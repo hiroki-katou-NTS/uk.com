@@ -501,10 +501,10 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 			OverrideSet overrideSet,
 			Optional<CalcStampMiss> calOptional,
 			List<DeductionTime> breakTimes,
-			ActualContentDisplay acuActualContentDisplay) {
+			Optional<ActualContentDisplay> acuActualContentDisplay) {
 		ApplicationTime output = new ApplicationTime();
 		// INPUT．「表示する実績内容．実績詳細」をチェックする
-		Optional<AchievementDetail> opAchievementDetail = acuActualContentDisplay.getOpAchievementDetail();
+		Optional<AchievementDetail> opAchievementDetail = acuActualContentDisplay.map(x -> x.getOpAchievementDetail()).orElse(Optional.empty());
 		
 		if (!(opAchievementDetail.isPresent() && opAchievementDetail.get().getTrackRecordAtr() == TrackRecordAtr.DAILY_RESULTS)) {
 			

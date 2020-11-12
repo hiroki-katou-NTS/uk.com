@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.ac.record.application.divergence;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -7,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.pub.application.divergence.DivergenceReasonInputMethodExport;
 import nts.uk.ctx.at.record.pub.application.divergence.DivergenceReasonInputMethodPub;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.DivergenceInputRequired;
@@ -43,7 +45,7 @@ public class DivergenceReasonInputMethodImpl implements DivergenceReasonInputMet
 				export.getCompanyId(),
 				export.getDivergenceReasonInputed(),
 				export.getDivergenceReasonSelected(),
-				export.getReasons().stream()
+				CollectionUtil.isEmpty(export.getReasons()) ? Collections.emptyList() : export.getReasons().stream()
 								   .map(x -> this.convertObject(x))
 								   .collect(Collectors.toList()));
 	}

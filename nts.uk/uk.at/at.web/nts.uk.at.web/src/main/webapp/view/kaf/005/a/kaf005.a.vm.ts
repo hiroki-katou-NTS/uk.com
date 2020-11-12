@@ -1,16 +1,70 @@
 module nts.uk.at.view.kaf005.a.viewmodel {
-	
+	import Application = nts.uk.at.view.kaf000.shr.viewmodel.Application;
+	import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
 	import Kaf000AViewModel = nts.uk.at.view.kaf000.a.viewmodel.Kaf000AViewModel;
 	
 	@bean()
     class Kaf005AViewModel extends Kaf000AViewModel {
-	
+		appType: KnockoutObservable<number> = ko.observable(AppType.OVER_TIME_APPLICATION);
+		application: KnockoutObservable<Application>;
+			
+		
 		mounted() {
 			const self = this;
-			let command = {
-				
-			};
-			// self.$ajax(API.start, command);
+			self.start();
+			
+		}
+		
+		start() {
+			const self = this;
+			self.application = ko.observable(new Application(self.appType()));
+			self.$blockui("show");
+			let empLst: Array<string> = [],
+				dateLst: Array<string> = [];
+			self.loadData(empLst, dateLst, self.appType())
+				.then((loadDataFlag: any) => {
+					self.application().appDate.subscribe(value => {	
+	                    
+                	});
+	
+					if (loadDataFlag) {
+						let param1 = {
+							
+						} as FirstParam;
+						let param2 = {
+							
+						} as SecondParam;
+						
+						param1.companyId = self.$user.companyId;
+						param1.overtimeAppAtr = 1;
+						param1.appDispInfoStartupDto = ko.toJS(self.appDispInfoStartupOutput);
+						param1.isProxy = true;
+						let command = {
+							companyId: param1.companyId,
+							dateOp: param1.dateOp,
+							overtimeAppAtr: param1.overtimeAppAtr,
+							appDispInfoStartupDto: param1.appDispInfoStartupDto,
+							startTimeSPR: param1.endTimeSPR,
+							endTimeSPR: param1.endTimeSPR,
+							isProxy: param1.isProxy,
+							employeeId: param2.employeeId,
+							prePostInitAtr: param2.prePostInitAtr,
+							overtimeLeaveAppCommonSet: param2.overtimeLeaveAppCommonSet,
+							advanceApplicationTime: param2.advanceApplicationTime,
+							achieveApplicationTime: param2.achivementApplicationTime,
+							workContent: param2.workContent
+						};
+						
+						return self.$ajax(API.start, command);
+					}
+				})
+				.then((res: any) => {
+					
+				})
+				.fail((res: any) => {
+					
+				})
+				.always(() => self.$blockui('hide'));
 		}
 		
 		

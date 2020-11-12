@@ -50,15 +50,30 @@ public class AppOvertimeFinder {
 			endTimeSPR = Optional.of(param.endTimeSPR);
 		}
 		Boolean isProxy = param.isProxy;
-		String employeeId = param.employeeId;
+//		String employeeId = param.employeeId;
+//		
+//		PrePostAtr prePostInitAtr = EnumAdaptor.valueOf(param.prePostInitAtr, PrePostAtr.class);
+//		
+//		OvertimeLeaveAppCommonSet overtimeLeaveAppCommonSet = param.overtimeLeaveAppCommonSet.toDomain();
+//		ApplicationTime advanceApplicationTime = param.advanceApplicationTime.toDomain();
+//		ApplicationTime achieveApplicationTime = param.achieveApplicationTime.toDomain();
+//		WorkContent workContent = param.workContent.toDomain();
 		
-		PrePostAtr prePostInitAtr = EnumAdaptor.valueOf(param.prePostInitAtr, PrePostAtr.class);
-		
-		OvertimeLeaveAppCommonSet overtimeLeaveAppCommonSet = param.overtimeLeaveAppCommonSet.toDomain();
-		ApplicationTime advanceApplicationTime = param.advanceApplicationTime.toDomain();
-		ApplicationTime achieveApplicationTime = param.achieveApplicationTime.toDomain();
-		WorkContent workContent = param.workContent.toDomain();
-		
+//		output = overtimeService.startA(
+//				companyId,
+//				dateOp,
+//				overtimeAppAtr,
+//				appDispInfoStartupOutput,
+//				startTimeSPR,
+//				endTimeSPR,
+//				isProxy,
+//				employeeId,
+//				prePostInitAtr,
+//				overtimeLeaveAppCommonSet,
+//				advanceApplicationTime,
+//				achieveApplicationTime,
+//				workContent);
+		// test
 		output = overtimeService.startA(
 				companyId,
 				dateOp,
@@ -67,12 +82,12 @@ public class AppOvertimeFinder {
 				startTimeSPR,
 				endTimeSPR,
 				isProxy,
-				employeeId,
-				prePostInitAtr,
-				overtimeLeaveAppCommonSet,
-				advanceApplicationTime,
-				achieveApplicationTime,
-				workContent);
+				null,
+				null,
+				null,
+				null,
+				null,
+				null);
 		return DisplayInfoOverTimeDto.fromDomain(output);
 	}
 }

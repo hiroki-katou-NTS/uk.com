@@ -133,7 +133,7 @@ public interface ICommonAlgorithmOverTime {
 			WorkTimeCode workTimeCode,
 			Optional<TimeWithDayAttr> startTime,
 			Optional<TimeWithDayAttr> endTime,
-			AchievementDetail achievementDetail
+			Optional<AchievementDetail> achievementDetail
 			);
 	/**
 	 * Refactor5 勤務時間外の休憩時間を除く

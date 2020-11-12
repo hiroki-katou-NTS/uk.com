@@ -120,7 +120,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 	
-	
+	// pending #112662
 	@Override
 	public QuotaOuput getOvertimeQuotaSetUse(
 			String companyId,
@@ -290,7 +290,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 			List<Integer> frames = new ArrayList<Integer>();
 			if (appType == ApplicationType.HOLIDAY_WORK_APPLICATION) { // INPUT．「申請種類」= 休出時間申請 ⇒ List<乖離時間NO> = 3
 				frames.add(3);
-			} else if (appType == ApplicationType.HOLIDAY_WORK_APPLICATION) {
+			} else if (appType == ApplicationType.OVER_TIME_APPLICATION) {
 				if (ovetTimeAtr.isPresent()) {
 					OvertimeAppAtr value = ovetTimeAtr.get();
 					// 早出残業
@@ -306,7 +306,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 			}
 			// [RQ694]乖離時間Listを取得する
 			List<DivergenceTimeRoot> divergenceTimeRootList = divergenceTimeRoots.getList(frames);
-			if (divergenceTimeRootList.isEmpty()) {
+			if (CollectionUtil.isEmpty(divergenceTimeRootList)) {
 				return output;
 			}
 			output.setDivergenceTimeRoots(divergenceTimeRootList);
@@ -410,7 +410,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 				new WorkTimeCode(initWkTypeWkTimeOutput.getWorkTimeCD()),
 				startTimeSPR,
 				endTimeSPR,
-				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().map(x -> x.get(0)).orElse(null),
+				Optional.ofNullable(appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().map(x -> x.get(0)).orElse(null)),
 				overtimeAppSet);
 		// 取得情報を「申請日に関係する情報」にセットして返す
 		output.setWorkTypeCD(Optional.ofNullable(initWkTypeWkTimeOutput.getWorkTypeCD()));
@@ -434,10 +434,13 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 			WorkTimeCode workTimeCode,
 			Optional<TimeWithDayAttr> startTimeOp,
 			Optional<TimeWithDayAttr> endTimeOp,
-			AchievementDetail achievementDetail) {
+			Optional<AchievementDetail> achievementDetail) {
 		BreakTimeZoneSetting output = new BreakTimeZoneSetting();
 		// INPUT．「実績詳細．打刻実績．休憩時間帯」をチェックする
-		List<TimePlaceOutput> breakTimes = achievementDetail.getStampRecordOutput().getBreakTime();
+		List<TimePlaceOutput> breakTimes = Collections.emptyList();
+		if (achievementDetail.isPresent()) {
+			breakTimes = achievementDetail.get().getStampRecordOutput().getBreakTime();		
+		}
 		
 		if (breakTimes.isEmpty()) {
 			// 休憩時間帯を取得する

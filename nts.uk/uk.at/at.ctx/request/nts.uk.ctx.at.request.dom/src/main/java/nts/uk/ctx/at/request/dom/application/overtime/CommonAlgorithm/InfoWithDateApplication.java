@@ -18,7 +18,7 @@ import nts.uk.ctx.at.request.dom.workrecord.dailyrecordprocess.dailycreationwork
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-// 申請日に関係する情報 pending
+// 申請日に関係する情報
 public class InfoWithDateApplication {
 	// 休憩時間帯設定
 	private Optional<BreakTimeZoneSetting> breakTime = Optional.empty();

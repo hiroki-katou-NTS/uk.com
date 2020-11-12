@@ -154,7 +154,7 @@ public interface OvertimeService {
 			WorkTimeCode workTimeCode,
 			Optional<Integer> startTimeSPR,
 			Optional<Integer> endTimeSPR,
-			ActualContentDisplay actualContentDisplay,
+			Optional<ActualContentDisplay> actualContentDisplay,
 			OvertimeAppSet overtimeAppSet
 			);
 	

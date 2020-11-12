@@ -424,7 +424,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 	}
 
 	@Override
-	public DisplayInfoOverTime getInitData(String companyId,
+	public DisplayInfoOverTime getInitData(
+			String companyId,
 			Optional<GeneralDate> dateOp,
 			OvertimeAppAtr overtimeAppAtr,
 			AppDispInfoStartupOutput appDispInfoStartupOutput,
@@ -479,7 +480,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 			WorkTimeCode workTimeCode,
 			Optional<Integer> startTimeSPR,
 			Optional<Integer> endTimeSPR,
-			ActualContentDisplay actualContentDisplay,
+			Optional<ActualContentDisplay> actualContentDisplay,
 			OvertimeAppSet overtimeAppSet) {
 		SelectWorkOutput output = new SelectWorkOutput();
 		OverTimeContent overTimeContent = new OverTimeContent();
@@ -493,21 +494,24 @@ public class OvertimeServiceImpl implements OvertimeService {
 			workHoursSPR.setEndTimeOp1(Optional.of(new TimeWithDayAttr(startTimeSPR.get())));
 		}
 		WorkHours workHoursActual = new WorkHours();
-		if (actualContentDisplay.getOpAchievementDetail().isPresent()) {
-			AchievementDetail achievementDetail = actualContentDisplay.getOpAchievementDetail().get();
-			if (achievementDetail.getOpWorkTime().isPresent()) {
-				workHoursActual.setStartTimeOp1(Optional.of(new TimeWithDayAttr(achievementDetail.getOpWorkTime().get())));
-			}
-			if (achievementDetail.getOpLeaveTime().isPresent()) {
-				workHoursActual.setEndTimeOp1(Optional.of(new TimeWithDayAttr(achievementDetail.getOpLeaveTime().get())));
-			}
-			if (achievementDetail.getOpWorkTime2().isPresent()) {
-				workHoursActual.setStartTimeOp2(Optional.of(new TimeWithDayAttr(achievementDetail.getOpWorkTime2().get())));
-			}
-			if (achievementDetail.getOpDepartureTime2().isPresent()) {
-				workHoursActual.setEndTimeOp2(Optional.of(new TimeWithDayAttr(achievementDetail.getOpDepartureTime2().get())));
-			}
+		if (actualContentDisplay.isPresent()) {
 			
+			if (actualContentDisplay.get().getOpAchievementDetail().isPresent()) {
+				AchievementDetail achievementDetail = actualContentDisplay.get().getOpAchievementDetail().get();
+				if (achievementDetail.getOpWorkTime().isPresent()) {
+					workHoursActual.setStartTimeOp1(Optional.of(new TimeWithDayAttr(achievementDetail.getOpWorkTime().get())));
+				}
+				if (achievementDetail.getOpLeaveTime().isPresent()) {
+					workHoursActual.setEndTimeOp1(Optional.of(new TimeWithDayAttr(achievementDetail.getOpLeaveTime().get())));
+				}
+				if (achievementDetail.getOpWorkTime2().isPresent()) {
+					workHoursActual.setStartTimeOp2(Optional.of(new TimeWithDayAttr(achievementDetail.getOpWorkTime2().get())));
+				}
+				if (achievementDetail.getOpDepartureTime2().isPresent()) {
+					workHoursActual.setEndTimeOp2(Optional.of(new TimeWithDayAttr(achievementDetail.getOpDepartureTime2().get())));
+				}
+				
+			}
 		}
 		overTimeContent.setWorkTypeCode(workTypeCodeOp);
 		overTimeContent.setWorkTimeCode(workTimeCodeOp);
@@ -527,7 +531,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 				workTimeCode,
 				startTimeSPR.map(x -> Optional.of(new TimeWithDayAttr(x))).orElse(Optional.empty()),
 				endTimeSPR.map(x -> Optional.of(new TimeWithDayAttr(x))).orElse(Optional.empty()),
-				actualContentDisplay.getOpAchievementDetail().orElse(null));
+				actualContentDisplay.map(x -> x.getOpAchievementDetail()).orElse(Optional.empty()));
 		// 07-02_実績取得・状態チェック
 		ApplicationTime applicationTime = preActualColorCheck.checkStatus(
 				companyId,
@@ -649,7 +653,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 					overrideSet, // 退勤時刻優先設定
 					Optional.empty(),
 					Collections.emptyList(), // check again
-					appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().map(x -> x.get(0)).orElse(null));
+					appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().map(x -> x.get(0)));
 		}
 		// 取得した「残業申請」をチェックする
 		Optional<OvertimeApplicationSetting> resultOp = appOverTime.getApplicationTime().getApplicationTime().stream().filter(x -> x.getAttendanceType() == AttendanceType_Update.BREAKTIME).findFirst();

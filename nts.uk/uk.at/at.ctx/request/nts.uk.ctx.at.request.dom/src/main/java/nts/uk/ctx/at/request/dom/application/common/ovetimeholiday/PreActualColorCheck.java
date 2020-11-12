@@ -175,7 +175,7 @@ public interface PreActualColorCheck {
 			OverrideSet overrideSet,
 			Optional<CalcStampMiss> calOptional,
 			List<DeductionTime> breakTimes,
-			ActualContentDisplay acuActualContentDisplay
+			Optional<ActualContentDisplay> acuActualContentDisplay
 			
 			);
 	
