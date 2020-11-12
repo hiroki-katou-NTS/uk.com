@@ -43,11 +43,11 @@ import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
- * The Class FlexWorkSetting.
+ * フレックス勤務設定
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared.就業規則.就業時間帯.フレックス勤務設定.フレックス勤務設定
  */
 @Getter
 @NoArgsConstructor
-// フレックス勤務設定
 public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable, WorkSetting {
 
 	/** The company id. */
@@ -358,7 +358,6 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 		}
 
 		val coreTime = getCoreTimeByAmPm(require, ampmAtr);
-
 		val startTime = new TimeSpanForCalc(wkTimePossibles.getStart(), coreTime.getStart());
 		val endTime = new TimeSpanForCalc(coreTime.getEnd(), wkTimePossibles.getEnd());
 
@@ -370,7 +369,7 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 	/**
 	 * [prv-2] 指定した午前午後区分のコアタイム時間帯を取得する
 	 * @param require
-	 * @param ampmAtr
+	 * @param ampmAtr 
 	 * @return
 	 */
 	private TimeSpanForCalc getCoreTimeByAmPm(WorkSetting.Require require, AmPmAtr ampmAtr) {
@@ -405,13 +404,10 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 				.map(c -> c.getTimezone().timeSpan())
 				.collect(Collectors.toList());
 		val workOnDayOffTime = TimeSpanForCalc.join(workOnDayOffTimeList);
+		
 		val workTimeList = predetermineTimeSetting.getTimezoneByAmPmAtr(AmPmAtr.ONE_DAY);
 
-		if (checkDuplicate(workTimeList)) {
-			return Collections.emptyList();
-		}
-
-		if(workOnDayOffTime.isPresent()) {
+		if (checkDuplicate(workTimeList) == true) {
 			return Collections.emptyList();
 		}
 
@@ -425,7 +421,6 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 		for(int i = 0; i < timespans.size() - 1; i++) {
 			if (timespans.get(i).checkDuplication(timespans.get(i + 1)) == TimeSpanDuplication.NOT_DUPLICATE)
 				return true;
-			break;
 		}
 		return false;
 	}
