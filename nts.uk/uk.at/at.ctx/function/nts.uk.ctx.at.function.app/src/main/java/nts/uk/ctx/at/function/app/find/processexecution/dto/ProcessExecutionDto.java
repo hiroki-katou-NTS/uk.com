@@ -11,7 +11,7 @@ import lombok.Data;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.processexecution.AlarmExtraction;
 import nts.uk.ctx.at.function.dom.processexecution.AppRouteUpdateDaily;
-import nts.uk.ctx.at.function.dom.processexecution.ProcessExecution;
+import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionScope;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionScopeItem;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionSetting;
@@ -126,16 +126,16 @@ public class ProcessExecutionDto {
 		super();
 	}
 	
-	public static ProcessExecutionDto fromDomain(ProcessExecution domain) {
+	public static ProcessExecutionDto fromDomain(UpdateProcessAutoExecution domain) {
 		List<String> workplaceList = domain.getExecScope().getWorkplaceIdList().stream()
 				.map(ProcessExecutionScopeItem::getWkpId)
 				.collect(Collectors.toList());
 		ProcessExecutionDtoBuilder builder = ProcessExecutionDto.builder()
 				.companyId(domain.getCompanyId())
-				.execItemCd(domain.getExecItemCd().v())
+				.execItemCd(domain.getExecItemCode().v())
 				.execItemName(domain.getExecItemName().v())
 				.workplaceList(workplaceList)
-				.processExecType(domain.getProcessExecType().value)
+				.processExecType(domain.getExecutionType().value)
 				.cloudCreationFlag(domain.getCloudCreationFlag());
 		ProcessExecutionSetting execSetting = domain.getExecSetting();
 		if (execSetting != null) {
@@ -143,11 +143,11 @@ public class ProcessExecutionDto {
 					.reflectResultCls(execSetting.isReflectResultCls())
 					.monthlyAggCls(execSetting.isMonthlyAggCls())
 					.appRouteUpdateMonthly(execSetting.getAppRouteUpdateMonthly().equals(NotUseAtr.USE));
-			PersonalScheduleCreation perSchedule = execSetting.getPerSchedule();
+			PersonalScheduleCreation perSchedule = execSetting.getPerScheduleCreation();
 			if (perSchedule != null) {
 				builder = builder
 						.perScheduleCls(perSchedule.isPerSchedule());
-				PersonalScheduleCreationPeriod period = perSchedule.getPeriod();
+				PersonalScheduleCreationPeriod period = perSchedule.getPerSchedulePeriod();
 				if (period != null) {
 					builder = builder
 							.targetMonth(period.getTargetMonth().value)
@@ -192,7 +192,7 @@ public class ProcessExecutionDto {
 			if (appRouteUpdateDaily != null) {
 				builder = builder
 						.appRouteUpdateAtr(appRouteUpdateDaily.getAppRouteUpdateAtr().equals(NotUseAtr.USE))
-						.createNewEmp(appRouteUpdateDaily.getCreateNewEmp()
+						.createNewEmp(appRouteUpdateDaily.getCreateNewEmpApp()
 								.map(o -> o.equals(NotUseAtr.USE))
 								.orElse(null));
 			}

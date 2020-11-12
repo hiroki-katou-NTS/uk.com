@@ -18,7 +18,7 @@ import nts.uk.ctx.at.function.dom.adapter.EmployeeHistWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.WorkplaceWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.dailyperformanceformat.businesstype.BusinessTypeEmpOfHistAdapter;
 import nts.uk.ctx.at.function.dom.adapter.dailyperformanceformat.businesstype.BusinessTypeOfEmpHistImport;
-import nts.uk.ctx.at.function.dom.processexecution.ProcessExecution;
+import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetClassification;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetSetting;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -49,8 +49,8 @@ public class ChangePersionListForSche {
 	@Inject
 	private EmployeeHistWorkRecordAdapter employeeHistWorkRecordAdapter;
 	
-	public DatePeriod filterEmployeeList(ProcessExecution procExec, List<String> employeeIdList,
-			List<String> reEmployeeList, List<String> newEmployeeList, List<String> temporaryEmployeeList) {
+	public DatePeriod filterEmployeeList(UpdateProcessAutoExecution procExec, List<String> employeeIdList,
+	                                     List<String> reEmployeeList, List<String> newEmployeeList, List<String> temporaryEmployeeList) {
 		//Output : 
 		// ・社員ID（異動者、勤務種別変更者、休職者・休業者）（List）:  reEmployeeList
 		// 社員ID（新入社員）（List） : newEmployeeList
@@ -58,7 +58,7 @@ public class ChangePersionListForSche {
 		
 		String companyId = AppContexts.user().companyId();
 		/** 作成対象の判定 */
-		if (procExec.getExecSetting().getPerSchedule().getTarget()
+		if (procExec.getExecSetting().getPerScheduleCreation().getTarget()
 				.getCreationTarget().value == TargetClassification.ALL.value) {
 			return null;
 		} else {
@@ -69,7 +69,7 @@ public class ChangePersionListForSche {
 
 			DatePeriod newClosurePeriod = new DatePeriod(closurePeriod.start(), GeneralDate.ymd(9999, 12, 31));
 
-			TargetSetting setting = procExec.getExecSetting().getPerSchedule().getTarget().getTargetSetting();
+			TargetSetting setting = procExec.getExecSetting().getPerScheduleCreation().getTarget().getTargetSetting();
 			// 異動者を再作成するか判定
 			if (setting.isRecreateTransfer()) {
 				// Imported(勤務実績)「所属職場履歴」を取得する : 異動者の絞り込み

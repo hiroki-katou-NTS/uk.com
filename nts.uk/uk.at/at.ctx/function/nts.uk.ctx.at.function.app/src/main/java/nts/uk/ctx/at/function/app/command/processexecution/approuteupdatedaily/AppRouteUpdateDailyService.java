@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.function.app.command.processexecution.approuteupdatedaily;
 
-import nts.uk.ctx.at.function.dom.processexecution.ProcessExecution;
+import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLog;
 /**
  * 承認ルート更新（日次）
@@ -8,6 +8,6 @@ import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecution
  *
  */
 public interface AppRouteUpdateDailyService {
-	public OutputAppRouteDaily checkAppRouteUpdateDaily( String execId, ProcessExecution procExec,
+	public OutputAppRouteDaily checkAppRouteUpdateDaily( String execId, UpdateProcessAutoExecution procExec,
 			ProcessExecutionLog procExecLog);
 }

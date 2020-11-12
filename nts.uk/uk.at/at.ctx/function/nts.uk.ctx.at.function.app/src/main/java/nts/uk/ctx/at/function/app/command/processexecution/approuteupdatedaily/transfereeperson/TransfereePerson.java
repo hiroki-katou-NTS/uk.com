@@ -12,7 +12,7 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.app.command.processexecution.ListLeaderOrNotEmpOutput;
 import nts.uk.ctx.at.function.dom.adapter.WorkPlaceHistImport;
 import nts.uk.ctx.at.function.dom.adapter.WorkplaceWorkRecordAdapter;
-import nts.uk.ctx.at.function.dom.processexecution.ProcessExecution;
+import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmployeeHistory;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository.BusinessTypeEmpOfHistoryRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -39,7 +39,7 @@ public class TransfereePerson {
 	@Inject
 	private BusinessTypeEmpOfHistoryRepository typeEmployeeOfHistoryRepos;
 	
-	public ListLeaderOrNotEmpOutput createProcessForChangePerOrWorktype(int closureId,String companyId, List<String> empIds,DatePeriod period,ProcessExecution procExec){
+	public ListLeaderOrNotEmpOutput createProcessForChangePerOrWorktype(int closureId, String companyId, List<String> empIds, DatePeriod period, UpdateProcessAutoExecution procExec){
 		//期間を計算	
 		DatePeriod p = this.calculatePeriod(closureId, period, companyId);
 		List<String> newEmpIdList = new ArrayList<>();

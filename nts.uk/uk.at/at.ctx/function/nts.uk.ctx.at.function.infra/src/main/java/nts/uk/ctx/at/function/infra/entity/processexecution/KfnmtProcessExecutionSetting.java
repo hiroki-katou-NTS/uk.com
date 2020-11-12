@@ -1,269 +1,307 @@
 package nts.uk.ctx.at.function.infra.entity.processexecution;
 
-import java.io.Serializable;
-
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.Version;
-
 import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.function.dom.alarm.AlarmPatternCode;
+import nts.uk.ctx.at.function.dom.processexecution.*;
+import nts.uk.ctx.at.function.dom.processexecution.dailyperformance.DailyPerformanceCreation;
+import nts.uk.ctx.at.function.dom.processexecution.personalschedule.*;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Collections;
 
 /**
  * The Class KfnmtProcessExecutionSetting.
  */
+@Data
 @Entity
 @Table(name = "KFNMT_PROC_EXEC_SETTING")
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Serializable {
 
-	/** The Constant serialVersionUID. */
+	/**
+	 * The Constant serialVersionUID.
+	 */
 	private static final long serialVersionUID = 1L;
 
-	/** The kfnmt proc exec set PK. */
-	/* 主キー */
-	@EmbeddedId
-	public KfnmtProcessExecutionSettingPK kfnmtProcExecSetPK;
-
-	/** The exclus ver. */
+	/**
+	 * Column 排他バージョン
+	 */
 	@Version
 	@Column(name = "EXCLUS_VER")
-	private Long exclusVer;
-
-	/** The Contract Code. */
-	@Column(name = "CONTRACT_CD")
-	public String contractCode;
+	private long version;
 
 	/**
-	 * The per schedule cls. 個人スケジュール作成
+	 * The primary key
+	 */
+	@EmbeddedId
+	private KfnmtProcessExecutionSettingPK kfnmtProcExecSetPK;
+
+	/**
+	 * The contract code.
+	 */
+	@Column(name = "CONTRACT_CD")
+	private String contractCode;
+
+	/**
+	 * The personal schedule creation classification.<br>
+	 * 個人スケジュール作成区分
 	 */
 	@Column(name = "PER_SCHEDULE_CLS")
-	public int perScheduleCls;
+	private int perScheduleCls;
 
 	/**
-	 * The target month. 対象月
+	 * The target month.<br>
+	 * 対象月
 	 */
 	@Column(name = "TARGET_MONTH")
-	public int targetMonth;
+	private int targetMonth;
 
 	/**
-	 * The target date. 対象日
+	 * The target date.<br>
+	 * 対象日
 	 */
 	@Column(name = "TARGET_DATE")
-	public Integer targetDate;
+	private Integer targetDate;
 
 	/**
-	 * The creation period. 作成期間
+	 * The creation period.<br>
+	 * 作成期間
 	 */
 	@Column(name = "CREATION_PERIOD")
-	public Integer creationPeriod;
+	private Integer creationPeriod;
 
 	/**
-	 * The designated year. 指定年
+	 * The designated year.<br>
+	 * 指定年
 	 */
 	@Column(name = "DESIGNATED_YEAR")
-	public Integer designatedYear;
+	private Integer designatedYear;
 
 	/**
-	 * The start month day. 指定開始月日
+	 * The start month day.<br>
+	 * 指定開始月日
 	 */
 	@Column(name = "START_MONTHDAY")
-	public Integer startMonthDay;
+	private Integer startMonthDay;
 
 	/**
-	 * The end month day. 指定終了月日
+	 * The end month day.<br>
+	 * 指定終了月日
 	 */
 	@Column(name = "END_MONTHDAY")
-	public Integer endMonthDay;
+	private Integer endMonthDay;
 
 	/**
-	 * The create employee. 新入社員を作成する
+	 * The create new employee schedule.<br>
+	 * 新入社員を作成する
 	 */
 	@Column(name = "CRE_NEW_SYA_SCHED")
-	public int createEmployee;
+	private int createNewEmpSched;
 
 	/**
-	 * The daily perf cls. 日別実績の作成・計算
+	 * The daily perf classification.<br>
+	 * 日別実績の作成・計算区分
 	 */
 	@Column(name = "DAILY_PERF_CLS")
-	public int dailyPerfCls;
+	private int dailyPerfCls;
 
 	/**
-	 * The daily perf item. 作成・計算項目
+	 * The daily perf item.<br>
+	 * 作成・計算項目
 	 */
 	@Column(name = "DAILY_PERF_ITEM")
-	public int dailyPerfItem;
+	private int dailyPerfItem;
 
 	/**
-	 * The mid join employee. 途中入社は入社日からにする _> 新入社員を再作成する
+	 * The create new employee daily perf.<br>
+	 * 新入社員は入社日から作成
 	 */
 	@Column(name = "CRE_NEW_SYA_DAI")
-	public int midJoinEmployee;
+	private int createNewEmpDailyPerf;
 
 	/**
-	 * The reflect result cls. 承認結果反映
+	 * The reflect result classification.<br>
+	 * 承認結果反映
 	 */
 	@Column(name = "REFLECT_RS_CLS")
-	public int reflectResultCls;
+	private int reflectResultCls;
 
 	/**
-	 * The monthly agg cls. 月別集計
+	 * The monthly agg classification.<br>
+	 * 月別集計
 	 */
 	@Column(name = "MONTHLY_AGG_CLS")
-	public int monthlyAggCls;
+	private int monthlyAggCls;
 
 	/**
-	 * The app route update atr. 承認ルート更新（日次）.承認ルート更新区分
+	 * The app route update attribute.<br>
+	 * 承認ルート更新区分
 	 */
 	@Column(name = "APP_ROUTE_UPDATE_ATR_DAI")
-	public int appRouteUpdateAtr;
+	private int appRouteUpdateAtr;
 
 	/**
-	 * The create new emp. 承認ルート更新（日次）.新入社員を作成する
+	 * The create new emp app.<br>
+	 * 新入社員を作成する
 	 */
 	@Column(name = "CRE_NEW_SYA_APP")
-	public Integer createNewEmp;
+	private Integer createNewEmpApp;
 
 	/**
-	 * The app route update atr mon. 承認ルート更新（月次）
+	 * The app route update attribute monthly.<br>
+	 * 承認ルート更新（月次）
 	 */
 	@Column(name = "APP_ROUTE_UPDATE_ATR_MON")
-	public int appRouteUpdateAtrMon;
+	private int appRouteUpdateAtrMon;
 
 	/**
-	 * The alarm atr. 承認ルート更新（月次）
+	 * The alarm attribute.<br>
+	 * アラーム抽出区分
 	 */
 	@Column(name = "ALARM_ATR")
-	public int alarmAtr;
+	private int alarmAtr;
 
 	/**
-	 * The alarm code. 承認ルート更新（月次）
+	 * The alarm code.<br>
+	 * コード
 	 */
 	@Column(name = "ALARM_CODE")
-	public String alarmCode;
+	private String alarmCode;
 
 	/**
-	 * The mail principal. メールを送信する(本人)
+	 * The mail principal.<br>
+	 * メールを送信する(本人)
 	 */
 	@Column(name = "MAIL_PRINCIPAL")
-	public Integer mailPrincipal;
+	private Integer mailPrincipal;
 
 	/**
-	 * The mail administrator. メールを送信する(管理者)
+	 * The mail administrator.<br>
+	 * メールを送信する(管理者)
 	 */
 	@Column(name = "MAIL_ADMINISTRATOR")
-	public Integer mailAdministrator;
+	private Integer mailAdministrator;
 
-	/** The display tp principal. */
+	/**
+	 * The display tp principal.<br>
+	 * トップページに表示(本人)
+	 */
 	@Column(name = "DISPLAY_TP_PRINCIPAL")
-	public Integer displayTpPrincipal;
+	private Integer displayTpPrincipal;
 
-	/** The display tp admin. */
+	/**
+	 * The display tp admin.<br>
+	 * メールを送信する(管理者)
+	 */
 	@Column(name = "DISPLAY_TP_ADMIN")
-	public Integer displayTpAdmin;
+	private Integer displayTpAdmin;
 
-	/** 
-	 * The ext output art. 
+	/**
+	 * The ext output attribute.<br>
 	 * 外部出力区分
 	 **/
 	@Column(name = "EXT_OUTPUT_ART")
-	public int extOutputArt;
+	private int extOutputArt;
 
-	/** 
-	 * The ext acceptance art. 
+	/**
+	 * The ext acceptance attribute.<br>
 	 * 外部受入区分
 	 **/
 	@Column(name = "EXT_ACCEPTANCE_ART")
-	public int extAcceptanceArt;
+	private int extAcceptanceArt;
 
-	/** 
-	 * The data storage art. 
-	 * データの保存区分 
+	/**
+	 * The data storage attribute.<br>
+	 * データの保存区分
 	 **/
 	@Column(name = "DATA_STORAGE_ART")
-	public int dataStorageArt;
+	private int dataStorageArt;
 
-	/** 
-	 * The data storage code. 
+	/**
+	 * The data storage code.<br>
 	 * パターンコード
 	 **/
 	@Column(name = "DATA_STORAGE_CODE")
-	public String dataStorageCode;
+	private String dataStorageCode;
 
-	/** 
-	 * The data deletion art. 
-	 * データの削除
+	/**
+	 * The data deletion attribute.<br>
+	 * データの削除区分
 	 **/
 	@Column(name = "DATA_DELETION_ART")
-	public int dataDeletionArt;
+	private int dataDeletionArt;
 
-	/** 
-	 * The data deletion code. 
+	/**
+	 * The data deletion code.<br>
 	 * パターンコード
 	 **/
 	@Column(name = "DATA_DELETION_CODE")
-	public String dataDeletionCode;
+	private String dataDeletionCode;
 
-	/** 
-	 * The agg any period art. 
-	 * 使用区分
+	/**
+	 * The agg any period attribute.<br>
+	 * 任意期間の集計の使用区分
 	 **/
 	@Column(name = "AGG_ANY_PERIOD_ART")
-	public int aggAnyPeriodArt;
+	private int aggAnyPeriodArt;
 
-	/** 
-	 * The agg any period code. 
+	/**
+	 * The agg any period code.<br>
+	 * 任意集計枠コード
 	 **/
 	@Column(name = "AGG_ANY_PERIOD_CODE")
-	public String aggAnyPeriodCode;
+	private String aggAnyPeriodCode;
 
 	/**
-	 * The recre change bus. 勤務種別変更者を再作成
+	 * The recreate change bus.<br>
+	 * 勤務種別変更者を再作成
 	 */
 	@Column(name = "RECRE_CHANGE_BUS")
-	public int recreateWorkType;
+	private int recreateChangeBus;
 
 	/**
-	 * The recreate transfer. 異動者を再作成する
+	 * The recreate transfer.<br>
+	 * 異動者を再作成する
 	 */
 	@Column(name = "RECRE_CHANGE_WKP")
-	public int recreateTransfer;
+	private int recreateTransfer;
 
-	/** The recre leave sya. 
-	 * 休職者・休業者を再作成				
+	/**
+	 * The recreate leave sya.<br>
+	 * 休職者・休業者を再作成
 	 **/
 	@Column(name = "RECRE_LEAVE_SYA")
-	public int recreLeaveSya;
+	private int recreateLeaveSya;
 
-	/** 
-	 * The index reorg art. 
-	 * 使用区分
+	/**
+	 * The index reorg attribute.<br>
+	 * インデックス再構成の使用区分
 	 **/
 	@Column(name = "INDEX_REORG_ART")
-	public int indexReorgArt;
+	private int indexReorgArt;
 
-	/** 
-	 * The upd statistics art. 
+	/**
+	 * The upd statistics attribute.<br>
 	 * 統計情報を更新する
 	 **/
 	@Column(name = "UPD_STATISTICS_ART")
-	public int updStatisticsArt;
+	private int updStatisticsArt;
 
-	/** The cloud cre flag. */
-	@Column(name = "CLOUD_CRE_FLAG")
-	public int cloudCreFlag;
-
-	/** The proc exec. */
+	/**
+	 * The proc exec.
+	 */
 	@OneToOne
-	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-			@JoinColumn(name = "EXEC_ITEM_CD", referencedColumnName = "EXEC_ITEM_CD", insertable = false, updatable = false) })
+	@JoinColumns({@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
+				  @JoinColumn(name = "EXEC_ITEM_CD", referencedColumnName = "EXEC_ITEM_CD", insertable = false, updatable = false)})
 	public KfnmtProcessExecution procExec;
 
 	/**
@@ -276,18 +314,17 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 		return this.kfnmtProcExecSetPK;
 	}
 
-	public KfnmtProcessExecutionSetting(KfnmtProcessExecutionSettingPK kfnmtProcExecSetPK, Long exclusVer,
-			String contractCode, int perScheduleCls, int targetMonth, Integer targetDate, Integer creationPeriod,
-			Integer designatedYear, Integer startMonthDay, Integer endMonthDay, int createEmployee, int dailyPerfCls,
-			int dailyPerfItem, int midJoinEmployee, int reflectResultCls, int monthlyAggCls, int appRouteUpdateAtr,
-			Integer createNewEmp, int appRouteUpdateAtrMon, int alarmAtr, String alarmCode, Integer mailPrincipal,
-			Integer mailAdministrator, Integer displayTpPrincipal, Integer displayTpAdmin, int extOutputArt,
-			int extAcceptanceArt, int dataStorageArt, String dataStorageCode, int dataDeletionArt,
-			String dataDeletionCode, int aggAnyPeriodArt, String aggAnyPeriodCode, int recreateWorkType,
-			int recreateTransfer, int recreLeaveSya, int indexReorgArt, int updStatisticsArt, int cloudCreFlag) {
+	public KfnmtProcessExecutionSetting(KfnmtProcessExecutionSettingPK kfnmtProcExecSetPK,
+	                                    String contractCode, int perScheduleCls, int targetMonth, Integer targetDate, Integer creationPeriod,
+	                                    Integer designatedYear, Integer startMonthDay, Integer endMonthDay, int createNewEmpSched, int dailyPerfCls,
+	                                    int dailyPerfItem, int createNewEmpDailyPerf, int reflectResultCls, int monthlyAggCls, int appRouteUpdateAtr,
+	                                    Integer createNewEmpApp, int appRouteUpdateAtrMon, int alarmAtr, String alarmCode, Integer mailPrincipal,
+	                                    Integer mailAdministrator, Integer displayTpPrincipal, Integer displayTpAdmin, int extOutputArt,
+	                                    int extAcceptanceArt, int dataStorageArt, String dataStorageCode, int dataDeletionArt,
+	                                    String dataDeletionCode, int aggAnyPeriodArt, String aggAnyPeriodCode, int recreateChangeBus,
+	                                    int recreateTransfer, int recreateLeaveSya, int indexReorgArt, int updStatisticsArt) {
 		super();
 		this.kfnmtProcExecSetPK = kfnmtProcExecSetPK;
-		this.exclusVer = exclusVer;
 		this.contractCode = contractCode;
 		this.perScheduleCls = perScheduleCls;
 		this.targetMonth = targetMonth;
@@ -296,14 +333,14 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 		this.designatedYear = designatedYear;
 		this.startMonthDay = startMonthDay;
 		this.endMonthDay = endMonthDay;
-		this.createEmployee = createEmployee;
+		this.createNewEmpSched = createNewEmpSched;
 		this.dailyPerfCls = dailyPerfCls;
 		this.dailyPerfItem = dailyPerfItem;
-		this.midJoinEmployee = midJoinEmployee;
+		this.createNewEmpDailyPerf = createNewEmpDailyPerf;
 		this.reflectResultCls = reflectResultCls;
 		this.monthlyAggCls = monthlyAggCls;
 		this.appRouteUpdateAtr = appRouteUpdateAtr;
-		this.createNewEmp = createNewEmp;
+		this.createNewEmpApp = createNewEmpApp;
 		this.appRouteUpdateAtrMon = appRouteUpdateAtrMon;
 		this.alarmAtr = alarmAtr;
 		this.alarmCode = alarmCode;
@@ -319,13 +356,145 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 		this.dataDeletionCode = dataDeletionCode;
 		this.aggAnyPeriodArt = aggAnyPeriodArt;
 		this.aggAnyPeriodCode = aggAnyPeriodCode;
-		this.recreateWorkType = recreateWorkType;
+		this.recreateChangeBus = recreateChangeBus;
 		this.recreateTransfer = recreateTransfer;
-		this.recreLeaveSya = recreLeaveSya;
+		this.recreateLeaveSya = recreateLeaveSya;
 		this.indexReorgArt = indexReorgArt;
 		this.updStatisticsArt = updStatisticsArt;
-		this.cloudCreFlag = cloudCreFlag;
 	}
-	
+
+	/**
+	 * Creates from domain.
+	 *
+	 * @param companyId       the company id
+	 * @param execItemCode    the exec item code
+	 * @param contractCode    the contract code
+	 * @param reExecCondition the re-execution condition
+	 * @param domain          the domain
+	 * @return the entity Kfnmt process execution setting
+	 */
+	public static KfnmtProcessExecutionSetting createFromDomain(String companyId,
+	                                                            String execItemCode,
+	                                                            String contractCode,
+	                                                            ReExecutionCondition reExecCondition,
+	                                                            ProcessExecutionSetting domain) {
+		if (domain == null) {
+			return null;
+		}
+		KfnmtProcessExecutionSetting entity = new KfnmtProcessExecutionSetting();
+		entity.kfnmtProcExecSetPK = new KfnmtProcessExecutionSettingPK(companyId, execItemCode);
+		entity.contractCode = contractCode;
+		entity.perScheduleCls = domain.getPerScheduleCreation().getPerScheduleCls().value;
+		entity.targetMonth = domain.getPerScheduleCreation().getPerSchedulePeriod().getTargetMonth().value;
+		entity.targetDate = domain.getPerScheduleCreation().getPerSchedulePeriod().getTargetDate()
+																				  .map(TargetDate::v)
+																				  .orElse(null);
+		entity.creationPeriod = domain.getPerScheduleCreation().getPerSchedulePeriod().getCreationPeriod()
+																					  .map(CreationPeriod::v)
+																					  .orElse(null);
+		entity.designatedYear = domain.getPerScheduleCreation().getPerSchedulePeriod().getDesignatedYear()
+																					  .map(createScheduleYear -> createScheduleYear.value)
+																					  .orElse(null);
+		entity.startMonthDay = domain.getPerScheduleCreation().getPerSchedulePeriod().getStartMonthDayIntVal();
+		entity.endMonthDay = domain.getPerScheduleCreation().getPerSchedulePeriod().getEndMonthDayIntVal();
+		entity.createNewEmpSched = domain.getPerScheduleCreation().getCreateNewEmpSched().value;
+		entity.dailyPerfCls = domain.getDailyPerf().getDailyPerfCls().value;
+		entity.dailyPerfItem = domain.getDailyPerf().getDailyPerfItem().value;
+		entity.createNewEmpDailyPerf = domain.getDailyPerf().getCreateNewEmpDailyPerf().value;
+		entity.reflectResultCls = domain.getReflectAppResult().getReflectResultCls().value;
+		entity.monthlyAggCls = domain.getMonthlyAggregate().getMonthlyAggCls().value;
+		entity.appRouteUpdateAtr = domain.getAppRouteUpdateDaily().getAppRouteUpdateAtr().value;
+		entity.createNewEmpApp = domain.getAppRouteUpdateDaily().getCreateNewEmpApp()
+																.map(createNewEmpApp -> createNewEmpApp.value)
+																.orElse(null);
+		entity.appRouteUpdateAtrMon = domain.getAppRouteUpdateMonthly().value;
+		entity.alarmAtr = domain.getAlarmExtraction().getAlarmAtr().value;
+		entity.alarmCode = domain.getAlarmExtraction().getAlarmCode()
+													  .map(AlarmPatternCode::v)
+													  .orElse(null);
+		entity.mailPrincipal = domain.getAlarmExtraction().getMailPrincipal()
+														  .map(mailPrincipal -> mailPrincipal ? 1 : 0)
+														  .orElse(null);
+		entity.mailAdministrator = domain.getAlarmExtraction().getMailAdministrator()
+															  .map(mailAdministrator -> mailAdministrator ? 1 : 0)
+															  .orElse(null);
+		entity.displayTpPrincipal = domain.getAlarmExtraction().getDisplayOnTopPagePrincipal()
+															   .map(displayTpPrincipal -> displayTpPrincipal ? 1 : 0)
+															   .orElse(null);
+		entity.displayTpAdmin = domain.getAlarmExtraction().getDisplayOnTopPageAdministrator()
+														   .map(displayTpAdmin -> displayTpAdmin ? 1 : 0)
+														   .orElse(null);
+		entity.extOutputArt = domain.getExternalOutput().getExtOutputCls().value;
+		entity.extAcceptanceArt = domain.getExternalAcceptance().getExtAcceptCls().value;
+		entity.dataStorageArt = domain.getSaveData().getSaveDataCls().value;
+		entity.dataStorageCode = domain.getSaveData().getPatternCode()
+													 .map(AuxiliaryPatternCode::v)
+													 .orElse(null);
+		entity.dataDeletionArt = domain.getDeleteData().getDataDelCls().value;
+		entity.dataDeletionCode = domain.getDeleteData().getPatternCode()
+														.map(AuxiliaryPatternCode::v)
+														.orElse(null);
+		entity.aggAnyPeriodArt = domain.getAggrAnyPeriod().getAggAnyPeriodAttr().value;
+		entity.aggAnyPeriodCode = domain.getAggrAnyPeriod().getAggrFrameCode()
+														   .map(AggrFrameCode::v)
+														   .orElse(null);
+		entity.recreateChangeBus = reExecCondition.getRecreatePersonChangeWkt().value;
+		entity.recreateTransfer = reExecCondition.getRecreateTransfer().value;
+		entity.recreateLeaveSya = reExecCondition.getRecreateLeave().value;
+		entity.indexReorgArt = domain.getIndexReconstruction().getIndexReorgAttr().value;
+		entity.updStatisticsArt = domain.getIndexReconstruction().getUpdateStatistics().value;
+		return entity;
+	}
+
+	/**
+	 * Converts entity to domain.
+	 *
+	 * @return the domain Process execution setting
+	 */
+	public ProcessExecutionSetting toDomain() {
+		// Instantiates new domain
+		ProcessExecutionSetting domain = new ProcessExecutionSetting();
+		// Sets alarm extraction
+		domain.setAlarmExtraction(new AlarmExtraction(this.alarmAtr,
+													  this.alarmCode,
+													  this.mailPrincipal,
+													  this.mailAdministrator,
+													  this.displayTpAdmin,
+													  this.displayTpAdmin));
+		// Sets personal schedule creation
+		PersonalScheduleCreationPeriod perSchedulePeriod = new PersonalScheduleCreationPeriod(this.creationPeriod,
+																							  this.targetDate,
+																							  this.targetMonth,
+																							  this.designatedYear,
+																							  this.startMonthDay,
+																							  this.endMonthDay);
+		PersonalScheduleCreation perScheduleCreation = new PersonalScheduleCreation(perSchedulePeriod,
+																					this.perScheduleCls,
+																					this.createNewEmpSched);
+		domain.setPerScheduleCreation(perScheduleCreation);
+		// Sets daily performance creation
+		domain.setDailyPerf(new DailyPerformanceCreation(this.dailyPerfItem, this.createNewEmpDailyPerf, this.dailyPerfCls));
+		// Sets reflection approval result
+		domain.setReflectAppResult(new ReflectionApprovalResult(this.reflectResultCls));
+		// Sets monthly aggregate
+		domain.setMonthlyAggregate(new MonthlyAggregate(this.monthlyAggCls));
+		// Sets approval route update daily
+		domain.setAppRouteUpdateDaily(new AppRouteUpdateDaily(this.appRouteUpdateAtr, this.createNewEmpApp));
+		// Sets approval route update monthly
+		domain.setAppRouteUpdateMonthly(EnumAdaptor.valueOf(this.appRouteUpdateAtrMon, NotUseAtr.class));
+		// Sets delete data
+		domain.setDeleteData(new DeleteData(this.dataDeletionArt, this.dataDeletionCode));
+		// Sets save data
+		domain.setSaveData(new SaveData(this.dataStorageArt, this.dataStorageCode));
+		// Sets external acceptance
+		domain.setExternalAcceptance(new ExternalAcceptance(this.extAcceptanceArt, Collections.emptyList()));
+		// Sets external output
+		domain.setExternalOutput(new ExternalOutput(this.extOutputArt, Collections.emptyList()));
+		// Sets aggregation any period
+		domain.setAggrAnyPeriod(new AggregationAnyPeriod(this.aggAnyPeriodArt, this.aggAnyPeriodCode));
+		// Sets index reconstruction
+		domain.setIndexReconstruction(new IndexReconstruction(this.updStatisticsArt, this.indexReorgArt, Collections.emptyList()));
+		return domain;
+	}
 
 }

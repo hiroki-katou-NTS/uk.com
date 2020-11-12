@@ -15,7 +15,7 @@ import nts.uk.ctx.at.function.dom.adapter.employeebasic.EmployeeInfoImport;
 import nts.uk.ctx.at.function.dom.adapter.employeebasic.SyEmployeeFnAdapter;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionName;
-import nts.uk.ctx.at.function.dom.processexecution.ProcessExecution;
+import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ExecutionTaskLog;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogHistory;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogHistRepository;
@@ -176,7 +176,7 @@ public class GetDataToOutputService extends ExportService<Object> {
         // 取得できた
         // Step ドメインモデル「更新処理自動実行」を取得する
         String companyId = AppContexts.user().companyId();
-        List<ProcessExecution> lisProcessExecution = this.acquireTheDomainModel(companyId, listProcessExeHistory);
+        List<UpdateProcessAutoExecution> lisProcessExecution = this.acquireTheDomainModel(companyId, listProcessExeHistory);
 
         // Step OUTPUT「更新処理自動実行データ」を作成する
         UpdateProcessAutoRunDataDto updateProAutoRunData = new UpdateProcessAutoRunDataDto(
@@ -300,13 +300,13 @@ public class GetDataToOutputService extends ExportService<Object> {
         return result;
     }
 
-    private List<ProcessExecution> acquireTheDomainModel(String companyId, List<ProcessExecutionLogHistory> processExeHistory) {
+    private List<UpdateProcessAutoExecution> acquireTheDomainModel(String companyId, List<ProcessExecutionLogHistory> processExeHistory) {
         List<ExecutionCode> execItemCd = processExeHistory.stream().map(c -> c.getExecItemCd()).collect(Collectors.toList());
-        List<ProcessExecution> listProcessExecution = new ArrayList<>();
-        List<ProcessExecution> processExecution = this.procExecRepo.getProcessExecutionByCompanyId(companyId);
+        List<UpdateProcessAutoExecution> listProcessExecution = new ArrayList<>();
+        List<UpdateProcessAutoExecution> processExecution = this.procExecRepo.getProcessExecutionByCompanyId(companyId);
         processExecution.forEach(exe -> {
             execItemCd.forEach(code -> {
-                if (exe.getExecItemCd().v().equals(code.v())) {
+                if (exe.getExecItemCode().v().equals(code.v())) {
                     listProcessExecution.add(exe);
                 }
             });
@@ -400,11 +400,11 @@ public class GetDataToOutputService extends ExportService<Object> {
             CsvReportWriter csv = this.generator.generate(generatorContext, FILE_NAME_CSV1 + CSV_EXTENSION, headerCSV1, "UTF-8");
             for (int i = 0; i < updateProAutoRuns.getLstExecLogDetail().size(); i++) {
                 ExecutionLogDetailDto logDetail = updateProAutoRuns.getLstExecLogDetail().get(i);
-                ProcessExecution exeCode = updateProAutoRuns.getLstProcessExecution().get(i);
+                UpdateProcessAutoExecution exeCode = updateProAutoRuns.getLstProcessExecution().get(i);
                 ProcessExecutionLogHistory proHis = logDetail.getProcessExecLogHistory();
 
                 Map<String, Object> rowCSV1 = new HashMap<>();
-                rowCSV1.putAll(this.saveHeaderCSV(rowCSV1, proHis.getExecId(), exeCode.getExecItemCd(), proHis.getExecItemCd(), exeCode.getExecItemName()));
+                rowCSV1.putAll(this.saveHeaderCSV(rowCSV1, proHis.getExecId(), exeCode.getExecItemCode(), proHis.getExecItemCd(), exeCode.getExecItemName()));
 
                 rowCSV1.put(headerCSV1.get(3), proHis.getLastExecDateTime() != null ? proHis.getLastExecDateTime().toString("yyyy-MM-dd HH:mm:ss") : null);
                 rowCSV1.put(headerCSV1.get(4), proHis.getLastEndExecDateTime() != null ? proHis.getLastEndExecDateTime().toString("yyyy-MM-dd HH:mm:ss") : null);
@@ -437,13 +437,13 @@ public class GetDataToOutputService extends ExportService<Object> {
             CsvReportWriter csv = this.generator.generate(generatorContext, FILE_NAME_CSV2 + CSV_EXTENSION, headerCSV2, "UTF-8");
             for (int i = 0; i < updateProAutoRuns.getLstExecLogDetail().size(); i++) {
                 ExecutionLogDetailDto logDetail = updateProAutoRuns.getLstExecLogDetail().get(i);
-                ProcessExecution exeCode = updateProAutoRuns.getLstProcessExecution().get(i);
+                UpdateProcessAutoExecution exeCode = updateProAutoRuns.getLstProcessExecution().get(i);
                 ProcessExecutionLogHistory proHis = logDetail.getProcessExecLogHistory();
 
                 if(!proHis.getTaskLogList().isEmpty()){
                     for(ExecutionTaskLog taskLog : proHis.getTaskLogList()){
                         Map<String, Object> rowCSV2 = new HashMap<>();
-                        rowCSV2.putAll(this.saveHeaderCSV(rowCSV2, proHis.getExecId(), exeCode.getExecItemCd(), proHis.getExecItemCd(), exeCode.getExecItemName()));
+                        rowCSV2.putAll(this.saveHeaderCSV(rowCSV2, proHis.getExecId(), exeCode.getExecItemCode(), proHis.getExecItemCd(), exeCode.getExecItemName()));
                         rowCSV2.put(headerCSV2.get(3), taskLog.getProcExecTask() != null ? taskLog.getProcExecTask().name : null);
                         rowCSV2.put(headerCSV2.get(4), taskLog.getLastExecDateTime() != null ? taskLog.getLastExecDateTime().toString("yyyy-MM-dd HH:mm:ss") : null);
                         rowCSV2.put(headerCSV2.get(5), taskLog.getLastEndExecDateTime() != null ? taskLog.getLastEndExecDateTime().toString("yyyy-MM-dd HH:mm:ss") : null);
@@ -484,7 +484,7 @@ public class GetDataToOutputService extends ExportService<Object> {
                 CsvReportWriter csv = this.generator.generate(generatorContext, FILE_NAME_CSV3 + CSV_EXTENSION, headerCSV3, "UTF-8");
                 for (int i = 0; i < updateProAutoRuns.getLstExecLogDetail().size(); i++) {
                     ExecutionLogDetailDto logDetail = updateProAutoRuns.getLstExecLogDetail().get(i);
-                    ProcessExecution exeCode = updateProAutoRuns.getLstProcessExecution().get(i);
+                    UpdateProcessAutoExecution exeCode = updateProAutoRuns.getLstProcessExecution().get(i);
                     EmployeeInfoImport empImport = updateProAutoRuns.getLstEmployeeSearch().get(i);
                     ProcessExecutionLogHistory proHis = logDetail.getProcessExecLogHistory();
 
@@ -523,7 +523,7 @@ public class GetDataToOutputService extends ExportService<Object> {
                                     
                                     Map<String, Object> rowCSV3 = new HashMap<>();
 
-                                    rowCSV3.putAll(this.saveHeaderCSV(rowCSV3, proHis.getExecId(), exeCode.getExecItemCd(), proHis.getExecItemCd(), exeCode.getExecItemName()));
+                                    rowCSV3.putAll(this.saveHeaderCSV(rowCSV3, proHis.getExecId(), exeCode.getExecItemCode(), proHis.getExecItemCd(), exeCode.getExecItemName()));
                                     rowCSV3.put(headerCSV3.get(3), taskLog.getProcExecTask() != null ? taskLog.getProcExecTask().name : null);
 
                                     if (checkEqualId(empImport.getSid(), schLog.getEmployeeId())
@@ -595,14 +595,14 @@ public class GetDataToOutputService extends ExportService<Object> {
                 for (int i = 0; i < updateProAutoRuns.getLstExecLogDetail().size(); i++) {
                 	List<ExacErrorLogQueryDto> lstExacErrorLog = updateProAutoRuns.getLstExecLogDetail().get(i).getExacErrorLogImports();
                     if(lstExacErrorLog != null){
-                    	ProcessExecution exeCode = updateProAutoRuns.getLstProcessExecution().get(i);
+                    	UpdateProcessAutoExecution exeCode = updateProAutoRuns.getLstProcessExecution().get(i);
                         ProcessExecutionLogHistory proHis = updateProAutoRuns.getLstExecLogDetail().get(i).getProcessExecLogHistory();
                     	// sort list exacErrorLogImport of record number oder by asc
                         lstExacErrorLog.sort(Comparator.comparingInt(ExacErrorLogQueryDto::getRecordNumber));
 
                         for(ExacErrorLogQueryDto exacErrLog : lstExacErrorLog){
                             Map<String, Object> rowCSV4 = new HashMap<>();
-                            rowCSV4.putAll(this.saveHeaderCSV(rowCSV4,proHis.getExecId(),exeCode.getExecItemCd(),proHis.getExecItemCd(),exeCode.getExecItemName()));
+                            rowCSV4.putAll(this.saveHeaderCSV(rowCSV4,proHis.getExecId(),exeCode.getExecItemCode(),proHis.getExecItemCd(),exeCode.getExecItemName()));
                             rowCSV4.put(headerCSV4.get(3),exacErrLog.getRecordNumber());
                             rowCSV4.put(headerCSV4.get(4),exacErrLog.getCsvErrorItemName().isPresent() ? exacErrLog.getCsvErrorItemName().get() : null);
                             rowCSV4.put(headerCSV4.get(5),exacErrLog.getItemName().isPresent() ? exacErrLog.getItemName().get() : null);
@@ -638,7 +638,7 @@ public class GetDataToOutputService extends ExportService<Object> {
                     if(lstExternalOutLog != null){
                         ProcessExecutionLogHistory proHis = updateProAutoRuns.getLstExecLogDetail().get(i).getProcessExecLogHistory();
                         EmployeeInfoImport empImport = new EmployeeInfoImport(null, null, null);
-                        ProcessExecution exeCode = updateProAutoRuns.getLstProcessExecution().get(i);
+                        UpdateProcessAutoExecution exeCode = updateProAutoRuns.getLstProcessExecution().get(i);
 
                         if(updateProAutoRuns.getLstEmployeeSearch() != null){
                             empImport = updateProAutoRuns.getLstEmployeeSearch().get(i);
@@ -648,7 +648,7 @@ public class GetDataToOutputService extends ExportService<Object> {
 
                         for(ExternalOutLogQueryDto externalOutLogImport : lstExternalOutLog) {
                             Map<String, Object> rowCSV5 = new HashMap<>();
-                            rowCSV5.putAll(this.saveHeaderCSV(rowCSV5, proHis.getExecId(), exeCode.getExecItemCd(), proHis.getExecItemCd(), exeCode.getExecItemName()));
+                            rowCSV5.putAll(this.saveHeaderCSV(rowCSV5, proHis.getExecId(), exeCode.getExecItemCode(), proHis.getExecItemCd(), exeCode.getExecItemName()));
                             rowCSV5.put(headerCSV5.get(3), externalOutLogImport.getProcessCount());
                             rowCSV5.put(headerCSV5.get(4), empImport.getScd());
                             rowCSV5.put(headerCSV5.get(5), empImport.getBussinessName());

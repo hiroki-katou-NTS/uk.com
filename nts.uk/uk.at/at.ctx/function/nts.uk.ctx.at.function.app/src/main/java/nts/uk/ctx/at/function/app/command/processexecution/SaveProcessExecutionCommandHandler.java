@@ -19,7 +19,7 @@ import nts.uk.ctx.at.function.dom.processexecution.ExecutionName;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionScopeClassification;
 import nts.uk.ctx.at.function.dom.processexecution.LastExecDateTime;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecType;
-import nts.uk.ctx.at.function.dom.processexecution.ProcessExecution;
+import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionScope;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionScopeItem;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionSetting;
@@ -121,7 +121,7 @@ public class SaveProcessExecutionCommandHandler extends CommandHandlerWithResult
 
 		ProcessExecutionSetting execSetting = ProcessExecutionSetting.builder()
 				.alarmExtraction(alarmExtraction)
-				.perSchedule(perSchCreation)
+				.perScheduleCreation(perSchCreation)
 				.dailyPerf(dailyPerfCreation)
 				.reflectResultCls(command.isReflectResultCls())
 				.monthlyAggCls(command.isMonthlyAggCls())
@@ -137,20 +137,20 @@ public class SaveProcessExecutionCommandHandler extends CommandHandlerWithResult
 //				.aggregationOfArbitraryPeriod(aggregationOfArbitraryPeriod) //TODO-MINHNB
 //				.indexReconstruction(indexReconstruction)
 				.build();
-		ProcessExecution procExec = ProcessExecution.builder()
+		UpdateProcessAutoExecution procExec = UpdateProcessAutoExecution.builder()
 				.companyId(companyId)
-				.execItemCd(new ExecutionCode(execItemCd))
-				.execItemName(new ExecutionName(command.getExecItemName()))
+				.exeItemCode(new ExecutionCode(execItemCd))
+				.exeItemName(new ExecutionName(command.getExecItemName()))
 				.execScope(execScope)
 				.execSetting(execSetting)
-				.processExecType(EnumAdaptor.valueOf(command.getProcessExecType(), ProcessExecType.class))
+				.executionType(EnumAdaptor.valueOf(command.getProcessExecType(), ProcessExecType.class))
 				.cloudCreationFlag(command.getCloudCreationFlag())
 				.build();
 		procExec.validateVer2();
 		if (command.isNewMode()) {
 			// 新規モード(new mode)
 			//新規登録処理
-			Optional<ProcessExecution> procExecOpt = this.procExecRepo.getProcessExecutionByCidAndExecCd(companyId, execItemCd);
+			Optional<UpdateProcessAutoExecution> procExecOpt = this.procExecRepo.getProcessExecutionByCidAndExecCd(companyId, execItemCd);
 			if (procExecOpt.isPresent()) {
 				throw new BusinessException("Msg_3");
 			}
@@ -174,16 +174,16 @@ public class SaveProcessExecutionCommandHandler extends CommandHandlerWithResult
 				throw new BusinessException("Msg_1318");
 			}
 			// 更新処理自動実行管理.現在の実行状態　≠　実行中
-			this.scopeItemRepo.removeAllByCidAndExecCd(procExec.getCompanyId(), procExec.getExecItemCd().v());
+			this.scopeItemRepo.removeAllByCidAndExecCd(procExec.getCompanyId(), procExec.getExecItemCode().v());
 			// ドメインモデル「更新処理自動実行」に更新登録する
 			this.procExecRepo.update(procExec);
 			// Todo ドメインモデル「実行タスク設定」を更新する
 
 			this.scopeItemRepo.insert(procExec.getCompanyId(),
-										procExec.getExecItemCd().v(),
+										procExec.getExecItemCode().v(),
 										procExec.getExecScope().getWorkplaceIdList());
 		}
-		return procExec.getExecItemCd().v();
+		return procExec.getExecItemCode().v();
 //		return null;
 	}
 }

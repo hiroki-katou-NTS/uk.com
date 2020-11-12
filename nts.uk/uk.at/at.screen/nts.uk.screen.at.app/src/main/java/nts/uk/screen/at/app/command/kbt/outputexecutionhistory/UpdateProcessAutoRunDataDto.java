@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.function.dom.adapter.employeebasic.EmployeeInfoImport;
-import nts.uk.ctx.at.function.dom.processexecution.ProcessExecution;
+import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ import java.util.List;
 public class UpdateProcessAutoRunDataDto {
 
     /** 更新処理自動実行一覧 */
-    private List<ProcessExecution> lstProcessExecution;
+    private List<UpdateProcessAutoExecution> lstProcessExecution;
 
     /** 実行ログ詳細 */
     private List<ExecutionLogDetailDto> lstExecLogDetail;

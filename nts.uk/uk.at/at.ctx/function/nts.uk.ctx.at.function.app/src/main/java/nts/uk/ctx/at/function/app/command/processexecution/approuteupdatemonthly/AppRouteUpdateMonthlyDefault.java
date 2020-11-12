@@ -18,7 +18,7 @@ import nts.uk.ctx.at.function.dom.adapter.closure.FunClosureAdapter;
 import nts.uk.ctx.at.function.dom.adapter.closure.PresentClosingPeriodFunImport;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.actualsituation.createperapprovalmonthly.CreateperApprovalMonthlyAdapter;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.actualsituation.createperapprovalmonthly.OutputCreatePerAppMonImport;
-import nts.uk.ctx.at.function.dom.processexecution.ProcessExecution;
+import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionScopeItem;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.EndStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ExecutionTaskLog;
@@ -69,7 +69,7 @@ public class AppRouteUpdateMonthlyDefault implements AppRouteUpdateMonthlyServic
 	public static int MAX_DELAY_PARALLEL = 0;
 
 	@Override
-	public OutputAppRouteMonthly checkAppRouteUpdateMonthly(String execId, ProcessExecution procExec, ProcessExecutionLog procExecLog) {
+	public OutputAppRouteMonthly checkAppRouteUpdateMonthly(String execId, UpdateProcessAutoExecution procExec, ProcessExecutionLog procExecLog) {
 		String companyId = AppContexts.user().companyId();
 		boolean checkError1552 = false;
 		/** ドメインモデル「更新処理自動実行ログ」を更新する */
@@ -98,7 +98,7 @@ public class AppRouteUpdateMonthlyDefault implements AppRouteUpdateMonthlyServic
 			processExecutionLogRepo.update(procExecLog);
 			return new OutputAppRouteMonthly(false,checkError1552);
 		}
-		log.info("更新処理自動実行_承認ルート更新（月次）_START_"+procExec.getExecItemCd()+"_"+GeneralDateTime.now());
+		log.info("更新処理自動実行_承認ルート更新（月次）_START_"+procExec.getExecItemCode()+"_"+GeneralDateTime.now());
 		List<CheckCreateperApprovalClosure> listCheckCreateApp = new ArrayList<>();
 		/** ドメインモデル「就業締め日」を取得する(lấy thông tin domain ル「就業締め日」) */
 		List<Closure> listClosure = closureRepository.findAllActive(procExec.getCompanyId(),
@@ -141,7 +141,7 @@ public class AppRouteUpdateMonthlyDefault implements AppRouteUpdateMonthlyServic
 			OutputCreatePerAppMonImport check = createperApprovalMonthlyAdapter.createperApprovalMonthly(procExec.getCompanyId(),
 			 procExecLog.getExecId(),
 			 listEmp, 
-			 procExec.getProcessExecType().value, 
+			 procExec.getExecutionType().value,
 			 closureData.getClosureEndDate());
 			
 			if(check.isCheckStop()) {
@@ -151,7 +151,7 @@ public class AppRouteUpdateMonthlyDefault implements AppRouteUpdateMonthlyServic
 		};
 		
 		log.info("承認ルート更新(月別) END PARALLEL: " + ((System.currentTimeMillis() - startTime) / 1000) + "秒");
-		log.info("更新処理自動実行_承認ルート更新（月次）_END_"+procExec.getExecItemCd()+"_"+GeneralDateTime.now());
+		log.info("更新処理自動実行_承認ルート更新（月次）_END_"+procExec.getExecItemCode()+"_"+GeneralDateTime.now());
 //		boolean checkError = false;
 //		/*終了状態で「エラーあり」が返ってきたか確認する*/
 //		for(CheckCreateperApprovalClosure checkCreateperApprovalClosure :listCheckCreateApp) {

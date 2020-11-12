@@ -3,17 +3,17 @@ package nts.uk.ctx.at.function.dom.processexecution.repository;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.at.function.dom.processexecution.ProcessExecution;
+import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
 
 public interface ProcessExecutionRepository {
 	
-	List<ProcessExecution> getProcessExecutionByCompanyId(String companyId);
+	List<UpdateProcessAutoExecution> getProcessExecutionByCompanyId(String companyId);
 	
-	Optional<ProcessExecution> getProcessExecutionByCidAndExecCd(String companyId, String execItemCd);
+	Optional<UpdateProcessAutoExecution> getProcessExecutionByCidAndExecCd(String companyId, String execItemCd);
 	
-	void insert(ProcessExecution domain);
+	void insert(UpdateProcessAutoExecution domain);
 	
-	void update(ProcessExecution domain);
+	void update(UpdateProcessAutoExecution domain);
 	
 	void remove(String companyId, String execItemCd);
 }

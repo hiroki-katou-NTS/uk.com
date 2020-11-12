@@ -8,62 +8,62 @@ import nts.uk.ctx.sys.assist.dom.deletedata.DataDeletionSelectionCategory;
 
 @Data
 public class DataDeletionPatternSettingDto implements DataDeletionPatternSetting.MementoSetter {
-		
+
 	/**
 	 * パスワード有無
 	 */
 	private int withoutPassword;
-	
+
 	/**
 	 * パターン区分
 	 */
 	private int patternClassification;
-	
+
 	/**
 	 * 削除パターンパスワード
 	 */
 	private String patternCompressionPwd;
-	
+
 	/**
 	 * 月次参照年
 	 */
 	private Integer monthlyReferYear;
-	
+
 	/**
 	 * 日次参照年
 	 */
 	private Integer dailyReferYear;
-	
+
 	/**
 	 * 年次参照年
 	 */
 	private Integer annualReferYear;
-	
+
 	/**
 	 * 日次参照月
 	 */
 	private Integer dailyReferMonth;
-	
+
 	/**
 	 * 月次参照月
 	 */
 	private Integer monthlyReferMonth;
-	
+
 	/**
 	 * 契約コード
 	 */
 	private String contractCode;
-	
+
 	/**
 	 * パターンコード
 	 */
 	private String patternCode;
-	
+
 	/**
 	 * パターン名
 	 */
 	private String patternName;
-	
+
 	/**
 	 * データ削除の選択カテゴリ
 	 */
@@ -78,4 +78,20 @@ public class DataDeletionPatternSettingDto implements DataDeletionPatternSetting
 	public void setCategories(List<DataDeletionSelectionCategory> categories) {
 		//NOT USED
 	}
+
+	/**
+	 * Creates from domain.
+	 *
+	 * @param domain the domain
+	 * @return the Data deletion pattern setting dto
+	 */
+	public static DataDeletionPatternSettingDto createFromDomain(DataDeletionPatternSetting domain) {
+		if (domain == null) {
+			return null;
+		}
+		DataDeletionPatternSettingDto dto = new DataDeletionPatternSettingDto();
+		domain.setMemento(dto);
+		return dto;
+	}
+
 }
