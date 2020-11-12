@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype;
+package nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee;
 
 import java.util.List;
 

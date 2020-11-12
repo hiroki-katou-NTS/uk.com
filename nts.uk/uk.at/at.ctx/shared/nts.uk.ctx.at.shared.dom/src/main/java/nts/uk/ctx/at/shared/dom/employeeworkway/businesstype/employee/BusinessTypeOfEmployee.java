@@ -1,10 +1,10 @@
-package nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype;
+package nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
+import nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode;
 
 /**
  * 社員の勤務種別

@@ -5,10 +5,10 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmployeeHistory;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository.BusinessTypeEmpOfHistoryRepository;
 import nts.uk.ctx.at.record.pub.dailyperformanceformat.businesstype.BusinessTypeEmpOfHistoryPub;
 import nts.uk.ctx.at.record.pub.dailyperformanceformat.businesstype.BusinessTypeOfEmployeeHistoryEx;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeHistory;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.repository.BusinessTypeEmpOfHistoryRepository;
 @Stateless
 public class BusinessTypeEmpOfHistoryPubImpl implements BusinessTypeEmpOfHistoryPub {
 

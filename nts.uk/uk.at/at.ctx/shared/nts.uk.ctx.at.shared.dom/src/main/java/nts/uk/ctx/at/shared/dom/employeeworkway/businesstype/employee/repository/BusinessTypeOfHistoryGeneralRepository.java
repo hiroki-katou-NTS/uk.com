@@ -1,9 +1,9 @@
-package nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository;
+package nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.repository;
 
 import java.util.List;
 
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmployeeHistory;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmployeeHistoryInter;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeHistory;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeHistoryInter;
 import nts.uk.shr.com.history.DateHistoryItem;
 
 /**
