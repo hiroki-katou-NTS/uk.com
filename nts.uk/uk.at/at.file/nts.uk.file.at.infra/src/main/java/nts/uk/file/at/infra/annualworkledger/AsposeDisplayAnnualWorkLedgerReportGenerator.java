@@ -30,7 +30,7 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
     private static final String EXCEL_EXT = ".xlsx";
     private static final int EXPORT_PDF = 1;
     private static final int EXPORT_EXCEL = 2;
-    private static final int NUMBER_ROW_OF_PAGE = 47;
+    private static final int NUMBER_ROW_OF_PAGE = 48;
     private static final int MAX_DAY_IN_MONTH = 31;
 
     @Override
@@ -64,24 +64,19 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
     private void settingPage(Worksheet worksheet, AnnualWorkLedgerExportDataSource dataSource) {
         PageSetup pageSetup = worksheet.getPageSetup();
         pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
-        pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
         String companyName = dataSource.getCompanyName();
         pageSetup.setHeader(0, "&7&\"ＭＳ フォントサイズ\"" + companyName);
         pageSetup.setHeader(1, "&12&\"ＭＳ フォントサイズ\""
                 + dataSource.getOutputSetting().getName());
-        //pageSetup.setPrintArea(PRINT_AREA);
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter
                 .ofPattern("yyyy/MM/dd  H:mm", Locale.JAPAN);
         worksheet.getPageSetup().setHeader(2,
                 "&7&\"MS フォントサイズ\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\n" +
                         TextResource.localize("page") + " &P");
-        if (dataSource.getMode() == EXPORT_PDF) {
-            pageSetup.setFitToPagesTall(0);
-            pageSetup.setFitToPagesWide(0);
-        }
     }
 
     private void printContents(Worksheet worksheet, AnnualWorkLedgerExportDataSource dataSource) throws Exception {
+        HorizontalPageBreakCollection pageBreaks = worksheet.getHorizontalPageBreaks();
         Cells cells = worksheet.getCells();
         List<AnnualWorkLedgerContent> lstAnnualWorkLedgerContent = dataSource.getLstAnnualWorkLedgerContent();
         for (int i = 0; i < lstAnnualWorkLedgerContent.size(); i++) {
@@ -91,6 +86,7 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
 
             this.printEmployeeInfor(worksheet, firstRow, dataSource, empInfo);
             this.printData(worksheet, firstRow, dataSource, empInfo);
+            pageBreaks.add(firstRow);
         }
     }
 
