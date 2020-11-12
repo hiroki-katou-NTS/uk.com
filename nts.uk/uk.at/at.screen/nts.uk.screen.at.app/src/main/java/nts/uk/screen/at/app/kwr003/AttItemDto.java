@@ -31,7 +31,7 @@ public class AttItemDto {
         this.attendanceItemDisplayNumber = attendanceItemDisplayNumber;
         this.typeOfAttendanceItem = typeOfAttendanceItem;
         this.attributes = attributes;
-        this.attributeName = EnumAdaptor.valueOf(attendanceItemId,CommonAttributesOfForms.class).name();
+        this.attributeName = EnumAdaptor.valueOf(attributes,CommonAttributesOfForms.class).name();
     }
 
 }

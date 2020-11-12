@@ -70,20 +70,20 @@ public class GetAttendanceItemInfo {
                 masterType == TypesMasterRelatedDailyAttendanceItem.WORK_TYPE.value) {
             return CommonAttributesOfForms.WORK_TYPE.value;
         }
-        if (typeOfAttendanceItem == DailyAttendanceAtr.Code.value &&
+        else if (typeOfAttendanceItem == DailyAttendanceAtr.Code.value &&
                 masterType == TypesMasterRelatedDailyAttendanceItem.WORKING_HOURS.value) {
             return CommonAttributesOfForms.WORKING_HOURS.value;
         }
-        if (typeOfAttendanceItem == DailyAttendanceAtr.NumberOfTime.value) {
+        else if (typeOfAttendanceItem == DailyAttendanceAtr.NumberOfTime.value) {
             return CommonAttributesOfForms.NUMBER_OF_TIMES.value;
         }
-        if (typeOfAttendanceItem == DailyAttendanceAtr.AmountOfMoney.value) {
+        else if (typeOfAttendanceItem == DailyAttendanceAtr.AmountOfMoney.value) {
             return CommonAttributesOfForms.AMOUNT_OF_MONEY.value;
         }
-        if (typeOfAttendanceItem == DailyAttendanceAtr.Time.value) {
+        else if (typeOfAttendanceItem == DailyAttendanceAtr.Time.value) {
             return CommonAttributesOfForms.TIME.value;
-        }
-        return 0;
+        }else
+        return 1;
     }
 
     private int convertMonthlyToAttForms(Integer typeOfAttendanceItem) {
@@ -101,7 +101,7 @@ public class GetAttendanceItemInfo {
             return CommonAttributesOfForms.AMOUNT_OF_MONEY.value;
         }
 
-        return 0;
+        return 1;
     }
 
 }
