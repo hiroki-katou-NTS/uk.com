@@ -6,19 +6,19 @@
     <div class="sidebar-content-header custom-header">
         <div>
             <span class="title">#{i18n.getText('KSM008_184')}</span>
-            <a class="goback"
+            <a tabindex="-1" class="goback"
                data-bind="ntsLinkButton: { jump: backButon }">#{i18n.getText('KSM008_185')}</a>
-            <button  data-bind="click:lScreenClickNewButton">#{i18n.getText('KSM008_186')}</button>
-            <button class="proceed"  data-bind="click:registerLScreen, enable: $root.errors.isEmpty" >#{i18n.getText('KSM008_187')}</button>
-            <button class="danger" data-bind="enable:vm.isLScreenUpdateMode()?true:false, click:lScreenClickDeleteButton" >#{i18n.getText('KSM008_188')}</button>
+            <button tabindex="-1"  data-bind="click:lScreenClickNewButton">#{i18n.getText('KSM008_186')}</button>
+            <button tabindex="-1" class="proceed"  data-bind="click:registerLScreen, enable: $root.errors.isEmpty" >#{i18n.getText('KSM008_187')}</button>
+            <button tabindex="-1" class="danger" data-bind="enable:vm.isLScreenUpdateMode(), click:lScreenClickDeleteButton" >#{i18n.getText('KSM008_188')}</button>
         </div>
     </div>
     <div class="contents-area custom-class">
         <div>
             <div class="label class-padding-btm-5" data-bind="text: scheduleAlarmCheckCond().codeAndName"></div>
-            <div class="label warning"
+            <div class="label warning color-black "
                  style="padding-bottom: 0;padding-top: 0;">#{i18n.getText('KSM008_189')}</div>
-            <div class="label warning" style="padding-top: 0;"
+            <div class="label warning color-black " style="padding-top: 0;white-space: pre-wrap;"
                  data-bind="text: scheduleAlarmCheckCond().descriptions"></div>
         </div>
         <div class="table custom_table_j1_x" >
@@ -67,7 +67,7 @@
                     <div class="cell valign-center">
                         <!-- L3_2 -->
                         <input id="L3_2" tabindex="8"
-                               data-bind="ntsTextEditor: {constraint: 'MaxDayOfWorkTimeCode', value: vm.lScreenWorkingHour.code,enable:vm.isLScreenUpdateMode()?false:true, required: true, name: '#[KSM008_174]'}, style: { width: '25px', marginRight: '5px'}"/>
+                               data-bind="ntsTextEditor: {constraint: 'MaxDayOfWorkTimeCode', value: vm.lScreenWorkingHour.code,enable:vm.isLScreenUpdateMode()?false:true, required: true, name: '#[KSM008_174]'}, style: { width: '27px', marginRight: '5px'}"/>
                     </div>
                     <div class="cell valign-center">
                         <!-- L3_3  -->
@@ -82,11 +82,11 @@
                     </div>
                     <!-- L4_2 -->
                     <div class="cell valign-center">
-                        <button id="L4_2"  tabindex="10" data-bind="click: openKdl001ModalLScreen" style="margin-right: 5px;margin-left: 28px">#{i18n.getText('KSM008_177')}</button>
+                        <button id="L4_2"  tabindex="10" data-bind="click: openKdl001ModalLScreen" style="margin-right: 5px;margin-left: 28px;width: 48px">#{i18n.getText('KSM008_177')}</button>
                     </div>
                     <!-- L4_3-->
                     <div class="cell valign-center">
-                        <input id="L4_3" class="width-180" data-bind="ntsTextEditor: {value: vm.lScreenWorkingHour.workHour,enable:false,name: '#[KSM008_178]'}"/>
+                        <input style="width: 180px" data-bind="ntsTextEditor: {value: vm.lScreenWorkingHour.workHour, enable: false}"/>
                     </div>
                 </div>
                 <div class="table" style="margin-top: 7px">
@@ -97,7 +97,7 @@
                     <!-- L5_2 -->
                     <div class="cell valign-center">
                         <input id="L5_2" tabindex="11"
-                               data-bind="ntsNumberEditor: {constraint: 'MaxDay', value: vm.lScreenWorkingHour.numberOfConDays, required: true, name: '#[KSM008_180]'}, style: { width: '25px', marginRight: '5px',marginLeft: '28px'}"/>
+                               data-bind="ntsNumberEditor: {constraint: 'MaxDay', value: vm.lScreenWorkingHour.numberOfConDays, required: true, name: '#[KSM008_180]'}, style: { width: '27px', marginRight: '5px',marginLeft: '28px'}"/>
                     </div>
                     <!-- L5_3 -->
                     <div class="cell valign-center">

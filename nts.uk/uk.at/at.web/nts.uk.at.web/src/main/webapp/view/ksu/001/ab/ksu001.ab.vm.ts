@@ -21,7 +21,7 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
         
         width: KnockoutObservable<number>;
         tabIndex: KnockoutObservable<number | string>;
-        filter: KnockoutObservable<boolean>;
+        filter: KnockoutObservable<boolean> = ko.observable(false);
         disabled: KnockoutObservable<boolean>;
         workplaceIdKCP013: KnockoutObservable<string> = ko.observable('');
         selected: KnockoutObservable<string> | KnockoutObservableArray<string>;
@@ -33,7 +33,6 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
             let self = this;
             let workTypeCodeSave = uk.localStorage.getItem('workTypeCodeSelected');
             let workTimeCodeSave = uk.localStorage.getItem('workTimeCodeSelected');
-            let checkKcp013      = uk.localStorage.getItem('check_kcp013');
             
             let workTimeCode = '';
             if (workTimeCodeSave.isPresent()) {
@@ -50,12 +49,11 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
             
             self.width    = ko.observable(500);
             self.tabIndex = ko.observable('');
-            self.filter   = ko.observable(true);
             self.disabled = ko.observable(false);
             self.selected = ko.observable(workTimeCodeSave.isPresent() ? workTimeCode : '');
             self.dataSources = ko.observableArray([]);
             self.showMode = ko.observable(SHOW_MODE.BOTTLE);
-            self.check    = ko.observable(checkKcp013.isPresent() ? (checkKcp013.get() == 'false' ? false : true) : false);
+            self.check    = ko.observable(false);
 
             self.dataCell = {};
             
@@ -104,11 +102,6 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                     self.updateDataCell(itemSelected);
                     self.objWorkTime = itemSelected;
                 }
-            });
-            
-            self.check.subscribe((value) => {
-                console.log(value);
-                uk.localStorage.setItem("check_kcp013", value );
             });
         }
 
