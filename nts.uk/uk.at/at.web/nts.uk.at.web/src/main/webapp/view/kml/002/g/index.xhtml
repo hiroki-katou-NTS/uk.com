@@ -75,9 +75,12 @@
               swapTarget: 'right'
             }"
           ></div>
-          <div class="swapList-footer">
-            <label class="bg-daily-error color-daily-holiday" data-bind="text: $i18n('KML002_114')"></label>
-          </div>
+            <div class="swapList-footer" data-bind="with: limitedItems">
+              <label
+                class="bg-daily-error color-daily-holiday"
+                data-bind="text: $vm.$i18n('KML002_114')"
+              ></label>
+            </div>
         </div>
       </ui:define>
     </ui:composition>

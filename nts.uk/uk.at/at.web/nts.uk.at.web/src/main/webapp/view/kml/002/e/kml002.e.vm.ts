@@ -66,6 +66,9 @@ module nts.uk.at.view.kml002.e {
       vm.$window.modal('/view/kml/002/f/index.xhtml').then(() => {
         vm.$window.storage('REGISTER_TIME_ZONE').then((data) => {
           if (!_.isNil(data)) {
+
+            if(nts.uk.ui.errors.hasError()) nts.uk.ui.errors.clearAll();
+
             let startTime: number = data.startTime,
               endTime: number = data.endTime;
 

@@ -13,8 +13,10 @@ module nts.uk.at.view.kml002.g {
     currentCodeListSwap: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
 
     columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
-    countingType: KnockoutObservable<number> = ko.observable(0);
+    countingType: KnockoutObservable<number> = ko.observable(0);   
 
+    limitedItems: KnockoutObservable<string> = ko.observable(null);
+    limitedNumber: KnockoutObservable<number> = ko.observable(9999);
     constructor(params: any) {
       super();
       const vm = this;
@@ -26,6 +28,10 @@ module nts.uk.at.view.kml002.g {
       vm.$window.storage('KWL002_SCREEN_G_INPUT').then((data) => {
         if(!_.isNil(data)) {
           vm.countingType(data.countingType);
+          if( data.countingType > 0 ) {
+            vm.limitedItems(vm.$i18n('KML002_114'));          
+            vm.limitedNumber(10);
+          }
           vm.getTimeNumberCounter();      
         }
       });      
@@ -68,8 +74,8 @@ module nts.uk.at.view.kml002.g {
         return;
       }
 
-      if (vm.currentCodeListSwap().length > 10 || vm.currentCodeListSwap().length <= 0) {
-        let msgId = vm.currentCodeListSwap().length > 10 ? 'Msg_1837' : 'Msg_1817';
+      if (vm.currentCodeListSwap().length > vm.limitedNumber() || vm.currentCodeListSwap().length <= 0) {
+        let msgId = vm.currentCodeListSwap().length > vm.limitedNumber() ? 'Msg_1837' : 'Msg_1817';
         //「選択された対象項目」で回数集計項目は10項目以上に選択られた。 > 10
         //「選択された対象項目」でなにもない。 = 0
         vm.$dialog.error({ messageId: msgId }).then(() => {
