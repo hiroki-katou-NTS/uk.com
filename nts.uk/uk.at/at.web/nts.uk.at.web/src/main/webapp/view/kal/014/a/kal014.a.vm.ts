@@ -1,8 +1,7 @@
 module nts.uk.at.kal014.a {
-    import common=nts.uk.at.kal014.common;
-    const PATH_API = {
 
-    }
+    import common=nts.uk.at.kal014.common;
+    const PATH_API = {}
 
     const SCREEN = {
         B: 'B',
@@ -83,6 +82,7 @@ module nts.uk.at.kal014.a {
             ]);
             vm.selectedRuleCode = ko.observable(1);
             vm.isNewMode = ko.observable(true);
+            $("#fixed-table").ntsFixedTable({height: 320, width: 830});
         }
 
         created() {
@@ -125,14 +125,13 @@ module nts.uk.at.kal014.a {
             const vm = this;
             let modalPath = type === SCREEN.B ? '/view/kal/014/b/index.xhtml' : '/view/kal/014/c/index.xhtml';
             let modalDataKey = type === SCREEN.B ? 'KAL014BModalData' : 'KAL014CModalData';
-            vm.$window.storage(modalDataKey, item);
-            vm.$window.modal(modalPath)
-                .then((result: any) => {
-                    console.log(nts.uk.ui.windows.getShared(modalDataKey));
-                    //TODO write businees login with return data and make sure server side logic
-                })
-                .always(() => {
-                });
+            vm.$window.storage(modalDataKey, item).done(() => {
+                vm.$window.modal(modalPath)
+                    .then((result: any) => {
+                        console.log(nts.uk.ui.windows.getShared(modalDataKey));
+                        //TODO write businees login with return data and make sure server side logic
+                    });
+            });
         }
 
         /**
@@ -196,13 +195,11 @@ module nts.uk.at.kal014.a {
         code: number;
         name: string;
         category: string;
-        deletable: boolean;
 
         constructor(code: number, name: string, category: string) {
             this.code = code;
             this.name = name;
             this.category = category;
-            this.deletable = code % 3 === 0;
         }
     }
 
@@ -268,8 +265,8 @@ module nts.uk.at.kal014.a {
                 case item.workPalceCategory.SCHEDULE_DAILY:
                     extractionText = this.getMonthValue(item.startMonth) + "の" + item.classification + " ~ " + this.getMonthValue(item.endMonth) + "の締め終了日";
                     break
+                // 月次
                 case item.workPalceCategory.MONTHLY:
-                    // 月次
                     extractionText = this.getMonthValue(item.startMonth);
                     break
                 // 申請承認
@@ -287,33 +284,10 @@ module nts.uk.at.kal014.a {
          * @return string
          * */
         getMonthValue(month: any): string {
-            switch (month) {
-                case 0:
-                    return "当月";
-                case 1:
-                    return "1ヶ月前";
-                case 2:
-                    return "2ヶ月前";
-                case 3:
-                    return "3ヶ月前";
-                case 4:
-                    return "4ヶ月前";
-                case 5:
-                    return "5ヶ月前";
-                case 6:
-                    return "6ヶ月前";
-                case 7:
-                    return "7ヶ月前";
-                case 8:
-                    return "8ヶ月前";
-                case 9:
-                    return "9ヶ月前";
-                case 10:
-                    return "10ヶ月前";
-                case 11:
-                    return "11ヶ月前";
-                case 12:
-                    return "12ヶ月前";
+            if (month === 0) {
+                return "当月";
+            } else {
+                return month + "ヶ月前";
             }
         }
     }

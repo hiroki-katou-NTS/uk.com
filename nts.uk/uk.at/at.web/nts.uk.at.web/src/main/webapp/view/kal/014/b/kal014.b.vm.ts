@@ -20,8 +20,8 @@ module nts.uk.at.kal014.b {
             console.log(modalData);
             vm.modalDTO.categoryId(modalData.categoryId);
             vm.modalDTO.categoryName(modalData.categoryName);
-            vm.modalDTO.startMonth(modalData.startDate);
-            vm.modalDTO.endMonth(modalData.endDate);
+            vm.modalDTO.startMonth(modalData.startMonth);
+            vm.modalDTO.endMonth(modalData.endMonth);
             vm.isStartDateEnable = ko.observable(vm.checkStartDateISEnable());
             vm.isEndDateEnable = ko.observable(vm.checkEndDateISEnable());
             vm.strComboMonth = ko.observableArray(__viewContext.enums.SpecifiedMonth);
@@ -88,12 +88,13 @@ module nts.uk.at.kal014.b {
                     categoryId: vm.modalDTO.categoryId(),
                     categoryName: vm.modalDTO.categoryName(),
                     extractionPeriod: vm.modalDTO.extractionPeriod(),
-                    startDate: vm.modalDTO.startMonth(),
-                    endDate: vm.modalDTO.endMonth()
+                    startMonth: vm.modalDTO.startMonth(),
+                    endMonth: vm.modalDTO.endMonth()
                 }
-                nts.uk.ui.windows.setShared("KAL014BModalData", shareData);
-                console.log("shareData:", nts.uk.ui.windows.getShared("KAL014BModalData"));
-                vm.cancel_Dialog();
+                vm.$window.storage("KAL014BModalData", shareData).done(() => {
+                    console.log("shareData:", nts.uk.ui.windows.getShared("KAL014BModalData"));
+                    vm.cancel_Dialog();
+                });
             }
         }
 
@@ -105,11 +106,13 @@ module nts.uk.at.kal014.b {
         checkPeriod(): boolean {
             var vm = this;
             if ((vm.modalDTO.categoryId() === vm.workPalceCategory.MASTER_CHECK_BASIC || vm.modalDTO.categoryId() === vm.workPalceCategory.MASTER_CHECK_WORKPLACE) && vm.modalDTO.startMonth() > vm.modalDTO.endMonth()) {
-                nts.uk.ui.dialog.alertError({messageId: "Msg_812"});
-                return false;
+                vm.$dialog.error({messageId: "Msg_812"}).then(() => {
+                    return false;
+                });
             } else if (vm.modalDTO.categoryId() === vm.workPalceCategory.MONTHLY && vm.modalDTO.startMonth() < vm.modalDTO.endMonth()) {
-                nts.uk.ui.dialog.alertError({messageId: "Msg_812"});
-                return false;
+                vm.$dialog.error({messageId: "Msg_812"}).then(() => {
+                    return false;
+                });
             } else {
                 return true;
             }

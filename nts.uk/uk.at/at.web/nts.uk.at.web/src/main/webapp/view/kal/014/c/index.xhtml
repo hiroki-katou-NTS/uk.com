@@ -21,7 +21,6 @@
         <com:scriptfile path="/view/kal/014/common/common.js"/>
         <com:scriptfile path="kal014.c.vm.js"/>
     </ui:define>
-
     <ui:define name="content">
         <div id="contents-area">
             <div class="header">
@@ -44,21 +43,12 @@
                     <div class="table date-selecttion-table">
                         <div class="cell valign-center">
                             <!-- C3_1 -->
-                            <div tabindex="1" id="C3_1" data-bind="ntsRadioBoxGroup: {
-                                options: classifications,
-                                optionsValue: 'id',
-                                optionsText: 'name',
-                                value: classificationVal,
-                                enable: true}">
-                            </div>
-                        </div>
-                        <div class="cell valign-center">
-                            <!-- C3_4 -->
-                            <span class="label">#{i18n.getText('KAL014_44')}</span>
+                            <div tabindex="1"
+                                 data-bind="ntsRadioButton: {checked: strSelected, enable: true, option: dateSpecify()[0], optionValue: 'value', optionText: 'name', group: 'strRadio'}"></div>
                         </div>
                         <div class="cell valign-center">
                             <!-- C3_5 -->
-                            <input tabindex="7" id="C3_5" class="item-inputbox"
+                            <input tabindex="2" id="C3_5" class="item-inputbox"
                                    data-bind="ntsNumberEditor:
                                    {constraint: 'Day',
                                     value: modalDTO.numberOfDayFromStart,
@@ -89,24 +79,21 @@
                         </div>
                         <div class="cell valign-center">
                             <!-- C4_1 -->
-                            <div id="C4_1" tabindex="1" data-bind="ntsRadioBoxGroup: {
-                                options: classifications,
-                                optionsValue: 'id',
-                                optionsText: 'name',
-                                value: classificationVal,
-                                enable: true}">
+                            <div data-bind="ntsRadioButton: {
+                             checked: endSelected,
+                             enable: true,
+                             option: monthSpecify()[0],
+                             optionValue: 'value',
+                             optionText: 'name',
+                             group: 'endRadio'}">
                             </div>
-                        </div>
-                        <div class="cell valign-center">
-                            <!-- C4_4 -->
-                            <span class="label">#{i18n.getText('KAL014_49')}</span>
                         </div>
                         <div class="cell valign-center">
                             <!-- C4_5 -->
                             <input tabindex="6" id="C4_5" class="item-inputbox"
                                    data-bind="ntsNumberEditor:
                                    {constraint: 'Day',
-                                    value: modalDTO.numberOfDayFromStart,
+                                    value: modalDTO.numberOfDayFromEnd,
                                     enable: true,
                                     name: '#[KAL014_50]'}"/>
                         </div>
@@ -139,26 +126,28 @@
                             <span class="label">#{i18n.getText('KAL014_42')}</span>
                         </div>
                     </div>
-                    <div class="table date-selecttion-table">
+                    <div class="table date-selecttion-table" style="width: 100%"
+                         data-bind="if:vm.modalDTO.categoryId() === vm.workPalceCategory.SCHEDULE_DAILY">
                         <div class="cell valign-center">
                             <!-- C3_3 -->
-                            <div id="C3_3"  data-bind="ntsRadioBoxGroup: {
-                                options: classifications,
-                                optionsValue: 'id',
-                                optionsText: 'name',
-                                value: classificationVal,
-                                enable: true}">
+                            <div data-bind="ntsRadioButton: {
+                            checked: strSelected,
+                             enable: true,
+                             option: dateSpecify()[1],
+                             optionValue: 'value',
+                             optionText: 'name',
+                             group: 'strRadio'}">
                             </div>
                         </div>
-                        <div class="cell valign-center" >
+                        <div class="cell valign-center" style="width: 115px;">
                             <!-- C3_9 -->
-                            <div id="C3_9" tabindex="1" class="strComboMonth" data-bind="ntsComboBox: {
+                            <div id="C3_9" style="width: 115px;" tabindex="4" class="strComboMonth" data-bind="ntsComboBox: {
                                 options: strComboMonth,
                                 optionsValue: 'value',
                                 visibleItemsCount: 7,
                                 value: modalDTO.startMonth,
                                 optionsText: 'name',
-                                enable: isStartDateEnable,
+                                enable: true,
                                 required: true,
                                 columns: [
                                 { prop: 'name', length: 5 }
@@ -167,45 +156,48 @@
                                 ">
                             </div>
                         </div>
-                        <div class="cell valign-center" >
+                        <div class="cell valign-center">
                             <!-- C3_10 -->
                             <span class="label" id="C3_10">#{i18n.getText('KAL014_48')}</span>
                         </div>
                         <div class="cell valign-center">
                             <!-- C4_3 -->
-                            <div id="C4_3" data-bind="ntsRadioBoxGroup: {
-                                options: classifications,
-                                optionsValue: 'id',
-                                optionsText: 'name',
-                                value: classificationVal,
-                                enable: true}">
+                            <div data-bind="ntsRadioButton: {
+                            checked: endSelected,
+                             enable: true,
+                             option: monthSpecify()[1],
+                             optionValue: 'value',
+                             optionText: 'name',
+                             group: 'endRadio'}">
                             </div>
                         </div>
-                        <div class="cell valign-center">
+                        <div class="cell valign-center" style="width: 115px;">
                             <!-- C4_9 -->
-                            <div id="C4_9" tabindex="8" class="endComboMonth" data-bind="ntsComboBox: {
+                            <div id="C4_9" style="width: 115px;" tabindex="8" class="endComboMonth" data-bind="ntsComboBox: {
                                 options: endComboMonth,
                                 optionsValue: 'value',
                                 visibleItemsCount: 7,
                                 value: modalDTO.endMonth,
                                 optionsText: 'name',
-                                enable: isEndDateEnable,
+                                enable: true,
                                 required: true,
                                 columns: [
                                 { prop: 'name', length: 5 }
                                 ]},name: '#[KAL014_47]'">
                             </div>
                         </div>
-                        <div class="cell valign-center" >
+                        <div class="cell valign-center">
                             <!-- C4_10 -->
-                            <span class="label" >#{i18n.getText('KAL014_53')}</span>
+                            <span class="label">#{i18n.getText('KAL014_53')}</span>
                         </div>
                     </div>
                 </div>
             </div>
             <div id="functions-area-bottom">
-                <button tabindex="9" data-bind="click:decide">#{i18n.getText('KAL014_54')}</button>
-                <button tabindex="10" data-bind="click:cancel_Dialog">#{i18n.getText('KAL014_55')}</button>
+                <!-- C5_2 -->
+                <button tabindex="9" id="C5_2" data-bind="click:decide">#{i18n.getText('KAL014_54')}</button>
+                <!-- C5_3 -->
+                <button tabindex="10" id="C5_3" data-bind="click:cancel_Dialog">#{i18n.getText('KAL014_55')}</button>
             </div>
         </div>
     </ui:define>
