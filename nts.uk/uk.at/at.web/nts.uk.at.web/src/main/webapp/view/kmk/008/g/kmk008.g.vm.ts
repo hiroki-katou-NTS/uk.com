@@ -25,8 +25,8 @@ module nts.uk.at.view.kmk008.g {
             ]);
 
             vm.yearSpecialConditionList = ko.observableArray([
-                new RadioModel(true, vm.$i18n("KMK008_181")),
-                new RadioModel(false, vm.$i18n("KMK008_182"))
+                new RadioModel(false, vm.$i18n("KMK008_181")),
+                new RadioModel(true, vm.$i18n("KMK008_182"))
             ]);
 
             vm.$blockui("invisible");
@@ -47,8 +47,6 @@ module nts.uk.at.view.kmk008.g {
 
         created() {
             const vm = this;
-
-            _.extend(window, {vm});
         }
 
 

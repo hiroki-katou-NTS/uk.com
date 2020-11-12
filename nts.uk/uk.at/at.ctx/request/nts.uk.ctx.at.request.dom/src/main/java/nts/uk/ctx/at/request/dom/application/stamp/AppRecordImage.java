@@ -22,5 +22,14 @@ public class AppRecordImage extends Application{
 //	申請時刻
 	private AttendanceClock attendanceTime;
 //	外出理由
-	private Optional<GoingOutReason> appStampGoOutAtr; 
+	private Optional<GoingOutReason> appStampGoOutAtr;
+	
+	public AppRecordImage(EngraveAtr appStampCombinationAtr, AttendanceClock attendanceTime,
+			Optional<GoingOutReason> appStampGoOutAtr, Application app) {
+		super(app);
+		this.appStampCombinationAtr = appStampCombinationAtr;
+		this.attendanceTime = attendanceTime;
+		this.appStampGoOutAtr = appStampGoOutAtr;
+	}
+
 }

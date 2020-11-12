@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +24,8 @@ public class SendReasonApplicationService {
 	};
 
 	// [1] 各種名称送信に変換
-	public static List<SendReasonApplication> send(Require require, EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode) {
+	public static List<SendReasonApplication> send(Require require, EmpInfoTerminalCode empInfoTerCode,
+			ContractCode contractCode) {
 
 		Optional<TimeRecordReqSetting> requestSetting = require.getTimeRecordReqSetting(empInfoTerCode, contractCode);
 
@@ -37,43 +39,54 @@ public class SendReasonApplicationService {
 
 	// [pvt-1] 申請理由名称送信に変換
 	private static List<SendReasonApplication> convert(List<ApplicationReasonRc> lstAppReason) {
-		return lstAppReason.stream().map(x -> new SendReasonApplication(createAppReasonNo(x), x.getReasonTemp()))
-				.collect(Collectors.toList());
+		return lstAppReason.stream().flatMap(x -> createAppReasonNo(x).stream()).collect(Collectors.toList());
 	}
 
-	private static String createAppReasonNo(ApplicationReasonRc appType) {
-		// TODO: Domain chua mao EA ko co filed 理由コード
+	private static List<SendReasonApplication> createAppReasonNo(ApplicationReasonRc appType) {
+
 		switch (appType.appType) {
 		case OVER_TIME_APPLICATION:
-
-			return 10 + "";
+			return appType.reasonTemp.stream()
+					.map(x -> new SendReasonApplication(String.valueOf(10 + x.getLeft()), x.getRight()))
+					.collect(Collectors.toList());
 
 		case ABSENCE_APPLICATION:
 
-			return 20 + "";
+			return appType.reasonTemp.stream()
+					.map(x -> new SendReasonApplication(String.valueOf(20 + x.getLeft()), x.getRight()))
+					.collect(Collectors.toList());
 
 		case WORK_CHANGE_APPLICATION:
 
-			return 30 + "";
+			return appType.reasonTemp.stream()
+					.map(x -> new SendReasonApplication(String.valueOf(30 + x.getLeft()), x.getRight()))
+					.collect(Collectors.toList());
 
 		case BREAK_TIME_APPLICATION:
 
-			return 40 + "";
+			return appType.reasonTemp.stream()
+					.map(x -> new SendReasonApplication(String.valueOf(40 + x.getLeft()), x.getRight()))
+					.collect(Collectors.toList());
 
 		case STAMP_APPLICATION:
 
-			return String.format("%02d", 0);
+			return appType.reasonTemp.stream()
+					.map(x -> new SendReasonApplication(String.format("%02d", x.getLeft()), x.getRight()))
+					.collect(Collectors.toList());
 
 		case ANNUAL_HOLIDAY_APPLICATION:
 
-			return 60 + "";
+			return appType.reasonTemp.stream()
+					.map(x -> new SendReasonApplication(String.valueOf(60 + x.getLeft()), x.getRight()))
+					.collect(Collectors.toList());
 
 		case EARLY_LEAVE_CANCEL_APPLICATION:
 
-			return 50 + "";
-
+			return appType.reasonTemp.stream()
+					.map(x -> new SendReasonApplication(String.valueOf(50 + x.getLeft()), x.getRight()))
+					.collect(Collectors.toList());
 		default:
-			return "";
+			return new ArrayList<>();
 		}
 
 	}
@@ -84,7 +97,8 @@ public class SendReasonApplicationService {
 		List<ApplicationReasonRc> getReasonByAppType(String companyId, List<Integer> lstAppType);
 
 		// [R-2]タイムレコードのﾘｸｴｽﾄ設定を取得する
-		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode);
+		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(EmpInfoTerminalCode empInfoTerCode,
+				ContractCode contractCode);
 	}
 
 }

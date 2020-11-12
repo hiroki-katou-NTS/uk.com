@@ -5,10 +5,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.banholidaytogether.*;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.ClassificationCode;
-import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.BusinessDaysCalendarType;
-import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.ReferenceCalendar;
-import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.ReferenceCalendarClass;
-import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.ReferenceCalendarWorkplace;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.*;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.shr.com.context.AppContexts;
@@ -39,35 +36,45 @@ public class UpdateBanHolidayTogetherCommandHandler extends CommandHandler<Updat
 
         BanHolidayTogetherCode banHolidayCode = new BanHolidayTogetherCode(command.getBanHolidayTogetherCode());
 
-        Optional<BanHolidayTogether> banHdTogether = banHolidayTogetherRepo.get(companyId, targeOrg, banHolidayCode);
+        boolean isExist = banHolidayTogetherRepo.exists(companyId, targeOrg, banHolidayCode);
+        if (!isExist) {
+            return;
+        }
 
-        if (banHdTogether.isPresent()) {
-            BanHolidayTogetherName banHolidayName = new BanHolidayTogetherName(command.getBanHolidayTogetherName());
+        BanHolidayTogetherName banHolidayName = new BanHolidayTogetherName(command.getBanHolidayTogetherName());
 
-            Optional<ReferenceCalendar> workDayReference = Optional.ofNullable(null);
-            if (command.getCheckDayReference()) {
-                BusinessDaysCalendarType selectedWorkDayReference = EnumAdaptor.valueOf(command.getSelectedWorkDayReference(), BusinessDaysCalendarType.class);
+        Optional<ReferenceCalendar> workDayReference = Optional.empty();
+        if (command.getCheckDayReference()) {
+            BusinessDaysCalendarType selectedWorkDayReference = EnumAdaptor.valueOf(command.getSelectedWorkDayReference(), BusinessDaysCalendarType.class);
 
-                if (selectedWorkDayReference == BusinessDaysCalendarType.CLASSSICATION) {
-                    ReferenceCalendarClass referenceCalendarClass = new ReferenceCalendarClass(new ClassificationCode(command.getClassificationOrWorkplaceCode()));
-                    workDayReference = Optional.of(referenceCalendarClass);
+            switch (selectedWorkDayReference) {
+                case COMPANY: {
+                    ReferenceCalendarCompany referenceCalendarCompany = new ReferenceCalendarCompany();
+                    workDayReference = Optional.ofNullable((ReferenceCalendar) referenceCalendarCompany);
+                    break;
                 }
-                if (selectedWorkDayReference == BusinessDaysCalendarType.WORKPLACE) {
-                    ReferenceCalendarWorkplace referenceCalendarWorkplace = new ReferenceCalendarWorkplace(command.getWorkplaceId());
-                    workDayReference = Optional.of(referenceCalendarWorkplace);
+                case WORKPLACE: {
+                    ReferenceCalendarWorkplace referenceCalendarWorkplace = new ReferenceCalendarWorkplace(command.getWorkplaceInfoId());
+                    workDayReference = Optional.ofNullable((ReferenceCalendar) referenceCalendarWorkplace);
+                    break;
+                }
+                case CLASSSICATION: {
+                    ReferenceCalendarClass referenceCalendarClass = new ReferenceCalendarClass(new ClassificationCode(command.getClassificationOrWorkplaceCode()));
+                    workDayReference = Optional.ofNullable((ReferenceCalendar) referenceCalendarClass);
+                    break;
                 }
             }
-
-            BanHolidayTogether banHdTogetherUpdate = BanHolidayTogether.create(
-                    targeOrg,
-                    banHolidayCode,
-                    banHolidayName,
-                    workDayReference,
-                    command.getMinNumberOfEmployeeToWork(),
-                    command.getEmpsCanNotSameHolidays()
-            );
-
-            banHolidayTogetherRepo.update(companyId, banHdTogetherUpdate);
         }
+
+        BanHolidayTogether banHdTogetherUpdate = BanHolidayTogether.create(
+                targeOrg,
+                banHolidayCode,
+                banHolidayName,
+                workDayReference,
+                command.getMinNumberOfEmployeeToWork(),
+                command.getEmpsCanNotSameHolidays()
+        );
+
+        banHolidayTogetherRepo.update(companyId, banHdTogetherUpdate);
     }
 }

@@ -12,6 +12,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
@@ -21,8 +22,10 @@ import nts.uk.ctx.at.schedule.dom.adapter.jobtitle.PositionImport;
 import nts.uk.ctx.at.schedule.dom.adapter.jobtitle.SyJobTitleAdapter;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.EmpClassifiImport;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.EmployeePosition;
+import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.OrderedList;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.SortSetting;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.SortSettingRepository;
+import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.SortType;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.SortSetting.Require;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.EmpLicenseClassification;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.EmpMedicalWorkFormHisItem;
@@ -49,11 +52,12 @@ import nts.uk.query.pub.employee.EmployeeInformationExport;
 import nts.uk.query.pub.employee.EmployeeInformationPub;
 import nts.uk.query.pub.employee.EmployeeInformationQueryDto;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.SortOrder;
 
 /**
  * 
  * @author HieuLt
- *
+ *	並び替えした社員リストを取得
  */
 @Stateless
 public class GetSortedListEmployeeQuery {
@@ -146,16 +150,19 @@ public class GetSortedListEmployeeQuery {
 						.toGetWorkplace(false).toGetDepartment(false).toGetPosition(true).toGetEmployment(false)
 						.toGetClassification(true).toGetEmploymentCls(false).build());
 		// SortSetting sr = null;
-		Optional<SortSetting> sortSetting = sortSettingRepo.get(companyId);
-		if (!sortSetting.isPresent()) {
-			throw new RuntimeException("there is no SortSetting");
-		} else {
-			Require requireSortSetting = new SortSettingRequireImp(sortSettingRepo, belongScheduleTeamRepo,
-					employeeRankRepo, rankRepo, syJobTitleAdapter, syClassificationAdapter, empMedicalWorkStyleHisRepo,
-					nurseClassificationRepo);
-			listSidEmp = sortSetting.get().sort(requireSortSetting, date, lstEmpId);
+		Require requireSortSetting = new SortSettingRequireImp(sortSettingRepo, belongScheduleTeamRepo,
+				employeeRankRepo, rankRepo, syJobTitleAdapter, syClassificationAdapter, empMedicalWorkStyleHisRepo,
+				nurseClassificationRepo);
+		List<OrderedList> orderedListaa = new ArrayList<>();
+			for (EmployeeSwapDto item : selectedEmployeeSwap) {
+				OrderedList data = new OrderedList(EnumAdaptor.valueOf(item.getSortType(), SortType.class),
+						EnumAdaptor.valueOf(item.getSortOrder(), SortOrder.class));
+				orderedListaa.add(data);
+			}
 
-		}
+			SortSetting sortSettingNew = SortSetting.create(companyId, orderedListaa);
+			listSidEmp = sortSettingNew.sort(requireSortSetting, date, lstEmpId);
+			
 		lstEmpBase = syEmployeePub.getByListSid(lstEmpId).stream()
 				.map(x -> new EmployeeBaseDto(x.getSid(), x.getScd(), x.getBussinessName()))
 				.collect(Collectors.toList());
