@@ -16,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.s
 public class ConvertDailyRecordToAd implements DailyRecordConverter{
 	@Inject
 	private AttendanceItemConvertFactory factory;
+	
 	@Override
 	public DailyRecordToAttendanceItemConverter createDailyConverter() {
 		DailyRecordToAttendanceItemConverter converter = factory.createDailyConverter();
