@@ -14,19 +14,19 @@ import lombok.Setter;
 public class AttendanceInforDto {
 
 	//フレックス繰越時間
-	private String flexCarryOverTime = "0:00";
+	private String flexCarryOverTime = "00:00";
 
 	//フレックス時間
-	private String flexTime = "0:00";
+	private String flexTime = "00:00";
 	
 	//休出時間
-	private String holidayTime = "0:00";
+	private String holidayTime = "00:00";
 	
 	//残業時間
-	private String overTime = "0:00";
+	private String overTime = "00:00";
 	
 	//就業時間外深夜時間
-	private String nigthTime = "0:00";
+	private String nigthTime = "00:00";
 	
 	//早退回数
 	private String early = "0";

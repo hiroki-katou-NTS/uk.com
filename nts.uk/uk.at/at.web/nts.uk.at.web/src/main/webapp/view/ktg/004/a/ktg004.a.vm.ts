@@ -2,7 +2,6 @@ module nts.uk.at.view.ktg004.a.viewmodel {
     import block = nts.uk.ui.block;
 	import ajax = nts.uk.request.ajax;
     import getText = nts.uk.resource.getText;
-    import info = nts.uk.ui.dialog.info;
 	import windows = nts.uk.ui.windows;
 
     export var STORAGE_KEY_TRANSFER_DATA = "nts.uk.request.STORAGE_KEY_TRANSFER_DATA";
@@ -19,9 +18,7 @@ module nts.uk.at.view.ktg004.a.viewmodel {
 		detailedWorkStatusSettings = ko.observable(false);
 		specialHolidaysRemainings: KnockoutObservableArray<SpecialHolidaysRemainings> = ko.observableArray([]);
 		        
-        constructor() {
-            var self = this;
-        }
+        constructor() {}
 
         public startPage(): JQueryPromise<any> {
             var self = this;
@@ -76,18 +73,24 @@ module nts.uk.at.view.ktg004.a.viewmodel {
 		}
 		
 		public openKDW003() {
-			let self = this;
 			window.top.location = window.location.origin + '/nts.uk.at.web/view/kdw/003/a/index.xhtml';
 		}
     }
 
 	class AttendanceInfor {
-		flexCarryOverTime = ko.observable(getText('KTG004_4', ['0:00']));
-		flexTime = ko.observable('0:00');
-		holidayTime = ko.observable('0:00');
-		overTime = ko.observable('0:00');
-		nigthTime = ko.observable('0:00');
+		//フレックス繰越時間
+		flexCarryOverTime = ko.observable(getText('KTG004_4', ['00:00']));
+		//フレックス時間
+		flexTime = ko.observable('00:00');
+		//休出時間
+		holidayTime = ko.observable('00:00');
+		//残業時間
+		overTime = ko.observable('00:00');
+		//就業時間外深夜時間
+		nigthTime = ko.observable('00:00');
+		//早退回数/遅刻回数
 		lateEarly = ko.observable(getText('KTG004_8', ['0','0']));
+		//日別実績のエラー有無
 		dailyErrors = ko.observable(false);
 		
 		constructor(){}
@@ -107,11 +110,17 @@ module nts.uk.at.view.ktg004.a.viewmodel {
 	}
 	
 	class RemainingNumberInfor {
+		//年休残数
 		numberOfAnnualLeaveRemain = ko.observable(getText('KTG004_15', [0]));
+		//積立年休残日数
 		numberAccumulatedAnnualLeave = ko.observable(getText('KTG004_15', [0]));
+		//代休残数
 		numberOfSubstituteHoliday = ko.observable(getText('KTG004_15', [0]));
+		//振休残日数
 		remainingHolidays = ko.observable(getText('KTG004_15', [0]));
+		//子の看護残数
 		nursingRemainingNumberOfChildren = ko.observable(getText('KTG004_15', [0]));
+		//介護残数
 		longTermCareRemainingNumber = ko.observable(getText('KTG004_15', [0]));
 		
 		constructor(){}
@@ -129,8 +138,11 @@ module nts.uk.at.view.ktg004.a.viewmodel {
 		}
 	}
 	class SpecialHolidaysRemainings {
+		//特別休暇コード
 		code: number;
+		//特別休暇名称
 		name: string;
+		//特休残数
 		specialResidualNumber: string;
 		constructor(param: any){
 			if(param){

@@ -18,7 +18,7 @@ public class RemainingDaysAndTimeDto {
 	private double day = 0.0;
 	
 	//時間
-	private String time = "0:00";
+	private String time = "00:00";
 
 	public RemainingDaysAndTimeDto(double day, AttendanceTime time) {
 		super();
