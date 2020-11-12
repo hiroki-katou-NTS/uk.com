@@ -13,5 +13,7 @@ public class SortSettingDto {
 	private String companyID;
 	
 	private List<OrderListDto> lstOrderList;
+	
+	private List<OrderListDto> lstReal;
 
 }

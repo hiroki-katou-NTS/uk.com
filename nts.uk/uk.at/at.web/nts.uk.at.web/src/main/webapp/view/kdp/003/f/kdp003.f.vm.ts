@@ -252,8 +252,10 @@ module nts.uk.at.kdp003.f {
 				})
 				.then(() => vm.$ajax('at', API.FINGER_STAMP_SETTING, params))
 				.then((data: a.FingerStampSetting) => {
+					const { stampSetting } = data;
+
 					_.extend(vm.params, {
-						passwordRequired: !!((data || {}).stampSetting || {}).passwordRequiredArt
+						passwordRequired: stampSetting ? stampSetting.passwordRequiredArt : true
 					});
 				})
 				.then(() => {

@@ -23,7 +23,7 @@ module nts.uk.at.view.kmk008.i {
                     }
                 })
                 .fail(res => {
-                    vm.$dialog.error(res.message);
+                    vm.$dialog.error(res);
                 })
                 .always(() => {
                     vm.$blockui("clear");
@@ -32,8 +32,6 @@ module nts.uk.at.view.kmk008.i {
 
         created() {
             const vm = this;
-
-            _.extend(window, {vm});
         }
 
         mounted() {
@@ -51,7 +49,7 @@ module nts.uk.at.view.kmk008.i {
                     });
                 })
                 .fail(res => {
-                    vm.$dialog.error(res.message).then(() => {
+                    vm.$dialog.error(res).then(() => {
                         $('.chk_I13').focus();
                     })
                 })
