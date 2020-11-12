@@ -170,7 +170,8 @@ public class SaveProcessExecutionCommandHandler extends CommandHandlerWithResult
 																	  .getLogByCIdAndExecCd(companyId, execItemCd)
 																	  .orElseThrow(() -> new BusinessException("Msg_3"));
 			// 更新処理自動実行管理.現在の実行状態　＝　実行中
-			if (processExecutionLogManage.getCurrentStatus() == CurrentExecutionStatus.RUNNING) {
+			if (processExecutionLogManage.getCurrentStatus().isPresent()
+					&& processExecutionLogManage.getCurrentStatus().get().equals(CurrentExecutionStatus.RUNNING)) {
 				throw new BusinessException("Msg_1318");
 			}
 			// 更新処理自動実行管理.現在の実行状態　≠　実行中

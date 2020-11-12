@@ -1,27 +1,39 @@
 package nts.uk.ctx.at.function.app.command.processexecution;
 
-import nts.arc.layer.app.command.CommandHandler;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
+import nts.arc.error.BusinessException;
+import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.AsyncTaskService;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.app.command.processexecution.appupdatesuspension.AppUpdateSuspension;
-import nts.uk.ctx.at.function.dom.processexecution.executionlog.*;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.CurrentExecutionStatus;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.EachProcessPeriod;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.EndStatus;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.ExecutionTaskLog;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.OverallErrorDetail;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLog;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogHistory;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogManage;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionTask;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogHistRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogManageRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogRepository;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodExcution;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodExcutionRepository;
+import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.periodexcution.ExecutionStatus;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExeStateOfCalAndSum;
 
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 @Stateless
-public class TerminateProcessExecutionCommandHandler extends CommandHandler<TerminateProcessExecutionCommand> {
+public class TerminateProcessExecutionCommandHandler extends AsyncCommandHandler<TerminateProcessExecutionCommand> {
 
     @Inject
     private ProcessExecutionLogRepository procExecLogRepo;
@@ -55,7 +67,7 @@ public class TerminateProcessExecutionCommandHandler extends CommandHandler<Term
         //ドメインモデル「更新処理自動実行管理」を取得する
         Optional<ProcessExecutionLogManage> processExecLogManOpt = this.processExecLogManRepo.getLogByCIdAndExecCd(companyId, execItemCd);
         if (!processExecLogManOpt.isPresent()) {
-            return;
+           return;
         }
         // ドメインモデル「更新処理自動実行管理」．全体の終了状態 をチェックする
         if (processExecLogManOpt.get().getOverallStatus().isPresent()) {
@@ -68,9 +80,11 @@ public class TerminateProcessExecutionCommandHandler extends CommandHandler<Term
         ProcessExecutionLogManage processExecLogMan = processExecLogManOpt.get();
 
         //「待機中」 or 「無効」の場合
-        if (processExecLogMan.getCurrentStatus().value == 1 || processExecLogMan.getCurrentStatus().value == 2) {
+        if (processExecLogMan.getCurrentStatus().isPresent()
+        		&& (processExecLogMan.getCurrentStatus().get().value == 1 
+        		|| processExecLogMan.getCurrentStatus().get().value == 2)) {
 //			dataSetter.setData("currentStatusIsOneOrTwo", "Msg_1102");
-            return;
+            throw new BusinessException("Msg_1102");
         }
 
         // ドメインモデル「更新処理自動実行ログ」を取得する
@@ -117,17 +131,17 @@ public class TerminateProcessExecutionCommandHandler extends CommandHandler<Term
 		・各処理の期間　＝　「更新処理自動実行ログ」.各処理の期間
 		*/
         procExecLog.getTaskLogList().stream().sorted((x, y) -> x.getProcExecTask().value - y.getProcExecTask().value).collect(Collectors.toList());
-        List<ProcessExecutionTaskLogCommand> taskLogListCommand = procExecLog.getTaskLogList().stream()
-                .map(item -> ProcessExecutionTaskLogCommand.builder()
-                        .taskId(item.getProcExecTask().value)
-                        .status(item.getStatus().map(e -> e.value).orElse(null))
-                        .lastExecDateTime(item.getLastExecDateTime().orElse(null))
-                        .lastEndExecDateTime(item.getLastEndExecDateTime().orElse(null))
-                        .errorSystem(item.getErrorSystem().orElse(null))
-                        .errorBusiness(item.getErrorBusiness().orElse(null))
-                        .systemErrorDetails(item.getSystemErrorDetails().orElse(null))
-                        .build())
-                .collect(Collectors.toList());
+//        List<ProcessExecutionTaskLogCommand> taskLogListCommand = procExecLog.getTaskLogList().stream()
+//                .map(item -> ProcessExecutionTaskLogCommand.builder()
+//                        .taskId(item.getProcExecTask().value)
+//                        .status(item.getStatus().map(e -> e.value).orElse(null))
+//                        .lastExecDateTime(item.getLastExecDateTime().orElse(null))
+//                        .lastEndExecDateTime(item.getLastEndExecDateTime().orElse(null))
+//                        .errorSystem(item.getErrorSystem().orElse(null))
+//                        .errorBusiness(item.getErrorBusiness().orElse(null))
+//                        .systemErrorDetails(item.getSystemErrorDetails().orElse(null))
+//                        .build())
+//                .collect(Collectors.toList());
         Optional<DatePeriod> scheduleCreationPeriod = procExecLog.getEachProcPeriod().map(EachProcessPeriod::getScheduleCreationPeriod).orElse(null);
         Optional<DatePeriod> dailyCreationPeriod = procExecLog.getEachProcPeriod().map(EachProcessPeriod::getDailyCreationPeriod).orElse(null);
         Optional<DatePeriod> dailyCalcPeriod = procExecLog.getEachProcPeriod().map(EachProcessPeriod::getDailyCalcPeriod).orElse(null);
@@ -136,13 +150,13 @@ public class TerminateProcessExecutionCommandHandler extends CommandHandler<Term
                 .execItemCd(execItemCd)
                 .companyId(companyId)
                 .execId(procExecLog.getExecId())
-                .overallError(processExecLogMan.getOverallError().value)
+                .overallError(processExecLogMan.getOverallError().map(item -> item.value).orElse(null))
                 .overallStatus(processExecLogMan.getOverallStatus().map(item -> item.value).orElse(null))
-                .lastExecDateTime(processExecLogMan.getLastExecDateTime())
-                .lastEndExecDateTime(processExecLogMan.getLastEndExecDateTime())
-                .errorSystem(processExecLogMan.getErrorSystem())
-                .errorBusiness(processExecLogMan.getErrorBusiness())
-                .taskLogList(taskLogListCommand)
+                .lastExecDateTime(processExecLogMan.getLastExecDateTime().orElse(null))
+                .lastEndExecDateTime(processExecLogMan.getLastEndExecDateTime().orElse(null))
+                .errorSystem(processExecLogMan.getErrorSystem().orElse(null))
+                .errorBusiness(processExecLogMan.getErrorBusiness().orElse(null))
+                .taskLogList(Collections.emptyList())
                 .schCreateStart(scheduleCreationPeriod.map(DatePeriod::start).orElse(null))
                 .schCreateEnd(scheduleCreationPeriod.map(DatePeriod::end).orElse(null))
                 .dailyCreateStart(dailyCreationPeriod.map(DatePeriod::start).orElse(null))
@@ -316,9 +330,10 @@ public class TerminateProcessExecutionCommandHandler extends CommandHandler<Term
                         domain.getStartDateTime(),
                         domain.getEndDateTime(),
                         domain.getExecutionAtr().value,
-                        ProcessExecutionTask.AGGREGATION_OF_ARBITRARY_PERIOD.value,
+                        ExecutionStatus.START_OF_INTERRUPTION.value,
                         domain.getPresenceOfError().value))
                 .collect(Collectors.toList());
+        this.aggrPeriodExcutionRepo.updateAll(listDomain);
     }
 
     /**

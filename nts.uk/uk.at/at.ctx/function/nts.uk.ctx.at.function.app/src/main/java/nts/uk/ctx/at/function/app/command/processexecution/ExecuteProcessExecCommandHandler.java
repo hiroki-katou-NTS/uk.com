@@ -36,7 +36,9 @@ public class ExecuteProcessExecCommandHandler extends AsyncCommandHandler<Execut
 		//取得したドメインモデル「更新処理自動実行管理」の現在の実行状態を確認する
 		ProcessExecutionLogManage processExecutionLogManage = logManageOpt.get();
 		//「実行中」 or 「無効」の場合
-		if(processExecutionLogManage.getCurrentStatus().value==0||processExecutionLogManage.getCurrentStatus().value==2){
+		if(processExecutionLogManage.getCurrentStatus().isPresent()
+				&& (processExecutionLogManage.getCurrentStatus().get().value == 0
+				|| processExecutionLogManage.getCurrentStatus().get().value == 2)){
 			//throw new BusinessException("Msg_1101");
 			dataSetter.setData("message101", "Msg_1101");
 		}

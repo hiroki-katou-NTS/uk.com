@@ -36,11 +36,12 @@ public class JpaExecutionTaskLogRepository extends JpaRepository implements Exec
 			statement.setString(3, execId);
 			return new NtsResultSet(statement.executeQuery()).getList(rs -> ExecutionTaskLog.builder()
 						.procExecTask(EnumAdaptor.valueOf(rs.getInt("TASK_ID"), ProcessExecutionTask.class))
-						.status(Optional.ofNullable(EnumAdaptor.valueOf(rs.getInt("STATUS"), EndStatus.class)))
+						.status(Optional.ofNullable(rs.getInt("STATUS"))
+								.map(data -> EnumAdaptor.valueOf(data, EndStatus.class)))
 						.lastExecDateTime(Optional.ofNullable(rs.getGeneralDateTime("LAST_EXEC_DATETIME")))
 						.lastEndExecDateTime(Optional.ofNullable(rs.getGeneralDateTime("LAST_END_EXEC_DATETIME")))
-						.errorSystem(Optional.of(rs.getString("ERROR_SYSTEM") == null ? null : rs.getInt("ERROR_SYSTEM") == 1))
-						.errorBusiness(Optional.of(rs.getString("ERROR_BUSINESS") == null ? null : rs.getInt("ERROR_BUSINESS") == 1))
+						.errorSystem(Optional.ofNullable(rs.getString("ERROR_SYSTEM") == null ? null : rs.getInt("ERROR_SYSTEM") == 1))
+						.errorBusiness(Optional.ofNullable(rs.getString("ERROR_BUSINESS") == null ? null : rs.getInt("ERROR_BUSINESS") == 1))
 						.systemErrorDetails(Optional.ofNullable(rs.getString("ERROR_SYSTEM_CONT")))
 						.build()
 			);

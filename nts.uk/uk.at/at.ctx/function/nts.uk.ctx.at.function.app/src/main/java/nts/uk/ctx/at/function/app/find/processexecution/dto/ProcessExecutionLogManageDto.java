@@ -70,14 +70,14 @@ public class ProcessExecutionLogManageDto {
 		return new ProcessExecutionLogManageDto(
 				domain.getExecItemCd().v(),
 				domain.getCompanyId(),
-				domain.getOverallError() == null ? null : domain.getOverallError().value,
+				domain.getOverallError().map(item -> item.value).orElse(null),
 				domain.getOverallStatus().map(o -> o.value).orElse(null),
-				domain.getLastExecDateTime(),
-				domain.getCurrentStatus().value,
-				domain.getLastExecDateTimeEx(),
-				domain.getLastEndExecDateTime(),
-				domain.getErrorSystem(), 
-				domain.getErrorBusiness());
+				domain.getLastExecDateTime().orElse(null),
+				domain.getCurrentStatus().map(item -> item.value).orElse(null),
+				domain.getLastExecDateTimeEx().orElse(null),
+				domain.getLastEndExecDateTime().orElse(null),
+				domain.getErrorSystem().orElse(null), 
+				domain.getErrorBusiness().orElse(null));
 	}
 	
 }

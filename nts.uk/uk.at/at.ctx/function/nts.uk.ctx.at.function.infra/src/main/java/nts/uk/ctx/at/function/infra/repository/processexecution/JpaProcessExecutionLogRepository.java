@@ -45,14 +45,14 @@ public class JpaProcessExecutionLogRepository extends JpaRepository
 	private static final String SELECT_BY_PK = SELECT_ALL
 			+ "WHERE pel.kfnmtProcExecLogPK.companyId = :companyId "
 			+ "AND pel.kfnmtProcExecLogPK.execItemCd = :execItemCd "
-			+ "AND pel.kfnmtProcExecLogPK.execId = :execId ";
+			+ "AND pel.execId = :execId ";
 	
 //	private static final String SELECT_BY_KEY = SELECT_ALL 
 //			+ "WHERE pel.kfnmtProcExecLogPK.companyId = :companyId "
 //			+ "AND pel.kfnmtProcExecLogPK.execItemCd = :execItemCd ";
 //	
-//	private static final String SELECT_TASK_LOG = "SELECT k FROM KfnmtExecutionTaskLog k"+ 
-//	" WHERE k.kfnmtExecTaskLogPK.companyId = :companyId " + " AND k.kfnmtExecTaskLogPK.execItemCd= :execItemCd ";
+	private static final String SELECT_TASK_LOG = "SELECT k FROM KfnmtExecutionTaskLog k"+ 
+	" WHERE k.kfnmtExecTaskLogPK.companyId = :companyId " + " AND k.kfnmtExecTaskLogPK.execItemCd= :execItemCd ";
 	
 	
 	private static final String SELECT_BY_CID_AND_EXEC_CD = SELECT_ALL
@@ -192,47 +192,53 @@ public class JpaProcessExecutionLogRepository extends JpaRepository
 
 	@Override
 	public Optional<ProcessExecutionLog> getLog(String companyId, String execItemCd) {
-//		 List<KfnmtExecutionTaskLog> list = this.queryProxy().query(SELECT_TASK_LOG, KfnmtExecutionTaskLog.class)
-//				.setParameter("companyId", companyId).setParameter("execItemCd", execItemCd).getList();
-		List<KfnmtExecutionTaskLog> list = new ArrayList<>();
-		try (PreparedStatement statement1 = this.connection().prepareStatement(SELECT_TASK_LOG_BY_JDBC)) {
-			statement1.setString(1, companyId);
-			statement1.setString(2, execItemCd);
-			list.addAll(new NtsResultSet(statement1.executeQuery()).getList(rec -> {
-				KfnmtExecutionTaskLogPK pk = new KfnmtExecutionTaskLogPK();
-						pk.setCompanyId(rec.getString("CID"));
-						pk.setExecItemCd(rec.getString("EXEC_ITEM_CD"));
-						pk.setExecId(rec.getString("EXEC_ID"));
-						pk.setTaskId(rec.getInt("TASK_ID"));
-						KfnmtExecutionTaskLog entity = KfnmtExecutionTaskLog.builder()
-								.kfnmtExecTaskLogPK(pk)
-								.status(rec.getInt("STATUS"))
-								.lastExecDateTime(rec.getGeneralDateTime("LAST_EXEC_DATETIME"))
-								.lastEndExecDateTime(rec.getGeneralDateTime("LAST_END_EXEC_DATETIME"))
-								.errorSystem(rec.getInt("ERROR_SYSTEM"))
-								.errorBusiness(rec.getInt("ERROR_BUSINESS"))
-								.errorSystemDetail(rec.getString("ERROR_SYSTEM_CONT"))
-								.build();
-						entity.setUpdDate(rec.getGeneralDateTime("UPD_DATE"));
-						return entity;
-					}));
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
+		 List<KfnmtExecutionTaskLog> list = this.queryProxy().query(SELECT_TASK_LOG, KfnmtExecutionTaskLog.class)
+				.setParameter("companyId", companyId).setParameter("execItemCd", execItemCd).getList();
+//		List<KfnmtExecutionTaskLog> list = new ArrayList<>();
+//		try (PreparedStatement statement1 = this.connection().prepareStatement(SELECT_TASK_LOG_BY_JDBC)) {
+//			statement1.setString(1, companyId);
+//			statement1.setString(2, execItemCd);
+//			list.addAll(new NtsResultSet(statement1.executeQuery()).getList(rec -> {
+//				KfnmtExecutionTaskLogPK pk = new KfnmtExecutionTaskLogPK();
+//						pk.setCompanyId(rec.getString("CID"));
+//						pk.setExecItemCd(rec.getString("EXEC_ITEM_CD"));
+//						pk.setExecId(rec.getString("EXEC_ID"));
+//						pk.setTaskId(rec.getInt("TASK_ID"));
+//						KfnmtExecutionTaskLog entity = KfnmtExecutionTaskLog.builder()
+//								.kfnmtExecTaskLogPK(pk)
+//								.status(rec.getInt("STATUS"))
+//								.lastExecDateTime(rec.getGeneralDateTime("LAST_EXEC_DATETIME"))
+//								.lastEndExecDateTime(rec.getGeneralDateTime("LAST_END_EXEC_DATETIME"))
+//								.errorSystem(rec.getInt("ERROR_SYSTEM"))
+//								.errorBusiness(rec.getInt("ERROR_BUSINESS"))
+//								.errorSystemDetail(rec.getString("ERROR_SYSTEM_CONT"))
+//								.build();
+//						entity.setUpdDate(rec.getGeneralDateTime("UPD_DATE"));
+//						return entity;
+//					}));
+//		} catch (SQLException e) {
+//			throw new RuntimeException(e);
+//		}
 		if(!list.isEmpty()){
-			 List<KfnmtProcessExecutionLog> listKfnmtProcessExecutionLog= getProcessExecutionLog(companyId, execItemCd);
-			 if(!listKfnmtProcessExecutionLog.isEmpty()){
-				 KfnmtProcessExecutionLog kfnmtProcessExecutionLog = listKfnmtProcessExecutionLog.get(0);
-				 return Optional.ofNullable(kfnmtProcessExecutionLog.toDomainMaxDate(list));
-			 }else{
-				 return Optional.empty();
-			 }
-		}else{
-			 List<ProcessExecutionLog> lstProcessExecutionLog = getProcessExecutionLog(companyId, execItemCd).stream().map(c -> c.toDomainMaxDate()).collect(Collectors.toList());
-				 if(lstProcessExecutionLog!=null && !lstProcessExecutionLog.isEmpty()){
-					return Optional.ofNullable(lstProcessExecutionLog.get(0));
-				 }
-				 return Optional.empty();
+//			 List<KfnmtProcessExecutionLog> listKfnmtProcessExecutionLog= getProcessExecutionLog(companyId, execItemCd);
+//			 if(!listKfnmtProcessExecutionLog.isEmpty()){
+//				 KfnmtProcessExecutionLog kfnmtProcessExecutionLog = listKfnmtProcessExecutionLog.get(0);
+//				 return Optional.ofNullable(kfnmtProcessExecutionLog.toDomainMaxDate(list));
+//			 }else{
+//				 return Optional.empty();
+//			 }
+			 
+			 return getProcessExecutionLog(companyId, execItemCd)
+					 .map(entity -> entity.toDomainMaxDate(list));
+		} else {
+//			 List<ProcessExecutionLog> lstProcessExecutionLog = getProcessExecutionLog(companyId, execItemCd).stream()
+//				.map(c -> c.toDomainMaxDate()).collect(Collectors.toList());
+//				 if(lstProcessExecutionLog!=null && !lstProcessExecutionLog.isEmpty()){
+//					return Optional.ofNullable(lstProcessExecutionLog.get(0));
+//				 }
+//				 return Optional.empty();
+			return getProcessExecutionLog(companyId, execItemCd)
+					.map(KfnmtProcessExecutionLog::toDomainMaxDate);
 		}
 	}
 	
@@ -252,33 +258,37 @@ public class JpaProcessExecutionLogRepository extends JpaRepository
 		 return Optional.empty();
 	}
 	
-	private List<KfnmtProcessExecutionLog> getProcessExecutionLog(String companyId,String execItemCd){
-		List<KfnmtProcessExecutionLog> data = new ArrayList<>();
-		String selectData = " SELECT * FROM KFNMT_PROC_EXEC_LOG "
-				+ " WHERE CID = ? AND EXEC_ITEM_CD = ? ";
-		try (PreparedStatement statement = this.connection().prepareStatement(selectData)) {
-			statement.setString(1, companyId);
-			statement.setString(2, execItemCd);
-			data =  new NtsResultSet(statement.executeQuery()).getList(rec -> {
-				KfnmtProcessExecutionLog entity = new KfnmtProcessExecutionLog();
-				entity.kfnmtProcExecLogPK = new KfnmtProcessExecutionLogPK(rec.getString("CID"), 
-						rec.getString("EXEC_ITEM_CD"));
+	private Optional<KfnmtProcessExecutionLog> getProcessExecutionLog(String companyId,String execItemCd){
+//		List<KfnmtProcessExecutionLog> data = new ArrayList<>();
+//		String selectData = " SELECT * FROM KFNMT_PROC_EXEC_LOG "
+//				+ " WHERE CID = ? AND EXEC_ITEM_CD = ? ";
+//		try (PreparedStatement statement = this.connection().prepareStatement(selectData)) {
+//			statement.setString(1, companyId);
+//			statement.setString(2, execItemCd);
+//			data =  new NtsResultSet(statement.executeQuery()).getList(rec -> {
+//				KfnmtProcessExecutionLog entity = new KfnmtProcessExecutionLog();
 //				entity.kfnmtProcExecLogPK = new KfnmtProcessExecutionLogPK(rec.getString("CID"), 
-//						rec.getString("EXEC_ITEM_CD"), rec.getString("EXEC_ID"));
-				entity.schCreateStart = rec.getGeneralDate("SCH_CREATE_START");
-				entity.schCreateEnd = rec.getGeneralDate("SCH_CREATE_END");
-				entity.dailyCreateStart = rec.getGeneralDate("DAILY_CREATE_START");
-				entity.dailyCreateEnd = rec.getGeneralDate("DAILY_CREATE_END");
-				entity.dailyCalcStart = rec.getGeneralDate("DAILY_CALC_START");
-				entity.dailyCalcEnd = rec.getGeneralDate("DAILY_CALC_END");
-				entity.reflectApprovalResultStart = rec.getGeneralDate("RFL_APPR_START");
-				entity.reflectApprovalResultEnd = rec.getGeneralDate("RFL_APPR_END");
-				return entity;
-			});
-		}catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-		return data;
+//						rec.getString("EXEC_ITEM_CD"));
+//				entity.kfnmtProcExecLogPK = new KfnmtProcessExecutionLogPK(rec.getString("CID"), 
+//						rec.getString("EXEC_ITEM_CD"));
+//				entity.execId = rec.getString("EXEC_ID");
+//				entity.schCreateStart = rec.getGeneralDate("SCH_CREATE_START");
+//				entity.schCreateEnd = rec.getGeneralDate("SCH_CREATE_END");
+//				entity.dailyCreateStart = rec.getGeneralDate("DAILY_CREATE_START");
+//				entity.dailyCreateEnd = rec.getGeneralDate("DAILY_CREATE_END");
+//				entity.dailyCalcStart = rec.getGeneralDate("DAILY_CALC_START");
+//				entity.dailyCalcEnd = rec.getGeneralDate("DAILY_CALC_END");
+//				entity.reflectApprovalResultStart = rec.getGeneralDate("RFL_APPR_START");
+//				entity.reflectApprovalResultEnd = rec.getGeneralDate("RFL_APPR_END");
+//				return entity;
+//			});
+//		}catch (SQLException e) {
+//			throw new RuntimeException(e);
+//		}
+//		return data;
+		
+		return this.queryProxy()
+				.find(new KfnmtProcessExecutionLogPK(companyId, execItemCd), KfnmtProcessExecutionLog.class);
 	}
 	
 }

@@ -75,11 +75,11 @@ public class AppRouteUpdateMonthlyDefault implements AppRouteUpdateMonthlyServic
 		/** ドメインモデル「更新処理自動実行ログ」を更新する */
 		for (ExecutionTaskLog executionTaskLog : procExecLog.getTaskLogList()) {
 			if (executionTaskLog.getProcExecTask() == ProcessExecutionTask.APP_ROUTE_U_MON) {
-				executionTaskLog.setStatus(null);
+				executionTaskLog.setStatus(Optional.empty());
 				executionTaskLog.setLastExecDateTime(Optional.ofNullable(GeneralDateTime.now()));
-				executionTaskLog.setErrorBusiness(null);
-				executionTaskLog.setErrorSystem(null);
-				executionTaskLog.setLastEndExecDateTime(null);
+				executionTaskLog.setErrorBusiness(Optional.empty());
+				executionTaskLog.setErrorSystem(Optional.empty());
+				executionTaskLog.setLastEndExecDateTime(Optional.empty());
 				break;
 			}
 		}

@@ -147,7 +147,7 @@ public class ProcessExecutionLogFinder {
 						// 過去の実行平均時間を超過しているか
 						boolean isOverAverageExecTime = this.processExecutionService.isPassAverageExecTimeExceeded(companyId, 
 								processExecution, 
-								processExecutionLogManage.getLastExecDateTime());
+								processExecutionLogManage.getLastExecDateTime().get());
 						
 						// 「実行項目情報」を更新する
 						dto.setIsOverAverageExecTime(isOverAverageExecTime);

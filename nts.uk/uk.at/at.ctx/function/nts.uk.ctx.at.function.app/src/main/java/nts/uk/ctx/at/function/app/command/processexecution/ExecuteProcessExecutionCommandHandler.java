@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.app.command.processexecution;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
@@ -263,6 +264,15 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
         if (logByCIdAndExecCdOpt.isPresent()) {
             processExecutionLogManage = logByCIdAndExecCdOpt.get();
         }
+        
+        /*
+		   * 取得したドメインモデル「更新処理自動実行管理」の現在の実行状態を確認する
+		(Checkstatus thực hiện domain 「更新処理自動実行管理」 )
+         */
+        if (processExecutionLogManage.getCurrentStatus().isPresent()
+        		&& !processExecutionLogManage.getCurrentStatus().get().equals(CurrentExecutionStatus.WAITING)) {
+        	throw new BusinessException("Msg_1101");
+        }
 
         /*
          * // ドメインモデル「更新処理自動実行ログ」を取得する ProcessExecutionLog procExecLog = null;
@@ -354,7 +364,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 //				execItemCd, execId);
 //		if (!processExecutionLogHistory.isPresent()) {
         if (processExecutionLogManage.getOverallStatus().isPresent()
-                && processExecutionLogManage.getOverallStatus().get() == EndStatus.CLOSING) {
+                && processExecutionLogManage.getOverallStatus().get().equals(EndStatus.CLOSING)) {
             // ドメインモデル「更新処理自動実行管理」を取得する
             Optional<ProcessExecutionLogManage> optExecLogManage = processExecLogManaRepo
                     .getLogByCIdAndExecCdAndDateTiem(companyId, execItemCd, dateTimeOutput);
@@ -394,12 +404,12 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                         .execItemCd(execItemCd)
                         .companyId(companyId)
                         .execId(execId)
-                        .overallError(processExecutionLogManage.getOverallError().value)
+                        .overallError(processExecutionLogManage.getOverallError().map(item -> item.value).orElse(null))
                         .overallStatus(processExecutionLogManage.getOverallStatus().map(item -> item.value).orElse(null))
-                        .lastExecDateTime(processExecutionLogManage.getLastExecDateTime())
-                        .lastEndExecDateTime(processExecutionLogManage.getLastEndExecDateTime())
-                        .errorSystem(processExecutionLogManage.getErrorSystem())
-                        .errorBusiness(processExecutionLogManage.getErrorBusiness())
+                        .lastExecDateTime(processExecutionLogManage.getLastExecDateTime().orElse(null))
+                        .lastEndExecDateTime(processExecutionLogManage.getLastEndExecDateTime().orElse(null))
+                        .errorSystem(processExecutionLogManage.getErrorSystem().orElse(null))
+                        .errorBusiness(processExecutionLogManage.getErrorBusiness().orElse(null))
                         .taskLogList(taskLogListCommand)
                         .schCreateStart(scheduleCreationPeriod.map(DatePeriod::start).orElse(null))
                         .schCreateEnd(scheduleCreationPeriod.map(DatePeriod::end).orElse(null))
@@ -432,9 +442,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                         .execItemCd(execItemCd)
                         .companyId(companyId)
                         .execId(execId)
-                        .overallError(processExecutionLogManage.getOverallError().value)
+                        .overallError(processExecutionLogManage.getOverallError().map(item -> item.value).orElse(null))
                         .overallStatus(EndStatus.FORCE_END.value)
-                        .lastExecDateTime(processExecutionLogManage.getLastExecDateTime())
+                        .lastExecDateTime(processExecutionLogManage.getLastExecDateTime().orElse(null))
                         .lastEndExecDateTime(GeneralDateTime.now())
                         .errorSystem(errorCondition.getSystemErrorCondition())
                         .errorBusiness(errorCondition.getBusinessErrorStatus())
@@ -469,17 +479,17 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
             }
 
             // ドメインモデル「更新処理自動実行ログ履歴」を新規登録する
-            List<ProcessExecutionTaskLogCommand> taskLogListCommand = procExecLog.getTaskLogList().stream()
-                    .map(item -> ProcessExecutionTaskLogCommand.builder()
-                            .taskId(item.getProcExecTask().value)
-                            .status(item.getStatus().map(e -> e.value).orElse(null))
-                            .lastExecDateTime(item.getLastExecDateTime().orElse(null))
-                            .lastEndExecDateTime(item.getLastEndExecDateTime().orElse(null))
-                            .errorSystem(item.getErrorSystem().orElse(null))
-                            .errorBusiness(item.getErrorBusiness().orElse(null))
-                            .systemErrorDetails(item.getSystemErrorDetails().orElse(null))
-                            .build())
-                    .collect(Collectors.toList());
+//            List<ProcessExecutionTaskLogCommand> taskLogListCommand = procExecLog.getTaskLogList().stream()
+//                    .map(item -> ProcessExecutionTaskLogCommand.builder()
+//                            .taskId(item.getProcExecTask().value)
+//                            .status(item.getStatus().map(e -> e.value).orElse(null))
+//                            .lastExecDateTime(item.getLastExecDateTime().orElse(null))
+//                            .lastEndExecDateTime(item.getLastEndExecDateTime().orElse(null))
+//                            .errorSystem(item.getErrorSystem().orElse(null))
+//                            .errorBusiness(item.getErrorBusiness().orElse(null))
+//                            .systemErrorDetails(item.getSystemErrorDetails().orElse(null))
+//                            .build())
+//                    .collect(Collectors.toList());
             Optional<DatePeriod> scheduleCreationPeriod = procExecLog.getEachProcPeriod().map(EachProcessPeriod::getScheduleCreationPeriod).orElse(null);
             Optional<DatePeriod> dailyCreationPeriod = procExecLog.getEachProcPeriod().map(EachProcessPeriod::getDailyCreationPeriod).orElse(null);
             Optional<DatePeriod> dailyCalcPeriod = procExecLog.getEachProcPeriod().map(EachProcessPeriod::getDailyCalcPeriod).orElse(null);
@@ -488,13 +498,13 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                     .execItemCd(execItemCd)
                     .companyId(companyId)
                     .execId(execId)
-                    .overallError(processExecutionLogManage.getOverallError().value)
+                    .overallError(processExecutionLogManage.getOverallError().map(item -> item.value).orElse(null))
                     .overallStatus(processExecutionLogManage.getOverallStatus().map(item -> item.value).orElse(null))
-                    .lastExecDateTime(processExecutionLogManage.getLastExecDateTime())
-                    .lastEndExecDateTime(processExecutionLogManage.getLastEndExecDateTime())
-                    .errorSystem(processExecutionLogManage.getErrorSystem())
-                    .errorBusiness(processExecutionLogManage.getErrorBusiness())
-                    .taskLogList(taskLogListCommand)
+                    .lastExecDateTime(processExecutionLogManage.getLastExecDateTime().orElse(null))
+                    .lastEndExecDateTime(processExecutionLogManage.getLastEndExecDateTime().orElse(null))
+                    .errorSystem(processExecutionLogManage.getErrorSystem().orElse(null))
+                    .errorBusiness(processExecutionLogManage.getErrorBusiness().orElse(null))
+                    .taskLogList(Collections.emptyList())
                     .schCreateStart(scheduleCreationPeriod.map(DatePeriod::start).orElse(null))
                     .schCreateEnd(scheduleCreationPeriod.map(DatePeriod::end).orElse(null))
                     .dailyCreateStart(dailyCreationPeriod.map(DatePeriod::start).orElse(null))
@@ -1914,9 +1924,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
             if (execTask.value == task.getProcExecTask().value) {
                 task.setStatus(Optional.ofNullable(status));
                 task.setLastExecDateTime(Optional.ofNullable(GeneralDateTime.now()));
-                task.setErrorBusiness(null);
-                task.setErrorSystem(null);
-                task.setLastEndExecDateTime(null);
+                task.setErrorBusiness(Optional.empty());
+                task.setErrorSystem(Optional.empty());
+                task.setLastEndExecDateTime(Optional.empty());
             }
         });
     }
@@ -1926,10 +1936,10 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
         procExecLog.getTaskLogList().forEach(task -> {
             if (execTask.value == task.getProcExecTask().value) {
                 task.setStatus(Optional.ofNullable(status));
-                task.setLastExecDateTime(null);
-                task.setErrorBusiness(null);
-                task.setErrorSystem(null);
-                task.setLastEndExecDateTime(null);
+                task.setLastExecDateTime(Optional.empty());
+                task.setErrorBusiness(Optional.empty());
+                task.setErrorSystem(Optional.empty());
+                task.setLastEndExecDateTime(Optional.empty());
             }
         });
     }
@@ -2168,11 +2178,11 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
             ExecutionTaskLog executionTaskLog = taskLogLists.get(i);
             // 承認結果反映
             if (executionTaskLog.getProcExecTask().value == 3) {
-                executionTaskLog.setStatus(null);
+                executionTaskLog.setStatus(Optional.empty());
                 executionTaskLog.setLastExecDateTime(Optional.ofNullable(GeneralDateTime.now()));
-                executionTaskLog.setErrorBusiness(null);
-                executionTaskLog.setErrorSystem(null);
-                executionTaskLog.setLastEndExecDateTime(null);
+                executionTaskLog.setErrorBusiness(Optional.empty());
+                executionTaskLog.setErrorSystem(Optional.empty());
+                executionTaskLog.setLastEndExecDateTime(Optional.empty());
                 existExecutionTaskLog = true;
                 break;
             }
@@ -2196,7 +2206,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                 if (executionTaskLog.getProcExecTask().value == 3) {
                     // 未実施
                     executionTaskLog.setStatus(Optional.ofNullable(EndStatus.NOT_IMPLEMENT));
-                    executionTaskLog.setLastExecDateTime(null);
+                    executionTaskLog.setLastExecDateTime(Optional.empty());
                 }
             }
             this.procExecLogRepo.update(ProcessExecutionLog);
@@ -2478,12 +2488,12 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
             ExecutionTaskLog executionTaskLog = taskLogLists.get(i);
             // 月別集計
             if (executionTaskLog.getProcExecTask().value == 4) {
-                executionTaskLog.setStatus(null);
+                executionTaskLog.setStatus(Optional.empty());
                 executionTaskLog.setLastExecDateTime(Optional.ofNullable(GeneralDateTime.now()));
                 existExecutionTaskLog = true;
-                executionTaskLog.setErrorBusiness(null);
-                executionTaskLog.setErrorSystem(null);
-                executionTaskLog.setLastEndExecDateTime(null);
+                executionTaskLog.setErrorBusiness(Optional.empty());
+                executionTaskLog.setErrorSystem(Optional.empty());
+                executionTaskLog.setLastEndExecDateTime(Optional.empty());
                 break;
             }
         }
@@ -2493,9 +2503,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                     .lastExecDateTime(Optional.ofNullable(GeneralDateTime.now()))
                     .build();
             execTaskLog.setLastExecDateTime(Optional.ofNullable(GeneralDateTime.now()));
-            execTaskLog.setErrorBusiness(null);
-            execTaskLog.setErrorSystem(null);
-            execTaskLog.setLastEndExecDateTime(null);
+            execTaskLog.setErrorBusiness(Optional.empty());
+            execTaskLog.setErrorSystem(Optional.empty());
+            execTaskLog.setLastEndExecDateTime(Optional.empty());
             taskLogLists.add(execTaskLog);
         }
         String execItemCd = context.getCommand().getExecItemCd();
@@ -2518,7 +2528,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                 if (executionTaskLog.getProcExecTask().value == 4) {
                     // 未実施
                     executionTaskLog.setStatus(Optional.ofNullable(EndStatus.NOT_IMPLEMENT));
-                    executionTaskLog.setLastExecDateTime(null);
+                    executionTaskLog.setLastExecDateTime(Optional.empty());
                 }
             }
             this.procExecLogRepo.update(ProcessExecutionLog);
@@ -2783,7 +2793,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                     ExecutionTaskLog executionTaskLog = taskLogLists.get(i);
                     if (executionTaskLog.getProcExecTask().value == ProcessExecutionTask.AL_EXTRACTION.value) {
                         executionTaskLog.setStatus(Optional.ofNullable(EndStatus.NOT_IMPLEMENT));
-                        executionTaskLog.setLastExecDateTime(null);
+                        executionTaskLog.setLastExecDateTime(Optional.empty());
                     }
                 }
                 this.procExecLogRepo.update(ProcessExecutionLog);

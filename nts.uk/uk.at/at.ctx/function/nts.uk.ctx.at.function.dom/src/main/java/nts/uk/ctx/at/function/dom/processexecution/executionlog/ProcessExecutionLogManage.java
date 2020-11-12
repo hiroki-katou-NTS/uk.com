@@ -21,41 +21,41 @@ public class ProcessExecutionLogManage extends AggregateRoot {
 	private String companyId;
 	
 	/* 全体のエラー詳細  -> 強制終了の原因 */
-	private OverallErrorDetail overallError;
+	private Optional<OverallErrorDetail> overallError;
 	
 	/* 全体の終了状態 */
 	private Optional<EndStatus> overallStatus;
 	
 	/* 前回実行日時 */
-	private GeneralDateTime lastExecDateTime;
+	private Optional<GeneralDateTime> lastExecDateTime;
 	
 	/* 現在の実行状態 */
-	private CurrentExecutionStatus currentStatus;
+	private Optional<CurrentExecutionStatus> currentStatus;
 	
 	/* 前回実行日時（即時実行含めない） */
-	private GeneralDateTime lastExecDateTimeEx;
+	private Optional<GeneralDateTime> lastExecDateTimeEx;
 	
 	/* 前回終了日時*/
-	private GeneralDateTime lastEndExecDateTime;
+	private Optional<GeneralDateTime> lastEndExecDateTime;
 	
 	/* 全体のシステムエラー状態*/
-	private Boolean errorSystem;
+	private Optional<Boolean> errorSystem;
 	
 	/* 全体の業務エラー状態*/
-	private Boolean errorBusiness;
+	private Optional<Boolean> errorBusiness;
 
 	public ProcessExecutionLogManage(ExecutionCode execItemCd, String companyId, EndStatus overallStatus, CurrentExecutionStatus currentStatus) {
 		super();
 		this.execItemCd = execItemCd;
 		this.companyId = companyId;
-		this.overallStatus =Optional.ofNullable(overallStatus);
-		this.currentStatus = currentStatus;
-		this.overallError = null;
-		this.lastExecDateTime = null;
-		this.lastExecDateTimeEx = null;
-		this.lastEndExecDateTime = null;
-		this.errorSystem = null; 
-		this.errorBusiness = null;
+		this.overallStatus = Optional.ofNullable(overallStatus);
+		this.currentStatus = Optional.ofNullable(currentStatus);
+		this.overallError = Optional.empty();
+		this.lastExecDateTime = Optional.empty();
+		this.lastExecDateTimeEx = Optional.empty();
+		this.lastEndExecDateTime = Optional.empty();
+		this.errorSystem = Optional.empty(); 
+		this.errorBusiness = Optional.empty();
 	}
 
 	public void setExecItemCd(ExecutionCode execItemCd) {
@@ -67,7 +67,7 @@ public class ProcessExecutionLogManage extends AggregateRoot {
 	}
 
 	public void setOverallError(OverallErrorDetail overallError) {
-		this.overallError = overallError;
+		this.overallError = Optional.ofNullable(overallError);
 	}
 
 	public void setOverallStatus(EndStatus overallStatus) {
@@ -75,27 +75,27 @@ public class ProcessExecutionLogManage extends AggregateRoot {
 	}
 
 	public void setLastExecDateTime(GeneralDateTime lastExecDateTime) {
-		this.lastExecDateTime = lastExecDateTime;
+		this.lastExecDateTime = Optional.ofNullable(lastExecDateTime);
 	}
 	
 	public void setLastEndExecDateTime(GeneralDateTime lastEndExecDateTime) {
-		this.lastEndExecDateTime = lastEndExecDateTime;
+		this.lastEndExecDateTime = Optional.ofNullable(lastEndExecDateTime);
 	}
 
 	public void setCurrentStatus(CurrentExecutionStatus currentStatus) {
-		this.currentStatus = currentStatus;
+		this.currentStatus = Optional.ofNullable(currentStatus);
 	}
 
 	public void setLastExecDateTimeEx(GeneralDateTime lastExecDateTimeEx) {
-		this.lastExecDateTimeEx = lastExecDateTimeEx;
+		this.lastExecDateTimeEx = Optional.ofNullable(lastExecDateTimeEx);
 	}
 
 	public void setErrorSystem(Boolean errorSystem) {
-		this.errorSystem = errorSystem;
+		this.errorSystem = Optional.ofNullable(errorSystem);
 	}
 
 	public void setErrorBusiness(Boolean errorBusiness) {
-		this.errorBusiness = errorBusiness;
+		this.errorBusiness = Optional.ofNullable(errorBusiness);
 	}
 	
 }
