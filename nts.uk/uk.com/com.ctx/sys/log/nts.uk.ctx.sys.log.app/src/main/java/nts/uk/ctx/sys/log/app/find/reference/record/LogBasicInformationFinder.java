@@ -170,51 +170,6 @@ public class LogBasicInformationFinder {
 						}
 					break;
 				case START_UP:
-					Map<String, String> mapProgramNames = webMenuAdapter.getWebMenuByCId(cid);
-					//step 起動記録を取得する
-					// get start page log
-					List<StartPageLog> startPageLogs = this.startPageLogRepository.findByScreenF(cid,
-							logParams.getListOperatorEmployeeId(), logParams.getStartDateOperator(),
-							logParams.getEndDateOperator());
-					if (!CollectionUtil.isEmpty(startPageLogs)) {
-						// Get list employee code
-						Map<String, String> mapEmployeeCodes = getEmployeeCodes(recordTypeEnum,null,null,null,null,startPageLogs);
-						List<LogBasicInfoDto> logBasicInfoDtoInter = startPageLogs.stream()
-								.map(startPageLog -> {
-									// Convert log basic info to DTO
-									LogBasicInformation logBasicInformation = startPageLog.getBasicInfo();
-									LogBasicInfoDto logBasicInfoDto = LogBasicInfoDto.fromDomain(logBasicInformation);
-									// Set user login name
-									UserInfo userDto = logBasicInformation.getUserInfo();
-		
-									String key = logBasicInformation.getTargetProgram().getProgramId()
-											+ logBasicInformation.getTargetProgram().getScreenId()
-											+ logBasicInformation.getTargetProgram().getQueryString();
-									logBasicInfoDto.setMenuName(mapProgramNames.get(key));
-									//CLI003: fix bug #109166, 109165
-									// Get employee code user login
-									if (userDto != null) {
-										logBasicInfoDto.setEmployeeCodeLogin(mapEmployeeCodes.get(userDto.getEmployeeId()) == null?"": mapEmployeeCodes.get(userDto.getEmployeeId()));
-									}else {
-										logBasicInfoDto.setEmployeeCodeLogin("");
-									}
-									// get user login name
-									logBasicInfoDto.setUserNameLogin(userDto.getUserName());
-									// logBasicInfoDto.setMenuName(programName);
-									logBasicInfoDto.setNote(
-											logBasicInformation.getNote().isPresent() ? logBasicInformation.getNote().get() : "");
-									return logBasicInfoDto;
-								})
-								.filter(log -> this.filterLogStartUp(log, logParams.getListCondition()))
-								//使用しないPGの起動記録を除く
-								.filter(item -> !logSettingStartProgramId.stream().anyMatch(a -> a.equals(item.getProgramId())))
-								.collect(Collectors.toList());
-						if(logBasicInfoDtoInter.size() > 1000) {
-							lstLogBacsicInfo.addAll(logBasicInfoDtoInter.subList(0, 1000));
-						} else {
-							lstLogBacsicInfo.addAll(logBasicInfoDtoInter);
-						}
-					}
 					break;
 				case UPDATE_PERSION_INFO:
 				{
@@ -439,6 +394,54 @@ public class LogBasicInformationFinder {
 					break;
 				default:
 					break;
+				}
+			}else{
+				if(recordTypeEnum.code == RecordTypeEnum.START_UP.code){
+					Map<String, String> mapProgramNames = webMenuAdapter.getWebMenuByCId(cid);
+					//step 起動記録を取得する
+					// get start page log
+					List<StartPageLog> startPageLogs = this.startPageLogRepository.findByScreenF(cid,
+							logParams.getListOperatorEmployeeId(), logParams.getStartDateOperator(),
+							logParams.getEndDateOperator());
+					if (!CollectionUtil.isEmpty(startPageLogs)) {
+						// Get list employee code
+						Map<String, String> mapEmployeeCodes = getEmployeeCodes(recordTypeEnum,null,null,null,null,startPageLogs);
+						List<LogBasicInfoDto> logBasicInfoDtoInter = startPageLogs.stream()
+								.map(startPageLog -> {
+									// Convert log basic info to DTO
+									LogBasicInformation logBasicInformation = startPageLog.getBasicInfo();
+									LogBasicInfoDto logBasicInfoDto = LogBasicInfoDto.fromDomain(logBasicInformation);
+									// Set user login name
+									UserInfo userDto = logBasicInformation.getUserInfo();
+		
+									String key = logBasicInformation.getTargetProgram().getProgramId()
+											+ logBasicInformation.getTargetProgram().getScreenId()
+											+ logBasicInformation.getTargetProgram().getQueryString();
+									logBasicInfoDto.setMenuName(mapProgramNames.get(key));
+									//CLI003: fix bug #109166, 109165
+									// Get employee code user login
+									if (userDto != null) {
+										logBasicInfoDto.setEmployeeCodeLogin(mapEmployeeCodes.get(userDto.getEmployeeId()) == null?"": mapEmployeeCodes.get(userDto.getEmployeeId()));
+									}else {
+										logBasicInfoDto.setEmployeeCodeLogin("");
+									}
+									// get user login name
+									logBasicInfoDto.setUserNameLogin(userDto.getUserName());
+									// logBasicInfoDto.setMenuName(programName);
+									logBasicInfoDto.setNote(
+											logBasicInformation.getNote().isPresent() ? logBasicInformation.getNote().get() : "");
+									return logBasicInfoDto;
+								})
+								.filter(log -> this.filterLogStartUp(log, logParams.getListCondition()))
+								//使用しないPGの起動記録を除く
+								.filter(item -> !logSettingStartProgramId.stream().anyMatch(a -> a.equals(item.getProgramId())))
+								.collect(Collectors.toList());
+						if(logBasicInfoDtoInter.size() > 1000) {
+							lstLogBacsicInfo.addAll(logBasicInfoDtoInter.subList(0, 1000));
+						} else {
+							lstLogBacsicInfo.addAll(logBasicInfoDtoInter);
+						}
+					}
 				}
 			}
 			return lstLogBacsicInfo;
