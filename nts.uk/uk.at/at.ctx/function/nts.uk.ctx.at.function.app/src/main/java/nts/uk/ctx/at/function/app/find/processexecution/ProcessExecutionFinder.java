@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionDto;
@@ -11,6 +13,7 @@ import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionRe
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ProcessExecutionFinder {
 
 	@Inject

@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.function.dom.processexecution.updateprocessreexeccondition.refinementprocess;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -15,7 +14,7 @@ import nts.uk.ctx.at.function.dom.adapter.AffWorkplaceHistoryImport;
 import nts.uk.ctx.at.function.dom.adapter.WorkplaceWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.dailyperformanceformat.businesstype.BusinessTypeEmpOfHistAdapter;
 import nts.uk.ctx.at.function.dom.adapter.dailyperformanceformat.businesstype.BusinessTypeOfEmpHistImport;
-import nts.uk.ctx.at.function.dom.processexecution.ProcessExecution;
+import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 
@@ -34,7 +33,7 @@ public class RefinementProcess {
 	@Inject
 	private BusinessTypeEmpOfHistAdapter businessTypeEmpOfHistAdapter;
 	
-	public void refinementProcess(String companyId, List<String> empIds,Set<String> setEmpIds,List<String> newEmpIdList, GeneralDate startDate, ProcessExecution procExec) {
+	public void refinementProcess(String companyId, List<String> empIds,Set<String> setEmpIds,List<String> newEmpIdList, GeneralDate startDate, UpdateProcessAutoExecution procExec) {
 		if (procExec.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTransfer()) {
 			// 異動者の絞り込み todo request list 189
 			List<AffWorkplaceHistoryImport> list = workplaceWorkRecordAdapter.getWorkplaceBySidsAndBaseDate(empIds,

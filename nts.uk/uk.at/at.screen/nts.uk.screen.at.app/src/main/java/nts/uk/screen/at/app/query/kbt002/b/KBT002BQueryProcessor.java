@@ -1,29 +1,36 @@
 package nts.uk.screen.at.app.query.kbt002.b;
 
-import java.util.Collections;
-import java.util.List;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
 import nts.uk.ctx.at.function.app.find.alarm.AlarmPatternSettingDto;
 import nts.uk.ctx.at.function.app.find.alarm.AlarmPatternSettingFinder;
 import nts.uk.ctx.at.function.app.find.indexreconstruction.IndexReorgCateDto;
 import nts.uk.ctx.at.function.app.find.indexreconstruction.IndexReorgCateFinder;
 import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.AnyAggrPeriodDto;
 import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodFinder;
+import nts.uk.ctx.sys.assist.app.find.autosetting.deletion.DataDeletionPatternSettingDto;
+import nts.uk.ctx.sys.assist.app.find.autosetting.storage.DataStoragePatternSettingDto;
+import nts.uk.ctx.sys.assist.dom.deletedata.DataDeletionPatternSettingRepository;
+import nts.uk.ctx.sys.assist.dom.storage.DataStoragePatternSettingRepository;
 import nts.uk.query.app.exi.condset.StdAcceptCondSetQueryFinder;
 import nts.uk.query.app.exi.condset.dto.StdAcceptCondSetDto;
 import nts.uk.query.app.exo.condset.StdOutputCondSetQueryFinder;
 import nts.uk.query.app.exo.condset.dto.StdOutputCondSetDto;
 import nts.uk.screen.at.app.query.kbt002.b.dto.MasterInfoDto;
+import nts.uk.shr.com.context.AppContexts;
+
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * The class KBT002B query processor.
- * 
+ *
  * @author nws-minhnb
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class KBT002BQueryProcessor {
 
 	/**
@@ -51,6 +58,18 @@ public class KBT002BQueryProcessor {
 	private StdAcceptCondSetQueryFinder acceptCondSetQueryFinder;
 
 	/**
+	 * The Data storage pattern setting repository.
+	 */
+	@Inject
+	private DataStoragePatternSettingRepository dataStoragePatternSetRepo;
+
+	/**
+	 * The Data deletion pattern setting repository.
+	 */
+	@Inject
+	private DataDeletionPatternSettingRepository dataDelPatternSetRepo;
+
+	/**
 	 * The Index reorganization category finder.
 	 */
 	@Inject
@@ -59,7 +78,7 @@ public class KBT002BQueryProcessor {
 	/**
 	 * Gets master info.<br>
 	 * UKDesign.UniversalK.就業.KBT_更新処理自動実行.KBT002_更新処理自動実行.B:実行設定.アルゴリズム.利用するマスタ情報を取得する.利用するマスタ情報を取得する
-	 * 
+	 *
 	 * @return the <code>MasterInfoDto</code>
 	 */
 	public MasterInfoDto getMasterInfo() {
@@ -75,11 +94,18 @@ public class KBT002BQueryProcessor {
 		// ドメインモデル「受入条件設定（定型）」を取得する
 		List<StdAcceptCondSetDto> stdAcceptCondSetList = this.acceptCondSetQueryFinder.getStdAcceptCondSetsByCompanyId();
 
-		// TODO ドメインモデル「データ保存のパターン設定」を取得する
-		List<?> dataStoragePatternSetList = Collections.emptyList();
+		// ドメインモデル「データ保存のパターン設定」を取得する
+		String contractCode = AppContexts.user().contractCode();
+		List<DataStoragePatternSettingDto> dataStoragePatternSetList = this.dataStoragePatternSetRepo.findByContractCd(contractCode)
+																									 .stream()
+																									 .map(DataStoragePatternSettingDto::createFromDomain)
+																									 .collect(Collectors.toList());
 
-		// TODO ドメインモデル「データ削除のパターン設定」を取得する
-		List<?> dataDelPatternSetList = Collections.emptyList();
+		// ドメインモデル「データ削除のパターン設定」を取得する
+		List<DataDeletionPatternSettingDto> dataDelPatternSetList = this.dataDelPatternSetRepo.findByContractCd(contractCode)
+																							  .stream()
+																							  .map(DataDeletionPatternSettingDto::createFromDomain)
+																							  .collect(Collectors.toList());
 
 		// ドメインモデル「インデックス再構成カテゴリ」を取得する
 		List<IndexReorgCateDto> indexReorgCateList = this.indexReorgCateFinder.getAllIndexReorgCates();

@@ -25,7 +25,7 @@ import nts.uk.ctx.at.function.dom.adapter.workrecord.workperfor.dailymonthlyproc
 import nts.uk.ctx.at.function.dom.adapter.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoImport;
 import nts.uk.ctx.at.function.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodInforAdapter;
 import nts.uk.ctx.at.function.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodInforImported;
-import nts.uk.ctx.at.function.dom.processexecution.ProcessExecution;
+import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.EndStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLog;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionTask;
@@ -87,8 +87,8 @@ public class UpdateLogAfterProcess {
 	 * @param errorMessage the error message
 	 */
 	public void updateLogAfterProcess(ProcessExecutionTask processExecutionTask, String companyId, String execItemCd,
-			ProcessExecution procExec, ProcessExecutionLog procExecLog, boolean isException, boolean isStopExec,
-			String errorMessage) {
+	                                  UpdateProcessAutoExecution procExec, ProcessExecutionLog procExecLog, boolean isException, boolean isStopExec,
+	                                  String errorMessage) {
 		// 就業担当者の社員ID（List）を取得する - RQ526
 //		List<String> listManagementId = employeeManageAdapter.getListEmpID(companyId, GeneralDate.today());
 

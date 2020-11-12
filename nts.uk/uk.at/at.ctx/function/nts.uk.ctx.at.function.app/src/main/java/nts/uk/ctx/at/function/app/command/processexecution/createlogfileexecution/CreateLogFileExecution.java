@@ -12,9 +12,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.function.dom.processexecution.ProcessExecution;
+import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
 import nts.uk.ctx.at.function.dom.processexecution.createlogfileexecution.CalTimeRangeDateTimeToString;
-import nts.uk.ctx.at.function.dom.processexecution.executionlog.EndStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogManage;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogManageRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionRepository;
@@ -43,7 +42,7 @@ public class CreateLogFileExecution {
 			return;
 		}
 		// ドメインモデル「更新処理自動実行」取得
-		Optional<ProcessExecution> optProcessExecution = processExecutionRepo
+		Optional<UpdateProcessAutoExecution> optProcessExecution = processExecutionRepo
 				.getProcessExecutionByCidAndExecCd(companyId, execItemCd);
 		String execItemName = "";
 		if (optProcessExecution.isPresent()) {

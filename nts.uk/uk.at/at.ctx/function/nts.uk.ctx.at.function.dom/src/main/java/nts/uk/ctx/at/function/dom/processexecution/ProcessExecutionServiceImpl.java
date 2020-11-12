@@ -97,10 +97,10 @@ public class ProcessExecutionServiceImpl implements ProcessExecutionService {
 	}
 
 	@Override
-	public boolean isPassAverageExecTimeExceeded(String companyId, ProcessExecution updateProcessAutoExec,
+	public boolean isPassAverageExecTimeExceeded(String companyId, UpdateProcessAutoExecution updateProcessAutoExec,
 			GeneralDateTime execStartDateTime) {
 		// 過去の実行平均時間を取得する
-		BigDecimal averageRunTime = this.getAverageRunTime(companyId, updateProcessAutoExec.getExecItemCd());
+		BigDecimal averageRunTime = this.getAverageRunTime(companyId, updateProcessAutoExec.getExecItemCode());
 		
 		// 現在の経過時間と取得した「実行平均時間」を比較する
 		BigDecimal currentRunTime = BigDecimal.valueOf(GeneralDateTime.now().seconds() - execStartDateTime.seconds());
