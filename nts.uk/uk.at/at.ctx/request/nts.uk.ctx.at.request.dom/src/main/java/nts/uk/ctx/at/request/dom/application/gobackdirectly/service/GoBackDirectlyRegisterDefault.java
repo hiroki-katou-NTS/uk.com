@@ -626,10 +626,8 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		// handle  直行直帰申請.勤務を変更する = しない (112366)
 		Boolean c1 = status == ApplicationStatus.DO_NOT_REFLECT;
 		Boolean c2 = false;
-		if (inforGoBackCommonDirectOutput.getGoBackDirectly().isPresent()) {
-			if (inforGoBackCommonDirectOutput.getGoBackDirectly().get().getIsChangedWork().isPresent()) {
-				c2 = inforGoBackCommonDirectOutput.getGoBackDirectly().get().getIsChangedWork().get() == NotUseAtr.NOT_USE;
-			}
+		if (goBackDirectly.getIsChangedWork().isPresent()) {
+			c2 = goBackDirectly.getIsChangedWork().get() == NotUseAtr.NOT_USE;
 		}
 		if (c1 || c2 ) {
 //			反映する
@@ -699,10 +697,8 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		// handle  直行直帰申請.勤務を変更する = しない (112366)
 		Boolean c1 = status == ApplicationStatus.DO_NOT_REFLECT;
 		Boolean c2 = false;
-		if (inforGoBackCommonDirectOutput.getGoBackDirectly().isPresent()) {
-			if (inforGoBackCommonDirectOutput.getGoBackDirectly().get().getIsChangedWork().isPresent()) {
-				c2 = inforGoBackCommonDirectOutput.getGoBackDirectly().get().getIsChangedWork().get() == NotUseAtr.NOT_USE;
-			}
+		if (goBackDirectly.getIsChangedWork().isPresent()) {
+			c2 = goBackDirectly.getIsChangedWork().get() == NotUseAtr.NOT_USE;
 		}
 		if (c1 || c2 ) {
 			AppDispInfoStartupOutput appDispInfoStartup = inforGoBackCommonDirectOutput.getAppDispInfoStartup();
