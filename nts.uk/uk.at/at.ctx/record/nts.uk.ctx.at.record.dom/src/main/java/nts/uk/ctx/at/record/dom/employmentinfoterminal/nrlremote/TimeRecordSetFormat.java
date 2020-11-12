@@ -10,9 +10,15 @@ import lombok.Getter;
 @Getter
 public class TimeRecordSetFormat {
 
+	// 大項目NO
+	private final MajorNoClassification majorNo;
+	
 	// 大項目名称
 	private final MajorNameClassification majorClassification;
 
+	// 小項目NO
+	private final MajorNoClassification smallNo;
+		
 	// 小項目名称
 	private final MajorNameClassification smallClassification;
 
@@ -38,7 +44,9 @@ public class TimeRecordSetFormat {
 	private final SettingValue currentValue;
 
 	public TimeRecordSetFormat(TimeRecordSetFormatBuilder builder) {
+		this.majorNo = builder.getMajorNo();
 		this.majorClassification = builder.getMajorClassification();
+		this.smallNo = builder.getSmallNo();
 		this.smallClassification = builder.getSmallClassification();
 		this.variableName = builder.getVariableName();
 		this.type = builder.getType();
@@ -52,10 +60,16 @@ public class TimeRecordSetFormat {
 
 	@Getter
 	public static class TimeRecordSetFormatBuilder {
-
+		
+		// 大項目NO
+		private  MajorNoClassification majorNo;
+		
 		// 大項目名称
 		private MajorNameClassification majorClassification;
 
+		// 小項目NO
+		private MajorNoClassification smallNo;
+		
 		// 小項目名称
 		private MajorNameClassification smallClassification;
 
@@ -105,6 +119,16 @@ public class TimeRecordSetFormat {
 			return this;
 		}
 
+		public TimeRecordSetFormatBuilder majorNo(MajorNoClassification majorNo) {
+			this.majorNo = majorNo;
+			return this;
+		}
+		
+		public TimeRecordSetFormatBuilder smallNo(MajorNoClassification smallNo) {
+			this.smallNo = smallNo;
+			return this;
+		}
+		
 		public TimeRecordSetFormatBuilder value(SettingValue currentValue) {
 			this.currentValue = currentValue;
 			return this;

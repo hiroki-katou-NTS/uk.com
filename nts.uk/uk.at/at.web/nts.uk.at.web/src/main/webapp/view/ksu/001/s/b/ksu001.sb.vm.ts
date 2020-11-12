@@ -7,39 +7,22 @@ module nts.uk.at.view.ksu001.s.sb {
             lstEmp: KnockoutObservable<any> = ko.observable(nts.uk.ui.windows.getShared('KSU001SB')).lstEmp;
             date: KnockoutObservable<any> = ko.observable(nts.uk.ui.windows.getShared('KSU001SB')).date;
             selectedEmployeeSwap: KnockoutObservable<any> = ko.observable(nts.uk.ui.windows.getShared('KSU001SB')).selectedEmployeeSwap;
-
+            empCodeName: KnockoutObservable<any>
             items: KnockoutObservableArray<ItemModel>;
             currentCode: KnockoutObservable<any>;
+            columns2: KnockoutObservableArray<any>;
+            
             constructor() {
-                var self = this;
                 this.items = ko.observableArray([]);
-
-
-                this.items.push(new ItemModel('000001 大塚　太郎B１', '000001 大塚　太郎B１', " H ", " D ", " 看護師 ", "営業残業(9:00-）", "分類３"));
-                this.items.push(new ItemModel('000002 大塚　次郎２', '000002 大塚　次郎２', " ", " ", "", "Iﾜｰｸ(8:45-17:15） ", "分類1"));
-                this.items.push(new ItemModel('000003 大塚　花子３', '000003 大塚　花子３', " H ", " D ", "", "職位２", "職位1"));
-                this.items.push(new ItemModel('000004 000004', '000004 000004', " ", " ", " 看護師 ", "営業残業(9:00-） ", "職位1"));
-                this.items.push(new ItemModel('000005 000005', '000005 000005', " ", " ", " ", "職位２", "職位1"));
-                
-
-                this.columns2 = ko.observableArray([
-                    { headerText: 'コード', key: 'code', width: 100, hidden: true },
-                    { headerText: 'コード／名称', key: 'name', width: 300 },
-                    { headerText: 'チーム', key: 'description', width: 50 },
-                    { headerText: 'ランク', key: 'other1', width: 50 },
-                    { headerText: '看護区分', key: 'other2', width: 100 },
-                    { headerText: '職位', key: 'other3', width: 300, width: 100 },
-                    { headerText: '分類', key: 'other4', width: 300, width: 70 }
-
-                ]);
                 this.currentCode = ko.observable();
-
+                this.columns2 = ko.observableArray([]);
+                this.empCodeName =  ko.observable();
             }
 
             public startPage(): JQueryPromise<any> {
                 let self = this,
                     dataShare = nts.uk.ui.windows.getShared('KSU001SB');
-
+            
                 let dfd = $.Deferred();
 
                 let param = {
@@ -50,12 +33,59 @@ module nts.uk.at.view.ksu001.s.sb {
 
                 service.getData(param).done(function(data: any) {
                     console.log(data);
+                    let key1, key2, key3, key4, key5;
+                    key1 = self.createKey(data.lstOrderColumn[0].sortName);
+                    key2 = self.createKey(data.lstOrderColumn[1].sortName);
+                    key3 = self.createKey(data.lstOrderColumn[2].sortName);
+                    key4 = self.createKey(data.lstOrderColumn[3].sortName);
+                    key5 = self.createKey(data.lstOrderColumn[4].sortName);
+                    
+                    
+                        
+                    self.columns2 = ko.observableArray([
+                        { headerText: 'コード', key: 'code', width: 100, hidden: true },
+                        { headerText: 'コード／名称', key: 'name', width: 230 },
+                        { headerText: data.lstOrderColumn[0].sortName, key: key1, width: 100 },
+                        { headerText: data.lstOrderColumn[1].sortName, key: key2, width: 100 },
+                        { headerText: data.lstOrderColumn[2].sortName, key: key3, width: 100 },
+                        { headerText: data.lstOrderColumn[3].sortName, key: key4, width: 100 },
+                        { headerText: data.lstOrderColumn[4].sortName, key: key5, width: 100 }
+                    ]);
+                    _.forEach(data.lstEmpId, function(item) {
+                        let lstEmpInforATR = _.find(data.lstEmpInforATR, function(o) { return o.empID == item; });
+                        let lstEmpTeamInforDto = _.find(data.lstEmpTeamInforDto, function(o) { return o.employeeID == item; });
+                        let lstEmpRankInforDto = _.find(data.lstEmpRankInforDto, function(o) { return o.empId == item; });
+                        let lstEmpLicenseClassificationDto = _.find(data.lstEmpLicenseClassificationDto, function(o) { return o.empID == item; });
+                        let lstEmpBase = _.find(data.lstEmpBase, function(o) { return o.empId == item; });
+                    
+                        
+                        self.items.push(new ItemModel(lstEmpInforATR.empID, lstEmpBase.empCode.concat(lstEmpBase.empName) , lstEmpTeamInforDto.scheduleTeamName, lstEmpRankInforDto.rankName,
+                            lstEmpLicenseClassificationDto.licenseClassification,
+                            lstEmpInforATR.positionName,
+                            lstEmpInforATR.classificationName));
+                    });
+                    dfd.resolve();
                 });
 
-                dfd.resolve();
                 return dfd.promise();
             }
 
+            createKey(sortName: string): string {
+                let key = "";
+                
+                    if(sortName == nts.uk.resource.getText('KSU001_4048')){
+                        key = 'description';
+                        }else if(sortName == nts.uk.resource.getText('KSU001_4049')){
+                        key = 'other1';
+                        }else if(sortName == nts.uk.resource.getText('KSU001_4050')){
+                        key = 'other2';
+                        }else if(sortName == nts.uk.resource.getText('Com_Jobtitle')){
+                        key = 'other3';
+                        }else if(sortName == nts.uk.resource.getText('Com_Class')){
+                        key = 'other4';
+                        }
+                return key;
+            }
             cancel_Dialog(): any {
                 let self = this;
                 nts.uk.ui.windows.close();

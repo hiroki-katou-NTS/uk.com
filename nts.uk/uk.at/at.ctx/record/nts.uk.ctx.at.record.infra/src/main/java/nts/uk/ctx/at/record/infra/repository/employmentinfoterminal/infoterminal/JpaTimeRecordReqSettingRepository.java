@@ -20,6 +20,8 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTermi
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TimeRecordReqSetting;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo.TimeRecordReqSettingRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
+import nts.uk.ctx.at.record.infra.entity.employmentinfoterminal.infoterminal.KrcmtTrRequest;
+import nts.uk.ctx.at.record.infra.entity.employmentinfoterminal.infoterminal.KrcmtTrRequestPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -77,7 +79,7 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 			TimeRecordReqSetting req = new TimeRecordReqSetting.ReqSettingBuilder(
 					new EmpInfoTerminalCode(rs.getInt("TIMERECORDER_CD")),
 					new ContractCode(rs.getString("CONTRACT_CD")), new CompanyId(rs.getString("CID")),
-					String.valueOf(rs.getInt("COMPANY_CD")),
+					String.valueOf(rs.getString("COMPANY_CD")),
 					rs.getString("EMPLOYEE") == null ? Collections.emptyList()
 							: Arrays.asList(new EmployeeId(rs.getString("EMPLOYEE"))),
 					rs.getString("RESERVE_FRAME_NO") == null ? null
@@ -91,7 +93,13 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 									.stampReceive(rs.getInt("RECV_ALL_STAMP") == 1)
 									.reservationReceive(rs.getInt("RECV_ALL_RESERVATION") == 1)
 									.applicationReceive(rs.getInt("RECV_ALL_APPLICATION") == 1)
-									.timeSetting(rs.getInt("SEND_SERVERTIME") == 1).build();
+									.timeSetting(rs.getInt("SEND_SERVERTIME") == 1)
+									.sendEmployeeId(rs.getInt("SEND_SID") == 1)
+									.sendBentoMenu(rs.getInt("SEND_RESERVATION") == 1)
+									.sendWorkType(rs.getInt("SEND_WORKTYPE") == 1)
+									.sendWorkTime(rs.getInt("SEND_WORKTIME") == 1)
+									.remoteSetting(rs.getInt("REMOTE_SETTING") == 1).reboot(rs.getInt("REBOOT") == 1)
+									.build();
 			listFullData.add(req);
 		}
 
@@ -118,4 +126,19 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 								.build());
 	}
 
+	@Override
+	public void updateSetting(TimeRecordReqSetting setting) {
+		this.commandProxy().update(toEntity(setting));
+	}
+
+	private KrcmtTrRequest toEntity(TimeRecordReqSetting setting) {
+
+		return new KrcmtTrRequest(new KrcmtTrRequestPK(setting.getContractCode().v(), setting.getTerminalCode().v()),
+				setting.getCompanyId().v(), setting.getCompanyCode(), setting.isOverTimeHoliday() ? 1 : 0,
+				setting.isApplicationReason() ? 1 : 0, setting.isTimeSetting() ? 1 : 0,
+				setting.isSendEmployeeId() ? 1 : 0, setting.isSendBentoMenu() ? 1 : 0, setting.isSendWorkType() ? 1 : 0,
+				setting.isSendWorkTime() ? 1 : 0, setting.isStampReceive() ? 1 : 0,
+				setting.isReservationReceive() ? 1 : 0, setting.isApplicationReceive() ? 1 : 0,
+				setting.isRemoteSetting() ? 1 : 0, setting.isReboot() ? 1 : 0);
+	}
 }

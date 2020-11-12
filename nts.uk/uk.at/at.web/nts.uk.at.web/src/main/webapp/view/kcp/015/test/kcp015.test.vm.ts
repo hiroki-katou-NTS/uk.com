@@ -119,6 +119,11 @@ module nts.uk.at.view.kcp015.test {
                     baseDate   : self.baseDate()
                 });
                 
+                if(self.listEmp().length == 0){
+                    nts.uk.ui.dialog.alert("please select employee");
+                    return;
+                }
+                    
                 nts.uk.ui.windows.sub.modal("/view/kcp/015/component/index.xhtml").onClosed(() => {});
             }
         }

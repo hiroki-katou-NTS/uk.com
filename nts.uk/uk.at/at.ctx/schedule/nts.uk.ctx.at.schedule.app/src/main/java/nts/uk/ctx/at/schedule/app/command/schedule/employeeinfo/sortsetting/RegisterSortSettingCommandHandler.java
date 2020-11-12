@@ -15,7 +15,6 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.schedule.app.find.schedule.employeeinfo.sortsetting.OrderListDto;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.OrderedList;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.SortOrder;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.SortSetting;
@@ -34,7 +33,7 @@ public class RegisterSortSettingCommandHandler extends CommandHandler<RegisterSo
 	protected void handle(CommandHandlerContext<RegisterSortSettingCommand> context) {
 		String companyId = AppContexts.user().companyId();
 		RegisterSortSettingCommand command = context.getCommand();
-		List<OrderListDto> data = command.getLstOrderListDto();
+		List<OrderListDto2> data = command.getLstOrderListDto();
 		// 1:get 並び替え優先順
 		Optional<SortSetting> optSortSetting = repo.get(companyId);
 		List<OrderedList> lstOrderList = data.stream()
