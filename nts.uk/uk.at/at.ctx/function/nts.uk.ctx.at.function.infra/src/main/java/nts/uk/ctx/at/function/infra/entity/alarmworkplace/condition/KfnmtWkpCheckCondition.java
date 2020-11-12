@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KFNMT_WKPCHECK_CONDITION")
+@Table(name = "KFNMT_WRKPCHECK_CONDITION")
 public class KfnmtWkpCheckCondition extends UkJpaEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
