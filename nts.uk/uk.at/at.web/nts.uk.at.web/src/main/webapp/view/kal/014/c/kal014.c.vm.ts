@@ -8,42 +8,48 @@ module nts.uk.at.kal014.c {
     @bean()
     export class Kal014CViewModel extends ko.ViewModel {
         modalDTO: ModalDto = new ModalDto();
-        isStartDateEnable: KnockoutObservable<boolean>;
-        isEndDateEnable: KnockoutObservable<boolean>;
         strComboMonth: KnockoutObservableArray<any>;
         endComboMonth: KnockoutObservableArray<any>;
         classifications: KnockoutObservableArray<any>;
-        classificationVal: KnockoutObservable<any>;
         strComboDay: KnockoutObservableArray<any>;
         endComboDay: KnockoutObservableArray<any>;
+        strSelected: KnockoutObservable<number>;
+        endSelected: KnockoutObservable<number>;
         workPalceCategory: any;
+        CLASSIFICATION: any;
+        dateSpecify: KnockoutObservableArray<any>;
+        monthSpecify: KnockoutObservableArray<any>;
 
         constructor(props: any) {
             super();
             const vm = this;
             vm.workPalceCategory = common.WORKPLACE_CATAGORY;
+            vm.CLASSIFICATION = common.CLASSIFICATION;
             let modalData = nts.uk.ui.windows.getShared("KAL014CModalData");
             console.log(modalData);
             vm.initModalData(modalData);
-            vm.isStartDateEnable = ko.observable(vm.checkStartDateISEnable());
-            vm.isEndDateEnable = ko.observable(vm.checkEndDateISEnable());
             vm.strComboMonth = ko.observableArray(__viewContext.enums.SpecifiedMonth);
             vm.endComboMonth = ko.observableArray(__viewContext.enums.SpecifiedMonth);
             vm.strComboDay = ko.observableArray(__viewContext.enums.PreviousClassification);
             vm.endComboDay = ko.observableArray(__viewContext.enums.PreviousClassification);
             vm.classifications = ko.observableArray([
-                new BoxModel(1, '')
+                new BoxModel(0, '')
             ]);
-            vm.classificationVal = ko.observable(1);
+            vm.strSelected = ko.observable(0);
+            vm.endSelected = ko.observable(0);
+            vm.dateSpecify = ko.observableArray([
+                {value: 0, name: vm.$i18n("KAL014_44")},
+                {value: 1, name: ""}
+            ]);
+            vm.monthSpecify = ko.observableArray([
+                {value: 0, name: vm.$i18n("KAL014_49")},
+                {value: 1, name: ""}
+            ]);
         }
 
         created() {
             const vm = this;
             _.extend(window, {vm});
-        }
-
-        mounted() {
-
         }
 
         /**
@@ -62,26 +68,6 @@ module nts.uk.at.kal014.c {
             vm.modalDTO.numberOfDayFromEnd(modalData.numberOfDayFromEnd);
             vm.modalDTO.beforeAndAfterStart(modalData.beforeAndAfterStart);
             vm.modalDTO.beforeAndAfterEnd(modalData.beforeAndAfterEnd);
-        }
-
-        /**
-         * This function is responsible to check start month disable enable check
-         *
-         * @return boolean
-         **/
-        checkStartDateISEnable(): boolean {
-            const vm = this;
-            return vm.modalDTO.categoryId() === vm.workPalceCategory.SCHEDULE_DAILY;
-        }
-
-        /**
-         * This function is responsible to check end month disable enable check
-         *
-         * @return boolean
-         **/
-        checkEndDateISEnable(): boolean {
-            const vm = this;
-            return vm.modalDTO.categoryId() === vm.workPalceCategory.SCHEDULE_DAILY;
         }
 
         /**
@@ -120,14 +106,15 @@ module nts.uk.at.kal014.c {
                     beforeAndAfterStart: vm.modalDTO.beforeAndAfterStart(),
                     beforeAndAfterEnd: vm.modalDTO.beforeAndAfterEnd(),
                 }
-                nts.uk.ui.windows.setShared("KAL014CModalData", shareData);
-                console.log("shareData:", nts.uk.ui.windows.getShared("KAL014CModalData"));
-                vm.cancel_Dialog();
+                vm.$window.storage("KAL014CModalData", shareData).done(() => {
+                    console.log("shareData:", nts.uk.ui.windows.getShared("KAL014CModalData"));
+                    vm.cancel_Dialog();
+                });
             }
         }
 
         /**
-         * This function is responsible to error validation check
+         * This function is responsible to error validation check[補足資料２]
          *
          * @return type void               *
          * */
@@ -135,8 +122,10 @@ module nts.uk.at.kal014.c {
             var vm = this;
             let mockStartCategory = "Same day";
             let mockEndCategory = "Closing end date";
-            //TODO mockStartCategory mockEndCategory ->master data
-            if (vm.modalDTO.categoryId() === vm.workPalceCategory.SCHEDULE_DAILY || vm.modalDTO.categoryId() === vm.workPalceCategory.APPLICATION_APPROVAL) {
+            //TODO mockStartCategory ,mockEndCategory ->master data
+            if (vm.modalDTO.categoryId() === vm.workPalceCategory.SCHEDULE_DAILY ||
+                vm.modalDTO.categoryId() === vm.workPalceCategory.APPLICATION_APPROVAL ||
+                vm.modalDTO.categoryId() === vm.workPalceCategory.MASTER_CHECK_DAILY) {
                 /*
                 * (a）開始区分＝「当日」　AND　終了区分＝「当日」
                 * TODO [Same day] will be change with data master data.
@@ -145,34 +134,27 @@ module nts.uk.at.kal014.c {
                 if (mockStartCategory === 'Same day' && mockEndCategory === 'Same day') {
                     /**
                      * ①開始の前後区分＝「後」　AND　終了の前後区分＝「前」
-                     *TODO ['after' and 'before' will be change the master data]
                      */
-                    if (vm.modalDTO.beforeAndAfterStart === 'after' && vm.modalDTO.beforeAndAfterEnd === 'before') {
-                        nts.uk.ui.dialog.alertError({messageId: "Msg_812"});
-                        return false;
+                    if (vm.modalDTO.beforeAndAfterStart === vm.CLASSIFICATION.AHEAD && vm.modalDTO.beforeAndAfterEnd === vm.CLASSIFICATION.BEFORE) {
+                        vm.$dialog.error({messageId: "Msg_812"}).then(() => {
+                            return false;
+                        });
                     }
                     /**
                      * ②開始の前後区分＝「前」　AND　終了の前後区分＝「前」 　AND　開始の日数　＜　終了の日数
-                     * TODO ['after' and 'before' will be change the master data]
                      */
-                    else if ((vm.modalDTO.beforeAndAfterStart === 'before' && vm.modalDTO.beforeAndAfterEnd === 'after') && (vm.modalDTO.numberOfDayFromStart < vm.modalDTO.numberOfDayFromEnd)) {
-                        nts.uk.ui.dialog.alertError({messageId: "Msg_812"});
-                        return false;
+                    else if ((vm.modalDTO.beforeAndAfterStart === vm.CLASSIFICATION.BEFORE && vm.modalDTO.beforeAndAfterEnd === vm.CLASSIFICATION.BEFORE) && (vm.modalDTO.numberOfDayFromStart < vm.modalDTO.numberOfDayFromEnd)) {
+                        vm.$dialog.error({messageId: "Msg_812"}).then(() => {
+                            return false;
+                        });
                     }
                     /**
                      * ③開始の前後区分＝「後」　AND　終了の前後区分＝「後」
-                     * TODO ['after' and 'before' will be change the master data]
                      */
-                    else if ((vm.modalDTO.beforeAndAfterStart === 'after' && vm.modalDTO.beforeAndAfterEnd === 'before') && (vm.modalDTO.numberOfDayFromStart > vm.modalDTO.numberOfDayFromEnd)) {
-                        nts.uk.ui.dialog.alertError({messageId: "Msg_812"});
-                        return false;
-                    }
-                    /**
-                     * ③開始の前後区分＝「後」　AND　終了の前後区分＝「後」
-                     * TODO ['after' and 'before' will be change the master data]
-                     */
-                    else if (vm.modalDTO.beforeAndAfterStart === 'before' && vm.modalDTO.beforeAndAfterEnd === 'after') {
-                        return false;
+                    else if ((vm.modalDTO.beforeAndAfterStart === vm.CLASSIFICATION.AHEAD && vm.modalDTO.beforeAndAfterEnd === vm.CLASSIFICATION.AHEAD) && (vm.modalDTO.numberOfDayFromStart > vm.modalDTO.numberOfDayFromEnd)) {
+                        vm.$dialog.error({messageId: "Msg_812"}).then(() => {
+                            return false;
+                        });
                     } else {
                         return true;
                     }
@@ -183,8 +165,9 @@ module nts.uk.at.kal014.c {
                  * TODO ['Same day' and 'Closing end date' will be change to the master data]
                  */
                 else if ((mockStartCategory === "Same day" && mockEndCategory === "Closing end date") && vm.modalDTO.endMonth() === 0) {
-                    nts.uk.ui.dialog.alertError({messageId: "Msg_813"});
-                    return false;
+                    vm.$dialog.error({messageId: "Msg_813"}).then(() => {
+                        return false;
+                    });
                 }
                 /**
                  * (c）開始区分＝「締め開始日」　AND　終了区分＝「締め終了日」
@@ -192,16 +175,18 @@ module nts.uk.at.kal014.c {
                  * TODO ['closing start date' and 'Closing end date' will be change to the master data]
                  */
                 else if ((mockStartCategory === "closing start date" && mockEndCategory === "Closing end date") && vm.modalDTO.startMonth() > vm.modalDTO.endMonth) {
-                    nts.uk.ui.dialog.alertError({messageId: "Msg_812"});
-                    return false;
+                    vm.$dialog.error({messageId: "Msg_812"}).then(() => {
+                        return false;
+                    });
                 } else {
                     return true;
                 }
             }
             /*5	月次		(a)	開始月　<　終了月*/
             else if (vm.modalDTO.categoryId() === vm.workPalceCategory.MONTHLY && vm.modalDTO.startMonth() < vm.modalDTO.endMonth) {
-                nts.uk.ui.dialog.alertError({messageId: "Msg_812"});
-                return false;
+                vm.$dialog.error({messageId: "Msg_812"}).then(() => {
+                    return false;
+                });
             } else {
                 return true;
             }

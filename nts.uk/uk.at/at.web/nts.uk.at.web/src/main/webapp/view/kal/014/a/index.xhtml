@@ -28,7 +28,7 @@
             <button id="A1_3" tabindex="3" class="proceed"
                     data-bind="click:clickRegister, enable: $root.errors.isEmpty">#{i18n.getText('KAL014_10')}</button>
             <!--A1_4-->
-            <button id="A1_4"  tabindex="4" class="danger"
+            <button id="A1_4" tabindex="4" class="danger"
                     data-bind="click:clickDeleteButton, enable :isNewMode()?false:true">#{i18n.getText('KAL014_10')}</button>
         </div>
         <div id="contents-area">
@@ -98,26 +98,34 @@
                         </div>
                         <!-- A4_3 -->
                         <div class="tab-content-2">
-                            <div class="tableWrap">
+                            <div class="">
                                 <!-- A6_1 -->
-                                <table>
+                                <table id="fixed-table">
+                                    <colgroup>
+                                        <col width="240px"/>
+                                        <col width="500px"/>
+                                        <col width="90px"/>
+                                    </colgroup>
                                     <thead>
-                                        <tr><!-- A6_2 -->
-                                            <th style="width: 20%;">#{i18n.getText('KAL014_22')}</th>
-                                            <!-- A6_3 -->
-                                            <th style="width: 70%">#{i18n.getText('KAL014_27')}</th>
-                                            <th style="width: 10%"></th>
-                                        </tr>
+                                    <tr><!-- A6_2 -->
+                                        <th class="ui-widget-header">#{i18n.getText('KAL014_22')}</th>
+                                        <!-- A6_3 -->
+                                        <th class="ui-widget-header">#{i18n.getText('KAL014_27')}</th>
+                                        <th class="ui-widget-header"></th>
+                                    </tr>
                                     </thead>
                                     <tbody data-bind="foreach: tableItems">
-                                        <tr>
-                                            <!-- A6_4 -->
-                                            <td><span class="label" data-bind="text:categoryName"></span></td>
-                                            <!-- A6_5 -->
-                                            <td><span class="label" data-bind="text:extractionPeriod"></span></td>
-                                            <!-- A6_6 -->
-                                            <td><button tabindex="11" data-bind="click: function() {vm.clickTableItem($data)}">#{i18n.getText('KAL014_28')}</button></td>
-                                        </tr>
+                                    <tr>
+                                        <!-- A6_4 -->
+                                        <td><span class="label" data-bind="text:categoryName"></span></td>
+                                        <!-- A6_5 -->
+                                        <td><span class="label" data-bind="text:extractionPeriod"></span></td>
+                                        <!-- A6_6 -->
+                                        <td>
+                                            <button tabindex="11"
+                                                    data-bind="click: function() {vm.clickTableItem($data)}">#{i18n.getText('KAL014_28')}</button>
+                                        </td>
+                                    </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -153,7 +161,8 @@
                                 </div>
                                 <div class="cell valign-center">
                                     <!-- A8_3 -->
-                                    <button tabindex="13" style="margin-left: 15px;" data-bind="click:clickConfiguration">#{i18n.getText('KAL014_33')}</button>
+                                    <button tabindex="13" style="margin-left: 15px;"
+                                            data-bind="click:clickConfiguration">#{i18n.getText('KAL014_33')}</button>
                                 </div>
                             </div>
                         </div>

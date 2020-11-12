@@ -1,4 +1,4 @@
-module nts.uk.at.kal014.common{
+module nts.uk.at.kal014.common {
 
     // define WORKPLACE CATAGORY
     export enum WORKPLACE_CATAGORY {
@@ -14,5 +14,13 @@ module nts.uk.at.kal014.common{
         MONTHLY = <number> 4,
         // 申請承認
         APPLICATION_APPROVAL = <number> 5
+    }
+
+    // define CLASSIFICATION
+    export enum CLASSIFICATION {
+        // 前
+        BEFORE = <number> 0,
+        // 先
+        AHEAD = <number> 1
     }
 }
