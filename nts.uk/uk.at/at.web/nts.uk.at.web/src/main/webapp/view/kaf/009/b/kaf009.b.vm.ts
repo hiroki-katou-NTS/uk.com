@@ -241,7 +241,7 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
                 }).done(result => {
                     if (result != undefined) {
                         vm.$dialog.info( { messageId: "Msg_15" } ).then(() => {
-                            vm.reload();
+                        	ko.contextFor($('#contents-area')[0]).$vm.loadData();
                         });
                     }
                 }).fail(err => {
@@ -296,7 +296,7 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
             }
             vm.$dialog.error(param).then(res => {
                 if (err.messageId == 'Msg_197') {
-                    vm.reload();
+                	ko.contextFor($('#contents-area')[0]).$vm.loadData();
                 }
             });
         }
