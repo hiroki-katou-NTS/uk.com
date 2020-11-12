@@ -539,4 +539,9 @@ public class WorkType extends AggregateRoot implements Cloneable, Serializable{
 	public void setWorkTypeCode(WorkTypeCode workTypeCode) {
 		this.workTypeCode = workTypeCode;
 	}
+
+
+	public void setDailyWork(DailyWork dailyWork) {
+		this.dailyWork = dailyWork;
+	}
 }
