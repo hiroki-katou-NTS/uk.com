@@ -3,10 +3,13 @@ package nts.uk.ctx.at.request.app.find.application.optitem;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.request.app.command.application.optionalitem.OptionalItemApplicationCommand;
 import nts.uk.ctx.at.request.app.find.application.optitem.optitemdto.*;
+import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.optionalitemappsetting.OptionalItemAppSetDto;
+import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.optionalitemappsetting.OptionalItemAppSetFinder;
 import nts.uk.ctx.at.request.dom.adapter.OptionalItemAdapter;
 import nts.uk.ctx.at.request.dom.adapter.OptionalItemImport;
 import nts.uk.ctx.at.request.dom.application.optional.OptionalItemApplication;
 import nts.uk.ctx.at.request.dom.application.optional.OptionalItemApplicationRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.optionalitemappsetting.OptionalItemApplicationTypeCode;
 import nts.uk.ctx.at.shared.app.find.scherec.dailyattendanceitem.ControlOfAttendanceItemsDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.ControlOfAttendanceItems;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.TimeInputUnit;
@@ -45,6 +48,9 @@ public class OptionalItemApplicationQuery {
     @Inject
     private OptionalItemRepository optionalItemRepository;
 
+    @Inject
+    private OptionalItemAppSetFinder optionalItemAppSetFinder;
+
 
     public List<ControlOfAttendanceItemsDto> findControlOfAttendance(List<Integer> optionalItemNos) {
         String cid = AppContexts.user().companyId();
@@ -58,12 +64,15 @@ public class OptionalItemApplicationQuery {
         OptionalItemApplicationDetail detail = new OptionalItemApplicationDetail();
         Optional<OptionalItemApplication> byAppId = this.repository.getByAppId(cid, applicationId);
         OptionalItemApplication domain = byAppId.get();
+        String settingCode = domain.getCode().v();
+        OptionalItemAppSetDto setting = optionalItemAppSetFinder.findByCode(new OptionalItemApplicationTypeCode(settingCode).v());
         List<Integer> optionalItemNos = domain.getOptionalItems().stream().map(item -> item.getItemNo().v()).collect(Collectors.toList());
         List<Integer> daiLyList = optionalItemNos.stream().map(no -> no - 640).collect(Collectors.toList());
         List<OptionalItemImport> optionalItems = optionalItemAdapter.findOptionalItem(cid, daiLyList);
         List<ControlOfAttendanceItems> controlOfAttendanceItems = controlOfAttendanceItemsRepository.getByItemDailyList(cid, optionalItemNos);
         detail.setControlOfAttendanceItems(controlOfAttendanceItems.stream().map(ControlOfAttendanceItemsDto::fromDomain).collect(Collectors.toList()));
         detail.setApplication(OptionalItemApplicationDto.fromDomain(domain));
+        detail.getApplication().setName(setting.getName());
         detail.setOptionalItems(optionalItems.stream().map(item ->
                 {
                     CalcResultRangeDto calcResultRangeDto = new CalcResultRangeDto();

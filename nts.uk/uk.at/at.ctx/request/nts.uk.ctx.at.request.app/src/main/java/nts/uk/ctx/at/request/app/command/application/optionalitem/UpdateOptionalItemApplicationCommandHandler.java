@@ -23,7 +23,6 @@ import javax.inject.Inject;
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class UpdateOptionalItemApplicationCommandHandler extends CommandHandlerWithResult<UpdateOptionalItemApplicationCommand, ProcessResult> {
 
-
     @Inject
     private OptionalItemApplicationQuery optionalItemApplicationQuery;
 
@@ -60,12 +59,12 @@ public class UpdateOptionalItemApplicationCommandHandler extends CommandHandlerW
          */
         this.detailBeforeUpdate.exclusiveCheck(cid, application.getAppID(), application.getVersion());
         /**
-        * 更新時チェック処理
-        */
+         * 更新時チェック処理
+         */
         this.optionalItemApplicationQuery.checkBeforeUpdate(command.getOptItemAppCommand());
         OptionalItemApplication optionalItemApplication = command.getOptItemAppCommand().toDomain();
         optionalItemApplication.setAppID(application.getAppID());
-        this.optionalItemApplicationRepository.update(optionalItemApplication);
+        this.optionalItemApplicationRepository.update(optionalItemApplication, application);
         return this.detailAfterUpdate.processAfterDetailScreenRegistration(cid, application.getAppID(), appDispInfoStartupOutput);
     }
 }

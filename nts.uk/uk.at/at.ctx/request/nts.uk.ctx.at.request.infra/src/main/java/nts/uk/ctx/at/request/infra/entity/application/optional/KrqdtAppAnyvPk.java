@@ -17,11 +17,11 @@ public class KrqdtAppAnyvPk {
 
     @Basic
     @Column(name = "CID")
-    public String companyId;
+    public String companyID;
 
     @Basic
     @Column(name = "APP_ID")
-    public String appId;
+    public String appID;
 
     @Basic
     @Column(name = "ANYV_CD")

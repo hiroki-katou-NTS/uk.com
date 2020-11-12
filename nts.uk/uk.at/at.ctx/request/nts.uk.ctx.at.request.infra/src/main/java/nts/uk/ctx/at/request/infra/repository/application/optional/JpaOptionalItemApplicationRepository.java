@@ -5,10 +5,12 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.optional.OptionalItemApplication;
 import nts.uk.ctx.at.request.dom.application.optional.OptionalItemApplicationRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.optionalitemappsetting.OptionalItemApplicationTypeCode;
+import nts.uk.ctx.at.request.infra.entity.application.KrqdtApplication;
 import nts.uk.ctx.at.request.infra.entity.application.optional.KrqdtAppAnyv;
 import nts.uk.ctx.at.request.infra.entity.application.optional.KrqdtAppAnyvPk;
 import nts.uk.ctx.at.shared.dom.scherec.anyitem.AnyItemNo;
@@ -31,8 +33,11 @@ public class JpaOptionalItemApplicationRepository extends JpaRepository implemen
             + "FROM KRQDT_APP_ANYV as a INNER JOIN KRQDT_APPLICATION as b ON a.APP_ID = b.APP_ID"
             + " WHERE a.APP_ID = @appID AND a.CID = @companyId ORDER BY a.ANYV_NO ASC";
 
-    private static final String FIND_ENTITY = "SELECT a FROM KrqdtAppAnyv a where a.KrqdtAppAnyvPk.companyId = :cid" +
-            " and a.KrqdtAppAnyvPk.appId = :appId";
+    private static final String FIND_OPTIONAL_ITEM_ENTITY = "SELECT a FROM KrqdtAppAnyv a where a.KrqdtAppAnyvPk.companyID = :cId" +
+            " and a.KrqdtAppAnyvPk.appID = :appId";
+
+    private static final String FIND_APPLICATION = "SELECT a FROM KrqdtApplication a where a.pk.companyID = :cId" +
+            " and a.pk.appID = :appId";
 
     @Override
     public void save(OptionalItemApplication optItemApp) {
@@ -41,19 +46,29 @@ public class JpaOptionalItemApplicationRepository extends JpaRepository implemen
     }
 
     @Override
-    public void update(OptionalItemApplication domain) {
+    public void update(OptionalItemApplication domain, Application application) {
         String cid = AppContexts.user().companyId();
-        Map<Integer, KrqdtAppAnyv> entityMap = this.queryProxy().query(FIND_ENTITY, KrqdtAppAnyv.class)
-                .setParameter("cid", cid)
+        Optional<KrqdtApplication> applicationEntity = this.queryProxy().query(FIND_APPLICATION, KrqdtApplication.class)
+                .setParameter("cId", cid)
+                .setParameter("appId", domain.getAppID()).getSingle();
+        if (applicationEntity.isPresent()) {
+            KrqdtApplication krqdtApplication = applicationEntity.get();
+            krqdtApplication.setOpAppReason(application.getOpAppReason().isPresent() ? application.getOpAppReason().get().v() : null);
+            this.commandProxy().update(applicationEntity.get());
+        }
+        Map<Integer, KrqdtAppAnyv> entityMap = this.queryProxy().query(FIND_OPTIONAL_ITEM_ENTITY, KrqdtAppAnyv.class)
+                .setParameter("cId", cid)
                 .setParameter("appId", domain.getAppID())
                 .getList().stream().collect(Collectors.toMap(x -> x.getKrqdtAppAnyvPk().anyvNo, x -> x));
-        domain.getOptionalItems().forEach(item -> {
-            KrqdtAppAnyv krqdtAppAnyv = entityMap.get(item.getItemNo().v() + 640);
-            krqdtAppAnyv.setTimes(item.getTimes().isPresent() ? item.getTimes().get().v() : null);
-            krqdtAppAnyv.setTime(item.getTime().isPresent() ? item.getTime().get().v() : null);
-            krqdtAppAnyv.setMoneyValue(item.getAmount().isPresent() ? item.getAmount().get().v() : null);
-        });
-        this.commandProxy().updateAll(entityMap.values());
+        if (entityMap.size() > 0) {
+            domain.getOptionalItems().forEach(item -> {
+                KrqdtAppAnyv krqdtAppAnyv = entityMap.get(item.getItemNo().v() + 640);
+                krqdtAppAnyv.setTimes(item.getTimes().isPresent() ? item.getTimes().get().v() : null);
+                krqdtAppAnyv.setTime(item.getTime().isPresent() ? item.getTime().get().v() : null);
+                krqdtAppAnyv.setMoneyValue(item.getAmount().isPresent() ? item.getAmount().get().v() : null);
+            });
+            this.commandProxy().updateAll(entityMap.values());
+        }
     }
 
     @Override
