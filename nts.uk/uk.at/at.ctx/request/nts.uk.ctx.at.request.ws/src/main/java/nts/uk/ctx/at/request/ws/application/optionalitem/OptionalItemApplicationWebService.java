@@ -31,25 +31,19 @@ public class OptionalItemApplicationWebService {
     private UpdateOptionalItemApplicationCommandHandler updateOptionalItemCommandHandler;
 
     @Inject
-    private OptionalItemAppSetFinder finder;
+    private OptionalItemAppSetFinder optionalItemAppSetFinder;
 
     @POST
     @Path("optionalItemAppSetting")
     public List<OptionalItemAppSetDto> get() {
         int UsageClassification = 1;
-        return this.finder.findAllByCompany().stream().filter(optionalItemAppSetDto -> optionalItemAppSetDto.getUseAtr() == UsageClassification).collect(Collectors.toList());
+        return this.optionalItemAppSetFinder.findAllByCompany().stream().filter(optionalItemAppSetDto -> optionalItemAppSetDto.getUseAtr() == UsageClassification).collect(Collectors.toList());
     }
 
     @POST
     @Path("getControlAttendance")
     public List<ControlOfAttendanceItemsDto> getControlAttendance(List<Integer> optionalItemNos) {
         return this.optionalItemApplicationQuery.findControlOfAttendance(optionalItemNos);
-    }
-
-    @POST
-    @Path("checkBeforeRegister")
-    public void checkBeforeRegister(OptionalItemApplicationCommand params) {
-        this.optionalItemApplicationQuery.checkBeforeUpdate(params);
     }
 
     @POST

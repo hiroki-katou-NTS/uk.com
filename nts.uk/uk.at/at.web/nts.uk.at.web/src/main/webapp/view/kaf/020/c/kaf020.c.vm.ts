@@ -3,7 +3,6 @@ module nts.uk.at.view.kaf020.c.viewmodel {
     import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
     import Application = nts.uk.at.view.kaf000.shr.viewmodel.Application;
     import OptionalItemApplicationContent = nts.uk.at.view.kaf020.shr.viewmodel.Content;
-    import Optional = nts.uk.util.optional.Optional;
 
     @component({
         name: 'kaf020-c',
@@ -69,7 +68,8 @@ module nts.uk.at.view.kaf020.c.viewmodel {
         appType: KnockoutObservable<number> = ko.observable(AppType.OPTIONAL_ITEM_APPLICATION);
         dataFetch: KnockoutObservable<DetailSreenInfo> = ko.observable({
             applicationContents: ko.observableArray([]),
-            code: ko.observable('')
+            code: ko.observable(''),
+            name: ko.observable('')
         });
         isSendMail: KnockoutObservable<Boolean>;
         application: KnockoutObservable<Application>;
@@ -108,6 +108,7 @@ module nts.uk.at.view.kaf020.c.viewmodel {
             }).done((applicationDto: any) => {
                 if (applicationDto) {
                     let code = applicationDto.application.code;
+                    let name = applicationDto.application.name;
                     let contents: Array<OptionalItemApplicationContent> = [];
                     applicationDto.application.optionalItems.forEach((item: any) => {
                         let optionalItem: any = _.find(applicationDto.optionalItems, {optionalItemNo: item.itemNo - 640});
@@ -137,7 +138,8 @@ module nts.uk.at.view.kaf020.c.viewmodel {
                     });
                     vm.dataFetch({
                         applicationContents: ko.observableArray(contents),
-                        code: code
+                        code: code,
+                        name: name,
                     });
                     vm.printContent.opOptionalItemOutput = ko.toJS({
                         code: vm.dataFetch().code,
@@ -223,6 +225,7 @@ module nts.uk.at.view.kaf020.c.viewmodel {
     interface DetailSreenInfo {
         applicationContents: KnockoutObservableArray<OptionalItemApplicationContent>,
         code: KnockoutObservable<string>,
+        name: KnockoutObservable<string>,
     }
 
     const PATH_API = {
