@@ -44,8 +44,8 @@ module nts.uk.pr.view.kmf001.h {
             // Dirty checker
             dirtyChecker: nts.uk.ui.DirtyChecker;
             //item H32
-            itemListH32: KnockoutObservableArray<ItemModel>;
-            selectedId: KnockoutObservable<number>;
+            itemListH32: KnockoutObservableArray<any>;
+            selectedId: KnockoutObservable<any>;
             constructor() {
                 var self = this;
                 self.employmentInitialized = false;
@@ -99,11 +99,10 @@ module nts.uk.pr.view.kmf001.h {
                 };
 
                 self.employmentVisible = ko.observable(self.settingModel().isManage() == 1);
-
+                self.selectedId = ko.observable(0);
                 self.itemListH32 = ko.observableArray([
-                    new ItemModel2(1, nts.uk.resource.getText("KMK013_358")),
-                    new ItemModel2(2, nts.uk.resource.getText("KMK013_359"))
-                  
+                    new BoxModel(0, nts.uk.resource.getText('KMF001_328')),
+                    new BoxModel(1, nts.uk.resource.getText('KMF001_329')),
                 ]);
             }
 
@@ -118,7 +117,7 @@ module nts.uk.pr.view.kmf001.h {
                 for (let i = 1; i < 9; i++) {
                     self.employmentList.push(new ItemModel('0' + i, '基本給', i % 3 === 0));
                 }
-               
+
                 // Load enums
                 $.when(self.loadVacationExpirationEnums(), self.loadApplyPermissionEnums(), self.loadManageDistinctEnums(), self.loadEmploymentList()).done(function() {
                     self.loadComSettingDetails();
@@ -425,14 +424,23 @@ module nts.uk.pr.view.kmf001.h {
                 this.alreadySet = alreadySet;
             }
         }
-        class ItemModel2 {
+        class BoxModel {
             id: number;
             name: string;
-            constructor(id: number, name: string) {
-                this.id = id;
-                this.name = name;
+            constructor(id, name) {
+                var self = this;
+                self.id = id;
+                self.name = name;
             }
         }
     }
-   
+    class BoxModel {
+        id: number;
+        name: string;
+        constructor(id, name) {
+            var self = this;
+            self.id = id;
+            self.name = name;
+        }
+    }
 }
