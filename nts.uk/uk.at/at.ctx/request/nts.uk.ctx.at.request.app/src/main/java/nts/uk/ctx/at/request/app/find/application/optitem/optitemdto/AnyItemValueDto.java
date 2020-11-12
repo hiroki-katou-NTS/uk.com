@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.app.command.application.optionalitem;
+package nts.uk.ctx.at.request.app.find.application.optitem.optitemdto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,9 +26,9 @@ public class AnyItemValueDto {
 
     public AnyItemValue toDomain() {
         return new AnyItemValue(new AnyItemNo(this.itemNo),
-                Optional.of(new AnyItemTimes(this.times)),
-                Optional.of(new AnyItemAmount(this.amount)),
-                Optional.of(new AnyItemTime(this.time))
+                Optional.ofNullable(this.times != null ? new AnyItemTimes(this.times) : null),
+                Optional.ofNullable(this.amount != null ? new AnyItemAmount(this.amount) : null),
+                Optional.ofNullable(this.time != null ? new AnyItemTime(this.time) : null)
         );
     }
 }
