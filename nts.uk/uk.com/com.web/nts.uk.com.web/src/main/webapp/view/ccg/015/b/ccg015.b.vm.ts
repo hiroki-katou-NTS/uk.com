@@ -1,6 +1,5 @@
 /// <reference path='../../../../lib/nittsu/viewcontext.d.ts' />
 module nts.uk.com.view.ccg015.b.screenModel {
-  import commonModel = ccg.model;
   import TopPageItemDto = ccg015.b.service.model.TopPageItemDto;
   import TopPageDto = ccg015.b.service.model.TopPageDto;
   @bean()
@@ -9,14 +8,12 @@ module nts.uk.com.view.ccg015.b.screenModel {
     toppageSelectedCode: KnockoutObservable<string>;
     topPageModel: KnockoutObservable<TopPageModel>;
     topPageModelParam: KnockoutObservable<TopPageModelParams> = ko.observable(new TopPageModelParams());
-    columns: KnockoutObservable<any>;
-    isNewMode: KnockoutObservable<boolean>;
-    listLinkScreen: KnockoutObservableArray<any>;
+    columns: KnockoutObservable<any> = ko.observableArray([]);
+    isNewMode: KnockoutObservable<boolean> = ko.observable(true);
     selectedId: KnockoutObservable<number> = ko.observable(1);
     isVisiableButton1: KnockoutObservable<boolean> = ko.observable(true);
     isVisiableButton2: KnockoutObservable<boolean> = ko.observable(false);
     isVisiableButton3: KnockoutObservable<boolean> = ko.observable(false);
-    isUpdateModeScreenD: KnockoutObservable<boolean> = ko.observable(true);
 
     isProcess: KnockoutObservable<boolean>;
     breakNewMode: boolean;
@@ -43,8 +40,7 @@ module nts.uk.com.view.ccg015.b.screenModel {
       vm.columns = ko.observableArray([
         { headerText: nts.uk.resource.getText("CCG015_11"), width: "50px", key: 'code', dataType: "string", hidden: false },
         { headerText: nts.uk.resource.getText("CCG015_12"), width: "260px", key: 'nodeText', dataType: "string", formatter: _.escape }
-      ]);
-      vm.isNewMode = ko.observable(true);
+      ]); 
       vm.toppageSelectedCode.subscribe(function (selectedTopPageCode: string) {
         if (nts.uk.text.isNullOrEmpty(selectedTopPageCode)) {
           vm.isNewMode(true);
@@ -148,7 +144,6 @@ module nts.uk.com.view.ccg015.b.screenModel {
           service.registerTopPage(vm.collectData()).done(function () {
             vm.$dialog.info({ messageId: "Msg_15" }).then(function () {
               vm.isProcess(false);
-              vm.isUpdateModeScreenD(true);
             });
             vm.loadTopPageList().done(function () {
               vm.toppageSelectedCode(vm.collectData().topPageCode);
@@ -202,8 +197,6 @@ module nts.uk.com.view.ccg015.b.screenModel {
       if (nts.uk.ui.errors.hasError()) {
         nts.uk.ui.errors.clearAll();
       }
-      //wait clear error
-      vm.isUpdateModeScreenD(false);
     }
 
     removeTopPage() {
@@ -352,42 +345,6 @@ module nts.uk.com.view.ccg015.b.screenModel {
     topPageCode?: string;
     topPageName?: string;
     layoutDisp?: number;
-  }
-
-  export class PlacementModel {
-    row: KnockoutObservable<number>;
-    column: KnockoutObservable<number>;
-    topPagePart: KnockoutObservable<TopPagePartModel>;
-    constructor() {
-      this.row = ko.observable(0);
-      this.column = ko.observable(0);
-      this.topPagePart = ko.observable(new TopPagePartModel());
-    }
-  }
-
-  export class TopPagePartModel {
-    topPagePartType: KnockoutObservable<number>;
-    topPagePartCode: KnockoutObservable<string>;
-    topPagePartName: KnockoutObservable<string>;
-    width: KnockoutObservable<number>;
-    height: KnockoutObservable<number>;
-    constructor() {
-      this.topPagePartType = ko.observable(0);
-      this.topPagePartCode = ko.observable("");
-      this.topPagePartName = ko.observable("");
-      this.width = ko.observable(0);
-      this.height = ko.observable(0);
-    }
-  }
-
-  export class ItemCbbModel {
-    code: string;
-    name: string;
-    label: string;
-    constructor(code: string, name: string) {
-      this.code = code;
-      this.name = name;
-    }
   }
 
   export function getHistoryEditMethod(): Array<ItemModel> {
