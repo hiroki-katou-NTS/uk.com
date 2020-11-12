@@ -14,7 +14,6 @@ import nts.uk.shr.com.context.AppContexts;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-
 import java.util.Arrays;
 
 
@@ -22,7 +21,9 @@ import java.util.Arrays;
 public class DuplicateWorkStatusSettingDServiceTest {
     @Injectable
     private DuplicateWorkStatusSettingDomainService.Require require;
-    private final SettingClassificationCommon settingCategory =  EnumAdaptor.valueOf(0, SettingClassificationCommon.class);
+    private final SettingClassificationCommon settingCategory = EnumAdaptor.valueOf(0, SettingClassificationCommon.class);
+    private final SettingClassificationCommon settingCategoryStandard = EnumAdaptor.valueOf(0, SettingClassificationCommon.class);
+    private final SettingClassificationCommon settingCategoryStandardFree = EnumAdaptor.valueOf(1, SettingClassificationCommon.class);
     private final WorkStatusOutputSettings outputSettings = new WorkStatusOutputSettings(
             "settingId",
             new OutputItemSettingCode("outPutSettingCode"),
@@ -108,12 +109,10 @@ public class DuplicateWorkStatusSettingDServiceTest {
                 require.checkTheStandard(outputItemSettingCode.v(), cid);
                 result = true;
 
-                require.checkFreedom(outputItemSettingCode.v(), cid, employeeId);
-                result = false;
             }
         };
         NtsAssert.businessException("Msg_1753", () -> {
-            DuplicateWorkStatusSettingDomainService.duplicate(require, settingCategory, settingId, outputItemSettingCode,
+            DuplicateWorkStatusSettingDomainService.duplicate(require, settingCategoryStandard, settingId, outputItemSettingCode,
                     outputItemSettingName);
         });
     }
@@ -133,15 +132,12 @@ public class DuplicateWorkStatusSettingDServiceTest {
                 require.getWorkStatusOutputSettings(cid, settingId);
                 result = outputSettings;
 
-                require.checkTheStandard(outputItemSettingCode.v(), cid);
-                result = false;
-
                 require.checkFreedom(outputItemSettingCode.v(), cid, employeeId);
                 result = true;
             }
         };
         NtsAssert.businessException("Msg_1753", () -> {
-            DuplicateWorkStatusSettingDomainService.duplicate(require, settingCategory, settingId, outputItemSettingCode,
+            DuplicateWorkStatusSettingDomainService.duplicate(require, settingCategoryStandardFree, settingId, outputItemSettingCode,
                     outputItemSettingName);
         });
     }
@@ -156,22 +152,28 @@ public class DuplicateWorkStatusSettingDServiceTest {
                 result = "employeeId";
             }
         };
+        new Expectations(IdentifierUtil.class) {
+            {
+                IdentifierUtil.randomUniqueId();
+                result = "id";
+            }
+        };
+
         new Expectations() {
             {
                 require.getWorkStatusOutputSettings(cid, settingId);
                 result = outputSettings;
 
-                require.checkTheStandard(outputItemSettingCode.v(), cid);
-                result = true;
-
                 require.checkFreedom(outputItemSettingCode.v(), cid, employeeId);
-                result = true;
+                result = false;
+
             }
         };
-        NtsAssert.businessException("Msg_1753", () -> {
-            DuplicateWorkStatusSettingDomainService.duplicate(require, settingCategory, settingId, outputItemSettingCode,
-                    outputItemSettingName);
-        });
+        NtsAssert.atomTask(() ->
+                        DuplicateWorkStatusSettingDomainService.duplicate(require, settingCategoryStandardFree, settingId, outputItemSettingCode,
+                                outputItemSettingName),
+                any -> require.duplicateConfigurationDetails(cid, settingId, iD, outputItemSettingCode, outputItemSettingName)
+        );
     }
 
     @Test
@@ -199,8 +201,6 @@ public class DuplicateWorkStatusSettingDServiceTest {
                 require.checkTheStandard(outputItemSettingCode.v(), cid);
                 result = false;
 
-                require.checkFreedom(outputItemSettingCode.v(), cid, employeeId);
-                result = false;
             }
         };
         NtsAssert.atomTask(() ->
