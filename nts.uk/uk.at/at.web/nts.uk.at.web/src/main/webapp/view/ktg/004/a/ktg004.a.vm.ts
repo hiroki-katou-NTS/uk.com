@@ -35,7 +35,7 @@ module nts.uk.at.view.ktg004.a.viewmodel {
             }
 			block.grayout();
             ajax("at", KTG004_API.GET_DATA, {topPageYearMonthEnum: self.selectedSwitch()}).done(function(data: any){
-				self.name(data.name);
+				self.name(data.name || "");
 				self.detailedWorkStatusSettings(data.detailedWorkStatusSettings);
 				self.itemsSetting(data.itemsSetting);
 				self.attendanceInfor.update(data.attendanceInfor);
@@ -48,6 +48,9 @@ module nts.uk.at.view.ktg004.a.viewmodel {
 				let show = _.filter(data.itemsSetting, { 'displayType': true });
 				if(show && show.length > 14){
 					$("#scrollTable").addClass("scroll");
+					$(".widget-table td").each(function() {
+						this.setAttribute("style", "width:262px");
+					});
 				}
 				if(data.name == null){
 					$('#setting').css("top", "-7px");
