@@ -32,7 +32,7 @@ public class JpaEraNameRepository extends JpaRepository implements EraNameDomRep
 	
 	@Override
 	public List<EraNameDom> getAllEraName(){
-		return this.forDefaultDataSources(em ->{
+		return this.forDefaultDataSource(em ->{
 			CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 			CriteriaQuery<CisdtEraName> cq = criteriaBuilder.createQuery(CisdtEraName.class);
 			Root<CisdtEraName> root = cq.from(CisdtEraName.class);

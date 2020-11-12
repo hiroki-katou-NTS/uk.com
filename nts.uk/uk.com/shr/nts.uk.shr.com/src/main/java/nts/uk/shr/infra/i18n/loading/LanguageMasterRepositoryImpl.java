@@ -21,7 +21,7 @@ public class LanguageMasterRepositoryImpl extends JpaRepository implements Langu
 
 	@Override
 	public List<LanguageMasterDto> getSystemLanguages() {
-		return this.forDefaultDataSources(em ->{
+		return this.forDefaultDataSource(em ->{
 			return this.queryProxy(em).query("SELECT l FROM LanguageMaster l", LanguageMaster.class).getList(l -> {
 				return new LanguageMasterDto(l.getLanguageId(), l.getLanguageCode(), l.getLanguageName());
 			});

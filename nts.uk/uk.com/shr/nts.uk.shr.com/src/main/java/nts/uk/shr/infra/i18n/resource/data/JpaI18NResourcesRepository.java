@@ -24,7 +24,7 @@ public class JpaI18NResourcesRepository extends JpaRepository implements I18NRes
 		String query = "SELECT e FROM CisctI18NResource e"
 				+ " WHERE e.pk.languageId = :languageId";
 		
-		val items = this.forDefaultDataSources(em -> {
+		val items = this.forDefaultDataSource(em -> {
 			return this.queryProxy(em).query(query, CisctI18NResource.class)
 					.setParameter("languageId", languageId)
 					.getList(e -> e.toDomain());
