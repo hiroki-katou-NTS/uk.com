@@ -16,9 +16,7 @@ module nts.uk.at.view.ktg004.b.viewmodel {
 		name: KnockoutObservable<string> = ko.observable('');
 		itemsSetting: KnockoutObservableArray<any> = ko.observableArray([]);
         
-        constructor() {
-            var self = this;
-        }
+        constructor() {}
 
         public startPage(): JQueryPromise<any> {
             var self = this;
@@ -77,8 +75,11 @@ module nts.uk.at.view.ktg004.b.viewmodel {
        
     }
     class ItemsSetting{
+		// 項目
         item: number;
+		// 特別休暇名称
         name: string;
+		// 表示区分
 		displayType : KnockoutObservable<boolean>;
         constructor(dto: any){
             this.item = dto.item;

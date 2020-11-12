@@ -19,7 +19,7 @@ public class ItemsSettingDto {
 	// 項目
 	private int item;
 	
-	//name
+	// 特別休暇名称
 	private String name;
 
 	public ItemsSettingDto(DetailedWorkStatusSetting domain, String name) {
