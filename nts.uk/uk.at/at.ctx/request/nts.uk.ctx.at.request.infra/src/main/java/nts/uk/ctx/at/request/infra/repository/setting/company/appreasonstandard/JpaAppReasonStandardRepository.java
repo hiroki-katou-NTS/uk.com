@@ -122,7 +122,7 @@ public class JpaAppReasonStandardRepository extends JpaRepository implements App
 
 	@Override
 	public void deleteReasonTypeItem(String companyId, int appType, Integer holidayAppType, int reasonCode) {
-		this.commandProxy().remove(KrcmtAppReason.class, new KrcmtAppReasonPk(companyId, appType, appType == 1 ? holidayAppType : 0, reasonCode));
+		this.commandProxy().remove(KrcmtAppReason.class, new KrcmtAppReasonPk(companyId, appType, reasonCode, appType == 1 ? holidayAppType : 0));
 	}
 
 }
