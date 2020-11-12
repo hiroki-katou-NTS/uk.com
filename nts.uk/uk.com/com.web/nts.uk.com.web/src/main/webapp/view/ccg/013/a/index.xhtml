@@ -54,13 +54,6 @@
 								data-bind="ntsTextEditor: {value: webMenuCode,name: '#[CCG013_49]',constraint: 'WebMenuCode', required: true,immediate: true, enable: $parent.checkDisabled}" /></span>
 						<span><input style="width: 180px" id="webMenuName"
 								data-bind="ntsTextEditor: {value: webMenuName,name: '#[CCG013_50]',constraint: 'WebMenuName', required: true,immediate: true}" /></span>
-						<!-- <div class="bg-yellow">
-							<div style="margin-left: 5px;"
-								data-bind="ntsCheckBox: {checked: $parent.isDefaultMenu }"
-								class="cf minimalist">#{i18n.getText('CCG013_12')}</div>
-							<button style="width: 25px; height: 25px; margin-left: 20px;"
-								data-bind="ntsHelpButton: {image: 'CCG013_001.png', position: 'right top', enable: true }">?</button>
-						</div>  -->
 					</div>
 					<div class="label warning">#{i18n.getText('CCG013_13')}</div>
 					<div id="menu_container">
@@ -70,7 +63,7 @@
 									<li class="context-menu-bar" data-bind="attr: {'id': menuBarId}">
 										<a class="tab-item" data-bind="attr: {href: targetContent}, style: {color: textColor, 'background-color': backgroundColor}">
 											<span class="tab-item-content" data-bind=" text: menuBarName" />
-											<i data-bind="ntsIcon: { no: 3, width: 20, height: 20 }, click: function() { $vm.openIdialog(menuBarId()); }" />
+											<img style="width: 20px; height: 20px;" src="../resource/CCG013_1.png" data-bind="click: function() { $vm.openIdialog(menuBarId()); }" />
 										</a>
 									</li>
 								</ul>
@@ -87,7 +80,7 @@
 											<div class="title-menu-column valign-top" data-bind="attr:{id: titleMenuId}">
 												<div class="title-menu-name" data-bind="style: {color: textColor, 'background-color': backgroundColor}">
 													<span class="title-menu-content limited-label" data-bind="text: titleMenuName"></span>
-													<i data-bind="ntsIcon: { no: 3, width: 20, height: 20 }, click: $parents[2].openCdialog.bind($parents[2], $data)" />
+													<img style="width: 20px; height: 20px;" src="../resource/CCG013_1.png" data-bind="click: $parents[2].openCdialog.bind($parents[2], $data)" />
 												</div>
 												<span class="caret-bottom"></span>
 												<ul class="tree-menu" data-bind="foreach: {data: treeMenu}">
