@@ -58,7 +58,11 @@ public class GetSelectedTerminalInfo {
 		dto.setEmpInfoTerName(empInfoTerValue.getEmpInfoTerName().v());
 		dto.setModelEmpInfoTer(empInfoTerValue.getModelEmpInfoTer().value);
 		dto.setMacAddress(empInfoTerValue.getMacAddress().v());
-		dto.setIpAddress(empInfoTerValue.getIpAddress().isPresent() ? empInfoTerValue.getIpAddress().get().v() : "");
+//		dto.setIpAddress(empInfoTerValue.getIpAddress().isPresent() ? empInfoTerValue.getIpAddress().get().v() : "");
+		dto.setIpAddress1(empInfoTerValue.getIpAddress().isPresent() ? empInfoTerValue.getIpAddress().get().getIpAddress1().toString() : "");
+		dto.setIpAddress2(empInfoTerValue.getIpAddress().isPresent() ? empInfoTerValue.getIpAddress().get().getIpAddress2().toString() : "");
+		dto.setIpAddress3(empInfoTerValue.getIpAddress().isPresent() ? empInfoTerValue.getIpAddress().get().getIpAddress3().toString() : "");
+		dto.setIpAddress4(empInfoTerValue.getIpAddress().isPresent() ? empInfoTerValue.getIpAddress().get().getIpAddress4().toString() : "");
 		dto.setTerSerialNo(
 				empInfoTerValue.getTerSerialNo().isPresent() ? empInfoTerValue.getTerSerialNo().get().v() : "");
 		dto.setWorkLocationName(workLocation.isPresent() ? workLocation.get().getWorkLocationName().v() : "");

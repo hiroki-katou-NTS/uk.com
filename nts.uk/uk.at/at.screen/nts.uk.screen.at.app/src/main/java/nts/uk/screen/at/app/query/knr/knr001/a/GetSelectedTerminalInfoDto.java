@@ -23,8 +23,14 @@ public class GetSelectedTerminalInfoDto {
 	private int modelEmpInfoTer;
 	//	MACアドレス
 	private String macAddress;
-	//	ＩＰアドレス
-	private String ipAddress;
+	//	ＩＰアドレス1
+	private String ipAddress1;
+	//	ＩＰアドレス2
+	private String ipAddress2;
+	//	ＩＰアドレス3
+	private String ipAddress3;
+	//	ＩＰアドレス4
+	private String ipAddress4;
 	//	シリアルＮｏ
 	private String terSerialNo;
 	//	設置場所

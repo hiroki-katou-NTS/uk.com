@@ -15,11 +15,13 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerSe
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalName;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.FullIpAddress;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.IPAddress;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.MacAddress;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.ModelEmpInfoTer;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.MonitorIntervalTime;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.OutPlaceConvert;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.PartialIpAddress;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo.EmpInfoTerminalRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
@@ -47,7 +49,12 @@ public class EmpInfoTerminalUpdateCommandHandler extends CommandHandler<EmpInfoT
 
 		// 5: set()
 		EmpInfoTerminal empInfoTerminal = new EmpInfoTerminal.EmpInfoTerminalBuilder(
-				Optional.ofNullable(command.getIpAddress()).map(e -> new IPAddress(e)), new MacAddress(command.getMacAddress()),
+				Optional.ofNullable(command.getIpAddress1() == null ? null 
+						: new FullIpAddress(new PartialIpAddress(Integer.parseInt(command.getIpAddress1())),
+								new PartialIpAddress(Integer.parseInt(command.getIpAddress2())),
+								new PartialIpAddress(Integer.parseInt(command.getIpAddress3())),
+								new PartialIpAddress(Integer.parseInt(command.getIpAddress4())))),
+				new MacAddress(command.getMacAddress()),
 				new EmpInfoTerminalCode(command.getEmpInfoTerCode()), Optional.ofNullable(command.getTerSerialNo()).map(e -> new EmpInfoTerSerialNo(e)),
 				new EmpInfoTerminalName(command.getEmpInfoTerName()), new ContractCode(contractCode))
 						.createStampInfo(new CreateStampInfo(

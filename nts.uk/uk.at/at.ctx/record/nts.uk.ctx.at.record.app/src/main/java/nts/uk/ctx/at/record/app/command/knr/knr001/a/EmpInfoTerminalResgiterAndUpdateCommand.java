@@ -13,7 +13,13 @@ public class EmpInfoTerminalResgiterAndUpdateCommand {
 	
 	private String macAddress;
 	
-	private String ipAddress;
+	private String ipAddress1;
+	
+	private String ipAddress2;
+	
+	private String ipAddress3;
+	
+	private String ipAddress4;
 	
 	private String terSerialNo;
 	

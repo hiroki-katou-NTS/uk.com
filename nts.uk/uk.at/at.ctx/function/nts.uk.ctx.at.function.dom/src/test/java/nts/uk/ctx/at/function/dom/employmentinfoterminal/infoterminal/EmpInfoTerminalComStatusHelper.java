@@ -11,12 +11,12 @@ public class EmpInfoTerminalComStatusHelper {
 	public static EmpInfoTerminalComStatus createEmpInfoTerminalComStatus() {
 		return new EmpInfoTerminalComStatus(new ContractCode("000000000000"),
 										new EmpInfoTerminalCode(1111),
-										GeneralDateTime.ymdhms(2020, 12, 31, 0, 0, 0));
+										GeneralDateTime.now().addHours(60));
 	}
 	
 	public static EmpInfoTerminalComStatus createEmpInfoTerminalComStatus2() {
 		return new EmpInfoTerminalComStatus(new ContractCode("000000000000"),
 										new EmpInfoTerminalCode(1111),
-										GeneralDateTime.ymdhms(2020, 10, 31, 0, 0, 0));
+										GeneralDateTime.now().addHours(-60));
 	}
 }
