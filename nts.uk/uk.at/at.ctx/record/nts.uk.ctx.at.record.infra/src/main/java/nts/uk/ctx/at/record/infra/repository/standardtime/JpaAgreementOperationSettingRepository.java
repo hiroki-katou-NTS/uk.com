@@ -14,6 +14,7 @@ import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementOperationSett
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementOperationSettingPK;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.StartingMonthType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 @Stateless
@@ -52,6 +53,7 @@ public class JpaAgreementOperationSettingRepository extends JpaRepository
 		
 		if (entity.isPresent()) {
 			KmkmtAgeementOperationSetting data = entity.get();
+			data.contractCD = AppContexts.user().contractCode();
 			data.startingMonth = agreementOperationSetting.getStartingMonth().value;
 			data.closingDate = agreementOperationSetting.getClosureDate().getClosureDay().v();
 			data.appUseAtr = agreementOperationSetting.isSpecicalConditionApplicationUse();
@@ -76,6 +78,7 @@ public class JpaAgreementOperationSettingRepository extends JpaRepository
 
 		entity.kmkmtAgeementOperationSettingPK = new KmkmtAgeementOperationSettingPK();
 		entity.kmkmtAgeementOperationSettingPK.companyId = agreementOperationSetting.getCompanyId();
+		entity.contractCD =  AppContexts.user().contractCode();
 		entity.startingMonth = agreementOperationSetting.getStartingMonth().value;
 		entity.closingDate = agreementOperationSetting.getClosureDate().getClosureDay().v();
 		entity.appUseAtr = agreementOperationSetting.isSpecicalConditionApplicationUse();
