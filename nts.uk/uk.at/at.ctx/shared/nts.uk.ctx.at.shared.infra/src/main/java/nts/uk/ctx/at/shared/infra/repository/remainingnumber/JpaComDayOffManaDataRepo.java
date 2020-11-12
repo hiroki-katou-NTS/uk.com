@@ -33,7 +33,7 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 	
 	private String GET_BY_SID_DATE = GET_BYSID + " AND a.dayOff < :dayOff";
 
-	private static final String GET_BY_REDAY = String.join(" ", GET_BYSID, " AND a.remainDays > 0");
+	private static final String GET_BY_REDAY = String.join(" ", GET_BYSID, " AND a.remainDays <> 0");
 
 	private static final String GET_BYSID_WITHREDAY = String.join(" ", GET_BYSID, " AND a.remainDays > 0 OR "
 			+ " a.comDayOffID IN  (SELECT c.krcmtLeaveDayOffManaPK.comDayOffID FROM KrcmtLeaveDayOffMana c "
