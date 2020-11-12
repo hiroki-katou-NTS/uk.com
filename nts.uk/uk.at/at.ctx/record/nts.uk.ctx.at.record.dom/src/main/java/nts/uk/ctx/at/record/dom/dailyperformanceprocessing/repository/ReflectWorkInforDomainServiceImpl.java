@@ -698,7 +698,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							new EmploymentCode(employmentHistItemImport.get().getEmploymentCode()),
 							jobTitleHistItemImport.get().getJobTitleId(),
 							workplaceHistItemImport.get().getWorkplaceId(),
-							new ClassificationCode(classificationHistItemImport.get().getClassificationCode()),null, null)));
+							new ClassificationCode(classificationHistItemImport.get().getClassificationCode()),Optional.empty(), Optional.empty())));
 		} else {
 			// #日別作成修正 2018/07/17 前川 隼大
 			// 社員の日別実績のエラーを作成する
@@ -937,8 +937,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							new EmploymentCode(employmentHasData.get().getEmploymentCode()),
 							jobTitleHasData.get().getJobTitleId(), workPlaceHasData.get().getWorkplaceId(),
 							new ClassificationCode(classificationHasData.get().getClassificationCode()),
-							null,
-							null)));
+							Optional.empty(),
+							Optional.empty())));
 		} else {
 			// #日別作成修正 2018/07/17 前川 隼大
 			// 社員の日別実績のエラーを作成する
@@ -1217,8 +1217,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						affiliationInforOfDailyPerfor.getJobTitleID(),
 						affiliationInforOfDailyPerfor.getWplID(),
 						affiliationInforOfDailyPerfor.getClsCode(),
-						affiliationInforOfDailyPerfor.getBusinessTypeCode().isPresent()?affiliationInforOfDailyPerfor.getBusinessTypeCode().get():null,
-						bonusPaySetting.get().getCode());
+						affiliationInforOfDailyPerfor.getBusinessTypeCode().isPresent()?Optional.of(affiliationInforOfDailyPerfor.getBusinessTypeCode().get()):Optional.empty(),
+						Optional.of(bonusPaySetting.get().getCode()));
 			}
 
 			// 計算区分を日別実績に反映する
@@ -2359,8 +2359,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							jobTitleHistItemImport.get().getJobTitleId(),
 							workplaceHistItemImport.get().getWorkplaceId(),
 							new ClassificationCode(classificationHistItemImport.get().getClassificationCode()),
-							worktypeHistItemImport.get().getBusinessTypeCd() == null?null: new BusinessTypeCode(worktypeHistItemImport.get().getBusinessTypeCd()),
-							null
+							worktypeHistItemImport.get().getBusinessTypeCd() == null?Optional.empty(): Optional.of(new BusinessTypeCode(worktypeHistItemImport.get().getBusinessTypeCd())),
+							Optional.empty()
 							)
 						),errMesInfos);
 		} else {

@@ -50,7 +50,6 @@ import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.repository.RecreateFl
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.repository.ReflectShortWorkingTimeDomainService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemIdContainer;
@@ -180,13 +179,13 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 									.getItemIdByDailyDomains(DailyDomainGroup.CALCULATION_ATTR);
 
 							this.editStateOfDailyPerformanceRepository.deleteByListItemId(employeeID, processingDate, attItemIds);
-							AffiliationInforOfDailyAttd affiliationInforOfDailyAttd = new AffiliationInforOfDailyAttd(affiliationInforOfDailyPerfor.get().getAffiliationInfor().getEmploymentCode(),
-									affiliationInforOfDailyPerfor.get().getAffiliationInfor().getJobTitleID(),
-									affiliationInforOfDailyPerfor.get().getAffiliationInfor().getWplID(), 
-									affiliationInforOfDailyPerfor.get().getAffiliationInfor().getClsCode(),
-									affiliationInforOfDailyPerfor.get().getAffiliationInfor().getBusinessTypeCode().isPresent()?
-											affiliationInforOfDailyPerfor.get().getAffiliationInfor().getBusinessTypeCode().get():null,
-									affiliationInforOfDailyPerfor.get().getAffiliationInfor().getBonusPaySettingCode());
+//							AffiliationInforOfDailyAttd affiliationInforOfDailyAttd = new AffiliationInforOfDailyAttd(affiliationInforOfDailyPerfor.get().getAffiliationInfor().getEmploymentCode(),
+//									affiliationInforOfDailyPerfor.get().getAffiliationInfor().getJobTitleID(),
+//									affiliationInforOfDailyPerfor.get().getAffiliationInfor().getWplID(), 
+//									affiliationInforOfDailyPerfor.get().getAffiliationInfor().getClsCode(),
+//									affiliationInforOfDailyPerfor.get().getAffiliationInfor().getBusinessTypeCode().isPresent()?
+//									Optional.of(affiliationInforOfDailyPerfor.get().getAffiliationInfor().getBusinessTypeCode().get()):Optional.empty(),
+//									affiliationInforOfDailyPerfor.get().getAffiliationInfor().getBonusPaySettingCode());
 							calAttrOfDailyPerformance = new CalAttrOfDailyPerformance(employeeID, processingDate, this.reflectWorkInforDomainService.reflectCalAttOfDaiPer(
 									companyID, employeeID, processingDate, affiliationInforOfDailyPerfor.get().getAffiliationInfor(),
 									periodInMasterList));
