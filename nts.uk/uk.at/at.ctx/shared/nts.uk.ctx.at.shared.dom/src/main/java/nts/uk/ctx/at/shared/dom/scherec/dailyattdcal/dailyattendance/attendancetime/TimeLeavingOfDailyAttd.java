@@ -11,12 +11,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.objecttype.DomainObject;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.WorkInfoAndTimeZone;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.worktime.TimeLeaveChangeEvent;
 import nts.uk.ctx.at.shared.dom.worktime.common.JustCorrectionAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 
 /**
  * 日別勤怠の出退勤
@@ -28,15 +31,48 @@ import nts.uk.ctx.at.shared.dom.worktime.common.JustCorrectionAtr;
 @Setter
 @NoArgsConstructor
 public class TimeLeavingOfDailyAttd implements DomainObject{
+	
 	// 1 ~ 2
 	/** 出退勤 */
 	private List<TimeLeavingWork> timeLeavingWorks;
+	
 	/** 勤務回数 */
 	private WorkTimes workTimes;
+	
 	public TimeLeavingOfDailyAttd(List<TimeLeavingWork> timeLeavingWorks, WorkTimes workTimes) {
 		super();
 		this.timeLeavingWorks = timeLeavingWorks;
 		this.workTimes = workTimes;
+	}
+	
+	/**
+	 * [C-1] 所定時間帯で作る
+	 * @param require
+	 * @param workInformation 勤務情報
+	 * @return
+	 */
+	public static TimeLeavingOfDailyAttd createByPredetermineZone(Require require, WorkInformation workInformation) {
+		
+		Optional<WorkInfoAndTimeZone> workInfoAndTimeZone = workInformation.getWorkInfoAndTimeZone(require);
+		if (! workInfoAndTimeZone.isPresent() ) {
+			throw new RuntimeException("Invalid value!");
+		}
+		
+		List<TimeZone> predetermineZoneList = workInfoAndTimeZone.get().getListTimeZone();
+		List<TimeLeavingWork> timeLeavingWorks = new ArrayList<>(); 
+		for ( int index = 0; index < predetermineZoneList.size(); index++) {
+			
+			TimeLeavingWork newTimeLeavingWork = TimeLeavingWork.createFromTimeSpan( 
+					new WorkNo(index + 1) ,
+					new TimeSpanForCalc(
+							predetermineZoneList.get(index).getStart(), 
+							predetermineZoneList.get(index).getEnd()));
+			timeLeavingWorks.add(newTimeLeavingWork);
+		}
+
+		return new TimeLeavingOfDailyAttd(
+				timeLeavingWorks, 
+				new WorkTimes(predetermineZoneList.size()));
 	}
 	
 	public Optional<TimeLeavingWork> getAttendanceLeavingWork(int workNo) {
@@ -184,6 +220,10 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 		}
 		
 		return null;
+	}
+	
+	public static interface Require extends WorkInformation.Require{
+		
 	}
 	
 }

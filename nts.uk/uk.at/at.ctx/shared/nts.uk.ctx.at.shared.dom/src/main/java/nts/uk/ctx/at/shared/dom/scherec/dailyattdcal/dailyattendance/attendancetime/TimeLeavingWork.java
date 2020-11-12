@@ -32,24 +32,17 @@ public class TimeLeavingWork extends DomainObject{
 	/*
 	 * 勤務NO
 	 */
-	@Getter
 	private WorkNo workNo;
 	//出勤
-	@Getter
 	private Optional<TimeActualStamp> attendanceStamp;
 	//退勤
-	@Getter
 	private Optional<TimeActualStamp> leaveStamp;
 	//遅刻を取り消した
-	@Getter
 	private boolean canceledLate = false; 
 	//早退を取り消した
-	@Getter
 	private boolean CanceledEarlyLeave = false;
 	
-	@Getter
 	private TimeSpanForCalc timespan;
-	
 	
 	public TimeSpanForCalc getTimespan() {
 		return this.craeteTimeSpan();
@@ -62,6 +55,22 @@ public class TimeLeavingWork extends DomainObject{
 		this.leaveStamp = Optional.ofNullable(leaveStamp);
 		
 		this.timespan = this.craeteTimeSpan();
+	}
+	
+	/**
+	 * 時間帯から作る
+	 * @param workNo 勤務NO
+	 * @param timeSpan 時間帯
+	 * @return
+	 */
+	public static TimeLeavingWork createFromTimeSpan(WorkNo workNo, TimeSpanForCalc timeSpan) {
+		
+		return new TimeLeavingWork(
+				workNo, 
+				Optional.of(TimeActualStamp.createByAutomaticSet(timeSpan.getStart())), 
+				Optional.of(TimeActualStamp.createByAutomaticSet(timeSpan.getEnd())), 
+				false, 
+				false);
 	}
 	
 	/**
@@ -184,7 +193,14 @@ public class TimeLeavingWork extends DomainObject{
 		}
 		return false;
 	}
-
+	
+	/**
+	 * @param workNo 勤務NO
+	 * @param attendanceStamp 出勤
+	 * @param leaveStamp 退勤
+	 * @param canceledLate 遅刻を取り消した
+	 * @param canceledEarlyLeave 早退を取り消した
+	 */
 	public TimeLeavingWork(WorkNo workNo, Optional<TimeActualStamp> attendanceStamp,
 			Optional<TimeActualStamp> leaveStamp, boolean canceledLate, boolean canceledEarlyLeave) {
 		super();
