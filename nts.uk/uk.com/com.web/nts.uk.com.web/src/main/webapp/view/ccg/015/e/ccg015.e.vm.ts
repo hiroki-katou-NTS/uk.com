@@ -60,6 +60,11 @@ module nts.uk.com.view.ccg015.e.screenModel {
     saveListWidgetLayout() {
       const vm = this;
       vm.$blockui("show");
+      let widgetTest: WidgetItem = new WidgetItemImpl();
+      widgetTest.widgetType = 0;
+      widgetTest.order = 1;
+      vm.widgetList.push(widgetTest);
+
       let data: any = {
         cid: __viewContext.user.companyId,
         topPageCode: vm.topPageCode(),
@@ -68,8 +73,16 @@ module nts.uk.com.view.ccg015.e.screenModel {
         flowMenuCd: null,
         flowMenuUpCd: null,
         url: null,
-        widgetSettings: vm.widgetList(),
+        widgetSettings: [{ widgetType: 0, order:1 }],
       };
+
+      vm.$ajax('/toppage/saveLayoutWidget', data).done(function () {
+        vm.$dialog.info({ messageId: "Msg_15" })
+      }).then((result: any) => {
+        vm.isNewMode(false);
+      }).always(() => {
+        vm.$blockui("hide");
+      });
     }
 
     draggableItem() {
@@ -222,6 +235,11 @@ module nts.uk.com.view.ccg015.e.screenModel {
   }
 
   interface WidgetItem {
+    widgetType: number;
+    order: number;
+  }
+
+  class WidgetItemImpl implements WidgetItem {
     widgetType: number;
     order: number;
   }
