@@ -81,7 +81,10 @@ module nts.uk.at.ksm008.c {
             ]);
 
             vm.initEmployeeList();
-            vm.initEmployeeTargetList();
+            setTimeout(() => {
+                vm.initEmployeeTargetList();
+            }, 50);
+
         }
 
         mounted() {
