@@ -19,17 +19,14 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.businesstype.KrcmtBusinessTypeOfHistory;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.businesstype.KrcmtBusinessTypeOfHistoryPK;
-import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
-import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpHis;
-import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpHisAdaptor;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeHistory;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.repository.BusinessTypeEmpOfHistoryRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * implement BusinessTypeEmpOfHistoryRepository
@@ -45,12 +42,12 @@ public class JpaBusinessTypeEmpOfHistory extends JpaRepository
 	private static final String FIND_BY_EMPLOYEE_DESC;
 //	private static final String SEL_BUSINESS_TYPE;
 
-	private static final String FIND_BY_CID_SID_DATE_PERIOD = "SELECT NEW " + BusinessTypeOfEmpDto.class.getName()
-			+ " (a.cID, a.sId, a.krcmtBusinessTypeOfHistoryPK.historyId, a.startDate, a.endDate, b.businessTypeCode)"
-			+ " FROM KrcmtBusinessTypeOfHistory a JOIN KrcmtBusinessTypeOfEmployee b"
-			+ " ON a.krcmtBusinessTypeOfHistoryPK.historyId = b.krcmtBusinessTypeOfEmployeePK.historyId"
-			+ " WHERE a.sId IN :sIds" + " AND a.cID = :cId"
-			+ " AND a.startDate <= :endDate and a.endDate >= :startDate";
+//	private static final String FIND_BY_CID_SID_DATE_PERIOD = "SELECT NEW " + BusinessTypeOfEmpDto.class.getName()
+//			+ " (a.cID, a.sId, a.krcmtBusinessTypeOfHistoryPK.historyId, a.startDate, a.endDate, b.businessTypeCode)"
+//			+ " FROM KrcmtBusinessTypeOfHistory a JOIN KrcmtBusinessTypeOfEmployee b"
+//			+ " ON a.krcmtBusinessTypeOfHistoryPK.historyId = b.krcmtBusinessTypeOfEmployeePK.historyId"
+//			+ " WHERE a.sId IN :sIds" + " AND a.cID = :cId"
+//			+ " AND a.startDate <= :endDate and a.endDate >= :startDate";
 
 	static {
 		StringBuilder stringBuilder = new StringBuilder();

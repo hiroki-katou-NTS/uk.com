@@ -89,11 +89,10 @@ import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExEmploymentHistor
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExJobTitleHistItemImport;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExJobTitleHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkPlaceHistoryImport;
-import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkTypeHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkplaceHistItemImport;
-import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.AffiliationInforState;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ReflectWorkInforDomainService;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeHis;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
@@ -369,7 +368,7 @@ public class ScheduleCreatorExecutionTransaction {
 	// スケジュールを再設定する
 	private void resetScheduleWithMultiThread(BasicScheduleResetCommand command,
 			CommandHandlerContext<ScheduleCreatorExecutionCommand> context, DatePeriod targetPeriod,
-			EmployeeGeneralInfoImported empGeneralInfo, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis,
+			EmployeeGeneralInfoImported empGeneralInfo, List<BusinessTypeOfEmployeeHis> listBusTypeOfEmpHis,
 			List<BasicSchedule> listBasicSchedule, RegistrationListDateSchedule registrationListDateSchedule,
 			ScheduleCreator scheduleCreator) {
 
@@ -1847,11 +1846,7 @@ public class ScheduleCreatorExecutionTransaction {
 												x.getWorkplaceId()))
 										.collect(Collectors.toList())))
 						.collect(Collectors.toList()),
-				masterCache.getListBusTypeOfEmpHis().stream()
-						.map(mapper -> new ExWorkTypeHistoryImport(mapper.getCompanyId(), mapper.getEmployeeId(),
-								mapper.getHistoryId(), new DatePeriod(mapper.getStartDate(), mapper.getEndDate()),
-								mapper.getBusinessTypeCd()))
-						.collect(Collectors.toList()));
+				masterCache.getListBusTypeOfEmpHis());
 		return generalInfoImport;
 
 	}

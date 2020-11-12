@@ -14,15 +14,13 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.businesstype.KrcmtBusinessTypeOfEmployee;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.businesstype.KrcmtBusinessTypeOfEmployeePK;
-import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmp;
-import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpAdaptor;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployee;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.repository.BusinessTypeOfEmployeeRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * implement BusinessTypeOfEmployeeRepository
@@ -32,9 +30,9 @@ import nts.arc.time.calendar.period.DatePeriod;
  */
 @Stateless
 public class JpaBusinessTypeOfEmployee extends JpaRepository
-		implements BusinessTypeOfEmployeeRepository, BusinessTypeOfEmpAdaptor {
+		implements BusinessTypeOfEmployeeRepository {
 	private static final String FIND_BY_LIST_CODE;
-	private static final String FIND_BY_SID_HISTID;
+//	private static final String FIND_BY_SID;
 	private static final String SEL_BUSINESS_TYPE;
 	static {
 		StringBuilder stringBuilder = new StringBuilder();
@@ -43,12 +41,12 @@ public class JpaBusinessTypeOfEmployee extends JpaRepository
 		stringBuilder.append("WHERE k.businessTypeCode IN :businessTypeCodes");
 		FIND_BY_LIST_CODE = stringBuilder.toString();
 
-		StringBuilder stringBuild = new StringBuilder();
-		stringBuild.append("SELECT k ");
-		stringBuild.append("FROM KrcmtBusinessTypeOfEmployee k ");
-		stringBuild.append("WHERE k.sId = :employeeId ");
-		stringBuild.append("AND k.krcmtBusinessTypeOfEmployeePK.historyId = :historyId");
-		FIND_BY_SID_HISTID = stringBuild.toString();
+//		StringBuilder stringBuild = new StringBuilder();
+//		stringBuild.append("SELECT k ");
+//		stringBuild.append("FROM KrcmtBusinessTypeOfEmployee k ");
+//		stringBuild.append("WHERE k.sId = :employeeId ");
+//		stringBuild.append("AND k.sId = :sId");
+//		FIND_BY_SID = stringBuild.toString();
 		
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT b");
@@ -130,13 +128,13 @@ public class JpaBusinessTypeOfEmployee extends JpaRepository
 		return Optional.empty();
 	}
 
-	@Override
-	public Optional<BusinessTypeOfEmp> getBySidAndHistId(String employeeId, String histId) {
-		return this.queryProxy().query(FIND_BY_SID_HISTID, KrcmtBusinessTypeOfEmployee.class)
-				.setParameter("employeeId", employeeId).setParameter("historyId", histId)
-				.getSingle(x -> new BusinessTypeOfEmp(x.businessTypeCode, x.krcmtBusinessTypeOfEmployeePK.historyId,
-						x.sId));
-	}
+//	@Override
+//	public Optional<BusinessTypeOfEmp> getBySidAndHistId(String employeeId, String histId) {
+//		return this.queryProxy().query(FIND_BY_SID_HISTID, KrcmtBusinessTypeOfEmployee.class)
+//				.setParameter("employeeId", employeeId).setParameter("historyId", histId)
+//				.getSingle(x -> new BusinessTypeOfEmp(x.businessTypeCode, x.krcmtBusinessTypeOfEmployeePK.historyId,
+//						x.sId));
+//	}
 
 	@Override
 	public List<BusinessTypeOfEmployee> findAllByEmpAndDate(List<String> employeeIds, DatePeriod date) {
