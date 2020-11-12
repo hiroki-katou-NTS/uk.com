@@ -32,7 +32,7 @@ public class LayoutNew extends AggregateRoot {
 	/** 外部URL */
 	private Optional<String> url;
 
-	private LayoutNew() {}
+	public LayoutNew() {}
 
 	public static LayoutNew createFromMemento(MementoGetter memento) {
 		LayoutNew domain = new LayoutNew();
@@ -46,13 +46,9 @@ public class LayoutNew extends AggregateRoot {
 		this.layoutNo = new LayoutNO(memento.getLayoutNo());
 		this.layoutType = LayoutType.valueOf(memento.getLayoutType().intValue());
 		this.cid = memento.getCid();
-		this.flowMenuCd = memento.getFlowMenuCd() != null
-				? Optional.of(new FlowMenuCode(memento.getFlowMenuCd()))
-				: Optional.empty();
-		this.flowMenuUpCd = memento.getFlowMenuUpCd() != null
-				? Optional.of(new FlowMenuUpCode(memento.getFlowMenuUpCd()))
-				: Optional.empty();
-		this.url = Optional.of(memento.getUrl());
+		this.flowMenuCd = Optional.ofNullable(new FlowMenuCode(memento.getFlowMenuCd()));
+		this.flowMenuUpCd = Optional.ofNullable(new FlowMenuUpCode(memento.getFlowMenuUpCd()));
+		this.url = Optional.ofNullable(memento.getUrl());
 		this.widgetSettings = memento.getWidgetSettings();
 	}
 
