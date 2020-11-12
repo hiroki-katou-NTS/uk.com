@@ -29,6 +29,7 @@ module nts.uk.com.view.ccg015.d.screenModel {
     flowMenuUpCd: KnockoutObservable<string> = ko.observable('');
     url: KnockoutObservable<string> = ko.observable('');
     html:  KnockoutObservable<string> = ko.observable('');
+    html2:  KnockoutObservable<string> = ko.observable('');
     params: any = {};
 
     created(params: any) {
@@ -105,6 +106,12 @@ module nts.uk.com.view.ccg015.d.screenModel {
           if (result.flowMenuUpCd) {
             const topPagePartChoose = _.findIndex(vm.listTopPagePart(), (item: TopPagePartItem) => { return item.flowCode === result.flowMenuCd});
             vm.toppageSelectedCode(vm.listTopPagePart()[topPagePartChoose].flowCode);
+            let fileIdChoose: string = vm.listFlowMenu()[topPagePartChoose].fileId;
+            vm.$ajax('sys/portal/createflowmenu/extract/'+ fileIdChoose).then((item: any) => {
+              let width = item.htmlContent.match(/(?<=width: )[0-9A-Za-z]+(?=;)/)[0];
+              let height = item.htmlContent.match(/(?<=height: )[0-9A-Za-z]+(?=;)/)[0];
+                return { html2: `<iframe style="width: ${width}; height: ${height};" srcdoc='${item.htmlContent}'></iframe>`};
+            });
           }
           vm.url(result.url);
           console.log(result);

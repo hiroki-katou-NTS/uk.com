@@ -5,16 +5,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.sys.portal.app.find.toppage.WidgetSettingDto;
 import nts.uk.ctx.sys.portal.dom.layout.LayoutNew;
 import nts.uk.ctx.sys.portal.dom.layout.WidgetSetting;
 import nts.uk.ctx.sys.portal.dom.layout.WidgetType;
 
-@Getter
-@Setter
-public class SaveLayoutFlowMenuCommand implements LayoutNew.MementoSetter, LayoutNew.MementoGetter {
+@Data
+@NoArgsConstructor
+public class SaveLayoutCommand implements LayoutNew.MementoGetter {
 	/** ウィジェット設定 */
 	private List<WidgetSettingDto> widgetSettings;
 	/** トップページコード */
@@ -42,25 +42,8 @@ public class SaveLayoutFlowMenuCommand implements LayoutNew.MementoSetter, Layou
 	}
 
 	@Override
-	public void setWidgetSettings(List<WidgetSetting> widgetSettings) {
-		if (widgetSettings == null) {
-			return;
-		}
-		this.widgetSettings = widgetSettings.stream().map(x -> WidgetSettingDto.builder()
-				.widgetType(x.getWidgetType().value)
-				.order(x.getOrder())
-				.build())
-				.collect(Collectors.toList());
-	}
-
-	@Override
 	public String getTopPageCode() {
 		return this.topPageCode;
-	}
-
-	@Override
-	public void setTopPageCode(String toppageCode) {
-		this.topPageCode = toppageCode;
 	}
 
 	@Override
@@ -69,18 +52,8 @@ public class SaveLayoutFlowMenuCommand implements LayoutNew.MementoSetter, Layou
 	}
 
 	@Override
-	public void setLayoutNo(BigDecimal layoutNo) {
-		this.layoutNo = layoutNo.intValue();
-	}
-
-	@Override
 	public BigDecimal getLayoutType() {
 		return BigDecimal.valueOf(this.layoutType);
-	}
-	
-	@Override
-	public void setLayoutType(BigDecimal layoutType) {
-		this.layoutType = layoutType.intValue();
 	}
 
 	@Override
@@ -88,20 +61,12 @@ public class SaveLayoutFlowMenuCommand implements LayoutNew.MementoSetter, Layou
 		return this.cid;
 	}
 
-	@Override
-	public void setCid(String cid) {
-		this.cid = cid;
-	}
 
 	@Override
 	public String getFlowMenuCd() {
 		return this.flowMenuCd;
 	}
-	
-	@Override
-	public void setFlowMenuCd(String flowMenuCd) {
-		this.flowMenuCd = flowMenuCd;
-	}
+
 
 	@Override
 	public String getFlowMenuUpCd() {
@@ -109,17 +74,8 @@ public class SaveLayoutFlowMenuCommand implements LayoutNew.MementoSetter, Layou
 	}
 
 	@Override
-	public void setFlowMenuUpCd(String flowMenuUpCd) {
-		this.flowMenuUpCd = flowMenuUpCd;
-	}
-
-	@Override
 	public String getUrl() {
 		return this.url;
 	}
 
-	@Override
-	public void setUrl(String url) {
-		this.url = url;
-	}
 }

@@ -10,8 +10,12 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.portal.dom.layout.LayoutNew;
 import nts.uk.ctx.sys.portal.dom.layout.LayoutNewRepository;
+import nts.uk.ctx.sys.portal.dom.layout.WidgetSetting;
+import nts.uk.ctx.sys.portal.dom.layout.WidgetType;
 import nts.uk.ctx.sys.portal.infra.entity.layout.SptmtLayout;
 import nts.uk.ctx.sys.portal.infra.entity.layout.SptmtLayoutPk;
+import nts.uk.ctx.sys.portal.infra.entity.layout.widget.SptmtLayoutWidget;
+import nts.uk.ctx.sys.portal.infra.entity.layout.widget.SptmtLayoutWidgetPK;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -30,7 +34,10 @@ public class JpaLayoutNewRepository extends JpaRepository implements LayoutNewRe
 	private static final String SELECT_BY_CID_AND_TOPPAGECODE = "SELECT a FROM SptmtLayout a WHERE a.id.cid  =:cid AND a.id.topPageCode =:topPageCode ";
 	
 	private static final String SELECT_BY_CODE = "SELECT a FROM SptmtLayout a WHERE a.id.topPageCode =:topPageCode ";
-		
+	
+	private static final String SELECT_BY_CID_AND_LST_WIDGET = "SELECT a FROM SptmtLayoutWidget WHERE a.id.cid = :cid AND "
+			+ "a.id.layoutNo = :layoutNo AND a.id.topPageCode = :topPageCode AND a.id.widgetType = :widgetType";
+
 	@Override
 	public void insert(LayoutNew domain) {
 		SptmtLayout entity = JpaLayoutNewRepository.toEntity(domain);
@@ -115,4 +122,63 @@ public class JpaLayoutNewRepository extends JpaRepository implements LayoutNewRe
 				.getSingle(LayoutNew::createFromMemento);
 	}
 
+	@Override
+	public Optional<WidgetSetting> getByCidAndCodeAndWidgetType(String companyId, String topPageCd, BigDecimal layoutNo,
+			Integer widgetType) {
+		return this.queryProxy().query(SELECT_BY_CID_AND_LST_WIDGET, SptmtLayoutWidget.class)
+				.setParameter("cid", companyId)
+				.setParameter("topPageCode", topPageCd)
+				.setParameter("layoutNo", layoutNo)
+				.setParameter("widgetType", widgetType)
+				.getSingle().map(x -> new WidgetSetting(WidgetType.valueOf(x.getId().widgetType.intValue()),
+						x.getWidgetDisp().intValue()));
+	}
+
+	@Override
+	public void insertWidget(LayoutNew layout, WidgetSetting widget) {
+		SptmtLayoutWidget entity = JpaLayoutNewRepository.toEntityWidget(layout, widget);
+		// insert
+		this.commandProxy().insert(entity);		
+	}
+	
+	@Override
+	public void updateWidget(LayoutNew layout, WidgetSetting widget) {
+		Optional<SptmtLayoutWidget> entity = 
+				findWidget(layout.getCid(), layout.getTopPageCode().v(), layout.getLayoutNo().v(), BigDecimal.valueOf(widget.getWidgetType().value));
+ 
+		if (entity.isPresent()) {
+			// update
+			this.commandProxy().update(entity);
+		}
+	}
+	
+	@Override
+	public void deleteWidget(String CompanyId, BigDecimal LayoutNo, String topPageCd, BigDecimal widgetType) {
+		SptmtLayoutWidgetPK pk = 
+				new SptmtLayoutWidgetPK(CompanyId, LayoutNo, topPageCd, widgetType);
+		// delete
+		this.commandProxy().remove(SptmtLayoutWidget.class, pk);
+		
+	}
+	
+	private static SptmtLayoutWidget toEntityWidget(LayoutNew layout, WidgetSetting widget) {
+		SptmtLayoutWidget entity = new SptmtLayoutWidget();
+		SptmtLayoutWidgetPK pk = 
+				new SptmtLayoutWidgetPK(layout.getCid(), layout.getLayoutNo().v(), layout.getTopPageCode().v(), BigDecimal.valueOf(widget.getWidgetType().value));
+		entity.setId(pk);
+		entity.setContractCd(AppContexts.user().contractCode());
+		entity.setWidgetDisp(BigDecimal.valueOf(widget.getOrder()));
+		entity.setLayout(JpaLayoutNewRepository.toEntity(layout));
+		return entity;
+	}
+	
+	private Optional<SptmtLayoutWidget> findWidget(String companyId, String topPageCode, BigDecimal layoutNo, BigDecimal widgetType) {
+		return this.queryProxy()
+				.query(SELECT_BY_CID_AND_LST_WIDGET, SptmtLayoutWidget.class)
+				.setParameter("cid", companyId)
+				.setParameter("topPageCode", topPageCode)
+				.setParameter("layoutNo", layoutNo)
+				.setParameter("widgetType", widgetType)
+				.getSingle();
+	}
 }
