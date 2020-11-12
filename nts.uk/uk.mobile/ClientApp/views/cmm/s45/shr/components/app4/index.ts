@@ -118,8 +118,12 @@ export class CmmS45ComponentsApp4Component extends Vue {
 
     }
     public isDisplay3(params: any) {
-
-        return params.goBackApplication.dataWork != null;
+        let c1 = params.goBackApplication.isChangedWork == null;
+        let c2 = false;
+        if (params.goBackApplication.isChangedWork != null) {
+            params.goBackApplication.isChangedWork == 0;
+        }
+        return !(c1 || c2);
         // return true;
 
     }
