@@ -1,13 +1,10 @@
 package nts.uk.ctx.at.function.dom.dailyattendanceitem;
 
-import lombok.AllArgsConstructor;
-
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.勤怠項目.日次の勤怠項目.勤怠項目が利用できる帳票
  *
  * @author LienPTK
  */
-@AllArgsConstructor
 public enum FormCanUsedForTime {
 	// 日別勤務表
 	DAILY_WORK_SCHEDULE(1),
@@ -26,7 +23,7 @@ public enum FormCanUsedForTime {
 	// 勤務台帳
 	WORKBOOK(8);
 
-	public final Integer value;
+	public final int value;
 	
 	private FormCanUsedForTime(int value) {
 		this.value = value;

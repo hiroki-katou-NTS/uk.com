@@ -8,6 +8,7 @@ import java.io.Serializable;
 import javax.persistence.*;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -17,6 +18,7 @@ import lombok.Setter;
 @Embeddable
 @Getter
 @Setter
+@NoArgsConstructor
 public class KfnmtRptWkDaiOutatdPK implements Serializable {
 	
 	/** The Constant serialVersionUID. */
@@ -30,12 +32,6 @@ public class KfnmtRptWkDaiOutatdPK implements Serializable {
 	/** The order no. */
 	@Column(name="ORDER_NO")
 	private long orderNo;
-
-	/**
-	 * Instantiates a new kfnmt attendance display PK.
-	 */
-	public KfnmtRptWkDaiOutatdPK() {
-	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()

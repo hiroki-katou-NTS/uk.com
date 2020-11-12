@@ -95,7 +95,7 @@ public class OutputItemDailyWorkSchedule extends DomainObject {
 	public void validate() {
 		super.validate();
 		// execute algorithm アルゴリズム「登録チェック処理」を実行する to check C7_8 exist element?
-		if (this.lstDisplayedAttendance.isEmpty() || this.lstDisplayedAttendance == null) {
+		if ( this.lstDisplayedAttendance == null || this.lstDisplayedAttendance.isEmpty()) {
 			throw new BusinessException("Msg_880");
 		}
 

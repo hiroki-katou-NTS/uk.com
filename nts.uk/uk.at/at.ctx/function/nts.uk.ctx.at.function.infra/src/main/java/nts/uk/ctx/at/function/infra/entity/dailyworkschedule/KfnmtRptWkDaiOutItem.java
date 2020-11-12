@@ -174,17 +174,15 @@ public class KfnmtRptWkDaiOutItem extends UkJpaEntity
 	@Override
 	public List<AttendanceItemsDisplay> getLstDisplayedAttendance() {
 		return this.lstKfnmtRptWkDaiOutatds.stream()
-			.map(entity -> {
-				return new AttendanceItemsDisplay((int) entity.getId().getOrderNo(), entity.getAtdDisplay().intValue());
-			}).collect(Collectors.toList());
+			.map(entity -> new AttendanceItemsDisplay((int) entity.getId().getOrderNo(), entity.getAtdDisplay().intValue()))
+			.collect(Collectors.toList());
 	}
 
 	@Override
 	public List<PrintRemarksContent> getLstRemarkContent() {
 		return this.lstKfnmtRptWkDaiOutnotes.stream()
-			.map(entity -> {
-				return new PrintRemarksContent(entity.getUseCls().intValue(), entity.getId().getPrintItem().intValue());
-			}).collect(Collectors.toList());
+			.map(entity -> new PrintRemarksContent(entity.getUseCls().intValue(), entity.getId().getPrintItem().intValue()))
+			.collect(Collectors.toList());
 	}
 
 	@Override

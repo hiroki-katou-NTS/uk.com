@@ -305,7 +305,7 @@ public class OutputItemDailyWorkScheduleFinder {
 		
 		// すべて合致するか (Does it all match) = 一部合致しない
 		if (sizeData != dataInforReturnDtos.size()) {
-			List<String> lstMsgErr = new ArrayList<String>();
+			List<String> lstMsgErr = new ArrayList<>();
 			// 情報メッセージ(#Msg_1476)を表示する(Display information message (#Msg_1476)
 			lstMsgErr.add("Msg_1476");
 			dataReturnDto.setMsgErr(lstMsgErr);
@@ -495,9 +495,7 @@ public class OutputItemDailyWorkScheduleFinder {
 				BigDecimal.valueOf(formId.value));
 		
 		// アルゴリズム「使用不可の勤怠項目を除く」を実行する Thực hiện thuật toán 「使用不可の勤怠項目を除く」
-		List<Integer> avaiableItem = this.attendanceItemNameService.getAvaiableAttendanceItem(companyId, type, dailyItemUsed);
-
-		return avaiableItem;
+		return this.attendanceItemNameService.getAvaiableAttendanceItem(companyId, type, dailyItemUsed);
 		
 	}
 
@@ -530,7 +528,7 @@ public class OutputItemDailyWorkScheduleFinder {
 			}
 		}
 
-		List<InformationItemDto> displayDtos = new ArrayList<InformationItemDto>();
+		List<InformationItemDto> displayDtos = new ArrayList<>();
 		List<PrintRemarksContentDto> printRemarksContents = new ArrayList<>();
 		List<InformationItemDto> possibleSelectedItem = dailyItemDtos.stream()
 				.map(item -> InformationItemDto.builder()

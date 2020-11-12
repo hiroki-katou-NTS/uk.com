@@ -48,11 +48,7 @@ public class JpaAuthorityFormatDailyRepository extends JpaRepository implements 
 		FIND_DETAIL = builderString.toString();
 		
 		builderString = new StringBuilder();
-		builderString.append("SELECT a ");
-		builderString.append("FROM KfnmtAuthorityDailyItem a ");
-		builderString.append("WHERE a.kfnmtAuthorityDailyItemPK.companyId = :companyId ");
-		builderString
-				.append("AND a.kfnmtAuthorityDailyItemPK.dailyPerformanceFormatCode = :dailyPerformanceFormatCode ");
+		builderString.append(FIND_DETAIL);
 		builderString.append("AND a.kfnmtAuthorityDailyItemPK.sheetNo = :sheetNo ");
 		FIND_DETAIL_WITH_SHEET_NO = builderString.toString();
 

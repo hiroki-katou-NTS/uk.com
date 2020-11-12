@@ -97,12 +97,11 @@ public class KfnctAtdIdRptDai extends UkJpaEntity
 
 	@Override
 	public List<FormCanUsedForTime> getFormCanUsedForTimes() {
-		List<FormCanUsedForTime> canUsedForTimes = Arrays.asList(
+		return Arrays.asList(
 				FormCanUsedForTime.valueOf(this.workDaily.intValue()),
 				FormCanUsedForTime.valueOf(this.workAttendance.intValue()),
 				FormCanUsedForTime.valueOf(this.atdWorkAttendance.intValue()),
 				FormCanUsedForTime.valueOf(this.atdWorkDaily.intValue()));
-		return canUsedForTimes;
 	}
 
 }
