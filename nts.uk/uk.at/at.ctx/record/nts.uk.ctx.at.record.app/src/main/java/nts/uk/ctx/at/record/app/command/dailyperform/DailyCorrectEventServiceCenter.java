@@ -41,7 +41,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.enu.DailyDomainGroup;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -116,9 +115,8 @@ public class DailyCorrectEventServiceCenter {
 					
 					correctedType.add(DailyDomainGroup.ATTENDACE_LEAVE);
 				});
-		List<BreakTimeOfDailyPerformance> breakTime = domain.getBreakTime().stream()
-				.map(c -> new BreakTimeOfDailyPerformance(updated.getEmployeeId(), updated.getDate(), c))
-				.collect(Collectors.toList());
+		Optional<BreakTimeOfDailyPerformance> breakTime = domain.getBreakTime()
+				.map(c -> new BreakTimeOfDailyPerformance(updated.getEmployeeId(), updated.getDate(), c));
 		triggerBreakTime(companyId, workType, eventBus, triggerBus, wi,
 				editState, breakTime, timeLeavingOfDailyPerformance!=null?Optional.of(timeLeavingOfDailyPerformance):Optional.empty(), e -> {
 					if(e.getAction() == EventHandleAction.ABORT){
@@ -126,13 +124,11 @@ public class DailyCorrectEventServiceCenter {
 					}
 					if(e.getAction() == EventHandleAction.DELETE){
 						
-						domain.getBreakTime().removeIf(b -> b.getBreakType() == BreakType.REFER_WORK_TIME);
+						domain.setBreakTime(Optional.empty());
 						
 					} else if(e.getAction() == EventHandleAction.INSERT || e.getAction() == EventHandleAction.UPDATE) {
 						
-						domain.getBreakTime().removeIf(b -> b.getBreakType() == BreakType.REFER_WORK_TIME);
-						domain.getBreakTime().add(e.getData().getTimeZone());
-						domain.getBreakTime().sort((c1, c2) -> c1.getBreakType().compareTo(c2.getBreakType()));
+						domain.setBreakTime(Optional.of(e.getData().getTimeZone()));
 					}
 					correctedType.add(DailyDomainGroup.BREAK_TIME);
 				});
@@ -183,12 +179,12 @@ public class DailyCorrectEventServiceCenter {
 	
 	private void triggerBreakTime(String companyId, WorkType workType, EventTrigger eventTriggerBus,
 			EventTriggerBus eventBus, WorkInfoOfDailyPerformance wi, List<EditStateOfDailyPerformance> editStates,
-			List<BreakTimeOfDailyPerformance> breakTimes, Optional<TimeLeavingOfDailyPerformance> timeLeave,
+			Optional<BreakTimeOfDailyPerformance> breakTimes, Optional<TimeLeavingOfDailyPerformance> timeLeave,
 			Consumer<EventHandleResult<BreakTimeOfDailyPerformance>> actionAfterComplete) {
 		if(eventBus.shouldCorreactBreakTime() && eventTriggerBus.triggerBreakTime){
 			UpdateBreakTimeByTimeLeaveChangeCommand breakTimeEvent = (UpdateBreakTimeByTimeLeaveChangeCommand) UpdateBreakTimeByTimeLeaveChangeCommand
 					.builder()
-					.cachedBreackTime(breakTimes.stream().filter(b -> b.getTimeZone().getBreakType() == BreakType.REFER_WORK_TIME).findFirst().orElse(null))
+					.cachedBreakTime(breakTimes.orElse(null))
 					.employeeId(wi.getEmployeeId())
 					.targetDate(wi.getYmd())
 					.companyId(companyId)
@@ -307,7 +303,7 @@ public class DailyCorrectEventServiceCenter {
 			triggerBreakTime(companyId, workTypes.get(wi.getWorkInformation().getRecordInfo().getWorkTypeCode()), eventTriggerBus, c.getValue(), wi,
 					dailyRecord.getEditState().getData(), dailyRecord.getBreakTime().getData(), dailyRecord.getTimeLeaving().getData(), e -> {
 						if(e.getAction() == EventHandleAction.DELETE){
-							dailyRecord.getBreakTime().getData().removeIf(b -> b.getTimeZone().getBreakType() == BreakType.REFER_WORK_TIME);
+							dailyRecord.getBreakTime().updateDataO(Optional.empty());
 							dailyRecord.getBreakTime().shouldDeleteIfNull();
 						} else if(e.getAction() == EventHandleAction.INSERT || e.getAction() == EventHandleAction.UPDATE) {
 							dailyRecord.getBreakTime().updateData(e.getData());

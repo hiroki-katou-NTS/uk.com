@@ -76,7 +76,7 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 					pc.isPresent()?Optional.of(pc.get().getTimeZone()):Optional.empty(),//pcLogOnInfo
 					new ArrayList<>(),//employeeError
 					Optional.empty(),//outingTime
-					new ArrayList<>(),//breakTime
+					Optional.empty(),//breakTime
 					attendanceTime.isPresent()?Optional.of(attendanceTime.get().getTime()):Optional.empty(),//attendanceTimeOfDailyPerformance
 					tl.isPresent()?Optional.of(tl.get().getAttendance()):Optional.empty(),//attendanceLeave
 					Optional.empty(), //shortTime

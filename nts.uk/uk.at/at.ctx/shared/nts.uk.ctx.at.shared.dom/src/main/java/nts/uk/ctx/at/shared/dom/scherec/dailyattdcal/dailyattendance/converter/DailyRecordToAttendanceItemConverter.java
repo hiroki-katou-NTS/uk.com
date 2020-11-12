@@ -21,6 +21,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalite
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.remarks.RemarksOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 //move at record -> at shared
@@ -40,45 +41,45 @@ public interface DailyRecordToAttendanceItemConverter {
 
 	DailyRecordToAttendanceItemConverter withWorkInfo(String employeeId,GeneralDate ymd, WorkInfoOfDailyAttendance domain);
 
-	DailyRecordToAttendanceItemConverter withCalcAttr(String employeeId,GeneralDate ymd,CalAttrOfDailyAttd domain);
+	DailyRecordToAttendanceItemConverter withCalcAttr(String employeeId, GeneralDate ymd, CalAttrOfDailyAttd domain);
 
 //	DailyRecordToAttendanceItemConverter withBusinessType(WorkTypeOfDailyPerformance domain);
 	
-	DailyRecordToAttendanceItemConverter withAffiliationInfo(String employeeId,GeneralDate ymd,AffiliationInforOfDailyAttd domain);
+	DailyRecordToAttendanceItemConverter withAffiliationInfo(String employeeId, GeneralDate ymd, AffiliationInforOfDailyAttd domain);
 
 	DailyRecordToAttendanceItemConverter withEmployeeErrors(List<EmployeeDailyPerError> domain);
 
-	DailyRecordToAttendanceItemConverter withOutingTime(String employeeId,GeneralDate ymd,OutingTimeOfDailyAttd domain);
+	DailyRecordToAttendanceItemConverter withOutingTime(String employeeId, GeneralDate ymd, OutingTimeOfDailyAttd domain);
 
-	DailyRecordToAttendanceItemConverter withBreakTime(String employeeId,GeneralDate ymd,BreakTimeOfDailyAttd domain);
+	DailyRecordToAttendanceItemConverter withBreakTime(String employeeId, GeneralDate ymd, BreakTimeOfDailyAttd domain);
 
-	DailyRecordToAttendanceItemConverter withBreakTime(String employeeId,GeneralDate ymd,List<BreakTimeOfDailyAttd> domain);
-
-	DailyRecordToAttendanceItemConverter withAttendanceTime(String employeeId,GeneralDate ymd,AttendanceTimeOfDailyAttendance domain);
+	DailyRecordToAttendanceItemConverter withAttendanceTime(String employeeId, GeneralDate ymd, AttendanceTimeOfDailyAttendance domain);
 
 //	DailyRecordToAttendanceItemConverter withAttendanceTimeByWork(AttendanceTimeByWorkOfDaily domain);
 
-	DailyRecordToAttendanceItemConverter withTimeLeaving(String employeeId,GeneralDate ymd,TimeLeavingOfDailyAttd domain);
+	DailyRecordToAttendanceItemConverter withTimeLeaving(String employeeId, GeneralDate ymd, TimeLeavingOfDailyAttd domain);
 
-	DailyRecordToAttendanceItemConverter withShortTime(String employeeId,GeneralDate ymd,ShortTimeOfDailyAttd domain);
+	DailyRecordToAttendanceItemConverter withShortTime(String employeeId, GeneralDate ymd, ShortTimeOfDailyAttd domain);
 
-	DailyRecordToAttendanceItemConverter withSpecificDateAttr(String employeeId,GeneralDate ymd,SpecificDateAttrOfDailyAttd domain);
+	DailyRecordToAttendanceItemConverter withSpecificDateAttr(String employeeId, GeneralDate ymd, SpecificDateAttrOfDailyAttd domain);
 
-	DailyRecordToAttendanceItemConverter withAttendanceLeavingGate(String employeeId,GeneralDate ymd,AttendanceLeavingGateOfDailyAttd domain);
+	DailyRecordToAttendanceItemConverter withAttendanceLeavingGate(String employeeId, GeneralDate ymd, AttendanceLeavingGateOfDailyAttd domain);
 
-	DailyRecordToAttendanceItemConverter withAnyItems(String employeeId,GeneralDate ymd,AnyItemValueOfDailyAttd domain);
+	DailyRecordToAttendanceItemConverter withAnyItems(String employeeId, GeneralDate ymd, AnyItemValueOfDailyAttd domain);
 
-	DailyRecordToAttendanceItemConverter withEditStates(String employeeId,GeneralDate ymd,EditStateOfDailyAttd domain);
+	DailyRecordToAttendanceItemConverter withEditStates(String employeeId, GeneralDate ymd, EditStateOfDailyAttd domain);
 
-	DailyRecordToAttendanceItemConverter withEditStates(String employeeId,GeneralDate ymd,List<EditStateOfDailyAttd> domain);
+	DailyRecordToAttendanceItemConverter withEditStates(String employeeId, GeneralDate ymd, List<EditStateOfDailyAttd> domain);
 
-	DailyRecordToAttendanceItemConverter withTemporaryTime(String employeeId,GeneralDate ymd,TemporaryTimeOfDailyAttd domain);
+	DailyRecordToAttendanceItemConverter withTemporaryTime(String employeeId, GeneralDate ymd, TemporaryTimeOfDailyAttd domain);
 	
-	DailyRecordToAttendanceItemConverter withPCLogInfo(String employeeId,GeneralDate ymd,PCLogOnInfoOfDailyAttd domain);
+	DailyRecordToAttendanceItemConverter withPCLogInfo(String employeeId, GeneralDate ymd, PCLogOnInfoOfDailyAttd domain);
 	
-	DailyRecordToAttendanceItemConverter withRemark(String employeeId,GeneralDate ymd,RemarksOfDailyAttd domain);
+	DailyRecordToAttendanceItemConverter withRemark(String employeeId, GeneralDate ymd, RemarksOfDailyAttd domain);
 	
-	DailyRecordToAttendanceItemConverter withRemarks(String employeeId,GeneralDate ymd,List<RemarksOfDailyAttd> domain);
+	DailyRecordToAttendanceItemConverter withRemarks(String employeeId, GeneralDate ymd, List<RemarksOfDailyAttd> domain);
+	
+	DailyRecordToAttendanceItemConverter withSnapshot(String employeeId, GeneralDate ymd, SnapShot domain);
 
 	DailyRecordToAttendanceItemConverter employeeId(String employeeId);
 
@@ -96,7 +97,7 @@ public interface DailyRecordToAttendanceItemConverter {
 
 	Optional<OutingTimeOfDailyAttd> outingTime();
 
-	List<BreakTimeOfDailyAttd> breakTime();
+	Optional<BreakTimeOfDailyAttd> breakTime();
 
 	Optional<AttendanceTimeOfDailyAttendance> attendanceTime();
 
@@ -119,5 +120,7 @@ public interface DailyRecordToAttendanceItemConverter {
 	Optional<PCLogOnInfoOfDailyAttd> pcLogInfo();
 	
 	List<RemarksOfDailyAttd> remarks();
+	
+	Optional<SnapShot> snapshot();
 
 }

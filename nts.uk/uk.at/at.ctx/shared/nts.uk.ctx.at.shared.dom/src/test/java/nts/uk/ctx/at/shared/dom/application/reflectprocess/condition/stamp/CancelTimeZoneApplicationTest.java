@@ -85,7 +85,7 @@ public class CancelTimeZoneApplicationTest {
 		List<Integer> actualResult = CancelTimeZoneApplication.process(dailyApp, listDestinationTimeZoneApp);
 
 		assertThat(actualResult).isEqualTo(Arrays.asList(7, 8));
-		assertThat(dailyApp.getBreakTime().get(0).getBreakTimeSheets().get(0).getStartTime()).isNull();// 開始
-		assertThat(dailyApp.getBreakTime().get(0).getBreakTimeSheets().get(0).getEndTime()).isNull();// 終了
+		assertThat(dailyApp.getBreakTime().get().getBreakTimeSheets().get(0).getStartTime()).isNull();// 開始
+		assertThat(dailyApp.getBreakTime().get().getBreakTimeSheets().get(0).getEndTime()).isNull();// 終了
 	}
 }

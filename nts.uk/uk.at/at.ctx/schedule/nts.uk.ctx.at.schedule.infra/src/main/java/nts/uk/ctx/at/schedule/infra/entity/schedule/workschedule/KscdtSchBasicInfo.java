@@ -171,7 +171,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		}
 		// 勤務予定．休憩時間帯
 		List<KscdtSchBreakTs> kscdtSchBreakTs = new ArrayList<>();
-		workSchedule.getLstBreakTime().stream().forEach(x -> {
+		workSchedule.getLstBreakTime().ifPresent(x -> {
 			List<KscdtSchBreakTs> kscdtSchBreakT = x.getBreakTimeSheets().stream()
 					.map(mapper -> KscdtSchBreakTs.toEntity(mapper, sID, yMD, cID)).collect(Collectors.toList());
 			kscdtSchBreakTs.addAll(kscdtSchBreakT);
@@ -202,15 +202,13 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 				null);
 		
 		// create List<BreakTimeOfDailyAttd> 
-		List<BreakTimeOfDailyAttd> lstBreakTime = new ArrayList<>();
 		List<BreakTimeSheet> breakTimeSheets = new ArrayList<>();
 		breakTs.stream().forEach(x->{
 			BreakTimeSheet timeSheet = new BreakTimeSheet(new BreakFrameNo(x.getPk().getFrameNo()), new TimeWithDayAttr(x.getBreakTsStart()), new TimeWithDayAttr(x.getBreakTsEnd()));
 			breakTimeSheets.add(timeSheet);
 			
-			BreakTimeOfDailyAttd dailyAttd = new BreakTimeOfDailyAttd(null, breakTimeSheets);
-			lstBreakTime.add(dailyAttd);
 		});
+		BreakTimeOfDailyAttd dailyAttd = new BreakTimeOfDailyAttd(breakTimeSheets);
 		
 		// create List<EditStateOfDailyAttd>
 		List<EditStateOfDailyAttd> lstEditState = editStates.stream().map(mapper-> new EditStateOfDailyAttd(mapper.getPk().getAtdItemId(),EnumAdaptor.valueOf(mapper.getSditState(), EditStateSetting.class))).collect(Collectors.toList());
@@ -240,8 +238,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		});
 		
 		ActualWorkingTimeOfDaily actualWorkingTimeOfDaily = kscdtSchTime != null ? kscdtSchTime.toDomain(sID, yMD) : null;
-		WorkScheduleTimeOfDaily scheduleTimeOfDaily = new WorkScheduleTimeOfDaily(new WorkScheduleTime(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0)), 
-				new AttendanceTime(0), new AttendanceTime(0));
+		WorkScheduleTimeOfDaily scheduleTimeOfDaily = new WorkScheduleTimeOfDaily(new WorkScheduleTime(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0)), new AttendanceTime(0));
 		AttendanceTimeOfDailyAttendance attendance = null;
 		StayingTimeOfDaily stayingTime = new StayingTimeOfDaily(new AttendanceTimeOfExistMinus(0), new AttendanceTimeOfExistMinus(0), new AttendanceTimeOfExistMinus(0), new AttendanceTime(0), new AttendanceTimeOfExistMinus(0));
 		MedicalCareTimeOfDaily medicalCareTime = new MedicalCareTimeOfDaily(WorkTimeNightShift.DAY_SHIFT, new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0));
@@ -252,7 +249,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		}
 		optSortTimeWork = new ShortTimeOfDailyAttd(shortWorkingTimeSheets);
 		return new WorkSchedule(sID, yMD, EnumAdaptor.valueOf(confirmedATR ? 1 : 0, ConfirmedATR.class), 
-				workInfo, affInfo, lstBreakTime, lstEditState, Optional.ofNullable(optTimeLeaving), Optional.ofNullable(attendance), Optional.ofNullable(optSortTimeWork));
+				workInfo, affInfo, Optional.of(dailyAttd), lstEditState, Optional.ofNullable(optTimeLeaving), Optional.ofNullable(attendance), Optional.ofNullable(optSortTimeWork));
 	}
 
 	@Override

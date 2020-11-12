@@ -315,7 +315,7 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 		
 		// 共有項目を集計する
 		prevTotalWorkingTime.aggregateSharedItem(require, lastWeekPeriod, attendanceTimeOfDailyMap,
-				monthlyCalcDailys.getWorkInfoOfDailyMap());
+				workInformationOfDailyMap, monthlyCalcDailys.getSnapshots());
 
 		GeneralDate procDate = lastWeekPeriod.start();
 		while (procDate.beforeOrEquals(lastWeekPeriod.end())){

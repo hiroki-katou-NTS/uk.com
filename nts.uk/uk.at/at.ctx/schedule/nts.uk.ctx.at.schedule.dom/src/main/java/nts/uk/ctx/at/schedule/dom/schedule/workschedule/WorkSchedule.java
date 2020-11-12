@@ -47,7 +47,7 @@ public class WorkSchedule implements DomainAggregate {
 	
 	/** 休憩時間帯**/
 	@Getter
-	private List<BreakTimeOfDailyAttd> lstBreakTime;
+	private Optional<BreakTimeOfDailyAttd> lstBreakTime;
 	
 	/** 編集状態 **/
 	@Getter

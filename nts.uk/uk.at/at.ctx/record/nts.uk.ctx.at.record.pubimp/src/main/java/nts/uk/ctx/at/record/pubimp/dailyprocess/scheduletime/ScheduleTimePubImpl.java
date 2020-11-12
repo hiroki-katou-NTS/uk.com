@@ -150,7 +150,7 @@ public class ScheduleTimePubImpl implements ScheduleTimePub{
 				personalExpenceTime = integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance()
 													.getPremiumTimes().stream().map(tc -> tc.getPremitumTime()).collect(Collectors.toList());
 				//計画所定
-				preTime = integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getWorkScheduleTimeOfDaily().getSchedulePrescribedLaborTime();
+				preTime = integrationOfDaily.getSnapshot().map(c -> c.getPredetermineTime()).orElseGet(() -> new AttendanceTime(0));//integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getWorkScheduleTimeOfDaily().getSchedulePrescribedLaborTime();
 			
 				if(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime() != null) {
 					//総労働時間

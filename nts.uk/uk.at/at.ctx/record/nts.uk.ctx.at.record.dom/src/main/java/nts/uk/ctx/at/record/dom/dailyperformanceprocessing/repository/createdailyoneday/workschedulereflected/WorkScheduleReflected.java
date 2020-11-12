@@ -12,22 +12,18 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.adapter.schedule.snapshot.DailySnapshotWorkAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.BreakTimeOfDailyAttdImport;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.TimeLeavingWorkImport;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.WorkScheduleWorkInforAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.WorkScheduleWorkInforImport;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.snapshot.CreateNoScheduleSnapshotService;
+import nts.uk.ctx.at.record.dom.adapter.workschedule.snapshot.DailySnapshotWorkAdapter;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
@@ -110,14 +106,14 @@ public class WorkScheduleReflected {
 						.getRecordInfo().getWorkTimeCode().v(), AbolishAtr.NOT_ABOLISH);
 		//取得できなかった場合
 		//勤務予定の出退勤を確認する
-		if(!workTimeOpt.isPresent() || !scheduleWorkInfor.get().getTimeLeavingOfDailyAttd().isPresent() ) {
+		if(!workTimeOpt.isPresent() || !scheduleWorkInfor.get().getTimeLeaving().isPresent() ) {
 			listErrorMessageInfo.add(new ErrorMessageInfo(companyId, employeeId, ymd, ExecutionContent.DAILY_CREATION,
 					new ErrMessageResource("016"), new ErrMessageContent(TextResource.localize("Msg_591"))));
 			return listErrorMessageInfo;
 		}
 		// 予定時間帯をコピーする(Copy 予定時間帯) (lấy từ Stamp chứ kp actualStamp, do bên schedule k có actualStamp)
 		List<ScheduleTimeSheet> listScheduleTimeSheet = new ArrayList<>();
-		for (TimeLeavingWorkImport timeLeavingWorkImport : scheduleWorkInfor.get().getTimeLeavingOfDailyAttd().get()
+		for (TimeLeavingWorkImport timeLeavingWorkImport : scheduleWorkInfor.get().getTimeLeaving().get()
 				.getTimeLeavingWorks()) {
 			listScheduleTimeSheet.add(
 				new ScheduleTimeSheet(
@@ -133,14 +129,10 @@ public class WorkScheduleReflected {
 		workInformation.setScheduleTimeSheets(listScheduleTimeSheet);
 		
 		//予定休憩時間をコピーする
-		List<BreakTimeOfDailyAttdImport> breakTimeWorkSchedule = scheduleWorkInfor.get()
-				.getListBreakTimeOfDailyAttdImport().stream().filter(c -> c.getBreakType() == 1)
-				.collect(Collectors.toList());
+		Optional<BreakTimeOfDailyAttdImport> breakTimeWorkSchedule = scheduleWorkInfor.get().getBreakTime();
 		
-		List<BreakTimeOfDailyAttd> breakTime = breakTimeWorkSchedule.stream()
-				.map(c -> 
+		Optional<BreakTimeOfDailyAttd> breakTime = breakTimeWorkSchedule.map(c -> 
 						new BreakTimeOfDailyAttd(
-							EnumAdaptor.valueOf(c.getBreakType(), BreakType.class),
 							c.getBreakTimeSheets().stream().map(
 									x -> new BreakTimeSheet(
 										new BreakFrameNo(x.getBreakFrameNo()), 
@@ -149,8 +141,7 @@ public class WorkScheduleReflected {
 									)
 							).collect(Collectors.toList())
 						)
-					)
-				.collect(Collectors.toList());
+					);
 		integrationOfDaily.setBreakTime(breakTime);
 
 		return listErrorMessageInfo;

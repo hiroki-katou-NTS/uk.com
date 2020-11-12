@@ -17,7 +17,6 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
@@ -37,30 +36,14 @@ public class BreakTimeDailyDto extends AttendanceItemCommon {
 	@JsonDeserialize(using = CustomGeneralDateSerializer.class)
 	private GeneralDate ymd;
 	
-	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = TIME_ZONE, 
-			listMaxLength = 10, indexField = DEFAULT_INDEX_FIELD_NAME, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
+	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = TIME_ZONE, listMaxLength = 10, indexField = DEFAULT_INDEX_FIELD_NAME)
 	private List<TimeSheetDto> timeZone;
-
-	/** 休憩種類 */
-	private int attr;
-
-	public String enumText() {
-		switch (this.attr) {
-		case 0:
-			return E_WORK_REF;
-		case 1:
-			return E_SCHEDULE_REF;
-		default:
-			return EMPTY_STRING;
-		}
-	}
 	
 	public static BreakTimeDailyDto getDto(BreakTimeOfDailyPerformance x) {
 		BreakTimeDailyDto dto = new BreakTimeDailyDto();
 		if(x != null){
 			dto.setEmployeeId(x.getEmployeeId());
 			dto.setYmd(x.getYmd());
-			dto.setAttr(x.getTimeZone().getBreakType() == null ? 0 : x.getTimeZone().getBreakType().value);
 			dto.setTimeZone(ConvertHelper.mapTo(x.getTimeZone().getBreakTimeSheets(), 
 													(c) -> new TimeSheetDto(
 														c.getBreakFrameNo().v().intValue(),
@@ -71,12 +54,11 @@ public class BreakTimeDailyDto extends AttendanceItemCommon {
 		}
 		return dto;
 	}
-	public static BreakTimeDailyDto getDto(String employeeID,GeneralDate ymd,BreakTimeOfDailyAttd x) {
+	public static BreakTimeDailyDto getDto(String employeeID, GeneralDate ymd, BreakTimeOfDailyAttd x) {
 		BreakTimeDailyDto dto = new BreakTimeDailyDto();
 		if(x != null){
 			dto.setEmployeeId(employeeID);
 			dto.setYmd(ymd);
-			dto.setAttr(x.getBreakType() == null ? 0 : x.getBreakType().value);
 			dto.setTimeZone(ConvertHelper.mapTo(x.getBreakTimeSheets(), 
 													(c) -> new TimeSheetDto(
 														c.getBreakFrameNo().v().intValue(),
@@ -93,7 +75,6 @@ public class BreakTimeDailyDto extends AttendanceItemCommon {
 		BreakTimeDailyDto dto = new BreakTimeDailyDto();
 		dto.setEmployeeId(employeeId());
 		dto.setYmd(workingDate());
-		dto.setAttr(attr);
 		dto.setTimeZone(ConvertHelper.mapTo(timeZone, t -> t.clone()));
 		if(isHaveData()){
 			dto.exsistData();
@@ -127,10 +108,8 @@ public class BreakTimeDailyDto extends AttendanceItemCommon {
 			date = this.workingDate();
 		}
 		
-		BreakTimeOfDailyPerformance domain =  new BreakTimeOfDailyPerformance(emp,
-					attr == BreakType.REFER_SCHEDULE.value ? BreakType.REFER_SCHEDULE : BreakType.REFER_WORK_TIME,
-					timeZone.stream().filter(c -> judgNotNull(c)).map(c -> toTimeSheet(c)).collect(Collectors.toList()),
-					date);
+		BreakTimeOfDailyPerformance domain =  new BreakTimeOfDailyPerformance(emp, date,
+					timeZone.stream().filter(c -> judgNotNull(c)).map(c -> toTimeSheet(c)).collect(Collectors.toList()));
 		return domain.getTimeZone();
 	}
 	

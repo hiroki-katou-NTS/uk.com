@@ -549,7 +549,8 @@ public class MonthlyCalculation implements SerializableWithOptional {
 		// 共有項目を集計する
 		this.aggregateTime.aggregateSharedItem(
 				require, aggrPeriod, this.monthlyCalculatingDailys.getAttendanceTimeOfDailyMap(),
-				this.monthlyCalculatingDailys.getWorkInfoOfDailyMap());
+				this.monthlyCalculatingDailys.getWorkInfoOfDailyMap(),
+				this.monthlyCalculatingDailys.getSnapshots());
 
 		ConcurrentStopwatches.stop("12221:共有項目：");
 

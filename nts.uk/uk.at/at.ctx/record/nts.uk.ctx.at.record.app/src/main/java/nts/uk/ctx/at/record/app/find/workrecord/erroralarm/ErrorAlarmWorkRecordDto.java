@@ -234,7 +234,7 @@ public class ErrorAlarmWorkRecordDto {
 			WorkTimeConditionDto wtimeConditionDto = new WorkTimeConditionDto();
 			// Set WorkTypeConditionDto
 			if (conditionDomain.getWorkTypeCondition()
-					.getComparePlanAndActual() != FilterByCompare.EXTRACT_SAME) {
+					.getComparePlanAndActual() != FilterByCompare.SELECTED) {
 				PlanActualWorkType wtypeConditionDomain = (PlanActualWorkType) conditionDomain
 						.getWorkTypeCondition();
 				wtypeConditionDto.setActualFilterAtr(wtypeConditionDomain.getWorkTypeActual().isUse());
@@ -259,7 +259,7 @@ public class ErrorAlarmWorkRecordDto {
 			errorAlarmWorkRecordDto.setWorkTypeCondition(wtypeConditionDto);
 			// Set WorkTimeConditionDto
 			if (conditionDomain.getWorkTimeCondition()
-					.getComparePlanAndActual() != FilterByCompare.EXTRACT_SAME) {
+					.getComparePlanAndActual() != FilterByCompare.SELECTED) {
 				PlanActualWorkTime wtimeConditionDomain = (PlanActualWorkTime) conditionDomain
 						.getWorkTimeCondition();
 				wtimeConditionDto.setActualFilterAtr(wtimeConditionDomain.getWorkTimeActual().isUse());

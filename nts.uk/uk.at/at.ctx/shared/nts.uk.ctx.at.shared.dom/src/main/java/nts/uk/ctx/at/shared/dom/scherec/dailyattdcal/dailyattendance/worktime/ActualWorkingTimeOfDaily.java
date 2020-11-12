@@ -700,15 +700,14 @@ public class ActualWorkingTimeOfDaily {
 		}
 		//休憩終了 <= 退勤
 		if(attendanceLeave.getEnd().greaterThan(breakTimeSheet.get().getEndTime())) {
-			Optional<BreakTimeSheet> equalTimeSheet = Optional.empty();
-			for(BreakTimeOfDailyAttd masterBreakTimeSheet: integrationOfDailyInDto.getBreakTime()) {
-				if(masterBreakTimeSheet.getBreakType().isReferWorkTime()) {
-					equalTimeSheet = masterBreakTimeSheet.getBreakTimeSheets().stream()
-																			  .filter(ts -> ts.getStartTime() != null && ts.getEndTime() != null)
-																			  .filter(tc -> new TimeSpanForCalc(tc.getStartTime(),tc.getEndTime())
-																					  					.contains(new TimeSpanForCalc(breakTimeSheet.get().getStartTime(),breakTimeSheet.get().getEndTime()))).findFirst();
-				}
-			}
+			Optional<BreakTimeSheet> equalTimeSheet = integrationOfDailyInDto.getBreakTime().flatMap(c -> {
+				return c.getBreakTimeSheets().stream()
+						  .filter(ts -> ts.getStartTime() != null && ts.getEndTime() != null)
+						  .filter(tc -> new TimeSpanForCalc(tc.getStartTime(),tc.getEndTime())
+								  			.contains(new TimeSpanForCalc(breakTimeSheet.get().getStartTime(),
+				  															breakTimeSheet.get().getEndTime())))
+						  .findFirst();
+			});
 			if(equalTimeSheet.isPresent()) {
 				//取得した休憩と予定休憩の時間帯が同じ
 				return 0;

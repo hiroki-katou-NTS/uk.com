@@ -6,7 +6,6 @@ import java.util.function.Consumer;
 
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 
 /**
@@ -46,8 +45,6 @@ public interface DailyCalculationEmployeeService {
 	 */
 	@SuppressWarnings("rawtypes")
 	ProcessState calculateForOnePerson(String employeeId,DatePeriod datePeriod, Optional<Consumer<ProcessState>> counter,String executeLogId,Boolean isCalWhenLock );
-
-	List<IntegrationOfDaily> getIntegrationOfDaily(String employeeId, DatePeriod datePeriod);
 	
 	/**
 	 * 計算状態の更新

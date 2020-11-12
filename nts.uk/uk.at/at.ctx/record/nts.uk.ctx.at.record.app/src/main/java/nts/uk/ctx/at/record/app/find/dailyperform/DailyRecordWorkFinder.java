@@ -159,7 +159,7 @@ public class DailyRecordWorkFinder extends FinderFacade {
 				.withAffiliationInfo(affiliInfoFinder.find(employeeId, baseDate))
 				.withErrors(errorFinder.finds(employeeId, baseDate))
 				.outingTime(outingTimeFinder.find(employeeId, baseDate))
-				.addBreakTime(breakItemFinder.finds(employeeId, baseDate))
+				.breakTime(breakItemFinder.find(employeeId, baseDate))
 				.attendanceTime(attendanceTimeFinder.find(employeeId, baseDate))
 				.attendanceTimeByWork(attendanceTimeByWorkFinder.find(employeeId, baseDate))
 				.timeLeaving(timeLeavingFinder.find(employeeId, baseDate))
@@ -191,7 +191,7 @@ public class DailyRecordWorkFinder extends FinderFacade {
 				errorFinder.find(employeeId, baseDate));
 		Map<String, Map<GeneralDate, OutingTimeOfDailyPerformanceDto>> outings = toMap(
 				outingTimeFinder.find(employeeId, baseDate));
-		Map<String, Map<GeneralDate, List<BreakTimeDailyDto>>> breaks = toMapList(
+		Map<String, Map<GeneralDate, BreakTimeDailyDto>> breaks = toMap(
 				breakItemFinder.find(employeeId, baseDate));
 		Map<String, Map<GeneralDate, AttendanceTimeDailyPerformDto>> attendTime = toMap(
 				attendanceTimeFinder.find(employeeId, baseDate));
@@ -228,7 +228,7 @@ public class DailyRecordWorkFinder extends FinderFacade {
 							.withSnapshot(getValue(snapshots.get(em), start))
 							.withErrors(getListValue(errors.get(em), start))
 							.outingTime(getValue(outings.get(em), start))
-							.addBreakTime(getListValue(breaks.get(em), start))
+							.breakTime(getValue(breaks.get(em), start))
 							.attendanceTime(getValue(attendTime.get(em), start))
 							.attendanceTimeByWork(getValue(attendTimeByWork.get(em), start))
 							.timeLeaving(getValue(leaving.get(em), start))
@@ -261,7 +261,7 @@ public class DailyRecordWorkFinder extends FinderFacade {
 		Map<String, Map<GeneralDate, List<EmployeeDailyPerErrorDto>>> errors = toMapList(
 				errorFinder.find(param));
 		Map<String, Map<GeneralDate, OutingTimeOfDailyPerformanceDto>> outings = toMap(outingTimeFinder.find(param));
-		Map<String, Map<GeneralDate, List<BreakTimeDailyDto>>> breaks = toMapList(breakItemFinder.find(param));
+		Map<String, Map<GeneralDate, BreakTimeDailyDto>> breaks = toMap(breakItemFinder.find(param));
 		Map<String, Map<GeneralDate, AttendanceTimeDailyPerformDto>> attendTime = toMap(
 				attendanceTimeFinder.find(param));
 		Map<String, Map<GeneralDate, AttendanceTimeByWorkOfDailyDto>> attendTimeByWork = toMap(
@@ -290,7 +290,7 @@ public class DailyRecordWorkFinder extends FinderFacade {
 						.withSnapshot(getValue(snapshots.get(p.getKey()), d))
 						.withErrors(getListValue(errors.get(p.getKey()), d))
 						.outingTime(getValue(outings.get(p.getKey()), d))
-						.addBreakTime(getListValue(breaks.get(p.getKey()), d))
+						.breakTime(getValue(breaks.get(p.getKey()), d))
 						.attendanceTime(getValue(attendTime.get(p.getKey()), d))
 						.attendanceTimeByWork(getValue(attendTimeByWork.get(p.getKey()), d))
 						.timeLeaving(getValue(leaving.get(p.getKey()), d))

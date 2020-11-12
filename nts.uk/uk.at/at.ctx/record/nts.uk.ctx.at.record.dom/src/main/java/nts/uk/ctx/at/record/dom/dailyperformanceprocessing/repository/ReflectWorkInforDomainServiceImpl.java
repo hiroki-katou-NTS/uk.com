@@ -127,7 +127,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancet
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
@@ -1029,7 +1028,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				// 存在する - has data
 				else {
 					basicScheduleHasData.ifPresent(c -> {
-						workInfoOfDailyPerformanceUpdate.setScheduleInfo(new WorkInformation(c.getWorkTypeCode(), c.getWorkTimeCode()));
+//						workInfoOfDailyPerformanceUpdate.setScheduleInfo(new WorkInformation(c.getWorkTypeCode(), c.getWorkTimeCode()));
 						workInfoOfDailyPerformanceUpdate.setRecordInfo(new WorkInformation(c.getWorkTypeCode(), c.getWorkTimeCode()));
 					});
 
@@ -1162,8 +1161,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 										}
 
 										BreakTimeOfDailyPerformance breakTimeOfDailyPerformanceUpdate = new BreakTimeOfDailyPerformance(
-												employeeID, EnumAdaptor.valueOf(1, BreakType.class), breakTimeSheets,
-												day);
+												employeeID, day, breakTimeSheets);
 										breakTimeOfDailyPerformance = Optional.of(breakTimeOfDailyPerformanceUpdate);
 									}
 									// - end
@@ -1702,74 +1700,74 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			List<TimeLeavingWorkOutput> timeLeavingWorkTemps = new ArrayList<>();
 			List<TimeLeavingWork> timeLeavingWorks = new ArrayList<>();
 			if (workInfoOfDailyPerformanceUpdate.getRecordInfo() != null) {
-				if(workInfoOfDailyPerformanceUpdate.getScheduleInfo() != null) {
-				if (workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTimeCode() != null  && workInfoOfDailyPerformanceUpdate.getScheduleInfo().getWorkTypeCode() != null && workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTimeCode()
-						.equals(workInfoOfDailyPerformanceUpdate.getScheduleInfo().getWorkTimeCode())
-						&& workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTypeCode()
-								.equals(workInfoOfDailyPerformanceUpdate.getScheduleInfo().getWorkTypeCode())) {
-
-					// 自動打刻セット詳細．出退勤 ← 勤務予定時間帯
-					workInfoOfDailyPerformanceUpdate.getScheduleTimeSheets().forEach(sheet -> {
-
-						TimeLeavingWorkOutput timeLeavingWorkOutput = new TimeLeavingWorkOutput();
-						TimeActualStampOutPut attendanceStampTemp = new TimeActualStampOutPut();
-						TimeActualStampOutPut leaveStampTemp = new TimeActualStampOutPut();
-
-						timeLeavingWorkOutput.setWorkNo(sheet.getWorkNo());
-
-						// 出勤系時刻を丸める (làm tròn thời gian 出勤)
-						Optional<WorkTimezoneCommonSet> workTimezoneCommonSet = GetCommonSet.workTimezoneCommonSet(require, companyId,
-								workInfoOfDailyPerformanceUpdate.getScheduleInfo().getWorkTimeCode().v());
-						WorkTimezoneStampSet stampSet = workTimezoneCommonSet.get().getStampSet();
-
-						// 出勤
-						RoundingSet atendanceRoundingSet = stampSet.getRoundingSets().stream()
-								.filter(item -> item.getSection() == Superiority.ATTENDANCE).findFirst().isPresent()
-										? stampSet.getRoundingSets().stream()
-												.filter(item -> item.getSection() == Superiority.ATTENDANCE).findFirst()
-												.get()
-										: null;
-
-						int attendanceTimeAfterRouding = atendanceRoundingSet != null ? this.roudingTime(
-								sheet.getAttendance().v(),
-								atendanceRoundingSet.getRoundingSet().getFontRearSection().value,
-								new Integer(atendanceRoundingSet.getRoundingSet().getRoundingTimeUnit().description)
-										.intValue())
-								: sheet.getAttendance().v();
-						// 退勤
-						RoundingSet leavingRoundingSet = stampSet.getRoundingSets().stream()
-								.filter(item -> item.getSection() == Superiority.OFFICE_WORK).findFirst().isPresent()
-										? stampSet.getRoundingSets().stream()
-												.filter(item -> item.getSection() == Superiority.OFFICE_WORK)
-												.findFirst().get()
-										: null;
-
-						int leaveTimeAfterRounding = leavingRoundingSet != null ? this.roudingTime(
-								sheet.getLeaveWork().v(),
-								leavingRoundingSet.getRoundingSet().getFontRearSection().value,
-								new Integer(leavingRoundingSet.getRoundingSet().getRoundingTimeUnit().description)
-										.intValue())
-								: sheet.getLeaveWork().v();
-
-						// ドメインモデル「所属職場履歴」を取得する
-						attendanceStampTemp
-								.setStamp(new WorkStampOutPut(new TimeWithDayAttr(attendanceTimeAfterRouding),
-										sheet.getAttendance(), null, automaticStampSetDetailDto.getAttendanceStamp()));
-						leaveStampTemp.setStamp(new WorkStampOutPut(new TimeWithDayAttr(leaveTimeAfterRounding),
-								sheet.getLeaveWork(), null, automaticStampSetDetailDto.getLeavingStamp()));
-						// attendanceStampTemp.setStamp(new WorkStampOutPut(new
-						// TimeWithDayAttr(sheet.getAttendance().v()),
-						// sheet.getAttendance(), null,
-						// automaticStampSetDetailDto.getAttendanceStamp()));
-						// leaveStampTemp.setStamp(new WorkStampOutPut(new
-						// TimeWithDayAttr(sheet.getLeaveWork().v()),
-						// sheet.getLeaveWork(), null,
-						// automaticStampSetDetailDto.getLeavingStamp()));
-						timeLeavingWorkOutput.setAttendanceStamp(attendanceStampTemp);
-						timeLeavingWorkOutput.setLeaveStamp(leaveStampTemp);
-						timeLeavingWorkTemps.add(timeLeavingWorkOutput);
-					});
-				} else {
+//				if(workInfoOfDailyPerformanceUpdate.getScheduleInfo() != null) {
+//				if (workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTimeCode() != null  && workInfoOfDailyPerformanceUpdate.getScheduleInfo().getWorkTypeCode() != null && workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTimeCode()
+//						.equals(workInfoOfDailyPerformanceUpdate.getScheduleInfo().getWorkTimeCode())
+//						&& workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTypeCode()
+//								.equals(workInfoOfDailyPerformanceUpdate.getScheduleInfo().getWorkTypeCode())) {
+//
+//					// 自動打刻セット詳細．出退勤 ← 勤務予定時間帯
+//					workInfoOfDailyPerformanceUpdate.getScheduleTimeSheets().forEach(sheet -> {
+//
+//						TimeLeavingWorkOutput timeLeavingWorkOutput = new TimeLeavingWorkOutput();
+//						TimeActualStampOutPut attendanceStampTemp = new TimeActualStampOutPut();
+//						TimeActualStampOutPut leaveStampTemp = new TimeActualStampOutPut();
+//
+//						timeLeavingWorkOutput.setWorkNo(sheet.getWorkNo());
+//
+//						// 出勤系時刻を丸める (làm tròn thời gian 出勤)
+//						Optional<WorkTimezoneCommonSet> workTimezoneCommonSet = GetCommonSet.workTimezoneCommonSet(require, companyId,
+//								workInfoOfDailyPerformanceUpdate.getScheduleInfo().getWorkTimeCode().v());
+//						WorkTimezoneStampSet stampSet = workTimezoneCommonSet.get().getStampSet();
+//
+//						// 出勤
+//						RoundingSet atendanceRoundingSet = stampSet.getRoundingSets().stream()
+//								.filter(item -> item.getSection() == Superiority.ATTENDANCE).findFirst().isPresent()
+//										? stampSet.getRoundingSets().stream()
+//												.filter(item -> item.getSection() == Superiority.ATTENDANCE).findFirst()
+//												.get()
+//										: null;
+//
+//						int attendanceTimeAfterRouding = atendanceRoundingSet != null ? this.roudingTime(
+//								sheet.getAttendance().v(),
+//								atendanceRoundingSet.getRoundingSet().getFontRearSection().value,
+//								new Integer(atendanceRoundingSet.getRoundingSet().getRoundingTimeUnit().description)
+//										.intValue())
+//								: sheet.getAttendance().v();
+//						// 退勤
+//						RoundingSet leavingRoundingSet = stampSet.getRoundingSets().stream()
+//								.filter(item -> item.getSection() == Superiority.OFFICE_WORK).findFirst().isPresent()
+//										? stampSet.getRoundingSets().stream()
+//												.filter(item -> item.getSection() == Superiority.OFFICE_WORK)
+//												.findFirst().get()
+//										: null;
+//
+//						int leaveTimeAfterRounding = leavingRoundingSet != null ? this.roudingTime(
+//								sheet.getLeaveWork().v(),
+//								leavingRoundingSet.getRoundingSet().getFontRearSection().value,
+//								new Integer(leavingRoundingSet.getRoundingSet().getRoundingTimeUnit().description)
+//										.intValue())
+//								: sheet.getLeaveWork().v();
+//
+//						// ドメインモデル「所属職場履歴」を取得する
+//						attendanceStampTemp
+//								.setStamp(new WorkStampOutPut(new TimeWithDayAttr(attendanceTimeAfterRouding),
+//										sheet.getAttendance(), null, automaticStampSetDetailDto.getAttendanceStamp()));
+//						leaveStampTemp.setStamp(new WorkStampOutPut(new TimeWithDayAttr(leaveTimeAfterRounding),
+//								sheet.getLeaveWork(), null, automaticStampSetDetailDto.getLeavingStamp()));
+//						// attendanceStampTemp.setStamp(new WorkStampOutPut(new
+//						// TimeWithDayAttr(sheet.getAttendance().v()),
+//						// sheet.getAttendance(), null,
+//						// automaticStampSetDetailDto.getAttendanceStamp()));
+//						// leaveStampTemp.setStamp(new WorkStampOutPut(new
+//						// TimeWithDayAttr(sheet.getLeaveWork().v()),
+//						// sheet.getLeaveWork(), null,
+//						// automaticStampSetDetailDto.getLeavingStamp()));
+//						timeLeavingWorkOutput.setAttendanceStamp(attendanceStampTemp);
+//						timeLeavingWorkOutput.setLeaveStamp(leaveStampTemp);
+//						timeLeavingWorkTemps.add(timeLeavingWorkOutput);
+//					});
+//				} else {
 					if(workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTimeCode() != null) {
 						// 出勤休日区分を確認する (Xác nhận 出勤休日区分)
 						Optional<WorkType> workTypeOptional = this.workTypeRepository.findByPK(companyId,
@@ -1858,9 +1856,9 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 							}
 						}
-					}
+//					}
 					
-				}
+//				}
 			}
 		}
 			timeLeavingWorks = timeLeavingWorkTemps.stream().map(item -> {

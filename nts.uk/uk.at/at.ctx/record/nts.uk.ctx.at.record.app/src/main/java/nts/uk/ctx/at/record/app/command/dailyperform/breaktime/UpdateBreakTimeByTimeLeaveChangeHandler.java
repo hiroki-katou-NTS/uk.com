@@ -56,7 +56,7 @@ public class UpdateBreakTimeByTimeLeaveChangeHandler extends
 				Optional.empty(), //pcLogOnInfo
 				new ArrayList<>(), //employeeError
 				Optional.empty(), //outingTime
-				new ArrayList<>(), //breakTime
+				Optional.empty(), //breakTime
 				Optional.empty(), //attendanceTimeOfDailyPerformance
 				timeLeavingOfDailyAttd, //attendanceLeave
 				Optional.empty(), //shortTime
@@ -68,7 +68,7 @@ public class UpdateBreakTimeByTimeLeaveChangeHandler extends
 				new ArrayList<>(),//remarks
 				Optional.empty());
 		command.cachedBreackTime.ifPresent(b -> {
-			working.getBreakTime().add(b.getTimeZone());
+			working.setBreakTime(Optional.of(b.getTimeZone()));
 		});
 
 		EventHandleResult<IntegrationOfDaily> result = eventService.correct(companyId, working, command.cachedWorkType, !command.actionOnCache);
@@ -80,8 +80,7 @@ public class UpdateBreakTimeByTimeLeaveChangeHandler extends
 
 		/** 「日別実績の休憩時間帯」を更新する */
 		if (result.getAction() == EventHandleAction.UPDATE || result.getAction() == EventHandleAction.INSERT) {
-			BreakTimeOfDailyAttd breakTime = result.getData().getBreakTime().stream()
-					.filter(b -> b.getBreakType() == BreakType.REFER_WORK_TIME).findFirst().orElse(null);
+			BreakTimeOfDailyAttd breakTime = result.getData().getBreakTime().orElse(null);
 			return EventHandleResult.withResult(EventHandleAction.UPDATE, new BreakTimeOfDailyPerformance(command.employeeId,command.targetDate, breakTime) );
 		}
 		return EventHandleResult.onFail();

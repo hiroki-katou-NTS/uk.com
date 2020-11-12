@@ -5,12 +5,15 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktime;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkCheckResult;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.FilterByCompare;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 
 /**
@@ -52,14 +55,13 @@ public class SingleWorkTime extends WorkTimeCondition {
 	}
 
 	@Override
-	public WorkCheckResult checkWorkTime(WorkInfoOfDailyPerformance workInfo) {
-//		if(workInfo.getScheduleInfo().getWorkTimeCode() != null && 
-//				!workInfo.getScheduleInfo().getWorkTimeCode().equals(workInfo.getRecordInfo().getWorkTimeCode())){
-//			return true;
-//		}
+	public WorkCheckResult checkWorkTime(WorkInfoOfDailyPerformance workInfo, Optional<SnapShot> snapshot) {
 		if (this.targetWorkTime != null) {
+			
+			val scheWorkTime = snapshot.flatMap(c -> c.getWorkInfo().getWorkTimeCodeNotNull()).orElse(null);
+			
 			if(this.targetWorkTime.isUse() && !this.targetWorkTime.getLstWorkTime().isEmpty()){
-				if(workInfo.getWorkInformation().getRecordInfo().getWorkTimeCode().equals(workInfo.getWorkInformation().getScheduleInfo().getWorkTimeCode()) && 
+				if(workInfo.getWorkInformation().getRecordInfo().getWorkTimeCode().equals(scheWorkTime) && 
 						this.targetWorkTime.contains(workInfo.getWorkInformation().getRecordInfo().getWorkTimeCode())){
 					return WorkCheckResult.ERROR;
 				}

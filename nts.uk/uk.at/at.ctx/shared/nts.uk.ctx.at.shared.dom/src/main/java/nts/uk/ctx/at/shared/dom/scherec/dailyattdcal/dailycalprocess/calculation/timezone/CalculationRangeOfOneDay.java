@@ -12,6 +12,7 @@ import lombok.Setter;
 import lombok.val;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
@@ -682,7 +683,6 @@ public class CalculationRangeOfOneDay {
 		}
 	}
 	
-	
 	/**
 	 * 事前処理
 	 * @param personDailySetting 社員設定管理
@@ -716,13 +716,12 @@ public class CalculationRangeOfOneDay {
 		};
 		
 		//控除時間帯の取得
-		DeductionTimeSheet deductionTimeSheetCalcBefore = provisionalDeterminationOfDeductionTimeSheet(
+		List<TimeSheetOfDeductionItem> deductionTimeSheetCalcBefore = DeductionTimeSheet.collectDeductionTimesForCalc(
 				todayWorkType,
 				integrationOfWorkTime,
 				integrationOfDaily,
 				this.oneDayOfRange,
-				this.attendanceLeavingWork,
-				this.predetermineTimeSetForCalc);
+				this.attendanceLeavingWork);
 		
 		//遅刻時間帯の計算
 		List<TimeLeavingWork> calcLateTimeLeavingWorksWorks = new ArrayList<>(timeLeavingForFlowWork);
@@ -773,6 +772,110 @@ public class CalculationRangeOfOneDay {
 	}
 	
 	/**
+	 * 補正用事前処理
+	 * 補正用処理
+	 * @param personDailySetting 社員設定管理
+	 * @param todayWorkType 勤務種類
+	 * @param integrationOfWorkTime 統合就業時間帯
+	 * @param integrationOfDaily 日別実績(Work)
+	 * @param timeLeavingForFlowWork 流動勤務用出退勤
+	 * @param creatingWithinWorkTimeSheet 就業時間内時間帯
+	 * @return 控除時間帯
+	 */
+	public List<TimeSheetOfDeductionItem> prePocessForFlowCorrect(
+			ManagePerPersonDailySet personDailySetting,
+			WorkType todayWorkType,
+			IntegrationOfWorkTime integrationOfWorkTime,
+			IntegrationOfDaily integrationOfDaily,
+			List<TimeLeavingWork> timeLeavingForFlowWork,
+			WithinWorkTimeSheet creatingWithinWorkTimeSheet){
+		
+		/** 1回目と2回目の間の時間帯を作成 */
+		Optional<TimeSheetOfDeductionItem> betweenWorkTimeSheets = this.createBetweenWork(
+				timeLeavingForFlowWork,
+				integrationOfWorkTime.getFlowWorkSetting().get());
+		
+		if(!integrationOfDaily.getAttendanceLeave().isPresent()) {
+			return new ArrayList<>();
+		}
+		
+		/** 休憩が固定の場合は控除時間帯を取得する */
+		List<TimeSheetOfDeductionItem> deductionTimeSheetCalcBefore = getDeductionTimeSheetOnFixed(
+																						todayWorkType,
+																						integrationOfWorkTime,
+																						integrationOfDaily);
+		
+		//遅刻時間帯の計算
+		List<TimeLeavingWork> calcLateTimeLeavingWorksWorks = new ArrayList<>(timeLeavingForFlowWork);
+		timeLeavingForFlowWork.clear();
+		for(TimeLeavingWork timeLeavingWork : calcLateTimeLeavingWorksWorks) {
+			timeLeavingForFlowWork.add(
+					this.calcLateTimeSheet(
+							todayWorkType,
+							integrationOfWorkTime,
+							integrationOfDaily,
+							deductionTimeSheetCalcBefore.getForDeductionTimeZoneList(),
+							personDailySetting.getAddSetting().getVacationCalcMethodSet(),
+							timeLeavingWork,
+							creatingWithinWorkTimeSheet));
+		}
+		
+		//控除時間帯の取得
+		DeductionTimeSheet deductionTimeSheetCalcAfter = provisionalDeterminationOfDeductionTimeSheet(
+				todayWorkType,
+				integrationOfWorkTime,
+				integrationOfDaily,
+				this.oneDayOfRange,
+				new TimeLeavingOfDailyAttd(
+						timeLeavingForFlowWork, 
+						new WorkTimes(timeLeavingForFlowWork.size())),
+				this.predetermineTimeSetForCalc);
+		
+		if(betweenWorkTimeSheets.isPresent()) {
+			deductionTimeSheetCalcAfter.getForDeductionTimeZoneList().add(betweenWorkTimeSheets.get());
+		}
+		
+		//早退時間帯の計算
+		List<TimeLeavingWork> calcLeaveEarlyTimeLeavingWorks = new ArrayList<>(timeLeavingForFlowWork);
+		timeLeavingForFlowWork.clear();
+		
+		for(TimeLeavingWork timeLeavingWork : calcLeaveEarlyTimeLeavingWorks) {
+			timeLeavingForFlowWork.add(
+					this.calcLeaveEarlyTimeSheet(
+							todayWorkType,
+							integrationOfWorkTime,
+							deductionTimeSheetCalcBefore.getForDeductionTimeZoneList(),
+							personDailySetting.getAddSetting().getVacationCalcMethodSet(),
+							timeLeavingWork,
+							creatingWithinWorkTimeSheet));
+		}
+		
+		return deductionTimeSheetCalcAfter.getForDeductionTimeZoneList();
+	}
+	
+	/** 休憩が固定の場合は控除時間帯を取得する */
+	public List<TimeSheetOfDeductionItem> getDeductionTimeSheetOnFixed(WorkType workType,
+			IntegrationOfWorkTime workTime, IntegrationOfDaily integrationOfDaily) {
+		
+		/** 控除時間帯の取得 */
+		val deductionTimeSheet = CalculationRangeOfOneDay.provisionalDeterminationOfDeductionTimeSheet(
+						workType, workTime, integrationOfDaily, this.oneDayOfRange, 
+						integrationOfDaily.getAttendanceLeave().get(), this.predetermineTimeSetForCalc)
+				.getForDeductionTimeZoneList();
+		
+		/** 休憩が固定かどうかを判断する */
+		if (workTime.isFixBreak(workType)) {
+
+			return deductionTimeSheet;
+		}
+		
+		/** 流動休憩の場合は、休憩時間帯は削除する */
+		return deductionTimeSheet.stream()
+				.filter(dts -> dts.getDeductionAtr() != DeductionClassification.BREAK)
+				.collect(Collectors.toList());
+	}
+	
+	/**
 	* 遅刻時間帯の計算
 	 * @param todayWorkType 勤務種類
 	 * @param integrationOfWorkTime 統合就業時間帯
@@ -783,7 +886,7 @@ public class CalculationRangeOfOneDay {
 	 * @param creatingWithinWorkTimeSheet 就業時間内時間帯
 	 * @return 出退勤
 	 */
-	private TimeLeavingWork calcLateTimeSheet(
+	public TimeLeavingWork calcLateTimeSheet(
 			WorkType todayWorkType,
 			IntegrationOfWorkTime integrationOfWorkTime,
 			IntegrationOfDaily integrationOfDaily,
@@ -812,12 +915,12 @@ public class CalculationRangeOfOneDay {
 				timeLeavingWork,
 				predetermineTimeSet);
 		
-		if(!timeLeavingWork.getAttendanceStampTimeWithDay().isPresent())
+		if(!timeLeavingWork.getAttendanceTime().isPresent())
 			return timeLeavingWork;
 		
 		//時間帯.出勤←流動勤務用出退勤.出勤
 		creatingWithinWorkTimeSheet.getWithinWorkTimeFrame().get(timeLeavingWork.getWorkNo().v() - 1).shiftStart(
-				timeLeavingWork.getAttendanceStampTimeWithDay().get());
+				timeLeavingWork.getAttendanceTime().get());
 		
 		return timeLeavingWork;
 	}
@@ -852,12 +955,12 @@ public class CalculationRangeOfOneDay {
 				timeLeavingWork,
 				predetermineTimeSet);
 		
-		if(!timeLeavingWork.getleaveStampTimeWithDay().isPresent())
+		if(!timeLeavingWork.getLeaveTime().isPresent())
 			return timeLeavingWork;
 		
 		//時間帯.退勤←流動勤務用出退勤.退勤
 		creatingWithinWorkTimeSheet.getWithinWorkTimeFrame().get(timeLeavingWork.getWorkNo().v() - 1).shiftEnd(
-				timeLeavingWork.getleaveStampTimeWithDay().get());
+				timeLeavingWork.getLeaveTime().get());
 		
 		return timeLeavingWork;
 	}
@@ -873,18 +976,15 @@ public class CalculationRangeOfOneDay {
 			WorkType workType){
 		
 		PredetermineTimeSetForCalc copiedPredetermineTimeSetForCalc = this.predetermineTimeSetForCalc.clone();
-	
-		//予定と実績が同じ勤務の場合
-		if(this.workInformationOfDaily.isMatchWorkInfomation()){
 			
-			//予定勤務から参照
-			Optional<ScheduleTimeSheet> scheduleTimeSheet = this.workInformationOfDaily.getScheduleTimeSheet(workNo);
-			
-			if(scheduleTimeSheet.isPresent()) {
-				copiedPredetermineTimeSetForCalc.getTimeSheets().get(workNo.v()).updateStartTime(scheduleTimeSheet.get().getAttendance());
-				copiedPredetermineTimeSetForCalc.getTimeSheets().get(workNo.v()).updateEndTime(scheduleTimeSheet.get().getLeaveWork());
-			}
+		//始業/終業時刻から参照
+		Optional<ScheduleTimeSheet> scheduleTimeSheet = this.workInformationOfDaily.getScheduleTimeSheet(workNo);
+		
+		if(scheduleTimeSheet.isPresent()) {
+			copiedPredetermineTimeSetForCalc.getTimeSheets().get(workNo.v()).updateStartTime(scheduleTimeSheet.get().getAttendance());
+			copiedPredetermineTimeSetForCalc.getTimeSheets().get(workNo.v()).updateEndTime(scheduleTimeSheet.get().getLeaveWork());
 		}
+		
 		//午前勤務、午後勤務の場合に時間帯を補正する
 		copiedPredetermineTimeSetForCalc.correctPredetermineTimeSheet(workType.getDailyWork(),workNo.v());
 		return copiedPredetermineTimeSetForCalc;
@@ -951,11 +1051,8 @@ public class CalculationRangeOfOneDay {
 			IntegrationOfDaily integrationOfDaily,
 			FlowWorkSetting flowWorkSetting) {
 		
-		//出勤時刻から計算する
+		//計算開始時刻を決める設定をチェック
 		if(flowWorkSetting.getFlowSetting().getCalculateSetting().getCalcStartTimeSet() == PrePlanWorkTimeCalcMethod.CALC_FROM_WORK_TIME) return false;
-		
-		//一致しない 
-		if(!integrationOfDaily.getWorkInformation().isMatchWorkInfomation()) return false;
 		
 		//計算開始時刻>=予定勤務時間帯．出勤時刻
 		if(!integrationOfDaily.getWorkInformation().getScheduleTimeSheet(new WorkNo(1)).isPresent()) return false;
@@ -972,7 +1069,7 @@ public class CalculationRangeOfOneDay {
 	 * @param flowWorkSetting 流動勤務設定
 	 * @return Optional<TimeSheetOfDeductionItem>  控除項目の時間帯
 	 */
-	private Optional<TimeSheetOfDeductionItem> createBetweenWork(
+	public Optional<TimeSheetOfDeductionItem> createBetweenWork(
 			List<TimeLeavingWork> timeLeavingForFlowWork,
 			FlowWorkSetting flowWorkSetting) {
 		
@@ -1158,11 +1255,29 @@ public class CalculationRangeOfOneDay {
 			Optional<SchedulePerformance> schedulePerformance) {
 		
 		if(!schedulePerformance.isPresent() //予定を渡している場合（予定の計算時には変動させない為）
-			|| !integrationOfDaily.getWorkInformation().isMatchWorkInfomation() //勤務実績と勤務予定の勤務情報が一致しない
+			|| !isMatchWorkInfomation(integrationOfDaily.getWorkInformation().getRecordInfo(), 
+								 	  integrationOfDaily.getSnapshot().map(c -> c.getWorkInfo())) //勤務実績と勤務予定の勤務情報が一致しない
 			|| todayWorkType.chechAttendanceDay().equals(AttendanceDayAttr.HOLIDAY_WORK) //勤務実績の勤務種類が休出
 			|| flowOTSet.getFixedChangeAtr().equals(FixedChangeAtr.NOT_CHANGE)) { //所定変動区分が「変動しない」
 			return false;
 		}
 		return true;
+	}
+	
+	/**
+	 * 勤務実績と勤務予定の勤務情報を比較
+	 * @param workNo
+	 * @param predetermineTimeSheetSetting
+	 * @return
+	 */
+	private boolean isMatchWorkInfomation(WorkInformation record, Optional<WorkInformation> schedule) {
+		val isSameWorkType = record.getWorkTypeCode().equals(schedule.map(c -> c.getWorkTypeCode()).orElse(null));
+		val isSameWorkTime = record.getWorkTimeCodeNotNull()
+					.map(wtc -> wtc.equals(schedule.flatMap(c -> c.getWorkTimeCodeNotNull()).orElse(null)))
+					.orElse(false);
+		if(isSameWorkType && isSameWorkTime) {
+			return true;
+		}
+		return false;
 	}
 }

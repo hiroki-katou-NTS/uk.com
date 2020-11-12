@@ -13,6 +13,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.byperiod.FlexTimeByPeriod;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.ExcessOutsideTimeSetReg;
@@ -115,17 +116,19 @@ public class AggregateTotalWorkingTime implements Cloneable, Serializable{
 	 * @param datePeriod 期間
 	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
 	 * @param workInfoOfDailyMap 日別実績の勤務情報リスト
+	 * @param snapshots 日別実績のスナップショット
 	 */
 	public void aggregateSharedItem(
 			RequireM3 require, DatePeriod datePeriod,
 			Map<GeneralDate, AttendanceTimeOfDailyAttendance> attendanceTimeOfDailyMap,
-			Map<GeneralDate, WorkInfoOfDailyAttendance> workInfoOfDailyMap){
+			Map<GeneralDate, WorkInfoOfDailyAttendance> workInfoOfDailyMap,
+			Map<GeneralDate, SnapShot> snapshots){
 	
 		// 休暇使用時間を集計する
 		this.vacationUseTime.confirm(require, datePeriod, attendanceTimeOfDailyMap, workInfoOfDailyMap);
 		
 		// 所定労働時間を集計する
-		this.prescribedWorkingTime.confirm(datePeriod, attendanceTimeOfDailyMap);
+		this.prescribedWorkingTime.confirm(datePeriod, attendanceTimeOfDailyMap, snapshots);
 
 		// 就業時間を集計する
 		this.workTime.confirm(require, datePeriod, attendanceTimeOfDailyMap, workInfoOfDailyMap);

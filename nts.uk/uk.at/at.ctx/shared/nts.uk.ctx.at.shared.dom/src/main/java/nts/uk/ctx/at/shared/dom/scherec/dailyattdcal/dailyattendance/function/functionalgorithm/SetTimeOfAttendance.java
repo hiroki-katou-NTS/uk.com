@@ -8,11 +8,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.DetermineClassifiByWorkInfoCond.AutoStampSetClassifi;
@@ -29,37 +27,28 @@ import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
 public class SetTimeOfAttendance {
 
 	@Inject
-	private SetPredetermineTimeZone setPredetermineTimeZone;
-
-	@Inject
 	private CorrectLateArrivalDepartureTime correctLateArrivalDepartureTime;
 
 	public List<TimeLeavingWork> process(String companyId, WorkInfoOfDailyAttendance workInfo,
 			AutoStampSetClassifi autoStampClasssifi) {
 		// INPUT．「日別実績の勤務情報」の勤務実績と勤務予定を比較する
 		List<TimeLeavingWork> lstTimeLeavingWork = new ArrayList<>();
-		if (compareWorkInfo(workInfo.getRecordInfo(), workInfo.getScheduleInfo())) {
-			// 「出退勤（List）」を作成する
-			lstTimeLeavingWork.addAll(workInfo.getScheduleTimeSheets().stream().map(x -> {
-				return new TimeLeavingWork(x.getWorkNo(),
-						new TimeActualStamp(null, new WorkStamp(x.getAttendance(),
-								new WorkTimeInformation(new ReasonTimeChange(autoStampClasssifi.getAttendanceStamp(), null),
-										x.getAttendance()),
-								Optional.empty()), 0),
-						new TimeActualStamp(null,
-								new WorkStamp(x.getLeaveWork(),
-										new WorkTimeInformation(
-												new ReasonTimeChange(autoStampClasssifi.getLeaveStamp(), null),
-												x.getLeaveWork()),
-										Optional.empty()),
-								0));
-			}).collect(Collectors.toList()));
-		} else {
-			// 所定時間帯をセットする
-			lstTimeLeavingWork
-					.addAll(setPredetermineTimeZone.setTimeZone(companyId, workInfo.getRecordInfo().getWorkTypeCode(),
-							workInfo.getRecordInfo().getWorkTimeCode(), autoStampClasssifi));
-		}
+		
+		// 「出退勤（List）」を作成する
+		lstTimeLeavingWork.addAll(workInfo.getScheduleTimeSheets().stream().map(x -> {
+			return new TimeLeavingWork(x.getWorkNo(),
+					new TimeActualStamp(null, new WorkStamp(x.getAttendance(),
+							new WorkTimeInformation(new ReasonTimeChange(autoStampClasssifi.getAttendanceStamp(), null),
+									x.getAttendance()),
+							Optional.empty()), 0),
+					new TimeActualStamp(null,
+							new WorkStamp(x.getLeaveWork(),
+									new WorkTimeInformation(
+											new ReasonTimeChange(autoStampClasssifi.getLeaveStamp(), null),
+											x.getLeaveWork()),
+									Optional.empty()),
+							0));
+		}).collect(Collectors.toList()));
 
 		// ジャスト遅刻早退時刻を補正する
 		correctLateArrivalDepartureTime.process(companyId, workInfo.getRecordInfo().getWorkTimeCode().v(),
@@ -78,16 +67,5 @@ public class SetTimeOfAttendance {
 
 		// 「出退勤（List）」を返す
 		return lstTimeLeavingWork;
-	}
-
-	private boolean compareWorkInfo(WorkInformation recordInfo, WorkInformation scheduleInfo) {
-
-		if (recordInfo.getWorkTypeCode().v() == scheduleInfo.getWorkTypeCode().v()
-				&& ((recordInfo.getWorkTimeCode() == null && scheduleInfo.getWorkTimeCode() == null)
-						|| (recordInfo.getWorkTimeCode() != null && scheduleInfo.getWorkTimeCode() != null)
-								&& recordInfo.getWorkTimeCode().v().equals(scheduleInfo.getWorkTimeCode().v()))) {
-			return true;
-		}
-		return false;
 	}
 }

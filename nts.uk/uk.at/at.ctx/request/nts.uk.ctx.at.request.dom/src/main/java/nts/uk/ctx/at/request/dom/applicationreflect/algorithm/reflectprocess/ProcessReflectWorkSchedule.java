@@ -17,6 +17,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.reflect.con
 import nts.uk.ctx.at.request.dom.applicationreflect.algorithm.checkprocess.PreCheckProcessWorkSchedule;
 import nts.uk.ctx.at.request.dom.applicationreflect.algorithm.checkprocess.PreCheckProcessWorkSchedule.PreCheckProcessResult;
 import nts.uk.ctx.at.request.dom.applicationreflect.object.AppReflectExecCond;
+import nts.uk.ctx.at.request.dom.applicationreflect.object.PreApplicationWorkScheReflectAttr;
 import nts.uk.ctx.at.request.dom.applicationreflect.object.ReflectStatusResult;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule.ExecutionType;
 import nts.uk.ctx.at.request.dom.setting.company.request.appreflect.AppReflectionSetting;
@@ -47,7 +48,9 @@ public class ProcessReflectWorkSchedule {
 
 		// [申請反映実行条件]を取得する
 		Optional<AppReflectExecCond> appReFlectExec = require.findAppReflectExecCond(companyId);
-		if (!appReFlectExec.isPresent() || appReFlectExec.get().getPreAppSchedule() == NotUseAtr.NOT_USE) {
+		
+		/** [事前申請を勤務予定に反映する]をチェック */
+		if (!appReFlectExec.isPresent() || appReFlectExec.get().getPreAppSchedule() == PreApplicationWorkScheReflectAttr.NOT_REFLECT) {
 			statusWorkSchedule.setReflectStatus(ReflectedState.REFLECTED);
 			return Pair.of(statusWorkSchedule, Optional.empty());
 		}
@@ -65,7 +68,8 @@ public class ProcessReflectWorkSchedule {
 		Pair<Object, AtomTask> result = require.process(ConvertApplicationToShare.toAppliction(application), targetDate,
 				new ReflectStatusResultShare(ReflectedStateShare.valueOf(statusWorkSchedule.getReflectStatus().value),
 						ReasonNotReflectDailyShare.valueOf(statusWorkSchedule.getReasonNotReflectWorkRecord().value),
-						ReasonNotReflectShare.valueOf(statusWorkSchedule.getReasonNotReflectWorkSchedule().value)));
+						ReasonNotReflectShare.valueOf(statusWorkSchedule.getReasonNotReflectWorkSchedule().value)),
+				appReFlectExec.get().getPreAppSchedule().value);
 		return Pair.of(statusResult((ReflectStatusResultShare) result.getLeft()), Optional.of(result.getRight()));
 
 	}
@@ -94,7 +98,7 @@ public class ProcessReflectWorkSchedule {
 
 		// ReflectApplicationWorkScheduleAdapter
 		public Pair<Object, AtomTask> process(ApplicationShare application, GeneralDate date,
-				ReflectStatusResultShare reflectStatus);
+				ReflectStatusResultShare reflectStatus, int preAppWorkScheReflectAttr);
 
 	}
 

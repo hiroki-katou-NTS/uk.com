@@ -33,7 +33,7 @@ public class DeductionTimeSheetAdjustDuplicationTime {
 	 * @param clockManage
 	 * 
 	 */
-	public List<TimeSheetOfDeductionItem> reCreate(WorkTimeMethodSet setMethod,RestClockManageAtr clockManage,WorkTimeDailyAtr workTimeDailyAtr){
+	public List<TimeSheetOfDeductionItem> reCreate(WorkTimeMethodSet setMethod, RestClockManageAtr clockManage, WorkTimeDailyAtr workTimeDailyAtr){
 		List<TimeSheetOfDeductionItem> originCopyList = timeSpanList;
 		int processedListNumber = 0;
 		//分割処理などを行っている現在処理中の時間帯中でどの時間帯を処理しているかチェック(末尾までいったらこの処理を終える) 
@@ -70,7 +70,9 @@ public class DeductionTimeSheetAdjustDuplicationTime {
 	 * @param clockManage　休憩打刻の時刻管理設定区分
 	 * @return 調整後の値を入れたList
 	 */
-	private List<TimeSheetOfDeductionItem> convertFromDeductionItemToList(List<TimeSheetOfDeductionItem> originList,int number,int nextNumber,WorkTimeMethodSet setMethod,RestClockManageAtr clockManage,WorkTimeDailyAtr workTimeDailyAtr){
+	private List<TimeSheetOfDeductionItem> convertFromDeductionItemToList(List<TimeSheetOfDeductionItem> originList,int number,int nextNumber,
+			WorkTimeMethodSet setMethod,RestClockManageAtr clockManage,WorkTimeDailyAtr workTimeDailyAtr){
+		
 		return replaceListItem(originList,
 							   originList.get(number).DeplicateBreakGoOut(originList.get(nextNumber),setMethod,clockManage,true,FluidFixedAtr.FixedWork,workTimeDailyAtr)
 							   ,number,nextNumber);

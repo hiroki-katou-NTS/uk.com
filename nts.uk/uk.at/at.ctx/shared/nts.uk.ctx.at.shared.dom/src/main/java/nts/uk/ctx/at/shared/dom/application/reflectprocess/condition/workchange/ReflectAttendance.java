@@ -56,34 +56,33 @@ public class ReflectAttendance {
 			} else {
 				// [日別勤怠(work）の出退勤]をチェック
 				// 日別勤怠の出退勤
-				Optional<TimeLeavingWork> attendanceLeave = !dailyApp.getAttendanceLeave().isPresent()
-						? Optional.empty()
-						: dailyApp.getAttendanceLeave().get().getAttendanceLeavingWork(timeZone.getWorkNo());
+				Optional<TimeLeavingWork> attendanceLeave = dailyApp.getAttendanceLeave()
+						.flatMap(at -> at.getAttendanceLeavingWork(timeZone.getWorkNo()));
+				
 				if (attendanceLeave.isPresent()) {
-					if (reflectAtt.isPresent() && reflectAtt.get()
-							&& attendanceLeave.get().getAttendanceStamp().get().getStamp().isPresent()) {
-						attendanceLeave.get().getAttendanceStamp().get().getStamp().get().getTimeDay()
-								.setTimeWithDay(Optional.of(timeZone.getTimeZone().getStartTime()));
-						// if (dailyApp.getClassification() == ScheduleRecordClassifi.RECORD) {
-						attendanceLeave.get().getAttendanceStamp().get().getStamp().get().getTimeDay()
-								.getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.APPLICATION);
-						// }
-						lstItemId.addAll(Arrays.asList(CancelAppStamp.createItemId(31, timeZone.getWorkNo().v(), 10)));
+					
+					if (reflectAtt.orElse(false)) {
+						attendanceLeave.flatMap(c -> c.getStampOfAttendance()).ifPresent(at -> {
+							at.getTimeDay().setTimeWithDay(Optional.of(timeZone.getTimeZone().getStartTime()));
+							at.getTimeDay().getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.APPLICATION);
+							
+							lstItemId.addAll(Arrays.asList(CancelAppStamp.createItemId(31, timeZone.getWorkNo().v(), 10)));
+						});
+						
 					}
 
-					if (reflectLeav.isPresent() && reflectLeav.get()
-							&& attendanceLeave.get().getLeaveStamp().get().getStamp().isPresent()) {
-						attendanceLeave.get().getLeaveStamp().get().getStamp().get().getTimeDay()
-								.setTimeWithDay(Optional.of(timeZone.getTimeZone().getEndTime()));
-						// if (dailyApp.getClassification() == ScheduleRecordClassifi.RECORD) {
-						attendanceLeave.get().getLeaveStamp().get().getStamp().get().getTimeDay().getReasonTimeChange()
-								.setTimeChangeMeans(TimeChangeMeans.APPLICATION);
-						// }
-						lstItemId.addAll(Arrays.asList(CancelAppStamp.createItemId(34, timeZone.getWorkNo().v(), 10)));
+					if (reflectLeav.orElse(false)) {
+						
+						attendanceLeave.flatMap(c -> c.getStampOfLeave()).ifPresent(at -> {
+							at.getTimeDay().setTimeWithDay(Optional.of(timeZone.getTimeZone().getEndTime()));
+							at.getTimeDay().getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.APPLICATION);
+							
+							lstItemId.addAll(Arrays.asList(CancelAppStamp.createItemId(34, timeZone.getWorkNo().v(), 10)));
+						});
 					}
 				} else {
 					TimeLeavingWork work = new TimeLeavingWork(timeZone.getWorkNo(), null, null);
-					if (reflectAtt.isPresent() && reflectAtt.get()) {
+					if (reflectAtt.orElse(false)) {
 						work.setAttendanceStamp(Optional.of(new TimeActualStamp(null,
 								new WorkStamp(timeZone.getTimeZone().getStartTime(),
 										new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.APPLICATION, null),
@@ -92,7 +91,7 @@ public class ReflectAttendance {
 								0)));
 						lstItemId.addAll(Arrays.asList(CancelAppStamp.createItemId(31, timeZone.getWorkNo().v(), 10)));
 					}
-					if (reflectLeav.isPresent() && reflectLeav.get()) {
+					if (reflectLeav.orElse(false)) {
 						work.setLeaveStamp(Optional.of(new TimeActualStamp(null,
 								new WorkStamp(timeZone.getTimeZone().getStartTime(),
 										new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.APPLICATION, null),

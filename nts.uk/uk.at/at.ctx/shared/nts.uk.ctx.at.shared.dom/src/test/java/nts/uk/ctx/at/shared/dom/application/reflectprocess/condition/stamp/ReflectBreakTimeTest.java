@@ -42,8 +42,8 @@ public class ReflectBreakTimeTest {
 		List<Integer> actualResult = ReflectBreakTime.reflect(dailyApp, listTimeStampApp);
 
 		assertThat(actualResult).isEqualTo(Arrays.asList(157, 159));
-		assertThat(dailyApp.getBreakTime().get(0).getBreakTimeSheets().get(0).getStartTime().v()).isEqualTo(666);
-		assertThat(dailyApp.getBreakTime().get(0).getBreakTimeSheets().get(0).getEndTime().v()).isEqualTo(1111);
+		assertThat(dailyApp.getBreakTime().get().getBreakTimeSheets().get(0).getStartTime().v()).isEqualTo(666);
+		assertThat(dailyApp.getBreakTime().get().getBreakTimeSheets().get(0).getEndTime().v()).isEqualTo(1111);
 
 	}
 
@@ -70,9 +70,9 @@ public class ReflectBreakTimeTest {
 		List<Integer> actualResult = ReflectBreakTime.reflect(dailyApp, listTimeStampApp);
 
 		assertThat(actualResult).isEqualTo(Arrays.asList(163, 165));
-		assertThat(dailyApp.getBreakTime().get(0).getBreakTimeSheets().get(1).getBreakFrameNo().v()).isEqualTo(2);
-		assertThat(dailyApp.getBreakTime().get(0).getBreakTimeSheets().get(1).getStartTime().v()).isEqualTo(666);
-		assertThat(dailyApp.getBreakTime().get(0).getBreakTimeSheets().get(1).getEndTime().v()).isEqualTo(1111);
+		assertThat(dailyApp.getBreakTime().get().getBreakTimeSheets().get(1).getBreakFrameNo().v()).isEqualTo(2);
+		assertThat(dailyApp.getBreakTime().get().getBreakTimeSheets().get(1).getStartTime().v()).isEqualTo(666);
+		assertThat(dailyApp.getBreakTime().get().getBreakTimeSheets().get(1).getEndTime().v()).isEqualTo(1111);
 
 	}
 

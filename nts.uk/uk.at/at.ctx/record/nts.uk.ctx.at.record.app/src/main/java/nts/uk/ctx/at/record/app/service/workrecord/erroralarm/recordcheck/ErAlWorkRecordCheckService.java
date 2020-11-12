@@ -486,7 +486,7 @@ public class ErAlWorkRecordCheckService {
 		}
 		WorkInfoOfDailyPerformance workInfo = new WorkInfoOfDailyPerformance(record.employeeId(), record.getDate(), record.getWorkInfo().toDomain(record.employeeId(), record.getDate()));
 		
-		return condition.checkWith(workInfo, item -> {
+		return condition.checkWith(workInfo, record.getSnapshot().map(c -> c.toDomain(null, null)), item -> {
 			if (item.isEmpty()) {
 				return new ArrayList<>();
 			}
@@ -511,7 +511,7 @@ public class ErAlWorkRecordCheckService {
 					.collect(Collectors.toList());
 		})).filter(v -> v != null).collect(Collectors.toList());
 		
-		return new ResultCheckWith(condition.checkWith(workInfo, item -> {
+		return new ResultCheckWith(condition.checkWith(workInfo, record.getSnapshot().map(c -> c.toDomain(null, null)), item -> {
 			if (item.isEmpty()) {
 				return new ArrayList<>();
 			}

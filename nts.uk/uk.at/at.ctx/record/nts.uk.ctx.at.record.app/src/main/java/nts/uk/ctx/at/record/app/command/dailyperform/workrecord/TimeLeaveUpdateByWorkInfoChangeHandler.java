@@ -51,7 +51,7 @@ public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandlerWithRe
 				Optional.empty(), //pcLogOnInfo
 				new ArrayList<>(), //employeeError
 				Optional.empty(), //outingTime
-				new ArrayList<>(), //breakTime
+				Optional.empty(), //breakTime
 				Optional.empty(), //attendanceTimeOfDailyPerformance
 				timeLeavingOfDailyAttd, //attendanceLeave
 				Optional.empty(), //shortTime

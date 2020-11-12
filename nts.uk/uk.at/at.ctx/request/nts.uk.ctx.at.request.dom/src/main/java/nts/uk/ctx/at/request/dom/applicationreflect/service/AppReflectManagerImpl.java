@@ -56,7 +56,6 @@ import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.CommonRef
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.GobackReflectPara;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.HolidayWorkReflectPara;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.OvertimeReflectPara;
-import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.WorkRecordReflectService;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.ExecutionLogRequestImport;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.ExecutionTypeExImport;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule.ExecutionType;
@@ -71,8 +70,6 @@ import nts.uk.shr.com.context.AppContexts;
 public class AppReflectManagerImpl implements AppReflectManager {
 	@Inject
 	private OvertimeRepository overTimeRepo;
-	@Inject
-	private WorkRecordReflectService workRecordReflect;
 	@Inject
 	private ApplicationRepository appRepo;
 	@Inject
@@ -96,8 +93,6 @@ public class AppReflectManagerImpl implements AppReflectManager {
 	@Resource
 	private SessionContext scContext;
 	private AppReflectManager self;
-	@Inject
-	private AppReflectProcessRecord checkReflect;
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlg;
 	@Inject

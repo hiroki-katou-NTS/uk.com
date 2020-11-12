@@ -109,39 +109,41 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 	}
 	
 	// 勤務情報と始業終業を変更する
-			public void changeWorkSchedule(Require require, WorkInfoDto workInfo, boolean changeWorkType, boolean changeWorkTime) {
-				// 勤務情報を変更する
-			Optional<WorkTypeCode> workTypeCode = Optional.ofNullable(this.recordInfo.getWorkTypeCode());
-			Optional<WorkTimeCode> workTimeCode = this.recordInfo.getWorkTimeCodeNotNull();
-			
-			if(changeWorkType) {
-				workTypeCode =  workInfo.getWorkTypeCode();
-			}
-			
-			if(changeWorkTime) {
-				workTimeCode = workInfo.getWorkTimeCode();
-			}
-			
-			this.recordInfo = new WorkInformation(workTypeCode.orElse(null),
-					workTimeCode.orElse(null));
+	public void changeWorkSchedule(Require require, WorkInformation workInfo, 
+			boolean changeWorkType, boolean changeWorkTime) {
+		
+		// 勤務情報を変更する
+		Optional<WorkTypeCode> workTypeCode = Optional.ofNullable(this.recordInfo.getWorkTypeCode());
+		Optional<WorkTimeCode> workTimeCode = this.recordInfo.getWorkTimeCodeNotNull();
+		
+		if(changeWorkType) {
+			workTypeCode =  Optional.of(workInfo.getWorkTypeCode());
+		}
+		
+		if(changeWorkTime) {
+			workTimeCode = workInfo.getWorkTimeCodeNotNull();
+		}
+		
+		this.recordInfo = new WorkInformation(workTypeCode.orElse(null),
+				workTimeCode.orElse(null));
 
-				// input.require.所定時間帯を取得する
-				PredetermineTimeSetForCalc determine = require.getPredeterminedTimezone(
-						workTypeCode.map(x -> x.v()).orElse(null),
-						workTimeCode.map(x -> x.v()).orElse(null), null);
+		// input.require.所定時間帯を取得する
+		PredetermineTimeSetForCalc determine = require.getPredeterminedTimezone(
+				workTypeCode.map(x -> x.v()).orElse(null),
+				workTimeCode.map(x -> x.v()).orElse(null), null);
 
-				// determine.getTimezones().st
-				// 始業終業に取得した所定時間帯をセットする
-				this.getScheduleTimeSheets().forEach(x -> {
-					TimezoneUse timeZone = determine.getTimezones().stream().filter(t -> {
-						return t.getWorkNo() == x.getWorkNo().v();
-					}).findFirst().orElse(null);
-					if (timeZone != null) {
-						x.setAttendance(timeZone.getStart());
-						x.setLeaveWork(timeZone.getEnd());
-					}
-				});
+		// determine.getTimezones().st
+		// 始業終業に取得した所定時間帯をセットする
+		this.getScheduleTimeSheets().forEach(x -> {
+			TimezoneUse timeZone = determine.getTimezones().stream().filter(t -> {
+				return t.getWorkNo() == x.getWorkNo().v();
+			}).findFirst().orElse(null);
+			if (timeZone != null) {
+				x.setAttendance(timeZone.getStart());
+				x.setLeaveWork(timeZone.getEnd());
 			}
+		});
+	}
 
 	public static interface Require extends WorkInformation.Require {
 		

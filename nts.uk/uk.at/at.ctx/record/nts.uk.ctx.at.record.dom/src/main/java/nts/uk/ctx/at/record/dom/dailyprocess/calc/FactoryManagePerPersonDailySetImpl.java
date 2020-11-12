@@ -9,9 +9,12 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
+import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus;
 import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.shared.dom.common.TimeOfDay;
+import nts.uk.ctx.at.shared.dom.dailyprocess.calc.FactoryManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetting;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionRepository;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
@@ -25,6 +28,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PredetermineTimeSetForCalc;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.UsageUnitSetting;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.DailyStatutoryLaborTime;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.DailyUnit;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -60,6 +64,16 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 	
 	@Override
 	public Optional<ManagePerPersonDailySet> create(String companyId, ManagePerCompanySet companySetting, IntegrationOfDaily daily, WorkingConditionItem nowWorkingItem ) {
+		return internalCreate(companyId, companySetting.getUsageSetting(), daily, nowWorkingItem,
+				companySetting.getShareContainer());
+
+	}
+
+
+	private Optional<ManagePerPersonDailySet> internalCreate(String companyId, 
+			Optional<UsageUnitSetting> usageSetting, 
+			IntegrationOfDaily daily, WorkingConditionItem nowWorkingItem,
+			MasterShareContainer<String> shareContainer) {
 		try {
 			/*法定労働時間*/
 			DailyUnit dailyUnit = DailyStatutoryLaborTime.getDailyUnit(
@@ -70,7 +84,7 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 					daily.getEmployeeId(),
 					daily.getYmd(),
 					nowWorkingItem.getLaborSystem(),
-					companySetting.getUsageSetting());
+					usageSetting);
 
 			if(dailyUnit == null || dailyUnit.getDailyTime() == null)
 				dailyUnit = new DailyUnit(new TimeOfDay(0));
@@ -91,7 +105,7 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 			/*平日時*/
 			PredetermineTimeSetForCalc predetermineTimeSetByPersonWeekDay = this.getPredByPersonInfo(
 					nowWorkingItem.getWorkCategory().getWeekdayTime().getWorkTimeCode().get(),
-					companySetting.getShareContainer());
+					shareContainer);
 			
 			return Optional.of(
 					new ManagePerPersonDailySet(
@@ -105,7 +119,6 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 		catch(RuntimeException e) {
 			return Optional.empty();
 		}
-
 	}
 
 
@@ -176,6 +189,26 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 			return Optional.of(predSet.get().clone());
 		}
 		return Optional.empty();
+	}
+
+
+	@Override
+	public Optional<ManagePerPersonDailySet> create(String companyId, String sid, GeneralDate ymd,
+			IntegrationOfDaily daily) {
+		
+		val require = requireService.createRequire();
+		val workingItem = require.workingConditionItem(sid, ymd);
+		if(!workingItem.isPresent()) {
+			return Optional.empty();
+		}
+		val usageSetting = require.usageUnitSetting(companyId);
+		MasterShareContainer<String> shareContainer = MasterShareBus.open();
+		
+		val personDailySet = internalCreate(companyId, usageSetting, daily, workingItem.get(), shareContainer);
+		
+		shareContainer.clearAll();
+		
+		return personDailySet;
 	}
 	
 	

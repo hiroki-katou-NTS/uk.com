@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdai
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -9,7 +10,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.PreOvertimeReflectService;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ExecutionTypeDaily;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.OutputAcquireReflectEmbossingNew;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ReflectStampDomainService;
@@ -41,7 +42,7 @@ public class CreateDailyOneDay {
 	private ICorrectionAttendanceRule iCorrectionAttendanceRule;
 	
 	@Inject
-	private PreOvertimeReflectService preOvertimeReflectService;
+	private IntegrationOfDailyGetter integrationGetter;
 	/**
 	 * 
 	 * @param companyId 会社ID
@@ -63,22 +64,23 @@ public class CreateDailyOneDay {
 		List<ErrorMessageInfo> listErrorMessageInfo = new ArrayList<>();
 		//ドメインモデル「日別実績の勤務情報」を取得する (Lấy dữ liệu từ domain)
         // 日別実績の「情報系」のドメインを取得する
- 		IntegrationOfDaily integrationOfDaily = preOvertimeReflectService.calculateForAppReflect(employeeId, ymd);
- 		integrationOfDaily.setYmd(ymd);
- 		integrationOfDaily.setEmployeeId(employeeId);
+ 		List<IntegrationOfDaily> integrationOfDailys = integrationGetter.getIntegrationOfDaily(employeeId, new DatePeriod(ymd, ymd));
+ 		IntegrationOfDaily integrationOfDaily = integrationOfDailys.isEmpty() ? createNull(employeeId, ymd) : integrationOfDailys.get(0);
         //「勤務種類」と「実行タイプ」をチェックする
         //日別実績が既に存在しない場合OR「作成する」の場合	
-        if(integrationOfDaily.getWorkInformation() == null || executionType == ExecutionTypeDaily.CREATE) {
+        if(integrationOfDailys.isEmpty() || executionType == ExecutionTypeDaily.CREATE) {
+        	
         	//日別実績を作成する 
         	OutputCreateDailyOneDay outputCreate = createDailyResults.createDailyResult(companyId, employeeId, ymd,
 					reCreateWorkType, reCreateWorkPlace, reCreateRestTime, executionType, flag,
-					employeeGeneralInfoImport, periodInMasterList,integrationOfDaily);
+					employeeGeneralInfoImport, periodInMasterList, integrationOfDaily);
         	listErrorMessageInfo.addAll(outputCreate.getListErrorMessageInfo());
         	integrationOfDaily = outputCreate.getIntegrationOfDaily();
         	if(!listErrorMessageInfo.isEmpty()) {
         		return new OutputCreateDailyOneDay( listErrorMessageInfo,null,new ArrayList<>());
         	}
-        }
+        } 
+        
         //打刻を取得して反映する 
 		OutputAcquireReflectEmbossingNew outputAcquireReflectEmbossingNew = reflectStampDomainServiceImpl
 				.acquireReflectEmbossingNew(companyId, employeeId, ymd, executionType, flag,
@@ -96,6 +98,30 @@ public class CreateDailyOneDay {
 		integrationOfDaily.setEmployeeId(employeeId);
 		return new OutputCreateDailyOneDay( listErrorMessageInfo,integrationOfDaily,outputAcquireReflectEmbossingNew.getListStamp());
 		
+	}
+	
+	private IntegrationOfDaily createNull(String sid, GeneralDate dateData) {
+		
+		return new IntegrationOfDaily(
+				sid,
+				dateData,
+				null, 
+				null, 
+				null,
+				Optional.empty(), 
+				new ArrayList<>(), 
+				Optional.empty(), 
+				Optional.empty(), 
+				Optional.empty(), 
+				Optional.empty(), 
+				Optional.empty(), 
+				Optional.empty(), 
+				Optional.empty(), 
+				Optional.empty(), 
+				new ArrayList<>(),
+				Optional.empty(),
+				new ArrayList<>(),
+				Optional.empty());
 	}
 
 }

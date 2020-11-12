@@ -33,7 +33,7 @@ public class UpdateBreakTimeByTimeLeaveChangeCommand extends DailyEventCommonCom
 		return this;
 	}
 	
-	public UpdateBreakTimeByTimeLeaveChangeCommand cachedBreackTime(BreakTimeOfDailyPerformance cachedBreackTime) {
+	public UpdateBreakTimeByTimeLeaveChangeCommand cachedBreakTime(BreakTimeOfDailyPerformance cachedBreackTime) {
 		this.cachedBreackTime = Optional.ofNullable(cachedBreackTime);
 		return this;
 	}

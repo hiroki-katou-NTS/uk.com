@@ -9,9 +9,9 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.adapter.schedule.snapshot.DailySnapshotWorkAdapter;
-import nts.uk.ctx.at.record.dom.adapter.schedule.snapshot.DailySnapshotWorkImport;
-import nts.uk.ctx.at.record.dom.adapter.schedule.snapshot.SnapshotImport;
+import nts.uk.ctx.at.record.dom.adapter.workschedule.snapshot.DailySnapshotWorkAdapter;
+import nts.uk.ctx.at.record.dom.adapter.workschedule.snapshot.DailySnapshotWorkImport;
+import nts.uk.ctx.at.record.dom.adapter.workschedule.snapshot.SnapshotImport;
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.snapshot.DailySnapshotWorkExport;
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.snapshot.DailySnapshotWorkPub;
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.snapshot.SnapShotExport;

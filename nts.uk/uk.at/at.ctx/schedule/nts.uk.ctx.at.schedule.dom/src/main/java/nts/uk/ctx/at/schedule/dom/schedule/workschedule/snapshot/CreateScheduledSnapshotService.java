@@ -27,6 +27,7 @@ public class CreateScheduledSnapshotService {
 											.map(at -> calcPredetermineTime(at.getActualWorkingTimeOfDaily().getTotalWorkingTime()))
 											 .orElseGet(() -> new AttendanceTime(0));
 		
+		/** 日別勤怠の勤務情報をスナップショットの勤務情報にコピー */
 		return Optional.of(SnapShot.of(workSchedule.getWorkInfo().getRecordInfo(), predetermineTime));
 	}
 	
@@ -47,15 +48,15 @@ public class CreateScheduledSnapshotService {
 	
 	/** 使用時間の合計を計算 */
 	private static AttendanceTime calcBreakUsage(HolidayOfDaily holiday) {
-		
+		/** TODO: 子の看護介護を足す*/
 		/** 休暇使用時間を合計する */
-		return holiday.getAbsence().getUseTime()
-				.addHours(holiday.getAnnual().getUseTime().valueAsMinutes())
+		return holiday.getAnnual().getUseTime()
+				.addHours(holiday.getSubstitute().getUseTime().valueAsMinutes())
 				.addHours(holiday.getOverSalary().getUseTime().valueAsMinutes())
 				.addHours(holiday.getSpecialHoliday().getUseTime().valueAsMinutes())
+				.addHours(holiday.getYearlyReserved().getUseTime().valueAsMinutes())
 				.addHours(holiday.getTimeDigest().getUseTime().valueAsMinutes())
-				.addHours(holiday.getSubstitute().getUseTime().valueAsMinutes())
-				.addHours(holiday.getYearlyReserved().getUseTime().valueAsMinutes());
+				.addHours(holiday.getAbsence().getUseTime().valueAsMinutes());
 	}
 	
 	/** 時間休暇使用時間の合計を計算 */

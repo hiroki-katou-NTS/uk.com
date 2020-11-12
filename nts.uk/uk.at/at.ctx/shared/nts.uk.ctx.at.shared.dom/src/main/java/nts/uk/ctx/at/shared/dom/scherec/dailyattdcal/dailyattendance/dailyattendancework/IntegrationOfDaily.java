@@ -80,7 +80,7 @@ public class IntegrationOfDaily {
 //	private List<BreakTimeOfDailyPerformance> breakTime;
 	//休憩時間帯: 日別勤怠の休憩時間帯
 	@Setter
-	private List<BreakTimeOfDailyAttd> breakTime;
+	private Optional<BreakTimeOfDailyAttd> breakTime;
 	
 	//日別実績の外出時間帯 (old)
 //	private Optional<OutingTimeOfDailyPerformance> outingTime;
@@ -194,7 +194,7 @@ public class IntegrationOfDaily {
 			Optional<PCLogOnInfoOfDailyAttd> pcLogOnInfo,
 			List<EmployeeDailyPerError> employeeError,
 			Optional<OutingTimeOfDailyAttd> outingTime,
-			List<BreakTimeOfDailyAttd> breakTime,
+			Optional<BreakTimeOfDailyAttd> breakTime,
 			Optional<AttendanceTimeOfDailyAttendance> attendanceTimeOfDailyPerformance,
 			Optional<TimeLeavingOfDailyAttd> attendanceLeave, 
 			Optional<ShortTimeOfDailyAttd> shortTime,
@@ -262,7 +262,7 @@ public class IntegrationOfDaily {
 			Optional<PCLogOnInfoOfDailyAttd> pcLogOnInfo,
 			List<EmployeeDailyPerError> employeeError,
 			Optional<OutingTimeOfDailyAttd> outingTime,
-			List<BreakTimeOfDailyAttd> breakTime,
+			Optional<BreakTimeOfDailyAttd> breakTime,
 			Optional<AttendanceTimeOfDailyAttendance> attendanceTimeOfDailyPerformance,
 			Optional<TimeLeavingOfDailyAttd> attendanceLeave, 
 			Optional<ShortTimeOfDailyAttd> shortTime,

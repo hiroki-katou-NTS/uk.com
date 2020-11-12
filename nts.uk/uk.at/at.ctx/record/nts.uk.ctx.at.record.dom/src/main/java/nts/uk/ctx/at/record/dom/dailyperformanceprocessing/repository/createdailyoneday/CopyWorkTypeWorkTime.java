@@ -9,7 +9,7 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.adapter.schedule.snapshot.DailySnapshotWorkAdapter;
+import nts.uk.ctx.at.record.dom.adapter.workschedule.snapshot.DailySnapshotWorkAdapter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.snapshot.CreateNoScheduleSnapshotService;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;

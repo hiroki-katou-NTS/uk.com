@@ -101,7 +101,7 @@ public class MonthlyCalculatingDailys {
 			return new IntegrationOfDaily(sid, wi.getKey(), wi.getValue(), 
 					null, affiInfoOfDailyMap.get(wi.getKey()), 
 					Optional.ofNullable(pcLogonInfoMap.get(wi.getKey())), new ArrayList<>(), 
-					Optional.empty(), new ArrayList<>(), 
+					Optional.empty(), Optional.empty(), 
 					Optional.ofNullable(attendanceTimeOfDailyMap.get(wi.getKey())), 
 					Optional.ofNullable(timeLeaveOfDailyMap.get(wi.getKey())), Optional.empty(), 
 					Optional.ofNullable(specificDateAttrOfDailyMap.get(wi.getKey())), 
@@ -402,7 +402,6 @@ public class MonthlyCalculatingDailys {
 		if (workInfo.getRecordInfo().isExamWorkTime()) {
 			
 			WorkScheduleTimeOfDaily correctedSche = new WorkScheduleTimeOfDaily(atTime.getWorkScheduleTimeOfDaily().getWorkScheduleTime(),
-																				new AttendanceTime(0), 
 																				atTime.getWorkScheduleTimeOfDaily().getRecordPrescribedLaborTime());
 			
 			ActualWorkingTimeOfDaily beforeActualWork = atTime.getActualWorkingTimeOfDaily();

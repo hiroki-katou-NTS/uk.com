@@ -647,7 +647,7 @@ public class ScheduleCreatorExecutionTransaction {
 								nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek
 										.valueOf(dateInPeriod.dayOfWeek() - 1),
 								new ArrayList<>()),
-						null, new ArrayList<>(), new ArrayList<>(), Optional.empty(), Optional.empty(),
+						null, Optional.empty(), new ArrayList<>(), Optional.empty(), Optional.empty(),
 						Optional.empty()),
 				workingConditionItem, employmentInfo);
 

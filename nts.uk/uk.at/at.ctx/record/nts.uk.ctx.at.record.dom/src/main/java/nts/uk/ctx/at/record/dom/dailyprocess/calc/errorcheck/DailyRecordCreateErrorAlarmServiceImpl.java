@@ -105,7 +105,7 @@ public class DailyRecordCreateErrorAlarmServiceImpl implements DailyRecordCreate
 		returnList.addAll(goingOutStampLeakageChecking.goingOutStampLeakageChecking(companyId, empId, targetDate,
 				outingTime));
 		// 休憩系打刻漏れをチェックする
-		integrationOfDaily.getBreakTime().forEach(tc ->{
+		integrationOfDaily.getBreakTime().ifPresent(tc ->{
 			returnList.add(breakTimeStampLeakageChecking.breakTimeStampLeakageChecking(companyId, empId, targetDate,new BreakTimeOfDailyPerformance(empId, targetDate, tc)));
 		});
 		// 臨時系打刻漏れをチェックする
@@ -220,7 +220,7 @@ public class DailyRecordCreateErrorAlarmServiceImpl implements DailyRecordCreate
 				timeLeavingOfDailyPerformance, 
 				temporaryTimeOfDailyPerformance));
 		// 休憩系打刻順序不正をチェックする
-		integrationOfDaily.getBreakTime().forEach(tc ->{
+		integrationOfDaily.getBreakTime().ifPresent(tc ->{
 				returnList.addAll(breakTimeStampIncorrectOrderChecking.breakTimeStampIncorrectOrderChecking(
 						companyId, empId, targetDate,new BreakTimeOfDailyPerformance(empId, targetDate, tc)));
 		});

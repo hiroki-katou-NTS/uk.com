@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
@@ -55,7 +56,7 @@ public class SCReflectWorkChangeApp {
 	}
 
 	@AllArgsConstructor
-	@Getter
+	@Data
 	public static class WorkInfoDto {
 
 		// 勤務種類コード

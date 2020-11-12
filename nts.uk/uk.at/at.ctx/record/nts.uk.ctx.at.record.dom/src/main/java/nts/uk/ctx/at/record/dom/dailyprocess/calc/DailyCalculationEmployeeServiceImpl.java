@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -23,73 +22,34 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.error.ThrowableAnalyzer;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.repo.AttendanceTimeByWorkOfDailyRepository;
-import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
-import nts.uk.ctx.at.record.dom.adapter.schedule.snapshot.DailySnapshotWorkAdapter;
-import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
-import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
-import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
-import nts.uk.ctx.at.record.dom.breakorgoout.repository.OutingTimeOfDailyPerformanceRepository;
-import nts.uk.ctx.at.record.dom.calculationattribute.repo.CalAttrOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.daily.DailyRecordAdUpService;
-import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
-import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
-import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavingGateOfDailyRepo;
-import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
-import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
-import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerform;
-import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerformRepo;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.checkprocessed.CheckProcessed;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.checkprocessed.OutputCheckProcessed;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.checkprocessed.StatusOutput;
-import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.IntegrationOfDailyGetter;
 import nts.uk.ctx.at.record.dom.organization.EmploymentHistoryImported;
 import nts.uk.ctx.at.record.dom.organization.adapter.EmploymentAdapter;
-import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
-import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerforRepo;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
-import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.shorttimework.repo.ShortTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.DetermineActualResultLock;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.PerformanceType;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.service.ErAlCheckService;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.IdentityProcessUseSet;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentityProcessUseSetRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.TargetPersonRepository;
-import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
-import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
-import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagementRepository;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TemporaryTimeOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.AttendanceLeavingGateOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.PCLogOnInfoOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemValueOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateAttrOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
@@ -99,7 +59,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
-import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService.RequireM3;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
@@ -114,78 +73,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	//*****（未）　以下、日別実績の勤怠情報など、日別計算のデータ更新に必要なリポジトリを列記。
 	/** リポジトリ：日別実績の勤怠時間 */
 	@Inject
-	private AttendanceTimeRepository attendanceTimeRepository;
-	
-	/** リポジトリ：日別実績の勤務情報 */
-	@Inject
-	private WorkInformationRepository workInformationRepository;  
-	
-	/** リポジトリ：日別実績の計算区分 */
-	@Inject
-	private CalAttrOfDailyPerformanceRepository calAttrOfDailyPerformanceRepository;
-	
-	/** リポジトリ：日別実績の所属情報 */
-	@Inject
-	private AffiliationInforOfDailyPerforRepository affiliationInforOfDailyPerforRepository;
-	
-	/** リポジトリ：日別実績の勤務種別 */
-	@Inject
-	private WorkTypeOfDailyPerforRepository workTypeOfDailyPerforRepository;
-	
-	/** リポジトリ：日別実績のPCログオン情報 */
-	@Inject
-	private PCLogOnInfoOfDailyRepo pcLogOnInfoOfDailyRepo; 
-	
-	/** リポジトリ:社員の日別実績エラー一覧 */
-	@Inject
-	private EmployeeDailyPerErrorRepository employeeDailyPerErrorRepository;
-	
-	/** リポジトリ：日別実績の外出時間帯 */
-	@Inject
-	private OutingTimeOfDailyPerformanceRepository outingTimeOfDailyPerformanceRepository;
-	
-	/** リポジトリ：日別実績の休憩時間帯 */
-	@Inject
-	private BreakTimeOfDailyPerformanceRepository breakTimeOfDailyPerformanceRepository; 
-	
-	/** リポジトリ：日別実績の作業別勤怠時間 */
-	@Inject
-	private AttendanceTimeByWorkOfDailyRepository attendanceTimeByWorkOfDailyRepository;
-	
-	/** リポジトリ：日別実績の出退勤 */
-	@Inject
-	private TimeLeavingOfDailyPerformanceRepository timeLeavingOfDailyPerformanceRepository;
-	
-	/** リポジトリ：日別実績の短時間勤務時間帯 */
-	@Inject
-	private ShortTimeOfDailyPerformanceRepository shortTimeOfDailyPerformanceRepository;
-	
-	/** リポジトリ：日別実績の特定日区分 */
-	@Inject
-	private SpecificDateAttrOfDailyPerforRepo specificDateAttrOfDailyPerforRepo;
-	
-	/** リポジトリ：日別実績の入退門 */
-	@Inject
-	private AttendanceLeavingGateOfDailyRepo attendanceLeavingGateOfDailyRepo;
-	
-	/** リポジトリ：日別実績の任意項目 */
-	@Inject
-	private AnyItemValueOfDailyRepo anyItemValueOfDailyRepo;
-	
-	/** リポジトリ：日別実績のの編集状態 */
-	@Inject
-	private EditStateOfDailyPerformanceRepository editStateOfDailyPerformanceRepository;
-	
-	/** リポジトリ：日別実績の臨時出退勤 */
-	@Inject
-	private TemporaryTimeOfDailyPerformanceRepository temporaryTimeOfDailyPerformanceRepository;
-	
-	/** リポジトリ：日別実績の備考 */
-	@Inject
-	private RemarksOfDailyPerformRepo remarksRepository;
-	
-	@Inject 
-	private ErAlCheckService determineErrorAlarmWorkRecordService;
+	private IntegrationOfDailyGetter integrationGetter;
 	
 //	@Inject
 //	private DailyRecordTransactionService dailyTransaction;
@@ -193,9 +81,6 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	//ドメインサービス：計算用ストアド実行用
 	@Inject
 	private AdTimeAndAnyItemAdUpService adTimeAndAnyItemAdUpService; 
-	
-	@Inject
-	private DailySnapshotWorkAdapter snapshotAdapter;
 	
 	/*日別計算　マネージャークラス*/
 	@Inject
@@ -372,7 +257,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 		
 //		List<Boolean> isHappendOptimistLockError = new ArrayList<>(); 
 
-		List<IntegrationOfDaily> createListNew = getIntegrationOfDaily(employeeId, datePeriod);
+		List<IntegrationOfDaily> createListNew = integrationGetter.getIntegrationOfDaily(employeeId, datePeriod);
 		if (createListNew.isEmpty()) {
 			check = 0;
 			return Pair.of(check, afterCalcRecord);
@@ -577,7 +462,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	private List<IntegrationOfDaily> createIntegrationList(List<String> employeeId, DatePeriod datePeriod) {
 		List<IntegrationOfDaily> returnList = new ArrayList<>();
 		for(String empId:employeeId) {
-			returnList.addAll(getIntegrationOfDaily(empId, datePeriod));
+			returnList.addAll(integrationGetter.getIntegrationOfDaily(empId, datePeriod));
 		}
 		return returnList;
 	}
@@ -590,90 +475,5 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 		adTimeAndAnyItemAdUpService.addAndUpdate(empId,ymd,Optional.of(attendanceTime), anyItem);	
 	}
 	
-	/**
-	 * 日別実績(WORK)の作成
-	 * @param employeeId
-	 * @param datePeriod
-	 * @return
-	 */
-	//@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public List<IntegrationOfDaily> getIntegrationOfDaily(String employeeId, DatePeriod datePeriod) {
-		val attendanceTimeList= workInformationRepository.findByPeriodOrderByYmd(employeeId, datePeriod);
-		
-		List<IntegrationOfDaily> returnList = new ArrayList<>();
-
-		for(WorkInfoOfDailyPerformance attendanceTime : attendanceTimeList) {
-			/** リポジトリ：日別実績の勤務情報 */
-			val workInf = workInformationRepository.find(employeeId, attendanceTime.getYmd());  
-			/** リポジトリ：日別実績.日別実績の計算区分 */
-			val calAttr = calAttrOfDailyPerformanceRepository.find(employeeId, attendanceTime.getYmd());
-			
-			/** リポジトリ：日別実績の所属情報 */
-			val affiInfo = affiliationInforOfDailyPerforRepository.findByKey(employeeId, attendanceTime.getYmd());
-
-			if(!workInf.isPresent() || !affiInfo.isPresent())//calAttr == null
-				continue;
-			workInf.get().getWorkInformation().setVer(workInf.get().getVersion());
-			/** リポジトリ：日別実績のPCログオン情報 */
-			Optional<PCLogOnInfoOfDaily> pCLogOnInfoOfDaily = pcLogOnInfoOfDailyRepo.find(employeeId, attendanceTime.getYmd());
-			Optional<PCLogOnInfoOfDailyAttd> pCLogOnInfoOfDailyAttd = pCLogOnInfoOfDaily.isPresent()?Optional.of(pCLogOnInfoOfDaily.get().getTimeZone()):Optional.empty();
-			/** リポジトリ：日別実績の外出時間帯 */
-			Optional<OutingTimeOfDailyPerformance> outingTimeOfDailyPerformance = outingTimeOfDailyPerformanceRepository.findByEmployeeIdAndDate(employeeId, attendanceTime.getYmd());
-			Optional<OutingTimeOfDailyAttd> outingTimeOfDailyAttd = outingTimeOfDailyPerformance.isPresent()?Optional.of(outingTimeOfDailyPerformance.get().getOutingTime()):Optional.empty();
-			/** リポジトリ：日別実績の休憩時間帯 */
-			List<BreakTimeOfDailyPerformance> listBreakTimeOfDailyPerformance = breakTimeOfDailyPerformanceRepository.findByKey(employeeId, attendanceTime.getYmd());
-			
-			Optional<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyPerformance = attendanceTimeRepository.find(employeeId, attendanceTime.getYmd());
-			Optional<AttendanceTimeOfDailyAttendance> attendanceTimeOfDailyAttd = attendanceTimeOfDailyPerformance.isPresent()?Optional.of(attendanceTimeOfDailyPerformance.get().getTime()):Optional.empty();
-			/** リポジトリ：日別実績の出退勤 */
-			Optional<TimeLeavingOfDailyPerformance> timeLeavingOfDailyPerformance = timeLeavingOfDailyPerformanceRepository.findByKey(employeeId, attendanceTime.getYmd());
-			Optional<TimeLeavingOfDailyAttd> timeLeavingOfDailyAttd = timeLeavingOfDailyPerformance.isPresent()?Optional.of(timeLeavingOfDailyPerformance.get().getAttendance()):Optional.empty();
-			/** リポジトリ：日別実績の短時間勤務時間帯 */
-			Optional<ShortTimeOfDailyPerformance> shortTimeOfDailyPerformance = shortTimeOfDailyPerformanceRepository.find(employeeId, attendanceTime.getYmd());
-			Optional<ShortTimeOfDailyAttd> shortTimeOfDailyAttd = shortTimeOfDailyPerformance.isPresent()?Optional.of(shortTimeOfDailyPerformance.get().getTimeZone()):Optional.empty();
-			/** リポジトリ：日別実績の特定日区分 */
-			Optional<SpecificDateAttrOfDailyPerfor> specificDateAttrOfDailyPerfor = specificDateAttrOfDailyPerforRepo.find(employeeId, attendanceTime.getYmd());
-			Optional<SpecificDateAttrOfDailyAttd> specificDateAttrOfDailyAttd = specificDateAttrOfDailyPerfor.isPresent()?Optional.of(specificDateAttrOfDailyPerfor.get().getSpecificDay()):Optional.empty();
-			/** リポジトリ：日別実績の入退門 */
-			Optional<AttendanceLeavingGateOfDaily> attendanceLeavingGateOfDaily = attendanceLeavingGateOfDailyRepo.find(employeeId, attendanceTime.getYmd());
-			Optional<AttendanceLeavingGateOfDailyAttd> attendanceLeavingGateOfDailyAttd = attendanceLeavingGateOfDaily.isPresent()?Optional.of(attendanceLeavingGateOfDaily.get().getTimeZone()):Optional.empty();
-			/** リポジトリ：日別実績の任意項目 */
-			Optional<AnyItemValueOfDaily> anyItemValueOfDaily = anyItemValueOfDailyRepo.find(employeeId, attendanceTime.getYmd());
-			Optional<AnyItemValueOfDailyAttd> anyItemValueOfDailyAttd = anyItemValueOfDaily.isPresent()?Optional.of(anyItemValueOfDaily.get().getAnyItem()):Optional.empty();
-			/** リポジトリ：日別実績のの編集状態 */
-			List<EditStateOfDailyPerformance> listEditStateOfDailyPerformance = editStateOfDailyPerformanceRepository.findByKey(employeeId, attendanceTime.getYmd());
-			/** リポジトリ：日別実績の臨時出退勤 */
-			Optional<TemporaryTimeOfDailyPerformance>  temporaryTimeOfDailyPerformance = temporaryTimeOfDailyPerformanceRepository.findByKey(employeeId, attendanceTime.getYmd());
-			Optional<TemporaryTimeOfDailyAttd> temporaryTimeOfDailyAttd = temporaryTimeOfDailyPerformance.isPresent()?Optional.of(temporaryTimeOfDailyPerformance.get().getAttendance()):Optional.empty();
-			
-			List<RemarksOfDailyPerform> listRemarksOfDailyPerform = remarksRepository.getRemarks(employeeId, attendanceTime.getYmd());
-			
-			val snapshot = snapshotAdapter.find(employeeId, attendanceTime.getYmd());
-			
-			returnList.add(
-				new IntegrationOfDaily(
-					attendanceTime.getEmployeeId(),
-					attendanceTime.getYmd(),
-					workInf.get().getWorkInformation(),
-					calAttr.getCalcategory(),
-					affiInfo.get().getAffiliationInfor(),
-					pCLogOnInfoOfDailyAttd,
-					employeeDailyPerErrorRepository.find(employeeId, attendanceTime.getYmd()),/** リポジトリ:社員の日別実績エラー一覧 */
-					outingTimeOfDailyAttd,
-					listBreakTimeOfDailyPerformance.stream().map(c->c.getTimeZone()).collect(Collectors.toList()),
-					attendanceTimeOfDailyAttd,
-//					attendanceTimeByWorkOfDailyRepository.find(employeeId, attendanceTime.getYmd()),/** リポジトリ：日別実績の作業別勤怠時間 */
-					timeLeavingOfDailyAttd,
-					shortTimeOfDailyAttd,
-					specificDateAttrOfDailyAttd,
-					attendanceLeavingGateOfDailyAttd,
-					anyItemValueOfDailyAttd,/** リポジトリ：日別実績の任意項目 */
-					listEditStateOfDailyPerformance.stream().map(c->c.getEditState()).collect(Collectors.toList()),
-					temporaryTimeOfDailyAttd,
-					listRemarksOfDailyPerform.stream().map(c->c.getRemarks()).collect(Collectors.toList()),
-					snapshot.map(c -> c.getSnapshot().toDomain())
-					));
-		}
-		return returnList;
-	}
+	
 }

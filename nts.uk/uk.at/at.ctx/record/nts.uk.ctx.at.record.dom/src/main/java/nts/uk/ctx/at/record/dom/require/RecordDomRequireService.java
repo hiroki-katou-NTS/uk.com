@@ -28,15 +28,15 @@ import nts.uk.ctx.at.record.dom.adapter.employment.EmploymentHistAdapter;
 import nts.uk.ctx.at.record.dom.adapter.employment.EmploymentHistImport;
 import nts.uk.ctx.at.record.dom.adapter.employment.SyEmploymentAdapter;
 import nts.uk.ctx.at.record.dom.adapter.employment.SyEmploymentImport;
-import nts.uk.ctx.at.record.dom.adapter.schedule.snapshot.DailySnapshotWorkAdapter;
 import nts.uk.ctx.at.record.dom.adapter.shift.pattern.GetPredWorkingDaysAdaptor;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
+import nts.uk.ctx.at.record.dom.adapter.workschedule.snapshot.DailySnapshotWorkAdapter;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDailyRepo;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.DailyCalculationEmployeeService;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.IntegrationOfDailyGetter;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.AgeementTimeCommonSettingService;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreementTime;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetExcessTimesYear;
@@ -202,9 +202,9 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roleofovertimework.r
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roleofovertimework.roleopenperiod.RoleOfOpenPeriodRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset.RoundingSetOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset.RoundingSetOfMonthlyRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.AggregateMethodOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.PayItemCountOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.PayItemCountOfMonthlyRepository;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.AggregateMethodOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.VerticalTotalMethodOfMonthlyRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrEmployeeSettings;
@@ -630,7 +630,7 @@ public class RecordDomRequireService {
 	@Inject
 	private WeekRuleManagementRepo weekRuleManagementRepo;
 	@Inject
-	private DailyCalculationEmployeeService dailyCalculationEmployeeService;
+	private IntegrationOfDailyGetter integrationOfDailyGetter;
 	@Inject
 	private GetProcessingDate getProcessingDate;
 	@Inject
@@ -723,7 +723,7 @@ public class RecordDomRequireService {
 				wkpDeforLaborMonthActCalSetRepo, wkpRegulaMonthActCalSetRepo, 
 				monthlyWorkTimeSetRepo, executionLogRepo, 
 				lockStatusService, verticalTotalMethodOfMonthlyRepo, stampCardRepo,
-				bentoReservationRepo, bentoMenuRepo, dailyCalculationEmployeeService, 
+				bentoReservationRepo, bentoMenuRepo, integrationOfDailyGetter, 
 				weekRuleManagementRepo, sharedAffWorkPlaceHisAdapter, getProcessingDate,
 				roleOfOpenPeriodRepo, snapshotAdapter);
 	}
@@ -841,7 +841,7 @@ public class RecordDomRequireService {
 				ExecutionLogRepository executionLogRepo, DetermineActualResultLock lockStatusService,
 				VerticalTotalMethodOfMonthlyRepository verticalTotalMethodOfMonthlyRepo,
 				StampCardRepository stampCardRepo, BentoReservationRepository bentoReservationRepo,
-				BentoMenuRepository bentoMenuRepo, DailyCalculationEmployeeService dailyCalculationEmployeeService,
+				BentoMenuRepository bentoMenuRepo, IntegrationOfDailyGetter integrationOfDailyGetter,
 				WeekRuleManagementRepo weekRuleManagementRepo, SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter,
 				GetProcessingDate getProcessingDate, RoleOfOpenPeriodRepository roleOfOpenPeriodRepo,
 				DailySnapshotWorkAdapter snapshotAdapter) {
@@ -979,7 +979,7 @@ public class RecordDomRequireService {
 			this.bentoReservationRepo = bentoReservationRepo;
 			this.bentoMenuRepo = bentoMenuRepo;
 			this.weekRuleManagementRepo = weekRuleManagementRepo;
-			this.dailyCalculationEmployeeService = dailyCalculationEmployeeService;
+			this.integrationOfDailyGetter = integrationOfDailyGetter;
 			this.getProcessingDate = getProcessingDate;
 			this.roleOfOpenPeriodRepo = roleOfOpenPeriodRepo;
 			this.snapshotAdapter = snapshotAdapter;
@@ -1227,7 +1227,7 @@ public class RecordDomRequireService {
 		
 		private WeekRuleManagementRepo weekRuleManagementRepo;
 		
-		private DailyCalculationEmployeeService dailyCalculationEmployeeService;
+		private IntegrationOfDailyGetter integrationOfDailyGetter;
 		
 		@Override
 		public Optional<SEmpHistoryImport> employeeEmploymentHis(CacheCarrier cacheCarrier, String companyId,
@@ -2310,7 +2310,7 @@ public class RecordDomRequireService {
 		@Override
 		public List<IntegrationOfDaily> integrationOfDaily(String sid, DatePeriod period) {
 			
-			return dailyCalculationEmployeeService.getIntegrationOfDaily(sid, period);
+			return integrationOfDailyGetter.getIntegrationOfDaily(sid, period);
 		}
 
 		@Override

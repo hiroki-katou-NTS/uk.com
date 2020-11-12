@@ -17,6 +17,8 @@ import nts.uk.ctx.at.schedule.dom.adapter.appreflect.SCAppReflectionSetting;
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.change.ReflectApplicationWorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.snapshot.DailySnapshotWork;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.snapshot.DailySnapshotWorkRepository;
 import nts.uk.ctx.at.schedule.pub.appreflectprocess.ReflectApplicationWorkSchedulePub;
 import nts.uk.ctx.at.shared.dom.adapter.application.reflect.SHAppReflectionSetting;
 import nts.uk.ctx.at.shared.dom.adapter.application.reflect.SHApplyTimeSchedulePriority;
@@ -81,15 +83,18 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 
 	@Inject
 	private RequestSettingAdapter requestSettingAdapter;
+	
+	@Inject
+	private DailySnapshotWorkRepository snapshotRepo;
 
 	@Override
-	public Pair<Object, AtomTask> process(Object application, GeneralDate date, Object reflectStatus) {
+	public Pair<Object, AtomTask> process(Object application, GeneralDate date, Object reflectStatus, int preAppWorkScheReflectAttr) {
 		String companyId = AppContexts.user().companyId();
 		RequireImpl impl = new RequireImpl(companyId, workTypeRepo, workTimeSettingRepository, service,
 				workTimeSettingService, basicScheduleService, workScheduleRepository, convertDailyRecordToAd,
-				correctionAttendanceRule, calculateDailyRecordServiceCenterNew, requestSettingAdapter);
+				correctionAttendanceRule, calculateDailyRecordServiceCenterNew, requestSettingAdapter, snapshotRepo);
 		Pair<ReflectStatusResultShare, AtomTask> result = ReflectApplicationWorkSchedule.process(impl, companyId, 
-				(ApplicationShare) application, date, (ReflectStatusResultShare) reflectStatus);
+				(ApplicationShare) application, date, (ReflectStatusResultShare) reflectStatus, preAppWorkScheReflectAttr);
 		return Pair.of(result.getLeft(), result.getRight());
 	}
 
@@ -117,6 +122,8 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 		private final CalculateDailyRecordServiceCenterNew calculateDailyRecordServiceCenterNew;
 
 		private final RequestSettingAdapter requestSettingAdapter;
+		
+		private DailySnapshotWorkRepository snapshotRepo;
 
 		@Override
 		public Optional<WorkType> findByPK(String workTypeCd) {
@@ -229,5 +236,10 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 			return null;
 		}
 
+		@Override
+		public Optional<DailySnapshotWork> snapshot(String sid, GeneralDate ymd) {
+			
+			return snapshotRepo.find(sid, ymd);
+		}
 	}
 }

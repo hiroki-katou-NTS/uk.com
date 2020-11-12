@@ -6,14 +6,19 @@ package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * The Class FlowRestTimezone.
@@ -147,6 +152,63 @@ public class FlowRestTimezone extends WorkTimeDomainObject implements Cloneable{
 		if (!this.useHereAfterRestSet) {
 			this.hereAfterRestSet = new FlowRestSetting();
 		}
+	}
+	
+	/** 設定以降の時間を含めて流動設定を取得 */
+	public List<FlowRestSetting> getFlowRestSet(TimeSpanForDailyCalc oneDayRange) {
+		
+		List<FlowRestSetting> flowRestSet = this.flowRestSets;
+		
+		/** ○設定以降の休憩を使用するか確認 */
+		if (this.useHereAfterRestSet) {
+			
+			/** ○流動経過時間を取得 */
+//			val flowPassTime = this.flowRestSets.stream().map(c -> c.getFlowPassageTime()).collect(Collectors.toList());
+			
+			/** ○パラメータ「日別実績の出退勤」から最大の計算範囲を取得 */
+			
+			/** ○出退勤の間の時間を超過するまで休憩設定を作成 */
+			flowRestSet.addAll(createRestSetToOverAttendanceLeave(oneDayRange));
+		} 
+		
+		return flowRestSet;
+	}
+	
+	/** ○出退勤の間の時間を超過するまで休憩設定を作成 */
+	private List<FlowRestSetting> createRestSetToOverAttendanceLeave(TimeSpanForDailyCalc oneDayRange) {
+		
+		List<FlowRestSetting> restSets = new ArrayList<>();
+		
+		/** ○最大流動休憩設定時間を取得 */
+		val maxRestTime = this.flowRestSets.stream().map(c -> c.getFlowPassageTime())
+											.max((c1, c2) -> c1.compareTo(c2))
+											.orElse(new AttendanceTime(0));
+		
+		/** ○休憩設定が作成される可能性のある範囲を計算 */
+		val restRange = oneDayRange.getEnd().backByMinutes(maxRestTime.valueAsMinutes());
+		
+		/** ○休憩範囲に含まれる流動休憩の数を計算 */
+		val restTimes = restRange.valueAsMinutes() / this.hereAfterRestSet.getFlowPassageTime().valueAsMinutes();
+		
+		/** ○最大時間を保持 */
+		AttendanceTime maxRestTimeCopy = new AttendanceTime(maxRestTime.valueAsMinutes());
+		
+		val restTime = this.hereAfterRestSet.getFlowRestTime();
+		
+		for(int i = 0; i < restTimes; i++) {
+			
+			val passageTime = this.hereAfterRestSet.getFlowPassageTime().addMinutes(maxRestTimeCopy.valueAsMinutes());
+			
+			/** ○流動休憩設定を作成 */
+			FlowRestSetting copy = new FlowRestSetting(restTime, passageTime);
+			
+			/**○作成した流動経過時間を最大時間へ移送 */
+			maxRestTimeCopy = copy.getFlowPassageTime();
+			
+			restSets.add(copy);
+		}
+		
+		return restSets;
 	}
 	
 	@Override

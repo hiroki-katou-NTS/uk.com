@@ -9,7 +9,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.PreOvertimeReflectService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ExecutionTypeDaily;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.CopyWorkTypeWorkTime;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.EmbossingExecutionFlag;
@@ -43,9 +42,6 @@ import nts.uk.shr.com.i18n.TextResource;
  */
 @Stateless
 public class CreateDailyResults {
-
-	@Inject
-	private PreOvertimeReflectService preOvertimeReflectService;
 
 	@Inject
 	private DailyRecordConverter dailyRecordConverter;

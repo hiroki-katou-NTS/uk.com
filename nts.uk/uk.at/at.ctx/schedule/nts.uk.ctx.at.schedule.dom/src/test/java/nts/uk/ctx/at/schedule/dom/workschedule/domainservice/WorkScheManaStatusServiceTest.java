@@ -111,7 +111,7 @@ public class WorkScheManaStatusServiceTest {
 		List<String> lstEmployeeID = Arrays.asList("emp1");
 		DatePeriod period = new DatePeriod(GeneralDate.today(), GeneralDate.today());
 		WorkSchedule workSchedule = new WorkSchedule("employeeID",
-				GeneralDate.today(), ConfirmedATR.CONFIRMED, null, null, new ArrayList<>(),
+				GeneralDate.today(), ConfirmedATR.CONFIRMED, null, null, Optional.empty(),
 				new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty());
 
 		ScheManaStatuTempo scheManaStatuTempo = new ScheManaStatuTempo("emp1", GeneralDate.today(),

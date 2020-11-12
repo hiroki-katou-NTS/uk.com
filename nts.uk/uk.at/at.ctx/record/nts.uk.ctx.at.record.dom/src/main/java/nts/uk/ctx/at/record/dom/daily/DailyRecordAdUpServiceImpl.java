@@ -15,8 +15,8 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerforma
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.AttendanceTimeByWorkOfDaily;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.repo.AttendanceTimeByWorkOfDailyRepository;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
-import nts.uk.ctx.at.record.dom.adapter.schedule.snapshot.DailySnapshotWorkAdapter;
-import nts.uk.ctx.at.record.dom.adapter.schedule.snapshot.DailySnapshotWorkImport;
+import nts.uk.ctx.at.record.dom.adapter.workschedule.snapshot.DailySnapshotWorkAdapter;
+import nts.uk.ctx.at.record.dom.adapter.workschedule.snapshot.DailySnapshotWorkImport;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
@@ -174,10 +174,10 @@ public class DailyRecordAdUpServiceImpl implements DailyRecordAdUpService {
 	}
 
 	@Override
-	public void adUpBreakTime(List<BreakTimeOfDailyPerformance> breakTime) {
-		//breakTime.stream().forEach(domain -> {
-			breakTimeRepo.update(breakTime);
-		//});
+	public void adUpBreakTime(Optional<BreakTimeOfDailyPerformance> breakTime) {
+		breakTime.ifPresent(domain -> {
+			breakTimeRepo.update(domain);
+		});
 
 	}
 

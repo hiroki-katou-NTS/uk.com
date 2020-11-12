@@ -4,6 +4,7 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -28,6 +29,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.FilterByCompare;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.TypeCheckWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ContinuousPeriod;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMessage;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
 
 /**
  * @author hungnm
@@ -135,7 +137,7 @@ public class ErrorAlarmCondition extends AggregateRoot {
 	 * @param comparePlanAndActual
 	 */
 	public void createWorkTypeCondition(boolean useAtr, int comparePlanAndActual) {
-		if (comparePlanAndActual != FilterByCompare.EXTRACT_SAME.value) {
+		if (comparePlanAndActual != FilterByCompare.SELECTED.value) {
 			this.workTypeCondition = PlanActualWorkType.init(useAtr, comparePlanAndActual);
 		} else {
 			this.workTypeCondition = SingleWorkType.init(useAtr, comparePlanAndActual);
@@ -190,7 +192,7 @@ public class ErrorAlarmCondition extends AggregateRoot {
 	 * @param comparePlanAndActual
 	 */
 	public void createWorkTimeCondition(boolean useAtr, int comparePlanAndActual) {
-		if (comparePlanAndActual != FilterByCompare.EXTRACT_SAME.value) {
+		if (comparePlanAndActual != FilterByCompare.SELECTED.value) {
 			this.workTimeCondition = PlanActualWorkTime.init(useAtr, comparePlanAndActual);
 		} else {
 			this.workTimeCondition = SingleWorkTime.init(useAtr, comparePlanAndActual);
@@ -287,14 +289,15 @@ public class ErrorAlarmCondition extends AggregateRoot {
 		this.continuousPeriod = new ContinuousPeriod(continuousPeriod);
 	}
 	
-	public boolean checkWith(WorkInfoOfDailyPerformance workInfo, Function<List<Integer>, List<Double>> getValueFromItemIds){
+	public boolean checkWith(WorkInfoOfDailyPerformance workInfo, Optional<SnapShot> snapshot, 
+			Function<List<Integer>, List<Double>> getValueFromItemIds){
 		/** 勤務種類をチェックする */
 		// TODO: uncomment
 		// if (condition.getWorkTypeCondition().isUse() &&
 		// !condition.getWorkTypeCondition().checkWorkType(workInfo)) {
 		WorkCheckResult  workTypeCheck = WorkCheckResult.NOT_CHECK;
 		if (this.workTypeCondition != null) {
-			workTypeCheck = this.workTypeCondition.checkWorkType(workInfo);
+			workTypeCheck = this.workTypeCondition.checkWorkType(workInfo, snapshot);
 		}
 		/** 就業時間帯をチェックする */
 		// TODO: uncomment
@@ -302,7 +305,7 @@ public class ErrorAlarmCondition extends AggregateRoot {
 		// !condition.getWorkTimeCondition().checkWorkTime(workInfo)) {
 		WorkCheckResult workTimeCheck = WorkCheckResult.NOT_CHECK;
 		if (this.workTimeCondition != null) {
-			workTimeCheck = this.workTimeCondition.checkWorkTime(workInfo);
+			workTimeCheck = this.workTimeCondition.checkWorkTime(workInfo, snapshot);
 		}
 		/** 勤怠項目をチェックする */
 		WorkCheckResult atdCheck = WorkCheckResult.NOT_CHECK;

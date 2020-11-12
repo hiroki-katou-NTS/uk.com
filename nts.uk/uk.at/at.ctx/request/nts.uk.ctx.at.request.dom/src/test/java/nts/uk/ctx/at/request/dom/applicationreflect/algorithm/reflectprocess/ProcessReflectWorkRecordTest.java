@@ -23,6 +23,7 @@ import nts.uk.ctx.at.request.dom.applicationreflect.algorithm.checkprocess.PreCh
 import nts.uk.ctx.at.request.dom.applicationreflect.algorithm.checkprocess.PreCheckProcessWorkSchedule.PreCheckProcessResult;
 import nts.uk.ctx.at.request.dom.applicationreflect.algorithm.common.ReflectApplicationHelper;
 import nts.uk.ctx.at.request.dom.applicationreflect.object.AppReflectExecCond;
+import nts.uk.ctx.at.request.dom.applicationreflect.object.PreApplicationWorkScheReflectAttr;
 import nts.uk.ctx.at.request.dom.applicationreflect.object.ReflectStatusResult;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule.ExecutionType;
 import nts.uk.ctx.at.shared.dom.application.common.ReflectedStateShare;
@@ -76,7 +77,7 @@ public class ProcessReflectWorkRecordTest {
 			{
 				require.findAppReflectExecCond(companyId);
 				result = Optional
-						.of(new AppReflectExecCond(companyId, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.USE));// 勤務実績が確定状態でも反映する
+						.of(new AppReflectExecCond(companyId, PreApplicationWorkScheReflectAttr.NOT_REFLECT, NotUseAtr.NOT_USE, NotUseAtr.USE));// 勤務実績が確定状態でも反映する
 
 				require.process(application, dateRefer, (ReflectStatusResultShare) any);
 				result = Pair.of(new ReflectStatusResultShare(ReflectedStateShare.REFLECTED, null, null),
@@ -111,7 +112,7 @@ public class ProcessReflectWorkRecordTest {
 			{
 				require.findAppReflectExecCond(companyId);
 				result = Optional
-						.of(new AppReflectExecCond(companyId, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE));// 勤務実績が確定状態でも反映する
+						.of(new AppReflectExecCond(companyId, PreApplicationWorkScheReflectAttr.NOT_REFLECT, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE));// 勤務実績が確定状態でも反映する
 
 				PreCheckProcessWorkRecord.preCheck(require, companyId, application, closureId, anyBoolean,
 						(ReflectStatusResult) any, dateRefer);
@@ -145,7 +146,7 @@ public class ProcessReflectWorkRecordTest {
 			{
 				require.findAppReflectExecCond(companyId);
 				result = Optional
-						.of(new AppReflectExecCond(companyId, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE));// 勤務実績が確定状態でも反映する
+						.of(new AppReflectExecCond(companyId, PreApplicationWorkScheReflectAttr.NOT_REFLECT, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE));// 勤務実績が確定状態でも反映する
 
 				PreCheckProcessWorkRecord.preCheck(require, companyId, application, closureId, anyBoolean,
 						(ReflectStatusResult) any, dateRefer);

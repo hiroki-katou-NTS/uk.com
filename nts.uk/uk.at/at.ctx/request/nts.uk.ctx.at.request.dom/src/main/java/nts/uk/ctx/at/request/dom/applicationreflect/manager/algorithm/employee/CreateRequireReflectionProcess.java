@@ -105,8 +105,8 @@ public class CreateRequireReflectionProcess {
 
 		@Override
 		public Pair<Object, AtomTask> process(ApplicationShare application, GeneralDate date,
-				ReflectStatusResultShare reflectStatus) {
-			return eflectApplicationWorkScheduleAdapter.process(application, date, reflectStatus);
+				ReflectStatusResultShare reflectStatus, int preAppWorkScheReflectAttr) {
+			return eflectApplicationWorkScheduleAdapter.process(application, date, reflectStatus, preAppWorkScheReflectAttr);
 		}
 
 		@Override

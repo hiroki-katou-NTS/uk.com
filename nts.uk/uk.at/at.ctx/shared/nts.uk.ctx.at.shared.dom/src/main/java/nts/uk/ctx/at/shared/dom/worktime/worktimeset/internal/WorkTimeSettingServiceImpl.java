@@ -118,6 +118,8 @@ public class WorkTimeSettingServiceImpl implements WorkTimeSettingService {
 	// 所定時間帯を取得する
 	public PredetermineTimeSetForCalc getPredeterminedTimezone(String companyId, String workTimeCd, String workTypeCd,
 			Integer workNo) {
+
+		/** TODO: 三浦さんチームの処理待ち*/
 		PredetemineTimeSetting predTime = this.predetemineTimeRepo.findByWorkTimeCode(companyId, workTimeCd).get();
 		PrescribedTimezoneSetting presTime = predTime.getPrescribedTimezoneSetting();
 		WorkType workType = this.workTypeRepo.findByPK(companyId, workTypeCd).get();
