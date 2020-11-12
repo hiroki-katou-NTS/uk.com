@@ -299,13 +299,16 @@ export class KafS20A2Component extends KafS00ShrComponent {
 
     public updateOptionalItem() {
         const vm = this;
-        
-        const {params} = vm;
-        const { appDispInfoStartupOutput} = params;
-        const {appDetailScreenInfo} = appDispInfoStartupOutput;
 
-        const {application} = appDetailScreenInfo;
+        const { params } = vm;
+        const { appDispInfoStartupOutput } = params;
+        const { appDetailScreenInfo } = appDispInfoStartupOutput;
 
+        const { application } = appDetailScreenInfo;
+
+        application.opAppReason = vm.application.opAppReason;
+        application.opReversionReason = vm.application.opReversionReason;
+        // application.opAppStandardReasonCD = vm.application.opAppStandardReasonCD;
         let optionalItems: optionalItems[] = [];
         vm.optionalItemApplication.forEach((item) => {
             optionalItems.push({
@@ -317,7 +320,7 @@ export class KafS20A2Component extends KafS00ShrComponent {
         });
         let paramsUpdate = {
             application,
-            appDispInfoStartup: vm.appDispInfoStartupOutput,
+            appDispInfoStartup: appDispInfoStartupOutput,
             optItemAppCommand: {
                 code: vm.settingItems.code,
                 optionalItems

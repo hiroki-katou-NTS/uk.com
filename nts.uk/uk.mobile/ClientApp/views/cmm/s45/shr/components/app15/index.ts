@@ -15,6 +15,11 @@ import { OptionalItemApplication } from '../../../../../kaf/s20/a/define';
 export class CmmS45ShrComponentsApp15Component extends Vue {
     public title: string = 'CmmS45ShrComponentsApp15';
     public optionalItemApplication: OptionalItemApplication[] | null = [];
+    public optionalItemSetting: ISettings = {
+        name: '',
+        description: '',
+        code: ''
+    };
 
     @Prop({
         default: () => ({
@@ -59,6 +64,7 @@ export class CmmS45ShrComponentsApp15Component extends Vue {
                 applicationId: appID
             }).then((res: any) => {
                 vm.params.appDetail = res.data;
+                vm.optionalItemSetting = vm.params.appDetail.application;
                 const { params } = vm;
                 const { appDetail } = params;
 
@@ -90,7 +96,7 @@ export class CmmS45ShrComponentsApp15Component extends Vue {
                         optionalItemAtr: optionalItem.optionalItemAtr,
                         optionalItemName: optionalItem.optionalItemName,
                         optionalItemNo: optionalItem.optionalItemNo,
-                        unit: optionalItem.unit
+                        unit: optionalItem.unit,
                     });
                     vm.$emit('loading-complete');
                 });
@@ -102,3 +108,9 @@ export class CmmS45ShrComponentsApp15Component extends Vue {
 const API = {
     startBScreen: 'ctx/at/request/application/optionalitem/getDetail'
 };
+
+export interface ISettings {
+    code: string;
+    name: string;
+    description: string;
+}

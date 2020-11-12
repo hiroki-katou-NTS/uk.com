@@ -315,7 +315,7 @@ export interface IApplication {
     inputDate: string;
     opAppEndDate: string;
     opAppReason: string | null;
-    opAppStandardReasonCD: number | string | null;
+    opAppStandardReasonCD: number | string| null;
     opAppStartDate: string;
     opReversionReason: null;
     opStampRequestMode: null;

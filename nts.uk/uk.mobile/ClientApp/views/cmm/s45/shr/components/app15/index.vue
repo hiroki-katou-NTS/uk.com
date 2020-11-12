@@ -15,7 +15,7 @@
           <div class="card-header">
             <button class="btn btn-link" type="button">
               <!-- tiêu đề của collapse -->
-              <span>{{ "this is card header" }}</span>
+              <span>{{ optionalItemSetting.name }}</span>
             </button>
           </div>
           <div class="collapse">
