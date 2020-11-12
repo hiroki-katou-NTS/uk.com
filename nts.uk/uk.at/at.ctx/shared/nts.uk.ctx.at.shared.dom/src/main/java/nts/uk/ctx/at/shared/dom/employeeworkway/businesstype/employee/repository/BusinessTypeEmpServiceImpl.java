@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository;
+package nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.repository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,8 +8,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmployee;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmployeeHistory;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployee;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeHistory;
 import nts.uk.shr.com.history.DateHistoryItem;
 
 @Stateless

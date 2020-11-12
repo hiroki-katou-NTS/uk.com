@@ -1,9 +1,8 @@
-package nts.uk.ctx.at.record.dom.dailyperformanceformat;
+package nts.uk.ctx.at.shared.dom.employeeworkway.businesstype;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeName;
+import nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode;
 
 /**
  * 

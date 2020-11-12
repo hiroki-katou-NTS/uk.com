@@ -1,10 +1,10 @@
-package nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository;
+package nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.repository;
 
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmployee;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployee;
 
 public interface BusinessTypeOfEmployeeRepository {
 	/**

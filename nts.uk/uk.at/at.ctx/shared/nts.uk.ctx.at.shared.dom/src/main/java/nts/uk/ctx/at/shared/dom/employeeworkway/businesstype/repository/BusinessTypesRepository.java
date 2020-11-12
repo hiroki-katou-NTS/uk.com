@@ -1,9 +1,9 @@
-package nts.uk.ctx.at.record.dom.dailyperformanceformat.repository;
+package nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.repository;
 
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessType;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.BusinessType;
 
 public interface BusinessTypesRepository {
 	

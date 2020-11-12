@@ -41,8 +41,8 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.otkcustomize.repo.Continuo
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
+import nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.context.AppContexts;
 import nts.arc.time.calendar.period.DatePeriod;

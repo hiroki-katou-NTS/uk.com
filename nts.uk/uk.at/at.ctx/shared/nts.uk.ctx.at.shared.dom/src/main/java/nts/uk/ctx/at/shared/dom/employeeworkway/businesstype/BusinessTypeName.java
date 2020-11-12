@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue;
+package nts.uk.ctx.at.shared.dom.employeeworkway.businesstype;
 
 import nts.arc.primitive.PrimitiveValue;
 import nts.arc.primitive.StringPrimitiveValue;
