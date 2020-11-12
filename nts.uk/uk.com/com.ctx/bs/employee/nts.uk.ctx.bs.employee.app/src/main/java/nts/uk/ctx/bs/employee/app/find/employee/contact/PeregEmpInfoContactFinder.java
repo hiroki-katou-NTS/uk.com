@@ -1,5 +1,4 @@
 package nts.uk.ctx.bs.employee.app.find.employee.contact;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -9,8 +8,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.bs.employee.dom.employee.contact.EmployeeInfoContact;
-import nts.uk.ctx.bs.employee.dom.employee.contact.EmployeeInfoContactRepository;
+import nts.uk.ctx.bs.employee.dom.employee.data.management.contact.EmployeeContact;
+import nts.uk.ctx.bs.employee.dom.employee.data.management.contact.EmployeeContactRepository;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
@@ -24,7 +23,7 @@ import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 public class PeregEmpInfoContactFinder implements PeregFinder<EmpInfoContactDto>{
 	
 	@Inject
-	private EmployeeInfoContactRepository empInfoContactRepo;
+	private EmployeeContactRepository empInfoContactRepo;
 
 	@Override
 	public String targetCategoryCode() {
@@ -44,7 +43,7 @@ public class PeregEmpInfoContactFinder implements PeregFinder<EmpInfoContactDto>
 
 	@Override
 	public PeregDomainDto getSingleData(PeregQuery query) {
-		Optional<EmployeeInfoContact> empInfoContact = empInfoContactRepo.findByEmpId(query.getEmployeeId());
+		Optional<EmployeeContact> empInfoContact = empInfoContactRepo.getByEmployeeId(query.getEmployeeId());
 		if(empInfoContact.isPresent())
 			return EmpInfoContactDto.fromDomain(empInfoContact.get());
 		return null;
@@ -71,11 +70,10 @@ public class PeregEmpInfoContactFinder implements PeregFinder<EmpInfoContactDto>
 		query.getEmpInfos().forEach(c -> {
 			result.add(new GridPeregDomainDto(c.getEmployeeId(), c.getPersonId(), null));
 		});
-		
-		List<EmployeeInfoContact> empInfoContact = empInfoContactRepo.findByListEmpId(sids);
+		List<EmployeeContact> empInfoContact = empInfoContactRepo.getByEmployeeIds(sids);
 		
 		result.stream().forEach(c ->{
-			Optional<EmployeeInfoContact> empOpt = empInfoContact.stream().filter(emp -> emp.getSid().equals(c.getEmployeeId())).findFirst();
+			Optional<EmployeeContact> empOpt = empInfoContact.stream().filter(emp -> emp.getEmployeeId().equals(c.getEmployeeId())).findFirst();
 			c.setPeregDomainDto(empOpt.isPresent() == true ? EmpInfoContactDto.fromDomain(empOpt.get()) : null);
 		});
 		
@@ -93,10 +91,10 @@ public class PeregEmpInfoContactFinder implements PeregFinder<EmpInfoContactDto>
 			result.add(new GridPeregDomainBySidDto(c.getEmployeeId(), c.getPersonId(), new ArrayList<>()));
 		});
 		
-		List<EmployeeInfoContact> empInfoContact = empInfoContactRepo.findByListEmpId(sids);
+		List<EmployeeContact> empInfoContact = empInfoContactRepo.getByEmployeeIds(sids);
 		
 		result.stream().forEach(c ->{
-			Optional<EmployeeInfoContact> empOpt = empInfoContact.stream().filter(emp -> emp.getSid().equals(c.getEmployeeId())).findFirst();
+			Optional<EmployeeContact> empOpt = empInfoContact.stream().filter(emp -> emp.getEmployeeId().equals(c.getEmployeeId())).findFirst();
 			c.setPeregDomainDto(empOpt.isPresent() == true ? Arrays.asList(EmpInfoContactDto.fromDomain(empOpt.get())) : new ArrayList<>());
 		});
 		

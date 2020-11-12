@@ -5,6 +5,12 @@ module nts.uk.at.kaf021.common {
     import getMessage = nts.uk.resource.getMessage;
     import parseTime = nts.uk.time.parseTime;
 
+    export interface AgreementOperationSettingDto {
+        startingMonth: number;
+        useSpecical: boolean;
+        useYear: boolean;
+    }
+
     export class CellState {
         rowId: string;
         columnKey: string;
@@ -178,6 +184,7 @@ module nts.uk.at.kaf021.common {
          * 申請一覧
          */
         applications: Array<IApplicationListDto>;
+        setting: AgreementOperationSettingDto;
     }
 
     export interface IApplicationListDto {

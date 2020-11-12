@@ -70,6 +70,7 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
                 _.forEach(editMenuBar.listSystem, x => {
                     item1.push(x);
                 })
+
                 self.listSystemSelect(item1);
                 _.forEach(editMenuBar.listStandardMenu, (item, index) => {
                     self.allPart.push(new MenuBarDto(
@@ -132,7 +133,7 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
                         letterColor: self.letterColor(),
                         backgroundColor: self.backgroundColor(),
                         selectedRadioAtcClass: self.selectedRadioAtcClass(),
-                        system: self.selectedCodeSystemSelect(),
+                        system: _.find(self.listStandardMenu(), { uniqueCode: self.selectedStandardMenuKey() }).system,
                         menuCls: menuCls,
                     });
                     windows.setShared("CCG013B_MenuBar", menuBar);
@@ -149,7 +150,7 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
                     letterColor: self.letterColor(),
                     backgroundColor: self.backgroundColor(),
                     selectedRadioAtcClass: self.selectedRadioAtcClass(),
-                    system: self.selectedCodeSystemSelect(),
+                    system: 0,
                     menuCls: menuCls,
                 });
                 windows.setShared("CCG013B_MenuBar", menuBar);
@@ -254,7 +255,7 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             this.targetItems = targetItems;
             this.url = url;
             this.webMenuSetting = webMenuSetting;
-            this.uniqueCode = nts.uk.text.format("{0}{1}{2}", code, system, classification);;
+            this.uniqueCode = nts.uk.util.randomId();
         }
     }
 

@@ -32,4 +32,9 @@ public class ImageSetting extends DomainObject {
 	 * サイズと位置
 	 */
 	private SizeAndPosition sizeAndPosition;
+	
+	/**
+	 * 比率
+	 */
+	private double ratio;
 }

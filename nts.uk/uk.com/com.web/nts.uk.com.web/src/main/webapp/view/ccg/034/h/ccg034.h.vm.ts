@@ -63,7 +63,6 @@ module nts.uk.com.view.ccg034.h {
 
     public uploadFinished(data: any) {
       const vm = this;
-      console.log(data);
       vm.fileId(data.id);
       vm.fileSize(Math.round(Number(data.originalSize) / 1024));
       if (!vm.fileName()) {

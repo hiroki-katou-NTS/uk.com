@@ -78,8 +78,8 @@ module nts.uk.com.view.cli003.b {
     ]);
 
     //B2
-    b2_10Datasource: KnockoutObservableArray<LogSetItemDetailModalDisplay> = ko.observableArray([]);
-    b2_10Columns: KnockoutObservableArray<any> = ko.observableArray([
+    conditionDatasource: KnockoutObservableArray<LogSetItemDetailModalDisplay> = ko.observableArray([]);
+    conditionColumns: KnockoutObservableArray<any> = ko.observableArray([
       {
         headerText: this.$i18n("CLI003_90"),
         prop: "displayItem",
@@ -112,7 +112,7 @@ module nts.uk.com.view.cli003.b {
         width: 125,
       },
     ]);
-    b2_10CurrentCode: KnockoutObservable<any> = ko.observable();
+    conditionCurrentCode: KnockoutObservable<any> = ko.observable();
     logSetOutputs: KnockoutObservableArray<any> = ko.observableArray([]);  //5 condition for Log
 
     //B3
@@ -122,7 +122,7 @@ module nts.uk.com.view.cli003.b {
     endDateOperator: KnockoutObservable<string> = ko.observable(moment.utc().format("YYYY/MM/DD 23:59:59"));
 
     //B4
-    b4_2SelectedRuleCode: KnockoutObservable<number> = ko.observable(2);
+    operatorEmpSelectedRuleCode: KnockoutObservable<number> = ko.observable(2);
     roundingRules: KnockoutObservableArray<any> = ko.observableArray([
       { code: EMPLOYEE_SPECIFIC.SPECIFY, name: this.$i18n("CLI003_17") },
       { code: EMPLOYEE_SPECIFIC.ALL, name: this.$i18n("CLI003_18") },
@@ -134,10 +134,10 @@ module nts.uk.com.view.cli003.b {
     startDateString: KnockoutObservable<string> = ko.observable("");
     endDateString: KnockoutObservable<string> = ko.observable("");
     checkFormatDate: KnockoutObservable<string> = ko.observable('1'); //1: Display YYYY/MM/DD , 2: Display YYYY/MM
-    b5_2dateValue: KnockoutObservable<any> = ko.observable({});
+    selectedEmpDateValue: KnockoutObservable<any> = ko.observable({});
 
     //B6
-    b6_2SelectedRuleCode: KnockoutObservable<number> = ko.observable(2);
+    selectedEmpSelectedRuleCode: KnockoutObservable<number> = ko.observable(2);
     targetEmployeeCount: KnockoutObservable<string> = ko.observable(nts.uk.text.format(this.$i18n("CLI003_57"), 0));
     selectedEmployeeCodeTarget: KnockoutObservableArray<any> = ko.observableArray([]);
 
@@ -149,11 +149,11 @@ module nts.uk.com.view.cli003.b {
             vm.currentCode(data.currentCode);
             vm.checkFormatDate(data.checkFormatDate);
             vm.selectedEmployeeCodeOperator(data.operatorEmployeeIdList);
-            vm.b5_2dateValue(data.dateValue);
+            vm.selectedEmpDateValue(data.dateValue);
             vm.startDateOperator(data.startDateOperator);
             vm.endDateOperator(data.endDateOperator);
-            vm.b4_2SelectedRuleCode(data.selectedRuleCodeOperator);
-            vm.b6_2SelectedRuleCode(data.selectedRuleCodeTarget);
+            vm.operatorEmpSelectedRuleCode(data.selectedRuleCodeOperator);
+            vm.selectedEmpSelectedRuleCode(data.selectedRuleCodeTarget);
             vm.selectedEmployeeCodeTarget(data.targetEmployeeIdList);
             vm.targetEmployeeCount(data.targetEmployeeCount);
             vm.operatorEmployeeCount(data.operatorEmployeeCount);
@@ -163,7 +163,7 @@ module nts.uk.com.view.cli003.b {
         .then(() => {
           vm.getAllLogDisplaySet();
           vm.obsSelectedLogSet();
-        })
+        });
     }
 
     //get logDisplaySet from service and convert to UI Dto
@@ -175,8 +175,7 @@ module nts.uk.com.view.cli003.b {
         .getAllLogDisplaySet()
         .then((logDisplaySets: any) => {
           if (logDisplaySets && logDisplaySets.length > 0) {
-            for (let i = 0; i < logDisplaySets.length; i++) {
-              const logDisplaySet = logDisplaySets[i];
+            for (const logDisplaySet of logDisplaySets) {
               vm.logSets.push(
                 new ItemLogSetModel(
                   logDisplaySet.logSetId,
@@ -197,7 +196,7 @@ module nts.uk.com.view.cli003.b {
               //pick current display log
             } else {
               $("#B1").ntsGridList("setSelected", vm.currentCode());
-              const logSet = vm.logSets().filter(logSet => (logSet.code === vm.currentCode()))[0];
+              const logSet = _.find(vm.logSets(),log => (log.code === vm.currentCode()));
               vm.getLogItems(logSet);
               vm.getTargetDate(logSet);
             }
@@ -217,7 +216,7 @@ module nts.uk.com.view.cli003.b {
       const vm = this;
       vm.currentCode.subscribe((newValue) => {
         vm.$errors("clear");
-        const logSet = vm.logSets().filter(logSet => (logSet.code === newValue))[0];
+        const logSet = _.find(vm.logSets(),(log) => (log.code === newValue));
         vm.getLogItems(logSet);
         vm.getTargetDate(logSet);
       });
@@ -232,10 +231,10 @@ module nts.uk.com.view.cli003.b {
           vm.setLogSetInfo(logSet);
           const logSetItemDetailsList = _.map(logSet.logSetOutputs, (item: any, index: number) => {
             const listCond: string[] = ["", "", "", "", "", ""];
-            item.logSetItemDetails.map((itemDetail: any, index: number) => {
-              const condSymbol = vm.symbolList().filter((symbol) => symbol.code === itemDetail.sybol)[0].name;
+            item.logSetItemDetails.map((itemDetail: any, i: number) => {
+              const condSymbol = _.find(vm.symbolList(), (symbol) => symbol.code === itemDetail.sybol).name;
               if (itemDetail.condition !== "" && itemDetail.condition !== null) {
-                listCond[index] = condSymbol + " " + itemDetail.condition;
+                listCond[i] = condSymbol.concat(" ",itemDetail.condition);
               }
             });
             const itemName = _.filter(logOutputItems, (logOutputItem => logOutputItem.itemNo === item.itemNo))[0].itemName;
@@ -248,7 +247,7 @@ module nts.uk.com.view.cli003.b {
               listCond[4]
             );
           });
-          vm.b2_10Datasource(logSetItemDetailsList);
+          vm.conditionDatasource(logSetItemDetailsList);
         })
         .fail(() => {
           vm.$dialog.alert({ messageId: "Msg_1221" });
@@ -288,16 +287,19 @@ module nts.uk.com.view.cli003.b {
         vm.dataType("");
         vm.currentDataTypeName("");
       }
-      if (logSet.recordType === 0 ||
-        logSet.recordType === 1 ||
-        logSet.recordType === 9 ||
-        logSet.recordType === 10 ||
-        logSet.recordType === 11) {
-        vm.showOperator(false);
-        vm.b6_2SelectedRuleCode(2);
-      } else {
-        vm.showOperator(true);
-      }
+      switch(logSet.recordType) {
+        case 0:
+        case 1:
+        case 9:
+        case 10:
+        case 11:
+          vm.showOperator(false);
+          vm.selectedEmpSelectedRuleCode(2);
+          break;
+        default:
+          vm.showOperator(true);
+          break;
+      } 
     }
 
     //get recordType Name
@@ -322,58 +324,65 @@ module nts.uk.com.view.cli003.b {
     private getTargetDate(logSet: any) {
       const vm = this;
       vm.checkFormatDate('1');
-      vm.b5_2dateValue.valueHasMutated();
-      if (logSet.recordType === RECORD_TYPE.DATA_CORRECT
-        && (logSet.dataType === 2 || logSet.dataType === 3
-          || logSet.dataType === 6 || logSet.dataType === 7)) {
-        vm.checkFormatDate('2');
+      vm.selectedEmpDateValue.valueHasMutated();
+      if (logSet.recordType === RECORD_TYPE.DATA_CORRECT) {
+        switch(logSet.dataType) {
+          case 2:
+          case 3:
+          case 6:
+          case 7:
+            vm.checkFormatDate('2');
+            break;
+          default:
+            break;
+        } 
       }
     }
 
     //Open B4_3
-    public openDialogForB4_3() {
+    public openDialogOperatorEmpl() {
       const vm = this;
       vm.$window
         .storage("CLI003_C_FormLabel", vm.$i18n("CLI003_23"))
         .then(() => {
           vm.$window.modal("/view/cli/003/c/index.xhtml").then(() => {
             vm.$window.storage("operatorEmployeeCount").then((data) => {
-              if (data !== undefined)
+              if (data)
                 vm.operatorEmployeeCount(data);
             })
             vm.$window.storage("selectedEmployeeCodeOperator").then((data) => {
-              if (data !== undefined)
+              if (data)
                 vm.selectedEmployeeCodeOperator(data);
-            })
-          })
-        })
+            });
+          });
+        });
     }
 
     //Open B6_3
-    public openDialogForB6_3() {
+    public openDialogTargetEmpl() {
       const vm = this;
       vm.$window
         .storage("CLI003_C_FormLabel", vm.$i18n("CLI003_16"))
         .then(() => {
           vm.$window.modal("/view/cli/003/c/index.xhtml").then(() => {
             vm.$window.storage("targetEmployeeCount").then((data) => {
-              if (data !== undefined)
+              if (data)
                 vm.targetEmployeeCount(data);
-            })
+            });
             vm.$window.storage("selectedEmployeeCodeTarget").then((data) => {
-              if (data !== undefined)
+              if (data)
                 vm.selectedEmployeeCodeTarget(data);
-            })
-          })
-        })
+            });
+          });
+        });
     }
 
     //check before jump to screen F
     private validateBeforeJumpToF(): boolean {
       const vm = this;
       const noOne = nts.uk.text.format(vm.$i18n("CLI003_57"), 0);
-      if (vm.b4_2SelectedRuleCode() === 1 && vm.operatorEmployeeCount() === noOne &&
-        vm.b6_2SelectedRuleCode() === 1 && vm.targetEmployeeCount() === noOne) {
+      if (vm.operatorEmpSelectedRuleCode() === 1 && vm.operatorEmployeeCount() === noOne &&
+        vm.selectedEmpSelectedRuleCode() === 1 && vm.targetEmployeeCount() === noOne) {
         const bundledErrors = [{
           message: resource.getMessage('Msg_1718'),
           messageId: "Msg_1718",
@@ -385,16 +394,14 @@ module nts.uk.com.view.cli003.b {
         }];
         nts.uk.ui.dialog.bundledErrors({ errors: bundledErrors });
         return false;
-      } else if (vm.b4_2SelectedRuleCode() === 1 && vm.operatorEmployeeCount() === noOne) {
+      } else if (vm.operatorEmpSelectedRuleCode() === 1 && vm.operatorEmployeeCount() === noOne) {
         vm.$dialog.error({ messageId: "Msg_1718" });
         return false;
-      }
-      else if (vm.b6_2SelectedRuleCode() === 1 && vm.targetEmployeeCount() === noOne) {
+      } else if (vm.selectedEmpSelectedRuleCode() === 1 && vm.targetEmployeeCount() === noOne) {
         vm.$dialog.error({ messageId: "Msg_1719" });
         return false;
-      } else {
-        return true;
-      };
+      } 
+      return true;
     }
 
     //jump to screen F
@@ -411,13 +418,13 @@ module nts.uk.com.view.cli003.b {
           systemTypeSelectedCode: vm.systemType(),
           checkFormatDate: vm.checkFormatDate(),
           operatorEmployeeIdList: vm.selectedEmployeeCodeOperator(),
-          dateValue: vm.b5_2dateValue(),
+          dateValue: vm.selectedEmpDateValue(),
           startDateOperator: vm.startDateOperator(),
           endDateOperator: vm.endDateOperator(),
-          selectedRuleCodeOperator: vm.b4_2SelectedRuleCode(),
-          selectedRuleCodeTarget: vm.b6_2SelectedRuleCode(),
+          selectedRuleCodeOperator: vm.operatorEmpSelectedRuleCode(),
+          selectedRuleCodeTarget: vm.selectedEmpSelectedRuleCode(),
           targetEmployeeIdList: vm.selectedEmployeeCodeTarget(),
-        }
+        };
         vm.$window
           .storage('VIEW_B_DATA', data)
           .then(() => vm.$jump.self("/view/cli/003/f/index.xhtml", data));
@@ -567,12 +574,12 @@ module nts.uk.com.view.cli003.b {
       cond4: string,
       cond5: string
     ) {
-      this.displayItem = displayItem,
-        this.cond1 = cond1,
-        this.cond2 = cond2,
-        this.cond3 = cond3,
-        this.cond4 = cond4,
-        this.cond5 = cond5;
+      this.displayItem = displayItem;
+      this.cond1 = cond1;
+      this.cond2 = cond2;
+      this.cond3 = cond3;
+      this.cond4 = cond4;
+      this.cond5 = cond5;
     }
   }
   export interface LogOutputItem {

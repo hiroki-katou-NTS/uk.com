@@ -163,6 +163,7 @@ module ccg018.a1.viewmodel {
         }
 
         showNote() {
+            $('#popup-show-note').remove();
             const $table1 = $('#A2-4');
             $('<div/>')
                 .attr('id', 'popup-show-note')
@@ -180,7 +181,7 @@ module ccg018.a1.viewmodel {
             $('<div/>')
                 .text(nts.uk.resource.getText('CCG018_52'))
                 .appendTo($popUpShowNote);
-                $popUpShowNote.ntsPopup('show');
+            $popUpShowNote.ntsPopup('show');
         }
 
         private getSwitchDateLists() {

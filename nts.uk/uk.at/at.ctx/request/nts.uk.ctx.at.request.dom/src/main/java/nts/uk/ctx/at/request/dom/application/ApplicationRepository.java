@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 
@@ -187,6 +188,20 @@ public interface ApplicationRepository {
 			List<ApplicationType> appTypeLst, List<PrePostAtr> prePostAtrLst, List<StampRequestMode> stampRequestModeLst);
 
 	public List<Application> getAppForKAF008(String sID, GeneralDate startDate, GeneralDate endDate);
+
+	/**
+	 * 申請を取得	(反映状態="反映済み",対象日=ループ中の申請日)
+	 * @param sid
+	 * @param appDate
+	 * @return
+	 */
+	public List<Application> getAppReflected(String sid, GeneralDate appDate);
+	
+	//申請を取得する
+	// 事前事後区分, 入力日, 申請日, 申請種類, 申請者
+	public List<Application> getApplication(PrePostAtr prePostAtr, GeneralDateTime inputDate, GeneralDate appDate,
+			ApplicationType appType, String employeeID);
 	
 	public List<Application> getApprSttByEmpPeriod(String employeeID, DatePeriod period);
+
 }
