@@ -207,47 +207,16 @@ public class OutingTimeSheetTest {
 	 * 
 	 */
 	@Test
-	public void getTimeZone_not_empty() {	
-		TimeZone vacations  = null;
-		/** 外出を作る */
-		//実打刻
-		val actStamp_go_out = new WorkStamp(  new TimeWithDayAttr(15)
-				                               , new TimeWithDayAttr(1600)
-				                               , new WorkLocationCD("001")
-				                               , TimeChangeMeans.REAL_STAMP);
-		//打刻
-		val stamp_go_out = new WorkStamp( new TimeWithDayAttr(15)
-				                           , new TimeWithDayAttr(1600)
-				                           , new WorkLocationCD("001")
-				                           , TimeChangeMeans.REAL_STAMP);
+	public void getTimeZone_not_empty() {				
+		//外出
+		val goOut = Helper.createTimeAcutualStamp(new TimeWithDayAttr(1600));
+		
+		//戻り
+		val comeBack = Helper.createTimeAcutualStamp(new TimeWithDayAttr(1700));
 
-		val goOut = new TimeActualStamp( actStamp_go_out, stamp_go_out, 1
-                , new OvertimeDeclaration(new AttendanceTime(100), new AttendanceTime(0))
-                , vacations);
+		//外出時間帯
+		val outingTime = Helper.createOutingTime(goOut, comeBack);
 		
-		
-		/** 戻りを作る */
-		//実打刻
-		val actStamp_come_back = new WorkStamp(  new TimeWithDayAttr(15)
-				                               , new TimeWithDayAttr(1700)
-				                               , new WorkLocationCD("001")
-				                               , TimeChangeMeans.REAL_STAMP);
-		//打刻
-		val stamp_come_back = new WorkStamp( new TimeWithDayAttr(15)
-				                           , new TimeWithDayAttr(1700)
-				                           , new WorkLocationCD("001")
-				                           , TimeChangeMeans.REAL_STAMP);
-
-		val comeBack =  new TimeActualStamp(actStamp_come_back, stamp_come_back, 1
-                , new OvertimeDeclaration(new AttendanceTime(100), new AttendanceTime(0))
-                , vacations);
-		
-		val outingTime = new OutingTimeSheet(new OutingFrameNo(1)
-				, Optional.of(goOut)
-				, new AttendanceTime(1600)
-				, new AttendanceTime(1700)
-				, GoingOutReason.PRIVATE
-				, Optional.of(comeBack));
 		val actual = outingTime.getTimeZone();
 		
 		assertThat(actual).isNotEmpty();
@@ -313,6 +282,52 @@ public class OutingTimeSheetTest {
 			return  new TimeActualStamp( actStamp_go_out, stamp_go_out, 1
                     , new OvertimeDeclaration(new AttendanceTime(100), new AttendanceTime(0))
                     , vacations);
+		}
+		
+		/**
+		 * 時刻（日区分付き）を指定して勤怠打刻を作る
+		 * 時刻以外はdummy
+		 * @param goOut
+		 * @return
+		 */
+		public static WorkStamp createStamp(TimeWithDayAttr goOut) {
+			return new WorkStamp(
+					new TimeWithDayAttr(15)
+					, goOut
+					, new WorkLocationCD("001")
+					, TimeChangeMeans.REAL_STAMP);
+		}
+		
+		/**
+		 * 時刻（日区分付き）を指定して勤怠打刻(実打刻付き)を作る
+		 * 時刻以外はdummy
+		 * @param stamp
+		 * @return
+		 */
+		public static TimeActualStamp createTimeAcutualStamp (TimeWithDayAttr stamp) {
+			return new TimeActualStamp(
+					Helper.createStamp(new TimeWithDayAttr(1000))
+					, Helper.createStamp(stamp)
+					, 1
+	                , new OvertimeDeclaration(new AttendanceTime(100), new AttendanceTime(0))
+	                , null);
+		}
+		
+		/**
+		 * 外出・戻りの勤怠打刻を指定して外出時間帯を作る
+		 * 外出・戻り以外はdummy
+		 * @param goOut
+		 * @param comeBack
+		 * @return
+		 */
+		public static OutingTimeSheet createOutingTime(TimeActualStamp goOut, TimeActualStamp comeBack) {
+			return new OutingTimeSheet(
+					new OutingFrameNo(1)
+					, Optional.of(goOut)
+					, new AttendanceTime(1600)
+					, new AttendanceTime(1700)
+					, GoingOutReason.PRIVATE
+					, Optional.of(comeBack));
 		}
 	}
 }
