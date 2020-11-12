@@ -8,9 +8,10 @@ import java.util.stream.Collectors;
 
 @Getter
 public class InitActiveAlarmListDto {
-    public  InitActiveAlarmListDto(String employmentCode, List<AlarmPatternSettingWorkPlace> domains){
+    public  InitActiveAlarmListDto(String employmentCode, List<AlarmPatternSettingWorkPlace> domains, Integer processingYm){
         this.employmentCode = employmentCode;
         this.alarmPatterns = domains.stream().map(AlarmPatternSettingWorkPlaceDto::new).collect(Collectors.toList());
+        this.processingYm = processingYm;
     }
 
     /**
@@ -18,5 +19,14 @@ public class InitActiveAlarmListDto {
      */
     private String employmentCode;
 
+    /**
+     * アラームリストパターン設定(職場別)
+     */
     private List<AlarmPatternSettingWorkPlaceDto> alarmPatterns;
+
+    /**
+     * 当月の年月
+
+     */
+    private Integer processingYm;
 }

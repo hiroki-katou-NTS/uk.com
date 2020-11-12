@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.app.find.alarmworkplace.alarmlist;
 import lombok.Getter;
 import nts.arc.primitive.PrimitiveValueBase;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.function.dom.alarm.workplace.checkcondition.WorkplaceCategory;
 import nts.uk.ctx.at.function.dom.alarmworkplace.CheckCondition;
 
 import java.util.List;
@@ -14,6 +15,12 @@ public class CheckConditionDto {
         this.workplaceCategory = domain.getWorkplaceCategory().value;
         this.checkConditionLis = domain.getCheckConditionLis().stream().map(PrimitiveValueBase::v).collect(Collectors.toList());
 
+    }
+
+    public CheckConditionDto(WorkplaceCategory workplaceCategory, GeneralDate startDate, GeneralDate endDate) {
+        this.workplaceCategory = workplaceCategory.value;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
     /**

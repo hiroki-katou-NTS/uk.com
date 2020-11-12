@@ -8,6 +8,7 @@ import nts.uk.ctx.at.function.app.find.alarmworkplace.alarmlist.InitActiveAlarmL
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import java.util.List;
 
@@ -27,8 +28,8 @@ public class ExtractAlarmListWorkPlaceWebService extends WebService {
     }
 
     @POST
-    @Path("get-check-conditions")
-    public List<CheckConditionDto> getCheckConditions() {
-        return extractAlarmListWorkPlaceFinder.getCheckConditions();
+    @Path("get-check-conditions/{code}/{ym}")
+    public List<CheckConditionDto> getCheckConditions(@PathParam("code") String code, @PathParam("ym") Integer ym) {
+        return extractAlarmListWorkPlaceFinder.getCheckConditions(code, ym);
     }
 }
