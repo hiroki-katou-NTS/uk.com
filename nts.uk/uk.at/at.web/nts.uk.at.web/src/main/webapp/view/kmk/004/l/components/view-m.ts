@@ -15,14 +15,14 @@ module nts.uk.at.view.kmk004.l {
 	<div class="view-m">
 	<table>
 		<tr>
-			<td>
+			<td id="left-side">
 				<div id="tree-grid"></div>
 			</td>
 			
-			<td>
+			<td id="right-side">
 				<div class="view-l">
 					<div class="header-l">
-						<div data-bind="i18n: 'KMK004_307'"></div>
+						<div id="title", data-bind="i18n: 'KMK004_307'"></div>
 						<hr></hr>
 						<div>
 							<label data-bind= "text: selectedItemText"></label>

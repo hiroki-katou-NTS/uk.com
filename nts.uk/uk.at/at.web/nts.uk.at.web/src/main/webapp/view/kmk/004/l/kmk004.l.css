@@ -8,8 +8,7 @@
 }
 
 .view-l {
-	padding: 10px;
-	margin-left: 10px;
+	margin-left: 20px;
 }
 
 .view-l .header-l {
@@ -59,4 +58,17 @@
 
 #tree-grid {
 	padding-left: 30px;
+}
+
+#right-side {
+	padding-left: 40px;
+}
+
+#left-side {
+	position: relative;
+    top: -38px;
+}
+
+#title {
+	font-size: 20px;
 }
