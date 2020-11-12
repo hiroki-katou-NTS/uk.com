@@ -53,3 +53,10 @@
 .kml-002-c .content-table tbody td:nth-child(4) {
   white-space: break-spaces;
 }
+
+#fixed-table tbody tr td:nth-child(2) {
+  text-align: center;
+}
+#fixed-table tbody tr td:nth-child(3) button {
+  width: 100%;
+}

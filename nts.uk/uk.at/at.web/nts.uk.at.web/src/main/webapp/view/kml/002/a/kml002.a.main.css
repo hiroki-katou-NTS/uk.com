@@ -1,15 +1,16 @@
 .kml-002-a {
 }
 .kml-002-a .wpl-settings {
-  width: 240px;
+  width: 250px;
   margin: 20px 0 0 20px
 }
 .kml-002-a .row-item {
   margin: 0 auto 24px;
 }
 .kml-002-a .header {
-  max-width: 176px;
+  max-width: 205px;
   width: 100%;
+  text-align: center;
 }
 .kml-002-a .row-item h1 {
   font-size: 22px;
