@@ -193,8 +193,8 @@ public class GetDataToOutputService extends ExportService<Object> {
         for (ProcessExecutionLogHistory logHistory : listProcessExeHistory) {
             // 処理中の「更新処理自動実行ログ履歴．全体の業務エラー状態」を確認する
             // 全体の業務エラー状態 = true
-            if (logHistory.getErrorBusiness() != null) {
-                if (logHistory.getErrorBusiness()) {
+            if (logHistory.getErrorBusiness().isPresent()) {
+                if (logHistory.getErrorBusiness().get()) {
 //                  // Sort list ExecutionTaskLog by enum
 //                  logHistory.getTaskLogList().sort(Comparator.comparingInt(taskLog -> taskLog.getProcExecTask().value));
 
@@ -202,8 +202,8 @@ public class GetDataToOutputService extends ExportService<Object> {
                     if (!logHistory.getTaskLogList().isEmpty()) {
 
                         for (ExecutionTaskLog taskLog : logHistory.getTaskLogList()) {
-                        	if(taskLog.getErrorBusiness()!= null) {
-                        		if (taskLog.getErrorBusiness()) {
+                        	if(taskLog.getErrorBusiness().isPresent()) {
+                        		if (taskLog.getErrorBusiness().get()) {
 
                                     String execIdByLogHistory = logHistory.getExecId();
                                     ExecutionLogDetailDto execLogDetail = new ExecutionLogDetailDto();
@@ -406,18 +406,20 @@ public class GetDataToOutputService extends ExportService<Object> {
                 Map<String, Object> rowCSV1 = new HashMap<>();
                 rowCSV1.putAll(this.saveHeaderCSV(rowCSV1, proHis.getExecId(), exeCode.getExecItemCode(), proHis.getExecItemCd(), exeCode.getExecItemName()));
 
-                rowCSV1.put(headerCSV1.get(3), proHis.getLastExecDateTime() != null ? proHis.getLastExecDateTime().toString("yyyy-MM-dd HH:mm:ss") : null);
-                rowCSV1.put(headerCSV1.get(4), proHis.getLastEndExecDateTime() != null ? proHis.getLastEndExecDateTime().toString("yyyy-MM-dd HH:mm:ss") : null);
+                String lastExecDateTime = proHis.getLastExecDateTime().map(item -> item.toString("yyyy-MM-dd HH:mm:ss")).orElse(null);
+                String lastEndExecDateTime = proHis.getLastEndExecDateTime().map(item -> item.toString("yyyy-MM-dd HH:mm:ss")).orElse(null);
+                rowCSV1.put(headerCSV1.get(3), proHis.getLastExecDateTime() != null ? lastExecDateTime : null);
+                rowCSV1.put(headerCSV1.get(4), proHis.getLastEndExecDateTime() != null ? lastEndExecDateTime : null);
 
-                rowCSV1.put(headerCSV1.get(5), this.getHourByGetLastExecDateTimeAndGetLastEndExecDateTime(proHis.getLastExecDateTime(), proHis.getLastEndExecDateTime()));
+                rowCSV1.put(headerCSV1.get(5), this.getHourByGetLastExecDateTimeAndGetLastEndExecDateTime(proHis.getLastExecDateTime().orElse(null), proHis.getLastEndExecDateTime().orElse(null)));
                 rowCSV1.put(headerCSV1.get(6), proHis.getOverallStatus().map(item -> item.value)
                         .orElse(null));
-                rowCSV1.put(headerCSV1.get(7), proHis.getErrorSystem() == null
+                rowCSV1.put(headerCSV1.get(7), proHis.getErrorSystem().isPresent()
                         ? null
-                        : (proHis.getErrorSystem() ? TextResource.localize("KBT002_290") : TextResource.localize("KBT002_291")));
-                rowCSV1.put(headerCSV1.get(8), proHis.getErrorBusiness() == null
+                        : (proHis.getErrorSystem().get() ? TextResource.localize("KBT002_290") : TextResource.localize("KBT002_291")));
+                rowCSV1.put(headerCSV1.get(8), proHis.getErrorBusiness().isPresent()
                         ? null
-                        : (proHis.getErrorBusiness() ? TextResource.localize("KBT002_290") : TextResource.localize("KBT002_291")));
+                        : (proHis.getErrorBusiness().get() ? TextResource.localize("KBT002_290") : TextResource.localize("KBT002_291")));
                 rowCSV1.put(headerCSV1.get(9), proHis.getOverallError()
                         .map(item -> item.name)
                         .orElse(null));
@@ -445,19 +447,22 @@ public class GetDataToOutputService extends ExportService<Object> {
                         Map<String, Object> rowCSV2 = new HashMap<>();
                         rowCSV2.putAll(this.saveHeaderCSV(rowCSV2, proHis.getExecId(), exeCode.getExecItemCode(), proHis.getExecItemCd(), exeCode.getExecItemName()));
                         rowCSV2.put(headerCSV2.get(3), taskLog.getProcExecTask() != null ? taskLog.getProcExecTask().name : null);
-                        rowCSV2.put(headerCSV2.get(4), taskLog.getLastExecDateTime() != null ? taskLog.getLastExecDateTime().toString("yyyy-MM-dd HH:mm:ss") : null);
-                        rowCSV2.put(headerCSV2.get(5), taskLog.getLastEndExecDateTime() != null ? taskLog.getLastEndExecDateTime().toString("yyyy-MM-dd HH:mm:ss") : null);
-                        rowCSV2.put(headerCSV2.get(6), this.getHourByGetLastExecDateTimeAndGetLastEndExecDateTime(proHis.getLastExecDateTime(), proHis.getLastEndExecDateTime()));
+
+                        String lastExecDateTime = taskLog.getLastExecDateTime().map(item -> item.toString("yyyy-MM-dd HH:mm:ss")).orElse(null);
+                        String lastEndExecDateTime = taskLog.getLastEndExecDateTime().map(item -> item.toString("yyyy-MM-dd HH:mm:ss")).orElse(null);
+                        rowCSV2.put(headerCSV2.get(4), taskLog.getLastExecDateTime().isPresent() ? lastExecDateTime : null);
+                        rowCSV2.put(headerCSV2.get(5), taskLog.getLastEndExecDateTime().isPresent() ? lastEndExecDateTime : null);
+                        rowCSV2.put(headerCSV2.get(6), this.getHourByGetLastExecDateTimeAndGetLastEndExecDateTime(proHis.getLastExecDateTime().orElse(null), proHis.getLastEndExecDateTime().orElse(null)));
                         rowCSV2.put(headerCSV2.get(7), proHis.getOverallStatus()
                                 .map(item -> item.name)
                                 .orElse(null));
-                        rowCSV2.put(headerCSV2.get(8), proHis.getErrorSystem() == null
+                        rowCSV2.put(headerCSV2.get(8), proHis.getErrorSystem().isPresent()
                                 ? null
-                                : proHis.getErrorSystem() ? TextResource.localize("KBT002_290") : TextResource.localize("KBT002_291"));
+                                : proHis.getErrorSystem().get() ? TextResource.localize("KBT002_290") : TextResource.localize("KBT002_291"));
                         rowCSV2.put(headerCSV2.get(9), taskLog.getSystemErrorDetails());
-                        rowCSV2.put(headerCSV2.get(10), proHis.getErrorBusiness() == null
+                        rowCSV2.put(headerCSV2.get(10), proHis.getErrorBusiness().isPresent()
                                 ? null
-                                : proHis.getErrorBusiness() ? TextResource.localize("KBT002_290") : TextResource.localize("KBT002_291"));
+                                : proHis.getErrorBusiness().get() ? TextResource.localize("KBT002_290") : TextResource.localize("KBT002_291"));
                         csv.writeALine(rowCSV2);
                     }
                 }
@@ -492,8 +497,8 @@ public class GetDataToOutputService extends ExportService<Object> {
                         
                         for(ExecutionTaskLog taskLog : proHis.getTaskLogList()){
                         	int j = 0;
-                            if(taskLog.getErrorBusiness() != null){
-                                if (taskLog.getErrorBusiness()) {
+                            if(taskLog.getErrorBusiness().isPresent()){
+                                if (taskLog.getErrorBusiness().get()) {
                                     // sort list scheduleErrorLog in date by asc
                                 	ScheduleErrorLog schLog = new ScheduleErrorLog(null,null,null,null);
                                 	ErrMessageInfo errLog = new ErrMessageInfo(null,null, null, null, null, null);

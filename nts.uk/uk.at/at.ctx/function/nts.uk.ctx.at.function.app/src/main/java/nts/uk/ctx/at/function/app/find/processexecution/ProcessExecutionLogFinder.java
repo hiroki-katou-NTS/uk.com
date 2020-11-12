@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.app.find.processexecution;
 //import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -71,20 +72,24 @@ public class ProcessExecutionLogFinder {
 		
 		Map<String, UpdateProcessAutoExecution> mapProcessExecution = listProcessExecution.stream()
 				.collect(Collectors.toMap(item -> item.getExecItemCode().v(), Function.identity()));
+						(a, b) -> a, TreeMap::new));
 		
 		// ドメインモデル「更新処理自動実行ログ」を取得する
 		Map<String, ProcessExecutionLog> mapProcessExecutionLog = this.procExecLogRepo.getProcessExecutionLogByCompanyIdAndExecItemCd(companyId, listExecItemCd).stream()
-				.collect(Collectors.toMap(item -> item.getExecItemCd().v(), Function.identity()));
+				.collect(Collectors.toMap(item -> item.getExecItemCd().v(), Function.identity(),
+						(a, b) -> a, TreeMap::new));
 		
 		// ドメインモデル「更新処理自動実行管理」を取得する
 		Map<String, ProcessExecutionLogManage> mapProcessExecutionLogManage = this.processExecLogManRepo.getProcessExecutionLogByCompanyIdAndExecItemCd(companyId, listExecItemCd).stream()
-				.collect(Collectors.toMap(item -> item.getExecItemCd().v(), Function.identity()));
+				.collect(Collectors.toMap(item -> item.getExecItemCd().v(), Function.identity(),
+						(a, b) -> a, TreeMap::new));
 		
 		// ドメインモデル「実行タスク設定」を取得する
 		Map<String, ExecutionTaskSetting> mapExecutionTaskSetting = this.execSettingRepo.getByCidAndExecItemCd(companyId, listExecItemCd).stream()
-				.collect(Collectors.toMap(item -> item.getExecItemCd().v(), Function.identity()));
+				.collect(Collectors.toMap(item -> item.getExecItemCd().v(), Function.identity(),
+						(a, b) -> a, TreeMap::new));
 		
-		List<ExecutionItemInfomationDto> listResult = listExecItemCd.stream()
+		List<ExecutionItemInfomationDto> listResult = listExecItemCd.parallelStream()
 				.map(execItemCd -> {
 					// OUTPUT「実行項目情報」を作成する
 					UpdateProcessAutoExecution processExecution = mapProcessExecution.get(execItemCd);

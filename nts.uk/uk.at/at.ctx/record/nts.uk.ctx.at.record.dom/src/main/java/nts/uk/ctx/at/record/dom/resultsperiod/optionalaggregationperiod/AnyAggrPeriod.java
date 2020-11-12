@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.primitivevalue.AnyAggrFrameCode;
 import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.primitivevalue.AnyAggrName;
@@ -12,6 +14,7 @@ import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.primitiv
  * @author nws-minhnb
  */
 @Getter
+@NoArgsConstructor
 public class AnyAggrPeriod extends AggregateRoot {
 
 	/** 会社ID */
@@ -25,12 +28,6 @@ public class AnyAggrPeriod extends AggregateRoot {
 
 	/** 対象期間 */
 	private DatePeriod period;
-
-	/**
-	 * No args constructor of domain AnyAggrPeriod.
-	 */
-	private AnyAggrPeriod() {
-	}
 
 	/**
 	 * Creates domain from memento.
@@ -54,7 +51,7 @@ public class AnyAggrPeriod extends AggregateRoot {
 	public void getMemento(MementoGetter memento) {
 		this.aggrFrameCode = new AnyAggrFrameCode(memento.getAggrFrameCode());
 		this.optionalAggrName = new AnyAggrName(memento.getOptionalAggrName());
-		this.period = memento.getPeriod();
+		this.period = new DatePeriod(memento.getStartDate(), memento.getEndDate());
 	}
 
 	/**
@@ -66,7 +63,8 @@ public class AnyAggrPeriod extends AggregateRoot {
 		memento.setCompanyId(this.companyId);
 		memento.setAggrFrameCode(this.aggrFrameCode.v());
 		memento.setOptionalAggrName(this.optionalAggrName.v());
-		memento.setPeriod(this.period);
+		memento.setStartDate(this.period.start());
+		memento.setEndDate(period.end());
 	}
 
 	/**
@@ -96,11 +94,16 @@ public class AnyAggrPeriod extends AggregateRoot {
 		void setOptionalAggrName(String optionalAggrName);
 
 		/**
-		 * Sets period.
-		 *
-		 * @param period the period
+		 * Sets period start date
+		 * @param startDate
 		 */
-		void setPeriod(DatePeriod period);
+		void setStartDate(GeneralDate startDate);
+		
+		/**
+		 * Sets period end date
+		 * @param endDate
+		 */
+		void setEndDate(GeneralDate endDate);
 	}
 
 	/**
@@ -130,11 +133,18 @@ public class AnyAggrPeriod extends AggregateRoot {
 		String getOptionalAggrName();
 
 		/**
-		 * Gets period.
-		 *
-		 * @return the period
+		 * Gets period start date 
+		 * 
+		 * @return period start date
 		 */
-		DatePeriod getPeriod();
+		GeneralDate getStartDate();
+		
+		/**
+		 * Gets period end date
+		 * 
+		 * @return period end date
+		 */
+		GeneralDate getEndDate();
 	}
 
 }

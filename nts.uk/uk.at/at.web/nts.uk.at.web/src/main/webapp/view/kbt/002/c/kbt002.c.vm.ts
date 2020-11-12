@@ -174,18 +174,11 @@ module nts.uk.at.view.kbt002.c {
 
     openDialogD() {
     const vm = this;
-    vm.$blockui("grayout")
-    nts.uk.ui.windows.setShared('inputDialogD',
-      {
-        repeatMonthDateList: vm.curExecSetting().repeatMonthDateList()
+    vm.$window.modal("/view/kbt/002/d/index.xhtml", { repeatMonthDateList: vm.curExecSetting().repeatMonthDateList() })
+      .then(data => {
+        vm.curExecSetting().repeatMonthDateList(data.selectedDays);
+        vm.monthDays(vm.buildMonthDaysStr());
       });
-      nts.uk.ui.windows.sub.modal("/view/kbt/002/d/index.xhtml").onClosed(function () {
-      var sharedDataD = nts.uk.ui.windows.getShared('outputDialogD');
-      vm.curExecSetting().repeatMonthDateList(sharedDataD.selectedDays);
-
-      vm.monthDays(vm.buildMonthDaysStr());
-      vm.$blockui("clear");
-    });
     }
 
     closeDialog() {

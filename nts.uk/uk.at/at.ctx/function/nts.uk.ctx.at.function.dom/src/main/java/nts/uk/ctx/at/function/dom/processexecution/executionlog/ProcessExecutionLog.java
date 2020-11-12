@@ -1,12 +1,15 @@
 package nts.uk.ctx.at.function.dom.processexecution.executionlog;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 
@@ -17,6 +20,17 @@ import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProcessExecutionLog extends AggregateRoot {
+	
+	public static final ProcessExecutionTask[] TASK_SETTINGS = {
+			ProcessExecutionTask.SCH_CREATION,
+			ProcessExecutionTask.DAILY_CREATION,
+			ProcessExecutionTask.DAILY_CALCULATION,
+			ProcessExecutionTask.RFL_APR_RESULT,
+			ProcessExecutionTask.MONTHLY_AGGR,
+			ProcessExecutionTask.AL_EXTRACTION,
+			ProcessExecutionTask.APP_ROUTE_U_DAI,
+			ProcessExecutionTask.APP_ROUTE_U_MON
+	};
 
 	/* コード */
 	private ExecutionCode execItemCd;
@@ -33,7 +47,6 @@ public class ProcessExecutionLog extends AggregateRoot {
 	/* 実行ID */
 	private String execId;
 	
-	
 	public ProcessExecutionLog(ExecutionCode execItemCd, String companyId,
 			String execId) {
 		super();
@@ -43,19 +56,22 @@ public class ProcessExecutionLog extends AggregateRoot {
 		this.taskLogList = new ArrayList<>();
 		this.execId = execId;
 	}
-	
-	
+
 	public void initTaskLogList() {
-		this.taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.SCH_CREATION ,Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
-		this.taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.DAILY_CREATION ,Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
-		this.taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.DAILY_CALCULATION ,Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
-		this.taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.RFL_APR_RESULT ,Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
-		this.taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.MONTHLY_AGGR ,Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
-		//this.taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.INDV_ALARM ,Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
-		//this.taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.WKP_ALARM ,Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
-		this.taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.AL_EXTRACTION ,Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
-		this.taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.APP_ROUTE_U_DAI ,Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
-		this.taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.APP_ROUTE_U_MON ,Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
+		this.taskLogList = processInitTaskLog();
+	}
+	
+	public static List<ExecutionTaskLog> processInitTaskLog() {
+		return Arrays.stream(TASK_SETTINGS)
+				.map(item -> ProcessExecutionLog.processInitTaskLog(item, EndStatus.NOT_IMPLEMENT))
+				.collect(Collectors.toList());
+	}
+	
+	private static ExecutionTaskLog processInitTaskLog(ProcessExecutionTask task, EndStatus endStatus) {
+		return ExecutionTaskLog.builder()
+			.procExecTask(EnumAdaptor.valueOf(task.value, ProcessExecutionTask.class))
+			.status(Optional.ofNullable(EnumAdaptor.valueOf(endStatus.value, EndStatus.class)))
+			.build();
 	}
 	
 	public void setExecItemCd(ExecutionCode execItemCd) {

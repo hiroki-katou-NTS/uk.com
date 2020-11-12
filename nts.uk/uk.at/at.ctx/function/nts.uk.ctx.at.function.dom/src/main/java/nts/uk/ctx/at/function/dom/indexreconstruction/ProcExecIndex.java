@@ -45,7 +45,7 @@ public class ProcExecIndex extends AggregateRoot {
 
 	public static interface MementoSetter {
 		void setExecutionId(String indexNo);
-		void setIndexReconstructionResult(List<ProcExecIndexResult> fragmentationRate);
+		void setIndexReconstructionResult(List<ProcExecIndexResult> indexReconstructionResult);
 	}
 
 	public static interface MementoGetter {

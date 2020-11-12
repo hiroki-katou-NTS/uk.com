@@ -33,18 +33,6 @@ public class OptionalAggrPeriodWebService extends WebService {
 	private RemoveOptionalAggregationPeriodCommandHandler removeHandler;
 	
 	/**
-	 * Gets the aggr period dto.
-	 *	
-	 * @param companyId the company id
-	 * @return the aggr period dto
-	 */
-	@POST
-	@Path("getAggrPeriod")
-	public AnyAggrPeriodDto getAggrPeriodDto() {
-		return this.optionalAggrPeriodFinder.findByCid();
-	}
-	
-	/**
 	 * Gets the all dtos.
 	 *	ドメインモデル「任意集計期間」を取得する
 	 * @return the all dtos

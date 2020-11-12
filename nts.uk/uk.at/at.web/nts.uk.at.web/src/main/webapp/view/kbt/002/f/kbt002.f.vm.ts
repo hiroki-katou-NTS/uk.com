@@ -9,6 +9,9 @@ module nts.uk.at.view.kbt002.f {
     changeSetting: 'at/function/processexec/changeSetting',
   };
 
+  const DATETIME_FORMAT = 'YYYY/MM/DD HH:mm:ss';
+  const DOM_DATA_VALUE = 'data-value';
+
   @bean()
   export class KBT002FViewModel extends ko.ViewModel {
     $grid!: JQuery;
@@ -29,19 +32,19 @@ module nts.uk.at.view.kbt002.f {
       vm.getExecItemInfoList();
       // data binding
       $(document).on("click", ".button-process-start", function () {
-        const key = $(this).attr("data-value");
+        const key = $(this).attr(DOM_DATA_VALUE);
         vm.executeUpdateProcess(key);
       });
       $(document).on("click", ".button-process-stop", function () {
-        const key = $(this).attr("data-value");
+        const key = $(this).attr(DOM_DATA_VALUE);
         vm.stopUpdateProcess(key);
       });
       $(document).on("click", ".button-open-g", function () {
-        const key = $(this).attr("data-value");
+        const key = $(this).attr(DOM_DATA_VALUE);
         vm.openDialogG(key);
       });
       $(document).on("click", ".button-open-h", function () {
-        const key = $(this).attr("data-value");
+        const key = $(this).attr(DOM_DATA_VALUE);
         vm.openDialogH(key);
       });
     }
@@ -126,8 +129,8 @@ module nts.uk.at.view.kbt002.f {
               width: 70,
               formatter: (value: number, record: ExecutionItemInfomationModel) => {
                 const enabled: boolean = (record.execStatus === 1 || record.execStatus === 2);
-                let $button = $("<button>", { "class": "btn-center setting small button-process-start", "tabindex": -1, "disabled": !enabled });
-                $button.attr("data-value", record["execItemCd"]);
+                const $button = $("<button>", { "class": "btn-center setting small button-process-start", "tabindex": -1, "disabled": !enabled });
+                $button.attr(DOM_DATA_VALUE, record["execItemCd"]);
                 $button.append(`<i class="img-icon icon-start"></i>${vm.$i18n('KBT002_262')}`);
                 return $button[0].outerHTML;
               }
@@ -138,8 +141,8 @@ module nts.uk.at.view.kbt002.f {
               width: 70,
               formatter: (value: number, record: ExecutionItemInfomationModel) => {
                 const enabled: boolean = (record.execStatus === 0);
-                let $button = $("<button>", { "class": "btn-center setting small button-process-stop", "tabindex": -1, "disabled": !enabled });
-                $button.attr("data-value", record["execItemCd"]);
+                const $button = $("<button>", { "class": "btn-center setting small button-process-stop", "tabindex": -1, "disabled": !enabled });
+                $button.attr(DOM_DATA_VALUE, record["execItemCd"]);
                 $button.append(`<i class="img-icon icon-stop"></i>${vm.$i18n('KBT002_133')}`);
                 return $button[0].outerHTML;
               }
@@ -179,9 +182,9 @@ module nts.uk.at.view.kbt002.f {
               key: 'execItemCd',
               width: 50,
               formatter: (value: any, record: ExecutionItemInfomationModel) => {
-                const enabled: boolean = (record.execStatus === 1 || record.execStatus === 2) && (record.overallStatus !== 0 && record.overallStatus !== 3);
-                let $button = $("<button>", { "class": "setting small button-open-g", "tabindex": -1, "disabled": !enabled, "text": vm.$i18n("KBT002_144") });
-                $button.attr("data-value", record["execItemCd"]);
+                const enabled = (record.execStatus === 1 || record.execStatus === 2) && (record.overallStatus !== 0 && record.overallStatus !== 3);
+                const $button = $("<button>", { "class": "setting small button-open-g", "tabindex": -1, "disabled": !enabled, "text": vm.$i18n("KBT002_144") });
+                $button.attr(DOM_DATA_VALUE, record["execItemCd"]);
                 return $button[0].outerHTML;
               }
             },
@@ -190,9 +193,9 @@ module nts.uk.at.view.kbt002.f {
               key: 'execItemCd',
               width: 70,
               formatter: (value: any, record: ExecutionItemInfomationModel) => {
-                const enabled: boolean = !!(record.lastStartDateTime);
-                let $button = $("<button>", { "class": "setting small button-open-h", "tabindex": -1, "disabled": !enabled, "text": vm.$i18n("KBT002_147") });
-                $button.attr("data-value", record["execItemCd"]);
+                const enabled = !!(record.lastStartDateTime);
+                const $button = $("<button>", { "class": "setting small button-open-h", "tabindex": -1, "disabled": !enabled, "text": vm.$i18n("KBT002_147") });
+                $button.attr(DOM_DATA_VALUE, record["execItemCd"]);
                 return $button[0].outerHTML;
               }
             },
@@ -255,25 +258,25 @@ module nts.uk.at.view.kbt002.f {
             .then((info: any) => {
               //ExecuteProcessExecCommandHandler
               const message101 = vm.getAsyncData(info.taskDatas, "message101").valueAsString;
-              if (message101 == "Msg_1101" && vm.isOnceMessage101()) {
+              if (message101 === "Msg_1101" && vm.isOnceMessage101()) {
                 vm.isOnceMessage101(false);
                 vm.$dialog.alert({ messageId: message101 });
                 vm.getExecItemInfoList();
               }
               //TerminateProcessExecutionCommandHandler
               const currentStatusIsOneOrTwo = vm.getAsyncData(info.taskDatas, "currentStatusIsOneOrTwo").valueAsString;
-              if (currentStatusIsOneOrTwo == "Msg_1102" && vm.isOnceCurrentStatus()) {
+              if (currentStatusIsOneOrTwo === "Msg_1102" && vm.isOnceCurrentStatus()) {
                 vm.isOnceCurrentStatus(false);
                 vm.$dialog.alert({ messageId: currentStatusIsOneOrTwo });
                 vm.getExecItemInfoList();
               }
               const interupt = vm.getAsyncData(info.taskDatas, "interupt").valueAsString;
-              if (interupt == "true" && vm.isOnceInterupt()) {
+              if (interupt === "true" && vm.isOnceInterupt()) {
                 vm.isOnceInterupt(false);
                 vm.getExecItemInfoList();
               }
               const createSchedule = vm.getAsyncData(info.taskDatas, "createSchedule").valueAsString;
-              if (createSchedule == "done" && vm.isCreateSchedule()) {
+              if (createSchedule === "done" && vm.isCreateSchedule()) {
                 vm.isCreateSchedule(false);
                 vm.getExecItemInfoList();
               }
@@ -289,7 +292,7 @@ module nts.uk.at.view.kbt002.f {
 
     private getAsyncData(data: any[], key: string): any {
       const result = _.find(data, (item) => {
-        return item.key == key;
+        return item.key === key;
       });
       return result || { valueAsString: "", valueAsNumber: 0, valueAsBoolean: false };
     }
@@ -415,7 +418,7 @@ module nts.uk.at.view.kbt002.f {
     systemError: string;
     businessError: string;
 
-    constructor(vm: ComponentViewModel, dto: any) {
+    constructor(vm: any, dto: any) {
       // PK
       this.execItemCd = dto.execItemCd;
       // 警告アイコン
@@ -429,7 +432,7 @@ module nts.uk.at.view.kbt002.f {
 
       if (dto.updateProcessAutoExec) {
         // 実行項目
-        this.execItem = dto.execItemCd + ' ' + dto.updateProcessAutoExec.execItemName;
+        this.execItem = `${dto.execItemCd} ${dto.updateProcessAutoExec.execItemName}`;
       }
       if (dto.updateProcessAutoExecManage) {
         // 実行状態
@@ -438,11 +441,11 @@ module nts.uk.at.view.kbt002.f {
         this.overallStatus = dto.updateProcessAutoExecManage.overallStatus;
         // 前回開始日時
         this.lastStartDateTime = dto.updateProcessAutoExecManage.lastExecDateTime
-          ? moment.utc(dto.updateProcessAutoExecManage.lastExecDateTime).format('YYYY/MM/DD HH:mm:ss')
+          ? moment.utc(dto.updateProcessAutoExecManage.lastExecDateTime).format(DATETIME_FORMAT)
           : "";
         // 前回終了日時
         this.lastEndDateTime = dto.updateProcessAutoExecManage.lastEndExecDateTime
-          ? moment.utc(dto.updateProcessAutoExecManage.lastEndExecDateTime).format('YYYY/MM/DD HH:mm:ss')
+          ? moment.utc(dto.updateProcessAutoExecManage.lastEndExecDateTime).format(DATETIME_FORMAT)
           : "";
         // 処理時間
         if (dto.updateProcessAutoExecManage.lastExecDateTime && dto.updateProcessAutoExecManage.lastEndExecDateTime) {
@@ -455,7 +458,7 @@ module nts.uk.at.view.kbt002.f {
       this.isTaskExecution = (dto.executionTaskSetting) ? dto.executionTaskSetting.enabledSetting : false;
       // 次回実行日時
       this.nextExecDate = dto.nextExecDate
-        ? moment.utc(dto.nextExecDate).format('YYYY/MM/DD HH:mm:ss')
+        ? moment.utc(dto.nextExecDate).format(DATETIME_FORMAT)
         : vm.$i18n('KBT002_165');
       // ｼｽﾃﾑｴﾗｰ
       this.systemError = (dto.updateProcessAutoExecManage && dto.updateProcessAutoExecManage.errorSystem)

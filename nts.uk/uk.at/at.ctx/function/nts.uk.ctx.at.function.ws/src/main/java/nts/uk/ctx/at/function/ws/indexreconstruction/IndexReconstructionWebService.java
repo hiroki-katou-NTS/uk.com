@@ -20,9 +20,6 @@ public class IndexReconstructionWebService extends WebService {
     @Path("/{execId}")
     @POST
     public ProExecIndexDtoAndNumberTargetTableDto getIndexReconstructionAndNumberTarget(@PathParam("execId") String execId) {
-    	if (this.procExecIndexFinder.findByExectionId(execId).isPresent()) {
-    		return this.procExecIndexFinder.findByExectionId(execId).get();
-    	}
-    	return null;
+    	return this.procExecIndexFinder.findByExectionId(execId);
     }
 }

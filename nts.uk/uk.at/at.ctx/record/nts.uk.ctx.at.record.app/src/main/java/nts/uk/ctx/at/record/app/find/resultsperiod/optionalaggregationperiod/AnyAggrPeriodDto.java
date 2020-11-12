@@ -1,9 +1,8 @@
 package nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.AnyAggrPeriod;
 
 /**
@@ -12,7 +11,7 @@ import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.AnyAggrP
  * @author nws-minhnb
  */
 @Data
-@AllArgsConstructor
+@NoArgsConstructor
 public class AnyAggrPeriodDto implements AnyAggrPeriod.MementoSetter {
 
 	/** 会社ID */
@@ -29,23 +28,6 @@ public class AnyAggrPeriodDto implements AnyAggrPeriod.MementoSetter {
 
 	/** 対象期間 */
 	private GeneralDate endDate;
-
-	/**
-	 * No args constructor.
-	 */
-	private AnyAggrPeriodDto() {
-	}
-
-	/**
-	 * Sets period.
-	 *
-	 * @param period the period
-	 */
-	@Override
-	public void setPeriod(DatePeriod period) {
-		this.startDate = period.start();
-		this.endDate = period.end();
-	}
 
 	/**
 	 * Creates from domain.

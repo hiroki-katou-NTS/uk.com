@@ -76,7 +76,7 @@ public class AppRouteUpdateMonthlyDefault implements AppRouteUpdateMonthlyServic
 		for (ExecutionTaskLog executionTaskLog : procExecLog.getTaskLogList()) {
 			if (executionTaskLog.getProcExecTask() == ProcessExecutionTask.APP_ROUTE_U_MON) {
 				executionTaskLog.setStatus(null);
-				executionTaskLog.setLastExecDateTime(GeneralDateTime.now());
+				executionTaskLog.setLastExecDateTime(Optional.ofNullable(GeneralDateTime.now()));
 				executionTaskLog.setErrorBusiness(null);
 				executionTaskLog.setErrorSystem(null);
 				executionTaskLog.setLastEndExecDateTime(null);

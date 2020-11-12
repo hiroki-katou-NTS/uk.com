@@ -6,6 +6,8 @@ module nts.uk.at.view.kbt002.k {
     exportCSV: "screen/at/outputexechistory/exportCSV",
   };
 
+  const DATE_FORMAT = 'YYYY/MM/DD';
+
   @bean()
   export class KBT002KViewModel extends ko.ViewModel {
     empNames: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -18,7 +20,7 @@ module nts.uk.at.view.kbt002.k {
     created() {
       const vm = this;
       let today = moment().utc();
-      let currentDate = today.format("YYYY/MM/DD");
+      let currentDate = today.format(DATE_FORMAT);
 
       vm.dateValue().startDate = currentDate;
       vm.dateValue().endDate = currentDate;
@@ -43,12 +45,13 @@ module nts.uk.at.view.kbt002.k {
       const vm = this;
       const command: GetDataExportCSVModel = new GetDataExportCSVModel({
         isExportEmployeeName: vm.selectEmpName() === 2,
-        startDate: moment.utc(vm.dateValue().startDate, 'YYYY/MM/DD').toISOString(),
-        endDate: moment.utc(vm.dateValue().endDate, 'YYYY/MM/DD').toISOString()
+        startDate: moment.utc(vm.dateValue().startDate, DATE_FORMAT).toISOString(),
+        endDate: moment.utc(vm.dateValue().endDate, DATE_FORMAT).toISOString()
       });
 
       vm.$blockui('grayout');
-      nts.uk.request.exportFile(API.exportCSV, command).then(() => {});
+      nts.uk.request.exportFile(API.exportCSV, command)
+        .always(() => vm.$blockui('clear'));
     }
 
     closeDialog() {

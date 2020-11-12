@@ -1,20 +1,32 @@
 package nts.uk.ctx.at.function.app.find.indexreconstruction;
 
-import lombok.Value;
-import nts.uk.ctx.at.function.dom.indexreconstruction.ProcExecIndex;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Value
-public class ProcExecIndexDto {
+import lombok.Data;
+import nts.uk.ctx.at.function.dom.indexreconstruction.ProcExecIndex;
+import nts.uk.ctx.at.function.dom.indexreconstruction.ProcExecIndexResult;
+
+@Data
+public class ProcExecIndexDto implements ProcExecIndex.MementoSetter {
 
     private String executionId;
 
     List<ProcExecIndexResultDto> indexReconstructionResult;
 
-    public static ProcExecIndexDto fromDomain(ProcExecIndex domain){
-        return new ProcExecIndexDto(domain.getExecutionId().v(),
-                domain.getIndexReconstructionResult().stream().map(r -> ProcExecIndexResultDto.fromDomain(r)).collect(Collectors.toList()));
-    }
+	@Override
+	public void setIndexReconstructionResult(List<ProcExecIndexResult> indexReconstructionResult) {
+		this.indexReconstructionResult = indexReconstructionResult.stream()
+				.map(domain -> {
+					ProcExecIndexResultDto dto = new ProcExecIndexResultDto();
+					domain.setMemento(dto);
+					return dto;
+				}).collect(Collectors.toList());
+	}
+	
+	public static ProcExecIndexDto createFromDomain(ProcExecIndex domain) {
+		ProcExecIndexDto dto = new ProcExecIndexDto();
+		domain.setMemento(dto);
+		return dto;
+	}
 }

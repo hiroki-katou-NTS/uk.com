@@ -17,4 +17,5 @@ public interface ProcessExecutionLogHistRepository {
 			GeneralDateTime startDate,GeneralDateTime endDate);
 	public List<ProcessExecutionLogHistory> getByCompanyIdAndDateAndEmployeeName(String companyId, GeneralDateTime startDate, GeneralDateTime endDate);
 	public List<ProcessExecutionLogHistory> getByCompanyIdAndExecItemCd(String companyId, String execItemCd);
+	public Optional<ProcessExecutionLogHistory> getByExecId(String execId);
 }

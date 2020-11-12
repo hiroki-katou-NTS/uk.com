@@ -2,70 +2,49 @@ package nts.uk.ctx.at.function.dom.processexecution.executionlog;
 
 import java.util.Optional;
 
-//import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Builder;
+import lombok.Data;
 import nts.arc.time.GeneralDateTime;
 
 /**
- * 更新処理自動実行タスクログ
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.更新処理自動実行.更新処理自動実行ログ.更新処理自動実行タスクログ
  */
-@Getter
-@Setter
+@Data
+@Builder
 public class ExecutionTaskLog {
-	
-	/* 更新処理 */
-	private ProcessExecutionTask procExecTask;
-	
-	/* 終了状態 */
-	private Optional<EndStatus> status;
-	
-	
-	private String execId;
-	
-	/* 前回実行日時 */
-	private GeneralDateTime lastExecDateTime;
-	
-	/* 前回終了日時*/
-	private GeneralDateTime lastEndExecDateTime;
-	
-	/* 全体のシステムエラー状態*/
-	private Boolean errorSystem;
-	
-	/* 全体の業務エラー状態*/
-	private Boolean errorBusiness;
 
-	/**
-	 * システムエラー内容
-	 **/
-	private String systemErrorDetails;
+    /**
+     * 更新処理
+     */
+    private ProcessExecutionTask procExecTask;
 
-	public ExecutionTaskLog(ProcessExecutionTask procExecTask, Optional<EndStatus> status) {
-		super();
-		this.procExecTask = procExecTask;
-		this.status = status;
-	}
+    /**
+     * システムエラー内容
+     */
+    private Optional<String> systemErrorDetails;
 
-	public ExecutionTaskLog(ProcessExecutionTask procExecTask, Optional<EndStatus> status, String execId,
-			GeneralDateTime lastExecDateTime, GeneralDateTime lastEndExecDateTime, Boolean errorSystem,
-			Boolean errorBusiness, String systemErrorDetails) {
-		super();
-		this.procExecTask = procExecTask;
-		this.status = status;
-		this.execId = execId;
-		this.lastExecDateTime = lastExecDateTime;
-		this.lastEndExecDateTime = lastEndExecDateTime;
-		this.errorSystem = errorSystem;
-		this.errorBusiness = errorBusiness;
-		this.systemErrorDetails = systemErrorDetails;
-	}
+    /**
+     * 全体のシステムエラー状態
+     */
+    private Optional<Boolean> errorSystem;
 
-//	public ExecutionTaskLog(ProcessExecutionTask procExecTask, Optional<EndStatus> status, String execId) {
-//		super();
-//		this.procExecTask = procExecTask;
-//		this.status = status;
-//		this.execId = execId;
-//	}
-	
-	
+    /**
+     * 全体の業務エラー状態
+     */
+    private Optional<Boolean> errorBusiness;
+
+    /**
+     * 前回実行日時
+     */
+    private Optional<GeneralDateTime> lastExecDateTime;
+
+    /**
+     * 終了状態
+     */
+    private Optional<EndStatus> status;
+
+    /**
+     * 前回終了日時
+     */
+    private Optional<GeneralDateTime> lastEndExecDateTime;
 }
