@@ -30,6 +30,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType_Update;
 import nts.uk.ctx.at.request.dom.application.overtime.ExcessState;
 import nts.uk.ctx.at.request.dom.application.overtime.OverStateOutput;
+import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeApplicationSetting;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayInfoOverTime;
@@ -118,6 +119,8 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 	
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
+	
+	
 	@Override
 	public QuotaOuput getOvertimeQuotaSetUse(
 			String companyId,
@@ -259,7 +262,8 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 	}
 
 
-
+	@Inject
+	private DivergenceReasonInputMethodI divergenceReasonInputMethod;
 
 	@Override
 	public ReasonDissociationOutput getInfoNoBaseDate(
@@ -306,8 +310,13 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 				return output;
 			}
 			output.setDivergenceTimeRoots(divergenceTimeRootList);
-			// [RQ693]乖離理由の入力方法Listを取得する export pending
-			List<DivergenceReasonInputMethod> exportList = Collections.emptyList();
+			// [RQ693]乖離理由の入力方法Listを取得する
+			List<Integer> lstNo = divergenceTimeRootList.stream()
+														   .filter(x -> x.getDivTimeUseSet() == DivergenceTimeUseSet.USE)
+														   .map(y -> y.getDivergenceTimeNo())
+														   .collect(Collectors.toList());
+			List<DivergenceReasonInputMethod> exportList = divergenceReasonInputMethod.getData(companyId, lstNo);
+			
 			List<DivergenceReasonInputMethod> divergenceReasonInputMethodListFilter = exportList.stream()
 					.filter(x -> x.getDivergenceTimeNo() == DivergenceTimeUseSet.USE.value)
 					.collect(Collectors.toList());
@@ -680,6 +689,9 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 	public AppOverTime check36Limit(String companyId, AppOverTime appOverTime, Boolean isProxy, Integer mode) {
 		if (mode == 0) { // 新規モードの場合
 			// 03-03_３６上限チェック（月間）
+			// #112509
+			List<OverTimeInput> overTimeInput = new ArrayList<OverTimeInput>();
+			
 			// commonOvertimeholiday.registerOvertimeCheck36TimeLimit(companyId, employeeId, appDate, overTimeInput)
 		} else { // 詳細・照会モード
 			// 05_３６上限チェック(詳細)
