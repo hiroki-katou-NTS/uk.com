@@ -40,13 +40,13 @@ public class SetTimeOfAttendance {
 			lstTimeLeavingWork.addAll(workInfo.getScheduleTimeSheets().stream().map(x -> {
 				return new TimeLeavingWork(x.getWorkNo(),
 						new TimeActualStamp(null, new WorkStamp(
-								new WorkTimeInformation(new ReasonTimeChange(autoStampClasssifi.getAttendanceStamp(), null),
+								new WorkTimeInformation(new ReasonTimeChange(autoStampClasssifi.getAttendanceStamp(), Optional.empty()),
 										x.getAttendance()),
 								Optional.empty()), 0),
 						new TimeActualStamp(null,
 								new WorkStamp(
 										new WorkTimeInformation(
-												new ReasonTimeChange(autoStampClasssifi.getLeaveStamp(), null),
+												new ReasonTimeChange(autoStampClasssifi.getLeaveStamp(), Optional.empty()),
 												x.getLeaveWork()),
 										Optional.empty()),
 								0));
