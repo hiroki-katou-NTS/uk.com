@@ -30,7 +30,13 @@ const _NavMenu = Vue.observable({
 @component({
     template: `<nav class="navbar navbar-expand-lg fixed-top" v-if="visible">
         <a v-on:click="" class="navbar-brand mr-n2">{{pgName |i18n}}</a>
-        <button class="navbar-toggler dropdown-toggle" v-on:click="show = !show"></button>
+        <div class="d-flex justify-content-end">
+            <div class="div-ccgs08">
+                <img :src="iconNotice" class="img-notice" @click="showCcg003()">
+                <img v-if="isNewNotice" :src="redCircle" class="img-red-circle">
+            </div>
+            <button class="navbar-toggler dropdown-toggle" v-on:click="show = !show"></button>
+        </div>
         <transition name="collapse-long" v-on:before-enter="beforeEnter" v-on:after-leave="afterLeave">
             <div ref="nav" class="collapse navbar-collapse" v-show="show">
                 <ul class="navbar-nav mr-auto">
@@ -73,7 +79,9 @@ const _NavMenu = Vue.observable({
 })
 export class NavMenuBar extends Vue {
     public active: any = {};
-
+    private isNewNotice: boolean = false;
+    public iconNotice: string = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC4AAAAhCAYAAACm75niAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAGESURBVFhH7ZjPSsNAEMa/SbSHWoOCxT/Qi3jwxeJD6Yt5EC8BrfRQSNFDMTvObqahsU0jgmsX9ndodibN7pf0S3d2CUq1uGLiKQhGM/uGVXaGNJs5ze6jKoec4MM29x7GAZLsk8g+6YRfNB0GBicgLuUmAiTRY3BE4b6Jwn0ThfsmWOGdExBLNcA4lzubPmhKZqyLnPDmzmzD4AhEl9Lpk7uG6SZnfpU+3t357xgMRIGMwcXaGKd5grlG3XQKt52m2bIpwlZU5UDqmqVGbQxNkB4XrWuqxURKikKjNiJSxpi3vi967uWQ11E30eO+2WkVsUTjvRWSFw92W2XdrxbJ5busIn7eGEPotUqsDn0ThfsmCvdNFO6bcIUbjLQZDnZTyFVmXJLMngFNoMltbRXKmAyGLrfPMFInmkaPtK0WbrALAfCz227sg+0zoOtmEfEXUIY7bdZW6aMqx7J4mGm0icG42UX1xY/+VZwo+YkMDjVT42LJ+xb9K+zurn2Z7VFT/wDwBQ1Zgov2L8soAAAAAElFTkSuQmCC';
+    public redCircle: string = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAANCAYAAACdKY9CAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAADCSURBVChTjZK9DYUwDIQNFSOEjg42gBEyAiOwDSVsQEkJGyAqYAM6Skro7jkWRfjRUz7p5Fick9jEIwvsO6jvicaR6DyJ0pRIa/LC8OYTMAyAUgAvbwoCoGl4aYGuexufKksOxnwcQBR9m2yZk7YNvtx5XaX4L6anuiZfGnRlWbhgnq/MAfb6lCRX5oBSXBDHV+ZAlnH73LlM4DmVL00TB8bM+PXxqTznYIGi+DYaaQ15Nk/QtrKT/EjzTIyxqiwj0Q9rQLQA9JUVSwAAAABJRU5ErkJggg==';
     @Watch('show', { immediate: true })
     public toggleMaskLayer(show: boolean) {
         let self = this;
@@ -109,7 +117,15 @@ export class NavMenuBar extends Vue {
     }
 
     public created() {
+        const vm = this;
         dom.registerEventHandler(window, 'resize', resize);
+        vm.$mask('show', { message: true });
+        vm.$http.post('com', servicePath.isNewNotice).then((res: boolean) => {
+            vm.isNewNotice = res;
+            vm.$mask('hide');
+        }).catch(() => {
+            vm.$mask('hide');
+        });
     }
 
     public destroyed() {
@@ -127,6 +143,14 @@ export class NavMenuBar extends Vue {
 
         dom.removeClass(nav, 'show');
     }
+
+    private showCcg003() {
+        alert('showCCG003');
+    }
 }
 
 export { NavMenu };
+
+const servicePath = {
+    isNewNotice: 'sys/portal/notice/is-new-notice'
+};
