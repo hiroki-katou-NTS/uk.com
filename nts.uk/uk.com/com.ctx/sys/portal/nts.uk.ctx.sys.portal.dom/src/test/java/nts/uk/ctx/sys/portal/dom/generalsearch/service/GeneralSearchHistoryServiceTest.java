@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import lombok.val;
+import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
@@ -54,6 +55,12 @@ public class GeneralSearchHistoryServiceTest {
 
 	@Test
 	public void testCheckRoleSearchManual_3() {
+		new Expectations() {
+			{
+				require.getLoginResponsible().isPersonIncharge();
+				result = false;
+			}
+		};
 		val domainService = new GeneralSearchHistoryService();
 		val result2 = (boolean)NtsAssert.Invoke.privateMethod
 				(
@@ -78,6 +85,26 @@ public class GeneralSearchHistoryServiceTest {
 						require,
 						forCompanyAdmin,
 						forSystemAdmin
+						);
+		assertTrue(result);
+	}
+	
+	@Test
+	public void testCheckRoleSearchManual_5() {
+		new Expectations() {
+			{
+				require.getLoginResponsible().isPersonIncharge();
+				result = true;
+			}
+		};
+		val domainService = new GeneralSearchHistoryService();
+		val result = (boolean)NtsAssert.Invoke.privateMethod
+				(
+						domainService, 
+						"checkRoleSearchManual", 
+						require,
+						null,
+						null
 						);
 		assertTrue(result);
 	}
