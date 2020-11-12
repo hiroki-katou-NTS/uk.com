@@ -6,6 +6,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.screen.at.app.query.kmk004.b.DisplayBasicSettings;
+import nts.uk.screen.at.app.query.kmk004.b.DisplayBasicSettingsDto;
 import nts.uk.screen.at.app.query.kmk004.s.GetUsageUnitSetting;
 import nts.uk.screen.at.app.query.kmk004.s.UsageUnitSettingDto;
 
@@ -22,6 +24,9 @@ public class Kmk004WebService extends WebService{
 	@Inject
 	private GetUsageUnitSetting getUsageUnitSetting;
 	
+	@Inject
+	private DisplayBasicSettings basicSettings;
+	
 	//View S
 	@POST
 	@Path("getUsageUnitSetting")
@@ -29,4 +34,10 @@ public class Kmk004WebService extends WebService{
 		return this.getUsageUnitSetting.get();
 	}
 	
+	//ViewB
+	@POST
+	@Path("getDisplayBasicSetting")
+	public DisplayBasicSettingsDto getDisplayBasicSetting() {
+		return this.basicSettings.getSetting();
+	}
 }

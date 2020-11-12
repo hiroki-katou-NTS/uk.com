@@ -1,9 +1,9 @@
 /// <reference path="../../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.view.kmk004.b {
-    
-    interface Params {
-        model: ParamsTabSetting;
+
+    const API = {
+        DISPLAY_BASICSETTING: 'screen/at/kmk004/getDisplayBasicSetting',
     }
 
     const template = `
@@ -12,18 +12,18 @@ module nts.uk.at.view.kmk004.b {
                 <tbody>
                     <tr>
                         <th>
-                            <div class="content" data-bind="i18n: 'KMK004_213'"></div>
+                            <div class="content-tab" data-bind="i18n: 'KMK004_213'"></div>
                         </th>
                         <th>
-                            <div class="content" data-bind="i18n: 'KMK004_214'"></div>
+                            <div class="content-tab" data-bind="i18n: 'KMK004_214'"></div>
                         </th>
                     </tr>
                     <tr>
                         <td>
-                            <div class="content" data-bind="i18n: paramsTabSetting.daily"></div>
+                            <div class="content-tab" data-bind="i18n: tabSetting.daily"></div>
                         </td>
                         <td>
-                            <div class="content" data-bind="i18n: paramsTabSetting.weekly"></div>
+                            <div class="content-tab" data-bind="i18n: tabSetting.weekly"></div>
                         </td>
                     </tr>
                     <tr>
@@ -33,13 +33,13 @@ module nts.uk.at.view.kmk004.b {
                     </tr>
                     <tr>
                         <td>
-                            <div class="content" data-bind="i18n: model.surcharge1"></div>
+                            <div class="content-tab" data-bind="i18n: model.surcharge1"></div>
                         </td>
                         <td>
-                            <div class="content" data-bind="i18n: model.surcharge2"></div>
+                            <div class="content-tab" data-bind="i18n: model.surcharge2"></div>
                         </td>
                         <td>
-                            <div class="content" data-bind="i18n: model.surcharge3"></div>
+                            <div class="content-tab" data-bind="i18n: model.surcharge3"></div>
                         </td>
                     </tr>
                     <tr>
@@ -49,13 +49,13 @@ module nts.uk.at.view.kmk004.b {
                     </tr>
                     <tr>
                         <td>
-                            <div class="content" data-bind="i18n: model.surchargeOvertime1"></div>
+                            <div class="content-tab" data-bind="i18n: model.surchargeOvertime1"></div>
                         </td>
                         <td>
-                            <div class="content" data-bind="i18n: model.surchargeOvertime2"></div>
+                            <div class="content-tab" data-bind="i18n: model.surchargeOvertime2"></div>
                         </td>
                         <td>
-                            <div class="content" data-bind="i18n: model.surchargeOvertime3"></div>
+                            <div class="content-tab" data-bind="i18n: model.surchargeOvertime3"></div>
                         </td>
                     </tr>
                 </tbody>
@@ -84,7 +84,7 @@ module nts.uk.at.view.kmk004.b {
                 border: 1px solid #AAAAAA;
                 padding: 3px;
               }
-            .content {
+            .content-tab {
                 text-align: center;
             }
             
@@ -99,38 +99,54 @@ module nts.uk.at.view.kmk004.b {
 
     class Setting extends ko.ViewModel {
         public model = new DataModel();
-        public paramsTabSetting = new ParamsTabSetting();
-        public params!: Params;
+        public tabSetting = new TabSetting();
+        public modeCheckChangeSetting: KnockoutObservable<string>;
 
-        created(params: Params) {
+        created(params: any) {
             const vm = this;
 
-            vm.params = params;
-            vm.paramsTabSetting = params.model;
+            vm.reloadData();
+
+            vm.modeCheckChangeSetting = params.modeCheckChangeSetting;
+            vm.modeCheckChangeSetting
+                .subscribe(() => {
+                    vm.reloadData();
+                });
         }
 
         mounted() {
             const vm = this;
 
-            if (!ko.unwrap(vm.paramsTabSetting.deforWorkSurchargeWeekMonth)) {
+            if (!ko.unwrap(vm.tabSetting.deforWorkSurchargeWeekMonth)) {
                 vm.model.surcharge1('KMK004_245');
             }
-            if (!ko.unwrap(vm.paramsTabSetting.deforWorkLegalOverTimeWork)) {
+            if (!ko.unwrap(vm.tabSetting.deforWorkLegalOverTimeWork)) {
                 vm.model.surcharge2('KMK004_217');
             }
-            if (!ko.unwrap(vm.paramsTabSetting.deforWorkLegalHoliday)) {
+            if (!ko.unwrap(vm.tabSetting.deforWorkLegalHoliday)) {
                 vm.model.surcharge3('KMK004_219');
             }
-            if (!ko.unwrap(vm.paramsTabSetting.outsideSurchargeWeekMonth)) {
+            if (!ko.unwrap(vm.tabSetting.outsideSurchargeWeekMonth)) {
                 vm.model.surchargeOvertime1('KMK004_251');
             }
-            if (!ko.unwrap(vm.paramsTabSetting.outsidedeforWorkLegalOverTimeWork)) {
+            if (!ko.unwrap(vm.tabSetting.outsidedeforWorkLegalOverTimeWork)) {
                 vm.model.surchargeOvertime2('KMK004_217');
             }
-            if (!ko.unwrap(vm.paramsTabSetting.outsidedeforWorkLegalHoliday)) {
+            if (!ko.unwrap(vm.tabSetting.outsidedeforWorkLegalHoliday)) {
                 vm.model.surchargeOvertime3('KMK004_219');
             }
 
+        }
+
+        reloadData() {
+            const vm = this;
+
+            vm.$blockui('invisible')
+                .then(() => vm.$ajax(API.DISPLAY_BASICSETTING))
+                .then((data: ITabSetting) => {
+                    vm.tabSetting.create(data)
+                })
+                .then(() => vm.$blockui('clear'));
         }
     }
 
@@ -173,7 +189,7 @@ module nts.uk.at.view.kmk004.b {
         }
     }
 
-    export interface IParamsTabSetting {
+    interface ITabSetting {
         daily: number;
         weekly: number;
         deforWorkSurchargeWeekMonth: boolean;
@@ -184,9 +200,9 @@ module nts.uk.at.view.kmk004.b {
         outsidedeforWorkLegalHoliday: boolean;
     }
 
-    export class ParamsTabSetting {
-        daily: KnockoutObservable<number> = ko.observable(8);
-        weekly: KnockoutObservable<number> = ko.observable(40);
+    class TabSetting {
+        daily: KnockoutObservable<string> = ko.observable('8:00');
+        weekly: KnockoutObservable<string> = ko.observable('40:00');
         deforWorkSurchargeWeekMonth: KnockoutObservable<boolean> = ko.observable(true);
         deforWorkLegalOverTimeWork: KnockoutObservable<boolean> = ko.observable(true);;
         deforWorkLegalHoliday: KnockoutObservable<boolean> = ko.observable(true);;
@@ -194,12 +210,20 @@ module nts.uk.at.view.kmk004.b {
         outsidedeforWorkLegalOverTimeWork: KnockoutObservable<boolean> = ko.observable(true);;
         outsidedeforWorkLegalHoliday: KnockoutObservable<boolean> = ko.observable(true);;
 
-        public create(params?: IParamsTabSetting) {
+        public create(params?: ITabSetting) {
             const self = this;
 
             if (params) {
-                self.daily(params.daily);
-                self.weekly(params.weekly);
+                var daily = params.daily % 60 + '';
+                if (daily.length < 2) {
+                    daily = daily + '0';
+                }
+                var weekly = params.weekly % 60 + '';
+                if (weekly.length <2) {
+                    weekly = weekly + '0';
+                }
+                self.daily(params.daily / 60 + ':' + daily);
+                self.weekly(params.weekly / 60 + ':' + weekly);
                 self.deforWorkSurchargeWeekMonth(params.deforWorkSurchargeWeekMonth);
                 self.deforWorkLegalOverTimeWork(params.deforWorkLegalOverTimeWork);
                 self.deforWorkLegalHoliday(params.deforWorkLegalHoliday);

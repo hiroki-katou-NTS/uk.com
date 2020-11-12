@@ -1,6 +1,6 @@
-/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
+/// <reference path="../../../../../lib/nittsu/viewcontext.d.ts" />
 
-module nts.uk.at.view.kmk004{
+module nts.uk.at.view.kmk004.b{
     
     interface Params {
     }
@@ -17,20 +17,23 @@ module nts.uk.at.view.kmk004{
                 rows: 5,
                 columns: [
                     { key: 'statusValue', length: 1 },
-                    { key: 'value', length: 4 }
+                    { key: 'value', length: 2 }
                 ]}"></div>
         </div>
         <style type="text/css" rel="stylesheet">
+                .listbox {
+                    max-width: 150px;
+                }
         </style>
         <style type="text/css" rel="stylesheet" data-bind="html: $component.style"></style>
     `;
 
     @component({
-        name: 'listbox',
+        name: 'box-year',
         template
     })
 
-    class ListBox extends ko.ViewModel {
+    class BoxYear extends ko.ViewModel {
 
         public itemList: KnockoutObservableArray<IListYear> = ko.observableArray([]);
         public selectedYear: KnockoutObservable<string> = ko.observable('');

@@ -18,8 +18,6 @@ module nts.uk.at.view.kmk004.s {
         create() {
             const vm = this;
 
-
-
         }
 
         mounted() {

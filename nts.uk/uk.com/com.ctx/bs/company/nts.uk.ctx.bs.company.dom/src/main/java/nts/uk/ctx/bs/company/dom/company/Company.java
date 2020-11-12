@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.bs.company.dom.company.primitive.ABName;
 import nts.uk.ctx.bs.company.dom.company.primitive.ContractCd;
@@ -125,5 +127,15 @@ public class Company extends AggregateRoot {
 	public boolean isAbolition() {
 		return AbolitionAtr.ABOLITION == this.isAbolition;
 	}
-
+	
+	// [2]年度の期間を取得
+	public YearMonthPeriod getPeriodTheYear (int year) {
+		
+		YearMonth yearStart = YearMonth.of(year, this.startMonth.value);
+		YearMonth yearEnd = YearMonth.of(yearStart.nextYear().v(), yearStart.previousMonth().v());
+		
+		YearMonthPeriod result = new YearMonthPeriod(yearStart, yearEnd);
+		
+		return result;
+	}
 }
