@@ -1,0 +1,193 @@
+.float-left {
+  float: left;
+}
+
+/* margin css */
+.ml-7 {
+  margin-left: 7px;
+}
+
+.ml-10 {
+  margin-left: 10px;
+}
+
+.ml-20 {
+  margin-left: 20px;
+}
+
+.ml-40 {
+  margin-left: 40px;
+}
+
+/* padding css */
+.pt-10 {
+  padding-top: 10px;
+}
+
+.pb-10 {
+  padding-bottom: 10px;
+}
+
+.pl-10 {
+  padding-left: 10px;
+}
+
+.pl-20 {
+  padding-left: 20px;
+
+}
+
+.pr-10 {
+  padding-right: 10px;
+}
+
+.pt-20 {
+  padding-top: 20px;
+}
+
+.pd-0 {
+  padding: 0 0 0 0;
+}
+
+.pt-30 {
+  padding-top: 30px;
+}
+
+/* width css */
+.w_100_layout {
+  width: calc(100% - 20px);
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.w-490 {
+  width: 493px;
+  display: block;
+}
+
+.fix_items_center {
+  display: flex;
+  align-items: center;
+}
+
+.items-center {
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+}
+
+.inline_row {
+  display: inline-flex;
+}
+
+.fix_margin_layout {
+  margin: 20px 0px 0px 20px;
+}
+
+.width_left {
+  width: 38%;
+}
+
+.fix-margin {
+  height: 3px;
+}
+
+.widget_contents {
+  width: 466px;
+}
+
+.height_panel {
+  height: 500px;
+}
+
+.box-container {
+	height: 500px;
+}
+
+/* css item drag drop */
+.box-item {
+	z-index: 1000
+}
+
+.border_items {
+  border: 1px solid #c5c5c5;
+}
+
+.scroll_container_2 {
+  overflow: scroll;
+}
+
+.items_row {
+  display: none;
+  height: 20px;
+}
+
+.panel-content:hover > .items_row {
+  display: flex !important;
+  justify-content: flex-end;
+}
+
+.panel-content:hover > .widget_layout {
+  margin-top: 0px;
+}
+
+.item_opacity {
+  opacity: 0.4;
+}
+
+.fix_style_item {
+  left: 0px !important;
+  top: 0px !important;
+}
+
+.click_icons_item {
+  cursor: pointer;
+}
+
+.widget_layout {
+  margin-top: 20px;
+  width: 470px;
+}
+
+.test {
+  display: none;
+  border: 1px solid;
+}
+
+#container2 {
+  overflow: auto;
+}
+
+.table_fix {
+  width: calc(100% - 40px);
+  margin: 0 20px;
+}
+
+.text_bold {
+  font-weight: bold;
+}
+
+.fix_panel {
+  padding-right: 0;
+  padding-top: 2px;
+  padding-left: 2px;
+}
+
+.w-col-icon {
+  width: 50px;
+  display: block;
+}
+
+.panel_left {
+  vertical-align: top;
+}
+
+.fix-text {
+  display: block;
+}
+
+.pd-items {
+  padding: 10px 10px 0 0;
+}
