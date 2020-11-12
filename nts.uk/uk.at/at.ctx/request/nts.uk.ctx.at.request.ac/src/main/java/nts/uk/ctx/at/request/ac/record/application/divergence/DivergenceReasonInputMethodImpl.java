@@ -22,7 +22,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.Divergence
  *
  */
 @Stateless
-public class DivergenceReasonInputMethodPubImpl implements DivergenceReasonInputMethodI{
+public class DivergenceReasonInputMethodImpl implements DivergenceReasonInputMethodI{
 	
 	@Inject
 	private DivergenceReasonInputMethodPub divergenceReasonInputMethodPub;
