@@ -2,14 +2,11 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common;
 
 import java.util.Optional;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.OvertimeDeclaration;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -166,6 +163,14 @@ public class TimeActualStamp {
 		this.overtimeDeclaration = Optional.ofNullable(overtimeDeclaration);
 		this.timeVacation = Optional.ofNullable(timeVacation);
 	}
+	
+	/**
+	 * @param actualStamp 実打刻
+	 * @param stamp 打刻
+	 * @param numberOfReflectionStamp 打刻反映回数
+	 * @param overtimeDeclaration 時間外の申告
+	 * @param timeVacation 時間休暇時間帯
+	 */
 	public TimeActualStamp(Optional<WorkStamp> actualStamp, Optional<WorkStamp> stamp, Integer numberOfReflectionStamp,
 			Optional<OvertimeDeclaration> overtimeDeclaration, Optional<TimeZone> timeVacation) {
 		super();
@@ -174,6 +179,21 @@ public class TimeActualStamp {
 		this.numberOfReflectionStamp = numberOfReflectionStamp;
 		this.overtimeDeclaration = overtimeDeclaration;
 		this.timeVacation = timeVacation;
+	}
+	
+	/**
+	 * 	[C-1] 自動セットで作る
+	 * @param time 	時刻
+	 * @return
+	 */
+	public static TimeActualStamp createByAutomaticSet(TimeWithDayAttr time) {
+		
+		return new TimeActualStamp(
+				Optional.empty(), 
+				Optional.of(WorkStamp.createByAutomaticSet(time)), 
+				Integer.valueOf(1), 
+				Optional.empty(), 
+				Optional.empty());
 	}
 	
 }

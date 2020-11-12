@@ -21,7 +21,6 @@ public class ReasonTimeChange implements DomainObject {
 	@Setter
 	private TimeChangeMeans timeChangeMeans;
 	
-	
 	//打刻方法
 	@Setter
 	private Optional<EngravingMethod> engravingMethod;
@@ -32,6 +31,14 @@ public class ReasonTimeChange implements DomainObject {
 		this.engravingMethod = Optional.ofNullable(engravingMethod);
 	}
 	
-	
+	/**
+	 * 自動セットで作る
+	 * @return
+	 */
+	public static ReasonTimeChange createByAutomaticSet() {
+		
+		// WARNING: passing null value
+		return new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, null);
+	}
 
 }
