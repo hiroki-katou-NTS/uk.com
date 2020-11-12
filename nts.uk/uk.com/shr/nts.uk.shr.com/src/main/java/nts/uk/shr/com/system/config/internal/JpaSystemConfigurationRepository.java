@@ -12,9 +12,16 @@ public class JpaSystemConfigurationRepository extends JpaRepository
 
 	@Override
 	public SystemConfigurationValue get(String key) {
-		return this.queryProxy().find(key, CisctSystemConfig.class)
-				.map(e -> new SystemConfigurationValue(e.value))
-				.orElse(SystemConfigurationValue.none());
+		
+		return this.forDefaultDataSources(em -> {
+			return this.queryProxy(em).find(key, CisctSystemConfig.class)
+					.map(e -> new SystemConfigurationValue(e.value))
+					.orElse(SystemConfigurationValue.none());
+		});
+		
+//		return this.queryProxy().find(key, CisctSystemConfig.class)
+//				.map(e -> new SystemConfigurationValue(e.value))
+//				.orElse(SystemConfigurationValue.none());
 	}
 
 }

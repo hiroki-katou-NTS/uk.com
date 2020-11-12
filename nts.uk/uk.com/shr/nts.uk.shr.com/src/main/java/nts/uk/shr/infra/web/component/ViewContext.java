@@ -109,6 +109,9 @@ public class ViewContext extends UIComponentBase {
 	}
 	
 	private void writeOperationSetting(StringBuilder builder) {
+		if (!AppContexts.user().hasLoggedIn()) {
+			return;
+		}
 		SystemOperationSetting operationSetting = CDI.current().select(SystemOperationSettingAdapter.class).get().getSetting();
 		if(builder.length() > 0){
 			builder.append(", ");

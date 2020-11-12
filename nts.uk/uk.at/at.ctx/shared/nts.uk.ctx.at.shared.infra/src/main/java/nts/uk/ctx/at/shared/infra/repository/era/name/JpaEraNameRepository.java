@@ -32,24 +32,23 @@ public class JpaEraNameRepository extends JpaRepository implements EraNameDomRep
 	
 	@Override
 	public List<EraNameDom> getAllEraName(){
-		EntityManager em = this.getEntityManager();
+		return this.forDefaultDataSources(em ->{
+			CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+			CriteriaQuery<CisdtEraName> cq = criteriaBuilder.createQuery(CisdtEraName.class);
+			Root<CisdtEraName> root = cq.from(CisdtEraName.class);
 
-		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<CisdtEraName> cq = criteriaBuilder.createQuery(CisdtEraName.class);
-		Root<CisdtEraName> root = cq.from(CisdtEraName.class);
+			// Build query
+			cq.select(root);
 
-		// Build query
-		cq.select(root);
-
-		// query data
-		List<CisdtEraName> cisdtEraNames = em.createQuery(cq).getResultList();
-
-		// return
-		if (cisdtEraNames != null) {
-			List<EraNameDom> eraNameDoms = cisdtEraNames.stream().map(e -> this.toDomain(e)).collect(Collectors.toList());
-			return eraNameDoms.stream().sorted(Comparator.comparing(EraNameDom :: getStartDate)).collect(Collectors.toList());
-		}
-		return new ArrayList<EraNameDom>();
+			// query data
+			List<CisdtEraName> cisdtEraNames = em.createQuery(cq).getResultList();		
+			// return
+			if (cisdtEraNames != null) {
+				List<EraNameDom> eraNameDoms = cisdtEraNames.stream().map(e -> this.toDomain(e)).collect(Collectors.toList());
+				return eraNameDoms.stream().sorted(Comparator.comparing(EraNameDom :: getStartDate)).collect(Collectors.toList());
+			}
+			return new ArrayList<EraNameDom>();
+		});
 	};
 	
 	@Override

@@ -95,6 +95,10 @@ public class I18NResourcesForUK implements I18NResources, I18NResourceCustomizer
 	
 	public String getVersionOfCurrentCompany() {
 		
+		if(!AppContexts.user().hasLoggedIn()) {
+			return SERVER_START_TIME.toString("yyyyMMdd_hhmmss");
+		}
+		
 		val context = CompanyAndLanguage.createAsLogin();
 		GeneralDateTime lastUpdated = this.resourcesRepository.getLastUpdatedDateTime(context.companyId, context.languageId).orElse(null);
 		
@@ -182,7 +186,9 @@ public class I18NResourcesForUK implements I18NResources, I18NResourceCustomizer
 			companyId = AppContexts.user().companyId();
 			languageId = AppContexts.user().language().basicLanguageId();
 		}
-		
+		else {
+			return;
+		}
 		this.refreshIfRequired(languageId, companyId);
 	}
 	
