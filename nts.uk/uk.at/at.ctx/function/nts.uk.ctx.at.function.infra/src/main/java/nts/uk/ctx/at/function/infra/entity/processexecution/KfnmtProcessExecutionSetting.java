@@ -369,14 +369,12 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 	 * @param companyId       the company id
 	 * @param execItemCode    the exec item code
 	 * @param contractCode    the contract code
-	 * @param reExecCondition the re-execution condition
 	 * @param domain          the domain
 	 * @return the entity Kfnmt process execution setting
 	 */
 	public static KfnmtProcessExecutionSetting createFromDomain(String companyId,
 	                                                            String execItemCode,
 	                                                            String contractCode,
-	                                                            ReExecutionCondition reExecCondition,
 	                                                            ProcessExecutionSetting domain) {
 		if (domain == null) {
 			return null;
@@ -438,9 +436,11 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 		entity.aggAnyPeriodCode = domain.getAggrAnyPeriod().getAggrFrameCode()
 														   .map(AggrFrameCode::v)
 														   .orElse(null);
-		entity.recreateChangeBus = reExecCondition.getRecreatePersonChangeWkt().value;
-		entity.recreateTransfer = reExecCondition.getRecreateTransfer().value;
-		entity.recreateLeaveSya = reExecCondition.getRecreateLeave().value;
+		if (domain.getReExecCondition() != null) {
+			entity.recreateChangeBus = domain.getReExecCondition().getRecreatePersonChangeWkt().value;
+			entity.recreateTransfer = domain.getReExecCondition().getRecreateTransfer().value;
+			entity.recreateLeaveSya = domain.getReExecCondition().getRecreateLeave().value;
+		}
 		entity.indexReorgArt = domain.getIndexReconstruction().getIndexReorgAttr().value;
 		entity.updStatisticsArt = domain.getIndexReconstruction().getUpdateStatistics().value;
 		return entity;
@@ -494,6 +494,8 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 		domain.setAggrAnyPeriod(new AggregationAnyPeriod(this.aggAnyPeriodArt, this.aggAnyPeriodCode));
 		// Sets index reconstruction
 		domain.setIndexReconstruction(new IndexReconstruction(this.updStatisticsArt, this.indexReorgArt, Collections.emptyList()));
+		// Sets re-execution condition
+		domain.setReExecCondition(new ReExecutionCondition(this.recreateChangeBus, this.recreateTransfer, this.recreateLeaveSya));
 		return domain;
 	}
 

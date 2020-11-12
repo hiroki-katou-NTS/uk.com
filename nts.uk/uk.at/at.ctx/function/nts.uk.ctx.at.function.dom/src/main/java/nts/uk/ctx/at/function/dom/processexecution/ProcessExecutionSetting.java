@@ -99,6 +99,11 @@ public class ProcessExecutionSetting extends DomainObject {
 	private IndexReconstruction indexReconstruction;
 
 	/**
+	 * 再実行条件
+	 */
+	private ReExecutionCondition reExecCondition;
+
+	/**
 	 * Instantiates a new <code>ProcessExecutionSetting</code>.
 	 *
 	 * @param alarmExtraction       the alarm extraction
@@ -141,6 +146,7 @@ public class ProcessExecutionSetting extends DomainObject {
 		this.externalOutput = externalOutput;
 		this.aggrAnyPeriod = aggrAnyPeriod;
 		this.indexReconstruction = indexReconstruction;
+		this.reExecCondition = null;
 	}
 
 }
