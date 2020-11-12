@@ -139,7 +139,10 @@ module nts.uk.at.view.kaf020.c.viewmodel {
                         applicationContents: ko.observableArray(contents),
                         code: code
                     });
-                    vm.printContent.opOptionalItemOutput = ko.toJS(vm.dataFetch());
+                    vm.printContent.opOptionalItemOutput = ko.toJS({
+                        code: vm.dataFetch().code,
+                        optionalItems: vm.dataFetch().applicationContents
+                    });
                 }
             }).always(() => {
                 vm.$blockui("hide");
@@ -155,6 +158,10 @@ module nts.uk.at.view.kaf020.c.viewmodel {
 
         update() {
             const vm = this;
+            let application = vm.appDispInfoStartupOutput().appDetailScreenInfo.application;
+            application.opAppReason = ko.toJS(vm.application().opAppReason);
+            application.opAppStandardReasonCD = ko.toJS(vm.application().opAppStandardReasonCD);
+            application.opReversionReason = ko.toJS(vm.application().opReversionReason);
             let dataFetch = ko.toJS(vm.dataFetch);
             let optionalItems = new Array();
             dataFetch.applicationContents.forEach((item: OptionalItemApplicationContent) => {
@@ -166,7 +173,7 @@ module nts.uk.at.view.kaf020.c.viewmodel {
                 });
             })
             let command = {
-                application: ko.toJS(vm.appDispInfoStartupOutput().appDetailScreenInfo.application),
+                application: application,
                 appDispInfoStartup: ko.toJS(vm.appDispInfoStartupOutput()),
                 optItemAppCommand: {
                     code: dataFetch.code,
@@ -182,7 +189,7 @@ module nts.uk.at.view.kaf020.c.viewmodel {
                 }).done(res => {
                     if (res) {
                         if (res) {
-                            vm.printContent.opBusinessTripInfoOutput = dataFetch.businessTripContent;
+                            vm.printContent.opOptionalItemOutput = dataFetch.opOptionalItemOutput;
                             vm.$dialog.info({messageId: "Msg_15"}).then(() => $(vm.$el).find('#A5_3').focus());
                         }
                     }
@@ -199,14 +206,7 @@ module nts.uk.at.view.kaf020.c.viewmodel {
             let param;
 
             if (err.message && err.messageId) {
-
-                if (err.messageId == "Msg_23" || err.messageId == "Msg_24" || err.messageId == "Msg_1912" || err.messageId == "Msg_1913") {
-                    err.message = err.parameterIds[0] + err.message;
-                    param = err;
-                } else {
-                    param = {messageId: err.messageId, messageParams: err.parameterIds};
-                }
-
+                param = {messageId: err.messageId, messageParams: err.parameterIds};
             } else {
                 if (err.message) {
                     param = {message: err.message, messageParams: err.parameterIds};
@@ -215,11 +215,7 @@ module nts.uk.at.view.kaf020.c.viewmodel {
                 }
             }
 
-            vm.$dialog.error(param).then(() => {
-                if (err.messageId == 'Msg_197') {
-                    location.reload();
-                }
-            });
+            vm.$dialog.error(param);
         }
 
     }

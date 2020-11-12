@@ -29,7 +29,7 @@ public class JpaOptionalItemApplicationRepository extends JpaRepository implemen
 
     private static final String FIND_BY_APP_ID = "SELECT *  "
             + "FROM KRQDT_APP_ANYV as a INNER JOIN KRQDT_APPLICATION as b ON a.APP_ID = b.APP_ID"
-            + " WHERE a.APP_ID = @appID AND a.CID = @companyId";
+            + " WHERE a.APP_ID = @appID AND a.CID = @companyId ORDER BY a.ANYV_NO ASC";
 
     private static final String FIND_ENTITY = "SELECT a FROM KrqdtAppAnyv a where a.KrqdtAppAnyvPk.companyId = :cid" +
             " and a.KrqdtAppAnyvPk.appId = :appId";
@@ -47,9 +47,6 @@ public class JpaOptionalItemApplicationRepository extends JpaRepository implemen
                 .setParameter("cid", cid)
                 .setParameter("appId", domain.getAppID())
                 .getList().stream().collect(Collectors.toMap(x -> x.getKrqdtAppAnyvPk().anyvNo, x -> x));
-        System.out.println("appId " + domain.getAppID());
-        System.out.println("anyvCd " + domain.getCode().v());
-        System.out.println("size ---------------" + entityMap.size());
         domain.getOptionalItems().forEach(item -> {
             KrqdtAppAnyv krqdtAppAnyv = entityMap.get(item.getItemNo().v() + 640);
             krqdtAppAnyv.setTimes(item.getTimes().isPresent() ? item.getTimes().get().v() : null);

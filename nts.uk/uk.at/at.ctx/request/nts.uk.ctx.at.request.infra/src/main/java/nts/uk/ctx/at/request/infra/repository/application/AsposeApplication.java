@@ -185,10 +185,11 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 			break;
 		case OPTIONAL_ITEM_APPLICATION:
 			aposeOptionalItem.printOptionalItem(worksheet, printContentOfApp);
-			reasonLabel = worksheet.getCells().get("B27");
-			remarkLabel = worksheet.getCells().get("B30");
-			reasonContent = worksheet.getCells().get("D27");
+			reasonLabel = worksheet.getCells().get("B20");
+			remarkLabel = worksheet.getCells().get("B23");
+			reasonContent = worksheet.getCells().get("D20");
 			printBottomKAF000(reasonLabel, remarkLabel, reasonContent, printContentOfApp);
+			aposeOptionalItem.deleteEmptyRow(worksheet);
 			break;
 		default:
 			break;

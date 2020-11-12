@@ -4,7 +4,7 @@ import nts.uk.ctx.at.request.app.command.application.workchange.AppWorkChangeOut
 import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.BusinessTripDto;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.InforGoBackCommonDirectDto;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ArrivedLateLeaveEarlyInfoDto;
-import nts.uk.ctx.at.request.app.find.application.optitem.optitemdto.OptionalItemApplicationDto;
+import nts.uk.ctx.at.request.app.find.application.optitem.optitemdto.OptionalItemApplicationPrintDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampOutputDto;
 import nts.uk.ctx.at.request.dom.application.common.service.print.PrintContentOfEachApp;
 import nts.uk.ctx.at.request.dom.application.common.service.print.PrintContentOfWorkChange;
@@ -49,7 +49,7 @@ public class PrintContentOfEachAppDto {
 
     public BusinessTripDto opBusinessTripInfoOutput;
 
-    public OptionalItemApplicationDto opOptionalItemOutput;
+    public OptionalItemApplicationPrintDto opOptionalItemOutput;
 
     public PrintContentOfEachApp toDomain() {
         PrintContentOfEachApp printContentOfEachApp = new PrintContentOfEachApp();
