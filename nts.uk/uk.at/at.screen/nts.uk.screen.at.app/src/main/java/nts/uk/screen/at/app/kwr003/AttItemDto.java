@@ -1,8 +1,5 @@
 package nts.uk.screen.at.app.kwr003;
 
-
-import com.sun.xml.internal.bind.v2.model.core.Adapter;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
