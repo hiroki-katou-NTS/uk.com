@@ -339,10 +339,13 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 		switch( atr ) {
 			case ONE_DAY:	// 1日
 				timezones = this.prescribedTimezoneSetting.getUseableTimeZone();
+				break;
 			case AM:		// 午前
 				timezones = this.prescribedTimezoneSetting.getUseableTimeZoneInAm();
+				break;
 			case PM:		// 午後
 				timezones = this.prescribedTimezoneSetting.getUseableTimeZoneInPm();
+				break;
 		}
 
 		return timezones.stream().map( e -> e.timeSpan() ).collect(Collectors.toList());
