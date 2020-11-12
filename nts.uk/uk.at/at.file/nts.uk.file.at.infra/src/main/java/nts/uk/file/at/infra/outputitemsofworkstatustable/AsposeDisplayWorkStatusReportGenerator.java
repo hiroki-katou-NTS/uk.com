@@ -5,13 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
-
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.DailyValue;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.OutPutWorkStatusContent;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.CommonAttributesOfForms;;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.CommonAttributesOfForms;
 import nts.uk.file.at.app.export.outputworkstatustable.DisplayWorkStatusReportGenerator;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
@@ -20,11 +19,14 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.stream.Collectors;
+
+;
 
 
 @Stateless
@@ -248,45 +250,49 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
     private String formatValue(double valueDouble, String valueString, CommonAttributesOfForms attributes,
                                Boolean isZeroDisplay) {
         String rs = "";
-        if (!isZeroDisplay) {
-            if (valueDouble == 0 || valueString.equals(""))
-                return rs;
-        }
         switch (attributes) {
-
-            case TIME:
-                // HH:mm　(マイナスあり)
-                rs = convertToTime((int) valueDouble);
-                break;
-            case TIME_OF_DAY:
-                // HH:mm　(マイナスあり)
-                rs = convertToTime((int) valueDouble);
-                break;
-            case NUMBER_OF_TIMES:
-                // 小数点以下は、集計する勤怠項目の小数部桁数に従う(※1)　(マイナスあり)
-                rs = valueString;
-                break;
-            case AMOUNT_OF_MONEY:
-                // ３桁毎のカンマ区切り　(マイナスあり)
-                rs = valueString;
-                break;
-            case DAYS:
-                rs = valueString;
-                break;
             case WORK_TYPE:
                 rs = valueString;
                 break;
             case WORKING_HOURS:
                 rs = valueString;
                 break;
+            case TIME_OF_DAY:
+                rs = convertToTime((int) valueDouble);
+                break;
+            case TIME:
+                val minute = (int) valueDouble;
+                if (minute != 0 || isZeroDisplay) {
+                    rs = convertToTime(minute);
+                }
+                break;
+            case NUMBER_OF_TIMES:
+                if (valueDouble != 0 || isZeroDisplay) {
+                    DecimalFormat formatter1 = new DecimalFormat("#.#");
+                    rs = formatter1.format(valueDouble) + "回"; // TODO Text Resource
+                }
+                break;
+            case DAYS:
+                if (valueDouble != 0 || isZeroDisplay) {
+                    DecimalFormat formatter2 = new DecimalFormat("#.#");
+                    rs = formatter2.format(valueDouble) + "日";// TODO Text Resource
+                }
+                break;
+            case AMOUNT_OF_MONEY:
+                if (valueDouble != 0 || isZeroDisplay) {
+                    DecimalFormat formatter3 = new DecimalFormat("#,###");
+                    rs = formatter3.format((int) valueDouble) + "円"; // TODO Text Resource
+                }
+                break;
         }
         return rs;
     }
 
     private String convertToTime(int minute) {
-        int hour = minute / 60;
-        int minutes = minute % 60;
-        return (hour) + ":" + (minutes);
+        val minuteAbs = Math.abs(minute);
+        int hours = minuteAbs / 60;
+        int minutes = minuteAbs % 60;
+        return (minute < 0 ? "-" : "") + String.format("%d:%02d", hours, minutes);
     }
 
     @AllArgsConstructor
