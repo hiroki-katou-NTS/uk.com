@@ -1,161 +1,9 @@
-#function_area {
-	margin-top: 10px;
+#contents-area {
+	padding-top: 0px !important;
 }
 
-/* .add, .proceed, .danger, .pdf {
-	width: 80px;
-} */
-
-.add {
-	margin-left: 105px;
-}
-
-.danger {
-	margin-left: 291px;
-}
-
-.top-content {
-	margin-left: 100px;
-}
-
-.ntsControl.ntsProfile {
-	min-width: 680px;
-	border: 1px solid #ccc;
-	background-repeat: no-repeat;
-	background-position: right 228px top 1px;
-	background-image:
-		url('data:image/png;base64,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');
-}
-
-.ntsControl.ntsProfile>div {
-	display: inline-block;
-}
-
-.ntsControl.ntsProfile>.left-container {
-	padding: 3px 5px;
-	background-color: #c2f697;
-	border-right: 1px solid #ccc;
-}
-
-.ntsControl.ntsProfile .btn-search {
-	margin-right: 3px;
-	padding-left: 20px;
-	padding-right: 20px;
-}
-
-.ntsControl.ntsProfile .btn-next {
-	margin-left: 1px;
-}
-
-.ntsControl .nts-label {
-	display: inline-block;
-	min-width: 50px;
-	min-height: 18px;
-}
-
-.ntsControl .nts-label.nts-name {
-	min-width: 120px;
-}
-
-.ntsControl.ntsProfile .nts-label.nts-name:before {
-	content: '↵';
-	position: absolute;
-	margin-top: -11px;
-	font-size: 2em;
-	color: #ccc;
-	display: inline-block;
-	right: 10px;
-	z-index: 999;
-}
-
-.ntsControl.ntsProfile .nts-editor {
-	width: 135px;
-}
-
-.ntsControl.ntsProfile .nts-label.nts-person {
-	margin-left: 83px;
-	min-width: 45px;
-}
-
-.left-content {
-	width: 500px;
-	float: left;
-}
-
-.cell-column1 {
-	float: left;
-	margin-left: -15px;
-}
-
-#list {
-	margin-top: 10px;
-	margin-left: 100px;
-	width: 300px;
-	height: 400px;
-	float: left;
-}
-
-/* .bg-green {
-	margin-top: 30px;
-	margin-left: 100px;
-	width: 300px;
-	height: 530px;
-	float: left;
-} */
-#H_LST_001_grid_displayContainer {
-	margin-left: 10px;
-}
-
-.right-content {
-	margin-left: -45px;
-	float: left;
-}
-
-#daterangepicker {
-	float: right;
-	margin-top: 13px;
-	margin-right: 277px;
-}
-
-.cell-column1 {
-	margin-left: -10px;
-}
-
-#tab-panel {
-	margin-top: 15px;
-}
-
-#label-a3-001 {
-	margin-top: 10px;
-	margin-left: 10px;
-}
-
-#H_LST_001_container {
-	margin: 5px !important;
-	border: 0px !important;
-	padding: 10px !important;
-}
-
-#label-a4-001 {
-	margin-top: 10px;
-	margin-left: 20px;
-}
-
-#A4-004, #A5-004, #A4-006, #A4-007 {
-	margin-left: 10px;
-}
-
-#H_LST_001_container {
-	
-}
-
-#img-employee {
-	width: 90px;
-	margin-top: 27px;
-}
-
-.row-data {
-	margin-top: 10px !important;
+#emp-component {
+	margin-left: 90px;
 }
 
 .ntsControl.radio-wrapper {
@@ -164,10 +12,10 @@
 }
 
 .radio {
-	width: 182px;
+	width: 211px;
 }
 
-.ntsRadioBox {
+.ntsRadioBox:not(:last-child) {
 	margin-bottom: 17px;
 	display: block;
 }
@@ -177,36 +25,11 @@
 	margin-left: 20px;
 }
 
-.ui-iggrid-scrolldiv {
-	z-index: 0 !important;
+.control-group .form-label {
+	width: 100px;
 }
 
-.right-container {
-	min-width: 600px;
-	height: 31px;
-	position: relative;
-}
-
-.right-container .nts-editor.nts-input {
-	position: absolute;
-	top: -5px;
-	right: 5px;
-}
-
-.right-container .nts-label.nts-person {
-	position: absolute;
-	right: 170px;
-}
-
-#contents-area {
-	width: 1200px;
-	padding-top: 0px !important;
-}
-
-.top-content-data {
-	height: 39px;
-}
-
-#emp-component {
-	margin-left: 100px;
+.ntsDateRangeComponent {
+	float: unset !important;
+	display: inline-block;
 }

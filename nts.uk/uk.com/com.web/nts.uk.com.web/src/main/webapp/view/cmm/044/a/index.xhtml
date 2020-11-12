@@ -12,15 +12,13 @@
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/share/ccg.service.js"
-				of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
 			<!-- COMPONENT KCP009 -->
 			<com:scriptfile path="/view/kcp/009/kcp009.js" of="/nts.uk.com.web" />
 			<com:stylefile path="/view/kcp/009/style.css" of="/nts.uk.com.web" />
-			<!-- #CCG001 -->
+			<!-- #CMM044 -->
 			<com:stylefile path="cmm044.a.main.css" />
-			<!-- 			<com:scriptfile path="ko-profile-ext.js" /> -->
 			<com:scriptfile path="cmm044.a.start.js" />
 			<com:scriptfile path="cmm044.a.vm.js" />
 			<com:scriptfile path="cmm044.a.service.js" />
@@ -28,191 +26,200 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
-				<button class="add" data-bind="click: initAgent" tabindex="2">#{i18n.getText('CMM044_2')}</button>
-				<button class="proceed"
-					data-bind="click: addAgent, enable: isEnableAdd">#{i18n.getText('CMM044_3')}</button>
-				<button class="pdf" data-bind="click: openDDialog">#{i18n.getText('CMM044_4')}</button>
-				<button class="danger"
-					data-bind="click: deleteAgent, enable: isEnableDelete">#{i18n.getText('CMM044_6')}</button>
-				<button class="exportExcel" data-bind="click: exportExcel, visible: false" tabindex="3" >#{i18n.getText('CMM044_54')}</button>
+				<button data-bind="click: initAgent">#{i18n.getText('CMM044_2')}</button>
+				<button class="proceed" data-bind="click: addAgent, enable: $root.errors.isEmpty() &amp;&amp; isEnableAdd()">#{i18n.getText('CMM044_3')}</button>
+				<button data-bind="click: openDDialog">#{i18n.getText('CMM044_4')}</button>
+				<button data-bind="click: openCDialog, enable: isEnableDelete">#{i18n.getText('CMM044_5')}</button>
+				<button class="danger" data-bind="click: deleteAgent, enable: isEnableDelete">#{i18n.getText('CMM044_6')}</button>
+				<!--<button class="exportExcel" data-bind="click: exportExcel, visible: true" tabindex="3" >#{i18n.getText('CMM044_54')}</button>-->
 			</div>
 			<div id="contents-area">
-				<div id="ccgcomponent_contents">
-					<div id="emp-component"></div>
-					<div class="left-content">
-						<div id="ccgcomponent"></div>
-						<div class="cell-column1"></div>
-						<div id="list" class="bg-green caret-right caret-background">
-							<table id="H_LST_001"
-								data-bind="ntsGridList: {
-								options: histItems,
-								multiple: false,
-								value: histSelectedItem,
-								primaryKey: 'requestId',
-								enable: true,
-								height:370,
-								showNumbering: true,
-								columns: [
-									{headerText: 'pkey', key: 'requestId', type: 'string', hidden: true}, 
-									{headerText: '#{i18n.getText('CMM044_9')}', key: 'text', type: 'string'}
-								]}">
-							</table>
-						</div>
-					</div>
-					<div class="right-content">
-						<div data-bind="with: currentItem">
-							<div id="label-a3-001" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM044_10')}</div>
-							<div id="daterangepicker"
-								data-bind="ntsDateRangePicker: { startName: '#{i18n.getText('CMM044_10')}',
-																endName: '#{i18n.getText('CMM044_10')}',
-																name: '#{i18n.getText('CMM044_10')}',
-																enable: true, 
-																value: $parent.dateValue, 
-																maxRange: 'none',
-																required: true}" />
-
-						</div>
-						<div id="tab-panel"
-							data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
-							<div class="tab-content-1">
-								<table>
-									<colgroup>
-										<col width="200px" />
-										<col width="*" />
-									</colgroup>
-									<tr>
-										<td>
-											<div id="label-a4-001"
-												data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM044_14')}</div>
-										</td>
-									</tr>
-									<tr>
-										<td data-bind="with: currentItem">
-											<div class="radio" style="margin-left:55px;">
-												<label>#{i18n.getText('CMM044_16')}</label>
-											</div>
-										</td>
-										<td>
-											<div class="radio-right">
-												<button id="BTN_A4_003"
-													data-bind="enable: displayEmployeeInfo1,click: openCDL021.bind($data, 1, agentSid1())"
-													class="button separate-button">#{i18n.getText('CMM044_19')}</button>
-												<span id="A4-004"
-													data-bind="text: employeeNameScreen1,visible: agentAppType1() == 0 "></span>
-											</div>
-										</td>
-									</tr>
-								</table>
+                <div id="ccgcomponent"></div>
+                <div id="emp-component"></div>
+                <div class="fixed-flex-layout" style="margin-top: 20px;">
+                    <div class="fixed-flex-layout-left">
+                        <div id="list" class="bg-green caret-right caret-background" style="padding: 20px; margin-left: 100px;">
+                            <table id="H_LST_001"
+                                   data-bind="ntsGridList: {
+                                    options: histItems,
+                                    multiple: false,
+                                    value: histSelectedItem,
+                                    primaryKey: 'requestId',
+                                    enable: true,
+                                    rows: 15,
+                                    columns: [
+                                        {headerText: 'pkey', key: 'requestId', type: 'string', hidden: true},
+                                        {headerText: '#{i18n.getText('CMM044_9')}', key: 'text', type: 'string', width: 250}
+                                    ]}">
+                            </table>
+                        </div>
+                    </div>
+                    <div class="fixed-flex-layout-right" style="padding: 0 20px;">
+                        <div data-bind="with: currentItem">
+							<div class="control-group valign-center">
+								<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM044_10')}</div>
+								<div id="daterangepicker"
+									 style="display: inline-block"
+									 data-bind="ntsDateRangePicker: {
+									 				startName: '#{i18n.getText('CMM044_10')}',
+													endName: '#{i18n.getText('CMM044_10')}',
+													name: '#{i18n.getText('CMM044_10')}',
+													enable: true,
+													value: dateValue,
+													maxRange: 'none',
+													required: true}" />
 							</div>
-							<div class="tab-content-2" style= "display: none">
-								<table>
-									<colgroup>
-										<col width="200px" />
-										<col width="*" />
-									</colgroup>
-									<tr>
-										<td>
-											<div id="label-a4-001"
-												data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM044_14')}</div>
-										</td>
-									</tr>
-									<tr>
-										<td data-bind="with: currentItem">
-											<div class="radio"
-												data-bind="ntsRadioBoxGroup: {
-														options: $parent.itemList,
-														optionsValue: 'id',
-														optionsText: 'name',
-														value: $parent.agentAppType2,
-														enable: true}">
-											</div>
-										</td>
-										<td>
-											<div class="radio-right">
-												<button id="BTN_A5_003"
-													data-bind="enable: displayEmployeeInfo2,click: openCDL021.bind($data, 2, agentSid2())"
-													class="button separate-button">#{i18n.getText('CMM044_19')}</button>
-												<label id="A5-004"
-													data-bind="text: employeeNameScreen2,visible: agentAppType2() == 0 "></label>
-											</div>
-										</td>
-									</tr>
-								</table>
+							<div class="control-group valign-center">
+								<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM044_25')}</div>
+                                <button id="A3_007"
+										data-bind="click: openCDL021.bind($data, 1)"
+                                        class="button separate-button">#{i18n.getText('CMM044_19')}</button>
+                                <span style="padding-left: 20px" data-bind="text: employeeCodeScreen1"/>
+                                <span style="padding-left: 20px" data-bind="text: employeeNameScreen1"/>
 							</div>
-							<div class="tab-content-3" style= "display: none">
-								<table>
-									<colgroup>
-										<col width="200px" />
-										<col width="*" />
-									</colgroup>
-									<tr>
-										<td>
-											<div id="label-a4-001"
-												data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM044_14')}</div>
-										</td>
-									</tr>
-									<tr>
-										<td data-bind="with: currentItem">
-											<div class="radio"
-												data-bind="ntsRadioBoxGroup: {
-														options: $parent.itemList,
-														optionsValue: 'id',
-														optionsText: 'name',
-														value: $parent.agentAppType3,
-														enable: true}">
-											</div>
-										</td>
-										<td>
-											<div class="radio-right">
-												<button id="BTN_A6_003"
-													data-bind="enable: displayEmployeeInfo3,click: openCDL021.bind($data, 3, agentSid3())"
-													class="button separate-button">#{i18n.getText('CMM044_19')}</button>
-												<label id="A4-006" style="display: inline-block"
-													data-bind="text: employeeNameScreen3,visible: agentAppType3() == 0 ">代行者</label>
-											</div>
-										</td>
-									</tr>
-								</table>
-							</div>
-							<div class="tab-content-4" style= "display: none">
-								<table>
-									<colgroup>
-										<col width="200px" />
-										<col width="*" />
-									</colgroup>
-									<tr>
-										<td>
-											<div id="label-a4-001"
-												data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM044_14')}</div>
-										</td>
-									</tr>
-									<tr>
-										<td data-bind="with: currentItem">
-											<div class="radio"
-												data-bind="ntsRadioBoxGroup: {
-														options: $parent.itemList,
-														optionsValue: 'id',
-														optionsText: 'name',
-														value: $parent.agentAppType4,
-														enable: true}">
-											</div>
-											
-										</td>
-										<td>
-											<div class="radio-right">
-												<button id="BTN_A7_003"
-													data-bind="enable: displayEmployeeInfo4,click: openCDL021.bind($data, 4, agentSid4())"
-													class="button separate-button">#{i18n.getText('CMM044_19')}</button>
-												<label id="A4-007" style="display: inline-block"
-													data-bind="text: employeeNameScreen4,visible: agentAppType4() == 0 ">代行者</label>
-											</div>
-										</td>
-									</tr>
-								</table>
-							</div>
-						</div>
-					</div>
-				</div>
+                            <!--<div id="tab-panel"-->
+                                 <!--data-bind="ntsTabPanel: { dataSource: $parent.tabs, active: $parent.selectedTab}">-->
+                                <!--<div class="tab-content-1">-->
+                                    <!--<table>-->
+                                        <!--<colgroup>-->
+                                            <!--<col width="200px" />-->
+                                            <!--<col width="*" />-->
+                                        <!--</colgroup>-->
+                                        <!--<tr>-->
+                                            <!--<td>-->
+                                                <!--<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM044_14')}</div>-->
+                                            <!--</td>-->
+                                        <!--</tr>-->
+                                        <!--<tr>-->
+                                            <!--<td>-->
+                                                <!--<div class="radio"-->
+                                                     <!--data-bind="ntsRadioBoxGroup: {-->
+														<!--options: $parent.itemList,-->
+														<!--optionsValue: 'id',-->
+														<!--optionsText: 'name',-->
+														<!--value: agentAppType1,-->
+														<!--enable: true}">-->
+                                                <!--</div>-->
+                                            <!--</td>-->
+                                            <!--<td>-->
+                                                <!--<div class="radio-right">-->
+                                                    <!--<button id="BTN_A4_003"-->
+                                                            <!--data-bind="enable: displayEmployeeInfo1, click: openCDL021.bind($data, 1)"-->
+                                                            <!--class="button separate-button">#{i18n.getText('CMM044_19')}</button>-->
+                                                    <!--<span id="A4-004"-->
+                                                          <!--data-bind="text: employeeNameScreen1, visible: displayEmployeeInfo1"/>-->
+                                                <!--</div>-->
+                                            <!--</td>-->
+                                        <!--</tr>-->
+                                    <!--</table>-->
+                                <!--</div>-->
+                                <!--<div class="tab-content-2">-->
+                                    <!--<table>-->
+                                        <!--<colgroup>-->
+                                            <!--<col width="200px" />-->
+                                            <!--<col width="*" />-->
+                                        <!--</colgroup>-->
+                                        <!--<tr>-->
+                                            <!--<td>-->
+                                                <!--<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM044_14')}</div>-->
+                                            <!--</td>-->
+                                        <!--</tr>-->
+                                        <!--<tr>-->
+                                            <!--<td>-->
+                                                <!--<div class="radio"-->
+                                                     <!--data-bind="ntsRadioBoxGroup: {-->
+														<!--options: $parent.itemList,-->
+														<!--optionsValue: 'id',-->
+														<!--optionsText: 'name',-->
+														<!--value: agentAppType2,-->
+														<!--enable: true}">-->
+                                                <!--</div>-->
+                                            <!--</td>-->
+                                            <!--<td>-->
+                                                <!--<div class="radio-right">-->
+                                                    <!--<button id="BTN_A5_003"-->
+                                                            <!--data-bind="enable: displayEmployeeInfo2, click: openCDL021.bind($data, 2)"-->
+                                                            <!--class="button separate-button">#{i18n.getText('CMM044_19')}</button>-->
+                                                    <!--<label id="A5-004"-->
+                                                           <!--data-bind="text: employeeNameScreen2, visible: displayEmployeeInfo2 "/>-->
+                                                <!--</div>-->
+                                            <!--</td>-->
+                                        <!--</tr>-->
+                                    <!--</table>-->
+                                <!--</div>-->
+                                <!--<div class="tab-content-3">-->
+                                    <!--<table>-->
+                                        <!--<colgroup>-->
+                                            <!--<col width="200px" />-->
+                                            <!--<col width="*" />-->
+                                        <!--</colgroup>-->
+                                        <!--<tr>-->
+                                            <!--<td>-->
+                                                <!--<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM044_14')}</div>-->
+                                            <!--</td>-->
+                                        <!--</tr>-->
+                                        <!--<tr>-->
+                                            <!--<td>-->
+                                                <!--<div class="radio"-->
+                                                     <!--data-bind="ntsRadioBoxGroup: {-->
+														<!--options: $parent.itemList,-->
+														<!--optionsValue: 'id',-->
+														<!--optionsText: 'name',-->
+														<!--value: agentAppType3,-->
+														<!--enable: true}">-->
+                                                <!--</div>-->
+                                            <!--</td>-->
+                                            <!--<td>-->
+                                                <!--<div class="radio-right">-->
+                                                    <!--<button id="BTN_A6_003"-->
+                                                            <!--data-bind="enable: displayEmployeeInfo3, click: openCDL021.bind($data, 3)"-->
+                                                            <!--class="button separate-button">#{i18n.getText('CMM044_19')}</button>-->
+                                                    <!--<label id="A4-006" style="display: inline-block"-->
+                                                           <!--data-bind="text: employeeNameScreen3, visible: displayEmployeeInfo3 ">代行者</label>-->
+                                                <!--</div>-->
+                                            <!--</td>-->
+                                        <!--</tr>-->
+                                    <!--</table>-->
+                                <!--</div>-->
+                                <!--<div class="tab-content-4">-->
+                                    <!--<table>-->
+                                        <!--<colgroup>-->
+                                            <!--<col width="200px" />-->
+                                            <!--<col width="*" />-->
+                                        <!--</colgroup>-->
+                                        <!--<tr>-->
+                                            <!--<td>-->
+                                                <!--<div id="label-a4-001"-->
+                                                     <!--data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM044_14')}</div>-->
+                                            <!--</td>-->
+                                        <!--</tr>-->
+                                        <!--<tr>-->
+                                            <!--<td>-->
+                                                <!--<div class="radio"-->
+                                                     <!--data-bind="ntsRadioBoxGroup: {-->
+														<!--options: $parent.itemList,-->
+														<!--optionsValue: 'id',-->
+														<!--optionsText: 'name',-->
+														<!--value: agentAppType4,-->
+														<!--enable: true}">-->
+                                                <!--</div>-->
+                                            <!--</td>-->
+                                            <!--<td>-->
+                                                <!--<div class="radio-right">-->
+                                                    <!--<button id="BTN_A7_003"-->
+                                                            <!--data-bind="enable: displayEmployeeInfo4, click: openCDL021.bind($data, 4)"-->
+                                                            <!--class="button separate-button">#{i18n.getText('CMM044_19')}</button>-->
+                                                    <!--<label id="A4-007" style="display: inline-block"-->
+                                                           <!--data-bind="text: employeeNameScreen4, visible: displayEmployeeInfo4 ">代行者</label>-->
+                                                <!--</div>-->
+                                            <!--</td>-->
+                                        <!--</tr>-->
+                                    <!--</table>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        </div>
+                    </div>
+                </div>
 			</div>
 		</ui:define>
 	</ui:composition>

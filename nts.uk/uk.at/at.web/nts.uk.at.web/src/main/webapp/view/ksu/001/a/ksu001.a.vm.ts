@@ -2424,25 +2424,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             });
         }
         
-        //let item = uk.localStorage.getItem(self.KEY);
-        //let userInfor: IUserInfor = JSON.parse(item.get());
         editMode() {
             let self = this;
-            if (self.mode() == 'edit')
-                return;
-
             let arrCellUpdated = $("#extable").exTable("updatedCells");
             let arrTmp = _.clone(arrCellUpdated);
             let lockCells = $("#extable").exTable("lockCells");
             
-            $(".editMode").addClass("A6_hover").removeClass("A6_not_hover");
-            $(".confirmMode").addClass("A6_not_hover").removeClass("A6_hover");
-            
-            $('div.ex-body-leftmost a').css("pointer-events", "");
-            $('div.ex-header-detail.xheader a').css("pointer-events", "");
-            
             if (lockCells.length > 0 || arrCellUpdated.length > 0) {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_1732" }).ifYes(() => {
+
                     self.editModeAct();
                     
                     let item = uk.localStorage.getItem(self.KEY);
@@ -2453,11 +2443,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     self.setUpdateMode();
                     nts.uk.ui.block.clear();
                     
-                }).ifNo(() => {
-                    //self.editModeAct();
-                    //self.setUpdateMode();
-                    // check xem co undo redo dc ko
-                });
+                }).ifNo(() => {});
             } else {
                 self.editModeAct();
                 self.setUpdateMode();
@@ -2469,6 +2455,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             nts.uk.ui.block.grayout();
             self.mode('edit');
             // set color button
+            $(".editMode").addClass("A6_hover").removeClass("A6_not_hover");
+            $(".confirmMode").addClass("A6_not_hover").removeClass("A6_hover");
+
+            $('div.ex-body-leftmost a').css("pointer-events", "");
+            $('div.ex-header-detail.xheader a').css("pointer-events", "");
+
             $(".editMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
             $(".confirmMode").addClass("btnControlUnSelected").removeClass("btnControlSelected");
 
@@ -2503,12 +2495,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         confirmMode() {
             let self = this;
 
-            $(".editMode").addClass("A6_not_hover").removeClass("A6_hover");
-            $(".confirmMode").addClass("A6_hover").removeClass("A6_not_hover");
-
-            $('div.ex-body-leftmost a').css("pointer-events", "none");
-            $('div.ex-header-detail.xheader a').css("pointer-events", "none");
-
             let arrCellUpdated = $("#extable").exTable("updatedCells");
 
             if (arrCellUpdated.length > 0) {
@@ -2529,6 +2515,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             nts.uk.ui.block.grayout();
             self.mode('confirm');
             // set color button
+            
+            $(".editMode").addClass("A6_not_hover").removeClass("A6_hover");
+            $(".confirmMode").addClass("A6_hover").removeClass("A6_not_hover");
+
+            $('div.ex-body-leftmost a').css("pointer-events", "none");
+            $('div.ex-header-detail.xheader a').css("pointer-events", "none");
+
             $(".confirmMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
             $(".editMode").addClass("btnControlUnSelected").removeClass("btnControlSelected");
 

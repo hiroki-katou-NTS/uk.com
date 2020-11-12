@@ -1,137 +1,142 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:com="http://xmlns.jcp.org/jsf/component"
-                xmlns:h="http://xmlns.jcp.org/jsf/html">
+>
     <div class="sidebar-content-header">
-        <div>
-            <span class="title" data-bind="text: $i18n('KSM008_50')"/>
-            <!-- D2_1 -->
-            <a class="goback" tabindex="2"
-               data-bind="text: $i18n('KSM008_51'), ntsLinkButton: { jump: backButon }"/>
-            <!-- D2_2 -->
-            <button tabindex="3" data-bind="text: $i18n('KSM008_52')"/>
-            <!-- D2_3 -->
-            <button tabindex="4" data-bind="text: $i18n('KSM008_53')" class="proceed"/>
-            <!-- D2_4 -->
-            <button tabindex="5" data-bind="text: $i18n('KSM008_54')" class="danger"/>
-        </div>
+        <span class="title" data-bind="text: $i18n('Com_Company')"/>
+        <!-- D2_1 -->
+        <a class="goback" tabindex="2"
+           data-bind="text: $i18n('KSM008_51'), ntsLinkButton: { jump: backButton }"/>
+        <!-- D2_2 -->
+        <button tabindex="3" data-bind="text: $i18n('KSM008_52'), click: $vm.newScreenE"/>
+        <!-- D2_3 -->
+        <button tabindex="4" data-bind="text: $i18n('KSM008_53'), click: $vm.registerScreenE" class="proceed"/>
+        <!-- D2_4 -->
+        <button tabindex="5"
+                data-bind="text: $i18n('KSM008_54'), click: $vm.deleteScreenE, enable: $vm.eScreenCurrentCode()"
+                class="danger"/>
     </div>
-    <div class="contents-area custom-class">
-        <div>
+    <div class="contents-area">
+        <div class="padding-15">
             <div>
                 <!-- D3_1 -->
-                <span class="label" data-bind="text: conditionCodeAndName"/>
+                <span class="label"  style="margin-top: 7px;" data-bind="text: conditionCodeAndName"/>
                 <!-- D3_2 -->
-                <button tabindex="6" class="float-right" data-bind="text: $i18n('KSM008_99')"/>
+                <button tabindex="6"
+                        data-bind="text: $i18n('KSM008_99'), ntsHelpButton: {image: 'help.png', position: 'bottom right', enable: true }"/>
             </div>
             <!-- D5_1 -->
-            <div class="label warning" data-bind="text: $i18n('KSM008_56')"/>
+            <div class="label-warning" style="padding: 10px 10px 0 10px" data-bind="text: $i18n('KSM008_56')" />
             <!-- D5_2 -->
-            <div class="label warning" data-bind="text: conditionDescription"/>
-            <div class="cell valign-center">
+            <div class="label-warning" style="padding: 0 10px 30px 10px" data-bind="text: conditionDescription"/>
+            <div class="cell valign-center" style="padding-top: 5px">
                 <!-- E1_1 -->
                 <div data-bind="ntsFormLabel: { required: true, text: $i18n('KSM008_77') }"/>
                 <!-- E1_2 -->
-                <button tabindex="1" data-bind="click: openModalKDL046, text: $i18n('KSM008_78')" class="small"/>
+                <button tabindex="7" data-bind="click: openModalKDL046, text: $i18n('KSM008_78')" class="small"/>
                 <!-- E1_3 -->
-                <span class="title" data-bind="text: dScreenCurrentCode"/>
+                <span class="title" data-bind="text: workplaceCode"/>
                 <!-- E1_4 -->
-                <span class="title" data-bind="text: dScreenCurrentName"/>
+                <span class="title" data-bind="text: workplaceName"/>
             </div>
         </div>
-
-        <div class="table" style="margin-top: 8px;">
-            <div class="cell valign-top">
+        <div>
+            <!-- E2 -->
+            <hr/>
+        </div>
+        <div class="table margin-15">
+            <div class="cell">
                 <!-- E3 -->
                 <div data-bind="ntsPanel:{width: '350px', direction: 'right', showIcon: false, visible: true}">
                     <!-- E3_1 -->
-                    <table tabindex="2" id="single-list" data-bind="ntsGridList: {
-                                name: '#{i18n.getText('KSM008_79')}',
-                                dataSource: $vm.targetWorkMethods,
-                                primaryKey: 'code',
-                                columns: [ { headerText: '', key: 'code', hidden: true },
+                    <table tabindex="8" id="E3_1" data-bind="ntsGridList: {
+                                name: $i18n('KSM008_79'),
+                                dataSource: targetWorkMethods,
+                                primaryKey: 'key',
+                                columns: [ { headerText: '', key: 'key', hidden: true },
                                            { headerText: $i18n('KSM008_80'), key: 'display', formatter: _.escape }],
                                 multiple: false,
-                                rows: 12,
-                                value: $vm.dScreenCurrentCode
+                                columnResize: true,
+                                value: eScreenCurrentCode,
+                                rows: 12
                             }"/>
                 </div>
             </div>
-            <div class="cell valign-top">
-                <div class="padding-10">
+            <div class="cell">
+                <div class="padding-5">
                     <!-- E4_1 -->
-                    <div class="width-200"
+                    <div class="width-form-label"
                          data-bind="ntsFormLabel: { required: true, text: $i18n('KSM008_81') }"/>
                     <!-- E4_2 -->
-                    <div tabindex="3" data-bind="ntsSwitchButton: {
-                                    name: '#{i18n.getText('KSM008_82')}',
-                                     options: [ { code: '0', name: $i18n('KSM008_83') },
-                                               { code: '1', name: $i18n('KSM008_84') }],
+                    <div tabindex="9" style="margin-right: 30px" id="E4_2" data-bind="ntsSwitchButton: {
+                                    name: $i18n('KSM008_82'),
+                                    options: [ { code: '1', name: $i18n('KSM008_83') },
+                                               { code: '0', name: $i18n('KSM008_84') }],
                                     optionsValue: 'code',
                                     optionsText: 'name',
+                                    enable: !$vm.eScreenCurrentCode(),
                                     value: $vm.workMethodType }"/>
                     <!-- E4_5 -->
-                    <button tabindex="6" data-bind="text: $i18n('KSM008_85'), click: $vm.openKdl001Modal" class="small"/>
+                    <button tabindex="12" id="E4_5" data-bind="text: $i18n('KSM008_85'), click: $vm.openKdl001SingleSelect, enable: !$vm.eScreenCurrentCode(), visible: $vm.workMethodType() == 0"/>
                     <!-- E4_6 -->
-                    <span class="title" data-bind="text: $i18n('KSM008_86')"/>
+                    <span class="title" id="E4_6" data-bind="text: $i18n('KSM008_86'), visible: $vm.workMethodType() == 0"/>
                     <!-- E4_7 -->
-                    <span class="title" data-bind="text: dScreenCurrentCode"/>
+                    <span class="title" data-bind="text: targetWorkMethodCode, visible: $vm.workMethodType() == 0"/>
                     <!-- E4_8 -->
-                    <span class="title" data-bind="text: dScreenCurrentName"/>
+                    <span class="title" data-bind="text: targetWorkMethodName, visible: $vm.workMethodType() == 0"/>
                 </div>
-                <div class="padding-10">
+                <div class="padding-5">
                     <!-- E5_1 -->
-                    <div class="width-200"
+                    <div class="width-form-label"
                          data-bind="ntsFormLabel: { required: true, text: $i18n('KSM008_87') }"/>
                     <!-- E5_2 -->
-                    <div tabindex="7" class="panel panel-frame">
-                        <div tabindex="8" data-bind="ntsRadioBoxGroup: {
-                                    name: '#{i18n.getText('KSM008_88')}',
+                    <div tabindex="13" class="panel panel-frame" data-bind="ntsRadioBoxGroup: {
+                                    name: $i18n('KSM008_88'),
                                     options: [ { code: '0', name: $i18n('KSM008_89') },
                                             { code: '1', name: $i18n('KSM008_90') }],
                                     optionsValue: 'code',
                                     optionsText: 'name',
                                     value: $vm.nextDayWorkMethod}"/>
-                    </div>
                 </div>
-                <div class="padding-10">
-                    <div class="width-200 display-inline-block"/>
+                <div class="padding-5">
+                    <div class="width-form-label display-inline-block"/>
                     <!-- E6 -->
                     <span class="caret-bottom caret-inline"/>
                 </div>
-                <div class="padding-10">
-                    <div class="width-200 display-inline-block"/>
+                <div class="padding-5">
+                    <div class="width-form-label display-inline-block"/>
                     <!-- E7 -->
-                    <div tabindex="11" data-bind="ntsSwitchButton: {
-                                    name: '#{i18n.getText('KSM008_91')}',
-                                    options: [ { code: '0', name: $i18n('KSM008_92') },
-                                            { code: '1', name: $i18n('KSM008_93') },
-                                            { code: '2', name: $i18n('KSM008_94') }],
+                    <div tabindex="17" id="E7" data-bind="ntsSwitchButton: {
+                                    name: $i18n('KSM008_91'),
+                                    options: [ { code: '1', name: $i18n('KSM008_92') },
+                                            { code: '2', name: $i18n('KSM008_93') },
+                                            { code: '0', name: $i18n('KSM008_94') }],
                                     optionsValue: 'code',
                                     optionsText: 'name',
                                     value: $vm.nextDayWorkMethodType }"/>
                 </div>
-                <div class="padding-10">
-                    <div class="width-200 display-inline-block"/>
+                <div class="padding-5" data-bind="visible: $vm.nextDayWorkMethodType() == 0">
+                    <div class="width-form-label display-inline-block"/>
                     <!-- E8_1 -->
-                    <button tabindex="15" data-bind="text: $i18n('KSM008_95')" class="small"/>
+                    <button tabindex="21" id="E8_1" data-bind="text: $i18n('KSM008_95'), click: $vm.openKdl001MultiSelect"
+                            class="small"/>
                     <!-- E8_2 -->
-                    <button tabindex="16" data-bind="text: $i18n('KSM008_96')" class="danger small"/>
+                    <button tabindex="22"
+                            data-bind="text: $i18n('KSM008_96'), click: $vm.removeNextDayWorkHours, enable: $vm.nextDayWorkHourCodes().length > 0"
+                            class="danger small"/>
                 </div>
                 <!-- E9 -->
-                <div class="padding-10">
-                    <div class="width-200 display-inline-block"/>
-                    <div style="padding-left: 205px">
-                        <table tabindex="17" id="multi-list" data-bind="ntsGridList: {
-                                        name: '#{i18n.getText('KSM008_97')}',
-                                        dataSource: $vm.nextDayWorkHours,
+                <div style="padding: 3px" data-bind="visible: $vm.nextDayWorkMethodType() == 0">
+                    <div style="padding-left: 188px">
+                        <table tabindex="23" id="E9" data-bind="ntsGridList: {
+                                        name: $i18n('KSM008_97'),
+                                        dataSource: nextDayWorkHours,
                                         primaryKey: 'code',
                                         columns: [ { headerText: '', key: 'code', hidden: true },
                                                    { headerText: $i18n('KSM008_98'), key: 'display', width: '300px', formatter: _.escape }],
                                         multiple: true,
-                                        rows: 10,
-                                        value: $vm.nextDayWorkHour
+                                        value: nextDayWorkHourCodes,
+                                        rows: 10
                                     }"/>
                     </div>
                 </div>
