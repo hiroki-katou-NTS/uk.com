@@ -70,8 +70,8 @@ public class WorkStamp extends DomainObject{
 	}
 	
 	/**
-	 * 以下
-	 * @param compareValue
+	 * ＜
+	 * @param compareValue　比較値
 	 * @return
 	 */
 	public boolean lessThan(WorkStamp compareValue) {

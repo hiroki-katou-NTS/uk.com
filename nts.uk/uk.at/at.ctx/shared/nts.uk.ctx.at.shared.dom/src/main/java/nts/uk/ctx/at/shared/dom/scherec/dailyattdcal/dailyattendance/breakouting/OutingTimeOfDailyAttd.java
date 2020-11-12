@@ -104,14 +104,18 @@ public class OutingTimeOfDailyAttd {
 									.map(tc -> tc.toTimeSheetOfDeductionItem())
 									.collect(Collectors.toList());
 	}
+	
 	/**
 	 * 外出理由を指定して時間帯を取得する
-	 * @param goOutReason
+	 * @param reasonForGoOut 外出理由
+	 * @return
 	 */
-	public List<TimeSpanForCalc> getTimeZoneByGoOutReason() {
+	public List<TimeSpanForCalc> getTimeZoneByGoOutReason(GoingOutReason reasonForGoOut) {
+		
 		return this.outingTimeSheets.stream()
-				.map(c -> {return c.getTimeZone();})
-				.filter(c -> c.isPresent())
-				.map(c -> c.get()).collect(Collectors.toList());
+				.filter( c -> c.getReasonForGoOut() == reasonForGoOut)
+				.filter(c -> c.getTimeZone().isPresent() )
+				.map(c -> c.getTimeZone().get() )
+				.collect( Collectors.toList() );
 	}
 }

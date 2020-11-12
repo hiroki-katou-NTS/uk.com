@@ -91,7 +91,7 @@ public class OutingTimeSheet extends DomainObject {
 	}
 	
 	/**
-	 * 自信が計算できる状態か判定うる
+	 * 計算可能な状態か判断する	
 	 * @return 計算可能である
 	 */
 	public boolean isCalcState() {
@@ -126,15 +126,15 @@ public class OutingTimeSheet extends DomainObject {
 	 * 	[2] 時間帯を返す
 	 * @return
 	 */
-	public Optional<TimeSpanForCalc>  getTimeZone(){
-		//if [1] 計算可能な状態か判断する	
-		if(this.isCalcState() == true) {
-			//外出.＜ (戻り)
+	public Optional<TimeSpanForCalc> getTimeZone(){
+		
+		if( this.isCalcState() ) {
+			
 			if(goOut.get().getStamp().get().lessThan(comeBack.get().getStamp().get())) {
-				//計算時間帯 (外出.時刻.時刻, 戻り.時刻.時刻)	
-				return Optional.of(new TimeSpanForCalc(
-						 goOut.get().getStamp().get().getTimeDay().getTimeWithDay().get()
-			           , comeBack.get().getStamp().get().getTimeDay() .getTimeWithDay().get()));
+				
+				return Optional.of( new TimeSpanForCalc( 
+								goOut.get().getStamp().get().getTimeDay().getTimeWithDay().get() , 
+								comeBack.get().getStamp().get().getTimeDay().getTimeWithDay().get()));
 			}  
 		}
 		
