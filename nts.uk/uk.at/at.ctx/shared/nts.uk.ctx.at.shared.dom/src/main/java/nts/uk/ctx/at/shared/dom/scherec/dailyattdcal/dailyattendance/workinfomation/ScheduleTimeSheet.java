@@ -11,7 +11,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * 
  * @author nampt
  * 予定時間帯
- *
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared(勤務予定、勤務実績).日の勤怠計算.日別勤怠.勤務予定.予定時間帯
  */
 @Getter
 @NoArgsConstructor
