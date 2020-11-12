@@ -26,11 +26,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		sids?: Array<string>; // 申請者リスト
 		dates?: Array<string>; // 申請対象日リスト
 		mode: number; // 新規詳細モード
-		date?: string // 申請日
-		overTimeClf: number; // 残業申請区分
+		dateOp?: string // 申請日
+		overtimeAppAtr: number; // 残業申請区分
 		appDispInfoStartupDto: any; // 申請表示情報
-		startSPR?: number; // SPR連携の開始時刻
-		endSPR?: number; // SPR連携の終了時刻
+		startTimeSPR?: number; // SPR連携の開始時刻
+		endTimeSPR?: number; // SPR連携の終了時刻
 		isProxy: boolean; // 代行申請か
 	}
 	
@@ -38,7 +38,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		companyId: string; // 会社ID
 		employeeId: string; // 社員ID
 		appDate: string; // 申請日
-		prePost: number; // 事前事後区分
+		prePostInitAtr: number; // 事前事後区分
 		overtimeLeaveAppCommonSet: OvertimeLeaveAppCommonSet; // 残業休出申請共通設定
 		advanceApplicationTime: ApplicationTime; // 事前の申請時間
 		achivementApplicationTime: ApplicationTime; // 実績の申請時間
