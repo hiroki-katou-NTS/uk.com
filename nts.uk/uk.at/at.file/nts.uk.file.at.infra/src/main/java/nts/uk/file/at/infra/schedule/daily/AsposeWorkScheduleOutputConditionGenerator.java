@@ -80,7 +80,6 @@ import nts.uk.ctx.at.schedule.dom.adapter.executionlog.SCEmployeeAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmployeeDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.TimeLimitUpperLimitSetting;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
@@ -89,7 +88,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.SystemFixedErrorAlarm;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.PrimitiveValueOfAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.CompanyDailyItemService;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
@@ -251,10 +249,6 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	
 	@Inject
 	private EmploymentStatusPub empStatusPub;
-
-	// for addition
-	@Inject
-	private BPSettingRepository bpSettingRepository;
 	
 	/** The Constant filename. */
 	private static final String TEMPLATE_DATE = "report/KWR001_Date.xlsx";
@@ -830,17 +824,16 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			List<CodeName> lstBusiness = dataProcessor.getBussinessType(companyId).getCodeNames();
 			queryData.setLstBusiness(lstBusiness);
 		}
-		
-		// get all addition of attendance item when PrimitiveValueOfAttendanceItem == 68
-		List<String> itemDtos = this.companyDailyItemService.findByAttendanceItems(companyId, itemsId).stream()
-				.filter(t -> t.getMasterType() != null && t.getMasterType() == PrimitiveValueOfAttendanceItem.ADDITION_SETTING_CODE.value)
-				.map(t -> t.getTimeId().toString())
-				.collect(Collectors.toList());
-		List<CodeName> lstAddtition = this.bpSettingRepository.findByCompanyAndCode(companyId, itemDtos).stream()
-				.map(t -> new CodeName(t.getCode().v(), t.getName().v(), ""))
-				.collect(Collectors.toList());
-		queryData.setLstAddition(lstAddtition);
-		
+		// 加給
+		if (itemsId.stream().filter(x -> ATTENDANCE_ID_ADDITION == x).count() > 0) {
+			List<CodeName> lstAddtition = dataProcessor.getAddition(companyId).getCodeNames();
+			queryData.setLstAddition(lstAddtition);
+		}
+		// 作業
+		if (itemsId.stream().filter(x -> IntStream.of(ATTENDANCE_ID_ADDITION).anyMatch(y -> x == y)).count() > 0) {
+			List<CodeName> lstWork = dataProcessor.getWork(companyId).getCodeNames();
+			queryData.setLstWork(lstWork);
+		}
 		// Collect optional item from KMK002 if there is at least 1 attendance id fall into id 641 -> 740
 		List<Integer> lstOptionalAttendanceId = itemsId.stream()
 				.filter(x -> x >= ATTENDANCE_ID_OPTIONAL_START && x <= ATTENDANCE_ID_OPTIONAL_END)
@@ -3686,6 +3679,8 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		List<CodeName> lstEmployment = queryData.getLstEmployment();
 		List<CodeName> lstBusiness = queryData.getLstBusiness();
 		List<CodeName> lstAddition = queryData.getLstAddition();
+		List<CodeName> lstWork = queryData.getLstWork();
+		
 		
 		// Not set -> won't check master unregistered
 		if (StringUtils.isEmpty(code)) {
@@ -3834,6 +3829,18 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				return code + " " + MASTER_UNREGISTERED;
 			}
 			CodeName addition = oAddtion.get();
+			return displayType == SwitchItemDisplay.DISPLAY_NAME ? addition.getName() : addition.getCode();
+		}
+		
+		// 作業コード
+		if (IntStream.of(ATTENDANCE_ID_WORKCODE).anyMatch(id -> id == attendanceId)) {
+			Optional<CodeName> oWork = lstWork.stream()
+					.filter(add -> add.getCode().equalsIgnoreCase(code))
+					.findFirst();
+			if (!oWork.isPresent()) {
+				return code + " " + MASTER_UNREGISTERED;
+			}
+			CodeName addition = oWork.get();
 			return displayType == SwitchItemDisplay.DISPLAY_NAME ? addition.getName() : addition.getCode();
 		}
 

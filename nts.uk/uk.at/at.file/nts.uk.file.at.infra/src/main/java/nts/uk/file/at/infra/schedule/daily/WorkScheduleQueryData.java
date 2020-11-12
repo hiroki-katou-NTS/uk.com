@@ -77,5 +77,9 @@ public class WorkScheduleQueryData {
 	/** The remark data containter. */
 	RemarkQueryDataContainer remarkDataContainter;
 	
+	/** The addition. */
 	List<CodeName> lstAddition;
+	
+	/** The lst work  */
+	List<CodeName> lstWork;
 }
