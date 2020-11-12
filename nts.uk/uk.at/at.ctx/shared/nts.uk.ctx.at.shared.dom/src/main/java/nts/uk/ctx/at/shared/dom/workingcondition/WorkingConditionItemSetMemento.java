@@ -6,6 +6,8 @@ package nts.uk.ctx.at.shared.dom.workingcondition;
 
 import java.util.Optional;
 
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
+
 /**
  * The Interface WorkingConditionItemSetMemento.
  */
