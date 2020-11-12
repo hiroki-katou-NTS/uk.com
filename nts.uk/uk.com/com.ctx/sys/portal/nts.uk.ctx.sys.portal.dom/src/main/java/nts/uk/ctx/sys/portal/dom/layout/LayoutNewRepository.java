@@ -23,7 +23,7 @@ public interface LayoutNewRepository {
 	 * @param CompanyId
 	 * @param topPageCode
 	 */
-	void delete(String CompanyId, String topPageCd, BigDecimal layoutNo );
+	void delete(String companyId, String topPageCd, BigDecimal layoutNo );
 	
 	/**
 	 * 

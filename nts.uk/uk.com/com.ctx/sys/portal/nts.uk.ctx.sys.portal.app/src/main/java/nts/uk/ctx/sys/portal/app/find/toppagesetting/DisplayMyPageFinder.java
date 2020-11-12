@@ -147,7 +147,7 @@ public class DisplayMyPageFinder {
 				}
 				//	トップページの場合
 			} else if (param.getTopPageSetting().get().getMenuClassification() == MenuClassification.TopPage.value) {
-				DisplayInTopPage dataDisplay = this.displayTopPage(displayCode.get());
+				DisplayInTopPage dataDisplay = this.displayTopPage(displayCode.orElse(""));
 				result.setDisplayTopPage(dataDisplay);
 			}
 		}
@@ -255,12 +255,12 @@ public class DisplayMyPageFinder {
 			result.setLayout1(listFlow);
 			// アルゴリズム「レイアウトにウィジェットを表示する」を実行する
 			if(layout2.isPresent() && !layout2.get().getWidgetSettings().isEmpty()) {
-				List<WidgetSettingDto> lstWidgetLayout2 = layout2.get().getWidgetSettings().stream().map(x ->{
-					return WidgetSettingDto.builder()
-							.widgetType(x.getWidgetType().value)
-							.order(x.getOrder())
-							.build();
-				}).collect(Collectors.toList());
+				List<WidgetSettingDto> lstWidgetLayout2 = layout2.get().getWidgetSettings().stream()
+						.map(x -> WidgetSettingDto.builder()
+									.widgetType(x.getWidgetType().value)
+									.order(x.getOrder())
+									.build())
+						.collect(Collectors.toList());
 				result.setLayout2(lstWidgetLayout2);
 			} else {
 				result.setLayout2(new ArrayList<WidgetSettingDto>());
@@ -268,12 +268,12 @@ public class DisplayMyPageFinder {
 
 			// アルゴリズム「レイアウトにウィジェットを表示する」を実行する
 			if(layout3.isPresent() && !layout3.get().getWidgetSettings().isEmpty()) {
-				List<WidgetSettingDto> lstWidgetLayout3 = layout3.get().getWidgetSettings().stream().map(x ->{
-					return WidgetSettingDto.builder()
-							.widgetType(x.getWidgetType().value)
-							.order(x.getOrder())
-							.build();
-				}).collect(Collectors.toList());
+				List<WidgetSettingDto> lstWidgetLayout3 = layout3.get().getWidgetSettings().stream()
+						.map(x -> WidgetSettingDto.builder()
+									.widgetType(x.getWidgetType().value)
+									.order(x.getOrder())
+									.build())
+						.collect(Collectors.toList());
 				result.setLayout3(lstWidgetLayout3);
 			} else {
 				result.setLayout3(new ArrayList<WidgetSettingDto>());
