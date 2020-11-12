@@ -701,7 +701,6 @@ module nts.uk.com.view.cli003.f {
                 // Get Log basic info
                 service.getLogBasicInfoByModifyDate(paramLog).then((data: Array<LogBasicInfoModel>) => {
                     if (data.length > 0) {
-                        console.log(data);
                         //log setting list start boot history not in use
                         const logSettingEdit: LogSettingParam[] = logSettings.filter(x => x.updateHistoryRecord === USE_STAGE.NOT_USE);
                         const logSettingBoot: LogSettingParam[] = logSettings.filter(x => x.startHistoryRecord === USE_STAGE.NOT_USE);
@@ -1365,7 +1364,6 @@ module nts.uk.com.view.cli003.f {
                     lstHeaderDto: vm.LogDataResultHeader.map(item => item.itemName).filter(item => item !== 'id' && item !== 'logNumber'),
                     lstSubHeaderDto: vm.LogDataResultSubHeader.map(item => item.itemName).filter(item => item !== 'id' && item !== 'logNumber')
                 }
-                console.log(LogDataParamsExport)
                 vm.$blockui('grayout');
                 //CLI003: fix bug #108971, #108970
                 service.exportCsvForDataResult(LogDataParamsExport).done(() => {
