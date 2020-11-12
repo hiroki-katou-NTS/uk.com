@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.portal.ws.toppagepart.createflowmenu;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -109,4 +110,11 @@ public class CreateFlowMenuWebService extends WebService {
 	public ExtractionResponseDto extractData(@PathParam("fileId") String fileId) throws IOException {
 		return this.exportService.extract(fileId);
 	}
+	
+	@POST
+	@Path("/extractListFileId")
+	public List<ExtractionResponseDto> extractListData(ParamListFileId param) throws IOException {
+		return this.exportService.extractByListFileId(param.getLstFileId());
+	}
 }
+

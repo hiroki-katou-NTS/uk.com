@@ -6,7 +6,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
         name: 'kaf008-share',
         template: `<div id="kaf008-share">
                         <div class="flex valign-center A5">
-                            <div id="A5_1" data-bind="ntsFormLabel: {i18n : 'KAF008_20'}"></div>
+                            <div id="A5_1" data-bind="ntsFormLabel: {text: $i18n('KAF008_20')}"></div>
                             <div id="A5_2">
                                 <span  data-bind="i18n : 'KAF008_21'"></span>
                             </div>

@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<head>
+</head>
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+      <com:scriptfile set="IGNITE" />
+			<com:stylefile path="ccg015.f.style.css" />
+			<com:scriptfile path="ccg015.f.vm.js" />
+			<script>var dialogSize = { width: 1500 , height: 700};</script>
+		</ui:define>
+		<ui:define name="content">
+      <div class="contents_layout" id="resizable">
+        <com:ko-if bind="isVisiableContentF2()">
+          <div class="contents_2" id="F2">
+            <div class="panel panel-frame widget_contents h_100">
+              <span>F2</span>
+            </div>
+          </div>
+        </com:ko-if>
+        <div class="contents_1" id="F1">
+          <div class="panel panel-frame h_100">
+            <span>F1</span>
+          </div>
+        </div>
+        <com:ko-if bind="isVisiableContentF3()">
+          <div class="contents_3" id="F3">
+            <div class="widget_contents panel panel-frame h_100">
+              <span>F3</span>
+            </div>
+          </div>
+        </com:ko-if>
+      </div>
+      <div id="functions-area-bottom">
+        <!-- btn close dialog -->
+        <button class="large" data-bind="click: close">#{i18n.getText('CCG015_87')}</button>
+      </div>
+    </ui:define>
+  </ui:composition>
+</body>
+</html>

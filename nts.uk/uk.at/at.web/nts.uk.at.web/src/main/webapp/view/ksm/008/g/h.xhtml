@@ -7,16 +7,16 @@
 <body>
 <ui:composition template="base.xhtml">
     <ui:define name="title">
-        <span class="title" data-bind="text: vm.$i18n('KSM008_133')"></span>
+        <span class="title" data-bind="text: $vm.$i18n('KSM008_133')"></span>
     </ui:define>
 
     <ui:define name="table-content">
         <tr>
             <td>
-                <div data-bind="ntsFormLabel: {required: true, text: vm.$i18n('KSM008_141')}"></div>
+                <div data-bind="ntsFormLabel: {required: true, text: $vm.$i18n('KSM008_141')}"></div>
             </td>
             <td>
-                <button id="H1_2" tabindex="5" data-bind="click: openDiaglog, text: vm.$i18n('KSM008_142')"></button>
+                <button id="H1_2" tabindex="5" data-bind="click: openDiaglog, text: $vm.$i18n('KSM008_142')"></button>
             </td>
             <td>
                 <div class="labelWorkplace">
@@ -27,7 +27,7 @@
         </tr>
         <tr>
             <td>
-                <div data-bind="ntsFormLabel: { constraint: 'ConsecutiveNumberOfDays', required: true, text: vm.$i18n('KSM008_143') }"></div>
+                <div data-bind="ntsFormLabel: { constraint: 'ConsecutiveNumberOfDays', required: true, text: $vm.$i18n('KSM008_143') }"></div>
             </td>
             <td>
                 <input class="cons-day" tabindex="7" data-bind="ntsNumberEditor: {
@@ -39,7 +39,7 @@
             </td>
             <td>
                 <div class="labelWorkplace">
-                    <span class="label" data-bind="text: vm.$i18n('KSM008_145')"></span>
+                    <span class="label" data-bind="text: $vm.$i18n('KSM008_145')"></span>
                 </div>
             </td>
         </tr>

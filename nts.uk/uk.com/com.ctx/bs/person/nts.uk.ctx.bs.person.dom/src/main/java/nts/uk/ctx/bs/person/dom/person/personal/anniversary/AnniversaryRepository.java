@@ -59,7 +59,7 @@ public interface AnniversaryRepository {
      * @param personalId
      * @param anniversary
      */
-    Optional<AnniversaryNotice> getByPersonalIdAndAnniversary(String personalId, GeneralDate anniversary);
+    Optional<AnniversaryNotice> getByPersonalIdAndAnniversary(String personalId, String anniversary);
 
     /**
      * Find List AnniversaryNotice by personalId

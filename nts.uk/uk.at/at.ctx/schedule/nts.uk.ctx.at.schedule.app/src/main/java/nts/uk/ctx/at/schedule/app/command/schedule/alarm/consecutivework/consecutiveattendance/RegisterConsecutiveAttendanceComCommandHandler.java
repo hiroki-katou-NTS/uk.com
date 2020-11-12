@@ -10,7 +10,6 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.Optional;
 
 /**
  * 会社の連続出勤できる上限日数を登録する
@@ -32,9 +31,9 @@ public class RegisterConsecutiveAttendanceComCommandHandler extends CommandHandl
         String companyId = AppContexts.user().companyId();
 
         //1. get
-        Optional<MaxDaysOfConsecutiveAttendanceCompany> oldMaxConsDays = maxDaysOfConsAttComRepo.get(companyId);
+        boolean isExists = maxDaysOfConsAttComRepo.exists(companyId);
 
-        if (oldMaxConsDays.isPresent()) {
+        if (isExists) {
             //2. isPresent == true: set
             maxDaysOfConsAttComRepo.update(companyId, newMaxConsDays);
         }

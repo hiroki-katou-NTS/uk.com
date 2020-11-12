@@ -81,6 +81,12 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 			+ "ORDER BY s.ccgmtStandardMenuPK.system ASC, "
 			+ "s.ccgmtStandardMenuPK.classification ASC, "
 			+ "s.programId ASC";
+	
+	private static final String FIND_BY_CID_SYSTEM__MENUCLASSIFICATION_CODE = SEL
+			+ "WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
+			+ "AND s.ccgmtStandardMenuPK.system = :system "
+			+ "AND s.ccgmtStandardMenuPK.classification = :classification "
+			+ "AND s.ccgmtStandardMenuPK.code = :code ";
 
 	public CcgstStandardMenu insertToEntity(StandardMenu domain) {
 		 CcgstStandardMenuPK ccgstStandardMenuPK = new CcgstStandardMenuPK(domain.getCompanyId(), domain.getCode().v(), domain.getSystem().value, domain.getClassification().value);
@@ -428,5 +434,16 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 				.setParameter("menuAtr", menuAtr)
 				.setParameter("webSetting", webSetting)
 				.getList(this::toDomain);
+	}
+
+	@Override
+	public Optional<StandardMenu> findByCIDSystemMenuClassificationCode(String cid, int system, int classification,
+			String code) {
+		return this.queryProxy().query(FIND_BY_CID_SYSTEM__MENUCLASSIFICATION_CODE, CcgstStandardMenu.class)
+				.setParameter("companyId", cid)
+				.setParameter("system", system)
+				.setParameter("classification", classification)
+				.setParameter("code", code)
+				.getSingle(x-> toDomain(x));
 	}
 }

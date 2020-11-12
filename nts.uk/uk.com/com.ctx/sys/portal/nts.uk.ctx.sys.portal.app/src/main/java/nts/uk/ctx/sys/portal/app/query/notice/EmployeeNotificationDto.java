@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.Builder;
 import lombok.Data;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.portal.dom.notice.adapter.RoleImport;
 
 @Data
@@ -24,4 +25,9 @@ public class EmployeeNotificationDto {
 	 * ロール
 	 */
 	RoleImport role;
+	
+	/**
+	 * SYSTEM日付
+	 */
+	GeneralDateTime systemDate;
 }
