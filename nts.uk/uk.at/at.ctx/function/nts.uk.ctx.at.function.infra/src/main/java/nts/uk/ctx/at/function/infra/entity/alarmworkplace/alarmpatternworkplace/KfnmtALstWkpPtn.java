@@ -50,9 +50,9 @@ public class KfnmtALstWkpPtn extends UkJpaEntity implements Serializable {
         return this.pk;
     }
 
-    public AlarmPatternSettingWorkPlace toDomain() {
-        return new AlarmPatternSettingWorkPlace(this.checkConList.stream().map(c -> c.toDomain()).collect(Collectors.toList()),
-            pk.alarmPatternCD, pk.companyID, alarmPerSet.toDomain(), alarmPatternName);
-    }
+//    public AlarmPatternSettingWorkPlace toDomain() {
+//        return new AlarmPatternSettingWorkPlace(this.checkConList.stream().map(c -> c.toDomain()).collect(Collectors.toList()),
+//            pk.alarmPatternCD, pk.companyID, alarmPerSet.toDomain(), alarmPatternName);
+//    }
 
 }
