@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.file.at.infra.schedule.daily;
 
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -1105,20 +1104,15 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 													item.getValue(), queryData, outSche, condition.getSwitchItemDisplay()))
 											.filter(Objects::nonNull)
 											.collect(Collectors.toList());
-									boolean masterUnregistedFlag = names.stream()
-											.anyMatch(item -> StringUtils.equalsIgnoreCase(item,
-													MASTER_UNREGISTERED));
-									if (masterUnregistedFlag) {
-										lstRemarkContentStr.add(TextResource.localize(RemarksContentChoice.MASTER_UNREGISTERED.shortName));
-									} else {
-										lstRemarkContentStr.addAll(names.stream().map(t -> this.subStringByByte(t, 0, 18)).collect(Collectors.toList()));
-									}
+									lstRemarkContentStr.addAll(names.stream()
+											.map(t -> this.cutStringByByte(t, 0, 18))
+											.collect(Collectors.toList()));
 									// 乖離理由手入力の場合
 									List<String> lstStrReason = attResultImport.getAttendanceItems().stream()
 													.filter(attendance -> IntStream.of(ATTENDANCE_ID_REASON_DIVERGENCE)
 															.anyMatch(id -> id == attendance.getItemId())
 															&& !StringUtil.isNullOrEmpty(attendance.getValue(), false))
-											.map(t -> this.subStringByByte(t.getValue(), 0, 18))
+											.map(t -> this.cutStringByByte(t.getValue(), 0, 18))
 											.collect(Collectors.toList());
 									lstRemarkContentStr.addAll(lstStrReason);
 								}  else {
@@ -1151,6 +1145,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 									break;
 								} else {
 									stringBuilder.append("/n").append(remarkContentStr);
+									maxByte = 35;
 								}
 							}
                             personalPerformanceDate.detailedErrorData  += stringBuilder.toString();
@@ -1373,20 +1368,15 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 										item.getValue(), queryData, outSche, condition.getSwitchItemDisplay()))
 								.filter(Objects::nonNull)
 								.collect(Collectors.toList());
-						boolean masterUnregistedFlag = names.stream()
-								.anyMatch(item -> StringUtils.equalsIgnoreCase(item,
-										MASTER_UNREGISTERED));
-						if (masterUnregistedFlag) {
-							lstRemarkContentStr.add(TextResource.localize(RemarksContentChoice.MASTER_UNREGISTERED.shortName));
-						} else {
-							lstRemarkContentStr.addAll(names.stream().map(t -> this.subStringByByte(t, 0, 18)).collect(Collectors.toList()));
-						}
+						lstRemarkContentStr.addAll(names.stream()
+								.map(t -> this.cutStringByByte(t, 0, 18))
+								.collect(Collectors.toList()));
 						// 乖離理由手入力の場合
 						List<String> lstStrReason = x.getAttendanceItems().stream()
 										.filter(attendance -> IntStream.of(ATTENDANCE_ID_REASON_DIVERGENCE)
 												.anyMatch(id -> id == attendance.getItemId())
 												&& !StringUtil.isNullOrEmpty(attendance.getValue(), false))
-								.map(t -> this.subStringByByte(t.getValue(), 0, 18))
+								.map(t -> this.cutStringByByte(t.getValue(), 0, 18))
 								.collect(Collectors.toList());
 						lstRemarkContentStr.addAll(lstStrReason);
 					} else {
@@ -1419,6 +1409,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						break;
 					} else {
 						errorDetails.append("/n").append(remarkContentStr);
+						maxByte = 35;
 					}
 				}
 				detailedDate.errorDetail += errorDetails.toString();
@@ -1698,9 +1689,6 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 								totalValue.setValue("0");
 							}
 						}
-						else { // This case also deals with null value
-							totalValue.setValue(actualValue.getValue());
-						}
 						totalValue.setValueType(valueType);
 						lstTotalValue.add(totalValue);
 					}
@@ -1728,9 +1716,6 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 							} else {
 								totalWorkplaceValue.setValue("0");
 							}
-						}
-						else { // This case also deals with null value
-							totalWorkplaceValue.setValue(actualValue.getValue());
 						}
 						totalWorkplaceValue.setValueType(valueType);
 						lstTotalHierarchyValue.add(totalWorkplaceValue);
@@ -1769,9 +1754,6 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						} else {
 							totalValue.setValue("0");
 						}
-					}
-					else { // This case also deals with null value
-						totalValue.setValue(actualValue.getValue());
 					}
 					totalValue.setValueType(valueType);
 					lstTotalValue.add(totalValue);
@@ -3956,8 +3938,17 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
         return value != null ? pattern.matcher(value).matches() :  false;
     }
     
-    private String subStringByByte(String strValue, Integer index, Integer length) {
-		byte[] bytes = strValue.getBytes(StandardCharsets.UTF_8);
-		return bytes.length > length ? new String(bytes, index, length, StandardCharsets.UTF_8) : strValue;
+    private String cutStringByByte(String valueStr, int start, int size) {
+    	String[] valueStrArr = valueStr.split("");
+    	StringBuilder result = new StringBuilder();
+    	int numberOfByte = 0;
+    	for (int i = 0; i < valueStrArr.length; i++) {
+			numberOfByte += valueStrArr[i].getBytes().length;
+    		if (numberOfByte > size) {
+    			break;
+    		}
+    		result.append(valueStrArr[i]);
+		}
+    	return result.toString();
     }
 }
