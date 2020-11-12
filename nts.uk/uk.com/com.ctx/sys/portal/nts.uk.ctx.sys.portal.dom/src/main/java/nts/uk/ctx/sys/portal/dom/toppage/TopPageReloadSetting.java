@@ -20,7 +20,7 @@ public class TopPageReloadSetting extends AggregateRoot {
 	/** リロード間隔 */
 	private ReloadPeriodEnum reloadInterval;
 
-	private TopPageReloadSetting() {}
+	public TopPageReloadSetting() {}
 
 	public static TopPageReloadSetting createFromMemento(MementoGetter memento) {
 		TopPageReloadSetting domain = new TopPageReloadSetting();
@@ -30,7 +30,9 @@ public class TopPageReloadSetting extends AggregateRoot {
 
 	public void getMemento(MementoGetter memento) {
 		this.cid = memento.getCid();
-		this.reloadInterval = ReloadPeriodEnum.valueOf(memento.getReloadInterval().intValue());
+		if(memento.getReloadInterval() != null) {
+			this.reloadInterval = ReloadPeriodEnum.valueOf(memento.getReloadInterval().intValue());
+		}
 	}
 
 	public void setMemento(MementoSetter memento) {
