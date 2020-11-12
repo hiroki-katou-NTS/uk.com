@@ -2,6 +2,11 @@ package nts.uk.ctx.at.function.infra.entity.alarmworkplace.monthdayperiod;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.SpecifyStartMonth;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.StartMonth;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.YearSpecifiedType;
 import nts.uk.ctx.at.function.infra.entity.alarmworkplace.condition.KfnmtWkpCheckCondition;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -44,5 +49,14 @@ public class KfnmtAssignMonthStart extends UkJpaEntity implements Serializable {
 
     @OneToOne(mappedBy = "kfnmtAssignMonthStart", orphanRemoval = true)
     public KfnmtWkpCheckCondition checkCondition;
+
+    public StartMonth toDomain() {
+
+        StartMonth endMonth = new StartMonth(specifyStartMonth);
+        endMonth.setFixedMonth(EnumAdaptor.valueOf(1, YearSpecifiedType.class), 1); //TODO not exist fixedMonthly in entity thì how to map ?
+        endMonth.setStartMonth(EnumAdaptor.valueOf(monthPrevious, PreviousClassification.class),monthNo,curentMonth);
+        return endMonth;
+
+    }
 
 }

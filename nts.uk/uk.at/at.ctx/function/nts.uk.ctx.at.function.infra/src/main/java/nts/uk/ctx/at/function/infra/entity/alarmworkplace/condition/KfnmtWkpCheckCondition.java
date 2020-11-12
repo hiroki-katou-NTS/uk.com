@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.EndSpecify;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.StartSpecify;
 import nts.uk.ctx.at.function.dom.alarm.workplace.checkcondition.WorkplaceCategory;
 import nts.uk.ctx.at.function.dom.alarmworkplace.CheckCondition;
 import nts.uk.ctx.at.function.dom.alarmworkplace.ExtractionPeriodDaily;
@@ -97,22 +99,26 @@ public class KfnmtWkpCheckCondition extends UkJpaEntity implements Serializable 
 
     public CheckCondition toDomain() {
 
-        RangeToExtract extractPeriodList = new RangeToExtract() {
-        };
+        RangeToExtract extractPeriod = null;
         if (this.pk.category == WorkplaceCategory.MONTHLY.value) {
-            extractPeriodList = kfnmtAssignNumofMon.toDomain();
+            extractPeriod = kfnmtAssignNumofMon.toDomain();
 
         } else if (this.pk.category == WorkplaceCategory.MASTER_CHECK_BASIC.value || this.pk.category == WorkplaceCategory.MASTER_CHECK_WORKPLACE.value) {
-            extractPeriodList = new ExtractionPeriodMonthly();
+            extractPeriod = new ExtractionPeriodMonthly(kfnmtAssignMonthStart.toDomain(),kfnmtAssignMonthEnd.toDomain());
 
         } else if (this.pk.category == WorkplaceCategory.MASTER_CHECK_DAILY.value || this.pk.category == WorkplaceCategory.SCHEDULE_DAILY.value) {
-            extractPeriodList = new ExtractionPeriodDaily();
+            extractPeriod = new ExtractionPeriodDaily(
+                // Start day
+                StartSpecify.DAYS.value == 0 ? kfnmtAssignDayStart.toDomain() : kfnmtAssignDatelineStart.toDomain(),
+                // End day
+                EndSpecify.DAYS.value == 0 ? kfnmtAssignDayEnd.toDomain() : kfnmtAssignDatelineEnd.toDomain()
+            );
         }
 
         List<AlarmCheckConditionCode> checkConList = this.checkConItems.stream().map(c -> new AlarmCheckConditionCode(c.pk.categoryCode))
             .collect(Collectors.toList());
         CheckCondition domain = new CheckCondition(EnumAdaptor.valueOf(this.pk.category, WorkplaceCategory.class),
-            checkConList, extractPeriodList);
+            checkConList, extractPeriod);
         return domain;
     }
 

@@ -53,11 +53,9 @@ public class KfnmtAssignMonthEnd extends UkJpaEntity implements Serializable {
 
     public EndMonth toDomain() {
 
-        EndMonth endMonth = new EndMonth(EnumAdaptor.valueOf(specifyEndMonth, SpecifyEndMonth.class),
-            EnumAdaptor.valueOf(1, ExtractFromStartMonth.class),
+        return new EndMonth(EnumAdaptor.valueOf(specifyEndMonth, SpecifyEndMonth.class),
+            EnumAdaptor.valueOf(1, ExtractFromStartMonth.class), //TODO not exist extractFromStartMonth in entity thì how to map ?
             new MonthNo(EnumAdaptor.valueOf(monthPrevious, PreviousClassification.class),monthNo,curentMonth));
-
-        return endMonth;
 
     }
 

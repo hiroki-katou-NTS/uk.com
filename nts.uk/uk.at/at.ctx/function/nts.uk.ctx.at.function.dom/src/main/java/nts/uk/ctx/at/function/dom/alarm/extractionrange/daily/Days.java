@@ -2,8 +2,6 @@ package nts.uk.ctx.at.function.dom.alarm.extractionrange.daily;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.function.dom.alarmworkplace.EndDate;
-import nts.uk.ctx.at.function.dom.alarmworkplace.StartDate;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification;
 
 /**
@@ -12,7 +10,7 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification;
  */
 @Getter
 @Setter
-public class Days implements EndDate,StartDate {
+public class Days {
 
 	//Previous / previous classification
 	/**前・先区分*/
@@ -30,15 +28,5 @@ public class Days implements EndDate,StartDate {
 		this.dayPrevious = dayPrevious;
 		this.day = new Day(day);
 		this.makeToDay = makeToDay;
-	}
-
-	@Override
-	public EndSpecify getEndSpecify() {
-		return EndSpecify.DAYS;
-	}
-
-	@Override
-	public StartSpecify getStartSpecify() {
-		return StartSpecify.DAYS;
 	}
 }

@@ -5,7 +5,6 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternCode;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternName;
-import nts.uk.ctx.at.function.dom.alarm.AlarmPermissionSetting;
 
 import java.util.ArrayList;
 import java.util.List;

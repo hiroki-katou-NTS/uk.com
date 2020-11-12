@@ -2,25 +2,22 @@ package nts.uk.ctx.at.function.dom.alarmworkplace;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.EndMonth;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.SpecifyEndMonth;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.SpecifyStartMonth;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.StartMonth;
 
 @Getter
 @NoArgsConstructor
 public class ExtractionPeriodMonthly implements RangeToExtract {
 
-    /** 終了月の指定方法 */
-    private SpecifyEndMonth specifyEndMonth;
+    /**開始日*/
+    private StartMonth startMonth;
 
-    /** 終了月の指定方法 */
-    private SpecifyStartMonth specifyStartMonth;
+    /**終了日*/
+    private EndMonth endMonth;
 
-    private ExtractionEndMonth endMonth;
-
-    private ExtractionStartMonth startMonth;
-
-
-    public ExtractionPeriodMonthly(ExtractionEndMonth endMonth, ExtractionStartMonth startMonth) {
+    public ExtractionPeriodMonthly(StartMonth startMonth, EndMonth endMonth) {
         super();
         this.startMonth = startMonth;
         this.endMonth = endMonth;
