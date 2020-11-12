@@ -154,8 +154,6 @@ public class GetSortedListEmployeeQuery {
 				employeeRankRepo, rankRepo, syJobTitleAdapter, syClassificationAdapter, empMedicalWorkStyleHisRepo,
 				nurseClassificationRepo);
 		List<OrderedList> orderedListaa = new ArrayList<>();
-		Optional<SortSetting> sortSetting = sortSettingRepo.get(companyId);
-		if (!sortSetting.isPresent()) {
 			for (EmployeeSwapDto item : selectedEmployeeSwap) {
 				OrderedList data = new OrderedList(EnumAdaptor.valueOf(item.getSortType(), SortType.class),
 						EnumAdaptor.valueOf(item.getSortOrder(), SortOrder.class));
@@ -165,11 +163,6 @@ public class GetSortedListEmployeeQuery {
 			SortSetting sortSettingNew = SortSetting.create(companyId, orderedListaa);
 			listSidEmp = sortSettingNew.sort(requireSortSetting, date, lstEmpId);
 			
-		} else {
-			
-			listSidEmp = sortSetting.get().sort(requireSortSetting, date, lstEmpId);
-
-		}
 		lstEmpBase = syEmployeePub.getByListSid(lstEmpId).stream()
 				.map(x -> new EmployeeBaseDto(x.getSid(), x.getScd(), x.getBussinessName()))
 				.collect(Collectors.toList());

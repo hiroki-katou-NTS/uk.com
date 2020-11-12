@@ -1,19 +1,14 @@
 package nts.uk.ctx.sys.portal.dom.generalsearch.service;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 
-import nts.uk.ctx.sys.portal.dom.adapter.generalsearch.LoginRoleResponsibleAdapter;
+import nts.uk.ctx.sys.portal.dom.adapter.generalsearch.LoginRulerImport;
 
 /**
  * The Interface GeneralSearchHistoryService.
  */
 @Stateless
 public class GeneralSearchHistoryService {
-	
-	/** The adapter. */
-	@Inject
-	private LoginRoleResponsibleAdapter adapter;
 	
 	/**
 	 * Check role search manual.
@@ -23,7 +18,7 @@ public class GeneralSearchHistoryService {
 	 * @param forSystemAdmin the for system admin
 	 * @return true, if successful
 	 */
-	public boolean checkRoleSearchManual(String forCompanyAdmin, String forSystemAdmin) {
+	public boolean checkRoleSearchManual(Require require, String forCompanyAdmin, String forSystemAdmin) {
 		// ログインユーザコンテキスト．権限情報．システム管理者のロールID ≠ null 
 		// OR ログインユーザコンテキスト．権限情報．会社管理者のロールID ≠ null 
 		if (forCompanyAdmin != null || forSystemAdmin != null) {
@@ -31,6 +26,18 @@ public class GeneralSearchHistoryService {
 		}
 		// call：ログイン者が担当者かチェックする＃担当者か ()														
 		// return　担当者かのOUTPUT											
-		return this.adapter.getLoginResponsible().isPersonIncharge();
+		return require.getLoginResponsible().isPersonIncharge();
+	}
+	
+	public static interface Require {
+		
+		/**
+		 * Gets the login responsible.
+		 *	ログイン者のルール担当を取得する
+		 *	ログイン者のロール担当の判断Adapter
+		 *	[1] ログイン者のルール担当
+		 * @return the login responsible
+		 */
+		public LoginRulerImport getLoginResponsible();
 	}
 }

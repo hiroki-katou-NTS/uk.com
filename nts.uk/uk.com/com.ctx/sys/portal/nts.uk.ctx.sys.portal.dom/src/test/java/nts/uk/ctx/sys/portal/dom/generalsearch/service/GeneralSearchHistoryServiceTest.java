@@ -6,13 +6,10 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import mockit.Expectations;
+import lombok.val;
 import mockit.Injectable;
-import mockit.Mocked;
-import mockit.Tested;
 import mockit.integration.junit4.JMockit;
-import nts.uk.ctx.sys.portal.dom.adapter.generalsearch.LoginRoleResponsibleAdapter;
-import nts.uk.ctx.sys.portal.dom.adapter.generalsearch.LoginRulerImport;
+import nts.arc.testing.assertion.NtsAssert;
 
 /**
  * The Class GeneralSearchHistoryServiceTest.
@@ -20,36 +17,68 @@ import nts.uk.ctx.sys.portal.dom.adapter.generalsearch.LoginRulerImport;
  */
 @RunWith(JMockit.class)
 public class GeneralSearchHistoryServiceTest {
-	@Tested
-	private GeneralSearchHistoryService domainService;
-	
 	@Injectable
-	private LoginRoleResponsibleAdapter adapter;
-	
-	@Mocked
-	LoginRulerImport loginRulerImport = LoginRulerImport.builder()
-		.isPayRoll(true)
-		.isEmployee(true)
-		.isHumanResource(true)
-		.build();
-	
-	@Mocked
-	boolean isPersonIncharge = true;
+	private GeneralSearchHistoryService.Require require;
 	
 	@Test
-	public void testGetLoginRuler() {
+	public void testCheckRoleSearchManual_1() {
 		String forCompanyAdmin = "forCompanyAdmin";
 		String forSystemAdmin = "forSystemAdmin";
-		new Expectations() {
-			{
-				adapter.getLoginResponsible().isPersonIncharge();
-				result = false;
+		val domainService = new GeneralSearchHistoryService();
+		val result = (boolean)NtsAssert.Invoke.privateMethod
+				(
+				domainService, 
+				"checkRoleSearchManual", 
+				require,
+				forCompanyAdmin,
+				forSystemAdmin
+				);
+		assertTrue(result);
+	}
 
-			}
-		};
-		assertTrue(domainService.checkRoleSearchManual(forCompanyAdmin, null));
-		assertTrue(domainService.checkRoleSearchManual(null, forSystemAdmin));
-		assertFalse(domainService.checkRoleSearchManual(null, null));
-		assertTrue(domainService.checkRoleSearchManual(forCompanyAdmin, forSystemAdmin));
+	@Test
+	public void testCheckRoleSearchManual_2() {
+		String forCompanyAdmin = null;
+		String forSystemAdmin = "forSystemAdmin";
+		val domainService = new GeneralSearchHistoryService();
+		val result = (boolean)NtsAssert.Invoke.privateMethod
+				(
+						domainService, 
+						"checkRoleSearchManual", 
+						require,
+						forCompanyAdmin,
+						forSystemAdmin
+						);
+		assertTrue(result);
+	}
+
+	@Test
+	public void testCheckRoleSearchManual_3() {
+		val domainService = new GeneralSearchHistoryService();
+		val result2 = (boolean)NtsAssert.Invoke.privateMethod
+				(
+						domainService, 
+						"checkRoleSearchManual", 
+						require,
+						null,
+						null
+						);
+		assertFalse(result2);
+	}
+
+	@Test
+	public void testCheckRoleSearchManual_4() {
+		String forCompanyAdmin = "forCompanyAdmin";
+		String forSystemAdmin = null;
+		val domainService = new GeneralSearchHistoryService();
+		val result = (boolean)NtsAssert.Invoke.privateMethod
+				(
+						domainService, 
+						"checkRoleSearchManual", 
+						require,
+						forCompanyAdmin,
+						forSystemAdmin
+						);
+		assertTrue(result);
 	}
 }
