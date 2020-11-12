@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremaini
 import nts.uk.ctx.at.shared.dom.remainingnumber.holidayover60h.empinfo.grantremainingdata.HolidayOver60hGrantRemainingData;
 
 /**
- * 60H超休付与残数   
+ * 60H超休付与残数
  * @author masaaki_jinno
  *
  */
@@ -17,12 +17,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.holidayover60h.empinfo.grantrema
 @NoArgsConstructor
 public class HolidayOver60hGrantRemaining extends HolidayOver60hGrantRemainingData{
 
-	/** 60H超休不足ダミーフラグ */
-	@Setter
-	private boolean dummyAtr = false;
-	
 	public HolidayOver60hGrantRemaining(HolidayOver60hGrantRemainingData parent){
-		
+
 		this.leaveID = parent.getLeaveID();
 		this.cid = parent.getCid();
 		this.employeeId = parent.getEmployeeId();
@@ -31,11 +27,7 @@ public class HolidayOver60hGrantRemaining extends HolidayOver60hGrantRemainingDa
 		this.expirationStatus = parent.getExpirationStatus();
 		this.registerType = parent.getRegisterType();
 		this.details = parent.getDetails();
-		
-		//this.annualLeaveConditionInfo = parent.getAnnualLeaveConditionInfo();
-		
-		this.dummyAtr = false;
+		this.dummyAtr = parent.isDummyAtr();
 	}
-	
 }
 

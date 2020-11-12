@@ -206,11 +206,11 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 		try {
 			cloned.leaveID = new String(leaveID);
 			cloned.employeeId = new String(employeeId);
-			cloned.grantDate = GeneralDate.localDate(grantDate.localDate());
-			cloned.deadline = GeneralDate.localDate(deadline.localDate());
+			cloned.grantDate = grantDate;
+			cloned.deadline = deadline;
 			cloned.expirationStatus = expirationStatus;
 			cloned.registerType = registerType;
-
+			cloned.details = details.clone();
 		}
 		catch (Exception e){
 			throw new RuntimeException("LeaveGrantRemainingData clone error.");

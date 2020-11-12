@@ -64,7 +64,7 @@ public class LeaveGrantRemaining extends LeaveGrantRemainingData {
 		LeaveGrantRemaining cloned;
 		try {
 			cloned = (LeaveGrantRemaining)super.clone();
-			cloned.dummyAtr = dummyAtr;
+//			cloned.dummyAtr = dummyAtr;
 		}
 		catch (Exception e){
 			throw new RuntimeException("LeaveGrantRemaining clone error.");

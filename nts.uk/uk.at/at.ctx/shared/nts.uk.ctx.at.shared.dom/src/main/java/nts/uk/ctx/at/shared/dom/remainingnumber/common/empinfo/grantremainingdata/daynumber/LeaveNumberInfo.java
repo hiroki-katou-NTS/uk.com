@@ -7,6 +7,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 
 /**
  * 休暇数情報（明細）
@@ -15,7 +16,7 @@ import lombok.Setter;
  */
 @Getter
 @AllArgsConstructor
-public class LeaveNumberInfo {
+public class LeaveNumberInfo implements Cloneable {
 
 	/**
 	 * 付与数
@@ -33,12 +34,12 @@ public class LeaveNumberInfo {
 	 */
 	@Setter
 	protected LeaveRemainingNumber remainingNumber;
-	
+
 	/**
 	 * 使用率
 	 */
 	protected LeaveUsedPercent usedPercent;
-	
+
 	/**
 	 * コンストラクタ
 	 */
@@ -48,35 +49,35 @@ public class LeaveNumberInfo {
 		remainingNumber = new LeaveRemainingNumber();
 		usedPercent = new LeaveUsedPercent(new BigDecimal(0.0));
 	}
-	
+
 	/**
 	 * すべて使用する
 	 */
 	public void digestAll()
 	{
 		// 使用数← 付与数
-		
+
 		// 日数
 		usedNumber.days = new LeaveUsedDayNumber(grantNumber.getDays().v());
-		
+
 		// 時間
 		if ( grantNumber.getMinutes().isPresent() ){
 			usedNumber.setMinutes(Optional.of(new LeaveUsedTime(grantNumber.getMinutes().get().v())));
 		} else {
 			usedNumber.setMinutes(Optional.of(new LeaveUsedTime(0)));
 		}
-		
+
 		// 残数 ← ０
 		remainingNumber.setDays(new LeaveRemainingDayNumber(0.0));
 		remainingNumber.setMinutes(Optional.of(new LeaveRemainingTime(0)));
 	}
-	
+
 	/**
 	 * 残数をセットする
 	 * @param leaveRemainingNumber 休暇残数
 	 */
 	public void setRemainingNumber(LeaveRemainingNumber leaveRemainingNumber){
-		
+
 		// 残数をセット
 		remainingNumber.setDays(new LeaveRemainingDayNumber(leaveRemainingNumber.getDays().v()));
 		if ( leaveRemainingNumber.getMinutes().isPresent() ){
@@ -84,7 +85,7 @@ public class LeaveNumberInfo {
 		} else {
 			remainingNumber.setMinutes(Optional.of(new LeaveRemainingTime(0)));
 		}
-		
+
 		// 使用数をセット（使用数←付与数-残数）
 		usedNumber.days = new LeaveUsedDayNumber(grantNumber.getDays().v() - remainingNumber.getDays().v());
 		if ( grantNumber.getMinutes().isPresent() && remainingNumber.getMinutes().isPresent() ){
@@ -92,7 +93,7 @@ public class LeaveNumberInfo {
 			usedNumber.setMinutes(Optional.of(new LeaveUsedTime(used)));
 		}
 	}
-	
+
 	@Override
 	public LeaveNumberInfo clone() {
 		LeaveNumberInfo cloned = new LeaveNumberInfo();
@@ -108,13 +109,6 @@ public class LeaveNumberInfo {
 		return cloned;
 	}
 
-//	public LeaveNumberInfo(){
-//		this.grantNumber = LeaveGrantNumber.createFromJavaType(0.0, null);
-//		this.usedNumber = LeaveUsedNumber.createFromJavaType(0.0, null, null);
-//		this.remainingNumber = LeaveRemainingNumber.createFromJavaType(0.0, null);
-//		this.usedPercent = new LeaveUsedPercent(new BigDecimal(0));
-//	}
-	
 	public LeaveNumberInfo(
 			double grantDays, Integer grantMinutes, double usedDays, Integer usedMinutes,
 			Double stowageDays, double remainDays, Integer remainMinutes, double usedPercent) {

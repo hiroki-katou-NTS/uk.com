@@ -13,12 +13,17 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremain
  */
 @AllArgsConstructor
 public class LeaveOverNumber {
-	
-	// 日数
+
+	/**
+	 * 日数
+	 */
 	public DayNumberOver numberOverDays;
-	// 時間
+
+	/**
+	 * 時間
+	 */
 	public Optional<TimeOver> timeOver;
-	
+
 	public LeaveOverNumber(Double days, Integer minutes) {
 		this.numberOverDays = new DayNumberOver(days == null? 0.0d: days.doubleValue());
 		this.timeOver = minutes != null ? Optional.of(new TimeOver(minutes)) : Optional.empty();
@@ -27,10 +32,10 @@ public class LeaveOverNumber {
 	public static LeaveOverNumber createFromJavaType(Double days, Integer minutes) {
 		return new LeaveOverNumber(days, minutes);
 	}
-	
+
 	@Override
 	public LeaveOverNumber clone() {
-		
+
 		LeaveOverNumber cloned;
 		try {
 			cloned = new LeaveOverNumber(
