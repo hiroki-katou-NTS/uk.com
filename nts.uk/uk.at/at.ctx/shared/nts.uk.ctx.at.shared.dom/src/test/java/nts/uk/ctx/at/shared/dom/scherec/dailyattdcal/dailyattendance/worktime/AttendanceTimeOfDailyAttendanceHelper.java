@@ -28,8 +28,12 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.Time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculationMinusExist;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.EngravingMethod;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayMidnightWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkFrameTime;
@@ -57,6 +61,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedul
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.IntervalExemptionTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.WithinOutingTotalTime;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
+import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHdFrameNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 public class AttendanceTimeOfDailyAttendanceHelper {
@@ -156,7 +161,14 @@ public class AttendanceTimeOfDailyAttendanceHelper {
 		List<LateTimeOfDaily> lateTimes = Arrays.asList(new LateTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(120)), 
 				  TimeWithCalculation.sameTime(new AttendanceTime(120)), 
 				  new WorkNo(0), 
-				  new TimevacationUseTimeOfDaily(new AttendanceTime(480), new AttendanceTime(480), new AttendanceTime(480), new AttendanceTime(480)), 
+				  new TimevacationUseTimeOfDaily(
+						  new AttendanceTime(480)
+						  , new AttendanceTime(480)
+						  , new AttendanceTime(480)
+						  , new AttendanceTime(480)
+						  , Optional.of(new SpecialHdFrameNo(1))
+						  , new AttendanceTime(480)
+						  , new AttendanceTime(480)), 
 				  IntervalExemptionTime.defaultValue()));
 		
 		return new TotalWorkingTime(new AttendanceTime(0),
@@ -305,7 +317,14 @@ public class AttendanceTimeOfDailyAttendanceHelper {
 		List<LeaveEarlyTimeOfDaily> leaveEarlyTimes = Arrays.asList(new LeaveEarlyTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(120)), 
 					TimeWithCalculation.sameTime(new AttendanceTime(120)), 
 					new WorkNo(0), 
-					new TimevacationUseTimeOfDaily(new AttendanceTime(480), new AttendanceTime(480), new AttendanceTime(480), new AttendanceTime(480)), 
+					new TimevacationUseTimeOfDaily(
+							new AttendanceTime(480)
+							, new AttendanceTime(480)
+							, new AttendanceTime(480)
+							, new AttendanceTime(480)
+							, Optional.of(new SpecialHdFrameNo(1))
+							, new AttendanceTime(480)
+							, new AttendanceTime(480)), 
 					IntervalExemptionTime.defaultValue()));
 		
 		return new TotalWorkingTime(new AttendanceTime(0),
@@ -425,15 +444,25 @@ public class AttendanceTimeOfDailyAttendanceHelper {
 			lstHolidayWorkFrameTime.add(frameTime);
 		}
 		
-		val actualStamp = new WorkStamp(new TimeWithDayAttr(510),new TimeWithDayAttr(510),new WorkLocationCD("code"), null, null);
-		val stamp = new WorkStamp(new TimeWithDayAttr(1050),new TimeWithDayAttr(3600),new WorkLocationCD("code"), null, null);
+		val reasonTimeChange = new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, EngravingMethod.WEB_STAMP_INPUT);
+		val workTimeInformation = new WorkTimeInformation(reasonTimeChange, new TimeWithDayAttr(510));
+		
+		val actualStamp = new WorkStamp(workTimeInformation, Optional.of(new WorkLocationCD("code")));
+		val stamp = new WorkStamp(workTimeInformation, Optional.of(new WorkLocationCD("code")));
 		val goOut = new TimeActualStamp(actualStamp, stamp,10);
 		val comeBack = new TimeActualStamp(actualStamp, stamp,10);
 		
 		List<OutingTimeOfDaily> outTimes = Arrays.asList(new OutingTimeOfDaily(
 				  new BreakTimeGoOutTimes(120)
 				, GoingOutReason.UNION
-				, new TimevacationUseTimeOfDaily(new AttendanceTime(480), new AttendanceTime(480), new AttendanceTime(480), new AttendanceTime(480))
+				, new TimevacationUseTimeOfDaily(
+						new AttendanceTime(480)
+						, new AttendanceTime(480)
+						, new AttendanceTime(480)
+						, new AttendanceTime(480)
+						, Optional.of(new SpecialHdFrameNo(1))
+						, new AttendanceTime(480)
+						, new AttendanceTime(480))
 				, OutingTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(120))
 						, WithinOutingTotalTime.sameTime(TimeWithCalculation.sameTime(new AttendanceTime(120)))
 						, TimeWithCalculation.sameTime(new AttendanceTime(120)))

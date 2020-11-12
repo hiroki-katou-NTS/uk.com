@@ -25,14 +25,19 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.EngravingMethod;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedule.WorkScheduleTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.IntervalExemptionTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.WithinOutingTotalTime;
+import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHdFrameNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 /**
  * Unit Test: 日別勤怠の勤怠時間 
@@ -72,8 +77,15 @@ public class AttendanceTimeOfDailyAttendanceTest {
 		val lateTime = new LateTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(120)), 
 				  TimeWithCalculation.sameTime(new AttendanceTime(120)), 
 				  new WorkNo(0), 
-				  new TimevacationUseTimeOfDaily(new AttendanceTime(480), new AttendanceTime(480), new AttendanceTime(480), new AttendanceTime(480)), 
-				  IntervalExemptionTime.defaultValue());
+				  new TimevacationUseTimeOfDaily(
+						  new AttendanceTime(480)
+						  , new AttendanceTime(480)
+						  , new AttendanceTime(480)
+						  , new AttendanceTime(480)
+						  , Optional.of(new SpecialHdFrameNo(1))
+						  , new AttendanceTime(480)
+						  , new AttendanceTime(480))
+				  , IntervalExemptionTime.defaultValue());
 		
 		val attTimeDaily = new AttendanceTimeOfDailyAttendance(WorkScheduleTimeOfDaily.defaultValue()
 				, ActualWorkingTimeOfDaily.of(AttendanceTimeOfDailyAttendanceHelper.createLateTime(Arrays.asList(lateTime)), 0, 0, 0, 0)
@@ -91,6 +103,9 @@ public class AttendanceTimeOfDailyAttendanceTest {
 				, d -> d.getTimePaidUseTime().getTimeCompensatoryLeaveUseTime()
 				, d -> d.getTimePaidUseTime().getSixtyHourExcessHolidayUseTime()
 				, d -> d.getTimePaidUseTime().getTimeSpecialHolidayUseTime()
+				, d -> d.getTimePaidUseTime().getSpecialHolidayFrameNo()
+				, d -> d.getTimePaidUseTime().getTimeChildCareHolidayUseTime()
+				, d -> d.getTimePaidUseTime().getTimeCareHolidayUseTime()
 				, d -> d.getExemptionTime().getExemptionTime()
 				,d -> d.getWorkNo())
 		.containsExactly(
@@ -102,6 +117,9 @@ public class AttendanceTimeOfDailyAttendanceTest {
 					  , lateTime.getTimePaidUseTime().getTimeCompensatoryLeaveUseTime()
 					  , lateTime.getTimePaidUseTime().getSixtyHourExcessHolidayUseTime()
 					  , lateTime.getTimePaidUseTime().getTimeSpecialHolidayUseTime()
+					  , lateTime.getTimePaidUseTime().getSpecialHolidayFrameNo()
+					  , lateTime.getTimePaidUseTime().getTimeChildCareHolidayUseTime()
+					  , lateTime.getTimePaidUseTime().getTimeCareHolidayUseTime()
 					  , lateTime.getExemptionTime().getExemptionTime()
 					  , lateTime.getWorkNo())
 				);
@@ -131,11 +149,19 @@ public class AttendanceTimeOfDailyAttendanceTest {
 	
 	@Test
 	public void getEarlyTime_not_empty() {
-		val leaveEarlyTime = new LeaveEarlyTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(120)), 
-				TimeWithCalculation.sameTime(new AttendanceTime(120)), 
-				new WorkNo(0), 
-				new TimevacationUseTimeOfDaily(new AttendanceTime(480), new AttendanceTime(480), new AttendanceTime(480), new AttendanceTime(480)), 
-				IntervalExemptionTime.defaultValue());
+		val leaveEarlyTime = new LeaveEarlyTimeOfDaily(
+				TimeWithCalculation.sameTime(new AttendanceTime(120))
+				, TimeWithCalculation.sameTime(new AttendanceTime(120))
+				, new WorkNo(0)
+				, new TimevacationUseTimeOfDaily(
+						new AttendanceTime(480)
+						, new AttendanceTime(480)
+						, new AttendanceTime(480)
+						, new AttendanceTime(480)
+						, Optional.of(new SpecialHdFrameNo(1))
+						, new AttendanceTime(480)
+						, new AttendanceTime(480))
+				, IntervalExemptionTime.defaultValue());
 		
 		val attTimeDaily = new AttendanceTimeOfDailyAttendance(WorkScheduleTimeOfDaily.defaultValue()
 				, ActualWorkingTimeOfDaily.of(AttendanceTimeOfDailyAttendanceHelper.createEarlyTime(Arrays.asList(leaveEarlyTime)), 0, 0, 0, 0)
@@ -153,8 +179,11 @@ public class AttendanceTimeOfDailyAttendanceTest {
 					, d -> d.getTimePaidUseTime().getTimeCompensatoryLeaveUseTime()
 					, d -> d.getTimePaidUseTime().getSixtyHourExcessHolidayUseTime()
 					, d -> d.getTimePaidUseTime().getTimeSpecialHolidayUseTime()
+					, d -> d.getTimePaidUseTime().getSpecialHolidayFrameNo()
+					, d -> d.getTimePaidUseTime().getTimeChildCareHolidayUseTime()
+					, d -> d.getTimePaidUseTime().getTimeCareHolidayUseTime()
 					, d -> d.getIntervalTime().getExemptionTime()
-					,d -> d.getWorkNo())
+					, d -> d.getWorkNo())
 		.containsExactly(
 				Tuple.tuple(
 						leaveEarlyTime.getLeaveEarlyTime().getTime() 
@@ -165,6 +194,9 @@ public class AttendanceTimeOfDailyAttendanceTest {
 					  , leaveEarlyTime.getTimePaidUseTime().getTimeCompensatoryLeaveUseTime()
 					  , leaveEarlyTime.getTimePaidUseTime().getSixtyHourExcessHolidayUseTime()
 					  , leaveEarlyTime.getTimePaidUseTime().getTimeSpecialHolidayUseTime()
+					  , leaveEarlyTime.getTimePaidUseTime().getSpecialHolidayFrameNo()
+					  , leaveEarlyTime.getTimePaidUseTime().getTimeChildCareHolidayUseTime()
+					  , leaveEarlyTime.getTimePaidUseTime().getTimeCareHolidayUseTime()
 					  , leaveEarlyTime.getIntervalTime().getExemptionTime()
 					  , leaveEarlyTime.getWorkNo())
 				);
@@ -191,14 +223,25 @@ public class AttendanceTimeOfDailyAttendanceTest {
 	
 	@Test
 	public void getOutingTime_not_empty() {
-		val actualStamp = new WorkStamp(new TimeWithDayAttr(510),new TimeWithDayAttr(510),new WorkLocationCD("code"), null, null);
-		val stamp = new WorkStamp(new TimeWithDayAttr(1050),new TimeWithDayAttr(3600),new WorkLocationCD("code"), null, null);
-		val goOut = new TimeActualStamp(actualStamp, stamp,10);
-		val comeBack = new TimeActualStamp(actualStamp, stamp,10);
+		val reasonTimeChange = new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, EngravingMethod.WEB_STAMP_INPUT);
+		val workTimeInformation = new WorkTimeInformation(reasonTimeChange, new TimeWithDayAttr(510));
+		
+		val actualStamp = new WorkStamp(workTimeInformation, Optional.of(new WorkLocationCD("code")));
+		val stamp = new WorkStamp(workTimeInformation, Optional.of(new WorkLocationCD("code")));
+		
+		val goOut = new TimeActualStamp(actualStamp, stamp, 10);
+		val comeBack = new TimeActualStamp(actualStamp, stamp, 10);
 		val outTime = new OutingTimeOfDaily(
 				  new BreakTimeGoOutTimes(120)
 				, GoingOutReason.UNION
-				, new TimevacationUseTimeOfDaily(new AttendanceTime(480), new AttendanceTime(480), new AttendanceTime(480), new AttendanceTime(480))
+				, new TimevacationUseTimeOfDaily(
+						new AttendanceTime(480)
+						, new AttendanceTime(480)
+						, new AttendanceTime(480)
+						, new AttendanceTime(480)
+						, Optional.of(new SpecialHdFrameNo(1))
+						, new AttendanceTime(480)
+						, new AttendanceTime(480))
 				, OutingTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(120))
 						, WithinOutingTotalTime.sameTime(TimeWithCalculation.sameTime(new AttendanceTime(120)))
 						, TimeWithCalculation.sameTime(new AttendanceTime(120)))
@@ -231,6 +274,9 @@ public class AttendanceTimeOfDailyAttendanceTest {
 					, d -> d.getTimeVacationUseOfDaily().getSixtyHourExcessHolidayUseTime()
 					, d -> d.getTimeVacationUseOfDaily().getTimeCompensatoryLeaveUseTime()
 					, d -> d.getTimeVacationUseOfDaily().getTimeSpecialHolidayUseTime()
+					, d -> d.getTimeVacationUseOfDaily().getSpecialHolidayFrameNo()
+					, d -> d.getTimeVacationUseOfDaily().getTimeChildCareHolidayUseTime()
+					, d -> d.getTimeVacationUseOfDaily().getTimeCareHolidayUseTime()
 					, d -> d.getRecordTotalTime().getTotalTime()
 					, d -> d.getRecordTotalTime().getWithinTotalTime()
 					, d -> d.getRecordTotalTime().getExcessTotalTime()
@@ -240,12 +286,15 @@ public class AttendanceTimeOfDailyAttendanceTest {
 					)
 		.containsExactly(
 			Tuple.tuple(
-					  outTime.getWorkTime()
+					outTime.getWorkTime()
 					, outTime.getReason()
 					, outTime.getTimeVacationUseOfDaily().getTimeAnnualLeaveUseTime()
 					, outTime.getTimeVacationUseOfDaily().getSixtyHourExcessHolidayUseTime()
 					, outTime.getTimeVacationUseOfDaily().getTimeCompensatoryLeaveUseTime()
 					, outTime.getTimeVacationUseOfDaily().getTimeSpecialHolidayUseTime()
+					, outTime.getTimeVacationUseOfDaily().getSpecialHolidayFrameNo()
+					, outTime.getTimeVacationUseOfDaily().getTimeChildCareHolidayUseTime()
+					, outTime.getTimeVacationUseOfDaily().getTimeCareHolidayUseTime()
 					, outTime.getRecordTotalTime().getTotalTime()
 					, outTime.getRecordTotalTime().getWithinTotalTime()
 					, outTime.getRecordTotalTime().getExcessTotalTime()
