@@ -62,7 +62,7 @@ public class AlarmExtractionDto {
 			return null;
 		}
 		AlarmExtractionDto dto = new AlarmExtractionDto();
-		dto.alarmAtr = domain.isAlarmAtr();
+		dto.alarmAtr = domain.getAlarmAtr().value == 1;
 		dto.alarmCode = domain.getAlarmCode().map(AlarmPatternCode::v).orElse(null);
 		dto.mailPrincipal = domain.getMailPrincipal().orElse(null);
 		dto.mailAdministrator = domain.getMailAdministrator().orElse(null);

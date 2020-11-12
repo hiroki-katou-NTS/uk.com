@@ -17,7 +17,6 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @Data
 @Builder
 @NoArgsConstructor
-@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class ProcessExecutionSetting extends DomainObject {
 
@@ -61,7 +60,7 @@ public class ProcessExecutionSetting extends DomainObject {
 	 * The Approval route update monthly.<br>
 	 * 承認ルート更新（月次）
 	 */
-	private NotUseAtr appRouteUpdateMonthly;
+	private AppRouteUpdateMonthly appRouteUpdateMonthly;
 
 	/**
 	 * The Delete data.<br>
@@ -122,7 +121,7 @@ public class ProcessExecutionSetting extends DomainObject {
 								   ReflectionApprovalResult reflectAppResult,
 								   MonthlyAggregate monthlyAggregate,
 								   AppRouteUpdateDaily appRouteUpdateDaily,
-								   int appRouteUpdateMonthly,
+								   AppRouteUpdateMonthly appRouteUpdateMonthly,
 								   DeleteData deleteData,
 								   SaveData saveData,
 								   ExternalAcceptance externalAcceptance,
@@ -135,7 +134,7 @@ public class ProcessExecutionSetting extends DomainObject {
 		this.reflectAppResult = reflectAppResult;
 		this.monthlyAggregate = monthlyAggregate;
 		this.appRouteUpdateDaily = appRouteUpdateDaily;
-		this.appRouteUpdateMonthly = EnumAdaptor.valueOf(appRouteUpdateMonthly, NotUseAtr.class);
+		this.appRouteUpdateMonthly = appRouteUpdateMonthly;
 		this.deleteData = deleteData;
 		this.saveData = saveData;
 		this.externalAcceptance = externalAcceptance;

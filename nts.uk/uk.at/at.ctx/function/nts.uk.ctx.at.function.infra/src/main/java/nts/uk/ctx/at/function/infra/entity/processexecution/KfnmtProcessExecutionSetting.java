@@ -407,7 +407,7 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 		entity.createNewEmpApp = domain.getAppRouteUpdateDaily().getCreateNewEmpApp()
 																.map(createNewEmpApp -> createNewEmpApp.value)
 																.orElse(null);
-		entity.appRouteUpdateAtrMon = domain.getAppRouteUpdateMonthly().value;
+		entity.appRouteUpdateAtrMon = domain.getAppRouteUpdateMonthly().getAppRouteUpdateAtr().value;
 		entity.alarmAtr = domain.getAlarmExtraction().getAlarmAtr().value;
 		entity.alarmCode = domain.getAlarmExtraction().getAlarmCode()
 													  .map(AlarmPatternCode::v)
@@ -481,7 +481,7 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 		// Sets approval route update daily
 		domain.setAppRouteUpdateDaily(new AppRouteUpdateDaily(this.appRouteUpdateAtr, this.createNewEmpApp));
 		// Sets approval route update monthly
-		domain.setAppRouteUpdateMonthly(EnumAdaptor.valueOf(this.appRouteUpdateAtrMon, NotUseAtr.class));
+		domain.setAppRouteUpdateMonthly(new AppRouteUpdateMonthly(this.appRouteUpdateAtrMon));
 		// Sets delete data
 		domain.setDeleteData(new DeleteData(this.dataDeletionArt, this.dataDeletionCode));
 		// Sets save data

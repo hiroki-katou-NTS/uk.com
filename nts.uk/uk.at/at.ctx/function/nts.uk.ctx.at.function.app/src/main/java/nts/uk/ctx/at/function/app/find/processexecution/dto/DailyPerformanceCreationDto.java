@@ -47,7 +47,7 @@ public class DailyPerformanceCreationDto {
 			return null;
 		}
 		DailyPerformanceCreationDto dto = new DailyPerformanceCreationDto();
-		dto.dailyPerfCls = domain.isDailyPerfCls();
+		dto.dailyPerfCls = domain.getDailyPerfCls().value == 1;
 		dto.dailyPerfItem = domain.getDailyPerfItem().value;
 		dto.targetGroupClassification = domain.getTargetGroupClassification();
 		return dto;
