@@ -28,7 +28,8 @@ public class EmpInfoTerminalComStatusPubImpl implements EmpInfoTerminalComStatus
 
 	@Override
 	public Optional<EmpInfoTerminalComStatusExport> get(String contractCode, int empInfoTerCode) {
-		return Optional.of(convertToExport(repository.get(new ContractCode(contractCode), new EmpInfoTerminalCode(empInfoTerCode)).get()));
+		Optional<EmpInfoTerminalComStatus> statusOpt = repository.get(new ContractCode(contractCode), new EmpInfoTerminalCode(empInfoTerCode));
+		return statusOpt.map(s -> convertToExport(s));
 	}
 	
 	@Override

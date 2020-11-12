@@ -124,6 +124,7 @@ module nts.uk.at.view.knr001.a {
                         self.empInfoTerminalModel().isEnableCode(false);              
                     }else{
                         self.createNewMode();
+                        self.isUpdateMode(false);
                     }
                 });
             }
@@ -186,7 +187,8 @@ module nts.uk.at.view.knr001.a {
                             });   
                         });
                     }).fail(error => {
-                        $('#A3_2').ntsError('set', {messageId: error.messageId});  
+                        $('#A3_2').ntsError('set', {messageId: error.messageId}); 
+                        console.log(error); 
                     }).always(()=>{
                         blockUI.clear();    
                     });
@@ -206,7 +208,7 @@ module nts.uk.at.view.knr001.a {
                             });   
                         });
                     }).fail(error => {
-                        $('#A1_2').ntsError('set', {messageId: error.messageId});
+                        $('#A3_8').ntsError('set', {messageId: error.messageId});
                     }).always(()=>{
                         blockUI.clear();    
                     });
@@ -219,52 +221,59 @@ module nts.uk.at.view.knr001.a {
              */
             private removeEmpInfoTerminal(): void{
                 let self = this;
+                console.log("Delete");
+                var delCode = self.empInfoTerminalModel().empInfoTerCode();
                 if(self.hasError()){
                     return;
                 }
-                dialog.confirm({messageId:"Msg_18"}).ifYes(()=>{
-                    var delCode = self.empInfoTerminalModel().empInfoTerCode();
-                    var index = self.empInfoTerminalList().indexOf(self.empInfoTerminalList().find(empInfoTer => delCode == empInfoTer.empInfoTerCode));
-                    let command = {
-                        empInfoTerCode: delCode
-                    };
-                    blockUI.invisible();
-                    service.removeEmpInfoTer(command).done(()=>{
-                        dialog.info({messageId:"Msg_16"}).then(() => {
-                            //reload
-                            blockUI.invisible();
-                            service.getAll().done((data)=>{
-                                if(data.length <= 0){
-                                    self.empInfoTerminalList([]);
-                                    self.clearErrors();
-                                    self.createNewMode();
-                                    blockUI.clear();
-                                } else {
-                                    self.isUpdateMode(true);
-                                    self.enableBtnDelete(true);
-                                    self.empInfoTerminalList(data);
-                                    let length = data.length;
-                                    if(index === 0){
-                                        self.selectedCode(self.empInfoTerminalList()[0].empInfoTerCode);
-                                    } else if (index === length){
-                                        self.selectedCode(self.empInfoTerminalList()[index-1].empInfoTerCode);
-                                    }else{
-                                        self.selectedCode(self.empInfoTerminalList()[index].empInfoTerCode);
-                                    }
-                                    self.loadEmpInfoTerminal(self.selectedCode());
-                                }
-                            });   
+                
+                dialog.confirm({messageId:"Msg_18"})
+                    .ifYes(() => {
+                        var index = self.empInfoTerminalList().indexOf(self.empInfoTerminalList().find(empInfoTer => delCode == empInfoTer.empInfoTerCode));
+                        let command = {
+                            empInfoTerCode: delCode
+                        };
+                        
+                        blockUI.invisible();
+                        service.removeEmpInfoTer(command).done(()=>{
+                            dialog.info({messageId:"Msg_16"}).then(() => {
+                                self.reloadData(index);
+                            });
+                        }).fail((res)=>{
+                            nts.uk.ui.dialog.info(res.message).then(()=>{
+                                self.reloadData(0);
+                            });
                         });
-                        blockUI.clear();
-                    }).fail((res)=>{
-                        nts.uk.ui.alertError(res.message).then(()=>{
-                            blockUI.clear();
-                        });
-                    });
                     }).ifNo(function(){
                         blockUI.clear();
                         $('#A3_4').focus();      
-                });
+                    });
+            }
+
+            private reloadData(index: number) {
+                let self = this;
+                service.getAll().done((data)=>{
+                    if(data.length <= 0){
+                        self.empInfoTerminalList([]);
+                        self.clearErrors();
+                        self.createNewMode();
+                    } else {
+                        self.isUpdateMode(true);
+                        self.enableBtnDelete(true);
+                        self.empInfoTerminalList(data);
+                        let length = data.length;
+                        if(index === 0){
+                            self.selectedCode(self.empInfoTerminalList()[0].empInfoTerCode);
+                        } else if (index === length){
+                            self.selectedCode(self.empInfoTerminalList()[index-1].empInfoTerCode);
+                        }else{
+                            self.selectedCode(self.empInfoTerminalList()[index].empInfoTerCode);
+                        }
+                        self.loadEmpInfoTerminal(self.selectedCode());
+                    }
+
+                    blockUI.clear();
+                }); 
             }
              /**
              * export Excel

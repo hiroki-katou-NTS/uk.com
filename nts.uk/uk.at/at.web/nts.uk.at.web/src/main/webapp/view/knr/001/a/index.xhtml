@@ -12,6 +12,7 @@
 					nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalName
 					nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.MacAddress
 					nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.IPAddress
+					nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.PartialIpAddress
 					nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerSerialNo
 					nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.MonitorIntervalTime
 					nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerMemo
@@ -144,34 +145,38 @@
 					<!-- row5: A4_1 + A4_2 + A4_3 + A4_4 + A4_5 + A4_6 + A4_7 + A4_8 -->
 					<div class="div_line">
 						<div class="ilb w_label" style=""
-							data-bind="ntsFormLabel: {required: false, constraint:'IPAddress'}">#{i18n.getText('KNR001_30')}</div>
+							data-bind="ntsFormLabel: {required: false, constraint:'PartialIpAddress'}">#{i18n.getText('KNR001_30')}</div>
 						<div class="ml-15 ilb va_t">
 							<input class="h_input" style="width: 25px" id="IP1"
-								data-bind="ntsTextEditor: {
+								data-bind="ntsNumberEditor: {
 															value: ipAddress1,
-															name: '#[KNR001_31]',													
+															name: '#[KNR001_31]',
+															constraint: 'PartialIpAddress',
 															required:false,
 															enable: true }" />
 
 							<span class="label" style="width: 1px;">#{i18n.getText('KNR001_35')}</span>
 							<input class="h_input" style="width: 25px" id="IP2"
-								data-bind="ntsTextEditor: {
+								data-bind="ntsNumberEditor: {
 															value: ipAddress2,
 															name: '#[KNR001_32]',
+															constraint: 'PartialIpAddress',
 															required:false,
 															enable: true }" />
 							<span class="label" style="width: 1px;">#{i18n.getText('KNR001_35')}</span>
 							<input class="h_input" style="width: 25px" id="IP3"
-								data-bind="ntsTextEditor: {
+								data-bind="ntsNumberEditor: {
 															value: ipAddress3,
 															name: '#[KNR001_33]',
+															constraint: 'PartialIpAddress',
 															required:false,
 															enable: true }" />
 							<span class="label" style="width: 1px;">#{i18n.getText('KNR001_35')}</span>
 							<input class="h_input" style="width: 25px" id="IP4"
-								data-bind="ntsTextEditor: {
+								data-bind="ntsNumberEditor: {
 															value: ipAddress4,
 															name: '#[KNR001_34]',
+															constraint: 'PartialIpAddress',
 															required:false,
 															enable: true }" />
 
