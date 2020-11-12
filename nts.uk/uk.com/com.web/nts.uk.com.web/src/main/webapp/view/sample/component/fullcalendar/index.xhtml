@@ -15,7 +15,7 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button data-bind="click: $vm.changeVisible">Change view</button>
+				<button data-bind="click: $vm.changeVisible, timeClick: -1">Change view</button>
 			</div>
 			<div id="contents-area" data-bind="if: $vm.show">
                 <div data-bind="nts-fullcalendar: {}"></div>

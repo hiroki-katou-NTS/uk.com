@@ -1,48 +1,97 @@
 /// <reference path="../../generic.d.ts/fullcalendar/index.d.ts" />
 
 module nts.uk.ui.koExtentions {
+    const E_COMP_NAME = 'fc-editor';
     const COMPONENT_NAME = 'nts-fullcalendar';
     const DEFAULT_STYLES = `
-        .fc .fc-toolbar.fc-header-toolbar {
+        .fc-container {
+            position: relative;
+            overflow: hidden;
+        }
+        .fc-container .fc-toolbar.fc-header-toolbar {
             margin-bottom: 10px;
         }
-        .fc .fc-timegrid thead>tr>td td:first-child {
+        .fc-container .fc-timegrid thead>tr>td td:first-child {
             font-size: 11px;
             vertical-align: middle;
         }
-        .fc .fc-timegrid thead>tr>td td:first-child,
-        .fc .fc-timegrid thead>tr>td tr:last-child td {
+        .fc-container .fc-timegrid thead>tr>td td:first-child,
+        .fc-container .fc-timegrid thead>tr>td tr:last-child td {
             text-align: center;
         }
-        .fc .fc-timegrid thead>tr>td {
+        .fc-container .fc-timegrid thead>tr>td {
             border-bottom: 3px solid #ddd;
         }
-        .fc .fc-timegrid thead td .fc-scroller {
+        .fc-container .fc-timegrid-body {
+            -webkit-touch-callout: none; /* iOS Safari */
+            -webkit-user-select: none; /* Safari */
+            -khtml-user-select: none; /* Konqueror HTML */
+            -moz-user-select: none; /* Old versions of Firefox */
+            -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                        supported by Chrome, Edge, Opera and Firefox */
+        }
+        .fc-container .fc-timegrid thead td .fc-scroller {
             overflow: hidden !important;
         }
-        .fc .fc-scrollgrid table {
+        .fc-container .fc-scrollgrid table {
             border-right-style: solid;
             border-bottom-style: hidden;
         }
-        .fc .fc-button-group button:not(:last-child) {
+        .fc-container .fc-button-group button:not(:last-child) {
             border-top-right-radius: 0px;
             border-bottom-right-radius: 0px;
         }
-        .fc .fc-button-group button:not(:first-child) {
+        .fc-container .fc-button-group button:not(:first-child) {
             margin-left: -1px;
             border-top-left-radius: 0px;
             border-bottom-left-radius: 0px;
         }
-        .fc .fc-day-today {
+        .fc-container .fc-day-today {
             background-color: #fffadf;
         }
-        .fc .fc-event-note.no-data {
+        .fc-container .fc-event-note.no-data {
             background-color: #f3f3f3;
         }
-        .fc .fc-event-note>div {
+        .fc-container .fc-event-note>div {
             padding: 2px;
             min-height: 60px;
             overflow: hidden;
+        }
+        .fc-container .fc-popup-editor {
+            position: fixed;
+            border-radius: 3px;
+            -webkit-box-shadow: 1px 1px 5px 2px #888;
+            box-shadow: 1px 1px 5px 2px #888;
+            width: 0px;
+            height: 0px;
+            background-color: #fff;
+            z-index: 99;
+            visibility: hidden;
+            -webkit-transition: opacity 200ms ease-in-out;
+            transition: opacity 200ms ease-in-out;
+            opacity: 0;
+            box-sizing: border-box;
+        }
+        .fc-container .fc-popup-editor.show {
+            overflow: hidden;
+            visibility: visible;
+            width: 250px;
+            height: 270px;
+            padding: 10px;
+            opacity: 1;
+        }
+        .fc-container .fc-popup-editor .toolbar {
+            text-align: right;
+        }
+        .fc-container .fc-popup-editor .toolbar svg {
+            fill: #5f6368;
+        }
+        .fc-container .fc-popup-editor .toolbar svg:last-child {
+            margin-left: 10px;
+        }
+        .fc-container .fc-popup-editor .toolbar svg:not(:last-child) {
+            margin-right: 10px;
         }`;
 
     @component({
@@ -101,21 +150,38 @@ module nts.uk.ui.koExtentions {
 
             ko.applyBindingsToNode(element, { component }, bindingContext);
 
+            element.classList.add('fc-container');
             element.removeAttribute('data-bind');
 
             return { controlsDescendantBindings: true };
         }
     }
 
+    type D_EVENT = {
+        alt: boolean;
+        ctrl: boolean;
+        shift: boolean;
+        popup: boolean;
+        [key: string]: any;
+    };
     type J_EVENT = (evt: JQueryEventObject) => void;
     type G_EVENT = { [key: string]: J_EVENT[]; };
 
     @component({
         name: COMPONENT_NAME,
-        template: `<div></div><style>${DEFAULT_STYLES}</style><style></style>`
+        template: `<div class="fc"></div>
+        <div class="fc-popup-editor"></div>
+        <style>${DEFAULT_STYLES}</style>
+        <style></style>`
     })
     export class FullCalendarComponent extends ko.ViewModel {
         events: G_EVENT = {};
+        dataEvent: D_EVENT = {
+            alt: false,
+            ctrl: false,
+            shift: false,
+            popup: false
+        };
 
         created() {
 
@@ -124,15 +190,38 @@ module nts.uk.ui.koExtentions {
         mounted() {
             const vm = this;
             const $el = $(vm.$el);
+            const $fc = $el.find('div.fc').get(0);
+            const $ed = $el.find('div.fc-popup-editor').get(0);
             const FC: FullCalendar = _.get(window, 'FullCalendar') || null;
 
+            const hideEditor = (target?: Element) => {
+                const $target = $(target);
+
+                if (!$target.is($ed) && !$(target).closest('.fc-popup-editor.show').length) {
+                    $ed.style.top = null;
+                    $ed.style.left = null;
+
+                    $ed.classList.remove('show');
+                }
+
+                vm.dataEvent.popup = false;
+            };
+
             if (!FC || !FC.Calendar) {
-                $el.html(`<pre>${_.escape('Please add 2 tag at below to htmlHead ui defined:\n<com:stylefile set="FULLCALENDAR" />\n<com:scriptfile set="FULLCALENDAR" />')}</pre>`);
+                const pre = document.createElement('pre');
+
+                ko.applyBindingsToNode(pre, {
+                    prettify: 'xml',
+                    code: `<com:stylefile set="FULLCALENDAR" />\n<com:scriptfile set="FULLCALENDAR" />`
+                });
+
+                $el.append('Please add 2 tag at below to htmlHead ui defined:');
+                $el.append(pre);
 
                 return;
             }
 
-            const calendar = new FC.Calendar($el.find('div').get(0), {
+            const calendar = new FC.Calendar($fc, {
                 customButtons: {
                     copyDay: {
                         text: '1日分コピー',
@@ -144,8 +233,6 @@ module nts.uk.ui.koExtentions {
                 height: 'auto',
                 locale: 'ja',
                 expandRows: true,
-                // slotMinTime: '08:00',
-                // slotMaxTime: '20:00',
                 headerToolbar: {
                     left: 'today prev,next',
                     center: 'title',
@@ -153,39 +240,72 @@ module nts.uk.ui.koExtentions {
                 },
                 themeSystem: 'default',
                 initialView: 'timeGridWeek',
-                initialDate: '2020-09-12',
+                // initialDate: '2020-09-12',
                 navLinks: true, // can click day/week names to navigate views
                 editable: true,
-                selectable: true,
+                selectable: false,
+                selectMirror: true,
                 nowIndicator: true,
                 dayMaxEvents: true, // allow "more" link when too many events
                 scrollTime: '07:00:00',
-                allDaySlot: false,
-                allDayContent: 'abc',
                 dayHeaders: true,
+                allDaySlot: false,
                 // weekends: false,
                 // hiddenDays: [5, 6],
-                dayHeaderFormat: {
-                    weekday: 'short',
-                    day: 'numeric',
-                    omitCommas: true
-                },
                 dayHeaderContent: (opts: any) => {
                     return moment(opts.date).format('DD(ddd)');
                 },
                 slotDuration: '00:30:00',
                 slotLabelInterval: '01:00',
-                slotLabelFormat: {
-                    hour: 'numeric',
-                    meridiem: false
+                eventDidMount: (arg) => {
+                    const { id, title, groupId } = arg.event;
+
+                    // draw new event
+                    if (!id && !groupId && !title) {
+                        calendar.trigger('eventClick', {
+                            el: arg.el,
+                            event: arg.event,
+                            jsEvent: new MouseEvent('click', {}),
+                            view: calendar.view
+                        });
+                    }
                 },
-                eventClick: (evt: any) => {
-                    evt.event.remove();
+                eventClick: (evt) => {
+                    if ($ed && evt.el) {
+                        if (vm.dataEvent.ctrl) {
+                            return;
+                        }
+
+                        const bounds = evt.el.getBoundingClientRect();
+
+                        if (bounds) {
+                            const { innerHeight } = window;
+                            const { top, left, right } = bounds;
+
+                            $ed.classList.add('show');
+
+                            if (left - 263 <= 0) {
+                                $ed.style.left = `${right + 3}px`;
+                            } else {
+                                $ed.style.left = `${left - 253}px`;
+                            }
+
+                            if (innerHeight - top - 280 > 0) {
+                                $ed.style.top = `${top}px`;
+                            } else {
+                                $ed.style.top = `${innerHeight - 280}px`;
+                            }
+
+                            ko.applyBindingsToNode($ed, { [E_COMP_NAME]: evt.event });
+
+                            vm.dataEvent.popup = true;
+                        }
+                    }
                 },
                 eventDragStart: (evt) => {
                     console.log(evt);
                 },
-                eventDrop: (evt: any) => {
+                eventDrop: (evt) => {
                     if (evt.event.allDay) {
                         evt.revert();
                     }
@@ -232,100 +352,8 @@ module nts.uk.ui.koExtentions {
 
                     //$el.find('style').first().html(DEFAULT_STYLE);
                 },
-                slotLaneDidMount: (evt: any) => {
-                    // console.log(evt);
-                },
-                handleWindowResize: true,
-                windowResize: (opts) => {
-                    console.log(opts.view);
-                },
                 firstDay: 1,
-                events: [
-                    {
-                        title: 'All Day Event',
-                        start: '2020-09-07T16:00:00',
-                        allDay: true,
-                        color: 'transparent',
-                        textColor: '#000',
-                        editable: false
-                    },
-                    {
-                        title: 'Long Event',
-                        start: '2020-09-07',
-                        color: 'transparent',
-                        textColor: '#000',
-                        editable: false
-                    },
-                    {
-                        groupId: '999',
-                        title: 'Repeating Event',
-                        start: '2020-09-09T16:00:00'
-                    },
-                    {
-                        groupId: '999',
-                        title: 'Repeating Event',
-                        start: '2020-09-16T16:00:00'
-                    },
-                    {
-                        title: 'Conference',
-                        start: '2020-09-11',
-                        end: '2020-09-13',
-                        editable: false
-                    },
-                    {
-                        groupId: 'abc',
-                        title: 'Meeting',
-                        start: '2020-09-12T10:30:00',
-                        end: '2020-09-12T12:00:00'
-                    },
-                    {
-                        groupId: 'abc',
-                        title: 'Lunch',
-                        start: '2020-09-12T13:00:00',
-                        end: '2020-09-12T14:30:00'
-                    }, {
-                        groupId: 'abc',
-                        start: '2020-09-12T10:30:00',
-                        end: '2020-09-12T14:30:00',
-                        display: 'background',
-                        backgroundColor: 'transparent'
-                    },
-                    {
-                        title: 'Meeting',
-                        start: '2020-09-12T14:30:00',
-                    },
-                    {
-                        title: 'Happy Hour',
-                        start: '2020-09-12T17:30:00'
-                    },
-                    {
-                        title: 'Dinner',
-                        start: '2020-09-12T20:00:00'
-                    },
-                    {
-                        title: 'Birthday Party',
-                        start: '2020-09-13T07:00:00'
-                    },
-                    {
-                        title: 'Click for Google',
-                        url: 'http://google.com/',
-                        start: '2020-09-28',
-                    },
-                    // areas where "Meeting" must be dropped
-                    /*{
-                        groupId: 'availableForMeeting',
-                        start: '2020-09-07T10:00:00',
-                        end: '2020-09-07T16:00:00',
-                        display: 'background'
-                    },
-                    {
-                        groupId: 'availableForMeeting',
-                        start: '2020-09-09T10:00:00',
-                        end: '2020-09-09T16:00:00',
-                        display: 'background',
-                        backgroundColor: '#ddd'
-                    },*/
-                ],
+                events: [],
                 /*validRange: {
                     start: '2020-11-06T05:00',
                     end: '2020-11-06T06:00'
@@ -346,7 +374,10 @@ module nts.uk.ui.koExtentions {
                     endTime: '00:00'
                 }],
                 select: (arg) => {
-                    calendar.addEvent(arg);
+                    if (vm.dataEvent.shift) {
+                        calendar.unselect();
+                        calendar.addEvent(arg);
+                    }
                 },
                 selectOverlap: (evt) => evt.allDay,
                 selectAllow: (evt) => {
@@ -367,20 +398,46 @@ module nts.uk.ui.koExtentions {
 
             calendar.setOption('height', '700px');
 
+            vm.registerEvent('mousedown', (evt: JQueryEventObject) => hideEditor(evt.target));
+
             vm.registerEvent('keydown', (evt: JQueryEventObject) => {
-                if (evt.keyCode === 17) {
+                if (evt.keyCode === 16) {
+                    vm.dataEvent.shift = true;
+
+                    calendar.setOption('selectable', true);
+
+                    document.body.setAttribute('shift', 'true');
+                } else if (evt.keyCode === 17) {
+                    vm.dataEvent.ctrl = true;
+
                     document.body.setAttribute('ctrl', 'true');
+                } else if (evt.keyCode === 18) {
+                    vm.dataEvent.alt = true;
+
+                    document.body.setAttribute('alt', 'true');
                 }
             });
 
             vm.registerEvent('keyup', (evt: JQueryEventObject) => {
-                if (evt.keyCode === 17) {
+                if (evt.keyCode === 16) {
+                    vm.dataEvent.shift = false;
+
+                    calendar.setOption('selectable', false);
+
+                    document.body.setAttribute('shift', 'false');
+                } else if (evt.keyCode === 17) {
+                    vm.dataEvent.ctrl = false;
+
                     document.body.setAttribute('ctrl', 'false');
+                } else if (evt.keyCode === 18) {
+                    vm.dataEvent.alt = false;
+
+                    document.body.setAttribute('alt', 'false');
                 }
             });
 
             $el.on('mousewheel', (evt) => {
-                if (document.body.getAttribute('ctrl') === 'true') {
+                if (vm.dataEvent.ctrl === true || vm.dataEvent.popup === true) {
                     evt.preventDefault();
                 }
             });
@@ -408,4 +465,159 @@ module nts.uk.ui.koExtentions {
             });
         }
     }
+
+
+    export module components {
+        @handler({
+            bindingName: E_COMP_NAME,
+            validatable: true,
+            virtual: false
+        })
+        export class FullCalendarEditorBindingHandler implements KnockoutBindingHandler {
+            init(element: HTMLElement, valueAccessor: () => fc.EventApi, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
+                const name = E_COMP_NAME;
+                const component = { name, params: valueAccessor() };
+
+                ko.applyBindingsToNode(element, { component }, bindingContext);
+
+                return { controlsDescendantBindings: true };
+            }
+        }
+
+        @component({
+            name: E_COMP_NAME,
+            template: `<div class="toolbar">
+                <svg width="20" height="20" viewBox="0 0 24 24" focusable="false" title="Email">
+                    <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-.8 2L12 10.8 4.8 6h14.4zM4 18V7.87l8 5.33 8-5.33V18H4z"></path>
+                </svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" focusable="false" title="Edit">
+                    <path d="M20.41 4.94l-1.35-1.35c-.78-.78-2.05-.78-2.83 0L3 16.82V21h4.18L20.41 7.77c.79-.78.79-2.05 0-2.83zm-14 14.12L5 19v-1.36l9.82-9.82 1.41 1.41-9.82 9.83z"></path>
+                </svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" focusable="false" title="Remove">
+                    <path d="M15 4V3H9v1H4v2h1v13c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V6h1V4h-5zm2 15H7V6h10v13z"></path>
+                    <path d="M9 8h2v9H9zm4 0h2v9h-2z"></path>
+                </svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" focusable="false" title="Close" data-bind="click: $component.close">
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"></path>
+                </svg>
+            </div>
+            <div>
+            </div>`
+        })
+        export class FullCalendarEditorComponent extends ko.ViewModel {
+            constructor(private data: fc.EventApi) {
+                super();
+            }
+
+            close() {
+                const vm = this;
+                const { $el, data } = vm;
+
+                if (data) {
+                    const { id, groupId, title } = data;
+
+                    if (!id && !groupId && !title) {
+                        data.remove();
+                    }
+                }
+
+                if ($el) {
+                    ko.cleanNode($el);
+
+                    $el.classList.remove('show');
+
+                    $el.style.top = null;
+                    $el.style.left = null;
+
+                    $el.innerHTML = '';
+                }
+            }
+        }
+    }
 }
+
+
+/*{
+    title: 'All Day Event',
+    start: '2020-09-07T16:00:00',
+    allDay: true,
+    color: 'transparent',
+    textColor: '#000',
+    editable: false
+},
+{
+    title: 'Long Event',
+    start: '2020-09-07',
+    color: 'transparent',
+    textColor: '#000',
+    editable: false
+},
+{
+    groupId: '999',
+    title: 'Repeating Event',
+    start: '2020-09-09T16:00:00'
+},
+{
+    groupId: '999',
+    title: 'Repeating Event',
+    start: '2020-09-16T16:00:00'
+},
+{
+    title: 'Conference',
+    start: '2020-09-11',
+    end: '2020-09-13',
+    editable: false
+},
+{
+    groupId: 'abc',
+    title: 'Meeting',
+    start: '2020-09-12T10:30:00',
+    end: '2020-09-12T12:00:00'
+},
+{
+    groupId: 'abc',
+    title: 'Lunch',
+    start: '2020-09-12T13:00:00',
+    end: '2020-09-12T14:30:00'
+}, {
+    groupId: 'abc',
+    start: '2020-09-12T10:30:00',
+    end: '2020-09-12T14:30:00',
+    display: 'background',
+    backgroundColor: 'transparent'
+},
+{
+    title: 'Meeting',
+    start: '2020-09-12T14:30:00',
+},
+{
+    title: 'Happy Hour',
+    start: '2020-09-12T17:30:00'
+},
+{
+    title: 'Dinner',
+    start: '2020-09-12T20:00:00'
+},
+{
+    title: 'Birthday Party',
+    start: '2020-09-13T07:00:00'
+},
+{
+    title: 'Click for Google',
+    url: 'http://google.com/',
+    start: '2020-09-28',
+},
+// areas where "Meeting" must be dropped
+/*{
+    groupId: 'availableForMeeting',
+    start: '2020-09-07T10:00:00',
+    end: '2020-09-07T16:00:00',
+    display: 'background'
+},
+{
+    groupId: 'availableForMeeting',
+    start: '2020-09-09T10:00:00',
+    end: '2020-09-09T16:00:00',
+    display: 'background',
+    backgroundColor: '#ddd'
+},*/
