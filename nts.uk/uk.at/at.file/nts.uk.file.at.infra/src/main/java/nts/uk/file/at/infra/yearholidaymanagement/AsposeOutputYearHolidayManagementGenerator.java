@@ -612,7 +612,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 					// case time 年休取得日の印字方法  = 月日
 					if(query.getPrintAnnualLeaveDate() == AnnualLeaveAcquisitionDate.TIME) {
 						cells.get(holidayDetailRow, holidayDetailCol).setValue(this.genHolidayText(detail));
-						cells.get(holidayDetailRow + 1, holidayDetailCol).setValue(this.genHolidayText(detail));
+						cells.get(holidayDetailRow + 1, holidayDetailCol).setValue(this.generateTimeText(detail));
 					}
 					
 					if (holidayDetailCol == MAX_GRANT_DETAIL_COL) {
@@ -646,27 +646,13 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 		int lineOfDetails = holidayDetails.size() / 15 + (holidayDetails.size() % 15 > 0 ? 1 : 0);
 
 		int lineOfholidayInfo = holidayInfo != null ? holidayInfo.getLstGrantInfor().size() : 0;
-		if (query.getPrintAnnualLeaveDate() == AnnualLeaveAcquisitionDate.DATE) {
-			// số dòng của data sẽ là của getLstGrantInfor hoặc holidayDetails nếu 1 trong 2 > 2
-			if (lineOfholidayInfo > 2 || lineOfDetails > 2) {
-				// số dòng của data tùy thuộc getLstGrantInfor hoặc holidayDetails bên nào lớn hơn
-				if (lineOfholidayInfo > lineOfDetails) {
-					result = lineOfholidayInfo;
-				} else {
-					result = lineOfDetails;
-				}
-			}
-		}
-		
-		if (query.getPrintAnnualLeaveDate() == AnnualLeaveAcquisitionDate.TIME) {
-			// số dòng của data sẽ là của getLstGrantInfor hoặc holidayDetails nếu 2 trong 4 
-			if (lineOfholidayInfo > 4 || lineOfDetails > 4) {
-				// số dòng của data tùy thuộc getLstGrantInfor hoặc holidayDetails bên nào lớn hơn
-				if (lineOfholidayInfo > lineOfDetails) {
-					result = lineOfholidayInfo;
-				} else {
-					result = lineOfDetails;
-				}
+		// số dòng của data sẽ là của getLstGrantInfor hoặc holidayDetails nếu 1 trong 2 > 2
+		if (lineOfholidayInfo > result || lineOfDetails > result) {
+			// số dòng của data tùy thuộc getLstGrantInfor hoặc holidayDetails bên nào lớn hơn
+			if (lineOfholidayInfo > lineOfDetails) {
+				result = lineOfholidayInfo;
+			} else {
+				result = lineOfDetails;
 			}
 		}
 		
@@ -891,7 +877,6 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 		cells.get(HEADER_ROW, 19).setValue(TextResource.localize("KDR002_30"));
 		cells.get(HEADER_ROW, 20).setValue(TextResource.localize("KDR002_31"));
 		cells.get(HEADER_ROW, 21).setValue(TextResource.localize("KDR002_32"));
-
 		cells.get(HEADER_ROW, 22).setValue(TextResource.localize("KDR002_38"));
 	}
 
@@ -938,7 +923,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 				// 年休付与(i)．付与日 đang ở trong phần nào của 所属期間(List) đã cấp
 				for (StatusOfEmployeeExport sttEmployee : listStatusOfEmployeeExport) { 
 					for (DatePeriod period : sttEmployee.getListPeriod()) {
-						if(!holidayGrant.getYmd().after(period.start()) && !holidayGrant.getYmd().before(period.end())) {
+						if(!holidayGrant.getYmd().after(period.start()) || !holidayGrant.getYmd().before(period.end())) {
 							lstGrantInfor.add(new AnnualHolidayGrant());
 						}
 					}
@@ -1006,6 +991,14 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 									: TextResource.localize("KDR002_48"))
 					+ TextResource.localize("KDR002_68");
 		}
+		return result;
+	}
+	
+	private String generateTimeText(AnnualHolidayGrantDetail detail) {
+		String hour = String.valueOf(detail.getUseDays() / 60);
+		Double minTime = (detail.getUseDays() % 60) * 60;
+		String min = minTime < 10 ? "0" + minTime.toString() : minTime.toString();
+		String result = hour + ":" + min;
 		return result;
 	}
 }
