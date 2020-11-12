@@ -34,17 +34,17 @@ module nts.uk.com.view.ccg013.k.viewmodel {
             ];
             self.currentCode = ko.observable();
             self.selectedCode.subscribe((value) => {
-                if(value === 5) {
-                    var newList = _.chain(self.listStandardMenu())
-                    .uniqBy('displayName')
-                    .forEach((x, index) => {
-                        x.index = index + 1;
-                    })
-                    .value();
-                    self.list(newList);
-                } else {
-                    self.getListStandardMenu(value);
-                }
+                // if(value === 5) {
+                //     var newList = _.chain(self.listStandardMenu())
+                //     .uniqBy('displayName')
+                //     .forEach((x, index) => {
+                //         x.index = index + 1;
+                //     })
+                //     .value();
+                //     self.list(newList);
+                // } else {
+                self.getListStandardMenu(value);
+                // }
                 $("#grid").igGrid("option", "dataSource", self.list()); 
             });
         }
@@ -55,7 +55,10 @@ module nts.uk.com.view.ccg013.k.viewmodel {
             self.id(0);
             self.list([]);
             for (let i = 0; i < self.listStandardMenu().length; i++) {
-                if (self.listStandardMenu()[i].system == value){
+                if (value === 5) {
+                    self.list.push(new StandardMenu(i + 1, self.id(), self.listStandardMenu()[i].code, self.listStandardMenu()[i].targetItems, self.listStandardMenu()[i].displayName, self.listStandardMenu()[i].system, self.listStandardMenu()[i].classification));
+                    self.id(self.id()+1);
+                } else if (self.listStandardMenu()[i].system == value){
                     self.list.push(new StandardMenu(i + 1, self.id(), self.listStandardMenu()[i].code, self.listStandardMenu()[i].targetItems, self.listStandardMenu()[i].displayName, self.listStandardMenu()[i].system, self.listStandardMenu()[i].classification));
                     self.id(self.id()+1);
                 }
@@ -107,9 +110,12 @@ module nts.uk.com.view.ccg013.k.viewmodel {
            
             /** Get EditMenuBar*/
             service.getEditMenuBar().done(function(editMenuBar: any) {
+                var newItemList = [];
+                newItemList.push(new ItemModel(5, nts.uk.resource.getText("CCG013_137")));
                 _.forEach(editMenuBar.listSystem, function(item) {
-                    self.itemList.push(new ItemModel(item.value, item.localizedName));
-                }); 
+                   newItemList.push(new ItemModel(item.value, item.localizedName));
+                });
+                self.itemList(newItemList);
                 dfd.resolve();
             }).fail(function(error) {
                 dfd.reject();
