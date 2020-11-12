@@ -46,7 +46,10 @@ module nts.uk.com.view.kwr002.f {
                     vm.selectedCode(response.code);
                     vm.selectedName(response.name);
                 })
-                .always(() => vm.$blockui('hide'));
+                .always(() => {
+                    vm.$blockui('hide');
+                    $(vm.$el).find('#F1_5').focus();
+                });
 
         }
 
