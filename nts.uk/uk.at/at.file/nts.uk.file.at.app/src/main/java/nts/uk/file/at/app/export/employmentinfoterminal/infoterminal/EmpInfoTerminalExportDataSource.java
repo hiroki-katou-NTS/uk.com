@@ -42,10 +42,7 @@ public class EmpInfoTerminalExportDataSource {
 				break;
 		}
 		
-		String empInfoTerNo = "0000" + empInfoTerminal.getEmpInfoTerCode().v();
-		empInfoTerNo = empInfoTerNo.substring(empInfoTerNo.length()-4);
-		
-		return new EmpInfoTerminalExportDataSource(empInfoTerNo, empInfoTerminal.getEmpInfoTerName().v(),
+		return new EmpInfoTerminalExportDataSource(empInfoTerminal.getEmpInfoTerCode().v().toString(), empInfoTerminal.getEmpInfoTerName().v(),
 				empInfoTerminal.getModelEmpInfoTer().name(), empInfoTerminal.getMacAddress().v(), 
 				empInfoTerminal.getIpAddress().isPresent() ? empInfoTerminal.getIpAddress().get().getFullIpAddress() : "",
 				empInfoTerminal.getTerSerialNo().isPresent() ? empInfoTerminal.getTerSerialNo().get().v() : "", 

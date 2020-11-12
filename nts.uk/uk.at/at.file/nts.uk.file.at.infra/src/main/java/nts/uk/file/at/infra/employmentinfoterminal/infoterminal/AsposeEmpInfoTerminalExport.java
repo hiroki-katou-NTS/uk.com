@@ -57,8 +57,10 @@ public class AsposeEmpInfoTerminalExport extends AsposeCellsReportGenerator impl
 			reportContext.processDesigner();
 			
 			//merge if isEmpty(ipAddress) == true
-			mergeMacAndIp(worksheet, dataSource);
-
+			mergeMacAndIp(worksheet, dataSource);	
+			//delete empty row if no data
+			deleteTemplateRow(worksheet, dataSource);
+			
 			// save as Excel file
 			GeneralDateTime dateNow = GeneralDateTime.now();
 			String dateTime = dateNow.toString("yyyyMMddHHmmss");
@@ -94,6 +96,13 @@ public class AsposeEmpInfoTerminalExport extends AsposeCellsReportGenerator impl
 			if(data.getIpAddress() == null || data.getIpAddress().isEmpty()) {
 				cells.merge(i + PADDING_ROWS, COLUMN_MAC_ADDRESS, 1, 2);
 			}
+		}
+	}
+	
+	private void deleteTemplateRow(Worksheet worksheet, List<EmpInfoTerminalExportDataSource> dataSource) {
+		Cells cells = worksheet.getCells();
+		if(dataSource.size() <= 0) {
+			cells.deleteRow(PADDING_ROWS);
 		}
 	}
 }
