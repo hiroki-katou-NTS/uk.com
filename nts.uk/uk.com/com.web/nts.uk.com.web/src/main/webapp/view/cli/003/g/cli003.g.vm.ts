@@ -439,26 +439,27 @@ module nts.uk.com.view.cli003.g.viewmodel {
                     self.logItemsFull(logItemsTemp);
 
                     //check selected code
-                    if (self.currentLogDisplaySet() &&
-                        self.currentLogDisplaySet().recordType == recordType) {
-                        const logSetOutputs = self.currentLogDisplaySet().logSetOutputs;
-                        if (logSetOutputs) {
-                            const lengthItemSwap = logItemsTemp.length;
-                            const logItemSetted = [];
-                            _.forEach(logSetOutputs, function(logSetOutput) {
-                                let itemNo = logSetOutput.itemNo;
-                                let itemName;
-                                for (var k = 0; k < lengthItemSwap; k++) {
-                                    if (logItemsTemp[k].code == itemNo) {
-                                        itemName = logItemsTemp[k].name;
-                                        logItemSetted.push(
-                                            new ItemLogSetRecordTypeModel(logSetOutput.itemNo, itemName, logSetOutput.isUseFlag,
-                                                logSetOutput.logSetItemDetails));
-                                        break;
+                    if(self.mode() !== MODE.INSERT) {
+                        if (self.currentLogDisplaySet() && self.currentLogDisplaySet().recordType == recordType) {
+                            const logSetOutputs = self.currentLogDisplaySet().logSetOutputs;
+                            if (logSetOutputs) {
+                                const lengthItemSwap = logItemsTemp.length;
+                                const logItemSetted = [];
+                                _.forEach(logSetOutputs, function(logSetOutput) {
+                                    let itemNo = logSetOutput.itemNo;
+                                    let itemName;
+                                    for (var k = 0; k < lengthItemSwap; k++) {
+                                        if (logItemsTemp[k].code == itemNo) {
+                                            itemName = logItemsTemp[k].name;
+                                            logItemSetted.push(
+                                                new ItemLogSetRecordTypeModel(logSetOutput.itemNo, itemName, logSetOutput.isUseFlag,
+                                                    logSetOutput.logSetItemDetails));
+                                            break;
+                                        }
                                     }
-                                }
-                            });
-                            self.selectedCodeList(logItemSetted);
+                                });
+                                self.selectedCodeList(logItemSetted);
+                            }
                         }
                     }
                 } else {

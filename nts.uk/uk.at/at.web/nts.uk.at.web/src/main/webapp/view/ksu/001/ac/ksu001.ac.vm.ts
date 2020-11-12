@@ -680,6 +680,14 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                         $($('.ntsButtonTableButton')[index]).addClass('withContent');
                     }
                 });
+
+                if (__viewContext.viewModel.viewA.mode() === 'confirm') {
+                    if (self.selectedpalletUnit() == 1) { // 1 : mode company , 2: mode workPlace
+                        $('#tableButton1 button').addClass('disabledShiftControl');
+                    } else {
+                        $('#tableButton2 button').addClass('disabledShiftControl');
+                    }
+                }
                 nts.uk.ui.block.clear();
             }).fail(function() {
                 nts.uk.ui.block.clear();
@@ -766,9 +774,15 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 
                 // truowng hop khong co page nao duoc dang ky
                 if (data.listPageInfo.length == 0) {
-                    $('#tableButton1 button').addClass('disabledShiftControl');
-                } else {
-                    $('#tableButton1 button').removeClass('disabledShiftControl');
+                    //$('#tableButton1 button').addClass('disabledShiftControl');
+                    // set css table button
+                    _.each($('.ntsButtonTableButton'), function(buttonTbl, index) {
+                        if ($('.ntsButtonTableButton')[index].innerHTML == "+") {
+                            $($('.ntsButtonTableButton')[index]).addClass('nowithContent');
+                        } else {
+                            $($('.ntsButtonTableButton')[index]).addClass('withContent');
+                        }
+                    });
                 }
                 
                 nts.uk.ui.block.clear();
@@ -805,10 +819,15 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                     pageNumber);
                 
                 // truowng hop khong co page nao duoc dang ky
-                if(data.listPageInfo.length == 0){
-                    $('#tableButton2 button').addClass('disabledShiftControl');
-                }else{
-                    $('#tableButton2 button').removeClass('disabledShiftControl');
+                if (data.listPageInfo.length == 0) {
+                    // set css table button
+                    _.each($('.ntsButtonTableButton'), function(buttonTbl, index) {
+                        if ($('.ntsButtonTableButton')[index].innerHTML == "+") {
+                            $($('.ntsButtonTableButton')[index]).addClass('nowithContent');
+                        } else {
+                            $($('.ntsButtonTableButton')[index]).addClass('withContent');
+                        }
+                    });
                 }
                 
                 nts.uk.ui.block.clear();

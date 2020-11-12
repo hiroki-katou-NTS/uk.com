@@ -15,3 +15,7 @@
 .panel.ntsPanel {
     padding: 15px;
 }
+.label.warning.color-black {
+    color: black;
+    font-size: 1rem;
+}
