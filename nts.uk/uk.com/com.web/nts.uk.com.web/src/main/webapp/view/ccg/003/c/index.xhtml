@@ -8,7 +8,7 @@
     <ui:define name="htmlHead">
       <com:scriptfile set="IGNITE" />
       <com:ValidatorScript>
-        nts.uk.ctx.sys.auth.dom.anniversary.NotificationMessage
+        nts.uk.ctx.sys.portal.dom.notice.NotificationMessage
       </com:ValidatorScript>
       <script>var dialogSize = { width: 600, height: 560 };</script>
       <com:stylefile path="ccg003.c.style.css" />
@@ -23,7 +23,7 @@
             #{i18n.getText('CCG003_20')}</div>
           <!-- C1_2	メッセージ -->
           <textarea id="C1_2" tabindex="1"
-            data-bind="ntsMultilineEditor: { name:'#[CCG003_20]', value: messageText, constraint: 'NotificationMessage' }" />
+            data-bind="ntsMultilineEditor: { name:'#[CCG003_20]', value: messageText, constraint: 'NotificationMessage', required: true }" />
         </div>
         <div class="flex mt-10">
           <div class="left w-p-15">
@@ -36,7 +36,7 @@
                   <span class="ntsControl">
                     <label class="ntsRadioBox">
                       <!-- C2_2_1	宛先(全社員) -->
-                      <input type="radio" name="destination" data-bind="checkedValue: 1, checked: destination, enable: isVisibleDestination" />
+                      <input type="radio" name="destination" data-bind="checkedValue: 0, checked: destination, enable: isVisibleDestination" />
                       <span class="box"></span><span class="label">#{i18n.getText('CCG003_22')}</span>
                     </label>
                   </span>
@@ -47,7 +47,7 @@
               <span class="ntsControl flex">
                 <label class="ntsRadioBox">
                   <!-- C2_2_2 宛先(職場) -->
-                  <input type="radio" name="destination" data-bind="checkedValue: 2, checked: destination, enable: isVisibleDestination" />
+                  <input type="radio" name="destination" data-bind="checkedValue: 1, checked: destination, enable: isVisibleDestination" />
                   <span class="box"></span><span class="label">#{i18n.getText('CCG003_23')}</span>
                 </label>
                 <com:ko-if bind="isVisibleWorkplaceList()">
@@ -58,7 +58,7 @@
                 </com:ko-if>
                 <com:ko-if bind="!isVisibleWorkplaceList()">
                   <!-- C2_5_2	対象職場 -->
-                  <label id="C2_5_2" class="ml-15" data-bind="text: workPlaceText"></label>
+                  <label id="C2_5_2" class="ml-15" data-bind="text: workPlaceTxtRefer"></label>
                 </com:ko-if>
               </span>
             </div>
@@ -67,7 +67,7 @@
               <span class="ntsControl flex">
                 <label class="ntsRadioBox">
                   <!-- C2_2_3 宛先(社員) -->
-                  <input type="radio" name="destination" data-bind="checkedValue: 3, checked: destination, enable: isVisibleDestination" />
+                  <input type="radio" name="destination" data-bind="checkedValue: 2, checked: destination, enable: isVisibleDestination" />
                   <span class="box"></span><span class="label">#{i18n.getText('CCG003_24')}</span>
                 </label>
                 <!-- C2_3_3	社員選択 -->
@@ -91,15 +91,15 @@
         </div>
         <div class="flex mt-15 ml-p-15">
           <!-- C4	更新日表示 -->
-          <label id="C4" class="ml-13">更新日：2020/6/1</label>
+          <label id="C4" class="ml-13" data-bind="updateDate"></label>
         </div>
       </div>
 
       <div id="functions-area-bottom">
         <!-- C20_1 登録 -->
-        <button id="C20_1" class="proceed pl-15 pr-15 left ml-60" data-bind="click: onClickRegister">#{i18n.getText('CCG003_28')}</button>
+        <button id="C20_1" class="proceed pl-15 pr-15 left ml-60" data-bind="enable: $root.errors.isEmpty, click: onClickRegister">#{i18n.getText('CCG003_28')}</button>
         <!-- C20_2 削除 -->
-        <button id="C20_2" data-bind="enable: isActiveDelete" class="danger pl-15 pr-15 left ml-60">#{i18n.getText('CCG003_29')}</button>
+        <button id="C20_2" data-bind="enable: isActiveDelete, click: onClickDelete" class="danger pl-15 pr-15 left ml-60">#{i18n.getText('CCG003_29')}</button>
         <!-- C20_3 戻る -->
         <button id="C20_3" data-bind="click: closeWindow" class="pl-15 pr-15 right mr-60">#{i18n.getText('CCG003_30')}</button>
       </div>

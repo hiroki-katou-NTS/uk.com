@@ -13,11 +13,12 @@
 
     <ui:define name="content">
       <div class="contents">
+        <button id="show-ccg003" style="margin-left: 100px;">Show CCG003</button>
         <!-- A0 お知らせ表示 -->
         <div id="A0" class="panel panel-frame panel-ccg003">
           <div class="top-content">
             <!-- A1 対象日 -->
-            <div id="A1"><span>2020/06/04(木)</span>
+            <div id="A1"><span data-bind="text: systemDate"></span>
             </div>
             <div class="fw-right">
               <div>
@@ -49,49 +50,48 @@
                   maxRange: 'oneMonth'}"
                 />
                 <!-- A4_3 絞込 -->
-                <button id="A4_3" tabindex="2" class="small pl-10 pr-10 ml-90" >#{i18n.getText('CCG003_7')}</button>
+                <button id="A4_3" tabindex="2" class="small pl-10 pr-10 ml-90" data-bind="click: onClickFilter">#{i18n.getText('CCG003_7')}</button>
               </div>
             </div>
           </div>
           <div class="auto-overflow">
-            <div data-bind="foreach: msgNotices">
-              <!-- A6 メッセージ -->
-              <div class="w-490" data-bind="ntsAccordion: {}, click: $vm.seenMessage($index)">
-                <h3 class="bg-schedule-focus">
-                  <!-- ヘッダテキスト -->
-                  <span class="limited-label mw-400" data-bind="text: message.notificationMessage"></span>
-                  <!-- A6_1 NEWアイコン -->
-                  <com:ko-if bind="flag">
-                    <img id="A6_1" class="new-img mt-5" src="../resource/CCG003_2.png" />
-                  </com:ko-if>
-                </h3>
-                <!-- A6_2 メッセージ内容 -->
-                <div class="mr-data no-border-radius">
-                  <div class="row-inline">
-                    <span data-bind="text: message.notificationMessage"></span><br/>
-                    <span data-bind="text: $vm.$i18n('CCG003_8', [creator])"></span><br/>
-                    <span data-bind="text: $vm.$i18n('CCG003_9', [])"></span>
-                  </div>
-                </div>
-              </div>
-            </div>
             <div data-bind="foreach: anniversaries">
               <!-- A5 記念日 -->
-              <div class="w-490" data-bind="ntsAccordion: {}">
-                <div class="bg-schedule-focus" data-bind="click: $vm.seenMessage">
+              <div class="w-490" data-bind="ntsAccordion: {}, click: $vm.onClickAnniversary.bind($vm, $index)">
+                <div class="bg-schedule-focus">
                   <!-- ヘッダテキスト -->
                   <span class="limited-label mw-400" data-bind="text: anniversaryNotice.anniversaryTitle"></span>
                   <!-- A5_1 NEWアイコン -->
-                  <com:ko-if bind="flag">
+                  <com:ko-if bind="$vm.anniversaries()[$index()].flag">
                     <img id="A5_1" class="new-img mt-5" src="../resource/CCG003_2.png" />
                   </com:ko-if>
                 </div>
                 <div class="mr-data no-border-radius">
                   <!-- A5_2 記念日内容 -->
-                  <div class="row-inline">
-                    <span data-bind="text: anniversaryNotice.notificationMessage"></span>
-                    <br/>
+                  <div>
+                    <span class="break-space" data-bind="text: anniversaryNotice.notificationMessage"></span>
                     <span data-bind="text: $vm.$i18n('CCG003_16', [anniversaryNotice.anniversary])"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div data-bind="foreach: msgNotices">
+              <!-- A6 メッセージ -->
+              <div class="w-490" data-bind="ntsAccordion: {activate: $vm.onClickMessageNotice.bind($vm, message.creatorID, message.inputDate, $index)}">
+                <h3 class="bg-schedule-focus">
+                  <!-- ヘッダテキスト -->
+                  <span class="limited-label mw-400" data-bind="text: message.notificationMessage"></span>
+                  <!-- A6_1 NEWアイコン -->
+                  <com:ko-if bind="$vm.msgNotices()[$index()].flag">
+                    <img id="A6_1" class="new-img mt-5" src="../resource/CCG003_2.png" />
+                  </com:ko-if>
+                </h3>
+                <!-- A6_2 メッセージ内容 -->
+                <div class="mr-data no-border-radius">
+                  <div>
+                    <span class="break-space" data-bind="html: messageDisplay"></span>
+                    <span class="block-5" data-bind="text: $vm.$i18n('CCG003_8', [creator])"></span>
+                    <span class="block-5" data-bind="text: $vm.$i18n('CCG003_9', [dateDisplay])"></span>
                   </div>
                 </div>
               </div>
