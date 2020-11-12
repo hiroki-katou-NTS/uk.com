@@ -1,10 +1,9 @@
 /// <reference path='../../../../lib/nittsu/viewcontext.d.ts' />
-module nts.uk.com.view.ccg015.e.screenModel {
-  import setShared = nts.uk.ui.windows.setShared;
-  import getShared = nts.uk.ui.windows.getShared;
+
+module nts.uk.com.view.ccg015.e {
 
   @bean()
-  export class ViewModel extends ko.ViewModel {
+  export class ScreenModel extends ko.ViewModel {
 
     placementList: KnockoutObservableArray<Placement> = ko.observableArray([]);
     widgetList: KnockoutObservableArray<WidgetItem> = ko.observableArray([]);
@@ -96,7 +95,7 @@ module nts.uk.com.view.ccg015.e.screenModel {
       });
     }
 
-    
+
     draggableItemContainer2() {
       // ko.bindingHandlers.sortableList = {
       //   init: function(element, valueAccessor) {
@@ -228,9 +227,10 @@ module nts.uk.com.view.ccg015.e.screenModel {
         disabled: false
       });
     }
-   
+
     close() {
-      nts.uk.ui.windows.close();
+      const vm = this;
+      vm.$window.close();
     }
   }
 
