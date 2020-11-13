@@ -120,7 +120,7 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 			const vm = this;
 			$("#dGrid").igGrid({
 				height: 508,
-				width: screen.availWidth - 70,
+				width: window.innerWidth - 40,
 				dataSource: vm.dataSource,
 				primaryKey: 'empID',
 				primaryKeyDataType: 'string',
@@ -135,12 +135,13 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 			   		if($("#dGrid").css('visibility')=='hidden'){
 						vm.$nextTick(() => {
 							vm.$blockui('show');
+							$('#kaf018-d-cancel-btn').focus();
 						});
 					} else {
 						vm.$nextTick(() => {
 							vm.$blockui('hide');
 						});
-					} 	   
+					}
 			    },
 				cellClick: (evt: any, ui: any) => {
 					vm.cellGridClick(evt, ui); 

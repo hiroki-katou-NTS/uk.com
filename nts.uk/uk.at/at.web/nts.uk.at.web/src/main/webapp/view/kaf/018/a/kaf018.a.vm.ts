@@ -107,9 +107,11 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 				vm.dateValue.valueHasMutated();
 				return $('#tree-grid').ntsTreeComponent(vm.treeGrid).done(() => {
 					vm.fullWorkplaceInfo = vm.flattenWkpTree(_.cloneDeep($('#tree-grid').getDataList()));
+					vm.selectedClosureId.subscribe(() => $('#tree-grid').focusTreeGridComponent());
 				});
 			}).then(() => {
 				vm.$blockui('hide');
+				$('#tree-grid').focusTreeGridComponent();
 			});
 		}
 		

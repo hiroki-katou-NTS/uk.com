@@ -55,8 +55,8 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 					countUnApprApp: null
 				} 
 			});
+			$("#bGrid").css('visibility','hidden');
 			vm.createIggrid();
-			
 		}
 		
 		loadData(initFlg: boolean) {
@@ -94,17 +94,15 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 					}
 				});
 				$("#bGrid").igGrid("option", "dataSource", vm.dataSource);
-			}).always(() => {
-				vm.$blockui('hide');
-				$("#fixed-table").focus();
+				$("#bGrid").css('visibility','visible');
 			});
 		}
 		
 		createIggrid() {
 			const vm = this;
 			$("#bGrid").igGrid({
-				width: screen.availWidth - 24 < 1000 ? 1000 : screen.availWidth - 24,
-				height: screen.availHeight - 260,
+				width: window.innerWidth - 24 < 1000 ? 1000 : window.innerWidth - 24,
+				height: window.innerHeight - 150,
 				dataSource: vm.dataSource,
 				primaryKey: 'wkpID',
 				primaryKeyDataType: 'string',
@@ -118,10 +116,24 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 				cellClick: (evt: any, ui: any) => {
 					vm.cellGridClick(evt, ui); 
 				},
+				dataRendered: () => {
+					vm.$nextTick(() => {
+						vm.$blockui('hide');
+					});
+				},
 				rendered: () => {
-					vm.$blockui('hide');
-					vm.getPageData();
-					vm.loadData(true);
+					if($("#bGrid").css('visibility')=='hidden'){
+						vm.$nextTick(() => {
+							vm.$blockui('show');
+							$(".ui-iggrid").focus();
+							vm.getPageData();
+							vm.loadData(true);
+						});
+					} else {
+						vm.$nextTick(() => {
+							vm.$blockui('hide');
+						});
+					}
 			    },
 				columns: [
 					{ 
@@ -188,10 +200,12 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 							pageSizeDropDownTrailingLabel: ""
 						},
 						pageIndexChanged: () => {
+							$(".ui-iggrid").focus();
 							vm.getPageData();
 							vm.loadData(false);
 						},
 						pageSizeChanged: () => {
+							$(".ui-iggrid").focus();
 							vm.getPageData();
 							vm.loadData(false);
 						}
@@ -243,11 +257,11 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 		
 		buttonMailAction(mailTypeParam: ApprovalStatusMailType) {
 			const vm = this;
-			let height = screen.availHeight;
-			if(screen.availHeight > 820) {
+			let height = window.innerHeight;
+			if(window.innerHeight > 820) {
 				height = 820
 			}
-			if(screen.availHeight < 600) {
+			if(window.innerHeight < 600) {
 				height = 600;
 			}
 			let dialogSize = { width: 900, height: height },

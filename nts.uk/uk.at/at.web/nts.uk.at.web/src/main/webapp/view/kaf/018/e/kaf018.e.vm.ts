@@ -48,7 +48,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 			const vm = this;
 			$("#eGrid").igGrid({
 				height: 501,
-				width: screen.availWidth - 70,
+				width: window.innerWidth - 40,
 				dataSource: vm.dataSource,
 				primaryKey: 'appID',
 				primaryKeyDataType: 'string',
@@ -65,6 +65,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 			   		if($("#eGrid").css('visibility')=='hidden'){
 						vm.$nextTick(() => {
 							vm.$blockui('show');
+							$('#kaf018-e-cancel-btn').focus();
 						});
 					} else {
 						vm.$nextTick(() => {

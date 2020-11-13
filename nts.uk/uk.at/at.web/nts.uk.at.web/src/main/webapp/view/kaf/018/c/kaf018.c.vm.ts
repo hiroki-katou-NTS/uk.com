@@ -77,6 +77,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
 				dataRendered: () => {
 					vm.$nextTick(() => {
 						vm.$blockui('hide');
+						$("#cGrid").focus();
 					});
 				},
 				rendered: () => {
