@@ -708,8 +708,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
                 __viewContext.viewModel.viewAC.flag = true;
                 
-                self.mode() === 'edit' ? self.editMode() : self.confirmMode();
-
                 // check enable or disable tbaleButton
                 self.checkEnabDisableTblBtn();
                 
@@ -2994,7 +2992,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 shiftPalletUnit: userInfor.shiftPalletUnit, // 1: company , 2 : workPlace 
                 pageNumberCom: userInfor.shiftPalettePageNumberCom,
                 pageNumberOrg: userInfor.shiftPalettePageNumberOrg,
-                getActualData: false,
+                getActualData: userInfor.achievementDisplaySelected,
                 listShiftMasterNotNeedGetNew: userInfor.shiftMasterWithWorkStyleLst, // List of shifts không cần lấy mới
                 unit: input.unit,
                 wkpId: input.unit == 0 ? input.workplaceId : input.workplaceGroupID
