@@ -54,7 +54,7 @@ public class UserInformationSettingScreenQuery {
 					.functionIds(new ArrayList<>())
 					.build());
 
-			List<OtherContactDto> otherContacts = new ArrayList<OtherContactDto>();
+			List<OtherContactDto> otherContacts = new ArrayList<>();
 			otherContacts.add(OtherContactDto.builder()
 					.no(1)
 					.contactUsageSetting(2)
