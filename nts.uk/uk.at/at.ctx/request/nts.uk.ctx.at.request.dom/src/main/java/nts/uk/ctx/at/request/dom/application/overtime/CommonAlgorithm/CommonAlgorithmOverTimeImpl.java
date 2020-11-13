@@ -41,8 +41,10 @@ import nts.uk.ctx.at.request.dom.application.overtime.service.OverTimeContent;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
 import nts.uk.ctx.at.request.dom.application.overtime.service.SelectWorkOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkHours;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.FlexWorkAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSetRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeQuotaSetUse;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.ApplicationDetailSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.AtWorkAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeLeaveAppCommonSet;
@@ -124,29 +126,73 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 	
-	// pending #112662
 	@Override
 	public QuotaOuput getOvertimeQuotaSetUse(
 			String companyId,
 			String employeeId,
 			GeneralDate date,
-			OvertimeAppAtr overTimeAtr) {
+			OvertimeAppAtr overTimeAtr,
+			OvertimeAppSet overtimeAppSet) {
 		QuotaOuput output = new QuotaOuput();
 		// 社員の労働条件を取得する
 		Optional<WorkingConditionItem> workingConditionItemOp = WorkingConditionService.findWorkConditionByEmployee(createRequireM1(), employeeId, date);
 		if (!workingConditionItemOp.isPresent()) return null;
 		WorkingConditionItem workingConditionItem = workingConditionItemOp.get();
 		// 取得したドメインモデル「労働条件項目」．労働制を確認する
+		List<OvertimeWorkFrame> frames = overtimeWorkFrameRepository.getOvertimeWorkFrameByFrameByCom(companyId, NotUseAtr.USE.value);
+		List<Integer> listFNo = new ArrayList<Integer>();
+		List<OvertimeQuotaSetUse> overtimeQuotaSet;
 		if (workingConditionItem.getLaborSystem() == WorkingSystem.FLEX_TIME_WORK) { // 労働制 = フレックス時間勤務(LaborSystem = FlexTimeWork)
 			// OUTPUT「利用する残業枠」を更新する
 			output.setFlexTimeClf(true);
 			// ドメインモデル「残業枠」を取得
-			List<OvertimeWorkFrame> frames = overtimeWorkFrameRepository.getOvertimeWorkFrameByFrameByCom(companyId, 1);
+			/**
+			 * ⇒「残業申請設定」の条件は：「残業枠設定．残業申請区分」 = INPUT．「残業申請区分」
+　　　　　　　　　　　　　　　　　　「残業枠設定．フレックス勤務者区分」 = フレックス時間勤務
+			 */
+			overtimeQuotaSet = overtimeAppSet.getOvertimeQuotaSet().stream()
+					.filter(x -> x.getFlexWorkAtr() == FlexWorkAtr.FLEX_TIME && x.getOvertimeAppAtr() == overTimeAtr)
+					.collect(Collectors.toList());
+			
+			
 			
 		} else {
+			// OUTPUT「利用する残業枠」を更新する
+			output.setFlexTimeClf(false);
+			/**
+			 * ⇒「残業申請設定」の条件は：「残業枠設定．残業申請区分」 = INPUT．「残業申請区分」
+　　　　　　　　　　　　　　　　　　「残業枠設定．フレックス勤務者区分」 = フレックス時間勤務以外
+			 */
+			overtimeQuotaSet = overtimeAppSet.getOvertimeQuotaSet().stream()
+					.filter(x -> x.getFlexWorkAtr() == FlexWorkAtr.OTHER && x.getOvertimeAppAtr() == overTimeAtr)
+					.collect(Collectors.toList());
 			
 		}
+		
+		if (!CollectionUtil.isEmpty(overtimeQuotaSet)) {
+
+			overtimeQuotaSet.stream()
+				.map(x -> x.getTargetOvertimeLimit())
+				.collect(Collectors.toList())
+				.stream()
+				.forEach(item -> {
+					item.stream().forEach(item2 -> {
+						listFNo.add(item2.v());
+					});
+				});
+				
+			listFNo.stream().distinct();	
+		}
+		if (CollectionUtil.isEmpty(listFNo)) {
+			frames = Collections.emptyList();
+		} else {
+			frames = frames.stream()
+					.filter(x -> listFNo.contains(x.getOvertimeWorkFrNo().v().intValue()))
+					.collect(Collectors.toList());
+		}
+		
 		// OUTPUT「利用する残業枠」を更新して返す
+		output.setOverTimeQuotaList(frames);
 		return output;
 	}
 	
@@ -252,16 +298,17 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 			GeneralDate date,
 			OvertimeAppAtr overTimeAtr,
 			List<WorkTimeSetting> workTime,
-			Optional<AppEmploymentSet> appEmploymentSettingOp) {
-		if (workTime.isEmpty()) throw new BusinessException("Msg_1568");
+			Optional<AppEmploymentSet> appEmploymentSettingOp,
+			OvertimeAppSet overtimeAppSet) {
 		InfoBaseDateOutput output = new InfoBaseDateOutput();
 		// 指定社員の申請残業枠を取得する
-		QuotaOuput quotaOuput = this.getOvertimeQuotaSetUse(companyId, employeeId, date, overTimeAtr);
+		QuotaOuput quotaOuput = this.getOvertimeQuotaSetUse(companyId, employeeId, date, overTimeAtr, overtimeAppSet);
 		output.setQuotaOutput(quotaOuput);
 		// 07_勤務種類取得
 		List<WorkType> worktypes = this.getWorkType(appEmploymentSettingOp);
 		output.setWorktypes(worktypes);
 		// INPUT．「就業時間帯の設定<List>」をチェックする
+		if (workTime.isEmpty()) throw new BusinessException("Msg_1568");
 		return output;
 	}
 

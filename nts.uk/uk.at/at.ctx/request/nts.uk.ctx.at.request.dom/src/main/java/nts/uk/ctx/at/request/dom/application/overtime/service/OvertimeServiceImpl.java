@@ -445,7 +445,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 				dateOp.orElse(null),
 				overtimeAppAtr,
 				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().orElse(Collections.emptyList()),
-				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpEmploymentSet());
+				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpEmploymentSet(),
+				infoNoBaseDate.getOverTimeAppSet());
 		// 申請日に関する情報を取得する
 		InfoWithDateApplication infoWithDateApplication = commonAlgorithmOverTime.getInfoAppDate(
 				companyId,
@@ -624,7 +625,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 				appOverTime.getAppDate().getApplicationDate(),
 				appOverTime.getOverTimeClf(),
 				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().orElse(Collections.emptyList()),
-				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpEmploymentSet());
+				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpEmploymentSet(),
+				infoNoBaseDate.getOverTimeAppSet());
 		// 取得した「残業申請」をチェックする
 		if (appOverTime.getPrePostAtr() == PrePostAtr.POSTERIOR) {
 			// 07-02_実績取得・状態チェック

@@ -43,7 +43,8 @@ public interface ICommonAlgorithmOverTime {
 			String companyId,
 			String employeeId,
 			GeneralDate date,
-			OvertimeAppAtr overTimeAtr);
+			OvertimeAppAtr overTimeAtr,
+			OvertimeAppSet overtimeAppSet);
 	/**
 	 * Refactor5
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF005_残業申請.AB画面の共通アルゴリズム.07_勤務種類取得
@@ -68,7 +69,9 @@ public interface ICommonAlgorithmOverTime {
 			GeneralDate date,
 			OvertimeAppAtr overTimeAtr,
 			List<WorkTimeSetting> workTime,
-			Optional<AppEmploymentSet> appEmploymentSetting);
+			Optional<AppEmploymentSet> appEmploymentSetting,
+			OvertimeAppSet overtimeAppSet
+			);
 	/**
 	 * Refactor5 申請日に関する情報を取得する
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF005_残業申請.AB画面の共通アルゴリズム.申請日に関する情報を取得する
