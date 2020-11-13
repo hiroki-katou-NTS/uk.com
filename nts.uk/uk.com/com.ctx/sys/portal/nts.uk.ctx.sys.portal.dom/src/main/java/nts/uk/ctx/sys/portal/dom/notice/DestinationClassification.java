@@ -21,10 +21,10 @@ public enum DestinationClassification {
 	
 	public final int value;
 
-	public final String name;
+	public final String destination;
 	
 	/** The Constant values. */
-	private final static DestinationClassification[] values = DestinationClassification.values();
+	private static final DestinationClassification[] values = DestinationClassification.values();
 	
 	public static DestinationClassification valueOf(Integer value) {
 		// Invalid object.

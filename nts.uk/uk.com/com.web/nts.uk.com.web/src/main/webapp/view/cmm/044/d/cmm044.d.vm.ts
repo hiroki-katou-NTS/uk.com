@@ -1,10 +1,7 @@
 module cmm044.d.viewmodel {
-    import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
     export class ScreenModel {
         date: KnockoutObservable<string>;
         yearMonth: KnockoutObservable<number>;
-        inp_startDate: KnockoutObservable<string>;
-        inp_endDate: KnockoutObservable<string>;
         dateValue: KnockoutObservable<any>;
         histItems: KnockoutObservableArray<model.AgentDto>;
         personList: KnockoutObservableArray<AgentData>;
@@ -12,7 +9,7 @@ module cmm044.d.viewmodel {
         tabs: KnockoutObservableArray<any>;
 
         constructor() {
-            var self = this;
+            const self = this;
             self.date = ko.observable('20000101');
             self.yearMonth = ko.observable(200001);
 
@@ -22,8 +19,9 @@ module cmm044.d.viewmodel {
             self.personList = ko.observableArray([]);
             self.dataPerson = ko.observableArray([]);
             self.tabs = ko.observableArray(nts.uk.ui.windows.getShared("CMM044_TABS"));
-            $("#fixed-table").ntsFixedTable({height:374});
+            $("#fixed-table").ntsFixedTable({height: 356, width: 1050});
         }
+
         start() : JQueryPromise<any>  {
             var self = this,
                 dfd = $.Deferred();
@@ -38,10 +36,26 @@ module cmm044.d.viewmodel {
             nts.uk.ui.windows.close();
         }
 
-        findEmployee(employeeIds): JQueryPromise<any> {
-            var self = this,
+        printData(): void {
+            const self = this;
+            if (self.personList().length == 0) {
+                nts.uk.ui.dialog.alertError({messageId: "Msg_7"});
+                return;
+            }
+            nts.uk.ui.block.invisible();
+            nts.uk.request.exportFile("/workflow/agent/report/generate", ko.toJS(self.personList)).done(function() {
+                // Process results after generating report.
+            }).fail(error => {
+                nts.uk.ui.dialog.alertError(error);
+            }).always(() => {
+                nts.uk.ui.block.clear();
+            });
+        }
+
+        findEmployee(employeeIds: Array<string>): JQueryPromise<any> {
+            const self = this,
                 dfd = $.Deferred();
-            var option = {
+            const option = {
                 baseDate: moment().toDate(),
                 employeeIds: employeeIds
             };
@@ -55,68 +69,100 @@ module cmm044.d.viewmodel {
         }
 
         findAgentByDate(): JQueryPromise<any> {
-            var self = this,
-                employeeIds = [];
-            var dfd = $.Deferred();
+            const self = this,
+                employeeIds: Array<any> = [];
+            const dfd = $.Deferred();
             self.personList.removeAll();
+            nts.uk.ui.block.invisible();
             service.findAgentByDate(self.dateValue().startDate, self.dateValue().endDate).done(function(agent_arr: Array<model.AgentDto>) {
-
                 if (agent_arr.length == 0) {
-                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_7")).then(() => {
+                    nts.uk.ui.dialog.alertError({messageId: "Msg_7"}).then(() => {
                         self.dateValue({ startDate: '', endDate: '' });
                     });
                     return;
                 }
-
                 _.each(agent_arr, x => {
                     employeeIds.push(x.employeeId);
-                    if (x.agentSid1) {
+                    if (!nts.uk.util.isNullOrEmpty(x.agentSid1)) {
                         employeeIds.push(x.agentSid1);
                     }
-
-                    if (x.agentSid2) {
+                    if (!nts.uk.util.isNullOrEmpty(x.agentSid2)) {
                         employeeIds.push(x.agentSid2);
                     }
-
-                    if (x.agentSid3) {
+                    if (!nts.uk.util.isNullOrEmpty(x.agentSid3)) {
                         employeeIds.push(x.agentSid3);
                     }
-
-                    if (x.agentSid4) {
+                    if (!nts.uk.util.isNullOrEmpty(x.agentSid4)) {
                         employeeIds.push(x.agentSid4);
                     }
                 });
 
-                var employeUniqIds = _.uniq(employeeIds);
-
+                const employeUniqIds = _.uniq(employeeIds);
+                nts.uk.ui.block.invisible();
                 self.findEmployee(employeUniqIds).done(function() {
                     _.forEach(agent_arr, function(agent: model.AgentDto) {
-                        var employee = _.find(self.dataPerson(), function(e: service.EmployeeResult) {
+                        const employee = _.find(self.dataPerson(), function(e: service.EmployeeResult) {
                             return e.employeeId == agent.employeeId;
                         });
                         if (employee) {
-                            self.personList.push(new AgentData(employee.employeeCode, employee.employeeName, employee.workplaceCode, employee.workplaceName, employee.jobTitleName, agent.startDate, agent.endDate, self.tabs()[0].title, self.getAgentAppType(agent.agentAppType1, agent.agentSid1), self.getEmpNameAgentAppType(agent.agentAppType1, agent.agentSid1), self.getColSpanAgentAppType(agent.agentAppType1)));
-                            self.personList.push(new AgentData("", "", "", "", "", "", "", self.tabs()[1].title, self.getAgentAppType(agent.agentAppType2, agent.agentSid2), self.getEmpNameAgentAppType(agent.agentAppType2, agent.agentSid2), self.getColSpanAgentAppType(agent.agentAppType2)));
-                            self.personList.push(new AgentData("", "", "", "", "", "", "", self.tabs()[2].title, self.getAgentAppType(agent.agentAppType3, agent.agentSid3), self.getEmpNameAgentAppType(agent.agentAppType3, agent.agentSid3), self.getColSpanAgentAppType(agent.agentAppType3)));
-                            self.personList.push(new AgentData("", "", "", "", "", "", "", self.tabs()[3].title, self.getAgentAppType(agent.agentAppType4, agent.agentSid4), self.getEmpNameAgentAppType(agent.agentAppType4, agent.agentSid4), self.getColSpanAgentAppType(agent.agentAppType4)));
+                            self.personList.push(
+                                new AgentData(
+                                    employee.employeeCode,
+                                    employee.employeeName,
+                                    employee.workplaceCode,
+                                    employee.workplaceName,
+                                    employee.jobTitleName,
+                                    agent.startDate,
+                                    agent.endDate,
+                                    self.tabs()[0].title,
+                                    self.getAgentCode(agent.agentAppType1, agent.agentSid1),
+                                    self.getAgentName(agent.agentAppType1, agent.agentSid1),
+                                    self.getAgentWorkplaceCode(agent.agentAppType1, agent.agentSid1),
+                                    self.getAgentWorkplaceName(agent.agentAppType1, agent.agentSid1),
+                                    self.getAgentJobTitleName(agent.agentAppType1, agent.agentSid1),
+                                    self.getColSpanAgentAppType(agent.agentAppType1)
+                                )
+                            );
+                            // self.personList.push(new AgentData("", "", "", "", "", "", "", self.tabs()[1].title, self.getAgentCode(agent.agentAppType2, agent.agentSid2), self.getAgentName(agent.agentAppType2, agent.agentSid2), self.getColSpanAgentAppType(agent.agentAppType2)));
+                            // self.personList.push(new AgentData("", "", "", "", "", "", "", self.tabs()[2].title, self.getAgentCode(agent.agentAppType3, agent.agentSid3), self.getAgentName(agent.agentAppType3, agent.agentSid3), self.getColSpanAgentAppType(agent.agentAppType3)));
+                            // self.personList.push(new AgentData("", "", "", "", "", "", "", self.tabs()[3].title, self.getAgentCode(agent.agentAppType4, agent.agentSid4), self.getAgentName(agent.agentAppType4, agent.agentSid4), self.getColSpanAgentAppType(agent.agentAppType4)));
                         }
                     });
+                    self.personList(_.sortBy(self.personList(), [(o: AgentData) => o.employeeCode(), (o: AgentData) => new Date(o.startDate())]));
+                    let targetCode = "";
+                    self.personList().forEach((data: AgentData) => {
+                        if (targetCode != data.employeeCode()) {
+                            targetCode = data.employeeCode();
+                        } else {
+                            data.employeeCode("");
+                            data.employeeName("");
+                            data.workPlaceCode("");
+                            data.workPlaceName("");
+                            data.position("");
+                        }
+                    });
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError(error);
+                    dfd.reject(error);
+                }).always(() => {
+                    nts.uk.ui.block.clear();
                 });
                 dfd.resolve();
-
             }).fail(function(error) {
-                nts.uk.ui.dialog.alertError(error.message);
+                nts.uk.ui.dialog.alertError(error);
                 dfd.reject(error);
+            }).always(() => {
+                nts.uk.ui.block.clear();
             });
             return dfd.promise();
         }
 
-        getAgentAppType(agentAppType: number, agentSID): string {
-            var self = this;
-            var result = "";
+        getAgentCode(agentAppType: number, agentSID: string): string {
+            const self = this;
+            let result = "";
             switch (agentAppType) {
                 case model.AgentAppType.SUBSTITUTE_DESIGNATION:
-                    var employee = _.find(self.dataPerson(), function(e: service.EmployeeResult) {
+                    const employee = _.find(self.dataPerson(), function(e: service.EmployeeResult) {
                         return e.employeeId == agentSID;
                     });
                     result = employee.employeeCode; //convert to employeeCode
@@ -132,12 +178,12 @@ module cmm044.d.viewmodel {
             return result;
         }
 
-        getEmpNameAgentAppType(agentAppType: number, agentSID): string {
-            var self = this;
-            var result = "";
+        getAgentName(agentAppType: number, agentSID: string): string {
+            const self = this;
+            let result = "";
             switch (agentAppType) {
                 case model.AgentAppType.SUBSTITUTE_DESIGNATION:
-                    var employee = _.find(self.dataPerson(), function(e: service.EmployeeResult) {
+                    const employee = _.find(self.dataPerson(), function(e: service.EmployeeResult) {
                         return e.employeeId == agentSID;
                     });
                     result = employee.employeeName;
@@ -153,8 +199,71 @@ module cmm044.d.viewmodel {
             return result;
         }
 
+        getAgentWorkplaceCode(agentAppType: number, agentSID: string): string {
+            const self = this;
+            let result = "";
+            switch (agentAppType) {
+                case model.AgentAppType.SUBSTITUTE_DESIGNATION:
+                    const employee = _.find(self.dataPerson(), function(e: service.EmployeeResult) {
+                        return e.employeeId == agentSID;
+                    });
+                    result = employee.workplaceCode;
+                    break;
+                case model.AgentAppType.PATH:
+                    result = "";
+                    break;
+                case model.AgentAppType.NO_SETTINGS:
+                    result = "";
+                    break;
+            }
+
+            return result;
+        }
+
+        getAgentWorkplaceName(agentAppType: number, agentSID: string): string {
+            const self = this;
+            let result = "";
+            switch (agentAppType) {
+                case model.AgentAppType.SUBSTITUTE_DESIGNATION:
+                    const employee = _.find(self.dataPerson(), function(e: service.EmployeeResult) {
+                        return e.employeeId == agentSID;
+                    });
+                    result = employee.workplaceName;
+                    break;
+                case model.AgentAppType.PATH:
+                    result = "";
+                    break;
+                case model.AgentAppType.NO_SETTINGS:
+                    result = "";
+                    break;
+            }
+
+            return result;
+        }
+
+        getAgentJobTitleName(agentAppType: number, agentSID: string): string {
+            const self = this;
+            let result = "";
+            switch (agentAppType) {
+                case model.AgentAppType.SUBSTITUTE_DESIGNATION:
+                    const employee = _.find(self.dataPerson(), function(e: service.EmployeeResult) {
+                        return e.employeeId == agentSID;
+                    });
+                    result = employee.jobTitleName;
+                    break;
+                case model.AgentAppType.PATH:
+                    result = "";
+                    break;
+                case model.AgentAppType.NO_SETTINGS:
+                    result = "";
+                    break;
+            }
+
+            return result;
+        }
+
         getColSpanAgentAppType(agentAppType: number): boolean {
-            var result = false;
+            let result = false;
             switch (agentAppType) {
                 case model.AgentAppType.SUBSTITUTE_DESIGNATION:
                     result = false;
@@ -198,28 +307,8 @@ module cmm044.d.viewmodel {
 
         export enum AgentAppType {
             SUBSTITUTE_DESIGNATION = 0,
-            PATH,
-            NO_SETTINGS
-        }
-    }
-    interface IPersonModel {
-        personId: string;
-        code: string;
-        name: string;
-        baseDate?: number;
-    }
-
-    class PersonModel {
-        personId: string;
-        code: string;
-        name: string;
-        baseDate: number;
-
-        constructor(param: IPersonModel) {
-            this.personId = param.personId;
-            this.code = param.code;
-            this.name = param.name;
-            this.baseDate = param.baseDate || 20170104;
+            PATH = 1,
+            NO_SETTINGS = 2
         }
     }
 
@@ -234,8 +323,24 @@ module cmm044.d.viewmodel {
         agentTarget: KnockoutObservable<string>;
         agentCode: KnockoutObservable<string>;
         agentName: KnockoutObservable<string>;
+        agentWorkPlaceCode: KnockoutObservable<string>;
+        agentWorkPlaceName: KnockoutObservable<string>;
+        agentPosition: KnockoutObservable<string>;
         hasColSpan: KnockoutObservable<boolean>;
-        constructor(employeeCode: string, employeeName: string, workPlaceCode: string, workPlaceName: string, position: string, startDate: string, endDate: string, agentTarget: string, agentCode: string, agentName: string, hasColSpan: boolean) {
+        constructor(employeeCode: string,
+                    employeeName: string,
+                    workPlaceCode: string,
+                    workPlaceName: string,
+                    position: string,
+                    startDate: string,
+                    endDate: string,
+                    agentTarget: string,
+                    agentCode: string,
+                    agentName: string,
+                    agentWorkPlaceCode: string,
+                    agentWorkPlaceName: string,
+                    agentPosition: string,
+                    hasColSpan: boolean) {
             this.employeeCode = ko.observable(employeeCode);
             this.employeeName = ko.observable(employeeName);
             this.workPlaceCode = ko.observable(workPlaceCode);
@@ -246,10 +351,11 @@ module cmm044.d.viewmodel {
             this.agentTarget = ko.observable(agentTarget);
             this.agentCode = ko.observable(agentCode);
             this.agentName = ko.observable(agentName);
+            this.agentWorkPlaceCode = ko.observable(agentWorkPlaceCode);
+            this.agentWorkPlaceName = ko.observable(agentWorkPlaceName);
+            this.agentPosition = ko.observable(agentPosition);
             this.hasColSpan = ko.observable(hasColSpan);
         }
     }
-
-
 
 }

@@ -100,7 +100,7 @@ module nts.uk.com.view.ccg020.a {
             $userImage.ready(() => {
               $('<div/>')
                 .addClass('avatar')
-                .attr('id', 'A4_1_no_avatar')
+                .attr('id', 'avatar_id')
                 .text($('#user-name').text().substring(0, 2))
                 .appendTo($userImage);
             });

@@ -29,12 +29,13 @@ public class JpaAnniversaryRepository extends JpaRepository implements Anniversa
             + " OR("
             + " CAST(CONCAT('{:todayNextYear}',　a.ANNIVERSARY_DATE) AS datetime2) >= CAST('{:anniversary}' as datetime2)"
             + " AND CAST(CONCAT('{:todayNextYear}',a.ANNIVERSARY_DATE) AS datetime2) <= DATEADD(day,　a.NOTIFICATION_DAYS,　CAST('{:anniversary}' as datetime2))"
-            + " )";
+            + " ) ORDER BY ANNIVERSARY_DATE ASC";
 
     //select by date period
     private static final String SELECT_BY_DATE_PERIOD = "SELECT a FROM BpsdtPsAnniversaryInfo a"
             + " WHERE a.bpsdtPsAnniversaryInfoPK.personalId = :personalId"
-            + " AND a.bpsdtPsAnniversaryInfoPK.anniversary IN :datePeriod";
+            + " AND a.bpsdtPsAnniversaryInfoPK.anniversary IN :datePeriod"
+            + " ORDER BY a.bpsdtPsAnniversaryInfoPK.anniversary";
 
     //select by person ID and anniversary
     private static final String SELECT_BY_PERSONAL_ID_AND_ANNIVERSARY = "SELECT a FROM BpsdtPsAnniversaryInfo a"
@@ -122,7 +123,7 @@ public class JpaAnniversaryRepository extends JpaRepository implements Anniversa
     }
 
     @Override
-    public Optional<AnniversaryNotice> getByPersonalIdAndAnniversary(String personalId, GeneralDate anniversary) {
+    public Optional<AnniversaryNotice> getByPersonalIdAndAnniversary(String personalId, String anniversary) {
         return this.queryProxy()
                 .query(SELECT_BY_PERSONAL_ID_AND_ANNIVERSARY, BpsdtPsAnniversaryInfo.class)
                 .setParameter("personalId", personalId)

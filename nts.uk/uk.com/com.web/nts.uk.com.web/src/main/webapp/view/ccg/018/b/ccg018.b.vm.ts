@@ -324,6 +324,7 @@ module ccg018.b.viewmodel {
         }
 
         showNote() {
+          $('#popup-show-note').remove();
           const $table1 = $('#table-1');
           $('<div/>')
             .attr('id', 'popup-show-note')

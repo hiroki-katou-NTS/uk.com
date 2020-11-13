@@ -6,118 +6,60 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
-		<ui:define name="htmlHead">
-			<com:ValidatorScript>
-				nts.uk.ctx.sys.portal.dom.toppage.TopPageCode
-				nts.uk.ctx.sys.portal.dom.toppage.TopPageName
-  			</com:ValidatorScript>
-			<com:stylefile path="ccg015.a.style.css" />
-			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="ccg015.a.start.js" />
-			<com:scriptfile path="ccg015.a.service.js" />
-			<com:scriptfile path="ccg015.a.vm.js" />
-		</ui:define>
+    <ui:define name="htmlHead">
+        <com:stylefile path="ccg015.a.style.css" />
+        <com:scriptfile path="ccg015.a.vm.js" />
+    </ui:define>
 
 		<ui:define name="content">
-			<div id="functions-area" class="divHeader">
-				<div class="float_left">
-					<button tabindex="5" data-bind="click: newTopPage" id="btn_new" class="btnStyle">#{i18n.getText('CCG015_4')}</button>
-					<button tabindex="6" data-bind="click: saveTopPage ,enable: $root.errors.isEmpty" class="proceed btnStyle" id="btn_save">#{i18n.getText('CCG015_5')}</button>
-					<button tabindex="7" data-bind=" click: copyTopPage ,enable: !isNewMode()" id="btn_printing" class="btnStyle">#{i18n.getText('CCG015_6')}</button>
-					<button tabindex="8" data-bind=" click: openFlowMenuSettingDialog" id="btn_readFromSocialTnsuranceOffice" class="btnStyle2">#{i18n.getText('CCG015_8')}</button>
-					<button tabindex="9" id="btn_masterCorrectionLog" data-bind="click: openMyPageSettingDialog" class="btnStyle2">#{i18n.getText('CCG015_2')}</button>
-					<button tabindex="10" data-bind="click: removeTopPage,enable: !isNewMode()" class="danger btnStyle" id="btn_delete">#{i18n.getText('CCG015_7')}</button>
-				</div>
-				<div class="drop_links" tabindex="11"  data-bind="ntsFunctionPanel: {width: 200, headerText: '#{i18n.getText('CCG015_16')}', dataSource: listLinkScreen}"></div>
-			</div>
-			<div id="contents-area" data-bind="visible: true" style="display: none">
-				<table style="margin: 20px 0px 0px 20px">
-					<tr>
-						<td id="contents-left">
-							<div data-bind="ntsPanel:{width: '327px', height: '390px', direction: 'right', showIcon: true}">
-								<div id="box_search" tabindex="12"
-									data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'single-list', 
-									items: listTopPage, selected: toppageSelectedCode, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />
-								<table id="single-list"
-									data-bind="ntsGridList: {
-										height: 340,
-										options: listTopPage,
-										optionsValue: 'code',
-										columns: columns,
-										multiple: false,
-										value: toppageSelectedCode
-									}"></table>
-							</div>
-						</td>
-						<td id="contents-right">
-							<table id="tableRight">
-								<tr data-bind="with: topPageModel">
-									<td class="contentsRL">
-										<div id="lbl_code_name"
-											data-bind="ntsFormLabel: {required: true}">
-											<label>言語<br /></label>
-										</div>
-									</td>
-									<td colspan = "2" class="pad_left_20">
-										<div id="combo-box" tabindex="1"
-											data-bind="ntsComboBox: {
-												options: $parent.languageListOption,
-												optionsValue: 'code',
-												value: $parent.languageSelectedCode,
-												optionsText: 'name',
-												enable: true,
-												columns: [
-														{ prop: 'name', length: 10 },
-													]}"></div>
-									</td>
-								</tr>
-								<tr data-bind="with: topPageModel">
-									<td class="contentsRL">
-										<div id="lbl_code_name"
-											data-bind="ntsFormLabel: {constraint : ['TopPageCode','TopPageName'],required: true}">
-											<label>#{i18n.getText('CCG015_13')}<br /></label>
-										</div>
-									</td>
-									<td class="contentsRR pad_left_20"><input tabindex="2" id="inp_code"
-										class="nts-input tr40 save-error"
-										data-bind="ntsTextEditor: {
-											name: '#[CCG015_42]',
-											value: topPageCode,
-											enable: $parent.isNewMode(),
-											required:true,
-											constraint: 'TopPageCode'}" />
-									</td>
-									<td class = "pad_left_20"><input tabindex="3" id="inp_name"
-										class="nts-input save-error"
-										data-bind="ntsTextEditor: {
-											name: '#[CCG015_43]',
-											value: topPageName,
-											enable: true,
-											required: true,
-											constraint: 'TopPageName'}" />
-									</td>
-								</tr>
-
-								<tr data-bind="with: topPageModel">
-									<td><button tabindex="4"
-											data-bind=" click: $parent.openLayoutSettingDialog.bind($parent) ,enable: !$parent.isNewMode()"
-											class="btn_margin_top x-large">#{i18n.getText('CCG015_14')}</button></td>
-								</tr>
-								<tr>
-									<td colspan="3" data-bind="visible: true">
-										<div class="preview-area">
-											<div class="preview-container">
-												<iframe id="preview-iframe"></iframe>
-											</div>
-										</div>
-									</td>
-								</tr>
-							</table>
-
-						</td>
-					</tr>
-				</table>
-			</div>
+			<div class="ccg015-content">
+        <!-- A1 -->
+        <div id="A1" class="left-content inline-row">
+          <div class="panel panel-frame panel-left caret-right caret-background">
+            <div class="panel panel-gray-bg div-panel">
+              <!-- A1_1 -->
+              <span id="A1_1">#{i18n.getText('CCG015_46')}</span>
+            </div>
+            <div class="mt-10">
+              <!-- A1_2 -->
+              <span id="A1_2" class="w-100">#{i18n.getText('CCG015_47')}</span>
+            </div>
+            <div>
+              <div class="w-100 mt-30 ml-40">
+                <!-- A1_3 -->
+                <button id="A1_3" class="width_btn fix_btn" data-bind="click: openScreenCCG034">#{i18n.getText('CCG015_48')}</button><span class="caret-right caret-inline"></span>
+              </div>
+              <div class="w-100 mt-45 ml-40">
+                <!-- A1_4 -->
+                <button id="A1_4" class="width_btn fix_btn" data-bind="click: openDialogCCG030">#{i18n.getText('CCG015_49')}</button>
+              </div>
+            </div>
+          </div>
+          <!-- A2 -->
+          <div id="A2" class="panel panel-frame panel-right">
+            <div class="panel panel-gray-bg div-panel">
+              <!-- A2_1 -->
+              <span id="A2_1" >#{i18n.getText('CCG015_50')}</span>
+            </div>
+            <div class="mt-10">
+              <!-- A2_2 -->
+              <span id="A2_2" class="w-100">#{i18n.getText('CCG015_51')}</span>
+              <div class="w-100 mt-30 text-align-center">
+                <!-- A2_3 -->
+                <button id="A2_3" class="caret-bottom fix_btn width_btn fix-color-caret" data-bind="click: openScreenCCG015">#{i18n.getText('CCG015_52')}</button><span class="caret-right caret-inline"></span>
+              </div>
+              <div class="w-100 mt-15">
+                <!-- A2_4 -->
+              <span id="A2_4" class="w-100">#{i18n.getText('CCG015_54')}</span>
+              </div>
+              <div class="w-100 mt-15 text-align-center">
+                <!-- A2_5 -->
+                <button id="A2_5" class="width_btn fix_btn" data-bind="click: openScreenCCG018">#{i18n.getText('CCG015_55')}</button><span class="caret-right caret-inline"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 		</ui:define>
 	</ui:composition>
 </body>
