@@ -3,11 +3,10 @@ package nts.uk.file.at.infra.annualworkledger;
 import com.aspose.cells.*;
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.AnnualWorkLedgerContent;
 import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.AnnualWorkLedgerExportDataSource;
-import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.DailyData;
-import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.MonthlyData;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.CommonAttributesOfForms;
 import nts.uk.file.at.app.export.annualworkledger.DisplayAnnualWorkLedgerReportGenerator;
 import nts.uk.shr.com.i18n.TextResource;
@@ -15,8 +14,8 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 import javax.ejb.Stateless;
+import java.text.DecimalFormat;
 import java.time.DateTimeException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -31,9 +30,8 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
     private static final String EXCEL_EXT = ".xlsx";
     private static final int EXPORT_PDF = 1;
     private static final int EXPORT_EXCEL = 2;
-    private static final int NUMBER_ROW_OF_PAGE = 47;
+    private static final int NUMBER_ROW_OF_PAGE = 48;
     private static final int MAX_DAY_IN_MONTH = 31;
-    private static final int TOTAL_MONTH_IN_YEAR = 12;
 
     @Override
     public void generate(FileGeneratorContext generatorContext, AnnualWorkLedgerExportDataSource dataSource) {
@@ -44,7 +42,6 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
             Worksheet worksheet = worksheets.get(0);
             if (!dataSource.getLstAnnualWorkLedgerContent().isEmpty()) {
                 settingPage(worksheet, dataSource);
-                printHeaderTemplate(worksheet, dataSource);
                 printContents(worksheet, dataSource);
                 removeTemplate(worksheet);
             }
@@ -67,168 +64,199 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
     private void settingPage(Worksheet worksheet, AnnualWorkLedgerExportDataSource dataSource) {
         PageSetup pageSetup = worksheet.getPageSetup();
         pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
-        pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
         String companyName = dataSource.getCompanyName();
         pageSetup.setHeader(0, "&7&\"ＭＳ フォントサイズ\"" + companyName);
         pageSetup.setHeader(1, "&12&\"ＭＳ フォントサイズ\""
                 + dataSource.getOutputSetting().getName());
-        //pageSetup.setPrintArea(PRINT_AREA);
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter
                 .ofPattern("yyyy/MM/dd  H:mm", Locale.JAPAN);
         worksheet.getPageSetup().setHeader(2,
                 "&7&\"MS フォントサイズ\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\n" +
                         TextResource.localize("page") + " &P");
-        if (dataSource.getMode() == EXPORT_PDF) {
-            pageSetup.setFitToPagesTall(0);
-            pageSetup.setFitToPagesWide(0);
-        }
-    }
-
-    private void printHeaderTemplate(Worksheet worksheet, AnnualWorkLedgerExportDataSource dataSource) {
-        Cells cells = worksheet.getCells();
-        val yearMonths = dataSource.getYearMonthPeriod().yearMonthsBetween();
-        for (int i = 0; i < yearMonths.size(); i++) {
-            val yearMonth = yearMonths.get(i);
-            if (i == 0 || yearMonth.month() == 1) {
-                cells.get(4, 2 + i * 2).setValue(TextResource.localize("KWR004_209",
-                        String.valueOf(yearMonth.year()), String.valueOf(yearMonth.month())));
-                cells.get(38, 2 + i * 2).setValue(TextResource.localize("KWR004_209",
-                        String.valueOf(yearMonth.year()), String.valueOf(yearMonth.month())));
-            } else {
-                cells.get(4, 2 + i * 2).setValue(TextResource.localize("KWR004_210",
-                        String.valueOf(yearMonth.month())));
-                cells.get(38, 2 + i * 2).setValue(TextResource.localize("KWR004_210",
-                        String.valueOf(yearMonth.month())));
-            }
-
-            val firstDailyData = dataSource.getLstAnnualWorkLedgerContent().stream().findFirst().get().getDailyData();
-            cells.get(5, 2 + i * 2).setValue(firstDailyData.getLeftColumnName());
-            cells.get(5, 3 + i * 2).setValue(firstDailyData.getRightColumnName());
-        }
-
-        val closureDay = dataSource.getClosureDate().getLastDayOfMonth() ?
-                0 : dataSource.getClosureDate().getClosureDay().v();
-        // 日次項目では固定３１行であり
-        for (int i = 0; i < MAX_DAY_IN_MONTH; i++) {
-            val day = (closureDay + i) % MAX_DAY_IN_MONTH + 1;
-            cells.get(6 + i, 1).setValue(TextResource.localize("KWR004_211", String.valueOf(day)));
-            if (i > 28) {
-                for (int j = 0; j < yearMonths.size(); j++) {
-                    val yearMonth = yearMonths.get(j);
-                    try {
-                        LocalDate.of(yearMonth.year(), yearMonth.month(), day);
-                    } catch (DateTimeException ex) {
-                        cells.merge(6 + i, 2 + j * 2, 1, 2);
-                        this.setLineDiagonal(cells.get(6 + i, 2 + j * 2));
-                    }
-                }
-            }
-        }
     }
 
     private void printContents(Worksheet worksheet, AnnualWorkLedgerExportDataSource dataSource) throws Exception {
+        HorizontalPageBreakCollection pageBreaks = worksheet.getHorizontalPageBreaks();
         Cells cells = worksheet.getCells();
-        int firstRow = NUMBER_ROW_OF_PAGE;
-        val closureDay = dataSource.getClosureDate().getLastDayOfMonth() ?
-                0 : dataSource.getClosureDate().getClosureDay().v();
-        val startYearMonth = dataSource.getYearMonthPeriod().start();
         List<AnnualWorkLedgerContent> lstAnnualWorkLedgerContent = dataSource.getLstAnnualWorkLedgerContent();
         for (int i = 0; i < lstAnnualWorkLedgerContent.size(); i++) {
-            AnnualWorkLedgerContent empInfor = lstAnnualWorkLedgerContent.get(i);
-            firstRow = (i + 1) * NUMBER_ROW_OF_PAGE;
+            AnnualWorkLedgerContent empInfo = lstAnnualWorkLedgerContent.get(i);
+            int firstRow = (i + 1) * NUMBER_ROW_OF_PAGE;
             cells.copyRows(cells, 0, firstRow, NUMBER_ROW_OF_PAGE);
 
-            this.printDailyData(worksheet, firstRow, dataSource.isZeroDisplay(), empInfor.getDailyData(), startYearMonth, closureDay);
-            this.printMonthlyData(worksheet, firstRow, dataSource.isZeroDisplay(), empInfor.getLstMonthlyData(), startYearMonth);
+            this.printEmployeeInfor(worksheet, firstRow, dataSource, empInfo);
+            this.printData(worksheet, firstRow, dataSource, empInfo);
+            pageBreaks.add(firstRow);
         }
     }
 
-    private void printDailyData(Worksheet worksheet, int firstRow, boolean isZeroDisplay, DailyData dailyData, YearMonth startYearMonth, int closureDay) {
+    /**
+     * Print employee information
+     */
+    private void printEmployeeInfor(Worksheet worksheet, int firstRow, AnnualWorkLedgerExportDataSource dataSource, AnnualWorkLedgerContent empInfo) {
         Cells cells = worksheet.getCells();
-        for (val data : dailyData.getLstLeftValue()) {
-            val date = data.getDate();
-            val rowIndex = firstRow + (date.day() - closureDay) % MAX_DAY_IN_MONTH;
-            val columnIndex = firstRow + 2 + this.totalMonths(startYearMonth, date.yearMonth());
-            cells.get(rowIndex, columnIndex).setValue(this.formatValue(data.getActualValue(), data.getCharacterValue(), dailyData.getLeftAttribute(), isZeroDisplay));
-        }
-
-        for (val data : dailyData.getLstRightValue()) {
-            val date = data.getDate();
-            val rowIndex = firstRow + (date.day() - closureDay) % MAX_DAY_IN_MONTH;
-            val columnIndex = firstRow + 3 + this.totalMonths(startYearMonth, date.yearMonth());
-            cells.get(rowIndex, columnIndex).setValue(this.formatValue(data.getActualValue(), data.getCharacterValue(), dailyData.getRightAttribute(), isZeroDisplay));
-        }
+        // B1_1 B1_2 B1_3
+        cells.get(firstRow, 0).setValue(TextResource.localize("KWR004_201") + "　" + empInfo.getWorkplaceCode() + "　" + empInfo.getWorkplaceName());
+        // B2_1 B2_2 B2_3
+        cells.get(firstRow + 1, 0).setValue(TextResource.localize("KWR004_202") + "　" + empInfo.getEmployeeCode() + "　" + empInfo.getEmployeeName());
+        // B3_1 B3_2 B3_3
+        cells.get(firstRow + 2, 0).setValue(TextResource.localize("KWR004_203") + "　" + empInfo.getEmploymentCode() + "　" + empInfo.getEmploymentName());
+        // B4_1 B4_2
+        cells.get(firstRow + 2, 5).setValue(TextResource.localize("KWR004_204") + "　" + empInfo.getClosureDate());
+        // B5_1 B5_2
+        cells.get(firstRow, 10).setValue(TextResource.localize("KWR004_205") +
+                TextResource.localize("KWR004_208", this.toYearMonthString(dataSource.getYearMonthPeriod().start()),
+                        this.toYearMonthString(dataSource.getYearMonthPeriod().end())));
     }
 
-    private void printMonthlyData(Worksheet worksheet, int firstRow, boolean isZeroDisplay, List<MonthlyData> lstMonthlyData, YearMonth startYearMonth) {
+    /**
+     * Print data
+     */
+    private void printData(Worksheet worksheet, int firstRow, AnnualWorkLedgerExportDataSource dataSource, AnnualWorkLedgerContent empInfo) {
         Cells cells = worksheet.getCells();
-        for (int i = 0; i < lstMonthlyData.size(); i++) {
-            val dataRow = lstMonthlyData.get(i);
-            val rowIndex = firstRow + 39 + i;
-            cells.get(rowIndex, 0).setValue(dataRow.getOutputItemName());
-            for (val data : dataRow.getLstMonthlyValue()) {
-                val columnIndex = firstRow + 2 + this.totalMonths(startYearMonth, data.getDate());
-                cells.get(rowIndex, columnIndex).setValue(this.formatValue(data.getActualValue(), data.getCharacterValue(), dataRow.getAttribute(), isZeroDisplay));
+
+        // Daily data
+        val dailyData = empInfo.getDailyData();
+        // C1_1
+        cells.get(firstRow + 3, 0).setValue(TextResource.localize("KWR004_206"));
+
+        val closureDay = dataSource.getClosureDate().getLastDayOfMonth() ? 0 : dataSource.getClosureDate().getClosureDay().v();
+        val yearMonths = dataSource.getYearMonthPeriod().yearMonthsBetween();
+        for (int mi = 0; mi < yearMonths.size(); mi++) {
+            val yearMonth = yearMonths.get(mi);
+            String yearMonthString = (mi == 0 || yearMonth.month() == 1) ?
+                    TextResource.localize("KWR004_209", String.valueOf(yearMonth.year()), String.valueOf(yearMonth.month())) :
+                    TextResource.localize("KWR004_210", String.valueOf(yearMonth.month()));
+            // C2_1
+            cells.get(firstRow + 4, 2 + mi * 2).setValue(yearMonthString);
+            // C2_2
+            cells.get(firstRow + 5, 2 + mi * 2).setValue(dailyData.getLeftColumnName());
+            // C2_3
+            cells.get(firstRow + 5, 3 + mi * 2).setValue(dailyData.getRightColumnName());
+
+            // 日次項目では固定３１行であり
+            for (int di = 0; di < MAX_DAY_IN_MONTH; di++) {
+                val day = (closureDay + di) % MAX_DAY_IN_MONTH + 1;
+                // D1_1
+                cells.get(firstRow + 6 + di, 0).setValue(TextResource.localize("KWR004_211", String.valueOf(day)));
+
+                try {
+                    val date = GeneralDate.ymd(yearMonth.year(), yearMonth.month(), day);
+                    val leftData = dailyData.getLstLeftValue().stream().filter(x -> x.getDate().compareTo(date) == 0).findFirst();
+                    if (leftData.isPresent()) {
+                        // D2_1
+                        cells.get(firstRow + 6 + di, 2 + mi * 2)
+                                .setValue(this.formatValue(leftData.get().getActualValue(), leftData.get().getCharacterValue(), dailyData.getLeftAttribute(), dataSource.isZeroDisplay()));
+                    }
+
+                    val rightData = dailyData.getLstLeftValue().stream().filter(x -> x.getDate().compareTo(date) == 0).findFirst();
+                    if (rightData.isPresent()) {
+                        cells.get(firstRow + 6 + di, 3 + mi * 2)
+                                .setValue(this.formatValue(rightData.get().getActualValue(), rightData.get().getCharacterValue(), dailyData.getRightAttribute(), dataSource.isZeroDisplay()));
+                    }
+                } catch (DateTimeException ex) {
+                    cells.merge(firstRow + 6 + di, 2 + mi * 2, 1, 2);
+                    this.setLineDiagonal(cells.get(firstRow + 6 + di, 2 + mi * 2));
+                }
             }
+
+            // Monthly Data
+            val lstMonthlyData = empInfo.getLstMonthlyData();
+            // E1_1
+            cells.get(firstRow + 37, 0).setValue(TextResource.localize("KWR004_207"));
+            // E2_1
+            cells.get(firstRow + 38, 2 + mi * 2).setValue(yearMonthString);
+
+            for (int i = 0; i < lstMonthlyData.size(); i++) {
+                val dataRow = lstMonthlyData.get(i);
+                val rowIndex = firstRow + 39 + i;
+                // F1_1
+                cells.get(rowIndex, 0).setValue(dataRow.getOutputItemName());
+                val monthlyData = dataRow.getLstMonthlyValue().stream().filter(x -> x.getDate().compareTo(yearMonth) == 0).findFirst();
+                if (monthlyData.isPresent()) {
+                    // F2_1
+                    cells.get(rowIndex, 2 + mi * 2)
+                            .setValue(this.formatValue(monthlyData.get().getActualValue(), monthlyData.get().getCharacterValue(), dataRow.getAttribute(), dataSource.isZeroDisplay()));
+                }
+            }
+
         }
     }
 
+    /**
+     * Remove page template
+     */
     private void removeTemplate(Worksheet worksheet) {
         Cells cells = worksheet.getCells();
         cells.deleteRows(0, NUMBER_ROW_OF_PAGE);
     }
 
-    private String formatValue(double valueDouble, String valueString, CommonAttributesOfForms attributes,
-                               Boolean isZeroDisplay) {
+    /**
+     * Format value
+     */
+    private String formatValue(double valueDouble, String valueString, CommonAttributesOfForms attributes, Boolean isZeroDisplay) {
         String rs = "";
-        if (!isZeroDisplay) {
-            if (valueDouble == 0 || valueString.equals(""))
-                return rs;
-        }
         switch (attributes) {
-
-            case TIME:
-                // HH:mm　(マイナスあり)
-                rs = convertToTime((int) valueDouble);
-                break;
-            case TIME_OF_DAY:
-                // HH:mm　(マイナスあり)
-                rs = convertToTime((int) valueDouble);
-                break;
-            case NUMBER_OF_TIMES:
-                // 小数点以下は、集計する勤怠項目の小数部桁数に従う(※1)　(マイナスあり)
-                rs = valueString;
-                break;
-            case AMOUNT_OF_MONEY:
-                // ３桁毎のカンマ区切り　(マイナスあり)
-                rs = valueString;
-                break;
-            case DAYS:
-                rs = valueString;
-                break;
             case WORK_TYPE:
                 rs = valueString;
                 break;
             case WORKING_HOURS:
                 rs = valueString;
                 break;
+            case TIME_OF_DAY:
+                rs = convertToTime((int) valueDouble);
+                break;
+            case TIME:
+                val minute = (int) valueDouble;
+                if (minute != 0 || isZeroDisplay) {
+                    rs = convertToTime(minute);
+                }
+                break;
+            case NUMBER_OF_TIMES:
+                if (valueDouble != 0 || isZeroDisplay) {
+                    DecimalFormat formatter1 = new DecimalFormat("#.#");
+                    rs = formatter1.format(valueDouble) + "回"; // TODO Text Resource
+                }
+                break;
+            case DAYS:
+                if (valueDouble != 0 || isZeroDisplay) {
+                    DecimalFormat formatter2 = new DecimalFormat("#.#");
+                    rs = formatter2.format(valueDouble) + "日";// TODO Text Resource
+                }
+                break;
+            case AMOUNT_OF_MONEY:
+                if (valueDouble != 0 || isZeroDisplay) {
+                    DecimalFormat formatter3 = new DecimalFormat("#,###");
+                    rs = formatter3.format((int) valueDouble) + "円"; // TODO Text Resource
+                }
+                break;
         }
         return rs;
     }
 
+    /**
+     * Convert minute to HH:mm
+     */
     private String convertToTime(int minute) {
-        int hour = minute / 60;
-        int minutes = minute % 60;
-        return (hour) + ":" + (minutes);
+        val minuteAbs = Math.abs(minute);
+        int hours = minuteAbs / 60;
+        int minutes = minuteAbs % 60;
+        return (minute < 0 ? "-" : "") + String.format("%d:%02d", hours, minutes);
     }
 
+    /**
+     * 存在しない日のセールに斜線を付ける
+     */
     private void setLineDiagonal(Cell cell) {
         Style style = cell.getStyle();
-        style.getBorders().setDiagonalStyle(BorderType.DIAGONAL_DOWN);
+        style.setBorder(BorderType.DIAGONAL_UP, CellBorderType.THIN, Color.getBlack());
         cell.setStyle(style);
     }
 
-    private int totalMonths(YearMonth start, YearMonth end) {
-        return (end.year() - start.year()) * TOTAL_MONTH_IN_YEAR + (end.month() - start.month());
+    /**
+     * Display year month yyyy/MM
+     */
+    private String toYearMonthString(YearMonth yearMonth) {
+        return String.format("%04d/%02d", yearMonth.year(), yearMonth.month());
     }
 }

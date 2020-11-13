@@ -5,11 +5,10 @@ import nts.arc.time.calendar.period.DatePeriod;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 public interface AttendanceItemServiceAdapter {
 
-     AttendanceResultDto getValueOf(String employeeId, GeneralDate workingDate, Collection<Integer> itemIds);
+    AttendanceResultDto getValueOf(String employeeId, GeneralDate workingDate, Collection<Integer> itemIds);
 
-
+    List<AttendanceResultDto> getValueOf(List<String> employeeIds, DatePeriod workingDatePeriod, Collection<Integer> itemIds);
 }

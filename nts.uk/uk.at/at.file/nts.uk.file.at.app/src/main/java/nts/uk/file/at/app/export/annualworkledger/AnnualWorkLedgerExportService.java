@@ -127,7 +127,7 @@ public class AnnualWorkLedgerExportService extends ExportService<AnnualWorkLedge
         // 5 Call 年間勤務台帳の出力設定の詳細を取得する
         Optional<AnnualWorkLedgerOutputSetting> outputSetting = annualWorkLedgerOutputSettingFinder.getById(query.getSettingId());
         if (!outputSetting.isPresent()) {
-            throw new BusinessException("Msg_1816");
+            throw new BusinessException("Msg_1898");
         }
 
         // 6 Call 年間勤務台帳の表示内容を作成する
@@ -188,8 +188,8 @@ public class AnnualWorkLedgerExportService extends ExportService<AnnualWorkLedge
         }
 
         @Override
-        public AttendanceResultDto getValueOf(String employeeId, GeneralDate workingDate, Collection<Integer> itemIds) {
-            return itemServiceAdapter.getValueOf(employeeId, workingDate, itemIds);
+        public List<AttendanceResultDto> getValueOf(String employeeId, DatePeriod workingDatePeriod, Collection<Integer> itemIds) {
+            return itemServiceAdapter.getValueOf(Collections.singletonList(employeeId), workingDatePeriod, itemIds);
         }
 
         @Override

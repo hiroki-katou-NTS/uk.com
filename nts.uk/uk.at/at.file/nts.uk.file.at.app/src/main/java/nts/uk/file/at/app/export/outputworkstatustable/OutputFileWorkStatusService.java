@@ -91,7 +91,9 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
         // 3.1 Call [No.560]職場IDから職場の情報をすべて取得する
         List<WorkplaceInfor> lstWorkplaceInfo = workplaceConfigInfoAdapter.getWorkplaceInforByWkpIds(companyId, listWorkplaceId, baseDate);
 
-        List<WorkPlaceInfo> placeInfoList =lstWorkplaceInfo.stream().map(e->new WorkPlaceInfo(e.getWorkplaceId(),e.getWorkplaceCode(),e.getWorkplaceName())).collect(Collectors.toList());
+        List<WorkPlaceInfo> placeInfoList =lstWorkplaceInfo.stream()
+                .map(e->new WorkPlaceInfo(e.getWorkplaceId(),e.getWorkplaceCode(),e.getWorkplaceName()))
+                .collect(Collectors.toList());
 
         RequireImpl require = new RequireImpl(itemServiceAdapter,affComHistAdapter);
         // 4. 勤務状況表の出力設定の詳細を取得する.
