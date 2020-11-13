@@ -11,13 +11,27 @@ public class OptionalItemContent {
 
     private int optionalItemAtr;
 
+    /**
+     * 申請種類名
+     */
     private String optionalItemName;
+    /**
+     * 時間
+     */
+    private Integer time;
 
-    private String unit;
-
+    /**
+     * 回数
+     */
     private BigDecimal times;
 
+    /**
+     * 金額
+     */
     private Integer amount;
 
-    private Integer time;
+    /**
+     * 任意項目の単位
+     */
+    private String unit;
 }

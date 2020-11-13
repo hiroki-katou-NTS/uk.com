@@ -5,6 +5,7 @@ import nts.uk.ctx.at.request.app.find.application.gobackdirectly.ParamUpdate;
 import nts.uk.ctx.at.request.app.find.application.optitem.OptionalItemApplicationQuery;
 import nts.uk.ctx.at.request.app.find.application.optitem.optitemdto.OptionalItemApplicationDetail;
 import nts.uk.ctx.at.request.app.find.application.optitem.optitemdto.OptionalItemApplicationDto;
+import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.optionalitemappsetting.ControlOfAttendenceRequestDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.optionalitemappsetting.OptionalItemAppSetDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.optionalitemappsetting.OptionalItemAppSetFinder;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
@@ -37,13 +38,16 @@ public class OptionalItemApplicationWebService {
     @Path("optionalItemAppSetting")
     public List<OptionalItemAppSetDto> get() {
         int UsageClassification = 1;
+        /**
+         *  ドメインモデル「任意項目申請設定」を取得する
+         */
         return this.optionalItemAppSetFinder.findAllByCompany().stream().filter(optionalItemAppSetDto -> optionalItemAppSetDto.getUseAtr() == UsageClassification).collect(Collectors.toList());
     }
 
     @POST
     @Path("getControlAttendance")
-    public List<ControlOfAttendanceItemsDto> getControlAttendance(List<Integer> optionalItemNos) {
-        return this.optionalItemApplicationQuery.findControlOfAttendance(optionalItemNos);
+    public List<ControlOfAttendanceItemsDto> getControlAttendance(ControlOfAttendenceRequestDto param) {
+        return this.optionalItemApplicationQuery.findControlOfAttendance(param.getOptionalItemNos());
     }
 
     @POST

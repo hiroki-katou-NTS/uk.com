@@ -39,6 +39,8 @@ public class JpaOptionalItemApplicationRepository extends JpaRepository implemen
     private static final String FIND_APPLICATION = "SELECT a FROM KrqdtApplication a where a.pk.companyID = :cId" +
             " and a.pk.appID = :appId";
 
+    private static final Integer OPTIONAL_ITEM_NO_CONVERT_CONST = 640;
+
     @Override
     public void save(OptionalItemApplication optItemApp) {
         List<KrqdtAppAnyv> entities = toEntity(optItemApp);
@@ -62,7 +64,7 @@ public class JpaOptionalItemApplicationRepository extends JpaRepository implemen
                 .getList().stream().collect(Collectors.toMap(x -> x.getKrqdtAppAnyvPk().anyvNo, x -> x));
         if (entityMap.size() > 0) {
             domain.getOptionalItems().forEach(item -> {
-                KrqdtAppAnyv krqdtAppAnyv = entityMap.get(item.getItemNo().v() + 640);
+                KrqdtAppAnyv krqdtAppAnyv = entityMap.get(Integer.sum(item.getItemNo().v(), OPTIONAL_ITEM_NO_CONVERT_CONST));
                 krqdtAppAnyv.setTimes(item.getTimes().isPresent() ? item.getTimes().get().v() : null);
                 krqdtAppAnyv.setTime(item.getTime().isPresent() ? item.getTime().get().v() : null);
                 krqdtAppAnyv.setMoneyValue(item.getAmount().isPresent() ? item.getAmount().get().v() : null);
@@ -101,7 +103,7 @@ public class JpaOptionalItemApplicationRepository extends JpaRepository implemen
         List<KrqdtAppAnyv> entities = new ArrayList<>();
         domain.getOptionalItems().forEach(anyItemValue -> {
             KrqdtAppAnyv entity = new KrqdtAppAnyv();
-            entity.setKrqdtAppAnyvPk(new KrqdtAppAnyvPk(cid, domain.getAppID(), domain.getCode().v(), anyItemValue.getItemNo().v() + 640));
+            entity.setKrqdtAppAnyvPk(new KrqdtAppAnyvPk(cid, domain.getAppID(), domain.getCode().v(), Integer.sum(anyItemValue.getItemNo().v(), 640)));
             entity.setTimes(anyItemValue.getTimes().isPresent() ? anyItemValue.getTimes().get().v() : null);
             entity.setTime(anyItemValue.getTime().isPresent() ? anyItemValue.getTime().get().v() : null);
             entity.setMoneyValue(anyItemValue.getAmount().isPresent() ? anyItemValue.getAmount().get().v() : null);

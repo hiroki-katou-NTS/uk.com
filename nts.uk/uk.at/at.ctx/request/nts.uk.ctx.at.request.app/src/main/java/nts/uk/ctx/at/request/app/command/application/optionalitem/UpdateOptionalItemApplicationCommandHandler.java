@@ -64,7 +64,13 @@ public class UpdateOptionalItemApplicationCommandHandler extends CommandHandlerW
         this.optionalItemApplicationQuery.checkBeforeUpdate(command.getOptItemAppCommand());
         OptionalItemApplication optionalItemApplication = command.getOptItemAppCommand().toDomain();
         optionalItemApplication.setAppID(application.getAppID());
+        /**
+         * ドメインモデル「任意項目申請申請」の更新をする
+         */
         this.optionalItemApplicationRepository.update(optionalItemApplication, application);
+        /**
+         * 4-2.詳細画面登録後の処理
+         * */
         return this.detailAfterUpdate.processAfterDetailScreenRegistration(cid, application.getAppID(), appDispInfoStartupOutput);
     }
 }

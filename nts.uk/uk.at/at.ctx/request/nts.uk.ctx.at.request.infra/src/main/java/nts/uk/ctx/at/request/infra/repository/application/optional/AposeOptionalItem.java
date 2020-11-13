@@ -22,7 +22,7 @@ public class AposeOptionalItem {
         Cell cellB9 = cells.get("B9");
         cellB9.setValue(I18NText.getText("KAF020_56"));
         OptionalItemPrintContent optionalItemPrintContent = printContentOfApp.getOptionalItemPrintContent().get();
-        optionalItemPrintContent.getOptionalItemContents();
+        cells.get("D8").setValue(optionalItemPrintContent.getName());
         List<OptionalItemContent> printContent = optionalItemPrintContent.getOptionalItemContents();
         for (int i = 0; i < printContent.size(); i++) {
             Cell cellD = cells.get("D" + (9 + i));

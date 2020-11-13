@@ -11,5 +11,9 @@ import java.util.List;
 @AllArgsConstructor
 public class OptionalItemPrintContent {
     private String code;
+    /**
+     * 申請種類名
+     */
+    private String name;
     private List<OptionalItemContent> optionalItemContents;
 }
