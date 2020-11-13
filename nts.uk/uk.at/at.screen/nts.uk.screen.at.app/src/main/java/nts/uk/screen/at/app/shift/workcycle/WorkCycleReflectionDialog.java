@@ -198,12 +198,12 @@ public class WorkCycleReflectionDialog {
 		private BasicScheduleService basicScheduleService;
 
 		@Override
-		public Optional<WorkType> findByPK(String workTypeCd) {
+		public Optional<WorkType> getWorkType(String workTypeCd) {
 			return Optional.empty();
 		}
 
 		@Override
-		public Optional<WorkTimeSetting> findByCode(String workTimeCode) {
+		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
 			return Optional.empty();
 		}
 
@@ -213,7 +213,7 @@ public class WorkCycleReflectionDialog {
 		}
 
 		@Override
-		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTimeCd, String workTypeCd, Integer workNo) {
+		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd, Integer workNo) {
 			return null;
 		}
 

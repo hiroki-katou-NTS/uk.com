@@ -41,20 +41,20 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 
 	@Inject
 	private WorkTypeRepository workTypeRepo;
-	
+
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepository;
-	
+
 	@Inject
 	private WorkTimeSettingService workTimeSettingService;
-	
-	
+
+
 
 	@Override
 	protected void handle(CommandHandlerContext<RegisterShiftMasterCommand> context) {
 		String companyId = AppContexts.user().companyId();
 		RegisterShiftMasterCommand cmd = context.getCommand();
-		
+
 		Optional<ShiftMaster> existed = shiftMasterRepo.getByShiftMaterCd(companyId,
 				new ShiftMasterCode(cmd.getShiftMasterCode()).v());
 		if (cmd.getNewMode() && existed.isPresent()) {
@@ -76,30 +76,30 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 			persist = UpdateShiftMasterService.updateShiftMater(workRequired, updateRequired, cmd.getShiftMasterCode(),
 					dom.getDisplayInfor(), new WorkInformation(cmd.getWorkTypeCd(), cmd.getWorkTimeSetCd()));
 		}
-		
+
 		transaction.execute(() -> {
 			persist.run();
 		});
-		
+
 	}
 
 	@AllArgsConstructor
 	private static class WorkInfoRequireImpl implements WorkInformation.Require {
-		
+
 		private final String companyId = AppContexts.user().companyId();
-		
+
 		@Inject
 		private BasicScheduleService service;
-		
+
 		@Inject
 		private WorkTypeRepository workTypeRepo;
-		
+
 		@Inject
 		private WorkTimeSettingRepository workTimeSettingRepository;
-		
+
 		@Inject
 		private WorkTimeSettingService workTimeSettingService;
-		
+
 		@Inject
 		private BasicScheduleService basicScheduleService;
 
@@ -109,18 +109,17 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 		}
 
 		@Override
-		public Optional<WorkType> findByPK(String workTypeCd) {
+		public Optional<WorkType> getWorkType(String workTypeCd) {
 			return workTypeRepo.findByPK(companyId, workTypeCd);
 		}
 
 		@Override
-		public Optional<WorkTimeSetting> findByCode(String workTimeCode) {
+		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
 			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
 		}
 
 		@Override
-		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTimeCd,
-				String workTypeCd, Integer workNo) {
+		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd, Integer workNo) {
 			return workTimeSettingService .getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
 		}
 
@@ -146,7 +145,7 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 			return shiftMasterRepo.checkExistsByCd(companyId, shiftMaterCode);
 		}
 
-		
+
 		@Override
 		public void insert(ShiftMaster shiftMater, String workTypeCd, String workTimeCd) {
 			shiftMasterRepo.insert(shiftMater);
@@ -158,7 +157,7 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 	private static class UpdateShiftMasterRequireImpl implements UpdateShiftMasterService.Require {
 
 		private final String companyId = AppContexts.user().companyId();
-		
+
 		@Inject
 		private ShiftMasterRepository shiftMasterRepo;
 

@@ -52,10 +52,10 @@ public class CorrectDailyAttendanceServiceTest {
 		new Expectations() {
 			{
 
-				require.findByPK("001");
+				require.getWorkType("001");
 				result = Optional.of(createWorkType("001", WorkTypeUnit.OneDay, WorkTypeClassification.Absence));
 
-				require.findByPK("002");
+				require.getWorkType("002");
 				result = Optional.of(createWorkType("002", WorkTypeUnit.OneDay, WorkTypeClassification.Absence));
 			}
 		};
@@ -90,11 +90,11 @@ public class CorrectDailyAttendanceServiceTest {
 		new Expectations() {
 			{
 
-				require.findByPK("001");
+				require.getWorkType("001");
 				result = Optional.of(createWorkType("001", WorkTypeUnit.OneDay, //勤務の単位
 						WorkTypeClassification.Shooting));// 振出
 
-				require.findByPK("002");
+				require.getWorkType("002");
 				result = Optional.of(createWorkType("002", WorkTypeUnit.OneDay, WorkTypeClassification.Attendance));
 			}
 		};
@@ -131,11 +131,11 @@ public class CorrectDailyAttendanceServiceTest {
 		new Expectations() {
 			{
 
-				require.findByPK("001");
+				require.getWorkType("001");
 				result = Optional.of(createWorkType("001", WorkTypeUnit.OneDay, //勤務の単位
 						WorkTypeClassification.Shooting));// 振出
 
-				require.findByPK("002");
+				require.getWorkType("002");
 				result = Optional.of(createWorkType("002", WorkTypeUnit.OneDay, WorkTypeClassification.Holiday));
 			}
 		};
@@ -170,11 +170,11 @@ public class CorrectDailyAttendanceServiceTest {
 		new Expectations() {
 			{
 
-				require.findByPK("001");
+				require.getWorkType("001");
 				result = Optional.of(createWorkType("001", WorkTypeUnit.OneDay, //勤務の単位
 						WorkTypeClassification.Pause));// 振休
 
-				require.findByPK("002");
+				require.getWorkType("002");
 				result = Optional.of(createWorkType("002", WorkTypeUnit.OneDay, WorkTypeClassification.Absence));
 			}
 		};
@@ -210,11 +210,11 @@ public class CorrectDailyAttendanceServiceTest {
 		new Expectations() {
 			{
 
-				require.findByPK("001");
+				require.getWorkType("001");
 				result = Optional.of(createWorkType("001", WorkTypeUnit.OneDay, //勤務の単位
 						WorkTypeClassification.Pause));// 振休
 
-				require.findByPK("002");
+				require.getWorkType("002");
 				result = Optional.of(createWorkType("002", WorkTypeUnit.OneDay, WorkTypeClassification.Attendance));
 			}
 		};

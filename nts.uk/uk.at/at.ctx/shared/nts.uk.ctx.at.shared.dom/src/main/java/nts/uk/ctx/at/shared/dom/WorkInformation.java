@@ -108,11 +108,18 @@ public class WorkInformation {
 		this.workTimeCode = Optional.empty();
 	}
 
+	public boolean isExamWorkTime() {
+
+		return workTimeCode
+				.map(m -> m.equals(new WorkTimeCode("102")) || m.equals(new WorkTimeCode("103")))
+				.orElse(false);
+	}
+
+
 	/**
-	 * [1] 正常な状態か
-	 *
-	 * @param require
-	 * @return
+	 * 正常な状態か
+	 * @param require require
+	 * @return 勤務情報のエラー状態が"正常"であればtrue
 	 */
 	public boolean checkNormalCondition(Require require) {
 		// return [2] エラー状態をチェックする(require) == 勤務情報のエラー状態.正常
@@ -120,13 +127,12 @@ public class WorkInformation {
 	}
 
 	/**
-	 * [2] エラー状態をチェックする
-	 *
-	 * @param require
+	 * エラー状態をチェックする
+	 * @param require require
 	 */
 	public ErrorStatusWorkInfo checkErrorCondition(Require require) {
 		// $勤務種類 = require.勤務種類を取得する(@勤務種類コード) - CID sẽ dc truyền trên app
-		Optional<WorkType> workType = require.findByPK(this.workTypeCode.v());
+		Optional<WorkType> workType = require.getWorkType( this.workTypeCode.v() );
 
 		// if $勤務種類.isEmpty
 		if (!workType.isPresent()) {
@@ -163,7 +169,7 @@ public class WorkInformation {
 		}
 
 		// require.就業時間帯を取得する(ログイン会社ID, @就業時間帯コード) - CID sẽ dc truyền trên app
-		Optional<WorkTimeSetting> workTimeSetting = this.workTimeCode.flatMap(c -> require.findByCode(c.v()));
+		Optional<WorkTimeSetting> workTimeSetting = this.workTimeCode.flatMap(c -> require.getWorkTime(c.v()));
 		// if $就業時間帯.isEmpty
 		if (!workTimeSetting.isPresent()) {
 			return ErrorStatusWorkInfo.WORKTIME_WAS_DELETE;
@@ -176,8 +182,7 @@ public class WorkInformation {
 	}
 
 	/**
-	 * [3] 出勤・休日系の判定
-	 *
+	 * 出勤・休日系の判定
 	 * @return WorkStyle 出勤休日区分
 	 */
 	public Optional<WorkStyle> getWorkStyle(Require require) {
@@ -189,14 +194,13 @@ public class WorkInformation {
 	}
 
 	/**
-	 * [4] 勤務情報と補正済み所定時間帯を取得する
-	 *
-	 * @param require
+	 * 勤務情報と補正済み所定時間帯を取得する
+	 * @param require require
 	 */
 	public Optional<WorkInfoAndTimeZone> getWorkInfoAndTimeZone(Require require) {
 
 		// $勤務種類 = require.勤務種類を取得する( @勤務種類コード )
-		Optional<WorkType> workType = require.findByPK(this.workTypeCode.v());
+		Optional<WorkType> workType = require.getWorkType( this.workTypeCode.v() );
 		if (!workType.isPresent()) {
 			return Optional.empty();
 		}
@@ -205,14 +209,14 @@ public class WorkInformation {
 			return Optional.of(new WorkInfoAndTimeZone(workType.get()));
 		}
 		// $就業時間帯の設定 = require.就業時間帯を取得する(@就業時間帯コード )
-		Optional<WorkTimeSetting> workTimeSetting = require.findByCode(this.workTimeCode.get().v());
+		Optional<WorkTimeSetting> workTimeSetting = require.getWorkTime( this.workTimeCode.get().v() );
 		if (!workTimeSetting.isPresent()) {
 			return Optional.empty();
 		}
 
 		List<TimezoneUse> listTimezoneUse = new ArrayList<>();
 		// $就業時間帯の設定.所定時間帯を取得する( $就業時間帯の設定.会社ID, @勤務種類コード, Optional.empty )
-		listTimezoneUse = require.getPredeterminedTimezone(this.workTimeCode.get().v(), this.workTypeCode.v(), null)
+		listTimezoneUse = require.getPredeterminedTimezone(this.workTypeCode.v(), this.workTimeCode.get().v(), null)
 				.getTimezones();
 		// filter $.使用区分 == するしない区分．使用する
 		// sort $.勤務NO ASC
@@ -228,54 +232,43 @@ public class WorkInformation {
 	public static interface Require {
 
 		/**
-		 * [R-1] 勤務種類を取得する
-		 *
-		 * @param workTypeCd
+		 * 勤務種類を取得する
+		 * @param workTypeCd 就業時間帯コード
 		 * @return
 		 */
-		Optional<WorkType> findByPK(String workTypeCd);
+		Optional<WorkType> getWorkType(String workTypeCd);
 
 		/**
-		 * [R-2] 就業時間帯を取得する ( get 就業時間帯の設定)
-		 *
-		 * @param companyId
-		 * @param workTimeCode
-		 * @return
+		 * 就業時間帯を取得する
+		 * @param workTimeCode 就業時間帯コード
+		 * @return 就業時間帯の設定
 		 */
-		Optional<WorkTimeSetting> findByCode(String workTimeCode);
+		Optional<WorkTimeSetting> getWorkTime(String workTimeCode);
 
 		/**
-		 * [R-3] 就業時間帯が必須か 就業時間帯の必須チェック
-		 *
-		 * @param workTypeCode
+		 * 就業時間帯が必須か
+		 * @param workTypeCode 勤務種類コード
 		 * @return
 		 */
 		SetupType checkNeededOfWorkTimeSetting(String workTypeCode);
 
 		/**
 		 * 所定時間帯を取得する - WorkTimeSettingService
-		 *
-		 * @param companyId
-		 * @param workTimeCd
-		 * @param workTypeCd
-		 * @param workNo
-		 * @return
+		 * @param workTypeCd 勤務種類コード
+		 * @param workTimeCd 就業時間帯コード
+		 * @param workNo 勤務NO
+		 * @return 計算用所定時間設定
 		 */
-		PredetermineTimeSetForCalc getPredeterminedTimezone(String workTimeCd, String workTypeCd, Integer workNo);
+		PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd, Integer workNo);
 
 		/**
-		 * 1日半日出勤・1日休日系の判定 -
+		 * 1日半日出勤・1日休日系の判定
 		 *
 		 * @param workTypeCode
 		 * @return
 		 */
 		WorkStyle checkWorkDay(String workTypeCode);
+
 	}
 
-	public boolean isExamWorkTime() {
-
-		return workTimeCode
-				.map(m -> m.equals(new WorkTimeCode("102")) || m.equals(new WorkTimeCode("103")))
-				.orElse(false);
-	}
 }

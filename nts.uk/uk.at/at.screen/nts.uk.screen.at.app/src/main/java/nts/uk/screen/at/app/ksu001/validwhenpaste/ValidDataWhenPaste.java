@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package nts.uk.screen.at.app.ksu001.validwhenpaste;
 
@@ -30,7 +30,7 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class ValidDataWhenPaste {
-	
+
 	@Inject
 	private BasicScheduleService basicScheduleService;
 	@Inject
@@ -52,12 +52,12 @@ public class ValidDataWhenPaste {
 		}
 		return result;
 	}
-	
+
 	@AllArgsConstructor
 	private static class RequireWorkInforImpl implements WorkInformation.Require {
-		
+
 		private final String companyId = AppContexts.user().companyId();
-		
+
 		@Inject
 		private WorkTypeRepository workTypeRepo;
 		@Inject
@@ -67,21 +67,20 @@ public class ValidDataWhenPaste {
 		@Inject
 		private BasicScheduleService basicScheduleService;
 		@Override
-		
+
 		public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
 			 return basicScheduleService.checkNeededOfWorkTimeSetting(workTypeCode);
 		}
 		@Override
-		public Optional<WorkType> findByPK(String workTypeCd) {
+		public Optional<WorkType> getWorkType(String workTypeCd) {
 			return workTypeRepo.findByPK(companyId, workTypeCd);
 		}
 		@Override
-		public Optional<WorkTimeSetting> findByCode(String workTimeCode) {
+		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
 			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
 		}
 		@Override
-		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTimeCd,
-				String workTypeCd, Integer workNo) {
+		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd, Integer workNo) {
 			return workTimeSettingService .getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
 		}
 		@Override
