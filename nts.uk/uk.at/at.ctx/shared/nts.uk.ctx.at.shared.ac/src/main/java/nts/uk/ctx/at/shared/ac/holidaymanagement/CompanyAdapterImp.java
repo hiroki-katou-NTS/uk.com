@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.AddInforImport;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyDto;
@@ -80,5 +81,10 @@ public class CompanyAdapterImp implements CompanyAdapter {
 				export.getComNameKana(), export.getShortComName(), export.getRepname(), export.getRepjob(),
 				export.getContractCd(), export.getTaxNo(), export.getStartMonth(), addInfo, export.getIsAbolition());
 
+	}
+	
+	@Override
+	public YearMonthPeriod get(String cid, int year) {
+		return this.companyPub.getyearMonth(cid, year);
 	}
 }

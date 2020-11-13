@@ -12,6 +12,7 @@ import javax.ejb.Stateless;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetCom;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetEmp;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetRepo;
@@ -36,7 +37,8 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 
 	private static final String SELECT_YEAR_COM = "SELECT x FROM KshmtLegalTimeMCom x "
 			+ "WHERE x.pk.cid = :cid AND x.pk.type = :type AND x.pk.ym >= :start "
-			+ "AND x.pk.ym <= :end";
+			+ "AND x.pk.ym <= :end "
+			+ "ORDER BY x.pk.ym ASC";
 	private static final String SELECT_YEAR_SYA = "SELECT x FROM KshmtLegalTimeMSya x "
 			+ "WHERE x.pk.cid = :cid AND x.pk.type = :type AND x.pk.ym >= :start "
 			+ "AND x.pk.ym <= :end AND x.pk.sid = :sid";
@@ -317,5 +319,30 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 				.getList();
 		
 		return null;
+	}
+
+	@Override
+	public List<MonthlyWorkTimeSetCom> findCompanyByPeriod(String cid, LaborWorkTypeAttr laborAttr,
+			YearMonthPeriod yearMonthPeriod) {
+		
+		String startMonth = yearMonthPeriod.start().month() < 9 
+				? "0" + String.valueOf(yearMonthPeriod.start().month()) 
+				: String.valueOf(yearMonthPeriod.start().month());
+		
+		String start = String.valueOf(yearMonthPeriod.start().year()) + startMonth;
+		
+		String endMonth = yearMonthPeriod.end().month() < 9 
+				? "0" + String.valueOf(yearMonthPeriod.end().month()) 
+				: String.valueOf(yearMonthPeriod.end().month());
+		
+		String end = String.valueOf(yearMonthPeriod.end().year()) + endMonth;
+		
+		
+		return this.queryProxy().query(SELECT_YEAR_COM, KshmtLegalTimeMCom.class)
+				.setParameter("cid", cid)
+				.setParameter("type", laborAttr.value)
+				.setParameter("start", Integer.parseInt(start))
+				.setParameter("end", Integer.parseInt(end))
+				.getList(c -> MonthlyWorkTimeSetCom.of(cid, laborAttr, new YearMonth(c.pk.ym), c.domain()));
 	}
 }
