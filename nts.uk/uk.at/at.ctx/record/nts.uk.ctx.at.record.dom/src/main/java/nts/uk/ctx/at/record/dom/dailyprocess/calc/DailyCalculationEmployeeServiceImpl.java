@@ -38,6 +38,7 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.DetermineActualResultLock;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.PerformanceType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.service.ErAlCheckService;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.IdentityProcessUseSet;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentityProcessUseSetRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
@@ -74,9 +75,6 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	/** リポジトリ：日別実績の勤怠時間 */
 	@Inject
 	private IntegrationOfDailyGetter integrationGetter;
-	
-//	@Inject
-//	private DailyRecordTransactionService dailyTransaction;
 	
 	//ドメインサービス：計算用ストアド実行用
 	@Inject

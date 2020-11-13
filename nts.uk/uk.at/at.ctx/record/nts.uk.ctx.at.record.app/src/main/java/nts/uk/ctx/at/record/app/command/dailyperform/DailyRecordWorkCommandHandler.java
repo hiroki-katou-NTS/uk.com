@@ -120,20 +120,12 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 	private AffiliationInforOfDailyPerformCommandUpdateHandler affiliationInfoUpdateHandler;
 
 	/** エラー一覧： 社員の日別実績エラー一覧 */
-	// @Inject
-	// @AttendanceItemLayout(layout = "D", jpPropertyName = "", index = 4)
-	// private EmployeeDailyPerErrorCommandAddHandler errorAddHandler;
-	// @Inject
-	// @AttendanceItemLayout(layout = "D", jpPropertyName = "", index = 4)
-	// private EmployeeDailyPerErrorCommandUpdateHandler errorUpdateHandler;
-
-	/** エラー一覧： 社員の日別実績エラー一覧 */
 	@Inject
-	@AttendanceItemLayout(layout = DAILY_BUSINESS_TYPE_CODE, jpPropertyName = DAILY_BUSINESS_TYPE_NAME, index = 4)
-	private SnapshotOfDailyPerformCommandAddHandler businessTypeAddHandler;
+	@AttendanceItemLayout(layout = DAILY_SNAPSHOT_CODE, jpPropertyName = DAILY_SNAPSHOT_NAME, index = 4)
+	private SnapshotOfDailyPerformCommandAddHandler snapshotAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = DAILY_BUSINESS_TYPE_CODE, jpPropertyName = DAILY_BUSINESS_TYPE_NAME, index = 4)
-	private SnapshotOfDailyPerformCommandUpdateHandler businessTypeUpdateHandler;
+	@AttendanceItemLayout(layout = DAILY_SNAPSHOT_CODE, jpPropertyName = DAILY_SNAPSHOT_NAME, index = 4)
+	private SnapshotOfDailyPerformCommandUpdateHandler snapshotUpdateHandler;
 
 	/** 外出時間帯: 日別実績の外出時間帯 */
 	@Inject
@@ -646,8 +638,6 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 			return isUpdate ? this.calcAttrUpdateHandler : this.calcAttrAddHandler;
 		case DAILY_AFFILIATION_INFO_CODE:
 			return isUpdate ? this.affiliationInfoUpdateHandler : this.affiliationInfoAddHandler;
-		case DAILY_BUSINESS_TYPE_CODE:
-			return isUpdate ? this.businessTypeUpdateHandler : this.businessTypeAddHandler;
 		case DAILY_OUTING_TIME_CODE:
 			return isUpdate ? this.outingTimeUpdateHandler : this.outingTimeAddHandler;
 		case DAILY_BREAK_TIME_CODE:

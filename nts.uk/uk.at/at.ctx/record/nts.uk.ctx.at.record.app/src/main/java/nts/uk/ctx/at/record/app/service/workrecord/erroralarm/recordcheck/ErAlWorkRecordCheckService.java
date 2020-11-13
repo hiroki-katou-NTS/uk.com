@@ -277,11 +277,11 @@ public class ErAlWorkRecordCheckService {
 		return finalCheck(workingDate, checkCondition, record, employeeIds);
 	}
 	
-	private boolean canCheck(AffiliationInforOfDailyPerforDto affiliation, 
-			AlCheckTargetCondition checkCondition){
+	private boolean canCheck(AffiliationInforOfDailyPerforDto affiliation, AlCheckTargetCondition checkCondition){
 		if(isTrue(checkCondition.getFilterByBusinessType())){
 			if(!affiliation.isHaveData() || !checkCondition.getLstBusinessTypeCode()
-					.contains(new BusinessTypeCode(affiliation.getBusinessTypeCode()))){
+					.contains(affiliation.getBusinessTypeCode() == null ? null 
+							: new BusinessTypeCode(affiliation.getBusinessTypeCode()))){
 				return false;
 			}
 		}
