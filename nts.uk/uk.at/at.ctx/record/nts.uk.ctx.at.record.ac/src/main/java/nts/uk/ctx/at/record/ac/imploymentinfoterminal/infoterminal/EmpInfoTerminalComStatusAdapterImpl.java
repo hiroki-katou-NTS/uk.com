@@ -27,7 +27,8 @@ public class EmpInfoTerminalComStatusAdapterImpl implements EmpInfoTerminalComSt
 	
 	@Override
 	public Optional<EmpInfoTerminalComStatusImport> get(ContractCode contractCode, EmpInfoTerminalCode empInfoTerCode) {
-		return Optional.of(convertToImport(this.pub.get(contractCode.v(), empInfoTerCode.v().intValue()).get()));
+		Optional<EmpInfoTerminalComStatusExport> statusExportOpt = this.pub.get(contractCode.v(), empInfoTerCode.v().intValue());
+		return statusExportOpt.map(s -> convertToImport(s));
 	}
 	
 	@Override

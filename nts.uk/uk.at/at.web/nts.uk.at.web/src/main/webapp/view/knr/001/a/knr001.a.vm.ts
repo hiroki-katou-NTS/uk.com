@@ -124,6 +124,7 @@ module nts.uk.at.view.knr001.a {
                         self.empInfoTerminalModel().isEnableCode(false);              
                     }else{
                         self.createNewMode();
+                        self.isUpdateMode(false);
                     }
                 });
             }
@@ -150,17 +151,30 @@ module nts.uk.at.view.knr001.a {
                 if(self.hasError()){
                     return;
                 }
-                let ipAddress = "";
-                ipAddress += self.empInfoTerminalModel().ipAddress1() + "."
-                            + self.empInfoTerminalModel().ipAddress2() + "."
-                            + self.empInfoTerminalModel().ipAddress3() + "."
-                            + self.empInfoTerminalModel().ipAddress4();
+                // let ipAddress = "";
+                // ipAddress += self.empInfoTerminalModel().ipAddress1() + "."
+                //             + self.empInfoTerminalModel().ipAddress2() + "."
+                //             + self.empInfoTerminalModel().ipAddress3() + "."
+                //             + self.empInfoTerminalModel().ipAddress4();
                 let command: any = {};
                 command.empInfoTerCode = self.empInfoTerminalModel().empInfoTerCode();
                 command.empInfoTerName = self.empInfoTerminalModel().empInfoTerName();
                 command.modelEmpInfoTer = self.empInfoTerminalModel().modelEmpInfoTer();
                 command.macAddress = self.empInfoTerminalModel().macAddress();
-                command.ipAddress = ipAddress.length > 3 ? ipAddress : null;
+                // khong tab vao ip => null => con1 = false => con1
+                // tab vao ip => '' => con1 = true, con2 = false 
+                // true && true => true2; true & false => false; false && true => false; false & false => false1
+                if(self.empInfoTerminalModel().ipAddress1() == null || self.empInfoTerminalModel().ipAddress2() == null || self.empInfoTerminalModel().ipAddress3() == null || self.empInfoTerminalModel().ipAddress4() == null|| self.empInfoTerminalModel().ipAddress1().toString.length == 0 || self.empInfoTerminalModel().ipAddress2().toString.length == 0 || self.empInfoTerminalModel().ipAddress3().toString.length == 0 || self.empInfoTerminalModel().ipAddress4().toString.length == 0 ){
+                    command.ipAddress1 = null;
+                    command.ipAddress2 = null;
+                    command.ipAddress3 = null;
+                    command.ipAddress4 = null;
+                } else {
+                    command.ipAddress1 = self.empInfoTerminalModel().ipAddress1() == null || self.empInfoTerminalModel().ipAddress1().toString().length == 0 ? null : self.empInfoTerminalModel().ipAddress1().toString();
+                    command.ipAddress2 = self.empInfoTerminalModel().ipAddress2() == null || self.empInfoTerminalModel().ipAddress2().toString().length == 0 ? null : self.empInfoTerminalModel().ipAddress2().toString();
+                    command.ipAddress3 = self.empInfoTerminalModel().ipAddress3() == null || self.empInfoTerminalModel().ipAddress3().toString().length == 0 ? null : self.empInfoTerminalModel().ipAddress3().toString();
+                    command.ipAddress4 = self.empInfoTerminalModel().ipAddress4() == null || self.empInfoTerminalModel().ipAddress4().toString().length == 0 ? null : self.empInfoTerminalModel().ipAddress4().toString();
+                }
                 command.terSerialNo = self.empInfoTerminalModel().terSerialNo();
                 command.workLocationCode = self.empInfoTerminalModel().workLocationCode();
                 command.intervalTime = self.empInfoTerminalModel().intervalTime();
@@ -186,7 +200,7 @@ module nts.uk.at.view.knr001.a {
                             });   
                         });
                     }).fail(error => {
-                        $('#A3_2').ntsError('set', {messageId: error.messageId});  
+                        $('#A3_2').ntsError('set', {messageId: error.messageId});                       
                     }).always(()=>{
                         blockUI.clear();    
                     });
@@ -206,7 +220,7 @@ module nts.uk.at.view.knr001.a {
                             });   
                         });
                     }).fail(error => {
-                        $('#A1_2').ntsError('set', {messageId: error.messageId});
+                        $('#A3_8').ntsError('set', {messageId: error.messageId});
                     }).always(()=>{
                         blockUI.clear();    
                     });
@@ -219,52 +233,59 @@ module nts.uk.at.view.knr001.a {
              */
             private removeEmpInfoTerminal(): void{
                 let self = this;
+                
+                var delCode = self.empInfoTerminalModel().empInfoTerCode();
                 if(self.hasError()){
                     return;
                 }
-                dialog.confirm({messageId:"Msg_18"}).ifYes(()=>{
-                    var delCode = self.empInfoTerminalModel().empInfoTerCode();
-                    var index = self.empInfoTerminalList().indexOf(self.empInfoTerminalList().find(empInfoTer => delCode == empInfoTer.empInfoTerCode));
-                    let command = {
-                        empInfoTerCode: delCode
-                    };
-                    blockUI.invisible();
-                    service.removeEmpInfoTer(command).done(()=>{
-                        dialog.info({messageId:"Msg_16"}).then(() => {
-                            //reload
-                            blockUI.invisible();
-                            service.getAll().done((data)=>{
-                                if(data.length <= 0){
-                                    self.empInfoTerminalList([]);
-                                    self.clearErrors();
-                                    self.createNewMode();
-                                    blockUI.clear();
-                                } else {
-                                    self.isUpdateMode(true);
-                                    self.enableBtnDelete(true);
-                                    self.empInfoTerminalList(data);
-                                    let length = data.length;
-                                    if(index === 0){
-                                        self.selectedCode(self.empInfoTerminalList()[0].empInfoTerCode);
-                                    } else if (index === length){
-                                        self.selectedCode(self.empInfoTerminalList()[index-1].empInfoTerCode);
-                                    }else{
-                                        self.selectedCode(self.empInfoTerminalList()[index].empInfoTerCode);
-                                    }
-                                    self.loadEmpInfoTerminal(self.selectedCode());
-                                }
-                            });   
+                
+                dialog.confirm({messageId:"Msg_18"})
+                    .ifYes(() => {
+                        var index = self.empInfoTerminalList().indexOf(self.empInfoTerminalList().find(empInfoTer => delCode == empInfoTer.empInfoTerCode));
+                        let command = {
+                            empInfoTerCode: delCode
+                        };
+                        
+                        blockUI.invisible();
+                        service.removeEmpInfoTer(command).done(()=>{
+                            dialog.info({messageId:"Msg_16"}).then(() => {
+                                self.reloadData(index);
+                            });
+                        }).fail((res)=>{
+                            nts.uk.ui.dialog.info(res.message).then(()=>{
+                                self.reloadData(0);
+                            });
                         });
-                        blockUI.clear();
-                    }).fail((res)=>{
-                        nts.uk.ui.alertError(res.message).then(()=>{
-                            blockUI.clear();
-                        });
-                    });
                     }).ifNo(function(){
                         blockUI.clear();
                         $('#A3_4').focus();      
-                });
+                    });
+            }
+
+            private reloadData(index: number) {
+                let self = this;
+                service.getAll().done((data)=>{
+                    if(data.length <= 0){
+                        self.empInfoTerminalList([]);
+                        self.clearErrors();
+                        self.createNewMode();
+                    } else {
+                        self.isUpdateMode(true);
+                        self.enableBtnDelete(true);
+                        self.empInfoTerminalList(data);
+                        let length = data.length;
+                        if(index === 0){
+                            self.selectedCode(self.empInfoTerminalList()[0].empInfoTerCode);
+                        } else if (index === length){
+                            self.selectedCode(self.empInfoTerminalList()[index-1].empInfoTerCode);
+                        }else{
+                            self.selectedCode(self.empInfoTerminalList()[index].empInfoTerCode);
+                        }
+                        self.loadEmpInfoTerminal(self.selectedCode());
+                    }
+
+                    blockUI.clear();
+                }); 
             }
              /**
              * export Excel
@@ -385,7 +406,7 @@ module nts.uk.at.view.knr001.a {
                 
                 this.macAddress =  ko.observable('');
                 
-                this.ipAddress = ko.observable('');
+                //this.ipAddress = ko.observable('');
                 this.ipAddress1 =  ko.observable(null);
                 this.ipAddress2 =  ko.observable(null);
                 this.ipAddress3 =  ko.observable(null);
@@ -394,9 +415,9 @@ module nts.uk.at.view.knr001.a {
                 this.terSerialNo =  ko.observable(null);
                 this.workLocationCode =  ko.observable('');
                 this.workLocationName =  ko.observable('');
-                this.intervalTime =  ko.observable(0);
+                this.intervalTime =  ko.observable(null);
                 
-                this.outSupport =  ko.observable(0);
+                this.outSupport =  ko.observable(null);
                 this.enableOutingClass = ko.observable(true);
                 this.checkedOutingClass = ko.observable(false);
 
@@ -410,7 +431,7 @@ module nts.uk.at.view.knr001.a {
                 this.replace =  ko.observable(null);
                 this.goOutReason =  ko.observable(null);
                 
-                this.entranceExit =  ko.observable(0); 
+                this.entranceExit =  ko.observable(null); 
                 this.enableEntranExit = ko.observable(true);;
                 this.checkedEntranExit = ko.observable(false);
 
@@ -427,7 +448,7 @@ module nts.uk.at.view.knr001.a {
                 this.empInfoTerName('');
                 this.modelEmpInfoTer(null);
                 this.macAddress('');
-                this.ipAddress('');
+                //this.ipAddress('');
                 this.ipAddress1(null);
                 this.ipAddress2(null);
                 this.ipAddress3(null);
@@ -455,12 +476,13 @@ module nts.uk.at.view.knr001.a {
                 this.empInfoTerName(dto.empInfoTerName);
                 this.modelEmpInfoTer(dto.modelEmpInfoTer);
                 this.macAddress(dto.macAddress);
-                this.ipAddress(dto.ipAddress);
-                var arrIpAddress = dto.ipAddress.split(".");
-                this.ipAddress1(arrIpAddress[0]);
-                this.ipAddress2(arrIpAddress[1]);
-                this.ipAddress3(arrIpAddress[2]);
-                this.ipAddress4(arrIpAddress[3]);
+                //this.ipAddress(dto.ipAddress);
+                //var arrIpAddress = dto.ipAddress.split(".");
+                this.ipAddress1(dto.ipAddress1);
+                
+                this.ipAddress2(dto.ipAddress2);
+                this.ipAddress3(dto.ipAddress3);
+                this.ipAddress4(dto.ipAddress4);
                 this.terSerialNo(dto.terSerialNo);
                 this.workLocationCode(dto.workLocationCode);
                 this.workLocationName(dto.workLocationName.substring(0, 20));
