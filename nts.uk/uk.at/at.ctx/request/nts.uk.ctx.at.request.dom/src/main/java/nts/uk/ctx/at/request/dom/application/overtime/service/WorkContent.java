@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.overtime.service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,7 +26,7 @@ public class WorkContent {
 	// 就業時間帯コード
 	private Optional<String> workTimeCode = Optional.empty();
 	// 時間帯 NO = 1 and NO = 2
-	private List<TimeZone> timeZones;
+	private List<TimeZone> timeZones = Collections.emptyList();
 	// 休憩時間帯 休憩枠NO = 1 ~ 10
-	private List<BreakTimeSheet> breakTimes;
+	private List<BreakTimeSheet> breakTimes = Collections.emptyList();
 }

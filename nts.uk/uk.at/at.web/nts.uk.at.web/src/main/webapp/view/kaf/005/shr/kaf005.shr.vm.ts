@@ -16,7 +16,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 			<div class="cell valign-top" data-bind="if: true"
 				style="width: 25px;">
 				<!--A4_7 選択ボタン-->
-				<button tabindex="7" class="workSelect"
+				<button tabindex="7" style="margin-left: 18px" class="workSelect"
 					data-bind="enable: true, click : openDialogKdl003, text: $i18n('KAF005_36')"></button>
 			</div>
 			<div class="cell valign-center">
@@ -39,11 +39,11 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 		<!--勤務時間 1-->
 		<div class="valign-center control-group">
 			<div class="table">
-				<div class="cell valign-top cm-column2">
+				<div style="width: 113px" class="cell valign-top cm-column2">
 					<!--A4_8 勤務時間ラベル-->
 					<div class="lblTitle"
 						data-bind="ntsFormLabel: {required: true}, text: $i18n('KAF005_37')"
-						style="margin-right: 16px"></div>
+						style="margin-right: 6px"></div>
 				</div>
 				<div class="cell valign-center">
 					<div>
@@ -72,7 +72,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 
 	<div class="cf valign-top control-group" data-bind="if: true">
 		<!--A5_1 休憩時間ラベル-->
-		<div class="cm-column" style="display: inline-block;">
+		<div class="cm-column" style="display: inline-block; width: 100px">
 			<div class="lblTitle pull-left"
 				data-bind="ntsFormLabel: {}, text: $i18n('KAF005_40')"></div>
 		</div>
@@ -121,6 +121,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 			</table>
 		</div>
 	</div>
+	<!-- calculate button A5_8-->
 	
 	
 	<!-- over time hours -->
@@ -128,7 +129,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 	<div class="cf valign-top control-group cell"
 		style="margin-top: 0px !important">
 		<!--A6_1 残業時間ラベル-->
-		<div class="cm-column" style="display: inline-block;">
+		<div class="cm-column" style="display: inline-block; width: 100px">
 			<div class="lblTitle pull-left"
 				data-bind="text: $i18n('KAF005_50'), ntsFormLabel: {required: true}"></div>
 		</div>
@@ -176,10 +177,55 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 			</table>
 		</div>
 	</div>
-
+	<!-- holiday time -->
+	<div class="cf valign-top control-group" data-bind="if: true">
+		<!--A5_1 休憩時間ラベル-->
+		<div class="cm-column" style="display: inline-block; width: 100px">
+			<div class="lblTitle pull-left"
+				data-bind="ntsFormLabel: {required: true}, text: $i18n('KAF005_70')"></div>
+		</div>
+		<div class="table-time">
+			<table id="fixed-table-holiday">
+				<colgroup>
+					<col width="109px" />
+					<col width="115px" />
+					<col width="115px" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th class="ui-widget-header" rowspan="2"></th>
+						<!--A5_3 開始ラベル-->
+						<th class="ui-widget-header" rowspan="2"
+							data-bind="text: $i18n('KAF005_71')"></th>
+						<!--A5_4 終了ラベル-->
+						<th class="ui-widget-header" rowspan="2"
+							data-bind="text: $i18n('KAF005_72')"></th>
+					</tr>
+				</thead>
+				<tbody data-bind="foreach: restTime">
+					<tr>
+						<!--A5_5 休憩時間順序-->
+						<td class="header" data-bind="text: frameName"></td>
+						<!--A5_6 開始時刻-->
+						<td><input tabindex="12" class="right-content"
+							data-bind="
+								ntsTimeWithDayEditor: {
+									name: '#[KAF005_337]', 
+									value: startTime, 
+									constraint:'TimeWithDayAttr', 
+									enable: false,
+									option: {width: '85px', timeWithDay: true}}" /></td>
+						<!--A5_7 終了時刻-->
+						<td class="right-content" data-bind="text: 'preAppTime'"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
 
 
 </div>
+
 
 
 
@@ -188,7 +234,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
         name: 'kaf005-share',
 		template: template
     })
-	class KAF009ShrModel extends ko.ViewModel {
+	class KAF005ShrModel extends ko.ViewModel {
 		
 		restTime: KnockoutObservableArray<OverTimeInput> = ko.observableArray([]);
 		overtimeHours: KnockoutObservableArray<OverTimeInput> = ko.observableArray([]);
@@ -222,6 +268,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 		mounted() {
 			$("#fixed-table").ntsFixedTable({ height: 120 });
 			$("#fixed-overtime-hour-table").ntsFixedTable({ height: 216 });
+			$("#fixed-table-holiday").ntsFixedTable({ height: 120 });
 			
 		}
 		

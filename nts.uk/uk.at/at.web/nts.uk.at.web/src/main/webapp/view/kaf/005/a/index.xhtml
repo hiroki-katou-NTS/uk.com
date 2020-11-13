@@ -9,6 +9,7 @@
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
 			<com:ValidatorScript>
+					nts.uk.ctx.at.request.dom.application.AppReason
 					nts.uk.shr.com.time.TimeWithDayAttr
 					nts.uk.ctx.at.request.dom.application.overtime.primitivevalue.OvertimeAppPrimitiveTime
 			</com:ValidatorScript>
@@ -18,19 +19,85 @@
 			<com:stylefile path="/view/kaf/000/a/component4/kaf000.a.component4.css" />
 			<com:stylefile path="/view/kaf/000/a/component5/kaf000.a.component5.css" />
 			<com:stylefile path="/view/kaf/000/a/component6/kaf000.a.component6.css" />
+			
 			<com:scriptfile path="/view/kaf/000/shr/kaf000.shr.vm.js" />
+			<com:scriptfile path="/view/kaf/000/a/component1/kaf000.a.component1.js" />
+			<com:scriptfile path="/view/kaf/000/a/component2/kaf000.a.component2.js" />
+			<com:scriptfile path="/view/kaf/000/a/component3/kaf000.a.component3.js" />
+			<com:scriptfile path="/view/kaf/000/a/component4/kaf000.a.component4.js" />
+			<com:scriptfile path="/view/kaf/000/a/component5/kaf000.a.component5.js" />
+			<com:scriptfile path="/view/kaf/000/a/component6/kaf000.a.component6.js" />
+			<com:scriptfile path="/view/kaf/000/a/component7/kaf000.a.component7.js" />
+			<com:scriptfile path="/view/kaf/000/a/component8/kaf000.a.component8.js" />
 			<com:scriptfile path="/view/kaf/000/a/kaf000.a.vm.js" />
 			<com:scriptfile path="/view/kaf/005/shr/kaf005.shr.vm.js" />
+			<com:scriptfile path="/view/kaf/005/shr/header/kaf005.shr.header.vm.js" />
+			<com:scriptfile path="/view/kaf/005/shr/footer/kaf005.shr.footer.vm.js" />
 			<com:scriptfile path="/view/kaf/005/a/kaf005.a.vm.js" />
 			<com:stylefile path="/view/kaf/005/shr/kaf005.share.style.css" />
 
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
-				
+				<button class="proceed" data-bind="click: register, enable: $root.errors.isEmpty, text: $vm.$i18n('KAF009_3')"></button>
+				<div data-bind="component: { name: 'kaf000-a-component7',
+											params: {
+												appType: appType,
+												checkBoxValue: isSendMail,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }" style="display: inline-block; margin-left: 15px"></div>
 			</div>
 			<div id="contents-area">
+				<div data-bind="component: { name: 'kaf000-a-component1',
+											params: {
+												appType: appType,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
+				<div data-bind="component: { name: 'kaf005-share-header'}"></div>
+				<div class="table">
+					<div class="cell" style="width: 825px;" data-bind="component: { name: 'kaf000-a-component2',
+									params: {
+										appType: appType,
+										application: application,
+										appDispInfoStartupOutput: appDispInfoStartupOutput,
+										isAgentMode: isAgentMode
+                                          } }"></div>
+                 	<div class="cell" style="position: absolute;" data-bind="component: { name: 'kaf000-a-component8',
+									params: {
+										appType: appType,
+										application: application,
+										appDispInfoStartupOutput: appDispInfoStartupOutput
+									} }"></div>
+				</div>
+				<div data-bind="component: { name: 'kaf000-a-component3',
+											params: {
+												appType: appType,
+												application: application,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
+				<div data-bind="component: { name: 'kaf000-a-component4',
+											params: {
+												appType: appType,
+												application: application,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
+				
 				<div data-bind="component: { name: 'kaf005-share'}"></div>
+				
+				<div data-bind="component: { name: 'kaf000-a-component5',
+											params: {
+												appType: appType,
+												application: application,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
+				
+				<div data-bind="component: { name: 'kaf005-share-footer'}"></div>
+				
+				<div data-bind="component: { name: 'kaf000-a-component6',
+											params: {
+												appType: appType,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
 			</div>
 		</ui:define>
 	</ui:composition>

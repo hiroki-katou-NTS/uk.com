@@ -5,9 +5,16 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 	
 	@bean()
     class Kaf005AViewModel extends Kaf000AViewModel {
+	
 		appType: KnockoutObservable<number> = ko.observable(AppType.OVER_TIME_APPLICATION);
 		application: KnockoutObservable<Application>;
-			
+		isSendMail: KnockoutObservable<Boolean>;	
+		isAgentMode : KnockoutObservable<boolean> = ko.observable(false);
+		created() {
+			const self = this;
+			self.isSendMail = ko.observable(false);
+			self.application = ko.observable(new Application(self.appType()));
+		}
 		
 		mounted() {
 			const self = this;
@@ -17,7 +24,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		
 		start() {
 			const self = this;
-			self.application = ko.observable(new Application(self.appType()));
+			
 			self.$blockui("show");
 			let empLst: Array<string> = [],
 				dateLst: Array<string> = [];
@@ -31,11 +38,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						let param1 = {
 							
 						} as FirstParam;
-						let param2 = {
-							
-						} as SecondParam;
-						
 						param1.companyId = self.$user.companyId;
+						param1.dateOp = '2020/11/13';
 						param1.overtimeAppAtr = 1;
 						param1.appDispInfoStartupDto = ko.toJS(self.appDispInfoStartupOutput);
 						param1.isProxy = true;
@@ -47,12 +51,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 							startTimeSPR: param1.endTimeSPR,
 							endTimeSPR: param1.endTimeSPR,
 							isProxy: param1.isProxy,
-							employeeId: param2.employeeId,
-							prePostInitAtr: param2.prePostInitAtr,
-							overtimeLeaveAppCommonSet: param2.overtimeLeaveAppCommonSet,
-							advanceApplicationTime: param2.advanceApplicationTime,
-							achieveApplicationTime: param2.achivementApplicationTime,
-							workContent: param2.workContent
 						};
 						
 						return self.$ajax(API.start, command);
@@ -65,6 +63,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					
 				})
 				.always(() => self.$blockui('hide'));
+		}
+		
+		register() {
+			
 		}
 		
 		

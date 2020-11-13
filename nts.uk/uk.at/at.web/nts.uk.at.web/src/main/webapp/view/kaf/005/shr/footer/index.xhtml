@@ -1,0 +1,64 @@
+<div id="kaf005-footer">
+	<div class="table" style="margin-bottom: 5px;" data-bind="if: true">
+		<div style="width: 120px" class="cell col-1">
+			<div class="cell valign-center" data-bind="ntsFormLabel: {}, text: $i18n('KAF005_90')"></div>
+		</div>
+		<div class="cell valign-center">
+			<div id="combo-box" data-bind="ntsComboBox: {
+					options: itemList,
+					optionsValue: 'code',
+					value: selectedCode,
+					optionsText: 'name',
+					editable: true,
+					enable: true,
+					required: true,
+					columns: [
+						{ prop: 'code', length: 4 },
+						{ prop: 'name', length: 10 },
+					]}">
+			</div>
+		</div>
+	</div>
+	
+	<div class="table" style="margin-bottom: 5px;" data-bind="if: true">
+		<div style="width: 120px" class="cell col-1">
+			<div class="cell valign-center" data-bind="ntsFormLabel: {}, text: $i18n('KAF005_92')"></div>
+		</div>
+		<div class="cell valign-center">
+			<input style="width: 390px" data-bind="ntsTextEditor: {value: ko.observable('')}" />
+		</div>
+	</div>
+	
+	
+	<div class="table" style="margin-bottom: 5px;" data-bind="if: true">
+		<div style="width: 120px" class="cell col-1">
+			<div class="cell valign-center" data-bind="ntsFormLabel: {}, text: $i18n('KAF005_90')"></div>
+		</div>
+		<div class="cell valign-center">
+			<div id="combo-box" data-bind="ntsComboBox: {
+					options: itemList,
+					optionsValue: 'code',
+					value: selectedCode,
+					optionsText: 'name',
+					editable: true,
+					enable: true,
+					required: true,
+					columns: [
+						{ prop: 'code', length: 4 },
+						{ prop: 'name', length: 10 },
+					]}">
+			</div>
+		</div>
+	</div>
+	
+	<div class="table" style="margin-bottom: 5px;" data-bind="if: true">
+		<div style="width: 120px" class="cell col-1">
+			<div class="cell valign-center" data-bind="ntsFormLabel: {}, text: $i18n('KAF005_92')"></div>
+		</div>
+		<div class="cell valign-center">
+			<input style="width: 390px" data-bind="ntsTextEditor: {value: ko.observable('')}" />
+		</div>
+	</div>
+	
+	
+</div>
