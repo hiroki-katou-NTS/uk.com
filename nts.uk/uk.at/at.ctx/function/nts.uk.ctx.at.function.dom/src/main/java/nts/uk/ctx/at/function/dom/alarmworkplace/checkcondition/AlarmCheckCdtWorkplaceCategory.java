@@ -14,7 +14,6 @@ import nts.uk.shr.com.context.AppContexts;
  */
 
 @Getter
-@Setter
 @NoArgsConstructor
 public class AlarmCheckCdtWorkplaceCategory extends AggregateRoot {
 
