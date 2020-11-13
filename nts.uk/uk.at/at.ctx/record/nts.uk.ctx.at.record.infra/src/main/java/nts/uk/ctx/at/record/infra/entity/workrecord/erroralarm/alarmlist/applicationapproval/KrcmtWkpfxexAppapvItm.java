@@ -71,9 +71,7 @@ public class KrcmtWkpfxexAppapvItm extends AggregateTableEntity {
         entity.firstMessageDisp = domain.getFirstMessageDisp().v();
         entity.boldAtr = domain.isBoldAtr();
 
-        if (domain.getMessageColor().isPresent()) {
-            entity.messageColor = domain.getMessageColor().get().v();
-        }
+        entity.messageColor = domain.getMessageColor().isPresent() ? domain.getMessageColor().get().v() : null;
 
         return entity;
     }

@@ -9,8 +9,8 @@
     <ui:define name="htmlHead">
         <script>
             var dialogSize = {
-                width: 900,
-                height: 900
+                width: 1020,
+                height: 315
             };
         </script>
 
@@ -29,7 +29,7 @@
                     </td>
                     <td>
                         <!--B1_2-->
-                        <div tabindex="" id="combo-box-check-item"  data-bind="ntsComboBox: {
+                        <div tabindex="" id="combo-box-check-item" data-bind="ntsComboBox: {
                         name: '#{i18n.getText('KAL003_27')}',
                         required: true,
                         options: closureDateEnum,
@@ -43,90 +43,96 @@
                     </td>
                 </tr>
 
-                <tr>
-                    <td></td>
-                    <td>
-                        <!--B5_1-->
-                        <div class="label" data-bind="text: $vm.$i18n('KAL003_31')"></div>
-                        <!--B5_2-->
-                        <div class="label" data-bind="text: $vm.$i18n('KAL003_32')"></div>
-                        <!--B5_3-->
-                        <!--<div tabindex="3" data-bind="ntsRadioBoxGroup: {-->
-                        <!--options: $parent.specialConditionList,-->
-                        <!--optionsValue: 'value',-->
-                        <!--optionsText: 'localizedName',-->
-                        <!--value: specialConditionApplicationUse}">-->
-                        <!--</div>-->
-                        <!--B5_4-->
-                        <!--<table id="single-list" data-bind="ntsGridList: {-->
-                        <!--name: '#{i18n.getText('KMK008_30',['#KMK008_10'])}',-->
-                        <!--rows: 10,-->
-                        <!--dataSource: items,-->
-                        <!--primaryKey: 'year',-->
-                        <!--columns: [-->
-                        <!--{ headerText: '#{i18n.getText('KMK008_30')}', key: 'year', width: 70 },-->
-                        <!--{ headerText: '#{i18n.getText('KMK008_19')}', key: 'error', width: 75 },-->
-                        <!--{ headerText: '#{i18n.getText('KMK008_20')}', key: 'alarm', width: 86 }-->
-                        <!--],-->
-                        <!--multiple: false,-->
-                        <!--value: currentCode-->
-                        <!--}">-->
-                        <!--</table>-->
+                <com:ko-if
+                        bind="currentAtdItemCondition.conditionType() == 0 || currentAtdItemCondition.conditionType() == 1">
+                    <tr>
+                        <td></td>
+                        <td>
+                            <!--B5_1-->
+                            <div class="label" data-bind="text: $vm.$i18n('KAL003_31')"></div>
+                            <!--B5_2-->
+                            <div class="label" data-bind="text: $vm.$i18n('KAL003_32')"></div>
+                            <!--B5_3-->
+                            <!--<div tabindex="3" data-bind="ntsRadioBoxGroup: {-->
+                            <!--options: $parent.specialConditionList,-->
+                            <!--optionsValue: 'value',-->
+                            <!--optionsText: 'localizedName',-->
+                            <!--value: specialConditionApplicationUse}">-->
+                            <!--</div>-->
+                            <!--B5_4-->
+                            <!--<table id="single-list" data-bind="ntsGridList: {-->
+                            <!--name: '#{i18n.getText('KMK008_30',['#KMK008_10'])}',-->
+                            <!--rows: 10,-->
+                            <!--dataSource: items,-->
+                            <!--primaryKey: 'year',-->
+                            <!--columns: [-->
+                            <!--{ headerText: '#{i18n.getText('KMK008_30')}', key: 'year', width: 70 },-->
+                            <!--{ headerText: '#{i18n.getText('KMK008_19')}', key: 'error', width: 75 },-->
+                            <!--{ headerText: '#{i18n.getText('KMK008_20')}', key: 'alarm', width: 86 }-->
+                            <!--],-->
+                            <!--multiple: false,-->
+                            <!--value: currentCode-->
+                            <!--}">-->
+                            <!--</table>-->
 
-                        <!--B6_1-->
-                        <div tabindex="1" class="" data-itemno="I1_3"
-                             data-bind="ntsCheckBox: { checked: useWorkPlace }">
-                        </div>
-                        <!--B6_2-->
-                        <div class="label" data-bind="text: $vm.$i18n('KAL003_32')"></div>
-                        <!--B6_3-->
-                        <!--<div tabindex="3" data-bind="ntsRadioBoxGroup: {-->
-                        <!--options: $parent.specialConditionList,-->
-                        <!--optionsValue: 'value',-->
-                        <!--optionsText: 'localizedName',-->
-                        <!--value: specialConditionApplicationUse}">-->
-                        <!--</div>-->
+                            <!--B6_1-->
+                            <div tabindex="1" class="" data-itemno="I1_3"
+                                 data-bind="ntsCheckBox: { checked: useWorkPlace }">
+                            </div>
+                            <!--B6_2-->
+                            <div class="label" data-bind="text: $vm.$i18n('KAL003_32')"></div>
+                            <!--B6_3-->
+                            <!--<div tabindex="3" data-bind="ntsRadioBoxGroup: {-->
+                            <!--options: $parent.specialConditionList,-->
+                            <!--optionsValue: 'value',-->
+                            <!--optionsText: 'localizedName',-->
+                            <!--value: specialConditionApplicationUse}">-->
+                            <!--</div>-->
 
-                        <!--B7_1-->
-                        <div class="label" data-bind="text: $vm.$i18n('KAL003_32')"></div>
-                        <!--B7_2-->
-                        <!--<div tabindex="3" data-bind="ntsRadioBoxGroup: {-->
-                        <!--options: $parent.specialConditionList,-->
-                        <!--optionsValue: 'value',-->
-                        <!--optionsText: 'localizedName',-->
-                        <!--value: specialConditionApplicationUse}">-->
-                        <!--</div>-->
-                    </td>
-                </tr>
+                            <!--B7_1-->
+                            <div class="label" data-bind="text: $vm.$i18n('KAL003_32')"></div>
+                            <!--B7_2-->
+                            <!--<div tabindex="3" data-bind="ntsRadioBoxGroup: {-->
+                            <!--options: $parent.specialConditionList,-->
+                            <!--optionsValue: 'value',-->
+                            <!--optionsText: 'localizedName',-->
+                            <!--value: specialConditionApplicationUse}">-->
+                            <!--</div>-->
+                        </td>
+                    </tr>
+                </com:ko-if>
 
-                <tr>
-                    <td>
-                        <!--B10_1-->
-                        <div class="label" data-bind="text: $vm.$i18n('KAL003_56')"></div>
-                    </td>
-                    <td>
-                        <!--B10_2-->
-                        <!--<div tabindex="3" data-bind="ntsRadioBoxGroup: {-->
-                        <!--options: $parent.specialConditionList,-->
-                        <!--optionsValue: 'value',-->
-                        <!--optionsText: 'localizedName',-->
-                        <!--value: specialConditionApplicationUse}">-->
-                        <!--</div>-->
+                <com:ko-if
+                        bind="currentAtdItemCondition.conditionType() == 0 || currentAtdItemCondition.conditionType() == 1">
+                    <tr>
+                        <td>
+                            <!--B10_1-->
+                            <div class="label" data-bind="text: $vm.$i18n('KAL003_56')"></div>
+                        </td>
+                        <td>
+                            <!--B10_2-->
+                            <!--<div tabindex="3" data-bind="ntsRadioBoxGroup: {-->
+                            <!--options: $parent.specialConditionList,-->
+                            <!--optionsValue: 'value',-->
+                            <!--optionsText: 'localizedName',-->
+                            <!--value: specialConditionApplicationUse}">-->
+                            <!--</div>-->
 
-                        <!--B10_3-->
-                        <button tabindex="4" class="small"
-                                data-bind="click: submitAndCloseDialog, text: $vm.$i18n('KAL003_57')">
-                        </button>
+                            <!--B10_3-->
+                            <button tabindex="4" class="small"
+                                    data-bind="click: submitAndCloseDialog, text: $vm.$i18n('KAL003_57')">
+                            </button>
 
-                        <!--B10_4-->
-                        <input tabindex="5" class="" data-bind="ntsTextEditor: {
+                            <!--B10_4-->
+                            <input tabindex="5" class="" data-bind="ntsTextEditor: {
                     name: '#{i18n.getText('KAL003_25')}',
                     value: maxConsDaysCom,
                     constraint: 'ConsecutiveNumberOfDays',
                     required: true}"
-                        />
-                    </td>
-                </tr>
+                            />
+                        </td>
+                    </tr>
+                </com:ko-if>
 
                 <tr>
                     <td>
@@ -134,7 +140,8 @@
                         <div class="label" data-bind="text: $vm.$i18n('KAL003_58')"></div>
                     </td>
                     <td>
-                        <div>
+                        <com:ko-if
+                                bind="currentAtdItemCondition.conditionType() == 0 || currentAtdItemCondition.conditionType() == 1">
                             <!--B2_2-->
                             <button tabindex="4" class="small"
                                     data-bind="click: submitAndCloseDialog, text: $vm.$i18n('KAL003_57')">
@@ -147,9 +154,10 @@
                     constraint: 'ConsecutiveNumberOfDays',
                     required: true}"
                             />
-                        </div>
+                        </com:ko-if>
 
-                        <div>
+                        <com:ko-if
+                                bind="currentAtdItemCondition.conditionType() == 0 || currentAtdItemCondition.conditionType() == 1">
                             <!--B12_1-->
                             <!--<div tabindex="2" id="combo-box-check-item"  data-bind="ntsComboBox: {-->
                             <!--name: '#{i18n.getText('KAL003_27')}',-->
@@ -161,7 +169,7 @@
                             <!--{ prop: 'localizedName', length: 10 },-->
                             <!--]} ">-->
                             <!--</div>-->
-                        </div>
+                        </com:ko-if>
 
                         <!--B2_4-->
                         <!--<div tabindex="2" id="combo-box-check-item"  data-bind="ntsComboBox: {-->
@@ -176,7 +184,7 @@
                         <!--</div>-->
 
                         <!--B2_6-->
-                        <input tabindex="5" class="" data-bind="ntsTextEditor: {
+                        <input tabindex="5" class="" data-bind="ntsTimeEditor: {
                     name: '#{i18n.getText('KAL003_25')}',
                     value: maxConsDaysCom,
                     constraint: 'ConsecutiveNumberOfDays',
@@ -184,7 +192,7 @@
                         />
 
                         <!--B2_7-->
-                        <input tabindex="5" class="" data-bind="ntsTextEditor: {
+                        <input tabindex="5" class="" data-bind="ntsTimeEditor: {
                     name: '#{i18n.getText('KAL003_25')}',
                     value: maxConsDaysCom,
                     constraint: 'ConsecutiveNumberOfDays',
@@ -193,21 +201,24 @@
                     </td>
                 </tr>
 
-                <tr>
-                    <td>
-                        <!--B11_1-->
-                        <div class="label" data-bind="text: $vm.$i18n('KAL003_61')"></div>
-                    </td>
-                    <td>
-                        <!--B11_2-->
-                        <input tabindex="5" class="" data-bind="ntsNumberEditor: {
+                <com:ko-if
+                        bind="currentAtdItemCondition.conditionType() == 0 || currentAtdItemCondition.conditionType() == 1">
+                    <tr>
+                        <td>
+                            <!--B11_1-->
+                            <div class="label" data-bind="text: $vm.$i18n('KAL003_61')"></div>
+                        </td>
+                        <td>
+                            <!--B11_2-->
+                            <input tabindex="5" class="" data-bind="ntsNumberEditor: {
                     name: '#{i18n.getText('KAL003_25')}',
                     value: maxConsDaysCom,
                     constraint: 'ConsecutiveNumberOfDays',
                     required: true}"
-                        />
-                    </td>
-                </tr>
+                            />
+                        </td>
+                    </tr>
+                </com:ko-if>
 
                 <tr>
                     <td>

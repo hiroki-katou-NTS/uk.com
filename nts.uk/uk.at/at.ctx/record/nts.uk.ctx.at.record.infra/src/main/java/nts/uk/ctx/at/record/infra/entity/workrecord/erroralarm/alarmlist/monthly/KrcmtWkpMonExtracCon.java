@@ -2,15 +2,15 @@ package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlist.monthl
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.monthly.AverageValueItem;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.monthly.ExtractionMonthlyCon;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.monthly.enums.*;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareRange;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareSingleValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.NameAlarmExtractionCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMessage;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
+import nts.uk.ctx.at.shared.dom.workrecord.alarm.attendanceitemconditions.CheckConditions;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.AggregateTableEntity;
 
@@ -77,9 +77,9 @@ public class KrcmtWkpMonExtracCon extends AggregateTableEntity {
     @Column(name = "CHK_TARGET")
     public String checkTarget;
 
-    /*  */
+    /* 勤務実績のエラーアラームチェックID */
     @Column(name = "CONDITION_COMPARE_ID")
-    public String conditionCompareId;
+    public String errorAlarmCheckID;
 
     @Override
     protected Object getKey() {
@@ -97,72 +97,48 @@ public class KrcmtWkpMonExtracCon extends AggregateTableEntity {
         entity.checkMonthlyItemsType = domain.getCheckMonthlyItemsType().value;
         entity.messageDisp = domain.getMessageDisp().v();
 
-        if (domain.getAverageValueItem() != null) {
-            if (domain.getAverageValueItem().getAverageNumberOfDays().isPresent()) {
-                entity.averageNumberOfDays = domain.getAverageValueItem().getAverageNumberOfDays().get().value;
-            }
+        val averageValueItem = domain.getAverageValueItem();
+        if (averageValueItem != null) {
+            entity.averageNumberOfDays = averageValueItem.getAverageNumberOfDays().isPresent() ? averageValueItem.getAverageNumberOfDays().get().value : null;
 
-            if (domain.getAverageValueItem().getAverageNumberOfTimes().isPresent()) {
-                entity.averageNumberOfTimes = domain.getAverageValueItem().getAverageNumberOfTimes().get().value;
-            }
+            entity.averageNumberOfTimes = averageValueItem.getAverageNumberOfTimes().isPresent() ? averageValueItem.getAverageNumberOfTimes().get().value : null;
 
-            if (domain.getAverageValueItem().getAverageRatio().isPresent()) {
-                entity.averageRatio = domain.getAverageValueItem().getAverageRatio().get().value;
-            }
+            entity.averageRatio = averageValueItem.getAverageRatio().isPresent() ? averageValueItem.getAverageRatio().get().value : null;
 
-            if (domain.getAverageValueItem().getAverageTime().isPresent()) {
-                entity.averageTime = domain.getAverageValueItem().getAverageTime().get().value;
-            }
+            entity.averageTime = averageValueItem.getAverageTime().isPresent() ? averageValueItem.getAverageTime().get().value : null;
 
-            if (domain.getAverageValueItem().getCheckTarget().isPresent()) {
-                entity.checkTarget = domain.getAverageValueItem().getCheckTarget().get().v();
-            }
+            entity.checkTarget = averageValueItem.getCheckTarget().isPresent() ? averageValueItem.getCheckTarget().get().v() : null;
         }
 
-//        entity.conditionCompareId = domain.getCompareRange().
+        entity.errorAlarmCheckID = domain.getErrorAlarmCheckID();
 
         return entity;
     }
 
     /**
-     * @param compareRange       範囲との比較
-     * @param compareSingleValue 単一値との比較
+     * @param checkConditions 勤務項目のチェック条件
      */
-    public ExtractionMonthlyCon toDomain(CompareRange compareRange, CompareSingleValue compareSingleValue) {
-        Optional<BonusPaySettingCode> checkTarget = Optional.of(new BonusPaySettingCode(this.checkTarget));
+    public ExtractionMonthlyCon toDomain(CheckConditions checkConditions) {
+        val checkTarget = Optional.of(new BonusPaySettingCode(this.checkTarget));
 
-        Optional<AverageNumberOfTimes> averageNumberOfDays = Optional.empty();
-        if (this.averageNumberOfDays != null) {
-            averageNumberOfDays = Optional.of(EnumAdaptor.valueOf(this.averageNumberOfDays, AverageNumberOfTimes.class));
-        }
+        val averageNumberOfDays = this.averageNumberOfDays != null ? Optional.of(EnumAdaptor.valueOf(this.averageNumberOfDays, AverageNumberOfTimes.class)) : Optional.empty();
 
-        Optional<AverageNumberOfDays> averageNumberOfTimes = Optional.empty();
-        if (this.averageNumberOfTimes != null) {
-            averageNumberOfTimes = Optional.of(EnumAdaptor.valueOf(this.averageNumberOfTimes, AverageNumberOfDays.class));
-        }
+        val averageNumberOfTimes = this.averageNumberOfTimes != null ? Optional.of(EnumAdaptor.valueOf(this.averageNumberOfTimes, AverageNumberOfDays.class)) : Optional.empty();
 
-        Optional<AverageTime> averageRatio = Optional.empty();
-        if (this.averageRatio != null) {
-            averageRatio = Optional.of(EnumAdaptor.valueOf(this.averageRatio, AverageTime.class));
-        }
+        val averageRatio = this.averageRatio != null ? Optional.of(EnumAdaptor.valueOf(this.averageRatio, AverageTime.class)) : Optional.empty();
 
-        Optional<AverageRatio> averageTime = Optional.empty();
-        if (this.averageTime != null) {
-            averageTime = Optional.of(EnumAdaptor.valueOf(this.averageTime, AverageRatio.class));
-        }
+        val averageTime = this.averageTime != null ? Optional.of(EnumAdaptor.valueOf(this.averageTime, AverageRatio.class)) : Optional.empty();
 
-        ExtractionMonthlyCon domain = ExtractionMonthlyCon.create(
+        return ExtractionMonthlyCon.create(
                 this.pk.errorAlarmWorkplaceId,
                 this.orderNumber,
                 EnumAdaptor.valueOf(this.checkMonthlyItemsType, CheckMonthlyItemsType.class),
                 this.useAtr,
+                this.errorAlarmCheckID,
+                checkConditions,
                 AverageValueItem.create(checkTarget, averageNumberOfDays, averageNumberOfTimes, averageRatio, averageTime),
                 new NameAlarmExtractionCondition(this.monExtracConName),
-                new DisplayMessage(this.messageDisp),
-                compareRange,
-                compareSingleValue
+                new DisplayMessage(this.messageDisp)
         );
-
-        return domain;
     }
 }

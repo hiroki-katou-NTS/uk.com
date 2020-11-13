@@ -56,13 +56,11 @@ public class KrcmtWkpMonFxexCon extends AggregateTableEntity {
     }
 
     public FixedExtractionMonthlyCon toDomain() {
-        FixedExtractionMonthlyCon domain = FixedExtractionMonthlyCon.create(
+        return FixedExtractionMonthlyCon.create(
                 this.pk.errorAlarmWorkplaceId,
                 EnumAdaptor.valueOf(this.pk.fixedCheckMonthlyItemName, FixedCheckMonthlyItemName.class),
                 this.useAtr,
                 new DisplayMessage(this.messageDisp)
         );
-
-        return domain;
     }
 }

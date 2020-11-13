@@ -2,17 +2,16 @@ package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlist.schedu
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.schedule.CheckDayItemsType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.schedule.ComparisonCheckItems;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.schedule.ContrastType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.schedule.ExtractionScheduleCon;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareRange;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareSingleValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.NameAlarmExtractionCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMessage;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlCompareRange;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
+import nts.uk.ctx.at.shared.dom.workrecord.alarm.attendanceitemconditions.CheckConditions;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.AggregateTableEntity;
 
@@ -64,9 +63,9 @@ public class KrcmtWkpSchedaiExCon extends AggregateTableEntity {
     @Column(name = "CHK_TARGET")
     public String checkTarget;
 
-    /*  */
+    /* 勤務実績のエラーアラームチェックID */
     @Column(name = "CONDITION_COMPARE_ID")
-    public String conditionCompareId;
+    public String errorAlarmCheckID;
 
     @Override
     protected Object getKey() {
@@ -84,45 +83,36 @@ public class KrcmtWkpSchedaiExCon extends AggregateTableEntity {
         entity.checkDayItemsType = domain.getCheckDayItemsType().value;
         entity.messageDisp = domain.getMessageDisp().v();
 
-        if (domain.getComparisonCheckItems() != null) {
-            if (domain.getComparisonCheckItems().getContrastType().isPresent()) {
-                entity.contrastType = domain.getComparisonCheckItems().getContrastType().get().value;
-            }
+        val comparisonCheckItems = domain.getComparisonCheckItems();
+        if (comparisonCheckItems != null) {
+            entity.contrastType = comparisonCheckItems.getContrastType().isPresent() ? comparisonCheckItems.getContrastType().get().value : null;
 
-            if (domain.getComparisonCheckItems().getCheckTarget().isPresent()) {
-                entity.checkTarget = domain.getComparisonCheckItems().getCheckTarget().get().v();
-            }
+            entity.checkTarget = comparisonCheckItems.getCheckTarget().isPresent() ? comparisonCheckItems.getCheckTarget().get().v() : null;
         }
 
-//        entity.conditionCompareId = domain.getCompareRange().
+        entity.errorAlarmCheckID = domain.getErrorAlarmCheckID();
 
         return entity;
     }
 
     /**
-     * @param compareRange       範囲との比較
-     * @param compareSingleValue 単一値との比較
+     * @param checkConditions 勤務項目のチェック条件
      */
-    public ExtractionScheduleCon toDomain(CompareRange compareRange, CompareSingleValue compareSingleValue) {
-        Optional<BonusPaySettingCode> checkTarget = Optional.of(new BonusPaySettingCode(this.checkTarget));
+    public ExtractionScheduleCon toDomain(CheckConditions checkConditions) {
+        val checkTarget = Optional.of(new BonusPaySettingCode(this.checkTarget));
 
-        Optional<ContrastType> contrastType = Optional.empty();
-        if (this.contrastType != null) {
-            contrastType = Optional.of(EnumAdaptor.valueOf(this.contrastType, ContrastType.class));
-        }
+        val contrastType = this.contrastType != null ? Optional.of(EnumAdaptor.valueOf(this.contrastType, ContrastType.class)) : Optional.empty();
 
-        ExtractionScheduleCon domain = ExtractionScheduleCon.create(
+        return ExtractionScheduleCon.create(
                 this.pk.errorAlarmWorkplaceId,
                 this.orderNumber,
                 EnumAdaptor.valueOf(this.checkDayItemsType, CheckDayItemsType.class),
                 this.useAtr,
+                this.errorAlarmCheckID,
+                checkConditions,
                 ComparisonCheckItems.create(checkTarget, contrastType),
                 new NameAlarmExtractionCondition(this.daiExtracConName),
-                new DisplayMessage(this.messageDisp),
-                compareRange,
-                compareSingleValue
+                new DisplayMessage(this.messageDisp)
         );
-
-        return domain;
     }
 }

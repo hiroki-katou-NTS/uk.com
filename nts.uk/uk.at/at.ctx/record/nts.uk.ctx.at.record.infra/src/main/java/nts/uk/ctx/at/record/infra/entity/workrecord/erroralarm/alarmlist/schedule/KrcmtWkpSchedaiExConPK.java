@@ -12,7 +12,7 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class KrcmtWkpSchedaiExConPK {
 
-    /* 職場のエラーアラームチェックID */
+    /* スケジュール／日次抽出条件ID */
     @Column(name = "WP_ERROR_ALARM_CHKID")
     public String errorAlarmWorkplaceId;
 
