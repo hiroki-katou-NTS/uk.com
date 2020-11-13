@@ -369,7 +369,7 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 	/**
 	 * [prv-2] 指定した午前午後区分のコアタイム時間帯を取得する
 	 * @param require
-	 * @param ampmAtr 
+	 * @param ampmAtr
 	 * @return
 	 */
 	private TimeSpanForCalc getCoreTimeByAmPm(WorkSetting.Require require, AmPmAtr ampmAtr) {
@@ -404,8 +404,8 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 				.map(c -> c.getTimezone().timeSpan())
 				.collect(Collectors.toList());
 		val workOnDayOffTime = TimeSpanForCalc.join(workOnDayOffTimeList);
-		
-		val workTimeList = predetermineTimeSetting.getTimezoneByAmPmAtr(AmPmAtr.ONE_DAY);
+
+		val workTimeList = predetermineTimeSetting.getTimezoneByAmPmAtrForCalc(AmPmAtr.ONE_DAY);
 
 		if (checkDuplicate(workTimeList) == true) {
 			return Collections.emptyList();

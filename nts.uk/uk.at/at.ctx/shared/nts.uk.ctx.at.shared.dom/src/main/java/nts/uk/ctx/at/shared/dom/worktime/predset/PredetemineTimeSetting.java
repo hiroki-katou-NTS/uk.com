@@ -331,9 +331,9 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 	/**
 	 * 午前午後区分に応じた所定時間帯
 	 * @param atr 午前午後区分
-	 * @return
+	 * @return 所定時間帯リスト
 	 */
-	public List<TimeSpanForCalc> getTimezoneByAmPmAtr(AmPmAtr atr) {
+	public List<TimezoneUse> getTimezoneByAmPmAtr(AmPmAtr atr) {
 
 		List<TimezoneUse> timezones = Collections.emptyList();
 		switch( atr ) {
@@ -348,7 +348,18 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 				break;
 		}
 
-		return timezones.stream().map( e -> e.timeSpan() ).collect(Collectors.toList());
+		return timezones;
+
+	}
+
+	/**
+	 * 午前午後区分に応じた所定時間帯(計算時間帯)
+	 * @param atr 午前午後区分
+	 * @return 所定時間帯リスト(計算時間帯)
+	 */
+	public List<TimeSpanForCalc> getTimezoneByAmPmAtrForCalc(AmPmAtr atr) {
+
+		return this.getTimezoneByAmPmAtr(atr).stream().map( e -> e.timeSpan() ).collect(Collectors.toList());
 
 	}
 
