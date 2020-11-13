@@ -4,6 +4,7 @@ import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.function.dom.commonform.AttendanceItemToPrint;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
@@ -44,7 +45,6 @@ public class CreateWorkLedgerSettingDomainService {
 			List<Integer> rankingList,
 			List<Integer> attendanceIdList) {
 
-		val cid = AppContexts.user().companyId();
 		val employeeId = AppContexts.user().employeeId();
 		val uid = IdentifierUtil.randomUniqueId();
 
@@ -63,12 +63,12 @@ public class CreateWorkLedgerSettingDomainService {
 
 		val attendanceListToPrint = AttendanceItemToPrint.createList(attendanceIdList, rankingList);
 		AtomTask atomTask = AtomTask.of(null);
-		if (settingCategory == SettingClassificationCommon.STANDARD_SELECTION) {
+			if (settingCategory == SettingClassificationCommon.STANDARD_SELECTION) {
 			val workLedgerOutputItem = WorkLedgerOutputItem.create(uid, code, name, settingCategory);
 			atomTask = AtomTask.of(() -> {
 				require.createWorkLedgerOutputSetting(workLedgerOutputItem, attendanceListToPrint);
 			});
-		} else if (settingCategory == SettingClassificationCommon.FREE_SETTING){
+		} else if (settingCategory == SettingClassificationCommon.FREE_SETTING) {
 			val workLedgerOutputItem = WorkLedgerOutputItem.create(uid, employeeId, code, name, settingCategory);
 			atomTask = AtomTask.of(() -> {
 				require.createWorkLedgerOutputSetting(workLedgerOutputItem, attendanceListToPrint);
@@ -82,6 +82,9 @@ public class CreateWorkLedgerSettingDomainService {
 		/**
 		 * Call 勤務台帳の出力項目Repository#新規作成する
 		 */
-		void createWorkLedgerOutputSetting(WorkLedgerOutputItem outputSetting, List<AttendanceItemToPrint> outputItemList);
+		void createWorkLedgerOutputSetting(
+				WorkLedgerOutputItem outputSetting,
+				List<AttendanceItemToPrint> outputItemList
+		);
 	}
 }

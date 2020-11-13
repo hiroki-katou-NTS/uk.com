@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.dom.workledgeroutputitem;
+package nts.uk.ctx.at.function.dom.commonform;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

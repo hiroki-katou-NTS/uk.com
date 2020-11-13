@@ -2,15 +2,13 @@ package nts.uk.ctx.at.function.dom.workledgeroutputitem;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.function.dom.commonform.AttendanceItemToPrint;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItem;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * AggregateRoot: 勤務台帳の出力項目
@@ -67,10 +65,11 @@ public class WorkLedgerOutputItem extends AggregateRoot {
 	 * @param settingCategory	定型自由区分
 	 * @return 勤務台帳の出力項目
 	 */
-	public static WorkLedgerOutputItem create(String id,
-											  OutputItemSettingCode code,
-											  OutputItemSettingName name,
-											  SettingClassificationCommon settingCategory) {
+	public static WorkLedgerOutputItem create(
+			String id,
+			OutputItemSettingCode code,
+			OutputItemSettingName name,
+			SettingClassificationCommon settingCategory) {
 
 			return new WorkLedgerOutputItem(id, code, null, name, settingCategory, null);
 	}
@@ -85,11 +84,12 @@ public class WorkLedgerOutputItem extends AggregateRoot {
 	 * @param employeeId		社員ID
 	 * @return 勤務台帳の出力項目
 	 */
-	public static WorkLedgerOutputItem create(String id,
-											  String employeeId,
-											  OutputItemSettingCode code,
-											  OutputItemSettingName name,
-											  SettingClassificationCommon settingCategory) {
+	public static WorkLedgerOutputItem create(
+			String id,
+			String employeeId,
+			OutputItemSettingCode code,
+			OutputItemSettingName name,
+			SettingClassificationCommon settingCategory) {
 
 		return new WorkLedgerOutputItem(id, code, null, name, settingCategory, employeeId);
 	}

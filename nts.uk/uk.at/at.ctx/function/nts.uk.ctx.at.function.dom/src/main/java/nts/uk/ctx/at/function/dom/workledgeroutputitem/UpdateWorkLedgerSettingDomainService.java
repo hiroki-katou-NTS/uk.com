@@ -3,9 +3,9 @@ package nts.uk.ctx.at.function.dom.workledgeroutputitem;
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
+import nts.uk.ctx.at.function.dom.commonform.AttendanceItemToPrint;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.WorkStatusOutputSettings;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -34,13 +34,11 @@ public class UpdateWorkLedgerSettingDomainService {
 	public static AtomTask updateSetting(
 			Require require,
 			String id,
-			OutputItemSettingCode code, // TODO QA Add this param
+			OutputItemSettingCode code, // TODO QA 36174
 			OutputItemSettingName name,
 			SettingClassificationCommon settingCategory,
 			List<Integer> rankingList,
 			List<Integer> attendanceIdList) {
-
-		val employeeId = AppContexts.user().employeeId();
 
 		if (settingCategory == SettingClassificationCommon.STANDARD_SELECTION) {
 			// 出力設定の詳細を取得する(会社ID, GUID)
@@ -57,13 +55,12 @@ public class UpdateWorkLedgerSettingDomainService {
 			atomTask = AtomTask.of(() -> {
 				require.updateWorkLedgerOutputItem(id, workLedgerOutputItem, attendanceListToPrint);
 			});
-
-		} else if (settingCategory == SettingClassificationCommon.FREE_SETTING){
+		} else if (settingCategory == SettingClassificationCommon.FREE_SETTING) {
+			val employeeId = AppContexts.user().employeeId();
 			val workLedgerOutputItem = WorkLedgerOutputItem.create(id, employeeId, code, name, settingCategory);
 			atomTask = AtomTask.of(() -> {
 				require.updateWorkLedgerOutputItem(id, workLedgerOutputItem, attendanceListToPrint);
 			});
-
 		}
 
 		return atomTask;
