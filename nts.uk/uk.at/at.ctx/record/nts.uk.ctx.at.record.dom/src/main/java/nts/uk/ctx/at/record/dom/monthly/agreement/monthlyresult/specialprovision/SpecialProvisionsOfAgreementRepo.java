@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovisio
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.Year;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetYearProcessAndPeriodDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -58,5 +59,13 @@ public interface SpecialProvisionsOfAgreementRepo {
      * [10] get
      */
     List<SpecialProvisionsOfAgreement> getBySID(String employeeId, GeneralDateTime startDateTime, GeneralDateTime endDateTime, List<ApprovalStatus> listApprove);
+	
+    /**
+     * 
+     * @param employeeId
+     * @param period
+     * @return
+     */
+    List<SpecialProvisionsOfAgreement> getByEmployeeId(String employeeId, GeneralDate closureStartDate, GeneralDate closureEndDate, String companyId);
 
 }

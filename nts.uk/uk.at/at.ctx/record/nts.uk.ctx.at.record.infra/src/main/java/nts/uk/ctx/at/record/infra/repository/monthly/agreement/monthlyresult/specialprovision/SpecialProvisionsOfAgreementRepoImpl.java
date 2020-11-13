@@ -1,8 +1,12 @@
 package nts.uk.ctx.at.record.infra.repository.monthly.agreement.monthlyresult.specialprovision;
 
-import lombok.val;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.layer.infra.data.query.QueryProxy;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -29,6 +33,7 @@ public class SpecialProvisionsOfAgreementRepoImpl extends JpaRepository implemen
     private static final String FIND_BY_YEAR;
     private static final String FIND_BY_PERSIONSID;
     private static final String FIND_BY_EMPLOYEEID;
+    private static final String FIND_BY_EMPLOYEEID_AND_PERIOD;
 
     static {
         StringBuilder builderString = new StringBuilder();
@@ -75,7 +80,15 @@ public class SpecialProvisionsOfAgreementRepoImpl extends JpaRepository implemen
         builderString.append(" AND (s.confirmerSID1 = :employeeId OR  s.confirmerSID2 = :employeeId OR  s.confirmerSID3 = :employeeId OR  s.confirmerSID4 = :employeeId OR  s.confirmerSID5 = :employeeId ");
         builderString.append(" OR s.approveSID1 = :employeeId OR  s.approveSID2 = :employeeId OR  s.approveSID3 = :employeeId OR  s.approveSID4 = :employeeId OR  s.approveSID5 = :employeeId ) ");
         FIND_BY_EMPLOYEEID = builderString.toString();
-
+        
+		builderString = new StringBuilder();
+		builderString.append(SELECT);
+		builderString.append(" WHERE ((s.approvalStatus = 0 AND (s.approveSID1 = :employeeId OR  s.approveSID2 = :employeeId OR  s.approveSID3 = :employeeId OR  s.approveSID4 = :employeeId OR  s.approveSID5 = :employeeId) ) ");
+		builderString.append(" OR (s.confirmationStatus1 = 0 OR s.confirmationStatus2 = 0 OR s.confirmationStatus3 = 0 OR s.confirmationStatus4 = 0 OR s.confirmationStatus5 = 0  ");
+		builderString.append(" AND (s.confirmerSID1 = :employeeId OR  s.confirmerSID2 = :employeeId OR  s.confirmerSID3 = :employeeId OR  s.confirmerSID4 = :employeeId OR  s.confirmerSID5 = :employeeId))) ");
+		builderString.append(" AND ((s.typeAgreement = 0 AND s.yearMonth >=  :closureStartDate  AND s.yearMonth <= :closureEndDate ) ");
+		builderString.append(" OR (s.typeAgreement = 1 AND s.year >=  :stDateMinus AND s.year <= :stDateAdd )) AND s.companyID = :companyId ");
+        FIND_BY_EMPLOYEEID_AND_PERIOD = builderString.toString();
     }
 
     @Override
@@ -213,4 +226,23 @@ public class SpecialProvisionsOfAgreementRepoImpl extends JpaRepository implemen
 
         return typedQuery.getList(Krcdt36AgrApp::toDomain);
     }
+
+    /**
+     * ドメインモデル「36協定特別条項の適用申請」を取得する
+     */
+	@Override
+	public List<SpecialProvisionsOfAgreement> getByEmployeeId(String employeeId, GeneralDate closureStartDate, GeneralDate closureEndDate, String companyId) {
+		   String query = FIND_BY_EMPLOYEEID_AND_PERIOD;
+		   
+		   TypedQueryWrapper<Krcdt36AgrApp> typedQuery = this.queryProxy()
+	                .query(query, Krcdt36AgrApp.class)
+	                .setParameter("employeeId", employeeId)
+	                .setParameter("closureStartDate", Integer.parseInt(closureStartDate.toString("YYYYMM")))
+	                .setParameter("closureEndDate", Integer.parseInt(closureEndDate.toString("YYYYMM")))
+	                .setParameter("stDateMinus", Integer.parseInt(closureStartDate.addYears(-1).toString("YYYY")))
+	                .setParameter("companyId", companyId)
+	                .setParameter("stDateAdd", Integer.parseInt(closureStartDate.addYears(1).toString("YYYY")));
+	   
+		return typedQuery.getList(Krcdt36AgrApp::toDomain);
+	}
 }

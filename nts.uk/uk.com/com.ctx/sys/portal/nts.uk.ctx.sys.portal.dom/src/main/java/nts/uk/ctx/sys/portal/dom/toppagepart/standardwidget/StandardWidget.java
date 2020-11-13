@@ -1,14 +1,35 @@
 package nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget;
 
+import java.util.List;
+
+import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.sys.portal.dom.enums.TopPagePartType;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePart;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartCode;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartName;
 import nts.uk.ctx.sys.portal.dom.toppagepart.size.Size;
-
+/**
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.ポータル.トップページの部品.標準ウィジェット.標準ウィジェット
+ *
+ */
+@Getter
+@Setter
 public class StandardWidget extends TopPagePart {
+	
+	// 勤務状況の詳細設定
+	private List<DetailedWorkStatusSetting> detailedWorkStatusSettingList;
 
+	// 承認すべき申請状況の詳細設定
+	private List<ApprovedAppStatusDetailedSetting> approvedAppStatusDetailedSettingList;
+
+	// 標準ウィジェット種別
+	private StandardWidgetType standardWidgetType;
+	
+	// 申請状況の詳細設定
+	private List<ApplicationStatusDetailedSetting> appStatusDetailedSettingList;
+	
 	public StandardWidget(String companyID, String toppagePartID, TopPagePartCode code, TopPagePartName name, TopPagePartType type, Size size) {
 		super(companyID, toppagePartID, code, name, type, size);
 		// TODO Auto-generated constructor stub
@@ -22,6 +43,18 @@ public class StandardWidget extends TopPagePart {
     		   new TopPagePartName(name),
     		   EnumAdaptor.valueOf(type, TopPagePartType.class), 
     		   Size.createFromJavaType(width, height));
+	}
+
+	public StandardWidget(String companyID, String toppagePartID, TopPagePartCode code, TopPagePartName name,
+			TopPagePartType type, Size size, List<DetailedWorkStatusSetting> detailedWorkStatusSettingList,
+			List<ApprovedAppStatusDetailedSetting> approvedAppStatusDetailedSettingList,
+			StandardWidgetType standardWidgetType,
+			List<ApplicationStatusDetailedSetting> appStatusDetailedSettingList) {
+		super(companyID, toppagePartID, code, name, type, size);
+		this.detailedWorkStatusSettingList = detailedWorkStatusSettingList;
+		this.approvedAppStatusDetailedSettingList = approvedAppStatusDetailedSettingList;
+		this.standardWidgetType = standardWidgetType;
+		this.appStatusDetailedSettingList = appStatusDetailedSettingList;
 	}
 
 }
