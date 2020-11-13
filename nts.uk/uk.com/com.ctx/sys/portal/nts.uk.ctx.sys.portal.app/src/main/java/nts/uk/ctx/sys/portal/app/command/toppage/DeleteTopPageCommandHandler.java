@@ -21,7 +21,6 @@ import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository;
 import nts.uk.ctx.sys.portal.dom.toppage.ToppageNew;
 import nts.uk.ctx.sys.portal.dom.toppage.ToppageNewRepository;
 import nts.uk.ctx.sys.portal.dom.toppage.service.TopPageService;
-import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageJobSetRepository;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -35,11 +34,7 @@ public class DeleteTopPageCommandHandler extends CommandHandler<DeleteTopPageCom
 	@Inject
 	private TopPageService topPageService;
 	@Inject
-	private StandardMenuRepository standardMenuRepository;
-	@Inject
 	private WebMenuRepository webMenuRepository;
-	@Inject
-	private TopPageJobSetRepository topPageJobSetRepository;
 	@Inject
 	private LayoutNewRepository layoutNewRepository;
 	@Inject
