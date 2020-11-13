@@ -143,7 +143,8 @@ module nts.uk.at.view.kaf020.c.viewmodel {
                     });
                     vm.printContent.opOptionalItemOutput = ko.toJS({
                         code: vm.dataFetch().code,
-                        optionalItems: vm.dataFetch().applicationContents
+                        optionalItems: vm.dataFetch().applicationContents,
+                        name: vm.dataFetch().name,
                     });
                 }
             }).always(() => {

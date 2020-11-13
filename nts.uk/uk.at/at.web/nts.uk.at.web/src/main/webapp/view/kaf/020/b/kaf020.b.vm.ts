@@ -47,7 +47,6 @@ module nts.uk.at.view.kaf020.b {
 
         fetchData(params: any) {
             const vm = this;
-            if (params == undefined) vm.$jump("../a/index.xhtml");
             let itemNoList = params.settingItems.map((item: any) => item.no);
             $.when(vm.$ajax(PATH_API.getControlAttendance, itemNoList), vm.$ajax(PATH_API.listOptionalItem, itemNoList)).done((controlAttendance: any, optionalItems: any) => {
                 let contents: Array<OptionalItemApplicationContent> = [];
