@@ -22,7 +22,7 @@
             <a tabindex="1" class="goback"
                     data-bind="ntsLinkButton: { jump: '/view/ksm/008/a/index.xhtml' }">#{i18n.getText("KSM008_13")}</a>
             <!-- B1_2-->
-            <button tabindex="2" class="proceed" data-bind="click: register, enable: enableRegisterBtn">#{i18n.getText("KSM008_14")}</button>
+            <button tabindex="2" class="proceed" data-bind="click: register, enable: enableRegisterBtn &amp;&amp; $root.errors.isEmpty">#{i18n.getText("KSM008_14")}</button>
             <!-- B1_3-->
             <button tabindex="3" class="danger" data-bind="click: remove, enable: enableDeleteBtn">#{i18n.getText("KSM008_15")}</button>
         </div>
@@ -46,7 +46,7 @@
                 <div style="display: flex">
                     <!--B5_1-->
                     <div tabindex="5" style="margin-top: 10px" id="kcp005-component"></div>
-                    <div style="flex: 1; padding-left: 30px; margin-top: 10px">
+                    <div style="padding-left: 30px; margin-top: 10px">
                         <div>
                             <!--B6_1-->
                             <div style="width: 200px" data-bind="ntsFormLabel: {}">#{i18n.getText("KSM008_17")}</div>
