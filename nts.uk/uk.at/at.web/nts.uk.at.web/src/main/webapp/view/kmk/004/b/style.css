@@ -6,3 +6,30 @@
 .sidebar-content-header .title {
     font-size: 32px;
 }
+
+/*ViewC*/
+.view-c-kmk004 {
+	padding: 10px;
+	width: 100vw;
+	float: left;
+}
+
+.view-c-kmk004 .left-content {
+	width: 515px;
+	padding: 12px;
+	float: left;
+}
+
+.view-c-kmk004 .right-content {
+	width: 500px;
+	float: left;
+	margin-left: 50px;
+}
+
+.view-c-kmk004 .right-content p {
+	font-size: 20px;
+}
+
+.sidebar-content-header {
+	width: 100vw;
+}
