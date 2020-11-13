@@ -46,8 +46,6 @@ module nts.uk.at.view.kmk004.b{
             ,{status: true, statusValue : '*', value: '2020'}];
 
             vm.itemList(_.orderBy(faceData, ['value'],['desc']));
-            
-            console.log(vm.selectedYear);
         }
 
     }

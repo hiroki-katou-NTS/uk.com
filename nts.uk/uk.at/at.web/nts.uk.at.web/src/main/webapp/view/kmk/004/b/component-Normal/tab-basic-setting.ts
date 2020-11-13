@@ -10,7 +10,7 @@ module nts.uk.at.view.kmk004.b {
         <div class="table-view">
             <table>
                 <tbody>
-                    <tr>
+                    <tr class= "label-row">
                         <th>
                             <div class="content-tab" data-bind="i18n: 'KMK004_213'"></div>
                         </th>
@@ -18,43 +18,43 @@ module nts.uk.at.view.kmk004.b {
                             <div class="content-tab" data-bind="i18n: 'KMK004_214'"></div>
                         </th>
                     </tr>
-                    <tr>
-                        <td>
+                    <tr class= "label-row">
+                        <td class="label-column">
                             <div class="content-tab" data-bind="i18n: tabSetting.daily"></div>
                         </td>
-                        <td>
+                        <td class="label-column">
                             <div class="content-tab" data-bind="i18n: tabSetting.weekly"></div>
                         </td>
                     </tr>
-                    <tr>
+                    <tr class= "label-row">
                         <th colspan="3">
                             <div data-bind="i18n: 'KMK004_215'"></div>
                         </th>
                     </tr>
-                    <tr>
-                        <td>
+                    <tr class= "label-row">
+                        <td class="label-column">
                             <div class="content-tab" data-bind="i18n: model.surcharge1"></div>
                         </td>
-                        <td>
+                        <td class="label-column">
                             <div class="content-tab" data-bind="i18n: model.surcharge2"></div>
                         </td>
-                        <td>
+                        <td class="label-column">
                             <div class="content-tab" data-bind="i18n: model.surcharge3"></div>
                         </td>
                     </tr>
-                    <tr>
+                    <tr class= "label-row">
                         <th colspan="3">
                             <div data-bind="i18n: 'KMK004_220'"></div>
                         </th>
                     </tr>
-                    <tr>
-                        <td>
+                    <tr class= "label-row">
+                        <td class="label-column">
                             <div class="content-tab" data-bind="i18n: model.surchargeOvertime1"></div>
                         </td>
-                        <td>
+                        <td class="label-column">
                             <div class="content-tab" data-bind="i18n: model.surchargeOvertime2"></div>
                         </td>
-                        <td>
+                        <td class="label-column">
                             <div class="content-tab" data-bind="i18n: model.surchargeOvertime3"></div>
                         </td>
                     </tr>
@@ -76,11 +76,11 @@ module nts.uk.at.view.kmk004.b {
                 background: #97D155;
             }
 
-            tr, th {
+            .label-row, th {
                 border: 1px solid #AAAAAA;
             }
 
-            tr, td {
+            .label-row .label-column {
                 border: 1px solid #AAAAAA;
                 padding: 3px;
               }
