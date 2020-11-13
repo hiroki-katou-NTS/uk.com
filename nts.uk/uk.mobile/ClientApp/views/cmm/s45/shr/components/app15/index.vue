@@ -21,7 +21,7 @@
           <div class="collapse">
             <div class="card-body">
               <!-- nội dung của collapse -->
-              {{ "this is card body" }}
+              {{ optionalItemSetting.note}}
             </div>
           </div>
         </div>

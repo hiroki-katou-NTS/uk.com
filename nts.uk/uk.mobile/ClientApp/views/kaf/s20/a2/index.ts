@@ -6,7 +6,6 @@ import { KafS00BComponent, KAFS00BParams, ScreenMode } from '../../s00/b';
 import { KafS00CComponent, KAFS00CParams } from '../../s00/c';
 import { AppType, KafS00ShrComponent } from '../../s00/shr';
 import { IAppDispInfoStartupOutput, IApplication, IRes } from '../../s04/a/define';
-import * as moment from 'moment';
 
 
 @component({
@@ -59,39 +58,82 @@ export class KafS20A2Component extends KafS00ShrComponent {
                 const { appDisplaySetting, appTypeSetting, appLimitSetting } = applicationSetting;
                 const { receptionRestrictionSetting } = applicationSetting;
 
-                vm.kafS00AParams = {
-                    applicationUseSetting: appUseSetLst[0],
-                    companyID: companyId,
-                    employeeID: vm.mode ? employeeId : vm.params.appDispInfoStartupOutput.appDetailScreenInfo.application.employeeID,
-                    employmentCD: employmentCode,
-                    receptionRestrictionSetting: receptionRestrictionSetting[0],
-                    opOvertimeAppAtr: null,
-                };
-                vm.kafS00BParams = {
-                    appDisplaySetting,
-                    newModeContent: {
-                        useMultiDaySwitch: true,
-                        initSelectMultiDay: false,
-                        appTypeSetting,
-                        appDate: null,
-                        dateRange: null,
-                    },
-                    mode: vm.mode ? ScreenMode.NEW : ScreenMode.DETAIL,
-                    detailModeContent: vm.mode ? null : {
-                        startDate: vm.params.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStartDate,
-                        endDate: vm.params.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppEndDate,
-                        employeeName: vm.params.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName,
-                        prePostAtr: vm.params.appDispInfoStartupOutput.appDetailScreenInfo.application.prePostAtr,
-                    }
-                };
-                vm.kafS00CParams = {
-                    displayFixedReason: displayStandardReason,
-                    displayAppReason,
-                    reasonTypeItemLst,
-                    appLimitSetting,
-                    opAppStandardReasonCD: vm.mode ? vm.application.opAppStandardReasonCD : vm.params.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
-                    opAppReason: vm.mode ? null : vm.params.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason,
-                };
+                if (vm.mode) {
+                    vm.kafS00AParams = {
+                        applicationUseSetting: appUseSetLst[0],
+                        companyID: companyId,
+                        employeeID: employeeId,
+                        employmentCD: employmentCode,
+                        receptionRestrictionSetting: receptionRestrictionSetting[0],
+                        opOvertimeAppAtr: null,
+                    };
+                    vm.kafS00BParams = {
+                        appDisplaySetting,
+                        newModeContent: {
+                            useMultiDaySwitch: true,
+                            initSelectMultiDay: false,
+                            appTypeSetting,
+                            appDate: null,
+                            dateRange: null,
+                        },
+                        mode: ScreenMode.NEW,
+                        detailModeContent: null
+                    };
+
+                    vm.kafS00CParams = {
+                        displayFixedReason: displayStandardReason,
+                        displayAppReason,
+                        reasonTypeItemLst,
+                        appLimitSetting,
+                        opAppStandardReasonCD: vm.application.opAppStandardReasonCD,
+                        opAppReason: null
+                    };
+                }
+                if (!vm.mode) {
+                    const { params } = vm;
+                    const { appDispInfoStartupOutput } = params;
+                    const { appDetailScreenInfo, appDispInfoNoDateOutput } = appDispInfoStartupOutput;
+
+
+                    const { application } = appDetailScreenInfo;
+                    const { employeeID, opAppStartDate, opAppEndDate, prePostAtr, opAppStandardReasonCD, opAppReason } = application;
+                    const { employeeInfoLst } = appDispInfoNoDateOutput;
+
+                    vm.kafS00AParams = {
+                        applicationUseSetting: appUseSetLst[0],
+                        companyID: companyId,
+                        employeeID,
+                        employmentCD: employmentCode,
+                        receptionRestrictionSetting: receptionRestrictionSetting[0],
+                        opOvertimeAppAtr: null,
+                    };
+                    vm.kafS00BParams = {
+                        appDisplaySetting,
+                        newModeContent: {
+                            useMultiDaySwitch: true,
+                            initSelectMultiDay: false,
+                            appTypeSetting,
+                            appDate: null,
+                            dateRange: null,
+                        },
+                        mode: ScreenMode.DETAIL,
+                        detailModeContent: {
+                            startDate: opAppStartDate,
+                            endDate: opAppEndDate,
+                            employeeName: employeeInfoLst[0].bussinessName,
+                            prePostAtr,
+                        }
+                    };
+
+                    vm.kafS00CParams = {
+                        displayFixedReason: displayStandardReason,
+                        displayAppReason,
+                        reasonTypeItemLst,
+                        appLimitSetting,
+                        opAppStandardReasonCD,
+                        opAppReason,
+                    };
+                }
             }
         });
     }
@@ -130,7 +172,6 @@ export class KafS20A2Component extends KafS00ShrComponent {
             const { params } = vm;
             const { appDetail } = params;
             const { application } = appDetail;
-
             const { optionalItems } = application;
 
             optionalItems.forEach((item) => {
@@ -142,88 +183,96 @@ export class KafS20A2Component extends KafS00ShrComponent {
 
                     return item.itemNo == controlAttendance.itemDailyID;
                 });
+
+                const { calcResultRange, optionalItemAtr, optionalItemName, optionalItemNo, unit } = optionalItem;
+                const { lowerCheck, upperCheck, amountLower, amountUpper, numberLower, numberUpper, timeLower, timeUpper } = calcResultRange;
+
+                const { amount, times, time } = item;
+                const { inputUnitOfTimeItem, } = controlAttendance;
+
                 vm.optionalItemApplication.push({
-                    lowerCheck: optionalItem.calcResultRange.lowerCheck,
-                    upperCheck: optionalItem.calcResultRange.upperCheck,
-                    amountLower: optionalItem.calcResultRange.amountLower,
-                    amountUpper: optionalItem.calcResultRange.amountUpper,
-                    numberLower: optionalItem.calcResultRange.numberLower,
-                    numberUpper: optionalItem.calcResultRange.numberUpper,
-                    timeLower: optionalItem.calcResultRange.timeLower ? optionalItem.calcResultRange.timeLower : null,
-                    timeUpper: optionalItem.calcResultRange.timeUpper ? optionalItem.calcResultRange.timeUpper : null,
-                    amount: item.amount,
-                    number: item.times,
-                    time: item.time,
-                    inputUnitOfTimeItem: controlAttendance.inputUnitOfTimeItem ? controlAttendance.inputUnitOfTimeItem : null,
-                    optionalItemAtr: optionalItem.optionalItemAtr,
-                    optionalItemName: optionalItem.optionalItemName,
-                    optionalItemNo: optionalItem.optionalItemNo,
-                    unit: optionalItem.unit
+                    lowerCheck,
+                    upperCheck,
+                    amountLower,
+                    amountUpper,
+                    numberLower,
+                    numberUpper,
+                    timeLower,
+                    timeUpper,
+                    amount,
+                    number: times,
+                    time,
+                    inputUnitOfTimeItem,
+                    optionalItemAtr,
+                    optionalItemName,
+                    optionalItemNo,
+                    unit
                 });
             });
         }
 
-        console.log(`mode A2 is ${vm.mode}`);
+        vm.$auth.user.then((user: any) => {
+        }).then(() => {
+            return vm.loadCommonSetting(OPTIONAL_ITEM_APPLICATION);
+        }).then((loadData: any) => {
+            if (loadData) {
+                vm.$mask('show');
+                let settingNoItems = vm.settingItems.settingItems.map((settingNoItem) => {
 
-        vm.$auth.user
-            .then((user: any) => {
-            }).then(() => {
-                return vm.loadCommonSetting(OPTIONAL_ITEM_APPLICATION);
-            }).then((loadData: any) => {
-                if (loadData) {
-                    vm.$mask('show');
-                    let settingNoItems = vm.settingItems.settingItems.map((settingNoItem, index, settingItems) => {
+                    return settingNoItem.no;
+                });
 
-                        return settingNoItem.no;
-                    });
+                let params = {
+                    optionalItemNos: settingNoItems,
+                };
 
-                    let params = {
-                        optionalItemNos: settingNoItems,
-                    };
+                Promise.all([vm.$http.post('at', API.getControlAttendance, params), vm.$http.post('at', API.getListItemNo, params)]).then((res: any) => {
+                    vm.$mask('hide');
 
-                    Promise.all([vm.$http.post('at', API.getControlAttendance, settingNoItems), vm.$http.post('at', API.getListItemNo, settingNoItems)]).then((res: any) => {
-                        vm.$mask('hide');
+                    let controlAttendances: IControlOfAttendanceItemsDto[] | null = res[0].data;
+                    let optionalNoItems: IOptionalItemDto[] | null = res[1].data;
 
-                        let controlAttendances: IControlOfAttendanceItemsDto[] | null = res[0].data;
-                        let optionalNoItems: IOptionalItemDto[] | null = res[1].data;
+                    settingNoItems.forEach((itemNo) => {
 
-                        settingNoItems.forEach((itemNo) => {
+                        let optionalItem = optionalNoItems.find((optionalItem) => {
 
-                            let optionalItem = optionalNoItems.find((optionalItem, index, optionalNoItems) => {
-
-                                return optionalItem.optionalItemNo === itemNo;
-                            });
-
-                            let controlAttendance = controlAttendances.find((controlAttend, index, controlAttendances) => {
-
-                                return controlAttend.itemDailyID == 640 + itemNo;
-                            });
-                            if (vm.mode) {
-                                vm.optionalItemApplication.push({
-                                    lowerCheck: optionalItem.calcResultRange.lowerCheck,
-                                    upperCheck: optionalItem.calcResultRange.upperCheck,
-                                    amountLower: optionalItem.calcResultRange.amountLower,
-                                    amountUpper: optionalItem.calcResultRange.amountUpper,
-                                    numberLower: optionalItem.calcResultRange.numberLower,
-                                    numberUpper: optionalItem.calcResultRange.numberUpper,
-                                    timeLower: optionalItem.calcResultRange.timeLower ? optionalItem.calcResultRange.timeLower : null,
-                                    timeUpper: optionalItem.calcResultRange.timeUpper ? optionalItem.calcResultRange.timeUpper : null,
-                                    amount: null,
-                                    number: null,
-                                    time: null,
-                                    inputUnitOfTimeItem: controlAttendance.inputUnitOfTimeItem ? controlAttendance.inputUnitOfTimeItem : null,
-                                    optionalItemAtr: optionalItem.optionalItemAtr,
-                                    optionalItemName: optionalItem.optionalItemName,
-                                    optionalItemNo: optionalItem.optionalItemNo,
-                                    unit: optionalItem.unit
-                                });
-                            }
+                            return optionalItem.optionalItemNo === itemNo;
                         });
-                    }).catch((error) => {
-                        vm.handleErrorMessage(error);
+
+                        let controlAttendance = controlAttendances.find((controlAttend) => {
+
+                            return controlAttend.itemDailyID == 640 + itemNo;
+                        });
+                        if (vm.mode) {
+                            const { calcResultRange, optionalItemAtr, optionalItemName, optionalItemNo, unit } = optionalItem;
+                            const { lowerCheck, upperCheck, amountLower, amountUpper, numberLower, numberUpper, timeLower, timeUpper } = calcResultRange;
+                            const { inputUnitOfTimeItem, } = controlAttendance;
+
+                            vm.optionalItemApplication.push({
+                                lowerCheck,
+                                upperCheck,
+                                amountLower,
+                                amountUpper,
+                                numberLower,
+                                numberUpper,
+                                timeLower,
+                                timeUpper,
+                                amount: null,
+                                number: null,
+                                time: null,
+                                inputUnitOfTimeItem,
+                                optionalItemAtr,
+                                optionalItemName,
+                                optionalItemNo,
+                                unit
+                            });
+                        }
                     });
-                }
-            });
+                }).catch((error) => {
+                    vm.handleErrorMessage(error);
+                });
+            }
+        });
     }
 
     public backToStep1() {

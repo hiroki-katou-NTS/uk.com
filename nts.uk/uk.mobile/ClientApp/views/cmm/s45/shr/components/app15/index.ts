@@ -17,7 +17,7 @@ export class CmmS45ShrComponentsApp15Component extends Vue {
     public optionalItemApplication: OptionalItemApplication[] | null = [];
     public optionalItemSetting: ISettings = {
         name: '',
-        description: '',
+        note: '',
         code: ''
     };
 
@@ -80,23 +80,30 @@ export class CmmS45ShrComponentsApp15Component extends Vue {
 
                         return item.itemNo == controlAttendance.itemDailyID;
                     });
+
+                    const { calcResultRange, optionalItemAtr, optionalItemName, optionalItemNo, unit } = optionalItem;
+                    const { lowerCheck, upperCheck, amountLower, amountUpper, numberLower, numberUpper, timeLower, timeUpper } = calcResultRange;
+
+                    const { amount, times, time } = item;
+                    const { inputUnitOfTimeItem, } = controlAttendance;
+
                     vm.optionalItemApplication.push({
-                        lowerCheck: optionalItem.calcResultRange.lowerCheck,
-                        upperCheck: optionalItem.calcResultRange.upperCheck,
-                        amountLower: optionalItem.calcResultRange.amountLower,
-                        amountUpper: optionalItem.calcResultRange.amountUpper,
-                        numberLower: optionalItem.calcResultRange.numberLower,
-                        numberUpper: optionalItem.calcResultRange.numberUpper,
-                        timeLower: optionalItem.calcResultRange.timeLower ? optionalItem.calcResultRange.timeLower : null,
-                        timeUpper: optionalItem.calcResultRange.timeUpper ? optionalItem.calcResultRange.timeUpper : null,
-                        amount: item.amount,
-                        number: item.times,
-                        time: item.time,
-                        inputUnitOfTimeItem: controlAttendance.inputUnitOfTimeItem ? controlAttendance.inputUnitOfTimeItem : null,
-                        optionalItemAtr: optionalItem.optionalItemAtr,
-                        optionalItemName: optionalItem.optionalItemName,
-                        optionalItemNo: optionalItem.optionalItemNo,
-                        unit: optionalItem.unit,
+                        lowerCheck,
+                        upperCheck,
+                        amountLower,
+                        amountUpper,
+                        numberLower,
+                        numberUpper,
+                        timeLower ,
+                        timeUpper ,
+                        amount,
+                        number: times,
+                        time,
+                        inputUnitOfTimeItem ,
+                        optionalItemAtr,
+                        optionalItemName,
+                        optionalItemNo,
+                        unit,
                     });
                     vm.$emit('loading-complete');
                 });
@@ -112,5 +119,5 @@ const API = {
 export interface ISettings {
     code: string;
     name: string;
-    description: string;
+    note: string;
 }
