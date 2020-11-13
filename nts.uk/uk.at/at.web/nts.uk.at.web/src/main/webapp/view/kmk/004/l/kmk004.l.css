@@ -68,17 +68,26 @@
     padding-left: 30px;
 }
 
+#view-o-left-side {
+    padding-left: 85px;
+}
+
 #title {
 	font-size: 20px;
 	padding: 1px;
 }
 
-#tree-grid {
+#workplace-list {
 	position: relative;
-    bottom: 40px;
+    bottom: 70px;
 }
 
 #empt-list-setting {
 	position: relative;
     bottom: 52px;
+}
+
+#com-kcp005 {
+	position: relative;
+    bottom: 96px;
 }

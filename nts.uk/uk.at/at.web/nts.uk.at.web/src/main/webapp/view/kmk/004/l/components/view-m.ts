@@ -15,7 +15,7 @@ module nts.uk.at.view.kmk004.l {
 	<table>
 		<tr>
 			<td id="view-m-left-side">
-				<div id="tree-grid"></div>
+				<div id="workplace-list"></div>
 			</td>
 			
 			<td id="right-side">
@@ -89,6 +89,7 @@ module nts.uk.at.view.kmk004.l {
 		alreadySettingList: KnockoutObservableArray<tree.UnitAlreadySettingModel>;
 		treeGrid: tree.TreeComponentOption;
 		selectedItemText: KnockoutObservable<string> = ko.observable('');
+		
 		created(params: Params) {
 			const vm = this;
 
@@ -114,9 +115,9 @@ module nts.uk.at.view.kmk004.l {
 
 		mounted() {
 			const vm = this;
-			$('#tree-grid').ntsTreeComponent(vm.treeGrid).done(() => {
+			$('#workplace-list').ntsTreeComponent(vm.treeGrid).done(() => {
 				vm.selectedId.subscribe((data) => {
-					let workplaces = $('#tree-grid').getDataList();
+					let workplaces = $('#workplace-list').getDataList();
 					let selectedItem: UnitModel = _.find(workplaces, ['id', data]);
 					vm.selectedItemText(selectedItem ? selectedItem.name : '');
 				});

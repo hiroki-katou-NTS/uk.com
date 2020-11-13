@@ -100,7 +100,7 @@ module nts.uk.at.view.kmk004.l {
 		isDialog: KnockoutObservable<boolean>;
 		isShowNoSelectRow: KnockoutObservable<boolean>;
 		isMultiSelect: KnockoutObservable<boolean>;
-		employmentList: KnockoutObservableArray<UnitModel>;
+		employeeList: KnockoutObservableArray<UnitModel>;
 
 		isDisplayClosureSelection: KnockoutObservable<boolean>;
 		isDisplayFullClosureOption: KnockoutObservable<boolean>;
@@ -142,16 +142,16 @@ module nts.uk.at.view.kmk004.l {
 				isDisplayClosureSelection: vm.isDisplayClosureSelection(),
 			};
 
-			vm.employmentList = ko.observableArray<UnitModel>([]);
+			vm.employeeList = ko.observableArray<UnitModel>([]);
 			vm.currentItemName = ko.observable('');
 		}
 
 		mounted() {
 			const vm = this;
 			$('#empt-list-setting').ntsListComponent(vm.listComponentOption).done(() => {
-				vm.employmentList($('#empt-list-setting').getDataList());
-				if (vm.employmentList().length > 0) {
-					vm.selectedCode(vm.employmentList()[0].code);
+				vm.employeeList($('#empt-list-setting').getDataList());
+				if (vm.employeeList().length > 0) {
+					vm.selectedCode(vm.employeeList()[0].code);
 				}
 
 				vm.selectedCode.subscribe((newValue) => {
@@ -160,7 +160,7 @@ module nts.uk.at.view.kmk004.l {
 						return;
 					}
 					
-					let selectedItem = _.find(vm.employmentList(), emp => {
+					let selectedItem = _.find(vm.employeeList(), emp => {
 						return emp.code == newValue;
 					});
 					
