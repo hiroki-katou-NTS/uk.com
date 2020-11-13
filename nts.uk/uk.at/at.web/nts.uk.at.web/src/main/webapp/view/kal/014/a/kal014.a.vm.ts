@@ -15,6 +15,7 @@ module nts.uk.at.kal014.a {
         gridItems: KnockoutObservableArray<GridItem> = ko.observableArray([]);
         currentCode: KnockoutObservable<string> = ko.observable(null);
         alarmPattern: AlarmPattern = new AlarmPattern('', '');
+        selectedExecutePermission: KnockoutObservable<any>;
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
         selectedTab: KnockoutObservable<string>;
         isNewMode: KnockoutObservable<boolean>;
@@ -80,8 +81,9 @@ module nts.uk.at.kal014.a {
                 {code: '1', name: vm.$i18n('KAL014_30')},
                 {code: '2', name: vm.$i18n('KAL014_31')}
             ]);
-            vm.selectedRuleCode = ko.observable(1);
+            vm.selectedRuleCode = ko.observable(null);
             vm.isNewMode = ko.observable(true);
+            vm.selectedExecutePermission = ko.observable("");
             $("#fixed-table").ntsFixedTable({height: 320, width: 830});
         }
 
@@ -91,6 +93,10 @@ module nts.uk.at.kal014.a {
             for (let i = 0; i < 100; i++) {
                 vm.gridItems.push(new GridItem("code " + i + "", "name " + i));
             }
+            vm.currentCode.subscribe((code:any)=>{
+                alert(code);
+                //TODO write server side logic and call API here
+            });
         }
 
         remove() {

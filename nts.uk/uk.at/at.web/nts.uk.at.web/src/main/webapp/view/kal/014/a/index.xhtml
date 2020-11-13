@@ -5,7 +5,6 @@
       xmlns:com="http://xmlns.jcp.org/jsf/component"
 >
 <body>
-<!--TODO waiting for text resource to make sure the desing -->
 <ui:composition template="../../../../master/base.xhtml">
     <ui:define name="htmlHead">
         <com:ValidatorScript>
@@ -23,7 +22,7 @@
             <a class="goback" tabindex="1"
                data-bind="ntsLinkButton: { jump: backButon }">#{i18n.getText('KAL014_8')}</a>
             <!--A1_2-->
-            <button id="A1_2" tabindex="2" data-bind="click:clickNewButton">#{i18n.getText('KAL014_9')}</button>
+            <button id="A1_2" tabindex="2" data-bind="click:clickNewButton,enable: true">#{i18n.getText('KAL014_9')}</button>
             <!--A1_3-->
             <button id="A1_3" tabindex="3" class="proceed"
                     data-bind="click:clickRegister, enable: $root.errors.isEmpty">#{i18n.getText('KAL014_10')}</button>
@@ -157,7 +156,8 @@
                                 </div>
                                 <div class="cell valign-center">
                                     <!-- A8_2 -->
-                                    <input tabindex="-1" type="text"/>
+                                    <input tabindex="-1" id="A8_2" style="margin-left: 40px;"
+                                           data-bind="ntsTextEditor: {value: vm.selectedExecutePermission}"/>
                                 </div>
                                 <div class="cell valign-center">
                                     <!-- A8_3 -->

@@ -1,6 +1,5 @@
 module nts.uk.at.kal011.c {
 
-
     const PATH_API = {
         //TODO wrote api path
         sendEmail: "",
@@ -10,8 +9,10 @@ module nts.uk.at.kal011.c {
     @bean()
     export class Kal011CViewModel extends ko.ViewModel {
 
-        columns: Array<any>;//nts.uk.ui.NtsGridListColumn
-        //data
+        /**
+         * nts.uk.ui.NtsGridListColumn
+         */
+        columns: Array<any>;
         workPlaceList: Array<WorkPlace> = [];
         processId: string;
 
@@ -55,7 +56,7 @@ module nts.uk.at.kal011.c {
                 processId: vm.processId,
             };
             vm.$ajax(PATH_API.getWorkPlace, command).then((data) => {
-                //TODO map table with vm.workPlaceList
+                //TODO map data with vm.workPlaceList
             }).fail(function (error) {
                 vm.$dialog.error({messageId: error.messageId});
             }).always(() => {
@@ -66,14 +67,14 @@ module nts.uk.at.kal011.c {
 
         /**
          *
-         * functiton start pagea
+         * function start pagea
          * @return JQueryPromise
          */
         startPage(): JQueryPromise<any> {
             let vm = this;
             let dfd = $.Deferred();
             vm.columns = [
-                {headerText: '', dataType: 'string', key: 'GUID'},
+                {headerText: '', key: 'GUID', width: 1, hidden: true},
                 {
                     headerText: vm.$i18n('KAL011_24'),
                     dataType: 'boolean',
@@ -82,12 +83,12 @@ module nts.uk.at.kal011.c {
                     width: 150,
                     ntsControl: 'isSendTo'
                 },
-                {headerText: vm.$i18n('KAL011_25'), key: 'workplaceCode', width: 150},
-                {headerText: vm.$i18n('KAL011_26'), key: 'workplaceName', width: 260}
+                {headerText: vm.$i18n('KAL011_25'), key: 'wpCode', width: 150},
+                {headerText: vm.$i18n('KAL011_26'), key: 'wpName', width: 383}
             ];
             $("#grid").ntsGrid({
-                height: '300px',
-                width: 450,
+                width : 700,
+                height: 380,
                 dataSource: vm.workPlaceList,
                 hidePrimaryKey: true,
                 primaryKey: 'GUID',
@@ -128,7 +129,7 @@ module nts.uk.at.kal011.c {
                         vm.closeDialog();
                     });
             }).fail(function (error) {
-                vm.$dialog.error({messageId: "Msg_1169"});
+                vm.$dialog.error({messageId: error.messageId});
             }).always(() => {
                 vm.closeDialog();
                 vm.$blockui("clear");
@@ -139,18 +140,18 @@ module nts.uk.at.kal011.c {
     class WorkPlace {
         GUID: string;
         isSendTo: boolean;
-        workplaceId: string;
-        workplaceCode: string;
-        workplaceName: string;
+        wpId: string;
+        wpCode: string;
+        wpName: string;
 
-        constructor(isSendTo: boolean, workplaceId: string, workplaceCode: string, workplaceName: string) {
+        constructor(isSendTo: boolean, wpId: string, wpCode: string, wpName: string) {
             this.GUID = nts.uk.util.randomId().replace(/-/g, "_");
             this.isSendTo = isSendTo;
-            this.workplaceId = workplaceId;
+            this.wpId = wpId;
             /* 職場コード*/
-            this.workplaceCode = workplaceCode;
+            this.wpCode = wpCode;
             /* 職場名*/
-            this.workplaceName = workplaceName;
+            this.wpName = wpName;
         }
     }
 }
