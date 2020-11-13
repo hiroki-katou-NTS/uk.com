@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.dom.alarm.workplace.checkcondition;
+package nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,6 +7,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionName;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.アラーム_職場別.チェック条件.カテゴリ別アラームチェック条件(職場別)
@@ -32,10 +33,11 @@ public class AlarmCheckCdtWorkplaceCategory extends AggregateRoot {
     // 抽出条件
     private ExtractionCondition condition;
 
-    public AlarmCheckCdtWorkplaceCategory(int category, String code, String cID, String name) {
+    public AlarmCheckCdtWorkplaceCategory(int category, String code, String name, ExtractionCondition condition) {
         this.category = EnumAdaptor.valueOf(category, WorkplaceCategory.class);
         this.code = new AlarmCheckConditionCode(code);
-        this.cID = cID;
+        this.cID = AppContexts.user().companyId();
         this.name = new AlarmCheckConditionName(name);
+        this.condition = condition;
     }
 }

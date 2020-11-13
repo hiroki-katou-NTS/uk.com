@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.dom.alarm.workplace.checkcondition;
+package nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition;
 
 import nts.arc.enums.EnumAdaptor;
 

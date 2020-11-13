@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.app.find.alarm.workplace.checkcondition;
+package nts.uk.ctx.at.function.app.find.alarmworkplace.checkcondition;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
