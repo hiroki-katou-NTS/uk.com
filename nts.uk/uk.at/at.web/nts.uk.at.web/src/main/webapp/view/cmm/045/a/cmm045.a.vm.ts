@@ -247,32 +247,32 @@ module cmm045.a.viewmodel {
             console.log(contentWidth);
 
             if (self.mode() == 0) {
-                character.restore('TableColumnWidth0').then((obj) => {
+                character.restore('TableColumnWidth0' + __viewContext.user.companyId + __viewContext.user.employeeId).then((obj) => {
                     if(obj !== undefined) {
                         if(contentWidth !== obj.width) {
-                            character.save('TableColumnWidth0', self.columnWidth).then(() => {
+                            character.save('TableColumnWidth0' + __viewContext.user.companyId + __viewContext.user.employeeId, self.columnWidth).then(() => {
                                 nts.uk.ui.dialog.info({ messageId: "Msg_357" });
                             });
                         }
                     } else {
                         if(contentWidth !== 340) {
-                            character.save('TableColumnWidth0', self.columnWidth).then(() => {
+                            character.save('TableColumnWidth0' + __viewContext.user.companyId + __viewContext.user.employeeId, self.columnWidth).then(() => {
                                 nts.uk.ui.dialog.info({ messageId: "Msg_357" });
                             });
                         }
                     }
                 });
             } else {
-                character.restore('TableColumnWidth1').then((obj) => {
+                character.restore('TableColumnWidth1' + __viewContext.user.companyId + __viewContext.user.employeeId).then((obj) => {
                     if(obj !== undefined) {
                         if(contentWidth !== obj.width) {
-                            character.save('TableColumnWidth1', self.columnWidth).then(() => {
+                            character.save('TableColumnWidth1' + __viewContext.user.companyId + __viewContext.user.employeeId, self.columnWidth).then(() => {
                                 nts.uk.ui.dialog.info({ messageId: "Msg_357" });
                             });
                         }
                     } else {
                         if(contentWidth !== 340) {
-                            character.save('TableColumnWidth1', self.columnWidth).then(() => {
+                            character.save('TableColumnWidth1' + __viewContext.user.companyId + __viewContext.user.employeeId, self.columnWidth).then(() => {
                                 nts.uk.ui.dialog.info({ messageId: "Msg_357" });
                             });
                         }
@@ -1021,7 +1021,7 @@ module cmm045.a.viewmodel {
             widthAuto = window.innerWidth >= 1280 ? window.innerWidth - 130 : 1100;
 
             var contentWidth = 340;
-            character.restore('TableColumnWidth0').then((obj) => {
+            character.restore('TableColumnWidth0' + __viewContext.user.companyId + __viewContext.user.employeeId).then((obj) => {
                     if(obj !== undefined && self.mode() === 0 && obj.appLstAtr === true && obj.cID === __viewContext.user.companyId && obj.sID === __viewContext.user.employeeId) {
                         contentWidth = obj.width;
                     } else {
@@ -1298,7 +1298,7 @@ module cmm045.a.viewmodel {
             widthAuto = window.innerWidth >= 1280 ? window.innerWidth - 130 : 1100;
 
             var contentWidth = 340;
-            character.restore('TableColumnWidth1').then((obj) => {
+            character.restore('TableColumnWidth1' + __viewContext.user.companyId + __viewContext.user.employeeId).then((obj) => {
                     if(obj !== undefined && self.mode() === 1 && obj.appLstAtr === false && obj.cID === __viewContext.user.companyId && obj.sID === __viewContext.user.employeeId) {
                         contentWidth = obj.width;
                     } else {
