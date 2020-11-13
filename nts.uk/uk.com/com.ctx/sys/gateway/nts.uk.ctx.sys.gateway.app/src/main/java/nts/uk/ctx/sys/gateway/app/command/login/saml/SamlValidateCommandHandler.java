@@ -129,14 +129,14 @@ public class SamlValidateCommandHandler extends LoginCommandHandlerBase<
 	
 	// 認証成功時の処理
 	@Override
-	protected AuthorResult processSuccess(AuthenResult state) {
+	protected AuthorResult processSuccess(Require require, AuthenResult state) {
 		/* ログインチェック  */
 		return AuthorResult.of(ValidateInfo.successToValidSaml(state.requestUrl));
 	}
 	
 	// 認証失敗時の処理
 	@Override
-	protected AuthorResult processFailure(AuthenResult state) {
+	protected AuthorResult processFailure(Require require, AuthenResult state) {
 		return AuthorResult.of(ValidateInfo.failedToValidSaml(state.errorMessage));
 	}
 	

@@ -9,7 +9,7 @@ import nts.uk.ctx.sys.shared.dom.company.CompanyInforImport;
  */
 public class CheckIfCanLogin {
 
-	public static void check(Require require, String tenantCode, String companyId, String employeeId) {
+	public static Result check(Require require, String tenantCode, String companyId, String employeeId) {
 		
 		val company = require.getCompanyInforImport(companyId);
 		if (company.isAbolished()) {
@@ -22,6 +22,9 @@ public class CheckIfCanLogin {
 		}
 	}
 	
+	public static class Result {
+		
+	}
 	
 	public static interface Require extends CheckSystemAvailability.Require {
 		CompanyInforImport getCompanyInforImport(String companyId);
