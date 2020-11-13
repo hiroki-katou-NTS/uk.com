@@ -458,7 +458,7 @@ public class WorkInformationTest {
 			}
 		};
 		Optional<WorkInfoAndTimeZone>  result = workInformation.getWorkInfoAndTimeZone(require);
-		assertThat(result.get().getListTimeZone().isEmpty()).isTrue();
+		assertThat(result.get().getTimeZones().isEmpty()).isTrue();
 		assertThat(result.get().getWorkTime().isPresent()).isFalse();
 		assertThat(result.get().getWorkType().getWorkTypeCode()).isEqualTo(workInformation.getWorkTypeCode());
 	}
@@ -503,13 +503,13 @@ public class WorkInformationTest {
 		};
 		Optional<WorkInfoAndTimeZone>  result = workInformation.getWorkInfoAndTimeZone(require);
 		assertThat(result.isPresent()).isTrue();
-		assertThat(result.get().getListTimeZone().size()).isEqualTo(listTimezoneUse.size()-1);
+		assertThat(result.get().getTimeZones().size()).isEqualTo(listTimezoneUse.size()-1);
 		//workNo 1
-		assertThat(result.get().getListTimeZone().get(0).getStart()).isEqualTo(listTimezoneUse.get(1).getStart());
-		assertThat(result.get().getListTimeZone().get(0).getEnd()).isEqualTo(listTimezoneUse.get(1).getEnd());
+		assertThat(result.get().getTimeZones().get(0).getStart()).isEqualTo(listTimezoneUse.get(1).getStart());
+		assertThat(result.get().getTimeZones().get(0).getEnd()).isEqualTo(listTimezoneUse.get(1).getEnd());
 		//workNo 2
-		assertThat(result.get().getListTimeZone().get(1).getStart()).isEqualTo(listTimezoneUse.get(0).getStart());
-		assertThat(result.get().getListTimeZone().get(1).getEnd()).isEqualTo(listTimezoneUse.get(0).getEnd());
+		assertThat(result.get().getTimeZones().get(1).getStart()).isEqualTo(listTimezoneUse.get(0).getStart());
+		assertThat(result.get().getTimeZones().get(1).getEnd()).isEqualTo(listTimezoneUse.get(0).getEnd());
 	}
 
 	/**

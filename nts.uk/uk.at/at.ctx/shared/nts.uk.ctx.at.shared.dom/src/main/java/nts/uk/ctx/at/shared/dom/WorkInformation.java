@@ -206,7 +206,7 @@ public class WorkInformation {
 		}
 		// @就業時間帯コード.isEmpty()
 		if (!this.workTimeCode.isPresent()) {
-			return Optional.of(new WorkInfoAndTimeZone(workType.get()));
+			return Optional.of(WorkInfoAndTimeZone.createWithoutWorkTime( workType.get() ));
 		}
 		// $就業時間帯の設定 = require.就業時間帯を取得する(@就業時間帯コード )
 		Optional<WorkTimeSetting> workTimeSetting = require.getWorkTime( this.workTimeCode.get().v() );
@@ -226,7 +226,7 @@ public class WorkInformation {
 		List<TimeZone> listTimeZone = listTimezoneUse.stream().map(i -> new TimeZone(i.getStart(), i.getEnd()))
 				.collect(Collectors.toList());
 
-		return Optional.of(new WorkInfoAndTimeZone(workType.get(), workTimeSetting.get(), listTimeZone));
+		return Optional.of( WorkInfoAndTimeZone.create( workType.get(), workTimeSetting.get(), listTimeZone ));
 	}
 
 	public static interface Require {
