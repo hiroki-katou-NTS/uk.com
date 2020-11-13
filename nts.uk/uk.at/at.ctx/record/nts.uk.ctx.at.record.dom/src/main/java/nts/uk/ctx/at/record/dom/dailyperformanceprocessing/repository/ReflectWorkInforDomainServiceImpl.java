@@ -2289,7 +2289,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							jobTitleHistItemImport.get().getJobTitleId(),
 							workplaceHistItemImport.get().getWorkplaceId(),
 							new ClassificationCode(classificationHistItemImport.get().getClassificationCode()),
-							worktypeHistItemImport.map(c -> c.getEmployee().getBusinessTypeCode()).orElse(null),
+							worktypeHistItemImport.map(c -> c.getEmployee().getBusinessTypeCode()),
 							Optional.empty())),errMesInfos);
 		} else {
 			// #日別作成修正 2018/07/17 前川 隼大
