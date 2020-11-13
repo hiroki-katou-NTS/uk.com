@@ -8,6 +8,7 @@ import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.layer.infra.file.temp.ApplicationTemporaryFileFactory;
 import nts.arc.layer.infra.file.temp.ApplicationTemporaryFilesContainer;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.app.find.employee.dto.EmployeeBasicInfoExportDto;
 import nts.uk.ctx.at.function.app.find.employee.dto.EmployeeInfoExport;
 import nts.uk.ctx.at.function.dom.adapter.EmployeeHistWorkRecordAdapter;
@@ -338,8 +339,7 @@ public class GetDataToOutputService extends ExportService<Object> {
         // Step ドメインモデル「社員データ管理情報」が取得できたかどうかチェックする
         // 取得できなかった場合（データ件数＝０件）
         if (employeeInfoImports.isEmpty()) {
-            // TODO
-            throw new BusinessException("list EmployeeBasicInfoFnImport empty !");
+            return result;
         }
         // 取得できた場合（データ件数≠０件）
         else {
@@ -356,8 +356,7 @@ public class GetDataToOutputService extends ExportService<Object> {
             List<EmployeeInfoExport> lstEmpSearch = this.getPersonalInformation(lstPersonId);
             // 取得できなかった場合（データ件数＝０件）
             if (lstEmpSearch.isEmpty()) {
-                // TODO
-                throw new BusinessException("list EmployeeInfoExport empty !");
+                return result;
             }
             // 取得できた場合（データ件数≠０件)
             lstEmpSearch.forEach(person -> {
@@ -394,8 +393,7 @@ public class GetDataToOutputService extends ExportService<Object> {
         List<PersonImport> lstPersonImport = this.personAdaptor.findByPids(personId);
         if (lstPersonImport.isEmpty()) {
             // Step 終了状態：個人情報取得失敗
-            // TODO
-            throw new BusinessException("list PersonImport empty !");
+            return result;
         } else {
             // Step 終了状態：成功
             lstPersonImport.forEach(ps -> {
