@@ -19,10 +19,10 @@
     <ui:define name="content">
         <div id="functions-area">
             <!--B1_1-->
-            <button tabindex="1" class=" goback  link-button"
-                    data-bind="ntsLinkButton: { jump: '/view/ksm/008/a/index.xhtml' }">#{i18n.getText("KSM008_13")}</button>
+            <a tabindex="1" class="goback"
+                    data-bind="ntsLinkButton: { jump: '/view/ksm/008/a/index.xhtml' }">#{i18n.getText("KSM008_13")}</a>
             <!-- B1_2-->
-            <button tabindex="2" class="proceed" data-bind="click: register, enable: enableRegisterBtn">#{i18n.getText("KSM008_14")}</button>
+            <button tabindex="2" class="proceed" data-bind="click: register, enable: enableRegisterBtn &amp;&amp; $root.errors.isEmpty">#{i18n.getText("KSM008_14")}</button>
             <!-- B1_3-->
             <button tabindex="3" class="danger" data-bind="click: remove, enable: enableDeleteBtn">#{i18n.getText("KSM008_15")}</button>
         </div>
@@ -33,9 +33,9 @@
             </div>
             <div class="ksm008-right-content">
                 <!--B2_1-->
-                <div class="label" data-bind="text: alarmCheckSet"></div>
+                <div class="label" style="padding-bottom: 10px" data-bind="text: alarmCheckSet"></div>
                 <!--B3_1-->
-                <div class="panel panel-gray-bg">
+                <div id="B3_1" class="panel panel-gray-bg">
                     <!--B3_2-->
                     <div class="label">#{i18n.getText("KSM008_16")}</div>
                     <!--B3_3-->
@@ -46,7 +46,7 @@
                 <div style="display: flex">
                     <!--B5_1-->
                     <div tabindex="5" style="margin-top: 10px" id="kcp005-component"></div>
-                    <div style="flex: 1; padding-left: 30px; margin-top: 10px">
+                    <div style="padding-left: 30px; margin-top: 10px">
                         <div>
                             <!--B6_1-->
                             <div style="width: 200px" data-bind="ntsFormLabel: {}">#{i18n.getText("KSM008_17")}</div>
@@ -67,7 +67,7 @@
                         <div tabindex="8" style="margin-top: 10px" id="sample-component-sa"></div>
                         <div id="kcp005-select" style="padding-left: 205px;"></div>
                         <!--B10_1-->
-                        <div class="label" style="padding-left: 205px;">#{i18n.getText("KSM008_21")}</div>
+                        <span class="label" id="B10_1">#{i18n.getText("KSM008_21")}</span>
                     </div>
                 </div>
             </div>

@@ -17,7 +17,6 @@ module nts.uk.at.view.kmk008.a {
 
 		created() {
 			const vm = this;
-			_.extend(window, {vm});
 
 			vm.$blockui("grayout");
 

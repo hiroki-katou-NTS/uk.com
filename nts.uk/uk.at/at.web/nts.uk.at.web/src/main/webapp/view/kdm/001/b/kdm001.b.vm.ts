@@ -197,6 +197,8 @@
                     if (result.closureEmploy && result.sempHistoryImport){
                         self.closureEmploy = result.closureEmploy;
                         self.listExtractData = result.remainingData;
+                        self.startDate = result.startDate;
+                        self.endDate = result.endDate;
                         self.convertToDisplayList(isShowMsg);
                         self.updateSubstituteDataList();
                         self.isHaveError(false);
@@ -273,11 +275,11 @@
                     `${data.occurrenceId}${data.digestionId}`,
                     data.occurrenceId,
                     data.digestionId,
-                    (_.isEmpty(data.occurrenceId) || data.occurrenceId !== 0) && _.isEmpty(data.accrualDate) ? getText('KDM001_160') : data.accrualDate, // B4_1_1
+                    !_.isEmpty(data.occurrenceId) && data.occurrenceId !== 0 && _.isEmpty(data.accrualDate) ? getText('KDM001_160') : data.accrualDate, // B4_1_1
                     data.occurrenceDay === 0 ? '' : data.occurrenceDay + getText('KDM001_27') + data.occurrenceHour, //B4_2_2
                     null,
                     substituedexpiredDate, //B4_4_2
-                    (_.isEmpty(data.digestionId) || data.digestionId !== 0) && _.isEmpty(data.digestionDay) ? getText('KDM001_160') : data.digestionDay, //B4_2_3
+                    !_.isEmpty(data.digestionId) && data.digestionId !== 0 && _.isEmpty(data.digestionDay) ? getText('KDM001_160') : data.digestionDay, //B4_2_3
                     data.digestionDays > 0 ? data.digestionDays + getText('KDM001_27') + data.digestionTimes : data.digestionTimes, //B4_2_4
                     null,
                     data.dayLetf > 0 ? data.dayLetf + getText('KDM001_27') + data.remainingHours : data.remainingHours, //B4_2_5
@@ -288,7 +290,7 @@
                 ));
 
             });
-            if (isShowMsg && self.listExtractData.length == 0) {
+            if (isShowMsg && self.listExtractData.length === 0) {
                 dialog.alertError({ messageId: 'Msg_726' });
             }
             self.subData = listData;
@@ -349,7 +351,8 @@
                                 columnKey: 'substituedWorkingHours',
                                 mergeOn: 'always',
                                 mergeStrategy: (prevRec: any, curRec: any, columnKey: any) =>
-                                    this.isMergeStrategy(prevRec, curRec, columnKey)
+                                    prevRec['substituedWorkingDate'] === curRec['substituedWorkingDate']
+                                    && this.isMergeStrategy(prevRec, curRec, columnKey)
                             },
                             {
                                 columnKey: 'substituedHolidayDate',
@@ -360,9 +363,21 @@
                             {
                                 columnKey: 'substituteHolidayHours',
                                 mergeOn: 'always',
-                                mergeStrategy: (prevRec: any, curRec: any, columnKey: any) => {
-                                    this.isMergeStrategy(prevRec, curRec, columnKey)
-                                }
+                                mergeStrategy: (prevRec: any, curRec: any, columnKey: any) =>
+                                    prevRec['substituedHolidayDate'] === curRec['substituedHolidayDate']
+                                    && this.isMergeStrategy(prevRec, curRec, columnKey)
+                            },
+                            {
+                                columnKey: 'remainHolidayHours',
+                                mergeOn: 'always',
+                                mergeStrategy: (prevRec: any, curRec: any, columnKey: any) =>
+                                    prevRec['mergeCell'] === curRec['mergeCell'] && prevRec[columnKey] === curRec[columnKey]
+                            },
+                            {
+                                columnKey: 'expiredHolidayHours',
+                                mergeOn: 'always',
+                                mergeStrategy: (prevRec: any, curRec: any, columnKey: any) =>
+                                    prevRec['mergeCell'] === curRec['mergeCell'] && prevRec[columnKey] === curRec[columnKey]
                             },
                             {
                                 columnKey: 'delete',
@@ -414,29 +429,23 @@
             block.invisible();
             service.getInfoEmLogin().done(loginerInfo => {
                 service.getWpName().then((wp: any) => {
-                    if (wp == null || wp.workplaceId == null || wp.workplaceId == "") {
-                        dialog.alertError({ messageId: "Msg_504" }).then(() => {
-                            nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
-                        });
-                    } else {
-                        if (!_.find(self.employeeInputList(), item => item.id === loginerInfo.sid)) {
-                            self.employeeInputList.push(new EmployeeKcp009(loginerInfo.sid,
-                                loginerInfo.employeeCode, loginerInfo.employeeName, wp.name, wp.name));
+                    if (!_.find(self.employeeInputList(), item => item.id === loginerInfo.sid)) {
+                        self.employeeInputList.push(new EmployeeKcp009(loginerInfo.sid,
+                            loginerInfo.employeeCode, loginerInfo.employeeName, wp.name, wp.name));
 
-                            self.selectedEmployee = {
-                                employeeId: loginerInfo.sid, employeeCode: loginerInfo.employeeCode, employeeName: loginerInfo.employeeName,
-                                workplaceId: wp.workplaceId, workplaceCode: wp.code, workplaceName: wp.name
-                            };
-                        }
-                        self.initKCP009();
-                        dfd.resolve();
+                        self.selectedEmployee = {
+                            employeeId: loginerInfo.sid, employeeCode: loginerInfo.employeeCode, employeeName: loginerInfo.employeeName,
+                            workplaceId: wp.workplaceId, workplaceCode: wp.code, workplaceName: wp.name
+                        };
                     }
+                    setTimeout(() => {
+                        self.initKCP009();
+                    }, 10);
+                    dfd.resolve();
                 });
-                
                 const employeeId = self.selectedEmployee ? self.selectedEmployee.employeeId : null;
                 searchCondition = { searchMode: self.selectedPeriodItem(), employeeId: employeeId };
                 service.getExtraHolidayData(searchCondition).done(result => {
-                    console.log("Data: ",result);
                     if (result.closureEmploy && result.sempHistoryImport) {
                         let wkHistory = result.wkHistory;
                         self.closureEmploy = result.closureEmploy;
@@ -448,16 +457,15 @@
                                 loginerInfo.employeeCode, loginerInfo.employeeName, wkHistory.workplaceName, wkHistory.wkpDisplayName));
                         self.listExtractData = result.remainingData;
                         self.totalRemainingNumber = result.totalRemainingNumber;
-                        self.convertToDisplayList();
+                        self.startDate = result.startDate;
+                        self.endDate = result.endDate;
+                        self.convertToDisplayList(true);
                         self.updateSubstituteDataList();
                         self.isHaveError(false);
                         if (result.dispExpiredDate){
                             self.dispExpiredDate(result.dispExpiredDate);
                         }
-                        self.initKCP009();
                         self.disableLinkedData();
-                        self.startDate = result.startDate;
-                        self.endDate = result.endDate;
                     }else{
                         self.subData = [];
                         self.updateSubstituteDataList();
@@ -472,13 +480,15 @@
                     if (result.messageId && result.messageId === 'Msg_1731') {
                         self.isHaveError(true);
                     }
-                    dialog.alertError({ messageId: result.messageId, messageParams: result.parameterIds }).then(function() { block.clear(); });
+                    
+                    dialog.alertError({ messageId: result.messageId, messageParams: result.parameterIds }).then(() => block.clear());
                     dfd.reject();
                 });
             }).fail(function(result) {
-                dialog.alertError({ messageId: result.messageId, messageParams: result.parameterIds }).then(function() { block.clear(); });
+                dialog.alertError({ messageId: result.messageId, messageParams: result.parameterIds }).then(() => block.clear());
                 dfd.reject();
             });
+
             return dfd.promise();
         }
 
@@ -575,13 +585,12 @@
                         comDayOffID: value.digestionId
                 };
                 service.deleteHolidaySetting(command)
-                    .then(() => dialog.info({ messageId: "Msg_16" }))
-                    .fail(error => dialog.alertError(error))
-                    .always(() => {
-                        self.startPage()
-                        self.getSubstituteDataList(self.getSearchCondition());
-                        block.clear();
-                    });
+                    .then(() => dialog.info({ messageId: "Msg_16" }).then(() => self.getSubstituteDataList(self.getSearchCondition(), true)))
+                    .fail(error => {
+                        dialog.alertError(error);
+                        self.getSubstituteDataList(self.getSearchCondition(), true);
+                    })
+                    .always(() => block.clear());
             })
             .then(() => block.clear());
         }

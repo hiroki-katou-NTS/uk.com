@@ -83,10 +83,6 @@ public class FurikyuMngDataExtractionService {
 				// Step ドメイン「振休管理データ」を取得する
 				substitutionOfHDManagementData = substitutionOfHDManaDataRepository.getBysiDAndAtr(cid, empId);
 			}
-			// Step 取得したデータをチェック
-			if (payoutManagementData.isEmpty() && substitutionOfHDManagementData.isEmpty()) {
-				throw new BusinessException("Msg_725");
-			}
 			// Step ドメイン「振出振休紐付け管理」を取得する
 			if (substitutionOfHDManagementData.isEmpty()) {
 				List<GeneralDate> listPayoutDate = payoutManagementData.stream().map(x -> x.getPayoutDate().getDayoffDate().orElse(null))
@@ -95,7 +91,7 @@ public class FurikyuMngDataExtractionService {
 						listPayoutDate);
 			} else {
 				List<GeneralDate> listSubDate = substitutionOfHDManagementData.stream().map(x -> {
-					return x.getHolidayDate().getDayoffDate().get();
+					return x.getHolidayDate().getDayoffDate().orElse(null);
 				}).collect(Collectors.toList());
 				payoutSubofHDManagementLinkToPayout = payoutSubofHDManaRepository.getByListDate(empId, listSubDate);
 			}
@@ -294,7 +290,7 @@ public class FurikyuMngDataExtractionService {
 		for (PayoutManagementData itemPayout : payoutManagementData) {
 			// Input.List＜振出振休紐付け管理＞を絞り込みする
 			List<PayoutSubofHDManagement> listPayoutSub = payoutSubofHDManagementLinkToPayout.stream()
-					.filter(item -> item.getAssocialInfo().getOutbreakDay().compareTo(itemPayout.getPayoutDate().getDayoffDate().get()) == 0)
+					.filter(item -> item.getAssocialInfo().getOutbreakDay().equals(itemPayout.getPayoutDate().getDayoffDate().orElse(null)))
 					.collect(Collectors.toList());
 			// 	絞り込みした「振出振休紐付け管理」をチェック
 			if (!listPayoutSub.isEmpty()) {
@@ -303,7 +299,7 @@ public class FurikyuMngDataExtractionService {
 				}).collect(Collectors.toList());
 				// Input．List＜振休管理データ＞を絞り込み
 				 List<SubstitutionOfHDManagementData> listSubstitution = substitutionOfHDManagementData.stream()
-						.filter(item -> lstDateOfUse.contains(item.getHolidayDate().getDayoffDate().get()))
+						.filter(item -> lstDateOfUse.contains(item.getHolidayDate().getDayoffDate().orElse(null)))
 						.collect(Collectors.toList());
 				if(listSubstitution.isEmpty() && !lstDateOfUse.isEmpty()) {
 					// Step ドメインモデル「振休管理データ」を取得
@@ -361,8 +357,9 @@ public class FurikyuMngDataExtractionService {
 		for (SubstitutionOfHDManagementData itemSubstitution : substitutionOfHDManagementData) {
 			// List＜振出振休紐付け管理＞を絞り込みする
 			List<PayoutSubofHDManagement> lstLinkToPayout = payoutSubofHDManagementLinkToPayout.stream()
-					.filter(item -> item.getAssocialInfo().getDateOfUse()
-							.compareTo(itemSubstitution.getHolidayDate().getDayoffDate().get()) == 0)
+					.filter(item -> itemSubstitution.getHolidayDate().getDayoffDate().isPresent()
+							? item.getAssocialInfo().getDateOfUse().compareTo(itemSubstitution.getHolidayDate().getDayoffDate().get()) == 0
+							: false)
 					.collect(Collectors.toList());
 			// 絞り込みした「振出振休紐付け管理」をチェック: あるの場合
 			if (!lstLinkToPayout.isEmpty()) {
