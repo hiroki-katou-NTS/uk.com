@@ -1134,7 +1134,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 										stringBuilder.append(" ").append(remarkContentStr);
 										maxByte = maxByte - 1;
 									}
-									if (numberLine == dataRowCount && maxByte <= lstRemarkContentStr.get(i + 1).getBytes().length) {
+									if (numberLine == dataRowCount
+										&& (i + 1) < lstRemarkContent.size()
+										&& maxByte <= lstRemarkContentStr.get(i + 1).getBytes().length) {
 										stringBuilder.append(" 他").append(lstRemarkContentStr.size() - i).append("件");
 										break;
 									}
@@ -1400,7 +1402,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 							errorDetails.append(" ").append(remarkContentStr);
 							maxByte = maxByte - 1;
 						}
-						if (numberLine == dataRowCount && maxByte <= lstRemarkContentStr.get(i + 1).getBytes().length) {
+						if (numberLine == dataRowCount
+							&& (i + 1) < lstRemarkContent.size()
+							&& maxByte <= lstRemarkContentStr.get(i + 1).getBytes().length) {
 							errorDetails.append(" 他").append(lstRemarkContentStr.size() - i).append("件");
 							break;
 						}
