@@ -5,18 +5,17 @@
       xmlns:com="http://xmlns.jcp.org/jsf/component"
 >
 <body>
-<!--TODO waiting for text resource to make sure the desing -->
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
         <com:scriptfile set="IGNITE"/>
-        <script>var dialogSize = {width: 500, height: 400};</script>
+        <script>var dialogSize = {width: 725, height: 490 };</script>
         <com:stylefile path="styles.css"/>
         <com:scriptfile path="kal011.c.vm.js"/>
     </ui:define>
     <ui:define name="content">
         <div id="functions-area">
             <div class="table" style="width:100% ">
-                <div class="cell">
+                <div class="cell" style="width: 35%">
                     <!--C1_1-->
                     <button tabindex="1" data-bind="click:doSendEmail">#{i18n.getText('KAL011_21')}</button>
                 </div>

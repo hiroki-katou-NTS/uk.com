@@ -3,7 +3,7 @@ package nts.uk.ctx.at.function.dom.alarmworkplace;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode;
-import nts.uk.ctx.at.function.dom.alarm.workplace.checkcondition.WorkplaceCategory;
+import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.WorkplaceCategory;
 
 import java.util.List;
 

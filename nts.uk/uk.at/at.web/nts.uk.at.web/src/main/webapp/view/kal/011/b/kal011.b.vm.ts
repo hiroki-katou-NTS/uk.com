@@ -2,11 +2,13 @@ module nts.uk.at.kal011.B {
 
     const PATH_API = {}
     const PATH_EXPORT_EXCELL = {
-        exportAlarmData: "at/function/alarm/kal/011/export-alarm-data/"
+        //TODO write API path
+        exportAlarmData: ""
     }
 
     @bean()
     export class Kal011BViewModel extends ko.ViewModel {
+
         columns: Array<any>;
         currentSelectedRow: KnockoutObservable<any>;
         eralRecord: KnockoutObservable<number>;
@@ -27,14 +29,22 @@ module nts.uk.at.kal011.B {
             vm.flgActive = ko.observable(true);
             vm.columns = [
                 {headerText: '', key: 'guid', width: 1, hidden: true},
+                /**B3_2**/
                 {headerText: vm.$i18n('KAL011_13'), key: 'workplaceCode', width: 85},
-                {headerText: vm.$i18n('KAL011_14'), key: 'workplaceName', width: 245},
-                {headerText: vm.$i18n('KAL011_15'), key: 'date', width: 130},
+                /**B3_3**/
+                {headerText: vm.$i18n('KAL011_14'), key: 'workplaceName', width: 150},
+                /**B3_4**/
+                {headerText: vm.$i18n('KAL011_15'), key: 'date', width: 100},
+                /**B3_5**/
                 {headerText: vm.$i18n('KAL011_16'), key: 'categoryName', width: 150},
-                {headerText: vm.$i18n('KAL011_17'), key: 'alarmValue', width: 60},
-                {headerText: vm.$i18n('KAL011_18'), key: 'alarmItem', width: 115},
+                /**B3_6**/
+                {headerText: vm.$i18n('KAL011_17'), key: 'alarmValueMessage', width: 200},
+                /**B3_7**/
+                {headerText: vm.$i18n('KAL011_18'), key: 'alarmItemName', width: 100},
+                /**B3_8**/
                 {headerText: vm.$i18n('KAL011_19'), key: 'checkTargetValue', width: 100},
-                {headerText: vm.$i18n('KAL011_120'), key: 'comment', width: 260}
+                /**B3_9**/
+                {headerText: vm.$i18n('KAL011_20'), key: 'comment', width: 250}
             ];
             // mock data
             for (let i = 1; i < 1000; i++) {
@@ -45,9 +55,12 @@ module nts.uk.at.kal011.B {
         created() {
             const vm = this;
             _.extend(window, {vm});
+            vm.$blockui("invisible");
             vm.startPage().done(() => {
                 $('.ui-igedit-input').attr("tabindex", "-1");
                 $('.ui-iggrid-paging > *').attr("tabindex", "-1");
+            }).always(() => {
+                vm.$blockui("clear");
             });
         }
 
@@ -153,9 +166,9 @@ module nts.uk.at.kal011.B {
         /* カテゴリ*/
         categoryName: string;
         /* アラーム値*/
-        alarmValue: string;
+        alarmValueMessage: string;
         /* アラーム項目名*/
-        alarmItem: string;
+        alarmItemName: string;
         /* チェック対象値*/
         checkTargetValue: string;
         /* コメント*/
@@ -168,8 +181,8 @@ module nts.uk.at.kal011.B {
                     date: string,
                     categoryId: number,
                     categoryName: string,
-                    alarmValue: string,
-                    alarmItem: string,
+                    alarmValueMessage: string,
+                    alarmItemName: string,
                     checkTargetValue: string,
                     comment: string) {
             this.guid = guid;
@@ -179,8 +192,8 @@ module nts.uk.at.kal011.B {
             this.date = date;
             this.categoryId = categoryId;
             this.categoryName = categoryName;
-            this.alarmValue = alarmValue;
-            this.alarmItem = alarmItem;
+            this.alarmValueMessage = alarmValueMessage;
+            this.alarmItemName = alarmItemName;
             this.checkTargetValue = checkTargetValue;
             this.comment = comment;
         }

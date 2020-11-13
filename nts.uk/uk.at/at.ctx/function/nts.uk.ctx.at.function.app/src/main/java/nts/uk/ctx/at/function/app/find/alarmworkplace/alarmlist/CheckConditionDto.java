@@ -3,8 +3,8 @@ package nts.uk.ctx.at.function.app.find.alarmworkplace.alarmlist;
 import lombok.Getter;
 import nts.arc.primitive.PrimitiveValueBase;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.function.dom.alarm.workplace.checkcondition.WorkplaceCategory;
 import nts.uk.ctx.at.function.dom.alarmworkplace.CheckCondition;
+import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.WorkplaceCategory;
 
 import java.util.List;
 import java.util.stream.Collectors;

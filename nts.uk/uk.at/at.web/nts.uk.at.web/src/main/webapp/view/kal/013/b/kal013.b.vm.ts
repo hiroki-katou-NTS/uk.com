@@ -1,6 +1,6 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
-module nts.uk.at.view.kal012.b {
+module nts.uk.at.view.kal013.b {
     @bean()
     export class KAL013BViewModel extends ko.ViewModel {
 

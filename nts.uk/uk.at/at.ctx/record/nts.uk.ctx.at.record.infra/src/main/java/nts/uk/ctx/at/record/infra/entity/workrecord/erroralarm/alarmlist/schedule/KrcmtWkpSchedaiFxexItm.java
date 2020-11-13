@@ -69,15 +69,13 @@ public class KrcmtWkpSchedaiFxexItm extends AggregateTableEntity {
         entity.firstMessageDisp = domain.getFirstMessageDisp().v();
         entity.boldAtr = domain.isBoldAtr();
 
-        if (domain.getMessageColor().isPresent()) {
-            entity.messageColor = domain.getMessageColor().get().v();
-        }
+        entity.messageColor = domain.getMessageColor().isPresent() ? domain.getMessageColor().get().v() : null;
 
         return entity;
     }
 
     public FixedExtractionScheduleItems toDomain() {
-        FixedExtractionScheduleItems domain = FixedExtractionScheduleItems.create(
+        return FixedExtractionScheduleItems.create(
                 EnumAdaptor.valueOf(this.pk.fixedCheckDayItemName, FixedCheckDayItemName.class),
                 EnumAdaptor.valueOf(this.alarmCheckCls, AlarmCheckClassification.class),
                 this.boldAtr,
@@ -85,7 +83,5 @@ public class KrcmtWkpSchedaiFxexItm extends AggregateTableEntity {
                 new DisplayMessage(this.firstMessageDisp),
                 Optional.of(new ColorCode(this.messageColor))
         );
-
-        return domain;
     }
 }

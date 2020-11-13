@@ -1,19 +1,35 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
-module nts.uk.at.view.kal012.a {
-  @bean()
-  class ViewModel extends ko.ViewModel {
 
-    constructor(params: any) {
-      super();
-      const vm = this;
-    }
+module nts.uk.at.view.kal013.c {
+    @bean()
+    export class KAL013CViewModel extends ko.ViewModel {
 
-    created(params: any) {
-      const vm = this;
-    }
+        constructor(params: any) {
+            super();
+            const vm = this;
+        }
 
-    mounted() {
-      const vm = this;
+        created(params: any) {
+            const vm = this;
+
+            _.extend(window, {vm});
+        }
+
+        mounted() {
+            const vm = this;
+        }
+
+        submitAndCloseDialog() {
+            const vm = this;
+
+            vm.$window.close({
+                // data return to parent
+            });
+        }
+
+        closeDialog() {
+            const vm = this;
+            vm.$window.close();
+        }
     }
-  }
 }

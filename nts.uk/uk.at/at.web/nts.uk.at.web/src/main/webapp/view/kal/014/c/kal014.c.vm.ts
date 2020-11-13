@@ -19,6 +19,7 @@ module nts.uk.at.kal014.c {
         CLASSIFICATION: any;
         dateSpecify: KnockoutObservableArray<any>;
         monthSpecify: KnockoutObservableArray<any>;
+        isScheduleDaily:KnockoutObservable<boolean>;
 
         constructor(props: any) {
             super();
@@ -45,11 +46,25 @@ module nts.uk.at.kal014.c {
                 {value: 0, name: vm.$i18n("KAL014_49")},
                 {value: 1, name: ""}
             ]);
+            vm.isScheduleDaily=ko.observable(vm.checkIsScheduleDaily());
         }
 
         created() {
             const vm = this;
             _.extend(window, {vm});
+            (vm.modalDTO.categoryId.subscribe((id)=>{
+                vm.isScheduleDaily=ko.observable(vm.checkIsScheduleDaily());
+            }));
+        }
+
+        /**
+         * This function is responsible to if the category SCHEDULE_DAILY or not
+         *
+         * @return boolean
+         **/
+        checkIsScheduleDaily():boolean{
+            const vm = this;
+            return vm.modalDTO.categoryId()=== vm.workPalceCategory.SCHEDULE_DAILY;
         }
 
         /**
