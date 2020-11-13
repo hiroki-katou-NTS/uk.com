@@ -20,6 +20,7 @@ module nts.uk.at.view.kaf020.a {
                     vm.detail(vm, data[0]);
                 } else {
                     vm.optionalItemAppSet(data);
+                    $('#fixed-table').focus();
                 }
             });
         }

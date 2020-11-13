@@ -31,15 +31,15 @@
                 </tr>
                 </thead>
                 <tbody data-bind="foreach: { data: optionalItemAppSet, as: 'optionalItem'}">
-                <tr data-bind="click: function() { return $parent.detail($parent, optionalItem)}">
+                <tr>
                     <!--A3_1-->
                     <td data-bind="text: optionalItem.code" style="text-align: center;"></td>
                     <!--A3_2-->
                     <td>
-                        <a class="hyperlink" href="" data-bind="text: optionalItem.name"></a>
+                        <a class="hyperlink" href="" data-bind="text: optionalItem.name, click: function() { return $parent.detail($parent, optionalItem)}"></a>
                     </td>
                     <!--A3_3-->
-                    <td data-bind="text: optionalItem.note"></td>
+                    <td style="white-space: pre-wrap;" data-bind="text: optionalItem.note"></td>
                 </tr>
                 </tbody>
             </table>
