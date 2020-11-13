@@ -15,16 +15,25 @@ import nts.uk.ctx.sys.portal.dom.notice.MessageNotice;
  * @author DungDV
  *
  */
-public interface MessageNoticeService {
+public class MessageNoticeService {
 
 	/**
-	 * [1] 新メッセージがあるか
+	 * Checks if is new msg.
+	 * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.ポータル.お知らせ.新メッセージがあるか
 	 * 
-	 * @param require @Require
-	 * @param sid     社員ID
-	 * @return 新メッセージがあるか
+	 * @param require the require
+	 * @param sid     the sid
+	 * @return the boolean
 	 */
-	Boolean isNewMsg(MessageNoticeRequire require, String sid);
+	public Boolean isNewMsg(MessageNoticeRequire require, String sid) {
+		GeneralDate baseDate = GeneralDate.today();
+		// $職場ID = require.社員IDから職場IDを取得する(ログイン社員ID、年月日.今日)
+		Optional<String> wpId = require.getWpId(sid, baseDate);
+		// $List<お知らせメッセージ> ＝ require.参照できるメッセージを取得する($職場ID)
+		List<MessageNotice> listMsg = require.getNewMsgForDay(wpId);
+		// return !$List<お知らせメッセージ>.isEmpty()
+		return !listMsg.isEmpty();
+	}
 
 	/**
 	 * [1]期間で全て参照できるメッセージを取得する
@@ -34,7 +43,13 @@ public interface MessageNoticeService {
 	 * @param sid     社員ID
 	 * @return List<お知らせメッセージ>
 	 */
-	List<MessageNotice> getAllMsgInPeriod(MessageNoticeRequire require, DatePeriod period, String sid);
+	public List<MessageNotice> getAllMsgInPeriod(MessageNoticeRequire require, DatePeriod period, String sid) {
+		GeneralDate baseDate = GeneralDate.today();
+		// $職場ID = require.社員IDから職場IDを取得する(ログイン社員ID、年月日.今日)
+		Optional<String> wpId = require.getWpId(sid, baseDate);
+		// return require.期間で参照できるメッセージを取得する(期間、$職場ID)
+		return require.getMsgRefByPeriod(period, wpId, sid);
+	}
 
 	public static interface MessageNoticeRequire {
 

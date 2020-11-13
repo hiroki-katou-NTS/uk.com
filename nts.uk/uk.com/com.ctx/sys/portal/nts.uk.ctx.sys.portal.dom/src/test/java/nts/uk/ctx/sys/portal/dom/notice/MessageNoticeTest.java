@@ -2,6 +2,8 @@ package nts.uk.ctx.sys.portal.dom.notice;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.ArrayList;
+
 import org.junit.Test;
 
 import mockit.Mocked;
@@ -12,6 +14,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * Test doamin UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.ポータル.お知らせ.お知らせメッセージ
+ * 
  * @author DungDV
  *
  */
@@ -68,7 +71,8 @@ public class MessageNoticeTest {
 		MessageNotice domain = new MessageNotice(creatorID, modifiedDate, targetInformation, datePeriod);
 
 		// then
-		NtsAssert.invokeGetters(domain);
+		assertThat(domain.getEmployeeIdSeen()).isEqualTo(new ArrayList<>());
+		assertThat(domain.getInputDate().toString()).isEqualTo(GeneralDateTime.now().toString());
 	}
 
 	/**
@@ -100,9 +104,9 @@ public class MessageNoticeTest {
 				.isEqualTo(mockDtoNullDest.getTargetInformation().getDestination());
 		assertThat(domainNullDest.getTargetInformation().getDestination())
 				.isEqualTo(mockDtoNotIncludeDest.getTargetInformation().getDestination());
-		assertThat(domain.getDatePeriod().start().equals(mockDto.getStartDate())).isTrue();
-		assertThat(domain.getDatePeriod().end().equals(mockDto.getEndDate())).isTrue();
-		assertThat(domain.getEmployeeIdSeen().isEmpty()).isFalse();
+		assertThat(domain.getDatePeriod().start()).isEqualTo(mockDto.getStartDate());
+		assertThat(domain.getDatePeriod().end()).isEqualTo(mockDto.getEndDate());
+		assertThat(domain.getEmployeeIdSeen()).isNotEmpty();
 		assertThat(domain.getEmployeeIdSeen()).isEqualTo(mockDto.getEmployeeIdSeen());
 	}
 

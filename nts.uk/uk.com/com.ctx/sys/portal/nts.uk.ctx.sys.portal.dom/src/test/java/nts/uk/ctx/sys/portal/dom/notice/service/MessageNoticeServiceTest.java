@@ -14,6 +14,7 @@ import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Mocked;
+import mockit.Tested;
 import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -33,13 +34,16 @@ public class MessageNoticeServiceTest {
 	@Injectable
 	private MessageNoticeService.MessageNoticeRequire require;
 
+	@Tested
+	private MessageNoticeService service;
+
 	@Mocked
 	private static MessageNoticeDto mockDto = MessageNoticeHelper.mockDto;
 
 	@Test
 	public void testIsNewMsgTrueResult() {
 		MessageNotice domain = MessageNotice.createFromMemento(mockDto);
-		
+
 		new Expectations() {
 			{
 				require.getWpId("mock-sid", GeneralDate.today());
@@ -50,11 +54,10 @@ public class MessageNoticeServiceTest {
 				result = Arrays.asList(domain);
 			}
 		};
-		val service = new DefaultMessageNoticeService();
 		val res = service.isNewMsg(require, "mock-sid");
 		assertThat(res).isTrue();
 	}
-	
+
 	@Test
 	public void testIsNewMsgFalseResult() {
 		new Expectations() {
@@ -67,7 +70,6 @@ public class MessageNoticeServiceTest {
 				result = new ArrayList<String>();
 			}
 		};
-		val service = new DefaultMessageNoticeService();
 		val res = service.isNewMsg(require, "mock-sid");
 		assertThat(res).isFalse();
 	}
@@ -86,10 +88,28 @@ public class MessageNoticeServiceTest {
 				result = Arrays.asList(domain);
 			}
 		};
-		val service = new DefaultMessageNoticeService();
-		List<MessageNotice> res = service.getAllMsgInPeriod(require, DatePeriod.oneDay(GeneralDate.today()), "mock-sid");
+		List<MessageNotice> res = service.getAllMsgInPeriod(require, DatePeriod.oneDay(GeneralDate.today()),
+				"mock-sid");
 		assertThat(res).isNotEmpty();
 		assertThat(res).hasSize(1);
 		assertThat(res.get(0)).isEqualTo(domain);
+	}
+
+	@Test
+	public void testGetAllMsgInPeriodEmptyResult() {
+		new Expectations() {
+			{
+				require.getWpId("mock-sid", GeneralDate.today());
+				result = Optional.of("31559a03-1f9a-47ea-8ae5-85364ff7e3fd");
+			}
+			{
+				require.getMsgRefByPeriod((DatePeriod) any, Optional.of("31559a03-1f9a-47ea-8ae5-85364ff7e3fd"),
+						"mock-sid");
+				result = new ArrayList<>();
+			}
+		};
+		List<MessageNotice> res = service.getAllMsgInPeriod(require, DatePeriod.oneDay(GeneralDate.today()),
+				"mock-sid");
+		assertThat(res).isEmpty();
 	}
 }
