@@ -48,6 +48,10 @@ public class TopPageSettingServiceTest {
 			new SwitchingDate(0)
 		);
 	
+	/**
+	 * Test get top page settings 1.
+	 * Test get topPageSettings by TopPageRoleSetting (TopPagePersonSetting is null and TopPageRoleSetting is not null)
+	 */
 	@Test
 	public void testGetTopPageSettings1() {
 		Optional<TopPageRoleSetting> topPageRoleSetting = Optional.of(new TopPageRoleSetting(
@@ -83,6 +87,10 @@ public class TopPageSettingServiceTest {
 		assertThat(result).isNotEmpty();
 	}
 	
+	/**
+	 * Test get top page settings 2.
+	 * Test get topPageSettings by TopPagePersonSetting (TopPagePersonSetting is not null)
+	 */
 	@Test
 	public void testGetTopPageSettings2() {
 		Optional<TopPagePersonSetting> topPagePersonSetting = Optional.of(new TopPagePersonSetting(
@@ -112,6 +120,10 @@ public class TopPageSettingServiceTest {
 		assertThat(result).isNotEmpty();
 	}
 	
+	/**
+	 * Test get top page settings 3.
+	 * Test get topPageSettings if TopPagePersonSetting and TopPageRoleSetting are null
+	 */
 	@Test
 	public void testGetTopPageSettings3() {
 		new Expectations() {
