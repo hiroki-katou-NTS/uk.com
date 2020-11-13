@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class KrqdtAppLateOrLeavePK_New implements Serializable {
+public class KrqdtAppLateOrLeavePK implements Serializable {
 
 	/**
 	 * 

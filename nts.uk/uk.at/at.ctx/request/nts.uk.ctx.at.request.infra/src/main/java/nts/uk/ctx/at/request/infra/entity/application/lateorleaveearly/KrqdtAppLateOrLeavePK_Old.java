@@ -8,14 +8,14 @@ import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 /**
- * 
+ * 古いクラス → 削除予定 → 使わないでください (Old Class → Delete plan → Please don't use it)
  * @author hieult
  *
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class KrqdtAppLateOrLeavePK implements Serializable {
+public class KrqdtAppLateOrLeavePK_Old implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@NotNull
@@ -25,7 +25,4 @@ public class KrqdtAppLateOrLeavePK implements Serializable {
 	@NotNull
 	@Column(name = "APP_ID")
 	public String appID;
-
-
-
 }
