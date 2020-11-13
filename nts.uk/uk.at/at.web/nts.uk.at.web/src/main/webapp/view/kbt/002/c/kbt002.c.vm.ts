@@ -186,7 +186,7 @@ module nts.uk.at.view.kbt002.c {
     }
 
     optionEndTime() {
-      const vm = this;;
+      const vm = this;
       if (vm.selectEndTime() == 0) {
         vm.curExecSetting().endTimeCls(0);
       } else {

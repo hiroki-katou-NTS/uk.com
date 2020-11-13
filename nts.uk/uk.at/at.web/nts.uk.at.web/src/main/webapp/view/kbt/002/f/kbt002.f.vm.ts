@@ -48,7 +48,7 @@ module nts.uk.at.view.kbt002.f {
         const key = $(this).attr(DOM_DATA_VALUE);
         vm.openDialogH(key);
       });
-      $(document).on("click", "div[class^='nts-grid-control-isTaskExecution']", function() {
+      $(document).on("click", "div[class^='nts-grid-control-isTaskExecution']", function () {
         const className = $(this).attr("class");
         const regex = /.*-([0-9]+)/;
         const key = regex.exec(className)[1];
@@ -231,6 +231,15 @@ module nts.uk.at.view.kbt002.f {
           virtualization: true,
           virtualizationMode: 'continuous',
         });
+
+        // Disable F3_7
+        $("#F2_1").ready(function () {
+          _.forEach(vm.dataSource(), item => {
+            if (!item.executionTaskSetting) {
+              $(`.nts-grid-control-isTaskExecution-${nts.uk.text.padLeft(item.execItemCd, '0', 2)} button`).attr("disabled", "disabled");
+            }
+          });
+        });
       });
     }
 
@@ -383,17 +392,33 @@ module nts.uk.at.view.kbt002.f {
             const selectedItem: any = _.find(vm.dataSource(), { execItemCd: execItemCd });
             if (selectedItem) {
               const command: ChangeExecutionTaskSettingCommand = new ChangeExecutionTaskSettingCommand(selectedItem.executionTaskSetting);
+              // Update date format
+              if (command.startDate) {
+                command.startDate = moment.utc(command.startDate, "YYYY/MM/DD");
+              }
+              if (command.endDate) {
+                command.endDate = moment.utc(command.endDate, "YYYY/MM/DD");
+              }
               vm.$ajax(API.changeSetting, command)
-                .then(res => vm.getExecItemInfoList())
-                .fail((err) => vm.$dialog.alert({ messageId: err.messageId }));
-            } 
+                .then((res) => {
+                  vm.dataSource().splice(vm.dataSource().indexOf(selectedItem), 1, res);
+                })
+                .fail((err) => {
+                  vm.revertSwitch($item);
+                  vm.$dialog.alert({ messageId: err.messageId });
+                });
+            }
           } else {
-            const onButton = $item.find(`.${SELECTED_CLASS}`);
-            const offButton = $item.find(`:not(.${SELECTED_CLASS})`);
-            onButton.removeClass(SELECTED_CLASS);
-            offButton.addClass(SELECTED_CLASS);
+            vm.revertSwitch($item);
           }
         });
+    }
+
+    private revertSwitch($item: JQuery) {
+      const onButton = $item.find(`.${SELECTED_CLASS}`);
+      const offButton = $item.find(`:not(.${SELECTED_CLASS})`);
+      onButton.removeClass(SELECTED_CLASS);
+      offButton.addClass(SELECTED_CLASS);
     }
 
     /**
@@ -494,12 +519,12 @@ module nts.uk.at.view.kbt002.f {
     oneDayRepInterval: number;
     oneDayRepClassification: number;
     nextExecDateTime: string;
-    endDate: string;
+    endDate: any;
     endDateCls: number;
     endTime: number;
     endTimeCls: number;
     repeatContent: number;
-    startDate: string;
+    startDate: any;
     startTime: number;
     scheduleId: string;
     endScheduleId: string;
@@ -523,6 +548,7 @@ module nts.uk.at.view.kbt002.f {
     november: boolean;
     december: boolean;
     repeatMonthDateList: number[];
+    newMode = false;
 
     constructor(init?: Partial<ChangeExecutionTaskSettingCommand>) {
       $.extend(this, init);

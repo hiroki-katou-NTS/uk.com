@@ -36,6 +36,7 @@ import nts.uk.ctx.at.function.dom.processexecution.repository.RepeatMonthDayRepo
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.ExecutionTaskSetting;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.detail.RepeatMonthDaysSelect;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.primitivevalue.EndTime;
+import nts.uk.ctx.at.function.dom.processexecution.tasksetting.primitivevalue.OneDayRepeatIntervalDetail;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.primitivevalue.StartTime;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.task.schedule.UkJobScheduleOptions;
@@ -85,7 +86,8 @@ public class SaveExecutionTaskSettingCommandHandler
 		ProcessExecutionLogManage logManage = optLogManage.get();
 		// 「実行中」の場合
 		// エラーメッセージ「#Msg_1318」を表示する
-		if (logManage.getCurrentStatus().equals(CurrentExecutionStatus.RUNNING)) {
+		if (logManage.getCurrentStatus().isPresent()
+				&& logManage.getCurrentStatus().get().equals(CurrentExecutionStatus.RUNNING)) {
 			throw new BusinessException("Msg_1318");
 		}
 		// 「実行中」以外の場合
@@ -425,7 +427,7 @@ public class SaveExecutionTaskSettingCommandHandler
 		return false;
 	}
 
-	private List<String> getCron(SaveExecutionTaskSettingCommand command) {
+	public List<String> getCron(SaveExecutionTaskSettingCommand command) {
 		List<String> lstCron = new ArrayList<String>();
 
 		Integer repeatMinute = null;
@@ -444,32 +446,7 @@ public class SaveExecutionTaskSettingCommandHandler
 		Integer startTimeRun = null;
 
 		if (command.getOneDayRepInterval() != null) {
-			switch (command.getOneDayRepInterval().intValue()) {
-			case 0:
-				repeatMinute = 1;
-				break;
-			case 1:
-				repeatMinute = 5;
-				break;
-			case 2:
-				repeatMinute = 10;
-				break;
-			case 3:
-				repeatMinute = 15;
-				break;
-			case 4:
-				repeatMinute = 20;
-				break;
-			case 5:
-				repeatMinute = 30;
-				break;
-			case 6:
-				repeatMinute = 60;
-				break;
-			default:
-				repeatMinute = 1;
-				break;
-			}
+			repeatMinute = EnumAdaptor.valueOf(command.getOneDayRepInterval(), OneDayRepeatIntervalDetail.class).getMinuteValue();
 		}
 
 		if (repeatMinute != null) {

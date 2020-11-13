@@ -4,12 +4,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.ExecutionTaskSetting;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.OneDayRepeatInterval;
@@ -30,11 +28,7 @@ import nts.uk.ctx.at.function.dom.processexecution.tasksetting.primitivevalue.On
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.primitivevalue.StartTime;
 
 @Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class SaveExecutionTaskSettingCommand {
-	private boolean newMode;
+public class ChangeExecutionTaskSettingCommand {
 
 	/* 会社ID */
 	private String companyId;
@@ -42,41 +36,44 @@ public class SaveExecutionTaskSettingCommand {
 	/* コード */
 	private String execItemCd;
 
+	/* 更新処理有効設定 */
+	private boolean enabledSetting;
+
+	/* 1日の繰り返し間隔.繰り返し間隔 */
+	private Integer oneDayRepInterval;
+
+	/* 1日の繰り返し間隔.指定区分 */
+	private Integer oneDayRepClassification;
+
+	/* 次回実行日時 */
+	private GeneralDateTime nextExecDateTime;
+
+	/* 終了日.終了日日付指定 */
+	private GeneralDate endDate;
+
+	/* 終了日.実行タスク終了日区分 */
+	private Integer endDateCls;
+
+	/* 終了時刻.終了時刻 */
+	private Integer endTime;
+
+	/* 終了時刻.実行タスク終了時刻ありなし区分 */
+	private Integer endTimeCls;
+
+	/* 繰り返し内容 */
+	private Integer repeatContent;
+
 	/* 開始日 */
 	private GeneralDate startDate;
 
 	/* 開始時刻 */
 	private Integer startTime;
 
-	/* 実行タスク終了時刻設定 */
-	private Integer endTimeCls;
+	/* スケジュールID */
+	private String scheduleId;
 
-	/* 終了時刻 */
-	private Integer endTime;
-
-	/* 実行タスク終了時刻設定 */
-	private Integer oneDayRepCls;
-
-	/* 繰り返し間隔 */
-	private Integer oneDayRepInterval;
-
-	/* 繰り返しする */
-	private boolean repeatCls;
-
-	/* 繰り返し内容 */
-	private Integer repeatContent;
-
-	/* 実行タスク終了日区分 */
-	private Integer endDateCls;
-
-	/* 終了日日付指定 */
-	private GeneralDate endDate;
-
-	/* 更新処理有効設定 */
-	private boolean enabledSetting;
-
-	/* 次回実行日時 */
-//	private GeneralDateTime nextExecDateTime;
+	/* 終了処理スケジュールID */
+	private String endScheduleId;
 
 	/* 日 */
 	private boolean monday;
@@ -137,12 +134,6 @@ public class SaveExecutionTaskSettingCommand {
 
 	private List<Integer> repeatMonthDateList;
 
-	/* スケジュールID */
-	private String scheduleId;
-	
-	/* 終了処理スケジュールID*/
-	private String endScheduleId;
-
 	public ExecutionTaskSetting toDomain() {
 		List<RepeatMonthDaysSelect> days = repeatMonthDateList.stream()
 				.map(x -> EnumAdaptor.valueOf(x, RepeatMonthDaysSelect.class)).collect(Collectors.toList());
@@ -165,10 +156,19 @@ public class SaveExecutionTaskSettingCommand {
 				.oneDayRepInr(new OneDayRepeatInterval(
 						oneDayRepInterval == null ? null
 								: EnumAdaptor.valueOf(oneDayRepInterval, OneDayRepeatIntervalDetail.class),
-						EnumAdaptor.valueOf(oneDayRepCls, OneDayRepeatClassification.class)))
-				.scheduleId(scheduleId)
-				.startDate(startDate)
-				.startTime(new StartTime(startTime))
-				.build();
+						EnumAdaptor.valueOf(oneDayRepClassification, OneDayRepeatClassification.class)))
+				.scheduleId(scheduleId).startDate(startDate).startTime(new StartTime(startTime)).build();
+	}
+
+	public SaveExecutionTaskSettingCommand convertToSaveCommand() {
+		return SaveExecutionTaskSettingCommand.builder().april(april).august(august).companyId(companyId)
+				.december(december).enabledSetting(enabledSetting).endDate(endDate).endDateCls(endDateCls)
+				.endScheduleId(endScheduleId).endTime(endTime).endTimeCls(endTimeCls).execItemCd(execItemCd)
+				.february(february).friday(friday).january(january).july(july).june(june).march(march).may(may)
+				.monday(monday).newMode(false).november(november).october(october).oneDayRepCls(oneDayRepClassification)
+				.oneDayRepInterval(oneDayRepInterval).repeatCls(true).repeatContent(repeatContent)
+				.repeatMonthDateList(repeatMonthDateList).saturday(saturday).scheduleId(endScheduleId)
+				.september(september).startDate(startDate).startTime(startTime).sunday(sunday).thursday(thursday)
+				.tuesday(tuesday).wednesday(wednesday).build();
 	}
 }
