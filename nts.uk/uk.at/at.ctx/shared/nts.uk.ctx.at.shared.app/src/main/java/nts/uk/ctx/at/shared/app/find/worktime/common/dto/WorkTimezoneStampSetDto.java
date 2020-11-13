@@ -11,8 +11,10 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.shared.app.command.worktime.common.dto.RoundingTimeDto;
 import nts.uk.ctx.at.shared.dom.worktime.common.PrioritySetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.RoundingSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.RoundingTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSetSetMemento;
 
 /**
@@ -22,14 +24,14 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSetSetMemento;
 @Setter
 public class WorkTimezoneStampSetDto implements WorkTimezoneStampSetSetMemento{
 	
-	/** The rounding set. */
-	private List<RoundingSetDto> roundingSets;
+	/** The rounding Time. */
+	private RoundingTimeDto roundingTime;
 	
 	/** The priority set. */
 	private List<PrioritySettingDto> prioritySets;
 
 	public WorkTimezoneStampSetDto() {
-		this.roundingSets = new ArrayList<>();
+		this.roundingTime = new RoundingTimeDto();
 		this.prioritySets = new ArrayList<>();
 	}
 	
@@ -40,16 +42,26 @@ public class WorkTimezoneStampSetDto implements WorkTimezoneStampSetSetMemento{
 	 * nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSetSetMemento#
 	 * setRoundingSet(java.util.List)
 	 */
+
+	//@Override
+//	public void setRoundingSet(List<RoundingSet> rdSet) {
+//		if (CollectionUtil.isEmpty(rdSet)) {
+//			return;
+//		}
+//		this.roundingSets = rdSet.stream().map(domain->{
+//			RoundingSetDto dto = new RoundingSetDto();
+//			domain.saveToMemento(dto);
+//			return dto;
+//		}).collect(Collectors.toList());
+//	}
+	
+	
 	@Override
-	public void setRoundingSet(List<RoundingSet> rdSet) {
-		if (CollectionUtil.isEmpty(rdSet)) {
-			return;
+	public void setRoundingTime(RoundingTime rdSet) {
+		if (rdSet != null) {
+			this.roundingTime = new RoundingTimeDto();
+			rdSet.saveToMemento(this.roundingTime);
 		}
-		this.roundingSets = rdSet.stream().map(domain->{
-			RoundingSetDto dto = new RoundingSetDto();
-			domain.saveToMemento(dto);
-			return dto;
-		}).collect(Collectors.toList());
 	}
 
 	/*
@@ -69,9 +81,6 @@ public class WorkTimezoneStampSetDto implements WorkTimezoneStampSetSetMemento{
 			domain.saveToMemento(dto);
 			return dto;
 		}).collect(Collectors.toList());
-	}
-
-	
-	
+	}	
 
 }
