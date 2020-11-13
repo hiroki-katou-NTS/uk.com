@@ -98,13 +98,21 @@ module nts.uk.at.view.ktg004.a.viewmodel {
 		update(param: any){
 			if(param){
 				let self = this;
-				self.flexCarryOverTime(getText('KTG004_4', [param.flexCarryOverTime]));
-				self.flexTime(param.flexTime);
-				self.holidayTime(param.holidayTime);
-				self.overTime(param.overTime);
-				self.nigthTime(param.nigthTime);
+				self.flexCarryOverTime(getText('KTG004_4', [self.convertToTime(param.flexCarryOverTime)]));
+				self.flexTime(self.convertToTime(param.flexTime));
+				self.holidayTime(self.convertToTime(param.holidayTime));
+				self.overTime(self.convertToTime(param.overTime));
+				self.nigthTime(self.convertToTime(param.nigthTime));
 				self.lateEarly(getText('KTG004_8', [param.late, param.early]));
 				self.dailyErrors(param.dailyErrors);	
+			}
+		}
+		
+		convertToTime(data:any):string{
+			if(data || data == 0 || data == '0'){
+				return '00:00';
+			}else{
+				return Math.floor(data / 60) + ":" + data / 60;
 			}
 		}
 	}
