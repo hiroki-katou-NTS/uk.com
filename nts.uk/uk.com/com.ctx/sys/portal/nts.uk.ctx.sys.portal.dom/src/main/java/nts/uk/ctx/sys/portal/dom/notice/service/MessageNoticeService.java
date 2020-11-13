@@ -3,6 +3,8 @@ package nts.uk.ctx.sys.portal.dom.notice.service;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.sys.portal.dom.notice.MessageNotice;
@@ -15,6 +17,7 @@ import nts.uk.ctx.sys.portal.dom.notice.MessageNotice;
  * @author DungDV
  *
  */
+@Stateless
 public class MessageNoticeService {
 
 	/**
