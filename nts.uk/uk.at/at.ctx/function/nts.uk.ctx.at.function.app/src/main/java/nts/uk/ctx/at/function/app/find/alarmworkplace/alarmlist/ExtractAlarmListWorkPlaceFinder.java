@@ -92,6 +92,7 @@ public class ExtractAlarmListWorkPlaceFinder {
         return calcPeriod(checkConList, YearMonth.of(processingYm));
     }
 
+
     /**
      * 期間を算出する
      *
