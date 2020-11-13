@@ -161,19 +161,21 @@ module nts.uk.at.view.knr001.a {
                 command.empInfoTerName = self.empInfoTerminalModel().empInfoTerName();
                 command.modelEmpInfoTer = self.empInfoTerminalModel().modelEmpInfoTer();
                 command.macAddress = self.empInfoTerminalModel().macAddress();
-                // khong tab vao ip => null => con1 = false => con1
-                // tab vao ip => '' => con1 = true, con2 = false 
-                // true && true => true2; true & false => false; false && true => false; false & false => false1
-                if(self.empInfoTerminalModel().ipAddress1() == null || self.empInfoTerminalModel().ipAddress2() == null || self.empInfoTerminalModel().ipAddress3() == null || self.empInfoTerminalModel().ipAddress4() == null|| self.empInfoTerminalModel().ipAddress1().toString.length == 0 || self.empInfoTerminalModel().ipAddress2().toString.length == 0 || self.empInfoTerminalModel().ipAddress3().toString.length == 0 || self.empInfoTerminalModel().ipAddress4().toString.length == 0 ){
+                
+                if(    !self.checkIpAddress(self.empInfoTerminalModel().ipAddress1())
+                    || !self.checkIpAddress(self.empInfoTerminalModel().ipAddress2())
+                    || !self.checkIpAddress(self.empInfoTerminalModel().ipAddress3())
+                    || !self.checkIpAddress(self.empInfoTerminalModel().ipAddress4())
+                ){
                     command.ipAddress1 = null;
                     command.ipAddress2 = null;
                     command.ipAddress3 = null;
                     command.ipAddress4 = null;
                 } else {
-                    command.ipAddress1 = self.empInfoTerminalModel().ipAddress1() == null || self.empInfoTerminalModel().ipAddress1().toString().length == 0 ? null : self.empInfoTerminalModel().ipAddress1().toString();
-                    command.ipAddress2 = self.empInfoTerminalModel().ipAddress2() == null || self.empInfoTerminalModel().ipAddress2().toString().length == 0 ? null : self.empInfoTerminalModel().ipAddress2().toString();
-                    command.ipAddress3 = self.empInfoTerminalModel().ipAddress3() == null || self.empInfoTerminalModel().ipAddress3().toString().length == 0 ? null : self.empInfoTerminalModel().ipAddress3().toString();
-                    command.ipAddress4 = self.empInfoTerminalModel().ipAddress4() == null || self.empInfoTerminalModel().ipAddress4().toString().length == 0 ? null : self.empInfoTerminalModel().ipAddress4().toString();
+                    command.ipAddress1 = self.empInfoTerminalModel().ipAddress1().toString();
+                    command.ipAddress2 = self.empInfoTerminalModel().ipAddress2().toString();
+                    command.ipAddress3 = self.empInfoTerminalModel().ipAddress3().toString();
+                    command.ipAddress4 = self.empInfoTerminalModel().ipAddress4().toString();
                 }
                 command.terSerialNo = self.empInfoTerminalModel().terSerialNo();
                 command.workLocationCode = self.empInfoTerminalModel().workLocationCode();
@@ -208,7 +210,7 @@ module nts.uk.at.view.knr001.a {
                 } else {
                     //登録ボタン押下（更新モード）
                     service.update(command).done(() => {
-                        nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(() => {
+                        dialog.info({messageId: "Msg_15"}).then(() => {
                             //Reload EmpList
                             service.getAll().done((data) => {
                                     self.isUpdateMode(true);
@@ -252,7 +254,7 @@ module nts.uk.at.view.knr001.a {
                                 self.reloadData(index);
                             });
                         }).fail((res)=>{
-                            nts.uk.ui.dialog.info(res.message).then(()=>{
+                            dialog.error({messageId: res.messageId}).then(()=>{
                                 self.reloadData(0);
                             });
                         });
@@ -306,7 +308,9 @@ module nts.uk.at.view.knr001.a {
              */
             private hasError(): boolean{
                 var self = this;
+                let checkIP = true;
                 self.clearErrors();
+                
                 //code
                 $('#A3_2').ntsEditor("validate");
                 //name
@@ -321,11 +325,39 @@ module nts.uk.at.view.knr001.a {
                 $('#A5_7').ntsEditor("validate");
                 //Memo
                 $('#A6_8').ntsEditor("validate");
+                
+                //  ipAddress
+                if (!self.checkIpAddress(self.empInfoTerminalModel().ipAddress1())
+                    && !self.checkIpAddress(self.empInfoTerminalModel().ipAddress2())
+                    && !self.checkIpAddress(self.empInfoTerminalModel().ipAddress3())
+                    && !self.checkIpAddress(self.empInfoTerminalModel().ipAddress4())) {
+
+                } else if(!self.checkIpAddress(self.empInfoTerminalModel().ipAddress1())
+                    || !self.checkIpAddress(self.empInfoTerminalModel().ipAddress2())
+                    || !self.checkIpAddress(self.empInfoTerminalModel().ipAddress3())
+                    || !self.checkIpAddress(self.empInfoTerminalModel().ipAddress4())
+                ) {
+                    dialog.error({messageId: "Msg_2036"}).then(()=>{
+                        return;
+                    });
+                    
+                    return true;
+                }
 
                 if ($('.nts-input').ntsError('hasError')) {
                     return true;
                 }
+
                 return false;
+            }
+            /**
+             * Check IpAddress
+             */
+            private checkIpAddress(ipAddress: number): boolean{
+                if(_.isNil(ipAddress) || ipAddress.toString().length == 0){
+                    return false;    
+                }
+                return true;
             }
             /**
              * clear Errors
@@ -388,8 +420,6 @@ module nts.uk.at.view.knr001.a {
             memo: KnockoutObservable<string>;
           
             isEnableCode: KnockoutObservable<boolean>;
-
-            
           
 
             constructor(){
@@ -478,8 +508,7 @@ module nts.uk.at.view.knr001.a {
                 this.macAddress(dto.macAddress);
                 //this.ipAddress(dto.ipAddress);
                 //var arrIpAddress = dto.ipAddress.split(".");
-                this.ipAddress1(dto.ipAddress1);
-                
+                this.ipAddress1(dto.ipAddress1);               
                 this.ipAddress2(dto.ipAddress2);
                 this.ipAddress3(dto.ipAddress3);
                 this.ipAddress4(dto.ipAddress4);
