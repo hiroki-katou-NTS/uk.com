@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.EndDate;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.StartDate;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.EndSpecify;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.StartSpecify;
 import nts.uk.ctx.at.function.dom.alarm.workplace.checkcondition.WorkplaceCategory;
@@ -20,6 +22,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -104,14 +107,14 @@ public class KfnmtWkpCheckCondition extends UkJpaEntity implements Serializable 
             extractPeriod = kfnmtAssignNumofMon.toDomain();
 
         } else if (this.pk.category == WorkplaceCategory.MASTER_CHECK_BASIC.value || this.pk.category == WorkplaceCategory.MASTER_CHECK_WORKPLACE.value) {
-            extractPeriod = new ExtractionPeriodMonthly(kfnmtAssignMonthStart.toDomain(),kfnmtAssignMonthEnd.toDomain());
+            extractPeriod = new ExtractionPeriodMonthly(kfnmtAssignMonthStart.toDomain(), kfnmtAssignMonthEnd.toDomain());
 
         } else if (this.pk.category == WorkplaceCategory.MASTER_CHECK_DAILY.value || this.pk.category == WorkplaceCategory.SCHEDULE_DAILY.value) {
             extractPeriod = new ExtractionPeriodDaily(
                 // Start day
-                StartSpecify.DAYS.value == 0 ? kfnmtAssignDayStart.toDomain() : kfnmtAssignDatelineStart.toDomain(),
+                toStartDate(),
                 // End day
-                EndSpecify.DAYS.value == 0 ? kfnmtAssignDayEnd.toDomain() : kfnmtAssignDatelineEnd.toDomain()
+                toEndDate()
             );
         }
 
@@ -120,6 +123,26 @@ public class KfnmtWkpCheckCondition extends UkJpaEntity implements Serializable 
         CheckCondition domain = new CheckCondition(EnumAdaptor.valueOf(this.pk.category, WorkplaceCategory.class),
             checkConList, extractPeriod);
         return domain;
+    }
+
+    private StartDate toStartDate() {
+        if (kfnmtAssignDayStart != null && kfnmtAssignDatelineStart != null) {
+            throw new RuntimeException("There are two start dates");
+        } else if (kfnmtAssignDayStart != null) {
+            return kfnmtAssignDayStart.toDomain();
+        } else if (kfnmtAssignDatelineStart != null) {
+            return kfnmtAssignDatelineStart.toDomain();
+        } else return null;
+    }
+
+    private EndDate toEndDate() {
+        if (kfnmtAssignDayEnd != null && kfnmtAssignDatelineEnd != null) {
+            throw new RuntimeException("There are two end dates");
+        } else if (kfnmtAssignDayEnd != null) {
+            return kfnmtAssignDayEnd.toDomain();
+        } else if (kfnmtAssignDatelineEnd != null) {
+            return kfnmtAssignDatelineEnd.toDomain();
+        } else return null;
     }
 
 }
