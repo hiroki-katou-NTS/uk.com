@@ -153,11 +153,18 @@ public class KTG004Finder {
 		if(topPageYearMonthEnum == TopPageDisplayYearMonthEnum.NEXT_MONTH_DISPLAY) {
 			result.setClosingDisplay(currentClosingPeriod);
 		}
-		//Get work status data - 勤務状況のデータを取得する
-		result.setAttendanceInfor(this.getWorkStatusData(cid, employeeId, result.getItemsSetting(), result.getClosingThisMonth()));
 		
-		//Get the number of vacations left - 休暇残数を取得する
-		result.setRemainingNumberInfor(this.getTheNumberOfVacationsLeft(cid, employeeId, result.getItemsSetting(), result.getClosingThisMonth()));
+		if(topPageYearMonthEnum == TopPageDisplayYearMonthEnum.THIS_MONTH_DISPLAY) {
+			//Get work status data - 勤務状況のデータを取得する
+			result.setAttendanceInfor(this.getWorkStatusData(cid, employeeId, result.getItemsSetting(), result.getClosingThisMonth()));
+			//Get the number of vacations left - 休暇残数を取得する
+			result.setRemainingNumberInfor(this.getTheNumberOfVacationsLeft(cid, employeeId, result.getItemsSetting(), result.getClosingThisMonth()));
+		}else {
+			//Get work status data - 勤務状況のデータを取得する
+			result.setAttendanceInfor(this.getWorkStatusData(cid, employeeId, result.getItemsSetting(), result.getClosingDisplay()));
+			//Get the number of vacations left - 休暇残数を取得する
+			result.setRemainingNumberInfor(this.getTheNumberOfVacationsLeft(cid, employeeId, result.getItemsSetting(), result.getClosingDisplay()));
+		}
 		
 		//Determine if the login person is the person in charge - ログイン者が担当者か判断する
 		result.setDetailedWorkStatusSettings(roleExportRepo.getWhetherLoginerCharge().isEmployeeCharge());
