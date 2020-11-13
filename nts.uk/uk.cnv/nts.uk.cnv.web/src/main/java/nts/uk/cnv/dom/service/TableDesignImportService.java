@@ -218,6 +218,9 @@ public class TableDesignImportService {
 	private static Map<String, String> createComment(String commentBlock) {
 
 		Map<String, String> result = new HashMap<>();
+
+		if(commentBlock == null || commentBlock.isEmpty()) return result;
+
 		String[] blocks = commentBlock.split(";");
 		for(String block : blocks ) {
 			if(block.contains("COMMENT ON TABLE")) {
