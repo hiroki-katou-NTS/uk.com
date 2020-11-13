@@ -261,7 +261,7 @@ div.label {
 
 /* Menu tab */
 #menubar-tabs .tab-item {
-	padding: 10px 15px;
+	padding: 10px 4px;
 	font-size: 12px;
 	display: flex;
 	justify-content: space-between;
@@ -270,8 +270,8 @@ div.label {
 #menubar-tabs .tab-item .tab-item-content {
 	flex: 1;
 	overflow: hidden;
-	text-overflow: ellipsis;
-	margin-right: 10px;
+	text-overflow: clip !important;
+	/* margin-right: 10px; */
 }
 
 /* Menu item */
@@ -283,7 +283,7 @@ div.label {
 }
 
 #menubar-tabs .title-menu .title-menu-name {
-	padding: 10px 15px;
+	padding: 10px 4px;
 	border-radius: 10px;
 	font-size: 12px;
 	display: flex;
@@ -293,8 +293,8 @@ div.label {
 #menubar-tabs .title-menu .title-menu-name .title-menu-content {
 	flex: 1;
 	overflow: hidden;
-	text-overflow: ellipsis;
-	margin-right: 10px;
+	/* text-overflow: ellipsis; */
+	/* margin-right: 10px; */
 }
 
 #menubar-tabs .title-menu .title-menu-column {
@@ -332,4 +332,8 @@ div.label {
 .context-menu-tree {
 	overflow: hidden;
 	text-overflow: ellipsis;
+}
+
+.menubar-header>ul>li {
+	text-align: center;
 }
