@@ -38,12 +38,12 @@ module nts.uk.at.view.kaf020.shr.viewmodel {
                         <!--number-->
                         <div data-bind="if: optionalItemAtr == 1">
                             <input class="input" tabindex="2"
-                                   data-bind="ntsNumberEditor: {name: '[#KAF020_22]', value: number, constraint: 'AnyItemTimes'}"/>
+                                   data-bind="ntsNumberEditor: {name: '[#KAF020_22]', value: number, constraint: 'AnyItemTimes', option: {grouplength: 3}}"/>
                         </div>
                         <!--amount-->
                         <div data-bind="if: optionalItemAtr == 2">
                             <input class="input" tabindex="2"
-                                   data-bind="ntsNumberEditor: {name: '[#KAF020_22]', value: amount, constraint: 'AnyItemAmount'}"/>
+                                   data-bind="ntsNumberEditor: {name: '[#KAF020_22]', value: amount, constraint: 'AnyItemAmount', option: {grouplength: 3}}"/>
                         </div>
                     </td>
                     <td>

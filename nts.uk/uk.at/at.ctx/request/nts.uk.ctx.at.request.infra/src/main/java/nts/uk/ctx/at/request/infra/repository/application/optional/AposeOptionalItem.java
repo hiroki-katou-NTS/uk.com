@@ -42,10 +42,10 @@ public class AposeOptionalItem {
 
     public void deleteEmptyRow(Worksheet worksheet) {
         Cells cells = worksheet.getCells();
-        for (int i = 0; i < 10; i++) {
-            Cell cell = cells.get("D" + (9 + i));
+        for (int i = 10; i > 0; i--) {
+            Cell cell = cells.get("D" + (8 + i));
             if (cell.getValue() == null || cell.getValue().toString().isEmpty()) {
-                worksheet.getCells().deleteRow(8 + i);
+                worksheet.getCells().deleteRow(7 + i);
             }
         }
     }

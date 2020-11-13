@@ -73,6 +73,7 @@ public class OptionalItemApplicationQuery {
         detail.setControlOfAttendanceItems(controlOfAttendanceItems.stream().map(ControlOfAttendanceItemsDto::fromDomain).collect(Collectors.toList()));
         detail.setApplication(OptionalItemApplicationDto.fromDomain(domain));
         detail.getApplication().setName(setting.getName());
+        detail.getApplication().setNote(setting.getNote());
         detail.setOptionalItems(optionalItems.stream().map(item ->
                 {
                     CalcResultRangeDto calcResultRangeDto = new CalcResultRangeDto();

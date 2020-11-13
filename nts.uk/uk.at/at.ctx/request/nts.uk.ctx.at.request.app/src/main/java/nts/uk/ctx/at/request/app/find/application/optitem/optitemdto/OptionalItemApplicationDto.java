@@ -11,10 +11,11 @@ import java.util.stream.Collectors;
 @Getter
 public class OptionalItemApplicationDto {
 
-
     private String name;
 
     private String code;
+
+    private String note;
 
     private List<AnyItemValueDto> optionalItems;
 
