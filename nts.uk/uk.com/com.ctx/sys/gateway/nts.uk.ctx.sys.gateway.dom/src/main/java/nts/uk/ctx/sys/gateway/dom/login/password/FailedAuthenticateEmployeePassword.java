@@ -12,18 +12,24 @@ import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockOutData;
  */
 public class FailedAuthenticateEmployeePassword {
 
-	public AtomTask failed(Require require, String userId) {
+	public static AtomTask failed(Require require, String userId) {
 		
 		val failuresLog = require.getAuthenticationFailuresLog(userId);
+		failuresLog.failedNow();
 		
 		String contractCode = require.getLoginUserContractCode();
 		
-		Runnable task = require.getAccountLockPolicy(contractCode)
-				.flatMap(p -> p.validate(failuresLog))
-				.map(lock -> (Runnable)() -> require.save(lock))
-				.orElse(() -> {});
+		val lockOpt = require.getAccountLockPolicy(contractCode)
+				.flatMap(p -> p.validate(failuresLog));
 		
-		return AtomTask.of(task);
+		return AtomTask.of(() -> {
+			
+			require.save(failuresLog);
+			
+			lockOpt.ifPresent(lock -> {
+				require.save(lock);
+			});
+		});
 	}
 	
 	public static interface Require {
@@ -33,6 +39,8 @@ public class FailedAuthenticateEmployeePassword {
 		AuthenticationFailuresLog getAuthenticationFailuresLog(String userId);
 		
 		Optional<AccountLockPolicy> getAccountLockPolicy(String contractCode);
+		
+		void save(AuthenticationFailuresLog failuresLog);
 		
 		void save(LockOutData lockOutData);
 	}
