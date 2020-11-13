@@ -11,6 +11,7 @@
 			<com:scriptfile set="IGNITE" />
 				
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
 			<com:stylefile path="kmk004.l.css" />
 			<com:scriptfile path="./kmk004.l.vm.js" />
             <com:scriptfile path="../components/tab-panel.js" />
@@ -40,10 +41,10 @@
 					<div data-bind="component: { name: 'view-m', params: {} }"></div>
 				</div>
 				<div data-bind="if: selected() === 'Com_Person'">
-					<div data-bind="component: { name: 'view-n', params: {} }"></div>
+					<div data-bind="component: { name: 'view-o', params: {} }"></div>
 				</div>
 				<div data-bind="if: selected() === 'Com_Employment'">
-					<div data-bind="component: { name: 'view-o', params: {} }"></div>
+					<div data-bind="component: { name: 'view-n', params: {} }"></div>
 				</div>
 				<div class="cf"></div>
 			</div>

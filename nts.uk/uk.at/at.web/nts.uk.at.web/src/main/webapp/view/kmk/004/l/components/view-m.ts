@@ -2,7 +2,6 @@
 
 module nts.uk.at.view.kmk004.l {
 	import tree = kcp.share.tree;
-	import list = kcp.share.list;
 
 	const template = `
 	<div class="sidebar-content-header">
@@ -15,7 +14,7 @@ module nts.uk.at.view.kmk004.l {
 	<div class="view-m">
 	<table>
 		<tr>
-			<td id="left-side">
+			<td id="view-m-left-side">
 				<div id="tree-grid"></div>
 			</td>
 			
@@ -61,11 +60,7 @@ module nts.uk.at.view.kmk004.l {
 				</div>
 			</td>
 		</tr>
-	
-	
 	</table>
-	
-	
 	`;
 
 	interface Params {
@@ -115,15 +110,12 @@ module nts.uk.at.view.kmk004.l {
 				systemType: 2
 			};
 
-
-
 		}
 
 		mounted() {
 			const vm = this;
-			$('#tree-grid')['ntsTreeComponent'](vm.treeGrid).done(() => {
+			$('#tree-grid').ntsTreeComponent(vm.treeGrid).done(() => {
 				vm.selectedId.subscribe((data) => {
-					console.log('item changed');
 					let workplaces = $('#tree-grid').getDataList();
 					let selectedItem: UnitModel = _.find(workplaces, ['id', data]);
 					vm.selectedItemText(selectedItem ? selectedItem.name : '');

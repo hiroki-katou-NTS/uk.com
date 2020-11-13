@@ -56,19 +56,23 @@
     margin-top: -14px;
 }
 
-#tree-grid {
-	padding-left: 30px;
-}
-
 #right-side {
 	padding-left: 40px;
 }
 
-#left-side {
+#view-m-left-side {
 	position: relative;
-    top: -38px;
+    bottom: 38px;
+    padding-left: 30px;
+}
+
+#view-n-left-side {
+	position: relative;
+    bottom: 53px;
+    padding-left: 30px;
 }
 
 #title {
 	font-size: 20px;
+	padding: 1px;
 }
