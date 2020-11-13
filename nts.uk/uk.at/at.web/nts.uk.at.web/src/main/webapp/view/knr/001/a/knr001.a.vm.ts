@@ -49,7 +49,7 @@ module nts.uk.at.view.knr001.a {
                     self.empInfoTerminalModel().modelEmpInfoTer(modelEmpInfo);
                             if(modelEmpInfo == 7 || modelEmpInfo == 8){
                                 self.empInfoTerminalModel().enableOutingClass(false);
-                                self.empInfoTerminalModel().checkedOutingClass(false);
+                                // self.empInfoTerminalModel().checkedOutingClass(null);
                                 self.empInfoTerminalModel().enableEntranExit(true);
                             }else{
                                 self.empInfoTerminalModel().enableOutingClass(true);
@@ -64,6 +64,7 @@ module nts.uk.at.view.knr001.a {
                 });
                 //tick on checkbox outSupport
                 self.empInfoTerminalModel().checkedOutingClass.subscribe(function(check){
+
                     self.empInfoTerminalModel().outSupport(check == true? 1 : 0);
                     if(check && self.empInfoTerminalModel().modelEmpInfoTer() == 9){
                         self.empInfoTerminalModel().enableEntranExit(false);
@@ -184,7 +185,7 @@ module nts.uk.at.view.knr001.a {
                 command.terSerialNo = self.empInfoTerminalModel().terSerialNo();
                 command.workLocationCode = self.empInfoTerminalModel().workLocationCode();
                 command.intervalTime = self.empInfoTerminalModel().intervalTime();
-                command.outSupport = self.empInfoTerminalModel().outSupport();
+                command.outSupport = self.empInfoTerminalModel().modelEmpInfoTer()==9?self.empInfoTerminalModel().outSupport():self.empInfoTerminalModel().outSupportTemp();
                 command.replace = self.empInfoTerminalModel().replace();
                 command.goOutReason = self.empInfoTerminalModel().goOutReason() == 0 ? null : self.empInfoTerminalModel().goOutReason() - 1;
                 command.entranceExit = self.empInfoTerminalModel().entranceExit();
@@ -409,6 +410,7 @@ module nts.uk.at.view.knr001.a {
             intervalTime: KnockoutObservable<number>;
             //  外出応援区分
             outSupport: KnockoutObservable<number>;
+            outSupportTemp: KnockoutObservable<number>;
             enableOutingClass: KnockoutObservable<boolean>;
             checkedOutingClass: KnockoutObservable<boolean>;
             //  外出区分: combobox
@@ -452,7 +454,8 @@ module nts.uk.at.view.knr001.a {
                 this.workLocationName =  ko.observable('');
                 this.intervalTime =  ko.observable(null);
                 
-                this.outSupport =  ko.observable(null);
+                this.outSupport =  ko.observable(0);
+                this.outSupportTemp = ko.observable(0);
                 this.enableOutingClass = ko.observable(true);
                 this.checkedOutingClass = ko.observable(false);
 
@@ -522,6 +525,7 @@ module nts.uk.at.view.knr001.a {
                 this.workLocationName(dto.workLocationName.substring(0, 20));
                 this.intervalTime(dto.intervalTime);
                 this.outSupport(dto.outSupport);
+                this.outSupportTemp(dto.outSupport);
                 this.checkedOutingClass(dto.outSupport == 1? true : false);
                 this.replace(dto.replace);
                 this.goOutReason(dto.replace == 1 ? dto.goOutReason + 1 : 0 );
