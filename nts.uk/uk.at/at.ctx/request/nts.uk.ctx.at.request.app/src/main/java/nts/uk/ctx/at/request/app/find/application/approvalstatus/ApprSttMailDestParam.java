@@ -1,8 +1,11 @@
 package nts.uk.ctx.at.request.app.find.application.approvalstatus;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.ApprovalStatusMailTempCommand;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttWkpEmpMailOutput;
 
 /**
  * refactor 5
@@ -13,4 +16,6 @@ import nts.uk.ctx.at.request.app.command.application.approvalstatus.ApprovalStat
 @Getter
 public class ApprSttMailDestParam {
 	private ApprovalStatusMailTempCommand command;
+	
+	private List<ApprSttWkpEmpMailOutput> wkpEmpMailLst;
 }

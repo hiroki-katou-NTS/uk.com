@@ -696,6 +696,6 @@ public class ApprovalStatusFinder {
 				command.getUrlMonthEmbed()==0 ? NotUseAtr.NOT_USE : NotUseAtr.USE, 
 				new Subject(command.getMailSubject()), 
 				new Content(command.getMailContent()));
-		return appSttService.sendMailToDestination(approvalStatusMailTemp, Collections.emptyList());
+		return appSttService.sendMailToDestination(approvalStatusMailTemp, param.getWkpEmpMailLst());
 	}
 }

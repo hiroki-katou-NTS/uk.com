@@ -4,7 +4,6 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTemp;
 
 /**
  * refactor 5
@@ -13,8 +12,16 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTe
  */
 @AllArgsConstructor
 @Getter
-public class ApprSttSendMailInfoOutput {
-	private ApprovalStatusMailTemp approvalStatusMailTemp;
+public class ApprSttWkpEmpMailOutput {
+	private String wkpID;
 	
-	private List<ApprSttWkpEmpMailOutput> wkpEmpMailLst;
+	private String wkpCD;
+	
+	private String wkpName;
+	
+	private String hierarchyCode;
+	
+	private int countEmp;
+	
+	private List<ApprSttEmpMailOutput> empMailLst;
 }

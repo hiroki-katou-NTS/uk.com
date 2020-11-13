@@ -52,8 +52,10 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprS
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmpDate;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmpDateContent;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmpDateSymbol;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmpMailOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttExecutionOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttSendMailInfoOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttWkpEmpMailOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalStatusEmployeeOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppDetail;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
@@ -549,10 +551,17 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		// 承認状況メールテンプレート.URL月別埋込
 		if (NotUseAtr.USE.equals(domain.getUrlMonthEmbed())) {
 			List<UrlTaskIncre> listTask = new ArrayList<>();
-			listTask.add(new UrlTaskIncre("", "", "", "activeMode", "approval", UrlParamAtr.URL_PARAM));
-			// アルゴリズム「埋込URL情報登録」を実行する
-			String url3 = registerEmbededURL.embeddedUrlInfoRegis("KMW003", "A", 1, 1, eid, contractCD, "", employeeCD, 0, listTask);
-			listUrl.add(url3);
+			if (ApprovalStatusMailType.MONTHLY_UNCONFIRM_BY_CONFIRMER==mailType) {
+				listTask.add(new UrlTaskIncre("", "", "", "activeMode", "approval", UrlParamAtr.URL_PARAM));
+				// アルゴリズム「埋込URL情報登録」を実行する
+				String url3 = registerEmbededURL.embeddedUrlInfoRegis("KMW003", "A", 1, 1, eid, contractCD, "", employeeCD, 0, listTask);
+				listUrl.add(url3);
+			} else if (ApprovalStatusMailType.MONTHLY_UNCONFIRM_BY_PRINCIPAL==mailType) {
+				listTask.add(new UrlTaskIncre("", "", "", "activeMode", "normal", UrlParamAtr.URL_PARAM));
+				// アルゴリズム「埋込URL情報登録」を実行する
+				String url3 = registerEmbededURL.embeddedUrlInfoRegis("KMW003", "A", 1, 1, eid, contractCD, "", employeeCD, 0, listTask);
+				listUrl.add(url3);
+			}
 		}
 		if (listUrl.size() == 0) {
 			return "";
@@ -1381,11 +1390,10 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	@Override
 	public List<Pair<Application,List<ApprovalPhaseStateImport_New>>> getApprSttApplication(String employeeID, DatePeriod period) {
 		List<Pair<Application,List<ApprovalPhaseStateImport_New>>> appPairLst = new ArrayList<>();
-		String companyID = AppContexts.user().companyId();
 		// ドメインモデル「申請」を取得する
 		List<Application> appLst = applicationRepository.getApprSttByEmpPeriod(employeeID, period);
 		// imported（申請承認）「承認ルートの内容」を取得する
-		Map<String, List<ApprovalPhaseStateImport_New>> mapApproval = approvalStateAdapter.getApprovalRootContents(appLst.stream().map(x -> x.getAppID()).collect(Collectors.toList()), companyID);
+		Map<String, List<ApprovalPhaseStateImport_New>> mapApproval = approvalStateAdapter.getApprovalPhaseByID(appLst.stream().map(x -> x.getAppID()).collect(Collectors.toList()));
 		for(Application app : appLst) {
 			appPairLst.add(Pair.of(app, mapApproval.entrySet().stream().filter(x -> x.getKey().equals(app.getAppID())).findAny().map(x -> x.getValue()).orElse(Collections.emptyList())));
 		}
@@ -1612,6 +1620,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	public ApprSttSendMailInfoOutput getApprSttSendMailInfo(ApprovalStatusMailType mailType, ClosureId closureId, YearMonth processingYm,
 			DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst) {
 		String companyId = AppContexts.user().companyId();
+		List<ApprSttWkpEmpMailOutput> wkpEmpMailLst = new ArrayList<>();
 		// アルゴリズム「メール送信_メール本文取得」を実行する
 		ApprovalStatusMailTemp approvalStatusMailTemp = approvalStatusMailTempRepo.getApprovalStatusMailTempById(companyId, mailType.value).orElse(null);
 		// アルゴリズム「メール送信_対象再取得_職場と対象社員」を実行
@@ -1620,6 +1629,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		List<ApprSttExecutionOutput> apprSttExecutionOutputFullLst = this.getStatusCommonProcess(closureId, processingYm, period, displayWorkplaceLst);
 		switch (mailType) {
 		case APP_APPROVAL_UNAPPROVED:
+			// アルゴリズム「メール送信_対象再取得_申請」を実行
 			Map<String, Integer> mapUnApprAppCount = this.getStatusApplicationApproval(period);
 			mapUnApprAppCount.entrySet().stream().forEach(x -> {
 				apprSttExecutionOutputFullLst.stream().filter(y -> y.getWkpID().equals(x.getKey())).findAny().ifPresent(z -> {
@@ -1627,27 +1637,159 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 				});
 			});
 			apprSttExecutionOutputLst = apprSttExecutionOutputFullLst.stream().filter(x -> x.getCountUnApprApp() > 0).collect(Collectors.toList());
+			
+			wkpEmpMailLst = this.getAppApproverToSendMail(apprSttExecutionOutputLst, period);
 			break;
 		default:
 			break;
 		}
-		return new ApprSttSendMailInfoOutput(approvalStatusMailTemp, apprSttExecutionOutputLst);
+		// 
+		wkpEmpMailLst = this.getPersonInfo(wkpEmpMailLst);
+		return new ApprSttSendMailInfoOutput(approvalStatusMailTemp, wkpEmpMailLst);
 	}
-
+	
 	@Override
-	public void getPersonInfo(String wkpID, String employeeID) {
-		// TODO Auto-generated method stub
+	public List<ApprSttWkpEmpMailOutput> getAppApproverToSendMail(List<ApprSttExecutionOutput> apprSttExecutionOutputLst, DatePeriod paramPeriod) {
+		List<ApprSttWkpEmpMailOutput> result = new ArrayList<>();
+		// 「職場別、雇用の合致する対象社員の、雇用の開始、終了」を変数として保持する
+		// đã query
+		// 職場単位でループする
+		for(ApprSttExecutionOutput apprSttExecutionOutput : apprSttExecutionOutputLst) {
+			List<ApprovalStatusEmployeeOutput> listEmpOutput = new ArrayList<>();
+			// 社員単位でループする
+			for(EmpPeriod empPeriod : apprSttExecutionOutput.getEmpPeriodLst()) {
+				// アルゴリズム「承認状況対象期間取得」を実行する
+				DatePeriod period = this.getApprSttTargetPeriod(
+						empPeriod.getEmpID(), 
+						new DatePeriod(empPeriod.getEmploymentStartDate(), empPeriod.getEmploymentEndDate()), 
+						paramPeriod, 
+						new DatePeriod(empPeriod.getCompanyInDate(), empPeriod.getCompanyOutDate()));
+				listEmpOutput.add(new ApprovalStatusEmployeeOutput(empPeriod.getEmpID(), period.start(), period.end()));
+				// アルゴリズム「承認状況未承認申請取得」を実行する
+				// get theo list ở dưới
+			}
+			List<String> empIDLst = this.getApprSttUnapprovedApp(listEmpOutput).stream().distinct().collect(Collectors.toList());
+			result.add(new ApprSttWkpEmpMailOutput(
+					apprSttExecutionOutput.getWkpID(), 
+					apprSttExecutionOutput.getWkpCD(), 
+					apprSttExecutionOutput.getWkpName(), 
+					apprSttExecutionOutput.getHierarchyCode(), 
+					apprSttExecutionOutput.getCountEmp(), 
+					empIDLst.stream().map(x -> new ApprSttEmpMailOutput(x, "", "")).collect(Collectors.toList())));
+		}
+		return result;
 		
 	}
 
 	@Override
-	public SendMailResultOutput sendMailToDestination(ApprovalStatusMailTemp approvalStatusMailTemp, List<ApprSttExecutionOutput> apprSttExecutionOutputLst) {
+	public List<ApprSttWkpEmpMailOutput> getPersonInfo(List<ApprSttWkpEmpMailOutput> wkpEmpMailLst) {
+		String companyID = AppContexts.user().companyId();
+		for(ApprSttWkpEmpMailOutput wkpEmpMail : wkpEmpMailLst) {
+			List<String> empIDLst = wkpEmpMail.getEmpMailLst().stream().map(x -> x.getEmpID()).collect(Collectors.toList());
+			// 職場IDから職場の情報を全て取得する。　　　　RequestListNo.560
+			// không cần
+			// imported（就業）「個人社員基本情報」を取得する
+			// RequestList126
+			List<EmployeeEmailImport> listEmployee = employeeRequestAdapter.getApprovalStatusEmpMailAddr(empIDLst);
+			// imported（申請承認）「社員メールアドレス」を取得する
+			// RequestList419
+			List<MailDestinationImport> listMailEmp = envAdapter.getEmpEmailAddress(companyID, empIDLst, 6);
+			// 取得した情報を編集する
+			for(ApprSttEmpMailOutput empMail : wkpEmpMail.getEmpMailLst()) {
+				listEmployee.stream().filter(x -> x.getSId().equals(empMail.getEmpID())).findAny().ifPresent(x -> {
+					empMail.setEmpName(x.getSName());
+				});
+				listMailEmp.stream().filter(x -> x.getEmployeeID().equals(empMail.getEmpID())).findAny().ifPresent(x -> {
+					if(!CollectionUtil.isEmpty(x.getOutGoingMails())) {
+						empMail.setEmpMail(x.getOutGoingMails().get(0).getEmailAddress());
+					}
+				});
+			}
+		}
+		return wkpEmpMailLst;
+	}
+
+	@Override
+	public SendMailResultOutput sendMailToDestination(ApprovalStatusMailTemp approvalStatusMailTemp, List<ApprSttWkpEmpMailOutput> wkpEmpMailLst) {
+		List<MailTransmissionContentOutput> listMailInput = wkpEmpMailLst.stream().filter(x -> x.getCountEmp() > 0 && x.getEmpMailLst().size() > 0)
+				.map(x -> x.getEmpMailLst()
+						.stream().map(y -> new MailTransmissionContentOutput(
+								y.getEmpID(), 
+								y.getEmpName(), 
+								y.getEmpName(), 
+								approvalStatusMailTemp.getMailSubject().v(), 
+								approvalStatusMailTemp.getMailContent().v()))
+						.collect(Collectors.toList()))
+				.flatMap(List::stream)
+		        .collect(Collectors.toList());
 		// 送信対象があるか判別
-		if(CollectionUtil.isEmpty(apprSttExecutionOutputLst)) {
+		if(CollectionUtil.isEmpty(listMailInput)) {
 			// メッセージ（Msg_787)を表示する
 			throw new BusinessException("Msg_787");
 		}
 		// アルゴリズム「承認状況メール送信実行」を実行する
-		return this.exeApprovalStatusMailTransmission(Collections.emptyList(), approvalStatusMailTemp, approvalStatusMailTemp.getMailType());
+		return this.exeApprovalStatusMailTransmission(listMailInput, approvalStatusMailTemp, approvalStatusMailTemp.getMailType());
+	}
+
+	@Override
+	public List<String> getApprSttUnapprovedApp(List<ApprovalStatusEmployeeOutput> approvalStatusEmployeeLst) {
+		List<String> result = new ArrayList<>();
+		// 社員ID（リスト）
+		for(ApprovalStatusEmployeeOutput approvalStatusEmployee : approvalStatusEmployeeLst) {
+			List<Pair<Application,List<ApprovalPhaseStateImport_New>>> appPairLst = this.getApprSttApplication(
+					approvalStatusEmployee.getSid(), 
+					new DatePeriod(approvalStatusEmployee.getStartDate(), approvalStatusEmployee.getEndDate()));
+			
+			for(Pair<Application,List<ApprovalPhaseStateImport_New>> appPair : appPairLst) {
+				if(appPair.getKey().getAppReflectedState() != ReflectedState.NOTREFLECTED) {
+					continue;
+				}
+				List<String> targetLst = this.getApprSttUnapprovedAppTarget(appPair.getValue(), appPair.getKey().getAppDate().getApplicationDate());
+				result.addAll(targetLst.stream().distinct().collect(Collectors.toList()));
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public List<String> getApprSttUnapprovedAppTarget(List<ApprovalPhaseStateImport_New> phaseLst, GeneralDate appDate) {
+		List<String> result = new ArrayList<>();
+		for(ApprovalPhaseStateImport_New phase : phaseLst) {
+			if(phase.getApprovalAtr()==ApprovalBehaviorAtrImport_New.APPROVED || phase.getApprovalAtr()==ApprovalBehaviorAtrImport_New.DENIAL) {
+				continue;
+			}
+			boolean isBreak = false;
+			for(ApprovalFrameImport_New frame : phase.getListApprovalFrame()) {
+				for(ApproverStateImport_New state : frame.getListApprover()) {
+					if(state.getApprovalAtr()==ApprovalBehaviorAtrImport_New.APPROVED || state.getApprovalAtr()==ApprovalBehaviorAtrImport_New.DENIAL) {
+						continue;
+					}
+					List<String> targetLst = this.getApprSttUnapprovedAppPerson(Arrays.asList(state.getApproverID()), appDate);
+					if(!CollectionUtil.isEmpty(targetLst)) {
+						result = targetLst;
+						isBreak = true;
+					}
+				}
+				if(isBreak) {
+					break;
+				}
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public List<String> getApprSttUnapprovedAppPerson(List<String> approverIDLst, GeneralDate appDate) {
+		List<String> result = new ArrayList<>();
+		String companyID = AppContexts.user().companyId();
+		for(String approverID : approverIDLst) {
+			List<AgentInfoImport> listAgentInfor = agentApdater.findAgentByPeriod(companyID, Arrays.asList(approverID), appDate, appDate, 1);
+			if(!CollectionUtil.isEmpty(listAgentInfor)) {
+				result.add(listAgentInfor.get(0).getApproverID());
+			} else {
+				result.add(approverID);
+			}
+		}
+		return result;
 	}
 }

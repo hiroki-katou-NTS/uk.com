@@ -18,6 +18,7 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprS
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmpDateContent;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttExecutionOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttSendMailInfoOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttWkpEmpMailOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalStatusEmployeeOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttByEmpListOutput;
@@ -223,14 +224,41 @@ public interface ApprovalStatusService {
 			DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst);
 	
 	/**
+	 * C:メール送信承認者を取得
+	 */
+	public List<ApprSttWkpEmpMailOutput> getAppApproverToSendMail(List<ApprSttExecutionOutput> apprSttExecutionOutputLst, DatePeriod paramPeriod);
+	
+	/**
 	 * C:メール送信_本人の情報を取得
 	 * @param wkpID
 	 * @param employeeID
 	 */
-	public void getPersonInfo(String wkpID, String employeeID);
+	public List<ApprSttWkpEmpMailOutput> getPersonInfo(List<ApprSttWkpEmpMailOutput> wkpEmpMailLst);
 	
 	/**
 	 * C:メール送信_対象者へメール送信
 	 */
-	public SendMailResultOutput sendMailToDestination(ApprovalStatusMailTemp approvalStatusMailTemp, List<ApprSttExecutionOutput> apprSttExecutionOutputLst);
+	public SendMailResultOutput sendMailToDestination(ApprovalStatusMailTemp approvalStatusMailTemp, List<ApprSttWkpEmpMailOutput> wkpEmpMailLst);
+	
+	/**
+	 * 承認状況未承認申請取得
+	 * @param empPeriodLst
+	 * @return
+	 */
+	public List<String> getApprSttUnapprovedApp(List<ApprovalStatusEmployeeOutput> approvalStatusEmployeeLst);
+	
+	/**
+	 * 承認状況未承認メール対象者取得
+	 * @param phaseLst
+	 * @return
+	 */
+	public List<String> getApprSttUnapprovedAppTarget(List<ApprovalPhaseStateImport_New> phaseLst, GeneralDate appDate);
+	
+	/**
+	 * 承認状況未承認メール未承認者取得
+	 * @param approverIDLst
+	 * @param appDate
+	 * @return
+	 */
+	public List<String> getApprSttUnapprovedAppPerson(List<String> approverIDLst, GeneralDate appDate);
 }

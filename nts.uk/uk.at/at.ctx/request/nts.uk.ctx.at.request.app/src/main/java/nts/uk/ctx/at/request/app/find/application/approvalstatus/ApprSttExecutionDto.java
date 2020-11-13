@@ -31,12 +31,12 @@ public class ApprSttExecutionDto {
 	/**
 	 * 対象人数
 	 */
-	private Integer countEmp;
+	private int countEmp;
 	
 	/**
 	 * 申請未承認
 	 */
-	private Integer countUnApprApp;
+	private int countUnApprApp;
 	
 	public static ApprSttExecutionDto fromDomain(ApprSttExecutionOutput apprSttExecutionOutput) {
 		return new ApprSttExecutionDto(
