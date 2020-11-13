@@ -109,7 +109,7 @@ module nts.uk.at.view.ktg004.a.viewmodel {
 		}
 		
 		convertToTime(data:any):string{
-			if(data || data == 0 || data == '0'){
+			if(data == null || data == undefined || data == 0 || data == '0'){
 				return '00:00';
 			}else{
 				return Math.floor(data / 60) + ":" + data / 60;
