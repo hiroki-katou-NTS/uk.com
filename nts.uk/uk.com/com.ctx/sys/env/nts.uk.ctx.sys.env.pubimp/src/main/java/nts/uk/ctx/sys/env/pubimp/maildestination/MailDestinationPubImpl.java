@@ -15,6 +15,7 @@ import nts.uk.ctx.sys.env.dom.contact.EmployeeContactObjectImport;
 import nts.uk.ctx.sys.env.dom.contact.PersonContactObjectOfEmployeeImport;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.ContactSetting;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.EmailClassification;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.company.EmailDestinationFunction;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.MailDestinationFunction;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.MailDestinationFunctionRepository;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.SettingUseSendMail;
@@ -47,57 +48,98 @@ public class MailDestinationPubImpl implements IMailDestinationPub {
 	public List<MailDestination> getEmpEmailAddress(String cID, List<String> sIDs, Integer functionID) {
 
 		List<MailDestination> emailAddress = new ArrayList<MailDestination>();
-		// パラメータ.社員ID(List)をメール送信一覧に追加する
+		/**
+		 * パラメータ.社員ID(List)をメール送信一覧に追加する
+		 */
 		sIDs.forEach(sID -> {
 			emailAddress.add(new MailDestination(sID, Collections.emptyList()));
-		});
-//
-//		// ドメインモデル「メール送信先機能」を取得する
-//		List<MailDestinationFunction> mailDes = mailDesRepo.findByCidSettingItemAndUse(cID, functionID, NotUseAtr.USE);
-//
-//		if (CollectionUtil.isEmpty(mailDes)) {
-//			return emailAddress;
-//		}
-		
+		});		
+		/**
+		 * ドメインモデル「ユーザー情報の使用方法」を取得する
+		 */
 		Optional<UserInformationUseMethod> userInformationUseMethodOpt = userInformationUseMethodRepository.findByCId(cID);
 		
 		/**
 		 * 取得件数０件
 		 */
-		if (!userInformationUseMethodOpt.isPresent()) {
+		if (!userInformationUseMethodOpt.isPresent() || !userInformationUseMethodOpt.get().getSettingContactInformation().isPresent()) {
 			return emailAddress;
 		}
 		/**
 		 * 取得件数１件以上
 		 */
 		UserInformationUseMethod userInformationUseMethod = userInformationUseMethodOpt.get();
-//		boolean companyEmailAddressFlag = false;
-//		boolean personalEmailAddressFlag = false;
-//		boolean companyMobileEmailAddressFlag = false;
-//		boolean personalMobileEmailAddressFlag = false;
-//		if (!userInformationUseMethod.getEmailDestinationFunctions().isEmpty()) {
-//			userInformationUseMethod.getEmailDestinationFunctions().forEach(e -> {
-//				if (e.getEmailClassification() == EmailClassification.COMPANY_EMAIL_ADDRESS
-//						&& userInformationUseMethod.getSettingContactInformation().get().getCompanyEmailAddress().getContactUsageSetting().value != 0) {
-//					companyEmailAddressFlag = true;
-//				}
-//				if (e.getEmailClassification() == EmailClassification.PERSONAL_EMAIL_ADDRESS
-//						&& userInformationUseMethod.getSettingContactInformation().get().getPersonalEmailAddress().getContactUsageSetting().value != 0) {
-//					personalEmailAddressFlag = true;
-//				}
-//				if (e.getEmailClassification() == EmailClassification.COMPANY_MOBILE_EMAIL_ADDRESS
-//						&& userInformationUseMethod.getSettingContactInformation().get().getCompanyMobileEmailAddress().getContactUsageSetting().value != 0) {
-//					companyMobileEmailAddressFlag = true;
-//				}
-//				if (e.getEmailClassification() == EmailClassification.PERSONAL_MOBILE_EMAIL_ADDRESS
-//						&& userInformationUseMethod.getSettingContactInformation().get().getPersonalMobileEmailAddress().getContactUsageSetting().value != 0) {
-//					personalMobileEmailAddressFlag = true;
-//				}
-//			});
-//		}
+		
+		/**
+		 * 取得した「ユーザー情報の使用方法」kから、使えるメールの判断する
+		 */
+		boolean companyEmailAddressFlag = false;
+		boolean personalEmailAddressFlag = false;
+		boolean companyMobileEmailAddressFlag = false;
+		boolean personalMobileEmailAddressFlag = false;
+		if (!userInformationUseMethod.getEmailDestinationFunctions().isEmpty()) {
+			for (EmailDestinationFunction e : userInformationUseMethod.getEmailDestinationFunctions()) {
+				if (e.getEmailClassification() == EmailClassification.COMPANY_EMAIL_ADDRESS
+						&& userInformationUseMethod.getSettingContactInformation().get().getCompanyEmailAddress().getContactUsageSetting().value != 0) {
+					companyEmailAddressFlag = true;
+				}
+				if (e.getEmailClassification() == EmailClassification.PERSONAL_EMAIL_ADDRESS
+						&& userInformationUseMethod.getSettingContactInformation().get().getPersonalEmailAddress().getContactUsageSetting().value != 0) {
+					personalEmailAddressFlag = true;
+				}
+				if (e.getEmailClassification() == EmailClassification.COMPANY_MOBILE_EMAIL_ADDRESS
+						&& userInformationUseMethod.getSettingContactInformation().get().getCompanyMobileEmailAddress().getContactUsageSetting().value != 0) {
+					companyMobileEmailAddressFlag = true;
+				}
+				if (e.getEmailClassification() == EmailClassification.PERSONAL_MOBILE_EMAIL_ADDRESS
+						&& userInformationUseMethod.getSettingContactInformation().get().getPersonalMobileEmailAddress().getContactUsageSetting().value != 0) {
+					personalMobileEmailAddressFlag = true;
+				}
+			}
+		}
+		
+		/**
+		 * 「会社メールアドレスFlag」と「会社携帯メールアドレスFlag」をチェックする
+		 */
+		/**
+		 * 両方がfalse場合
+		 */
+		if (!companyEmailAddressFlag && !companyMobileEmailAddressFlag) {
+			/**
+			 * 「個人メールアドレスFlag」と「個人携帯メールアドレスFlag」をチェックする
+			 */
+			if (!personalEmailAddressFlag && !personalMobileEmailAddressFlag) {
+				
+			} else {
+				/**
+				 * その他
+				 */
+				/**
+				 * Imported(環境)「個人連絡先」を取得する
+				 */
+				// Imported(環境)「個人連絡先」を取得する RequestList 420
+				List<PersonContactObjectOfEmployeeImport> personContacts = empContactAdapter.getListOfEmployees(sIDs);
+			}
+		} else {
+			/**
+			 * その他
+			 */
+			/**
+			 * Imported(環境)「社員連絡先」を取得する RequestList 378
+			 */
+			List<EmployeeContactObjectImport> empContacts = empContactAdapter.getList(sIDs);
+			boolean displayEmail = empContacts.stream().allMatch(x -> !x.getMailAddress().isEmpty());
+			boolean displayPhoneEmail = empContacts.stream().allMatch(x -> !x.getPhoneMailAddress().isEmpty());
+			if(companyEmailAddressFlag) {
+				if(userInformationUseMethod.getSettingContactInformation().get().getCompanyEmailAddress().getContactUsageSetting().value == 1
+						|| (userInformationUseMethod.getSettingContactInformation().get().getCompanyEmailAddress().getContactUsageSetting().value == 2
+						&& true)) {
+//					empContacts.stream().filter(x -> x.getSid().equ)
+				}
+			}
+		}
 
 		return emailAddress;
-
 	}
 
 	private void setEmail(UserInfoUseMethod useInfoMethod, List<MailDestination> emailAddress, List<String> sIDs,

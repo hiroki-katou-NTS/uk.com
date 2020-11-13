@@ -4,6 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.sys.portal.app.command.toppage;
 
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -12,7 +16,10 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
 import nts.uk.ctx.sys.portal.dom.enums.System;
+import nts.uk.ctx.sys.portal.dom.layout.LayoutNewRepository;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository;
+import nts.uk.ctx.sys.portal.dom.toppage.ToppageNew;
+import nts.uk.ctx.sys.portal.dom.toppage.ToppageNewRepository;
 import nts.uk.ctx.sys.portal.dom.toppage.service.TopPageService;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageJobSetRepository;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuRepository;
@@ -26,16 +33,19 @@ import nts.uk.shr.com.context.AppContexts;
 public class DeleteTopPageCommandHandler extends CommandHandler<DeleteTopPageCommand> {
 	
 	@Inject
-	private TopPageService topPageService; 
-	
+	private TopPageService topPageService;
 	@Inject
 	private StandardMenuRepository standardMenuRepository;
-	
 	@Inject
 	private WebMenuRepository webMenuRepository;
-	
 	@Inject
 	private TopPageJobSetRepository topPageJobSetRepository;
+	@Inject
+	private LayoutNewRepository layoutNewRepository;
+	@Inject
+	private ToppageNewRepository toppageNewRepository;
+	@Inject
+	private StandardMenuRepository standardMenuRepo;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
@@ -44,13 +54,28 @@ public class DeleteTopPageCommandHandler extends CommandHandler<DeleteTopPageCom
 	protected void handle(CommandHandlerContext<DeleteTopPageCommand> context) {
 		DeleteTopPageCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		topPageService.removeTopPage(command.getTopPageCode(), companyId);
 		
-		// add by ThanhPV 
-		standardMenuRepository.deleteStandardMenu(companyId, command.getTopPageCode(), System.COMMON.value, MenuClassification.TopPage.value);
+		List<BigDecimal> lstLayoutNo = layoutNewRepository.getLstLayoutNo(command.getTopPageCode());
+		if (!lstLayoutNo.isEmpty()) {
+			// 「レイアウト」を削除する
+			layoutNewRepository.delete(companyId, command.getTopPageCode(), lstLayoutNo);
+		}
+		Optional<ToppageNew> tp = toppageNewRepository.getByCidAndCode(companyId, command.getTopPageCode());
+		if (tp.isPresent()) {
+			// 「トップページ」を削除する
+			toppageNewRepository.delete(companyId, command.getTopPageCode());
+		}
+		// ドメインモデル「標準メニュー」を削除する
+		standardMenuRepo.deleteStandardMenu(companyId, command.getTopPageCode(), System.COMMON.value, MenuClassification.TopPage.value);
+		// ドメインモデル「Webメニュー」に紐付く「ツリーメニュー」を削除する
 		webMenuRepository.removeTreeMenu(companyId, MenuClassification.TopPage.value, command.getTopPageCode());
+		
+		// topPageService.removeTopPage(command.getTopPageCode(), companyId);
+		// add by ThanhPV 
+		// standardMenuRepository.deleteStandardMenu(companyId, command.getTopPageCode(), System.COMMON.value, MenuClassification.TopPage.value);
+		// webMenuRepository.removeTreeMenu(companyId, MenuClassification.TopPage.value, command.getTopPageCode());
 		// remove top page code selected in CCG018
-		topPageJobSetRepository.removeTopPageCode(companyId, command.getTopPageCode());
+		// topPageJobSetRepository.removeTopPageCode(companyId, command.getTopPageCode());
 	}
 
 }

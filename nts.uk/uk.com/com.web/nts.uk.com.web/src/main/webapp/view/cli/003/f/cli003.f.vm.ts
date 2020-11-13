@@ -518,7 +518,7 @@ module nts.uk.com.view.cli003.f {
         endDateOperator: KnockoutObservable<string> = ko.observable('');
         targetEmployeeIdList: KnockoutObservableArray<any> = ko.observableArray([]);
         logSetOutputs: KnockoutObservableArray<LogSetOutputs> = ko.observableArray([]);
-
+        logSettingDto :  KnockoutObservableArray<LogSettingParam> = ko.observableArray([]);
         constructor(data: any) {
             super();
             const vm = this;
@@ -680,6 +680,7 @@ module nts.uk.com.view.cli003.f {
             // 記録を取得する
             service.getLogSettingsBySystem(systemType).then((logSettings: LogSettingParam[]) => {
                 //I：出力ボタン押下時処理
+                vm.logSettingDto(logSettings);
                 const paramLog = {
                     listOperatorEmployeeId: vm.operatorEmployeeIdList(),
                     listTagetEmployeeId: vm.targetEmployeeIdList(),
@@ -697,11 +698,9 @@ module nts.uk.com.view.cli003.f {
                 } else {
                     paramLog.endDateTaget = moment.utc(vm.dateValue().endDate, "YYYY/MM/DD").toISOString();
                 }
-                console.log(paramLog);
                 // Get Log basic info
                 service.getLogBasicInfoByModifyDate(paramLog).then((data: Array<LogBasicInfoModel>) => {
                     if (data.length > 0) {
-                        console.log(data);
                         //log setting list start boot history not in use
                         const logSettingEdit: LogSettingParam[] = logSettings.filter(x => x.updateHistoryRecord === USE_STAGE.NOT_USE);
                         const logSettingBoot: LogSettingParam[] = logSettings.filter(x => x.startHistoryRecord === USE_STAGE.NOT_USE);
@@ -1365,7 +1364,6 @@ module nts.uk.com.view.cli003.f {
                     lstHeaderDto: vm.LogDataResultHeader.map(item => item.itemName).filter(item => item !== 'id' && item !== 'logNumber'),
                     lstSubHeaderDto: vm.LogDataResultSubHeader.map(item => item.itemName).filter(item => item !== 'id' && item !== 'logNumber')
                 }
-                console.log(LogDataParamsExport)
                 vm.$blockui('grayout');
                 //CLI003: fix bug #108971, #108970
                 service.exportCsvForDataResult(LogDataParamsExport).done(() => {
@@ -1379,23 +1377,23 @@ module nts.uk.com.view.cli003.f {
                     itemNos: null
                 };
                 const checkProcess = false;
-                const format = "YYYY/MM/DD";
+                const format = 'YYYY/MM/DD HH:mm:ss';
                 const paramLog = {
                     listOperatorEmployeeId: vm.operatorEmployeeIdList(),
                     listTagetEmployeeId: vm.targetEmployeeIdList(),
-                    startDateTaget: moment(vm.dateValue().startDate, format).toISOString(),
-                    endDateTaget: moment(vm.dateValue().endDate, format).toISOString(),
+                    startDateTaget: moment(vm.dateValue().startDate, "YYYY/MM/DD").toISOString(),
+                    endDateTaget: moment(vm.dateValue().endDate, "YYYY/MM/DD").toISOString(),
                     startDateOperator: moment.utc(vm.startDateOperator(), format).toISOString(),
                     endDateOperator: moment.utc(vm.endDateOperator(), format).toISOString(),
                     recordType: vm.logTypeSelectedCode(),
                     targetDataType: vm.dataTypeSelectedCode(),
+                    listLogSettingDto: vm.logSettingDto(),
                     listCondition: vm.filterLogSetting(),
-                    listLogSettingDto: []
-                };
+                }
                 if (vm.checkFormatDate() === '2') {
-                    paramLog.endDateTaget = moment.utc(vm.dateValue().endDate, format).endOf('month').toISOString();
+                    paramLog.endDateTaget = moment.utc(vm.dateValue().endDate, "YYYY/MM/DD").endOf('month').toISOString();
                 } else {
-                    paramLog.endDateTaget = moment.utc(vm.dateValue().endDate, format).toISOString();
+                    paramLog.endDateTaget = moment.utc(vm.dateValue().endDate, "YYYY/MM/DD").toISOString();
                 }
 
                 switch (recordType) {

@@ -27,13 +27,13 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 			, "AND m.startDate <= :endDate"
 			, "AND m.endDate >= :startDate"
 			, "AND m.destination = :destination"
-			, "ORDER BY m.startDate DESC, endDate DESC, m.pk.inputDate DESC");
+			, "ORDER BY m.startDate DESC, m.endDate DESC, m.pk.inputDate DESC");
 	
 	private static final String GET_BY_PERIOD_AND_SID = String.join(" "
 			, "SELECT m FROM SptdtInfoMessage m WHERE m.pk.sid = :sid"
 			, "AND m.startDate <= :endDate"
 			, "AND m.endDate >= :startDate"
-			, "ORDER BY m.startDate DESC, endDate DESC, m.pk.inputDate DESC");
+			, "ORDER BY m.startDate DESC, m.endDate DESC, m.pk.inputDate DESC");
 	
 	private static final String GET_FROM_LIST_WORKPLACE_ID = String.join(" "
 			, "SELECT m FROM SptdtInfoMessage m JOIN SptdtInfoMessageTgt n"
@@ -50,32 +50,32 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 			, "ON m.pk.sid = n.pk.sid AND m.pk.inputDate = n.pk.inputDate"
 			, "LEFT JOIN SptdtInfoMessageRead s"
 			, "ON m.pk.sid = s.pk.sid AND m.pk.inputDate = s.pk.inputDate"
-			, "AND m.startDate <= :endDate"
+			, "WHERE m.startDate <= :endDate"
 			, "AND m.endDate >= :startDate"
-			, "AND m.destination = 0"
+			, "AND (m.destination = 0"
 			, "OR (m.destination = 1 AND n.pk.tgtInfoId = :wpId)"
-			, "OR (m.destination = 2 AND n.pk.tgtInfoId = :sid)"
+			, "OR (m.destination = 2 AND n.pk.tgtInfoId = :sid))"
 			, "ORDER BY m.startDate DESC, m.endDate DESC, m.pk.inputDate DESC");
 	
 	private static final String GET_NEW_MSG_FOR_DAY = String.join(" "
             , "SELECT m FROM SptdtInfoMessage m"
-            , "LEFT JOIN SptdtInfoMessageTgt n"
-            , "ON m.pk.sid = n.pk.sid AND m.pk.inputDate = n.pk.inputDate"
+			, "LEFT JOIN SptdtInfoMessageTgt n"
+			, "ON m.pk.sid = n.pk.sid AND m.pk.inputDate = n.pk.inputDate"
             , "LEFT JOIN SptdtInfoMessageRead s"
             , "ON m.pk.sid = s.pk.sid AND m.pk.inputDate = s.pk.inputDate"
-            , "WHERE m.startDate <= :today"
+			, "WHERE m.startDate <= :today"
             , "AND m.endDate >= :today"
-            , "AND (m.destination = 0"
+			, "AND (m.destination = 0"
             , "OR (m.destination = 1 AND n.pk.tgtInfoId = :wpId)"
-            , "OR (m.destination = 2 AND n.pk.tgtInfoId = :sid))"
-            , "AND s.pk.readSid <> :sid"
+			, "OR (m.destination = 2 AND n.pk.tgtInfoId = :sid))"
+			, "AND s.pk.readSid <> :sid"
             , "ORDER BY m.destination ASC, m.startDate DESC");
 	
 	private static final String GET_REF_BY_SID_FOR_PERIOD = String.join(" "
 			, "SELECT m FROM SptdtInfoMessage m"
 			, "LEFT JOIN SptdtInfoMessageRead s"
 			, "ON m.pk.sid = s.pk.sid AND m.pk.inputDate = s.pk.inputDate"
-			, "AND m.startDate <= :endDate"
+			, "WHERE m.startDate <= :endDate"
 			, "AND m.endDate >= :startDate"
 			, "AND m.destination = 2 AND n.pk.tgtInfoId = :sid"
 			, "AND s.pk.sid = :sid"
@@ -126,7 +126,7 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 	@Override
 	public void delete(MessageNotice msg) {
 		SptdtInfoMessage entity = toEntity(msg);
-		this.commandProxy().remove(entity.getPk());
+		this.commandProxy().remove(SptdtInfoMessage.class, entity.getPk());
 	}
 
 	@Override
@@ -188,7 +188,7 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 		List<MessageNotice> result = this.queryProxy()
 				.query(GET_NEW_MSG_FOR_DAY, SptdtInfoMessage.class)
 				.setParameter("today", GeneralDate.today())
-				.setParameter("wpId", wpId.orElse(""))
+				.setParameter("wpId", wpId.orElse(null))
 				.setParameter("sid", AppContexts.user().employeeId())
 				.getList(MessageNotice::createFromMemento);
 		return result;
@@ -211,11 +211,13 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 										.inputDate(msg.getInputDate())
 										.readSid(sid)
 										.build();
-		SptdtInfoMessageRead entity = new SptdtInfoMessageRead();
-		entity.setPk(pk);
-		entity.setContractCd(AppContexts.user().contractCode());
-		entity.setCompanyId(AppContexts.user().companyId());
-		this.commandProxy().insert(entity);
+		SptdtInfoMessageRead sptdtInfoMessageRead = new SptdtInfoMessageRead();
+		sptdtInfoMessageRead.setPk(pk);
+		sptdtInfoMessageRead.setContractCd(AppContexts.user().contractCode());
+		sptdtInfoMessageRead.setCompanyId(AppContexts.user().companyId());
+		SptdtInfoMessage sptdtInfoMessage = toEntity(msg);
+		sptdtInfoMessageRead.setSptdtInfoMessage(sptdtInfoMessage);
+		this.commandProxy().insert(sptdtInfoMessageRead);
 	}
 	
 	@Override

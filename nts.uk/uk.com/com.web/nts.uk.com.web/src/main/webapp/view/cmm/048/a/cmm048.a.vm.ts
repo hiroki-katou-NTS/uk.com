@@ -354,7 +354,9 @@ module nts.uk.com.view.cmm048.a {
 
         //set data for tab C
         if (data.anniversaryNotices.length !== 0) {
-          _.map(data.anniversaryNotices, (anniversary: AnniversaryNoticeDto) => {
+          const list : AnniversaryNotificationViewModel[] = [];
+          const datas = _.orderBy(data.anniversaryNotices, ["anniversary"], ["ASC"]);
+          _.map(datas, (anniversary: AnniversaryNoticeDto) => {
             const newItem: AnniversaryNotificationViewModel =
               new AnniversaryNotificationViewModel(
                 anniversary.anniversary,
@@ -362,8 +364,9 @@ module nts.uk.com.view.cmm048.a {
                 anniversary.notificationMessage,
                 anniversary.noticeDay
               );
-            vm.listAnniversary.push(newItem);
+              list.push(newItem);
           });
+          vm.listAnniversary(list);
         } else {
           vm.listAnniversary.push(new AnniversaryNotificationViewModel("", "", "", 0));
         }

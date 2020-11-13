@@ -965,8 +965,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 				.value("")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
-		data.put(I18NText.getText(RegistTimeColumn.KMK008_204), MasterCellData.builder()
-				.columnId(I18NText.getText(RegistTimeColumn.KMK008_204))
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_205), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_205))
 				.value("")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
@@ -998,8 +998,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 				.value(Arrays.asList(3, 6, 8, 11, 14).contains(++checkExist) ? formatTime(((BigDecimal)objects[++param]).intValue()) : "-")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
-		data.put(I18NText.getText(RegistTimeColumn.KMK008_204), MasterCellData.builder()
-				.columnId(I18NText.getText(RegistTimeColumn.KMK008_204))
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_205), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_205))
 				.value(check == 0 ? I18NText.getText(getTexresource(((BigDecimal)objects[0]).intValue())) : "-")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
@@ -1149,8 +1149,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 				.value(Arrays.asList(5, 8, 10, 13,16).contains(++checkExist) ? formatTime(((BigDecimal)objects[++param]).intValue()) : "-")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
-		data.put(I18NText.getText(RegistTimeColumn.KMK008_204), MasterCellData.builder()
-			.columnId(I18NText.getText(RegistTimeColumn.KMK008_204))
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_205), MasterCellData.builder()
+			.columnId(I18NText.getText(RegistTimeColumn.KMK008_205))
 			.value(check == 0 ? I18NText.getText(getTexresource(((BigDecimal) objects[2]).intValue())) : "-")
 			.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 			.build());
@@ -1189,8 +1189,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 				.value("")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
-		data.put(I18NText.getText(RegistTimeColumn.KMK008_204), MasterCellData.builder()
-			.columnId(I18NText.getText(RegistTimeColumn.KMK008_204))
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_205), MasterCellData.builder()
+			.columnId(I18NText.getText(RegistTimeColumn.KMK008_205))
 			.value("")
 			.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 			.build());
@@ -1265,8 +1265,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 				.value(Arrays.asList(5, 8, 10, 13,16).contains(++checkExist) ? formatTime(((BigDecimal)objects[++param]).intValue()) : "-")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
-		data.put(I18NText.getText(RegistTimeColumn.KMK008_204), MasterCellData.builder()
-			.columnId(I18NText.getText(RegistTimeColumn.KMK008_204))
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_205), MasterCellData.builder()
+			.columnId(I18NText.getText(RegistTimeColumn.KMK008_205))
 			.value(check == 0 ? I18NText.getText(getTexresource(((BigDecimal)objects[2]).intValue())) : "-")
 			.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 			.build());
@@ -1305,8 +1305,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 				.value("")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
-		data.put(I18NText.getText(RegistTimeColumn.KMK008_204), MasterCellData.builder()
-			.columnId(I18NText.getText(RegistTimeColumn.KMK008_204))
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_205), MasterCellData.builder()
+			.columnId(I18NText.getText(RegistTimeColumn.KMK008_205))
 			.value("")
 			.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 			.build());
@@ -1382,8 +1382,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 				.value(Arrays.asList(5, 8, 10, 13,16).contains(++checkExist) ? formatTime(((BigDecimal)objects[++param]).intValue()) : "-")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
-		data.put(I18NText.getText(RegistTimeColumn.KMK008_204), MasterCellData.builder()
-			.columnId(I18NText.getText(RegistTimeColumn.KMK008_204))
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_205), MasterCellData.builder()
+			.columnId(I18NText.getText(RegistTimeColumn.KMK008_205))
 			.value(check == 0 ? I18NText.getText(getTexresource(((BigDecimal)objects[2]).intValue())) : "-")
 			.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 			.build());
@@ -1422,8 +1422,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 				.value("")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
-		data.put(I18NText.getText(RegistTimeColumn.KMK008_204), MasterCellData.builder()
-			.columnId(I18NText.getText(RegistTimeColumn.KMK008_204))
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_205), MasterCellData.builder()
+			.columnId(I18NText.getText(RegistTimeColumn.KMK008_205))
 			.value("")
 			.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 			.build());
@@ -1486,8 +1486,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 				.value(Arrays.asList(3, 6, 8, 11, 14).contains(++checkExist) ? formatTime(((BigDecimal)objects[++param]).intValue()) : "-")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
-		data.put(I18NText.getText(RegistTimeColumn.KMK008_204), MasterCellData.builder()
-			.columnId(I18NText.getText(RegistTimeColumn.KMK008_204))
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_205), MasterCellData.builder()
+			.columnId(I18NText.getText(RegistTimeColumn.KMK008_205))
 			.value(check == 0 ? I18NText.getText(getTexresource(((BigDecimal)objects[0]).intValue())) : "-")
 			.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 			.build());
@@ -1562,8 +1562,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 				.value(Arrays.asList(5, 8, 10, 13,16).contains(++checkExist) ? formatTime(((BigDecimal)objects[++param]).intValue()) : "-")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
-		data.put(I18NText.getText(RegistTimeColumn.KMK008_204), MasterCellData.builder()
-			.columnId(I18NText.getText(RegistTimeColumn.KMK008_204))
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_205), MasterCellData.builder()
+			.columnId(I18NText.getText(RegistTimeColumn.KMK008_205))
 			.value(check == 0 ? I18NText.getText(getTexresource(((BigDecimal)objects[2]).intValue())) : "-")
 			.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 			.build());
@@ -1638,8 +1638,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 				.value(Arrays.asList(5, 8, 10, 13,16).contains(++checkExist) ? formatTime(((BigDecimal)objects[++param]).intValue()) : "-")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
-		data.put(I18NText.getText(RegistTimeColumn.KMK008_204), MasterCellData.builder()
-			.columnId(I18NText.getText(RegistTimeColumn.KMK008_204))
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_205), MasterCellData.builder()
+			.columnId(I18NText.getText(RegistTimeColumn.KMK008_205))
 			.value(check == 0 ? I18NText.getText(getTexresource(((BigDecimal)objects[2]).intValue())) : "-")
 			.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 			.build());
@@ -1714,8 +1714,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 				.value(Arrays.asList(5, 8, 10, 13,16).contains(++checkExist) ? formatTime(((BigDecimal)objects[++param]).intValue()) : "-")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
-		data.put(I18NText.getText(RegistTimeColumn.KMK008_204), MasterCellData.builder()
-			.columnId(I18NText.getText(RegistTimeColumn.KMK008_204))
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_205), MasterCellData.builder()
+			.columnId(I18NText.getText(RegistTimeColumn.KMK008_205))
 			.value(check == 0 ? I18NText.getText(getTexresource(((BigDecimal)objects[2]).intValue())) : "-")
 			.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 			.build());

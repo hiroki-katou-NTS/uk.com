@@ -5,10 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
 import nts.uk.ctx.bs.employee.app.command.employee.data.management.EmployeeContactDto;
 import nts.uk.ctx.bs.employee.dom.employee.data.management.contact.EmployeeContact;
 import nts.uk.ctx.bs.employee.dom.employee.data.management.contact.EmployeeContactRepository;
@@ -16,9 +14,9 @@ import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository
 import nts.uk.ctx.bs.employee.pub.contact.EmployeeContactObject;
 import nts.uk.ctx.bs.employee.pub.contact.EmployeeContactPub;
 import nts.uk.ctx.bs.employee.pub.contact.PersonContactObjectOfEmployee;
-import nts.uk.ctx.bs.person.dom.person.contact.EmergencyContact;
-import nts.uk.ctx.bs.person.dom.person.contact.PersonContact;
-import nts.uk.ctx.bs.person.dom.person.contact.PersonContactRepository;
+import nts.uk.ctx.bs.person.dom.person.personal.contact.EmergencyContact;
+import nts.uk.ctx.bs.person.dom.person.personal.contact.PersonalContact;
+import nts.uk.ctx.bs.person.dom.person.personal.contact.PersonalContactRepository;
 
 @Stateless
 public class EmployeeContactPubImpl implements EmployeeContactPub {
@@ -30,7 +28,7 @@ public class EmployeeContactPubImpl implements EmployeeContactPub {
 	private EmployeeDataMngInfoRepository empDataMngInfoRepo;
 	
 	@Inject
-	private PersonContactRepository personContactRepo;
+	private PersonalContactRepository personalContactRepository;
 
 	@Override
 	public List<EmployeeContactObject> getList(List<String> employeeIds) {
@@ -74,40 +72,38 @@ public class EmployeeContactPubImpl implements EmployeeContactPub {
 		Map<String, String> employeeIdPersonIdMap = empDataMngInfoRepo.findByListEmployeeId(employeeIds).stream()
 				.collect(Collectors.toMap(x -> x.getEmployeeId(), x -> x.getPersonId()));
 
-		Map<String, PersonContact> personContacts = personContactRepo
-				.getByPersonIdList(new ArrayList<>(employeeIdPersonIdMap.values())).stream()
-				.collect(Collectors.toMap(x -> x.getPersonId(), x -> x));
+		Map<String, PersonalContact> personContacts = personalContactRepository.getByPersonalIds(employeeIdPersonIdMap.values()
+				.stream().collect(Collectors.toList())).stream()
+				.collect(Collectors.toMap(p -> p.getPersonalId(), p -> p));
+		
 		List<PersonContactObjectOfEmployee> resultList = new ArrayList<>();
 		employeeIdPersonIdMap.forEach((empId, perId) -> {
-			PersonContact personContact = personContacts.get(perId);
-			if(personContact != null) {
-				PersonContactObjectOfEmployee personContactOfEmp = convert(empId, personContact);
+			PersonalContact personalContact = personContacts.get(perId);
+			if(personalContact != null) {
+				PersonContactObjectOfEmployee personContactOfEmp = convert(empId, personalContact);
 				resultList.add(personContactOfEmp);
 			}
 		});
 		return resultList;
 	}
 	
-	private PersonContactObjectOfEmployee convert(String employeeId, PersonContact p) {
+	private PersonContactObjectOfEmployee convert(String employeeId, PersonalContact p) {
 		PersonContactObjectOfEmployee pcObject = new PersonContactObjectOfEmployee();
 		pcObject.setEmployeeId(employeeId);
-		pcObject.setPersonId(p.getPersonId());
-		pcObject.setCellPhoneNumber(p.getCellPhoneNumber().isPresent() ? p.getCellPhoneNumber().get().v() : null);
-		pcObject.setMailAdress(p.getMailAdress().isPresent() ? p.getMailAdress().get().v() : null);
-		pcObject.setMobileMailAdress(p.getMobileMailAdress().isPresent() ? p.getMobileMailAdress().get().v() : null);
+		pcObject.setPersonId(p.getPersonalId());
+		pcObject.setCellPhoneNumber(p.getPhoneNumber().isPresent() ? p.getPhoneNumber().get().v() : null);
+		pcObject.setMailAdress(p.getMailAddress().isPresent() ? p.getMailAddress().get().v() : null);
+		pcObject.setMobileMailAdress(p.getMobileEmailAddress().isPresent() ? p.getMobileEmailAddress().get().v() : null);
 
 		Optional<EmergencyContact> emerContact1 = p.getEmergencyContact1();
-		if (emerContact1.isPresent()) {
-			pcObject.setMemo1(emerContact1.get().getMemo().map(i->i.v()).orElse(null));
-			pcObject.setContactName1(emerContact1.get().getContactName().map(i->i.v()).orElse(null));
-			pcObject.setPhoneNumber1(emerContact1.get().getPhoneNumber().map(i->i.v()).orElse(null));
-		}
+		pcObject.setMemo1(emerContact1.map(item -> item.getRemark().v()).orElse(null));
+		pcObject.setContactName1(emerContact1.map(item -> item.getContactName().v()).orElse(null));
+		pcObject.setPhoneNumber1(emerContact1.map(item -> item.getPhoneNumber().v()).orElse(null));
+		
 		Optional<EmergencyContact> emerContact2 = p.getEmergencyContact2();
-		if (emerContact2.isPresent()) {
-			pcObject.setMemo2(emerContact2.get().getMemo().map(i->i.v()).orElse(null));
-			pcObject.setContactName2(emerContact2.get().getContactName().map(i->i.v()).orElse(null));
-			pcObject.setPhoneNumber2(emerContact2.get().getPhoneNumber().map(i->i.v()).orElse(null));
-		}
+		pcObject.setMemo2(emerContact2.map(item -> item.getRemark().v()).orElse(null));
+		pcObject.setContactName2(emerContact2.map(item -> item.getContactName().v()).orElse(null));
+		pcObject.setPhoneNumber2(emerContact2.map(item -> item.getPhoneNumber().v()).orElse(null));
 		return pcObject;
 
 	}
