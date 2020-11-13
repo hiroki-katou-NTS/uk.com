@@ -29,11 +29,13 @@ public class GetClosureDateEmploymentDomainService {
         val companyId = AppContexts.user().companyId();
 
         // 雇用を取得する
-        val employmentInfors = require.getEmploymentInfor(companyId, listSid, baseDate);
+        val lstEmploymentInfo = require.getEmploymentInfor(companyId, listSid, baseDate);
 
-        return employmentInfors.values().stream().map(i -> {
+        return lstEmploymentInfo.values().stream().map(i -> {
             // Call 社員に対応する処理締めを取得する
             val closure = require.getClosureDataByEmployee(i.getEmployeeId(), baseDate);
+
+            // ※締め．締め変更履歴 がリストの場合は基準日がある履歴のみ残して、他の履歴を無視する
             val closureHistories = new ArrayList<ClosureHistory>();
             closureHistories.add(closure.getHistoryByBaseDate(baseDate));
             closure.setClosureHistories(closureHistories);
