@@ -1363,6 +1363,18 @@ public class ProgramIdConsts {
 	/** KSM007A */
 	public static final String KDL048 = "KDL048";
 	/** KDL047 */
-	public static final String KDL047 = "KDL047";
-	
+	public static final String KDL047 = "KDL047";;
+	/*** KWR003*/
+	public static final String KWR003A = "KWR003A";
+	/*** KWR003*/
+	public static final String KWR003B = "KWR003B";
+	/*** KWR003*/
+	public static final String KWR003C = "KWR003C";
+
+	/*** KWR005*/
+	public static final String KWR005A = "KWR005A";
+	/*** KWR005*/
+	public static final String KWR005B = "KWR005B";
+	/*** KWR005*/
+	public static final String KWR005C = "KWR005C";
 }

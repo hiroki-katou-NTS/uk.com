@@ -14,6 +14,7 @@ import nts.uk.shr.com.context.AppContexts;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -31,7 +32,8 @@ public class GetAttendanceItemInfo {
     private CompanyDailyItemService dailyItemService;
 
 
-    public AttendanceItemInfoDto getAttendanceItemInfo(DailyMonthlyClassification classification, int formNumberDisplay) {
+    public AttendanceItemInfoDto getAttendanceItemInfo(DailyMonthlyClassification classification, int formNumberDisplay
+            , boolean isDaily, boolean isMonthly) {
         // ①　=　List<勤怠項目ID>// TODO   QA.
         val listAttendanceItemId = new ArrayList<Integer>();
         //  （2:月次）
@@ -41,67 +43,63 @@ public class GetAttendanceItemInfo {
 
         val cid = AppContexts.user().companyId();
         val roleId = Optional.of(AppContexts.user().roles().forAttendance()); // TODO QA
-        // 勤怠項目の種類　（2:月次）
-        val itemMonthlys = monthlyItemService.getMonthlyItems(cid, roleId, listAttdanceIdOfMonthly, null);
-        //勤怠項目の種類　（1:日次）
-        val itemDailys = dailyItemService.getDailyItems(cid, roleId, listAttdanceIdOfDaily, null);
-
-        val listDailyAttributes = itemDailys.stream().map(e -> new AttItemDto(
-                e.getAttendanceItemId(),
-                e.getAttendanceItemName(),
-                e.getAttendanceItemDisplayNumber(),
-                e.getTypeOfAttendanceItem(),
-                convertDailyToAttForms(e.getTypeOfAttendanceItem(), 0)))
-                .collect(Collectors.toCollection(ArrayList::new));
-        val listMonthlyAttributes = itemMonthlys.stream().map(e -> new AttItemDto(
-                e.getAttendanceItemId(),
-                e.getAttendanceItemName(),
-                e.getAttendanceItemDisplayNumber(),
-                e.getTypeOfAttendanceItem(),
-                convertMonthlyToAttForms(e.getTypeOfAttendanceItem())))
-                .collect(Collectors.toCollection(ArrayList::new));
-
-        return new AttendanceItemInfoDto(listDailyAttributes, listMonthlyAttributes);
+        List<AttItemDto> listDaily = new ArrayList<AttItemDto>();
+        if (isDaily) {
+            //勤怠項目の種類　（1:日次）
+            val itemDailys = dailyItemService.getDailyItems(cid, roleId, listAttdanceIdOfDaily, null);
+            listDaily.addAll(itemDailys.stream().map(e -> new AttItemDto(
+                    e.getAttendanceItemId(),
+                    e.getAttendanceItemName(),
+                    e.getAttendanceItemDisplayNumber(),
+                    e.getTypeOfAttendanceItem(),
+                    convertDailyToAttForms(e.getTypeOfAttendanceItem(), 0)))
+                    .collect(Collectors.toCollection(ArrayList::new)));
+        }
+        List<AttItemDto> listMonthly = new ArrayList<AttItemDto>();
+        if (isMonthly) {
+            // 勤怠項目の種類　（2:月次）
+            val itemMonthlys = monthlyItemService.getMonthlyItems(cid, roleId, listAttdanceIdOfMonthly, null);
+            listMonthly.addAll(itemMonthlys.stream().map(e -> new AttItemDto(
+                    e.getAttendanceItemId(),
+                    e.getAttendanceItemName(),
+                    e.getAttendanceItemDisplayNumber(),
+                    e.getTypeOfAttendanceItem(),
+                    convertMonthlyToAttForms(e.getTypeOfAttendanceItem())))
+                    .collect(Collectors.toCollection(ArrayList::new)));
+        }
+        return new AttendanceItemInfoDto(listDaily, listMonthly);
 
     }
 
-    private int convertDailyToAttForms(Integer typeOfAttendanceItem, int masterType) {
+    private Integer convertDailyToAttForms(Integer typeOfAttendanceItem, int masterType) {
         if (typeOfAttendanceItem == DailyAttendanceAtr.Code.value &&
                 masterType == TypesMasterRelatedDailyAttendanceItem.WORK_TYPE.value) {
             return CommonAttributesOfForms.WORK_TYPE.value;
-        }
-        else if (typeOfAttendanceItem == DailyAttendanceAtr.Code.value &&
+        } else if (typeOfAttendanceItem == DailyAttendanceAtr.Code.value &&
                 masterType == TypesMasterRelatedDailyAttendanceItem.WORKING_HOURS.value) {
             return CommonAttributesOfForms.WORKING_HOURS.value;
-        }
-        else if (typeOfAttendanceItem == DailyAttendanceAtr.NumberOfTime.value) {
+        } else if (typeOfAttendanceItem == DailyAttendanceAtr.NumberOfTime.value) {
             return CommonAttributesOfForms.NUMBER_OF_TIMES.value;
-        }
-        else if (typeOfAttendanceItem == DailyAttendanceAtr.AmountOfMoney.value) {
+        } else if (typeOfAttendanceItem == DailyAttendanceAtr.AmountOfMoney.value) {
             return CommonAttributesOfForms.AMOUNT_OF_MONEY.value;
-        }
-        else if (typeOfAttendanceItem == DailyAttendanceAtr.Time.value) {
+        } else if (typeOfAttendanceItem == DailyAttendanceAtr.Time.value) {
             return CommonAttributesOfForms.TIME.value;
-        }else
-        return 1;
+        } else
+            return null;
     }
 
-    private int convertMonthlyToAttForms(Integer typeOfAttendanceItem) {
+    private Integer convertMonthlyToAttForms(Integer typeOfAttendanceItem) {
         if (typeOfAttendanceItem == MonthlyAttendanceItemAtr.TIME.value) {
-
             return CommonAttributesOfForms.TIME.value;
-        }
-        if (typeOfAttendanceItem == MonthlyAttendanceItemAtr.NUMBER.value) {
+        } else if (typeOfAttendanceItem == MonthlyAttendanceItemAtr.NUMBER.value) {
             return CommonAttributesOfForms.NUMBER_OF_TIMES.value;
-        }
-        if (typeOfAttendanceItem == MonthlyAttendanceItemAtr.DAYS.value) {
+        } else if (typeOfAttendanceItem == MonthlyAttendanceItemAtr.DAYS.value) {
             return CommonAttributesOfForms.DAYS.value;
-        }
-        if (typeOfAttendanceItem == MonthlyAttendanceItemAtr.AMOUNT.value) {
+        } else if (typeOfAttendanceItem == MonthlyAttendanceItemAtr.AMOUNT.value) {
             return CommonAttributesOfForms.AMOUNT_OF_MONEY.value;
-        }
+        } else
 
-        return 1;
+            return null;
     }
 
 }
