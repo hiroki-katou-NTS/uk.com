@@ -7,15 +7,20 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import lombok.Value;
 import lombok.val;
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
 import nts.arc.error.BusinessException;
+import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.gateway.app.command.login.LoginCommandHandlerBase;
 import nts.uk.ctx.sys.gateway.dom.login.password.AuthenticateEmployeePassword;
+import nts.uk.ctx.sys.gateway.dom.login.password.AuthenticationFailuresLog;
 import nts.uk.ctx.sys.gateway.dom.role.RoleFromUserIdAdapter;
 import nts.uk.ctx.sys.gateway.dom.role.RoleFromUserIdAdapter.RoleInfoImport;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockOutData;
 import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthentication;
 import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationRepository;
 import nts.uk.ctx.sys.shared.dom.company.CompanyInformationAdapter;
@@ -30,7 +35,8 @@ import nts.uk.ctx.sys.shared.dom.user.UserRepository;
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 															PasswordAuthenticateCommand, 
-															PasswordAuthenticateCommandHandler.LoginState, 
+															PasswordAuthenticateCommandHandler.AuthenState,
+															PasswordAuthenticateCommandHandler.AuthorResult,
 															CheckChangePassDto, 
 															PasswordAuthenticateCommandHandler.Require> {
 	
@@ -57,7 +63,7 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 	
 	// 認証処理本体
 	@Override
-	protected LoginState authenticate(Require require, PasswordAuthenticateCommand command) {
+	protected AuthenState authenticate(Require require, PasswordAuthenticateCommand command) {
 		
 		// 入力チェック
 		checkInput(command);
@@ -67,15 +73,15 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 
 	// 認証成功時の処理
 	@Override
-	protected CheckChangePassDto processSuccess(LoginState state) {
+	protected AuthorResult processSuccess(AuthenState state) {
 		/* ログインチェック  */
-		return CheckChangePassDto.successToAuthPassword();
+		return AuthorResult.of(CheckChangePassDto.successToAuthPassword());
 	}
 
 	// 認証失敗時の処理
 	@Override
-	protected CheckChangePassDto processFailure(LoginState state) {
-		return CheckChangePassDto.failedToAuthPassword();
+	protected AuthorResult processFailure(AuthenState state) {
+		return AuthorResult.of(CheckChangePassDto.failedToAuthPassword());
 	}
 	
 	// 入力チェック
@@ -91,7 +97,7 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 	}
 	
 	// パスワード認証
-	LoginState passwordAuthenticate(AuthenticateEmployeePassword.Require require, PasswordAuthenticateCommand command) {
+	AuthenState passwordAuthenticate(AuthenticateEmployeePassword.Require require, PasswordAuthenticateCommand command) {
 		
 		String companyId = companyInformationAdapter.createCompanyId(command.getTenantCode(), command.getCompanyCode());
 		String employeeCode = command.getEmployeeCode();
@@ -99,10 +105,10 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 		
 		
 		// パスワード認証
-		val successPasswordAuth = AuthenticateEmployeePassword.authenticate(require, companyId, employeeCode, password);
-		if(!successPasswordAuth) {
+		val authenticationResult = AuthenticateEmployeePassword.authenticate(require, companyId, employeeCode, password);
+		if(!authenticationResult.isSuccess()) {
 			// パスワード認証失敗
-			return LoginState.failed();
+			return AuthenState.failed(authenticationResult.getAtomTask());
 		}
 		
 		// パスワード認証成功
@@ -111,45 +117,35 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 		if(!optEmployee.isPresent() || !optUser.isPresent()) {
 			throw new BusinessException("Msg_318");
 		}
-		return LoginState.success(optEmployee.get(), optUser.get());
+		return AuthenState.success(optEmployee.get(), optUser.get());
 	}
 
-	static class LoginState implements LoginCommandHandlerBase.AuthenticationState{
+	@Value
+	static class AuthenState implements LoginCommandHandlerBase.AuthenticationResult {
 			
 		private boolean isSuccess;
-		
-		private EmployeeImport employeeImport;
-		
+		private EmployeeImport employee;
 		private User user;
+		private Optional<AtomTask> atomTask;
 		
-		public LoginState(boolean isSuccess, EmployeeImport employeeImport, User user) {
-			this.isSuccess = isSuccess;
-			this.employeeImport = employeeImport;
-			this.user = user;
+		public static AuthenState success(EmployeeImport employeeImport, User user) {
+			return new AuthenState(true, employeeImport, user, Optional.empty());
 		}
 		
-		public static LoginState success(EmployeeImport employeeImport, User user) {
-			return new LoginState(true, employeeImport, user);
+		public static AuthenState failed(AtomTask atomTask) {
+			return new AuthenState(false, null, null, Optional.of(atomTask));
 		}
-		
-		public static LoginState failed() {
-			return new LoginState(false, null, null);
-		}
-		
-		@Override
-		public boolean isSuccess() {
-			return isSuccess;
-		}
+	}
+	
+	@Value
+	static class AuthorResult implements LoginCommandHandlerBase.AuthorizationResult<CheckChangePassDto> {
 
-		@Override
-		public EmployeeImport getEmployee() {
-			return employeeImport;
-		}
+		Optional<AtomTask> atomTask;
+		CheckChangePassDto loginResult;
 		
-		@Override
-		public User getUser() {
-			return user;
-		}	
+		public static AuthorResult of(CheckChangePassDto loginResult) {
+			return new AuthorResult(Optional.empty(), loginResult);
+		}
 	}
 	
 	public static interface Require extends AuthenticateEmployeePassword.Require, 
@@ -203,6 +199,36 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 		@Override
 		public String getRoleId(String userId, Integer roleType, GeneralDate baseDate) {
 			return roleFromUserIdAdapter.getRoleFromUser(userId, roleType, baseDate);
+		}
+
+		@Override
+		public String getLoginUserContractCode() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public AuthenticationFailuresLog getAuthenticationFailuresLog(String userId) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Optional<AccountLockPolicy> getAccountLockPolicy(String contractCode) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void save(AuthenticationFailuresLog failuresLog) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void save(LockOutData lockOutData) {
+			// TODO Auto-generated method stub
+			
 		}
 	}
 }

@@ -10,6 +10,8 @@ import org.apache.commons.lang3.StringUtils;
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.arc.task.tran.AtomTask;
+import nts.arc.task.tran.TransactionService;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.gateway.dom.role.RoleType;
 import nts.uk.ctx.sys.gateway.dom.role.RoleFromUserIdAdapter.RoleInfoImport;
@@ -24,12 +26,16 @@ import nts.uk.shr.com.context.loginuser.SessionLowLayer;
  * TenantLocatorを想定したログイン処理の基底クラス
  *
  * @param <Command> Command
- * @param <Result> Result
+ * @param <Authen> 認証処理の結果
+ * @param <Author> 認可処理の結果
+ * @param <Result> ログイン全体の結果、CommandHandlerの戻り値
+ * @param <Req> Require
  */
 @Stateless
 public abstract class LoginCommandHandlerBase<
 		Command extends LoginCommandHandlerBase.TenantAuth,
-		Authen extends LoginCommandHandlerBase.AuthenticationState,
+		Authen extends LoginCommandHandlerBase.AuthenticationResult,
+		Author extends LoginCommandHandlerBase.AuthorizationResult<Result>,
 		Result,
 		Req extends LoginCommandHandlerBase.Require>
 		extends CommandHandlerWithResult<Command, Result> {
@@ -39,6 +45,9 @@ public abstract class LoginCommandHandlerBase<
 	
 	@Inject
 	private LoginUserContextManager manager;
+	
+	@Inject
+	private TransactionService transaction;
 
 	@Override
 	protected Result handle(CommandHandlerContext<Command> context) {
@@ -66,14 +75,23 @@ public abstract class LoginCommandHandlerBase<
 		
 		Authen authen = authenticate(require, command);
 		
+		Author author;
 		if (authen.isSuccess()) {
 			authorize(require, authen);
 			initSession(require, authen);
-			return processSuccess(authen);
+			author = processSuccess(authen);
 		} else {
-			return processFailure(authen);
+			author = processFailure(authen);
 		}
 		/* ログインログ */
+		
+		
+		transaction.execute(() -> {
+			authen.getAtomTask().ifPresent(t -> t.run());
+			author.getAtomTask().ifPresent(t -> t.run());
+		});
+		
+		return author.getLoginResult();
 	}
 	
 	private void authorize(Req require, Authen authen) {
@@ -188,14 +206,14 @@ public abstract class LoginCommandHandlerBase<
 	 * @param state
 	 * @return
 	 */
-	protected abstract Result processSuccess(Authen state);
+	protected abstract Author processSuccess(Authen state);
 	
 	/**
 	 * 認証失敗時の処理
 	 * @param state
 	 * @return
 	 */
-	protected abstract Result processFailure(Authen state);
+	protected abstract Author processFailure(Authen state);
 	
 	public static interface TenantAuth {
 		
@@ -207,13 +225,22 @@ public abstract class LoginCommandHandlerBase<
 		
 	}
 	
-	public static interface AuthenticationState {
+	public static interface AuthenticationResult {
 		
 		boolean isSuccess();
 		
 		EmployeeImport getEmployee();
 		
 		User getUser();
+		
+		Optional<AtomTask> getAtomTask();
+	}
+	
+	public static interface AuthorizationResult<R> {
+
+		Optional<AtomTask> getAtomTask();
+		
+		R getLoginResult();
 	}
 	
 	protected abstract Req getRequire();
