@@ -47,13 +47,14 @@ module nts.uk.at.view.knr001.a {
                 //select a value from selectbox 機種
                 self.empInfoTerminalModel().modelEmpInfoTer.subscribe(function(modelEmpInfo){
                     self.empInfoTerminalModel().modelEmpInfoTer(modelEmpInfo);
-                            if(modelEmpInfo == 9){
-                                self.empInfoTerminalModel().enableOutingClass(true);
-                                self.empInfoTerminalModel().enableEntranExit(self.empInfoTerminalModel().checkedOutingClass()? false : true);
-                            }else{
+                            if(modelEmpInfo == 7 || modelEmpInfo == 8){
                                 self.empInfoTerminalModel().enableOutingClass(false);
                                 self.empInfoTerminalModel().checkedOutingClass(false);
                                 self.empInfoTerminalModel().enableEntranExit(true);
+                            }else{
+                                self.empInfoTerminalModel().enableOutingClass(true);
+                                self.empInfoTerminalModel().enableEntranExit(self.empInfoTerminalModel().checkedOutingClass()? false : true);
+                                
                             }
                 });
                 //select a value from selectbox 外出区分
