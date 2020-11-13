@@ -35,6 +35,7 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepos
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
+import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType_Update;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
@@ -163,14 +164,14 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 					outData.setWorkTypeCode(x.getWorkTypeCode() == null ? Optional.empty() : Optional.of(x.getWorkTypeCode().v()));
 					//申請休出時間合計を設定する
 					List<OverTimeInput> lstInput = x.getOverTimeInput().stream()
-							.filter(y -> y.getAttendanceType() == AttendanceType.BREAKTIME)
+							.filter(y -> y.getAttendanceType() == AttendanceType_Update.BREAKTIME)
 							.collect(Collectors.toList());
 					for (OverTimeInput inputData : lstInput) {
 						appBreakTimeTotal += inputData.getApplicationTime().v();
 					}
 					//申請残業時間合計を設定する
 					lstInput = x.getOverTimeInput().stream()
-							.filter(y -> y.getAttendanceType() == AttendanceType.NORMALOVERTIME)
+							.filter(y -> y.getAttendanceType() == AttendanceType_Update.NORMALOVERTIME)
 							.collect(Collectors.toList());
 					for (OverTimeInput inputData : lstInput) {
 						appOvertimeTimeTotal += inputData.getApplicationTime().v();

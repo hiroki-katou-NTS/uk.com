@@ -27,11 +27,11 @@ public class OverTimeInput{
 	/**
 	 * 勤怠種類
 	 */
-	private AttendanceType attendanceType;
+	private AttendanceType_Update attendanceType;
 	/**
 	 * 勤怠項目NO
 	 */
-	private int frameNo;
+	private Integer frameNo;
 	/**
 	 * 開始時間
 	 */
@@ -50,10 +50,21 @@ public class OverTimeInput{
 	 */
 	private TimeItemTypeAtr timeItemTypeAtr;
 	
-	public static OverTimeInput createSimpleFromJavaType(String companyID, String appID, int attendanceID, int frameNo, Integer startTime, Integer endTime, Integer applicationTime, int timeItemTypeAtr){
+	public OverTimeInput(String companyID, String appID, int attendanceID, Integer frameNo, Integer startTime, Integer endTime, Integer applicationTime, int timeItemTypeAtr) {
+		this.companyID = companyID;
+		this.appID = appID;
+		this.attendanceType = EnumAdaptor.valueOf(attendanceID, AttendanceType_Update.class);
+		this.frameNo = frameNo;
+		this.startTime = startTime == null? null : new OvertimeAppPrimitiveTime(startTime);
+		this.endTime = endTime == null ? null : new OvertimeAppPrimitiveTime(endTime);
+		this.applicationTime = applicationTime == null ? null : new OvertimeAppPrimitiveTime(applicationTime);
+		this.timeItemTypeAtr = EnumAdaptor.valueOf(timeItemTypeAtr, TimeItemTypeAtr.class);
+	}
+	
+	public static OverTimeInput createSimpleFromJavaType(String companyID, String appID, int attendanceID, Integer frameNo, Integer startTime, Integer endTime, Integer applicationTime, int timeItemTypeAtr){
 		return new OverTimeInput(companyID,
 				appID,
-				EnumAdaptor.valueOf(attendanceID, AttendanceType.class),
+				EnumAdaptor.valueOf(attendanceID, AttendanceType_Update.class),
 				frameNo,
 				startTime == null? null : new OvertimeAppPrimitiveTime(startTime),
 				endTime == null ? null : new OvertimeAppPrimitiveTime(endTime),

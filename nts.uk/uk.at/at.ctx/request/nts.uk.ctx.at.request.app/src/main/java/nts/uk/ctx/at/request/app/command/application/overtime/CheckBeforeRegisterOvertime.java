@@ -28,6 +28,7 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.ColorCo
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
+import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType_Update;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.service.IFactoryOvertime;
 import nts.uk.shr.com.context.AppContexts;
@@ -201,7 +202,7 @@ public class CheckBeforeRegisterOvertime {
 		// 社員ID
 		OvertimeCheckResultDto result = new OvertimeCheckResultDto(0, 0, 0, false, null);
 		// 事前申請超過チェック
-		Map<AttendanceType, List<OverTimeInput>> findMap = overTimeDomain.getOverTimeInput().stream()
+		Map<AttendanceType_Update, List<OverTimeInput>> findMap = overTimeDomain.getOverTimeInput().stream()
 				.collect(groupingBy(OverTimeInput::getAttendanceType));
 		// Only check for [残業時間]
 		// 時間①～フレ超過時間 まで 背景色をピンク
