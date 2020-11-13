@@ -68,7 +68,7 @@ public class TopPageSettingServiceTest {
 				result = Optional.empty();
 				
 				require.getRoleSetCode();
-				result = ROLE_SET_CODE;
+				result = Optional.of(ROLE_SET_CODE);
 				
 				require.getTopPageRoleSetting(COMPANY_ID, ROLE_SET_CODE);
 				result = topPageRoleSetting;
@@ -132,9 +132,39 @@ public class TopPageSettingServiceTest {
 				result = Optional.empty();
 				
 				require.getRoleSetCode();
-				result = ROLE_SET_CODE;
+				result = Optional.of(ROLE_SET_CODE);
 				
 				require.getTopPageRoleSetting(COMPANY_ID, ROLE_SET_CODE);
+				result = Optional.empty();
+			}
+		};
+
+		//Execute
+		val instance = new TopPageSettingService();
+		val testResult = NtsAssert.Invoke.privateMethod(
+				instance, 
+				"getTopPageSettings", 
+				require,
+				COMPANY_ID,
+				EMPLOYEE_ID);
+		@SuppressWarnings("unchecked")
+		val result = (Optional<TopPageSettings>) testResult;
+		//Assertion
+		assertThat(result).isEmpty();
+	}
+	
+	/**
+	 * Test get top page settings 4.
+	 * Test get topPageSettings if TopPagePersonSetting and RoleSetCode are null
+	 */
+	@Test
+	public void testGetTopPageSettings4() {
+		new Expectations() {
+			{
+				require.getTopPagePersonSetting(COMPANY_ID, EMPLOYEE_ID);
+				result = Optional.empty();
+				
+				require.getRoleSetCode();
 				result = Optional.empty();
 			}
 		};
