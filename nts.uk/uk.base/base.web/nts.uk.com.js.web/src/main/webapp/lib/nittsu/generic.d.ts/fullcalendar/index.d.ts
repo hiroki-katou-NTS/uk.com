@@ -1200,6 +1200,7 @@ module fc {
             collapseColor?: boolean;
         }): Dictionary;
         toJSON(): Record<string, any>;
+        el: HTMLElement;
     }
     function buildEventApis(eventStore: EventStore, context: CalendarContext, excludeInstance?: EventInstance): EventApi[];
 

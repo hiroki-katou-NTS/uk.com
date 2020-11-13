@@ -1,6 +1,7 @@
 /// <reference path="../../generic.d.ts/fullcalendar/index.d.ts" />
 
 module nts.uk.ui.koExtentions {
+    const C_COMP_NAME = 'fc-copy';
     const E_COMP_NAME = 'fc-editor';
     const COMPONENT_NAME = 'nts-fullcalendar';
     const DEFAULT_STYLES = `
@@ -158,76 +159,124 @@ module nts.uk.ui.koExtentions {
     }
 
     type D_EVENT = {
-        alt: boolean;
-        ctrl: boolean;
-        shift: boolean;
-        popup: boolean;
-        [key: string]: any;
+        alt: KnockoutObservable<boolean>;
+        ctrl: KnockoutObservable<boolean>;
+        shift: KnockoutObservable<boolean>;
+        popup: KnockoutObservable<boolean>;
+        mouse: KnockoutObservable<boolean>;
+        event: KnockoutObservable<null | fc.EventApi>;
+        [key: string]: KnockoutObservable<any>;
     };
     type J_EVENT = (evt: JQueryEventObject) => void;
     type G_EVENT = { [key: string]: J_EVENT[]; };
 
-    type PARAMS = {
-        shiftSelect: boolean | KnockoutObservable<boolean>;
+    type SLOT_DURATION = 5 | 10 | 15 | 30;
+    const durations: SLOT_DURATION[] = [5, 10, 15, 30];
+
+    enum DAY_OF_WEEK {
+        SUN = 0,
+        MON = 1,
+        TUE = 2,
+        WED = 3,
+        THU = 4,
+        FRI = 5,
+        SAT = 6
     }
+
+    type BUSINESSHOUR = {
+        daysOfWeek: DAY_OF_WEEK[];
+        startTime: number;
+        endTime: number;
+    };
+
+    type PARAMS = {
+        scrollTime: number;
+        slotDuration: SLOT_DURATION | KnockoutObservable<SLOT_DURATION>;
+        weekends: boolean | KnockoutObservable<boolean>;
+        firstDay: DAY_OF_WEEK | KnockoutObservable<DAY_OF_WEEK>;
+        businessHours: BUSINESSHOUR[] | KnockoutObservableArray<BUSINESSHOUR>;
+    };
+
+    const formatTime = (time: number) => {
+        const f = Math.floor;
+        const times = [f(time / 60), f(time % 60), 0]
+
+        return times
+            .map((m) => m.toString())
+            .map((m) => _.padStart(m, 2, '0'))
+            .join(':')
+    };
+
+    const defaultDEvent = (): D_EVENT => ({
+        alt: ko.observable(false),
+        ctrl: ko.observable(false),
+        shift: ko.observable(false),
+        popup: ko.observable(false),
+        mouse: ko.observable(false),
+        event: ko.observable(null)
+    });
 
     @component({
         name: COMPONENT_NAME,
         template: `<div class="fc"></div>
-        <div class="fc-popup-editor"></div>
+        <div data-bind="fc-copy"></div>
+        <div data-bind="fc-editor: $component.dataEvent.event"></div>
         <style>${DEFAULT_STYLES}</style>
         <style></style>`
     })
     export class FullCalendarComponent extends ko.ViewModel {
-        events: G_EVENT = {};
-        dataEvent: D_EVENT = {
-            alt: false,
-            ctrl: false,
-            shift: false,
-            popup: false
-        };
+        // stored all global events
+        public events: G_EVENT = {};
+        // stored glodal date events
+        public dataEvent: D_EVENT = defaultDEvent();
 
         constructor(private params: PARAMS) {
             super();
 
             if (!params) {
                 this.params = {
-                    shiftSelect: ko.observable(false)
+                    scrollTime: 360,
+                    firstDay: ko.observable(1),
+                    slotDuration: ko.observable(30),
+                    weekends: ko.observable(true),
+                    businessHours: ko.observableArray([])
                 };
             }
 
-            const { shiftSelect } = this.params;
+            const { weekends, firstDay, scrollTime, slotDuration, businessHours } = this.params;
 
-            if (shiftSelect === undefined) {
-                this.params.shiftSelect = ko.observable(false)
+            if (weekends === undefined) {
+                this.params.weekends = ko.observable(true);
+            }
+
+            if (firstDay === undefined) {
+                this.params.firstDay = ko.observable(1);
+            }
+
+            if (scrollTime === undefined) {
+                this.params.scrollTime = 360;
+            }
+
+            if (slotDuration === undefined) {
+                this.params.slotDuration = ko.observable(30);
+            }
+
+            if (businessHours === undefined) {
+                this.params.businessHours = ko.observableArray([]);
             }
         }
 
-        created() {
+        public created() {
             const vm = this;
         }
 
-        mounted() {
+        public mounted() {
             const vm = this;
             const { params, dataEvent } = vm;
 
             const $el = $(vm.$el);
             const $fc = $el.find('div.fc').get(0);
-            const $ed = $el.find('div.fc-popup-editor').get(0);
             const FC: FullCalendar = _.get(window, 'FullCalendar') || null;
-
-            const hideEditor = (target?: Element) => {
-                const $target = $(target);
-
-                if (!$target.is($ed) && !$(target).closest('.fc-popup-editor.show').length) {
-                    $ed.style.top = null;
-                    $ed.style.left = null;
-
-                    $ed.classList.remove('show');
-                }
-
-                dataEvent.popup = false;
-            };
 
             if (!FC || !FC.Calendar) {
                 const pre = document.createElement('pre');
@@ -253,38 +302,41 @@ module nts.uk.ui.koExtentions {
                 customButtons: {
                     copyDay: {
                         text: '1日分コピー',
-                        click: function () {
-                            alert('clicked the custom button!');
+                        click: (evt) => {
+                            const btn = evt.target as HTMLElement;
+                        }
+                    },
+                    settings: {
+                        text: '&nbsp;',
+                        click: (evt) => {
+
                         }
                     }
                 },
-                height: '700px',
                 locale: 'ja',
+                height: '700px',
                 headerToolbar: {
                     left: 'today prev,next',
                     center: 'title',
-                    right: 'copyDay'
+                    right: 'copyDay settings'
                 },
                 themeSystem: 'default',
                 initialView: 'timeGridWeek',
-                // navLinks: true, // can click day/week names to navigate views
+                scrollTime: formatTime(params.scrollTime),
                 editable: true,
-                selectable: false,
+                selectable: true,
                 selectMirror: true,
-                selectMinDistance: 15,
+                selectMinDistance: 4,
                 nowIndicator: true,
-                dayMaxEvents: true, // allow "more" link when too many events
-                scrollTime: '07:00:00',
                 dayHeaders: true,
                 allDaySlot: false,
-                // weekends: false,
+                slotEventOverlap: false,
+                initialDate: '2020-11-11',
                 // hiddenDays: [5, 6],
-                dayHeaderContent: (opts: any) => {
-                    return moment(opts.date).format('DD(ddd)');
-                },
-                slotDuration: '00:30:00',
-                slotLabelInterval: '01:00',
+                dayHeaderContent: (opts: any) => moment(opts.date).format('DD(ddd)'),
                 eventDidMount: (arg) => {
+                    arg.event.el = arg.el;
+
                     const { id, title, groupId } = arg.event;
 
                     // draw new event
@@ -298,35 +350,13 @@ module nts.uk.ui.koExtentions {
                     }
                 },
                 eventClick: (evt) => {
-                    if ($ed && evt.el) {
+                    if (evt.el) {
                         if (dataEvent.ctrl) {
                             return;
                         }
 
-                        const bounds = evt.el.getBoundingClientRect();
-
-                        if (bounds) {
-                            const { innerHeight } = window;
-                            const { top, left, right } = bounds;
-
-                            $ed.classList.add('show');
-
-                            if (left - 263 <= 0) {
-                                $ed.style.left = `${right + 3}px`;
-                            } else {
-                                $ed.style.left = `${left - 253}px`;
-                            }
-
-                            if (innerHeight - top - 280 > 0) {
-                                $ed.style.top = `${top}px`;
-                            } else {
-                                $ed.style.top = `${innerHeight - 280}px`;
-                            }
-
-                            ko.applyBindingsToNode($ed, { [E_COMP_NAME]: evt.event });
-
-                            dataEvent.popup = true;
-                        }
+                        dataEvent.popup(true);
+                        dataEvent.event(evt.event);
                     }
                 },
                 eventDragStart: (evt) => {
@@ -337,19 +367,20 @@ module nts.uk.ui.koExtentions {
                         evt.revert();
                     }
                 },
-                eventOverlap: (stillEvent) => stillEvent.allDay,
-                slotEventOverlap: false,
-                // eventBackgroundColor: '#ccc',
-                // eventBorderColor: '#ddd',
+                eventOverlap: false, // (stillEvent) => stillEvent.allDay,
+                select: (arg) => {
+                    calendar.unselect();
+                    calendar.addEvent(arg);
+                },
+                selectOverlap: false, // (evt) => evt.allDay,
+                selectAllow: (evt) => evt.start.getDate() === evt.end.getDate(),
                 slotLabelContent: (opts: any) => {
-                    const min = opts.time.milliseconds / 1000 / 60;
+                    const { milliseconds } = opts.time;
+                    const min = milliseconds / 1000 / 60;
                     const hour = Math.floor(min / 60);
                     const minite = Math.floor(min % 60);
 
-                    return `${hour}:${_.padStart(`${minite}`, 2, '0')}`;
-                },
-                dayCellDidMount: (evt: any) => {
-                    // console.log(evt);
+                    return !minite ? `${hour}:${_.padStart(`${minite}`, 2, '0')}` : _.padStart(`${minite}`, 2, '0');
                 },
                 datesSet: (dateInfo) => {
                     console.log(dateInfo);
@@ -367,51 +398,67 @@ module nts.uk.ui.koExtentions {
                         const evts = document.createElement('tr');
                         const times = document.createElement('tr');
 
-                        header.append(evts);
-                        header.append(times);
+                        // header.append(evts);
+                        // header.append(times);
 
                         ko.applyBindingsToNode(evts, { component: { name: 'fc-events', params: {} } });
                         ko.applyBindingsToNode(times, { component: { name: 'fc-times', params: {} } });
                     }
-                },
-                events: [],
-                businessHours: [{
-                    // days of week. an array of zero-based day of week integers (0=Sunday)
-                    daysOfWeek: [1, 2, 3, 4, 5], // Monday - Thursday
-                    startTime: '08:30', // a start time (10am in this example)
-                    endTime: '12:00', // an end time (6pm in this example)
-                }, {
-                    // days of week. an array of zero-based day of week integers (0=Sunday)
-                    daysOfWeek: [1, 2, 3, 4, 5], // Monday - Thursday
-                    startTime: '13:00', // a start time (10am in this example)
-                    endTime: '17:30', // an end time (6pm in this example)
-                }, {
-                    daysOfWeek: [0, 6],
-                    startTime: '00:00',
-                    endTime: '00:00'
-                }],
-                select: (arg) => {
-                    if (ko.unwrap(params.shiftSelect) ? dataEvent.shift : true) {
-                        calendar.unselect();
-                        calendar.addEvent(arg);
-                    }
-                },
-                selectOverlap: (evt) => evt.allDay,
-                selectAllow: (evt) => {
-                    return evt.start.getDate() === evt.end.getDate();
                 }
             });
 
             calendar.render();
 
+            _.extend(window, { calendar, params });
+
+            // set weekends
             ko.computed({
                 read: () => {
-                    calendar.setOption('selectable', !ko.unwrap(params.shiftSelect));
+                    const weekends = ko.unwrap(params.weekends);
+
+                    calendar.setOption('weekends', weekends);
                 },
                 disposeWhenNodeIsRemoved: vm.$el
             });
-            // calendar.setOption('slotDuration', '00:30:00');
 
+            // set firstDay
+            ko.computed({
+                read: () => {
+                    const firstDay = ko.unwrap(params.firstDay);
+
+                    calendar.setOption('firstDay', firstDay);
+                },
+                disposeWhenNodeIsRemoved: vm.$el
+            });
+
+            // set slotDuration
+            ko.computed({
+                read: () => {
+                    const slotdr = ko.unwrap(params.slotDuration);
+                    const time = !slotdr ? '00:15:00' : formatTime(slotdr);
+
+                    calendar.setOption('slotDuration', time);
+                    calendar.setOption('slotLabelInterval', time);
+                },
+                disposeWhenNodeIsRemoved: vm.$el
+            });
+
+            // set slotDuration
+            ko.computed({
+                read: () => {
+                    const businessHours: BUSINESSHOUR[] = ko.unwrap(params.businessHours) as any;
+
+                    calendar.setOption('businessHours', businessHours.map((m) => ({
+                        ...m,
+                        startTime: formatTime(m.startTime),
+                        endTime: formatTime(m.endTime)
+                    })));
+                },
+                disposeWhenNodeIsRemoved: vm.$el
+            });
+
+
+            // update height
             const fce = calendar.el.getBoundingClientRect();
 
             if (fce) {
@@ -421,60 +468,61 @@ module nts.uk.ui.koExtentions {
                 calendar.setOption('height', `${innerHeight - top - 10}px`);
             }
 
-            vm.registerEvent('resize', () => {
-                calendar.updateSize();
-            });
-
-            vm.registerEvent('mousedown', (evt: JQueryEventObject) => hideEditor(evt.target));
+            vm.registerEvent('mouseup', () => dataEvent.mouse(false));
+            vm.registerEvent('mousedown', () => dataEvent.mouse(true));
 
             vm.registerEvent('keydown', (evt: JQueryEventObject) => {
                 if (evt.keyCode === 16) {
-                    vm.dataEvent.shift = true;
-
-                    if (ko.unwrap(params.shiftSelect)) {
-                        calendar.setOption('selectable', true);
-                    }
-
-                    document.body.setAttribute('shift', 'true');
+                    dataEvent.shift(true);
                 } else if (evt.keyCode === 17) {
-                    vm.dataEvent.ctrl = true;
-
-                    document.body.setAttribute('ctrl', 'true');
+                    dataEvent.ctrl(true);
                 } else if (evt.keyCode === 18) {
-                    vm.dataEvent.alt = true;
-
-                    document.body.setAttribute('alt', 'true');
+                    dataEvent.alt(true);
                 }
             });
 
             vm.registerEvent('keyup', (evt: JQueryEventObject) => {
                 if (evt.keyCode === 16) {
-                    vm.dataEvent.shift = false;
-
-                    if (ko.unwrap(params.shiftSelect)) {
-                        calendar.setOption('selectable', false);
-                    }
-
-                    document.body.setAttribute('shift', 'false');
+                    dataEvent.shift(false);
                 } else if (evt.keyCode === 17) {
-                    vm.dataEvent.ctrl = false;
-
-                    document.body.setAttribute('ctrl', 'false');
+                    dataEvent.ctrl(false);
                 } else if (evt.keyCode === 18) {
-                    vm.dataEvent.alt = false;
-
-                    document.body.setAttribute('alt', 'false');
+                    dataEvent.alt(false);
                 }
             });
 
             $el.on('mousewheel', (evt) => {
-                if (vm.dataEvent.ctrl === true || vm.dataEvent.popup === true) {
+                if (dataEvent.ctrl() === true || dataEvent.popup() === true) {
                     evt.preventDefault();
+
+                    if (dataEvent.ctrl() === true) {
+                        const { deltaY } = evt.originalEvent as WheelEvent;
+                        const slotDuration = ko.unwrap(params.slotDuration);
+
+                        if (ko.isObservable(params.slotDuration)) {
+                            const index = durations.indexOf(slotDuration);
+
+                            if (deltaY < 0) {
+                                params.slotDuration(durations[Math.max(index - 1, 0)]);
+                            } else {
+                                params.slotDuration(durations[Math.min(index + 1, durations.length - 1)]);
+                            }
+                        }
+                    }
                 }
             });
         }
 
-        registerEvent(name: string, cb: (evt: JQueryEventObject) => void) {
+        public destroyed() {
+            const vm = this;
+            const { events } = vm;
+
+            _.each(events, (evts: J_EVENT[], k: string) => {
+                _.each(evts, (h: J_EVENT) => $(window).off(k, h))
+            });
+        }
+
+        private registerEvent(name: string, cb: (evt: JQueryEventObject) => void) {
             const vm = this;
             let hook = vm.events[name];
 
@@ -486,15 +534,6 @@ module nts.uk.ui.koExtentions {
 
             $(window).on(name, cb);
         }
-
-        destroyed() {
-            const vm = this;
-            const { events } = vm;
-
-            _.each(events, (evts: J_EVENT[], k: string) => {
-                _.each(evts, (h: J_EVENT) => $(window).off(k, h))
-            });
-        }
     }
 
 
@@ -505,13 +544,33 @@ module nts.uk.ui.koExtentions {
             virtual: false
         })
         export class FullCalendarEditorBindingHandler implements KnockoutBindingHandler {
-            init(element: HTMLElement, valueAccessor: () => fc.EventApi, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
-                const name = E_COMP_NAME;
-                const component = { name, params: valueAccessor() };
-
-                ko.applyBindingsToNode(element, { component }, bindingContext);
-
+            init(): { controlsDescendantBindings: boolean; } {
                 return { controlsDescendantBindings: true };
+            }
+            update(element: HTMLElement, valueAccessor: () => KnockoutObservable<null | fc.EventApi>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
+                const name = E_COMP_NAME;
+                const params = valueAccessor();
+                const event = ko.unwrap(params);
+                const component = { name, params };
+
+                ko.cleanNode(element);
+                element.innerHTML = '';
+
+                if (event) {
+                    ko.applyBindingsToNode(element, { component }, bindingContext);
+                } else {
+                    $.Deferred()
+                        .resolve(true)
+                        .then(() => {
+                            element
+                                .classList
+                                .remove('show');
+                        })
+                        .then(() => {
+                            element.style.top = null;
+                            element.style.left = null;
+                        });
+                }
             }
         }
 
@@ -536,39 +595,39 @@ module nts.uk.ui.koExtentions {
             </div>`
         })
         export class FullCalendarEditorComponent extends ko.ViewModel {
-            constructor(private data: fc.EventApi) {
+            constructor(private data: KnockoutObservable<null | fc.EventApi>) {
                 super();
             }
 
             mounted() {
                 const vm = this;
+                const data = ko.unwrap(vm.data);
+
+                console.log(data);
 
                 $(vm.$el).find('[data-bind]').removeAttr('data-bind');
             }
 
             edit() {
                 const vm = this;
-                const { data } = vm;
 
-                console.log(data);
-
-                vm.unbind();
+                vm.data(null);
             }
 
             remove() {
                 const vm = this;
-                const { data } = vm;
+                const data = ko.unwrap(vm.data);
 
                 if (data) {
                     data.remove();
                 }
 
-                vm.unbind();
+                vm.data(null);
             }
 
             close() {
                 const vm = this;
-                const { data } = vm;
+                const data = ko.unwrap(vm.data);
 
                 if (data) {
                     const { id, groupId, title } = data;
@@ -578,27 +637,54 @@ module nts.uk.ui.koExtentions {
                     }
                 }
 
-                vm.unbind();
+                vm.data(null);
             }
+        }
 
-            unbind() {
-                const vm = this;
-                const { $el } = vm;
 
-                if ($el) {
-                    ko.cleanNode($el);
+        @handler({
+            bindingName: C_COMP_NAME,
+            validatable: false,
+            virtual: false
+        })
+        export class FullCalendarCopyBindingHandler implements KnockoutBindingHandler {
+            init(element: HTMLElement, valueAccessor: () => fc.EventApi, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
+                const name = C_COMP_NAME;
+                const component = { name, params: valueAccessor() };
 
-                    $el.classList.remove('show');
+                ko.applyBindingsToNode(element, { component }, bindingContext);
 
-                    $el.style.top = null;
-                    $el.style.left = null;
+                element.classList.add('fc-popup-editor');
 
-                    $el.innerHTML = '';
-                }
+                return { controlsDescendantBindings: true };
             }
+        }
+
+        @component({
+            name: C_COMP_NAME,
+            template: `COPY`
+        })
+        export class FullCalendarCopyComponent extends ko.ViewModel {
         }
     }
 }
+
+
+/*[{
+    // days of week. an array of zero-based day of week integers (0=Sunday)
+    daysOfWeek: [1, 2, 3, 4, 5], // Monday - Thursday
+    startTime: '08:30:00', // a start time (10am in this example)
+    endTime: '12:00:00', // an end time (6pm in this example)
+}, {
+    // days of week. an array of zero-based day of week integers (0=Sunday)
+    daysOfWeek: [1, 2, 3, 4, 5], // Monday - Thursday
+    startTime: '13:00:00', // a start time (10am in this example)
+    endTime: '17:30:00', // an end time (6pm in this example)
+}, {
+    daysOfWeek: [0, 6],
+    startTime: '00:00:00',
+    endTime: '00:00:00'
+}]*/
 
 
 /*{
