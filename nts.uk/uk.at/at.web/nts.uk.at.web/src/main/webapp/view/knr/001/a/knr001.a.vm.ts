@@ -13,6 +13,8 @@ module nts.uk.at.view.knr001.a {
             empInfoTerminalModel: KnockoutObservable<EmpInfoTerminalModel>;
             selectedCode: KnockoutObservable<number>;
             empInfoTerminalList: KnockoutObservableArray<EmpInfoListDto>;
+            enableBtnRegist: KnockoutObservable<boolean>;
+            
             
             
             
@@ -24,6 +26,7 @@ module nts.uk.at.view.knr001.a {
                 self.empInfoTerminalModel = ko.observable(new EmpInfoTerminalModel);
                 self.empInfoTerminalList = ko.observableArray<EmpInfoListDto>([]);
                 self.selectedCode = ko.observable(null);
+                self.enableBtnRegist = ko.observable(true);
                 
                 //select an employment information terminal
                 self.selectedCode.subscribe(function(empInfoTerminalCode){
@@ -159,7 +162,7 @@ module nts.uk.at.view.knr001.a {
                 let command: any = {};
                 command.empInfoTerCode = self.empInfoTerminalModel().empInfoTerCode();
                 command.empInfoTerName = self.empInfoTerminalModel().empInfoTerName();
-                command.modelEmpInfoTer = self.empInfoTerminalModel().modelEmpInfoTer();
+                command.modelEmpInfoTer = self.empInfoTerminalModel().modelEmpInfoTer();               
                 command.macAddress = self.empInfoTerminalModel().macAddress();
                 
                 if(    !self.checkIpAddress(self.empInfoTerminalModel().ipAddress1())
@@ -344,7 +347,8 @@ module nts.uk.at.view.knr001.a {
                     return true;
                 }
 
-                if ($('.nts-input').ntsError('hasError')) {
+                if ($('.nts-input').ntsError('hasError')
+                    || $("#A3_6").ntsError("hasError")) {
                     return true;
                 }
 

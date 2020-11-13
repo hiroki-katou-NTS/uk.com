@@ -33,7 +33,7 @@
 					data-bind="click : createNewMode, enable: enableBtnNew">#{i18n.getText('KNR001_10')}</button>
 				<!-- A1_2 saveBtn-->
 				<button id="A1_2" class="proceed"
-					data-bind="click: registEmpInfoTerminal, enable: true">#{i18n.getText('KNR001_11')}</button>
+					data-bind="click: registEmpInfoTerminal, enable: $root.errors.isEmpty">#{i18n.getText('KNR001_11')}</button>
 				<!-- A1_3 deleteBtn-->
 				<button id="A1_3" class="danger"
 					data-bind="click: removeEmpInfoTerminal, enable: enableBtnDelete">#{i18n.getText('KNR001_12')}</button>
