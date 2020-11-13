@@ -88,12 +88,12 @@ public interface OptionalItemSetMemento {
 	 * 
 	 * @param note
 	 */
-	void setNote(Optional<String> note);
+	void setNote(Optional<NoteOptionalItem> note);
 	
 	/**
 	 * Set the description
 	 * 
 	 * @param description
 	 */
-	void setDescription(Optional<String> description);
+	void setDescription(Optional<DescritionOptionalItem> description);
 }

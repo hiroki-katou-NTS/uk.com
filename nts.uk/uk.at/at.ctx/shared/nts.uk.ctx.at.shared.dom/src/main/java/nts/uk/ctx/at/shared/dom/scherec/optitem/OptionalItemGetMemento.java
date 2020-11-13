@@ -86,11 +86,11 @@ public interface OptionalItemGetMemento {
 	 * Gets the not
 	 * @return the note
 	 */
-	Optional<String> getNote();
+	Optional<NoteOptionalItem> getNote();
 	
 	/**
 	 * Gets the description
 	 * @return the descroption
 	 */
-	Optional<String> getDescription();
+	Optional<DescritionOptionalItem> getDescription();
 }

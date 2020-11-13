@@ -11,7 +11,9 @@ import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.CalcResultRange;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.CalculationClassification;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.DescritionOptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.EmpConditionAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.NoteOptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemName;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemNo;
@@ -155,13 +157,13 @@ public class OptionalItemHeaderDto implements OptionalItemSetMemento {
     }
 
     @Override
-    public void setNote(Optional<String> note) {
+    public void setNote(Optional<NoteOptionalItem> note) {
         // TODO Auto-generated method stub
         
     }
 
     @Override
-    public void setDescription(Optional<String> description) {
+    public void setDescription(Optional<DescritionOptionalItem> description) {
         // TODO Auto-generated method stub
         
     }

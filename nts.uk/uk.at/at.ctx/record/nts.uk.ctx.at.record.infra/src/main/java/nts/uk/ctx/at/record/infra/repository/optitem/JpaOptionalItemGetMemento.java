@@ -12,7 +12,9 @@ import nts.uk.ctx.at.record.infra.entity.optitem.KrcmtAnyv;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.CalcResultRange;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.CalculationClassification;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.DescritionOptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.EmpConditionAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.NoteOptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemGetMemento;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemName;
@@ -160,13 +162,13 @@ public class JpaOptionalItemGetMemento implements OptionalItemGetMemento {
     }
 
     @Override
-    public Optional<String> getNote() {
+    public Optional<NoteOptionalItem> getNote() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public Optional<String> getDescription() {
+    public Optional<DescritionOptionalItem> getDescription() {
         // TODO Auto-generated method stub
         return null;
     }

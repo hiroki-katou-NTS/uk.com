@@ -14,7 +14,9 @@ import nts.uk.ctx.at.record.app.command.optitem.calculation.FormulaDto;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.CalcResultRange;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.CalculationClassification;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.DescritionOptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.EmpConditionAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.NoteOptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemGetMemento;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemName;
@@ -62,9 +64,9 @@ public class OptionalItemSaveCommand implements OptionalItemGetMemento {
 	
 	private int calAtr;
 	
-	private String note;
+	private NoteOptionalItem note;
 	
-	private String description;
+	private DescritionOptionalItem description;
 
 	/*
 	 * (non-Javadoc)
@@ -168,12 +170,12 @@ public class OptionalItemSaveCommand implements OptionalItemGetMemento {
     }
 
     @Override
-    public Optional<String> getNote() {
+    public Optional<NoteOptionalItem> getNote() {
         return Optional.ofNullable(this.note);
     }
 
     @Override
-    public Optional<String> getDescription() {
+    public Optional<DescritionOptionalItem> getDescription() {
         return Optional.ofNullable(this.description);
     }
 }

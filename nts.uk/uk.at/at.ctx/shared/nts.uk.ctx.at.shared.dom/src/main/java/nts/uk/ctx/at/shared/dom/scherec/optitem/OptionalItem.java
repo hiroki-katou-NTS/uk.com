@@ -75,11 +75,11 @@ public class OptionalItem extends AggregateRoot {
 	
 	/** The note */
 	// 任意項目のメモ
-	private Optional<String> note;
+	private Optional<NoteOptionalItem> note;
 	
 	/** The Description */
 	// 説明文
-	private Optional<String> description;
+	private Optional<DescritionOptionalItem> description;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.dom.DomainObject#validate()

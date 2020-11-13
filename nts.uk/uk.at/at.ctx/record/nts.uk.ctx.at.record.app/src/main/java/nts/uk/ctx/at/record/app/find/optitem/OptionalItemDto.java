@@ -13,7 +13,9 @@ import nts.uk.ctx.at.record.app.find.optitem.calculation.FormulaDto;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.CalcResultRange;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.CalculationClassification;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.DescritionOptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.EmpConditionAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.NoteOptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemName;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemNo;
@@ -60,10 +62,10 @@ public class OptionalItemDto implements OptionalItemSetMemento {
 	private int calAtr;
 	
 	/** The note */
-	private String note;
+	private NoteOptionalItem note;
 	
 	/** The description */
-	private String description;
+	private DescritionOptionalItem description;
 
 	/*
 	 * (non-Javadoc)
@@ -179,12 +181,12 @@ public class OptionalItemDto implements OptionalItemSetMemento {
     }
 
     @Override
-    public void setNote(Optional<String> note) {
+    public void setNote(Optional<NoteOptionalItem> note) {
         this.note = note.isPresent() ? note.get() : null;
     }
 
     @Override
-    public void setDescription(Optional<String> description) {
+    public void setDescription(Optional<DescritionOptionalItem> description) {
         this.description = description.isPresent() ? description.get() : null;
     }
 }
