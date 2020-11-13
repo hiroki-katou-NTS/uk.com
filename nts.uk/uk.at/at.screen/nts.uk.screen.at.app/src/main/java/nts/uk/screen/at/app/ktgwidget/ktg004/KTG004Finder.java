@@ -185,8 +185,8 @@ public class KTG004Finder {
 			if(nextMonth.isPresent()) {
 				return nextMonth.get();
 			}else {
-				DatePeriod datePeriod = ClosureService.getClosurePeriod(ClosureService.createRequireM1(closureRepo, closureEmploymentRepo), closureId, new YearMonth(currentMonth.getProcessingYm()));
-				return new CurrentClosingPeriod(currentMonth.getProcessingYm(), datePeriod.start(), datePeriod.end());
+				DatePeriod datePeriod = ClosureService.getClosurePeriod(ClosureService.createRequireM1(closureRepo, closureEmploymentRepo), closureId, new YearMonth(currentMonth.getProcessingYm()).addMonths(1));
+				return new CurrentClosingPeriod(YearMonth.of(currentMonth.getProcessingYm()).addMonths(1).v(), datePeriod.start(), datePeriod.end());
 			}
 		}
 	}
