@@ -75,113 +75,116 @@ public class SaveProcessExecutionCommandHandler extends CommandHandlerWithResult
 	 */
 	@Override
 	protected String handle(CommandHandlerContext<SaveProcessExecutionCommand> context) {
-//		// ログイン社員の社員ID
-//		String companyId = AppContexts.user().companyId();
-//
-//		SaveProcessExecutionCommand command = context.getCommand();
-//		// 選択している項目の更新処理自動実行項目コード
-//		String execItemCd = command.getExecItemCd();
-//
-//		List<ProcessExecutionScopeItem> workplaceIdList = command.getWorkplaceList()
-//				.stream()
-//				.map(workplaceId -> new ProcessExecutionScopeItem(companyId, command.getExecItemCd(), workplaceId))
-//				.collect(Collectors.toList());
-//
-//		ProcessExecutionScope execScope =
-//				new ProcessExecutionScope(EnumAdaptor.valueOf(command.getExecScopeCls(), ExecutionScopeClassification.class),
-//						command.getRefDate(),
-//						workplaceIdList);
-//
-//		AlarmExtraction alarmExtraction = new AlarmExtraction(command.isAlarmAtr(), new AlarmPatternCode(command.getAlarmCode()),
-//				command.getMailPrincipal(),
-//				command.getMailAdministrator(),
-//				null, //TODO-MINHNB
-//				null//TODO-MINHNB
-//				);
-//
-//		PersonalScheduleCreationPeriod period = new PersonalScheduleCreationPeriod(
-//										command.getCreationPeriod() == null ? null : new CreationPeriod(command.getCreationPeriod()),
-//										command.getTargetDate() == null ? null : new TargetDate(command.getTargetDate()),
-//										EnumAdaptor.valueOf(command.getTargetMonth(), TargetMonth.class),
-//										command.getDesignatedYear() == null ? null : EnumAdaptor.valueOf(command.getDesignatedYear(), CreateScheduleYear.class),
-//										command.getStartMonthDay() == null ? null : new MonthDay(command.getStartMonthDay()/100, command.getStartMonthDay()%100),
-//										command.getEndMonthDay() == null ? null : new MonthDay(command.getEndMonthDay()/100, command.getEndMonthDay()%100)
-//				);
-//
-//		PersonalScheduleCreationTarget target = new PersonalScheduleCreationTarget(
-//				EnumAdaptor.valueOf(command.getCreationTarget(), TargetClassification.class),
-//				new TargetSetting(command.isRecreateWorkType(), command.isCreateEmployee(), command.isRecreateTransfer()));
-//		PersonalScheduleCreation perSchCreation = new PersonalScheduleCreation(period, command.isPerScheduleCls(), target);
-//		DailyPerformanceCreation dailyPerfCreation =
-//								new DailyPerformanceCreation(command.isDailyPerfCls(),
-//										EnumAdaptor.valueOf(command.getDailyPerfItem(), DailyPerformanceItem.class)
-//										,new TargetGroupClassification( command.isRecreateWorkType(), command.isMidJoinEmployee(),command.isRecreateTransfer()));
-//
-//		ProcessExecutionSetting execSetting = ProcessExecutionSetting.builder()
-//				.alarmExtraction(alarmExtraction)
-//				.perScheduleCreation(perSchCreation)
-//				.dailyPerf(dailyPerfCreation)
-//				.reflectResultCls(command.isReflectResultCls())
-//				.monthlyAggCls(command.isMonthlyAggCls())
-//				.appRouteUpdateDaily(new AppRouteUpdateDaily(
-//								EnumAdaptor.valueOf(command.isAppRouteUpdateAtr()?1:0, NotUseAtr.class),
-//								command.getCreateNewEmp()==null?null:EnumAdaptor.valueOf((command.getCreateNewEmp().booleanValue()?1:0), NotUseAtr.class)
-//								))
-//				.appRouteUpdateMonthly(EnumAdaptor.valueOf(command.isAppRouteUpdateMonthly()?1:0, NotUseAtr.class))
-////				.externalOutput(externalOutput) //TODO-MINHNB
-////				.externalAcceptance(externalAcceptance) //TODO-MINHNB
-////				.saveData(saveData) //TODO-MINHNB
-////				.deleteData(deleteData) //TODO-MINHNB
-////				.aggregationOfArbitraryPeriod(aggregationOfArbitraryPeriod) //TODO-MINHNB
-////				.indexReconstruction(indexReconstruction)
-//				.build();
-//		UpdateProcessAutoExecution procExec = UpdateProcessAutoExecution.builder()
-//				.companyId(companyId)
-//				.exeItemCode(new ExecutionCode(execItemCd))
-//				.exeItemName(new ExecutionName(command.getExecItemName()))
-//				.execScope(execScope)
-//				.execSetting(execSetting)
-//				.executionType(EnumAdaptor.valueOf(command.getProcessExecType(), ProcessExecType.class))
-//				.cloudCreationFlag(command.getCloudCreationFlag())
-//				.build();
-//		procExec.validateVer2();
-//		if (command.isNewMode()) {
-//			// 新規モード(new mode)
-//			//新規登録処理
-//			Optional<UpdateProcessAutoExecution> procExecOpt = this.procExecRepo.getProcessExecutionByCidAndExecCd(companyId, execItemCd);
-//			if (procExecOpt.isPresent()) {
-//				throw new BusinessException("Msg_3");
-//			}
-//			// ドメインモデル「更新処理自動実行」に新規登録する
-//			this.procExecRepo.insert(procExec);
-//
-//			//ドメインモデル「更新処理自動実行管理」に新規登録する
-//			ProcessExecutionLogManage processExecutionLogManage = new ProcessExecutionLogManage(new ExecutionCode(command.getExecItemCd()),companyId,EndStatus.NOT_IMPLEMENT,CurrentExecutionStatus.WAITING);
-//			this.processExecLogManRepo.insert(processExecutionLogManage);
-//			this.lastDateTimeRepo.insert(new LastExecDateTime(companyId,
-//																new ExecutionCode(command.getExecItemCd()),
-//																null));
-//		} else {
-//			// 更新モード(update mode)
-//			// ドメインモデル「更新処理自動実行管理」を取得し、現在の実行状態を判断する
-//			ProcessExecutionLogManage processExecutionLogManage = this.processExecLogManRepo
-//																	  .getLogByCIdAndExecCd(companyId, execItemCd)
-//																	  .orElseThrow(() -> new BusinessException("Msg_3"));
-//			// 更新処理自動実行管理.現在の実行状態　＝　実行中
-//			if (processExecutionLogManage.getCurrentStatus() == CurrentExecutionStatus.RUNNING) {
-//				throw new BusinessException("Msg_1318");
-//			}
-//			// 更新処理自動実行管理.現在の実行状態　≠　実行中
-//			this.scopeItemRepo.removeAllByCidAndExecCd(procExec.getCompanyId(), procExec.getExecItemCode().v());
-//			// ドメインモデル「更新処理自動実行」に更新登録する
-//			this.procExecRepo.update(procExec);
-//			// Todo ドメインモデル「実行タスク設定」を更新する
-//
-//			this.scopeItemRepo.insert(procExec.getCompanyId(),
-//										procExec.getExecItemCode().v(),
-//										procExec.getExecScope().getWorkplaceIdList());
-//		}
-//		return procExec.getExecItemCode().v();
-		return "";
+		// ログイン社員の社員ID
+		String companyId = AppContexts.user().companyId();
+
+		SaveProcessExecutionCommand command = context.getCommand();
+		// 選択している項目の更新処理自動実行項目コード
+		String execItemCd = command.getExecItemCd();
+		
+		List<ProcessExecutionScopeItem> workplaceIdList = command.getWorkplaceList().stream()
+				.map(workplaceId -> ProcessExecutionScopeItem.createSimpleFromJavaType(
+																		companyId,
+																		command.getExecItemCd(),
+																		workplaceId)
+				).collect(Collectors.toList());
+		
+		ProcessExecutionScope execScope =
+				new ProcessExecutionScope(EnumAdaptor.valueOf(command.getExecScopeCls(), ExecutionScopeClassification.class),
+						command.getRefDate(),
+						workplaceIdList);
+		
+		AlarmExtraction alarmExtraction = new AlarmExtraction(command.isAlarmAtr(), new AlarmPatternCode(command.getAlarmCode()),
+				command.getMailPrincipal(),
+				command.getMailAdministrator(),
+				null, //TODO-MINHNB
+				null//TODO-MINHNB
+				);
+		
+		PersonalScheduleCreationPeriod period = new PersonalScheduleCreationPeriod(
+										command.getCreationPeriod() == null ? null : new CreationPeriod(command.getCreationPeriod()),
+										command.getTargetDate() == null ? null : new TargetDate(command.getTargetDate()),
+										EnumAdaptor.valueOf(command.getTargetMonth(), TargetMonth.class),
+										command.getDesignatedYear() == null ? null : EnumAdaptor.valueOf(command.getDesignatedYear(), CreateScheduleYear.class),
+										command.getStartMonthDay() == null ? null : new MonthDay(command.getStartMonthDay()/100, command.getStartMonthDay()%100),
+										command.getEndMonthDay() == null ? null : new MonthDay(command.getEndMonthDay()/100, command.getEndMonthDay()%100)
+				);
+		
+		PersonalScheduleCreationTarget target = new PersonalScheduleCreationTarget(
+				EnumAdaptor.valueOf(command.getCreationTarget(), TargetClassification.class),
+				new TargetSetting(command.isRecreateWorkType(), command.isCreateEmployee(), command.isRecreateTransfer()));
+		PersonalScheduleCreation perSchCreation = new PersonalScheduleCreation(period, command.isPerScheduleCls(), target);
+		DailyPerformanceCreation dailyPerfCreation =
+								new DailyPerformanceCreation(command.isDailyPerfCls(),
+										EnumAdaptor.valueOf(command.getDailyPerfItem(), DailyPerformanceItem.class)
+										,new TargetGroupClassification( command.isRecreateWorkType(), command.isMidJoinEmployee(),command.isRecreateTransfer()));
+
+		ProcessExecutionSetting execSetting = ProcessExecutionSetting.builder()
+				.alarmExtraction(alarmExtraction)
+				.perSchedule(perSchCreation)
+				.dailyPerf(dailyPerfCreation)
+				.reflectResultCls(command.isReflectResultCls())
+				.monthlyAggCls(command.isMonthlyAggCls())
+				.appRouteUpdateDaily(new AppRouteUpdateDaily(
+								EnumAdaptor.valueOf(command.isAppRouteUpdateAtr()?1:0, NotUseAtr.class),
+								command.getCreateNewEmp()==null?null:EnumAdaptor.valueOf((command.getCreateNewEmp().booleanValue()?1:0), NotUseAtr.class)
+								))
+				.appRouteUpdateMonthly(EnumAdaptor.valueOf(command.isAppRouteUpdateMonthly()?1:0, NotUseAtr.class))
+//				.externalOutput(externalOutput) //TODO-MINHNB
+//				.externalAcceptance(externalAcceptance) //TODO-MINHNB
+//				.saveData(saveData) //TODO-MINHNB
+//				.deleteData(deleteData) //TODO-MINHNB
+//				.aggregationOfArbitraryPeriod(aggregationOfArbitraryPeriod) //TODO-MINHNB
+//				.indexReconstruction(indexReconstruction)
+				.build();
+		ProcessExecution procExec = ProcessExecution.builder()
+				.companyId(companyId)
+				.execItemCd(new ExecutionCode(execItemCd))
+				.execItemName(new ExecutionName(command.getExecItemName()))
+				.execScope(execScope)
+				.execSetting(execSetting)
+				.processExecType(EnumAdaptor.valueOf(command.getProcessExecType(), ProcessExecType.class))
+				.cloudCreationFlag(command.getCloudCreationFlag())
+				.build();
+		procExec.validateVer2();
+		if (command.isNewMode()) {
+			// 新規モード(new mode)
+			//新規登録処理
+			Optional<ProcessExecution> procExecOpt = this.procExecRepo.getProcessExecutionByCidAndExecCd(companyId, execItemCd);
+			if (procExecOpt.isPresent()) {
+				throw new BusinessException("Msg_3");
+			}
+			// ドメインモデル「更新処理自動実行」に新規登録する
+			this.procExecRepo.insert(procExec);
+			
+			//ドメインモデル「更新処理自動実行管理」に新規登録する
+			ProcessExecutionLogManage processExecutionLogManage = new ProcessExecutionLogManage(new ExecutionCode(command.getExecItemCd()),companyId,EndStatus.NOT_IMPLEMENT,CurrentExecutionStatus.WAITING);
+			this.processExecLogManRepo.insert(processExecutionLogManage);
+			this.lastDateTimeRepo.insert(new LastExecDateTime(companyId,
+																new ExecutionCode(command.getExecItemCd()),
+																null));
+		} else {
+			// 更新モード(update mode)
+			// ドメインモデル「更新処理自動実行管理」を取得し、現在の実行状態を判断する
+			ProcessExecutionLogManage processExecutionLogManage = this.processExecLogManRepo
+																	  .getLogByCIdAndExecCd(companyId, execItemCd)
+																	  .orElseThrow(() -> new BusinessException("Msg_3"));
+			// 更新処理自動実行管理.現在の実行状態　＝　実行中
+			if (processExecutionLogManage.getCurrentStatus().isPresent()
+					&& processExecutionLogManage.getCurrentStatus().get().equals(CurrentExecutionStatus.RUNNING)) {
+				throw new BusinessException("Msg_1318");
+			}
+			// 更新処理自動実行管理.現在の実行状態　≠　実行中
+			this.scopeItemRepo.removeAllByCidAndExecCd(procExec.getCompanyId(), procExec.getExecItemCd().v());
+			// ドメインモデル「更新処理自動実行」に更新登録する
+			this.procExecRepo.update(procExec);
+			// Todo ドメインモデル「実行タスク設定」を更新する
+
+			this.scopeItemRepo.insert(procExec.getCompanyId(),
+										procExec.getExecItemCd().v(),
+										procExec.getExecScope().getWorkplaceIdList());
+		}
+		return procExec.getExecItemCd().v();
+//		return null;
 	}
 }

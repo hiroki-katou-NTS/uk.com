@@ -134,7 +134,7 @@ public class ExecutionTaskSettingDto {
 											domain.getContent().value,
 											domain.getStartDate(),
 											domain.getStartTime().v(),
-											domain.getScheduleId().orElse(null),
+											domain.getScheduleId(),
 											domain.getEndScheduleId().orElse(null),
 											domain.getDetailSetting().getWeekly().getWeekdaySetting().isMonday(),
 											domain.getDetailSetting().getWeekly().getWeekdaySetting().isTuesday(),

@@ -313,12 +313,8 @@ public class KfnmtExecutionTaskSetting extends UkJpaEntity implements Serializab
 				domain.getDetailSetting().getMonthly().getMonth().isOctober() ? 1 : 0,
 				domain.getDetailSetting().getMonthly().getMonth().isNovember() ? 1 : 0,
 				domain.getDetailSetting().getMonthly().getMonth().isDecember() ? 1 : 0,
-				(domain.getScheduleId() != null && domain.getScheduleId().isPresent())
-						? domain.getScheduleId().get()
-						: null,		
-				(domain.getEndScheduleId() != null && domain.getEndScheduleId().isPresent())
-						? domain.getEndScheduleId().get()
-						: null,		
+				domain.getScheduleId(),		
+				domain.getEndScheduleId().orElse(null),		
 				new ArrayList<>());
 	}
 }

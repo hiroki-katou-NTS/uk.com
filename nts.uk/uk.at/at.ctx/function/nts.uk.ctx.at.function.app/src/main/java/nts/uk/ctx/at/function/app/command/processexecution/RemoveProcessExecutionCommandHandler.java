@@ -48,7 +48,7 @@ public class RemoveProcessExecutionCommandHandler extends CommandHandler<RemoveP
 		Optional<ExecutionTaskSetting> executionTaskSettingOpt = execSetRepo.getByCidAndExecCd(companyId, command.getExecItemCd());
 		if(executionTaskSettingOpt.isPresent()){
 			ExecutionTaskSetting execTaskSetting = executionTaskSettingOpt.get();
-			String scheduleId = execTaskSetting.getScheduleId().orElse(null);
+			String scheduleId = execTaskSetting.getScheduleId();
 			this.scheduler.unscheduleOnCurrentCompany(SortingProcessScheduleJob.class,scheduleId);
 			Optional<String> endScheduleId = execTaskSetting.getEndScheduleId();
 			if(endScheduleId.isPresent()){

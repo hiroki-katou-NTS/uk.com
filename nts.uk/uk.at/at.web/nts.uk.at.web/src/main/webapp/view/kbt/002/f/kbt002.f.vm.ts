@@ -11,6 +11,7 @@ module nts.uk.at.view.kbt002.f {
 
   const DATETIME_FORMAT = 'YYYY/MM/DD HH:mm:ss';
   const DOM_DATA_VALUE = 'data-value';
+  const SELECTED_CLASS = "selected";
 
   @bean()
   export class KBT002FViewModel extends ko.ViewModel {
@@ -46,6 +47,12 @@ module nts.uk.at.view.kbt002.f {
       $(document).on("click", ".button-open-h", function () {
         const key = $(this).attr(DOM_DATA_VALUE);
         vm.openDialogH(key);
+      });
+      $(document).on("click", "div[class^='nts-grid-control-isTaskExecution']", function() {
+        const className = $(this).attr("class");
+        const regex = /.*-([0-9]+)/;
+        const key = regex.exec(className)[1];
+        vm.changeSetting(key, $(this));
       });
     }
 
@@ -218,8 +225,7 @@ module nts.uk.at.view.kbt002.f {
               ],
               optionsValue: 'value',
               optionsText: 'text',
-              controlType: 'SwitchButtons',
-              click: (rowId: any, key: any, event: any) => vm.changeSetting(key)
+              controlType: 'SwitchButtons'
             },
           ],
           virtualization: true,
@@ -233,8 +239,9 @@ module nts.uk.at.view.kbt002.f {
      */
     private executeUpdateProcess(execItemCd: string) {
       const vm = this;
-      const selectedItem: any = _.find(vm.dataSource, (item) => item.execItemCd === execItemCd);
-      if (selectedItem) {
+      const selectedItem: any = _.find(vm.dataSource(), (item) => item.execItemCd === execItemCd);
+      if (selectedItem && selectedItem.updateProcessAutoExecLog) {
+        vm.$blockui("grayout");
         const command: ExecuteProcessExecutionCommand = new ExecuteProcessExecutionCommand({
           companyId: selectedItem.updateProcessAutoExecLog.companyId,
           execItemCd: selectedItem.updateProcessAutoExecLog.execItemCd,
@@ -244,9 +251,10 @@ module nts.uk.at.view.kbt002.f {
         vm.$ajax(API.execute, command)
           .then(res => vm.repeatCheckAsyncResult(res.id))
           .fail((err) => {
-            vm.$dialog.alert({ messageId: err.messageId });
-            vm.getExecItemInfoList();
-          });
+            vm.$dialog.error({ messageId: err.messageId });
+            return vm.getExecItemInfoList();
+          })
+          .always(() => vm.$blockui("clear"));
       }
     }
 
@@ -256,6 +264,7 @@ module nts.uk.at.view.kbt002.f {
         .task(() => {
           return (nts.uk.request as any).asyncTask.getInfo(taskId)
             .then((info: any) => {
+              console.log(info);
               //ExecuteProcessExecCommandHandler
               const message101 = vm.getAsyncData(info.taskDatas, "message101").valueAsString;
               if (message101 === "Msg_1101" && vm.isOnceMessage101()) {
@@ -302,8 +311,9 @@ module nts.uk.at.view.kbt002.f {
      */
     private stopUpdateProcess(execItemCd: string) {
       const vm = this;
-      const selectedItem: any = _.find(vm.dataSource, (item) => item.execItemCd === execItemCd);
-      if (selectedItem) {
+      const selectedItem: any = _.find(vm.dataSource(), (item) => item.execItemCd === execItemCd);
+      if (selectedItem && selectedItem.updateProcessAutoExecLog) {
+        vm.$blockui("grayout");
         const command: TerminateProcessExecutionCommand = new TerminateProcessExecutionCommand({
           companyId: selectedItem.updateProcessAutoExecLog.companyId,
           execItemCd: selectedItem.updateProcessAutoExecLog.execItemCd,
@@ -314,9 +324,10 @@ module nts.uk.at.view.kbt002.f {
         vm.$ajax(API.terminate, command)
           .then(res => vm.repeatCheckAsyncResult(res.id))
           .fail((err) => {
-            vm.$dialog.alert({ messageId: err.messageId });
-            vm.getExecItemInfoList();
-          });
+            vm.$dialog.error({ messageId: err.messageId });
+            return vm.getExecItemInfoList();
+          })
+          .always(() => vm.$blockui("clear"));
       }
     }
 
@@ -363,19 +374,24 @@ module nts.uk.at.view.kbt002.f {
     /**
      * 実行タスクの設定変更する
      */
-    private changeSetting(execItemCd: string) {
+    private changeSetting(execItemCd: string, $item: JQuery) {
       const vm = this;
       vm.$dialog.confirm({ messageId: "Msg_1846" })
         .then((result: 'no' | 'yes' | 'cancel') => {
           if (result === 'yes') {
             // logic for yes case
-            const selectedItem: any = _.find(vm.dataSource, (item) => item.execItemCd === execItemCd);
+            const selectedItem: any = _.find(vm.dataSource(), { execItemCd: execItemCd });
             if (selectedItem) {
               const command: ChangeExecutionTaskSettingCommand = new ChangeExecutionTaskSettingCommand(selectedItem.executionTaskSetting);
               vm.$ajax(API.changeSetting, command)
                 .then(res => vm.getExecItemInfoList())
                 .fail((err) => vm.$dialog.alert({ messageId: err.messageId }));
-            }
+            } 
+          } else {
+            const onButton = $item.find(`.${SELECTED_CLASS}`);
+            const offButton = $item.find(`:not(.${SELECTED_CLASS})`);
+            onButton.removeClass(SELECTED_CLASS);
+            offButton.addClass(SELECTED_CLASS);
           }
         });
     }
@@ -410,7 +426,7 @@ module nts.uk.at.view.kbt002.f {
     showWarningIcon: number;
     execStatus: number;
     nextExecDate: string;
-    isTaskExecution: boolean;
+    isTaskExecution: string;
     lastStartDateTime: string;
     lastEndDateTime: string;
     processingTime: string;

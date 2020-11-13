@@ -9,137 +9,155 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-//import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 //import lombok.Setter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.detail.RepeatMonthDaysSelect;
+import nts.uk.ctx.at.function.dom.processexecution.tasksetting.enums.EndDateClassification;
+import nts.uk.ctx.at.function.dom.processexecution.tasksetting.enums.EndTimeClassification;
+import nts.uk.ctx.at.function.dom.processexecution.tasksetting.enums.OneDayRepeatClassification;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.enums.RepeatContentItem;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.primitivevalue.StartTime;
 
 /**
  * 実行タスク設定
  */
-@Getter
+@Data
+@EqualsAndHashCode(callSuper = false)
+@Builder
+@AllArgsConstructor
 public class ExecutionTaskSetting extends AggregateRoot {
 	final static String SPACE = " ";
 	final static String ZEZO_TIME = "00:00";
 	final static String DATE_TIME_FORMAT = "yyyy/MM/dd HH:mm";
-	
+
 	/* 会社ID */
 	private String companyId;
-	
+
 	/* コード */
 	private ExecutionCode execItemCd;
-	
+
 	/* 更新処理有効設定 */
 	private boolean enabledSetting;
-	
+
 	/* 1日の繰り返し間隔 */
 	private OneDayRepeatInterval oneDayRepInr;
-	
+
 	/* 次回実行日時 */
 	private Optional<GeneralDateTime> nextExecDateTime;
-	
+
 	/* 終了日 */
 	private TaskEndDate endDate;
-	
+
 	/* 終了時刻 */
 	private TaskEndTime endTime;
-	
+
 	/* 繰り返し内容 */
 	private RepeatContentItem content;
-	
+
 	/* 繰り返し詳細設定 */
 	private RepeatDetailSetting detailSetting;
-	
+
 	/* 開始日 */
 	private GeneralDate startDate;
-	
+
 	/* 開始時刻 */
 	private StartTime startTime;
-	
-	/* スケジュールID */
-	private Optional<String> scheduleId;
-	
-	/* 終了処理スケジュールID*/
-	private Optional<String> endScheduleId;
-	
 
+	/* スケジュールID */
+	private String scheduleId;
+
+	/* 終了処理スケジュールID */
+	private Optional<String> endScheduleId;
+
+	@Override
 	public void validate() {
-		if (startTime != null && endTime.getEndTime() != null) {
-			// 画面項目「C2_6：終了時刻入力欄」に開始時刻より前の時刻を入力し、登録することはできない。
-			if (endTime.getEndTime().lessThan(startTime.v())) {
-				throw new BusinessException("Msg_849");
-			}
-			
-			if (oneDayRepInr.getDetail() != null && oneDayRepInr.getDetail().isPresent()) {
-				// 画面項目「C2_18：繰り返し間隔入力欄」に開始時刻～終了時刻以上の時間を入力し、登録することはできない
-				
-				int oneDayRepInrLoop = 1;
-				switch (oneDayRepInr.getDetail().get().value) {
-				case 0:
-					oneDayRepInrLoop =1;
-					break;
-				case 1:
-					oneDayRepInrLoop =5;
-					break;
-				case 2:
-					oneDayRepInrLoop =10;
-					break;
-				case 3:
-					oneDayRepInrLoop =15;
-					break;
-				case 4:
-					oneDayRepInrLoop =30;
-					break;
-				case 5:
-					oneDayRepInrLoop =60;
-					break;	
-				default:
-					oneDayRepInrLoop = 1;
-					break;
-				}
-				
-				int totalMinuteEndTime	= endTime.getEndTime().hour()*60+ endTime.getEndTime().minute();
-				int totalMinuteStartTime = startTime.hour()*60+startTime.minute();
-				if (oneDayRepInrLoop > (totalMinuteEndTime  - totalMinuteStartTime)) {
-					throw new BusinessException("Msg_848");
-				}
-			}
-		}
-		
-		if (endDate.getEndDate() != null && startDate != null) {
-			// 画面項目「C2_23：終了日入力欄」に開始日より前の日付を入力し、登録することはできない。
-			if (endDate.getEndDate().before(startDate) || endDate.getEndDate().compareTo(startDate)==0 ) {
-				throw new BusinessException("Msg_662");
-			}
-		}
-		
-		// 画面項目「C2_12：繰り返し内容リスト」が毎週のときC4_6~C4_12のチェックボックスのいずれかがTRUE状態でなければならない。
-		if (content != null) {
-			if (content.value == 1 && !this.isCheckedAtLeastOneWeekDay()) {
+		// 「実行タスク設定．繰り返し内容 = 曜日指定」の場合、
+		// 「実行タスク設定．繰り返し詳細設定．繰り返し詳細設定(毎週)．曜日」のいずれかが「する」でなければならない。
+		// #Msg_842
+		if (this.getContent().equals(RepeatContentItem.SPECIFIED_WEEK_DAYS)) {
+			if (!this.getDetailSetting().getWeekly().getWeekdaySetting().isCheckedAtLeastOne()) {
 				throw new BusinessException("Msg_842");
 			}
-			// 画面項目「C2_12：画面項目内容リスト」が毎月のときC6_3~C6_14のチェックボックスのいずれかがTRUE状態でなければならない。
-			else if (content.value == 2 && !this.isCheckedAtLeastOneMonthDay()) {
+		}
+		// 「実行タスク設定．繰り返し内容 = 月日指定」の場合、
+		// 「実行タスク設定．繰り返し詳細設定．繰り返し詳細設定(毎月)．月」のいずれかが「する」でなければならない。
+		// #Msg_843
+		if (this.getContent().equals(RepeatContentItem.SPECIFIED_IN_MONTH)) {
+			if (!this.getDetailSetting().getMonthly().getMonth().isCheckedAtLeastOne()) {
 				throw new BusinessException("Msg_843");
 			}
 		}
+		// 「実行タスク設定．1日の繰り返し間隔．指定区分 = あり」 かつ「実行タスク設定．終了時刻設定．指定区分 = あり」の場合、
+		// 「実行タスク設定．1日の繰り返し間隔．繰り返し間隔」 >=
+		// 「実行タスク設定．開始時刻～実行タスク設定．終了時刻設定．終了時刻」の時間を登録することはできない。
+		// #Msg_848
+		if (this.getOneDayRepInr().getOneDayRepCls().equals(OneDayRepeatClassification.YES)
+				&& this.getEndTime().getEndTimeCls().equals(EndTimeClassification.YES)) {
+			int distance = this.getEndTime().getEndTime().valueAsMinutes() - this.getStartTime().valueAsMinutes();
+			if (this.getOneDayRepInr().getDetail().isPresent()
+					&& this.getOneDayRepInr().getDetail().get().getMinuteValue() >= distance) {
+				throw new BusinessException("Msg_848");
+			}
+		}
+		// 「実行タスク設定．繰り返し内容 = 月日指定」の場合、
+		// 「実行タスク設定．繰り返し詳細設定．繰り返し詳細設定(毎月)．日」<>emptyでなければならない
+		// #Msg_846
+		if (this.getContent().equals(RepeatContentItem.SPECIFIED_IN_MONTH)) {
+			if (this.getDetailSetting().getMonthly().getDays().isEmpty()) {
+				throw new BusinessException("Msg_846");
+			}
+		}
+		// 「実行タスク設定．繰り返し内容 = 月日指定」の場合、
+		// 「実行タスク設定．繰り返し詳細設定．繰り返し詳細設定(毎月)．月 + 日」が「実行タスク設定．開始日 ～
+		// 実行タスク設定．終了日．終了日」の範囲内でなければならない。
+		// #Msg_1266
+		if (this.getContent().equals(RepeatContentItem.SPECIFIED_IN_MONTH)) {
+			List<Integer> days = this.getDetailSetting().getMonthly().getDays().stream().map(item -> item.value)
+					.collect(Collectors.toList());
+			List<Integer> months = this.getDetailSetting().getMonthly().getMonth().getMonthsAfterEqualsStartMonth(1);
+			DatePeriod range = new DatePeriod(this.getStartDate(), this.getEndDate().getEndDate());
+			int currentYear = GeneralDateTime.now().year();
+			boolean isValid = true;
+			for (int day : days) {
+				for (int month : months) {
+					GeneralDate dateToCompare = GeneralDate.ymd(currentYear, month, day);
+					if (!range.contains(dateToCompare)) {
+						isValid = false;
+						break;
+					}
+				}
+				if (!isValid) {
+					throw new BusinessException("Msg_1266");
+				}
+			}
+		}
+		// 「実行タスク設定．終了時刻設定．指定区分 = あり」の場合、
+		// 「実行タスク設定．開始時刻」 > 「実行タスク設定．終了時刻設定．終了時刻」を登録することはできない。
+		// #Msg_849
+		if (this.getEndTime().getEndTimeCls().equals(EndTimeClassification.YES)) {
+			if (this.getStartTime().greaterThan(this.getEndTime().getEndTime())) {
+				throw new BusinessException("Msg_849");
+			}
+		}
+		// 「実行タスク設定．終了日．終了日区分 = 日付指定」の場合、
+		// 「実行タスク設定．開始日 >= 実行タスク設定．終了日．終了日」を登録することはできない。
+		// #Msg_662
+		if (this.getEndDate().getEndDateCls().equals(EndDateClassification.DATE)) {
+			if (this.getStartDate().after(this.getEndDate().getEndDate())) {
+				throw new BusinessException("Msg_662");
+			}
+		}
 	}
-	
-	private boolean isCheckedAtLeastOneWeekDay() {
-		return detailSetting.getWeekly().getWeekdaySetting().isCheckedAtLeastOne();
-	}
-	
-	private boolean isCheckedAtLeastOneMonthDay() {
-		return detailSetting.getMonthly().getMonth().isCheckedAtLeastOne();
-	}
-	
+
 	/**
 	 * 次回実行日時の求め
 	 */
@@ -148,95 +166,101 @@ public class ExecutionTaskSetting extends AggregateRoot {
 		if (!this.isEnabledSetting()) {
 			this.nextExecDateTime = null;
 		}
-		
+
 		/*
-		 * ◆◆事後条件
-		 * ・設定された次回実行日時が終了日を過ぎていたら次回実行日時　＝　NULL　とする
+		 * ◆◆事後条件 ・設定された次回実行日時が終了日を過ぎていたら次回実行日時 ＝ NULL とする
 		 */
-		if (this.nextExecDateTime != null && this.nextExecDateTime.isPresent() && this.nextExecDateTime.get().before(now)) {
+		if (this.nextExecDateTime != null && this.nextExecDateTime.isPresent()
+				&& this.nextExecDateTime.get().before(now)) {
 			this.nextExecDateTime = null;
 		}
 	}
-	
+
 	private GeneralDateTime buildGeneralDateTime(GeneralDate date) {
 		return GeneralDateTime.fromString(date.toString() + SPACE + ZEZO_TIME, DATE_TIME_FORMAT)
 				.addMinutes(this.startTime.valueAsMinutes());
 	}
-	
+
 	/**
 	 * 毎日のパターン
+	 * 
 	 * @param startDate
 	 * @param today
 	 * @param now
 	 * @return 次回実行日時
 	 */
-	private GeneralDateTime getNextExecDateTimeByDay( GeneralDate today, GeneralDateTime now) {
+	private GeneralDateTime getNextExecDateTimeByDay(GeneralDate today, GeneralDateTime now) {
 		/*
-		//GeneralDateTime tempDateTime = this.buildGeneralDateTime(this.startDate);
-		GeneralDateTime tempDateTime =  GeneralDateTime.legacyDateTime(this.startDate.date());
-		if (nextExecDateTime.before(now)) {
-			/*tempDateTime = this.buildGeneralDateTime(today);
-			if (tempDateTime.before(now)) {
-				tempDateTime = tempDateTime.addDays(1);
+		 * //GeneralDateTime tempDateTime = this.buildGeneralDateTime(this.startDate);
+		 * GeneralDateTime tempDateTime =
+		 * GeneralDateTime.legacyDateTime(this.startDate.date()); if
+		 * (nextExecDateTime.before(now)) { /*tempDateTime =
+		 * this.buildGeneralDateTime(today); if (tempDateTime.before(now)) {
+		 * tempDateTime = tempDateTime.addDays(1); }
+		 * 
+		 * tempDateTime = GeneralDateTime.ymdhms(nextExecDateTime.year(),
+		 * nextExecDateTime.month(), nextExecDateTime.day()+1, 0, 0,
+		 * 0).addMinutes(this.startTime.minute()); };
+		 */
+		GeneralDateTime startDateTime = GeneralDateTime.legacyDateTime(this.startDate.date());
+		GeneralDateTime tempDateTime = GeneralDateTime.ymdhms(this.startDate.year(), this.startDate.month(),
+				this.startDate.day(), this.startTime.hour(), this.startTime.minute(), 0);
+		if (startDateTime.before(now)) {
+			if (this.startTime.hour() * 60 + this.startTime.minute() < now.hours() * 60 + now.minutes()) {
+				tempDateTime = GeneralDateTime.ymdhms(now.year(), now.month(), now.day() + 1, this.startTime.hour(),
+						this.startTime.minute(), 0);
+			} else {
+				tempDateTime = GeneralDateTime.ymdhms(now.year(), now.month(), now.day(), this.startTime.hour(),
+						this.startTime.minute(), 0);
 			}
-			
-			tempDateTime = GeneralDateTime.ymdhms(nextExecDateTime.year(), nextExecDateTime.month(), nextExecDateTime.day()+1, 0, 0, 0).addMinutes(this.startTime.minute());
-		};
-		*/
-		GeneralDateTime startDateTime =  GeneralDateTime.legacyDateTime(this.startDate.date());
-		GeneralDateTime tempDateTime = GeneralDateTime.ymdhms(this.startDate.year(),this.startDate.month(),this.startDate.day(),this.startTime.hour(),this.startTime.minute(),0);
-		if(startDateTime.before(now)){
-			if(this.startTime.hour()*60+this.startTime.minute()< now.hours()*60+now.minutes()){
-				tempDateTime = GeneralDateTime.ymdhms(now.year(),now.month(),now.day()+1,this.startTime.hour(),this.startTime.minute(),0);
-			}else{
-				tempDateTime = GeneralDateTime.ymdhms(now.year(),now.month(),now.day(),this.startTime.hour(),this.startTime.minute(),0);
-			}
-			
+
 		}
-		
+
 		return tempDateTime;
 	}
-	
+
 	/**
 	 * 毎週のパターン
+	 * 
 	 * @param startDate
 	 * @param now
 	 * @return 次回実行日時
 	 */
 	private GeneralDateTime getNextExecDateTimeByWeek(GeneralDate startDate, GeneralDateTime now) {
 		// get first day of week (sunday)
-		LocalDate sunday = startDate.localDate()
-	            						.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY));
-	    
+		LocalDate sunday = startDate.localDate().with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY));
+
 		// get 7 weekdays from the sunday to saturday
-	    List<LocalDate> allWeekDays = IntStream.range(0, 7).mapToObj(sunday::plusDays).collect(Collectors.toList());
-	    
-	    // get picked weekdays from setting screen
-	    List<DayOfWeek> pickedWeekDays = this.detailSetting.getWeekly().getWeekdaySetting().setWeekDaysList();
-	    GeneralDateTime startDateTime = this.buildGeneralDateTime(this.startDate);
-	    
+		List<LocalDate> allWeekDays = IntStream.range(0, 7).mapToObj(sunday::plusDays).collect(Collectors.toList());
+
+		// get picked weekdays from setting screen
+		List<DayOfWeek> pickedWeekDays = this.detailSetting.getWeekly().getWeekdaySetting().setWeekDaysList();
+		GeneralDateTime startDateTime = this.buildGeneralDateTime(this.startDate);
+
 		GeneralDateTime tempDateTime = null;
 		for (LocalDate date : allWeekDays) {
 			// if current date is the weekday checked from screen
 			if (pickedWeekDays.contains(date.getDayOfWeek())) {
 				tempDateTime = this.buildGeneralDateTime(GeneralDate.localDate(date));
-				// if the date time is after both start date time and now then break loop and assign to the next date time
+				// if the date time is after both start date time and now then break loop and
+				// assign to the next date time
 				if (tempDateTime.after(now) && tempDateTime.afterOrEquals(startDateTime)) {
 					break;
 				}
 			}
 		}
-		// If next exec date time is still before now, then try to find after add interval week
+		// If next exec date time is still before now, then try to find after add
+		// interval week
 		if (tempDateTime.before(now)) {
-			GeneralDate nextStartDate = GeneralDate.localDate(
-					startDate.localDate().plusWeeks(1));
+			GeneralDate nextStartDate = GeneralDate.localDate(startDate.localDate().plusWeeks(1));
 			tempDateTime = getNextExecDateTimeByWeek(nextStartDate, now);
 		}
 		return tempDateTime;
 	}
-	
+
 	/**
 	 * 毎月のパターン
+	 * 
 	 * @param startDate
 	 * @param now
 	 * @return 次回実行日時
@@ -244,20 +268,23 @@ public class ExecutionTaskSetting extends AggregateRoot {
 	private GeneralDateTime getNextExecDateTimeByMonth(GeneralDate startDate, GeneralDateTime now) {
 		GeneralDateTime tempDateTime = null;
 		GeneralDateTime startDateTime = this.buildGeneralDateTime(this.startDate);
-		List<Integer> pickedMonths = this.detailSetting.getMonthly().getMonth().getMonthsAfterEqualsStartMonth(startDate.month());
+		List<Integer> pickedMonths = this.detailSetting.getMonthly().getMonth()
+				.getMonthsAfterEqualsStartMonth(startDate.month());
 		List<RepeatMonthDaysSelect> pickedDates = this.detailSetting.getMonthly().getDays();
 		for (Integer month : pickedMonths) {
 			// init date by first day of current month
 			tempDateTime = this.buildGeneralDateTime(GeneralDate.ymd(startDate.year(), month, 1));
 			for (RepeatMonthDaysSelect day : pickedDates) {
 				try {
-					if (day.value == RepeatMonthDaysSelect.DAY_32.value) {
-						tempDateTime = this.buildGeneralDateTime(GeneralDate.ymd(startDate.year(), month, tempDateTime.toLocalDate().lengthOfMonth()));
+					if (day.value == RepeatMonthDaysSelect.LAST_DAY.value) {
+						tempDateTime = this.buildGeneralDateTime(
+								GeneralDate.ymd(startDate.year(), month, tempDateTime.toLocalDate().lengthOfMonth()));
 					} else {
 						tempDateTime = this.buildGeneralDateTime(GeneralDate.ymd(startDate.year(), month, day.value));
 					}
 				} catch (DateTimeException dte) {
-					tempDateTime = this.buildGeneralDateTime(GeneralDate.ymd(startDate.year(), month, tempDateTime.toLocalDate().lengthOfMonth()));
+					tempDateTime = this.buildGeneralDateTime(
+							GeneralDate.ymd(startDate.year(), month, tempDateTime.toLocalDate().lengthOfMonth()));
 				}
 				if (tempDateTime.after(now) && tempDateTime.afterOrEquals(startDateTime)) {
 					return tempDateTime;
@@ -268,9 +295,9 @@ public class ExecutionTaskSetting extends AggregateRoot {
 	}
 
 	public ExecutionTaskSetting(OneDayRepeatInterval oneDayRepInr, ExecutionCode execItemCd, String companyId,
-			boolean enabledSetting, GeneralDateTime nextExecDateTime, TaskEndDate endDate,
-			TaskEndTime endTime, RepeatContentItem content, RepeatDetailSetting detailSetting,
-			GeneralDate startDate, StartTime startTime, String scheduleId, String endScheduleId) {
+			boolean enabledSetting, GeneralDateTime nextExecDateTime, TaskEndDate endDate, TaskEndTime endTime,
+			RepeatContentItem content, RepeatDetailSetting detailSetting, GeneralDate startDate, StartTime startTime,
+			String scheduleId, String endScheduleId) {
 		super();
 		this.oneDayRepInr = oneDayRepInr;
 		this.execItemCd = execItemCd;
@@ -283,13 +310,13 @@ public class ExecutionTaskSetting extends AggregateRoot {
 		this.detailSetting = detailSetting;
 		this.startDate = startDate;
 		this.startTime = startTime;
-		this.scheduleId = Optional.ofNullable(scheduleId);
+		this.scheduleId = scheduleId;
 		this.endScheduleId = Optional.ofNullable(endScheduleId);
 	}
+
 	public ExecutionTaskSetting(OneDayRepeatInterval oneDayRepInr, ExecutionCode execItemCd, String companyId,
-			boolean enabledSetting, GeneralDateTime nextExecDateTime, TaskEndDate endDate,
-			TaskEndTime endTime, RepeatContentItem content, RepeatDetailSetting detailSetting,
-			GeneralDate startDate, StartTime startTime) {
+			boolean enabledSetting, GeneralDateTime nextExecDateTime, TaskEndDate endDate, TaskEndTime endTime,
+			RepeatContentItem content, RepeatDetailSetting detailSetting, GeneralDate startDate, StartTime startTime) {
 		super();
 		this.oneDayRepInr = oneDayRepInr;
 		this.execItemCd = execItemCd;
@@ -303,61 +330,4 @@ public class ExecutionTaskSetting extends AggregateRoot {
 		this.startDate = startDate;
 		this.startTime = startTime;
 	}
-
-	public void setOneDayRepInr(OneDayRepeatInterval oneDayRepInr) {
-		this.oneDayRepInr = oneDayRepInr;
-	}
-
-	public void setExecItemCd(ExecutionCode execItemCd) {
-		this.execItemCd = execItemCd;
-	}
-
-	public void setCompanyId(String companyId) {
-		this.companyId = companyId;
-	}
-
-	public void setEnabledSetting(boolean enabledSetting) {
-		this.enabledSetting = enabledSetting;
-	}
-
-	public void setNextExecDateTime(GeneralDateTime nextExecDateTime) {
-		this.nextExecDateTime = Optional.ofNullable(nextExecDateTime) ;
-	}
-	public void setNextExecDateTime(Optional<GeneralDateTime> nextExecDateTime) {
-		this.nextExecDateTime = nextExecDateTime ;
-	}
-
-	public void setEndDate(TaskEndDate endDate) {
-		this.endDate = endDate;
-	}
-
-	public void setEndTime(TaskEndTime endTime) {
-		this.endTime = endTime;
-	}
-
-
-	public void setContent(RepeatContentItem content) {
-		this.content = content;
-	}
-
-	public void setDetailSetting(RepeatDetailSetting detailSetting) {
-		this.detailSetting = detailSetting;
-	}
-
-	public void setStartDate(GeneralDate startDate) {
-		this.startDate = startDate;
-	}
-
-	public void setStartTime(StartTime startTime) {
-		this.startTime = startTime;
-	}
-
-	public void setScheduleId(String scheduleId) {
-		this.scheduleId = Optional.ofNullable(scheduleId);
-	}
-
-	public void setEndScheduleId(String endScheduleId) {
-		this.endScheduleId = Optional.ofNullable(endScheduleId);
-	}
-	
 }

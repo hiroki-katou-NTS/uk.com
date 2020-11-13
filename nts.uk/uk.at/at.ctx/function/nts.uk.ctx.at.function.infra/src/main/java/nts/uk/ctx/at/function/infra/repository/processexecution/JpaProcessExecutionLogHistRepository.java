@@ -8,6 +8,7 @@ import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecution
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogHistRepository;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtExecutionTaskLog;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutionLogHistory;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 
 import javax.ejb.Stateless;
@@ -29,12 +30,14 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository implemen
 	private static final String SELECT_All_BY_CID_EXECCD_DATE = SELECT_ALL
 			+ "WHERE pelh.kfnmtProcExecLogHstPK.companyId = :companyId "
 			+ "AND pelh.kfnmtProcExecLogHstPK.execItemCd = :execItemCd "
-			+ "AND pelh.lastExecDateTime >= :lastExecDateTime AND pelh.lastExecDateTime< :nextExecDateTime";
+			+ "AND pelh.lastExecDateTime >= :lastExecDateTime AND pelh.lastExecDateTime< :nextExecDateTime "
+			+ "ORDER BY pelh.lastExecDateTime DESC";
 
 	private static final String SELECT_All_BY_CID_EXECCD_DATE_RANGE = SELECT_ALL
 			+ "WHERE pelh.kfnmtProcExecLogHstPK.companyId = :companyId "
 			+ "AND pelh.kfnmtProcExecLogHstPK.execItemCd = :execItemCd "
-			+ "AND pelh.lastExecDateTime >= :startDate AND pelh.lastExecDateTime < :endDate";
+			+ "AND pelh.lastExecDateTime >= :startDate AND pelh.lastExecDateTime < :endDate "
+			+ "ORDER BY pelh.lastExecDateTime DESC";
 
 	private static final String SELECT_All_BY_CID_EXECCD = SELECT_ALL
 			+ "WHERE pelh.kfnmtProcExecLogHstPK.companyId = :companyId "
@@ -42,17 +45,20 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository implemen
 
 	private static final String SELECT_ALL_BY_CID_START_DATE_END_DATE = SELECT_ALL
 			+ "WHERE pelh.kfnmtProcExecLogHstPK.companyId = :companyId "
-			+ "AND CAST(pelh.lastExecDateTime as DATE) >= :startDate AND CAST(pelh.lastExecDateTime as DATE) < :endDate";
+			+ "AND pelh.lastExecDateTime >= :startDate AND pelh.lastExecDateTime < :endDate "
+			+ "ORDER BY pelh.lastExecDateTime DESC";
 
 	private static final String SELECT_ALL_BY_CID_AND_EXECCD = SELECT_ALL
 			+ "WHERE pelh.kfnmtProcExecLogHstPK.companyId = :companyId "
-			+ "AND pelh.kfnmtProcExecLogHstPK.execItemCd = :execItemCd";
+			+ "AND pelh.kfnmtProcExecLogHstPK.execItemCd = :execItemCd "
+			+ "ORDER BY pelh.lastExecDateTime DESC";
 	private static final String SELECT_BY_EXEC_ID = SELECT_ALL
 			+ "WHERE pelh.kfnmtProcExecLogHstPK.execId = :execId";
 
 	private static KfnmtProcessExecutionLogHistory toEntity(ProcessExecutionLogHistory domain) {
 		KfnmtProcessExecutionLogHistory entity = new KfnmtProcessExecutionLogHistory();
 		domain.setMemento(entity);
+		entity.contractCode = AppContexts.user().contractCode();
 		return entity;
 	}
 
@@ -146,6 +152,7 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository implemen
 					ps.executeUpdate();
 				}
 			}
+			
 		}catch (Exception e) {
 			throw new RuntimeException(e);
 		}

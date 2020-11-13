@@ -89,15 +89,15 @@ public class ProcessExecutionLogHistoryCommand implements ProcessExecutionLogHis
 
     @Override
     public List<ExecutionTaskLog> getTaskLogList() {
-        //TODO
         return taskLogList.stream()
                 .map(item -> ExecutionTaskLog.builder()
                         .procExecTask(EnumAdaptor.valueOf(item.getTaskId(), ProcessExecutionTask.class))
-                        .status(Optional.ofNullable(EnumAdaptor.valueOf(item.getStatus(), EndStatus.class)))
+                        .status(Optional.ofNullable(item.getStatus())
+                        		.map(status -> EnumAdaptor.valueOf(status, EndStatus.class)))
                         .lastExecDateTime(Optional.ofNullable(item.getLastExecDateTime()))
                         .lastEndExecDateTime(Optional.ofNullable(item.getLastEndExecDateTime()))
-                        .errorSystem(Optional.of(item.getErrorSystem()))
-                        .errorBusiness(Optional.of(item.getErrorBusiness()))
+                        .errorSystem(Optional.ofNullable(item.getErrorSystem()))
+                        .errorBusiness(Optional.ofNullable(item.getErrorBusiness()))
                         .systemErrorDetails(Optional.ofNullable(item.getSystemErrorDetails()))
                         .build())
                 .collect(Collectors.toList());

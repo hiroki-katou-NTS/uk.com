@@ -96,9 +96,10 @@ public class SortingProcessCommandHandler extends CommandHandler<ScheduleExecute
             ProcessExecutionLogManage processExecutionLogManage = logManageOpt.get();
             // Step ドメインモデル「更新処理自動実行管理.現在の実行状態」をチェックする
             // 「実行中」
-            if (processExecutionLogManage.getCurrentStatus().value == 0) {
+            if (processExecutionLogManage.getCurrentStatus().isPresent()
+            		&& processExecutionLogManage.getCurrentStatus().get().value == 0) {
                 // ドメインモデル「更新処理自動実行管理．前回実行日時」から5時間を経っているかチェックする
-                boolean checkLastTime = checkLastDateTimeLessthanNow5h(processExecutionLogManage.getLastExecDateTime());
+                boolean checkLastTime = checkLastDateTimeLessthanNow5h(processExecutionLogManage.getLastExecDateTime().get());
                 if (checkLastTime) {
                     // Step 実行中の場合の登録処理 - Registration process when running
                     this.DistributionRegistProcess(companyId, execItemCd, execItemId, nextDate, false);
@@ -108,7 +109,8 @@ public class SortingProcessCommandHandler extends CommandHandler<ScheduleExecute
                 }
             }
             // 「待機中」
-            else if (processExecutionLogManage.getCurrentStatus().value == 1) {
+            else if (processExecutionLogManage.getCurrentStatus().isPresent()
+            		&& processExecutionLogManage.getCurrentStatus().get().value == 1) {
                 // Step 実行処理
                 this.executeHandler(companyId, execItemCd, execItemId, nextDate);
             }
@@ -173,7 +175,7 @@ public class SortingProcessCommandHandler extends CommandHandler<ScheduleExecute
         Optional<ExecutionTaskSetting> executionTaskSetOpt = this.execSettingRepo.getByCidAndExecCd(companyId, execItemCd);
         if (executionTaskSetOpt.isPresent() && nextDate != null) {
             ExecutionTaskSetting executionTaskSetting = executionTaskSetOpt.get();
-            executionTaskSetting.setNextExecDateTime(nextDate);
+            executionTaskSetting.setNextExecDateTime(Optional.ofNullable(nextDate));
             this.execSettingRepo.update(executionTaskSetting);
         }
     }

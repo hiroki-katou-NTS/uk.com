@@ -5,9 +5,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
@@ -76,13 +78,13 @@ public class KfnmtExecutionTaskLog extends UkJpaEntity implements Serializable {
 	@Column(name = "ERROR_SYSTEM_CONT")
 	public String errorSystemDetail;
 
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumns({
 		@JoinColumn(name="CID", referencedColumnName="CID", insertable = false, updatable = false),
 		@JoinColumn(name="EXEC_ITEM_CD", referencedColumnName="EXEC_ITEM_CD", insertable = false, updatable = false)})
 	public KfnmtProcessExecutionLog procExecLogItem;
 
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumns({
 		@JoinColumn(name="CID", referencedColumnName="CID", insertable = false, updatable = false),
 		@JoinColumn(name="EXEC_ITEM_CD", referencedColumnName="EXEC_ITEM_CD", insertable = false, updatable = false),

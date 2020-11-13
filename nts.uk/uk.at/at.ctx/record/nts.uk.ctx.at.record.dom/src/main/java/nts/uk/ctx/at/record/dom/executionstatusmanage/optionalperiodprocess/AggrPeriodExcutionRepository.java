@@ -78,4 +78,6 @@ public interface AggrPeriodExcutionRepository {
 	
 	void updateStopState(String excuteId);
 	
+	void updateAll(List<AggrPeriodExcution> domains);
+	
 }

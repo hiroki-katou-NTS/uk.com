@@ -48,13 +48,13 @@ public class CreateLogFileExecution {
 		if (optProcessExecution.isPresent()) {
 			execItemName = optProcessExecution.get().getExecItemName().v();
 		}
-		String errorSystem = optProcessExeLogManage.get().getErrorSystem() == null ? "正常"
-				: (optProcessExeLogManage.get().getErrorSystem() ? "異常" : "正常");
-		String errorBusiness = optProcessExeLogManage.get().getErrorBusiness() == null ? "正常"
-				: (optProcessExeLogManage.get().getErrorBusiness() ? "異常" : "正常");
+		String errorSystem = optProcessExeLogManage.get().getErrorSystem()
+				.map(value -> value ? "異常" : "正常").orElse("正常");
+		String errorBusiness = optProcessExeLogManage.get().getErrorBusiness()
+				.map(value -> value ? "異常" : "正常").orElse("正常");
 
-		String timeRun = CalTimeRangeDateTimeToString.calTimeExec(optProcessExeLogManage.get().getLastExecDateTime(),
-				optProcessExeLogManage.get().getLastEndExecDateTime());
+		String timeRun = CalTimeRangeDateTimeToString.calTimeExec(optProcessExeLogManage.get().getLastExecDateTime().get(),
+				optProcessExeLogManage.get().getLastEndExecDateTime().get());
 
 		String lastEndExecDateTime = "";
 		if(optProcessExeLogManage.get().getLastEndExecDateTime() != null) {

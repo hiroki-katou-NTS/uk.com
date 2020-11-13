@@ -9,6 +9,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -111,7 +112,7 @@ public class KfnmtProcessExecutionLogHistory extends UkJpaEntity implements Proc
     public Integer overallError;
 
     /* 各処理の終了状態 */
-    @OneToMany(mappedBy = "procExecLogHistItem", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "procExecLogHistItem", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinTable(name = "KFNMT_EXEC_TASK_LOG")
     public List<KfnmtExecutionTaskLog> taskLogList;
 
@@ -172,6 +173,9 @@ public class KfnmtProcessExecutionLogHistory extends UkJpaEntity implements Proc
 
     @Override
     public void setExecItemCd(String execItemCd) {
+    	if (this.kfnmtProcExecLogHstPK == null) {
+    		this.kfnmtProcExecLogHstPK = new KfnmtProcessExecutionLogHistoryPK();
+    	}
         this.kfnmtProcExecLogHstPK.execItemCd = execItemCd;
     }
 
@@ -182,6 +186,9 @@ public class KfnmtProcessExecutionLogHistory extends UkJpaEntity implements Proc
 
     @Override
     public void setCompanyId(String companyId) {
+    	if (this.kfnmtProcExecLogHstPK == null) {
+    		this.kfnmtProcExecLogHstPK = new KfnmtProcessExecutionLogHistoryPK();
+    	}
         this.kfnmtProcExecLogHstPK.companyId = companyId;
     }
 
@@ -192,6 +199,9 @@ public class KfnmtProcessExecutionLogHistory extends UkJpaEntity implements Proc
 
     @Override
     public void setExecId(String execId) {
+    	if (this.kfnmtProcExecLogHstPK == null) {
+    		this.kfnmtProcExecLogHstPK = new KfnmtProcessExecutionLogHistoryPK();
+    	}
         this.kfnmtProcExecLogHstPK.execId = execId;
     }
 

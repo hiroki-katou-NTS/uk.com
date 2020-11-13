@@ -85,17 +85,18 @@ public class KfnmtProcessExecutionLogManage extends UkJpaEntity {
 	}
 
 	public static KfnmtProcessExecutionLogManage toEntity(ProcessExecutionLogManage domain) {
-		try {
+		try {	
 			return new KfnmtProcessExecutionLogManage(
 					new KfnmtProcessExecutionLogManagePK(domain.getCompanyId(), domain.getExecItemCd().v()),
 					domain.getVersion(), AppContexts.user().contractCode(),
-					domain.getCurrentStatus() == null ? null : domain.getCurrentStatus().value,
-					(domain.getOverallStatus() == null || !domain.getOverallStatus().isPresent()) ? null
-							: domain.getOverallStatus().get().value,
-					domain.getOverallError() == null ? null : domain.getOverallError().value,
-					domain.getLastExecDateTime(), domain.getLastExecDateTimeEx(), domain.getLastEndExecDateTime(),
-					domain.getErrorSystem() == null ? null : (domain.getErrorSystem() ? 1 : 0),
-					domain.getErrorBusiness() == null ? null : (domain.getErrorBusiness() ? 1 : 0));
+					domain.getCurrentStatus().map(item -> item.value).orElse(null),
+					domain.getOverallStatus().map(item -> item.value).orElse(null),
+					domain.getOverallError().map(item -> item.value).orElse(null),
+					domain.getLastExecDateTime().orElse(null), 
+					domain.getLastExecDateTimeEx().orElse(null),
+					domain.getLastEndExecDateTime().orElse(null),
+					domain.getErrorSystem().map(item -> item ? 1 : 0).orElse(null),
+					domain.getErrorBusiness().map(item -> item ? 1 : 0).orElse(null));
 		} catch (Exception e) {
 			return null;
 		}
@@ -105,13 +106,14 @@ public class KfnmtProcessExecutionLogManage extends UkJpaEntity {
 	public ProcessExecutionLogManage toDomain() {
 		return new ProcessExecutionLogManage(new ExecutionCode(this.kfnmtProcExecLogPK.execItemCd),
 				this.kfnmtProcExecLogPK.companyId,
-				this.errorDetail == null ? null : EnumAdaptor.valueOf(this.errorDetail, OverallErrorDetail.class),
-				this.overallStatus == null ? Optional.empty()
-						: Optional.ofNullable(EnumAdaptor.valueOf(this.overallStatus, EndStatus.class)),
-				this.lastExecDateTime, EnumAdaptor.valueOf(this.currentStatus, CurrentExecutionStatus.class),
-				this.prevExecDateTimeEx, this.lastEndExecDateTime,
-				this.errorSystem == null ? null : (this.errorSystem == 1 ? true : false),
-				this.errorBusiness == null ? null : (this.errorBusiness == 1 ? true : false));
+				Optional.ofNullable(this.errorDetail).map(item -> EnumAdaptor.valueOf(item, OverallErrorDetail.class)),
+				Optional.ofNullable(this.overallStatus).map(item -> EnumAdaptor.valueOf(item, EndStatus.class)),
+				Optional.ofNullable(this.lastExecDateTime), 
+				Optional.ofNullable(this.currentStatus).map(item -> EnumAdaptor.valueOf(item, CurrentExecutionStatus.class)),
+				Optional.ofNullable(this.prevExecDateTimeEx),
+				Optional.ofNullable(this.lastEndExecDateTime),
+				Optional.ofNullable(this.errorSystem).map(item -> item == 1),
+				Optional.ofNullable(this.errorBusiness).map(item -> item == 1));
 	}
 
 }

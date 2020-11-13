@@ -15,6 +15,8 @@ import nts.arc.layer.ws.WebService;
 import nts.arc.task.AsyncTaskInfo;
 import nts.arc.task.AsyncTaskInfoRepository;
 import nts.gul.util.value.MutableValue;
+import nts.uk.ctx.at.function.app.command.processexecution.ChangeExecutionTaskSettingCommand;
+import nts.uk.ctx.at.function.app.command.processexecution.ChangeExecutionTaskSettingCommandHandler;
 import nts.uk.ctx.at.function.app.command.processexecution.ExecuteProcessExecutionCommand;
 import nts.uk.ctx.at.function.app.command.processexecution.ExecuteProcessExecutionCommandHandler;
 import nts.uk.ctx.at.function.app.command.processexecution.RemoveProcessExecutionCommand;
@@ -78,6 +80,9 @@ public class ProcessExecutionWebService extends WebService {
 
 	@Inject
 	private TerminateProcessExecutionCommandHandler termHandler;
+	
+	@Inject
+	private ChangeExecutionTaskSettingCommandHandler changeExecutionTaskSettingCommandHandler;
 
 	/**
 	 * The i18n.
@@ -149,15 +154,13 @@ public class ProcessExecutionWebService extends WebService {
 			System.out.println("Call batch service  !");
 			val webApi = this.batchServer.webApi(PathToWebApi.at("/batch/batch-execute"),
 					ExecuteProcessExecutionCommand.class, BatchTaskResult.class);
-			this.batchServer.request(webApi, c -> c.entity(command)
-					.succeeded(x -> {
-						String taskId = x.getId();
-						AsyncTaskInfo taskInfo = asyncTaskInfoRepository.find(taskId).get();
-						result.set(taskInfo);
-					})
-					.failed(f -> {
-						throw new RuntimeException(f.toString());
-					}));
+			this.batchServer.request(webApi, c -> c.entity(command).succeeded(x -> {
+				String taskId = x.getId();
+				AsyncTaskInfo taskInfo = asyncTaskInfoRepository.find(taskId).get();
+				result.set(taskInfo);
+			}).failed(f -> {
+				throw new RuntimeException(f.toString());
+			}));
 		} else {
 			System.out.println("No call batch service !");
 			result.set(this.execHandler.handle(command));
@@ -169,28 +172,29 @@ public class ProcessExecutionWebService extends WebService {
 
 	@POST
 	@Path("terminate")
-	public void terminate(TerminateProcessExecutionCommand command) {
-//		MutableValue<AsyncTaskInfo> result = new MutableValue<>();
-//		
-//		if (this.batchServer.exists()) {
-//			val webApi = this.batchServer.webApi(PathToWebApi.at("/batch/batch-terminate"), 
-//					TerminateProcessExecutionCommand.class, BatchTaskResult.class);
-//			this.batchServer.request(webApi, c -> c.entity(command)
-//					.succeeded(x -> {
-//						String taskId = x.getId();
-//						AsyncTaskInfo taskInfo = asyncTaskInfoRepository.find(taskId).get();
-//						result.set(taskInfo);
-//			}));
-//		} else {
-//			this.termHandler.handle(command);
-//		}
-		this.termHandler.handle(command);
-		//return result.get();
+	public AsyncTaskInfo terminate(TerminateProcessExecutionCommand command) {
+		MutableValue<AsyncTaskInfo> result = new MutableValue<>();
+
+		if (this.batchServer.exists()) {
+			val webApi = this.batchServer.webApi(PathToWebApi.at("/batch/batch-terminate"),
+					TerminateProcessExecutionCommand.class, BatchTaskResult.class);
+			this.batchServer.request(webApi, c -> c.entity(command).succeeded(x -> {
+				String taskId = x.getId();
+				AsyncTaskInfo taskInfo = asyncTaskInfoRepository.find(taskId).get();
+				result.set(taskInfo);
+			}).failed(f -> {
+				throw new RuntimeException(f.toString());
+			}));
+		} else {
+			result.set(this.termHandler.handle(command));
+		}
+		return result.get();
 	}
 
 	@POST
 	@Path("getLogHistory/{execItemCd}/{execId}")
-	public ProcessExecutionLogHistoryDto getProcessExecutionLogHistory(@PathParam("execItemCd") String execItemCd, @PathParam("execId") String execId) {
+	public ProcessExecutionLogHistoryDto getProcessExecutionLogHistory(@PathParam("execItemCd") String execItemCd,
+			@PathParam("execId") String execId) {
 		String companyId = AppContexts.user().companyId();
 		return this.logHistFinder.find(companyId, execItemCd, execId);
 	}
@@ -205,5 +209,11 @@ public class ProcessExecutionWebService extends WebService {
 	@Path("findListDateRange")
 	public List<ProcessExecutionLogHistoryDto> findListDateRange(ProcessExecutionDateParam Param) {
 		return logHistFinder.findListDateRange(Param.getExecItemCd(), Param.getStartDate(), Param.getEndDate());
+	}
+	
+	@POST
+	@Path("changeSetting")
+	public ExecutionTaskSettingDto changeSetting(ChangeExecutionTaskSettingCommand command) {
+		return this.changeExecutionTaskSettingCommandHandler.handle(command);
 	}
 }

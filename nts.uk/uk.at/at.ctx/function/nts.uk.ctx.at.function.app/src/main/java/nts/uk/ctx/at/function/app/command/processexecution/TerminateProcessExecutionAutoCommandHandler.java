@@ -59,7 +59,9 @@ public class TerminateProcessExecutionAutoCommandHandler extends AsyncCommandHan
         ProcessExecutionLogManage processExecLogMan = processExecLogManOpt.get();
 
         //「待機中」 or 「無効」の場合
-        if (processExecLogMan.getCurrentStatus().value == 1 || processExecLogMan.getCurrentStatus().value == 2) {
+        if (processExecLogMan.getCurrentStatus().isPresent()
+        		&& (processExecLogMan.getCurrentStatus().get().value == 1 
+        		|| processExecLogMan.getCurrentStatus().get().value == 2)) {
 //			dataSetter.setData("currentStatusIsOneOrTwo", "Msg_1102");
             return;
         }
@@ -127,12 +129,12 @@ public class TerminateProcessExecutionAutoCommandHandler extends AsyncCommandHan
                 .execItemCd(execItemCd)
                 .companyId(companyId)
                 .execId(procExecLog.getExecId())
-                .overallError(processExecLogMan.getOverallError().value)
+                .overallError(processExecLogMan.getOverallError().map(item -> item.value).orElse(null))
                 .overallStatus(processExecLogMan.getOverallStatus().map(item -> item.value).orElse(null))
-                .lastExecDateTime(processExecLogMan.getLastExecDateTime())
-                .lastEndExecDateTime(processExecLogMan.getLastEndExecDateTime())
-                .errorSystem(processExecLogMan.getErrorSystem())
-                .errorBusiness(processExecLogMan.getErrorBusiness())
+                .lastExecDateTime(processExecLogMan.getLastExecDateTime().orElse(null))
+                .lastEndExecDateTime(processExecLogMan.getLastEndExecDateTime().orElse(null))
+                .errorSystem(processExecLogMan.getErrorSystem().orElse(null))
+                .errorBusiness(processExecLogMan.getErrorBusiness().orElse(null))
                 .taskLogList(taskLogListCommand)
                 .schCreateStart(scheduleCreationPeriod.map(DatePeriod::start).orElse(null))
                 .schCreateEnd(scheduleCreationPeriod.map(DatePeriod::end).orElse(null))
