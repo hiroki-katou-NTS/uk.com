@@ -58,10 +58,10 @@ public class RegisterOptionalItemApplicationCommandHandler extends CommandHandle
     protected ProcessResult handle(CommandHandlerContext<RegisterOptionalItemApplicationCommand> commandHandlerContext) {
         String cid = AppContexts.user().companyId();
         String sid = AppContexts.user().employeeId();
-        /**
-         * 登録時チェック処理（全申請共通）
-         */
         RegisterOptionalItemApplicationCommand command = commandHandlerContext.getCommand();
+        /**
+         *登録前のエラーチェック処理
+         */
         this.optionalItemApplicationQuery.checkBeforeUpdate(command.getOptItemAppCommand());
         OptionalItemApplication domain = command.getOptItemAppCommand().toDomain();
         ApplicationDto applicationDto = command.getApplication();
@@ -78,6 +78,9 @@ public class RegisterOptionalItemApplicationCommandHandler extends CommandHandle
                 applicationDto.getOpAppReason() == null ? Optional.empty() : Optional.of(new AppReason(applicationDto.getOpAppReason())),
                 applicationDto.getOpAppStandardReasonCD() == null ? Optional.empty() : Optional.of(new AppStandardReasonCode(applicationDto.getOpAppStandardReasonCD())
                 ));
+        /**
+         * 登録時チェック処理（全申請共通）
+         */
         registerBefore.processBeforeRegister_New(cid,
                 EmploymentRootAtr.APPLICATION,
                 false,
@@ -86,7 +89,9 @@ public class RegisterOptionalItemApplicationCommandHandler extends CommandHandle
                 appDispInfoStartup.getAppDispInfoWithDateOutput().getOpErrorFlag().get(),
                 Collections.emptyList(),
                 appDispInfoStartup);
-
+        /**
+         * ドメインモデル「申請」の新規登録をする
+         * */
         appRepository.insertApp(application, command
                 .getAppDispInfoStartup().toDomain()
                 .getAppDispInfoWithDateOutput()
@@ -96,8 +101,13 @@ public class RegisterOptionalItemApplicationCommandHandler extends CommandHandle
 
         domain.setAppID(application.getAppID());
         repository.save(domain);
-        /* 2-2.新規画面登録時承認反映情報の整理(register: reflection info setting) */
+        /**
+         *  2-2.新規画面登録時承認反映情報の整理(register: reflection info setting)
+         */
         registerService.newScreenRegisterAtApproveInfoReflect(application.getEmployeeID(), application);
+        /**
+         * 2-3.新規画面登録後の処理
+         * */
         return newAfterRegister.processAfterRegister(application.getAppID(),
                 appDispInfoStartup.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings().stream().findFirst().get(),
                 appDispInfoStartup.getAppDispInfoNoDateOutput().isMailServerSet());

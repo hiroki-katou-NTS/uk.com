@@ -18,13 +18,19 @@ public class KrqdtAppAnyv extends ContractUkJpaEntity {
     @EmbeddedId
     private KrqdtAppAnyvPk KrqdtAppAnyvPk;
 
-    /* 時間 */
+    /**
+     * 時間
+     */
     @Column(name = "TIME_VAL")
     public Integer time;
-    /* 回数 */
+    /**
+     * 回数
+     */
     @Column(name = "COUNT_VAL")
     public BigDecimal times;
-    /* 金額 */
+    /**
+     * 金額
+     */
     @Column(name = "MONEY_VAL")
     public Integer moneyValue;
 

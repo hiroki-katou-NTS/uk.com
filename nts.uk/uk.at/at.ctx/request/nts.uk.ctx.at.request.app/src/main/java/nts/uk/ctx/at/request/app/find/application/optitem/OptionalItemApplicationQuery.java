@@ -34,6 +34,8 @@ import java.util.stream.Collectors;
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class OptionalItemApplicationQuery {
 
+    private static final Integer OPTIONAL_ITEM_NO_CONVERT_CONST = 640;
+
     @Inject
     private ControlOfAttendanceItemsRepository controlOfAttendanceItemsRepository;
 
@@ -52,9 +54,12 @@ public class OptionalItemApplicationQuery {
     private OptionalItemAppSetFinder optionalItemAppSetFinder;
 
 
+    /**
+     * ドメインモデル「任意項目」を取得する
+     */
     public List<ControlOfAttendanceItemsDto> findControlOfAttendance(List<Integer> optionalItemNos) {
         String cid = AppContexts.user().companyId();
-        List<Integer> daiLyList = optionalItemNos.stream().map(no -> no + 640).collect(Collectors.toList());
+        List<Integer> daiLyList = optionalItemNos.stream().map(no -> no + OPTIONAL_ITEM_NO_CONVERT_CONST).collect(Collectors.toList());
         List<ControlOfAttendanceItems> controlOfAttendanceItems = controlOfAttendanceItemsRepository.getByItemDailyList(cid, daiLyList);
         return controlOfAttendanceItems.stream().map(item -> ControlOfAttendanceItemsDto.fromDomain(item)).collect(Collectors.toList());
     }
@@ -67,7 +72,7 @@ public class OptionalItemApplicationQuery {
         String settingCode = domain.getCode().v();
         OptionalItemAppSetDto setting = optionalItemAppSetFinder.findByCode(new OptionalItemApplicationTypeCode(settingCode).v());
         List<Integer> optionalItemNos = domain.getOptionalItems().stream().map(item -> item.getItemNo().v()).collect(Collectors.toList());
-        List<Integer> daiLyList = optionalItemNos.stream().map(no -> no - 640).collect(Collectors.toList());
+        List<Integer> daiLyList = optionalItemNos.stream().map(no -> no - OPTIONAL_ITEM_NO_CONVERT_CONST).collect(Collectors.toList());
         List<OptionalItemImport> optionalItems = optionalItemAdapter.findOptionalItem(cid, daiLyList);
         List<ControlOfAttendanceItems> controlOfAttendanceItems = controlOfAttendanceItemsRepository.getByItemDailyList(cid, optionalItemNos);
         detail.setControlOfAttendanceItems(controlOfAttendanceItems.stream().map(ControlOfAttendanceItemsDto::fromDomain).collect(Collectors.toList()));
@@ -97,12 +102,12 @@ public class OptionalItemApplicationQuery {
         boolean register = false;
         List<Integer> optionalItemNos = optionalItems.stream().map(anyItemNo -> anyItemNo.getItemNo()).collect(Collectors.toList());
         Map<Integer, OptionalItem> optionalItemMap = optionalItemRepository.findByListNos(cid, optionalItemNos).stream().collect(Collectors.toMap(optionalItem -> optionalItem.getOptionalItemNo().v(), item -> item));
-        List<Integer> daiLyList = optionalItemNos.stream().map(no -> no + 640).collect(Collectors.toList());
+        List<Integer> daiLyList = optionalItemNos.stream().map(no -> no + OPTIONAL_ITEM_NO_CONVERT_CONST).collect(Collectors.toList());
         Map<Integer, ControlOfAttendanceItems> controlOfAttendanceItemsMap = controlOfAttendanceItemsRepository.getByItemDailyList(cid, daiLyList).stream().collect(Collectors.toMap(item -> item.getItemDailyID(), item -> item));
         for (Iterator<AnyItemValueDto> iterator = optionalItems.iterator(); iterator.hasNext(); ) {
             AnyItemValueDto inputOptionalItem = iterator.next();
             /* Kiểm tra giá trị nằm trong giới hạn, vượt ra ngoài khoảng giới hạn thì thông báo lỗi Msg_1692 */
-            ControlOfAttendanceItems controlOfAttendanceItems = controlOfAttendanceItemsMap.get(inputOptionalItem.getItemNo() + 640);
+            ControlOfAttendanceItems controlOfAttendanceItems = controlOfAttendanceItemsMap.get(inputOptionalItem.getItemNo() + OPTIONAL_ITEM_NO_CONVERT_CONST);
             Optional<TimeInputUnit> unit = controlOfAttendanceItems.getInputUnitOfTimeItem();
             /* kiểm tra bội của đơn vị, không phải là bội thì thông báo lỗi Msg_1693*/
             OptionalItem optionalItem = optionalItemMap.get(inputOptionalItem.getItemNo());

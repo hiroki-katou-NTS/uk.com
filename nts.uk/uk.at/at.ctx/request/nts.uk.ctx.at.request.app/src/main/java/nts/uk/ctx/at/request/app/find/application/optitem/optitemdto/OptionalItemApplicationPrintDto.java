@@ -14,6 +14,10 @@ import java.util.List;
 @Getter
 public class OptionalItemApplicationPrintDto {
     private String code;
+    /**
+     * 申請種類名
+     */
+    private String name;
 
     private List<OptionalItemPrintDto> optionalItems;
 
@@ -30,6 +34,6 @@ public class OptionalItemApplicationPrintDto {
                     .build();
             optionalItemContents.add(optionalItemContent);
         }
-        return new OptionalItemPrintContent(this.code, optionalItemContents);
+        return new OptionalItemPrintContent(this.code, this.name, optionalItemContents);
     }
 }
