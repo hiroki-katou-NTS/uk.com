@@ -89,7 +89,7 @@ export class KafS20A2Component extends KafS00ShrComponent {
                     displayAppReason,
                     reasonTypeItemLst,
                     appLimitSetting,
-                    opAppStandardReasonCD: vm.mode ? null : vm.params.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
+                    opAppStandardReasonCD: vm.mode ? vm.application.opAppStandardReasonCD : vm.params.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
                     opAppReason: vm.mode ? null : vm.params.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason,
                 };
             }
@@ -262,9 +262,6 @@ export class KafS20A2Component extends KafS00ShrComponent {
     public register() {
         const vm = this;
 
-        let dates: string[] = [];
-        dates = vm.getDateArray(vm.application.opAppStartDate, vm.application.opAppEndDate);
-
         let optionalItems: optionalItems[] = [];
         vm.optionalItemApplication.forEach((item) => {
             optionalItems.push(({
@@ -308,7 +305,7 @@ export class KafS20A2Component extends KafS00ShrComponent {
 
         application.opAppReason = vm.application.opAppReason;
         application.opReversionReason = vm.application.opReversionReason;
-        // application.opAppStandardReasonCD = vm.application.opAppStandardReasonCD;
+        application.opAppStandardReasonCD = vm.application.opAppStandardReasonCD;
         let optionalItems: optionalItems[] = [];
         vm.optionalItemApplication.forEach((item) => {
             optionalItems.push({
@@ -364,18 +361,6 @@ export class KafS20A2Component extends KafS00ShrComponent {
         vm.application.opAppEndDate = vm.$dt.date(changeDate.endDate, 'YYYY/MM/DD');
         vm.application.appDate = vm.$dt.date(changeDate.startDate, 'YYYY/MM/DD');
     }
-
-    public getDateArray = function (startDate, endDate) {
-        let dates = [];
-        startDate = moment(startDate, 'YYYY/MM/DD');
-        dates.push(startDate.format('YYYY/MM/DD'));
-        while (!startDate.isSame(endDate)) {
-            startDate = startDate.add(1, 'days');
-            dates.push(startDate.format('YYYY/MM/DD'));
-        }
-
-        return dates;
-    };
 
     public handleKaf00CChangeAppReason(appReason) {
         const vm = this;
