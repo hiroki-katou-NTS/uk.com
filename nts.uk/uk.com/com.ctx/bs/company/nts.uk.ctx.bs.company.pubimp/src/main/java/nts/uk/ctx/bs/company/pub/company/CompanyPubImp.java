@@ -12,8 +12,7 @@ import javax.inject.Inject;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.company.app.cache.CompanyCache;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.bs.company.dom.company.AbolitionAtr;
 import nts.uk.ctx.bs.company.dom.company.AddInfor;
 import nts.uk.ctx.bs.company.dom.company.Company;
@@ -219,5 +218,18 @@ public class CompanyPubImp implements ICompanyPub {
 		return result;
 		
 		
+	}
+
+	@Override
+	public YearMonthPeriod getyearMonth(String cid, int year) {
+		Optional<Company> company = this.repo.getComanyInfoByCid(cid);
+
+		if (!company.isPresent()) {
+			return null;
+		}
+
+		YearMonthPeriod result = company.get().getPeriodTheYear(year);
+
+		return result;
 	}
 }

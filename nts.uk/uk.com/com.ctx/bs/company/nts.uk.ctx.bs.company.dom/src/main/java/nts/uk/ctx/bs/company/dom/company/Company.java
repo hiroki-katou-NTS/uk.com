@@ -132,7 +132,7 @@ public class Company extends AggregateRoot {
 	public YearMonthPeriod getPeriodTheYear (int year) {
 		
 		YearMonth yearStart = YearMonth.of(year, this.startMonth.value);
-		YearMonth yearEnd = YearMonth.of(yearStart.nextYear().v(), yearStart.previousMonth().v());
+		YearMonth yearEnd = YearMonth.of(yearStart.nextYear().year(), yearStart.previousMonth().month());
 		
 		YearMonthPeriod result = new YearMonthPeriod(yearStart, yearEnd);
 		

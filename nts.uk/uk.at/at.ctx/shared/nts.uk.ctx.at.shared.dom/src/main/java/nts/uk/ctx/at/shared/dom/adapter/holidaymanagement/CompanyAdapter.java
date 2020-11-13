@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 
 /**
  * The Interface CompanyAdapter.
@@ -30,4 +31,6 @@ public interface CompanyAdapter {
 	
 	
 	Optional<CompanyImport622> getCompanyNotAbolitionByCid(String cid);
+	
+	YearMonthPeriod get(String cid, int year);
 }

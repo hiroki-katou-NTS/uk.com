@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
 
 public interface MonthlyWorkTimeSetRepo {
@@ -25,6 +26,8 @@ public interface MonthlyWorkTimeSetRepo {
 	public List<MonthlyWorkTimeSetWkp> findWorkplace(String cid, String workplaceId, LaborWorkTypeAttr laborAttr, int year);
 	
 	public List<MonthlyWorkTimeSetEmp> findEmploymentbyCid(String cid);
+	
+	public List<MonthlyWorkTimeSetCom> findCompanyByPeriod(String cid, LaborWorkTypeAttr laborAttr, YearMonthPeriod yearMonthPeriod);
 	
 	public List<String> findEmploymentCD(String cid, int year);
 	
