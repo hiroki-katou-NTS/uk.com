@@ -6,6 +6,10 @@ import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.ExtractionCondit
 
 import java.util.List;
 
+/**
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.アラーム_職場別.チェック条件.カテゴリ別のチェック条件.マスタチェック(日別).マスタチェック(日別)のアラームチェック条件
+ */
+
 @AllArgsConstructor
 @Getter
 public class AlarmMasterDailyCheckCdt implements ExtractionCondition {

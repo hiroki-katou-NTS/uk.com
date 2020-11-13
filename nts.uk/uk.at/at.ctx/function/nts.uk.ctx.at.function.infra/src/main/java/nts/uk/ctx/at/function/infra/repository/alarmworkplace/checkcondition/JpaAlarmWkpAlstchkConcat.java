@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.infra.repository.alarm.workplace.checkcondition;
+package nts.uk.ctx.at.function.infra.repository.alarmworkplace.checkcondition;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
