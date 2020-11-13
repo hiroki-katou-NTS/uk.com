@@ -175,6 +175,7 @@ module nts.uk.ui.koExtentions {
     type J_EVENT = (evt: JQueryEventObject) => void;
     type G_EVENT = { [key: string]: J_EVENT[]; };
 
+    type LOCALE = 'en' | 'ja' | 'vi';
     type SLOT_DURATION = 5 | 10 | 15 | 30;
     const durations: SLOT_DURATION[] = [5, 10, 15, 30];
 
@@ -195,8 +196,9 @@ module nts.uk.ui.koExtentions {
     };
 
     type PARAMS = {
-        scrollTime: number;
+        locale: LOCALE | KnockoutObservable<LOCALE>;
         initialDate: Date | KnockoutObservable<Date>;
+        scrollTime: number | KnockoutObservable<number>;
         slotDuration: SLOT_DURATION | KnockoutObservable<SLOT_DURATION>;
         weekends: boolean | KnockoutObservable<boolean>;
         firstDay: DAY_OF_WEEK | KnockoutObservable<DAY_OF_WEEK>;
@@ -242,7 +244,8 @@ module nts.uk.ui.koExtentions {
 
             if (!params) {
                 this.params = {
-                    scrollTime: 360,
+                    scrollTime: ko.observable(360),
+                    locale: ko.observable('ja'),
                     firstDay: ko.observable(1),
                     slotDuration: ko.observable(30),
                     weekends: ko.observable(true),
@@ -251,10 +254,14 @@ module nts.uk.ui.koExtentions {
                 };
             }
 
-            const { scrollTime, initialDate, weekends, firstDay, slotDuration, businessHours } = this.params;
+            const { locale, scrollTime, initialDate, weekends, firstDay, slotDuration, businessHours } = this.params;
+
+            if (locale === undefined) {
+                this.params.locale = ko.observable('ja');
+            }
 
             if (scrollTime === undefined) {
-                this.params.scrollTime = 360;
+                this.params.scrollTime = ko.observable(360);
             }
 
             if (initialDate === undefined) {
@@ -281,7 +288,7 @@ module nts.uk.ui.koExtentions {
         public mounted() {
             const vm = this;
             const { params, dataEvent } = vm;
-            const { scrollTime, firstDay, weekends, initialDate } = params;
+            const { locale, scrollTime, firstDay, weekends, initialDate } = params;
 
             const $el = $(vm.$el);
             const $fc = $el.find('div.fc').get(0);
@@ -339,7 +346,6 @@ module nts.uk.ui.koExtentions {
                         }
                     }
                 },
-                locale: 'ja',
                 height: '100px',
                 headerToolbar: {
                     left: 'today prev,next',
@@ -348,9 +354,10 @@ module nts.uk.ui.koExtentions {
                 },
                 themeSystem: 'default',
                 initialView: 'timeGridWeek',
+                locale: ko.unwrap(locale),
                 firstDay: ko.unwrap(firstDay),
                 weekends: ko.unwrap(weekends),
-                scrollTime: formatTime(scrollTime),
+                scrollTime: formatTime(ko.unwrap(scrollTime)),
                 initialDate: formatDate(ko.unwrap(initialDate)),
                 editable: true,
                 selectable: true,
@@ -412,7 +419,7 @@ module nts.uk.ui.koExtentions {
                     return !minite ? `${hour}:${_.padStart(`${minite}`, 2, '0')}` : _.padStart(`${minite}`, 2, '0');
                 },
                 datesSet: (dateInfo) => {
-                    console.log(dateInfo);
+                    $el.trigger($.Event('datesSet', { data: dateInfo }));
                 },
                 viewDidMount: (opts) => {
                     $('.fc-header-toolbar button').removeAttr('class');
@@ -448,6 +455,11 @@ module nts.uk.ui.koExtentions {
                 calendar.setOption('height', `${innerHeight - top - 10}px`);
             }
 
+            // set locale
+            if (ko.isObservable(locale)) {
+                locale.subscribe(l => calendar.setOption('locale', l));
+            }
+
             // set weekends
             if (ko.isObservable(weekends)) {
                 weekends.subscribe(w => calendar.setOption('weekends', w));
@@ -458,9 +470,14 @@ module nts.uk.ui.koExtentions {
                 firstDay.subscribe(f => calendar.setOption('firstDay', f));
             }
 
+            // set scrollTime
+            if (ko.isObservable(scrollTime)) {
+                scrollTime.subscribe(c => calendar.scrollToTime(formatTime(c)));
+            }
+
             // set initialDate
-            if (ko.isObservable(params.initialDate)) {
-                params.initialDate.subscribe(c => calendar.gotoDate(formatDate(c)));
+            if (ko.isObservable(initialDate)) {
+                initialDate.subscribe(c => calendar.gotoDate(formatDate(c)));
             }
 
             // set slotDuration

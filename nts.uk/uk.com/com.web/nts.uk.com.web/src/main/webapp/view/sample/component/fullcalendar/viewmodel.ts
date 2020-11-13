@@ -8,5 +8,9 @@ module nts.uk.ui.com.sample.fullcalendar {
 
             vm.show(!vm.show());
         }
+
+        datesSet(data: any) {
+            console.log(arguments);
+        }
     }
 }

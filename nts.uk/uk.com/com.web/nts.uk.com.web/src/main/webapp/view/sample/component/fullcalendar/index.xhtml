@@ -7,6 +7,10 @@
 <body>
 	<ui:composition template="/master/base.xhtml">
 		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="../../catalog/catalog.css" />
+			<com:scriptfile path="../../catalog/catalog.js" />
+
 			<com:stylefile set="FULLCALENDAR" />
             <com:scriptfile set="FULLCALENDAR" />
             
@@ -17,8 +21,16 @@
 			<div id="functions-area">
 				<button data-bind="click: $vm.changeVisible, timeClick: -1">Change view</button>
 			</div>
-			<div id="contents-area" data-bind="if: $vm.show">
-                <div data-bind="nts-fullcalendar: {}"></div>
+			<div id="contents-area">
+				<div id="side-menu" class="cf"></div>
+				<div id="content" class="cf" data-bind="if: $vm.show">
+					<div data-bind="
+						nts-fullcalendar: ko.observable(true),
+						event: {
+							datesSet: $vm.datesSet
+						}
+					"></div>
+				</div>
             </div>
         </ui:define>
     </ui:composition>
