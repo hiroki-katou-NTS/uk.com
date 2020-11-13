@@ -36,14 +36,14 @@ class TabPanel extends ko.ViewModel {
 		vm.$blockui('invisible')
                 .then(() => vm.$ajax(KMK004A_API.GET_USAGE_UNIT_SETTING))
                 .then((data: IUnitSetting) => {
+					if (data.workPlace) {
+						vm.tabs.push('Com_Workplace');
+					}
 					if (data.employee) {
 						vm.tabs.push('Com_Person');
 					}
 					if (data.employment) {
 						vm.tabs.push('Com_Employment');
-					}
-					if (data.workPlace) {
-						vm.tabs.push('Com_Workplace');
 					}
                 })
                 .then(() => vm.$blockui('clear'));
