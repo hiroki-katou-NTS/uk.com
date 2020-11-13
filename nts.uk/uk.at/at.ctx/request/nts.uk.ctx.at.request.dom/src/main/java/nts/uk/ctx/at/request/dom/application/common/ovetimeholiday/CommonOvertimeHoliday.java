@@ -299,7 +299,14 @@ public interface CommonOvertimeHoliday {
 	 * @param breakTimes
 	 * @return 申請時間 List
 	 */
-	public List<ApplicationTime> calculator(String companyId, String employeeId, GeneralDate date, String workTypeCode, String workTimeCode, List<TimeZone> timeZones, List<BreakTimeSheet> breakTimes);
+	public List<ApplicationTime> calculator(
+			String companyId,
+			String employeeId,
+			GeneralDate date,
+			Optional<String> workTypeCode,
+			Optional<String> workTimeCode,
+			List<TimeZone> timeZones,
+			List<BreakTimeSheet> breakTimes);
 	/**
 	 * 03-01-1_チェック条件
 	 * @param prePostAtr 事前事後区分

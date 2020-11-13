@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.overtime.service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +31,7 @@ public class DisplayInfoOverTime {
 	// 基準日に関係しない情報
 	private InfoNoBaseDate infoNoBaseDate;
 	// 休出枠
-	private List<WorkdayoffFrame> workdayoffFrames;
+	private List<WorkdayoffFrame> workdayoffFrames = Collections.emptyList();
 	// 残業申請区分
 	private OvertimeAppAtr overtimeAppAtr;
 	// 申請表示情報

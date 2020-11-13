@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.app.command.application.overtime;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkContent;
@@ -20,8 +21,8 @@ public class WorkContentCommand {
 		
 		
 		return new WorkContent(
-				workTypeCode,
-				workTimeCode,
+				Optional.ofNullable(workTypeCode),
+				Optional.ofNullable(workTimeCode),
 				timeZones.isEmpty() ? 
 						Collections.emptyList() : 
 						timeZones

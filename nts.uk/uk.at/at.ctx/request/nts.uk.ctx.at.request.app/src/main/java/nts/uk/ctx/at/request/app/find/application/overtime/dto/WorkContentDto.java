@@ -22,8 +22,8 @@ public class WorkContentDto {
 	public static WorkContentDto fromDomain(WorkContent workContent) {
 		
 		return new WorkContentDto(
-				workContent.getWorkTypeCode(),
-				workContent.getWorkTimeCode(),
+				workContent.getWorkTypeCode().orElse(null),
+				workContent.getWorkTimeCode().orElse(null),
 				workContent.getTimeZones()
 					.stream()
 					.map(x -> TimeZoneDto.fromDomain(x))

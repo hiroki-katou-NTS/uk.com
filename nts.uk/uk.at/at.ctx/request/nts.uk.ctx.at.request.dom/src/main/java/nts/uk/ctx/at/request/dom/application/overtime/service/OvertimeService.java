@@ -252,12 +252,13 @@ public interface OvertimeService {
 			AppDispInfoStartupOutput appDispInfoStartupOutput,
 			Optional<Integer> startTimeSPR,
 			Optional<Integer> endTimeSPR,
-			Boolean isProxy,
-			String employeeId,
-			PrePostAtr prePostInitAtr,
-			OvertimeLeaveAppCommonSet overtimeLeaveAppCommonSet,
-			ApplicationTime advanceApplicationTime,
-			ApplicationTime achieveApplicationTime,
-			WorkContent workContent
+			Boolean isProxy
+//			,
+//			String employeeId,
+//			PrePostAtr prePostInitAtr,
+//			OvertimeLeaveAppCommonSet overtimeLeaveAppCommonSet,
+//			ApplicationTime advanceApplicationTime,
+//			ApplicationTime achieveApplicationTime,
+//			WorkContent workContent
 			);
 }

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.overtime.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,9 +21,9 @@ import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 // 勤務内容
 public class WorkContent {
 	// 勤務種類コード
-	private String workTypeCode;
+	private Optional<String> workTypeCode = Optional.empty();
 	// 就業時間帯コード
-	private String workTimeCode;
+	private Optional<String> workTimeCode = Optional.empty();
 	// 時間帯 NO = 1 and NO = 2
 	private List<TimeZone> timeZones;
 	// 休憩時間帯 休憩枠NO = 1 ~ 10

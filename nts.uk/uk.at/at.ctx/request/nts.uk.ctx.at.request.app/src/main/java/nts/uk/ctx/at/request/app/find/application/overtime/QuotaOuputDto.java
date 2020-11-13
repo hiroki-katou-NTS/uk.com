@@ -16,7 +16,7 @@ public class QuotaOuputDto {
 	public List<OvertimeWorkFrameDto> overTimeQuotaList;
 	
 	public static QuotaOuputDto fromDomain(QuotaOuput quotaOuput) {
-		
+		if (quotaOuput == null) return null;
 		return new QuotaOuputDto(
 				quotaOuput.getFlexTimeClf(),
 				quotaOuput

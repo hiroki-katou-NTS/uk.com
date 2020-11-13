@@ -5,12 +5,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
@@ -54,11 +56,15 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdwo
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeLeaveAppCommonSet;
 import nts.uk.ctx.at.request.dom.workrecord.dailyrecordprocess.dailycreationwork.BreakTimeZoneSetting;
 import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
@@ -378,8 +384,10 @@ public class OvertimeServiceImpl implements OvertimeService {
 				achieveApplicationTime,
 				workContent);
 		// 取得した「休出枠<List>」を「残業申請の表示情報」にセットする
-		output.setCalculationResultOp(Optional.of(caculationOutput.getCalculationResult()));
-		output.setWorkdayoffFrames(caculationOutput.getWorkdayoffFrames());
+		if (caculationOutput != null) {
+			output.setWorkdayoffFrames(caculationOutput.getWorkdayoffFrames());
+			output.setCalculationResultOp(Optional.of(caculationOutput.getCalculationResult()));			
+		}
 		// 残業時間帯の値と背景色をセット
 		return output;
 	}
@@ -396,8 +404,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 		CaculationOutput ouput = new CaculationOutput();
 		// INPUTをチェックする
 		if (	!dateOp.isPresent() 
-				|| StringUtils.isBlank(workContent.getWorkTypeCode()) 
-				|| StringUtils.isBlank(workContent.getWorkTimeCode()) 
+				|| workContent.getWorkTypeCode().isPresent()
+				|| workContent.getWorkTimeCode().isPresent() 
 				|| workContent.getTimeZones().isEmpty()) return null;
 		// 06_計算処理
 		List<ApplicationTime> applicationTimes = commonOvertimeHoliday.calculator(companyId, employeeId, dateOp.orElse(null), workContent.getWorkTypeCode(), workContent.getWorkTimeCode(), workContent.getTimeZones(), workContent.getBreakTimes());
@@ -736,13 +744,14 @@ public class OvertimeServiceImpl implements OvertimeService {
 			AppDispInfoStartupOutput appDispInfoStartupOutput,
 			Optional<Integer> startTimeSPR,
 			Optional<Integer> endTimeSPR,
-			Boolean isProxy,
-			String employeeId,
-			PrePostAtr prePostInitAtr,
-			OvertimeLeaveAppCommonSet overtimeLeaveAppCommonSet,
-			ApplicationTime advanceApplicationTime,
-			ApplicationTime achieveApplicationTime,
-			WorkContent workContent
+			Boolean isProxy
+//			,
+//			String employeeId,
+//			PrePostAtr prePostInitAtr,
+//			OvertimeLeaveAppCommonSet overtimeLeaveAppCommonSet,
+//			ApplicationTime advanceApplicationTime,
+//			ApplicationTime achieveApplicationTime,
+//			WorkContent workContent
 			) {
 		DisplayInfoOverTime output = new DisplayInfoOverTime();
 		// 15_初期起動の処理
@@ -756,15 +765,68 @@ public class OvertimeServiceImpl implements OvertimeService {
 				isProxy);
 		
 		
+		Integer prePost = output.getAppDispInfoStartup()
+			.getAppDispInfoWithDateOutput()
+			.getPrePostAtr().value;
+		WorkContent workContent = new WorkContent();
+		workContent.setWorkTypeCode(output.getInfoWithDateApplicationOp()
+										  .map(x -> x.getWorkTypeCD())
+										  .orElse(Optional.empty()));
+		workContent.setWorkTimeCode(
+				output.getInfoWithDateApplicationOp()
+				  .map(x -> x.getWorkTimeCD())
+				  .orElse(Optional.empty()));
+		List<TimeZone> timeZones = new ArrayList<TimeZone>();
+		List<BreakTimeSheet> breakTimes = new ArrayList<BreakTimeSheet>();
+		if (output.getInfoWithDateApplicationOp().isPresent()) {
+			Optional<WorkHours> workHours = output.getInfoWithDateApplicationOp().get().getWorkHours();
+			if (workHours.isPresent()) {
+				if (workHours.get().getStartTimeOp1().isPresent() || workHours.get().getEndTimeOp1().isPresent()) {
+					TimeZone timeZone = new TimeZone(
+							workHours.get().getStartTimeOp1().get(),
+							workHours.get().getEndTimeOp1().get());
+					timeZones.add(timeZone);
+				}
+				if (workHours.get().getStartTimeOp2().isPresent() || workHours.get().getEndTimeOp2().isPresent()) {
+					TimeZone timeZone = new TimeZone(
+							workHours.get().getStartTimeOp2().get(),
+							workHours.get().getEndTimeOp2().get());
+					timeZones.add(timeZone);
+				}
+			}
+			Optional<BreakTimeZoneSetting> breakTime = output.getInfoWithDateApplicationOp().get().getBreakTime();
+			if (breakTime.isPresent()) {
+				List<DeductionTime> breakTimeZones = breakTime.get().getTimeZones();
+				breakTimes = IntStream.range(1, (int) breakTimeZones.stream().count())
+							.mapToObj(i -> new BreakTimeSheet(
+									new BreakFrameNo(i),
+									breakTimeZones.get(i).getStart(),
+									breakTimeZones.get(i).getEnd()))
+							.collect(Collectors.toList());
+			}
+		}
+		workContent.setTimeZones(timeZones);
+		workContent.setBreakTimes(breakTimes);
 		// 計算を実行する
-		DisplayInfoOverTime temp = this.calculate(companyId,
-				employeeId,
+		DisplayInfoOverTime temp = this.calculate(
+				companyId,
+				output.getAppDispInfoStartup()
+						.getAppDispInfoNoDateOutput()
+						.getEmployeeInfoLst()
+						.get(0)
+						.getSid(),
 				dateOp,
-				prePostInitAtr,
-				overtimeLeaveAppCommonSet,
-				advanceApplicationTime,
-				achieveApplicationTime,
-				workContent);
+				EnumAdaptor.valueOf(prePost, PrePostAtr.class),
+				output.getInfoNoBaseDate().getOverTimeAppSet().getOvertimeLeaveAppCommonSet(),
+				output.getAppDispInfoStartup()
+					.getAppDispInfoWithDateOutput()
+					.getOpPreAppContentDisplayLst()
+					.map(x -> x.get(0).getApOptional().map(y -> y.getApplicationTime()).orElse(null))
+					.orElse(null),
+				output.getInfoWithDateApplicationOp()
+					.map(x -> x.getApplicationTime().orElse(null))
+					.orElse(null),
+					workContent);
 		output.setWorkdayoffFrames(temp.getWorkdayoffFrames());
 		output.setCalculationResultOp(temp.getCalculationResultOp());
 		

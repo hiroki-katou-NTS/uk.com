@@ -81,13 +81,15 @@ public class AppOvertimeFinder {
 				appDispInfoStartupOutput,
 				startTimeSPR,
 				endTimeSPR,
-				isProxy,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null);
+				isProxy
+//				,
+//				null,
+//				null,
+//				null,
+//				null,
+//				null,
+//				null
+				);
 		return DisplayInfoOverTimeDto.fromDomain(output);
 	}
 }
