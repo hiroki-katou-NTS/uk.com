@@ -1,14 +1,11 @@
 package nts.uk.ctx.at.function.infra.entity.alarmworkplace.condition;
 
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.EndDate;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.StartDate;
-import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.EndSpecify;
-import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.StartSpecify;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.singlemonth.SingleMonth;
 import nts.uk.ctx.at.function.dom.alarm.workplace.checkcondition.WorkplaceCategory;
 import nts.uk.ctx.at.function.dom.alarmworkplace.CheckCondition;
 import nts.uk.ctx.at.function.dom.alarmworkplace.ExtractionPeriodDaily;
@@ -17,15 +14,14 @@ import nts.uk.ctx.at.function.dom.alarmworkplace.RangeToExtract;
 import nts.uk.ctx.at.function.infra.entity.alarmworkplace.alarmpatternworkplace.KfnmtALstWkpPtn;
 import nts.uk.ctx.at.function.infra.entity.alarmworkplace.monthdayperiod.*;
 import nts.uk.ctx.at.function.infra.entity.alarmworkplace.singlemonth.KfnmtAssignNumofMon;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "KFNMT_WRKPCHECK_CONDITION")
@@ -100,6 +96,44 @@ public class KfnmtWkpCheckCondition extends UkJpaEntity implements Serializable 
         @JoinColumn(name = "CATEGORY", referencedColumnName = "CATEGORY", insertable = false, updatable = false)})
     public KfnmtAssignDatelineEnd kfnmtAssignDatelineEnd;
 
+    public KfnmtWkpCheckCondition(KfnmtWkpCheckConditionPK pk, List<KfnmtPtnMapCat> checkConItems, KfnmtAssignNumofMon assignNumofMon) {
+        super();
+        this.pk = pk;
+        this.checkConItems = checkConItems;
+        this.kfnmtAssignNumofMon = assignNumofMon;
+    }
+
+    public KfnmtWkpCheckCondition(KfnmtWkpCheckConditionPK pk, List<KfnmtPtnMapCat> checkConItems) {
+        super();
+        this.pk = pk;
+        this.checkConItems = checkConItems;
+    }
+
+    public KfnmtWkpCheckCondition(KfnmtWkpCheckConditionPK pk, List<KfnmtPtnMapCat> checkConItems,
+                                  KfnmtAssignMonthStart assignMonthStart,
+                                  KfnmtAssignMonthEnd assignMonthEnd) {
+        super();
+        this.pk = pk;
+        this.checkConItems = checkConItems;
+        this.kfnmtAssignMonthStart = assignMonthStart;
+        this.kfnmtAssignMonthEnd = assignMonthEnd;
+    }
+
+    public KfnmtWkpCheckCondition(KfnmtWkpCheckConditionPK pk,
+                                  List<KfnmtPtnMapCat> checkConItems,
+                                  KfnmtAssignDayStart assignDayStart,
+                                  KfnmtAssignDatelineStart assignDatelineStart,
+                                  KfnmtAssignDayEnd assignDayEnd,
+                                  KfnmtAssignDatelineEnd assignDatelineEnd) {
+        super();
+        this.pk = pk;
+        this.checkConItems = checkConItems;
+        this.kfnmtAssignDayStart = assignDayStart;
+        this.kfnmtAssignDatelineStart = assignDatelineStart;
+        this.kfnmtAssignDatelineEnd = assignDatelineEnd;
+        this.kfnmtAssignDayEnd = assignDayEnd;
+    }
+
     public CheckCondition toDomain() {
 
         RangeToExtract extractPeriod = null;
@@ -144,5 +178,62 @@ public class KfnmtWkpCheckCondition extends UkJpaEntity implements Serializable 
             return kfnmtAssignDatelineEnd.toDomain();
         } else return null;
     }
+
+    public static KfnmtWkpCheckCondition toEntity(CheckCondition domain, String patternCD) {
+
+        String companyId = AppContexts.user().companyId();
+        int category = domain.getWorkplaceCategory().value;
+        if (category == WorkplaceCategory.MONTHLY.value) {
+            return new KfnmtWkpCheckCondition(
+                new KfnmtWkpCheckConditionPK(AppContexts.user().companyId(), patternCD, category),
+                domain.getCheckConditionLis().stream().map(
+                    x -> new KfnmtPtnMapCat(buildCheckConItemPK(domain, x.v(), companyId, patternCD)))
+                    .collect(Collectors.toList()),
+                KfnmtAssignNumofMon.toEntity((SingleMonth) domain.getRangeToExtract(), patternCD, category)
+            );
+        } else if (category == WorkplaceCategory.MASTER_CHECK_BASIC.value || domain.getWorkplaceCategory().value == WorkplaceCategory.MASTER_CHECK_WORKPLACE.value) {
+            return new KfnmtWkpCheckCondition(
+                new KfnmtWkpCheckConditionPK(AppContexts.user().companyId(), patternCD, category),
+                domain.getCheckConditionLis().stream().map(
+                    x -> new KfnmtPtnMapCat(buildCheckConItemPK(domain, x.v(), companyId, patternCD)))
+                    .collect(Collectors.toList()),
+                KfnmtAssignMonthStart.toEntity(((ExtractionPeriodMonthly) domain.getRangeToExtract()).getStartMonth(), patternCD, category),
+                KfnmtAssignMonthEnd.toEntity(((ExtractionPeriodMonthly) domain.getRangeToExtract()).getEndMonth(), patternCD, category)
+
+            );
+        } else if (category == WorkplaceCategory.MASTER_CHECK_DAILY.value || domain.getWorkplaceCategory().value == WorkplaceCategory.SCHEDULE_DAILY.value) {
+
+            return new KfnmtWkpCheckCondition(
+                new KfnmtWkpCheckConditionPK(AppContexts.user().companyId(), patternCD, category),
+                domain.getCheckConditionLis().stream().map(
+                    x -> new KfnmtPtnMapCat(buildCheckConItemPK(domain, x.v(), companyId, patternCD)))
+                    .collect(Collectors.toList()),
+
+                ((ExtractionPeriodDaily) domain.getRangeToExtract()).getStartDate().getStrDays().isPresent() ?
+                    KfnmtAssignDayStart.toEntity(((ExtractionPeriodDaily) domain.getRangeToExtract()).getStartDate(), patternCD, category) : null,
+
+                ((ExtractionPeriodDaily) domain.getRangeToExtract()).getStartDate().getStrMonth().isPresent() ?
+                    KfnmtAssignDatelineStart.toEntity(((ExtractionPeriodDaily) domain.getRangeToExtract()).getStartDate(), patternCD, category) : null,
+
+                ((ExtractionPeriodDaily) domain.getRangeToExtract()).getEndDate().getEndDays().isPresent() ?
+                    KfnmtAssignDayEnd.toEntity(((ExtractionPeriodDaily) domain.getRangeToExtract()).getEndDate(), patternCD, category) : null,
+
+                ((ExtractionPeriodDaily) domain.getRangeToExtract()).getEndDate().getEndMonth().isPresent() ?
+                    KfnmtAssignDatelineEnd.toEntity(((ExtractionPeriodDaily) domain.getRangeToExtract()).getEndDate(), patternCD, category) : null
+
+            );
+        }else {
+            return new KfnmtWkpCheckCondition(
+                new KfnmtWkpCheckConditionPK(AppContexts.user().companyId(), patternCD, category),
+                domain.getCheckConditionLis().stream().map(
+                    x -> new KfnmtPtnMapCat(buildCheckConItemPK(domain, x.v(), companyId, patternCD)))
+                    .collect(Collectors.toList()));
+        }
+    }
+
+    private static KfnmtPtnMapCatPk buildCheckConItemPK(CheckCondition domain, String checkConditionCD, String companyId, String alarmPatternCode) {
+        return new KfnmtPtnMapCatPk(companyId, alarmPatternCode, domain.getWorkplaceCategory().value, checkConditionCD);
+    }
+
 
 }

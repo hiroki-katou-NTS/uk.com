@@ -5,8 +5,8 @@ import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.EndDate;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification;
-import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.EndSpecify;
 import nts.uk.ctx.at.function.infra.entity.alarmworkplace.condition.KfnmtWkpCheckCondition;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
@@ -56,5 +56,28 @@ public class KfnmtAssignDatelineEnd extends UkJpaEntity implements Serializable 
         endDate.setEndMonth(EnumAdaptor.valueOf(previous, PreviousClassification.class), monthNo,curentMonth);
         return endDate;
     }
+
+    public void fromEntity(KfnmtAssignDatelineEnd newEntity) {
+        this.contractCode = AppContexts.user().contractCode();
+        this.endSpecify = newEntity.endSpecify;
+        this.monthNo = newEntity.monthNo;
+        this.curentMonth = newEntity.curentMonth;
+        this.previous = newEntity.previous;
+    }
+
+    public static KfnmtAssignDatelineEnd toEntity(EndDate domain, String patternCD, int category) {
+
+        KfnmtAssignDatelineEnd entity = new KfnmtAssignDatelineEnd();
+        entity.pk = new KfnmtAssignDatelineEndPk(AppContexts.user().companyId(), patternCD, category);
+        entity.contractCode = AppContexts.user().contractCode();
+        entity.endSpecify = domain.getEndSpecify().value;
+        if (domain.getEndMonth().isPresent()) {
+            entity.monthNo = domain.getEndMonth().get().getMonth();
+            entity.curentMonth = domain.getEndMonth().get().isCurentMonth();
+            entity.previous = domain.getEndMonth().get().getMonthPrevious().value;
+        }
+        return entity;
+    }
+
 
 }
