@@ -1,6 +1,8 @@
 /// <reference path="../../generic.d.ts/fullcalendar/index.d.ts" />
 
 module nts.uk.ui.koExtentions {
+    const { version } = nts.uk.util.browser;
+
     const C_COMP_NAME = 'fc-copy';
     const E_COMP_NAME = 'fc-editor';
     const COMPONENT_NAME = 'nts-fullcalendar';
@@ -38,6 +40,9 @@ module nts.uk.ui.koExtentions {
         .fc-container .fc-scrollgrid table {
             border-right-style: solid;
             border-bottom-style: hidden;
+        }
+        .fc-container .fc-button-group button:focus {
+            z-index: 2;
         }
         .fc-container .fc-button-group button:not(:last-child) {
             border-top-right-radius: 0px;
@@ -191,12 +196,14 @@ module nts.uk.ui.koExtentions {
 
     type PARAMS = {
         scrollTime: number;
+        initialDate: Date | KnockoutObservable<Date>;
         slotDuration: SLOT_DURATION | KnockoutObservable<SLOT_DURATION>;
         weekends: boolean | KnockoutObservable<boolean>;
         firstDay: DAY_OF_WEEK | KnockoutObservable<DAY_OF_WEEK>;
         businessHours: BUSINESSHOUR[] | KnockoutObservableArray<BUSINESSHOUR>;
     };
 
+    const formatDate = (date: Date) => moment(date).format('YYYY-MM-DDTHH:mm:ss');
     const formatTime = (time: number) => {
         const f = Math.floor;
         const times = [f(time / 60), f(time % 60), 0]
@@ -239,11 +246,20 @@ module nts.uk.ui.koExtentions {
                     firstDay: ko.observable(1),
                     slotDuration: ko.observable(30),
                     weekends: ko.observable(true),
+                    initialDate: ko.observable(new Date()),
                     businessHours: ko.observableArray([])
                 };
             }
 
-            const { weekends, firstDay, scrollTime, slotDuration, businessHours } = this.params;
+            const { scrollTime, initialDate, weekends, firstDay, slotDuration, businessHours } = this.params;
+
+            if (scrollTime === undefined) {
+                this.params.scrollTime = 360;
+            }
+
+            if (initialDate === undefined) {
+                this.params.initialDate = ko.observable(new Date());
+            }
 
             if (weekends === undefined) {
                 this.params.weekends = ko.observable(true);
@@ -251,10 +267,6 @@ module nts.uk.ui.koExtentions {
 
             if (firstDay === undefined) {
                 this.params.firstDay = ko.observable(1);
-            }
-
-            if (scrollTime === undefined) {
-                this.params.scrollTime = 360;
             }
 
             if (slotDuration === undefined) {
@@ -266,17 +278,18 @@ module nts.uk.ui.koExtentions {
             }
         }
 
-        public created() {
-            const vm = this;
-        }
-
         public mounted() {
             const vm = this;
             const { params, dataEvent } = vm;
+            const { scrollTime, firstDay, weekends, initialDate } = params;
 
             const $el = $(vm.$el);
             const $fc = $el.find('div.fc').get(0);
-            const FC: FullCalendar = _.get(window, 'FullCalendar') || null;
+            const FC: FullCalendar | null = _.get(window, 'FullCalendar') || null;
+
+            if (version.match(/IE/)) {
+                $el.addClass('ie');
+            }
 
             if (!FC || !FC.Calendar) {
                 const pre = document.createElement('pre');
@@ -292,11 +305,24 @@ module nts.uk.ui.koExtentions {
                 return;
             }
 
-            const { version } = nts.uk.util.browser;
+            dataEvent.alt
+                .subscribe((c) => {
+                    $el.attr('alt', c + '');
+                });
 
-            if (version.match(/IE/)) {
-                $el.addClass('ie');
-            }
+            dataEvent.ctrl
+                .subscribe((c) => {
+                    $el.attr('ctrl', c + '');
+                });
+
+            dataEvent.shift
+                .subscribe((c) => {
+                    $el.attr('shift', c + '');
+                });
+
+            dataEvent.alt.valueHasMutated();
+            dataEvent.ctrl.valueHasMutated();
+            dataEvent.shift.valueHasMutated();
 
             const calendar = new FC.Calendar($fc, {
                 customButtons: {
@@ -314,7 +340,7 @@ module nts.uk.ui.koExtentions {
                     }
                 },
                 locale: 'ja',
-                height: '700px',
+                height: '100px',
                 headerToolbar: {
                     left: 'today prev,next',
                     center: 'title',
@@ -322,7 +348,10 @@ module nts.uk.ui.koExtentions {
                 },
                 themeSystem: 'default',
                 initialView: 'timeGridWeek',
-                scrollTime: formatTime(params.scrollTime),
+                firstDay: ko.unwrap(firstDay),
+                weekends: ko.unwrap(weekends),
+                scrollTime: formatTime(scrollTime),
+                initialDate: formatDate(ko.unwrap(initialDate)),
                 editable: true,
                 selectable: true,
                 selectMirror: true,
@@ -331,7 +360,6 @@ module nts.uk.ui.koExtentions {
                 dayHeaders: true,
                 allDaySlot: false,
                 slotEventOverlap: false,
-                initialDate: '2020-11-11',
                 // hiddenDays: [5, 6],
                 dayHeaderContent: (opts: any) => moment(opts.date).format('DD(ddd)'),
                 eventDidMount: (arg) => {
@@ -370,7 +398,8 @@ module nts.uk.ui.koExtentions {
                 eventOverlap: false, // (stillEvent) => stillEvent.allDay,
                 select: (arg) => {
                     calendar.unselect();
-                    calendar.addEvent(arg);
+                    debugger;
+                    // calendar.addEvent(arg);
                 },
                 selectOverlap: false, // (evt) => evt.allDay,
                 selectAllow: (evt) => evt.start.getDate() === evt.end.getDate(),
@@ -409,27 +438,30 @@ module nts.uk.ui.koExtentions {
 
             calendar.render();
 
-            _.extend(window, { calendar, params });
+            // update height
+            const fce = calendar.el.getBoundingClientRect();
+
+            if (fce) {
+                const { top } = fce;
+                const { innerHeight } = window;
+
+                calendar.setOption('height', `${innerHeight - top - 10}px`);
+            }
 
             // set weekends
-            ko.computed({
-                read: () => {
-                    const weekends = ko.unwrap(params.weekends);
-
-                    calendar.setOption('weekends', weekends);
-                },
-                disposeWhenNodeIsRemoved: vm.$el
-            });
+            if (ko.isObservable(weekends)) {
+                weekends.subscribe(w => calendar.setOption('weekends', w));
+            }
 
             // set firstDay
-            ko.computed({
-                read: () => {
-                    const firstDay = ko.unwrap(params.firstDay);
+            if (ko.isObservable(firstDay)) {
+                firstDay.subscribe(f => calendar.setOption('firstDay', f));
+            }
 
-                    calendar.setOption('firstDay', firstDay);
-                },
-                disposeWhenNodeIsRemoved: vm.$el
-            });
+            // set initialDate
+            if (ko.isObservable(params.initialDate)) {
+                params.initialDate.subscribe(c => calendar.gotoDate(formatDate(c)));
+            }
 
             // set slotDuration
             ko.computed({
@@ -443,7 +475,7 @@ module nts.uk.ui.koExtentions {
                 disposeWhenNodeIsRemoved: vm.$el
             });
 
-            // set slotDuration
+            // set businessHours
             ko.computed({
                 read: () => {
                     const businessHours: BUSINESSHOUR[] = ko.unwrap(params.businessHours) as any;
@@ -457,41 +489,27 @@ module nts.uk.ui.koExtentions {
                 disposeWhenNodeIsRemoved: vm.$el
             });
 
+            // register all global event
+            vm.initalEvents();
 
-            // update height
-            const fce = calendar.el.getBoundingClientRect();
+            // test item
+            _.extend(window, { calendar, params });
+        }
 
-            if (fce) {
-                const { top } = fce;
-                const { innerHeight } = window;
+        public destroyed() {
+            const vm = this;
+            const { events } = vm;
 
-                calendar.setOption('height', `${innerHeight - top - 10}px`);
-            }
-
-            vm.registerEvent('mouseup', () => dataEvent.mouse(false));
-            vm.registerEvent('mousedown', () => dataEvent.mouse(true));
-
-            vm.registerEvent('keydown', (evt: JQueryEventObject) => {
-                if (evt.keyCode === 16) {
-                    dataEvent.shift(true);
-                } else if (evt.keyCode === 17) {
-                    dataEvent.ctrl(true);
-                } else if (evt.keyCode === 18) {
-                    dataEvent.alt(true);
-                }
+            _.each(events, (evts: J_EVENT[], k: string) => {
+                _.each(evts, (h: J_EVENT) => $(window).off(k, h))
             });
+        }
 
-            vm.registerEvent('keyup', (evt: JQueryEventObject) => {
-                if (evt.keyCode === 16) {
-                    dataEvent.shift(false);
-                } else if (evt.keyCode === 17) {
-                    dataEvent.ctrl(false);
-                } else if (evt.keyCode === 18) {
-                    dataEvent.alt(false);
-                }
-            });
+        private initalEvents() {
+            const vm = this;
+            const { $el, params, dataEvent } = vm;
 
-            $el.on('mousewheel', (evt) => {
+            $($el).on('mousewheel', (evt) => {
                 if (dataEvent.ctrl() === true || dataEvent.popup() === true) {
                     evt.preventDefault();
 
@@ -511,14 +529,36 @@ module nts.uk.ui.koExtentions {
                     }
                 }
             });
-        }
 
-        public destroyed() {
-            const vm = this;
-            const { events } = vm;
+            vm.registerEvent('mouseup', () => dataEvent.mouse(false));
+            vm.registerEvent('mousedown', () => dataEvent.mouse(true));
 
-            _.each(events, (evts: J_EVENT[], k: string) => {
-                _.each(evts, (h: J_EVENT) => $(window).off(k, h))
+            vm.registerEvent('keydown', (evt: JQueryEventObject) => {
+                if (evt.keyCode === 16 || evt.shiftKey) {
+                    dataEvent.shift(true);
+                }
+
+                if (evt.keyCode === 17 || evt.ctrlKey) {
+                    dataEvent.ctrl(true);
+                }
+
+                if (evt.keyCode === 18 || evt.altKey) {
+                    dataEvent.alt(true);
+                }
+            });
+
+            vm.registerEvent('keyup', (evt: JQueryEventObject) => {
+                if (evt.keyCode === 16 || evt.shiftKey) {
+                    dataEvent.shift(false);
+                }
+
+                if (evt.keyCode === 17 || evt.ctrlKey) {
+                    dataEvent.ctrl(false);
+                }
+
+                if (evt.keyCode === 18 || evt.altKey) {
+                    dataEvent.alt(false);
+                }
             });
         }
 
@@ -535,7 +575,6 @@ module nts.uk.ui.koExtentions {
             $(window).on(name, cb);
         }
     }
-
 
     export module components {
         @handler({
