@@ -31,7 +31,7 @@ module nts.uk.ui.koExtentions {
             user-select: none; /* Non-prefixed version, currently
                                         supported by Chrome, Edge, Opera and Firefox */
         }
-        .fc-container .fc-timegrid thead td .fc-scroller {
+        .fc-container:not(.ie) .fc-timegrid thead td .fc-scroller {
             overflow: hidden !important;
         }
         .fc-container .fc-scrollgrid table {
@@ -167,6 +167,10 @@ module nts.uk.ui.koExtentions {
     type J_EVENT = (evt: JQueryEventObject) => void;
     type G_EVENT = { [key: string]: J_EVENT[]; };
 
+    type PARAMS = {
+        shiftSelect: boolean | KnockoutObservable<boolean>;
+    }
+
     @component({
         name: COMPONENT_NAME,
         template: `<div class="fc"></div>
@@ -183,12 +187,30 @@ module nts.uk.ui.koExtentions {
             popup: false
         };
 
-        created() {
+        constructor(private params: PARAMS) {
+            super();
 
+            if (!params) {
+                this.params = {
+                    shiftSelect: ko.observable(false)
+                };
+            }
+
+            const { shiftSelect } = this.params;
+
+            if (shiftSelect === undefined) {
+                this.params.shiftSelect = ko.observable(false)
+            }
+        }
+
+        created() {
+            const vm = this;
         }
 
         mounted() {
             const vm = this;
+            const { params, dataEvent } = vm;
+
             const $el = $(vm.$el);
             const $fc = $el.find('div.fc').get(0);
             const $ed = $el.find('div.fc-popup-editor').get(0);
@@ -204,7 +226,7 @@ module nts.uk.ui.koExtentions {
                     $ed.classList.remove('show');
                 }
 
-                vm.dataEvent.popup = false;
+                dataEvent.popup = false;
             };
 
             if (!FC || !FC.Calendar) {
@@ -221,6 +243,12 @@ module nts.uk.ui.koExtentions {
                 return;
             }
 
+            const { version } = nts.uk.util.browser;
+
+            if (version.match(/IE/)) {
+                $el.addClass('ie');
+            }
+
             const calendar = new FC.Calendar($fc, {
                 customButtons: {
                     copyDay: {
@@ -230,9 +258,8 @@ module nts.uk.ui.koExtentions {
                         }
                     }
                 },
-                height: 'auto',
+                height: '700px',
                 locale: 'ja',
-                expandRows: true,
                 headerToolbar: {
                     left: 'today prev,next',
                     center: 'title',
@@ -240,11 +267,11 @@ module nts.uk.ui.koExtentions {
                 },
                 themeSystem: 'default',
                 initialView: 'timeGridWeek',
-                // initialDate: '2020-09-12',
-                navLinks: true, // can click day/week names to navigate views
+                // navLinks: true, // can click day/week names to navigate views
                 editable: true,
                 selectable: false,
                 selectMirror: true,
+                selectMinDistance: 15,
                 nowIndicator: true,
                 dayMaxEvents: true, // allow "more" link when too many events
                 scrollTime: '07:00:00',
@@ -265,14 +292,14 @@ module nts.uk.ui.koExtentions {
                         calendar.trigger('eventClick', {
                             el: arg.el,
                             event: arg.event,
-                            jsEvent: new MouseEvent('click', {}),
+                            jsEvent: null,
                             view: calendar.view
                         });
                     }
                 },
                 eventClick: (evt) => {
                     if ($ed && evt.el) {
-                        if (vm.dataEvent.ctrl) {
+                        if (dataEvent.ctrl) {
                             return;
                         }
 
@@ -298,7 +325,7 @@ module nts.uk.ui.koExtentions {
 
                             ko.applyBindingsToNode($ed, { [E_COMP_NAME]: evt.event });
 
-                            vm.dataEvent.popup = true;
+                            dataEvent.popup = true;
                         }
                     }
                 },
@@ -324,9 +351,6 @@ module nts.uk.ui.koExtentions {
                 dayCellDidMount: (evt: any) => {
                     // console.log(evt);
                 },
-                allDayDidMount: (evt: any) => {
-                    // console.log(evt.el);
-                },
                 datesSet: (dateInfo) => {
                     console.log(dateInfo);
                 },
@@ -349,15 +373,8 @@ module nts.uk.ui.koExtentions {
                         ko.applyBindingsToNode(evts, { component: { name: 'fc-events', params: {} } });
                         ko.applyBindingsToNode(times, { component: { name: 'fc-times', params: {} } });
                     }
-
-                    //$el.find('style').first().html(DEFAULT_STYLE);
                 },
-                firstDay: 1,
                 events: [],
-                /*validRange: {
-                    start: '2020-11-06T05:00',
-                    end: '2020-11-06T06:00'
-                },*/
                 businessHours: [{
                     // days of week. an array of zero-based day of week integers (0=Sunday)
                     daysOfWeek: [1, 2, 3, 4, 5], // Monday - Thursday
@@ -374,29 +391,39 @@ module nts.uk.ui.koExtentions {
                     endTime: '00:00'
                 }],
                 select: (arg) => {
-                    if (vm.dataEvent.shift) {
+                    if (ko.unwrap(params.shiftSelect) ? dataEvent.shift : true) {
                         calendar.unselect();
                         calendar.addEvent(arg);
                     }
                 },
                 selectOverlap: (evt) => evt.allDay,
                 selectAllow: (evt) => {
-                    // const time = new Date().getTime();
-                    return evt.start.getDate() === evt.end.getDate();/* &&
-                                ((evt.start.getTime() < time && evt.end.getTime() < time) ||
-                                    (evt.start.getTime() > time && evt.end.getTime() > time));*/
+                    return evt.start.getDate() === evt.end.getDate();
                 }
             });
 
             calendar.render();
 
-            // calendar.addEvent({ title: 'Vuong Dep trai', start: '2020-09-07', allDay: false })
-
-            // Object.assign(window, { calendar });
-
+            ko.computed({
+                read: () => {
+                    calendar.setOption('selectable', !ko.unwrap(params.shiftSelect));
+                },
+                disposeWhenNodeIsRemoved: vm.$el
+            });
             // calendar.setOption('slotDuration', '00:30:00');
 
-            calendar.setOption('height', '700px');
+            const fce = calendar.el.getBoundingClientRect();
+
+            if (fce) {
+                const { top } = fce;
+                const { innerHeight } = window;
+
+                calendar.setOption('height', `${innerHeight - top - 10}px`);
+            }
+
+            vm.registerEvent('resize', () => {
+                calendar.updateSize();
+            });
 
             vm.registerEvent('mousedown', (evt: JQueryEventObject) => hideEditor(evt.target));
 
@@ -404,7 +431,9 @@ module nts.uk.ui.koExtentions {
                 if (evt.keyCode === 16) {
                     vm.dataEvent.shift = true;
 
-                    calendar.setOption('selectable', true);
+                    if (ko.unwrap(params.shiftSelect)) {
+                        calendar.setOption('selectable', true);
+                    }
 
                     document.body.setAttribute('shift', 'true');
                 } else if (evt.keyCode === 17) {
@@ -422,7 +451,9 @@ module nts.uk.ui.koExtentions {
                 if (evt.keyCode === 16) {
                     vm.dataEvent.shift = false;
 
-                    calendar.setOption('selectable', false);
+                    if (ko.unwrap(params.shiftSelect)) {
+                        calendar.setOption('selectable', false);
+                    }
 
                     document.body.setAttribute('shift', 'false');
                 } else if (evt.keyCode === 17) {
@@ -490,14 +521,14 @@ module nts.uk.ui.koExtentions {
                 <svg width="20" height="20" viewBox="0 0 24 24" focusable="false" title="Email">
                     <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-.8 2L12 10.8 4.8 6h14.4zM4 18V7.87l8 5.33 8-5.33V18H4z"></path>
                 </svg>
-                <svg width="20" height="20" viewBox="0 0 24 24" focusable="false" title="Edit">
+                <svg width="20" height="20" viewBox="0 0 24 24" focusable="false" title="Edit" data-bind="click: edit, timeClick: -1">
                     <path d="M20.41 4.94l-1.35-1.35c-.78-.78-2.05-.78-2.83 0L3 16.82V21h4.18L20.41 7.77c.79-.78.79-2.05 0-2.83zm-14 14.12L5 19v-1.36l9.82-9.82 1.41 1.41-9.82 9.83z"></path>
                 </svg>
-                <svg width="20" height="20" viewBox="0 0 24 24" focusable="false" title="Remove">
+                <svg width="20" height="20" viewBox="0 0 24 24" focusable="false" title="Remove" data-bind="click: remove, timeClick: -1">
                     <path d="M15 4V3H9v1H4v2h1v13c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V6h1V4h-5zm2 15H7V6h10v13z"></path>
                     <path d="M9 8h2v9H9zm4 0h2v9h-2z"></path>
                 </svg>
-                <svg width="20" height="20" viewBox="0 0 24 24" focusable="false" title="Close" data-bind="click: $component.close">
+                <svg width="20" height="20" viewBox="0 0 24 24" focusable="false" title="Close" data-bind="click: $component.close, timeClick: -1">
                     <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"></path>
                 </svg>
             </div>
@@ -509,9 +540,35 @@ module nts.uk.ui.koExtentions {
                 super();
             }
 
+            mounted() {
+                const vm = this;
+
+                $(vm.$el).find('[data-bind]').removeAttr('data-bind');
+            }
+
+            edit() {
+                const vm = this;
+                const { data } = vm;
+
+                console.log(data);
+
+                vm.unbind();
+            }
+
+            remove() {
+                const vm = this;
+                const { data } = vm;
+
+                if (data) {
+                    data.remove();
+                }
+
+                vm.unbind();
+            }
+
             close() {
                 const vm = this;
-                const { $el, data } = vm;
+                const { data } = vm;
 
                 if (data) {
                     const { id, groupId, title } = data;
@@ -520,6 +577,13 @@ module nts.uk.ui.koExtentions {
                         data.remove();
                     }
                 }
+
+                vm.unbind();
+            }
+
+            unbind() {
+                const vm = this;
+                const { $el } = vm;
 
                 if ($el) {
                     ko.cleanNode($el);
