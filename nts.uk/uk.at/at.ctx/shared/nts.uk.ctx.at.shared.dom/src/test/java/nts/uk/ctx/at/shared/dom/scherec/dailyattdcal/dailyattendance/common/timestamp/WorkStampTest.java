@@ -2,6 +2,8 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.tim
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Optional;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -18,30 +20,21 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class WorkStampTest {
 	@Test
 	public void getters() {
-		val workStamp = WorkStampHelper.createWorkStamp();
+		val workStamp = WorkStampHelper.createWorkStampWithTimeWithDay(1); 
 		NtsAssert.invokeGetters(workStamp);
 	}
 	
 	/**
 	 * less_than = false
-	 * workStamp = 1730 
-	 * compareWorkStamp = 830
+	 * workStamp = 830 
+	 * compareWorkStamp = 829
 	 */
 	@Test
 	public void check_less_than_false() {		
-		val workStamp = new WorkStamp(new TimeWithDayAttr(100)
-				, new TimeWithDayAttr(1730)
-				, new WorkLocationCD("001")
-				, TimeChangeMeans.REAL_STAMP
-				, EngravingMethod.TIME_RECORD_FINGERPRINT_ENGRAVING
-				);
+
+		val workStamp = WorkStampHelper.createWorkStampWithTimeWithDay(830); 
+		val compareWorkStamp = WorkStampHelper.createWorkStampWithTimeWithDay(829); 
 		
-		val compareWorkStamp = new WorkStamp(new TimeWithDayAttr(100)
-				, new TimeWithDayAttr(830)
-				, new WorkLocationCD("001")
-				, TimeChangeMeans.REAL_STAMP
-				, EngravingMethod.TIME_RECORD_FINGERPRINT_ENGRAVING
-				);
 		assertThat(workStamp.lessThan(compareWorkStamp)).isFalse();
 		
 	}
@@ -53,54 +46,37 @@ public class WorkStampTest {
 	 */
 	@Test
 	public void check_less_than_false_1() {		
-		val workStamp = new WorkStamp(new TimeWithDayAttr(100)
-				, new TimeWithDayAttr(830)
-				, new WorkLocationCD("001")
-				, TimeChangeMeans.REAL_STAMP
-				, EngravingMethod.TIME_RECORD_FINGERPRINT_ENGRAVING
-				);
 		
-		val compareWorkStamp = new WorkStamp(new TimeWithDayAttr(100)
-				, new TimeWithDayAttr(830)
-				, new WorkLocationCD("001")
-				, TimeChangeMeans.REAL_STAMP
-				, EngravingMethod.TIME_RECORD_FINGERPRINT_ENGRAVING
-				);
+		val workStamp = WorkStampHelper.createWorkStampWithTimeWithDay(830); 
+		val compareWorkStamp = WorkStampHelper.createWorkStampWithTimeWithDay(830);
+		
 		assertThat(workStamp.lessThan(compareWorkStamp)).isFalse();
 	}
 
 	/**
-	 * less_than = false
+	 * less_than = true
 	 * workStamp = 830 
-	 * compareWorkStamp = 1730
+	 * compareWorkStamp = 831
 	 */
 	@Test
-	public void check_less_than_true() {		
-		val workStamp = new WorkStamp(new TimeWithDayAttr(100)
-				, new TimeWithDayAttr(830)
-				, new WorkLocationCD("001")
-				, TimeChangeMeans.REAL_STAMP
-				, EngravingMethod.TIME_RECORD_FINGERPRINT_ENGRAVING
-				);
+	public void check_less_than_true() {	
 		
-		val compareWorkStamp = new WorkStamp(new TimeWithDayAttr(100)
-				, new TimeWithDayAttr(1730)
-				, new WorkLocationCD("001")
-				, TimeChangeMeans.REAL_STAMP
-				, EngravingMethod.TIME_RECORD_FINGERPRINT_ENGRAVING
-				);
+		val workStamp = WorkStampHelper.createWorkStampWithTimeWithDay(830); 
+		val compareWorkStamp = WorkStampHelper.createWorkStampWithTimeWithDay(831);
+		
 		assertThat(workStamp.lessThan(compareWorkStamp)).isTrue();
 	}
 	
-	static class WorkStampHelper{
-		public static WorkStamp createWorkStamp() {
-			return new WorkStamp(new TimeWithDayAttr(100)
-					, new TimeWithDayAttr(830)
-					, new WorkLocationCD("001")
-					, TimeChangeMeans.REAL_STAMP
-					, EngravingMethod.TIME_RECORD_FINGERPRINT_ENGRAVING
-					);
+	public static class WorkStampHelper{
+		
+		public static WorkStamp createWorkStampWithTimeWithDay(int timeWithDay) {
+			return new WorkStamp( 
+					new WorkTimeInformation(
+							new ReasonTimeChange(TimeChangeMeans.REAL_STAMP, null ), 
+							new TimeWithDayAttr(timeWithDay)), 
+					Optional.of(new WorkLocationCD("001")));
 		}
+		
 	}
 
 }
