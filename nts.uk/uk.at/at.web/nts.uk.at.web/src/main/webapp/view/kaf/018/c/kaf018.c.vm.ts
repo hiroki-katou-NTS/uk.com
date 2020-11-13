@@ -112,12 +112,12 @@ module nts.uk.at.view.kaf018.c.viewmodel {
 						
 					},
 					{ 
-						headerText: vm.$i18n('KAF018_491'), 
+						headerText: vm.$i18n('KAF018_550'), 
 						key: 'countEmp', 
 						width: '100px', 
 						columnCssClass: 'kaf018-c-column-countEmp',
 						dataType: 'number', 
-						formatter: (key: number) => key + '人'
+						formatter: (key: number) => key + vm.$i18n('KAF018_551')
 					},
 					{ 
 						headerText: vm.$i18n('KAF018_351') + vm.$i18n('KAF018_352'), 
