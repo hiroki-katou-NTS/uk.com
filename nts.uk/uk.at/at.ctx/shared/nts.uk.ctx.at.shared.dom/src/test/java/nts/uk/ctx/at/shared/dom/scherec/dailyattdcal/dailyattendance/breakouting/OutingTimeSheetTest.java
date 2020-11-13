@@ -39,7 +39,7 @@ public class OutingTimeSheetTest {
 
 		//外出時間帯
 		val outingTime = Helper.createOutingTime(
-				Optional.of(goOut), 
+				Optional.of(goOut),
 				Optional.of(comeBack));
 		
 		NtsAssert.invokeGetters(outingTime);
@@ -49,7 +49,7 @@ public class OutingTimeSheetTest {
 	 * 計算可能な状態か判断する(isCalcState) == false
 	 */
 	@Test
-	public void getTimeZone_empty_1() {	
+	public void getTimeZone_empty_1() {
 		
 		//外出
 		val goOut = Helper.createTimeAcutualStamp(new TimeWithDayAttr(1600));
@@ -89,10 +89,10 @@ public class OutingTimeSheetTest {
 
 		//外出時間帯
 		val outingTime = Helper.createOutingTime(
-				Optional.of(goOut), 
+				Optional.of(goOut),
 				Optional.of(comeBack));
 		
-		new Expectations(outingTime, goOut) {{
+		new Expectations(outingTime) {{
 			
 			outingTime.isCalcState();
 			result = true;
@@ -121,7 +121,7 @@ public class OutingTimeSheetTest {
 
 		//外出時間帯
 		val outingTime = Helper.createOutingTime(
-				Optional.of(goOut), 
+				Optional.of(goOut),
 				Optional.of(comeBack));
 		
 		new Expectations(outingTime) {{
@@ -151,7 +151,7 @@ public class OutingTimeSheetTest {
 
 		//外出時間帯
 		val outingTime = Helper.createOutingTime(
-				Optional.of(goOut), 
+				Optional.of(goOut),
 				Optional.of(comeBack));
 		
 		new Expectations(outingTime) {{
@@ -190,8 +190,8 @@ public class OutingTimeSheetTest {
 					Helper.createStamp(new TimeWithDayAttr(1000))
 					, Helper.createStamp(stamp)
 					, 1
-	                , new OvertimeDeclaration(new AttendanceTime(100), new AttendanceTime(0))
-	                , null);
+					, new OvertimeDeclaration(new AttendanceTime(100), new AttendanceTime(0))
+					, null);
 		}
 		
 		/**

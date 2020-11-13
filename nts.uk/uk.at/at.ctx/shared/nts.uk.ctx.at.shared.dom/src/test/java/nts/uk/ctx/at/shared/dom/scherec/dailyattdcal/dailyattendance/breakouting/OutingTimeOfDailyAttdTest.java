@@ -35,7 +35,7 @@ public class OutingTimeOfDailyAttdTest {
 	 * Reason isn't matched
 	 */
 	@Test
-	public void getTimeZoneByGoOutReason_empty_case1() {	
+	public void getTimeZoneByGoOutReason_empty_case1() {
 		
 		OutingTimeSheet outingTimeSheet1 = Helper.createOutingTimeSheetWithReason(GoingOutReason.PRIVATE);
 		OutingTimeSheet outingTimeSheet2 = Helper.createOutingTimeSheetWithReason(GoingOutReason.UNION);
@@ -57,7 +57,7 @@ public class OutingTimeOfDailyAttdTest {
 	 * timeZone is empty
 	 */
 	@Test
-	public void getTimeZoneByGoOutReason_empty_case2() {	
+	public void getTimeZoneByGoOutReason_empty_case2() {
 		
 		OutingTimeSheet outingTimeSheet1 = Helper.createOutingTimeSheetWithReason(GoingOutReason.PUBLIC);
 		OutingTimeSheet outingTimeSheet2 = Helper.createOutingTimeSheetWithReason(GoingOutReason.PRIVATE);
@@ -71,7 +71,7 @@ public class OutingTimeOfDailyAttdTest {
 		new Expectations(outingTimeSheet1) {{
 			
 			outingTimeSheet1.getTimeZone();
-			// result = empty; 
+			// result = empty;
 		}};
 		
 		// Action
@@ -83,7 +83,7 @@ public class OutingTimeOfDailyAttdTest {
 	}
 	
 	@Test
-	public void getTimeZoneByGoOutReason_not_empty() {	
+	public void getTimeZoneByGoOutReason_not_empty() {
 		
 		OutingTimeSheet outingTimeSheet1 = Helper.createOutingTimeSheetWithReason(GoingOutReason.PUBLIC); // true
 		OutingTimeSheet outingTimeSheet2 = Helper.createOutingTimeSheetWithReason(GoingOutReason.PRIVATE);
@@ -108,7 +108,7 @@ public class OutingTimeOfDailyAttdTest {
 			result = Optional.of(timeZone1);
 			
 			outingTimeSheet3.getTimeZone();
-			// result = empty; 
+			// result = empty;
 			
 			outingTimeSheet5.getTimeZone();
 			result = Optional.of(timeZone5);
@@ -151,6 +151,6 @@ public class OutingTimeOfDailyAttdTest {
 					, Optional.of(comeBack));
 		}
 		
-	} 
+	}
 	
 }

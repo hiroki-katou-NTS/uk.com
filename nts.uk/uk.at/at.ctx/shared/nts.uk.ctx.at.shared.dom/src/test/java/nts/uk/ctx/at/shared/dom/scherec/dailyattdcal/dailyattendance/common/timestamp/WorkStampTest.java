@@ -16,24 +16,23 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * @author lan_lt
  *
  */
-@RunWith(JMockit.class)
 public class WorkStampTest {
 	@Test
 	public void getters() {
-		val workStamp = WorkStampHelper.createWorkStampWithTimeWithDay(1); 
+		val workStamp = WorkStampHelper.createWorkStampWithTimeWithDay(1);
 		NtsAssert.invokeGetters(workStamp);
 	}
 	
 	/**
 	 * less_than = false
-	 * workStamp = 830 
+	 * workStamp = 830
 	 * compareWorkStamp = 829
 	 */
 	@Test
-	public void check_less_than_false() {		
+	public void check_less_than_false() {
 
-		val workStamp = WorkStampHelper.createWorkStampWithTimeWithDay(830); 
-		val compareWorkStamp = WorkStampHelper.createWorkStampWithTimeWithDay(829); 
+		val workStamp = WorkStampHelper.createWorkStampWithTimeWithDay(830);
+		val compareWorkStamp = WorkStampHelper.createWorkStampWithTimeWithDay(829);
 		
 		assertThat(workStamp.lessThan(compareWorkStamp)).isFalse();
 		
@@ -41,13 +40,13 @@ public class WorkStampTest {
 	
 	/**
 	 * less_than = false
-	 * workStamp = 830 
+	 * workStamp = 830
 	 * compareWorkStamp = 830
 	 */
 	@Test
-	public void check_less_than_false_1() {		
+	public void check_less_than_false_1() {
 		
-		val workStamp = WorkStampHelper.createWorkStampWithTimeWithDay(830); 
+		val workStamp = WorkStampHelper.createWorkStampWithTimeWithDay(830);
 		val compareWorkStamp = WorkStampHelper.createWorkStampWithTimeWithDay(830);
 		
 		assertThat(workStamp.lessThan(compareWorkStamp)).isFalse();
@@ -55,13 +54,13 @@ public class WorkStampTest {
 
 	/**
 	 * less_than = true
-	 * workStamp = 830 
+	 * workStamp = 830
 	 * compareWorkStamp = 831
 	 */
 	@Test
-	public void check_less_than_true() {	
+	public void check_less_than_true() {
 		
-		val workStamp = WorkStampHelper.createWorkStampWithTimeWithDay(830); 
+		val workStamp = WorkStampHelper.createWorkStampWithTimeWithDay(830);
 		val compareWorkStamp = WorkStampHelper.createWorkStampWithTimeWithDay(831);
 		
 		assertThat(workStamp.lessThan(compareWorkStamp)).isTrue();
@@ -70,10 +69,10 @@ public class WorkStampTest {
 	public static class WorkStampHelper{
 		
 		public static WorkStamp createWorkStampWithTimeWithDay(int timeWithDay) {
-			return new WorkStamp( 
+			return new WorkStamp(
 					new WorkTimeInformation(
-							new ReasonTimeChange(TimeChangeMeans.REAL_STAMP, null ), 
-							new TimeWithDayAttr(timeWithDay)), 
+							new ReasonTimeChange(TimeChangeMeans.REAL_STAMP, null ),
+							new TimeWithDayAttr(timeWithDay)),
 					Optional.of(new WorkLocationCD("001")));
 		}
 		
