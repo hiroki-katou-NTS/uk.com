@@ -8,8 +8,9 @@ import java.util.List;
 
 @Data
 public class AnnualWorkLedgerFileQuery {
-    //「１」ExcelPdf区分
+    // ExcelPdf区分: 1 - PDF, 2 - EXCEL
     private int mode;
+
     // A2_3 期間入力 - 開始月
     private GeneralDate startMonth;
 

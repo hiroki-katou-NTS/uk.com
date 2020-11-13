@@ -1,5 +1,6 @@
 package nts.uk.screen.at.ws.kwr004;
 
+import nts.uk.screen.at.app.kwr004.AnnualWorkLedgerInitScreenDto;
 import nts.uk.screen.at.app.kwr004.AnnualWorkLedgerSettingDto;
 import nts.uk.screen.at.app.kwr004.GetAnnualWorkLedgerSettingRequestParams;
 import nts.uk.screen.at.app.kwr004.GetAnnualWorkLedgerSettingScreenQuery;
@@ -16,6 +17,13 @@ public class Kwr004AWebService {
 
     @Inject
     private GetAnnualWorkLedgerSettingScreenQuery query;
+
+
+    @POST
+    @Path("initScreen")
+    public AnnualWorkLedgerInitScreenDto getInitScreen() {
+        return query.getInitScreen();
+    }
 
     @POST
     @Path("getSetting")

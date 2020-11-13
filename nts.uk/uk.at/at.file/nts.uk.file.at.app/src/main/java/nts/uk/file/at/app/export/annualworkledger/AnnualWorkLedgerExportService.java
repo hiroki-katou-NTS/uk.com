@@ -43,6 +43,9 @@ import javax.inject.Inject;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * 年間勤務台帳のExcelファイルを出力する
+ */
 @Stateless
 public class AnnualWorkLedgerExportService extends ExportService<AnnualWorkLedgerFileQuery> {
 
@@ -90,6 +93,7 @@ public class AnnualWorkLedgerExportService extends ExportService<AnnualWorkLedge
     @Override
     protected void handle(ExportServiceContext<AnnualWorkLedgerFileQuery> context) {
         AnnualWorkLedgerFileQuery query = context.getQuery();
+
         GeneralDate startMonth = query.getStartMonth();
         GeneralDate endMonth = query.getEndMonth();
         YearMonthPeriod yearMonthPeriod = new YearMonthPeriod(startMonth.yearMonth(), endMonth.yearMonth());
@@ -97,21 +101,24 @@ public class AnnualWorkLedgerExportService extends ExportService<AnnualWorkLedge
         List<String> lstEmpIds = query.getLstEmpIds();
         DatePeriod datePeriod = this.getFromClosureDate(startMonth, endMonth, closureDate.getClosureDay().v());
         GeneralDate baseDate = datePeriod.end();
+        String companyId = AppContexts.user().companyId();
 
         // 1 Call [No.600]社員ID（List）から社員コードと表示名を取得（削除社員考慮）
         List<EmployeeBasicInfoImport> lstEmployeeInfo = empEmployeeAdapter.getEmpInfoLstBySids(lstEmpIds, datePeriod, true, false);
-        Map<String, EmployeeBasicInfoImport> mapEmployeeInfo = lstEmployeeInfo.stream().collect(Collectors.toMap(EmployeeBasicInfoImport::getSid, i -> i));
+        Map<String, EmployeeBasicInfoImport> mapEmployeeInfo = lstEmployeeInfo.stream()
+                .collect(Collectors.toMap(EmployeeBasicInfoImport::getSid, i -> i));
+
         // 2 Call 会社を取得する
-        String companyId = AppContexts.user().companyId();
         CompanyBsImport companyInfo = companyBsAdapter.getCompanyByCid(companyId);
 
         // 3 Call 社員ID（List）と基準日から所属職場IDを取得
         List<AffAtWorkplaceImport> lstAffAtWorkplaceImport = affWorkplaceAdapter.findBySIdAndBaseDate(lstEmpIds, baseDate);
-        List<String> listWorkplaceId = lstAffAtWorkplaceImport.stream().map(AffAtWorkplaceImport::getWorkplaceId).collect(Collectors.toList());
+        List<String> listWorkplaceId = lstAffAtWorkplaceImport.stream().map(AffAtWorkplaceImport::getWorkplaceId).distinct()
+                .collect(Collectors.toList());
         // 3.1 Call [No.560]職場IDから職場の情報をすべて取得する
         List<WorkplaceInfor> lstWorkplaceInfo = workplaceConfigInfoAdapter.getWorkplaceInforByWkpIds(companyId, listWorkplaceId, baseDate);
-
-        Map<String, WorkplaceInfor> mapWorkplaceInfo = lstWorkplaceInfo.stream().collect(Collectors.toMap(WorkplaceInfor::getWorkplaceId, i -> i));
+        Map<String, WorkplaceInfor> mapWorkplaceInfo = lstWorkplaceInfo.stream()
+                .collect(Collectors.toMap(WorkplaceInfor::getWorkplaceId, i -> i));
 
         Map<String, WorkplaceInfor> mapEmployeeWorkplace = new HashMap<>();
         lstAffAtWorkplaceImport.forEach(x -> {
@@ -120,9 +127,11 @@ public class AnnualWorkLedgerExportService extends ExportService<AnnualWorkLedge
         });
 
         // 4 Call 基準日で社員の雇用と締め日を取得する
-        RequireClosureDateEmploymentService require1 = new RequireClosureDateEmploymentService(shareEmploymentAdapter, closureRepository, closureEmploymentRepository);
+        RequireClosureDateEmploymentService require1 = new RequireClosureDateEmploymentService(
+                shareEmploymentAdapter, closureRepository, closureEmploymentRepository);
         List<ClosureDateEmployment> lstClosureDateEmployment = GetClosureDateEmploymentDomainService.getByDate(require1, baseDate, lstEmpIds);
-        Map<String, ClosureDateEmployment> mapClosureDateEmployment = lstClosureDateEmployment.stream().collect(Collectors.toMap(ClosureDateEmployment::getEmployeeId, i -> i));
+        Map<String, ClosureDateEmployment> mapClosureDateEmployment = lstClosureDateEmployment.stream()
+                .collect(Collectors.toMap(ClosureDateEmployment::getEmployeeId, i -> i));
 
         // 5 Call 年間勤務台帳の出力設定の詳細を取得する
         Optional<AnnualWorkLedgerOutputSetting> outputSetting = annualWorkLedgerOutputSettingFinder.getById(query.getSettingId());
@@ -131,9 +140,12 @@ public class AnnualWorkLedgerExportService extends ExportService<AnnualWorkLedge
         }
 
         // 6 Call 年間勤務台帳の表示内容を作成する
-        RequireCreateAnnualWorkLedgerContentService require2 = new RequireCreateAnnualWorkLedgerContentService(affComHistAdapter, itemServiceAdapter, actualMultipleMonthAdapter);
-        List<AnnualWorkLedgerContent> lstContent = CreateAnnualWorkLedgerContentDomainService.getData(require2, datePeriod, mapEmployeeInfo, outputSetting.get(), mapEmployeeWorkplace, mapClosureDateEmployment);
+        RequireCreateAnnualWorkLedgerContentService require2 = new RequireCreateAnnualWorkLedgerContentService(
+                affComHistAdapter, itemServiceAdapter, actualMultipleMonthAdapter);
+        List<AnnualWorkLedgerContent> lstContent = CreateAnnualWorkLedgerContentDomainService.getData(require2,
+                datePeriod, mapEmployeeInfo, outputSetting.get(), mapEmployeeWorkplace, mapClosureDateEmployment);
 
+        // 7 年間勤務台帳を作成する
         AnnualWorkLedgerExportDataSource dataSource = new AnnualWorkLedgerExportDataSource(
                 query.getMode(),
                 companyInfo.getCompanyName(),
