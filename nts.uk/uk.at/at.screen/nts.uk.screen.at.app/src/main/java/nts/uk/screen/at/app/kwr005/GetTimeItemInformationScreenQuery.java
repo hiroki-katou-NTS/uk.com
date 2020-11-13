@@ -21,7 +21,7 @@ public class GetTimeItemInformationScreenQuery {
     public AttendanceItemInfoDto geInfo(int formNumberDisplay) {
         int MONTHLY = 2;
         val classification = EnumAdaptor.valueOf(MONTHLY, DailyMonthlyClassification.class);
-        return getAttendanceItemInfo.getAttendanceItemInfo(classification, formNumberDisplay);
+        return getAttendanceItemInfo.getAttendanceItemInfo(classification, formNumberDisplay,false,true);
     }
 
 }
