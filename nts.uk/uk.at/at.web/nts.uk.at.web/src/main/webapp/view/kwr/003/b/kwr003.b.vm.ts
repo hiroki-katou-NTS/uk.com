@@ -7,10 +7,14 @@ module nts.uk.at.view.kwr003.b {
   const KWR003_C_INPUT = 'KWR003_C_DATA';
   const KWR003_C_OUTPUT = 'KWR003_C_RETURN';
 
-  const PATHS = {
+  const PATH = {
+    getSettingListWorkStatus: 'at/function/kwr/003/a/listworkstatus',
+    getSettingLitsWorkStatusDetails: 'at/function/kwr/003/b/detailworkstatus',
+    checkDailyAuthor: 'at/function/kwr/003/a/checkdailyauthor',
     deleteSettingItemDetails: '',
     createSettingItemDetails: '',
     updateSettingItemDetails: '',
+    getFormInfo: 'at/screen/kwr/003/b/getinfor'
   };
 
   @bean()
@@ -19,7 +23,7 @@ module nts.uk.at.view.kwr003.b {
     settingListItems: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
     columns: KnockoutObservableArray<any>;
     currentCode: KnockoutObservable<any>;
-    currentCodeList: KnockoutObservableArray<any> = ko.observableArray([]);
+    currentCodeList: KnockoutObservable<string> = ko.observable(null);
     currentSettingCodeList: KnockoutObservableArray<any>;
     settingRules: KnockoutObservableArray<any>;
     attendance: KnockoutObservable<any> = ko.observable(null);
@@ -27,7 +31,6 @@ module nts.uk.at.view.kwr003.b {
     attendanceName: KnockoutObservable<string> = ko.observable(null);
     settingRuleCode: KnockoutObservable<number> = ko.observable(0);
     settingListItemsDetails: KnockoutObservableArray<SettingForPrint> = ko.observableArray([]);
-    //model: KnockoutObservable<Model> = ko.observable(new Model());
 
     isSelectAll: KnockoutObservable<boolean> = ko.observable(false);
     isEnableAddButton: KnockoutObservable<boolean> = ko.observable(false);
@@ -40,9 +43,7 @@ module nts.uk.at.view.kwr003.b {
     shareParam = new SharedParams();
 
     position: KnockoutObservable<number> = ko.observable(1);
-    attendanceItemName: KnockoutObservable<string> = ko.observable('勤務種類');
-    //attendanceCode: KnockoutObservable<string> = ko.observable('02');
-    //attendanceName: KnockoutObservable<string> = ko.observable('出勤簿');
+    attendanceItemName: KnockoutObservable<string> = ko.observable(null);
     columnIndex: KnockoutObservable<number> = ko.observable(1);
     isDisplayItemName: KnockoutObservable<boolean> = ko.observable(true);
     isDisplayTitle: KnockoutObservable<boolean> = ko.observable(true);
@@ -52,10 +53,15 @@ module nts.uk.at.view.kwr003.b {
     tableSelected: KnockoutObservable<any> = ko.observable(null);
 
 
+    workStatusTableOutputItem: KnockoutObservableArray<any> = ko.observableArray([]);
+
     constructor(params: any) {
       super();
 
-      let vm = this;
+      const vm = this;
+
+      //get output info
+      vm.getWorkStatusTableOutput();
 
       vm.getSettingList();
 
@@ -63,9 +69,6 @@ module nts.uk.at.view.kwr003.b {
         nts.uk.ui.errors.clearAll();
         vm.getSettingListForPrint(code);
       });
-
-      vm.getSettingListItemsDetails();
-      vm.currentSettingCodeList = ko.observableArray([]);
 
       vm.settingRules = ko.observableArray([
         { code: 0, name: vm.$i18n('KWR003_217') },
@@ -119,11 +122,11 @@ module nts.uk.at.view.kwr003.b {
     }
 
     created(params: any) {
-      let vm = this;
+      const vm = this;
     }
 
     mounted() {
-      let vm = this;
+      const vm = this;
       if (!!navigator.userAgent.match(/Trident.*rv\:11\./))
         $("#multiGridList").ntsFixedTable({ height: 368 });
       else
@@ -148,7 +151,7 @@ module nts.uk.at.view.kwr003.b {
     }
 
     addNewRow() {
-      let vm = this;
+      const vm = this;
 
       nts.uk.ui.errors.clearAll();
       vm.currentCodeList(null);
@@ -247,7 +250,7 @@ module nts.uk.at.view.kwr003.b {
      * @param [listItemsDetails] 
      */
     createListItemAfterSorted(listItemsDetails?: Array<any>) {
-      let vm = this;
+      const vm = this;
 
       vm.settingListItemsDetails([]);
       _.forEach(listItemsDetails, (x: any) => {
@@ -279,7 +282,7 @@ module nts.uk.at.view.kwr003.b {
 
       vm.$dialog.confirm({ messageId: 'Msg_18' }).then((answer: string) => {
         if (answer === 'yes') {
-          vm.$ajax(PATHS.deleteSettingItemDetails, params)
+          vm.$ajax(PATH.deleteSettingItemDetails, params)
             .done(() => {
               vm.$dialog.info({ messageId: 'Msg_16' }).then(() => {
                 let returnAttendance: AttendanceItem= {};
@@ -306,7 +309,7 @@ module nts.uk.at.view.kwr003.b {
      * @returns  
      */
     deleteSettingItem() {
-      let vm = this;
+      const vm = this;
       //get all items that will be remove
       let listCheckedItems: Array<any> = vm.settingListItemsDetails().filter((row) => row.isChecked() === true);
       if (listCheckedItems.length <= 0) return;
@@ -322,7 +325,7 @@ module nts.uk.at.view.kwr003.b {
      * Shows dialog C
      */
     showDialogC() {
-      let vm = this;
+      const vm = this;
       let lastItem = _.last(vm.settingListItems());
 
       let params = {
@@ -358,7 +361,7 @@ module nts.uk.at.view.kwr003.b {
      * Close dialog
      */
     closeDialog() {
-      let vm = this;
+      const vm = this;
       vm.$window.storage(KWR003_B_OUTPUT, vm.attendance());
       vm.$window.close();
     }
@@ -367,12 +370,50 @@ module nts.uk.at.view.kwr003.b {
      * Get setting list items details
      */
     getSettingListItemsDetails() {
-      let vm = this;
+      const vm = this;
 
       for (let i = 0; i < NUM_ROWS; i++) {
         let newIitem: SettingForPrint = new SettingForPrint(i + 1, '予定勤務種類', 0, '予定勤務種類', false);
         vm.addRowItem(newIitem);
       }
+
+      let selectedObj = _.find(vm.settingListItems(), (x) => x.code === vm.currentCodeList());
+      //get details the work table status
+      let totalItems = 10;
+      let listDaily = vm.workStatusTableOutputItem().listDaily;
+
+      vm.$ajax(PATH.getSettingLitsWorkStatusDetails, { settingId: selectedObj.id }).done((data) => {
+        if (!_.isNil(data) && data.outputItemList.length > 0) {
+          /*  id?: number,
+           name?: string,
+           setting?: number,
+           selectionItem?: string,
+           checked?: boolean,
+           selectedTimeList?: Array<selectedTimeList> */
+
+          totalItems = totalItems - data.outputItemList.length;
+          _.forEach(data.outputItemList, (x, index: number) => {
+            let selectedTimeList: Array<selectedTimeList> = [];
+            //get selected items: 選択項目
+            _.forEach(x.attendanceItemList, (element: any) => {
+              /* itemId?: number;
+              operator?: string;
+              name?: string;
+              indicatesNumber?: number */
+              let findObj = _.find(listDaily, (listItem: any) => listItem.attendanceItemId === element.attendanceItemId);
+            });
+
+            let newIitem: SettingForPrint = new SettingForPrint(
+              index + 1,
+              x.name,
+              x.printTargetFlag,
+              vm.createDataSelection(selectedTimeList),
+              x.printTargetFlag,
+              selectedTimeList);
+            vm.addRowItem(newIitem);
+          });
+        }
+      });
 
       //order by list
       //let listItemsDetails: Array<any> = [];
@@ -384,7 +425,7 @@ module nts.uk.at.view.kwr003.b {
      * Creatsedefault setting details
      */
     createDefaultSettingDetails() {
-      let vm = this;
+      const vm = this;
       //clear
       vm.settingListItemsDetails([])
       for (let i = 0; i < NUM_ROWS; i++) {
@@ -421,7 +462,7 @@ module nts.uk.at.view.kwr003.b {
     }
 
     getSettingListForPrint(code: string) {
-      let vm = this;
+      const vm = this;
       if (!_.isNil(code)) {
         let selectedObj = _.find(vm.settingListItems(), (x: any) => x.code === code);
         if (!_.isNil(selectedObj)) {
@@ -442,52 +483,70 @@ module nts.uk.at.view.kwr003.b {
       $('#KWR003_B43').focus();
     }
 
-    getListItems() {
-      let lisItems: Array<any> = [
-        new ItemModel('01', '予定勤務種類'),
-        new ItemModel('03', '予定勤務種類'),
-        new ItemModel('04', '予定勤務種類'),
-        new ItemModel('05', '予定勤務種類'),
-        new ItemModel('02', 'Seoul Korea'),
-        new ItemModel('06', 'Paris France'),
-        new ItemModel('07', '予定勤務種類'),
-        new ItemModel('08', '予定勤務種類'),
-        new ItemModel('09', '予定勤務種類'),
-        new ItemModel('10', '予定勤務種類'),
-        new ItemModel('11', 'Paris France'),
-        new ItemModel('12', '予定勤務種類'),
-        new ItemModel('13', '予定勤務種類'),
-        new ItemModel('14', '予定勤務種類'),
-        new ItemModel('15', '予定勤務種類'),
-        new ItemModel('16', 'Paris France'),
-        new ItemModel('17', '予定勤務種類'),
-        new ItemModel('18', '予定勤務種類'),
-        new ItemModel('19', '予定勤務種類'),
-        new ItemModel('20', '予定勤務種類'),
-      ];
+    getWorkStatusTableOutput() {
+      const vm = this;
+      vm.$blockui('show');
+      vm.$ajax(PATH.getFormInfo, { formNumberDisplay: 6 }).done((result) => {
+        vm.workStatusTableOutputItem(result);
+        vm.$blockui('hide');
+        console.log(vm.workStatusTableOutputItem());
+      }).always(() => vm.$blockui('hide'));
+    }
 
-      return lisItems;
-
+    /**
+     * Gets setting listwork status
+     * @param type 
+     * 定型選択	: 0
+     * 自由設定 : 1
+     */
+    getSettingListWorkStatus(type: number): any {
+      const vm = this;
+      let listWorkStatus: Array<ItemModel> = [];
+      //定型選択		
+      vm.$ajax(PATH.getSettingListWorkStatus, { setting: type }).then((data) => {
+        console.log(data);
+        if (!_.isNil(data)) {
+          _.forEach(data, (item) => {
+            listWorkStatus.push(new ItemModel(item.settingDisplayCode, item.settingName, item.settingId));
+          });
+        }
+        console.log(listWorkStatus);
+        return listWorkStatus;
+      });
     }
 
     getSettingList() {
-      let vm = this;
-
-      let lisItems: Array<any> = vm.getListItems();
-
-      //sort by code with asc
-      lisItems = _.orderBy(lisItems, ['code'], ['asc']);
-      vm.settingListItems(lisItems);
+      const vm = this;
+      let listWorkStatus: Array<any> = [];
 
       vm.$window.storage(KWR003_B_INPUT).then((data: any) => {
-        let code = !_.isNil(data) ? data.code : null;
-        if (vm.settingListItems().length > 0) {
-          let firstItem: any = _.head(vm.settingListItems());
-          if (!code) code = firstItem.code;
-        }
 
-        vm.currentCodeList.push(code);
-        vm.getSettingListForPrint(code);
+        if (!data) return;
+
+        vm.$ajax(PATH.getSettingListWorkStatus, { setting: data.standOrFree }).then((data) => {
+          console.log(data);
+          if (!_.isNil(data)) {
+            _.forEach(data, (item) => {
+              listWorkStatus.push(new ItemModel(item.settingDisplayCode, item.settingName, item.settingId));
+            });
+          }
+
+          //sort by code with asc
+          listWorkStatus = _.orderBy(listWorkStatus, ['code'], ['asc']);
+          vm.settingListItems(listWorkStatus);
+
+          let code = !_.isNil(data) ? data.code : null;
+          if (vm.settingListItems().length > 0) {
+            let firstItem: any = _.head(vm.settingListItems());
+            if (!code) code = firstItem.code;
+          }
+
+          vm.currentCodeList(code);
+          vm.getSettingListForPrint(code);
+
+          vm.getSettingListItemsDetails();
+          vm.currentSettingCodeList = ko.observableArray([]);
+        });
       });
     }
 
@@ -496,7 +555,7 @@ module nts.uk.at.view.kwr003.b {
      * @param data 
      */
     openDialogKDL(data: SettingForPrint) {
-      let vm = this;
+      const vm = this;
 
       if (data.setting())
         vm.openDialogKDL048(data);
@@ -508,7 +567,7 @@ module nts.uk.at.view.kwr003.b {
      * @param row 
      */
     openDialogKDL047(row: any) {
-      let vm = this;
+      const vm = this;
 
       vm.shareParam.itemNameLine.name = row.name();
       nts.uk.ui.windows.setShared('attendanceItem', vm.shareParam, true);
@@ -577,7 +636,7 @@ module nts.uk.at.view.kwr003.b {
 
 
     selectAllChange(newValue: boolean) {
-      let vm = this;
+      const vm = this;
 
       if (newValue === null) return;
 
@@ -637,11 +696,13 @@ module nts.uk.at.view.kwr003.b {
   }
 
   export class ItemModel {
+    id: string;
     code: string;
     name: string;
-    constructor(code?: string, name?: string) {
+    constructor(code?: string, name?: string, id?: string) {
       this.code = code;
-      this.name = name + (code ? '_' + code : '');
+      this.name = name;
+      this.id = id;
     }
   }
 

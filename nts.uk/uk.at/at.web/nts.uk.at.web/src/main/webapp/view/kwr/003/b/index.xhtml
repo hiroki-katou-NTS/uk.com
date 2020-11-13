@@ -17,8 +17,8 @@
         <com:scriptfile path="kwr003.b.vm.js" />
 
         <com:ValidatorScript>
-          nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode
-          nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingName
+          nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode
+          nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName
         </com:ValidatorScript>
       </ui:define>
 
@@ -102,7 +102,7 @@
                   data-bind="ntsFormLabel: { 
                     required: true, 
                     text: $i18n('KWR003_209'), 
-                    constraint: ['ExportSettingCode', 'ExportSettingName']}"
+                    constraint: ['OutputItemSettingCode', 'OutputItemSettingName']}"
                 ></div>
                 <div class="textEditor">
                   <input
@@ -112,7 +112,7 @@
                     data-bind="ntsTextEditor: {
                       value: attendanceCode, 
                       required: true,
-                      constraint: 'ExportSettingCode',
+                      constraint: 'OutputItemSettingCode',
                       name: $i18n('KWR003_210'),
                       enable: isEnableAttendanceCode
                     }"
@@ -124,7 +124,7 @@
                     data-bind="ntsTextEditor: {
                       value: attendanceName,
                       required: true,
-                      constraint: 'ExportSettingName',
+                      constraint: 'OutputItemSettingName',
                       name: $i18n('KWR003_211')
                     }"
                   />
