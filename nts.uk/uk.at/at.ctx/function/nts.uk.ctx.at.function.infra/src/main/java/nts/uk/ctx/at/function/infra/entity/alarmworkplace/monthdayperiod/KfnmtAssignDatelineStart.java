@@ -5,8 +5,8 @@ import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.StartDate;
-import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.StartSpecify;
 import nts.uk.ctx.at.function.infra.entity.alarmworkplace.condition.KfnmtWkpCheckCondition;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
@@ -56,5 +56,28 @@ public class KfnmtAssignDatelineStart extends UkJpaEntity implements Serializabl
         startDate.setStartMonth(EnumAdaptor.valueOf(previous, PreviousClassification.class), monthNo, curentMonth);
         return startDate;
     }
+
+    public void fromEntity(KfnmtAssignDatelineStart newEntity) {
+        this.contractCode = AppContexts.user().contractCode();
+        this.startSpecify = newEntity.startSpecify;
+        this.monthNo = newEntity.monthNo;
+        this.curentMonth = newEntity.curentMonth;
+        this.previous = newEntity.previous;
+    }
+
+    public static KfnmtAssignDatelineStart toEntity(StartDate domain, String patternCD, int category) {
+
+        KfnmtAssignDatelineStart entity = new KfnmtAssignDatelineStart();
+        entity.pk = new KfnmtAssignDatelineStartPk(AppContexts.user().companyId(), patternCD, category);
+        entity.contractCode = AppContexts.user().contractCode();
+        entity.startSpecify = domain.getStartSpecify().value;
+        if (domain.getStrMonth().isPresent()) {
+            entity.monthNo = domain.getStrMonth().get().getMonth();
+            entity.curentMonth = domain.getStrMonth().get().isCurentMonth();
+            entity.previous = domain.getStrMonth().get().getMonthPrevious().value;
+        }
+        return entity;
+    }
+
 
 }

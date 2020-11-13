@@ -3,10 +3,10 @@ package nts.uk.ctx.at.function.infra.entity.alarmworkplace.alarmpatternworkplace
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.function.dom.alarmworkplace.AlarmPatternSettingWorkPlace;
+import nts.uk.ctx.at.function.dom.alarmworkplace.AlarmPermissionSetting;
 import nts.uk.ctx.at.function.infra.entity.alarmworkplace.alarmlstrole.KfnmtALstWkpPms;
-import nts.uk.ctx.at.function.infra.entity.alarmworkplace.alarmlstrole.KfnmtALstWkpPmsPk;
-import nts.uk.ctx.at.function.infra.entity.alarmworkplace.condition.KfnmtPtnMapCat;
 import nts.uk.ctx.at.function.infra.entity.alarmworkplace.condition.KfnmtWkpCheckCondition;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
@@ -41,7 +41,7 @@ public class KfnmtALstWkpPtn extends UkJpaEntity implements Serializable {
     @JoinTable(name = "KFNMT_ALSTWKP_PMS")
     public List<KfnmtALstWkpPms> alarmPerSet;
 
-    @OneToMany(mappedBy = "kfnmtALstWkpPtn", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "kfnmtALstWkpPtn", cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinTable(name = "KFNMT_PTN_MAP_CAT")
     public List<KfnmtWkpCheckCondition> checkConList;
 
@@ -50,9 +50,29 @@ public class KfnmtALstWkpPtn extends UkJpaEntity implements Serializable {
         return this.pk;
     }
 
-//    public AlarmPatternSettingWorkPlace toDomain() {
-//        return new AlarmPatternSettingWorkPlace(this.checkConList.stream().map(c -> c.toDomain()).collect(Collectors.toList()),
-//            pk.alarmPatternCD, pk.companyID, alarmPerSet.toDomain(), alarmPatternName);
-//    }
+
+    public AlarmPatternSettingWorkPlace toDomain() {
+        return new AlarmPatternSettingWorkPlace(this.checkConList.stream().map(c -> c.toDomain()).collect(Collectors.toList()),
+            pk.alarmPatternCD, pk.companyID, toDomainItem(), alarmPatternName);
+    }
+
+    public static KfnmtALstWkpPtn toEntity(AlarmPatternSettingWorkPlace domain) {
+        List<KfnmtALstWkpPms> alarmPerSet = domain.getAlarmPerSet().getRoleIds().stream().map(x ->
+            KfnmtALstWkpPms.toEntity(x, domain.getAlarmPatternCD().v())).collect(Collectors.toList());
+
+        List<KfnmtWkpCheckCondition> checkConList = domain.getCheckConList().stream()
+            .map(c -> KfnmtWkpCheckCondition.toEntity(c, domain.getAlarmPatternCD().v())).collect(Collectors.toList());
+        return new KfnmtALstWkpPtn(
+            new KfnmtALstWkpPtnPk(domain.getCompanyID(), domain.getAlarmPatternCD().v()),
+            AppContexts.user().contractCode(),
+            domain.getAlarmPatternName().v(),
+            domain.getAlarmPerSet().isAuthSetting(),
+            alarmPerSet, checkConList);
+    }
+
+    public AlarmPermissionSetting toDomainItem() {
+        return new AlarmPermissionSetting(pk.alarmPatternCD, pk.companyID, authSetting,
+            this.alarmPerSet.stream().map(c -> c.pk.roleId).collect(Collectors.toList()));
+    }
 
 }
