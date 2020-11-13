@@ -22,13 +22,15 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
  * 勤務情報
- * 
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared.就業規則.勤務情報
  * @author ken_takasu
  *
  */
 public class WorkInformation {
+
+	/** 勤務種類コード **/
 	private WorkTypeCode workTypeCode;
-	
+	/** 就業時間帯コード **/
 	private Optional<WorkTimeCode> workTimeCode;
 
 	public WorkInformation(String workTypeCode, String workTimeCode) {
@@ -40,38 +42,60 @@ public class WorkInformation {
 		this.setWorkTypeCode(workTypeCode);
 		this.setWorkTimeCode(workTimeCode);
 	}
-	
+
 	public WorkInformation clone() {
-		
 		return new WorkInformation(workTypeCode, workTimeCode.orElse(null));
 	}
 
+	/**
+	 * 勤務種類コード(Get)
+	 * @return 勤務種類コード
+	 */
 	public WorkTypeCode getWorkTypeCode() {
 		return this.workTypeCode;
 	}
-
+	/**
+	 * 勤務種類コード(Set)
+	 * @param workTypeCode 就業時間帯
+	 */
 	public void setWorkTypeCode(String workTypeCode) {
 		if (!StringUtils.isEmpty(workTypeCode)) {
 			this.setWorkTypeCode(new WorkTypeCode(workTypeCode));
 		}
 	}
-
+	/**
+	 * 勤務種類コード(Set)
+	 * @param workTypeCode 就業時間帯
+	 */
 	public void setWorkTypeCode(WorkTypeCode workTypeCode) {
 		this.workTypeCode = workTypeCode;
 	}
 
+	/**
+	 * 就業時間帯コード(Get)
+	 * @return 就業時間帯コード or null
+	 */
 	public WorkTimeCode getWorkTimeCode() {
 		return this.workTimeCode.orElse(null);
 	}
-	
+	/**
+	 * 就業時間帯コード(Get)
+	 * @return 就業時間帯コード
+	 */
 	public Optional<WorkTimeCode> getWorkTimeCodeNotNull() {
 		return this.workTimeCode;
 	}
-
-	public void removeWorkTimeInHolydayWorkType() {
-		this.workTimeCode = Optional.empty();
+	/**
+	 * 就業時間帯コード(Set)
+	 * @param workTimeCode 就業時間帯コード
+	 */
+	public void setWorkTimeCode(WorkTimeCode workTimeCode) {
+		this.workTimeCode = Optional.ofNullable(workTimeCode);
 	}
-
+	/**
+	 * 就業時間帯コード(Set)
+	 * @param workTimeCode 就業時間帯コード
+	 */
 	public void setWorkTimeCode(String workTimeCode) {
 		if (StringUtils.isEmpty(workTimeCode)) {
 			this.workTimeCode = Optional.empty();
@@ -80,13 +104,13 @@ public class WorkInformation {
 		}
 	}
 
-	public void setWorkTimeCode(WorkTimeCode workTimeCode) {
-		this.workTimeCode = Optional.ofNullable(workTimeCode);
+	public void removeWorkTimeInHolydayWorkType() {
+		this.workTimeCode = Optional.empty();
 	}
 
 	/**
 	 * [1] 正常な状態か
-	 * 
+	 *
 	 * @param require
 	 * @return
 	 */
@@ -97,7 +121,7 @@ public class WorkInformation {
 
 	/**
 	 * [2] エラー状態をチェックする
-	 * 
+	 *
 	 * @param require
 	 */
 	public ErrorStatusWorkInfo checkErrorCondition(Require require) {
@@ -108,7 +132,7 @@ public class WorkInformation {
 		if (!workType.isPresent()) {
 			return ErrorStatusWorkInfo.WORKTYPE_WAS_DELETE;
 		}
-		
+
 		if(workType.get().getDeprecate() == DeprecateClassification.Deprecated) {
 			return ErrorStatusWorkInfo.WORKTYPE_WAS_ABOLISHED;
 		}
@@ -153,7 +177,7 @@ public class WorkInformation {
 
 	/**
 	 * [3] 出勤・休日系の判定
-	 * 
+	 *
 	 * @return WorkStyle 出勤休日区分
 	 */
 	public Optional<WorkStyle> getWorkStyle(Require require) {
@@ -166,7 +190,7 @@ public class WorkInformation {
 
 	/**
 	 * [4] 勤務情報と補正済み所定時間帯を取得する
-	 * 
+	 *
 	 * @param require
 	 */
 	public Optional<WorkInfoAndTimeZone> getWorkInfoAndTimeZone(Require require) {
@@ -205,7 +229,7 @@ public class WorkInformation {
 
 		/**
 		 * [R-1] 勤務種類を取得する
-		 * 
+		 *
 		 * @param workTypeCd
 		 * @return
 		 */
@@ -213,7 +237,7 @@ public class WorkInformation {
 
 		/**
 		 * [R-2] 就業時間帯を取得する ( get 就業時間帯の設定)
-		 * 
+		 *
 		 * @param companyId
 		 * @param workTimeCode
 		 * @return
@@ -222,7 +246,7 @@ public class WorkInformation {
 
 		/**
 		 * [R-3] 就業時間帯が必須か 就業時間帯の必須チェック
-		 * 
+		 *
 		 * @param workTypeCode
 		 * @return
 		 */
@@ -230,7 +254,7 @@ public class WorkInformation {
 
 		/**
 		 * 所定時間帯を取得する - WorkTimeSettingService
-		 * 
+		 *
 		 * @param companyId
 		 * @param workTimeCd
 		 * @param workTypeCd
@@ -241,15 +265,15 @@ public class WorkInformation {
 
 		/**
 		 * 1日半日出勤・1日休日系の判定 -
-		 * 
+		 *
 		 * @param workTypeCode
 		 * @return
 		 */
 		WorkStyle checkWorkDay(String workTypeCode);
 	}
-	
+
 	public boolean isExamWorkTime() {
-		
+
 		return workTimeCode
 				.map(m -> m.equals(new WorkTimeCode("102")) || m.equals(new WorkTimeCode("103")))
 				.orElse(false);
