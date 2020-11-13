@@ -1,7 +1,10 @@
-package nts.uk.ctx.at.function.app.find.processexecution.dto;
+package nts.uk.screen.at.app.command.kbt.outputexecutionhistory;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionScopeDto;
+import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionSettingDto;
+import nts.uk.ctx.at.function.app.find.processexecution.dto.ReExecutionConditionDto;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionScope;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionSetting;
 import nts.uk.ctx.at.function.dom.processexecution.ReExecutionCondition;

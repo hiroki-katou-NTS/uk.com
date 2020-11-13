@@ -1,5 +1,6 @@
 package nts.uk.screen.at.app.command.kbt.outputexecutionhistory;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
@@ -13,26 +14,20 @@ import nts.uk.ctx.at.function.dom.adapter.EmployeeHistWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.employeebasic.EmployeeBasicInfoFnImport;
 import nts.uk.ctx.at.function.dom.adapter.employeebasic.EmployeeInfoImport;
 import nts.uk.ctx.at.function.dom.adapter.employeebasic.SyEmployeeFnAdapter;
-import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
-import nts.uk.ctx.at.function.dom.processexecution.ExecutionName;
 import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.EndStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ExecutionTaskLog;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogHistory;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogHistRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionRepository;
 import nts.uk.ctx.at.function.dom.processexecution.storage.ResultState;
-import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodInfor;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodInforRepository;
-import nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.dailyperformance.AppDataInfoDaily;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.dailyperformance.AppDataInfoDailyRepository;
-import nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.monthlyperformance.AppDataInfoMonthly;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.monthlyperformance.AppDataInfoMonthlyRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoRepository;
-import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLog;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLogRepository;
 import nts.uk.ctx.at.shared.dom.person.PersonAdaptor;
 import nts.uk.ctx.at.shared.dom.person.PersonImport;
-import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
 import nts.uk.query.app.exi.ExacErrorLogQueryDto;
 import nts.uk.query.app.exi.ExacErrorLogQueryFinder;
 import nts.uk.query.app.exo.ExternalOutLogQueryDto;
@@ -48,6 +43,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -154,7 +150,6 @@ public class GetDataToOutputService extends ExportService<Object> {
         }
     }
 
-
     /**
      * Gets the data output.
      * ドメインモデル「更新処理自動実行ログ履歴」を取得する
@@ -176,7 +171,7 @@ public class GetDataToOutputService extends ExportService<Object> {
         // 取得できた
         // Step ドメインモデル「更新処理自動実行」を取得する
         String companyId = AppContexts.user().companyId();
-        List<UpdateProcessAutoExecution> lisProcessExecution = this.acquireTheDomainModel(companyId, listProcessExeHistory);
+        List<UpdateProcessAutoExecutionDto> lisProcessExecution = this.acquireTheDomainModel(companyId, listProcessExeHistory);
 
         // Step OUTPUT「更新処理自動実行データ」を作成する
         UpdateProcessAutoRunDataDto updateProAutoRunData = new UpdateProcessAutoRunDataDto(
@@ -186,92 +181,115 @@ public class GetDataToOutputService extends ExportService<Object> {
                 command.isExportEmployeeName());
 
         List<ExecutionLogDetailDto> lstLogDetail = new ArrayList<>();
-//        // sort ProcessExecutionLogHistory in  lastExecDateTime by ASC
-//        listProcessExeHistory.sort((o1, o2) -> o1.getLastExecDateTime().compareTo(o2.getLastEndExecDateTime()));
-
+        List<String> empIds = new ArrayList<>();
         // 取得した「更新処理自動実行ログ履歴」をループする - Loop the acquired 「更新処理自動実行ログ履歴」
         for (ProcessExecutionLogHistory logHistory : listProcessExeHistory) {
             // 処理中の「更新処理自動実行ログ履歴．全体の業務エラー状態」を確認する
             // 全体の業務エラー状態 = true
-            if (logHistory.getErrorBusiness().isPresent()) {
-                if (logHistory.getErrorBusiness().get()) {
-//                  // Sort list ExecutionTaskLog by enum
-//                  logHistory.getTaskLogList().sort(Comparator.comparingInt(taskLog -> taskLog.getProcExecTask().value));
+            if (logHistory.getErrorBusiness().isPresent() && logHistory.getErrorBusiness().get()) {
+                // Step 処理中の「更新処理自動実行ログ履歴．各処理の終了状態．業務エラー状態」 = true の項目を確認する
+                if (!logHistory.getTaskLogList().isEmpty()) {
+                    for (ExecutionTaskLog taskLog : logHistory.getTaskLogList()) {
+                        if(taskLog.getErrorBusiness().isPresent() && taskLog.getErrorBusiness().get()) {
+                            String execIdByLogHistory = logHistory.getExecId();
 
-                    // Step 処理中の「更新処理自動実行ログ履歴．各処理の終了状態．業務エラー状態」 = true の項目を確認する
-                    if (!logHistory.getTaskLogList().isEmpty()) {
+                            //create empty ExecutionLogDetailDto
+                            ExecutionLogDetailDto execLogDetail = ExecutionLogDetailDto.builder().build();
 
-                        for (ExecutionTaskLog taskLog : logHistory.getTaskLogList()) {
-                        	if(taskLog.getErrorBusiness().isPresent()) {
-                        		if (taskLog.getErrorBusiness().get()) {
+                            //set ProcessExecutionLogHistoryDto to ExecutionLogDetailDto
+                            ProcessExecutionLogHistoryDto processExecutionLogHistoryDto = ProcessExecutionLogHistoryDto.builder().build();
+                            logHistory.setMemento(processExecutionLogHistoryDto);
+                            execLogDetail.setProcessExecLogHistory(processExecutionLogHistoryDto);
 
-                                    String execIdByLogHistory = logHistory.getExecId();
-                                    ExecutionLogDetailDto execLogDetail = new ExecutionLogDetailDto();
-                                    execLogDetail.setProcessExecLogHistory(logHistory);
-
-                                    switch (taskLog.getProcExecTask()) {
-                                        // Case 1 ドメインモデル「スケジュール作成エラーログ」を取得する
-                                        case SCH_CREATION:
-//                                            execLogDetail.setScheduleErrorLog(this.scheduleErrorLogRepo.findByExecutionId(execIdByLogHistory));
-                                            break;
-                                        // Case 2 ドメインモデル「エラーメッセージ情報」を取得する
-                                        case DAILY_CREATION:
-                                        case MONTHLY_AGGR:
-                                        case RFL_APR_RESULT:
-                                        case DAILY_CALCULATION:
-                                            execLogDetail.setErrMessageInfo(this.errMessageInfoRepo.getAllErrMessageInfoByEmpID(execIdByLogHistory));
-                                            break;
-                                        // Case 3 ドメインモデル「任意期間集計エラーメッセージ情報」を取得する
-                                        case AGGREGATION_OF_ARBITRARY_PERIOD:
-                                            execLogDetail.setAggrPeriodInfor(this.errorInfoRepo.findAll(execIdByLogHistory));
-                                            break;
-                                        // Case 4 ドメインモデル「承認中間データエラーメッセージ情報（日別実績）」を取得する
-                                        case APP_ROUTE_U_DAI:
-                                            execLogDetail.setAppDataInfoDailies(this.appDataInfoDailyRepo.getAppDataInfoDailyByExeID(execIdByLogHistory));
-                                            break;
-                                        // Case 5 ドメインモデル「承認中間データエラーメッセージ情報（月別実績）」を取得する
-                                        case APP_ROUTE_U_MON:
-                                            execLogDetail.setAppDataInfoMonthlies(this.appDataInfoMonthlyRepo.getAppDataInfoMonthlyByExeID(execIdByLogHistory));
-                                            break;
-                                        // Case 6 ドメインモデル「外部受入エラーログ」のデータを取得する
-                                        case EXTERNAL_ACCEPTANCE:
-                                            execLogDetail.setExacErrorLogImports(this.exacErrorLogQueryFinder.getExacErrorLogByProcessId(execIdByLogHistory));
-                                            break;
-                                        // Case 7 ドメインモデル「外部出力結果ログ」のデータを取得する
-                                        case EXTERNAL_OUTPUT:
-                                           execLogDetail.setExternalOutLogImports(this.externalOutLogQueryFinder.getExternalOutLogById(companyId,execIdByLogHistory,0));
-                                            break;
-                                        default:
-                                            break;
-                                    }
-                                    lstLogDetail.add(execLogDetail);
-                                }
-                        	}
-                        	continue;
+                            switch (taskLog.getProcExecTask()) {
+                                // Case 1 ドメインモデル「スケジューScheduleErrorLogル作成エラーログ」を取得する
+                                case SCH_CREATION:
+                                    List<ScheduleErrorLogDto> scheduleErrorLogDtos = this.scheduleErrorLogRepo.findByExecutionId(execIdByLogHistory).stream()
+                                        .map(item -> {
+                                            ScheduleErrorLogDto dto = ScheduleErrorLogDto.builder().build();
+                                            item.saveToMemento(dto);
+                                            return dto;
+                                        })
+                                        .collect(Collectors.toList());
+                                    // 更新処理自動実行データ．実行ログ詳細．スケジュール作成エラー．社員ID
+                                    empIds.addAll(scheduleErrorLogDtos.stream().map(ScheduleErrorLogDto::getEmployeeId).collect(Collectors.toList()));
+                                    execLogDetail.setScheduleErrorLog(scheduleErrorLogDtos);
+                                    break;
+                                // Case 2 ドメインモデル「エラーメッセージ情報」を取得する
+                                case DAILY_CREATION:
+                                case DAILY_CALCULATION:
+                                case MONTHLY_AGGR:
+                                case RFL_APR_RESULT:
+                                    List<ErrMessageInfoDto> errMessageInfoDtos = this.errMessageInfoRepo.getAllErrMessageInfoByEmpID(execIdByLogHistory).stream()
+                                        .map(item -> ErrMessageInfoDto.builder()
+                                            .employeeID(item.getEmployeeID())
+                                            .empCalAndSumExecLogID(item.getEmpCalAndSumExecLogID())
+                                            .resourceID(item.getResourceID().v())
+                                            .executionContent(item.getExecutionContent().value)
+                                            .disposalDay(item.getDisposalDay())
+                                            .messageError(item.getMessageError().v())
+                                            .build())
+                                        .collect(Collectors.toList());
+                                    //更新処理自動実行データ．実行ログ詳細．日次・月次処理エラー．社員ID
+                                    empIds.addAll(errMessageInfoDtos.stream().map(ErrMessageInfoDto::getEmployeeID).collect(Collectors.toList()));
+                                    execLogDetail.setErrMessageInfo(errMessageInfoDtos);
+                                    break;
+                                // Case 3 ドメインモデル「任意期間集計エラーメッセージ情報」を取得する
+                                case AGGREGATION_OF_ARBITRARY_PERIOD:
+                                    List<AggrPeriodInforDto> aggrPeriodInforDtos = this.errorInfoRepo.findAll(execIdByLogHistory).stream()
+                                        .map(item -> AggrPeriodInforDto.builder()
+                                            .memberId(item.getMemberId())
+                                            .periodArrgLogId(item.getPeriodArrgLogId())
+                                            .resourceId(item.getResourceId())
+                                            .processDay(item.getProcessDay())
+                                            .errorMess(item.getErrorMess().v())
+                                            .build())
+                                        .collect(Collectors.toList());
+                                    //更新処理自動実行データ．実行ログ詳細．任意期間集計エラー．社員ID
+                                    empIds.addAll(aggrPeriodInforDtos.stream().map(AggrPeriodInforDto::getMemberId).collect(Collectors.toList()));
+                                    execLogDetail.setAggrPeriodInfor(aggrPeriodInforDtos);
+                                    break;
+                                // Case 4 ドメインモデル「承認中間データエラーメッセージ情報（日別実績）」を取得する
+                                case APP_ROUTE_U_DAI:
+                                    List<AppDataInfoDailyDto> appDataInfoDailyDtos = this.appDataInfoDailyRepo.getAppDataInfoDailyByExeID(execIdByLogHistory).stream()
+                                        .map(item -> AppDataInfoDailyDto.builder()
+                                            .employeeId(item.getEmployeeId())
+                                            .executionId(item.getExecutionId())
+                                            .errorMessage(item.getErrorMessage().v())
+                                            .build())
+                                        .collect(Collectors.toList());
+                                    //更新処理自動実行データ．実行ログ詳細．承認ルート更新（日次）エラー．社員ID
+                                    empIds.addAll(appDataInfoDailyDtos.stream().map(AppDataInfoDailyDto::getEmployeeId).collect(Collectors.toList()));
+                                    execLogDetail.setAppDataInfoDailies(appDataInfoDailyDtos);
+                                    break;
+                                // Case 5 ドメインモデル「承認中間データエラーメッセージ情報（月別実績）」を取得する
+                                case APP_ROUTE_U_MON:
+                                    List<AppDataInfoMonthlyDto> appDataInfoMonthlyDtos = this.appDataInfoMonthlyRepo.getAppDataInfoMonthlyByExeID(execIdByLogHistory).stream()
+                                        .map(item -> AppDataInfoMonthlyDto.builder()
+                                            .employeeId(item.getEmployeeId())
+                                            .executionId(item.getExecutionId())
+                                            .errorMessage(item.getErrorMessage().v())
+                                            .build())
+                                        .collect(Collectors.toList());
+                                    //更新処理自動実行データ．実行ログ詳細．承認ルート更新（月次）エラー．社員ID
+                                    empIds.addAll(appDataInfoMonthlyDtos.stream().map(AppDataInfoMonthlyDto::getEmployeeId).collect(Collectors.toList()));
+                                    execLogDetail.setAppDataInfoMonthlies(appDataInfoMonthlyDtos);
+                                    break;
+                                // Case 6 ドメインモデル「外部受入エラーログ」のデータを取得する
+                                case EXTERNAL_ACCEPTANCE:
+                                    execLogDetail.setExacErrorLogImports(this.exacErrorLogQueryFinder.getExacErrorLogByProcessId(execIdByLogHistory));
+                                    break;
+                                // Case 7 ドメインモデル「外部出力結果ログ」のデータを取得する
+                                case EXTERNAL_OUTPUT:
+                                   execLogDetail.setExternalOutLogImports(this.externalOutLogQueryFinder.getExternalOutLogById(companyId,execIdByLogHistory,0)); //ProcessingClassification.ERROR = 0
+                                    break;
+                                default:
+                                    break;
+                            }
+                            lstLogDetail.add(execLogDetail);
                         }
                     }
                 }
-            }
-            continue;
-        }
-
-        List<String> empIds = new ArrayList<>();
-        // get employeeId by logDetail
-        for(ExecutionLogDetailDto logDetail : lstLogDetail){
-            if(logDetail.getErrMessageInfo() != null){
-                empIds.addAll(logDetail.getErrMessageInfo().stream().map(err -> err.getEmployeeID()).collect(Collectors.toList()));
-            }
-            if(logDetail.getScheduleErrorLog() != null){
-                empIds.addAll(logDetail.getErrMessageInfo().stream().map(err -> err.getEmployeeID()).collect(Collectors.toList()));
-            }
-            if(logDetail.getAggrPeriodInfor() != null){
-                empIds.addAll(logDetail.getAggrPeriodInfor().stream().map(agg -> agg.getMemberId()).collect(Collectors.toList()));
-            }
-            if(logDetail.getAppDataInfoMonthlies() != null){
-                empIds.addAll(logDetail.getAppDataInfoMonthlies().stream().map(appM -> appM.getEmployeeId()).collect(Collectors.toList()));
-            }
-            if(logDetail.getAppDataInfoDailies() != null ){
-                empIds.addAll(logDetail.getAppDataInfoDailies().stream().map(appD -> appD.getEmployeeId()).collect(Collectors.toList()));
             }
         }
         // remove duplicate employeeId by empIds
@@ -279,16 +297,21 @@ public class GetDataToOutputService extends ExportService<Object> {
         // Step 社員ID(List)から個人社員基本情報を取得
         List<EmployeeBasicInfoExportDto> empBasicIf = this.obtainBasicPersonalEmployeeInformation(deDupEmpIds);
 
-        // Step OUTPUT「更新処理自動実行データ」を更新して返す
         // Convert lst EmployeeBasicInfoExportDto ->  lst EmployeeSearchDto
         List<EmployeeInfoImport> empInfoResult = empBasicIf.stream()
                 .map(empBs -> new EmployeeInfoImport(empBs.getEmployeeId(), empBs.getEmployeeCode(), empBs.getBusinessName()))
                 .collect(Collectors.toList());
-
         updateProAutoRunData.setLstEmployeeSearch(empInfoResult);
+
+        //「更新処理自動実行データ」を更新後「実行ログ詳細」をソートする ::::「更新処理自動実行データ．実行ログ詳細．更新処理自動実行ログ履歴．前回実行日時」の昇順
+        lstLogDetail.sort(Comparator.comparing(item -> item.getProcessExecLogHistory().getLastExecDateTime()));
+        //「更新処理自動実行データ」を更新後「実行ログ詳細」をソートする ::::「更新処理自動実行データ．実行ログ詳細．更新処理自動実行ログ履歴．各処理の終了状態．更新処理」の昇順
+        lstLogDetail.forEach(item -> {
+            item.getProcessExecLogHistory().getTaskLogList().sort(Comparator.comparing(logTask -> logTask.getProcExecTask().value));
+        });
         // Step 「実行ログ詳細」を作成してOUTPUT「更新処理自動実行データ」に追加する
         updateProAutoRunData.setLstExecLogDetail(lstLogDetail);
-
+        // Step OUTPUT「更新処理自動実行データ」を更新して返す
         return updateProAutoRunData;
     }
 
@@ -296,22 +319,15 @@ public class GetDataToOutputService extends ExportService<Object> {
         String companyId = AppContexts.user().companyId();
         GeneralDateTime startDate = commandHandlerContext.getStartDate();
         GeneralDateTime endDate = commandHandlerContext.getEndDate();
-        List<ProcessExecutionLogHistory> result = this.updateProAutoExeRepo.getByCompanyIdAndDateAndEmployeeName(companyId, startDate, endDate);
-        return result;
+        return this.updateProAutoExeRepo.getByCompanyIdAndDateAndEmployeeName(companyId, startDate, endDate);
     }
 
-    private List<UpdateProcessAutoExecution> acquireTheDomainModel(String companyId, List<ProcessExecutionLogHistory> processExeHistory) {
-        List<ExecutionCode> execItemCd = processExeHistory.stream().map(c -> c.getExecItemCd()).collect(Collectors.toList());
-        List<UpdateProcessAutoExecution> listProcessExecution = new ArrayList<>();
-        List<UpdateProcessAutoExecution> processExecution = this.procExecRepo.getProcessExecutionByCompanyId(companyId);
-        processExecution.forEach(exe -> {
-            execItemCd.forEach(code -> {
-                if (exe.getExecItemCode().v().equals(code.v())) {
-                    listProcessExecution.add(exe);
-                }
-            });
-        });
-        return listProcessExecution;
+    private List<UpdateProcessAutoExecutionDto> acquireTheDomainModel(String companyId, List<ProcessExecutionLogHistory> processExeHistory) {
+        List<String> execItemCd = processExeHistory.stream().map(item -> item.getExecItemCd().v()).collect(Collectors.toList());
+        return this.procExecRepo.getProcessExecutionByCompanyId(companyId).stream()
+                .map(UpdateProcessAutoExecutionDto::createFromDomain)
+                .filter(item -> execItemCd.stream().anyMatch(Predicate.isEqual(item.getExecItemCode())))
+                .collect(Collectors.toList());
     }
 
     private List<EmployeeBasicInfoExportDto> obtainBasicPersonalEmployeeInformation(List<String> empIds) {
@@ -329,13 +345,13 @@ public class GetDataToOutputService extends ExportService<Object> {
         else {
             // Step ドメインモデル「所属会社履歴（社員別）」を取得する
             //get list employeeId
-            List<String> lstEmpId = employeeInfoImports.stream().map(em -> em.getEmployeeId()).collect(Collectors.toList());
+            List<String> lstEmpId = employeeInfoImports.stream().map(EmployeeBasicInfoFnImport::getEmployeeId).collect(Collectors.toList());
 
 //            List<AffCompanyHistImport> affCompanyHistImports =
 //                    this.employeeHistWorkRecordAdapter.getWplByListSidAndPeriod(lstEmpId, new DatePeriod(GeneralDate.min(), GeneralDate.max()));
 
             // get list personId
-            List<String> lstPersonId = employeeInfoImports.stream().map(em -> em.getPId()).collect(Collectors.toList());
+            List<String> lstPersonId = employeeInfoImports.stream().map(EmployeeBasicInfoFnImport::getPId).collect(Collectors.toList());
             // Step アルゴリズム「個人IDから個人情報を取得」実行する
             List<EmployeeInfoExport> lstEmpSearch = this.getPersonalInformation(lstPersonId);
             // 取得できなかった場合（データ件数＝０件）
@@ -354,16 +370,16 @@ public class GetDataToOutputService extends ExportService<Object> {
                 empBasicInfo.setBirthDay(person.getBirthDay());
                 empBasicInfo.setBusinessName(person.getBusinessName());
                 empBasicInfo.setEmployeeCode(fnImport
-                        .map(item -> item.getEmployeeCode())
+                        .map(EmployeeBasicInfoFnImport::getEmployeeCode)
                         .orElse(null));
                 empBasicInfo.setEmployeeId(fnImport
-                        .map(item -> item.getEmployeeId())
+                        .map(EmployeeBasicInfoFnImport::getEmployeeId)
                         .orElse(null));
                 empBasicInfo.setEntryDate(fnImport
-                        .map(item -> item.getEntryDate())
+                        .map(EmployeeBasicInfoFnImport::getEntryDate)
                         .orElse(null));
                 empBasicInfo.setRetiredDate(fnImport
-                        .map(item -> item.getRetiredDate())
+                        .map(EmployeeBasicInfoFnImport::getRetiredDate)
                         .orElse(null));
                 result.add(empBasicInfo);
             });
@@ -394,194 +410,161 @@ public class GetDataToOutputService extends ExportService<Object> {
         return result;
     }
 
+    private String getTextResource(boolean check) {
+    	return check ? TextResource.localize("KBT002_290") : TextResource.localize("KBT002_291");
+    }
+    
     private void generalFileCSV1(FileGeneratorContext generatorContext, UpdateProcessAutoRunDataDto updateProAutoRuns) {
-        try {
             List<String> headerCSV1 = this.getTextHeaderCsv1();
             CsvReportWriter csv = this.generator.generate(generatorContext, FILE_NAME_CSV1 + CSV_EXTENSION, headerCSV1, "UTF-8");
             for (int i = 0; i < updateProAutoRuns.getLstExecLogDetail().size(); i++) {
                 ExecutionLogDetailDto logDetail = updateProAutoRuns.getLstExecLogDetail().get(i);
-                UpdateProcessAutoExecution exeCode = updateProAutoRuns.getLstProcessExecution().get(i);
-                ProcessExecutionLogHistory proHis = logDetail.getProcessExecLogHistory();
+                UpdateProcessAutoExecutionDto exeCode = updateProAutoRuns.getLstProcessExecution().get(i);
+                ProcessExecutionLogHistoryDto proHis = logDetail.getProcessExecLogHistory();
 
-                Map<String, Object> rowCSV1 = new HashMap<>();
-                rowCSV1.putAll(this.saveHeaderCSV(rowCSV1, proHis.getExecId(), exeCode.getExecItemCode(), proHis.getExecItemCd(), exeCode.getExecItemName()));
+                Map<String, Object> rowCSV1 = new HashMap<>(this.saveHeaderCSV(proHis.getExecId(), exeCode.getExecItemCode(), proHis.getExecItemCd(), exeCode.getExecItemName()));
 
-                String lastExecDateTime = proHis.getLastExecDateTime().map(item -> item.toString("yyyy-MM-dd HH:mm:ss")).orElse(null);
-                String lastEndExecDateTime = proHis.getLastEndExecDateTime().map(item -> item.toString("yyyy-MM-dd HH:mm:ss")).orElse(null);
-                rowCSV1.put(headerCSV1.get(3), proHis.getLastExecDateTime() != null ? lastExecDateTime : null);
-                rowCSV1.put(headerCSV1.get(4), proHis.getLastEndExecDateTime() != null ? lastEndExecDateTime : null);
+                String lastExecDateTime = proHis.getLastExecDateTime() == null ? null : proHis.getLastExecDateTime().toString("yyyy-MM-dd HH:mm:ss");
+                String lastEndExecDateTime = proHis.getLastEndExecDateTime() == null ? null : proHis.getLastEndExecDateTime().toString("yyyy-MM-dd HH:mm:ss");
+                rowCSV1.put(headerCSV1.get(3), lastExecDateTime);
+                rowCSV1.put(headerCSV1.get(4), lastEndExecDateTime);
 
-                rowCSV1.put(headerCSV1.get(5), this.getHourByGetLastExecDateTimeAndGetLastEndExecDateTime(proHis.getLastExecDateTime().orElse(null), proHis.getLastEndExecDateTime().orElse(null)));
-                rowCSV1.put(headerCSV1.get(6), proHis.getOverallStatus().map(item -> item.value)
-                        .orElse(null));
-                rowCSV1.put(headerCSV1.get(7), proHis.getErrorSystem().isPresent()
-                        ? null
-                        : (proHis.getErrorSystem().get() ? TextResource.localize("KBT002_290") : TextResource.localize("KBT002_291")));
-                rowCSV1.put(headerCSV1.get(8), proHis.getErrorBusiness().isPresent()
-                        ? null
-                        : (proHis.getErrorBusiness().get() ? TextResource.localize("KBT002_290") : TextResource.localize("KBT002_291")));
-                rowCSV1.put(headerCSV1.get(9), proHis.getOverallError()
-                        .map(item -> item.name)
-                        .orElse(null));
+                rowCSV1.put(headerCSV1.get(5), this.getHourByGetLastExecDateTimeAndGetLastEndExecDateTime(proHis.getLastExecDateTime(), proHis.getLastEndExecDateTime()));
+                rowCSV1.put(headerCSV1.get(6), proHis.getOverallStatus());
+                rowCSV1.put(headerCSV1.get(7), proHis.getErrorSystem() == null ? null : getTextResource(proHis.getErrorSystem()));
+                rowCSV1.put(headerCSV1.get(8), proHis.getErrorBusiness() == null ? null : getTextResource(proHis.getErrorBusiness()));
+                rowCSV1.put(headerCSV1.get(9), proHis.getOverallError());
                 csv.writeALine(rowCSV1);
-                continue;
             }
-
             csv.destroy();
-        } catch (Exception e) {
-
-        }
     }
 
     private void generalFileCSV2(FileGeneratorContext generatorContext, UpdateProcessAutoRunDataDto updateProAutoRuns) {
-        try {
             List<String> headerCSV2 = this.getTextHeaderCsv2();
             CsvReportWriter csv = this.generator.generate(generatorContext, FILE_NAME_CSV2 + CSV_EXTENSION, headerCSV2, "UTF-8");
             for (int i = 0; i < updateProAutoRuns.getLstExecLogDetail().size(); i++) {
                 ExecutionLogDetailDto logDetail = updateProAutoRuns.getLstExecLogDetail().get(i);
-                UpdateProcessAutoExecution exeCode = updateProAutoRuns.getLstProcessExecution().get(i);
-                ProcessExecutionLogHistory proHis = logDetail.getProcessExecLogHistory();
+                UpdateProcessAutoExecutionDto exeCode = updateProAutoRuns.getLstProcessExecution().get(i);
+                ProcessExecutionLogHistoryDto proHis = logDetail.getProcessExecLogHistory();
 
                 if(!proHis.getTaskLogList().isEmpty()){
-                    for(ExecutionTaskLog taskLog : proHis.getTaskLogList()){
-                        Map<String, Object> rowCSV2 = new HashMap<>();
-                        rowCSV2.putAll(this.saveHeaderCSV(rowCSV2, proHis.getExecId(), exeCode.getExecItemCode(), proHis.getExecItemCd(), exeCode.getExecItemName()));
-                        rowCSV2.put(headerCSV2.get(3), taskLog.getProcExecTask() != null ? taskLog.getProcExecTask().name : null);
 
+                    for(ExecutionTaskLog taskLog : proHis.getTaskLogList()){
+                        Map<String, Object> rowCSV2 = new HashMap<>(this.saveHeaderCSV(proHis.getExecId(), exeCode.getExecItemCode(), proHis.getExecItemCd(), exeCode.getExecItemName()));
+                        rowCSV2.put(headerCSV2.get(3), taskLog.getProcExecTask() != null ? taskLog.getProcExecTask().name : null);
                         String lastExecDateTime = taskLog.getLastExecDateTime().map(item -> item.toString("yyyy-MM-dd HH:mm:ss")).orElse(null);
                         String lastEndExecDateTime = taskLog.getLastEndExecDateTime().map(item -> item.toString("yyyy-MM-dd HH:mm:ss")).orElse(null);
                         rowCSV2.put(headerCSV2.get(4), taskLog.getLastExecDateTime().isPresent() ? lastExecDateTime : null);
                         rowCSV2.put(headerCSV2.get(5), taskLog.getLastEndExecDateTime().isPresent() ? lastEndExecDateTime : null);
-                        rowCSV2.put(headerCSV2.get(6), this.getHourByGetLastExecDateTimeAndGetLastEndExecDateTime(proHis.getLastExecDateTime().orElse(null), proHis.getLastEndExecDateTime().orElse(null)));
-                        rowCSV2.put(headerCSV2.get(7), proHis.getOverallStatus()
-                                .map(item -> item.name)
-                                .orElse(null));
-                        rowCSV2.put(headerCSV2.get(8), proHis.getErrorSystem().isPresent()
-                                ? null
-                                : proHis.getErrorSystem().get() ? TextResource.localize("KBT002_290") : TextResource.localize("KBT002_291"));
+                        rowCSV2.put(headerCSV2.get(6), this.getHourByGetLastExecDateTimeAndGetLastEndExecDateTime(proHis.getLastExecDateTime(), proHis.getLastEndExecDateTime()));
+                        rowCSV2.put(headerCSV2.get(7), proHis.getOverallStatus() == null ? null : EnumAdaptor.valueOf(proHis.getOverallStatus(),EndStatus.class).name);
+                        rowCSV2.put(headerCSV2.get(8), proHis.getErrorSystem() == null ? null : getTextResource(proHis.getErrorSystem()));
                         rowCSV2.put(headerCSV2.get(9), taskLog.getSystemErrorDetails());
-                        rowCSV2.put(headerCSV2.get(10), proHis.getErrorBusiness().isPresent()
-                                ? null
-                                : proHis.getErrorBusiness().get() ? TextResource.localize("KBT002_290") : TextResource.localize("KBT002_291"));
+                        rowCSV2.put(headerCSV2.get(10), proHis.getErrorBusiness() == null ? null : getTextResource(proHis.getErrorBusiness()));
                         csv.writeALine(rowCSV2);
                     }
                 }
-                continue;
             }
             csv.destroy();
-        } catch (Exception e) {
-
-        }
     }
 
     private void generalFileCSV3(FileGeneratorContext generatorContext, UpdateProcessAutoRunDataDto updateProAutoRuns) {
-    	
-    	boolean checkEmptyTaskLogList = false;
-    	for (int i = 0; i < updateProAutoRuns.getLstExecLogDetail().size(); i++) {
-    		if(!updateProAutoRuns.getLstExecLogDetail().get(i).getProcessExecLogHistory().getTaskLogList().isEmpty()) {
-    			checkEmptyTaskLogList = true;
-        	}
-    	}
-    	
-    	if(checkEmptyTaskLogList) {
-    		try {
-                List<String> headerCSV3 = this.getTextHeaderCsv3(updateProAutoRuns.isExportEmpName());
-                CsvReportWriter csv = this.generator.generate(generatorContext, FILE_NAME_CSV3 + CSV_EXTENSION, headerCSV3, "UTF-8");
-                for (int i = 0; i < updateProAutoRuns.getLstExecLogDetail().size(); i++) {
-                    ExecutionLogDetailDto logDetail = updateProAutoRuns.getLstExecLogDetail().get(i);
-                    UpdateProcessAutoExecution exeCode = updateProAutoRuns.getLstProcessExecution().get(i);
-                    EmployeeInfoImport empImport = updateProAutoRuns.getLstEmployeeSearch().get(i);
-                    ProcessExecutionLogHistory proHis = logDetail.getProcessExecLogHistory();
 
-                    if(!proHis.getTaskLogList().isEmpty()){
-                        
-                        for(ExecutionTaskLog taskLog : proHis.getTaskLogList()){
-                        	int j = 0;
-                            if(taskLog.getErrorBusiness().isPresent()){
-                                if (taskLog.getErrorBusiness().get()) {
-                                    // sort list scheduleErrorLog in date by asc
-                                	ScheduleErrorLog schLog = new ScheduleErrorLog(null,null,null,null);
-                                	ErrMessageInfo errLog = new ErrMessageInfo(null,null, null, null, null, null);
-                                	AggrPeriodInfor aggPeInfo = new AggrPeriodInfor(null, null, null,null,null);
-                                	AppDataInfoDaily appDaily = new AppDataInfoDaily(null, null, null);
-                                	AppDataInfoMonthly appMonthly = new AppDataInfoMonthly(null,null,null);
-                                    if(logDetail.getScheduleErrorLog() != null){
-                                        logDetail.getScheduleErrorLog().sort(Comparator.comparing(ScheduleErrorLog::getDate));
-                                        schLog = logDetail.getScheduleErrorLog().get(j);
-                                    }
-                                    if(logDetail.getAggrPeriodInfor() != null){
-                                        logDetail.getAggrPeriodInfor().sort(Comparator.comparing(AggrPeriodInfor::getProcessDay));
-                                        aggPeInfo = logDetail.getAggrPeriodInfor().get(j);
-                                    }
-                                    if(logDetail.getErrMessageInfo() != null){
-                                        logDetail.getErrMessageInfo().sort(Comparator.comparing(ErrMessageInfo::getDisposalDay));
-                                        errLog = logDetail.getErrMessageInfo().get(j);
-                                    }
+        boolean checkEmptyTaskLogList = false;
+        for (int i = 0; i < updateProAutoRuns.getLstExecLogDetail().size(); i++) {
+            if (!updateProAutoRuns.getLstExecLogDetail().get(i).getProcessExecLogHistory().getTaskLogList().isEmpty()) {
+                checkEmptyTaskLogList = true;
+            }
+        }
 
-                                    if(logDetail.getAppDataInfoDailies() != null) {
-                                        appDaily = logDetail.getAppDataInfoDailies().get(j);
-                                    }
-                                    
-                                    if(logDetail.getAppDataInfoMonthlies() != null) {
-                                    	appMonthly = logDetail.getAppDataInfoMonthlies().get(j);
-                                    }
-                                    
-                                    Map<String, Object> rowCSV3 = new HashMap<>();
+        if (checkEmptyTaskLogList) {
+            List<String> headerCSV3 = this.getTextHeaderCsv3(updateProAutoRuns.isExportEmpName());
+            CsvReportWriter csv = this.generator.generate(generatorContext, FILE_NAME_CSV3 + CSV_EXTENSION, headerCSV3, "UTF-8");
+            for (int i = 0; i < updateProAutoRuns.getLstExecLogDetail().size(); i++) {
+                ExecutionLogDetailDto logDetail = updateProAutoRuns.getLstExecLogDetail().get(i);
+                UpdateProcessAutoExecutionDto exeCode = updateProAutoRuns.getLstProcessExecution().get(i);
+                EmployeeInfoImport empImport = updateProAutoRuns.getLstEmployeeSearch().get(i);
+                ProcessExecutionLogHistoryDto proHis = logDetail.getProcessExecLogHistory();
 
-                                    rowCSV3.putAll(this.saveHeaderCSV(rowCSV3, proHis.getExecId(), exeCode.getExecItemCode(), proHis.getExecItemCd(), exeCode.getExecItemName()));
-                                    rowCSV3.put(headerCSV3.get(3), taskLog.getProcExecTask() != null ? taskLog.getProcExecTask().name : null);
+                if (!proHis.getTaskLogList().isEmpty()) {
+                    for (ExecutionTaskLog taskLog : proHis.getTaskLogList()) {
+                        int j = 0;
+                        if (taskLog.getErrorBusiness().isPresent() && taskLog.getErrorBusiness().get()) {
+                            // sort list scheduleErrorLog in date by asc
+                            ScheduleErrorLogDto schLog = ScheduleErrorLogDto.builder().build();
+                            ErrMessageInfoDto errLog = ErrMessageInfoDto.builder().build();
+                            AggrPeriodInforDto aggPeInfo = AggrPeriodInforDto.builder().build();
+                            AppDataInfoDailyDto appDaily = AppDataInfoDailyDto.builder().build();
+                            AppDataInfoMonthlyDto appMonthly = AppDataInfoMonthlyDto.builder().build();
+                            if (logDetail.getScheduleErrorLog() != null) {
+                                logDetail.getScheduleErrorLog().sort(Comparator.comparing(ScheduleErrorLogDto::getDate));
+                                schLog = logDetail.getScheduleErrorLog().get(j);
+                            }
+                            if (logDetail.getAggrPeriodInfor() != null) {
+                                logDetail.getAggrPeriodInfor().sort(Comparator.comparing(AggrPeriodInforDto::getProcessDay));
+                                aggPeInfo = logDetail.getAggrPeriodInfor().get(j);
+                            }
+                            if (logDetail.getErrMessageInfo() != null) {
+                                logDetail.getErrMessageInfo().sort(Comparator.comparing(ErrMessageInfoDto::getDisposalDay));
+                                errLog = logDetail.getErrMessageInfo().get(j);
+                            }
 
-                                    if (checkEqualId(empImport.getSid(), schLog.getEmployeeId())
-                                            || checkEqualId(empImport.getSid(), aggPeInfo.getMemberId())
-                                            || checkEqualId(empImport.getSid(), appDaily.getEmployeeId())
-                                            || checkEqualId(empImport.getSid(), appMonthly.getEmployeeId())) {
+                            if (logDetail.getAppDataInfoDailies() != null) {
+                                appDaily = logDetail.getAppDataInfoDailies().get(j);
+                            }
 
-                                        rowCSV3.put(headerCSV3.get(4), empImport.getScd());
-                                        // check valid whether to output the employee name
-                                        if (updateProAutoRuns.isExportEmpName()) {
-                                            rowCSV3.put(headerCSV3.get(5), empImport.getBussinessName());
-                                        }
+                            if (logDetail.getAppDataInfoMonthlies() != null) {
+                                appMonthly = logDetail.getAppDataInfoMonthlies().get(j);
+                            }
 
-                                    }
-                                    switch (taskLog.getProcExecTask()) {
-                                        case SCH_CREATION:
-                                            rowCSV3.put(headerCSV3.get(6), schLog.getDate() != null ? schLog.getDate().toString() : null);
-                                            rowCSV3.put(headerCSV3.get(7), schLog.getErrorContent() != null ? schLog.getErrorContent() : null);
-                                            break;
-                                        case DAILY_CREATION:
-                                        case DAILY_CALCULATION:
-                                        case RFL_APR_RESULT:
-                                        case MONTHLY_AGGR:
-                                            rowCSV3.put(headerCSV3.get(6), errLog.getDisposalDay() != null ? errLog.getDisposalDay().toString() : null);
-                                            rowCSV3.put(headerCSV3.get(7), errLog.getMessageError() != null ? errLog.getMessageError().v() : null );
-                                            break;
-                                        case AGGREGATION_OF_ARBITRARY_PERIOD:
-                                            rowCSV3.put(headerCSV3.get(6), aggPeInfo.getProcessDay() != null ? aggPeInfo.getProcessDay().toString() : null);
-                                            rowCSV3.put(headerCSV3.get(7), aggPeInfo.getErrorMess() != null ? aggPeInfo.getErrorMess().v() : null);
-                                            break;
-                                        case APP_ROUTE_U_DAI:
-                                            rowCSV3.put(headerCSV3.get(7), appDaily.getErrorMessage() != null ? appDaily.getErrorMessage().v() : null);
-                                            break;
-                                        case APP_ROUTE_U_MON:
-                                            rowCSV3.put(headerCSV3.get(7), appMonthly.getErrorMessage() != null ? appMonthly.getErrorMessage().v() : null);
-                                            break;
-                                        default:
-                                            break;
-                                    }
-                                    csv.writeALine(rowCSV3);
+                            Map<String, Object> rowCSV3 = new HashMap<>(this.saveHeaderCSV(proHis.getExecId(), exeCode.getExecItemCode(), proHis.getExecItemCd(), exeCode.getExecItemName()));
+                            rowCSV3.put(headerCSV3.get(3), taskLog.getProcExecTask() != null ? taskLog.getProcExecTask().name : null);
+
+                            if (checkEqualId(empImport.getSid(), schLog.getEmployeeId())
+                                    || checkEqualId(empImport.getSid(), aggPeInfo.getMemberId())
+                                    || checkEqualId(empImport.getSid(), appDaily.getEmployeeId())
+                                    || checkEqualId(empImport.getSid(), appMonthly.getEmployeeId())) {
+
+                                rowCSV3.put(headerCSV3.get(4), empImport.getScd());
+                                // check valid whether to output the employee name
+                                if (updateProAutoRuns.isExportEmpName()) {
+                                    rowCSV3.put(headerCSV3.get(5), empImport.getBussinessName());
                                 }
                             }
-                            j++;
+                            switch (taskLog.getProcExecTask()) {
+                                case SCH_CREATION:
+                                    rowCSV3.put(headerCSV3.get(6), schLog.getDate() != null ? schLog.getDate().toString() : null);
+                                    rowCSV3.put(headerCSV3.get(7), schLog.getErrorContent() != null ? schLog.getErrorContent() : null);
+                                    break;
+                                case DAILY_CREATION:
+                                case DAILY_CALCULATION:
+                                case RFL_APR_RESULT:
+                                case MONTHLY_AGGR:
+                                    rowCSV3.put(headerCSV3.get(6), errLog.getDisposalDay() != null ? errLog.getDisposalDay().toString() : null);
+                                    rowCSV3.put(headerCSV3.get(7), errLog.getMessageError() != null ? errLog.getMessageError() : null);
+                                    break;
+                                case AGGREGATION_OF_ARBITRARY_PERIOD:
+                                    rowCSV3.put(headerCSV3.get(6), aggPeInfo.getProcessDay() != null ? aggPeInfo.getProcessDay().toString() : null);
+                                    rowCSV3.put(headerCSV3.get(7), aggPeInfo.getErrorMess() != null ? aggPeInfo.getErrorMess() : null);
+                                    break;
+                                case APP_ROUTE_U_DAI:
+                                    rowCSV3.put(headerCSV3.get(7), appDaily.getErrorMessage() != null ? appDaily.getErrorMessage() : null);
+                                    break;
+                                case APP_ROUTE_U_MON:
+                                    rowCSV3.put(headerCSV3.get(7), appMonthly.getErrorMessage() != null ? appMonthly.getErrorMessage() : null);
+                                    break;
+                                default:
+                                    break;
+                            }
+                            csv.writeALine(rowCSV3);
                         }
+                        j++;
                     }
-                    continue;
                 }
-                csv.destroy();
-            } catch (Exception e) {
-
             }
-    	}
-    	
+            csv.destroy();
+        }
+
     }
 
     private void generalFileCSV4(FileGeneratorContext generatorContext, UpdateProcessAutoRunDataDto updateProAutoRuns) {
@@ -593,57 +576,51 @@ public class GetDataToOutputService extends ExportService<Object> {
     			checkListExacErrorLogEmpty = true;
     		}
     	}
+
     	if(checkListExacErrorLogEmpty) {
-    		try {
                 List<String> headerCSV4 = this.getTextHeaderCsv4();
                 CsvReportWriter csv = this.generator.generate(generatorContext, FILE_NAME_CSV4 + CSV_EXTENSION, headerCSV4, "UTF-8");
                 for (int i = 0; i < updateProAutoRuns.getLstExecLogDetail().size(); i++) {
                 	List<ExacErrorLogQueryDto> lstExacErrorLog = updateProAutoRuns.getLstExecLogDetail().get(i).getExacErrorLogImports();
                     if(lstExacErrorLog != null){
-                    	UpdateProcessAutoExecution exeCode = updateProAutoRuns.getLstProcessExecution().get(i);
-                        ProcessExecutionLogHistory proHis = updateProAutoRuns.getLstExecLogDetail().get(i).getProcessExecLogHistory();
+                    	UpdateProcessAutoExecutionDto exeCode = updateProAutoRuns.getLstProcessExecution().get(i);
+                        ProcessExecutionLogHistoryDto proHis = updateProAutoRuns.getLstExecLogDetail().get(i).getProcessExecLogHistory();
                     	// sort list exacErrorLogImport of record number oder by asc
                         lstExacErrorLog.sort(Comparator.comparingInt(ExacErrorLogQueryDto::getRecordNumber));
 
                         for(ExacErrorLogQueryDto exacErrLog : lstExacErrorLog){
-                            Map<String, Object> rowCSV4 = new HashMap<>();
-                            rowCSV4.putAll(this.saveHeaderCSV(rowCSV4,proHis.getExecId(),exeCode.getExecItemCode(),proHis.getExecItemCd(),exeCode.getExecItemName()));
+                            Map<String, Object> rowCSV4 = new HashMap<>(this.saveHeaderCSV(proHis.getExecId(), exeCode.getExecItemCode(), proHis.getExecItemCd(), exeCode.getExecItemName()));
                             rowCSV4.put(headerCSV4.get(3),exacErrLog.getRecordNumber());
-                            rowCSV4.put(headerCSV4.get(4),exacErrLog.getCsvErrorItemName().isPresent() ? exacErrLog.getCsvErrorItemName().get() : null);
-                            rowCSV4.put(headerCSV4.get(5),exacErrLog.getItemName().isPresent() ? exacErrLog.getItemName().get() : null);
-                            rowCSV4.put(headerCSV4.get(6),exacErrLog.getCsvAcceptedValue().isPresent() ? exacErrLog.getCsvAcceptedValue().get() : null);
-                            rowCSV4.put(headerCSV4.get(7),exacErrLog.getErrorContents().isPresent() ? exacErrLog.getErrorContents().get() : null);
+                            rowCSV4.put(headerCSV4.get(4),exacErrLog.getCsvErrorItemName().orElse(null));
+                            rowCSV4.put(headerCSV4.get(5),exacErrLog.getItemName().orElse(null));
+                            rowCSV4.put(headerCSV4.get(6),exacErrLog.getCsvAcceptedValue().orElse(null));
+                            rowCSV4.put(headerCSV4.get(7),exacErrLog.getErrorContents().orElse(null));
                             csv.writeALine(rowCSV4);
                         }
                     }
-                    continue;
                 }
                 csv.destroy();
-            } catch (Exception e) {
-            	 
-            }
     	}
     }
 
     private void generalFileCSV5(FileGeneratorContext generatorContext, UpdateProcessAutoRunDataDto updateProAutoRuns) {
-
         boolean checkExternalErrLogEmpty = false;
         for(int i = 0; i < updateProAutoRuns.getLstExecLogDetail().size(); i++){
             List<ExternalOutLogQueryDto> lstExternalOutLog = updateProAutoRuns.getLstExecLogDetail().get(i).getExternalOutLogImports();
-            if(lstExternalOutLog != null){
+            if (lstExternalOutLog != null) {
                 checkExternalErrLogEmpty = true;
+                break;
             }
         }
         if(checkExternalErrLogEmpty){
-            try {
                 List<String> headerCSV5 = this.getTextHeaderCsv5();
                 CsvReportWriter csv = this.generator.generate(generatorContext, FILE_NAME_CSV5 + CSV_EXTENSION, headerCSV5, "UTF-8");
                 for (int i = 0; i < updateProAutoRuns.getLstExecLogDetail().size(); i++) {
                     List<ExternalOutLogQueryDto> lstExternalOutLog = updateProAutoRuns.getLstExecLogDetail().get(i).getExternalOutLogImports();
                     if(lstExternalOutLog != null){
-                        ProcessExecutionLogHistory proHis = updateProAutoRuns.getLstExecLogDetail().get(i).getProcessExecLogHistory();
+                        ProcessExecutionLogHistoryDto proHis = updateProAutoRuns.getLstExecLogDetail().get(i).getProcessExecLogHistory();
                         EmployeeInfoImport empImport = new EmployeeInfoImport(null, null, null);
-                        UpdateProcessAutoExecution exeCode = updateProAutoRuns.getLstProcessExecution().get(i);
+                        UpdateProcessAutoExecutionDto exeCode = updateProAutoRuns.getLstProcessExecution().get(i);
 
                         if(updateProAutoRuns.getLstEmployeeSearch() != null){
                             empImport = updateProAutoRuns.getLstEmployeeSearch().get(i);
@@ -652,42 +629,34 @@ public class GetDataToOutputService extends ExportService<Object> {
                         lstExternalOutLog.sort(Comparator.comparing(ExternalOutLogQueryDto::getProcessCount));
 
                         for(ExternalOutLogQueryDto externalOutLogImport : lstExternalOutLog) {
-                            Map<String, Object> rowCSV5 = new HashMap<>();
-                            rowCSV5.putAll(this.saveHeaderCSV(rowCSV5, proHis.getExecId(), exeCode.getExecItemCode(), proHis.getExecItemCd(), exeCode.getExecItemName()));
+                            Map<String, Object> rowCSV5 = new HashMap<>(this.saveHeaderCSV(proHis.getExecId(), exeCode.getExecItemCode(), proHis.getExecItemCd(), exeCode.getExecItemName()));
                             rowCSV5.put(headerCSV5.get(3), externalOutLogImport.getProcessCount());
                             rowCSV5.put(headerCSV5.get(4), empImport.getScd());
                             rowCSV5.put(headerCSV5.get(5), empImport.getBussinessName());
                             rowCSV5.put(headerCSV5.get(6), externalOutLogImport.getErrorDate().map(item -> item.toString()).orElse(null));
-                            rowCSV5.put(headerCSV5.get(7), externalOutLogImport.getErrorItem().isPresent() ? externalOutLogImport.getErrorItem().get() : null);
-                            rowCSV5.put(headerCSV5.get(8), externalOutLogImport.getErrorTargetValue().isPresent() ? externalOutLogImport.getErrorTargetValue().get() : null);
-                            rowCSV5.put(headerCSV5.get(9), externalOutLogImport.getErrorContent().isPresent() ? externalOutLogImport.getErrorContent().get() : null);
+                            rowCSV5.put(headerCSV5.get(7), externalOutLogImport.getErrorItem().orElse(null));
+                            rowCSV5.put(headerCSV5.get(8), externalOutLogImport.getErrorTargetValue().orElse(null));
+                            rowCSV5.put(headerCSV5.get(9), externalOutLogImport.getErrorContent().orElse(null));
                             csv.writeALine(rowCSV5);
                         }
                     }
-                    continue;
                 }
                 csv.destroy();
-
-            } catch (Exception e) {
-
-            }
         }
     }
 
     // saves duplicate fields of CSVs
-    private Map<String, Object> saveHeaderCSV(Map<String, Object> rowCsv, String execId, ExecutionCode execCode, ExecutionCode execCodeHistory, ExecutionName execName) {
+    private Map<String, Object> saveHeaderCSV(String execId, String execCode, String execCodeHistory, String execName) {
+        Map<String, Object> rowCsv = new HashMap<>();
         rowCsv.put(TextResource.localize("KBT002_289"), execId);
-        rowCsv.put(TextResource.localize("KBT002_7"), execCode.v());
-        rowCsv.put(TextResource.localize("KBT002_8"), execCode.equals(execCodeHistory) ? execName.v() : TextResource.localize("KBT002_193"));
+        rowCsv.put(TextResource.localize("KBT002_7"), execCode);
+        rowCsv.put(TextResource.localize("KBT002_8"), execCode.equals(execCodeHistory) ? execName : TextResource.localize("KBT002_193"));
         return rowCsv;
     }
 
     // check equalId
     private boolean checkEqualId(String id1, String id2) {
-        if (id1.equals(id2)) {
-            return true;
-        }
-        return false;
+        return id1.equals(id2);
     }
 
     // convert GeneralDateTime to LocalDateTime and get Hour lastExecTime - lasExecEndTime to String

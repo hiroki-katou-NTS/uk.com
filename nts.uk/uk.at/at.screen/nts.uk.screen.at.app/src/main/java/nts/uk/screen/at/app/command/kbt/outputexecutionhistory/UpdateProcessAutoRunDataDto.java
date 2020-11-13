@@ -17,7 +17,7 @@ import java.util.List;
 public class UpdateProcessAutoRunDataDto {
 
     /** 更新処理自動実行一覧 */
-    private List<UpdateProcessAutoExecution> lstProcessExecution;
+    private List<UpdateProcessAutoExecutionDto> lstProcessExecution;
 
     /** 実行ログ詳細 */
     private List<ExecutionLogDetailDto> lstExecLogDetail;

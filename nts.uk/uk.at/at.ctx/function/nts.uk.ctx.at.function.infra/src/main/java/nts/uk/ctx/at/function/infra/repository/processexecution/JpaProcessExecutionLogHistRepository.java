@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.infra.repository.processexecution;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogHistory;
@@ -28,12 +29,12 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository implemen
 	private static final String SELECT_All_BY_CID_EXECCD_DATE = SELECT_ALL
 			+ "WHERE pelh.kfnmtProcExecLogHstPK.companyId = :companyId "
 			+ "AND pelh.kfnmtProcExecLogHstPK.execItemCd = :execItemCd "
-			+ "AND pelh.prevExecDateTime >= :prevExecDateTime AND pelh.prevExecDateTime< :nextExecDateTime";
+			+ "AND pelh.lastExecDateTime >= :lastExecDateTime AND pelh.lastExecDateTime< :nextExecDateTime";
 
 	private static final String SELECT_All_BY_CID_EXECCD_DATE_RANGE = SELECT_ALL
 			+ "WHERE pelh.kfnmtProcExecLogHstPK.companyId = :companyId "
 			+ "AND pelh.kfnmtProcExecLogHstPK.execItemCd = :execItemCd "
-			+ "AND pelh.prevExecDateTime >= :startDate AND pelh.prevExecDateTime < :endDate";
+			+ "AND pelh.lastExecDateTime >= :startDate AND pelh.lastExecDateTime < :endDate";
 
 	private static final String SELECT_All_BY_CID_EXECCD = SELECT_ALL
 			+ "WHERE pelh.kfnmtProcExecLogHstPK.companyId = :companyId "
@@ -41,7 +42,7 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository implemen
 
 	private static final String SELECT_ALL_BY_CID_START_DATE_END_DATE = SELECT_ALL
 			+ "WHERE pelh.kfnmtProcExecLogHstPK.companyId = :companyId "
-			+ "AND pelh.prevExecDateTime >= :startDate AND pelh.prevExecDateTime < :endDate";
+			+ "AND CAST(pelh.lastExecDateTime as DATE) >= :startDate AND CAST(pelh.lastExecDateTime as DATE) < :endDate";
 
 	private static final String SELECT_ALL_BY_CID_AND_EXECCD = SELECT_ALL
 			+ "WHERE pelh.kfnmtProcExecLogHstPK.companyId = :companyId "
@@ -145,7 +146,6 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository implemen
 					ps.executeUpdate();
 				}
 			}
-			
 		}catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -160,24 +160,19 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository implemen
 				this.commandProxy().removeAll(list);
 			}
 	}
-	
-	
-
 
 	@Override
 	public List<ProcessExecutionLogHistory> getByDate(String companyId, String execItemCd,
-			GeneralDateTime prevExecDateTime) {
-		GeneralDateTime nextExecDateTime = prevExecDateTime.addDays(1);
+			GeneralDateTime lastExecDateTime) {
+		GeneralDateTime nextExecDateTime = lastExecDateTime.addDays(1);
 		
 		return this.queryProxy().query(SELECT_All_BY_CID_EXECCD_DATE, KfnmtProcessExecutionLogHistory.class)
 				.setParameter("companyId", companyId)
 				.setParameter("execItemCd", execItemCd)
-				.setParameter("prevExecDateTime", prevExecDateTime)
+				.setParameter("lastExecDateTime", lastExecDateTime)
 				.setParameter("nextExecDateTime", nextExecDateTime)
 				.getList(ProcessExecutionLogHistory::createFromMemento);
-		
 	}
-
 
 	@Override
 	public List<ProcessExecutionLogHistory> getByDateRange(String companyId, String execItemCd,
@@ -193,14 +188,13 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository implemen
 	}
 
 	@Override
-	public List<ProcessExecutionLogHistory> getByCompanyIdAndDateAndEmployeeName(String companyId, GeneralDateTime startDate, GeneralDateTime endDate) {
+	public List<ProcessExecutionLogHistory> getByCompanyIdAndDateAndEmployeeName(String companyId, GeneralDateTime startDateTime, GeneralDateTime endDateTime) {
 		return this.queryProxy().query(SELECT_ALL_BY_CID_START_DATE_END_DATE, KfnmtProcessExecutionLogHistory.class)
 				.setParameter("companyId", companyId)
-				.setParameter("startDate", startDate)
-				.setParameter("endDate", endDate)
+				.setParameter("startDate", startDateTime.toDate())
+				.setParameter("endDate", endDateTime.toDate())
 				.getList(ProcessExecutionLogHistory::createFromMemento);
 	}
-
 
 	@Override
 	public List<ProcessExecutionLogHistory> getByCompanyIdAndExecItemCd(String companyId, String execItemCd) {
@@ -209,7 +203,6 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository implemen
 				.setParameter("execItemCd", execItemCd)
 				.getList(ProcessExecutionLogHistory::createFromMemento);
 	}
-
 
 	@Override
 	public Optional<ProcessExecutionLogHistory> getByExecId(String execId) {
