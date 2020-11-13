@@ -65,8 +65,8 @@ public class Ccg008WebService {
 				new CacheCarrier(), employeeID, systemDate);
 		InitDisplayPeriodSwitchSetDto rq609 = displayPeriodfinder.targetDateFromLogin();
 		DatePeriod  datePeriod = rq609.getListDateProcessed().get(0).getDatePeriod();
-		Ccg008Dto result = new Ccg008Dto(closure.getClosureId().value, rq609.getCurrentOrNextMonth(), datePeriod.start().toString(), datePeriod.end().toString());
-		return result;
+		return new Ccg008Dto(closure.getClosureId().value, rq609.getCurrentOrNextMonth(), datePeriod.start().toString(), datePeriod.end().toString());
+		 
 	}
 	
 	@POST

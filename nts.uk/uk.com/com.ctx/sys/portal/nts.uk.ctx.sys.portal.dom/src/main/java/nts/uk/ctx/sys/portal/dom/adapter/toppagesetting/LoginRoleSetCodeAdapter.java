@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.portal.dom.adapter.toppagesetting;
 
+import java.util.Optional;
+
 import nts.uk.ctx.sys.portal.dom.adapter.roleset.RoleSetDto;
 
 /**
@@ -13,5 +15,5 @@ public interface LoginRoleSetCodeAdapter {
 	 * ログイン者のロールセットを取得する
 	 * @return the login role set
 	 */
-	public RoleSetDto getLoginRoleSet();
+	public Optional<RoleSetDto> getLoginRoleSet();
 }
