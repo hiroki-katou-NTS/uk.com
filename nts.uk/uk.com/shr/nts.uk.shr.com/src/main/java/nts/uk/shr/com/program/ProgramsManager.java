@@ -2260,6 +2260,13 @@ public class ProgramsManager {
     public static final Program KTG002A = new Program(WebAppId.AT, ProgramIdConsts.KTG002A, "KTG002_1",
             "/view/ktg/002/a/index.xhtml");
 
+    /**     * KTG004     **/
+    public static final Program KTG004A = new Program(WebAppId.AT, ProgramIdConsts.KTG004A, "",
+            "/view/ktg/004/a/index.xhtml");
+    /**     * KTG004     **/
+    public static final Program KTG004B = new Program(WebAppId.AT, ProgramIdConsts.KTG004B, "KTG004_24",
+            "/view/ktg/004/b/index.xhtml");
+    
     /**     * KTG005     **/
     public static final Program KTG005A = new Program(WebAppId.AT, ProgramIdConsts.KTG005A, "KTG005_14",
             "/view/ktg/005/a/index.xhtml");

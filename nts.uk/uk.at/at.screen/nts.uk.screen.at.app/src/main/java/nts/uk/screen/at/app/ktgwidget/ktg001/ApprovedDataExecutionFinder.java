@@ -14,9 +14,9 @@ import nts.uk.ctx.sys.auth.pub.role.RoleExportRepo;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApproveWidgetRepository;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidget;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidgetType;
-import nts.uk.screen.at.app.ktgwidget.find.dto.ApprovedAppStatusDetailedSettingDto;
 import nts.uk.screen.at.app.ktgwidget.find.dto.ClosureIdPresentClosingPeriodDto;
 import nts.uk.screen.at.app.ktgwidget.find.dto.PresentClosingPeriodImportDto;
+import nts.uk.screen.at.app.ktgwidget.find.dto.StatusDetailedSettingDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -94,7 +94,7 @@ public class ApprovedDataExecutionFinder {
 
 		approvedDataExecutionResultDto
 				.setApprovedAppStatusDetailedSettings(standardWidget.getApprovedAppStatusDetailedSettingList().stream()
-						.map(a -> new ApprovedAppStatusDetailedSettingDto(a.getDisplayType().value, a.getItem().value))
+						.map(a -> new StatusDetailedSettingDto(a.getDisplayType().value, a.getItem().value))
 						.collect(Collectors.toList()));
 
 		return approvedDataExecutionResultDto;

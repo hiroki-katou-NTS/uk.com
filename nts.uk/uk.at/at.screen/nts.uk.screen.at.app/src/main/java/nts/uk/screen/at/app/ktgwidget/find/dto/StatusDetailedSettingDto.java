@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ApprovedAppStatusDetailedSettingDto {
+public class StatusDetailedSettingDto {
 	
 	// 表示区分
 	int displayType;
