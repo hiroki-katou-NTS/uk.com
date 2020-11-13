@@ -43,23 +43,21 @@ module nts.uk.com.view.ccg015.e {
         topPageCode: vm.topPageCode(),
         layoutNo: vm.layoutNo()
       }
-      vm.$blockui("show");
-      vm.$ajax('/toppage/getLayout', layoutRquest).then((result: any) => {
-        if (result) {
-          vm.isNewMode(false)
-          console.log(result);
-        } else {
-          vm.isNewMode(true);
-        }
-      }).always(() => {
-        vm.$blockui("hide");
-      });
+      vm.$blockui("grayout");
+      vm.$ajax('/toppage/getLayout', layoutRquest)
+        .then((result: any) => {
+          if (result) {
+            vm.isNewMode(false)
+          } else {
+            vm.isNewMode(true);
+          }
+        })
+        .always(() => vm.$blockui("clear"));
     }
 
     saveListWidgetLayout() {
       const vm = this;
-      vm.$blockui("show");
-      let widgetTest: WidgetItem = new WidgetItemImpl();
+      const widgetTest: WidgetItem = new WidgetItemImpl();
       widgetTest.widgetType = 0;
       widgetTest.order = 1;
       vm.widgetList.push(widgetTest);
@@ -74,14 +72,14 @@ module nts.uk.com.view.ccg015.e {
         url: null,
         widgetSettings: [{ widgetType: 1, order:1 }, { widgetType: 3, order:2 }, { widgetType: 4, order:3 }],
       };
-
-      vm.$ajax('/toppage/saveLayoutWidget', data).done(function () {
-        vm.$dialog.info({ messageId: "Msg_15" })
-      }).then((result: any) => {
-        vm.isNewMode(false);
-      }).always(() => {
-        vm.$blockui("hide");
-      });
+      vm.$blockui("grayout");
+      vm.$ajax('/toppage/saveLayoutWidget', data)
+        .then(() => {
+          vm.isNewMode(false);
+          vm.$blockui("clear");
+          vm.$dialog.info({ messageId: "Msg_15" });
+        })
+        .always(() => vm.$blockui("clear"));
     }
 
     draggableItem() {
@@ -109,9 +107,9 @@ module nts.uk.com.view.ccg015.e {
     droppableItem() {
       const vm = this;
       $("#container2").droppable({
-        drop: function(event: any, ui) {
+        drop: function (event: any, ui) {
           let itemid = $(event.originalEvent.toElement).attr("itemid");
-          $('.box-item').each(function() {
+          $('.box-item').each(function () {
             if ($(this).attr("itemid") === itemid) {
               let placementItem: Placement = new Placement();
               let widgetItem: WidgetItem;
