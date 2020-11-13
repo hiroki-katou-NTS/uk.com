@@ -24,15 +24,11 @@ module nts.uk.at.view.ksu001.a {
             $('.header-image-no-event').css('background-image', 'url(' + iconNoEventPath + ')');
 
             if (__viewContext.viewModel.viewAC.listPageComIsEmpty == true) {
-                $('#tableButton1 button').addClass('disabledShiftControl');
-            } else {
-                $('#tableButton1 button').removeClass('disabledShiftControl');
-            }
+                $('.ntsButtonTableButton').addClass('nowithContent');
+            } 
 
             if (__viewContext.viewModel.viewAC.listPageWkpIsEmpty == true) {
-                $('#tableButton2 button').addClass('disabledShiftControl');
-            } else {
-                $('#tableButton2 button').removeClass('disabledShiftControl');
+                $('.ntsButtonTableButton').addClass('nowithContent');
             }
 
             $(window).resize(function() {

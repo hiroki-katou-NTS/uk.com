@@ -696,20 +696,22 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 
                 __viewContext.viewModel.viewAC.selectedpalletUnit(userInfor.shiftPalletUnit);
                 if(userInfor.shiftPalletUnit == 1){
-                    __viewContext.viewModel.viewAC.handleInitCom(
-                        data.listPageInfo,
-                        data.targetShiftPalette.shiftPalletCom,
-                        userInfor.shiftPalettePageNumberCom);
+                    __viewContext.viewModel.viewAC.handleInitCom(data.listPageInfo,data.targetShiftPalette.shiftPalletCom,userInfor.shiftPalettePageNumberCom);
                 }else{
-                    __viewContext.viewModel.viewAC.handleInitWkp(
-                        data.listPageInfo,
-                        data.targetShiftPalette.shiftPalletWorkPlace,
-                        userInfor.shiftPalettePageNumberOrg);
+                    __viewContext.viewModel.viewAC.handleInitWkp(data.listPageInfo,data.targetShiftPalette.shiftPalletWorkPlace,userInfor.shiftPalettePageNumberOrg);
                 }
                 __viewContext.viewModel.viewAC.flag = true;
-                
-                // check enable or disable tbaleButton
-                self.checkEnabDisableTblBtn();
+
+                if (__viewContext.viewModel.viewAC.listPageComIsEmpty == true) {
+                    $('.ntsButtonTableButton').addClass('nowithContent');
+                }
+                if (__viewContext.viewModel.viewAC.listPageWkpIsEmpty == true) {
+                    $('.ntsButtonTableButton').addClass('nowithContent');
+                }
+
+                if (self.mode() == 'confirm') {
+                    self.shiftPalletControlDisable();
+                }
                 
                 // set data Grid
                 let dataBindGrid = self.convertDataToGrid(data, 'shift');
@@ -2587,17 +2589,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         checkEnabDisableTblBtn() {
             if (__viewContext.viewModel.viewAC.selectedpalletUnit() == 1) { // 1 : mode company , 2: mode workPlace
-                if (__viewContext.viewModel.viewAC.listPageComIsEmpty == true) {
-                    $('#tableButton1 button').addClass('disabledShiftControl');
-                } else {
-                    $('#tableButton1 button').removeClass('disabledShiftControl');
-                }
+                $('#tableButton1 button').removeClass('disabledShiftControl');
             } else {
-                if (__viewContext.viewModel.viewAC.listPageWkpIsEmpty == true) {
-                    $('#tableButton2 button').addClass('disabledShiftControl');
-                } else {
-                    $('#tableButton2 button').removeClass('disabledShiftControl');
-                }
+                $('#tableButton2 button').removeClass('disabledShiftControl');
             }
         }
         
@@ -3011,8 +3005,35 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 userInfor.code             = input.workplaceGroupCode;
                 uk.localStorage.setItemAsJson(self.KEY, userInfor);
                 
-                __viewContext.viewModel.viewAB.workplaceIdKCP013(input.unit == 0 ? input.workplaceId : input.workplaceGroupID);
-                __viewContext.viewModel.viewAB.filter(input.unit == 0 ? true : false);
+                if (userInfor.disPlayFormat === 'time' || userInfor.disPlayFormat === 'shortName') {
+                    __viewContext.viewModel.viewAB.workplaceIdKCP013(input.unit == 0 ? input.workplaceId : input.workplaceGroupID);
+                    __viewContext.viewModel.viewAB.filter(input.unit == 0 ? true : false);
+                } else {
+                    //__viewContext.viewModel.viewAC.workplaceModeName(data.dataBasicDto.designation);
+                    //$($("#Aa1_2 > button")[1]).html(data.dataBasicDto.designation);
+
+                    self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
+                    // set data shiftPallet
+                    __viewContext.viewModel.viewAC.flag = false;
+                    __viewContext.viewModel.viewAC.selectedpalletUnit(userInfor.shiftPalletUnit);
+                    
+                    if (userInfor.shiftPalletUnit == 1) {
+                        __viewContext.viewModel.viewAC.handleInitCom(data.listPageInfo,data.targetShiftPalette.shiftPalletCom,userInfor.shiftPalettePageNumberCom);
+                    } else {
+                        __viewContext.viewModel.viewAC.handleInitWkp(data.listPageInfo,data.targetShiftPalette.shiftPalletWorkPlace,userInfor.shiftPalettePageNumberOrg);
+                    }
+                    __viewContext.viewModel.viewAC.flag = true;
+                    if (__viewContext.viewModel.viewAC.listPageComIsEmpty == true) {
+                        $('.ntsButtonTableButton').addClass('nowithContent');
+                    }
+                    if (__viewContext.viewModel.viewAC.listPageWkpIsEmpty == true) {
+                        $('.ntsButtonTableButton').addClass('nowithContent');
+                    }
+                    
+                    if (self.mode() == 'confirm') {
+                        self.shiftPalletControlDisable();
+                    }
+                }
 
                 self.saveDataGrid(data);
                 
@@ -3033,6 +3054,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 
                 if (self.mode() == 'confirm') {
                     $("#extable").exTable("updateMode", "determine");
+                    $('div.ex-body-leftmost a').css("pointer-events", "none");
+                    $('div.ex-header-detail.xheader a').css("pointer-events", "none");
                 }
 
                 self.setPositionButonToRightToLeft();
