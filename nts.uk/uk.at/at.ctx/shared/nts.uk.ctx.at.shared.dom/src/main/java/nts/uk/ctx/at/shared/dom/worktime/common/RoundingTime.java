@@ -97,7 +97,7 @@ public class RoundingTime {
 			//出勤のデータがあるか
 			if(timeLeavingWork.getAttendanceStamp().isPresent() && timeLeavingWork.getAttendanceStamp().get().getActualStamp().isPresent()) {
 				//丸め設定取得
-				RoundingSet roundingSetAttendance =  (RoundingSet) this.roundingSets.stream().filter(item -> item.getSection() == Superiority.ATTENDANCE);
+				RoundingSet roundingSetAttendance =  this.roundingSets.stream().filter(item -> item.getSection() == Superiority.ATTENDANCE).findFirst().get();
 				//丸め処理
 				newAttendanceStamp =Optional.of(roundingSetAttendance.getRoundingSet().roundStamp(timeLeavingWork.getAttendanceStamp().get().getActualStamp().get()));
 			}else {
@@ -121,9 +121,9 @@ public class RoundingTime {
 				
 			Optional<WorkStamp> newLeave;	
 			//退勤データがあるか
-			if(timeLeavingWork.getLeaveStamp().isPresent()) {
+			if(timeLeavingWork.getLeaveStamp().isPresent()&& timeLeavingWork.getLeaveStamp().get().getActualStamp().isPresent()) {
 				//丸め設定取得
-				RoundingSet roundingSetAttendance =  (RoundingSet) this.roundingSets.stream().filter(item -> item.getSection() == Superiority.OFFICE_WORK);
+				RoundingSet roundingSetAttendance = this.roundingSets.stream().filter(item -> item.getSection() == Superiority.OFFICE_WORK).findFirst().get();;
 				//丸め処理
 				newLeave =Optional.of(roundingSetAttendance.getRoundingSet().roundStamp(timeLeavingWork.getLeaveStamp().get().getActualStamp().get()));
 			}else {
