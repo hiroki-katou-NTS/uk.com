@@ -56,13 +56,11 @@ public class KrcmtWkpSchedaiFxexCon extends AggregateTableEntity {
     }
 
     public FixedExtractionScheduleCon toDomain() {
-        FixedExtractionScheduleCon domain = FixedExtractionScheduleCon.create(
+        return FixedExtractionScheduleCon.create(
                 this.pk.errorAlarmWorkplaceId,
                 EnumAdaptor.valueOf(this.pk.fixedCheckDayItemName, FixedCheckDayItemName.class),
                 this.useAtr,
                 new DisplayMessage(this.messageDisp)
         );
-
-        return domain;
     }
 }

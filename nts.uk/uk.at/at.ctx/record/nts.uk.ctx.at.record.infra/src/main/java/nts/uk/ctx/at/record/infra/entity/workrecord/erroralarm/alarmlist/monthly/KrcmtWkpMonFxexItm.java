@@ -64,22 +64,18 @@ public class KrcmtWkpMonFxexItm extends AggregateTableEntity {
         entity.alarmCheckCls = domain.getAlarmCheckCls().value;
         entity.firstMessageDisp = domain.getFirstMessageDisp().v();
 
-        if (domain.getMessageColor().isPresent()) {
-            entity.messageColor = domain.getMessageColor().get().v();
-        }
+        entity.messageColor = domain.getMessageColor().isPresent() ? domain.getMessageColor().get().v() : null;
 
         return entity;
     }
 
     public FixedExtractionMonthlyItems toDomain() {
-        FixedExtractionMonthlyItems domain = FixedExtractionMonthlyItems.create(
+        return FixedExtractionMonthlyItems.create(
                 EnumAdaptor.valueOf(this.pk.fixedCheckMonthlyItemName, FixedCheckMonthlyItemName.class),
                 EnumAdaptor.valueOf(this.alarmCheckCls, AlarmCheckClassification.class),
                 this.monthlyCheckName,
                 new DisplayMessage(this.firstMessageDisp),
                 Optional.of(new ColorCode(this.messageColor))
         );
-
-        return domain;
     }
 }

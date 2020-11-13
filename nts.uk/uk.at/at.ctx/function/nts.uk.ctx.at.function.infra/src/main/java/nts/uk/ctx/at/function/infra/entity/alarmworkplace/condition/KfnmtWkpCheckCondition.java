@@ -3,13 +3,14 @@ package nts.uk.ctx.at.function.infra.entity.alarmworkplace.condition;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode;
-import nts.uk.ctx.at.function.dom.alarm.workplace.checkcondition.WorkplaceCategory;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.EndDate;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.StartDate;
 import nts.uk.ctx.at.function.dom.alarmworkplace.CheckCondition;
 import nts.uk.ctx.at.function.dom.alarmworkplace.ExtractionPeriodDaily;
 import nts.uk.ctx.at.function.dom.alarmworkplace.ExtractionPeriodMonthly;
 import nts.uk.ctx.at.function.dom.alarmworkplace.RangeToExtract;
+import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.WorkplaceCategory;
 import nts.uk.ctx.at.function.infra.entity.alarmworkplace.alarmpatternworkplace.KfnmtALstWkpPtn;
 import nts.uk.ctx.at.function.infra.entity.alarmworkplace.monthdayperiod.*;
 import nts.uk.ctx.at.function.infra.entity.alarmworkplace.singlemonth.KfnmtAssignNumofMon;
@@ -97,23 +98,47 @@ public class KfnmtWkpCheckCondition extends UkJpaEntity implements Serializable 
 
     public CheckCondition toDomain() {
 
-        RangeToExtract extractPeriodList = new RangeToExtract() {
-        };
+        RangeToExtract extractPeriod = null;
         if (this.pk.category == WorkplaceCategory.MONTHLY.value) {
-            extractPeriodList = kfnmtAssignNumofMon.toDomain();
+            extractPeriod = kfnmtAssignNumofMon.toDomain();
 
         } else if (this.pk.category == WorkplaceCategory.MASTER_CHECK_BASIC.value || this.pk.category == WorkplaceCategory.MASTER_CHECK_WORKPLACE.value) {
-            extractPeriodList = new ExtractionPeriodMonthly();
+            extractPeriod = new ExtractionPeriodMonthly(kfnmtAssignMonthStart.toDomain(), kfnmtAssignMonthEnd.toDomain());
 
         } else if (this.pk.category == WorkplaceCategory.MASTER_CHECK_DAILY.value || this.pk.category == WorkplaceCategory.SCHEDULE_DAILY.value) {
-            extractPeriodList = new ExtractionPeriodDaily();
+            extractPeriod = new ExtractionPeriodDaily(
+                // Start day
+                toStartDate(),
+                // End day
+                toEndDate()
+            );
         }
 
         List<AlarmCheckConditionCode> checkConList = this.checkConItems.stream().map(c -> new AlarmCheckConditionCode(c.pk.categoryCode))
             .collect(Collectors.toList());
         CheckCondition domain = new CheckCondition(EnumAdaptor.valueOf(this.pk.category, WorkplaceCategory.class),
-            checkConList, extractPeriodList);
+            checkConList, extractPeriod);
         return domain;
+    }
+
+    private StartDate toStartDate() {
+        if (kfnmtAssignDayStart != null && kfnmtAssignDatelineStart != null) {
+            throw new RuntimeException("There are two start dates");
+        } else if (kfnmtAssignDayStart != null) {
+            return kfnmtAssignDayStart.toDomain();
+        } else if (kfnmtAssignDatelineStart != null) {
+            return kfnmtAssignDatelineStart.toDomain();
+        } else return null;
+    }
+
+    private EndDate toEndDate() {
+        if (kfnmtAssignDayEnd != null && kfnmtAssignDatelineEnd != null) {
+            throw new RuntimeException("There are two end dates");
+        } else if (kfnmtAssignDayEnd != null) {
+            return kfnmtAssignDayEnd.toDomain();
+        } else if (kfnmtAssignDatelineEnd != null) {
+            return kfnmtAssignDatelineEnd.toDomain();
+        } else return null;
     }
 
 }

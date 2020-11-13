@@ -2,6 +2,10 @@ package nts.uk.ctx.at.function.infra.entity.alarmworkplace.monthdayperiod;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.StartDate;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.StartSpecify;
 import nts.uk.ctx.at.function.infra.entity.alarmworkplace.condition.KfnmtWkpCheckCondition;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -35,7 +39,7 @@ public class KfnmtAssignDatelineStart extends UkJpaEntity implements Serializabl
     public boolean curentMonth;
 
     @Column(name = "BEFORE_AFTER_ATR")
-    public int monthPrevious;
+    public int previous;
 
     @Override
     protected Object getKey() {
@@ -46,5 +50,11 @@ public class KfnmtAssignDatelineStart extends UkJpaEntity implements Serializabl
 
     @OneToOne(mappedBy = "kfnmtAssignDatelineStart", orphanRemoval = true)
     public KfnmtWkpCheckCondition checkCondition;
+
+    public StartDate toDomain() {
+        StartDate startDate = new StartDate(this.startSpecify);
+        startDate.setStartMonth(EnumAdaptor.valueOf(previous, PreviousClassification.class), monthNo, curentMonth);
+        return startDate;
+    }
 
 }

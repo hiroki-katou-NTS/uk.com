@@ -11,7 +11,7 @@ import javax.persistence.Embeddable;
 @AllArgsConstructor
 @Embeddable
 public class KrcmtWkpMonExtracConPK {
-    /* 職場のエラーアラームチェックID */
+    /* 月次抽出条件ID */
     @Column(name = "WP_ERROR_ALARM_CHKID")
     public String errorAlarmWorkplaceId;
 
