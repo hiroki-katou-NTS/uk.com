@@ -4,7 +4,7 @@ import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.sys.gateway.app.command.loginold.dto.CheckChangePassDto;
+import nts.uk.ctx.sys.gateway.app.command.login.password.CheckChangePassDto;
 
 /**
  * 

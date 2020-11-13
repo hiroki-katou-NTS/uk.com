@@ -17,16 +17,16 @@ import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
 import nts.uk.ctx.sys.gateway.dom.loginold.adapter.RoleAdapter;
 import nts.uk.ctx.sys.gateway.dom.loginold.adapter.RoleIndividualGrantAdapter;
-import nts.uk.ctx.sys.gateway.dom.loginold.adapter.RoleType;
-import nts.uk.ctx.sys.gateway.dom.loginold.adapter.SysEmployeeAdapter;
 import nts.uk.ctx.sys.gateway.dom.loginold.dto.RoleImport;
 import nts.uk.ctx.sys.gateway.dom.loginold.dto.RoleIndividualGrantImport;
+import nts.uk.ctx.sys.gateway.dom.role.RoleType;
 import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopByCompany;
 import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopByCompanyRepository;
 import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopModeType;
 import nts.uk.ctx.sys.gateway.dom.stopbycompany.SystemStatusType;
 import nts.uk.ctx.sys.gateway.dom.stopbysystem.StopBySystem;
 import nts.uk.ctx.sys.gateway.dom.stopbysystem.StopBySystemRepository;
+import nts.uk.ctx.sys.shared.dom.employee.SysEmployeeAdapter;
 import nts.uk.shr.com.context.AppContexts;
 /**
  * 

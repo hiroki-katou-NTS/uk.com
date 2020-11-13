@@ -7,7 +7,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.pub.grant.RoleFromUserIdPub;
-import nts.uk.ctx.sys.gateway.dom.loginold.adapter.RoleFromUserIdAdapter;
+import nts.uk.ctx.sys.gateway.dom.role.RoleFromUserIdAdapter;
 
 /**
  * The Class RoleFromUserIdAdapterImpl.

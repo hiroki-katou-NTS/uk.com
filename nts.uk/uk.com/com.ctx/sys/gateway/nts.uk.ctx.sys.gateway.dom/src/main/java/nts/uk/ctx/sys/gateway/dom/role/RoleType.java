@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.sys.gateway.dom.loginold.adapter;
+package nts.uk.ctx.sys.gateway.dom.role;
 
 /**
  * The Enum RoleTypeExport.

@@ -4,8 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.app.command.loginold.dto;
 
-import nts.uk.ctx.sys.gateway.dom.loginold.dto.CompanyInformationImport;
-import nts.uk.ctx.sys.gateway.dom.loginold.dto.EmployeeImportNew;
+import nts.uk.ctx.sys.shared.dom.company.CompanyInformationImport;
+import nts.uk.ctx.sys.shared.dom.employee.EmployeeImportNew;
 
 /**
  * The Class SignonEmployeeInfoData.

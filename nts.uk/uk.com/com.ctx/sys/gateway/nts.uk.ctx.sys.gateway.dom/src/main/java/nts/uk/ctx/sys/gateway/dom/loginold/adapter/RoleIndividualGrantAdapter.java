@@ -9,6 +9,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.gateway.dom.loginold.dto.RoleIndividualGrantImport;
+import nts.uk.ctx.sys.gateway.dom.role.RoleType;
 
 /**
  * The Interface RoleIndividualGrantAdapter.

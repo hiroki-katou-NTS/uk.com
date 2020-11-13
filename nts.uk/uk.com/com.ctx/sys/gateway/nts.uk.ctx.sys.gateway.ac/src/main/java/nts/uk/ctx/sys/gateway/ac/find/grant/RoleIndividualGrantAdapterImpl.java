@@ -16,8 +16,8 @@ import nts.uk.ctx.sys.auth.pub.grant.RoleIndividualGrantEx;
 import nts.uk.ctx.sys.auth.pub.grant.RoleIndividualGrantExport;
 import nts.uk.ctx.sys.auth.pub.grant.RoleIndividualGrantExportRepo;
 import nts.uk.ctx.sys.gateway.dom.loginold.adapter.RoleIndividualGrantAdapter;
-import nts.uk.ctx.sys.gateway.dom.loginold.adapter.RoleType;
 import nts.uk.ctx.sys.gateway.dom.loginold.dto.RoleIndividualGrantImport;
+import nts.uk.ctx.sys.gateway.dom.role.RoleType;
 
 /**
  * The Class RoleIndividualGrantAdapterImpl.

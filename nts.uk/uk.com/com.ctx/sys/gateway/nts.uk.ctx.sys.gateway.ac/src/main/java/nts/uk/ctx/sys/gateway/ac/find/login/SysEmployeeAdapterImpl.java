@@ -19,12 +19,12 @@ import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmpInfoByCidSidExport;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmpInfoByCidSidPub;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoDtoExport;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoPub;
-import nts.uk.ctx.sys.gateway.dom.loginold.adapter.SysEmployeeAdapter;
-import nts.uk.ctx.sys.gateway.dom.loginold.dto.EmployeeDataMngInfoImport;
-import nts.uk.ctx.sys.gateway.dom.loginold.dto.EmployeeImport;
-import nts.uk.ctx.sys.gateway.dom.loginold.dto.EmployeeImportNew;
 import nts.uk.ctx.sys.gateway.dom.loginold.dto.SDelAtr;
-import nts.uk.ctx.sys.gateway.dom.loginold.dto.StatusOfEmployeeImport;
+import nts.uk.ctx.sys.shared.dom.employee.EmployeeDataMngInfoImport;
+import nts.uk.ctx.sys.shared.dom.employee.EmployeeImport;
+import nts.uk.ctx.sys.shared.dom.employee.EmployeeImportNew;
+import nts.uk.ctx.sys.shared.dom.employee.StatusOfEmployeeImport;
+import nts.uk.ctx.sys.shared.dom.employee.SysEmployeeAdapter;
 
 /**
  * The Class SysEmployeeAdapterImpl.

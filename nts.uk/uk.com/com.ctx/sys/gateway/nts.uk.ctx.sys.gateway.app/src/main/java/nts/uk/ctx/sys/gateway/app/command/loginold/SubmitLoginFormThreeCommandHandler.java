@@ -10,18 +10,18 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.sys.gateway.app.command.loginold.dto.CheckChangePassDto;
+import nts.uk.ctx.sys.gateway.app.command.login.password.CheckChangePassDto;
 import nts.uk.ctx.sys.gateway.app.command.loginold.dto.ParamLoginRecord;
 import nts.uk.ctx.sys.gateway.app.command.loginold.dto.SignonEmployeeInfoData;
 import nts.uk.ctx.sys.gateway.app.command.systemsuspend.SystemSuspendOutput;
 import nts.uk.ctx.sys.gateway.app.service.login.LoginService;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
 import nts.uk.ctx.sys.gateway.dom.loginold.LoginStatus;
-import nts.uk.ctx.sys.gateway.dom.loginold.dto.CompanyInformationImport;
-import nts.uk.ctx.sys.gateway.dom.loginold.dto.EmployeeImport;
-import nts.uk.ctx.sys.gateway.dom.loginold.dto.EmployeeImportNew;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LoginMethod;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccount;
+import nts.uk.ctx.sys.shared.dom.company.CompanyInformationImport;
+import nts.uk.ctx.sys.shared.dom.employee.EmployeeImport;
+import nts.uk.ctx.sys.shared.dom.employee.EmployeeImportNew;
 
 /**
  * The Class SubmitLoginFormThreeCommandHandler.

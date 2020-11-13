@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.gateway.dom.loginold.dto;
+package nts.uk.ctx.sys.shared.dom.employee;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

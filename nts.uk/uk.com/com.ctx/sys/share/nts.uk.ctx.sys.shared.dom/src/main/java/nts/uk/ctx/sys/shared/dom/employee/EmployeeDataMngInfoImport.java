@@ -1,8 +1,9 @@
-package nts.uk.ctx.sys.gateway.dom.loginold.dto;
+package nts.uk.ctx.sys.shared.dom.employee;
 
 import lombok.Builder;
 import lombok.Data;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.sys.gateway.dom.loginold.dto.SDelAtr;
 
 //社員データ管理情報 <imported>
 @Data

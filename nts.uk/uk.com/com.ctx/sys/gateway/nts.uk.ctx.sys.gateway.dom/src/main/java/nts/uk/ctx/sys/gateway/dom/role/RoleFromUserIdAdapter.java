@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.gateway.dom.loginold.adapter;
+package nts.uk.ctx.sys.gateway.dom.role;
 
 import java.util.Optional;
 

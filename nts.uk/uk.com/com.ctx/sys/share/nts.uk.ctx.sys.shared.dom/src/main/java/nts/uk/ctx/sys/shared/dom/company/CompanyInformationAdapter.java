@@ -2,12 +2,9 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.sys.gateway.dom.loginold.adapter;
+package nts.uk.ctx.sys.shared.dom.company;
 
 import java.util.List;
-
-import nts.uk.ctx.sys.gateway.dom.loginold.dto.CompanyInforImport;
-import nts.uk.ctx.sys.gateway.dom.loginold.dto.CompanyInformationImport;
 
 /**
  * The Interface CompanyInformationAdapter.

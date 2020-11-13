@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.sys.gateway.app.command.loginold.dto;
+package nts.uk.ctx.sys.gateway.app.command.login.password;
 
 import lombok.Setter;
 
