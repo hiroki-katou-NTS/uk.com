@@ -84,7 +84,7 @@ public class SpecialProvisionsOfAgreementRepoImpl extends JpaRepository implemen
 		builderString = new StringBuilder();
 		builderString.append(SELECT);
 		builderString.append(" WHERE ((s.approvalStatus = 0 AND (s.approveSID1 = :employeeId OR  s.approveSID2 = :employeeId OR  s.approveSID3 = :employeeId OR  s.approveSID4 = :employeeId OR  s.approveSID5 = :employeeId) ) ");
-		builderString.append(" OR (s.confirmationStatus1 = 0 OR s.confirmationStatus2 = 0 OR s.confirmationStatus3 = 0 OR s.confirmationStatus4 = 0 OR s.confirmationStatus5 = 0  ");
+		builderString.append(" OR ((s.confirmationStatus1 = 0 OR s.confirmationStatus2 = 0 OR s.confirmationStatus3 = 0 OR s.confirmationStatus4 = 0 OR s.confirmationStatus5 = 0)  ");
 		builderString.append(" AND (s.confirmerSID1 = :employeeId OR  s.confirmerSID2 = :employeeId OR  s.confirmerSID3 = :employeeId OR  s.confirmerSID4 = :employeeId OR  s.confirmerSID5 = :employeeId))) ");
 		builderString.append(" AND ((s.typeAgreement = 0 AND s.yearMonth >=  :closureStartDate  AND s.yearMonth <= :closureEndDate ) ");
 		builderString.append(" OR (s.typeAgreement = 1 AND s.year >=  :stDateMinus AND s.year <= :stDateAdd )) AND s.companyID = :companyId ");
