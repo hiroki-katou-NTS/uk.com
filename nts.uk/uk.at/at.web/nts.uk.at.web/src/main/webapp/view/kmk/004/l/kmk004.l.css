@@ -61,18 +61,24 @@
 }
 
 #view-m-left-side {
-	position: relative;
-    bottom: 38px;
     padding-left: 30px;
 }
 
 #view-n-left-side {
-	position: relative;
-    bottom: 53px;
     padding-left: 30px;
 }
 
 #title {
 	font-size: 20px;
 	padding: 1px;
+}
+
+#tree-grid {
+	position: relative;
+    bottom: 40px;
+}
+
+#empt-list-setting {
+	position: relative;
+    bottom: 52px;
 }
