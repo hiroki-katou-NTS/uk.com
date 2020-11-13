@@ -198,8 +198,8 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		
 		// create AffiliationInforOfDailyAttd
 		AffiliationInforOfDailyAttd affInfo = new AffiliationInforOfDailyAttd(new EmploymentCode(empCd), jobId, wkpId, new ClassificationCode(clsCd),
-				busTypeCd==null?null:new BusinessTypeCode(busTypeCd),
-				null);
+				Optional.ofNullable(new BusinessTypeCode(busTypeCd)),
+				Optional.empty());
 		
 		// create List<BreakTimeOfDailyAttd> 
 		List<BreakTimeOfDailyAttd> lstBreakTime = new ArrayList<>();
@@ -221,8 +221,8 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		@SuppressWarnings("unused")
 		TimeWithDayAttr timeWithDayAttr = null;
 		atdLvwTimes.stream().forEach(mapper-> {
-			WorkStamp workStamp = new WorkStamp(new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET,null), new TimeWithDayAttr(mapper.getAtdClock())), Optional.empty());
-			WorkStamp workStamp2 = new WorkStamp(new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET,null), new TimeWithDayAttr(mapper.getLwkClock())), Optional.empty());
+			WorkStamp workStamp = new WorkStamp(new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET,Optional.empty()), new TimeWithDayAttr(mapper.getAtdClock())), Optional.empty());
+			WorkStamp workStamp2 = new WorkStamp(new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET,Optional.empty()), new TimeWithDayAttr(mapper.getLwkClock())), Optional.empty());
 			TimeActualStamp timeActualStamp = new TimeActualStamp(null, workStamp, 0);
 			TimeActualStamp timeActualStamp2 = new TimeActualStamp(null, workStamp2, 0);
 			TimeLeavingWork timeLeavingWork = new TimeLeavingWork(new WorkNo(mapper.getPk().getWorkNo()), timeActualStamp, timeActualStamp2);
