@@ -72,7 +72,7 @@ module nts.uk.com.view.ccg015.e {
         flowMenuCd: null,
         flowMenuUpCd: null,
         url: null,
-        widgetSettings: [{ widgetType: 0, order:1 }],
+        widgetSettings: [{ widgetType: 0, order:1 }, { widgetType: 3, order:2 }, { widgetType: 4, order:3 }],
       };
 
       vm.$ajax('/toppage/saveLayoutWidget', data).done(function () {

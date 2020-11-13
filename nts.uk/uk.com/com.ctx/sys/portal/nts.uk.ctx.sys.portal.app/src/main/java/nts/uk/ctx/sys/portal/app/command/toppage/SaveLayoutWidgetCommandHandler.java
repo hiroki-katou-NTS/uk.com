@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.portal.app.command.toppage;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -60,12 +61,15 @@ public class SaveLayoutWidgetCommandHandler extends CommandHandler< SaveLayoutCo
 			}
 		} else {
 			// 新規モード
+			List<WidgetSetting> widgetSettings = command.getWidgetSettings();
+			command.setWidgetSettings(new ArrayList<>());
 			LayoutNew layout = LayoutNew.createFromMemento(command);
+			
 			// ドメインモデル「レイアウト」を登録する
 			layoutNewRepository.insert(layout);
 			
-			if (!command.getWidgetSettings().isEmpty()) {
-				for(WidgetSetting widget: command.getWidgetSettings()) {
+			if (!widgetSettings.isEmpty()) {
+				for(WidgetSetting widget: widgetSettings) {
 					// レイアウトの「ウィジェット設定」を登録する
 					layoutNewRepository.insertWidget(layout, widget);
 				}

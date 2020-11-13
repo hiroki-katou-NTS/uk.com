@@ -35,7 +35,7 @@ public class JpaLayoutNewRepository extends JpaRepository implements LayoutNewRe
 	
 	private static final String SELECT_BY_CODE = "SELECT a FROM SptmtLayout a WHERE a.id.topPageCode =:topPageCode ";
 	
-	private static final String SELECT_BY_CID_AND_LST_WIDGET = "SELECT a FROM SptmtLayoutWidget WHERE a.id.cid = :cid AND "
+	private static final String SELECT_BY_CID_AND_LST_WIDGET = "SELECT a FROM SptmtLayoutWidget a WHERE a.id.cid = :cid AND "
 			+ "a.id.layoutNo = :layoutNo AND a.id.topPageCode = :topPageCode AND a.id.widgetType = :widgetType";
 
 	@Override
@@ -137,8 +137,9 @@ public class JpaLayoutNewRepository extends JpaRepository implements LayoutNewRe
 	@Override
 	public void insertWidget(LayoutNew layout, WidgetSetting widget) {
 		SptmtLayoutWidget entity = JpaLayoutNewRepository.toEntityWidget(layout, widget);
+		entity.setContractCd(AppContexts.user().contractCode());
 		// insert
-		this.commandProxy().insert(entity);		
+		this.commandProxy().insert(entity);
 	}
 	
 	@Override
@@ -148,7 +149,7 @@ public class JpaLayoutNewRepository extends JpaRepository implements LayoutNewRe
  
 		if (entity.isPresent()) {
 			// update
-			this.commandProxy().update(entity);
+			this.commandProxy().update(entity.get());
 		}
 	}
 	
