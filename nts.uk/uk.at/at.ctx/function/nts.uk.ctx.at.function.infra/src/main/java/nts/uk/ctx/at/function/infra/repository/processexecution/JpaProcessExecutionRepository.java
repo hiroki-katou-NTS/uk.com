@@ -6,7 +6,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.function.dom.processexecution.ProcessExecution;
+import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionRepository;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtExecutionScope;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecution;
@@ -26,31 +26,31 @@ public class JpaProcessExecutionRepository extends JpaRepository implements Proc
 			+ "WHERE pe.kfnmtProcExecPK.companyId = :companyId AND pe.kfnmtProcExecPK.execItemCd = :execItemCd ";
 	
 	@Override
-	public List<ProcessExecution> getProcessExecutionByCompanyId(String companyId) {
+	public List<UpdateProcessAutoExecution> getProcessExecutionByCompanyId(String companyId) {
 		return this.queryProxy().query(SELECT_All_BY_CID, KfnmtProcessExecution.class)
 				.setParameter("companyId", companyId).getList(c -> c.toDomain());
 	}
 
 	@Override
-	public Optional<ProcessExecution> getProcessExecutionByCidAndExecCd(String companyId, String execItemCd) {
+	public Optional<UpdateProcessAutoExecution> getProcessExecutionByCidAndExecCd(String companyId, String execItemCd) {
 		return this.queryProxy().query(SELECT_BY_CID_AND_EXEC_CD, KfnmtProcessExecution.class)
 				.setParameter("companyId", companyId)
 				.setParameter("execItemCd", execItemCd).getSingle(c -> c.toDomain());
 	}
 	
 	@Override
-	public void insert(ProcessExecution domain) {
+	public void insert(UpdateProcessAutoExecution domain) {
 		this.commandProxy().insert(KfnmtProcessExecution.toEntity(domain));
 	}
 
 	@Override
-	public void update(ProcessExecution domain) {
+	public void update(UpdateProcessAutoExecution domain) {
 		KfnmtProcessExecution updateData = KfnmtProcessExecution.toEntity(domain);
 		KfnmtProcessExecution oldData = this.queryProxy().find(updateData.kfnmtProcExecPK, KfnmtProcessExecution.class).get();
 		oldData.execItemName = updateData.execItemName;
 		oldData.execScope = setScope(oldData.execScope, updateData.execScope);
 		oldData.execSetting = setSetting(oldData.execSetting, updateData.execSetting);
-		oldData.processExecType =updateData.processExecType;
+		oldData.executionType =updateData.executionType;
 		this.commandProxy().update(oldData);
 		
 	}
@@ -75,14 +75,14 @@ public class JpaProcessExecutionRepository extends JpaRepository implements Proc
 		old.designatedYear = update.designatedYear;
 		old.startMonthDay = update.startMonthDay;
 		old.endMonthDay = update.endMonthDay;
-		old.createEmployee = update.createEmployee;
+		old.createNewEmpSched = update.createNewEmpSched;
 		old.dailyPerfCls = update.dailyPerfCls;
 		old.dailyPerfItem = update.dailyPerfItem;
-		old.midJoinEmployee = update.midJoinEmployee;
+		old.createNewEmpDailyPerf = update.createNewEmpDailyPerf;
 		old.reflectResultCls = update.reflectResultCls;
 		old.monthlyAggCls = update.monthlyAggCls;
 		old.appRouteUpdateAtr = update.appRouteUpdateAtr;
-		old.createNewEmp = update.createNewEmp;
+		old.createNewEmpApp = update.createNewEmpApp;
 		old.appRouteUpdateAtrMon = update.appRouteUpdateAtrMon;
 		old.alarmAtr = update.alarmAtr;
 		old.alarmCode = update.alarmCode;
@@ -98,9 +98,9 @@ public class JpaProcessExecutionRepository extends JpaRepository implements Proc
 		old.dataDeletionCode = update.dataDeletionCode;
 		old.aggAnyPeriodArt = update.aggAnyPeriodArt;
 		old.aggAnyPeriodCode = update.aggAnyPeriodCode;
-		old.recreateWorkType = update.recreateWorkType;
+		old.recreateChangeBus = update.recreateChangeBus;
 		old.recreateTransfer = update.recreateTransfer;
-		old.recreLeaveSya = update.recreLeaveSya;
+		old.recreateLeaveSya = update.recreateLeaveSya;
 		old.indexReorgArt = update.indexReorgArt;
 		old.updStatisticsArt = update.updStatisticsArt;
 		old.cloudCreFlag = update.cloudCreFlag;

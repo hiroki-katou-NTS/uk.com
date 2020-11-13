@@ -13,6 +13,7 @@ import nts.arc.layer.dom.DomainObject;
 @Setter
 @AllArgsConstructor
 public class ProcessExecutionScopeItem extends DomainObject {
+
 	/* 会社ID */
 	public String companyId;
 	
@@ -21,8 +22,5 @@ public class ProcessExecutionScopeItem extends DomainObject {
 	
 	/* 職場実行範囲 */
 	public String wkpId;
-	
-	public static ProcessExecutionScopeItem createSimpleFromJavaType(String companyId, String execItemCd, String wkpId) {
-		return new ProcessExecutionScopeItem(companyId, execItemCd, wkpId);
-	}
+
 }

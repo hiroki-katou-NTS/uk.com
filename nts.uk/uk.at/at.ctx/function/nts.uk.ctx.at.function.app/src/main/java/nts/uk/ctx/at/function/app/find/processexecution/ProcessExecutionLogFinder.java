@@ -19,7 +19,7 @@ import nts.uk.ctx.at.function.app.find.processexecution.dto.ExecutionTaskSetting
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionDto;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionLogDto;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionLogManageDto;
-import nts.uk.ctx.at.function.dom.processexecution.ProcessExecution;
+import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionService;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLog;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogManage;
@@ -62,9 +62,9 @@ public class ProcessExecutionLogFinder {
 		String companyId = AppContexts.user().companyId();
 		
 		// ドメインモデル「更新処理自動実行」を取得する
-		List<ProcessExecution> listProcessExecution = this.procExecRepo.getProcessExecutionByCompanyId(companyId);
+		List<UpdateProcessAutoExecution> listProcessExecution = this.procExecRepo.getProcessExecutionByCompanyId(companyId);
 		List<String> listExecItemCd = listProcessExecution.stream()
-				.map(item -> item.getExecItemCd().v())
+				.map(item -> item.getExecItemCode().v())
 				.collect(Collectors.toList());
 		
 		// データが0件(0 dữ liệu)
@@ -73,8 +73,8 @@ public class ProcessExecutionLogFinder {
 			throw new BusinessException("Msg_851");
 		}
 		
-		Map<String, ProcessExecution> mapProcessExecution = listProcessExecution.stream()
-				.collect(Collectors.toMap(item -> item.getExecItemCd().v(), Function.identity(),
+		Map<String, UpdateProcessAutoExecution> mapProcessExecution = listProcessExecution.stream()
+				.collect(Collectors.toMap(item -> item.getExecItemCode().v(), Function.identity()));
 						(a, b) -> a, TreeMap::new));
 		
 		// ドメインモデル「更新処理自動実行ログ」を取得する
@@ -95,7 +95,7 @@ public class ProcessExecutionLogFinder {
 		List<ExecutionItemInfomationDto> listResult = listExecItemCd.stream()
 				.map(execItemCd -> {
 					// OUTPUT「実行項目情報」を作成する
-					ProcessExecution processExecution = mapProcessExecution.get(execItemCd);
+					UpdateProcessAutoExecution processExecution = mapProcessExecution.get(execItemCd);
 					ProcessExecutionLog processExecutionLog = mapProcessExecutionLog.get(execItemCd);
 					ProcessExecutionLogManage processExecutionLogManage = mapProcessExecutionLogManage.get(execItemCd);
 					ExecutionTaskSetting executionTaskSetting = mapExecutionTaskSetting.get(execItemCd);

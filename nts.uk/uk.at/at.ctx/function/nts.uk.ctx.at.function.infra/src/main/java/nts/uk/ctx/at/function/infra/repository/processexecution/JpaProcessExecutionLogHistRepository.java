@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.infra.repository.processexecution;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogHistory;
@@ -166,9 +167,6 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository implemen
 				this.commandProxy().removeAll(list);
 			}
 	}
-	
-	
-
 
 	@Override
 	public List<ProcessExecutionLogHistory> getByDate(String companyId, String execItemCd,
@@ -181,9 +179,7 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository implemen
 				.setParameter("lastExecDateTime", lastExecDateTime)
 				.setParameter("nextExecDateTime", nextExecDateTime)
 				.getList(ProcessExecutionLogHistory::createFromMemento);
-		
 	}
-
 
 	@Override
 	public List<ProcessExecutionLogHistory> getByDateRange(String companyId, String execItemCd,
@@ -199,14 +195,13 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository implemen
 	}
 
 	@Override
-	public List<ProcessExecutionLogHistory> getByCompanyIdAndDateAndEmployeeName(String companyId, GeneralDateTime startDate, GeneralDateTime endDate) {
+	public List<ProcessExecutionLogHistory> getByCompanyIdAndDateAndEmployeeName(String companyId, GeneralDateTime startDateTime, GeneralDateTime endDateTime) {
 		return this.queryProxy().query(SELECT_ALL_BY_CID_START_DATE_END_DATE, KfnmtProcessExecutionLogHistory.class)
 				.setParameter("companyId", companyId)
-				.setParameter("startDate", startDate)
-				.setParameter("endDate", endDate)
+				.setParameter("startDate", startDateTime.toDate())
+				.setParameter("endDate", endDateTime.toDate())
 				.getList(ProcessExecutionLogHistory::createFromMemento);
 	}
-
 
 	@Override
 	public List<ProcessExecutionLogHistory> getByCompanyIdAndExecItemCd(String companyId, String execItemCd) {
@@ -215,7 +210,6 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository implemen
 				.setParameter("execItemCd", execItemCd)
 				.getList(ProcessExecutionLogHistory::createFromMemento);
 	}
-
 
 	@Override
 	public Optional<ProcessExecutionLogHistory> getByExecId(String execId) {

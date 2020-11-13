@@ -26,7 +26,7 @@ public interface ProcessExecutionService {
 	 * @param execStartDateTime
 	 * @return
 	 */
-	boolean isPassAverageExecTimeExceeded(String companyId, ProcessExecution updateProcessAutoExec, GeneralDateTime execStartDateTime);
+	boolean isPassAverageExecTimeExceeded(String companyId, UpdateProcessAutoExecution updateProcessAutoExec, GeneralDateTime execStartDateTime);
 	
 	/**
 	 * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.更新処理自動実行.アルゴリズム.更新処理自動実行ログ履歴.過去の実行平均時間を超過しているか.過去の実行平均時間を取得する
