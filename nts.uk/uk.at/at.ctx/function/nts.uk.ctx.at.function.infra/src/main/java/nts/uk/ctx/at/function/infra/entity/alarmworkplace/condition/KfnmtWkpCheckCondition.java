@@ -3,17 +3,14 @@ package nts.uk.ctx.at.function.infra.entity.alarmworkplace.condition;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.EndDate;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.StartDate;
-import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.EndSpecify;
-import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.StartSpecify;
-import nts.uk.ctx.at.function.dom.alarm.workplace.checkcondition.WorkplaceCategory;
 import nts.uk.ctx.at.function.dom.alarmworkplace.CheckCondition;
 import nts.uk.ctx.at.function.dom.alarmworkplace.ExtractionPeriodDaily;
 import nts.uk.ctx.at.function.dom.alarmworkplace.ExtractionPeriodMonthly;
 import nts.uk.ctx.at.function.dom.alarmworkplace.RangeToExtract;
+import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.WorkplaceCategory;
 import nts.uk.ctx.at.function.infra.entity.alarmworkplace.alarmpatternworkplace.KfnmtALstWkpPtn;
 import nts.uk.ctx.at.function.infra.entity.alarmworkplace.monthdayperiod.*;
 import nts.uk.ctx.at.function.infra.entity.alarmworkplace.singlemonth.KfnmtAssignNumofMon;
@@ -22,7 +19,6 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
