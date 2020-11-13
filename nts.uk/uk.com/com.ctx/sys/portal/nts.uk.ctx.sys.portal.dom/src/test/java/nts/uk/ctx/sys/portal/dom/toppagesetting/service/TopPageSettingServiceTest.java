@@ -49,7 +49,7 @@ public class TopPageSettingServiceTest {
 		);
 	
 	@Test
-	public void testGetTopPageSettings_1() {
+	public void testGetTopPageSettings1() {
 		Optional<TopPageRoleSetting> topPageRoleSetting = Optional.of(new TopPageRoleSetting(
 				COMPANY_ID, 
 				new RoleSetCode(ROLE_SET_CODE),
@@ -72,6 +72,7 @@ public class TopPageSettingServiceTest {
 		};
 		//Execute
 		val instance = new TopPageSettingService();
+		@SuppressWarnings("unchecked")
 		val result = (Optional<TopPageSettings>) NtsAssert.Invoke.privateMethod(
 				instance, 
 				"getTopPageSettings", 
@@ -83,7 +84,7 @@ public class TopPageSettingServiceTest {
 	}
 	
 	@Test
-	public void testGetTopPageSettings_2() {
+	public void testGetTopPageSettings2() {
 		Optional<TopPagePersonSetting> topPagePersonSetting = Optional.of(new TopPagePersonSetting(
 				EMPLOYEE_ID, 
 				new LoginMenuCode(LOGIN_MENU_CODE), 
@@ -100,6 +101,7 @@ public class TopPageSettingServiceTest {
 		
 		//Execute
 		val instance = new TopPageSettingService();
+		@SuppressWarnings("unchecked")
 		val result = (Optional<TopPageSettings>) NtsAssert.Invoke.privateMethod(
 				instance, 
 				"getTopPageSettings", 
@@ -111,7 +113,7 @@ public class TopPageSettingServiceTest {
 	}
 	
 	@Test
-	public void testGetTopPageSettings_3() {
+	public void testGetTopPageSettings3() {
 		new Expectations() {
 			{
 				require.getTopPagePersonSetting(COMPANY_ID, EMPLOYEE_ID);
@@ -127,12 +129,14 @@ public class TopPageSettingServiceTest {
 
 		//Execute
 		val instance = new TopPageSettingService();
-		val result = (Optional<TopPageSettings>) NtsAssert.Invoke.privateMethod(
+		val testResult = NtsAssert.Invoke.privateMethod(
 				instance, 
 				"getTopPageSettings", 
 				require,
 				COMPANY_ID,
 				EMPLOYEE_ID);
+		@SuppressWarnings("unchecked")
+		val result = (Optional<TopPageSettings>) testResult;
 		//Assertion
 		assertThat(result).isEmpty();
 	}

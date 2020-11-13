@@ -30,9 +30,9 @@ const _NavMenu = Vue.observable({
 @component({
     template: `<nav class="navbar navbar-expand-lg fixed-top" v-if="visible">
         <a v-on:click="" class="navbar-brand mr-n2">{{pgName |i18n}}</a>
-        <div class="d-flex justify-content-end">
+        <div class="d-flex justify-content-end align-items-center">
             <div class="div-ccgs08">
-                <img :src="iconNotice" class="img-notice" @click="showCcg003()">
+                <img :class="isNewNotice ? 'left-style' : ''" :src="iconNotice" class="img-notice" @click="showCcg003()">
                 <img v-if="isNewNotice" :src="redCircle" class="img-red-circle">
             </div>
             <button class="navbar-toggler dropdown-toggle" v-on:click="show = !show"></button>

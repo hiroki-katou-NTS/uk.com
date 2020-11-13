@@ -140,14 +140,20 @@ body {
         }
     }
     .div-ccgs08 {
+        top: 2px;
+        position: relative;
         .img-notice {
             width: 40px;
         }
         .img-red-circle {
             position: relative;
-            right: 10px;
             bottom: 10px;
+            left: 5px;
         }
+    }
+    .left-style {
+        left: 17px;
+        position: relative;
     }
 }
 

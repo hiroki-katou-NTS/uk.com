@@ -22,7 +22,7 @@ public class GeneralSearchHistoryServiceTest {
 	private GeneralSearchHistoryService.Require require;
 	
 	@Test
-	public void testCheckRoleSearchManual_1() {
+	public void testCheckRoleSearchManual1() {
 		String forCompanyAdmin = "forCompanyAdmin";
 		String forSystemAdmin = "forSystemAdmin";
 		val domainService = new GeneralSearchHistoryService();
@@ -38,7 +38,7 @@ public class GeneralSearchHistoryServiceTest {
 	}
 
 	@Test
-	public void testCheckRoleSearchManual_2() {
+	public void testCheckRoleSearchManual2() {
 		String forCompanyAdmin = null;
 		String forSystemAdmin = "forSystemAdmin";
 		val domainService = new GeneralSearchHistoryService();
@@ -54,7 +54,7 @@ public class GeneralSearchHistoryServiceTest {
 	}
 
 	@Test
-	public void testCheckRoleSearchManual_3() {
+	public void testCheckRoleSearchManual3() {
 		new Expectations() {
 			{
 				require.getLoginResponsible().isPersonIncharge();
@@ -74,7 +74,7 @@ public class GeneralSearchHistoryServiceTest {
 	}
 
 	@Test
-	public void testCheckRoleSearchManual_4() {
+	public void testCheckRoleSearchManual4() {
 		String forCompanyAdmin = "forCompanyAdmin";
 		String forSystemAdmin = null;
 		val domainService = new GeneralSearchHistoryService();
@@ -90,7 +90,7 @@ public class GeneralSearchHistoryServiceTest {
 	}
 	
 	@Test
-	public void testCheckRoleSearchManual_5() {
+	public void testCheckRoleSearchManual5() {
 		new Expectations() {
 			{
 				require.getLoginResponsible().isPersonIncharge();

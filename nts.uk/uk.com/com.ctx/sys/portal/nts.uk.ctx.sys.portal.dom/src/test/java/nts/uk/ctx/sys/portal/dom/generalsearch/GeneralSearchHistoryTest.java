@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 
 import nts.arc.testing.assertion.NtsAssert;
-import nts.uk.ctx.sys.portal.dom.GeneralSearchHelper.GeneralSearchHistoryHelper;
 public class GeneralSearchHistoryTest {
 
 	private static GeneralSearchHistoryDto mockDto = GeneralSearchHistoryHelper.getMockDto();
