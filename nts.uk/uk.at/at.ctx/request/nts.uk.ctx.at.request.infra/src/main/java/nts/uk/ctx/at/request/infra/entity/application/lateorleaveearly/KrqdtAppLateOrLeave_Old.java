@@ -16,6 +16,7 @@ import nts.uk.ctx.at.request.dom.application.lateorleaveearly.TimeDay;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
+ * 古いクラス → 削除予定 → 使わないでください (Old Class → Delete plan → Please don't use it)
  * author hieult
  */
 @Entity
@@ -24,12 +25,12 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Getter
 @Setter
-public class KrqdtAppLateOrLeave  extends UkJpaEntity implements Serializable {
+public class KrqdtAppLateOrLeave_Old  extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KrqdtAppLateOrLeavePK krqdtAppLateOrLeavePK;
+	public KrqdtAppLateOrLeavePK_Old krqdtAppLateOrLeavePK;
 	
 	@Column(name = "ACTUAL_CANCEL_ATR")
 	public int actualCancelAtr;
@@ -80,7 +81,7 @@ public class KrqdtAppLateOrLeave  extends UkJpaEntity implements Serializable {
 		return null;
 	}
 	
-	public static KrqdtAppLateOrLeave toEntity(LateOrLeaveEarly domain){
+	public static KrqdtAppLateOrLeave_Old toEntity(LateOrLeaveEarly domain){
 //		return new KrqdtAppLateOrLeave (
 //					new KrqdtAppLateOrLeavePK(
 //							domain.getApplication().getCompanyID(), 
