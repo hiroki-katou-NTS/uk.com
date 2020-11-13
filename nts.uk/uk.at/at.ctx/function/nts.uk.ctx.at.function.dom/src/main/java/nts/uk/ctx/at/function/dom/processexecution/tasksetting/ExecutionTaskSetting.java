@@ -170,8 +170,7 @@ public class ExecutionTaskSetting extends AggregateRoot {
 		/*
 		 * ◆◆事後条件 ・設定された次回実行日時が終了日を過ぎていたら次回実行日時 ＝ NULL とする
 		 */
-		if (this.nextExecDateTime != null && this.nextExecDateTime.isPresent()
-				&& this.nextExecDateTime.get().before(now)) {
+		if (this.nextExecDateTime.isPresent() && this.nextExecDateTime.get().before(now)) {
 			this.nextExecDateTime = null;
 		}
 	}

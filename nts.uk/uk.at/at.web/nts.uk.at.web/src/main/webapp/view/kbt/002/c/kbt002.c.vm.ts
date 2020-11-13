@@ -4,7 +4,7 @@ module nts.uk.at.view.kbt002.c {
     getEnumDataList: 'at/function/processexec/getEnum',
     getExecSetting: 'at/function/processexec/getExecSetting',
     saveExecSetting: 'at/function/processexec/saveExecSetting/'
-  }
+  };
 
   @bean()
   export class KBT002CViewModel extends ko.ViewModel {
@@ -32,12 +32,12 @@ module nts.uk.at.view.kbt002.c {
     isHiddenTimeRepeat: KnockoutObservable<boolean> = ko.observable(false);
     lstOneDayRepInterval: KnockoutObservableArray<OneDayRepIntervalModel> = ko.observableArray([]);
     cloudCreationFlag: KnockoutObservable<boolean> = ko.observable(false);
-    isNewMode: boolean = false;
+    isNewMode = false;
 
     created(params: any) {
       const vm = this;
       let dfd = $.Deferred<void>();
-      let today = moment();
+      const today = moment();
       vm.currentDate = today.format("YYYY/MM/DD");
       vm.currentTime = today.hour() * 60 + today.minute();
 
@@ -100,7 +100,6 @@ module nts.uk.at.view.kbt002.c {
           vm.$blockui('clear');
           if (item) {
             vm.curExecSetting(new ExecutionSettingModel(item, vm.currentDate, vm.currentTime));
-            console.log(vm.curExecSetting());
             vm.monthDays(vm.buildMonthDaysStr());
           }
         })
@@ -148,7 +147,6 @@ module nts.uk.at.view.kbt002.c {
           execItemCd: vm.execItemCd(),
           newMode: vm.isNewMode
         };
-        console.log(params);
         vm.$ajax(API.saveExecSetting, params)
           .then(res => {
             vm.$dialog.info({ messageId: "Msg_15" })
@@ -165,7 +163,7 @@ module nts.uk.at.view.kbt002.c {
 
     optionTimeRepeat() {
       const vm = this;
-      if (vm.selectTimeRepeat() == 0) {
+      if (vm.selectTimeRepeat() === 0) {
         vm.curExecSetting().oneDayRepCls(0);
         vm.isSelectEndTime(false);
         vm.curExecSetting().endTimeCls(0);
@@ -177,7 +175,7 @@ module nts.uk.at.view.kbt002.c {
 
     optionEndDate() {
       const vm = this;
-      if (vm.selectEndDate() == 0) {
+      if (vm.selectEndDate() === 0) {
         vm.curExecSetting().endDateCls(0);
       } else {
         vm.curExecSetting().endDateCls(1);
@@ -187,7 +185,7 @@ module nts.uk.at.view.kbt002.c {
 
     optionEndTime() {
       const vm = this;
-      if (vm.selectEndTime() == 0) {
+      if (vm.selectEndTime() === 0) {
         vm.curExecSetting().endTimeCls(0);
       } else {
         vm.curExecSetting().endTimeCls(1);
@@ -213,7 +211,7 @@ module nts.uk.at.view.kbt002.c {
       let monthDaysText = '';
       const listSize = vm.curExecSetting().repeatMonthDateList().length;
       _.each(vm.curExecSetting().repeatMonthDateList(), (data, index) => {
-        if (data == 32) {
+        if (data === 32) {
           monthDaysText += '最終';
         } else {
           monthDaysText += data;
@@ -234,24 +232,24 @@ module nts.uk.at.view.kbt002.c {
         vm.isHiddenTime(false);
         vm.isHiddenWeek(false);
         vm.isHiddenMonth(false);
-      };
+      }
       if (indexSelectExec === 1) {
         vm.isHiddenTime(true);
         vm.isHiddenWeek(false);
         vm.isHiddenMonth(false);
-      };
+      }
       if (indexSelectExec === 2) {
         vm.isHiddenTime(true);
         vm.isHiddenWeek(true);
         vm.isHiddenMonth(false);
         vm.curExecSetting().repeatContent(0);
-      };
+      }
       if (indexSelectExec === 3) {
         vm.isHiddenTime(true);
         vm.isHiddenWeek(false);
         vm.isHiddenMonth(true);
         vm.curExecSetting().repeatContent(1);
-      };
+      }
     }
 
   }
@@ -336,14 +334,14 @@ module nts.uk.at.view.kbt002.c {
     december: KnockoutObservable<boolean> = ko.observable(false);
     repeatMonthDateList: KnockoutObservableArray<number> = ko.observableArray([]);
     constructor(param: ExecutionSettingDto, curDate?: any, curTime?: any) {
-      let vm = this;
+      const vm = this;
       if (param && param != null) {
         vm.companyId(param.companyId || '');
         vm.execItemCd(param.execItemCd || '');
         vm.startDate(param.startDate || curDate);
-        param.startTime == 0 ? vm.startTime(param.startTime) : vm.startTime(param.startTime || curTime);
+        param.startTime === 0 ? vm.startTime(param.startTime) : vm.startTime(param.startTime || curTime);
         vm.endTimeCls(param.endTimeCls);
-        param.endTime == 0 ? vm.endTime(param.endTime) : vm.endTime(param.endTime || curTime);
+        param.endTime === 0 ? vm.endTime(param.endTime) : vm.endTime(param.endTime || curTime);
         vm.oneDayRepCls(param.oneDayRepCls);
         vm.oneDayRepInterval(param.oneDayRepInterval || 0);
         vm.repeatCls(param.repeatCls || false);

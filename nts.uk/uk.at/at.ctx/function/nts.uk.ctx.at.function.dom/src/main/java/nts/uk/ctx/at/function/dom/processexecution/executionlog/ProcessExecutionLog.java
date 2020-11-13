@@ -21,7 +21,7 @@ import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 @NoArgsConstructor
 public class ProcessExecutionLog extends AggregateRoot {
 	
-	public static final ProcessExecutionTask[] TASK_SETTINGS = {
+	protected static final ProcessExecutionTask[] TASK_SETTINGS = {
 			ProcessExecutionTask.SCH_CREATION,
 			ProcessExecutionTask.DAILY_CREATION,
 			ProcessExecutionTask.DAILY_CALCULATION,

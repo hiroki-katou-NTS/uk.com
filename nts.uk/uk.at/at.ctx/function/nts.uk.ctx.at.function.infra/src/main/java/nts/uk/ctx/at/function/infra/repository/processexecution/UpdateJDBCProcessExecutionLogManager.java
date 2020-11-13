@@ -11,7 +11,6 @@ import javax.ejb.TransactionAttributeType;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.CurrentExecutionStatus;

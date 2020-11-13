@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -118,7 +117,7 @@ public class KfnmtExecutionTaskLog extends UkJpaEntity implements Serializable {
 	public ExecutionTaskLog toDomain() {
 		return ExecutionTaskLog.builder()
 				.procExecTask(EnumAdaptor.valueOf(kfnmtExecTaskLogPK.taskId, ProcessExecutionTask.class))
-				.status(Optional.ofNullable(status).map(status -> EnumAdaptor.valueOf(status, EndStatus.class)))
+				.status(Optional.ofNullable(status).map(endStatus -> EnumAdaptor.valueOf(endStatus, EndStatus.class)))
 				.lastExecDateTime(Optional.ofNullable(lastExecDateTime))
 				.lastEndExecDateTime(Optional.ofNullable(lastEndExecDateTime))
 				.errorSystem(Optional.ofNullable(errorSystem).map(data -> data == 1))

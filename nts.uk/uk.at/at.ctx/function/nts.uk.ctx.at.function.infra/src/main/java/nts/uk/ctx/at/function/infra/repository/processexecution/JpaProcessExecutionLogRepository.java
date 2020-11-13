@@ -2,11 +2,9 @@ package nts.uk.ctx.at.function.infra.repository.processexecution;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -14,13 +12,11 @@ import javax.ejb.TransactionAttributeType;
 import javax.persistence.Query;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLog;
 //import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogManage;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogRepository;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtExecutionTaskLog;
-import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtExecutionTaskLogPK;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutionLog;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutionLogPK;
 //import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutionLogManage;

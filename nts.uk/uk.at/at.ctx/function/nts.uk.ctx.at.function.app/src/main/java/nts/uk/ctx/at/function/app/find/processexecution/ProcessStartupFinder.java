@@ -40,7 +40,7 @@ public class ProcessStartupFinder {
 
 	public ProcessStartupDto init(ProcessStartupCommand command) {
 		ProcessStartupDto dto = new ProcessStartupDto();
-		List<String> sids = new ArrayList<>();
+		List<String> sids;
 
 		// パラメータ.実施内容を確認する
 		if (command.isDaily()) {

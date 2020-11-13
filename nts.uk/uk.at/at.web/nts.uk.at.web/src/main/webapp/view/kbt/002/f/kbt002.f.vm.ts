@@ -273,7 +273,6 @@ module nts.uk.at.view.kbt002.f {
         .task(() => {
           return (nts.uk.request as any).asyncTask.getInfo(taskId)
             .then((info: any) => {
-              console.log(info);
               //ExecuteProcessExecCommandHandler
               const message101 = vm.getAsyncData(info.taskDatas, "message101").valueAsString;
               if (message101 === "Msg_1101" && vm.isOnceMessage101()) {
