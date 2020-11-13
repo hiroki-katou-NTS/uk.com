@@ -213,7 +213,7 @@ module nts.uk.at.kaf021.a {
             let results: Array<EmployeeAgreementTime> = [];
             _.each(data, (item: IEmployeeAgreementTime) => {
                 let result = new EmployeeAgreementTime(item)
-                result.statusStr = result.isApplying ? vm.$i18n("KAF021_73") : vm.$i18n("KAF021_72");
+                result.statusStr = result.isApplying ? vm.$i18n("KAF021_73") : "";
                 results.push(result);
             })
             return results
@@ -858,7 +858,7 @@ module nts.uk.at.kaf021.a {
 
             this.monthAverage2 = data.monthAverage2?.time;
             this.monthAverage2Str = parseTime(this.monthAverage2, true).format();
-            this.monthAverage3Status = data.monthAverage3?.status;
+            this.monthAverage2Status = data.monthAverage2?.status;
 
             this.monthAverage3 = data.monthAverage3?.time;
             this.monthAverage3Str = parseTime(this.monthAverage3, true).format();
