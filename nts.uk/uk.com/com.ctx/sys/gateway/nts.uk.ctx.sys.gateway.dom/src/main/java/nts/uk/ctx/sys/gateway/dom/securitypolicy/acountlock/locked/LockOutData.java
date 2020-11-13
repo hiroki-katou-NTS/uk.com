@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata;
+package nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
@@ -43,6 +43,21 @@ public class LockOutData extends AggregateRoot{
 		this.contractCode = memento.getContractCode();
 		this.loginMethod = memento.getLoginMethod();
 	}
+
+	private LockOutData(
+			String userId,
+			GeneralDateTime lockOutDateTime,
+			LockType logType,
+			ContractCode contractCode,
+			LoginMethod loginMethod) {
+		
+		this.userId = userId;
+		this.lockOutDateTime = lockOutDateTime;
+		this.logType = logType;
+		this.contractCode = contractCode;
+		this.loginMethod = loginMethod;
+	}
+	
 	
 	/**
 	 * Save to memento.
@@ -56,4 +71,20 @@ public class LockOutData extends AggregateRoot{
 		memento.setContractCode(this.contractCode);
 		memento.setLoginMethod(this.loginMethod);
 	}
+	
+	/**
+	 * 自動ロックをかける
+	 * @param userId
+	 * @param contractCode
+	 * @return
+	 */
+	public static LockOutData autoLock(String userId, ContractCode contractCode) {
+		return new LockOutData(
+				userId,
+				GeneralDateTime.now(),
+				LockType.AUTO_LOCK,
+				contractCode,
+				LoginMethod.NORMAL_LOGIN);
+	}
+
 }

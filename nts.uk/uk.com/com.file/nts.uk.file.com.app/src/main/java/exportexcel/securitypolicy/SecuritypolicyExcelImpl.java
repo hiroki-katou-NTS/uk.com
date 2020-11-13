@@ -10,10 +10,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.AccountLockPolicy;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.AccountLockPolicyRepository;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.PasswordPolicy;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.PasswordPolicyRepository;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicyRepository;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicy;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicyRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;

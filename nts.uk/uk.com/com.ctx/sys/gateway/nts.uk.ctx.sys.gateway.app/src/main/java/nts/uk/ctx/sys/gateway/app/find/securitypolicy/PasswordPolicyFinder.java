@@ -7,8 +7,8 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.sys.gateway.app.find.securitypolicy.dto.PasswordPolicyDto;
 import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.PasswordPolicy;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.PasswordPolicyRepository;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicy;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicyRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

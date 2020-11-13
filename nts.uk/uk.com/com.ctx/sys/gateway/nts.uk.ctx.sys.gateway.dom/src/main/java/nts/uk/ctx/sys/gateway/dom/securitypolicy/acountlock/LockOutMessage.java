@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.gateway.dom.securitypolicy;
+package nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock;
 
 import nts.arc.primitive.StringPrimitiveValue;
 

@@ -6,10 +6,10 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.AccountLockPolicy;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.AccountLockPolicyRepository;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.PasswordPolicy;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.PasswordPolicyRepository;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicyRepository;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicy;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicyRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

@@ -22,7 +22,7 @@ import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
 import nts.uk.ctx.sys.gateway.dom.loginold.LoginStatus;
 import nts.uk.ctx.sys.gateway.dom.role.RoleType;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LoginMethod;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LoginMethod;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccount;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;

@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.gateway.dom.securitypolicy;
+package nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock;
 
 import java.math.BigDecimal;
 

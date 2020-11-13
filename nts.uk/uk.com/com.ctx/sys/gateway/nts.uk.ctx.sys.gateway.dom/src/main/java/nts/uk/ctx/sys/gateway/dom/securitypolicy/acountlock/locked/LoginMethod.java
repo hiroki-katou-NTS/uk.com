@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata;
+package nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked;
 
 /**
  * The Enum LoginMethod.

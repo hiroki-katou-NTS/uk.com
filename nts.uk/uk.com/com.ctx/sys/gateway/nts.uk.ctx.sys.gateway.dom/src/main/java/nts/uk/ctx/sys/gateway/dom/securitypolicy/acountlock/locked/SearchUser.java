@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata;
+package nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked;
 
 
 import lombok.Value;

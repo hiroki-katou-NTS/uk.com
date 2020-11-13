@@ -23,7 +23,7 @@ import nts.uk.ctx.sys.gateway.app.service.login.LoginService;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
 import nts.uk.ctx.sys.gateway.dom.loginold.LoginStatus;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LoginMethod;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LoginMethod;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccount;
 import nts.uk.ctx.sys.shared.dom.company.CompanyInformationImport;
 import nts.uk.ctx.sys.shared.dom.employee.EmployeeImport;

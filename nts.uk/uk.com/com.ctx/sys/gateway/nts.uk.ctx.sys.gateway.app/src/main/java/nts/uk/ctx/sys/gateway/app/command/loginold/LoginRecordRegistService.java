@@ -28,7 +28,7 @@ import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
 import nts.uk.ctx.sys.gateway.dom.loginold.LoginStatus;
 import nts.uk.ctx.sys.gateway.dom.loginold.adapter.loginrecord.LoginRecordAdapter;
 import nts.uk.ctx.sys.gateway.dom.loginold.adapter.loginrecord.LoginRecordInfor;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LoginMethod;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LoginMethod;
 import nts.uk.ctx.sys.shared.dom.employee.EmployeeImport;
 import nts.uk.ctx.sys.shared.dom.employee.SysEmployeeAdapter;
 import nts.uk.shr.com.context.AppContexts;
