@@ -1066,7 +1066,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 										if(value != null) {
 											value = StringLength.cutOffAsLengthHalf(value, LIMIT_REMARK_INPUT);
 										}
-										personalPerformanceDate.detailedErrorData += (value == null? "" : value + " ");
+										lstRemarkContentStr.add(value == null? "" : value);
 									}
 								// Append マスタ未登録
 								} else if (remark.getPrintItem() == RemarksContentChoice.MASTER_UNREGISTERED) {
@@ -1080,8 +1080,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 											.collect(Collectors.toList());
 
 									boolean masterUnregistedFlag = names.stream()
-											.anyMatch(item -> StringUtils.equalsIgnoreCase(item,
-													MASTER_UNREGISTERED));
+											.anyMatch(item -> item.contains(MASTER_UNREGISTERED));
 										
 									if (masterUnregistedFlag) {
 										lstRemarkContentStr.add(TextResource.localize(RemarksContentChoice.MASTER_UNREGISTERED.shortName));
@@ -1128,17 +1127,20 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 							for (int i = 0; i < lstRemarkContentStr.size(); i++) {
 								String remarkContentStr = lstRemarkContentStr.get(i);
 								int numberLine = stringBuilder.toString().split("/n").length;
-								if (numberLine < dataRowCount && maxByte > lstRemarkContentStr.get(i).getBytes().length) {
-									maxByte = maxByte - lstRemarkContentStr.get(i).getBytes().length;
+								int currentStrLenght = lstRemarkContentStr.get(i).getBytes().length;
+								if (numberLine <= dataRowCount && maxByte >= currentStrLenght) {
+									maxByte = maxByte - currentStrLenght;
 									if (!StringUtil.isNullOrEmpty(lstRemarkContentStr.get(i), false)) {
 										stringBuilder.append(" ").append(remarkContentStr);
+										maxByte = maxByte - 1;
 									}
-								} else if (numberLine == dataRowCount) {
-									stringBuilder.append(" 他").append(lstRemarkContentStr.size() - i).append("件");
-									break;
+									if (numberLine == dataRowCount && maxByte <= lstRemarkContentStr.get(i + 1).getBytes().length) {
+										stringBuilder.append(" 他").append(lstRemarkContentStr.size() - i).append("件");
+										break;
+									}
 								} else {
 									stringBuilder.append("/n").append(remarkContentStr);
-									maxByte = 35;
+									maxByte = 35 - remarkContentStr.getBytes().length;
 								}
 							}
                             personalPerformanceDate.detailedErrorData  += stringBuilder.toString();
@@ -1330,7 +1332,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 							if (value != null) {
 								value = StringLength.cutOffAsLengthHalf(value, LIMIT_REMARK_INPUT);
 							}
-							detailedDate.errorDetail += (value == null ? "" : value + " ");
+							lstRemarkContentStr.add((value == null ? "" : value));
 						}
 					// Append マスタ未登録
 					} else if (remark.getPrintItem() == RemarksContentChoice.MASTER_UNREGISTERED) {
@@ -1344,8 +1346,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 								.collect(Collectors.toList());
 
 						boolean masterUnregistedFlag = names.stream()
-								.anyMatch(item -> StringUtils.equalsIgnoreCase(item,
-										MASTER_UNREGISTERED));
+								.anyMatch(item -> item.contains(MASTER_UNREGISTERED));
 							
 						if (masterUnregistedFlag) {
 							lstRemarkContentStr.add(TextResource.localize(RemarksContentChoice.MASTER_UNREGISTERED.shortName));
@@ -1392,17 +1393,20 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				for (int i = 0; i < lstRemarkContentStr.size(); i++) {
 					String remarkContentStr = lstRemarkContentStr.get(i);
 					int numberLine = errorDetails.toString().split("/n").length;
-					if (numberLine < dataRowCount && maxByte > lstRemarkContentStr.get(i).getBytes().length) {
-						maxByte = maxByte - lstRemarkContentStr.get(i).getBytes().length;
+					int currentStrLenght = lstRemarkContentStr.get(i).getBytes().length;
+					if (numberLine <= dataRowCount && maxByte >= currentStrLenght) {
+						maxByte = maxByte - currentStrLenght;
 						if (!StringUtil.isNullOrEmpty(lstRemarkContentStr.get(i), false)) {
 							errorDetails.append(" ").append(remarkContentStr);
+							maxByte = maxByte - 1;
 						}
-					} else if (numberLine == dataRowCount) {
-						errorDetails.append(" 他").append(lstRemarkContentStr.size() - i).append("件");
-						break;
+						if (numberLine == dataRowCount && maxByte <= lstRemarkContentStr.get(i + 1).getBytes().length) {
+							errorDetails.append(" 他").append(lstRemarkContentStr.size() - i).append("件");
+							break;
+						}
 					} else {
 						errorDetails.append("/n").append(remarkContentStr);
-						maxByte = 35;
+						maxByte = 35 - remarkContentStr.getBytes().length;
 					}
 				}
 				detailedDate.errorDetail += errorDetails.toString();
