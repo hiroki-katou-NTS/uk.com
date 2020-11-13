@@ -11,9 +11,9 @@ public class GetAttendanceItemInfoScreenQuery {
     @Inject
     private GetAttendanceItemInfo getAttendanceItemInfo;
 
-    public AttendanceItemInfoDto getInfo( int formNumberDisplay) {
+    public AttendanceItemInfoDto getInfo( AttendanceItemInfoPrams prams) {
         int DAILY = 1;
         DailyMonthlyClassification classification = EnumAdaptor.valueOf(DAILY,DailyMonthlyClassification.class);
-        return getAttendanceItemInfo.getAttendanceItemInfo(classification,formNumberDisplay);
+        return getAttendanceItemInfo.getAttendanceItemInfo(classification,prams.getFormNumberDisplay(),true,false);
     }
 }

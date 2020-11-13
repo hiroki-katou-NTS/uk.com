@@ -47,13 +47,13 @@ public class CreateAnnualWorkLedgerContentDomainService {
                 .filter(x -> x.getDailyMonthlyClassification() == DailyMonthlyClassification.MONTHLY && x.isPrintTargetFlag())
                 .collect(Collectors.toList());
         // Loop 「社員の会社所属状況」の「対象社員」
-        for (StatusOfEmployee emp : listEmployeeStatus) {// 日次データ
+        for (StatusOfEmployee emp : listEmployeeStatus) {
+            // 日次データ
             val employee = lstEmployee.get(emp.getEmployeeId());
             val closureDateEmployment = lstClosureDateEmployment.get(emp.getEmployeeId());
             if (closureDateEmployment == null) continue;
             val workplaceInfo = lstWorkplaceInfor.get(emp.getEmployeeId());
             val closureHistory = closureDateEmployment.getClosure().getClosureHistories().get(0);
-
             List<DailyValue> lstRightValue = new ArrayList<>();
             List<DailyValue> lstLeftValue = new ArrayList<>();
             String rightColumnName = null;
@@ -77,40 +77,43 @@ public class CreateAnnualWorkLedgerContentDomainService {
                 }
 
                 val listItem = item.getSelectedAttendanceItemList();
+                val attendanceItemId = listItem.stream().map(OutputItemDetailSelectionAttendanceItem::getAttendanceItemId).collect(Collectors.toList());
                 // 1の「所属状況」の「期間」の中にループを行い: ・社員ID、・①の「印刷期間」の一つ
-                emp.getListPeriod().forEach((DatePeriod i) -> i.datesBetween().forEach(wd -> {
-                    val listAttendances = require.getValueOf(emp.getEmployeeId(), wd,
-                            listItem.stream().map(OutputItemDetailSelectionAttendanceItem::getAttendanceItemId).collect(Collectors.toList()));
+                emp.getListPeriod().forEach((DatePeriod i) -> {
+                    val listAttendances = require.getValueOf(emp.getEmployeeId(), i, attendanceItemId);
+                    if (listAttendances != null) {
+                        for (AttendanceResultDto attendance : listAttendances) {
+                            StringBuilder character = new StringBuilder();
+                            Double actualValue = 0d;
 
-                    StringBuilder character = new StringBuilder();
-                    Double actualValue = 0d;
+                            for (OutputItemDetailSelectionAttendanceItem ite : listItem) {
+                                val subItem = (attendance.getAttendanceItems().stream().
+                                        filter(x -> x.getItemId() == ite.getAttendanceItemId()).findFirst());
+                                if (subItem.isPresent()) {
+                                    if (item.getItemDetailAttributes() == CommonAttributesOfForms.WORK_TYPE ||
+                                            item.getItemDetailAttributes() == CommonAttributesOfForms.WORKING_HOURS) {
+                                        character.append(subItem.get().getValue());
+                                    } else {
+                                        Double value = Double.parseDouble(subItem.get().getValue());
+                                        if (ite.getOperator() == OperatorsCommonToForms.ADDITION) {
+                                            actualValue += value;
+                                        } else if (ite.getOperator() == OperatorsCommonToForms.SUBTRACTION)
+                                            actualValue -= value;
+                                    }
+                                }
+                            }
 
-                    if (item.getItemDetailAttributes() == CommonAttributesOfForms.WORK_TYPE ||
-                            item.getItemDetailAttributes() == CommonAttributesOfForms.WORKING_HOURS) {
-                        for (OutputItemDetailSelectionAttendanceItem ite : listItem) {
-                            val subItem = (listAttendances.getAttendanceItems().stream().
-                                    filter(x -> x.getItemId() == ite.getAttendanceItemId()).findFirst());
-                            subItem.ifPresent(attendanceItemDtoValue -> character.append(attendanceItemDtoValue.getValue()));
-                        }
-                    } else {
-                        for (OutputItemDetailSelectionAttendanceItem ite : listItem) {
-                            val subItem = (listAttendances.getAttendanceItems().stream().
-                                    filter(x -> x.getItemId() == ite.getAttendanceItemId()).findFirst());
-                            if (subItem.isPresent()) {
-                                if (ite.getOperator() == OperatorsCommonToForms.ADDITION) {
-                                    actualValue += Double.parseDouble(subItem.get().getValue());
-                                } else if (ite.getOperator() == OperatorsCommonToForms.SUBTRACTION)
-                                    actualValue -= Double.parseDouble(subItem.get().getValue());
+                            if (finalIndex == 0) {
+                                lstLeftValue.add(new DailyValue(actualValue, character.toString(), attendance.getWorkingDate()));
+                            } else {
+                                lstRightValue.add(new DailyValue(actualValue, character.toString(), attendance.getWorkingDate()));
                             }
                         }
+
                     }
-                    if (finalIndex == 0) {
-                        lstLeftValue.add(new DailyValue(actualValue, character.toString(), wd));
-                    } else {
-                        lstRightValue.add(new DailyValue(actualValue, character.toString(), wd));
-                    }
-                }));
+                });
             }
+
             DailyData dailyData = new DailyData(
                     lstRightValue,
                     lstLeftValue,
@@ -124,38 +127,37 @@ public class CreateAnnualWorkLedgerContentDomainService {
             // Loop 出力項目 月次
             for (OutputItem monthlyItem : monthlyOutputItems) {
                 List<MonthlyValue> lstMonthlyValue = new ArrayList<>();
+                val listItem = monthlyItem.getSelectedAttendanceItemList();
+                val itemIds = listItem.stream().map(OutputItemDetailSelectionAttendanceItem::getAttendanceItemId).collect(Collectors.toList());
                 emp.getListPeriod().forEach((DatePeriod period) -> {
-                    val listItem = monthlyItem.getSelectedAttendanceItemList();
-                    val itemIds = listItem.stream().map(OutputItemDetailSelectionAttendanceItem::getAttendanceItemId).collect(Collectors.toList());
                     val yearMonthPeriod = GetSuitableDateByClosureDateUtility.getByClosureDate(
                             period, closureHistory.getClosureDate().getClosureDay().v());
                     val monthlyRecordValues = (require.getActualMultipleMonth(
                             new ArrayList<>(Collections.singletonList(emp.getEmployeeId())), yearMonthPeriod, itemIds)).get(emp.getEmployeeId());
+                    if (monthlyRecordValues != null) {
+                        for (val monthlyRecordValue : monthlyRecordValues) {
+                            StringBuilder character = new StringBuilder();
+                            Double actualValue = 0d;
 
-                    for (val monthlyRecordValue : monthlyRecordValues) {
-                        StringBuilder character = new StringBuilder();
-                        Double actualValue = 0d;
-                        if (monthlyItem.getItemDetailAttributes() == CommonAttributesOfForms.WORK_TYPE ||
-                                monthlyItem.getItemDetailAttributes() == CommonAttributesOfForms.WORKING_HOURS) {
-                            for (OutputItemDetailSelectionAttendanceItem ite : listItem) {
-                                val subItem = (monthlyRecordValue.getItemValues().stream().
-                                        filter(x -> x.getItemId() == ite.getAttendanceItemId()).findFirst());
-                                subItem.ifPresent(attendanceItemDtoValue -> character.append(attendanceItemDtoValue.getValue()));
-                            }
-                        } else {
                             for (OutputItemDetailSelectionAttendanceItem ite : listItem) {
                                 val subItem = (monthlyRecordValue.getItemValues().stream().
                                         filter(x -> x.getItemId() == ite.getAttendanceItemId()).findFirst());
                                 if (subItem.isPresent()) {
-                                    if (ite.getOperator() == OperatorsCommonToForms.ADDITION) {
-                                        actualValue += Double.parseDouble(subItem.get().getValue());
-                                    } else if (ite.getOperator() == OperatorsCommonToForms.SUBTRACTION)
-                                        actualValue -= Double.parseDouble(subItem.get().getValue());
+                                    if (monthlyItem.getItemDetailAttributes() == CommonAttributesOfForms.WORK_TYPE ||
+                                            monthlyItem.getItemDetailAttributes() == CommonAttributesOfForms.WORKING_HOURS) {
+                                        character.append(subItem.get().getValue());
+                                    } else {
+                                        Double value = Double.parseDouble(subItem.get().getValue());
+                                        if (ite.getOperator() == OperatorsCommonToForms.ADDITION) {
+                                            actualValue += value;
+                                        } else if (ite.getOperator() == OperatorsCommonToForms.SUBTRACTION)
+                                            actualValue -= value;
+                                    }
                                 }
                             }
-                        }
 
-                        lstMonthlyValue.add(new MonthlyValue(actualValue, character.toString(), monthlyRecordValue.getYearMonth()));
+                            lstMonthlyValue.add(new MonthlyValue(actualValue, character.toString(), monthlyRecordValue.getYearMonth()));
+                        }
                     }
                 });
 
@@ -183,10 +185,11 @@ public class CreateAnnualWorkLedgerContentDomainService {
         //[RQ 588] 社員の指定期間中の所属期間を取得する
         List<StatusOfEmployee> getListAffComHistByListSidAndPeriod(List<String> sid, DatePeriod datePeriod);
 
-        AttendanceResultDto getValueOf(String employeeId, GeneralDate workingDate, Collection<Integer> itemIds);
+        List<AttendanceResultDto> getValueOf(String employeeId, DatePeriod workingDatePeriod, Collection<Integer> itemIds);
 
         // [No.495]勤怠項目IDを指定して月別実績の値を取得（複数レコードは合算）
         Map<String, List<MonthlyRecordValueImport>> getActualMultipleMonth(
                 List<String> employeeIds, YearMonthPeriod period, List<Integer> itemIds);
+
     }
 }

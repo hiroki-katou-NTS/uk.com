@@ -106,8 +106,6 @@ public class UpdateWorkStatusSettingDServiceTest {
                 AppContexts.user().companyId();
                 result = cid;
 
-                AppContexts.user().employeeId();
-                result = empId;
             }
         };
         new Expectations() {
@@ -122,6 +120,30 @@ public class UpdateWorkStatusSettingDServiceTest {
         });
     }
 
+    @Test
+    public void test_02() {
+        val settingCategory = SettingClassificationCommon.FREE_SETTING;
+        new Expectations(AppContexts.class) {
+            {
+                AppContexts.user().companyId();
+                result = cid;
+                AppContexts.user().employeeId();
+                result = empId;
+            }
+        };
+        new Expectations() {
+            {
+                require.getWorkStatusOutputSettings(cid, settingId);
+                result = outputSettings;
+            }
+        };
+
+        NtsAssert.atomTask(() ->
+                        UpdateWorkStatusSettingDomainService.updateSetting(require, settingId, code, name, settingCategory,
+                                outputItems),
+
+                any -> require.update(any.get(), any.get(), any.get(), any.get(), any.get()));
+    }
     @Test
     public void test_03() {
         val settingCategory = SettingClassificationCommon.STANDARD_SELECTION;

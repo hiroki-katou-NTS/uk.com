@@ -10,6 +10,7 @@ import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.FormOutputItemNam
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItem;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemDetailSelectionAttendanceItem;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.*;
+import nts.uk.ctx.at.function.ws.outputworkstatustable.dto.*;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -46,47 +47,51 @@ public class OutputItemSettingWebService extends WebService {
 
     @Inject
     private CheckDailyPerformAuthorQuery checkDailyPerformAuthorQuery;
+
     @POST
     @Path("003/a/listworkstatus")
-    public List<WorkStatusOutputDto> getListWorkStatus(int setting) {
-        return settingQuery.getListWorkStatus(EnumAdaptor.valueOf(setting, SettingClassificationCommon.class));
+    public List<WorkStatusOutputDto> getListWorkStatus(SettingParams params) {
+        return settingQuery.getListWorkStatus(EnumAdaptor.valueOf(params.getSetting(), SettingClassificationCommon.class));
     }
+
     @POST
     @Path("beginmonthofcompany/checkauthor")
-    public BeginMonthAndIsAuthor getBeginMonthAndIsAuthor(String cid, String roleId) {
-        return monthAndIsAuthorQuery.getBeginMonthAndIsAuthor(cid,roleId);
+    public BeginMonthAndIsAuthor getBeginMonthAndIsAuthor(RoleIdAndCidParams params) {
+        return monthAndIsAuthorQuery.getBeginMonthAndIsAuthor(params.getCid(), params.getRoleId());
     }
+
     @POST
     @Path("checkdailyauthor")
-    public boolean checkDailyPerformAuthor(String roleId) {
-        return checkDailyPerformAuthorQuery.checkDailyPerformAuthor(roleId);
+    public boolean checkDailyPerformAuthor(RoleIdParams params) {
+        return checkDailyPerformAuthorQuery.checkDailyPerformAuthor(params.getRoleId());
     }
+
     @POST
     @Path("003/b/detailworkstatus")
-    public WorkStatusOutputSettingDto getDetailWorkStatus(String settingId) {
+    public WorkStatusOutputSettingDto getDetailWorkStatus(SettingIdParams params) {
         WorkStatusOutputSettingDto rs = new WorkStatusOutputSettingDto();
         val itemList = new ArrayList<ItemDto>();
-        val workStatusOutputSettings = detailOutputSettingWorkStatusQuery.getDetail(settingId);
-        if(workStatusOutputSettings!=null){
+        val workStatusOutputSettings = detailOutputSettingWorkStatusQuery.getDetail(params.getSettingId());
+        if (workStatusOutputSettings != null) {
             workStatusOutputSettings.getOutputItem().forEach(e ->
-                itemList.add(new ItemDto(
-                        e.getRank(),
-                        e.getName()!=null ? e.getName().v():null,
-                        e.isPrintTargetFlag(),
-                        e.getIndependentCalculaClassification()!=null?e.getIndependentCalculaClassification().value:0,
-                        e.getIndependentCalculaClassification()!=null?e.getIndependentCalculaClassification().name():null,
-                        e.getDailyMonthlyClassification()!=null? e.getDailyMonthlyClassification().value:0,
-                        e.getDailyMonthlyClassification()!=null? e.getDailyMonthlyClassification().name():null,
-                        e.getItemDetailAttributes()!=null? e.getItemDetailAttributes().value:0,
-                        e.getItemDetailAttributes()!=null? e.getItemDetailAttributes().name():null,
-                        e.getSelectedAttendanceItemList().stream().map(i -> new AttendanceItemDto(
-                                i.getOperator()!=null?i.getOperator().value:0,
-                                i.getOperator()!=null?i.getOperator().name():null,
-                                i.getAttendanceItemId()
-                        )).collect(Collectors.toCollection(ArrayList::new))
-                ))
+                    itemList.add(new ItemDto(
+                            e.getRank(),
+                            e.getName() != null ? e.getName().v() : null,
+                            e.isPrintTargetFlag(),
+                            e.getIndependentCalculaClassification() != null ? e.getIndependentCalculaClassification().value : 0,
+                            e.getIndependentCalculaClassification() != null ? e.getIndependentCalculaClassification().name() : null,
+                            e.getDailyMonthlyClassification() != null ? e.getDailyMonthlyClassification().value : 0,
+                            e.getDailyMonthlyClassification() != null ? e.getDailyMonthlyClassification().name() : null,
+                            e.getItemDetailAttributes() != null ? e.getItemDetailAttributes().value : 0,
+                            e.getItemDetailAttributes() != null ? e.getItemDetailAttributes().name() : null,
+                            e.getSelectedAttendanceItemList().stream().map(i -> new AttendanceItemDto(
+                                    i.getOperator() != null ? i.getOperator().value : 0,
+                                    i.getOperator() != null ? i.getOperator().name() : null,
+                                    i.getAttendanceItemId()
+                            )).collect(Collectors.toCollection(ArrayList::new))
+                    ))
             );
-             rs = new  WorkStatusOutputSettingDto(
+            rs = new WorkStatusOutputSettingDto(
                     workStatusOutputSettings.getSettingId(),
                     workStatusOutputSettings.getSettingDisplayCode().v(),
                     workStatusOutputSettings.getSettingName().v(),
@@ -96,15 +101,16 @@ public class OutputItemSettingWebService extends WebService {
                     itemList
             );
         }
-       return rs;
+        return rs;
     }
+
     @POST
     @Path("003/b/create")
     public void create(CreateConfigdetailDto dto) {
         if (dto != null) {
             List<OutputItem> outputItemList = new ArrayList<>();
             dto.getOutputItemList().forEach(e -> {
-                val selectedAttItemList =  e.getSelectedAttItemList().stream().map(i -> new OutputItemDetailSelectionAttendanceItem(
+                val selectedAttItemList = e.getSelectedAttItemList().stream().map(i -> new OutputItemDetailSelectionAttendanceItem(
                         EnumAdaptor.valueOf(i.getOperator(), OperatorsCommonToForms.class),
                         i.getAttendanceItemId()
                 )).collect(Collectors.toList());
@@ -116,7 +122,7 @@ public class OutputItemSettingWebService extends WebService {
                         EnumAdaptor.valueOf(e.getDailyMonthlyClassic(), DailyMonthlyClassification.class),
                         EnumAdaptor.valueOf(e.getItemDetailAtt(), CommonAttributesOfForms.class),
                         selectedAttItemList
-                       ));
+                ));
             });
 
             CreateConfigdetailCommand command = new CreateConfigdetailCommand(
@@ -161,8 +167,8 @@ public class OutputItemSettingWebService extends WebService {
 
     @POST
     @Path("003/b/delete")
-    public void delete(String settingId ) {
-        val command = new DeleteDetailsOfTheWorkCommand(settingId);
+    public void delete(SettingIdParams params) {
+        val command = new DeleteDetailsOfTheWorkCommand(params.getSettingId());
         this.deleteDetailsOfTheWorkCommandHandler.handle(command);
     }
 
@@ -171,4 +177,9 @@ public class OutputItemSettingWebService extends WebService {
     public void duplicate(DuplicateSettingDetailCommand command) {
         this.duplicateSettingDetailCommandHandler.handle(command);
     }
+
+
+
+
+
 }

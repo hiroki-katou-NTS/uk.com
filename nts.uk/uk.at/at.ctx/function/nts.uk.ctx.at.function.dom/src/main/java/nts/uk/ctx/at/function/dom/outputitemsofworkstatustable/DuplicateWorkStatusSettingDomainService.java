@@ -28,15 +28,17 @@ public class DuplicateWorkStatusSettingDomainService {
             // 2. [1.isEmpty]
             throw new BusinessException("Msg_1903");
         }
-        Boolean isCheckDuplicateFixedSelection = false;
+            // 1
+        Boolean isCheck;
         if(settingCategory == SettingClassificationCommon.STANDARD_SELECTION){
             // 3.1定型選択の重複をチェックする(出力項目設定コード, 会社ID)
-            isCheckDuplicateFixedSelection = require.checkTheStandard(settingCode.v(), cid);
+            isCheck = require.checkTheStandard(settingCode.v(), cid);
+        } else{
+            // 3.2自由設定の重複をチェックする(出力項目設定コード, 会社ID, 社員ID)
+            isCheck = require.checkFreedom(settingCode.v(), cid, employeeId);
         }
-        // 3.2自由設定の重複をチェックする(出力項目設定コード, 会社ID, 社員ID)
-        val isCheckDuplicateFreeSetting = require.checkFreedom(settingCode.v(), cid, employeeId);
-        // 4. [3.1,3.2] true
-        if (isCheckDuplicateFixedSelection || isCheckDuplicateFreeSetting) {
+        // 4. [1] true
+        if (isCheck ) {
             throw new BusinessException("Msg_1753");
         }
         // 5.設定IDを生成する
