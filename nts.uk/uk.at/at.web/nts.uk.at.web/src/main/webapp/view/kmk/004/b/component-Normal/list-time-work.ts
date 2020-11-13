@@ -12,49 +12,51 @@ module nts.uk.at.view.kmk004.b {
     const TYPE = 0;
 
     const template = `
-        <table>
-            <tbody>
-                <!-- ko if: check -->
-                <tr>
-                </tr>
-                <!-- /ko -->
-                <tr>
-                    <td>
-                        <div class= "label-row1" data-bind="i18n: 'KMK004_221'"></div>
-                    </td>
-                    <td>
-                        <div class= "label-row2" data-bind="i18n: 'KMK004_222'"></div>
-                    </td>
-                </tr>
-                <!-- ko foreach: workTimes -->
-                <tr>
-                    <td class="label-column1" data-bind="text: $data.month"></td>
-                    <td>
-                        <div class="label-column2">
-                            <input class="lable-input" data-bind="ntsTextEditor: {value: $data.legalLaborTime}" />
-                        </div>
-                    </td>
-                </tr>
-                <!-- /ko -->
-                <tr>
-                    <td>
-                        <div class="label-column1" data-bind="i18n: 'KMK004_223'"></div>
-                    </td>
-                    <td>
-                        <div class="label-column2" data-bind="i18n: 'KMK004_223'"></div>
-                    </td>
-                </tr>
-                <!-- ko if: flex -->
-                <tr>
-                </tr>
-                <tr>
-                </tr>
-                <!-- /ko -->
-            </tbody>
-        </table>
+        <div class="list-time">
+            <table>
+                <tbody>
+                    <!-- ko if: check -->
+                    <tr>
+                    </tr>
+                    <!-- /ko -->
+                    <tr>
+                        <td>
+                            <div class= "label-row1" data-bind="i18n: 'KMK004_221'"></div>
+                        </td>
+                        <td>
+                            <div class= "label-row2" data-bind="i18n: 'KMK004_222'"></div>
+                        </td>
+                    </tr>
+                    <!-- ko foreach: workTimes -->
+                    <tr>
+                        <td class="label-column1" data-bind="text: $data.month"></td>
+                        <td>
+                            <div class="label-column2">
+                                <input class="lable-input" data-bind="ntsTextEditor: {value: $data.legalLaborTime}" />
+                            </div>
+                        </td>
+                    </tr>
+                    <!-- /ko -->
+                    <tr>
+                        <td>
+                            <div class="label-column1" data-bind="i18n: 'KMK004_223'"></div>
+                        </td>
+                        <td>
+                            <div class="label-column2" data-bind="text: total"></div>
+                        </td>
+                    </tr>
+                    <!-- ko if: flex -->
+                    <tr>
+                    </tr>
+                    <tr>
+                    </tr>
+                    <!-- /ko -->
+                </tbody>
+            </table>
+        </div>
         <style type="text/css" rel="stylesheet">
-		.label-column1 {
-            padding: 5px;
+		.list-time .label-column1 {
+            padding: 3px;
             border-left: solid 1px #AAAAAA;
             border-right: solid 1px #AAAAAA;
             border-bottom: solid 1px #AAAAAA;
@@ -62,32 +64,36 @@ module nts.uk.at.view.kmk004.b {
             width: 50px;
             background: #E0F59E;
             max-width: 50px;
+            height: 24px;
         }
-        .label-row1 {
+        .list-time .label-row1 {
             border: solid 1px #AAAAAA;
-            padding: 5px;
+            padding: 3px;
             text-align: center;
             background: #97D155;
             max-width: 50px;
+            height: 24px;
         }
-        .label-column2 {
-            padding: 5px;
+        .list-time .label-column2 {
+            padding: 3px;
             border-right: solid 1px #AAAAAA;
             border-bottom: solid 1px #AAAAAA;
             text-align: center;
             width: 125px;
             max-width: 125px;
+            height: 24px;
         }
-        .label-row2 {
+        .list-time .label-row2 {
             border-top: solid 1px #AAAAAA;
             border-right: solid 1px #AAAAAA;
             border-bottom: solid 1px #AAAAAA;
-            padding: 5px;
+            padding: 3px;
             text-align: center;
             background: #97D155;
             max-width: 125px;
+            height: 24px;
         }
-        .lable-input {
+        .list-time .lable-input {
             width: 60px;
             text-align: center;
             height: 13px;
@@ -112,18 +118,17 @@ module nts.uk.at.view.kmk004.b {
         created() {
             const vm = this;
             const input = { workType: TYPE, year: 2020 };
+            var s = 0;
 
             vm.$ajax(API.GET_WORK_TIME, input)
                 .then((data: IWorkTime[]) => {
-                    vm.workTimes(data.map(m => new WorkTime(m)));
-                    console.log(ko.unwrap(vm.workTimes));
+                    vm.workTimes(data.map(m => new WorkTime({...m, parrent: vm.workTimes})));
                 });
-
-            vm.workTimes.subscribe(() => {
-                console.log('Chung dep trai');
-            }); 
+            
+            vm.workTimes.subscribe((wts) => {
+                console.log(wts.reduce((p, c) => p+= Number(c.legalLaborTime()), 0));
+            });
         }
-
     }
 
     interface IWorkTime {
@@ -141,10 +146,12 @@ module nts.uk.at.view.kmk004.b {
         withinLaborTime: KnockoutObservable<number | null> = ko.observable(null);
         weekAvgTime: KnockoutObservable<number | null> = ko.observable(null);
 
-        constructor(params?: IWorkTime) {
+        constructor(params?: IWorkTime & { parrent: KnockoutObservableArray<WorkTime>}) {
             const md = this;
 
             md.create(params);
+
+            this.legalLaborTime.subscribe(c => params.parrent.valueHasMutated());
         }
 
         public create(param?: IWorkTime) {
