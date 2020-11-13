@@ -1,6 +1,6 @@
 #sidebar-area ~ div {
 	float: left;
-	width: calc(100vw - 140px);
+	width: 100vh;
 }
 
 .sidebar-content-header .title {
