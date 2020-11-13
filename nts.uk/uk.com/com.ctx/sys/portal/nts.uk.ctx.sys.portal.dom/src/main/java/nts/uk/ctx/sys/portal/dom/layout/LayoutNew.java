@@ -90,4 +90,8 @@ public class LayoutNew extends AggregateRoot {
 	public void setTopPageCode(String toppageCode) {
 		this.topPageCode = new TopPageCode(toppageCode);
 	}
+	
+	public void setWidgetSetting(List<WidgetSetting> lstWidget) {
+		this.widgetSettings = lstWidget;
+	}
 }

@@ -65,14 +65,14 @@ module nts.uk.com.view.ccg015.e {
       vm.widgetList.push(widgetTest);
 
       let data: any = {
-        cid: __viewContext.user.companyId,
+        cid: null,
         topPageCode: vm.topPageCode(),
         layoutNo: vm.layoutNo(),
         layoutType: 3,
         flowMenuCd: null,
         flowMenuUpCd: null,
         url: null,
-        widgetSettings: [{ widgetType: 0, order:1 }, { widgetType: 3, order:2 }, { widgetType: 4, order:3 }],
+        widgetSettings: [{ widgetType: 1, order:1 }, { widgetType: 3, order:2 }, { widgetType: 4, order:3 }],
       };
 
       vm.$ajax('/toppage/saveLayoutWidget', data).done(function () {

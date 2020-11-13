@@ -49,7 +49,7 @@ public interface LayoutNewRepository {
 	
 	Optional<WidgetSetting> getByCidAndCodeAndWidgetType(String companyId, String topPageCd, BigDecimal layoutNo, Integer widgetType);
 	
-	Optional<LayoutNew> getByCidAndCode(String companyId, String topPageCd);
+	List<LayoutNew> getByCidAndCode(String companyId, String topPageCd);
 	
 	List<BigDecimal> getLstLayoutNo(String topPageCd);
 	

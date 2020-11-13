@@ -5,6 +5,7 @@
 package nts.uk.ctx.sys.portal.dom.toppage.service.internal;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +17,7 @@ import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
 import nts.uk.ctx.sys.portal.dom.enums.System;
 import nts.uk.ctx.sys.portal.dom.layout.LayoutNew;
 import nts.uk.ctx.sys.portal.dom.layout.LayoutNewRepository;
+import nts.uk.ctx.sys.portal.dom.layout.WidgetSetting;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenu;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository;
 import nts.uk.ctx.sys.portal.dom.toppage.ToppageNew;
@@ -48,24 +50,23 @@ public class TopPageServiceImpl implements TopPageService {
 	 */
 	@Override
 	public void copyTopPage(ToppageNew topPage, String companyId, boolean isCheckOverWrite, String copyCode) {
-		Optional<ToppageNew> findTopPage = topPageRepository.getByCidAndCode(companyId, topPage.getTopPageCode().v());
 		// コピー先「トップページ」を取得する
-		Optional<ToppageNew> findCopyTopPage = topPageRepository.getByCidAndCode(companyId, copyCode);
-		Optional<LayoutNew> findLayout = layoutNewRepository.getByCidAndCode(companyId, copyCode);
+		Optional<ToppageNew> findTopPageNew = topPageRepository.getByCidAndCode(companyId, topPage.getTopPageCode().v());
+		Optional<ToppageNew> findOldTopPage = topPageRepository.getByCidAndCode(companyId, copyCode);
+		List<LayoutNew> lsLayoutsOld = layoutNewRepository.getByCidAndCode(companyId, copyCode);
 		Optional<StandardMenu> findSandardMenu = 
 				standardMenuRepo.findByCIDSystemMenuClassificationCode(companyId, System.COMMON.value, MenuClassification.TopPage.value, copyCode);
 		
-		if (findTopPage.isPresent()) {
+		if (findTopPageNew.isPresent()) {
 			// 取得件数≠０件の場合
-			if (isCheckOverWrite) {
-				// 上書きチェックありの場合
+			if (isCheckOverWrite) { // 上書きチェックありの場合
 				// コピー先「トップページ」を削除する
-				topPageRepository.delete(companyId, findTopPage.get().getTopPageCode().toString());
-				List<BigDecimal> lstLayoutNo = layoutNewRepository.getLstLayoutNo(findTopPage.get().getTopPageCode().toString());
+				topPageRepository.delete(companyId, findTopPageNew.get().getTopPageCode().toString());
+				List<BigDecimal> lstLayoutNo = layoutNewRepository.getLstLayoutNo(findTopPageNew.get().getTopPageCode().toString());
 				
 				if (!lstLayoutNo.isEmpty()) {
 					// コピー先「トップページ」の「レイアウト」を削除する
-					layoutNewRepository.delete(companyId, findTopPage.get().getTopPageCode().toString(), lstLayoutNo);
+					layoutNewRepository.delete(companyId, findTopPageNew.get().getTopPageCode().toString(), lstLayoutNo);
 				}
 			} else {
 				// 上書きチェックなしの場合
@@ -73,18 +74,29 @@ public class TopPageServiceImpl implements TopPageService {
 				throw new BusinessException("Msg_3");
 			}
 		}
-		if (findCopyTopPage.isPresent()) {
-			// コピー元「トップページ」から「トップページ」を新規登録する
-			topPageRepository.insert(topPage);
+		// コピー元「トップページ」から「トップページ」を新規登録する
+		topPageRepository.insert(topPage);
+		
+		if (findOldTopPage.isPresent()) {
+			// コピー元レイアウトが登録済みの場合
+			if (!lsLayoutsOld.isEmpty()) {
+				for(LayoutNew layout: lsLayoutsOld) {
+					List<WidgetSetting> widgetSettings = layout.getWidgetSettings();
+					layout.setWidgetSetting(new ArrayList<>());
+					layout.setTopPageCode(topPage.getTopPageCode().toString());
+					// コピー元「レイアウト」を元に「レイアウト」を新規登録する
+					layoutNewRepository.insert(layout);
+					
+					if (!widgetSettings.isEmpty()) {
+						for(WidgetSetting widget: widgetSettings) {
+							// レイアウトの「ウィジェット設定」を登録する
+							layoutNewRepository.insertWidget(layout, widget);
+						}
+					}
+				}
+			}
 		}
 
-		if (findLayout.isPresent()) {
-			LayoutNew layout = findLayout.get();
-			layout.setTopPageCode(topPage.getTopPageCode().toString());
-			// コピー元「レイアウト」を元に「レイアウト」を新規登録する
-			layoutNewRepository.insert(layout);
-		}
-		
 		// ドメインモデル「標準メニュー」を取得する
 		Optional<StandardMenu> newSandardMenu = 
 				standardMenuRepo.findByCIDSystemMenuClassificationCode(companyId, System.COMMON.value, MenuClassification.TopPage.value, topPage.getTopPageCode().v());

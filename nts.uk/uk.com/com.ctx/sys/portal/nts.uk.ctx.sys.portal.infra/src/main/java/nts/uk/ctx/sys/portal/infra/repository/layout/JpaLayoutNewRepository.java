@@ -114,12 +114,12 @@ public class JpaLayoutNewRepository extends JpaRepository implements LayoutNewRe
 	}
 
 	@Override
-	public Optional<LayoutNew> getByCidAndCode(String companyId, String topPageCd) {
+	public List<LayoutNew> getByCidAndCode(String companyId, String topPageCd) {
 		return this.queryProxy()
 				.query(SELECT_BY_CID_AND_TOPPAGECODE, SptmtLayout.class)
 				.setParameter("cid", companyId)
 				.setParameter("topPageCode", topPageCd)  
-				.getSingle(LayoutNew::createFromMemento);
+				.getList(LayoutNew::createFromMemento);
 	}
 
 	@Override

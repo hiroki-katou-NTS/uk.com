@@ -143,7 +143,7 @@ module nts.uk.com.view.ccg015.d {
         topPageCode: vm.topPageCode(),
         layoutNo: vm.layoutNo(),
         layoutType: vm.layoutType(),
-        cid: __viewContext.user.companyId,
+        cid: null,
         flowMenuCd: vm.flowMenuSelectedCode(),
         flowMenuUpCd: vm.toppageSelectedCode(),
         url: vm.urlIframe3()
