@@ -28,7 +28,7 @@ public class MessageNoticeService {
 	 * @param sid     the sid
 	 * @return the boolean
 	 */
-	public Boolean isNewMsg(MessageNoticeRequire require, String sid) {
+	public static Boolean isNewMsg(MessageNoticeRequire require, String sid) {
 		GeneralDate baseDate = GeneralDate.today();
 		// $職場ID = require.社員IDから職場IDを取得する(ログイン社員ID、年月日.今日)
 		Optional<String> wpId = require.getWpId(sid, baseDate);
@@ -46,7 +46,7 @@ public class MessageNoticeService {
 	 * @param sid     社員ID
 	 * @return List<お知らせメッセージ>
 	 */
-	public List<MessageNotice> getAllMsgInPeriod(MessageNoticeRequire require, DatePeriod period, String sid) {
+	public static List<MessageNotice> getAllMsgInPeriod(MessageNoticeRequire require, DatePeriod period, String sid) {
 		GeneralDate baseDate = GeneralDate.today();
 		// $職場ID = require.社員IDから職場IDを取得する(ログイン社員ID、年月日.今日)
 		Optional<String> wpId = require.getWpId(sid, baseDate);

@@ -72,7 +72,7 @@ public class MessageNoticeTest {
 
 		// then
 		assertThat(domain.getEmployeeIdSeen()).isEqualTo(new ArrayList<>());
-		assertThat(domain.getInputDate().toString()).isEqualTo(GeneralDateTime.now().toString());
+		assertThat(domain.getInputDate().toString("yyyy-MM-dd hh:mm")).isEqualTo(GeneralDateTime.now().toString("yyyy-MM-dd hh:mm"));
 	}
 
 	/**

@@ -14,13 +14,13 @@ import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Mocked;
-import mockit.Tested;
 import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.sys.portal.dom.notice.MessageNotice;
 import nts.uk.ctx.sys.portal.dom.notice.MessageNoticeDto;
 import nts.uk.ctx.sys.portal.dom.notice.MessageNoticeHelper;
+import nts.uk.ctx.sys.portal.dom.notice.service.MessageNoticeService.MessageNoticeRequire;
 
 /**
  * Test domain service お知らせメッセージ
@@ -32,14 +32,15 @@ import nts.uk.ctx.sys.portal.dom.notice.MessageNoticeHelper;
 public class MessageNoticeServiceTest {
 
 	@Injectable
-	private MessageNoticeService.MessageNoticeRequire require;
-
-	@Tested
-	private MessageNoticeService service;
+	private MessageNoticeRequire require;
 
 	@Mocked
 	private static MessageNoticeDto mockDto = MessageNoticeHelper.mockDto;
 
+	/**
+	 * 新メッセージがあるか: No1
+	 * Check isNewMsg function return true (has new message notice)
+	 */
 	@Test
 	public void testIsNewMsgTrueResult() {
 		MessageNotice domain = MessageNotice.createFromMemento(mockDto);
@@ -54,10 +55,14 @@ public class MessageNoticeServiceTest {
 				result = Arrays.asList(domain);
 			}
 		};
-		val res = service.isNewMsg(require, "mock-sid");
+		val res = MessageNoticeService.isNewMsg(require, "mock-sid");
 		assertThat(res).isTrue();
 	}
 
+	/**
+	 * 新メッセージがあるか: No2
+	 * Check isNewMsg function return false (don't have new message notice)
+	 */
 	@Test
 	public void testIsNewMsgFalseResult() {
 		new Expectations() {
@@ -70,10 +75,14 @@ public class MessageNoticeServiceTest {
 				result = new ArrayList<String>();
 			}
 		};
-		val res = service.isNewMsg(require, "mock-sid");
+		val res = MessageNoticeService.isNewMsg(require, "mock-sid");
 		assertThat(res).isFalse();
 	}
 
+	/**
+	 * 期間で全て参照できるメッセージを取得する: No1
+	 * Check getAllMsgInPeriod function return a list message notice
+	 */
 	@Test
 	public void testGetAllMsgInPeriod() {
 		MessageNotice domain = MessageNotice.createFromMemento(mockDto);
@@ -88,13 +97,17 @@ public class MessageNoticeServiceTest {
 				result = Arrays.asList(domain);
 			}
 		};
-		List<MessageNotice> res = service.getAllMsgInPeriod(require, DatePeriod.oneDay(GeneralDate.today()),
+		List<MessageNotice> res = MessageNoticeService.getAllMsgInPeriod(require, DatePeriod.oneDay(GeneralDate.today()),
 				"mock-sid");
 		assertThat(res).isNotEmpty();
 		assertThat(res).hasSize(1);
 		assertThat(res.get(0)).isEqualTo(domain);
 	}
 
+	/**
+	 * 期間で全て参照できるメッセージを取得する: No2
+	 * Check getAllMsgInPeriod function return empty list message notice
+	 */
 	@Test
 	public void testGetAllMsgInPeriodEmptyResult() {
 		new Expectations() {
@@ -108,7 +121,7 @@ public class MessageNoticeServiceTest {
 				result = new ArrayList<>();
 			}
 		};
-		List<MessageNotice> res = service.getAllMsgInPeriod(require, DatePeriod.oneDay(GeneralDate.today()),
+		List<MessageNotice> res = MessageNoticeService.getAllMsgInPeriod(require, DatePeriod.oneDay(GeneralDate.today()),
 				"mock-sid");
 		assertThat(res).isEmpty();
 	}
