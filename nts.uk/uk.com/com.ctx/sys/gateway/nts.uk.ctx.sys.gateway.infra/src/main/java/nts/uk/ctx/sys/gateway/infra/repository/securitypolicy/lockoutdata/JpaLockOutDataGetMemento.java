@@ -1,7 +1,7 @@
 package nts.uk.ctx.sys.gateway.infra.repository.securitypolicy.lockoutdata;
 
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
+import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutDataGetMemento;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockType;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LoginMethod;

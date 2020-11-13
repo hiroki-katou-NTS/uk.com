@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.gateway.dom.accessrestrictions.AccessRestrictions;
 import nts.uk.ctx.sys.gateway.dom.accessrestrictions.AccessRestrictionsRepository;
-import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
+import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
 import nts.uk.ctx.sys.gateway.infra.entity.accessrestrictions.SgwmtAccess;
 
 @Stateless

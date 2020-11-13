@@ -2,14 +2,14 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.sys.gateway.dom.login.adapter;
+package nts.uk.ctx.sys.gateway.dom.loginold.adapter;
 
 import java.util.Optional;
 
-import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeDataMngInfoImport;
-import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
-import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImportNew;
-import nts.uk.ctx.sys.gateway.dom.login.dto.StatusOfEmployeeImport;
+import nts.uk.ctx.sys.gateway.dom.loginold.dto.EmployeeDataMngInfoImport;
+import nts.uk.ctx.sys.gateway.dom.loginold.dto.EmployeeImport;
+import nts.uk.ctx.sys.gateway.dom.loginold.dto.EmployeeImportNew;
+import nts.uk.ctx.sys.gateway.dom.loginold.dto.StatusOfEmployeeImport;
 
 /**
  * The Interface SysEmployeeAdapter.

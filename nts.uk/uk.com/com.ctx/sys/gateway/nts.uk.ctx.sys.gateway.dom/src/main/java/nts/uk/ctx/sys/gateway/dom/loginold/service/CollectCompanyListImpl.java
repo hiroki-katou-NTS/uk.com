@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.gateway.dom.login.service;
+package nts.uk.ctx.sys.gateway.dom.loginold.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,12 +15,12 @@ import nts.uk.ctx.sys.gateway.dom.adapter.employee.EmployeeInfoAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.employee.EmployeeInfoDtoImport;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
-import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleAdapter;
-import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleIndividualGrantAdapter;
-import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleType;
-import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter;
-import nts.uk.ctx.sys.gateway.dom.login.dto.RoleImport;
-import nts.uk.ctx.sys.gateway.dom.login.dto.RoleIndividualGrantImport;
+import nts.uk.ctx.sys.gateway.dom.loginold.adapter.RoleAdapter;
+import nts.uk.ctx.sys.gateway.dom.loginold.adapter.RoleIndividualGrantAdapter;
+import nts.uk.ctx.sys.gateway.dom.loginold.adapter.RoleType;
+import nts.uk.ctx.sys.gateway.dom.loginold.adapter.SysEmployeeAdapter;
+import nts.uk.ctx.sys.gateway.dom.loginold.dto.RoleImport;
+import nts.uk.ctx.sys.gateway.dom.loginold.dto.RoleIndividualGrantImport;
 import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopByCompany;
 import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopByCompanyRepository;
 import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopModeType;

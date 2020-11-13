@@ -1,7 +1,7 @@
 package nts.uk.ctx.sys.gateway.dom.login;
 
 import lombok.val;
-import nts.uk.ctx.sys.gateway.dom.login.dto.CompanyInforImport;
+import nts.uk.ctx.sys.gateway.dom.loginold.dto.CompanyInforImport;
 import nts.uk.ctx.sys.gateway.dom.outage.CheckSystemAvailability;
 
 /**

@@ -3,7 +3,7 @@ package nts.uk.ctx.sys.gateway.dom.securitypolicy.loginlog;
 import lombok.Builder;
 import lombok.Value;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
+import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
 
 @Builder
 @Value

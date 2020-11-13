@@ -9,8 +9,8 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.sys.gateway.dom.login.adapter.CompanyInformationAdapter;
-import nts.uk.ctx.sys.gateway.dom.login.dto.CompanyInformationImport;
+import nts.uk.ctx.sys.gateway.dom.loginold.adapter.CompanyInformationAdapter;
+import nts.uk.ctx.sys.gateway.dom.loginold.dto.CompanyInformationImport;
 
 /**
  * The Class CompanyFinder.

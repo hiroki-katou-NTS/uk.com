@@ -2,11 +2,11 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.sys.gateway.dom.login.adapter;
+package nts.uk.ctx.sys.gateway.dom.loginold.adapter;
 
 import java.util.List;
 
-import nts.uk.ctx.sys.gateway.dom.login.dto.RoleImport;
+import nts.uk.ctx.sys.gateway.dom.loginold.dto.RoleImport;
 import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
 
 public interface RoleAdapter {

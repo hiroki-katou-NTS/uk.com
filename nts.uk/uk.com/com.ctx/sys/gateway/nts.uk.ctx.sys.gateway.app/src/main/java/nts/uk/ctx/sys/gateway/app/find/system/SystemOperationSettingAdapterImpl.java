@@ -7,7 +7,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.sys.gateway.app.command.systemsuspend.SystemSuspendOutput;
 import nts.uk.ctx.sys.gateway.app.command.systemsuspend.SystemSuspendService;
-import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleAdapter;
+import nts.uk.ctx.sys.gateway.dom.loginold.adapter.RoleAdapter;
 import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopByCompany;
 import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopByCompanyRepository;
 import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopModeType;

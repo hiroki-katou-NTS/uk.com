@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
+import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
 
 @Getter
 public class AccountLockPolicy extends AggregateRoot {

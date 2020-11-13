@@ -41,7 +41,7 @@ import nts.uk.ctx.sys.gateway.app.command.loginold.dto.CheckContractDto;
 import nts.uk.ctx.sys.gateway.app.find.login.CompanyInformationFinder;
 import nts.uk.ctx.sys.gateway.app.find.login.EmployeeLoginSettingFinder;
 import nts.uk.ctx.sys.gateway.app.find.login.dto.EmployeeLoginSettingDto;
-import nts.uk.ctx.sys.gateway.dom.login.dto.CompanyInformationImport;
+import nts.uk.ctx.sys.gateway.dom.loginold.dto.CompanyInformationImport;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.application.auth.WindowsAccount;
 

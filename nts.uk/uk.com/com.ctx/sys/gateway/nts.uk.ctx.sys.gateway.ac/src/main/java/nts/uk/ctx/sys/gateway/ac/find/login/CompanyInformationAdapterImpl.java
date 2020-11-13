@@ -13,9 +13,9 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.bs.company.pub.company.CompanyExport;
 import nts.uk.ctx.bs.company.pub.company.ICompanyPub;
-import nts.uk.ctx.sys.gateway.dom.login.adapter.CompanyInformationAdapter;
-import nts.uk.ctx.sys.gateway.dom.login.dto.CompanyInforImport;
-import nts.uk.ctx.sys.gateway.dom.login.dto.CompanyInformationImport;
+import nts.uk.ctx.sys.gateway.dom.loginold.adapter.CompanyInformationAdapter;
+import nts.uk.ctx.sys.gateway.dom.loginold.dto.CompanyInforImport;
+import nts.uk.ctx.sys.gateway.dom.loginold.dto.CompanyInformationImport;
 
 /**
  * The Class CompanyInformationAdapterImpl.

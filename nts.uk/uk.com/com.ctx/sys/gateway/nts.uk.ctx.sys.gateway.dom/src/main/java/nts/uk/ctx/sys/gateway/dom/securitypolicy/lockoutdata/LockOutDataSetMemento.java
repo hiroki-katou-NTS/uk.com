@@ -5,7 +5,7 @@
 package nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata;
 
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
+import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
 
 /**
  * The Interface LogoutDataSetMemento.

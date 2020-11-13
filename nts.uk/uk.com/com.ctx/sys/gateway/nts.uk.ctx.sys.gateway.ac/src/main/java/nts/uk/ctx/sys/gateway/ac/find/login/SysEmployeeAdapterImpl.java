@@ -19,12 +19,12 @@ import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmpInfoByCidSidExport;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmpInfoByCidSidPub;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoDtoExport;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoPub;
-import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter;
-import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeDataMngInfoImport;
-import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
-import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImportNew;
-import nts.uk.ctx.sys.gateway.dom.login.dto.SDelAtr;
-import nts.uk.ctx.sys.gateway.dom.login.dto.StatusOfEmployeeImport;
+import nts.uk.ctx.sys.gateway.dom.loginold.adapter.SysEmployeeAdapter;
+import nts.uk.ctx.sys.gateway.dom.loginold.dto.EmployeeDataMngInfoImport;
+import nts.uk.ctx.sys.gateway.dom.loginold.dto.EmployeeImport;
+import nts.uk.ctx.sys.gateway.dom.loginold.dto.EmployeeImportNew;
+import nts.uk.ctx.sys.gateway.dom.loginold.dto.SDelAtr;
+import nts.uk.ctx.sys.gateway.dom.loginold.dto.StatusOfEmployeeImport;
 
 /**
  * The Class SysEmployeeAdapterImpl.

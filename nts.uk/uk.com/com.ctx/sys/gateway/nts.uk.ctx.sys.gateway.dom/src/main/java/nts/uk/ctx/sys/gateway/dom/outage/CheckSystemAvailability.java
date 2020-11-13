@@ -14,18 +14,18 @@ public class CheckSystemAvailability {
 
 		val roles = require.getLoginUserRoles();
 		
-		val byTenant = require.getPlannedOutageByTenant(tenantCode)
+		val tenantStatus = require.getPlannedOutageByTenant(tenantCode)
 				.map(o -> o.statusFor(roles));
 		
-		if (byTenant.isPresent() && byTenant.get().isOutage()) {
-			return byTenant.get();
+		if (tenantStatus.isPresent() && tenantStatus.get().isOutage()) {
+			return tenantStatus.get();
 		}
 		
-		val byCompany = require.getPlannedOutageByCompany(companyId)
+		val companyStatus = require.getPlannedOutageByCompany(companyId)
 				.map(o -> o.statusFor(roles));
 		
-		if (byCompany.isPresent() && byCompany.get().isOutage()) {
-			return byCompany.get();
+		if (companyStatus.isPresent() && companyStatus.get().isOutage()) {
+			return companyStatus.get();
 		}
 		
 		return PlannedOutage.Status.available();

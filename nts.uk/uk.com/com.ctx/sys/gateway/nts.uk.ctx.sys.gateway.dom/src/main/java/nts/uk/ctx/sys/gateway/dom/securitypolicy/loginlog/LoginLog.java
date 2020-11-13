@@ -3,7 +3,7 @@ package nts.uk.ctx.sys.gateway.dom.securitypolicy.loginlog;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
+import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
 
 /**
  * Gets the operation.

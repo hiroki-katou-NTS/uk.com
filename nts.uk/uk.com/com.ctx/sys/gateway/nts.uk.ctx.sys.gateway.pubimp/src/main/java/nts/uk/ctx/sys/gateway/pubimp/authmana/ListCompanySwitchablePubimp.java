@@ -5,7 +5,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.sys.gateway.dom.login.service.CollectCompanyList;
+import nts.uk.ctx.sys.gateway.dom.loginold.service.CollectCompanyList;
 import nts.uk.ctx.sys.gateway.pub.authmana.ListCompanySwitchablePub;
 @Stateless
 public class ListCompanySwitchablePubimp implements ListCompanySwitchablePub{

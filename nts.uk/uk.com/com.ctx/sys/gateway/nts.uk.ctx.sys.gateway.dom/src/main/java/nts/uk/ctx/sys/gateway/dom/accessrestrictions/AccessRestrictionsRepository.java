@@ -2,7 +2,7 @@ package nts.uk.ctx.sys.gateway.dom.accessrestrictions;
 
 import java.util.Optional;
 
-import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
+import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
 
 public interface AccessRestrictionsRepository {
 

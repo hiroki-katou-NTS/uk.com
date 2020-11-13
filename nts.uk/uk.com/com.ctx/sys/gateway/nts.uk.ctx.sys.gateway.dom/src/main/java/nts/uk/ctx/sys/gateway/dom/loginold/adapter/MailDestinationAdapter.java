@@ -2,11 +2,11 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.sys.gateway.dom.login.adapter;
+package nts.uk.ctx.sys.gateway.dom.loginold.adapter;
 
 import java.util.List;
 
-import nts.uk.ctx.sys.gateway.dom.login.dto.MailDestinationImport;
+import nts.uk.ctx.sys.gateway.dom.loginold.dto.MailDestinationImport;
 
 /**
  * The Interface MailDestinationAdapter.

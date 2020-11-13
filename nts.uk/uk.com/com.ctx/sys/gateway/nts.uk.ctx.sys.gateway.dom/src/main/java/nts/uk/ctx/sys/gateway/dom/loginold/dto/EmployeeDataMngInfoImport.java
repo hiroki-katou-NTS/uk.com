@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.gateway.dom.login.dto;
+package nts.uk.ctx.sys.gateway.dom.loginold.dto;
 
 import lombok.Builder;
 import lombok.Data;

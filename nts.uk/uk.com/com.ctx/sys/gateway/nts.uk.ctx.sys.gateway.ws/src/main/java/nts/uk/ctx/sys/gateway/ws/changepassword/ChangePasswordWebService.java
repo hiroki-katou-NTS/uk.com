@@ -28,8 +28,8 @@ import nts.uk.ctx.sys.gateway.app.service.login.LoginService;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImport;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
-import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter;
-import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
+import nts.uk.ctx.sys.gateway.dom.loginold.adapter.SysEmployeeAdapter;
+import nts.uk.ctx.sys.gateway.dom.loginold.dto.EmployeeImport;
 import nts.uk.ctx.sys.gateway.dom.mail.UrlExecInfoRepository;
 import nts.uk.shr.com.url.UrlExecInfo;
 

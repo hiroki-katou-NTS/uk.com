@@ -2,13 +2,13 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.sys.gateway.dom.login.adapter;
+package nts.uk.ctx.sys.gateway.dom.loginold.adapter;
 
 import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.sys.gateway.dom.login.dto.RoleIndividualGrantImport;
+import nts.uk.ctx.sys.gateway.dom.loginold.dto.RoleIndividualGrantImport;
 
 /**
  * The Interface RoleIndividualGrantAdapter.

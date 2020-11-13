@@ -13,8 +13,8 @@ import javax.inject.Inject;
 import nts.uk.ctx.sys.auth.pub.role.RoleExport;
 import nts.uk.ctx.sys.auth.pub.role.RoleExportRepo;
 import nts.uk.ctx.sys.auth.pub.role.RoleWhetherLoginPubExport;
-import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleAdapter;
-import nts.uk.ctx.sys.gateway.dom.login.dto.RoleImport;
+import nts.uk.ctx.sys.gateway.dom.loginold.adapter.RoleAdapter;
+import nts.uk.ctx.sys.gateway.dom.loginold.dto.RoleImport;
 import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
 
 @Stateless

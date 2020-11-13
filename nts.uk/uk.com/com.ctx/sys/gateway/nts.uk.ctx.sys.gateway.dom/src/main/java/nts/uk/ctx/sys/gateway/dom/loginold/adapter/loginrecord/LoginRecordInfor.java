@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.gateway.dom.login.adapter.loginrecord;
+package nts.uk.ctx.sys.gateway.dom.loginold.adapter.loginrecord;
 
 import lombok.Data;
 

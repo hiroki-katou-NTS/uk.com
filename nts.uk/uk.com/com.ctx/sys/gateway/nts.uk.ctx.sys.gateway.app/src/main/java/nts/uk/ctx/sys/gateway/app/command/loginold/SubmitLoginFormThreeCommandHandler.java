@@ -16,10 +16,10 @@ import nts.uk.ctx.sys.gateway.app.command.loginold.dto.SignonEmployeeInfoData;
 import nts.uk.ctx.sys.gateway.app.command.systemsuspend.SystemSuspendOutput;
 import nts.uk.ctx.sys.gateway.app.service.login.LoginService;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
-import nts.uk.ctx.sys.gateway.dom.login.LoginStatus;
-import nts.uk.ctx.sys.gateway.dom.login.dto.CompanyInformationImport;
-import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
-import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImportNew;
+import nts.uk.ctx.sys.gateway.dom.loginold.LoginStatus;
+import nts.uk.ctx.sys.gateway.dom.loginold.dto.CompanyInformationImport;
+import nts.uk.ctx.sys.gateway.dom.loginold.dto.EmployeeImport;
+import nts.uk.ctx.sys.gateway.dom.loginold.dto.EmployeeImportNew;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LoginMethod;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccount;
 

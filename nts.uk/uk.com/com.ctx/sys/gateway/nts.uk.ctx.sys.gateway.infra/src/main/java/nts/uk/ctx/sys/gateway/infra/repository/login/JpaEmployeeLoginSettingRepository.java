@@ -16,8 +16,8 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.sys.gateway.dom.login.EmployeeLoginSetting;
-import nts.uk.ctx.sys.gateway.dom.login.EmployeeLoginSettingRepository;
+import nts.uk.ctx.sys.gateway.dom.loginold.EmployeeLoginSetting;
+import nts.uk.ctx.sys.gateway.dom.loginold.EmployeeLoginSettingRepository;
 import nts.uk.ctx.sys.gateway.infra.entity.login.SgwstEmployeeLoginSet;
 import nts.uk.ctx.sys.gateway.infra.entity.login.SgwstEmployeeLoginSet_;
 
