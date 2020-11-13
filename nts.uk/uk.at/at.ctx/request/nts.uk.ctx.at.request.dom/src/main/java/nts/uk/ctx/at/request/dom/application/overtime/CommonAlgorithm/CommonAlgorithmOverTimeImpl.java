@@ -27,12 +27,15 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgori
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.InitWkTypeWkTimeOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType_Update;
 import nts.uk.ctx.at.request.dom.application.overtime.ExcessState;
+import nts.uk.ctx.at.request.dom.application.overtime.HolidayMidNightTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OverStateOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeApplicationSetting;
+import nts.uk.ctx.at.request.dom.application.overtime.primitivevalue.OvertimeAppPrimitiveTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayInfoOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OverTimeContent;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
@@ -59,6 +62,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.DuplicateStateAtr;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.DuplicationStatusOfTimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.RangeOfDayTimeZoneService;
@@ -690,19 +694,95 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 
 	@Override
 	public AppOverTime check36Limit(String companyId, AppOverTime appOverTime, Boolean isProxy, Integer mode) {
+		// #112509
+		List<OverTimeInput> overTimeInput = new ArrayList<OverTimeInput>();
+		if (!CollectionUtil.isEmpty(appOverTime.getApplicationTime().getApplicationTime())) {
+			List<OvertimeApplicationSetting> applicationTimelist = appOverTime.getApplicationTime().getApplicationTime();
+			
+			List<OverTimeInput> list = applicationTimelist.stream()
+					.map(x -> new OverTimeInput(
+							companyId,
+							appOverTime.getAppID(),
+							x.getAttendanceType().value,
+							x.getFrameNo().v(),
+							appOverTime.getWorkHoursOp().map(y -> y.get(0).getTimeZone().getStartTime().v()).orElse(null),
+							appOverTime.getWorkHoursOp().map(y -> y.get(0).getTimeZone().getEndTime().v()).orElse(null),
+							x.getApplicationTime().v(),
+							0))
+					.collect(Collectors.toList());
+			overTimeInput.addAll(list);
+		}
+		if (appOverTime.getApplicationTime().getFlexOverTime().isPresent()) {
+			OverTimeInput item = new OverTimeInput(
+					companyId,
+					appOverTime.getAppID(),
+					AttendanceType_Update.NORMALOVERTIME.value,
+					11,
+					appOverTime.getWorkHoursOp().map(y -> y.get(0).getTimeZone().getStartTime().v()).orElse(null),
+					appOverTime.getWorkHoursOp().map(y -> y.get(0).getTimeZone().getEndTime().v()).orElse(null),
+					appOverTime.getApplicationTime().getFlexOverTime().get().v(),
+					0);
+			overTimeInput.add(item);
+		}
+		
+		if (appOverTime.getApplicationTime().getOverTimeShiftNight().isPresent()) {
+			OverTimeInput item = new OverTimeInput(
+					companyId,
+					appOverTime.getAppID(),
+					AttendanceType_Update.NORMALOVERTIME.value,
+					12,
+					appOverTime.getWorkHoursOp().map(y -> y.get(0).getTimeZone().getStartTime().v()).orElse(null),
+					appOverTime.getWorkHoursOp().map(y -> y.get(0).getTimeZone().getEndTime().v()).orElse(null),
+					appOverTime.getApplicationTime().getOverTimeShiftNight().get().getOverTimeMidNight().v(),
+					0);
+			overTimeInput.add(item);
+			List<HolidayMidNightTime> midNightHolidayTimes = appOverTime.getApplicationTime().getOverTimeShiftNight().get().getMidNightHolidayTimes();
+			if (!CollectionUtil.isEmpty(midNightHolidayTimes)) {
+				List<OverTimeInput> list = midNightHolidayTimes.stream()
+						.map(x -> new OverTimeInput(
+								companyId,
+								appOverTime.getAppID(),
+								AttendanceType_Update.BREAKTIME.value,
+								this.convertFramNo(x.getLegalClf()),
+								appOverTime.getWorkHoursOp().map(y -> y.get(0).getTimeZone().getStartTime().v()).orElse(null),
+								appOverTime.getWorkHoursOp().map(y -> y.get(0).getTimeZone().getEndTime().v()).orElse(null),
+								x.getAttendanceTime().v(),
+								0))
+						.collect(Collectors.toList());
+				overTimeInput.addAll(list);
+			}
+		}
+		Optional<AppOvertimeDetail> detailOverTimeOp = Optional.empty();
 		if (mode == 0) { // 新規モードの場合
 			// 03-03_３６上限チェック（月間）
-			// #112509
-			List<OverTimeInput> overTimeInput = new ArrayList<OverTimeInput>();
 			
-			// commonOvertimeholiday.registerOvertimeCheck36TimeLimit(companyId, employeeId, appDate, overTimeInput)
+			
+			detailOverTimeOp = commonOvertimeholiday.registerOvertimeCheck36TimeLimit(
+					 companyId,
+					 appOverTime.getEmployeeID(),
+					 appOverTime.getAppDate().getApplicationDate(),
+					 overTimeInput);
 		} else { // 詳細・照会モード
 			// 05_３６上限チェック(詳細)
+			detailOverTimeOp = commonOvertimeholiday.updateOvertimeCheck36TimeLimit(
+					companyId,
+					appOverTime.getEmployeeID(),
+					appOverTime.getEnteredPersonID(),
+					appOverTime.getEmployeeID(),
+					appOverTime.getAppDate().getApplicationDate(),
+					overTimeInput);
 		}
 		// INPUT「残業申請」を更新して返す
-		return null;
+		appOverTime.setDetailOverTimeOp(detailOverTimeOp);
+		
+		return appOverTime;
 	}
-
+	// get 
+	public Integer convertFramNo(StaturoryAtrOfHolidayWork legalClf) {
+		if (legalClf == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork) return 11;
+		if (legalClf == StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork) return 12;
+		return 13;
+	}
 
 	@Override
 	public void commonAlgorithmAB(String companyId,
