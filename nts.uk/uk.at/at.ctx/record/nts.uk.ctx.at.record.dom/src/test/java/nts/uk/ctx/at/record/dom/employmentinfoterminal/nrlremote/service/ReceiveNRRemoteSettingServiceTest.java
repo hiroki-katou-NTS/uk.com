@@ -91,9 +91,9 @@ public class ReceiveNRRemoteSettingServiceTest {
 		new Expectations() {
 			{
 				require.getEmpInfoTerWithMac(new MacAddress("00-14-22-01-23-45"), (ContractCode) any);
-				result = Optional.of(new EmpInfoTerminalBuilder(new IPAddress("192.168.1.1"),
+				result = Optional.of(new EmpInfoTerminalBuilder(Optional.of(new IPAddress("192.168.1.1")),
 						new MacAddress("00-14-22-01-23-45"), new EmpInfoTerminalCode(1234),
-						new EmpInfoTerSerialNo("1111"), new EmpInfoTerminalName("AT"), new ContractCode("000000000000"))
+						Optional.of(new EmpInfoTerSerialNo("1111")), new EmpInfoTerminalName("AT"), new ContractCode("000000000000"))
 								.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).build());
 
 			}

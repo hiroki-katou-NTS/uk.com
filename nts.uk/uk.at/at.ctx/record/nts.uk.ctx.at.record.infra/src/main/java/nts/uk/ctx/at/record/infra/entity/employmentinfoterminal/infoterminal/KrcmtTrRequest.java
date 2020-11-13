@@ -32,13 +32,13 @@ public class KrcmtTrRequest extends UkJpaEntity implements Serializable {
 	 * 会社コード
 	 */
 	@Column(name = "COMPANY_CD")
-	public int companyCode;
+	public String companyCode;
 
-	/**
-	 * 社員ID
-	 */
-	@Column(name = "SID")
-	public String sid;
+//	/**
+//	 * 社員ID
+//	 */
+//	@Column(name = "SID")
+//	public String sid;
 
 	/**
 	 * 残業・休日出勤送信
@@ -57,6 +57,30 @@ public class KrcmtTrRequest extends UkJpaEntity implements Serializable {
 	 */
 	@Column(name = "SEND_SERVERTIME")
 	public Integer sendServerTime;
+	
+	/**
+	 * 社員ID送信
+	 */
+	@Column(name = "SEND_SID")
+	public Integer sendSid;
+
+	/**
+	 * 弁当メニュー枠番送信
+	 */
+	@Column(name = "SEND_RESERVATION")
+	public Integer sendReservation;
+
+	/**
+	 * 	勤務種類コード送信
+	 */
+	@Column(name = "SEND_WORKTYPE")
+	public Integer sendWorkType;
+	
+	/**
+	 * 就業時間帯コード送信
+	 */
+	@Column(name = "SEND_WORKTIME")
+	public Integer sendWorkTime;
 
 	/**
 	 * 全ての打刻データ
@@ -75,6 +99,20 @@ public class KrcmtTrRequest extends UkJpaEntity implements Serializable {
 	 */
 	@Column(name = "RECV_ALL_APPLICATION")
 	public Integer recbApplication;
+	
+	/**
+	 * リモート設定
+	 */
+	@Column(name = "REMOTE_SETTING")
+	public Integer remoteSetting;
+
+	/**
+	 * 再起動を行う
+	 */
+	@Column(name = "REBOOT")
+	public Integer reboot;
+	
+	
 
 	@Override
 	protected Object getKey() {

@@ -20,11 +20,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @NoArgsConstructor
 public class WorkStamp extends DomainObject{
 	
-	/*
-	 * 丸め後の時刻
-	 */
-	private TimeWithDayAttr afterRoundingTime;
-	
+
 	/*
 	 * 時刻
 	 */
@@ -36,27 +32,24 @@ public class WorkStamp extends DomainObject{
 	private Optional<WorkLocationCD> locationCode;
 	
 
-	public WorkStamp(TimeWithDayAttr afterRoundingTime, TimeWithDayAttr timeWithDay, WorkLocationCD locationCode,
+	public WorkStamp(TimeWithDayAttr timeWithDay, WorkLocationCD locationCode,
 			TimeChangeMeans timeChangeMeans,EngravingMethod engravingMethod) {
 		super();
-		this.afterRoundingTime = afterRoundingTime;
-		this.timeDay = new WorkTimeInformation(new ReasonTimeChange(timeChangeMeans, engravingMethod), timeWithDay);
+		this.timeDay = new WorkTimeInformation(new ReasonTimeChange(timeChangeMeans, Optional.of(engravingMethod)), timeWithDay);
 		this.locationCode = Optional.ofNullable(locationCode);
 	}
 	
-	public WorkStamp(TimeWithDayAttr afterRoundingTime, TimeWithDayAttr timeWithDay, WorkLocationCD locationCode,
+	public WorkStamp(TimeWithDayAttr timeWithDay, WorkLocationCD locationCode,
 			TimeChangeMeans timeChangeMeans) {
 		super();
-		this.afterRoundingTime = afterRoundingTime;
-		this.timeDay = new WorkTimeInformation(new ReasonTimeChange(timeChangeMeans, null), timeWithDay);
+		this.timeDay = new WorkTimeInformation(new ReasonTimeChange(timeChangeMeans, Optional.empty()), timeWithDay);
 		this.locationCode = Optional.ofNullable(locationCode);
 	}
 	
 	
-	public void setPropertyWorkStamp(TimeWithDayAttr afterRoundingTime, TimeWithDayAttr timeWithDay, WorkLocationCD locationCode,
+	public void setPropertyWorkStamp(TimeWithDayAttr timeWithDay, WorkLocationCD locationCode,
 			TimeChangeMeans timeChangeMeans){
-		this.afterRoundingTime = afterRoundingTime;
-		this.timeDay = new WorkTimeInformation(new ReasonTimeChange(timeChangeMeans, null), timeWithDay);
+		this.timeDay = new WorkTimeInformation(new ReasonTimeChange(timeChangeMeans, Optional.empty()), timeWithDay);
 		this.locationCode = Optional.ofNullable(locationCode);
 		
 	}
@@ -69,10 +62,9 @@ public class WorkStamp extends DomainObject{
 		this.timeDay.setTimeWithDay(Optional.ofNullable(PcLogOnStamp));
 	}
 
-	public WorkStamp(TimeWithDayAttr afterRoundingTime, WorkTimeInformation timeDay,
+	public WorkStamp(WorkTimeInformation timeDay,
 			Optional<WorkLocationCD> locationCode) {
 		super();
-		this.afterRoundingTime = afterRoundingTime;
 		this.timeDay = timeDay;
 		this.locationCode = locationCode;
 	}

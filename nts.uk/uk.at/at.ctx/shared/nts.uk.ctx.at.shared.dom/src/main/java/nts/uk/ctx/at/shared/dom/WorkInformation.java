@@ -42,19 +42,8 @@ public class WorkInformation {
 	}
 	
 	public WorkInformation clone() {
-		if (workTypeCode != null && workTimeCode != null) {
-			return new WorkInformation(workTypeCode, workTimeCode.orElse(null));
-		}
-
-		if (workTypeCode == null && workTimeCode == null) {
-			return new WorkInformation("", "");
-		}
-
-		if (workTypeCode == null) {
-			return new WorkInformation("", workTimeCode.map(wtc -> wtc.v()).orElse(""));
-		}
-
-		return new WorkInformation(workTypeCode.v(), "");
+		
+		return new WorkInformation(workTypeCode, workTimeCode.orElse(null));
 	}
 
 	public WorkTypeCode getWorkTypeCode() {
@@ -150,8 +139,7 @@ public class WorkInformation {
 		}
 
 		// require.就業時間帯を取得する(ログイン会社ID, @就業時間帯コード) - CID sẽ dc truyền trên app
-		Optional<WorkTimeSetting> workTimeSetting = require
-				.findByCode(this.workTimeCode.isPresent() ? this.workTimeCode.get().v() : null);
+		Optional<WorkTimeSetting> workTimeSetting = this.workTimeCode.flatMap(c -> require.findByCode(c.v()));
 		// if $就業時間帯.isEmpty
 		if (!workTimeSetting.isPresent()) {
 			return ErrorStatusWorkInfo.WORKTIME_WAS_DELETE;
@@ -261,9 +249,6 @@ public class WorkInformation {
 	}
 	
 	public boolean isExamWorkTime() {
-		if (workTimeCode == null) {
-			return false;
-		}
 		
 		return workTimeCode
 				.map(m -> m.equals(new WorkTimeCode("102")) || m.equals(new WorkTimeCode("103")))

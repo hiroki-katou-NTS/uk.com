@@ -698,7 +698,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							new EmploymentCode(employmentHistItemImport.get().getEmploymentCode()),
 							jobTitleHistItemImport.get().getJobTitleId(),
 							workplaceHistItemImport.get().getWorkplaceId(),
-							new ClassificationCode(classificationHistItemImport.get().getClassificationCode()),null, null)));
+							new ClassificationCode(classificationHistItemImport.get().getClassificationCode()),Optional.empty(), Optional.empty())));
 		} else {
 			// #日別作成修正 2018/07/17 前川 隼大
 			// 社員の日別実績のエラーを作成する
@@ -937,8 +937,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							new EmploymentCode(employmentHasData.get().getEmploymentCode()),
 							jobTitleHasData.get().getJobTitleId(), workPlaceHasData.get().getWorkplaceId(),
 							new ClassificationCode(classificationHasData.get().getClassificationCode()),
-							null,
-							null)));
+							Optional.empty(),
+							Optional.empty())));
 		} else {
 			// #日別作成修正 2018/07/17 前川 隼大
 			// 社員の日別実績のエラーを作成する
@@ -1217,8 +1217,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						affiliationInforOfDailyPerfor.getJobTitleID(),
 						affiliationInforOfDailyPerfor.getWplID(),
 						affiliationInforOfDailyPerfor.getClsCode(),
-						affiliationInforOfDailyPerfor.getBusinessTypeCode().isPresent()?affiliationInforOfDailyPerfor.getBusinessTypeCode().get():null,
-						bonusPaySetting.get().getCode());
+						affiliationInforOfDailyPerfor.getBusinessTypeCode().isPresent()?Optional.of(affiliationInforOfDailyPerfor.getBusinessTypeCode().get()):Optional.empty(),
+						Optional.of(bonusPaySetting.get().getCode()));
 			}
 
 			// 計算区分を日別実績に反映する
@@ -1723,9 +1723,9 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						WorkTimezoneStampSet stampSet = workTimezoneCommonSet.get().getStampSet();
 
 						// 出勤
-						RoundingSet atendanceRoundingSet = stampSet.getRoundingSets().stream()
+						RoundingSet atendanceRoundingSet = stampSet.getRoundingTime().getRoundingSets().stream()
 								.filter(item -> item.getSection() == Superiority.ATTENDANCE).findFirst().isPresent()
-										? stampSet.getRoundingSets().stream()
+										? stampSet.getRoundingTime().getRoundingSets().stream()
 												.filter(item -> item.getSection() == Superiority.ATTENDANCE).findFirst()
 												.get()
 										: null;
@@ -1737,9 +1737,9 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 										.intValue())
 								: sheet.getAttendance().v();
 						// 退勤
-						RoundingSet leavingRoundingSet = stampSet.getRoundingSets().stream()
+						RoundingSet leavingRoundingSet = stampSet.getRoundingTime().getRoundingSets().stream()
 								.filter(item -> item.getSection() == Superiority.OFFICE_WORK).findFirst().isPresent()
-										? stampSet.getRoundingSets().stream()
+										? stampSet.getRoundingTime().getRoundingSets().stream()
 												.filter(item -> item.getSection() == Superiority.OFFICE_WORK)
 												.findFirst().get()
 										: null;
@@ -1805,10 +1805,10 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 										WorkTimezoneStampSet stampSet = workTimezoneCommonSet.get().getStampSet();
 
 										// 出勤
-										RoundingSet atendanceRoundingSet = stampSet.getRoundingSets().stream()
+										RoundingSet atendanceRoundingSet = stampSet.getRoundingTime().getRoundingSets().stream()
 												.filter(item -> item.getSection() == Superiority.ATTENDANCE).findFirst()
 												.isPresent()
-														? stampSet.getRoundingSets().stream()
+														? stampSet.getRoundingTime().getRoundingSets().stream()
 																.filter(item -> item.getSection() == Superiority.ATTENDANCE)
 																.findFirst().get()
 														: null;
@@ -1823,9 +1823,9 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 										actualStamp.setAfterRoundingTime(new TimeWithDayAttr(attendanceTimeAfterRouding));
 
 										// 退勤
-										RoundingSet leavingRoundingSet = stampSet.getRoundingSets().stream()
+										RoundingSet leavingRoundingSet = stampSet.getRoundingTime().getRoundingSets().stream()
 												.filter(item -> item.getSection() == Superiority.OFFICE_WORK).findFirst()
-												.isPresent() ? stampSet.getRoundingSets().stream()
+												.isPresent() ? stampSet.getRoundingTime().getRoundingSets().stream()
 														.filter(item -> item.getSection() == Superiority.OFFICE_WORK)
 														.findFirst().get() : null;
 
@@ -1868,13 +1868,13 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				if (item.getAttendanceStamp() != null) {
 					WorkStamp actualStamp = null;
 					if (item.getAttendanceStamp().getActualStamp() != null) {
-						actualStamp = new WorkStamp(item.getAttendanceStamp().getActualStamp().getAfterRoundingTime(),
+						actualStamp = new WorkStamp(
 								item.getAttendanceStamp().getActualStamp().getTimeWithDay(),
 								item.getAttendanceStamp().getActualStamp().getLocationCode(),
 								item.getAttendanceStamp().getActualStamp().getStampSourceInfo());
 					}
 
-					WorkStamp stamp = new WorkStamp(item.getAttendanceStamp().getStamp().getAfterRoundingTime(),
+					WorkStamp stamp = new WorkStamp(
 							item.getAttendanceStamp().getStamp().getTimeWithDay(),
 							item.getAttendanceStamp().getStamp().getLocationCode(),
 							item.getAttendanceStamp().getStamp().getStampSourceInfo());
@@ -1888,13 +1888,12 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					WorkStamp leaveActualStampTemp = null;
 					if (item.getLeaveStamp().getActualStamp() != null) {
 						leaveActualStampTemp = new WorkStamp(
-								item.getLeaveStamp().getActualStamp().getAfterRoundingTime(),
 								item.getLeaveStamp().getActualStamp().getTimeWithDay(),
 								item.getLeaveStamp().getActualStamp().getLocationCode(),
 								item.getLeaveStamp().getActualStamp().getStampSourceInfo());
 					}
 
-					WorkStamp leaveStampTemp = new WorkStamp(item.getLeaveStamp().getStamp().getAfterRoundingTime(),
+					WorkStamp leaveStampTemp = new WorkStamp(
 							item.getLeaveStamp().getStamp().getTimeWithDay(),
 							item.getLeaveStamp().getStamp().getLocationCode(),
 							item.getLeaveStamp().getStamp().getStampSourceInfo());
@@ -2022,7 +2021,6 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 	private TimeActualStamp attendanceStampInfor(TimeLeavingWork timeLeavingWork) {
 		WorkStamp stamp = new WorkStamp(
-				timeLeavingWork.getAttendanceStamp().get().getStamp().get().getAfterRoundingTime(),
 				timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get(),
 				timeLeavingWork.getAttendanceStamp().get().getStamp().get().getLocationCode().isPresent()
 						? timeLeavingWork.getAttendanceStamp().get().getStamp().get().getLocationCode()
@@ -2035,7 +2033,6 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 	
 	private TimeActualStamp leaveStampInfor(TimeLeavingWork timeLeavingWork) {
 		WorkStamp stamp = new WorkStamp(
-				timeLeavingWork.getLeaveStamp().get().getStamp().get().getAfterRoundingTime(),
 				timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get(),
 				timeLeavingWork.getLeaveStamp().get().getStamp().get().getLocationCode().isPresent()
 						? timeLeavingWork.getLeaveStamp().get().getStamp().get().getLocationCode()
@@ -2362,8 +2359,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							jobTitleHistItemImport.get().getJobTitleId(),
 							workplaceHistItemImport.get().getWorkplaceId(),
 							new ClassificationCode(classificationHistItemImport.get().getClassificationCode()),
-							worktypeHistItemImport.get().getBusinessTypeCd() == null?null: new BusinessTypeCode(worktypeHistItemImport.get().getBusinessTypeCd()),
-							null
+							worktypeHistItemImport.get().getBusinessTypeCd() == null?Optional.empty(): Optional.of(new BusinessTypeCode(worktypeHistItemImport.get().getBusinessTypeCd())),
+							Optional.empty()
 							)
 						),errMesInfos);
 		} else {

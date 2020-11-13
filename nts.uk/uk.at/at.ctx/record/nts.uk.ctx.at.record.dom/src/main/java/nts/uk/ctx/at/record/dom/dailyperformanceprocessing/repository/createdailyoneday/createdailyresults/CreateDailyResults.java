@@ -148,7 +148,7 @@ public class CreateDailyResults {
 		Optional<BonusPaySetting> optBonusPaySetting = reflectWorkInforDomainServiceImpl.reflectBonusSettingDailyPer(companyId, employeeId, ymd,
 				integrationOfDaily.getWorkInformation(), integrationOfDaily.getAffiliationInfor(), periodInMasterList);
 		if(optBonusPaySetting.isPresent()) {
-			integrationOfDaily.getAffiliationInfor().setBonusPaySettingCode(optBonusPaySetting.get().getCode());
+			integrationOfDaily.getAffiliationInfor().setBonusPaySettingCode(Optional.ofNullable(optBonusPaySetting.get().getCode()));
 		}
 		// 計算区分を日別実績に反映する
 		integrationOfDaily.setCalAttr(reflectWorkInforDomainServiceImpl.reflectCalAttOfDaiPer(companyId, employeeId, ymd,
