@@ -20,9 +20,8 @@ public class JpaOutputStandardSettingOfDailyWorkScheduleGetMemento
 
 	@Override
 	public List<OutputItemDailyWorkSchedule> getOutputItems() {
-		List<OutputItemDailyWorkSchedule> result = this.kfnmtRptWkDaiOutItem.stream()
+		return this.kfnmtRptWkDaiOutItem.stream()
 				.map(t -> new OutputItemDailyWorkSchedule(t)).collect(Collectors.toList());
-		return result;
 	}
 
 }

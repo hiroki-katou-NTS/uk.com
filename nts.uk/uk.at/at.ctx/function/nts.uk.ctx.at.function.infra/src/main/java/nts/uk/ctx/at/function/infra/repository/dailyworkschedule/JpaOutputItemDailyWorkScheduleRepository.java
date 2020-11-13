@@ -50,7 +50,7 @@ public class JpaOutputItemDailyWorkScheduleRepository extends JpaRepository impl
 				.getList();
 
 		// map to domain
-		Optional<OutputItemDailyWorkSchedule> result = this.queryProxy()
+		return this.queryProxy()
 				.query(SELECT_BY_LAYOUT_ID, KfnmtRptWkDaiOutItem.class)
 				.setParameter("layoutId", layoutId)
 				.getSingle().map(t -> {
@@ -58,7 +58,6 @@ public class JpaOutputItemDailyWorkScheduleRepository extends JpaRepository impl
 					t.setLstKfnmtRptWkDaiOutnotes(lstKfnmtRptWkDaiOutnotes);
 					return new OutputItemDailyWorkSchedule(t);
 				});
-		return result;
 	}
 
 	@Override

@@ -178,7 +178,7 @@ public class JpaOutputItemDailyWorkScheduleRepo extends JpaRepository implements
 		Map<String, List<KfnmtRptWkDaiOutnote>> mapNote = this.getLstKfnmtRptWkDaiOutnotes(companyId).stream()
 				.collect(Collectors.groupingBy(t -> t.getId().getLayoutId()));
 
-		Optional<OutputItemDailyWorkSchedule> result = this.queryProxy()
+		return this.queryProxy()
 				.query(GET_SETTING_BY_EMPLOYEE_AND_COMPANY_AND_CODE, KfnmtRptWkDaiOutItem.class)
 				.setParameter("companyId", companyId)
 				.setParameter("employeeId", employeeId)
@@ -189,8 +189,6 @@ public class JpaOutputItemDailyWorkScheduleRepo extends JpaRepository implements
 					t.setLstKfnmtRptWkDaiOutnotes(mapNote.get(t.getLayoutId()));
 					return t;
 				}).map(outputItem -> new OutputItemDailyWorkSchedule(outputItem));
-
-		return result;
 	}
 
 	@Override
@@ -213,7 +211,7 @@ public class JpaOutputItemDailyWorkScheduleRepo extends JpaRepository implements
 		Map<String, List<KfnmtRptWkDaiOutnote>> mapNote = this.getLstKfnmtRptWkDaiOutnotes(companyId).stream()
 				.collect(Collectors.groupingBy(t -> t.getId().getLayoutId()));
 
-		Optional<OutputItemDailyWorkSchedule> result = this.queryProxy().query(GET_SETTING_BY_COMPANY_AND_CODE, KfnmtRptWkDaiOutItem.class)
+		return this.queryProxy().query(GET_SETTING_BY_COMPANY_AND_CODE, KfnmtRptWkDaiOutItem.class)
 				.setParameter("companyId", companyId)
 				.setParameter("itemSelType", ItemSelectionType.STANDARD_SELECTION.value)
 				.setParameter("itemCode", code)
@@ -222,8 +220,6 @@ public class JpaOutputItemDailyWorkScheduleRepo extends JpaRepository implements
 					t.setLstKfnmtRptWkDaiOutnotes(mapNote.get(t.getLayoutId()));
 					return t;
 				}).map(outputItem -> new OutputItemDailyWorkSchedule(outputItem));
-
-		return result;
 	}
 
 	/**

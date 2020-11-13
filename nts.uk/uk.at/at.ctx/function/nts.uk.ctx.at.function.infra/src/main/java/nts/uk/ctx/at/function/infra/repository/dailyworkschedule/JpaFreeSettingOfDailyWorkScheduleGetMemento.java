@@ -27,9 +27,8 @@ public class JpaFreeSettingOfDailyWorkScheduleGetMemento
 
 	@Override
 	public List<OutputItemDailyWorkSchedule> getOutputItemDailyWorkSchedules() {
-		List<OutputItemDailyWorkSchedule> result = this.kfnmtRptWkDaiOutItem.stream()
+		return this.kfnmtRptWkDaiOutItem.stream()
 				.map(t -> new OutputItemDailyWorkSchedule(t)).collect(Collectors.toList());
-		return result;
 	}
 
 }
