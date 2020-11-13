@@ -140,7 +140,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		WorkingConditionItem workingConditionItem = workingConditionItemOp.get();
 		// 取得したドメインモデル「労働条件項目」．労働制を確認する
 		List<OvertimeWorkFrame> frames = overtimeWorkFrameRepository.getOvertimeWorkFrameByFrameByCom(companyId, NotUseAtr.USE.value);
-		List<Integer> listFNo = new ArrayList<Integer>();
+		List<Integer> listFNo = Collections.emptyList();
 		List<OvertimeQuotaSetUse> overtimeQuotaSet;
 		if (workingConditionItem.getLaborSystem() == WorkingSystem.FLEX_TIME_WORK) { // 労働制 = フレックス時間勤務(LaborSystem = FlexTimeWork)
 			// OUTPUT「利用する残業枠」を更新する
@@ -171,28 +171,24 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		
 		if (!CollectionUtil.isEmpty(overtimeQuotaSet)) {
 
-			overtimeQuotaSet.stream()
-				.map(x -> x.getTargetOvertimeLimit())
-				.collect(Collectors.toList())
-				.stream()
-				.forEach(item -> {
-					item.stream().forEach(item2 -> {
-						listFNo.add(item2.v());
-					});
-				});
-				
-			listFNo.stream().distinct();	
+			listFNo = overtimeQuotaSet.stream()
+					.flatMap(x -> x.getTargetOvertimeLimit().stream().map(y -> y.v()))
+					.distinct()
+					.collect(Collectors.toList());
 		}
 		if (CollectionUtil.isEmpty(listFNo)) {
 			frames = Collections.emptyList();
 		} else {
+			final List<Integer> nos = listFNo;
 			frames = frames.stream()
-					.filter(x -> listFNo.contains(x.getOvertimeWorkFrNo().v().intValue()))
-					.collect(Collectors.toList());
+							.filter(x -> nos.contains(x.getOvertimeWorkFrNo().v().intValue()))
+							.collect(Collectors.toList());
 		}
 		
 		// OUTPUT「利用する残業枠」を更新して返す
 		output.setOverTimeQuotaList(frames);
+		
+		
 		return output;
 	}
 	
