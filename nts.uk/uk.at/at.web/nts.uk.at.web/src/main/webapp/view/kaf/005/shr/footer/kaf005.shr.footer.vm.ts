@@ -74,7 +74,7 @@ module nts.uk.at.view.kaf005.shr.footer.viewmodel {
 	})
 	class KAF005ShrFooterModel extends ko.ViewModel {
 		itemList: KnockoutObservableArray<ItemModel>;
-
+		selectedCode: KnockoutObservable<String>;
 		created() {
 			const self = this;
 			self.itemList = ko.observableArray([

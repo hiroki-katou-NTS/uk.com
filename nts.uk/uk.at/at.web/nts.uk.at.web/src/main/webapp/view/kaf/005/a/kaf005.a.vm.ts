@@ -1,4 +1,5 @@
 module nts.uk.at.view.kaf005.a.viewmodel {
+	import OvertimeWork = nts.uk.at.view.kaf005.shr.header.viewmodel.OvertimeWork;
 	import Application = nts.uk.at.view.kaf000.shr.viewmodel.Application;
 	import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
 	import Kaf000AViewModel = nts.uk.at.view.kaf000.a.viewmodel.Kaf000AViewModel;
@@ -10,6 +11,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		application: KnockoutObservable<Application>;
 		isSendMail: KnockoutObservable<Boolean>;	
 		isAgentMode : KnockoutObservable<boolean> = ko.observable(false);
+		overTimeWork: KnockoutObservableArray<OvertimeWork> = ko.observableArray([]);
 		created() {
 			const self = this;
 			self.isSendMail = ko.observable(false);
@@ -39,8 +41,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 							
 						} as FirstParam;
 						param1.companyId = self.$user.companyId;
-						param1.dateOp = '2020/11/13';
-						param1.overtimeAppAtr = 1;
+						// param1.dateOp = '2020/11/13';
+						param1.overtimeAppAtr = OvertimeAppAtr.EARLY_OVERTIME;
 						param1.appDispInfoStartupDto = ko.toJS(self.appDispInfoStartupOutput);
 						param1.isProxy = true;
 						let command = {
@@ -56,8 +58,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						return self.$ajax(API.start, command);
 					}
 				})
-				.then((res: any) => {
-					
+				.then((res: DisplayInfoOverTime) => {
+					self.bindOverTimeWorks(res);
 				})
 				.fail((res: any) => {
 					
@@ -69,11 +71,80 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			
 		}
 		
+		bindOverTimeWorks(res: DisplayInfoOverTime) {
+			const self = this;
+			let overTimeWorks = [];
+			{
+				let item = new OvertimeWork();
+				let currentMonth = res.infoNoBaseDate.agreeOverTimeOutput.currentMonth;
+				item.yearMonth = ko.observable(currentMonth);
+				overTimeWorks.push(item);
+			}
+			{
+				let item = new OvertimeWork(); 
+				let nextMonth = res.infoNoBaseDate.agreeOverTimeOutput.nextMonth;
+				item.yearMonth = ko.observable(nextMonth);
+				overTimeWorks.push(item);
+			}
+			self.overTimeWork(overTimeWorks);
+		}
+		
 		
 	
 	}
 	const API = {
 		start: 'at/request/application/overtime/start'
+	}
+	
+	interface DisplayInfoOverTime {
+		infoBaseDateOutput: any;
+		infoNoBaseDate: InfoNoBaseDate;
+		workdayoffFrames: Array<any>;
+		overtimeAppAtr: OvertimeAppAtr;
+		appDispInfoStartup: any;
+		isProxy: Boolean;
+		calculationResultOp?: any;
+		infoWithDateApplicationOp?: any;
+	}
+	interface InfoNoBaseDate {
+		overTimeReflect: any;
+		overTimeAppSet: any;
+		agreeOverTimeOutput: AgreeOverTimeOutput;
+		divergenceReasonInputMethod: Array<any>;
+		divergenceTimeRoot: Array<any>;
+	}
+	interface AgreeOverTimeOutput {
+		detailCurrentMonth: AgreementTimeImport;
+		detailNextMonth: AgreementTimeImport;
+		currentMonth: string;
+		nextMonth: string;
+	}
+	interface AgreementTimeImport {
+		employeeId: string;
+		confirmed?: AgreeTimeOfMonthExport;
+		afterAppReflect?: AgreeTimeOfMonthExport;
+		confirmedMax?: AgreMaxTimeOfMonthExport;
+		afterAppReflectMax?: AgreMaxTimeOfMonthExport;
+		errorMessage?: string;
+	}
+	interface AgreeTimeOfMonthExport {
+		agreementTime: number;
+		limitErrorTime: number;
+		limitAlarmTime: number
+		exceptionLimitErrorTime?: number;
+		exceptionLimitAlarmTime?: number;
+		status: number
+	}
+	interface AgreMaxTimeOfMonthExport {
+		agreementTime: number;
+		maxTime: number;
+		status: number;
+	}
+	enum OvertimeAppAtr {
+		
+		EARLY_OVERTIME,
+		NORMAL_OVERTIME,
+		EARLY_NORMAL_OVERTIME
 	}
 	
 	interface FirstParam { // start param

@@ -29,7 +29,7 @@ module nts.uk.at.view.kaf005.shr.header.viewmodel {
 						<th class="kaf005_overtimeAgreement_header" style="display: none" data-bind="text: $i18n('KAF005_28')"></th>
 					</tr>
 				</thead>
-				<tbody data-bind="foreach: overtimeWork">
+				<tbody data-bind="foreach: overTimeWork">
 					<tr>
 						<!--A2_14 年月ラベル-->
 						<td
@@ -59,7 +59,8 @@ module nts.uk.at.view.kaf005.shr.header.viewmodel {
     })
 	class KAF005ShrHeaderModel extends ko.ViewModel {
 		
-		overtimeWork: KnockoutObservableArray<OvertimeWork> = ko.observableArray([
+		overTimeWork: KnockoutObservableArray<OvertimeWork>;
+		/* ko.observableArray([
             new OvertimeWork(
 				"2020/10", 
 				10, 
@@ -77,8 +78,15 @@ module nts.uk.at.view.kaf005.shr.header.viewmodel {
 				"", 
 				""),    
         ]);
-		created() {
-			
+		*/
+		created(params: any) {
+			const self = this;
+			self.overTimeWork = params.overTimeWork;
+			self.overTimeWork.subscribe(value => {
+				if (value) {
+					console.log(value);
+				}
+			});
 		}
 		
 		
@@ -87,14 +95,18 @@ module nts.uk.at.view.kaf005.shr.header.viewmodel {
 		}
 	}
 	export class OvertimeWork {
-            yearMonth: KnockoutObservable<string>;
-            limitTime: KnockoutObservable<number>;
-            actualTime: KnockoutObservable<number>;
-            appTime: KnockoutObservable<number>;
-            totalTime: KnockoutObservable<number>;
-            backgroundColor: KnockoutObservable<string>;
-            textColor: KnockoutObservable<string>;
-            constructor(yearMonth: string, limitTime: number, actualTime: number, appTime: number,  
+            yearMonth: KnockoutObservable<string> = ko.observable('');
+            limitTime: KnockoutObservable<number> = ko.observable(0);
+            actualTime: KnockoutObservable<number> = ko.observable(0);
+            appTime: KnockoutObservable<number> = ko.observable(0);
+            totalTime: KnockoutObservable<number> = ko.observable(0);
+            backgroundColor: KnockoutObservable<string> = ko.observable('');
+            textColor: KnockoutObservable<string> = ko.observable('');
+			constructor() {
+				
+			}
+			/*
+			constructor(yearMonth: string, limitTime: number, actualTime: number, appTime: number,  
                 totalTime: number, backgroundColor: string, textColor: string) {
                 this.yearMonth = ko.observable(yearMonth);
                 this.limitTime = ko.observable(limitTime);
@@ -104,5 +116,7 @@ module nts.uk.at.view.kaf005.shr.header.viewmodel {
                 this.backgroundColor = ko.observable(backgroundColor);
                 this.textColor = ko.observable(textColor);
             }
+			 */
+            
         }	
 }
