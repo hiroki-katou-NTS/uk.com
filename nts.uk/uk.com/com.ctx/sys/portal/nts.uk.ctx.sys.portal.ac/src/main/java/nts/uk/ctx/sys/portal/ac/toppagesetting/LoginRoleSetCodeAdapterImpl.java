@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.portal.ac.toppagesetting;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -25,7 +27,7 @@ public class LoginRoleSetCodeAdapterImpl implements LoginRoleSetCodeAdapter {
 	 * @return the login role set
 	 */
 	@Override
-	public RoleSetDto getLoginRoleSet() {
+	public Optional<RoleSetDto> getLoginRoleSet() {
 		return this.export.getRoleSetFromUserId(AppContexts.user().userId(), GeneralDate.today())
 				.map(dto -> new RoleSetDto(
 						dto.getRoleSetCd(),
@@ -38,7 +40,7 @@ public class LoginRoleSetCodeAdapterImpl implements LoginRoleSetCodeAdapter {
 						dto.getPersonInfRoleId(),
 						dto.getEmploymentRoleId(),
 						dto.getSalaryRoleId()
-						)).orElse(null);
+						));
 	}
 
 }

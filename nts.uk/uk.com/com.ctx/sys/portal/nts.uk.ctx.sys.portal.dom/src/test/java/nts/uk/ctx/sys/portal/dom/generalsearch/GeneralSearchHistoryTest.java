@@ -1,10 +1,10 @@
 package nts.uk.ctx.sys.portal.dom.generalsearch;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Test;
 
 import nts.arc.testing.assertion.NtsAssert;
-import nts.uk.ctx.sys.portal.dom.GeneralSearchHelper.GeneralSearchHistoryHelper;
-
 public class GeneralSearchHistoryTest {
 
 	private static GeneralSearchHistoryDto mockDto = GeneralSearchHistoryHelper.getMockDto();
@@ -26,7 +26,11 @@ public class GeneralSearchHistoryTest {
 		domain.setMemento(dto);
 		
 		//Then
-		NtsAssert.invokeGetters(domain);
+		assertThat(domain.getCompanyID()).isEqualTo(mockDto.getCompanyID());
+		assertThat(domain.getSearchCategory().value).isEqualTo(mockDto.getSearchCategory());
+		assertThat(domain.getSearchDate()).isEqualTo(mockDto.getSearchDate());
+		assertThat(domain.getUserID()).isEqualTo(mockDto.getUserID());
+		assertThat(domain.getContents().v()).isEqualTo(mockDto.getContents());
 	}
 	
 	@Test

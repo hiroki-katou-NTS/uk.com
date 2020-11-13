@@ -1229,7 +1229,6 @@ module nts.uk.com.view.ccg034.d {
               arrowSettings: listArrowSettingDto,
             }),
           });
-          console.log(updateLayoutParams.flowMenuLayout.imageSettings);
           return vm.$ajax(API.updateLayout, updateLayoutParams);
         })
         // [After] save layout data

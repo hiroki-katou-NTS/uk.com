@@ -69,8 +69,11 @@ public class TopPageSettingFinder {
 		}
 
 		@Override
-		public String getRoleSetCode() {
-			return this.adapter.getLoginRoleSet().getRoleSetCd();
+		public Optional<String> getRoleSetCode() {
+			if (this.adapter.getLoginRoleSet().isPresent()) {
+				return Optional.of(this.adapter.getLoginRoleSet().get().getRoleSetCd());
+			}
+			return Optional.empty();
 		}
 
 		@Override

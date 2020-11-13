@@ -66,3 +66,14 @@ table th {
 .wp-100 {
   width: 100%;
 }
+.border-groove {
+  border: 1px groove;
+}
+.blue-link {
+  cursor: pointer;
+  color: rgb(37, 37, 238) !important;
+}
+.blue-link:hover {
+  cursor: pointer;
+  color: rgb(0, 0, 255) !important;
+}
