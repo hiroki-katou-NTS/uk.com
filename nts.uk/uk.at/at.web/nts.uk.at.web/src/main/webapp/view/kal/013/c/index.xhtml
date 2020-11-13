@@ -1,25 +1,151 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
-	<body>
-		<ui:composition template="../../../../master/base.xhtml">
-			<ui:define name="htmlHead">
-        <com:scriptfile set="IGNITE" />			
-				<com:stylefile path="kal013.c.css" />
-				<com:scriptfile path="kal013.c.vm.js" />
-			</ui:define>
-			
-			<ui:define name="content">
-				<div id="functions-area">
-          Ok
-				</div>
-				<div id="contents-area">
-          OK
-				</div>
-			</ui:define>
-		</ui:composition>
-   	</body>
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <script>
+            var dialogSize = {
+                width: 1020,
+                height: 315
+            };
+        </script>
+
+        <com:scriptfile set="IGNITE"/>
+        <com:stylefile path="kal013.c.css"/>
+        <com:scriptfile path="kal013.c.vm.js"/>
+    </ui:define>
+
+    <ui:define name="content">
+        <div id="contents-area">
+            <table>
+                <tr>
+                    <td>
+                        <!--C1_1-->
+                        <div class="label" data-bind="text: $vm.$i18n('KAL003_37')"></div>
+                    </td>
+                    <td>
+                        <!--C1_2-->
+                        <div tabindex="" id="combo-box-check-item" data-bind="ntsComboBox: {
+                        name: '#{i18n.getText('KAL003_27')}',
+                        required: true,
+                        options: closureDateEnum,
+                        optionsValue: 'value',
+                        value: closureDate,
+                        optionsText: 'localizedName',
+                        columns: [
+                        { prop: 'localizedName', length: 10 },
+                        ]} ">
+                        </div>
+                    </td>
+                    <td>
+                        <!--C1_4-->
+                        <div class="label" data-bind="text: $vm.$i18n('KAL003_38')"></div>
+
+                        <!--C1_5-->
+                        <!--<div tabindex="3" data-bind="ntsRadioBoxGroup: {-->
+                        <!--options: $parent.specialConditionList,-->
+                        <!--optionsValue: 'value',-->
+                        <!--optionsText: 'localizedName',-->
+                        <!--value: specialConditionApplicationUse}">-->
+                        <!--</div>-->
+                    </td>
+                    <td></td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <!--C2_1-->
+                        <div class="label" data-bind="text: $vm.$i18n('KAL003_33')"></div>
+                    </td>
+                    <td>
+                        <!--C2_2-->
+                        <div class="label" data-bind="text: $vm.$i18n('KAL003_39')"></div>
+
+                        <!--C2_3-->
+                        <button tabindex="4" class="small"
+                                data-bind="click: submitAndCloseDialog, text: $vm.$i18n('KAL003_42')">
+                        </button>
+
+                        <!--C2_4-->
+                        <input tabindex="5" class="" data-bind="ntsTextEditor: {
+                            name: '#{i18n.getText('KAL003_40')}',
+                            value: maxConsDaysCom,
+                            constraint: 'ConsecutiveNumberOfDays',
+                            required: true}"
+                        />
+                    </td>
+                    <td>
+                        <!--C2_5-->
+                        <!--<div tabindex="2" id="combo-box-check-item"  data-bind="ntsComboBox: {-->
+                        <!--name: '#{i18n.getText('KAL003_27')}',-->
+                        <!--options: closureDateEnum,-->
+                        <!--optionsValue: 'value',-->
+                        <!--value: closureDate,-->
+                        <!--optionsText: 'localizedName',-->
+                        <!--columns: [-->
+                        <!--{ prop: 'localizedName', length: 10 },-->
+                        <!--]} ">-->
+                        <!--</div>-->
+                    </td>
+                    <td>
+                        <com:ko-if
+                                bind="currentAtdItemCondition.conditionType() == 0 || currentAtdItemCondition.conditionType() == 1">
+                            <!--C2_7-->
+                            <div class="label" data-bind="text: $vm.$i18n('KAL003_33')"></div>
+
+                            <!--C2_8-->
+                            <button tabindex="4" class="small"
+                                    data-bind="click: submitAndCloseDialog, text: $vm.$i18n('KAL003_42')">
+                            </button>
+
+                            <!--C2_9-->
+                            <input tabindex="5" class="" data-bind="ntsTextEditor: {
+                            name: '#{i18n.getText('KAL003_40')}',
+                            value: maxConsDaysCom,
+                            constraint: 'ConsecutiveNumberOfDays',
+                            required: true}"
+                            />
+                        </com:ko-if>
+
+                        <com:ko-if
+                                bind="currentAtdItemCondition.conditionType() == 0 || currentAtdItemCondition.conditionType() == 1">
+                            <!--C2_10-->
+                            <div class="label" data-bind="text: $vm.$i18n('KAL003_33')"></div>
+
+                            <!--C2_11-->
+                            <input tabindex="5" class="" data-bind="ntsTimeEditor: {
+                    name: '#{i18n.getText('KAL003_25')}',
+                    value: maxConsDaysCom,
+                    constraint: 'ConsecutiveNumberOfDays',
+                    required: true}"
+                            />
+
+                            <!--C2_12-->
+                            <input tabindex="5" class="" data-bind="ntsTimeEditor: {
+                    name: '#{i18n.getText('KAL003_25')}',
+                    value: maxConsDaysCom,
+                    constraint: 'ConsecutiveNumberOfDays',
+                    required: true}"
+                            />
+                        </com:ko-if>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!--B4-->
+        <div id="functions-area-bottom">
+            <button tabindex="4" class="large proceed"
+                    data-bind="click: submitAndCloseDialog, text: $vm.$i18n('KAL003_14')">
+            </button>
+            <button tabindex="5" data-bind="click: closeDialog, text: $vm.$i18n('KAL003_30')">
+            </button>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
 </html>
