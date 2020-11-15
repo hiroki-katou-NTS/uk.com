@@ -4,10 +4,10 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.function.dom.commonform.AttendanceItemToPrint;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
-import nts.uk.ctx.at.function.dom.workledgeroutputitem.AttendanceItemToPrint;
 import nts.uk.ctx.at.function.dom.workledgeroutputitem.WorkLedgerOutputItem;
 import nts.uk.ctx.at.function.dom.workledgeroutputitem.WorkLedgerOutputItemRepo;
 import nts.uk.ctx.at.function.infra.entity.outputitemofworkledger.KfnmtRptRecDispCont;
@@ -157,7 +157,7 @@ public class JpaWorkLedgerOutputItemRepo extends JpaRepository implements WorkLe
     }
 
     @Override
-    public void update(String cid, String settingId, WorkLedgerOutputItem outputSetting, List<AttendanceItemToPrint> outputItemList) {
+    public void update(String cid, String settingId,WorkLedgerOutputItem outputSetting, List<AttendanceItemToPrint> outputItemList) {
         this.commandProxy().update(KfnmtRptRecSetting.fromDomain(outputSetting, cid));
         this.queryProxy().query(DELETE_WORK_LEDGER_CONST_CID, KfnmtRptRecDispCont.class)
                 .setParameter("cid", cid)
