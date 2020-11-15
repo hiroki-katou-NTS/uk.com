@@ -89,10 +89,7 @@
                     <div
                       tabindex="5"
                       data-bind="ntsRadioBoxGroup: {
-                        options: [
-                          { id: 0, name: $i18n('KWR003_105')},
-                          { id: 1, name: $i18n('KWR003_106')},
-                        ],
+                        options: itemSelection,
                         optionsValue: 'id',
                         optionsText: 'name',
                         value: rdgSelectedId,
@@ -109,7 +106,7 @@
                         id="KWR003_105"
                         data-bind="ntsComboBox: {
                           name: $i18n('KWR003_105'),
-                          options:  settingListItems,
+                          options:  settingListItems1,
                           optionsValue: 'code',
                           visibleItemsCount: 5,
                           value: standardSelectedCode,
@@ -126,18 +123,18 @@
                       <!-- A5_3_3-->
                       <button
                         tabindex="7"
-                        data-bind="enable: isEnableSelectedCode() &amp;&amp; isWorker &amp;&amp; isEnableStdBtn, 
+                        data-bind="enable: isEnableSelectedCode() &amp;&amp; isWorker, 
                                   click: showDialogScreenB, text: $i18n('KWR003_112')"
                       />
                     </div>
-                    <div class="item item-2">
+                    <div class="item item-2" data-bind="if: isPermission51">
                       <!-- A5_4_2 - KWR003_106-->
                       <div
                         tabindex="8"
                         id="KWR003_106"
                         data-bind="ntsComboBox: {
                           name: $i18n('KWR003_106'),
-                          options:  settingListItems,
+                          options:  settingListItems2,
                           optionsValue: 'code',
                           visibleItemsCount: 5,
                           value: freeSelectedCode,
@@ -154,7 +151,7 @@
                       <!-- A5_3_3-->
                       <button
                         tabindex="9"
-                        data-bind="enable: !isEnableSelectedCode() &amp;&amp; isEnableFreeBtn, click: showDialogScreenB, text: $i18n('KWR003_112')"
+                        data-bind="enable: !isEnableSelectedCode(), click: showDialogScreenB, text: $i18n('KWR003_112')"
                       />
                     </div>
                   </div>

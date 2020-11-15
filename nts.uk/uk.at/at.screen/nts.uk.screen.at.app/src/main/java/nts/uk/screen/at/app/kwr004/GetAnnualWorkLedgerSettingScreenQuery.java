@@ -1,13 +1,16 @@
 package nts.uk.screen.at.app.kwr004;
 
 import lombok.val;
+import nts.uk.ctx.at.function.dom.adapter.dailyperform.DailyPerformanceAuthorityAdapter;
 import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.AnnualWorkLedgerOutputSetting;
 import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.AnnualWorkLedgerOutputSettingRepository;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
+import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,6 +23,28 @@ import java.util.stream.Collectors;
 public class GetAnnualWorkLedgerSettingScreenQuery {
     @Inject
     AnnualWorkLedgerOutputSettingRepository settingsRepository;
+
+    @Inject
+    private DailyPerformanceAuthorityAdapter authorityAdapter;
+
+    @Inject
+    private CompanyAdapter companyAdapter;
+
+    private final BigDecimal FUNCTION_NO = BigDecimal.valueOf(51);
+
+    public AnnualWorkLedgerInitScreenDto getInitScreen() {
+        // 会社の期首月を取得する (RequetsList108)
+        val cid = AppContexts.user().companyId();
+        val companyDto = companyAdapter.getFirstMonth(cid);
+
+        // ログイン社員の就業帳票の権限を取得する
+        val roleId = AppContexts.user().roles().forAttendance();
+        val rs = authorityAdapter.get(roleId);
+        val hasAuthority = !rs.isEmpty() &&
+                rs.stream().anyMatch(e -> e.getFunctionNo().equals(FUNCTION_NO) && e.isAvailability());
+
+        return new AnnualWorkLedgerInitScreenDto(companyDto.getStartMonth(), hasAuthority);
+    }
 
     public List<AnnualWorkLedgerSettingDto> getSettings(GetAnnualWorkLedgerSettingRequestParams requestPrams) {
 
