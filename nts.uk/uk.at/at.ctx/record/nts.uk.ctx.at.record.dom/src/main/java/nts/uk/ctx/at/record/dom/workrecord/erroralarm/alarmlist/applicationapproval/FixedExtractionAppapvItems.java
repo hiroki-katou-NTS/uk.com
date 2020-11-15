@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.applicationappr
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.basic.AlarmCheckClassification;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ColorCode;
@@ -57,15 +58,18 @@ public class FixedExtractionAppapvItems extends AggregateRoot {
      * @param firstMessageDisp 最初表示するメッセージ
      * @param messageColor     メッセージの色
      */
-    public static FixedExtractionAppapvItems create(CheckItemAppapv checkItemAppapv,
-                                                    AlarmCheckClassification alarmCheckCls,
+    public static FixedExtractionAppapvItems create(int checkItemAppapv,
+                                                    int alarmCheckCls,
                                                     boolean boldAtr,
                                                     String appapvCheckName,
-                                                    DisplayMessage firstMessageDisp,
-                                                    Optional<ColorCode> messageColor) {
+                                                    String firstMessageDisp,
+                                                    String messageColor) {
 
-        return new FixedExtractionAppapvItems(checkItemAppapv, alarmCheckCls,
-                boldAtr, appapvCheckName,
-                firstMessageDisp, messageColor);
+        return new FixedExtractionAppapvItems(EnumAdaptor.valueOf(checkItemAppapv, CheckItemAppapv.class),
+                EnumAdaptor.valueOf(alarmCheckCls, AlarmCheckClassification.class),
+                boldAtr,
+                appapvCheckName,
+                new DisplayMessage(firstMessageDisp),
+                messageColor != null ? Optional.of(new ColorCode(messageColor)) : Optional.empty());
     }
 }

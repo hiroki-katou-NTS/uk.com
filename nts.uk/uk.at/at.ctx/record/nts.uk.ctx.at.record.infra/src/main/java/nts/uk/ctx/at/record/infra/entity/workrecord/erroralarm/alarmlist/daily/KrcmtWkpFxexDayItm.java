@@ -2,20 +2,14 @@ package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlist.daily;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.basic.AlarmCheckClassification;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.daily.FixedCheckDayItems;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.daily.FixedExtractionDayItems;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ColorCode;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMessage;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.AggregateTableEntity;
 
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
-import java.util.Optional;
 
 /**
  * Entity: アラームリスト（職場）日別の固定抽出項目
@@ -27,8 +21,11 @@ import java.util.Optional;
 @Entity
 @Table(name = "KRCMT_WKP_FXEX_DAY_ITM")
 public class KrcmtWkpFxexDayItm extends AggregateTableEntity {
-    @EmbeddedId
-    public KrcmtWkpFxexDayItmPK pk;
+
+    /* No */
+    @Id
+    @Column(name = "NO")
+    public int fixedCheckDayItems;
 
     /* 契約コード */
     @Column(name = "CONTRACT_CD")
@@ -56,13 +53,13 @@ public class KrcmtWkpFxexDayItm extends AggregateTableEntity {
 
     @Override
     protected Object getKey() {
-        return pk;
+        return fixedCheckDayItems;
     }
 
     public static KrcmtWkpFxexDayItm fromDomain(FixedExtractionDayItems domain) {
         KrcmtWkpFxexDayItm entity = new KrcmtWkpFxexDayItm();
 
-        entity.pk = KrcmtWkpFxexDayItmPK.fromDomain(domain);
+        entity.fixedCheckDayItems = domain.getFixedCheckDayItems().value;
         entity.contractCd = AppContexts.user().contractCode();
         entity.dailyCheckName = domain.getDailyCheckName();
         entity.alarmCheckCls = domain.getAlarmCheckCls().value;
@@ -76,12 +73,12 @@ public class KrcmtWkpFxexDayItm extends AggregateTableEntity {
 
     public FixedExtractionDayItems toDomain() {
         return FixedExtractionDayItems.create(
-                EnumAdaptor.valueOf(this.pk.fixedCheckDayItems, FixedCheckDayItems.class),
-                EnumAdaptor.valueOf(this.alarmCheckCls, AlarmCheckClassification.class),
+                this.fixedCheckDayItems,
+                this.alarmCheckCls,
                 this.boldAtr,
                 this.dailyCheckName,
-                new DisplayMessage(this.firstMessageDisp),
-                Optional.of(new ColorCode(this.messageColor))
+                this.firstMessageDisp,
+                this.messageColor
         );
     }
 }

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.monthly;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.monthly.enums.FixedCheckMonthlyItemName;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMessage;
@@ -43,10 +44,13 @@ public class FixedExtractionMonthlyCon extends AggregateRoot {
      * @param messageDisp               表示するメッセージ
      */
     public static FixedExtractionMonthlyCon create(String errorAlarmWorkplaceId,
-                                                   FixedCheckMonthlyItemName fixedCheckMonthlyItemName,
+                                                   int fixedCheckMonthlyItemName,
                                                    boolean useAtr,
-                                                   DisplayMessage messageDisp) {
+                                                   String messageDisp) {
 
-        return new FixedExtractionMonthlyCon(errorAlarmWorkplaceId, fixedCheckMonthlyItemName, useAtr, messageDisp);
+        return new FixedExtractionMonthlyCon(errorAlarmWorkplaceId,
+                EnumAdaptor.valueOf(fixedCheckMonthlyItemName, FixedCheckMonthlyItemName.class),
+                useAtr,
+                new DisplayMessage(messageDisp));
     }
 }

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.schedule;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.NameAlarmExtractionCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMessage;
@@ -69,24 +70,30 @@ public class ExtractionScheduleCon extends AggregateRoot {
      * @param useAtr                使用区分
      * @param errorAlarmCheckID     勤務実績のエラーアラームチェックID
      * @param checkConditions       勤務項目のチェック条件
-     * @param comparisonCheckItems  対比チェック項目
+     * @param checkTarget           チェック対象
+     * @param contrastType          対比チェック対象
      * @param daiExtracConName      日次抽出条件名称
      * @param messageDisp           表示するメッセージ
      */
     public static ExtractionScheduleCon create(String errorAlarmWorkplaceId,
                                                int orderNumber,
-                                               CheckDayItemsType checkDayItemsType,
+                                               int checkDayItemsType,
                                                boolean useAtr,
                                                String errorAlarmCheckID,
                                                CheckConditions checkConditions,
-                                               ComparisonCheckItems comparisonCheckItems,
-                                               NameAlarmExtractionCondition daiExtracConName,
-                                               DisplayMessage messageDisp) {
+                                               String checkTarget,
+                                               Integer contrastType,
+                                               String daiExtracConName,
+                                               String messageDisp) {
 
-        return new ExtractionScheduleCon(errorAlarmWorkplaceId, orderNumber,
-                checkDayItemsType, useAtr,
-                errorAlarmCheckID, checkConditions,
-                comparisonCheckItems, daiExtracConName,
-                messageDisp);
+        return new ExtractionScheduleCon(errorAlarmWorkplaceId,
+                orderNumber,
+                EnumAdaptor.valueOf(checkDayItemsType, CheckDayItemsType.class),
+                useAtr,
+                errorAlarmCheckID,
+                checkConditions,
+                ComparisonCheckItems.create(checkTarget, contrastType),
+                new NameAlarmExtractionCondition(daiExtracConName),
+                new DisplayMessage(messageDisp));
     }
 }

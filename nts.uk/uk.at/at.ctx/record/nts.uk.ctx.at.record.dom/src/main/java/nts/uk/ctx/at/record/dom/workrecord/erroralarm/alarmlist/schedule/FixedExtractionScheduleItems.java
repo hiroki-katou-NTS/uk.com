@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.schedule;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.basic.AlarmCheckClassification;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ColorCode;
@@ -57,15 +58,18 @@ public class FixedExtractionScheduleItems extends AggregateRoot {
      * @param firstMessageDisp      最初表示するメッセージ
      * @param messageColor          メッセージの色
      */
-    public static FixedExtractionScheduleItems create(FixedCheckDayItemName fixedCheckDayItemName,
-                                                      AlarmCheckClassification alarmCheckCls,
+    public static FixedExtractionScheduleItems create(int fixedCheckDayItemName,
+                                                      int alarmCheckCls,
                                                       boolean boldAtr,
                                                       String scheduleCheckName,
-                                                      DisplayMessage firstMessageDisp,
-                                                      Optional<ColorCode> messageColor) {
+                                                      String firstMessageDisp,
+                                                      String messageColor) {
 
-        return new FixedExtractionScheduleItems(fixedCheckDayItemName, alarmCheckCls,
-                boldAtr, scheduleCheckName,
-                firstMessageDisp, messageColor);
+        return new FixedExtractionScheduleItems(EnumAdaptor.valueOf(fixedCheckDayItemName, FixedCheckDayItemName.class),
+                EnumAdaptor.valueOf(alarmCheckCls, AlarmCheckClassification.class),
+                boldAtr,
+                scheduleCheckName,
+                new DisplayMessage(firstMessageDisp),
+                messageColor != null ? Optional.of(new ColorCode(messageColor)) : Optional.empty());
     }
 }

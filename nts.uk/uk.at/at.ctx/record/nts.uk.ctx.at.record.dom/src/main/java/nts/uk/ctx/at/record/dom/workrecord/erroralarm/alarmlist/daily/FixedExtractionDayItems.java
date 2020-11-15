@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.daily;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.basic.AlarmCheckClassification;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ColorCode;
@@ -57,15 +58,18 @@ public class FixedExtractionDayItems extends AggregateRoot {
      * @param firstMessageDisp   最初表示するメッセージ
      * @param messageColor       メッセージの色
      */
-    public static FixedExtractionDayItems create(FixedCheckDayItems fixedCheckDayItems,
-                                                 AlarmCheckClassification alarmCheckCls,
+    public static FixedExtractionDayItems create(int fixedCheckDayItems,
+                                                 int alarmCheckCls,
                                                  boolean boldAtr,
                                                  String dailyCheckName,
-                                                 DisplayMessage firstMessageDisp,
-                                                 Optional<ColorCode> messageColor) {
+                                                 String firstMessageDisp,
+                                                 String messageColor) {
 
-        return new FixedExtractionDayItems(fixedCheckDayItems, alarmCheckCls,
-                boldAtr, dailyCheckName,
-                firstMessageDisp, messageColor);
+        return new FixedExtractionDayItems(EnumAdaptor.valueOf(fixedCheckDayItems, FixedCheckDayItems.class),
+                EnumAdaptor.valueOf(alarmCheckCls, AlarmCheckClassification.class),
+                boldAtr,
+                dailyCheckName,
+                new DisplayMessage(firstMessageDisp),
+                messageColor != null ? Optional.of(new ColorCode(messageColor)) : Optional.empty());
     }
 }

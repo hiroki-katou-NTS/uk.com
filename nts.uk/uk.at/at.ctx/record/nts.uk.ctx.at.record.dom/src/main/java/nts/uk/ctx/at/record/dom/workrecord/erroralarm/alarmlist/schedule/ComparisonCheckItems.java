@@ -2,6 +2,8 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.schedule;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.val;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
 
 import java.util.Optional;
@@ -27,11 +29,14 @@ public class ComparisonCheckItems {
     /**
      * 作成する
      *
-     * @param checkTarget  Optional<チェック対象>
-     * @param contrastType Optional<対比チェック対象>
+     * @param checkTarget  チェック対象
+     * @param contrastType 対比チェック対象
      */
-    public static ComparisonCheckItems create(Optional<BonusPaySettingCode> checkTarget, Optional<ContrastType> contrastType) {
+    public static ComparisonCheckItems create(String checkTarget, Integer contrastType) {
+        val checkTargetOpt = checkTarget != null ? Optional.of(new BonusPaySettingCode(checkTarget)) : Optional.empty();
 
-        return new ComparisonCheckItems(checkTarget, contrastType);
+        val contrastTypeOpt = contrastType != null ? Optional.of(EnumAdaptor.valueOf(contrastType, ContrastType.class)) : Optional.empty();
+
+        return new ComparisonCheckItems(checkTargetOpt, contrastTypeOpt);
     }
 }
