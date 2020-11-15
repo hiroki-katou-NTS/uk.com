@@ -17,12 +17,8 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 public class WorkLedgerDisplayContent {
-
-    // 日次データ
-    private List<DailyData> lstDailyData;
-
-    // 月次データ１行
-    private List<MonthlyData> lstMonthlyData;
+    // 月次出力１行
+    private List<MonthlyOutputLine> monthlyDataList;
 
     // 社員コード
     private String employeeCode;
@@ -30,19 +26,9 @@ public class WorkLedgerDisplayContent {
     // 社員名
     private String employeeName;
 
-    // 締め日
-    private String closureDate;
-
     // 職場コード
     private String workplaceCode;
 
     // 職場名称
     private String workplaceName;
-
-    // 雇用コード
-    private String employmentCode;
-
-    // 雇用名称
-    private String employmentName;
-
 }
