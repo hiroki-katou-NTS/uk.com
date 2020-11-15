@@ -237,24 +237,30 @@ module nts.uk.at.view.kwr003.a {
     showDialogScreenB() {
       const vm = this;
 
-      let selectedItem = vm.rdgSelectedId();
-      let attendenceItem = selectedItem ? vm.freeSelectedCode() : vm.standardSelectedCode();
-      let attendence: any = _.find(vm.settingListItems1(), (x) => x.code === attendenceItem);
+      let attendenceItem = vm.rdgSelectedId() ? vm.freeSelectedCode() : vm.standardSelectedCode();
+      let attendence: any = _.find((vm.rdgSelectedId() ? vm.settingListItems2() : vm.settingListItems1()), (x) => x.code === attendenceItem);
 
       if (_.isNil(attendence)) attendence = _.head(vm.settingListItems1());
 
       let params = {
         code: attendence.code, //項目選択コード
         name: attendence.name,
-        standOrFree: selectedItem //設定区分								
+        settingId: attendence.id,
+        standOrFree: vm.rdgSelectedId() //設定区分								
       }
 
       vm.$window.storage(KWR003_B_INPUT, ko.toJS(params)).then(() => {
         vm.$window.modal('/view/kwr/003/b/index.xhtml').then(() => {
           vm.$window.storage(KWR003_B_OUTPUT).then((data: any) => {
-
+            console.log(data);
             if (data) {
-              switch (data.status) {
+              vm.getSettingListWorkStatus(vm.rdgSelectedId());
+              if (data.settingCategory == 0)
+                vm.standardSelectedCode(data.code);
+              else
+                vm.freeSelectedCode(data.code);
+
+              /* switch (data.status) {
                 case 0:
                   //update new name after changed from screen B
                   let index = _.findIndex(vm.settingListItems1(), (x) => x.code === data.code);
@@ -266,8 +272,10 @@ module nts.uk.at.view.kwr003.a {
                   vm.settingListItems1([]);
                   vm.settingListItems1(tempListItems);
                   //reselect
-                  vm.standardSelectedCode(data.code);
-                  vm.freeSelectedCode(data.code);
+                  if (data.settingCategory == 0)
+                    vm.standardSelectedCode(data.code);
+                  else
+                    vm.freeSelectedCode(data.code);
 
                   break;
                 case 1:
@@ -279,7 +287,7 @@ module nts.uk.at.view.kwr003.a {
                   //remove item that's deleted from screen B
                   vm.settingListItems1(_.filter(vm.settingListItems1(), (x) => x.code !== data.code));
                   break;
-              }
+              } */
             }
             //settingListItems
           });
@@ -486,13 +494,13 @@ module nts.uk.at.view.kwr003.a {
 
     getItemSelection() {
       const vm = this;
-      
+
       vm.itemSelection.push({ id: 0, name: vm.$i18n('KWR003_105') });
 
       vm.$ajax(PATH.checkDailyAuthor, { roleId: vm.$user.role.attendance }).done((permission) => {
-        vm.isPermission51(permission);        
+        vm.isPermission51(permission);
         if (vm.isPermission51()) vm.itemSelection.push({ id: 1, name: vm.$i18n('KWR003_106') });
-      });      
+      });
     }
   }
 

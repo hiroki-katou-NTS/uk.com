@@ -8,7 +8,7 @@ module nts.uk.at.view.kwr003.c {
   const KWR003_C_OUTPUT = 'KWR003_C_RETURN';
 
   const PATHS = {
-    cloneSettingClassification: ''
+    cloneSettingClassification: 'at/function/kwr/003/c/duplicate'
   };
 
   @bean()
@@ -24,14 +24,16 @@ module nts.uk.at.view.kwr003.c {
 
     constructor(params: any) {
       super();
-      const vm = this;
+      const vm = this;      
+    }
 
-
-      vm.params({
-        settingListItemDetails: [], //設定区分
-        sourceCode: null, //複製元の設定ID
-        code: null,  //複製先_コード
-        name: null //複製先_名称
+    created(params: any) {
+      let vm = this;
+      vm.params({     
+        settingCategory: 1, //設定区分
+        settingId: '111', //複製元の設定ID
+        settingCode: '',//複製先_コード
+        settingName: ''//複製先_名称
       });
 
       vm.$window.storage(KWR003_C_INPUT).then((data) => {
@@ -39,25 +41,21 @@ module nts.uk.at.view.kwr003.c {
           vm.oldCode(data.code);
           vm.oldName(data.name);
 
-          let cloneCode: any = !_.isNil(data.lastCode) ? parseInt(data.lastCode) + 1 : 1;
-          cloneCode = _.padStart(cloneCode, 2, '0');
-          vm.newCode(cloneCode);
+          //let cloneCode: any = !_.isNil(data.lastCode) ? parseInt(data.lastCode) + 1 : 1;
+          //cloneCode = _.padStart(cloneCode, 2, '0');
+          //vm.newCode(cloneCode);
 
-          let cloneName: any = data.name;
+          /* let cloneName: any = data.name;
           cloneName = cloneName.substring(0, cloneName.indexOf('_' + data.code));
           cloneName = cloneName + '_' + cloneCode;
-          vm.newName(cloneName);
+          vm.newName(cloneName); */
 
-          vm.params().sourceCode = data.code;
-          vm.params().code = data.cloneCode;
-          vm.params().name = data.cloneName;
-          vm.params().settingListItemDetails = data.settingListItemDetails;
+          vm.params().settingId = data.settingId;
+          vm.params().settingCode = data.code;
+          vm.params().settingName = data.name;
+          vm.params().settingCategory = data.settingCategory;
         }
       });
-    }
-
-    created(params: any) {
-      let vm = this;
     }
 
     mounted() {
@@ -67,10 +65,7 @@ module nts.uk.at.view.kwr003.c {
     }
 
     proceed() {
-      let vm = this;
-
-      //vm.$window.storage(KWR003_C_OUTPUT, { code: vm.newCode(), name: vm.newName() });
-      //vm.$window.close();
+      let vm = this;      
       vm.cloneSettingClassification();
     }
 
@@ -87,7 +82,9 @@ module nts.uk.at.view.kwr003.c {
       const vm = this;
 
       vm.$blockui('show');
-
+      vm.params().settingCode = vm.newCode();
+      vm.params().settingName = vm.newName();
+      
       vm.$ajax(PATHS.cloneSettingClassification, vm.params())
         .done((response) => {
           let hasErrors = vm.checkErrors();

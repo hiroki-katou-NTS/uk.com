@@ -19,6 +19,7 @@
         <com:ValidatorScript>
           nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode
           nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName
+          nts.uk.ctx.at.function.dom.attendancerecord.item.ItemName
         </com:ValidatorScript>
       </ui:define>
 
@@ -183,7 +184,7 @@
                                     value: name,
                                     required: true,
                                     name: $i18n('KWR003_215'),
-                                    constraint: 'ExportSettingName'
+                                    constraint: 'ItemName'
                                   }"
                           />
                         </td>
