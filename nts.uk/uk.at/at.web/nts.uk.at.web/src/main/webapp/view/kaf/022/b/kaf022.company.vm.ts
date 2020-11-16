@@ -96,6 +96,7 @@ module nts.uk.at.view.kaf022.company.viewmodel {
                 self.viewmodelH.initData(data);
                 self.viewmodelI.initData(data);
                 self.viewmodelJ.initData(data);
+                self.viewmodelK.initData(data);
                 self.viewmodelN.initData(data);
                 self.viewmodelQ.initData(data);
                 self.viewmodelV.initData(data);
