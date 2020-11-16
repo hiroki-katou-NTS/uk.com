@@ -19,6 +19,7 @@ module nts.uk.at.view.kwr003.a {
 
     // start variable of CCG001
     ccg001ComponentOption: common.GroupOption;
+    closureId: KnockoutObservable<number> = ko.observable(null);
     // end variable of CCG001
 
     //panel left
@@ -157,6 +158,7 @@ module nts.uk.at.view.kwr003.a {
         * @param: data: the data return from CCG001
         */
         returnDataFromCcg001: function (data: common.Ccg001ReturnedData) {
+          vm.closureId(data.closureId);
           vm.getListEmployees(data);
         }
       }
@@ -410,10 +412,7 @@ module nts.uk.at.view.kwr003.a {
           pageBreak: vm.pageBreakSpecification(), //改ページ指定選択肢,
           standardFreeClassification: vm.rdgSelectedId(), //自由設定: A5_4_2   || 定型選択 : A5_3_2,
           settingId: findObj.id, //ゼロ表示区分,
-          closureDate: {
-            closureDay: currentDate, //current day
-            lastDayOfMonth: endOfMonth === currentDate
-          } //締め日
+          closureId: vm.closureId() //締め日
         }
 
         console.log(params);
@@ -423,11 +422,6 @@ module nts.uk.at.view.kwr003.a {
       });
       //create an excel file and redirect to download
     }
-
-    exportPdf() {
-
-    }
-
 
     saveWorkScheduleOutputConditions(): JQueryPromise<void> {
       let vm = this,
