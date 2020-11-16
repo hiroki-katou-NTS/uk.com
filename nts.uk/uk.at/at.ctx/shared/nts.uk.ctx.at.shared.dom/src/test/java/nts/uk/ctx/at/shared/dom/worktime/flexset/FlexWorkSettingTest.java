@@ -300,6 +300,7 @@ public class FlexWorkSettingTest {
 	 * 午前午後区分 = ONE_DAY
 	 * コアタイム=(480: 960)
 	 * $勤務可能時間帯= (300:　1740)
+	 * 所定時間設定 = (12:00 -> 13:00)
 	 * $開始 = 計算時間帯( $勤務可能時間帯.開始時刻, $コアタイム.開始時刻 )	[300 -> 480]
 	 * $終了 = 計算時間帯( $コアタイム.終了時刻, $勤務可能時間帯.終了時刻 )	[960 -> 1740]
 	 * 
@@ -436,14 +437,15 @@ public class FlexWorkSettingTest {
 	 * 午前午後区分 = AM
 	 * コアタイムを使用する
 	 * コアタイム=(480: 960)
-	 * $勤務可能時間帯= (300:　1740)
+	 * $勤務可能時間帯= (300 ->　1740)
+	 * 所定時間設定 = (12:00 -> 13:00)
 	 * 結果：	$開始 = 計算時間帯( $勤務可能時間帯.開始時刻, 所定時間設定.開始時刻 )																				
-     *      $終了 = 計算時間帯( $コアタイム.終了時刻, $勤務可能時間帯.終了時刻 )
+     *      $終了 = 計算時間帯( 所定時間設定	.終了時刻, $勤務可能時間帯.終了時刻 )
 	 * 
 	 */
 	
 	@Test
-	public void createTimeZoneByAmPmCls_Morning_OneDay_CoreTime_Use(@Injectable TimeSheet timeSheet) {
+	public void createTimeZoneByAmPmCls_Morning_OneDay_CoreTime_Use() {
 		// 休憩時間帯 
 		val flexHalfRestTimezone = FlowWkRestTimezoneHelper.createRestTimeZone(new FlowRestSetting(new AttendanceTime(120), new AttendanceTime(60))
 				,  new FlowRestSetting(new AttendanceTime(240), new AttendanceTime(320)), false);
@@ -483,6 +485,7 @@ public class FlexWorkSettingTest {
 				  Arrays.asList(new HDWorkTimeSheetSetting(new HDWorkTimeSheetSettingImpl(TimeWithDayAttr.hourMinute(5, 00), TimeWithDayAttr.hourMinute(29, 00))))
 				, new FlowWorkRestTimezone(true, fixedRestTimeSet, new FlowRestTimezone()));
 
+		val timeSheet = new TimeSheet(new TimeWithDayAttr(480), new TimeWithDayAttr(960));
 		// コアタイムを使用しない
 		val flexWorkSetting = new FlexWorkSetting(new FlexWorkSettingImpl(ApplyAtr.USE, flexHalfDayWorkTimes
 												, new FlexOffdayWorkTime(offdayWorkTimeImpl), false, timeSheet));
@@ -510,11 +513,11 @@ public class FlexWorkSettingTest {
 							,   worktime
 							,   AmPmAtr.AM
 						);
-	    
+	    //480: 600
 	    assertThat(result.get(0).getWorkNo()).isEqualTo(new WorkNo(1));
 	    assertThat(result.get(0).getForStart().getStart().v()).isEqualTo(300);
-	    assertThat(result.get(0).getForStart().getEnd().v()).isEqualTo(720);	
-	    assertThat(result.get(0).getForEnd().getStart().v()).isEqualTo(960);
+	    assertThat(result.get(0).getForStart().getEnd().v()).isEqualTo(480);	
+	    assertThat(result.get(0).getForEnd().getStart().v()).isEqualTo(720);
 	    assertThat(result.get(0).getForEnd().getEnd().v()).isEqualTo(1740);	
 		
 	}
@@ -524,7 +527,7 @@ public class FlexWorkSettingTest {
 	 * 午前午後区分 = AM
 	 * 平日勤務時間帯リスト中に午前午後区分 = AMを存在しない
 	 * コアタイムを使用する
-	 * 結果：	$開始 = 計算時間帯( 就業の時間帯.開始時刻, $コアタイム.開始時刻 )																				
+	 * 結果：	$開始 = 計算時間帯(  就業の時間帯.開始時刻 , 所定時間設定の開始時刻 ) 																		
      *      $終了 = 計算時間帯( $コアタイム.終了時刻, 就業の時間帯.終了時刻 )
 	 * 
 	 */
@@ -535,13 +538,22 @@ public class FlexWorkSettingTest {
 		val flexHalfRestTimezone = FlowWkRestTimezoneHelper.createRestTimeZone(new FlowRestSetting(new AttendanceTime(120), new AttendanceTime(60))
 				,  new FlowRestSetting(new AttendanceTime(240), new AttendanceTime(320)), false);
 
+		// 残業時間帯
+		val oTTimezoneImpls = Arrays.asList(
+				      OverTimeOfTimeZoneSetHelper.createOverTime(1, true, TimeWithDayAttr.hourMinute(  5, 0), TimeWithDayAttr.hourMinute(8, 30))
+					, OverTimeOfTimeZoneSetHelper.createOverTime(2, true, TimeWithDayAttr.hourMinute( 18, 0), TimeWithDayAttr.hourMinute(22, 0))
+					, OverTimeOfTimeZoneSetHelper.createOverTime(3, true, TimeWithDayAttr.hourMinute( 22, 0), TimeWithDayAttr.hourMinute(29, 0))
+				);
+		
 		//就業時間帯
 		val flexHalfDayWorkTimes = Arrays.asList(
-				  FlexHalfDayWorkTimeHelper.createWorkTime(AmPmAtr.ONE_DAY, flexHalfRestTimezone, Collections.emptyList()
+				  FlexHalfDayWorkTimeHelper.createWorkTime(AmPmAtr.ONE_DAY, flexHalfRestTimezone
+						  , OverTimeOfTimeZoneSetHelper.createOverTimeList(oTTimezoneImpls)
 						  , Arrays.asList(
 								  EmTimeZoneSetHelper.createWorkingTimezoneList(new EmTimeFrameNo(1) , TimeWithDayAttr.hourMinute( 5,  0 ), TimeWithDayAttr.hourMinute( 29, 0 ))
 							))
-				, FlexHalfDayWorkTimeHelper.createWorkTime(AmPmAtr.PM, flexHalfRestTimezone, Collections.emptyList()
+				, FlexHalfDayWorkTimeHelper.createWorkTime(AmPmAtr.PM, flexHalfRestTimezone
+						, OverTimeOfTimeZoneSetHelper.createOverTimeList(oTTimezoneImpls)
 						, Arrays.asList(
 								 EmTimeZoneSetHelper.createWorkingTimezoneList(new EmTimeFrameNo(3) , TimeWithDayAttr.hourMinute( 13,  0 ), TimeWithDayAttr.hourMinute( 29, 0 ))
 						))
@@ -555,6 +567,7 @@ public class FlexWorkSettingTest {
 		val offdayWorkTimeImpl = new FlexOffdayWorkTimeGetMementoImpl(
 				  Arrays.asList(new HDWorkTimeSheetSetting(new HDWorkTimeSheetSettingImpl(TimeWithDayAttr.hourMinute(5, 00), TimeWithDayAttr.hourMinute(29, 00))))
 				, new FlowWorkRestTimezone(true, fixedRestTimeSet, new FlowRestTimezone()));
+		
 
 		// コアタイムを使用する
 		val flexWorkSetting = new FlexWorkSetting(new FlexWorkSettingImpl(ApplyAtr.USE, flexHalfDayWorkTimes
@@ -583,13 +596,12 @@ public class FlexWorkSettingTest {
 							,   worktime
 							,   AmPmAtr.AM
 						);
-	    
-	    val coreTime = new TimeSpanForCalc(flexWorkSetting.getCoreTimeSetting().getCoreTimeSheet().getStartTime(), predTimeStg.getPrescribedTimezoneSetting().getMorningEndTime());
-	    val startTime_excepted = new TimeSpanForCalc(worktime.getStart(), coreTime.getStart());
-	    val endTime_excepted = new TimeSpanForCalc(coreTime.getEnd(), worktime.getEnd());
+	    //480 720
 	    assertThat(result.get(0).getWorkNo()).isEqualTo(new WorkNo(1));
-	    assertThat(result.get(0).getForStart()).isEqualTo(startTime_excepted);
-	    assertThat(result.get(0).getForEnd()).isEqualTo(endTime_excepted);	
+	    assertThat(result.get(0).getForStart().getStart().v()).isEqualTo(600);
+	    assertThat(result.get(0).getForStart().getEnd().v()).isEqualTo(480);	
+	    assertThat(result.get(0).getForEnd().getStart().v()).isEqualTo(720);
+	    assertThat(result.get(0).getForEnd().getEnd().v()).isEqualTo(720);		
 		
 	}
 	
