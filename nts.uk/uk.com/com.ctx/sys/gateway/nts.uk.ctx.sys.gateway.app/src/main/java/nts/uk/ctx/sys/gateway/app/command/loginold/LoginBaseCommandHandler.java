@@ -55,7 +55,7 @@ import nts.uk.ctx.sys.gateway.dom.loginold.dto.RoleIndividualGrantImport;
 import nts.uk.ctx.sys.gateway.dom.loginold.service.CollectCompanyList;
 import nts.uk.ctx.sys.gateway.dom.role.RoleFromUserIdAdapter;
 import nts.uk.ctx.sys.gateway.dom.role.RoleType;
-import nts.uk.ctx.sys.gateway.dom.role.RoleInfoImport;
+import nts.uk.ctx.sys.gateway.dom.role.RoleFromUserIdAdapter.RoleInfoImport;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicyRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.LockInterval;
