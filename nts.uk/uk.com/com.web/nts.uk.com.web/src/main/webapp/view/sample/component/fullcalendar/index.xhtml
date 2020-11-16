@@ -32,12 +32,14 @@
 					<div data-bind="
 						fullcalendar: $vm.events,
 						weekends: $vm.weekends,
+						editable: $vm.editable,
 						firstDay: $vm.firstDay,
 						scrollTime: $vm.scrollTime,
 						slotDuration: $vm.slotDuration,
 						businessHours: $vm.businessHours,
 						attendanceTimes: $vm.attendanceTimes,
 						event: {
+							coppyDay: $vm.coppyDay,
 							datesSet: $vm.datesSet
 						}
 					"></div>

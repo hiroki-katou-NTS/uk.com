@@ -210,6 +210,7 @@ module nts.uk.ui.koExtentions {
             const event = allBindingsAccessor.get('event');
             const locale = allBindingsAccessor.get('locale');
             const weekends = allBindingsAccessor.get('weekends');
+            const editable = allBindingsAccessor.get('editable');
             const firstDay = allBindingsAccessor.get('firstDay');
             const scrollTime = allBindingsAccessor.get('scrollTime');
             const initialDate = allBindingsAccessor.get('initialDate');
@@ -217,7 +218,7 @@ module nts.uk.ui.koExtentions {
             const businessHours = allBindingsAccessor.get('businessHours');
             const attendanceTimes = allBindingsAccessor.get('attendanceTimes');
 
-            const params = { events, event, locale, initialDate, scrollTime, weekends, firstDay, slotDuration, attendanceTimes, businessHours, viewModel };
+            const params = { events, event, locale, initialDate, scrollTime, weekends, editable, firstDay, slotDuration, attendanceTimes, businessHours, viewModel };
             const component = { name, params };
 
             ko.applyBindingsToNode(element, { component }, bindingContext);
@@ -274,10 +275,12 @@ module nts.uk.ui.koExtentions {
         scrollTime: number | KnockoutObservable<number>;
         slotDuration: SLOT_DURATION | KnockoutObservable<SLOT_DURATION>;
         weekends: boolean | KnockoutObservable<boolean>;
+        editable: boolean | KnockoutObservable<boolean>;
         firstDay: DAY_OF_WEEK | KnockoutObservable<DAY_OF_WEEK>;
         attendanceTimes: ATTENDANCE_TIME[] | KnockoutObservableArray<ATTENDANCE_TIME>;
         businessHours: BUSINESSHOUR[] | KnockoutObservableArray<BUSINESSHOUR>;
         event: {
+            coppyDay: (from: Date, to: Date) => void;
             datesSet: (start: Date, end: Date) => void;
         };
     };
@@ -332,17 +335,19 @@ module nts.uk.ui.koExtentions {
                     firstDay: ko.observable(1),
                     slotDuration: ko.observable(30),
                     weekends: ko.observable(true),
+                    editable: ko.observable(false),
                     initialDate: ko.observable(new Date()),
                     events: ko.observableArray([]),
                     attendanceTimes: ko.observableArray([]),
                     businessHours: ko.observableArray([]),
                     event: {
+                        coppyDay: (__: Date, ___: Date) => { },
                         datesSet: (__: Date, ___: Date) => { }
                     }
                 };
             }
 
-            const { locale, events, scrollTime, initialDate, weekends, firstDay, slotDuration, attendanceTimes, businessHours } = this.params;
+            const { locale, event, events, scrollTime, initialDate, weekends, editable, firstDay, slotDuration, attendanceTimes, businessHours } = this.params;
 
             if (locale === undefined) {
                 this.params.locale = ko.observable('ja');
@@ -358,6 +363,10 @@ module nts.uk.ui.koExtentions {
 
             if (weekends === undefined) {
                 this.params.weekends = ko.observable(true);
+            }
+
+            if (editable === undefined) {
+                this.params.editable = ko.observable(false);
             }
 
             if (firstDay === undefined) {
@@ -379,12 +388,29 @@ module nts.uk.ui.koExtentions {
             if (businessHours === undefined) {
                 this.params.businessHours = ko.observableArray([]);
             }
+
+            if (event === undefined) {
+                this.params.event = {
+                    coppyDay: (__: Date, ___: Date) => { },
+                    datesSet: (__: Date, ___: Date) => { }
+                };
+            }
+
+            const { coppyDay, datesSet } = event;
+
+            if (coppyDay === undefined) {
+                this.params.event.coppyDay = (__: Date, ___: Date) => { };
+            }
+
+            if (datesSet === undefined) {
+                this.params.event.datesSet = (__: Date, ___: Date) => { };
+            }
         }
 
         public mounted() {
             const vm = this;
             const { params, dataEvent } = vm;
-            const { locale, events, scrollTime, firstDay, weekends, initialDate, viewModel, event, attendanceTimes } = params;
+            const { locale, event, events, scrollTime, firstDay, weekends, editable, initialDate, viewModel, attendanceTimes } = params;
 
             const $el = $(vm.$el);
             const $fc = $el.find('div.fc').get(0);
@@ -501,6 +527,8 @@ module nts.uk.ui.koExtentions {
                         text: '1日分コピー',
                         click: (evt) => {
                             const btn = evt.target as HTMLElement;
+
+                            event.coppyDay.apply(viewModel, [(new Date(), new Date())]);
                         }
                     },
                     oneDay: {
@@ -511,7 +539,7 @@ module nts.uk.ui.koExtentions {
                             } else {
                                 calendar.setOption('weekends', true);
                             }
-                            
+
                             calendar.changeView('timeGridDay');
                         }
                     },
@@ -554,8 +582,8 @@ module nts.uk.ui.koExtentions {
                 weekends: ko.unwrap(weekends),
                 scrollTime: formatTime(ko.unwrap(scrollTime)),
                 initialDate: formatDate(ko.unwrap(initialDate)),
-                editable: true,
-                selectable: true,
+                editable: ko.unwrap(editable),
+                selectable: ko.unwrap(editable),
                 selectMirror: true,
                 selectMinDistance: 4,
                 nowIndicator: true,
@@ -756,6 +784,15 @@ module nts.uk.ui.koExtentions {
             // set weekends
             if (ko.isObservable(weekends)) {
                 weekends.subscribe(w => calendar.setOption('weekends', w));
+            }
+
+            // set editable
+
+            if (ko.isObservable(editable)) {
+                editable.subscribe(e => {
+                    calendar.setOption('editable', e);
+                    calendar.setOption('selectable', e);
+                });
             }
 
             // set firstDay

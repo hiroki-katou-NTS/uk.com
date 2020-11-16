@@ -44,6 +44,7 @@ module nts.uk.ui.com.sample.fullcalendar {
         }]);
 
         weekends: KnockoutObservable<boolean> = ko.observable(true);
+        editable: KnockoutObservable<boolean> = ko.observable(true);
         firstDay: KnockoutObservable<number> = ko.observable(1);
         scrollTime: KnockoutObservable<number> = ko.observable(420);
         slotDuration: KnockoutObservable<number> = ko.observable(30);
@@ -77,6 +78,10 @@ module nts.uk.ui.com.sample.fullcalendar {
             const vm = this;
 
             vm.show(!vm.show());
+        }
+
+        coppyDay(from: Date, to: Date) {
+            console.log(from, to);
         }
 
         datesSet(start: Date, end: Date) {
