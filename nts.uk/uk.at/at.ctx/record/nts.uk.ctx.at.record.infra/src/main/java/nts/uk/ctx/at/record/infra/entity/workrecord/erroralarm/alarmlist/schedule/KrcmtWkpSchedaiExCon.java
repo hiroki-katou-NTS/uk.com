@@ -17,7 +17,7 @@ import javax.persistence.Table;
 import java.util.Optional;
 
 /**
- * AggregateRoot: アラームリスト（職場別）スケジュール／日次の抽出条件
+ * Entity: アラームリスト（職場別）スケジュール／日次の抽出条件
  *
  * @author Thanh.LNP
  */
@@ -103,7 +103,7 @@ public class KrcmtWkpSchedaiExCon extends UkJpaEntity {
                 this.checkDayItemsType,
                 this.useAtr,
                 this.errorAlarmCheckID,
-                ToCheckConditions.check(compareSingle, compareRange, singleFixed),
+                ToCheckConditions.checkSchedaiExCon(this.checkDayItemsType, compareSingle, compareRange, singleFixed),
                 this.checkTarget,
                 this.contrastType,
                 this.daiExtracConName,
