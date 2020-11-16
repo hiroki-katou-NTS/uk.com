@@ -1,9 +1,9 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.erroralarm.alarmlist.applicationapproval;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.applicationapproval.FixedExtractionAppapvCon;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.applicationapproval.FixedExtractionAppapvConRepository;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlist.applicationapproval.KrcmtWkpfxexAppapvCon;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.applicationapproval.FixedExtractionAppapvCon;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.applicationapproval.FixedExtractionAppapvConRepository;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlistworkplace.applicationapproval.KrcmtWkpfxexAppapvCon;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;

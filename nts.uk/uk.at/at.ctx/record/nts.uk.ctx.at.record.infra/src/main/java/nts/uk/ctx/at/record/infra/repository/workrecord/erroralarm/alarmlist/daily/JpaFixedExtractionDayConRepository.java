@@ -1,9 +1,9 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.erroralarm.alarmlist.daily;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.daily.FixedExtractionDayCon;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.daily.FixedExtractionDayConRepository;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlist.daily.KrcmtWkpFxexDayCon;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.FixedExtractionDayCon;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.FixedExtractionDayConRepository;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlistworkplace.daily.KrcmtWkpFxexDayCon;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;

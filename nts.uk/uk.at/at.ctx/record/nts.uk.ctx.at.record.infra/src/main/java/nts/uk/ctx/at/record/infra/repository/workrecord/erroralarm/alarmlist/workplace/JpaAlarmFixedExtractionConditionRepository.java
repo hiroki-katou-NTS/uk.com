@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.erroralarm.alarmlist.workplace;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.workplace.AlarmFixedExtractionCondition;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.workplace.AlarmFixedExtractionConditionRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.workplace.AlarmFixedExtractionCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.workplace.AlarmFixedExtractionConditionRepository;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;

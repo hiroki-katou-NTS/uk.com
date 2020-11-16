@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.erroralarm.alarmlist.monthly;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.monthly.FixedExtractionMonthlyConRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.FixedExtractionMonthlyConRepository;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;

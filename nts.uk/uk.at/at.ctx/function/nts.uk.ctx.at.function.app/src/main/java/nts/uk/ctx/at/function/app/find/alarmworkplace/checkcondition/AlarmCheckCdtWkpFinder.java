@@ -1,8 +1,7 @@
 package nts.uk.ctx.at.function.app.find.alarmworkplace.checkcondition;
 
 import lombok.val;
-import nts.uk.ctx.at.function.app.find.alarmworkplace.checkcondition.FixedExtractionCdtOutput;
-import nts.uk.ctx.at.function.app.find.alarmworkplace.checkcondition.InitScreenDto;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.AlarmCheckCdtWkpCtgRepository;
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.AlarmCheckCdtWorkplaceCategory;
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.WorkplaceCategory;
@@ -12,26 +11,22 @@ import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.daily.AlarmMaste
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.monthly.AlarmMonthlyCheckCdt;
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.schedule.AlarmScheduleCheckCdt;
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.workplace.AlarmMasterWkpCheckCdt;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.applicationapproval.FixedExtractionAppapvCon;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.applicationapproval.FixedExtractionAppapvConRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.applicationapproval.FixedExtractionAppapvItems;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.applicationapproval.FixedExtractionAppapvItemsRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.basic.BasicFixedExtractionCondition;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.basic.BasicFixedExtractionConditionRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.basic.BasicFixedExtractionItem;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.basic.BasicFixedExtractionItemRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.daily.FixedExtractionDayConRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.daily.FixedExtractionDayItemsRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.workplace.AlarmFixedExtractionCondition;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.workplace.AlarmFixedExtractionConditionRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.workplace.AlarmFixedExtractionItem;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.workplace.AlarmFixedExtractionItemRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.applicationapproval.FixedExtractionAppapvCon;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.applicationapproval.FixedExtractionAppapvConRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.applicationapproval.FixedExtractionAppapvItemsRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.BasicFixedExtractionCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.BasicFixedExtractionConditionRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.BasicFixedExtractionItemRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.FixedExtractionDayConRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.FixedExtractionDayItemsRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.workplace.AlarmFixedExtractionCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.workplace.AlarmFixedExtractionConditionRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.workplace.AlarmFixedExtractionItemRepository;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -69,7 +64,8 @@ public class AlarmCheckCdtWkpFinder {
 
         List<FixedExtractionCdtOutput> outputs = Collections.emptyList();
 
-        List<AlarmCheckCdtWorkplaceCategory> alarmCheck = alarmCheckCdtWkpCtgRepo.getByCategoryID(param.getCategoryID());
+        List<AlarmCheckCdtWorkplaceCategory> alarmCheck = alarmCheckCdtWkpCtgRepo
+                .getByCategory(EnumAdaptor.valueOf(param.getCategoryID(), WorkplaceCategory.class));
 
         if (!alarmCheck.isEmpty()) {
             val firstCategory = alarmCheck.get(0);
@@ -91,7 +87,8 @@ public class AlarmCheckCdtWkpFinder {
                                 i.getDisplayMessage().v()
                         )).collect(Collectors.toList());
                     } else {
-                        val mapBasicExtractCon = listBasicExtractCdt.stream().collect(Collectors.toMap(BasicFixedExtractionCondition::getNo, Function.identity()));
+                        val mapBasicExtractCon = listBasicExtractCdt.stream()
+                                .collect(Collectors.toMap(BasicFixedExtractionCondition::getNo, Function.identity()));
 
                         outputs = listBasicExtractItem.stream().map(i -> {
                             val itemHasSameNo = mapBasicExtractCon.get(i.getNo());
@@ -132,7 +129,8 @@ public class AlarmCheckCdtWkpFinder {
                                 i.getDisplayMessage().v()
                         )).collect(Collectors.toList());
                     } else {
-                        val mapBasicExtractCon = masterCheckWkpCdt.stream().collect(Collectors.toMap(AlarmFixedExtractionCondition::getNo, Function.identity()));
+                        val mapBasicExtractCon = masterCheckWkpCdt.stream()
+                                .collect(Collectors.toMap(AlarmFixedExtractionCondition::getNo, Function.identity()));
 
                         outputs = listMasterCheckWkpItem.stream().map(i -> {
                             val itemHasSameNo = mapBasicExtractCon.get(i.getNo());
@@ -191,7 +189,8 @@ public class AlarmCheckCdtWkpFinder {
                                 i.getFirstMessageDisp().v()
                         )).collect(Collectors.toList());
                     } else {
-                        val mapBasicExtractCon = listCon.stream().collect(Collectors.toMap(FixedExtractionAppapvCon::getCheckItemAppapv, Function.identity()));
+                        val mapBasicExtractCon = listCon.stream()
+                                .collect(Collectors.toMap(FixedExtractionAppapvCon::getCheckItemAppapv, Function.identity()));
 
                         outputs = listItem.stream().map(i -> {
                             val itemHasSameNo = mapBasicExtractCon.get(i.getCheckItemAppapv());
