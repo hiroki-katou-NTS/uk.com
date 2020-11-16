@@ -28,13 +28,13 @@
 				<tbody data-bind="foreach: restTime">
 					<tr>
 						<!--A5_5 休憩時間順序-->
-						<td class="header" data-bind="text: frameName"></td>
+						<td class="header" data-bind="text: String(frameNo)"></td>
 						<!--A5_6 開始時刻-->
 						<td><input tabindex="12" class="right-content"
 							data-bind="
 								ntsTimeWithDayEditor: {
 									name: '#[KAF005_337]', 
-									value: startTime, 
+									value: start, 
 									constraint:'TimeWithDayAttr', 
 									enable: false,
 									option: {width: '85px', timeWithDay: true}}" /></td>
@@ -43,7 +43,7 @@
 							data-bind="
 								ntsTimeWithDayEditor: {
 									name: '#[KAF005_338]', 
-									value: endTime, 
+									value: end, 
 									constraint:'TimeWithDayAttr', 
 									enable: false,
 									option: {width: '85px', timeWithDay: true}}" /></td>
@@ -121,6 +121,7 @@
 					<col width="109px" />
 					<col width="115px" />
 					<col width="115px" />
+					<col width="115px" />
 				</colgroup>
 				<thead>
 					<tr>
@@ -131,23 +132,26 @@
 						<!--A5_4 終了ラベル-->
 						<th class="ui-widget-header" rowspan="2"
 							data-bind="text: $i18n('KAF005_72')"></th>
+							<th class="ui-widget-header" rowspan="2"
+							data-bind="text: $i18n('KAF005_54')"></th>
 					</tr>
 				</thead>
-				<tbody data-bind="foreach: restTime">
+				<tbody data-bind="foreach: holidayTime">
 					<tr>
 						<!--A5_5 休憩時間順序-->
-						<td class="header" data-bind="text: frameName"></td>
+						<td class="header" data-bind="text: String(frameNo)"></td>
 						<!--A5_6 開始時刻-->
 						<td><input tabindex="12" class="right-content"
 							data-bind="
 								ntsTimeWithDayEditor: {
 									name: '#[KAF005_337]', 
-									value: startTime, 
+									value: start, 
 									constraint:'TimeWithDayAttr', 
 									enable: false,
 									option: {width: '85px', timeWithDay: true}}" /></td>
 						<!--A5_7 終了時刻-->
-						<td class="right-content" data-bind="text: 'preAppTime'"></td>
+						<td class="right-content" data-bind="text: String(ko.toJS(preApp))"></td>
+						<td class="right-content" data-bind="text: String(ko.toJS(actualTime))"></td>
 					</tr>
 				</tbody>
 			</table>

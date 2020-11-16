@@ -1,6 +1,6 @@
 module nts.uk.at.view.kaf005.shr.viewmodel {
 	const template = `
-	<div class="container cf">
+<div class="container cf">
 	
 
 	<div class="cf valign-top control-group" data-bind="if: true">
@@ -30,13 +30,13 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 				<tbody data-bind="foreach: restTime">
 					<tr>
 						<!--A5_5 休憩時間順序-->
-						<td class="header" data-bind="text: frameName"></td>
+						<td class="header" data-bind="text: String(frameNo)"></td>
 						<!--A5_6 開始時刻-->
 						<td><input tabindex="12" class="right-content"
 							data-bind="
 								ntsTimeWithDayEditor: {
 									name: '#[KAF005_337]', 
-									value: startTime, 
+									value: start, 
 									constraint:'TimeWithDayAttr', 
 									enable: false,
 									option: {width: '85px', timeWithDay: true}}" /></td>
@@ -45,7 +45,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 							data-bind="
 								ntsTimeWithDayEditor: {
 									name: '#[KAF005_338]', 
-									value: endTime, 
+									value: end, 
 									constraint:'TimeWithDayAttr', 
 									enable: false,
 									option: {width: '85px', timeWithDay: true}}" /></td>
@@ -123,6 +123,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 					<col width="109px" />
 					<col width="115px" />
 					<col width="115px" />
+					<col width="115px" />
 				</colgroup>
 				<thead>
 					<tr>
@@ -133,23 +134,26 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 						<!--A5_4 終了ラベル-->
 						<th class="ui-widget-header" rowspan="2"
 							data-bind="text: $i18n('KAF005_72')"></th>
+							<th class="ui-widget-header" rowspan="2"
+							data-bind="text: $i18n('KAF005_54')"></th>
 					</tr>
 				</thead>
-				<tbody data-bind="foreach: restTime">
+				<tbody data-bind="foreach: holidayTime">
 					<tr>
 						<!--A5_5 休憩時間順序-->
-						<td class="header" data-bind="text: frameName"></td>
+						<td class="header" data-bind="text: String(frameNo)"></td>
 						<!--A5_6 開始時刻-->
 						<td><input tabindex="12" class="right-content"
 							data-bind="
 								ntsTimeWithDayEditor: {
 									name: '#[KAF005_337]', 
-									value: startTime, 
+									value: start, 
 									constraint:'TimeWithDayAttr', 
 									enable: false,
 									option: {width: '85px', timeWithDay: true}}" /></td>
 						<!--A5_7 終了時刻-->
-						<td class="right-content" data-bind="text: 'preAppTime'"></td>
+						<td class="right-content" data-bind="text: String(ko.toJS(preApp))"></td>
+						<td class="right-content" data-bind="text: String(ko.toJS(actualTime))"></td>
 					</tr>
 				</tbody>
 			</table>
@@ -161,8 +165,6 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 
 
 
-
-
 	`
 	@component({
         name: 'kaf005-share',
@@ -170,10 +172,19 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
     })
 	class KAF005ShrModel extends ko.ViewModel {
 		
-		restTime: KnockoutObservableArray<OverTimeInput> = ko.observableArray([]);
+		restTime: KnockoutObservableArray<RestTime> = ko.observableArray([]);
+		
+		holidayTime: KnockoutObservableArray<HolidayTime> = ko.observableArray([]);
+		
 		overtimeHours: KnockoutObservableArray<OverTimeInput> = ko.observableArray([]);
-		created() {
+		
+		created(params: any) {
+			
 			const self = this;
+			self.restTime = params.restTime;
+			self.holidayTime = params.holidayTime;
+			
+			
 			let restTimes = [];
 			let item1 : OverTimeInput = new OverTimeInput('', '', 0, '', 1, 0, '1', 10, 15, null, '');
 			let item2 : OverTimeInput = new OverTimeInput('', '', 0, '', 2, 0, '2', 20, 25, null, '');
@@ -195,7 +206,6 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 			restTimes.push(item8);
 			restTimes.push(item9);
 			restTimes.push(item10);
-			self.restTime(restTimes);
 			self.overtimeHours(restTimes);
 		}
 		
@@ -209,6 +219,19 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 		public openDialogKdl003() {
 			
 		}
+	}
+	
+	export interface RestTime {
+		frameNo: string;
+		start?: KnockoutObservable<number>;
+		end?: KnockoutObservable<number>;
+	}
+	
+	export interface HolidayTime {
+		frameNo: string;
+		start?: KnockoutObservable<number>;
+		preApp?: KnockoutObservable<number>;
+		actualTime?: KnockoutObservable<number>;
 	}
 	
 	export class OverTimeInput {

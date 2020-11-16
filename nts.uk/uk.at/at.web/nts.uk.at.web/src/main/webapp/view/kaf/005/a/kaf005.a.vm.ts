@@ -1,4 +1,6 @@
 module nts.uk.at.view.kaf005.a.viewmodel {
+	import HolidayTime = nts.uk.at.view.kaf005.shr.viewmodel.HolidayTime;
+	import RestTime = nts.uk.at.view.kaf005.shr.viewmodel.RestTime;
 	import WorkHours = nts.uk.at.view.kaf005.shr.work_info.viewmodel.WorkHours;
 	import Work = nts.uk.at.view.kaf005.shr.work_info.viewmodel.Work;
 	import WorkInfo = nts.uk.at.view.kaf005.shr.work_info.viewmodel.WorkInfo;
@@ -16,17 +18,50 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		isAgentMode : KnockoutObservable<boolean> = ko.observable(false);
 		overTimeWork: KnockoutObservableArray<OvertimeWork> = ko.observableArray([]);
 		workInfo: KnockoutObservable<WorkInfo> = ko.observable(null);
+		restTime: KnockoutObservableArray<RestTime> = ko.observableArray([]);
+		holidayTime: KnockoutObservableArray<HolidayTime> = ko.observableArray([]);
 		dataSource: DisplayInfoOverTime;
 		created() {
 			const self = this;
 			self.isSendMail = ko.observable(false);
 			self.application = ko.observable(new Application(self.appType()));
+			self.createRestTime(self.restTime);
+			self.createHolidayTime(self.holidayTime);
 		}
 		
 		mounted() {
 			const self = this;
 			self.start();
 			
+		}
+		
+		createRestTime(restTime: KnockoutObservableArray<RestTime>) {
+			const self = this;
+			let restTimeArray = [];
+			let length = 10;
+			for (let i = 1; i < length + 1; i++) {
+				let item = {} as RestTime;
+				item.frameNo = String(i);
+				item.start = ko.observable(null);
+				item.end = ko.observable(null);
+				restTimeArray.push(item);
+			}
+			restTime(restTimeArray);
+		}
+		
+		createHolidayTime(holidayTime: KnockoutObservableArray<RestTime>) {
+			const self = this;
+			let holidayTimeArray = [];
+			let length = 10;
+			for (let i = 1; i < length + 1; i++) {
+				let item = {} as HolidayTime;
+				item.frameNo = String(i);
+				item.start = ko.observable(null);
+				item.preApp = ko.observable(null);
+				item.actualTime = ko.observable(null);
+				holidayTimeArray.push(item);
+			}
+			holidayTime(holidayTimeArray);
 		}
 		
 		start() {
@@ -71,6 +106,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					self.dataSource = res;
 					self.bindOverTimeWorks(res);
 					self.bindWorkInfo(res);
+					self.bindRestTime(res);
+					self.bindHolidayTime(res);
 				})
 				.fail((res: any) => {
 					
@@ -189,6 +226,85 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			self.workInfo(workInfo);
 		}
 		
+		bindRestTime(res: DisplayInfoOverTime) {
+			const self = this;
+			let infoWithDateApplication = res.infoWithDateApplicationOp as InfoWithDateApplication;
+			let restTimeArray = ko.toJS(self.restTime);
+			if(!_.isNil(infoWithDateApplication)) {
+				let breakTime = infoWithDateApplication.breakTime;
+				if (!_.isNil(breakTime)) {
+					if (!_.isEmpty(breakTime.timeZones)) {
+						_.forEach(breakTime.timeZones, (item: TimeZone, index) => {
+							if (Number(index) < 10) {
+								let restItem = restTimeArray(index) as RestTime;
+								restItem.start(item.start);
+								restItem.end(item.end);
+							}
+						})
+						
+					}
+					
+				}
+			}
+			self.restTime(_.clone(restTimeArray));
+		}
+		
+		bindHolidayTime(res: DisplayInfoOverTime) {
+			const self = this;
+			let holidayTimeArray = ko.toJS(self.holidayTime) as Array<HolidayTime>;
+			let workdayoffFrames = res.workdayoffFrames as Array<WorkdayoffFrame>;
+
+			let calculationResultOp = res.calculationResultOp;
+			// A7_7
+			if (!_.isEmpty(workdayoffFrames)) {
+				_.forEach(workdayoffFrames, (item: WorkdayoffFrame) => {
+					let findHolidayTimeArray = _.find(holidayTimeArray, {frameNo: item.workdayoffFrNo}) as HolidayTime;
+					if (!findHolidayTimeArray) {
+						findHolidayTimeArray.frameNo = item.workdayoffFrName;
+					}
+				})
+			}
+			
+			
+			 // A7_8
+			if (!_.isEmpty(calculationResultOp.applicationTimes)) {
+				let applicationTime = calculationResultOp.applicationTimes[0].applicationTime;
+				if (!_.isEmpty(applicationTime)) {
+					_.forEach(applicationTime, (item: OvertimeApplicationSetting) => {
+						let findHolidayTimeArray = _.find(holidayTimeArray, {frameNo: item.frameNo}) as HolidayTime;
+						
+						if (!findHolidayTimeArray && item.attendanceType == AttendanceType.BREAKTIME) {
+							findHolidayTimeArray.start(item.applicationTime);
+						}	
+					})
+				}
+			}
+			// A7_9
+			// 申請表示情報．申請表示情報(基準日関係あり)．表示する事前申請内容．残業申請．申請時間．申請時間．申請時間
+			let opPreAppContentDisplayLst = res.appDispInfoStartup.appDispInfoWithDateOutput.opPreAppContentDispDtoLst;
+			if (!_.isEmpty(opPreAppContentDisplayLst)) {
+				let apOptional = opPreAppContentDisplayLst[0].apOptional;
+				if (apOptional) {
+					let applicationTime = apOptional.applicationTime;
+					if (!_.isEmpty(applicationTime)) {
+					_.forEach(applicationTime, (item: OvertimeApplicationSetting) => {
+						let findHolidayTimeArray = _.find(holidayTimeArray, {frameNo: item.frameNo}) as HolidayTime;
+						
+						if (!findHolidayTimeArray && item.attendanceType == AttendanceType.BREAKTIME) {
+							findHolidayTimeArray.preApp(item.applicationTime);
+						}	
+					})
+				}
+				}
+			}
+			
+			// A7_10
+			// 申請日に関係する情報．実績の申請時間．申請時間．申請時間
+			
+			self.holidayTime(_.clone(holidayTimeArray));
+			
+		}
+		
 		
 		
 		
@@ -203,17 +319,35 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 	interface DisplayInfoOverTime {
 		infoBaseDateOutput: InfoBaseDateOutput;
 		infoNoBaseDate: InfoNoBaseDate;
-		workdayoffFrames: Array<any>;
+		workdayoffFrames: Array<WorkdayoffFrame>;
 		overtimeAppAtr: OvertimeAppAtr;
 		appDispInfoStartup: any;
 		isProxy: Boolean;
-		calculationResultOp?: any;
+		calculationResultOp?: CalculationResult;
 		infoWithDateApplicationOp?: InfoWithDateApplication;
+	}
+	interface WorkdayoffFrame {
+		workdayoffFrNo: number;
+		workdayoffFrName: string;
+	}
+	interface CalculationResult {
+		flag: number;
+		overTimeZoneFlag: number;
+		overStateOutput: any;
+		applicationTimes: Array<ApplicationTime>;
 	}
 	interface InfoWithDateApplication {
 		workTypeCD?: string;
 		workTimeCD?: string;
 		workHours?: WorkHoursDto;
+		breakTime?: BreakTimeZoneSetting;
+	}
+	interface BreakTimeZoneSetting {
+		timeZones?: Array<TimeZone>;
+	}
+	interface TimeZone {
+		start: number;
+		end: number;
 	}
 	interface WorkHoursDto {
 		startTimeOp1: number;
@@ -276,6 +410,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		EARLY_OVERTIME,
 		NORMAL_OVERTIME,
 		EARLY_NORMAL_OVERTIME
+	}
+	enum AttendanceType {
+		
+		NORMALOVERTIME,
+		BREAKTIME,
+		BONUSPAYTIME,
+		BONUSSPECIALDAYTIME
 	}
 	
 	interface FirstParam { // start param
