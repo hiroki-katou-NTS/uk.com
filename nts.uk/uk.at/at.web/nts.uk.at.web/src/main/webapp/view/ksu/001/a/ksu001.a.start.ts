@@ -31,6 +31,14 @@ module nts.uk.at.view.ksu001.a {
                 $('.ntsButtonTableButton').addClass('nowithContent');
             }
 
+            let item = uk.localStorage.getItem('USER_INFOR');
+            let userInfor = JSON.parse(item.get());
+            if (userInfor.updateMode == 'copyPaste') {
+                setTimeout(() => {
+                    __viewContext.viewModel.viewA.setCoppyStyler();
+                }, 100);
+            }
+
             $(window).resize(function() {
                 __viewContext.viewModel.viewA.setHeightScreen();
                 __viewContext.viewModel.viewA.setPositionButonDownAndHeightGrid();
