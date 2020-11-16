@@ -10,6 +10,9 @@ import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -19,27 +22,43 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 
 /**
- * The Class KfnmtAttendanceDisplay.
+ * The Class KfnmtPrintRemarkCont.
  * @author HoangDD
  */
 @Entity
-@NoArgsConstructor
+@Table(name="KFNMT_RPT_WK_DAI_OUTNOTE")
 @Getter
 @Setter
-@Table(name="KFNMT_ATTENDANCE_DISPLAY")
-public class KfnmtAttendanceDisplay extends UkJpaEntity implements Serializable {
+@NoArgsConstructor
+public class KfnmtRptWkDaiOutnote extends UkJpaEntity implements Serializable {
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	/** The id. */
 	@EmbeddedId
-	private KfnmtAttendanceDisplayPK id;
-
-	/** The atd display. */
-	@Column(name="ATD_DISPLAY")
-	private BigDecimal atdDisplay;
+	private KfnmtRptWkDaiOutnotePK id;
 	
+	/** The cid. */
+	@Column(name="CID")
+	private String cid;
+
+	/** The use cls. */
+	@Column(name="USE_CLS")
+	private BigDecimal useCls;
+
+	/** The contract cd. */
+	@Column(name="CONTRACT_CD")
+	private String contractCd;
+	
+	/** The exclus ver. */
+	@Column(name = "EXCLUS_VER")
+	public int exclusVer;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="LAYOUT_ID", referencedColumnName="LAYOUT_ID", insertable = false, updatable = false)
+	public KfnmtRptWkDaiOutItem kfnmtRptWkDaiOutItem;
+
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
 	 */
@@ -47,4 +66,5 @@ public class KfnmtAttendanceDisplay extends UkJpaEntity implements Serializable 
 	protected Object getKey() {
 		return this.id;
 	}
+
 }

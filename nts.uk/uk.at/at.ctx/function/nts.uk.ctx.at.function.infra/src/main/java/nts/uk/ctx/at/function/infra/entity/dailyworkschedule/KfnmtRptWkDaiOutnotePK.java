@@ -5,45 +5,37 @@
 package nts.uk.ctx.at.function.infra.entity.dailyworkschedule;
 
 import java.io.Serializable;
-import javax.persistence.*;
+import java.math.BigDecimal;
+
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * The Class KfnmtItemWorkSchedulePK.
+ * The Class KfnmtPrintRemarkContPK.
  * @author HoangDD
  */
 @Embeddable
 @Getter
 @Setter
 @NoArgsConstructor
-public class KfnmtItemWorkSchedulePK implements Serializable {
+public class KfnmtRptWkDaiOutnotePK implements Serializable {
 	
 	/** The Constant serialVersionUID. */
 	//default serial version id, required for serializable classes.
 	private static final long serialVersionUID = 1L;
 
-	/** The cid. */
-	@Column(name="CID")
-	private String cid;
+	/** The layout id. */
+	@Column(name="LAYOUT_ID")
+	private String layoutId;
 
-	/** The item code. */
-	@Column(name="ITEM_CD")
-	private String itemCode;
+	/** The print item. */
+	@Column(name="PRINT_ITEM")
+	private BigDecimal printItem;
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((cid == null) ? 0 : cid.hashCode());
-		result = prime * result + ((itemCode == null) ? 0 : itemCode.hashCode());
-		return result;
-	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
@@ -56,17 +48,21 @@ public class KfnmtItemWorkSchedulePK implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		KfnmtItemWorkSchedulePK other = (KfnmtItemWorkSchedulePK) obj;
-		if (cid == null) {
-			if (other.cid != null)
-				return false;
-		} else if (!cid.equals(other.cid))
-			return false;
-		if (itemCode == null) {
-			if (other.itemCode != null)
-				return false;
-		} else if (!itemCode.equals(other.itemCode))
+		KfnmtRptWkDaiOutnotePK other = (KfnmtRptWkDaiOutnotePK) obj;
+
+		if (printItem != other.printItem)
 			return false;
 		return true;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (printItem.intValue() ^ (printItem.intValue() >>> 32));
+		return result;
 	}
 }

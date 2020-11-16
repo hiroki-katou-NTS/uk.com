@@ -21,10 +21,12 @@ import nts.arc.enums.EnumConstant;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.dailyfix.IAppliCalDaiCorrecRepository;
 import nts.uk.ctx.at.record.dom.algorithm.masterinfo.CodeNameInfo;
+import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessType;
+import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypesRepository;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppWithDetailExportDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListForScreen;
-import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.BusinessType;
-import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.repository.BusinessTypesRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BonusPaySetting;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrectionProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AffEmploymentHistoryDto;
@@ -48,6 +50,9 @@ public class DataDialogWithTypeProcessor {
 	
 	@Inject
 	private BusinessTypesRepository businessTypesRepository;
+	
+	@Inject
+	private BPSettingRepository bpSettingRepository;
 
 	// 勤務種類
 	public CodeNameType getDutyType(String companyId, String workTypeCode, String employmentCode) {
@@ -122,6 +127,22 @@ public class DataDialogWithTypeProcessor {
 		List<BusinessType> lstBussinessType = businessTypesRepository.findAll(companyId);
 		List<CodeName> codeNames = lstBussinessType.stream().map(x -> new CodeName(x.getBusinessTypeCode().v(), x.getBusinessTypeName().v(), "")).collect(Collectors.toList());
 		return CodeNameType.create(TypeLink.BUSINESS_TYPE.value, codeNames);
+	}
+	
+	// 加給
+	public CodeNameType getAddition(String companyId) {
+		List<BonusPaySetting> lstBussinessType = this.bpSettingRepository.getAllBonusPaySetting(companyId);
+		List<CodeName> codeNames = lstBussinessType.stream()
+				.map(x -> new CodeName(x.getCode().v(), x.getName().v(), ""))
+				.collect(Collectors.toList());
+		return CodeNameType.create(TypeLink.ADDITION.value, codeNames);
+	}
+	
+	// 作業
+	public CodeNameType getWork(String companyId) {
+		// TODO
+		List<CodeName> codeNames = new ArrayList<>();
+		return CodeNameType.create(TypeLink.WORK.value, codeNames);
 	}
 	
 	public CodeName getTypeDialog(int type, ParamDialog param) {
