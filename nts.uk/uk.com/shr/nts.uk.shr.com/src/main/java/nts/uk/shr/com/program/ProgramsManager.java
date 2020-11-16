@@ -3368,6 +3368,13 @@ public class ProgramsManager {
             "/view/ksm/008/i/index.xhtml");
     public static final Program KSM008K = new Program(WebAppId.AT, ProgramIdConsts.KSM008K, "KSM008_146",
             "/view/ksm/008/k/index.xhtml");
+    
+    /**
+     * KNR001
+     */
+    public static final Program KNR001A = new Program(WebAppId.AT, ProgramIdConsts.KNR001A, "KNR001_170",
+            "/view/knr/001/a/index.xhtml");
+    
 
     /**
      * All programs map.

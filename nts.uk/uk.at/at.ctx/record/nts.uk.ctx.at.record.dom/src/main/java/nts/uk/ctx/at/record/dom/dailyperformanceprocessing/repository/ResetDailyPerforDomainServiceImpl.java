@@ -398,12 +398,12 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 							stampOutput = this.reflectStampDomainService.reflectStampInfo(companyID, employeeID,
 									processingDate, workInfoOfDailyPerformanceUpdate, null, empCalAndSumExecLogID,
 		                            Optional.ofNullable(calAttrOfDailyPerformance),
-		                            affiliationInforOfDailyPerfor, Optional.empty(),recreateFlag);
+		                            affiliationInforOfDailyPerfor, recreateFlag);
 							}else {
 								 stampOutput = this.reflectStampDomainServiceImpl.acquireReflectEmbossing(companyID,
 										 employeeID, processingDate, Optional.of(workInfoOfDailyPerformanceUpdate),
 										 null, empCalAndSumExecLogID,
-										 Optional.ofNullable(calAttrOfDailyPerformance), affiliationInforOfDailyPerfor, Optional.empty(),recreateFlag);
+										 Optional.ofNullable(calAttrOfDailyPerformance), affiliationInforOfDailyPerfor, recreateFlag);
 								 
 							}
 							if(stampOutput.getErrMesInfos().isEmpty()) {
@@ -524,7 +524,7 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 							|| stampOutput.getErrMesInfos() == null)) {
 				this.registerDailyPerformanceInfoService.registerDailyPerformanceInfo(companyID, employeeID,
 						processingDate, stampOutput.getReflectStampOutput(), affiliationInfor, dailyPerformance,
-						specificDateAttrOfDailyPerfor, calAttrOfDailyPerformance, null, breakTimeOfDailyPerformance);
+						specificDateAttrOfDailyPerfor, calAttrOfDailyPerformance, breakTimeOfDailyPerformance);
 			} else {
 				errMesInfos.forEach(action -> {
 					this.errMessageInfoRepository.add(action);
