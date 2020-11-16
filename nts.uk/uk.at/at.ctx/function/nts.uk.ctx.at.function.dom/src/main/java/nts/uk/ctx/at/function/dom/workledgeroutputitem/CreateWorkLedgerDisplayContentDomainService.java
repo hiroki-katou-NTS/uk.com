@@ -71,12 +71,12 @@ public class CreateWorkLedgerDisplayContentDomainService {
                     val wInfor = mapEmployeeWorkplace.get(e.getEmployeeId());
                     Double total = 0D;
                     for (val monthlyItem : monthlyOutputItems) {
-                        List<MonthlyValue> lstMonthlyValue = new ArrayList<>();
+
                         val listItem = monthlyItem.getSelectedAttendanceItemList();
                         val itemIds = listItem.stream().map(OutputItemDetailSelectionAttendanceItem::getAttendanceItemId)
                                 .collect(Collectors.toList());
                         // 4  会社の月次項目を取得する->・List<月次の勤怠項目>
-                        val monthlyAttendanceItems = require.getMonthlyItems(cid, Optional.empty(),itemIds,null);
+                        val monthlyAttendanceItems = require.getMonthlyItems(cid, Optional.empty(), itemIds, null);
                         e.getListPeriod().parallelStream().forEach((DatePeriod period) -> {
                             val getClosureDate = closureDateEmploymentList.parallelStream()
                                     .filter(j -> j.getEmployeeId().equals(e.getEmployeeId())).findFirst();
@@ -88,33 +88,14 @@ public class CreateWorkLedgerDisplayContentDomainService {
                                         new ArrayList<>(Collections.singletonList(e.getEmployeeId())),
                                         yearMonthPeriod, itemIds).get(e.getEmployeeId());
                                 if (monthlyValue != null) {
-                                    for (val monthlyRecordValue : monthlyValue) {
-                                        StringBuilder character = new StringBuilder();
-                                        Double actualValue = 0d;
-                                        for (val ite : listItem) {
-                                            val subItem = (monthlyRecordValue.getItemValues().stream().
-                                                    filter(x -> x.getItemId() == ite.getAttendanceItemId()).findFirst());
-                                            if (subItem.isPresent()) {
-                                                if (monthlyItem.getItemDetailAttributes() == CommonAttributesOfForms.WORK_TYPE ||
-                                                        monthlyItem.getItemDetailAttributes() == CommonAttributesOfForms.WORKING_HOURS) {
-                                                    character.append(subItem.get().getValue());
-                                                } else {
-                                                    Double value = Double.parseDouble(subItem.get().getValue());
-                                                    if (ite.getOperator() == OperatorsCommonToForms.ADDITION) {
-                                                        actualValue += value;
-                                                    } else if (ite.getOperator() == OperatorsCommonToForms.SUBTRACTION)
-                                                        actualValue -= value;
-                                                }
-                                            }
-                                        }
-                                        lstMonthlyValue.add(new MonthlyValue(actualValue,
-                                                monthlyRecordValue.getYearMonth(), character.toString()));
-                                    }
+                                    List<MonthlyValue> lstMonthlyValue = new ArrayList<>();
+
+                                    
                                 }
                             }
                         });
-                        val item = new MonthlyOutputLine(lstMonthlyValue, monthlyItem.getName().v(), monthlyItem.getRank(),total , monthlyItem.getItemDetailAttributes());
-                        outputLines.add(item);
+//                        val item = new MonthlyOutputLine(lstMonthlyValue, monthlyItem.getName().v(), monthlyItem.getRank(), total, monthlyItem.getItemDetailAttributes());
+//                        outputLines.add(item);
                     }
 
                     rs.add(new WorkLedgerDisplayContent(
@@ -136,6 +117,7 @@ public class CreateWorkLedgerDisplayContentDomainService {
 
         List<AttItemName> getMonthlyItems(String cid, Optional<String> authorityId, List<Integer> attendanceItemIds,
                                           List<MonthlyAttendanceItemAtr> itemAtrs);
+
         // [No.495]勤怠項目IDを指定して月別実績の値を取得（複数レコードは合算）
         Map<String, List<MonthlyRecordValueImport>> getActualMultipleMonth(
                 List<String> employeeIds, YearMonthPeriod period, List<Integer> itemIds);
