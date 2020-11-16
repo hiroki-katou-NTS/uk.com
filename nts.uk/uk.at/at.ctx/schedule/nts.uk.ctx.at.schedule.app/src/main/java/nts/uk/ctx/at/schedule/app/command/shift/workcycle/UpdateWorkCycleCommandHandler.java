@@ -18,7 +18,11 @@ import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.WorkCycleCreateR
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
@@ -53,7 +57,7 @@ public class UpdateWorkCycleCommandHandler extends CommandHandlerWithResult<AddW
     protected WorkCycleCreateResult handle(CommandHandlerContext<AddWorkCycleCommand> context) {
         val command = context.getCommand();
         String cid = AppContexts.user().companyId();
-        RegisterWorkCycleServiceImlp require = new RegisterWorkCycleServiceImlp(workCycleRepository,basicScheduleService, workTypeRepo,workTimeSettingRepository,workTimeSettingService, basicScheduleService);
+        RegisterWorkCycleServiceImlp require = new RegisterWorkCycleServiceImlp(workCycleRepository,basicScheduleService, workTypeRepo,workTimeSettingRepository,workTimeSettingService);
         WorkCycleCreateResult result = RegisterWorkCycleService.register(require, AddWorkCycleCommand.createFromCommand(command, cid), false);
         if (!result.isHasError()) {
             AtomTask atomTask = result.getAtomTask().get();
@@ -79,8 +83,6 @@ public class UpdateWorkCycleCommandHandler extends CommandHandlerWithResult<AddW
 
         private WorkTimeSettingService workTimeSettingService;
 
-        private BasicScheduleService basicScheduleService;
-
         @Override
         public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
             return service.checkNeededOfWorkTimeSetting(workTypeCode);
@@ -103,11 +105,6 @@ public class UpdateWorkCycleCommandHandler extends CommandHandlerWithResult<AddW
         }
 
         @Override
-        public WorkStyle checkWorkDay(String workTypeCode) {
-            return basicScheduleService.checkWorkDay(workTypeCode);
-        }
-
-        @Override
         public boolean exists(String cid, String code) {
             return workCycleRepository.exists(cid, code);
         }
@@ -121,6 +118,30 @@ public class UpdateWorkCycleCommandHandler extends CommandHandlerWithResult<AddW
         public void update(WorkCycle item) {
             this.workCycleRepository.update(item);
         }
+
+		@Override
+		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
     }
 
     @AllArgsConstructor
@@ -135,8 +156,6 @@ public class UpdateWorkCycleCommandHandler extends CommandHandlerWithResult<AddW
         private WorkTimeSettingRepository workTimeSettingRepository;
 
         private WorkTimeSettingService workTimeSettingService;
-
-        private BasicScheduleService basicScheduleService;
 
         @Override
         public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
@@ -158,9 +177,29 @@ public class UpdateWorkCycleCommandHandler extends CommandHandlerWithResult<AddW
             return workTimeSettingService .getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
         }
 
-        @Override
-        public WorkStyle checkWorkDay(String workTypeCode) {
-            return basicScheduleService.checkWorkDay(workTypeCode);
-        }
+		@Override
+		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
     }
 }

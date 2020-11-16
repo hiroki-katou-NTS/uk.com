@@ -17,7 +17,11 @@ import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySetting;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySettingRepository;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
@@ -52,7 +56,7 @@ public class MonthlyPatternRegisterCommandHandler extends CommandHandler<Monthly
     protected void handle(CommandHandlerContext<MonthlyPatternRegisterCommand> commandHandlerContext) {
         MonthlyPatternRegisterCommand command = commandHandlerContext.getCommand();
         RequireImpl require = new RequireImpl(basicScheduleService, workTypeRepo, workTimeSettingRepository,
-                workTimeSettingService, basicScheduleService,workMonthlySettingRepository);
+                workTimeSettingService, workMonthlySettingRepository);
         // 登録する(Require, 月間パターンの勤務情報, boolean)
         command.getWorkMonthlySetting().forEach((item) -> {
             Optional<AtomTask> persist = WorkMonthlySettingService.register(require, command.toDomain(item),
@@ -74,8 +78,6 @@ public class MonthlyPatternRegisterCommandHandler extends CommandHandler<Monthly
         private WorkTimeSettingRepository workTimeSettingRepository;
 
         private WorkTimeSettingService workTimeSettingService;
-
-        private BasicScheduleService basicScheduleService;
 
         private WorkMonthlySettingRepository workMonthlySettingRepository;
 
@@ -120,9 +122,28 @@ public class MonthlyPatternRegisterCommandHandler extends CommandHandler<Monthly
             return workTimeSettingService .getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
         }
 
-        @Override
-        public WorkStyle checkWorkDay(String workTypeCode) {
-            return basicScheduleService.checkWorkDay(workTypeCode);
-        }
+		@Override
+		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
     }
 }
