@@ -48,6 +48,29 @@ module nts.uk.ui.com.sample.fullcalendar {
         scrollTime: KnockoutObservable<number> = ko.observable(420);
         slotDuration: KnockoutObservable<number> = ko.observable(30);
 
+        allDayEvents: KnockoutObservableArray<any> = ko.observableArray([{
+            date: moment().toDate(),
+            events: [
+                '勤怠　8:00 ~ 17:00',
+                '休憩　1:00',
+                '総労働時間　8:00'
+            ]
+        }, {
+            date: moment().add(2, 'day').toDate(),
+            events: [
+                '勤怠　8:00 ~ 17:00',
+                '休憩　1:00',
+                '総労働時間　8:00'
+            ]
+        }, {
+            date: moment().add(3, 'day').toDate(),
+            events: [
+                '勤怠　8:00 ~ 17:00',
+                '休憩　1:00',
+                '総労働時間　8:00'
+            ]
+        }]);
+
         show: KnockoutObservable<boolean> = ko.observable(true);
 
         changeVisible() {
