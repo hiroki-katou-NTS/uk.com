@@ -13,6 +13,7 @@ import nts.arc.task.tran.TransactionService;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.gateway.dom.login.CheckIfCanLogin;
 import nts.uk.ctx.sys.gateway.dom.tenantlogin.FindTenant;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthentication;
 import nts.uk.ctx.sys.shared.dom.employee.EmployeeImport;
 import nts.uk.ctx.sys.shared.dom.user.User;
 
@@ -47,9 +48,10 @@ public abstract class LoginCommandHandlerBase<
 		
 		/* テナントロケーター処理 */
 		
-		// テナント認証
 		Req require = getRequire(command);
-		val opTenant = FindTenant.byTenantCode(require, command.getTenantCode(), GeneralDate.today());
+
+		// テナント認証
+		val opTenant = require.getTenantAuthentication(command.getTenantCode());
 		if(!opTenant.isPresent()) {
 			return getResultOnFailTenantAuth();
 		}
@@ -157,9 +159,7 @@ public abstract class LoginCommandHandlerBase<
 		BuildLoginEmployeeSession.Require,
 		FindTenant.Require,
 		CheckIfCanLogin.Require {
+		
+		Optional<TenantAuthentication> getTenantAuthentication(String tenantCode);
 	}	
 }
-
-
-
-// privateかpublicか整理しておく

@@ -52,4 +52,18 @@ public class AccountLockPolicy extends AggregateRoot {
 		
 		return Optional.empty();
 	}
+	
+	/**
+	 * ロックされているか
+	 * @param require
+	 * @param userId
+	 * @return
+	 */
+	public boolean isLocked(RequireIsLocked require, String userId) {
+		return isUse && require.getLockOutData(userId).isPresent();
+	}
+
+	public static interface RequireIsLocked {
+		Optional<LockOutData> getLockOutData(String userId);
+	}
 }

@@ -35,7 +35,7 @@ public class AuthenticateEmployeePassword {
 	}
 	
 	public static interface Require extends
-			FindUser.Require,
+			FindUser.RequireByEmployeeCode,
 			FailedAuthenticateEmployeePassword.Require {
 		
 	}

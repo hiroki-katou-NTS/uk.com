@@ -1,8 +1,12 @@
 package nts.uk.ctx.sys.gateway.dom.login;
 
+import java.util.Optional;
+
 import lombok.val;
 import nts.uk.ctx.sys.gateway.dom.outage.CheckSystemAvailability;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
 import nts.uk.ctx.sys.shared.dom.company.CompanyInforImport;
+import nts.uk.ctx.sys.shared.dom.user.FindUser;
 
 /**
  * ログインできるかチェックする
@@ -11,22 +15,41 @@ public class CheckIfCanLogin {
 
 	public static Result check(Require require, String tenantCode, String companyId, String employeeId) {
 		
+		// 会社の廃止
 		val company = require.getCompanyInforImport(companyId);
 		if (company.isAbolished()) {
 			
 		}
 		
+		// システム利用停止
 		val status = CheckSystemAvailability.isAvailable(require, tenantCode, companyId);
 		if (!status.isAvailable()) {
 			
 		}
+		
+		// アカウントロック
+		val user = FindUser.byEmployeeId(require, employeeId).get();
+		boolean isAccountLocked = require.getAccountLockPolicy(tenantCode)
+				.map(p -> p.isLocked(require, user.getUserID()))
+				.orElse(false);
+		if (isAccountLocked) {
+			
+		}
+		
+		return null;
 	}
 	
 	public static class Result {
 		
 	}
 	
-	public static interface Require extends CheckSystemAvailability.Require {
+	public static interface Require extends
+			CheckSystemAvailability.Require,
+			AccountLockPolicy.RequireIsLocked,
+			FindUser.RequireByEmployeeId {
+		
 		CompanyInforImport getCompanyInforImport(String companyId);
+		
+		Optional<AccountLockPolicy> getAccountLockPolicy(String tenantCode);
 	}
 }

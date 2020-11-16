@@ -17,25 +17,18 @@ import lombok.Value;
 import lombok.val;
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
 import nts.arc.task.tran.AtomTask;
-import nts.arc.time.GeneralDate;
 import nts.gul.security.saml.SamlResponseValidator;
 import nts.gul.security.saml.SamlResponseValidator.ValidateException;
 import nts.gul.security.saml.ValidSamlResponse;
 import nts.uk.ctx.sys.gateway.app.command.login.LoginCommandHandlerBase;
-import nts.uk.ctx.sys.gateway.dom.role.RoleFromUserIdAdapter;
-import nts.uk.ctx.sys.gateway.dom.role.RoleFromUserIdAdapter.RoleInfoImport;
+import nts.uk.ctx.sys.gateway.app.command.login.LoginRequire;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.saml.FindSamlSetting;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.saml.IdpUserAssociation;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.saml.IdpUserAssociationRepository;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthentication;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationRepository;
-import nts.uk.ctx.sys.shared.dom.company.CompanyInformationAdapter;
-import nts.uk.ctx.sys.shared.dom.company.CompanyInformationImport;
 import nts.uk.ctx.sys.shared.dom.employee.EmployeeImport;
 import nts.uk.ctx.sys.shared.dom.employee.SysEmployeeAdapter;
 import nts.uk.ctx.sys.shared.dom.user.FindUser;
 import nts.uk.ctx.sys.shared.dom.user.User;
-import nts.uk.ctx.sys.shared.dom.user.UserRepository;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -54,18 +47,6 @@ public class SamlValidateCommandHandler extends LoginCommandHandlerBase<
 	
 	@Inject
 	private SysEmployeeAdapter employeeAdapter;
-	
-	@Inject
-	private UserRepository userRepository;
-	
-	@Inject
-	private CompanyInformationAdapter companyInformationAdapter;
-	
-	@Inject
-    private TenantAuthenticationRepository tenantAuthenticationRepository;
-	
-	@Inject
-    private RoleFromUserIdAdapter roleFromUserIdAdapter;
 	
 	// テナント認証失敗時
 	@Override
@@ -123,7 +104,7 @@ public class SamlValidateCommandHandler extends LoginCommandHandlerBase<
 		}
 		
 		// 認証成功
-		Optional<User> optUser = FindUser.byEmployeeCode(require, employee.getCompanyId(), employee.getEmployeeCode());
+		Optional<User> optUser = FindUser.byEmployeeId(require, employee.getEmployeeId());
 		return AuthenResult.success(optEmployee.get(), optUser.get(), relayState.getRequestUrl());
 	}
 	
@@ -144,17 +125,11 @@ public class SamlValidateCommandHandler extends LoginCommandHandlerBase<
 	static class AuthenResult implements LoginCommandHandlerBase.AuthenticationResult{
 		
 		private boolean isSuccess;
-		
 		private EmployeeImport employee;
-
 		private User user;
-
 		private String requestUrl;
-		
 		private String errorMessage;
-		
 		private Optional<AtomTask> atomTask;
-		
 		
 		public static AuthenResult success(EmployeeImport employeeImport, User user, String requestUrl) {
 			return new AuthenResult(true, employeeImport, user, requestUrl, null, Optional.empty());
@@ -175,55 +150,21 @@ public class SamlValidateCommandHandler extends LoginCommandHandlerBase<
 		}
 	}
 	
-	
-	public static interface Require extends FindUser.Require, 
-											LoginCommandHandlerBase.Require{
+	public static interface Require extends FindUser.RequireByEmployeeId, 
+											LoginCommandHandlerBase.Require {
 	}
 	
 	@Override
-	protected Require getRequire() {
+	protected Require getRequire(SamlValidateCommand command) {
 		return EmbedStopwatch.embed(new RequireImpl());
 	}
 	
-	public class RequireImpl implements Require {
+	public class RequireImpl extends LoginRequire.BaseImpl implements Require {
 
 		@Override
-		public Optional<String> getPersonalId(String companyId, String employeeCode) {
-			val empInfo = employeeAdapter.getCurrentInfoByScd(companyId, employeeCode);
-			if(!empInfo.isPresent()) {
-				return Optional.empty();
-			}
-			return Optional.of(empInfo.get().getPersonalId());
-		}
-
-		@Override
-		public Optional<User> getUser(String personalId) {
-			return userRepository.getByAssociatedPersonId(personalId);
-		}
-
-		@Override
-		public CompanyInformationImport getCompanyInformationImport(String companyId) {
-			return companyInformationAdapter.findById(companyId);
-		}
-
-		@Override
-		public Optional<TenantAuthentication> getTenantAuthentication(String tenantCode) {
-			return tenantAuthenticationRepository.find(tenantCode);
-		}
-
-		@Override
-		public Optional<TenantAuthentication> getTenantAuthentication(String tenantCode, GeneralDate date) {
-			return tenantAuthenticationRepository.find(tenantCode, date);
-		}
-		
-		@Override
-		public Optional<RoleInfoImport> getRoleInfoImport(String userId, int roleType, GeneralDate baseDate, String comId) {
-			return roleFromUserIdAdapter.getRoleInfoFromUser(userId, roleType, baseDate, comId);
-		}
-		
-		@Override
-		public String getRoleId(String userId, Integer roleType, GeneralDate baseDate) {
-			return roleFromUserIdAdapter.getRoleFromUser(userId, roleType, baseDate);
+		public Optional<String> getPersonalIdByEmployeeId(String employeeId) {
+			return employeeAdapter.getCurrentInfoBySid(employeeId)
+					.map(e -> e.getPersonalId());
 		}
 	}
 }
