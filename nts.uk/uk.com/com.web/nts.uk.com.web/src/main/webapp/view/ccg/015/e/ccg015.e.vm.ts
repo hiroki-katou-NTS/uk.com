@@ -2,6 +2,11 @@
 
 module nts.uk.com.view.ccg015.e {
 
+  const KEY_DATA_PART_TYPE = 'data-part-type';
+  const MENU_CREATION_LAYOUT_ID = 'menu-creation-layout';
+  const CSS_CLASS_MENU_CREATION_ITEM_CONTAINER = 'menu-creation-item-container';
+  const CSS_CLASS_MENU_CREATION_ITEM = 'menu-creation-item';
+
   @bean()
   export class ScreenModel extends ko.ViewModel {
 
@@ -13,6 +18,10 @@ module nts.uk.com.view.ccg015.e {
     params: any = {};
     layoutClone: JQuery;
 
+    // new params
+    $menuCreationLayout: JQuery = null;
+    isMouseInsideLayout: KnockoutObservable<boolean> = ko.observable(false);
+
     created(params: any) {
       const vm = this;
       vm.params = params;
@@ -20,12 +29,90 @@ module nts.uk.com.view.ccg015.e {
 
     mounted() {
       const vm = this;
-      vm.draggableItem();
-      vm.droppableItem();
-      vm.draggableItemContainer2();
-      vm.checkDataLayout(vm.params);
+      // Init dropable layout
+      vm.$menuCreationLayout = $(`#${MENU_CREATION_LAYOUT_ID}`);
+      vm.$menuCreationLayout
+        .droppable({
+          accept: ".menu-creation-option:not(.disabled)",
+        })
+        .mouseenter(() => {
+          console.log('enter');
+          vm.isMouseInsideLayout(true);
+        })
+        .mouseleave(() => {
+          console.log('leave');
+          vm.isMouseInsideLayout(false);
+        });
+      // Init dragable item
+      vm.initDragable();
+
+      // vm.draggableItem();
+      // vm.droppableItem();
+      // vm.draggableItemContainer2();
+      // vm.checkDataLayout(vm.params);
       // vm.removeItem();
     }
+
+    private initDragable() {
+      const vm = this;
+      $(".menu-creation-option:not(.disabled)").draggable({
+        appendTo: `#${MENU_CREATION_LAYOUT_ID}`,
+        helper: "clone",
+        start: (event, ui) => {
+          LayoutUtils.startDragItemFromMenu(ui);
+        },
+        drag: (event, ui) => {
+          // const partSize = LayoutUtils.getPartSize(ui.helper.attr(KEY_DATA_PART_TYPE));
+          // vm.renderHoveringItemOnDrag(ui, partSize.width, partSize.height);
+        },
+        stop: (event, ui) => {
+          if (vm.isMouseInsideLayout()) {
+            vm.createItemFromMenu(ui, ui.helper.attr(KEY_DATA_PART_TYPE));
+          }
+        },
+      });
+      $(".menu-creation-option.disabled").draggable('disable');
+    }
+
+    /**
+     * Create new item on drop from menu
+     * @param item
+     */
+    private createItemFromMenu(part: JQueryUI.DraggableEventUIParams, partType: string) {
+      const vm = this;
+      // Remove drag item
+      // part.helper.remove();
+      // Disable menu
+      $(`.menu-creation-option[${KEY_DATA_PART_TYPE}=${partType}]`)
+        .addClass('disabled');
+      vm.$nextTick(() => vm.initDragable());
+      // Add new item
+      const $newPart = $("<div>", { "class": CSS_CLASS_MENU_CREATION_ITEM_CONTAINER }).append($('<div>', { 'class': `${CSS_CLASS_MENU_CREATION_ITEM}` }));
+      switch (partType) {
+        case MenuPartType.PART_KTG_005:
+          break;
+        case MenuPartType.PART_KTG_001:
+          break;
+        case MenuPartType.PART_KTG_004:
+          break;
+        case MenuPartType.PART_KTG_026:
+          break;
+        case MenuPartType.PART_KTG_027:
+          break;
+        case MenuPartType.PART_KDP_001:
+          break;
+        case MenuPartType.PART_KTG_031:
+          break;
+        case MenuPartType.PART_CCG_005:
+          break;
+        default:
+          break;
+      }
+      vm.$menuCreationLayout.append($newPart);
+    }
+
+
+
 
     checkDataLayout(params: any) {
       const vm = this;
@@ -70,7 +157,7 @@ module nts.uk.com.view.ccg015.e {
         flowMenuCd: null,
         flowMenuUpCd: null,
         url: null,
-        widgetSettings: [{ widgetType: 1, order:1 }, { widgetType: 3, order:2 }, { widgetType: 4, order:3 }],
+        widgetSettings: [{ widgetType: 1, order: 1 }, { widgetType: 3, order: 2 }, { widgetType: 4, order: 3 }],
       };
       vm.$blockui("grayout");
       vm.$ajax('/toppage/saveLayoutWidget', data)
@@ -230,6 +317,31 @@ module nts.uk.com.view.ccg015.e {
       const vm = this;
       vm.$window.close();
     }
+  }
+
+  export class LayoutUtils {
+
+    /**
+     * Start drag item from menu
+     * @param item
+     * @param width
+     * @param height
+     */
+    static startDragItemFromMenu(item: JQueryUI.DraggableEventUIParams) {
+      // Init size + style for dragging item
+      item.helper.css({ 'opacity': '0.7' });
+    }
+  }
+
+  export enum MenuPartType {
+    PART_KTG_005 = '1',
+    PART_KTG_001 = '2',
+    PART_KTG_004 = '3',
+    PART_KTG_026 = '4',
+    PART_KTG_027 = '5',
+    PART_KDP_001 = '6',
+    PART_KTG_031 = '7',
+    PART_CCG_005 = '8',
   }
 
   interface WidgetItem {

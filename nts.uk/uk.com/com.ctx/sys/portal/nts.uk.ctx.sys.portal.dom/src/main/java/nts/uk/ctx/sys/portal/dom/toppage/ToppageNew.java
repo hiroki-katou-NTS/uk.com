@@ -38,9 +38,7 @@ public class ToppageNew extends AggregateRoot {
 
 	public void setMemento(MementoSetter memento) {
 		memento.setCid(this.cid);
-		if (this.layoutDisp != null) {
-			memento.setLayoutDisp(BigDecimal.valueOf(this.layoutDisp.value));
-		}
+		memento.setLayoutDisp(BigDecimal.valueOf(this.layoutDisp.value));
 		memento.setTopPageCode(this.topPageCode.v());
 		memento.setTopPageName(this.topPageName.v());
 	}

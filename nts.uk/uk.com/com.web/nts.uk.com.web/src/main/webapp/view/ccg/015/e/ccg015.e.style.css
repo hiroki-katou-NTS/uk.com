@@ -34,7 +34,6 @@
 
 .pl-20 {
   padding-left: 20px;
-
 }
 
 .pr-10 {
@@ -51,11 +50,6 @@
 
 .pt-30 {
   padding-top: 30px;
-}
-
-/* width css */
-.w_100_layout {
-  width: calc(100% - 20px);
 }
 
 .w-100 {
@@ -103,12 +97,12 @@
 }
 
 .box-container {
-	height: 500px;
+  height: 500px;
 }
 
 /* css item drag drop */
 .box-item {
-	z-index: 1000
+  z-index: 1000;
 }
 
 .border_items {
@@ -117,20 +111,6 @@
 
 .scroll_container_2 {
   overflow: scroll;
-}
-
-.items_row {
-  display: none;
-  height: 20px;
-}
-
-.panel-content:hover > .items_row {
-  display: flex !important;
-  justify-content: flex-end;
-}
-
-.panel-content:hover > .widget_layout {
-  margin-top: 0px;
 }
 
 .item_opacity {
@@ -144,16 +124,6 @@
 
 .click_icons_item {
   cursor: pointer;
-}
-
-.widget_layout {
-  margin-top: 20px;
-  width: 470px;
-}
-
-.test {
-  display: none;
-  border: 1px solid;
 }
 
 #container2 {
@@ -188,6 +158,110 @@
   display: block;
 }
 
-.pd-items {
-  padding: 10px 10px 0 0;
+/* Refactor CSS */
+.main-area {
+  padding: 20px;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.header-area {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+}
+.header-area > .header-label {
+  width: 250px;
+  margin-bottom: 20px;
+}
+.header-area > .layout-label {
+  margin-bottom: 5px;
+}
+
+.contents-area {
+  display: flex;
+  flex-direction: row;
+}
+
+.arrow-container {
+  width: 50px;
+  height: 320px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.arrow-container > .arrow {
+  color: #e0f59e;
+  border-width: 35px 20px;
+  border-left: 1em solid;
+  border-top: 1em solid transparent;
+  border-bottom: 1em solid transparent;
+  content: "";
+  display: inline-block;
+  width: 0;
+  height: 0;
+  vertical-align: middle;
+  font-size: 1em;
+}
+
+/* Left section */
+.contents-area > #menu-item-container {
+  width: 200px;
+  height: 100%;
+  box-sizing: border-box;
+}
+.contents-area > #menu-item-container > .menu-note {
+  padding: 10px 5px;
+}
+.menu-creation-option {
+  width: 100%;
+  max-width: 200px;
+  height: 40px;
+  border: 1px solid #bcbcbc;
+  cursor: grab;
+  box-sizing: border-box;
+  background-color: #eeeeee;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  opacity: 1;
+}
+.menu-creation-option.disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Right section */
+.contents-area > #menu-creation-layout {
+  width: calc(100% - 200px - 50px);
+  height: 470px;
+  border: solid 2px #607d8b;
+  overflow: auto;
+}
+.menu-creation-item-container {
+  margin: 2px;
+  box-sizing: border-box;
+  width: calc(100% - 4px);
+  min-height: 60px;
+  border: 1px solid #aaaaaa;
+}
+
+.widget-setting {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  flex-direction: row;
+  background-color: bisque;
+}
+.widget-setting > i:not(:last-child) {
+  margin-right: 5px;
+}
+
+.widget-frame {
+  width: 100%;
 }

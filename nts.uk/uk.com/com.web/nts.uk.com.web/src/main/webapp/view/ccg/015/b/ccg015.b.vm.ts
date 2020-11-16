@@ -19,7 +19,7 @@ module nts.uk.com.view.ccg015.b {
     topPageModelParam: KnockoutObservable<TopPageModelParams> = ko.observable(new TopPageModelParams());
     columns: KnockoutObservable<any> = ko.observableArray([]);
     isNewMode: KnockoutObservable<boolean> = ko.observable(true);
-    selectedId: KnockoutObservable<number> = ko.observable(1);
+    selectedId: KnockoutObservable<number> = ko.observable(null);
     isVisiableButton1: KnockoutObservable<boolean> = ko.observable(true);
     isVisiableButton2: KnockoutObservable<boolean> = ko.observable(false);
     isVisiableButton3: KnockoutObservable<boolean> = ko.observable(false);
@@ -46,15 +46,15 @@ module nts.uk.com.view.ccg015.b {
         vm.button1Text(isLayout2or3 ? vm.$i18n("CCG015_60") : vm.$i18n("CCG015_59"));
         vm.button2Text(isLayout2or3 ? vm.$i18n("CCG015_59") : vm.$i18n("CCG015_60"));
         // Render layout
-        if (vm.selectedId() === LayoutType.LAYOUT_TYPE_0) {
+        if (value === LayoutType.LAYOUT_TYPE_0) {
           vm.isVisiableButton1(true);
           vm.isVisiableButton2(false);
           vm.isVisiableButton3(false);
-        } else if (vm.selectedId() === LayoutType.LAYOUT_TYPE_1) {
+        } else if (value === LayoutType.LAYOUT_TYPE_1) {
           vm.isVisiableButton1(true);
           vm.isVisiableButton2(true);
           vm.isVisiableButton3(false);
-        } else if (vm.selectedId() === LayoutType.LAYOUT_TYPE_2) {
+        } else if (value === LayoutType.LAYOUT_TYPE_2) {
           vm.isVisiableButton1(true);
           vm.isVisiableButton2(true);
           vm.isVisiableButton3(false);
@@ -69,6 +69,7 @@ module nts.uk.com.view.ccg015.b {
 
     mounted() {
       const vm = this;
+      vm.selectedId(1);
       vm.toppageSelectedCode.subscribe((selectedTopPageCode: string) => {
         if (selectedTopPageCode) {
           vm.isNewMode(false);

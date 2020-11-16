@@ -1,32 +1,41 @@
-/******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
- * All right reserved.                                            *
- *****************************************************************/
 package nts.uk.ctx.sys.portal.app.command.toppage;
+
+import java.math.BigDecimal;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.sys.portal.dom.toppage.TopPage;
-import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.sys.portal.dom.toppage.ToppageNew;
 
 @Getter
 @Setter
-public class TopPageBaseCommand {
+public class TopPageBaseCommand implements ToppageNew.MementoSetter, ToppageNew.MementoGetter {
 	
-	/** The top page code. */
+	/** コード */
 	private String topPageCode;
-	
-	/** The layout id. */
-	private String layoutId;
-	
-	/** The top page name. */
+	/** レイアウトの表示種類 */
+	private int layoutDisp;
+	/** 会社ID */
+	private String cid;
+	/** 名称 */
 	private String topPageName;
 	
-	/** The Language number. */
-	private Integer languageNumber;
-	
-	public TopPage toDomain(){
-		String companyId = AppContexts.user().companyId();
-		return  TopPage.createFromJavaType(companyId,topPageCode,layoutId, topPageName, languageNumber);
+	@Override
+	public BigDecimal getLayoutDisp() {
+		return BigDecimal.valueOf(this.layoutDisp);
+	}
+
+	@Override
+	public String getCid() {
+		return this.cid;
+	}
+
+	@Override
+	public void setLayoutDisp(BigDecimal layoutDisp) {
+		this.layoutDisp = layoutDisp.intValue();
+	}
+
+	@Override
+	public void setCid(String cid) {
+		this.cid = cid;
 	}
 }
