@@ -9,8 +9,7 @@ module nts.uk.at.view.kmk004.b {
 	const DATE_FORMAT = 'YYYY/MM/DD';
 
 	interface Params {
-		// employees: KnockoutObservableArray<IModel>;
-		// baseDate: KnockoutObservable<string>;
+		employees: KnockoutObservableArray<IEmployee>;
 	}
 
 	@component({
@@ -71,22 +70,31 @@ module nts.uk.at.view.kmk004.b {
 					* @param: data: the data return from CCG001
 					*/
 					returnDataFromCcg001: function(data: any) {
-						// vm.params.baseDate(moment.utc(data.baseDate, DATE_FORMAT).format("YYYY-MM-DD"));
 
-						// vm.params.employees([]);
+						vm.params.employees([]);
 
-						// const employees = data.listEmployee
-						// 	.map((m: any) => ({
-						// 		affiliationId: m.affiliationId,
-						// 		affiliationName: m.affiliationName,
-						// 		code: m.employeeCode,
-						// 		name: m.employeeName,
-						// 		employeeId: m.employeeId
-						// 	}));
+						const employees = data.listEmployee
+							.map((m: IEmployee) => ({
+								affiliationCode: m.affiliationCode,
+								affiliationId: m.affiliationId,
+								affiliationName: m.affiliationName,
+								code: m.employeeCode,
+								name: m.employeeName,
+								employeeId: m.employeeId
+							}));
 
-						// vm.params.employees(employees);
+						vm.params.employees(employees);
 					}
 				});
 		}
+	}
+
+	export interface IEmployee {
+		affiliationCode: String;
+		affiliationId: String;
+		affiliationName: String;
+		employeeCode: String;
+		employeeId: String;
+		employeeName: String;
 	}
 }
