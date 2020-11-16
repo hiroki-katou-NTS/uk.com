@@ -22,7 +22,12 @@ public class ComSubstVacation extends DomainObject {
 	/** The setting. */
 	// 振休取得・使用方法
 	private SubstVacationSetting setting;
-
+	//管理区分 
+	private ManageDistinct manageDistinct;
+	
+	//紐付け管理区分
+	private ManageDistinct  linkingManagementATR;
+	
 	/**
 	 * Checks if is managed.
 	 *
@@ -40,10 +45,13 @@ public class ComSubstVacation extends DomainObject {
 	 * @param setting
 	 *            the setting
 	 */
-	public ComSubstVacation(String companyId, SubstVacationSetting setting) {
+	public ComSubstVacation(String companyId, SubstVacationSetting setting ,ManageDistinct manageDistinct ,ManageDistinct linkingManagementATR ) {
 		super();
 		this.companyId = companyId;
 		this.setting = setting;
+		this.manageDistinct = manageDistinct;
+		this.linkingManagementATR = linkingManagementATR;
+		
 	}
 
 	// =================== Memento State Support Method ===================
@@ -56,6 +64,8 @@ public class ComSubstVacation extends DomainObject {
 	public ComSubstVacation(ComSubstVacationGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.setting = memento.getSetting();
+		this.manageDistinct = memento.getManageDistinct();
+		this.linkingManagementATR = memento.getLinkingManagementATR();
 	}
 
 	/**
@@ -67,6 +77,8 @@ public class ComSubstVacation extends DomainObject {
 	public void saveToMemento(ComSubstVacationSetMemento memento) {
 		memento.setCompanyId(this.companyId);
 		memento.setSetting(this.setting);
+		memento.setManageDistinct(this.manageDistinct);
+		memento.setLinkingManagementATR(this.linkingManagementATR);
 	}
 
 }

@@ -37,7 +37,12 @@ public class CompensatoryLeaveComSetting extends AggregateRoot {
 	// 発生設定
 	/** The occurrence vacation setting. */
 	private List<CompensatoryOccurrenceSetting> compensatoryOccurrenceSetting;
-
+    // 代休発生設定 ---
+	private SubstituteHolidaySetting substituteHolidaySetting;
+	// 紐付け管理区分
+	private ManageDistinct linkingManagementATR;
+	
+	
 	/**
 	 * Checks if is managed.
 	 *
@@ -59,6 +64,8 @@ public class CompensatoryLeaveComSetting extends AggregateRoot {
 		this.compensatoryAcquisitionUse = memento.getCompensatoryAcquisitionUse();
 		this.compensatoryDigestiveTimeUnit = memento.getCompensatoryDigestiveTimeUnit();
 		this.compensatoryOccurrenceSetting = memento.getCompensatoryOccurrenceSetting();
+		this.substituteHolidaySetting = memento.getSubstituteHolidaySetting();
+		this.linkingManagementATR = memento.getLinkingManagementATR();
 	}
 
 	/**
@@ -73,5 +80,7 @@ public class CompensatoryLeaveComSetting extends AggregateRoot {
 		memento.setCompensatoryAcquisitionUse(this.compensatoryAcquisitionUse);
 		memento.setCompensatoryDigestiveTimeUnit(this.compensatoryDigestiveTimeUnit);
 		memento.setCompensatoryOccurrenceSetting(this.compensatoryOccurrenceSetting);
+		memento.setSubstituteHolidaySetting(this.substituteHolidaySetting);
+		memento.setLinkingManagementATR(this.linkingManagementATR);
 	}
 }

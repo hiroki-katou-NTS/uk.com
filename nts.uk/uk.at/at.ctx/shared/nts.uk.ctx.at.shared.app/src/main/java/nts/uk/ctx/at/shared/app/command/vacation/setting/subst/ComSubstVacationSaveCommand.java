@@ -76,6 +76,18 @@ public class ComSubstVacationSaveCommand extends SubstVacationSaveBaseCommand {
 					ExpirationTime.valueOf(this.dto.getExpirationDate()),
 					ApplyPermission.valueOf(this.dto.getAllowPrepaidLeave()));
 		}
+
+		@Override
+		public ManageDistinct getManageDistinct() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public ManageDistinct getLinkingManagementATR() {
+			// TODO Auto-generated method stub
+			return null;
+		}
 	}
 
 }

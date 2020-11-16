@@ -19,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryD
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.SubstituteHolidaySetting;
 
 /**
  * The Class SaveCompensatoryLeaveCommand.
@@ -103,6 +104,18 @@ public class SaveCompensatoryLeaveCommand {
 			return this.command.compensatoryOccurrenceSetting.stream().map(item -> {
 				return item.toDomain();
 			}).collect(Collectors.toList());
+		}
+
+		@Override
+		public SubstituteHolidaySetting getSubstituteHolidaySetting() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public ManageDistinct getLinkingManagementATR() {
+			// TODO Auto-generated method stub
+			return null;
 		}
 	}
 }

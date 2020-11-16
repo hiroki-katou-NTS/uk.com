@@ -47,4 +47,8 @@ public interface CompensatoryLeaveComSetMemento {
 	 * @param compensatoryOccurrenceSetting the new compensatory occurrence setting
 	 */
      void setCompensatoryOccurrenceSetting(List<CompensatoryOccurrenceSetting> compensatoryOccurrenceSetting);
+     
+     void setSubstituteHolidaySetting( SubstituteHolidaySetting substituteHolidaySetting);
+     
+     void setLinkingManagementATR( ManageDistinct linkingManagementATR);
 }

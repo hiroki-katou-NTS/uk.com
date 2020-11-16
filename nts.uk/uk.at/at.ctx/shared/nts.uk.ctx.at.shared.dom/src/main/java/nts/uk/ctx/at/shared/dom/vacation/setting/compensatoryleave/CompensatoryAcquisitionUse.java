@@ -15,8 +15,8 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 // 代休取得・使用方法
 @Getter
 public class CompensatoryAcquisitionUse extends DomainObject {
-    
-	//使用期限
+	
+	// 休暇使用期限
 	/** The expiration time. */
 	private ExpirationTime expirationTime;
 	
@@ -27,6 +27,8 @@ public class CompensatoryAcquisitionUse extends DomainObject {
 	// 代休期限チェック月数
 	private DeadlCheckMonth deadlCheckMonth;
 	
+	//期限日の管理方法 
+	private TermManagement TermManagement;
 	/**
 	 * Instantiates a new compensatory acquisition use.
 	 *

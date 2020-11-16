@@ -13,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryA
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryDigestiveTimeUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.SubstituteHolidaySetting;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KclmtAcquisitionCom;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KclmtCompensLeaveCom;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KctmtDigestTimeCom;
@@ -129,5 +130,17 @@ public class JpaCompensLeaveComSetMemento implements CompensatoryLeaveComSetMeme
         }
         this.entity.setListOccurrence(listEntity);
     }
+
+	@Override
+	public void setSubstituteHolidaySetting(SubstituteHolidaySetting substituteHolidaySetting) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setLinkingManagementATR(ManageDistinct linkingManagementATR) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }
