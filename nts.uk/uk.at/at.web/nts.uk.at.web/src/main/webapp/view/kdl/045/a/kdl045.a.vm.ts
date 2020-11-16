@@ -834,6 +834,7 @@ module nts.uk.at.view.kdl045.a {
                 self.isDisableA1_7(self.informationStartup.showYourDesire);
                 if (assignmentMethod == shareModelData.AssignmentMethod.HOLIDAY) {
                     self.assignmentMethodName("休日");
+                    //nts.uk.resource.getText('Enum_AssignmentMethod_TIME_ZONE')
                     self.isDisableA1_8(false);
                 } else if (assignmentMethod == shareModelData.AssignmentMethod.SHIFT) {
                     self.assignmentMethodName("シフト");
@@ -933,17 +934,19 @@ module nts.uk.at.view.kdl045.a {
                     $('#a4-2').focus();
                     checkError =  true;
                 }
-                if(self.isEnableA5_9() && self.timeRange2Value().startTime <= self.timeRange1Value().endTime && self.timeRange2Value().endTime > self.timeRange1Value().startTime ){
-                    $('#a5-5').ntsError('set',{ messageId: 'Msg_515', messageParams: [getText('KDL045_12')] });
-                    $('#a5-5').focus();
-                    checkError =  true;
-                }
+                if(self.isShowTimeRange2){
+                    if(self.isEnableA5_9() && self.timeRange2Value().startTime <= self.timeRange1Value().endTime && self.timeRange2Value().endTime > self.timeRange1Value().startTime ){
+                        $('#a5-5').ntsError('set',{ messageId: 'Msg_515', messageParams: [getText('KDL045_12')] });
+                        $('#a5-5').focus();
+                        checkError =  true;
+                    }
                 
-                if(self.isEnableA5_9() && self.timeRange2Value().startTime <= self.timeRange1Value().startTime && self.timeRange2Value().endTime <= self.timeRange1Value().startTime ){
-                    $('#a5-9').ntsError('set',{ messageId: 'Msg_772' });
-                    $('#a5-9').focus();
-                    checkError =  true;
-                }
+                    if(self.isEnableA5_9() && self.timeRange2Value().startTime <= self.timeRange1Value().startTime && self.timeRange2Value().endTime <= self.timeRange1Value().startTime ){
+                        $('#a5-9').ntsError('set',{ messageId: 'Msg_772' });
+                        $('#a5-9').focus();
+                        checkError =  true;
+                    }
+                }  
                 
                 if(self.checkDataSourceTime()){
                     $('#kdl045').ntsError('set',{ messageId: 'Msg_1793' });
@@ -972,7 +975,7 @@ module nts.uk.at.view.kdl045.a {
             private checkDataSourceTime():boolean{
                 let self = this;
                 //Trường hợp tồn tại workNo 1
-                if(self.isEnableA5_5() && !self.isEnableA5_9()){
+                if(self.isEnableA5_5() && (!self.isEnableA5_9() || !self.isShowTimeRange2)){
                     for(let i = 0; i <self.dataSourceTime().length;i++){
                         if(! (self.dataSourceTime()[i].range1().startTime >= self.timeRange1Value().startTime 
                                 && self.dataSourceTime()[i].range1().endTime <= self.timeRange1Value().endTime)){
@@ -981,7 +984,7 @@ module nts.uk.at.view.kdl045.a {
                     }
                 }
                 //Trường hợp tồn tại workNo 1 và 2
-                if(self.isEnableA5_5() && self.isEnableA5_9()){
+                if(self.isEnableA5_5() && self.isEnableA5_9() && self.isShowTimeRange2){
                     for(let i = 0; i <self.dataSourceTime().length;i++){
                         if(!( (self.dataSourceTime()[i].range1().startTime >= self.timeRange1Value().startTime 
                                 && self.dataSourceTime()[i].range1().endTime <= self.timeRange1Value().endTime) ||

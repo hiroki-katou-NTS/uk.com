@@ -95,7 +95,7 @@
 											<!-- A4_2 -->
 											<button tabindex="3" id ="a4-2" data-bind="click: openDialogKDL003 , enable: isEnableA4_2">#{i18n.getText('KDL045_9')}</button>
 										</td>
-										<com:ko-if bind="isExistWorkType() == true">
+										<com:ko-if bind="isExistWorkType() == true  &amp;&amp; isDisableA4_6() == true">
 											<td >
 												<!-- A4_3 -->
 												<div>#{i18n.getText('KDL045_10')}</div>
@@ -105,9 +105,19 @@
 												<div><span data-bind="text: workType()"></span>　　<span data-bind="text: workTypeName()"></span></div>
 											</td>
 										</com:ko-if>
+										<com:ko-if bind="isExistWorkType() == true  &amp;&amp; isDisableA4_6() == false">
+											<td style="padding-top: 5px;">
+												<!-- A4_3 -->
+												<div>#{i18n.getText('KDL045_10')}</div>
+											</td>
+											<td >
+												<!-- A4_4 --> <!-- A4_5 -->
+												<div><span data-bind="text: workType()"></span>　　<span data-bind="text: workTypeName()"></span></div>
+											</td>
+										</com:ko-if>
 									</tr>
+									<com:ko-if bind="isDisableA4_6() == true">
 									<tr>
-										<com:ko-if bind="isDisableA4_6() == true">
 											<td >
 												<!-- A4_6 -->
 												<div>#{i18n.getText('KDL045_11')}</div>
@@ -116,8 +126,8 @@
 												<!-- A4_7 --> <!-- A4_8 -->
 												<div><span data-bind="text: workTime()"></span>　　<span data-bind="text: workTimeName()"></span></div>
 											</td>
-										</com:ko-if>
 									</tr>
+									</com:ko-if>
 								</table>
 								<!-- A5 -->
 								<div class="panel panel-frame" style="width:704px; height: 330px">
@@ -863,7 +873,7 @@
 					<button tabindex="19" data-bind="click: closeDialog">#{i18n.getText('KDL045_44')}</button>
 				</com:ko-if>
 				<com:ko-if bind="canModified == false">
-					<button tabindex="20" data-bind="click: closeDialog">#{i18n.getText('KDL045_45')}</button>
+					<button id ="closeDialog-2" tabindex="20" data-bind="click: closeDialog">#{i18n.getText('KDL045_45')}</button>
 				</com:ko-if>
 			</div>
 		</ui:define> 
