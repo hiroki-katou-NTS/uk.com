@@ -84,16 +84,17 @@ public class FurikyuMngDataExtractionService {
 				substitutionOfHDManagementData = substitutionOfHDManaDataRepository.getBysiDAndAtr(cid, empId);
 			}
 			// Step ドメイン「振出振休紐付け管理」を取得する
-			if (substitutionOfHDManagementData.isEmpty()) {
+			if (!payoutManagementData.isEmpty()) {
 				List<GeneralDate> listPayoutDate = payoutManagementData.stream().map(x -> x.getPayoutDate().getDayoffDate().orElse(null))
 						.collect(Collectors.toList());
-				payoutSubofHDManagementLinkToPayout = payoutSubofHDManaRepository.getByListOccDate(empId,
-						listPayoutDate);
-			} else {
+				payoutSubofHDManagementLinkToPayout.addAll(payoutSubofHDManaRepository.getByListOccDate(empId,
+						listPayoutDate));
+			}
+			if (!substitutionOfHDManagementData.isEmpty()) {
 				List<GeneralDate> listSubDate = substitutionOfHDManagementData.stream().map(x -> {
 					return x.getHolidayDate().getDayoffDate().orElse(null);
 				}).collect(Collectors.toList());
-				payoutSubofHDManagementLinkToPayout = payoutSubofHDManaRepository.getByListDate(empId, listSubDate);
+				payoutSubofHDManagementLinkToPayout.addAll(payoutSubofHDManaRepository.getByListDate(empId, listSubDate));
 			}
 			
 			// Step 振休残数データ情報を作成
