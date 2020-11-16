@@ -1183,6 +1183,12 @@ public class ProgramsManager {
             "/view/kmf/001/l/index.xhtml");
 
     /**
+     * The Constant KMF001M.
+     */
+    public static final Program KMF001M = new Program(WebAppId.AT, ProgramIdConsts.KMF001M, "KMF001_335",
+            "/view/kmf/001/m/index.xhtml");
+
+    /**
      * KMF003A
      */
     public static final Program KMF003A = new Program(WebAppId.AT, ProgramIdConsts.KMF003A, "KMF003_1",
