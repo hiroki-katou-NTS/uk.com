@@ -174,14 +174,14 @@ module nts.uk.at.view.ksu001.g {
                                         conditionList: ["contain", "notContain"],                                       
                                         customConditions: {                                           
                                             contain: {
-                                                labelText: "～を含む",
-                                                expressionText: "～を含む",
+                                                labelText: getText('KSU001_4062'),
+                                                expressionText: getText('KSU001_4062'),
                                                 requireExpr: true,
                                                 filterFunc: self.contains
                                             },
                                             notContain: {
-                                                labelText: "～を含まない",
-                                                expressionText: "～を含まない",
+                                                labelText: getText('KSU001_4063'),
+                                                expressionText: getText('KSU001_4063'),
                                                 requireExpr: true,
                                                 filterFunc: self.doesNotContain
                                             }
