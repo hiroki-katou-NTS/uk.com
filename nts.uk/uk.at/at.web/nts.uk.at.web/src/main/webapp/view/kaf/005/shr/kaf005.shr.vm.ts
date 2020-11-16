@@ -85,26 +85,25 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 						<th class="ui-widget-header" rowspan="2" data-bind="text: $i18n('KAF005_54')"></th>
 					</tr>
 				</thead>
-				<tbody data-bind="foreach: overtimeHours">
+				<tbody data-bind="foreach: overTime">
 					<tr>
 						<!--A6_7 残業時間名称-->
 						<td class="header"
-							data-bind="text: frameName"></td>
+							data-bind="text: frameNo"></td>
 						<!--A6_8 残業申請時間入力-->
 						<td>
 							<input tabindex="15" class="right-content overtimeHoursCheck"
 							data-bind=" 
-								ntsTimeEditor: {
-									name: nameID, 
-									value: applicationTime, 
+								ntsTimeEditor: { 
+									value: applicationTime,
 									option: {width: '80px'}, 
 									constraint:'OvertimeAppPrimitiveTime',
 									enable: true }" />
 						</td>
 						<!--A6_9 残業事前申請時間-->
-						<td class="right-content" data-bind="text: 'preAppTime'"></td>
+						<td class="right-content" data-bind="text: String(ko.toJS(preTime))"></td>
 						<!--A6_11 実績時間-->
-						<td class="right-content" data-bind="text: 'caculationTime'"></td>
+						<td class="right-content" data-bind="text: String(ko.toJS(actualTime))"></td>
 					</tr>
 				</tbody>
 			</table>
@@ -176,37 +175,15 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 		
 		holidayTime: KnockoutObservableArray<HolidayTime> = ko.observableArray([]);
 		
-		overtimeHours: KnockoutObservableArray<OverTimeInput> = ko.observableArray([]);
+		overTime: KnockoutObservableArray<OverTime> = ko.observableArray([]);
 		
 		created(params: any) {
 			
 			const self = this;
 			self.restTime = params.restTime;
 			self.holidayTime = params.holidayTime;
+			self.overTime = params.overTime;
 			
-			
-			let restTimes = [];
-			let item1 : OverTimeInput = new OverTimeInput('', '', 0, '', 1, 0, '1', 10, 15, null, '');
-			let item2 : OverTimeInput = new OverTimeInput('', '', 0, '', 2, 0, '2', 20, 25, null, '');
-			let item3 : OverTimeInput = new OverTimeInput('', '', 0, '', 3, 0, '3', null, null, null, '');
-			let item4 : OverTimeInput = new OverTimeInput('', '', 0, '', 4, 0, '4', null, null, null, '');
-			let item5 : OverTimeInput = new OverTimeInput('', '', 0, '', 5, 0, '5', null, null, null, '');
-			let item6 : OverTimeInput = new OverTimeInput('', '', 0, '', 6, 0, '6', null, null, null, '');
-			let item7 : OverTimeInput = new OverTimeInput('', '', 0, '', 7, 0, '7', null, null, null, '');
-			let item8 : OverTimeInput = new OverTimeInput('', '', 0, '', 8, 0, '8', null, null, null, '');
-			let item9 : OverTimeInput = new OverTimeInput('', '', 0, '', 9, 0, '9', null, null, null, '');
-			let item10 : OverTimeInput = new OverTimeInput('', '', 0, '', 10, 0, '10', null, null, null, '');
-			restTimes.push(item1);
-			restTimes.push(item2);
-			restTimes.push(item3);
-			restTimes.push(item4);
-			restTimes.push(item5);
-			restTimes.push(item6);
-			restTimes.push(item7);
-			restTimes.push(item8);
-			restTimes.push(item9);
-			restTimes.push(item10);
-			self.overtimeHours(restTimes);
 		}
 		
 		mounted() {
@@ -215,12 +192,13 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 			$("#fixed-table-holiday").ntsFixedTable({ height: 120 });
 			
 		}
-		
-		public openDialogKdl003() {
-			
-		}
 	}
-	
+	export interface OverTime {
+		frameNo: string;
+		applicationTime?: KnockoutObservable<number>;
+		preTime?: KnockoutObservable<number>;
+		actualTime?: KnockoutObservable<number>;
+	}
 	export interface RestTime {
 		frameNo: string;
 		start?: KnockoutObservable<number>;

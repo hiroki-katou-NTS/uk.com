@@ -1,4 +1,5 @@
 module nts.uk.at.view.kaf005.a.viewmodel {
+	import OverTime = nts.uk.at.view.kaf005.shr.viewmodel.OverTime;
 	import HolidayTime = nts.uk.at.view.kaf005.shr.viewmodel.HolidayTime;
 	import RestTime = nts.uk.at.view.kaf005.shr.viewmodel.RestTime;
 	import WorkHours = nts.uk.at.view.kaf005.shr.work_info.viewmodel.WorkHours;
@@ -20,6 +21,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		workInfo: KnockoutObservable<WorkInfo> = ko.observable(null);
 		restTime: KnockoutObservableArray<RestTime> = ko.observableArray([]);
 		holidayTime: KnockoutObservableArray<HolidayTime> = ko.observableArray([]);
+		overTime: KnockoutObservableArray<OverTime> = ko.observableArray([]);
 		dataSource: DisplayInfoOverTime;
 		created() {
 			const self = this;
@@ -27,6 +29,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			self.application = ko.observable(new Application(self.appType()));
 			self.createRestTime(self.restTime);
 			self.createHolidayTime(self.holidayTime);
+			self.createOverTime(self.overTime);
 		}
 		
 		mounted() {
@@ -62,6 +65,20 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				holidayTimeArray.push(item);
 			}
 			holidayTime(holidayTimeArray);
+		}
+		createOverTime(overTime: KnockoutObservableArray<OverTime>) {
+			const self = this;
+			let overTimeArray = [];
+			let length = 10;
+			for (let i = 1; i < length + 1; i++) {
+				let item = {} as OverTime;
+				item.frameNo = String(i);
+				item.applicationTime = ko.observable(null);
+				item.preTime = ko.observable(null);
+				item.actualTime = ko.observable(null);
+				overTimeArray.push(item);
+			}
+			overTime(overTimeArray);
 		}
 		
 		start() {
