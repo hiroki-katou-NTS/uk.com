@@ -830,20 +830,27 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             }
             
-            let workTypeCodeSave = uk.localStorage.getItem('workTypeCodeSelected');
-            let workTimeCodeSave = uk.localStorage.getItem('workTimeCodeSelected');
+            let item = uk.localStorage.getItem(self.KEY);
+            let userInfor: IUserInfor = {};
+            if (item.isPresent()) {
+                userInfor = JSON.parse(item.get());
+            }
+            
+            let workTypeCodeSave = item.isPresent() ? userInfor.workTypeCodeSelected : '';
+            let workTimeCodeSave = item.isPresent() ? userInfor.workTimeCodeSelected : '';
+            
             let workTimeCode = '';
-            if (workTimeCodeSave.isPresent()) {
-                if (workTimeCodeSave.get() === 'none') {
+            if (workTimeCodeSave != '') {
+                if (workTimeCodeSave === 'none') {
                     workTimeCode = '';
-                } else if (workTimeCodeSave.get() === 'deferred') {
+                } else if (workTimeCodeSave === 'deferred') {
                     workTimeCode = ' ';
                 } else {
-                    workTimeCode = workTimeCodeSave.get();
+                    workTimeCode = workTimeCodeSave;
                 }
             }
             self.setDataWorkType(listWorkTypeInfo);
-            __viewContext.viewModel.viewAB.selectedWorkTypeCode(workTypeCodeSave.get());
+            __viewContext.viewModel.viewAB.selectedWorkTypeCode(workTypeCodeSave);
             __viewContext.viewModel.viewAB.selected(workTimeCode);
             __viewContext.viewModel.viewAB.workplaceIdKCP013(userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId);
             __viewContext.viewModel.viewAB.filter(userInfor.unit == 0 ? true : false);
