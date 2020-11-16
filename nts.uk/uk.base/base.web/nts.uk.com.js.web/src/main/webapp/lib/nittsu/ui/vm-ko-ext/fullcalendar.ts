@@ -53,8 +53,12 @@ module nts.uk.ui.koExtentions {
             border-top-left-radius: 0px;
             border-bottom-left-radius: 0px;
         }
+        .fc-container .fc-timegrid-slot-label-bold {
+            font-weight: bold;
+        }
+        .fc-container .fc-timegrid-slot-lane-even,
         .fc-container .fc-timegrid-slot-label-even {
-            background-color: #f3f3f3;
+            background-color: #d9e3f4;
         }
         .fc-container .fc-day-today {
             background-color: #fffadf;
@@ -189,8 +193,8 @@ module nts.uk.ui.koExtentions {
     type G_EVENT = { [key: string]: J_EVENT[]; };
 
     type LOCALE = 'en' | 'ja' | 'vi';
-    type SLOT_DURATION = 5 | 10 | 15 | 20 | 30;
-    const durations: SLOT_DURATION[] = [5, 10, 15, 20, 30];
+    type SLOT_DURATION = 5 | 10 | 15 | 30;
+    const durations: SLOT_DURATION[] = [5, 10, 15, 30];
 
     enum DAY_OF_WEEK {
         SUN = 0,
@@ -449,8 +453,16 @@ module nts.uk.ui.koExtentions {
                     const { milliseconds } = opts.time;
                     const min = milliseconds / 1000 / 60;
                     const hour = Math.floor(min / 60);
+                    const minite = Math.floor(min % 60);
 
-                    return `fc-timegrid-slot-label-${hour % 2 === 0 ? 'odd' : 'even'}`;
+                    return `${!minite ? 'fc-timegrid-slot-label-bold' : ''} fc-timegrid-slot-label-${hour}`;
+                },
+                slotLaneClassNames: (opts) => {
+                    const { milliseconds } = opts.time;
+                    const min = milliseconds / 1000 / 60;
+                    const hour = Math.floor(min / 60);
+
+                    return `fc-timegrid-slot-lane-${hour}`;
                 },
                 datesSet: (dateInfo) => {
                     const { start, end } = dateInfo;
