@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -17,6 +18,7 @@ import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationDate;
@@ -25,15 +27,23 @@ import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReasonForReversion;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTimeRepository;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeApplicationSetting;
+import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36Agree;
+import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeUpperLimit;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOverTime;
-import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqdtAppWorkChange;
+import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeDetail;
+import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeDetailPk;
+import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtOvertimeInput;
+import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtOvertimeInputPK;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTimeRepository{
@@ -109,6 +119,50 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 				krqdtAppOverTime.breakTimeEnd10 = item.getTimeZone().getEndTime().v();
 			}
 		});
+		krqdtAppOverTime.overtimeInputs = new ArrayList<KrqdtOvertimeInput>();
+		
+		List<OvertimeApplicationSetting> overtimeApplicationSettings = appOverTime.getApplicationTime().getApplicationTime();
+		if (CollectionUtil.isEmpty(overtimeApplicationSettings)) {
+			krqdtAppOverTime.overtimeInputs = overtimeApplicationSettings
+				.stream()
+				.map(x -> new KrqdtOvertimeInput(
+										new KrqdtOvertimeInputPK(
+												AppContexts.user().companyId(),
+												appOverTime.getAppID(),
+												x.getAttendanceType().value,
+												x.getFrameNo().v()),
+										x.getApplicationTime().v(),
+										krqdtAppOverTime))
+				.collect(Collectors.toList());
+				
+									
+		}
+		AppOvertimeDetail appOvertimeDetail = appOverTime.getDetailOverTimeOp().orElse(null);
+		if (appOvertimeDetail != null) {
+			Time36Agree time36Agree = appOvertimeDetail.getTime36Agree();
+			Time36AgreeUpperLimit time36AgreeUpperLimit = appOvertimeDetail.getTime36AgreeUpperLimit();
+			KrqdtAppOvertimeDetail krqdtAppOvertimeDetail = new KrqdtAppOvertimeDetail(
+					new KrqdtAppOvertimeDetailPk(
+							AppContexts.user().companyId(),
+							appOverTime.getAppID()),
+					time36Agree.getApplicationTime().v(),
+					appOvertimeDetail.getYearMonth().v(),
+					time36Agree.getAgreeMonth().getActualTime().v(),
+					time36Agree.getAgreeMonth().getLimitErrorTime().v(),
+					time36Agree.getAgreeMonth().getLimitAlarmTime().v(),
+					time36Agree.getAgreeMonth().getExceptionLimitErrorTime().map(x -> x.v()).orElse(null),
+					time36Agree.getAgreeMonth().getExceptionLimitAlarmTime().map(x -> x.v()).orElse(null),
+					time36Agree.getAgreeMonth().getNumOfYear36Over().v(),
+					time36Agree.getAgreeAnnual().getActualTime().v(),
+					time36Agree.getAgreeAnnual().getLimitTime().v(),
+					time36AgreeUpperLimit.getApplicationTime().v(),
+					time36AgreeUpperLimit.getAgreeUpperLimitMonth().getOverTime().v(),
+					time36AgreeUpperLimit.getAgreeUpperLimitMonth().getUpperLimitTime().v(),
+					time36AgreeUpperLimit.getAgreeUpperLimitAverage().getUpperLimitTime().v(),
+					krqdtAppOverTime
+					);
+			krqdtAppOverTime.appOvertimeDetail = krqdtAppOvertimeDetail;
+		}
 		
 		
 		return krqdtAppOverTime;
@@ -152,6 +206,10 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 		updateAppOverTime.get().breakTimeEnd9 = krqdtAppOverTime.breakTimeEnd9;
 		updateAppOverTime.get().breakTimeStart10 = krqdtAppOverTime.breakTimeStart10;
 		updateAppOverTime.get().breakTimeEnd10 = krqdtAppOverTime.breakTimeEnd10;
+		
+		updateAppOverTime.get().overtimeInputs = krqdtAppOverTime.overtimeInputs;
+		updateAppOverTime.get().appOvertimeDetail = krqdtAppOverTime.appOvertimeDetail;
+		
 		this.commandProxy().update(updateAppOverTime.get());
 	}
 	public AppOverTime toDomain(NtsResultRecord res) {
