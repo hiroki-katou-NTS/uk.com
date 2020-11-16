@@ -5,24 +5,24 @@ module nts.uk.ui.com.sample.fullcalendar {
     export class ViewModel extends ko.ViewModel {
         events: KnockoutObservableArray<any> = ko.observableArray([{
             title: 'Conference',
-            start: moment().set('hour', 8).set('minute', 0).format(F_DATE),
-            end: moment().set('hour', 9).set('minute', 30).format(F_DATE)
+            start: moment().set('hour', 8).set('minute', 0).toDate(),
+            end: moment().set('hour', 9).set('minute', 30).toDate()
         },
         {
             groupId: 'abc',
             title: 'Meeting',
-            start: moment().set('hour', 9).set('minute', 30).format(F_DATE),
-            end: moment().set('hour', 10).set('minute', 30).format(F_DATE)
+            start: moment().set('hour', 9).set('minute', 30).toDate(),
+            end: moment().set('hour', 10).set('minute', 30).toDate()
         },
         {
             groupId: 'abc',
             title: 'Lunch',
-            start: moment().set('hour', 11).set('minute', 0).format(F_DATE),
-            end: moment().set('hour', 12).set('minute', 0).format(F_DATE)
+            start: moment().set('hour', 11).set('minute', 0).toDate(),
+            end: moment().set('hour', 12).set('minute', 0).toDate()
         }, {
             groupId: 'abc',
-            start: moment().set('hour', 9).set('minute', 30).format(F_DATE),
-            end: moment().set('hour', 12).set('minute', 0).format(F_DATE),
+            start: moment().set('hour', 9).set('minute', 30).toDate(),
+            end: moment().set('hour', 12).set('minute', 0).toDate(),
             display: 'background',
             backgroundColor: 'transparent'
         }]);

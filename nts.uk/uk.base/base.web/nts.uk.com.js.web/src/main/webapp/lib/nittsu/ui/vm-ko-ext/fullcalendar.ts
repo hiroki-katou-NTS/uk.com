@@ -385,6 +385,15 @@ module nts.uk.ui.koExtentions {
             const $el = $(vm.$el);
             const $fc = $el.find('div.fc').get(0);
             const FC: FullCalendar | null = _.get(window, 'FullCalendar') || null;
+            const mappedEvents = (events: fc.EventApi[] | KnockoutObservableArray<fc.EventApi>) => {
+                const wraped = ko.unwrap(events) as fc.EventApi[];
+
+                return wraped.map(m => ({
+                    ...m,
+                    start: formatDate(m.start),
+                    end: formatDate(m.end)
+                }));
+            };
 
             const datesSet: KnockoutObservable<DATES_SET | null> = ko.observable(null);
 
@@ -505,7 +514,7 @@ module nts.uk.ui.koExtentions {
                 },
                 themeSystem: 'default',
                 initialView: 'timeGridWeek',
-                events: ko.unwrap(events),
+                events: mappedEvents(events),
                 locale: ko.unwrap(locale),
                 firstDay: ko.unwrap(firstDay),
                 weekends: ko.unwrap(weekends),
@@ -553,6 +562,8 @@ module nts.uk.ui.koExtentions {
                     if (evt.event.allDay) {
                         evt.revert();
                     }
+
+                    console.log(evt, calendar.getEvents());
                 },
                 eventOverlap: false, // (stillEvent) => stillEvent.allDay,
                 select: (arg) => {
@@ -628,7 +639,7 @@ module nts.uk.ui.koExtentions {
                 events.subscribe((evts) => {
                     calendar.removeAllEvents();
 
-                    evts.forEach(e => calendar.addEvent(e));
+                    evts.forEach(e => calendar.addEvent({ ...e, start: formatDate(e.start), end: formatDate(e.end) }));
                 });
             }
 
