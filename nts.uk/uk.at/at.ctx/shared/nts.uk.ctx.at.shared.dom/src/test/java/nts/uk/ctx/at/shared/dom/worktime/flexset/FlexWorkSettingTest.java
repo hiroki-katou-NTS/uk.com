@@ -233,7 +233,9 @@ public class FlexWorkSettingTest {
 													, new FlexOffdayWorkTime(offdayWorkTimeImpl), true, timeSheet));
 
 			val actual = flexWorkSetting.getBreakTimeZone(true, AmPmAtr.ONE_DAY);
+			
 			assertThat( actual.isFixed() ).isFalse();
+			
 			assertThat( actual.getBreakTimes() ).isEmpty();
 	
 	}

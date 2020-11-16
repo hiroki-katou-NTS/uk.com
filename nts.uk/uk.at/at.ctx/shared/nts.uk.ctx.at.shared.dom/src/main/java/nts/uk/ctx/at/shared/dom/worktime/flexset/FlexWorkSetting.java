@@ -19,6 +19,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.val;
+import nts.gul.util.OptionalUtil;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanDuplication;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
@@ -312,8 +313,7 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 		List<TimeSpanForCalc> lstOTTimezone = this.lstHalfDayWorkTimezone.stream()
 				.filter(c -> c.getAmpmAtr() == ampmAtr )
 				.map(c -> c.getWorkTimezone().getFirstAndLastTimeOfOvertimeWorkingTimezone())
-				.filter(c -> c.isPresent())
-				.map(c -> c.get())
+				.flatMap(OptionalUtil::stream)
 				.collect(Collectors.toList());
 		
 		TimeSpanForCalc wkTimePossibles = wortime;
@@ -378,7 +378,7 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 				.collect(Collectors.toList());
 		val workOnDayOffTime = TimeSpanForCalc.join(workOnDayOffTimeList);
 		
-		val workTimeList = preTimeSetting.getTimezoneByAmPmAtr(AmPmAtr.ONE_DAY);
+		val workTimeList = preTimeSetting.getTimezoneByAmPmAtrForCalc(AmPmAtr.ONE_DAY);
 
 		
 		if (workTimeList.stream().allMatch(c -> c.checkDuplication(workOnDayOffTime.get()) == TimeSpanDuplication.NOT_DUPLICATE)) {
