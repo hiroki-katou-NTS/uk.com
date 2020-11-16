@@ -1,7 +1,5 @@
 package nts.uk.ctx.sys.gateway.app.command.login.saml;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -11,15 +9,12 @@ import org.apache.commons.lang3.StringUtils;
 
 import lombok.SneakyThrows;
 import lombok.val;
-import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.gul.security.saml.IdpEntryUrl;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.saml.SamlOperationRepository;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.FindTenant;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthentication;
 import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationRepository;
 import nts.uk.shr.com.program.ProgramsManager;
 
@@ -42,8 +37,7 @@ public class SamlAuthenticateCommandHandler extends CommandHandlerWithResult<Sam
 		// テナント認証情報のチェック
 		this.checkInput(command);
 		// テナント認証
-		FindTenant.Require require = EmbedStopwatch.embed(new RequireImpl());
-		val tenant = FindTenant.byTenantCode(require, tenantCode)
+		val tenant = tenantAuthenticationRepository.find(tenantCode)
 				.orElseThrow(() -> new BusinessException("Msg_314"));
 
 		if(!tenant.verify(password)) {
@@ -97,19 +91,6 @@ public class SamlAuthenticateCommandHandler extends CommandHandlerWithResult<Sam
 		}
 		if (StringUtils.isEmpty(command.getTenantPassword())) {
 			throw new BusinessException("Msg_310");
-		}
-	}
-	
-	public class RequireImpl implements FindTenant.Require{
-
-		@Override
-		public Optional<TenantAuthentication> getTenantAuthentication(String tenantCode) {
-			return tenantAuthenticationRepository.find(tenantCode);
-		}
-
-		@Override
-		public Optional<TenantAuthentication> getTenantAuthentication(String tenantCode, GeneralDate date) {
-			return tenantAuthenticationRepository.find(tenantCode, date);
 		}
 	}
 }

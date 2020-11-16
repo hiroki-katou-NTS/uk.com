@@ -4,19 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.app.command.loginold;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
-import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.FindTenant;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthentication;
 import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationRepository;
 
 /**
@@ -50,8 +45,7 @@ public class SubmitContractFormCommandHandler extends CommandHandler<SubmitContr
 	 * @param password the password
 	 */
 	private void contractAccAuth(String tenantCode, String password) {
-		FindTenant.Require require = EmbedStopwatch.embed(new RequireImpl());
-		val optTenant = FindTenant.byTenantCode(require, tenantCode);
+		val optTenant = tenantAuthenticationRepository.find(tenantCode);
 		if (!optTenant.isPresent()) {
 			// テナントが取得できない
 			throw new BusinessException("Msg_314");
@@ -78,19 +72,6 @@ public class SubmitContractFormCommandHandler extends CommandHandler<SubmitContr
 		}
 		if (command.getPassword() == null || command.getPassword().isEmpty()) {
 			throw new BusinessException("Msg_310");
-		}
-	}
-	
-	public class RequireImpl implements FindTenant.Require{
-
-		@Override
-		public Optional<TenantAuthentication> getTenantAuthentication(String tenantCode) {
-			return tenantAuthenticationRepository.find(tenantCode);
-		}
-
-		@Override
-		public Optional<TenantAuthentication> getTenantAuthentication(String tenantCode, GeneralDate date) {
-			return tenantAuthenticationRepository.find(tenantCode, date);
 		}
 	}
 }

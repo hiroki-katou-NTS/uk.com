@@ -11,8 +11,8 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.task.tran.TransactionService;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.sys.gateway.app.command.login.session.BuildLoginEmployeeSession;
 import nts.uk.ctx.sys.gateway.dom.login.CheckIfCanLogin;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.FindTenant;
 import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthentication;
 import nts.uk.ctx.sys.shared.dom.employee.EmployeeImport;
 import nts.uk.ctx.sys.shared.dom.user.User;
@@ -157,7 +157,6 @@ public abstract class LoginCommandHandlerBase<
 	
 	public static interface Require extends
 		BuildLoginEmployeeSession.Require,
-		FindTenant.Require,
 		CheckIfCanLogin.Require {
 		
 		Optional<TenantAuthentication> getTenantAuthentication(String tenantCode);
