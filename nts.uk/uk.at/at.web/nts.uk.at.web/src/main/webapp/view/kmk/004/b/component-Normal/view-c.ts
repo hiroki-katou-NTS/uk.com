@@ -31,6 +31,32 @@ module nts.uk.at.view.kmk004.b {
 							<button data-bind="i18n: 'KMK004_238'"></button>
 						<!-- /ko -->
 					</div>
+					<!-- ko if: modeCheckSetting -->
+						<div class ="setting" data-bind="component: {
+							name: 'basic-setting',
+							params:{
+								modeCheckChangeSetting: modeCheckChangeSetting
+							}
+						}"></div>
+					<!-- /ko -->
+					<div class="label1" data-bind="ntsFormLabel: {}, i18n: 'KMK004_232'"></div>
+					<div class="content-data">
+						<div class="year">
+							<div>
+								<button data-bind="i18n: 'KMK004_233'"></button>
+							</div>
+							<div class= "box-year" data-bind="component: {
+								name: 'box-year',
+								params:{
+								}
+							}"></div>
+						</div>
+						<div class= "time-work" data-bind="component: {
+							name: 'time-work',
+							params:{
+							}
+						}"></div>
+					</div>
 				</div>
 			</div>
 		<div>
@@ -48,6 +74,7 @@ module nts.uk.at.view.kmk004.b {
 	export class ViewCComponent extends ko.ViewModel {
 
 		public modeCheckSetting: KnockoutObservable<boolean> = ko.observable(true);
+		public modeCheckChangeSetting: KnockoutObservable<string> = ko.observable('');
 		
 		created(params: Params) {
 
