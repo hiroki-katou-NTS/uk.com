@@ -126,9 +126,9 @@ module nts.uk.at.view.kwr006.a {
                 let self = this;
                 // dropdownlist A9_2
                 self.itemListTypePageBrake = ko.observableArray([
-                    new ItemModel('0', 'なし'),
-                    new ItemModel('1', '社員'),
-                    new ItemModel('2', '職場')
+                    new ItemModel('0', nts.uk.resource.getText("KWR006_99")),
+                    new ItemModel('1', nts.uk.resource.getText("KWR006_100")),
+                    new ItemModel('2', nts.uk.resource.getText("KWR006_101"))
                 ]);
                 self.dataOutputType = ko.observableArray([
                     { code: '0', name: nts.uk.resource.getText("KWR006_10") },
