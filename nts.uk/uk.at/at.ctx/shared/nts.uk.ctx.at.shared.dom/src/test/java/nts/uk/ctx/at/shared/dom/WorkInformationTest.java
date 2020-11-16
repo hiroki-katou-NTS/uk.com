@@ -9,6 +9,7 @@ import java.util.Optional;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
@@ -24,6 +25,7 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -402,34 +404,125 @@ public class WorkInformationTest {
 
 
 
+	/**
+	 * Target	: getWorkStyle
+	 * Pattern	: 勤務種類が取得できない
+	 * Result	: Output -> Optional.empty
+	 */
 	@Test
-	public void testGetWorkStyle_1() {
-		WorkInformation workInformation = new WorkInformation("workTypeCode", "workTimeCode");
+	public void testGetWorkStyle_WorkTypeIsEmpty() {
 
-		new Expectations() {
-			{
-				require.checkWorkDay(workInformation.getWorkTypeCode().v());
-				result = null;
+		new Expectations() {{
 
-			}
-		};
-		assertThat(workInformation.getWorkStyle(require).isPresent()).isFalse();
+			// 勤務種類を取得する
+			require.getWorkType( anyString );
+
+		}};
+
+		// Execute
+		val result = new WorkInformation("WktpCd", "WktmCd").getWorkStyle( require );
+
+		// Assertion
+		assertThat( result ).isEmpty();
+
 	}
 
+	/**
+	 * Target	: getWorkStyle
+	 * Pattern	: 1日の勤務：勤務の単位＝1日 / 勤務の分類＝出勤
+	 * Result	: Output -> 1日系( WorkStyle.ONE_DAY_WORK )
+	 */
 	@Test
-	public void testGetWorkStyle_2() {
-		WorkInformation workInformation = new WorkInformation("workTypeCode", "workTimeCode");
+	public void testGetWorkStyle_WorkTypeIsOneDay_ClassTypeIsWork() {
 
-		new Expectations() {
-			{
-				require.checkWorkDay(workInformation.getWorkTypeCode().v());
-				result = WorkStyle.ONE_DAY_REST;
+		// 1日の勤務：単位＝1日 / 分類＝出勤
+		val dailyWork = WorkinfoHelper.createDailyWorkAsOneDay(WorkTypeClassification.Attendance);
+		// 勤務種類
+		val workType = WorkinfoHelper.createWorkType(false, "cid", "WktpCd", "テスト", "テスト", "テ" , dailyWork);
 
-			}
-		};
+		new Expectations() {{
 
-		assertThat(workInformation.getWorkStyle(require).get()).isEqualTo(WorkStyle.ONE_DAY_REST);
+			// 勤務種類を取得する
+			require.getWorkType( anyString );
+			result = Optional.of( workType );
+
+		}};
+
+		// Execute
+		val result = new WorkInformation(workType.getWorkTypeCode().v(), "WktmCd").getWorkStyle( require );
+
+		// Assertion
+		assertThat( result ).isPresent();
+		assertThat( result.get() ).isEqualTo( WorkStyle.ONE_DAY_WORK );
+
 	}
+
+	/**
+	 * Target	: getWorkStyle
+	 * Pattern	: 1日の勤務：勤務の単位＝半日 / 勤務の分類(午前)＝休日系 / 勤務の分類(午後)＝休日系
+	 * Result	: Output -> 1日休日系( WorkStyle.ONE_DAY_REST )
+	 */
+	@Test
+	public void testGetWorkStyle_WorkTypeIsHalfDay_ClassTypeIsLeaveAndLeave() {
+
+		// 1日の勤務：単位＝1日 / 分類(午前)＝代休 / 分類(午後)＝特休
+		val dailyWork = WorkinfoHelper.createDailyWorkAsHalfDay(
+									WorkTypeClassification.SubstituteHoliday
+								,	WorkTypeClassification.SpecialHoliday
+							);
+		// 勤務種類
+		val workType = WorkinfoHelper.createWorkType(false, "cid", "WktpCd", "テスト", "テスト", "テ" , dailyWork);
+
+		new Expectations() {{
+
+			// 勤務種類を取得する
+			require.getWorkType( anyString );
+			result = Optional.of( workType );
+
+		}};
+
+		// Execute
+		val result = new WorkInformation(workType.getWorkTypeCode().v(), "WktmCd").getWorkStyle( require );
+
+		// Assertion
+		assertThat( result ).isPresent();
+		assertThat( result.get() ).isEqualTo( WorkStyle.ONE_DAY_REST );
+
+	}
+
+	/**
+	 * Target	: getWorkStyle
+	 * Pattern	: 1日の勤務：勤務の単位＝半日 / 勤務の分類(午前)＝出勤系 / 勤務の分類(午後)＝休日系
+	 * Result	: Output -> 午前出勤系( WorkStyle.MORNING_WORK )
+	 */
+	@Test
+	public void testGetWorkStyle_WorkTypeIsHalfDay_ClassTypeIsWorkAndLeave() {
+
+		// 1日の勤務：単位＝1日 / 分類(午前)＝振出 / 分類(午後)＝年休
+		val dailyWork = WorkinfoHelper.createDailyWorkAsHalfDay(
+									WorkTypeClassification.Shooting
+								,	WorkTypeClassification.AnnualHoliday
+							);
+		// 勤務種類
+		val workType = WorkinfoHelper.createWorkType(false, "cid", "WktpCd", "テスト", "テスト", "テ" , dailyWork);
+
+		new Expectations() {{
+
+			// 勤務種類を取得する
+			require.getWorkType( anyString );
+			result = Optional.of( workType );
+
+		}};
+
+		// Execute
+		val result = new WorkInformation(workType.getWorkTypeCode().v(), "WktmCd").getWorkStyle( require );
+
+		// Assertion
+		assertThat( result ).isPresent();
+		assertThat( result.get() ).isEqualTo( WorkStyle.MORNING_WORK );
+
+	}
+
 
 	@Test
 	public void getWorkInfoAndTimeZone_1() {
