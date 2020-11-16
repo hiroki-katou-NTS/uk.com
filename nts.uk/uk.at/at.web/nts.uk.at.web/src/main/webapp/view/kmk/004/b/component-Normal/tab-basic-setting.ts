@@ -68,26 +68,26 @@ module nts.uk.at.view.kmk004.b {
                 border-radius: 15px;
             }
 
-            table {
+            .table-view table {
                 border-collapse: collapse;
             }
             
-            th {
+            .table-view th {
                 background: #97D155;
             }
 
-            .label-row, th {
+            .table-view .label-row, th {
                 border: 1px solid #AAAAAA;
             }
 
-            .label-row .label-column {
+            .table-view .label-row .label-column {
                 border: 1px solid #AAAAAA;
                 padding: 3px;
               }
-            .content-tab {
+
+            .table-view .content-tab {
                 text-align: center;
             }
-            
         </style>
         <style type="text/css" rel="stylesheet" data-bind="html: $component.style"></style>
     `;
