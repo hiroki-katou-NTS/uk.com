@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.function.infra.entity.alarmworkplace.alarmpatternworkplace;
 
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.function.dom.alarmworkplace.AlarmPatternSettingWorkPlace;
 import nts.uk.ctx.at.function.dom.alarmworkplace.AlarmPermissionSetting;
 import nts.uk.ctx.at.function.infra.entity.alarmworkplace.alarmlstrole.KfnmtALstWkpPms;
@@ -12,14 +11,13 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
  * entity : アラームリストパターン設定(職場別)
  */
 @AllArgsConstructor
-@NoArgsConstructor
-@Entity
 @Table(name = "KFNMT_ALSTWKP_PTN")
 public class KfnmtALstWkpPtn extends UkJpaEntity implements Serializable {
 
@@ -71,8 +69,28 @@ public class KfnmtALstWkpPtn extends UkJpaEntity implements Serializable {
     }
 
     public AlarmPermissionSetting toDomainItem() {
-        return new AlarmPermissionSetting(pk.alarmPatternCD, pk.companyID, authSetting,
-            this.alarmPerSet.stream().map(c -> c.pk.roleId).collect(Collectors.toList()));
+        return new AlarmPermissionSetting(authSetting,this.alarmPerSet.stream().map(c -> c.pk.roleId).collect(Collectors.toList()));
+    }
+
+    public void fromEntity(KfnmtALstWkpPtn entity) {
+        this.alarmPatternName = entity.alarmPatternName;
+        this.checkConList.removeIf(c -> !entity.checkConList.contains(c));
+        entity.checkConList.forEach(e -> {
+            Optional<KfnmtWkpCheckCondition> checkCon = this.checkConList.stream().filter(c -> c.pk.equals(e.pk))
+                .findFirst();
+            if (checkCon.isPresent()) {
+                checkCon.get().fromEntity(e);
+            } else {
+                this.checkConList.add(e);
+            }
+        });
+        this.alarmPerSet.removeIf(x -> !entity.alarmPerSet.contains(x));
+
+        entity.alarmPerSet.forEach( item ->{
+            if(!this.alarmPerSet.contains(item)) this.alarmPerSet.add(item);
+        });
+        this.authSetting = entity.authSetting;
+
     }
 
 }

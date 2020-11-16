@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.function.infra.entity.alarmworkplace.condition;
 
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
@@ -11,7 +10,6 @@ import java.io.Serializable;
  * entity : チェック条件
  */
 @AllArgsConstructor
-@NoArgsConstructor
 @Entity
 @Table(name = "KFNMT_PTN_MAP_CAT")
 public class KfnmtPtnMapCat extends UkJpaEntity implements Serializable {

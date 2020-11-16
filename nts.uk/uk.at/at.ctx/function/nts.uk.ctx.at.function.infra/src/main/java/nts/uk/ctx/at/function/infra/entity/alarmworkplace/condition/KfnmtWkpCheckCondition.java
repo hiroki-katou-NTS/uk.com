@@ -1,12 +1,10 @@
 package nts.uk.ctx.at.function.infra.entity.alarmworkplace.condition;
 
-import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.EndDate;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.StartDate;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.singlemonth.SingleMonth;
-import nts.uk.ctx.at.function.dom.alarm.workplace.checkcondition.WorkplaceCategory;
 import nts.uk.ctx.at.function.dom.alarmworkplace.CheckCondition;
 import nts.uk.ctx.at.function.dom.alarmworkplace.ExtractionPeriodDaily;
 import nts.uk.ctx.at.function.dom.alarmworkplace.ExtractionPeriodMonthly;
@@ -23,7 +21,6 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@NoArgsConstructor
 @Entity
 @Table(name = "KFNMT_WRKPCHECK_CONDITION")
 public class KfnmtWkpCheckCondition extends UkJpaEntity implements Serializable {
@@ -192,7 +189,7 @@ public class KfnmtWkpCheckCondition extends UkJpaEntity implements Serializable 
                     .collect(Collectors.toList()),
                 KfnmtAssignNumofMon.toEntity((SingleMonth) domain.getRangeToExtract(), patternCD, category)
             );
-        } else if (category == WorkplaceCategory.MASTER_CHECK_BASIC.value || domain.getWorkplaceCategory().value == WorkplaceCategory.MASTER_CHECK_WORKPLACE.value) {
+        } else if (category == WorkplaceCategory.MASTER_CHECK_BASIC.value || category == WorkplaceCategory.MASTER_CHECK_WORKPLACE.value) {
             return new KfnmtWkpCheckCondition(
                 new KfnmtWkpCheckConditionPK(AppContexts.user().companyId(), patternCD, category),
                 domain.getCheckConditionLis().stream().map(
@@ -202,7 +199,7 @@ public class KfnmtWkpCheckCondition extends UkJpaEntity implements Serializable 
                 KfnmtAssignMonthEnd.toEntity(((ExtractionPeriodMonthly) domain.getRangeToExtract()).getEndMonth(), patternCD, category)
 
             );
-        } else if (category == WorkplaceCategory.MASTER_CHECK_DAILY.value || domain.getWorkplaceCategory().value == WorkplaceCategory.SCHEDULE_DAILY.value) {
+        } else if (category == WorkplaceCategory.MASTER_CHECK_DAILY.value || category == WorkplaceCategory.SCHEDULE_DAILY.value) {
 
             return new KfnmtWkpCheckCondition(
                 new KfnmtWkpCheckConditionPK(AppContexts.user().companyId(), patternCD, category),
@@ -223,13 +220,46 @@ public class KfnmtWkpCheckCondition extends UkJpaEntity implements Serializable 
                     KfnmtAssignDatelineEnd.toEntity(((ExtractionPeriodDaily) domain.getRangeToExtract()).getEndDate(), patternCD, category) : null
 
             );
-        }else {
+        } else {
             return new KfnmtWkpCheckCondition(
                 new KfnmtWkpCheckConditionPK(AppContexts.user().companyId(), patternCD, category),
                 domain.getCheckConditionLis().stream().map(
                     x -> new KfnmtPtnMapCat(buildCheckConItemPK(domain, x.v(), companyId, patternCD)))
                     .collect(Collectors.toList()));
         }
+    }
+
+    public void fromEntity(KfnmtWkpCheckCondition entity) {
+
+        if (entity.pk.category == WorkplaceCategory.MONTHLY.value) {
+            if (this.kfnmtAssignNumofMon != null)
+                this.kfnmtAssignNumofMon.fromEntity(entity.kfnmtAssignNumofMon);
+        } else if (entity.pk.category == WorkplaceCategory.MASTER_CHECK_BASIC.value || entity.pk.category == WorkplaceCategory.MASTER_CHECK_WORKPLACE.value) {
+            if (this.kfnmtAssignMonthStart != null)
+                this.kfnmtAssignMonthStart.fromEntity(entity.kfnmtAssignMonthStart);
+
+            if (this.kfnmtAssignMonthEnd != null)
+                this.kfnmtAssignMonthEnd.fromEntity(entity.kfnmtAssignMonthEnd);
+
+        } else if (entity.pk.category == WorkplaceCategory.MASTER_CHECK_DAILY.value || entity.pk.category == WorkplaceCategory.SCHEDULE_DAILY.value) {
+            if (this.kfnmtAssignDayStart != null)
+                this.kfnmtAssignDayStart.fromEntity(entity.kfnmtAssignDayStart);
+
+            if (this.kfnmtAssignDatelineStart != null)
+                this.kfnmtAssignDatelineStart.fromEntity(entity.kfnmtAssignDatelineStart);
+
+            if (this.kfnmtAssignDayEnd != null)
+                this.kfnmtAssignDayEnd.fromEntity(entity.kfnmtAssignDayEnd);
+
+            if (this.kfnmtAssignDatelineEnd != null)
+                this.kfnmtAssignDatelineEnd.fromEntity(entity.kfnmtAssignDatelineEnd);
+        }
+
+        this.checkConItems.removeIf(item -> !entity.checkConItems.contains(item));
+        entity.checkConItems.forEach( item ->{
+            if(!this.checkConItems.contains(item)) this.checkConItems.add(item);
+        });
+
     }
 
     private static KfnmtPtnMapCatPk buildCheckConItemPK(CheckCondition domain, String checkConditionCD, String companyId, String alarmPatternCode) {
