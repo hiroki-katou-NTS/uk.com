@@ -172,7 +172,7 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 						Optional<AppReasonStandard> optionalAppReasonStandard =  appReasonStandardRepo.findByHolidayAppType(companyId, target.getOpHolidayAppType().get());
 						if (!optionalAppReasonStandard.isPresent()
 								|| CollectionUtil.isEmpty(optionalAppReasonStandard.get().getReasonTypeItemLst()))
-							throw new BusinessException("Msg_1751", target.getAppType().name);
+							throw new BusinessException("Msg_1751", target.getOpHolidayAppType().get().name);
 					} else {
 						Optional<AppReasonStandard> optionalAppReasonStandard =  appReasonStandardRepo.findByAppType(companyId, target.getAppType());
 						if (!optionalAppReasonStandard.isPresent()
