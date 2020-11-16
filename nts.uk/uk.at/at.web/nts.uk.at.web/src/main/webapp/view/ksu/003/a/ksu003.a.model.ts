@@ -139,7 +139,7 @@ module nts.uk.at.view.ksu003.a.model {
 		// 社員情報
 		listEmp: Array<EmployeeInfo>;
 		// いつから編集可能か
-		timeCanEdit: string;
+		dayEdit: string;
 		constructor(
 			detailContentDs: any,
 			daySelect: string,
@@ -152,7 +152,7 @@ module nts.uk.at.view.ksu003.a.model {
 			// 社員情報
 			listEmp: Array<EmployeeInfo>,
 			// いつから編集可能か
-			timeCanEdit: string) {
+			dayEdit: string) {
 			let self = this;
 			self.detailContentDs = detailContentDs;
 			self.daySelect = daySelect;
@@ -163,7 +163,7 @@ module nts.uk.at.view.ksu003.a.model {
 			self.workplaceGroupId = workplaceGroupId;
 			self.workplaceName = workplaceName;
 			self.listEmp = listEmp;
-			self.timeCanEdit = timeCanEdit;
+			self.dayEdit = dayEdit;
 		}
 	}
 
@@ -186,14 +186,17 @@ module nts.uk.at.view.ksu003.a.model {
 	* 社員情報
 	*/
 	export class DataFrom045 {
-		employeeWorkScheduleDto: EmployeeWorkScheduleDto;//対象社員の社員勤務予定dto
+		workScheduleDto: EmployeeWorkScheduleDto;//対象社員の社員勤務予定dto
 		fixedWorkInforDto: FixedWorkInforDto;//対象社員の勤務固定情報dto
+		workInfoDto : EmployeeWorkInfoDto
 		constructor(
-			employeeWorkScheduleDto: EmployeeWorkScheduleDto,
-			fixedWorkInforDto: FixedWorkInforDto) {
+			workScheduleDto: EmployeeWorkScheduleDto,
+			fixedWorkInforDto: FixedWorkInforDto,
+			workInfoDto : EmployeeWorkInfoDto) {
 			let self = this;
-			self.employeeWorkScheduleDto = employeeWorkScheduleDto;
+			self.workScheduleDto = workScheduleDto;
 			self.fixedWorkInforDto = fixedWorkInforDto;
+			self.workInfoDto = workInfoDto
 		}
 	}
 
@@ -302,10 +305,10 @@ module nts.uk.at.view.ksu003.a.model {
 
 	//時間休暇
 	export class TimeVacationDto {
-		timeZone: TimeZoneDto; //時間帯リスト
-		usageTime: DailyAttdTimeVacationDto;//使用時間
-		constructor(timeZone: TimeZoneDto,
-			usageTime: DailyAttdTimeVacationDto) {
+		timeZone: Array<TimeZoneDto>; //時間帯リスト
+		usageTime: Array<DailyAttdTimeVacationDto>;//使用時間
+		constructor(timeZone: Array<TimeZoneDto>,
+			usageTime: Array<DailyAttdTimeVacationDto>) {
 			this.timeZone = timeZone;
 			this.usageTime = usageTime;
 		}
@@ -637,50 +640,6 @@ module nts.uk.at.view.ksu003.a.model {
 		 * 前日
 		 */
 		DAY_BEFORE = 3
-	}
-
-	/**
-	* 日別実績の編集状態 
-	*/
-	export enum EditStateSetting {
-		/**
-		* 手修正（本人）
-		*/
-		HAND_CORRECTION_MYSELF = 0,
-		/**
-		 * 手修正（他人） 
-		 */
-		HAND_CORRECTION_OTHER = 1,
-		/**
-		 * 申請反映
-		 */
-		REFLECT_APPLICATION = 2,
-		/**
-		 * 打刻反映
-		 */
-		IMPRINT = 3
-	}
-
-	/**
-	 * 就業時間帯の勤務形態
-	 */
-	export enum WorkTimeForm {
-		/**
-		* 固定勤務 
-		*/
-		FIXED = 0,
-		/**
-		 * フレックス勤務
-		 */
-		FLEX = 1,
-		/**
-		 * 流動勤務
-		 */
-		FLOW = 2,
-		/**
-		 * 時差勤務
-		 */
-		TIMEDIFFERENCE = 3
 	}
 
 	/**

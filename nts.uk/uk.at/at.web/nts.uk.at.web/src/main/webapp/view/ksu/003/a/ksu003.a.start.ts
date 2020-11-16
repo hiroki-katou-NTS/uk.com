@@ -5,11 +5,12 @@ module nts.uk.at.view.ksu003.a {
 			__viewContext.bind(screenModel);
 			nts.uk.ui.block.grayout();
 			$(window).resize(function() {
-				screenModel.setPositionButonDownAndHeightGrid ();
+				screenModel.setPositionButonDownAndHeightGrid();
 			});
 			nts.uk.ui.block.clear();
 		});
-		initEvent()
+		initEvent();
+		initEvent2();
 	});
 	function initEvent(): void {
 		//click btnA5
@@ -25,10 +26,30 @@ module nts.uk.at.view.ksu003.a {
 			$('#A5_1').ntsPopup("toggle");
 		});
 	}
-	/*	$(window).resize(function () {
-				$("#extable").exTable("setHeight", 525);
-						let heightExtable = $("#extable").height();
-						let margintop = 525 - 52;
-						$(".toDown").css({ "margin-top": margintop + 'px' });
-			});*/
+
+	function initEvent2(): void {
+		//click btnA5
+		$('#A3_4').ntsPopup({
+			position: {
+				my: 'left top',
+				at: 'left bottom+3',
+				of: $('#note-sort')
+			}
+		});
+
+		$('#note-sort').click(function() {
+			$('#A3_4').ntsPopup("toggle");
+		});
+	}
+	$(window).resize(function() {
+		let self = this;
+		if (window.innerHeight < 700) {
+			$("#note-sort").css({ "margin-left": 1022 + 'px' });
+			$(".close").css({ "margin-right": 45 + 'px !important' });
+			$("#note-color").css({ "margin-right": 57 + 'px' });
+		}else{
+		$("#note-sort").css({ "margin-left": 1043 + 'px' });
+		} 
+		let screenModel = new viewmodel.ScreenModel();
+	});
 }

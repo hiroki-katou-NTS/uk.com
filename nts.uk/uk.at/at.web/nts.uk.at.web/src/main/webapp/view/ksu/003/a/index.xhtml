@@ -5,11 +5,11 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/dialog.xhtml">
+	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 		<script>
 				var dialogSize = {
-					width : 1280,
+					width : 1270,
 					height : 768
 				};
 		</script>
@@ -47,16 +47,17 @@
 							<label data-bind="text:targetDateDay"></label>
 						</div>
 						<div id="next-button" style="margin-left: 10px">
-							<button id="next-all" class="small" data-bind=" click: nextAllDay">
+							<button id="next-one" class="small" data-bind=" click: nextDay">
 								<i data-bind="ntsIcon: { no: 10, width: 22, height: 22 }"></i>
 							</button>
-							<button id="next-one" class="small" data-bind=" click: nextDay">
+							<button id="next-all" class="small" data-bind=" click: nextAllDay">
 								<i data-bind="ntsIcon: { no: 58, width: 22, height: 22 }"></i>
 							</button>
 						</div>
 						<!-- A2_1_6 -->
-						<div id="event-button" class="cf">
-							<button id="event" style="margin-left: 10px" class="small">#{i18n.getText('KSU003_6')}</button>
+						<div class="event-button">
+							<button id="event" title="" style="margin-left: 10px" class="small">#{i18n.getText('KSU003_6')} 
+							</button>
 						</div>
 					</div>
 				</div>
@@ -107,12 +108,10 @@
 			</div>
 			<div>
 				<!-- A3_3 -->
-				<div id="check-time"
-					data-bind="ntsCheckBox: { checked: checked, enable: true}">#{i18n.getText('KSU003_18')}</div>
-			</div>
-			<!-- A3_4 -->
-			<div id="check-name"
+				<div id="check-name"
 				data-bind="ntsCheckBox: { checked: checkedName, enable: true}">#{i18n.getText('KSU003_19')}</div>
+			</div>
+				<button id="note-sort" class="small">#{i18n.getText('KSU003_18')}</button>
 			<div id="contents-area">
 				<div id="side-menu" class="cf"></div>
 				<div id="content" class="cf">
@@ -138,8 +137,26 @@
 						</com:ko-if>
 						</button>
 					</div>
-					<div id="extable" style="height: 400px; float: left"></div>
+					<div id="extable-ksu003" style="height: 400px; float: left"></div>
 				</div>
+			</div>
+			
+			<div id="A3_4" class="popup-area popup-panel">
+			<div ><label id="sort-label">#{i18n.getText('KSU003_56')}</label><label id="sort-label">#{i18n.getText('KSU003_57')}</label></div>
+			<div id="combo-box-sort"
+					data-bind="ntsComboBox: {
+					name: '#KSU003_58',
+					options: sortList,
+					optionsValue: 'code',
+					value: checked,
+					optionsText: 'name',
+					editable: true,
+					enable: true,
+					columns: [
+						{ prop: 'name', length: 5 },
+					]}">
+				</div>
+				<div id="sort-label-note"><label>#{i18n.getText('KSU003_61')}</label></div>
 			</div>
 
 			<div id="A5_1" class="popup-area popup-panel">
