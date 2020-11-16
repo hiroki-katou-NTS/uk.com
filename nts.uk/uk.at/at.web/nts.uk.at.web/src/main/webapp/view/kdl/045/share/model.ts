@@ -30,19 +30,19 @@ module nts.uk.at.view {
         export class EmployeeInformation {
             employeeCode: string;//社員コード
             employeeName: string;//社員名称   
-            employeeWorkInfoDto: EmployeeWorkInfoDto;//対象社員の社員勤務情報dto
-            employeeWorkScheduleDto: EmployeeWorkScheduleDto;//対象社員の社員勤務予定dto
+            workInfoDto: EmployeeWorkInfoDto;//対象社員の社員勤務情報dto
+            workScheduleDto: EmployeeWorkScheduleDto;//対象社員の社員勤務予定dto
             fixedWorkInforDto: FixedWorkInforDto;//対象社員の勤務固定情報dto
             constructor(employeeCode: string,
                 employeeName: string,
-                employeeWorkInfoDto: EmployeeWorkInfoDto,
-                employeeWorkScheduleDto: EmployeeWorkScheduleDto,
+                workInfoDto: EmployeeWorkInfoDto,
+                workScheduleDto: EmployeeWorkScheduleDto,
                 fixedWorkInforDto: FixedWorkInforDto) {
                 let self = this;
                 self.employeeCode = employeeCode;
                 self.employeeName = employeeName;
-                self.employeeWorkInfoDto = employeeWorkInfoDto;
-                self.employeeWorkScheduleDto = employeeWorkScheduleDto;
+                self.workInfoDto = workInfoDto;
+                self.workScheduleDto = workScheduleDto;
                 self.fixedWorkInforDto = fixedWorkInforDto;
             }
         }

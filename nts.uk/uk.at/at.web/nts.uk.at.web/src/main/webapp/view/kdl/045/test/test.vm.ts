@@ -566,7 +566,7 @@ module nts.uk.at.view.test.vm {
 
 
 
-            let employeeWorkInfoDto: shareModelData.IEmployeeWorkInfoDto = {
+            let workInfoDto: shareModelData.IEmployeeWorkInfoDto = {
                 isCheering: shareModelData.SupportAtr.NOT_CHEERING,
                 isConfirmed: 0,
                 bounceAtr: self.bounceAtr() == true ? 1 : 0, //ok
@@ -594,7 +594,7 @@ module nts.uk.at.view.test.vm {
 
             let listBreakTimeZoneDto = [breakTimeOfDailyAttdDto];
 
-            let employeeWorkScheduleDto: shareModelData.IEmployeeWorkScheduleDto = {
+            let workScheduleDto: shareModelData.IEmployeeWorkScheduleDto = {
                 startTime1: self.timeRange1Value().startTime,//ok
                 startTime1Status: shareModelData.EditStateSetting.HAND_CORRECTION_MYSELF,
                 endTime1: self.timeRange1Value().endTime,//ok
@@ -640,8 +640,8 @@ module nts.uk.at.view.test.vm {
             let employeeInformation: shareModelData.EmployeeInformation = {
                 employeeCode: self.listEmpSetShare()[0].code,//ok
                 employeeName: self.listEmpSetShare()[0].name,//ok
-                employeeWorkInfoDto: employeeWorkInfoDto,
-                employeeWorkScheduleDto: employeeWorkScheduleDto,
+                workInfoDto: workInfoDto,
+                workScheduleDto: workScheduleDto,
                 fixedWorkInforDto: fixedWorkInforDto
             };
 

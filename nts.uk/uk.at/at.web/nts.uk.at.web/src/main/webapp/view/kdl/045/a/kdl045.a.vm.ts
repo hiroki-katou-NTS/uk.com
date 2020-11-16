@@ -29,7 +29,7 @@ module nts.uk.at.view.kdl045.a {
 
 
             //A1_5
-            basedate: KnockoutObservable<string>;
+            basedate: KnockoutObservable<string> = ko.observable("");
 
             employee: KnockoutObservable<shareModelData.ParamKsu003>;
             timeA10_1: KnockoutObservable<string> = ko.observable("");
@@ -43,32 +43,32 @@ module nts.uk.at.view.kdl045.a {
             showLineA8_10: boolean = false;
 
             //A8_13,A8_15
-            childcareNo1: string;
-            childcareNo2: string;
+            childcareNo1: string ="";
+            childcareNo2: string ="";
             showChildCare: boolean = false;
             //A8_18,A8_20
-            nursingNo1: string;
-            nursingNo2: string;
+            nursingNo1: string ="";
+            nursingNo2: string ="";
             showNursing: boolean = false;
 
             //A8_6_1,A8_6_2,A8_6_3,A8_6_4,A8_6_5,A8_6_6
-            atWork1: string;
-            atWork2: string;
-            offWork1: string;
-            offWork2: string;
-            privateTime: string;
-            unionTime: string;
+            atWork1: string ="";
+            atWork2: string ="";
+            offWork1: string ="";
+            offWork2: string ="";
+            privateTime: string ="";
+            unionTime: string="";
 
-            listPrivateTime :any;
-            listUnionTime :any;
+            listPrivateTime :any = [];
+            listUnionTime :any = [];
 
             //A9
-            atWork1A9: any;
-            atWork2A9: any;
-            offWork1A9: any;
-            offWork2A9: any;
-            privateTimeA9: any;
-            unionTimeA9: any;
+            atWork1A9: any = [];
+            atWork2A9: any= [];
+            offWork1A9: any = [];
+            offWork2A9: any = [];
+            privateTimeA9: any = [];
+            unionTimeA9: any = [];
 
             atWork1showA9: KnockoutObservable<boolean> = ko.observable(true);
             atWork2showA9: KnockoutObservable<boolean> = ko.observable(true);
@@ -154,7 +154,7 @@ module nts.uk.at.view.kdl045.a {
             constructor() {
                 let self = this;
 
-                self.employee = ko.observable(getShared('kdl045Data'));
+                self.employee = ko.observable(getShared('dataShareTo045'));
                 self.canModified = self.employee().canModified == 1 ? true : false;
                 self.tabs = ko.observableArray([
                     { id: 'tab-1', title: getText('KDL045_6'), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
@@ -163,7 +163,7 @@ module nts.uk.at.view.kdl045.a {
                 self.selectedTab = ko.observable('tab-1');
 
                 self.dataSourceTime = ko.observableArray([]);
-                let breakTimeNo = self.employee().employeeInfo.employeeWorkScheduleDto.listBreakTimeZoneDto[0].breakTimeSheets;
+                let breakTimeNo = self.employee().employeeInfo.workScheduleDto.listBreakTimeZoneDto[0].breakTimeSheets;
                 for (let i = 0; i < breakTimeNo.length; i++) {
                     let tempBreakTime = breakTimeNo[i];
                     self.dataSourceTime().push({ range1: ko.observable({ startTime: tempBreakTime.startTime, endTime: tempBreakTime.endTime, breakFrameNo: tempBreakTime.breakFrameNo,
@@ -187,26 +187,26 @@ module nts.uk.at.view.kdl045.a {
                 });
 
                 self.timeRange1Value = ko.observable({
-                    startTime: self.employee().employeeInfo.employeeWorkScheduleDto.startTime1,
-                    endTime: self.employee().employeeInfo.employeeWorkScheduleDto.endTime1
+                    startTime: self.employee().employeeInfo.workScheduleDto.startTime1,
+                    endTime: self.employee().employeeInfo.workScheduleDto.endTime1
                 });
                 self.timeRange2Value = ko.observable({ 
-                    startTime: self.employee().employeeInfo.employeeWorkScheduleDto.startTime2, 
-                    endTime: self.employee().employeeInfo.employeeWorkScheduleDto.endTime2 });
+                    startTime: self.employee().employeeInfo.workScheduleDto.startTime2, 
+                    endTime: self.employee().employeeInfo.workScheduleDto.endTime2 });
                 self.isShowTimeRange2 = (self.employee().targetInfor == 1 ? true : false);
                 //A10_1,A10_2
-                self.timeA10_1(self.showTimeByPeriod(self.employee().employeeInfo.employeeWorkScheduleDto.startTime1, self.employee().employeeInfo.employeeWorkScheduleDto.endTime1));
-                self.timeA10_2(self.showTimeByPeriod(self.employee().employeeInfo.employeeWorkScheduleDto.startTime2, self.employee().employeeInfo.employeeWorkScheduleDto.endTime2));
+                self.timeA10_1(self.showTimeByPeriod(self.employee().employeeInfo.workScheduleDto.startTime1, self.employee().employeeInfo.workScheduleDto.endTime1));
+                self.timeA10_2(self.showTimeByPeriod(self.employee().employeeInfo.workScheduleDto.startTime2, self.employee().employeeInfo.workScheduleDto.endTime2));
                 
                 
                 //A4_4,A4_5,A4_6,A4_7
-                self.workType = ko.observable(self.employee().employeeInfo.employeeWorkScheduleDto.workTypeCode);
+                self.workType = ko.observable(self.employee().employeeInfo.workScheduleDto.workTypeCode);
                 self.workTypeName = ko.observable(self.employee().employeeInfo.fixedWorkInforDto.workTypeName);
-                self.workTime = ko.observable(self.employee().employeeInfo.employeeWorkScheduleDto.workTimeCode);
+                self.workTime = ko.observable(self.employee().employeeInfo.workScheduleDto.workTimeCode);
                 self.workTimeName = ko.observable(self.employee().employeeInfo.fixedWorkInforDto.workTimeName);
 
                 //A1_5
-                let shortW = moment(self.employee().employeeInfo.employeeWorkInfoDto.date).format("dd");
+                let shortW = moment(self.employee().employeeInfo.workInfoDto.date).format("dd");
                 if (shortW == "土") {
                     shortW = "<span style='color:#0000ff;'>" + getText('KDL045_64') + shortW + getText('KDL045_65') + "</span>";
                 } else if (shortW == "日") {
@@ -214,18 +214,18 @@ module nts.uk.at.view.kdl045.a {
                 } else {
                     shortW = getText('KDL045_64') + shortW + getText('KDL045_65');
                 }
-                self.basedate = self.employee().employeeInfo.employeeWorkInfoDto.date + shortW;
+                self.basedate(self.employee().employeeInfo.workInfoDto.date + shortW);
 
 
 
 
 
                 //A5_2,A5_3
-                self.directAtr = ko.observable(self.employee().employeeInfo.employeeWorkInfoDto.directAtr == 1 ? true : false);
-                self.bounceAtr = ko.observable(self.employee().employeeInfo.employeeWorkInfoDto.bounceAtr == 1 ? true : false);
+                self.directAtr = ko.observable(self.employee().employeeInfo.workInfoDto.directAtr == 1 ? true : false);
+                self.bounceAtr = ko.observable(self.employee().employeeInfo.workInfoDto.bounceAtr == 1 ? true : false);
 
                 //A8_13,A8_15,A8_18,A8_20
-                let shortTime = self.employee().employeeInfo.employeeWorkInfoDto.shortTime;
+                let shortTime = self.employee().employeeInfo.workInfoDto.shortTime;
                 for (let i = 0; i < shortTime.length; i++) {
                     self.showLineA8_10 = true;
                     if (shortTime[i].shortTimeNo == 1 && shortTime[i].shortTimeAtr == 0) { // shortTimeAtr : (0:育児,1:介護)
@@ -253,7 +253,7 @@ module nts.uk.at.view.kdl045.a {
                 //A8_6_1,A8_6_2,A8_6_3,A8_6_4,A8_6_5,A8_6_6
                 //tương ứng vs A8_6_1~A8_6_4  thì 時間帯リスト chỉ có 1 phần tử
                 //tương ứng vs A8_6_5~A8_6_6  thì 時間帯リスト có nhiều phần tử
-                let listTimeVacationAndType = self.employee().employeeInfo.employeeWorkInfoDto.listTimeVacationAndType;
+                let listTimeVacationAndType = self.employee().employeeInfo.workInfoDto.listTimeVacationAndType;
                 for (let i = 0; i < listTimeVacationAndType.length; i++) {
                     if (listTimeVacationAndType[i].typeVacation == shareModelData.TimeVacationType.ATWORK) {
                         self.atWork1 = listTimeVacationAndType[i].timeVacation.timeZone.length == 0?"": self.showTimeByPeriod(listTimeVacationAndType[i].timeVacation.timeZone[0].startTime.time, listTimeVacationAndType[i].timeVacation.timeZone[0].endTime.time);
@@ -464,9 +464,9 @@ module nts.uk.at.view.kdl045.a {
                 // set update data input open dialog kdl003
                 nts.uk.ui.windows.setShared('parentCodes', {
                     workTypeCodes: [],
-                    selectedWorkTypeCode: self.employee().employeeInfo.employeeWorkScheduleDto.workTypeCode,
+                    selectedWorkTypeCode: self.employee().employeeInfo.workScheduleDto.workTypeCode,
                     workTimeCodes: [],
-                    selectedWorkTimeCode: self.employee().employeeInfo.employeeWorkScheduleDto.workTimeCode
+                    selectedWorkTimeCode: self.employee().employeeInfo.workScheduleDto.workTimeCode
                 }, true);
 
                 nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(function(): any {
@@ -474,8 +474,8 @@ module nts.uk.at.view.kdl045.a {
                     let childData = nts.uk.ui.windows.getShared('childData');
                     if (childData) {
                         self.isExistWorkType(true);
-                        self.employee().employeeInfo.employeeWorkScheduleDto.workTypeCode = childData.selectedWorkTypeCode;
-                        self.employee().employeeInfo.employeeWorkScheduleDto.workTimeCode = childData.selectedWorkTimeCode;
+                        self.employee().employeeInfo.workScheduleDto.workTypeCode = childData.selectedWorkTypeCode;
+                        self.employee().employeeInfo.workScheduleDto.workTimeCode = childData.selectedWorkTimeCode;
                         self.employee().employeeInfo.fixedWorkInforDto.workTypeName = childData.selectedWorkTypeName;
                         self.employee().employeeInfo.fixedWorkInforDto.workTimeName = childData.selectedWorkTimeName;
                         self.workType(childData.selectedWorkTypeCode);
@@ -513,10 +513,10 @@ module nts.uk.at.view.kdl045.a {
                 let self = this;
                 let dfd = $.Deferred();
                 let command = {
-                    employeeId : self.employee().employeeInfo.employeeWorkInfoDto.employeeId,
-                    baseDate : self.employee().employeeInfo.employeeWorkInfoDto.date,
-                    listTimeVacationAndType : self.employee().employeeInfo.employeeWorkInfoDto.listTimeVacationAndType,
-                    workTimeCode : self.employee().employeeInfo.employeeWorkScheduleDto.workTimeCode,
+                    employeeId : self.employee().employeeInfo.workInfoDto.employeeId,
+                    baseDate : self.employee().employeeInfo.workInfoDto.date,
+                    listTimeVacationAndType : self.employee().employeeInfo.workInfoDto.listTimeVacationAndType,
+                    workTimeCode : self.employee().employeeInfo.workScheduleDto.workTimeCode,
                     targetOrgIdenInforDto: new shareModelData.TargetOrgIdenInforDto(
                         self.employee().unit,
                         self.employee().unit ==0?self.employee().targetId:null,
@@ -634,7 +634,7 @@ module nts.uk.at.view.kdl045.a {
                 let self = this;
                 let dfd = $.Deferred();
                 let command = {
-                    employeeId : self.employee().employeeInfo.employeeWorkInfoDto.employeeId,
+                    employeeId : self.employee().employeeInfo.workInfoDto.employeeId,
                     workType : self.workType(),
                     workTimeCode : self.workTime()
                 }
@@ -890,9 +890,9 @@ module nts.uk.at.view.kdl045.a {
                     listBreakTimeZoneDto.push(temp);
                 }
                 //対象社員の社員勤務予定dto
-                let employeeWorkScheduleDto = {
+                let workScheduleDto = {
                         workTypeCode : self.workType(),//勤務種類コード
-                        WorkTimeCode : self.workTime(),//就業時間帯コード
+                        workTimeCode : self.workTime(),//就業時間帯コード
                         startTime1 : self.timeRange1Value().startTime,//開始時刻１
                         endTime1 : self.timeRange1Value().endTime,//終了時刻１
                         startTime2 : self.timeRange2Value().startTime,//開始時刻2
@@ -900,7 +900,7 @@ module nts.uk.at.view.kdl045.a {
                         listBreakTimeZoneDto : listBreakTimeZoneDto //List<休憩時間帯>
                     };
                 
-                let employeeWorkInfoDto = {
+                let workInfoDto = {
                         directAtr : self.directAtr()?1:0,//直行区分
                         bounceAtr : self.bounceAtr()?1:0 //直帰区分
                     };
@@ -914,13 +914,13 @@ module nts.uk.at.view.kdl045.a {
                     };
                 
                 let resultKdl045 = {
-                    employeeWorkScheduleDto: employeeWorkScheduleDto,
-                    employeeWorkInfoDto: employeeWorkInfoDto,
+                    workScheduleDto: workScheduleDto,
+                    workInfoDto: workInfoDto,
                     fixedWorkInforDto: fixedWorkInforDto
                 };
 
 
-                setShared('resultKdl045', resultKdl045);
+                setShared('dataFromKdl045', resultKdl045);
                 nts.uk.ui.windows.close();
             }
 
