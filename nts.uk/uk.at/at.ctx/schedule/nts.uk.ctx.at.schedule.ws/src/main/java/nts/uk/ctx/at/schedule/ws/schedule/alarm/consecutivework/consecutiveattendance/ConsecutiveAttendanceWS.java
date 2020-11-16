@@ -40,7 +40,6 @@ public class ConsecutiveAttendanceWS {
     @POST
     @Path("com/delete")
     public void deleteConsecutiveAttendanceCom(DeleteConsecutiveAttendanceComDto command) {
-
         deleteConsecutiveAttendanceComHandler.handle(command);
     }
 
