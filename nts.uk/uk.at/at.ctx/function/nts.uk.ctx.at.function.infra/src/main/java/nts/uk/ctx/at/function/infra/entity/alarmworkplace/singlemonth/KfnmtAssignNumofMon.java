@@ -43,7 +43,7 @@ public class KfnmtAssignNumofMon extends UkJpaEntity implements Serializable {
         return this.pk;
     }
 
-    @OneToOne(mappedBy = "kfnmtAssignNumofMon", orphanRemoval = true)
+    @OneToOne(mappedBy = "kfnmtAssignNumofMon", orphanRemoval = true, fetch=FetchType.LAZY)
     public KfnmtWkpCheckCondition checkCondition;
 
     public SingleMonth toDomain() {

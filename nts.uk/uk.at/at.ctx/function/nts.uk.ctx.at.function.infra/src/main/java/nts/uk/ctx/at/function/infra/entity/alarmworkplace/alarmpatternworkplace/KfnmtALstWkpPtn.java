@@ -35,11 +35,11 @@ public class KfnmtALstWkpPtn extends UkJpaEntity implements Serializable {
     @Column(name = "PERMISSION_SET")
     public boolean authSetting;
 
-    @OneToMany(mappedBy = "kfnmtALstWkpPtn", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "kfnmtALstWkpPtn", cascade = CascadeType.ALL, orphanRemoval = true, fetch=FetchType.LAZY)
     @JoinTable(name = "KFNMT_ALSTWKP_PMS")
     public List<KfnmtALstWkpPms> alarmPerSet;
 
-    @OneToOne(mappedBy = "kfnmtALstWkpPtn", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "kfnmtALstWkpPtn", cascade = CascadeType.ALL, orphanRemoval = true, fetch=FetchType.LAZY)
     @JoinTable(name = "KFNMT_PTN_MAP_CAT")
     public List<KfnmtWkpCheckCondition> checkConList;
 
