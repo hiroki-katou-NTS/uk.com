@@ -68,6 +68,9 @@ public class LogParams {
 	 */
 	private List<LogSettingDto> listLogSettingDto;
 	
+	/**
+	 * This is condition we get from screen B (表示する項目)
+	 */
 	private List<ConditionDto> listCondition;
 	
 	private List<LogOutputItemDto> lstHeaderDto;
@@ -75,7 +78,6 @@ public class LogParams {
 	private List<LogBasicInfoDto> lstLogBasicInfoDto;
 	private List<LogBasicInfoAllDto> listLogBasicInfoAllDto;
 	private List<LogSetItemDetailDto> listLogSetItemDetailDto;
-	private List<Map<String, Object>> listDataExport;
 	
 
 	

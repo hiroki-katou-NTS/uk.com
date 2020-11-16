@@ -29,9 +29,8 @@ public class LogDataResultExportService extends ExportService<LogDataParamsExpor
 
 	private static final String FILE_EXTENSION = ".csv";
 	private static final String PGID = "CLI003";
-	private List<String> listHeader = new ArrayList<>();
 
-	private List<Map<String, Object>> getLogDataStorage(List<LogDataResultDto> logParams) {
+	private List<Map<String, Object>> getLogDataStorage(List<String> listHeader, List<LogDataResultDto> logParams) {
 		List<Map<String, Object>> dataSource = new ArrayList<>();
 		for (LogDataResultDto data : logParams) {
 			if(data.getLogResult().isEmpty()) {
@@ -64,10 +63,10 @@ public class LogDataResultExportService extends ExportService<LogDataParamsExpor
 		return dataSource;
 	}
 	
-	private List<Map<String, Object>> getDataRecovery(List<LogDataResultDto> logParams) {
+	private List<Map<String, Object>> getDataRecovery(List<String> listHeader, List<LogDataResultDto> logParams) {
 		List<Map<String, Object>> dataSource = new ArrayList<>();
 		for (LogDataResultDto data : logParams) {
-			for( LogResultDto logRs : data.getLogResult()) {
+			if(data.getLogResult().isEmpty()) {
 				Map<String, Object> row = new HashMap<>();
 				//parent
 				row.put(listHeader.get(0), data.getEmployeeCode());
@@ -75,19 +74,30 @@ public class LogDataResultExportService extends ExportService<LogDataParamsExpor
 				row.put(listHeader.get(2), data.getStartDateTime());
 				row.put(listHeader.get(3), data.getSetCode());
 				row.put(listHeader.get(4), data.getEndDateTime());
-				//sub
-				row.put(listHeader.get(5), logRs.getProcessingContent());
-				row.put(listHeader.get(6), logRs.getErrorContent());
-				row.put(listHeader.get(7), logRs.getContentSql());
-				row.put(listHeader.get(8), logRs.getErrorDate());
-				row.put(listHeader.get(9), logRs.getErrorEmployeeId());
 				dataSource.add(row);
+			} else {
+				for( LogResultDto logRs : data.getLogResult()) {
+					Map<String, Object> row = new HashMap<>();
+					//parent
+					row.put(listHeader.get(0), data.getEmployeeCode());
+					row.put(listHeader.get(1), data.getEmployeeName());
+					row.put(listHeader.get(2), data.getStartDateTime());
+					row.put(listHeader.get(3), data.getSetCode());
+					row.put(listHeader.get(4), data.getEndDateTime());
+					//sub
+					row.put(listHeader.get(5), logRs.getProcessingContent());
+					row.put(listHeader.get(6), logRs.getErrorContent());
+					row.put(listHeader.get(7), logRs.getContentSql());
+					row.put(listHeader.get(8), logRs.getErrorDate());
+					row.put(listHeader.get(9), logRs.getErrorEmployeeId());
+					dataSource.add(row);
+				}
 			}
 		}
 		return dataSource;
 	}
 	
-	private List<Map<String, Object>> getDataDeletion(List<LogDataResultDto> logParams) {
+	private List<Map<String, Object>> getDataDeletion(List<String> listHeader, List<LogDataResultDto> logParams) {
 		List<Map<String, Object>> dataSource = new ArrayList<>();
 		for (LogDataResultDto data : logParams) {
 			for( LogResultDto logRs : data.getLogResult()) {
@@ -112,6 +122,7 @@ public class LogDataResultExportService extends ExportService<LogDataParamsExpor
 	@Override
 	protected void handle(ExportServiceContext<LogDataParamsExport> context) {
 		LogDataParamsExport params = context.getQuery();
+		List<String> listHeader = new ArrayList<>();
 		listHeader.addAll(params.getLstHeaderDto());
 		listHeader.addAll(params.getLstSubHeaderDto());
 		LogDataParams param = LogDataParams.builder()
@@ -127,13 +138,13 @@ public class LogDataResultExportService extends ExportService<LogDataParamsExpor
 		Integer recordType = params.getRecordType();
 		switch (recordType) {
 		case 9:
-			dataSource = getLogDataStorage(logParams);
+			dataSource = getLogDataStorage(listHeader, logParams);
 			break;
 		case 10:
-			dataSource = getDataRecovery(logParams);
+			dataSource = getDataRecovery(listHeader, logParams);
 			break;
 		case 11:
-			dataSource = getDataDeletion(logParams);
+			dataSource = getDataDeletion(listHeader, logParams);
 			break;
 		default:
 			break;
