@@ -12,6 +12,8 @@ import nts.gul.security.hash.password.PasswordHash;
 import nts.gul.security.hash.password.PasswordHash.Verifier;
 import nts.gul.text.IdentifierUtil;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.sys.shared.dom.user.password.HashPassword;
+import nts.uk.ctx.sys.shared.dom.user.password.PassStatus;
 
 @Getter
 @Setter

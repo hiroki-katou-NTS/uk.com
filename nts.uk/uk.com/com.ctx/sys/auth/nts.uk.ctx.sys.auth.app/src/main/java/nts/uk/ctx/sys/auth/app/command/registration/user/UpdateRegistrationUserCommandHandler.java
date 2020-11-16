@@ -19,12 +19,12 @@ import nts.uk.ctx.sys.auth.dom.password.changelog.PasswordChangeLog;
 import nts.uk.ctx.sys.auth.dom.password.changelog.PasswordChangeLogRepository;
 import nts.uk.ctx.sys.auth.dom.registration.user.service.RegistrationUserService;
 import nts.uk.ctx.sys.shared.dom.user.DisabledSegment;
-import nts.uk.ctx.sys.shared.dom.user.HashPassword;
 import nts.uk.ctx.sys.shared.dom.user.LoginID;
 import nts.uk.ctx.sys.shared.dom.user.MailAddress;
 import nts.uk.ctx.sys.shared.dom.user.User;
 import nts.uk.ctx.sys.shared.dom.user.UserName;
 import nts.uk.ctx.sys.shared.dom.user.UserRepository;
+import nts.uk.ctx.sys.shared.dom.user.password.HashPassword;
 
 /**
  * The Class UpdateRegistrationUserCommandHandler.

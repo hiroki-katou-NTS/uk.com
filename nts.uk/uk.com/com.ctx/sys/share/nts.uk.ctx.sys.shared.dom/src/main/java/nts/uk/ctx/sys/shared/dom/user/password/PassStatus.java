@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.shared.dom.user;
+package nts.uk.ctx.sys.shared.dom.user.password;
 
 public enum PassStatus {
 	/** 正式 */

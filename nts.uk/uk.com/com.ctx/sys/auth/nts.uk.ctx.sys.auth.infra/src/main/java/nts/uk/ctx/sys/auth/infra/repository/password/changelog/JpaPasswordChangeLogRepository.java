@@ -23,7 +23,7 @@ import nts.uk.ctx.sys.auth.infra.entity.password.changelog.SacdtPasswordChangeLo
 import nts.uk.ctx.sys.auth.infra.entity.password.changelog.SacdtPasswordChangeLogPK;
 import nts.uk.ctx.sys.auth.infra.entity.password.changelog.SacdtPasswordChangeLogPK_;
 import nts.uk.ctx.sys.auth.infra.entity.password.changelog.SacdtPasswordChangeLog_;
-import nts.uk.ctx.sys.shared.dom.user.HashPassword;
+import nts.uk.ctx.sys.shared.dom.user.password.HashPassword;
 
 /**
  * The Class JpaPasswordChangeLogRepository.

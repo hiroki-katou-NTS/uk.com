@@ -1,7 +1,7 @@
 package nts.uk.ctx.sys.auth.dom.password.changelog;
 
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.sys.shared.dom.user.HashPassword;
+import nts.uk.ctx.sys.shared.dom.user.password.HashPassword;
 
 /**
  * The Interface PasswordChangeLogGetMemento.

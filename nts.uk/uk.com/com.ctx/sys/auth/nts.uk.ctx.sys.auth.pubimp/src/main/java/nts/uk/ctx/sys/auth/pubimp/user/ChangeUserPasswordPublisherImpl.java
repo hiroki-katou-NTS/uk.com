@@ -10,11 +10,11 @@ import nts.gul.security.hash.password.PasswordHash;
 import nts.uk.ctx.sys.auth.dom.password.changelog.PasswordChangeLog;
 import nts.uk.ctx.sys.auth.dom.password.changelog.PasswordChangeLogRepository;
 import nts.uk.ctx.sys.auth.pub.user.ChangeUserPasswordPublisher;
-import nts.uk.ctx.sys.shared.dom.user.HashPassword;
 import nts.uk.ctx.sys.shared.dom.user.LoginID;
-import nts.uk.ctx.sys.shared.dom.user.PassStatus;
 import nts.uk.ctx.sys.shared.dom.user.User;
 import nts.uk.ctx.sys.shared.dom.user.UserRepository;
+import nts.uk.ctx.sys.shared.dom.user.password.HashPassword;
+import nts.uk.ctx.sys.shared.dom.user.password.PassStatus;
 
 @Stateless
 public class ChangeUserPasswordPublisherImpl implements ChangeUserPasswordPublisher {
