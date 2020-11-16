@@ -98,6 +98,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			self.$ajax(API.changeDate, command)
 				.done((res: DisplayInfoOverTime) => {
 					console.log(res);
+					self.dataSource.infoWithDateApplicationOp = res.infoWithDateApplicationOp;
+					self.dataSource.calculationResultOp = res.calculationResultOp;
+					self.dataSource.workdayoffFrames = res.workdayoffFrames;
 				})
 				.fail((res: any) => {
 					

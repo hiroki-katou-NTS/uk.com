@@ -75,9 +75,9 @@ public class KrqdtAppOvertime_Old extends UkJpaEntity implements Serializable {
 	@Column(name = "OVERTIME_SHIFT_NIGHT")
 	private Integer overtimeShiftNight;
 
-	@OneToMany(targetEntity = KrqdtOvertimeInput.class, mappedBy = "appOvertime", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(targetEntity = KrqdtOvertimeInput_Old.class, mappedBy = "appOvertime", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinTable(name = "KRQDT_OVERTIME_INPUT")
-	public List<KrqdtOvertimeInput> overtimeInputs;
+	public List<KrqdtOvertimeInput_Old> overtimeInputs;
 
 	@OneToOne(targetEntity = KrqdtAppOvertimeDetail_Old.class, mappedBy = "appOvertime", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinTable(name = "KRQDT_APP_OVERTIME_DETAIL")
@@ -100,7 +100,7 @@ public class KrqdtAppOvertime_Old extends UkJpaEntity implements Serializable {
 		this.setOvertimeShiftNight(appOverTime.getOverTimeShiftNight());
 		this.setFlexExcessTime(appOverTime.getFlexExessTime());
 		this.setDivergenceReason(appOverTime.getDivergenceReason());
-		List<KrqdtOvertimeInput> overTimes = new ArrayList<KrqdtOvertimeInput>();
+		List<KrqdtOvertimeInput_Old> overTimes = new ArrayList<KrqdtOvertimeInput_Old>();
 		for (int i = 0; i < appOverTime.getOverTimeInput().size(); i++) {
 			OverTimeInput overtimeInput = appOverTime.getOverTimeInput().get(i);
 			this.getOvertimeInputs().stream()
@@ -112,8 +112,8 @@ public class KrqdtAppOvertime_Old extends UkJpaEntity implements Serializable {
 						return Optional.ofNullable(null);
 					}).orElseGet(() -> {
 
-						KrqdtOvertimeInput krqdtOvertimeInput = new KrqdtOvertimeInput(
-								new KrqdtOvertimeInputPK(appOverTime.getCompanyID(), appOverTime.getAppID(),
+						KrqdtOvertimeInput_Old krqdtOvertimeInput = new KrqdtOvertimeInput_Old(
+								new KrqdtOvertimeInputPK_Old(appOverTime.getCompanyID(), appOverTime.getAppID(),
 										overtimeInput.getAttendanceType().value, overtimeInput.getFrameNo(),
 										overtimeInput.getTimeItemTypeAtr().value),
 								overtimeInput.getStartTime() == null ? null : overtimeInput.getStartTime().v(),

@@ -1,8 +1,13 @@
 package nts.uk.ctx.at.request.infra.entity.application.overtime;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
@@ -11,7 +16,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
- * 
+ * Refactor5
  * @author hoangnd
  *
  */
@@ -137,6 +142,10 @@ public class KrqdtAppOverTime extends ContractUkJpaEntity{
 	
 	@Column(name = "BREAK_TIME_END10")
 	public Integer breakTimeEnd10;
+	
+	@OneToMany(targetEntity = KrqdtOvertimeInput.class, mappedBy = "appOvertime", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinTable(name = "KRQDT_OVERTIME_INPUT")
+	public List<KrqdtOvertimeInput> overtimeInputs;
 
 	@Override
 	protected Object getKey() {

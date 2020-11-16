@@ -2,11 +2,20 @@ package nts.uk.ctx.at.request.infra.entity.application.overtime;
 
 import java.io.Serializable;
 
+
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
-
+/**
+ * Refactor5
+ * @author hoangnd
+ *
+ */
+@AllArgsConstructor
+@NoArgsConstructor
 public class KrqdtAppOvertimeDetail extends ContractUkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;

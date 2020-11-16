@@ -31,8 +31,8 @@ import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertime_
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeDetail_Old;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeDetailPk_Old;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimePK_Old;
-import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtOvertimeInput;
-import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtOvertimeInputPK;
+import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtOvertimeInput_Old;
+import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtOvertimeInputPK_Old;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtTime36UpLimitPerMonth;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtYear36OverMonth;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtYear36OverMonthPk;
@@ -115,10 +115,10 @@ public class JpaOvertimeRepository_Old extends JpaRepository implements Overtime
 	}
 
 	private KrqdtAppOvertime_Old toEntity(AppOverTime_Old domain) {
-		List<KrqdtOvertimeInput> overtimeInputs = domain.getOverTimeInput().stream().map(item -> {
-			KrqdtOvertimeInputPK pk = new KrqdtOvertimeInputPK(item.getCompanyID(), item.getAppID(),
+		List<KrqdtOvertimeInput_Old> overtimeInputs = domain.getOverTimeInput().stream().map(item -> {
+			KrqdtOvertimeInputPK_Old pk = new KrqdtOvertimeInputPK_Old(item.getCompanyID(), item.getAppID(),
 					item.getAttendanceType().value, item.getFrameNo(), item.getTimeItemTypeAtr().value);
-			return new KrqdtOvertimeInput(pk, item.getStartTime() == null ? null : item.getStartTime().v(),
+			return new KrqdtOvertimeInput_Old(pk, item.getStartTime() == null ? null : item.getStartTime().v(),
 					item.getEndTime() == null ? null : item.getEndTime().v(),
 					item.getApplicationTime() == null ? null : item.getApplicationTime().v());
 		}).collect(Collectors.toList());
@@ -207,7 +207,7 @@ public class JpaOvertimeRepository_Old extends JpaRepository implements Overtime
 
 		Set<KrqdtYear36OverMonth> lstYear36OverMonth = new HashSet<KrqdtYear36OverMonth>();
 		Set<KrqdtTime36UpLimitPerMonth> lstAverageTimeLst = new HashSet<KrqdtTime36UpLimitPerMonth>();
-		Set<KrqdtOvertimeInput> lstKrqdtOvertimeInput = new HashSet<KrqdtOvertimeInput>();
+		Set<KrqdtOvertimeInput_Old> lstKrqdtOvertimeInput = new HashSet<KrqdtOvertimeInput_Old>();
 		Set<KrqdtAppOvertimeDetail_Old> lstkrqdtAppOvertimeDetail = new HashSet<KrqdtAppOvertimeDetail_Old>();
 		Set<KrqdtAppOvertime_Old> lstKrqdtAppOvertime = new HashSet<KrqdtAppOvertime_Old>();
 
@@ -273,7 +273,7 @@ public class JpaOvertimeRepository_Old extends JpaRepository implements Overtime
 			// get krqdtAppOvertime
 			KrqdtAppOvertime_Old krqdtAppOvertime = optKrqdtAppOvertime.get();
 			// get list KrqdtOvertimeInput
-			List<KrqdtOvertimeInput> lstKrqdtOvertimeInputFilter = lstKrqdtOvertimeInput.stream()
+			List<KrqdtOvertimeInput_Old> lstKrqdtOvertimeInputFilter = lstKrqdtOvertimeInput.stream()
 					.filter(x -> x.getKrqdtOvertimeInputPK().getAppId().equals(appId)).collect(Collectors.toList());
 			// set KrqdtOvertimeInput for krqdtAppOvertime
 			krqdtAppOvertime.setOvertimeInputs(lstKrqdtOvertimeInputFilter);
@@ -326,9 +326,9 @@ public class JpaOvertimeRepository_Old extends JpaRepository implements Overtime
 				rs.getInt("AVE_TIME"), rs.getInt("TOTAL_TIME"));
 	}
 
-	private KrqdtOvertimeInput createKrqdtOvertimeInput(String cid, String appId, NtsResultRecord rs) {
-		return new KrqdtOvertimeInput(
-				new KrqdtOvertimeInputPK(cid, appId, rs.getInt("ATTENDANCE_ID"), rs.getInt("FRAME_NO"),
+	private KrqdtOvertimeInput_Old createKrqdtOvertimeInput(String cid, String appId, NtsResultRecord rs) {
+		return new KrqdtOvertimeInput_Old(
+				new KrqdtOvertimeInputPK_Old(cid, appId, rs.getInt("ATTENDANCE_ID"), rs.getInt("FRAME_NO"),
 						rs.getInt("TIME_ITEM_TYPE_ATR")),
 				rs.getInt("START_TIME"), rs.getInt("END_TIME"), rs.getInt("APPLICATION_TIME_INPUT"));
 	}

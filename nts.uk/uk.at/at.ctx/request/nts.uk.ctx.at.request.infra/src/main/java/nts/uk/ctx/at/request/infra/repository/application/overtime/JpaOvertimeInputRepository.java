@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeInputRepository;
-import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtOvertimeInput;
+import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtOvertimeInput_Old;
 
 @Stateless
 public class JpaOvertimeInputRepository extends JpaRepository implements OvertimeInputRepository {
@@ -33,7 +33,7 @@ public class JpaOvertimeInputRepository extends JpaRepository implements Overtim
 	@Override
 	public List<OverTimeInput> getOvertimeInput(String companyID, String appID) {
 		
-		return this.queryProxy().query(FIND_BY_APPID, KrqdtOvertimeInput.class)
+		return this.queryProxy().query(FIND_BY_APPID, KrqdtOvertimeInput_Old.class)
 				.setParameter("companyID", companyID)
 				.setParameter("appID", appID).getList(e -> convertToDomain(e));
 	}
@@ -41,13 +41,13 @@ public class JpaOvertimeInputRepository extends JpaRepository implements Overtim
 	@Override
 	public List<OverTimeInput> getOvertimeInputByAttendanceId(String companyID, String appID, int attendanceId) {
 		// TODO Auto-generated method stub
-		return this.queryProxy().query(FIND_BY_APPID_AND_ATTENDANCEID,KrqdtOvertimeInput.class)
+		return this.queryProxy().query(FIND_BY_APPID_AND_ATTENDANCEID,KrqdtOvertimeInput_Old.class)
 				.setParameter("companyID", companyID)
 				.setParameter("appID", appID)
 				.setParameter("attendanceId", attendanceId).getList(e -> convertToDomain(e));
 	}
 	
-	private OverTimeInput convertToDomain(KrqdtOvertimeInput entity){
+	private OverTimeInput convertToDomain(KrqdtOvertimeInput_Old entity){
 		return OverTimeInput.createSimpleFromJavaType(entity.getKrqdtOvertimeInputPK().getCid(),
 				entity.getKrqdtOvertimeInputPK().getAppId(),
 				entity.getKrqdtOvertimeInputPK().getAttendanceId(),

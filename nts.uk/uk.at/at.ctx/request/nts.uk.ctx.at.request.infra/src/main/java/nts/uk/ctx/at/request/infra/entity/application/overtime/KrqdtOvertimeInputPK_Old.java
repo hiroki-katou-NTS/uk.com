@@ -9,35 +9,29 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+
 
 @Getter
 @Setter
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrqdtOvertimeInputPK extends ContractUkJpaEntity implements Serializable{
+public class KrqdtOvertimeInputPK_Old implements Serializable{
+	
+	private static final long serialVersionUID = 1L;
 
-	public static final long serialVersionUID = 1L;
-	
-	
 	@Column(name = "CID")
 	private String cid;
 
 	@Column(name = "APP_ID")
 	private String appId;
 
-	@Column(name = "ATTENDANCE_TYPE")
-	private Integer attendanceType;
+	@Column(name = "ATTENDANCE_ID")
+	private int attendanceId;
 
 	@Column(name = "FRAME_NO")
-	private Integer frameNo;
+	private int frameNo;
 
-	
-	@Override
-	protected Object getKey() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	@Column(name = "TIME_ITEM_TYPE_ATR")
+	private int timeItemTypeAtr;
 }
