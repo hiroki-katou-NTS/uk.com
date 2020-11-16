@@ -336,8 +336,7 @@ export class KafS20A2Component extends KafS00ShrComponent {
             vm.$emit('nextToStep3', res);
         }).catch((error) => {
             vm.$mask('hide');
-
-            //show Msg_1691,1692,1693
+             //show Msg_1691,1692,1693
             if (error.messageId == 'Msg_1691' || error.messageId == 'Msg_1692' || error.messageId == 'Msg_1693') {
                 vm.$modal.warn({ messageId: error.messageId, messageParams: error.parameterIds[0] });
             } else {
@@ -396,7 +395,7 @@ export class KafS20A2Component extends KafS00ShrComponent {
         const vm = this;
         vm.$mask('hide');
         if (res.messageId) {
-            return vm.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds[0] });
+            return vm.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
         } else {
 
             if (_.isArray(res.errors)) {
