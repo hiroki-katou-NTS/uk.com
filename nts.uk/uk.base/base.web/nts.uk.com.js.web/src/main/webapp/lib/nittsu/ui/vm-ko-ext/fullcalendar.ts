@@ -430,7 +430,11 @@ module nts.uk.ui.koExtentions {
 
                         return _.range(0, diff, 1).map(m => {
                             const date = first.clone().add(m, 'day');
-                            const exists = _.filter(evts, (d: fc.EventApi) => date.isSame(d.start, 'date') && d.display !== 'background');
+                            const exists = _.filter(evts, (d: fc.EventApi) => {
+                                return !d.allDay &&
+                                    d.display !== 'background' &&
+                                    date.isSame(d.start, 'date');
+                            });
 
                             return exists.reduce((p, c) => p += moment(c.end).diff(c.start, 'minute'), 0);
                         });
