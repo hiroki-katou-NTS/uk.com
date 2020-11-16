@@ -48,14 +48,14 @@ module nts.uk.at.view.kmk004.l {
 						<button id = "btn_year" data-bind="i18n: 'KMK004_233'"></button>
 						<table id = "btm_area">
 							<tr>
-								<td>
+								<td id="view-o-listbox">
 									<div data-bind="component: {
 										name: 'view-l-listbox'
 									}"></div>
 								</td>
 								<td>
 									<div data-bind="component: {
-										name: 'view-l-times-table'
+										name: 'view-o-times-table'
 									}"></div>
 								</td>
 							</tr>
