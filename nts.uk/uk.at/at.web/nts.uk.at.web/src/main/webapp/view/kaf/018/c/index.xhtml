@@ -21,14 +21,11 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<div class="table" style="margin-left: 5px">
-					<div class="cell valign-center">
-						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_10')}</div>
+					<div class="cell valign-center" style="width: 130px;">
+						<div class="cell valign-center" data-bind="ntsFormLabel: {required: true}, text: name"></div>
 					</div>
 					<div class="cell valign-center">
-						<div class="limited-label label" style="width: 110px;"  data-bind="text: closureName"></div>
-					</div>
-					<div class="cell valign-center">
-						<div class="limited-label label" style="width: 300px;" data-bind="text: getTargetDate()"></div>
+						<div class="cell valign-center limited-label label" style="width: 300px;" data-bind="text: description"></div>
 					</div>
 				</div>
 				<div class="table" style="margin-left: 5px; margin-top: 5px;">
@@ -36,9 +33,9 @@
 														options: items,
 														optionsValue: 'code',
 														columns: ko.observableArray([
-															{ headerText: '#{i18n.getText('KAF018_350')}', key: 'code', width: 100 },
-															{ headerText: '#{i18n.getText('KAF018_351')}', key: 'name', width: 150 }, 
-															{ headerText: '#{i18n.getText('KAF018_351')}#{i18n.getText('KAF018_352')}', key: 'description', width: 570 }
+															{ headerText: '#{i18n.getText('KAF018_350')}', key: 'wkpName', width: 100 },
+															{ headerText: '#{i18n.getText('KAF018_351')}', key: 'numberPeople', width: 150 }, 
+															{ headerText: '#{i18n.getText('KAF018_351')}#{i18n.getText('KAF018_352')}', key: 'mailInfo', width: 570 }
 														]),
 														multiple: true,
 														value: currentCodeList,
@@ -50,7 +47,7 @@
 				<div class="table" style="margin-left: 5px; margin-top: 5px;">
 					<input id="kaf018-c-input" data-bind="ntsTextEditor: { 
 										name: '#{i18n.getText('KAF018_354')}',
-										value: textEditor }" />
+										value: mailSubject }" />
 				</div>
 				<div class="table" style="margin-left: 5px; margin-top: 10px;">
 					<div class="cell">
@@ -61,22 +58,22 @@
 				<div class="table" style="margin-left: 5px; margin-top: 5px;">
 					<textarea id="kaf018-c-textarea" data-bind="ntsMultilineEditor: { 
 										name: '#{i18n.getText('KAF018_357')}',
-										value: textArea }" />
+										value: mailContent }" />
 				</div>
 				<div class="table" style="margin-left: 5px; margin-top: 10px;">
-					<div data-bind="ntsMultiCheckBox: {
-										options: ko.observableArray([
-											{ id: 1, name: '#{i18n.getText('KAF018_362')}'},
-											{ id: 2, name: '#{i18n.getText('KAF018_363')}'},
-											{ id: 3, name: '#{i18n.getText('KAF018_364')}'}
-								        ]),
-										optionsValue: 'id',
-										optionsText: 'name',
-										value: selectedIds }"></div>
+					<div data-bind="if: displayUrlApprovalEmbed">
+						<div data-bind="ntsCheckBox: { checked: urlApprovalEmbed }">#{i18n.getText('KAF018_362')}</div>
+					</div>
+					<div data-bind="if: displayUrlDayEmbed">
+						<div data-bind="ntsCheckBox: { checked: urlDayEmbed }">#{i18n.getText('KAF018_363')}</div>
+					</div>
+					<div data-bind="if: displayUrlMonthEmbed">
+						<div data-bind="ntsCheckBox: { checked: urlMonthEmbed }">#{i18n.getText('KAF018_364')}</div>
+					</div>
 				</div>
 				<div class="table" style="margin-left: 5px; margin-top: 10px;">
 					<div class="cell" style="width: 60px">
-						<button>#{i18n.getText('KAF018_358')}</button>
+						<button data-bind="click: updateMailTemplate">#{i18n.getText('KAF018_358')}</button>
 					</div>
 					<div class="cell" style="padding-left: 10px">#{i18n.getText('KAF018_359')}</div>
 				</div>

@@ -26,4 +26,6 @@ public class EmpPeriod {
 	private GeneralDate employmentStartDate;
 	
 	private GeneralDate employmentEndDate;
+	
+	private String empMail;
 }

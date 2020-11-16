@@ -14,6 +14,18 @@
 	vertical-align: middle !important;
 }
 
+.kaf018-d-header-saturday {
+	text-align: center !important;
+	vertical-align: middle !important;
+	background-color: #8BD8FF !important;
+}
+
+.kaf018-d-header-sunday {
+	text-align: center !important;
+	vertical-align: middle !important;
+	background-color: #FABF8F !important;
+}
+
 .kaf018-d-column-date {
 	text-align: center;
 }

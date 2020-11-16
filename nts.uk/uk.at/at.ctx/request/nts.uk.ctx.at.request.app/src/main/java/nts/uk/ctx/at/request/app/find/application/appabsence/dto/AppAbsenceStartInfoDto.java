@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.TimeZoneUseDto;
+import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingDto;
 import nts.uk.ctx.at.request.app.find.setting.company.request.applicationsetting.apptypesetting.DisplayReasonDto;
 import nts.uk.ctx.at.request.app.find.setting.company.vacationapplicationsetting.HdAppSetDto;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.RemainVacationInfo;
@@ -40,7 +41,7 @@ public class AppAbsenceStartInfoDto {
 	/**
 	 * 休暇申請設定
 	 */
-	public HdAppSetDto hdAppSet;
+	public HolidayApplicationSettingDto hdAppSet;
 	
 	/**
 	 * 申請理由表示
@@ -97,8 +98,8 @@ public class AppAbsenceStartInfoDto {
 	public static AppAbsenceStartInfoDto fromDomain(AppAbsenceStartInfoOutput absenceStartInfoOutput) {
 		AppAbsenceStartInfoDto result = new AppAbsenceStartInfoDto();
 		result.appDispInfoStartupOutput = AppDispInfoStartupDto.fromDomain(absenceStartInfoOutput.getAppDispInfoStartupOutput());
-		result.hdAppSet = HdAppSetDto.convertToDto(absenceStartInfoOutput.getHdAppSet());
-		result.displayReason = DisplayReasonDto.fromDomain(absenceStartInfoOutput.getDisplayReason());
+		result.hdAppSet = HolidayApplicationSettingDto.fromDomain(absenceStartInfoOutput.getHdAppSet());
+		result.displayReason = absenceStartInfoOutput.getDisplayReason() == null ? null : DisplayReasonDto.fromDomain(absenceStartInfoOutput.getDisplayReason());
 		result.remainVacationInfo = absenceStartInfoOutput.getRemainVacationInfo();
 		result.workHoursDisp = absenceStartInfoOutput.isWorkHoursDisp();
 		result.workTypeLst = CollectionUtil.isEmpty(absenceStartInfoOutput.getWorkTypeLst()) ? Collections.emptyList() : absenceStartInfoOutput.getWorkTypeLst().stream().map(x -> WorkTypeDto.fromDomain(x)).collect(Collectors.toList());
@@ -107,7 +108,7 @@ public class AppAbsenceStartInfoDto {
 		result.specAbsenceDispInfo = absenceStartInfoOutput.getSpecAbsenceDispInfo().map(x -> SpecAbsenceDispInfoDto.fromDomain(x)).orElse(null);
 		result.selectedWorkTypeCD = absenceStartInfoOutput.getSelectedWorkTypeCD().orElse(null);
 		result.selectedWorkTimeCD = absenceStartInfoOutput.getSelectedWorkTimeCD().orElse(null);
-		result.requiredVacationTime = absenceStartInfoOutput.getRequiredVacationTimeOptional().orElse(null).v();
+		result.requiredVacationTime = absenceStartInfoOutput.getRequiredVacationTimeOptional().isPresent() ? absenceStartInfoOutput.getRequiredVacationTimeOptional().get().v() : null;
 		result.vacationApplicationReflect = HolidayApplicationReflectCommand.fromDomain(absenceStartInfoOutput.getVacationAppReflect());
 		return result;
 	}
@@ -116,7 +117,7 @@ public class AppAbsenceStartInfoDto {
 		return new AppAbsenceStartInfoOutput(
 				appDispInfoStartupOutput.toDomain(), 
 				vacationApplicationReflect.toDomain(companyId),
-				hdAppSet.toDomain(), 
+				hdAppSet.toDomain(companyId), 
 				displayReason.toDomain(), 
 				remainVacationInfo, 
 				workHoursDisp, 
