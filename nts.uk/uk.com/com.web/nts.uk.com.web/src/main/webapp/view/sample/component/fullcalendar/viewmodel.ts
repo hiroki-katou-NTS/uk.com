@@ -43,6 +43,8 @@ module nts.uk.ui.com.sample.fullcalendar {
             endTime: 0
         }]);
 
+        weekends: KnockoutObservable<boolean> = ko.observable(true);
+        firstDay: KnockoutObservable<number> = ko.observable(1);
         scrollTime: KnockoutObservable<number> = ko.observable(420);
         slotDuration: KnockoutObservable<number> = ko.observable(30);
 

@@ -31,6 +31,8 @@
 				<div id="content" class="cf" data-bind="if: $vm.show">
 					<div data-bind="
 						fullcalendar: $vm.events,
+						weekends: $vm.weekends,
+						firstDay: $vm.firstDay,
 						scrollTime: $vm.scrollTime,
 						slotDuration: $vm.slotDuration,
 						businessHours: $vm.businessHours,
