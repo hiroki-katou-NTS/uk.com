@@ -1,11 +1,11 @@
-package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp;
+package nts.uk.ctx.at.shared.dom.workrule.goingout;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 
 import nts.arc.testing.assertion.NtsAssert;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 /**
  * 
  * @author tutk
