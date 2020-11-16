@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 
 /**
@@ -35,7 +36,7 @@ public class TotalValue {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T> T value() {
-		if(value == null){
+		if(StringUtil.isNullOrEmpty(value, false)){
 			return null;
 		}
 		ValueType valueType = EnumAdaptor.valueOf(this.valueType, ValueType.class);

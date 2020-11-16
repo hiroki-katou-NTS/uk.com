@@ -31,7 +31,7 @@ public class EmpInfoTerminalPubImpl implements EmpInfoTerminalPub {
 	}
 
 	private EmpInfoTerminalExport convertTo(EmpInfoTerminal setting) {
-		return new EmpInfoTerminalBuilder(setting.getIpAddress().map(x -> x.v()), setting.getMacAddress().v(),
+		return new EmpInfoTerminalBuilder(setting.getIpAddress().map(x -> x.getFullIpAddress()), setting.getMacAddress().v(),
 				setting.getEmpInfoTerCode().v(), setting.getTerSerialNo().map(x -> x.v()),
 				setting.getEmpInfoTerName().v(), setting.getContractCode().v())
 						.modelEmpInfoTer(setting.getModelEmpInfoTer().value).intervalTime(setting.getIntervalTime().v())

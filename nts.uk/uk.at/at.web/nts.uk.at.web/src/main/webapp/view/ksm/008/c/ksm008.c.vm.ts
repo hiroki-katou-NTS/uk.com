@@ -81,7 +81,6 @@ module nts.uk.at.ksm008.c {
             ]);
 
             vm.initEmployeeList();
-            vm.initEmployeeTargetList();
         }
 
         mounted() {
@@ -244,12 +243,6 @@ module nts.uk.at.ksm008.c {
                 maxRows: 10
             };
 
-            $("#kcp005-component-left").ntsListComponent(vm.selectableEmployeeComponentOption);
-        }
-
-        initEmployeeTargetList() {
-            const vm = this;
-
             vm.targetEmployeeComponentOption = {
                 listType: ListType.EMPLOYEE,
                 employeeInputList: vm.targetEmployeeList,
@@ -266,7 +259,9 @@ module nts.uk.at.ksm008.c {
                 maxRows: 10
             };
 
-            $("#kcp005-component-right").ntsListComponent(vm.targetEmployeeComponentOption);
+            $("#kcp005-component-left").ntsListComponent(vm.selectableEmployeeComponentOption).then(() => {
+                $("#kcp005-component-right").ntsListComponent(vm.targetEmployeeComponentOption);
+            });
         }
 
         moveItemToRight() {

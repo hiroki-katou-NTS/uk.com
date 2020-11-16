@@ -56,8 +56,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedul
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.ActualWorkingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.StayingTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
+import nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
@@ -198,8 +198,8 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		
 		// create AffiliationInforOfDailyAttd
 		AffiliationInforOfDailyAttd affInfo = new AffiliationInforOfDailyAttd(new EmploymentCode(empCd), jobId, wkpId, new ClassificationCode(clsCd),
-				busTypeCd==null?null:new BusinessTypeCode(busTypeCd),
-				null);
+				Optional.ofNullable(new BusinessTypeCode(busTypeCd)),
+				Optional.empty());
 		
 		// create List<BreakTimeOfDailyAttd> 
 		List<BreakTimeOfDailyAttd> lstBreakTime = new ArrayList<>();
@@ -221,8 +221,8 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		@SuppressWarnings("unused")
 		TimeWithDayAttr timeWithDayAttr = null;
 		atdLvwTimes.stream().forEach(mapper-> {
-			WorkStamp workStamp = new WorkStamp(new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET,null), new TimeWithDayAttr(mapper.getAtdClock())), Optional.empty());
-			WorkStamp workStamp2 = new WorkStamp(new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET,null), new TimeWithDayAttr(mapper.getLwkClock())), Optional.empty());
+			WorkStamp workStamp = new WorkStamp(new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET,Optional.empty()), new TimeWithDayAttr(mapper.getAtdClock())), Optional.empty());
+			WorkStamp workStamp2 = new WorkStamp(new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET,Optional.empty()), new TimeWithDayAttr(mapper.getLwkClock())), Optional.empty());
 			TimeActualStamp timeActualStamp = new TimeActualStamp(null, workStamp, 0);
 			TimeActualStamp timeActualStamp2 = new TimeActualStamp(null, workStamp2, 0);
 			TimeLeavingWork timeLeavingWork = new TimeLeavingWork(new WorkNo(mapper.getPk().getWorkNo()), timeActualStamp, timeActualStamp2);

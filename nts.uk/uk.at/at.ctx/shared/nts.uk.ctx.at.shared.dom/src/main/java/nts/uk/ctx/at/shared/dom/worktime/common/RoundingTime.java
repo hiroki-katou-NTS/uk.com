@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,9 +39,12 @@ public class RoundingTime {
 	 */
 	public RoundingTime(RoundingTimeGetMemento memento) {
 		super();
-		this.attendanceMinuteLaterCalculate = memento.getAttendanceMinuteLaterCalculate();
-		this.leaveWorkMinuteAgoCalculate = memento.getLeaveWorkMinuteAgoCalculate();
-		this.roundingSets = memento.getRoundingSets();
+		this.attendanceMinuteLaterCalculate = NotUseAtr.NOT_USE;//memento.getAttendanceMinuteLaterCalculate();
+		this.leaveWorkMinuteAgoCalculate = NotUseAtr.NOT_USE;//memento.getLeaveWorkMinuteAgoCalculate();
+		this.roundingSets = Arrays.asList(new RoundingSet(new InstantRounding(FontRearSection.AFTER, RoundingTimeUnit.FIFTEEN), Superiority.ATTENDANCE),
+				new RoundingSet(new InstantRounding(FontRearSection.AFTER, RoundingTimeUnit.FIFTEEN), Superiority.GO_OUT),
+				new RoundingSet(new InstantRounding(FontRearSection.AFTER, RoundingTimeUnit.FIFTEEN), Superiority.OFFICE_WORK),
+				new RoundingSet(new InstantRounding(FontRearSection.AFTER, RoundingTimeUnit.FIFTEEN), Superiority.TURN_BACK));//memento.getRoundingSets();
 	}
 	
 	/**
@@ -97,7 +101,7 @@ public class RoundingTime {
 			//出勤のデータがあるか
 			if(timeLeavingWork.getAttendanceStamp().isPresent() && timeLeavingWork.getAttendanceStamp().get().getActualStamp().isPresent()) {
 				//丸め設定取得
-				RoundingSet roundingSetAttendance =  (RoundingSet) this.roundingSets.stream().filter(item -> item.getSection() == Superiority.ATTENDANCE);
+				RoundingSet roundingSetAttendance =  this.roundingSets.stream().filter(item -> item.getSection() == Superiority.ATTENDANCE).findFirst().get();
 				//丸め処理
 				newAttendanceStamp =Optional.of(roundingSetAttendance.getRoundingSet().roundStamp(timeLeavingWork.getAttendanceStamp().get().getActualStamp().get()));
 			}else {
@@ -121,9 +125,9 @@ public class RoundingTime {
 				
 			Optional<WorkStamp> newLeave;	
 			//退勤データがあるか
-			if(timeLeavingWork.getLeaveStamp().isPresent()) {
+			if(timeLeavingWork.getLeaveStamp().isPresent()&& timeLeavingWork.getLeaveStamp().get().getActualStamp().isPresent()) {
 				//丸め設定取得
-				RoundingSet roundingSetAttendance =  (RoundingSet) this.roundingSets.stream().filter(item -> item.getSection() == Superiority.OFFICE_WORK);
+				RoundingSet roundingSetAttendance = this.roundingSets.stream().filter(item -> item.getSection() == Superiority.OFFICE_WORK).findFirst().get();;
 				//丸め処理
 				newLeave =Optional.of(roundingSetAttendance.getRoundingSet().roundStamp(timeLeavingWork.getLeaveStamp().get().getActualStamp().get()));
 			}else {

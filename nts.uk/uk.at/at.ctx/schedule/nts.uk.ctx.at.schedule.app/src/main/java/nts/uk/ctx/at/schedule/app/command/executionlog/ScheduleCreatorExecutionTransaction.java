@@ -89,11 +89,10 @@ import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExEmploymentHistor
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExJobTitleHistItemImport;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExJobTitleHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkPlaceHistoryImport;
-import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkTypeHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkplaceHistItemImport;
-import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.AffiliationInforState;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ReflectWorkInforDomainService;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeHis;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
@@ -144,16 +143,16 @@ import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
  * ScheduleCreatorExecutionCommandHandlerから並列で実行されるトランザクション処理を担当するサービス
  */
 @Stateless
-@TransactionAttribute(TransactionAttributeType.REQUIRED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ScheduleCreatorExecutionTransaction {
 
 	/** The schedule creator repository. */
 	@Inject
 	private ScheduleCreatorRepository scheduleCreatorRepository;
 
-	 /** The schedule execution log repository. */
-	 @Inject
-	 private ScheduleExecutionLogRepository scheduleExecutionLogRepository;
+	/** The schedule execution log repository. */
+	@Inject
+	private ScheduleExecutionLogRepository scheduleExecutionLogRepository;
 
 	/** The schedule error log repository. */
 	@Inject
@@ -236,7 +235,6 @@ public class ScheduleCreatorExecutionTransaction {
 	@Inject
 	private BasicScheduleService basicScheduleService;
 
-
 	public void execute(ScheduleCreatorExecutionCommand command, ScheduleExecutionLog scheduleExecutionLog,
 			CommandHandlerContext<ScheduleCreatorExecutionCommand> context, String companyId, String exeId,
 			DatePeriod period, CreateScheduleMasterCache masterCache, List<BasicSchedule> listBasicSchedule,
@@ -278,7 +276,6 @@ public class ScheduleCreatorExecutionTransaction {
 //			// アルゴリズム「暫定データの登録」を実行する(Thực hiện thuật toán [đăng ký data tạm])
 //			this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, x.getEmployeeId(), x.getListDate());
 //		});
-
 	}
 
 	private void createSchedule(ScheduleCreatorExecutionCommand command, ScheduleExecutionLog scheduleExecutionLog,
@@ -298,7 +295,7 @@ public class ScheduleCreatorExecutionTransaction {
 			// スケジュールを再設定する (Thiết lập lại schedule)
 			// ドメインモデル「スケジュール作成実行ログ」を更新する ở trong xử lý này
 			this.resetScheduleWithMultiThread(commandReset, context, period, masterCache.getEmpGeneralInfo(),
-					masterCache.getListBusTypeOfEmpHis(), listBasicSchedule, registrationListDateSchedule, scheduleCreator);
+					masterCache.getListBusTypeOfEmpHis(), listBasicSchedule, registrationListDateSchedule,scheduleCreator);
 		} else {
 			// else 中断じゃない
 			// 入力パラメータ「作成方法区分」を判断-check parameter
@@ -357,26 +354,25 @@ public class ScheduleCreatorExecutionTransaction {
 
 	}
 
-	/**
-	 * Reset schedule.
-	 *
-	 * @param command
-	 *            the command
-	 * @param creator
-	 *            the creator
-	 * @param domain
-	 *            the domain
-	 */
+		/**
+		 * Reset schedule.
+		 *
+		 * @param command the command
+		 * @param creator the creator
+		 * @param domain  the domain
+		 */
 	// スケジュールを再設定する
 	private void resetScheduleWithMultiThread(BasicScheduleResetCommand command,
 			CommandHandlerContext<ScheduleCreatorExecutionCommand> context, DatePeriod targetPeriod,
-			EmployeeGeneralInfoImported empGeneralInfo, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis,
-			List<BasicSchedule> listBasicSchedule, RegistrationListDateSchedule registrationListDateSchedule, ScheduleCreator scheduleCreator) {
+			EmployeeGeneralInfoImported empGeneralInfo, List<BusinessTypeOfEmployeeHis> listBusTypeOfEmpHis,
+			List<BasicSchedule> listBasicSchedule, RegistrationListDateSchedule registrationListDateSchedule,
+			ScheduleCreator scheduleCreator) {
 
 		// get info by context
 		val asyncTask = context.asAsync();
 
-		DateRegistedEmpSche dateRegistedEmpSche = new DateRegistedEmpSche(scheduleCreator.getEmployeeId(), new ArrayList<>());
+		DateRegistedEmpSche dateRegistedEmpSche = new DateRegistedEmpSche(scheduleCreator.getEmployeeId(),
+				new ArrayList<>());
 		// loop start period date => end period date
 		for (val toDate : targetPeriod.datesBetween()) {
 			// 中断フラグを判断
@@ -389,8 +385,9 @@ public class ScheduleCreatorExecutionTransaction {
 			}
 			// ドメインモデル「勤務予定基本情報」を取得する
 			// fix for response
-			Optional<BasicSchedule> optionalBasicSchedule = listBasicSchedule.stream().filter(
-					x -> (x.getEmployeeId().equals(scheduleCreator.getEmployeeId()) && x.getDate().compareTo(toDate) == 0))
+			Optional<BasicSchedule> optionalBasicSchedule = listBasicSchedule.stream()
+					.filter(x -> (x.getEmployeeId().equals(scheduleCreator.getEmployeeId())
+							&& x.getDate().compareTo(toDate) == 0))
 					.findFirst();
 			if (optionalBasicSchedule.isPresent()) {
 				command.setWorkingCode(optionalBasicSchedule.get().getWorkTimeCode());
@@ -413,8 +410,8 @@ public class ScheduleCreatorExecutionTransaction {
 
 	/**
 	 * tra ve true la muon ket thuc vong lap tra ve false la k chay cac xu ly ben
-	 * duoi, sang object tiep theo 日のデータを用意する
-	 * hàm này là code của bác Bình - để riêng ra và viết 1 hàm mới
+	 * duoi, sang object tiep theo 日のデータを用意する hàm này là code của bác Bình - để
+	 * riêng ra và viết 1 hàm mới
 	 * @param command
 	 * @param creator
 	 * @param domain
@@ -432,8 +429,8 @@ public class ScheduleCreatorExecutionTransaction {
 	@SuppressWarnings("unused")
 	private boolean createScheduleBasedPersonOneDate(ScheduleCreatorExecutionCommand command, ScheduleCreator creator,
 			ScheduleExecutionLog domain, CommandHandlerContext<ScheduleCreatorExecutionCommand> context,
-			DatePeriod targetPeriod, GeneralDate dateInPeriod, CreateScheduleMasterCache masterCache, List<BasicSchedule> listBasicSchedule,
-			DateRegistedEmpSche dateRegistedEmpSche) {
+			DatePeriod targetPeriod, GeneralDate dateInPeriod, CreateScheduleMasterCache masterCache,
+			List<BasicSchedule> listBasicSchedule, DateRegistedEmpSche dateRegistedEmpSche) {
 
 		// 「社員の在職状態」から該当社員、該当日の在職状態を取得する
 		// EA修正履歴 No2716
@@ -1844,11 +1841,7 @@ public class ScheduleCreatorExecutionTransaction {
 												x.getWorkplaceId()))
 										.collect(Collectors.toList())))
 						.collect(Collectors.toList()),
-				masterCache.getListBusTypeOfEmpHis().stream()
-						.map(mapper -> new ExWorkTypeHistoryImport(mapper.getCompanyId(), mapper.getEmployeeId(),
-								mapper.getHistoryId(), new DatePeriod(mapper.getStartDate(), mapper.getEndDate()),
-								mapper.getBusinessTypeCd()))
-						.collect(Collectors.toList()));
+				masterCache.getListBusTypeOfEmpHis());
 		return generalInfoImport;
 
 	}
