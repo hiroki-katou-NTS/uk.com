@@ -1200,7 +1200,6 @@ module fc {
             collapseColor?: boolean;
         }): Dictionary;
         toJSON(): Record<string, any>;
-        el: HTMLElement;
     }
     function buildEventApis(eventStore: EventStore, context: CalendarContext, excludeInstance?: EventInstance): EventApi[];
 
@@ -1709,6 +1708,7 @@ module fc {
         dayMinWidth: NumberConstructor;
         slotLabelInterval: typeof createDuration;
         allDayText: StringConstructor;
+        allDaySlot: BooleanConstructor;
         allDayClassNames: Identity<ClassNamesGenerator<AllDayContentArg>>;
         allDayContent: Identity<CustomContentGenerator<AllDayContentArg>>;
         allDayDidMount: Identity<DidMountHandler<MountArg<AllDayContentArg>>>;
@@ -1744,11 +1744,7 @@ module fc {
     interface BaseOptionRefiners extends BuiltInBaseOptionRefiners {
     }
 
-    type BaseOptions = RawOptionsFromRefiners<Required<BaseOptionRefiners>> & {
-        allDaySlot: boolean;
-        eventDrop: (evt: any) => void;
-        eventDragStart: (evt: any) => void;
-    };
+    type BaseOptions = RawOptionsFromRefiners<Required<BaseOptionRefiners>>;
 
     const BASE_OPTION_DEFAULTS: {
         eventDisplay: string;
@@ -1804,6 +1800,7 @@ module fc {
         navLinks: boolean;
         selectable: boolean;
     };
+
     type BaseOptionsRefined = DefaultedRefinedOptions<RefinedOptionsFromRefiners<Required<BaseOptionRefiners>>, keyof typeof BASE_OPTION_DEFAULTS>;
 
     const CALENDAR_LISTENER_REFINERS: {

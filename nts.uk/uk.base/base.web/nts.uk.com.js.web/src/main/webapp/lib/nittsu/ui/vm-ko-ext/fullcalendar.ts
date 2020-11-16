@@ -144,6 +144,8 @@ module nts.uk.ui.koExtentions {
                     } else {
                         $el.style.display = 'none';
                     }
+
+                    $($el).find('[data-bind]').removeAttr('data-bind');
                 },
                 disposeWhenNodeIsRemoved: $el
             });
@@ -179,6 +181,8 @@ module nts.uk.ui.koExtentions {
                     } else {
                         $el.style.display = 'none';
                     }
+
+                    $($el).find('[data-bind]').removeAttr('data-bind');
                 },
                 disposeWhenNodeIsRemoved: $el
             });
@@ -531,8 +535,6 @@ module nts.uk.ui.koExtentions {
                 // hiddenDays: [5, 6],
                 dayHeaderContent: (opts: any) => moment(opts.date).format('DD(ddd)'),
                 eventDidMount: (arg) => {
-                    arg.event.el = arg.el;
-
                     const { id, title, groupId } = arg.event;
 
                     // draw new event
@@ -556,19 +558,92 @@ module nts.uk.ui.koExtentions {
                     }
                 },
                 eventDragStart: (evt) => {
-                    console.log(evt);
                 },
                 eventDrop: (evt) => {
                     if (evt.event.allDay) {
                         evt.revert();
                     }
 
-                    console.log(evt, calendar.getEvents());
+                    const evts: any[] = calendar
+                        .getEvents()
+                        .map(({
+                            id,
+                            start,
+                            end,
+                            title,
+                            display,
+                            groupId,
+                            backgroundColor
+                        }) => ({
+                            id,
+                            start,
+                            end,
+                            title,
+                            display,
+                            groupId,
+                            backgroundColor
+                        }));
+
+                    // update data sources
+                    if (ko.isObservable(events)) {
+                        events(evts);
+                    }
+                },
+                eventResize: () => {
+                    const evts: any[] = calendar
+                        .getEvents()
+                        .map(({
+                            id,
+                            start,
+                            end,
+                            title,
+                            display,
+                            groupId,
+                            backgroundColor
+                        }) => ({
+                            id,
+                            start,
+                            end,
+                            title,
+                            display,
+                            groupId,
+                            backgroundColor
+                        }));
+
+                    // update data sources
+                    if (ko.isObservable(events)) {
+                        events(evts);
+                    }
                 },
                 eventOverlap: false, // (stillEvent) => stillEvent.allDay,
                 select: (arg) => {
                     calendar.unselect();
                     calendar.addEvent(arg);
+
+                    const evts: any[] = calendar
+                        .getEvents()
+                        .map(({
+                            id,
+                            start,
+                            end,
+                            title,
+                            display,
+                            groupId,
+                            backgroundColor
+                        }) => ({
+                            id,
+                            start,
+                            end,
+                            title,
+                            display,
+                            groupId,
+                            backgroundColor
+                        }));
+
+                    // update data sources
+                    if (ko.isObservable(events)) {
+                        events(evts);
+                    }
                 },
                 selectOverlap: false, // (evt) => evt.allDay,
                 selectAllow: (evt) => evt.start.getDate() === evt.end.getDate(),
@@ -848,8 +923,6 @@ module nts.uk.ui.koExtentions {
             mounted() {
                 const vm = this;
                 const data = ko.unwrap(vm.data);
-
-                console.log(data);
 
                 $(vm.$el).find('[data-bind]').removeAttr('data-bind');
             }
