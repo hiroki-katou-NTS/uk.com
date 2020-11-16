@@ -5,7 +5,7 @@ module nts.uk.ui.koExtentions {
 
     const C_COMP_NAME = 'fc-copy';
     const E_COMP_NAME = 'fc-editor';
-    const COMPONENT_NAME = 'nts-fullcalendar';
+    const COMPONENT_NAME = 'fullcalendar';
     const DEFAULT_STYLES = `
         .fc-container {
             position: relative;
@@ -52,6 +52,9 @@ module nts.uk.ui.koExtentions {
             margin-left: -1px;
             border-top-left-radius: 0px;
             border-bottom-left-radius: 0px;
+        }
+        .fc-container .fc-timegrid-slot-label-even {
+            background-color: #f3f3f3;
         }
         .fc-container .fc-day-today {
             background-color: #fffadf;
@@ -104,11 +107,9 @@ module nts.uk.ui.koExtentions {
         name: 'fc-events',
         template: `<td data-bind="i18n: '勤怠時間'"></td>
         <!-- ko foreach: [0,1,2,3,4,5,6] -->
-        <td class="fc-event-note">
+        <td class="fc-event-note no-data">
             <div>
-                <div>勤怠　8:00 ~ 17:00</div>
-                <div>休憩　1:00</div>
-                <div>総労働時間　8:00</div>
+                <div data-bind="foreach: []"></div>
             </div>
         </td>
         <!-- /ko -->`
@@ -149,9 +150,21 @@ module nts.uk.ui.koExtentions {
         virtual: false
     })
     export class FullCalendarBindingHandler implements KnockoutBindingHandler {
-        init(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
+        init(element: HTMLElement, valueAccessor: () => KnockoutObservableArray<fc.EventApi>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
             const name = COMPONENT_NAME;
-            const params = {};
+
+            const events = valueAccessor();
+
+            const event = allBindingsAccessor.get('event');
+            const locale = allBindingsAccessor.get('locale');
+            const weekends = allBindingsAccessor.get('weekends');
+            const firstDay = allBindingsAccessor.get('firstDay');
+            const scrollTime = allBindingsAccessor.get('scrollTime');
+            const initialDate = allBindingsAccessor.get('initialDate');
+            const slotDuration = allBindingsAccessor.get('slotDuration');
+            const businessHours = allBindingsAccessor.get('businessHours');
+
+            const params = { events, event, locale, initialDate, scrollTime, weekends, firstDay, slotDuration, businessHours, viewModel };
             const component = { name, params };
 
             ko.applyBindingsToNode(element, { component }, bindingContext);
@@ -176,8 +189,8 @@ module nts.uk.ui.koExtentions {
     type G_EVENT = { [key: string]: J_EVENT[]; };
 
     type LOCALE = 'en' | 'ja' | 'vi';
-    type SLOT_DURATION = 5 | 10 | 15 | 30;
-    const durations: SLOT_DURATION[] = [5, 10, 15, 30];
+    type SLOT_DURATION = 5 | 10 | 15 | 20 | 30;
+    const durations: SLOT_DURATION[] = [5, 10, 15, 20, 30];
 
     enum DAY_OF_WEEK {
         SUN = 0,
@@ -196,6 +209,8 @@ module nts.uk.ui.koExtentions {
     };
 
     type PARAMS = {
+        viewModel: any;
+        events: fc.EventApi[] | KnockoutObservableArray<fc.EventApi>;
         locale: LOCALE | KnockoutObservable<LOCALE>;
         initialDate: Date | KnockoutObservable<Date>;
         scrollTime: number | KnockoutObservable<number>;
@@ -203,9 +218,12 @@ module nts.uk.ui.koExtentions {
         weekends: boolean | KnockoutObservable<boolean>;
         firstDay: DAY_OF_WEEK | KnockoutObservable<DAY_OF_WEEK>;
         businessHours: BUSINESSHOUR[] | KnockoutObservableArray<BUSINESSHOUR>;
+        event: {
+            datesSet: (start: Date, end: Date) => void;
+        };
     };
 
-    const formatDate = (date: Date) => moment(date).format('YYYY-MM-DDTHH:mm:ss');
+    const formatDate = (date: Date) => moment(date).format('YYYY-MM-DDTHH:mm:00');
     const formatTime = (time: number) => {
         const f = Math.floor;
         const times = [f(time / 60), f(time % 60), 0]
@@ -244,17 +262,22 @@ module nts.uk.ui.koExtentions {
 
             if (!params) {
                 this.params = {
+                    viewModel: this,
                     scrollTime: ko.observable(360),
                     locale: ko.observable('ja'),
                     firstDay: ko.observable(1),
                     slotDuration: ko.observable(30),
                     weekends: ko.observable(true),
                     initialDate: ko.observable(new Date()),
-                    businessHours: ko.observableArray([])
+                    events: ko.observableArray([]),
+                    businessHours: ko.observableArray([]),
+                    event: {
+                        datesSet: (__: Date, ___: Date) => { }
+                    }
                 };
             }
 
-            const { locale, scrollTime, initialDate, weekends, firstDay, slotDuration, businessHours } = this.params;
+            const { locale, events, scrollTime, initialDate, weekends, firstDay, slotDuration, businessHours } = this.params;
 
             if (locale === undefined) {
                 this.params.locale = ko.observable('ja');
@@ -280,6 +303,10 @@ module nts.uk.ui.koExtentions {
                 this.params.slotDuration = ko.observable(30);
             }
 
+            if (events === undefined) {
+                this.params.events = ko.observableArray([]);
+            }
+
             if (businessHours === undefined) {
                 this.params.businessHours = ko.observableArray([]);
             }
@@ -288,7 +315,7 @@ module nts.uk.ui.koExtentions {
         public mounted() {
             const vm = this;
             const { params, dataEvent } = vm;
-            const { locale, scrollTime, firstDay, weekends, initialDate } = params;
+            const { locale, events, scrollTime, firstDay, weekends, initialDate, viewModel, event } = params;
 
             const $el = $(vm.$el);
             const $fc = $el.find('div.fc').get(0);
@@ -346,7 +373,7 @@ module nts.uk.ui.koExtentions {
                         }
                     }
                 },
-                height: '100px',
+                height: '500px',
                 headerToolbar: {
                     left: 'today prev,next',
                     center: 'title',
@@ -354,6 +381,7 @@ module nts.uk.ui.koExtentions {
                 },
                 themeSystem: 'default',
                 initialView: 'timeGridWeek',
+                events: ko.unwrap(events),
                 locale: ko.unwrap(locale),
                 firstDay: ko.unwrap(firstDay),
                 weekends: ko.unwrap(weekends),
@@ -405,8 +433,7 @@ module nts.uk.ui.koExtentions {
                 eventOverlap: false, // (stillEvent) => stillEvent.allDay,
                 select: (arg) => {
                     calendar.unselect();
-                    debugger;
-                    // calendar.addEvent(arg);
+                    calendar.addEvent(arg);
                 },
                 selectOverlap: false, // (evt) => evt.allDay,
                 selectAllow: (evt) => evt.start.getDate() === evt.end.getDate(),
@@ -416,10 +443,19 @@ module nts.uk.ui.koExtentions {
                     const hour = Math.floor(min / 60);
                     const minite = Math.floor(min % 60);
 
-                    return !minite ? `${hour}:${_.padStart(`${minite}`, 2, '0')}` : _.padStart(`${minite}`, 2, '0');
+                    return !minite ? `${hour}:00` : `${minite}`;
+                },
+                slotLabelClassNames: (opts) => {
+                    const { milliseconds } = opts.time;
+                    const min = milliseconds / 1000 / 60;
+                    const hour = Math.floor(min / 60);
+
+                    return `fc-timegrid-slot-label-${hour % 2 === 0 ? 'odd' : 'even'}`;
                 },
                 datesSet: (dateInfo) => {
-                    $el.trigger($.Event('datesSet', { data: dateInfo }));
+                    const { start, end } = dateInfo;
+
+                    event.datesSet.apply(viewModel, [start, end]);
                 },
                 viewDidMount: (opts) => {
                     $('.fc-header-toolbar button').removeAttr('class');
@@ -434,8 +470,8 @@ module nts.uk.ui.koExtentions {
                         const evts = document.createElement('tr');
                         const times = document.createElement('tr');
 
-                        // header.append(evts);
-                        // header.append(times);
+                        header.append(evts);
+                        header.append(times);
 
                         ko.applyBindingsToNode(evts, { component: { name: 'fc-events', params: {} } });
                         ko.applyBindingsToNode(times, { component: { name: 'fc-times', params: {} } });
@@ -453,6 +489,14 @@ module nts.uk.ui.koExtentions {
                 const { innerHeight } = window;
 
                 calendar.setOption('height', `${innerHeight - top - 10}px`);
+            }
+
+            if (ko.isObservable(events)) {
+                events.subscribe((evts) => {
+                    calendar.removeAllEvents();
+
+                    evts.forEach(e => calendar.addEvent(e));
+                });
             }
 
             // set locale
@@ -600,7 +644,9 @@ module nts.uk.ui.koExtentions {
             virtual: false
         })
         export class FullCalendarEditorBindingHandler implements KnockoutBindingHandler {
-            init(): { controlsDescendantBindings: boolean; } {
+            init(element: HTMLElement): { controlsDescendantBindings: boolean; } {
+                element.removeAttribute('data-bind');
+
                 return { controlsDescendantBindings: true };
             }
             update(element: HTMLElement, valueAccessor: () => KnockoutObservable<null | fc.EventApi>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
@@ -712,6 +758,8 @@ module nts.uk.ui.koExtentions {
 
                 element.classList.add('fc-popup-editor');
 
+                element.removeAttribute('data-bind');
+
                 return { controlsDescendantBindings: true };
             }
         }
@@ -724,106 +772,3 @@ module nts.uk.ui.koExtentions {
         }
     }
 }
-
-
-/*[{
-    // days of week. an array of zero-based day of week integers (0=Sunday)
-    daysOfWeek: [1, 2, 3, 4, 5], // Monday - Thursday
-    startTime: '08:30:00', // a start time (10am in this example)
-    endTime: '12:00:00', // an end time (6pm in this example)
-}, {
-    // days of week. an array of zero-based day of week integers (0=Sunday)
-    daysOfWeek: [1, 2, 3, 4, 5], // Monday - Thursday
-    startTime: '13:00:00', // a start time (10am in this example)
-    endTime: '17:30:00', // an end time (6pm in this example)
-}, {
-    daysOfWeek: [0, 6],
-    startTime: '00:00:00',
-    endTime: '00:00:00'
-}]*/
-
-
-/*{
-    title: 'All Day Event',
-    start: '2020-09-07T16:00:00',
-    allDay: true,
-    color: 'transparent',
-    textColor: '#000',
-    editable: false
-},
-{
-    title: 'Long Event',
-    start: '2020-09-07',
-    color: 'transparent',
-    textColor: '#000',
-    editable: false
-},
-{
-    groupId: '999',
-    title: 'Repeating Event',
-    start: '2020-09-09T16:00:00'
-},
-{
-    groupId: '999',
-    title: 'Repeating Event',
-    start: '2020-09-16T16:00:00'
-},
-{
-    title: 'Conference',
-    start: '2020-09-11',
-    end: '2020-09-13',
-    editable: false
-},
-{
-    groupId: 'abc',
-    title: 'Meeting',
-    start: '2020-09-12T10:30:00',
-    end: '2020-09-12T12:00:00'
-},
-{
-    groupId: 'abc',
-    title: 'Lunch',
-    start: '2020-09-12T13:00:00',
-    end: '2020-09-12T14:30:00'
-}, {
-    groupId: 'abc',
-    start: '2020-09-12T10:30:00',
-    end: '2020-09-12T14:30:00',
-    display: 'background',
-    backgroundColor: 'transparent'
-},
-{
-    title: 'Meeting',
-    start: '2020-09-12T14:30:00',
-},
-{
-    title: 'Happy Hour',
-    start: '2020-09-12T17:30:00'
-},
-{
-    title: 'Dinner',
-    start: '2020-09-12T20:00:00'
-},
-{
-    title: 'Birthday Party',
-    start: '2020-09-13T07:00:00'
-},
-{
-    title: 'Click for Google',
-    url: 'http://google.com/',
-    start: '2020-09-28',
-},
-// areas where "Meeting" must be dropped
-/*{
-    groupId: 'availableForMeeting',
-    start: '2020-09-07T10:00:00',
-    end: '2020-09-07T16:00:00',
-    display: 'background'
-},
-{
-    groupId: 'availableForMeeting',
-    start: '2020-09-09T10:00:00',
-    end: '2020-09-09T16:00:00',
-    display: 'background',
-    backgroundColor: '#ddd'
-},*/
