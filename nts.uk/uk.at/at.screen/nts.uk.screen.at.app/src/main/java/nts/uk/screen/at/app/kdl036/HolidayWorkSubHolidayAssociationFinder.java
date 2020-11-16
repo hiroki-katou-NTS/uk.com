@@ -1,6 +1,7 @@
 package nts.uk.screen.at.app.kdl036;
 
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.app.find.application.common.service.other.output.ActualContentDisplayDto;
@@ -56,7 +57,7 @@ public class HolidayWorkSubHolidayAssociationFinder {
     public Kdl036OutputData init(Kdl036InputData inputData) {
         Optional<ClosurePeriod> closurePeriod = closureService.getClosurePeriod(inputData.getEmployeeId(), GeneralDate.today());
         if (!closurePeriod.isPresent())
-            throw new BusinessException("Closure Period Not Found!");
+            throw new BusinessException(new RawErrorMessage("Closure Period Not Found!"));
 
         List<HolidayWorkData> outputData = getSubsituteWorkData(
                 inputData.getEmployeeId(),
@@ -232,7 +233,7 @@ public class HolidayWorkSubHolidayAssociationFinder {
         // 会社別の代休管理設定を取得する
         CompensatoryLeaveComSetting comSubstVacation = comSubstVacationRepo.find(companyId);
         if (comSubstVacation == null)
-            throw new BusinessException("代休管理設定 Not Found!");
+            throw new BusinessException(new RawErrorMessage("代休管理設定 Not Found!"));
 
         // INPUT．「List<休日出勤データ>」と「代休日リスト」を並び変える
         inputData.getSubstituteHolidayList().sort(Comparator.naturalOrder());
