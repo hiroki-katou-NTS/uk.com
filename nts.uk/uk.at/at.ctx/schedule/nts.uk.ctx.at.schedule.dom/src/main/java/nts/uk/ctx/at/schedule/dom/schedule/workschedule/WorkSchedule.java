@@ -18,7 +18,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
@@ -27,6 +26,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.La
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 
 /**
  * 勤務予定 root
@@ -209,7 +209,7 @@ public class WorkSchedule implements DomainAggregate {
 		
 		for(OutingTimeOfDaily outingTime : outingTimes) {
 			
-			val type = this.convertGoOutReasonToTimeOffType(outingTime.getReason());
+			val type = TimezoneToUseHourlyHoliday.convertGoOutReasonToTimeOffType(outingTime.getReason());
 			
 			// 外出理由を指定して時間帯を取得する
 			val timeZones = this.outingTime.get().getTimeZoneByGoOutReason(outingTime.getReason());
@@ -219,22 +219,6 @@ public class WorkSchedule implements DomainAggregate {
 		}
 		
 		return result;
-	}
-
-	/**
-	 * 外出理由から時間休暇種類への変換
-	 * @param goOutReason 外出理由
-	 * @return
-	 */
-	private TimezoneToUseHourlyHoliday convertGoOutReasonToTimeOffType(GoingOutReason goOutReason) {
-		switch(goOutReason) {
-		case PRIVATE:
-			return TimezoneToUseHourlyHoliday.GOINGOUT_PRIVATE;
-		case UNION:
-			return TimezoneToUseHourlyHoliday.GOINGOUT_UNION;
-		default:
-			throw new RuntimeException("時間休暇は私用、組合しかない。");
-		}
 	}
 
 }
