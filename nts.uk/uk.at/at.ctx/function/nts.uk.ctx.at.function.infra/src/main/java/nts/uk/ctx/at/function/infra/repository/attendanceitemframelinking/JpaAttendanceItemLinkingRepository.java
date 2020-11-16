@@ -183,10 +183,10 @@ public class JpaAttendanceItemLinkingRepository extends JpaRepository implements
 		}
 
 		BigDecimal bTypeOfItem = BigDecimal.valueOf(typeOfItem);
-		List<BigDecimal> categories = frameCategory.stream().map(t -> BigDecimal.valueOf(t)).collect(Collectors.toList());
+		List<BigDecimal> categories = frameCategory.stream().map(BigDecimal::valueOf).collect(Collectors.toList());
 		List<AttendanceItemLinking> resultList = new ArrayList<>();
 		CollectionUtil.split(frameNos, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			CollectionUtil.split(categories, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subFrameCategories) -> {
+			CollectionUtil.split(categories, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subFrameCategories -> {
 				resultList.addAll(this.queryProxy().query(FIND_BY_FRAME_NO_FRAME_CATEGORY, KfnmtAttendanceLink.class)
 						.setParameter("frameNos", subList)
 						.setParameter("typeOfItem", bTypeOfItem)
@@ -207,10 +207,10 @@ public class JpaAttendanceItemLinkingRepository extends JpaRepository implements
 		}
 
 		BigDecimal bTypeOfItem = BigDecimal.valueOf(typeOfItem);
-		List<BigDecimal> categories = frameCategory.stream().map(t -> BigDecimal.valueOf(t)).collect(Collectors.toList());
+		List<BigDecimal> categories = frameCategory.stream().map(BigDecimal::valueOf).collect(Collectors.toList());
 		List<AttendanceItemLinking> resultList = new ArrayList<>();
 		CollectionUtil.split(frameNos, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			CollectionUtil.split(categories, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subFrameCategories) -> {
+			CollectionUtil.split(categories, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subFrameCategories -> {
 				if (breakdownItemNo.isEmpty()) {
 					resultList.addAll(this.queryProxy().query(FIND_BY_FRAME_NO_FRAME_CATEGORY, KfnmtAttendanceLink.class)
 							.setParameter("frameNos", subList)
@@ -220,11 +220,12 @@ public class JpaAttendanceItemLinkingRepository extends JpaRepository implements
 				} else {
 					CollectionUtil.split(breakdownItemNo
 							, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT
-							, (subBreakdownItemNo) -> {
+							, subBreakdownItemNo -> {
 								resultList.addAll(this.queryProxy()
 										.query(FIND_BY_FRAME_NO_FRAME_CATEGORY_AND_PRELIMINARY_FRAME_NO,
 												KfnmtAttendanceLink.class)
-										.setParameter("frameNos", subList).setParameter("typeOfItem", bTypeOfItem)
+										.setParameter("frameNos", subList)
+										.setParameter("typeOfItem", bTypeOfItem)
 										.setParameter("frameCategories", subFrameCategories)
 										.setParameter("preliminaryFrameNO", breakdownItemNo)
 										.getList(KfnmtAttendanceLink::toDomain));

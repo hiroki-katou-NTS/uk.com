@@ -22,5 +22,15 @@ public interface AttendanceItemNameService {
 	List<AttItemName> getNameOfAttendanceItem(List<AttItemName> attendanceItems,
 			List<AttendanceItemLinking> attendanceItemAndFrameNos);
 	
+	
+	List<Integer> getAvaiableAttendanceItem(String companyId, TypeOfItem type, List<Integer> attendanceItemIds);
+	/**
+	 * 使用不可の勤怠項目を除く
+	 *
+	 * @param companyId : 会社ID
+	 * @param type: 勤怠項目の種類（0:スケジュール、1:日次、2:月次、3:週次、4:任意期間）
+	 * @param attendanceItemIds List<勤怠項目ID>
+	 * @return List＜使用可能な勤怠項目ID＞
+	 */
 	List<Integer> getAvaiableAttendanceItem(String companyId, TypeOfItem type, List<Integer> attendanceItemIds);
 }

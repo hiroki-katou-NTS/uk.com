@@ -116,4 +116,21 @@ public interface OutsideOTSettingRepository {
 	 */
 	public List<OutsideOTBRDItem> getByCompanyIdAndUseClassification(String companyId, int useClassification);
 
+	/**
+	 *対応するドメインモデル「超過時間」を取得する Nhận domain model 「超過時間」 tương ứng
+	 *
+	 * @param companyId the company id
+	 * @param useClassification the use classification
+	 * @return the over time by company id and use classification
+	 */
+	public List<Overtime> getOverTimeByCompanyIdAndUseClassification(String companyId, int useClassification);
+	
+	/**
+	 * 対応するドメインモデル「時間外超過の内訳項目」を取得する Nhận domain model  「時間外超過の内訳項目」 tương ứng
+	 *
+	 * @param companyId the company id
+	 * @param useClassification the use classification
+	 * @return the by company id and use classification
+	 */
+	public List<OutsideOTBRDItem> getByCompanyIdAndUseClassification(String companyId, int useClassification);
 }

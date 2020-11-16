@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.function.app.find.dailyworkschedule.scrA;
 
+import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -14,13 +15,17 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.function.app.find.dailyworkschedule.DataInforReturnDto;
+import nts.uk.ctx.at.function.app.find.dailyworkschedule.FreeSettingOfOutputItemForDailyWorkScheduleDto;
+import nts.uk.ctx.at.function.app.find.dailyworkschedule.OutputStandardSettingOfDailyWorkScheduleDto;
 import nts.uk.ctx.at.function.app.find.dailyworkschedule.scrB.ErrorAlarmCodeDto;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkSchedule;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleRepository;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.FreeSettingOfOutputItemRepository;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.ItemSelectionType;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputStandardSettingRepository;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.scrA.RoleExportRepoAdapter;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.scrA.SEmpHistExportAdapter;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.scrA.SEmpHistExportImported;
+import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformAuthorRepo;
+import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformanceFunctionNo;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -48,17 +53,22 @@ public class WorkScheduleOutputConditionFinder {
 	/** The closure repository. */
 	@Inject
 	private ClosureRepository closureRepository;
-	
-	/** The output item daily work schedule repository. */
+
 	@Inject
-	private OutputItemDailyWorkScheduleRepository outputItemDailyWorkScheduleRepository;
-	
+	private FreeSettingOfOutputItemRepository freeSettingOfOutputItemRepository;
+
+	@Inject
+	private OutputStandardSettingRepository outputStandardSettingRepository;
+
 	/** The error alarm work record repository. */
 	@Inject
 	private ErrorAlarmWorkRecordRepository errorAlarmWorkRecordRepository;
 	
 	@Inject
 	private RoleExportRepoAdapter roleExportRepoAdapter;
+	
+	@Inject
+	private DailyPerformAuthorRepo dailyPerformAuthorRepo;
 	
 	/** The Constant STRING_EMPTY. */
 	private static final String STRING_EMPTY = "";
@@ -78,6 +88,7 @@ public class WorkScheduleOutputConditionFinder {
 		String companyId = AppContexts.user().companyId();
 		GeneralDate systemDate = GeneralDate.today();
 		String employeeId = AppContexts.user().employeeId();
+		String roleId = AppContexts.user().roles().forAttendance();
 		//「ログイン者が担当者か判断する」で就業担当者かチェックする
 		// 出力項目の設定ボタン(A7_6)の活性制御を行う
 		if (roleExportRepoAdapter.getRoleWhetherLogin().isEmployeeCharge()) {
@@ -85,7 +96,18 @@ public class WorkScheduleOutputConditionFinder {
 		} else {
 			dto.setEmployeeCharge(false);
 		}
-		
+
+		// ログイン社員の就業帳票の権限を取得する
+		// ・ロールID：ログイン社員の就業ロールID
+		// ・機能NO：51(自由設定区分)
+		// ・利用できる：TRUE
+		boolean isFreeSetting = this.dailyPerformAuthorRepo.getAuthorityOfEmployee(roleId,
+				new DailyPerformanceFunctionNo(BigDecimal.valueOf(51l)), true);
+
+		dto.setConfigFreeSetting(isFreeSetting);
+		// 自由設定(A7_7～A7_12)の活性制御を行う
+		dto.setSelectionType(isFreeSetting ? ItemSelectionType.FREE_SETTING.value : ItemSelectionType.STANDARD_SELECTION.value);
+
 		// アルゴリズム「社員に対応する締め期間を取得する」を実行する(Execute the algorithm "Acquire closing period corresponding to employee")
 		Optional<Closure> optClosure = getDomClosure(employeeId, systemDate);
 		
@@ -108,18 +130,29 @@ public class WorkScheduleOutputConditionFinder {
 			dto.setEndDate(null);
 		}
 
-		// ドメインモデル「日別勤務表の出力項目」をすべて取得する(Acquire all domain model "Output items of daily work schedule")
-		List<OutputItemDailyWorkSchedule> lstOutputItemDailyWorkSchedule = outputItemDailyWorkScheduleRepository.findByCid(companyId);
-		if (!lstOutputItemDailyWorkSchedule.isEmpty()) {
-			if (isExistWorkScheduleOutputCondition) {
-				dto.setStrReturn(SHOW_CHARACTERISTIC);
-			} else {
-				dto.setStrReturn(STRING_EMPTY);
+		// 社員IDから自由設定の出力項目を取得 (Get output item for free setup from employee ID)
+		FreeSettingOfOutputItemForDailyWorkScheduleDto freeSettingDto = this.freeSettingOfOutputItemRepository
+				.getFreeSettingByCompanyAndEmployee(companyId, employeeId)
+				.map(d -> FreeSettingOfOutputItemForDailyWorkScheduleDto.toFreeSettingDto(d)).orElse(null);
+
+		// 定型設定の出力項目を取得(Get output items of standard settings)
+		OutputStandardSettingOfDailyWorkScheduleDto standardSettingDto = this.outputStandardSettingRepository
+				.getStandardSettingByCompanyId(companyId)
+				.map(d -> OutputStandardSettingOfDailyWorkScheduleDto.toStandardDto(d)).orElse(null);
+
+		if (isFreeSetting) {
+			if (freeSettingDto != null && !freeSettingDto.getOutputItemDailyWorkSchedules().isEmpty()) {
+				dto.setStrReturn(isExistWorkScheduleOutputCondition ? SHOW_CHARACTERISTIC : STRING_EMPTY);
+			}
+		} else {
+			if (standardSettingDto != null && !standardSettingDto.getOutputItemDailyWorkSchedules().isEmpty()) {
+				dto.setStrReturn(isExistWorkScheduleOutputCondition ? SHOW_CHARACTERISTIC : STRING_EMPTY);
 			}
 		}
-		
-		dto.setLstOutputItemDailyWorkSchedule(getOutputItemDailyWorkSchedule(lstOutputItemDailyWorkSchedule));
-		
+
+		dto.setStandardSetting(standardSettingDto);
+		dto.setFreeSetting(freeSettingDto);
+
 		return dto;
 	}
 	
@@ -167,16 +200,5 @@ public class WorkScheduleOutputConditionFinder {
 								.sorted(Comparator.comparing(ErrorAlarmCodeDto::getCode))
 								.collect(Collectors.toList());
 	} 
-	
-	// convert to DTO
-	private List<DataInforReturnDto> getOutputItemDailyWorkSchedule(List<OutputItemDailyWorkSchedule> lstOutputItemDailyWorkSchedule) {
-		return lstOutputItemDailyWorkSchedule.stream()
-						.map(domain -> {
-							DataInforReturnDto dto = new DataInforReturnDto();
-							dto.setCode(String.valueOf(domain.getItemCode().v()));
-							dto.setName(domain.getItemName().v());
-							return dto;
-						})
-						.collect(Collectors.toList());
-	}
+
 }

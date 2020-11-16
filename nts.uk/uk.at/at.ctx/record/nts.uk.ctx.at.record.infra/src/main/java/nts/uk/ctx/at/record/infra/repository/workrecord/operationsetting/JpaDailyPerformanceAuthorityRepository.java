@@ -31,7 +31,7 @@ public class JpaDailyPerformanceAuthorityRepository extends JpaRepository
 			+ "	WHERE da.pk.roleId = :roleId"
 			+ "		AND da.pk.functionNo = :functionNo"
 			+ "		AND da.availability = :availability";
-	
+
 	@Override
 	public List<DailyPerformanceAuthority> get(String roleId) {
 		List<KrcmtDaiPerformanceAut> entities = this.queryProxy()
@@ -74,7 +74,7 @@ public class JpaDailyPerformanceAuthorityRepository extends JpaRepository
 			return new BigDecimal(0);
 		}
 	}
-	
+
 	/**
 	 * ログイン社員の就業帳票の権限を取得する
 	 * 
@@ -85,7 +85,7 @@ public class JpaDailyPerformanceAuthorityRepository extends JpaRepository
 	 */
 	@Override
 	public boolean getAuthorityOfEmployee(String roleId, DailyPerformanceFunctionNo functionNo, boolean available) {
-		//		ドメインモデル「勤務実績の権限」を取得する
+		//	ドメインモデル「勤務実績の権限」を取得する
 		Optional<KrcmtDaiPerformanceAut> oKrcmtDaiPerformanceAut = this.queryProxy()
 				.query(GET_DAI_PER_AUTH_WITH_ROLE_AND_FUNCTION_NO, KrcmtDaiPerformanceAut.class)
 				.setParameter("roleId", roleId)
