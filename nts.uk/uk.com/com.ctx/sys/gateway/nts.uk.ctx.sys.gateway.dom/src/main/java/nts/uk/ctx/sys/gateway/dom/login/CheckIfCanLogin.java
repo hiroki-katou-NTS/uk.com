@@ -21,14 +21,15 @@ public class CheckIfCanLogin {
 			
 		}
 		
+		val user = FindUser.byEmployeeId(require, employeeId).get();
+		
 		// システム利用停止
-		val status = CheckSystemAvailability.isAvailable(require, tenantCode, companyId);
+		val status = CheckSystemAvailability.isAvailable(require, tenantCode, companyId, user.getUserID());
 		if (!status.isAvailable()) {
 			
 		}
 		
 		// アカウントロック
-		val user = FindUser.byEmployeeId(require, employeeId).get();
 		boolean isAccountLocked = require.getAccountLockPolicy(tenantCode)
 				.map(p -> p.isLocked(require, user.getUserID()))
 				.orElse(false);

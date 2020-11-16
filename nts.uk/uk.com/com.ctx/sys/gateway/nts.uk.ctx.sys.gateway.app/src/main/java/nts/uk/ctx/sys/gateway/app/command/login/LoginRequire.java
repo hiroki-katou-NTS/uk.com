@@ -5,12 +5,10 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.time.GeneralDate;
+import nts.uk.ctx.sys.gateway.app.command.login.session.LoginAuthorizeAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.CheckIfCanLogin;
 import nts.uk.ctx.sys.gateway.dom.outage.PlannedOutageByCompany;
 import nts.uk.ctx.sys.gateway.dom.outage.PlannedOutageByTenant;
-import nts.uk.ctx.sys.gateway.dom.role.RoleFromUserIdAdapter;
-import nts.uk.ctx.sys.gateway.dom.role.RoleInfoImport;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockOutData;
 import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthentication;
@@ -19,6 +17,7 @@ import nts.uk.ctx.sys.shared.dom.company.CompanyInforImport;
 import nts.uk.ctx.sys.shared.dom.company.CompanyInformationAdapter;
 import nts.uk.ctx.sys.shared.dom.user.User;
 import nts.uk.ctx.sys.shared.dom.user.UserRepository;
+import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
 
 @Stateless
 public class LoginRequire {
@@ -33,7 +32,7 @@ public class LoginRequire {
     private TenantAuthenticationRepository tenantAuthenticationRepository;
 	
 	@Inject
-    private RoleFromUserIdAdapter roleFromUserIdAdapter;
+	private LoginAuthorizeAdapter authorizeAdapter;
 
 	/**
 	 * 社員に紐付かないユーザのログイン用
@@ -45,7 +44,7 @@ public class LoginRequire {
 				userRepository,
 				companyInformationAdapter,
 				tenantAuthenticationRepository,
-				roleFromUserIdAdapter);
+				authorizeAdapter);
 	}
 
 	public static interface CommonRequire extends
@@ -56,37 +55,26 @@ public class LoginRequire {
 	
 	public static class BaseImpl implements CommonRequire {
 
-		protected UserRepository userRepository;
-		protected CompanyInformationAdapter companyInformationAdapter;
-		protected TenantAuthenticationRepository tenantAuthenticationRepository;
-		protected RoleFromUserIdAdapter roleFromUserIdAdapter;
+		private UserRepository userRepository;
+		private CompanyInformationAdapter companyInformationAdapter;
+		private TenantAuthenticationRepository tenantAuthenticationRepository;
+		private LoginAuthorizeAdapter authorizeAdapter;
 
 		public void setDependencies(
 				UserRepository userRepository,
 				CompanyInformationAdapter companyInformationAdapter,
 				TenantAuthenticationRepository tenantAuthenticationRepository,
-				RoleFromUserIdAdapter roleFromUserIdAdapter) {
+				LoginAuthorizeAdapter authorizeAdapter) {
 
 			this.userRepository = userRepository;
 			this.companyInformationAdapter = companyInformationAdapter;
 			this.tenantAuthenticationRepository = tenantAuthenticationRepository;
-			this.roleFromUserIdAdapter = roleFromUserIdAdapter;
+			this.authorizeAdapter = authorizeAdapter;
 		}
 
 		@Override
 		public CompanyInforImport getCompanyInforImport(String companyId) {
 			return companyInformationAdapter.findComById(companyId);
-		}
-
-		@Override
-		public Optional<RoleInfoImport> getRoleInfoImport(
-				String userId, int roleType, GeneralDate baseDate, String comId) {
-			return roleFromUserIdAdapter.getRoleInfoFromUser(userId, roleType, baseDate, comId);
-		}
-
-		@Override
-		public String getRoleId(String userId, Integer roleType, GeneralDate baseDate) {
-			return roleFromUserIdAdapter.getRoleFromUser(userId, roleType, baseDate);
 		}
 
 		@Override
@@ -127,6 +115,11 @@ public class LoginRequire {
 		@Override
 		public Optional<User> getUser(String personalId) {
 			return userRepository.getByAssociatedPersonId(personalId);
+		}
+
+		@Override
+		public LoginUserRoles getLoginUserRoles(String userId) {
+			return authorizeAdapter.buildUserRoles(userId);
 		}
 		
 	}

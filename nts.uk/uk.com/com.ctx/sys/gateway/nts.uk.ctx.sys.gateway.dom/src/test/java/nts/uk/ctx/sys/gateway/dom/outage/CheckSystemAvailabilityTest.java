@@ -15,6 +15,7 @@ public class CheckSystemAvailabilityTest {
 
 	private static final String TENANT_CODE = "000000000099";
 	private static final String COMPANY_ID = "000000000099-0001";
+	private static final String USER_ID = "user";
 	private static final String MESSAGE = "message";
 
 	@Mocked CheckSystemAvailability.Require require;
@@ -30,7 +31,7 @@ public class CheckSystemAvailabilityTest {
 			require.getPlannedOutageByCompany(COMPANY_ID);
 		}};
 		
-		val actual = CheckSystemAvailability.isAvailable(require, TENANT_CODE, COMPANY_ID);
+		val actual = CheckSystemAvailability.isAvailable(require, TENANT_CODE, COMPANY_ID, USER_ID);
 		assertStatusAvailable(actual);
 	}
 
@@ -52,7 +53,7 @@ public class CheckSystemAvailabilityTest {
 			result = Optional.of(outageByCompany);
 		}};
 		
-		val actual = CheckSystemAvailability.isAvailable(require, TENANT_CODE, COMPANY_ID);
+		val actual = CheckSystemAvailability.isAvailable(require, TENANT_CODE, COMPANY_ID, USER_ID);
 		assertStatusAvailable(actual);
 	}
 
@@ -68,7 +69,7 @@ public class CheckSystemAvailabilityTest {
 			result = Optional.of(outageByTenant);
 		}};
 
-		val actual = CheckSystemAvailability.isAvailable(require, TENANT_CODE, COMPANY_ID);
+		val actual = CheckSystemAvailability.isAvailable(require, TENANT_CODE, COMPANY_ID, USER_ID);
 		assertStatus(actual, true, MESSAGE);
 	}
 
@@ -84,7 +85,7 @@ public class CheckSystemAvailabilityTest {
 			result = Optional.of(outageByTenant);
 		}};
 
-		val actual = CheckSystemAvailability.isAvailable(require, TENANT_CODE, COMPANY_ID);
+		val actual = CheckSystemAvailability.isAvailable(require, TENANT_CODE, COMPANY_ID, USER_ID);
 		assertStatus(actual, false, MESSAGE);
 	}
 
@@ -100,7 +101,7 @@ public class CheckSystemAvailabilityTest {
 			result = Optional.of(outageByCompany);
 		}};
 
-		val actual = CheckSystemAvailability.isAvailable(require, TENANT_CODE, COMPANY_ID);
+		val actual = CheckSystemAvailability.isAvailable(require, TENANT_CODE, COMPANY_ID, USER_ID);
 		assertStatus(actual, true, MESSAGE);
 	}
 
@@ -116,7 +117,7 @@ public class CheckSystemAvailabilityTest {
 			result = Optional.of(outageByCompany);
 		}};
 
-		val actual = CheckSystemAvailability.isAvailable(require, TENANT_CODE, COMPANY_ID);
+		val actual = CheckSystemAvailability.isAvailable(require, TENANT_CODE, COMPANY_ID, USER_ID);
 		assertStatus(actual, false, MESSAGE);
 	}
 

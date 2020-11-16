@@ -10,10 +10,15 @@ import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
  */
 public class CheckSystemAvailability {
 	
-	public static PlannedOutage.Status isAvailable(Require require, String tenantCode, String companyId) {
+	public static PlannedOutage.Status isAvailable(
+			Require require,
+			String tenantCode,
+			String companyId,
+			String userId) {
 
-		val roles = require.getLoginUserRoles();
+		val roles = require.getLoginUserRoles(userId);
 		
+		// テナント
 		val tenantStatus = require.getPlannedOutageByTenant(tenantCode)
 				.map(o -> o.statusFor(roles));
 		
@@ -21,6 +26,7 @@ public class CheckSystemAvailability {
 			return tenantStatus.get();
 		}
 		
+		// 会社
 		val companyStatus = require.getPlannedOutageByCompany(companyId)
 				.map(o -> o.statusFor(roles));
 		
@@ -37,6 +43,6 @@ public class CheckSystemAvailability {
 		
 		Optional<PlannedOutageByCompany> getPlannedOutageByCompany(String companyId);
 		
-		LoginUserRoles getLoginUserRoles();
+		LoginUserRoles getLoginUserRoles(String userId);
 	}
 }
