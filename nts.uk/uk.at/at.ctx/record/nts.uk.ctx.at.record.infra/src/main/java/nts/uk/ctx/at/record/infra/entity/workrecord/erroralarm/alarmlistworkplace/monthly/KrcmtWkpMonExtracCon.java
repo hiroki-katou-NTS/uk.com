@@ -121,7 +121,7 @@ public class KrcmtWkpMonExtracCon extends UkJpaEntity {
                 this.checkMonthlyItemsType,
                 this.useAtr,
                 this.errorAlarmCheckID,
-                ToCheckConditions.check(compareSingle, compareRange, singleFixed),
+                ToCheckConditions.checkMonExtracCon(this.checkMonthlyItemsType, compareSingle, compareRange, singleFixed),
                 this.checkTarget,
                 this.averageNumberOfDays,
                 this.averageNumberOfTimes,

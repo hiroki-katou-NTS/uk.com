@@ -77,51 +77,280 @@
                                 <!--B5_2-->
                                 <div class="label" data-bind="text: $vm.$i18n('KAL003_32')"></div>
                                 <!--B5_3-->
-                                <!--<div tabindex="3" data-bind="ntsRadioBoxGroup: {-->
-                                <!--options: $parent.specialConditionList,-->
-                                <!--optionsValue: 'value',-->
-                                <!--optionsText: 'localizedName',-->
-                                <!--value: specialConditionApplicationUse}">-->
-                                <!--</div>-->
+                                <div tabindex="2" data-bind="ntsRadioBoxGroup: {
+                                    name: '#{i18n.getText('KAL003_32')}',
+                                    options: $parents[1].swANDOR_B5_3,
+                                    optionsValue: 'value',
+                                    optionsText: 'localizedName',
+                                    value: group1().conditionOperator
+                                }">
+                                </div>
                                 <!--B5_4-->
-                                <!--<table id="single-list" data-bind="ntsGridList: {-->
-                                <!--name: '#{i18n.getText('KMK008_30',['#KMK008_10'])}',-->
-                                <!--rows: 10,-->
-                                <!--dataSource: items,-->
-                                <!--primaryKey: 'year',-->
-                                <!--columns: [-->
-                                <!--{ headerText: '#{i18n.getText('KMK008_30')}', key: 'year', width: 70 },-->
-                                <!--{ headerText: '#{i18n.getText('KMK008_19')}', key: 'error', width: 75 },-->
-                                <!--{ headerText: '#{i18n.getText('KMK008_20')}', key: 'alarm', width: 86 }-->
-                                <!--],-->
-                                <!--multiple: false,-->
-                                <!--value: currentCode-->
-                                <!--}">-->
-                                <!--</table>-->
+                                <table id="table-group1condition">
+                                    <colgroup>
+                                        <col width="180px"/>
+                                        <col width="60px"/>
+                                        <col width="180px"/>
+                                        <col width="60px"/>
+                                        <col width="180px"/>
+                                        <col width="52"/>
+                                    </colgroup>
+                                    <thead>
+                                    <tr>
+                                        <!-- B5_5 -->
+                                        <th class="ui-widget-header" colspan="6"
+                                            style="text-align: center;">#{i18n.getText('KAL003_33')}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody data-bind="foreach: group1().lstErAlAtdItemCon()">
+                                    <tr>
+                                        <!-- B5_6 -->
+                                        <com:ko-if bind="$data.compareOperator() == 6 || $data.compareOperator() == 7">
+                                            <td>
+                                                <span class="limited-label" style="width: 160px"
+                                                      data-bind="text: $data.displayLeftCompare">
+                                                </span>
+                                            </td>
+
+                                            <td>
+                                                <span class="limited-label" style="width: 50px"
+                                                      data-bind="text: $data.displayLeftOperator">
+                                                </span>
+                                            </td>
+
+                                            <td>
+                                                <span class="limited-label" style="width: 160px; text-align: center;"
+                                                      data-bind="text: $data.displayTarget">
+                                                </span>
+                                            </td>
+
+                                            <td>
+                                                <span class="limited-label" style="width: 50px"
+                                                      data-bind="text: $data.displayRightOperator">
+                                                </span>
+                                            </td>
+
+                                            <td>
+                                                <span class="limited-label" style="width: 160px"
+                                                      data-bind="text: $data.displayRightCompare">
+                                                </span>
+                                            </td>
+                                        </com:ko-if>
+                                        <com:ko-if bind="$data.compareOperator() == 8 || $data.compareOperator() == 9">
+                                            <td>
+                                                <span class="limited-label" style="width: 160px"
+                                                      data-bind="text: $data.displayTarget">
+                                                </span>
+                                            </td>
+
+                                            <td>
+                                                <span class="limited-label" style="width: 50px"
+                                                      data-bind="text: $data.displayLeftOperator">
+                                                </span>
+                                            </td>
+
+                                            <td>
+                                                <span class="limited-label" style="width: 160px; text-align: center;"
+                                                      data-bind="text: $data.displayLeftCompare() + ', ' + $data.displayRightCompare()">
+                                                </span>
+                                            </td>
+
+                                            <td>
+                                                <span class="limited-label" style="width: 50px"
+                                                      data-bind="text: $data.displayRightOperator">
+                                                </span>
+                                            </td>
+
+                                            <td>
+                                                <span class="limited-label" style="width: 160px"
+                                                      data-bind="text: $data.displayTarget">
+                                                </span>
+                                            </td>
+                                        </com:ko-if>
+                                        <com:ko-if bind="$data.compareOperator() &lt; 6">
+                                            <td>
+                                                <span class="limited-label" style="width: 160px"
+                                                      data-bind="text: $data.displayTarget">
+                                                </span>
+                                            </td>
+
+                                            <td>
+                                                <span class="limited-label" style="width: 50px"
+                                                      data-bind="text: $data.displayLeftOperator">
+                                                </span>
+                                            </td>
+
+                                            <td>
+                                                <span class="limited-label" style="width: 160px"
+                                                      data-bind="text: $data.displayLeftCompare">
+                                                </span>
+                                            </td>
+
+                                            <td>
+                                                <span class="limited-label" style="width: 50px"
+                                                      data-bind="text: $data.displayRightOperator">
+                                                </span>
+                                            </td>
+
+                                            <td>
+                                                <span class="limited-label" style="width: 160px"
+                                                      data-bind="text: $data.displayRightCompare">
+                                                </span>
+                                            </td>
+                                        </com:ko-if>
+                                        <!-- B5_7 -->
+                                        <td>
+                                            <button id="btnSettingB5_7" data-bind="click:
+                                                $data.openAtdItemConditionDialog.bind($data, 0),
+                                                enable: true,
+                                                text: $vm.$i18n('KAL003_14')
+                                            ">
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
 
                                 <!--B6_1-->
-                                <div tabindex="1" class="" data-itemno="I1_3"
-                                     data-bind="ntsCheckBox: { checked: useWorkPlace }">
+                                <div tabindex="4"
+                                     data-bind="ntsCheckBox: { checked: group2UseAtr }, text: $vm.$i18n('KAL003_34')">
                                 </div>
-                                <!--B6_2-->
-                                <div class="label" data-bind="text: $vm.$i18n('KAL003_32')"></div>
-                                <!--B6_3-->
-                                <!--<div tabindex="3" data-bind="ntsRadioBoxGroup: {-->
-                                <!--options: $parent.specialConditionList,-->
-                                <!--optionsValue: 'value',-->
-                                <!--optionsText: 'localizedName',-->
-                                <!--value: specialConditionApplicationUse}">-->
-                                <!--</div>-->
+                                <com:ko-if bind="group2UseAtr()">
+                                    <!--B6_2-->
+                                    <div class="label" data-bind="text: $vm.$i18n('KAL003_35')"></div>
+                                    <!--B6_3-->
+                                    <div tabindex="5" data-bind="ntsRadioBoxGroup: {
+                                        name: '#{i18n.getText('KAL003_35')}',
+                                        options: $parents[1].swANDOR_B6_3,
+                                        optionsValue: 'value',
+                                        optionsText: 'localizedName',
+                                        value: group2().conditionOperator
+                                    }">
+                                    </div>
+                                </com:ko-if>
+                                <!--B6_4-->
+                                <table id="table-group2condition">
+                                    <colgroup>
+                                        <col width="180"/>
+                                        <col width="60"/>
+                                        <col width="180"/>
+                                        <col width="60"/>
+                                        <col width="180"/>
+                                        <col width="52"/>
+                                    </colgroup>
+                                    <thead>
+                                    <tr>
+                                        <!-- B6_5 -->
+                                        <th class="ui-widget-header" colspan="6"
+                                            style="text-align: center;">#{i18n.getText('KAL003_33')}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody data-bind="foreach: group2().lstErAlAtdItemCon()">
+                                    <tr>
+                                        <!-- B6_7 -->
+                                        <com:ko-if
+                                                bind="$data.compareOperator() &gt; 5 &amp;&amp; $data.compareOperator() &lt; 8">
+                                            <td>
+                                                <span class="limited-label" style="width: 160px"
+                                                      data-bind="text: $data.displayLeftCompare">
+                                                </span>
+                                            </td>
+
+                                            <td>
+                                                <span class="limited-label" style="width: 50px"
+                                                      data-bind="text: $data.displayLeftOperator">
+                                                </span>
+                                            </td>
+
+                                            <td>
+                                                <span class="limited-label" style="width: 160px"
+                                                      data-bind="text: $data.displayTarget">
+                                                </span>
+                                            </td>
+                                        </com:ko-if>
+                                        <com:ko-if bind="$data.compareOperator() &lt; 6">
+                                            <td>
+                                                <span class="limited-label" style="width: 160px"
+                                                      data-bind="text: $data.displayTarget">
+                                                </span>
+                                            </td>
+
+                                            <td>
+                                                <span class="limited-label" style="width: 50px"
+                                                      data-bind="text: $data.displayLeftOperator">
+                                                </span>
+                                            </td>
+
+                                            <td>
+                                                <span class="limited-label" style="width: 160px"
+                                                      data-bind="text: $data.displayLeftCompare">
+                                                </span>
+                                            </td>
+                                        </com:ko-if>
+                                        <com:ko-if bind="$data.compareOperator() == 8 || $data.compareOperator() == 9">
+                                            <td>
+                                                <span class="limited-label" style="width: 160px"
+                                                      data-bind="text: $data.displayTarget">
+                                                </span>
+                                            </td>
+
+                                            <td>
+                                                <span class="limited-label" style="width: 50px"
+                                                      data-bind="text: $data.displayLeftOperator">
+                                                </span>
+                                            </td>
+
+                                            <td>
+                                                <span class="limited-label" style="width: 160px;"
+                                                      data-bind="text: $data.displayLeftCompare() + ', ' + $data.displayRightCompare()">
+                                                </span>
+                                            </td>
+
+                                            <td>
+                                                <span class="limited-label" style="width: 50px"
+                                                      data-bind="text: $data.displayRightOperator">
+                                                </span>
+                                            </td>
+
+                                            <td>
+                                                <span class="limited-label" style="width: 160px"
+                                                      data-bind="text: $data.displayTarget">
+                                                </span>
+                                            </td>
+                                        </com:ko-if>
+                                        <com:ko-if bind="$data.compareOperator() &lt; 8">
+                                            <td>
+                                                <span class="limited-label" style="width: 50px"
+                                                      data-bind="text: $data.displayRightOperator">
+                                                </span>
+                                            </td>
+
+                                            <td>
+                                                <span class="limited-label" style="width: 160px"
+                                                      data-bind="text: $data.displayRightCompare">
+                                                </span>
+                                            </td>
+                                        </com:ko-if>
+                                        <!-- B6_7 -->
+                                        <td>
+                                            <button id="btnSettingB16_5"
+                                                    data-bind="click: $data.openAtdItemConditionDialog.bind($data, 0), enable: true">#{i18n.getText('KAL003_14')}</button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
 
                                 <!--B7_1-->
-                                <div class="label" data-bind="text: $vm.$i18n('KAL003_32')"></div>
+                                <div class="label" data-bind="text: $vm.$i18n('KAL003_36')"></div>
                                 <!--B7_2-->
-                                <!--<div tabindex="3" data-bind="ntsRadioBoxGroup: {-->
-                                <!--options: $parent.specialConditionList,-->
-                                <!--optionsValue: 'value',-->
-                                <!--optionsText: 'localizedName',-->
-                                <!--value: specialConditionApplicationUse}">-->
-                                <!--</div>-->
+                                <div tabindex="7" data-bind="ntsRadioBoxGroup: {
+                                    name: '#{i18n.getText('KAL003_36')}',
+                                    options: $parents[1].swANDOR_B7_2,
+                                    optionsValue: 'value',
+                                    optionsText: 'localizedName',
+                                    value: operatorBetweenGroups
+                                }">
+                                </div>
                             </td>
                         </tr>
                     </com:ko-if>
