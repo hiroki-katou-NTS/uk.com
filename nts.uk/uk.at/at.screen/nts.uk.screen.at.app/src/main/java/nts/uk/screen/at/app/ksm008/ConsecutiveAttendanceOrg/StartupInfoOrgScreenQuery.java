@@ -1,6 +1,5 @@
 package nts.uk.screen.at.app.ksm008.ConsecutiveAttendanceOrg;
 
-
 import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.app.query.schedule.alarm.consecutivework.consecutiveattendance.ConsecutiveAttendanceOrgQuery;
