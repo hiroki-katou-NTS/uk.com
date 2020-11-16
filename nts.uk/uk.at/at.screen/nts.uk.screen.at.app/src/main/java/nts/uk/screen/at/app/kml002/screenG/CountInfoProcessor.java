@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Screen KML002  G : 回数集計情報を取得する
+ * KML002 Screen G : 回数集計情報を取得する
  */
 @Stateless
 public class CountInfoProcessor {

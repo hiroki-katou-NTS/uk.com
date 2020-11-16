@@ -10,7 +10,6 @@ import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 /**
@@ -28,7 +27,7 @@ public class WorkplaceCounterFinder {
 
         Optional<WorkplaceCounter> workplaceCounter = repository.get(AppContexts.user().companyId());
         List<EnumConstant> listEnum = EnumAdaptor.convertToValueNameList(WorkplaceCounterCategory.class, ukResource);
-        return workplaceCounter.isPresent() ? WorkplaceCounterCategoryDto.setData(listEnum,workplaceCounter.get()) : new ArrayList<>();
+        return WorkplaceCounterCategoryDto.setData(listEnum,workplaceCounter);
     }
 }
 

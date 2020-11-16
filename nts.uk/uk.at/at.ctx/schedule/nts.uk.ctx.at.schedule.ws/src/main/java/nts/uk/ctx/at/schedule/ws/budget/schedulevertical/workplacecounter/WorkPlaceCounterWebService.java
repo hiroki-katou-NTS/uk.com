@@ -13,7 +13,7 @@ import javax.ws.rs.Produces;
 import java.util.List;
 
 /**
- * Screen B
+ * KML002 Screen B
  */
 @Path("ctx/at/schedule/budget/workplaceCounter")
 @Produces("application/json")

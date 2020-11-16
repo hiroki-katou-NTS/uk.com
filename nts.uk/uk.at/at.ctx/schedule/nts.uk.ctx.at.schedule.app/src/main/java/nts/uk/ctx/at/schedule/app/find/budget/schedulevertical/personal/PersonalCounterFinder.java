@@ -10,7 +10,6 @@ import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +29,7 @@ public class PersonalCounterFinder {
         Optional<PersonalCounter> personalCounter = repository.get(AppContexts.user().companyId());
         List<EnumConstant> listEnum = EnumAdaptor.convertToValueNameList(PersonalCounterCategory.class, ukResource);
 
-        return personalCounter.isPresent() ? PersonalCounterCategoryDto.setData(listEnum,personalCounter.get()) : new ArrayList<>();
+        return PersonalCounterCategoryDto.setData(listEnum,personalCounter);
     }
 }
 

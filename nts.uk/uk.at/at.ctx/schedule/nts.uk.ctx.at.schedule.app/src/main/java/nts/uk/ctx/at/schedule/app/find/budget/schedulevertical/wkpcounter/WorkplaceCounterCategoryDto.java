@@ -9,6 +9,7 @@ import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.WorkplaceCoun
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Data
@@ -19,12 +20,10 @@ public class WorkplaceCounterCategoryDto {
     private int value;
     private boolean use;
 
-    public static List<WorkplaceCounterCategoryDto> setData(List<EnumConstant> listEnum,WorkplaceCounter workplaceCounter) {
-        return listEnum.stream().map(x -> {
-            return new WorkplaceCounterCategoryDto(
-                x.getValue(),
-                workplaceCounter.isUsed(WorkplaceCounterCategory.of(x.getValue()))
-            );
-        }).sorted(Comparator.comparing(WorkplaceCounterCategoryDto::getValue)).collect(Collectors.toList());
+    public static List<WorkplaceCounterCategoryDto> setData(List<EnumConstant> listEnum, Optional<WorkplaceCounter> workplaceCounter) {
+        return listEnum.stream().map(x -> new WorkplaceCounterCategoryDto(
+            x.getValue(),
+            workplaceCounter.isPresent() && workplaceCounter.get().isUsed(WorkplaceCounterCategory.of(x.getValue()))
+        )).sorted(Comparator.comparing(WorkplaceCounterCategoryDto::getValue)).collect(Collectors.toList());
     }
 }

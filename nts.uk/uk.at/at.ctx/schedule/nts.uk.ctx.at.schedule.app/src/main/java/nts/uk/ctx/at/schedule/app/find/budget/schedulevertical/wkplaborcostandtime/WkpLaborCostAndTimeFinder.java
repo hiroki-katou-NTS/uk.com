@@ -21,6 +21,6 @@ public class WkpLaborCostAndTimeFinder {
 
     public List<WkpLaborCostAndTimeDto> findById() {
         Optional<WorkplaceCounterLaborCostAndTime> wkpLaborCostAndTime = repository.get(AppContexts.user().companyId());
-        return wkpLaborCostAndTime.isPresent() ? WkpLaborCostAndTimeDto.setData(wkpLaborCostAndTime.get()) : new ArrayList<>();
+        return WkpLaborCostAndTimeDto.setData(wkpLaborCostAndTime);
     }
 }
