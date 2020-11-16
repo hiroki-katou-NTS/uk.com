@@ -2,8 +2,8 @@ package nts.uk.file.at.app.export.attendanceitemprepare;
 
 import lombok.Builder;
 import lombok.Data;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeName;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.BusinessTypeName;
+import nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode;
 
 
 @Data
