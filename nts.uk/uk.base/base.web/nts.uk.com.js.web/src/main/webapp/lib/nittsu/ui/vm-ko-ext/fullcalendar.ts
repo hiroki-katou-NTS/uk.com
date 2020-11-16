@@ -214,10 +214,10 @@ module nts.uk.ui.koExtentions {
             const scrollTime = allBindingsAccessor.get('scrollTime');
             const initialDate = allBindingsAccessor.get('initialDate');
             const slotDuration = allBindingsAccessor.get('slotDuration');
-            const allDayEvents = allBindingsAccessor.get('allDayEvents');
             const businessHours = allBindingsAccessor.get('businessHours');
+            const attendanceTimes = allBindingsAccessor.get('attendanceTimes');
 
-            const params = { events, event, locale, initialDate, scrollTime, weekends, firstDay, slotDuration, allDayEvents, businessHours, viewModel };
+            const params = { events, event, locale, initialDate, scrollTime, weekends, firstDay, slotDuration, attendanceTimes, businessHours, viewModel };
             const component = { name, params };
 
             ko.applyBindingsToNode(element, { component }, bindingContext);
@@ -261,7 +261,7 @@ module nts.uk.ui.koExtentions {
         endTime: number;
     };
 
-    type ALLDAYEVENTS = {
+    type ATTENDANCE_TIME = {
         date: Date;
         events: string[];
     };
@@ -275,7 +275,7 @@ module nts.uk.ui.koExtentions {
         slotDuration: SLOT_DURATION | KnockoutObservable<SLOT_DURATION>;
         weekends: boolean | KnockoutObservable<boolean>;
         firstDay: DAY_OF_WEEK | KnockoutObservable<DAY_OF_WEEK>;
-        allDayEvents: ALLDAYEVENTS[] | KnockoutObservableArray<ALLDAYEVENTS>;
+        attendanceTimes: ATTENDANCE_TIME[] | KnockoutObservableArray<ATTENDANCE_TIME>;
         businessHours: BUSINESSHOUR[] | KnockoutObservableArray<BUSINESSHOUR>;
         event: {
             datesSet: (start: Date, end: Date) => void;
@@ -334,7 +334,7 @@ module nts.uk.ui.koExtentions {
                     weekends: ko.observable(true),
                     initialDate: ko.observable(new Date()),
                     events: ko.observableArray([]),
-                    allDayEvents: ko.observableArray([]),
+                    attendanceTimes: ko.observableArray([]),
                     businessHours: ko.observableArray([]),
                     event: {
                         datesSet: (__: Date, ___: Date) => { }
@@ -342,7 +342,7 @@ module nts.uk.ui.koExtentions {
                 };
             }
 
-            const { locale, events, scrollTime, initialDate, weekends, firstDay, slotDuration, allDayEvents, businessHours } = this.params;
+            const { locale, events, scrollTime, initialDate, weekends, firstDay, slotDuration, attendanceTimes, businessHours } = this.params;
 
             if (locale === undefined) {
                 this.params.locale = ko.observable('ja');
@@ -372,8 +372,8 @@ module nts.uk.ui.koExtentions {
                 this.params.events = ko.observableArray([]);
             }
 
-            if (allDayEvents === undefined) {
-                this.params.allDayEvents = ko.observableArray([]);
+            if (attendanceTimes === undefined) {
+                this.params.attendanceTimes = ko.observableArray([]);
             }
 
             if (businessHours === undefined) {
@@ -384,7 +384,7 @@ module nts.uk.ui.koExtentions {
         public mounted() {
             const vm = this;
             const { params, dataEvent } = vm;
-            const { locale, events, scrollTime, firstDay, weekends, initialDate, viewModel, event, allDayEvents } = params;
+            const { locale, events, scrollTime, firstDay, weekends, initialDate, viewModel, event, attendanceTimes } = params;
 
             const $el = $(vm.$el);
             const $fc = $el.find('div.fc').get(0);
@@ -400,35 +400,6 @@ module nts.uk.ui.koExtentions {
             };
 
             const datesSet: KnockoutObservable<DATES_SET | null> = ko.observable(null);
-
-            const eventSet: KnockoutComputed<string[][]> = ko.computed({
-                read: () => {
-                    const ds = ko.unwrap(datesSet);
-                    const ads: ALLDAYEVENTS[] = ko.unwrap(allDayEvents) as any;
-
-                    if (ds) {
-                        const { start, end } = ds;
-
-                        const first = moment(start);
-                        const diff: number = moment(end).diff(start, 'day');
-
-                        return _.range(0, diff, 1)
-                            .map(m => {
-                                const date = first.clone().add(m, 'day');
-                                const exist = _.find(ads, (d: ALLDAYEVENTS) => date.isSame(d.date, 'date'));
-
-                                if (exist) {
-                                    return exist.events;
-                                }
-
-                                return [];
-                            });
-                    }
-
-                    return [] as string[][];
-                },
-                disposeWhenNodeIsRemoved: vm.$el
-            })
 
             const timesSet: KnockoutComputed<number[]> = ko.computed({
                 read() {
@@ -454,6 +425,35 @@ module nts.uk.ui.koExtentions {
                     }
 
                     return [] as number[];
+                },
+                disposeWhenNodeIsRemoved: vm.$el
+            });
+
+            const attendancesSet: KnockoutComputed<string[][]> = ko.computed({
+                read: () => {
+                    const ds = ko.unwrap(datesSet);
+                    const ads: ATTENDANCE_TIME[] = ko.unwrap(attendanceTimes) as any;
+
+                    if (ds) {
+                        const { start, end } = ds;
+
+                        const first = moment(start);
+                        const diff: number = moment(end).diff(start, 'day');
+
+                        return _.range(0, diff, 1)
+                            .map(m => {
+                                const date = first.clone().add(m, 'day');
+                                const exist = _.find(ads, (d: ATTENDANCE_TIME) => date.isSame(d.date, 'date'));
+
+                                if (exist) {
+                                    return exist.events;
+                                }
+
+                                return [];
+                            });
+                    }
+
+                    return [] as string[][];
                 },
                 disposeWhenNodeIsRemoved: vm.$el
             });
@@ -503,18 +503,48 @@ module nts.uk.ui.koExtentions {
                             const btn = evt.target as HTMLElement;
                         }
                     },
-                    settings: {
-                        text: '&nbsp;',
-                        click: (evt) => {
+                    oneDay: {
+                        text: '日',
+                        click: () => {
+                            if (ko.isObservable(weekends)) {
+                                weekends(true);
+                            } else {
+                                calendar.setOption('weekends', true);
+                            }
+                            
+                            calendar.changeView('timeGridDay');
+                        }
+                    },
+                    fiveDay: {
+                        text: '稼働日',
+                        click: () => {
+                            if (ko.isObservable(weekends)) {
+                                weekends(false);
+                            } else {
+                                calendar.setOption('weekends', false);
+                            }
 
+                            calendar.changeView('timeGridWeek');
+                        }
+                    },
+                    fullWeek: {
+                        text: '週',
+                        click: () => {
+                            if (ko.isObservable(weekends)) {
+                                weekends(true);
+                            } else {
+                                calendar.setOption('weekends', true);
+                            }
+
+                            calendar.changeView('timeGridWeek');
                         }
                     }
                 },
                 height: '500px',
                 headerToolbar: {
-                    left: 'today prev,next',
+                    left: 'today prev,next oneDay,fiveDay,fullWeek',
                     center: 'title',
-                    right: 'copyDay settings'
+                    right: 'copyDay'
                 },
                 themeSystem: 'default',
                 initialView: 'timeGridWeek',
@@ -679,21 +709,21 @@ module nts.uk.ui.koExtentions {
                 viewDidMount: (opts) => {
                     $('.fc-header-toolbar button').removeAttr('class');
 
-                    if (opts.view.type !== 'timeGridWeek') {
+                    if (['timeGridDay', 'timeGridWeek'].indexOf(opts.view.type) === -1) {
                         return false;
                     }
 
                     const header = $(opts.el).find('thead tbody');
 
                     if (header.length) {
-                        const evts = document.createElement('tr');
-                        const times = document.createElement('tr');
+                        const _events = document.createElement('tr');
+                        const __times = document.createElement('tr');
 
-                        header.append(evts);
-                        header.append(times);
+                        header.append(_events);
+                        header.append(__times);
 
-                        ko.applyBindingsToNode(evts, { component: { name: 'fc-events', params: eventSet } });
-                        ko.applyBindingsToNode(times, { component: { name: 'fc-times', params: timesSet } });
+                        ko.applyBindingsToNode(__times, { component: { name: 'fc-times', params: timesSet } });
+                        ko.applyBindingsToNode(_events, { component: { name: 'fc-events', params: attendancesSet } });
                     }
                 }
             });

@@ -48,7 +48,7 @@ module nts.uk.ui.com.sample.fullcalendar {
         scrollTime: KnockoutObservable<number> = ko.observable(420);
         slotDuration: KnockoutObservable<number> = ko.observable(30);
 
-        allDayEvents: KnockoutObservableArray<any> = ko.observableArray([{
+        attendanceTimes: KnockoutObservableArray<any> = ko.observableArray([{
             date: moment().toDate(),
             events: [
                 '勤怠　8:00 ~ 17:00',
