@@ -21,8 +21,13 @@
 			<com:scriptfile path="./component-Normal/list-time-work.js" />
 			<com:scriptfile path="./component-Normal/kcp004-cpn.js" />
 			<com:scriptfile path="./component-Normal/kcp001-cpn.js" />
+			<com:scriptfile path="./component-Normal/ccg001-cpn.js" />
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+			<com:scriptfile path="/view/ccg/share/ccg.service.js"
+			of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
 
 
 		</ui:define>
@@ -43,10 +48,10 @@
 					<div data-bind="component: { name: 'view-c', params: {} }"></div>
 				</div>
 				<div data-bind="if: selected() === 'Com_Person'">
-					<div data-bind="component: { name: 'view-d', params: {} }"></div>
+					<div data-bind="component: { name: 'view-e', params: {} }"></div>
 				</div>
 				<div data-bind="if: selected() === 'Com_Employment'">
-					<div data-bind="component: { name: 'view-e', params: {} }"></div>
+					<div data-bind="component: { name: 'view-d', params: {} }"></div>
 				</div>
 				<div class="cf"></div>
 			</div>
