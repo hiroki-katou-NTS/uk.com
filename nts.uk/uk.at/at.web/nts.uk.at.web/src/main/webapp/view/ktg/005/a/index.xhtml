@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 314,
+					height : 346
+				};
+			</script>
+			<com:scriptfile path="viewmodel.js" />
+			<com:stylefile path="kdp005.a.style.css" />
+		</ui:define>
+
+
+		<ui:define name="content">
+
+			<div id="contents-area">
+				<div id="top_title">
+					<!-- A1_1 -->
+
+					<div class="limited-label"
+						style="display: inline-block; margin-left: 7px; vertical-align: middle;line-height: 45px; width: 105px;"
+						data-bind="text:executionAppResult().topPagePartName"></div>
+
+
+					<div class="col_line_2">
+						<!-- A1_2 -->
+						<button style="margin: 8px 10px 0px 0px;" class="button-group" 
+							data-bind="icon: 85 ,click:jumpToCmm045"></button>
+						<!-- A1_3 -->
+						<div
+							style="display: inline-block; margin-right: 15px; vertical-align: middle;line-height: 45px;">#{i18n.getText('KTG005_1')}</div>
+						<!-- A1_4 -->
+
+						<button style="margin-top: 8px" class="button-group" data-bind="icon: 5, click:openScreenB ,visible:executionAppResult().employeeCharge == true"></button>
+					</div>
+				</div>
+				<div data-bind="with:executionAppResult" style="padding: 0px 10px">
+					<com:ko-foreach bind="appSettings">
+						<div class="div_line border">
+							<div class="col_line_1">
+								<!-- A2_1 -->
+								<div class="label" data-bind="text:$parents[1].getLabel(item)"></div>
+							</div>
+							<div class="col_line_2">
+								<!-- A2_2 -->
+								<div class="label"
+									data-bind="text:$parents[1].getText(item)"></div>
+							</div>
+						</div>
+					</com:ko-foreach>
+				</div>
+			</div>
+		</ui:define>
+
+	</ui:composition>
+</body>
+</html>

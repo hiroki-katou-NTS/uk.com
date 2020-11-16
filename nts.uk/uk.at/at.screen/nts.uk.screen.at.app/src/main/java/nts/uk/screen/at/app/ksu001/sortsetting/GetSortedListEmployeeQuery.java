@@ -56,8 +56,7 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.SortOrder;
 
 /**
  * 
- * @author HieuLt
- *	並び替えした社員リストを取得
+ * @author HieuLt 並び替えした社員リストを取得
  */
 @Stateless
 public class GetSortedListEmployeeQuery {
@@ -107,11 +106,7 @@ public class GetSortedListEmployeeQuery {
 		List<String> listSidEmp = new ArrayList<>();
 		List<EmployeeBaseDto> lstEmpBase = new ArrayList<>();
 		List<OrderListDto> lstOrders = new ArrayList<>();
-		/*
-		 * lstEmp.add( "ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570"); lstEmp.add(
-		 * "8f9edce4-e135-4a1e-8dca-ad96abe405d6"); lstEmp.add(
-		 * "787c06b-3c71-4508-8e06-c70ad41f042a");
-		 */
+
 		// 所属スケジュールチーム情報を取得する
 
 		// 1 :取得する :get List<社員所属チーム情報>
@@ -137,11 +132,10 @@ public class GetSortedListEmployeeQuery {
 				nurseClassificationRepo, empMedicalWorkStyleHisRepo);
 		empLicenseClassifications = GetEmpLicenseClassificationService.get(getEmpLicenseClassificationImpl, date,
 				lstEmpId);
-		List<EmpLicenseClassificationDto> lstEmpLicenseClassificationDto = empLicenseClassifications
-				.stream().map(
-						x -> new EmpLicenseClassificationDto(x.getEmpID(),
-								x.getOptLicenseClassification().isPresent()
-										? LicenseClassification.valueOf(x.getOptLicenseClassification().get().value).name  : ""))
+		List<EmpLicenseClassificationDto> lstEmpLicenseClassificationDto = empLicenseClassifications.stream()
+				.map(x -> new EmpLicenseClassificationDto(x.getEmpID(),
+						x.getOptLicenseClassification().isPresent()
+								? LicenseClassification.valueOf(x.getOptLicenseClassification().get().value).name : ""))
 				.collect(Collectors.toList());
 		// 4: call <get> <<Public>> 社員の情報を取得する
 		// <<Public>> 社員の情報を取得する
@@ -149,28 +143,26 @@ public class GetSortedListEmployeeQuery {
 				.find(EmployeeInformationQueryDto.builder().employeeIds(lstEmpId).referenceDate(date)
 						.toGetWorkplace(false).toGetDepartment(false).toGetPosition(true).toGetEmployment(false)
 						.toGetClassification(true).toGetEmploymentCls(false).build());
-		// SortSetting sr = null;
+
 		Require requireSortSetting = new SortSettingRequireImp(sortSettingRepo, belongScheduleTeamRepo,
 				employeeRankRepo, rankRepo, syJobTitleAdapter, syClassificationAdapter, empMedicalWorkStyleHisRepo,
 				nurseClassificationRepo);
 		List<OrderedList> orderedListaa = new ArrayList<>();
-			for (EmployeeSwapDto item : selectedEmployeeSwap) {
-				OrderedList data = new OrderedList(EnumAdaptor.valueOf(item.getSortType(), SortType.class),
-						EnumAdaptor.valueOf(item.getSortOrder(), SortOrder.class));
-				orderedListaa.add(data);
-			}
+		for (EmployeeSwapDto item : selectedEmployeeSwap) {
+			OrderedList data = new OrderedList(EnumAdaptor.valueOf(item.getSortType(), SortType.class),
+					EnumAdaptor.valueOf(item.getSortOrder(), SortOrder.class));
+			orderedListaa.add(data);
+		}
+		// 5: 並び替える(Require, 年月日, List<社員ID>)
+		SortSetting sortSettingNew = SortSetting.create(companyId, orderedListaa);
+		listSidEmp = sortSettingNew.sort(requireSortSetting, date, lstEmpId);
 
-			SortSetting sortSettingNew = SortSetting.create(companyId, orderedListaa);
-			listSidEmp = sortSettingNew.sort(requireSortSetting, date, lstEmpId);
-			
 		lstEmpBase = syEmployeePub.getByListSid(lstEmpId).stream()
 				.map(x -> new EmployeeBaseDto(x.getSid(), x.getScd(), x.getBussinessName()))
 				.collect(Collectors.toList());
-//		Optional<SortSetting> st = sortSettingRepo.get(companyId);
-//		List<OrderListDto> listOrderColum = st.get().getOrderedList().stream()
-//				.map(x -> new OrderListDto(x.getSortOrder().value, x.getType().value)).collect(Collectors.toList());
+		
 		List<OrderListDto> listOrderColum = new ArrayList<>();
-		selectedEmployeeSwap.forEach(x->{
+		selectedEmployeeSwap.forEach(x -> {
 			listOrderColum.add(new OrderListDto(x.getSortOrder(), x.getSortType()));
 		});
 
@@ -191,14 +183,13 @@ public class GetSortedListEmployeeQuery {
 				sortName = I18NText.getText("Com_Jobtitle");
 			} else if (x.getSortType() == 4) {
 				sortName = I18NText.getText("Com_Class");
-			} 
+			}
 			return new OrderListDto(x.getSortOrder(), sortName);
 		}).collect(Collectors.toList());
 		if (!listOrderColum1.isEmpty()) {
 			lstOrders.removeAll(listOrderColum1);
 			listOrderColum1.addAll(lstOrders);
 
-			
 		}
 		List<EmplInforATR> lstEmplInforATR = empInfoLst.stream()
 				.map(x -> new EmplInforATR(x.getEmployeeId(),

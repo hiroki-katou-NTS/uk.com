@@ -10,7 +10,7 @@
         <!-- D2_2 -->
         <button tabindex="3" data-bind="text: $i18n('KSM008_52'), click: $vm.newScreenE"/>
         <!-- D2_3 -->
-        <button tabindex="4" data-bind="text: $i18n('KSM008_53'), click: $vm.registerScreenE" class="proceed"/>
+        <button tabindex="4" data-bind="text: $i18n('KSM008_53'), click: $vm.registerScreenE, enable: $root.errors.isEmpty" class="proceed"/>
         <!-- D2_4 -->
         <button tabindex="5"
                 data-bind="text: $i18n('KSM008_54'), click: $vm.deleteScreenE, enable: $vm.eScreenCurrentCode()"

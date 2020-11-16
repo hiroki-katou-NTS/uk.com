@@ -353,12 +353,13 @@ module nts.uk.at.kaf021.c {
                 cellStates.push(new common.CellState(data.applicantId, 'monthAverage6Str', ["center-align"]));
                 cellStates.push(new common.CellState(data.applicantId, 'exceededNumber', ["center-align"]));
                 cellStates.push(new common.CellState(data.applicantId, 'currentMax', ["center-align"]));
-                cellStates.push(new common.CellState(data.applicantId, 'newMax', ["center-align", "cell-edit"]));
                 if (data.approvalStatus == common.ApprovalStatusEnum.APPROVED) {
                     cellStates.push(new common.CellState(data.applicantId, 'checked', [disableCell]));
                     cellStates.push(new common.CellState(data.applicantId, 'reason', ["cell-edit", disableCell]));
+                    cellStates.push(new common.CellState(data.applicantId, 'newMax', ["center-align", "cell-edit", disableCell]));
                 } else {
                     cellStates.push(new common.CellState(data.applicantId, 'reason', ["cell-edit"]));
+                    cellStates.push(new common.CellState(data.applicantId, 'newMax', ["center-align", "cell-edit"]));
                 }
                 cellStates.push(new common.CellState(data.applicantId, 'inputDateStr', ["center-align"]));
                 cellStates.push(new common.CellState(data.applicantId, 'approverStatusStr', ["center-align"]));

@@ -12,7 +12,7 @@ td {
 }
 
 #C4_3, #C4_4 {
-    width: fit-content;
+    width: auto;
     margin: 0 20px;
 }
 
