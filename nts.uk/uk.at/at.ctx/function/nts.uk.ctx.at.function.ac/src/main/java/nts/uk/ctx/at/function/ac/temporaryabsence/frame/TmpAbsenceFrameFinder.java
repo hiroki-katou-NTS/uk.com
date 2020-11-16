@@ -23,17 +23,17 @@ import nts.uk.ctx.bs.employee.pub.temporaryabsence.frame.TempAbsenceFramePub;
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class TmpAbsenceFrameFinder implements TempAbsenceFrameApdater {
 	
-//	/** The temp absence frame pub. */
+	/** The temp absence frame pub. */
 	@Inject
 	private TempAbsenceFramePub tempAbsenceFramePub;
-//
-//	/**
-//	 * Find with use state.
-//	 *
-//	 * @param cId the c id
-//	 * @param useAtr the use atr
-//	 * @return the list
-//	 */
+
+	/**
+	 * Find with use state.
+	 *
+	 * @param cId the c id
+	 * @param useAtr the use atr
+	 * @return the list
+	 */
 	@Override
 	public List<TempAbsenceFrameApdaterDto> findWithUseState(String cId, Integer useAtr) {
 		return this.tempAbsenceFramePub.findWithUseState(cId, useAtr).stream()

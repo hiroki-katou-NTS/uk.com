@@ -92,4 +92,5 @@ public interface DivergenceTimeRepository {
 	 * @return List＜乖離時間＞
 	 */
 	List<DivergenceTimeRoot> findByCompanyAndUseDistination(String comapanyId, int useDistination);
+
 }

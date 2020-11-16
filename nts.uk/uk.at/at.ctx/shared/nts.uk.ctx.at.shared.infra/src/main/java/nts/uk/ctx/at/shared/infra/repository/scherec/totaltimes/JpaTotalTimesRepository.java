@@ -198,4 +198,14 @@ public class JpaTotalTimesRepository extends JpaRepository implements TotalTimes
 				.collect(Collectors.toList());
 	}
 
+	@Override
+	public List<TotalTimes> findByCompanyIdAndUseCls(String companyId, int useCls) {
+		return this.queryProxy().query(FIND_BY_COMPANY_ID_AND_USE_CLS, KshstTotalTimes.class)
+				.setParameter("companyId", companyId)
+				.setParameter("useAtr", useCls)
+				.getList().stream()
+				.map(x -> new TotalTimes(new JpaTotalTimesGetMemento(x)))
+				.collect(Collectors.toList());
+	}
+
 }

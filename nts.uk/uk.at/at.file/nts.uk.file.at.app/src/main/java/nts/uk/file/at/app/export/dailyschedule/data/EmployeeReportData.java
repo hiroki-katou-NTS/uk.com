@@ -30,13 +30,14 @@ public class EmployeeReportData {
 	public String employmentName;
 	
 	/** The employment code. */
-	// Add by LienPTK ver-20
 	public String employmentCode;
 	
 	/** The position. */
 	public String position;
+	
+	/** The job title code. */
+	public String jobTitleCode;
 
-	// Add by LienPTK ver-20
 	/** The job title code. */
 	public String jobTitleCode;
 	

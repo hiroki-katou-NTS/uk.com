@@ -114,4 +114,3 @@ public class JpaSpecialHolidayFrameRepository extends JpaRepository implements S
 				.map(x -> toDomain(x))
 				.collect(Collectors.toList());
 	}
-}

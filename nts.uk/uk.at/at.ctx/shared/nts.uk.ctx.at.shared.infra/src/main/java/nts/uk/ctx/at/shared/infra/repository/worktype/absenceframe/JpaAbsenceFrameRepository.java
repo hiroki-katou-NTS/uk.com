@@ -110,4 +110,12 @@ public class JpaAbsenceFrameRepository extends JpaRepository implements AbsenceF
 				.setParameter("abolishAtr", useCls)
 				.getList(a -> toDomain(a));
 	}
+
+	@Override
+	public List<AbsenceFrame> findByCompanyIdAndDeprecateClassification(String cid, int useCls) {
+		return this.queryProxy().query(FIND_BY_CID_USE_CLS, KshmtAbsenceFrame.class)
+				.setParameter("companyId", cid)
+				.setParameter("abolishAtr", useCls)
+				.getList(a -> toDomain(a));
+	}
 }

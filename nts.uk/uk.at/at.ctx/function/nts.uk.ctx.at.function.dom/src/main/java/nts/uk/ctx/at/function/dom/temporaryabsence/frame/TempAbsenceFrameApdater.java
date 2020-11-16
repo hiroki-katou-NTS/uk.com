@@ -12,7 +12,7 @@ public interface TempAbsenceFrameApdater {
 	/**
 	 * Find with use state.
 	 *
-	 * @param cId    the c id
+	 * @param cId the c id
 	 * @param useAtr the use atr
 	 * @return the list
 	 */

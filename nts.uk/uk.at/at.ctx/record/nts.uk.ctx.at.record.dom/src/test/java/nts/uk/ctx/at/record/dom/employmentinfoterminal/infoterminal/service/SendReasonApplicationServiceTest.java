@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.assertj.core.groups.Tuple;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -86,14 +87,21 @@ public class SendReasonApplicationServiceTest {
 
 				require.getReasonByAppType(anyString, (List<Integer>) any);
 				result = Arrays.asList(
-						new ApplicationReasonRc("1", ApplicationType.OVER_TIME_APPLICATION, "", 1, "A1", 1),
-						new ApplicationReasonRc("1", ApplicationType.ABSENCE_APPLICATION, "", 2, "A2", 1),
-						new ApplicationReasonRc("1", ApplicationType.WORK_CHANGE_APPLICATION, "", 3, "A3", 1),
-						new ApplicationReasonRc("1", ApplicationType.BREAK_TIME_APPLICATION, "", 4, "A4", 1),
-						new ApplicationReasonRc("1", ApplicationType.STAMP_APPLICATION, "", 5, "A5", 1),
-						new ApplicationReasonRc("1", ApplicationType.ANNUAL_HOLIDAY_APPLICATION, "", 6, "A6", 1),
-						new ApplicationReasonRc("1", ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION, "", 7, "A7", 1),
-						new ApplicationReasonRc("1", ApplicationType.APPLICATION_36, "", 8, "", 1)
+						new ApplicationReasonRc("1", ApplicationType.OVER_TIME_APPLICATION,
+								Arrays.asList(Pair.of(1, "A1"))),
+						new ApplicationReasonRc("1", ApplicationType.ABSENCE_APPLICATION,
+								Arrays.asList(Pair.of(2, "A2"))),
+						new ApplicationReasonRc("1", ApplicationType.WORK_CHANGE_APPLICATION,
+								Arrays.asList(Pair.of(3, "A3"))),
+						new ApplicationReasonRc("1", ApplicationType.BREAK_TIME_APPLICATION,
+								Arrays.asList(Pair.of(4, "A4"))),
+						new ApplicationReasonRc("1", ApplicationType.STAMP_APPLICATION,
+								Arrays.asList(Pair.of(5, "A5"))),
+						new ApplicationReasonRc("1", ApplicationType.ANNUAL_HOLIDAY_APPLICATION,
+								Arrays.asList(Pair.of(6, "A6"))),
+						new ApplicationReasonRc("1", ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION,
+								Arrays.asList(Pair.of(7, "A7"))),
+						new ApplicationReasonRc("1", ApplicationType.APPLICATION_36, Arrays.asList(Pair.of(8, "A8")))
 
 				);
 			}
@@ -101,8 +109,8 @@ public class SendReasonApplicationServiceTest {
 		List<SendReasonApplication> actual = SendReasonApplicationService.send(require, new EmpInfoTerminalCode(1),
 				new ContractCode("1"));
 		assertThat(actual).extracting(d -> d.getAppReasonNo(), d -> d.getAppReasonName()).containsExactly(
-				Tuple.tuple("10", "A1"), Tuple.tuple("20", "A2"), Tuple.tuple("30", "A3"), Tuple.tuple("40", "A4"),
-				Tuple.tuple("00", "A5"), Tuple.tuple("60", "A6"), Tuple.tuple("50", "A7"), Tuple.tuple("", ""));
+				Tuple.tuple("11", "A1"), Tuple.tuple("22", "A2"), Tuple.tuple("33", "A3"), Tuple.tuple("44", "A4"),
+				Tuple.tuple("05", "A5"), Tuple.tuple("66", "A6"), Tuple.tuple("57", "A7"));
 
 	}
 

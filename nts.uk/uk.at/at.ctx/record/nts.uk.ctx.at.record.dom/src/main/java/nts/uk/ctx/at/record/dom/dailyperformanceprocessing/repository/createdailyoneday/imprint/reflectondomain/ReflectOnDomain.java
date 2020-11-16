@@ -34,10 +34,9 @@ public class ReflectOnDomain {
 		TimeWithDayAttr timeWithDayAttr = TimeWithDayAttr.convertToTimeWithDayAttr(ymd,
 				stamp.getStampDateTime().toDate(), stamp.getStampDateTime().clockHourMinute().v());
 		//打刻方法を打刻元情報に変換する
-		ReasonTimeChange reasonTimeChange =  new ReasonTimeChange(TimeChangeMeans.REAL_STAMP, EngravingMethod.TIME_RECORD_ID_INPUT);
+		ReasonTimeChange reasonTimeChange =  new ReasonTimeChange(TimeChangeMeans.REAL_STAMP, Optional.of(EngravingMethod.TIME_RECORD_ID_INPUT));
 		workStamp.getTimeDay().setTimeWithDay(Optional.ofNullable(timeWithDayAttr));
 		workStamp.getTimeDay().setReasonTimeChange(reasonTimeChange);
-		workStamp.setAfterRoundingTime(timeWithDayAttr);
 		workStamp.setLocationCode(stamp.getRefActualResults().getWorkLocationCD());
 		//「打刻．反映済み区分」をtrueにする
 		stamp.setReflectedCategory(true);

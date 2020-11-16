@@ -32,6 +32,11 @@ public class JpaDailyPerformanceAuthorityRepository extends JpaRepository
 			+ "		AND da.pk.functionNo = :functionNo"
 			+ "		AND da.availability = :availability";
 
+	private static final String GET_DAI_PER_AUTH_WITH_ROLE_AND_FUNCTION_NO = "SELECT da FROM KrcmtDaiPerformanceAut da"
+			+ "	WHERE da.pk.roleId = :roleId"
+			+ "		AND da.pk.functionNo = :functionNo"
+			+ "		AND da.availability = :availability";
+
 	@Override
 	public List<DailyPerformanceAuthority> get(String roleId) {
 		List<KrcmtDaiPerformanceAut> entities = this.queryProxy()
