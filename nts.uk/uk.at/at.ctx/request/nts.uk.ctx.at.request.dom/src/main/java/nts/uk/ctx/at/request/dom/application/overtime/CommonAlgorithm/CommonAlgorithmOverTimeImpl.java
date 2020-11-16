@@ -426,7 +426,8 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 
 
 	@Override
-	public InfoWithDateApplication getInfoAppDate(String companyId,
+	public InfoWithDateApplication getInfoAppDate(
+			String companyId,
 			Optional<GeneralDate> dateOp,
 			Optional<Integer> startTimeSPR,
 			Optional<Integer> endTimeSPR,

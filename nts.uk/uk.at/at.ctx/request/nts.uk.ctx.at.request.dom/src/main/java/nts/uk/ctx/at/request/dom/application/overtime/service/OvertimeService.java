@@ -20,6 +20,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appo
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeLeaveAppCommonSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 public interface OvertimeService {
@@ -237,12 +238,6 @@ public interface OvertimeService {
 	 * @param startTimeSPR
 	 * @param endTimeSPR
 	 * @param isProxy
-	 * @param employeeId
-	 * @param prePostInitAtr
-	 * @param overtimeLeaveAppCommonSet
-	 * @param advanceApplicationTime
-	 * @param achieveApplicationTime
-	 * @param workContent
 	 * @return
 	 */
 	public DisplayInfoOverTime startA(
@@ -253,12 +248,16 @@ public interface OvertimeService {
 			Optional<Integer> startTimeSPR,
 			Optional<Integer> endTimeSPR,
 			Boolean isProxy
-//			,
-//			String employeeId,
-//			PrePostAtr prePostInitAtr,
-//			OvertimeLeaveAppCommonSet overtimeLeaveAppCommonSet,
-//			ApplicationTime advanceApplicationTime,
-//			ApplicationTime achieveApplicationTime,
-//			WorkContent workContent
+			);
+	public DisplayInfoOverTime changeDate(
+			String companyId,
+			String employeeId,
+			Optional<GeneralDate> dateOp,
+			OvertimeAppAtr overtimeAppAtr,
+			AppDispInfoStartupOutput appDispInfoStartupOutput,
+			Optional<Integer> startTimeSPR,
+			Optional<Integer> endTimeSPR,
+			OvertimeAppSet overtimeAppSet,
+			List<WorkType> worktypes
 			);
 }

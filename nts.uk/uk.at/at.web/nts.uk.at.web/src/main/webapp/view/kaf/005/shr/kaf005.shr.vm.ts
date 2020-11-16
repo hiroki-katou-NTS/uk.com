@@ -276,7 +276,13 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 			
 		}
 	}
-	
+	export interface Model {
+		// workcode
+		
+	}
+	interface WorkCode {
+		
+	}
 	export class OverTimeInput {
             companyID: KnockoutObservable<string>;
             appID: KnockoutObservable<string>;

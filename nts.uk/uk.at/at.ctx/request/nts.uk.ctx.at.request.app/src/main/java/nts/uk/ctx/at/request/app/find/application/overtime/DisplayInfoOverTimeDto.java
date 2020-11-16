@@ -38,7 +38,7 @@ public class DisplayInfoOverTimeDto {
 					.stream()
 					.map(x -> WorkdayoffFrameDto.fromDomain(x))
 					.collect(Collectors.toList()),
-				displayInfoOverTime.getOvertimeAppAtr().value,
+				displayInfoOverTime.getOvertimeAppAtr() == null ? null : displayInfoOverTime.getOvertimeAppAtr().value,
 				AppDispInfoStartupDto.fromDomain(displayInfoOverTime.getAppDispInfoStartup()),
 				displayInfoOverTime.getIsProxy(),
 				CalculationResultDto.fromDomain(displayInfoOverTime.getCalculationResultOp().orElse(null)),

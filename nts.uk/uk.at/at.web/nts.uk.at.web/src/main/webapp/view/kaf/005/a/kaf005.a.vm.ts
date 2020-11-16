@@ -12,6 +12,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		isSendMail: KnockoutObservable<Boolean>;	
 		isAgentMode : KnockoutObservable<boolean> = ko.observable(false);
 		overTimeWork: KnockoutObservableArray<OvertimeWork> = ko.observableArray([]);
+		dataSource: DisplayInfoOverTime;
 		created() {
 			const self = this;
 			self.isSendMail = ko.observable(false);
@@ -33,7 +34,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			self.loadData(empLst, dateLst, self.appType())
 				.then((loadDataFlag: any) => {
 					self.application().appDate.subscribe(value => {	
-	                    
+	                    if (value) {
+							self.changeDate();
+						}
                 	});
 	
 					if (loadDataFlag) {
@@ -44,13 +47,15 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						// param1.dateOp = '2020/11/13';
 						param1.overtimeAppAtr = OvertimeAppAtr.EARLY_OVERTIME;
 						param1.appDispInfoStartupDto = ko.toJS(self.appDispInfoStartupOutput);
+						param1.startTimeSPR = 100;
+						param1.endTimeSPR = 200;
 						param1.isProxy = true;
 						let command = {
 							companyId: param1.companyId,
 							dateOp: param1.dateOp,
 							overtimeAppAtr: param1.overtimeAppAtr,
 							appDispInfoStartupDto: param1.appDispInfoStartupDto,
-							startTimeSPR: param1.endTimeSPR,
+							startTimeSPR: param1.startTimeSPR,
 							endTimeSPR: param1.endTimeSPR,
 							isProxy: param1.isProxy,
 						};
@@ -59,7 +64,40 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					}
 				})
 				.then((res: DisplayInfoOverTime) => {
+					self.dataSource = res;
 					self.bindOverTimeWorks(res);
+				})
+				.fail((res: any) => {
+					
+				})
+				.always(() => self.$blockui('hide'));
+		}
+		
+		changeDate() {
+			console.log('change date');
+			const self = this;
+			let param1 = {
+							
+			} as FirstParam;
+			param1.companyId = self.$user.companyId;
+			param1.dateOp = ko.toJS(self.appDispInfoStartupOutput).appDispInfoWithDateOutput.baseDate;
+			param1.overtimeAppAtr = OvertimeAppAtr.EARLY_OVERTIME;
+			param1.appDispInfoStartupDto = ko.toJS(self.appDispInfoStartupOutput);
+			param1.startTimeSPR = 100;
+			param1.endTimeSPR = 200;
+			let command = {
+				companyId: param1.companyId,
+				dateOp: param1.dateOp,
+				overtimeAppAtr: param1.overtimeAppAtr,
+				appDispInfoStartupDto: param1.appDispInfoStartupDto,
+				startTimeSPR: param1.startTimeSPR,
+				endTimeSPR: param1.endTimeSPR,
+				overTimeAppSet: self.dataSource.infoNoBaseDate.overTimeAppSet,
+				worktypes: self.dataSource.infoBaseDateOutput.worktypes
+			}
+			self.$ajax(API.changeDate, command)
+				.done((res: DisplayInfoOverTime) => {
+					console.log(res);
 				})
 				.fail((res: any) => {
 					
@@ -93,7 +131,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 	
 	}
 	const API = {
-		start: 'at/request/application/overtime/start'
+		start: 'at/request/application/overtime/start',
+		changeDate: 'at/request/application/overtime/changeDate'
 	}
 	
 	interface DisplayInfoOverTime {
@@ -105,6 +144,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		isProxy: Boolean;
 		calculationResultOp?: any;
 		infoWithDateApplicationOp?: any;
+	}
+	interface InfoBaseDateOutput {
+		worktypes: Array<any>;
+		quotaOutput: any;
 	}
 	interface InfoNoBaseDate {
 		overTimeReflect: any;

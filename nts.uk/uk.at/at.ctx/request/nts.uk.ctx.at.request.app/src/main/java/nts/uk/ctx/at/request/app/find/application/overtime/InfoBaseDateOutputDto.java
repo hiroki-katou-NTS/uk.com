@@ -17,7 +17,8 @@ public class InfoBaseDateOutputDto {
 	public QuotaOuputDto quotaOutput;
 	
 	public static InfoBaseDateOutputDto fromDomain(InfoBaseDateOutput infoBaseDateOutput) {
-		
+		// necessary for changing date 
+		if (infoBaseDateOutput == null) return null;
 		return new InfoBaseDateOutputDto(
 				infoBaseDateOutput
 					.getWorktypes()

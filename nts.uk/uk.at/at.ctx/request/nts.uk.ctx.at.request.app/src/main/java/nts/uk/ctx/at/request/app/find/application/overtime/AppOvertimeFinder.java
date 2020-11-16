@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.request.app.find.application.overtime;
 
+import java.util.Collections;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -9,20 +11,19 @@ import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
-import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayInfoOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
-import nts.uk.ctx.at.request.dom.application.overtime.service.WorkContent;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeLeaveAppCommonSet;
 
 @Stateless
 public class AppOvertimeFinder {
 	public static final String PATTERN_DATE = "yyyy/MM/dd";
+	
 	@Inject
 	private OvertimeService overtimeService;
+	
 	/**
 	 * Refactor5
 	 * start at A
@@ -30,7 +31,7 @@ public class AppOvertimeFinder {
 	 * @return
 	 */
 	public DisplayInfoOverTimeDto start(ParamOverTimeStart param) {
-		DisplayInfoOverTime output = null;
+		DisplayInfoOverTime output;
 		String companyId = param.companyId;
 		Optional<GeneralDate> dateOp = Optional.empty();
 		if (StringUtils.isNotBlank(param.dateOp)) {
@@ -39,41 +40,11 @@ public class AppOvertimeFinder {
 		
 		OvertimeAppAtr overtimeAppAtr = EnumAdaptor.valueOf(param.overtimeAppAtr, OvertimeAppAtr.class);
 		AppDispInfoStartupOutput appDispInfoStartupOutput = param.appDispInfoStartupDto.toDomain();
-		Optional<Integer> startTimeSPR = Optional.empty();
-		if (param.startTimeSPR != null) {
-			startTimeSPR = Optional.of(param.startTimeSPR);
-		}
+		Optional<Integer> startTimeSPR = Optional.ofNullable(param.startTimeSPR);
 		
-		Optional<Integer> endTimeSPR = Optional.empty();
-		
-		if (param.endTimeSPR != null) {
-			endTimeSPR = Optional.of(param.endTimeSPR);
-		}
+		Optional<Integer> endTimeSPR = Optional.ofNullable(param.endTimeSPR);
 		Boolean isProxy = param.isProxy;
-//		String employeeId = param.employeeId;
-//		
-//		PrePostAtr prePostInitAtr = EnumAdaptor.valueOf(param.prePostInitAtr, PrePostAtr.class);
-//		
-//		OvertimeLeaveAppCommonSet overtimeLeaveAppCommonSet = param.overtimeLeaveAppCommonSet.toDomain();
-//		ApplicationTime advanceApplicationTime = param.advanceApplicationTime.toDomain();
-//		ApplicationTime achieveApplicationTime = param.achieveApplicationTime.toDomain();
-//		WorkContent workContent = param.workContent.toDomain();
-		
-//		output = overtimeService.startA(
-//				companyId,
-//				dateOp,
-//				overtimeAppAtr,
-//				appDispInfoStartupOutput,
-//				startTimeSPR,
-//				endTimeSPR,
-//				isProxy,
-//				employeeId,
-//				prePostInitAtr,
-//				overtimeLeaveAppCommonSet,
-//				advanceApplicationTime,
-//				achieveApplicationTime,
-//				workContent);
-		// test
+
 		output = overtimeService.startA(
 				companyId,
 				dateOp,
@@ -82,14 +53,37 @@ public class AppOvertimeFinder {
 				startTimeSPR,
 				endTimeSPR,
 				isProxy
-//				,
-//				null,
-//				null,
-//				null,
-//				null,
-//				null,
-//				null
 				);
 		return DisplayInfoOverTimeDto.fromDomain(output);
 	}
+	public DisplayInfoOverTimeDto changeDate(ParamOverTimeChangeDate param) {
+		DisplayInfoOverTime output = new DisplayInfoOverTime();
+		String companyId = param.companyId;
+		Optional<GeneralDate> dateOp = Optional.empty();
+		if (StringUtils.isNotBlank(param.dateOp)) {
+			dateOp = Optional.of(GeneralDate.fromString(param.dateOp, PATTERN_DATE));	
+		}
+		
+		AppDispInfoStartupOutput appDispInfoStartupOutput = param.appDispInfoStartupDto.toDomain();
+		Optional<Integer> startTimeSPR = Optional.ofNullable(param.startTimeSPR);
+		
+		Optional<Integer> endTimeSPR = Optional.ofNullable(param.endTimeSPR);
+
+		output = overtimeService.changeDate(
+				companyId,
+				param.employeeId,
+				dateOp,
+				EnumAdaptor.valueOf(param.overtimeAppAtr, OvertimeAppAtr.class),
+				appDispInfoStartupOutput,
+				startTimeSPR,
+				endTimeSPR,
+				param.overTimeAppSet.toDomain(companyId),
+				CollectionUtil.isEmpty(param.worktypes) ? Collections.emptyList() : param.worktypes
+						.stream()
+						.map(x -> x.toDomain(param.companyId))
+						.collect(Collectors.toList())
+				);
+		return DisplayInfoOverTimeDto.fromDomain(output);
+	}
+	
 }

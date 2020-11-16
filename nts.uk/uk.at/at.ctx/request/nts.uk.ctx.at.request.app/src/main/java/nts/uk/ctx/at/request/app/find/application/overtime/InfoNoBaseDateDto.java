@@ -29,7 +29,8 @@ public class InfoNoBaseDateDto {
 	public List<DivergenceTimeRootDto> divergenceTimeRoot;
 	
 	public static InfoNoBaseDateDto fromDomain(InfoNoBaseDate infoNoBaseDate) {
-		
+		// necessary for changing date 
+		if (infoNoBaseDate == null) return null;
 		return new InfoNoBaseDateDto(
 				AppReflectOtHdWorkDto.fromDomain(infoNoBaseDate.getOverTimeReflect()),
 				OvertimeAppSetDto.fromDomain(infoNoBaseDate.getOverTimeAppSet()),
