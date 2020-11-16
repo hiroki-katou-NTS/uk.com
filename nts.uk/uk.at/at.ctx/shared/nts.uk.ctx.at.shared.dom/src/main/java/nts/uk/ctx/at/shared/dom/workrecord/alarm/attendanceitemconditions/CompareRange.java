@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.workrecord.alarm.attendanceitemconditions;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 
 import java.util.function.Function;
 
@@ -23,6 +24,16 @@ public class CompareRange<V> implements CheckConditions<V> {
 
     // 比較演算子
     private final RangeCompareType compareOperator;
+
+    public CompareRange(int compareOperator) {
+        super();
+        this.compareOperator = EnumAdaptor.valueOf(compareOperator, RangeCompareType.class);
+    }
+
+    public void setValue(V startValue, V endValue) {
+        this.startValue = startValue;
+        this.endValue = endValue;
+    }
 
     @Override
     public boolean check(Double targetV, Function<V, Double> value) {

@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.monthly;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.monthly.enums.AverageNumberOfDays;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.monthly.enums.AverageNumberOfTimes;
@@ -60,15 +59,15 @@ public class AverageValueItem {
                                           Integer averageTime,
                                           Integer averageRatio) {
 
-        val checkTargetOpt = checkTarget != null ? Optional.of(new BonusPaySettingCode(checkTarget)) : Optional.empty();
+        Optional<BonusPaySettingCode> checkTargetOpt = checkTarget != null ? Optional.of(new BonusPaySettingCode(checkTarget)) : Optional.empty();
 
-        val averageNumberOfDaysOpt = averageNumberOfDays != null ? Optional.of(EnumAdaptor.valueOf(averageNumberOfDays, AverageNumberOfDays.class)) : Optional.empty();
+        Optional<AverageNumberOfDays> averageNumberOfDaysOpt = averageNumberOfDays != null ? Optional.of(EnumAdaptor.valueOf(averageNumberOfDays, AverageNumberOfDays.class)) : Optional.empty();
 
-        val averageNumberOfTimesOpt = averageNumberOfTimes != null ? Optional.of(EnumAdaptor.valueOf(averageNumberOfTimes, AverageNumberOfTimes.class)) : Optional.empty();
+        Optional<AverageNumberOfTimes> averageNumberOfTimesOpt = averageNumberOfTimes != null ? Optional.of(EnumAdaptor.valueOf(averageNumberOfTimes, AverageNumberOfTimes.class)) : Optional.empty();
 
-        val averageTimeOpt = averageTime != null ? Optional.of(EnumAdaptor.valueOf(averageTime, AverageTime.class)) : Optional.empty();
+        Optional<AverageTime> averageTimeOpt = averageTime != null ? Optional.of(EnumAdaptor.valueOf(averageTime, AverageTime.class)) : Optional.empty();
 
-        val averageRatioOpt = averageRatio != null ? Optional.of(EnumAdaptor.valueOf(averageRatio, AverageRatio.class)) : Optional.empty();
+        Optional<AverageRatio> averageRatioOpt = averageRatio != null ? Optional.of(EnumAdaptor.valueOf(averageRatio, AverageRatio.class)) : Optional.empty();
 
         return new AverageValueItem(checkTargetOpt, averageNumberOfDaysOpt, averageNumberOfTimesOpt, averageTimeOpt, averageRatioOpt);
     }

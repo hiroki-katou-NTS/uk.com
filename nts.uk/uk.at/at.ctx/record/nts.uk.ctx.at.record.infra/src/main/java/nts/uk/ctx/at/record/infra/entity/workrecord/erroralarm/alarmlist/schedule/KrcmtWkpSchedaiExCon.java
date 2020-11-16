@@ -4,14 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.schedule.ExtractionScheduleCon;
-import nts.uk.ctx.at.shared.dom.workrecord.alarm.attendanceitemconditions.CheckConditions;
-import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.data.entity.AggregateTableEntity;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlist.ToCheckConditions;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlCompareRange;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlCompareSingle;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlSingleFixed;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.Optional;
 
 /**
  * AggregateRoot: アラームリスト（職場別）スケジュール／日次の抽出条件
@@ -22,16 +25,12 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_WKP_SCHEDAI_EXCON")
-public class KrcmtWkpSchedaiExCon extends AggregateTableEntity {
+public class KrcmtWkpSchedaiExCon extends UkJpaEntity {
 
     /* スケジュール／日次抽出条件ID */
     @Id
     @Column(name = "WP_ERROR_ALARM_CHKID")
     public String errorAlarmWorkplaceId;
-
-    /* 契約コード */
-    @Column(name = "CONTRACT_CD")
-    public String contractCd;
 
     /* No */
     @Column(name = "ORDER_NUMBER")
@@ -74,8 +73,7 @@ public class KrcmtWkpSchedaiExCon extends AggregateTableEntity {
         KrcmtWkpSchedaiExCon entity = new KrcmtWkpSchedaiExCon();
 
         entity.errorAlarmWorkplaceId = domain.getErrorAlarmWorkplaceId();
-        entity.contractCd = AppContexts.user().contractCode();
-        entity.orderNumber = domain.getOrderNumber();
+        entity.orderNumber = domain.getOrderNumber().value;
         entity.daiExtracConName = domain.getDaiExtracConName().v();
         entity.useAtr = domain.isUseAtr();
         entity.checkDayItemsType = domain.getCheckDayItemsType().value;
@@ -83,9 +81,9 @@ public class KrcmtWkpSchedaiExCon extends AggregateTableEntity {
 
         val comparisonCheckItems = domain.getComparisonCheckItems();
         if (comparisonCheckItems != null) {
-            entity.contrastType = comparisonCheckItems.getContrastType().isPresent() ? comparisonCheckItems.getContrastType().get().value : null;
+            entity.contrastType = comparisonCheckItems.getContrastType().map(i -> i.value).orElse(null);
 
-            entity.checkTarget = comparisonCheckItems.getCheckTarget().isPresent() ? comparisonCheckItems.getCheckTarget().get().v() : null;
+            entity.checkTarget = comparisonCheckItems.getCheckTarget().map(i -> i.v()).orElse(null);
         }
 
         entity.errorAlarmCheckID = domain.getErrorAlarmCheckID();
@@ -94,16 +92,18 @@ public class KrcmtWkpSchedaiExCon extends AggregateTableEntity {
     }
 
     /**
-     * @param checkConditions 勤務項目のチェック条件
+     * @param compareSingle
+     * @param compareRange
+     * @param singleFixed
      */
-    public ExtractionScheduleCon toDomain(CheckConditions checkConditions) {
+    public ExtractionScheduleCon toDomain(Optional<KrcstErAlCompareSingle> compareSingle, Optional<KrcstErAlCompareRange> compareRange, Optional<KrcstErAlSingleFixed> singleFixed) {
         return ExtractionScheduleCon.create(
                 this.errorAlarmWorkplaceId,
                 this.orderNumber,
                 this.checkDayItemsType,
                 this.useAtr,
                 this.errorAlarmCheckID,
-                checkConditions,
+                ToCheckConditions.check(compareSingle, compareRange, singleFixed),
                 this.checkTarget,
                 this.contrastType,
                 this.daiExtracConName,

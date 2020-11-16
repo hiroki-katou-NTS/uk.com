@@ -4,14 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.monthly.ExtractionMonthlyCon;
-import nts.uk.ctx.at.shared.dom.workrecord.alarm.attendanceitemconditions.CheckConditions;
-import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.data.entity.AggregateTableEntity;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlist.ToCheckConditions;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlCompareRange;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlCompareSingle;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlSingleFixed;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.Optional;
 
 /**
  * Entity: アラームリスト（職場）月次の抽出条件
@@ -22,16 +25,12 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_WKPMON_EXTRAC_CON")
-public class KrcmtWkpMonExtracCon extends AggregateTableEntity {
+public class KrcmtWkpMonExtracCon extends UkJpaEntity {
 
     /* 月次抽出条件ID */
     @Id
     @Column(name = "WP_ERROR_ALARM_CHKID")
     public String errorAlarmWorkplaceId;
-
-    /* 契約コード */
-    @Column(name = "CONTRACT_CD")
-    public String contractCd;
 
     /* No */
     @Column(name = "ORDER_NUMBER")
@@ -86,8 +85,7 @@ public class KrcmtWkpMonExtracCon extends AggregateTableEntity {
         KrcmtWkpMonExtracCon entity = new KrcmtWkpMonExtracCon();
 
         entity.errorAlarmWorkplaceId = domain.getErrorAlarmWorkplaceId();
-        entity.contractCd = AppContexts.user().contractCode();
-        entity.orderNumber = domain.getOrderNumber();
+        entity.orderNumber = domain.getOrderNumber().value;
         entity.monExtracConName = domain.getMonExtracConName().v();
         entity.useAtr = domain.isUseAtr();
         entity.checkMonthlyItemsType = domain.getCheckMonthlyItemsType().value;
@@ -95,15 +93,15 @@ public class KrcmtWkpMonExtracCon extends AggregateTableEntity {
 
         val averageValueItem = domain.getAverageValueItem();
         if (averageValueItem != null) {
-            entity.averageNumberOfDays = averageValueItem.getAverageNumberOfDays().isPresent() ? averageValueItem.getAverageNumberOfDays().get().value : null;
+            entity.averageNumberOfDays = averageValueItem.getAverageNumberOfDays().map(i -> i.value).orElse(null);
 
-            entity.averageNumberOfTimes = averageValueItem.getAverageNumberOfTimes().isPresent() ? averageValueItem.getAverageNumberOfTimes().get().value : null;
+            entity.averageNumberOfTimes = averageValueItem.getAverageNumberOfTimes().map(i -> i.value).orElse(null);
 
-            entity.averageRatio = averageValueItem.getAverageRatio().isPresent() ? averageValueItem.getAverageRatio().get().value : null;
+            entity.averageRatio = averageValueItem.getAverageRatio().map(i -> i.value).orElse(null);
 
-            entity.averageTime = averageValueItem.getAverageTime().isPresent() ? averageValueItem.getAverageTime().get().value : null;
+            entity.averageTime = averageValueItem.getAverageTime().map(i -> i.value).orElse(null);
 
-            entity.checkTarget = averageValueItem.getCheckTarget().isPresent() ? averageValueItem.getCheckTarget().get().v() : null;
+            entity.checkTarget = averageValueItem.getCheckTarget().map(i -> i.v()).orElse(null);
         }
 
         entity.errorAlarmCheckID = domain.getErrorAlarmCheckID();
@@ -112,16 +110,18 @@ public class KrcmtWkpMonExtracCon extends AggregateTableEntity {
     }
 
     /**
-     * @param checkConditions 勤務項目のチェック条件
+     * @param compareSingle
+     * @param compareRange
+     * @param singleFixed
      */
-    public ExtractionMonthlyCon toDomain(CheckConditions checkConditions) {
+    public ExtractionMonthlyCon toDomain(Optional<KrcstErAlCompareSingle> compareSingle, Optional<KrcstErAlCompareRange> compareRange, Optional<KrcstErAlSingleFixed> singleFixed) {
         return ExtractionMonthlyCon.create(
                 this.errorAlarmWorkplaceId,
                 this.orderNumber,
                 this.checkMonthlyItemsType,
                 this.useAtr,
                 this.errorAlarmCheckID,
-                checkConditions,
+                ToCheckConditions.check(compareSingle, compareRange, singleFixed),
                 this.checkTarget,
                 this.averageNumberOfDays,
                 this.averageNumberOfTimes,
