@@ -2,7 +2,9 @@ package nts.uk.ctx.at.function.app.find.processexecution.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import nts.uk.ctx.at.function.dom.processexecution.personalschedule.CreationPeriod;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.PersonalScheduleCreationPeriod;
+import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetDate;
 import nts.uk.shr.com.time.calendar.MonthDay;
 
 /**
@@ -62,8 +64,8 @@ public class PersonalScheduleCreationPeriodDto {
 			return null;
 		}
 		PersonalScheduleCreationPeriodDto dto = new PersonalScheduleCreationPeriodDto();
-		dto.creationPeriod = domain.getCreationPeriod().v();
-		dto.targetDate = domain.getTargetDate().v();
+		dto.creationPeriod = domain.getCreationPeriod().map(CreationPeriod::v).orElse(null);
+		dto.targetDate = domain.getTargetDate().map(TargetDate::v).orElse(null);
 		dto.targetMonth = domain.getTargetMonth().value;
 		dto.designatedYear = domain.getDesignatedYear()
 								   .map(designatedYear -> designatedYear.value)

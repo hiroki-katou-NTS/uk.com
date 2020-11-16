@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.dom.processexecution;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
@@ -12,6 +13,7 @@ import java.util.List;
  * 実行範囲
  */
 @Getter
+@Builder
 @AllArgsConstructor
 public class ProcessExecutionScope extends DomainObject {
 

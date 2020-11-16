@@ -1,16 +1,17 @@
 package nts.uk.ctx.at.function.dom.processexecution;
 
 import lombok.AllArgsConstructor;
-//import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import nts.arc.layer.dom.DomainObject;
 
 /**
  * 職場::職場ID
  */
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = false)
+@Builder
 @AllArgsConstructor
 public class ProcessExecutionScopeItem extends DomainObject {
 

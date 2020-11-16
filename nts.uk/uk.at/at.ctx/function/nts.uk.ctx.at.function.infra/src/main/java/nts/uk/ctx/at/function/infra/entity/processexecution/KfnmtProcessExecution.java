@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.infra.entity.processexecution;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import nts.uk.ctx.at.function.dom.processexecution.*;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -18,56 +19,57 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "KFNMT_PROC_EXEC")
 @EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
 public class KfnmtProcessExecution extends UkJpaEntity
 		implements UpdateProcessAutoExecution.MementoGetter, UpdateProcessAutoExecution.MementoSetter, Serializable {
 
-	private static final long serialVersionUID = 1L;
+	public static final long serialVersionUID = 1L;
 
 	/**
 	 * Column 排他バージョン
 	 */
 	@Version
 	@Column(name = "EXCLUS_VER")
-	private long version;
+	public long version;
 
 	/**
 	 * The contract code<br>
 	 * Column 契約コード
 	 */
 	@Column(name = "CONTRACT_CD")
-	private String contractCode;
+	public String contractCode;
 
 	/**
 	 * The primary key
 	 */
 	@EmbeddedId
-	private KfnmtProcessExecutionPK kfnmtProcExecPK;
+	public KfnmtProcessExecutionPK kfnmtProcExecPK;
 
 	/**
 	 * 名称
 	 */
 	@Column(name = "EXEC_ITEM_NAME")
-	private String execItemName;
+	public String execItemName;
 
 	@OneToOne(mappedBy = "procExec", cascade = CascadeType.ALL)
 	@JoinTable(name = "KFNMT_EXECUTION_SCOPE")
-	private KfnmtExecutionScope execScope;
+	public KfnmtExecutionScope execScope;
 
 	@OneToOne(mappedBy = "procExec", cascade = CascadeType.ALL)
 	@JoinTable(name = "KFNMT_PROC_EXEC_SETTING")
-	private KfnmtProcessExecutionSetting execSetting;
+	public KfnmtProcessExecutionSetting execSetting;
 
 	/**
 	 * 実行種別
 	 */
 	@Column(name = "PROCESS_EXEC_TYPE")
-	private int executionType;
+	public int executionType;
 
 	/**
 	 * クラウド作成フラグ
 	 */
 	@Column(name = "CLOUD_CRE_FLAG")
-	private int cloudCreFlag;
+	public int cloudCreFlag;
 
 	/**
 	 * Gets primary key.

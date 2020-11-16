@@ -28,7 +28,6 @@ public class ExternalAcceptanceDto {
 	 **/
 	private List<String> extAccepConditionCodeList;
 
-
 	/**
 	 * No args constructor.
 	 */
@@ -47,11 +46,8 @@ public class ExternalAcceptanceDto {
 		}
 		ExternalAcceptanceDto dto = new ExternalAcceptanceDto();
 		dto.externalAcceptanceClassification = domain.getExtAcceptCls().value;
-		dto.extAccepConditionCodeList = domain.getExtAcceptCondCodeList()
-											  .map(list -> list.stream()
-															   .map(ExternalAcceptanceConditionCode::v)
-															   .collect(Collectors.toList()))
-											  .orElse(null);
+		dto.extAccepConditionCodeList = domain.getExtAcceptCondCodeList().stream()
+				.map(ExternalAcceptanceConditionCode::v).collect(Collectors.toList());
 		return dto;
 	}
 

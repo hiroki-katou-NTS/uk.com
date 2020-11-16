@@ -1,17 +1,23 @@
 package nts.uk.ctx.at.function.dom.processexecution;
 
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 //import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 
 /**
  * Domain 更新処理自動実行<br>
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.更新処理自動実行.更新処理自動実行
  */
-@Getter
+@Data
+@EqualsAndHashCode(callSuper = false)
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class UpdateProcessAutoExecution extends AggregateRoot {
 
 	/**
@@ -53,12 +59,6 @@ public class UpdateProcessAutoExecution extends AggregateRoot {
 	 * クラウド作成フラグ
 	 */
 	private boolean cloudCreationFlag;
-
-	/**
-	 * No args constructor.
-	 */
-	private UpdateProcessAutoExecution() {
-	}
 
 //	/**
 //	 * Validate ver 2.

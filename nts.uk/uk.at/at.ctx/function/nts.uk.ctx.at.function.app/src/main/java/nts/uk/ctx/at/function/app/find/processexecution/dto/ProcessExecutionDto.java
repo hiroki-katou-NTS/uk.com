@@ -11,17 +11,16 @@ import lombok.Data;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.processexecution.AlarmExtraction;
 import nts.uk.ctx.at.function.dom.processexecution.AppRouteUpdateDaily;
-import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionScope;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionScopeItem;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionSetting;
+import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
 import nts.uk.ctx.at.function.dom.processexecution.dailyperformance.DailyPerformanceCreation;
+import nts.uk.ctx.at.function.dom.processexecution.personalschedule.CreationPeriod;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.PersonalScheduleCreation;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.PersonalScheduleCreationPeriod;
-import nts.uk.ctx.at.function.dom.processexecution.personalschedule.PersonalScheduleCreationTarget;
-import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetClassification;
-import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetSetting;
-import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
+import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetDate;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 //import nts.uk.ctx.at.function.dom.processexecution.dailyperformance.TargetGroupClassification;
 import nts.uk.shr.com.time.calendar.MonthDay;
 
@@ -120,7 +119,7 @@ public class ProcessExecutionDto {
 	private Integer endMonthDay;
 	
 	/* クラウド作成フラグ  */
-	private Boolean cloudCreationFlag;
+	private boolean cloudCreationFlag;
 	
 	public ProcessExecutionDto() {
 		super();
@@ -136,23 +135,23 @@ public class ProcessExecutionDto {
 				.execItemName(domain.getExecItemName().v())
 				.workplaceList(workplaceList)
 				.processExecType(domain.getExecutionType().value)
-				.cloudCreationFlag(domain.getCloudCreationFlag());
+				.cloudCreationFlag(domain.isCloudCreationFlag());
 		ProcessExecutionSetting execSetting = domain.getExecSetting();
 		if (execSetting != null) {
 			builder = builder
-					.reflectResultCls(execSetting.isReflectResultCls())
-					.monthlyAggCls(execSetting.isMonthlyAggCls())
+					.reflectResultCls(execSetting.getReflectAppResult().getReflectResultCls().equals(NotUseAtr.USE))
+					.monthlyAggCls(execSetting.getMonthlyAggregate().getMonthlyAggCls().equals(NotUseAtr.USE))
 					.appRouteUpdateMonthly(execSetting.getAppRouteUpdateMonthly().equals(NotUseAtr.USE));
 			PersonalScheduleCreation perSchedule = execSetting.getPerScheduleCreation();
 			if (perSchedule != null) {
 				builder = builder
-						.perScheduleCls(perSchedule.isPerSchedule());
+						.perScheduleCls(perSchedule.getPerScheduleCls().equals(NotUseAtr.USE));
 				PersonalScheduleCreationPeriod period = perSchedule.getPerSchedulePeriod();
 				if (period != null) {
 					builder = builder
 							.targetMonth(period.getTargetMonth().value)
-							.targetDate(period.getTargetDate().v())
-							.creationPeriod(period.getCreationPeriod().v())
+							.targetDate(period.getTargetDate().map(TargetDate::v).orElse(null))
+							.creationPeriod(period.getCreationPeriod().map(CreationPeriod::v).orElse(null))
 							.designatedYear(period.getDesignatedYear()
 									.map(o -> o.value)
 									.orElse(null))
@@ -182,11 +181,11 @@ public class ProcessExecutionDto {
 			DailyPerformanceCreation dailyPerf = execSetting.getDailyPerf();
 			if (dailyPerf != null) {
 				builder = builder
-						.dailyPerfCls(dailyPerf.isDailyPerfCls())
+						.dailyPerfCls(dailyPerf.getDailyPerfCls().equals(NotUseAtr.USE))
 						.dailyPerfItem(dailyPerf.getDailyPerfItem().value)
-						.midJoinEmployee(dailyPerf.getTargetGroupClassification().isMidJoinEmployee())
-						.recreateTypeChangePerson(dailyPerf.getTargetGroupClassification().isRecreateTypeChangePerson())
-						.recreateTransfers(dailyPerf.getTargetGroupClassification().isRecreateTransfer());
+						.midJoinEmployee(perSchedule.getCreateNewEmpSched().equals(NotUseAtr.USE))
+						.recreateTypeChangePerson(execSetting.getReExecCondition().getRecreatePersonChangeWkt().equals(NotUseAtr.USE))
+						.recreateTransfers(execSetting.getReExecCondition().getRecreateTransfer().equals(NotUseAtr.USE));
 			}
 			AppRouteUpdateDaily appRouteUpdateDaily = execSetting.getAppRouteUpdateDaily();
 			if (appRouteUpdateDaily != null) {
@@ -199,7 +198,7 @@ public class ProcessExecutionDto {
 			AlarmExtraction alarmExtraction = execSetting.getAlarmExtraction();
 			if (alarmExtraction != null) {
 				builder = builder
-						.alarmAtr(alarmExtraction.isAlarmAtr())
+						.alarmAtr(alarmExtraction.getAlarmAtr().equals(NotUseAtr.USE))
 						.alarmCode(alarmExtraction.getAlarmCode()
 								.map(o -> o.v())
 								.orElse(null))

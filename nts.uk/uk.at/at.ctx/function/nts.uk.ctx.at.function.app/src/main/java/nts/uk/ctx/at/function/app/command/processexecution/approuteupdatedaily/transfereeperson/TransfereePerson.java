@@ -19,11 +19,12 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**
- * 異動者・勤務種別変更者リスト作成処理
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.更新処理自動実行.アルゴリズム.更新処理実行設定.アルゴリズム.異動者・勤務種別変更者リスト作成処理.異動者・勤務種別変更者リスト作成処理
  * @author tutk
  *
  */
@@ -49,7 +50,7 @@ public class TransfereePerson {
 		//・社員ID（異動者、勤務種別変更者のみ）（List）
 		List<String> noLeaderEmpIdList = empIds;
 		// 異動者を再作成するか判定
-		if(procExec.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTransfer()){
+		if(procExec.getExecSetting().getReExecCondition().getRecreateTransfer().equals(NotUseAtr.USE)){
 			//異動者の絞り込み todo request list 189
 			List<WorkPlaceHistImport> wplByListSidAndPeriod = this.workplaceWorkRecordAdapter.getWplByListSidAndPeriod(empIds, p);
 			wplByListSidAndPeriod.forEach(x->{
@@ -57,7 +58,7 @@ public class TransfereePerson {
 			});
 		}
 		//勤務種別変更者を再作成するか判定
-		if(procExec.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTypeChangePerson()){
+		if(procExec.getExecSetting().getReExecCondition().getRecreatePersonChangeWkt().equals(NotUseAtr.USE)){
 		// 勤務種別の絞り込み
 			 newEmpIdList = this.refineWorkType(companyId, empIds, p.start());
 		}

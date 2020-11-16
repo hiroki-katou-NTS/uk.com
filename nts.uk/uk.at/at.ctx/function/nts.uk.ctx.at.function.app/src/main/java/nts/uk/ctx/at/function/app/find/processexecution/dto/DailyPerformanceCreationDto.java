@@ -25,10 +25,10 @@ public class DailyPerformanceCreationDto {
 	 */
 	private int dailyPerfItem;
 
-	/**
-	 * 対象者区分
-	 */
-	private TargetGroupClassification targetGroupClassification;
+//	/**
+//	 * 対象者区分
+//	 */
+//	private TargetGroupClassification targetGroupClassification;
 
 	/**
 	 * No args constructor.
@@ -49,7 +49,7 @@ public class DailyPerformanceCreationDto {
 		DailyPerformanceCreationDto dto = new DailyPerformanceCreationDto();
 		dto.dailyPerfCls = domain.getDailyPerfCls().value == 1;
 		dto.dailyPerfItem = domain.getDailyPerfItem().value;
-		dto.targetGroupClassification = domain.getTargetGroupClassification();
+//		dto.targetGroupClassification = domain.getTargetGroupClassification();
 		return dto;
 	}
 

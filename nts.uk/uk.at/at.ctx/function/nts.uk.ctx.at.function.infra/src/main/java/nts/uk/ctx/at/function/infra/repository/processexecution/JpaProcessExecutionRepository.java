@@ -12,6 +12,7 @@ import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtExecutionScope;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecution;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutionPK;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutionSetting;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaProcessExecutionRepository extends JpaRepository implements ProcessExecutionRepository {
@@ -28,24 +29,26 @@ public class JpaProcessExecutionRepository extends JpaRepository implements Proc
 	@Override
 	public List<UpdateProcessAutoExecution> getProcessExecutionByCompanyId(String companyId) {
 		return this.queryProxy().query(SELECT_All_BY_CID, KfnmtProcessExecution.class)
-				.setParameter("companyId", companyId).getList(c -> c.toDomain());
+				.setParameter("companyId", companyId)
+				.getList(entity -> UpdateProcessAutoExecution.createFromMemento(companyId, entity));
 	}
 
 	@Override
 	public Optional<UpdateProcessAutoExecution> getProcessExecutionByCidAndExecCd(String companyId, String execItemCd) {
 		return this.queryProxy().query(SELECT_BY_CID_AND_EXEC_CD, KfnmtProcessExecution.class)
 				.setParameter("companyId", companyId)
-				.setParameter("execItemCd", execItemCd).getSingle(c -> c.toDomain());
+				.setParameter("execItemCd", execItemCd)
+				.getSingle(entity -> UpdateProcessAutoExecution.createFromMemento(companyId, entity));
 	}
 	
 	@Override
 	public void insert(UpdateProcessAutoExecution domain) {
-		this.commandProxy().insert(KfnmtProcessExecution.toEntity(domain));
+		this.commandProxy().insert(this.toEntity(domain));
 	}
 
 	@Override
 	public void update(UpdateProcessAutoExecution domain) {
-		KfnmtProcessExecution updateData = KfnmtProcessExecution.toEntity(domain);
+		KfnmtProcessExecution updateData = this.toEntity(domain);
 		KfnmtProcessExecution oldData = this.queryProxy().find(updateData.kfnmtProcExecPK, KfnmtProcessExecution.class).get();
 		oldData.execItemName = updateData.execItemName;
 		oldData.execScope = setScope(oldData.execScope, updateData.execScope);
@@ -103,8 +106,13 @@ public class JpaProcessExecutionRepository extends JpaRepository implements Proc
 		old.recreateLeaveSya = update.recreateLeaveSya;
 		old.indexReorgArt = update.indexReorgArt;
 		old.updStatisticsArt = update.updStatisticsArt;
-		old.cloudCreFlag = update.cloudCreFlag;
 		
 		return old;
+	}
+	
+	private KfnmtProcessExecution toEntity(UpdateProcessAutoExecution domain) {
+		KfnmtProcessExecution entity = new KfnmtProcessExecution();
+		domain.setMemento(AppContexts.user().contractCode(), entity);
+		return entity;
 	}
 }

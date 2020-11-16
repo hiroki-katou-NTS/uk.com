@@ -1,12 +1,13 @@
 package nts.uk.ctx.at.function.dom.processexecution;
 
-import lombok.*;
-import nts.arc.enums.EnumAdaptor;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.function.dom.processexecution.dailyperformance.DailyPerformanceCreation;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.PersonalScheduleCreation;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
-//import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 
 /**
  * The class Process execution setting.<br>
@@ -17,6 +18,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @Data
 @Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class ProcessExecutionSetting extends DomainObject {
 

@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.app.find.processexecution.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.PersonalScheduleCreation;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * The class Personal schedule creation dto.<br>
@@ -47,7 +48,7 @@ public class PersonalScheduleCreationDto {
 		}
 		PersonalScheduleCreationDto dto = new PersonalScheduleCreationDto();
 		dto.period = PersonalScheduleCreationPeriodDto.createFromDomain(domain.getPerSchedulePeriod());
-		dto.perSchedule = domain.isPerSchedule();
+		dto.perSchedule = domain.getPerScheduleCls().equals(NotUseAtr.USE);
 		dto.target = PersonalScheduleCreationTargetDto.createFromDomain(domain.getTarget());
 		return dto;
 	}

@@ -1,20 +1,43 @@
 package nts.uk.ctx.at.function.infra.entity.processexecution;
 
+import java.io.Serializable;
+import java.util.Collections;
+
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.Version;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternCode;
-import nts.uk.ctx.at.function.dom.processexecution.*;
+import nts.uk.ctx.at.function.dom.processexecution.AggrFrameCode;
+import nts.uk.ctx.at.function.dom.processexecution.AggregationAnyPeriod;
+import nts.uk.ctx.at.function.dom.processexecution.AlarmExtraction;
+import nts.uk.ctx.at.function.dom.processexecution.AppRouteUpdateDaily;
+import nts.uk.ctx.at.function.dom.processexecution.AppRouteUpdateMonthly;
+import nts.uk.ctx.at.function.dom.processexecution.AuxiliaryPatternCode;
+import nts.uk.ctx.at.function.dom.processexecution.DeleteData;
+import nts.uk.ctx.at.function.dom.processexecution.ExternalAcceptance;
+import nts.uk.ctx.at.function.dom.processexecution.ExternalOutput;
+import nts.uk.ctx.at.function.dom.processexecution.IndexReconstruction;
+import nts.uk.ctx.at.function.dom.processexecution.MonthlyAggregate;
+import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionSetting;
+import nts.uk.ctx.at.function.dom.processexecution.ReExecutionCondition;
+import nts.uk.ctx.at.function.dom.processexecution.ReflectionApprovalResult;
+import nts.uk.ctx.at.function.dom.processexecution.SaveData;
 import nts.uk.ctx.at.function.dom.processexecution.dailyperformance.DailyPerformanceCreation;
-import nts.uk.ctx.at.function.dom.processexecution.personalschedule.*;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.ctx.at.function.dom.processexecution.personalschedule.CreationPeriod;
+import nts.uk.ctx.at.function.dom.processexecution.personalschedule.PersonalScheduleCreation;
+import nts.uk.ctx.at.function.dom.processexecution.personalschedule.PersonalScheduleCreationPeriod;
+import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
-
-import javax.persistence.*;
-import java.io.Serializable;
-import java.util.Collections;
 
 /**
  * The Class KfnmtProcessExecutionSetting.
@@ -30,271 +53,271 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 	/**
 	 * The Constant serialVersionUID.
 	 */
-	private static final long serialVersionUID = 1L;
+	public static final long serialVersionUID = 1L;
 
 	/**
 	 * Column 排他バージョン
 	 */
 	@Version
 	@Column(name = "EXCLUS_VER")
-	private long version;
+	public long version;
 
 	/**
 	 * The primary key
 	 */
 	@EmbeddedId
-	private KfnmtProcessExecutionSettingPK kfnmtProcExecSetPK;
+	public KfnmtProcessExecutionSettingPK kfnmtProcExecSetPK;
 
 	/**
 	 * The contract code.
 	 */
 	@Column(name = "CONTRACT_CD")
-	private String contractCode;
+	public String contractCode;
 
 	/**
 	 * The personal schedule creation classification.<br>
 	 * 個人スケジュール作成区分
 	 */
 	@Column(name = "PER_SCHEDULE_CLS")
-	private int perScheduleCls;
+	public int perScheduleCls;
 
 	/**
 	 * The target month.<br>
 	 * 対象月
 	 */
 	@Column(name = "TARGET_MONTH")
-	private int targetMonth;
+	public int targetMonth;
 
 	/**
 	 * The target date.<br>
 	 * 対象日
 	 */
 	@Column(name = "TARGET_DATE")
-	private Integer targetDate;
+	public Integer targetDate;
 
 	/**
 	 * The creation period.<br>
 	 * 作成期間
 	 */
 	@Column(name = "CREATION_PERIOD")
-	private Integer creationPeriod;
+	public Integer creationPeriod;
 
 	/**
 	 * The designated year.<br>
 	 * 指定年
 	 */
 	@Column(name = "DESIGNATED_YEAR")
-	private Integer designatedYear;
+	public Integer designatedYear;
 
 	/**
 	 * The start month day.<br>
 	 * 指定開始月日
 	 */
 	@Column(name = "START_MONTHDAY")
-	private Integer startMonthDay;
+	public Integer startMonthDay;
 
 	/**
 	 * The end month day.<br>
 	 * 指定終了月日
 	 */
 	@Column(name = "END_MONTHDAY")
-	private Integer endMonthDay;
+	public Integer endMonthDay;
 
 	/**
 	 * The create new employee schedule.<br>
 	 * 新入社員を作成する
 	 */
 	@Column(name = "CRE_NEW_SYA_SCHED")
-	private int createNewEmpSched;
+	public int createNewEmpSched;
 
 	/**
 	 * The daily perf classification.<br>
 	 * 日別実績の作成・計算区分
 	 */
 	@Column(name = "DAILY_PERF_CLS")
-	private int dailyPerfCls;
+	public int dailyPerfCls;
 
 	/**
 	 * The daily perf item.<br>
 	 * 作成・計算項目
 	 */
 	@Column(name = "DAILY_PERF_ITEM")
-	private int dailyPerfItem;
+	public int dailyPerfItem;
 
 	/**
 	 * The create new employee daily perf.<br>
 	 * 新入社員は入社日から作成
 	 */
 	@Column(name = "CRE_NEW_SYA_DAI")
-	private int createNewEmpDailyPerf;
+	public int createNewEmpDailyPerf;
 
 	/**
 	 * The reflect result classification.<br>
 	 * 承認結果反映
 	 */
 	@Column(name = "REFLECT_RS_CLS")
-	private int reflectResultCls;
+	public int reflectResultCls;
 
 	/**
 	 * The monthly agg classification.<br>
 	 * 月別集計
 	 */
 	@Column(name = "MONTHLY_AGG_CLS")
-	private int monthlyAggCls;
+	public int monthlyAggCls;
 
 	/**
 	 * The app route update attribute.<br>
 	 * 承認ルート更新区分
 	 */
 	@Column(name = "APP_ROUTE_UPDATE_ATR_DAI")
-	private int appRouteUpdateAtr;
+	public int appRouteUpdateAtr;
 
 	/**
 	 * The create new emp app.<br>
 	 * 新入社員を作成する
 	 */
 	@Column(name = "CRE_NEW_SYA_APP")
-	private Integer createNewEmpApp;
+	public Integer createNewEmpApp;
 
 	/**
 	 * The app route update attribute monthly.<br>
 	 * 承認ルート更新（月次）
 	 */
 	@Column(name = "APP_ROUTE_UPDATE_ATR_MON")
-	private int appRouteUpdateAtrMon;
+	public int appRouteUpdateAtrMon;
 
 	/**
 	 * The alarm attribute.<br>
 	 * アラーム抽出区分
 	 */
 	@Column(name = "ALARM_ATR")
-	private int alarmAtr;
+	public int alarmAtr;
 
 	/**
 	 * The alarm code.<br>
 	 * コード
 	 */
 	@Column(name = "ALARM_CODE")
-	private String alarmCode;
+	public String alarmCode;
 
 	/**
 	 * The mail principal.<br>
 	 * メールを送信する(本人)
 	 */
 	@Column(name = "MAIL_PRINCIPAL")
-	private Integer mailPrincipal;
+	public Integer mailPrincipal;
 
 	/**
 	 * The mail administrator.<br>
 	 * メールを送信する(管理者)
 	 */
 	@Column(name = "MAIL_ADMINISTRATOR")
-	private Integer mailAdministrator;
+	public Integer mailAdministrator;
 
 	/**
 	 * The display tp principal.<br>
 	 * トップページに表示(本人)
 	 */
 	@Column(name = "DISPLAY_TP_PRINCIPAL")
-	private Integer displayTpPrincipal;
+	public Integer displayTpPrincipal;
 
 	/**
 	 * The display tp admin.<br>
 	 * メールを送信する(管理者)
 	 */
 	@Column(name = "DISPLAY_TP_ADMIN")
-	private Integer displayTpAdmin;
+	public Integer displayTpAdmin;
 
 	/**
 	 * The ext output attribute.<br>
 	 * 外部出力区分
 	 **/
 	@Column(name = "EXT_OUTPUT_ART")
-	private int extOutputArt;
+	public int extOutputArt;
 
 	/**
 	 * The ext acceptance attribute.<br>
 	 * 外部受入区分
 	 **/
 	@Column(name = "EXT_ACCEPTANCE_ART")
-	private int extAcceptanceArt;
+	public int extAcceptanceArt;
 
 	/**
 	 * The data storage attribute.<br>
 	 * データの保存区分
 	 **/
 	@Column(name = "DATA_STORAGE_ART")
-	private int dataStorageArt;
+	public int dataStorageArt;
 
 	/**
 	 * The data storage code.<br>
 	 * パターンコード
 	 **/
 	@Column(name = "DATA_STORAGE_CODE")
-	private String dataStorageCode;
+	public String dataStorageCode;
 
 	/**
 	 * The data deletion attribute.<br>
 	 * データの削除区分
 	 **/
 	@Column(name = "DATA_DELETION_ART")
-	private int dataDeletionArt;
+	public int dataDeletionArt;
 
 	/**
 	 * The data deletion code.<br>
 	 * パターンコード
 	 **/
 	@Column(name = "DATA_DELETION_CODE")
-	private String dataDeletionCode;
+	public String dataDeletionCode;
 
 	/**
 	 * The agg any period attribute.<br>
 	 * 任意期間の集計の使用区分
 	 **/
 	@Column(name = "AGG_ANY_PERIOD_ART")
-	private int aggAnyPeriodArt;
+	public int aggAnyPeriodArt;
 
 	/**
 	 * The agg any period code.<br>
 	 * 任意集計枠コード
 	 **/
 	@Column(name = "AGG_ANY_PERIOD_CODE")
-	private String aggAnyPeriodCode;
+	public String aggAnyPeriodCode;
 
 	/**
 	 * The recreate change bus.<br>
 	 * 勤務種別変更者を再作成
 	 */
 	@Column(name = "RECRE_CHANGE_BUS")
-	private int recreateChangeBus;
+	public int recreateChangeBus;
 
 	/**
 	 * The recreate transfer.<br>
 	 * 異動者を再作成する
 	 */
 	@Column(name = "RECRE_CHANGE_WKP")
-	private int recreateTransfer;
+	public int recreateTransfer;
 
 	/**
 	 * The recreate leave sya.<br>
 	 * 休職者・休業者を再作成
 	 **/
 	@Column(name = "RECRE_LEAVE_SYA")
-	private int recreateLeaveSya;
+	public int recreateLeaveSya;
 
 	/**
 	 * The index reorg attribute.<br>
 	 * インデックス再構成の使用区分
 	 **/
 	@Column(name = "INDEX_REORG_ART")
-	private int indexReorgArt;
+	public int indexReorgArt;
 
 	/**
 	 * The upd statistics attribute.<br>
 	 * 統計情報を更新する
 	 **/
 	@Column(name = "UPD_STATISTICS_ART")
-	private int updStatisticsArt;
+	public int updStatisticsArt;
 
 	/**
 	 * The proc exec.

@@ -1,7 +1,22 @@
 package nts.uk.ctx.at.function.app.command.processexecution;
 
-import lombok.extern.slf4j.Slf4j;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.CountDownLatch;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+import javax.ejb.Stateless;
+import javax.enterprise.concurrent.ManagedExecutorService;
+import javax.inject.Inject;
+
 import lombok.val;
+import lombok.extern.slf4j.Slf4j;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.layer.app.command.AsyncCommandHandler;
@@ -40,18 +55,43 @@ import nts.uk.ctx.at.function.dom.executionstatusmanage.optionalperiodprocess.Ag
 import nts.uk.ctx.at.function.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodExcutionImport;
 import nts.uk.ctx.at.function.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodTargetAdapter;
 import nts.uk.ctx.at.function.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodTargetImport;
-import nts.uk.ctx.at.function.dom.indexreconstruction.*;
+import nts.uk.ctx.at.function.dom.indexreconstruction.FragmentationRate;
+import nts.uk.ctx.at.function.dom.indexreconstruction.IndexName;
+import nts.uk.ctx.at.function.dom.indexreconstruction.IndexReorgTable;
+import nts.uk.ctx.at.function.dom.indexreconstruction.ProcExecIndex;
+import nts.uk.ctx.at.function.dom.indexreconstruction.ProcExecIndexResult;
+import nts.uk.ctx.at.function.dom.indexreconstruction.TableName;
 import nts.uk.ctx.at.function.dom.indexreconstruction.repository.CaculateFragRate;
 import nts.uk.ctx.at.function.dom.indexreconstruction.repository.IndexReorgTableRepository;
 import nts.uk.ctx.at.function.dom.indexreconstruction.repository.ProcExecIndexRepository;
-import nts.uk.ctx.at.function.dom.processexecution.*;
-import nts.uk.ctx.at.function.dom.processexecution.executionlog.*;
+import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
+import nts.uk.ctx.at.function.dom.processexecution.ExecutionScopeClassification;
+import nts.uk.ctx.at.function.dom.processexecution.LastExecDateTime;
+import nts.uk.ctx.at.function.dom.processexecution.ProcessExecType;
+import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionScopeItem;
+import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.CurrentExecutionStatus;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.EachProcessPeriod;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.EndStatus;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.ExecutionTaskLog;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLog;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogHistory;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogManage;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionTask;
 import nts.uk.ctx.at.function.dom.processexecution.listempautoexec.ListEmpAutoExec;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.CreateScheduleYear;
+import nts.uk.ctx.at.function.dom.processexecution.personalschedule.CreationPeriod;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.PersonalScheduleCreationPeriod;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetClassification;
+import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetDate;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetMonth;
-import nts.uk.ctx.at.function.dom.processexecution.repository.*;
+import nts.uk.ctx.at.function.dom.processexecution.repository.ExecutionTaskLogRepository;
+import nts.uk.ctx.at.function.dom.processexecution.repository.ExecutionTaskSettingRepository;
+import nts.uk.ctx.at.function.dom.processexecution.repository.LastExecDateTimeRepository;
+import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogHistRepository;
+import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogManageRepository;
+import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogRepository;
+import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionRepository;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.ExecutionTaskSetting;
 import nts.uk.ctx.at.function.dom.processexecution.updatelogafterprocess.UpdateLogAfterProcess;
 import nts.uk.ctx.at.function.dom.processexecution.updateprocessautoexeclog.overallerrorprocess.ErrorConditionOutput;
@@ -77,37 +117,51 @@ import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.peri
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationEmployeeService;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationEmployeeService.AggregationResult;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.*;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.CalExeSettingInfor;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLogRepository;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionTime;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ObjectPeriod;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.SetInforReflAprResult;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.SettingInforForDailyCreation;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.CalAndAggClassification;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.DailyRecreateClassification;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ErrorPresent;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutedMenu;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionStatus;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.*;
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommand;
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommandHandler;
-import nts.uk.ctx.at.schedule.dom.executionlog.*;
+import nts.uk.ctx.at.schedule.dom.executionlog.CreationMethod;
+import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionAtr;
+import nts.uk.ctx.at.schedule.dom.executionlog.ImplementAtr;
+import nts.uk.ctx.at.schedule.dom.executionlog.RecreateCondition;
+import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContent;
+import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLog;
+import nts.uk.ctx.at.schedule.dom.executionlog.SpecifyCreation;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkplaceHistItemImport;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpHisAdaptor;
 import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.ConditionEmployee;
-import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.getprocessingdate.GetProcessingDate;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
-import nts.uk.ctx.at.shared.dom.workrule.closure.*;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
+import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.task.schedule.UkJobScheduler;
-
-import javax.annotation.Resource;
-import javax.ejb.Stateless;
-import javax.enterprise.concurrent.ManagedExecutorService;
-import javax.inject.Inject;
-import java.math.BigDecimal;
-import java.util.*;
-import java.util.concurrent.CountDownLatch;
-import java.util.stream.Collectors;
 
 @Stateless
 @Slf4j
@@ -731,7 +785,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
             errorMessageMonthly = "Msg_1339";
         }
 
-        if (procExec.getExecSetting().getAppRouteUpdateMonthly() == NotUseAtr.USE) {
+        if (procExec.getExecSetting().getAppRouteUpdateMonthly().getAppRouteUpdateAtr() == NotUseAtr.USE) {
             updateLogAfterProcess.updateLogAfterProcess(ProcessExecutionTask.APP_ROUTE_U_MON, companyId,
                     procExecLog.getExecItemCd().v(), procExec, procExecLog,
 					outputAppRouteMonthly.isCheckError1552Monthly() || checkErrAppMonth, outputAppRouteMonthly.isCheckStop(), errorMessageMonthly);
@@ -838,7 +892,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
         boolean checkStopExec = false;
         try {
             // 個人スケジュール作成区分の判定
-			if (!procExec.getExecSetting().getPerScheduleCreation().isPerSchedule()) {
+			if (procExec.getExecSetting().getPerScheduleCreation().getPerScheduleCls().equals(NotUseAtr.NOT_USE)) {
                 this.updateStatusAndStartDateNull(procExecLog, ProcessExecutionTask.SCH_CREATION, EndStatus.NOT_IMPLEMENT);
                 this.procExecLogRepo.update(procExecLog);
                 return new OutputCreateScheduleAndDaily(true, listApprovalPeriodByEmp);
@@ -891,9 +945,9 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 								scheduleCommand.setIsReExecution(procExec.getExecutionType().equals(ProcessExecType.RE_CREATE));
                                 scheduleCommand.setRecreateTransfer(procExec
                                         .getExecSetting()
-                                        .getDailyPerf()
-                                        .getTargetGroupClassification()
-                                        .isRecreateTransfer());
+                                		.getReExecCondition()
+                                		.getRecreateTransfer()
+                                		.equals(NotUseAtr.USE));
                                 AsyncTaskInfo handle1 = this.scheduleExecution.handle(scheduleCommand);
                                 dataToAsyn.setHandle(handle1);
                             });
@@ -966,10 +1020,10 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
                                         scheduleCreatorExecutionOneEmp2.setCountDownLatch(countDownLatch);
 										scheduleCreatorExecutionOneEmp2.setIsReExecution(procExec.getExecutionType().equals(ProcessExecType.RE_CREATE));
                                         scheduleCreatorExecutionOneEmp2.setRecreateTransfer(procExec
-                                                .getExecSetting()
-                                                .getDailyPerf()
-                                                .getTargetGroupClassification()
-                                                .isRecreateTransfer());
+                                        		.getExecSetting()
+                                         		.getReExecCondition()
+                                         		.getRecreateTransfer()
+                                         		.equals(NotUseAtr.USE));
                                         AsyncTaskInfo handle1 = this.scheduleExecution.handle(scheduleCreatorExecutionOneEmp2);
                                         dataToAsyn.setHandle(handle1);
 
@@ -1011,10 +1065,10 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
                                             scheduleCreatorExecutionOneEmp3.setCountDownLatch(countDownLatch1);
 											scheduleCreatorExecutionOneEmp3.setIsReExecution(procExec.getExecutionType().equals(ProcessExecType.RE_CREATE));
                                             scheduleCreatorExecutionOneEmp3.setRecreateTransfer(procExec
-                                                    .getExecSetting()
-                                                    .getDailyPerf()
-                                                    .getTargetGroupClassification()
-                                                    .isRecreateTransfer());
+                                            		.getExecSetting()
+                                             		.getReExecCondition()
+                                             		.getRecreateTransfer()
+                                             		.equals(NotUseAtr.USE));
                                             AsyncTaskInfo handle1 = this.scheduleExecution.handle(scheduleCreatorExecutionOneEmp3);
                                             dataToAsyn.setHandle(handle1);
                                         });
@@ -1067,10 +1121,14 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
                             scheduleCreatorExecutionOneEmp1.getScheduleExecutionLog()
                                     .setPeriod(new DatePeriod(periodDate.start(), endDate));
 
-							boolean isTransfer = procExec.getExecSetting().getPerScheduleCreation().getTarget()
-                                    .getTargetSetting().isRecreateTransfer();
-							boolean isWorkType = procExec.getExecSetting().getPerScheduleCreation().getTarget()
-                                    .getTargetSetting().isRecreateWorkType();
+							boolean isTransfer = procExec.getExecSetting()
+                            		.getReExecCondition()
+                            		.getRecreateTransfer()
+                            		.equals(NotUseAtr.USE);
+							boolean isWorkType = procExec.getExecSetting()
+									.getReExecCondition()
+									.getRecreatePersonChangeWkt()
+									.equals(NotUseAtr.USE);
 
                             // 異動者・勤務種別変更者の作成対象期間の計算（個人別）
                             listApprovalPeriodByEmp = calPeriodTransferAndWorktype.calPeriodTransferAndWorktype(
@@ -1520,7 +1578,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 //		boolean checkError1552 = false;
         String errorMessage = "";
         // 個人スケジュール作成区分の判定
-		if (procExec.getExecSetting().getPerScheduleCreation().isPerSchedule()) {
+		if (procExec.getExecSetting().getPerScheduleCreation().getPerScheduleCls().equals(NotUseAtr.USE)) {
             this.updateEndtimeSchedule(procExecLog);
         }
         // ドメインモデル「更新処理自動実行ログ」を更新する
@@ -1528,11 +1586,11 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
         this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DAILY_CALCULATION, null);
         this.procExecLogRepo.update(procExecLog);
         // 個人スケジュール作成区分の判定 --set time end( bao gồm cả tg nhả bộ nhớ mà schedule đã dùng)
-		if (procExec.getExecSetting().getPerScheduleCreation().isPerSchedule()) {
+		if (procExec.getExecSetting().getPerScheduleCreation().getPerScheduleCls().equals(NotUseAtr.USE)) {
             this.updateEndtimeSchedule(procExecLog);
         }
         // 日別実績の作成・計算区分の判定
-        if (!procExec.getExecSetting().getDailyPerf().isDailyPerfCls()) {
+        if (!procExec.getExecSetting().getDailyPerf().getDailyPerfCls().equals(NotUseAtr.USE)) {
             this.updateStatusAndStartDateNull(procExecLog, ProcessExecutionTask.DAILY_CREATION, EndStatus.NOT_IMPLEMENT);
             this.updateStatusAndStartDateNull(procExecLog, ProcessExecutionTask.DAILY_CALCULATION, EndStatus.NOT_IMPLEMENT);
             this.procExecLogRepo.update(procExecLog);
@@ -1704,7 +1762,10 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
                             List<DatePeriod> listDatePeriodWorktype = new ArrayList<>();
                             List<DatePeriod> listDatePeriodAll = new ArrayList<>();
                             //INPUT．「異動時に再作成」をチェックする
-                            if (procExec.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTransfer()) {
+                            if (procExec.getExecSetting()
+                            		.getReExecCondition()
+                            		.getRecreateTransfer()
+                            		.equals(NotUseAtr.USE)) {
                                 //社員ID（List）と期間から個人情報を取得する - RQ401
                                 EmployeeGeneralInfoImport employeeGeneralInfoImport = employeeGeneralInfoAdapter.getEmployeeGeneralInfo(Arrays.asList(empLeader), datePeriod, false, false, false, true, false); //職場を取得するか　=　True
                                 if (!employeeGeneralInfoImport.getExWorkPlaceHistoryImports().isEmpty()) {
@@ -1724,7 +1785,10 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
                                 check = true;
                             }
                             //INPUT．「勤務種別変更時に再作成」をチェックする
-                            if (procExec.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTypeChangePerson() && !check) {
+                            if (procExec.getExecSetting()
+                            		.getReExecCondition()
+                            		.getRecreatePersonChangeWkt()
+                            		.equals(NotUseAtr.USE) && !check) {
                                 //<<Public>> 社員ID(List)、期間で期間分の勤務種別情報を取得する
                                 List<BusinessTypeOfEmpDto> listBusinessTypeOfEmpDto = businessTypeOfEmpHisAdaptor.findByCidSidBaseDate(companyId, Arrays.asList(empLeader), datePeriod);
                                 //勤務種別情報変更期間を求める
@@ -1909,7 +1973,8 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 
         GeneralDate today = GeneralDate.today();
 		int targetMonth = procExec.getExecSetting().getPerScheduleCreation().getPerSchedulePeriod().getTargetMonth().value;
-		int targetDate = procExec.getExecSetting().getPerScheduleCreation().getPerSchedulePeriod().getTargetDate().v().intValue();
+		int targetDate = procExec.getExecSetting().getPerScheduleCreation().getPerSchedulePeriod().getTargetDate()
+				.map(TargetDate::v).map(Integer::intValue).orElse(0);
         int startMonth = today.month();
         GeneralDate startDate;
         switch (targetMonth) {
@@ -1941,7 +2006,8 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
                 startDate = GeneralDate.ymd(today.year(), startMonth, targetDate);
                 break;
         }
-		int createPeriod = procExec.getExecSetting().getPerScheduleCreation().getPerSchedulePeriod().getCreationPeriod().v().intValue();
+		int createPeriod = procExec.getExecSetting().getPerScheduleCreation().getPerSchedulePeriod().getCreationPeriod()
+				.map(CreationPeriod::v).map(Integer::intValue).orElse(0);
         GeneralDate endDate;
         if (targetMonth == TargetMonth.DESIGNATE_START_MONTH.value) {
 			PersonalScheduleCreationPeriod creationPeriod = procExec.getExecSetting().getPerScheduleCreation().getPerSchedulePeriod();
@@ -2235,7 +2301,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
         }
         this.procExecLogRepo.update(ProcessExecutionLog);
 
-        boolean reflectResultCls = processExecution.getExecSetting().isReflectResultCls();
+        boolean reflectResultCls = processExecution.getExecSetting().getReflectAppResult().getReflectResultCls().equals(NotUseAtr.USE);
         // 承認結果反映の判定
         if (!reflectResultCls) {
             // ドメインモデル「更新処理自動実行ログ」を更新する
@@ -2565,7 +2631,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 
         this.procExecLogRepo.update(ProcessExecutionLog);
         // 月別集計の判定
-        boolean reflectResultCls = processExecution.getExecSetting().isMonthlyAggCls();
+        boolean reflectResultCls = processExecution.getExecSetting().getMonthlyAggregate().getMonthlyAggCls().equals(NotUseAtr.USE);
         if (!reflectResultCls) {
             // ドメインモデル「更新処理自動実行ログ」を更新する
             for (int i = 0; i < size; i++) {
@@ -2829,7 +2895,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
             }
             this.procExecLogRepo.update(ProcessExecutionLog);
             // アラーム抽出区分の判定
-            boolean alarmAtr = processExecution.getExecSetting().getAlarmExtraction().isAlarmAtr();
+            boolean alarmAtr = processExecution.getExecSetting().getAlarmExtraction().getAlarmAtr().equals(NotUseAtr.USE);
             if (!alarmAtr) {
                 // ドメインモデル「更新処理自動実行ログ」を更新する
                 for (int i = 0; i < size; i++) {
@@ -3110,7 +3176,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
                 // アルゴリズム「開始日を入社日にする」を実行する
                 DatePeriod employeeDatePeriod = this.makeStartDateForHiringDate(processExecution, empId, period);
                 if (employeeDatePeriod == null && processExecution.getExecSetting().getDailyPerf()
-                        .getTargetGroupClassification().isMidJoinEmployee()) {
+                		.getCreateNewEmpDailyPerf().equals(NotUseAtr.USE)) {
 
                 } else {
                     if (employeeDatePeriod != null) {
@@ -3162,7 +3228,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
         List<String> lstEmployeeId = new ArrayList<String>();
         lstEmployeeId.add(employeeId);
         // ドメインモデル「更新処理自動実行.実行設定.日別実績の作成・計算.途中入社は入社日からにする」の判定
-        if (processExecution.getExecSetting().getDailyPerf().getTargetGroupClassification().isMidJoinEmployee()) {
+        if (processExecution.getExecSetting().getDailyPerf().getCreateNewEmpDailyPerf().equals(NotUseAtr.USE)) {
             // request list 211
             List<nts.uk.ctx.at.record.dom.adapter.company.AffCompanyHistImport> affCompanyHistByEmployee = this.syCompanyRecordAdapter
                     .getAffCompanyHistByEmployee(lstEmployeeId, period);

@@ -74,7 +74,7 @@ public class ProcessExecutionLogFinder {
 		}
 		
 		Map<String, UpdateProcessAutoExecution> mapProcessExecution = listProcessExecution.stream()
-				.collect(Collectors.toMap(item -> item.getExecItemCode().v(), Function.identity()));
+				.collect(Collectors.toMap(item -> item.getExecItemCode().v(), Function.identity(),
 						(a, b) -> a, TreeMap::new));
 		
 		// ドメインモデル「更新処理自動実行ログ」を取得する

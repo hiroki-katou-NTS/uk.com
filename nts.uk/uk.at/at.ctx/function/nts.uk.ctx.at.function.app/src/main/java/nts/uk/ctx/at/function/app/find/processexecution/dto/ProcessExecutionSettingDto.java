@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.app.find.processexecution.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionSetting;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * The class Process execution setting dto.<br>
@@ -99,10 +100,10 @@ public class ProcessExecutionSettingDto {
 		dto.alarmExtraction = AlarmExtractionDto.createFromDomain(domain.getAlarmExtraction());
 		dto.perSchedule = PersonalScheduleCreationDto.createFromDomain(domain.getPerScheduleCreation());
 		dto.dailyPerf = DailyPerformanceCreationDto.createFromDomain(domain.getDailyPerf());
-		dto.reflectResultCls = domain.isReflectResultCls();
-		dto.monthlyAggCls = domain.isMonthlyAggCls();
+		dto.reflectResultCls = domain.getReflectAppResult().getReflectResultCls().equals(NotUseAtr.USE);
+		dto.monthlyAggCls = domain.getMonthlyAggregate().getMonthlyAggCls().equals(NotUseAtr.USE);
 		dto.appRouteUpdateDaily = AppRouteUpdateDailyDto.createFromDomain(domain.getAppRouteUpdateDaily());
-		dto.appRouteUpdateMonthly = domain.getAppRouteUpdateMonthly().value;
+		dto.appRouteUpdateMonthly = domain.getAppRouteUpdateMonthly().getAppRouteUpdateAtr().value;
 		dto.deleteData = DeleteDataDto.createFromDomain(domain.getDeleteData());
 		dto.saveData = SaveDataDto.createFromDomain(domain.getSaveData());
 		dto.externalAcceptance = ExternalAcceptanceDto.createFromDomain(domain.getExternalAcceptance());
