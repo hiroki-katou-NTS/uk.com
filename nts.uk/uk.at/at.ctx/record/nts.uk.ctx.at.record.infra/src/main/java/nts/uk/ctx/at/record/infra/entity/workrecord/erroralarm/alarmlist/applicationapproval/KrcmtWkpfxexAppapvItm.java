@@ -3,8 +3,7 @@ package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlist.applic
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.applicationapproval.FixedExtractionAppapvItems;
-import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.data.entity.AggregateTableEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,16 +20,12 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_WKPFXEX_APPAPV_ITM")
-public class KrcmtWkpfxexAppapvItm extends AggregateTableEntity {
+public class KrcmtWkpfxexAppapvItm extends UkJpaEntity {
 
     /* No */
     @Id
     @Column(name = "NO")
     public int checkItemAppapv;
-
-    /* 契約コード */
-    @Column(name = "CONTRACT_CD")
-    public String contractCd;
 
     /* 申請承認チェック名称 */
     @Column(name = "APPLI_APPRO_CHKNAME")
@@ -61,13 +56,12 @@ public class KrcmtWkpfxexAppapvItm extends AggregateTableEntity {
         KrcmtWkpfxexAppapvItm entity = new KrcmtWkpfxexAppapvItm();
 
         entity.checkItemAppapv = domain.getCheckItemAppapv().value;
-        entity.contractCd = AppContexts.user().contractCode();
         entity.appapvCheckName = domain.getAppapvCheckName();
         entity.alarmCheckCls = domain.getAlarmCheckCls().value;
         entity.firstMessageDisp = domain.getFirstMessageDisp().v();
         entity.boldAtr = domain.isBoldAtr();
 
-        entity.messageColor = domain.getMessageColor().isPresent() ? domain.getMessageColor().get().v() : null;
+        entity.messageColor = domain.getMessageColor().map(i -> i.v()).orElse(null);
 
         return entity;
     }

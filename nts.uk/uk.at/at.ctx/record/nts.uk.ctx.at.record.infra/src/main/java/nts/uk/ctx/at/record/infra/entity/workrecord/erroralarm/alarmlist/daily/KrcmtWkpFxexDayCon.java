@@ -3,8 +3,7 @@ package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlist.daily;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.daily.FixedExtractionDayCon;
-import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.data.entity.AggregateTableEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -20,14 +19,10 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_WKP_FXEX_DAY_CON")
-public class KrcmtWkpFxexDayCon extends AggregateTableEntity {
+public class KrcmtWkpFxexDayCon extends UkJpaEntity {
 
     @EmbeddedId
     public KrcmtWkpFxexDayConPK pk;
-
-    /* 契約コード */
-    @Column(name = "CONTRACT_CD")
-    public String contractCd;
 
     /* 表示するメッセージ */
     @Column(name = "MESSAGE_DISPLAY")
@@ -42,7 +37,6 @@ public class KrcmtWkpFxexDayCon extends AggregateTableEntity {
         KrcmtWkpFxexDayCon entity = new KrcmtWkpFxexDayCon();
 
         entity.pk = KrcmtWkpFxexDayConPK.fromDomain(domain);
-        entity.contractCd = AppContexts.user().contractCode();
         entity.messageDisp = domain.getMessageDisp().v();
 
         return entity;

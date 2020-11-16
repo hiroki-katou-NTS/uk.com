@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.workrecord.alarm.attendanceitemconditions;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 
 import java.util.Arrays;
 import java.util.List;
@@ -25,6 +26,12 @@ public class CompareSingleValue<V> implements CheckConditions<V> {
 
     // 条件値の種別
     private final ConditionType conditionType;
+
+    public CompareSingleValue(int compareOpertor, int conditionType) {
+        super();
+        this.compareOpertor = EnumAdaptor.valueOf(compareOpertor, SingleValueCompareType.class);
+        this.conditionType = EnumAdaptor.valueOf(conditionType, ConditionType.class);
+    }
 
     @Override
     public boolean check(Double targetV, Function<V, Double> value) {
@@ -54,8 +61,8 @@ public class CompareSingleValue<V> implements CheckConditions<V> {
     }
 
     private boolean checkWithAttendanceItem(Double target, Function<List<Integer>, List<Double>> getItemValue,
-                                           Function<V, Double> getVValue) {
-        Double compareValue = getItemValue.apply(Arrays.asList(getVValue.apply(this.value).intValue())).get(0);
+                                            Function<V, Double> getValue) {
+        Double compareValue = getItemValue.apply(Arrays.asList(getValue.apply(this.value).intValue())).get(0);
         return checkWithFixedValue(target, compareValue);
     }
 

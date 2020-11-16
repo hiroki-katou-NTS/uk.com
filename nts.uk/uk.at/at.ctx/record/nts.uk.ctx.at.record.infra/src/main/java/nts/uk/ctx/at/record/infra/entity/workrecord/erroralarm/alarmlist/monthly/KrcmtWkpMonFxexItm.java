@@ -3,8 +3,7 @@ package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlist.monthl
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.monthly.FixedExtractionMonthlyItems;
-import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.data.entity.AggregateTableEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,16 +19,12 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_WKP_MON_FXEX_ITM")
-public class KrcmtWkpMonFxexItm extends AggregateTableEntity {
+public class KrcmtWkpMonFxexItm extends UkJpaEntity {
 
     /* No */
     @Id
     @Column(name = "NO")
     public int fixedCheckMonthlyItemName;
-
-    /* 契約コード */
-    @Column(name = "CONTRACT_CD")
-    public String contractCd;
 
     /* 月次チェック名称 */
     @Column(name = "MON_CHKNAME")
@@ -56,12 +51,11 @@ public class KrcmtWkpMonFxexItm extends AggregateTableEntity {
         KrcmtWkpMonFxexItm entity = new KrcmtWkpMonFxexItm();
 
         entity.fixedCheckMonthlyItemName = domain.getFixedCheckMonthlyItemName().value;
-        entity.contractCd = AppContexts.user().contractCode();
         entity.monthlyCheckName = domain.getMonthlyCheckName();
         entity.alarmCheckCls = domain.getAlarmCheckCls().value;
         entity.firstMessageDisp = domain.getFirstMessageDisp().v();
 
-        entity.messageColor = domain.getMessageColor().isPresent() ? domain.getMessageColor().get().v() : null;
+        entity.messageColor = domain.getMessageColor().map(i -> i.v()).orElse(null);
 
         return entity;
     }

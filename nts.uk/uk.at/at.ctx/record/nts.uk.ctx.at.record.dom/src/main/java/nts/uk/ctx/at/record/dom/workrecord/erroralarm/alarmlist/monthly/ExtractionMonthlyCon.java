@@ -25,7 +25,7 @@ public class ExtractionMonthlyCon extends AggregateRoot {
     /**
      * No
      */
-    private int orderNumber;
+    private FixedCheckMonthlyItemName orderNumber;
 
     /**
      * チェック項目
@@ -94,7 +94,7 @@ public class ExtractionMonthlyCon extends AggregateRoot {
                                               String messageDisp) {
 
         return new ExtractionMonthlyCon(errorAlarmWorkplaceId,
-                orderNumber,
+                EnumAdaptor.valueOf(orderNumber, FixedCheckMonthlyItemName.class),
                 EnumAdaptor.valueOf(checkMonthlyItemsType, CheckMonthlyItemsType.class),
                 useAtr,
                 errorAlarmCheckID,

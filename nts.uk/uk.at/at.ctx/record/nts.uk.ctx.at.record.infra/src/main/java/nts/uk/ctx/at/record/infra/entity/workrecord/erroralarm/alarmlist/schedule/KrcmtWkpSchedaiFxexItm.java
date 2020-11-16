@@ -3,8 +3,7 @@ package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlist.schedu
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.schedule.FixedExtractionScheduleItems;
-import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.data.entity.AggregateTableEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,16 +19,12 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_WKP_SCHEDAI_FXEXITM")
-public class KrcmtWkpSchedaiFxexItm extends AggregateTableEntity {
+public class KrcmtWkpSchedaiFxexItm extends UkJpaEntity {
 
     /* No */
     @Id
     @Column(name = "NO")
     public int fixedCheckDayItemName;
-
-    /* 契約コード */
-    @Column(name = "CONTRACT_CD")
-    public String contractCd;
 
     /* スケジュール／日次チェック名称 */
     @Column(name = "SCHEDAI_CHKNAME")
@@ -60,13 +55,12 @@ public class KrcmtWkpSchedaiFxexItm extends AggregateTableEntity {
         KrcmtWkpSchedaiFxexItm entity = new KrcmtWkpSchedaiFxexItm();
 
         entity.fixedCheckDayItemName = domain.getFixedCheckDayItemName().value;
-        entity.contractCd = AppContexts.user().contractCode();
         entity.scheduleCheckName = domain.getScheduleCheckName();
         entity.alarmCheckCls = domain.getAlarmCheckCls().value;
         entity.firstMessageDisp = domain.getFirstMessageDisp().v();
         entity.boldAtr = domain.isBoldAtr();
 
-        entity.messageColor = domain.getMessageColor().isPresent() ? domain.getMessageColor().get().v() : null;
+        entity.messageColor = domain.getMessageColor().map(i -> i.v()).orElse(null);
 
         return entity;
     }

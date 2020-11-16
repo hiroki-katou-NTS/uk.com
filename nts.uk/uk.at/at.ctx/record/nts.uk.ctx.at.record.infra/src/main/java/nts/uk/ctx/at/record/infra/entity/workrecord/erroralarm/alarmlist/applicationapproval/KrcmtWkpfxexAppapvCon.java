@@ -3,8 +3,7 @@ package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlist.applic
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.applicationapproval.FixedExtractionAppapvCon;
-import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.data.entity.AggregateTableEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -21,14 +20,10 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_WKPFXEX_APPAPV_CON")
-public class KrcmtWkpfxexAppapvCon extends AggregateTableEntity {
+public class KrcmtWkpfxexAppapvCon extends UkJpaEntity {
 
     @EmbeddedId
     public KrcmtWkpfxexAppapvConPK pk;
-
-    /* 契約コード */
-    @Column(name = "CONTRACT_CD")
-    public String contractCd;
 
     /* 表示するメッセージ */
     @Column(name = "MESSAGE_DISPLAY")
@@ -47,7 +42,6 @@ public class KrcmtWkpfxexAppapvCon extends AggregateTableEntity {
         KrcmtWkpfxexAppapvCon entity = new KrcmtWkpfxexAppapvCon();
 
         entity.pk = KrcmtWkpfxexAppapvConPK.fromDomain(domain);
-        entity.contractCd = AppContexts.user().contractCode();
         entity.messageDisp = domain.getMessageDisp().v();
 
         return entity;

@@ -24,7 +24,7 @@ public class ExtractionScheduleCon extends AggregateRoot {
     /**
      * No
      */
-    private int orderNumber;
+    private FixedCheckDayItemName orderNumber;
 
     /**
      * チェック項目
@@ -87,7 +87,7 @@ public class ExtractionScheduleCon extends AggregateRoot {
                                                String messageDisp) {
 
         return new ExtractionScheduleCon(errorAlarmWorkplaceId,
-                orderNumber,
+                EnumAdaptor.valueOf(orderNumber, FixedCheckDayItemName.class),
                 EnumAdaptor.valueOf(checkDayItemsType, CheckDayItemsType.class),
                 useAtr,
                 errorAlarmCheckID,

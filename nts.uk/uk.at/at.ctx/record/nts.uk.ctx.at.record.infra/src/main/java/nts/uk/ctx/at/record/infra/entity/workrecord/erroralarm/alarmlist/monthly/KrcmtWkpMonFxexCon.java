@@ -3,8 +3,7 @@ package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlist.monthl
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.monthly.FixedExtractionMonthlyCon;
-import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.data.entity.AggregateTableEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -20,13 +19,9 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_WKP_MON_FXEX_CON")
-public class KrcmtWkpMonFxexCon extends AggregateTableEntity {
+public class KrcmtWkpMonFxexCon extends UkJpaEntity {
     @EmbeddedId
     public KrcmtWkpMonFxexConPK pk;
-
-    /* 契約コード */
-    @Column(name = "CONTRACT_CD")
-    public String contractCd;
 
     /* 使用区分 */
     @Column(name = "USE_ATR")
@@ -45,7 +40,6 @@ public class KrcmtWkpMonFxexCon extends AggregateTableEntity {
         KrcmtWkpMonFxexCon entity = new KrcmtWkpMonFxexCon();
 
         entity.pk = KrcmtWkpMonFxexConPK.fromDomain(domain);
-        entity.contractCd = AppContexts.user().contractCode();
         entity.useAtr = domain.isUseAtr();
         entity.messageDisp = domain.getMessageDisp().v();
 
