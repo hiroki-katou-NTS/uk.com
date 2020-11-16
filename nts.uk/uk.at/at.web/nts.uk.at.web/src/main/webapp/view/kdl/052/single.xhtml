@@ -20,7 +20,7 @@
           <div class="inline-row mt-20">
             <div class="w-120 ml-40">
               <!-- A2_1 -->
-              <div id="A2_1" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL052_5')}</div>
+              <div id="A2_1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDL052_5')}</div>
             </div>
             <div>
               <!-- A2_2 -->
@@ -103,10 +103,10 @@
     </com:ko-if>
       <com:ko-if bind="!manageDisabled()">
         <div class="right-content">
-          <div class="inline-row">
-            <div class="w-120 ml-20">
+          <div class="inline-row mt-20">
+            <div class="w-120 ml-40">
               <!-- A2_1 -->
-              <div id="A2_1" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL052_5')}</div>
+              <div id="A2_1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDL052_5')}</div>
             </div>
             <div>
               <!-- A2_2 -->
@@ -115,6 +115,7 @@
                 class="select-name"
                 data-bind="text:selectedName"
               ></label>
+            </div>
           </div>
           <hr class="hr-style-multi" />
           <div class="inline-row mt-25 ml-140">

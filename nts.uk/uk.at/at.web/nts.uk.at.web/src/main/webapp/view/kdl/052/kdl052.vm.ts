@@ -78,7 +78,17 @@ module nts.uk.at.view.kdl052.screenModel {
       // Call api get data
       vm.$ajax(API.startPage, command).then((result: any) => {
         if (result && result.lstEmployee) {
-          if (result.lstEmployee.length > 0) {
+            if (result && result.managementClassification) {
+              if (result.managementClassification.manageType === 1) {
+                vm.manageDisabled(true);
+              } else {
+                vm.manageDisabled(false);
+              }
+            } else {
+              vm.$dialog.info({messageId: 'Msg_504'}).then(() => {
+                vm.$window.close();
+              });
+            }
             let mappedList =
                 _.map(result.lstEmployee, (item: any) => {
                     return { id: item.employeeId, code: item.employeeCode, name: item.employeeName };
@@ -88,20 +98,10 @@ module nts.uk.at.view.kdl052.screenModel {
             vm.selectedCode(listSort[0].code);
             vm.nextStartDate(result.nextStartDate)
             $('#component-items-list').ntsListComponent(vm.listComponentOption);
-          }
+          // 取得したObject＜介護看護休暇設定＞．管理区分をチェックする。
+        
         }
-        // 取得したObject＜介護看護休暇設定＞．管理区分をチェックする。
-        if (result && result.managementClassification) {
-          if (result.managementClassification.manageType === 1) {
-            vm.manageDisabled(true);
-          } else {
-            vm.manageDisabled(false);
-          }
-        } else {
-          vm.$dialog.info({messageId: 'Msg_1962'}).then(() => {
-            vm.$window.close();
-          });
-        }
+        
       });
     }
 
@@ -120,7 +120,7 @@ module nts.uk.at.view.kdl052.screenModel {
         let mappedList: any[] =
                         _.map(lstChildCareMana, (item: any) => {
                             return { 
-                              id: res.lstChildCareMana.indexOf(item), 
+                              id: res.lstChildCareMana.indexOf(item) + 1, 
                               date: item.ymd, 
                               periodDate: vm.genDateTime(item.usedDay, item.usedTimes),
                               classification: item.creatorAtr

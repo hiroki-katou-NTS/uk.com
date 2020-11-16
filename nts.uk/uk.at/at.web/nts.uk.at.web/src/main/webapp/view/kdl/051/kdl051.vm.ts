@@ -17,7 +17,7 @@ module nts.uk.at.view.kdl051.screenModel {
     code:  KnockoutObservable<string> = ko.observable('');
     error: KnockoutObservable<boolean> = ko.observable(false);
     // A3_8
-    limitDays: KnockoutObservable<number> = ko.observable(0);
+    limitDays: KnockoutObservable<string> = ko.observable('');
     alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel> = ko.observableArray([]);
     // A3_9
     childNursingUsed: KnockoutObservable<string> = ko.observable('');
@@ -100,7 +100,7 @@ module nts.uk.at.view.kdl051.screenModel {
       // call API changeId
       vm.$ajax(`${API.changeId}/${sId}`).then((res: any)=>{
         let startdateDays = res.aggrResultOfChildCareNurse.startdateDays;
-        vm.limitDays(startdateDays.thisYear.limitDays);
+        vm.limitDays(vm.genDateTime(startdateDays.thisYear.limitDays,0));
         let childNursingUsed = vm.genDateTime(startdateDays.thisYear.usedDays.usedDay, startdateDays.thisYear.usedDays.usedTimes);
         vm.childNursingUsed(childNursingUsed);
         let childNursingRemaining = vm.genDateTime(startdateDays.thisYear.remainingNumber.usedDays, startdateDays.thisYear.remainingNumber.usedTime)
@@ -109,7 +109,7 @@ module nts.uk.at.view.kdl051.screenModel {
         let mappedList: any[] =
                         _.map(lstChildCareMana, (item: any) => {
                             return { 
-                              id: res.lstChildCareMana.indexOf(item), 
+                              id: res.lstChildCareMana.indexOf(item) + 1, 
                               date: item.ymd, 
                               periodDate: vm.genDateTime(item.usedDay, item.usedTimes),
                               classification: item.creatorAtr
