@@ -290,7 +290,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 
                 let updatedCells = $("#extable").exTable('updatedCells');
                 if (updatedCells.length > 0) {
-                    self.updatedCellsInModeShift =  $.merge( self.updatedCellsInModeShift , updatedCells )
+                    self.updatedCellsInModeShift = $.merge(self.updatedCellsInModeShift, updatedCells);
+                    _.forEach(self.updatedCellsInModeShift, function(itemUpdate) {
+                        // loại bỏ những item đã update mà nằm trong danh sách listBgOfCellSelfOther. 
+                        _.remove(self.listBgOfCellSelfOther, function(n) {
+                            return n.columnKey === itemUpdate.columnKey && n.rowId === (itemUpdate.rowIndex + '');
+                        });
+                    });
                 }
 
                 uk.localStorage.getItem(self.KEY).ifPresent((data) => {
@@ -690,22 +696,22 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 
                 __viewContext.viewModel.viewAC.selectedpalletUnit(userInfor.shiftPalletUnit);
                 if(userInfor.shiftPalletUnit == 1){
-                    __viewContext.viewModel.viewAC.handleInitCom(
-                        data.listPageInfo,
-                        data.targetShiftPalette.shiftPalletCom,
-                        userInfor.shiftPalettePageNumberCom);
+                    __viewContext.viewModel.viewAC.handleInitCom(data.listPageInfo,data.targetShiftPalette.shiftPalletCom,userInfor.shiftPalettePageNumberCom);
                 }else{
-                    __viewContext.viewModel.viewAC.handleInitWkp(
-                        data.listPageInfo,
-                        data.targetShiftPalette.shiftPalletWorkPlace,
-                        userInfor.shiftPalettePageNumberOrg);
+                    __viewContext.viewModel.viewAC.handleInitWkp(data.listPageInfo,data.targetShiftPalette.shiftPalletWorkPlace,userInfor.shiftPalettePageNumberOrg);
                 }
                 __viewContext.viewModel.viewAC.flag = true;
-                
-                self.mode() === 'edit' ? self.editMode() : self.confirmMode();
 
-                // check enable or disable tbaleButton
-                self.checkEnabDisableTblBtn();
+                if (__viewContext.viewModel.viewAC.listPageComIsEmpty == true) {
+                    $('.ntsButtonTableButton').addClass('nowithContent');
+                }
+                if (__viewContext.viewModel.viewAC.listPageWkpIsEmpty == true) {
+                    $('.ntsButtonTableButton').addClass('nowithContent');
+                }
+
+                if (self.mode() == 'confirm') {
+                    self.shiftPalletControlDisable();
+                }
                 
                 // set data Grid
                 let dataBindGrid = self.convertDataToGrid(data, 'shift');
@@ -1049,6 +1055,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                 //HAND_CORRECTION_OTHER(1), 手修正（他人）
                                 self.listBgOfCellSelfOther.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other", 0));
                             }
+                            if (cell.shiftEditState != null && cell.shiftEditState.editStateSetting === 2) {
+                                //REFLECT_APPLICATION(2), 申請反映
+                                detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-reflect-application", 0));
+                                self.listBgOfCellSelfOther.push(new CellColor('_' + ymd, rowId, "bg-daily-reflect-application", 0));
+                            }
                         } else if (userInfor.backgroundColor == 0) {
                             // A10_color③ シフト表示：通常の背景色  (hiển thị shift: màu nền normal)                                                     
                             if (cell.achievements == true || cell.needToWork == false) {
@@ -1069,6 +1080,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                 if (cell.shiftEditState != null && cell.shiftEditState.editStateSetting === 2) {
                                     //REFLECT_APPLICATION(2), 申請反映
                                     detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-reflect-application", 0));
+                                    self.listBgOfCellSelfOther.push(new CellColor('_' + ymd, rowId, "bg-daily-reflect-application", 0));
                                 }
                             }
                         }
@@ -2577,17 +2589,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         checkEnabDisableTblBtn() {
             if (__viewContext.viewModel.viewAC.selectedpalletUnit() == 1) { // 1 : mode company , 2: mode workPlace
-                if (__viewContext.viewModel.viewAC.listPageComIsEmpty == true) {
-                    $('#tableButton1 button').addClass('disabledShiftControl');
-                } else {
-                    $('#tableButton1 button').removeClass('disabledShiftControl');
-                }
+                $('#tableButton1 button').removeClass('disabledShiftControl');
             } else {
-                if (__viewContext.viewModel.viewAC.listPageWkpIsEmpty == true) {
-                    $('#tableButton2 button').addClass('disabledShiftControl');
-                } else {
-                    $('#tableButton2 button').removeClass('disabledShiftControl');
-                }
+                $('#tableButton2 button').removeClass('disabledShiftControl');
             }
         }
         
@@ -2955,8 +2959,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let param = {
                 unit: userInfor.unit == 0 ? '0' : '1',
                 date: moment(self.dateTimeAfter()),
-                workplaceId: userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId,
-                workplaceGroupId: userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId,
+                workplaceId: userInfor.unit == 0 ? userInfor.workplaceId : null,
+                workplaceGroupId: userInfor.unit == 0 ? null : userInfor.workplaceGroupId,
                 showBaseDate : false
             }
             setShared('dataShareDialog046', param);
@@ -2982,7 +2986,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 shiftPalletUnit: userInfor.shiftPalletUnit, // 1: company , 2 : workPlace 
                 pageNumberCom: userInfor.shiftPalettePageNumberCom,
                 pageNumberOrg: userInfor.shiftPalettePageNumberOrg,
-                getActualData: false,
+                getActualData: userInfor.achievementDisplaySelected,
                 listShiftMasterNotNeedGetNew: userInfor.shiftMasterWithWorkStyleLst, // List of shifts không cần lấy mới
                 unit: input.unit,
                 wkpId: input.unit == 0 ? input.workplaceId : input.workplaceGroupID
@@ -3001,8 +3005,35 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 userInfor.code             = input.workplaceGroupCode;
                 uk.localStorage.setItemAsJson(self.KEY, userInfor);
                 
-                __viewContext.viewModel.viewAB.workplaceIdKCP013(input.unit == 0 ? input.workplaceId : input.workplaceGroupID);
-                __viewContext.viewModel.viewAB.filter(input.unit == 0 ? true : false);
+                if (userInfor.disPlayFormat === 'time' || userInfor.disPlayFormat === 'shortName') {
+                    __viewContext.viewModel.viewAB.workplaceIdKCP013(input.unit == 0 ? input.workplaceId : input.workplaceGroupID);
+                    __viewContext.viewModel.viewAB.filter(input.unit == 0 ? true : false);
+                } else {
+                    //__viewContext.viewModel.viewAC.workplaceModeName(data.dataBasicDto.designation);
+                    //$($("#Aa1_2 > button")[1]).html(data.dataBasicDto.designation);
+
+                    self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
+                    // set data shiftPallet
+                    __viewContext.viewModel.viewAC.flag = false;
+                    __viewContext.viewModel.viewAC.selectedpalletUnit(userInfor.shiftPalletUnit);
+                    
+                    if (userInfor.shiftPalletUnit == 1) {
+                        __viewContext.viewModel.viewAC.handleInitCom(data.listPageInfo,data.targetShiftPalette.shiftPalletCom,userInfor.shiftPalettePageNumberCom);
+                    } else {
+                        __viewContext.viewModel.viewAC.handleInitWkp(data.listPageInfo,data.targetShiftPalette.shiftPalletWorkPlace,userInfor.shiftPalettePageNumberOrg);
+                    }
+                    __viewContext.viewModel.viewAC.flag = true;
+                    if (__viewContext.viewModel.viewAC.listPageComIsEmpty == true) {
+                        $('.ntsButtonTableButton').addClass('nowithContent');
+                    }
+                    if (__viewContext.viewModel.viewAC.listPageWkpIsEmpty == true) {
+                        $('.ntsButtonTableButton').addClass('nowithContent');
+                    }
+                    
+                    if (self.mode() == 'confirm') {
+                        self.shiftPalletControlDisable();
+                    }
+                }
 
                 self.saveDataGrid(data);
                 
@@ -3023,6 +3054,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 
                 if (self.mode() == 'confirm') {
                     $("#extable").exTable("updateMode", "determine");
+                    $('div.ex-body-leftmost a').css("pointer-events", "none");
+                    $('div.ex-header-detail.xheader a').css("pointer-events", "none");
                 }
 
                 self.setPositionButonToRightToLeft();

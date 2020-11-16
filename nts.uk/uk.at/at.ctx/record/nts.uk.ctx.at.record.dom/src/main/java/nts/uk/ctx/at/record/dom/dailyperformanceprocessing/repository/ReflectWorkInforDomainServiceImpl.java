@@ -40,16 +40,11 @@ import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceDto;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
-import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.repo.CalAttrOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmployee;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmployeeHistory;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository.BusinessTypeEmpOfHistoryRepository;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository.BusinessTypeOfEmployeeRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.AutomaticStampSetDetailOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.NewReflectStampOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ReflectStampOutput;
@@ -79,10 +74,8 @@ import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExEmploymentHistor
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExJobTitleHistItemImport;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExJobTitleHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkPlaceHistoryImport;
-import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkTypeHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkplaceHistItemImport;
 import nts.uk.ctx.at.shared.dom.adapter.specificdatesetting.RecSpecificDateSettingImport;
-import nts.uk.ctx.at.shared.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.calculationattribute.enums.DivergenceTimeAttr;
 import nts.uk.ctx.at.shared.dom.calculationsetting.AutoStampForFutureDayClass;
 import nts.uk.ctx.at.shared.dom.calculationsetting.StampReflectionManagement;
@@ -96,6 +89,11 @@ import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.ClosureOfDaily
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.MasterList;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.PeriodInMasterList;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.repository.RecreateFlag;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployee;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeHis;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeHistory;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.repository.BusinessTypeEmpOfHistoryRepository;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.repository.BusinessTypeOfEmployeeRepository;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
@@ -145,7 +143,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomat
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
@@ -258,9 +255,6 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 	@Inject
 	private RegisterDailyPerformanceInfoService registerDailyPerformanceInfoService;
-
-	@Inject
-	private WorkTypeOfDailyPerforRepository workTypeOfDailyPerforRepository;
 
 	@Inject
 	private DeleteWorkInfoOfDaiPerService deleteWorkInfoOfDaiPerService;
@@ -384,11 +378,11 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						if (workStyle != WorkStyle.ONE_DAY_REST) {
 							 stampOutput = this.reflectStampDomainServiceImpl.reflectStampInfo(companyId,
 			                         employeeId, day,dailyPerformance, null, empCalAndSumExecLogID,
-			                         Optional.empty(), Optional.empty(), Optional.empty(),recreateFlag);
+			                         Optional.empty(), Optional.empty(), recreateFlag);
 						}else {
 							 stampOutput = this.reflectStampDomainServiceImpl.acquireReflectEmbossing(companyId,
 			                         employeeId, day, Optional.of(dailyPerformance), null, empCalAndSumExecLogID, 
-			                         Optional.empty(), Optional.empty(), Optional.empty(),recreateFlag);
+			                         Optional.empty(), Optional.empty(), recreateFlag);
 						}
 					}
 					Boolean existsDailyInfo = workInfoOfDailyPerformance != null;
@@ -400,7 +394,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						WorkInfoOfDailyPerformance performance = new WorkInfoOfDailyPerformance(employeeId, day, workInfoOfDailyPerformance);
 						this.registerDailyPerformanceInfoService.registerDailyPerformanceInfo(companyId, employeeId,
 								day, stampOutput.getReflectStampOutput(), null,
-								existsDailyInfo ? null : performance/* 既に勤務情報が存在する場合は更新しない */, null,
+								existsDailyInfo ? null : performance/* 既に勤務情報が存在する場合は更新しない */,
 								null, null, null);
 					} else {
 						stampOutput.getErrMesInfos().forEach(action -> {
@@ -490,11 +484,11 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						if (workStyle != WorkStyle.ONE_DAY_REST) {
 							stampOutput = this.reflectStampDomainService.reflectStampInfo(companyId, employeeId,
 									day, dailyPerformance, null, empCalAndSumExecLogID,
-                            		Optional.empty(),Optional.empty(), Optional.empty(),recreateFlag);
+                            		Optional.empty(),Optional.empty(), recreateFlag);
 						}else {
 							 stampOutput = this.reflectStampDomainServiceImpl.acquireReflectEmbossing(companyId,
 		                             employeeId, day, Optional.of(dailyPerformance), null, empCalAndSumExecLogID,
-		                             Optional.empty(),Optional.empty(), Optional.empty(),recreateFlag);
+		                             Optional.empty(),Optional.empty(), recreateFlag);
 						}
 					}
 					// this.registerDailyPerformanceInfoService.registerDailyPerformanceInfo(companyId,
@@ -505,7 +499,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						WorkInfoOfDailyPerformance performance = new WorkInfoOfDailyPerformance(employeeId, day, workInfoOfDailyPerformance);
 						this.registerDailyPerformanceInfoService.registerDailyPerformanceInfo(companyId, employeeId,
 								day, stampOutput.getReflectStampOutput(), null,
-								existsDailyInfo ? null : performance/* 既に勤務情報が存在する場合は更新しない */, null,
+								existsDailyInfo ? null : performance/* 既に勤務情報が存在する場合は更新しない */,
 								null, null, null);
 					} else {
 						stampOutput.getErrMesInfos().forEach(action -> {
@@ -532,10 +526,10 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
         }
         WorkInfoOfDailyAttendance workInfoOfDailyPerformance = new WorkInfoOfDailyAttendance();
 		// 勤務種別を反映する
-		WorkTypeOfDailyPerformance workTypeOfDailyPerformance = reflectWorkType(companyId, employeeId, day,
-				empCalAndSumExecLogID);
+//		WorkTypeOfDailyPerformance workTypeOfDailyPerformance = reflectWorkType(companyId, employeeId, day,
+//				empCalAndSumExecLogID);
 
-		if (workTypeOfDailyPerformance != null) {
+//		if (workTypeOfDailyPerformance != null) {
 
 			// 所属情報を反映する
 			val affiliationInforOfDailyPerforState = createAffiliationInforState(companyId, employeeId, day,
@@ -549,14 +543,14 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				// Imported(就業.勤務実績)「社員の勤務予定管理」を取得する
                 workInfoOfDailyPerformance = this.workschedule(companyId, employeeId, day, empCalAndSumExecLogID,
 						affiliationInforOfDailyPerforState.getAffiliationInforOfDailyPerfor().get(), reCreateAttr,
-						workTypeOfDailyPerformance, reCreateWorkType, stampReflectionManagement, mapDateHistoryItem,
+						reCreateWorkType, stampReflectionManagement, mapDateHistoryItem,
 						mapWorkingConditionItem, periodInMasterList, timeLeavingOptional,recreateFlag,optDaily);
 			} else {
 				affiliationInforOfDailyPerforState.getErrMesInfos().forEach(action -> {
 					this.errMessageInfoRepository.add(action);
 				});
 			}
-		}
+//		}
         return workInfoOfDailyPerformance;
 	}
 
@@ -573,14 +567,10 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
         }
         WorkInfoOfDailyAttendance workInfoOfDailyPerformance = new WorkInfoOfDailyAttendance();
 		// 勤務種別を反映する
-		WorkTypeOfDailyPerformance workTypeOfDailyPerformance = reflectWorkType(companyId, employeeId, day,
-				empCalAndSumExecLogID);
+//		WorkTypeOfDailyPerformance workTypeOfDailyPerformance = reflectWorkType(companyId, employeeId, day,
+//				empCalAndSumExecLogID);
 
-		if (workTypeOfDailyPerformance != null) {
-
-			// val affiliationInforOfDailyPerforState =
-			// createAffiliationInforState(companyId, employeeId, day,
-			// empCalAndSumExecLogID, employeeGeneralInfoImport);
+//		if (workTypeOfDailyPerformance != null) {
 
 			val affiliationInforOfDailyPerforState = createAffiliationInforOfDailyPerfor(companyId, employeeId, day,
 					empCalAndSumExecLogID);
@@ -589,14 +579,14 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				// Imported(就業.勤務実績)「社員の勤務予定管理」を取得する
                 workInfoOfDailyPerformance = this.workschedule(companyId, employeeId, day, empCalAndSumExecLogID,
 						affiliationInforOfDailyPerforState.getAffiliationInforOfDailyPerfor().get(), reCreateAttr,
-						workTypeOfDailyPerformance, reCreateWorkType, stampReflectionManagement, null, null, null,
+						reCreateWorkType, stampReflectionManagement, null, null, null,
 						timeLeavingPerformance,recreateFlag,optDaily);
 			} else {
 				affiliationInforOfDailyPerforState.getErrMesInfos().forEach(action -> {
 					this.errMessageInfoRepository.add(action);
 				});
 			}
-		}
+//		}
         return workInfoOfDailyPerformance;
 	}
 
@@ -738,6 +728,9 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				String historyId = businessTypeOfEmployeeHistory.get().getHistory().get(0).identifier();
 				// 社員の勤務種別を取得する -- end
 				// 対応するドメインモデル「社員の勤務種別」を取得する
+
+				Optional<AffiliationInforOfDailyPerfor> affiliationInfo = this.affiliationInforOfDailyPerforRepository
+						.findByKey(employeeId, day);
 				Optional<BusinessTypeOfEmployee> businessTypeOfEmployee = this.businessTypeOfEmployeeRepository
 						.findByHistoryId(historyId);
 
@@ -751,22 +744,19 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					return exitStatus;
 				} else {
 					// ドメインモデル「日別実績の勤務種別」を取得する
-					Optional<WorkTypeOfDailyPerformance> workTypeOfDailyPerformance = this.workTypeOfDailyPerforRepository
-							.findByKey(employeeId, day);
-					if (!workTypeOfDailyPerformance.isPresent()) {
-						return exitStatus;
-					} else {
+//					Optional<WorkTypeOfDailyPerformance> workTypeOfDailyPerformance = this.workTypeOfDailyPerforRepository
+//							.findByKey(employeeId, day);
+//					if (!workTypeOfDailyPerformance.isPresent()) {
+//						return exitStatus;
+//					} else {
 						if (businessTypeOfEmployee.get().getBusinessTypeCode()
-								.equals(workTypeOfDailyPerformance.get().getWorkTypeCode())) {
+								.equals(affiliationInfo.get().getAffiliationInfor().getBusinessTypeCode().orElse(null))) {
 							// パラメータ「異動時に再作成」を確認する
 							// check reCreateWorkPlace
 							if (reCreateWorkPlace == true) {
 								// ReqL30 :
 								Optional<AffWorkPlaceSidImport> workPlaceHasData = this.affWorkplaceAdapter
 										.findBySidAndDate(employeeId, day);
-
-								Optional<AffiliationInforOfDailyPerfor> affiliationInfo = this.affiliationInforOfDailyPerforRepository
-										.findByKey(employeeId, day);
 
 								if (workPlaceHasData.isPresent() && affiliationInfo.isPresent()) {
 									if (!workPlaceHasData.get().getWorkplaceId()
@@ -782,7 +772,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							exitStatus = ExitStatus.RECREATE;
 							return exitStatus;
 						}
-					}
+//					}
 				}
 			} else {
 				List<ErrMessageInfo> errMesInfos = new ArrayList<>();
@@ -814,63 +804,6 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		}
 
 		return exitStatus;
-	}
-
-	/**
-	 * 勤務種別を反映する
-	 * 
-	 * @param employeeId
-	 * @param day
-	 * @return WorkTypeOfDailyPerformance
-	 */
-	@Override
-	public WorkTypeOfDailyPerformance reflectWorkType(String companyId, String employeeId, GeneralDate day,
-			String empCalAndSumExecLogID) {
-
-		List<ErrMessageInfo> errMesInfos = new ArrayList<>();
-
-		WorkTypeOfDailyPerformance workTypeOfDailyPerformance = new WorkTypeOfDailyPerformance();
-
-		// 対応するドメインモデル「社員の勤務種別の履歴」を取得する
-		Optional<BusinessTypeOfEmployeeHistory> businessTypeOfEmployeeHistory = this.businessTypeEmpOfHistoryRepository
-				.findByBaseDate(day, employeeId);
-
-		if (businessTypeOfEmployeeHistory.isPresent()) {
-			String historyId = businessTypeOfEmployeeHistory.get().getHistory().get(0).identifier();
-			Optional<BusinessTypeOfEmployee> businessTypeOfEmployee = this.businessTypeOfEmployeeRepository
-					.findByHistoryId(historyId);
-			if (businessTypeOfEmployee.isPresent()) {
-				workTypeOfDailyPerformance = new WorkTypeOfDailyPerformance(employeeId, day,
-						businessTypeOfEmployee.get().getBusinessTypeCode().v());
-				return workTypeOfDailyPerformance;
-			} else {
-				// #日別作成修正 2018/07/17 前川 隼大
-				// 社員の日別実績のエラーを作成する
-				EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId, employeeId, day,
-						new ErrorAlarmWorkRecordCode("S025"), new ArrayList<>());
-				this.createEmployeeDailyPerError.createEmployeeError(employeeDailyPerError);
-
-				ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId, empCalAndSumExecLogID,
-						new ErrMessageResource("011"), EnumAdaptor.valueOf(0, ExecutionContent.class), day,
-						new ErrMessageContent(TextResource.localize("Msg_1010")));
-				errMesInfos.add(employmentErrMes);
-				this.errMessageInfoRepository.addList(errMesInfos);
-				return null;
-			}
-		} else {
-			// #日別作成修正 2018/07/17 前川 隼大
-			// 社員の日別実績のエラーを作成する
-			EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId, employeeId, day,
-					new ErrorAlarmWorkRecordCode("S025"), new ArrayList<>());
-			this.createEmployeeDailyPerError.createEmployeeError(employeeDailyPerError);
-
-			ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId, empCalAndSumExecLogID,
-					new ErrMessageResource("011"), EnumAdaptor.valueOf(0, ExecutionContent.class), day,
-					new ErrMessageContent(TextResource.localize("Msg_1010")));
-			errMesInfos.add(employmentErrMes);
-			this.errMessageInfoRepository.addList(errMesInfos);
-			return null;
-		}
 	}
 
 	/**
@@ -951,7 +884,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 	}
     private WorkInfoOfDailyAttendance workschedule(String companyId, String employeeID, GeneralDate day, String empCalAndSumExecLogID,
     		AffiliationInforOfDailyAttd affiliationInforOfDailyPerfor, ExecutionType reCreateAttr,
-			WorkTypeOfDailyPerformance workTypeOfDailyPerformance, boolean reCreateWorkType,
+			boolean reCreateWorkType,
 			Optional<StampReflectionManagement> stampReflectionManagement,
 			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem,
 			Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem,
@@ -1241,7 +1174,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				this.affiliationInforOfDailyPerforRepository.delete(employeeID, day);
 				this.calAttrOfDailyPerformanceRepository.deleteByKey(employeeID, day);
 				this.specificDateAttrOfDailyPerforRepo.deleteByEmployeeIdAndDate(employeeID, day);
-				this.workTypeOfDailyPerforRepository.delete(employeeID, day);
+//				this.workTypeOfDailyPerforRepository.delete(employeeID, day);
 				List<Integer> attItemIds = Arrays.asList(1, 2, 3, 4, 28, 29, 623, 624, 625, 626, 627, 628, 629, 630,
 						631, 632, 633, 634, 635, 636, 637, 638, 639, 640, 824, 825, 826, 827, 828, 829, 830, 831,
 						832);
@@ -1269,14 +1202,12 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				// check tay
 				stampOutput = this.reflectStampDomainServiceImpl.reflectStampInfo(companyId, employeeID, day,
 						workInfoOfDailyPerformance, timeLeavingOfDailyPerformance, empCalAndSumExecLogID,
-						Optional.of(calcOfDaily), Optional.of(affInfoOfDaily),
-                		Optional.empty(),recreateFlag);
+						Optional.of(calcOfDaily), Optional.of(affInfoOfDaily), recreateFlag);
 			} else {
 				// fixbug 105926
 				stampOutput = this.reflectStampDomainServiceImpl.acquireReflectEmbossing(companyId, employeeID, day,
 						Optional.of(workInfoOfDailyPerformance), null, empCalAndSumExecLogID,
-						Optional.of(calcOfDaily), Optional.of(affInfoOfDaily),
-                		Optional.of(workTypeOfDailyPerformance),recreateFlag);
+						Optional.of(calcOfDaily), Optional.of(affInfoOfDaily), recreateFlag);
 			}
 			AffiliationInforOfDailyPerfor dailyAttd = new AffiliationInforOfDailyPerfor(employeeID, day, affiliationInforOfDailyPerfor);
 			WorkInfoOfDailyPerformance ofDailyPerformance = new WorkInfoOfDailyPerformance(employeeID, day, workInfoOfDailyPerformanceUpdate);
@@ -1287,7 +1218,6 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				this.registerDailyPerformanceInfoService.registerDailyPerformanceInfo(companyId, employeeID, day,
 						stampOutput.getReflectStampOutput(), dailyAttd,
 						ofDailyPerformance, dailyPerfor, performance,
-						workTypeOfDailyPerformance,
 						breakTimeOfDailyPerformance.isPresent() ? breakTimeOfDailyPerformance.get() : null);
 			} else {
 				stampOutput.getErrMesInfos().forEach(action -> {
@@ -2297,14 +2227,14 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		}
 		
 		// WorkType
-		Map<String, ExWorkTypeHistoryImport> map = generalInfoImport
+		Map<String, BusinessTypeOfEmployeeHis> map = generalInfoImport
 				.getExWorkTypeHistoryImports().stream().collect(Collectors
-						.toMap(ExWorkTypeHistoryImport::getEmployeeId,x->x));
+						.toMap(c -> c.getEmployee().getSId(), x -> x));
 
-		Optional<ExWorkTypeHistoryImport> worktypeHistItemImport = Optional.empty();
-		ExWorkTypeHistoryImport exWorktypeHistItemImports = map.get(employeeId);
+		Optional<BusinessTypeOfEmployeeHis> worktypeHistItemImport = Optional.empty();
+		BusinessTypeOfEmployeeHis exWorktypeHistItemImports = map.get(employeeId);
 		if (exWorktypeHistItemImports != null) {
-			if(exWorktypeHistItemImports.getPeriod().contains(day)) {
+			if(exWorktypeHistItemImports.getHistory().span().contains(day)) {
 				worktypeHistItemImport = Optional.of(exWorktypeHistItemImports);	
 			}
 		}
@@ -2359,10 +2289,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							jobTitleHistItemImport.get().getJobTitleId(),
 							workplaceHistItemImport.get().getWorkplaceId(),
 							new ClassificationCode(classificationHistItemImport.get().getClassificationCode()),
-							worktypeHistItemImport.get().getBusinessTypeCd() == null?Optional.empty(): Optional.of(new BusinessTypeCode(worktypeHistItemImport.get().getBusinessTypeCd())),
-							Optional.empty()
-							)
-						),errMesInfos);
+							worktypeHistItemImport.map(c -> c.getEmployee().getBusinessTypeCode()),
+							Optional.empty())),errMesInfos);
 		} else {
 			// #日別作成修正 2018/07/17 前川 隼大
 			// 社員の日別実績のエラーを作成する
