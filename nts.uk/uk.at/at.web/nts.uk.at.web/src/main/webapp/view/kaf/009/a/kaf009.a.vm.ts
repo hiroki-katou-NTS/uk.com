@@ -44,7 +44,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
             };
         model: Model;
         dataFetch: KnockoutObservable<ModelDto> = ko.observable(null);
-        mode: string = 'edit';
+        mode: KnockoutObservable<String> = ko.observable('edit');
         isSendMail: KnockoutObservable<Boolean>;
 
         created(params: AppInitParam) {

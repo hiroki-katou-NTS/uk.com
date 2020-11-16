@@ -4,6 +4,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.M
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDayOfWorkTimeOrganization;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDayOfWorkTimeOrganizationRepo;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.screen.at.app.ksm008.query.j.Ksm008GetWkDetaislRequestParam;
@@ -34,18 +35,18 @@ public class Ksm008LWorkingHourListOrgScreenQuery {
     MaxDayOfWorkTimeOrganizationRepo maxDayOfWorkTimeOrganizationRepo;
 
     public MaxDaysOfWorkTimeListOrgDto get(Ksm008GetWkDetaislRequestParam requestParam) {
-        TargetOrgIdenInfor targetOrgIdenInfor = requestParam.getWorkPlaceUnit() == 0
+        TargetOrgIdenInfor targetOrgIdenInfor = requestParam.getWorkPlaceUnit() == TargetOrganizationUnit.WORKPLACE.value
                 ? TargetOrgIdenInfor.creatIdentifiWorkplace(requestParam.getWorkPlaceId())
                 : TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(requestParam.getWorkPlaceGroup());
         /*就業時間帯情報リストを取得する*/
         Optional<MaxDayOfWorkTimeOrganization> maxDayOfWorkTimeOrganization = maxDayOfWorkTimeOrganizationRepo.getWithCode(AppContexts.user().companyId(),
                 targetOrgIdenInfor,
                 new MaxDayOfWorkTimeCode(requestParam.getCode()));        /*就業時間帯コードリスト */
-        if(!maxDayOfWorkTimeOrganization.isPresent()){
+        if (!maxDayOfWorkTimeOrganization.isPresent()) {
             return new MaxDaysOfWorkTimeListOrgDto();
         }
         List<String> workHourCodeList = new ArrayList<>();
-        if (maxDayOfWorkTimeOrganization.isPresent() && !maxDayOfWorkTimeOrganization.get().getMaxDayOfWorkTime().getWorkTimeCodeList().isEmpty()) {
+        if (!maxDayOfWorkTimeOrganization.get().getMaxDayOfWorkTime().getWorkTimeCodeList().isEmpty()) {
             workHourCodeList = maxDayOfWorkTimeOrganization
                     .get()
                     .getMaxDayOfWorkTime()

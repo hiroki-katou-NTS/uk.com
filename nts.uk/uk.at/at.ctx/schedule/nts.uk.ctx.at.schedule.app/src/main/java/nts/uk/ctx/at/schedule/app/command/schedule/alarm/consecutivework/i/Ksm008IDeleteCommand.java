@@ -4,5 +4,6 @@ import lombok.Data;
 
 @Data
 public class Ksm008IDeleteCommand {
+    /** コード */
     private String code;
 }

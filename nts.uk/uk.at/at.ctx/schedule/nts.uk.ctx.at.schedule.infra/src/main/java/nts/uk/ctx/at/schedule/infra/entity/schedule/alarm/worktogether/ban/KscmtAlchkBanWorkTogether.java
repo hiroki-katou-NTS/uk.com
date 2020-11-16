@@ -83,7 +83,7 @@ public class KscmtAlchkBanWorkTogether extends ContractUkJpaEntity implements Se
 		entity.contractCd = AppContexts.user().contractCode();
 		entity.name = domain.getName().v();
 		entity.applyTs = domain.getApplicableTimeZoneCls().value;
-		entity.upperLimit = domain.getUpperLimit().v();
+		entity.upperLimit = domain.getUpperLimit();
 		
 		return entity;
 	}
@@ -104,7 +104,7 @@ public class KscmtAlchkBanWorkTogether extends ContractUkJpaEntity implements Se
 				, new BanWorkTogetherName(this.name)
 				, ApplicableTimeZoneCls.of(this.applyTs)
 				, dtl.stream().map(x -> x.pk.employeeId).collect(Collectors.toList())
-				, new MaxOfNumberEmployeeTogether(this.upperLimit)
+				, this.upperLimit
 				);
 	}
 }
