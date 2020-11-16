@@ -240,54 +240,27 @@ module nts.uk.at.view.kwr003.a {
       let attendenceItem = vm.rdgSelectedId() ? vm.freeSelectedCode() : vm.standardSelectedCode();
       let attendence: any = _.find((vm.rdgSelectedId() ? vm.settingListItems2() : vm.settingListItems1()), (x) => x.code === attendenceItem);
 
-      if (_.isNil(attendence)) attendence = _.head(vm.settingListItems1());
-
       let params = {
-        code: attendence.code, //項目選択コード
-        name: attendence.name,
-        settingId: attendence.id,
+        code: null, //項目選択コード
+        name: null,
+        settingId: null,
         standOrFree: vm.rdgSelectedId() //設定区分								
+      }
+
+      if (!_.isNil(attendence) && !_.isNil(attendence.code)) {
+        let params = {
+          code: attendence.code, //項目選択コード
+          name: attendence.name,
+          settingId: attendence.id,
+          standOrFree: vm.rdgSelectedId() //設定区分								
+        }
       }
 
       vm.$window.storage(KWR003_B_INPUT, ko.toJS(params)).then(() => {
         vm.$window.modal('/view/kwr/003/b/index.xhtml').then(() => {
           vm.$window.storage(KWR003_B_OUTPUT).then((data: any) => {
-            console.log(data);
             if (data) {
-              vm.getSettingListWorkStatus(vm.rdgSelectedId());
-              if (data.settingCategory == 0)
-                vm.standardSelectedCode(data.code);
-              else
-                vm.freeSelectedCode(data.code);
-
-              /* switch (data.status) {
-                case 0:
-                  //update new name after changed from screen B
-                  let index = _.findIndex(vm.settingListItems1(), (x) => x.code === data.code);
-                  let tempListItems = vm.settingListItems1();
-                  tempListItems[index] = new ItemModel(
-                    data.code,
-                    data.name.substring(0, data.name.indexOf('_' + data.code))
-                  );
-                  vm.settingListItems1([]);
-                  vm.settingListItems1(tempListItems);
-                  //reselect
-                  if (data.settingCategory == 0)
-                    vm.standardSelectedCode(data.code);
-                  else
-                    vm.freeSelectedCode(data.code);
-
-                  break;
-                case 1:
-                  //add new an item into settingListItems
-                  vm.settingListItems1.push(new ItemModel(data.code, data.name));
-                  break;
-                //deleted
-                case 2:
-                  //remove item that's deleted from screen B
-                  vm.settingListItems1(_.filter(vm.settingListItems1(), (x) => x.code !== data.code));
-                  break;
-              } */
+              vm.getSettingListWorkStatus(vm.rdgSelectedId(), data);
             }
             //settingListItems
           });
@@ -296,43 +269,36 @@ module nts.uk.at.view.kwr003.a {
       });
     }
 
-    /* initialWorkStatusInformation() {
-      const vm = this;
-
-      //パラメータ.就業担当者であるか = true || false
-      vm.isWorker(vm.$user.role.isInCharge.attendance);
-      vm.$window.storage(WORK_STATUS).then((data: any) => {
-        if (!_.isNil(data)) {
-          vm.rdgSelectedId(data.itemSelection); //項目選択
-          vm.standardSelectedCode(data.standardSelectedCode); //定型選択
-          vm.freeSelectedCode(data.freeSelectedCode); //自由設定
-          vm.zeroDisplayClassification(data.zeroDisplayClassification); //自由の選択済みコード
-          vm.pageBreakSpecification(data.pageBreakSpecification); //改ページ指定
-        }
-      });
-    } */
-
     /**
      * Gets setting listwork status
      * @param type 
      * 定型選択	: 0
      * 自由設定 : 1
      */
-    getSettingListWorkStatus(type: number) {
+    getSettingListWorkStatus(type: number, dataFromB?: any) {
       const vm = this;
       let listWorkStatus: Array<ItemModel> = [];
       //定型選択		
       vm.$ajax(PATH.getSettingListWorkStatus, { setting: type }).done((data) => {
         if (!_.isNil(data)) {
+          let selectedCode: any = null;
           _.forEach(data, (item) => {
-            listWorkStatus.push(new ItemModel(item.settingDisplayCode, item.settingName, item.settingId));
+            let code = _.padStart(item.settingDisplayCode, 2, '0');
+            if (!selectedCode) selectedCode = code;
+            listWorkStatus.push(new ItemModel(code, _.trim(item.settingName), item.settingId));
           });
-        }
 
-        if (type === 0) {
-          vm.settingListItems1(listWorkStatus);
-        } else
-          vm.settingListItems2(listWorkStatus);
+          if (!_.isNil(dataFromB) && !_.isNil(dataFromB.code)) selectedCode = dataFromB.code;
+
+          if (type === 0) {
+            vm.settingListItems1(listWorkStatus);
+            vm.standardSelectedCode(selectedCode);
+          } else {
+            vm.settingListItems2(listWorkStatus);
+            vm.freeSelectedCode(selectedCode);
+          }
+
+        }
       });
     }
 
@@ -397,7 +363,7 @@ module nts.uk.at.view.kwr003.a {
       return newListItems;
     }
 
-    exportExcel() {
+    exportExcelPDF( mode: number = 1) {
       let vm = this,
         validateError: any = {}; //not error
 
@@ -422,18 +388,38 @@ module nts.uk.at.view.kwr003.a {
       });
 
       vm.saveWorkScheduleOutputConditions().done(() => {
-        vm.$blockui('grayout');
-        let params = {
-          lstEmployeeId: lstEmployeeIds, //社員リスト
-          baseDate: vm.dpkYearMonth(), //対象年月,          
-          zeroDisplayClassification: 0,//ゼロ表示区分選択肢
-          pageBreakSpecification: 0, //改ページ指定選択肢,
-          standardFreeDivision: 0, //自由設定: A5_4_2   || 定型選択 : A5_3_2
-        }
-        vm.$blockui('hide');
+        //vm.$blockui('grayout');
 
-        /* nts.uk.request.exportFile(PATH.exportExcel, params).done((response) => {
-        });*/
+        let findObj = null;
+
+        if( vm.rdgSelectedId() === 0 ) {
+          findObj = _.find(vm.settingListItems1(), (x) => x.code === vm.standardSelectedCode());
+        } else  {
+          findObj = _.find(vm.settingListItems2(), (x) => x.code === vm.freeSelectedCode());
+        }
+        
+        let baseDate = moment(vm.dpkYearMonth(), 'YYYY/MM').format('YYYY/MM');
+        let endOfMonth = moment().endOf('month').format('DD');
+        let currentDate = moment().format('DD');
+
+        let params = {
+          mode: mode, //ExcelPdf区分
+          lstEmpIds: lstEmployeeIds, //社員リスト
+          targetDate: baseDate, //対象年月,          
+          isZeroDisplay: vm.zeroDisplayClassification(),//ゼロ表示区分選択肢
+          pageBreak: vm.pageBreakSpecification(), //改ページ指定選択肢,
+          standardFreeClassification: vm.rdgSelectedId(), //自由設定: A5_4_2   || 定型選択 : A5_3_2,
+          settingId: findObj.id, //ゼロ表示区分,
+          closureDate: {
+            closureDay: currentDate, //current day
+            lastDayOfMonth: endOfMonth === currentDate
+          } //締め日
+        }
+
+        console.log(params);
+        //vm.$blockui('hide');
+        nts.uk.request.exportFile(PATH.exportExcelPDF, params).done((response) => {
+        }).fail().always(() => vm.$blockui('hide'));
       });
       //create an excel file and redirect to download
     }
@@ -463,7 +449,6 @@ module nts.uk.at.view.kwr003.a {
       });
 
       return dfd.promise();
-
     }
 
     getWorkScheduleOutputConditions() {
