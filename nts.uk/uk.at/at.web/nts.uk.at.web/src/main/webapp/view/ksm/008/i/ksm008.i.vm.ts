@@ -391,6 +391,7 @@ module nts.uk.at.ksm008.i {
                         vm.getJScreenDetails(vm.jItems()[0].code);
                     }
                     vm.isKDL004StateChanged = false;
+                    $("#J3_3").focus();
                 } else if (vm.jItems().length > 0) {
                     vm.getJScreenDetails(vm.jScreenCurrentCode());
                     $("#J3_3").focus();
@@ -636,21 +637,20 @@ module nts.uk.at.ksm008.i {
                         let selectedData = nts.uk.ui.windows.getShared('dataShareKDL046');
                         console.log(selectedData);
                         vm.workPlace.unit(selectedData.unit);
-
                         if (selectedData.unit === 0) {
-                            vm.workPlace.workplaceName(selectedData.workplaceName);
-                            vm.workPlace.workplaceCode(selectedData.workplaceCode);
-                            vm.workPlace.workplaceId(selectedData.workplaceId);
                             if (selectedData.workplaceId != vm.workPlace.workplaceId()) {
                                 vm.isKDL004StateChanged = true;
                             }
+                            vm.workPlace.workplaceName(selectedData.workplaceName);
+                            vm.workPlace.workplaceCode(selectedData.workplaceCode);
+                            vm.workPlace.workplaceId(selectedData.workplaceId);
                         } else {
+                            if (selectedData.workplaceGroupId != vm.workPlace.workplaceGroupId()) {
+                                vm.isKDL004StateChanged = true;
+                            }
                             vm.workPlace.workplaceName(selectedData.workplaceGroupName);
                             vm.workPlace.workplaceGroupId(selectedData.workplaceGroupID);
                             vm.workPlace.workplaceCode(selectedData.workplaceGroupCode);
-                            if (selectedData.workplaceGroupID != vm.workPlace.workplaceId()) {
-                                vm.isKDL004StateChanged = true;
-                            }
                         }
                     }
                 })

@@ -1,0 +1,77 @@
+#contents {
+    width: 305px;
+    margin: 0 auto;
+    height: 587px;
+    border: 1px solid #B1B1B1;
+    border-top: 0;
+}
+
+.header{
+	border-bottom: 1px solid #B1B1B1;
+}
+
+.header div.form-label {
+	width: 259px;
+    border-color: #10A5F5;
+    margin: 2px;
+}
+
+.header .setting {
+	width: 25px;
+    height: 25px;
+    padding: 0;
+    border: 0;
+    box-shadow: none;
+    top: 6px;
+}
+
+.scroll {
+    overflow-y: scroll;
+    height: 545px;
+}
+
+.widget-table {
+	width: 225px;
+	margin: 0 auto;
+	table-layout: fixed;
+}
+
+.widget-table tr {
+    border-bottom: 1px solid #B1B1B1;
+}
+
+.widget-table td {
+    height: 38px;
+    width: 272px;
+}
+
+.widget-table .row-name{
+	float: left;
+    margin-left: 3px;
+}
+
+.widget-table .row-data{
+    float: right;
+    margin-right: 5px;
+    height: 18px;
+    vertical-align: top;
+    position: relative;
+}
+
+.widget-table .row-data .go-button {
+    width: 32px;
+    position: absolute;
+    top: -6px;
+    right: 31px;;
+}
+
+.widget-table .row-data .go-button button {
+    width: 25px;
+    border: 0;
+    box-shadow: none;
+    padding: 0;
+}
+
+#scrollTable table:last-child tr:last-child {
+	border: 0;
+}
