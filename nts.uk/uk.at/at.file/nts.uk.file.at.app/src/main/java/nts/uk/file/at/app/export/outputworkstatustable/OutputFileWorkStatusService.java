@@ -6,6 +6,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.app.query.outputworkstatustable.GetDetailOutputSettingWorkStatusQuery;
 import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.AffComHistAdapter;
@@ -62,7 +63,7 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
     @Override
     protected void handle(ExportServiceContext<OutputFileWorkStatusFileQuery> context) {
         OutputFileWorkStatusFileQuery query = context.getQuery();
-        GeneralDate targetDate = query.getTargetDate();
+        YearMonth targetDate = query.getTargetDate();
         List<String> lstEmpIds = query.getLstEmpIds();
         ClosureDate closureDate = new ClosureDate(query.getClosureDate().getClosureDay(), query.getClosureDate().getLastDayOfMonth());
         DatePeriod datePeriod = this.getFromClosureDate(targetDate, closureDate);
@@ -77,13 +78,13 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
         List<AffAtWorkplaceImport> lstAffAtWorkplaceImport = affWorkplaceAdapter
                 .findBySIdAndBaseDate(lstEmpIds, baseDate);
         List<EmployeeInfor> employeeInfoList = new ArrayList<EmployeeInfor>();
-        lstEmployeeInfo.forEach(e->{
-            val wpl = lstAffAtWorkplaceImport.stream().filter(i->i.getEmployeeId().equals(e.getSid())).findFirst();
+        lstEmployeeInfo.forEach(e -> {
+            val wpl = lstAffAtWorkplaceImport.stream().filter(i -> i.getEmployeeId().equals(e.getSid())).findFirst();
             employeeInfoList.add(new EmployeeInfor(
                     e.getSid(),
                     e.getEmployeeCode(),
                     e.getEmployeeName(),
-                    wpl.isPresent()?wpl.get().getWorkplaceId():null
+                    wpl.isPresent() ? wpl.get().getWorkplaceId() : null
             ));
         });
         List<String> listWorkplaceId = lstAffAtWorkplaceImport.stream()
@@ -91,21 +92,21 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
         // 3.1 Call [No.560]職場IDから職場の情報をすべて取得する
         List<WorkplaceInfor> lstWorkplaceInfo = workplaceConfigInfoAdapter.getWorkplaceInforByWkpIds(companyId, listWorkplaceId, baseDate);
 
-        List<WorkPlaceInfo> placeInfoList =lstWorkplaceInfo.stream()
-                .map(e->new WorkPlaceInfo(e.getWorkplaceId(),e.getWorkplaceCode(),e.getWorkplaceName()))
+        List<WorkPlaceInfo> placeInfoList = lstWorkplaceInfo.stream()
+                .map(e -> new WorkPlaceInfo(e.getWorkplaceId(), e.getWorkplaceCode(), e.getWorkplaceName()))
                 .collect(Collectors.toList());
 
-        RequireImpl require = new RequireImpl(itemServiceAdapter,affComHistAdapter);
+        RequireImpl require = new RequireImpl(itemServiceAdapter, affComHistAdapter);
         // 4. 勤務状況表の出力設定の詳細を取得する.
         WorkStatusOutputSettings workStatusOutputSetting = getDetailOutputSettingWorkStatusQuery.getDetail(query.getSettingId());
         // 5 Call 勤務状況表の表示内容を作成する:
-        val listData = CreateDisplayContentWorkStatusDService.displayContentsOfWorkStatus(require,datePeriod,
-                employeeInfoList,workStatusOutputSetting,placeInfoList);
+        val listData = CreateDisplayContentWorkStatusDService.displayContentsOfWorkStatus(require, datePeriod,
+                employeeInfoList, workStatusOutputSetting, placeInfoList);
 
         val listRs = new ArrayList<ExportExcelDto>();
-        for (int i = 0; i < listData.size() ; i++) {
+        for (int i = 0; i < listData.size(); i++) {
             val wplCode = listData.get(i).getWorkPlaceCode();
-            val item = listData.stream().filter(e->e.getWorkPlaceCode().equals(wplCode)).map(j->new DisplayContentWorkStatus(
+            val item = listData.stream().filter(e -> e.getWorkPlaceCode().equals(wplCode)).map(j -> new DisplayContentWorkStatus(
                     j.getEmployeeCode(),
                     j.getEmployeeName(),
                     j.getWorkPlaceCode(),
@@ -130,10 +131,10 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
         this.displayGenerator.generate(context.getGeneratorContext(), result);
     }
 
-    private DatePeriod getFromClosureDate(GeneralDate targetDate, ClosureDate closureDate) {
+    private DatePeriod getFromClosureDate(YearMonth yearMonth, ClosureDate closureDate) {
         Integer closureDay = closureDate.getClosureDay().v();
-        return new DatePeriod(GeneralDate.ymd(targetDate.year(), targetDate.month() - 1, closureDay + 1),
-                GeneralDate.ymd(targetDate.year(), targetDate.month(), closureDay));
+        val baseDate = GeneralDate.ymd(yearMonth.year(), yearMonth.month(), closureDay);
+        return new DatePeriod(baseDate.addMonths(-1).addDays(1), baseDate);
     }
 
     @AllArgsConstructor

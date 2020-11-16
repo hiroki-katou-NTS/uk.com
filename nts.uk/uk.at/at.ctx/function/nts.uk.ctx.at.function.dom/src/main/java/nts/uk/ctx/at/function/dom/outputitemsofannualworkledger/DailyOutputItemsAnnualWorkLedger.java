@@ -1,10 +1,10 @@
 package nts.uk.ctx.at.function.dom.outputitemsofannualworkledger;
 
 import lombok.AllArgsConstructor;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemDetailSelectionAttendanceItem;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemDetailAttItem;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.CommonAttributesOfForms;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.DailyMonthlyClassification;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.IndependentCalculationClassification;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.IndependentCalcClassic;
 import org.eclipse.persistence.internal.xr.ValueObject;
 
 /**
@@ -23,7 +23,7 @@ public class DailyOutputItemsAnnualWorkLedger extends ValueObject {
     private boolean printTtargetFlag;
 
     // 	単独計算区分
-    private IndependentCalculationClassification  independentCalculationClassification;
+    private IndependentCalcClassic independentCalcClassic;
 
     // 	日次月次区分
     private DailyMonthlyClassification dailyMonthlyClassification;
@@ -32,7 +32,7 @@ public class DailyOutputItemsAnnualWorkLedger extends ValueObject {
     private CommonAttributesOfForms attribute;
 
     // 	選択勤怠項目リスト
-    private OutputItemDetailSelectionAttendanceItem selectionAttendanceItem;
+    private OutputItemDetailAttItem selectionAttendanceItem;
 
     // 	[C-0] 出力項目を作成する
 

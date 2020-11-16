@@ -60,7 +60,7 @@ public class KfnmtRptWkRecItem extends UkJpaEntity implements Serializable {
                cid,
                e.getName().v(),
                e.isPrintTargetFlag(),
-               e.getIndependentCalculaClassification().value,
+               e.getIndependentCalcClassic().value,
                e.getItemDetailAttributes().value
        )).collect(Collectors.toList());
     }

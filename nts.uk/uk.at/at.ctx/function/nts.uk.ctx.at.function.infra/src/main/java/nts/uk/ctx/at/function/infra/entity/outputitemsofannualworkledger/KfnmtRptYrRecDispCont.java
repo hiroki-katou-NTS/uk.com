@@ -6,7 +6,7 @@ import lombok.val;
 import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.AnnualWorkLedgerOutputSetting;
 import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.DailyOutputItemsAnnualWorkLedger;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItem;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemDetailSelectionAttendanceItem;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemDetailAttItem;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -50,17 +50,16 @@ public class KfnmtRptYrRecDispCont extends UkJpaEntity implements Serializable {
     }
 
     public static List<KfnmtRptYrRecDispCont> fromDomain(AnnualWorkLedgerOutputSetting outputSetting,
-                                                           List<DailyOutputItemsAnnualWorkLedger> outputItemsOfTheDayList,
                                                            List<OutputItem> outputItemList,
-                                                           List<OutputItemDetailSelectionAttendanceItem> attendanceItemList){
+                                                           List<OutputItemDetailAttItem> attendanceItemList){
 
         val rs = new ArrayList<KfnmtRptYrRecDispCont>();
-        for (OutputItemDetailSelectionAttendanceItem i:attendanceItemList ) {
-            rs.addAll(outputItemList.stream().map(e->new KfnmtRptYrRecDispCont(
-                    new KfnmtRptYrRecDispContPk((outputSetting.getID()),e.getRank(),i.getAttendanceItemId()),
+        for (val i:outputItemList ) {
+            rs.addAll(i.getSelectedAttendanceItemList().stream().map(e->new KfnmtRptYrRecDispCont(
+                    new KfnmtRptYrRecDispContPk((outputSetting.getID()),i.getRank(),e.getAttendanceItemId()),
                     AppContexts.user().contractCode(),
                     AppContexts.user().companyId(),
-                    i.getOperator().value
+                    e.getOperator().value
             ) ).collect(Collectors.toList()));
         }
         return rs;

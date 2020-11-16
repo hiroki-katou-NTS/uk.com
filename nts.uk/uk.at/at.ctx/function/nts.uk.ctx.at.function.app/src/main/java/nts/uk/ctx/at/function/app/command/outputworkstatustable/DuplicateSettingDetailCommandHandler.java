@@ -13,6 +13,7 @@ import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.DuplicateWorkStat
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.WorkStatusOutputSettings;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.WorkStatusOutputSettingsRepository;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -44,27 +45,27 @@ public class DuplicateSettingDetailCommandHandler extends CommandHandler<Duplica
     public class RequireImpl implements DuplicateWorkStatusSettingDomainService.Require{
         private WorkStatusOutputSettingsRepository settingsRepository;
         @Override
-        public WorkStatusOutputSettings getWorkStatusOutputSettings(String cid, String settingId) {
-            return this.settingsRepository.getWorkStatusOutputSettings(cid,settingId);
+        public WorkStatusOutputSettings getWorkStatusOutputSettings(String settingId) {
+            return this.settingsRepository.getWorkStatusOutputSettings(AppContexts.user().companyId(),settingId);
         }
 
         @Override
-        public void duplicateConfigurationDetails(String cid, String replicationSourceSettingId,
+        public void duplicateConfigurationDetails(String replicationSourceSettingId,
                                                   String replicationDestinationSettingId,
                                                   OutputItemSettingCode duplicateCode,
                                                   OutputItemSettingName copyDestinationName) {
-            this.settingsRepository.duplicateConfigurationDetails(cid,replicationSourceSettingId,
+            this.settingsRepository.duplicateConfigurationDetails(AppContexts.user().companyId(),replicationSourceSettingId,
                     replicationDestinationSettingId,duplicateCode,copyDestinationName);
         }
 
         @Override
-        public boolean checkTheStandard(String code, String cid) {
-            return this.settingsRepository.exist(new OutputItemSettingCode(code),cid);
+        public boolean checkTheStandard(String code) {
+            return this.settingsRepository.exist(new OutputItemSettingCode(code),AppContexts.user().companyId());
         }
 
         @Override
-        public boolean checkFreedom(String code, String cid, String employeeId) {
-            return this.settingsRepository.exist(new OutputItemSettingCode(code),cid,employeeId);
+        public boolean checkFreedom(String code, String employeeId) {
+            return this.settingsRepository.exist(new OutputItemSettingCode(code),AppContexts.user().companyId(),employeeId);
         }
     }
 

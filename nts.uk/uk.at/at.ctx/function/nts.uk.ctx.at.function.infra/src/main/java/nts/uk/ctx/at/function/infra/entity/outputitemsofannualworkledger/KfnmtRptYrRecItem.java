@@ -7,7 +7,6 @@ import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.DailyOutputItems
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItem;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
-import org.omg.CORBA.PUBLIC_MEMBER;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -71,7 +70,7 @@ public class KfnmtRptYrRecItem extends UkJpaEntity implements Serializable {
                 AppContexts.user().companyId(),
                 e.getName().v(),
                 e.isPrintTargetFlag(),
-                e.getIndependentCalculaClassification().value,
+                e.getIndependentCalcClassic().value,
                 e.getDailyMonthlyClassification().value,
                 e.getItemDetailAttributes().value
         ) ).collect(Collectors.toList());

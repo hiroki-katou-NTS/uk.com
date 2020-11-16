@@ -8,10 +8,7 @@ import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.AnnualWorkLedger
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 
 /**
@@ -27,8 +24,10 @@ import java.io.Serializable;
 @Setter
 public class KfnmtRptYrRecSetting extends UkJpaEntity implements Serializable {
 
-    @EmbeddedId
-    public KfnmtRptYrRecSettingPk pk;
+    // 	設定ID
+    @Id
+    @Column(name = "ID")
+    public String iD;
 
     //	契約コード
     @Column(name = "CONTRACT_CD")
@@ -56,12 +55,12 @@ public class KfnmtRptYrRecSetting extends UkJpaEntity implements Serializable {
 
     @Override
     protected Object getKey() {
-        return pk;
+        return iD;
     }
 
     public static KfnmtRptYrRecSetting fromDomain(String cid,AnnualWorkLedgerOutputSetting outputSetting){
         return  new KfnmtRptYrRecSetting(
-                new KfnmtRptYrRecSettingPk(outputSetting.getID()),
+                outputSetting.getID(),
                 AppContexts.user().contractCode(),
                 cid,
                 Integer.parseInt(outputSetting.getCode().v()),

@@ -21,11 +21,11 @@ public interface WorkStatusOutputSettingsRepository {
      WorkStatusOutputSettings getWorkStatusOutputSettings(String cid, String settingId);
 
      //     [4]	定型選択を新規作成する
-     void createNew(String cid, WorkStatusOutputSettings outputSettings, List<OutputItem> outputItemList, List<OutputItemDetailSelectionAttendanceItem> attendanceItemList);
+     void createNew(String cid, WorkStatusOutputSettings outputSettings, List<OutputItem> outputItemList, List<OutputItemDetailAttItem> attendanceItemList);
 
      //     [5]	自由設定を新規作成する
      // 	[6]	定型選択を更新する
-     void update(String cid, String settingId, WorkStatusOutputSettings outputSettings, List<OutputItem> outputItemList, List<OutputItemDetailSelectionAttendanceItem> attendanceItemList);
+     void update(String cid, String settingId, WorkStatusOutputSettings outputSettings, List<OutputItem> outputItemList, List<OutputItemDetailAttItem> attendanceItemList);
 
      //     [7] 自由設定を更新する
      // 	[8]	設定の詳細を削除する

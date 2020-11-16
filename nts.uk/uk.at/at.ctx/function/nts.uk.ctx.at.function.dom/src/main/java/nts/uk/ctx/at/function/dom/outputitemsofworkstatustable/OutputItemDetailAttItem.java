@@ -13,7 +13,7 @@ import org.eclipse.persistence.internal.xr.ValueObject;
 @AllArgsConstructor
 @Getter
 @Setter
-public class   OutputItemDetailSelectionAttendanceItem extends ValueObject {
+public class OutputItemDetailAttItem extends ValueObject {
     //	演算子
     private OperatorsCommonToForms operator ;
 

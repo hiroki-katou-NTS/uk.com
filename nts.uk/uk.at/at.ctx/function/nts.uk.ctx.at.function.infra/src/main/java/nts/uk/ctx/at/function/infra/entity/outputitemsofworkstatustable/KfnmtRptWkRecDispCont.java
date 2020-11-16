@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItem;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemDetailSelectionAttendanceItem;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemDetailAttItem;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.WorkStatusOutputSettings;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -46,14 +46,14 @@ public class KfnmtRptWkRecDispCont extends UkJpaEntity implements Serializable {
 
     public static List<KfnmtRptWkRecDispCont>fromDomain(String cid, WorkStatusOutputSettings outputSettings,
                                                         List<OutputItem> outputItemList,
-                                                        List<OutputItemDetailSelectionAttendanceItem> attendanceItemList){
+                                                        List<OutputItemDetailAttItem> attendanceItemList){
         val rs = new ArrayList<KfnmtRptWkRecDispCont>();
-        for (OutputItemDetailSelectionAttendanceItem i:attendanceItemList ) {
-            rs.addAll(outputItemList.stream().map(e->new KfnmtRptWkRecDispCont(
-                    new KfnmtRptWkRecDispContPk(outputSettings.getSettingId(),e.getRank(),i.getAttendanceItemId()),
+        for (val item: outputItemList ) {
+            rs.addAll(item.getSelectedAttendanceItemList().stream().map(e->new KfnmtRptWkRecDispCont(
+                    new KfnmtRptWkRecDispContPk(outputSettings.getSettingId(),item.getRank(),e.getAttendanceItemId()),
                     AppContexts.user().contractCode(),
                     cid,
-                    i.getOperator().value
+                    e.getOperator().value
             ) ).collect(Collectors.toList()));
         }
         return rs;

@@ -9,7 +9,7 @@ import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.Attendanc
 import nts.uk.ctx.at.function.dom.commonform.ClosureDateEmployment;
 import nts.uk.ctx.at.function.dom.commonform.GetSuitableDateByClosureDateUtility;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItem;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemDetailSelectionAttendanceItem;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemDetailAttItem;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.StatusOfEmployee;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.CommonAttributesOfForms;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.DailyMonthlyClassification;
@@ -105,7 +105,7 @@ public class CreateAnnualWorkLedgerContentDomainService {
                 rightAttribute = item.getItemDetailAttributes();
             }
 
-            val itemIds = item.getSelectedAttendanceItemList().stream().map(OutputItemDetailSelectionAttendanceItem::getAttendanceItemId).collect(Collectors.toList());
+            val itemIds = item.getSelectedAttendanceItemList().stream().map(OutputItemDetailAttItem::getAttendanceItemId).collect(Collectors.toList());
             // 「所属状況」の「期間」の中にループを行い: ・社員ID、・①の「印刷期間」の一つ
             for (DatePeriod period : emp.getListPeriod()) {
                 // 指定した期間内の勤怠項目IDに対応する項目を返す
@@ -141,7 +141,7 @@ public class CreateAnnualWorkLedgerContentDomainService {
         // Loop 出力項目 月次
         for (OutputItem monthlyItem : monthlyOutputItems) {
             List<MonthlyValue> lstMonthlyValue = new ArrayList<>();
-            val itemIds = monthlyItem.getSelectedAttendanceItemList().stream().map(OutputItemDetailSelectionAttendanceItem::getAttendanceItemId).collect(Collectors.toList());
+            val itemIds = monthlyItem.getSelectedAttendanceItemList().stream().map(OutputItemDetailAttItem::getAttendanceItemId).collect(Collectors.toList());
 
             // 「期間」の中にループを行い
             for (DatePeriod period : emp.getListPeriod()) {
@@ -164,7 +164,7 @@ public class CreateAnnualWorkLedgerContentDomainService {
         StringBuilder character = new StringBuilder();
         Double actualValue = 0d;
 
-        for (OutputItemDetailSelectionAttendanceItem ite : item.getSelectedAttendanceItemList()) {
+        for (OutputItemDetailAttItem ite : item.getSelectedAttendanceItemList()) {
             val subItem = (attendance.getAttendanceItems().stream().
                     filter(x -> x.getItemId() == ite.getAttendanceItemId()).findFirst());
             if (subItem.isPresent()) {
@@ -188,7 +188,7 @@ public class CreateAnnualWorkLedgerContentDomainService {
         StringBuilder character = new StringBuilder();
         Double actualValue = 0d;
 
-        for (OutputItemDetailSelectionAttendanceItem ite : item.getSelectedAttendanceItemList()) {
+        for (OutputItemDetailAttItem ite : item.getSelectedAttendanceItemList()) {
             val subItem = (monthlyRecordValue.getItemValues().stream().
                     filter(x -> x.getItemId() == ite.getAttendanceItemId()).findFirst());
             if (subItem.isPresent()) {

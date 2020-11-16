@@ -4,7 +4,7 @@ package nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums;
  * Enumeration: 帳票共通の単独計算区分
  * @author chinh.hm
  */
-public enum IndependentCalculationClassification {
+public enum IndependentCalcClassic {
     //1 	単独
     ALONE(1),
 
@@ -14,7 +14,7 @@ public enum IndependentCalculationClassification {
     /** The value. */
     public final int value;
 
-    private IndependentCalculationClassification(int value) {
+    private IndependentCalcClassic(int value) {
         this.value = value;
     }
 

@@ -3,7 +3,6 @@ package nts.uk.ctx.at.function.dom.outputitemsofworkstatustable;
 
 import lombok.val;
 import nts.arc.error.BusinessException;
-import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.AttendanceResultDto;
@@ -14,7 +13,6 @@ import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.CommonAttri
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.OperatorsCommonToForms;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -60,7 +58,7 @@ public class CreateDisplayContentWorkStatusDService {
                 val itemValue = new ArrayList<DailyValue>();
                 e.getListPeriod().forEach(i -> i.datesBetween().forEach(l -> {
                     val listAtId = j.getSelectedAttendanceItemList().parallelStream()
-                            .map(OutputItemDetailSelectionAttendanceItem::getAttendanceItemId)
+                            .map(OutputItemDetailAttItem::getAttendanceItemId)
                             .collect(Collectors.toList());
                     val listAttendances = require.getValueOf(e.getEmployeeId(), l, listAtId);
                     Double actualValue = 0D;

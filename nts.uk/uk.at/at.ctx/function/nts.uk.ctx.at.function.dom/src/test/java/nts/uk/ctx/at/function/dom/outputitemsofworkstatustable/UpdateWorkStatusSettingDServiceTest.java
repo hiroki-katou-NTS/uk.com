@@ -37,26 +37,26 @@ public class UpdateWorkStatusSettingDServiceTest {
                     1,
                     new FormOutputItemName("itemName01"),
                     true,
-                    EnumAdaptor.valueOf(1, IndependentCalculationClassification.class),
+                    EnumAdaptor.valueOf(1, IndependentCalcClassic.class),
                     EnumAdaptor.valueOf(1, DailyMonthlyClassification.class),
                     EnumAdaptor.valueOf(3, CommonAttributesOfForms.class),
                     Arrays.asList(
-                            new OutputItemDetailSelectionAttendanceItem(EnumAdaptor.valueOf(1, OperatorsCommonToForms.class), 1),
-                            new OutputItemDetailSelectionAttendanceItem(EnumAdaptor.valueOf(1, OperatorsCommonToForms.class), 1)
+                            new OutputItemDetailAttItem(EnumAdaptor.valueOf(1, OperatorsCommonToForms.class), 1),
+                            new OutputItemDetailAttItem(EnumAdaptor.valueOf(1, OperatorsCommonToForms.class), 1)
                     )
             ),
             new OutputItem(
                     2,
                     new FormOutputItemName("itemName02"),
                     true,
-                    EnumAdaptor.valueOf(2, IndependentCalculationClassification.class),
+                    EnumAdaptor.valueOf(2, IndependentCalcClassic.class),
                     EnumAdaptor.valueOf(2, DailyMonthlyClassification.class),
                     EnumAdaptor.valueOf(5, CommonAttributesOfForms.class),
                     Arrays.asList(
-                            new OutputItemDetailSelectionAttendanceItem(
+                            new OutputItemDetailAttItem(
                                     EnumAdaptor.valueOf(2, OperatorsCommonToForms.class),
                                     2),
-                            new OutputItemDetailSelectionAttendanceItem(
+                            new OutputItemDetailAttItem(
                                     EnumAdaptor.valueOf(1, OperatorsCommonToForms.class),
                                     2)
                     )
@@ -72,26 +72,26 @@ public class UpdateWorkStatusSettingDServiceTest {
                             1,
                             new FormOutputItemName("itemName01"),
                             true,
-                            EnumAdaptor.valueOf(1, IndependentCalculationClassification.class),
+                            EnumAdaptor.valueOf(1, IndependentCalcClassic.class),
                             EnumAdaptor.valueOf(1, DailyMonthlyClassification.class),
                             EnumAdaptor.valueOf(1, CommonAttributesOfForms.class),
                             Arrays.asList(
-                                    new OutputItemDetailSelectionAttendanceItem(EnumAdaptor.valueOf(1, OperatorsCommonToForms.class), 1),
-                                    new OutputItemDetailSelectionAttendanceItem(EnumAdaptor.valueOf(2, OperatorsCommonToForms.class), 1)
+                                    new OutputItemDetailAttItem(EnumAdaptor.valueOf(1, OperatorsCommonToForms.class), 1),
+                                    new OutputItemDetailAttItem(EnumAdaptor.valueOf(2, OperatorsCommonToForms.class), 1)
                             )
                     ),
                     new OutputItem(
                             2,
                             new FormOutputItemName("itemName02"),
                             true,
-                            EnumAdaptor.valueOf(2, IndependentCalculationClassification.class),
+                            EnumAdaptor.valueOf(2, IndependentCalcClassic.class),
                             EnumAdaptor.valueOf(2, DailyMonthlyClassification.class),
                             EnumAdaptor.valueOf(2, CommonAttributesOfForms.class),
                             Arrays.asList(
-                                    new OutputItemDetailSelectionAttendanceItem(
+                                    new OutputItemDetailAttItem(
                                             EnumAdaptor.valueOf(2, OperatorsCommonToForms.class),
                                             2),
-                                    new OutputItemDetailSelectionAttendanceItem(
+                                    new OutputItemDetailAttItem(
                                             EnumAdaptor.valueOf(1, OperatorsCommonToForms.class),
                                             2)
                             )

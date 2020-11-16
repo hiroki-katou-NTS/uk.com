@@ -8,7 +8,7 @@ import nts.uk.ctx.at.function.app.command.outputworkstatustable.*;
 import nts.uk.ctx.at.function.app.query.outputworkstatustable.*;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.FormOutputItemName;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItem;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemDetailSelectionAttendanceItem;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemDetailAttItem;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.*;
 import nts.uk.ctx.at.function.ws.outputworkstatustable.dto.*;
 
@@ -78,8 +78,8 @@ public class OutputItemSettingWebService extends WebService {
                             e.getRank(),
                             e.getName() != null ? e.getName().v() : null,
                             e.isPrintTargetFlag(),
-                            e.getIndependentCalculaClassification() != null ? e.getIndependentCalculaClassification().value : 0,
-                            e.getIndependentCalculaClassification() != null ? e.getIndependentCalculaClassification().name() : null,
+                            e.getIndependentCalcClassic() != null ? e.getIndependentCalcClassic().value : 0,
+                            e.getIndependentCalcClassic() != null ? e.getIndependentCalcClassic().name() : null,
                             e.getDailyMonthlyClassification() != null ? e.getDailyMonthlyClassification().value : 0,
                             e.getDailyMonthlyClassification() != null ? e.getDailyMonthlyClassification().name() : null,
                             e.getItemDetailAttributes() != null ? e.getItemDetailAttributes().value : 0,
@@ -110,7 +110,7 @@ public class OutputItemSettingWebService extends WebService {
         if (dto != null) {
             List<OutputItem> outputItemList = new ArrayList<>();
             dto.getOutputItemList().forEach(e -> {
-                val selectedAttItemList = e.getSelectedAttItemList().stream().map(i -> new OutputItemDetailSelectionAttendanceItem(
+                val selectedAttItemList = e.getSelectedAttItemList().stream().map(i -> new OutputItemDetailAttItem(
                         EnumAdaptor.valueOf(i.getOperator(), OperatorsCommonToForms.class),
                         i.getAttendanceItemId()
                 )).collect(Collectors.toList());
@@ -118,7 +118,7 @@ public class OutputItemSettingWebService extends WebService {
                         e.getRank(),
                         new FormOutputItemName(e.getName()),
                         e.isPrintTargetFlag(),
-                        EnumAdaptor.valueOf(e.getIndependentCalClassic(), IndependentCalculationClassification.class),
+                        EnumAdaptor.valueOf(e.getIndependentCalClassic(), IndependentCalcClassic.class),
                         EnumAdaptor.valueOf(e.getDailyMonthlyClassic(), DailyMonthlyClassification.class),
                         EnumAdaptor.valueOf(e.getItemDetailAtt(), CommonAttributesOfForms.class),
                         selectedAttItemList
@@ -145,10 +145,10 @@ public class OutputItemSettingWebService extends WebService {
                         e.getRank(),
                         new FormOutputItemName(e.getName()),
                         e.isPrintTargetFlag(),
-                        EnumAdaptor.valueOf(e.getIndependentCalClassic(), IndependentCalculationClassification.class),
+                        EnumAdaptor.valueOf(e.getIndependentCalClassic(), IndependentCalcClassic.class),
                         EnumAdaptor.valueOf(e.getDailyMonthlyClassic(), DailyMonthlyClassification.class),
                         EnumAdaptor.valueOf(e.getItemDetailAtt(), CommonAttributesOfForms.class),
-                        e.getSelectedAttItemList().stream().map(i -> new OutputItemDetailSelectionAttendanceItem(
+                        e.getSelectedAttItemList().stream().map(i -> new OutputItemDetailAttItem(
                                 EnumAdaptor.valueOf(i.getOperator(), OperatorsCommonToForms.class),
                                 i.getAttendanceItemId()
                         )).collect(Collectors.toList())));

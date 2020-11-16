@@ -27,16 +27,15 @@ public class CreateWorkStatusSettingDomainService {
 
     ) {
         Boolean checkDuplicate = false;
-        val cid = AppContexts.user().companyId();
         val empId = AppContexts.user().employeeId();
         // 1.1 設定区分 ＝＝ 定型選択; 定型選択の重複をチェックする(出力項目設定コード, 会社ID)
         if (settingCategory == SettingClassificationCommon.STANDARD_SELECTION) {
 
-            checkDuplicate = require.checkTheStandard(code.v(), cid);
+            checkDuplicate = require.checkTheStandard(code.v());
         }
         // 1.2 設定区分 == 自由設定; 自由設定の重複をチェックする(出力項目設定コード, 会社ID, 社員ID)
         if (settingCategory == SettingClassificationCommon.FREE_SETTING) {
-            checkDuplicate = require.checkFreedom(code.v(), cid, empId);
+            checkDuplicate = require.checkFreedom(code.v(), empId);
         }
         // ①　== true
         if (checkDuplicate) {
@@ -69,7 +68,7 @@ public class CreateWorkStatusSettingDomainService {
             );
         }
         // 5 create(): List<出力項目詳細の所属勤怠項目>
-        List<OutputItemDetailSelectionAttendanceItem> itemListAttendanceItem = new ArrayList<>();
+        List<OutputItemDetailAttItem> itemListAttendanceItem = new ArrayList<>();
 
         outputItemList.forEach(e -> itemListAttendanceItem.addAll(e.getSelectedAttendanceItemList()));
         WorkStatusOutputSettings finalOutputSettings = outputSettings;
@@ -77,18 +76,18 @@ public class CreateWorkStatusSettingDomainService {
         return AtomTask.of(() -> {
             //7. 1 設定区分 == 定型選択; 定型選択を新規作成する(会社ID, 勤務状況の出力設定, 勤務状況の出力項目, 勤務状況の出力項目詳細)
             if (settingCategory == SettingClassificationCommon.STANDARD_SELECTION) {
-                require.createNewFixedPhrase(cid, finalOutputSettings, outputItemList, itemListAttendanceItem);
+                require.createNewFixedPhrase(finalOutputSettings, outputItemList, itemListAttendanceItem);
             }
             // 7.2 設定区分 == 自由設定; 自由設定を新規作成する(会社ID, 社員コード, 勤務状況の出力設定, 勤務状況の出力項目, 勤務状況の出力項目詳細)
             if (settingCategory == SettingClassificationCommon.FREE_SETTING) {
-                require.createNewFixedPhrase(cid, finalOutputSettings, outputItemList, itemListAttendanceItem);
+                require.createNewFixedPhrase(finalOutputSettings, outputItemList, itemListAttendanceItem);
             }
         });
     }
 
     public interface Require extends WorkStatusOutputSettings.Require {
         //  [1]定型選択を新規作成する
-        void createNewFixedPhrase(String cid, WorkStatusOutputSettings outputSettings, List<OutputItem> outputItemList, List<OutputItemDetailSelectionAttendanceItem> attendanceItemList);
+        void createNewFixedPhrase(WorkStatusOutputSettings outputSettings, List<OutputItem> outputItemList, List<OutputItemDetailAttItem> attendanceItemList);
 
     }
 }

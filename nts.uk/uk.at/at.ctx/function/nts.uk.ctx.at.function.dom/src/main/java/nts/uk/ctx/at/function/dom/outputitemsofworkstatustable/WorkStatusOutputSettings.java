@@ -17,12 +17,11 @@ import java.util.List;
  * @author : chinh.hm
  */
 @AllArgsConstructor
-@NoArgsConstructor
 @Getter
 public class WorkStatusOutputSettings extends AggregateRoot {
 
     // 	設定ID 	(GUID)
-    private String settingId;
+    private final String settingId;
 
     //  設定表示コード ->(出力項目設定コード)
     private OutputItemSettingCode settingDisplayCode;
@@ -37,26 +36,25 @@ public class WorkStatusOutputSettings extends AggregateRoot {
     private SettingClassificationCommon standardFreeDivision;
 
     // 	出力項目リスト
-    @Setter
     private List<OutputItem> outputItem;
 
     //  [C-0] 勤怠状況の出力設定を作成する
 
     // 	[1]　定型選択の重複をチェックする
-    public  boolean  checkDuplicateStandardSelections(Require require,String yearHolidayCode,String cid){
-        return require.checkTheStandard(yearHolidayCode,cid);
+    public  boolean  checkDuplicateStandardSelections(Require require,String outputItemSettingCode){
+        return require.checkTheStandard(outputItemSettingCode);
     }
 
     // [2]　自由設定の重複をチェックする
-    public  boolean checkDuplicateFreeSettings(Require require,String yearHolidayCode,String cid,String employeeId){
-        return require.checkFreedom(yearHolidayCode,cid,employeeId);
+    public  boolean checkDuplicateFreeSettings(Require require,String outputItemSettingCode,String employeeId){
+        return require.checkFreedom(outputItemSettingCode,employeeId);
     }
 
     public interface Require{
         // 	[R-1]　定型をチェックする-> 勤務状況表の出力項目Repository.	exist(コード、ログイン会社ID)
-        boolean checkTheStandard(String code,String cid);
+        boolean checkTheStandard(String code);
         // 	[R-2]  自由をチェックする->	勤務状況表の出力項目Repository.	exist(コード、ログイン会社ID、ログイン社員ID)
-        boolean checkFreedom(String code,String cid,String employeeId);
+        boolean checkFreedom(String code,String employeeId);
 
     }
 
