@@ -10,4 +10,6 @@ public interface FixedExtractionAppapvConRepository {
      * @return List アラームリスト（職場）申請承認の固定抽出条件
      */
     List<FixedExtractionAppapvCon> get(String errorAlarmWorkplaceId);
+
+    List<FixedExtractionAppapvCon> getByIds(List<String> sids);
 }

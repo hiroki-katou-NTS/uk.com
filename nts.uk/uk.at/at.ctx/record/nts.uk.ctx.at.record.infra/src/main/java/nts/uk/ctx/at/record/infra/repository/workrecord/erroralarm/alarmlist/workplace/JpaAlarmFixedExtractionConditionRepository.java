@@ -12,8 +12,15 @@ import java.util.List;
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class JpaAlarmFixedExtractionConditionRepository extends JpaRepository implements AlarmFixedExtractionConditionRepository {
+
     @Override
     public List<AlarmFixedExtractionCondition> getByID(String id) {
         return null;
     }
+
+    @Override
+    public List<AlarmFixedExtractionCondition> getByIDs(List<String> ids) {
+        return null;
+    }
+
 }

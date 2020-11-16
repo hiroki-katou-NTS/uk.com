@@ -7,4 +7,6 @@ public interface AlarmFixedExtractionConditionRepository {
 
     List<AlarmFixedExtractionCondition> getByID(String id);
 
+    List<AlarmFixedExtractionCondition> getByIDs(List<String> ids);
+
 }

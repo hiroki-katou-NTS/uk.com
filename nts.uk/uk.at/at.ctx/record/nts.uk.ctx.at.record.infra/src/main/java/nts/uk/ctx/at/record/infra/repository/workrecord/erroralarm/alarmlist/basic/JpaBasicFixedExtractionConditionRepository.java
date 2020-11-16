@@ -18,6 +18,11 @@ public class JpaBasicFixedExtractionConditionRepository extends JpaRepository im
     }
 
     @Override
+    public List<BasicFixedExtractionCondition> getByIDs(List<String> ids) {
+        return null;
+    }
+
+    @Override
     public void register(BasicFixedExtractionCondition domain) {
 
     }
