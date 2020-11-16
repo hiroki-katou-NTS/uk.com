@@ -2596,7 +2596,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.enableBtnPaste(true);
             self.enableBtnCoppy(true);
             self.enableHelpBtn(true);
-
+            self.updateExTableWhenChangeModeBg(self.detailContentDeco);
             if (self.selectedModeDisplayInBody() == 'time' || self.selectedModeDisplayInBody() == 'shortName') {
                 // enable combobox workType, workTime
                 __viewContext.viewModel.viewAB.enableListWorkType(true);
@@ -2615,7 +2615,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.enableBtnInput(false);
                 self.shiftPalletControlEnable();
             }
-            self.updateExTableWhenChangeModeBg(self.detailContentDeco);
+            if(self.backgroundColorSelected() == 1){
+                self.backgroundColorSelected(null);
+                self.backgroundColorSelected(0);    
+            }
             nts.uk.ui.block.clear();
         }
         
