@@ -17,7 +17,11 @@ import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.RegisterWorkCycl
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.WorkCycleCreateResult;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
@@ -52,7 +56,7 @@ public class AddWorkCycleCommandHandler extends CommandHandlerWithResult<AddWork
 
         val command = context.getCommand();
         String cid = AppContexts.user().companyId();
-        RegisterWorkCycleServiceImlp require = new RegisterWorkCycleServiceImlp(workCycleRepository,basicScheduleService, workTypeRepo,workTimeSettingRepository,workTimeSettingService, basicScheduleService);
+        RegisterWorkCycleServiceImlp require = new RegisterWorkCycleServiceImlp(workCycleRepository,basicScheduleService, workTypeRepo,workTimeSettingRepository,workTimeSettingService);
         WorkCycleCreateResult result = RegisterWorkCycleService.register(require, AddWorkCycleCommand.createFromCommand(command, cid), true);
         if (!result.isHasError()) {
             AtomTask atomTask = result.getAtomTask().get();
@@ -77,8 +81,6 @@ public class AddWorkCycleCommandHandler extends CommandHandlerWithResult<AddWork
 
         private WorkTimeSettingService workTimeSettingService;
 
-        private BasicScheduleService basicScheduleService;
-
         @Override
         public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
             return service.checkNeededOfWorkTimeSetting(workTypeCode);
@@ -100,11 +102,6 @@ public class AddWorkCycleCommandHandler extends CommandHandlerWithResult<AddWork
         }
 
         @Override
-        public WorkStyle checkWorkDay(String workTypeCode) {
-            return basicScheduleService.checkWorkDay(workTypeCode);
-        }
-
-        @Override
         public boolean exists(String cid, String code) {
             return workCycleRepository.exists(cid, code);
         }
@@ -118,6 +115,30 @@ public class AddWorkCycleCommandHandler extends CommandHandlerWithResult<AddWork
         public void update(WorkCycle item) {
             this.workCycleRepository.update(item);
         }
+
+		@Override
+		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
 
     }
 
