@@ -2,10 +2,7 @@ package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlist.monthl
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.monthly.enums.FixedCheckMonthlyItemName;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.monthly.FixedExtractionMonthlyCon;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMessage;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.AggregateTableEntity;
 
@@ -58,9 +55,9 @@ public class KrcmtWkpMonFxexCon extends AggregateTableEntity {
     public FixedExtractionMonthlyCon toDomain() {
         return FixedExtractionMonthlyCon.create(
                 this.pk.errorAlarmWorkplaceId,
-                EnumAdaptor.valueOf(this.pk.fixedCheckMonthlyItemName, FixedCheckMonthlyItemName.class),
+                this.pk.fixedCheckMonthlyItemName,
                 this.useAtr,
-                new DisplayMessage(this.messageDisp)
+                this.messageDisp
         );
     }
 }

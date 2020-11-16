@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.monthly;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.basic.AlarmCheckClassification;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.monthly.enums.FixedCheckMonthlyItemName;
@@ -52,14 +53,16 @@ public class FixedExtractionMonthlyItems extends AggregateRoot {
      * @param firstMessageDisp          最初表示するメッセージ
      * @param messageColor              メッセージの色
      */
-    public static FixedExtractionMonthlyItems create(FixedCheckMonthlyItemName fixedCheckMonthlyItemName,
-                                                     AlarmCheckClassification alarmCheckCls,
+    public static FixedExtractionMonthlyItems create(int fixedCheckMonthlyItemName,
+                                                     int alarmCheckCls,
                                                      String monthlyCheckName,
-                                                     DisplayMessage firstMessageDisp,
-                                                     Optional<ColorCode> messageColor) {
+                                                     String firstMessageDisp,
+                                                     String messageColor) {
 
-        return new FixedExtractionMonthlyItems(fixedCheckMonthlyItemName, alarmCheckCls,
-                monthlyCheckName, firstMessageDisp,
-                messageColor);
+        return new FixedExtractionMonthlyItems(EnumAdaptor.valueOf(fixedCheckMonthlyItemName, FixedCheckMonthlyItemName.class),
+                EnumAdaptor.valueOf(alarmCheckCls, AlarmCheckClassification.class),
+                monthlyCheckName,
+                new DisplayMessage(firstMessageDisp),
+                messageColor != null ? Optional.of(new ColorCode(messageColor)) : Optional.empty());
     }
 }

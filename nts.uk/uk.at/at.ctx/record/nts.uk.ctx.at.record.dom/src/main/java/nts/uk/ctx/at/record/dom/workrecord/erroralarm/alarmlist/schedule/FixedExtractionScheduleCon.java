@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.schedule;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMessage;
 
@@ -42,10 +43,13 @@ public class FixedExtractionScheduleCon extends AggregateRoot {
      * @param messageDisp           表示するメッセージ
      */
     public static FixedExtractionScheduleCon create(String errorAlarmWorkplaceId,
-                                                    FixedCheckDayItemName fixedCheckDayItemName,
+                                                    int fixedCheckDayItemName,
                                                     boolean useAtr,
-                                                    DisplayMessage messageDisp) {
+                                                    String messageDisp) {
 
-        return new FixedExtractionScheduleCon(errorAlarmWorkplaceId, fixedCheckDayItemName, useAtr, messageDisp);
+        return new FixedExtractionScheduleCon(errorAlarmWorkplaceId,
+                EnumAdaptor.valueOf(fixedCheckDayItemName, FixedCheckDayItemName.class),
+                useAtr,
+                new DisplayMessage(messageDisp));
     }
 }

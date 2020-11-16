@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.applicationappr
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMessage;
 
@@ -42,10 +43,13 @@ public class FixedExtractionAppapvCon extends AggregateRoot {
      * @param useAtr                使用区分
      */
     public static FixedExtractionAppapvCon create(String errorAlarmWorkplaceId,
-                                                  CheckItemAppapv checkItemAppapv,
-                                                  DisplayMessage messageDisp,
+                                                  int checkItemAppapv,
+                                                  String messageDisp,
                                                   boolean useAtr) {
 
-        return new FixedExtractionAppapvCon(errorAlarmWorkplaceId, checkItemAppapv, messageDisp, useAtr);
+        return new FixedExtractionAppapvCon(errorAlarmWorkplaceId,
+                EnumAdaptor.valueOf(checkItemAppapv, CheckItemAppapv.class),
+                new DisplayMessage(messageDisp),
+                useAtr);
     }
 }

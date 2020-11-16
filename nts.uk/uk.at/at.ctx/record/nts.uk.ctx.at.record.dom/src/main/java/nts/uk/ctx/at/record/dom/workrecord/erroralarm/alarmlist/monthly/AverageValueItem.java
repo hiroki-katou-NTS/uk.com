@@ -2,6 +2,8 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.monthly;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.val;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.monthly.enums.AverageNumberOfDays;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.monthly.enums.AverageNumberOfTimes;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.monthly.enums.AverageRatio;
@@ -24,14 +26,14 @@ public class AverageValueItem {
     private Optional<BonusPaySettingCode> checkTarget;
 
     /**
-     * 平均回数
-     */
-    private Optional<AverageNumberOfTimes> averageNumberOfTimes;
-
-    /**
      * 平均日数
      */
     private Optional<AverageNumberOfDays> averageNumberOfDays;
+
+    /**
+     * 平均回数
+     */
+    private Optional<AverageNumberOfTimes> averageNumberOfTimes;
 
     /**
      * 平均時間
@@ -46,18 +48,28 @@ public class AverageValueItem {
     /**
      * 作成する
      *
-     * @param checkTarget          Optional<チェック対象>
-     * @param averageNumberOfTimes Optional<平均回数>
-     * @param averageNumberOfDays  Optional<平均日数>
-     * @param averageTime          Optional<平均時間>
-     * @param averageRatio         Optional<平均比率>
+     * @param checkTarget          チェック対象
+     * @param averageNumberOfDays  平均日数
+     * @param averageNumberOfTimes 平均回数
+     * @param averageTime          平均時間
+     * @param averageRatio         平均比率
      */
-    public static AverageValueItem create(Optional<BonusPaySettingCode> checkTarget,
-                                          Optional<AverageNumberOfTimes> averageNumberOfTimes,
-                                          Optional<AverageNumberOfDays> averageNumberOfDays,
-                                          Optional<AverageTime> averageTime,
-                                          Optional<AverageRatio> averageRatio) {
+    public static AverageValueItem create(String checkTarget,
+                                          Integer averageNumberOfDays,
+                                          Integer averageNumberOfTimes,
+                                          Integer averageTime,
+                                          Integer averageRatio) {
 
-        return new AverageValueItem(checkTarget, averageNumberOfTimes, averageNumberOfDays, averageTime, averageRatio);
+        val checkTargetOpt = checkTarget != null ? Optional.of(new BonusPaySettingCode(checkTarget)) : Optional.empty();
+
+        val averageNumberOfDaysOpt = averageNumberOfDays != null ? Optional.of(EnumAdaptor.valueOf(averageNumberOfDays, AverageNumberOfDays.class)) : Optional.empty();
+
+        val averageNumberOfTimesOpt = averageNumberOfTimes != null ? Optional.of(EnumAdaptor.valueOf(averageNumberOfTimes, AverageNumberOfTimes.class)) : Optional.empty();
+
+        val averageTimeOpt = averageTime != null ? Optional.of(EnumAdaptor.valueOf(averageTime, AverageTime.class)) : Optional.empty();
+
+        val averageRatioOpt = averageRatio != null ? Optional.of(EnumAdaptor.valueOf(averageRatio, AverageRatio.class)) : Optional.empty();
+
+        return new AverageValueItem(checkTargetOpt, averageNumberOfDaysOpt, averageNumberOfTimesOpt, averageTimeOpt, averageRatioOpt);
     }
 }

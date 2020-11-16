@@ -11,6 +11,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -19,7 +20,7 @@ public class JpaFixedExtractionDayItemsRepository extends JpaRepository implemen
     private static final String SELECT_ALL_FXEX_DAY_ITM = "SELECT a FROM KrcmtWkpFxexDayItm a ";
 
     private static final String SELECT_RANGE_FXEX_DAY_ITM_BY_NO = SELECT_ALL_FXEX_DAY_ITM
-            + " WHERE a.pk.fixedCheckDayItems IN :no ";
+            + " WHERE a.fixedCheckDayItems IN :no ";
 
     @Override
     public List<FixedExtractionDayItems> get(List<FixedCheckDayItems> fixedCheckDayItems) {
@@ -28,7 +29,9 @@ public class JpaFixedExtractionDayItemsRepository extends JpaRepository implemen
         }
 
         return this.queryProxy().query(SELECT_RANGE_FXEX_DAY_ITM_BY_NO, KrcmtWkpFxexDayItm.class)
-                .setParameter("no", fixedCheckDayItems)
+                .setParameter("no", fixedCheckDayItems.stream().map(i -> {
+                    return i.value;
+                }).collect(Collectors.toList()))
                 .getList(KrcmtWkpFxexDayItm::toDomain);
     }
 }

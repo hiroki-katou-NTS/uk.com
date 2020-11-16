@@ -18,7 +18,7 @@ public class KrcmtWkpfxexAppapvConPK {
 
     /* No */
     @Column(name = "NO")
-    public int fixedCheckDayItems;
+    public int checkItemAppapv;
 
     public static KrcmtWkpfxexAppapvConPK fromDomain(FixedExtractionAppapvCon domain) {
         return new KrcmtWkpfxexAppapvConPK(domain.getErrorAlarmWorkplaceId(), domain.getCheckItemAppapv().value);

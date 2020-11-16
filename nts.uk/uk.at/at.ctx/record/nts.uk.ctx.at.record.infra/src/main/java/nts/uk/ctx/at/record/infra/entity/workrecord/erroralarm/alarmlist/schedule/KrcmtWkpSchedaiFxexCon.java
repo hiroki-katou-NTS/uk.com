@@ -2,10 +2,7 @@ package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlist.schedu
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.schedule.FixedCheckDayItemName;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.schedule.FixedExtractionScheduleCon;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMessage;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.AggregateTableEntity;
 
@@ -58,9 +55,9 @@ public class KrcmtWkpSchedaiFxexCon extends AggregateTableEntity {
     public FixedExtractionScheduleCon toDomain() {
         return FixedExtractionScheduleCon.create(
                 this.pk.errorAlarmWorkplaceId,
-                EnumAdaptor.valueOf(this.pk.fixedCheckDayItemName, FixedCheckDayItemName.class),
+                this.pk.fixedCheckDayItemName,
                 this.useAtr,
-                new DisplayMessage(this.messageDisp)
+                this.messageDisp
         );
     }
 }

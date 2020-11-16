@@ -3,22 +3,15 @@ package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlist.monthl
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.val;
-import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.monthly.AverageValueItem;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.monthly.ExtractionMonthlyCon;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.monthly.enums.*;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.NameAlarmExtractionCondition;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMessage;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.workrecord.alarm.attendanceitemconditions.CheckConditions;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.AggregateTableEntity;
 
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
-import java.util.Optional;
 
 /**
  * Entity: アラームリスト（職場）月次の抽出条件
@@ -30,8 +23,11 @@ import java.util.Optional;
 @Entity
 @Table(name = "KRCMT_WKPMON_EXTRAC_CON")
 public class KrcmtWkpMonExtracCon extends AggregateTableEntity {
-    @EmbeddedId
-    public KrcmtWkpMonExtracConPK pk;
+
+    /* 月次抽出条件ID */
+    @Id
+    @Column(name = "WP_ERROR_ALARM_CHKID")
+    public String errorAlarmWorkplaceId;
 
     /* 契約コード */
     @Column(name = "CONTRACT_CD")
@@ -65,13 +61,13 @@ public class KrcmtWkpMonExtracCon extends AggregateTableEntity {
     @Column(name = "AVERAGE_NUM_TIMES")
     public Integer averageNumberOfTimes;
 
-    /* 平均比率 */
-    @Column(name = "AVERAGE_RATE")
-    public Integer averageRatio;
-
     /* 平均時間 */
     @Column(name = "AVERAGE_TIME")
     public Integer averageTime;
+
+    /* 平均比率 */
+    @Column(name = "AVERAGE_RATE")
+    public Integer averageRatio;
 
     /* チェック対象 */
     @Column(name = "CHK_TARGET")
@@ -83,13 +79,13 @@ public class KrcmtWkpMonExtracCon extends AggregateTableEntity {
 
     @Override
     protected Object getKey() {
-        return pk;
+        return errorAlarmWorkplaceId;
     }
 
     public static KrcmtWkpMonExtracCon fromDomain(ExtractionMonthlyCon domain) {
         KrcmtWkpMonExtracCon entity = new KrcmtWkpMonExtracCon();
 
-        entity.pk = KrcmtWkpMonExtracConPK.fromDomain(domain);
+        entity.errorAlarmWorkplaceId = domain.getErrorAlarmWorkplaceId();
         entity.contractCd = AppContexts.user().contractCode();
         entity.orderNumber = domain.getOrderNumber();
         entity.monExtracConName = domain.getMonExtracConName().v();
@@ -119,26 +115,20 @@ public class KrcmtWkpMonExtracCon extends AggregateTableEntity {
      * @param checkConditions 勤務項目のチェック条件
      */
     public ExtractionMonthlyCon toDomain(CheckConditions checkConditions) {
-        val checkTarget = Optional.of(new BonusPaySettingCode(this.checkTarget));
-
-        val averageNumberOfDays = this.averageNumberOfDays != null ? Optional.of(EnumAdaptor.valueOf(this.averageNumberOfDays, AverageNumberOfTimes.class)) : Optional.empty();
-
-        val averageNumberOfTimes = this.averageNumberOfTimes != null ? Optional.of(EnumAdaptor.valueOf(this.averageNumberOfTimes, AverageNumberOfDays.class)) : Optional.empty();
-
-        val averageRatio = this.averageRatio != null ? Optional.of(EnumAdaptor.valueOf(this.averageRatio, AverageTime.class)) : Optional.empty();
-
-        val averageTime = this.averageTime != null ? Optional.of(EnumAdaptor.valueOf(this.averageTime, AverageRatio.class)) : Optional.empty();
-
         return ExtractionMonthlyCon.create(
-                this.pk.errorAlarmWorkplaceId,
+                this.errorAlarmWorkplaceId,
                 this.orderNumber,
-                EnumAdaptor.valueOf(this.checkMonthlyItemsType, CheckMonthlyItemsType.class),
+                this.checkMonthlyItemsType,
                 this.useAtr,
                 this.errorAlarmCheckID,
                 checkConditions,
-                AverageValueItem.create(checkTarget, averageNumberOfDays, averageNumberOfTimes, averageRatio, averageTime),
-                new NameAlarmExtractionCondition(this.monExtracConName),
-                new DisplayMessage(this.messageDisp)
+                this.checkTarget,
+                this.averageNumberOfDays,
+                this.averageNumberOfTimes,
+                this.averageTime,
+                this.averageRatio,
+                this.monExtracConName,
+                this.messageDisp
         );
     }
 }

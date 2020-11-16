@@ -2,20 +2,14 @@ package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlist.monthl
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.basic.AlarmCheckClassification;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.monthly.enums.FixedCheckMonthlyItemName;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.monthly.FixedExtractionMonthlyItems;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ColorCode;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMessage;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.AggregateTableEntity;
 
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
-import java.util.Optional;
 
 /**
  * Entity: アラームリスト（職場）月次の固定抽出項目
@@ -27,8 +21,11 @@ import java.util.Optional;
 @Entity
 @Table(name = "KRCMT_WKP_MON_FXEX_ITM")
 public class KrcmtWkpMonFxexItm extends AggregateTableEntity {
-    @EmbeddedId
-    public KrcmtWkpMonFxexItmPK pk;
+
+    /* No */
+    @Id
+    @Column(name = "NO")
+    public int fixedCheckMonthlyItemName;
 
     /* 契約コード */
     @Column(name = "CONTRACT_CD")
@@ -52,13 +49,13 @@ public class KrcmtWkpMonFxexItm extends AggregateTableEntity {
 
     @Override
     protected Object getKey() {
-        return pk;
+        return fixedCheckMonthlyItemName;
     }
 
     public static KrcmtWkpMonFxexItm fromDomain(FixedExtractionMonthlyItems domain) {
         KrcmtWkpMonFxexItm entity = new KrcmtWkpMonFxexItm();
 
-        entity.pk = KrcmtWkpMonFxexItmPK.fromDomain(domain);
+        entity.fixedCheckMonthlyItemName = domain.getFixedCheckMonthlyItemName().value;
         entity.contractCd = AppContexts.user().contractCode();
         entity.monthlyCheckName = domain.getMonthlyCheckName();
         entity.alarmCheckCls = domain.getAlarmCheckCls().value;
@@ -71,11 +68,11 @@ public class KrcmtWkpMonFxexItm extends AggregateTableEntity {
 
     public FixedExtractionMonthlyItems toDomain() {
         return FixedExtractionMonthlyItems.create(
-                EnumAdaptor.valueOf(this.pk.fixedCheckMonthlyItemName, FixedCheckMonthlyItemName.class),
-                EnumAdaptor.valueOf(this.alarmCheckCls, AlarmCheckClassification.class),
+                this.fixedCheckMonthlyItemName,
+                this.alarmCheckCls,
                 this.monthlyCheckName,
-                new DisplayMessage(this.firstMessageDisp),
-                Optional.of(new ColorCode(this.messageColor))
+                this.firstMessageDisp,
+                this.messageColor
         );
     }
 }
