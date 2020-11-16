@@ -6,3 +6,105 @@
 .sidebar-content-header .title {
     font-size: 32px;
 }
+
+/*ViewC*/
+.view-c-kmk004 {
+	padding: 10px;
+	width: 100vw;
+	float: left;
+}
+
+.view-c-kmk004 .left-content {
+	width: 515px;
+	padding: 12px;
+	float: left;
+}
+
+.view-c-kmk004 .right-content {
+	width: 415px;
+	float: left;
+	margin-left: 50px;
+}
+
+.view-c-kmk004 .right-content p {
+	font-size: 20px;
+}
+
+.sidebar-content-header {
+	width: 100vw;
+}
+
+.view-c-kmk004 .right-content .setting {
+	margin-top: 30px;
+}
+
+.view-c-kmk004 .right-content .content-data {
+	margin-top: 20px;
+}
+
+.view-c-kmk004 .right-content .label1 {
+	margin-top: 20px;
+}
+
+.view-c-kmk004 .right-content .year {
+	float: left;
+}
+
+.view-c-kmk004 .right-content .year .box-year {
+	margin-top: 20px;
+}
+
+.view-c-kmk004 .right-content .time-work {
+	margin-left: 190px;
+}
+
+/* View D */
+.view-d-kmk004 {
+	padding: 10px;
+	width: 100vw;
+	float: left;
+}
+
+.view-d-kmk004 .left-content {
+	width: 330px;
+	padding: 12px;
+	float: left;
+}
+
+.view-d-kmk004 .right-content {
+	width: 415px;
+	float: left;
+	margin-left: 50px;
+}
+
+.view-d-kmk004 .right-content p {
+	font-size: 20px;
+}
+
+.view-d-kmk004 .sidebar-content-header {
+	width: 100vw;
+}
+
+.view-d-kmk004 .right-content .setting {
+	margin-top: 30px;
+}
+
+.view-d-kmk004 .right-content .content-data {
+	margin-top: 20px;
+}
+
+.view-d-kmk004 .right-content .label1 {
+	margin-top: 20px;
+}
+
+.view-d-kmk004 .right-content .year {
+	float: left;
+}
+
+.view-d-kmk004 .right-content .year .box-year {
+	margin-top: 20px;
+}
+
+.view-d-kmk004 .right-content .time-work {
+	margin-left: 190px;
+}

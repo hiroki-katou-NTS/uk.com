@@ -70,3 +70,7 @@
     border-width: 15px;
     color: #97D155;
 }
+
+.sidebar-content-header {
+    width: 100vw;
+}
