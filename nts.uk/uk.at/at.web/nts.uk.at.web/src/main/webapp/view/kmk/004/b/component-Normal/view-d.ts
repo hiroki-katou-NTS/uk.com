@@ -9,10 +9,10 @@ module nts.uk.at.view.kmk004.b {
 	<button data-bind="i18n: 'KMK004_226'"></button>
 	<button class="danger" data-bind="i18n: 'KMK004_227'"></button>
 </div>
-<div class="view-c-kmk004">
+<div class="view-d-kmk004">
 	<div class="left-content">
 		<div data-bind="component: {
-			name: 'kcp004',
+			name: 'kcp001',
 			params:{
 			}
 		}"></div>
@@ -21,14 +21,14 @@ module nts.uk.at.view.kmk004.b {
 		<div>
 			<p data-bind="i18n: 'KMK004_228'"></p>
 			<hr></hr>
-			<div data-bind="i18n: ''"></div>
+			<div data-bind="i18n: 'Chung dep trai'"></div>
 			<div>
 				<div data-bind="ntsFormLabel: {}, i18n: 'KMK004_229'"></div>
 				<!-- ko if: modeCheckSetting -->
-					<button data-bind="i18n: 'KMK004_239'"></button>
+					<button data-bind="i18n: 'KMK004_241'"></button>
 				<!-- /ko -->
 				<!-- ko if: !modeCheckSetting -->
-					<button data-bind="i18n: 'KMK004_238'"></button>
+					<button data-bind="i18n: 'KMK004_240'"></button>
 				<!-- /ko -->
 			</div>
 			<!-- ko if: modeCheckSetting -->
