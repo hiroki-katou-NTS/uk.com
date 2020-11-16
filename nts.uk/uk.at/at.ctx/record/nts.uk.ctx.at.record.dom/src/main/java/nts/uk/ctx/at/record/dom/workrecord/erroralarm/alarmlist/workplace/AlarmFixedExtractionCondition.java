@@ -3,7 +3,6 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.workplace;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMessage;
 
@@ -13,15 +12,14 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMess
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Setter
 public class AlarmFixedExtractionCondition extends AggregateRoot {
 
     // ID
-    private String ID;
+    private String id;
     // No
     private FixedCheckItem no;
     // 使用区分
-    private Boolean useAtr;
+    private boolean useAtr;
     // 最初表示するメッセージ
     private DisplayMessage displayMessage;
 

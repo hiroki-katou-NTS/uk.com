@@ -20,20 +20,24 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Stateless
-public class JpaAlarmWkpAlstchkConcat extends JpaRepository implements AlarmCheckCdtWkpCtgRepository {
+public class JpaAlarmWkpAlstchkConcatRepository extends JpaRepository implements AlarmCheckCdtWkpCtgRepository {
 
     // Get Main Table
     private static final String GET_ALL = "select f from KfnmtWkpAlstchkConcat f";
-    private static final String GET_BY_ID = GET_ALL + " where f.id = :id";
-    private static final String GET_BY_CATEGORY_ID = GET_ALL + " where f.pk.cid = :cid and f.pk.category = :ctg";
+    private static final String GET_BY_ID = GET_ALL + " where f.pk.companyID = :cid and f.pk.category = :ctg and f.pk.categoryItemCD = :ctgCD";
+    private static final String GET_BY_CATEGORY_ID = GET_ALL + " where f.pk.companyID = :cid and f.pk.category = :ctg";
 
     // Get Sub Table
     private static final String GET_ALL_SUB = "select f from KfnmtCatMapEachType f";
     private static final String GET_SUB_BY_CTG = GET_ALL_SUB + " where f.pk.companyID = :cid and f.pk.category = :ctg";
 
     @Override
-    public Optional<AlarmCheckCdtWorkplaceCategory> getByID(String id) {
-        Optional<KfnmtWkpAlstchkConcat> entity = this.queryProxy().query(GET_BY_ID, KfnmtWkpAlstchkConcat.class).setParameter("id", id).getSingle();
+    public Optional<AlarmCheckCdtWorkplaceCategory> getByID(String id, int category, String categoryItemCD) {
+        Optional<KfnmtWkpAlstchkConcat> entity = this.queryProxy().query(GET_BY_ID, KfnmtWkpAlstchkConcat.class)
+                .setParameter("cid", id)
+                .setParameter("ctg", category)
+                .setParameter("ctgCD", categoryItemCD)
+                .getSingle();
         return entity.map(KfnmtWkpAlstchkConcat::toDomain);
     }
 

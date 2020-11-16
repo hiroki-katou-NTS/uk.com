@@ -25,4 +25,9 @@ public class JpaFixedExtractionAppapvConRepository extends JpaRepository impleme
                 .setParameter("chkId", errorAlarmWorkplaceId)
                 .getList(KrcmtWkpfxexAppapvCon::toDomain);
     }
+
+    @Override
+    public List<FixedExtractionAppapvCon> getByIds(List<String> sids) {
+        return null;
+    }
 }

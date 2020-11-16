@@ -5,7 +5,7 @@ import java.util.Optional;
 
 public interface AlarmCheckCdtWkpCtgRepository {
 
-    Optional<AlarmCheckCdtWorkplaceCategory> getByID(String id);
+    Optional<AlarmCheckCdtWorkplaceCategory> getByID(String id, int category, String categoryItemCD);
 
     List<AlarmCheckCdtWorkplaceCategory> getByCategoryID(int categoryID);
 

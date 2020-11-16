@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.basic;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMessage;
@@ -12,24 +11,23 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMess
  */
 
 @Getter
-@Setter
 @NoArgsConstructor
 public class BasicFixedExtractionCondition extends AggregateRoot {
 
     // ID
-    private String ID;
+    private String id;
 
     // No
     private BasicFixedCheckItem no;
 
     // 使用区分
-    private Boolean useAtr;
+    private boolean useAtr;
 
     // 表示するメッセージ
     private DisplayMessage displayMessage;
 
-    public BasicFixedExtractionCondition(String ID, int no, Boolean useAtr, String displayMessage) {
-        this.ID = ID;
+    public BasicFixedExtractionCondition(String id, int no, boolean useAtr, String displayMessage) {
+        this.id = id;
         this.no = EnumAdaptor.valueOf(no, BasicFixedCheckItem.class);
         this.useAtr = useAtr;
         this.displayMessage = new DisplayMessage(displayMessage);

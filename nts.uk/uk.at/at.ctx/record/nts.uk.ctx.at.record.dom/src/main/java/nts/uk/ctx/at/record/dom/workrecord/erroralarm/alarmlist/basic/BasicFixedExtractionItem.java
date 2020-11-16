@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.basic;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ColorCode;
@@ -15,7 +14,6 @@ import java.util.Optional;
  */
 
 @Getter
-@Setter
 @NoArgsConstructor
 public class BasicFixedExtractionItem extends AggregateRoot {
 
@@ -26,7 +24,7 @@ public class BasicFixedExtractionItem extends AggregateRoot {
     private AlarmCheckClassification checkCls;
 
     // メッセージを太字にする
-    private Boolean bold;
+    private boolean bold;
 
     // 基本チェック名称
     private BasicCheckName name;
@@ -38,7 +36,7 @@ public class BasicFixedExtractionItem extends AggregateRoot {
     private Optional<ColorCode> colorCode;
 
 
-    public BasicFixedExtractionItem(int no, int checkCls, Boolean bold, String name, String displayMessage, String colorCode) {
+    public BasicFixedExtractionItem(int no, int checkCls, boolean bold, String name, String displayMessage, String colorCode) {
         this.no = EnumAdaptor.valueOf(no, BasicFixedCheckItem.class);
         this.checkCls = EnumAdaptor.valueOf(checkCls, AlarmCheckClassification.class);
         this.bold = bold;

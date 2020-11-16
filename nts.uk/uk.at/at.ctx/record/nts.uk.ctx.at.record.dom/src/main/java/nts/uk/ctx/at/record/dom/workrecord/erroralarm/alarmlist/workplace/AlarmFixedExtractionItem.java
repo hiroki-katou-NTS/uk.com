@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.workplace;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ColorCode;
@@ -12,7 +11,6 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMess
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.勤務実績.勤務実績のエラーアラーム設定.アラームリスト（職場）.マスタチェック（職場）.アラームリスト（職場）固定抽出項目
  */
 @Getter
-@Setter
 @NoArgsConstructor
 public class AlarmFixedExtractionItem extends AggregateRoot {
 
@@ -23,7 +21,7 @@ public class AlarmFixedExtractionItem extends AggregateRoot {
     private AlarmCheckCls alarmCheckCls;
 
     // メッセージを太字にする
-    private Boolean msgBold;
+    private boolean msgBold;
 
     // 最初表示するメッセージ
     private DisplayMessage displayMessage;
