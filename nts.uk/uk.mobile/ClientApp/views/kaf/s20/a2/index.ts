@@ -338,7 +338,11 @@ export class KafS20A2Component extends KafS00ShrComponent {
             vm.$mask('hide');
 
             //show Msg_1691,1692,1693
-            vm.$modal.warn({ messageId: error.messageId, messageParams: error.parameterIds[0] });
+            if (error.messageId == 'Msg_1691' || error.messageId == 'Msg_1692' || error.messageId == 'Msg_1693') {
+                vm.$modal.warn({ messageId: error.messageId, messageParams: error.parameterIds[0] });
+            } else {
+                vm.handleErrorMessage(error);
+            }
         });
 
     }
@@ -377,7 +381,13 @@ export class KafS20A2Component extends KafS00ShrComponent {
             vm.$mask('hide');
             vm.$emit('nextToStep3', res);
         }).catch((error: any) => {
-            vm.handleErrorMessage(error);
+            vm.$mask('hide');
+             //show Msg_1691,1692,1693
+             if (error.messageId == 'Msg_1691' || error.messageId == 'Msg_1692' || error.messageId == 'Msg_1693') {
+                vm.$modal.warn({ messageId: error.messageId, messageParams: error.parameterIds[0] });
+            } else {
+                vm.handleErrorMessage(error);
+            }
         });
     }
 
@@ -386,13 +396,13 @@ export class KafS20A2Component extends KafS00ShrComponent {
         const vm = this;
         vm.$mask('hide');
         if (res.messageId) {
-            return vm.$modal.warn({ messageId: res.messageId, messageParams: res.parameterIds });
+            return vm.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds[0] });
         } else {
 
             if (_.isArray(res.errors)) {
-                return vm.$modal.warn({ messageId: res.errors[0].messageId, messageParams: res.parameterIds });
+                return vm.$modal.error({ messageId: res.errors[0].messageId, messageParams: res.parameterIds });
             } else {
-                return vm.$modal.warn({ messageId: res.errors.messageId, messageParams: res.parameterIds });
+                return vm.$modal.error({ messageId: res.errors.messageId, messageParams: res.parameterIds });
             }
         }
     }
