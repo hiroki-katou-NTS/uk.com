@@ -32,6 +32,7 @@
 			<com:scriptfile path="/view/kaf/000/a/kaf000.a.vm.js" />
 			<com:scriptfile path="/view/kaf/005/shr/kaf005.shr.vm.js" />
 			<com:scriptfile path="/view/kaf/005/shr/header/kaf005.shr.header.vm.js" />
+			<com:scriptfile path="/view/kaf/005/shr/work_info/kaf005.shr.work_info.vm.js" />
 			<com:scriptfile path="/view/kaf/005/shr/footer/kaf005.shr.footer.vm.js" />
 			<com:scriptfile path="/view/kaf/005/a/kaf005.a.vm.js" />
 			<com:stylefile path="/view/kaf/005/shr/kaf005.share.style.css" />
@@ -85,7 +86,11 @@
 												application: application,
 												appDispInfoStartupOutput: appDispInfoStartupOutput
 											} }"></div>
-				
+				<div data-bind="component: { name: 'kaf005-share-work-info',
+											params: {
+												workInfo: workInfo
+											}
+											}"></div>
 				<div data-bind="component: { name: 'kaf005-share'}"></div>
 				
 				<div data-bind="component: { name: 'kaf000-a-component5',

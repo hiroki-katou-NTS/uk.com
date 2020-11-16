@@ -1,4 +1,7 @@
 module nts.uk.at.view.kaf005.a.viewmodel {
+	import WorkHours = nts.uk.at.view.kaf005.shr.work_info.viewmodel.WorkHours;
+	import Work = nts.uk.at.view.kaf005.shr.work_info.viewmodel.Work;
+	import WorkInfo = nts.uk.at.view.kaf005.shr.work_info.viewmodel.WorkInfo;
 	import OvertimeWork = nts.uk.at.view.kaf005.shr.header.viewmodel.OvertimeWork;
 	import Application = nts.uk.at.view.kaf000.shr.viewmodel.Application;
 	import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
@@ -12,6 +15,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		isSendMail: KnockoutObservable<Boolean>;	
 		isAgentMode : KnockoutObservable<boolean> = ko.observable(false);
 		overTimeWork: KnockoutObservableArray<OvertimeWork> = ko.observableArray([]);
+		workInfo: KnockoutObservable<WorkInfo> = ko.observable(null);
 		dataSource: DisplayInfoOverTime;
 		created() {
 			const self = this;
@@ -66,6 +70,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				.then((res: DisplayInfoOverTime) => {
 					self.dataSource = res;
 					self.bindOverTimeWorks(res);
+					self.bindWorkInfo(res);
 				})
 				.fail((res: any) => {
 					
@@ -111,7 +116,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		register() {
 			
 		}
-		
+		// header
 		bindOverTimeWorks(res: DisplayInfoOverTime) {
 			const self = this;
 			let overTimeWorks = [];
@@ -129,6 +134,63 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			}
 			self.overTimeWork(overTimeWorks);
 		}
+		//  work-info 
+		bindWorkInfo(res: DisplayInfoOverTime) {
+			const self = this;
+			let infoWithDateApplication = res.infoWithDateApplicationOp as InfoWithDateApplication;
+			let workInfo = {} as WorkInfo;
+			let workType = {} as Work;
+			let workTime = {} as Work;
+			let workHours1 = {} as WorkHours;
+			let workHours2 = {} as WorkHours;
+			if (!_.isNil(infoWithDateApplication)) {
+				workType.code = infoWithDateApplication.workTypeCD;
+				if (!_.isNil(workType.code)) {
+					let workTypeList = res.infoBaseDateOutput.worktypes as Array<WorkType>;
+					let item = _.find(workTypeList, (item: WorkType) => item.workTypeCode == workType.code)
+					if (!_.isNil(item)) {
+						workType.name = item.name;									
+					}
+				} else {
+					workType.name = self.$i18n('KAF_005_345');
+				}
+				workTime.code = infoWithDateApplication.workTimeCD;
+				if (!_.isNil(workTime.code)) {
+					let workTimeList = res.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst as Array<WorkTime>;
+					if (!_.isEmpty(workTimeList)) {
+						let item = _.find(workTimeList, (item: WorkTime) => item.workTimeCode == workTime.code);
+						if (!_.isNil(item)) {
+							workTime.name  = item.workTimeDisplayName.workTimeName;
+						}
+					}
+				} else {
+					workTime.name = self.$i18n('KAF_005_345');
+				}
+				// set input time
+				let workHoursDto = infoWithDateApplication.workHours;
+				if (workHoursDto) {
+					workHours1.start = ko.observable(workHoursDto.startTimeOp1);
+					workHours1.end = ko.observable(workHoursDto.endTimeOp1);
+					workHours2.start = ko.observable(workHoursDto.startTimeOp2);
+					workHours2.end = ko.observable(workHoursDto.endTimeOp2);
+				} else {
+					workHours1.start = ko.observable(null);
+					workHours1.end = ko.observable(null);
+					workHours2.start = ko.observable(null);
+					workHours2.end = ko.observable(null);
+				}
+				
+			}
+			workInfo.workType = ko.observable(workType);		
+			workInfo.workTime = ko.observable(workTime);
+			workInfo.workHours1 = workHours1;
+			workInfo.workHours2 = workHours2;
+			
+			self.workInfo(workInfo);
+		}
+		
+		
+		
 		
 		
 	
@@ -139,18 +201,41 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 	}
 	
 	interface DisplayInfoOverTime {
-		infoBaseDateOutput: any;
+		infoBaseDateOutput: InfoBaseDateOutput;
 		infoNoBaseDate: InfoNoBaseDate;
 		workdayoffFrames: Array<any>;
 		overtimeAppAtr: OvertimeAppAtr;
 		appDispInfoStartup: any;
 		isProxy: Boolean;
 		calculationResultOp?: any;
-		infoWithDateApplicationOp?: any;
+		infoWithDateApplicationOp?: InfoWithDateApplication;
+	}
+	interface InfoWithDateApplication {
+		workTypeCD?: string;
+		workTimeCD?: string;
+		workHours?: WorkHoursDto;
+	}
+	interface WorkHoursDto {
+		startTimeOp1: number;
+		endTimeOp1: number;
+		startTimeOp2: number;
+		endTimeOp2: number;
 	}
 	interface InfoBaseDateOutput {
-		worktypes: Array<any>;
+		worktypes: Array<WorkType>;
 		quotaOutput: any;
+	}
+	interface WorkType {
+		workTypeCode: string;
+		name: string;
+	}
+	
+	interface WorkTime {
+		workTimeCode: string;
+		workTimeDisplayName: WorkTimeDisplayName;
+	}
+	interface WorkTimeDisplayName {
+		workTimeName: string;
 	}
 	interface InfoNoBaseDate {
 		overTimeReflect: any;
