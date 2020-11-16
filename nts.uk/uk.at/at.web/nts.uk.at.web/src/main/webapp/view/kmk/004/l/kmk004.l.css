@@ -89,5 +89,10 @@
 
 #com-kcp005 {
 	position: relative;
-    bottom: 96px;
+    bottom: 115px;
+}
+
+#view-o-listbox {
+	position: relative;
+    bottom: 20px;
 }
