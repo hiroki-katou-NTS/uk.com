@@ -3,7 +3,6 @@ package nts.uk.ctx.at.shared.dom.worktime.flexset;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -19,8 +18,6 @@ import lombok.NoArgsConstructor;
 import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
-import mockit.Mock;
-import mockit.MockUp;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -32,7 +29,6 @@ import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZonePerNo;
-import nts.uk.ctx.at.shared.dom.worktime.WorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.WorkSetting.Require;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.BreakFrameNo;
@@ -60,7 +56,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSetGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.PrioritySetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestClockManageAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestTimeOfficeWorkCalcMethod;
-import nts.uk.ctx.at.shared.dom.worktime.common.RoundingSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.RoundingTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
@@ -85,6 +81,10 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSetGe
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneShortTimeWorkSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSetGetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingTest.Helper.EmTimeZoneSetHelper;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingTest.Helper.FlexHalfDayWorkTimeHelper;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingTest.Helper.FlowWkRestTimezoneHelper;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingTest.Helper.OverTimeOfTimeZoneSetHelper;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestCalcMethod;
@@ -98,6 +98,10 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSettingDetail;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSettingDetailGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.predset.BreakDownTimeDay;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetermineTime;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -106,102 +110,646 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class FlexWorkSettingTest {
 	@Injectable
 	private Require require;
+	
 	@Test
-	public void getters() {
-		FlexWorkSetting flexWorkSetting = new FlexWorkSetting(new FlexWorkSettingImpl());
+	public void getters(@Injectable FlexWorkSetting flexWorkSetting) {
 		NtsAssert.invokeGetters(flexWorkSetting);
 	}
 	
-	/**    [prv-3] 休出時の時間帯を作成する        **/
-	
 	/**
-	 * 休出時の時間帯を作成する = empty
-	 * 「$.重複の判断処理( $休出の時間帯 ) == 非重複」 がある
-	 * 時間帯1:　5:00 -> 10:30
-	 * 時間帯2:　13:00 -> 29:00
+	 * 休憩時間帯を取得する
+	 * 休出か == TRUE
+	 * 午前午後区分 = ONE_DAY
+	 * 休憩時間帯を固定にする = TRUE
+	 * 期待値：　固定 = TRUE, 休憩時間帯= 「フレックス勤務設定」の「休日勤務時間帯」の「固定休憩時間帯」
 	 */
 	@Test
-	public void createWorkOnDayOffTime_empty() {
-		//$.重複の判断処理( $休出の時間帯 ) == 非重複
-		List<TimezoneUse> timeZones = Arrays.asList(
-				    new TimezoneUse(TimeWithDayAttr.hourMinute(  5,  0 ), TimeWithDayAttr.hourMinute( 10, 30 ), UseSetting.USE, 1)
-				,	new TimezoneUse(TimeWithDayAttr.hourMinute(  13,  0 ), TimeWithDayAttr.hourMinute( 29,  00), UseSetting.USE, 1)
-			);
+	public void getBreakTimeZone_isFixRestTime_true(@Injectable TimeSheet timeSheet) {
+			val fixedRestTimeSet = new TimezoneOfFixedRestTimeSet(Arrays.asList(
+					  new DeductionTime(TimeWithDayAttr.hourMinute(12, 00), TimeWithDayAttr.hourMinute(13, 00))
+					, new DeductionTime(TimeWithDayAttr.hourMinute(17, 30), TimeWithDayAttr.hourMinute(18, 00))));
+			val offRestTimeZone = new FlowWorkRestTimezone(true, fixedRestTimeSet, new FlowRestTimezone());
+			val offdayWorkTimeImpl = new FlexOffdayWorkTimeGetMementoImpl(Arrays.asList(new HDWorkTimeSheetSetting()), offRestTimeZone);
+			val flexWorkSetting = new FlexWorkSetting(new FlexWorkSettingImpl(ApplyAtr.USE, Collections.emptyList()
+													, new FlexOffdayWorkTime(offdayWorkTimeImpl), true, timeSheet));
+			
+			val actual = flexWorkSetting.getBreakTimeZone(true, AmPmAtr.ONE_DAY);
+			assertThat( actual.isFixed() ).isTrue();
+			assertThat( actual.getBreakTimes() ).containsExactlyInAnyOrderElementsOf(fixedRestTimeSet.getRestTimezonesForCalc());
+	}
+	
+	/**
+	 * 休憩時間帯を取得する
+	 * 休出か == TRUE
+	 * 午前午後区分 = ONE_DAY
+	 * 休憩時間帯を固定にする = FALSE
+	 * 期待値：　固定 = FALSE, 休憩時間帯= empty
+	 * 
+	 */
+	@Test
+	public void getBreakTimeZone_isFixRestTime_false(@Injectable TimeSheet timeSheet) {
+			val fixedRestTimeSet = new TimezoneOfFixedRestTimeSet(Arrays.asList(
+					  new DeductionTime(TimeWithDayAttr.hourMinute(12, 00), TimeWithDayAttr.hourMinute(13, 00))
+					, new DeductionTime(TimeWithDayAttr.hourMinute(17, 30), TimeWithDayAttr.hourMinute(18, 00))));
+			//休憩時間帯を固定にする = FALSE
+			val offRestTimeZone = new FlowWorkRestTimezone(false, fixedRestTimeSet, new FlowRestTimezone());
+			
+			val offdayWorkTimeImpl = new FlexOffdayWorkTimeGetMementoImpl(Arrays.asList(new HDWorkTimeSheetSetting()), offRestTimeZone);
+			
+			val flexWorkSetting = new FlexWorkSetting(new FlexWorkSettingImpl(ApplyAtr.USE, Collections.emptyList()
+													, new FlexOffdayWorkTime(offdayWorkTimeImpl), true, timeSheet));
+
+			val actual = flexWorkSetting.getBreakTimeZone(true, AmPmAtr.ONE_DAY);
+			assertThat( actual.isFixed() ).isFalse();
+			assertThat( actual.getBreakTimes() ).isEmpty();
+	
+	}
+	
+	/**
+	 * 休憩時間帯を取得する
+	 * 休出か == FALSE
+	 * 午前午後区分 = ONE_DAY
+	 * 休憩時間帯を固定にする = TRUE
+	 * 期待値：　固定 = TRUE, 休憩時間帯= 「フレックス勤務設定」の「平日勤務時間帯」のONE_DAYの「 休憩時間帯」
+	 */
+	@Test
+	public void getBreakTimeZone_isWorkingOnDayOff_false_isFixRestTime_true(@Injectable TimeSheet timeSheet) {
+		// 休憩時間帯 
+		val flexHalfRestTimezone = FlowWkRestTimezoneHelper.createRestTimeZone(new FlowRestSetting(new AttendanceTime(120), new AttendanceTime(60))
+				,  new FlowRestSetting(new AttendanceTime(240), new AttendanceTime(320)), false);
+
+		val flexHalfDayWorkTimes = Arrays.asList(
+				  FlexHalfDayWorkTimeHelper.createWorkTime(AmPmAtr.ONE_DAY, flexHalfRestTimezone, Collections.emptyList()
+						  , Arrays.asList(
+								  EmTimeZoneSetHelper.createWorkingTimezoneList(new EmTimeFrameNo(1) , TimeWithDayAttr.hourMinute( 5,  0 ), TimeWithDayAttr.hourMinute( 29, 0 ))
+							))
+				, FlexHalfDayWorkTimeHelper.createWorkTime(AmPmAtr.AM, flexHalfRestTimezone, Collections.emptyList()
+						, Arrays.asList(
+								 EmTimeZoneSetHelper.createWorkingTimezoneList(new EmTimeFrameNo(2) , TimeWithDayAttr.hourMinute( 5,  0 ), TimeWithDayAttr.hourMinute( 12, 0 ))
+						))
+				, FlexHalfDayWorkTimeHelper.createWorkTime(AmPmAtr.PM, flexHalfRestTimezone, Collections.emptyList()
+						, Arrays.asList(
+								 EmTimeZoneSetHelper.createWorkingTimezoneList(new EmTimeFrameNo(3) , TimeWithDayAttr.hourMinute( 13,  0 ), TimeWithDayAttr.hourMinute( 29, 0 ))
+						))
+				);
+		
+		val fixedRestTimeSet = new TimezoneOfFixedRestTimeSet(Arrays.asList(
+				  new DeductionTime(TimeWithDayAttr.hourMinute(12, 00), TimeWithDayAttr.hourMinute(13, 00))
+				, new DeductionTime(TimeWithDayAttr.hourMinute(17, 30), TimeWithDayAttr.hourMinute(18, 00))));
+		
+		val offdayWorkTimeImpl = new FlexOffdayWorkTimeGetMementoImpl(Arrays.asList(new HDWorkTimeSheetSetting())
+				, new FlowWorkRestTimezone(true, fixedRestTimeSet, new FlowRestTimezone()) //休憩時間帯を固定にする = TRUE
+				);
+		
+		val flexWorkSetting = new FlexWorkSetting(new FlexWorkSettingImpl(ApplyAtr.USE, flexHalfDayWorkTimes
+												, new FlexOffdayWorkTime(offdayWorkTimeImpl), true, timeSheet));
+
+		val actual = flexWorkSetting.getBreakTimeZone(true, AmPmAtr.ONE_DAY);
+		
+		assertThat( actual.isFixed() ).isTrue();
+		
+		assertThat( actual.getBreakTimes() ).containsExactlyInAnyOrderElementsOf(fixedRestTimeSet.getRestTimezonesForCalc());
+	}
+	
+
+	/**
+	 * 休憩時間帯を取得する
+	 * 休出か == FALSE
+	 * 午前午後区分 = ONE_DAY
+	 * 休憩時間帯を固定にする = FALSE
+	 * 期待値：　固定 = TRUE, 休憩時間帯= empty
+	 */
+	@Test
+	public void getBreakTimeZone_isWorkingOnDayOff_false_isFixRestTime_false(@Injectable TimeSheet timeSheet) {
+			val fixedRestTimeSet = new TimezoneOfFixedRestTimeSet(Arrays.asList(
+					  new DeductionTime(TimeWithDayAttr.hourMinute(12, 00), TimeWithDayAttr.hourMinute(13, 00))
+					, new DeductionTime(TimeWithDayAttr.hourMinute(17, 30), TimeWithDayAttr.hourMinute(18, 00))));
+			//休憩時間帯を固定にする = FALSE
+			val offRestTimeZone = new FlowWorkRestTimezone(false, fixedRestTimeSet, new FlowRestTimezone());
+			
+			val offdayWorkTimeImpl = new FlexOffdayWorkTimeGetMementoImpl(Arrays.asList(new HDWorkTimeSheetSetting()), offRestTimeZone);
+			
+			val flexWorkSetting = new FlexWorkSetting(new FlexWorkSettingImpl(ApplyAtr.USE, Collections.emptyList()
+													, new FlexOffdayWorkTime(offdayWorkTimeImpl), true, timeSheet));
+
+			val actual = flexWorkSetting.getBreakTimeZone(true, AmPmAtr.ONE_DAY);
+			
+			assertThat( actual.isFixed() ).isFalse();
+			
+			assertThat( actual.getBreakTimes() ).isEmpty();
+	
+	}
+	
+
+	/**  [prv-1] 指定した午前午後区分の時間帯情報を作成する   **/
+	/**
+	 * 就業の時間帯 = (10:00, 12:00)
+	 * 午前午後区分 = ONE_DAY
+	 * コアタイムを使用しない⇒開始/終了が同じ
+	 * 結果：$勤務可能時間帯
+	 * 
+	 */
+	@Test
+	public void createTimeZoneByAmPmCls_OneDay_CoreTime_Not_Use(@Injectable TimeSheet timeSheet) {
+		// 休憩時間帯 
+		val flexHalfRestTimezone = FlowWkRestTimezoneHelper.createRestTimeZone(new FlowRestSetting(new AttendanceTime(120), new AttendanceTime(60))
+				,  new FlowRestSetting(new AttendanceTime(240), new AttendanceTime(320)), false);
+
+		// 残業時間帯
+		val oTTimezoneImpls = Arrays.asList(
+				      OverTimeOfTimeZoneSetHelper.createOverTime(1, true, TimeWithDayAttr.hourMinute(  5, 0), TimeWithDayAttr.hourMinute(8, 30))
+					, OverTimeOfTimeZoneSetHelper.createOverTime(2, true, TimeWithDayAttr.hourMinute( 18, 0), TimeWithDayAttr.hourMinute(22, 0))
+					, OverTimeOfTimeZoneSetHelper.createOverTime(3, true, TimeWithDayAttr.hourMinute( 22, 0), TimeWithDayAttr.hourMinute(29, 0))
+				);
+		
+		val flexHalfDayWorkTimes = Arrays.asList(
+				  FlexHalfDayWorkTimeHelper.createWorkTime(AmPmAtr.ONE_DAY, flexHalfRestTimezone
+						  , OverTimeOfTimeZoneSetHelper.createOverTimeList(oTTimezoneImpls)
+						  , Arrays.asList(
+								  EmTimeZoneSetHelper.createWorkingTimezoneList(new EmTimeFrameNo(1) , TimeWithDayAttr.hourMinute( 5,  0 ), TimeWithDayAttr.hourMinute( 29, 0 ))
+							))
+				, FlexHalfDayWorkTimeHelper.createWorkTime(AmPmAtr.AM, flexHalfRestTimezone
+						,  OverTimeOfTimeZoneSetHelper.createOverTimeList(oTTimezoneImpls)
+						, Arrays.asList(
+								 EmTimeZoneSetHelper.createWorkingTimezoneList(new EmTimeFrameNo(2) , TimeWithDayAttr.hourMinute( 5,  0 ), TimeWithDayAttr.hourMinute( 12, 0 ))
+						))
+				);
+		// コアタイムを使用しない
+		val flexWorkSetting = new FlexWorkSetting(new FlexWorkSettingImpl(ApplyAtr.NOT_USE, flexHalfDayWorkTimes
+												, new FlexOffdayWorkTime(), false, timeSheet));
+		
+		// Execute
+	    @SuppressWarnings("unchecked")
+ 		val result = (List<ChangeableWorkingTimeZonePerNo>) NtsAssert.Invoke.privateMethod(
+				                flexWorkSetting
+							,	"createTimeZoneByAmPmCls"
+							,	require
+							,   new TimeSpanForCalc(TimeWithDayAttr.hourMinute(10,  0 ), TimeWithDayAttr.hourMinute( 12, 00 ))
+							,   AmPmAtr.ONE_DAY
+						);
+	    assertThat(result.get(0).getWorkNo()).isEqualTo(new WorkNo(1));
+	    assertThat(result.get(0).getForStart().getStart().v()).isEqualTo(300);
+	    assertThat(result.get(0).getForStart().getEnd().v()).isEqualTo(1740);
+	    assertThat(result.get(0).getForEnd().getStart().v()).isEqualTo(300);
+	    assertThat(result.get(0).getForEnd().getEnd().v()).isEqualTo(1740);
+		
+	}
+	
+	/**
+	 * 就業の時間帯 = (10:00, 12:00)
+	 * 午前午後区分 = ONE_DAY
+	 * コアタイム=(480: 960)
+	 * $勤務可能時間帯= (300:　1740)
+	 * $開始 = 計算時間帯( $勤務可能時間帯.開始時刻, $コアタイム.開始時刻 )	[300 -> 480]
+	 * $終了 = 計算時間帯( $コアタイム.終了時刻, $勤務可能時間帯.終了時刻 )	[960 -> 1740]
+	 * 
+	 */
+	@Test
+	public void createTimeZoneByAmPmCls_OneDay_CoreTime_Use() {
+		// 休憩時間帯 
+		val flexHalfRestTimezone = FlowWkRestTimezoneHelper.createRestTimeZone(new FlowRestSetting(new AttendanceTime(120), new AttendanceTime(60))
+				,  new FlowRestSetting(new AttendanceTime(240), new AttendanceTime(320)), false);
+		
+		// 残業時間帯
+		val oTTimezoneImpls = Arrays.asList(
+				      OverTimeOfTimeZoneSetHelper.createOverTime(1, true, TimeWithDayAttr.hourMinute(  5, 0), TimeWithDayAttr.hourMinute(8, 30))
+					, OverTimeOfTimeZoneSetHelper.createOverTime(2, true, TimeWithDayAttr.hourMinute( 18, 0), TimeWithDayAttr.hourMinute(22, 0))
+					, OverTimeOfTimeZoneSetHelper.createOverTime(3, true, TimeWithDayAttr.hourMinute( 22, 0), TimeWithDayAttr.hourMinute(29, 0))
+				);
+		
+		//就業時間帯
+		val flexHalfDayWorkTimes = Arrays.asList(
+				  FlexHalfDayWorkTimeHelper.createWorkTime(AmPmAtr.ONE_DAY, flexHalfRestTimezone
+						  , OverTimeOfTimeZoneSetHelper.createOverTimeList(oTTimezoneImpls)
+						  , Arrays.asList(
+								  EmTimeZoneSetHelper.createWorkingTimezoneList(new EmTimeFrameNo(1) , TimeWithDayAttr.hourMinute( 5,  0 ), TimeWithDayAttr.hourMinute( 29, 0 ))
+							))
+				, FlexHalfDayWorkTimeHelper.createWorkTime(AmPmAtr.AM, flexHalfRestTimezone
+						, OverTimeOfTimeZoneSetHelper.createOverTimeList(oTTimezoneImpls)
+						, Arrays.asList(
+								 EmTimeZoneSetHelper.createWorkingTimezoneList(new EmTimeFrameNo(2) , TimeWithDayAttr.hourMinute( 5,  0 ), TimeWithDayAttr.hourMinute( 12, 0 ))
+						))
+				, FlexHalfDayWorkTimeHelper.createWorkTime(AmPmAtr.PM, flexHalfRestTimezone
+						, OverTimeOfTimeZoneSetHelper.createOverTimeList(oTTimezoneImpls)
+						, Arrays.asList(
+								 EmTimeZoneSetHelper.createWorkingTimezoneList(new EmTimeFrameNo(3) , TimeWithDayAttr.hourMinute( 13,  0 ), TimeWithDayAttr.hourMinute( 29, 0 ))
+						))
+				);
+		
+		val timeSheet = new TimeSheet(new TimeWithDayAttr(480), new TimeWithDayAttr(960));
+
+		// コアタイムを使用する
+		val flexWorkSetting = new FlexWorkSetting(new FlexWorkSettingImpl(ApplyAtr.USE, flexHalfDayWorkTimes
+												, new FlexOffdayWorkTime(), false, timeSheet));
+		
+		// Execute
+	    @SuppressWarnings("unchecked")
+ 		val result = (List<ChangeableWorkingTimeZonePerNo>) NtsAssert.Invoke.privateMethod(
+				                flexWorkSetting
+							,	"createTimeZoneByAmPmCls"
+							,	require
+							,   new TimeSpanForCalc(TimeWithDayAttr.hourMinute(10,  0 ), TimeWithDayAttr.hourMinute( 12, 00 ))
+							,   AmPmAtr.ONE_DAY
+						);
+	    
+	    assertThat(result.get(0).getWorkNo()).isEqualTo(new WorkNo(1));
+	    assertThat(result.get(0).getForStart().getStart().v()).isEqualTo(300);
+	    assertThat(result.get(0).getForStart().getEnd().v()).isEqualTo(480);
+	    assertThat(result.get(0).getForEnd().getStart().v()).isEqualTo(960);
+	    assertThat(result.get(0).getForEnd().getEnd().v()).isEqualTo(1740);
+		
+	}
+	
+	/**
+	 * 就業の時間帯 = (10:00, 12:00)
+	 * 午前午後区分 = AM
+	 * $勤務可能時間帯= (300:　1740)
+	 * コアタイムを使用しない⇒開始/終了が同じ
+	 * 結果：$勤務可能時間帯
+	 * 
+	 */
+	
+	@Test
+	public void createTimeZoneByAmPmCls_Morning_OneDay_CoreTime_Not_Use(@Injectable TimeSheet timeSheet) {
+		// 休憩時間帯 
+		val flexHalfRestTimezone = FlowWkRestTimezoneHelper.createRestTimeZone(
+				   new FlowRestSetting(new AttendanceTime(120), new AttendanceTime(60))
+				,  new FlowRestSetting(new AttendanceTime(240), new AttendanceTime(320)), false);
+
+		// 残業時間帯
+		val oTTimezoneImpls = Arrays.asList(
+					  OverTimeOfTimeZoneSetHelper.createOverTime(1, true, TimeWithDayAttr.hourMinute(  5, 0), TimeWithDayAttr.hourMinute(8, 30))
+					, OverTimeOfTimeZoneSetHelper.createOverTime(2, true, TimeWithDayAttr.hourMinute( 18, 0), TimeWithDayAttr.hourMinute(22, 0))
+					, OverTimeOfTimeZoneSetHelper.createOverTime(3, true, TimeWithDayAttr.hourMinute( 22, 0), TimeWithDayAttr.hourMinute(29, 0))
+				);
+		//就業時間帯
+		val flexHalfDayWorkTimes = Arrays.asList(
+				  FlexHalfDayWorkTimeHelper.createWorkTime(AmPmAtr.ONE_DAY, flexHalfRestTimezone
+						  ,  OverTimeOfTimeZoneSetHelper.createOverTimeList(oTTimezoneImpls)
+						  , Arrays.asList(
+								  EmTimeZoneSetHelper.createWorkingTimezoneList(new EmTimeFrameNo(1) , TimeWithDayAttr.hourMinute( 5,  0 ), TimeWithDayAttr.hourMinute( 29, 0 ))
+							))
+				, FlexHalfDayWorkTimeHelper.createWorkTime(AmPmAtr.AM, flexHalfRestTimezone
+						,  OverTimeOfTimeZoneSetHelper.createOverTimeList(oTTimezoneImpls)
+						, Arrays.asList(
+								 EmTimeZoneSetHelper.createWorkingTimezoneList(new EmTimeFrameNo(2) , TimeWithDayAttr.hourMinute( 5,  0 ), TimeWithDayAttr.hourMinute( 12, 0 ))
+						))
+				, FlexHalfDayWorkTimeHelper.createWorkTime(AmPmAtr.PM, flexHalfRestTimezone
+						, OverTimeOfTimeZoneSetHelper.createOverTimeList(oTTimezoneImpls)
+						, Arrays.asList(
+								 EmTimeZoneSetHelper.createWorkingTimezoneList(new EmTimeFrameNo(3) , TimeWithDayAttr.hourMinute( 13,  0 ), TimeWithDayAttr.hourMinute( 29, 0 ))
+						))
+				);
+		
+		val fixedRestTimeSet = new TimezoneOfFixedRestTimeSet(Arrays.asList(
+				  new DeductionTime(TimeWithDayAttr.hourMinute(12, 00), TimeWithDayAttr.hourMinute(13, 00))
+				, new DeductionTime(TimeWithDayAttr.hourMinute(17, 30), TimeWithDayAttr.hourMinute(18, 00))));
+		
+		val offdayWorkTimeImpl = new FlexOffdayWorkTimeGetMementoImpl(
+				  Arrays.asList(new HDWorkTimeSheetSetting(new HDWorkTimeSheetSettingImpl(TimeWithDayAttr.hourMinute(5, 00), TimeWithDayAttr.hourMinute(29, 00))))
+				, new FlowWorkRestTimezone(true, fixedRestTimeSet, new FlowRestTimezone()));
+
+		// コアタイムを使用する
+		val flexWorkSetting = new FlexWorkSetting(new FlexWorkSettingImpl(ApplyAtr.NOT_USE, flexHalfDayWorkTimes
+												, new FlexOffdayWorkTime(offdayWorkTimeImpl), false, timeSheet));
+		
+		// Execute
+	    @SuppressWarnings("unchecked")
+ 		val result = (List<ChangeableWorkingTimeZonePerNo>) NtsAssert.Invoke.privateMethod(
+				                flexWorkSetting
+							,	"createTimeZoneByAmPmCls"
+							,	require
+							,   new TimeSpanForCalc(TimeWithDayAttr.hourMinute(10,  0 ), TimeWithDayAttr.hourMinute( 12, 00 ))
+							,   AmPmAtr.AM
+						);
+	    
+	    assertThat(result.get(0).getWorkNo()).isEqualTo(new WorkNo(1));
+	    assertThat(result.get(0).getForStart().getStart().v()).isEqualTo(300);
+	    assertThat(result.get(0).getForStart().getEnd().v()).isEqualTo(1740);	
+	    assertThat(result.get(0).getForEnd().getStart().v()).isEqualTo(300);
+	    assertThat(result.get(0).getForEnd().getEnd().v()).isEqualTo(1740);	
+		
+	}
+	
+	/**
+	 * 就業の時間帯 = (10:00, 12:00)
+	 * 午前午後区分 = AM
+	 * コアタイムを使用する
+	 * コアタイム=(480: 960)
+	 * $勤務可能時間帯= (300:　1740)
+	 * 結果：	$開始 = 計算時間帯( $勤務可能時間帯.開始時刻, 所定時間設定.開始時刻 )																				
+     *      $終了 = 計算時間帯( $コアタイム.終了時刻, $勤務可能時間帯.終了時刻 )
+	 * 
+	 */
+	
+	@Test
+	public void createTimeZoneByAmPmCls_Morning_OneDay_CoreTime_Use(@Injectable TimeSheet timeSheet) {
+		// 休憩時間帯 
+		val flexHalfRestTimezone = FlowWkRestTimezoneHelper.createRestTimeZone(new FlowRestSetting(new AttendanceTime(120), new AttendanceTime(60))
+				,  new FlowRestSetting(new AttendanceTime(240), new AttendanceTime(320)), false);
+		
+		// 残業時間帯
+		val oTTimezoneImpls = Arrays.asList(
+				      OverTimeOfTimeZoneSetHelper.createOverTime(1, true, TimeWithDayAttr.hourMinute(  5, 0), TimeWithDayAttr.hourMinute(8, 30))
+					, OverTimeOfTimeZoneSetHelper.createOverTime(2, true, TimeWithDayAttr.hourMinute( 18, 0), TimeWithDayAttr.hourMinute(22, 0))
+					, OverTimeOfTimeZoneSetHelper.createOverTime(3, true, TimeWithDayAttr.hourMinute( 22, 0), TimeWithDayAttr.hourMinute(29, 0))
+				);
+		
+		//就業時間帯
+		val flexHalfDayWorkTimes = Arrays.asList(
+				  FlexHalfDayWorkTimeHelper.createWorkTime(AmPmAtr.ONE_DAY, flexHalfRestTimezone
+						  , OverTimeOfTimeZoneSetHelper.createOverTimeList(oTTimezoneImpls)
+						  , Arrays.asList(
+								  EmTimeZoneSetHelper.createWorkingTimezoneList(new EmTimeFrameNo(1) , TimeWithDayAttr.hourMinute( 5,  0 ), TimeWithDayAttr.hourMinute( 29, 0 ))
+							))
+				, FlexHalfDayWorkTimeHelper.createWorkTime(AmPmAtr.AM, flexHalfRestTimezone
+						, OverTimeOfTimeZoneSetHelper.createOverTimeList(oTTimezoneImpls)
+						, Arrays.asList(
+								 EmTimeZoneSetHelper.createWorkingTimezoneList(new EmTimeFrameNo(2) , TimeWithDayAttr.hourMinute( 5,  0 ), TimeWithDayAttr.hourMinute( 12, 0 ))
+						))
+				, FlexHalfDayWorkTimeHelper.createWorkTime(AmPmAtr.PM, flexHalfRestTimezone
+						, OverTimeOfTimeZoneSetHelper.createOverTimeList(oTTimezoneImpls)
+						, Arrays.asList(
+								 EmTimeZoneSetHelper.createWorkingTimezoneList(new EmTimeFrameNo(3) , TimeWithDayAttr.hourMinute( 13,  0 ), TimeWithDayAttr.hourMinute( 29, 0 ))
+						))
+				);
+		
+		
+		val fixedRestTimeSet = new TimezoneOfFixedRestTimeSet(Arrays.asList(
+				  new DeductionTime(TimeWithDayAttr.hourMinute(12, 00), TimeWithDayAttr.hourMinute(13, 00))
+				, new DeductionTime(TimeWithDayAttr.hourMinute(17, 30), TimeWithDayAttr.hourMinute(18, 00))));
+		
+		val offdayWorkTimeImpl = new FlexOffdayWorkTimeGetMementoImpl(
+				  Arrays.asList(new HDWorkTimeSheetSetting(new HDWorkTimeSheetSettingImpl(TimeWithDayAttr.hourMinute(5, 00), TimeWithDayAttr.hourMinute(29, 00))))
+				, new FlowWorkRestTimezone(true, fixedRestTimeSet, new FlowRestTimezone()));
+
+		// コアタイムを使用しない
+		val flexWorkSetting = new FlexWorkSetting(new FlexWorkSettingImpl(ApplyAtr.USE, flexHalfDayWorkTimes
+												, new FlexOffdayWorkTime(offdayWorkTimeImpl), false, timeSheet));
+
+		val morningEndTime = TimeWithDayAttr.hourMinute( 12,  0 );
+		val afternoonStartTime = TimeWithDayAttr.hourMinute( 13,  0 );
 		
 		// 所定時間設定		
-		val instance = FlexWorkSettingHelper.PredTimeStg.create(timeZones);
+		val predTimeStg = Helper.PredTimeStg.create(morningEndTime, afternoonStartTime);
 		
 		new Expectations() {
 			{
-				require.getPredetermineTimeSetting((WorkTimeCode)any);
-				result = instance;
+				require.getPredetermineTimeSetting((WorkTimeCode) any);
+				result = predTimeStg;
 			}
 		};
 		
-		List<HDWorkTimeSheetSetting> lstWorkTimezone=  new ArrayList<HDWorkTimeSheetSetting>(){{
-			HDWorkTimeSheetSettingImpl memento = new HDWorkTimeSheetSettingImpl();
-			add(new HDWorkTimeSheetSetting(memento));
-			add(new HDWorkTimeSheetSetting(memento));
-		}};
-		
-		val flexWorkSetting = createFlexWorkSetting(lstWorkTimezone);
+		val worktime = new TimeSpanForCalc(TimeWithDayAttr.hourMinute(10,  0 ), TimeWithDayAttr.hourMinute( 12, 00 ));
 		// Execute
-		@SuppressWarnings("unchecked")
- 		val result = (List<ChangeableWorkingTimeZonePerNo>)NtsAssert.Invoke.privateMethod(
+	    @SuppressWarnings("unchecked")
+ 		val result = (List<ChangeableWorkingTimeZonePerNo>) NtsAssert.Invoke.privateMethod(
 				                flexWorkSetting
-							,	"createWorkOnDayOffTime"
+							,	"createTimeZoneByAmPmCls"
 							,	require
+							,   worktime
+							,   AmPmAtr.AM
 						);
-		assertThat( result ).isEmpty();
+	    
+	    assertThat(result.get(0).getWorkNo()).isEqualTo(new WorkNo(1));
+	    assertThat(result.get(0).getForStart().getStart().v()).isEqualTo(300);
+	    assertThat(result.get(0).getForStart().getEnd().v()).isEqualTo(720);	
+	    assertThat(result.get(0).getForEnd().getStart().v()).isEqualTo(960);
+	    assertThat(result.get(0).getForEnd().getEnd().v()).isEqualTo(1740);	
+		
 	}
 	
-	
 	/**
-	 * 休出時の時間帯を作成する not empty
-	 * 「$.重複の判断処理( $休出の時間帯 ) != 非重複」 
-	 * 時間帯1:　8:00 -> 15:00
-	 * 時間帯2:　13:00 -> 22:00
+	 * 就業の時間帯 = (10:00, 12:00)
+	 * 午前午後区分 = AM
+	 * 平日勤務時間帯リスト中に午前午後区分 = AMを存在しない
+	 * コアタイムを使用する
+	 * 結果：	$開始 = 計算時間帯( 就業の時間帯.開始時刻, $コアタイム.開始時刻 )																				
+     *      $終了 = 計算時間帯( $コアタイム.終了時刻, 就業の時間帯.終了時刻 )
+	 * 
 	 */
+	
 	@Test
-	public void createWorkOnDayOffTime() {
-		//$.重複の判断処理( $休出の時間帯 ) != 非重複
-		List<TimezoneUse> timeZones = Arrays.asList(
-				    new TimezoneUse(TimeWithDayAttr.hourMinute(  8,  0 ), TimeWithDayAttr.hourMinute( 15, 00 ), UseSetting.USE, 1)
-				,	new TimezoneUse(TimeWithDayAttr.hourMinute(  13,  0 ), TimeWithDayAttr.hourMinute( 22,  00), UseSetting.USE, 1)
-			);
+	public void createTimeZoneByAmPmCls_Morning_Not_Exist(@Injectable TimeSheet timeSheet) {
+		// 休憩時間帯 
+		val flexHalfRestTimezone = FlowWkRestTimezoneHelper.createRestTimeZone(new FlowRestSetting(new AttendanceTime(120), new AttendanceTime(60))
+				,  new FlowRestSetting(new AttendanceTime(240), new AttendanceTime(320)), false);
+
+		//就業時間帯
+		val flexHalfDayWorkTimes = Arrays.asList(
+				  FlexHalfDayWorkTimeHelper.createWorkTime(AmPmAtr.ONE_DAY, flexHalfRestTimezone, Collections.emptyList()
+						  , Arrays.asList(
+								  EmTimeZoneSetHelper.createWorkingTimezoneList(new EmTimeFrameNo(1) , TimeWithDayAttr.hourMinute( 5,  0 ), TimeWithDayAttr.hourMinute( 29, 0 ))
+							))
+				, FlexHalfDayWorkTimeHelper.createWorkTime(AmPmAtr.PM, flexHalfRestTimezone, Collections.emptyList()
+						, Arrays.asList(
+								 EmTimeZoneSetHelper.createWorkingTimezoneList(new EmTimeFrameNo(3) , TimeWithDayAttr.hourMinute( 13,  0 ), TimeWithDayAttr.hourMinute( 29, 0 ))
+						))
+				);
+		
+		
+		val fixedRestTimeSet = new TimezoneOfFixedRestTimeSet(Arrays.asList(
+				  new DeductionTime(TimeWithDayAttr.hourMinute(12, 00), TimeWithDayAttr.hourMinute(13, 00))
+				, new DeductionTime(TimeWithDayAttr.hourMinute(17, 30), TimeWithDayAttr.hourMinute(18, 00))));
+		
+		val offdayWorkTimeImpl = new FlexOffdayWorkTimeGetMementoImpl(
+				  Arrays.asList(new HDWorkTimeSheetSetting(new HDWorkTimeSheetSettingImpl(TimeWithDayAttr.hourMinute(5, 00), TimeWithDayAttr.hourMinute(29, 00))))
+				, new FlowWorkRestTimezone(true, fixedRestTimeSet, new FlowRestTimezone()));
+
+		// コアタイムを使用する
+		val flexWorkSetting = new FlexWorkSetting(new FlexWorkSettingImpl(ApplyAtr.USE, flexHalfDayWorkTimes
+												, new FlexOffdayWorkTime(offdayWorkTimeImpl), false, timeSheet));
+
+		val morningEndTime = TimeWithDayAttr.hourMinute( 12,  0 );
+		val afternoonStartTime = TimeWithDayAttr.hourMinute( 13,  0 );
 		
 		// 所定時間設定		
-		val instance = FlexWorkSettingHelper.PredTimeStg.create(timeZones);
+		val predTimeStg = Helper.PredTimeStg.create(morningEndTime, afternoonStartTime);
 		
 		new Expectations() {
 			{
-				require.getPredetermineTimeSetting((WorkTimeCode)any);
-				result = instance;
+				require.getPredetermineTimeSetting((WorkTimeCode) any);
+				result = predTimeStg;
 			}
 		};
 		
-		List<HDWorkTimeSheetSetting> lstWorkTimezone=  new ArrayList<HDWorkTimeSheetSetting>(){{
-			HDWorkTimeSheetSettingImpl memento = new HDWorkTimeSheetSettingImpl();
-			add(new HDWorkTimeSheetSetting(memento));
-			add(new HDWorkTimeSheetSetting(memento));
-		}};
-		
-		val flexWorkSetting = createFlexWorkSetting(lstWorkTimezone);
+		val worktime = new TimeSpanForCalc(TimeWithDayAttr.hourMinute(10,  0 ), TimeWithDayAttr.hourMinute( 12, 00 ));
 		// Execute
-		@SuppressWarnings("unchecked")
- 		val result = (List<ChangeableWorkingTimeZonePerNo>)NtsAssert.Invoke.privateMethod(
+	    @SuppressWarnings("unchecked")
+ 		val result = (List<ChangeableWorkingTimeZonePerNo>) NtsAssert.Invoke.privateMethod(
 				                flexWorkSetting
-							,	"createWorkOnDayOffTime"
+							,	"createTimeZoneByAmPmCls"
 							,	require
+							,   worktime
+							,   AmPmAtr.AM
 						);
+	    
+	    val coreTime = new TimeSpanForCalc(flexWorkSetting.getCoreTimeSetting().getCoreTimeSheet().getStartTime(), predTimeStg.getPrescribedTimezoneSetting().getMorningEndTime());
+	    val startTime_excepted = new TimeSpanForCalc(worktime.getStart(), coreTime.getStart());
+	    val endTime_excepted = new TimeSpanForCalc(coreTime.getEnd(), worktime.getEnd());
+	    assertThat(result.get(0).getWorkNo()).isEqualTo(new WorkNo(1));
+	    assertThat(result.get(0).getForStart()).isEqualTo(startTime_excepted);
+	    assertThat(result.get(0).getForEnd()).isEqualTo(endTime_excepted);	
 		
-		val timeExcepted = TimeSpanForCalc.join( flexWorkSetting.getOffdayWorkTime().getLstWorkTimezone().stream()
-				.map(c -> c.getTimezone().timeSpan())
-				.collect(Collectors.toList()));
-		
-		assertThat( result ).extracting(d -> d.getWorkNo(), d -> d.getForStart(), d -> d.getForEnd())
-		                    .containsExactly( Tuple.tuple(new WorkNo(1), timeExcepted.get(), timeExcepted.get()));
 	}
+	
+	/**
+	 * 就業の時間帯 = (10:00, 12:00)
+	 * 午前午後区分 = PM
+	 * コアタイムを使用しない⇒開始/終了が同じ
+	 * 結果：$勤務可能時間帯
+	 * 
+	 */
+	
+	@Test
+	public void createTimeZoneByAmPmCls_After_OneDay_CoreTime_Not_Use(@Injectable TimeSheet timeSheet) {
+		// 休憩時間帯 
+		val flexHalfRestTimezone = FlowWkRestTimezoneHelper.createRestTimeZone(new FlowRestSetting(new AttendanceTime(120), new AttendanceTime(60))
+				,  new FlowRestSetting(new AttendanceTime(240), new AttendanceTime(320)), false);
+		
+		// 残業時間帯
+		val oTTimezoneImpls = Arrays.asList(
+				      OverTimeOfTimeZoneSetHelper.createOverTime(1, true, TimeWithDayAttr.hourMinute(  5, 0), TimeWithDayAttr.hourMinute(8, 30))
+					, OverTimeOfTimeZoneSetHelper.createOverTime(2, true, TimeWithDayAttr.hourMinute( 18, 0), TimeWithDayAttr.hourMinute(22, 0))
+					, OverTimeOfTimeZoneSetHelper.createOverTime(3, true, TimeWithDayAttr.hourMinute( 22, 0), TimeWithDayAttr.hourMinute(29, 0))
+				);
+		
+		//就業時間帯
+		val flexHalfDayWorkTimes = Arrays.asList(
+				  FlexHalfDayWorkTimeHelper.createWorkTime(AmPmAtr.ONE_DAY, flexHalfRestTimezone
+						  , OverTimeOfTimeZoneSetHelper.createOverTimeList(oTTimezoneImpls)
+						  , Arrays.asList(
+								  EmTimeZoneSetHelper.createWorkingTimezoneList(new EmTimeFrameNo(1) , TimeWithDayAttr.hourMinute( 5,  0 ), TimeWithDayAttr.hourMinute( 29, 0 ))
+							))
+				, FlexHalfDayWorkTimeHelper.createWorkTime(AmPmAtr.AM, flexHalfRestTimezone
+						, OverTimeOfTimeZoneSetHelper.createOverTimeList(oTTimezoneImpls)
+						, Arrays.asList(
+								 EmTimeZoneSetHelper.createWorkingTimezoneList(new EmTimeFrameNo(2) , TimeWithDayAttr.hourMinute( 5,  0 ), TimeWithDayAttr.hourMinute( 12, 0 ))
+						))
+				, FlexHalfDayWorkTimeHelper.createWorkTime(AmPmAtr.PM, flexHalfRestTimezone
+						, OverTimeOfTimeZoneSetHelper.createOverTimeList(oTTimezoneImpls)
+						, Arrays.asList(
+								 EmTimeZoneSetHelper.createWorkingTimezoneList(new EmTimeFrameNo(3) , TimeWithDayAttr.hourMinute( 13,  0 ), TimeWithDayAttr.hourMinute( 29, 0 ))
+						))
+				);
+		
+		val fixedRestTimeSet = new TimezoneOfFixedRestTimeSet(Arrays.asList(
+				  new DeductionTime(TimeWithDayAttr.hourMinute(12, 00), TimeWithDayAttr.hourMinute(13, 00))
+				, new DeductionTime(TimeWithDayAttr.hourMinute(17, 30), TimeWithDayAttr.hourMinute(18, 00))));
+		
+		val offRestTimeZone = new FlowWorkRestTimezone(true, fixedRestTimeSet, new FlowRestTimezone());
+		
+		val offdayWorkTimeImpl = new FlexOffdayWorkTimeGetMementoImpl(
+				  Arrays.asList(new HDWorkTimeSheetSetting(new HDWorkTimeSheetSettingImpl(TimeWithDayAttr.hourMinute(5, 00), TimeWithDayAttr.hourMinute(29, 00))))
+				, offRestTimeZone);
+
+		// コアタイムを使用する
+		val flexWorkSetting = new FlexWorkSetting(new FlexWorkSettingImpl(ApplyAtr.NOT_USE, flexHalfDayWorkTimes
+												, new FlexOffdayWorkTime(offdayWorkTimeImpl), false, timeSheet));
+		
+		// Execute
+	    @SuppressWarnings("unchecked")
+ 		val result = (List<ChangeableWorkingTimeZonePerNo>) NtsAssert.Invoke.privateMethod(
+				                flexWorkSetting
+							,	"createTimeZoneByAmPmCls"
+							,	require
+							,   new TimeSpanForCalc(TimeWithDayAttr.hourMinute(10,  0 ), TimeWithDayAttr.hourMinute( 12, 00 ))
+							,   AmPmAtr.PM
+						);
+	    
+	    Optional<TimeSpanForCalc> wkTimePossibles = TimeSpanForCalc.join(oTTimezoneImpls.stream().map(c -> {return c.getTimezone().timeSpan();}).collect(Collectors.toList()));
+	    assertThat(result.get(0).getWorkNo()).isEqualTo(new WorkNo(1));
+	    assertThat(result.get(0).getForStart()).isEqualTo(wkTimePossibles.get());
+	    assertThat(result.get(0).getForEnd()).isEqualTo(wkTimePossibles.get());	
+		
+	}
+	
+	/**
+	 * 就業の時間帯 = (10:00, 12:00)
+	 * 午前午後区分 = PM
+	 * コアタイムを使用する
+	 * 結果：	$開始 = 計算時間帯( $勤務可能時間帯.開始時刻, $コアタイム.開始時刻 )																				
+     *      $終了 = 計算時間帯( $コアタイム.終了時刻, $勤務可能時間帯.終了時刻 )
+	 * 
+	 */
+	
+	@Test
+	public void createTimeZoneByAmPmCls_After_OneDay_CoreTime_Use(@Injectable TimeSheet timeSheet) {
+		// 休憩時間帯 
+		val flexHalfRestTimezone = FlowWkRestTimezoneHelper.createRestTimeZone(new FlowRestSetting(new AttendanceTime(120), new AttendanceTime(60))
+				,  new FlowRestSetting(new AttendanceTime(240), new AttendanceTime(320)), false);
+		
+		// 残業時間帯
+		val oTTimezoneImpls = Arrays.asList(
+				      OverTimeOfTimeZoneSetHelper.createOverTime(1, true, TimeWithDayAttr.hourMinute(  5, 0), TimeWithDayAttr.hourMinute(8, 30))
+					, OverTimeOfTimeZoneSetHelper.createOverTime(2, true, TimeWithDayAttr.hourMinute( 18, 0), TimeWithDayAttr.hourMinute(22, 0))
+					, OverTimeOfTimeZoneSetHelper.createOverTime(3, true, TimeWithDayAttr.hourMinute( 22, 0), TimeWithDayAttr.hourMinute(29, 0))
+				);
+		
+		//就業時間帯
+		val flexHalfDayWorkTimes = Arrays.asList(
+				  FlexHalfDayWorkTimeHelper.createWorkTime(AmPmAtr.ONE_DAY, flexHalfRestTimezone
+						  , OverTimeOfTimeZoneSetHelper.createOverTimeList(oTTimezoneImpls)
+						  , Arrays.asList(
+								  EmTimeZoneSetHelper.createWorkingTimezoneList(new EmTimeFrameNo(1) , TimeWithDayAttr.hourMinute( 5,  0 ), TimeWithDayAttr.hourMinute( 29, 0 ))
+							))
+				, FlexHalfDayWorkTimeHelper.createWorkTime(AmPmAtr.AM, flexHalfRestTimezone
+						, OverTimeOfTimeZoneSetHelper.createOverTimeList(oTTimezoneImpls)
+						, Arrays.asList(
+								 EmTimeZoneSetHelper.createWorkingTimezoneList(new EmTimeFrameNo(2) , TimeWithDayAttr.hourMinute( 5,  0 ), TimeWithDayAttr.hourMinute( 12, 0 ))
+						))
+				, FlexHalfDayWorkTimeHelper.createWorkTime(AmPmAtr.PM, flexHalfRestTimezone
+						, OverTimeOfTimeZoneSetHelper.createOverTimeList(oTTimezoneImpls)
+						, Arrays.asList(
+								 EmTimeZoneSetHelper.createWorkingTimezoneList(new EmTimeFrameNo(3) , TimeWithDayAttr.hourMinute( 13,  0 ), TimeWithDayAttr.hourMinute( 29, 0 ))
+						))
+				);
+		
+		val fixedRestTimeSet = new TimezoneOfFixedRestTimeSet(Arrays.asList(
+				  new DeductionTime(TimeWithDayAttr.hourMinute(12, 00), TimeWithDayAttr.hourMinute(13, 00))
+				, new DeductionTime(TimeWithDayAttr.hourMinute(17, 30), TimeWithDayAttr.hourMinute(18, 00))));
+		
+		val offdayWorkTimeImpl = new FlexOffdayWorkTimeGetMementoImpl(
+				  Arrays.asList(new HDWorkTimeSheetSetting(new HDWorkTimeSheetSettingImpl(TimeWithDayAttr.hourMinute(5, 00), TimeWithDayAttr.hourMinute(29, 00))))
+				, new FlowWorkRestTimezone(true, fixedRestTimeSet, new FlowRestTimezone()));
+
+		// コアタイムを使用しない
+		val flexWorkSetting = new FlexWorkSetting(new FlexWorkSettingImpl(ApplyAtr.USE, flexHalfDayWorkTimes
+												, new FlexOffdayWorkTime(offdayWorkTimeImpl), false, timeSheet));
+
+		val morningEndTime = TimeWithDayAttr.hourMinute( 12,  0 );
+		val afternoonStartTime = TimeWithDayAttr.hourMinute( 13,  0 );
+		
+		// 所定時間設定		
+		val predTimeStg = Helper.PredTimeStg.create(morningEndTime, afternoonStartTime);
+		
+		new Expectations() {
+			{
+				require.getPredetermineTimeSetting((WorkTimeCode) any);
+				result = predTimeStg;
+			}
+		};
+		
+		// Execute
+	    @SuppressWarnings("unchecked")
+ 		val result = (List<ChangeableWorkingTimeZonePerNo>) NtsAssert.Invoke.privateMethod(
+				                flexWorkSetting
+							,	"createTimeZoneByAmPmCls"
+							,	require
+							,   new TimeSpanForCalc(TimeWithDayAttr.hourMinute(10,  0 ), TimeWithDayAttr.hourMinute( 12, 00 ))
+							,   AmPmAtr.PM
+						);
+	    
+	    Optional<TimeSpanForCalc> wkTimePossibles = TimeSpanForCalc.join(oTTimezoneImpls.stream().map(c -> {return c.getTimezone().timeSpan();}).collect(Collectors.toList()));
+	    val coreTime = new TimeSpanForCalc(predTimeStg.getPrescribedTimezoneSetting().getAfternoonStartTime(), flexWorkSetting.getCoreTimeSetting().getCoreTimeSheet().getEndTime());
+	    val startTime_excepted = new TimeSpanForCalc(wkTimePossibles.get().getStart(), coreTime.getStart());
+	    val endTime_excepted = new TimeSpanForCalc(coreTime.getEnd(), wkTimePossibles.get().getEnd());
+	    assertThat(result.get(0).getWorkNo()).isEqualTo(new WorkNo(1));
+	    assertThat(result.get(0).getForStart()).isEqualTo(startTime_excepted);
+	    assertThat(result.get(0).getForEnd()).isEqualTo(endTime_excepted);	
+		
+	}
+	
 	
 	/** 
 	 * [prv-2] 指定した午前午後区分のコアタイム時間帯を取得する
@@ -238,7 +786,7 @@ public class FlexWorkSettingTest {
 		val afternoonStartTime = TimeWithDayAttr.hourMinute( 13,  0 );
 		
 		// 所定時間設定		
-		val predTimeStg = FlexWorkSettingHelper.PredTimeStg.create(morningEndTime, afternoonStartTime);
+		val predTimeStg = Helper.PredTimeStg.create(morningEndTime, afternoonStartTime);
 		
 		new Expectations() {
 			{
@@ -272,7 +820,7 @@ public class FlexWorkSettingTest {
 		val afternoonStartTime = TimeWithDayAttr.hourMinute( 13,  0 );
 		
 		// 所定時間設定		
-		val predTimeStg = FlexWorkSettingHelper.PredTimeStg.create(morningEndTime, afternoonStartTime);
+		val predTimeStg = Helper.PredTimeStg.create(morningEndTime, afternoonStartTime);
 		
 		new Expectations() {
 			{
@@ -295,101 +843,71 @@ public class FlexWorkSettingTest {
 		
 	}
 	
-	private List<OverTimeOfTimeZoneSet> createOverTimeList(List<OverTimeOfTimeZoneSetImpl> overTimeList) {
-		
-		return overTimeList.stream().map(c -> {return new OverTimeOfTimeZoneSet(c);}).collect(Collectors.toList());
-	}
-	/**  [prv-1] 指定した午前午後区分の時間帯情報を作成する   **/
+	
 	/**
-	 * 就業の時間帯 = (5:00, 12:00)
-	 * 午前午後区分 = ONE_DAY
-	 * コアタイムを使用しない⇒開始/終了が同じ
-	 * 結果：$勤務可能時間帯
-	 * 
+	 * [prv-3]休出時の時間帯を作成する not empty
+	 * 「$.重複の判断処理( $休出の時間帯 ) != 非重複」 
+	 *  所定時間設定	時間帯1:　8:00 -> 15:00, 時間帯2:　13:00 -> 22:00
+	 *  勤務時間帯        時間帯1:　8:00 -> 12:00, 時間帯2:　13:00 -> 18:00
+	 *  期待値：　8:00　-> 18:00
 	 */
 	@Test
-	public void createTimeZoneByAmPmCls() {
-		// 休憩時間帯 
-		val flexHalfRestTimezone = createRestTimeZone(new FlowRestSetting(new AttendanceTime(120), new AttendanceTime(60))
-				,  new FlowRestSetting(new AttendanceTime(240), new AttendanceTime(320)), false);
+	public void createWorkOnDayOffTime() {
+		List<HDWorkTimeSheetSetting> lstWorkTimezone=  Arrays.asList(
+				   new HDWorkTimeSheetSetting(new HDWorkTimeSheetSettingImpl(TimeWithDayAttr.hourMinute(8, 00), TimeWithDayAttr.hourMinute(12, 00)))
+				,  new HDWorkTimeSheetSetting(new HDWorkTimeSheetSettingImpl(TimeWithDayAttr.hourMinute(13, 00), TimeWithDayAttr.hourMinute(18, 00)))
+				
+				);
 		
-		// 一日の就業時間帯
-		val lstWorkingTimeOneDay = Arrays.asList(
-				   new EmTimeZoneSet(new EmTimeFrameNo(1)
-						   , new TimeZoneRounding(TimeWithDayAttr.hourMinute( 5,  0 ), TimeWithDayAttr.hourMinute( 29, 0 )
-						   , new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN)))
-						);
-		// 残業時間帯
-		val oTTimezoneImpls = Arrays.asList(new OverTimeOfTimeZoneSetImpl(new EmTimezoneNo(1), true
-				, new TimeZoneRounding(TimeWithDayAttr.hourMinute(5, 0), TimeWithDayAttr.hourMinute(8, 30), null)
-				, new OTFrameNo(1), new OTFrameNo(1), new SettlementOrder(1))
-				, new OverTimeOfTimeZoneSetImpl(new EmTimezoneNo(2), false
-						, new TimeZoneRounding(TimeWithDayAttr.hourMinute(18, 0), TimeWithDayAttr.hourMinute(22, 0), null)
-						, new OTFrameNo(2), new OTFrameNo(2), new SettlementOrder(2))
-				, new OverTimeOfTimeZoneSetImpl(new EmTimezoneNo(3), false
-						, new TimeZoneRounding(TimeWithDayAttr.hourMinute(22, 0), TimeWithDayAttr.hourMinute(29, 0), null)
-						, new OTFrameNo(3), new OTFrameNo(3), new SettlementOrder(3)));
+		val flexWorkSetting = Helper.createFlexWorkSetting(lstWorkTimezone);
 		
-		val workingTimeOneDay = createWorkTime(AmPmAtr.ONE_DAY, flexHalfRestTimezone, createOverTimeList(oTTimezoneImpls), lstWorkingTimeOneDay);
+		List<TimezoneUse> timeZones = Arrays.asList(
+				    new TimezoneUse(TimeWithDayAttr.hourMinute(  8,  0 ), TimeWithDayAttr.hourMinute( 15, 00 ), UseSetting.USE, 1)
+				,	new TimezoneUse(TimeWithDayAttr.hourMinute(  13,  0 ), TimeWithDayAttr.hourMinute( 22,  00), UseSetting.USE, 1)
+			);
 		
-		// 午前の就業時間帯
-		val lstWorkingTimeMorning = Arrays.asList(
-				   new EmTimeZoneSet(new EmTimeFrameNo(1)
-						   , new TimeZoneRounding(TimeWithDayAttr.hourMinute( 5,  0 ), TimeWithDayAttr.hourMinute( 12, 0 )
-						   , new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN)))
-						);
-		val workingTimeMorning = createWorkTime(AmPmAtr.ONE_DAY, flexHalfRestTimezone, createOverTimeList(oTTimezoneImpls), lstWorkingTimeMorning);
+		// 所定時間設定		
+		val instance = Helper.PredTimeStg.create(timeZones);
 		
-		// 午後の就業時間帯
-		val lstWorkingTimeAfter= Arrays.asList(
-				   new EmTimeZoneSet(new EmTimeFrameNo(1)
-						   , new TimeZoneRounding(TimeWithDayAttr.hourMinute( 13,  0 ), TimeWithDayAttr.hourMinute( 29, 0 )
-						   , new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN)))
-						);
-		val workingTimeAfter = createWorkTime(AmPmAtr.ONE_DAY, flexHalfRestTimezone, createOverTimeList(oTTimezoneImpls), lstWorkingTimeAfter);
+		new Expectations() {
+			{
+				require.getPredetermineTimeSetting((WorkTimeCode)any);
+				result = instance;
+			}
+		};
 		
-		val flexHalfDayWorkTimes = Arrays.asList(workingTimeOneDay, workingTimeMorning, workingTimeAfter);
-		
-		val fixedRestTimeSet = new TimezoneOfFixedRestTimeSet(Arrays.asList(
-				  new DeductionTime(TimeWithDayAttr.hourMinute(12, 00), TimeWithDayAttr.hourMinute(13, 00))
-				, new DeductionTime(TimeWithDayAttr.hourMinute(17, 30), TimeWithDayAttr.hourMinute(18, 00))));
-		
-		val offRestTimeZone = new FlowWorkRestTimezone(true, fixedRestTimeSet, new FlowRestTimezone());
-		
-		val offdayWorkTimeImpl = new FlexOffdayWorkTimeGetMementoImpl(Arrays.asList(new HDWorkTimeSheetSetting(new HDWorkTimeSheetSettingImpl())), offRestTimeZone);
 
-		// コアタイムを使用しない
-		val flexWorkSetting = new FlexWorkSetting(new FlexWorkSettingImpl(ApplyAtr.NOT_USE, flexHalfDayWorkTimes, new FlexOffdayWorkTime(offdayWorkTimeImpl)));
-
-		new MockUp<FlexWorkSetting>() {
-	        @Mock
-	        private TimeSpanForCalc getCoreTimeByAmPm(WorkSetting.Require require, AmPmAtr ampmAtr) {
-	        		return new TimeSpanForCalc(TimeWithDayAttr.hourMinute(10,  0 ), TimeWithDayAttr.hourMinute( 23, 30 ));
-	        }
-	    };	
-		
 		// Execute
-	    @SuppressWarnings("unchecked")
- 		val result = (List<ChangeableWorkingTimeZonePerNo>) NtsAssert.Invoke.privateMethod(
+		@SuppressWarnings("unchecked")
+ 		val result = (List<ChangeableWorkingTimeZonePerNo>)NtsAssert.Invoke.privateMethod(
 				                flexWorkSetting
-							,	"createTimeZoneByAmPmCls"
+							,	"createWorkOnDayOffTime"
 							,	require
-							,   new TimeSpanForCalc(TimeWithDayAttr.hourMinute(10,  0 ), TimeWithDayAttr.hourMinute( 12, 00 ))
-							,   AmPmAtr.ONE_DAY
 						);
-	    Optional<TimeSpanForCalc> excepted = TimeSpanForCalc.join(oTTimezoneImpls.stream().map(c -> {return c.getTimezone().timeSpan();}).collect(Collectors.toList()));
-	    assertThat(result.get(0).getWorkNo()).isEqualTo(new WorkNo(1));
-	    assertThat(result.get(0).getForStart()).isEqualTo(excepted.get());
-	    assertThat(result.get(0).getForEnd()).isEqualTo(excepted.get());
-//		
-//		assertThat(result.getStart()).isEqualTo(predTimeStg.getPrescribedTimezoneSetting().getAfternoonStartTime());
-//		assertThat(result.getEnd()).isEqualTo(flexWorkSetting.getCoreTimeSetting().getCoreTimeSheet().getEndTime());		
 		
+		assertThat( result )
+						.extracting(
+							  d -> d.getWorkNo()
+							, d -> d.getForStart().getStart()
+							, d -> d.getForStart().getEnd()
+							, d -> d.getForEnd().getStart()
+							, d -> d.getForEnd().getEnd())
+	                    .containsExactly( 
+                    		Tuple.tuple(
+                    				new WorkNo(1) 
+                    				, TimeWithDayAttr.hourMinute(8, 00)
+                    				, TimeWithDayAttr.hourMinute(18, 00)
+                    				, TimeWithDayAttr.hourMinute(8, 00)
+                    				, TimeWithDayAttr.hourMinute(18, 00)));
 	}
+
+
+	
+
 	
 	
 	@AllArgsConstructor
-	class FlowRestSetImpl implements FlowRestSetGetMemento{
+	public static class FlowRestSetImpl implements FlowRestSetGetMemento{
 
 		@Override
 		public boolean getUseStamp() {
@@ -415,7 +933,7 @@ public class FlexWorkSettingTest {
 	}
 	
 	@AllArgsConstructor
-	class FlowWorkRestSettingDetailImpl implements FlowWorkRestSettingDetailGetMemento{
+	public static class FlowWorkRestSettingDetailImpl implements FlowWorkRestSettingDetailGetMemento{
 		@Override
 		public FlowRestSet getFlowRestSetting() {
 		    val flowRestMemento = new FlowRestSetImpl();
@@ -441,7 +959,7 @@ public class FlexWorkSettingTest {
 	}
 	
 	@AllArgsConstructor
-	class FlowWorkRestSettingGetMementoImpl implements FlowWorkRestSettingGetMemento{
+	public static class FlowWorkRestSettingGetMementoImpl implements FlowWorkRestSettingGetMemento{
 		@Override
 		public CommonRestSetting getCommonRestSetting() {
 			return new CommonRestSetting(RestTimeOfficeWorkCalcMethod.APPROP_ALL);
@@ -456,8 +974,12 @@ public class FlexWorkSettingTest {
 	}
 	
 	@AllArgsConstructor
-	class HDWorkTimeSheetSettingImpl implements HDWorkTimeSheetSettingGetMemento{
+	public static class HDWorkTimeSheetSettingImpl implements HDWorkTimeSheetSettingGetMemento{
 
+		private TimeWithDayAttr start;
+		
+		private TimeWithDayAttr end;
+		
 		@Override
 		public Integer getWorkTimeNo() {
 			return 1;
@@ -465,11 +987,8 @@ public class FlexWorkSettingTest {
 
 		@Override
 		public TimeZoneRounding getTimezone() {
-			val timeRoundingSetting =  new TimeRoundingSetting(Unit.ROUNDING_TIME_15MIN, Rounding.ROUNDING_DOWN);
-			
-			return new TimeZoneRounding(TimeWithDayAttr.hourMinute(5, 0)
-					, TimeWithDayAttr.hourMinute(29, 0)
-					, timeRoundingSetting);
+			val timeRoundingSetting =  new TimeRoundingSetting(Unit.ROUNDING_TIME_10MIN, Rounding.ROUNDING_DOWN);
+			return new TimeZoneRounding(this.start, this.end, timeRoundingSetting);
 		}
 
 		@Override
@@ -505,7 +1024,7 @@ public class FlexWorkSettingTest {
 	}
 	
 	@AllArgsConstructor
-	class FlexOffdayWorkTimeGetMementoImpl implements FlexOffdayWorkTimeGetMemento{
+	public static class FlexOffdayWorkTimeGetMementoImpl implements FlexOffdayWorkTimeGetMemento{
 		
 		private List<HDWorkTimeSheetSetting> lstWorkTimezone;
 		
@@ -523,7 +1042,7 @@ public class FlexWorkSettingTest {
 		
 	}
 	
-	class IntervalTimeImpl implements IntervalTimeGetMemento{
+	public static class IntervalTimeImpl implements IntervalTimeGetMemento{
 
 		@Override
 		public AttendanceTime getIntervalTime() {
@@ -539,7 +1058,7 @@ public class FlexWorkSettingTest {
 	
 	
 	@AllArgsConstructor
-	class IntervalTimeSettingOImpl implements IntervalTimeSettingGetMemento{
+	public static class IntervalTimeSettingOImpl implements IntervalTimeSettingGetMemento{
 
 		@Override
 		public boolean getuseIntervalExemptionTime() {
@@ -565,7 +1084,7 @@ public class FlexWorkSettingTest {
 	}
 	
 	@AllArgsConstructor
-	class SubHolTransferSetImpl implements SubHolTransferSetGetMemento{
+	public static class SubHolTransferSetImpl implements SubHolTransferSetGetMemento{
 		//1日：８ｈ
 		@Override
 		public OneDayTime getCertainTime() {
@@ -590,7 +1109,7 @@ public class FlexWorkSettingTest {
 	}
 
 	@AllArgsConstructor
-	class WorkTimezoneOtherSubHolTimeSetImpl implements WorkTimezoneOtherSubHolTimeSetGetMemento{
+	public static class WorkTimezoneOtherSubHolTimeSetImpl implements WorkTimezoneOtherSubHolTimeSetGetMemento{
 
 		@Override
 		public SubHolTransferSet getSubHolTimeSet() {
@@ -611,7 +1130,7 @@ public class FlexWorkSettingTest {
 	}
 	
 	@AllArgsConstructor
-	class WorkTimezoneMedicalSetImpl implements WorkTimezoneMedicalSetGetMemento{
+	public static class WorkTimezoneMedicalSetImpl implements WorkTimezoneMedicalSetGetMemento{
 
 		@Override
 		public TimeRoundingSetting getRoundingSet() {
@@ -631,7 +1150,7 @@ public class FlexWorkSettingTest {
 	}
 	
 	@AllArgsConstructor
-	class WorkTimezoneGoOutSetImpl implements WorkTimezoneGoOutSetGetMemento{
+	public static class WorkTimezoneGoOutSetImpl implements WorkTimezoneGoOutSetGetMemento{
 		@Override
 		public TotalRoundingSet getTotalRoundingSet() {
 			return new  TotalRoundingSet(GoOutTimeRoundingMethod.ROUNDING_AND_TOTAL, GoOutTimeRoundingMethod.ROUNDING_AND_TOTAL);
@@ -644,20 +1163,22 @@ public class FlexWorkSettingTest {
 	}
 	
 	@AllArgsConstructor
-	class WorkTimezoneStampSetImpl implements WorkTimezoneStampSetGetMemento{
-		@Override
-		public List<RoundingSet> getRoundingSet() {
-			return Arrays.asList(new RoundingSet());
-		}
+	public static class WorkTimezoneStampSetImpl implements WorkTimezoneStampSetGetMemento{
 
 		@Override
 		public List<PrioritySetting> getPrioritySet() {
 			return Arrays.asList(new PrioritySetting());
 		}
+
+		@Override
+		public RoundingTime getRoundingTime() {
+			// TODO Auto-generated method stub
+			return null;
+		}
 	}
 	
 	@AllArgsConstructor
-	class WorkTimezoneCommonSetImpl  implements WorkTimezoneCommonSetGetMemento{
+	public static class WorkTimezoneCommonSetImpl  implements WorkTimezoneCommonSetGetMemento{
 
 		@Override
 		public boolean getZeroHStraddCalculateSet() {
@@ -724,7 +1245,7 @@ public class FlexWorkSettingTest {
 	}
 	
 	@AllArgsConstructor
-	class OverTimeOfTimeZoneSetImpl implements OverTimeOfTimeZoneSetGetMemento{
+	static class OverTimeOfTimeZoneSetImpl implements OverTimeOfTimeZoneSetGetMemento{
 		// 就業時間帯NO
 		private EmTimezoneNo workTimezoneNo;
 
@@ -783,7 +1304,7 @@ public class FlexWorkSettingTest {
 	
 	
 	@AllArgsConstructor
-    class FlexHalfDayWorkTimeImpl implements FlexHalfDayWorkTimeGetMemento{
+    public static class FlexHalfDayWorkTimeImpl implements FlexHalfDayWorkTimeGetMemento{
     	private FlowWorkRestTimezone restTimezone;
     	
     	private FixedWorkTimezoneSet workTimezone;
@@ -813,13 +1334,17 @@ public class FlexWorkSettingTest {
 	
 	@AllArgsConstructor
 	@NoArgsConstructor
-    class FlexWorkSettingImpl implements FlexWorkSettingGetMemento{
+    public static class FlexWorkSettingImpl implements FlexWorkSettingGetMemento{
 		
 		private ApplyAtr coreSettingApplyAtr;
 		
 		private List<FlexHalfDayWorkTime> flexHalfDayWorkTimes;
 		
 		private FlexOffdayWorkTime flexOffDayWorkTime;
+		
+		private boolean useHalfDayShift;
+		
+		private TimeSheet timeSheet;
 
 		@Override
 		public String getCompanyId() {
@@ -833,12 +1358,8 @@ public class FlexWorkSettingTest {
 
 		@Override
 		public CoreTimeSetting getCoreTimeSetting() {
-			return new CoreTimeSetting(
-				      new TimeSheet(new TimeWithDayAttr(4800), new TimeWithDayAttr(9600))
-						, coreSettingApplyAtr
-						, new AttendanceTime(3000));
-					
-
+			return new CoreTimeSetting(new TimeSheet(new TimeWithDayAttr(480), new TimeWithDayAttr(960))
+										 , coreSettingApplyAtr, new AttendanceTime(3000));
 		}
 
 		@Override
@@ -859,7 +1380,7 @@ public class FlexWorkSettingTest {
 
 		@Override
 		public boolean getUseHalfDayShift() {
-			return false;
+			return useHalfDayShift;
 		}
 
 		@Override
@@ -880,196 +1401,193 @@ public class FlexWorkSettingTest {
 
     }	
 	
-	private List<DeductionTime> createTimeZones(){
-		return Arrays.asList(
-				  new DeductionTime(TimeWithDayAttr.hourMinute(9, 30), TimeWithDayAttr.hourMinute(9, 0))
-				, new DeductionTime(TimeWithDayAttr.hourMinute(16, 30), TimeWithDayAttr.hourMinute(17,30))
-		);
-	}
-	
-	private List<FlowRestSetting> createFlowRestSets() {
-		List<FlowRestSetting> result = Arrays.asList(
-				  new FlowRestSetting(new AttendanceTime(1200), new AttendanceTime(1300))
-				, new FlowRestSetting(new AttendanceTime(1730), new AttendanceTime(1800))
-			);
+	public static class Helper {
 		
-		return result;
-	}
-	
-	private FlexWorkSetting createFlexWorkSetting(List<HDWorkTimeSheetSetting> lstWorkTimezone) {
-		// 休憩時間帯 
-		val flexHalfRestTimezone = createRestTimeZone(new FlowRestSetting(new AttendanceTime(120), new AttendanceTime(60))
-				,  new FlowRestSetting(new AttendanceTime(240), new AttendanceTime(320)), false);
+		@Injectable
+		static FlowRestTimezone flowRestTimeZone;
 		
-		// 一日の就業時間帯
-		val lstWorkingTimeOneDay = Arrays.asList(
-				   new EmTimeZoneSet(new EmTimeFrameNo(1)
-						   , new TimeZoneRounding(TimeWithDayAttr.hourMinute( 5,  0 ), TimeWithDayAttr.hourMinute( 29, 0 )
-						   , new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN)))
-						);
-		// 残業時間帯
-		val oTTimezoneImpls = Arrays.asList(new OverTimeOfTimeZoneSetImpl(new EmTimezoneNo(1), true
-				, new TimeZoneRounding(TimeWithDayAttr.hourMinute(5, 0), TimeWithDayAttr.hourMinute(8, 30), null)
-				, new OTFrameNo(1), new OTFrameNo(1), new SettlementOrder(1))
-				, new OverTimeOfTimeZoneSetImpl(new EmTimezoneNo(2), false
-						, new TimeZoneRounding(TimeWithDayAttr.hourMinute(18, 0), TimeWithDayAttr.hourMinute(22, 0), null)
-						, new OTFrameNo(2), new OTFrameNo(2), new SettlementOrder(2))
-				, new OverTimeOfTimeZoneSetImpl(new EmTimezoneNo(3), false
-						, new TimeZoneRounding(TimeWithDayAttr.hourMinute(22, 0), TimeWithDayAttr.hourMinute(29, 0), null)
-						, new OTFrameNo(3), new OTFrameNo(3), new SettlementOrder(3)));
+		@Injectable
+		static TimezoneOfFixedRestTimeSet fixedRestTimeSet;
 		
-		val workingTimeOneDay = createWorkTime(AmPmAtr.ONE_DAY, flexHalfRestTimezone, createOverTimeList(oTTimezoneImpls), lstWorkingTimeOneDay);
+		@Injectable
+		static List<FlexHalfDayWorkTime> flexHalfDayWorkTimes;
 		
-		// 午前の就業時間帯
-		val lstWorkingTimeMorning = Arrays.asList(
-				   new EmTimeZoneSet(new EmTimeFrameNo(1)
-						   , new TimeZoneRounding(TimeWithDayAttr.hourMinute( 5,  0 ), TimeWithDayAttr.hourMinute( 12, 0 )
-						   , new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN)))
-						);
-		val workingTimeMorning = createWorkTime(AmPmAtr.ONE_DAY, flexHalfRestTimezone, createOverTimeList(oTTimezoneImpls), lstWorkingTimeMorning);
+		@Injectable
+		static ApplyAtr isUse;
 		
-		// 午後の就業時間帯
-		val lstWorkingTimeAfter= Arrays.asList(
-				   new EmTimeZoneSet(new EmTimeFrameNo(1)
-						   , new TimeZoneRounding(TimeWithDayAttr.hourMinute( 13,  0 ), TimeWithDayAttr.hourMinute( 29, 0 )
-						   , new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN)))
-						);
-		val workingTimeAfter = createWorkTime(AmPmAtr.ONE_DAY, flexHalfRestTimezone, createOverTimeList(oTTimezoneImpls), lstWorkingTimeAfter);
+		@Injectable 
+		static TimeSheet timeSheet;
 		
-		val flexHalfDayWorkTimes = Arrays.asList(workingTimeOneDay, workingTimeMorning, workingTimeAfter);
-		
-		val fixedRestTimeSet = new TimezoneOfFixedRestTimeSet(Arrays.asList(
-				  new DeductionTime(TimeWithDayAttr.hourMinute(12, 00), TimeWithDayAttr.hourMinute(13, 00))
-				, new DeductionTime(TimeWithDayAttr.hourMinute(17, 30), TimeWithDayAttr.hourMinute(18, 00))));
-		
-		val offRestTimeZone = new FlowWorkRestTimezone(true, fixedRestTimeSet, new FlowRestTimezone());
-		
-		val offdayWorkTimeImpl = new FlexOffdayWorkTimeGetMementoImpl(lstWorkTimezone, offRestTimeZone);
+		public static FlexWorkSetting createFlexWorkSetting(List<HDWorkTimeSheetSetting> lstWorkTimezone) {
+			
+			val offRestTimeZone = new FlowWorkRestTimezone(true, fixedRestTimeSet, flowRestTimeZone);
+			
+			val offdayWorkTimeImpl = new FlexOffdayWorkTimeGetMementoImpl(lstWorkTimezone, offRestTimeZone);
 
-		// コアタイムを使用しない
-		val flexWorkSetting = new FlexWorkSetting(new FlexWorkSettingImpl(ApplyAtr.NOT_USE, flexHalfDayWorkTimes, new FlexOffdayWorkTime(offdayWorkTimeImpl)));
+			// コアタイムを使用しない
+			val flexWorkSetting = new FlexWorkSetting(new FlexWorkSettingImpl(isUse, flexHalfDayWorkTimes
+													, new FlexOffdayWorkTime(offdayWorkTimeImpl), false, timeSheet));
 
-		return flexWorkSetting;
-	}
-	
-	private FlowWorkRestTimezone createRestTimeZone(FlowRestSetting flowRestSetting, FlowRestSetting hereAfterRestSet, boolean fixRestTime) {
-		val flowRestTimezone = new FlowRestTimezone(Arrays.asList(flowRestSetting), false,  hereAfterRestSet);
-		return new FlowWorkRestTimezone(false, new TimezoneOfFixedRestTimeSet(), flowRestTimezone);
-	}
-	
-	
-	private FlexHalfDayWorkTime createWorkTime(AmPmAtr amPmAtr, FlowWorkRestTimezone restTimezone
-			, List<OverTimeOfTimeZoneSet> lstOTTimezone, List<EmTimeZoneSet> lstWorkingTimezone) {
-//		//流動休憩設定1
-//		val flowRestSetting1 = new FlowRestSetting(new AttendanceTime(120), new AttendanceTime(60));
-//		//設定以降の休憩設定
-//		val  hereAfterRestSet = new FlowRestSetting(new AttendanceTime(240), new AttendanceTime(320));
-//		//流動休憩時間帯    
-//		val flowRestTimezone1 = new FlowRestTimezone(Arrays.asList(flowRestSetting1), false,  hereAfterRestSet);
-//		/** 休憩時間帯 */
-//		val restTimezone = new FlowWorkRestTimezone(false, new TimezoneOfFixedRestTimeSet(), flowRestTimezone1);
-		//勤務時間帯
-		val workTimezone = new FixedWorkTimezoneSet();
+			return flexWorkSetting;
+		}
 		
-		// 就業時間帯
-//		val lstWorkingTimezone = Arrays.asList(
-//				   new EmTimeZoneSet(new EmTimeFrameNo(1)
-//						   , new TimeZoneRounding(TimeWithDayAttr.hourMinute( 5,  0 ), TimeWithDayAttr.hourMinute( 29, 0 )
-//						   , new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN)))
-//						);
-		
-//		// 残業時間帯
-//		val oTTimezoneImpl = new OverTimeOfTimeZoneSetImpl(new EmTimezoneNo(1), false, false
-//				, new TimeZoneRounding(TimeWithDayAttr.hourMinute(18, 0), TimeWithDayAttr.hourMinute(29, 0),
-//						new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN))
-//				, new OTFrameNo(1), new OTFrameNo(1), new SettlementOrder(1));
+		public static class Time {
+			/**
+			 * 勤怠時刻を作成する
+			 * @param hour 時
+			 * @param minute 分
+			 * @return 勤怠時刻
+			 */
+			public static AttendanceTime toAtdTime(int hour, int minute) {
+				return new AttendanceTime( hour * 60 + minute );
+			}
+		}
 
-		workTimezone.setLstOTTimezone(lstOTTimezone);
-		workTimezone.setLstWorkingTimezone(lstWorkingTimezone);
+		public static class Timezone {
+
+			public static TimezoneUse from(int workNo, boolean isUse, TimeSpanForCalc timeSpan) {
+				return new TimezoneUse(
+									timeSpan.getStart(), timeSpan.getEnd()
+								,	isUse ? UseSetting.USE : UseSetting.NOT_USE
+								,	workNo
+							);
+			}
+
+			public static TimezoneUse createUsed(int workNo, TimeSpanForCalc timeSpan) {
+				return Timezone.from(workNo, true, timeSpan);
+			}
+
+			public static TimezoneUse createUnused(int workNo) {
+				return Timezone.from(workNo, false, new TimeSpanForCalc(TimeWithDayAttr.hourMinute(0, 0), TimeWithDayAttr.hourMinute(0, 0)));
+			}
+			
+		}
 		
-		FlexHalfDayWorkTimeImpl  flexHalfMorningImpl = new FlexHalfDayWorkTimeImpl(restTimezone, workTimezone, amPmAtr);
+		public static class PredTimeStg {
+			
+			@Injectable
+			static BreakDownTimeDay predTime;
+			
+			@Injectable
+			static List<TimezoneUse> lstTimezone;
+			
+			@Injectable
+			static TimeWithDayAttr morningEndTime;
+
+			@Injectable
+			static TimeWithDayAttr afternoonStartTime;
+			
+			/**
+			 * 所定時間(DUMMY)を作成する
+			 * @return 所定時間(DUMMY)
+			 */
+			public static PredetermineTime createDummyPredTime() {
+				return new PredetermineTime( predTime, predTime);
+			}
+
+			/**
+			 * 所定時間帯設定(DUMMY)を作成する
+			 * @return 所定時間帯設定(DUMMY)
+			 */
+			public static PrescribedTimezoneSetting createPrscTzStg(List<TimezoneUse> lstTimezone) {
+				return new PrescribedTimezoneSetting( morningEndTime, afternoonStartTime, lstTimezone);
+			}
+			
+			/**
+			 * 所定時間帯設定(DUMMY)を作成する
+			 * @return 所定時間帯設定(DUMMY)
+			 */
+			public static PrescribedTimezoneSetting createPrscTzStg(TimeWithDayAttr morningEndTime, TimeWithDayAttr afternoonStartTime) {
+				return new PrescribedTimezoneSetting( morningEndTime, afternoonStartTime, lstTimezone);
+			}
+			
+			/**
+			 * 所定時間帯設定(DUMMY)を作成する
+			 * @return 所定時間帯設定(DUMMY)
+			 */
+			public static PrescribedTimezoneSetting createPrscTzStgByMoringEnd(List<TimezoneUse> lstTimezone) {
+				return new PrescribedTimezoneSetting( morningEndTime,	afternoonStartTime,	lstTimezone);
+			}
+
+			/**
+			 * 所定時間設定を作成する
+			 * @param code 就業時間帯コード
+			 * @param startClock 1日の開始時刻
+			 * @param rangeOfDay 1日の範囲(時間)
+			 * @param prscTzStg 所定時間帯設定
+			 * @return 所定時間設定
+			 */
+			public static PredetemineTimeSetting create(String code, TimeWithDayAttr startClock, AttendanceTime rangeOfDay
+					, PrescribedTimezoneSetting prscTzStg) {
+				return new PredetemineTimeSetting("CID", rangeOfDay, new WorkTimeCode(code)
+							, PredTimeStg.createDummyPredTime(), false, prscTzStg, startClock, false
+						);
+			}
+			
+			public static PredetemineTimeSetting create(List<TimezoneUse> lstTimezone) {
+				return new PredetemineTimeSetting("CID", new AttendanceTime(2300), new WorkTimeCode("01")
+						, PredTimeStg.createDummyPredTime(), false
+						, createPrscTzStg(lstTimezone),  TimeWithDayAttr.hourMinute( 5, 0 ), false
+					);
+			}
+			
+			public static PredetemineTimeSetting create(TimeWithDayAttr morningEndTime, TimeWithDayAttr afternoonStartTime) {
+				return new PredetemineTimeSetting("CID", new AttendanceTime(2300), new WorkTimeCode("01")
+						, PredTimeStg.createDummyPredTime(), false
+						, createPrscTzStg(morningEndTime, afternoonStartTime),  TimeWithDayAttr.hourMinute( 5, 0 ), false
+					);
+			}
+	    }
 		
-		return new FlexHalfDayWorkTime(flexHalfMorningImpl);
+		
+		public static class EmTimeZoneSetHelper{
+			
+			@Injectable
+			static TimeRoundingSetting timeRouding;
+			
+			public static EmTimeZoneSet  createWorkingTimezoneList(EmTimeFrameNo emTimeFrNo, TimeWithDayAttr start, TimeWithDayAttr end) {
+				return new EmTimeZoneSet(emTimeFrNo , new TimeZoneRounding(start, end, timeRouding));
+			}
+		}
+		
+		public static class FlowWkRestTimezoneHelper{
+			
+			@Injectable
+			static TimezoneOfFixedRestTimeSet fixedRestTimeZone;
+			
+			public static FlowWorkRestTimezone createRestTimeZone(FlowRestSetting flowRestSetting, FlowRestSetting hereAfterRestSet, boolean fixRestTime) {
+				val flowRestTimezone = new FlowRestTimezone(Arrays.asList(flowRestSetting), false,  hereAfterRestSet);
+				return new FlowWorkRestTimezone(false, fixedRestTimeZone , flowRestTimezone);
+			}
+			
+		}
+		
+		public static class FlexHalfDayWorkTimeHelper{
+			
+			public static FlexHalfDayWorkTime createWorkTime(AmPmAtr amPmAtr, FlowWorkRestTimezone restTimezone
+					, List<OverTimeOfTimeZoneSet> lstOTTimezone, List<EmTimeZoneSet> lstWorkingTimezone) {
+				//勤務時間帯
+				val workTimezone = new FixedWorkTimezoneSet();
+				workTimezone.setLstOTTimezone(lstOTTimezone);
+				workTimezone.setLstWorkingTimezone(lstWorkingTimezone);
+				
+				return new FlexHalfDayWorkTime(new FlexHalfDayWorkTimeImpl(restTimezone, workTimezone, amPmAtr));
+			}
+			
+		}
+		
+		public static class OverTimeOfTimeZoneSetHelper{
+			public static OverTimeOfTimeZoneSetImpl createOverTime(int emTimeNo, boolean earlyOTUse, TimeWithDayAttr start, TimeWithDayAttr end) {
+				return new OverTimeOfTimeZoneSetImpl(new EmTimezoneNo(emTimeNo), earlyOTUse, new TimeZoneRounding(start, end, null), new OTFrameNo(emTimeNo), new OTFrameNo(emTimeNo), new SettlementOrder(emTimeNo));
+			}
+			
+			public static List<OverTimeOfTimeZoneSet> createOverTimeList(List<OverTimeOfTimeZoneSetImpl> overTimeList) {
+				
+				return overTimeList.stream().map(c -> {return new OverTimeOfTimeZoneSet(c);}).collect(Collectors.toList());
+			}
+			
+		}
+		
 	}
-	
-//	private FlexHalfDayWorkTime createWorkTimeMorning(AmPmAtr morning) {
-//		//流動休憩設定1
-//		val flowRestSetting1 = new FlowRestSetting(new AttendanceTime(120), new AttendanceTime(60));
-//		//設定以降の休憩設定
-//		val  hereAfterRestSet = new FlowRestSetting(new AttendanceTime(240), new AttendanceTime(320));
-//		//流動休憩時間帯    
-//		val flowRestTimezone1 = new FlowRestTimezone(Arrays.asList(flowRestSetting1), false,  hereAfterRestSet);
-//		/** 休憩時間帯 */
-//		val restTimezone = new FlowWorkRestTimezone(false, new TimezoneOfFixedRestTimeSet(), flowRestTimezone1);
-//		//勤務時間帯
-//		val workTimezone = new FixedWorkTimezoneSet();
-//		
-//		// 就業時間帯
-//		val lstWorkingTimezone = Arrays.asList(
-//				   new EmTimeZoneSet(new EmTimeFrameNo(1)
-//						   , new TimeZoneRounding(TimeWithDayAttr.hourMinute( 5,  0 ), TimeWithDayAttr.hourMinute( 12, 0 )
-//						   , new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN)))
-//						);
-//
-//		workTimezone.setLstWorkingTimezone(lstWorkingTimezone);
-//		
-//		FlexHalfDayWorkTimeImpl  flexHalfMorningImpl = new FlexHalfDayWorkTimeImpl(restTimezone, workTimezone, morning);
-//		
-//		return new FlexHalfDayWorkTime(flexHalfMorningImpl);
-//	}
-//	
-//	private FlexHalfDayWorkTime createWorkTimeAfterNoon(AmPmAtr afternoon) {
-//		//流動休憩設定1
-//		val flowRestSetting1 = new FlowRestSetting(new AttendanceTime(120), new AttendanceTime(60));
-//		//設定以降の休憩設定
-//		val  hereAfterRestSet = new FlowRestSetting(new AttendanceTime(240), new AttendanceTime(320));
-//		//流動休憩時間帯    
-//		val flowRestTimezone1 = new FlowRestTimezone(Arrays.asList(flowRestSetting1), false,  hereAfterRestSet);
-//		/** 休憩時間帯 */
-//		val restTimezone = new FlowWorkRestTimezone(false, new TimezoneOfFixedRestTimeSet(), flowRestTimezone1);
-//		//勤務時間帯
-//		val workTimezone = new FixedWorkTimezoneSet();
-//		
-//		// 就業時間帯
-//		val lstWorkingTimezone = Arrays.asList(
-//				   new EmTimeZoneSet(new EmTimeFrameNo(1)
-//						   , new TimeZoneRounding(TimeWithDayAttr.hourMinute( 13,  0 ), TimeWithDayAttr.hourMinute( 29, 0 )
-//						   , new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN)))
-//						);
-//
-//		workTimezone.setLstWorkingTimezone(lstWorkingTimezone);
-//		
-//		FlexHalfDayWorkTimeImpl  flexHalfAfterImpl = new FlexHalfDayWorkTimeImpl(restTimezone, workTimezone, afternoon);
-//		
-//		return new FlexHalfDayWorkTime(flexHalfAfterImpl);
-//	}
-//	
-	
-	
-	
-//	static class Helper {
-//		
-//		public FlexWorkSetting createFlexWorkSetting() {
-//			//val flexWorkSetting = new FlexWorkSetting(new FlexWorkSettingGetMemento());
-//			//flexWorkSetting.se
-//			val coreTimeSetting = new CoreTimeSetting(
-//					  new TimeSheet(new TimeWithDayAttr(4800), new TimeWithDayAttr(9600))
-//					, ApplyAtr.USE
-//					, new AttendanceTime(3000));
-//			val commonRestSetting = new CommonRestSetting(RestTimeOfficeWorkCalcMethod.APPROP_ALL);
-//			val flowRestSetting = 
-//			
-//			
-//			//val flowRestSetting = new 
-//			//val FlowWorkRestSetting = 
-//			
-////			return new FlexWorkSetting("cid", new WorkTimeCode("001")
-////					, );
-//			
-//			return null;
-//		}
-//		
-//		
-//		
-//	}
+
 }

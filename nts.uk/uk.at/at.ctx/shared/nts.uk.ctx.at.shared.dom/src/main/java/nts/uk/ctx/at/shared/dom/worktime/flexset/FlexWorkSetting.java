@@ -19,6 +19,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.val;
+import nts.gul.util.OptionalUtil;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanDuplication;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
@@ -108,6 +109,10 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 		this.calculateSetting = memento.getCalculateSetting();
 	}
 
+	@Override
+	public WorkTimeCode getWorkTimeCode() {
+		return this.workTimeCode;
+	}
 	/**
 	 * Save to memento.
 	 *
@@ -251,34 +256,21 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 	 */
 	@Override
 	public ChangeableWorkingTimeZone getChangeableWorkingTimeZone(WorkSetting.Require require) {
-		/**
-		 * $就業の時間帯 = @平日勤務時間帯 : filter $.午前午後区分 == 1日 // 就業時間帯は "1日" しかないので。 map
-		 * $.勤務時間帯.就業時間の時間帯 ()
-		 *
-		 */
-		List<TimeSpanForCalc> lstWorkingTimezone = this.lstHalfDayWorkTimezone.stream()
+		TimeSpanForCalc workingTimezone = this.lstHalfDayWorkTimezone.stream()
 				.filter(c -> c.getAmpmAtr() == AmPmAtr.ONE_DAY)
 				.map(c -> {
 					return c.getWorkTimezone().getFirstAndLastTimeOfWorkingTimezone();
 				})
-				.collect(Collectors.toList());
-
-		if(lstWorkingTimezone.isEmpty()) return null;
-
-		TimeSpanForCalc workingTimezone = TimeSpanForCalc.join(lstWorkingTimezone).get();
-		// $1日 = [prv-1] 指定した午前午後区分の時間帯情報を作成する( $就業の時間帯, 1日 )
+				.findFirst().get();
+		
 		val oneDay = this.createTimeZoneByAmPmCls(require, workingTimezone, AmPmAtr.ONE_DAY);
-		// $休出 = [prv-3] 休出時の時間帯を作成する()
-		val workOnDayOff = createWorkOnDayOffTime(require);
-		// if @半日用シフトを使用する == false	return 変更可能な勤務時間帯#半日の区別しない( $1日, $休出 )
+		val workOnDayOff = this.createWorkOnDayOffTime(require);
 		if (!this.isUseHalfDayShift()) {
 			return ChangeableWorkingTimeZone.createWithoutSeparationOfHalfDay(oneDay, workOnDayOff);
 		}
-
-		// $午前 = [prv-1] 指定した午前午後区分の時間帯情報を作成する ($就業の時間帯, 午前)
-		val morning = createTimeZoneByAmPmCls(require, workingTimezone, AmPmAtr.AM);
-		// $午後 = [prv-1] 指定した午前午後区分の時間帯情報を作成する ($就業の時間帯, 午後)
-		val evening = createTimeZoneByAmPmCls(require, workingTimezone, AmPmAtr.PM);
+		
+		val morning = this.createTimeZoneByAmPmCls(require, workingTimezone, AmPmAtr.AM);
+		val evening = this.createTimeZoneByAmPmCls(require, workingTimezone, AmPmAtr.PM);
 
 		return ChangeableWorkingTimeZone.create(oneDay, morning, evening, workOnDayOff);
 	}
@@ -292,29 +284,21 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 	 */
 	@Override
 	public BreakTimeZone getBreakTimeZone(boolean isWorkingOnDayOff, AmPmAtr amPmAtr) {
-		FlowWorkRestTimezone breakTimeZone = null;
-		if (isWorkingOnDayOff == true) {
-			// $休憩時間帯 = @休日勤務時間帯.休憩時間帯
+		FlowWorkRestTimezone breakTimeZone = new FlowWorkRestTimezone();
+		if (isWorkingOnDayOff) {
 			breakTimeZone = this.offdayWorkTime.getRestTimezone();
 		} else {
-			Optional<FlowWorkRestTimezone> breakTimeZoneOpt = this.lstHalfDayWorkTimezone.stream()
+			//休憩時間帯が存在しないのは想定外なので、emptyチェックしない。
+			breakTimeZone = this.lstHalfDayWorkTimezone.stream()
 					.filter(c -> c.getAmpmAtr() == amPmAtr)
 					.map(c -> c.getRestTimezone())
-					.findFirst();
-			if (breakTimeZoneOpt.isPresent()) {
-				breakTimeZone = breakTimeZoneOpt.get();
-			}
+					.findFirst().get();
 		}
-
-		// 流動休憩
-		// if not $休憩時間帯.休憩時間帯を固定にする
-		// return 休憩時間#流動休憩で作る( List.empty )
+		
 		if (!breakTimeZone.isFixRestTime()) {
 			return BreakTimeZone.createAsNotFixed(Collections.emptyList());
 		}
-
-		// 固定休憩
-		// return 休憩時間#固定休憩で作る( $休憩時間帯.固定休憩時間帯.休憩時間帯を取得() )
+		
 		return BreakTimeZone.createAsFixed(breakTimeZone.getFixedRestTimezone().getRestTimezonesForCalc());
 	}
 
@@ -326,68 +310,57 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 	 * @return
 	 */
 	private List<ChangeableWorkingTimeZonePerNo> createTimeZoneByAmPmCls(WorkSetting.Require require, TimeSpanForCalc wortime, AmPmAtr ampmAtr) {
-
-		/**
-		 * $残業の時間帯 = @平日勤務時間帯 : filter $.午前午後区分 == 午前午後区分 map $.勤務時間帯.残業の時間帯 ()
-		 */
 		List<TimeSpanForCalc> lstOTTimezone = this.lstHalfDayWorkTimezone.stream()
-				.filter(c -> {
-					return c.getAmpmAtr() == ampmAtr
-							&& c.getWorkTimezone()!= null
-							&& c.getWorkTimezone().getFirstAndLastTimeOfOvertimeWorkingTimezone().isPresent();
-				})
-				.map(c -> c.getWorkTimezone().getFirstAndLastTimeOfOvertimeWorkingTimezone().get())
+				.filter(c -> c.getAmpmAtr() == ampmAtr )
+				.map(c -> c.getWorkTimezone().getFirstAndLastTimeOfOvertimeWorkingTimezone())
+				.flatMap(OptionalUtil::stream)
 				.collect(Collectors.toList());
-
-		// $勤務可能時間帯 = 就業の時間帯
+		
 		TimeSpanForCalc wkTimePossibles = wortime;
-		/**
-		 * if $残業の時間帯.isPresent $勤務可能時間帯 = 時間帯#連結する (list: @残業の時間帯, 就業の時間帯)
-		 */
-		if (!lstOTTimezone.isEmpty()) {
-			// $勤務可能時間帯 = 時間帯#連結する (list: @残業の時間帯, 就業の時間帯)
-			lstOTTimezone.add(wortime);
-			wkTimePossibles = TimeSpanForCalc.join(lstOTTimezone).get();
-		}
-
+		lstOTTimezone.add(wortime);
+		wkTimePossibles = TimeSpanForCalc.join(lstOTTimezone).get();
+		
 		if (this.coreTimeSetting.getTimesheet() == ApplyAtr.NOT_USE) {
-			val timezonePerNo = ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd(
-					new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkNo(1),
-					wkTimePossibles);
-			return Arrays.asList(timezonePerNo);
+			return Arrays.asList(ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd(
+					    new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkNo(1)
+					  , wkTimePossibles)
+					);
 		}
 
-		val coreTime = getCoreTimeByAmPm(require, ampmAtr);
+		val coreTime = this.getCoreTimeByAmPm(require, ampmAtr);
 		val startTime = new TimeSpanForCalc(wkTimePossibles.getStart(), coreTime.getStart());
 		val endTime = new TimeSpanForCalc(coreTime.getEnd(), wkTimePossibles.getEnd());
 
 		return Arrays.asList(new ChangeableWorkingTimeZonePerNo(
-				new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkNo(1), startTime,
-				endTime));
+				  	  new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkNo(1)
+					, startTime
+					, endTime)
+				);
 	}
 
 	/**
 	 * [prv-2] 指定した午前午後区分のコアタイム時間帯を取得する
 	 * @param require
-	 * @param ampmAtr
+	 * @param ampmAtr 午前午後区分
 	 * @return
 	 */
 	private TimeSpanForCalc getCoreTimeByAmPm(WorkSetting.Require require, AmPmAtr ampmAtr) {
 		if (ampmAtr == AmPmAtr.ONE_DAY) {
-			return new TimeSpanForCalc(this.coreTimeSetting.getCoreTimeSheet().getStartTime(),
-					this.coreTimeSetting.getCoreTimeSheet().getEndTime());
+			return new TimeSpanForCalc( this.coreTimeSetting.getCoreTimeSheet().getStartTime(),
+										this.coreTimeSetting.getCoreTimeSheet().getEndTime());
 		}
 
-		val predetermineTimeSetting = require.getPredetermineTimeSetting(this.workTimeCode);
+		val predetermineTimeSetting = this.getPredetermineTimeSetting(require);
 
 		switch (ampmAtr) {
 			case AM:
-				return new TimeSpanForCalc(this.coreTimeSetting.getCoreTimeSheet().getStartTime(),
-						predetermineTimeSetting.getPrescribedTimezoneSetting().getMorningEndTime());
+				return new TimeSpanForCalc(	  this.coreTimeSetting.getCoreTimeSheet().getStartTime()
+						   					, predetermineTimeSetting.getPrescribedTimezoneSetting().getMorningEndTime());
 			case PM:
-				return new TimeSpanForCalc(predetermineTimeSetting.getPrescribedTimezoneSetting().getAfternoonStartTime(),
-						this.coreTimeSetting.getCoreTimeSheet().getEndTime());
-			default: return null;
+				return new TimeSpanForCalc(   predetermineTimeSetting.getPrescribedTimezoneSetting().getAfternoonStartTime()
+											, this.coreTimeSetting.getCoreTimeSheet().getEndTime());
+			default: 
+				throw new RuntimeException("AmPmAtrは、ONE_DAY、AM、PMの3種類しかなく、システムエラー");
 		}
 	}
 
@@ -398,35 +371,21 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 	 */
 	private List<ChangeableWorkingTimeZonePerNo> createWorkOnDayOffTime(WorkSetting.Require require) {
 
-		val predetermineTimeSetting = require.getPredetermineTimeSetting(this.workTimeCode);
+		val preTimeSetting =  this.getPredetermineTimeSetting(require);
 
 		val workOnDayOffTimeList = this.offdayWorkTime.getLstWorkTimezone().stream()
 				.map(c -> c.getTimezone().timeSpan())
 				.collect(Collectors.toList());
 		val workOnDayOffTime = TimeSpanForCalc.join(workOnDayOffTimeList);
+		
+		val workTimeList = preTimeSetting.getTimezoneByAmPmAtrForCalc(AmPmAtr.ONE_DAY);
 
-		val workTimeList = predetermineTimeSetting.getTimezoneByAmPmAtrForCalc(AmPmAtr.ONE_DAY);
-
-		if (checkDuplicate(workTimeList) == true) {
+		
+		if (workTimeList.stream().allMatch(c -> c.checkDuplication(workOnDayOffTime.get()) == TimeSpanDuplication.NOT_DUPLICATE)) {
 			return Collections.emptyList();
 		}
 
 		return Arrays.asList(ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd(
-				new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkNo(1)
-				, workOnDayOffTime.get()));
+				  new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkNo(1), workOnDayOffTime.get()));
 	}
-
-
-	private boolean checkDuplicate(List<TimeSpanForCalc> timespans) {
-		for(int i = 0; i < timespans.size() - 1; i++) {
-			if (timespans.get(i).checkDuplication(timespans.get(i + 1)) == TimeSpanDuplication.NOT_DUPLICATE)
-				return true;
-		}
-		return false;
-	}
-
-
-	public static interface Require {
-	}
-
 }

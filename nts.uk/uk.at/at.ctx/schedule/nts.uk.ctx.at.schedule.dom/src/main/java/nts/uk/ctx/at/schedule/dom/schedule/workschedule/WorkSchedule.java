@@ -1,6 +1,4 @@
 package nts.uk.ctx.at.schedule.dom.schedule.workschedule;
-//
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -16,7 +14,6 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.TimezoneToUseHourlyHoliday;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkNo;
@@ -102,61 +99,125 @@ public class WorkSchedule implements DomainAggregate {
 	 * 時間休暇を取得する
 	 * @return
 	 */
-	public Map<TimezoneToUseHourlyHoliday, TimeVacation> getTimeVacation(){
-
-		if (!this.optAttendanceTime.isPresent()) {
+	public Map<TimezoneToUseHourlyHoliday, TimeVacation> getTimeVacation() {
+		
+		/** 日別勤怠の遅刻時間を取得 */
+		val lateTimeMap = this.getLateTimes();
+		
+		/** 日別勤怠の早退時間を取得*/
+		val earlyTimeMap = this.getEarlyTimes();
+		
+		/** 日別勤怠の外出時間を取得 **/
+		val outingTimeMap = this.getOutingTimes();
+		
+		Map<TimezoneToUseHourlyHoliday, TimeVacation> result = new HashMap<>();
+		result.putAll( lateTimeMap );
+		result.putAll( earlyTimeMap );
+		result.putAll( outingTimeMap );
+		
+		return result;
+	}
+	
+	/**
+	 * ［時間休暇を取得する］　の　［日別勤怠の遅刻時間を取得］
+	 * @return
+	 */
+	private Map<TimezoneToUseHourlyHoliday, TimeVacation> getLateTimes() {
+		
+		// 勤怠時間 or 出退勤 empty
+		if ( !this.optAttendanceTime.isPresent() || !this.optTimeLeaving.isPresent() ) {
 			return Collections.emptyMap();
 		}
-
-		Map<TimezoneToUseHourlyHoliday, TimeVacation> result = new HashMap<>();
-
-		/** 日別勤怠の遅刻時間を取得 */
+		
+		// 遅刻時間を取得する
 		val lateTimes = this.optAttendanceTime.get().getLateTimeOfDaily();
 
+		Map<TimezoneToUseHourlyHoliday, TimeVacation> result = new HashMap<>();
+		
 		for (LateTimeOfDaily lateTime : lateTimes) {
-				// @出退勤.勤務開始の休暇時間帯を取得する ($.勤務NO)
-				val useTimeStart = TimezoneToUseHourlyHoliday.getBeforeWorking(WorkNo.converFromOtherWorkNo(lateTime.getWorkNo()));
-				// $.休暇使用時間
-				Optional<TimeSpanForCalc> leavingTime = this.optTimeLeaving.isPresent()?
-						this.optTimeLeaving.get().getStartTimeVacations(lateTime.getWorkNo()): Optional.empty();
-				//時間休暇
-				val timeVacation = new TimeVacation(
-						  leavingTime.isPresent() ? Arrays.asList(leavingTime.get()) : new ArrayList<>()
-						, lateTime.getTimePaidUseTime());
+			
+			// 出勤の勤務NOを指定
+			val lateType = TimezoneToUseHourlyHoliday.getBeforeWorking(WorkNo.converFromOtherWorkNo(lateTime.getWorkNo()));
 
-				result.put(useTimeStart, timeVacation);
+			// @出退勤.勤務開始の休暇時間帯を取得する
+			Optional<TimeSpanForCalc> leavingTimeSpan = this.optTimeLeaving.get().getStartTimeVacations(lateTime.getWorkNo());
+			if ( !leavingTimeSpan.isPresent() ) {
+				continue;
+			}
+			
+			//時間休暇
+			val timeVacation = new TimeVacation( Arrays.asList(leavingTimeSpan.get()), lateTime.getTimePaidUseTime() );
+
+			result.put(lateType, timeVacation);
 		}
-
-
+		
+		return result;
+	}
+	
+	/**
+	 * ［時間休暇を取得する］　の　［日別勤怠の早退時間を取得］
+	 * @return
+	 */
+	private Map<TimezoneToUseHourlyHoliday, TimeVacation> getEarlyTimes() {
+		
+		if ( !this.optAttendanceTime.isPresent() || !this.optTimeLeaving.isPresent() ) {
+			return Collections.emptyMap();
+		}
+		
 		/** 日別勤怠の早退時間を取得*/
 		List<LeaveEarlyTimeOfDaily> earlyTimes = this.optAttendanceTime.get().getLeaveEarlyTimeOfDaily();
+		
+		Map<TimezoneToUseHourlyHoliday, TimeVacation> result = new HashMap<>();
+		
 		for(LeaveEarlyTimeOfDaily earlyTime : earlyTimes) {
+			
+			// 退勤の勤務NOを指定
+			val earlyType = TimezoneToUseHourlyHoliday.getAfterWorking(WorkNo.converFromOtherWorkNo(earlyTime.getWorkNo()));
+			
 			// @出退勤.勤務終了の休暇時間帯を取得する ($.勤務NO)
-			val useTimeEnd = TimezoneToUseHourlyHoliday.getAfterWorking(WorkNo.converFromOtherWorkNo(earlyTime.getWorkNo()));
-			// $.休暇使用時間
-			Optional<TimeSpanForCalc> leavingTime = this.optTimeLeaving.isPresent()?
-					this.optTimeLeaving.get().getStartTimeVacations(earlyTime.getWorkNo()): Optional.empty();
+			Optional<TimeSpanForCalc> leavingTimeSpan = this.optTimeLeaving.get().getEndTimeVacations(earlyTime.getWorkNo());
+			if ( !leavingTimeSpan.isPresent() ) {
+				continue;
+			}
+			
 			//時間休暇
-			val timeVacation = new TimeVacation(leavingTime.isPresent() ? Arrays.asList(leavingTime.get()) : new ArrayList<>(),
-					earlyTime.getTimePaidUseTime());
-			result.put(useTimeEnd, timeVacation);
+			val timeVacation = new TimeVacation( Arrays.asList(leavingTimeSpan.get()), earlyTime.getTimePaidUseTime() );
+			
+			result.put(earlyType, timeVacation);
 		}
-
-		/** 日別勤怠の外出時間を取得 **/
+		
+		return result;
+		
+	}
+	
+	/**
+	 * ［時間休暇を取得する］　の　［【日別勤怠の外出時間を取得］
+	 * @return
+	 */
+	private Map<TimezoneToUseHourlyHoliday, TimeVacation> getOutingTimes() {
+		
+		if ( !this.optAttendanceTime.isPresent() || !this.outingTime.isPresent() ) {
+			return new HashMap<>();
+		}
+		
 		//$外出時間 = @勤怠時間.外出時間を取得する () : filter $.外出理由 in (私用, 組合)
 		List<OutingTimeOfDaily> outingTimes = this.optAttendanceTime.get().getOutingTimeOfDaily().stream()
 				.filter(c -> c.getReason() == GoingOutReason.PRIVATE || c.getReason() == GoingOutReason.UNION)
 				.collect(Collectors.toList());
-
+		
+		Map<TimezoneToUseHourlyHoliday, TimeVacation> result = new HashMap<>();
+		
 		for(OutingTimeOfDaily outingTime : outingTimes) {
-			val outTime = convertTimeOffTypeFromGoOutReason(outingTime.getReason());
-			if(this.outingTime.isPresent()){
-				val timeZones = this.outingTime.get().getTimeZoneByGoOutReason();
-				val timeLeave = new TimeVacation( timeZones, outingTime.getTimeVacationUseOfDaily());
-				result.put(outTime, timeLeave);
-			}
+			
+			val type = this.convertGoOutReasonToTimeOffType(outingTime.getReason());
+			
+			// 外出理由を指定して時間帯を取得する
+			val timeZones = this.outingTime.get().getTimeZoneByGoOutReason(outingTime.getReason());
+			val timeLeave = new TimeVacation( timeZones, outingTime.getTimeVacationUseOfDaily() );
+			
+			result.put(type, timeLeave);
 		}
-
+		
 		return result;
 	}
 
@@ -165,7 +226,7 @@ public class WorkSchedule implements DomainAggregate {
 	 * @param goOutReason 外出理由
 	 * @return
 	 */
-	private TimezoneToUseHourlyHoliday convertTimeOffTypeFromGoOutReason(GoingOutReason goOutReason) {
+	private TimezoneToUseHourlyHoliday convertGoOutReasonToTimeOffType(GoingOutReason goOutReason) {
 		switch(goOutReason) {
 		case PRIVATE:
 			return TimezoneToUseHourlyHoliday.GOINGOUT_PRIVATE;
@@ -176,20 +237,4 @@ public class WorkSchedule implements DomainAggregate {
 		}
 	}
 
-	/**
-	 * 時間休暇
-	 * @author lan_lt
-	 *
-	 */
-	@AllArgsConstructor
-	@Getter
-	public class TimeVacation{
-		/** 時間帯リスト */
-		private List<TimeSpanForCalc> timeList;
-
-		/** 使用時間 */
-		private TimevacationUseTimeOfDaily useTime;
-
-
-	}
 }
