@@ -1,8 +1,9 @@
-package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting;
+package nts.uk.ctx.at.shared.dom.workrule.goingout;
 
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.ConditionAtr;
 
 /**
  * 
