@@ -31,12 +31,14 @@ import nts.uk.ctx.at.function.app.find.processexecution.ExecutionTaskSettingFind
 import nts.uk.ctx.at.function.app.find.processexecution.ProcessExecutionFinder;
 import nts.uk.ctx.at.function.app.find.processexecution.ProcessExecutionLogFinder;
 import nts.uk.ctx.at.function.app.find.processexecution.ProcessExecutionLogHistoryFinder;
+import nts.uk.ctx.at.function.app.find.processexecution.UpdateProcessAutoExecutionFinder;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ExecItemEnumDto;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ExecutionItemInfomationDto;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ExecutionTaskSettingDto;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionDateParam;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionDto;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionLogHistoryDto;
+import nts.uk.ctx.at.function.app.find.processexecution.dto.SelectedProcessExecutionDto;
 import nts.uk.ctx.at.function.app.find.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodImportFinder;
 import nts.uk.ctx.at.function.ws.processexecution.batchserver.BatchTaskResult;
 import nts.uk.shr.com.communicate.PathToWebApi;
@@ -63,6 +65,9 @@ public class ProcessExecutionWebService extends WebService {
 
 	@Inject
 	private OptionalAggrPeriodImportFinder aggrPeriodImportFinder;
+	
+	@Inject
+	private UpdateProcessAutoExecutionFinder updateProcessAutoExecutionFinder;
 
 	/* Handler */
 	@Inject
@@ -215,5 +220,11 @@ public class ProcessExecutionWebService extends WebService {
 	@Path("changeSetting")
 	public ExecutionTaskSettingDto changeSetting(ChangeExecutionTaskSettingCommand command) {
 		return this.changeExecutionTaskSettingCommandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("findProcessExecution/{execItemCd}")
+	public SelectedProcessExecutionDto findProcessExecution(@PathParam("execItemCd") String execItemCd) {
+		return this.updateProcessAutoExecutionFinder.findByCode(execItemCd);
 	}
 }

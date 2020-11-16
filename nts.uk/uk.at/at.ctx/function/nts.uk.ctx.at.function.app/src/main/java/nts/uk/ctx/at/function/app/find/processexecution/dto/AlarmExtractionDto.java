@@ -1,9 +1,14 @@
 package nts.uk.ctx.at.function.app.find.processexecution.dto;
 
+import java.util.Optional;
+
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternCode;
 import nts.uk.ctx.at.function.dom.processexecution.AlarmExtraction;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * The class Alarm extraction dto.<br>
@@ -13,6 +18,7 @@ import nts.uk.ctx.at.function.dom.processexecution.AlarmExtraction;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AlarmExtractionDto {
 
 	/**
@@ -46,12 +52,6 @@ public class AlarmExtractionDto {
 	private Boolean displayOnTopPagePrincipal;
 
 	/**
-	 * No args constructor.
-	 */
-	private AlarmExtractionDto() {
-	}
-
-	/**
 	 * Create from domain.
 	 *
 	 * @param domain the domain
@@ -62,7 +62,7 @@ public class AlarmExtractionDto {
 			return null;
 		}
 		AlarmExtractionDto dto = new AlarmExtractionDto();
-		dto.alarmAtr = domain.getAlarmAtr().value == 1;
+		dto.alarmAtr = domain.getAlarmAtr().equals(NotUseAtr.USE);
 		dto.alarmCode = domain.getAlarmCode().map(AlarmPatternCode::v).orElse(null);
 		dto.mailPrincipal = domain.getMailPrincipal().orElse(null);
 		dto.mailAdministrator = domain.getMailAdministrator().orElse(null);
@@ -71,4 +71,14 @@ public class AlarmExtractionDto {
 		return dto;
 	}
 
+	public AlarmExtraction toDomain() {
+		return AlarmExtraction.builder()
+				.alarmAtr(this.alarmAtr ? NotUseAtr.USE : NotUseAtr.NOT_USE)
+				.alarmCode(Optional.ofNullable(this.alarmCode).map(AlarmPatternCode::new))
+				.displayOnTopPageAdministrator(Optional.ofNullable(this.displayOnTopPageAdministrator))
+				.displayOnTopPagePrincipal(Optional.ofNullable(this.displayOnTopPagePrincipal))
+				.mailAdministrator(Optional.ofNullable(this.mailAdministrator))
+				.mailPrincipal(Optional.ofNullable(this.mailPrincipal))
+				.build();
+	}
 }

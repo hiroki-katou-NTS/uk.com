@@ -1,12 +1,16 @@
 package nts.uk.ctx.at.function.app.find.processexecution.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import nts.uk.ctx.at.function.dom.processexecution.ExternalOutput;
-import nts.uk.ctx.at.function.dom.processexecution.ExternalOutputConditionCode;
-
 import java.util.List;
 import java.util.stream.Collectors;
+
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.function.dom.processexecution.ExternalOutput;
+import nts.uk.ctx.at.function.dom.processexecution.ExternalOutputConditionCode;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * The class External output dto.<br>
@@ -16,6 +20,7 @@ import java.util.stream.Collectors;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ExternalOutputDto {
 
 	/**
@@ -27,12 +32,6 @@ public class ExternalOutputDto {
 	 * 条件一覧
 	 **/
 	private List<String> extOutputConditionCodeList;
-
-	/**
-	 * No args constructor.
-	 */
-	private ExternalOutputDto() {
-	}
 
 	/**
 	 * Create from domain.
@@ -51,4 +50,13 @@ public class ExternalOutputDto {
 		return dto;
 	}
 
+	public ExternalOutput toDomain() {
+		return ExternalOutput.builder()
+				.extOutCondCodeList(this.extOutputConditionCodeList.stream()
+						.map(ExternalOutputConditionCode::new)
+						.collect(Collectors.toList()))
+				.extOutputCls(EnumAdaptor.valueOf(this.externalOutputClassification, NotUseAtr.class))
+				.build();
+	}
+	
 }

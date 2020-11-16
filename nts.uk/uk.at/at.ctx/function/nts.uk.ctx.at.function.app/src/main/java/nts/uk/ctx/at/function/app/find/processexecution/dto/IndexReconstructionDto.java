@@ -1,9 +1,13 @@
 package nts.uk.ctx.at.function.app.find.processexecution.dto;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.dom.processexecution.IndexReconstruction;
 import nts.uk.ctx.at.function.dom.processexecution.IndexReconstructionCategoryNO;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,6 +20,7 @@ import java.util.stream.Collectors;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class IndexReconstructionDto {
 
 	/**
@@ -32,13 +37,6 @@ public class IndexReconstructionDto {
 	 * カテゴリリスト
 	 **/
 	private List<Integer> categoryNo;
-
-
-	/**
-	 * No args constructor.
-	 */
-	private IndexReconstructionDto() {
-	}
 
 	/**
 	 * Create from domain.
@@ -60,4 +58,14 @@ public class IndexReconstructionDto {
 		return dto;
 	}
 
+	public IndexReconstruction toDomain() {
+		return IndexReconstruction.builder()
+				.categoryList(this.categoryNo.stream()
+						.map(IndexReconstructionCategoryNO::new)
+						.collect(Collectors.toList()))
+				.indexReorgAttr(EnumAdaptor.valueOf(this.classificationOfUse, NotUseAtr.class))
+				.updateStatistics(EnumAdaptor.valueOf(this.updateStats, NotUseAtr.class))
+				.build();
+	}
+	
 }

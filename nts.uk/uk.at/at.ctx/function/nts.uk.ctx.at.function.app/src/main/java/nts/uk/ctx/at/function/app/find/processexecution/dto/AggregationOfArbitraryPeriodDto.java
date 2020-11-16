@@ -1,9 +1,15 @@
 package nts.uk.ctx.at.function.app.find.processexecution.dto;
 
+import java.util.Optional;
+
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.dom.processexecution.AggrFrameCode;
 import nts.uk.ctx.at.function.dom.processexecution.AggregationAnyPeriod;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * The class Aggregation of arbitrary period dto.<br>
@@ -13,6 +19,7 @@ import nts.uk.ctx.at.function.dom.processexecution.AggregationAnyPeriod;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AggregationOfArbitraryPeriodDto {
 
 	/**
@@ -24,12 +31,6 @@ public class AggregationOfArbitraryPeriodDto {
 	 * コード
 	 **/
 	private String aggrFrameCode;
-
-	/**
-	 * No args constructor.
-	 */
-	private AggregationOfArbitraryPeriodDto() {
-	}
 
 	/**
 	 * Create from domain.
@@ -47,4 +48,11 @@ public class AggregationOfArbitraryPeriodDto {
 		return dto;
 	}
 
+	public AggregationAnyPeriod toDomain() {
+		return AggregationAnyPeriod.builder()
+				.aggAnyPeriodAttr(EnumAdaptor.valueOf(this.classificationOfUse, NotUseAtr.class))
+				.aggrFrameCode(Optional.ofNullable(this.aggrFrameCode).map(AggrFrameCode::new))
+				.build();
+	}
+	
 }

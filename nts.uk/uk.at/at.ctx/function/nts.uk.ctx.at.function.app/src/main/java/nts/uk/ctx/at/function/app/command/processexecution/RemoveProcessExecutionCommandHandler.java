@@ -46,26 +46,26 @@ public class RemoveProcessExecutionCommandHandler extends CommandHandler<RemoveP
 		RemoveProcessExecutionCommand command = context.getCommand();
 		//ドメインモデル「実行タスク設定」を取得する
 		Optional<ExecutionTaskSetting> executionTaskSettingOpt = execSetRepo.getByCidAndExecCd(companyId, command.getExecItemCd());
-		if(executionTaskSettingOpt.isPresent()){
-			ExecutionTaskSetting execTaskSetting = executionTaskSettingOpt.get();
+		executionTaskSettingOpt.ifPresent(execTaskSetting -> {
 			String scheduleId = execTaskSetting.getScheduleId();
+			// アルゴリズム「バッチのスケジュールを削除する」を実行する
 			this.scheduler.unscheduleOnCurrentCompany(SortingProcessScheduleJob.class,scheduleId);
 			Optional<String> endScheduleId = execTaskSetting.getEndScheduleId();
 			if(endScheduleId.isPresent()){
 				this.scheduler.unscheduleOnCurrentCompany(SortingProcessEndScheduleJob.class,endScheduleId.get());
 			}
-		}
-		//ドメインモデル「実行タスク設定」を削除する
-		this.execSetRepo.remove(companyId, command.getExecItemCd());
-		//ドメインモデル「更新処理自動実行ログ」を削除する
-		this.procExecLogRepo.removeList(companyId, command.getExecItemCd());
-		//ドメインモデル「更新処理自動実行」を削除する
-		this.procExecRepo.remove(companyId, command.getExecItemCd());
-		//ドメインモデル「更新処理前回実行日時」を削除する
-		this.lastExecRepo.remove(companyId, command.getExecItemCd());
-		//ドメインモデル「更新処理自動実行管理」を削除する
-		this.processExecLogManRepo.remove(companyId, command.getExecItemCd());
-		//ドメインモデル「更新処理自動実行ログ履歴」を削除する
-		this.processExecLogHistRepo.remove(companyId, command.getExecItemCd());
+			//ドメインモデル「実行タスク設定」を削除する
+			this.execSetRepo.remove(companyId, command.getExecItemCd());
+			//ドメインモデル「更新処理自動実行ログ」を削除する
+			this.procExecLogRepo.removeList(companyId, command.getExecItemCd());
+			//ドメインモデル「更新処理自動実行」を削除する
+			this.procExecRepo.remove(companyId, command.getExecItemCd());
+			//ドメインモデル「更新処理前回実行日時」を削除する
+			this.lastExecRepo.remove(companyId, command.getExecItemCd());
+			//ドメインモデル「更新処理自動実行管理」を削除する
+			this.processExecLogManRepo.remove(companyId, command.getExecItemCd());
+			//ドメインモデル「更新処理自動実行ログ履歴」を削除する
+			this.processExecLogHistRepo.remove(companyId, command.getExecItemCd());
+		});
 	}
 }

@@ -72,7 +72,7 @@ module nts.uk.at.view.kbt002.b {
         .then((response: any) => {
           console.log(response)
         })
-        .fail(err => {errors.clearAll();});
+        .fail(err => { errors.clearAll(); });
 
       vm.selectedExecCode.subscribe(execItemCode => {
         errors.clearAll();
@@ -280,7 +280,7 @@ module nts.uk.at.view.kbt002.b {
         });
     }
 
-    public openDialogK(){
+    public openDialogK() {
       const vm = this;
       vm.$window.modal('/view/kbt/002/k/index.xhtml')
         .then(() => {
@@ -288,7 +288,7 @@ module nts.uk.at.view.kbt002.b {
         });
     }
 
-    public openDialogL(){
+    public openDialogL() {
       const vm = this;
       vm.$window.modal('/view/kbt/002/l/index.xhtml')
         .then(() => {
@@ -300,28 +300,28 @@ module nts.uk.at.view.kbt002.b {
      * Open dialog CDL008
      * 職場選択 button
      */
-    private openDialogCDL008() {
+    public openDialogCDL008() {
       const vm = this;
       vm.$blockui('grayout');
       const canSelected = vm.currentExecItem().workplaceList() ? vm.currentExecItem().workplaceList() : [];
       // Data send to dialog CDL008
-      const data: any = {
-        baseDate: moment().utc().toDate(),
+      setShared('inputCDL008', {
+        baseDate: moment.utc().toDate(),
         isMultiple: true,
         selectedCodes: canSelected,
         selectedSystemType: 2,
         isrestrictionOfReferenceRange: true,
         showNoSelection: false,
         isShowBaseDate: false
-      }
-      vm.$window.modal('com', '/view/cdl/008/a/index.xhtml', data)
-        .then((result: any) => {
-          vm.$blockui('clear');
-          if (result) {
-            vm.currentExecItem().workplaceList(result);
-            vm.buildWorkplaceStr(result);
-          }
-        });
+      });
+      (nts.uk as any).ui.windows.sub.modal("com", "/view/cdl/008/a/index.xhtml").onClosed(function () {
+        vm.$blockui("clear")
+        const data = getShared('outputCDL008');
+        if (data) {
+          vm.currentExecItem().workplaceList(data);
+          vm.buildWorkplaceStr(data);
+        }
+      });
     }
 
     /**

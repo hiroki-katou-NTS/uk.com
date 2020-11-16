@@ -1,8 +1,12 @@
 package nts.uk.ctx.at.function.app.find.processexecution.dto;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.dom.processexecution.ReExecutionCondition;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * The class Re-execution condition dto.<br>
@@ -10,6 +14,7 @@ import nts.uk.ctx.at.function.dom.processexecution.ReExecutionCondition;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ReExecutionConditionDto {
 
 	/**
@@ -42,4 +47,12 @@ public class ReExecutionConditionDto {
 										   domain.getRecreateLeave().value);
 	}
 
+	public ReExecutionCondition toDomain() {
+		return ReExecutionCondition.builder()
+				.recreateLeave(EnumAdaptor.valueOf(this.recreateLeave, NotUseAtr.class))
+				.recreatePersonChangeWkt(EnumAdaptor.valueOf(this.recreatePerson, NotUseAtr.class))
+				.recreateTransfer(EnumAdaptor.valueOf(this.recreateTransfer, NotUseAtr.class))
+				.build();
+	}
+	
 }

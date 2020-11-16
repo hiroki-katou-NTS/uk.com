@@ -1,9 +1,15 @@
 package nts.uk.ctx.at.function.app.find.processexecution.dto;
 
+import java.util.Optional;
+
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.dom.processexecution.AuxiliaryPatternCode;
 import nts.uk.ctx.at.function.dom.processexecution.SaveData;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * The class Save data dto.<br>
@@ -13,6 +19,7 @@ import nts.uk.ctx.at.function.dom.processexecution.SaveData;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SaveDataDto {
 
 	/**
@@ -24,12 +31,6 @@ public class SaveDataDto {
 	 * パターンコード
 	 **/
 	private String patternCode;
-
-	/**
-	 * No args constructor.
-	 */
-	private SaveDataDto() {
-	}
 
 	/**
 	 * Create from domain.
@@ -47,4 +48,11 @@ public class SaveDataDto {
 		return dto;
 	}
 
+	public SaveData toDomain() {
+		return SaveData.builder()
+				.patternCode(Optional.ofNullable(this.patternCode).map(AuxiliaryPatternCode::new))
+				.saveDataCls(EnumAdaptor.valueOf(this.saveDataClassification, NotUseAtr.class))
+				.build();
+	}
+	
 }

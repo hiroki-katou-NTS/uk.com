@@ -51,11 +51,11 @@ public class KfnmtProcessExecution extends UkJpaEntity
 	@Column(name = "EXEC_ITEM_NAME")
 	public String execItemName;
 
-	@OneToOne(mappedBy = "procExec", cascade = CascadeType.ALL)
+	@OneToOne(mappedBy = "procExec", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinTable(name = "KFNMT_EXECUTION_SCOPE")
 	public KfnmtExecutionScope execScope;
 
-	@OneToOne(mappedBy = "procExec", cascade = CascadeType.ALL)
+	@OneToOne(mappedBy = "procExec", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinTable(name = "KFNMT_PROC_EXEC_SETTING")
 	public KfnmtProcessExecutionSetting execSetting;
 

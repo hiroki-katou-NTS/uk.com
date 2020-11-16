@@ -1,9 +1,13 @@
 package nts.uk.ctx.at.function.app.find.processexecution.dto;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.dom.processexecution.ExternalAcceptance;
 import nts.uk.ctx.at.function.dom.processexecution.ExternalAcceptanceConditionCode;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,6 +20,7 @@ import java.util.stream.Collectors;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ExternalAcceptanceDto {
 
 	/**
@@ -27,12 +32,6 @@ public class ExternalAcceptanceDto {
 	 * 条件一覧
 	 **/
 	private List<String> extAccepConditionCodeList;
-
-	/**
-	 * No args constructor.
-	 */
-	private ExternalAcceptanceDto() {
-	}
 
 	/**
 	 * Create from domain.
@@ -51,4 +50,13 @@ public class ExternalAcceptanceDto {
 		return dto;
 	}
 
+	public ExternalAcceptance toDomain() {
+		return ExternalAcceptance.builder()
+				.extAcceptCls(EnumAdaptor.valueOf(this.externalAcceptanceClassification, NotUseAtr.class))
+				.extAcceptCondCodeList(this.extAccepConditionCodeList.stream()
+						.map(ExternalAcceptanceConditionCode::new)
+						.collect(Collectors.toList()))
+				.build();
+	}
+	
 }

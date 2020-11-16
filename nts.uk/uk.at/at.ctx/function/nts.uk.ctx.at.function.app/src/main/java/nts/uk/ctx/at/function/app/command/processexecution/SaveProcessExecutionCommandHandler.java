@@ -92,8 +92,7 @@ public class SaveProcessExecutionCommandHandler extends CommandHandlerWithResult
 				.collect(Collectors.toList());
 
 		ProcessExecutionScope execScope = new ProcessExecutionScope(
-				EnumAdaptor.valueOf(command.getExecScopeCls(), ExecutionScopeClassification.class),
-				command.getRefDate(), workplaceIdList);
+				command.getExecScopeCls(), command.getRefDate(), workplaceIdList);
 
 		AlarmExtraction alarmExtraction = new AlarmExtraction(
 				command.isAlarmAtr() ? NotUseAtr.USE : NotUseAtr.NOT_USE,

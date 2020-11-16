@@ -22,6 +22,6 @@ public class ProcessExecutionScopeDto {
 	
 	public static ProcessExecutionScopeDto fromDomain(ProcessExecutionScope domain){
 		List<String> wkpIdList = domain.getWorkplaceIdList().stream().map(x -> x.wkpId).collect(Collectors.toList());
-		return new ProcessExecutionScopeDto(domain.getExecScopeCls().value, domain.getRefDate(), wkpIdList);
+		return new ProcessExecutionScopeDto(domain.getExecScopeCls().value, domain.getRefDate().orElse(null), wkpIdList);
 	}
 }

@@ -1,9 +1,15 @@
 package nts.uk.ctx.at.function.app.find.processexecution.dto;
 
+import java.util.Optional;
+
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.dom.processexecution.AuxiliaryPatternCode;
 import nts.uk.ctx.at.function.dom.processexecution.DeleteData;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * The class Delete data dto.<br>
@@ -13,6 +19,7 @@ import nts.uk.ctx.at.function.dom.processexecution.DeleteData;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DeleteDataDto {
 
 	/**
@@ -25,12 +32,6 @@ public class DeleteDataDto {
 	 * 補助パターンコード
 	 **/
 	private String patternCode;
-
-	/**
-	 * No args constructor.
-	 */
-	private DeleteDataDto() {
-	}
 
 	/**
 	 * Create from domain.
@@ -48,4 +49,11 @@ public class DeleteDataDto {
 		return dto;
 	}
 
+	public DeleteData toDomain() {
+		return DeleteData.builder()
+				.dataDelCls(EnumAdaptor.valueOf(this.dataDeletionClassification, NotUseAtr.class))
+				.patternCode(Optional.ofNullable(this.patternCode).map(AuxiliaryPatternCode::new))
+				.build();
+	}
+	
 }

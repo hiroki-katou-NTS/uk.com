@@ -83,7 +83,7 @@ public class KfnmtExecutionScope extends UkJpaEntity implements Serializable {
 															  .collect(Collectors.toList());
 		return new KfnmtExecutionScope(new KfnmtExecutionScopePK(companyId, execItemCode),
 									   domain.getExecScopeCls().value,
-									   domain.getRefDate(),
+									   domain.getRefDate().orElse(null),
 									   workplaceIdList);
 	}
 

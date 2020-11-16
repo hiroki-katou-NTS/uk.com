@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.function.app.find.processexecution.dto;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.function.dom.processexecution.AppRouteUpdateDaily;
 
 /**
@@ -12,6 +14,7 @@ import nts.uk.ctx.at.function.dom.processexecution.AppRouteUpdateDaily;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AppRouteUpdateDailyDto {
 
 	/**
@@ -23,12 +26,6 @@ public class AppRouteUpdateDailyDto {
 	 * 新入社員を作成する
 	 */
 	private Integer createNewEmp;
-
-	/**
-	 * No args constructor.
-	 */
-	private AppRouteUpdateDailyDto() {
-	}
 
 	/**
 	 * Create from domain.
@@ -48,4 +45,8 @@ public class AppRouteUpdateDailyDto {
 		return dto;
 	}
 
+	public AppRouteUpdateDaily toDomain() {
+		return new AppRouteUpdateDaily(appRouteUpdateAtr, createNewEmp);
+	}
+	
 }

@@ -214,7 +214,7 @@ public class ProcessExecutionDto {
 		if (execScope != null) {
 			builder = builder
 					.execScopeCls(execScope.getExecScopeCls().value)
-					.refDate(execScope.getRefDate());
+					.refDate(execScope.getRefDate().orElse(null));
 		}
 		
 		return builder.build();

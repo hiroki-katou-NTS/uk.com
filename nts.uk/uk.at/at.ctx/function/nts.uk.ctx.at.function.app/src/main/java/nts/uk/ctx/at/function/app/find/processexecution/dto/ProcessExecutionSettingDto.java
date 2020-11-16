@@ -1,8 +1,13 @@
 package nts.uk.ctx.at.function.app.find.processexecution.dto;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.function.dom.processexecution.AppRouteUpdateMonthly;
+import nts.uk.ctx.at.function.dom.processexecution.MonthlyAggregate;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionSetting;
+import nts.uk.ctx.at.function.dom.processexecution.ReflectionApprovalResult;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -13,6 +18,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ProcessExecutionSettingDto {
 
 	/**
@@ -79,12 +85,11 @@ public class ProcessExecutionSettingDto {
 	 * インデックス再構成
 	 **/
 	private IndexReconstructionDto indexReconstruction;
-
+	
 	/**
-	 * No args constructor.
+	 * 再実行条件
 	 */
-	private ProcessExecutionSettingDto() {
-	}
+	private ReExecutionConditionDto reExecCondition;
 
 	/**
 	 * Create from domain.
@@ -114,4 +119,22 @@ public class ProcessExecutionSettingDto {
 		return dto;
 	}
 
+	public ProcessExecutionSetting toDomain() {
+		return ProcessExecutionSetting.builder()
+				.aggrAnyPeriod(this.aggregationOfArbitraryPeriod.toDomain())
+				.alarmExtraction(this.alarmExtraction.toDomain())
+				.appRouteUpdateDaily(this.appRouteUpdateDaily.toDomain())
+				.appRouteUpdateMonthly(new AppRouteUpdateMonthly(this.appRouteUpdateMonthly))
+				.dailyPerf(this.dailyPerf.toDomain())
+				.deleteData(this.deleteData.toDomain())
+				.externalAcceptance(this.externalAcceptance.toDomain())
+				.externalOutput(this.externalOutput.toDomain())
+				.indexReconstruction(this.indexReconstruction.toDomain())
+				.monthlyAggregate(new MonthlyAggregate(this.monthlyAggCls ? NotUseAtr.USE : NotUseAtr.NOT_USE))
+				.perScheduleCreation(this.perSchedule.toDomain())
+				.reExecCondition(this.reExecCondition.toDomain())
+				.reflectAppResult(new ReflectionApprovalResult(this.reflectResultCls ? NotUseAtr.USE : NotUseAtr.NOT_USE))
+				.saveData(this.saveData.toDomain())
+				.build();
+	}
 }

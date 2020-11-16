@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.function.app.find.processexecution.dto;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.PersonalScheduleCreation;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -13,29 +15,32 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PersonalScheduleCreationDto {
 
 	/**
+	 * The Personal schedule creation period.<br>
 	 * 作成期間
 	 */
-	private PersonalScheduleCreationPeriodDto period;
+	private PersonalScheduleCreationPeriodDto perSchedulePeriod;
 
 	/**
+	 * The Personal schedule creation classification.<br>
 	 * 個人スケジュール作成区分
 	 */
-	private boolean perSchedule;
+	private boolean perScheduleCls;
+
+//	/**
+//	 * 対象社員
+//	 */
+//	private PersonalScheduleCreationTarget target;
 
 	/**
-	 * 対象社員
+	 * The Create new employee schedule.<br>
+	 * 新入社員を作成
 	 */
-	private PersonalScheduleCreationTargetDto target;
-
-	/**
-	 * No args constructor.
-	 */
-	private PersonalScheduleCreationDto() {
-	}
-
+	private boolean createNewEmpSched;
+	
 	/**
 	 * Create from domain.
 	 *
@@ -47,10 +52,18 @@ public class PersonalScheduleCreationDto {
 			return null;
 		}
 		PersonalScheduleCreationDto dto = new PersonalScheduleCreationDto();
-		dto.period = PersonalScheduleCreationPeriodDto.createFromDomain(domain.getPerSchedulePeriod());
-		dto.perSchedule = domain.getPerScheduleCls().equals(NotUseAtr.USE);
-		dto.target = PersonalScheduleCreationTargetDto.createFromDomain(domain.getTarget());
+		dto.perSchedulePeriod = PersonalScheduleCreationPeriodDto.createFromDomain(domain.getPerSchedulePeriod());
+		dto.perScheduleCls = domain.getPerScheduleCls().equals(NotUseAtr.USE);
+//		dto.target = PersonalScheduleCreationTargetDto.createFromDomain(domain.getTarget());
 		return dto;
 	}
 
+	public PersonalScheduleCreation toDomain() {
+		return PersonalScheduleCreation.builder()
+				.createNewEmpSched(createNewEmpSched ? NotUseAtr.USE : NotUseAtr.NOT_USE)
+				.perScheduleCls(perScheduleCls ? NotUseAtr.USE : NotUseAtr.NOT_USE)
+				.perSchedulePeriod(perSchedulePeriod.toDomain())
+				.build();
+	}
+	
 }
