@@ -27,7 +27,6 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.IdentityProcessUseSet;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-import nts.uk.ctx.at.shared.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 
@@ -40,9 +39,6 @@ public interface DailyRecordAdUpService {
 
 	// ドメインモデル「日別実績の計算区分」を更新する
 	public void adUpCalAttr(CalAttrOfDailyPerformance calAttr);
-
-	// ドメインモデル「日別実績の勤務種別」を更新する
-	public void adUpWorkType(Optional<WorkTypeOfDailyPerformance> businessType);
 
 	// ドメインモデル「日別実績の出退勤」を更新する
 	public void adUpTimeLeaving(Optional<TimeLeavingOfDailyPerformance> attendanceLeave);

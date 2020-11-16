@@ -1,5 +1,12 @@
 package nts.uk.ctx.at.schedule.app.command.shift.pattern.monthly;
 
+import java.util.Optional;
+
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
+
 import lombok.AllArgsConstructor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -18,12 +25,6 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSe
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
-
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
-import java.util.Optional;
 
 /**
  * 月間パターンを登録する
@@ -105,18 +106,17 @@ public class MonthlyPatternRegisterCommandHandler extends CommandHandler<Monthly
         }
 
         @Override
-        public Optional<WorkType> findByPK(String workTypeCd) {
+        public Optional<WorkType> getWorkType(String workTypeCd) {
             return workTypeRepo.findByPK(companyId, workTypeCd);
         }
 
         @Override
-        public Optional<WorkTimeSetting> findByCode(String workTimeCode) {
+        public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
             return workTimeSettingRepository.findByCode(companyId, workTimeCode);
         }
 
         @Override
-        public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTimeCd,
-                                                                   String workTypeCd, Integer workNo) {
+        public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd, Integer workNo) {
             return workTimeSettingService .getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
         }
 

@@ -1,7 +1,6 @@
 package nts.uk.screen.at.app.shift.management.workavailability;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -36,7 +35,7 @@ import nts.uk.shr.com.context.AppContexts;
 /**
  * 初期起動の情報取得
  * UKDesign.UniversalK.就業.KSU_スケジュール.KSU001_個人スケジュール修正(職場別).G：希望参照.メニュー別OCD.初期起動の情報取得.初期起動の情報取得
- * 
+ *
  * @author quytb
  *
  */
@@ -75,7 +74,7 @@ public class Ksu001gScreenQuerry {
 			availabilityOfOneDays = Stream.of(availabilityOfOneDays, availabilityOfOneDayTmps).flatMap(x -> x.stream())
 					.collect(Collectors.toList());
 		}
-		
+
 		/** 2: List<一日分の勤務希望>.size == 0*/
 		if (CollectionUtil.isEmpty(availabilityOfOneDays)) {
 			return new ArrayList<WorkAvailabilityInfoDto>();
@@ -143,7 +142,7 @@ public class Ksu001gScreenQuerry {
 					}
 				}
 			});
-			return dtos;			
+			return dtos;
 		}
 	}
 
@@ -161,12 +160,12 @@ public class Ksu001gScreenQuerry {
 		private ShiftMasterRepository shiftMasterRepo;
 
 		@Override
-		public Optional<WorkType> findByPK(String workTypeCd) {
+		public Optional<WorkType> getWorkType(String workTypeCd) {
 			return workTypeRepository.findByDeprecated(AppContexts.user().companyId(), workTypeCd);
 		}
 
 		@Override
-		public Optional<WorkTimeSetting> findByCode(String workTimeCode) {
+		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
 			return workTimeSettingRepository.findByCode(AppContexts.user().companyId(), workTimeCode);
 		}
 
@@ -176,8 +175,7 @@ public class Ksu001gScreenQuerry {
 		}
 
 		@Override
-		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTimeCd, String workTypeCd,
-				Integer workNo) {
+		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd, Integer workNo) {
 			return workTimeService.getPredeterminedTimezone(AppContexts.user().companyId(), workTimeCd, workTypeCd,
 					workNo);
 		}

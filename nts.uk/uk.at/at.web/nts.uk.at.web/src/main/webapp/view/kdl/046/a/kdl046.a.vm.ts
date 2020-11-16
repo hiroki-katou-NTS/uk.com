@@ -125,7 +125,7 @@ module nts.uk.at.view.kdl046.a.viewmodel {
                 if (rowSelect.length > 0) {
                     item = _.filter(flwps, function(o) { return o.code === rowSelect[0].code; });
                 }
-                if (self.target() == 1 && _.isNil(self.workplaceGroupId())) {
+                if (self.target() == 1 && self.workplaceGroupId() == "") {
                     nts.uk.ui.dialog.error({ messageId: "Msg_218", messageParams: [nts.uk.resource.getText('Com_WorkplaceGroup')] });
                     return;
                 }

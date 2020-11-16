@@ -355,10 +355,11 @@ module nts.uk.at.kaf021.d {
             _.forEach(vm.datas, (data: any) => {
                 if (vm.isApprovedByApprover(data.approvalStatus) && vm.isApprovedByConfirmer(data.confirmStatus)) {
                     cellStates.push(new common.CellState(data.applicantId, 'approvalChecked', [disableCell]));
+                }
 
-                    if (vm.isDenyByApprover(data.approvalStatus) && vm.isDenyByConfirmer(data.confirmStatus)) {
-                        cellStates.push(new common.CellState(data.applicantId, 'denialChecked', [disableCell]));
-                    }
+                if ((vm.isApprovedByApprover(data.approvalStatus) && vm.isApprovedByConfirmer(data.confirmStatus)) ||
+                    (vm.isDenyByApprover(data.approvalStatus) && vm.isDenyByConfirmer(data.confirmStatus))) {
+                    cellStates.push(new common.CellState(data.applicantId, 'denialChecked', [disableCell]));
                 }
 
                 if (data.canApprove) {

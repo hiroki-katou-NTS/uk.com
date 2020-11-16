@@ -88,7 +88,7 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 		RequireImpl impl = new RequireImpl(companyId, workTypeRepo, workTimeSettingRepository, service,
 				workTimeSettingService, basicScheduleService, workScheduleRepository, convertDailyRecordToAd,
 				correctionAttendanceRule, calculateDailyRecordServiceCenterNew, requestSettingAdapter);
-		Pair<ReflectStatusResultShare, AtomTask> result = ReflectApplicationWorkSchedule.process(impl, companyId, 
+		Pair<ReflectStatusResultShare, AtomTask> result = ReflectApplicationWorkSchedule.process(impl, companyId,
 				(ApplicationShare) application, date, (ReflectStatusResultShare) reflectStatus);
 		return Pair.of(result.getLeft(), result.getRight());
 	}
@@ -119,12 +119,12 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 		private final RequestSettingAdapter requestSettingAdapter;
 
 		@Override
-		public Optional<WorkType> findByPK(String workTypeCd) {
+		public Optional<WorkType> getWorkType(String workTypeCd) {
 			return workTypeRepo.findByPK(companyId, workTypeCd);
 		}
 
 		@Override
-		public Optional<WorkTimeSetting> findByCode(String workTimeCode) {
+		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
 			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
 		}
 
@@ -134,8 +134,7 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 		}
 
 		@Override
-		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTimeCd, String workTypeCd,
-				Integer workNo) {
+		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd, Integer workNo) {
 			return workTimeSettingService.getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
 		}
 
