@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.infra.repository.alarmworkplace.checkcondition;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode;
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.AlarmCheckCdtWkpCtgRepository;
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.AlarmCheckCdtWorkplaceCategory;
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.ExtractionCondition;
@@ -38,16 +39,21 @@ public class JpaAlarmWkpAlstchkConcat extends JpaRepository implements AlarmChec
     }
 
     @Override
-    public List<AlarmCheckCdtWorkplaceCategory> getByCategoryID(int categoryID) {
+    public List<AlarmCheckCdtWorkplaceCategory> getByCategory(WorkplaceCategory category) {
         List<KfnmtWkpAlstchkConcat> entityMain = this.queryProxy().query(GET_BY_CATEGORY_ID, KfnmtWkpAlstchkConcat.class)
                 .setParameter("cid", AppContexts.user().companyId())
-                .setParameter("ctgID", categoryID)
+                .setParameter("ctgID", category.value)
                 .getList();
         List<KfnmtCatMapEachType> entitySub = this.queryProxy().query(GET_SUB_BY_CTG, KfnmtCatMapEachType.class)
                 .setParameter("cid", AppContexts.user().companyId())
-                .setParameter("ctgID", categoryID)
+                .setParameter("ctgID", category.value)
                 .getList();
         return this.toDomain(entityMain, entitySub);
+    }
+
+    @Override
+    public List<AlarmCheckCdtWorkplaceCategory> getBy(WorkplaceCategory category, List<AlarmCheckConditionCode> codes) {
+        return new ArrayList<>();
     }
 
     private List<AlarmCheckCdtWorkplaceCategory> toDomain(List<KfnmtWkpAlstchkConcat> entityMain, List<KfnmtCatMapEachType> entitySub) {
