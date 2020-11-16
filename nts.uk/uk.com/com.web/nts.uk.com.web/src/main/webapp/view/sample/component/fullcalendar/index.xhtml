@@ -15,6 +15,11 @@
             <com:scriptfile set="FULLCALENDAR" />
             
 			<com:scriptfile path="viewmodel.js" />
+			<style>
+				#contents-area>#content {
+					padding: 0 0 0 10px;
+				}
+			</style>
 		</ui:define>
 
 		<ui:define name="content">
@@ -25,7 +30,10 @@
 				<div id="side-menu" class="cf"></div>
 				<div id="content" class="cf" data-bind="if: $vm.show">
 					<div data-bind="
-						nts-fullcalendar: ko.observable(true),
+						fullcalendar: $vm.events,
+						scrollTime: $vm.scrollTime,
+						slotDuration: $vm.slotDuration,
+						businessHours: $vm.businessHours,
 						event: {
 							datesSet: $vm.datesSet
 						}
