@@ -84,12 +84,10 @@ module nts.uk.at.view.ksm005.a {
 
                     if (monthlyPatternCode) {
                         self.modeMonthlyPattern(ModeMonthlyPattern.UPDATE);
-                        if (self.yearMonthPicked() == self.getMonth()){
+                        if (self.yearMonthPicked() == self.getMonth() || !self.reloadYM){
                             self.yearMonthPicked.valueHasMutated();
                         } else{
-                            if (self.reloadYM) {
-                                self.yearMonthPicked(self.getMonth());
-                            }
+                            self.yearMonthPicked(self.getMonth());
                         }
                         self.enableDelete(true);
 	                    self.enableUpdate(true);
