@@ -4,6 +4,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.BasicFixedExtractionCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.BasicFixedExtractionItem;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.BasicFixedExtractionItemRepository;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlistworkplace.basic.KrcmtWkpBasicFxexItm;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -14,6 +15,9 @@ import java.util.Optional;
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class JpaBasicFixedExtractionItemRepository extends JpaRepository implements BasicFixedExtractionItemRepository {
+
+    private static final String GET_ALL = "select f from KrcmtWkpBasicFxexItm f";
+
     @Override
     public Optional<BasicFixedExtractionItem> getByID(String id) {
         return Optional.empty();
@@ -21,7 +25,7 @@ public class JpaBasicFixedExtractionItemRepository extends JpaRepository impleme
 
     @Override
     public List<BasicFixedExtractionItem> getAll() {
-        return null;
+        return this.queryProxy().query(GET_ALL, KrcmtWkpBasicFxexItm.class).getList(KrcmtWkpBasicFxexItm::toDomain);
     }
 
     @Override

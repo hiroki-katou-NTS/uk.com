@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.infra.repository.workrecord.erroralarm.alarmlist.ba
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.BasicFixedExtractionCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.BasicFixedExtractionConditionRepository;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlistworkplace.basic.KrcmtWkpBasicFxexCon;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -12,6 +13,11 @@ import java.util.List;
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class JpaBasicFixedExtractionConditionRepository extends JpaRepository implements BasicFixedExtractionConditionRepository {
+
+    private static final String GET_ALL = "select f from KrcmtWkpBasicFxexCon f";
+
+    private static final String GET_BY_IDS = GET_ALL + " where f.pk.id in :ids";
+
     @Override
     public List<BasicFixedExtractionCondition> getByID(String id) {
         return null;
@@ -19,7 +25,9 @@ public class JpaBasicFixedExtractionConditionRepository extends JpaRepository im
 
     @Override
     public List<BasicFixedExtractionCondition> getByIDs(List<String> ids) {
-        return null;
+        return this.queryProxy()
+                .query(GET_BY_IDS, KrcmtWkpBasicFxexCon.class).setParameter("ids", ids)
+                .getList(KrcmtWkpBasicFxexCon::toDomain);
     }
 
     @Override

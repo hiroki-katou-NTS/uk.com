@@ -11,5 +11,5 @@ public interface FixedExtractionAppapvConRepository {
      */
     List<FixedExtractionAppapvCon> get(String errorAlarmWorkplaceId);
 
-    List<FixedExtractionAppapvCon> getByIds(List<String> sids);
+    List<FixedExtractionAppapvCon> getByIds(List<String> ids);
 }
