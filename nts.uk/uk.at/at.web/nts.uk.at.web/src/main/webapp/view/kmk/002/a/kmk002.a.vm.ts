@@ -18,6 +18,7 @@ module nts.uk.at.view.kmk002.a {
             optionalItemHeader: OptionalItemHeader;
             langId: KnockoutObservable<string> = ko.observable('ja');
             langJP: KnockoutObservable<boolean> = ko.observable(true); 
+
             constructor() {
                 let self = this;
                 self.optionalItemHeader = new OptionalItemHeader(self.langId());
@@ -161,6 +162,9 @@ module nts.uk.at.view.kmk002.a {
             empConClsDatasource: KnockoutObservableArray<any>;
             perfClsDatasource: KnockoutObservableArray<any>;
             atrDataSource: EnumConstantDto[];
+            
+            calculationAtr: KnockoutObservableArray<any>;
+            selectedClac: KnockoutObservable<any> = ko.observable(0);
 
             // function
             getExcludedOptItems: () => Array<number>;
@@ -256,6 +260,10 @@ module nts.uk.at.view.kmk002.a {
                     { code: 0, name: nts.uk.resource.getText("KMK002_23") } // monthly
                 ]);
                 self.atrDataSource = [];
+                self.calculationAtr = ko.observableArray([
+                    { code: 0, name: nts.uk.resource.getText("KMK002_103")},
+                    { code: 1, name: nts.uk.resource.getText("KMK002_104")}
+                ]);
             }
 
             /**
@@ -1278,39 +1286,41 @@ module nts.uk.at.view.kmk002.a {
                 let dfd = $.Deferred<void>();
 
                 // Select first item
-                let itemNo = self.optionalItemHeaders()[0].itemNo;
-                self.selectedCode(itemNo);
-
-                self.loadOptionalItemDetail(itemNo).done(() => {
-
-                    // init usageAtr subscribe.
-                    self.optionalItem.usageAtr.subscribe(vl => {
-                        if (vl === 1) {
-                            self.optionalItem.isUsed(true);
-                        } else {
-                            self.optionalItem.isUsed(false);
-                        }
+                if (self.optionalItemHeaders().length > 0) {
+                    let itemNo = self.optionalItemHeaders()[0].itemNo;
+                    self.selectedCode(itemNo);
+    
+                    self.loadOptionalItemDetail(itemNo).done(() => {
+    
+                        // init usageAtr subscribe.
+                        self.optionalItem.usageAtr.subscribe(vl => {
+                            if (vl === 1) {
+                                self.optionalItem.isUsed(true);
+                            } else {
+                                self.optionalItem.isUsed(false);
+                            }
+                        });
+    
+                        // force to check enable/disable condition
+                        self.optionalItem.usageAtr.valueHasMutated();
+    
+                        // init selected code subscribe
+                        self.selectedCode.subscribe(itemNo => {
+                            if (itemNo && itemNo != 0) {
+                                self.hasSelected(true);
+                                self.loadOptionalItemDetail(itemNo);
+                                // clear error.
+                                $('.nts-editor').ntsError('clear');
+                            } else {
+                                self.optionalItem.clearAll();
+                                self.hasSelected(false);
+                            }
+                        });
+    
                     });
-
-                    // force to check enable/disable condition
-                    self.optionalItem.usageAtr.valueHasMutated();
-
-                    // init selected code subscribe
-                    self.selectedCode.subscribe(itemNo => {
-                        if (itemNo && itemNo != 0) {
-                            self.hasSelected(true);
-                            self.loadOptionalItemDetail(itemNo);
-                            // clear error.
-                            $('.nts-editor').ntsError('clear');
-                        } else {
-                            self.optionalItem.clearAll();
-                            self.hasSelected(false);
-                        }
-                    });
-
-                    // resolve
-                    dfd.resolve();
-                });
+                }
+                // resolve
+                dfd.resolve();
 
                 return dfd.promise();
             }

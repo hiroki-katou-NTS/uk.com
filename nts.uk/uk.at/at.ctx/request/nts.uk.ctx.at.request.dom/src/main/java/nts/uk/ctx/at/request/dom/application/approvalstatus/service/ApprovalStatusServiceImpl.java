@@ -38,17 +38,22 @@ import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSp
 import nts.uk.ctx.at.request.dom.application.applist.service.AppCompltLeaveSync;
 import nts.uk.ctx.at.request.dom.application.applist.service.CheckExitSync;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppCompltLeaveFull;
+import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppContentDetailCMM045;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppDetailInfoRepository;
+import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppStampDataOutput;
+import nts.uk.ctx.at.request.dom.application.applist.service.detail.ScreenAtr;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTemp;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTempRepository;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailType;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApplicationApprContent;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApplicationsListOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttContentPrepareOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmp;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmpDate;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmpDateContent;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmpDateSymbol;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttExecutionOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttSendMailInfoOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalStatusEmployeeOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppDetail;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
@@ -99,6 +104,8 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppComp
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode_Old;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDispSetRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
@@ -109,6 +116,10 @@ import nts.uk.ctx.at.shared.dom.relationship.repository.RelationshipRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.WorkplaceInforExport;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
@@ -193,6 +204,18 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	
 	@Inject
 	private ClosureEmploymentRepository closureEmploymentRepository;
+	
+	@Inject
+	private AppContentDetailCMM045 appContentDetailCMM045;
+	
+	@Inject
+	private ApprovalListDispSetRepository approvalListDispSetRepository;
+	
+	@Inject
+	private WorkTypeRepository workTypeRepository;
+	
+	@Inject
+	private WorkTimeSettingRepository workTimeSettingRepository;
 	
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
@@ -1443,7 +1466,10 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 
 	@Override
 	public List<ApprSttEmpDateContent> getApprSttAppContentAdd(List<Pair<Application,List<ApprovalPhaseStateImport_New>>> appPairLst) {
+		String companyID = AppContexts.user().companyId();
 		List<ApprSttEmpDateContent> result = new ArrayList<>();
+		// アルゴリズム「申請内容編集準備情報の取得」を実行する
+		ApprSttContentPrepareOutput apprSttContentPrepareOutput = this.getApprSttAppContentPrepare(companyID);
 		// 申請承認内容(リスト)
 		for(Pair<Application,List<ApprovalPhaseStateImport_New>> appPair : appPairLst) {
 			Application application = appPair.getKey();
@@ -1454,27 +1480,61 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			// ドメインモデル「申請」．申請種類をチェック
 			String content = "";
 			switch (application.getAppType()) {
-			case OVER_TIME_APPLICATION: 
+			case COMPLEMENT_LEAVE_APPLICATION:
 				break;
 			case ABSENCE_APPLICATION:
 				break;
-			case WORK_CHANGE_APPLICATION:
-				break;
-			case BUSINESS_TRIP_APPLICATION:
-				break;
 			case GO_RETURN_DIRECTLY_APPLICATION:
+				// 直行直帰申請データを作成 ( Tạo dữ liệu đơn xin đi làm, về nhà thẳng)
+				content = appContentDetailCMM045.getContentGoBack(
+						application, 
+						apprSttContentPrepareOutput.getApprovalListDisplaySetting().getAppReasonDisAtr(), 
+						apprSttContentPrepareOutput.getWorkTimeSettingLst(), 
+						apprSttContentPrepareOutput.getWorkTypeLst(), 
+						ScreenAtr.CMM045);
+				break;
+			case WORK_CHANGE_APPLICATION:
+				// 勤務変更申請データを作成
+				content = appContentDetailCMM045.getContentWorkChange(
+						application, 
+						apprSttContentPrepareOutput.getApprovalListDisplaySetting().getAppReasonDisAtr(), 
+						apprSttContentPrepareOutput.getWorkTimeSettingLst(), 
+						apprSttContentPrepareOutput.getWorkTypeLst(), 
+						companyID);
+				break;
+			case OVER_TIME_APPLICATION: 
 				break;
 			case HOLIDAY_WORK_APPLICATION:
 				break;
+			case BUSINESS_TRIP_APPLICATION:
+				// 出張申請データを作成
+				content = appContentDetailCMM045.createBusinessTripData(
+						application, 
+						apprSttContentPrepareOutput.getApprovalListDisplaySetting().getAppReasonDisAtr(), 
+						ScreenAtr.CMM045, 
+						companyID);
+				break;
+			case OPTIONAL_ITEM_APPLICATION:
+				break;
 			case STAMP_APPLICATION:
+				// 打刻申請データを作成
+				AppStampDataOutput appStampDataOutput = appContentDetailCMM045.createAppStampData(
+						application, 
+						apprSttContentPrepareOutput.getApprovalListDisplaySetting().getAppReasonDisAtr(), 
+						ScreenAtr.CMM045, 
+						companyID, 
+						null);
+				content = appStampDataOutput.getAppContent();
 				break;
 			case ANNUAL_HOLIDAY_APPLICATION:
 				break;
 			case EARLY_LEAVE_CANCEL_APPLICATION:
-				break;
-			case COMPLEMENT_LEAVE_APPLICATION:
-				break;
-			case OPTIONAL_ITEM_APPLICATION:
+				// 遅刻早退取消申請データを作成
+				content = appContentDetailCMM045.createArrivedLateLeaveEarlyData(
+						application, 
+						apprSttContentPrepareOutput.getApprovalListDisplaySetting().getAppReasonDisAtr(), 
+						ScreenAtr.CMM045, 
+						companyID);
 				break;
 			default:
 				break;
@@ -1485,6 +1545,19 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		return result.stream().sorted(Comparator.comparing((ApprSttEmpDateContent x) -> {
 			return x.getApplication().getAppDate().getApplicationDate().toString() + x.getApplication().getAppType().value;
 		})).collect(Collectors.toList());
+	}
+	
+	@Override
+	public ApprSttContentPrepareOutput getApprSttAppContentPrepare(String companyID) {
+		// ドメインモデル「承認一覧表示設定」を取得する
+		ApprovalListDisplaySetting approvalListDisplaySetting = approvalListDispSetRepository.findByCID(companyID).get();
+		// ドメインモデル「就業時間帯」を取得 (Lấy WorkTime)
+		List<WorkTimeSetting> workTimeSettingLst = workTimeSettingRepository.findByCId(companyID);
+		// ドメインモデル「勤務種類」を取得(Lấy WorkType)
+		List<WorkType> workTypeLst = workTypeRepository.findByCompanyId(companyID);
+		// 勤怠名称を取得 ( Lấy tên working time)
+		// chưa đối ứng
+		return new ApprSttContentPrepareOutput(approvalListDisplaySetting, workTypeLst, workTimeSettingLst);
 	}
 
 	@Override
@@ -1536,10 +1609,29 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	}
 
 	@Override
-	public void initSendMail(ApprovalStatusMailType mailType, List<ApprSttExecutionOutput> apprSttExecutionOutputLst) {
+	public ApprSttSendMailInfoOutput getApprSttSendMailInfo(ApprovalStatusMailType mailType, List<ApprSttExecutionOutput> apprSttExecutionOutputLst) {
 		String companyId = AppContexts.user().companyId();
 		// アルゴリズム「メール送信_メール本文取得」を実行する
-		ApprovalStatusMailTemp approvalStatusMailTemp = approvalStatusMailTempRepo.getApprovalStatusMailTempById(companyId, mailType.value).get();
+		ApprovalStatusMailTemp approvalStatusMailTemp = approvalStatusMailTempRepo.getApprovalStatusMailTempById(companyId, mailType.value).orElse(null);
 		// 
+		
+		return new ApprSttSendMailInfoOutput(approvalStatusMailTemp, apprSttExecutionOutputLst);
+	}
+
+	@Override
+	public void getPersonInfo(String wkpID, String employeeID) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public SendMailResultOutput sendMailToDestination(ApprovalStatusMailTemp approvalStatusMailTemp, List<ApprSttExecutionOutput> apprSttExecutionOutputLst) {
+		// 送信対象があるか判別
+		if(CollectionUtil.isEmpty(apprSttExecutionOutputLst)) {
+			// メッセージ（Msg_787)を表示する
+			throw new BusinessException("Msg_787");
+		}
+		// アルゴリズム「承認状況メール送信実行」を実行する
+		return this.exeApprovalStatusMailTransmission(Collections.emptyList(), approvalStatusMailTemp, approvalStatusMailTemp.getMailType());
 	}
 }

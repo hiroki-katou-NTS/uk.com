@@ -36,7 +36,9 @@
     </ui:define>
     <ui:define name="content">
         <div id="functions-area">
-            <button class="goback link-button" data-bind="click: goBack,  text: $vm.$i18n('KAF020_15')"></button>
+            <div class="ntsControl">
+                <a class="goback link-button" data-bind="click: goBack,  text: $vm.$i18n('KAF020_15')"></a>
+            </div>
             <button class="proceed"
                     data-bind="click: register, enable: $root.errors.isEmpty, text: $vm.$i18n('KAF020_16')"></button>
             <div  data-bind="component: { name: 'kaf000-a-component7',

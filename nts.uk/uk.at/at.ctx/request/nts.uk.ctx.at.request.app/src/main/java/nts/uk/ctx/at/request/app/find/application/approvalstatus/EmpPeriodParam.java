@@ -27,6 +27,8 @@ public class EmpPeriodParam {
 	
 	private String employmentEndDate;
 	
+	private String empMail;
+	
 	public EmpPeriod toDomain() {
 		return new EmpPeriod(
 				wkpID, 
@@ -35,6 +37,7 @@ public class EmpPeriodParam {
 				GeneralDate.fromString(companyInDate, "yyyy/MM/dd"), 
 				GeneralDate.fromString(companyOutDate, "yyyy/MM/dd"), 
 				employmentStartDate == null ? null : GeneralDate.fromString(employmentStartDate, "yyyy/MM/dd"), 
-				employmentEndDate == null ? null : GeneralDate.fromString(employmentEndDate, "yyyy/MM/dd"));
+				employmentEndDate == null ? null : GeneralDate.fromString(employmentEndDate, "yyyy/MM/dd"),
+				empMail);
 	}
 }

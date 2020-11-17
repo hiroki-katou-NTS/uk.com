@@ -64,13 +64,13 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 				vm.columns.push(
 					{ 
 						headerText: moment(moment(vm.startDate,'YYYY/MM/DD').add(i, 'd')).date(),
-						headerCssClass: 'kaf018-d-header-date',
+						headerCssClass: vm.getHeaderCss(i),
 						group: [
 							{ 
 								headerText: moment(moment(vm.startDate,'YYYY/MM/DD').add(i, 'd')).format('ddd'),
 								key: 'dateInfoLst',
 								width: '60px',
-								headerCssClass: 'kaf018-d-header-date',
+								headerCssClass: vm.getHeaderCss(i),
 								columnCssClass: 'kaf018-d-column-date',
 								formatter: (value: any) => vm.getStatusByDay(value, i)
 							}
@@ -92,6 +92,18 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 			$("#dGrid").css('visibility','hidden');
 			vm.createIggrid();
 			vm.refreshDataSource();
+		}
+		
+		getHeaderCss(value: any) {
+			const vm = this;
+			let dayOfWeek: number = parseInt(moment(moment(vm.startDate,'YYYY/MM/DD').add(value, 'd')).format('e'));
+			if(dayOfWeek==6) {
+				return 'kaf018-d-header-saturday';
+			}
+			if(dayOfWeek==0) {
+				return 'kaf018-d-header-sunday';
+			}
+			return 'kaf018-d-header-date';
 		}
 		
 		getStatusByDay(value: Array<DateInfo>, i: number) {
