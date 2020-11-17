@@ -292,12 +292,8 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 	 */
 	@Override
 	public BreakTimeZone getBreakTimeZone(boolean isWorkingOnDayOff, AmPmAtr amPmAtr) {
-		FlowWorkRestTimezone breakTimeZone = new FlowWorkRestTimezone();
-		if(isWorkingOnDayOff) {
-			breakTimeZone = this.offdayWorkTimezone.getRestTimeZone();
-		}else {
-			breakTimeZone = this.halfDayWorkTimezone.getRestTimezone();
-		}
+		val breakTimeZone = isWorkingOnDayOff ? 
+				this.offdayWorkTimezone.getRestTimeZone(): this.halfDayWorkTimezone.getRestTimezone();
 		
 		if(!breakTimeZone.isFixRestTime()) {
 			return BreakTimeZone.createAsNotFixed(Collections.emptyList());
