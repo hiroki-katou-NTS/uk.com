@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -271,17 +271,43 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 		val workAbleMorning = predTimeStg.getHalfDayOfAmSpan();
 		val workAbleEvening = predTimeStg.getHalfDayOfPmSpan();
 		
-		List<ChangeableWorkingTimeZonePerNo>  oneDayList = Arrays.asList(this.createChangeableWorkingTimeZonePerNo(1, workAbleOneDay));
-		List<ChangeableWorkingTimeZonePerNo>  morningList = Arrays.asList(this.createChangeableWorkingTimeZonePerNo(1, workAbleMorning));
-		List<ChangeableWorkingTimeZonePerNo>  eveningList = Arrays.asList(this.createChangeableWorkingTimeZonePerNo(1, workAbleEvening));
+		List<ChangeableWorkingTimeZonePerNo> oneDayList = new ArrayList<>();
+		List<ChangeableWorkingTimeZonePerNo> morningList = new ArrayList<>();
+		List<ChangeableWorkingTimeZonePerNo> eveningList = new ArrayList<>();
+		
+		this.addShift(1, oneDayList, morningList, eveningList, workAbleOneDay, workAbleMorning, workAbleEvening);
 		
 		if(predTimeStg.isUseShiftTwo()) {
-			oneDayList.add(this.createChangeableWorkingTimeZonePerNo(2, workAbleOneDay));
-			morningList.add(this.createChangeableWorkingTimeZonePerNo(2, workAbleMorning));
-			eveningList.add(this.createChangeableWorkingTimeZonePerNo(2, workAbleEvening));
+			
+			this.addShift(2, oneDayList, morningList, eveningList, workAbleOneDay, workAbleMorning, workAbleEvening);
+			
 		}
 		
 		return new ChangeableWorkingTimeZone(oneDayList, morningList, eveningList, oneDayList);
+	}
+	/**
+	 * add shift
+	 * @param workNo
+	 * @param oneDays
+	 * @param morningDays
+	 * @param eveningDays
+	 * @param workAbleOneDay
+	 * @param workAbleMorning
+	 * @param workAbleEvening
+	 */
+	private void addShift(
+			  int workNo
+			, List<ChangeableWorkingTimeZonePerNo> oneDays
+			, List<ChangeableWorkingTimeZonePerNo> morningDays
+			, List<ChangeableWorkingTimeZonePerNo> eveningDays
+			, TimeSpanForCalc workAbleOneDay
+			, TimeSpanForCalc  workAbleMorning
+			, TimeSpanForCalc workAbleEvening) {
+		
+		oneDays.add(this.createChangeableWkTzPerNo(workNo, workAbleOneDay));
+		morningDays.add(this.createChangeableWkTzPerNo(workNo, workAbleMorning));
+		eveningDays.add(this.createChangeableWkTzPerNo(workNo, workAbleEvening));
+		
 	}
 
 	/**
@@ -309,7 +335,7 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 	 * @param timeSpan
 	 * @return
 	 */
-	private ChangeableWorkingTimeZonePerNo createChangeableWorkingTimeZonePerNo(int workNo, TimeSpanForCalc timeSpan ) {
+	private ChangeableWorkingTimeZonePerNo createChangeableWkTzPerNo(int workNo, TimeSpanForCalc timeSpan ) {
 		return ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd(
 				new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkNo(workNo),timeSpan);
 	}	

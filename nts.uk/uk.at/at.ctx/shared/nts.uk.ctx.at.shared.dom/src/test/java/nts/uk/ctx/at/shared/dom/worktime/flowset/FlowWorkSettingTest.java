@@ -191,69 +191,69 @@ public class FlowWorkSettingTest {
 		val result = flowSetting.getChangeableWorkingTimeZone(require);
 		
 		assertThat( result.getForWholeDay() )
-		.extracting(
-			  d -> d.getWorkNo()
-			, d -> d.getForStart().getStart().v()
-			, d -> d.getForStart().getEnd().v()
-			, d -> d.getForEnd().getStart().v()
-			, d -> d.getForEnd().getEnd().v())
-        .containsExactly( 
-        		Tuple.tuple(
-        				new WorkNo(1) 
-        				, predTimeStg.getStartDateClock().v()
-        				, predTimeStg.getEndDateClock().v()
-        				, predTimeStg.getStartDateClock().v()
-        				, predTimeStg.getEndDateClock().v()));
+			.extracting(
+				  d -> d.getWorkNo()
+				, d -> d.getForStart().getStart().v()
+				, d -> d.getForStart().getEnd().v()
+				, d -> d.getForEnd().getStart().v()
+				, d -> d.getForEnd().getEnd().v())
+	        .containsExactly( 
+	        		Tuple.tuple(
+	        				new WorkNo(1) 
+	        				, predTimeStg.getStartDateClock().v()
+	        				, predTimeStg.getEndDateClock().v()
+	        				, predTimeStg.getStartDateClock().v()
+	        				, predTimeStg.getEndDateClock().v()));
 		
 		assertThat( result.getForAm())
-		.extracting(
-			  d -> d.getWorkNo()
-			, d -> d.getForStart().getStart().v()
-			, d -> d.getForStart().getEnd().v()
-			, d -> d.getForEnd().getStart().v()
-			, d -> d.getForEnd().getEnd().v())
-        .containsExactly( 
-        		Tuple.tuple(
-        				new WorkNo(1) 
-        				, predTimeStg.getStartDateClock().v()
-        				, predTimeStg.getPrescribedTimezoneSetting().getMorningEndTime().v()
-          				, predTimeStg.getStartDateClock().v()
-        				, predTimeStg.getPrescribedTimezoneSetting().getMorningEndTime().v()
-        				)
-        		);
+			.extracting(
+				  d -> d.getWorkNo()
+				, d -> d.getForStart().getStart().v()
+				, d -> d.getForStart().getEnd().v()
+				, d -> d.getForEnd().getStart().v()
+				, d -> d.getForEnd().getEnd().v())
+	        .containsExactly( 
+	        		Tuple.tuple(
+	        				new WorkNo(1) 
+	        				, predTimeStg.getStartDateClock().v()
+	        				, predTimeStg.getPrescribedTimezoneSetting().getMorningEndTime().v()
+	          				, predTimeStg.getStartDateClock().v()
+	        				, predTimeStg.getPrescribedTimezoneSetting().getMorningEndTime().v()
+	        				)
+	        		);
 		
 		assertThat( result.getForPm())
-		.extracting(
-			  d -> d.getWorkNo()
-			, d -> d.getForStart().getStart().v()
-			, d -> d.getForStart().getEnd().v()
-			, d -> d.getForEnd().getStart().v()
-			, d -> d.getForEnd().getEnd().v())
-        .containsExactly( 
-        		Tuple.tuple(
-        				new WorkNo(1) 
-        				, predTimeStg.getPrescribedTimezoneSetting().getAfternoonStartTime().v()
-        				, predTimeStg.getEndDateClock().v()
-          				, predTimeStg.getPrescribedTimezoneSetting().getAfternoonStartTime().v()
-        				, predTimeStg.getEndDateClock().v()
-        				)
-        		);
+			.extracting(
+				  d -> d.getWorkNo()
+				, d -> d.getForStart().getStart().v()
+				, d -> d.getForStart().getEnd().v()
+				, d -> d.getForEnd().getStart().v()
+				, d -> d.getForEnd().getEnd().v())
+	        .containsExactly( 
+	        		Tuple.tuple(
+	        				new WorkNo(1) 
+	        				, predTimeStg.getPrescribedTimezoneSetting().getAfternoonStartTime().v()
+	        				, predTimeStg.getEndDateClock().v()
+	          				, predTimeStg.getPrescribedTimezoneSetting().getAfternoonStartTime().v()
+	        				, predTimeStg.getEndDateClock().v()
+	        				)
+	        		);
 		
 		assertThat( result.getForWorkOnDayOff())
-		.extracting(
-			  d -> d.getWorkNo()
-			, d -> d.getForStart().getStart().v()
-			, d -> d.getForStart().getEnd().v()
-			, d -> d.getForEnd().getStart().v()
-			, d -> d.getForEnd().getEnd().v())
-        .containsExactly( 
-        		Tuple.tuple(
-        				new WorkNo(1) 
-        				, predTimeStg.getStartDateClock().v()
-        				, predTimeStg.getEndDateClock().v()
-        				, predTimeStg.getStartDateClock().v()
-        				, predTimeStg.getEndDateClock().v()
-        				));
+			.extracting(
+				  d -> d.getWorkNo()
+				, d -> d.getForStart().getStart().v()
+				, d -> d.getForStart().getEnd().v()
+				, d -> d.getForEnd().getStart().v()
+				, d -> d.getForEnd().getEnd().v())
+	        .containsExactly( 
+	        		Tuple.tuple(
+	        				new WorkNo(1) 
+	        				, predTimeStg.getStartDateClock().v()
+	        				, predTimeStg.getEndDateClock().v()
+	        				, predTimeStg.getStartDateClock().v()
+	        				, predTimeStg.getEndDateClock().v()
+	        				));
 	}
 
 	/**
@@ -289,102 +289,102 @@ public class FlowWorkSettingTest {
 		
 	    /**  1勤目, 2勤目	*/
 		assertThat( result.getForWholeDay())
-		.extracting(
-			  d -> d.getWorkNo()
-			, d -> d.getForStart().getStart().v()
-			, d -> d.getForStart().getEnd().v()
-			, d -> d.getForEnd().getStart().v()
-			, d -> d.getForEnd().getEnd().v())
-        .containsExactly( 
-        		Tuple.tuple(
-        				new WorkNo(1) 
-        				, predTimeStg.getStartDateClock().v()
-        				, predTimeStg.getEndDateClock().v()
-        				, predTimeStg.getStartDateClock().v()
-        				, predTimeStg.getEndDateClock().v())
-        	  , Tuple.tuple(
-    				new WorkNo(2) 
-    				, predTimeStg.getStartDateClock().v()
-    				, predTimeStg.getEndDateClock().v()
-    				, predTimeStg.getStartDateClock().v()
-    				, predTimeStg.getEndDateClock().v())	
-        		
-        		);
-		
+			.extracting(
+				  d -> d.getWorkNo()
+				, d -> d.getForStart().getStart().v()
+				, d -> d.getForStart().getEnd().v()
+				, d -> d.getForEnd().getStart().v()
+				, d -> d.getForEnd().getEnd().v())
+	        .containsExactly( 
+	        		Tuple.tuple(
+	        				new WorkNo(1) 
+	        				, predTimeStg.getStartDateClock().v()
+	        				, predTimeStg.getEndDateClock().v()
+	        				, predTimeStg.getStartDateClock().v()
+	        				, predTimeStg.getEndDateClock().v())
+	        	  , Tuple.tuple(
+	    				new WorkNo(2) 
+	    				, predTimeStg.getStartDateClock().v()
+	    				, predTimeStg.getEndDateClock().v()
+	    				, predTimeStg.getStartDateClock().v()
+	    				, predTimeStg.getEndDateClock().v())	
+	        		
+	        		);
+			
 		assertThat( result.getForAm())
-		.extracting(
-			  d -> d.getWorkNo()
-			, d -> d.getForStart().getStart().v()
-			, d -> d.getForStart().getEnd().v()
-			, d -> d.getForEnd().getStart().v()
-			, d -> d.getForEnd().getEnd().v())
-        .containsExactly( 
-        		 Tuple.tuple(
-        				new WorkNo(1) 
-        				, predTimeStg.getStartDateClock().v()
-        				, predTimeStg.getPrescribedTimezoneSetting().getMorningEndTime().v()
-          				, predTimeStg.getStartDateClock().v()
-        				, predTimeStg.getPrescribedTimezoneSetting().getMorningEndTime().v()
-        				)
-        		, Tuple.tuple(
-        				new WorkNo(2) 
-        				, predTimeStg.getStartDateClock().v()
-        				, predTimeStg.getPrescribedTimezoneSetting().getMorningEndTime().v()
-          				, predTimeStg.getStartDateClock().v()
-        				, predTimeStg.getPrescribedTimezoneSetting().getMorningEndTime().v()
-        				)
-        		);
+			.extracting(
+				  d -> d.getWorkNo()
+				, d -> d.getForStart().getStart().v()
+				, d -> d.getForStart().getEnd().v()
+				, d -> d.getForEnd().getStart().v()
+				, d -> d.getForEnd().getEnd().v())
+	        .containsExactly( 
+	        		 Tuple.tuple(
+	        				new WorkNo(1) 
+	        				, predTimeStg.getStartDateClock().v()
+	        				, predTimeStg.getPrescribedTimezoneSetting().getMorningEndTime().v()
+	          				, predTimeStg.getStartDateClock().v()
+	        				, predTimeStg.getPrescribedTimezoneSetting().getMorningEndTime().v()
+	        				)
+	        		, Tuple.tuple(
+	        				new WorkNo(2) 
+	        				, predTimeStg.getStartDateClock().v()
+	        				, predTimeStg.getPrescribedTimezoneSetting().getMorningEndTime().v()
+	          				, predTimeStg.getStartDateClock().v()
+	        				, predTimeStg.getPrescribedTimezoneSetting().getMorningEndTime().v()
+	        				)
+	        		);
 		
-		assertThat( result.getForPm().get(0) )
-		.extracting(
-			  d -> d.getWorkNo()
-			, d -> d.getForStart().getStart().v()
-			, d -> d.getForStart().getEnd().v()
-			, d -> d.getForEnd().getStart().v()
-			, d -> d.getForEnd().getEnd().v()
-			)
-        .containsExactly( 
-        		  Tuple.tuple(
-        				new WorkNo(1) 
-        				, predTimeStg.getPrescribedTimezoneSetting().getAfternoonStartTime().v()
-        				, predTimeStg.getEndDateClock().v()
-          				, predTimeStg.getPrescribedTimezoneSetting().getAfternoonStartTime().v()
-        				, predTimeStg.getEndDateClock().v()
-        				)
-        		,  Tuple.tuple(
-        				new WorkNo(2) 
-        				, predTimeStg.getPrescribedTimezoneSetting().getAfternoonStartTime().v()
-        				, predTimeStg.getEndDateClock().v()
-          				, predTimeStg.getPrescribedTimezoneSetting().getAfternoonStartTime().v()
-        				, predTimeStg.getEndDateClock().v()
-        				)
-        		);
-		
-		assertThat( result.getForWorkOnDayOff().get(0))
-		.extracting(
-			  d -> d.getWorkNo()
-			, d -> d.getForStart().getStart().v()
-			, d -> d.getForStart().getEnd().v()
-			, d -> d.getForEnd().getStart().v()
-			, d -> d.getForEnd().getEnd().v()
-			)
-        .containsExactly( 
-        		  Tuple.tuple(
-        				new WorkNo(1) 
-        				, predTimeStg.getStartDateClock().v()
-        				, predTimeStg.getEndDateClock().v()
-        				, predTimeStg.getStartDateClock().v()
-        				, predTimeStg.getEndDateClock().v()
-        				)
-        		, Tuple.tuple(
-        				new WorkNo(2) 
-        				, predTimeStg.getStartDateClock().v()
-        				, predTimeStg.getEndDateClock().v()
-        				, predTimeStg.getStartDateClock().v()
-        				, predTimeStg.getEndDateClock().v()
-        				)
-        		);
-	}
+		assertThat( result.getForPm() )
+			.extracting(
+				  d -> d.getWorkNo()
+				, d -> d.getForStart().getStart().v()
+				, d -> d.getForStart().getEnd().v()
+				, d -> d.getForEnd().getStart().v()
+				, d -> d.getForEnd().getEnd().v()
+				)
+	        .containsExactly( 
+	        		  Tuple.tuple(
+	        				new WorkNo(1) 
+	        				, predTimeStg.getPrescribedTimezoneSetting().getAfternoonStartTime().v()
+	        				, predTimeStg.getEndDateClock().v()
+	          				, predTimeStg.getPrescribedTimezoneSetting().getAfternoonStartTime().v()
+	        				, predTimeStg.getEndDateClock().v()
+	        				)
+	        		,  Tuple.tuple(
+	        				new WorkNo(2) 
+	        				, predTimeStg.getPrescribedTimezoneSetting().getAfternoonStartTime().v()
+	        				, predTimeStg.getEndDateClock().v()
+	          				, predTimeStg.getPrescribedTimezoneSetting().getAfternoonStartTime().v()
+	        				, predTimeStg.getEndDateClock().v()
+	        				)
+	        		);
+			
+		assertThat( result.getForWorkOnDayOff())
+			.extracting(
+				  d -> d.getWorkNo()
+				, d -> d.getForStart().getStart().v()
+				, d -> d.getForStart().getEnd().v()
+				, d -> d.getForEnd().getStart().v()
+				, d -> d.getForEnd().getEnd().v()
+				)
+	        .containsExactly( 
+	        		  Tuple.tuple(
+	        				new WorkNo(1) 
+	        				, predTimeStg.getStartDateClock().v()
+	        				, predTimeStg.getEndDateClock().v()
+	        				, predTimeStg.getStartDateClock().v()
+	        				, predTimeStg.getEndDateClock().v()
+	        				)
+	        		, Tuple.tuple(
+	        				new WorkNo(2) 
+	        				, predTimeStg.getStartDateClock().v()
+	        				, predTimeStg.getEndDateClock().v()
+	        				, predTimeStg.getStartDateClock().v()
+	        				, predTimeStg.getEndDateClock().v()
+	        				)
+	        		);
+		}
 	
 	
 	
