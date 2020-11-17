@@ -22,8 +22,6 @@ public interface AttendanceItemNameService {
 	List<AttItemName> getNameOfAttendanceItem(List<AttItemName> attendanceItems,
 			List<AttendanceItemLinking> attendanceItemAndFrameNos);
 	
-	
-	List<Integer> getAvaiableAttendanceItem(String companyId, TypeOfItem type, List<Integer> attendanceItemIds);
 	/**
 	 * 使用不可の勤怠項目を除く
 	 *
