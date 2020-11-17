@@ -57,6 +57,12 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			// load setting common KAF000
 			vm.loadData(empLst, dateLst, vm.appType())
 			.then((loadDataFlag: any) => {
+				vm.application().appDate.subscribe(value => {
+                    console.log(value);
+                    if (value) {
+                        vm.changeDate();
+                    }
+                });
 				if (loadDataFlag) {
 					let param1 = {
 							
@@ -205,10 +211,16 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			}
 			self.$ajax(API.changeDate, command)
 				.done((res: DisplayInfoOverTime) => {
-					console.log(res);
 					self.dataSource.infoWithDateApplicationOp = res.infoWithDateApplicationOp;
 					self.dataSource.calculationResultOp = res.calculationResultOp;
 					self.dataSource.workdayoffFrames = res.workdayoffFrames;
+					
+					self.bindOverTimeWorks(self.dataSource);
+					self.bindWorkInfo(self.dataSource);
+					self.bindRestTime(self.dataSource);
+					self.bindHolidayTime(self.dataSource);
+					self.bindOverTime(self.dataSource);
+					
 				})
 				.fail((res: any) => {
 					
