@@ -76,11 +76,11 @@ module nts.uk.com.view.ccg008.a.viewmodel {
         }
         
         start(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
-            var transferData = __viewContext.transferred.value;
-            var code = transferData && transferData.topPageCode ? transferData.topPageCode : "";
-            var fromScreen = transferData && transferData.screen ? transferData.screen : "other";
+          var self = this;
+          var dfd = $.Deferred();
+          var transferData = __viewContext.transferred.value;
+          var code = transferData && transferData.topPageCode ? transferData.topPageCode : "";
+          var fromScreen = transferData && transferData.screen ? transferData.screen : "other";
           service.getLoginUser().done(user => {
             service.getSetting().done(res => {
               if(res.reloadInterval){
@@ -163,10 +163,10 @@ module nts.uk.com.view.ccg008.a.viewmodel {
           // 会社の締めを取得する - Lấy closure company
           service.getClosure().done((data: any) => {
             self.lstClosure(data);
-              service.getTopPageByCode(fromScreen, self.topPageCode()).done((data: model.LayoutAllDto) => {
-                self.dataSource(data);
-                dfd.resolve();
-            });
+            //   service.getTopPageByCode(fromScreen, self.topPageCode()).done((data: model.LayoutAllDto) => {
+            //     self.dataSource(data);
+            //     dfd.resolve();
+            // }); 
           });
           self.isStart = false;
           return dfd.promise();

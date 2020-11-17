@@ -52,7 +52,7 @@ public class TopPageSettingFinder {
 	}
 	
 	@AllArgsConstructor
-	private static class TopPageSettingRequireImpl implements TopPageSettingService.Require {
+	public static class TopPageSettingRequireImpl implements TopPageSettingService.Require {
 
 		@Inject
 		private TopPagePersonSettingRepository topPagePersonSettingRepo;

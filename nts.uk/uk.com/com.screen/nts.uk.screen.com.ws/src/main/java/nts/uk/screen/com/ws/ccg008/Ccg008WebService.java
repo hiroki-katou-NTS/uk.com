@@ -22,10 +22,15 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.sys.portal.app.command.toppagesetting.AddTopPageReloadSettingCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.toppagesetting.ToppageReloadSettingCommand;
+import nts.uk.ctx.sys.portal.app.find.toppagesetting.TopPageSettingFinder;
+import nts.uk.ctx.sys.portal.dom.adapter.toppagesetting.LoginRoleSetCodeAdapter;
 import nts.uk.ctx.sys.portal.dom.toppage.TopPageReloadSetting;
 import nts.uk.ctx.sys.portal.dom.toppage.TopPageReloadSettingRepository;
+import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPagePersonSettingRepository;
+import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageRoleSettingRepository;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageSettings;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.service.TopPageSettingService;
+import nts.uk.ctx.sys.portal.dom.toppagesetting.service.TopPageSettingService.Require;
 import nts.uk.shr.com.context.AppContexts;
 
 
@@ -53,6 +58,15 @@ public class Ccg008WebService {
 	
 	@Inject 
 	private AddTopPageReloadSettingCommandHandler addToppage;
+	
+	@Inject
+	private TopPagePersonSettingRepository topPagePersonSettingRepo;
+	
+	@Inject
+	private TopPageRoleSettingRepository topPageRoleSettingRepo;
+	
+	@Inject
+	private LoginRoleSetCodeAdapter adapter;
 	
 
 	@POST
@@ -82,7 +96,8 @@ public class Ccg008WebService {
 		String cId = AppContexts.user().companyId();
 		String eId = AppContexts.user().employeeId();
 		Optional<TopPageReloadSetting> reloadSetting = reloadRepo.getByCompanyId(cId);
-		Optional<TopPageSettings> topPageSetting = settingService.getTopPageSettings(cId, eId);
+		Require require = new TopPageSettingFinder.TopPageSettingRequireImpl(topPagePersonSettingRepo, topPageRoleSettingRepo, adapter);
+		Optional<TopPageSettings> topPageSetting = settingService.getTopPageSettings(require, cId, eId);
 		ToppageSettingDto result = ToppageSettingDto.builder().build();
 		if(reloadSetting.isPresent()) {
 			result.setCid(reloadSetting.get().getCid());
