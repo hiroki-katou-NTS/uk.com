@@ -490,23 +490,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			
 		}
 		
-		createVisibleModel(res: DisplayInfoOverTime) {
-			let visibleModel = new VisibleModel() as VisibleModel;
-			// 「残業申請の表示情報．基準日に関係しない情報．残業申請設定．申請詳細設定．時刻計算利用区分」= する
-			let c7  = res.infoNoBaseDate.overTimeAppSet.applicationDetailSetting.timeInputUse == NotUseAtr.USE
-			visibleModel.c7(c7);
-			// ※7 = ○　OR　※18-1 = ○
-			let c18 = false;
-			visibleModel.c18(c18);
-			
-			// 「残業申請の表示情報．基準日に関係しない情報．残業休日出勤申請の反映．残業申請．実績の勤務情報へ反映する」= する
-			let c26 = res.infoNoBaseDate.overTimeReflect.overtimeWorkAppReflect.reflectActualWorkAtr == NotUseAtr.USE;
-			visibleModel.c26(c26);
-			// ※7 = ○　AND 「残業申請の表示情報．申請表示情報．申請表示情報(基準日関係なし)．複数回勤務の管理」= true
-			let c29 = c7 && false;
-			visibleModel.c29(c29);
-			return visibleModel;
-		}
 		
 		openDialogKdl003() {
 			
@@ -514,6 +497,114 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		getFormatTime(number: number) {
 			if (_.isNil(number)) return '';
 			return (formatTime("ClockDay_Short_HM", 10));
+		}
+		createVisibleModel(res: DisplayInfoOverTime) {
+			let visibleModel = new VisibleModel() as VisibleModel;
+			// 「残業申請の表示情報．基準日に関する情報．残業申請で利用する残業枠．残業枠一覧」 <> empty
+			let c2 = !_.isEmpty(res.infoBaseDateOutput.quotaOutput.overTimeQuotaList);
+			visibleModel.c2(c2);
+			// 
+			let c6 = false;
+			visibleModel.c6(c6);
+			
+			// 「残業申請の表示情報．基準日に関係しない情報．残業申請設定．申請詳細設定．時刻計算利用区分」= する
+			let c7  = res.infoNoBaseDate.overTimeAppSet.applicationDetailSetting.timeInputUse == NotUseAtr.USE
+			visibleModel.c7(c7);
+			
+			// 「残業申請の表示情報．基準日に関係しない情報．利用する乖離理由．NO = 1」 <> empty And
+			// 残業申請の表示情報．基準日に関係しない情報．利用する乖離理由．乖離理由を選択肢から選ぶ = true
+			let c11_1 = false;
+			let findResut = _.find(res.infoNoBaseDate.divergenceReasonInputMethod, {divergenceTimeNo: 1});
+			let c11_1_1 = !_.isNil(findResut);
+			let c11_1_2 = c11_1_1 ? findResut.divergenceReasonSelected : false;
+			c11_1 = c11_1_1 && c11_1_2;
+			visibleModel.c11_1(c11_1);
+			
+			// 「残業申請の表示情報．基準日に関係しない情報．利用する乖離理由．NO = 1」 <> empty　AND
+			// 残業申請の表示情報．基準日に関係しない情報．利用する乖離理由．乖離理由を入力する = true
+			let c11_2 = false;
+			let c11_2_1 = !_.isNil(findResut);
+			let c11_2_2 = c11_2_1 ? findResut.divergenceReasonInputed : false;
+			c11_2 = c11_2_1 && c11_2_2;
+			visibleModel.c11_2(c11_2);
+			
+			// 「残業申請の表示情報．基準日に関係しない情報．利用する乖離理由．NO = 2」 <> empty　AND
+			// 残業申請の表示情報．基準日に関係しない情報．利用する乖離理由．乖離理由を選択肢から選ぶ = true
+			let c12_1 = false;
+			findResut = _.find(res.infoNoBaseDate.divergenceReasonInputMethod, {divergenceTimeNo: 2});
+			let c12_1_1 = !_.isNil(findResut);
+			let c12_1_2 = c12_1_1 ? findResut.divergenceReasonSelected : false;
+			c12_1 = c12_1_1 && c12_1_2;
+			visibleModel.c12_1(c12_1);
+			
+			// 「残業申請の表示情報．基準日に関係しない情報．利用する乖離理由．NO = 2」 <> empty　AND
+			// 残業申請の表示情報．基準日に関係しない情報．利用する乖離理由．乖離理由を入力する = true
+			let c12_2 = false;
+			findResut = _.find(res.infoNoBaseDate.divergenceReasonInputMethod, {divergenceTimeNo: 2});
+			let c12_2_1 = !_.isNil(findResut);
+			let c12_2_2 = c12_2_1 ? findResut.divergenceReasonInputed : false;
+			c12_2 = c12_2_2 && c12_2_2;
+			visibleModel.c12_2(c12_2);
+			
+			// （「事前事後区分」が表示する　AND　「事前事後区分」が「事後」を選択している）　OR
+			// （「事前事後区分」が表示しない　AND　「残業申請の表示情報．申請表示情報．申請表示情報(基準日関係あり)．事前事後区分」= 「事後」）
+			let c15_3 = false;
+			visibleModel.c15_3(c15_3);
+			
+			// 「残業申請の表示情報．基準日に関係しない情報．残業休日出勤申請の反映．時間外深夜時間を反映する」= する
+			let c16 = res.infoNoBaseDate.overTimeReflect.nightOvertimeReflectAtr == NotUseAtr.USE;
+			visibleModel.c16(c16);
+			
+			
+			// 「残業申請の表示情報．基準日に関する情報．残業申請で利用する残業枠．フレックス時間表示区分」= true
+			let c17 = res.infoBaseDateOutput.quotaOutput.flexTimeClf
+			visibleModel.c17(c17);		
+			
+			
+			// ※7 = ○　OR　※18-1 = ○
+			let c18 = false;
+			visibleModel.c18(c18);
+			
+			// ※15-3 = ×　AND　
+			// 「残業申請の表示情報．基準日に関係しない情報．残業休日出勤申請の反映．残業申請．事前．休憩・外出を申請反映する」= する
+			let c18_1 = false;
+			visibleModel.c18_1(c18_1);
+			
+			
+			// 「残業申請の表示情報．基準日に関係しない情報．残業休日出勤申請の反映．残業申請．実績の勤務情報へ反映する」= する
+			let c26 = res.infoNoBaseDate.overTimeReflect.overtimeWorkAppReflect.reflectActualWorkAtr == NotUseAtr.USE;
+			visibleModel.c26(c26);
+			
+			
+			// 「残業申請の表示情報．基準日に関係しない情報．残業申請設定．申請詳細設定．時間入力利用区分」= する
+			let c28 = res.infoNoBaseDate.overTimeAppSet.applicationDetailSetting.timeInputUse == NotUseAtr.USE;
+			visibleModel.c28(c28);
+			
+			
+			// ※7 = ○　AND 「残業申請の表示情報．申請表示情報．申請表示情報(基準日関係なし)．複数回勤務の管理」= true
+			let c29 = c7 && false;
+			visibleModel.c29(c29);
+			
+			// 「残業申請の表示情報．計算結果．申請時間．申請時間．type」= 休出時間 があるの場合
+			let c30_1 = false;
+			visibleModel.c30_1(c30_1);
+			
+			let c30_2 = false;
+			visibleModel.c30_2(c30_2);
+			
+			let c30_3 = false;
+			visibleModel.c30_3(c30_3);
+			
+			let c30_4 = false;
+			visibleModel.c30_4(c30_4);
+			
+			let c30 = c30_1 || c30_2 || c30_3 || c30_4;
+			visibleModel.c30(c30);
+			
+			
+			
+			
+			return visibleModel;
 		}
 		
 		
@@ -527,15 +618,26 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		register: ''
 	}
 	class VisibleModel {
-		
+		c2: KnockoutObservable<Boolean> = ko.observable(false);
 		c6: KnockoutObservable<Boolean> = ko.observable(false);
-		
 		c7: KnockoutObservable<Boolean> = ko.observable(false);
+		c11_1: KnockoutObservable<Boolean> = ko.observable(false);
+		c11_2: KnockoutObservable<Boolean> = ko.observable(false);
+		c12_1: KnockoutObservable<Boolean> = ko.observable(false);
+		c12_2: KnockoutObservable<Boolean> = ko.observable(false);
+		c15_3: KnockoutObservable<Boolean> = ko.observable(false);
+		c16: KnockoutObservable<Boolean> = ko.observable(false);
+		c17: KnockoutObservable<Boolean> = ko.observable(false);
 		c18: KnockoutObservable<Boolean> = ko.observable(false);
-		
+		c18_1: KnockoutObservable<Boolean> = ko.observable(false);
 		c26: KnockoutObservable<Boolean> = ko.observable(false);
-		
+		c28: KnockoutObservable<Boolean> = ko.observable(false);
 		c29: KnockoutObservable<Boolean> = ko.observable(false);
+		c30: KnockoutObservable<Boolean> = ko.observable(false);
+		c30_1: KnockoutObservable<Boolean> = ko.observable(false);
+		c30_2: KnockoutObservable<Boolean> = ko.observable(false);
+		c30_3: KnockoutObservable<Boolean> = ko.observable(false);
+		c30_4: KnockoutObservable<Boolean> = ko.observable(false);
 		
 		
 		constructor() {
@@ -588,7 +690,14 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 	}
 	interface InfoBaseDateOutput {
 		worktypes: Array<WorkType>;
-		quotaOutput: any;
+		quotaOutput: QuotaOuput;
+	}
+	interface QuotaOuput {
+		flexTimeClf: boolean;
+		overTimeQuotaList: Array<OvertimeWorkFrame>;
+	}
+	interface OvertimeWorkFrame {
+		
 	}
 	interface WorkType {
 		workTypeCode: string;
