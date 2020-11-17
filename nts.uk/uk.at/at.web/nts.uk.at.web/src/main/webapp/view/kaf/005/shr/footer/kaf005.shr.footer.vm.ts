@@ -66,7 +66,6 @@ module nts.uk.at.view.kaf005.shr.footer.viewmodel {
 </div>
 
 
-
 	`
 	@component({
 		name: 'kaf005-share-footer',

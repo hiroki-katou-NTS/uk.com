@@ -1,8 +1,6 @@
 module nts.uk.at.view.kaf005.shr.viewmodel {
 	const template = `
-<div class="container cf">
-	
-
+<div class="container cf" data-bind="with: $parent">
 	<div class="cf valign-top control-group" data-bind="if: true">
 		<!--A5_1 休憩時間ラベル-->
 		<div class="cm-column" style="display: inline-block; width: 100px">
@@ -164,6 +162,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 
 
 
+
 	`
 	@component({
         name: 'kaf005-share',
@@ -171,18 +170,17 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
     })
 	class KAF005ShrModel extends ko.ViewModel {
 		
-		restTime: KnockoutObservableArray<RestTime> = ko.observableArray([]);
+		// restTime: KnockoutObservableArray<RestTime> = ko.observableArray([]);
 		
-		holidayTime: KnockoutObservableArray<HolidayTime> = ko.observableArray([]);
+		// holidayTime: KnockoutObservableArray<HolidayTime> = ko.observableArray([]);
 		
-		overTime: KnockoutObservableArray<OverTime> = ko.observableArray([]);
+		// overTime: KnockoutObservableArray<OverTime> = ko.observableArray([]);
 		
 		created(params: any) {
-			
 			const self = this;
-			self.restTime = params.restTime;
-			self.holidayTime = params.holidayTime;
-			self.overTime = params.overTime;
+			// self.restTime = params.restTime;
+			// self.holidayTime = params.holidayTime;
+			// self.overTime = params.overTime;
 			
 		}
 		

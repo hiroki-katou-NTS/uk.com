@@ -25,6 +25,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		overTime: KnockoutObservableArray<OverTime> = ko.observableArray([]);
 		dataSource: DisplayInfoOverTime;
 		visibleModel: VisibleModel;
+		name: KnockoutObservable<string> = ko.observable('GGGGGGGGGG');
 		
 		created(params: AppInitParam) {		
 			// new 
@@ -336,14 +337,14 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		bindRestTime(res: DisplayInfoOverTime) {
 			const self = this;
 			let infoWithDateApplication = res.infoWithDateApplicationOp as InfoWithDateApplication;
-			let restTimeArray = ko.toJS(self.restTime);
+			let restTimeArray = self.restTime() as Array<RestTime>;
 			if(!_.isNil(infoWithDateApplication)) {
 				let breakTime = infoWithDateApplication.breakTime;
 				if (!_.isNil(breakTime)) {
 					if (!_.isEmpty(breakTime.timeZones)) {
 						_.forEach(breakTime.timeZones, (item: TimeZone, index) => {
 							if (Number(index) < 10) {
-								let restItem = restTimeArray(index) as RestTime;
+								let restItem = restTimeArray[index] as RestTime;
 								restItem.start(item.start);
 								restItem.end(item.end);
 							}
@@ -374,17 +375,21 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			
 			
 			 // A7_8
-			if (!_.isEmpty(calculationResultOp.applicationTimes)) {
-				let applicationTime = calculationResultOp.applicationTimes[0].applicationTime;
-				if (!_.isEmpty(applicationTime)) {
-					_.forEach(applicationTime, (item: OvertimeApplicationSetting) => {
-						let findHolidayTimeArray = _.find(holidayTimeArray, {frameNo: item.frameNo}) as HolidayTime;
-						
-						if (!findHolidayTimeArray && item.attendanceType == AttendanceType.BREAKTIME) {
-							findHolidayTimeArray.start(item.applicationTime);
-						}	
-					})
+			if (!_.isEmpty(calculationResultOp)) {
+				
+				if (!_.isEmpty(calculationResultOp.applicationTimes)) {
+					let applicationTime = calculationResultOp.applicationTimes[0].applicationTime;
+					if (!_.isEmpty(applicationTime)) {
+						_.forEach(applicationTime, (item: OvertimeApplicationSetting) => {
+							let findHolidayTimeArray = _.find(holidayTimeArray, {frameNo: item.frameNo}) as HolidayTime;
+							
+							if (!findHolidayTimeArray && item.attendanceType == AttendanceType.BREAKTIME) {
+								findHolidayTimeArray.start(item.applicationTime);
+							}	
+						})
+					}
 				}
+				
 			}
 			// A7_9
 			// 申請表示情報．申請表示情報(基準日関係あり)．表示する事前申請内容．残業申請．申請時間．申請時間．申請時間
@@ -430,6 +435,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			return visibleModel;
 		}
 		
+		openDialogKdl003() {
+			
+		}
 		
 		
 		

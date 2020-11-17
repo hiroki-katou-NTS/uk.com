@@ -1,6 +1,7 @@
 module nts.uk.at.view.kaf005.shr.work_info.viewmodel {
 	const template = `
-	<div data-bind="if: model">
+	<div data-bind="with: $parent">
+<div data-bind="if: workInfo">
 
 	<div class="table" data-bind="visible : true">
 		<div class="cell valign-center" style="width: 105px;">
@@ -20,15 +21,15 @@ module nts.uk.at.view.kaf005.shr.work_info.viewmodel {
 		<div class="cell valign-center">
 			<div class="valign-center control-group">
 				<!--A4_2 勤務種類コード-->
-				<label class="lblWorkTypeCd" data-bind="text: ko.toJS(model).workType.code"></label>
+				<label class="lblWorkTypeCd" data-bind="text: ko.toJS(workInfo).workType.code"></label>
 				<!--A4_3 勤務種類名称-->
-				<LABEL data-bind="text: ko.toJS(model).workType.name"></LABEL>
+				<LABEL data-bind="text: ko.toJS(workInfo).workType.name"></LABEL>
 			</div>
 			<div class="valign-center control-group">
 				<!--A4_5 就業時間コード-->
-				<label class="lblSiftCd" data-bind="text: ko.toJS(model).workTime.code"></label>
+				<label class="lblSiftCd" data-bind="text: ko.toJS(workInfo).workTime.code"></label>
 				<!--A4_6 就業時間名称-->
-				<LABEL data-bind="text: ko.toJS(model).workTime.name"></LABEL>
+				<LABEL data-bind="text: ko.toJS(workInfo).workTime.name"></LABEL>
 			</div>
 		</div>
 	</div>
@@ -52,7 +53,7 @@ module nts.uk.at.view.kaf005.shr.work_info.viewmodel {
 						data-bind="ntsTimeWithDayEditor: { 
 							name: '#[KAF005_333]',
 							constraint:'TimeWithDayAttr',
-							value: model().workHours1.start,
+							value: workInfo().workHours1.start,
 							enable: true,
 							readonly: false,
 							required: true }" />
@@ -68,7 +69,7 @@ module nts.uk.at.view.kaf005.shr.work_info.viewmodel {
 						class="right-content inputTime-kaf005"
 						data-bind="ntsTimeWithDayEditor: {name: '#[KAF005_334]',
 						 constraint:'TimeWithDayAttr',
-						 value: model().workHours1.end,
+						 value: workInfo().workHours1.end,
 						 enable: true,
 						 readonly: false,
 						 required: true}" />
@@ -92,7 +93,7 @@ module nts.uk.at.view.kaf005.shr.work_info.viewmodel {
 						data-bind="ntsTimeWithDayEditor: { 
 						name: '#[KAF005_333]',
 						constraint:'TimeWithDayAttr',
-						value: model().workHours2.start,
+						value: workInfo().workHours2.start,
 						enable: true,
 						readonly: false,
 						required: true }" />
@@ -109,7 +110,7 @@ module nts.uk.at.view.kaf005.shr.work_info.viewmodel {
 						data-bind="ntsTimeWithDayEditor: {
 						name: '#[KAF005_334]',
 						constraint:'TimeWithDayAttr',
-						value: model().workHours2.end,
+						value: workInfo().workHours2.end,
 						enable: true,
 						readonly: false,
 						required: true}" />
@@ -118,23 +119,20 @@ module nts.uk.at.view.kaf005.shr.work_info.viewmodel {
 		</div>
 	</div>
 </div>
+</div>
 	`
 	@component({
 		name: 'kaf005-share-work-info',
 		template: template
 	})
 	class VModel extends ko.ViewModel {
-		model: WorkInfo;
 		created(params: any) {
 			const self = this;
-			self.model = params.workInfo;
 		}
 		mounted() {
 			
 		}
-		openDialogKdl003() {
-			
-		}
+		
 	}
 	
 	export interface Work {
