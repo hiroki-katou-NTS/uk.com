@@ -31,6 +31,7 @@ module fc {
     }
 
     type DurationInput = DurationObjectInput | string | number;
+
     interface DurationObjectInput {
         years?: number;
         year?: number;
@@ -50,6 +51,7 @@ module fc {
         millisecond?: number;
         ms?: number;
     }
+
     interface Duration {
         years: number;
         months: number;
@@ -113,14 +115,17 @@ module fc {
         start?: DateInput;
         end?: DateInput;
     }
+
     interface OpenDateRange {
         start: DateMarker | null;
         end: DateMarker | null;
     }
+
     interface DateRange {
         start: DateMarker;
         end: DateMarker;
     }
+
     function intersectRanges(range0: OpenDateRange, range1: OpenDateRange): OpenDateRange;
     function rangesEqual(range0: OpenDateRange, range1: OpenDateRange): boolean;
     function rangesIntersect(range0: OpenDateRange, range1: OpenDateRange): boolean;
@@ -137,13 +142,11 @@ module fc {
         deltaY: number;
     }
 
-
     interface EventInteractionState {
         affectedEvents: EventStore;
         mutatedEvents: EventStore;
         isEvent: boolean;
     }
-
 
     function guid(): string;
     function disableCursor(): void;
@@ -152,11 +155,13 @@ module fc {
     function allowSelection(el: HTMLElement): void;
     function preventContextMenu(el: HTMLElement): void;
     function allowContextMenu(el: HTMLElement): void;
+
     interface OrderSpec<Subject> {
         field?: string;
         order?: number;
         func?: FieldSpecInputFunc<Subject>;
     }
+
     type FieldSpecInput<Subject> = string | string[] | FieldSpecInputFunc<Subject> | FieldSpecInputFunc<Subject>[];
     type FieldSpecInputFunc<Subject> = (a: Subject, b: Subject) => number;
     function parseFieldSpecs<Subject>(input: FieldSpecInput<Subject>): OrderSpec<Subject>[];
@@ -168,7 +173,6 @@ module fc {
     function isInt(n: any): boolean;
     function computeSmallestCellWidth(cellEl: HTMLElement): number;
 
-
     interface EventMutation {
         datesDelta?: Duration;
         startDelta?: Duration;
@@ -176,14 +180,15 @@ module fc {
         standardProps?: any;
         extendedProps?: any;
     }
+
     function applyMutationToEventStore(eventStore: EventStore, eventConfigBase: EventUiHash, mutation: EventMutation, context: CalendarContext): EventStore;
     type eventDefMutationApplier = (eventDef: EventDef, mutation: EventMutation, context: CalendarContext) => void;
-
 
     interface DateSelectionApi extends DateSpanApi {
         jsEvent: UIEvent;
         view: ViewApi;
     }
+
     type DatePointTransform = (dateSpan: DateSpan, context: CalendarContext) => any;
     type DateSpanTransform = (dateSpan: DateSpan, context: CalendarContext) => any;
     type CalendarInteraction = {
@@ -196,19 +201,22 @@ module fc {
     type OptionChangeHandlerMap = {
         [propName: string]: OptionChangeHandler;
     };
+
     interface DateSelectArg extends DateSpanApi {
         jsEvent: MouseEvent | null;
         view: ViewApi;
     }
+
     function triggerDateSelect(selection: DateSpan, pev: PointerDragEvent | null, context: CalendarContext & {
         viewApi?: ViewApi;
     }): void;
+
     interface DateUnselectArg {
         jsEvent: MouseEvent;
         view: ViewApi;
     }
-    function getDefaultEventEnd(allDay: boolean, marker: DateMarker, context: CalendarContext): DateMarker;
 
+    function getDefaultEventEnd(allDay: boolean, marker: DateMarker, context: CalendarContext): DateMarker;
 
     interface RenderHookProps<ContentArg> {
         hookProps: ContentArg;
@@ -220,6 +228,7 @@ module fc {
         children: RenderHookPropsChildren;
         elRef?: Ref<any>;
     }
+    
     type RenderHookPropsChildren = (rootElRef: Ref<any>, classNames: string[], innerElRef: Ref<any>, innerContent: ComponentChildren) => ComponentChildren;
     interface ContentTypeHandlers {
         [contentKey: string]: () => (el: HTMLElement, contentVal: any) => void;

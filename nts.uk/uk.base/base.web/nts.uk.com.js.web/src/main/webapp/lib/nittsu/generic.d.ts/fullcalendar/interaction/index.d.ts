@@ -1,7 +1,4 @@
-
-
 module fc {
-
     class PointerDragging {
         containerEl: EventTarget;
         subjectEl: HTMLElement | null;
