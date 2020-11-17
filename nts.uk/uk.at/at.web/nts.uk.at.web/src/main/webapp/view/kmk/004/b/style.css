@@ -108,3 +108,58 @@
 .view-d-kmk004 .right-content .time-work {
 	margin-left: 190px;
 }
+
+/* View E */
+.view-e-kmk004 {
+	padding: 10px;
+	width: 100vw;
+	float: left;
+}
+
+.view-e-kmk004 .left-content {
+	width: 650px;
+	padding: 12px;
+	float: left;
+}
+
+.view-e-kmk004 .left-content .cpn-kcp005 {
+	margin-left: 85px;
+}
+
+.view-e-kmk004 .right-content {
+	width: 415px;
+	float: left;
+	margin-left: 50px;
+}
+
+.view-e-kmk004 .right-content p {
+	font-size: 20px;
+}
+
+.view-e-kmk004 .sidebar-content-header {
+	width: 100vw;
+}
+
+.view-e-kmk004 .right-content .setting {
+	margin-top: 30px;
+}
+
+.view-e-kmk004 .right-content .content-data {
+	margin-top: 20px;
+}
+
+.view-e-kmk004 .right-content .label1 {
+	margin-top: 20px;
+}
+
+.view-e-kmk004 .right-content .year {
+	float: left;
+}
+
+.view-e-kmk004 .right-content .year .box-year {
+	margin-top: 20px;
+}
+
+.view-e-kmk004 .right-content .time-work {
+	margin-left: 190px;
+}

@@ -9,12 +9,18 @@ module nts.uk.at.view.kmk004.b {
 	<button data-bind="i18n: 'KMK004_226'"></button>
 	<button class="danger" data-bind="i18n: 'KMK004_227'"></button>
 	</div>
-	<div class="view-d-kmk004">
+	<div class="view-e-kmk004">
 		<div class="left-content">
 			<div data-bind="component: {
 				name: 'ccg001',
 				params:{
 					employees: employees
+				}
+			}"></div>
+			<div class="cpn-kcp005" data-bind="component: {
+				name: 'kcp005',
+				params:{
+					paramKcp005
 				}
 			}"></div>
 		</div>
@@ -77,8 +83,14 @@ module nts.uk.at.view.kmk004.b {
 		public modeCheckSetting: KnockoutObservable<boolean> = ko.observable(true);
 		public modeCheckChangeSetting: KnockoutObservable<string> = ko.observable('');
 		public employees: KnockoutObservableArray<IEmployee> = ko.observableArray([]);
+		public selectedCode: KnockoutObservable<string> = ko.observable('');
+		public employeeList: KnockoutObservableArray<IEmployeeKcp005> = ko.observableArray([]);
+		public paramKcp005: ParamsKcp005;
 
 		created(params: Params) {
+			const vm = this;
+
+			vm.paramKcp005 = {selectedCode: vm.selectedCode, employeeList: vm.employeeList};
 
 		}
 
