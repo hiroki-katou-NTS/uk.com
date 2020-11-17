@@ -5,6 +5,7 @@ module nts.uk.at.view.kaf022.s.viewmodel {
     import dialogConfirm =  nts.uk.ui.dialog.confirm;
     import alert = nts.uk.ui.dialog.alertError;
     import getText = nts.uk.resource.getText;
+    import getShared = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {
         listReason: KnockoutObservableArray<IAppReasonStandard> = ko.observableArray([]);
@@ -134,7 +135,12 @@ module nts.uk.at.view.kaf022.s.viewmodel {
         /** get data when start dialog **/
         startPage(): JQueryPromise<any> {
             const self = this;
-            return self.getData();
+            return self.getData().done(() => {
+                const params = getShared("KAF022S_PARAMS");
+                if (params) {
+                    self.selectedAppType(params.holidayAppType ? params.appType + "-" + params.holidayAppType : params.appType.toString());
+                }
+            });
         }
 
         // new button

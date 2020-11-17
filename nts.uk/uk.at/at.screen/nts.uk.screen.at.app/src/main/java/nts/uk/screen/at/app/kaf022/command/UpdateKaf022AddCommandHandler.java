@@ -171,13 +171,20 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 					if (target.getAppType() == ApplicationType.ABSENCE_APPLICATION) {
 						Optional<AppReasonStandard> optionalAppReasonStandard =  appReasonStandardRepo.findByHolidayAppType(companyId, target.getOpHolidayAppType().get());
 						if (!optionalAppReasonStandard.isPresent()
-								|| CollectionUtil.isEmpty(optionalAppReasonStandard.get().getReasonTypeItemLst()))
-							throw new BusinessException("Msg_1751", target.getOpHolidayAppType().get().name);
+								|| CollectionUtil.isEmpty(optionalAppReasonStandard.get().getReasonTypeItemLst())) {
+							BusinessException exception = new BusinessException("Msg_1751", target.getOpHolidayAppType().get().name);
+							exception.setSuppliment("appType", target.getAppType().value);
+							exception.setSuppliment("holidayAppType", target.getHolidayAppType());
+							throw exception;
+						}
 					} else {
 						Optional<AppReasonStandard> optionalAppReasonStandard =  appReasonStandardRepo.findByAppType(companyId, target.getAppType());
 						if (!optionalAppReasonStandard.isPresent()
-								|| CollectionUtil.isEmpty(optionalAppReasonStandard.get().getReasonTypeItemLst()))
-							throw new BusinessException("Msg_1751", target.getAppType().name);
+								|| CollectionUtil.isEmpty(optionalAppReasonStandard.get().getReasonTypeItemLst())) {
+							BusinessException exception = new BusinessException("Msg_1751", target.getAppType().name);
+							exception.setSuppliment("appType", target.getAppType().value);
+							throw exception;
+						}
 					}
 				}
 			}
