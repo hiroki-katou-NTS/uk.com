@@ -388,14 +388,15 @@ public class OvertimeServiceImpl implements OvertimeService {
 		// 取得した「休出枠<List>」を「残業申請の表示情報」にセットする
 		if (caculationOutput != null) {
 			output.setWorkdayoffFrames(caculationOutput.getWorkdayoffFrames());
-			output.setCalculationResultOp(Optional.of(caculationOutput.getCalculationResult()));			
+			output.setCalculationResultOp(Optional.ofNullable(caculationOutput.getCalculationResult()));			
 		}
 		// 残業時間帯の値と背景色をセット
 		return output;
 	}
 
 	@Override
-	public CaculationOutput getCalculation(String companyId,
+	public CaculationOutput getCalculation(
+			String companyId,
 			String employeeId,
 			Optional<GeneralDate> dateOp,
 			PrePostAtr prePostInitAtr,
@@ -406,8 +407,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 		CaculationOutput ouput = new CaculationOutput();
 		// INPUTをチェックする
 		if (	!dateOp.isPresent() 
-				|| workContent.getWorkTypeCode().isPresent()
-				|| workContent.getWorkTimeCode().isPresent() 
+				|| !workContent.getWorkTypeCode().isPresent()
+				|| !workContent.getWorkTimeCode().isPresent() 
 				|| workContent.getTimeZones().isEmpty()) return null;
 		// 06_計算処理
 		List<ApplicationTime> applicationTimes = commonOvertimeHoliday.calculator(
@@ -427,15 +428,17 @@ public class OvertimeServiceImpl implements OvertimeService {
 				Optional.ofNullable(achieveApplicationTime));
 		// 【チェック内容】
 		// 取得したList「申請時間．type」 = 休出時間　がある場合
-		applicationTimes.get(0).getApplicationTime().forEach(item -> {
-			// 休出時間をチェックする
-			if (item.getAttendanceType() == AttendanceType_Update.BREAKTIME) {
-				List<WorkdayoffFrame> workdayoffFrames = workdayoffFrameRepository.findByUseAtr(
-						companyId,
-						NotUseAtr.NOT_USE.value);
-				ouput.setWorkdayoffFrames(workdayoffFrames);
-			}
-		});
+		if (!CollectionUtil.isEmpty(applicationTimes)) {
+			applicationTimes.get(0).getApplicationTime().forEach(item -> {
+				// 休出時間をチェックする
+				if (item.getAttendanceType() == AttendanceType_Update.BREAKTIME) {
+					List<WorkdayoffFrame> workdayoffFrames = workdayoffFrameRepository.findByUseAtr(
+							companyId,
+							NotUseAtr.NOT_USE.value);
+					ouput.setWorkdayoffFrames(workdayoffFrames);
+				}
+			});			
+		}
 		// OUTPUT「計算結果」をセットして取得した「休出枠」と一緒に返す
 		CalculationResult calculationResult = new CalculationResult();
 		calculationResult.setFlag(0);
