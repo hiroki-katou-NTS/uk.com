@@ -32,7 +32,7 @@ module nts.uk.at.view.kbt002.c {
     isHiddenTimeRepeat: KnockoutObservable<boolean> = ko.observable(false);
     lstOneDayRepInterval: KnockoutObservableArray<OneDayRepIntervalModel> = ko.observableArray([]);
     cloudCreationFlag: KnockoutObservable<boolean> = ko.observable(false);
-    isNewMode = false;
+    isNewMode = true;
 
     created(params: any) {
       const vm = this;
@@ -42,13 +42,11 @@ module nts.uk.at.view.kbt002.c {
       vm.currentTime = today.hour() * 60 + today.minute();
 
       vm.lstOneDayRepInterval = ko.observableArray([
-        { code: 0, name: "1分" },
-        { code: 1, name: "5分" },
-        { code: 2, name: "10分" },
-        { code: 3, name: "15分" },
-        { code: 4, name: "20分" },
-        { code: 5, name: "30分" },
-        { code: 6, name: "60分" }
+        { code: 0, name: vm.$i18n("Enum_OneDayRepeatIntervalDetail_MIN_10") },
+        { code: 1, name: vm.$i18n("Enum_OneDayRepeatIntervalDetail_MIN_15") },
+        { code: 2, name: vm.$i18n("Enum_OneDayRepeatIntervalDetail_MIN_20") },
+        { code: 3, name: vm.$i18n("Enum_OneDayRepeatIntervalDetail_MIN_30") },
+        { code: 4, name: vm.$i18n("Enum_OneDayRepeatIntervalDetail_MIN_60") }
       ]);
 
       vm.executionTypes = ko.observableArray([
@@ -77,11 +75,8 @@ module nts.uk.at.view.kbt002.c {
         vm.execItemCd(params.execItemCd);
         vm.execItemName(params.execItemName);
         vm.cloudCreationFlag(params.cloudCreationFlag);
-        vm.isNewMode = false;
         vm.getExecSetting();
-      } else {
-        vm.isNewMode = true;
-      }
+      } 
     }
 
     mounted() {
@@ -101,6 +96,9 @@ module nts.uk.at.view.kbt002.c {
           if (item) {
             vm.curExecSetting(new ExecutionSettingModel(item, vm.currentDate, vm.currentTime));
             vm.monthDays(vm.buildMonthDaysStr());
+            vm.isNewMode = false;
+          } else {
+            vm.isNewMode = true;
           }
         })
         .always(() => {
@@ -110,55 +108,66 @@ module nts.uk.at.view.kbt002.c {
 
     decide() {
       const vm = this;
-      if (vm.$validate()) {
-        vm.$blockui("grayout");
-        const params: ExecutionSettingDto = {
-          repeatContent: vm.selectExec(), //実行タイプ
-          oneDayRepCls: vm.selectTimeRepeat(), //1日の繰り返し
-          endTimeCls: vm.selectEndTime(), //終了時刻
-          endDateCls: vm.selectEndDate(), //終了日
-          startDate: vm.curExecSetting().startDate(), //開始日時
-          startTime: vm.curExecSetting().startTime(),
-          monday: vm.curExecSetting().monday(),
-          tuesday: vm.curExecSetting().tuesday(),
-          wednesday: vm.curExecSetting().wednesday(),
-          thursday: vm.curExecSetting().thursday(),
-          friday: vm.curExecSetting().friday(),
-          saturday: vm.curExecSetting().saturday(),
-          sunday: vm.curExecSetting().sunday(),
-          january: vm.curExecSetting().january(),
-          february: vm.curExecSetting().february(),
-          march: vm.curExecSetting().march(),
-          april: vm.curExecSetting().april(),
-          may: vm.curExecSetting().may(),
-          june: vm.curExecSetting().june(),
-          july: vm.curExecSetting().july(),
-          august: vm.curExecSetting().august(),
-          september: vm.curExecSetting().september(),
-          october: vm.curExecSetting().october(),
-          november: vm.curExecSetting().november(),
-          december: vm.curExecSetting().december(),
-          oneDayRepInterval: vm.curExecSetting().oneDayRepInterval(), //時刻指定
-          endDate: vm.curExecSetting().endDate(),
-          endTime: vm.curExecSetting().endTime(),
-          repeatMonthDateList: vm.curExecSetting().repeatMonthDateList(), //日付選択
-          repeatCls: vm.curExecSetting().repeatCls(),
-          enabledSetting: vm.curExecSetting().enabledSetting(),
-          execItemCd: vm.execItemCd(),
-          newMode: vm.isNewMode
-        };
-        vm.$ajax(API.saveExecSetting, params)
-          .then(res => {
-            vm.$dialog.info({ messageId: "Msg_15" })
-              .then(() => {
-                nts.uk.ui.windows.setShared('inputScreenB', { params: params });
-                vm.$window.close(params);
-              });
-          })
-          .fail(res => vm.$dialog.alert({ messageId: res.messageId }))
-          .always(() => vm.$blockui("clear"));
-      }
+      vm.$validate().then((allValid: boolean) => {
+        // Validate special editors
+        vm.$validate(['#endTime', '#endDate']).then((textEditorValid: boolean) => {
+          if (allValid && textEditorValid) {
+            vm.processSaveExecSetting();
+          } 
+        })
+      });
+    }
 
+    private processSaveExecSetting() {
+      const vm = this;
+      vm.$blockui("grayout");
+      const params: ExecutionSettingDto = {
+        repeatContent: vm.selectExec(), //実行タイプ
+        oneDayRepCls: vm.selectTimeRepeat(), //1日の繰り返し
+        endTimeCls: vm.selectTimeRepeat() === 1 ? vm.selectEndTime() : 0, //終了時刻
+        endDateCls: vm.selectEndDate(), //終了日
+        startDate: moment.utc(vm.curExecSetting().startDate(), "YYYY/MM/DD"), //開始日時
+        startTime: vm.curExecSetting().startTime(),
+        monday: vm.curExecSetting().monday(),
+        tuesday: vm.curExecSetting().tuesday(),
+        wednesday: vm.curExecSetting().wednesday(),
+        thursday: vm.curExecSetting().thursday(),
+        friday: vm.curExecSetting().friday(),
+        saturday: vm.curExecSetting().saturday(),
+        sunday: vm.curExecSetting().sunday(),
+        january: vm.curExecSetting().january(),
+        february: vm.curExecSetting().february(),
+        march: vm.curExecSetting().march(),
+        april: vm.curExecSetting().april(),
+        may: vm.curExecSetting().may(),
+        june: vm.curExecSetting().june(),
+        july: vm.curExecSetting().july(),
+        august: vm.curExecSetting().august(),
+        september: vm.curExecSetting().september(),
+        october: vm.curExecSetting().october(),
+        november: vm.curExecSetting().november(),
+        december: vm.curExecSetting().december(),
+        oneDayRepInterval: vm.curExecSetting().oneDayRepInterval(), //時刻指定
+        endDate: vm.curExecSetting().endDate() ? moment.utc(vm.curExecSetting().endDate(), "YYYY/MM/DD") : null,
+        endTime: vm.curExecSetting().endTime(),
+        repeatMonthDateList: vm.curExecSetting().repeatMonthDateList(), //日付選択
+        repeatCls: vm.curExecSetting().repeatCls(),
+        enabledSetting: vm.curExecSetting().enabledSetting(),
+        execItemCd: vm.execItemCd(),
+        newMode: vm.isNewMode
+      };
+      vm.$ajax(API.saveExecSetting, params)
+        .then(res => {
+          if (res) {
+            vm.$dialog.info({ messageId: "Msg_15" })
+            .then(() => {
+              // nts.uk.ui.windows.setShared('inputScreenB', { params: params });
+              vm.$window.close(params);
+            });
+          }
+        })
+        .fail(res => vm.$dialog.error({ messageId: res.messageId }))
+        .always(() => vm.$blockui("clear"));
     }
 
     optionTimeRepeat() {
@@ -265,7 +274,7 @@ module nts.uk.at.view.kbt002.c {
   export interface ExecutionSettingDto {
     companyId?: string;
     execItemCd: string;
-    startDate: string;
+    startDate: any;
     startTime: number;
     endTimeCls: number;
     endTime: number;
@@ -274,7 +283,7 @@ module nts.uk.at.view.kbt002.c {
     repeatCls: boolean;
     repeatContent: number;
     endDateCls: number;
-    endDate: string;
+    endDate: any;
     enabledSetting: boolean;
     monday: boolean;
     tuesday: boolean;

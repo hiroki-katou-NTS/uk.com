@@ -18,7 +18,6 @@
       </com:ValidatorScript>
       <com:stylefile path="kbt002.c.main.css" />
       <com:scriptfile set="IGNITE" />
-      <com:scriptfile path="kbt002.c.service.js" />
       <com:scriptfile path="kbt002.c.vm.js" />
     </ui:define>
 
@@ -261,10 +260,12 @@
                 </td>
                 <td>
                   <!-- C2_6 -->
-                  <input tabindex="7" style="width: 60px;" class="date-picker" id="endTime" data-bind="ntsTimeEditor: {value: endTime,
+                  <input tabindex="7" style="width: 60px;" class="date-picker" id="endTime" data-bind="ntsTimeEditor: {
+                    name: '#[KBT002_58]',
+                    value: endTime,
                     inputFormat: 'time',
                     enable: endTimeCls() == 1,
-                    required: true,
+                    required: endTimeCls() == 1,
                     mode: 'time',
                     constraint: 'EndTime'}" />
                 </td>
@@ -289,7 +290,13 @@
                 <td>
                   <!-- C2_23 -->
                   <div tabindex="29" id="endDate" class="date-picker"
-                    data-bind="ntsDatePicker: {value: endDate, dateFormat: 'date', enable: repeatCls() == 1 &amp;&amp; endDateCls() == 1}" />
+                    data-bind="ntsDatePicker: {
+                      name: '#[KBT002_73]',
+                      value: endDate, 
+                      dateFormat: 'date', 
+                      enable: repeatCls() == 1 &amp;&amp; endDateCls() == 1,
+                      required: repeatCls() == 1 &amp;&amp; endDateCls() == 1
+                    }"></div>
                 </td>
               </tr>
             </table>

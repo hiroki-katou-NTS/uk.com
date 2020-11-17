@@ -132,7 +132,7 @@
                       enable: true
                     }">
                   </div>
-                  <button id="B5_5" tabindex="12" class="add ml-25" data-bind="click: $parent.openDialogC">#{i18n.getText('KBT002_51')}</button>
+                  <button id="B5_5" tabindex="12" class="add ml-25" data-bind="click: function() { $parent.openDialogC() }, disable: $parent.isNewMode()">#{i18n.getText('KBT002_51')}</button>
                 </td>
               </tr>
               <tr>

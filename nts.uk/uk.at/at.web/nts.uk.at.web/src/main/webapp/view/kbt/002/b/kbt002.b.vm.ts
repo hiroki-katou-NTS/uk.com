@@ -305,7 +305,7 @@ module nts.uk.at.view.kbt002.b {
       vm.$blockui('grayout');
       const canSelected = vm.currentExecItem().workplaceList() ? vm.currentExecItem().workplaceList() : [];
       // Data send to dialog CDL008
-      setShared('inputCDL008', {
+      nts.uk.ui.windows.setShared('inputCDL008', {
         baseDate: moment.utc().toDate(),
         isMultiple: true,
         selectedCodes: canSelected,
@@ -314,9 +314,9 @@ module nts.uk.at.view.kbt002.b {
         showNoSelection: false,
         isShowBaseDate: false
       });
-      (nts.uk as any).ui.windows.sub.modal("com", "/view/cdl/008/a/index.xhtml").onClosed(function () {
+      nts.uk.ui.windows.sub.modal("com", "/view/cdl/008/a/index.xhtml").onClosed(function () {
         vm.$blockui("clear")
-        const data = getShared('outputCDL008');
+        const data = nts.uk.ui.windows.getShared('outputCDL008');
         if (data) {
           vm.currentExecItem().workplaceList(data);
           vm.buildWorkplaceStr(data);
