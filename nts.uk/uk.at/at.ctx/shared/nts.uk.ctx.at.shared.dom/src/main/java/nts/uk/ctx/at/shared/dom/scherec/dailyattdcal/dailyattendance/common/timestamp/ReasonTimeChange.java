@@ -26,12 +26,10 @@ public class ReasonTimeChange implements DomainObject {
 	@Setter
 	private Optional<EngravingMethod> engravingMethod;
 
-	public ReasonTimeChange(TimeChangeMeans timeChangeMeans, EngravingMethod engravingMethod) {
+	public ReasonTimeChange(TimeChangeMeans timeChangeMeans, Optional<EngravingMethod> engravingMethod) {
 		super();
 		this.timeChangeMeans = timeChangeMeans;
-		this.engravingMethod = Optional.ofNullable(engravingMethod);
+		this.engravingMethod = engravingMethod;
 	}
 	
-	
-
 }

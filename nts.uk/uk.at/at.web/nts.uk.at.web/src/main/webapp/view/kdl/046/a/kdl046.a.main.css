@@ -17,3 +17,6 @@ button.nts-switch-button {
 .nts-searchbbox-wrapper input.ntsSearchBox{
 	min-width: 235px;
 }
+#single-tree-grid-tree-grid_scrollContainer{
+	height: 288px !important;
+}

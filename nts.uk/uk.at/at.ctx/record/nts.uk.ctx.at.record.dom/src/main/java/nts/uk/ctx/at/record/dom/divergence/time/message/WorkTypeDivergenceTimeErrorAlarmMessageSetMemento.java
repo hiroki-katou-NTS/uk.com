@@ -2,9 +2,9 @@ package nts.uk.ctx.at.record.dom.divergence.time.message;
 
 import java.util.Optional;
 
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmMessage;
+import nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode;
 
 /**
  * The Interface WorkTypeDivergenceTimeErrorAlarmMessageSetMemento.

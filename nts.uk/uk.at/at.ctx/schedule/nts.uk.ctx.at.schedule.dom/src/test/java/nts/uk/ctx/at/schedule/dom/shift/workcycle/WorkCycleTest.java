@@ -53,6 +53,19 @@ public class WorkCycleTest {
         assertThat(item.getWorkInfo(12, 1)).isEqualToComparingFieldByField(item.getInfos().get(0));
         assertThat(item.getWorkInfo(5, 0)).isEqualToComparingFieldByField(item.getInfos().get(1));
         assertThat(item.getWorkInfo(3, 5)).isEqualToComparingFieldByField(item.getInfos().get(2));
+        assertThat(item.getWorkInfo(10, -6)).isEqualToComparingFieldByField(item.getInfos().get(2));
+        assertThat(item.getWorkInfo(1, 8)).isEqualToComparingFieldByField(item.getInfos().get(0));
+    }
+
+    @Test
+    public void testGetWorkInfo_02() {
+        WorkCycle item = WorkCycle.create("CID001", "COD001", "Name001", Arrays.asList(
+                WorkCycleInfo.create(3, new WorkInformation("WType001", "WTime001")),
+                WorkCycleInfo.create(2, new WorkInformation("WType002", "WTime002"))
+        ));
+        assertThat(item.getWorkInfo(1, 6)).isEqualToComparingFieldByField(item.getInfos().get(1));
+        assertThat(item.getWorkInfo(1, 7)).isEqualToComparingFieldByField(item.getInfos().get(1));
+        assertThat(item.getWorkInfo(1, 8)).isEqualToComparingFieldByField(item.getInfos().get(0));
     }
 
 	@Test
