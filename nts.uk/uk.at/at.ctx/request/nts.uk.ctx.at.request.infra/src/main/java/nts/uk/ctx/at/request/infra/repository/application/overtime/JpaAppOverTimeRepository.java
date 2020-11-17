@@ -18,6 +18,7 @@ import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
@@ -36,10 +37,16 @@ import nts.uk.ctx.at.request.dom.application.overtime.OvertimeApplicationSetting
 import nts.uk.ctx.at.request.dom.application.overtime.ReasonDivergence;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.DivergenceReason;
 import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36Agree;
+import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeAnnual;
+import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeMonth;
 import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeUpperLimit;
+import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeUpperLimitAverage;
+import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeUpperLimitMonth;
+import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeUpperLimitPerMonth;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOverTime;
+import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOverTimeDetM;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeDetail;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeDetailPk;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtOvertimeInput;
@@ -47,8 +54,12 @@ import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtOvertimeInpu
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DiverdenceReasonCode;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.AgreementOneYearTime;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -149,6 +160,7 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 		if (appOvertimeDetail != null) {
 			Time36Agree time36Agree = appOvertimeDetail.getTime36Agree();
 			Time36AgreeUpperLimit time36AgreeUpperLimit = appOvertimeDetail.getTime36AgreeUpperLimit();
+			List<KrqdtAppOverTimeDetM> KrqdtAppOverTimeDetMs = new ArrayList<KrqdtAppOverTimeDetM>();
 			KrqdtAppOvertimeDetail krqdtAppOvertimeDetail = new KrqdtAppOvertimeDetail(
 					new KrqdtAppOvertimeDetailPk(
 							AppContexts.user().companyId(),
@@ -167,7 +179,8 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 					time36AgreeUpperLimit.getAgreeUpperLimitMonth().getOverTime().v(),
 					time36AgreeUpperLimit.getAgreeUpperLimitMonth().getUpperLimitTime().v(),
 					time36AgreeUpperLimit.getAgreeUpperLimitAverage().getUpperLimitTime().v(),
-					krqdtAppOverTime
+					krqdtAppOverTime,
+					KrqdtAppOverTimeDetMs
 					);
 			krqdtAppOverTime.appOvertimeDetail = krqdtAppOvertimeDetail;
 		}
@@ -510,6 +523,75 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 				appOverTime.setBreakTimeOp(Optional.of(breakTimeOp));				
 			}
 		}
+		
+
+		Integer applicationTime_detail = res.getInt("APPLICATION_TIME");
+		Integer year_month = res.getInt("YEAR_MONTH");
+		Integer actualTime = res.getInt("ACTUAL_TIME");
+		Integer limitErrorTime = res.getInt("LIMIT_ERROR_TIME");
+		Integer limitAlarmTime = res.getInt("LIMIT_ALARM_TIME");
+		Integer excLimitErrorTime = res.getInt("EXCEPTION_LIMIT_ERROR_TIME");
+		Integer excLimitAlarmTime = res.getInt("EXCEPTION_LIMIT_ALARM_TIME");
+		Integer numOfYear36Over = res.getInt("NUM_OF_YEAR36_OVER");
+		Integer actualTimeYear = res.getInt("ACTUAL_TIME_YEAR");
+		Integer limitTimeYear = res.getInt("LIMIT_TIME_YEAR");
+		Integer regApplicationTime = res.getInt("REG_APPLICATION_TIME");
+		Integer refActualTime = res.getInt("REG_ACTUAL_TIME");
+		Integer regLimitTime = res.getInt("REG_LIMIT_TIME");
+		Integer regLimitTimeMulti = res.getInt("REG_LIMIT_TIME_MULTI");
+		
+		AppOvertimeDetail appOvertimeDetail = new AppOvertimeDetail();
+		appOvertimeDetail.setCid(AppContexts.user().companyId());
+		appOvertimeDetail.setAppId(appID);
+		
+		if(year_month != null) {
+			YearMonth yearMonth = new YearMonth(year_month);
+			appOvertimeDetail.setYearMonth(yearMonth);
+		}
+		
+		Time36Agree time36Agree = new Time36Agree();
+		if (applicationTime_detail != null) {
+			time36Agree.setApplicationTime(new AttendanceTimeMonth(applicationTime_detail));			
+		}
+		Time36AgreeMonth agreeMonth = new Time36AgreeMonth();
+		agreeMonth.setActualTime(actualTime);
+		agreeMonth.setLimitErrorTime(limitErrorTime);
+		agreeMonth.setLimitAlarmTime(limitAlarmTime);
+		if (excLimitErrorTime != null) {
+			agreeMonth.setExceptionLimitErrorTime(excLimitErrorTime);			
+		}
+		if (excLimitAlarmTime != null) {
+			agreeMonth.setExceptionLimitAlarmTime(excLimitAlarmTime);			
+		}
+		agreeMonth.setNumOfYear36Over(numOfYear36Over);
+		time36Agree.setAgreeMonth(agreeMonth);
+		Time36AgreeAnnual agreeAnnual = new Time36AgreeAnnual();
+		agreeAnnual.setActualTime(new AttendanceTimeYear(actualTimeYear));
+		agreeAnnual.setLimitTime(new AgreementOneYearTime(limitTimeYear));
+		time36Agree.setAgreeAnnual(agreeAnnual);
+		appOvertimeDetail.setTime36Agree(time36Agree);
+		
+		Time36AgreeUpperLimit time36AgreeUpperLimit = new Time36AgreeUpperLimit();
+		time36AgreeUpperLimit.setApplicationTime(new AttendanceTimeMonth(regApplicationTime));
+		Time36AgreeUpperLimitMonth agreeUpperLimitMonth = new Time36AgreeUpperLimitMonth();
+		agreeUpperLimitMonth.updateOverTime(refActualTime);
+		agreeUpperLimitMonth.updateUpperLimitTime(regLimitTime);
+		time36AgreeUpperLimit.setAgreeUpperLimitMonth(agreeUpperLimitMonth);
+		
+		Time36AgreeUpperLimitAverage agreeUpperLimitAverage = new Time36AgreeUpperLimitAverage();
+		List<Time36AgreeUpperLimitPerMonth> averageTimeLst = new ArrayList<Time36AgreeUpperLimitPerMonth>();
+		Integer startYm = res.getInt("START_YM");
+		Integer endYm = res.getInt("END_YM");
+		Integer avTime = res.getInt("AVE_TIME");
+		Integer totalTime = res.getInt("TOTAL_TIME");
+		Time36AgreeUpperLimitPerMonth time36AgreeUpperLimitPerMonth = new Time36AgreeUpperLimitPerMonth(
+				startYm,
+				endYm,
+				avTime,
+				totalTime);
+		averageTimeLst.add(time36AgreeUpperLimitPerMonth);
+		agreeUpperLimitAverage.setAverageTimeLst(averageTimeLst);
+		agreeUpperLimitAverage.setUpperLimitTime(new AgreementOneMonthTime(regLimitTimeMulti));
 		
 		return appOverTime;
 	}

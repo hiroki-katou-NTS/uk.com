@@ -36,11 +36,13 @@ public class AppOvertimeDetail extends DomainObject {
 	/**
 	 * 36協定時間
 	 */
+	@Setter
 	private Time36Agree time36Agree;
 	
 	/**
 	 * 36協定上限時間
 	 */
+	@Setter
 	private Time36AgreeUpperLimit time36AgreeUpperLimit;
 
 	public AppOvertimeDetail() {

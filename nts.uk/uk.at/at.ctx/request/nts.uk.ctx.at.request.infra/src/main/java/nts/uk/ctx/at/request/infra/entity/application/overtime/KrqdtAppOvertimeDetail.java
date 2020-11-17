@@ -1,11 +1,14 @@
 package nts.uk.ctx.at.request.infra.entity.application.overtime;
 
 import java.io.Serializable;
+import java.util.List;
 
-
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.PrimaryKeyJoinColumns;
@@ -76,6 +79,11 @@ public class KrqdtAppOvertimeDetail extends ContractUkJpaEntity implements Seria
 	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
 			@PrimaryKeyJoinColumn(name = "APP_ID", referencedColumnName = "APP_ID") })
 	public KrqdtAppOverTime appOvertime;
+	
+	
+	@OneToMany(targetEntity = KrqdtAppOverTimeDetM.class, mappedBy = "appOvertimeDetail", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinTable(name = "KRQDT_APP_OVERTIME_DET_M")
+	public List<KrqdtAppOverTimeDetM> KrqdtAppOverTimeDetM;
 	
 	@Override
 	protected Object getKey() {

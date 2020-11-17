@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.infra.entity.application.overtime;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -25,7 +26,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Table(name = "KRQDT_APP_OVERTIME")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrqdtAppOverTime extends ContractUkJpaEntity{
+public class KrqdtAppOverTime extends ContractUkJpaEntity implements Serializable{
 	
 	public static final long serialVersionUID = 1L;
 	
