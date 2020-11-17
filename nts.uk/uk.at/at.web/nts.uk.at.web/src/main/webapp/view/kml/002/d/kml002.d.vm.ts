@@ -9,16 +9,16 @@ module nts.uk.at.view.kml002.d {
   @bean()
   class ViewModel extends ko.ViewModel {
 
-    d31totalUsage: KnockoutObservable<number> = ko.observable(UsageClassification.Use);
+    d31totalUsage: KnockoutObservable<number> = ko.observable(UsageClassification.NotUse);
     d31TimeReference: KnockoutObservable<number> = ko.observable(UsageClassification.Use);
     d31LaborCosts: KnockoutObservable<number> = ko.observable(UsageClassification.Use);
     d31Budget: KnockoutObservable<number> = ko.observable(UsageClassification.Use);
 
-    d41WorkingHours: KnockoutObservable<number> = ko.observable(UsageClassification.Use);
+    d41WorkingHours: KnockoutObservable<number> = ko.observable(UsageClassification.NotUse);
     d41TimeReference: KnockoutObservable<number> = ko.observable(UsageClassification.Use);
     d41LaborCosts: KnockoutObservable<number> = ko.observable(UsageClassification.Use);
 
-    d51Overtime: KnockoutObservable<number> = ko.observable(UsageClassification.Use);
+    d51Overtime: KnockoutObservable<number> = ko.observable(UsageClassification.NotUse);
     d51TimeReference: KnockoutObservable<number> = ko.observable(UsageClassification.Use);
     d51LaborCosts: KnockoutObservable<number> = ko.observable(UsageClassification.Use);
 
@@ -162,14 +162,14 @@ module nts.uk.at.view.kml002.d {
           useClassification: vm.d41WorkingHours(),
           time: vm.d41TimeReference(),
           laborCost: vm.d41LaborCosts(),
-          budget: 0,
+          budget: null,
         },
         {
           LaborCostAndTimeType: 2,
           useClassification: vm.d51Overtime(),
           time: vm.d51TimeReference(),
           laborCost: vm.d51LaborCosts(),
-          budget: 0,
+          budget: null,
         },
       ];
 

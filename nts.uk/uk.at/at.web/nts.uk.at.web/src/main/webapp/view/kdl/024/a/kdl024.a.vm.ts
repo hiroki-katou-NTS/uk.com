@@ -57,6 +57,8 @@ module kdl024.a.viewmodel {
                 nts.uk.ui.block.clear();
                 if (lstBudget.length > 0) {
                     self.isNew(false);
+                    //order by externalBudgetCode asc
+                    lstBudget = _.orderBy(lstBudget, 'externalBudgetCode', 'asc');
                     self.listBudget(lstBudget);
                     self.findItemByIndex(0);
                     _.defer(() => { $("#inpName").focus(); });

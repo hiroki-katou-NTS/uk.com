@@ -51,11 +51,11 @@ module nts.uk.at.view.kml002.c {
 
     openDialogScreenG(count: number) {
       const vm = this;
-      if( count > 3 || count <= 0 ) count = 1;
+      if (count > 3 || count <= 0) count = 1;
 
       vm.$window.storage('KWL002_SCREEN_G_INPUT', { countingType: count }).then(() => {
         vm.$window.modal('/view/kml/002/g/index.xhtml').then(() => {
-          vm.$window.storage('KWL002_SCREEN_G_OUTPUT').then((data) => {          
+          vm.$window.storage('KWL002_SCREEN_G_OUTPUT').then((data) => {
             if (!_.isNil(data)) {
               vm.updateTotalNumberOfTimes(count, data);
             }
@@ -66,22 +66,34 @@ module nts.uk.at.view.kml002.c {
 
     //スケジュール職場計情報を登録する時
     registerSchedulePersonalInfor() {
-      const vm = this;      
-      
+      const vm = this;
+
       //Workplace Total Categor
       /* 
       ・「人件費・時間」の利用区分＝＝利用するが「人件費・時間」の詳細設定はまだ設定られない。
       ・「回数集計」の利用区分＝＝利用するが「回数集計」の詳細設定はまだ設定られない。
       ・「時間帯人数」の利用区分＝＝利用するが「時間帯人数」の詳細設定はまだ設定られない。
       */
- 
+
       if ((vm.count1() === Usage.Use && vm.count1Details().length === 0)
-        && (vm.count2() === Usage.Use && vm.count2Details().length === 0)
-        && (vm.count3() === Usage.Use && vm.count3Details().length === 0)) {
+        || (vm.count2() === Usage.Use && vm.count2Details().length === 0)
+        || (vm.count3() === Usage.Use && vm.count3Details().length === 0)) {
         let errorParams = [];
-        errorParams.push(vm.$i18n('KML002_119') + vm.$i18n('KML002_69'));
-        errorParams.push(vm.$i18n('KML002_119') + vm.$i18n('KML002_72'));
-        errorParams.push(vm.$i18n('KML002_119') + vm.$i18n('KML002_75'));
+        
+        if (vm.count1Details().length === 0)
+          errorParams.push(vm.$i18n('KML002_119') + vm.$i18n('KML002_69'));
+        else
+          errorParams.push('');
+
+        if (vm.count2Details().length === 0)
+          errorParams.push(vm.$i18n('KML002_119') + vm.$i18n('KML002_72'));
+        else
+          errorParams.push('');
+
+        if (vm.count3Details().length === 0)
+          errorParams.push(vm.$i18n('KML002_119') + vm.$i18n('KML002_75'));
+        else
+          errorParams.push('');
 
         vm.$dialog.error({
           messageId: 'Msg_1850',
@@ -97,7 +109,7 @@ module nts.uk.at.view.kml002.c {
       ・「回数集計２」の利用区分＝＝利用するが「回数集計２」の詳細設定はまだ設定られない。																										
       ・「回数集計３」の利用区分＝＝利用するが「回数集計３」の詳細設定はまだ設定られない。
       */
-      if ((vm.count1() === Usage.Use && vm.count1Details().length > 0)
+      /* if ((vm.count1() === Usage.Use && vm.count1Details().length > 0)
         && (vm.count2() === Usage.Use && vm.count2Details().length === 0)
         && (vm.count3() === Usage.Use && vm.count3Details().length === 0)) {
         let errorParams = [];
@@ -112,8 +124,8 @@ module nts.uk.at.view.kml002.c {
           $('#btnRegister').focus();
         });
         return;
-      }
-      
+      } */
+
       vm.personalCounterRegister();
     }
     /**
@@ -122,7 +134,7 @@ module nts.uk.at.view.kml002.c {
     personalCounterGetById() {
       const vm = this;
       vm.$blockui('show');
-      vm.$ajax(PATH.personalCounterGetById).done((data) => {        
+      vm.$ajax(PATH.personalCounterGetById).done((data) => {
         vm.fillDataToGrid(data);
         vm.$blockui('hide');
       })
@@ -139,12 +151,12 @@ module nts.uk.at.view.kml002.c {
      */
     personalCounterRegister() {
       const vm = this;
-      
+
       vm.$blockui('show');
 
       let wpCategory = vm.createParamsToSave();
       let params = { personalCategory: wpCategory };
-      vm.$ajax(PATH.personalCounterRegister, params).done(() => {        
+      vm.$ajax(PATH.personalCounterRegister, params).done(() => {
         vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
           vm.$blockui('hide');
           $('#B322').focus();
@@ -159,7 +171,7 @@ module nts.uk.at.view.kml002.c {
      */
     getNumberCounterDetails(type: number) {
       const vm = this;
-      vm.$ajax(PATH.getNumberCounterDetails, { countType :type}).done((data) => {
+      vm.$ajax(PATH.getNumberCounterDetails, { countType: type }).done((data) => {
         if (!_.isNil(data)) {
           vm.updateTotalNumberOfTimes(type, data);
         }
@@ -214,7 +226,7 @@ module nts.uk.at.view.kml002.c {
       const vm = this;
 
       let wpCategory: any = [];
-      
+
       if (vm.estimatedMonthlySalary() === Usage.Use) wpCategory.push(0); //月間想定給与額      
       if (vm.estimatedAnnualSalary() === Usage.Use) wpCategory.push(1); //年間想定給与額      
       if (vm.comparisonStandardWorkingHours() === Usage.Use) wpCategory.push(2); //基準労働時間比較

@@ -99,36 +99,22 @@ module nts.uk.at.view.kml002.b {
       */
 
       if ((vm.laborCostTime() === Usage.Use && vm.laborCostTimeDetails().length === 0)
-        && (vm.countingNumberTimes() === Usage.Use && vm.countingNumberTimesDetails().length === 0)
-        && (vm.timeZoneNumberPeople() === Usage.Use && vm.timeZoneNumberPeopleDetails().length === 0)
+        || (vm.countingNumberTimes() === Usage.Use && vm.countingNumberTimesDetails().length === 0)
+        || (vm.timeZoneNumberPeople() === Usage.Use && vm.timeZoneNumberPeopleDetails().length === 0)
       ) {
         let errorParams = [];
-        errorParams.push(vm.$i18n('KML002_119') + vm.$i18n('KML002_18'));
-        errorParams.push(vm.$i18n('KML002_119') + vm.$i18n('KML002_27'));
-        errorParams.push(vm.$i18n('KML002_119') + vm.$i18n('KML002_33'));
+        
+        if (vm.laborCostTimeDetails().length === 0)
+          errorParams.push(vm.$i18n('KML002_119') + vm.$i18n('KML002_18'));
+        else errorParams.push('');
 
-        vm.$dialog.error({
-          messageId: 'Msg_1850',
-          messageParams: errorParams
-        }).then(() => {
-          $('#btnRegister').focus();
-        });
-        return;
-      }
+        if (vm.countingNumberTimesDetails().length === 0)
+          errorParams.push(vm.$i18n('KML002_119') + vm.$i18n('KML002_27'));
+        else errorParams.push('');
 
-      /*
-      ・「人件費・時間」の利用区分＝＝利用するが「人件費・時間」の詳細設定はまだ設定られない。																												
-      ・「回数集計」の利用区分＝＝利用するが「回数集計」の詳細設定はまだ設定られた。																												
-      ・「時間帯人数」の利用区分＝＝利用するが「時間帯人数」の詳細設定はまだ設定られない。 */
-
-      if ((vm.laborCostTime() === Usage.Use && vm.laborCostTimeDetails().length === 0)
-        && (vm.countingNumberTimes() === Usage.Use && vm.countingNumberTimesDetails().length > 0)
-        && (vm.timeZoneNumberPeople() === Usage.Use && vm.timeZoneNumberPeopleDetails().length === 0)
-      ) {
-        let errorParams = [];
-        errorParams.push(vm.$i18n('KML002_119') + vm.$i18n('KML002_18'));
-        errorParams.push(vm.$i18n('KML002_119') + vm.$i18n('KML002_33'));
-        errorParams.push('');
+        if (vm.timeZoneNumberPeopleDetails().length === 0)
+          errorParams.push(vm.$i18n('KML002_119') + vm.$i18n('KML002_33'));
+        else errorParams.push('');
 
         vm.$dialog.error({
           messageId: 'Msg_1850',
@@ -215,10 +201,9 @@ module nts.uk.at.view.kml002.b {
     getNumberCounterDetails() {
       const vm = this;
       vm.$ajax(PATH.getNumberCounterDetails, { countType: 0 }).done((data) => {
-        if (!_.isNil(data)) {
-          vm.countingNumberTimesDetails(data);
-        } else
-          vm.countingNumberTimesDetails(null);
+        if (!_.isNil(data) && data.numberOfTimeTotalDtos.length > 0) {
+          vm.countingNumberTimesDetails(data.numberOfTimeTotalDtos);
+        }
       }).fail().always();
     }
 
@@ -237,9 +222,9 @@ module nts.uk.at.view.kml002.b {
         //時間帯人数
         vm.timeZoneNumberPeople(data[4].use ? Usage.Use : Usage.NotUse);
         //雇用人数
-        vm.numberOfPeopleClassified(data[5].use ? Usage.Use : Usage.NotUse);
-        //分類人数
-        vm.numberOfEmployees(data[6].use ? Usage.Use : Usage.NotUse);
+        vm.numberOfEmployees(data[5].use ? Usage.Use : Usage.NotUse);
+        //分類人数        
+        vm.numberOfPeopleClassified(data[6].use ? Usage.Use : Usage.NotUse);
         //職位人数
         vm.numberOfPositions(data[7].use ? Usage.Use : Usage.NotUse);
       }

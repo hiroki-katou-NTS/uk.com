@@ -121,6 +121,10 @@ module nts.uk.at.view.kml002.e {
       let newItem: StartTime = new StartTime(0, false, null);
       vm.addItem(newItem);
       if (nts.uk.ui.errors.hasError()) nts.uk.ui.errors.clearAll();
+      if( vm.listOfStartTimes().length <= 24 ) {
+        let last  = _.last(vm.listOfStartTimes());
+        $('#starttime-' + last.id).focus();
+      }      
     }
 
     addItem(item: StartTime, isNew: boolean = false) {
@@ -134,12 +138,12 @@ module nts.uk.at.view.kml002.e {
         vm.listOfStartTimes.valueHasMutated();
       });
 
-      item.time.subscribe((value) => {        
+      /* item.time.subscribe((value) => {        
         $('#starttime-' + item.id).ntsError('clear');
         if( value < -720 ||  value > 4260) {          
           $('#starttime-' + item.id).ntsError('set', { messageId: "MsgB_16" }).focus();
         }        
-      });
+      }); */
 
       vm.listOfStartTimes.push(item);
       if (isNew) $('#starttime-' + id).focus();
