@@ -118,9 +118,7 @@ module nts.uk.at.view.kaf020.b {
             }
             vm.$ajax(PATH_API.register, command).done(result => {
                 if (result != undefined) {
-                    vm.$dialog.info({messageId: "Msg_15"}).then(() => {
-                        location.reload();
-                    });
+                    vm.$dialog.info({messageId: "Msg_15"});
                 }
             }).fail(err => {
                 vm.$dialog.error(err);
