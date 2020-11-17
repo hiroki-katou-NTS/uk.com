@@ -388,8 +388,6 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 		return Arrays.asList(ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd(
 				  new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkNo(1), workOnDayOffTime.get()));
 	}
-	
-
 
 	public static interface Require {
 	}

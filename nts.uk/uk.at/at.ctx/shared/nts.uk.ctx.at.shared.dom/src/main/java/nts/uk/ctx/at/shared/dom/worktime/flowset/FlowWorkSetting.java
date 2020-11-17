@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.val;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.workrule.BreakTimeZone;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZone;
@@ -264,56 +265,23 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 	 */
 	@Override
 	public ChangeableWorkingTimeZone getChangeableWorkingTimeZone(WorkSetting.Require require) {
-		// 所定時間設定を取得																																			
-		// $所定時間設定 = [1] 所定時間設定を取得する( require )	
-		val predetemineTimeSetting = require.getPredetermineTimeSetting(this.getWorkTimeCode());
 		
-		// 勤務可能な時間帯を取得																																		
-		// $1日の勤務可能時間 = $所定時間設定.勤務時間範囲を取得する( 午前午後区分.1日 )																						
-		// $午前の勤務可能時間 = $所定時間設定.勤務時間範囲を取得する( 午前午後区分.午前 )																						
-		// $午後の勤務可能時間 = $所定時間設定.勤務時間範囲を取得する( 午前午後区分.午後 )
-		val workAbleTimeZoneOfOneDay = predetemineTimeSetting.getOneDaySpan();
-		val workAbleTimeZoneOfMorning = predetemineTimeSetting.getHalfDayOfAmSpan();
-		val workAbleTimeZoneOfEvening = predetemineTimeSetting.getHalfDayOfPmSpan();
+		val predTimeStg = this.getPredetermineTimeSetting(require);
+		val workAbleOneDay = predTimeStg.getOneDaySpan();
+		val workAbleMorning = predTimeStg.getHalfDayOfAmSpan();
+		val workAbleEvening = predTimeStg.getHalfDayOfPmSpan();
 		
-		// 1勤目																																						
-		// $1日リスト = list: 勤務NOごとの変更可能な勤務時間帯#開始と終了が同じ (1, $1日の勤務可能時間)																			
-		// $午前リスト = list: 勤務NOごとの変更可能な勤務時間帯#開始と終了が同じ (1, $午前の勤務可能時間)																		
-		// $午後リスト = list: 勤務NOごとの変更可能な勤務時間帯#開始と終了が同じ (1, $午後の勤務可能時間)
-		val oneDayList = Arrays.asList(ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd(
-				new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkNo(1),
-				workAbleTimeZoneOfOneDay));
-		val morningList = Arrays.asList(ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd(
-				new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkNo(1),
-				workAbleTimeZoneOfMorning
-				));
+		val oneDayList = Arrays.asList(this.createChangeableWorkingTimeZonePerNo(1, workAbleOneDay));
+		val morningList = Arrays.asList(this.createChangeableWorkingTimeZonePerNo(1, workAbleMorning));
+		val eveningList = Arrays.asList(this.createChangeableWorkingTimeZonePerNo(1, workAbleEvening));
 		
-		val evenningList = Arrays.asList(ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd(
-				new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkNo(1),
-				workAbleTimeZoneOfEvening
-				));
-		
-		
-		// 2勤目																																						
-		// if $所定時間設定.2回勤務か ()																																	
-		// $1日リスト.add (勤務NOごとの変更可能な勤務時間帯#開始と終了が同じ (2, $1日の勤務可能時間) )																		
-		// $午前リスト.add (勤務NOごとの変更可能な勤務時間帯#開始と終了が同じ (2, $午前の勤務可能時間) )																		
-		// $午後リスト.add (勤務NOごとの変更可能な勤務時間帯#開始と終了が同じ (2, $午後の勤務可能時間) )
-		if(predetemineTimeSetting.isUseShiftTwo()) {
-			
-			oneDayList.add(ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd(
-				new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkNo(2),
-				workAbleTimeZoneOfOneDay));
-			morningList.add(ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd(
-					new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkNo(2),
-					workAbleTimeZoneOfMorning));
-			evenningList.add(ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd(
-					new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkNo(2),
-					workAbleTimeZoneOfEvening));
+		if(predTimeStg.isUseShiftTwo()) {
+			oneDayList.add(this.createChangeableWorkingTimeZonePerNo(2, workAbleOneDay));
+			morningList.add(this.createChangeableWorkingTimeZonePerNo(2, workAbleMorning));
+			eveningList.add(this.createChangeableWorkingTimeZonePerNo(2, workAbleEvening));
 		}
 		
-		//return 勤務可能な時間帯情報 ($1日リスト, $午前リスト, $午後リスト, $1日リスト)
-		return new ChangeableWorkingTimeZone(oneDayList, morningList, evenningList, oneDayList);
+		return new ChangeableWorkingTimeZone(oneDayList, morningList, eveningList, oneDayList);
 	}
 
 	/**
@@ -324,27 +292,31 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 	 */
 	@Override
 	public BreakTimeZone getBreakTimeZone(boolean isWorkingOnDayOff, AmPmAtr amPmAtr) {
-		FlowWorkRestTimezone breakTimeZone = null;
+		FlowWorkRestTimezone breakTimeZone = new FlowWorkRestTimezone();
 		if(isWorkingOnDayOff) {
-			//$休憩時間帯 = @休日勤務時間帯	
 			breakTimeZone = this.offdayWorkTimezone.getRestTimeZone();
 		}else {
-			//$休憩時間帯 = @平日勤務時間帯
-			breakTimeZone = halfDayWorkTimezone.getRestTimezone();
+			breakTimeZone = this.halfDayWorkTimezone.getRestTimezone();
 		}
 		
-		//if not $休憩時間帯.休憩時間帯を固定にする
-		if(breakTimeZone.isFixRestTime()) {
-			//return 休憩時間#流動休憩で作る( List.empty )
+		if(!breakTimeZone.isFixRestTime()) {
 			return BreakTimeZone.createAsNotFixed(Collections.emptyList());
 		}
 		
-		// 固定休憩
-		// return 休憩時間#固定休憩で作る( $休憩時間帯.固定休憩時間帯.休憩時間帯を取得() )
 		return BreakTimeZone.createAsFixed(breakTimeZone.getFixedRestTimezone()
 				                                        .getRestTimezonesForCalc());
 	}
-
+	
+	/**
+	 * convert to ChangeableWorkingTimeZonePerNo
+	 * @param workNo
+	 * @param timeSpan
+	 * @return
+	 */
+	private ChangeableWorkingTimeZonePerNo createChangeableWorkingTimeZonePerNo(int workNo, TimeSpanForCalc timeSpan ) {
+		return ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd(
+				new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkNo(workNo),timeSpan);
+	}	
 
 	public static interface Require {
 	}
