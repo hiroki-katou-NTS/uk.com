@@ -9,7 +9,8 @@ module nts.uk.at.view.kbt002.b {
     getMasterInfo: 'screen/at/processexec/getMasterInfo',
     getAlarmByUser: 'at/function/alarm/kal/001/pattern/setting',
     findWorkplaceTree: "bs/employee/workplace/config/info/findAll",
-    findWkpTreeNew: 'bs/employee/wkpdep/get-wkpdepinfo-kcp004'
+    findWkpTreeNew: 'bs/employee/wkpdep/get-wkpdepinfo-kcp004',
+    selectProcExec: 'at/function/processexec/findProcessExecution/{0}'
   };
 
   const getTextResource = nts.uk.resource.getText;
@@ -84,16 +85,29 @@ module nts.uk.at.view.kbt002.b {
           vm.isNewMode(true);
         } else {
           // set update mode
-          const data = _.filter(vm.execItemList(), (item) => { return item.execItemCode === execItemCode; });
-          if (data[0]) {
-            vm.currentExecItem().createData(data[0]);
-            vm.buildWorkplaceStr(vm.currentExecItem().workplaceList());
-            if (vm.currentExecItem().perScheduleCls()) {
-              // vm.targetDateText(vm.buildTargetDateStr(vm.currentExecItem()) || '');
-              vm.targetDateText('targetDateText');
-            }
-          }
-          vm.isNewMode(false);
+          vm.$blockui("grayout");
+          vm.$ajax(textUtil.format(API.selectProcExec, execItemCode))
+            .then(res => {
+              console.log(res);
+              vm.currentExecItem().createData(res.processExecution);
+              vm.currentExecItem().workplaceList(res.workplaceInfos);
+              vm.buildWorkplaceStr(vm.currentExecItem().workplaceList());
+              if (vm.currentExecItem().perScheduleCls()) {
+                vm.targetDateText('targetDateText');
+              }
+              vm.isNewMode(false);
+            })
+            .done(() => vm.$blockui("clear"));
+
+          // const data = _.filter(vm.execItemList(), (item) => { return item.execItemCode === execItemCode; });
+          // if (data[0]) {
+          //   vm.currentExecItem().createData(data[0]);
+          //   vm.buildWorkplaceStr(vm.currentExecItem().workplaceList());
+          //   if (vm.currentExecItem().perScheduleCls()) {
+          //     // vm.targetDateText(vm.buildTargetDateStr(vm.currentExecItem()) || '');
+          //     vm.targetDateText('targetDateText');
+          //   }
+          // }
         }
 
         vm.$nextTick(() => {

@@ -17,7 +17,7 @@ import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
 import nts.uk.shr.com.context.AppContexts;
 
 @Data
-public class UpdateProcessAutoExecutionCommand implements UpdateProcessAutoExecution.MementoGetter {
+public class SaveUpdateProcessAutoExecutionCommand implements UpdateProcessAutoExecution.MementoGetter {
 	
 	private boolean newMode;
 	

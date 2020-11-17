@@ -22,7 +22,7 @@ import nts.uk.shr.com.context.AppContexts;
 /**
  * UKDesign.UniversalK.就業.KBT_更新処理自動実行.KBT002_更新処理自動実行.B:実行設定.アルゴリズム.登録ボタン押下時処理.登録ボタン押下時処理
  */
-public class UpdateProcessAutoExecutionCommandHandler extends CommandHandler<UpdateProcessAutoExecutionCommand> {
+public class SaveUpdateProcessAutoExecutionCommandHandler extends CommandHandler<SaveUpdateProcessAutoExecutionCommand> {
 
 	@Inject
 	private ProcessExecutionRepository processExecutionRepository;
@@ -31,8 +31,8 @@ public class UpdateProcessAutoExecutionCommandHandler extends CommandHandler<Upd
 	private ProcessExecutionLogManageRepository processExecutionLogManageRepository;
 
 	@Override
-	protected void handle(CommandHandlerContext<UpdateProcessAutoExecutionCommand> context) {
-		UpdateProcessAutoExecutionCommand command = context.getCommand();
+	protected void handle(CommandHandlerContext<SaveUpdateProcessAutoExecutionCommand> context) {
+		SaveUpdateProcessAutoExecutionCommand command = context.getCommand();
 		UpdateProcessAutoExecution domain = UpdateProcessAutoExecution.createFromMemento(AppContexts.user().companyId(),
 				command);
 		// アルゴリズム「登録チェック処理」を実行する

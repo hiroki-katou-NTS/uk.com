@@ -27,17 +27,17 @@ public class PersonalScheduleCreationPeriodDto {
 	/**
 	 * 作成期間
 	 */
-	private int creationPeriod;
+	private Integer creationPeriod;
 
 	/**
 	 * 対象日
 	 */
-	private int targetDate;
+	private Integer targetDate;
 
 	/**
 	 * 対象月
 	 */
-	private int targetMonth;
+	private Integer targetMonth;
 
 	/**
 	 * 指定年

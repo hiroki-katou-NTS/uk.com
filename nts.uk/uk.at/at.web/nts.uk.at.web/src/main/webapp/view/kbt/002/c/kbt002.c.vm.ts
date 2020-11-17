@@ -86,8 +86,8 @@ module nts.uk.at.view.kbt002.c {
     getExecSetting() {
       const vm = this;
       //FAKE-DATA
-      vm.execItemCd('53');
-      vm.execItemName('KBT002_C review');
+      // vm.execItemCd('53');
+      // vm.execItemName('KBT002_C review');
 
       vm.$blockui('grayout')
         .then(() => vm.$ajax(`${API.getExecSetting}/${vm.execItemCd()}`))
