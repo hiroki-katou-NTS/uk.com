@@ -68,7 +68,7 @@ public class TimezoneToUseHourlyHolidayTest {
 	public void testGetOutingReason_exception() {
 		
 		NtsAssert.systemError(
-				() -> TimezoneToUseHourlyHoliday.getOutingReason(GoingOutReason.PUBLIC));
+				() -> TimezoneToUseHourlyHoliday.getDuringWorking(GoingOutReason.PUBLIC));
 	}
 	
 	/**
@@ -89,7 +89,7 @@ public class TimezoneToUseHourlyHolidayTest {
 		val result = expected.keySet().stream()
 				.collect(Collectors.toMap( 
 						reason -> reason, 
-						reason -> TimezoneToUseHourlyHoliday.getOutingReason(reason)));
+						reason -> TimezoneToUseHourlyHoliday.getDuringWorking(reason)));
 
 		// Assertion
 		assertThat( result ).containsExactlyInAnyOrderEntriesOf( expected );

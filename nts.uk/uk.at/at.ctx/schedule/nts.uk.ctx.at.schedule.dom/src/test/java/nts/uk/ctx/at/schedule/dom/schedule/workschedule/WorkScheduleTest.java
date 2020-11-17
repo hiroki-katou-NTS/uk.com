@@ -228,16 +228,16 @@ public class WorkScheduleTest {
 			
 			timeLeaving.getStartTimeVacations(new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(2));
 			result = Optional.of(new TimeSpanForCalc(
-									new TimeWithDayAttr(100), 
-									new TimeWithDayAttr(200))); 
+									new TimeWithDayAttr(100),
+									new TimeWithDayAttr(200)));
 			
 			lateTime2.getTimePaidUseTime();
 			// result = timePaidUseTime2;
 		}};
 		
 		WorkSchedule target = Helper.createWithParams(
-				Optional.of(timeLeaving), // 出退勤 
-				Optional.of(attendanceTime), // 勤怠時間 
+				Optional.of(timeLeaving), // 出退勤
+				Optional.of(attendanceTime), // 勤怠時間
 				Optional.empty());
 		
 		// Action
@@ -248,7 +248,7 @@ public class WorkScheduleTest {
 		TimeVacation value = result.get(TimezoneToUseHourlyHoliday.WORK_NO2_BEFORE);
 		assertThat(value.getUseTime()).isEqualTo(timePaidUseTime2);
 		assertThat(value.getTimeList())
-			.extracting( 
+			.extracting(
 				e -> e.startValue(),
 				e -> e.endValue())
 			.containsExactly( tuple ( 100, 200 ));
@@ -277,13 +277,13 @@ public class WorkScheduleTest {
 			
 			timeLeaving.getStartTimeVacations(new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(1));
 			result = Optional.of(new TimeSpanForCalc(
-					new TimeWithDayAttr(100), 
-					new TimeWithDayAttr(200))); 
+					new TimeWithDayAttr(100),
+					new TimeWithDayAttr(200)));
 			
 			timeLeaving.getStartTimeVacations(new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(2));
 			result = Optional.of(new TimeSpanForCalc(
-									new TimeWithDayAttr(300), 
-									new TimeWithDayAttr(400))); 
+									new TimeWithDayAttr(300),
+									new TimeWithDayAttr(400)));
 
 			lateTime1.getTimePaidUseTime();
 			result = timePaidUseTime1;
@@ -293,8 +293,8 @@ public class WorkScheduleTest {
 		}};
 		
 		WorkSchedule target = Helper.createWithParams(
-				Optional.of(timeLeaving), // 出退勤 
-				Optional.of(attendanceTime), // 勤怠時間 
+				Optional.of(timeLeaving), // 出退勤
+				Optional.of(attendanceTime), // 勤怠時間
 				Optional.empty());
 		
 		// Action
@@ -307,7 +307,7 @@ public class WorkScheduleTest {
 		TimeVacation value1 = result.get(TimezoneToUseHourlyHoliday.WORK_NO1_BEFORE);
 		assertThat(value1.getUseTime()).isEqualTo(timePaidUseTime1);
 		assertThat(value1.getTimeList())
-			.extracting( 
+			.extracting(
 				e -> e.startValue(),
 				e -> e.endValue())
 			.containsExactly( tuple ( 100, 200 ));
@@ -316,7 +316,7 @@ public class WorkScheduleTest {
 		TimeVacation value2 = result.get(TimezoneToUseHourlyHoliday.WORK_NO2_BEFORE);
 		assertThat(value2.getUseTime()).isEqualTo(timePaidUseTime2);
 		assertThat(value2.getTimeList())
-			.extracting( 
+			.extracting(
 				e -> e.startValue(),
 				e -> e.endValue())
 			.containsExactly( tuple ( 300, 400 ));
@@ -343,16 +343,16 @@ public class WorkScheduleTest {
 			// result = empty
 			timeLeaving.getEndTimeVacations(new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(2));
 			result = Optional.of(new TimeSpanForCalc(
-									new TimeWithDayAttr(100), 
-									new TimeWithDayAttr(200))); 
+									new TimeWithDayAttr(100),
+									new TimeWithDayAttr(200)));
 			
 			earlyTime2.getTimePaidUseTime();
 			// result = timePaidUseTime2;
 		}};
 		
 		WorkSchedule target = Helper.createWithParams(
-				Optional.of(timeLeaving), // 出退勤 
-				Optional.of(attendanceTime), // 勤怠時間 
+				Optional.of(timeLeaving), // 出退勤
+				Optional.of(attendanceTime), // 勤怠時間
 				Optional.empty());
 		
 		// Action
@@ -363,7 +363,7 @@ public class WorkScheduleTest {
 		TimeVacation value = result.get(TimezoneToUseHourlyHoliday.WORK_NO2_AFTER);
 		assertThat(value.getUseTime()).isEqualTo(timePaidUseTime2);
 		assertThat(value.getTimeList())
-			.extracting( 
+			.extracting(
 				e -> e.startValue(),
 				e -> e.endValue())
 			.containsExactly( tuple ( 100, 200 ));
@@ -389,13 +389,13 @@ public class WorkScheduleTest {
 			
 			timeLeaving.getEndTimeVacations(new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(1));
 			result = Optional.of(new TimeSpanForCalc(
-									new TimeWithDayAttr(100), 
-									new TimeWithDayAttr(200))); 
+									new TimeWithDayAttr(100),
+									new TimeWithDayAttr(200)));
 			
 			timeLeaving.getEndTimeVacations(new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(2));
 			result = Optional.of(new TimeSpanForCalc(
-									new TimeWithDayAttr(300), 
-									new TimeWithDayAttr(400))); 
+									new TimeWithDayAttr(300),
+									new TimeWithDayAttr(400)));
 			
 			earlyTime1.getTimePaidUseTime();
 			result = timePaidUseTime1;
@@ -405,8 +405,8 @@ public class WorkScheduleTest {
 		}};
 		
 		WorkSchedule target = Helper.createWithParams(
-				Optional.of(timeLeaving), // 出退勤 
-				Optional.of(attendanceTime), // 勤怠時間 
+				Optional.of(timeLeaving), // 出退勤
+				Optional.of(attendanceTime), // 勤怠時間
 				Optional.empty());
 		
 		// Action
@@ -417,7 +417,7 @@ public class WorkScheduleTest {
 		TimeVacation value1 = result.get(TimezoneToUseHourlyHoliday.WORK_NO1_AFTER);
 		assertThat(value1.getUseTime()).isEqualTo(timePaidUseTime1);
 		assertThat(value1.getTimeList())
-			.extracting( 
+			.extracting(
 				e -> e.startValue(),
 				e -> e.endValue())
 			.containsExactly( tuple ( 100, 200 ));
@@ -425,7 +425,7 @@ public class WorkScheduleTest {
 		TimeVacation value2 = result.get(TimezoneToUseHourlyHoliday.WORK_NO2_AFTER);
 		assertThat(value2.getUseTime()).isEqualTo(timePaidUseTime2);
 		assertThat(value2.getTimeList())
-			.extracting( 
+			.extracting(
 				e -> e.startValue(),
 				e -> e.endValue())
 			.containsExactly( tuple ( 300, 400 ));
@@ -443,7 +443,7 @@ public class WorkScheduleTest {
 		// Arrange
 		
 		WorkSchedule target = Helper.createWithParams(
-										Optional.empty(), 
+										Optional.empty(),
 										Optional.of(attendanceTime),
 										Optional.of(outingTime));
 		
@@ -476,7 +476,7 @@ public class WorkScheduleTest {
 		// Arrange
 		
 		WorkSchedule target = Helper.createWithParams(
-										Optional.empty(), 
+										Optional.empty(),
 										Optional.of(attendanceTime), // 勤怠時間
 										Optional.of(outingTime)); // 外出時間帯
 		
@@ -484,9 +484,9 @@ public class WorkScheduleTest {
 			
 			attendanceTime.getOutingTimeOfDaily();
 			result = Arrays.asList(
-					Helper.createOutingTimeOfDailyWithParams(GoingOutReason.PRIVATE, timevacationUseTimeOfDaily1), 
-					Helper.createOutingTimeOfDailyWithParams(GoingOutReason.PUBLIC, timevacationUseTimeOfDaily2), 
-					Helper.createOutingTimeOfDailyWithParams(GoingOutReason.COMPENSATION, timevacationUseTimeOfDaily3), 
+					Helper.createOutingTimeOfDailyWithParams(GoingOutReason.PRIVATE, timevacationUseTimeOfDaily1),
+					Helper.createOutingTimeOfDailyWithParams(GoingOutReason.PUBLIC, timevacationUseTimeOfDaily2),
+					Helper.createOutingTimeOfDailyWithParams(GoingOutReason.COMPENSATION, timevacationUseTimeOfDaily3),
 					Helper.createOutingTimeOfDailyWithParams(GoingOutReason.UNION, timevacationUseTimeOfDaily4));
 			
 			outingTime.getTimeZoneByGoOutReason((GoingOutReason) any);
@@ -508,7 +508,7 @@ public class WorkScheduleTest {
 		
 		assertThat(value1.getUseTime()).isEqualTo(timevacationUseTimeOfDaily1);
 		assertThat(value1.getTimeList())
-			.extracting( 
+			.extracting(
 				d -> d.getStart().v(),
 				d -> d.getEnd().v())
 			.containsExactly(
@@ -551,7 +551,7 @@ public class WorkScheduleTest {
 		 * @param outingTime 外出時間帯
 		 * @return
 		 */
-		static WorkSchedule createWithParams( 
+		static WorkSchedule createWithParams(
 				Optional<TimeLeavingOfDailyAttd> optTimeLeaving,
 				Optional<AttendanceTimeOfDailyAttendance> optAttendanceTime,
 				Optional<OutingTimeOfDailyAttd> outingTime
@@ -559,25 +559,25 @@ public class WorkScheduleTest {
 			
 			return new WorkSchedule(
 					"employeeID",
-					GeneralDate.today(), 
-					ConfirmedATR.UNSETTLED, 
+					GeneralDate.today(),
+					ConfirmedATR.UNSETTLED,
 					workInfo,
 					affInfo, 
-					Collections.emptyList(), 
-					Collections.emptyList(), 
+					Collections.emptyList(),
+					Collections.emptyList(),
 					optTimeLeaving, // parameter
 					optAttendanceTime, // parameter
-					Optional.empty(), 
+					Optional.empty(),
 					outingTime); // parameter
 		}
 		
 		static OutingTimeOfDaily createOutingTimeOfDailyWithReason(GoingOutReason reason) {
 			return new OutingTimeOfDaily(
 					workTime,
-					reason, 
-					timeVacationUseOfDaily, 
-					recordTotalTime, 
-					deductionTotalTime, 
+					reason,
+					timeVacationUseOfDaily,
+					recordTotalTime,
+					deductionTotalTime,
 					Collections.emptyList());
 			
 		}
@@ -586,9 +586,9 @@ public class WorkScheduleTest {
 			return new OutingTimeOfDaily(
 					workTime,
 					reason,
-					timeVacationUseOfDaily, 
-					recordTotalTime, 
-					deductionTotalTime, 
+					timeVacationUseOfDaily,
+					recordTotalTime,
+					deductionTotalTime,
 					Collections.emptyList());
 			
 		}

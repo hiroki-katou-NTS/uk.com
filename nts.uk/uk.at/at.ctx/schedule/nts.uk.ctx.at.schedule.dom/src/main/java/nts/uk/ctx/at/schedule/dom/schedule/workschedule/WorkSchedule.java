@@ -209,7 +209,7 @@ public class WorkSchedule implements DomainAggregate {
 		
 		for(OutingTimeOfDaily outingTime : outingTimes) {
 			
-			val type = TimezoneToUseHourlyHoliday.getOutingReason(outingTime.getReason());
+			val type = TimezoneToUseHourlyHoliday.getDuringWorking(outingTime.getReason());
 			
 			// 外出理由を指定して時間帯を取得する
 			val timeZones = this.outingTime.get().getTimeZoneByGoOutReason(outingTime.getReason());

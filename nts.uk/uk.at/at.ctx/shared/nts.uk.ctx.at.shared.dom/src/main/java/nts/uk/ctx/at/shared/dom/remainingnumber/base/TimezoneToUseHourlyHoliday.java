@@ -56,7 +56,7 @@ public enum TimezoneToUseHourlyHoliday {
 	 * @param goOutReason 外出理由
 	 * @return
 	 */
-	public static TimezoneToUseHourlyHoliday getOutingReason(GoingOutReason goOutReason) {
+	public static TimezoneToUseHourlyHoliday getDuringWorking (GoingOutReason goOutReason) {
 		switch(goOutReason) {
 		case PRIVATE:
 			return TimezoneToUseHourlyHoliday.GOINGOUT_PRIVATE;
