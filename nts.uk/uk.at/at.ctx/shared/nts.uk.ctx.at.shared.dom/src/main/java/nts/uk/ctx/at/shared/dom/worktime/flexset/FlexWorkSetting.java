@@ -368,6 +368,7 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 		val workOnDayOffTimeList = this.offdayWorkTime.getLstWorkTimezone().stream()
 				.map(c -> c.getTimezone().timeSpan())
 				.collect(Collectors.toList());
+		// 休出時間がないことはないので、直接get
 		val workOnDayOffTime = TimeSpanForCalc.join(workOnDayOffTimeList).get();
 		
 		val workTimeList = preTimeSetting.getTimezoneByAmPmAtrForCalc(AmPmAtr.ONE_DAY);
