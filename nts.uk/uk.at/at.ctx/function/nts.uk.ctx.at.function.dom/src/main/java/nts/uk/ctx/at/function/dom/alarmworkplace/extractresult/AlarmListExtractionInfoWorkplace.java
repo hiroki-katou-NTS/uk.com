@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.dom.alarmworkplace.extractresult;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.WorkplaceCategory;
@@ -13,6 +14,7 @@ import java.util.List;
  * @author Le Huu Dat
  */
 @Getter
+@AllArgsConstructor
 public class AlarmListExtractionInfoWorkplace extends AggregateRoot {
 
     /**

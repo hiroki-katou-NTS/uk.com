@@ -7,6 +7,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.B
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import java.util.ArrayList;
 import java.util.List;
 
 @Stateless
@@ -20,6 +21,11 @@ public class JpaBasicFixedExtractionConditionRepository extends JpaRepository im
     @Override
     public List<BasicFixedExtractionCondition> getByIDs(List<String> ids) {
         return null;
+    }
+
+    @Override
+    public List<BasicFixedExtractionCondition> getBy(List<String> ids, boolean useAtr) {
+        return new ArrayList<>();
     }
 
     @Override

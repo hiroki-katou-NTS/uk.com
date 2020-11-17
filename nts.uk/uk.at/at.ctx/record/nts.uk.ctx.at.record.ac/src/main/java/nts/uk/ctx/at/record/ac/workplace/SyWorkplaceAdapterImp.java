@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.adapter.workplace.EmployeeInfoImported;
 import org.apache.commons.lang3.tuple.Pair;
 
 import nts.arc.time.GeneralDate;
@@ -48,6 +50,13 @@ public class SyWorkplaceAdapterImp implements SyWorkplaceAdapter {
 		return workplacePub.findBySId(employeeIds, baseDate).stream()
 				.map(x -> new SWkpHistRcImported(x.getDateRange(), x.getEmployeeId(), x.getWorkplaceId(),
 						x.getWorkplaceCode(), x.getWorkplaceName(), x.getWkpDisplayName()))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<EmployeeInfoImported> getLstEmpByWorkplaceIdsAndPeriod(List<String> workplaceIds, DatePeriod period) {
+		return workplacePub.getLstEmpByWorkplaceIdsAndPeriod(workplaceIds, period).stream()
+				.map(x -> new EmployeeInfoImported(x.getSid(), x.getEmployeeCode(), x.getEmployeeName()))
 				.collect(Collectors.toList());
 	}
 

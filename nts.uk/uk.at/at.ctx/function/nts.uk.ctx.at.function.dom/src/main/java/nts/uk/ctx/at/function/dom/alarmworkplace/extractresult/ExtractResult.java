@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.dom.alarmworkplace.extractresult;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionName;
 import nts.uk.ctx.at.shared.dom.scherec.alarm.alarmlistactractionresult.AlarmValueDate;
@@ -46,4 +47,14 @@ public class ExtractResult {
      * 職場ID
      */
     private String workplaceId;
+
+    public ExtractResult(String alarmValueMessage, int startDate, Integer endDate, String alarmItemName,
+                         String checkTargetValue, String comment, String workplaceId) {
+        this.alarmValueMessage = new AlarmValueMessage(alarmValueMessage);
+        this.alarmValueDate = new AlarmValueDate(startDate, Optional.ofNullable(endDate));
+        this.alarmItemName = new AlarmCheckConditionName(alarmItemName);
+        this.checkTargetValue = Optional.ofNullable(checkTargetValue);
+        this.comment = comment == null ? Optional.empty() : Optional.of(new MessageDisplay(comment));
+        this.workplaceId = workplaceId;
+    }
 }

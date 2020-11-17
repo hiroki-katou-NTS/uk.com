@@ -8,6 +8,8 @@ public interface BasicFixedExtractionConditionRepository {
 
     List<BasicFixedExtractionCondition> getByIDs(List<String> ids);
 
+    List<BasicFixedExtractionCondition> getBy(List<String> ids, boolean useAtr);
+
     void register(BasicFixedExtractionCondition domain);
 
     void update(BasicFixedExtractionCondition domain);

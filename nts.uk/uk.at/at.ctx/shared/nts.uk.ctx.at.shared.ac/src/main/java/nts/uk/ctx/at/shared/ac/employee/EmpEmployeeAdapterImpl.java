@@ -17,14 +17,7 @@ import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.shared.dom.adapter.employee.AffComHistItemShareImport;
-import nts.uk.ctx.at.shared.dom.adapter.employee.AffCompanyHistSharedImport;
-import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
-import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
-import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeRecordImport;
-import nts.uk.ctx.at.shared.dom.adapter.employee.MailAddress;
-import nts.uk.ctx.at.shared.dom.adapter.employee.PersonEmpBasicInfoImport;
-import nts.uk.ctx.at.shared.dom.adapter.employee.SClsHistImport;
+import nts.uk.ctx.at.shared.dom.adapter.employee.*;
 import nts.uk.ctx.bs.employee.pub.classification.SClsHistExport;
 import nts.uk.ctx.bs.employee.pub.classification.SyClassificationPub;
 import nts.uk.ctx.bs.employee.pub.company.AffCompanyHistExport;
@@ -189,5 +182,12 @@ public class EmpEmployeeAdapterImpl implements EmpEmployeeAdapter {
 	public List<AffCompanyHistSharedImport> getAffComHisBySids(String cid, List<String> sids) {
 		List<AffCompanyHistSharedImport> result =  this.syCompanyPub.getAffComHisBySids(cid, sids).stream().map(c -> convert(c)).collect(Collectors.toList());
 		return result;
+	}
+
+	@Override
+	public List<ClassificationImport> getClassificationByCompanyId(String companyId) {
+		return this.classPub.getClassificationByCompanyId(companyId).stream()
+				.map(x -> new ClassificationImport(x.getCompanyId(), x.getClassificationCode(),x.getClassificationName(),x.getMemo()))
+				.collect(Collectors.toList());
 	}
 }

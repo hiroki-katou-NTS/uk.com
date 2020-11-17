@@ -62,4 +62,6 @@ public interface EmpEmployeeAdapter {
 	 * @return
 	 */
 	List<AffCompanyHistSharedImport> getAffComHisBySids(String cid, List<String> sid);
+
+	List<ClassificationImport> getClassificationByCompanyId(String companyId);
 }

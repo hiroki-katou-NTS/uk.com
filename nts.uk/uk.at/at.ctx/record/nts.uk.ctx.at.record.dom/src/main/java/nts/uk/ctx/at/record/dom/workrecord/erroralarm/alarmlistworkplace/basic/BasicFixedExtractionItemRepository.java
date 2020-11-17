@@ -7,6 +7,8 @@ public interface BasicFixedExtractionItemRepository {
 
     Optional<BasicFixedExtractionItem> getByID(String id);
 
+    Optional<BasicFixedExtractionItem> getBy(BasicFixedCheckItem no);
+
     List<BasicFixedExtractionItem> getAll();
 
     void register(BasicFixedExtractionCondition domain);

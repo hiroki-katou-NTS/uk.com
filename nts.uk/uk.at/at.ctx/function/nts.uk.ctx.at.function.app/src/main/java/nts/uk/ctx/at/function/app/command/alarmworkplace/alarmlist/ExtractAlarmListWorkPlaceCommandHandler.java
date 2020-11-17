@@ -49,7 +49,7 @@ public class ExtractAlarmListWorkPlaceCommandHandler extends AsyncCommandHandler
         }
 
         // 集計処理
-        aggregateProcessService.process(cid, command.getAlarmPatternCode());
+        aggregateProcessService.process(cid, command.getAlarmPatternCode(), command.getWorkplaceIds());
     }
 
     /**
