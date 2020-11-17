@@ -100,14 +100,13 @@ public class ScreenQueryExtractTargetEmployees {
 		EmployeeInformationQueryDtoImport input = new EmployeeInformationQueryDtoImport(sids, param.baseDate, false, false, false, false, false, false);
 
 		List<EmployeeInformationImport> listEmp = empInfoAdapter.getEmployeeInfo(input);
-		listEmp.sort( Comparator.comparing(EmployeeInformationImport :: getEmployeeCode));
-		List<String> sids2 = listEmp.stream().map(m -> m.getEmployeeId()).collect(Collectors.toList());
-		
 		//2020/9/7　発注済み step 4
 		//※スケ①-5_スケ修正(職場別)
 		if(listEmp.isEmpty()){
 			throw new BusinessException("Msg_1779"); 
 		}
+		listEmp.sort( Comparator.comparing(EmployeeInformationImport :: getEmployeeCode));
+		List<String> sids2 = listEmp.stream().map(m -> m.getEmployeeId()).collect(Collectors.toList());
 		
 		// step 5 call AR_並び替え設定.
 		RequireSortEmpImpl requireSortEmpImpl = new RequireSortEmpImpl(belongScheduleTeamRepo,
