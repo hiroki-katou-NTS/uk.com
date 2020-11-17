@@ -206,8 +206,8 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                 block.invisible();
 
                 let linkingDates: any[] = [];
-                if (self.checkedSubHoliday()) {
-                    if (self.checkedSplit() && _.isEmpty(self.listLinkingDate())) {
+                if (self.checkedHoliday()) {
+                    if (self.checkedSubHoliday() && _.isEmpty(self.listLinkingDate())) {
                         linkingDates = [moment.utc(self.dateHoliday()).format('YYYY-MM-DD')];
                     } else {
                         linkingDates = self.listLinkingDate();
@@ -297,6 +297,11 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                         setShared('KDM001_I_SUCCESS', {isSuccess: true})
                         nts.uk.ui.windows.close();
                     });
+                })
+                .fail(err => {
+                    if (err && err.messageId === 'Msg_2017' || err.messageId === 'Msg_2018') {
+                        dialog.info(err);
+                    }
                 });
                 block.clear();
             }

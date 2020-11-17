@@ -7,6 +7,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementUnitSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementUnitSetting;
@@ -55,7 +56,7 @@ public class RegisteTimeImpl implements MasterListData {
 	
 	@Override
 	public String mainSheetName() {
-		return TextResource.localize("KMK008_70");
+		return "３６協定運用設定";
 	}
 
 	@Override
@@ -113,15 +114,15 @@ public class RegisteTimeImpl implements MasterListData {
 	 */
 	public List<MasterHeaderColumn> getHeaderColumnsSheet4() {
 		List<MasterHeaderColumn> columns = new ArrayList<>();
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_89, TextResource.localize("KMK008_89"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.KMK008_89), TextResource.localize(I18NText.getText(RegistTimeColumn.KMK008_89)),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_92, TextResource.localize("KMK008_92"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.KMK008_92), TextResource.localize(I18NText.getText(RegistTimeColumn.KMK008_92)),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_90, TextResource.localize("KMK008_90"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.KMK008_90), TextResource.localize(I18NText.getText(RegistTimeColumn.KMK008_90)),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_91, TextResource.localize("KMK008_91"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.KMK008_91), TextResource.localize(I18NText.getText(RegistTimeColumn.KMK008_91)),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_204, TextResource.localize("KMK008_204"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.KMK008_205), TextResource.localize(I18NText.getText(RegistTimeColumn.KMK008_205)),
 				ColumnTextAlign.LEFT, "", true));
 		return columns;
 	}
@@ -137,19 +138,19 @@ public class RegisteTimeImpl implements MasterListData {
 	public List<MasterHeaderColumn> getHeaderColumnsSheet5() {
 		List<MasterHeaderColumn> columns = new ArrayList<>();
 
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.S5KMK008_100, TextResource.localize("KMK008_104"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.S5KMK008_100), TextResource.localize(I18NText.getText(RegistTimeColumn.S5KMK008_100)),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.S5KMK008_101, TextResource.localize("KMK008_105"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.S5KMK008_101), TextResource.localize(I18NText.getText(RegistTimeColumn.S5KMK008_101)),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_89, TextResource.localize("KMK008_89"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.KMK008_89), TextResource.localize(I18NText.getText(RegistTimeColumn.KMK008_89)),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_92, TextResource.localize("KMK008_92"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.KMK008_92), TextResource.localize(I18NText.getText(RegistTimeColumn.KMK008_92)),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_90, TextResource.localize("KMK008_90"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.KMK008_90), TextResource.localize(I18NText.getText(RegistTimeColumn.KMK008_90)),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_91, TextResource.localize("KMK008_91"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.KMK008_91), TextResource.localize(I18NText.getText(RegistTimeColumn.KMK008_91)),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_204, TextResource.localize("KMK008_204"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.KMK008_205), TextResource.localize(I18NText.getText(RegistTimeColumn.KMK008_205)),
 				ColumnTextAlign.LEFT, "", true));
 		return columns;
 	}
@@ -165,19 +166,19 @@ public class RegisteTimeImpl implements MasterListData {
 	public List<MasterHeaderColumn> getHeaderColumnsSheet6() {
 		 List <MasterHeaderColumn> columns = new ArrayList<>();
 
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.S6KMK008_102, TextResource.localize("KMK008_104"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.S6KMK008_102), TextResource.localize(I18NText.getText(RegistTimeColumn.S6KMK008_102)),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.S6KMK008_103, TextResource.localize("KMK008_105"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.S6KMK008_103), TextResource.localize(I18NText.getText(RegistTimeColumn.S6KMK008_103)),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_89, TextResource.localize("KMK008_89"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.KMK008_89), TextResource.localize(I18NText.getText(RegistTimeColumn.KMK008_89)),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_92, TextResource.localize("KMK008_92"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.KMK008_92), TextResource.localize(I18NText.getText(RegistTimeColumn.KMK008_92)),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_90, TextResource.localize("KMK008_90"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.KMK008_90), TextResource.localize(I18NText.getText(RegistTimeColumn.KMK008_90)),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_91, TextResource.localize("KMK008_91"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.KMK008_91), TextResource.localize(I18NText.getText(RegistTimeColumn.KMK008_91)),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_204, TextResource.localize("KMK008_204"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.KMK008_205), TextResource.localize(I18NText.getText(RegistTimeColumn.KMK008_205)),
 				ColumnTextAlign.LEFT, "", true));
 	        return columns;
 	}
@@ -193,19 +194,19 @@ public class RegisteTimeImpl implements MasterListData {
 	public List<MasterHeaderColumn> getHeaderColumnsSheet7() {
 		List<MasterHeaderColumn> columns = new ArrayList<>();
 
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.S7KMK008_104, TextResource.localize("KMK008_104"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.S7KMK008_104), TextResource.localize(I18NText.getText(RegistTimeColumn.S7KMK008_104)),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.S7KMK008_105, TextResource.localize("KMK008_105"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.S7KMK008_105), TextResource.localize(I18NText.getText(RegistTimeColumn.S7KMK008_105)),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_89, TextResource.localize("KMK008_89"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.KMK008_89), TextResource.localize(I18NText.getText(RegistTimeColumn.KMK008_89)),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_92, TextResource.localize("KMK008_92"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.KMK008_92), TextResource.localize(I18NText.getText(RegistTimeColumn.KMK008_92)),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_90, TextResource.localize("KMK008_90"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.KMK008_90), TextResource.localize(I18NText.getText(RegistTimeColumn.KMK008_90)),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_91, TextResource.localize("KMK008_91"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.KMK008_91), TextResource.localize(I18NText.getText(RegistTimeColumn.KMK008_91)),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_204, TextResource.localize("KMK008_204"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.KMK008_205), TextResource.localize(I18NText.getText(RegistTimeColumn.KMK008_205)),
 				ColumnTextAlign.LEFT, "", true));
 		return columns;
 	}
@@ -222,15 +223,15 @@ public class RegisteTimeImpl implements MasterListData {
 	public List<MasterHeaderColumn> getHeaderColumnsSheet8() {
 
 		List<MasterHeaderColumn> columns = new ArrayList<>();
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.S8KMK008_89, TextResource.localize("KMK008_89"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.S8KMK008_89), TextResource.localize(I18NText.getText(RegistTimeColumn.S8KMK008_89)),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.S8KMK008_92, TextResource.localize("KMK008_92"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.S8KMK008_92), TextResource.localize(I18NText.getText(RegistTimeColumn.S8KMK008_92)),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_90, TextResource.localize("KMK008_90"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.KMK008_90), TextResource.localize(I18NText.getText(RegistTimeColumn.KMK008_90)),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_91, TextResource.localize("KMK008_91"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.KMK008_91), TextResource.localize(I18NText.getText(RegistTimeColumn.KMK008_91)),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_204, TextResource.localize("KMK008_204"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.KMK008_205), TextResource.localize(I18NText.getText(RegistTimeColumn.KMK008_205)),
 				ColumnTextAlign.LEFT, "", true));
 		return columns;
 	}
@@ -247,19 +248,19 @@ public class RegisteTimeImpl implements MasterListData {
 	public List<MasterHeaderColumn> getHeaderColumnsSheet9() {
 		 List <MasterHeaderColumn> columns = new ArrayList<>();
 
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.S9KMK008_100, TextResource.localize("KMK008_100"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.S9KMK008_100), TextResource.localize(I18NText.getText(RegistTimeColumn.S9KMK008_100)),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.S9KMK008_101, TextResource.localize("KMK008_101"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.S9KMK008_101), TextResource.localize(I18NText.getText(RegistTimeColumn.S9KMK008_101)),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_89, TextResource.localize("KMK008_89"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.KMK008_89), TextResource.localize(I18NText.getText(RegistTimeColumn.KMK008_89)),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_92, TextResource.localize("KMK008_92"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.KMK008_92), TextResource.localize(I18NText.getText(RegistTimeColumn.KMK008_92)),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_90, TextResource.localize("KMK008_90"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.KMK008_90), TextResource.localize(I18NText.getText(RegistTimeColumn.KMK008_90)),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_91, TextResource.localize("KMK008_91"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.KMK008_91), TextResource.localize(I18NText.getText(RegistTimeColumn.KMK008_91)),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_204, TextResource.localize("KMK008_204"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.KMK008_205), TextResource.localize(I18NText.getText(RegistTimeColumn.KMK008_205)),
 				ColumnTextAlign.LEFT, "", true));
 	        return columns;
 	}
@@ -275,19 +276,19 @@ public class RegisteTimeImpl implements MasterListData {
 	public List<MasterHeaderColumn> getHeaderColumnsSheet10() {
 		 List <MasterHeaderColumn> columns = new ArrayList<>();
 
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.S10KMK008_102, TextResource.localize("KMK008_102"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.S10KMK008_102), TextResource.localize(I18NText.getText(RegistTimeColumn.S10KMK008_102)),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.S10KMK008_103, TextResource.localize("KMK008_103"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.S10KMK008_103), TextResource.localize(I18NText.getText(RegistTimeColumn.S10KMK008_103)),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_89, TextResource.localize("KMK008_89"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.KMK008_89), TextResource.localize(I18NText.getText(RegistTimeColumn.KMK008_89)),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_92, TextResource.localize("KMK008_92"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.KMK008_92), TextResource.localize(I18NText.getText(RegistTimeColumn.KMK008_92)),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_90, TextResource.localize("KMK008_90"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.KMK008_90), TextResource.localize(I18NText.getText(RegistTimeColumn.KMK008_90)),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_91, TextResource.localize("KMK008_91"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.KMK008_91), TextResource.localize(I18NText.getText(RegistTimeColumn.KMK008_91)),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_204, TextResource.localize("KMK008_204"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.KMK008_205), TextResource.localize(I18NText.getText(RegistTimeColumn.KMK008_205)),
 				ColumnTextAlign.LEFT, "", true));
 	        return columns;
 	}
@@ -303,19 +304,19 @@ public class RegisteTimeImpl implements MasterListData {
 	public List<MasterHeaderColumn> getHeaderColumnsSheet11() {
 		 List <MasterHeaderColumn> columns = new ArrayList<>();
 
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.S11KMK008_104, TextResource.localize("KMK008_104"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.S11KMK008_104), TextResource.localize(I18NText.getText(RegistTimeColumn.S11KMK008_104)),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.S11KMK008_105, TextResource.localize("KMK008_105"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.S11KMK008_105), TextResource.localize(I18NText.getText(RegistTimeColumn.S11KMK008_105)),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_89, TextResource.localize("KMK008_89"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.KMK008_89), TextResource.localize(I18NText.getText(RegistTimeColumn.KMK008_89)),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_92, TextResource.localize("KMK008_92"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.KMK008_92), TextResource.localize(I18NText.getText(RegistTimeColumn.KMK008_92)),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_90, TextResource.localize("KMK008_90"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.KMK008_90), TextResource.localize(I18NText.getText(RegistTimeColumn.KMK008_90)),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_91, TextResource.localize("KMK008_91"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.KMK008_91), TextResource.localize(I18NText.getText(RegistTimeColumn.KMK008_91)),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_204, TextResource.localize("KMK008_204"),
+		columns.add(new MasterHeaderColumn(I18NText.getText(RegistTimeColumn.KMK008_205), TextResource.localize(I18NText.getText(RegistTimeColumn.KMK008_205)),
 				ColumnTextAlign.LEFT, "", true));
 	        return columns;
 	}
@@ -365,7 +366,7 @@ public class RegisteTimeImpl implements MasterListData {
 		SheetData sheetData2 = SheetData.builder()
 				.mainData(this.getMasterDatasSheet2())
 				.mainDataColumns(this.getHeaderColumnsSheet2())
-				.sheetName(TextResource.localize("KMK008_203"))
+				.sheetName("３６協定単位設定")
 				.mode(MasterListMode.NONE)
 				.build();
 		sheetDatas.add(sheetData2);
@@ -376,7 +377,7 @@ public class RegisteTimeImpl implements MasterListData {
 		SheetData sheetData3 = SheetData.builder()
 				.mainData(this.getMasterDatasSheet3())
 				.mainDataColumns(this.getHeaderColumnsSheet3())
-				.sheetName(TextResource.localize("KMK008_204"))
+				.sheetName("承認者（36協定）の利用単位")
 				.mode(MasterListMode.NONE)
 				.build();
 		sheetDatas.add(sheetData3);

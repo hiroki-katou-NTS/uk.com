@@ -19,17 +19,14 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmployeeHistory;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository.BusinessTypeEmpOfHistoryRepository;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.businesstype.KrcmtBusinessTypeOfHistory;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.businesstype.KrcmtBusinessTypeOfHistoryPK;
-import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
-import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpHis;
-import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpHisAdaptor;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeHistory;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.repository.BusinessTypeEmpOfHistoryRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * implement BusinessTypeEmpOfHistoryRepository
@@ -39,18 +36,18 @@ import nts.arc.time.calendar.period.DatePeriod;
  */
 @Stateless
 public class JpaBusinessTypeEmpOfHistory extends JpaRepository
-		implements BusinessTypeEmpOfHistoryRepository, BusinessTypeOfEmpHisAdaptor {
+		implements BusinessTypeEmpOfHistoryRepository {
 	private static final String FIND_BY_BASE_DATE;
 	private static final String FIND_BY_EMPLOYEE;
 	private static final String FIND_BY_EMPLOYEE_DESC;
 //	private static final String SEL_BUSINESS_TYPE;
 
-	private static final String FIND_BY_CID_SID_DATE_PERIOD = "SELECT NEW " + BusinessTypeOfEmpDto.class.getName()
-			+ " (a.cID, a.sId, a.krcmtBusinessTypeOfHistoryPK.historyId, a.startDate, a.endDate, b.businessTypeCode)"
-			+ " FROM KrcmtBusinessTypeOfHistory a JOIN KrcmtBusinessTypeOfEmployee b"
-			+ " ON a.krcmtBusinessTypeOfHistoryPK.historyId = b.krcmtBusinessTypeOfEmployeePK.historyId"
-			+ " WHERE a.sId IN :sIds" + " AND a.cID = :cId"
-			+ " AND a.startDate <= :endDate and a.endDate >= :startDate";
+//	private static final String FIND_BY_CID_SID_DATE_PERIOD = "SELECT NEW " + BusinessTypeOfEmpDto.class.getName()
+//			+ " (a.cID, a.sId, a.krcmtBusinessTypeOfHistoryPK.historyId, a.startDate, a.endDate, b.businessTypeCode)"
+//			+ " FROM KrcmtBusinessTypeOfHistory a JOIN KrcmtBusinessTypeOfEmployee b"
+//			+ " ON a.krcmtBusinessTypeOfHistoryPK.historyId = b.krcmtBusinessTypeOfEmployeePK.historyId"
+//			+ " WHERE a.sId IN :sIds" + " AND a.cID = :cId"
+//			+ " AND a.startDate <= :endDate and a.endDate >= :startDate";
 
 	static {
 		StringBuilder stringBuilder = new StringBuilder();
@@ -185,29 +182,29 @@ public class JpaBusinessTypeEmpOfHistory extends JpaRepository
 		return Optional.empty();
 	}
 
-	@Override
-	public Optional<BusinessTypeOfEmpHis> findByBaseDateAndSid(GeneralDate baseDate, String sId) {
-		return this.findByBaseDate(baseDate, sId).map(x -> new BusinessTypeOfEmpHis(x.getCompanyId(), x.getEmployeeId(),
-				x.getHistory().get(0).identifier(), x.getHistory().get(0).span()));
-	}
-
-	@Override
-	public List<BusinessTypeOfEmpDto> findByCidSidBaseDate(String cid, List<String> sIds, DatePeriod datePeriod) {
-		
-		// ResultList
-		List<BusinessTypeOfEmpDto> resultList = new ArrayList<>();
-		// Split employeeId List if size of employeeId List is greater than 1000
-		CollectionUtil.split(sIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
-			List<BusinessTypeOfEmpDto> entities = this.queryProxy()
-					.query(FIND_BY_CID_SID_DATE_PERIOD, BusinessTypeOfEmpDto.class).setParameter("sIds", subList)
-					.setParameter("cId", cid).setParameter("startDate", datePeriod.start())
-					.setParameter("endDate", datePeriod.end())
-					.getList();
-			resultList.addAll(entities);
-		});
-		
-		return resultList;
-	}
+//	@Override
+//	public Optional<BusinessTypeOfEmpHis> findByBaseDateAndSid(GeneralDate baseDate, String sId) {
+//		return this.findByBaseDate(baseDate, sId).map(x -> new BusinessTypeOfEmpHis(x.getCompanyId(), x.getEmployeeId(),
+//				x.getHistory().get(0).identifier(), x.getHistory().get(0).span()));
+//	}
+//
+//	@Override
+//	public List<BusinessTypeOfEmpDto> findByCidSidBaseDate(String cid, List<String> sIds, DatePeriod datePeriod) {
+//		
+//		// ResultList
+//		List<BusinessTypeOfEmpDto> resultList = new ArrayList<>();
+//		// Split employeeId List if size of employeeId List is greater than 1000
+//		CollectionUtil.split(sIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
+//			List<BusinessTypeOfEmpDto> entities = this.queryProxy()
+//					.query(FIND_BY_CID_SID_DATE_PERIOD, BusinessTypeOfEmpDto.class).setParameter("sIds", subList)
+//					.setParameter("cId", cid).setParameter("startDate", datePeriod.start())
+//					.setParameter("endDate", datePeriod.end())
+//					.getList();
+//			resultList.addAll(entities);
+//		});
+//		
+//		return resultList;
+//	}
 
 	@Override
 	@SneakyThrows

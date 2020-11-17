@@ -9,7 +9,7 @@ import nts.arc.primitive.constraint.IntegerRange;
  * @author lan_lt
  *
  */
-@IntegerRange(min = 0, max = 9)
+@IntegerRange(min = 2, max = 10)
 public class MinNumberEmployeeTogether extends IntegerPrimitiveValue<MinNumberEmployeeTogether>{
 
 	/**serialVersionUID	 */

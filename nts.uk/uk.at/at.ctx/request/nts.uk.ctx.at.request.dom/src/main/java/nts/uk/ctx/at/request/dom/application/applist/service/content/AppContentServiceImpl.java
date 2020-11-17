@@ -152,7 +152,7 @@ public class AppContentServiceImpl implements AppContentService {
 				// 申請理由内容　+＝　定型理由＋’　’＋Input．申請理由
 				result += reasonForFixedForm.v();
 				if(appReason!=null) {
-					result += " " + appReason.v();	
+					result += " " + appReason.v().replaceAll("\n", " ");	
 				}
 			}
 		} else {
@@ -166,7 +166,7 @@ public class AppContentServiceImpl implements AppContentService {
 			} else {
 				// 申請理由内容　+＝　Input．申請理由
 				if(appReason!=null) {
-					result += appReason.v();	
+					result += appReason.v().replaceAll("\n", " ");	
 				}
 			}
 		}
@@ -539,6 +539,7 @@ public class AppContentServiceImpl implements AppContentService {
 			} else {
 				result = "CMMS45_9";
 			}
+			return result;
 		}
 		// 反映状態(trạng thái phản ánh)　＝　PC：#CMM045_63スマホ：#CMMS45_8
 		boolean condition1 = 
@@ -554,6 +555,7 @@ public class AppContentServiceImpl implements AppContentService {
 			} else {
 				result = "CMMS45_8";
 			}
+			return result;
 		}
 		// 反映状態　＝　PC：#CMM045_65スマホ：#CMMS45_11
 		if(reflectedState==ReflectedState.DENIAL) {
@@ -562,6 +564,7 @@ public class AppContentServiceImpl implements AppContentService {
 			} else {
 				result = "CMMS45_11";
 			}
+			return result;
 		}
 		// 反映状態　＝　PC：#CMM045_66スマホ：#CMMS45_36
 		if(reflectedState==ReflectedState.NOTREFLECTED && phaseAtr==ApprovalBehaviorAtrImport_New.REMAND) {
@@ -570,6 +573,7 @@ public class AppContentServiceImpl implements AppContentService {
 			} else {
 				result = "CMMS45_36";
 			}
+			return result;
 		}
 		// 反映状態　＝　PC：#CMM045_67スマホ：#CMMS45_10
 		if(reflectedState==ReflectedState.CANCELED) {
@@ -578,6 +582,7 @@ public class AppContentServiceImpl implements AppContentService {
 			} else {
 				result = "CMMS45_10";
 			}
+			return result;
 		}
 		return result;
 	}

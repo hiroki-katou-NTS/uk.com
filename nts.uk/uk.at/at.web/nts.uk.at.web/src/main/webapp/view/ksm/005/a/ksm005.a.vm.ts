@@ -139,7 +139,7 @@ module nts.uk.at.view.ksm005.a {
                 self.workplaceId = ko.observable("0");
                 self.workplaceName = ko.observable("");
                 self.eventDisplay = ko.observable(true);
-                self.eventUpdatable = ko.observable(true);
+                self.eventUpdatable = ko.observable(false);
                 self.holidayDisplay = ko.observable(true);
                 self.cellButtonDisplay = ko.observable(false);
 
