@@ -20,11 +20,11 @@ module nts.uk.at.view.ksu001.g {
         loadWorkAvailabilityOfOneDay(): void {
             const self = this,
             method = [
-            { id: '', Name: "なし" },
-            { id: getText('KSU001_4038'), Name: getText('KSU001_4038') },
-            { id: getText('KSU001_4035'), Name: getText('KSU001_4035') },
-            { id: getText('KSU001_4036'), Name: getText('KSU001_4036') }
-            ]
+				{ id: '', Name: "なし" },
+				{ id: getText('KSU001_4038'), Name: getText('KSU001_4038') },
+				{ id: getText('KSU001_4035'), Name: getText('KSU001_4035') },
+				{ id: getText('KSU001_4036'), Name: getText('KSU001_4036') }
+            ];
             let listData: Array<any> = [];    
             let dataAll: Array<any> = [];            
             let arrOneDay: Array<any> = [];
@@ -116,12 +116,12 @@ module nts.uk.at.view.ksu001.g {
                         autoGenerateColumns: false,                        
                         responseDatakey: "results",
                         columns: [
-                            { headerText: getText('KSU001_4032'), key: "desireDay", dataType: "string" },                          
-                            { headerText: getText('KSU001_4033'), key: "employeeCdName", dataType: "string", width: "30%" },
+                            { headerText: getText('KSU001_4032'), key: "desireDay", dataType: "string", width: "17%" },                          
+                            { headerText: getText('KSU001_4033'), key: "employeeCdName", dataType: "string", width: "20%" },
                             { headerText: getText('KSU001_4034'), key: "method", dataType: "string" },
                             { headerText: getText('KSU001_4035'), key: "shift" },
                             { headerText: getText('KSU001_4036'), key: "timezone" },
-                            { headerText: getText('KSU001_4037'), key: "remarks", height: "20px" }
+                            { headerText: getText('KSU001_4037'), key: "remarks" }
                         ],
 
                         features: [

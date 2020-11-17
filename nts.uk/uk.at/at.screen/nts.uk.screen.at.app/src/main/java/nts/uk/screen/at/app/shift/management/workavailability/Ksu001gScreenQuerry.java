@@ -34,6 +34,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
 
 /**
  * 初期起動の情報取得
@@ -92,13 +93,13 @@ public class Ksu001gScreenQuerry {
 			availabilityDisplayInfoOfOneDays.forEach(x -> {
 				String method = "";
 				if (x.getDisplayInfo().getMethod().value == 0) {
-					method = "休日";
+					method = TextResource.localize("KSU001_4038");
 				}
 				if (x.getDisplayInfo().getMethod().value == 1) {
-					method = "シフト";
+					method = TextResource.localize("KSU001_4035");
 				}
 				if (x.getDisplayInfo().getMethod().value == 2) {
-					method = "時間帯";
+					method = TextResource.localize("KSU001_4036");
 				}
 
 				if (x.getDisplayInfo().getNameList().size() >= 1) {
@@ -110,7 +111,7 @@ public class Ksu001gScreenQuerry {
 												+ syEmployeePub.getEmpBasicBySId(x.getEmployeeId()).getBusinessName(),
 										method, x.getDisplayInfo().getNameList().get(i),
 										x.getDisplayInfo().getTimeZoneList().get(j).getStart().getInDayTimeWithFormat()
-												+ "～" + x.getDisplayInfo().getTimeZoneList().get(j).getEnd()
+												+ TextResource.localize("KSU001_4055") + x.getDisplayInfo().getTimeZoneList().get(j).getEnd()
 														.getInDayTimeWithFormat(),
 										x.getMemo().v()));
 							}
@@ -131,7 +132,7 @@ public class Ksu001gScreenQuerry {
 											+ syEmployeePub.getEmpBasicBySId(x.getEmployeeId()).getBusinessName(),
 									method, "",
 									x.getDisplayInfo().getTimeZoneList().get(j).getStart().getInDayTimeWithFormat()
-											+ "～" + x.getDisplayInfo().getTimeZoneList().get(j).getEnd()
+											+ TextResource.localize("KSU001_4055") + x.getDisplayInfo().getTimeZoneList().get(j).getEnd()
 													.getInDayTimeWithFormat(),
 									x.getMemo().v()));
 						}
