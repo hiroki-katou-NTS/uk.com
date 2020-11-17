@@ -9,6 +9,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 	import Application = nts.uk.at.view.kaf000.shr.viewmodel.Application;
 	import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
 	import Kaf000AViewModel = nts.uk.at.view.kaf000.a.viewmodel.Kaf000AViewModel;
+	import AppInitParam = nts.uk.at.view.kaf000.shr.viewmodel.AppInitParam;
 	
 	@bean()
     class Kaf005AViewModel extends Kaf000AViewModel {
@@ -23,18 +24,114 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		holidayTime: KnockoutObservableArray<HolidayTime> = ko.observableArray([]);
 		overTime: KnockoutObservableArray<OverTime> = ko.observableArray([]);
 		dataSource: DisplayInfoOverTime;
-		created() {
-			const self = this;
-			self.isSendMail = ko.observable(false);
-			self.application = ko.observable(new Application(self.appType()));
-			self.createRestTime(self.restTime);
-			self.createHolidayTime(self.holidayTime);
-			self.createOverTime(self.overTime);
+		visibleModel: VisibleModel;
+		
+		created(params: AppInitParam) {		
+			// new 
+			const vm = this;
+			vm.application = ko.observable(new Application(ko.toJS(vm.appType)));
+			vm.createRestTime(vm.restTime);
+			vm.createHolidayTime(vm.holidayTime);
+			vm.createOverTime(vm.overTime);
+			let empLst: Array<string> = [],
+				dateLst: Array<string> = [];
+			if (!_.isEmpty(params)) {
+				if (!_.isEmpty(params.employeeIds)) {
+					empLst = params.employeeIds;
+				}
+				if (!_.isEmpty(params.baseDate)) {
+					let paramDate = moment(params.baseDate).format('YYYY/MM/DD');
+					dateLst = [paramDate];
+					vm.application().appDate(paramDate);
+					vm.application().opAppStartDate(paramDate);
+                    vm.application().opAppEndDate(paramDate);
+				}
+				if (params.isAgentMode) {
+					vm.isAgentMode(params.isAgentMode);
+				}
+			}
+			vm.isSendMail = ko.observable(false);
+			vm.$blockui("show");
+			// load setting common KAF000
+			vm.loadData(empLst, dateLst, vm.appType())
+			.then((loadDataFlag: any) => {
+				if (loadDataFlag) {
+					let param1 = {
+							
+					} as FirstParam;
+					param1.companyId = vm.$user.companyId;
+					// param1.dateOp = '2020/11/13';
+					param1.overtimeAppAtr = OvertimeAppAtr.EARLY_OVERTIME;
+					param1.appDispInfoStartupDto = ko.toJS(vm.appDispInfoStartupOutput);
+					param1.startTimeSPR = 100;
+					param1.endTimeSPR = 200;
+					param1.isProxy = true;
+					let command = {
+						companyId: param1.companyId,
+						dateOp: param1.dateOp,
+						overtimeAppAtr: param1.overtimeAppAtr,
+						appDispInfoStartupDto: param1.appDispInfoStartupDto,
+						startTimeSPR: param1.startTimeSPR,
+						endTimeSPR: param1.endTimeSPR,
+						isProxy: param1.isProxy,
+					};
+					// load setting đơn xin
+					return vm.$ajax(API.start, command);
+				}
+			}).then((successData: any) => {
+				if (successData) {
+					vm.dataSource = successData;
+					vm.bindOverTimeWorks(vm.dataSource);
+					vm.bindWorkInfo(vm.dataSource);
+					vm.bindRestTime(vm.dataSource);
+					vm.bindHolidayTime(vm.dataSource);
+				}
+			}).fail((failData: any) => {
+				// xử lý lỗi nghiệp vụ riêng
+				vm.handleErrorCustom(failData).then((result: any) => {
+					if(result) {
+						// xử lý lỗi nghiệp vụ chung
+						vm.handleErrorCommon(failData);
+					}
+				});
+			}).always(() => {
+				vm.$blockui("hide"); 
+				$('#kaf000-a-component4-singleDate').focus();
+			});
+		}
+		
+		
+		handleErrorCustom(failData: any): any {
+			const vm = this;
+			if(failData.messageId == "Msg_26") {
+				vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds })
+				.then(() => {
+					vm.$jump("com", "/view/ccg/008/a/index.xhtml");	
+				});
+				return $.Deferred().resolve(false);		
+			}
+			return $.Deferred().resolve(true);
+		}
+
+		handleConfirmMessage(listMes: any): any {
+			const vm = this;
+			if(_.isEmpty(listMes)) {
+				return $.Deferred().resolve(true);
+			}
+			let msg = listMes[0];
+
+			return vm.$dialog.confirm({ messageId: msg.msgID, messageParams: msg.paramLst })
+			.then((value) => {
+				if (value === 'yes') {
+					return vm.handleConfirmMessage(_.drop(listMes));
+				} else {
+					return $.Deferred().resolve(false);
+				}
+			});
 		}
 		
 		mounted() {
 			const self = this;
-			self.start();
 			
 		}
 		
@@ -80,58 +177,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			}
 			overTime(overTimeArray);
 		}
-		
-		start() {
-			const self = this;
-			
-			self.$blockui("show");
-			let empLst: Array<string> = [],
-				dateLst: Array<string> = [];
-			self.loadData(empLst, dateLst, self.appType())
-				.then((loadDataFlag: any) => {
-					self.application().appDate.subscribe(value => {	
-	                    if (value) {
-							self.changeDate();
-						}
-                	});
-	
-					if (loadDataFlag) {
-						let param1 = {
-							
-						} as FirstParam;
-						param1.companyId = self.$user.companyId;
-						// param1.dateOp = '2020/11/13';
-						param1.overtimeAppAtr = OvertimeAppAtr.EARLY_OVERTIME;
-						param1.appDispInfoStartupDto = ko.toJS(self.appDispInfoStartupOutput);
-						param1.startTimeSPR = 100;
-						param1.endTimeSPR = 200;
-						param1.isProxy = true;
-						let command = {
-							companyId: param1.companyId,
-							dateOp: param1.dateOp,
-							overtimeAppAtr: param1.overtimeAppAtr,
-							appDispInfoStartupDto: param1.appDispInfoStartupDto,
-							startTimeSPR: param1.startTimeSPR,
-							endTimeSPR: param1.endTimeSPR,
-							isProxy: param1.isProxy,
-						};
-						
-						return self.$ajax(API.start, command);
-					}
-				})
-				.then((res: DisplayInfoOverTime) => {
-					self.dataSource = res;
-					self.bindOverTimeWorks(res);
-					self.bindWorkInfo(res);
-					self.bindRestTime(res);
-					self.bindHolidayTime(res);
-				})
-				.fail((res: any) => {
-					
-				})
-				.always(() => self.$blockui('hide'));
-		}
-		
+
 		changeDate() {
 			console.log('change date');
 			const self = this;
@@ -168,7 +214,51 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		}
 		
 		register() {
-			
+			const vm = this;
+			vm.$blockui("show");
+			// validate chung KAF000
+			vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
+			.then((isValid) => {
+				if (isValid) {
+					// validate riêng cho màn hình
+					return vm.$validate('.inputTime');
+				}
+			}).then((result) => {
+				// check trước khi đăng kí
+				if(result) {
+					return vm.$ajax('at', API.checkBefore, ["Msg_26"]);
+				}
+			}).then((result) => {
+				if (result) {
+					// xử lý confirmMsg
+					return vm.handleConfirmMessage(result);
+				}
+			}).then((result) => {
+				if(result) {
+					// đăng kí 
+					return vm.$ajax('at', API.register, ["Msg_15"]).then(() => {
+						return vm.$dialog.info({ messageId: "Msg_15"}).then(() => {
+							return true;
+						});	
+					});
+				}
+			}).then((result) => {
+				if(result) {
+					// gửi mail sau khi đăng kí
+					// return vm.$ajax('at', API.sendMailAfterRegisterSample);
+					return true;
+				}	
+			}).fail((failData) => {
+				// xử lý lỗi nghiệp vụ riêng
+				vm.handleErrorCustom(failData).then((result: any) => {
+					if(result) {
+						// xử lý lỗi nghiệp vụ chung
+						vm.handleErrorCommon(failData);
+					}
+				});
+			}).always(() => {
+				vm.$blockui("hide");	
+			});
 		}
 		// header
 		bindOverTimeWorks(res: DisplayInfoOverTime) {
@@ -322,6 +412,24 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			
 		}
 		
+		createVisibleModel(res: DisplayInfoOverTime) {
+			let visibleModel = new VisibleModel() as VisibleModel;
+			// 「残業申請の表示情報．基準日に関係しない情報．残業申請設定．申請詳細設定．時刻計算利用区分」= する
+			let c7  = res.infoNoBaseDate.overTimeAppSet.applicationDetailSetting.timeInputUse == NotUseAtr.USE
+			visibleModel.c7(c7);
+			// ※7 = ○　OR　※18-1 = ○
+			let c18 = false;
+			visibleModel.c18(c18);
+			
+			// 「残業申請の表示情報．基準日に関係しない情報．残業休日出勤申請の反映．残業申請．実績の勤務情報へ反映する」= する
+			let c26 = res.infoNoBaseDate.overTimeReflect.overtimeWorkAppReflect.reflectActualWorkAtr == NotUseAtr.USE;
+			visibleModel.c26(c26);
+			// ※7 = ○　AND 「残業申請の表示情報．申請表示情報．申請表示情報(基準日関係なし)．複数回勤務の管理」= true
+			let c29 = c7 && false;
+			visibleModel.c29(c29);
+			return visibleModel;
+		}
+		
 		
 		
 		
@@ -330,9 +438,30 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 	}
 	const API = {
 		start: 'at/request/application/overtime/start',
-		changeDate: 'at/request/application/overtime/changeDate'
+		changeDate: 'at/request/application/overtime/changeDate',
+		checkBefore: '',
+		register: ''
 	}
-	
+	class VisibleModel {
+		
+		c6: KnockoutObservable<Boolean> = ko.observable(false);
+		
+		c7: KnockoutObservable<Boolean> = ko.observable(false);
+		c18: KnockoutObservable<Boolean> = ko.observable(false);
+		
+		c26: KnockoutObservable<Boolean> = ko.observable(false);
+		
+		c29: KnockoutObservable<Boolean> = ko.observable(false);
+		
+		
+		constructor() {
+			
+		}
+	}
+	enum NotUseAtr {
+		Not_USE,
+		USE
+	}
 	interface DisplayInfoOverTime {
 		infoBaseDateOutput: InfoBaseDateOutput;
 		infoNoBaseDate: InfoNoBaseDate;

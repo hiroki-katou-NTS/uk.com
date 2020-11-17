@@ -446,11 +446,13 @@ public class OvertimeServiceImpl implements OvertimeService {
 		String employeeId = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid();
 		DisplayInfoOverTime output = new DisplayInfoOverTime();
 		// 基準日に関係ない情報を取得する 
-		InfoNoBaseDate infoNoBaseDate= commonAlgorithmOverTime.getInfoNoBaseDate(companyId,
+		InfoNoBaseDate infoNoBaseDate= commonAlgorithmOverTime.getInfoNoBaseDate(
+				companyId,
 				employeeId,
 				overtimeAppAtr);
 		// 基準日に関する情報を取得する
-		InfoBaseDateOutput infoBaseDateOutput = commonAlgorithmOverTime.getInfoBaseDate(companyId,
+		InfoBaseDateOutput infoBaseDateOutput = commonAlgorithmOverTime.getInfoBaseDate(
+				companyId,
 				employeeId,
 				dateOp.orElse(null),
 				overtimeAppAtr,
