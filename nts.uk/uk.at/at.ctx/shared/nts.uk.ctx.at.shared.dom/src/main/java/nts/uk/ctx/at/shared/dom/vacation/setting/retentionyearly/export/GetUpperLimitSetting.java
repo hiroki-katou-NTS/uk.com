@@ -64,9 +64,9 @@ public class GetUpperLimitSetting {
 				val emptYearlyRetentionSet = emptYearlyRetentionSetOpt.get();
 				
 				// 管理区分を確認
-				if (emptYearlyRetentionSet.getManagementCategory() == ManageDistinct.YES){
+			/*	if (emptYearlyRetentionSet.getManagementCategory() == ManageDistinct.YES){
 					return emptYearlyRetentionSet.getUpperLimitSetting();
-				}
+				}*/
 				return new UpperLimitSetting(new UpperLimitSetCreateMemento(0, 0));
 			}
 		}
