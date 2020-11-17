@@ -104,9 +104,13 @@ module nts.uk.at.view.ksm005.a {
                 });
                 
                 self.yearMonthPicked.subscribe(function(month: number){
+
                     if($('#yMPicker').ntsError('hasError')){
                         return; 
                     }
+                    // Reset value, always reload yearMonthPicker
+                    self.reloadYM = true;
+
                     if (self.modeMonthlyPattern() == ModeMonthlyPattern.UPDATE) {
                         self.detailMonthlyPattern(self.selectMonthlyPattern(), month);
                     }
