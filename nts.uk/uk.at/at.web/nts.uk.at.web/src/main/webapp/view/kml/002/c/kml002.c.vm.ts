@@ -57,7 +57,8 @@ module nts.uk.at.view.kml002.c {
         vm.$window.modal('/view/kml/002/g/index.xhtml').then(() => {
           vm.$window.storage('KWL002_SCREEN_G_OUTPUT').then((data) => {
             if (!_.isNil(data)) {
-              vm.updateTotalNumberOfTimes(count, data);
+              //vm.updateTotalNumberOfTimes(count, data);
+              vm.getNumberCounterDetails(count);
             }
           });
         });
@@ -79,52 +80,38 @@ module nts.uk.at.view.kml002.c {
         || (vm.count2() === Usage.Use && vm.count2Details().length === 0)
         || (vm.count3() === Usage.Use && vm.count3Details().length === 0)) {
         let errorParams = [];
-        
-        if (vm.count1Details().length === 0)
+
+        if (vm.count1() === Usage.Use &&  vm.count1Details().length === 0)
           errorParams.push(vm.$i18n('KML002_119') + vm.$i18n('KML002_69'));
         else
           errorParams.push('');
 
-        if (vm.count2Details().length === 0)
+        if (vm.count2() === Usage.Use && vm.count2Details().length === 0)
           errorParams.push(vm.$i18n('KML002_119') + vm.$i18n('KML002_72'));
         else
           errorParams.push('');
 
-        if (vm.count3Details().length === 0)
+        if (vm.count3() === Usage.Use && vm.count3Details().length === 0)
           errorParams.push(vm.$i18n('KML002_119') + vm.$i18n('KML002_75'));
         else
           errorParams.push('');
 
+        let showMsg = [];
+        _.forEach(errorParams, (x, index) => {
+          if (x !== '') showMsg.push(x);
+        });
+        for (let i = showMsg.length; i < errorParams.length; i++) {
+          showMsg.push('');
+        }
+
         vm.$dialog.error({
           messageId: 'Msg_1850',
-          messageParams: errorParams
+          messageParams: showMsg
         }).then(() => {
           $('#btnRegister').focus();
         });
         return;
       }
-
-      /* 
-      ・「回数集計１」の利用区分＝＝利用するが「回数集計１」の詳細設定はまだ設定られた。																										
-      ・「回数集計２」の利用区分＝＝利用するが「回数集計２」の詳細設定はまだ設定られない。																										
-      ・「回数集計３」の利用区分＝＝利用するが「回数集計３」の詳細設定はまだ設定られない。
-      */
-      /* if ((vm.count1() === Usage.Use && vm.count1Details().length > 0)
-        && (vm.count2() === Usage.Use && vm.count2Details().length === 0)
-        && (vm.count3() === Usage.Use && vm.count3Details().length === 0)) {
-        let errorParams = [];
-        errorParams.push(vm.$i18n('KML002_119') + vm.$i18n('KML002_72'));
-        errorParams.push(vm.$i18n('KML002_119') + vm.$i18n('KML002_75'));
-        errorParams.push('');
-
-        vm.$dialog.error({
-          messageId: 'Msg_1850',
-          messageParams: errorParams
-        }).then(() => {
-          $('#btnRegister').focus();
-        });
-        return;
-      } */
 
       vm.personalCounterRegister();
     }

@@ -28,11 +28,16 @@ module nts.uk.at.view.kml002.f {
 
     proceed() {
       const vm = this;
-      //「開始時刻」＞＝「終了時刻」の場合。
+      //「開始時刻」＞＝「終了時刻」の場合。  
       if (vm.startTime() >= vm.endTime()) {
         vm.$dialog.error({ messageId: 'Msg_307' }).then(() => {
           $('#startTime').focus();
         });
+        return;
+      } else if ( vm.endTime() - vm.startTime() < 60) {
+        vm.$dialog.error({ messageId: "Msg_1819" }).then(() => {
+          $('#endTime').focus(); 
+        }); 
         return;
       } else {
         let start15m = vm.startTime() - _.floor(vm.startTime() / 60) * 60;
