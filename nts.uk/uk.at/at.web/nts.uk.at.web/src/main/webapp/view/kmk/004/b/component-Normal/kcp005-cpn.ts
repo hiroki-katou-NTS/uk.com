@@ -8,7 +8,7 @@ module nts.uk.at.view.kmk004.b {
 
     export interface ParamsKcp005 {
         selectedCode: KnockoutObservable<string>;
-        employeeList: KnockoutObservableArray<IEmployeeKcp005>;
+        employees: KnockoutObservableArray<IEmployee>;
     }
 
     @component({
@@ -19,19 +19,21 @@ module nts.uk.at.view.kmk004.b {
     export class KCP005VM extends ko.ViewModel {
 
         public selectedCode: KnockoutObservable<string> = ko.observable('');
-        public employeeList: KnockoutObservableArray<IEmployeeKcp005> = ko.observableArray([]);
+        public employees: KnockoutObservableArray<IEmployee> = ko.observableArray([]);
+        public employeeList: KnockoutObservableArray<IEmployee> = ko.observableArray([]);
         public alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel> = ko.observableArray([]);
 
-        created(params: Params) {
+        created(params: ParamsKcp005) {
             const vm = this;
+            vm.selectedCode = params.selectedCode;
+            vm.employees = params.employees;
 
             $('#employee-list')
                 .ntsListComponent({
                     isShowAlreadySet: true,
                     isMultiSelect: false,
                     listType: ListType.EMPLOYEE,
-                    employeeInputList: vm.employeeList,
-                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                    employeeInputList: vm.employees,
                     selectedCode: vm.selectedCode,
                     isDialog: false,
                     isShowNoSelectRow: false,
@@ -40,6 +42,19 @@ module nts.uk.at.view.kmk004.b {
                     isShowSelectAllButton: false,
                     disableSelection: false
                 });
+
+            // vm.employees
+            //     .subscribe(() => {
+            //         const employee = ko.unwrap(vm.employees)
+            //             .map((m: IEmployee) => ({
+            //                 code: m.employeeCode,
+            //                 name: m.employeeName,
+            //                 workplaceName: m.affiliationName
+            //             }));
+
+            //         vm.employeeList(employee as IEmployeeKcp005[]);
+            //         debugger;
+            //     });
         }
     }
 
@@ -50,22 +65,13 @@ module nts.uk.at.view.kmk004.b {
         static EMPLOYEE = 4;
     }
 
-    export interface IEmployeeKcp005 {
-        id?: string;
-        code: string;
-        name?: string;
-        workplaceName?: string;
-        isAlreadySetting?: boolean;
-        optionalColumn?: any;
-    }
-    
     class SelectType {
         static SELECT_BY_SELECTED_CODE = 1;
         static SELECT_ALL = 2;
         static SELECT_FIRST_ITEM = 3;
         static NO_SELECT = 4;
     }
-    
+
     interface UnitAlreadySettingModel {
         code: string;
         isAlreadySetting: boolean;

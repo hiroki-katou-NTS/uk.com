@@ -74,13 +74,11 @@ module nts.uk.at.view.kmk004.b {
 						vm.params.employees([]);
 
 						const employees = data.listEmployee
-							.map((m: IEmployee) => ({
-								affiliationCode: m.affiliationCode,
-								affiliationId: m.affiliationId,
-								affiliationName: m.affiliationName,
+							.map((m: any) => ({
+								workplaceName: m.affiliationName,
 								code: m.employeeCode,
 								name: m.employeeName,
-								employeeId: m.employeeId
+								id: m.employeeId
 							}));
 
 						vm.params.employees(employees);
@@ -90,11 +88,9 @@ module nts.uk.at.view.kmk004.b {
 	}
 
 	export interface IEmployee {
-		affiliationCode: String;
-		affiliationId: String;
-		affiliationName: String;
-		employeeCode: String;
-		employeeId: String;
-		employeeName: String;
+		workplaceName: String;
+		code: String;
+		id: String;
+		name: String;
 	}
 }

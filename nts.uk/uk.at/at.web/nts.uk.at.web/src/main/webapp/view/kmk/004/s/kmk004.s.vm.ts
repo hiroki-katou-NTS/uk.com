@@ -23,6 +23,10 @@ module nts.uk.at.view.kmk004.s {
         mounted() {
             const vm = this;
 
+            $(document).ready(function () {
+				$('.check-box-unit').focus();
+			});
+
             vm.$blockui('invisible')
                 .then(() => vm.$ajax(KMK004A_API.GET_USAGE_UNIT_SETTING))
                 .then((data: IUnitSetting) => {
@@ -47,7 +51,7 @@ module nts.uk.at.view.kmk004.s {
                 .then(() => vm.$blockui('clear'));
         }
 
-        setting() {
+        updateSetting() {
             const vm = this;
             var workPlace: boolean = false;
             var employment: boolean = false;
