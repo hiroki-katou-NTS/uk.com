@@ -410,16 +410,29 @@ public class OvertimeServiceImpl implements OvertimeService {
 				|| workContent.getWorkTimeCode().isPresent() 
 				|| workContent.getTimeZones().isEmpty()) return null;
 		// 06_計算処理
-		List<ApplicationTime> applicationTimes = commonOvertimeHoliday.calculator(companyId, employeeId, dateOp.orElse(null), workContent.getWorkTypeCode(), workContent.getWorkTimeCode(), workContent.getTimeZones(), workContent.getBreakTimes());
+		List<ApplicationTime> applicationTimes = commonOvertimeHoliday.calculator(
+				companyId,
+				employeeId,
+				dateOp.orElse(null),
+				workContent.getWorkTypeCode(),
+				workContent.getWorkTimeCode(),
+				workContent.getTimeZones(),
+				workContent.getBreakTimes());
 		
 		// 事前申請・実績の時間超過をチェックする
-		OverStateOutput overStateOutput = overtimeLeaveAppCommonSet.checkPreApplication(prePostInitAtr, Optional.ofNullable(advanceApplicationTime), applicationTimes.isEmpty() ? Optional.empty() : Optional.of(applicationTimes.get(0)), Optional.ofNullable(achieveApplicationTime));
+		OverStateOutput overStateOutput = overtimeLeaveAppCommonSet.checkPreApplication(
+				prePostInitAtr,
+				Optional.ofNullable(advanceApplicationTime),
+				applicationTimes.isEmpty() ? Optional.empty() : Optional.of(applicationTimes.get(0)),
+				Optional.ofNullable(achieveApplicationTime));
 		// 【チェック内容】
 		// 取得したList「申請時間．type」 = 休出時間　がある場合
 		applicationTimes.get(0).getApplicationTime().forEach(item -> {
 			// 休出時間をチェックする
 			if (item.getAttendanceType() == AttendanceType_Update.BREAKTIME) {
-				List<WorkdayoffFrame> workdayoffFrames = workdayoffFrameRepository.findByUseAtr(companyId, NotUseAtr.NOT_USE.value);
+				List<WorkdayoffFrame> workdayoffFrames = workdayoffFrameRepository.findByUseAtr(
+						companyId,
+						NotUseAtr.NOT_USE.value);
 				ouput.setWorkdayoffFrames(workdayoffFrames);
 			}
 		});

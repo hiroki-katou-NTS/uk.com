@@ -8,6 +8,7 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.find.application.overtime.AppOvertimeFinder;
 import nts.uk.ctx.at.request.app.find.application.overtime.DisplayInfoOverTimeDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.ParamCalculation;
 import nts.uk.ctx.at.request.app.find.application.overtime.ParamOverTimeChangeDate;
 import nts.uk.ctx.at.request.app.find.application.overtime.ParamOverTimeStart;
 /**
@@ -37,8 +38,8 @@ public class OvertimeWebService extends WebService {
 	
 	@POST
 	@Path("calculate")
-	public DisplayInfoOverTimeDto calculate(ParamOverTimeChangeDate param) {
-		return appOvertimeFinder.changeDate(param);
+	public DisplayInfoOverTimeDto calculate(ParamCalculation param) {
+		return appOvertimeFinder.calculate(param);
 	}
 	
 	

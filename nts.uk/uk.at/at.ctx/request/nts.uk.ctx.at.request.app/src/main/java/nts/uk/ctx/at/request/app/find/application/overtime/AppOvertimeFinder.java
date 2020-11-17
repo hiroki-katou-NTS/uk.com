@@ -84,7 +84,7 @@ public class AppOvertimeFinder {
 						.map(x -> x.toDomain(param.companyId))
 						.collect(Collectors.toList())
 				);
-		return DisplayInfoOverTimeDto.fromDomain(output);
+		return DisplayInfoOverTimeDto.fromDomainChangeDate(output);
 	}
 	
 	public DisplayInfoOverTimeDto calculate(ParamCalculation param) {
@@ -100,12 +100,12 @@ public class AppOvertimeFinder {
 				dateOp,
 				EnumAdaptor.valueOf(param.prePostInitAtr, PrePostAtr.class),
 				param.overtimeLeaveAppCommonSet.toDomain(),
-				param.advanceApplicationTime.toDomain(),
-				param.achieveApplicationTime.toDomain(),
+				param.advanceApplicationTime == null ? null : param.advanceApplicationTime.toDomain(),
+				param.achieveApplicationTime == null ? null : param.achieveApplicationTime.toDomain(),
 				param.workContent.toDomain());
 		
 		
-		return DisplayInfoOverTimeDto.fromDomain(output);
+		return DisplayInfoOverTimeDto.fromDomainCalculation(output);
 	}
 	
 }

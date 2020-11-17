@@ -215,6 +215,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					self.dataSource.infoWithDateApplicationOp = res.infoWithDateApplicationOp;
 					self.dataSource.calculationResultOp = res.calculationResultOp;
 					self.dataSource.workdayoffFrames = res.workdayoffFrames;
+					self.dataSource.appDispInfoStartup = res.appDispInfoStartup;
 					
 					self.bindOverTimeWorks(self.dataSource);
 					self.bindWorkInfo(self.dataSource);
@@ -610,7 +611,76 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		
 		calculate() {
 			const self = this;
+			self.$blockui("show");
 			console.log('calculate');
+			let command = {} as ParamCalculationCMD;
+			command.companyId = self.$user.companyId;
+			command.employeeId = self.$user.employeeId;
+			command.dateOp = ko.toJS(self.application).appDate;
+			command.prePostInitAtr = 0; // wait
+			command.overtimeLeaveAppCommonSet = self.dataSource.infoNoBaseDate.overTimeAppSet.overtimeLeaveAppCommonSetting;
+			if (self.dataSource.appDispInfoStartup.opPreAppContentDisplayLst) {
+				let opPreAppContentDisplayLst = self.dataSource.appDispInfoStartup.opPreAppContentDisplayLst;
+				if (!_.isEmpty(opPreAppContentDisplayLst)) {
+					let preAppContentDisplay = opPreAppContentDisplayLst[0];
+					if (!_.isNil(preAppContentDisplay.apOptional)) {
+						let appOverTime = preAppContentDisplay.apOptional;
+						command.advanceApplicationTime = appOverTime.applicationTime;
+					}
+				}
+			}
+			if (self.dataSource.infoWithDateApplicationOp) {
+				command.achieveApplicationTime = self.dataSource.infoWithDateApplicationOp.applicationTime;
+			}
+			let workContent = {} as WorkContent;
+			let workInfo = self.workInfo() as WorkInfo;
+			workContent.workTypeCode = workInfo.workType().code as string;
+			workContent.workTimeCode = workInfo.workTime().code as string;
+			
+			let timeZoneArray = [] as Array<TimeZone>;
+			let timeZone = {} as TimeZone;
+			if (!(_.isNil(workInfo.workHours1.start()) ||  _.isNil(workInfo.workHours1.end()))) {
+				timeZone.frameNo = 1;
+				timeZone.start = workInfo.workHours1.start();
+				timeZone.end = workInfo.workHours1.end();
+				timeZoneArray.push(timeZone);				
+			}
+			timeZone = {} as TimeZone;
+			if (!(_.isNil(workInfo.workHours2.start()) ||  _.isNil(workInfo.workHours2.end()))) {
+				timeZone.frameNo = 2;
+				timeZone.start = workInfo.workHours2.start();
+				timeZone.end = workInfo.workHours2.end();
+				timeZoneArray.push(timeZone);				
+			}
+			
+			workContent.timeZones = timeZoneArray;
+			let breakTimeSheetArray = [] as Array<BreakTimeSheet>;
+			let restTime = self.restTime() as Array<RestTime>;
+			
+			_.forEach(restTime, (item: RestTime) => {
+				if (!(_.isNil(ko.toJS(item.start)) || _.isNil(ko.toJS(item.end)))) {
+					let breakTimeSheet = {} as BreakTimeSheet;
+					breakTimeSheet.breakFrameNo = Number(item.frameNo);
+					breakTimeSheet.startTime = ko.toJS(item.start);
+					breakTimeSheet.endTime = ko.toJS(item.end);
+					breakTimeSheet.breakTime = 0;
+					breakTimeSheetArray.push(breakTimeSheet);					
+				}
+				
+			});
+			workContent.breakTimes = breakTimeSheetArray;
+			command.workContent = workContent;
+			self.$ajax(API.calculate, command)
+				.done((res: any) => {
+					if (res) {
+						
+					}
+				})
+				.fail((res: any) => {
+					
+				})
+				.always(() => self.$blockui("hide"));
+			
 		}
 		
 	
@@ -619,7 +689,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		start: 'at/request/application/overtime/start',
 		changeDate: 'at/request/application/overtime/changeDate',
 		checkBefore: '',
-		register: ''
+		register: '',
+		calculate: 'at/request/application/overtime/calculate'
 	}
 	class VisibleModel {
 		c2: KnockoutObservable<Boolean> = ko.observable(false);
@@ -652,6 +723,16 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		Not_USE,
 		USE
 	}
+	interface ParamCalculationCMD {
+		companyId: string;
+		employeeId: string;
+		dateOp: string;
+		prePostInitAtr: number;
+		overtimeLeaveAppCommonSet: OvertimeLeaveAppCommonSet;
+		advanceApplicationTime: ApplicationTime;
+		achieveApplicationTime: ApplicationTime;
+		workContent: WorkContent;
+	}
 	interface DisplayInfoOverTime {
 		infoBaseDateOutput: InfoBaseDateOutput;
 		infoNoBaseDate: InfoNoBaseDate;
@@ -683,6 +764,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		timeZones?: Array<TimeZone>;
 	}
 	interface TimeZone {
+		frameNo: number;
 		start: number;
 		end: number;
 	}
@@ -717,10 +799,16 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 	}
 	interface InfoNoBaseDate {
 		overTimeReflect: any;
-		overTimeAppSet: any;
+		overTimeAppSet: OvertimeAppSet;
 		agreeOverTimeOutput: AgreeOverTimeOutput;
 		divergenceReasonInputMethod: Array<any>;
 		divergenceTimeRoot: Array<any>;
+	}
+	interface OvertimeAppSet {
+		companyID: string;
+		overtimeLeaveAppCommonSetting: any;
+		overtimeQuotaSet: Array<any>;
+		applicationDetailSetting: any;
 	}
 	interface AgreeOverTimeOutput {
 		detailCurrentMonth: AgreementTimeImport;

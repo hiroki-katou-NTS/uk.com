@@ -19,7 +19,6 @@ public class BreakTimeSheetCommand {
 	public Integer breakTime;
 	
 	public BreakTimeSheet toDomain() {
-		
 		return new BreakTimeSheet(
 				new BreakFrameNo(breakFrameNo),
 				new TimeWithDayAttr(startTime),
