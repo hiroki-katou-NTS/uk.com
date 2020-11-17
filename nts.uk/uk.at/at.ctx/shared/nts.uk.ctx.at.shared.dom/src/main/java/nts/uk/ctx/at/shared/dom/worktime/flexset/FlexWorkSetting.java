@@ -315,8 +315,8 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 		val wkTimePossibles = TimeSpanForCalc.join(lstOTTimezone).get();
 		if (this.coreTimeSetting.getTimesheet() == ApplyAtr.NOT_USE) {
 			return Arrays.asList(ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd(
-					    new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkNo(1)
-					  , wkTimePossibles)
+					  new WorkNo(1).toAttendance()
+					, wkTimePossibles)
 					);
 		}
 
@@ -324,7 +324,7 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 		val startTime = new TimeSpanForCalc(wkTimePossibles.getStart(), coreTime.getStart());
 		val endTime = new TimeSpanForCalc(coreTime.getEnd(), wkTimePossibles.getEnd());
 		return Arrays.asList(ChangeableWorkingTimeZonePerNo.create(
-				  new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkNo(1)
+				  new WorkNo(1).toAttendance()
 				, startTime
 				, endTime
 				));
@@ -379,7 +379,7 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 		}
 
 		return Arrays.asList(ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd(
-				  new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkNo(1), workOnDayOffTime));
+				new WorkNo(1).toAttendance(), workOnDayOffTime));
 	}
 
 	public static interface Require {

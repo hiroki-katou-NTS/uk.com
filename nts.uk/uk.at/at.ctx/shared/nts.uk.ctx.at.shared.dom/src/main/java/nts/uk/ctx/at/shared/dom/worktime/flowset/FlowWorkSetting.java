@@ -14,6 +14,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.workrule.BreakTimeZone;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZone;
@@ -318,15 +319,14 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 	 */
 	@Override
 	public BreakTimeZone getBreakTimeZone(boolean isWorkingOnDayOff, AmPmAtr amPmAtr) {
-		val breakTimeZone = isWorkingOnDayOff ? 
+		val breakTimeZone = isWorkingOnDayOff ?
 				this.offdayWorkTimezone.getRestTimeZone(): this.halfDayWorkTimezone.getRestTimezone();
 		
 		if(!breakTimeZone.isFixRestTime()) {
 			return BreakTimeZone.createAsNotFixed(Collections.emptyList());
 		}
 		
-		return BreakTimeZone.createAsFixed(breakTimeZone.getFixedRestTimezone()
-				                                        .getRestTimezonesForCalc());
+		return BreakTimeZone.createAsFixed(breakTimeZone.getFixedRestTimezone().getRestTimezonesForCalc());
 	}
 	
 	/**
@@ -337,8 +337,8 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 	 */
 	private ChangeableWorkingTimeZonePerNo createChangeableWkTzPerNo(int workNo, TimeSpanForCalc timeSpan ) {
 		return ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd(
-				new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkNo(workNo),timeSpan);
-	}	
+				new WorkNo(workNo).toAttendance() ,timeSpan);
+	}
 
 	public static interface Require {
 	}
