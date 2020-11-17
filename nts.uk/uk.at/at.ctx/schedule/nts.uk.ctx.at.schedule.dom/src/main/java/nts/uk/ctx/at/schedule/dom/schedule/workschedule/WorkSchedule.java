@@ -1,20 +1,27 @@
 package nts.uk.ctx.at.schedule.dom.schedule.workschedule;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 
 /**
  * 勤務予定 root
@@ -81,5 +88,92 @@ public class WorkSchedule implements DomainAggregate {
 		this.optAttendanceTime = attendanceTime;
 		this.optSortTimeWork = sortTimeWork;
 		this.outingTime = Optional.empty();
+	}
+	
+	/**
+	 * 作る
+	 * @param require
+	 * @param employeeId 社員ID
+	 * @param date　年月日
+	 * @param workinformation 勤務情報
+	 * @return
+	 */
+	public static WorkSchedule create(
+			Require require,
+			String employeeId,
+			GeneralDate date,
+			WorkInformation workInformation
+			){
+		
+		if (! workInformation.checkNormalCondition(require) ) {
+			// TODO msgId
+			throw new BusinessException("xxx");
+		}
+			
+		return new WorkSchedule(
+				employeeId, 
+				date, 
+				ConfirmedATR.UNSETTLED, 
+				WorkInfoOfDailyAttendance.create(
+						require, 
+						workInformation, 
+						workInformation, 
+						CalculationState.No_Calculated, 
+						NotUseAttribute.Not_use, 
+						NotUseAttribute.Not_use, 
+						DayOfWeek.valueOf(date.dayOfWeek() - 1 )), // TODO smell code. asking team process! 
+				AffiliationInforOfDailyAttd.create(require, employeeId, date), 
+				new ArrayList<>(), 
+				new ArrayList<>(), 
+				Optional.of(TimeLeavingOfDailyAttd.createByPredetermineZone(
+						require, 
+						workInformation)), 
+				Optional.empty(), 
+				Optional.empty());
+	}
+	
+	/**
+	 * 勤務情報を指定して手修正で作る
+	 * @param require
+	 * @param employeeId 社員ID
+	 * @param date　年月日
+	 * @param workInformation 勤務情報
+	 * @return
+	 */
+	public static WorkSchedule createByHandCorrectionWithWorkInformation(
+			Require require,
+			String employeeId,
+			GeneralDate date,
+			WorkInformation workInformation
+			) {
+		WorkSchedule workSchedule = WorkSchedule.create(require, employeeId, date, workInformation);
+		
+		// 勤怠項目ID = 勤務種類(1)
+		EditStateOfDailyAttd editStateOfDailyAttd = EditStateOfDailyAttd.createByHandCorrection(require, 1, employeeId);
+		
+		List<EditStateOfDailyAttd> editStateOfDailyAttdList = Arrays.asList(editStateOfDailyAttd);
+		
+		if ( workInformation.getWorkTimeCodeNotNull().isPresent() ) {
+			// 勤怠項目ID　= 就業時間帯(2)
+			editStateOfDailyAttdList.add( EditStateOfDailyAttd.createByHandCorrection(require, 2, employeeId) );
+		}
+		
+		return new WorkSchedule(
+				employeeId, 
+				date, 
+				workSchedule.getConfirmedATR(), 
+				workSchedule.getWorkInfo(), 
+				workSchedule.getAffInfo(), 
+				workSchedule.getLstBreakTime(), 
+				editStateOfDailyAttdList, 
+				workSchedule.getOptTimeLeaving(), 
+				workSchedule.getOptAttendanceTime(), 
+				workSchedule.getOptSortTimeWork(), 
+				workSchedule.getOutingTime());
+	}
+	
+	public static interface Require extends WorkInfoOfDailyAttendance.Require, AffiliationInforOfDailyAttd.Require,
+		TimeLeavingOfDailyAttd.Require, EditStateOfDailyAttd.Require {
+		
 	}
 }
