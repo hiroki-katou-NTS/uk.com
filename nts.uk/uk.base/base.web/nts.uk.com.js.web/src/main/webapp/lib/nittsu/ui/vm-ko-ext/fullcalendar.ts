@@ -446,7 +446,7 @@ module nts.uk.ui.koExtentions {
                 return wraped.map(m => ({
                     ...m,
                     start: formatDate(m.start),
-                    end: formatDate(m.end)
+                    end: formatDate(m.end),
                 }));
             };
             const updateActive = () => {
@@ -988,7 +988,7 @@ module nts.uk.ui.koExtentions {
                 events.subscribe((evts) => {
                     calendar.removeAllEvents();
 
-                    evts.forEach(e => calendar.addEvent({ ...e, start: formatDate(e.start), end: formatDate(e.end) }));
+                    mappedEvents(evts).forEach(e => calendar.addEvent(e));
                 });
             }
 
