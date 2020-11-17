@@ -69,6 +69,10 @@ module nts.uk.at.view.kdl052.screenModel {
       });
     }
 
+    mounted(){
+      $('#btnCancel').focus();
+    }
+
     getData(params: any) {
       const vm = this
           , command = {
@@ -85,7 +89,7 @@ module nts.uk.at.view.kdl052.screenModel {
                 vm.manageDisabled(false);
               }
             } else {
-              vm.$dialog.info({messageId: 'Msg_504'}).then(() => {
+              vm.$dialog.info({messageId: 'Msg_1962'}).then(() => {
                 vm.$window.close();
               });
             }

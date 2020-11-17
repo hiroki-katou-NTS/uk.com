@@ -91,7 +91,10 @@ module nts.uk.at.view.kdl051.screenModel {
         }
       });
       $('#component-items-list').ntsListComponent(vm.listComponentOption);
-      
+    }
+
+    mounted(){
+      $('#btnCancel').focus();
     }
 
     // event when change employee
