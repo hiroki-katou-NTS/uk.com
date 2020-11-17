@@ -1,23 +1,25 @@
 package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex;
 
+import nts.uk.shr.com.i18n.TextResource;
+
 /**
  * フレックス不足時の繰越設定
  * @author shuichi_ishida
  */
 public enum CarryforwardSetInShortageFlex {
 	/** 当月積算 */
-	CURRENT_MONTH_INTEGRATION(0, "当月清算"),
+	CURRENT_MONTH_INTEGRATION(0, TextResource.localize("当月清算")),
 	/** 翌月繰越 */
-	NEXT_MONTH_CARRYFORWARD(1, "翌月繰越");
+	NEXT_MONTH_CARRYFORWARD(1, TextResource.localize("翌月繰越"));
 
 	/** The Constant values. */
 	private final static CarryforwardSetInShortageFlex[] values = CarryforwardSetInShortageFlex.values();
 	
 	public int value;
 	
-	public String name;
-	private CarryforwardSetInShortageFlex(int value ,String name){
-		this.name = name;
+	public String nameId;
+	private CarryforwardSetInShortageFlex(int value ,String nameId){
+		this.nameId = nameId;
 		this.value = value;
 	}
 	
