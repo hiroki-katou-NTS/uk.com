@@ -20,11 +20,11 @@ module nts.uk.at.view.ksu001.g {
         loadWorkAvailabilityOfOneDay(): void {
             const self = this,
             method = [
-            { id: '', Name: "なし" },
-            { id: getText('KSU001_4038'), Name: getText('KSU001_4038') },
-            { id: getText('KSU001_4035'), Name: getText('KSU001_4035') },
-            { id: getText('KSU001_4036'), Name: getText('KSU001_4036') }
-            ]
+				{ id: '', Name: "なし" },
+				{ id: getText('KSU001_4038'), Name: getText('KSU001_4038') },
+				{ id: getText('KSU001_4035'), Name: getText('KSU001_4035') },
+				{ id: getText('KSU001_4036'), Name: getText('KSU001_4036') }
+            ];
             let listData: Array<any> = [];    
             let dataAll: Array<any> = [];            
             let arrOneDay: Array<any> = [];
