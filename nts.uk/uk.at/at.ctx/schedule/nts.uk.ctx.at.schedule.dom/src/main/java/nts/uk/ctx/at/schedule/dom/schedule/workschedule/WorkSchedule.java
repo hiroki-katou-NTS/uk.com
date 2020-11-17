@@ -197,7 +197,7 @@ public class WorkSchedule implements DomainAggregate {
 	private Map<TimezoneToUseHourlyHoliday, TimeVacation> getOutingTimes() {
 		
 		if ( !this.optAttendanceTime.isPresent() || !this.outingTime.isPresent() ) {
-			return new HashMap<>();
+			return Collections.emptyMap();
 		}
 		
 		//$外出時間 = @勤怠時間.外出時間を取得する () : filter $.外出理由 in (私用, 組合)
@@ -209,7 +209,7 @@ public class WorkSchedule implements DomainAggregate {
 		
 		for(OutingTimeOfDaily outingTime : outingTimes) {
 			
-			val type = TimezoneToUseHourlyHoliday.convertGoOutReasonToTimeOffType(outingTime.getReason());
+			val type = TimezoneToUseHourlyHoliday.getOutingReason(outingTime.getReason());
 			
 			// 外出理由を指定して時間帯を取得する
 			val timeZones = this.outingTime.get().getTimeZoneByGoOutReason(outingTime.getReason());

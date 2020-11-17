@@ -52,11 +52,11 @@ public enum TimezoneToUseHourlyHoliday {
 	}
 	
 	/**
-	 * 外出理由から時間休暇種類への変換
+	 * 外出理由を指定
 	 * @param goOutReason 外出理由
 	 * @return
 	 */
-	public static TimezoneToUseHourlyHoliday convertGoOutReasonToTimeOffType(GoingOutReason goOutReason) {
+	public static TimezoneToUseHourlyHoliday getOutingReason(GoingOutReason goOutReason) {
 		switch(goOutReason) {
 		case PRIVATE:
 			return TimezoneToUseHourlyHoliday.GOINGOUT_PRIVATE;

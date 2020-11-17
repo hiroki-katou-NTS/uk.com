@@ -13,8 +13,6 @@ import org.junit.Test;
 
 import mockit.Expectations;
 import mockit.Injectable;
-import mockit.Mock;
-import mockit.MockUp;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
@@ -22,7 +20,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.TimezoneToUseHourlyHoliday;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakTimeGoOutTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTotalTime;
@@ -54,10 +51,11 @@ public class WorkScheduleTest {
 	}
 	
 	/**
-	 * 勤怠時間 (optAttendanceTime) is empty
+	 * 勤怠時間 (attendanceTime) is empty
+	 * 出退勤(timeLeaving) is mocked 
 	 */
 	@Test
-	public void testGetLateTimes_empty_case1() {
+	public void testGetTimeVacation_empty_case1() {
 		
 		// Arrange
 		WorkSchedule target = Helper.createWithParams(
@@ -66,18 +64,21 @@ public class WorkScheduleTest {
 				Optional.empty());
 		
 		// Action
-		Map<TimezoneToUseHourlyHoliday, TimeVacation> result = NtsAssert.Invoke.privateMethod(target, "getLateTimes");
+		Map<TimezoneToUseHourlyHoliday, TimeVacation> lateTimes = NtsAssert.Invoke.privateMethod(target, "getLateTimes");
+		Map<TimezoneToUseHourlyHoliday, TimeVacation> earlyTimes = NtsAssert.Invoke.privateMethod(target, "getEarlyTimes");
 		
 		// Assert
-		assertThat(result).isEmpty();
+		assertThat(lateTimes).isEmpty();
+		assertThat(earlyTimes).isEmpty();
 		
 	}
 	
-	/**
-	 * 出退勤 (optTimeLeaving) is empty
+	/** 
+	 * 勤怠時間(attendanceTime) is mocked
+	 * 出退勤 (timeLeaving) is empty
 	 */
 	@Test
-	public void testGetLateTimes_empty_case2() {
+	public void testGetTimeVacation_empty_case2() {
 		
 		// Arrange
 		WorkSchedule target = Helper.createWithParams(
@@ -86,7 +87,30 @@ public class WorkScheduleTest {
 				Optional.empty());
 		
 		// Action
-		Map<TimezoneToUseHourlyHoliday, TimeVacation> result = NtsAssert.Invoke.privateMethod(target, "getLateTimes");
+		Map<TimezoneToUseHourlyHoliday, TimeVacation> lateTimes = NtsAssert.Invoke.privateMethod(target, "getLateTimes");
+		Map<TimezoneToUseHourlyHoliday, TimeVacation> earlyTimes = NtsAssert.Invoke.privateMethod(target, "getEarlyTimes");
+		
+		// Assert
+		assertThat(lateTimes).isEmpty();
+		assertThat(earlyTimes).isEmpty();
+		
+	}
+	
+	/**
+	 * 勤怠時間 (attendanceTime) is empty
+	 * 外出時間帯(outingTime) is mocked
+	 */
+	@Test
+	public void testGetTimeVacation_empty_case3() {
+		
+		// Arrange
+		WorkSchedule target = Helper.createWithParams(
+				Optional.empty(), // 出退勤 mocked 
+				Optional.empty(), // 勤怠時間 empty
+				Optional.of(outingTime)); // 外出時間帯
+		
+		// Action
+		Map<TimezoneToUseHourlyHoliday, TimeVacation> result = NtsAssert.Invoke.privateMethod(target, "getOutingTimes");
 		
 		// Assert
 		assertThat(result).isEmpty();
@@ -94,69 +118,100 @@ public class WorkScheduleTest {
 	}
 	
 	/**
-	 * 勤怠時間 (optAttendanceTime) is empty
-	 * 出退勤 (optTimeLeaving) is empty
+	 * 勤怠時間(attendanceTime) is mocked
+	 * 外出時間帯 (outingTime) is empty
 	 */
 	@Test
-	public void testGetLateTimes_empty_case3() {
+	public void testGetTimeVacation_empty_case4() {
+		
+		// Arrange
+		WorkSchedule target = Helper.createWithParams(
+				Optional.empty(), // 出退勤 empty 
+				Optional.of(attendanceTime), // 勤怠時間 mocked
+				Optional.empty()); // 外出時間帯
+		
+		// Action
+		Map<TimezoneToUseHourlyHoliday, TimeVacation> result = NtsAssert.Invoke.privateMethod(target, "getOutingTimes");
+		
+		// Assert
+		assertThat(result).isEmpty();
+		
+	}
+	
+	/**
+	 * 勤怠時間 (attendanceTime) is empty
+	 * 出退勤 (timeLeaving) is empty
+	 * 外出時間帯(outingTime) empty
+	 */
+	@Test
+	public void testGetTimeVacation_empty_case5() {
 		
 		// Arrange
 		WorkSchedule target = Helper.createWithParams(
 				Optional.empty(), // 出退勤 empty 
 				Optional.empty(), // 勤怠時間 empty
-				Optional.empty());
+				Optional.empty()); // 外出時間帯 empty
 		
 		// Action
-		Map<TimezoneToUseHourlyHoliday, TimeVacation> result = NtsAssert.Invoke.privateMethod(target, "getLateTimes");
+		Map<TimezoneToUseHourlyHoliday, TimeVacation> lateTimes = NtsAssert.Invoke.privateMethod(target, "getLateTimes");
+		Map<TimezoneToUseHourlyHoliday, TimeVacation> earlyTimes = NtsAssert.Invoke.privateMethod(target, "getEarlyTimes");
+		Map<TimezoneToUseHourlyHoliday, TimeVacation> outtingTimes = NtsAssert.Invoke.privateMethod(target, "getOutingTimes");
 		
 		// Assert
-		assertThat(result).isEmpty();
+		assertThat(lateTimes).isEmpty();
+		assertThat(earlyTimes).isEmpty();
+		assertThat(outtingTimes).isEmpty();
 		
 	}
 	
 	/**
 	 * 遅刻時間を取得する getLateTimeOfDaily == empty List
+	 * 早退時間を取得	getLeaveEarlyTimeOfDaily == empty list
+	 * 外出時間を取得する getOutingTimeOfDaily == emptyList
 	 */
 	@Test
-	public void testGetLateTimes_empty_case4() {
+	public void testGetTimeVacation_empty_case6() {
 		
 		// Arrange
 		
 		WorkSchedule target = Helper.createWithParams(
 										Optional.of(timeLeaving), 
 										Optional.of(attendanceTime),
-										Optional.empty());
+										Optional.of(outingTime));
 		
 		new Expectations() {{
 			
 			attendanceTime.getLateTimeOfDaily();
 			// result = empty
 			
+			attendanceTime.getLeaveEarlyTimeOfDaily();
+			// result = empty
+			
+			attendanceTime.getOutingTimeOfDaily();
+			// result = empty
+			
 		}};
 		
 		// Action
-		Map<TimezoneToUseHourlyHoliday, TimeVacation> result = NtsAssert.Invoke.privateMethod(target, "getLateTimes");
+		Map<TimezoneToUseHourlyHoliday, TimeVacation> lateTimes = NtsAssert.Invoke.privateMethod(target, "getLateTimes");
+		Map<TimezoneToUseHourlyHoliday, TimeVacation> earlyTimes = NtsAssert.Invoke.privateMethod(target, "getEarlyTimes");
+		Map<TimezoneToUseHourlyHoliday, TimeVacation> outingTime = NtsAssert.Invoke.privateMethod(target, "getOutingTimes");
 		
 		// Assert
-		assertThat(result).isEmpty();
+		assertThat(lateTimes).isEmpty();
+		assertThat(earlyTimes).isEmpty();
+		assertThat(outingTime).isEmpty();
 		
 	}
 	
+	/**
+	 * result has one item
+	 */
 	@Test
-	public void testGetLateTimes_successfully(
+	public void testGetLateTimes_successfully_single(
 			@Injectable LateTimeOfDaily lateTime1,
 			@Injectable LateTimeOfDaily lateTime2,
 			@Injectable TimevacationUseTimeOfDaily timePaidUseTime2) {
-		
-		// Mock
-		new MockUp<TimezoneToUseHourlyHoliday>() {
-	        @Mock
-	        public TimezoneToUseHourlyHoliday getBeforeWorking(WorkNo workNo) {
-	        	return (workNo.v() == 2) ? 
-	        			TimezoneToUseHourlyHoliday.WORK_NO2_BEFORE : 
-	        				TimezoneToUseHourlyHoliday.WORK_NO1_BEFORE;
-	        }
-	    };
 		
 		new Expectations() {{
 			
@@ -201,109 +256,78 @@ public class WorkScheduleTest {
 	}
 	
 	/**
-	 * 勤怠時間 (optAttendanceTime) is empty
+	 * result has two item
 	 */
 	@Test
-	public void testGetEarlyTimes_empty_case1() {
-		
-		// Arrange
-		WorkSchedule target = Helper.createWithParams(
-				Optional.of(timeLeaving), // 出退勤 mocked 
-				Optional.empty(), // 勤怠時間 empty
-				Optional.empty());
-		
-		// Action
-		Map<TimezoneToUseHourlyHoliday, TimeVacation> result = NtsAssert.Invoke.privateMethod(target, "getEarlyTimes");
-		
-		// Assert
-		assertThat(result).isEmpty();
-		
-	}
-	
-	/**
-	 * 出退勤 (optTimeLeaving) is empty
-	 */
-	@Test
-	public void testGetEarlyTimes_empty_case2() {
-		
-		// Arrange
-		WorkSchedule target = Helper.createWithParams(
-				Optional.empty(), // 出退勤 empty 
-				Optional.of(attendanceTime), // 勤怠時間 mocked
-				Optional.empty());
-		
-		// Action
-		Map<TimezoneToUseHourlyHoliday, TimeVacation> result = NtsAssert.Invoke.privateMethod(target, "getEarlyTimes");
-		
-		// Assert
-		assertThat(result).isEmpty();
-		
-	}
-	
-	/**
-	 * 勤怠時間 (optAttendanceTime) is empty
-	 * 出退勤 (optTimeLeaving) is empty
-	 */
-	@Test
-	public void testGetEarlyTimes_empty_case3() {
-		
-		// Arrange
-		WorkSchedule target = Helper.createWithParams(
-				Optional.empty(), // 出退勤 empty 
-				Optional.empty(), // 勤怠時間 empty
-				Optional.empty());
-		
-		// Action
-		Map<TimezoneToUseHourlyHoliday, TimeVacation> result = NtsAssert.Invoke.privateMethod(target, "getEarlyTimes");
-		
-		// Assert
-		assertThat(result).isEmpty();
-		
-	}
-	
-	/**
-	 * 日別勤怠の早退時間を取得 getLeaveEarlyTimeOfDaily == empty List
-	 */
-	@Test
-	public void testGetEarlyTimes_empty_case4() {
-		
-		// Arrange
-		
-		WorkSchedule target = Helper.createWithParams(
-										Optional.of(timeLeaving), 
-										Optional.of(attendanceTime),
-										Optional.empty());
+	public void testGetLateTimes_successfully_multi(
+			@Injectable LateTimeOfDaily lateTime1,
+			@Injectable LateTimeOfDaily lateTime2,
+			@Injectable TimevacationUseTimeOfDaily timePaidUseTime1,
+			@Injectable TimevacationUseTimeOfDaily timePaidUseTime2) {
 		
 		new Expectations() {{
 			
-			attendanceTime.getLeaveEarlyTimeOfDaily();
-			// result = empty
+			attendanceTime.getLateTimeOfDaily();
+			result = Arrays.asList( lateTime1, lateTime2 );
 			
+			lateTime1.getWorkNo();
+			result = new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(1);
+			lateTime2.getWorkNo();
+			result = new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(2);
+			
+			timeLeaving.getStartTimeVacations(new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(1));
+			result = Optional.of(new TimeSpanForCalc(
+					new TimeWithDayAttr(100), 
+					new TimeWithDayAttr(200))); 
+			
+			timeLeaving.getStartTimeVacations(new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(2));
+			result = Optional.of(new TimeSpanForCalc(
+									new TimeWithDayAttr(300), 
+									new TimeWithDayAttr(400))); 
+
+			lateTime1.getTimePaidUseTime();
+			result = timePaidUseTime1;
+			
+			lateTime2.getTimePaidUseTime();
+			result = timePaidUseTime2;
 		}};
 		
+		WorkSchedule target = Helper.createWithParams(
+				Optional.of(timeLeaving), // 出退勤 
+				Optional.of(attendanceTime), // 勤怠時間 
+				Optional.empty());
+		
 		// Action
-		Map<TimezoneToUseHourlyHoliday, TimeVacation> result = NtsAssert.Invoke.privateMethod(target, "getEarlyTimes");
+		Map<TimezoneToUseHourlyHoliday, TimeVacation> result = NtsAssert.Invoke.privateMethod(target, "getLateTimes");
 		
 		// Assert
-		assertThat(result).isEmpty();
+		assertThat(result).hasSize(2);
+		
+			// value1
+		TimeVacation value1 = result.get(TimezoneToUseHourlyHoliday.WORK_NO1_BEFORE);
+		assertThat(value1.getUseTime()).isEqualTo(timePaidUseTime1);
+		assertThat(value1.getTimeList())
+			.extracting( 
+				e -> e.startValue(),
+				e -> e.endValue())
+			.containsExactly( tuple ( 100, 200 ));
+		
+			// value2
+		TimeVacation value2 = result.get(TimezoneToUseHourlyHoliday.WORK_NO2_BEFORE);
+		assertThat(value2.getUseTime()).isEqualTo(timePaidUseTime2);
+		assertThat(value2.getTimeList())
+			.extracting( 
+				e -> e.startValue(),
+				e -> e.endValue())
+			.containsExactly( tuple ( 300, 400 ));
 		
 	}
 	
 	@Test
-	public void testGetEarlyTimes_successfully(
+	public void testGetEarlyTimes_successfully_single(
 			@Injectable LeaveEarlyTimeOfDaily earlyTime1,
 			@Injectable LeaveEarlyTimeOfDaily earlyTime2,
 			@Injectable TimevacationUseTimeOfDaily timePaidUseTime2) {
-		
-		// Mock
-		new MockUp<TimezoneToUseHourlyHoliday>() {
-	        @Mock
-	        public TimezoneToUseHourlyHoliday getAfterWorking(WorkNo workNo) {
-	        	return (workNo.v() == 2) ? 
-	        			TimezoneToUseHourlyHoliday.WORK_NO2_AFTER : 
-	        				TimezoneToUseHourlyHoliday.WORK_NO1_AFTER;
-	        }
-	    };
 		
 		new Expectations() {{
 			
@@ -346,92 +370,65 @@ public class WorkScheduleTest {
 		
 	}
 	
-	/**
-	 * 勤怠時間 (optAttendanceTime) is empty
-	 */
 	@Test
-	public void getOutingTimes_empty_case1() {
-		
-		// Arrange
-		WorkSchedule target = Helper.createWithParams(
-				Optional.empty(), // 出退勤 mocked 
-				Optional.empty(), // 勤怠時間 empty
-				Optional.of(outingTime)); // 外出時間帯
-		
-		// Action
-		Map<TimezoneToUseHourlyHoliday, TimeVacation> result = NtsAssert.Invoke.privateMethod(target, "getOutingTimes");
-		
-		// Assert
-		assertThat(result).isEmpty();
-		
-	}
-	
-	/**
-	 * 外出時間帯 (outingTime) is empty
-	 */
-	@Test
-	public void getOutingTimes_empty_case2() {
-		
-		// Arrange
-		WorkSchedule target = Helper.createWithParams(
-				Optional.empty(), // 出退勤 empty 
-				Optional.of(attendanceTime), // 勤怠時間 mocked
-				Optional.empty()); // 外出時間帯
-		
-		// Action
-		Map<TimezoneToUseHourlyHoliday, TimeVacation> result = NtsAssert.Invoke.privateMethod(target, "getOutingTimes");
-		
-		// Assert
-		assertThat(result).isEmpty();
-		
-	}
-	
-	/**
-	 * 勤怠時間 (optAttendanceTime) is empty
-	 * 出退勤 (optTimeLeaving) is empty
-	 */
-	@Test
-	public void getOutingTimes_empty_case3() {
-		
-		// Arrange
-		WorkSchedule target = Helper.createWithParams(
-				Optional.empty(), // 出退勤 empty 
-				Optional.empty(), // 勤怠時間 empty
-				Optional.empty()); // 外出時間帯
-		
-		// Action
-		Map<TimezoneToUseHourlyHoliday, TimeVacation> result = NtsAssert.Invoke.privateMethod(target, "getOutingTimes");
-		
-		// Assert
-		assertThat(result).isEmpty();
-		
-	}
-	
-	/**
-	 * 外出時間を取得する getOutingTimeOfDaily == empty List
-	 */
-	@Test
-	public void getOutingTimes_empty_case4() {
-		
-		// Arrange
-		
-		WorkSchedule target = Helper.createWithParams(
-										Optional.empty(), 
-										Optional.of(attendanceTime),
-										Optional.of(outingTime));
+	public void testGetEarlyTimes_successfully_multi(
+			@Injectable LeaveEarlyTimeOfDaily earlyTime1,
+			@Injectable LeaveEarlyTimeOfDaily earlyTime2,
+			@Injectable TimevacationUseTimeOfDaily timePaidUseTime1,
+			@Injectable TimevacationUseTimeOfDaily timePaidUseTime2) {
 		
 		new Expectations() {{
 			
-			attendanceTime.getOutingTimeOfDaily();
-			// result = empty
+			attendanceTime.getLeaveEarlyTimeOfDaily();
+			result = Arrays.asList( earlyTime1, earlyTime2 );
 			
+			earlyTime1.getWorkNo();
+			result = new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(1);
+			earlyTime2.getWorkNo();
+			result = new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(2);
+			
+			timeLeaving.getEndTimeVacations(new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(1));
+			result = Optional.of(new TimeSpanForCalc(
+									new TimeWithDayAttr(100), 
+									new TimeWithDayAttr(200))); 
+			
+			timeLeaving.getEndTimeVacations(new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(2));
+			result = Optional.of(new TimeSpanForCalc(
+									new TimeWithDayAttr(300), 
+									new TimeWithDayAttr(400))); 
+			
+			earlyTime1.getTimePaidUseTime();
+			result = timePaidUseTime1;
+			
+			earlyTime2.getTimePaidUseTime();
+			result = timePaidUseTime2;
 		}};
 		
+		WorkSchedule target = Helper.createWithParams(
+				Optional.of(timeLeaving), // 出退勤 
+				Optional.of(attendanceTime), // 勤怠時間 
+				Optional.empty());
+		
 		// Action
-		Map<TimezoneToUseHourlyHoliday, TimeVacation> result = NtsAssert.Invoke.privateMethod(target, "getOutingTimes");
+		Map<TimezoneToUseHourlyHoliday, TimeVacation> result = NtsAssert.Invoke.privateMethod(target, "getEarlyTimes");
 		
 		// Assert
-		assertThat(result).isEmpty();
+		assertThat(result).hasSize(2);
+		TimeVacation value1 = result.get(TimezoneToUseHourlyHoliday.WORK_NO1_AFTER);
+		assertThat(value1.getUseTime()).isEqualTo(timePaidUseTime1);
+		assertThat(value1.getTimeList())
+			.extracting( 
+				e -> e.startValue(),
+				e -> e.endValue())
+			.containsExactly( tuple ( 100, 200 ));
+		
+		TimeVacation value2 = result.get(TimezoneToUseHourlyHoliday.WORK_NO2_AFTER);
+		assertThat(value2.getUseTime()).isEqualTo(timePaidUseTime2);
+		assertThat(value2.getTimeList())
+			.extracting( 
+				e -> e.startValue(),
+				e -> e.endValue())
+			.containsExactly( tuple ( 300, 400 ));
 		
 	}
 	
@@ -441,7 +438,7 @@ public class WorkScheduleTest {
 	 * 「私用, 組合」と合ってない
 	 */
 	@Test
-	public void getOutingTimes_empty_case5() {
+	public void getOutingTimes_empty() {
 		
 		// Arrange
 		
