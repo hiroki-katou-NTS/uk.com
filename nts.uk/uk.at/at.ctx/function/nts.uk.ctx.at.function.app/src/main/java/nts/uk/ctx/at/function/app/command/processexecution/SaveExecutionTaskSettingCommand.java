@@ -152,19 +152,18 @@ public class SaveExecutionTaskSettingCommand {
 				.content(EnumAdaptor.valueOf(repeatContent, RepeatContentItem.class))
 				.detailSetting(
 						new RepeatDetailSetting(
-								new RepeatDetailSettingWeekly(new RepeatWeekDaysSelect(monday, tuesday, wednesday,
-										thursday, friday, saturday, sunday)),
-								new RepeatDetailSettingMonthly(days, months)))
+								Optional.ofNullable(new RepeatDetailSettingWeekly(new RepeatWeekDaysSelect(monday, tuesday, wednesday,
+										thursday, friday, saturday, sunday))),
+								Optional.ofNullable(new RepeatDetailSettingMonthly(days, months))))
 				.enabledSetting(enabledSetting)
-				.endDate(new TaskEndDate(EnumAdaptor.valueOf(endDateCls, EndDateClassification.class), endDate))
+				.endDate(new TaskEndDate(EnumAdaptor.valueOf(endDateCls, EndDateClassification.class), Optional.ofNullable(endDate)))
 				.endScheduleId(Optional.ofNullable(endScheduleId))
 				.endTime(new TaskEndTime(EnumAdaptor.valueOf(endTimeCls, EndTimeClassification.class),
-						new EndTime(endTime)))
+						Optional.ofNullable(endTime).map(EndTime::new)))
 				.execItemCd(new ExecutionCode(execItemCd)).nextExecDateTime(
 						Optional.empty())
 				.oneDayRepInr(new OneDayRepeatInterval(
-						oneDayRepInterval == null ? null
-								: EnumAdaptor.valueOf(oneDayRepInterval, OneDayRepeatIntervalDetail.class),
+						Optional.ofNullable(oneDayRepInterval).map(data -> EnumAdaptor.valueOf(data, OneDayRepeatIntervalDetail.class)),
 						EnumAdaptor.valueOf(oneDayRepCls, OneDayRepeatClassification.class)))
 				.scheduleId(scheduleId)
 				.startDate(startDate)

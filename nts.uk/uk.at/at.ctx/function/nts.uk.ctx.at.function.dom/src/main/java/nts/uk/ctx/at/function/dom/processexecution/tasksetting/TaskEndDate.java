@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.function.dom.processexecution.tasksetting;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
@@ -15,5 +17,5 @@ public class TaskEndDate {
 	private EndDateClassification endDateCls;
 	
 	/* 終了日日付指定 */
-	private GeneralDate endDate;
+	private Optional<GeneralDate> endDate;
 }

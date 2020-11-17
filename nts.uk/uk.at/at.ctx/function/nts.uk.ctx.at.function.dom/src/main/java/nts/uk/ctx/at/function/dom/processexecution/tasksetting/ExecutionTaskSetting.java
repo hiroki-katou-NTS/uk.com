@@ -79,30 +79,46 @@ public class ExecutionTaskSetting extends AggregateRoot {
 	private Optional<String> endScheduleId;
 
 	@Override
-	public void validate() {
+	public void validate() throws BusinessException {
 		// 「実行タスク設定．繰り返し内容 = 曜日指定」の場合、
 		// 「実行タスク設定．繰り返し詳細設定．繰り返し詳細設定(毎週)．曜日」のいずれかが「する」でなければならない。
 		// #Msg_842
-		if (this.getContent().equals(RepeatContentItem.SPECIFIED_WEEK_DAYS)) {
-			if (!this.getDetailSetting().getWeekly().getWeekdaySetting().isCheckedAtLeastOne()) {
-				throw new BusinessException("Msg_842");
-			}
+		if (this.getContent().equals(RepeatContentItem.SPECIFIED_WEEK_DAYS)
+				&& this.getDetailSetting().getWeekly().isPresent()
+				&& !this.getDetailSetting().getWeekly().get().getWeekdaySetting().isCheckedAtLeastOne()) {
+			throw new BusinessException("Msg_842");
 		}
 		// 「実行タスク設定．繰り返し内容 = 月日指定」の場合、
 		// 「実行タスク設定．繰り返し詳細設定．繰り返し詳細設定(毎月)．月」のいずれかが「する」でなければならない。
 		// #Msg_843
-		if (this.getContent().equals(RepeatContentItem.SPECIFIED_IN_MONTH)) {
-			if (!this.getDetailSetting().getMonthly().getMonth().isCheckedAtLeastOne()) {
-				throw new BusinessException("Msg_843");
-			}
+		if (this.getContent().equals(RepeatContentItem.SPECIFIED_IN_MONTH)
+				&& this.getDetailSetting().getMonthly().isPresent()
+				&& !this.getDetailSetting().getMonthly().get().getMonth().isCheckedAtLeastOne()) {
+			throw new BusinessException("Msg_843");
+		}
+		// 「実行タスク設定．終了時刻設定．指定区分 = あり」の場合、
+		// 「実行タスク設定．開始時刻」 > 「実行タスク設定．終了時刻設定．終了時刻」を登録することはできない。
+		// #Msg_849
+		if (this.getEndTime().getEndTimeCls().equals(EndTimeClassification.YES)
+				&& this.getEndTime().getEndTime().isPresent()
+				&& this.getStartTime().greaterThan(this.getEndTime().getEndTime().get())) {
+			throw new BusinessException("Msg_849");
+		}
+		// 「実行タスク設定．終了日．終了日区分 = 日付指定」の場合、
+		// 「実行タスク設定．開始日 >= 実行タスク設定．終了日．終了日」を登録することはできない。
+		// #Msg_662
+		if (this.getEndDate().getEndDateCls().equals(EndDateClassification.DATE)
+				&& this.getEndDate().getEndDate().isPresent()
+				&& this.getStartDate().after(this.getEndDate().getEndDate().get())) {
+			throw new BusinessException("Msg_662");
 		}
 		// 「実行タスク設定．1日の繰り返し間隔．指定区分 = あり」 かつ「実行タスク設定．終了時刻設定．指定区分 = あり」の場合、
-		// 「実行タスク設定．1日の繰り返し間隔．繰り返し間隔」 >=
-		// 「実行タスク設定．開始時刻～実行タスク設定．終了時刻設定．終了時刻」の時間を登録することはできない。
+		// 「実行タスク設定．1日の繰り返し間隔．繰り返し間隔」 >= 「実行タスク設定．開始時刻～実行タスク設定．終了時刻設定．終了時刻」の時間を登録することはできない。
 		// #Msg_848
 		if (this.getOneDayRepInr().getOneDayRepCls().equals(OneDayRepeatClassification.YES)
-				&& this.getEndTime().getEndTimeCls().equals(EndTimeClassification.YES)) {
-			int distance = this.getEndTime().getEndTime().valueAsMinutes() - this.getStartTime().valueAsMinutes();
+				&& this.getEndTime().getEndTimeCls().equals(EndTimeClassification.YES)
+				&& this.getEndTime().getEndTime().isPresent()) {
+			int distance = this.getEndTime().getEndTime().get().valueAsMinutes() - this.getStartTime().valueAsMinutes();
 			if (this.getOneDayRepInr().getDetail().isPresent()
 					&& this.getOneDayRepInr().getDetail().get().getMinuteValue() >= distance) {
 				throw new BusinessException("Msg_848");
@@ -111,49 +127,35 @@ public class ExecutionTaskSetting extends AggregateRoot {
 		// 「実行タスク設定．繰り返し内容 = 月日指定」の場合、
 		// 「実行タスク設定．繰り返し詳細設定．繰り返し詳細設定(毎月)．日」<>emptyでなければならない
 		// #Msg_846
-		if (this.getContent().equals(RepeatContentItem.SPECIFIED_IN_MONTH)) {
-			if (this.getDetailSetting().getMonthly().getDays().isEmpty()) {
-				throw new BusinessException("Msg_846");
-			}
+		if (this.getContent().equals(RepeatContentItem.SPECIFIED_IN_MONTH)
+				&& this.getDetailSetting().getMonthly().isPresent()
+				&& this.getDetailSetting().getMonthly().get().getDays().isEmpty()) {
+			throw new BusinessException("Msg_846");
 		}
 		// 「実行タスク設定．繰り返し内容 = 月日指定」の場合、
-		// 「実行タスク設定．繰り返し詳細設定．繰り返し詳細設定(毎月)．月 + 日」が「実行タスク設定．開始日 ～
-		// 実行タスク設定．終了日．終了日」の範囲内でなければならない。
+		// 「実行タスク設定．繰り返し詳細設定．繰り返し詳細設定(毎月)．月 + 日」が「実行タスク設定．開始日 ～ 実行タスク設定．終了日．終了日」の範囲内でなければならない。
 		// #Msg_1266
-		if (this.getContent().equals(RepeatContentItem.SPECIFIED_IN_MONTH)) {
-			List<Integer> days = this.getDetailSetting().getMonthly().getDays().stream().map(item -> item.value)
+		if (this.getContent().equals(RepeatContentItem.SPECIFIED_IN_MONTH)
+				&& this.getDetailSetting().getMonthly().isPresent()) {
+			List<Integer> days = this.getDetailSetting().getMonthly().get().getDays().stream().map(item -> item.value)
 					.collect(Collectors.toList());
-			List<Integer> months = this.getDetailSetting().getMonthly().getMonth().getMonthsAfterEqualsStartMonth(1);
-			DatePeriod range = new DatePeriod(this.getStartDate(), this.getEndDate().getEndDate());
-			int currentYear = GeneralDateTime.now().year();
-			boolean isValid = true;
-			for (int day : days) {
-				for (int month : months) {
-					GeneralDate dateToCompare = GeneralDate.ymd(currentYear, month, day);
-					if (!range.contains(dateToCompare)) {
-						isValid = false;
-						break;
+			List<Integer> months = this.getDetailSetting().getMonthly().get().getMonth().getMonthsAfterEqualsStartMonth(1);
+			if (this.getEndDate().getEndDate().isPresent()) {
+				DatePeriod range = new DatePeriod(this.getStartDate(), this.getEndDate().getEndDate().get());
+				int currentYear = GeneralDateTime.now().year();
+				boolean isValid = true;
+				for (int day : days) {
+					for (int month : months) {
+						GeneralDate dateToCompare = GeneralDate.ymd(currentYear, month, day);
+						if (!range.contains(dateToCompare)) {
+							isValid = false;
+							break;
+						}
+					}
+					if (!isValid) {
+						throw new BusinessException("Msg_1266");
 					}
 				}
-				if (!isValid) {
-					throw new BusinessException("Msg_1266");
-				}
-			}
-		}
-		// 「実行タスク設定．終了時刻設定．指定区分 = あり」の場合、
-		// 「実行タスク設定．開始時刻」 > 「実行タスク設定．終了時刻設定．終了時刻」を登録することはできない。
-		// #Msg_849
-		if (this.getEndTime().getEndTimeCls().equals(EndTimeClassification.YES)) {
-			if (this.getStartTime().greaterThan(this.getEndTime().getEndTime())) {
-				throw new BusinessException("Msg_849");
-			}
-		}
-		// 「実行タスク設定．終了日．終了日区分 = 日付指定」の場合、
-		// 「実行タスク設定．開始日 >= 実行タスク設定．終了日．終了日」を登録することはできない。
-		// #Msg_662
-		if (this.getEndDate().getEndDateCls().equals(EndDateClassification.DATE)) {
-			if (this.getStartDate().after(this.getEndDate().getEndDate())) {
-				throw new BusinessException("Msg_662");
 			}
 		}
 	}
@@ -233,7 +235,7 @@ public class ExecutionTaskSetting extends AggregateRoot {
 		List<LocalDate> allWeekDays = IntStream.range(0, 7).mapToObj(sunday::plusDays).collect(Collectors.toList());
 
 		// get picked weekdays from setting screen
-		List<DayOfWeek> pickedWeekDays = this.detailSetting.getWeekly().getWeekdaySetting().setWeekDaysList();
+		List<DayOfWeek> pickedWeekDays = this.detailSetting.getWeekly().get().getWeekdaySetting().setWeekDaysList();
 		GeneralDateTime startDateTime = this.buildGeneralDateTime(this.startDate);
 
 		GeneralDateTime tempDateTime = null;
@@ -267,9 +269,9 @@ public class ExecutionTaskSetting extends AggregateRoot {
 	private GeneralDateTime getNextExecDateTimeByMonth(GeneralDate startDate, GeneralDateTime now) {
 		GeneralDateTime tempDateTime = null;
 		GeneralDateTime startDateTime = this.buildGeneralDateTime(this.startDate);
-		List<Integer> pickedMonths = this.detailSetting.getMonthly().getMonth()
+		List<Integer> pickedMonths = this.detailSetting.getMonthly().get().getMonth()
 				.getMonthsAfterEqualsStartMonth(startDate.month());
-		List<RepeatMonthDaysSelect> pickedDates = this.detailSetting.getMonthly().getDays();
+		List<RepeatMonthDaysSelect> pickedDates = this.detailSetting.getMonthly().get().getDays();
 		for (Integer month : pickedMonths) {
 			// init date by first day of current month
 			tempDateTime = this.buildGeneralDateTime(GeneralDate.ymd(startDate.year(), month, 1));

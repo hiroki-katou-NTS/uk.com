@@ -1,13 +1,16 @@
 package nts.uk.ctx.at.function.dom.processexecution.tasksetting.detail;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  *	繰り返す月
@@ -16,72 +19,94 @@ import nts.arc.layer.dom.DomainObject;
 @AllArgsConstructor
 public class RepeatMonthSelect extends DomainObject {
 	/* 1月 */
-	private boolean january;
+	private NotUseAtr january;
 	
 	/* 2月 */
-	private boolean february;
+	private NotUseAtr february;
 	
 	/* 3月 */
-	private boolean march;
+	private NotUseAtr march;
 	
 	/* 4月 */
-	private boolean april;
+	private NotUseAtr april;
 	
 	/* 5月 */
-	private boolean may;
+	private NotUseAtr may;
 	
 	/* 6月 */
-	private boolean june;
+	private NotUseAtr june;
 	
 	/* 7月 */
-	private boolean july;
+	private NotUseAtr july;
 	
 	/* 8月 */
-	private boolean august;
+	private NotUseAtr august;
 	
 	/* 9月 */
-	private boolean september;
+	private NotUseAtr september;
 	
 	/* 10月 */
-	private boolean october;
+	private NotUseAtr october;
 	
 	/* 11月 */
-	private boolean november;
+	private NotUseAtr november;
 	
 	/* 12月 */
-	private boolean december;
-
-	public static RepeatMonthSelect initDefaut() {
-		return new RepeatMonthSelect(false, false, false, false, false, false, false, false, false, false, false, false);
-	}
+	private NotUseAtr december;
 	
+	@Getter(value = AccessLevel.NONE)
+	private Map<Integer, Boolean> values;
+	
+	public RepeatMonthSelect(boolean january, boolean february, boolean march, boolean april, boolean may, boolean june,
+			boolean july, boolean august, boolean september, boolean october, boolean november, boolean december) {
+		this.january = january ? NotUseAtr.USE : NotUseAtr.NOT_USE;
+		this.february = february ? NotUseAtr.USE : NotUseAtr.NOT_USE;
+		this.march = march ? NotUseAtr.USE : NotUseAtr.NOT_USE;
+		this.april = april ? NotUseAtr.USE : NotUseAtr.NOT_USE;
+		this.may = may ? NotUseAtr.USE : NotUseAtr.NOT_USE;
+		this.june = june ? NotUseAtr.USE : NotUseAtr.NOT_USE;
+		this.july = july ? NotUseAtr.USE : NotUseAtr.NOT_USE;
+		this.august = august ? NotUseAtr.USE : NotUseAtr.NOT_USE;
+		this.september = september ? NotUseAtr.USE : NotUseAtr.NOT_USE;
+		this.october = october ? NotUseAtr.USE : NotUseAtr.NOT_USE;
+		this.november = november ? NotUseAtr.USE : NotUseAtr.NOT_USE;
+		this.december = december ? NotUseAtr.USE : NotUseAtr.NOT_USE;
+	}
+
 	public boolean isCheckedAtLeastOne() {
-		return (january || february || march || april || may || june || july|| august|| september|| october|| november|| december);
+		if (values == null) {
+			values = this.generateValuesMap();
+		}
+		return values.values().isEmpty();
 	}
 	
 	public List<Integer> getMonthsAfterEqualsStartMonth(Integer startMonth) {
-		List<Integer> allMonthList = IntStream.rangeClosed(1, 12).boxed().collect(Collectors.toList());
-		
-		List<Integer> pickedMonths = new ArrayList<>();
-		if (january) pickedMonths.add(1);
-		if (february) pickedMonths.add(2);
-		if (march) pickedMonths.add(3);
-		if (april) pickedMonths.add(4);
-		if (may) pickedMonths.add(5);
-		if (june) pickedMonths.add(6);
-		if (july) pickedMonths.add(7);
-		if (august) pickedMonths.add(8);
-		if (september) pickedMonths.add(9);
-		if (october) pickedMonths.add(10);
-		if (november) pickedMonths.add(11);
-		if (december) pickedMonths.add(12);
-		
-		List<Integer> narrowList = new ArrayList<>();
-		for (int i = startMonth; i <= allMonthList.size(); i++) {
-			if (pickedMonths.contains(i)) {
-				narrowList.add(i);
-			}
+		if (values == null) {
+			values = this.generateValuesMap();
 		}
-		return narrowList;
+		return values.keySet().stream().filter(key -> key >= startMonth).collect(Collectors.toList());
+	}
+	
+	public static boolean isTrue(NotUseAtr atr) {
+		return atr.equals(NotUseAtr.USE);
+	}
+	
+	private Map<Integer, Boolean> generateValuesMap() {
+		Map<Integer, Boolean> values = new HashMap<>();
+		values.put(1, isTrue(january));
+		values.put(2, isTrue(february));
+		values.put(3, isTrue(march));
+		values.put(4, isTrue(april));
+		values.put(5, isTrue(may));
+		values.put(6, isTrue(june));
+		values.put(7, isTrue(july));
+		values.put(8, isTrue(august));
+		values.put(9, isTrue(september));
+		values.put(10, isTrue(october));
+		values.put(11, isTrue(november));
+		values.put(12, isTrue(december));
+		return values.entrySet().stream()
+				.filter(Entry::getValue)
+				.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
 	}
 }

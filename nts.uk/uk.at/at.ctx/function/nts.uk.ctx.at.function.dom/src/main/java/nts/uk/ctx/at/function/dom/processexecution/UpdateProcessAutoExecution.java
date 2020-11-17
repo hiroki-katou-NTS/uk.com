@@ -68,7 +68,7 @@ public class UpdateProcessAutoExecution extends AggregateRoot {
 	 * Validate.
 	 */
 	@Override
-	public void validate() {
+	public void validate() throws BusinessException {
 		if (execSetting.getPerScheduleCreation().getPerScheduleCls().equals(NotUseAtr.USE)) {
 			// 対象日は、個人スケジュール作成区分（B7_1）が「する（TRUE）」の場合は必須入力とする。
 			if (!execSetting.getPerScheduleCreation().getPerSchedulePeriod().getTargetDate().isPresent()) {

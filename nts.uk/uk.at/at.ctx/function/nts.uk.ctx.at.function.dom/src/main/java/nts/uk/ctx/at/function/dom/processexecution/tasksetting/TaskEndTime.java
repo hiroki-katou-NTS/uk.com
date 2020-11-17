@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.function.dom.processexecution.tasksetting;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.enums.EndTimeClassification;
@@ -15,5 +17,5 @@ public class TaskEndTime {
 	private EndTimeClassification endTimeCls;
 	
 	/* 終了時刻 */
-	private EndTime endTime;
+	private Optional<EndTime> endTime;
 }

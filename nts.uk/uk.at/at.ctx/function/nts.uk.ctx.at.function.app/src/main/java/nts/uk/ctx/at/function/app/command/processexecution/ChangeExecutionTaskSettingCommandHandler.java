@@ -147,10 +147,10 @@ public class ChangeExecutionTaskSettingCommandHandler
 		// 取得成功
 		// 「次回実行日時（暫定）」が「終了日＋終了時刻」を過ぎているか判定する
 		GeneralDateTime endDateTime = null;
-		EndTime endTime = domain.getEndTime().getEndTime();
-		GeneralDate endDate = domain.getEndDate().getEndDate();
 		if (domain.getEndDate().getEndDateCls().equals(EndDateClassification.DATE)) {
+			GeneralDate endDate = domain.getEndDate().getEndDate().get();
 			if (domain.getEndTime().getEndTimeCls().equals(EndTimeClassification.YES)) {
+				EndTime endTime = domain.getEndTime().getEndTime().get();
 				endDateTime = GeneralDateTime.ymdhms(
 						endDate.year(),
 						endDate.month(),

@@ -70,19 +70,19 @@ public class ProcessExecutionServiceImpl implements ProcessExecutionService {
 		// 「次回実行日時（暫定）」が「終了日＋終了時刻」を過ぎているか判定する
 		GeneralDateTime endDateTime = null;
 		TaskEndDate endDate = execTaskSet.getEndDate();
-		if (endDate != null && endDate.getEndDate() != null) {
+		if (endDate != null && endDate.getEndDate().isPresent()) {
 			TaskEndTime endTime = execTaskSet.getEndTime();
 			if (endTime != null && endTime.getEndTimeCls().equals(EndTimeClassification.YES)) {
 				// →「実行タスク設定.終了日.終了日」＋「実行タスク設定.終了時刻設定.終了時刻」＝終了日時
 				endDateTime = GeneralDateTime.fromString(
-						endDate.getEndDate().toString("yyyy/MM/dd") 
+						endDate.getEndDate().get().toString("yyyy/MM/dd") 
 								+ " " 
-								+ endTime.getEndTime().hour() + ":" + endTime.getEndTime().minute() + ":00",
+								+ endTime.getEndTime().get().hour() + ":" + endTime.getEndTime().get().minute() + ":00",
 						"yyyy/MM/dd HH:mm:ss");
 			} else {
 				// →「実行タスク設定.終了日.終了日」＋0:00＝終了日時
 				endDateTime = GeneralDateTime.fromString(
-						endDate.getEndDate().toString("yyyy/MM/dd") + " 00:00:00",
+						endDate.getEndDate().get().toString("yyyy/MM/dd") + " 00:00:00",
 						"yyyy/MM/dd HH:mm:ss");
 			}
 		}
