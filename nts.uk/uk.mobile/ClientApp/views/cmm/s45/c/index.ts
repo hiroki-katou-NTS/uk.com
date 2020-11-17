@@ -13,6 +13,7 @@ import {
     CmmS45ComponentsApp5Component,
     CmmS45ComponentsApp9Component,
     CmmS45ShrComponentsApp7Component,
+    CmmS45ShrComponentsAppsampleComponent
 } from 'views/cmm/s45/shr/components';
 
 @component({
@@ -25,6 +26,7 @@ import {
     components: {
         // khai báo virtual tag name
         'approved': ApprovedComponent,
+        'appsample': CmmS45ShrComponentsAppsampleComponent,
         'app1': CmmS45ComponentsApp1Component,
         'app2': CmmS45ComponentsApp2Component,
         'app3': CmmS45ComponentsApp3Component,
