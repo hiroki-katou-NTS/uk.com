@@ -28,7 +28,7 @@
          <com:ko tag="with" bind="optionalItemHeader">
             <div id="functions-area">
                <div class="container">
-                  <button tabindex="1" class="proceed" data-bind="click: saveOptionalItemDetail, enable: hasSelected">
+                  <button tabindex="1" class="proceed" data-bind="click: saveOptionalItemDetail, enable: hasSelected &amp;&amp; $root.errors.isEmpty">
                      #{i18n.getText('KMK002_1')}</button>
                   <!-- Print Excel -->
                   <button tabindex="1" id="print-button"
@@ -85,11 +85,12 @@
                                  <td>
                                     <div data-bind="ntsSwitchButton: {
                                                 name: '#[KMK002_102]',
-                                                options: calculationAtr,
+                                                options: usageClsDatasource,
                                                 optionsValue: 'code',
                                                 optionsText: 'name',
-                                                value: selectedClac,
-                                                required: true
+                                                value: usageAtr,
+                                                required: true,
+                                                enable: $parent.hasSelected &amp;&amp; $parents[1].langJP()
                                              }"></div>
                                  </td>
                               </tr>
@@ -101,10 +102,10 @@
                                  <td>
                                     <div tabindex="1" data-bind="ntsSwitchButton: {
                                                 name: '#[KMK002_13]',
-                                                options: usageClsDatasource,
+                                                options: calculationAtr,
                                                 optionsValue: 'code',
                                                 optionsText: 'name',
-                                                value: usageAtr,
+                                                value: selectedClac,
                                                 enable: $parent.hasSelected &amp;&amp; $parents[1].langJP() }"></div>
                                  </td>
                               </tr>
@@ -136,10 +137,16 @@
                                                 value: optionalItemAtr,
                                                 optionsText: 'localizedName',
                                                 editable: false,
-                                                enable: true &amp;&amp; $parents[1].langJP(),
+                                                enable: selectedClac() === 1 &amp;&amp; $parents[1].langJP(),
                                                 columns: [
                                                 { prop: 'localizedName', length: 2 },
                                                 ]}">
+                                    </div>
+                                    <div style="display: inline; vertical-align: super;">
+                                       <span class="label" style="margin-left: 50px;">#{i18n.getText('KMK002_109')}</span>
+                                       <span class="label" style="margin-left: 20px;" data-bind="text: dailyUnit, visible: performanceAtr() === 1"></span> <!-- daily -->
+                                       <span class="label" style="margin-left: 20px;" data-bind="text: monthlyUnit, visible: performanceAtr() === 0"></span> <!-- monthly -->
+                                       <span class="label" data-bind="text: unit"></span>
                                     </div>
                                  </td>
                               </tr>
@@ -179,7 +186,7 @@
                                                       decimallength: 1
                                                       },
                                                       required: true,
-                                                      enable: calcResultRange.upperCheck() &amp;&amp; isUsed() &amp;&amp; $parents[1].langJP()}" />
+                                                      enable: selectedClac() === 1 &amp;&amp; calcResultRange.upperCheck() &amp;&amp; $parents[1].langJP()}" />
                                        </com:ko>
                                        <com:ko tag="if" bind="isAmountSelected()">
                                           <input tabindex="1" id="inp-upper-amount"
@@ -191,7 +198,7 @@
                                                       grouplength: 3
                                                       },
                                                       required: true,
-                                                      enable: calcResultRange.upperCheck() &amp;&amp; isUsed() &amp;&amp; $parents[1].langJP()}" />
+                                                      enable: selectedClac() === 1 &amp;&amp; calcResultRange.upperCheck() &amp;&amp; $parents[1].langJP()}" />
                                        </com:ko>
                                        <com:ko tag="if" bind="isTimeSelected()">
                                           <input tabindex="1" id="inp-upper-time"
@@ -202,7 +209,7 @@
                                                       inputFormat: 'time',
                                                       mode: 'time',
                                                       required: true,
-                                                      enable: calcResultRange.upperCheck() &amp;&amp; isUsed() &amp;&amp; $parents[1].langJP()}" />
+                                                      enable: selectedClac() === 1 &amp;&amp; calcResultRange.upperCheck() &amp;&amp; $parents[1].langJP()}" />
                                        </com:ko>
                                     </div>
                                  </td>
@@ -228,7 +235,7 @@
                                                          decimallength: 1
                                                          },
                                                          required: true,
-                                                         enable: calcResultRange.lowerCheck() &amp;&amp; isUsed() &amp;&amp; $parents[1].langJP()}" />
+                                                         enable: selectedClac() === 1 &amp;&amp; calcResultRange.lowerCheck() &amp;&amp; $parents[1].langJP()}" />
                                        </com:ko>
                                        <com:ko tag="if" bind="isTimeSelected()">
                                           <input tabindex="1" id="inp-lower-time"
@@ -239,7 +246,7 @@
                                                          inputFormat: 'time',
                                                          mode: 'time',
                                                          required: true,
-                                                         enable: calcResultRange.lowerCheck() &amp;&amp; isUsed() &amp;&amp; $parents[1].langJP()}" />
+                                                         enable: selectedClac() === 1 &amp;&amp; calcResultRange.lowerCheck() &amp;&amp; $parents[1].langJP()}" />
                                        </com:ko>
                                        <com:ko tag="if" bind="isAmountSelected()">
                                           <input tabindex="1" id="inp-lower-amount"
@@ -251,7 +258,7 @@
                                                          grouplength: 3
                                                          },
                                                          required: true,
-                                                         enable: calcResultRange.lowerCheck() &amp;&amp; isUsed() &amp;&amp; $parents[1].langJP()}" />
+                                                         enable: selectedClac() === 1 &amp;&amp; calcResultRange.lowerCheck() &amp;&amp; $parents[1].langJP()}" />
                                        </com:ko>
                                     </div>
                                  </td>
@@ -266,10 +273,11 @@
                               </div>
                               <div class="cell" style="vertical-align: bottom;">
                                  <textarea style="height: 50px;" data-bind="ntsMultilineEditor: {
-                                                   value: '',
+                                                   value: description,
                                                    constraint: 'DescritionOptionalItem',
                                                    name: '#[KMK002_106]',
                                                    required: true,
+                                                   enable: selectedClac() === 1 &amp;&amp; $parents[1].langJP(),
                                                    option: {
                                                       width: '300'
                                                    }
@@ -283,9 +291,10 @@
                               </div>
                               <div class="cell" style="vertical-align: bottom;">
                                  <textarea style="height: 150px;" data-bind="ntsMultilineEditor: {
-                                                   value: '',
+                                                   value: note,
                                                    constraint: 'NoteOptionalItem',
                                                    name: '#[KMK002_108]',
+                                                   enable: selectedClac() === 1 &amp;&amp; $parents[1].langJP(),
                                                    option: {
                                                       width: '300'
                                                    }

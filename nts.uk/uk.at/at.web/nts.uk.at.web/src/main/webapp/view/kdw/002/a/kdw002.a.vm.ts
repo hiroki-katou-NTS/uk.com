@@ -15,6 +15,9 @@ module nts.uk.at.view.kdw002.a {
             timeInputCurrentCode: KnockoutObservable<any>;
             linebreak: KnockoutObservable<any>;
             timeInputEnable: KnockoutObservable<boolean>;
+            roundingUnitValue: KnockoutObservable<number>;
+            unit: KnockoutObservable<number>;
+            frameCategory: KnockoutObservable<number>;
             //
             isDaily: boolean;
             isSave: KnockoutObservable<boolean>;
@@ -38,12 +41,17 @@ module nts.uk.at.view.kdw002.a {
                 self.aICurrentCodes = ko.observableArray([]);
                 self.timeInputEnable = ko.observable(true);
                 self.aICurrentCode = ko.observable(null);
+                self.roundingUnitValue = ko.observable(null);
+                self.unit = ko.observable(null);
+                self.frameCategory = ko.observable(null);
                 self.aICurrentCode.subscribe(displayNumber => {
                     if (displayNumber) {
                         self.isSave(true);
                         let attendanceItem = _.find(self.attendanceItems(), { displayNumber: Number(displayNumber) });
                         self.txtItemName(attendanceItem.attendanceItemName);
                         self.txtItemId(displayNumber);
+                        self.unit(attendanceItem.optionalItemAtr);
+                        self.frameCategory(attendanceItem.frameCategory);
                         // self.txtItemName(cAttendanceItem.attandanceItemName);
                         self.unitRoundings([
                             { timeInputValue: 0, timeInputName: '1分' }, { timeInputValue: 1, timeInputName: '5分' }, { timeInputValue: 2, timeInputName: '10分' },
@@ -71,6 +79,7 @@ module nts.uk.at.view.kdw002.a {
                                     self.txtItemId(cAttendanceItem.itemDailyID);
                                     self.headerColorValue(cAttendanceItem.headerBgColorOfDailyPer);
                                     self.timeInputCurrentCode(cAttendanceItem.inputUnitOfTimeItem);
+                                    self.roundingUnitValue(cAttendanceItem.inputUnitOfTimeItem);
                                 } else {
                                     self.headerColorValue(null);
                                     self.timeInputCurrentCode(0);
@@ -82,6 +91,7 @@ module nts.uk.at.view.kdw002.a {
                                     self.txtItemId(cAttendanceItem.itemMonthlyId);
                                     self.headerColorValue(cAttendanceItem.headerBgColorOfMonthlyPer);
                                     self.timeInputCurrentCode(cAttendanceItem.inputUnitOfTimeItem);
+                                    self.roundingUnitValue(cAttendanceItem.inputUnitOfTimeItem);
                                 } else {
                                     self.headerColorValue(null);
                                     self.timeInputCurrentCode(0);
@@ -125,7 +135,9 @@ module nts.uk.at.view.kdw002.a {
                                 attendanceItemName: item.attendanceItemName,
                                 dailyAttendanceAtr: item.typeOfAttendanceItem,
                                 nameLineFeedPosition: item.nameLineFeedPosition,
-                                displayNumber: item.attendanceItemDisplayNumber
+                                displayNumber: item.attendanceItemDisplayNumber,
+                                optionalItemAtr: item.optionalItemAtr,
+                                frameCategory: item.frameCategory
                             });
                         })
                         self.attendanceItems(_.sortBy(attendanceItems, 'displayNumber'));
@@ -140,7 +152,9 @@ module nts.uk.at.view.kdw002.a {
                                 attendanceItemName: item.attendanceItemName,
                                 dailyAttendanceAtr: item.typeOfAttendanceItem,
                                 nameLineFeedPosition: item.nameLineFeedPosition,
-                                displayNumber: item.attendanceItemDisplayNumber
+                                displayNumber: item.attendanceItemDisplayNumber,
+                                optionalItemAtr: item.optionalItemAtr,
+                                frameCategory: item.frameCategory
                             });
                         })
                         self.attendanceItems(_.sortBy(attendanceItems, 'displayNumber'));
@@ -235,6 +249,9 @@ module nts.uk.at.view.kdw002.a {
                     if (self.headerColorValue()) {
                         AtItems.headerBgColorOfDailyPer = self.headerColorValue();
                     }
+                    if (self.roundingUnitValue) {
+                        AtItems.inputUnitOfTimeItem = self.roundingUnitValue();
+                    }
                     service.updateDaily(AtItems).done(x => {
                         infor(nts.uk.resource.getMessage("Msg_15", []));
                         $("#colorID").focus();
@@ -243,6 +260,9 @@ module nts.uk.at.view.kdw002.a {
                     AtItems.itemMonthlyID = attendanceItem.attendanceItemId;
                     if (self.headerColorValue()) {
                         AtItems.headerBgColorOfMonthlyPer = self.headerColorValue();
+                    }
+                    if (self.roundingUnitValue) {
+                        AtItems.inputUnitOfTimeItem = self.roundingUnitValue();
                     }
                     service.updateMonthly(AtItems).done(x => {
 
