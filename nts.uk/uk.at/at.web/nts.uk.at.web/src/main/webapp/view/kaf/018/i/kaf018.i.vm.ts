@@ -97,36 +97,11 @@ module nts.uk.at.view.kaf018.i.viewmodel {
 					});
 				
 					vm.screenEditMode(vm.appApprovalUnapproved().editMode());
-					if (vm.dailyUnconfirmByPrincipal().editMode()) {
-						vm.checkI4(true);
-					}
-					else {
-						vm.checkI4(vm.useSetting.usePersonConfirm);
-					}
-					if (vm.dailyUnconfirmByConfirmer().editMode()) {
-						vm.checkI3(true);
-					}
-					else {
-						vm.checkI3(vm.useSetting.useBossConfirm);
-					}
-					if (vm.monthlyUnconfirmByPrincipal().editMode()) {
-						vm.checkI1(true);
-					}
-					else {
-						vm.checkI1(vm.useSetting.monthlyIdentityConfirm);
-					}
-					if (vm.monthlyUnconfirmByConfirmer().editMode()) {
-						vm.checkI2(true);
-					}
-					else {
-						vm.checkI2(vm.useSetting.monthlyConfirm);
-					}
-					if (vm.workConfirmation().editMode()) {
-						vm.checkI5(true);
-					}
-					else {
-						vm.checkI5(vm.useSetting.employmentConfirm);
-					}
+					vm.checkI4(vm.useSetting.usePersonConfirm);
+					vm.checkI3(vm.useSetting.useBossConfirm);
+					vm.checkI1(vm.useSetting.monthlyIdentityConfirm);
+					vm.checkI2(vm.useSetting.monthlyConfirm);
+					vm.checkI5(vm.useSetting.employmentConfirm);
 				});
 			}).always(() => {
 				vm.$blockui("hide");
