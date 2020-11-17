@@ -76,6 +76,7 @@ public class WorkScheduleTest {
 	/** 
 	 * 勤怠時間(attendanceTime) is mocked
 	 * 出退勤 (timeLeaving) is empty
+	 * 外出時間帯(outingTime) empty
 	 */
 	@Test
 	public void testGetTimeVacation_empty_case2() {
@@ -84,15 +85,17 @@ public class WorkScheduleTest {
 		WorkSchedule target = Helper.createWithParams(
 				Optional.empty(), // 出退勤 empty 
 				Optional.of(attendanceTime), // 勤怠時間 mocked
-				Optional.empty());
+				Optional.empty()); // 外出時間帯 empty
 		
 		// Action
 		Map<TimezoneToUseHourlyHoliday, TimeVacation> lateTimes = NtsAssert.Invoke.privateMethod(target, "getLateTimes");
 		Map<TimezoneToUseHourlyHoliday, TimeVacation> earlyTimes = NtsAssert.Invoke.privateMethod(target, "getEarlyTimes");
+		Map<TimezoneToUseHourlyHoliday, TimeVacation> outingTimes = NtsAssert.Invoke.privateMethod(target, "getOutingTimes");
 		
 		// Assert
 		assertThat(lateTimes).isEmpty();
 		assertThat(earlyTimes).isEmpty();
+		assertThat(outingTimes).isEmpty();
 		
 	}
 	
@@ -108,27 +111,6 @@ public class WorkScheduleTest {
 				Optional.empty(), // 出退勤 mocked 
 				Optional.empty(), // 勤怠時間 empty
 				Optional.of(outingTime)); // 外出時間帯
-		
-		// Action
-		Map<TimezoneToUseHourlyHoliday, TimeVacation> result = NtsAssert.Invoke.privateMethod(target, "getOutingTimes");
-		
-		// Assert
-		assertThat(result).isEmpty();
-		
-	}
-	
-	/**
-	 * 勤怠時間(attendanceTime) is mocked
-	 * 外出時間帯 (outingTime) is empty
-	 */
-	@Test
-	public void testGetTimeVacation_empty_case4() {
-		
-		// Arrange
-		WorkSchedule target = Helper.createWithParams(
-				Optional.empty(), // 出退勤 empty 
-				Optional.of(attendanceTime), // 勤怠時間 mocked
-				Optional.empty()); // 外出時間帯
 		
 		// Action
 		Map<TimezoneToUseHourlyHoliday, TimeVacation> result = NtsAssert.Invoke.privateMethod(target, "getOutingTimes");
