@@ -850,6 +850,11 @@ public class ProgramsManager {
     public static final Program KSU001Q = new Program(WebAppId.AT, ProgramIdConsts.KSU001Q, "KSU001_3701",
             "/view/ksu/001/q/index.xhtml");
     /**
+     * KSU002A
+     */
+    public static final Program KSU002A = new Program(WebAppId.AT, ProgramIdConsts.KSU002A, "KSU002_32",
+            "/view/ksu/002/a/index.xhtml");
+    /**   
      * KSU001SA
      */
     public static final Program KSU001SA = new Program(WebAppId.AT, ProgramIdConsts.KSU001SA, "KSU001_4039",
