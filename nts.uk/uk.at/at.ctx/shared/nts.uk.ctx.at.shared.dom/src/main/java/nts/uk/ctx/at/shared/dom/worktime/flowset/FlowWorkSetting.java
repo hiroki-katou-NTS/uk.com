@@ -271,9 +271,9 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 		val workAbleMorning = predTimeStg.getHalfDayOfAmSpan();
 		val workAbleEvening = predTimeStg.getHalfDayOfPmSpan();
 		
-		val oneDayList = Arrays.asList(this.createChangeableWorkingTimeZonePerNo(1, workAbleOneDay));
-		val morningList = Arrays.asList(this.createChangeableWorkingTimeZonePerNo(1, workAbleMorning));
-		val eveningList = Arrays.asList(this.createChangeableWorkingTimeZonePerNo(1, workAbleEvening));
+		List<ChangeableWorkingTimeZonePerNo>  oneDayList = Arrays.asList(this.createChangeableWorkingTimeZonePerNo(1, workAbleOneDay));
+		List<ChangeableWorkingTimeZonePerNo>  morningList = Arrays.asList(this.createChangeableWorkingTimeZonePerNo(1, workAbleMorning));
+		List<ChangeableWorkingTimeZonePerNo>  eveningList = Arrays.asList(this.createChangeableWorkingTimeZonePerNo(1, workAbleEvening));
 		
 		if(predTimeStg.isUseShiftTwo()) {
 			oneDayList.add(this.createChangeableWorkingTimeZonePerNo(2, workAbleOneDay));
