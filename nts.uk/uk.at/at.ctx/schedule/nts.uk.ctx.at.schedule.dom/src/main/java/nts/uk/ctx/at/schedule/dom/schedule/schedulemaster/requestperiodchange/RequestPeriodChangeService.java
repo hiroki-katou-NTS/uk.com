@@ -2,9 +2,9 @@ package nts.uk.ctx.at.schedule.dom.schedule.schedulemaster.requestperiodchange;
 
 import java.util.List;
 
-import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.workplace.ExWorkplaceHistItemImported;
-import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.workplace.ExWorkplaceHistItemImported;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeHis;
 
 public interface RequestPeriodChangeService {
 	/**
@@ -18,6 +18,7 @@ public interface RequestPeriodChangeService {
 	 * @return
 	 */
 	public List<DatePeriod> getPeriodChange(String employeeId, DatePeriod period,
-			List<ExWorkplaceHistItemImported> workplaceHistory, List<BusinessTypeOfEmpDto> worktypeHis, boolean isWorkplace,
-			boolean recreate);
+			List<ExWorkplaceHistItemImported> workplaceHistory, 
+			List<BusinessTypeOfEmployeeHis> worktypeHis,
+			boolean isWorkplace, boolean recreate);
 }

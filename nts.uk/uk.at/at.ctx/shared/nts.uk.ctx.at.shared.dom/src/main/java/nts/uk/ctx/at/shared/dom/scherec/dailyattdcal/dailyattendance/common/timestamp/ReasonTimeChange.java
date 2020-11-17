@@ -25,10 +25,10 @@ public class ReasonTimeChange implements DomainObject {
 	@Setter
 	private Optional<EngravingMethod> engravingMethod;
 
-	public ReasonTimeChange(TimeChangeMeans timeChangeMeans, EngravingMethod engravingMethod) {
+	public ReasonTimeChange(TimeChangeMeans timeChangeMeans, Optional<EngravingMethod> engravingMethod) {
 		super();
 		this.timeChangeMeans = timeChangeMeans;
-		this.engravingMethod = Optional.ofNullable(engravingMethod);
+		this.engravingMethod = engravingMethod;
 	}
 	
 	/**
@@ -37,8 +37,7 @@ public class ReasonTimeChange implements DomainObject {
 	 */
 	public static ReasonTimeChange createByAutomaticSet() {
 		
-		// WARNING: passing null value
-		return new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, null);
+		return new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, Optional.empty());
 	}
 
 }

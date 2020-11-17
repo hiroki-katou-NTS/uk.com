@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.schedule.app.command.schedule.alarm.checksetting.banworktogether;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -12,8 +11,10 @@ import nts.uk.shr.com.context.AppContexts;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.List;
-import java.util.Optional;
 
+/**
+ * UKDesign.UniversalK.就業.KSM_スケジュールマスタ.KSM008 スケジュールのアラームチェック設定.C: 同時出勤禁止.メニュー別OCD.同時出勤禁止を新規する
+ */
 @Stateless
 public class AddBanWorkTogetherCommandHandler extends CommandHandler<AddBanWorkTogetherCommand> {
 
@@ -53,7 +54,7 @@ public class AddBanWorkTogetherCommandHandler extends CommandHandler<AddBanWorkT
                     new BanWorkTogetherCode(code),
                     new BanWorkTogetherName(name),
                     targetList,
-                    (upperLimit - 1)
+                    upperLimit
             );
         } else {
             result = BanWorkTogether.createBySpecifyingAllDay(
@@ -61,7 +62,7 @@ public class AddBanWorkTogetherCommandHandler extends CommandHandler<AddBanWorkT
                     new BanWorkTogetherCode(code),
                     new BanWorkTogetherName(name),
                     targetList,
-                    (upperLimit - 1)
+                    upperLimit
             );
         }
         return result;

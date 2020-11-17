@@ -44,20 +44,22 @@ public class InsertBanHolidayTogetherCommandHandler extends CommandHandler<Inser
 
         BanHolidayTogetherName banHolidayName = new BanHolidayTogetherName(command.getBanHolidayTogetherName());
 
-        Optional<ReferenceCalendar> workDayReference = Optional.ofNullable(null);
+        Optional<ReferenceCalendar> workDayReference = Optional.empty();
         if (command.getCheckDayReference()) {
-            switch (command.getSelectedWorkDayReference()) {
-                case 0: {
+            BusinessDaysCalendarType selectedWorkDayReference = EnumAdaptor.valueOf(command.getSelectedWorkDayReference(), BusinessDaysCalendarType.class);
+
+            switch (selectedWorkDayReference){
+                case COMPANY: {
                     ReferenceCalendarCompany referenceCalendarCompany = new ReferenceCalendarCompany();
                     workDayReference = Optional.ofNullable((ReferenceCalendar) referenceCalendarCompany);
                     break;
                 }
-                case 1: {
-                    ReferenceCalendarWorkplace referenceCalendarWorkplace = new ReferenceCalendarWorkplace(command.getWorkplaceId());
+                case WORKPLACE: {
+                    ReferenceCalendarWorkplace referenceCalendarWorkplace = new ReferenceCalendarWorkplace(command.getWorkplaceInfoId());
                     workDayReference = Optional.ofNullable((ReferenceCalendar) referenceCalendarWorkplace);
                     break;
                 }
-                case 2: {
+                case CLASSSICATION: {
                     ReferenceCalendarClass referenceCalendarClass = new ReferenceCalendarClass(new ClassificationCode(command.getClassificationOrWorkplaceCode()));
                     workDayReference = Optional.ofNullable((ReferenceCalendar) referenceCalendarClass);
                     break;

@@ -46,21 +46,21 @@ public class WorkStamp extends DomainObject{
 	public WorkStamp(TimeWithDayAttr timeWithDay, WorkLocationCD locationCode,
 			TimeChangeMeans timeChangeMeans,EngravingMethod engravingMethod) {
 		super();
-		this.timeDay = new WorkTimeInformation(new ReasonTimeChange(timeChangeMeans, engravingMethod), timeWithDay);
+		this.timeDay = new WorkTimeInformation(new ReasonTimeChange(timeChangeMeans, Optional.ofNullable(engravingMethod)), timeWithDay);
 		this.locationCode = Optional.ofNullable(locationCode);
 	}
 	
 	public WorkStamp(TimeWithDayAttr timeWithDay, WorkLocationCD locationCode,
 			TimeChangeMeans timeChangeMeans) {
 		super();
-		this.timeDay = new WorkTimeInformation(new ReasonTimeChange(timeChangeMeans, null), timeWithDay);
+		this.timeDay = new WorkTimeInformation(new ReasonTimeChange(timeChangeMeans, Optional.empty()), timeWithDay);
 		this.locationCode = Optional.ofNullable(locationCode);
 	}
 	
 	
 	public void setPropertyWorkStamp(TimeWithDayAttr timeWithDay, WorkLocationCD locationCode,
 			TimeChangeMeans timeChangeMeans){
-		this.timeDay = new WorkTimeInformation(new ReasonTimeChange(timeChangeMeans, null), timeWithDay);
+		this.timeDay = new WorkTimeInformation(new ReasonTimeChange(timeChangeMeans, Optional.empty()), timeWithDay);
 		this.locationCode = Optional.ofNullable(locationCode);
 		
 	}

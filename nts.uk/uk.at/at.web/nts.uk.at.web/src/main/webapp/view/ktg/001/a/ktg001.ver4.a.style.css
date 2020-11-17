@@ -1,0 +1,73 @@
+#contents-area {
+	padding: 0;
+}
+
+.widget-table {
+	width: 100%;
+	max-width: 305px;
+	margin: 0 auto;
+	table-layout: fixed;
+}
+
+.widget-table .go-button {
+	width: 24px;
+}
+
+.widget-table .go-button button {
+	width: 25px;
+	border: 0;
+	box-shadow: none;
+	padding: 0;
+}
+
+.widget-table td {
+	padding: 2px;
+	overflow: hidden;
+}
+
+.widget-table .widget-table-child {
+	height: 37px;
+}
+
+.widget-table tr {
+	border-bottom: 1px solid #B1B1B1;
+}
+
+.parent{
+	border-left: 1px solid #B1B1B1;
+	border-right: 1px solid #B1B1B1;
+	border-bottom: 1px solid #B1B1B1;
+    height: 320px;
+    width: 305px;
+    margin: 0 auto;
+} 
+
+#title {
+	width: 197px;
+}
+
+.child-row {
+	padding-left: 22px;
+}
+
+.row {
+	width: 225px;
+	max-width: 200px;
+}
+
+.row .child-row {
+	width: 213px;
+	height: 33px;
+}
+
+.row .go-button {
+	width: 32px;
+}
+
+.row td:nth-child(3) {
+	width: 25px;
+}
+
+div.form-label {
+    border-color: #10A5F5;
+}

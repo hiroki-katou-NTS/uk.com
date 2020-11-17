@@ -328,7 +328,7 @@ public class ScheCreExeMonthlyPatternHandler {
 		}
 
 		// 勤務種別変更者再作成を判定する
-		boolean valueIsReWorkerTypeChangePerson = masterCache.getBusinessTypeOfEmpDtos().isReWorkerTypeChangePerson(
+		boolean valueIsReWorkerTypeChangePerson = masterCache.isReWorkerTypeChangePerson(
 				workingConditionItem.getEmployeeId(),
 				dateInPeriod,
 				command.getContent().getReCreateContent().getRebuildTargetDetailsAtr().getRecreateWorkTypeChange(),
