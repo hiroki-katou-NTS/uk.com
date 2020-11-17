@@ -26,6 +26,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
@@ -276,6 +277,10 @@ public class KTG004Finder {
 		boolean subVacaManage = false;
 		//振休管理区分
 		boolean retentionManage = false;
+		//子看護管理区分
+		boolean childNursingManagement = false;
+		//介護管理区分
+		boolean longTermCareManagement = false;
 		for (ItemsSettingDto item: itemsSetting) {
 			if(item.getItem() == WorkStatusItem.HDPAID_DISPLAY_ATR.value) {
 				yearManage = item.isDisplayType();
@@ -285,22 +290,29 @@ public class KTG004Finder {
 				subVacaManage = item.isDisplayType();
 			}else if(item.getItem() == WorkStatusItem.HDSUB_DISPLAY_ATR.value) {
 				retentionManage = item.isDisplayType();
+			}else if(item.getItem() == WorkStatusItem.CHILD_CARE_DISPLAY_ATR.value) {
+				childNursingManagement = item.isDisplayType();
+			}else if(item.getItem() == WorkStatusItem.CARE_DISPLAY_ATR.value) {
+				longTermCareManagement = item.isDisplayType();
 			}
 		}
 		//残数取得する
 		NumberOfRemainOutput numberOfRemain = absenceServiceProcess.getNumberOfRemaining(
 				cid, 
 				employeeId, 
-				GeneralDate.today(),
-				yearManage, 
-				subHdManage, 
-				subVacaManage, 
-				retentionManage);
+				GeneralDate.today(), 
+				yearManage ? ManageDistinct.YES : ManageDistinct.NO, 
+				subVacaManage ? ManageDistinct.YES : ManageDistinct.NO, 
+				subHdManage ? ManageDistinct.YES : ManageDistinct.NO, 
+				retentionManage ? ManageDistinct.YES : ManageDistinct.NO, 
+				ManageDistinct.NO, 
+				childNursingManagement ? ManageDistinct.YES : ManageDistinct.NO, 
+				longTermCareManagement ? ManageDistinct.YES : ManageDistinct.NO);
 		if(numberOfRemain != null) {
 			result.setNumberOfAnnualLeaveRemain(new RemainingDaysAndTimeDto(numberOfRemain.getYearRemain(), new AttendanceTime(0)));
 			result.setNumberOfSubstituteHoliday(new RemainingDaysAndTimeDto(numberOfRemain.getSubHdRemain(), new AttendanceTime(0)));
 			result.setNumberAccumulatedAnnualLeave(numberOfRemain.getSubVacaRemain());
-			result.setRemainingHolidays(numberOfRemain.getStockRemain());
+			result.setRemainingHolidays(numberOfRemain.getSubVacaRemain());
 		}
 		
 		//アルゴリズム「23.特休残数表示」を実行する(Thực thi xử lý [23:hiển thị số phép đặc biệt còn lại])
