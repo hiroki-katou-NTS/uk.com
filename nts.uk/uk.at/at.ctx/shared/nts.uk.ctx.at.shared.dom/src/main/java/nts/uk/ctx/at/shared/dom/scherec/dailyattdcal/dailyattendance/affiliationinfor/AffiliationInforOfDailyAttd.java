@@ -209,7 +209,7 @@ public class AffiliationInforOfDailyAttd implements DomainObject  {
 		
 
 		/**
-		 * [R-5] 勤務儒別履歴を取得する
+		 * [R-5] 勤務種別履歴を取得する
 		 * @param employeeId 社員ID
 		 * @param standardDate　基準日
 		 * @return
