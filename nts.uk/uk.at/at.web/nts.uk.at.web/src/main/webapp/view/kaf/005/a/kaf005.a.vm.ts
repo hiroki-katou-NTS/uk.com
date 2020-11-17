@@ -94,6 +94,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					vm.bindRestTime(vm.dataSource);
 					vm.bindHolidayTime(vm.dataSource);
 					vm.bindOverTime(vm.dataSource);
+					vm.visibleModel = vm.createVisibleModel(vm.dataSource);
 				}
 			}).fail((failData: any) => {
 				// xử lý lỗi nghiệp vụ riêng
@@ -607,7 +608,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			return visibleModel;
 		}
 		
-		
+		calculate() {
+			const self = this;
+			console.log('calculate');
+		}
 		
 	
 	}

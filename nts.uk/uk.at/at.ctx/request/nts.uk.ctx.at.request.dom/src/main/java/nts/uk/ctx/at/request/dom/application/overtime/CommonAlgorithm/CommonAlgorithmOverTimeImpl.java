@@ -136,7 +136,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		QuotaOuput output = new QuotaOuput();
 		// 社員の労働条件を取得する
 		Optional<WorkingConditionItem> workingConditionItemOp = WorkingConditionService.findWorkConditionByEmployee(createRequireM1(), employeeId, date);
-		if (!workingConditionItemOp.isPresent()) return null;
+		if (!workingConditionItemOp.isPresent()) return new QuotaOuput(false, Collections.emptyList()); // need to QA if workingConditionItemOp is empty
 		WorkingConditionItem workingConditionItem = workingConditionItemOp.get();
 		// 取得したドメインモデル「労働条件項目」．労働制を確認する
 		List<OvertimeWorkFrame> frames = overtimeWorkFrameRepository.getOvertimeWorkFrameByFrameByCom(companyId, NotUseAtr.USE.value);

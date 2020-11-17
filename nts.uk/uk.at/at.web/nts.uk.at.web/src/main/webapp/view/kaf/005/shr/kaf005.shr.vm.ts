@@ -53,8 +53,9 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 		</div>
 	</div>
 	<!-- calculate button A5_8-->
-	
-	
+	<div style="margin-bottom: 20px">
+		<button style="width: 100px; margin-left: 200px" data-bind="text: $i18n('KAF005_43'), click: calculate" class="caret-bottom caret-inline" ></button>
+	</div>
 	<!-- over time hours -->
 
 	<div class="cf valign-top control-group cell"
@@ -159,8 +160,6 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 
 
 </div>
-
-
 
 
 	`
