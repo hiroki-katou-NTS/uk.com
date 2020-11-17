@@ -99,9 +99,9 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 									enable: true }" />
 						</td>
 						<!--A6_9 残業事前申請時間-->
-						<td class="right-content" data-bind="text: String(ko.toJS(preTime))"></td>
+						<td class="right-content" data-bind="text: $parent.getFormatTime(ko.toJS(preTime))"></td>
 						<!--A6_11 実績時間-->
-						<td class="right-content" data-bind="text: String(ko.toJS(actualTime))"></td>
+						<td class="right-content" data-bind="text: $parent.getFormatTime(ko.toJS(actualTime))"></td>
 					</tr>
 				</tbody>
 			</table>
@@ -149,8 +149,8 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 									enable: false,
 									option: {width: '85px', timeWithDay: true}}" /></td>
 						<!--A5_7 終了時刻-->
-						<td class="right-content" data-bind="text: String(ko.toJS(preApp))"></td>
-						<td class="right-content" data-bind="text: String(ko.toJS(actualTime))"></td>
+						<td class="right-content" data-bind="text: $parent.getFormatTime(ko.toJS(preApp))"></td>
+						<td class="right-content" data-bind="text: $parent.getFormatTime(ko.toJS(actualTime))"></td>
 					</tr>
 				</tbody>
 			</table>
