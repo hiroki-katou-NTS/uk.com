@@ -175,8 +175,10 @@ module nts.uk.at.view.kml002.d {
 
       vm.$ajax(PATH.wkpLaborCostAndTimeRegister, { laborCostAndTimes: params }).done((data) => {
         vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
-          vm.$blockui('hide');
-          vm.$window.close();
+          vm.$blockui('hide');          
+          vm.$window.storage('LABOR_COST_TIME_DETAILS', params).then(() => {
+            vm.$window.close();
+          });
         });
       })
         .fail((error) => { })

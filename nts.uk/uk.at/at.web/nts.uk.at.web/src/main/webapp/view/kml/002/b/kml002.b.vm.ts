@@ -61,10 +61,7 @@ module nts.uk.at.view.kml002.b {
       const vm = this;
       vm.$window.modal('/view/kml/002/d/index.xhtml').then(() => {
         vm.$window.storage('LABOR_COST_TIME_DETAILS').then((data) => {
-          if (!_.isNil(data)) {
-            //vm.laborCostTimeDetails(data);
-            vm.getLaborCostTimeDetails();
-          }
+          vm.getLaborCostTimeDetails();
         });
       });
     }
@@ -74,10 +71,7 @@ module nts.uk.at.view.kml002.b {
       vm.$window.storage('KWL002_SCREEN_G_INPUT', { countingType: 0 }).then(() => {
         vm.$window.modal('/view/kml/002/g/index.xhtml').then(() => {
           vm.$window.storage('KWL002_SCREEN_G_OUTPUT').then((data) => {
-            if (!_.isNil(data)) {
-              //vm.countingNumberTimesDetails(data);
-              vm.getNumberCounterDetails();
-            }
+            vm.getNumberCounterDetails();
           });
         });
       });
@@ -87,10 +81,7 @@ module nts.uk.at.view.kml002.b {
       const vm = this;
       vm.$window.modal('/view/kml/002/e/index.xhtml').then(() => {
         vm.$window.storage('TIME_ZONE_NUMBER_PEOPLE_DETAILS').then((data) => {
-          if (!_.isNil(data)) {
-            //vm.timeZoneNumberPeopleDetails(data);
-            vm.getWorkplaceTimeZoneById();
-          }
+          vm.getWorkplaceTimeZoneById(); 
         });
       });
     }
