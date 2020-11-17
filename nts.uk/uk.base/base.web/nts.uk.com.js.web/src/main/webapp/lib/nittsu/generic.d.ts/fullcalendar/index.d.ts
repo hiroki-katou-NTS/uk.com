@@ -1584,7 +1584,6 @@ module fc {
         nextDayThreshold: Duration;
     }, allDay?: boolean): EventRenderRange[];
 
-
     const BASE_OPTION_REFINERS: {
         navLinkDayClick: Identity<string | ((this: CalendarApi, date: Date, jsEvent: VUIEvent) => void)>;
         navLinkWeekClick: Identity<string | ((this: CalendarApi, weekStart: Date, jsEvent: VUIEvent) => void)>;

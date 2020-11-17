@@ -534,43 +534,77 @@ module nts.uk.ui.koExtentions {
                     oneDay: {
                         text: '日',
                         click: () => {
-                            if (ko.isObservable(weekends)) {
-                                weekends(true);
-                            } else {
-                                calendar.setOption('weekends', true);
-                            }
+                            if (calendar.view.type !== 'timeGridDay') {
+                                if (ko.isObservable(weekends)) {
+                                    weekends(true);
+                                } else {
+                                    calendar.setOption('weekends', true);
+                                }
 
-                            calendar.changeView('timeGridDay');
+                                calendar.changeView('timeGridDay');
+                            }
                         }
                     },
                     fiveDay: {
                         text: '稼働日',
                         click: () => {
-                            if (ko.isObservable(weekends)) {
-                                weekends(false);
-                            } else {
-                                calendar.setOption('weekends', false);
-                            }
+                            if (calendar.view.type !== 'timeGridWeek' || ko.unwrap(weekends) !== false) {
+                                if (ko.isObservable(weekends)) {
+                                    weekends(false);
+                                } else {
+                                    calendar.setOption('weekends', false);
+                                }
 
-                            calendar.changeView('timeGridWeek');
+                                calendar.changeView('timeGridWeek');
+                            }
                         }
                     },
                     fullWeek: {
                         text: '週',
                         click: () => {
-                            if (ko.isObservable(weekends)) {
-                                weekends(true);
-                            } else {
-                                calendar.setOption('weekends', true);
-                            }
+                            if (calendar.view.type !== 'timeGridWeek' || ko.unwrap(weekends) !== true) {
+                                if (ko.isObservable(weekends)) {
+                                    weekends(true);
+                                } else {
+                                    calendar.setOption('weekends', true);
+                                }
 
-                            calendar.changeView('timeGridWeek');
+                                calendar.changeView('timeGridWeek');
+                            }
+                        }
+                    },
+                    dayGridMonth: {
+                        text: '月',
+                        click: () => {
+                            if (calendar.view.type !== 'dayGridMonth') {
+                                if (ko.isObservable(weekends)) {
+                                    weekends(true);
+                                } else {
+                                    calendar.setOption('weekends', true);
+                                }
+
+                                calendar.changeView('dayGridMonth');
+                            }
+                        }
+                    },
+                    listWeek: {
+                        text: '一覧表',
+                        click: () => {
+                            if (calendar.view.type !== 'listWeek') {
+                                if (ko.isObservable(weekends)) {
+                                    weekends(true);
+                                } else {
+                                    calendar.setOption('weekends', true);
+                                }
+
+                                calendar.changeView('listWeek');
+                            }
                         }
                     }
                 },
                 height: '500px',
                 headerToolbar: {
-                    left: 'today prev,next oneDay,fiveDay,fullWeek',
+                    left: 'today prev,next oneDay,fiveDay,fullWeek,dayGridMonth,listWeek',
                     center: 'title',
                     right: 'copyDay'
                 },
@@ -672,6 +706,55 @@ module nts.uk.ui.koExtentions {
                     if (ko.isObservable(events)) {
                         events(evts);
                     }
+                },
+                eventContent: (args: any) => {
+                    const { type } = args.view;
+                    const { start, end, title } = args.event;
+                    const hour = (value: Date) => moment(value).format('H');
+                    const format = (value: Date) => moment(value).format('HH:mm');
+
+                    if (['timeGridDay', 'timeGridWeek'].indexOf(type) !== -1) {
+                        return {
+                            html: `<div class="fc-event-time">${format(start)} - ${format(end)}</div>
+                            <div class="fc-event-title-container">
+                                <div class="fc-event-title fc-sticky">${title}</div>
+                            </div>`
+                        };
+                    }
+
+                    if (type === 'dayGridMonthc') {
+                        const hours = hour(start);
+                        const minutes = format(start);
+
+                        return {
+                            html: `<div class="fc-daygrid-event-dot"></div>
+                            <div class="fc-event-time">${minutes.match(/\:00$/) ? `${hours}時` : minutes}</div>
+                            <div class="fc-event-title">${title}</div>`
+                        };
+                    }
+
+                    if (type === 'listWeek') {
+                        return {
+                            html: `<h4>${title}</h4>
+                            <div>Content 1</div>
+                            <div>Content 1</div>
+                            <div>Content 1</div>
+                            <div>Content 1</div>
+                            <div>Content 1</div>
+                            <div>Content 1</div>
+                            <div>Content 1</div>
+                            <div>Content 1</div>
+                            <div>Content 1</div>
+                            <div>Content 1</div>
+                            <div>Content 1</div>
+                            <div>Content 1</div>
+                            <div>Content 1</div>
+                            <div>Content 1</div>
+                            <div>Content 1</div>`
+                        };
+                    }
+
+                    return undefined;
                 },
                 eventOverlap: false, // (stillEvent) => stillEvent.allDay,
                 select: (arg) => {
