@@ -134,9 +134,11 @@ module nts.uk.at.view.kml002.e {
         vm.listOfStartTimes.valueHasMutated();
       });
 
-      item.time.subscribe((value) => {
-        if (value) $('#starttime-' + item.id).removeClass('error-input');
-        //vm.listOfStartTimes.valueHasMutated();
+      item.time.subscribe((value) => {        
+        $('#starttime-' + item.id).ntsError('clear');
+        if( value < -720 ||  value > 4260) {          
+          $('#starttime-' + item.id).ntsError('set', { messageId: "MsgB_16" }).focus();
+        }        
       });
 
       vm.listOfStartTimes.push(item);

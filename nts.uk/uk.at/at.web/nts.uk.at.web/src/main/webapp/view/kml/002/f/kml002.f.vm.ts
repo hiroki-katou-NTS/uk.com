@@ -37,12 +37,18 @@ module nts.uk.at.view.kml002.f {
       } else {
         let start15m = vm.startTime() - _.floor(vm.startTime() / 60) * 60;
         let end15m = vm.endTime() - _.floor(vm.endTime() / 60) * 60;
-
+        let over24h = (vm.endTime() - end15m) - (vm.startTime() - start15m);
+     
         if (start15m % 15 !== 0) {
           $('#startTime').ntsError('set', { messageId: "Msg_1845" }).focus();
           return;
         } else if (end15m % 15 !== 0) {
           $('#endTime').ntsError('set', { messageId: "Msg_1845" }).focus();
+          return;
+        } else if( over24h / 60 >= 24) {
+          vm.$dialog.error({ messageId: "Msg_1819" }).then(() => {
+            $('#endTime').focus(); //.ntsError('set', { messageId: "Msg_1819" })
+          });          
           return;
         } else {
           let params = {
