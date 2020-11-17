@@ -246,7 +246,7 @@ public class TimeLeavingOfDailyAttdTest {
 		}
 		
 		private static ReasonTimeChange dummyReasonTimeChange() {
-			return new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, EngravingMethod.WEB_STAMP_INPUT);
+			return new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, Optional.of(EngravingMethod.WEB_STAMP_INPUT));
 		}
 		
 		private static OvertimeDeclaration dummyOvertimeDeclaration() {
