@@ -1,47 +1,46 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-   xmlns:ui="http://java.sun.com/jsf/facelets"
-   xmlns:com="http://xmlns.jcp.org/jsf/component"
-   xmlns:h="http://xmlns.jcp.org/jsf/html">
-   <body>
-      <ui:composition template="../../../../master/base.xhtml">
-         <ui:define name="htmlHead">
-            <com:ValidatorScript>
-               nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemName
-               nts.uk.ctx.at.shared.dom.scherec.optitem.NumberRangeValue
-               nts.uk.ctx.at.shared.dom.scherec.optitem.TimeRangeValue
-               nts.uk.ctx.at.shared.dom.scherec.optitem.AmountRangeValue
-               nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.FormulaName
-               nts.uk.ctx.at.shared.dom.scherec.optitem.UnitOfOptionalItem
-            </com:ValidatorScript>
-            <com:scriptfile
-				path="/view/language/select/languagemasterselect-jquery-ext.js"
-				of="nts.uk.com.web" />
-			<com:stylefile path="/view/language/select/languagemasterselect.css"
-				of="nts.uk.com.web" />
-            <com:scriptfile set="IGNITE" />
-            <com:stylefile path="kmk002.a.style.css" />
-            <com:scriptfile path="kmk002.a.start.js" />
-            <com:scriptfile path="kmk002.a.service.js" />
-            <com:scriptfile path="kmk002.a.vm.js" />
-         </ui:define>
-         <ui:define name="content">
-            <com:ko tag="with" bind="optionalItemHeader">
-               <div id="functions-area">
-                  <div class="container">
-                  <button tabindex="1" class="proceed" data-bind="click: saveOptionalItemDetail, enable: hasSelected">
-                  #{i18n.getText('KMK002_1')}</button>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+   xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+   <ui:composition template="../../../../master/base.xhtml">
+      <ui:define name="htmlHead">
+         <com:ValidatorScript>
+            nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemName
+            nts.uk.ctx.at.shared.dom.scherec.optitem.NumberRangeValue
+            nts.uk.ctx.at.shared.dom.scherec.optitem.TimeRangeValue
+            nts.uk.ctx.at.shared.dom.scherec.optitem.AmountRangeValue
+            nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.FormulaName
+            nts.uk.ctx.at.shared.dom.scherec.optitem.UnitOfOptionalItem
+            nts.uk.ctx.at.shared.dom.scherec.optitem.DescritionOptionalItem
+            nts.uk.ctx.at.shared.dom.scherec.optitem.NoteOptionalItem
+         </com:ValidatorScript>
+         <com:scriptfile path="/view/language/select/languagemasterselect-jquery-ext.js" of="nts.uk.com.web" />
+         <com:stylefile path="/view/language/select/languagemasterselect.css" of="nts.uk.com.web" />
+         <com:scriptfile set="IGNITE" />
+         <com:stylefile path="kmk002.a.style.css" />
+         <com:scriptfile path="kmk002.a.start.js" />
+         <com:scriptfile path="kmk002.a.service.js" />
+         <com:scriptfile path="kmk002.a.vm.js" />
+      </ui:define>
+      <ui:define name="content">
+         <com:ko tag="with" bind="optionalItemHeader">
+            <div id="functions-area">
+               <div class="container">
+                  <button tabindex="1" class="proceed" data-bind="click: saveOptionalItemDetail, enable: hasSelected &amp;&amp; $root.errors.isEmpty">
+                     #{i18n.getText('KMK002_1')}</button>
                   <!-- Print Excel -->
-                  <button tabindex="1" id="print-button" data-bind="click: function(){ $vm.exportExcel()}">#{i18n.getText('KMK002_99')}</button>
+                  <button tabindex="1" id="print-button"
+                     data-bind="click: function(){ $vm.exportExcel()}">#{i18n.getText('KMK002_99')}</button>
                   <div tabindex="1" id="switch-language"></div>
-                  </div>
                </div>
-               <div id="contents-area" style="display: none" data-bind="visible: true" class="fixed-flex-layout">
-                  <!-- Optional item grid list. -->
-                  <div class="opt-item-grid-list pull-left caret-right caret-background bg-green fixed-flex-layout-left">
-                     <i class="icon icon-searchbox"></i>
-                     <div tabindex="1" data-bind="ntsSearchBox: {
+            </div>
+            <div id="contents-area" style="display: none" data-bind="visible: true" class="fixed-flex-layout">
+               <!-- Optional item grid list. -->
+               <div class="opt-item-grid-list pull-left caret-right caret-background bg-green fixed-flex-layout-left">
+                  <i class="icon icon-searchbox"></i>
+                  <div tabindex="1" data-bind="ntsSearchBox: {
                         targetKey: 'itemNo',
                         mode:'igGrid',
                         comId:'tbl-master-list',
@@ -49,8 +48,7 @@
                         selected: selectedCode,
                         selectedKey: 'itemNo',
                         fields: ['itemNo', 'itemName']}"></div>
-                     <table tabindex="1" id="tbl-master-list"
-                        data-bind="ntsGridList: {
+                  <table tabindex="1" id="tbl-master-list" data-bind="ntsGridList: {
                         name: '#[KMK002_6]',
                         width: 380,
                         dataSource: optionalItemHeaders,
@@ -59,271 +57,345 @@
                         multiple: false,
                         value: selectedCode,
                         rows: 15}">
-                     </table>
-                  </div>
-                  <!-- Optional Item view model -->
-                  <div class="pull-left opt-item-detail fixed-flex-layout-right">
-                     <com:ko tag="with" bind="optionalItem">
-                        <table class="control-group">
-                           <tr>
-                              <td>
-                                 <div data-bind="ntsFormLabel: {required: true, constraint: 'OptionalItemName'}">#{i18n.getText('KMK002_11')}</div>
-                              </td>
-                              <td><input tabindex="1" id="inpName"
-                                 data-bind="ntsTextEditor: {
-                                 name: '#[KMK002_12]',
-                                 value: optionalItemName,
-                                 constraint: 'OptionalItemName', 
-                                 enable: $parent.hasSelected, 
-                                 required: true}"/></td>
-                           </tr>
-                           <tr>
-                              <!-- optionalItemAtr -->
-                              <td>
-                                 <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK002_24')}</div>
-                              </td>
-                              <td>
-                                 <div tabindex="1" style="width: 80px"
-                                    data-bind="ntsComboBox: {
-                                    name: '#[KMK002_24]',
-                                    options: atrDataSource,
-                                    optionsValue: 'value',
-                                    value: optionalItemAtr,
-                                    optionsText: 'localizedName',
-                                    editable: false,
-                                    enable: true &amp;&amp; $parents[1].langJP(),
-                                    columns: [
-                                    { prop: 'localizedName', length: 2 },
-                                    ]}">
-                                 </div>
-                              </td>
-                              <td>
-                              	<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK002_75')}</div>
-                              </td>
-                              <td>
-                              	<input tabindex="1" id="inp-unit" style="margin-left: 5px;"
-                                    data-bind="ntsTextEditor: {
-                                    name: '#[KMK002_75]',
-                                    value: unit,
-                                    enable: enableUnit &amp;&amp; $parents[1].langJP(),
-                                    constraint: 'UnitOfOptionalItem',
-                                    required: false}"/>
-                              </td>
-                           </tr>
-                           <tr>
-                              <!-- Usage Atr -->
-                              <td>
-                                 <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK002_13')}</div>
-                              </td>
-                              <td>
-                                 <div tabindex="1"
-                                    data-bind="ntsSwitchButton: {
-                                    name: '#[KMK002_13]',
-                                    options: usageClsDatasource,
-                                    optionsValue: 'code',
-                                    optionsText: 'name',
-                                    value: usageAtr,
-                                    enable: $parent.hasSelected &amp;&amp; $parents[1].langJP() }"></div>
-                              </td>
-                           </tr>
-                           <tr><td colspan="4"><hr/></td></tr>
-                           <tr>
-                              <!-- Performance Atr -->
-                              <td>
-                                 <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK002_20')}</div>
-                              </td>
-                              <td>
-                                 <div tabindex="1"
-                                    data-bind="ntsSwitchButton: {
-                                    name: '#[KMK002_21]',
-                                    options: perfClsDatasource,
-                                    optionsValue: 'code',
-                                    optionsText: 'name',
-                                    value: performanceAtr,
-                                    enable: isUsed &amp;&amp; $parents[1].langJP()}"></div>
-                              </td>
-                              <!-- Calculation ResultRange -->
-                              <td>
-                                 <div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK002_25')}</div>
-                              </td>
-                              <td>
-                              <div>
-                                 <div tabindex="1" id="cb-upper"
-                                    data-bind="ntsCheckBox: {
-                                    name: '#[KMK002_26]',
-                                    checked: calcResultRange.upperCheck,
-                                    enable: isUsed &amp;&amp; $parents[1].langJP(),
-                                    text: nts.uk.resource.getText('KMK002_26') }"></div>
-                                 <com:ko tag="if" bind="isNumberSelected()">
-                                    <input tabindex="1" id="inp-upper-number"
-                                       data-bind="ntsNumberEditor: {
-                                       name: '#[KMK002_26]',
-                                       value: calcResultRange.numberUpper,
-                                       constraint: 'NumberRangeValue',
-                                       option: {
-                                       grouplength: 3,
-                                       decimallength: 1
-                                       },
-                                       required: true,
-                                       enable: calcResultRange.upperCheck() &amp;&amp; isUsed() &amp;&amp; $parents[1].langJP()}"/>
-                                 </com:ko>
-                                 <com:ko tag="if" bind="isAmountSelected()">
-                                    <input tabindex="1" id="inp-upper-amount"
-                                       data-bind="ntsNumberEditor: {
-                                       name: '#[KMK002_26]',
-                                       value: calcResultRange.amountUpper,
-                                       constraint: 'AmountRangeValue',
-                                       option: {
-                                       grouplength: 3
-                                       },
-                                       required: true,
-                                       enable: calcResultRange.upperCheck() &amp;&amp; isUsed() &amp;&amp; $parents[1].langJP()}"/>
-                                 </com:ko>
-                                 <com:ko tag="if" bind="isTimeSelected()">
-                                    <input tabindex="1" id="inp-upper-time"
-                                       data-bind="ntsTimeEditor: {
-                                       name: '#[KMK002_26]',
-                                       value: calcResultRange.timeUpper,
-                                       constraint: 'TimeRangeValue',
-                                       inputFormat: 'time',
-                                       mode: 'time',
-                                       required: true,
-                                       enable: calcResultRange.upperCheck() &amp;&amp; isUsed() &amp;&amp; $parents[1].langJP()}"/>
-                                 </com:ko>
-                                 </div>
-                              </td>
-                           </tr>
-                           <tr>
-                              <!-- EmpCondition Atr -->
-                              <td>
-                                 <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK002_16')}</div>
-                              </td>
-                              <td>
-                                 <div tabindex="2"
-                                    data-bind="ntsSwitchButton: {
+                  </table>
+               </div>
+               <!-- Optional Item view model -->
+               <div class="pull-left opt-item-detail fixed-flex-layout-right">
+                  <com:ko tag="with" bind="optionalItem">
+                     <div class="table">
+                        <div class="cell">
+                           <table class="control-group">
+                              <tr>
+                                 <td>
+                                    <div data-bind="ntsFormLabel: {required: true, constraint: 'OptionalItemName'}">
+                                       #{i18n.getText('KMK002_11')}</div>
+                                 </td>
+                                 <td><input tabindex="1" id="inpName" data-bind="ntsTextEditor: {
+                                             name: '#[KMK002_12]',
+                                             value: optionalItemName,
+                                             constraint: 'OptionalItemName', 
+                                             enable: $parent.hasSelected, 
+                                             required: true}" /></td>
+                              </tr>
+
+                              <tr>
+                                 <td>
+                                    <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK002_101')}</div>
+                                 </td>
+                                 <td>
+                                    <div data-bind="ntsSwitchButton: {
+                                                name: '#[KMK002_102]',
+                                                options: usageClsDatasource,
+                                                optionsValue: 'code',
+                                                optionsText: 'name',
+                                                value: usageAtr,
+                                                required: true,
+                                                enable: $parent.hasSelected &amp;&amp; $parents[1].langJP()
+                                             }"></div>
+                                 </td>
+                              </tr>
+                              <tr>
+                                 <!-- Usage Atr -->
+                                 <td>
+                                    <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK002_13')}</div>
+                                 </td>
+                                 <td>
+                                    <div tabindex="1" data-bind="ntsSwitchButton: {
+                                                name: '#[KMK002_13]',
+                                                options: calculationAtr,
+                                                optionsValue: 'code',
+                                                optionsText: 'name',
+                                                value: selectedClac,
+                                                enable: $parent.hasSelected &amp;&amp; $parents[1].langJP() }"></div>
+                                 </td>
+                              </tr>
+                              <tr>
+                                 <!-- Performance Atr -->
+                                 <td>
+                                    <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK002_20')}</div>
+                                 </td>
+                                 <td>
+                                    <div tabindex="1" data-bind="ntsSwitchButton: {
+                                                name: '#[KMK002_21]',
+                                                options: perfClsDatasource,
+                                                optionsValue: 'code',
+                                                optionsText: 'name',
+                                                value: performanceAtr,
+                                                enable: isUsed &amp;&amp; $parents[1].langJP()}"></div>
+                                 </td>
+                              </tr>
+                              <tr>
+                                 <!-- optionalItemAtr -->
+                                 <td>
+                                    <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK002_24')}</div>
+                                 </td>
+                                 <td>
+                                    <div tabindex="1" style="width: 80px" data-bind="ntsComboBox: {
+                                                name: '#[KMK002_24]',
+                                                options: atrDataSource,
+                                                optionsValue: 'value',
+                                                value: optionalItemAtr,
+                                                optionsText: 'localizedName',
+                                                editable: false,
+                                                enable: selectedClac() === 1 &amp;&amp; $parents[1].langJP(),
+                                                columns: [
+                                                { prop: 'localizedName', length: 2 },
+                                                ]}">
+                                    </div>
+                                    <div style="display: inline; vertical-align: super;">
+                                       <span class="label" style="margin-left: 50px;">#{i18n.getText('KMK002_109')}</span>
+                                       <span class="label" style="margin-left: 20px;" data-bind="text: dailyUnit, visible: performanceAtr() === 1"></span> <!-- daily -->
+                                       <span class="label" style="margin-left: 20px;" data-bind="text: monthlyUnit, visible: performanceAtr() === 0"></span> <!-- monthly -->
+                                       <span class="label" data-bind="text: unit"></span>
+                                    </div>
+                                 </td>
+                              </tr>
+                              <tr>
+                                 <td>
+                                    <div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK002_75')}</div>
+                                 </td>
+                                 <td>
+                                    <input tabindex="1" id="inp-unit" data-bind="ntsTextEditor: {
+                                                name: '#[KMK002_75]',
+                                                value: unit,
+                                                enable: enableUnit &amp;&amp; $parents[1].langJP(),
+                                                constraint: 'UnitOfOptionalItem',
+                                                required: false}" />
+                                 </td>
+                              </tr>
+                              <tr>
+                                 <!-- Calculation ResultRange -->
+                                 <td>
+                                    <div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK002_25')}</div>
+                                 </td>
+                                 <td>
+                                    <div>
+                                       <div tabindex="1" id="cb-upper" data-bind="ntsCheckBox: {
+                                                   name: '#[KMK002_26]',
+                                                   checked: calcResultRange.upperCheck,
+                                                   enable: isUsed &amp;&amp; $parents[1].langJP(),
+                                                   text: nts.uk.resource.getText('KMK002_26') }"></div>
+                                       <com:ko tag="if" bind="isNumberSelected()">
+                                          <input tabindex="1" id="inp-upper-number"
+                                             data-bind="ntsNumberEditor: {
+                                                      name: '#[KMK002_26]',
+                                                      value: calcResultRange.numberUpper,
+                                                      constraint: 'NumberRangeValue',
+                                                      option: {
+                                                      grouplength: 3,
+                                                      decimallength: 1
+                                                      },
+                                                      required: true,
+                                                      enable: selectedClac() === 1 &amp;&amp; calcResultRange.upperCheck() &amp;&amp; $parents[1].langJP()}" />
+                                       </com:ko>
+                                       <com:ko tag="if" bind="isAmountSelected()">
+                                          <input tabindex="1" id="inp-upper-amount"
+                                             data-bind="ntsNumberEditor: {
+                                                      name: '#[KMK002_26]',
+                                                      value: calcResultRange.amountUpper,
+                                                      constraint: 'AmountRangeValue',
+                                                      option: {
+                                                      grouplength: 3
+                                                      },
+                                                      required: true,
+                                                      enable: selectedClac() === 1 &amp;&amp; calcResultRange.upperCheck() &amp;&amp; $parents[1].langJP()}" />
+                                       </com:ko>
+                                       <com:ko tag="if" bind="isTimeSelected()">
+                                          <input tabindex="1" id="inp-upper-time"
+                                             data-bind="ntsTimeEditor: {
+                                                      name: '#[KMK002_26]',
+                                                      value: calcResultRange.timeUpper,
+                                                      constraint: 'TimeRangeValue',
+                                                      inputFormat: 'time',
+                                                      mode: 'time',
+                                                      required: true,
+                                                      enable: selectedClac() === 1 &amp;&amp; calcResultRange.upperCheck() &amp;&amp; $parents[1].langJP()}" />
+                                       </com:ko>
+                                    </div>
+                                 </td>
+                              </tr>
+                              <tr>
+                                 <td></td>
+                                 <!-- Calculation ResultRange -->
+                                 <td>
+                                    <div>
+                                       <div tabindex="1" id="cb-lower" data-bind="ntsCheckBox: {
+                                                      name: '#[KMK002_27]',
+                                                      checked: calcResultRange.lowerCheck,
+                                                      enable: isUsed &amp;&amp; $parents[1].langJP(),
+                                                      text: nts.uk.resource.getText('KMK002_27') }"></div>
+                                       <com:ko tag="if" bind="isNumberSelected()">
+                                          <input tabindex="1" id="inp-lower-number"
+                                             data-bind="ntsNumberEditor: {
+                                                         name: '#[KMK002_27]',
+                                                         value: calcResultRange.numberLower,
+                                                         constraint: 'NumberRangeValue',
+                                                         option: {
+                                                         grouplength: 3,
+                                                         decimallength: 1
+                                                         },
+                                                         required: true,
+                                                         enable: selectedClac() === 1 &amp;&amp; calcResultRange.lowerCheck() &amp;&amp; $parents[1].langJP()}" />
+                                       </com:ko>
+                                       <com:ko tag="if" bind="isTimeSelected()">
+                                          <input tabindex="1" id="inp-lower-time"
+                                             data-bind="ntsTimeEditor: {
+                                                         name: '#[KMK002_27]',
+                                                         value: calcResultRange.timeLower,
+                                                         constraint: 'TimeRangeValue',
+                                                         inputFormat: 'time',
+                                                         mode: 'time',
+                                                         required: true,
+                                                         enable: selectedClac() === 1 &amp;&amp; calcResultRange.lowerCheck() &amp;&amp; $parents[1].langJP()}" />
+                                       </com:ko>
+                                       <com:ko tag="if" bind="isAmountSelected()">
+                                          <input tabindex="1" id="inp-lower-amount"
+                                             data-bind="ntsNumberEditor: {
+                                                         name: '#[KMK002_27]',
+                                                         value: calcResultRange.amountLower,
+                                                         constraint: 'AmountRangeValue',
+                                                         option: {
+                                                         grouplength: 3
+                                                         },
+                                                         required: true,
+                                                         enable: selectedClac() === 1 &amp;&amp; calcResultRange.lowerCheck() &amp;&amp; $parents[1].langJP()}" />
+                                       </com:ko>
+                                    </div>
+                                 </td>
+                              </tr>
+                           </table>
+                        </div>
+                        <div class="cell" style="padding-left: 10px;">
+                           <div>
+                              <div class="cell col-1">
+                                 <div data-bind="ntsFormLabel: {required: true, constraint: 'DescritionOptionalItem'}">
+                                    #{i18n.getText('KMK002_105')}</div>
+                              </div>
+                              <div class="cell" style="vertical-align: bottom;">
+                                 <textarea style="height: 50px;" data-bind="ntsMultilineEditor: {
+                                                   value: description,
+                                                   constraint: 'DescritionOptionalItem',
+                                                   name: '#[KMK002_106]',
+                                                   required: true,
+                                                   enable: selectedClac() === 1 &amp;&amp; $parents[1].langJP(),
+                                                   option: {
+                                                      width: '300'
+                                                   }
+                                                }"></textarea>
+                              </div>
+                           </div>
+                           <div style="margin-top: 5px;">
+                              <div class="cell col-1">
+                                 <div data-bind="ntsFormLabel: {required: false, constraint: 'NoteOptionalItem'}">
+                                    #{i18n.getText('KMK002_107')}</div>
+                              </div>
+                              <div class="cell" style="vertical-align: bottom;">
+                                 <textarea style="height: 150px;" data-bind="ntsMultilineEditor: {
+                                                   value: note,
+                                                   constraint: 'NoteOptionalItem',
+                                                   name: '#[KMK002_108]',
+                                                   enable: selectedClac() === 1 &amp;&amp; $parents[1].langJP(),
+                                                   option: {
+                                                      width: '300'
+                                                   }
+                                                }"></textarea>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     <hr style="width: 1200px; margin-left: 10px;" />
+                     <table class="control-group">
+                        <!-- <tr>
+                           <td colspan="4">
+                              <hr />
+                           </td>
+                        </tr> -->
+                        <tr>
+                           <!-- EmpCondition Atr -->
+                           <td style="width: 140px;">
+                              <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK002_16')}</div>
+                           </td>
+                           <td style="width: 140px;">
+                              <div tabindex="2" data-bind="ntsSwitchButton: {
                                     name: '#[KMK002_16]',
                                     options: empConClsDatasource,
                                     optionsValue: 'code',
                                     optionsText: 'name',
                                     value: empConditionAtr,
                                     enable: isUsed &amp;&amp; $parents[1].langJP()}"></div>
-                                 <button tabindex="2"
+                              <button tabindex="2"
                                  data-bind="click: openDialogB, enable: empConditionAtr() == 1 &amp;&amp; isUsed &amp;&amp; $parents[1].langJP()">#{i18n.getText('KMK002_19')}</button>
-                              </td>
-                              <td></td>
-                              <!-- Calculation ResultRange -->
-                              <td>
-                              <div>
-                                 <div tabindex="1" id="cb-lower"
-                                    data-bind="ntsCheckBox: {
-                                    name: '#[KMK002_27]',
-                                    checked: calcResultRange.lowerCheck,
-                                    enable: isUsed &amp;&amp; $parents[1].langJP(),
-                                    text: nts.uk.resource.getText('KMK002_27') }"></div>
-                                 <com:ko tag="if" bind="isNumberSelected()">
-                                    <input tabindex="1" id="inp-lower-number"
-                                       data-bind="ntsNumberEditor: {
-                                       name: '#[KMK002_27]',
-                                       value: calcResultRange.numberLower,
-                                       constraint: 'NumberRangeValue',
-                                       option: {
-                                       grouplength: 3,
-                                       decimallength: 1
-                                       },
-                                       required: true,
-                                       enable: calcResultRange.lowerCheck() &amp;&amp; isUsed() &amp;&amp; $parents[1].langJP()}"/>
-                                 </com:ko>
-                                 <com:ko tag="if" bind="isTimeSelected()">
-                                    <input tabindex="1" id="inp-lower-time"
-                                       data-bind="ntsTimeEditor: {
-                                       name: '#[KMK002_27]',
-                                       value: calcResultRange.timeLower,
-                                       constraint: 'TimeRangeValue',
-                                       inputFormat: 'time',
-                                       mode: 'time',
-                                       required: true,
-                                       enable: calcResultRange.lowerCheck() &amp;&amp; isUsed() &amp;&amp; $parents[1].langJP()}"/>
-                                 </com:ko>
-                                 <com:ko tag="if" bind="isAmountSelected()">
-                                    <input tabindex="1" id="inp-lower-amount"
-                                       data-bind="ntsNumberEditor: {
-                                       name: '#[KMK002_27]',
-                                       value: calcResultRange.amountLower,
-                                       constraint: 'AmountRangeValue',
-                                       option: {
-                                       grouplength: 3
-                                       },
-                                       required: true,
-                                       enable: calcResultRange.lowerCheck() &amp;&amp; isUsed() &amp;&amp; $parents[1].langJP()}"/>
-                                 </com:ko>
-                                 </div>
-                              </td>
-                           </tr>
-                           <!-- Optional Item view model -->
-                           <tr>
-                              <td><button tabindex="2" data-bind="click: addFormulaAbove, enable: isUsed &amp;&amp; $parents[1].langJP()" >#{i18n.getText('KMK002_28')}</button></td>
-                              <td>
-                                 <button tabindex="2" data-bind="click: addFormulaBelow, enable: isUsed &amp;&amp; $parents[1].langJP()">#{i18n.getText('KMK002_29')}</button>
-                                 <button tabindex="2" style="margin-left: 12px"
-                                 data-bind="click: removeFormula, enable: isUsed() &amp;&amp; hasSelectedFormula() &amp;&amp; $parents[1].langJP()" class="danger">#{i18n.getText('KMK002_30')}</button>
-                              </td>
-                           </tr>
-                           <tr>
-                              <td colspan="5"><span>#{i18n.getText('KMK002_31')}</span>
-                                 <input style="width: 700px; margin-left: 18px;" id="inp-apply-formula"
-                                    data-bind="ntsTextEditor: {
+                           </td>
+                           <td></td>
+                        </tr>
+                        <!-- Optional Item view model -->
+                        <tr>
+                           <td><button tabindex="2"
+                                 data-bind="click: addFormulaAbove, enable: isUsed &amp;&amp; $parents[1].langJP()">#{i18n.getText('KMK002_28')}</button>
+                           </td>
+                           <td>
+                              <button tabindex="2"
+                                 data-bind="click: addFormulaBelow, enable: isUsed &amp;&amp; $parents[1].langJP()">#{i18n.getText('KMK002_29')}</button>
+                              <button tabindex="2" style="margin-left: 12px"
+                                 data-bind="click: removeFormula, enable: isUsed() &amp;&amp; hasSelectedFormula() &amp;&amp; $parents[1].langJP()"
+                                 class="danger">#{i18n.getText('KMK002_30')}</button>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td colspan="5"><span>#{i18n.getText('KMK002_31')}</span>
+                              <input style="width: 700px; margin-left: 18px;" id="inp-apply-formula" data-bind="ntsTextEditor: {
                                     value: applyFormula,
                                     enable: isUsed &amp;&amp; $parents[1].langJP(),
                                     readonly: true,
-                                    required: false}"/>
-                              </td>
-                           </tr>
-                        </table>
-                        <!-- Optional Item formula view model -->
-                        <table id="tbl-calc-formula" data-bind="name: '#[KMK002_32]'">
-                           <colgroup>
-                              <col width="35px"/>
-                              <col width="38px"/>
-                              <col width="145px"/>
-                              <col width="157px"/>
-                              <col width="207px"/>
-                              <col width="35px"/>
-                              <col width="157px"/>
-                              <col width="105px"/>
-                              <col width="145px"/>
-                              <col width="105px"/>
-                              <col width="145px"/>
-                           </colgroup>
-                           <thead>
-                              <tr>
-                                 <th class="ui-widget-header">
-                                    <div tabindex="-1" data-bind="ntsCheckBox: {
+                                    required: false}" />
+                           </td>
+                        </tr>
+                     </table>
+                     <!-- Optional Item formula view model -->
+                     <table id="tbl-calc-formula" data-bind="name: '#[KMK002_32]'">
+                        <colgroup>
+                           <col width="35px" />
+                           <col width="38px" />
+                           <col width="145px" />
+                           <col width="157px" />
+                           <col width="207px" />
+                           <col width="35px" />
+                           <col width="157px" />
+                           <col width="105px" />
+                           <col width="145px" />
+                           <col width="105px" />
+                           <col width="145px" />
+                        </colgroup>
+                        <thead>
+                           <tr>
+                              <th class="ui-widget-header">
+                                 <div tabindex="-1" data-bind="ntsCheckBox: {
                                        checked: checkedAllFormula,
                                        enable: isUsed,
                                        text: '' }"></div>
-                                 </th>
-                                 <th class="ui-widget-header">#{i18n.getText('KMK002_33')}</th>
-                                 <th class="ui-widget-header">#{i18n.getText('KMK002_24')}</th>
-                                 <th class="ui-widget-header">#{i18n.getText('KMK002_34')}</th>
-                                 <th colspan="3" class="ui-widget-header">#{i18n.getText('KMK002_35')}</th>
-                                 <th class="ui-widget-header">#{i18n.getText('KMK002_36')}</th>
-                                 <th class="ui-widget-header">#{i18n.getText('KMK002_37')}</th>
-                                 <th class="ui-widget-header">#{i18n.getText('KMK002_38')}</th>
-                                 <th class="ui-widget-header">#{i18n.getText('KMK002_39')}</th>
-                              </tr>
-                           </thead>
-                           <tbody>
-                              <com:ko tag="foreach" bind="calcFormulas">
-                                 <tr>
-                                    <td>
-                                       <div tabindex="-1" data-bind="ntsCheckBox: {
+                              </th>
+                              <th class="ui-widget-header">#{i18n.getText('KMK002_33')}</th>
+                              <th class="ui-widget-header">#{i18n.getText('KMK002_24')}</th>
+                              <th class="ui-widget-header">#{i18n.getText('KMK002_34')}</th>
+                              <th colspan="3" class="ui-widget-header">#{i18n.getText('KMK002_35')}</th>
+                              <th class="ui-widget-header">#{i18n.getText('KMK002_36')}</th>
+                              <th class="ui-widget-header">#{i18n.getText('KMK002_37')}</th>
+                              <th class="ui-widget-header">#{i18n.getText('KMK002_38')}</th>
+                              <th class="ui-widget-header">#{i18n.getText('KMK002_39')}</th>
+                           </tr>
+                        </thead>
+                        <tbody>
+                           <com:ko tag="foreach" bind="calcFormulas">
+                              <tr>
+                                 <td>
+                                    <div tabindex="-1" data-bind="ntsCheckBox: {
                                           checked: selected,
                                           enable: $parent.isUsed,
                                           text: '' }"></div>
-                                    </td>
-                                    <td style="text-align: right" data-bind="text: symbolValue"></td>
-                                    <td>
-                                       <div tabindex="2" style="width: 80px" class="combo-table" data-bind="ntsComboBox: {
+                                 </td>
+                                 <td style="text-align: right" data-bind="text: symbolValue"></td>
+                                 <td>
+                                    <div tabindex="2" style="width: 80px" class="combo-table" data-bind="ntsComboBox: {
                                           name: '#[KMK002_24]',
                                           options: formulaAtrDs,
                                           optionsValue: 'value',
@@ -333,49 +405,48 @@
                                           columns: [
                                           { prop: 'localizedName', length: 8 },
                                           ]}">
-                                       </div>
-                                    </td>
-                                    <td><input tabindex="2" class="inp-formula-required"
-                                    data-bind="attr: {'id': 'formulaName' + ($index() + 1)},
+                                    </div>
+                                 </td>
+                                 <td><input tabindex="2" class="inp-formula-required" data-bind="attr: {'id': 'formulaName' + ($index() + 1)},
                                     ntsTextEditor: {
                                        name: '#[KMK002_40]',
                                        value: formulaName,
                                        enable: $parent.isUsed, 
                                        constraint: 'FormulaName',
                                        option: {width: '130'},
-                                       required: true}"/>
-                                    </td>
-                                    <td>
-                                       <div tabindex="2" data-bind="ntsSwitchButton: {
+                                       required: true}" />
+                                 </td>
+                                 <td>
+                                    <div tabindex="2" data-bind="ntsSwitchButton: {
                                           name: '#[KMK002_41]',
                                           options: calcAtrDs,
                                           optionsValue: 'value',
                                           optionsText: 'localizedName',
                                           value: calcAtr,
-                                          enable: orderNo() == 1 ? false : ($parent.isUsed() == true ? true : false)}"></div>
-                                    </td>
-                                    <td>
-                                       <com:ko tag="if" bind="!isFormulaSettingSelected()">
-                                          <button tabindex="2" class="btn-calc-set"
+                                          enable: orderNo() == 1 ? false : ($parent.isUsed() == true ? true : false)}">
+                                    </div>
+                                 </td>
+                                 <td>
+                                    <com:ko tag="if" bind="!isFormulaSettingSelected()">
+                                       <button tabindex="2" class="btn-calc-set"
                                           data-bind="click: openDialogC, enable: $parent.isUsed"></button>
-                                       </com:ko>
-                                       <com:ko tag="if" bind="isFormulaSettingSelected()">
-                                          <button tabindex="2" class="btn-calc-set"
+                                    </com:ko>
+                                    <com:ko tag="if" bind="isFormulaSettingSelected()">
+                                       <button tabindex="2" class="btn-calc-set"
                                           data-bind="click: openDialogD, enable: $parent.isUsed"></button>
-                                       </com:ko>
-                                    </td>
-                                    <td>
-                                       <input class="inp-formula-required"
-                                       data-bind="attr: {'id': 'settingResult' + ($index() + 1)},
+                                    </com:ko>
+                                 </td>
+                                 <td>
+                                    <input class="inp-formula-required" data-bind="attr: {'id': 'settingResult' + ($index() + 1)},
                                        ntsTextEditor: {
                                           name: '#[KMK002_35]',
                                           value: settingResult,
                                           readonly: true,
                                           enable: $parent.isUsed, 
-                                          required: true}"/>
-                                    </td>
-                                    <td>
-                                    	<com:ko tag="if" bind="isTimeSelected()">
+                                          required: true}" />
+                                 </td>
+                                 <td>
+                                    <com:ko tag="if" bind="isTimeSelected()">
                                        <div tabindex="2" style="width: 100px" class="combo-table" data-bind="ntsComboBox: {
                                           name: '#[KMK002_36]',
                                           options: timeUnitDs,
@@ -387,8 +458,8 @@
                                           { prop: 'localizedName', length: 5 },
                                           ]}">
                                        </div>
-                                       </com:ko>
-                                       <com:ko tag="if" bind="isAmountSelected()">
+                                    </com:ko>
+                                    <com:ko tag="if" bind="isAmountSelected()">
                                        <div tabindex="2" style="width: 100px" class="combo-table" data-bind="ntsComboBox: {
                                           name: '#[KMK002_36]',
                                           options: amountUnitDs,
@@ -400,8 +471,8 @@
                                           { prop: 'localizedName', length: 5 },
                                           ]}">
                                        </div>
-                                       </com:ko>
-                                       <com:ko tag="if" bind="isNumberSelected()">
+                                    </com:ko>
+                                    <com:ko tag="if" bind="isNumberSelected()">
                                        <div tabindex="2" style="width: 100px" class="combo-table" data-bind="ntsComboBox: {
                                           name: '#[KMK002_36]',
                                           options: numberUnitDs,
@@ -413,10 +484,10 @@
                                           { prop: 'localizedName', length: 5 },
                                           ]}">
                                        </div>
-                                       </com:ko>
-                                    </td>
-                                    <td>
-                                    	<com:ko tag="if" bind="isTimeSelected()">
+                                    </com:ko>
+                                 </td>
+                                 <td>
+                                    <com:ko tag="if" bind="isTimeSelected()">
                                        <div tabindex="2" style="width: 140px" class="combo-table" data-bind="ntsComboBox: {
                                           name: '#[KMK002_37]',
                                           options: timeRoundingDailyDs,
@@ -428,8 +499,8 @@
                                           { prop: 'localizedName', length: 8 },
                                           ]}">
                                        </div>
-                                       </com:ko>
-                                    	<com:ko tag="if" bind="isNumberSelected()">
+                                    </com:ko>
+                                    <com:ko tag="if" bind="isNumberSelected()">
                                        <div tabindex="2" style="width: 140px" class="combo-table" data-bind="ntsComboBox: {
                                           name: '#[KMK002_37]',
                                           options: numberRoundingDs,
@@ -441,8 +512,8 @@
                                           { prop: 'localizedName', length: 8 },
                                           ]}">
                                        </div>
-                                       </com:ko>
-                                    	<com:ko tag="if" bind="isAmountSelected()">
+                                    </com:ko>
+                                    <com:ko tag="if" bind="isAmountSelected()">
                                        <div tabindex="2" style="width: 140px" class="combo-table" data-bind="ntsComboBox: {
                                           name: '#[KMK002_37]',
                                           options: amountRoundingDs,
@@ -454,9 +525,9 @@
                                           { prop: 'localizedName', length: 8 },
                                           ]}">
                                        </div>
-                                       </com:ko>
-                                    </td>
-                                    <td>
+                                    </com:ko>
+                                 </td>
+                                 <td>
                                     <com:ko tag="if" bind="isTimeSelected()">
                                        <div tabindex="2" style="width: 100px" class="combo-table" data-bind="ntsComboBox: {
                                           name: '#[KMK002_38]',
@@ -469,7 +540,7 @@
                                           { prop: 'localizedName', length: 5 },
                                           ]}">
                                        </div>
-                                       </com:ko>
+                                    </com:ko>
                                     <com:ko tag="if" bind="isNumberSelected()">
                                        <div tabindex="2" style="width: 100px" class="combo-table" data-bind="ntsComboBox: {
                                           name: '#[KMK002_38]',
@@ -482,7 +553,7 @@
                                           { prop: 'localizedName', length: 5 },
                                           ]}">
                                        </div>
-                                       </com:ko>
+                                    </com:ko>
                                     <com:ko tag="if" bind="isAmountSelected()">
                                        <div tabindex="2" style="width: 100px" class="combo-table" data-bind="ntsComboBox: {
                                           name: '#[KMK002_38]',
@@ -495,9 +566,9 @@
                                           { prop: 'localizedName', length: 5 },
                                           ]}">
                                        </div>
-                                       </com:ko>
-                                    </td>
-                                    <td>
+                                    </com:ko>
+                                 </td>
+                                 <td>
                                     <com:ko tag="if" bind="isTimeSelected()">
                                        <div tabindex="2" style="width: 140px" class="combo-table" data-bind="ntsComboBox: {
                                           name: '#[KMK002_39]',
@@ -510,7 +581,7 @@
                                           { prop: 'localizedName', length: 8 },
                                           ]}">
                                        </div>
-                                       </com:ko>
+                                    </com:ko>
                                     <com:ko tag="if" bind="isNumberSelected()">
                                        <div tabindex="2" style="width: 140px" class="combo-table" data-bind="ntsComboBox: {
                                           name: '#[KMK002_39]',
@@ -523,7 +594,7 @@
                                           { prop: 'localizedName', length: 8 },
                                           ]}">
                                        </div>
-                                       </com:ko>
+                                    </com:ko>
                                     <com:ko tag="if" bind="isAmountSelected()">
                                        <div tabindex="2" style="width: 140px" class="combo-table" data-bind="ntsComboBox: {
                                           name: '#[KMK002_39]',
@@ -536,17 +607,18 @@
                                           { prop: 'localizedName', length: 8 },
                                           ]}">
                                        </div>
-                                       </com:ko>
-                                    </td>
-                                 </tr>
-                              </com:ko>
-                           </tbody>
-                        </table>
-                     </com:ko>
-                  </div>
+                                    </com:ko>
+                                 </td>
+                              </tr>
+                           </com:ko>
+                        </tbody>
+                     </table>
+                  </com:ko>
                </div>
-            </com:ko>
-         </ui:define>
-      </ui:composition>
-   </body>
+            </div>
+         </com:ko>
+      </ui:define>
+   </ui:composition>
+</body>
+
 </html>

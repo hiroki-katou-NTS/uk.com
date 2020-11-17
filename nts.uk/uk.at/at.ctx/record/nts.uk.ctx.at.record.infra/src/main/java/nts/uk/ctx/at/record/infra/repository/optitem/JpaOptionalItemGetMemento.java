@@ -4,12 +4,17 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.infra.repository.optitem;
 
+import java.util.Optional;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcstCalcResultRange;
-import nts.uk.ctx.at.record.infra.entity.optitem.KrcstOptionalItem;
+import nts.uk.ctx.at.record.infra.entity.optitem.KrcmtAnyv;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.CalcResultRange;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.CalculationClassification;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.DescritionOptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.EmpConditionAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.NoteOptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemGetMemento;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemName;
@@ -24,7 +29,7 @@ import nts.uk.ctx.at.shared.dom.scherec.optitem.UnitOfOptionalItem;
 public class JpaOptionalItemGetMemento implements OptionalItemGetMemento {
 
 	/** The type value. */
-	private KrcstOptionalItem typeValue;
+	private KrcmtAnyv typeValue;
 	
 	/** The krcst calc result range. */
 	private KrcstCalcResultRange krcstCalcResultRange;
@@ -35,7 +40,7 @@ public class JpaOptionalItemGetMemento implements OptionalItemGetMemento {
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaOptionalItemGetMemento(KrcstOptionalItem typeValue, KrcstCalcResultRange... krcstCalcResultRangeView) {
+	public JpaOptionalItemGetMemento(KrcmtAnyv typeValue, KrcstCalcResultRange... krcstCalcResultRangeView) {
 		
 		if(krcstCalcResultRangeView.length > 0) {
 			this.krcstCalcResultRange = krcstCalcResultRangeView[0];
@@ -44,7 +49,7 @@ public class JpaOptionalItemGetMemento implements OptionalItemGetMemento {
 		this.typeValue = typeValue;
 	}
 	
-	public JpaOptionalItemGetMemento(KrcstOptionalItem typeValue, KrcstCalcResultRange krcstCalcResultRange) {
+	public JpaOptionalItemGetMemento(KrcmtAnyv typeValue, KrcstCalcResultRange krcstCalcResultRange) {
 		this.typeValue = typeValue;
 		this.krcstCalcResultRange = krcstCalcResultRange;
 	}
@@ -57,7 +62,7 @@ public class JpaOptionalItemGetMemento implements OptionalItemGetMemento {
 	 */
 	@Override
 	public CompanyId getCompanyId() {
-		return new CompanyId(this.typeValue.getKrcstOptionalItemPK().getCid());
+		return new CompanyId(this.typeValue.getKrcmtAnyvPK().getCid());
 	}
 
 	/*
@@ -69,7 +74,7 @@ public class JpaOptionalItemGetMemento implements OptionalItemGetMemento {
 	 */
 	@Override
 	public OptionalItemNo getOptionalItemNo() {
-		return new OptionalItemNo(this.typeValue.getKrcstOptionalItemPK().getOptionalItemNo());
+		return new OptionalItemNo(this.typeValue.getKrcmtAnyvPK().getOptionalItemNo());
 	}
 
 	/*
@@ -146,8 +151,23 @@ public class JpaOptionalItemGetMemento implements OptionalItemGetMemento {
 	 * @see nts.uk.ctx.at.record.dom.optitem.OptionalItemGetMemento#getUnit()
 	 */
 	@Override
-	public UnitOfOptionalItem getUnit() {
-		return new UnitOfOptionalItem(this.typeValue.getUnitOfOptionalItem());
+	public Optional<UnitOfOptionalItem> getUnit() {
+		return Optional.ofNullable(new UnitOfOptionalItem(this.typeValue.getUnitOfOptionalItem()));
 	}
+
+    @Override
+    public CalculationClassification getCalcAtr() {
+        return EnumAdaptor.valueOf(this.typeValue.getCalcAtr(), CalculationClassification.class);
+    }
+
+    @Override
+    public Optional<NoteOptionalItem> getNote() {
+        return this.typeValue.getNote() == null ? Optional.empty() : Optional.of(new NoteOptionalItem(this.typeValue.getNote()));
+    }
+
+    @Override
+    public Optional<DescritionOptionalItem> getDescription() {
+        return this.typeValue.getDescription() == null ? Optional.empty() : Optional.of(new DescritionOptionalItem(this.typeValue.getDescription()));
+    }
 
 }

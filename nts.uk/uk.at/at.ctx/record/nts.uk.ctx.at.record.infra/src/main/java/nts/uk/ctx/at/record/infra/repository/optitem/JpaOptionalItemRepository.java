@@ -33,8 +33,8 @@ import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcstCalcResultRange;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcstCalcResultRangePK;
-import nts.uk.ctx.at.record.infra.entity.optitem.KrcstOptionalItem;
-import nts.uk.ctx.at.record.infra.entity.optitem.KrcstOptionalItemPK;
+import nts.uk.ctx.at.record.infra.entity.optitem.KrcmtAnyv;
+import nts.uk.ctx.at.record.infra.entity.optitem.KrcmtAnyvPK;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcstOptionalItemPK_;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcstOptionalItem_;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
@@ -62,9 +62,9 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 	public void update(OptionalItem dom) {
 
 		// Find entity
-		KrcstOptionalItem entity = this.queryProxy()
-				.find(new KrcstOptionalItemPK(dom.getCompanyId().v(), dom.getOptionalItemNo().v()),
-						KrcstOptionalItem.class)
+		KrcmtAnyv entity = this.queryProxy()
+				.find(new KrcmtAnyvPK(dom.getCompanyId().v(), dom.getOptionalItemNo().v()),
+						KrcmtAnyv.class)
 				.get();
 
 		// Update entity
@@ -82,8 +82,8 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public OptionalItem find(String companyId, Integer optionalItemNo) {
-		KrcstOptionalItem entity = this.queryProxy()
-				.find(new KrcstOptionalItemPK(companyId, optionalItemNo), KrcstOptionalItem.class).get();
+		KrcmtAnyv entity = this.queryProxy()
+				.find(new KrcmtAnyvPK(companyId, optionalItemNo), KrcmtAnyv.class).get();
 
 		// Return
 		return new OptionalItem(new JpaOptionalItemGetMemento(entity));
@@ -101,14 +101,14 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 	@SneakyThrows
 	public List<OptionalItem> findAll(String companyId) {
 		try (val stmt = this.connection()
-				.prepareStatement("select * from KRCST_OPTIONAL_ITEM KOI LEFT JOIN KRCST_CALC_RESULT_RANGE KCRR "
+				.prepareStatement("select * from KRCMT_ANYV KOI LEFT JOIN KRCST_CALC_RESULT_RANGE KCRR "
 						+ "on KOI.CID = KCRR.CID and KOI.OPTIONAL_ITEM_NO = KCRR.OPTIONAL_ITEM_NO "
 						+ "where KOI.CID = ? ORDER BY KOI.OPTIONAL_ITEM_NO ASC")) {
 			stmt.setString(1, companyId);
 
 			return new NtsResultSet(stmt.executeQuery()).getList(rec -> {
-				KrcstOptionalItem item = new KrcstOptionalItem();
-				item.setKrcstOptionalItemPK(new KrcstOptionalItemPK(companyId, rec.getInt("OPTIONAL_ITEM_NO")));
+				KrcmtAnyv item = new KrcmtAnyv();
+				item.setKrcmtAnyvPK(new KrcmtAnyvPK(companyId, rec.getInt("OPTIONAL_ITEM_NO")));
 				item.setOptionalItemName(rec.getString("OPTIONAL_ITEM_NAME"));
 				item.setOptionalItemAtr(rec.getInt("OPTIONAL_ITEM_ATR"));
 				item.setUsageAtr(rec.getInt("USAGE_ATR"));
@@ -145,8 +145,8 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 		CriteriaQuery<?> cq = builder.createQuery();
 
 		// From table
-		Root<KrcstOptionalItem> root = cq.from(KrcstOptionalItem.class);
-		Join<KrcstOptionalItem, KrcstCalcResultRange> joinRoot = root.join(KrcstOptionalItem_.krcstCalcResultRange,
+		Root<KrcmtAnyv> root = cq.from(KrcmtAnyv.class);
+		Join<KrcmtAnyv, KrcstCalcResultRange> joinRoot = root.join(KrcstOptionalItem_.krcstCalcResultRange,
 				JoinType.LEFT);
 
 		List<Predicate> predicateList = new ArrayList<Predicate>();
@@ -170,7 +170,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 		// Return
 		return results.stream()
 				.map(item -> new OptionalItem(
-						new JpaOptionalItemGetMemento((KrcstOptionalItem) item[0], (KrcstCalcResultRange) item[1])))
+						new JpaOptionalItemGetMemento((KrcmtAnyv) item[0], (KrcstCalcResultRange) item[1])))
 				.collect(Collectors.toList());
 	}
 
@@ -202,8 +202,8 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 			}
 
 			return new NtsResultSet(stmt.executeQuery()).getList(rec -> {
-				KrcstOptionalItem item = new KrcstOptionalItem();
-				item.setKrcstOptionalItemPK(new KrcstOptionalItemPK(companyId, rec.getInt("OPTIONAL_ITEM_NO")));
+				KrcmtAnyv item = new KrcmtAnyv();
+				item.setKrcmtAnyvPK(new KrcmtAnyvPK(companyId, rec.getInt("OPTIONAL_ITEM_NO")));
 				item.setOptionalItemName(rec.getString("OPTIONAL_ITEM_NAME"));
 				item.setOptionalItemAtr(rec.getInt("OPTIONAL_ITEM_ATR"));
 				item.setUsageAtr(rec.getInt("USAGE_ATR"));
@@ -247,8 +247,8 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 		CriteriaQuery<?> cq = builder.createQuery();
 
 		// From table
-		Root<KrcstOptionalItem> root = cq.from(KrcstOptionalItem.class);
-		Join<KrcstOptionalItem, KrcstCalcResultRange> joinRoot = root.join(KrcstOptionalItem_.krcstCalcResultRange,
+		Root<KrcmtAnyv> root = cq.from(KrcmtAnyv.class);
+		Join<KrcmtAnyv, KrcstCalcResultRange> joinRoot = root.join(KrcstOptionalItem_.krcstCalcResultRange,
 				JoinType.LEFT);
 
 		List<Predicate> predicateList = new ArrayList<Predicate>();
@@ -272,7 +272,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 		// Return
 		return results.stream()
 				.map(item -> new OptionalItem(
-						new JpaOptionalItemGetMemento((KrcstOptionalItem) item[0], (KrcstCalcResultRange) item[1])))
+						new JpaOptionalItemGetMemento((KrcmtAnyv) item[0], (KrcstCalcResultRange) item[1])))
 				.collect(Collectors.toList());
 	}
 
@@ -296,8 +296,8 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 		CriteriaQuery<?> cq = builder.createQuery();
 
 		// From table
-		Root<KrcstOptionalItem> root = cq.from(KrcstOptionalItem.class);
-		Join<KrcstOptionalItem, KrcstCalcResultRange> joinRoot = root.join(KrcstOptionalItem_.krcstCalcResultRange,
+		Root<KrcmtAnyv> root = cq.from(KrcmtAnyv.class);
+		Join<KrcmtAnyv, KrcstCalcResultRange> joinRoot = root.join(KrcstOptionalItem_.krcstCalcResultRange,
 				JoinType.LEFT);
 
 		List<Predicate> predicateList = new ArrayList<Predicate>();
@@ -321,7 +321,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 		// Return
 		return results.stream()
 				.map(item -> new OptionalItem(
-						new JpaOptionalItemGetMemento((KrcstOptionalItem) item[0], (KrcstCalcResultRange) item[1])))
+						new JpaOptionalItemGetMemento((KrcmtAnyv) item[0], (KrcstCalcResultRange) item[1])))
 				.collect(Collectors.toList());
 	}
 
@@ -345,8 +345,8 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 		CriteriaQuery<Tuple> cq = builder.createQuery(Tuple.class);
 
 		// From table
-		Root<KrcstOptionalItem> root = cq.from(KrcstOptionalItem.class);
-		Join<KrcstOptionalItem, KrcstCalcResultRange> join = root.join(KrcstOptionalItem_.krcstCalcResultRange,
+		Root<KrcmtAnyv> root = cq.from(KrcmtAnyv.class);
+		Join<KrcmtAnyv, KrcstCalcResultRange> join = root.join(KrcstOptionalItem_.krcstCalcResultRange,
 				JoinType.LEFT);
 
 		List<Predicate> predicateList = new ArrayList<Predicate>();
@@ -364,7 +364,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 		// Get results
 		return result.stream()
 				.map(c -> new OptionalItem(
-						new JpaOptionalItemGetMemento((KrcstOptionalItem) c.get(0), (KrcstCalcResultRange) c.get(1))))
+						new JpaOptionalItemGetMemento((KrcmtAnyv) c.get(0), (KrcstCalcResultRange) c.get(1))))
 				.collect(Collectors.toList());
 	}
 
@@ -381,7 +381,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 		CriteriaQuery<Tuple> cq = builder.createTupleQuery();
 
 		// From table
-		Root<KrcstOptionalItem> root = cq.from(KrcstOptionalItem.class);
+		Root<KrcmtAnyv> root = cq.from(KrcmtAnyv.class);
 
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 

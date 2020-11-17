@@ -18,7 +18,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Embeddable
-public class KrcstOptionalItemPK implements Serializable {
+public class KrcmtAnyvPK implements Serializable {
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -34,7 +34,7 @@ public class KrcstOptionalItemPK implements Serializable {
 	/**
 	 * Instantiates a new krcst optional item PK.
 	 */
-	public KrcstOptionalItemPK() {
+	public KrcmtAnyvPK() {
 		super();
 	}
 
@@ -44,7 +44,7 @@ public class KrcstOptionalItemPK implements Serializable {
 	 * @param cid the cid
 	 * @param optionalItemNo the optional item no
 	 */
-	public KrcstOptionalItemPK(String cid, Integer optionalItemNo) {
+	public KrcmtAnyvPK(String cid, Integer optionalItemNo) {
 		this.cid = cid;
 		this.optionalItemNo = optionalItemNo;
 	}
@@ -65,10 +65,10 @@ public class KrcstOptionalItemPK implements Serializable {
 	 */
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof KrcstOptionalItemPK)) {
+		if (!(object instanceof KrcmtAnyvPK)) {
 			return false;
 		}
-		KrcstOptionalItemPK other = (KrcstOptionalItemPK) object;
+		KrcmtAnyvPK other = (KrcmtAnyvPK) object;
 		if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
 			return false;
 		}
