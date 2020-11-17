@@ -102,6 +102,10 @@ module nts.uk.at.ksm008.c {
                 }
             });
 
+            vm.numOfEmployeeLimit.subscribe(value => {
+                $("#kcp005-component-right").ntsError("clear");
+            });
+
         }
 
         loadData() {
