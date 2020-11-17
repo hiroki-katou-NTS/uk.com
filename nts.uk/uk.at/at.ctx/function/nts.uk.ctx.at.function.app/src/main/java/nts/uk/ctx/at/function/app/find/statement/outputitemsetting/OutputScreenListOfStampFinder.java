@@ -314,8 +314,8 @@ public class OutputScreenListOfStampFinder {
 		} else {
 			try {
 				URL url = new URL("http://geoapi.heartrails.com/api/xml?method=searchByGeoLocation"
-						+ "&x=" + String.format("%.6f", stampLocationInfor.getPositionInfor().getLatitude()) 
-						+ "&y=" + String.format("%.6f", stampLocationInfor.getPositionInfor().getLongitude()));
+						+ "&x=" + String.format("%.6f", stampLocationInfor.getPositionInfor().getLongitude()) 
+						+ "&y=" + String.format("%.6f", stampLocationInfor.getPositionInfor().getLatitude()));
 				DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 				DocumentBuilder db = dbf.newDocumentBuilder();
 				Document doc = db.parse(url.openStream());
@@ -325,11 +325,11 @@ public class OutputScreenListOfStampFinder {
 					result.put(element.getElementsByTagName("prefecture").item(0).getTextContent() + element.getElementsByTagName("city").item(0).getTextContent() + element.getElementsByTagName("town").item(0).getTextContent(), true);		
 					return result;
 				}else {
-					result.put(String.format("%.6f", stampLocationInfor.getPositionInfor().getLatitude()) + " " + String.format("%.6f", stampLocationInfor.getPositionInfor().getLongitude()), false);
+					result.put(String.format("%.6f", stampLocationInfor.getPositionInfor().getLongitude()) + " " + String.format("%.6f", stampLocationInfor.getPositionInfor().getLatitude()), false);
 					return result;
 				}
 			} catch (Exception e) {
-				result.put(String.format("%.6f", stampLocationInfor.getPositionInfor().getLatitude()) + " " + String.format("%.6f", stampLocationInfor.getPositionInfor().getLongitude()), false);
+				result.put(String.format("%.6f", stampLocationInfor.getPositionInfor().getLongitude()) + " " + String.format("%.6f", stampLocationInfor.getPositionInfor().getLatitude()), false);
 				return result;
 			}
 		}
