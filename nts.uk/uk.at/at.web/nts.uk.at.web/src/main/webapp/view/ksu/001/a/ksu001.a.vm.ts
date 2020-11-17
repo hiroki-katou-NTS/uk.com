@@ -2558,14 +2558,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             
             if (lockCells.length > 0 || arrCellUpdated.length > 0) {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_1732" }).ifYes(() => {
-
-                    self.editModeAct();
-                    
                     let item = uk.localStorage.getItem(self.KEY);
                     let userInfor: IUserInfor = JSON.parse(item.get());
                     let updateMode = userInfor.updateMode;
                     self.convertDataToGrid(self.dataSource, self.selectedModeDisplayInBody());
                     self.updateExTableWhenChangeMode(self.selectedModeDisplayInBody(), updateMode);
+                    self.editModeAct();
                     self.setUpdateMode();
                     nts.uk.ui.block.clear();
                     
@@ -2629,9 +2627,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             if (arrCellUpdated.length > 0) {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_1732" }).ifYes(() => {
-                    self.confirmModeAct();
                     self.convertDataToGrid(self.dataSource, self.selectedModeDisplayInBody());
                     self.updateExTableWhenChangeMode(self.selectedModeDisplayInBody() , "determine");
+                    self.confirmModeAct();
                     nts.uk.ui.block.clear();
                 }).ifNo(() => {});
             } else {
