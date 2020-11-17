@@ -36,7 +36,7 @@ module nts.uk.at.view.ksu001.a {
             if (userInfor.updateMode == 'copyPaste') {
                 setTimeout(() => {
                     __viewContext.viewModel.viewA.setCoppyStyler();
-                }, 100);
+                }, 800);
             }
 
             $(window).resize(function() {
