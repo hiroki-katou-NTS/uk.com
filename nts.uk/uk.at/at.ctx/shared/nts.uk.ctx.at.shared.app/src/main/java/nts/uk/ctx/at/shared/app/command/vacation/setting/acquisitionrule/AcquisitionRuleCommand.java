@@ -25,8 +25,7 @@ public class AcquisitionRuleCommand {
 	/** The annualHoliday. */
 	public AnnualHoliday annualHoliday;
 	
-	/** The hoursHoliday. */
-	public HoursHoliday hoursHoliday;
+
 
 	/**
 	 * To domain.
@@ -100,9 +99,6 @@ public class AcquisitionRuleCommand {
 		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.
 		 * AcquisitionRuleGetMemento#getHoursHoliday()
 		 */
-		@Override
-		public HoursHoliday getHoursHoliday() {
-			return this.command.hoursHoliday;
-		}
+	
 	}
 }
