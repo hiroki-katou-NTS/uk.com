@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayInfoOverTime;
@@ -83,6 +84,27 @@ public class AppOvertimeFinder {
 						.map(x -> x.toDomain(param.companyId))
 						.collect(Collectors.toList())
 				);
+		return DisplayInfoOverTimeDto.fromDomain(output);
+	}
+	
+	public DisplayInfoOverTimeDto calculate(ParamCalculation param) {
+		String companyId = param.companyId;
+		Optional<GeneralDate> dateOp = Optional.empty();
+		if (StringUtils.isNotBlank(param.dateOp)) {
+			dateOp = Optional.of(GeneralDate.fromString(param.dateOp, PATTERN_DATE));	
+		}
+		
+		DisplayInfoOverTime output = overtimeService.calculate(
+				companyId,
+				param.employeeId,
+				dateOp,
+				EnumAdaptor.valueOf(param.prePostInitAtr, PrePostAtr.class),
+				param.overtimeLeaveAppCommonSet.toDomain(),
+				param.advanceApplicationTime.toDomain(),
+				param.achieveApplicationTime.toDomain(),
+				param.workContent.toDomain());
+		
+		
 		return DisplayInfoOverTimeDto.fromDomain(output);
 	}
 	

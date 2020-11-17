@@ -33,4 +33,13 @@ public class OvertimeWebService extends WebService {
 	public DisplayInfoOverTimeDto changeDate(ParamOverTimeChangeDate param) {
 		return appOvertimeFinder.changeDate(param);
 	}
+	
+	
+	@POST
+	@Path("calculate")
+	public DisplayInfoOverTimeDto calculate(ParamOverTimeChangeDate param) {
+		return appOvertimeFinder.changeDate(param);
+	}
+	
+	
 }
