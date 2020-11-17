@@ -105,6 +105,14 @@ module nts.uk.ui.koExtentions {
         }
         .fc-container .fc-popup-editor .toolbar svg:not(:last-child) {
             margin-right: 10px;
+        }
+        .fc-container .fc-one-day-button.active,
+        .fc-container .fc-five-day-button.active,
+        .fc-container .fc-full-week-button.active,
+        .fc-container .fc-full-month-button.active,
+        .fc-container .fc-list-week-button.active {
+            color: #fff;
+            background-color: #00B050;
         }`;
 
     @component({
@@ -214,11 +222,12 @@ module nts.uk.ui.koExtentions {
             const firstDay = allBindingsAccessor.get('firstDay');
             const scrollTime = allBindingsAccessor.get('scrollTime');
             const initialDate = allBindingsAccessor.get('initialDate');
+            const initialView = allBindingsAccessor.get('initialView');
             const slotDuration = allBindingsAccessor.get('slotDuration');
             const businessHours = allBindingsAccessor.get('businessHours');
             const attendanceTimes = allBindingsAccessor.get('attendanceTimes');
 
-            const params = { events, event, locale, initialDate, scrollTime, weekends, editable, firstDay, slotDuration, attendanceTimes, businessHours, viewModel };
+            const params = { events, event, locale, initialDate, initialView, scrollTime, weekends, editable, firstDay, slotDuration, attendanceTimes, businessHours, viewModel };
             const component = { name, params };
 
             ko.applyBindingsToNode(element, { component }, bindingContext);
@@ -267,10 +276,13 @@ module nts.uk.ui.koExtentions {
         events: string[];
     };
 
+    type INITIAL_VIEW = 'oneDay' | 'fiveDay' | 'listWeek' | 'fullWeek' | 'fullMonth';
+
     type PARAMS = {
         viewModel: any;
         events: fc.EventApi[] | KnockoutObservableArray<fc.EventApi>;
         locale: LOCALE | KnockoutObservable<LOCALE>;
+        initialView: INITIAL_VIEW | KnockoutObservable<INITIAL_VIEW>;
         initialDate: Date | KnockoutObservable<Date>;
         scrollTime: number | KnockoutObservable<number>;
         slotDuration: SLOT_DURATION | KnockoutObservable<SLOT_DURATION>;
@@ -299,6 +311,14 @@ module nts.uk.ui.koExtentions {
             .map((m) => m.toString())
             .map((m) => _.padStart(m, 2, '0'))
             .join(':')
+    };
+    const activeClass = (t: EventTarget) => {
+        $(t)
+            .closest('.fc-button-group')
+            .find('button')
+            .removeClass('active');
+
+        $(t).addClass('active');
     };
 
     const defaultDEvent = (): D_EVENT => ({
@@ -336,6 +356,7 @@ module nts.uk.ui.koExtentions {
                     slotDuration: ko.observable(30),
                     weekends: ko.observable(true),
                     editable: ko.observable(false),
+                    initialView: ko.observable('fullWeek'),
                     initialDate: ko.observable(new Date()),
                     events: ko.observableArray([]),
                     attendanceTimes: ko.observableArray([]),
@@ -347,7 +368,7 @@ module nts.uk.ui.koExtentions {
                 };
             }
 
-            const { locale, event, events, scrollTime, initialDate, weekends, editable, firstDay, slotDuration, attendanceTimes, businessHours } = this.params;
+            const { locale, event, events, scrollTime, initialDate, initialView, weekends, editable, firstDay, slotDuration, attendanceTimes, businessHours } = this.params;
 
             if (locale === undefined) {
                 this.params.locale = ko.observable('ja');
@@ -359,6 +380,10 @@ module nts.uk.ui.koExtentions {
 
             if (initialDate === undefined) {
                 this.params.initialDate = ko.observable(new Date());
+            }
+
+            if (initialView === undefined) {
+                this.params.initialView = ko.observable('fullWeek');
             }
 
             if (weekends === undefined) {
@@ -410,7 +435,7 @@ module nts.uk.ui.koExtentions {
         public mounted() {
             const vm = this;
             const { params, dataEvent } = vm;
-            const { locale, event, events, scrollTime, firstDay, weekends, editable, initialDate, viewModel, attendanceTimes } = params;
+            const { locale, event, events, scrollTime, firstDay, weekends, editable, initialDate, initialView, viewModel, attendanceTimes } = params;
 
             const $el = $(vm.$el);
             const $fc = $el.find('div.fc').get(0);
@@ -423,6 +448,46 @@ module nts.uk.ui.koExtentions {
                     start: formatDate(m.start),
                     end: formatDate(m.end)
                 }));
+            };
+            const updateActive = () => {
+                $el
+                    .find('.fc-header-toolbar button')
+                    .each((__, e) => {
+                        e.classList.remove('active');
+                        e.classList.remove('fc-button');
+                        e.classList.remove('fc-button-primary');
+
+                        const view = ko.unwrap(initialView);
+
+                        switch (view) {
+                            case 'oneDay':
+                                if (e.className.match(/one-day/)) {
+                                    e.classList.add('active');
+                                }
+                                break;
+                            case 'fiveDay':
+                                if (e.className.match(/five-day/)) {
+                                    e.classList.add('active');
+                                }
+                                break;
+                            default:
+                            case 'fullWeek':
+                                if (e.className.match(/full-week/)) {
+                                    e.classList.add('active');
+                                }
+                                break;
+                            case 'fullMonth':
+                                if (e.className.match(/full-month/)) {
+                                    e.classList.add('active');
+                                }
+                                break;
+                            case 'listWeek':
+                                if (e.className.match(/list-week/)) {
+                                    e.classList.add('active');
+                                }
+                                break;
+                        }
+                    });
             };
 
             const datesSet: KnockoutObservable<DATES_SET | null> = ko.observable(null);
@@ -484,6 +549,39 @@ module nts.uk.ui.koExtentions {
                 disposeWhenNodeIsRemoved: vm.$el
             });
 
+            const initialViewComputed = ko.computed({
+                read: () => {
+                    const iv = ko.unwrap(initialView);
+
+                    updateActive();
+
+                    switch (iv) {
+                        case 'oneDay':
+                            return 'timeGridDay';
+                        default:
+                        case 'fiveDay':
+                            if (ko.isObservable(weekends)) {
+                                weekends(false);
+                            } else if (calendar) {
+                                calendar.setOption('weekends', false);
+                            }
+                            return 'timeGridWeek';
+                        case 'fullWeek':
+                            if (ko.isObservable(weekends)) {
+                                weekends(true);
+                            } else if (calendar) {
+                                calendar.setOption('weekends', true);
+                            }
+                            return 'timeGridWeek';
+                        case 'fullMonth':
+                            return 'dayGridMonth';
+                        case 'listWeek':
+                            return 'listWeek';
+                    }
+                },
+                disposeWhenNodeIsRemoved: vm.$el
+            })
+
             if (version.match(/IE/)) {
                 $el.addClass('ie');
             }
@@ -523,7 +621,7 @@ module nts.uk.ui.koExtentions {
 
             const calendar = new FC.Calendar($fc, {
                 customButtons: {
-                    copyDay: {
+                    'copy-day': {
                         text: '1日分コピー',
                         click: (evt) => {
                             const btn = evt.target as HTMLElement;
@@ -531,85 +629,115 @@ module nts.uk.ui.koExtentions {
                             event.coppyDay.apply(viewModel, [(new Date(), new Date())]);
                         }
                     },
-                    oneDay: {
+                    'one-day': {
                         text: '日',
-                        click: () => {
+                        click: (evt) => {
                             if (calendar.view.type !== 'timeGridDay') {
+                                activeClass(evt.target);
+
                                 if (ko.isObservable(weekends)) {
                                     weekends(true);
                                 } else {
                                     calendar.setOption('weekends', true);
                                 }
 
-                                calendar.changeView('timeGridDay');
+                                if (ko.isObservable(initialView)) {
+                                    initialView('oneDay');
+                                } else {
+                                    calendar.changeView('timeGridDay');
+                                }
                             }
                         }
                     },
-                    fiveDay: {
+                    'five-day': {
                         text: '稼働日',
-                        click: () => {
+                        click: (evt) => {
                             if (calendar.view.type !== 'timeGridWeek' || ko.unwrap(weekends) !== false) {
+                                activeClass(evt.target);
+
                                 if (ko.isObservable(weekends)) {
                                     weekends(false);
                                 } else {
                                     calendar.setOption('weekends', false);
                                 }
 
-                                calendar.changeView('timeGridWeek');
+                                if (ko.isObservable(initialView)) {
+                                    initialView('fiveDay');
+                                } else {
+                                    calendar.changeView('timeGridWeek');
+                                }
                             }
                         }
                     },
-                    fullWeek: {
+                    'full-week': {
                         text: '週',
-                        click: () => {
+                        click: (evt) => {
                             if (calendar.view.type !== 'timeGridWeek' || ko.unwrap(weekends) !== true) {
+                                activeClass(evt.target);
+
                                 if (ko.isObservable(weekends)) {
                                     weekends(true);
                                 } else {
                                     calendar.setOption('weekends', true);
                                 }
 
-                                calendar.changeView('timeGridWeek');
+                                if (ko.isObservable(initialView)) {
+                                    initialView('fullWeek');
+                                } else {
+                                    calendar.changeView('timeGridWeek');
+                                }
                             }
                         }
                     },
-                    dayGridMonth: {
+                    'full-month': {
                         text: '月',
-                        click: () => {
+                        click: (evt) => {
                             if (calendar.view.type !== 'dayGridMonth') {
+                                activeClass(evt.target);
+
                                 if (ko.isObservable(weekends)) {
                                     weekends(true);
                                 } else {
                                     calendar.setOption('weekends', true);
                                 }
 
-                                calendar.changeView('dayGridMonth');
+                                if (ko.isObservable(initialView)) {
+                                    initialView('fullMonth');
+                                } else {
+                                    calendar.changeView('dayGridMonth');
+                                }
                             }
                         }
                     },
-                    listWeek: {
+                    'list-week': {
                         text: '一覧表',
-                        click: () => {
+                        click: (evt) => {
                             if (calendar.view.type !== 'listWeek') {
+                                activeClass(evt.target);
+
                                 if (ko.isObservable(weekends)) {
                                     weekends(true);
                                 } else {
                                     calendar.setOption('weekends', true);
                                 }
 
-                                calendar.changeView('listWeek');
+                                if (ko.isObservable(initialView)) {
+                                    initialView('listWeek');
+                                } else {
+                                    calendar.changeView('listWeek');
+                                }
                             }
                         }
                     }
                 },
                 height: '500px',
                 headerToolbar: {
-                    left: 'today prev,next oneDay,fiveDay,fullWeek,dayGridMonth,listWeek',
+                    left: 'today prev,next one-day,five-day,full-week,full-month,list-week',
                     center: 'title',
-                    right: 'copyDay'
+                    right: 'copy-day'
                 },
                 themeSystem: 'default',
-                initialView: 'timeGridWeek',
+                initialView: ko.unwrap(initialViewComputed),
                 events: mappedEvents(events),
                 locale: ko.unwrap(locale),
                 firstDay: ko.unwrap(firstDay),
@@ -818,7 +946,7 @@ module nts.uk.ui.koExtentions {
                     event.datesSet.apply(viewModel, [start, end]);
                 },
                 viewDidMount: (opts) => {
-                    $('.fc-header-toolbar button').removeAttr('class');
+                    updateActive();
 
                     if (['timeGridDay', 'timeGridWeek'].indexOf(opts.view.type) === -1) {
                         return false;
@@ -850,6 +978,9 @@ module nts.uk.ui.koExtentions {
 
                 calendar.setOption('height', `${innerHeight - top - 10}px`);
             }
+
+            // change view
+            initialViewComputed.subscribe((view) => calendar.changeView(view));
 
             if (ko.isObservable(events)) {
                 events.subscribe((evts) => {

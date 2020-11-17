@@ -48,6 +48,7 @@ module nts.uk.ui.com.sample.fullcalendar {
         firstDay: KnockoutObservable<number> = ko.observable(1);
         scrollTime: KnockoutObservable<number> = ko.observable(420);
         slotDuration: KnockoutObservable<number> = ko.observable(30);
+        initialView: KnockoutObservable<string> = ko.observable('oneDay');
 
         attendanceTimes: KnockoutObservableArray<any> = ko.observableArray([{
             date: moment().toDate(),
