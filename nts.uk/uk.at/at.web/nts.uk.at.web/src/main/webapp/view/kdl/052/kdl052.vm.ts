@@ -19,7 +19,7 @@ module nts.uk.at.view.kdl052.screenModel {
     manageDisabled: KnockoutObservable<boolean> = ko.observable(true);
     nextStartDate:  KnockoutObservable<string> = ko.observable('');
     // A3_8
-    limitDays: KnockoutObservable<number> = ko.observable(0);
+    limitDays: KnockoutObservable<string> = ko.observable('');
     // A3_9
     childNursingUsed: KnockoutObservable<string> = ko.observable('');
     // A3_10
