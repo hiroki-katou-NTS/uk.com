@@ -144,6 +144,10 @@
       </div>
     </div>
     <div>
+      <div v-if="currentApp=='sample'">
+        <appsample v-bind:params="appTransferData" @loading-complete='loadingComplete' />
+      </div>
+      <div v-if="currentApp!='sample'">
       <app1 v-if="appType==1" v-bind:params="{appOvertime: appDetail}" />
       <app2 v-if="appType==2" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
       <app3 v-if="appType==3" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
@@ -151,6 +155,7 @@
       <app7 v-if="appType==7" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
       <app9 v-if="appType==9" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
       <app15 v-if="appType==15" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
+      </div>
     </div>
     <div v-if="comboReasonDisp || textReasonDisp" class="row content-div uk-bg-headline border-top uk-border-light-gray">{{'CMMS45_34' | i18n}}</div>
     <div v-if="comboReasonDisp || textReasonDisp" class="row content-div border-top uk-border-light-gray text-break">
