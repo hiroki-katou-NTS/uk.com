@@ -67,6 +67,7 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 					new TimeSpanForCalc(
 							predetermineZoneList.get(index).getStart(), 
 							predetermineZoneList.get(index).getEnd()));
+			
 			timeLeavingWorks.add(newTimeLeavingWork);
 		}
 
