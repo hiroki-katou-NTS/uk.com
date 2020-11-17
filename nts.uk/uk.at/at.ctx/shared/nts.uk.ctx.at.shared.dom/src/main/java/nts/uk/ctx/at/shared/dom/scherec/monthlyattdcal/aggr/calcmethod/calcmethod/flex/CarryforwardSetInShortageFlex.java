@@ -6,15 +6,18 @@ package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmeth
  */
 public enum CarryforwardSetInShortageFlex {
 	/** 当月積算 */
-	CURRENT_MONTH_INTEGRATION(0),
+	CURRENT_MONTH_INTEGRATION(0, "当月清算"),
 	/** 翌月繰越 */
-	NEXT_MONTH_CARRYFORWARD(1);
+	NEXT_MONTH_CARRYFORWARD(1, "翌月繰越");
 
 	/** The Constant values. */
 	private final static CarryforwardSetInShortageFlex[] values = CarryforwardSetInShortageFlex.values();
 	
 	public int value;
-	private CarryforwardSetInShortageFlex(int value){
+	
+	public String name;
+	private CarryforwardSetInShortageFlex(int value ,String name){
+		this.name = name;
 		this.value = value;
 	}
 	

@@ -9,11 +9,12 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum ReferencePredTimeOfFlex {
 	/** マスタから参照 */
-	FROM_MASTER(0),
+	FROM_MASTER(0,"KMK004_288"),
 	/** 実績から参照 */
-	FROM_RECORD(1);
+	FROM_RECORD(1,"KMK004_289");
 	
 	public int value;
+	public String name;
 	
 	public static ReferencePredTimeOfFlex valueOf(Integer value) {
 		// Invalid object.

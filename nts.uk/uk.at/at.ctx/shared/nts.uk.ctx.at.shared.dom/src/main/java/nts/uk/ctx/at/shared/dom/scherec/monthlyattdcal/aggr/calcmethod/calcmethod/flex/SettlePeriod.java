@@ -6,16 +6,19 @@ package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmeth
  */
 public enum SettlePeriod {
 	/** 単月 */
-	SINGLE_MONTH(0),
+	SINGLE_MONTH(0, "KMK004_272"),
 	/** 複数月 */
-	MULTI_MONTHS(1);
+	MULTI_MONTHS(1, "KMK004_273");
 	
 	/** The Constant values. */
 	private final static SettlePeriod[] values = SettlePeriod.values();
 	
 	public int value;
-	private SettlePeriod(int value){
+	public String name;
+
+	private SettlePeriod(int value, String name) {
 		this.value = value;
+		this.name = name;
 	}
 	
 	/**

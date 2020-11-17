@@ -6,17 +6,19 @@ package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmeth
  */
 public enum FlexAggregateMethod {
 	/** 原則集計 */
-	PRINCIPLE(0),
+	PRINCIPLE(0, "KMK004_280"),
 	/** 便宜上集計 */
-	FOR_CONVENIENCE(1);
+	FOR_CONVENIENCE(1, "KMK004_281");
 
 	/** The Constant values. */
 	private final static FlexAggregateMethod[] values = FlexAggregateMethod.values();
 	
 	public int value;
+	public String name;
 	
-	private FlexAggregateMethod(int value){
+	private FlexAggregateMethod(int value, String name) {
 		this.value = value;
+		this.name = name;
 	}
 	
 	/**
