@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlistworkpla
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.BasicFixedExtractionItem;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.Column;
@@ -43,6 +44,17 @@ public class KrcmtWkpBasicFxexItm extends UkJpaEntity implements Serializable {
     @Override
     protected Object getKey() {
         return this.no;
+    }
+
+    public BasicFixedExtractionItem toDomain() {
+        return new BasicFixedExtractionItem(
+                this.no,
+                this.checkAtr,
+                this.bold,
+                this.name,
+                this.message,
+                this.color
+        );
     }
 
 }

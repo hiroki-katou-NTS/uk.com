@@ -19,6 +19,8 @@ public class JpaFixedExtractionAppapvConRepository extends JpaRepository impleme
     private static final String SELECT_ALL_FXEX_APPAPV_CON_BY_ID = SELECT_ALL_FXEX_APPAPV_CON
             + " WHERE a.pk.errorAlarmWorkplaceId = :chkId ";
 
+    private static final String SELECT_BY_IDS = " where  a.pk.errorAlarmWorkplaceId in :ids";
+
     @Override
     public List<FixedExtractionAppapvCon> get(String errorAlarmWorkplaceId) {
         return this.queryProxy().query(SELECT_ALL_FXEX_APPAPV_CON_BY_ID, KrcmtWkpfxexAppapvCon.class)
@@ -27,7 +29,9 @@ public class JpaFixedExtractionAppapvConRepository extends JpaRepository impleme
     }
 
     @Override
-    public List<FixedExtractionAppapvCon> getByIds(List<String> sids) {
-        return null;
+    public List<FixedExtractionAppapvCon> getByIds(List<String> ids) {
+        return this.queryProxy().query(SELECT_BY_IDS, KrcmtWkpfxexAppapvCon.class)
+                .setParameter("ids", ids)
+                .getList(KrcmtWkpfxexAppapvCon::toDomain);
     }
 }
