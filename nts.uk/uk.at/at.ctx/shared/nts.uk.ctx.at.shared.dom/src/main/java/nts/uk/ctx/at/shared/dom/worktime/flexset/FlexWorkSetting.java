@@ -14,8 +14,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
-
-//import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.val;
@@ -258,9 +256,7 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 	public ChangeableWorkingTimeZone getChangeableWorkingTimeZone(WorkSetting.Require require) {
 		TimeSpanForCalc workingTimezone = this.lstHalfDayWorkTimezone.stream()
 				.filter(c -> c.getAmpmAtr() == AmPmAtr.ONE_DAY)
-				.map(c -> {
-					return c.getWorkTimezone().getFirstAndLastTimeOfWorkingTimezone();
-				})
+				.map(c ->  c.getWorkTimezone().getFirstAndLastTimeOfWorkingTimezone())
 				.findFirst().get();
 		
 		val oneDay = this.createTimeZoneByAmPmCls(require, workingTimezone, AmPmAtr.ONE_DAY);
@@ -277,14 +273,13 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 
 	/**
 	 * 休憩時間帯を取得する
-	 *
 	 * @param isWorkingOnDayOff 休出か
 	 * @param amPmAtr 午前午後区分
 	 * @return 休憩時間
 	 */
 	@Override
 	public BreakTimeZone getBreakTimeZone(boolean isWorkingOnDayOff, AmPmAtr amPmAtr) {
-		FlowWorkRestTimezone breakTimeZone = new FlowWorkRestTimezone();
+		FlowWorkRestTimezone breakTimeZone;
 		if (isWorkingOnDayOff) {
 			breakTimeZone = this.offdayWorkTime.getRestTimezone();
 		} else {
@@ -316,10 +311,8 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 				.flatMap(OptionalUtil::stream)
 				.collect(Collectors.toList());
 		
-		TimeSpanForCalc wkTimePossibles = wortime;
 		lstOTTimezone.add(wortime);
-		wkTimePossibles = TimeSpanForCalc.join(lstOTTimezone).get();
-		
+		val wkTimePossibles = TimeSpanForCalc.join(lstOTTimezone).get();
 		if (this.coreTimeSetting.getTimesheet() == ApplyAtr.NOT_USE) {
 			return Arrays.asList(ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd(
 					    new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkNo(1)
@@ -330,12 +323,11 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 		val coreTime = this.getCoreTimeByAmPm(require, ampmAtr);
 		val startTime = new TimeSpanForCalc(wkTimePossibles.getStart(), coreTime.getStart());
 		val endTime = new TimeSpanForCalc(coreTime.getEnd(), wkTimePossibles.getEnd());
-
-		return Arrays.asList(new ChangeableWorkingTimeZonePerNo(
-				  	  new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkNo(1)
-					, startTime
-					, endTime)
-				);
+		return Arrays.asList(ChangeableWorkingTimeZonePerNo.create(
+				  new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkNo(1)
+				, startTime
+				, endTime
+				));
 	}
 
 	/**
@@ -376,17 +368,17 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 		val workOnDayOffTimeList = this.offdayWorkTime.getLstWorkTimezone().stream()
 				.map(c -> c.getTimezone().timeSpan())
 				.collect(Collectors.toList());
-		val workOnDayOffTime = TimeSpanForCalc.join(workOnDayOffTimeList);
+		val workOnDayOffTime = TimeSpanForCalc.join(workOnDayOffTimeList).get();
 		
 		val workTimeList = preTimeSetting.getTimezoneByAmPmAtrForCalc(AmPmAtr.ONE_DAY);
 
 		
-		if (workTimeList.stream().allMatch(c -> c.checkDuplication(workOnDayOffTime.get()) == TimeSpanDuplication.NOT_DUPLICATE)) {
+		if (workTimeList.stream().allMatch(c -> c.checkDuplication(workOnDayOffTime) == TimeSpanDuplication.NOT_DUPLICATE)) {
 			return Collections.emptyList();
 		}
 
 		return Arrays.asList(ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd(
-				  new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkNo(1), workOnDayOffTime.get()));
+				  new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkNo(1), workOnDayOffTime));
 	}
 
 	public static interface Require {
