@@ -63,6 +63,7 @@ public class FlowWorkSettingTest {
 		val halfDayWtz = new FlowHalfDayWorkTimezone(new FlowHalfDayWtzImpl(flexHalfRTz));
 		
 		val flowWS = new FlowWorkSetting(new FlowWorkSettingImpl(halfDayWtz, offdayWTz));
+		};
 		
 		val actual = flowWS.getBreakTimeZone(false, AmPmAtr.ONE_DAY);
 		
