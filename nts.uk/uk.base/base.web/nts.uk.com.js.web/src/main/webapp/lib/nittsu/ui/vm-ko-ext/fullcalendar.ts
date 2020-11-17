@@ -626,7 +626,9 @@ module nts.uk.ui.koExtentions {
                         click: (evt) => {
                             const btn = evt.target as HTMLElement;
 
-                            event.coppyDay.apply(viewModel, [(new Date(), new Date())]);
+                            if (ko.unwrap(editable) === true) {
+                                event.coppyDay.apply(viewModel, [(new Date(), new Date())]);
+                            }
                         }
                     },
                     'one-day': {
@@ -1006,6 +1008,12 @@ module nts.uk.ui.koExtentions {
                 editable.subscribe(e => {
                     calendar.setOption('editable', e);
                     calendar.setOption('selectable', e);
+
+                    if (e !== false) {
+                        $el.find('.fc-copy-day-button').removeAttr('disabled');
+                    } else {
+                        $el.find('.fc-copy-day-button').attr('disabled', 'disabled');
+                    }
                 });
             }
 
