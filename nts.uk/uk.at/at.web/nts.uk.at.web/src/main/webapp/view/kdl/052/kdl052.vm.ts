@@ -115,7 +115,7 @@ module nts.uk.at.view.kdl052.screenModel {
       // call API changeId
       vm.$ajax(`${API.changeId}/${sId}`).then((res: any)=>{
         let startdateDays = res.aggrResultOfChildCareNurse.startdateDays;
-        vm.limitDays(startdateDays.thisYear.limitDays);
+        vm.limitDays(vm.genDateTime(startdateDays.thisYear.limitDays,0));
         let childNursingUsed = vm.genDateTime(startdateDays.thisYear.usedDays.usedDay, startdateDays.thisYear.usedDays.usedTimes);
         vm.childNursingUsed(childNursingUsed);
         let childNursingRemaining = vm.genDateTime(startdateDays.thisYear.remainingNumber.usedDays, startdateDays.thisYear.remainingNumber.usedTime)

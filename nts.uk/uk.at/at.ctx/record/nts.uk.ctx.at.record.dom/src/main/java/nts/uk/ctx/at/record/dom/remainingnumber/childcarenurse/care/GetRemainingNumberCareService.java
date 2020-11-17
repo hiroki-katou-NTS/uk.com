@@ -22,6 +22,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemain
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse;
 
 /**
  * 実装：期間中の介護休暇残数を取得
@@ -72,7 +73,7 @@ public class GetRemainingNumberCareService {
 																					ChildCareNurseStartdateInfo.of(
 																							createUseNumber(),
 																							createRemNumber(),
-																							new ChildCareNurseUpperLimit(0d)),
+																							new ChildCareNurseUpperLimit(10d)),
 																					Optional.empty()),
 																			false,
 																			ChildCareNurseAggrPeriodDaysInfo.of(
@@ -82,12 +83,12 @@ public class GetRemainingNumberCareService {
 
 	// 介護休暇使用数
 	private ChildCareNurseUsedNumber createUseNumber() {
-		return ChildCareNurseUsedNumber.of(new DayNumberOfUse(0d), Optional.empty());
+		return ChildCareNurseUsedNumber.of(new DayNumberOfUse(3d), Optional.of(new TimeOfUse(60)));
 	}
 
 	// 介護休暇残数
 	private ChildCareNurseRemainingNumber createRemNumber() {
-		return ChildCareNurseRemainingNumber.of(new DayNumberOfUse(0d), Optional.empty());
+		return ChildCareNurseRemainingNumber.of(new DayNumberOfUse(6d), Optional.of(new TimeOfUse(420)));
 	}
 
 }

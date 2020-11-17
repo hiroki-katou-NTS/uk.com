@@ -13,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemain
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse;
 
 /**
  * 実装：期間中の子の看護休暇残数を取得
@@ -53,7 +54,7 @@ public class GetRemainingNumberChildCareService {
 	// 子の看護休暇エラー情報
 	private ChildCareNurseErrors createError() {
 		return ChildCareNurseErrors.of(createUseNumber(),
-															new ChildCareNurseUpperLimit(0d),
+															new ChildCareNurseUpperLimit(10d),
 															GeneralDate.today());
 	}
 
@@ -64,21 +65,21 @@ public class GetRemainingNumberChildCareService {
 																					ChildCareNurseStartdateInfo.of(
 																							createUseNumber(),
 																							createRemNumber(),
-																							new ChildCareNurseUpperLimit(0d)),
+																							new ChildCareNurseUpperLimit(10d)),
 																					Optional.empty()),
 																			false,
 																			ChildCareNurseAggrPeriodDaysInfo.of(
-																					ChildCareNurseAggrPeriodInfo.of(new UsedTimes(0), new UsedTimes(0), createUseNumber())
+																					ChildCareNurseAggrPeriodInfo.of(new UsedTimes(30), new UsedTimes(30), createUseNumber())
 																					,Optional.empty()));
 	}
 
 	// 子の看護休暇使用数
 	private ChildCareNurseUsedNumber createUseNumber() {
-		return ChildCareNurseUsedNumber.of(new DayNumberOfUse(0d), Optional.empty());
+		return ChildCareNurseUsedNumber.of(new DayNumberOfUse(3d), Optional.of(new TimeOfUse(60)));
 	}
 
 	// 子の看護休暇残数
 	private ChildCareNurseRemainingNumber createRemNumber() {
-		return ChildCareNurseRemainingNumber.of(new DayNumberOfUse(0d), Optional.empty());
+		return ChildCareNurseRemainingNumber.of(new DayNumberOfUse(6d), Optional.of(new TimeOfUse(420)));
 	}
 }
