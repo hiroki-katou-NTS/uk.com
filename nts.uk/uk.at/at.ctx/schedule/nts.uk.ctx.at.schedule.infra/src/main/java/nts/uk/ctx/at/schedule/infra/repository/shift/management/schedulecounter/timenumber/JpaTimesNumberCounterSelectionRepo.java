@@ -22,6 +22,8 @@ public class JpaTimesNumberCounterSelectionRepo extends JpaRepository implements
 
     private static final String FIND_BY_CID;
 
+    private static final String FIND_BY_KEYS;
+
     private static final String FIND_BY_CID_AND_TYPE;
 
     static {
@@ -34,6 +36,12 @@ public class JpaTimesNumberCounterSelectionRepo extends JpaRepository implements
         builderString.append(SELECT);
         builderString.append(" WHERE a.pk.companyId = :companyId ");
         FIND_BY_CID = builderString.toString();
+
+        builderString = new StringBuilder();
+        builderString.append(SELECT);
+        builderString.append(" WHERE a.pk.companyId = :companyId ");
+        builderString.append(" AND a.pk.countType = :countType ");
+        FIND_BY_KEYS = builderString.toString();
 
         builderString = new StringBuilder();
         builderString.append(SELECT);
@@ -51,8 +59,9 @@ public class JpaTimesNumberCounterSelectionRepo extends JpaRepository implements
 
     @Override
     public void update(String companyId, TimesNumberCounterSelection domain) {
-        List<KscmtTallyTotalTime> result = this.queryProxy().query(FIND_BY_CID, KscmtTallyTotalTime.class)
+        List<KscmtTallyTotalTime> result = this.queryProxy().query(FIND_BY_KEYS, KscmtTallyTotalTime.class)
             .setParameter("companyId", companyId)
+            .setParameter("countType", domain.getType().value)
             .getList();
         commandProxy().removeAll(result);
         this.getEntityManager().flush();
@@ -70,7 +79,7 @@ public class JpaTimesNumberCounterSelectionRepo extends JpaRepository implements
 
     @Override
     public boolean exists(String companyId, TimesNumberCounterType type) {
-        List<KscmtTallyByWkpLaborCost> result = this.queryProxy().query(FIND_BY_CID, KscmtTallyByWkpLaborCost.class)
+        List<KscmtTallyTotalTime> result = this.queryProxy().query(FIND_BY_CID, KscmtTallyTotalTime.class)
             .setParameter("companyId", companyId)
             .getList();
         return result.size() > 0;
