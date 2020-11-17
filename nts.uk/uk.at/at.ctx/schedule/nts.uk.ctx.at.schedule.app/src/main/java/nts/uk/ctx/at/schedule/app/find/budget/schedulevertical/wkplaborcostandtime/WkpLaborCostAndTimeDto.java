@@ -18,27 +18,15 @@ public class WkpLaborCostAndTimeDto {
     private int LaborCostAndTimeType;
     private LaborCostAndTimeDto laborCostAndTimeDtos;
 
-    public static List<WkpLaborCostAndTimeDto> setData(Optional<WorkplaceCounterLaborCostAndTime> laborCostAndTime){
+    public static List<WkpLaborCostAndTimeDto> setData(WorkplaceCounterLaborCostAndTime laborCostAndTime) {
 
-        if (laborCostAndTime.isPresent()){
-            return laborCostAndTime.get().getLaborCostAndTimeList().entrySet().stream().map(x -> new WkpLaborCostAndTimeDto(
-                x.getKey().value,
-                new LaborCostAndTimeDto(
-                    x.getValue().getUseClassification().value,
-                    x.getValue().getTime().value,
-                    x.getValue().getLaborCost().value,
-                    x.getValue().getBudget().isPresent() ? x.getValue().getBudget().get().value : null)
-            )).collect(Collectors.toList());
-        }else {
-            List<WkpLaborCostAndTimeDto> result = new ArrayList<>();
-            for (int x = 0; x <3; x++){
-                result.add(new WkpLaborCostAndTimeDto(
-                    x,
-                    new LaborCostAndTimeDto(0,1,1,1)
-                ));
-            }
-            return result;
-        }
-
+        return laborCostAndTime.getLaborCostAndTimeList().entrySet().stream().map(x -> new WkpLaborCostAndTimeDto(
+            x.getKey().value,
+            new LaborCostAndTimeDto(
+                x.getValue().getUseClassification().value,
+                x.getValue().getTime().value,
+                x.getValue().getLaborCost().value,
+                x.getValue().getBudget().isPresent() ? x.getValue().getBudget().get().value : null)
+        )).collect(Collectors.toList());
     }
 }
