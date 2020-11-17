@@ -10,13 +10,13 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KrcstOptionalItemPK_.
  */
-@StaticMetamodel(KrcstOptionalItemPK.class)
+@StaticMetamodel(KrcmtAnyvPK.class)
 public class KrcstOptionalItemPK_ {
 
 	/** The cid. */
-	public static volatile SingularAttribute<KrcstOptionalItemPK, String> cid;
+	public static volatile SingularAttribute<KrcmtAnyvPK, String> cid;
 
 	/** The optional item no. */
-	public static volatile SingularAttribute<KrcstOptionalItemPK, Integer> optionalItemNo;
+	public static volatile SingularAttribute<KrcmtAnyvPK, Integer> optionalItemNo;
 
 }

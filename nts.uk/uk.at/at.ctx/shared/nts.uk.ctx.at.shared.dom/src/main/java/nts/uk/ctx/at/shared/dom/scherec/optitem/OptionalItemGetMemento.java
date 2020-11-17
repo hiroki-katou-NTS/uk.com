@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.scherec.optitem;
 
+import java.util.Optional;
+
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
@@ -72,5 +74,23 @@ public interface OptionalItemGetMemento {
 	 *
 	 * @return the unit
 	 */
-	UnitOfOptionalItem getUnit();
+	Optional<UnitOfOptionalItem> getUnit();
+	
+	/**
+	 * Gets the calculation atr
+	 * @return the calAtr
+	 */
+	CalculationClassification getCalcAtr();
+	
+	/**
+	 * Gets the not
+	 * @return the note
+	 */
+	Optional<NoteOptionalItem> getNote();
+	
+	/**
+	 * Gets the description
+	 * @return the descroption
+	 */
+	Optional<DescritionOptionalItem> getDescription();
 }
