@@ -5,15 +5,9 @@ module nts.uk.at.view.ksu001.g {
     const Paths = {
         GET_WORK_AVAILABILITY_OF_ONE_DAY: 'screen/at/shift/management/workavailability/getAll'
     };
-    const method = [
-        { id: '', Name: "なし" },
-        { id: '休日', Name: "休日" },
-        { id: 'シフト', Name: "シフト" },
-        { id: '時間帯', Name: "時間帯" },
-    ]
+    
     @bean()
-    class Ksu001GViewModel extends ko.ViewModel {
-        // listWorkAvailabilitys: KnockoutObservableArray<IWorkAvailabilityOfOneDay> = ko.observableArray([]);
+    class Ksu001GViewModel extends ko.ViewModel {		
         period: string = "";
         constructor(params: any) {
             super();
@@ -24,7 +18,13 @@ module nts.uk.at.view.ksu001.g {
         }
 
         loadWorkAvailabilityOfOneDay(): void {
-            const self = this;
+            const self = this,
+            method = [
+            { id: '', Name: "なし" },
+            { id: getText('KSU001_4038'), Name: getText('KSU001_4038') },
+            { id: getText('KSU001_4035'), Name: getText('KSU001_4035') },
+            { id: getText('KSU001_4036'), Name: getText('KSU001_4036') }
+            ]
             let listData: Array<any> = [];    
             let dataAll: Array<any> = [];            
             let arrOneDay: Array<any> = [];
@@ -32,16 +32,16 @@ module nts.uk.at.view.ksu001.g {
             let timezoneStart: string;
             let timezoneEnd: string;
             let request: any = getShared('dataShareDialogG');
-            self.period = request.startDate + "～" + request.endDate;
+            self.period = request.startDate + getText('KSU001_4055') + request.endDate;
             self.$ajax(Paths.GET_WORK_AVAILABILITY_OF_ONE_DAY, request).done((data: Array<IWorkAvailabilityOfOneDay>) => {
                 self.$blockui("show");
-                if (data && data.length > 0) {
+                if (data) {
                     let count: number = 0;
                     let convertedData: Array<IWorkAvailabilityOfOneDay> = [];
                     // format lại timezone hh:mm
                     listData = _.forEach(data, e =>{
                         if(e.timezone.trim()!=""){
-                            let timezoneSplit = e.timezone.trim().split('～');
+                            let timezoneSplit = e.timezone.trim().split(getText('KSU001_4055'));
                             if(timezoneSplit[0].length < 5){
                                timezoneStart = "0".concat(timezoneSplit[0]);
                             } else {
@@ -54,7 +54,7 @@ module nts.uk.at.view.ksu001.g {
                                  timezoneEnd = timezoneSplit[1];
                              }
                             
-                           return e.timezone = timezoneStart + '～'+ timezoneEnd;
+                           return e.timezone = timezoneStart + getText('KSU001_4055') + timezoneEnd;
                         } else {
                             return e;
                         }
@@ -96,16 +96,14 @@ module nts.uk.at.view.ksu001.g {
                         let arrTimezone = _.filter(arrByDay, e => {
                             return e.timezone.trim() != "";
                         } );
-
                         
                         // tách mảng không có timezone từ mảng đã tách theo ngày
-                        let arrNoTimezone = _.difference(arrByDay, arrTimezone);
-
+						let arrNoTimezone = _.difference(arrByDay, arrTimezone);
+						
                         // tạo lại mảng đã tách theo ngày với timezone đã được sort
                         arrOneDay = _.union(arrNoTimezone, _.sortBy(arrTimezone, e => e.timezone ))      
                         // tạo mảng dữ liệu đã được sort theo timezone, codename                        
-                        dataAll = _.union(dataAll, _.sortBy(arrOneDay, e => e.employeeCdName));
-                       
+                        dataAll = _.union(dataAll, _.sortBy(arrOneDay, e => e.employeeCdName));                       
                     });
                    
                     // self.listWorkAvailabilitys(dataAll);
@@ -115,11 +113,11 @@ module nts.uk.at.view.ksu001.g {
                         dataSource: dataAll,
                         dataSourceType: "json",
                         primaryKey: "desireDay",
-                        autoGenerateColumns: false,
+                        autoGenerateColumns: false,                        
                         responseDatakey: "results",
                         columns: [
-                            { headerText: getText('KSU001_4032'), key: "desireDay", dataType: "string" },                          
-                            { headerText: getText('KSU001_4033'), key: "employeeCdName", dataType: "string", width: "30%" },
+                            { headerText: getText('KSU001_4032'), key: "desireDay", dataType: "string", width: "17%" },                          
+                            { headerText: getText('KSU001_4033'), key: "employeeCdName", dataType: "string", width: "20%" },
                             { headerText: getText('KSU001_4034'), key: "method", dataType: "string" },
                             { headerText: getText('KSU001_4035'), key: "shift" },
                             { headerText: getText('KSU001_4036'), key: "timezone" },
@@ -152,70 +150,88 @@ module nts.uk.at.view.ksu001.g {
                                         conditionList: ["same", "beforeAndEqual", "afterAndEqual"],                                       
                                         customConditions: {                                           
                                             same: {
-                                                labelText: "= ～に等しい",
-                                                expressionText: "～に等しい",
+                                                labelText: getText('KSU001_4056'),
+                                                expressionText: getText('KSU001_4057'),
                                                 requireExpr: true,
                                                 filterFunc: self.equal
                                             },
                                             afterAndEqual: {
-                                                labelText: "<= 以下",
-                                                expressionText: "以下",
+                                                labelText: getText('KSU001_4060'),
+                                                expressionText: getText('KSU001_4061'),
                                                 requireExpr: true,
                                                 filterFunc: self.beforeAndEqual
                                             },
                                             beforeAndEqual: {
-                                                labelText: ">= 以上",
-                                                expressionText: "以上",                                                
+                                                labelText: getText('KSU001_4058'),
+                                                expressionText: getText('KSU001_4059'),                                              
                                                 requireExpr: true,
                                                 filterFunc: self.afterAndEqual
                                             },
-                                            contains:{                                                
-                                                expressionText: "～に等しい",
-                                                requireExpr: true,
-                                                filterFunc: self.equal
-                                            }
                                         }
                                     },
-
-                                    { columnKey: 'employeeCdName', conditionList: ["contains", "doesNotContain"] },
+									// { columnKey: 'employeeCdName', conditionList: ["contains", "doesNotContain"] },
+									{ columnKey: 'employeeCdName', 
+                                        conditionList: ["contain", "notContain"],                                       
+                                        customConditions: {                                           
+                                            contain: {
+                                                labelText: getText('KSU001_4062'),
+                                                expressionText: getText('KSU001_4062'),
+                                                requireExpr: true,
+                                                filterFunc: self.contains
+                                            },
+                                            notContain: {
+                                                labelText: getText('KSU001_4063'),
+                                                expressionText: getText('KSU001_4063'),
+                                                requireExpr: true,
+                                                filterFunc: self.doesNotContain
+                                            }
+                                        } },
                                     { columnKey: "shift", allowFiltering: false },
                                     { columnKey: "timezone", allowFiltering: false },
                                     { columnKey: "remarks", allowFiltering: false },
                                     {
-                                        columnKey: "method", editorType: 'combo',
-                                        conditionList: [
-                                            "equals"
-                                        ],
-                                        editorOptions: {
-                                            mode: "dropdown",
-                                            dataSource: method,
-                                            textKey: "Name",
-                                            valueKey: "id",
-                                            selectionChanged: function (e, args) {
-                                                //TODO sử dụng khi thay đổi data của combobox
-                                            }
-                                        }
+										columnKey: "method", editorType: 'combo',
+										conditionList: [
+											"equals"
+										],
+										editorOptions: {
+											mode: "dropdown",
+											dataSource: method,
+											textKey: "Name",
+											valueKey: "id",
+											selectionChanged: function (e, args) {
+												//TODO sử dụng khi thay đổi data của combobox
+											}
+										}
                                     }
                                 ]
-                            }
-                        ]
-                        
+							},
+							
+							{
+								name: "Tooltips",
+								columnSettings: [
+									{ columnKey: "employeeCdName", allowTooltips: true },
+									{ columnKey: "remarks", allowTooltips: true },
+									{ columnKey: "desireDay", allowTooltips: false },
+									{ columnKey: "method", allowTooltips: false },
+									{ columnKey: "shift", allowTooltips: false },
+									{ columnKey: "timezone", allowTooltips: false }
+								],
+								visibility: "overflow"
+							}                                                  
+                        ]                        
                     }); 
                     self.$blockui('hide');
                     $('#grid_scroll').focus();
                     $('#grid').focus();
-                    // $('table').focus();
-                    // $('input:first').removeAttr('placeholder');
-                    $('input:first').attr('placeholder',"= ");                   
+                    $('input:first').attr('placeholder', getText('KSU001_4057'));                   
                     $("table thead tr td:nth-child(3)").css('padding',"0px !important");
                     $("table thead tr td:nth-child(2)").css('padding',"0px !important");
                     $("td").eq(2).css('padding',"0px !important");
-
-                } else {
-                    self.$dialog.error({ messageId: "Msg_37" });
-                    // $('#grid').focus();
-
-                }
+                    if(data.length <= 0){
+                        self.$dialog.error({ messageId: "Msg_37" });
+                    }
+                } 
                 
             }).fail(() => {
                 self.$dialog.error({ messageId: "Msg_37" });
@@ -226,22 +242,31 @@ module nts.uk.at.view.ksu001.g {
 
         equal(value, expression, dataType, ignoreCase, preciseDateFormat) {
             if (isNaN(parseInt(expression))) {
-                return parseInt(value.replaceAll('/', '')) == 99999999;
+                return parseInt(value.split('/').join('')) == 99999999;
             }
-            return parseInt(value.replaceAll('/', '')) == parseInt(expression.replaceAll('/', ''));
+            return parseInt(value.split('/').join('')) == parseInt(expression.split('/').join(''));
         }
         beforeAndEqual(value, expression, dataType, ignoreCase, preciseDateFormat) {
             if (isNaN(parseInt(expression))) {
-                return parseInt(value.replaceAll('/', '')) == 99999999;
+                return parseInt(value.split('/').join('')) == 99999999;
             }
-            return parseInt(value.replaceAll('/', '')) <= parseInt(expression.replaceAll('/', ''));
+            return parseInt(value.split('/').join('')) <= parseInt(expression.split('/').join(''));
         }
         afterAndEqual(value, expression, dataType, ignoreCase, preciseDateFormat) {
             if (isNaN(parseInt(expression))) {
-                return parseInt(value.replaceAll('/', '')) == 99999999;
+                return parseInt(value.split('/').join('')) == 99999999;
             }
-            return parseInt(value.replaceAll('/', '')) >= parseInt(expression.replaceAll('/', ''));
+            return parseInt(value.split('/').join('')) >= parseInt(expression.split('/').join(''));
+		}
+		
+		contains(value, expression, dataType, ignoreCase, preciseDateFormat) {
+            return value.indexOf(expression) !== -1;
         }
+
+        doesNotContain(value, expression, dataType, ignoreCase, preciseDateFormat) {
+            return value.indexOf(expression) == -1;
+		}
+		
         clearFilter() {
             $("#grid").igGridFiltering("filter", [], true);
         }

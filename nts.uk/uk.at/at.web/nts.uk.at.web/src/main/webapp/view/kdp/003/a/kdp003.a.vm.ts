@@ -612,7 +612,7 @@ module nts.uk.at.kdp003.a {
 		virtual: false
 	})
 	export class MessageErrorBindingHandler implements KnockoutBindingHandler {
-		update(element: any, valueAccessor: () => KnockoutObservable<f.Message | string | null | undefined>, __: KnockoutAllBindingsAccessor, vm: ComponentViewModel): void {
+		update(element: any, valueAccessor: () => KnockoutObservable<f.Message | string | null | undefined>, __: KnockoutAllBindingsAccessor, vm: nts.uk.ui.vm.ViewModel): void {
 			const $el = $(element);
 			const msg = ko.unwrap(valueAccessor());
 
