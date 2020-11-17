@@ -11,7 +11,7 @@ public class FixedExtractionCdtOutput {
     private String id;
 
     // NO
-    private int no;
+    private Integer no;
 
     // 区分
     private int classification;

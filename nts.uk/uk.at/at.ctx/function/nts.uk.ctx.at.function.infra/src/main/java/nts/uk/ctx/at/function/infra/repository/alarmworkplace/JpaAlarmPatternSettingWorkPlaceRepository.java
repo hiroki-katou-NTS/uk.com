@@ -64,7 +64,7 @@ public class JpaAlarmPatternSettingWorkPlaceRepository extends JpaRepository imp
     }
 
     @Override
-    public Optional<AlarmPatternSettingWorkPlace> getCheckCondition(String cid, AlarmPatternCode alarmPatternCode) {
+    public Optional<AlarmPatternSettingWorkPlace> getBy(String cid, AlarmPatternCode alarmPatternCode) {
         return this.queryProxy().query(SELECT_BY_ALARM_PATTERN_CD, KfnmtALstWkpPtn.class)
             .setParameter("companyId", cid).setParameter("alarmPatternCode", alarmPatternCode).getSingle(KfnmtALstWkpPtn::toDomain);
     }

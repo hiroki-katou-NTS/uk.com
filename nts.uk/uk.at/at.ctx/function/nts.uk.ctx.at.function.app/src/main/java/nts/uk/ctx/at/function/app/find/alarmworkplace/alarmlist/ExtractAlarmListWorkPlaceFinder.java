@@ -85,8 +85,9 @@ public class ExtractAlarmListWorkPlaceFinder {
     public List<CheckConditionDto> getCheckConditions(String alarmPatternCode, Integer processingYm) {
         String cid = AppContexts.user().companyId();
         // ドメインモデル「チェック条件」を取得する。
-        List<CheckCondition> checkConList = alarmPatternSettingWorkPlaceRepo.getCheckCondition(cid,
+        Optional<AlarmPatternSettingWorkPlace> patern = alarmPatternSettingWorkPlaceRepo.getBy(cid,
                 new AlarmPatternCode(alarmPatternCode));
+        List<CheckCondition> checkConList = patern.get().getCheckConList();
 
         // ドメインモデル「チェック条件」．抽出する範囲をもとに初期表示する期間を求める
         return calcPeriod(checkConList, YearMonth.of(processingYm));

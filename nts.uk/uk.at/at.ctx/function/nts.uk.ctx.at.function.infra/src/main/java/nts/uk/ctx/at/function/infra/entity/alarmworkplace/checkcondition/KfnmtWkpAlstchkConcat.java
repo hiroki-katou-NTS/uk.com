@@ -35,6 +35,6 @@ public class KfnmtWkpAlstchkConcat extends UkJpaEntity implements Serializable {
     }
 
     public static KfnmtWkpAlstchkConcat toEntity(AlarmCheckCdtWorkplaceCategory domain) {
-        return new KfnmtWkpAlstchkConcat();
+        return null;
     }
 }

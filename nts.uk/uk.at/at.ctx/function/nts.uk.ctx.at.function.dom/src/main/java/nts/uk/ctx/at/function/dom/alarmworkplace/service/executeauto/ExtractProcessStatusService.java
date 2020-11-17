@@ -6,6 +6,7 @@ import nts.uk.ctx.at.function.dom.alarmworkplace.extractprocessstatus.AlarmListE
 import nts.uk.ctx.at.function.dom.alarmworkplace.extractprocessstatus.AlarmListExtractProcessStatusWorkplaceRepository;
 import nts.uk.ctx.at.function.dom.alarmworkplace.extractprocessstatus.ExtractState;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 /**
@@ -14,6 +15,7 @@ import javax.inject.Inject;
  *
  * @author Le Huu Dat
  */
+@Stateless
 public class ExtractProcessStatusService {
     @Inject
     private AlarmListExtractProcessStatusWorkplaceRepository alarmListExtractProcessStatusWorkplaceRepo;

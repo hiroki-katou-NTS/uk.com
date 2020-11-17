@@ -17,6 +17,6 @@ public interface AlarmPatternSettingWorkPlaceRepository {
 
     List<AlarmPatternSettingWorkPlace> findByCompanyId(String cid);
 
-    Optional<AlarmPatternSettingWorkPlace> getCheckCondition(String cid, AlarmPatternCode alarmPatternCode);
+    Optional<AlarmPatternSettingWorkPlace> getBy(String cid, AlarmPatternCode alarmPatternCode);
 
 }
