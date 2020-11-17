@@ -3,7 +3,7 @@ package nts.uk.ctx.at.request.dom.application.overtime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReason;
+import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.DivergenceReason;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DiverdenceReasonCode;
 
 /**
@@ -22,4 +22,9 @@ public class ReasonDivergence {
 	private DiverdenceReasonCode reasonCode;
 	// 乖離時間NO
 	private Integer diviationTime;
+	
+	public Boolean isNullProp() {
+		if (this.reason == null && this.reasonCode == null && this.diviationTime == null) return true;
+		return false;
+	}
 }

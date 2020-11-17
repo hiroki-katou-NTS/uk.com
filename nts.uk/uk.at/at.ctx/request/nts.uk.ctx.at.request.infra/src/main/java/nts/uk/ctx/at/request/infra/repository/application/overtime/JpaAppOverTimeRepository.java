@@ -29,8 +29,12 @@ import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTimeRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
+import nts.uk.ctx.at.request.dom.application.overtime.HolidayMidNightTime;
+import nts.uk.ctx.at.request.dom.application.overtime.OverTimeShiftNight;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeApplicationSetting;
+import nts.uk.ctx.at.request.dom.application.overtime.ReasonDivergence;
+import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.DivergenceReason;
 import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36Agree;
 import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeUpperLimit;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
@@ -42,8 +46,12 @@ import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtOvertimeInpu
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtOvertimeInputPK;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DiverdenceReasonCode;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
 public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTimeRepository{
@@ -361,14 +369,71 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 			workHoursOp.add(timeZoneWithWorkNo);		
 		}
 		appOverTime.setOpReversionReason(Optional.empty());
-		// 112610
-//		if (divergenceNo != null) {
-//			ReasonForReversion reasonForReversion = new ReasonForReversion(rawValue)
-//		} else {
-//			appOverTime.setOpReversionReason(Optional.empty());
-//		}
+		ReasonDivergence reasonDivergence = new ReasonDivergence();
+		
 		ApplicationTime applicationTime = new ApplicationTime();
 		applicationTime.setFlexOverTime(Optional.ofNullable(flexExcessTime != null ? new AttendanceTimeOfExistMinus(flexExcessTime) : null));
+		// 112610
+		if (divergenceNo != null) {
+			reasonDivergence.setDiviationTime(divergenceNo);
+		}
+		if (divergenceCD != null) {
+			DiverdenceReasonCode reasonCode = new DiverdenceReasonCode(divergenceCD);
+			reasonDivergence.setReasonCode(reasonCode);
+		}
+		if (divergenceReason != null) {
+			DivergenceReason diReason = new DivergenceReason(divergenceReason);
+			reasonDivergence.setReason(diReason);
+		}
+		List<ReasonDivergence> reasonDissociation;
+		if (reasonDivergence.isNullProp()) {
+			applicationTime.setReasonDissociation(Optional.empty());
+		} else {
+			reasonDissociation = new ArrayList<ReasonDivergence>();
+			reasonDissociation.add(reasonDivergence);
+			applicationTime.setReasonDissociation(Optional.of(reasonDissociation));
+		}
+
+		OverTimeShiftNight overTimeShiftNight = new OverTimeShiftNight();
+		if (overTimeNight == null 
+				&& totalNight == null
+				&& legalHdNight == null 
+				&& nonLegalHdNight == null 
+				&& nonLegalPublicHdNight == null) {
+			applicationTime.setOverTimeShiftNight(Optional.empty());
+			
+		} else {
+			if (overTimeNight != null) {
+				overTimeShiftNight.setOverTimeMidNight(new TimeWithDayAttr(overTimeNight));
+			}
+			if (totalNight != null) {
+				overTimeShiftNight.setMidNightOutSide(new TimeWithDayAttr(totalNight));
+			}
+			List<HolidayMidNightTime> midNightHolidayTimes = new ArrayList<HolidayMidNightTime>();
+			if (legalHdNight != null) {
+				HolidayMidNightTime holidayMidNightTime = new HolidayMidNightTime();
+				holidayMidNightTime.setAttendanceTime(new AttendanceTime(legalHdNight));
+				holidayMidNightTime.setLegalClf(StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork);
+				midNightHolidayTimes.add(holidayMidNightTime);
+			}
+			
+			if (nonLegalHdNight != null) {
+				HolidayMidNightTime holidayMidNightTime = new HolidayMidNightTime();
+				holidayMidNightTime.setAttendanceTime(new AttendanceTime(nonLegalHdNight));
+				holidayMidNightTime.setLegalClf(StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork);
+				midNightHolidayTimes.add(holidayMidNightTime);
+			}
+			
+			
+			if (nonLegalPublicHdNight != null) {
+				HolidayMidNightTime holidayMidNightTime = new HolidayMidNightTime();
+				holidayMidNightTime.setAttendanceTime(new AttendanceTime(nonLegalPublicHdNight));
+				holidayMidNightTime.setLegalClf(StaturoryAtrOfHolidayWork.PublicHolidayWork);
+				midNightHolidayTimes.add(holidayMidNightTime);
+			}
+			applicationTime.setOverTimeShiftNight(Optional.of(overTimeShiftNight));
+			
+		}
 		
 		if (breakTimeStart1 != null && breakTimeEnd1 != null) {
 			TimeZoneWithWorkNo timeZoneWithWorkNo = new TimeZoneWithWorkNo(1, breakTimeStart1, breakTimeEnd1);
