@@ -11,6 +11,7 @@ import java.util.Optional;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Mock;
@@ -25,8 +26,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomat
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance.Require;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @RunWith(JMockit.class)
@@ -121,60 +120,80 @@ public class WorkInfoOfDailyAttendanceTest {
 	}
 	
 	@Test
-	public void testCreate_scheduleTimeSheets_empty() {
+	public void testCreate_scheduleTimeSheets_empty(
+			@Injectable WorkInformation scheduleInfo,
+			@Injectable WorkInformation recordInfo,
+			@Injectable CalculationState calculationState,
+			@Injectable NotUseAttribute backStraightAtr,
+			@Injectable NotUseAttribute goStraightAtr,
+			@Injectable DayOfWeek dayOfWeek
+			) {
 		
 		// Arrange
-		WorkInformation scheduleInfo = new WorkInformation(new WorkTypeCode("a01"), new WorkTimeCode("b01"));
-		WorkInformation recordInfo = new WorkInformation(new WorkTypeCode("a01"), new WorkTimeCode("b01"));
-		
-		new Expectations(scheduleInfo) { {
+		val WorkInfoAndTimeZone = WorkInfoOfDailyAttendanceHelper.createWorkInfoAndTimeZone(Collections.emptyList());
+		new Expectations() { {
 			scheduleInfo.getWorkInfoAndTimeZone(require);
-			result = Optional.of(WorkInfoOfDailyAttendanceHelper.createWorkInfoAndTimeZone(Collections.emptyList()));
+			result = Optional.of(WorkInfoAndTimeZone);
 		}};
 		
 		// Action
-		WorkInfoOfDailyAttendance target = WorkInfoOfDailyAttendance.create(require, recordInfo, scheduleInfo, 
-				CalculationState.No_Calculated, NotUseAttribute.Not_use, NotUseAttribute.Not_use, DayOfWeek.MONDAY);
+		WorkInfoOfDailyAttendance target = WorkInfoOfDailyAttendance.create(require, 
+																		recordInfo, 
+																		scheduleInfo, 
+																		calculationState, 
+																		backStraightAtr, 
+																		goStraightAtr, 
+																		dayOfWeek);
 		
 		// Assert
 		assertThat(target.getRecordInfo()).isEqualTo(recordInfo);
 		assertThat(target.getScheduleInfo()).isEqualTo(scheduleInfo);
-		assertThat(target.getCalculationState()).isEqualTo(CalculationState.No_Calculated);
-		assertThat(target.getBackStraightAtr()).isEqualTo(NotUseAttribute.Not_use);
-		assertThat(target.getGoStraightAtr()).isEqualTo(NotUseAttribute.Not_use);
-		assertThat(target.getDayOfWeek()).isEqualTo(DayOfWeek.MONDAY);
+		assertThat( target.getCalculationState() ).isEqualTo( calculationState );
+		assertThat( target.getBackStraightAtr() ).isEqualTo( backStraightAtr );
+		assertThat( target.getGoStraightAtr() ).isEqualTo( goStraightAtr );
+		assertThat( target.getDayOfWeek() ).isEqualTo( dayOfWeek );
 		assertThat(target.getScheduleTimeSheets()).isEmpty(); // emptyList
 	}
 	
 	@Test
-	public void testCreate_scheduleTimeSheets_not_empty() {
+	public void testCreate_scheduleTimeSheets_not_empty(
+			@Injectable WorkInformation scheduleInfo,
+			@Injectable WorkInformation recordInfo,
+			@Injectable CalculationState calculationState,
+			@Injectable NotUseAttribute backStraightAtr,
+			@Injectable NotUseAttribute goStraightAtr,
+			@Injectable DayOfWeek dayOfWeek
+			) {
 		
 		// Arrange
-		WorkInformation scheduleInfo = new WorkInformation(new WorkTypeCode("a01"), new WorkTimeCode("b01"));
-		WorkInformation recordInfo = new WorkInformation(new WorkTypeCode("a01"), new WorkTimeCode("b01"));
 		
 		List<TimeZone> listTimeZone = Arrays.asList(
 				new TimeZone(new TimeWithDayAttr(10), new TimeWithDayAttr(20)),
-				new TimeZone(new TimeWithDayAttr(30), new TimeWithDayAttr(40))
-				);
+				new TimeZone(new TimeWithDayAttr(30), new TimeWithDayAttr(40)));
+		val WorkInfoAndTimeZone = WorkInfoOfDailyAttendanceHelper.createWorkInfoAndTimeZone(listTimeZone);
 		
 		new Expectations(scheduleInfo) {{
 			scheduleInfo.getWorkInfoAndTimeZone(require);
-			result = Optional.of(WorkInfoOfDailyAttendanceHelper.createWorkInfoAndTimeZone(listTimeZone));
+			result = Optional.of(WorkInfoAndTimeZone);
 		}};
 		
 		// Action
-		WorkInfoOfDailyAttendance target = WorkInfoOfDailyAttendance.create(require, recordInfo, scheduleInfo, 
-				CalculationState.No_Calculated, NotUseAttribute.Not_use, NotUseAttribute.Not_use, DayOfWeek.MONDAY);
+		WorkInfoOfDailyAttendance target = WorkInfoOfDailyAttendance.create(require, 
+																		recordInfo, 
+																		scheduleInfo, 
+																		calculationState, 
+																		backStraightAtr, 
+																		goStraightAtr, 
+																		dayOfWeek);
 		
 		// Assert
-		assertThat(target.getRecordInfo()).isEqualTo(recordInfo);
-		assertThat(target.getScheduleInfo()).isEqualTo(scheduleInfo);
-		assertThat(target.getCalculationState()).isEqualTo(CalculationState.No_Calculated);
-		assertThat(target.getBackStraightAtr()).isEqualTo(NotUseAttribute.Not_use);
-		assertThat(target.getGoStraightAtr()).isEqualTo(NotUseAttribute.Not_use);
-		assertThat(target.getDayOfWeek()).isEqualTo(DayOfWeek.MONDAY);
-		assertThat(target.getScheduleTimeSheets())
+		assertThat( target.getRecordInfo() ).isEqualTo( recordInfo );
+		assertThat( target.getScheduleInfo() ).isEqualTo( scheduleInfo );
+		assertThat( target.getCalculationState() ).isEqualTo( calculationState );
+		assertThat( target.getBackStraightAtr() ).isEqualTo( backStraightAtr );
+		assertThat( target.getGoStraightAtr() ).isEqualTo( goStraightAtr );
+		assertThat( target.getDayOfWeek() ).isEqualTo( dayOfWeek );
+		assertThat( target.getScheduleTimeSheets() )
 			.extracting(
 				e -> e.getWorkNo().v(),
 				e -> e.getAttendance().v(),

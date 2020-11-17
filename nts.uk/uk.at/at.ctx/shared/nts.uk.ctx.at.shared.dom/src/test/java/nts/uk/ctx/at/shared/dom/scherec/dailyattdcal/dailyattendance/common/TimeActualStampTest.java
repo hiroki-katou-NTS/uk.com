@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.junit.Test;
 
+import mockit.Injectable;
 import mockit.Mock;
 import mockit.MockUp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
@@ -15,15 +16,10 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class TimeActualStampTest {
 	
 	@Test
-	public void testCreateByAutomaticSet() {
-		
-		// Arrange
-		TimeWithDayAttr time = new TimeWithDayAttr(60);
-		WorkStamp workStamp = new WorkStamp(
-				WorkTimeInformation.createByAutomaticSet(time), 
-				Optional.empty());
+	public void testCreateByAutomaticSet(@Injectable TimeWithDayAttr time) {
 		
 		// Mock
+		WorkStamp workStamp = Helper.createWorkStamp(time);
 		new MockUp<WorkStamp>() {
 	        @Mock
 	        public WorkStamp createByAutomaticSet(TimeWithDayAttr time) {
@@ -36,11 +32,23 @@ public class TimeActualStampTest {
 		
 		// Assert
 		assertThat(target.getActualStamp()).isEmpty();
+		
 		assertThat(target.getStamp().get()).isEqualTo(workStamp);
+		assertThat(target.getStamp().get().getTimeDay().getTimeWithDay().get()).isEqualTo(time);
+		
 		assertThat(target.getNumberOfReflectionStamp()).isEqualTo(1);
 		assertThat(target.getOvertimeDeclaration()).isEmpty();
 		assertThat(target.getTimeVacation()).isEmpty();
 		
+	}
+	
+	static class Helper {
+		
+		static WorkStamp createWorkStamp(TimeWithDayAttr time) {
+			return new WorkStamp( 
+					WorkTimeInformation.createByAutomaticSet(time), 
+					Optional.empty());
+		}
 	}
 
 }

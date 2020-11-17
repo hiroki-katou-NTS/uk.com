@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import org.assertj.core.groups.Tuple;
@@ -11,18 +12,30 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import lombok.val;
+import mockit.Capturing;
+import mockit.Expectations;
+import mockit.Injectable;
+import mockit.Mock;
+import mockit.MockUp;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
+import nts.uk.ctx.at.shared.dom.WorkInfoAndTimeZone;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @RunWith(JMockit.class)
 public class TimeLeavingOfDailyAttdTest {
+	
+	@Injectable
+	TimeLeavingOfDailyAttd.Require require;
 	
 	@Test
 	public void getters() {
@@ -207,6 +220,62 @@ public class TimeLeavingOfDailyAttdTest {
 		assertThat(actual.get()).isEqualTo(new TimeSpanForCalc(vacations.getStart(), vacations.getEnd()));
 	}
 	
+	@Test
+	public void testCreateByPredetermineZone_exception( @Injectable WorkInformation workInformation ) {
+		
+		// Arrange
+		new Expectations() { {
+			
+			workInformation.getWorkInfoAndTimeZone(require);
+			// result = empty
+			
+		}};
+		
+		NtsAssert.systemError( () -> TimeLeavingOfDailyAttd.createByPredetermineZone(require, workInformation));
+	}
+	
+	@Test
+	public void testCreateByPredetermineZone_success( 
+			@Injectable WorkInformation workInformation,
+			@Injectable WorkType workType,
+			@Injectable WorkTimeSetting workTime,
+			@Injectable TimeWithDayAttr start1,
+			@Injectable TimeWithDayAttr end1,
+			@Injectable TimeWithDayAttr start2,
+			@Injectable TimeWithDayAttr end2) {
+		
+		// Arrange
+		List<TimeZone> timeZoneList = Arrays.asList( 
+				new TimeZone(start1, end1), 
+				new TimeZone(start2, end2));
+		WorkInfoAndTimeZone workInforAndTimezone = WorkInfoAndTimeZone.create(workType, workTime, timeZoneList);
+		
+		// Expectation
+		new Expectations() { {
+			
+			workInformation.getWorkInfoAndTimeZone(require);
+			result = Optional.of(workInforAndTimezone);
+		}};
+		
+		// Mock-up
+		TimeLeavingWork timeLeavingWork1 = TimeLeavingWork.createFromTimeSpan(new WorkNo(1), new TimeSpanForCalc(start1, end1));
+		TimeLeavingWork timeLeavingWork2 = TimeLeavingWork.createFromTimeSpan(new WorkNo(2), new TimeSpanForCalc(start2, end2));
+		new MockUp<TimeLeavingWork>() {
+			
+			@Mock
+			public TimeLeavingWork createFromTimeSpan(WorkNo workNo, TimeSpanForCalc timeSpan) {
+				return workNo.v() == 1 ? timeLeavingWork1 : timeLeavingWork2;
+			}
+		};
+		
+		// Action
+		TimeLeavingOfDailyAttd target = TimeLeavingOfDailyAttd.createByPredetermineZone(require, workInformation);
+		
+		// Assert
+		assertThat(target.getWorkTimes().v()).isEqualTo( timeZoneList.size() );
+		assertThat(target.getTimeLeavingWorks()).containsExactly( timeLeavingWork1, timeLeavingWork2 );
+	}
+	
 	
 	static class Helper {
 
@@ -223,7 +292,6 @@ public class TimeLeavingOfDailyAttdTest {
 			
 			return timeLeaving;
 		} 
-
 	}
 	
 }

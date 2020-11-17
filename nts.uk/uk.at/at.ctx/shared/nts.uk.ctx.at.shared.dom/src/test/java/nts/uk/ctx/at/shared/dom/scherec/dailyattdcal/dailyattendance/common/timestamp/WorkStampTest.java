@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 
+import mockit.Injectable;
 import mockit.Mock;
 import mockit.MockUp;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -11,16 +12,13 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class WorkStampTest {
 	
 	@Test
-	public void testCreateByAutomaticSet() {
+	public void testCreateByAutomaticSet(@Injectable TimeWithDayAttr time) {
 		
-		// Arrange, 
-		TimeWithDayAttr time = new TimeWithDayAttr(60);
-		
+		// Mock
 		WorkTimeInformation workTimeInformation = new WorkTimeInformation(
 				ReasonTimeChange.createByAutomaticSet(), 
 				time);
 		
-		// Mock
 		new MockUp<WorkTimeInformation>() {
 	        @Mock
 	        public WorkTimeInformation createByAutomaticSet(TimeWithDayAttr time) {
@@ -33,6 +31,7 @@ public class WorkStampTest {
 		
 		// Assert
 		assertThat(target.getTimeDay()).isEqualTo(workTimeInformation);
+		assertThat(target.getTimeDay().getTimeWithDay().get()).isEqualTo(time);
 		assertThat(target.getLocationCode()).isEmpty();
 	}
 
