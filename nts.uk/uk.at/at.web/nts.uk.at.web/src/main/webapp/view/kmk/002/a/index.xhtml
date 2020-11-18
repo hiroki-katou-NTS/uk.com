@@ -28,7 +28,7 @@
          <com:ko tag="with" bind="optionalItemHeader">
             <div id="functions-area">
                <div class="container">
-                  <button tabindex="1" class="proceed" data-bind="click: saveOptionalItemDetail, enable: hasSelected">
+                  <button tabindex="1" class="proceed" data-bind="click: saveOptionalItemDetail, enable: hasSelected &amp;&amp; $root.errors.isEmpty">
                      #{i18n.getText('KMK002_1')}</button>
                   <!-- Print Excel -->
                   <button tabindex="1" id="print-button"
@@ -85,11 +85,12 @@
                                  <td>
                                     <div data-bind="ntsSwitchButton: {
                                                 name: '#[KMK002_102]',
-                                                options: calculationAtr,
+                                                options: usageClsDatasource,
                                                 optionsValue: 'code',
                                                 optionsText: 'name',
-                                                value: selectedClac,
-                                                required: true
+                                                value: usageAtr,
+                                                required: true,
+                                                enable: $parent.hasSelected &amp;&amp; $parents[1].langJP()
                                              }"></div>
                                  </td>
                               </tr>
@@ -101,11 +102,11 @@
                                  <td>
                                     <div tabindex="1" data-bind="ntsSwitchButton: {
                                                 name: '#[KMK002_13]',
-                                                options: usageClsDatasource,
+                                                options: calculationAtr,
                                                 optionsValue: 'code',
                                                 optionsText: 'name',
-                                                value: usageAtr,
-                                                enable: $parent.hasSelected &amp;&amp; $parents[1].langJP() }"></div>
+                                                value: selectedClac,
+                                                enable: usageAtr() === 1 &amp;&amp; $parent.hasSelected &amp;&amp; $parents[1].langJP() }"></div>
                                  </td>
                               </tr>
                               <tr>
@@ -120,7 +121,7 @@
                                                 optionsValue: 'code',
                                                 optionsText: 'name',
                                                 value: performanceAtr,
-                                                enable: isUsed &amp;&amp; $parents[1].langJP()}"></div>
+                                                enable: usageAtr() === 1 &amp;&amp; $parents[1].langJP()}"></div>
                                  </td>
                               </tr>
                               <tr>
@@ -136,10 +137,16 @@
                                                 value: optionalItemAtr,
                                                 optionsText: 'localizedName',
                                                 editable: false,
-                                                enable: true &amp;&amp; $parents[1].langJP(),
+                                                enable: usageAtr() === 1 &amp;&amp; $parents[1].langJP(),
                                                 columns: [
                                                 { prop: 'localizedName', length: 2 },
                                                 ]}">
+                                    </div>
+                                    <div style="display: inline; vertical-align: super;">
+                                       <span class="label" style="margin-left: 50px;">#{i18n.getText('KMK002_109')}</span>
+                                       <span class="label" style="margin-left: 20px;" data-bind="text: dailyUnit, visible: performanceAtr() === 1"></span> <!-- daily -->
+                                       <span class="label" style="margin-left: 20px;" data-bind="text: monthlyUnit, visible: performanceAtr() === 0"></span> <!-- monthly -->
+                                       <span class="label" data-bind="text: unit"></span>
                                     </div>
                                  </td>
                               </tr>
@@ -151,7 +158,7 @@
                                     <input tabindex="1" id="inp-unit" data-bind="ntsTextEditor: {
                                                 name: '#[KMK002_75]',
                                                 value: unit,
-                                                enable: enableUnit &amp;&amp; $parents[1].langJP(),
+                                                enable: optionalItemAtr() !== 0 &amp;&amp; usageAtr() === 1 &amp;&amp; enableUnit &amp;&amp; $parents[1].langJP(),
                                                 constraint: 'UnitOfOptionalItem',
                                                 required: false}" />
                                  </td>
@@ -166,7 +173,7 @@
                                        <div tabindex="1" id="cb-upper" data-bind="ntsCheckBox: {
                                                    name: '#[KMK002_26]',
                                                    checked: calcResultRange.upperCheck,
-                                                   enable: isUsed &amp;&amp; $parents[1].langJP(),
+                                                   enable: usageAtr() === 1 &amp;&amp; $parents[1].langJP(),
                                                    text: nts.uk.resource.getText('KMK002_26') }"></div>
                                        <com:ko tag="if" bind="isNumberSelected()">
                                           <input tabindex="1" id="inp-upper-number"
@@ -179,7 +186,7 @@
                                                       decimallength: 1
                                                       },
                                                       required: true,
-                                                      enable: calcResultRange.upperCheck() &amp;&amp; isUsed() &amp;&amp; $parents[1].langJP()}" />
+                                                      enable: usageAtr() === 1 &amp;&amp; calcResultRange.upperCheck() &amp;&amp; $parents[1].langJP()}" />
                                        </com:ko>
                                        <com:ko tag="if" bind="isAmountSelected()">
                                           <input tabindex="1" id="inp-upper-amount"
@@ -191,7 +198,7 @@
                                                       grouplength: 3
                                                       },
                                                       required: true,
-                                                      enable: calcResultRange.upperCheck() &amp;&amp; isUsed() &amp;&amp; $parents[1].langJP()}" />
+                                                      enable: usageAtr() === 1 &amp;&amp; calcResultRange.upperCheck() &amp;&amp; $parents[1].langJP()}" />
                                        </com:ko>
                                        <com:ko tag="if" bind="isTimeSelected()">
                                           <input tabindex="1" id="inp-upper-time"
@@ -202,7 +209,7 @@
                                                       inputFormat: 'time',
                                                       mode: 'time',
                                                       required: true,
-                                                      enable: calcResultRange.upperCheck() &amp;&amp; isUsed() &amp;&amp; $parents[1].langJP()}" />
+                                                      enable: usageAtr() === 1 &amp;&amp; calcResultRange.upperCheck() &amp;&amp; $parents[1].langJP()}" />
                                        </com:ko>
                                     </div>
                                  </td>
@@ -215,7 +222,7 @@
                                        <div tabindex="1" id="cb-lower" data-bind="ntsCheckBox: {
                                                       name: '#[KMK002_27]',
                                                       checked: calcResultRange.lowerCheck,
-                                                      enable: isUsed &amp;&amp; $parents[1].langJP(),
+                                                      enable: usageAtr() === 1 &amp;&amp; $parents[1].langJP(),
                                                       text: nts.uk.resource.getText('KMK002_27') }"></div>
                                        <com:ko tag="if" bind="isNumberSelected()">
                                           <input tabindex="1" id="inp-lower-number"
@@ -228,7 +235,7 @@
                                                          decimallength: 1
                                                          },
                                                          required: true,
-                                                         enable: calcResultRange.lowerCheck() &amp;&amp; isUsed() &amp;&amp; $parents[1].langJP()}" />
+                                                         enable: usageAtr() === 1 &amp;&amp; calcResultRange.lowerCheck() &amp;&amp; $parents[1].langJP()}" />
                                        </com:ko>
                                        <com:ko tag="if" bind="isTimeSelected()">
                                           <input tabindex="1" id="inp-lower-time"
@@ -239,7 +246,7 @@
                                                          inputFormat: 'time',
                                                          mode: 'time',
                                                          required: true,
-                                                         enable: calcResultRange.lowerCheck() &amp;&amp; isUsed() &amp;&amp; $parents[1].langJP()}" />
+                                                         enable: usageAtr() === 1 &amp;&amp; calcResultRange.lowerCheck() &amp;&amp; $parents[1].langJP()}" />
                                        </com:ko>
                                        <com:ko tag="if" bind="isAmountSelected()">
                                           <input tabindex="1" id="inp-lower-amount"
@@ -251,7 +258,7 @@
                                                          grouplength: 3
                                                          },
                                                          required: true,
-                                                         enable: calcResultRange.lowerCheck() &amp;&amp; isUsed() &amp;&amp; $parents[1].langJP()}" />
+                                                         enable: usageAtr() === 1 &amp;&amp; calcResultRange.lowerCheck() &amp;&amp; $parents[1].langJP()}" />
                                        </com:ko>
                                     </div>
                                  </td>
@@ -266,10 +273,11 @@
                               </div>
                               <div class="cell" style="vertical-align: bottom;">
                                  <textarea style="height: 50px;" data-bind="ntsMultilineEditor: {
-                                                   value: '',
+                                                   value: description,
                                                    constraint: 'DescritionOptionalItem',
                                                    name: '#[KMK002_106]',
                                                    required: true,
+                                                   enable: usageAtr() === 1 &amp;&amp; $parents[1].langJP(),
                                                    option: {
                                                       width: '300'
                                                    }
@@ -283,9 +291,10 @@
                               </div>
                               <div class="cell" style="vertical-align: bottom;">
                                  <textarea style="height: 150px;" data-bind="ntsMultilineEditor: {
-                                                   value: '',
+                                                   value: note,
                                                    constraint: 'NoteOptionalItem',
                                                    name: '#[KMK002_108]',
+                                                   enable: usageAtr() === 1 &amp;&amp; $parents[1].langJP(),
                                                    option: {
                                                       width: '300'
                                                    }
@@ -313,22 +322,22 @@
                                     optionsValue: 'code',
                                     optionsText: 'name',
                                     value: empConditionAtr,
-                                    enable: isUsed &amp;&amp; $parents[1].langJP()}"></div>
+                                    enable: usageAtr() === 1 &amp;&amp; selectedClac() === 1 &amp;&amp; isUsed &amp;&amp; $parents[1].langJP()}"></div>
                               <button tabindex="2"
-                                 data-bind="click: openDialogB, enable: empConditionAtr() == 1 &amp;&amp; isUsed &amp;&amp; $parents[1].langJP()">#{i18n.getText('KMK002_19')}</button>
+                                 data-bind="click: openDialogB, enable: usageAtr() === 1 &amp;&amp; selectedClac() === 1 &amp;&amp; empConditionAtr() == 1 &amp;&amp; isUsed &amp;&amp; $parents[1].langJP()">#{i18n.getText('KMK002_19')}</button>
                            </td>
                            <td></td>
                         </tr>
                         <!-- Optional Item view model -->
                         <tr>
                            <td><button tabindex="2"
-                                 data-bind="click: addFormulaAbove, enable: isUsed &amp;&amp; $parents[1].langJP()">#{i18n.getText('KMK002_28')}</button>
+                                 data-bind="click: addFormulaAbove, enable: usageAtr() === 1 &amp;&amp; selectedClac() === 1 &amp;&amp; isUsed &amp;&amp; $parents[1].langJP()">#{i18n.getText('KMK002_28')}</button>
                            </td>
                            <td>
                               <button tabindex="2"
-                                 data-bind="click: addFormulaBelow, enable: isUsed &amp;&amp; $parents[1].langJP()">#{i18n.getText('KMK002_29')}</button>
+                                 data-bind="click: addFormulaBelow, enable: usageAtr() === 1 &amp;&amp; selectedClac() === 1 &amp;&amp; isUsed &amp;&amp; $parents[1].langJP()">#{i18n.getText('KMK002_29')}</button>
                               <button tabindex="2" style="margin-left: 12px"
-                                 data-bind="click: removeFormula, enable: isUsed() &amp;&amp; hasSelectedFormula() &amp;&amp; $parents[1].langJP()"
+                                 data-bind="click: removeFormula, enable: usageAtr() === 1 &amp;&amp; selectedClac() === 1 &amp;&amp; isUsed() &amp;&amp; hasSelectedFormula() &amp;&amp; $parents[1].langJP()"
                                  class="danger">#{i18n.getText('KMK002_30')}</button>
                            </td>
                         </tr>
@@ -381,7 +390,7 @@
                                  <td>
                                     <div tabindex="-1" data-bind="ntsCheckBox: {
                                           checked: selected,
-                                          enable: $parent.isUsed,
+                                          enable: $parent.usageAtr() === 1 &amp;&amp; $parent.selectedClac() === 1 &amp;&amp; $parent.isUsed,
                                           text: '' }"></div>
                                  </td>
                                  <td style="text-align: right" data-bind="text: symbolValue"></td>
@@ -392,7 +401,7 @@
                                           optionsValue: 'value',
                                           value: formulaAtr,
                                           optionsText: 'localizedName',
-                                          enable: $parent.isUsed,
+                                          enable: $parent.usageAtr() === 1 &amp;&amp; $parent.selectedClac() === 1 &amp;&amp; $parent.isUsed,
                                           columns: [
                                           { prop: 'localizedName', length: 8 },
                                           ]}">
@@ -402,7 +411,7 @@
                                     ntsTextEditor: {
                                        name: '#[KMK002_40]',
                                        value: formulaName,
-                                       enable: $parent.isUsed, 
+                                       enable: $parent.usageAtr() === 1 &amp;&amp; $parent.selectedClac() === 1 &amp;&amp; $parent.isUsed, 
                                        constraint: 'FormulaName',
                                        option: {width: '130'},
                                        required: true}" />
@@ -414,17 +423,17 @@
                                           optionsValue: 'value',
                                           optionsText: 'localizedName',
                                           value: calcAtr,
-                                          enable: orderNo() == 1 ? false : ($parent.isUsed() == true ? true : false)}">
+                                          enable: $parent.usageAtr() === 1 &amp;&amp; $parent.selectedClac() === 1 &amp;&amp; orderNo() == 1 ? false : ($parent.isUsed() == true ? true : false)}">
                                     </div>
                                  </td>
                                  <td>
                                     <com:ko tag="if" bind="!isFormulaSettingSelected()">
                                        <button tabindex="2" class="btn-calc-set"
-                                          data-bind="click: openDialogC, enable: $parent.isUsed"></button>
+                                          data-bind="click: openDialogC, enable: $parent.usageAtr() === 1 &amp;&amp; $parent.selectedClac() === 1 &amp;&amp; $parent.isUsed"></button>
                                     </com:ko>
                                     <com:ko tag="if" bind="isFormulaSettingSelected()">
                                        <button tabindex="2" class="btn-calc-set"
-                                          data-bind="click: openDialogD, enable: $parent.isUsed"></button>
+                                          data-bind="click: openDialogD, enable: $parent.usageAtr() === 1 &amp;&amp; $parent.selectedClac() === 1 &amp;&amp; $parent.isUsed"></button>
                                     </com:ko>
                                  </td>
                                  <td>
@@ -444,7 +453,7 @@
                                           optionsValue: 'value',
                                           value: timeDailyUnit,
                                           optionsText: 'localizedName',
-                                          enable: $parent.isDailyRoundingEnabled(),
+                                          enable: $parent.usageAtr() === 1 &amp;&amp; $parent.selectedClac() === 1 &amp;&amp; $parent.isDailyRoundingEnabled(),
                                           columns: [
                                           { prop: 'localizedName', length: 5 },
                                           ]}">
@@ -457,7 +466,7 @@
                                           optionsValue: 'value',
                                           value: amountDailyUnit,
                                           optionsText: 'localizedName',
-                                          enable: $parent.isDailyRoundingEnabled(),
+                                          enable: $parent.usageAtr() === 1 &amp;&amp; $parent.selectedClac() === 1 &amp;&amp; $parent.isDailyRoundingEnabled(),
                                           columns: [
                                           { prop: 'localizedName', length: 5 },
                                           ]}">
@@ -470,7 +479,7 @@
                                           optionsValue: 'value',
                                           value: numberDailyUnit,
                                           optionsText: 'localizedName',
-                                          enable: $parent.isDailyRoundingEnabled(),
+                                          enable: $parent.usageAtr() === 1 &amp;&amp; $parent.selectedClac() === 1 &amp;&amp; $parent.isDailyRoundingEnabled(),
                                           columns: [
                                           { prop: 'localizedName', length: 5 },
                                           ]}">
@@ -485,7 +494,7 @@
                                           optionsValue: 'value',
                                           value: timeDailyRounding,
                                           optionsText: 'localizedName',
-                                          enable: $parent.isDailyRoundingEnabled(),
+                                          enable: $parent.usageAtr() === 1 &amp;&amp; $parent.selectedClac() === 1 &amp;&amp; $parent.isDailyRoundingEnabled(),
                                           columns: [
                                           { prop: 'localizedName', length: 8 },
                                           ]}">
@@ -498,7 +507,7 @@
                                           optionsValue: 'value',
                                           value: numberDailyRounding,
                                           optionsText: 'localizedName',
-                                          enable: $parent.isDailyRoundingEnabled(),
+                                          enable: $parent.usageAtr() === 1 &amp;&amp; $parent.selectedClac() === 1 &amp;&amp; $parent.isDailyRoundingEnabled(),
                                           columns: [
                                           { prop: 'localizedName', length: 8 },
                                           ]}">
@@ -511,7 +520,7 @@
                                           optionsValue: 'value',
                                           value: amountDailyRounding,
                                           optionsText: 'localizedName',
-                                          enable: $parent.isDailyRoundingEnabled(),
+                                          enable: $parent.usageAtr() === 1 &amp;&amp; $parent.selectedClac() === 1 &amp;&amp; $parent.isDailyRoundingEnabled(),
                                           columns: [
                                           { prop: 'localizedName', length: 8 },
                                           ]}">
@@ -526,7 +535,7 @@
                                           optionsValue: 'value',
                                           value: timeMonthlyUnit,
                                           optionsText: 'localizedName',
-                                          enable: $parent.isUsed,
+                                          enable: $parent.usageAtr() === 1 &amp;&amp; $parent.selectedClac() === 1 &amp;&amp; $parent.isUsed,
                                           columns: [
                                           { prop: 'localizedName', length: 5 },
                                           ]}">
@@ -539,7 +548,7 @@
                                           optionsValue: 'value',
                                           value: numberMonthlyUnit,
                                           optionsText: 'localizedName',
-                                          enable: $parent.isUsed,
+                                          enable: $parent.usageAtr() === 1 &amp;&amp; $parent.selectedClac() === 1 &amp;&amp; $parent.isUsed,
                                           columns: [
                                           { prop: 'localizedName', length: 5 },
                                           ]}">
@@ -552,7 +561,7 @@
                                           optionsValue: 'value',
                                           value: amountMonthlyUnit,
                                           optionsText: 'localizedName',
-                                          enable: $parent.isUsed,
+                                          enable: $parent.usageAtr() === 1 &amp;&amp; $parent.selectedClac() === 1 &amp;&amp; $parent.isUsed,
                                           columns: [
                                           { prop: 'localizedName', length: 5 },
                                           ]}">
@@ -567,7 +576,7 @@
                                           optionsValue: 'value',
                                           value: timeMonthlyRounding,
                                           optionsText: 'localizedName',
-                                          enable: $parent.isUsed,
+                                          enable: $parent.usageAtr() === 1 &amp;&amp; $parent.selectedClac() === 1 &amp;&amp; $parent.isUsed,
                                           columns: [
                                           { prop: 'localizedName', length: 8 },
                                           ]}">
@@ -580,7 +589,7 @@
                                           optionsValue: 'value',
                                           value: numberMonthlyRounding,
                                           optionsText: 'localizedName',
-                                          enable: $parent.isUsed,
+                                          enable: $parent.usageAtr() === 1 &amp;&amp; $parent.selectedClac() === 1 &amp;&amp; $parent.isUsed,
                                           columns: [
                                           { prop: 'localizedName', length: 8 },
                                           ]}">
@@ -593,7 +602,7 @@
                                           optionsValue: 'value',
                                           value: amountMonthlyRounding,
                                           optionsText: 'localizedName',
-                                          enable: $parent.isUsed,
+                                          enable: $parent.usageAtr() === 1 &amp;&amp; $parent.selectedClac() === 1 &amp;&amp; $parent.isUsed,
                                           columns: [
                                           { prop: 'localizedName', length: 8 },
                                           ]}">
