@@ -421,9 +421,9 @@ public class CollectAchievementImpl implements CollectAchievement {
 		// INPUT．申請対象日リストを先頭から最後へループする
 		for(GeneralDate loopDate : dateLst) {
 			// INPUT．申請種類をチェックする
-			if(appType==ApplicationType.OVER_TIME_APPLICATION || appType==ApplicationType.HOLIDAY_WORK_APPLICATION) {
-				continue;
-			}
+//			if(appType==ApplicationType.OVER_TIME_APPLICATION || appType==ApplicationType.HOLIDAY_WORK_APPLICATION) {
+//				continue;
+//			}
 			// 実績の取得
 			ActualContentDisplay actualContentDisplay = this.getAchievement(companyID, employeeID, loopDate);
 			// 取得した実績をOutput「表示する実績内容」に追加する
