@@ -601,7 +601,7 @@ module nts.uk.at.view.kwr006.a {
                 self.totalOutputSetting = new WorkScheduleSettingTotalOutputModel();
                 self.totalOutputSetting.isIndividualTypeSelected = self.isIndividualTypeSelected;
                 self.itemSettingType = ko.observable(ItemSelectionEnum.STANDARD_SELECTION);
-                self.displayType = ko.observable(0);
+                self.displayType = ko.observable(1);
                 self.itemDisplaySwitch = ko.observable(0);
             }
             public updateData(data: MonthlyWorkScheduleConditionDto): void {
