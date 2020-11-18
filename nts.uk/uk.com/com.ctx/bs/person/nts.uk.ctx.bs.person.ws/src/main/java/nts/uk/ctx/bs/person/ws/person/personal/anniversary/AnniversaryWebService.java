@@ -17,7 +17,7 @@ public class AnniversaryWebService extends WebService{
 	private BrowsePersonalAnniversarieCommandHandler commandHandler;
 	
 	@POST
-	@Path("/updateAnnivesartNotice")
+	@Path("/updateAnnivesaryNotice")
 	public void updateAnnivesartNotice(BrowsePersonalAnniversarieCommand command) {
 		this.commandHandler.handle(command);
 	}

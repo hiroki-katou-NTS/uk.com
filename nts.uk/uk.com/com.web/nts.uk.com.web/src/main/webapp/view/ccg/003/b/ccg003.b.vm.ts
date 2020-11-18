@@ -4,7 +4,7 @@ module nts.uk.com.view.ccg003.b {
   const API = {
     // <<ScreenQuery>> 社員が作成したお知らせの内容を取得する
     getContentOfNotification: 'sys/portal/notice/getContentOfNotification'
-  }
+  };
 
   @bean()
   export class ViewModel extends ko.ViewModel {
@@ -36,11 +36,11 @@ module nts.uk.com.view.ccg003.b {
           const itemList = _.map(response, msg => new ItemModel({
             creatorID: msg.creatorID,
             inputDate: msg.inputDate,
-            ymDisplay: moment.utc(msg.startDate, 'YYYYMMDD').format('M-D')
-              + ' ' + vm.$i18n('CCG003_15') + ' '
-              + moment.utc(msg.endDate, 'YYYYMMDD').format('M-D'),
+            ymDisplay: moment.utc(msg.startDate, 'YYYYMMDD').format('M-D').toString()
+              + ' ' + vm.$i18n('CCG003_15').toString() + ' '
+              + moment.utc(msg.endDate, 'YYYYMMDD').format('M-D').toString(),
             content: msg.notificationMessage
-          }))
+          }));
           vm.itemList(itemList);
         }
       })

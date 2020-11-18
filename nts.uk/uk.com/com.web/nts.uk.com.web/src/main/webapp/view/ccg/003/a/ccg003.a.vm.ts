@@ -9,17 +9,22 @@ module nts.uk.com.view.ccg003.a {
     // <<Command>> お知らせを閲覧する
     viewMessageNotice: 'sys/portal/notice/viewMessageNotice',
     // <<Command>> 個人の記念日を閲覧する
-    updateAnnivesartNotice: 'ctx/bs/person/personal/anniversary/updateAnnivesartNotice'
-  }
+    updateAnnivesaryNotice: 'ctx/bs/person/personal/anniversary/updateAnnivesaryNotice'
+  };
 
   const urlRegex = /(((https?:\/\/)|(www\.))[^\s]+)/g;
 
+  @component({
+    name: 'ccg003-component',
+    template: '/nts.uk.com.web/view/ccg/003/a/index.html'
+  })
   @bean()
   export class ViewModel extends ko.ViewModel {
-    isStartScreen: boolean = true;
+    isStartScreen = true;
+    formatType = 'YYYY/MM/DD';
     dateValue: KnockoutObservable<DatePeriod> = ko.observable(new DatePeriod({
-      startDate: moment.utc().format('YYYY/MM/DD'),
-      endDate: moment.utc().format('YYYY/MM/DD')
+      startDate: moment.utc().format(this.formatType),
+      endDate: moment.utc().format(this.formatType)
     }));
     systemDate: KnockoutObservable<string> = ko.observable('');
 
@@ -33,43 +38,39 @@ module nts.uk.com.view.ccg003.a {
 
     created() {
       const vm = this;
-      vm.$blockui('grayout');
-      vm.initPopup();
-      vm.$ajax('com', API.getEmployeeNotification).then((response: EmployeeNotification) => {
-        if (response) {
-          vm.anniversaries(response.anniversaryNotices);
-          const msgNotices = _.map(response.msgNotices, x => {
-            let msg = new MsgNotices();
-            msg.creator = x.creator;
-            msg.flag = x.flag;
-            msg.message = x.message;
-            msg.dateDisplay = x.message ? x.message.startDate + ' ' + vm.$i18n('CCG003_15') + ' ' + x.message.endDate : '';
-            msg.messageDisplay = vm.replaceUrl(x.message.notificationMessage);
-            return msg;
-          });
-          vm.msgNotices(msgNotices);
-          vm.role(response.role);
-          vm.roleFlag(response.role.employeeReferenceRange !== 3);
-          vm.systemDate(moment.utc(response.systemDate).locale('ja').format('YYYY/M/D(dddd)'));
-        }
-      })
+      vm.$blockui('show');
+      vm.$ajax('com', API.getEmployeeNotification)
+        .then((response: EmployeeNotification) => {
+          if (response) {
+            vm.anniversaries(response.anniversaryNotices);
+            const msgNotices = vm.listMsgNotice(response.msgNotices);
+            vm.msgNotices(msgNotices);
+            vm.role(response.role);
+            vm.roleFlag(response.role.employeeReferenceRange !== 3);
+            vm.systemDate(moment.utc(response.systemDate).locale('ja').format('YYYY/M/D(dddd)'));
+          }
+        })
         .fail(error => vm.$dialog.error(error))
         .always(() => vm.$blockui('hide'));
     }
 
-    initPopup(): void {
+    mounted() {
+      const elementId ='#notice-msg';
+      const elementPosition = $(elementId).position();
+      const elementWidth = $(elementId).outerWidth();
+      const marginRight = elementPosition.left + elementWidth;
       $('#A0').ntsPopup({
-        trigger: '#show-ccg003',
+        trigger: elementId,
         position: {
-          my: 'left top',
-          at: 'left bottom',
-          of: '#show-ccg003'
+          my: `right top`,
+          at: 'right bottom',
+          of: $('#user')
         },
         showOnStart: false,
         dismissible: true
       });
 
-      $('#show-ccg003').click(() => {
+      $(elementId).click(() => {
         $('#A0').ntsPopup('show');
       });
     }
@@ -79,10 +80,10 @@ module nts.uk.com.view.ccg003.a {
      */
     onClickFilter(): void {
       const vm = this;
-      vm.$blockui('grayout');
-      const startDate = moment.utc(vm.dateValue().startDate, 'YYYY/MM/DD');
-      const endDate = moment.utc(vm.dateValue().endDate, 'YYYY/MM/DD');
-      const baseDate = moment.utc(new Date(), 'YYYY/MM/DD');
+      vm.$blockui('show');
+      const startDate = moment.utc(vm.dateValue().startDate, vm.formatType);
+      const endDate = moment.utc(vm.dateValue().endDate, vm.formatType);
+      const baseDate = moment.utc(new Date(), vm.formatType);
       if (startDate.isAfter(baseDate) || endDate.isAfter(baseDate)) {
         vm.$dialog.error({ messageId: 'Msg_1833' });
         vm.$blockui('hide');
@@ -99,20 +100,28 @@ module nts.uk.com.view.ccg003.a {
         .then((response: DestinationNotification) => {
           if (response) {
             vm.anniversaries(response.anniversaryNotices);
-            const msgNotices = _.map(response.msgNotices, x => {
-              let msg = new MsgNotices();
-              msg.creator = x.creator;
-              msg.flag = x.flag;
-              msg.message = x.message;
-              msg.dateDisplay = x.message ? x.message.startDate + ' ' + vm.$i18n('CCG003_15') + ' ' + x.message.endDate : '';
-              msg.messageDisplay = vm.replaceUrl(x.message.notificationMessage);
-              return msg;
-            });
+            const msgNotices = vm.listMsgNotice(response.msgNotices);
             vm.msgNotices(msgNotices);
           }
         })
         .fail(error => vm.$dialog.error(error))
         .always(() => vm.$blockui('hide'));
+    }
+
+    listMsgNotice(messages: any[]): MsgNotices[] {
+      const vm = this;
+      if (_.isEmpty(messages)) {
+        return [];
+      }
+      return _.map(messages, (item: any) => {
+        const msg = new MsgNotices();
+        msg.creator = item.creator;
+        msg.flag = item.flag;
+        msg.message = item.message;
+        msg.dateDisplay = item.message ? `${item.message.startDate} ${vm.$i18n('CCG003_15')} ${item.message.endDate}` : '';
+        msg.messageDisplay = vm.replaceUrl(item.message.notificationMessage);
+        return msg;
+      });
     }
 
     replaceUrl(text: string): string {
@@ -139,7 +148,7 @@ module nts.uk.com.view.ccg003.a {
         referDate: moment.utc(vm.dateValue().endDate).toISOString(),
       }
       vm.$blockui('show');
-      vm.$ajax('com', API.updateAnnivesartNotice, command)
+      vm.$ajax('com', API.updateAnnivesaryNotice, command)
         .then(() => {
           const anniversaries = vm.anniversaries();
           anniversaries[index()].flag = false;
@@ -230,6 +239,7 @@ module nts.uk.com.view.ccg003.a {
     anniversary: string;
     anniversaryTitle: string;
     notificationMessage: string;
+    displayDate: string;
   }
 
   class Role {
