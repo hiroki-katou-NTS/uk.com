@@ -262,6 +262,7 @@ module nts.uk.at.view.kwr003.a {
         vm.$window.modal('/view/kwr/003/b/index.xhtml').then(() => {
           vm.$window.storage(KWR003_B_OUTPUT).then((data: any) => {
             if (data) {
+              nts.uk.ui.errors.clearAll();
               vm.getSettingListWorkStatus(vm.rdgSelectedId(), data);
             }
             //settingListItems
