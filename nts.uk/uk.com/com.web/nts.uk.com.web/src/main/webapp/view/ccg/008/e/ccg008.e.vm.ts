@@ -33,7 +33,7 @@ module nts.uk.at.view.ccg008.e.screenModel {
       vm.$ajax('com','screen/com/ccg008/save',command).then(()=> {
         nts.uk.ui.windows.setShared('DataFromScreenE',parseInt(vm.selectedCode()));
         this.$window.close();
-      })
+      });
     }
     onClickCancel(){
       const vm = this;

@@ -78,7 +78,7 @@
 }
 .scroll {
   overflow-y: auto;
-  max-height: 270px;
+  height: 270px;
   margin-bottom: 20px;
 }
 .scroll thead th {

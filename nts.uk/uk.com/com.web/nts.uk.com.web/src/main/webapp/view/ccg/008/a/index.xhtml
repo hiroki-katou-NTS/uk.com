@@ -84,10 +84,17 @@
                   </div>
                 </div>
               </div>
+              <com:ko-if bind="isVisiableContentF4()">
+                <div class="contents_2" id="F4">
+                  <div class="panel panel-frame widget_contents" data-bind="foreach: lstWidgetLayout2">
+                    <div class="panel-content placeholder" data-bind="html: html"></div>
+                  </div>
+                </div>
+              </com:ko-if>
               <com:ko-if bind="isVisiableContentF3()">
                 <div class="contents_3" id="F3">
                   <div class="widget_contents panel panel-frame">
-                    <div class="panel panel-frame widget_contents" data-bind="foreach: lstWidgetLayout2">
+                    <div class="panel panel-frame widget_contents" data-bind="foreach: lstWidgetLayout3">
                       <div class="panel-content placeholder" data-bind="html: html"></div>
                     </div>
                   </div>
