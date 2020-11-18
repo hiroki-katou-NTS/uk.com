@@ -8,6 +8,4 @@ public interface DivergenceTimeAdapter {
 	
 	List<DivergenceTimeAdapterDto> findByCompanyAndUseDistination(String companyId, int useDistination);
 
-	List<DivergenceTimeAdapterDto> findByCompanyAndUseDistination(String companyId, int useDistination);
-
 }

@@ -37,9 +37,6 @@ public class EmployeeReportData {
 	
 	/** The job title code. */
 	public String jobTitleCode;
-
-	/** The job title code. */
-	public String jobTitleCode;
 	
 	/** The lst detailed performance. */
 	public List<DetailedDailyPerformanceReportData> lstDetailedPerformance;
