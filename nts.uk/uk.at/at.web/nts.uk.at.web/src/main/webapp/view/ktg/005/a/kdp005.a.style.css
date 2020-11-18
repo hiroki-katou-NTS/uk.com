@@ -52,3 +52,8 @@
 .border {
 	border-bottom: solid thin #B1B1B1;
 }
+
+#contents-area {
+	width: 314px;
+	height: 314px;
+}
