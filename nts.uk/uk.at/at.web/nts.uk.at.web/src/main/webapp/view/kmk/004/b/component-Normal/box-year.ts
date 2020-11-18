@@ -1,9 +1,9 @@
 /// <reference path="../../../../../lib/nittsu/viewcontext.d.ts" />
 
-module nts.uk.at.view.kmk004.b{
-    
+module nts.uk.at.view.kmk004.b {
+
     interface Params {
-        selectedYear: KnockoutObservable<number| null>;
+        selectedYear: KnockoutObservable<number | null>;
         change: KnockoutObservable<boolean>;
     }
 
@@ -32,31 +32,36 @@ module nts.uk.at.view.kmk004.b{
     class BoxYear extends ko.ViewModel {
 
         public itemList: KnockoutObservableArray<IYear> = ko.observableArray([]);
-        public selectedYear: KnockoutObservable<number| null> = ko.observable(null);
+        public selectedYear: KnockoutObservable<number | null> = ko.observable(null);
         public change: KnockoutObservable<boolean> = ko.observable(true);
 
         created(params: Params) {
             const vm = this;
-            
+
             vm.selectedYear = params.selectedYear;
             vm.change = params.change;
 
             vm.reloadData(0);
+
+            vm.change
+                .subscribe(() => {
+                    ko.unwrap(vm.itemList)[0].statusValue = '*';
+                });
         }
 
         reloadData(selectedIndex: number = 0) {
             const vm = this;
-
             const faceData: IYear[] = [{status: true, statusValue : '*', value: 2017},
             {status: false, statusValue : '', value: 2016}
-            ,{status: true, statusValue : '*', value: 2018}
-            ,{status: true, statusValue : '*', value: 2020}];
+            ,{status: true, statusValue : '', value: 2018}
+            ,{status: true, statusValue : '', value: 2020}];
+            // const faceData: IYear[] = [];
 
-            vm.itemList(_.orderBy(faceData, ['value'],['desc']));
-
-            vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].value);
+            if (faceData.length > 0) {
+                vm.itemList(_.orderBy(faceData, ['value'], ['desc']));
+                vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].value);
+            }
         }
-
     }
 
     export interface IYear {

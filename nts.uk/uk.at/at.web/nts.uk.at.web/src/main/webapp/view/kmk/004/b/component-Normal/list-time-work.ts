@@ -29,7 +29,7 @@ module nts.uk.at.view.kmk004.b {
                     <tr>
                         <td class="label-column1" data-bind="text: $data.month"></td>
                         <td class="label-column2">
-                            <input type="number" maxlength="6" class="lable-input" data-bind="ntsTextEditor: {value: $data.legalLaborTime}" />
+                            <input type="number" maxlength="6" class="lable-input" data-bind="ntsTextEditor: {value: $data.legalLaborTime, enable: $parent.ckeckNullYear}" />
                         </td>
                     </tr>
                     <!-- /ko -->
@@ -57,7 +57,7 @@ module nts.uk.at.view.kmk004.b {
         public total: KnockoutObservable<number | null> = ko.observable(null);
         public selectedYear: KnockoutObservable<number | null> = ko.observable(null);
         public change: KnockoutObservable<boolean> = ko.observable(true);
-
+        public ckeckNullYear: KnockoutObservable<boolean> = ko.observable(false);
 
         created(params: Params) {
             const vm = this;
@@ -78,11 +78,20 @@ module nts.uk.at.view.kmk004.b {
                 .subscribe(() => {
                     vm.reloadData();
                 });
+            
+            vm.total
+                .subscribe(() => {
+                    vm.change.valueHasMutated();
+                });
         }
 
         reloadData() {
             const vm = this;
             const input = { workType: TYPE, year: ko.unwrap(vm.selectedYear) };
+
+            if (ko.unwrap(vm.selectedYear) != null){
+                vm.ckeckNullYear(true);
+            }
 
             vm.$ajax(API.GET_WORK_TIME, input)
                 .then((data: IWorkTime[]) => {
