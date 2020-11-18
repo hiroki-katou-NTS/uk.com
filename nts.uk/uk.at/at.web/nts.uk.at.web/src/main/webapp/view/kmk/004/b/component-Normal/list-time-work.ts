@@ -3,6 +3,8 @@
 module nts.uk.at.view.kmk004.b {
 
     interface Params {
+        selectedYear: KnockoutObservable<number| null>;
+        change: KnockoutObservable<boolean>;
     }
 
     const API = {
@@ -25,11 +27,6 @@ module nts.uk.at.view.kmk004.b {
                     </tr>
                     <!-- ko foreach: workTimes -->
                     <tr>
-                        <!-- ko if: check -->
-                            <td>
-                                Chung dep trai
-                            </td>
-                        <!-- /ko -->
                         <td class="label-column1" data-bind="text: $data.month"></td>
                         <td class="label-column2">
                             <input type="number" maxlength="6" class="lable-input" data-bind="ntsTextEditor: {value: $data.legalLaborTime}" />
@@ -56,18 +53,36 @@ module nts.uk.at.view.kmk004.b {
 
     class ListTimeWork extends ko.ViewModel {
 
-        public check: KnockoutObservable<boolean> = ko.observable(true);
-        public check1: KnockoutObservable<boolean> = ko.observable(true);
         public workTimes: KnockoutObservableArray<WorkTime> = ko.observableArray([]);
-        public total: KnockoutObservable<number| null> = ko.observable(null);
+        public total: KnockoutObservable<number | null> = ko.observable(null);
+        public selectedYear: KnockoutObservable<number | null> = ko.observable(null);
+        public change: KnockoutObservable<boolean> = ko.observable(true);
 
 
-        created() {
+        created(params: Params) {
             const vm = this;
-            const input = { workType: TYPE, year: 2020 };
-            var s = 0;
+            vm.selectedYear = params.selectedYear;
+            vm.change = params.change;
 
             vm.init();
+            vm.reloadData();
+
+            vm.workTimes.subscribe((wts) => {
+                const total: number = wts.reduce((p, c) => p += Number(c.legalLaborTime()), 0);
+                if (total > 0) {
+                    vm.total(total)
+                }
+            });
+
+            vm.selectedYear
+                .subscribe(() => {
+                    vm.reloadData();
+                });
+        }
+
+        reloadData() {
+            const vm = this;
+            const input = { workType: TYPE, year: ko.unwrap(vm.selectedYear) };
 
             vm.$ajax(API.GET_WORK_TIME, input)
                 .then((data: IWorkTime[]) => {
@@ -75,19 +90,11 @@ module nts.uk.at.view.kmk004.b {
                         vm.workTimes(data.map(m => new WorkTime({ ...m, parrent: vm.workTimes })));
                     }
                 });
-
-            vm.workTimes.subscribe((wts) => {
-                
-                const total:number = wts.reduce((p, c) => p += Number(c.legalLaborTime()), 0);
-                if (total > 0) {
-                    vm.total(total)
-                }
-            });
         }
 
         init() {
             const vm = this;
-            const IWorkTime1:IWorkTime[] = [{ check: true, month: "1月度", legalLaborTime: null, withinLaborTime: null, weekAvgTime: null },
+            const IWorkTime1: IWorkTime[] = [{ check: true, month: "1月度", legalLaborTime: null, withinLaborTime: null, weekAvgTime: null },
             { check: true, month: "2月度", legalLaborTime: null, withinLaborTime: null, weekAvgTime: null },
             { check: true, month: "3月度", legalLaborTime: null, withinLaborTime: null, weekAvgTime: null },
             { check: true, month: "4月度", legalLaborTime: null, withinLaborTime: null, weekAvgTime: null },

@@ -208,3 +208,65 @@
 	text-align: center;
 	height: 13px;
 }
+
+/* View B */
+
+.view-b {
+	padding: 10px;
+}
+
+.view-b .header-b {
+	width: 435px;
+}
+
+.view-b .header-b ~ div {
+	font-size: 20px;
+}
+
+.view-b .header-b hr {
+	margin-top: 4px;
+}
+
+.view-b .header-b .header_title {
+	margin-top: 15px;
+}
+
+.view-b .header-b .header_content {
+	margin-top: 15px;
+	margin-bottom: 15px;
+}
+
+.view-b .content {
+	text-align: left;
+	margin-top: 15px;
+}
+
+.view-b .content ~ div {
+	margin-top: 15px;
+	float: left;
+}
+
+.view-b .content .data {
+	margin-top: 20px;
+	float: left;
+	display: flex;
+}
+
+.view-b .content .data .box-year {
+	display: inline-block;
+}
+
+.view-b .content .data .time-work {
+	display: inline-block;
+	margin-left: 100px;
+}
+
+/*Box Year*/
+
+.listbox {
+	max-width: 150px;
+}
+
+.node {
+	color: #4472C4;
+}
