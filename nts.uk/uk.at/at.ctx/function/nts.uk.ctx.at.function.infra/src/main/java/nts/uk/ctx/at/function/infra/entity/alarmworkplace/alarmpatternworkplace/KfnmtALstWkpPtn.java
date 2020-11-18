@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
  * entity : アラームリストパターン設定(職場別)
  */
 @AllArgsConstructor
+@Entity
 @Table(name = "KFNMT_ALSTWKP_PTN")
 public class KfnmtALstWkpPtn extends UkJpaEntity implements Serializable {
 
