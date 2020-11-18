@@ -4,12 +4,15 @@ import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.Arrays;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -18,58 +21,41 @@ public class WorkStatusOutputSettingTest {
 
     @Injectable
     WorkStatusOutputSettings.Require require;
-    private final OutputItemSettingCode code = new OutputItemSettingCode("ABC");
-    private final OutputItemSettingName name = new OutputItemSettingName("CBA");
-
-    private final String cid = "companyId";
-
-    private final String settingId = "settingId";
+    private final OutputItemSettingCode code = new OutputItemSettingCode("12");
+    private final OutputItemSettingName name = new OutputItemSettingName("全角");
     private final String eplId = "employeeId";
-
-    private final String yearHolidayCode = "yearHolidayCode";
-
-    private final String iD = "id";
+    private final String opCode = "code";
+    private final SettingClassificationCommon settingCommon = SettingClassificationCommon.FREE_SETTING;
     @Test
-    public void test_01(){
-       val outputSettings = new WorkStatusOutputSettings();
+    public void test_01() {
         new Expectations() {
             {
-                require.checkTheStandard(yearHolidayCode, cid);
+                require.checkTheStandard(opCode);
                 result = true;
             }
         };
-        val actual = outputSettings.checkDuplicateStandardSelections(require,yearHolidayCode,cid);
+        val actual = WorkStatusOutputSettings.checkDuplicateStandardSelections(require, opCode);
         assertThat(actual).isEqualTo(true);
     }
+
     @Test
-    public void test_02(){
-        val outputSettings = new WorkStatusOutputSettings(
-                settingId,
-                code,
-                name,
-                eplId,
-                SettingClassificationCommon.FREE_SETTING,
-                null
-        );
+    public void test_02() {
         new Expectations() {
             {
-                require.checkFreedom(yearHolidayCode, cid,eplId);
+                require.checkFreedom(opCode, eplId);
                 result = true;
             }
         };
-        val actual = outputSettings.checkDuplicateFreeSettings(require,yearHolidayCode,cid,eplId);
+        val actual = WorkStatusOutputSettings.checkDuplicateFreeSettings(require, opCode, eplId);
         assertThat(actual).isEqualTo(true);
     }
+
     @Test
-    public void test_03(){
-        val outputSettings = new WorkStatusOutputSettings(
-                settingId,
-                code,
-                name,
-                eplId,
-                SettingClassificationCommon.FREE_SETTING,
-                null
-        );
+    public void test_03() {
+        String settingId = "settingId";
+        val outputSettings = CreateDomain.dumData(code,name,eplId, settingId,settingCommon);
         NtsAssert.invokeGetters(outputSettings);
     }
+
+
 }

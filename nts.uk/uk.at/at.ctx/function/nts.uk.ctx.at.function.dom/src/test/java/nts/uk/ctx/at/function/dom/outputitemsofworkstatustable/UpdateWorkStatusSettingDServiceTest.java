@@ -5,16 +5,14 @@ import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.*;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
 import nts.uk.shr.com.context.AppContexts;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.Arrays;
 import java.util.List;
 
 @RunWith(JMockit.class)
@@ -30,74 +28,8 @@ public class UpdateWorkStatusSettingDServiceTest {
 
     private final String settingId = "settingId";
 
-    private final String iD = "id";
+    private final List<OutputItem> outputItems = CreateDomain.outputItems;
 
-    private final List<OutputItem> outputItems = Arrays.asList(
-            new OutputItem(
-                    1,
-                    new FormOutputItemName("itemName01"),
-                    true,
-                    EnumAdaptor.valueOf(1, IndependentCalcClassic.class),
-                    EnumAdaptor.valueOf(1, DailyMonthlyClassification.class),
-                    EnumAdaptor.valueOf(3, CommonAttributesOfForms.class),
-                    Arrays.asList(
-                            new OutputItemDetailAttItem(EnumAdaptor.valueOf(1, OperatorsCommonToForms.class), 1),
-                            new OutputItemDetailAttItem(EnumAdaptor.valueOf(1, OperatorsCommonToForms.class), 1)
-                    )
-            ),
-            new OutputItem(
-                    2,
-                    new FormOutputItemName("itemName02"),
-                    true,
-                    EnumAdaptor.valueOf(2, IndependentCalcClassic.class),
-                    EnumAdaptor.valueOf(2, DailyMonthlyClassification.class),
-                    EnumAdaptor.valueOf(5, CommonAttributesOfForms.class),
-                    Arrays.asList(
-                            new OutputItemDetailAttItem(
-                                    EnumAdaptor.valueOf(2, OperatorsCommonToForms.class),
-                                    2),
-                            new OutputItemDetailAttItem(
-                                    EnumAdaptor.valueOf(1, OperatorsCommonToForms.class),
-                                    2)
-                    )
-            ));
-    private final WorkStatusOutputSettings outputSettings = new WorkStatusOutputSettings(
-            "settingId",
-            new OutputItemSettingCode("outPutSettingCode"),
-            new OutputItemSettingName("oputSettingName"),
-            "employeeId",
-            EnumAdaptor.valueOf(1, SettingClassificationCommon.class),
-            Arrays.asList(
-                    new OutputItem(
-                            1,
-                            new FormOutputItemName("itemName01"),
-                            true,
-                            EnumAdaptor.valueOf(1, IndependentCalcClassic.class),
-                            EnumAdaptor.valueOf(1, DailyMonthlyClassification.class),
-                            EnumAdaptor.valueOf(1, CommonAttributesOfForms.class),
-                            Arrays.asList(
-                                    new OutputItemDetailAttItem(EnumAdaptor.valueOf(1, OperatorsCommonToForms.class), 1),
-                                    new OutputItemDetailAttItem(EnumAdaptor.valueOf(2, OperatorsCommonToForms.class), 1)
-                            )
-                    ),
-                    new OutputItem(
-                            2,
-                            new FormOutputItemName("itemName02"),
-                            true,
-                            EnumAdaptor.valueOf(2, IndependentCalcClassic.class),
-                            EnumAdaptor.valueOf(2, DailyMonthlyClassification.class),
-                            EnumAdaptor.valueOf(2, CommonAttributesOfForms.class),
-                            Arrays.asList(
-                                    new OutputItemDetailAttItem(
-                                            EnumAdaptor.valueOf(2, OperatorsCommonToForms.class),
-                                            2),
-                                    new OutputItemDetailAttItem(
-                                            EnumAdaptor.valueOf(1, OperatorsCommonToForms.class),
-                                            2)
-                            )
-                    ))
-
-    );
     @Test
     public void test_01() {
         val settingCategory = SettingClassificationCommon.STANDARD_SELECTION;
@@ -110,7 +42,7 @@ public class UpdateWorkStatusSettingDServiceTest {
         };
         new Expectations() {
             {
-                require.getWorkStatusOutputSettings(cid, settingId);
+                require.getWorkStatusOutputSettings(settingId);
                 result = null;
             }
         };
@@ -133,8 +65,8 @@ public class UpdateWorkStatusSettingDServiceTest {
         };
         new Expectations() {
             {
-                require.getWorkStatusOutputSettings(cid, settingId);
-                result = outputSettings;
+                require.getWorkStatusOutputSettings(settingId);
+                result = outputItems;
             }
         };
 
@@ -142,8 +74,9 @@ public class UpdateWorkStatusSettingDServiceTest {
                         UpdateWorkStatusSettingDomainService.updateSetting(require, settingId, code, name, settingCategory,
                                 outputItems),
 
-                any -> require.update(any.get(), any.get(), any.get(), any.get(), any.get()));
+                any -> require.update(any.get()));
     }
+
     @Test
     public void test_03() {
         val settingCategory = SettingClassificationCommon.STANDARD_SELECTION;
@@ -157,8 +90,8 @@ public class UpdateWorkStatusSettingDServiceTest {
         };
         new Expectations() {
             {
-                require.getWorkStatusOutputSettings(cid, settingId);
-                result = outputSettings;
+                require.getWorkStatusOutputSettings(settingId);
+                result = outputItems;
             }
         };
 
@@ -166,6 +99,6 @@ public class UpdateWorkStatusSettingDServiceTest {
                         UpdateWorkStatusSettingDomainService.updateSetting(require, settingId, code, name, settingCategory,
                                 outputItems),
 
-                any -> require.update(any.get(), any.get(), any.get(), any.get(), any.get()));
+                any -> require.update(any.get()));
     }
 }
