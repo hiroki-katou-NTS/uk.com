@@ -45,10 +45,8 @@ public class CreateConfigdetailCommandHandler extends CommandHandler<CreateConfi
         private WorkStatusOutputSettingsRepository workStatusOutputSettingsRepository;
 
         @Override
-        public void createNewFixedPhrase(WorkStatusOutputSettings outputSettings,
-                                         List<OutputItem> outputItemList,
-                                         List<OutputItemDetailAttItem> attendanceItemList) {
-            workStatusOutputSettingsRepository.createNew(AppContexts.user().companyId(), outputSettings, outputItemList, attendanceItemList);
+        public void createNewFixedPhrase(WorkStatusOutputSettings outputSettings ) {
+            workStatusOutputSettingsRepository.createNew(AppContexts.user().companyId(), outputSettings);
         }
 
         @Override

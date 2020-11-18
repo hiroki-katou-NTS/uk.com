@@ -41,12 +41,12 @@ public class WorkStatusOutputSettings extends AggregateRoot {
     //  [C-0] 勤怠状況の出力設定を作成する
 
     // 	[1]　定型選択の重複をチェックする
-    public  boolean  checkDuplicateStandardSelections(Require require,String outputItemSettingCode){
+    public static boolean  checkDuplicateStandardSelections(Require require,String outputItemSettingCode){
         return require.checkTheStandard(outputItemSettingCode);
     }
 
     // [2]　自由設定の重複をチェックする
-    public  boolean checkDuplicateFreeSettings(Require require,String outputItemSettingCode,String employeeId){
+    public static boolean checkDuplicateFreeSettings(Require require,String outputItemSettingCode,String employeeId){
         return require.checkFreedom(outputItemSettingCode,employeeId);
     }
 

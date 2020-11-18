@@ -51,11 +51,9 @@ public class UpdateSettingDetailCommandHandler extends CommandHandler<UpdateSett
         }
 
         @Override
-        public void update(String settingId, WorkStatusOutputSettings outputSettings,
-                           List<OutputItem> outputItemList,
-                           List<OutputItemDetailAttItem> attendanceItemList) {
+        public void update( WorkStatusOutputSettings outputSettings) {
             this.workStatusOutputSettingsRepository
-                    .update(AppContexts.user().companyId(),settingId,outputSettings,outputItemList,attendanceItemList);
+                    .update(AppContexts.user().companyId(),outputSettings);
         }
         @Override
         public boolean checkTheStandard(String code) {

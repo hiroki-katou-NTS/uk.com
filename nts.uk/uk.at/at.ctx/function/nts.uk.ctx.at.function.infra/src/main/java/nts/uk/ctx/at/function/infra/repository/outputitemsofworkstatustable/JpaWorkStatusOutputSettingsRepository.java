@@ -58,7 +58,7 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
         builderString.append("SELECT a ");
         builderString.append("FROM KfnmtRptWkRecSetting a ");
         builderString.append("WHERE a.companyId  =:cid ");
-        builderString.append(" AND  a.pk.iD  =:settingId ");
+        builderString.append(" AND  a.iD  =:settingId ");
         builderString.append(" ORDER BY  a.displayCode ");
         FIND_WORK_STATUS_SETTING = builderString.toString();
 
@@ -152,29 +152,30 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
     }
 
     @Override
-    public void createNew(String cid, WorkStatusOutputSettings outputSettings, List<OutputItem> outputItemList, List<OutputItemDetailAttItem> attendanceItemList) {
+    public void createNew(String cid, WorkStatusOutputSettings outputSettings) {
         val entitySetting = KfnmtRptWkRecSetting.fromDomain(outputSettings, cid);
         this.commandProxy().insert(entitySetting);
 
-        val listEntityItems = KfnmtRptWkRecItem.fromDomain(cid, outputSettings, outputItemList);
+        val listEntityItems = KfnmtRptWkRecItem.fromDomain(cid, outputSettings);
         if (!listEntityItems.isEmpty()) {
             this.commandProxy().insertAll(listEntityItems);
         }
-        val listEntityConst = KfnmtRptWkRecDispCont.fromDomain(cid, outputSettings, outputItemList, attendanceItemList);
+        val listEntityConst = KfnmtRptWkRecDispCont.fromDomain(cid, outputSettings);
         if (!listEntityConst.isEmpty()) {
             this.commandProxy().insertAll(listEntityConst);
         }
     }
 
     @Override
-    public void update(String cid, String settingId, WorkStatusOutputSettings outputSettings, List<OutputItem> outputItemList, List<OutputItemDetailAttItem> attendanceItemList) {
+    public void update(String cid, WorkStatusOutputSettings outputSettings) {
+        val settingId = outputSettings.getSettingId();
         this.commandProxy().update(KfnmtRptWkRecSetting.fromDomain(outputSettings, cid));
-        this.commandProxy().updateAll(KfnmtRptWkRecItem.fromDomain(cid, outputSettings, outputItemList));
+        this.commandProxy().updateAll(KfnmtRptWkRecItem.fromDomain(cid, outputSettings));
         this.queryProxy().query(DELETE_WORK_STATUS_CONST_CID, KfnmtRptWkRecDispCont.class)
                 .setParameter("cid", cid)
                 .setParameter("settingId", settingId);
         this.getEntityManager().flush();
-        this.commandProxy().insertAll(KfnmtRptWkRecDispCont.fromDomain(cid, outputSettings, outputItemList, attendanceItemList));
+        this.commandProxy().insertAll(KfnmtRptWkRecDispCont.fromDomain(cid, outputSettings));
 
     }
 

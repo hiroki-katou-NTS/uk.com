@@ -31,10 +31,10 @@ public class DuplicateWorkStatusSettingDomainService {
         Boolean isCheck;
         if(settingCategory == SettingClassificationCommon.STANDARD_SELECTION){
             // 3.1定型選択の重複をチェックする(出力項目設定コード, 会社ID)
-            isCheck = require.checkTheStandard(settingCode.v());
+            isCheck = WorkStatusOutputSettings.checkDuplicateStandardSelections(require,settingCode.v());
         } else{
             // 3.2自由設定の重複をチェックする(出力項目設定コード, 会社ID, 社員ID)
-            isCheck = require.checkFreedom(settingCode.v(), employeeId);
+            isCheck = WorkStatusOutputSettings.checkDuplicateFreeSettings(require,settingCode.v(), employeeId);
         }
         // 4. [1] true
         if (isCheck ) {

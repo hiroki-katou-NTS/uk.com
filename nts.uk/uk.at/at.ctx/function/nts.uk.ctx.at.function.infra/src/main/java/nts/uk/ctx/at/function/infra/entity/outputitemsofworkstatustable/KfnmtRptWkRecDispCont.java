@@ -44,11 +44,9 @@ public class KfnmtRptWkRecDispCont extends UkJpaEntity implements Serializable {
         return pk;
     }
 
-    public static List<KfnmtRptWkRecDispCont>fromDomain(String cid, WorkStatusOutputSettings outputSettings,
-                                                        List<OutputItem> outputItemList,
-                                                        List<OutputItemDetailAttItem> attendanceItemList){
+    public static List<KfnmtRptWkRecDispCont>fromDomain(String cid, WorkStatusOutputSettings outputSettings ){
         val rs = new ArrayList<KfnmtRptWkRecDispCont>();
-        for (val item: outputItemList ) {
+        for (val item: outputSettings.getOutputItem() ) {
             rs.addAll(item.getSelectedAttendanceItemList().stream().map(e->new KfnmtRptWkRecDispCont(
                     new KfnmtRptWkRecDispContPk(outputSettings.getSettingId(),item.getRank(),e.getAttendanceItemId()),
                     AppContexts.user().contractCode(),

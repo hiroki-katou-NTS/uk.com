@@ -7,6 +7,8 @@ import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.DailyMonthl
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.IndependentCalcClassic;
 import org.eclipse.persistence.internal.xr.ValueObject;
 
+import java.util.List;
+
 /**
  * ValueObject:年間勤務台帳の日次出力項目
  * @author : chinh.hm
@@ -32,7 +34,7 @@ public class DailyOutputItemsAnnualWorkLedger extends ValueObject {
     private CommonAttributesOfForms attribute;
 
     // 	選択勤怠項目リスト
-    private OutputItemDetailAttItem selectionAttendanceItem;
+    private List<OutputItemDetailAttItem> selectionAttendanceItem;
 
     // 	[C-0] 出力項目を作成する
 

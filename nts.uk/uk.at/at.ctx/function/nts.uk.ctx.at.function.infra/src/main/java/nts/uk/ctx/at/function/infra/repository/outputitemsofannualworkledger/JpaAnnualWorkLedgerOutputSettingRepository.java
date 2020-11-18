@@ -8,6 +8,7 @@ import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.AnnualWorkLedgerOutputSetting;
 import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.AnnualWorkLedgerOutputSettingRepository;
 import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.DailyOutputItemsAnnualWorkLedger;
+import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.OutputItemNameOfAnnualWorkLedger;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.FormOutputItemName;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItem;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemDetailAttItem;
@@ -64,7 +65,7 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
         builderString.append("SELECT a ");
         builderString.append("FROM KfnmtRptYrRecSetting a ");
         builderString.append("WHERE a.companyId  =:cid ");
-        builderString.append(" AND  a.pk.iD  =:settingId ");
+        builderString.append(" AND  a.iD  =:settingId ");
         builderString.append(" ORDER BY  a.displayCode ");
         FIND_WORK_SETTING = builderString.toString();
 
@@ -145,6 +146,7 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
         val outputItem = this.queryProxy().query(FIND_WORK_ITEM, KfnmtRptYrRecItem.class)
                 .setParameter("cid", cid)
                 .setParameter("settingId", settingId).getList(JpaAnnualWorkLedgerOutputSettingRepository::toDomain);
+
         outputItem.forEach(e -> {
             e.setSelectedAttendanceItemList(itemList.stream().filter(i -> i.pk.itemPos == e.getRank())
                     .map(JpaAnnualWorkLedgerOutputSettingRepository::toDomain).collect(Collectors.toList()));
@@ -152,7 +154,7 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
 
         val result = this.queryProxy().query(FIND_WORK_SETTING, KfnmtRptYrRecSetting.class)
                 .setParameter("cid", cid)
-                .setParameter("settingId", settingId).getSingle(e->JpaAnnualWorkLedgerOutputSettingRepository.toDomain(e,outputItem));
+                .setParameter("settingId", settingId).getSingle(e -> JpaAnnualWorkLedgerOutputSettingRepository.toDomain(e, outputItem));
         return Optional.of(result).orElse(null);
 
     }
@@ -173,7 +175,6 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
     }
 
 
-
     @Override
     public void update(String cid, String settingId, AnnualWorkLedgerOutputSetting outputSetting, List<DailyOutputItemsAnnualWorkLedger> outputItemsOfTheDayList, List<OutputItem> outputItemList, List<OutputItemDetailAttItem> attendanceItemList) {
         this.commandProxy().update(KfnmtRptYrRecSetting.fromDomain(cid, outputSetting));
@@ -190,15 +191,15 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
     public void deleteSettingDetail(String settingId) {
         this.commandProxy().remove(KfnmtRptYrRecSetting.class, (settingId));
 
-        val entityCont =  this.queryProxy().query(FIND_DELETE_WORK_CONST, KfnmtRptYrRecDispCont.class)
+        val entityCont = this.queryProxy().query(FIND_DELETE_WORK_CONST, KfnmtRptYrRecDispCont.class)
                 .setParameter("settingId", settingId).getList();
-        if(!entityCont.isEmpty()){
+        if (!entityCont.isEmpty()) {
             this.commandProxy().removeAll(entityCont);
         }
 
         val entityItem = this.queryProxy().query(FIND_DELETE_WORK_ITEM, KfnmtRptYrRecItem.class)
                 .setParameter("settingId", settingId).getList();
-        if(!entityItem.isEmpty()){
+        if (!entityItem.isEmpty()) {
             this.commandProxy().removeAll(entityItem);
         }
     }
@@ -227,8 +228,8 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
                 .setParameter("cid", cid)
                 .setParameter("settingId", replicationSourceSettingsId).getList();
         if (!optEntityItem.isEmpty()) {
-            val listItem = optEntityItem.stream().map(e->new KfnmtRptYrRecItem(
-                    new KfnmtRptYrRecItemPk(destinationSettingId,e.pk.itemPos),
+            val listItem = optEntityItem.stream().map(e -> new KfnmtRptYrRecItem(
+                    new KfnmtRptYrRecItemPk(destinationSettingId, e.pk.itemPos),
                     e.contractCode,
                     e.companyId,
                     outputItemSettingName.v(),
@@ -243,12 +244,12 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
                 .setParameter("cid", cid)
                 .setParameter("settingId", replicationSourceSettingsId).getList();
         if (!optEntityConst.isEmpty()) {
-            val listItem = optEntityConst.stream().map(e->new KfnmtRptYrRecDispCont(
-                    new KfnmtRptYrRecDispContPk(destinationSettingId,e.pk.itemPos,e.pk.attendanceId),
+            val listItem = optEntityConst.stream().map(e -> new KfnmtRptYrRecDispCont(
+                    new KfnmtRptYrRecDispContPk(destinationSettingId, e.pk.itemPos, e.pk.attendanceId),
                     e.contractCode,
                     e.companyId,
                     e.operator
-            ) ).collect(Collectors.toList());
+            )).collect(Collectors.toList());
             this.commandProxy().insertAll(listItem);
         }
     }
@@ -286,16 +287,30 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
                 null
         );
     }
-    private static AnnualWorkLedgerOutputSetting toDomain(KfnmtRptYrRecSetting entity,List<OutputItem> itemList) {
 
+    private static AnnualWorkLedgerOutputSetting toDomain(KfnmtRptYrRecSetting entity, List<OutputItem> itemList) {
+        val monthlys = itemList.stream().filter(e -> e.getDailyMonthlyClassification()
+                .equals(DailyMonthlyClassification.MONTHLY)).collect(Collectors.toList());
+        val dailys = itemList.stream().filter(e -> e.getDailyMonthlyClassification()
+                .equals(DailyMonthlyClassification.DAILY)).map(i -> new DailyOutputItemsAnnualWorkLedger(
+                i.getRank(),
+                new OutputItemNameOfAnnualWorkLedger(i.getName().v()),
+                i.isPrintTargetFlag(),
+                i.getIndependentCalcClassic(),
+                i.getDailyMonthlyClassification(),
+                i.getItemDetailAttributes(),
+                i.getSelectedAttendanceItemList()
+        ))
+
+                .collect(Collectors.toList());
         return new AnnualWorkLedgerOutputSetting(
                 entity.iD,
                 new OutputItemSettingCode(Integer.toString(entity.displayCode)),
                 new OutputItemSettingName(entity.name),
                 EnumAdaptor.valueOf(entity.settingType, SettingClassificationCommon.class),
-                null,
+                dailys,
                 entity.employeeId,
-                itemList
+                monthlys
         );
     }
 
