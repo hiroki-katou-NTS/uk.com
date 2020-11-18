@@ -180,7 +180,6 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
         }
         val entityConst = this.queryProxy().query(FIND_DELETE_WORK_STATUS_CONST, KfnmtRptWkRecDispCont.class)
                 .setParameter("settingId", settingId)
-                .setParameter("cid", cid)
                 .getList();
         if (!CollectionUtil.isEmpty(entityConst)) {
             this.commandProxy().removeAll(entityConst);
@@ -193,7 +192,6 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
     @Override
     public void delete(String settingId) {
         this.commandProxy().remove(KfnmtRptWkRecSetting.class, settingId);
-        val cid = AppContexts.user().companyId();
         val entityConst = this.queryProxy().query(FIND_DELETE_WORK_STATUS_CONST, KfnmtRptWkRecDispCont.class)
                 .setParameter("settingId", settingId)
                 .getList();
