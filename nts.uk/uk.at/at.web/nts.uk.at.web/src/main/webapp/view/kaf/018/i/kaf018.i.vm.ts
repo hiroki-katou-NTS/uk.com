@@ -43,21 +43,27 @@ module nts.uk.at.view.kaf018.i.viewmodel {
 				switch (newValue) {
 					case 'tab-1':
 						vm.screenEditMode(vm.appApprovalUnapproved().editMode());
+						vm.$nextTick(() => $("#I3_1_1").focus());
 						break;
 					case 'tab-2':
 						vm.screenEditMode(vm.dailyUnconfirmByPrincipal().editMode());
+						vm.$nextTick(() => $("#I4_1_1").focus());
 						break;
 					case 'tab-3':
 						vm.screenEditMode(vm.dailyUnconfirmByConfirmer().editMode());
+						vm.$nextTick(() => $("#I5_1_1").focus());
 						break;
 					case 'tab-6':
 						vm.screenEditMode(vm.monthlyUnconfirmByPrincipal().editMode());
+						vm.$nextTick(() => $("#I8_1_1").focus());
 						break;
 					case 'tab-4':
 						vm.screenEditMode(vm.monthlyUnconfirmByConfirmer().editMode());
+						vm.$nextTick(() => $("#I6_1_1").focus());
 						break;
 					case 'tab-5':
 						vm.screenEditMode(vm.workConfirmation().editMode());
+						vm.$nextTick(() => $("#I7_1_1").focus());
 						break;
 				}
 			});
@@ -102,10 +108,12 @@ module nts.uk.at.view.kaf018.i.viewmodel {
 					vm.checkI1(vm.useSetting.monthlyIdentityConfirm);
 					vm.checkI2(vm.useSetting.monthlyConfirm);
 					vm.checkI5(vm.useSetting.employmentConfirm);
+					
+					vm.selectedTab.valueHasMutated();
 				});
 			}).always(() => {
 				vm.$blockui("hide");
-				$("#H3_1_1").focus();
+				
 			});
 		}
 
