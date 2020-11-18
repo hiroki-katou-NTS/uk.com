@@ -10,10 +10,12 @@ import nts.uk.ctx.at.function.dom.alarmworkplace.CheckCondition;
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.AlarmCheckCdtWkpCtgRepository;
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.AlarmCheckCdtWorkplaceCategory;
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.WorkplaceCategory;
-// import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.service.aggregateprocess.AggregateProcessMasterCheckBasicService;
+import nts.uk.ctx.at.function.dom.alarmworkplace.extractresult.AlarmListExtractInfoWorkplace;
+import nts.uk.ctx.at.function.dom.alarmworkplace.extractresult.AlarmListExtractInfoWorkplaceRepository;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -27,11 +29,12 @@ public class AggregateProcessService {
 
     @Inject
     private AlarmPatternSettingWorkPlaceRepository alarmPatternSettingWorkPlaceRepo;
-
     @Inject
     private AlarmCheckCdtWkpCtgRepository alarmCheckCdtWkpCtgRepo;
     @Inject
     private AggregateProcessAdapter aggregateProcessAdapter;
+    @Inject
+    private AlarmListExtractInfoWorkplaceRepository alarmListExtractInfoWorkplaceRepo;
 
 
     public void process(String cid, String alarmPatternCode, List<String> workplaceIds) {
@@ -40,6 +43,8 @@ public class AggregateProcessService {
         if (!patternOpt.isPresent()) {
             throw new RuntimeException("「アラームリストパターン設定(職場別) 」が見つかりません！");
         }
+
+        List<AlarmListExtractInfoWorkplace> alExtractInfos = new ArrayList<>();
 
         // 取得した「アラームリストパターン設定(職場別)」．カテゴリ別チェック条件をループする
         List<CheckCondition> checkConList = patternOpt.get().getCheckConList();
@@ -53,7 +58,7 @@ public class AggregateProcessService {
             switch (category) {
                 case MASTER_CHECK_BASIC:
                     // アルゴリズム「マスタチェック(基本)の集計処理」を実行する
-                    aggregateProcessAdapter.processMasterCheckBasic(cid, period, Collections.emptyList(), workplaceIds);
+                    alExtractInfos.addAll(aggregateProcessAdapter.processMasterCheckBasic(cid, period, Collections.emptyList(), workplaceIds));
                     break;
                 case MASTER_CHECK_DAILY:
                     // アルゴリズム「マスタチェック(日別)の集計処理」を実行する
@@ -73,6 +78,10 @@ public class AggregateProcessService {
             }
 
             // List＜アラーム抽出結果（職場別）＞に返す値を追加
+            alarmListExtractInfoWorkplaceRepo.addAll(alExtractInfos);
+
+            // 抽出処理停止フラグが立っているかチェックする
+            // TODO
         }
     }
 }

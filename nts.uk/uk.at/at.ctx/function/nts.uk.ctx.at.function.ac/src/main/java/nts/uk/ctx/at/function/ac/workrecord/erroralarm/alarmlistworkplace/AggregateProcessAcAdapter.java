@@ -4,7 +4,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.alarmlistworkplace.AggregateProcessAdapter;
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.WorkplaceCategory;
-import nts.uk.ctx.at.function.dom.alarmworkplace.extractresult.AlarmListExtractionInfoWorkplace;
+import nts.uk.ctx.at.function.dom.alarmworkplace.extractresult.AlarmListExtractInfoWorkplace;
 import nts.uk.ctx.at.function.dom.alarmworkplace.extractresult.ExtractResult;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.alarmlistworkplace.AggregateProcessPub;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.alarmlistworkplace.AlarmListExtractionInfoWorkplaceExport;
@@ -21,13 +21,13 @@ public class AggregateProcessAcAdapter implements AggregateProcessAdapter {
     private AggregateProcessPub aggregateProcessPub;
 
     @Override
-    public List<AlarmListExtractionInfoWorkplace> processMasterCheckBasic(String cid, DatePeriod period, List<String> workplaceErrorCheckIds, List<String> workplaceIds) {
+    public List<AlarmListExtractInfoWorkplace> processMasterCheckBasic(String cid, DatePeriod period, List<String> workplaceErrorCheckIds, List<String> workplaceIds) {
         return convert(aggregateProcessPub.processMasterCheckBasic(cid, period, workplaceErrorCheckIds, workplaceIds));
     }
 
-    private List<AlarmListExtractionInfoWorkplace> convert(List<AlarmListExtractionInfoWorkplaceExport> data) {
+    private List<AlarmListExtractInfoWorkplace> convert(List<AlarmListExtractionInfoWorkplaceExport> data) {
         return data.stream().map(x ->
-                new AlarmListExtractionInfoWorkplace(
+                new AlarmListExtractInfoWorkplace(
                         x.getCheckConditionId(),
                         EnumAdaptor.valueOf(x.getWorkplaceCategory(), WorkplaceCategory.class),
                         x.getExtractResults().stream().map(y ->

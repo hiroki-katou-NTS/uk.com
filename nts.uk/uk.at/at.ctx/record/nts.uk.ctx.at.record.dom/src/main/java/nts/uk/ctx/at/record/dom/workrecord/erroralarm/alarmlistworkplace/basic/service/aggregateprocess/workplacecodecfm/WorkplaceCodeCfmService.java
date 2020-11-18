@@ -5,7 +5,6 @@ import nts.uk.ctx.at.record.dom.adapter.workplace.EmployeeInfoImported;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.BasicCheckName;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.extractresult.ExtractResultDto;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMessage;
-import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import java.util.ArrayList;
@@ -24,16 +23,15 @@ public class WorkplaceCodeCfmService {
     /**
      * 職場コード確認
      *
-     * @param name             アラーム項目名
-     * @param displayMessage   表示するメッセージ.
-     * @param checkConditionId チェック条件ID
-     * @param empInfoMap       Map＜職場ID、List＜社員情報＞＞
-     * @param period           期間
+     * @param cid            会社ID
+     * @param name           アラーム項目名
+     * @param displayMessage 表示するメッセージ.
+     * @param empInfoMap     Map＜職場ID、List＜社員情報＞＞
+     * @param period         期間
      * @return List＜抽出結果＞
      */
-    public List<ExtractResultDto> confirm(BasicCheckName name, DisplayMessage displayMessage, String checkConditionId,
+    public List<ExtractResultDto> confirm(String cid, BasicCheckName name, DisplayMessage displayMessage,
                                           Map<String, List<EmployeeInfoImported>> empInfoMap, DatePeriod period) {
-        String cid = AppContexts.user().companyId();
         // 空欄のリスト「抽出結果」を作成する。
         List<ExtractResultDto> results = new ArrayList<>();
 

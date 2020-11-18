@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.
 
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.dom.adapter.workplace.EmployeeInfoImported;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.BasicCheckName;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.extractresult.ExtractResultDto;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMessage;
@@ -33,16 +32,13 @@ public class RefTimeSetCfmService {
     /**
      * 基準時間確認
      *
-     * @param name             アラーム項目名
-     * @param displayMessage   表示するメッセージ.
-     * @param checkConditionId チェック条件ID
-     * @param empInfoMap       Map＜職場ID、List＜社員情報＞＞
-     * @param period           期間
+     * @param cid            会社ID
+     * @param name           アラーム項目名
+     * @param displayMessage 表示するメッセージ.
+     * @param period         期間
      * @return List＜抽出結果＞
      */
-    public List<ExtractResultDto> confirm(BasicCheckName name, DisplayMessage displayMessage, String checkConditionId,
-                                          Map<String, List<EmployeeInfoImported>> empInfoMap, DatePeriod period) {
-        String cid = AppContexts.user().companyId();
+    public List<ExtractResultDto> confirm(String cid, BasicCheckName name, DisplayMessage displayMessage, DatePeriod period) {
         // 空欄のリスト「アラーム抽出結果（職場別）」を作成する。
         List<ExtractResultDto> results = new ArrayList<>();
 

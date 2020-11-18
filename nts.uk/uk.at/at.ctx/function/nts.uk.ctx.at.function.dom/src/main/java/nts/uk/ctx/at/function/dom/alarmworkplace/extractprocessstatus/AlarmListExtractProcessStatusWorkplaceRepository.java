@@ -2,19 +2,19 @@ package nts.uk.ctx.at.function.dom.alarmworkplace.extractprocessstatus;
 
 public interface AlarmListExtractProcessStatusWorkplaceRepository {
 	
-	//List<AlarmListExtractionInfoWorkplace> getAllAlListExtaProcess(String companyID);
+	//List<AlarmListExtractInfoWorkplace> getAllAlListExtaProcess(String companyID);
 
-	//Optional<AlarmListExtractionInfoWorkplace> getAlListExtaProcessByID(String extraProcessStatusID);
+	//Optional<AlarmListExtractInfoWorkplace> getAlListExtaProcessByID(String extraProcessStatusID);
 
-	//Optional<AlarmListExtractionInfoWorkplace> getAlListExtaProcess(String companyID, GeneralDate startDate, int startTime);
+	//Optional<AlarmListExtractInfoWorkplace> getAlListExtaProcess(String companyID, GeneralDate startDate, int startTime);
 
-	//Optional<AlarmListExtractionInfoWorkplace> getAlListExtaProcessByStatus(String companyID, GeneralDate startDate, int startTime, int status);
+	//Optional<AlarmListExtractInfoWorkplace> getAlListExtaProcessByStatus(String companyID, GeneralDate startDate, int startTime, int status);
 
-	//Optional<AlarmListExtractionInfoWorkplace> getAlListExtaProcessByEndDate(String companyID, String employeeID);
+	//Optional<AlarmListExtractInfoWorkplace> getAlListExtaProcessByEndDate(String companyID, String employeeID);
 
     void add(AlarmListExtractProcessStatusWorkplace alarmListExtraProcessStatus);
 
-	//void updateAlListExtaProcess(AlarmListExtractionInfoWorkplace alarmListExtraProcessStatus);
+	//void updateAlListExtaProcess(AlarmListExtractInfoWorkplace alarmListExtraProcessStatus);
 
 	//void deleteAlListExtaProcess(String extraProcessStatusID);
 

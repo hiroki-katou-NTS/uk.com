@@ -15,7 +15,7 @@ import java.util.List;
  */
 @Getter
 @AllArgsConstructor
-public class AlarmListExtractionInfoWorkplace extends AggregateRoot {
+public class AlarmListExtractInfoWorkplace extends AggregateRoot {
 
     /**
      * チェック条件ID

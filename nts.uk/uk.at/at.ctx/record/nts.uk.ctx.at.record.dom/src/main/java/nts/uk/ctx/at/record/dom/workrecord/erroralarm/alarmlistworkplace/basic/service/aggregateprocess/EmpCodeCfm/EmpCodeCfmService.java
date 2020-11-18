@@ -13,7 +13,6 @@ import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSidPeriodDateEmployment
 import nts.uk.ctx.at.shared.dom.scherec.alarm.alarmlistactractionresult.AlarmValueDate;
 import nts.uk.ctx.at.shared.dom.scherec.alarm.alarmlistactractionresult.AlarmValueMessage;
 import nts.uk.ctx.at.shared.dom.scherec.alarm.alarmlistactractionresult.MessageDisplay;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
 import javax.ejb.Stateless;
@@ -38,16 +37,15 @@ public class EmpCodeCfmService {
     /**
      * 雇用コード確認
      *
-     * @param name             アラーム項目名
-     * @param displayMessage   表示するメッセージ.
-     * @param checkConditionId チェック条件ID
-     * @param empInfoMap       Map＜職場ID、List＜社員情報＞＞
-     * @param period           期間
+     * @param cid            会社ID
+     * @param name           アラーム項目名
+     * @param displayMessage 表示するメッセージ.
+     * @param empInfoMap     Map＜職場ID、List＜社員情報＞＞
+     * @param period         期間
      * @return List＜抽出結果＞
      */
-    public List<ExtractResultDto> confirm(BasicCheckName name, DisplayMessage displayMessage, String checkConditionId,
+    public List<ExtractResultDto> confirm(String cid, BasicCheckName name, DisplayMessage displayMessage,
                                           Map<String, List<EmployeeInfoImported>> empInfoMap, DatePeriod period) {
-        String cid = AppContexts.user().companyId();
         // 空欄のリスト「抽出結果」を作成する。
         List<ExtractResultDto> results = new ArrayList<>();
 
@@ -77,8 +75,8 @@ public class EmpCodeCfmService {
 
                     // ドメインオブジェクト「抽出結果」を作成します。
                     ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(message),
-                            new AlarmValueDate(Integer.valueOf(period.start().toString("yyyy/MM/dd")),
-                                    Optional.of(Integer.valueOf(period.end().toString("yyyy/MM/dd")))),
+                            new AlarmValueDate(Integer.valueOf(period.start().toString("yyyyMMdd")),
+                                    Optional.of(Integer.valueOf(period.end().toString("yyyyMMdd")))),
                             name.v(),
                             Optional.ofNullable(TextResource.localize("KAL020_11")),
                             Optional.of(new MessageDisplay(displayMessage.v())),
