@@ -930,11 +930,13 @@ module nts.uk.ui.exTable {
                     }
                 }
                 
+                let paddingLeft;
                 if (self.options.isHeader) {
                     if (!util.isNullOrUndefined(column.icon) && column.icon.for === "header") {
                         let icon = document.createElement("span");
                         icon.className = COL_ICON_CLS + " " + column.icon.class;
                         tdStyle += "; padding-left: " + column.icon.width + ";";
+                        paddingLeft = true;
                         td.appendChild(icon);
                         if (column.icon.popup && typeof column.icon.popup === "function") {
                             icon.style.cursor = "pointer";
@@ -954,6 +956,7 @@ module nts.uk.ui.exTable {
                         let icon = document.createElement("span");
                         icon.className = COL_ICON_CLS + " " + column.icon.class;
                         tdStyle += "; padding-left: " + column.icon.width + ";";
+                        paddingLeft = true;
                         td.appendChild(icon);
                     } else if (!column.control) {
                         tdStyle += " text-overflow: ellipsis; -ms-text-overflow: ellipsis;";
@@ -965,7 +968,7 @@ module nts.uk.ui.exTable {
 //                spread.bindSticker(td, rowIdx , key, self.options);
                 // Separate det mode from other update mode
                 style.detCell(self.$container, td, rowIdx, key, self.options.determination, self.$exTable);
-                tdStyle += "; padding: 0px 2px;";
+                if (!paddingLeft) tdStyle += "; padding: 0px 2px;";
                 td.style.cssText += tdStyle;
                 
                 if (self.options.overflowTooltipOn) widget.textOverflow(td);
