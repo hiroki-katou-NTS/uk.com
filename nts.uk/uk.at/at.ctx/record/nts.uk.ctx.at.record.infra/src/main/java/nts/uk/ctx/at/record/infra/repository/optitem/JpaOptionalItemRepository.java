@@ -115,6 +115,9 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 				item.setPerformanceAtr(rec.getInt("PERFORMANCE_ATR"));
 				item.setEmpConditionAtr(rec.getInt("EMP_CONDITION_ATR"));
 				item.setUnitOfOptionalItem(rec.getString("UNIT_OF_OPTIONAL_ITEM"));
+				item.setCalcAtr(rec.getInt("CALC_ATR"));
+				item.setNote(rec.getString("ITEM_NOTE"));
+				item.setDescription(rec.getString("ITEM_DESCRIP"));
 
 				KrcstCalcResultRange range = new KrcstCalcResultRange();
 				range.setKrcstCalcResultRangePK(new KrcstCalcResultRangePK(companyId, rec.getInt("OPTIONAL_ITEM_NO")));
@@ -191,7 +194,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 		}
 
 		try (val stmt = this.connection()
-				.prepareStatement("select * from KRCST_OPTIONAL_ITEM KOI LEFT JOIN KRCST_CALC_RESULT_RANGE KCRR "
+				.prepareStatement("select * from KRCMT_ANYV KOI LEFT JOIN KRCST_CALC_RESULT_RANGE KCRR "
 						+ "on KOI.CID = KCRR.CID and KOI.OPTIONAL_ITEM_NO = KCRR.OPTIONAL_ITEM_NO "
 						+ "where KOI.CID = ? and KOI.OPTIONAL_ITEM_NO in ("
 						+ NtsStatement.In.createParamsString(optionalitemNos)
@@ -210,6 +213,9 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 				item.setPerformanceAtr(rec.getInt("PERFORMANCE_ATR"));
 				item.setEmpConditionAtr(rec.getInt("EMP_CONDITION_ATR"));
 				item.setUnitOfOptionalItem(rec.getString("UNIT_OF_OPTIONAL_ITEM"));
+                item.setCalcAtr(rec.getInt("CALC_ATR"));
+                item.setNote(rec.getString("ITEM_NOTE"));
+                item.setDescription(rec.getString("ITEM_DESCRIP"));
 
 				KrcstCalcResultRange range = new KrcstCalcResultRange();
 				range.setKrcstCalcResultRangePK(new KrcstCalcResultRangePK(companyId, rec.getInt("OPTIONAL_ITEM_NO")));
@@ -420,7 +426,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 	public List<CalFormulasItemExportData> findAllCalFormulasItem(String companyId, String languageId) {
 		try (val stmt = this.connection().prepareStatement(
 				"SELECT ec.EMP_CD , oi.OPTIONAL_ITEM_NO, oi.OPTIONAL_ITEM_NAME, oi.EMP_CONDITION_ATR FROM "
-						+ "KRCST_OPTIONAL_ITEM oi " + "LEFT JOIN KRCST_CALC_RESULT_RANGE rr ON oi.CID = rr.CID "
+						+ "KRCMT_ANYV oi " + "LEFT JOIN KRCST_CALC_RESULT_RANGE rr ON oi.CID = rr.CID "
 						+ "AND oi.OPTIONAL_ITEM_NO = rr.OPTIONAL_ITEM_NO "
 						+ "LEFT JOIN KRCST_APPL_EMP_CON ec ON rr.OPTIONAL_ITEM_NO = ec.OPTIONAL_ITEM_NO AND rr.CID = ec.CID"
 						+ "where oi.CID = ? AND ec.EMP_CD IS NOT NULL ORDER BY oi.OPTIONAL_ITEM_NO ASC")) {
@@ -460,7 +466,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 				+", cis.MINUS_SEGMENT, cis.OPERATOR "
 				+", fs.LEFT_FORMULA_ITEM_ID, fs.LEFT_SET_METHOD, fs.LEFT_INPUT_VAL, fs.RIGHT_FORMULA_ITEM_ID, fs.RIGHT_SET_METHOD, fs.RIGHT_INPUT_VAL "
 				+"FROM "
-				+"KRCST_OPTIONAL_ITEM oi "
+				+"KRCMT_ANYV oi "
 				+"INNER JOIN KRCMT_OPT_ITEM_FORMULA oif ON oi.CID = oif.CID AND oi.OPTIONAL_ITEM_NO = oif.OPTIONAL_ITEM_NO "
 				+"INNER JOIN KRCST_FORMULA_DISPORDER fd ON oif.OPTIONAL_ITEM_NO = fd.OPTIONAL_ITEM_NO AND oif.CID = fd.CID AND oif.FORMULA_ID = fd.FORMULA_ID " 
 				+"INNER JOIN KRCMT_FORMULA_ROUNDING fr ON fd.FORMULA_ID = fr.FORMULA_ID and fd.OPTIONAL_ITEM_NO = fr.OPTIONAL_ITEM_NO "
