@@ -1,14 +1,9 @@
 module ccg018.a1.service {
     const paths: any = {
         update: "sys/portal/toppagesetting/roleset/save",
-        findDataOfTopPageJobSet: "sys/portal/toppagesetting/jobset/find",
         findDataOfJobTitle: "bs/employee/jobtitle/findAll",
         findAllRoleSet: "ctx/sys/auth/roleset/findallroleset",
         findAllTopPageRoleSet: "sys/portal/toppagesetting/roleset/findAll"
-    }
-
-    export function findDataOfTopPageJobSet(listJobId): JQueryPromise<any> {
-        return nts.uk.request.ajax("com", paths.findDataOfTopPageJobSet, listJobId);
     }
 
     export function update(command: any): JQueryPromise<any> {

@@ -7,98 +7,84 @@
 <body>
 	<ui:composition template="../../../../master/freelayout.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 300, height: 230 };</script>
 			<com:ValidatorScript>
-					nts.uk.shr.com.primitive.PersonId
-				</com:ValidatorScript>
-			<com:scriptfile set="IGNITE" />
+				nts.uk.shr.com.primitive.PersonId
+			</com:ValidatorScript>
 			<com:stylefile path="ktg027.a.style.css" />
-			<com:scriptfile path="ktg027.a.service.js" />
-			<com:scriptfile path="ktg027.a.vm.js" />
-			<com:scriptfile path="ktg027.a.start.js" />
+      <com:scriptfile path="ktg027.a.vm.js" />
 		</ui:define>
-
 		<ui:define name="content">
+      <div>
 			<div id="contents-area">
-				<div class="valign-center control-group"
-					style="margin-top: 5px; margin-bottom: 15px;">
-					<label>#{i18n.getText('KTG027_3')}</label>
-					<div id = "inputYM"
-						data-bind="ntsDatePicker: { name: '#[KTG027_3]',value: targetMonth, dateFormat: 'yearmonth', valueFormat: 'YYYYMM',showJumpButtons: true, required: true}"></div>
+				<div class="title-border">
+					<!-- A1_1 -->
+					<label class="big-text">#{i18n.getText('KTG027_5')}</label>
 				</div>
-				<div class="valign-center control-group">
-					<label>#{i18n.getText('KTG027_4')}</label>
-					<div id="combo-box" style="margin-left: 19px;"
-						data-bind="ntsComboBox: {
-							name: 'Sample List',
-							options: closureResultModel,
-							optionsValue: 'closureId',
-							visibleItemsCount: 5,
-							value: selectedClosureID,
-							optionsText: 'closureName',
-							columns: [
-								{ prop: 'closureName', length: 5},
-							]}"></div>
-					<button class="caret-bottom" style="margin-left: 20px;"
-						data-bind="click : clickExtractionBtn ,enable: $root.errors.isEmpty">#{i18n.getText('KTG027_5')}</button>
-					<button style="margin-left: 100px;"
-						data-bind=" click : printData ,visible : check()  ">#{i18n.getText('KTG027_13')}
-					</button>
-					<div data-bind="visible : !displayEr()">
-						<button
-							data-bind="ntsHelpButton: {textId : 'KTG027_11',textParams:['{#KTG027_7}', '{#KTG027_8}', '{#KTG027_1}', '{#KTG027_9}'], position: 'left bottom'}">?</button>
-					</div>
-					<div data-bind="visible:!displayEr()">
 
-						<table id="fixed-table">
-							<colgroup>	
-								<col width="230px" />
-								<col width="75px" />
-								<col width="105px" />
-								<!-- <col width="70px" />
-								<col width="70px" /> -->
-
-							</colgroup>
-							<thead>
-								<tr>
-									<th class="ui-widget-header" rowspan="2">#{i18n.getText('Com_Person')}</th>
-									<th class="ui-widget-header" rowspan="2">#{i18n.getText('KTG027_7')}</th>
-									<th class="ui-widget-header" colspan="3">#{i18n.getText('KTG027_1')}</th>
-
-								</tr>
-
-								<tr>
-									<th class="ui-widget-header">#{i18n.getText('KTG027_8')}</th>
-									<!-- <th class="ui-widget-header">#{i18n.getText('KTG027_9')}</th>
-									<th class="ui-widget-header">#{i18n.getText('KTG027_10')}</th> -->
-								</tr>
-							</thead>
-							
-							<tbody data-bind="foreach : inforOvertime">
-								<tr
-									data-bind="style: { backgroundColor: status !== 0 ? backgroundColor : '', color : status !== 0  ? color : ''}">
-									<td data-bind="text : employee"></td>
-									<td data-bind="text : timeLimit"></td>
-									<td data-bind="text : actualTime"></td>
-									<!-- <td data-bind="text : applicationTime"></td>
-									<td data-bind="text : totalTime"></td> -->
-								</tr>
-							</tbody>
-						</table>
-						<!-- <div class="valign-center control-group" style = "display: inline-flex; margin-top : 2px;"
-						data-bind="style : {backgroundColor : backgroundColor , color : color}">
-						<div class = "row1" style = "width: 250px;">#{i18n.getText('KTG027_10')}</div>
-						<div class = "row2" style = "width: 69px;"></div>
-						<div class = "row3" style = "width: 69px;"  data-bind="text : total1()"></div>
-						<div class = "row4" style = "width: 69px;"	data-bind="text : total2()"></div>
-						<div class = "row5" style = "width: 86px;"	data-bind="text : total3()"></div>
-						 </div> -->
-					</div>
-					
-					<div data-bind="text : msg , visible : displayEr()"
-						class="color-daily-holiday" style="padding-top: 10px;"></div>
-				</div>
-			</div>
+				<table class="flex">
+					<tbody class="flex100">
+						<tr class="flex100">
+							<td class="p-10 left40">
+								<!-- A1_2 -->
+								<div data-bind="ntsDatePicker: {
+									value: year,
+									dateFormat: 'yearmonth',
+									valueFormat: 'YYYYMM',
+									showJumpButtons: true
+								}"></div>
+							</td>
+							<td class="block p-10" style="width: 60%">
+								<div class="right">
+									<!-- A1_3 -->
+									<label class="grid non-statutory-color">#{i18n.getText('KTG027_2')}</label>
+									<!-- A1_4 -->
+									<label class="grid time-outside-color">#{i18n.getText('KTG027_3')}</label>
+								</div>
+							</td>
+						</tr>
+				</tbody>
+        </table>
+        <div style="height: 270px;">
+          <!-- A3 -->
+          <table class="block pl-10 scroll">
+            <thead>
+              <tr>
+                <!-- A2_1 -->
+                <th style="width: 133px;">#{i18n.getText('KTG027_7')}</th>
+                <!-- A2_2 -->
+                <th>#{i18n.getText('KTG027_4')}</th>
+                <th class="w-200">
+                  <!-- A2_3 -->
+                  <span class="fixed45">45:00</span>
+                  <!-- A2_4 -->
+                  <span class="fixed80">80:00</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <com:ko-foreach bind="listShowData">
+                <tr class="mw-200" >
+                  <!-- A3_1 -->
+                  <td class="border-bot"><a href="#" data-bind="text: businessName, click: function() { $vm.openKTG026($data) }"></a></td>
+                  <!-- A3_2 -->
+                  <td class="border-bot text-right"><a href="#" data-bind="text: $parent.genTime(agreementTime), click:function() { $vm.openKDW003($data) } "></a></td>
+                  <td class="pl-20 inline-flex position-relative">
+                    <!-- A3_3 -->
+                    <div class="label non-statutory-bg-color" data-bind="style: { width: $parent.genWidthByTime(agreementTime)}"></div>
+                    <!-- A3_4 -->
+                    <div class="label time-outside-bg-color" data-bind="style: { width: $parent.genWidthByTime(legalUpperTime)}"></div> 
+                    <!-- A2_5 -->
+                    <div class="dashed45"></div>
+                    <!-- A2_6 -->
+                    <div class="dashed80"></div>
+                  </td>
+                </tr>
+              </com:ko-foreach>
+            </tbody>
+          </table>  
+        </div>
+      </div>
+      </div>
 		</ui:define>
 	</ui:composition>
 </body>

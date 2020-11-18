@@ -29,7 +29,7 @@ public class JpaAnniversaryRepository extends JpaRepository implements Anniversa
             + " OR("
             + " CAST(CONCAT('{:todayNextYear}',　a.ANNIVERSARY_DATE) AS datetime2) >= CAST('{:anniversary}' as datetime2)"
             + " AND CAST(CONCAT('{:todayNextYear}',a.ANNIVERSARY_DATE) AS datetime2) <= DATEADD(day,　a.NOTIFICATION_DAYS,　CAST('{:anniversary}' as datetime2))"
-            + " )";
+            + " ) ORDER BY ANNIVERSARY_DATE ASC";
 
     //select by date period
     private static final String SELECT_BY_DATE_PERIOD = "SELECT a FROM BpsdtPsAnniversaryInfo a"

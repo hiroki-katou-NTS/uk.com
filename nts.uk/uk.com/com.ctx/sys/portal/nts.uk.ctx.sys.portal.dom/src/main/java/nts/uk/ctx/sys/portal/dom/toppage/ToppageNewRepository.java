@@ -27,7 +27,7 @@ public interface ToppageNewRepository {
 	 * @param CompanyId
 	 * @param topPageCode
 	 */
-	void delete(String CompanyId, String topPageCode);
+	void delete(String companyId, String topPageCode);
 	
 	/**
 	 * 

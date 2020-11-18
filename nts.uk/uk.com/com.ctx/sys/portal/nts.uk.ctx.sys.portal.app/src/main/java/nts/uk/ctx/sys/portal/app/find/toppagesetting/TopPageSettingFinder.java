@@ -52,7 +52,7 @@ public class TopPageSettingFinder {
 	}
 	
 	@AllArgsConstructor
-	private static class TopPageSettingRequireImpl implements TopPageSettingService.Require {
+	public static class TopPageSettingRequireImpl implements TopPageSettingService.Require {
 
 		@Inject
 		private TopPagePersonSettingRepository topPagePersonSettingRepo;
@@ -69,8 +69,11 @@ public class TopPageSettingFinder {
 		}
 
 		@Override
-		public String getRoleSetCode() {
-			return this.adapter.getLoginRoleSet().getRoleSetCd();
+		public Optional<String> getRoleSetCode() {
+			if (this.adapter.getLoginRoleSet().isPresent()) {
+				return Optional.of(this.adapter.getLoginRoleSet().get().getRoleSetCd());
+			}
+			return Optional.empty();
 		}
 
 		@Override

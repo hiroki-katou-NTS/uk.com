@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
  */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class PersonalCommandHandle extends CommandHandler<PersonalCommand> {
+public class PersonalCommandHandler extends CommandHandler<PersonalCommand> {
 
     @Inject
     private AvatarRepository avatarRepository;

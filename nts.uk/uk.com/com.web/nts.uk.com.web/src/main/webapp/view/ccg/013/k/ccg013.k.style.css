@@ -1,6 +1,6 @@
 #table {
 	margin-top: 20px;
-	margin-left: 50px;
+	margin-left: 30px;
 }
 
 #gridlist {
@@ -26,4 +26,8 @@
 
 div#master-wrapper {
 	overflow: hidden !important;
+}
+
+#combo-box {
+	margin-top: 5px;
 }

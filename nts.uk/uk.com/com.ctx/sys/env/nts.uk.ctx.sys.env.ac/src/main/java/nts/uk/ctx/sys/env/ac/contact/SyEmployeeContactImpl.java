@@ -21,7 +21,7 @@ public class SyEmployeeContactImpl implements EmployeeContactAdapter {
 	public List<EmployeeContactObjectImport> getList(List<String> sIds) {
 		return employeeContactPub.getList(sIds).stream()
 				.map(x -> new EmployeeContactObjectImport(x.getSid(), x.getMailAddress(), x.getSeatDialIn(),
-						x.getSeatExtensionNo(), x.getPhoneMailAddress(), x.getCellPhoneNo()))
+						x.getSeatExtensionNo(), x.getPhoneMailAddress(), x.getCellPhoneNo(), false, false))
 				.collect(Collectors.toList());
 	}
 
@@ -39,7 +39,9 @@ public class SyEmployeeContactImpl implements EmployeeContactAdapter {
 						x.getPhoneNumber1(), 
 						x.getMemo2(), 
 						x.getContactName2(), 
-						x.getPhoneNumber2()))
+						x.getPhoneNumber2(),
+						false,
+						false))
 				.collect(Collectors.toList());
 	}
 

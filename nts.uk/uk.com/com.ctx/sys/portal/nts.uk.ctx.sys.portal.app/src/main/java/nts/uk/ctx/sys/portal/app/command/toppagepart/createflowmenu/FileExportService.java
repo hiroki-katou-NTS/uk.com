@@ -69,13 +69,13 @@ public class FileExportService extends ExportService<FileExportCommand> {
 	}
 	
 	public List<ExtractionResponseDto> extractByListFileId(List<String> lstFileId) throws IOException {
-		List<ExtractionResponseDto> result = new ArrayList<ExtractionResponseDto>();
+		List<ExtractionResponseDto> result = new ArrayList<>();
 		for (String fileId : lstFileId) {
 			InputStream inputStream = this.fileStreamService.takeOutFromFileId(fileId);
 			Path destinationDirectory = Paths.get(DATA_STORE_PATH + "//packs" + "//" + fileId);
 			ExtractStatus status = FileArchiver.create(ArchiveFormat.ZIP).extract(inputStream, destinationDirectory);
 			if (!status.equals(ExtractStatus.SUCCESS)) {
-				return null;
+				return new ArrayList<>();
 			}
 			File file = destinationDirectory.toFile().listFiles()[0];
 			ExtractionResponseDto item =  new ExtractionResponseDto(FileUtils.readFileToString(file, StandardCharsets.UTF_8), file.getAbsolutePath());

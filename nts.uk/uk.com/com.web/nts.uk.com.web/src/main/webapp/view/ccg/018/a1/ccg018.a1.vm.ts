@@ -96,53 +96,6 @@ module ccg018.a1.viewmodel {
         }
 
         /**
-         * Find data in DB TOPPAGE_JOB_SET
-         */
-        findDataOfTopPageJobSet(listJobId: any): JQueryPromise<any> {
-            let self = this;
-            let dfd = $.Deferred();
-            self.items.removeAll();
-            service.findDataOfTopPageJobSet(listJobId)
-                .done(function(data) {
-                    _.forEach(listJobId, function(x) {
-                        let dataObj: any = _.find(data, ['jobId', x]),
-                            jobTitle = _.find(self.listJobTitle(), ['id', x]);
-                        if (dataObj) {
-                            self.items.push(new TopPageJobSet({
-                                code: jobTitle.code,
-                                name: jobTitle.name,
-                                loginMenuCd: dataObj.loginMenuCode,
-                                topMenuCd: dataObj.topMenuCode,
-                                personPermissionSet: dataObj.personPermissionSet,
-                                switchingDate: dataObj.switchingDate,
-                                jobId: x,
-                                system: dataObj.system,
-                                menuClassification: dataObj.menuClassification
-                            }));
-                        } else {
-                            self.items.push(new TopPageJobSet({
-                                code: jobTitle.code,
-                                name: jobTitle.name,
-                                loginMenuCd: '',
-                                topMenuCd: '',
-                                personPermissionSet: 0,
-                                switchingDate: 0,
-                                jobId: x,
-                                system: 0,
-                                menuClassification: 0
-                            }));
-                        }
-                    });
-                    dfd.resolve();
-                }).fail(function() {
-                    dfd.reject();
-                }).always(function() {
-                    blockUI.clear();
-                });
-            return dfd.promise();
-        }
-
-        /**
          * Update/insert data in TOPPAGE_ROLE_SET
          */
         save(): void {

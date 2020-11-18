@@ -28,9 +28,12 @@ public class TopPageSettingService {
 		if (topPagePersonSetting.isPresent()) {
 			return Optional.of(topPagePersonSetting.get().getTopPageSettings());
 		}
-		String roleSetCode = require.getRoleSetCode();
+		Optional<String> roleSetCode = require.getRoleSetCode();
+		if (!roleSetCode.isPresent()) {
+			return Optional.empty();
+		}
 		Optional<TopPageRoleSetting> topPageRoleSetting = require.getTopPageRoleSetting(
-				companyId, roleSetCode);
+				companyId, roleSetCode.get());
 		if (topPageRoleSetting.isPresent()) {
 			return Optional.of(topPageRoleSetting.get().getTopPageSettings());
 		}
@@ -54,7 +57,7 @@ public class TopPageSettingService {
 		 *	ロールセットコードを取得するAdapter.ログイン者のロールセットを取得する()
 		 * @return the role set code
 		 */
-		public String getRoleSetCode();
+		public Optional<String> getRoleSetCode();
 
 		/**
 		 * Gets the top page role setting.
