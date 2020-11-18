@@ -56,13 +56,13 @@ public class AggregateProcessMasterCheckBasicService {
     /**
      * マスタチェック(基本)の集計処理
      *
-     * @param cid                    会社ID
-     * @param period                 期間
-     * @param workplaceErrorCheckIds List＜職場のエラームチェックID＞
-     * @param workplaceIds           List＜職場ID＞
+     * @param cid             会社ID
+     * @param period          期間
+     * @param alarmCheckWkpId List＜職場のエラームチェックID＞
+     * @param workplaceIds    List＜職場ID＞
      * @return List＜アラーム抽出結果＞
      */
-    public List<AlarmListExtractionInfoWorkplaceDto> process(String cid, DatePeriod period, List<String> workplaceErrorCheckIds, List<String> workplaceIds) {
+    public List<AlarmListExtractionInfoWorkplaceDto> process(String cid, DatePeriod period, List<String> alarmCheckWkpId, List<String> workplaceIds) {
         // 職場の社員の情報を取得する。
         Map<String, List<EmployeeInfoImported>> empInfoMap = employeeInfoByWorkplaceService.get(workplaceIds, period);
 
@@ -70,7 +70,7 @@ public class AggregateProcessMasterCheckBasicService {
         List<AlarmListExtractionInfoWorkplaceDto> alarmListResults = new ArrayList<>();
 
         // ドメインオブジェクト「アラームリスト（職場）基本の固定抽出条件」を取得する。
-        List<BasicFixedExtractionCondition> basicConditions = basicFixedExtractionConditionRepo.getBy(workplaceErrorCheckIds, true);
+        List<BasicFixedExtractionCondition> basicConditions = basicFixedExtractionConditionRepo.getBy(alarmCheckWkpId, true);
 
         for (BasicFixedExtractionCondition basic : basicConditions) {
             BasicFixedCheckItem no = basic.getNo();

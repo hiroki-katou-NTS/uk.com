@@ -6,6 +6,6 @@ import nts.uk.ctx.at.function.dom.alarmworkplace.extractresult.AlarmListExtractI
 import java.util.List;
 
 public interface AggregateProcessAdapter {
-    List<AlarmListExtractInfoWorkplace> processMasterCheckBasic(String cid, DatePeriod period, List<String> workplaceErrorCheckIds, List<String> workplaceIds);
+    List<AlarmListExtractInfoWorkplace> processMasterCheckBasic(String cid, DatePeriod period, List<String> alarmCheckWkpId, List<String> workplaceIds);
 
 }

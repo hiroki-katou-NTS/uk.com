@@ -10,6 +10,12 @@ import nts.uk.ctx.at.function.dom.alarmworkplace.CheckCondition;
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.AlarmCheckCdtWkpCtgRepository;
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.AlarmCheckCdtWorkplaceCategory;
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.WorkplaceCategory;
+import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.applicationapproval.AlarmAppApprovalCheckCdt;
+import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.basic.AlarmMasterBasicCheckCdt;
+import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.daily.AlarmMasterDailyCheckCdt;
+import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.monthly.AlarmMonthlyCheckCdt;
+import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.schedule.AlarmScheduleCheckCdt;
+import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.workplace.AlarmMasterWkpCheckCdt;
 import nts.uk.ctx.at.function.dom.alarmworkplace.extractresult.AlarmListExtractInfoWorkplace;
 import nts.uk.ctx.at.function.dom.alarmworkplace.extractresult.AlarmListExtractInfoWorkplaceRepository;
 
@@ -51,28 +57,42 @@ public class AggregateProcessService {
         for (CheckCondition checkCdt : checkConList) {
             WorkplaceCategory category = checkCdt.getWorkplaceCategory();
             // ドメインモデル「カテゴリ別アラームチェック条件(職場別)」を取得する。
-            List<AlarmCheckCdtWorkplaceCategory> conditionCtgs = alarmCheckCdtWkpCtgRepo.getBy(category,
+            Optional<AlarmCheckCdtWorkplaceCategory> conditionCtgOpt = alarmCheckCdtWkpCtgRepo.getBy(category,
                     checkCdt.getCheckConditionLis());
+
+            if (!conditionCtgOpt.isPresent()) continue;
+            AlarmCheckCdtWorkplaceCategory conditionCtg = conditionCtgOpt.get();
+            List<String> alarmCheckWkpId;
+            List<String> extractionIds;
+            List<String> optionalIds;
             DatePeriod period = new DatePeriod(GeneralDate.today(), GeneralDate.today());
             // ループ中のカテゴリをチェック
             switch (category) {
                 case MASTER_CHECK_BASIC:
+                    alarmCheckWkpId = ((AlarmMasterBasicCheckCdt) conditionCtg.getCondition()).getAlarmCheckWkpID();
                     // アルゴリズム「マスタチェック(基本)の集計処理」を実行する
-                    alExtractInfos.addAll(aggregateProcessAdapter.processMasterCheckBasic(cid, period, Collections.emptyList(), workplaceIds));
+                    alExtractInfos.addAll(aggregateProcessAdapter.processMasterCheckBasic(cid, period, alarmCheckWkpId, workplaceIds));
                     break;
                 case MASTER_CHECK_DAILY:
+                    alarmCheckWkpId = ((AlarmMasterDailyCheckCdt) conditionCtg.getCondition()).getAlarmCheckWkpID();
                     // アルゴリズム「マスタチェック(日別)の集計処理」を実行する
                     break;
                 case MASTER_CHECK_WORKPLACE:
+                    alarmCheckWkpId = ((AlarmMasterWkpCheckCdt) conditionCtg.getCondition()).getAlarmCheckWkpID();
                     // アルゴリズム「マスタチェック(職場)の集計処理」を実行する
                     break;
                 case SCHEDULE_DAILY:
+                    extractionIds = ((AlarmScheduleCheckCdt) conditionCtg.getCondition()).getListExtractionIDs();
+                    optionalIds = ((AlarmScheduleCheckCdt) conditionCtg.getCondition()).getListOptionalIDs();
                     // アルゴリズム「スケジュール／日次の集計処理」を実行する
                     break;
                 case MONTHLY:
+                    extractionIds = ((AlarmScheduleCheckCdt) conditionCtg.getCondition()).getListExtractionIDs();
+                    optionalIds = ((AlarmScheduleCheckCdt) conditionCtg.getCondition()).getListOptionalIDs();
                     // アルゴリズム「月次の集計処理」を実行する
                     break;
                 case APPLICATION_APPROVAL:
+                    alarmCheckWkpId = ((AlarmAppApprovalCheckCdt) conditionCtg.getCondition()).getAlarmCheckWkpID();
                     // アルゴリズム「申請承認の集計処理」を実行する
                     break;
             }

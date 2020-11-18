@@ -20,9 +20,9 @@ public class AggregateProcessPubImpl implements AggregateProcessPub {
 
     @Override
     public List<AlarmListExtractionInfoWorkplaceExport> processMasterCheckBasic(String cid, DatePeriod period,
-                                                                                List<String> workplaceErrorCheckIds,
+                                                                                List<String> alarmCheckWkpId,
                                                                                 List<String> workplaceIds) {
-        return convert(aggregateProcessMasterCheckBasicService.process(cid, period, workplaceErrorCheckIds, workplaceIds));
+        return convert(aggregateProcessMasterCheckBasicService.process(cid, period, alarmCheckWkpId, workplaceIds));
     }
 
     private List<AlarmListExtractionInfoWorkplaceExport> convert(List<AlarmListExtractionInfoWorkplaceDto> data) {

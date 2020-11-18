@@ -56,8 +56,8 @@ public class JpaAlarmWkpAlstchkConcatRepository extends JpaRepository implements
     }
 
     @Override
-    public List<AlarmCheckCdtWorkplaceCategory> getBy(WorkplaceCategory category, List<AlarmCheckConditionCode> codes) {
-        return new ArrayList<>();
+    public Optional<AlarmCheckCdtWorkplaceCategory> getBy(WorkplaceCategory category, List<AlarmCheckConditionCode> codes) {
+        return Optional.empty();
     }
 
     private List<AlarmCheckCdtWorkplaceCategory> toDomain(List<KfnmtWkpAlstchkConcat> entityMain, List<KfnmtCatMapEachType> entitySub) {
