@@ -75,45 +75,44 @@ module nts.uk.at.view.kml002.c {
       ・「回数集計」の利用区分＝＝利用するが「回数集計」の詳細設定はまだ設定られない。
       ・「時間帯人数」の利用区分＝＝利用するが「時間帯人数」の詳細設定はまだ設定られない。
       */
+      let errorParams = []; const maxMsg = 3;
 
-      if ((vm.count1() === Usage.Use && vm.count1Details().length === 0)
-        || (vm.count2() === Usage.Use && vm.count2Details().length === 0)
-        || (vm.count3() === Usage.Use && vm.count3Details().length === 0)) {
-        let errorParams = [];
+      if (vm.count1() === Usage.Use && vm.count1Details().length === 0) {
+        errorParams.push(vm.$i18n('KML002_119') + vm.$i18n('KML002_69'));
+      }
 
-        if (vm.count1() === Usage.Use &&  vm.count1Details().length === 0)
-          errorParams.push(vm.$i18n('KML002_119') + vm.$i18n('KML002_69'));
-        else
-          errorParams.push('');
+      if (vm.count2() === Usage.Use && vm.count2Details().length === 0) {
+        errorParams.push(vm.$i18n('KML002_119') + vm.$i18n('KML002_72'));
+      }
 
-        if (vm.count2() === Usage.Use && vm.count2Details().length === 0)
-          errorParams.push(vm.$i18n('KML002_119') + vm.$i18n('KML002_72'));
-        else
-          errorParams.push('');
+      if (vm.count3() === Usage.Use && vm.count3Details().length === 0) {
+        errorParams.push(vm.$i18n('KML002_119') + vm.$i18n('KML002_75'));
+      }
 
-        if (vm.count3() === Usage.Use && vm.count3Details().length === 0)
-          errorParams.push(vm.$i18n('KML002_119') + vm.$i18n('KML002_75'));
-        else
-          errorParams.push('');
-
-        let showMsg = [];
+      let showMsg = [],
+        Msg_id: string = errorParams.length > 0 ? 'Msg_1850' : 'Msg_15';
+      if (errorParams.length > 0) {
         _.forEach(errorParams, (x, index) => {
           if (x !== '') showMsg.push(x);
         });
-        for (let i = showMsg.length; i < errorParams.length; i++) {
+        for (let i = showMsg.length; i < maxMsg; i++) {
           showMsg.push('');
         }
-
-        vm.$dialog.error({
-          messageId: 'Msg_1850',
-          messageParams: showMsg
-        }).then(() => {
-          $('#btnRegister').focus();
-        });
-        return;
       }
 
-      vm.personalCounterRegister();
+      vm.$blockui('show');
+
+      let wpCategory = vm.createParamsToSave();
+      let params = { personalCategory: wpCategory };
+      vm.$ajax(PATH.personalCounterRegister, params).done(() => {
+        vm.$dialog.info({ messageId: Msg_id, messageParams: showMsg }).then(() => {
+          vm.$blockui('hide');
+          $('#B322').focus();
+        });
+      })
+        .fail()
+        .always();
+
     }
     /**
      * 
@@ -131,26 +130,6 @@ module nts.uk.at.view.kml002.c {
       vm.getNumberCounterDetails(1);
       vm.getNumberCounterDetails(2);
       vm.getNumberCounterDetails(3);
-    }
-
-    /**
-     * 
-     */
-    personalCounterRegister() {
-      const vm = this;
-
-      vm.$blockui('show');
-
-      let wpCategory = vm.createParamsToSave();
-      let params = { personalCategory: wpCategory };
-      vm.$ajax(PATH.personalCounterRegister, params).done(() => {
-        vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
-          vm.$blockui('hide');
-          $('#B322').focus();
-        });
-      })
-        .fail()
-        .always();
     }
 
     /**

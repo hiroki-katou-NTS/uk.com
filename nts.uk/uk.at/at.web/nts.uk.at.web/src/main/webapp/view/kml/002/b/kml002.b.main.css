@@ -55,7 +55,9 @@
 .kml-002-b .content-table tbody td:nth-child(4) {
   white-space: break-spaces;
 }
-
+#fixed-table {
+  width: 100%;
+}
 #fixed-table tbody tr td:nth-child(2) {
   text-align: center;
 }

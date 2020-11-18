@@ -11,7 +11,7 @@
       <ui:define name="htmlHead">
         <com:scriptfile set="IGNITE" />
         <script>
-          var dialogSize = { width: 580, height: 520 };
+          var dialogSize = { width: 580, height: 540 };
         </script>
         <com:stylefile path="kml002.g.main.css" />
         <com:scriptfile path="kml002.g.vm.js" />
@@ -77,7 +77,7 @@
           ></div>
             <div class="swapList-footer" data-bind="with: limitedItems">
               <label
-                class="bg-daily-error color-daily-holiday"
+                class="label warning"
                 data-bind="text: $vm.$i18n('KML002_114')"
               ></label>
             </div>

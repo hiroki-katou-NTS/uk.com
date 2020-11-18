@@ -108,12 +108,19 @@ module nts.uk.at.view.kml002.g {
     getTimeNumberCounter() {
       const vm = this;      
       vm.$blockui('show');
-      vm.$ajax( PATH.timeNumberCounterGetInfo, { countType :  vm.countingType() }).done((data) => {            
+      vm.$ajax( PATH.timeNumberCounterGetInfo, { countType :  vm.countingType() }).done((data) => {   
+        console.log(data);         
         if(!_.isNil(data)) {          
-          if(!_.isNil(data.countNumberOfTimeDtos)) {
+          if(data.countNumberOfTimeDtos.length > 0) {
             vm.createSelectableItems(data.countNumberOfTimeDtos);            
+          } else {
+            vm.$dialog.error({ messageId: 'Msg_37' }).then(() => {
+              vm.$blockui('hide');
+              vm.$window.close();
+            });
           }
-          if(!_.isNil(data.numberOfTimeTotalDtos)) {
+          
+          if(data.numberOfTimeTotalDtos.length > 0) {
             vm.currentCodeListSwap(data.numberOfTimeTotalDtos);            
           }
         }
