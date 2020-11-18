@@ -53,7 +53,14 @@
 	border-bottom: solid thin #B1B1B1;
 }
 
+#content {
+	overflow-y: auto;
+}
+
 #contents-area {
-	width: 314px;
-	height: 314px;
+	width: 305px;
+	margin: 0 auto;
+	height: 314px !important;
+	border: 1px solid #B1B1B1;
+	border-top: 0;
 }
