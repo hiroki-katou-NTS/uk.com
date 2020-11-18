@@ -21,12 +21,10 @@ import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZonePerNo;
 import nts.uk.ctx.at.shared.dom.worktime.WorkSetting.Require;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
-import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingHelper.FlexWorkSettingImpl;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingHelper.FlowWkRestTimezoneHelper;
-import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingHelper.HDWorkTimeSheetSettingImpl;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingHelper.OverTimeOfTimeZoneSetHelper;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
@@ -72,8 +70,6 @@ public class FlexWorkSettingTest {
 		
 		val isWorkingOnDayOff = true;
 		
-
-		
 		val result = flexWorkSetting.getBreakTimeZone(isWorkingOnDayOff, AmPmAtr.ONE_DAY);
 		
 		assertThat( result.isFixed() ).isTrue();
@@ -101,9 +97,9 @@ public class FlexWorkSettingTest {
 		
 		val flexWorkSetting = FlexWorkSettingHelper.createFlexOffRestTimeZone(offRestTimeZone);
 
-		val actual = flexWorkSetting.getBreakTimeZone(isWorkingOnDayOff, AmPmAtr.ONE_DAY);
-		assertThat( actual.isFixed() ).isFalse();
-		assertThat( actual.getBreakTimes() ).isEmpty();
+		val result = flexWorkSetting.getBreakTimeZone(isWorkingOnDayOff, AmPmAtr.ONE_DAY);
+		assertThat( result.isFixed() ).isFalse();
+		assertThat( result.getBreakTimes() ).isEmpty();
 	
 	}
 	
@@ -135,11 +131,11 @@ public class FlexWorkSettingTest {
 		
 		val flexWorkSetting = FlexWorkSettingHelper.createFlexHaftRestTimeZone(flexHalfRestTimezone);
 		
-		val actual = flexWorkSetting.getBreakTimeZone(isWorkingOnDayOff, AmPmAtr.ONE_DAY);
+		val result = flexWorkSetting.getBreakTimeZone(isWorkingOnDayOff, AmPmAtr.ONE_DAY);
 		
-		assertThat( actual.isFixed() ).isTrue();
+		assertThat( result.isFixed() ).isTrue();
 		
-		assertThat( actual.getBreakTimes() ).containsExactlyInAnyOrderElementsOf(restTimezone.getFixedRestTimezone().getRestTimezonesForCalc());
+		assertThat( result.getBreakTimes() ).containsExactlyInAnyOrderElementsOf(restTimezone.getFixedRestTimezone().getRestTimezonesForCalc());
 	}
 	
 
@@ -345,7 +341,6 @@ public class FlexWorkSettingTest {
 		val morningEndTime = TimeWithDayAttr.hourMinute( 12,  0 );
 		val afternoonStartTime = TimeWithDayAttr.hourMinute( 13,  0 );
 		
-
 		//コアタイム
 		val timeSheet = new TimeSheet(TimeWithDayAttr.hourMinute(8,  0 ), TimeWithDayAttr.hourMinute(16,  0 ));
 		
@@ -372,7 +367,6 @@ public class FlexWorkSettingTest {
 	    // 就業の時間帯 = (10:00, 12:00)ので、コアタイム= 所定時間設定のafternoonStartTime, コアタイムのend,
 	    // 時間帯1 = [残業時間帯のmin, コアタイムのstart],
 	    // 時間帯2 = [コアタイムのend, 残業時間帯のmax]
-	    
 	    val excepted = ChangeableWorkingTimeZonePerNo.create(
 	    		  new WorkNo(1)
 	    		, new TimeSpanForCalc(TimeWithDayAttr.hourMinute(5,  0 ), afternoonStartTime)
@@ -486,10 +480,9 @@ public class FlexWorkSettingTest {
 	 */
 	@Test
 	public void createWorkOnDayOffTime() {
-		List<HDWorkTimeSheetSetting> lstWorkTimezone=  Arrays.asList(
-				   new HDWorkTimeSheetSetting(new HDWorkTimeSheetSettingImpl(TimeWithDayAttr.hourMinute(8, 00), TimeWithDayAttr.hourMinute(12, 00)))
-				,  new HDWorkTimeSheetSetting(new HDWorkTimeSheetSettingImpl(TimeWithDayAttr.hourMinute(13, 00), TimeWithDayAttr.hourMinute(18, 00)))
-				
+		val lstWorkTimezone=  Arrays.asList(
+				   FlexWorkSettingHelper.createHdWorkTimeSheet(TimeWithDayAttr.hourMinute(8, 00), TimeWithDayAttr.hourMinute(12, 00))
+				 , FlexWorkSettingHelper.createHdWorkTimeSheet(TimeWithDayAttr.hourMinute(13, 00), TimeWithDayAttr.hourMinute(18, 00))
 				);
 		
 		val flexWorkSetting = FlexWorkSettingHelper.createFlexWorkSetting(lstWorkTimezone);
@@ -527,7 +520,7 @@ public class FlexWorkSettingTest {
 							, d -> d.getForEnd().getEnd())
 	                    .containsExactly( 
                     		Tuple.tuple(
-                    				new WorkNo(1) 
+                    				  new WorkNo(1) 
                     				, TimeWithDayAttr.hourMinute(8, 00)  //lstWorkTimezoneのmin
                     				, TimeWithDayAttr.hourMinute(18, 00) //lstWorkTimezoneのmax
                     				, TimeWithDayAttr.hourMinute(8, 00)  //lstWorkTimezoneのmin
