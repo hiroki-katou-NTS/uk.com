@@ -184,7 +184,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
 			if(_.isEmpty(empMailLst)) {
 				return '';	
 			}
-			return _.chain(empMailLst).map(o => o.empName + (o.empMail ? '(@)' : '')).join(', ').value();
+			return _.chain(empMailLst).map(o => o.empName + (o.empMail ? vm.$i18n('KAF018_503') : '')).join(vm.$i18n('KAF018_504')).value();
 		}
 		
 		sendMail() {
