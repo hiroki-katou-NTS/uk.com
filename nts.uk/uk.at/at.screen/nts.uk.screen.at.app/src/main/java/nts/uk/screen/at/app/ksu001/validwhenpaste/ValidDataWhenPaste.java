@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package nts.uk.screen.at.app.ksu001.validwhenpaste;
 
@@ -14,7 +14,11 @@ import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
@@ -30,7 +34,7 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class ValidDataWhenPaste {
-	
+
 	@Inject
 	private BasicScheduleService basicScheduleService;
 	@Inject
@@ -52,12 +56,12 @@ public class ValidDataWhenPaste {
 		}
 		return result;
 	}
-	
+
 	@AllArgsConstructor
 	private static class RequireWorkInforImpl implements WorkInformation.Require {
-		
+
 		private final String companyId = AppContexts.user().companyId();
-		
+
 		@Inject
 		private WorkTypeRepository workTypeRepo;
 		@Inject
@@ -67,26 +71,42 @@ public class ValidDataWhenPaste {
 		@Inject
 		private BasicScheduleService basicScheduleService;
 		@Override
-		
+
 		public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
 			 return basicScheduleService.checkNeededOfWorkTimeSetting(workTypeCode);
 		}
 		@Override
-		public Optional<WorkType> findByPK(String workTypeCd) {
+		public Optional<WorkType> getWorkType(String workTypeCd) {
 			return workTypeRepo.findByPK(companyId, workTypeCd);
 		}
 		@Override
-		public Optional<WorkTimeSetting> findByCode(String workTimeCode) {
+		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
 			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
 		}
 		@Override
-		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTimeCd,
-				String workTypeCd, Integer workNo) {
+		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd, Integer workNo) {
 			return workTimeSettingService .getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
 		}
 		@Override
-		public WorkStyle checkWorkDay(String workTypeCode) {
-			return basicScheduleService.checkWorkDay(workTypeCode);
+		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
 		}
+		@Override
+		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+		@Override
+		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+		@Override
+		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
 	}
 }

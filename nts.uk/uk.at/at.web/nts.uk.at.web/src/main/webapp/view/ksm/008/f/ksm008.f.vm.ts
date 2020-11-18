@@ -371,6 +371,7 @@ module nts.uk.at.ksm008.f {
                             vm.selectedableCodes(empsCanNotSameHolidays);
 
                             vm.moveItemToRight();
+                            vm.selectedTargetCode([]);
                         }
 
                         if (data.checkDayReference) {
