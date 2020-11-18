@@ -49,9 +49,9 @@ module nts.uk.at.view.kml002.g {
     }
 
     mounted() {
-      const vm = this;      
-      $('.nts-gridlist').attr('tabindex', '-1');
-      $('#swapList-gridArea1').attr('tabindex', '3').focus();
+      const vm = this;            
+      $("#swapList-grid1").igGrid("container").focus();
+      //$('#swapList-gridArea1').attr('tabindex', '3').focus();
     }
 
     closeDialog() {
