@@ -13,6 +13,7 @@ module nts.uk.at.view.kml002.g {
     currentCodeListSwap: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
 
     columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
+    gridHeight: KnockoutObservable<number> = ko.observable(285);
     countingType: KnockoutObservable<number> = ko.observable(0);   
 
     limitedItems: KnockoutObservable<string> = ko.observable(null);
@@ -40,6 +41,10 @@ module nts.uk.at.view.kml002.g {
     created(params: any) {
       const vm = this;
       //_.extend(window, { vm });
+
+      const userAgent = window.navigator.userAgent;
+      let msie = userAgent.match(/Trident.*rv\:11\./);
+      if(!_.isNil(msie) && msie.index > -1) vm.gridHeight(290);
     }
 
     mounted() {
@@ -119,7 +124,7 @@ module nts.uk.at.view.kml002.g {
               vm.$window.close();
             });
           }
-          
+
           if(data.numberOfTimeTotalDtos.length > 0) {
             vm.currentCodeListSwap(data.numberOfTimeTotalDtos);            
           }
