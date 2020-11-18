@@ -9,6 +9,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.sys.portal.dom.toppage.TopPageReloadSetting;
 import nts.uk.ctx.sys.portal.dom.toppage.TopPageReloadSettingRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class AddTopPageReloadSettingCommandHandler extends CommandHandler<ToppageReloadSettingCommand>{
@@ -18,11 +19,12 @@ public class AddTopPageReloadSettingCommandHandler extends CommandHandler<Toppag
 	@Override
 	protected void handle(CommandHandlerContext<ToppageReloadSettingCommand> context) {
 		ToppageReloadSettingCommand command = context.getCommand();
-		Optional<TopPageReloadSetting> data = this.repo.getByCompanyId(command.getCId());
+		String cId = AppContexts.user().companyId();
+		Optional<TopPageReloadSetting> data = this.repo.getByCompanyId(cId);
 		if (data.isPresent()) {
-			this.repo.update(TopPageReloadSetting.toDomain(command.getCId(), command.getReloadInteval()));
+			this.repo.update(TopPageReloadSetting.toDomain(cId, command.getReloadInteval()));
 		} else {
-			this.repo.insert(TopPageReloadSetting.toDomain(command.getCId(), command.getReloadInteval()));
+			this.repo.insert(TopPageReloadSetting.toDomain(cId, command.getReloadInteval()));
 		}
 	}
 }

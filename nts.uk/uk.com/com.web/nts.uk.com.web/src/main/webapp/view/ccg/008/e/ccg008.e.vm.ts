@@ -9,7 +9,7 @@ module nts.uk.at.view.ccg008.e.screenModel {
     isEditable: KnockoutObservable<boolean> = ko.observable(false);
     isRequired: KnockoutObservable<boolean> = ko.observable(false);
     selectFirstIfNull: KnockoutObservable<boolean> = ko.observable(false);
-    cId: KnockoutObservable<string> = ko.observable(__viewContext.user.companyId);
+    cId: KnockoutObservable<string> = ko.observable('');
     created(){
       const vm = this;
       const data = nts.uk.ui.windows.getShared('DataFromScreenA');

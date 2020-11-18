@@ -7,12 +7,12 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+      <com:stylefile path="../../common/common.css" />
 			<com:stylefile path="ccg008.a.style.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="ccg008.a.start.js" />
 			<com:scriptfile path="ccg008.a.service.js" />
 			<com:scriptfile path="ccg008.a.vm.js" />
-			<com:stylefile path="../../common/common.css" />
 		</ui:define>
 
 		<ui:define name="content">
@@ -47,7 +47,6 @@
               }">
               </div>
             </com:ko-if>
-                
           </div>
           <com:ko-if bind="isShowButtonRefresh">
             <div id = "reload">
@@ -70,16 +69,15 @@
             <div class="contents_layout" id="resizable">
               <com:ko-if bind="isVisiableContentF2()">
                 <div class="contents_2" id="F2">
-                  <span>F2</span>
-                  <!-- <div class="panel panel-frame widget_contents" data-bind="foreach: lstWidgetLayout2">
+                  <div class="panel panel-frame widget_contents" data-bind="foreach: lstWidgetLayout2">
                     <div class="panel-content placeholder" data-bind="html: html"></div>
-                  </div> -->
+                  </div>
                 </div>
               </com:ko-if>
               <div class="contents_1" id="F1">
                 <div class="panel panel-frame">
                   <com:ko-if bind="isShowUrlLayout1()">
-                    <!-- <iframe class="iframe_fix" id="preview-iframe1" data-bind="attr:{src: urlIframe1}"></iframe> -->
+                    <iframe class="iframe_fix" id="preview-iframe1" data-bind="attr:{src: urlIframe1}"></iframe>
                   </com:ko-if>
                   <div data-bind="foreach: lstHtml">
                     <div data-bind="html: html" id="F1-frame" ></div>
@@ -89,10 +87,9 @@
               <com:ko-if bind="isVisiableContentF3()">
                 <div class="contents_3" id="F3">
                   <div class="widget_contents panel panel-frame">
-                    <span>F3</span>
-                    <!-- <div class="panel panel-frame widget_contents" data-bind="foreach: lstWidgetLayout2">
+                    <div class="panel panel-frame widget_contents" data-bind="foreach: lstWidgetLayout2">
                       <div class="panel-content placeholder" data-bind="html: html"></div>
-                    </div> -->
+                    </div>
                   </div>
                 </div>
               </com:ko-if>

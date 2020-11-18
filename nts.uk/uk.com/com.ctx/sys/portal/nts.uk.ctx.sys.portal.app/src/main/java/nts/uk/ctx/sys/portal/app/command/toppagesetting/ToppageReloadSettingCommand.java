@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class ToppageReloadSettingCommand {
-	private Integer reloadInteval;
-	private String cId;
+	public Integer reloadInteval;
+	public String cId;
 }
