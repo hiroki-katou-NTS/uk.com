@@ -60,7 +60,7 @@
 #contents-area {
 	width: 305px;
 	margin: 0 auto;
-	height: 314px !important;
+	max-height: 314px !important;
 	border: 1px solid #B1B1B1;
 	border-top: 0;
 }
