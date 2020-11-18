@@ -1,6 +1,3 @@
-
-
-
 import './s00';
 import './s02';
 import './s04';
@@ -10,3 +7,4 @@ import './s07';
 import './s08';
 import './s09';
 import './s12';
+import './sample';

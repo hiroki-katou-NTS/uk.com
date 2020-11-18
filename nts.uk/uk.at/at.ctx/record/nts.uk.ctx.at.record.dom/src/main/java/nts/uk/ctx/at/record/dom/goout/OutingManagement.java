@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.goout;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 
 @Getter
 @NoArgsConstructor

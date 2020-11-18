@@ -125,4 +125,25 @@ public class JpaAppReasonStandardRepository extends JpaRepository implements App
 		this.commandProxy().remove(KrcmtAppReason.class, new KrcmtAppReasonPk(companyId, appType, reasonCode, appType == 1 ? holidayAppType : 0));
 	}
 
+	@Override
+	public List<AppReasonStandard> findByListAppType(String companyID, List<Integer> appTypes) {
+		List<AppReasonStandard> result = new ArrayList<>();
+		List<KrcmtAppReason> entities = this.queryProxy().query("select a from KrcmtAppReason a where a.pk.companyId = :companyId and a.pk.applicationType IN :appTypes", KrcmtAppReason.class)
+				.setParameter("companyId", companyID)
+				.setParameter("appTypes", appTypes)
+				.getList();
+		Map<Integer, List<KrcmtAppReason>> mapEntities = entities.stream().collect(Collectors.groupingBy(KrcmtAppReason::getAppType));
+		mapEntities.forEach((appType, items) -> {
+			if (appType == 1) {
+				Map<Integer, List<KrcmtAppReason>> mapHdAppType = items.stream().collect(Collectors.groupingBy(KrcmtAppReason::getHolidayAppType));
+				mapHdAppType.forEach((hdAppType, hdItems) -> {
+					result.add(KrcmtAppReason.toDomain(hdItems));
+				});
+			} else {
+				result.add(KrcmtAppReason.toDomain(items));
+			}
+		});
+		return result;
+	}
+
 }
