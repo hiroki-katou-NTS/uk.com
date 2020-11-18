@@ -53,10 +53,11 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 				},
 				{ 
 					headerText: vm.$i18n('KAF018_373'),
-					key: 'empName',
+					key: 'empID',
 					width: '300px',
 					headerCssClass: 'kaf018-d-header-empName',
-					columnCssClass: 'kaf018-d-column-empName'
+					columnCssClass: 'kaf018-d-column-empName',
+					formatter: (key: string) => vm.getDispEmpName(key)
 				}
 			);
 			let dateRangeNumber = moment(vm.endDate,'YYYY/MM/DD').diff(moment(vm.startDate,'YYYY/MM/DD'), 'days');
@@ -92,6 +93,12 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 			$("#dGrid").css('visibility','hidden');
 			vm.createIggrid();
 			vm.refreshDataSource();
+		}
+		
+		getDispEmpName(value: string) {
+			const vm = this;
+			let	empInfo: EmpInfo = _.find(vm.dataSource, o => o.empID==value);
+			return empInfo.empCD + '　　　　' + empInfo.empName;
 		}
 		
 		getHeaderCss(value: any) {
@@ -157,7 +164,7 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 		
 		cellGridClick(evt: any, ui: any) {
 			const vm = this;
-			if(ui.colKey=="empName") {
+			if(ui.colKey=="empID") {
 				let empInfoLst = vm.dataSource,
 					startDate = vm.startDate,
 					endDate = vm.endDate,
