@@ -3,9 +3,9 @@ package nts.uk.ctx.at.function.app.command.alarmworkplace;
 import lombok.Getter;
 
 @Getter
-public class DeleteAlarmPatternSettingWorkPlaceDto {
+public class DeleteAlarmPatternSettingWorkPlaceCommand {
     /**
      * コード
      */
-    private int code;
+    private String code;
 }

@@ -10,10 +10,12 @@ import java.util.List;
  */
 @Getter
 public class AlarmPermissionSetting extends DomainObject {
+
 	/**
-	 * authentication setting
+	 * 権限設定を使用する
 	 */
 	private boolean authSetting;
+
 	/**
 	 *  list role
 	 */
