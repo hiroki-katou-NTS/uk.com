@@ -217,7 +217,6 @@ module nts.uk.ui.koExtentions {
 
             const event = allBindingsAccessor.get('event');
             const locale = allBindingsAccessor.get('locale');
-            const weekends = allBindingsAccessor.get('weekends');
             const editable = allBindingsAccessor.get('editable');
             const firstDay = allBindingsAccessor.get('firstDay');
             const scrollTime = allBindingsAccessor.get('scrollTime');
@@ -227,7 +226,7 @@ module nts.uk.ui.koExtentions {
             const businessHours = allBindingsAccessor.get('businessHours');
             const attendanceTimes = allBindingsAccessor.get('attendanceTimes');
 
-            const params = { events, event, locale, initialDate, initialView, scrollTime, weekends, editable, firstDay, slotDuration, attendanceTimes, businessHours, viewModel };
+            const params = { events, event, locale, initialDate, initialView, scrollTime, editable, firstDay, slotDuration, attendanceTimes, businessHours, viewModel };
             const component = { name, params };
 
             ko.applyBindingsToNode(element, { component }, bindingContext);
@@ -286,7 +285,6 @@ module nts.uk.ui.koExtentions {
         initialDate: Date | KnockoutObservable<Date>;
         scrollTime: number | KnockoutObservable<number>;
         slotDuration: SLOT_DURATION | KnockoutObservable<SLOT_DURATION>;
-        weekends: boolean | KnockoutObservable<boolean>;
         editable: boolean | KnockoutObservable<boolean>;
         firstDay: DAY_OF_WEEK | KnockoutObservable<DAY_OF_WEEK>;
         attendanceTimes: ATTENDANCE_TIME[] | KnockoutObservableArray<ATTENDANCE_TIME>;
@@ -354,7 +352,6 @@ module nts.uk.ui.koExtentions {
                     locale: ko.observable('ja'),
                     firstDay: ko.observable(1),
                     slotDuration: ko.observable(30),
-                    weekends: ko.observable(true),
                     editable: ko.observable(false),
                     initialView: ko.observable('fullWeek'),
                     initialDate: ko.observable(new Date()),
@@ -368,7 +365,7 @@ module nts.uk.ui.koExtentions {
                 };
             }
 
-            const { locale, event, events, scrollTime, initialDate, initialView, weekends, editable, firstDay, slotDuration, attendanceTimes, businessHours } = this.params;
+            const { locale, event, events, scrollTime, initialDate, initialView, editable, firstDay, slotDuration, attendanceTimes, businessHours } = this.params;
 
             if (locale === undefined) {
                 this.params.locale = ko.observable('ja');
@@ -384,10 +381,6 @@ module nts.uk.ui.koExtentions {
 
             if (initialView === undefined) {
                 this.params.initialView = ko.observable('fullWeek');
-            }
-
-            if (weekends === undefined) {
-                this.params.weekends = ko.observable(true);
             }
 
             if (editable === undefined) {
@@ -435,7 +428,7 @@ module nts.uk.ui.koExtentions {
         public mounted() {
             const vm = this;
             const { params, dataEvent } = vm;
-            const { locale, event, events, scrollTime, firstDay, weekends, editable, initialDate, initialView, viewModel, attendanceTimes } = params;
+            const { locale, event, events, scrollTime, firstDay, editable, initialDate, initialView, viewModel, attendanceTimes } = params;
 
             const $el = $(vm.$el);
             const $fc = $el.find('div.fc').get(0);
@@ -549,6 +542,8 @@ module nts.uk.ui.koExtentions {
                 disposeWhenNodeIsRemoved: vm.$el
             });
 
+            const weekends: KnockoutObservable<boolean> = ko.observable(true);
+
             const initialViewComputed = ko.computed({
                 read: () => {
                     const iv = ko.unwrap(initialView);
@@ -557,25 +552,20 @@ module nts.uk.ui.koExtentions {
 
                     switch (iv) {
                         case 'oneDay':
+                            weekends(true);
                             return 'timeGridDay';
                         default:
                         case 'fiveDay':
-                            if (ko.isObservable(weekends)) {
-                                weekends(false);
-                            } else if (calendar) {
-                                calendar.setOption('weekends', false);
-                            }
+                            weekends(false);
                             return 'timeGridWeek';
                         case 'fullWeek':
-                            if (ko.isObservable(weekends)) {
-                                weekends(true);
-                            } else if (calendar) {
-                                calendar.setOption('weekends', true);
-                            }
+                            weekends(true);
                             return 'timeGridWeek';
                         case 'fullMonth':
+                            weekends(true);
                             return 'dayGridMonth';
                         case 'listWeek':
+                            weekends(true);
                             return 'listWeek';
                     }
                 },
@@ -637,12 +627,7 @@ module nts.uk.ui.koExtentions {
                             if (calendar.view.type !== 'timeGridDay') {
                                 activeClass(evt.target);
 
-                                if (ko.isObservable(weekends)) {
-                                    weekends(true);
-                                } else {
-                                    calendar.setOption('weekends', true);
-                                }
-
+                                weekends(true);
                                 if (ko.isObservable(initialView)) {
                                     initialView('oneDay');
                                 } else {
@@ -657,12 +642,7 @@ module nts.uk.ui.koExtentions {
                             if (calendar.view.type !== 'timeGridWeek' || ko.unwrap(weekends) !== false) {
                                 activeClass(evt.target);
 
-                                if (ko.isObservable(weekends)) {
-                                    weekends(false);
-                                } else {
-                                    calendar.setOption('weekends', false);
-                                }
-
+                                weekends(false);
                                 if (ko.isObservable(initialView)) {
                                     initialView('fiveDay');
                                 } else {
@@ -677,12 +657,7 @@ module nts.uk.ui.koExtentions {
                             if (calendar.view.type !== 'timeGridWeek' || ko.unwrap(weekends) !== true) {
                                 activeClass(evt.target);
 
-                                if (ko.isObservable(weekends)) {
-                                    weekends(true);
-                                } else {
-                                    calendar.setOption('weekends', true);
-                                }
-
+                                weekends(true);
                                 if (ko.isObservable(initialView)) {
                                     initialView('fullWeek');
                                 } else {
@@ -697,12 +672,7 @@ module nts.uk.ui.koExtentions {
                             if (calendar.view.type !== 'dayGridMonth') {
                                 activeClass(evt.target);
 
-                                if (ko.isObservable(weekends)) {
-                                    weekends(true);
-                                } else {
-                                    calendar.setOption('weekends', true);
-                                }
-
+                                weekends(true);
                                 if (ko.isObservable(initialView)) {
                                     initialView('fullMonth');
                                 } else {
@@ -717,12 +687,7 @@ module nts.uk.ui.koExtentions {
                             if (calendar.view.type !== 'listWeek') {
                                 activeClass(evt.target);
 
-                                if (ko.isObservable(weekends)) {
-                                    weekends(true);
-                                } else {
-                                    calendar.setOption('weekends', true);
-                                }
-
+                                weekends(true);
                                 if (ko.isObservable(initialView)) {
                                     initialView('listWeek');
                                 } else {
@@ -981,6 +946,9 @@ module nts.uk.ui.koExtentions {
                 calendar.setOption('height', `${innerHeight - top - 10}px`);
             }
 
+            // change weekends 
+            weekends.subscribe(w => calendar.setOption('weekends', w));
+
             // change view
             initialViewComputed.subscribe((view) => calendar.changeView(view));
 
@@ -997,13 +965,7 @@ module nts.uk.ui.koExtentions {
                 locale.subscribe(l => calendar.setOption('locale', l));
             }
 
-            // set weekends
-            if (ko.isObservable(weekends)) {
-                weekends.subscribe(w => calendar.setOption('weekends', w));
-            }
-
             // set editable
-
             if (ko.isObservable(editable)) {
                 editable.subscribe(e => {
                     calendar.setOption('editable', e);
