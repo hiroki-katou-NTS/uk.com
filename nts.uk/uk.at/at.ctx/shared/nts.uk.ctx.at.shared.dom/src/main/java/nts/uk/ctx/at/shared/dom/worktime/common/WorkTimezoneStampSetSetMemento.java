@@ -12,11 +12,11 @@ import java.util.List;
 public interface WorkTimezoneStampSetSetMemento {
 
 	/**
-	 * Sets the rounding set.
+	 * Sets the rounding time.
 	 *
-	 * @param rdSet the new rounding set
+	 * @param rdSet the new rounding time
 	 */
- 	void setRoundingSet(List<RoundingSet> rdSet);
+ 	void setRoundingTime(RoundingTime rdSet);
 
 	/**
 	 * Sets the priority set.

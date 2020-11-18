@@ -15,13 +15,9 @@ public final class RegistTimeColumn {
 	public static final String S1KMK008_83 ="起算月";
 	//A7_5
 	public static final String S1KMK008_84 = "締め日";
-	//A7_6
-	public static final String S1KMK008_85 = "超過回数上限";
-	//A7_7
-	public static final String S1KMK008_86 = "対象データ";
+
 
 	public static final String HEADER_NONE1 = "";
-	public static final String HEADER_NONE2 = "  ";
 
 	/**
 	 *  sheet 2
@@ -54,85 +50,86 @@ public final class RegistTimeColumn {
 	/**
 	 *  common column
 	 */
-	public static final String KMK008_89 = "期間／上限";
+	public static final String KMK008_89 = "KMK008_89";
 
-	public static final String KMK008_92 = "限度時間";
+	public static final String KMK008_92 = "KMK008_92";
 
-	public static final String KMK008_90 = "エラー時間";
+	public static final String KMK008_90 = "KMK008_90";
 
-	public static final String KMK008_91 = "アラーム時間";
+	public static final String KMK008_91 = "KMK008_91";
 
-	public static final String KMK008_204 = "上限回数";
+	public static final String KMK008_204 = "KMK008_204";
 
-	public static final String KMK008_162 = "月間限度時間の上限超過回数";
+	public static final String KMK008_205 = "KMK008_205";
 
-	public static final String KMK008_96 = "1カ月";
+	public static final String KMK008_162 = "KMK008_162";
 
-	public static final String KMK008_206 = "1カ月（特別条項）";
+	public static final String KMK008_96 = "KMK008_96";
 
-	public static final String KMK008_99 = "1年間";
+	public static final String KMK008_206 = "KMK008_206";
 
-	public static final String KMK008_207 = "1年間（特別条項）";
+	public static final String KMK008_99 = "KMK008_99";
 
-	public static final String KMK008_170 = "複数月平均";
+	public static final String KMK008_207 = "KMK008_207";
+
+	public static final String KMK008_170 = "KMK008_170";
 
 
 	/**
 	 *  sheet 5
 	 */
 	// A15_1
-	public static final String S5KMK008_100 = "雇用コード";
+	public static final String S5KMK008_100 = "KMK008_100";
 	// A15_2
-	public static final String S5KMK008_101 = "雇用名";
+	public static final String S5KMK008_101 = "KMK008_101";
 
 	/**
 	 *  sheet 6
 	 */
 	// A17_1
-	public static final String S6KMK008_102 = "職場コード";
+	public static final String S6KMK008_102 = "KMK008_102";
 	// A17_2
-	public static final String S6KMK008_103 = "職場名";
-
+	public static final String S6KMK008_103 = "KMK008_103";
 
 	/**
 	 *  sheet 7
 	 */
 	// A19_1
-	public static final String S7KMK008_104 = "分類コード";
+	public static final String S7KMK008_104 = "KMK008_104";
 	// A19_2
-	public static final String S7KMK008_105 = "分類名";
+	public static final String S7KMK008_105 = "KMK008_105";
 
 	/**
 	 *  sheet 8
 	 */
 	// A21_1
-	public static final String S8KMK008_89 = "期間/上限";
+	public static final String S8KMK008_89 = "KMK008_89";
 	// A21_2
-	public static final String S8KMK008_92 = "限度時間";
+	public static final String S8KMK008_92 = "KMK008_92";
 
 	/**
 	 *  sheet 9
 	 */
 	// A23_1
-	public static final String S9KMK008_100 = "雇用コード";
+	public static final String S9KMK008_100 = "KMK008_100";
 	// A23_2
-	public static final String S9KMK008_101 = "雇用名";
+	public static final String S9KMK008_101 = "KMK008_101";
 
 	/**
 	 *  sheet 10
 	 */
 	// A25_1
-	public static final String S10KMK008_102 = "職場コード";
+	public static final String S10KMK008_102 = "KMK008_102";
 	// A25_2
-	public static final String S10KMK008_103 = "職場名";
+	public static final String S10KMK008_103 = "KMK008_103";
 
 	/**
 	 *  sheet 11
 	 */
 	// A27_1
-	public static final String S11KMK008_104 = "分類コード";
+	public static final String S11KMK008_104 = "KMK008_104";
 	// A27_2
-	public static final String S11KMK008_105 = "分類名";
+	public static final String S11KMK008_105 = "KMK008_105";
 
 	/**
 	 *  sheet 12

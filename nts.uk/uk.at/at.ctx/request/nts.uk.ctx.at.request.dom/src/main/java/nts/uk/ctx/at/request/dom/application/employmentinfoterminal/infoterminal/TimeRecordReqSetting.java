@@ -23,6 +23,12 @@ public class TimeRecordReqSetting implements DomainAggregate {
 	private final Integer terminalCode;
 
 	/**
+	 * 契約コード
+	 */
+	@Getter
+	private final String contractCode;
+
+	/**
 	 * 会社ID
 	 */
 	@Getter
@@ -35,10 +41,22 @@ public class TimeRecordReqSetting implements DomainAggregate {
 	private final String companyCode;
 
 	/**
+	 * 社員ID送信
+	 */
+	@Getter
+	private final boolean sendEmployeeId;
+
+	/**
 	 * 社員ID
 	 */
 	@Getter
 	private final List<EmployeeId> employeeIds;
+
+	/**
+	 * 弁当メニュー枠番送信
+	 */
+	@Getter
+	private final boolean sendBentoMenu;
 
 	/**
 	 * 弁当メニュー枠番
@@ -47,10 +65,22 @@ public class TimeRecordReqSetting implements DomainAggregate {
 	private final List<Integer> bentoMenuFrameNumbers;
 
 	/**
+	 * 勤務種類コード送信
+	 */
+	@Getter
+	private final boolean sendWorkType;
+
+	/**
 	 * 勤務種類コード
 	 */
 	@Getter
 	private final List<WorkTypeCode> workTypeCodes;
+
+	/**
+	 * 就業時間帯コード送信
+	 */
+	@Getter
+	private final boolean sendWorkTime;
 
 	/**
 	 * 就業時間帯コード
@@ -94,14 +124,31 @@ public class TimeRecordReqSetting implements DomainAggregate {
 	@Getter
 	private final boolean timeSetting;
 
+	/**
+	 * リモート設定
+	 */
+	@Getter
+	private final boolean remoteSetting;
+
+	/**
+	 * 再起動を行う
+	 */
+	@Getter
+	private final boolean reboot;
+
 	public TimeRecordReqSetting(ReqSettingBuilder builder) {
 		super();
 		this.terminalCode = builder.terminalCode;
+		this.contractCode = builder.contractCode;
 		this.companyId = builder.companyId;
 		this.companyCode = builder.companyCode;
+		this.sendEmployeeId = builder.sendEmployeeId;
 		this.employeeIds = builder.employeeIds;
+		this.sendBentoMenu = builder.sendBentoMenu;
 		this.bentoMenuFrameNumbers = builder.bentoMenuFrameNumbers;
+		this.sendWorkType = builder.sendWorkType;
 		this.workTypeCodes = builder.workTypeCodes;
+		this.sendWorkTime = builder.sendWorkTime;
 		this.workTimeCodes = builder.workTimeCodes;
 		this.overTimeHoliday = builder.overTimeHoliday;
 		this.applicationReason = builder.applicationReason;
@@ -109,6 +156,8 @@ public class TimeRecordReqSetting implements DomainAggregate {
 		this.reservationReceive = builder.reservationReceive;
 		this.applicationReceive = builder.applicationReceive;
 		this.timeSetting = builder.timeSetting;
+		this.remoteSetting = builder.remoteSetting;
+		this.reboot = builder.reboot;
 	}
 
 	public static class ReqSettingBuilder {
@@ -116,6 +165,12 @@ public class TimeRecordReqSetting implements DomainAggregate {
 		 * コード
 		 */
 		private Integer terminalCode;
+
+		/**
+		 * 契約コード
+		 */
+		@Getter
+		private final String contractCode;
 
 		/**
 		 * 会社ID
@@ -128,20 +183,45 @@ public class TimeRecordReqSetting implements DomainAggregate {
 		private String companyCode;
 
 		/**
+		 * 社員ID送信
+		 */
+		@Getter
+		private  boolean sendEmployeeId;
+
+		
+		/**
 		 * 社員ID
 		 */
 		private List<EmployeeId> employeeIds;
 
+		/**
+		 * 弁当メニュー枠番送信
+		 */
+		@Getter
+		private  boolean sendBentoMenu;
+		
 		/**
 		 * 弁当メニュー枠番
 		 */
 		private List<Integer> bentoMenuFrameNumbers;
 
 		/**
+		 * 勤務種類コード送信
+		 */
+		@Getter
+		private  boolean sendWorkType;
+		
+		/**
 		 * 勤務種類コード
 		 */
 		private List<WorkTypeCode> workTypeCodes;
 
+		/**
+		 * 就業時間帯コード送信
+		 */
+		@Getter
+		private  boolean sendWorkTime;
+		
 		/**
 		 * 就業時間帯コード
 		 */
@@ -176,10 +256,23 @@ public class TimeRecordReqSetting implements DomainAggregate {
 		 * 時刻セット
 		 */
 		private boolean timeSetting;
+		
+		/**
+		 * リモート設定
+		 */
+		@Getter
+		private  boolean remoteSetting;
 
-		public ReqSettingBuilder(Integer terminalCode, CompanyId companyId, String companyCode,
+		/**
+		 * 再起動を行う
+		 */
+		@Getter
+		private  boolean reboot;
+
+		public ReqSettingBuilder(Integer terminalCode, String contractCode, CompanyId companyId, String companyCode,
 				List<EmployeeId> employeeIds, List<Integer> bentoMenuFrameNumbers, List<WorkTypeCode> workTypeCodes) {
 			this.terminalCode = terminalCode;
+			this.contractCode = contractCode;
 			this.companyId = companyId;
 			this.companyCode = companyCode;
 			this.employeeIds = employeeIds;
@@ -222,6 +315,36 @@ public class TimeRecordReqSetting implements DomainAggregate {
 			return this;
 		}
 
+		public ReqSettingBuilder sendEmployeeId(boolean sendEmployeeId) {
+			this.sendEmployeeId = sendEmployeeId;
+			return this;
+		}
+
+		public ReqSettingBuilder sendBentoMenu(boolean sendBentoMenu) {
+			this.sendBentoMenu = sendBentoMenu;
+			return this;
+		}
+
+		public ReqSettingBuilder sendWorkType(boolean sendWorkType) {
+			this.sendWorkType = sendWorkType;
+			return this;
+		}
+
+		public ReqSettingBuilder sendWorkTime(boolean sendWorkTime) {
+			this.sendWorkTime = sendWorkTime;
+			return this;
+		}
+
+		public ReqSettingBuilder remoteSetting(boolean remoteSetting) {
+			this.remoteSetting = remoteSetting;
+			return this;
+		}
+
+		public ReqSettingBuilder reboot(boolean reboot) {
+			this.reboot = reboot;
+			return this;
+		}
+		
 		public TimeRecordReqSetting build() {
 			return new TimeRecordReqSetting(this);
 		}

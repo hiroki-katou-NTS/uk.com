@@ -38,9 +38,6 @@ public class GetUnbalanceSuspension {
 		//追加用確定管理データをリストに追加する
 		addDataFixManaMonth(fixManaDataMonth, lstSub);
 		
-		//追加用確定管理データをリストに追加する
-		addDataFixManaMonth(fixManaDataMonth, lstSub);
-		
 		// アルゴリズム「暫定振出と紐付けをしない確定振休を取得する」を実行する
 		for (SubstitutionOfHDManagementData data : lstSub) {
 			acquireFixedSuspension(require, employeeId, data).ifPresent(x -> result.add(x));

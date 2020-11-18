@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.flexset;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -13,13 +14,17 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
-
-//import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.val;
+import nts.gul.util.OptionalUtil;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanDuplication;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.workrule.BreakTimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZone;
+import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZonePerNo;
 import nts.uk.ctx.at.shared.dom.worktime.WorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
@@ -37,11 +42,11 @@ import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
- * The Class FlexWorkSetting.
+ * フレックス勤務設定
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared.就業規則.就業時間帯.フレックス勤務設定.フレックス勤務設定
  */
 @Getter
 @NoArgsConstructor
-// フレックス勤務設定
 public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable, WorkSetting {
 
 	/** The company id. */
@@ -102,12 +107,16 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 		this.calculateSetting = memento.getCalculateSetting();
 	}
 
+	@Override
+	public WorkTimeCode getWorkTimeCode() {
+		return this.workTimeCode;
+	}
 	/**
 	 * Save to memento.
 	 *
 	 * @param memento the memento
 	 */
-	public void saveToMemento(FlexWorkSettingSetMemento memento){
+	public void saveToMemento(FlexWorkSettingSetMemento memento) {
 		memento.setcompanyId(this.companyId);
 		memento.setWorkTimeCode(this.workTimeCode);
 		memento.setCoreTimeSetting(this.coreTimeSetting);
@@ -129,21 +138,24 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 	 */
 	public void correctData(ScreenMode screenMode, WorkTimeDivision workTimeType, FlexWorkSetting other) {
 		// Dialog J: list stamp timezone
-		Map<Entry<WorkNo, GoLeavingWorkAtr>, StampReflectTimezone> mapStampReflectTimezone = other.getLstStampReflectTimezone().stream()
+		Map<Entry<WorkNo, GoLeavingWorkAtr>, StampReflectTimezone> mapStampReflectTimezone = other
+				.getLstStampReflectTimezone().stream()
 				.collect(Collectors.toMap(
 						item -> new ImmutablePair<WorkNo, GoLeavingWorkAtr>(item.getWorkNo(), item.getClassification()),
 						Function.identity()));
-		this.lstStampReflectTimezone.forEach(item -> item.correctData(screenMode, mapStampReflectTimezone.get(
-				new ImmutablePair<WorkNo, GoLeavingWorkAtr>(item.getWorkNo(), item.getClassification()))));
+		this.lstStampReflectTimezone.forEach(item -> item.correctData(screenMode, mapStampReflectTimezone
+				.get(new ImmutablePair<WorkNo, GoLeavingWorkAtr>(item.getWorkNo(), item.getClassification()))));
 
 		this.commonSetting.correctData(screenMode, other.getCommonSetting());
 
 		this.offdayWorkTime.correctData(screenMode, other);
 
 		this.coreTimeSetting.correctData(screenMode, other.getCoreTimeSetting());
-		//for dialog H
-		this.restSetting.correctData(screenMode, other.getRestSetting(), this.getLstHalfDayWorkTimezone().size() > 0
-				? this.getLstHalfDayWorkTimezone().get(0).getRestTimezone().isFixRestTime() : false);
+		// for dialog H
+		this.restSetting.correctData(screenMode, other.getRestSetting(),
+				this.getLstHalfDayWorkTimezone().size() > 0
+						? this.getLstHalfDayWorkTimezone().get(0).getRestTimezone().isFixRestTime()
+						: false);
 	}
 
 	/**
@@ -159,13 +171,16 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 
 		this.coreTimeSetting.correctDefaultData(screenMode);
 
-		//for dialog H
-		this.restSetting.correctDefaultData(screenMode,this.getLstHalfDayWorkTimezone().size() > 0
-				? this.getLstHalfDayWorkTimezone().get(0).getRestTimezone().isFixRestTime() : false);
+		// for dialog H
+		this.restSetting.correctDefaultData(screenMode,
+				this.getLstHalfDayWorkTimezone().size() > 0
+						? this.getLstHalfDayWorkTimezone().get(0).getRestTimezone().isFixRestTime()
+						: false);
 	}
 
 	/**
- 	 * create this Instance
+	 * create this Instance
+	 *
 	 * @return new Instance
 	 */
 	@Override
@@ -178,54 +193,59 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 			cloned.restSetting = this.restSetting.clone();
 			cloned.offdayWorkTime = this.offdayWorkTime.clone();
 			cloned.commonSetting = this.commonSetting.clone();
-			cloned.useHalfDayShift = this.useHalfDayShift ? true : false ;
-			cloned.lstHalfDayWorkTimezone = this.lstHalfDayWorkTimezone.stream().map(c -> c.clone()).collect(Collectors.toList());
-			cloned.lstStampReflectTimezone = this.lstStampReflectTimezone.stream().map(c -> c.clone()).collect(Collectors.toList());
+			cloned.useHalfDayShift = this.useHalfDayShift ? true : false;
+			cloned.lstHalfDayWorkTimezone = this.lstHalfDayWorkTimezone.stream().map(c -> c.clone())
+					.collect(Collectors.toList());
+			cloned.lstStampReflectTimezone = this.lstStampReflectTimezone.stream().map(c -> c.clone())
+					.collect(Collectors.toList());
 			cloned.calculateSetting = this.calculateSetting.clone();
-		}
-		catch (Exception e){
+		} catch (Exception e) {
 			throw new RuntimeException("AggregateTotalTimeSpentAtWork clone error.");
 		}
 		return cloned;
 	}
 
-
 	public List<EmTimeZoneSet> getEmTimeZoneSet(WorkType workType) {
 		return getFlexHalfDayWorkTime(workType.getAttendanceHolidayAttr()).isPresent()
-				?getFlexHalfDayWorkTime(workType.getAttendanceHolidayAttr()).get().getWorkTimezone().getLstWorkingTimezone()
-				:Collections.emptyList();
+				? getFlexHalfDayWorkTime(workType.getAttendanceHolidayAttr()).get().getWorkTimezone()
+						.getLstWorkingTimezone()
+				: Collections.emptyList();
 	}
 
 	public List<OverTimeOfTimeZoneSet> getOverTimeOfTimeZoneSet(WorkType workType) {
 		return getFlexHalfDayWorkTime(workType.getAttendanceHolidayAttr()).isPresent()
-				?getFlexHalfDayWorkTime(workType.getAttendanceHolidayAttr()).get().getWorkTimezone().getLstOTTimezone()
-				:Collections.emptyList();
+				? getFlexHalfDayWorkTime(workType.getAttendanceHolidayAttr()).get().getWorkTimezone().getLstOTTimezone()
+				: Collections.emptyList();
 	}
 
 	private Optional<FlexHalfDayWorkTime> getFlexHalfDayWorkTime(AttendanceHolidayAttr attendanceHolidayAttr) {
-		switch(attendanceHolidayAttr) {
-		case FULL_TIME:	return getFlexHalfDayWorkTime(AmPmAtr.ONE_DAY);
-		case MORNING:		return getFlexHalfDayWorkTime(AmPmAtr.AM);
-		case AFTERNOON:	return getFlexHalfDayWorkTime(AmPmAtr.PM);
-		case HOLIDAY:		return Optional.empty();
-		default:			throw new RuntimeException("Unknown AttendanceHolidayAttr");
+		switch (attendanceHolidayAttr) {
+		case FULL_TIME:
+			return getFlexHalfDayWorkTime(AmPmAtr.ONE_DAY);
+		case MORNING:
+			return getFlexHalfDayWorkTime(AmPmAtr.AM);
+		case AFTERNOON:
+			return getFlexHalfDayWorkTime(AmPmAtr.PM);
+		case HOLIDAY:
+			return Optional.empty();
+		default:
+			throw new RuntimeException("Unknown AttendanceHolidayAttr");
 		}
 	}
 
-	private Optional<FlexHalfDayWorkTime> getFlexHalfDayWorkTime(AmPmAtr amPmAtr){
+	private Optional<FlexHalfDayWorkTime> getFlexHalfDayWorkTime(AmPmAtr amPmAtr) {
 		return lstHalfDayWorkTimezone.stream().filter(timeZone -> timeZone.getAmpmAtr().equals(amPmAtr)).findFirst();
 	}
 
 	public FlowWorkRestTimezone getFlowWorkRestTimezone(WorkType workType) {
-		if(workType.getDailyWork().isHolidayWork()) {
+		if (workType.getDailyWork().isHolidayWork()) {
 			return this.offdayWorkTime.getRestTimezone();
 		}
-		if(this.getFlexHalfDayWorkTime(workType.getAttendanceHolidayAttr()).isPresent()) {
+		if (this.getFlexHalfDayWorkTime(workType.getAttendanceHolidayAttr()).isPresent()) {
 			return this.getFlexHalfDayWorkTime(workType.getAttendanceHolidayAttr()).get().getRestTimezone();
 		}
 		throw new RuntimeException("Not get FlexHalfDayWorkTime");
 	}
-
 
 	/**
 	 * 変更可能な勤務時間帯を取得する
@@ -234,8 +254,21 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 	 */
 	@Override
 	public ChangeableWorkingTimeZone getChangeableWorkingTimeZone(WorkSetting.Require require) {
-		// TODO 自動生成されたメソッド・スタブ
-		return null;
+		TimeSpanForCalc workingTimezone = this.lstHalfDayWorkTimezone.stream()
+				.filter(c -> c.getAmpmAtr() == AmPmAtr.ONE_DAY)
+				.map(c ->  c.getWorkTimezone().getFirstAndLastTimeOfWorkingTimezone())
+				.findFirst().get();
+		
+		val oneDay = this.createTimeZoneByAmPmCls(require, workingTimezone, AmPmAtr.ONE_DAY);
+		val workOnDayOff = this.createWorkOnDayOffTime(require);
+		if (!this.isUseHalfDayShift()) {
+			return ChangeableWorkingTimeZone.createWithoutSeparationOfHalfDay(oneDay, workOnDayOff);
+		}
+		
+		val morning = this.createTimeZoneByAmPmCls(require, workingTimezone, AmPmAtr.AM);
+		val evening = this.createTimeZoneByAmPmCls(require, workingTimezone, AmPmAtr.PM);
+
+		return ChangeableWorkingTimeZone.create(oneDay, morning, evening, workOnDayOff);
 	}
 
 	/**
@@ -246,11 +279,110 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 	 */
 	@Override
 	public BreakTimeZone getBreakTimeZone(boolean isWorkingOnDayOff, AmPmAtr amPmAtr) {
-		// TODO 自動生成されたメソッド・スタブ
-		return null;
+		FlowWorkRestTimezone breakTimeZone;
+		if (isWorkingOnDayOff) {
+			breakTimeZone = this.offdayWorkTime.getRestTimezone();
+		} else {
+			//休憩時間帯が存在しないのは想定外なので、emptyチェックしない。
+			breakTimeZone = this.lstHalfDayWorkTimezone.stream()
+					.filter(c -> c.getAmpmAtr() == amPmAtr)
+					.map(c -> c.getRestTimezone())
+					.findFirst().get();
+		}
+		
+		if (!breakTimeZone.isFixRestTime()) {
+			return BreakTimeZone.createAsNotFixed(Collections.emptyList());
+		}
+		
+		return BreakTimeZone.createAsFixed(breakTimeZone.getFixedRestTimezone().getRestTimezonesForCalc());
 	}
 
+	/**
+	 * [prv-1] 指定した午前午後区分の時間帯情報を作成する
+	 * @param require Require
+	 * @param wortime 就業の時間帯
+	 * @param ampmAtr 午前午後区分
+	 * @return
+	 */
+	private List<ChangeableWorkingTimeZonePerNo> createTimeZoneByAmPmCls(WorkSetting.Require require, TimeSpanForCalc wortime, AmPmAtr ampmAtr) {
+		List<TimeSpanForCalc> lstOTTimezone = this.lstHalfDayWorkTimezone.stream()
+				.filter(c -> c.getAmpmAtr() == ampmAtr )
+				.map(c -> c.getWorkTimezone().getFirstAndLastTimeOfOvertimeWorkingTimezone())
+				.flatMap(OptionalUtil::stream)
+				.collect(Collectors.toList());
+		
+		lstOTTimezone.add(wortime);
+		val wkTimePossibles = TimeSpanForCalc.join(lstOTTimezone).get();
+		if (this.coreTimeSetting.getTimesheet() == ApplyAtr.NOT_USE) {
+			return Arrays.asList(ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd(
+					  new WorkNo(1).toAttendance()
+					, wkTimePossibles)
+					);
+		}
+
+		val coreTime = this.getCoreTimeByAmPm(require, ampmAtr);
+		val startTime = new TimeSpanForCalc(wkTimePossibles.getStart(), coreTime.getStart());
+		val endTime = new TimeSpanForCalc(coreTime.getEnd(), wkTimePossibles.getEnd());
+		return Arrays.asList(ChangeableWorkingTimeZonePerNo.create(
+				  new WorkNo(1).toAttendance()
+				, startTime
+				, endTime
+				));
+	}
+
+	/**
+	 * [prv-2] 指定した午前午後区分のコアタイム時間帯を取得する
+	 * @param require
+	 * @param ampmAtr 午前午後区分
+	 * @return
+	 */
+	private TimeSpanForCalc getCoreTimeByAmPm(WorkSetting.Require require, AmPmAtr ampmAtr) {
+		if (ampmAtr == AmPmAtr.ONE_DAY) {
+			return new TimeSpanForCalc( this.coreTimeSetting.getCoreTimeSheet().getStartTime(),
+										this.coreTimeSetting.getCoreTimeSheet().getEndTime());
+		}
+
+		val predetermineTimeSetting = this.getPredetermineTimeSetting(require);
+
+		switch (ampmAtr) {
+			case AM:
+				return new TimeSpanForCalc(	  this.coreTimeSetting.getCoreTimeSheet().getStartTime()
+						   					, predetermineTimeSetting.getPrescribedTimezoneSetting().getMorningEndTime());
+			case PM:
+				return new TimeSpanForCalc(   predetermineTimeSetting.getPrescribedTimezoneSetting().getAfternoonStartTime()
+											, this.coreTimeSetting.getCoreTimeSheet().getEndTime());
+			default: 
+				throw new RuntimeException("AmPmAtrは、ONE_DAY、AM、PMの3種類しかなく、システムエラー");
+		}
+	}
+
+	/**
+	 * [prv-3] 休出時の時間帯を作成する
+	 * @param require
+	 * @return
+	 */
+	private List<ChangeableWorkingTimeZonePerNo> createWorkOnDayOffTime(WorkSetting.Require require) {
+
+		val preTimeSetting =  this.getPredetermineTimeSetting(require);
+
+		val workOnDayOffTimeList = this.offdayWorkTime.getLstWorkTimezone().stream()
+				.map(c -> c.getTimezone().timeSpan())
+				.collect(Collectors.toList());
+		// 休出時間がないことはないので、直接get
+		val workOnDayOffTime = TimeSpanForCalc.join(workOnDayOffTimeList).get();
+		
+		val workTimeList = preTimeSetting.getTimezoneByAmPmAtrForCalc(AmPmAtr.ONE_DAY);
+
+		
+		if (workTimeList.stream().allMatch(c -> c.checkDuplication(workOnDayOffTime) == TimeSpanDuplication.NOT_DUPLICATE)) {
+			return Collections.emptyList();
+		}
+
+		return Arrays.asList(ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd(
+				new WorkNo(1).toAttendance(), workOnDayOffTime));
+	}
 
 	public static interface Require {
 	}
+
 }

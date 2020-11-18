@@ -3,6 +3,7 @@ package nts.uk.screen.at.app.ksu001.sortsetting;
 import java.util.List;
 
 import lombok.Value;
+import nts.uk.ctx.at.schedule.app.find.schedule.employeeinfo.sortsetting.OrderListDto;
 
 @Value
 public class SortedListEmpDto {
@@ -16,5 +17,7 @@ public class SortedListEmpDto {
 	List<EmplInforATR> lstEmpInforATR;
 
 	List<String> lstEmpId;
+	List<EmployeeBaseDto> lstEmpBase;
+	List<OrderListDto> lstOrderColumn;
 
 }
