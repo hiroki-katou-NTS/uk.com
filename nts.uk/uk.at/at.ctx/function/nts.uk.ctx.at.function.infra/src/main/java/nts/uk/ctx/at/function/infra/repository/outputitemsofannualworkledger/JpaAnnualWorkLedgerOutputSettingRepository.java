@@ -232,7 +232,7 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
                     new KfnmtRptYrRecItemPk(destinationSettingId, e.pk.itemPos),
                     e.contractCode,
                     e.companyId,
-                    outputItemSettingName.v(),
+                    e.itemName,
                     e.itemIsPrintEd,
                     e.itemCalculatorType,
                     e.itemAttendanceType,
