@@ -524,14 +524,4 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 								.getList().stream()
 								.map(t -> this.toDomain(t)).collect(Collectors.toList());
 	}
-
-	@Override
-	public List<DivergenceTimeRoot> findByCompanyAndUseDistination(String companyId, int useDistination) {
-		return this.queryProxy().query(FIND_BY_COMPANYID_AND_USE_ATR, KrcstDvgcTime.class)
-								.setParameter("companyId", companyId)
-								.setParameter("dvgcTimeUseSet", BigDecimal.valueOf(useDistination))
-								.getList().stream()
-								.map(t -> this.toDomain(t)).collect(Collectors.toList());
-	}
-
 }
