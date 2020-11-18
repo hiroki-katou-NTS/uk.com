@@ -162,8 +162,7 @@ public class AffiliationInforOfDailyAttd implements DomainObject  {
 	private static Optional<BonusPaySettingCode> getBonusPaySettingCode(Require require, String employeeId, GeneralDate standardDate) {
 		Optional<WorkingConditionItem> workingCondition = require.getWorkingConditionHistory(employeeId, standardDate);
 		if ( !workingCondition.isPresent()) {
-			throw new BusinessException("Msg_Id");
-			// TODO add msgId
+			throw new BusinessException("Msg_430");
 		}
 		
 		if ( ! workingCondition.get().getTimeApply().isPresent() ) {

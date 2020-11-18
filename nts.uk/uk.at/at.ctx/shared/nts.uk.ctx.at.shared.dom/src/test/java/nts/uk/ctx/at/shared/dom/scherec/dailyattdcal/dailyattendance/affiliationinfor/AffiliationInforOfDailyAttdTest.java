@@ -18,13 +18,13 @@ import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobTitleHisImport;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisImport;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import static mockit.Deencapsulation.invoke;
 
 public class AffiliationInforOfDailyAttdTest {
 	
 	@Injectable
 	AffiliationInforOfDailyAttd.Require require;
 	
-	@Ignore
 	@Test
 	public void testGetBonusPaySettingCode_exception() {
 
@@ -35,11 +35,8 @@ public class AffiliationInforOfDailyAttdTest {
 			
 		}};
 		
-		NtsAssert.businessException("Msg_Id", () -> 
-			NtsAssert.Invoke.staticMethod(
-					AffiliationInforOfDailyAttd.class, 
-					"getBonusPaySettingCode", 
-					require, "empId", GeneralDate.today())); 
+		NtsAssert.businessException("Msg_430", () -> 
+			invoke(AffiliationInforOfDailyAttd.class, "getBonusPaySettingCode", require, "empId", GeneralDate.today())); 
 		
 		
 	}
