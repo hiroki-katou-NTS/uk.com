@@ -2561,6 +2561,8 @@ public class ProgramsManager {
             "/view/kaf/018/g/index.xhtml");
     public static final Program KAF018H = new Program(WebAppId.AT, ProgramIdConsts.KAF018H, "KAF018_8",
             "/view/kaf/018/h/index.xhtml");
+    public static final Program KAF018I = new Program(WebAppId.AT, ProgramIdConsts.KAF018I, "KAF018_9",
+            "/view/kaf/018/i/index.xhtml");
 
     /**
      * KDM002.
