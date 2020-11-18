@@ -9,6 +9,7 @@ import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.*;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.*;
 import nts.uk.ctx.at.function.infra.entity.outputitemsofworkstatustable.*;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import java.util.List;
@@ -146,7 +147,7 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
 
         val result = this.queryProxy().query(FIND_WORK_STATUS_SETTING, KfnmtRptWkRecSetting.class)
                 .setParameter("cid", cid)
-                .setParameter("settingId", settingId).getSingle(e->JpaWorkStatusOutputSettingsRepository.toDomain(e,outputItem));
+                .setParameter("settingId", settingId).getSingle(e -> JpaWorkStatusOutputSettingsRepository.toDomain(e, outputItem));
         return result.orElse(null);
 
     }
@@ -170,27 +171,39 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
     public void update(String cid, WorkStatusOutputSettings outputSettings) {
         val settingId = outputSettings.getSettingId();
         this.commandProxy().update(KfnmtRptWkRecSetting.fromDomain(outputSettings, cid));
-        this.commandProxy().updateAll(KfnmtRptWkRecItem.fromDomain(cid, outputSettings));
-        this.queryProxy().query(DELETE_WORK_STATUS_CONST_CID, KfnmtRptWkRecDispCont.class)
+        val entityItem = this.queryProxy().query(FIND_DELETE_WORK_STATUS_ITEM, KfnmtRptWkRecItem.class)
+                .setParameter("settingId", settingId).getList();
+        if (!CollectionUtil.isEmpty(entityItem)) {
+            this.commandProxy().removeAll(entityItem);
+            this.getEntityManager().flush();
+            this.commandProxy().insertAll(KfnmtRptWkRecItem.fromDomain(cid, outputSettings));
+        }
+        val entityConst = this.queryProxy().query(FIND_DELETE_WORK_STATUS_CONST, KfnmtRptWkRecDispCont.class)
+                .setParameter("settingId", settingId)
                 .setParameter("cid", cid)
-                .setParameter("settingId", settingId);
-        this.getEntityManager().flush();
-        this.commandProxy().insertAll(KfnmtRptWkRecDispCont.fromDomain(cid, outputSettings));
+                .getList();
+        if (!CollectionUtil.isEmpty(entityConst)) {
+            this.commandProxy().removeAll(entityConst);
+            this.getEntityManager().flush();
+            this.commandProxy().insertAll(KfnmtRptWkRecDispCont.fromDomain(cid, outputSettings));
+        }
 
     }
 
     @Override
     public void delete(String settingId) {
         this.commandProxy().remove(KfnmtRptWkRecSetting.class, settingId);
-
-        val entityConst =  this.queryProxy().query(FIND_DELETE_WORK_STATUS_CONST, KfnmtRptWkRecDispCont.class)
-                .setParameter("settingId", settingId).getList();
-        if(!CollectionUtil.isEmpty(entityConst)){
+        val cid = AppContexts.user().companyId();
+        val entityConst = this.queryProxy().query(FIND_DELETE_WORK_STATUS_CONST, KfnmtRptWkRecDispCont.class)
+                .setParameter("settingId", settingId)
+                .getList();
+        if (!CollectionUtil.isEmpty(entityConst)) {
             this.commandProxy().removeAll(entityConst);
         }
         val entityItem = this.queryProxy().query(FIND_DELETE_WORK_STATUS_ITEM, KfnmtRptWkRecItem.class)
-                .setParameter("settingId", settingId).getList();
-        if(!CollectionUtil.isEmpty(entityItem)){
+                .setParameter("settingId", settingId)
+                .getList();
+        if (!CollectionUtil.isEmpty(entityItem)) {
             this.commandProxy().removeAll(entityItem);
         }
     }
@@ -217,8 +230,8 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
                 .setParameter("cid", cid)
                 .setParameter("settingId", replicationSourceSettingId).getList();
         if (!optEntityItem.isEmpty()) {
-            val listItem = optEntityItem.stream().map(e->new KfnmtRptWkRecItem(
-                    new KfnmtRptWkRecItemPk(replicationDestinationSettingId,e.pk.itemPos),
+            val listItem = optEntityItem.stream().map(e -> new KfnmtRptWkRecItem(
+                    new KfnmtRptWkRecItemPk(replicationDestinationSettingId, e.pk.itemPos),
                     e.contractCode,
                     e.companyId,
                     copyDestinationName.v(),
@@ -232,15 +245,16 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
                 .setParameter("cid", cid)
                 .setParameter("settingId", replicationSourceSettingId).getList();
         if (!optEntityConst.isEmpty()) {
-        val listItem = optEntityConst.stream().map(e->new KfnmtRptWkRecDispCont(
-                    new KfnmtRptWkRecDispContPk(replicationDestinationSettingId,e.pk.itemPos,e.pk.attendanceId),
+            val listItem = optEntityConst.stream().map(e -> new KfnmtRptWkRecDispCont(
+                    new KfnmtRptWkRecDispContPk(replicationDestinationSettingId, e.pk.itemPos, e.pk.attendanceId),
                     e.contractCode,
                     e.companyId,
                     e.operator
-            ) ).collect(Collectors.toList());
+            )).collect(Collectors.toList());
             this.commandProxy().insertAll(listItem);
         }
     }
+
     @Override
     public boolean exist(OutputItemSettingCode code, String cid) {
         val displayCode = Integer.parseInt(code.v());
@@ -262,7 +276,7 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
         return rs != null;
     }
 
-    private static WorkStatusOutputSettings toDomain(KfnmtRptWkRecSetting entity ) {
+    private static WorkStatusOutputSettings toDomain(KfnmtRptWkRecSetting entity) {
 
         return new WorkStatusOutputSettings(
                 entity.iD,
@@ -273,6 +287,7 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
                 null
         );
     }
+
     private static WorkStatusOutputSettings toDomain(KfnmtRptWkRecSetting entity, List<OutputItem> listItems) {
 
         return new WorkStatusOutputSettings(
