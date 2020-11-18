@@ -163,3 +163,48 @@
 .view-e-kmk004 .right-content .time-work {
 	margin-left: 190px;
 }
+
+/* ListTimeWork */
+.list-time .label-column1 {
+	padding: 3px;
+	border-left: solid 1px #AAAAAA;
+	border-right: solid 1px #AAAAAA;
+	border-bottom: solid 1px #AAAAAA;
+	text-align: center;
+	width: 50px;
+	background: #E0F59E;
+	max-width: 50px;
+	height: 24px;
+}
+.list-time .label-row1 {
+	border: solid 1px #AAAAAA;
+	padding: 3px;
+	text-align: center;
+	background: #97D155;
+	max-width: 50px;
+	height: 24px;
+}
+.list-time .label-column2 {
+	padding: 3px;
+	border-right: solid 1px #AAAAAA;
+	border-bottom: solid 1px #AAAAAA;
+	text-align: center;
+	width: 125px;
+	max-width: 125px;
+	height: 24px;
+}
+.list-time .label-row2 {
+	border-top: solid 1px #AAAAAA;
+	border-right: solid 1px #AAAAAA;
+	border-bottom: solid 1px #AAAAAA;
+	padding: 3px;
+	text-align: center;
+	background: #97D155;
+	max-width: 125px;
+	height: 24px;
+}
+.list-time .lable-input {
+	width: 60px;
+	text-align: center;
+	height: 13px;
+}

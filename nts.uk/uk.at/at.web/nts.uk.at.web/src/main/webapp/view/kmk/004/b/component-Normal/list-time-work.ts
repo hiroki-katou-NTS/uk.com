@@ -15,91 +15,38 @@ module nts.uk.at.view.kmk004.b {
         <div class="list-time">
             <table>
                 <tbody>
-                    <!-- ko if: check -->
                     <tr>
-                    </tr>
-                    <!-- /ko -->
-                    <tr>
-                        <td>
-                            <div class= "label-row1" data-bind="i18n: 'KMK004_221'"></div>
+                        <td class= "label-row1">
+                            <div data-bind="i18n: 'KMK004_221'"></div>
                         </td>
-                        <td>
-                            <div class= "label-row2" data-bind="i18n: 'KMK004_222'"></div>
+                        <td class= "label-row2">
+                            <div data-bind="i18n: 'KMK004_222'"></div>
                         </td>
                     </tr>
                     <!-- ko foreach: workTimes -->
                     <tr>
+                        <!-- ko if: check -->
+                            <td>
+                                Chung dep trai
+                            </td>
+                        <!-- /ko -->
                         <td class="label-column1" data-bind="text: $data.month"></td>
-                        <td>
-                            <div class="label-column2">
-                                <input class="lable-input" data-bind="ntsTextEditor: {value: $data.legalLaborTime}" />
-                            </div>
+                        <td class="label-column2">
+                            <input type="number" maxlength="6" class="lable-input" data-bind="ntsTextEditor: {value: $data.legalLaborTime}" />
                         </td>
                     </tr>
                     <!-- /ko -->
-                    <tr>
-                        <td>
-                            <div class="label-column1" data-bind="i18n: 'KMK004_223'"></div>
+                    <tr>    
+                        <td class="label-column1">
+                            <div data-bind="i18n: 'KMK004_223'"></div>
                         </td>
-                        <td>
-                            <div class="label-column2" data-bind="text: total"></div>
+                        <td class="label-column2">
+                            <div data-bind="text: total"></div>
                         </td>
                     </tr>
-                    <!-- ko if: flex -->
-                    <tr>
-                    </tr>
-                    <tr>
-                    </tr>
-                    <!-- /ko -->
                 </tbody>
             </table>
         </div>
-        <style type="text/css" rel="stylesheet">
-		.list-time .label-column1 {
-            padding: 3px;
-            border-left: solid 1px #AAAAAA;
-            border-right: solid 1px #AAAAAA;
-            border-bottom: solid 1px #AAAAAA;
-            text-align: center;
-            width: 50px;
-            background: #E0F59E;
-            max-width: 50px;
-            height: 24px;
-        }
-        .list-time .label-row1 {
-            border: solid 1px #AAAAAA;
-            padding: 3px;
-            text-align: center;
-            background: #97D155;
-            max-width: 50px;
-            height: 24px;
-        }
-        .list-time .label-column2 {
-            padding: 3px;
-            border-right: solid 1px #AAAAAA;
-            border-bottom: solid 1px #AAAAAA;
-            text-align: center;
-            width: 125px;
-            max-width: 125px;
-            height: 24px;
-        }
-        .list-time .label-row2 {
-            border-top: solid 1px #AAAAAA;
-            border-right: solid 1px #AAAAAA;
-            border-bottom: solid 1px #AAAAAA;
-            padding: 3px;
-            text-align: center;
-            background: #97D155;
-            max-width: 125px;
-            height: 24px;
-        }
-        .list-time .lable-input {
-            width: 60px;
-            text-align: center;
-            height: 13px;
-        }
-        </style>
-        <style type="text/css" rel="stylesheet" data-bind="html: $component.style"></style>
     `;
 
     @component({
@@ -109,10 +56,10 @@ module nts.uk.at.view.kmk004.b {
 
     class ListTimeWork extends ko.ViewModel {
 
-        public flex: KnockoutObservable<boolean> = ko.observable(true);
         public check: KnockoutObservable<boolean> = ko.observable(true);
+        public check1: KnockoutObservable<boolean> = ko.observable(true);
         public workTimes: KnockoutObservableArray<WorkTime> = ko.observableArray([]);
-        public total: KnockoutObservable<string> = ko.observable('');
+        public total: KnockoutObservable<number| null> = ko.observable(null);
 
 
         created() {
@@ -120,14 +67,40 @@ module nts.uk.at.view.kmk004.b {
             const input = { workType: TYPE, year: 2020 };
             var s = 0;
 
+            vm.init();
+
             vm.$ajax(API.GET_WORK_TIME, input)
                 .then((data: IWorkTime[]) => {
-                    vm.workTimes(data.map(m => new WorkTime({...m, parrent: vm.workTimes})));
+                    if (data.length > 0) {
+                        vm.workTimes(data.map(m => new WorkTime({ ...m, parrent: vm.workTimes })));
+                    }
                 });
-            
+
             vm.workTimes.subscribe((wts) => {
-                console.log(wts.reduce((p, c) => p+= Number(c.legalLaborTime()), 0));
+                
+                const total:number = wts.reduce((p, c) => p += Number(c.legalLaborTime()), 0);
+                if (total > 0) {
+                    vm.total(total)
+                }
             });
+        }
+
+        init() {
+            const vm = this;
+            const IWorkTime1:IWorkTime[] = [{ check: true, month: "1月度", legalLaborTime: null, withinLaborTime: null, weekAvgTime: null },
+            { check: true, month: "2月度", legalLaborTime: null, withinLaborTime: null, weekAvgTime: null },
+            { check: true, month: "3月度", legalLaborTime: null, withinLaborTime: null, weekAvgTime: null },
+            { check: true, month: "4月度", legalLaborTime: null, withinLaborTime: null, weekAvgTime: null },
+            { check: true, month: "5月度", legalLaborTime: null, withinLaborTime: null, weekAvgTime: null },
+            { check: true, month: "6月度", legalLaborTime: null, withinLaborTime: null, weekAvgTime: null },
+            { check: true, month: "7月度", legalLaborTime: null, withinLaborTime: null, weekAvgTime: null },
+            { check: true, month: "8月度", legalLaborTime: null, withinLaborTime: null, weekAvgTime: null },
+            { check: true, month: "9月度", legalLaborTime: null, withinLaborTime: null, weekAvgTime: null },
+            { check: true, month: "10月度", legalLaborTime: null, withinLaborTime: null, weekAvgTime: null },
+            { check: true, month: "11月度", legalLaborTime: null, withinLaborTime: null, weekAvgTime: null },
+            { check: true, month: "12月度", legalLaborTime: null, withinLaborTime: null, weekAvgTime: null }];
+
+            vm.workTimes(IWorkTime1.map(m => new WorkTime({ ...m, parrent: vm.workTimes })));
         }
     }
 
@@ -146,7 +119,7 @@ module nts.uk.at.view.kmk004.b {
         withinLaborTime: KnockoutObservable<number | null> = ko.observable(null);
         weekAvgTime: KnockoutObservable<number | null> = ko.observable(null);
 
-        constructor(params?: IWorkTime & { parrent: KnockoutObservableArray<WorkTime>}) {
+        constructor(params?: IWorkTime & { parrent: KnockoutObservableArray<WorkTime> }) {
             const md = this;
 
             md.create(params);
