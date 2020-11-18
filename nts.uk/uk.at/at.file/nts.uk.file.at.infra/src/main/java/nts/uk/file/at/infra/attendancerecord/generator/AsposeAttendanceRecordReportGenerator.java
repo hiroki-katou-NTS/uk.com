@@ -58,7 +58,7 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 	private static final String TEMPLATE_FILE_MEDIUM = "report/KWR002_FM.xlsx";
 	
 	/** The Constant TEMPLATE_FILE_MEDIUM. */
-	private static final String TEMPLATE_FILE_SMALL = "report/KWR002_FM.xlsx";
+	private static final String TEMPLATE_FILE_SMALL = "report/KWR002_FS.xlsx";
 
 	/** The Constant PDF_EXT. */
 	private static final String PDF_EXT = ".pdf";
