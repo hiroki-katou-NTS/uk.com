@@ -1,223 +1,281 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
-<body>
-	<ui:composition template="../../../../master/base.xhtml">
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component"
+  xmlns:h="http://xmlns.jcp.org/jsf/html"
+>
+  <body>
+    <ui:composition template="/master/dialog.xhtml">
+      <ui:define name="htmlHead">
+        <script>
+          var dialogSize = {
+            width: 840,
+            height: 750,
+          };
+        </script>
+        <com:scriptfile set="IGNITE" />
+        <com:stylefile path="cmm049.a.style.css" />
+        <com:scriptfile path="cmm049.a.vm.js" />
+        <com:ValidatorScript>
+          nts.uk.ctx.sys.env.dom.mailnoticeset.company.ContactName
+			  </com:ValidatorScript>
+      </ui:define>
 
-		<ui:define name="htmlHead">
-			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="cmm049.a.style.css" />
-			<com:scriptfile path="cmm049.a.service.js" />
-			<com:scriptfile path="../b/cmm049.b.service.js" />
-			<com:scriptfile path="cmm049.a.start.js" />
-			<com:scriptfile path="cmm049.a.vm.js" />
-		</ui:define>
-
-		<ui:define name="content">
-			<div id="functions-area">
-				<button id="button-save" tabindex="1" class="proceed"
-					data-bind="click: save">#{i18n.getText('CMM049_3')}</button>
-			</div>
-			<div id="contents-area">
-				<div class = "pad-10">
-					<label>#{i18n.getText('CMM049_4')}</label>
-				</div>
-				<div class="ui-iggrid pad-10" style="min-width:900px;">
-					<table>
-						<colgroup>
-							<col width="220px" />
-							<col width="70px" />
-							<col width="340px" />
-							<col width="240px" />
-							<col width="100px" />
-						</colgroup>
-						<thead>
-							<tr>
-								<th class="ui-widget-header" colspan="2">#{i18n.getText('CMM049_5')}</th>
-								<th class="ui-widget-header">#{i18n.getText('CMM049_6')}</th>
-								<th class="ui-widget-header">#{i18n.getText('CMM049_7')}</th>
-								<th class="ui-widget-header">#{i18n.getText('CMM049_8')}</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td class="bg-green" rowspan="2">#{i18n.getText('CMM049_9')}</td>
-								<td class="bg-green">#{i18n.getText('CMM049_10')}</td>
-								<td style="text-align: center;">
-									<div class="cf" tabindex="2"
-										data-bind="ntsSwitchButton: {
-											name: '#[CMM049_6]',
-											options: sendMailSetOptions,
-											optionsValue: 'code',
-											optionsText: 'name',
-											value: selectedPcComSendMailSet,
-											required: false,
-											enable: true }"></div>
-
-								</td>
-								<td style="text-align: center;">
-									<div class="cf" tabindex="3"
-										data-bind="ntsSwitchButton: {
-											name: '#[CMM049_7]',
-											options: selfEditSetOptions,
-											optionsValue: 'code',
-											optionsText: 'name',
-											value: selectedPcComSelfEditSet,
-											required: false,
-											enable: controlMailPcCom }"></div>
-								</td>
-								<td style="text-align: center;"><button tabindex="4"
-										style="width: 80px;"  data-bind="enable:controlMailPcCom,click: openDialogUserInfo.bind($data, 0)">#{i18n.getText('CMM049_15')}</button></td>
-							</tr>
-
-							<tr>
-								<td class="bg-green">#{i18n.getText('CMM049_11')}</td>
-								<td style="text-align: center;">
-									<div class="cf" tabindex="5"
-										data-bind="ntsSwitchButton: {
-											name: '#[CMM049_6]',
-											options: sendMailSetOptions,
-											optionsValue: 'code',
-											optionsText: 'name',
-											value: selectedPcPersonalSendMailSet,
-											required: false,
-											enable: true }"></div>
-
-								</td>
-								<td style="text-align: center;">
-									<div class="cf" tabindex="6"
-										data-bind="ntsSwitchButton: {
-											name: '#[CMM049_7]',
-											options: selfEditSetOptions,
-											optionsValue: 'code',
-											optionsText: 'name',
-											value: selectedPcPersonalSelfEditSet,
-											required: false,
-											enable: controlMailPcPersonal }"></div>
-								</td>
-								<td style="text-align: center;"><button tabindex="7"
-										style="width: 80px;" data-bind="enable:controlMailPcPersonal,click: openDialogUserInfo.bind($data, 1)">#{i18n.getText('CMM049_15')}</button></td>
-							</tr>
-
-							<tr>
-								<td class="bg-green" rowspan="2">#{i18n.getText('CMM049_12')}</td>
-								<td class="bg-green">#{i18n.getText('CMM049_10')}</td>
-								<td style="text-align: center;">
-									<div class="cf" tabindex="8"
-										data-bind="ntsSwitchButton: {
-											name: '#[CMM049_6]',
-											options: sendMailSetOptions ,
-											optionsValue: 'code',
-											optionsText: 'name',
-											value: selectedMobileComSendMailSet,
-											required: false,
-											enable: true }"></div>
-
-								</td>
-								<td style="text-align: center;">
-									<div class="cf" tabindex="9"
-										data-bind="ntsSwitchButton: {
-											name: '#[CMM049_7]',
-											options: selfEditSetOptions,
-											optionsValue: 'code',
-											optionsText: 'name',
-											value: selectedMobileComSelfEditSet,
-											required: false,
-											enable: controlMailMobileCom }"></div>
-								</td>
-								<td style="text-align: center;"><button tabindex="10"
-										style="width: 80px;" data-bind="enable:controlMailMobileCom,click: openDialogUserInfo.bind($data, 2)">#{i18n.getText('CMM049_15')}</button></td>
-							</tr>
-							<tr>
-								<td class="bg-green">#{i18n.getText('CMM049_11')}</td>
-								<td style="text-align: center;">
-									<div class="cf" tabindex="11"
-										data-bind="ntsSwitchButton: {
-											name: '#[CMM049_6]',
-											options: sendMailSetOptions,
-											optionsValue: 'code',
-											optionsText: 'name',
-											value: selectedMobilePersonalSendMailSet,
-											required: false,
-											enable: true }"></div>
-
-								</td>
-								<td style="text-align: center;">
-									<div class="cf" tabindex="12"
-										data-bind="ntsSwitchButton: {
-											name: '#[CMM049_7]',
-											options: selfEditSetOptions,
-											optionsValue: 'code',
-											optionsText: 'name',
-											value: selectedMobilePersonalSelfEditSet,
-											required: false,
-											enable: controlMailMobilePersonal }"></div>
-								</td>
-								<td style="text-align: center;"><button tabindex="13" data-bind = "enable:controlMailMobilePersonal,click: openDialogUserInfo.bind($data, 3)"
-										style="width: 80px;" >#{i18n.getText('CMM049_15')}</button></td>
-							</tr>
-							<tr>
-								<td class="bg-green" rowspan="2">#{i18n.getText('CMM049_13')}</td>
-								<td class="bg-green">#{i18n.getText('CMM049_10')}</td>
-								<td style="text-align: center;">
-									
-								</td>
-								<td style="text-align: center;">
-									<div class="cf" tabindex="14"
-										data-bind="ntsSwitchButton: {
-											name: '#[CMM049_7]',
-											options: selfEditSetOptions,
-											optionsValue: 'code',
-											optionsText: 'name',
-											value: selectedMobilePhoneComSelfEditSet,
-											required: false,
-											enable: true }"></div>
-								</td>
-								<td style="text-align: center;"></td>
-							</tr>
-							
-							<tr>
-								<td class="bg-green">#{i18n.getText('CMM049_11')}</td>
-								<td style="text-align: center;">
-								</td>
-								<td style="text-align: center;">
-									<div class="cf" tabindex="15"
-										data-bind="ntsSwitchButton: {
-											name: '#[CMM049_7]',
-											options: selfEditSetOptions,
-											optionsValue: 'code',
-											optionsText: 'name',
-											value: selectedMobilePhonePersonalSelfEditSet,
-											required: false,
-											enable: true }"></div>
-								</td>
-								<td style="text-align: center;"></td>
-							</tr>
-							
-							<tr>
-								<td class="bg-green" colspan="2" >#{i18n.getText('CMM049_14')}</td>
-								<td ></td>
-								<td style="text-align: center;">
-									<div class="cf" tabindex="16"
-										data-bind="ntsSwitchButton: {
-											name: '#[CMM049_7]',
-											options: selfEditSetOptions,
-											optionsValue: 'code',
-											optionsText: 'name',
-											value: selectedPasswordSelfEditSet,
-											required: false,
-											enable: true }"></div>
-								</td>
-								<td style="text-align: center;"></td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</ui:define>
-	</ui:composition>
-</body>
+      <ui:define name="content">
+        <div id="functions-area">
+          <button
+            id="A1_1"
+            tabindex="1"
+            class="proceed"
+            data-bind="i18n: 'CMM049_3', click: register"
+          ></button>
+          <button
+            id="A1_2"
+            tabindex="2"
+            data-bind="i18n: 'CMM049_67', click: closeDialog"
+          ></button>
+        </div>
+        <div>
+          <div id="A3" data-bind="ntsTabPanel: {dataSource: tabs, active: selectedTab}">
+            <div id="A4" class="tab-content-1">
+              <span data-bind="i18n: 'CMM049_29'"></span>
+              <div data-bind="ntsRadioBoxGroup: {
+                name: '#[CMM049_30]',
+                options: profileCheckList,
+                optionsValue: 'id',
+                optionsText: 'name',
+                value: profileSelectedId,
+                enable: true
+              }">
+            </div>
+            <table id="A4_2">
+              <tr>
+                <td class="bg-green" rowspan="15" data-bind="i18n: 'CMM049_41'"></td>
+                <td class="bg-green" data-bind="i18n: 'CMM049_42'"></td>
+                <td colspan="3">
+                  <div data-bind="ntsCheckBox: { checked: companyMobilePhoneDisplay, enable: true, text: $i18n('CMM049_36') }"></div>
+                  <div class="secondCheckbox" data-bind="ntsCheckBox: { checked: companyMobilePhoneUpdatable, enable: companyMobilePhoneDisplay, text: $i18n('CMM049_43') }"></div>
+                  <div class="lastCheckbox" data-bind="ntsCheckBox: { checked: companyMobilePhoneIndividual, enable: companyMobilePhoneDisplay, text: $i18n('CMM049_69') }"></div> 
+                </td>
+              </tr>
+              <tr>
+                <td class="bg-green" data-bind="i18n: 'CMM049_44'"></td>
+                <td colspan="3">
+                  <div data-bind="ntsCheckBox: { checked: personalMobilePhoneDisplay, enable: true, text: $i18n('CMM049_36') }"></div>
+                  <div class="secondCheckbox" data-bind="ntsCheckBox: { checked: personalMobilePhoneUpdatable, enable: personalMobilePhoneDisplay, text: $i18n('CMM049_43') }"></div>
+                  <div class="lastCheckbox" data-bind="ntsCheckBox: { checked: personalMobilePhoneIndividual, enable: personalMobilePhoneDisplay, text: $i18n('CMM049_69') }"></div>
+                </td>
+              </tr>
+              <tr>
+                <td class="bg-green" data-bind="i18n: 'CMM049_45'"></td>
+                <td colspan="3">
+                  <div data-bind="ntsCheckBox: { checked: emergencyNumber1Display, enable: true, text: $i18n('CMM049_36') }"></div>
+                  <div class="secondCheckbox" data-bind="ntsCheckBox: { checked: emergencyNumber1Updatable, enable: emergencyNumber1Display, text: $i18n('CMM049_43') }"></div>
+                  <div class="lastCheckbox" data-bind="ntsCheckBox: { checked: emergencyNumber1Individual, enable: emergencyNumber1Display, text: $i18n('CMM049_69') }"></div>
+                </td>
+              </tr>
+              <tr>
+                <td class="bg-green" data-bind="i18n: 'CMM049_46'"></td>
+                <td colspan="3">
+                  <div data-bind="ntsCheckBox: { checked: emergencyNumber2Display, enable: true, text: $i18n('CMM049_36') }"></div>
+                  <div class="secondCheckbox" data-bind="ntsCheckBox: { checked: emergencyNumber2Updatable, enable: emergencyNumber2Display, text: $i18n('CMM049_43') }"></div>
+                  <div class="lastCheckbox" data-bind="ntsCheckBox: { checked: emergencyNumber2Individual, enable: emergencyNumber2Display, text: $i18n('CMM049_69') }"></div>
+                </td>
+              </tr>
+              <tr>
+                <td class="bg-green" data-bind="i18n: 'CMM049_47'"></td>
+                <td colspan="3">
+                  <div data-bind="ntsCheckBox: { checked: dialInNumberDisplay, enable: true, text: $i18n('CMM049_36') }"></div>
+                  <div class="secondCheckbox" data-bind="ntsCheckBox: { checked: dialInNumberUpdatable, enable: dialInNumberDisplay, text: $i18n('CMM049_43') }"></div>
+                  <div class="lastCheckbox" data-bind="ntsCheckBox: { checked: dialInNumberIndividual, enable: dialInNumberDisplay, text: $i18n('CMM049_69') }"></div>
+                </td>
+              </tr>
+              <tr>
+                <td class="bg-green" data-bind="i18n: 'CMM049_48'"></td>
+                <td colspan="3">
+                  <div data-bind="ntsCheckBox: { checked: extensionNumberDisplay, enable: true, text: $i18n('CMM049_36') }"></div>
+                  <div class="secondCheckbox" data-bind="ntsCheckBox: { checked: extensionNumberUpdatable, enable: extensionNumberDisplay, text: $i18n('CMM049_43') }"></div>
+                  <div class="lastCheckbox" data-bind="ntsCheckBox: { checked: extensionNumberIndividual, enable: extensionNumberDisplay, text: $i18n('CMM049_69') }"></div>
+                </td>
+              </tr>
+              <tr>
+                <td class="bg-green" data-bind="i18n: 'CMM049_49'"></td>
+                <td colspan="3">
+                  <div data-bind="ntsCheckBox: { checked: companyEmailAddressDisplay, enable: true, text: $i18n('CMM049_36') }"></div>
+                  <div class="secondCheckbox" data-bind="ntsCheckBox: { checked: companyEmailAddressUpdatable, enable: companyEmailAddressDisplay, text: $i18n('CMM049_43') }"></div>
+                  <div class="lastCheckbox" data-bind="ntsCheckBox: { checked: companyEmailAddressIndividual, enable: companyEmailAddressDisplay, text: $i18n('CMM049_69') }"></div>
+                </td>
+              </tr>
+              <tr>
+                <td class="bg-green" data-bind="i18n: 'CMM049_50'"></td>
+                <td colspan="3">
+                  <div data-bind="ntsCheckBox: { checked: companyMobileEmailAddressDisplay, enable: true, text: $i18n('CMM049_36') }"></div>
+                  <div class="secondCheckbox" data-bind="ntsCheckBox: { checked: companyMobileEmailAddressUpdatable, enable: companyMobileEmailAddressDisplay, text: $i18n('CMM049_43') }"></div>
+                  <div class="lastCheckbox" data-bind="ntsCheckBox: { checked: companyMobileEmailAddressIndividual, enable: companyMobileEmailAddressDisplay, text: $i18n('CMM049_69') }"></div>
+                </td>
+              </tr>
+              <tr>
+                <td class="bg-green" data-bind="i18n: 'CMM049_51'"></td>
+                <td colspan="3">
+                  <div data-bind="ntsCheckBox: { checked: personalEmailAddressDisplay, enable: true, text: $i18n('CMM049_36') }"></div>
+                  <div class="secondCheckbox" data-bind="ntsCheckBox: { checked: personalEmailAddressUpdatable, enable: personalEmailAddressDisplay, text: $i18n('CMM049_43') }"></div>
+                  <div class="lastCheckbox" data-bind="ntsCheckBox: { checked: personalEmailAddressIndividual, enable: personalEmailAddressDisplay, text: $i18n('CMM049_69') }"></div>
+                </td>
+              </tr>
+              <tr>
+                <td class="bg-green" data-bind="i18n: 'CMM049_52'"></td>
+                <td colspan="3">
+                  <div data-bind="ntsCheckBox: { checked: personalMobileEmailAddressDisplay, enable: true, text: $i18n('CMM049_36') }"></div>
+                  <div class="secondCheckbox" data-bind="ntsCheckBox: { checked: personalMobileEmailAddressUpdatable, enable: personalMobileEmailAddressDisplay, text: $i18n('CMM049_43') }"></div>
+                  <div class="lastCheckbox" data-bind="ntsCheckBox: { checked: personalMobileEmailAddressIndividual, enable: personalMobileEmailAddressDisplay, text: $i18n('CMM049_69') }"></div>
+                </td>
+              </tr>
+              <tr>
+                <td class="bg-green" data-bind="i18n: 'CMM049_53'"></td>
+                <td class="contactName"><input id="A4_4_33" data-bind="ntsTextEditor: {
+                      name: '#[CMM049_58]',
+											constraint: 'ContactName',
+											value: contactName1,
+											option: {
+												textmode: 'text',
+												placeholder: '#{i18n.getText('CMM049_58')}',
+												width: '150px',
+												textalign: 'left'
+											}
+                    }" /></td>
+                <td><div data-bind="ntsCheckBox: { checked: otherContact1Display, enable: true, text: $i18n('CMM049_36') }"></div></td>
+                <td><div data-bind="ntsCheckBox: { checked: otherContact1Individual, enable: otherContact1Display, text: $i18n('CMM049_69') }"></div></td>
+              </tr>
+              <tr>
+                <td class="bg-green" data-bind="i18n: 'CMM049_54'"></td>
+                <td class="contactName"><input id="A4_4_36" data-bind="ntsTextEditor: {
+                      name: '#[CMM049_58]',
+											constraint: 'ContactName',
+											value: contactName2,
+											option: {
+												textmode: 'text',
+												placeholder: '#{i18n.getText('CMM049_58')}',
+												width: '150px',
+												textalign: 'left'
+											}
+                    }" /></td>
+                <td><div data-bind="ntsCheckBox: { checked: otherContact2Display, enable: true, text: $i18n('CMM049_36') }"></div></td>
+                <td><div data-bind="ntsCheckBox: { checked: otherContact2Individual, enable: otherContact2Display, text: $i18n('CMM049_69') }"></div></td>
+              </tr>
+              <tr>
+                <td class="bg-green" data-bind="i18n: 'CMM049_55'"></td>
+                <td class="contactName"><input id="A4_4_39" data-bind="ntsTextEditor: {
+                      name: '#[CMM049_58]',
+											constraint: 'ContactName',
+											value: contactName3,
+											option: {
+												textmode: 'text',
+												placeholder: '#{i18n.getText('CMM049_58')}',
+												width: '150px',
+												textalign: 'left'
+											}
+                    }" /></td>
+                <td><div data-bind="ntsCheckBox: { checked: otherContact3Display, enable: true, text: $i18n('CMM049_36') }"></div></td>
+                <td><div data-bind="ntsCheckBox: { checked: otherContact3Individual, enable: otherContact3Display, text: $i18n('CMM049_69') }"></div></td>
+              </tr>
+              <tr>
+                <td class="bg-green" data-bind="i18n: 'CMM049_56'"></td>
+                <td class="contactName"><input id="A4_4_42" data-bind="ntsTextEditor: {
+                      name: '#[CMM049_58]',
+											constraint: 'ContactName',
+											value: contactName4,
+											option: {
+												textmode: 'text',
+												placeholder: '#{i18n.getText('CMM049_58')}',
+												width: '150px',
+												textalign: 'left'
+											}
+                    }" /></td>
+                <td><div data-bind="ntsCheckBox: { checked: otherContact4Display, enable: true, text: $i18n('CMM049_36') }"></div></td>
+                <td><div data-bind="ntsCheckBox: { checked: otherContact4Individual, enable: otherContact4Display, text: $i18n('CMM049_69') }"></div></td>
+              </tr>
+              <tr>
+                <td class="bg-green" data-bind="i18n: 'CMM049_57'"></td>
+                <td class="contactName"><input id="A4_4_45" data-bind="ntsTextEditor: {
+                      name: '#[CMM049_58]',
+											constraint: 'ContactName',
+											value: contactName5,
+											option: {
+												textmode: 'text',
+												placeholder: '#{i18n.getText('CMM049_58')}',
+												width: '150px',
+												textalign: 'left'
+											}
+                    }" /></td>
+                <td><div data-bind="ntsCheckBox: { checked: otherContact5Display, enable: true, text: $i18n('CMM049_36') }"></div></td>
+                <td><div data-bind="ntsCheckBox: { checked: otherContact5Individual, enable: otherContact5Display, text: $i18n('CMM049_69') }"></div></td>
+              </tr>
+            </table>
+            </div>
+            <div id="A5" class="tab-content-2">
+              <span data-bind="i18n: 'CMM049_59'"></span>
+              <div data-bind="ntsRadioBoxGroup: {
+                  name: '#[CMM049_30]',
+                  options: passwordCheckList,
+                  optionsValue: 'id',
+                  optionsText: 'name',
+                  value: passwordSelectedId,
+                  enable: true
+                }">
+              </div>
+            </div>
+            <div id="A6" class="tab-content-3">
+              <span data-bind="i18n: 'CMM049_60'"></span>
+              <div data-bind="ntsRadioBoxGroup: {
+                  name: '#[CMM049_30]',
+                  options: noticeCheckList,
+                  optionsValue: 'id',
+                  optionsText: 'name',
+                  value: noticeSelectedId,
+                  enable: true
+                }">
+              </div>
+            </div>
+            <div id="A7" class="tab-content-4">
+              <span data-bind="i18n: 'CMM049_63'"></span>
+              <div data-bind="ntsRadioBoxGroup: {
+                  name: '#[CMM049_30]',
+                  options: speechCheckList,
+                  optionsValue: 'id',
+                  optionsText: 'name',
+                  value: speechSelectedId,
+                  enable: true
+                }">
+              </div>
+            </div>
+            <div id="A8" class="tab-content-5">
+              <table>
+                <tr>
+                  <td><div id="A8_1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMM049_64')}</div></td>
+                  <td><div id="A8_3" data-bind="ntsFormLabel: {}">#{i18n.getText('CMM049_65')}</div></td>
+                </tr>
+                <tr>
+                  <td>
+                    <table id="A8_2" data-bind="ntsGridList: {
+                      height: 300,
+                      dataSource: emailDataSource,
+                      columns: emailColumns,
+                      primaryKey: 'index',
+                      value: selectedEmailAddress
+                    }">
+                    </table>
+                  </td>
+                  <td>
+                    <table id="A8_4"></table>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </ui:define>
+    </ui:composition>
+  </body>
 </html>

@@ -5,7 +5,13 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageSettingRepository;
+import lombok.AllArgsConstructor;
+import nts.uk.ctx.sys.portal.dom.adapter.toppagesetting.LoginRoleSetCodeAdapter;
+import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPagePersonSetting;
+import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPagePersonSettingRepository;
+import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageRoleSetting;
+import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageRoleSettingRepository;
+import nts.uk.ctx.sys.portal.dom.toppagesetting.service.TopPageSettingService;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -17,7 +23,16 @@ import nts.uk.shr.com.context.AppContexts;
 public class TopPageSettingFinder {
 
 	@Inject
-	private TopPageSettingRepository topPageSettingRepo;
+	private TopPagePersonSettingRepository topPagePersonSettingRepo;
+	
+	@Inject
+	private TopPageRoleSettingRepository topPageRoleSettingRepo;
+	
+	@Inject
+	private LoginRoleSetCodeAdapter adapter;
+
+	@Inject
+	private TopPageSettingService domainService;
 
 	/**
 	 * find topPageSetting Object base on companyId
@@ -25,12 +40,46 @@ public class TopPageSettingFinder {
 	 * @return topPageSettingDto
 	 */
 	public TopPageSettingDto findByCId() {
-		String companyId = AppContexts.user().companyId();
-		Optional<TopPageSettingDto> topPageSettingDto = topPageSettingRepo.findByCId(companyId)
-				.map(x -> TopPageSettingDto.fromDomain(x));
-		if (topPageSettingDto.isPresent()) {
-			return topPageSettingDto.get();
+		TopPageSettingRequireImpl require = new TopPageSettingRequireImpl(
+				this.topPagePersonSettingRepo,
+				this.topPageRoleSettingRepo,
+				this.adapter);
+		Optional<TopPageSettingDto> topPageSettingDto = this.domainService.getTopPageSettings(
+				require,
+				AppContexts.user().companyId(), 
+				AppContexts.user().employeeId()).map(TopPageSettingDto::fromDomain);
+		return topPageSettingDto.orElse(null);
+	}
+	
+	@AllArgsConstructor
+	private static class TopPageSettingRequireImpl implements TopPageSettingService.Require {
+
+		@Inject
+		private TopPagePersonSettingRepository topPagePersonSettingRepo;
+		
+		@Inject
+		private TopPageRoleSettingRepository topPageRoleSettingRepo;
+		
+		@Inject
+		private LoginRoleSetCodeAdapter adapter;
+		
+		@Override
+		public Optional<TopPagePersonSetting> getTopPagePersonSetting(String companyId, String employeeId) {
+			return this.topPagePersonSettingRepo.getByCompanyIdAndEmployeeId(companyId, employeeId);
 		}
-		return null;
+
+		@Override
+		public Optional<String> getRoleSetCode() {
+			if (this.adapter.getLoginRoleSet().isPresent()) {
+				return Optional.of(this.adapter.getLoginRoleSet().get().getRoleSetCd());
+			}
+			return Optional.empty();
+		}
+
+		@Override
+		public Optional<TopPageRoleSetting> getTopPageRoleSetting(String companyId, String roleSetCode) {
+			return this.topPageRoleSettingRepo.getByCompanyIdAndRoleSetCode(companyId, roleSetCode);
+		}
+		
 	}
 }

@@ -40,7 +40,8 @@ public class StorageHistoryFinder {
 					.sorted(Comparator.comparing(ResultOfSavingDto::getSaveStartDatetime))
 					.collect(Collectors.toList());
 			return list;
-		} else return null;
+		}
+		return null;
 	}
 	
 	private ResultOfSavingDto updatePractitioner(ResultOfSavingDto dto) {

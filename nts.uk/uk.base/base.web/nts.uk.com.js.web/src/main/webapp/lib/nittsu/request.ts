@@ -765,6 +765,10 @@ module nts.uk.request {
         jumpToMenu('nts.uk.com.web/view/ccg/008/a/index.xhtml');
     }
 
+    export function jumpToSettingPersonalPage() {
+        jumpToOtherWebApp('com', 'view/cmm/048/a/index.xhtml');
+    }
+
     export function resolvePath(path: string) {
         var destination: Locator;
         if (path.charAt(0) === '/') {

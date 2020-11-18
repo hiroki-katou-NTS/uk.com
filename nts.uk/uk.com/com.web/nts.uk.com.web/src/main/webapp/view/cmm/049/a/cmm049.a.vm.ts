@@ -1,251 +1,1259 @@
 module nts.uk.com.view.cmm049.a {
+  const API = {
+    findByCid: "query/cmm049userinformationsetting/get",
+    insertOrUpdate: "sys/env/userinformationusermethod/insertorupdate",
+  };
 
-    import ListUserInfoUseMethodDto = nts.uk.com.view.cmm049.a.service.UserInfoUseMethodDto;
-    import serviceB = nts.uk.com.view.cmm049.b.service
-    export module viewmodel {
+  @bean()
+  export class ScreenModel extends ko.ViewModel {
+    $grid!: JQuery;
 
-        export class ScreenModel {
-            enums: any;
-            sendMailSetOptions: KnockoutObservableArray<any>;
-            selfEditSetOptions: KnockoutObservableArray<any>;
+    public tabs: KnockoutObservableArray<any>;
+    public selectedTab: KnockoutObservable<string>;
 
-            selectedPcComSendMailSet: KnockoutObservable<number>;
-            selectedPcComSelfEditSet: KnockoutObservable<number>;
+    public profileCheckList: KnockoutObservableArray<CheckboxModel> = ko.observableArray([]);
+    public profileSelectedId: KnockoutObservable<number> = ko.observable(1);
 
-            selectedPcPersonalSendMailSet: KnockoutObservable<number>;
-            selectedPcPersonalSelfEditSet: KnockoutObservable<number>;
+    public passwordCheckList: KnockoutObservableArray<CheckboxModel> = ko.observableArray([]);
+    public passwordSelectedId: KnockoutObservable<number> = ko.observable(1);
 
-            selectedMobileComSendMailSet: KnockoutObservable<number>;
-            selectedMobileComSelfEditSet: KnockoutObservable<number>;
+    public noticeCheckList: KnockoutObservableArray<CheckboxModel> = ko.observableArray([]);
+    public noticeSelectedId: KnockoutObservable<number> = ko.observable(1);
 
-            selectedMobilePersonalSendMailSet: KnockoutObservable<number>;
-            selectedMobilePersonalSelfEditSet: KnockoutObservable<number>;
+    public speechCheckList: KnockoutObservableArray<CheckboxModel> = ko.observableArray([]);
+    public speechSelectedId: KnockoutObservable<number> = ko.observable(1);
 
-            selectedMobilePhoneComSelfEditSet: KnockoutObservable<number>;
-            selectedMobilePhonePersonalSelfEditSet: KnockoutObservable<number>;
+    // A4
+    public contactName1: KnockoutObservable<string> = ko.observable("");
+    public contactName2: KnockoutObservable<string> = ko.observable("");
+    public contactName3: KnockoutObservable<string> = ko.observable("");
+    public contactName4: KnockoutObservable<string> = ko.observable("");
+    public contactName5: KnockoutObservable<string> = ko.observable("");
 
-            selectedPasswordSelfEditSet: KnockoutObservable<number>;
+    public companyMobilePhoneDisplay: KnockoutObservable<boolean> = ko.observable();
+    public companyMobilePhoneUpdatable: KnockoutObservable<boolean> = ko.observable();
+    public companyMobilePhoneIndividual: KnockoutObservable<boolean> = ko.observable();
 
-            //controls
-            controlMailPcCom: KnockoutObservable<boolean>;
-            controlMailPcPersonal: KnockoutObservable<boolean>;
-            controlMailMobileCom: KnockoutObservable<boolean>;
-            controlMailMobilePersonal: KnockoutObservable<boolean>;
+    public personalMobilePhoneDisplay: KnockoutObservable<boolean> = ko.observable();
+    public personalMobilePhoneUpdatable: KnockoutObservable<boolean> = ko.observable();
+    public personalMobilePhoneIndividual: KnockoutObservable<boolean> = ko.observable();
 
-            constructor() {
-                var self = this;
-                //switch button options
-                self.sendMailSetOptions = ko.observableArray([]);
-                self.selfEditSetOptions = ko.observableArray([]);
+    public emergencyNumber1Display: KnockoutObservable<boolean> = ko.observable();
+    public emergencyNumber1Updatable: KnockoutObservable<boolean> = ko.observable();
+    public emergencyNumber1Individual: KnockoutObservable<boolean> = ko.observable();
 
-                //Mail Company
-                self.selectedPcComSendMailSet = ko.observable(SettingUseSendMail.NOT_USE);
-                self.selectedPcComSelfEditSet = ko.observable(SelfEditUserInfo.CAN_NOT_EDIT);
-                self.controlMailPcCom = ko.computed(function() {
-                    return self.selectedPcComSendMailSet() == SettingUseSendMail.USE || self.selectedPcComSendMailSet() == SettingUseSendMail.PERSONAL_SELECTABLE;
-                });
+    public emergencyNumber2Display: KnockoutObservable<boolean> = ko.observable();
+    public emergencyNumber2Updatable: KnockoutObservable<boolean> = ko.observable();
+    public emergencyNumber2Individual: KnockoutObservable<boolean> = ko.observable();
 
-                //Mail Personal
-                self.selectedPcPersonalSendMailSet = ko.observable(SettingUseSendMail.NOT_USE);
-                self.selectedPcPersonalSelfEditSet = ko.observable(SelfEditUserInfo.CAN_NOT_EDIT);
-                self.controlMailPcPersonal = ko.computed(function() {
-                    return self.selectedPcPersonalSendMailSet() == SettingUseSendMail.USE || self.selectedPcPersonalSendMailSet() == SettingUseSendMail.PERSONAL_SELECTABLE;
-                });
+    public dialInNumberDisplay: KnockoutObservable<boolean> = ko.observable();
+    public dialInNumberUpdatable: KnockoutObservable<boolean> = ko.observable();
+    public dialInNumberIndividual: KnockoutObservable<boolean> = ko.observable();
 
-                //Mobile Com
-                self.selectedMobileComSendMailSet = ko.observable(SettingUseSendMail.NOT_USE);
-                self.selectedMobileComSelfEditSet = ko.observable(SelfEditUserInfo.CAN_NOT_EDIT);
-                self.controlMailMobileCom = ko.computed(function() {
-                    return self.selectedMobileComSendMailSet() == SettingUseSendMail.USE || self.selectedMobileComSendMailSet() == SettingUseSendMail.PERSONAL_SELECTABLE;
-                });
+    public extensionNumberDisplay: KnockoutObservable<boolean> = ko.observable();
+    public extensionNumberUpdatable: KnockoutObservable<boolean> = ko.observable();
+    public extensionNumberIndividual: KnockoutObservable<boolean> = ko.observable();
 
-                //Mobile Personal
-                self.selectedMobilePersonalSendMailSet = ko.observable(SettingUseSendMail.NOT_USE);
-                self.selectedMobilePersonalSelfEditSet = ko.observable(SelfEditUserInfo.CAN_NOT_EDIT);
-                self.controlMailMobilePersonal = ko.computed(function() {
-                    return self.selectedMobilePersonalSendMailSet() == SettingUseSendMail.USE || self.selectedMobilePersonalSendMailSet() == SettingUseSendMail.PERSONAL_SELECTABLE;
-                });
+    public companyEmailAddressDisplay: KnockoutObservable<boolean> = ko.observable();
+    public companyEmailAddressUpdatable: KnockoutObservable<boolean> = ko.observable();
+    public companyEmailAddressIndividual: KnockoutObservable<boolean> = ko.observable();
 
-                // Phone
-                self.selectedMobilePhoneComSelfEditSet = ko.observable(SelfEditUserInfo.CAN_NOT_EDIT);
-                self.selectedMobilePhonePersonalSelfEditSet = ko.observable(SelfEditUserInfo.CAN_NOT_EDIT);
+    public companyMobileEmailAddressDisplay: KnockoutObservable<boolean> = ko.observable();
+    public companyMobileEmailAddressUpdatable: KnockoutObservable<boolean> = ko.observable();
+    public companyMobileEmailAddressIndividual: KnockoutObservable<boolean> = ko.observable();
 
-                //password
-                self.selectedPasswordSelfEditSet = ko.observable(SelfEditUserInfo.CAN_NOT_EDIT);
-            }
+    public personalEmailAddressDisplay: KnockoutObservable<boolean> = ko.observable();
+    public personalEmailAddressUpdatable: KnockoutObservable<boolean> = ko.observable();
+    public personalEmailAddressIndividual: KnockoutObservable<boolean> = ko.observable();
 
-            /**
-             * Start page
-             */
-            public startPage(): JQueryPromise<any> {
-                let _self = this;
-                let dfd = $.Deferred<any>();
-                nts.uk.ui.block.invisible();
-                $.when(service.getAllEnum(), service.findUserinfoUseMethod()).done((dataEnums: any, dataUserinfoUseMethod: any) => {
-                    //bind enums
-                    _self.enums = dataEnums
-                    _self.bindEnums(dataEnums);
+    public personalMobileEmailAddressDisplay: KnockoutObservable<boolean> = ko.observable();
+    public personalMobileEmailAddressUpdatable: KnockoutObservable<boolean> = ko.observable();
+    public personalMobileEmailAddressIndividual: KnockoutObservable<boolean> = ko.observable();
 
-                    //bind data to screen
-                    _self.bindToScreen(dataUserinfoUseMethod);
-                    dfd.resolve();
-                }).fail((res: any) => {
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(() => {
-                        nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
-                    });
-                    dfd.reject();
-                }).always(() => nts.uk.ui.block.clear());
-                return dfd.promise();
-            }
+    public otherContact1Display: KnockoutObservable<boolean> = ko.observable();
+    public otherContact1ContactName: KnockoutObservable<string> = ko.observable("");
+    public otherContact1Individual: KnockoutObservable<boolean> = ko.observable();
 
-            public bindEnums(data: any) {
-                let _self = this;
-                data.settingUseSendMail.forEach((item: any, index: number) => {
-                    _self.sendMailSetOptions().push({ code: item.value, name: item.localizedName });
-                });
-                data.selfEditSetting.forEach((item: any, index: number) => {
-                    _self.selfEditSetOptions.push({ code: item.value, name: item.localizedName });
-                });
-            }
+    public otherContact2Display: KnockoutObservable<boolean> = ko.observable();
+    public otherContact2ContactName: KnockoutObservable<string> = ko.observable("");
+    public otherContact2Individual: KnockoutObservable<boolean> = ko.observable();
 
-            private bindToScreen(data: any) {
-                let self = this;
-                data.forEach((item: any, index: any) => {
-                    if (item.settingItem == UserInfoItem.COMPANY_PC_MAIL) {
-                        self.selectedPcComSendMailSet(item.settingUseMail);
-                        self.selectedPcComSelfEditSet(item.selfEdit);
-                    }
-                    if (item.settingItem == UserInfoItem.PERSONAL_PC_MAIL) {
-                        self.selectedPcPersonalSendMailSet(item.settingUseMail);
-                        self.selectedPcPersonalSelfEditSet(item.selfEdit);
-                    }
-                    if (item.settingItem == UserInfoItem.COMPANY_MOBILE_MAIL) {
-                        self.selectedMobileComSendMailSet(item.settingUseMail);
-                        self.selectedMobileComSelfEditSet(item.selfEdit);
-                    }
-                    if (item.settingItem == UserInfoItem.PERSONAL_MOBILE_MAIL) {
-                        self.selectedMobilePersonalSendMailSet(item.settingUseMail);
-                        self.selectedMobilePersonalSelfEditSet(item.selfEdit);
-                    }
-                    if (item.settingItem == UserInfoItem.COMPANY_MOBILE_PHONE) {
-                        self.selectedMobilePhoneComSelfEditSet(item.selfEdit);
-                    }
-                    if (item.settingItem == UserInfoItem.PERSONAL_MOBILE_PHONE) {
-                        self.selectedMobilePhonePersonalSelfEditSet(item.selfEdit);
-                    }
-                    if (item.settingItem == UserInfoItem.PASSWORD) {
-                        self.selectedPasswordSelfEditSet(item.selfEdit);
-                    }
-                });
-            }
-            /**
-         * Open dialog user info
-         */
-            public openDialogUserInfo(userInfo: number) {
-                let _self = this;
-                let itemName: any;
-                let dfd = $.Deferred<any>();
-                switch (userInfo) {
-                    case UserInfoItem.COMPANY_PC_MAIL:
-                        _self.getData(serviceB.getPCMailCompany, nts.uk.resource.getText("CMM049_16"),userInfo);
-                        break;
-                    case UserInfoItem.PERSONAL_PC_MAIL:
-                        _self.getData(serviceB.getPCMailPerson, nts.uk.resource.getText("CMM049_17"),userInfo);
-                        break;
-                    case UserInfoItem.COMPANY_MOBILE_MAIL:
-                        _self.getData(serviceB.getMobileMailCompany, nts.uk.resource.getText("CMM049_18"),userInfo);
-                        break;
-                    case UserInfoItem.PERSONAL_MOBILE_MAIL:
-                        _self.getData(serviceB.getMobileMailPerson, nts.uk.resource.getText("CMM049_19"),userInfo);
-                        break;
-                    default:
-                }
-                dfd.resolve();
-            }
+    public otherContact3Display: KnockoutObservable<boolean> = ko.observable();
+    public otherContact3ContactName: KnockoutObservable<string> = ko.observable("");
+    public otherContact3Individual: KnockoutObservable<boolean> = ko.observable();
 
-            public getData(service: () => JQueryPromise<any>, text: string,userInfo: number): void {
-                nts.uk.ui.block.invisible();
-                service().done((data: any) => {
-                    nts.uk.ui.windows.setShared("CMM049_DIALOG_B_INPUT_DATA", { listMailFunction: data, userInfoItemName: text ,userInfo :userInfo});
-                    nts.uk.ui.windows.sub.modal("/view/cmm/049/b/index.xhtml");
-                }).fail((res: any) => {
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId });
-                }).always(() => nts.uk.ui.block.clear());
-            }
-                
-             /**
-             * Save
-             */
-            public save() {
-                let self = this;
-                nts.uk.ui.block.grayout();
-                let data1: ListUserInfoUseMethodDto = {
-                    settingItem: UserInfoItem.COMPANY_PC_MAIL,
-                    settingUseMail: self.selectedPcComSendMailSet(),
-                    selfEdit: self.selectedPcComSelfEditSet()
-                }
-                let data2: ListUserInfoUseMethodDto = {
-                    settingItem: UserInfoItem.PERSONAL_PC_MAIL,
-                    settingUseMail: self.selectedPcPersonalSendMailSet(),
-                    selfEdit: self.selectedPcPersonalSelfEditSet()
-                }
-                let data3: ListUserInfoUseMethodDto = {
-                    settingItem: UserInfoItem.COMPANY_MOBILE_MAIL,
-                    settingUseMail: self.selectedMobileComSendMailSet(),
-                    selfEdit: self.selectedMobileComSelfEditSet()
-                }
-                let data4: ListUserInfoUseMethodDto = {
-                    settingItem: UserInfoItem.PERSONAL_MOBILE_MAIL,
-                    settingUseMail: self.selectedMobilePersonalSendMailSet(),
-                    selfEdit: self.selectedMobilePersonalSelfEditSet()
-                }
-                let data5: ListUserInfoUseMethodDto = {
-                    settingItem: UserInfoItem.COMPANY_MOBILE_PHONE,
-                    settingUseMail: null,
-                    selfEdit: self.selectedMobilePhoneComSelfEditSet()
-                }
-                let data6: ListUserInfoUseMethodDto = {
-                    settingItem: UserInfoItem.PERSONAL_MOBILE_PHONE,
-                    settingUseMail: null,
-                    selfEdit: self.selectedMobilePhonePersonalSelfEditSet()
-                }
-                let data7: ListUserInfoUseMethodDto = {
-                    settingItem: UserInfoItem.PASSWORD,
-                    settingUseMail: null,
-                    selfEdit: self.selectedPasswordSelfEditSet()
-                }
+    public otherContact4Display: KnockoutObservable<boolean> = ko.observable();
+    public otherContact4ContactName: KnockoutObservable<string> = ko.observable("");
+    public otherContact4Individual: KnockoutObservable<boolean> = ko.observable();
 
-                let listData = [data1, data2, data3, data4, data5, data6, data7];
-                service.saveUserinfoUseMethod({ lstUserInfoUseMethodDto: listData }).done(() => {
-                    service.findUserinfoUseMethod().done((dataUserinfoUseMethod: any) => {
-                        //bind data to screen
-                        self.bindToScreen(dataUserinfoUseMethod);
-                    });
-                    nts.uk.ui.block.clear();
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                });
-            }
-        }
+    public otherContact5Display: KnockoutObservable<boolean> = ko.observable();
+    public otherContact5ContactName: KnockoutObservable<string> = ko.observable("");
+    public otherContact5Individual: KnockoutObservable<boolean> = ko.observable();
 
-        export enum UserInfoItem {
-            COMPANY_PC_MAIL,
-            PERSONAL_PC_MAIL,
-            COMPANY_MOBILE_MAIL,
-            PERSONAL_MOBILE_MAIL,
-            COMPANY_MOBILE_PHONE,
-            PERSONAL_MOBILE_PHONE,
-            PASSWORD
-        }
+    public mailFunctionDtos: KnockoutObservableArray<MailFunctionDto> = ko.observableArray([]);
+    public userInformationUseMethodDto: KnockoutObservable<UserInformationUseMethodDto> = ko.observable();
+    public otherContact1: KnockoutObservable<string> = ko.observable("");
+    public otherContact2: KnockoutObservable<string> = ko.observable("");
+    public otherContact3: KnockoutObservable<string> = ko.observable("");
+    public otherContact4: KnockoutObservable<string> = ko.observable("");
+    public otherContact5: KnockoutObservable<string> = ko.observable("");
 
-        export enum SettingUseSendMail {
-            NOT_USE,
-            USE,
-            PERSONAL_SELECTABLE
-        }
+    public selectedEmailAddress: KnockoutObservable<number> = ko.observable(0);
 
-        export enum SelfEditUserInfo {
-            CAN_NOT_EDIT,
-            CAN_EDIT
-        }
+    /**
+     * Key: emailClassification, value: listfunctionId
+     */
+    public emailData: any = {};
+
+    /**
+     * Giá trị emailClassification đang được chọn
+     */
+    public selectedEmailClassification: number = null;
+
+    /**
+     * Các functionId được check theo key emailClassification
+     */
+    public mailFunctionDataSource: MailFunctionModel[] = [];
+
+    public emailColumns: any[] = [
+      {
+        headerText: "",
+        prop: "index",
+        width: 160,
+        hidden: true,
+      },
+      {
+        headerText: this.$i18n("CMM049_66"),
+        prop: "emailAddress",
+        width: 180,
+      },
+    ];
+
+    public emailDataSource: KnockoutObservableArray<EmailModel> = ko.observableArray([
+      new EmailModel({ index: 0, emailAddress: this.$i18n("CMM049_49") }),
+      new EmailModel({ index: 1, emailAddress: this.$i18n("CMM049_50") }),
+      new EmailModel({ index: 2, emailAddress: this.$i18n("CMM049_51") }),
+      new EmailModel({ index: 3, emailAddress: this.$i18n("CMM049_52") }),
+    ]);
+
+    constructor() {
+      super();
+      const vm = this;
+      vm.tabs = ko.observableArray([
+        {
+          id: "tab-1",
+          title: vm.$i18n("CMM049_24"),
+          content: "#A4",
+          enable: ko.observable(true),
+          visible: ko.observable(true),
+        },
+        {
+          id: "tab-2",
+          title: vm.$i18n("CMM049_25"),
+          content: "#A5",
+          enable: ko.observable(true),
+          visible: ko.observable(true),
+        },
+        {
+          id: "tab-3",
+          title: vm.$i18n("CMM049_26"),
+          content: "#A6",
+          enable: ko.observable(true),
+          visible: ko.observable(true),
+        },
+        {
+          id: "tab-4",
+          title: vm.$i18n("CMM049_27"),
+          content: "#A7",
+          enable: ko.observable(true),
+          visible: ko.observable(true),
+        },
+        {
+          id: "tab-5",
+          title: vm.$i18n("CMM049_28"),
+          content: "#A8",
+          enable: ko.observable(true),
+          visible: ko.observable(true),
+        },
+      ]);
+      vm.selectedTab = ko.observable("tab-1");
+
+      // tab 1 - profile function
+      vm.profileCheckList = ko.observableArray([
+        new CheckboxModel({
+          id: 1,
+          name: vm.$i18n("CMM049_31"),
+        }),
+        new CheckboxModel({
+          id: 2,
+          name: vm.$i18n("CMM049_32"),
+        }),
+      ]);
+
+      // tab 2 - password
+      vm.passwordCheckList = ko.observableArray([
+        new CheckboxModel({
+          id: 1,
+          name: vm.$i18n("CMM049_31"),
+        }),
+        new CheckboxModel({
+          id: 2,
+          name: vm.$i18n("CMM049_32"),
+        }),
+      ]);
+
+      // tab 3 - notice
+      vm.noticeCheckList = ko.observableArray([
+        new CheckboxModel({
+          id: 1,
+          name: vm.$i18n("CMM049_31"),
+        }),
+        new CheckboxModel({
+          id: 2,
+          name: vm.$i18n("CMM049_32"),
+        }),
+      ]);
+
+      // tab 4 - speech
+      vm.speechCheckList = ko.observableArray([
+        new CheckboxModel({
+          id: 1,
+          name: vm.$i18n("CMM049_31"),
+        }),
+        new CheckboxModel({
+          id: 2,
+          name: vm.$i18n("CMM049_32"),
+        }),
+      ]);
     }
+
+    mounted() {
+      const vm = this;
+
+      vm.$grid = $("#A8_4");
+
+      /**
+       * メールアドレスを選択する時
+       */
+      vm.selectedEmailAddress.subscribe((newValue) => {
+        /**
+         * Lọc toàn bộ các functionId được check theo emailClassification
+         */
+        vm.emailData[vm.selectedEmailClassification] = _.chain(vm.mailFunctionDataSource)
+          .filter((item) => item.isChecked)
+          .map((item) => item.functionId)
+          .value();
+        if (vm.$grid.data("igGrid")) {
+          vm.$grid.ntsGrid("destroy");
+        }
+        vm.initGrid(newValue, vm.mailFunctionDtos());
+      });
+
+      /**
+       * ユーザ情報の設定を起動する
+       */
+      vm.getData();
+    }
+
+    public setCheckboxLine1(response: UserInformationSettingDto): void {
+      const vm = this;
+      const companyMobilePhone =
+        response.userInformationUseMethodDto.settingContactInformationDto
+          .companyMobilePhone.contactUsageSetting;
+      switch (companyMobilePhone) {
+        case 0: {
+          vm.companyMobilePhoneDisplay(false);
+          break;
+        }
+        case 1: {
+          vm.companyMobilePhoneDisplay(true);
+          vm.companyMobilePhoneIndividual(false);
+          break;
+        }
+        case 2: {
+          vm.companyMobilePhoneDisplay(true);
+          vm.companyMobilePhoneIndividual(true);
+          break;
+        }
+        default: break;
+      }
+      vm.companyMobilePhoneUpdatable(
+        response.userInformationUseMethodDto.settingContactInformationDto
+          .companyMobilePhone.updatable === 1
+      );
+    }
+
+    public setCheckboxLine2(response: UserInformationSettingDto): void {
+      const vm = this;
+      const personalMobilePhone =
+        response.userInformationUseMethodDto.settingContactInformationDto
+          .personalMobilePhone.contactUsageSetting;
+      switch (personalMobilePhone) {
+        case 0: {
+          vm.personalMobilePhoneDisplay(false);
+          break;
+        }
+        case 1: {
+          vm.personalMobilePhoneDisplay(true);
+          vm.personalMobilePhoneIndividual(false);
+          break;
+        }
+        case 2: {
+          vm.personalMobilePhoneDisplay(true);
+          vm.personalMobilePhoneIndividual(true);
+          break;
+        }
+        default: break;
+      }
+      vm.personalMobilePhoneUpdatable(
+        response.userInformationUseMethodDto.settingContactInformationDto
+          .personalMobilePhone.updatable === 1
+      );
+    }
+
+    public setCheckboxLine3(response: UserInformationSettingDto): void {
+      const vm = this;
+      const emergencyNumber1 =
+        response.userInformationUseMethodDto.settingContactInformationDto
+          .emergencyNumber1.contactUsageSetting;
+      switch (emergencyNumber1) {
+        case 0: {
+          vm.emergencyNumber1Display(false);
+          break;
+        }
+        case 1: {
+          vm.emergencyNumber1Display(true);
+          vm.emergencyNumber1Individual(false);
+          break;
+        }
+        case 2: {
+          vm.emergencyNumber1Display(true);
+          vm.emergencyNumber1Individual(true);
+          break;
+        }
+        default: break;
+      }
+      vm.emergencyNumber1Updatable(
+        response.userInformationUseMethodDto.settingContactInformationDto
+          .emergencyNumber1.updatable === 1
+      );
+    }
+
+    public setCheckboxLine4(response: UserInformationSettingDto): void {
+      const vm = this;
+      const emergencyNumber2 =
+        response.userInformationUseMethodDto.settingContactInformationDto
+          .emergencyNumber2.contactUsageSetting;
+      switch (emergencyNumber2) {
+        case 0: {
+          vm.emergencyNumber2Display(false);
+          break;
+        }
+        case 1: {
+          vm.emergencyNumber2Display(true);
+          vm.emergencyNumber2Individual(false);
+          break;
+        }
+        case 2: {
+          vm.emergencyNumber2Display(true);
+          vm.emergencyNumber2Individual(true);
+          break;
+        }
+        default: break;
+      }
+      vm.emergencyNumber2Updatable(
+        response.userInformationUseMethodDto.settingContactInformationDto
+          .emergencyNumber2.updatable === 1
+      );
+    }
+
+    public setCheckboxLine5(response: UserInformationSettingDto): void {
+      const vm = this;
+      const dialInNumber =
+        response.userInformationUseMethodDto.settingContactInformationDto
+          .dialInNumber.contactUsageSetting;
+      switch (dialInNumber) {
+        case 0: {
+          vm.dialInNumberDisplay(false);
+          break;
+        }
+        case 1: {
+          vm.dialInNumberDisplay(true);
+          vm.dialInNumberIndividual(false);
+          break;
+        }
+        case 2: {
+          vm.dialInNumberDisplay(true);
+          vm.dialInNumberIndividual(true);
+          break;
+        }
+        default: break;
+      }
+      vm.dialInNumberUpdatable(
+        response.userInformationUseMethodDto.settingContactInformationDto
+          .dialInNumber.updatable === 1
+      );
+    }
+
+    public setCheckboxLine6(response: UserInformationSettingDto): void {
+      const vm = this;
+      const extensionNumber =
+        response.userInformationUseMethodDto.settingContactInformationDto
+          .extensionNumber.contactUsageSetting;
+      switch (extensionNumber) {
+        case 0: {
+          vm.extensionNumberDisplay(false);
+          break;
+        }
+        case 1: {
+          vm.extensionNumberDisplay(true);
+          vm.extensionNumberIndividual(false);
+          break;
+        }
+        case 2: {
+          vm.extensionNumberDisplay(true);
+          vm.extensionNumberIndividual(true);
+          break;
+        }
+        default: break;
+      }
+      vm.extensionNumberUpdatable(
+        response.userInformationUseMethodDto.settingContactInformationDto
+          .extensionNumber.updatable === 1
+      );
+    }
+
+    public setCheckboxLine7(response: UserInformationSettingDto): void {
+      const vm = this;
+      const companyEmailAddress =
+        response.userInformationUseMethodDto.settingContactInformationDto
+          .companyEmailAddress.contactUsageSetting;
+      switch (companyEmailAddress) {
+        case 0: {
+          vm.companyEmailAddressDisplay(false);
+          break;
+        }
+        case 1: {
+          vm.companyEmailAddressDisplay(true);
+          vm.companyEmailAddressIndividual(false);
+          break;
+        }
+        case 2: {
+          vm.companyEmailAddressDisplay(true);
+          vm.companyEmailAddressIndividual(true);
+          break;
+        }
+        default: break;
+      }
+      vm.companyEmailAddressUpdatable(
+        response.userInformationUseMethodDto.settingContactInformationDto
+          .companyEmailAddress.updatable === 1
+      );
+    }
+
+    public setCheckboxLine8(response: UserInformationSettingDto): void {
+      const vm = this;
+      const companyMobileEmailAddress =
+        response.userInformationUseMethodDto.settingContactInformationDto
+          .companyMobileEmailAddress.contactUsageSetting;
+      switch (companyMobileEmailAddress) {
+        case 0: {
+          vm.companyMobileEmailAddressDisplay(false);
+          break;
+        }
+        case 1: {
+          vm.companyMobileEmailAddressDisplay(true);
+          vm.companyMobileEmailAddressIndividual(false);
+          break;
+        }
+        case 2: {
+          vm.companyMobileEmailAddressDisplay(true);
+          vm.companyMobileEmailAddressIndividual(true);
+          break;
+        }
+        default: break;
+      }
+      vm.companyMobileEmailAddressUpdatable(
+        response.userInformationUseMethodDto.settingContactInformationDto
+          .companyMobileEmailAddress.updatable === 1
+      );
+    }
+
+    public setCheckboxLine9(response: UserInformationSettingDto): void {
+      const vm = this;
+      const personalEmailAddress =
+        response.userInformationUseMethodDto.settingContactInformationDto
+          .personalEmailAddress.contactUsageSetting;
+      switch (personalEmailAddress) {
+        case 0: {
+          vm.personalEmailAddressDisplay(false);
+          break;
+        }
+        case 1: {
+          vm.personalEmailAddressDisplay(true);
+          vm.personalEmailAddressIndividual(false);
+          break;
+        }
+        case 2: {
+          vm.personalEmailAddressDisplay(true);
+          vm.personalEmailAddressIndividual(true);
+          break;
+        }
+        default: break;
+      }
+      vm.personalEmailAddressUpdatable(
+        response.userInformationUseMethodDto.settingContactInformationDto
+          .personalEmailAddress.updatable === 1
+      );
+    }
+
+    public setCheckboxLine10(response: UserInformationSettingDto): void {
+      const vm = this;
+      const personalMobileEmailAddress =
+        response.userInformationUseMethodDto.settingContactInformationDto
+          .personalMobileEmailAddress.contactUsageSetting;
+      switch (personalMobileEmailAddress) {
+        case 0: {
+          vm.personalMobileEmailAddressDisplay(false);
+          break;
+        }
+        case 1: {
+          vm.personalMobileEmailAddressDisplay(true);
+          vm.personalMobileEmailAddressIndividual(false);
+          break;
+        }
+        case 2: {
+          vm.personalMobileEmailAddressDisplay(true);
+          vm.personalMobileEmailAddressIndividual(true);
+          break;
+        }
+        default: break;
+      }
+      vm.personalMobileEmailAddressUpdatable(
+        response.userInformationUseMethodDto.settingContactInformationDto
+          .personalMobileEmailAddress.updatable === 1
+      );
+    }
+
+    public setCheckboxLine11(response: UserInformationSettingDto): void {
+      const vm = this;
+      const otherContact1 = vm.getOtherContact(1, response);
+      switch (otherContact1.contactUsageSetting) {
+        case 0: {
+          vm.otherContact1Display(false);
+          break;
+        }
+        case 1: {
+          vm.otherContact1Display(true);
+          vm.otherContact1Individual(false);
+          break;
+        }
+        case 2: {
+          vm.otherContact1Display(true);
+          vm.otherContact1Individual(true);
+          break;
+        }
+        default: break;
+      }
+    }
+
+    public setCheckboxLine12(response: UserInformationSettingDto): void {
+      const vm = this;
+      const otherContact2 = vm.getOtherContact(2, response);
+      switch (otherContact2.contactUsageSetting) {
+        case 0: {
+          vm.otherContact2Display(false);
+          break;
+        }
+        case 1: {
+          vm.otherContact2Display(true);
+          vm.otherContact2Individual(false);
+          break;
+        }
+        case 2: {
+          vm.otherContact2Display(true);
+          vm.otherContact2Individual(true);
+          break;
+        }
+        default: break;
+      }
+    }
+
+    public setCheckboxLine13(response: UserInformationSettingDto): void {
+      const vm = this;
+      const otherContact3 = vm.getOtherContact(3, response);
+      switch (otherContact3.contactUsageSetting) {
+        case 0: {
+          vm.otherContact3Display(false);
+          break;
+        }
+        case 1: {
+          vm.otherContact3Display(true);
+          vm.otherContact3Individual(false);
+          break;
+        }
+        case 2: {
+          vm.otherContact3Display(true);
+          vm.otherContact3Individual(true);
+          break;
+        }
+        default: break;
+      }
+    }
+
+    public setCheckboxLine14(response: UserInformationSettingDto): void {
+      const vm = this;
+      const otherContact4 = vm.getOtherContact(4, response);
+      switch (otherContact4.contactUsageSetting) {
+        case 0: {
+          vm.otherContact4Display(false);
+          break;
+        }
+        case 1: {
+          vm.otherContact4Display(true);
+          vm.otherContact4Individual(false);
+          break;
+        }
+        case 2: {
+          vm.otherContact4Display(true);
+          vm.otherContact4Individual(true);
+          break;
+        }
+        default: break;
+      }
+    }
+
+    public setCheckboxLine15(response: UserInformationSettingDto): void {
+      const vm = this;
+      const otherContact5 = vm.getOtherContact(5, response);
+      switch (otherContact5.contactUsageSetting) {
+        case 0: {
+          vm.otherContact5Display(false);
+          break;
+        }
+        case 1: {
+          vm.otherContact5Display(true);
+          vm.otherContact5Individual(false);
+          break;
+        }
+        case 2: {
+          vm.otherContact5Display(true);
+          vm.otherContact5Individual(true);
+          break;
+        }
+        default: break;
+      }
+    }
+
+    public setButtonGroup(response: UserInformationSettingDto): void {
+      const vm = this;
+      vm.profileSelectedId(response.userInformationUseMethodDto.useOfProfile === 1 ? 1 : 2);
+      vm.passwordSelectedId(response.userInformationUseMethodDto.useOfPassword === 1 ? 1 : 2);
+      vm.noticeSelectedId(response.userInformationUseMethodDto.useOfNotice === 1 ? 1 : 2);
+      vm.speechSelectedId(response.userInformationUseMethodDto.useOfLanguage === 1 ? 1 : 2);
+    }
+
+    public setContactNameInput(response: UserInformationSettingDto): void {
+      const vm = this;
+      vm.contactName1(vm.getOtherContact(1, response).contactName);
+      vm.contactName2(vm.getOtherContact(2, response).contactName);
+      vm.contactName3(vm.getOtherContact(3, response).contactName);
+      vm.contactName4(vm.getOtherContact(4, response).contactName);
+      vm.contactName5(vm.getOtherContact(5, response).contactName);
+    }
+
+    public getData() {
+      const vm = this;
+      vm.$blockui("grayout")
+        .then(() => vm.$ajax(API.findByCid))
+        .then((response: UserInformationSettingDto) => {
+          vm.mailFunctionDtos(response.mailFunctionDtos);
+          vm.userInformationUseMethodDto(response.userInformationUseMethodDto);
+
+          // binding button group (tab-1-2-3-4)
+          vm.setButtonGroup(response);
+
+          // binding contact name input (tab-1)
+          vm.setContactNameInput(response);
+
+          // binding data (tab-1)
+          // line 1
+          vm.setCheckboxLine1(response);
+
+          // line 2
+          vm.setCheckboxLine2(response);
+
+          // line 3
+          vm.setCheckboxLine3(response);
+
+          // line 4
+          vm.setCheckboxLine4(response);
+
+          // line 5
+          vm.setCheckboxLine5(response);
+
+          // line 6
+          vm.setCheckboxLine6(response);
+
+          // line 7
+          vm.setCheckboxLine7(response);
+
+          // line 8
+          vm.setCheckboxLine8(response);
+
+          // line 9
+          vm.setCheckboxLine9(response);
+
+          // line 10
+          vm.setCheckboxLine10(response);
+
+          // line 11
+          vm.setCheckboxLine11(response);
+
+          // line 12
+          vm.setCheckboxLine12(response);
+
+          // line 13
+          vm.setCheckboxLine13(response);
+
+          // line 14
+          vm.setCheckboxLine14(response);
+
+          // line 15
+          vm.setCheckboxLine15(response);
+
+          /**
+           * Gán key (emailClassification) và value (List functionIds) cho emailData
+           */
+          _.forEach(
+            response.userInformationUseMethodDto.emailDestinationFunctionDtos,
+            (email: EmailDestinationFunctionDto) =>
+              (vm.emailData[email.emailClassification] = email.functionIds)
+          );
+
+          vm.initGrid(vm.selectedEmailAddress(), vm.mailFunctionDtos());
+        })
+        .always(() => vm.$blockui("clear"));
+    }
+
+    private getOtherContact(no: number, response: any): OtherContactDto {
+      return _.find(
+        response.userInformationUseMethodDto.settingContactInformationDto.otherContacts,
+        (item: any) => item.no === no
+      );
+    }
+
+    /**
+     * Create Table target email
+     * @param emailClassification // email đang được chọn
+     * @param mailFunctionList // List mailFunction (dữ liệu bảng bên phải)
+     */
+    private initGrid(emailClassification: number, mailFunctionList: MailFunctionDto[]) {
+      const vm = this;
+      /**
+       * Tìm List functionId theo key emailClassification
+       */
+      const selectedFundtionIds: number[] = vm.emailData[emailClassification];
+
+      /**
+       * Lưu giá trị emailClassification đang được chọn
+       */
+      vm.selectedEmailClassification = emailClassification;
+
+      /**
+       * Lưu những functionId được check
+       */
+      vm.mailFunctionDataSource = _.map(mailFunctionList, (item) => {
+        const model = new MailFunctionModel(item);
+        model.isChecked = selectedFundtionIds.indexOf(item.functionId) !== -1;
+        return model;
+      });
+      vm.$grid.ntsGrid({
+        primaryKey: "functionId",
+        height: "270px",
+        dataSource: vm.mailFunctionDataSource,
+        rowVirtualization: true,
+        virtualization: true,
+        virtualizationMode: "continuous",
+        columns: [
+          {
+            headerText: "",
+            key: "functionId",
+            dataType: "number",
+            hidden: true,
+          },
+          {
+            headerText: "",
+            key: "isChecked",
+            dataType: "boolean",
+            width: "35px",
+            ntsControl: "Checkbox",
+            showHeaderCheckbox: true,
+          },
+          {
+            headerText: vm.$i18n("CMM049_21"),
+            key: "functionName",
+            dataType: "string",
+            width: "300x",
+          },
+        ],
+        features: [
+          {
+            name: "Selection",
+            mode: "row",
+            multipleSelection: true,
+            activation: false,
+          },
+        ],
+        ntsFeatures: [],
+        ntsControls: [
+          {
+            name: "Checkbox",
+            options: { value: 1, text: "" },
+            optionsValue: "value",
+            optionsText: "text",
+            controlType: "CheckBox",
+            enable: true,
+          },
+        ],
+      });
+    }
+
+    /**
+     * ユーザ情報へ戻る
+     */
+    public closeDialog() {
+      const vm = this;
+      vm.$window.close();
+    }
+
+    public settingValue(boo1: boolean, boo2: boolean): number {
+      if (!boo1) {
+        return 0;
+      } else {
+        return !boo2 ? 1 : 2;
+      }
+      //return !boo1 ? 0 : !boo2 ? 1 : 2;
+    }
+
+    public getUserInformationUseMethodDto(otherContactDtos: OtherContactDto[]): UserInformationUseMethodDto {
+      const vm = this;
+      return new UserInformationUseMethodDto(
+        {
+          useOfProfile: vm.profileSelectedId() === 1 ? 1 : 0,
+          useOfPassword: vm.passwordSelectedId() === 1 ? 1 : 0,
+          useOfNotice: vm.noticeSelectedId() === 1 ? 1 : 0,
+          useOfLanguage: vm.speechSelectedId() === 1 ? 1 : 0,
+          companyId: vm.userInformationUseMethodDto().companyId,
+          settingContactInformationDto: new SettingContactInformationDto({
+            companyEmailAddress: new ContactSettingDto({
+              contactUsageSetting: vm.settingValue(
+                vm.companyEmailAddressDisplay(),
+                vm.companyEmailAddressIndividual()
+              ),
+              updatable: vm.companyEmailAddressUpdatable() ? 1 : 0,
+            }),
+            companyMobileEmailAddress: new ContactSettingDto({
+              contactUsageSetting: vm.settingValue(
+                vm.companyMobileEmailAddressDisplay(),
+                vm.companyMobileEmailAddressIndividual()
+              ),
+              updatable: vm.companyMobileEmailAddressUpdatable() ? 1 : 0,
+            }),
+            companyMobilePhone: new ContactSettingDto({
+              contactUsageSetting: vm.settingValue(
+                vm.companyMobilePhoneDisplay(),
+                vm.companyMobilePhoneIndividual()
+              ),
+              updatable: vm.companyMobilePhoneUpdatable() ? 1 : 0,
+            }),
+            dialInNumber: new ContactSettingDto({
+              contactUsageSetting: vm.settingValue(
+                vm.dialInNumberDisplay(),
+                vm.dialInNumberIndividual()
+              ),
+              updatable: vm.dialInNumberUpdatable() ? 1 : 0,
+            }),
+            emergencyNumber1: new ContactSettingDto({
+              contactUsageSetting: vm.settingValue(
+                vm.emergencyNumber1Display(),
+                vm.emergencyNumber1Individual()
+              ),
+              updatable: vm.emergencyNumber1Updatable() ? 1 : 0,
+            }),
+            emergencyNumber2: new ContactSettingDto({
+              contactUsageSetting: vm.settingValue(
+                vm.emergencyNumber2Display(),
+                vm.emergencyNumber2Individual()
+              ),
+              updatable: vm.emergencyNumber2Updatable() ? 1 : 0,
+            }),
+            extensionNumber: new ContactSettingDto({
+              contactUsageSetting: vm.settingValue(
+                vm.extensionNumberDisplay(),
+                vm.extensionNumberIndividual()
+              ),
+              updatable: vm.extensionNumberUpdatable() ? 1 : 0,
+            }),
+            personalEmailAddress: new ContactSettingDto({
+              contactUsageSetting: vm.settingValue(
+                vm.personalEmailAddressDisplay(),
+                vm.personalEmailAddressIndividual()
+              ),
+              updatable: vm.personalEmailAddressUpdatable() ? 1 : 0,
+            }),
+            personalMobileEmailAddress: new ContactSettingDto({
+              contactUsageSetting: vm.settingValue(
+                vm.personalMobileEmailAddressDisplay(),
+                vm.personalMobileEmailAddressIndividual()
+              ),
+              updatable: vm.personalMobileEmailAddressUpdatable() ? 1 : 0,
+            }),
+            personalMobilePhone: new ContactSettingDto({
+              contactUsageSetting: vm.settingValue(
+                vm.personalMobilePhoneDisplay(),
+                vm.personalMobilePhoneIndividual()
+              ),
+              updatable: vm.personalMobilePhoneUpdatable() ? 1 : 0,
+            }),
+            otherContacts: otherContactDtos,
+          }),
+          emailDestinationFunctionDtos: [
+            new EmailDestinationFunctionDto({
+              emailClassification: 0,
+              functionIds: vm.emailData[0]
+            }),
+            new EmailDestinationFunctionDto({
+              emailClassification: 1,
+              functionIds: vm.emailData[1]
+            }),
+            new EmailDestinationFunctionDto({
+              emailClassification: 2,
+              functionIds: vm.emailData[2]
+            }),
+            new EmailDestinationFunctionDto({
+              emailClassification: 3,
+              functionIds: vm.emailData[3]
+            }),
+          ],
+        }
+      );
+    }
+
+    public getOtherContactDtos(): OtherContactDto[] {
+      const vm = this;
+      return [
+        new OtherContactDto({
+          no: 1,
+          contactName: vm.contactName1(),
+          contactUsageSetting: vm.settingValue(
+            vm.otherContact1Display(),
+            vm.otherContact1Individual()
+          ),
+        }),
+        new OtherContactDto({
+          no: 2,
+          contactName: vm.contactName2(),
+          contactUsageSetting: vm.settingValue(
+            vm.otherContact2Display(),
+            vm.otherContact2Individual()
+          ),
+        }),
+        new OtherContactDto({
+          no: 3,
+          contactName: vm.contactName3(),
+          contactUsageSetting: vm.settingValue(
+            vm.otherContact3Display(),
+            vm.otherContact3Individual()
+          ),
+        }),
+        new OtherContactDto({
+          no: 4,
+          contactName: vm.contactName4(),
+          contactUsageSetting: vm.settingValue(
+            vm.otherContact4Display(),
+            vm.otherContact4Individual()
+          ),
+        }),
+        new OtherContactDto({
+          no: 5,
+          contactName: vm.contactName5(),
+          contactUsageSetting: vm.settingValue(
+            vm.otherContact5Display(),
+            vm.otherContact5Individual()
+          ),
+        }),
+      ];
+    }
+
+    /**
+     * 新規登録する
+     * 変更登録する
+     */
+    public register() {
+      const vm = this;
+      vm.emailData[vm.selectedEmailClassification] = _.chain(vm.mailFunctionDataSource)
+        .filter((item) => item.isChecked)
+        .map((item) => item.functionId)
+        .value();
+      const userInformationUseMethodDto: UserInformationUseMethodDto = vm.getUserInformationUseMethodDto(vm.getOtherContactDtos());
+
+      /**
+       * 登録する時利用のチェック処理
+       * すべて機能が利用してない場合
+       */
+      if (
+        vm.profileSelectedId() === 2 &&
+        vm.passwordSelectedId() === 2 &&
+        vm.noticeSelectedId() === 2 &&
+        vm.speechSelectedId() === 2
+      ) {
+        vm.$dialog.error({ messageId: "Msg_1778" });
+      } else {
+        const command = new UserInformationUseMethodSaveCommand({
+          userInformationUseMethodDto: userInformationUseMethodDto,
+        });
+        vm.$blockui("grayout");
+        vm.$ajax(API.insertOrUpdate, command)
+          .always(() => {
+            vm.$blockui("clear");
+            this.closeDialog();
+          });
+      }
+    }
+  }
+
+  export class CheckboxModel {
+    id: number;
+    name: string;
+
+    constructor(init?: Partial<CheckboxModel>) {
+      $.extend(this, init);
+    }
+  }
+
+  export class EmailModel {
+    index: number;
+    emailAddress: string;
+
+    constructor(init?: Partial<EmailModel>) {
+      $.extend(this, init);
+    }
+  }
+
+  export class UserInformationSettingDto {
+    userInformationUseMethodDto: UserInformationUseMethodDto;
+    mailFunctionDtos: MailFunctionDto[];
+
+    constructor(init?: Partial<UserInformationSettingDto>) {
+      $.extend(this, init);
+    }
+  }
+
+  export class UserInformationUseMethodDto {
+    /**
+     * お知らせの利用
+     */
+    useOfNotice: number;
+
+    /**
+     * パスワードの利用
+     */
+    useOfPassword: number;
+
+    /**
+     * プロフィールの利用
+     */
+    useOfProfile: number;
+
+    /**
+     * 言語の利用
+     */
+    useOfLanguage: number;
+
+    /**
+     * 会社ID
+     */
+    companyId: string;
+
+    /**
+     * メール送信先機能
+     */
+    emailDestinationFunctionDtos: EmailDestinationFunctionDto[];
+
+    /**
+     * 連絡先情報の設定
+     */
+    settingContactInformationDto: SettingContactInformationDto;
+
+    constructor(init?: Partial<UserInformationUseMethodDto>) {
+      $.extend(this, init);
+    }
+  }
+
+  export interface MailFunctionDto {
+    //機能ID
+    functionId: number;
+
+    //機能名
+    functionName: string;
+
+    //メール送信設定可否区分
+    proprietySendMailSettingAtr: boolean;
+
+    //並び順
+    sortOrder: number;
+  }
+
+  export class MailFunctionModel {
+    //機能ID
+    functionId: number;
+
+    //機能名
+    functionName: string;
+
+    //メール送信設定可否区分
+    proprietySendMailSettingAtr: boolean;
+
+    //並び順
+    sortOrder: number;
+
+    isChecked: boolean;
+
+    constructor(init?: Partial<MailFunctionModel>) {
+      $.extend(this, init);
+    }
+  }
+
+  export class EmailDestinationFunctionDto {
+    /**
+     * メール分類
+     */
+    emailClassification: number;
+
+    /**
+     * 機能ID
+     */
+    functionIds: number[];
+
+    constructor(init?: Partial<EmailDestinationFunctionDto>) {
+      $.extend(this, init);
+    }
+  }
+
+  export class SettingContactInformationDto {
+    /**
+     * ダイヤルイン番号
+     */
+    dialInNumber: ContactSettingDto;
+
+    /**
+     * 会社メールアドレス
+     */
+    companyEmailAddress: ContactSettingDto;
+
+    /**
+     * 会社携帯メールアドレス
+     */
+    companyMobileEmailAddress: ContactSettingDto;
+
+    /**
+     * 個人メールアドレス
+     */
+    personalEmailAddress: ContactSettingDto;
+
+    /**
+     * 個人携帯メールアドレス
+     */
+    personalMobileEmailAddress: ContactSettingDto;
+
+    /**
+     * 内線番号
+     */
+    extensionNumber: ContactSettingDto;
+
+    /**
+     * 携帯電話（会社用）
+     */
+    companyMobilePhone: ContactSettingDto;
+
+    /**
+     * 携帯電話（個人用）
+     */
+    personalMobilePhone: ContactSettingDto;
+
+    /**
+     * 緊急電話番号1
+     */
+    emergencyNumber1: ContactSettingDto;
+
+    /**
+     * 緊急電話番号2
+     */
+    emergencyNumber2: ContactSettingDto;
+
+    /**
+     * 他の連絡先
+     */
+    otherContacts: OtherContactDto[];
+
+    constructor(init?: Partial<SettingContactInformationDto>) {
+      $.extend(this, init);
+    }
+  }
+
+  export class ContactSettingDto {
+    /**
+     * 連絡先利用設定
+     */
+    contactUsageSetting: number;
+
+    /**
+     * 更新可能
+     */
+    updatable: number;
+
+    constructor(init?: Partial<ContactSettingDto>) {
+      $.extend(this, init);
+    }
+  }
+
+  export class OtherContactDto {
+    /**
+     * NO
+     */
+    no: number;
+
+    /**
+     * 連絡先利用設定
+     */
+    contactUsageSetting: number;
+
+    /**
+     * 連絡先名
+     */
+    contactName: string;
+
+    constructor(init?: Partial<OtherContactDto>) {
+      $.extend(this, init);
+    }
+  }
+
+  export class MailFunctionData {
+    functionId: number;
+    dataAvailable: boolean;
+    targetMenu: string;
+
+    constructor(init?: Partial<MailFunctionData>) {
+      $.extend(this, init);
+    }
+  }
+
+  export class  UserInformationUseMethodSaveCommand {
+    userInformationUseMethodDto: UserInformationUseMethodDto;
+
+    constructor(init?: Partial<UserInformationUseMethodSaveCommand>) {
+      $.extend(this, init);
+    }
+  }
 }

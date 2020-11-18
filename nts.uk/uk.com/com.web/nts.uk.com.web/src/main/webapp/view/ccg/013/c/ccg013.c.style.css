@@ -1,93 +1,102 @@
-.ntsControl.radio-wrapper.reset-element {
-	padding-top: 20px !important;
+.left-contents {
+	float: left;
+	margin-left: 30px;
+	margin-top: 10px;
 }
 
-#listTitle {
-	background-color: #E0F59E;
-	height: 330px;
-	width: 365px;
-	padding-left: 20px;
-	padding-bottom: 15px;
+.right-contents {
+	float: left;
+	margin-top: 66px;
+	margin-left: 30px;
 }
 
-.ui-igcombo-wrapper {
-	vertical-align: middle;
+.cbb-system-data {
+	position: fixed;
 }
 
-.ntsControl.radio-wrapper.reset-element {
-	padding-top: 20px;
+.top-left-contents {
+	padding: 0 15px;
 }
 
-.ntsRadioBox {
-	margin-bottom: 10px;
-	display: block;
+.move-function {
+	float: left;
+	margin-top: 173px;
+	width: 60px;
 }
 
-table.control {
-	margin-left: 5px;
+.move-function button {
+	margin-bottom: 50px;
 }
 
-.sp-preview {
-	width: 20px;
+.chane-position-function {
+	float: left;
+	margin-top: 112px;
+	width: 30px;
+	margin-left: 20px;
 }
 
-#contents-area {
-	margin-left: 10px;
+.chane-position-function button {
+	margin-bottom: 50px;
 }
 
-img {
-	width: 292px ! important;
-	height: 120px;
-	padding-top: 0.5em;
-    border-radius: 24px;
+.first-caret .caret-bottom {
+	float: left;
+	padding-left: 125px;
+	margin-bottom: -18px;
+	position: fixed;
 }
 
-#liveview{
-	height: 200px;
+
+#multi-list1_tooltips,
+#multi-list2_tooltips {
+	border: none;
+	background: none;
+	box-shadow: none;
 }
 
-#imageName {
-	cursor: pointer;
-	width: 200px;
-	overflow: hidden;
-	display: inline-block;
+#multi-list1_tooltips .ui-tooltip-content,
+#multi-list2_tooltips .ui-tooltip-content {
+	white-space: nowrap;
+	background: #ffc;
+	border: solid 1px #b85;
+	padding: 5px;
 }
 
-#description {
-	height: 20px;
-	padding-bottom: 5px;
+table#table-top-content {
+	margin-left: 20px;
+	margin-top: -10px;
 }
 
-#titleMenu {
-	margin: 5px 0px 5px 0px;
+#table-top-content>tbody>tr>td>span.nts-editor-wrapped.ntsControl {
+	margin-right: 30px;
 }
 
-.col2 {
-	width: 180px;
+#table-top-content>tbody>tr>td {
+	padding: 10px;
 }
 
-#delBtn {
-	position: relative;
-	width: 80px;
+#table-top-content>tbody>tr>td>div.cellColor {
+	margin: 0 10px 0 10px;
 }
 
-.pull-right {
-	text-align: right;
+.systemGroup {
+	margin: 10px 0 0 30px;
 }
 
-#nameTitleBar {
-	width: 220px !important;
+.nts-searchbbox-wrapper {
+	margin-bottom: 0;
 }
 
-#file_upload {
-	width: 200px;
-	overflow: hidden;
+button#c1_28 {
+	margin-left: -140px !important;
+	margin-right: 90px !important;
+	float: right;
 }
 
-.labelRight {
-	margin-left: 10px;
+button#c1_26 {
+	width: 160px;
 }
 
-.nts-fileupload-container .nts-input {
-	display: none !important;
+div#combo-box {
+	margin-top: -15px;
 }

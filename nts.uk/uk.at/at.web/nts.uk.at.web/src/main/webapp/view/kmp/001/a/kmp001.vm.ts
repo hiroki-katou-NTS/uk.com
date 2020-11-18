@@ -21,6 +21,7 @@ module nts.uk.at.view.kmp001 {
 	export interface IStampCardEdit {
 		stampCardDigitNumber: number;
 		stampCardEditMethod: number;
+		ic_card: boolean;
 	}
 	
 	export class StampCardEdit {

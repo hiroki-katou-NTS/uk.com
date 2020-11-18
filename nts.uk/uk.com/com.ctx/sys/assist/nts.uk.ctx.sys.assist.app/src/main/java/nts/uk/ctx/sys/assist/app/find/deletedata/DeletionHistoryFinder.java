@@ -42,7 +42,8 @@ public class DeletionHistoryFinder {
 					.sorted(Comparator.comparing(DeletionHistoryDto::getStartDateTimeDel).reversed())
 					.collect(Collectors.toList());
 			return list;
-		} else return null;
+		}
+		return null;
 	}
 	
 	private DeletionHistoryDto updatePractitioner(DeletionHistoryDto dto) {

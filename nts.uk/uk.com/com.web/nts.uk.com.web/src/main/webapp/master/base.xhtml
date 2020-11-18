@@ -12,6 +12,9 @@
 	<com:stylefile set="BASIC" />
 	<com:viewcontext />
 	<com:scriptfile set="BASIC" />
+	<com:scriptfile path="/view/ccg/020/a/ccg020.a.vm.js" />
+	<com:stylefile path="/view/ccg/020/a/ccg020.a.style.css" />
+
 	<ui:insert name="htmlHead" />
 </h:head>
 
@@ -27,6 +30,7 @@
 									<img src="#{request.contextPath}/master/images/kinjirou.png" />
 								</div>
 								<div id="user-info" class="cf">
+									<ccg020-component></ccg020-component>
 									<div id="company" class="cf"></div>
 									<div id="user" class="cf"></div>
 								</div>

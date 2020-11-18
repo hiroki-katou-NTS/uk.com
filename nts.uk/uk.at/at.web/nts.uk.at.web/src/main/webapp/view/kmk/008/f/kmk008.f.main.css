@@ -1,7 +1,7 @@
 .settingButton {
     float: right;
     margin-top: 22px;
-    margin-right: 22px;
+    margin-right: 23px;
 }
 
 .container-right {
@@ -25,6 +25,7 @@
 
 #tab-panel-year-month{
     margin-top: 30px;
+    width: 293px;
 }
 
 .lbl-title-employeer-name span {

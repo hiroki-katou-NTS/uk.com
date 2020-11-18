@@ -65,14 +65,14 @@ module nts.uk.at.ksm008.c {
             vm.listBanWorkTogether = ko.observableArray([]);
 
             vm.columns = ko.observableArray([
-                {headerText: vm.$i18n('KSM008_32'), key: 'code', width: 100},
-                {headerText: vm.$i18n('KSM008_33'), key: 'name', width: 150},
+                {headerText: vm.$i18n('KSM008_32'), key: 'code', width: 50, formatter: _.escape},
+                {headerText: vm.$i18n('KSM008_33'), key: 'name', width: 150, formatter: _.escape},
                 {headerText: vm.$i18n('KSM008_34'), key: 'nightShift', width: 50},
             ]);
 
             vm.columnsWithoutNightShift = ko.observableArray([
-                {headerText: vm.$i18n('KSM008_32'), key: 'code', width: 100},
-                {headerText: vm.$i18n('KSM008_33'), key: 'name', width: 150},
+                {headerText: vm.$i18n('KSM008_32'), key: 'code', width: 50, formatter: _.escape},
+                {headerText: vm.$i18n('KSM008_33'), key: 'name', width: 150, formatter: _.escape},
             ]);
 
             vm.switchOps = ko.observableArray([
@@ -81,7 +81,6 @@ module nts.uk.at.ksm008.c {
             ]);
 
             vm.initEmployeeList();
-            vm.initEmployeeTargetList();
         }
 
         mounted() {
@@ -103,6 +102,13 @@ module nts.uk.at.ksm008.c {
                 }
             });
 
+            vm.numOfEmployeeLimit.subscribe(value => {
+                if (value) {
+                    $("#kcp005-component-right").ntsError("clear");
+                    vm.$errors("clear");
+                }
+            })
+
         }
 
         loadData() {
@@ -117,7 +123,7 @@ module nts.uk.at.ksm008.c {
                     if (alarmCheck) {
                         let lstCondition = alarmCheck.explanationList;
 
-                        vm.alarmCheckSet(vm.code + " " + alarmCheck.conditionName);
+                        vm.alarmCheckSet((vm.code || "") + " " + alarmCheck.conditionName);
 
                         if (lstCondition && lstCondition.length) {
                             vm.alarmCondition(lstCondition);
@@ -141,6 +147,7 @@ module nts.uk.at.ksm008.c {
                                 vm.listBanWorkTogether(lstBanWorkTogether);
                                 vm.selectedProhibitedCode(lstBanWorkTogether[0].code);
                             } else {
+                                vm.listBanWorkTogether([]);
                                 vm.swithchNewMode();
                             }
                         });
@@ -170,6 +177,7 @@ module nts.uk.at.ksm008.c {
                             workplaceName: ''
                         };
                     });
+                    vm.selectableEmployeeList(listEmployee);
                     vm.lstEmployeeSelectableBegin(listEmployee);
                 } else {
                     vm.selectableEmployeeList([]);
@@ -182,13 +190,12 @@ module nts.uk.at.ksm008.c {
         getBanWorkListByCode() {
             const vm = this;
 
-            vm.$ajax(API.getByCodeAndWorkInfo, ko.toJS(vm.targetOrganizationInfor)).done((res) => {
+            return vm.$ajax(API.getByCodeAndWorkInfo, ko.toJS(vm.targetOrganizationInfor)).done((res) => {
                 if (res && res.length) {
                     let listBanWork = _.map(res, function (i: any) {
                         return new ItemModel(i, vm);
                     });
                     vm.listBanWorkTogether(listBanWork);
-                    vm.selectedProhibitedCode(listBanWork[0].code);
                 } else {
                     vm.listBanWorkTogether([]);
                     vm.swithchNewMode();
@@ -233,13 +240,8 @@ module nts.uk.at.ksm008.c {
                 isShowSelectAllButton: false,
                 disableSelection: false,
                 hasPadding: false,
+                maxRows: 10
             };
-
-            $("#kcp005-component-left").ntsListComponent(vm.selectableEmployeeComponentOption);
-        }
-
-        initEmployeeTargetList() {
-            const vm = this;
 
             vm.targetEmployeeComponentOption = {
                 listType: ListType.EMPLOYEE,
@@ -254,9 +256,12 @@ module nts.uk.at.ksm008.c {
                 isShowSelectAllButton: false,
                 disableSelection: false,
                 hasPadding: false,
+                maxRows: 10
             };
 
-            $("#kcp005-component-right").ntsListComponent(vm.targetEmployeeComponentOption);
+            $("#kcp005-component-left").ntsListComponent(vm.selectableEmployeeComponentOption).then(() => {
+                $("#kcp005-component-right").ntsListComponent(vm.targetEmployeeComponentOption);
+            });
         }
 
         moveItemToRight() {
@@ -266,6 +271,7 @@ module nts.uk.at.ksm008.c {
             let currentTagretList = ko.toJS(vm.targetEmployeeList);
             let selectedableCode = ko.toJS(vm.selectedableCodes());
 
+            $("#kcp005-component-right").ntsError("clear");
             vm.selectedableCodes([]);
             vm.targetSelectedCodes([]);
 
@@ -290,6 +296,7 @@ module nts.uk.at.ksm008.c {
             let currentTagretList = ko.toJS(vm.targetEmployeeList());
             let selectedTargetList = ko.toJS(vm.targetSelectedCodes());
 
+            $("#kcp005-component-right").ntsError("clear");
             vm.targetSelectedCodes([]);
             vm.selectedableCodes([]);
 
@@ -364,18 +371,28 @@ module nts.uk.at.ksm008.c {
                 code: vm.banCode(),
                 name: vm.banName(),
                 applicableTimeZoneCls: vm.isWorkplaceMode() ? 0 : vm.selectedOperatingTime(),
-                upperLimit: vm.numOfEmployeeLimit(),
+                upperLimit: vm.numOfEmployeeLimit() - 1,
                 targetList: targetList
             };
             let api = vm.isEnableCode() ? API.register : API.update;
             vm.$validate(['.nts-input']).then((valid) => {
                 if (valid) {
+                    return vm.validate();
+                } else {
+                    return false;
+                }
+            }).then((check) => {
+                if (check) {
                     vm.$blockui("grayout");
                     vm.$ajax(api, data).done(() => {
-                        vm.$dialog.info({messageId: "Msg_15"});
+                        vm.$dialog.info({messageId: "Msg_15"}).then(() => {
+                            vm.getBanWorkListByCode().then(() => vm.selectedProhibitedCode(data.code))
+                        });
                     }).fail((err) => {
                         vm.$dialog.error(err);
-                    }).always(() => vm.$blockui('clear'));
+                    }).always(() => {
+                        vm.$blockui('clear');
+                    });
                 }
             });
         }
@@ -406,8 +423,15 @@ module nts.uk.at.ksm008.c {
                         vm.workplaceName(data.workplaceName || data.workplaceGroupName);
                         vm.targetOrganizationInfor(orgInfo);
                         vm.changeWorkplace(orgInfo).then(() => {
-                            vm.getBanWorkListByCode();
-                        });
+                            vm.getBanWorkListByCode().then(() => {
+                                if (vm.listBanWorkTogether().length) {
+                                    vm.selectedProhibitedCode(null);
+                                    vm.selectedProhibitedCode(vm.listBanWorkTogether()[0].code);
+                                } else {
+                                    vm.swithchNewMode();
+                                }
+                            });
+                        })
                     }
                 });
         }
@@ -416,18 +440,57 @@ module nts.uk.at.ksm008.c {
             const vm = this;
 
             vm.$errors("clear");
-            let data = {
-                targetOrgIdenInfor: ko.toJS(vm.targetOrganizationInfor),
-                code: vm.selectedProhibitedCode()
-            };
+            vm.$dialog.confirm({ messageId: "Msg_18" }).then((result: 'no' | 'yes' | 'cancel') => {
+                if (result === 'yes') {
 
-            vm.$ajax(API.delete, data).done(() => {
-                vm.$dialog.info({messageId: "Msg_16"}).then(() => {
-                    vm.loadData();
-                });
-            }).fail((err) => {
-                vm.$dialog.error(err);
+                    let data = {
+                        targetOrgIdenInfor: ko.toJS(vm.targetOrganizationInfor),
+                        code: vm.selectedProhibitedCode()
+                    };
+
+                    vm.$ajax(API.delete, data).done(() => {
+                        vm.$dialog.info({messageId: "Msg_16"}).then(() => {
+                            vm.getBanWorkListByCode().then(() => {
+                                if (vm.listBanWorkTogether().length) {
+                                    vm.selectedProhibitedCode(vm.listBanWorkTogether()[0].code);
+                                } else {
+                                    vm.swithchNewMode();
+                                }
+                            })
+                        });
+                    }).fail((err) => {
+                        vm.$dialog.error(err);
+                    });
+                } else {
+                    return;
+                }
             });
+        }
+
+        validate() {
+            const vm = this;
+
+            let listBanEmp = ko.toJS(vm.targetEmployeeList());
+
+            if (listBanEmp.length == 0 || listBanEmp.length == 1) {
+                vm.$errors({
+                    "#kcp005-component-right": {
+                        messageId: "Msg_1875"
+                    }
+                });
+                return false;
+            }
+            if (listBanEmp.length < vm.numOfEmployeeLimit()) {
+                const message: any = {
+                    messageId: "Msg_1787",
+                    messageParams: [ko.toJS(vm.numOfEmployeeLimit())]
+                };
+                vm.$errors({
+                    "#kcp005-component-right": message
+                });
+                return false;
+            }
+            return true;
         }
     }
 

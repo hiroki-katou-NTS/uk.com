@@ -1,53 +1,61 @@
 module nts.uk.pr.view.ccg015.c {
-    export module viewmodel {
-        import aservice = nts.uk.com.view.ccg015.a.service;
-        import aserviceDto = nts.uk.com.view.ccg015.a.service.model;
-        export class ScreenModel {
-            parentTopPageCode: KnockoutObservable<string>;
-            parentTopPageName: KnockoutObservable<string>;
-            parentLayoutId: KnockoutObservable<string>;
-            newTopPageCode: KnockoutObservable<string>;
-            newTopPageName: KnockoutObservable<string>;
-            isDuplicateCode: KnockoutObservable<boolean>;
-            check: KnockoutObservable<boolean>;
-            constructor(topPageCode: string, topPageName: string, layoutId: string) {
-                var self = this;
-                self.parentTopPageCode = ko.observable(topPageCode);
-                self.parentTopPageName = ko.observable(topPageName);
-                self.parentLayoutId = ko.observable(layoutId);
-                self.newTopPageCode = ko.observable("");
-                self.newTopPageName = ko.observable("");
-                self.isDuplicateCode = ko.observable(false);
-                self.check = ko.observable(false);
-            }
-            start(): JQueryPromise<void> {
-                var self = this;
-                var dfd = $.Deferred<void>();
-                nts.uk.ui.windows.setShared("codeOfNewTopPage", self.parentTopPageCode());
-                dfd.resolve();
-                return dfd.promise();
-            }
-            private copyTopPage() {
-                var self = this;
-                nts.uk.ui.windows.setShared("codeOfNewTopPage", self.newTopPageCode());
-                var data: service.TopPageDto = {
-                    topPageCode: self.newTopPageCode(),
-                    topPageName: self.newTopPageName(),
-                    layoutId: self.parentLayoutId(),
-                    languageNumber: 0,
-                    isCheckOverwrite: self.check(),
-                    copyCode: self.parentTopPageCode()
-                };
-                service.copyTopPage(data).done(function() {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_20" }).then(function() {
-                        nts.uk.ui.windows.close();
-                    }); 
-                }).fail(function(res: any) {
-                    $("#inp-code").focus();
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds});
-                });
+  export module viewmodel {
+    import aservice = nts.uk.com.view.ccg015.b.service;
+    import aserviceDto = nts.uk.com.view.ccg015.b.service.model;
+    @bean()
+    export class ViewModel extends ko.ViewModel {
+      parentTopPageCode: KnockoutObservable<string>;
+      parentTopPageName: KnockoutObservable<string>;
+      parentLayoutId: KnockoutObservable<string>;
+      newTopPageCode: KnockoutObservable<string>;
+      newTopPageName: KnockoutObservable<string>;
+      isDuplicateCode: KnockoutObservable<boolean>;
+      check: KnockoutObservable<boolean>;
 
-            }
+      created(params: any) {
+        const vm = this;
+        if (params && params.topPageCode) {
+          vm.parentTopPageCode = ko.observable(params.topPageCode);
         }
+        if (params && params.topPageName) {
+          vm.parentTopPageName = ko.observable(params.topPageName);
+        }
+        if (params && params.layoutDisp) {
+          vm.parentLayoutId = ko.observable(params.layoutDisp);
+        }
+        vm.newTopPageCode = ko.observable("");
+        vm.newTopPageName = ko.observable("");
+        vm.isDuplicateCode = ko.observable(false);
+        vm.check = ko.observable(false);
+      }
+
+      mounted(): JQueryPromise<void> {
+        const vm = this;
+        var dfd = $.Deferred<void>();
+        nts.uk.ui.windows.setShared("codeOfNewTopPage", vm.parentTopPageCode());
+        dfd.resolve();
+        return dfd.promise();
+      }
+      copyTopPage() {
+        const vm = this;
+        nts.uk.ui.windows.setShared("codeOfNewTopPage", vm.newTopPageCode());
+        var data: service.TopPageDto = {
+          topPageCode: vm.newTopPageCode(),
+          topPageName: vm.newTopPageName(),
+          layoutDisp: vm.parentLayoutId(),
+          isCheckOverwrite: vm.check(),
+          copyCode: vm.parentTopPageCode()
+        };
+        service.copyTopPage(data).done(function () {
+          nts.uk.ui.dialog.info({ messageId: "Msg_20" }).then(function () {
+            nts.uk.ui.windows.close();
+          });
+        }).fail(function (res: any) {
+          $("#inp-code").focus();
+          vm.$dialog.alert({ messageId: res.messageId, messageParams: res.parameterIds });
+        });
+
+      }
     }
+  }
 }
