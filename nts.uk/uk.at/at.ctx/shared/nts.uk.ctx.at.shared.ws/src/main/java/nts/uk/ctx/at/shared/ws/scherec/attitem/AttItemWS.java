@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.ws.scherec.attitem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -11,6 +12,7 @@ import javax.ws.rs.Produces;
 import nts.uk.ctx.at.shared.app.find.scherec.attitem.AttItemFinder;
 import nts.uk.ctx.at.shared.app.find.scherec.attitem.AttItemParam;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemOutput;
 
 @Path("at/shared/scherec/attitem")
 @Produces("application/json")
@@ -41,5 +43,25 @@ public class AttItemWS {
 	@Path("getmonthlyattitembyid/{authorityId}")
 	public List<AttItemName> getMonthlyAttItemById(@PathParam(value = "authorityId") String authorityId) {
 		return this.finder.getMonthlyAttItemById(authorityId);
+	}
+	
+	@POST
+	@Path("getDailyAttItemUsed")
+	public List<AttItemOutput> getDailyAttRemoveNotUse(AttItemParam param) {
+	    List<AttItemOutput> result = new ArrayList<AttItemOutput>();
+	    List<AttItemName> listDailyItems = this.finder.getDailyAttItemByIdAndAtr(param);
+	    result = this.finder.removeUnusedItems(listDailyItems, true);
+	    
+	    return result;
+	}
+	
+	@POST
+	@Path("getMonthlyAttItemUsed")
+	public List<AttItemOutput> getMonthlyAttRemoveNotUse(AttItemParam param) {
+	    List<AttItemOutput> result = new ArrayList<AttItemOutput>();
+	    List<AttItemName> listMonthlyItems = this.finder.getMonthlyAttItemByIdAndAtr(param);
+	    result = this.finder.removeUnusedItems(listMonthlyItems, false);
+	    
+	    return result;
 	}
 }

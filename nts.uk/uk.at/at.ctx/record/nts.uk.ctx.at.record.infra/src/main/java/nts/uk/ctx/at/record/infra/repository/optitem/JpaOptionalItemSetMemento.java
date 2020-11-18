@@ -148,20 +148,17 @@ public class JpaOptionalItemSetMemento implements OptionalItemSetMemento {
 
     @Override
     public void setCalAtr(CalculationClassification calcResultRange) {
-        // TODO Auto-generated method stub
-        
+        this.entity.setCalcAtr(calcResultRange.value);
     }
 
     @Override
     public void setNote(Optional<NoteOptionalItem> note) {
-        // TODO Auto-generated method stub
-        
+        this.entity.setNote(note.isPresent() ? note.get().v() : null);
     }
 
     @Override
     public void setDescription(Optional<DescritionOptionalItem> description) {
-        // TODO Auto-generated method stub
-        
+        this.entity.setDescription(description.isPresent() ? description.get().v() : null);
     }
 
 }

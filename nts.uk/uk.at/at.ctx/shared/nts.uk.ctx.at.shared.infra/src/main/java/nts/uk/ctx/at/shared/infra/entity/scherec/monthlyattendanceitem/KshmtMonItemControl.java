@@ -19,12 +19,12 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @NoArgsConstructor
 @Table(name = "KSHST_MON_ITEM_CONTROL")
-public class KrcmtControlOfMonthlyItems   extends UkJpaEntity implements Serializable{
+public class KshmtMonItemControl   extends UkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KrcmtControlOfMonthlyItemsPK krcmtControlOfMonthlyItemsPK;
+	public KshmtMonItemControlPK krcmtControlOfMonthlyItemsPK;
 	
 	@Column(name = "HEADER_BACKGROUND_COLOR")
 	public String headerBgColorOfMonthlyPer;
@@ -37,16 +37,16 @@ public class KrcmtControlOfMonthlyItems   extends UkJpaEntity implements Seriali
 		return krcmtControlOfMonthlyItemsPK;
 	}
 
-	public KrcmtControlOfMonthlyItems(KrcmtControlOfMonthlyItemsPK krcmtControlOfMonthlyItemsPK, String headerBgColorOfMonthlyPer, Integer inputUnitOfTimeItem) {
+	public KshmtMonItemControl(KshmtMonItemControlPK krcmtControlOfMonthlyItemsPK, String headerBgColorOfMonthlyPer, Integer inputUnitOfTimeItem) {
 		super();
 		this.krcmtControlOfMonthlyItemsPK = krcmtControlOfMonthlyItemsPK;
 		this.headerBgColorOfMonthlyPer = headerBgColorOfMonthlyPer;
 		this.inputUnitOfTimeItem = inputUnitOfTimeItem;
 	}
 	
-	public static KrcmtControlOfMonthlyItems toEntity(ControlOfMonthlyItems domain) {
-		return new KrcmtControlOfMonthlyItems(
-				new KrcmtControlOfMonthlyItemsPK(
+	public static KshmtMonItemControl toEntity(ControlOfMonthlyItems domain) {
+		return new KshmtMonItemControl(
+				new KshmtMonItemControlPK(
 					domain.getCompanyId(),
 					domain.getItemMonthlyId()
 						),
