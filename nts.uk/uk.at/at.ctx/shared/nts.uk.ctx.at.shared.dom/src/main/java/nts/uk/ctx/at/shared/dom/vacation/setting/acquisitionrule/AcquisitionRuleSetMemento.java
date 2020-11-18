@@ -31,10 +31,5 @@ public interface AcquisitionRuleSetMemento {
 	 */
 	void  setAnnualHoliday(AnnualHoliday annualHoliday);
 	
-	/**
-	 * Sets the HoursHoliday.
-	 *
-	 * @param hoursHoliday
-	 */
-	void  setHoursHoliday(HoursHoliday hoursHoliday);
+	
 }

@@ -26,13 +26,6 @@ public interface EmptYearlyRetentionGetMemento {
 	String getEmploymentCode(); 
 	
 	/**
-	 * Gets the upper limit setting.
-	 *
-	 * @return the upper limit setting
-	 */
-	UpperLimitSetting getUpperLimitSetting();
-	
-	/**
 	 * Gets the management category.
 	 *
 	 * @return the management category

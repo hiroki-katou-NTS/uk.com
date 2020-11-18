@@ -71,10 +71,5 @@ public class AcquisitionRuleDto implements AcquisitionRuleSetMemento {
 	 * AcquisitionRuleSetMemento#setHoursHoliday
 	 * (nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.HoursHoliday)
 	 */
-	@Override
-	public void setHoursHoliday(HoursHoliday hoursHoliday) {
-		HoursHolidayItemDto dto = HoursHolidayItemDto.builder().build();
-		hoursHoliday.saveToMemento(dto);
-		this.hoursHolidayShow = dto;		
-	}
+
 }

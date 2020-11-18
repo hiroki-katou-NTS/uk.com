@@ -23,10 +23,6 @@ public class EmptYearlyRetentionSetting extends AggregateRoot {
 	//雇用区分コード
 	private String employmentCode; 
 	
-	/** The upper limit setting. */
-	//上限設定
-	private UpperLimitSetting upperLimitSetting;
-	
 	/** The management category. */
 	//管理区分
 	private ManageDistinct managementCategory;
@@ -39,7 +35,6 @@ public class EmptYearlyRetentionSetting extends AggregateRoot {
 	public EmptYearlyRetentionSetting(EmptYearlyRetentionGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.employmentCode = memento.getEmploymentCode();
-		this.upperLimitSetting = memento.getUpperLimitSetting();
 		this.managementCategory = memento.getManagementCategory();
 	}
 	
@@ -51,7 +46,6 @@ public class EmptYearlyRetentionSetting extends AggregateRoot {
 	public void saveToMemento(EmptYearlyRetentionSetMemento memento) {
 		memento.setCompanyId(this.companyId);
 		memento.setEmploymentCode(this.employmentCode);
-		memento.setUpperLimitSetting(this.upperLimitSetting);
 		memento.setManagementCategory(this.managementCategory);
 	}
 

@@ -76,7 +76,7 @@ public class ResvLeaGrantRemNumFinder {
 			Optional<EmptYearlyRetentionSetting> emptYearlyRetSet = emSetRepo.find(companyId, syEmployment.get().getEmploymentCode());
 			if(emptYearlyRetSet.isPresent()){
 				if(emptYearlyRetSet.get().getManagementCategory() == ManageDistinct.YES){
-					upLimSet = emptYearlyRetSet.get().getUpperLimitSetting();
+					//upLimSet = emptYearlyRetSet.get().getUpperLimitSetting();
 				}
 				else{
 					upLimSet = setDefaultLimSet();

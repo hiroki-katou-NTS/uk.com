@@ -31,11 +31,10 @@ public class KarstAcquisitionRule extends UkJpaEntity implements Serializable {
 	@Id
 	@Column(name = "CID")
 	private String cid;
-
-	/** The annual paid. */
-	@Column(name = "ANNUAL_PAID")
-	private int annualPaid;
-
+	/** The setting classfication. */
+	@Column(name = "MANAGE_ATR")
+	private int category;
+	
 	/** 代休を優先 */
 	@Column(name = "COMPENSATORY_DAY_OFF")
 	private int compensatoryDayOff;
@@ -48,18 +47,8 @@ public class KarstAcquisitionRule extends UkJpaEntity implements Serializable {
 	@Column(name = "FUNDED_PAID_HOLIDAY")
 	private int fundedPaidHoliday;
 	
-	/** 代休を優先  */
-	@Column(name = "EXCESS_HOLIDAY")
-	private int excessHoliday;
-
-	/** 60H超休を優先超休を優先  */
-	@Column(name = "OVERRIDE_HOLIDAY")
-	private int overrideHoliday;
 	
-	/** The setting classfication. */
-	@Column(name = "MANAGE_ATR")
-	private int category;
-
+	
 	public KarstAcquisitionRule() {
 		super();
 	}
