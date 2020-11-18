@@ -13,6 +13,7 @@ module nts.uk.at.view.kml002.g {
     currentCodeListSwap: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
 
     columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
+    gridHeight: KnockoutObservable<number> = ko.observable(285);
     countingType: KnockoutObservable<number> = ko.observable(0);   
 
     limitedItems: KnockoutObservable<string> = ko.observable(null);
@@ -40,11 +41,16 @@ module nts.uk.at.view.kml002.g {
     created(params: any) {
       const vm = this;
       //_.extend(window, { vm });
+
+      const userAgent = window.navigator.userAgent;
+      let msie = userAgent.match(/Trident.*rv\:11\./);
+      if(!_.isNil(msie) && msie.index > -1) vm.gridHeight(290);
     }
 
     mounted() {
       const vm = this;      
-      $('#swapList-gridArea1').attr('tabindex', '-1').focus();
+      $('.nts-gridlist').attr('tabindex', '-1');
+      $('#swapList-gridArea1').attr('tabindex', '3').focus();
     }
 
     closeDialog() {
@@ -108,8 +114,7 @@ module nts.uk.at.view.kml002.g {
     getTimeNumberCounter() {
       const vm = this;      
       vm.$blockui('show');
-      vm.$ajax( PATH.timeNumberCounterGetInfo, { countType :  vm.countingType() }).done((data) => {   
-        console.log(data);         
+      vm.$ajax( PATH.timeNumberCounterGetInfo, { countType :  vm.countingType() }).done((data) => { 
         if(!_.isNil(data)) {          
           if(data.countNumberOfTimeDtos.length > 0) {
             vm.createSelectableItems(data.countNumberOfTimeDtos);            
@@ -119,11 +124,11 @@ module nts.uk.at.view.kml002.g {
               vm.$window.close();
             });
           }
-          
+
           if(data.numberOfTimeTotalDtos.length > 0) {
             vm.currentCodeListSwap(data.numberOfTimeTotalDtos);            
           }
-        }
+        }        
       })
       .fail()
       .always(() => vm.$blockui('hide'));
