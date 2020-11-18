@@ -250,10 +250,6 @@ module nts.uk.at.view.kml002.e {
       vm.$ajax(PATH.wkpTimeZoneRegister, { 'timeZone': params }).done((data) => {
         vm.$dialog.error({ messageId: 'Msg_15' }).then(() => {
           vm.$blockui('hide');
-          vm.$window.storage('TIME_ZONE_NUMBER_PEOPLE_DETAILS', params).then(() => {
-            vm.$window.close();
-          });
-
         });
       }).fail().always(() => vm.$blockui('hide'));
     }

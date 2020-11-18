@@ -59,10 +59,9 @@ module nts.uk.at.view.kml002.b {
 
     openDialogScreenD() {
       const vm = this;
-      vm.$window.modal('/view/kml/002/d/index.xhtml').then(() => {
-        vm.$window.storage('LABOR_COST_TIME_DETAILS').then((data) => {
-          vm.getLaborCostTimeDetails();
-        });
+      vm.$window.modal('/view/kml/002/d/index.xhtml').then(() => {       
+        vm.getLaborCostTimeDetails();
+        $('#B323').focus();
       });
     }
 
@@ -70,9 +69,8 @@ module nts.uk.at.view.kml002.b {
       const vm = this;
       vm.$window.storage('KWL002_SCREEN_G_INPUT', { countingType: 0 }).then(() => {
         vm.$window.modal('/view/kml/002/g/index.xhtml').then(() => {
-          vm.$window.storage('KWL002_SCREEN_G_OUTPUT').then((data) => {
-            vm.getNumberCounterDetails();
-          });
+          vm.getNumberCounterDetails();
+          $('#B343').focus();
         });
       });
     }
@@ -80,9 +78,8 @@ module nts.uk.at.view.kml002.b {
     openDialogScreenE() {
       const vm = this;
       vm.$window.modal('/view/kml/002/e/index.xhtml').then(() => {
-        vm.$window.storage('TIME_ZONE_NUMBER_PEOPLE_DETAILS').then((data) => {
-          vm.getWorkplaceTimeZoneById();
-        });
+        vm.getWorkplaceTimeZoneById();
+        $('#B363').focus();
       });
     }
 
@@ -233,9 +230,9 @@ module nts.uk.at.view.kml002.b {
       //時間帯人数
       if (vm.timeZoneNumberPeople() === Usage.Use) wpCategory.push(4);
       //雇用人数
-      if (vm.numberOfPeopleClassified() === Usage.Use) wpCategory.push(5);
+      if (vm.numberOfEmployees() === Usage.Use) wpCategory.push(5);
       //分類人数
-      if (vm.numberOfEmployees() === Usage.Use) wpCategory.push(6);
+      if (vm.numberOfPeopleClassified() === Usage.Use) wpCategory.push(6);
       //職位人数
       if (vm.numberOfPositions() === Usage.Use) wpCategory.push(7);
 

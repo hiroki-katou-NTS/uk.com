@@ -18,6 +18,7 @@ module nts.uk.at.view.kml002.g {
 
     limitedItems: KnockoutObservable<string> = ko.observable(null);
     limitedNumber: KnockoutObservable<number> = ko.observable(9999);
+
     constructor(params: any) {
       super();
       const vm = this;
@@ -104,8 +105,8 @@ module nts.uk.at.view.kml002.g {
       vm.$ajax(PATH.timeNumberCounterRegister, params).done(() => {
         vm.$window.storage('KWL002_SCREEN_G_OUTPUT', vm.currentCodeListSwap()).then(() => {
           vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
-            vm.$blockui('show');
-            vm.$window.close();
+            vm.$blockui('hide');
+            //vm.$window.close();
           });
         });
       }).fail().always(() => vm.$blockui('hide'));      

@@ -55,12 +55,7 @@ module nts.uk.at.view.kml002.c {
 
       vm.$window.storage('KWL002_SCREEN_G_INPUT', { countingType: count }).then(() => {
         vm.$window.modal('/view/kml/002/g/index.xhtml').then(() => {
-          vm.$window.storage('KWL002_SCREEN_G_OUTPUT').then((data) => {
-            if (!_.isNil(data)) {
-              //vm.updateTotalNumberOfTimes(count, data);
-              vm.getNumberCounterDetails(count);
-            }
-          });
+          vm.getNumberCounterDetails(count);
         });
       });
     }
