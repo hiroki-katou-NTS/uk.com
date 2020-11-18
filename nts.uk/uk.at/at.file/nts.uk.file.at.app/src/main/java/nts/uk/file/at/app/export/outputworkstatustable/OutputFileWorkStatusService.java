@@ -21,6 +21,7 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeBasicInfoImport;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceConfigInfoAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceInfor;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsImport;
 import nts.uk.shr.com.context.AppContexts;
@@ -58,6 +59,9 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
     private AttendanceItemServiceAdapter itemServiceAdapter;
 
     @Inject
+    private ClosureRepository closureRepository;
+
+    @Inject
     private GetDetailOutputSettingWorkStatusQuery getDetailOutputSettingWorkStatusQuery;
 
     @Override
@@ -65,7 +69,9 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
         OutputFileWorkStatusFileQuery query = context.getQuery();
         YearMonth targetDate = query.getTargetDate();
         List<String> lstEmpIds = query.getLstEmpIds();
-        ClosureDate closureDate = new ClosureDate(query.getClosureDate().getClosureDay(), query.getClosureDate().getLastDayOfMonth());
+        // TODO DANG QA
+        val cl = closureRepository.findByClosureId(AppContexts.user().companyId(), query.getClosureId());
+        val closureDate = cl.get(0).getClosureDate();
         DatePeriod datePeriod = this.getFromClosureDate(targetDate, closureDate);
         // [No.600]社員ID（List）から社員コードと表示名を取得（削除社員考慮）
         List<EmployeeBasicInfoImport> lstEmployeeInfo = empEmployeeAdapter.getEmpInfoLstBySids(lstEmpIds, datePeriod, true, true);
