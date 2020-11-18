@@ -1344,7 +1344,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			List<Pair<Application,List<ApprovalPhaseStateImport_New>>> appPairLst = this.getApprSttApplication(empPeriod.getEmpID(), period);
 			
 			List<ApprSttEmpDate> dateInfoLst = this.createApprSttByDate(empPeriod.getEmpID(), period, appPairLst);
-			apprSttEmpLst.add(new ApprSttEmp(empPeriod.getEmpCD(), employeeBasicInfoImport.getPName(), empPeriod.getEmpID(), dateInfoLst));
+			apprSttEmpLst.add(new ApprSttEmp(employeeBasicInfoImport.getEmployeeCode(), employeeBasicInfoImport.getPName(), empPeriod.getEmpID(), dateInfoLst));
 		}
 		return apprSttEmpLst;
 	}
