@@ -20,7 +20,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSVST_COM_SUBST_VACATION")
+@Table(name = "KSHMT_HDSUB_CMP")
 public class KsvstComSubstVacation extends KsvstSubstVacationSetting implements Serializable {
 
 	/** The Constant serialVersionUID. */

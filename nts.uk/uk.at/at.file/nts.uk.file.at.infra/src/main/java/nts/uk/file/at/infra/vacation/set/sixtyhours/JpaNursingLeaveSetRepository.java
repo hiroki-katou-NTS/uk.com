@@ -122,6 +122,19 @@ public class JpaNursingLeaveSetRepository extends JpaRepository implements Nursi
                 , new DataEachBox(null, ColumnTextAlign.LEFT)
                 , new DataEachBox(/*24_13*/ I18NText.getText("KMF001_241"), ColumnTextAlign.LEFT)
                 ,/*25_7*/ new DataEachBox(null, ColumnTextAlign.LEFT)));
+        // Row 7.1
+        datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
+                , new DataEachBox(null, ColumnTextAlign.LEFT)
+                , new DataEachBox(/*24_25*/I18NText.getText("KMF001_52"), ColumnTextAlign.LEFT)
+                , new DataEachBox(null, ColumnTextAlign.LEFT)
+                ,/*25_15*/ new DataEachBox(null, ColumnTextAlign.LEFT)));
+        // Row 7.2
+        datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
+                , new DataEachBox(null, ColumnTextAlign.LEFT)
+                , new DataEachBox(/*24_26*/I18NText.getText("KMF001_53"), ColumnTextAlign.LEFT)
+                , new DataEachBox(null, ColumnTextAlign.LEFT)
+                ,/*25_16*/ new DataEachBox(null, ColumnTextAlign.LEFT)));
+        //TODO:
         // Row 8
         datas.add(buildARow(new DataEachBox(/*24_14*/I18NText.getText("KMF001_242"), ColumnTextAlign.LEFT)
                 , new DataEachBox(null, ColumnTextAlign.LEFT)

@@ -23,17 +23,15 @@ public class JpaEmYearRetenSetRepository  extends JpaRepository implements EmplY
     private static final String GET_EMPLOY_YEARLY_RETEN =
             "SELECT EC.EMP_CTR_CD , " +
                     "EM.NAME, " +
-                    "EC.MANAGEMENT_CTR_ATR, " +
-                    "EC.NUMBER_OF_YEAR, " +
-                    "EC.MAX_NUMBER_OF_DAYS  " +
+                    "EC.MANAGE_ATR " +
                     "                    FROM ( " +
                     "                    SELECT BSYMT_EMPLOYMENT.CID,BSYMT_EMPLOYMENT.CODE,BSYMT_EMPLOYMENT.NAME  " +
                     "                    FROM BSYMT_EMPLOYMENT  " +
                     "                    WHERE BSYMT_EMPLOYMENT.CID= ?  " +
                     "                    ) as  EM " +
-                    "RIGHT JOIN (SELECT * FROM KMFMT_RETENTION_EMP_CTR CTR WHERE CTR.CID = ? ) as EC ON EC.EMP_CTR_CD = EM.CODE" +
+                    "RIGHT JOIN (SELECT * FROM KSHMT_HDSTK_EMP CTR WHERE CTR.CID = ? ) as EC ON EC.EMPCD = EM.CODE" +
                     "" +
-                    "                    ORDER BY EC.EMP_CTR_CD ASC;";
+                    "                    ORDER BY EC.EMPCD ASC;";
 
 
     @Override
@@ -44,11 +42,9 @@ public class JpaEmYearRetenSetRepository  extends JpaRepository implements EmplY
             stmt.setString(2, cid);
             datas = new NtsResultSet(stmt.executeQuery())
                     .getList(x -> buildARow(
-                            x.getString("EMP_CTR_CD")
+                            x.getString("EMPCD")
                             ,x.getString("NAME")
-                            ,CommonTempHolidays.getTextEnumManageDistinct(Integer.valueOf(x.getString("MANAGEMENT_CTR_ATR")))
-                            ,x.getString("NUMBER_OF_YEAR")+I18NText.getText("KMF001_198")
-                            ,x.getString("MAX_NUMBER_OF_DAYS")+I18NText.getText("KMF001_197")
+                            ,CommonTempHolidays.getTextEnumManageDistinct(Integer.valueOf(x.getString("MANAGE_ATR")))
                     ));
 
         } catch (Exception e) {
@@ -56,7 +52,7 @@ public class JpaEmYearRetenSetRepository  extends JpaRepository implements EmplY
         }
         return datas;
     }
-    private MasterData buildARow(String value1, String value2, String value3, String value4,String value5) {
+    private MasterData buildARow(String value1, String value2, String value3) {
         Map<String, MasterCellData> data = new HashMap<>();
 
         data.put(EmployeeSystemImpl.KMF001_204, MasterCellData.builder()
@@ -73,16 +69,6 @@ public class JpaEmYearRetenSetRepository  extends JpaRepository implements EmplY
                 .columnId(EmployeeSystemImpl.KMF001_200)
                 .value(value3)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                .build());
-        data.put(EmployeeSystemImpl.KMF001_201, MasterCellData.builder()
-                .columnId(EmployeeSystemImpl.KMF001_201)
-                .value(value4)
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
-                .build());
-        data.put(EmployeeSystemImpl.KMF001_202, MasterCellData.builder()
-                .columnId(EmployeeSystemImpl.KMF001_202)
-                .value(value5)
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
 
         return MasterData.builder().rowData(data).build();

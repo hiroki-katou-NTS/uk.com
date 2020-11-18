@@ -92,7 +92,7 @@ public class JpaEmpSubstVacationRepo extends JpaRepository implements EmpSubstVa
 	@SneakyThrows
 	public Optional<EmpSubstVacation> findById(String companyId, String contractTypeCode) {
 		
-		String sql = "select * from KSVST_EMP_SUBST_VACATION"
+		String sql = "select * from KSHMT_HDSUB_EMP"
     			+ " where CID = ?"
     			+ " and EMPCD = ?";
     	try (val stmt = this.connection().prepareStatement(sql)) {

@@ -1,5 +1,6 @@
 package nts.uk.file.at.app.export.vacation.set;
 
+import nts.uk.file.at.app.export.specialholiday.SpecialHolidayExportClass;
 import nts.uk.file.at.app.export.vacation.set.annualpaidleave.AcquisitionRuleExportRepository;
 import nts.uk.file.at.app.export.vacation.set.annualpaidleave.AnnPaidLeaveRepository;
 import nts.uk.file.at.app.export.vacation.set.compensatoryleave.TemHoliEmployeeRepository;
@@ -10,6 +11,7 @@ import nts.uk.file.at.app.export.vacation.set.subst.ComSubstVacatRepository;
 import nts.uk.file.at.app.export.vacation.set.subst.EmpSubstVacaRepository;
 import nts.uk.file.at.app.export.vacation.set.subst.EmplYearlyRetenSetRepository;
 import nts.uk.file.at.app.export.vacation.set.subst.RetenYearlySetRepository;
+import nts.uk.file.at.app.export.vacation.set.yearholidaygrant.YearHolidayRepositoryClass;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
@@ -68,6 +70,10 @@ public class EmployeeSystemImpl implements MasterListData {
     public static final String KMF001_202 = "上限日数";
     /*-----*/
     public static final String KMF001_203 = "出勤日数として加算";
+    
+    public static final String KMF001_327 = TextResource.localize("KMF001_327");
+    public static final String KMF001_330 = TextResource.localize("KMF001_330");
+    
 
 
     public static final String IS_MANAGE = "管理する";
@@ -95,10 +101,17 @@ public class EmployeeSystemImpl implements MasterListData {
     private EmplYearlyRetenSetRepository mEmplYearlyRetenSetRepository;
     @Inject
     private EmpSubstVacaRepository mEmpSubstVacaRepository;
+    
+    @Inject
+    private SpecialHolidayExportClass specialHolidayExportClass; //KMF004
+    
+    @Inject
+    private YearHolidayRepositoryClass yearHolidayRepositoryClass;
+    
 
     @Override
     public String mainSheetName() {
-        return TextResource.localize("KMF001_156");
+        return TextResource.localize("KMF004_154");
     }
 
 	@Override
@@ -108,21 +121,25 @@ public class EmployeeSystemImpl implements MasterListData {
 
     @Override
     public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery masterListExportQuery) {
-        List<MasterHeaderColumn> columns = new ArrayList<>();
-        columns.add(new MasterHeaderColumn(KMF001_166, TextResource.localize("KMF001_166"),
-                ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn(KMF001_B01, "",
-                ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn(KMF001_B02, "",
-                ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn(KMF001_167, TextResource.localize("KMF001_167"),
-                ColumnTextAlign.LEFT, "", true));
+        List<MasterHeaderColumn> columns = specialHolidayExportClass.getHeaderColumnSPHDEvent();
         return columns;
     }
 
     public List<MasterHeaderColumn> getHeaderColumns(EmployeeSystem mEmployeeSystem) {
         List<MasterHeaderColumn> columns = new ArrayList<>();
         switch (mEmployeeSystem) {
+	        case SETTING_PRIORITY:{
+	            
+	            columns.add(new MasterHeaderColumn(KMF001_166, TextResource.localize("KMF001_166"),
+	                    ColumnTextAlign.LEFT, "", true));
+	            columns.add(new MasterHeaderColumn(KMF001_B01, "",
+	                    ColumnTextAlign.LEFT, "", true));
+	            columns.add(new MasterHeaderColumn(KMF001_B02, "",
+	                    ColumnTextAlign.LEFT, "", true));
+	            columns.add(new MasterHeaderColumn(KMF001_167, TextResource.localize("KMF001_167"),
+	                    ColumnTextAlign.LEFT, "", true));
+	            break;
+	        }
             case ANNUAL_HOLIDAYS:{
 
                 columns.add(new MasterHeaderColumn(KMF001_166, TextResource.localize("KMF001_166"),
@@ -157,10 +174,6 @@ public class EmployeeSystemImpl implements MasterListData {
                 columns.add(new MasterHeaderColumn(KMF001_205, TextResource.localize("KMF001_205"),
                         ColumnTextAlign.LEFT, "", true));
                 columns.add(new MasterHeaderColumn(KMF001_200, TextResource.localize("KMF001_200"),
-                        ColumnTextAlign.LEFT, "", true));
-                columns.add(new MasterHeaderColumn(KMF001_201, TextResource.localize("KMF001_201"),
-                        ColumnTextAlign.LEFT, "", true));
-                columns.add(new MasterHeaderColumn(KMF001_202, TextResource.localize("KMF001_202"),
                         ColumnTextAlign.LEFT, "", true));
                 break;
             }
@@ -207,14 +220,6 @@ public class EmployeeSystemImpl implements MasterListData {
                         ColumnTextAlign.LEFT, "", true));
                 columns.add(new MasterHeaderColumn(KMF001_223, TextResource.localize("KMF001_223"),
                         ColumnTextAlign.LEFT, "", true));
-                columns.add(new MasterHeaderColumn(KMF001_207, TextResource.localize("KMF001_207"),
-                        ColumnTextAlign.LEFT, "", true));
-                columns.add(new MasterHeaderColumn(KMF001_208, TextResource.localize("KMF001_208"),
-                        ColumnTextAlign.LEFT, "", true));
-                columns.add(new MasterHeaderColumn(KMF001_210, TextResource.localize("KMF001_210"),
-                        ColumnTextAlign.LEFT, "", true));
-                columns.add(new MasterHeaderColumn(KMF001_211, TextResource.localize("KMF001_211"),
-                        ColumnTextAlign.LEFT, "", true));
                 break;
             }
             case SHUTDOWM_COMPANY: {
@@ -225,6 +230,10 @@ public class EmployeeSystemImpl implements MasterListData {
                         ColumnTextAlign.LEFT, "", true));
                 columns.add(new MasterHeaderColumn(KMF001_226, TextResource.localize("KMF001_226"),
                         ColumnTextAlign.LEFT, "", true));
+                columns.add(new MasterHeaderColumn(KMF001_327, TextResource.localize("KMF001_327"),
+                        ColumnTextAlign.LEFT, "", true));
+                columns.add(new MasterHeaderColumn(KMF001_330, TextResource.localize("KMF001_330"),
+                        ColumnTextAlign.LEFT, "", true));
                 break;
             }
             case PAID_WORK: {
@@ -234,10 +243,6 @@ public class EmployeeSystemImpl implements MasterListData {
                 columns.add(new MasterHeaderColumn(KMF001_205, TextResource.localize("KMF001_205"),
                         ColumnTextAlign.LEFT, "", true));
                 columns.add(new MasterHeaderColumn(KMF001_224, TextResource.localize("KMF001_224"),
-                        ColumnTextAlign.LEFT, "", true));
-                columns.add(new MasterHeaderColumn(KMF001_225, TextResource.localize("KMF001_225"),
-                        ColumnTextAlign.LEFT, "", true));
-                columns.add(new MasterHeaderColumn(KMF001_226, TextResource.localize("KMF001_226"),
                         ColumnTextAlign.LEFT, "", true));
                 break;
             }
@@ -275,13 +280,37 @@ public class EmployeeSystemImpl implements MasterListData {
 
     @Override
     public List<MasterData> getMasterDatas(MasterListExportQuery query) {
-        String companyId = AppContexts.user().companyId();
-        return mAcquisitionRuleExportRepository.getAllAcquisitionRule(companyId);
+        return specialHolidayExportClass.getSPHDEventMasterData(); 
     }
     @Override
     public List<SheetData> extraSheets(MasterListExportQuery query){
         List<SheetData> sheetDatas = new ArrayList<>();
         String companyId = AppContexts.user().companyId();
+        
+        SheetData sheetDataA = SheetData.builder()
+        		.mainData(specialHolidayExportClass.getMasterDatas(query))
+                .mainDataColumns(specialHolidayExportClass.getHeaderColumns(query))
+                .sheetName(specialHolidayExportClass.mainSheetName())
+                .mode(MasterListMode.NONE)
+                .build();
+        sheetDatas.add(sheetDataA);
+        
+        SheetData sheetDataB = SheetData.builder()
+        		.mainData(yearHolidayRepositoryClass.getMasterDatas(query))
+                .mainDataColumns(yearHolidayRepositoryClass.getHeaderColumns(query))
+                .sheetName(yearHolidayRepositoryClass.mainSheetName())
+                .mode(MasterListMode.NONE)
+                .build();
+        sheetDatas.add(sheetDataB);
+        //優先順位の設定 - delete 2 row - done
+        SheetData sheetData0 = SheetData.builder()
+                .mainData(mAcquisitionRuleExportRepository.getAllAcquisitionRule(companyId))
+                .mainDataColumns(getHeaderColumns(EmployeeSystem.SETTING_PRIORITY))
+                .sheetName(getSheetName(EmployeeSystem.SETTING_PRIORITY))
+                .mode(MasterListMode.NONE)
+                .build();
+        sheetDatas.add(sheetData0);
+        //年休 - delete 2 row - done
         SheetData sheetData1 = SheetData.builder()
                 .mainData(mAnnPaidLeaveRepository.getAnPaidLea(companyId))
                 .mainDataColumns(getHeaderColumns(EmployeeSystem.ANNUAL_HOLIDAYS))
@@ -289,7 +318,7 @@ public class EmployeeSystemImpl implements MasterListData {
                 .mode(MasterListMode.NONE)
                 .build();
         sheetDatas.add(sheetData1);
-
+        //積立年休積立 会社
         List<MasterData> listAllRetenYearlySet = mRetenYearlySetRepository.getAllRetenYearlySet(companyId);
         SheetData sheetData2 = SheetData.builder()
                 .mainData(listAllRetenYearlySet)
@@ -298,7 +327,7 @@ public class EmployeeSystemImpl implements MasterListData {
                 .mode(MasterListMode.NONE)
                 .build();
         sheetDatas.add(sheetData2);
-
+        //積立年休積立 雇用  - delete 2 column - done
         if (listAllRetenYearlySet.isEmpty() || (listAllRetenYearlySet.get(0).getRowData().get(EmployeeSystemImpl.KMF001_200).getValue() != null && listAllRetenYearlySet.get(0).getRowData().get(EmployeeSystemImpl.KMF001_200).getValue().equals(IS_MANAGE))) {
             SheetData sheetData3 = SheetData.builder()
                     .mainData(mEmplYearlyRetenSetRepository.getAllEmplYearlyRetenSet(companyId))
@@ -308,26 +337,26 @@ public class EmployeeSystemImpl implements MasterListData {
                     .build();
             sheetDatas.add(sheetData3);
         }
-
-        List<MasterData> listAllTemHoliCompany = mTempHoliComImplRepository.getAllTemHoliCompany(companyId);
-        SheetData sheetData4 = SheetData.builder()
-                .mainData(listAllTemHoliCompany)
-                .mainDataColumns(getHeaderColumns(EmployeeSystem.OFFTIME_COMPANY))
-                .sheetName(getSheetName(EmployeeSystem.OFFTIME_COMPANY))
-                .mode(MasterListMode.NONE)
-                .build();
-        sheetDatas.add(sheetData4);
-
-        if (listAllTemHoliCompany.isEmpty() ||(listAllTemHoliCompany.get(0).getRowData().get(EmployeeSystemImpl.KMF001_206).getValue().equals(IS_MANAGE_OF_HOLIDAYS))) {
-            SheetData sheetData5 = SheetData.builder()
-                    .mainData(mTemHoliEmployeeRepository.getTemHoliEmployee(companyId))
-                    .mainDataColumns(getHeaderColumns(EmployeeSystem.SUBSTITUTE_EMPLOYMENT))
-                    .sheetName(getSheetName(EmployeeSystem.SUBSTITUTE_EMPLOYMENT))
-                    .mode(MasterListMode.NONE)
-                    .build();
-            sheetDatas.add(sheetData5);
-        }
-
+        //TODO:代休代休 会社 - add 2 column
+//        List<MasterData> listAllTemHoliCompany = mTempHoliComImplRepository.getAllTemHoliCompany(companyId);
+//        SheetData sheetData4 = SheetData.builder()
+//                .mainData(listAllTemHoliCompany)
+//                .mainDataColumns(getHeaderColumns(EmployeeSystem.OFFTIME_COMPANY))
+//                .sheetName(getSheetName(EmployeeSystem.OFFTIME_COMPANY))
+//                .mode(MasterListMode.NONE)
+//                .build();
+//        sheetDatas.add(sheetData4);
+//        //代休代休 雇用 - delete 4 column - done
+//        if (listAllTemHoliCompany.isEmpty() ||(listAllTemHoliCompany.get(0).getRowData().get(EmployeeSystemImpl.KMF001_206).getValue().equals(IS_MANAGE_OF_HOLIDAYS))) {
+//            SheetData sheetData5 = SheetData.builder()
+//                    .mainData(mTemHoliEmployeeRepository.getTemHoliEmployee(companyId))
+//                    .mainDataColumns(getHeaderColumns(EmployeeSystem.SUBSTITUTE_EMPLOYMENT))
+//                    .sheetName(getSheetName(EmployeeSystem.SUBSTITUTE_EMPLOYMENT))
+//                    .mode(MasterListMode.NONE)
+//                    .build();
+//            sheetDatas.add(sheetData5);
+//        }
+        //振休休日 会社 - add 2 column - done
         List<MasterData> listAllComSubstVacation = mComSubstVacatRepository.getAllComSubstVacation(companyId);
         SheetData sheetData6 = SheetData.builder()
                 .mainData(listAllComSubstVacation)
@@ -336,7 +365,7 @@ public class EmployeeSystemImpl implements MasterListData {
                 .mode(MasterListMode.NONE)
                 .build();
         sheetDatas.add(sheetData6);
-
+        //振休休日 雇用  - delete 2 column - done
         if(listAllComSubstVacation.isEmpty() || (listAllComSubstVacation.get(0).getRowData().get(EmployeeSystemImpl.KMF001_224).getValue().equals(IS_MANAGE))){
             SheetData sheetData7 = SheetData.builder()
                     .mainData(mEmpSubstVacaRepository.getAllEmpSubstVacation(companyId))
@@ -346,7 +375,7 @@ public class EmployeeSystemImpl implements MasterListData {
                     .build();
             sheetDatas.add(sheetData7);
         }
-
+        //60H超休
         SheetData sheetData8 = SheetData.builder()
                 .mainData(mCom60HourVacaRepository.getAllCom60HourVacation(companyId))
                 .mainDataColumns(getHeaderColumns(EmployeeSystem.SIXTY_HOURS))
@@ -354,20 +383,24 @@ public class EmployeeSystemImpl implements MasterListData {
                 .mode(MasterListMode.NONE)
                 .build();
         sheetDatas.add(sheetData8);
-
-        SheetData sheetData9 = SheetData.builder()
-                .mainData(mNursingLeaveSetRepository.getAllNursingLeaveSetting(companyId))
-                .mainDataColumns(getHeaderColumns(EmployeeSystem.NURSING_CARE))
-                .sheetName(getSheetName(EmployeeSystem.NURSING_CARE))
-                .mode(MasterListMode.NONE)
-                .build();
-        sheetDatas.add(sheetData9);
-
+        //TODO:看護・介護休暇 - add 4 row  
+//        SheetData sheetData9 = SheetData.builder()
+//                .mainData(mNursingLeaveSetRepository.getAllNursingLeaveSetting(companyId))
+//                .mainDataColumns(getHeaderColumns(EmployeeSystem.NURSING_CARE))
+//                .sheetName(getSheetName(EmployeeSystem.NURSING_CARE))
+//                .mode(MasterListMode.NONE)
+//                .build();
+//        sheetDatas.add(sheetData9);
+        //TODO:休日 - Tạo mới
         return sheetDatas;
     }
 
     private String getSheetName(EmployeeSystem mEmployeeSystem){
         switch (mEmployeeSystem) {
+        
+	        case SETTING_PRIORITY: {
+	            return  TextResource.localize("KMF001_156");
+	        }
             case ANNUAL_HOLIDAYS: {
                 return  TextResource.localize("KMF001_157");
             }

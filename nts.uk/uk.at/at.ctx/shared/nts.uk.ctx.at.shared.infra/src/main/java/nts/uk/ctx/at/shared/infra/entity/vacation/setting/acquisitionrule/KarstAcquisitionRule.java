@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KARST_ACQUISITION_RULE")
+@Table(name = "KSHMT_HD_GET_RULE")
 public class KarstAcquisitionRule extends UkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */

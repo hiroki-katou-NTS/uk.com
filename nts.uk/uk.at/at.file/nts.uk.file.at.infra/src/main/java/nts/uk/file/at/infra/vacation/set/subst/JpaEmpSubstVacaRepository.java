@@ -23,16 +23,14 @@ public class JpaEmpSubstVacaRepository extends JpaRepository implements EmpSubst
             "SELECT  " +
                     "                     SV.EMPCD,  " +
                     "                     EM.NAME,  " +
-                    "                     SV.IS_MANAGE,  " +
-                    "                     SV.EXPIRATION_DATE_SET,  " +
-                    "                     SV.ALLOW_PREPAID_LEAVE  " +
-                    "                                FROM (  " +
-                    "                                        SELECT BE.CID,BE.CODE,BE.NAME  " +
-                    "                                        FROM BSYMT_EMPLOYMENT  BE " +
-                    "                                        WHERE BE.CID= ?  " +
-                    "                                        ) as EM  " +
-                    "                                RIGHT JOIN (SELECT * FROM KSVST_EMP_SUBST_VACATION SV WHERE SV.CID = ? ) as SV ON EM.CODE = SV.EMPCD AND SV.CID = EM.CID  " +
-                    "                                ORDER BY SV.EMPCD ASC;";
+                    "                     SV.MANAGE_ATR  " +
+            "                                FROM (  " +
+            "                                        SELECT BE.CID,BE.CODE,BE.NAME  " +
+            "                                        FROM BSYMT_EMPLOYMENT  BE " +
+            "                                        WHERE BE.CID= ?  " +
+            "                                        ) as EM  " +
+            "                                RIGHT JOIN (SELECT * FROM KSHMT_HDSUB_EMP SV WHERE SV.CID = ? ) as SV ON EM.CODE = SV.EMPCD AND SV.CID = EM.CID  " +
+            "                                ORDER BY SV.EMPCD ASC;";
 
 
     @Override
@@ -54,19 +52,17 @@ public class JpaEmpSubstVacaRepository extends JpaRepository implements EmpSubst
     private List<MasterData> buildMasterListData(NtsResultSet.NtsResultRecord rs) {
         List<MasterData> datas = new ArrayList<>();
         /*※14*/
-        boolean checkIsManager = rs.getString("IS_MANAGE").equals("1");
+        boolean checkIsManager = rs.getString("MANAGE_ATR").equals("1");
         datas.add(buildARow(
                 rs.getString("EMPCD"),
                 rs.getString("NAME"),
-                getTextEnumManageDistinct(Integer.valueOf(rs.getString("IS_MANAGE"))),
-                checkIsManager ? getTextEnumExpirationTime(Integer.valueOf(rs.getString("EXPIRATION_DATE_SET"))) : null,
-                checkIsManager ? getTextEnumApplyPermission(Integer.valueOf(rs.getString("ALLOW_PREPAID_LEAVE"))) : null
+                getTextEnumManageDistinct(Integer.valueOf(rs.getString("MANAGE_ATR")))
                 ));
 
         return datas;
     }
 
-    private MasterData buildARow(String value1, String value2, String value3, String value4, String value5) {
+    private MasterData buildARow(String value1, String value2, String value3) {
         Map<String, MasterCellData> data = new HashMap<>();
 
         data.put(EmployeeSystemImpl.KMF001_204, MasterCellData.builder()
@@ -82,16 +78,6 @@ public class JpaEmpSubstVacaRepository extends JpaRepository implements EmpSubst
         data.put(EmployeeSystemImpl.KMF001_224, MasterCellData.builder()
                 .columnId(EmployeeSystemImpl.KMF001_224)
                 .value(value3)
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                .build());
-        data.put(EmployeeSystemImpl.KMF001_225, MasterCellData.builder()
-                .columnId(EmployeeSystemImpl.KMF001_225)
-                .value(value4)
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
-                .build());
-        data.put(EmployeeSystemImpl.KMF001_226, MasterCellData.builder()
-                .columnId(EmployeeSystemImpl.KMF001_226)
-                .value(value5)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 

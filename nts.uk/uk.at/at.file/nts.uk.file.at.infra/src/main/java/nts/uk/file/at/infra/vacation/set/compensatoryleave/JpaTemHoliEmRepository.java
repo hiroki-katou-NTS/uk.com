@@ -23,19 +23,13 @@ public class JpaTemHoliEmRepository extends JpaRepository implements TemHoliEmpl
             " SELECT  " +
                     "                     LE.EMPCD,  " +
                     "                     EM.NAME,  " +
-                    "                     LE.MANAGE_ATR,  " +
-                    "                     AE.EXP_TIME,  " +
-                    "                     AE.PREEMP_PERMIT_ATR,  " +
-                    "                     TE.MANAGE_ATR AS MANAGE_ATR_TE,  " +
-                    "                     TE.DIGESTIVE_UNIT  " +
+                    "                     LE.MANAGE_ATR  " +
                     "                FROM (  " +
                     "                     SELECT EM1.CID,EM1.CODE,EM1.NAME   " +
                     "                     FROM BSYMT_EMPLOYMENT EM1  " +
                     "                     WHERE EM1.CID = ?   " +
                     "                     ) as EM   " +
-                    "                RIGHT JOIN (SELECT * FROM KCLMT_COMPENS_LEAVE_EMP LE WHERE LE.CID = ? ) as LE ON LE.EMPCD = EM.CODE " +
-                    "                LEFT JOIN (SELECT * FROM KCLMT_ACQUISITION_EMP AE WHERE AE.CID = ? )as AE ON LE.EMPCD = AE.EMPCD " +
-                    "                LEFT JOIN (SELECT * FROM KCTMT_DIGEST_TIME_EMP TE WHERE TE.CID = ? )as TE ON TE.EMPCD = LE.EMPCD  " +
+                    "                RIGHT JOIN (SELECT * FROM KSHMT_HDCOM_EMP LE WHERE LE.CID = ? ) as LE ON LE.EMPCD = EM.CODE " +
                     "                ORDER BY LE.EMPCD ASC;";
 
 
@@ -65,15 +59,11 @@ public class JpaTemHoliEmRepository extends JpaRepository implements TemHoliEmpl
         datas.add(buildARow(
                 rs.getString("EMPCD"),
                 rs.getString("NAME"),
-                CommonTempHolidays.getTextEnumManageDistinct(Integer.valueOf(rs.getString("MANAGE_ATR"))),
-                checkManagerAtr ? CommonTempHolidays.getTextEnumExpirationTime(Integer.valueOf(rs.getString("EXP_TIME"))) : null,
-                checkManagerAtr ? CommonTempHolidays.getTextEnumApplyPermission(Integer.valueOf(rs.getString("PREEMP_PERMIT_ATR"))): null,
-                checkManagerAtr ? CommonTempHolidays.getTextEnumManageDistinct((Integer.valueOf(rs.getString("MANAGE_ATR_TE")))) : null,
-                checkManagerAtr ? CommonTempHolidays.getTextEnumTimeDigestiveUnit(Integer.valueOf(rs.getString("DIGESTIVE_UNIT"))) : null
+                CommonTempHolidays.getTextEnumManageDistinct(Integer.valueOf(rs.getString("MANAGE_ATR")))
                 ));
         return datas;
     }
-    private MasterData buildARow(String value1, String value2, String value3, String value4, String value5, String value6, String value7) {
+    private MasterData buildARow(String value1, String value2, String value3) {
         Map<String, MasterCellData> data = new HashMap<>();
         data.put(EmployeeSystemImpl.KMF001_204, MasterCellData.builder()
                 .columnId(EmployeeSystemImpl.KMF001_204)
@@ -89,26 +79,6 @@ public class JpaTemHoliEmRepository extends JpaRepository implements TemHoliEmpl
                 .columnId(EmployeeSystemImpl.KMF001_223)
                 .value(value3)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                .build());
-        data.put(EmployeeSystemImpl.KMF001_207, MasterCellData.builder()
-                .columnId(EmployeeSystemImpl.KMF001_207)
-                .value(value4)
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
-                .build());
-        data.put(EmployeeSystemImpl.KMF001_208, MasterCellData.builder()
-                .columnId(EmployeeSystemImpl.KMF001_208)
-                .value(value5)
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                .build());
-        data.put(EmployeeSystemImpl.KMF001_210, MasterCellData.builder()
-                .columnId(EmployeeSystemImpl.KMF001_210)
-                .value(value6)
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                .build());
-        data.put(EmployeeSystemImpl.KMF001_211, MasterCellData.builder()
-                .columnId(EmployeeSystemImpl.KMF001_211)
-                .value(value7)
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
         return MasterData.builder().rowData(data).build();
     }

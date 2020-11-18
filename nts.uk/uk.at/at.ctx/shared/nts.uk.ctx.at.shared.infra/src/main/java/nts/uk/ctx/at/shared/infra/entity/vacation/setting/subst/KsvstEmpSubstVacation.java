@@ -20,7 +20,7 @@ import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSVST_EMP_SUBST_VACATION")
+@Table(name = "KSHMT_HDSUB_EMP")
 public class KsvstEmpSubstVacation extends KsvstSubstVacationSetting implements Serializable {
 	
 	/** The Constant serialVersionUID. */
