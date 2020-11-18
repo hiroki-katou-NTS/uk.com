@@ -6,4 +6,6 @@
   overflow: hidden;
   outline: 1px solid black;
   outline-offset: 5px;
+  min-width: 800px;
+  min-height: 600px;
 }

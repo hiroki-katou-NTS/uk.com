@@ -45,6 +45,14 @@ module nts.uk.com.view.ccg034.a {
           vm.selectFlowMenu();
         }
       });
+      vm.isNewMode.subscribe(value => {
+        if (value) {
+          $("#A4_2").focus();
+        } else {
+          $("#A4_3").focus();
+        }
+      });
+      vm.isNewMode.valueHasMutated();
     }
 
     public changeToNewMode() {

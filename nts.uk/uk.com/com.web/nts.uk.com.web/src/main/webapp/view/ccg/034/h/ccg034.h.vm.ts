@@ -58,6 +58,7 @@ module nts.uk.com.view.ccg034.h {
           vm.fileSize(Math.round(Number(res.originalSize) / 1024));
         });
       }
+      $("#H1_2").focus();
     }
 
 
