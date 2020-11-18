@@ -158,7 +158,7 @@
                                     <input tabindex="1" id="inp-unit" data-bind="ntsTextEditor: {
                                                 name: '#[KMK002_75]',
                                                 value: unit,
-                                                enable: usageAtr() === 1 &amp;&amp; enableUnit &amp;&amp; $parents[1].langJP(),
+                                                enable: optionalItemAtr() !== 0 &amp;&amp; usageAtr() === 1 &amp;&amp; enableUnit &amp;&amp; $parents[1].langJP(),
                                                 constraint: 'UnitOfOptionalItem',
                                                 required: false}" />
                                  </td>
@@ -324,7 +324,7 @@
                                     value: empConditionAtr,
                                     enable: usageAtr() === 1 &amp;&amp; selectedClac() === 1 &amp;&amp; isUsed &amp;&amp; $parents[1].langJP()}"></div>
                               <button tabindex="2"
-                                 data-bind="click: openDialogB, enable: empConditionAtr() == 1 &amp;&amp; isUsed &amp;&amp; $parents[1].langJP()">#{i18n.getText('KMK002_19')}</button>
+                                 data-bind="click: openDialogB, enable: usageAtr() === 1 &amp;&amp; selectedClac() === 1 &amp;&amp; empConditionAtr() == 1 &amp;&amp; isUsed &amp;&amp; $parents[1].langJP()">#{i18n.getText('KMK002_19')}</button>
                            </td>
                            <td></td>
                         </tr>

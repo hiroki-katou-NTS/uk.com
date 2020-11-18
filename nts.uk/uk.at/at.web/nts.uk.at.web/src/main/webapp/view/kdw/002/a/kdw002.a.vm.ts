@@ -233,9 +233,14 @@ module nts.uk.at.view.kdw002.a {
 
             submitData(): void {
                 let self = this,
-                    AtItems = {
-                        companyID: ""
-                    };
+                AtItems = {
+                    companyID: ""
+                };
+                if (_.isEmpty(self.roundingUnitValue()) && self.frameCategory() === 8) {
+                    nts.uk.ui.dialog.error({ messageId: "Msg_1713" }).then(() => nts.uk.ui.block.clear());
+                    // nts.uk.ui.block.clear();
+                    return;
+                }
                 let attendanceItem = _.find(self.attendanceItems(), { displayNumber: Number(self.aICurrentCode()) });
                 if (self.headerColorValue()) {
                     AtItems.headerBgColorOfDailyPer = self.headerColorValue();
