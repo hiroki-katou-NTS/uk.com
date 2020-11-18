@@ -17,7 +17,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class KshmtMonItemControlPK implements Serializable  {
+public class KrcmtControlOfMonthlyItemsPK implements Serializable  {
 	private static final long serialVersionUID = 1L;
 	
 	@Column(name = "CID")

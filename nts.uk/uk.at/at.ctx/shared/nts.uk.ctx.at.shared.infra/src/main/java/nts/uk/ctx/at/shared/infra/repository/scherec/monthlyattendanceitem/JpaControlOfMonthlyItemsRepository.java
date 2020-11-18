@@ -17,18 +17,18 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.TimeInputUnit;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.HeaderBackgroundColor;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.ControlOfMonthlyItems;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.ControlOfMonthlyItemsRepository;
-import nts.uk.ctx.at.shared.infra.entity.scherec.monthlyattendanceitem.KshmtMonItemControl;
+import nts.uk.ctx.at.shared.infra.entity.scherec.monthlyattendanceitem.KrcmtControlOfMonthlyItems;
 
 @Stateless
 public class JpaControlOfMonthlyItemsRepository extends JpaRepository implements ControlOfMonthlyItemsRepository {
 
-	private static final String GET_BY_CODE = "SELECT c FROM KshmtMonItemControl c "
+	private static final String GET_BY_CODE = "SELECT c FROM KrcmtControlOfMonthlyItems c "
 			+ " WHERE c.krcmtControlOfMonthlyItemsPK.companyID = :companyID "
 			+ " AND c.krcmtControlOfMonthlyItemsPK.itemMonthlyID = :itemMonthlyID ";
 
 	@Override
 	public Optional<ControlOfMonthlyItems> getControlOfMonthlyItem(String companyID, int itemMonthlyID) {
-		Optional<ControlOfMonthlyItems> data = this.queryProxy().query(GET_BY_CODE, KshmtMonItemControl.class)
+		Optional<ControlOfMonthlyItems> data = this.queryProxy().query(GET_BY_CODE, KrcmtControlOfMonthlyItems.class)
 				.setParameter("companyID", companyID).setParameter("itemMonthlyID", itemMonthlyID)
 				.getSingle(c -> c.toDomain());
 		return data;
@@ -36,9 +36,9 @@ public class JpaControlOfMonthlyItemsRepository extends JpaRepository implements
 
 	@Override
 	public void updateControlOfMonthlyItem(ControlOfMonthlyItems controlOfMonthlyItems) {
-		KshmtMonItemControl newEntity = KshmtMonItemControl.toEntity(controlOfMonthlyItems);
-		KshmtMonItemControl updateEntity = this.queryProxy()
-				.find(newEntity.getKrcmtControlOfMonthlyItemsPK(), KshmtMonItemControl.class).get();
+		KrcmtControlOfMonthlyItems newEntity = KrcmtControlOfMonthlyItems.toEntity(controlOfMonthlyItems);
+		KrcmtControlOfMonthlyItems updateEntity = this.queryProxy()
+				.find(newEntity.getKrcmtControlOfMonthlyItemsPK(), KrcmtControlOfMonthlyItems.class).get();
 		updateEntity.headerBgColorOfMonthlyPer = newEntity.headerBgColorOfMonthlyPer;
 		updateEntity.inputUnitOfTimeItem = newEntity.inputUnitOfTimeItem;
 		this.commandProxy().update(updateEntity);
@@ -47,7 +47,7 @@ public class JpaControlOfMonthlyItemsRepository extends JpaRepository implements
 
 	@Override
 	public void addControlOfMonthlyItem(ControlOfMonthlyItems controlOfMonthlyItems) {
-		KshmtMonItemControl newEntity = KshmtMonItemControl.toEntity(controlOfMonthlyItems);
+		KrcmtControlOfMonthlyItems newEntity = KrcmtControlOfMonthlyItems.toEntity(controlOfMonthlyItems);
 		this.commandProxy().insert(newEntity);
 
 	}

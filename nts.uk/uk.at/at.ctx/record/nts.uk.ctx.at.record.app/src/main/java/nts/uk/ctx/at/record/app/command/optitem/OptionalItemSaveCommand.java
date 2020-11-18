@@ -64,9 +64,9 @@ public class OptionalItemSaveCommand implements OptionalItemGetMemento {
 	
 	private int calAtr;
 	
-	private String note;
+	private NoteOptionalItem note;
 	
-	private String description;
+	private DescritionOptionalItem description;
 
 	/*
 	 * (non-Javadoc)
@@ -171,11 +171,11 @@ public class OptionalItemSaveCommand implements OptionalItemGetMemento {
 
     @Override
     public Optional<NoteOptionalItem> getNote() {
-        return this.note == null ? Optional.empty() : Optional.ofNullable(new NoteOptionalItem(this.note));
+        return Optional.ofNullable(this.note);
     }
 
     @Override
     public Optional<DescritionOptionalItem> getDescription() {
-        return this.description == null ? Optional.empty() : Optional.ofNullable(new DescritionOptionalItem(this.description));
+        return Optional.ofNullable(this.description);
     }
 }

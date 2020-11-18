@@ -157,17 +157,20 @@ public class JpaOptionalItemGetMemento implements OptionalItemGetMemento {
 
     @Override
     public CalculationClassification getCalcAtr() {
-        return EnumAdaptor.valueOf(this.typeValue.getCalcAtr(), CalculationClassification.class);
+        // TODO Auto-generated method stub
+        return null;
     }
 
     @Override
     public Optional<NoteOptionalItem> getNote() {
-        return this.typeValue.getNote() == null ? Optional.empty() : Optional.of(new NoteOptionalItem(this.typeValue.getNote()));
+        // TODO Auto-generated method stub
+        return null;
     }
 
     @Override
     public Optional<DescritionOptionalItem> getDescription() {
-        return this.typeValue.getDescription() == null ? Optional.empty() : Optional.of(new DescritionOptionalItem(this.typeValue.getDescription()));
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

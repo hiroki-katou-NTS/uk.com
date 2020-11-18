@@ -80,9 +80,6 @@ module nts.uk.at.view.kmk002.a {
                 calcResultRange: CalcResultRangeDto;
                 unit: string;
                 formulas: Array<FormulaDto>;
-                calAtr: number;
-                note: string;
-                description: string;
             }
             /**
              * CalcResultRangeDto

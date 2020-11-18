@@ -3,8 +3,6 @@
  */
 package nts.uk.screen.at.app.dailyperformance.correction.dto;
 
-import java.math.BigDecimal;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -25,7 +23,7 @@ public class DPAttendanceItemControl {
 	// 3:15分
 	// 4:30分
 	// 5:60分
-	private BigDecimal timeInputUnit;
+	private Integer timeInputUnit;
 
 	private String headerBackgroundColor;
 

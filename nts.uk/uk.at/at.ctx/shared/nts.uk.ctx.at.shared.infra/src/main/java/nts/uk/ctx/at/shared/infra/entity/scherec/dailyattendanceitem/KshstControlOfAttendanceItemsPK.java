@@ -16,7 +16,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class KshmtDayAtdCtrPK  implements Serializable {
+public class KshstControlOfAttendanceItemsPK  implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Column(name = "CID")

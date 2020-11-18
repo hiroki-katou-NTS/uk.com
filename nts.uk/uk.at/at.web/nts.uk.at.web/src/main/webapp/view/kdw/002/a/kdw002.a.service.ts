@@ -14,8 +14,8 @@ module nts.uk.at.view.kdw002.a {
             getNameDaily  :"screen/at/correctionofdailyperformance/getNamedailyAttItem",
             getNameMonthly  :"screen/at/correctionofdailyperformance/getNameMonthlyAttItem",
             
-            getDailyAttItem: "at/shared/scherec/attitem/getDailyAttItemUsed",
-            getMontlyAttItem: "at/shared/scherec/attitem/getMonthlyAttItemUsed"
+            getDailyAttItem: "at/shared/scherec/attitem/getDailyAttItem",
+            getMontlyAttItem: "at/shared/scherec/attitem/getMonthlyAttItem"
         }
         export function getListDailyAttdItem(): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.getListDailyAttdItem);

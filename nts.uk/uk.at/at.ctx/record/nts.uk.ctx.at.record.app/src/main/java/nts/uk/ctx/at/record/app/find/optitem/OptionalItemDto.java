@@ -62,10 +62,10 @@ public class OptionalItemDto implements OptionalItemSetMemento {
 	private int calAtr;
 	
 	/** The note */
-	private String note;
+	private NoteOptionalItem note;
 	
 	/** The description */
-	private String description;
+	private DescritionOptionalItem description;
 
 	/*
 	 * (non-Javadoc)
@@ -182,11 +182,11 @@ public class OptionalItemDto implements OptionalItemSetMemento {
 
     @Override
     public void setNote(Optional<NoteOptionalItem> note) {
-        this.note = note.isPresent() ? note.get().v() : null;
+        this.note = note.isPresent() ? note.get() : null;
     }
 
     @Override
     public void setDescription(Optional<DescritionOptionalItem> description) {
-        this.description = description.isPresent() ? description.get().v() : null;
+        this.description = description.isPresent() ? description.get() : null;
     }
 }
