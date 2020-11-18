@@ -232,7 +232,7 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
                     new KfnmtRptWkRecItemPk(replicationDestinationSettingId, e.pk.itemPos),
                     e.contractCode,
                     e.companyId,
-                    copyDestinationName.v(),
+                    e.itemName,
                     e.itemIsPrintEd,
                     e.itemType,
                     e.itemAtribute
