@@ -22,10 +22,8 @@ public class StampEdittingExportService extends ExportService<StampEdittingExpor
 	protected void handle(ExportServiceContext<StampEdittingExportDatasource> context) {
 		
 		StampEdittingExportDatasource datasource = context.getQuery();
-		int digitsNumber = datasource.getDigitsNumber();
-		int stampMethod = datasource.getStampMethod();
 		
-		StampEdittingExportDatasource input = new StampEdittingExportDatasource(digitsNumber, stampMethod);
+		StampEdittingExportDatasource input = new StampEdittingExportDatasource(datasource.getDigitsNumber(), datasource.getStampMethod());
 		
 		this.stampEdittingExportService.export(context.getGeneratorContext(), input);
 		
