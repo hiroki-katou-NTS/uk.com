@@ -2,6 +2,7 @@ import { Vue } from '@app/provider';
 import { dom, browser, $ } from '@app/utils';
 import { LanguageBar } from '@app/plugins/i18n';
 import { component, Watch } from '@app/core/component';
+import { Ccgs03AComponent } from 'views/ccg/s03/a';
 
 // tslint:disable-next-line: variable-name
 const _NavMenu = Vue.observable({
@@ -144,8 +145,8 @@ export class NavMenuBar extends Vue {
         dom.removeClass(nav, 'show');
     }
 
-    private showCcg003() {
-        alert('showCCG003');
+    public showCcg003() {
+        this.$modal(Ccgs03AComponent);
     }
 }
 
