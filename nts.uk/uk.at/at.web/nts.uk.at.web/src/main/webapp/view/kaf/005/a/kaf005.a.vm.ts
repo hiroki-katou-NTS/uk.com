@@ -32,9 +32,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			// new 
 			const vm = this;
 			vm.application = ko.observable(new Application(ko.toJS(vm.appType)));
+			
 			vm.createRestTime(vm.restTime);
 			vm.createHolidayTime(vm.holidayTime);
 			vm.createOverTime(vm.overTime);
+			vm.bindWorkInfo(null);
 			let empLst: Array<string> = [],
 				dateLst: Array<string> = [];
 			if (!_.isEmpty(params)) {
@@ -142,6 +144,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		
 		mounted() {
 			const self = this;
+			
 			
 		}
 		
@@ -298,12 +301,29 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		//  work-info 
 		bindWorkInfo(res: DisplayInfoOverTime) {
 			const self = this;
+			if (!ko.toJS(self.workInfo)) {
+				let workInfo = {} as WorkInfo;
+				let workType = {} as Work;
+				let workTime = {} as Work;
+				let workHours1 = {} as WorkHours;
+				workHours1.start = ko.observable(null);
+				workHours1.end = ko.observable(null);
+				let workHours2 = {} as WorkHours;
+				workHours2.start = ko.observable(null);
+				workHours2.end = ko.observable(null);
+				workInfo.workType = ko.observable(workType);	
+				workInfo.workTime = ko.observable(workTime);
+				workInfo.workHours1 = workHours1;
+				workInfo.workHours2 = workHours2;
+				self.workInfo(workInfo);
+				
+				return;
+			}
 			let infoWithDateApplication = res.infoWithDateApplicationOp as InfoWithDateApplication;
-			let workInfo = {} as WorkInfo;
 			let workType = {} as Work;
 			let workTime = {} as Work;
-			let workHours1 = {} as WorkHours;
-			let workHours2 = {} as WorkHours;
+			let workHours1 = self.workInfo().workHours1 as WorkHours;
+			let workHours2 = self.workInfo().workHours2 as WorkHours;
 			if (!_.isNil(infoWithDateApplication)) {
 				workType.code = infoWithDateApplication.workTypeCD;
 				if (!_.isNil(workType.code)) {
@@ -319,7 +339,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				if (!_.isNil(workTime.code)) {
 					let workTimeList = res.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst as Array<WorkTime>;
 					if (!_.isEmpty(workTimeList)) {
-						let item = _.find(workTimeList, (item: WorkTime) => item.workTimeCode == workTime.code);
+						let item = _.find(workTimeList, (item: WorkTime) => item.worktimeCode == workTime.code);
 						if (!_.isNil(item)) {
 							workTime.name  = item.workTimeDisplayName.workTimeName;
 						}
@@ -330,24 +350,18 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				// set input time
 				let workHoursDto = infoWithDateApplication.workHours;
 				if (workHoursDto) {
-					workHours1.start = ko.observable(workHoursDto.startTimeOp1);
-					workHours1.end = ko.observable(workHoursDto.endTimeOp1);
-					workHours2.start = ko.observable(workHoursDto.startTimeOp2);
-					workHours2.end = ko.observable(workHoursDto.endTimeOp2);
-				} else {
-					workHours1.start = ko.observable(null);
-					workHours1.end = ko.observable(null);
-					workHours2.start = ko.observable(null);
-					workHours2.end = ko.observable(null);
+					workHours1.start(workHoursDto.startTimeOp1);
+					workHours1.end(workHoursDto.endTimeOp1);
+					workHours2.start(workHoursDto.startTimeOp2);
+					workHours2.end(workHoursDto.endTimeOp2);
 				}
 				
 			}
-			workInfo.workType = ko.observable(workType);		
-			workInfo.workTime = ko.observable(workTime);
-			workInfo.workHours1 = workHours1;
-			workInfo.workHours2 = workHours2;
+			self.workInfo().workType(workType);		
+			self.workInfo().workTime(workTime);
+			self.workInfo().workHours1 = workHours1;
+			self.workInfo().workHours2 = workHours2;
 			
-			self.workInfo(workInfo);
 		}
 		
 		bindRestTime(res: DisplayInfoOverTime) {
@@ -791,7 +805,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 	}
 	
 	interface WorkTime {
-		workTimeCode: string;
+		worktimeCode: string;
 		workTimeDisplayName: WorkTimeDisplayName;
 	}
 	interface WorkTimeDisplayName {
