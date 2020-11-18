@@ -84,6 +84,7 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAt
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.DuplicateStateAtr;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.DuplicationStatusOfTimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.RangeOfDayTimeZoneService;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
@@ -1318,10 +1319,10 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 		List<OvertimeApplicationSetting> overTimes = dailyAttendanceTimeCaculationImport.getOverTime()
 																   .entrySet()
 																   .stream()
-																   .map(x -> x.getValue().getCalTime() > x.getValue().getTime() ? new OvertimeApplicationSetting(
+																   .map(x -> x.getValue().getTime() > 0  ? new OvertimeApplicationSetting(
 																									   x.getKey(),
 																									   AttendanceType_Update.NORMALOVERTIME,
-																									   x.getValue().getCalTime())
+																									   x.getValue().getTime())
 																		   		: null )
 																   .filter(y -> y != null)
 																   .collect(Collectors.toList());
@@ -1330,10 +1331,10 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 		List<OvertimeApplicationSetting> holidayTimes = dailyAttendanceTimeCaculationImport.getHolidayWorkTime()
 																   .entrySet()
 																   .stream()
-																   .map(x -> x.getValue().getCalTime() > x.getValue().getTime() ? new OvertimeApplicationSetting(
+																   .map(x -> x.getValue().getTime() > 0 ? new OvertimeApplicationSetting(
 																									   x.getKey(),
 																									   AttendanceType_Update.BREAKTIME,
-																									   x.getValue().getCalTime())
+																									   x.getValue().getTime())
 																		   		: null )
 																   .filter(y -> y != null)
 																   .collect(Collectors.toList());
@@ -1377,6 +1378,8 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 		
 		overTimeShiftNight.setMidNightHolidayTimes(midNightHolidayTimes);
 		applicationTime.setOverTimeShiftNight(Optional.of(overTimeShiftNight));
+		
+		applicationTime.setFlexOverTime(Optional.of(new AttendanceTimeOfExistMinus(100)));
 		
 		
 		output.add(applicationTime);

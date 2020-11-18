@@ -5,7 +5,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 		<!--A5_1 休憩時間ラベル-->
 		<div class="cm-column" style="display: inline-block; width: 100px">
 			<div class="lblTitle pull-left"
-				data-bind="ntsFormLabel: {}, text: $i18n('KAF005_40')"></div>
+				data-bind="text: $i18n('KAF005_40'), ntsFormLabel: {}"></div>
 		</div>
 		<div class="table-time">
 			<table id="fixed-table">
@@ -57,21 +57,19 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 		<button style="width: 100px; margin-left: 200px" data-bind="text: $i18n('KAF005_43'), click: calculate" class="caret-bottom caret-inline" ></button>
 	</div>
 	<!-- over time hours -->
-
-	<div class="cf valign-top control-group cell"
-		style="margin-top: 0px !important">
+	<div class="cf valign-top control-group" data-bind="if: true">
 		<!--A6_1 残業時間ラベル-->
 		<div class="cm-column" style="display: inline-block; width: 100px">
 			<div class="lblTitle pull-left"
 				data-bind="text: $i18n('KAF005_50'), ntsFormLabel: {required: true}"></div>
 		</div>
-		<div class="table-time" id="overtime-container">
+		<div class="table-time">
 			<table id="fixed-overtime-hour-table">
 				<colgroup>
-					<col width="110px" />
-					<col width="110px" />
-					<col width="110px" />
-					<col width="110px" />
+					<col width="109px" />
+					<col width="115px" />
+					<col width="115px" />
+					<col width="115px" />
 				</colgroup>
 				<thead>
 					<tr>
@@ -91,11 +89,12 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 							data-bind="text: frameNo"></td>
 						<!--A6_8 残業申請時間入力-->
 						<td>
-							<input tabindex="15" class="right-content overtimeHoursCheck"
+							<input tabindex="12" class="right-content overtimeHoursCheck"
 							data-bind=" 
 								ntsTimeEditor: { 
 									value: applicationTime,
-									option: {width: '80px'}, 
+									option: {width: '85px', timeWithDay: true},
+									inputFormat: 'time',
 									constraint:'OvertimeAppPrimitiveTime',
 									enable: true }" />
 						</td>
@@ -108,13 +107,16 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 			</table>
 		</div>
 	</div>
+	
+	
 	<!-- holiday time -->
 	<div class="cf valign-top control-group" data-bind="if: true">
 		<!--A5_1 休憩時間ラベル-->
 		<div class="cm-column" style="display: inline-block; width: 100px">
 			<div class="lblTitle pull-left"
-				data-bind="ntsFormLabel: {required: true}, text: $i18n('KAF005_70')"></div>
+				data-bind="text: $i18n('KAF005_70'), ntsFormLabel: {required: true}"></div>
 		</div>
+		
 		<div class="table-time">
 			<table id="fixed-table-holiday">
 				<colgroup>
@@ -146,7 +148,8 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 								ntsTimeWithDayEditor: {
 									name: '#[KAF005_337]', 
 									value: start, 
-									constraint:'TimeWithDayAttr', 
+									constraint:'TimeWithDayAttr',
+									inputFormat: 'time',
 									enable: false,
 									option: {width: '85px', timeWithDay: true}}" /></td>
 						<!--A5_7 終了時刻-->
@@ -157,9 +160,13 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 			</table>
 		</div>
 	</div>
+	
+	
+	
 
 
 </div>
+
 
 
 	`
@@ -187,6 +194,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 			$("#fixed-table").ntsFixedTable({ height: 120 });
 			$("#fixed-overtime-hour-table").ntsFixedTable({ height: 216 });
 			$("#fixed-table-holiday").ntsFixedTable({ height: 120 });
+			$("#fixed-table-holiday-test").ntsFixedTable({ height: 216 });
 			
 		}
 	}

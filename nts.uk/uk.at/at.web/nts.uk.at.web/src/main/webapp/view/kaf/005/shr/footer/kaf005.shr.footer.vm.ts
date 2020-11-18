@@ -1,15 +1,15 @@
 module nts.uk.at.view.kaf005.shr.footer.viewmodel {
 	const template = `
-<div id="kaf005-footer">
+<div id="kaf005-footer" data-bind="with: $parent">
 	<div class="table" style="margin-bottom: 5px;" data-bind="if: true">
 		<div style="width: 120px" class="cell col-1">
-			<div class="cell valign-center" data-bind="ntsFormLabel: {}, text: $i18n('KAF005_90')"></div>
+			<div class="cell valign-center" data-bind="ntsFormLabel: {}, text: $i18n('KAF005_90', [messageInfos()[0].titleDrop()])"></div>
 		</div>
 		<div class="cell valign-center">
 			<div id="combo-box" data-bind="ntsComboBox: {
-					options: itemList,
+					options: messageInfos()[0].listDrop,
 					optionsValue: 'code',
-					value: selectedCode,
+					value: messageInfos()[0].selectedCode,
 					optionsText: 'name',
 					editable: true,
 					enable: true,
@@ -38,9 +38,9 @@ module nts.uk.at.view.kaf005.shr.footer.viewmodel {
 		</div>
 		<div class="cell valign-center">
 			<div id="combo-box" data-bind="ntsComboBox: {
-					options: itemList,
+					options: messageInfos()[1].listDrop,
 					optionsValue: 'code',
-					value: selectedCode,
+					value: messageInfos()[1].selectedCode,
 					optionsText: 'name',
 					editable: true,
 					enable: true,
@@ -65,7 +65,6 @@ module nts.uk.at.view.kaf005.shr.footer.viewmodel {
 	
 </div>
 
-
 	`
 	@component({
 		name: 'kaf005-share-footer',
@@ -76,19 +75,14 @@ module nts.uk.at.view.kaf005.shr.footer.viewmodel {
 		selectedCode: KnockoutObservable<String>;
 		created() {
 			const self = this;
-			self.itemList = ko.observableArray([
-	            new ItemModel('1', '基本給'),
-	            new ItemModel('2', '役職手当'),
-	            new ItemModel('3', '基本給ながい文字列ながい文字列ながい文字列')
-        	]);
-			self.selectedCode = ko.observable('1');
+			
 		}
 		
 		mounted() {
 			const self = this;
 		}
 	}
-	class ItemModel {
+	export class ItemModel {
 	    code: string;
 	    name: string;
 	
@@ -97,4 +91,22 @@ module nts.uk.at.view.kaf005.shr.footer.viewmodel {
 	        this.name = name;
 	    }
 	}
+	
+	export interface MessageInfo {
+		selectedCode: KnockoutObservable<String>;
+		titleDrop: KnockoutObservable<String>;
+		listDrop: KnockoutObservableArray<ItemModel>;
+		titleInput: KnockoutObservable<String>;
+		valueInput: KnockoutObservable<String>;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

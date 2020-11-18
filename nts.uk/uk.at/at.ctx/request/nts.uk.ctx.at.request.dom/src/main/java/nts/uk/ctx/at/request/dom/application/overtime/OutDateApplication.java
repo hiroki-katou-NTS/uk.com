@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.overtime;
 
+import java.util.Collections;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -20,11 +21,11 @@ public class OutDateApplication {
 	// ﾌﾚｯｸｽの超過状態
 	private ExcessState flex;
 	// 休出深夜時間
-	private List<ExcessStateMidnight> excessStateMidnight;
+	private List<ExcessStateMidnight> excessStateMidnight = Collections.emptyList();
 	// 残業深夜の超過状態
 	private ExcessState overTimeLate;
 	// 申請時間
-	private List<ExcessStateDetail> excessStateDetail;
+	private List<ExcessStateDetail> excessStateDetail = Collections.emptyList();
 	// 取得した「事前申請・実績の超過状態．事前超過」をチェックする
 	public Boolean isAdvanceExcess() {
 		if (flex == ExcessState.EXCESS_ALARM

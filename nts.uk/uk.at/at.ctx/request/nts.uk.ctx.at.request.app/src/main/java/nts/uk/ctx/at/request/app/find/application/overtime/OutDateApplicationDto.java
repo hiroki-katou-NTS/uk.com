@@ -22,12 +22,12 @@ public class OutDateApplicationDto {
 	public static OutDateApplicationDto fromDomain(OutDateApplication outDateApplication) {
 		
 		return new OutDateApplicationDto(
-				outDateApplication.getFlex().value,
+				outDateApplication.getFlex() == null ? null : outDateApplication.getFlex().value,
 				outDateApplication.getExcessStateMidnight()
 					.stream()
 					.map(x -> ExcessStateMidnightDto.fromDomain(x))
 					.collect(Collectors.toList()),
-					outDateApplication.getOverTimeLate().value,
+				outDateApplication.getOverTimeLate() == null ? null : outDateApplication.getOverTimeLate().value,
 				outDateApplication.getExcessStateDetail()
 					.stream()
 					.map(x -> ExcessStateDetailDto.fromDomain(x))

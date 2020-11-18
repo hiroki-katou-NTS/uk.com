@@ -1,13 +1,13 @@
-<div id="kaf005-footer">
+<div id="kaf005-footer" data-bind="with: $parent">
 	<div class="table" style="margin-bottom: 5px;" data-bind="if: true">
 		<div style="width: 120px" class="cell col-1">
-			<div class="cell valign-center" data-bind="ntsFormLabel: {}, text: $i18n('KAF005_90')"></div>
+			<div class="cell valign-center" data-bind="ntsFormLabel: {}, text: $i18n('KAF005_90', [messageInfos()[0].titleDrop()])"></div>
 		</div>
 		<div class="cell valign-center">
 			<div id="combo-box" data-bind="ntsComboBox: {
-					options: itemList,
+					options: messageInfos()[0].listDrop,
 					optionsValue: 'code',
-					value: selectedCode,
+					value: messageInfos()[0].selectedCode,
 					optionsText: 'name',
 					editable: true,
 					enable: true,
@@ -36,9 +36,9 @@
 		</div>
 		<div class="cell valign-center">
 			<div id="combo-box" data-bind="ntsComboBox: {
-					options: itemList,
+					options: messageInfos()[1].listDrop,
 					optionsValue: 'code',
-					value: selectedCode,
+					value: messageInfos()[1].selectedCode,
 					optionsText: 'name',
 					editable: true,
 					enable: true,

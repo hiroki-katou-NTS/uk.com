@@ -1,4 +1,6 @@
 module nts.uk.at.view.kaf005.a.viewmodel {
+	import ItemModel = nts.uk.at.view.kaf005.shr.footer.viewmodel.ItemModel;
+	import MessageInfo = nts.uk.at.view.kaf005.shr.footer.viewmodel.MessageInfo;
 	import OverTime = nts.uk.at.view.kaf005.shr.viewmodel.OverTime;
 	import HolidayTime = nts.uk.at.view.kaf005.shr.viewmodel.HolidayTime;
 	import RestTime = nts.uk.at.view.kaf005.shr.viewmodel.RestTime;
@@ -24,6 +26,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		restTime: KnockoutObservableArray<RestTime> = ko.observableArray([]);
 		holidayTime: KnockoutObservableArray<HolidayTime> = ko.observableArray([]);
 		overTime: KnockoutObservableArray<OverTime> = ko.observableArray([]);
+		messageInfos: KnockoutObservableArray<any> = ko.observableArray([]);
 		dataSource: DisplayInfoOverTime;
 		visibleModel: VisibleModel;
 		name: KnockoutObservable<string> = ko.observable('GGGGGGGGGG');
@@ -37,6 +40,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			vm.createHolidayTime(vm.holidayTime);
 			vm.createOverTime(vm.overTime);
 			vm.bindWorkInfo(null);
+			vm.bindMessageInfo(null);
 			let empLst: Array<string> = [],
 				dateLst: Array<string> = [];
 			if (!_.isEmpty(params)) {
@@ -96,6 +100,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					vm.bindRestTime(vm.dataSource);
 					vm.bindHolidayTime(vm.dataSource);
 					vm.bindOverTime(vm.dataSource);
+					vm.bindMessageInfo(vm.dataSource);
 					vm.visibleModel = vm.createVisibleModel(vm.dataSource);
 				}
 			}).fail((failData: any) => {
@@ -364,6 +369,46 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			
 		}
 		
+		bindMessageInfo(res: DisplayInfoOverTime) {
+			const self = this;
+			if (_.isNil(res)) {
+				let itemList = [
+		            new ItemModel('1', '基本給'),
+		            new ItemModel('2', '役職手当'),
+		            new ItemModel('3', '基本給ながい文字列ながい文字列ながい文字列')
+        		];
+				let messageArray = [] as Array<MessageInfo>;
+				let messageInfo = {} as MessageInfo;
+				messageInfo.titleDrop = ko.observable('');
+				messageInfo.listDrop = ko.observableArray(itemList);
+				messageInfo.titleInput = ko.observable('');
+				messageInfo.valueInput = ko.observable(null);
+				messageInfo.selectedCode = ko.observable('1');
+				messageArray.push(messageInfo);
+				messageArray.push(messageInfo);
+				
+				self.messageInfos(messageArray);
+				return;
+			}
+			let messageInfo = self.messageInfos() as Array<MessageInfo>;
+			
+			// #KAF005_90　{0}:残業申請の表示情報．基準日に関係しない情報．乖離時間枠．名称　←　NO = 1
+			let divergenceTimeRoots = res.infoNoBaseDate.divergenceTimeRoot as Array<DivergenceTimeRoot>;
+			if (!_.isEmpty(divergenceTimeRoots)) {
+				let findNo1 = _.find(divergenceTimeRoots, {divergenceTimeNo: 1});
+				let findNo2 = _.find(divergenceTimeRoots, {divergenceTimeNo: 2});
+				if (!_.isNil(findNo1)) {
+					messageInfo[0].titleDrop(findNo1.divTimeName);
+					messageInfo[0].titleInput(findNo1.divTimeName);
+				}
+				if (!_.isNil(findNo2)) {
+					messageInfo[1].titleDrop(findNo2.divTimeName);
+					messageInfo[1].titleInput(findNo2.divTimeName);
+				}					
+			}
+			
+		}
+		
 		bindRestTime(res: DisplayInfoOverTime) {
 			const self = this;
 			let infoWithDateApplication = res.infoWithDateApplicationOp as InfoWithDateApplication;
@@ -398,8 +443,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					let applicationTime = calculationResultOp.applicationTimes[0].applicationTime;
 					if (!_.isEmpty(applicationTime)) {
 						_.forEach(applicationTime, (item: OvertimeApplicationSetting) => {
-							let findOverTimeArray = _.find(overTimeArray, {frameNo: item.frameNo}) as OverTime;
-							if (!findOverTimeArray && item.attendanceType == AttendanceType.NORMALOVERTIME) {
+							let findOverTimeArray = _.find(overTimeArray, {frameNo: String(item.frameNo)}) as OverTime;
+							if (!_.isNil(findOverTimeArray) && item.attendanceType == AttendanceType.NORMALOVERTIME) {
 								findOverTimeArray.applicationTime(item.applicationTime);
 							}
 						});
@@ -631,7 +676,12 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			command.companyId = self.$user.companyId;
 			command.employeeId = self.$user.employeeId;
 			command.dateOp = ko.toJS(self.application).appDate;
-			command.prePostInitAtr = 0; // wait
+			if (ko.toJS(self.appDispInfoStartupOutput).appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr == 1) {
+				command.prePostInitAtr = ko.toJS(self.application).prePostAtr;
+			} else {
+				command.prePostInitAtr = ko.toJS(self.appDispInfoStartupOutput).appDispInfoWithDateOutput.prePostAtr;				
+			}
+
 			command.overtimeLeaveAppCommonSet = self.dataSource.infoNoBaseDate.overTimeAppSet.overtimeLeaveAppCommonSetting;
 			if (self.dataSource.appDispInfoStartup.opPreAppContentDisplayLst) {
 				let opPreAppContentDisplayLst = self.dataSource.appDispInfoStartup.opPreAppContentDisplayLst;
@@ -816,7 +866,21 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		overTimeAppSet: OvertimeAppSet;
 		agreeOverTimeOutput: AgreeOverTimeOutput;
 		divergenceReasonInputMethod: Array<any>;
-		divergenceTimeRoot: Array<any>;
+		divergenceTimeRoot: Array<DivergenceTimeRoot>;
+	}
+	interface DivergenceTimeRoot {
+		divergenceTimeNo: number;
+		companyId: string;
+		divTimeUseSet: number;
+		divTimeName: string;
+		divType: number;
+	}
+	interface DivergenceReasonInputMethod {
+		divergenceTimeNo: number;
+		companyId: string;
+		divergenceReasonInputed: boolean;
+		divergenceReasonSelected: boolean;
+		reasons: Array<any>;
 	}
 	interface OvertimeAppSet {
 		companyID: string;

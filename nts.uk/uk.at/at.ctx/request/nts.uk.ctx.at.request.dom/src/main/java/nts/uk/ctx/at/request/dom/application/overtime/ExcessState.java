@@ -18,5 +18,5 @@ public enum ExcessState {
 	// 超過エラー
 	EXCESS_ERROR(2);
 	
-	public Integer value;
+	public final Integer value;
 }

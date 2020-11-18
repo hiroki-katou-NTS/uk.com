@@ -7,11 +7,11 @@ module nts.uk.at.view.kaf005.shr.work_info.viewmodel {
 		<div class="cell valign-center" style="width: 105px;">
 			<!--A4_1 勤務種類ラベル-->
 			<div class="valign-center control-group"
-				data-bind="ntsFormLabel:{required: true, text: $i18n('KAF005_34')}"></div>
+				data-bind="text: $i18n('KAF005_34'), ntsFormLabel:{required: true}"></div>
 			<BR />
 			<!--A4_4 就業時間ラベル-->
 			<div class="valign-center control-group"
-				data-bind="ntsFormLabel:{required: true, text: $i18n('KAF005_35')}"></div>
+				data-bind="text: $i18n('KAF005_35'), ntsFormLabel:{required: true}"></div>
 		</div>
 		<div class="cell valign-top" data-bind="if: true" style="width: 25px;">
 			<!--A4_7 選択ボタン-->
@@ -41,7 +41,7 @@ module nts.uk.at.view.kaf005.shr.work_info.viewmodel {
 			<div style="width: 113px" class="cell valign-top cm-column2">
 				<!--A4_8 勤務時間ラベル-->
 				<div class="lblTitle"
-					data-bind="ntsFormLabel: {required: true}, text: $i18n('KAF005_37')"
+					data-bind="text: $i18n('KAF005_37'), ntsFormLabel: {required: true}"
 					style="margin-right: 6px"></div>
 			</div>
 			<div class="cell valign-center">

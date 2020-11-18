@@ -519,10 +519,10 @@ public class OvertimeServiceImpl implements OvertimeService {
 		Optional<WorkTimeCode> workTimeCodeOp = Optional.of(workTimeCode);
 		WorkHours workHoursSPR = new WorkHours();
 		if (startTimeSPR.isPresent()) {
-			workHoursSPR.setStartTimeOp1(Optional.of(new TimeWithDayAttr(endTimeSPR.get())));
+			workHoursSPR.setStartTimeOp1(Optional.of(new TimeWithDayAttr(startTimeSPR.get())));
 		}
 		if (endTimeSPR.isPresent()) {
-			workHoursSPR.setEndTimeOp1(Optional.of(new TimeWithDayAttr(startTimeSPR.get())));
+			workHoursSPR.setEndTimeOp1(Optional.of(new TimeWithDayAttr(endTimeSPR.get())));
 		}
 		WorkHours workHoursActual = new WorkHours();
 		if (actualContentDisplay.isPresent()) {
@@ -896,14 +896,14 @@ public class OvertimeServiceImpl implements OvertimeService {
 				if (workHours.isPresent()) {
 					if (workHours.get().getStartTimeOp1().isPresent() || workHours.get().getEndTimeOp1().isPresent()) {
 						TimeZone timeZone = new TimeZone(
-								workHours.get().getStartTimeOp1().get(),
-								workHours.get().getEndTimeOp1().get());
+								workHours.get().getStartTimeOp1().orElse(null),
+								workHours.get().getEndTimeOp1().orElse(null));
 						timeZones.add(timeZone);
 					}
 					if (workHours.get().getStartTimeOp2().isPresent() || workHours.get().getEndTimeOp2().isPresent()) {
 						TimeZone timeZone = new TimeZone(
-								workHours.get().getStartTimeOp2().get(),
-								workHours.get().getEndTimeOp2().get());
+								workHours.get().getStartTimeOp2().orElse(null),
+								workHours.get().getEndTimeOp2().orElse(null));
 						timeZones.add(timeZone);
 					}
 				}
