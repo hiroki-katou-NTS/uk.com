@@ -3275,7 +3275,7 @@ module nts.uk.ui.exTable {
                 sm = sticker.styleMaker;
             }
             let touched = render.gridRow($grid, rowIdx, origData, sm);
-            if (changedCells.length > 0) {
+            if (changedCells.length > 0 && !_.isNil(touched)) {
                 changedCells.forEach(c => c.setTarget(touched.updateTarget));
                 pushHistory($grid, changedCells, txId);
                 events.trigger($exTable, events.ROW_UPDATED, events.createRowUi(rowIdx, origData));
