@@ -295,12 +295,15 @@ public class ScheduleCreatorExecutionTransaction {
 		// if 中断
 		if (content.getImplementAtr().value == ImplementAtr.CREATE_WORK_SCHEDULE.value
 				&& scheduleExecutionLog.getCompletionStatus().value == CompletionStatus.INTERRUPTION.value) {
-			BasicScheduleResetCommand commandReset = BasicScheduleResetCommand.create(command, companySetting,
-					scheduleCreator, content);
-			// スケジュールを再設定する (Thiết lập lại schedule)
-			// ドメインモデル「スケジュール作成実行ログ」を更新する ở trong xử lý này
-			this.resetScheduleWithMultiThread(commandReset, context, period, masterCache.getEmpGeneralInfo(),
-					masterCache.getListBusTypeOfEmpHis(), listBasicSchedule, registrationListDateSchedule,scheduleCreator);
+			val asyncTask = context.asAsync();
+
+			// ドメインモデル「スケジュール作成実行ログ」を更新する (update)
+			this.updateStatusScheduleExecutionLog(context.getCommand().getScheduleExecutionLog(),
+					CompletionStatus.INTERRUPTION);
+
+			asyncTask.finishedAsCancelled();
+			
+			return;
 		} else {
 			// else 中断じゃない
 			// 入力パラメータ「作成方法区分」を判断-check parameter
@@ -339,84 +342,29 @@ public class ScheduleCreatorExecutionTransaction {
 			// }
 		}
 	}
+
 	// ドメインモデル「スケジュール作成実行ログ」を更新する
-		private void updateStatusScheduleExecutionLog(ScheduleExecutionLog domain, CompletionStatus completionStatus) {
-			// check exist data schedule error log
-			domain.setCompletionStatus(completionStatus);
-			domain.updateExecutionTimeEndToNow();
-			this.scheduleExecutionLogRepository.update(domain);
-		}
+	private void updateStatusScheduleExecutionLog(ScheduleExecutionLog domain, CompletionStatus completionStatus) {
+		// check exist data schedule error log
+		domain.setCompletionStatus(completionStatus);
+		domain.updateExecutionTimeEndToNow();
+		this.scheduleExecutionLogRepository.update(domain);
+	}
 
-		// 勤務予定削除
-		private void deleteSchedule(String employeeId, DatePeriod period) {
-			@SuppressWarnings("unused")
-			String companyId = AppContexts.user().companyId();
-			// 勤務予定ドメインを削除する (TKT-TQP)
+	// 勤務予定削除
+	private void deleteSchedule(String employeeId, DatePeriod period) {
+		@SuppressWarnings("unused")
+		String companyId = AppContexts.user().companyId();
+		// 勤務予定ドメインを削除する (TKT-TQP)
 
-			workScheduleRepository.delete(employeeId, period);
+		workScheduleRepository.delete(employeeId, period);
 //			//暫定データの登録
 //			this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, employeeId, period.datesBetween());
 
-		}
-
-		/**
-		 * Reset schedule.
-		 *
-		 * @param command the command
-		 * @param creator the creator
-		 * @param domain  the domain
-		 */
-	// スケジュールを再設定する
-	private void resetScheduleWithMultiThread(BasicScheduleResetCommand command,
-			CommandHandlerContext<ScheduleCreatorExecutionCommand> context, DatePeriod targetPeriod,
-			EmployeeGeneralInfoImported empGeneralInfo, List<BusinessTypeOfEmployeeHis> listBusTypeOfEmpHis,
-			List<BasicSchedule> listBasicSchedule, RegistrationListDateSchedule registrationListDateSchedule,
-			ScheduleCreator scheduleCreator) {
-
-		// get info by context
-		val asyncTask = context.asAsync();
-
-		DateRegistedEmpSche dateRegistedEmpSche = new DateRegistedEmpSche(scheduleCreator.getEmployeeId(),
-				new ArrayList<>());
-		// loop start period date => end period date
-		for (val toDate : targetPeriod.datesBetween()) {
-			// 中断フラグを判断
-			if (asyncTask.hasBeenRequestedToCancel()) {
-				// ドメインモデル「スケジュール作成実行ログ」を更新する (update)
-				this.updateStatusScheduleExecutionLog(context.getCommand().getScheduleExecutionLog(),
-						CompletionStatus.INTERRUPTION);
-
-				asyncTask.finishedAsCancelled();
-				break;
-			}
-			// ドメインモデル「勤務予定基本情報」を取得する
-			// fix for response
-			Optional<BasicSchedule> optionalBasicSchedule = listBasicSchedule.stream()
-					.filter(x -> (x.getEmployeeId().equals(scheduleCreator.getEmployeeId())
-							&& x.getDate().compareTo(toDate) == 0))
-					.findFirst();
-			if (optionalBasicSchedule.isPresent()) {
-				command.setWorkingCode(optionalBasicSchedule.get().getWorkTimeCode());
-				command.setWorkTypeCode(optionalBasicSchedule.get().getWorkTypeCode());
-				// 入力パラメータ「再作成区分」を判断
-				// 取得したドメインモデル「勤務予定基本情報」の「予定確定区分」を判断
-				if (optionalBasicSchedule.get().getConfirmedAtr() == ConfirmedAtr.UNSETTLED) {
-					// 再設定する情報を取得する
-					this.scheCreExeBasicScheduleHandler.resetAllDataToCommandSave(command, toDate, empGeneralInfo,
-							listBusTypeOfEmpHis, listBasicSchedule, dateRegistedEmpSche);
-				}
-			}
-		}
-
-		if (dateRegistedEmpSche.getListDate().size() > 0) {
-			registrationListDateSchedule.getRegistrationListDateSchedule().add(dateRegistedEmpSche);
-		}
 	}
 
 	/**
-	 * 日のデータを用意する - method
-	 * 「パラメータ」 ・社員の在職状態一覧 ・労働条件一覧 ・実施区分 
-	 * 「Output」 ・データ（処理状態付き）
+	 * 日のデータを用意する - method 「パラメータ」 ・社員の在職状態一覧 ・労働条件一覧 ・実施区分 「Output」 ・データ（処理状態付き）
 	 */
 	private DataProcessingStatusResult createScheduleBasedPersonOneDate_New(ScheduleCreatorExecutionCommand command,
 			ScheduleCreator creator, ScheduleExecutionLog domain,
@@ -447,9 +395,10 @@ public class ScheduleCreatorExecutionTransaction {
 			return result;
 		}
 		ScheManaStatuTempo employmentInfo = optEmploymentInfo.get();
-		// 
+		//
 		// if 入社前OR出向中
-		// status employment equal BEFORE_JOINING (入社前) or equal ON_LOAN (出向中) (thay đổi enum)
+		// status employment equal BEFORE_JOINING (入社前) or equal ON_LOAN (出向中) (thay đổi
+		// enum)
 		if (employmentInfo.getScheManaStatus() == ScheManaStatus.INVALID_DATA
 				|| employmentInfo.getScheManaStatus() == ScheManaStatus.DO_NOT_MANAGE_SCHEDULE) {
 
@@ -760,33 +709,35 @@ public class ScheduleCreatorExecutionTransaction {
 							if (y.getWorkNo() == 2) {
 								i = 1;
 							}
-							integrationOfDaily.getAttendanceLeave().get().setTimeLeavingWorks(integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().stream()
-									.sorted((a, b) -> a.getWorkNo().compareTo(b.getWorkNo()))
-									.collect(Collectors.toList()));
-							if(i == 0 || (i == 1 && integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().size() > 1)) {
-							TimeLeavingWork x = integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks()
-									.get(i);
-							integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().get(i)
-									.setWorkNo(new WorkNo(y.getWorkNo()));
-							if (x.getAttendanceStamp().isPresent()
-									&& x.getAttendanceStamp().get().getStamp().get().getTimeDay() != null) {
-								x.getAttendanceStamp().get().getStamp().get().getTimeDay()
-										.setTimeWithDay(Optional.ofNullable(y.getStart()));
-								x.getAttendanceStamp().get().getStamp().get().getTimeDay().getReasonTimeChange()
-										.setTimeChangeMeans(TimeChangeMeans.REAL_STAMP);
-							}
-							if (x.getLeaveStamp().isPresent()
-									&& x.getLeaveStamp().get().getStamp().get().getTimeDay() != null) {
-								x.getLeaveStamp().get().getStamp().get().getTimeDay()
-										.setTimeWithDay(Optional.ofNullable(y.getEnd()));
-								x.getLeaveStamp().get().getStamp().get().getTimeDay().getReasonTimeChange()
-										.setTimeChangeMeans(TimeChangeMeans.REAL_STAMP);
-							}
-							x.setCanceledLate(false);
-							x.setCanceledEarlyLeave(false);
+							integrationOfDaily.getAttendanceLeave().get().setTimeLeavingWorks(
+									integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().stream()
+											.sorted((a, b) -> a.getWorkNo().compareTo(b.getWorkNo()))
+											.collect(Collectors.toList()));
+							if (i == 0 || (i == 1 && integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks()
+									.size() > 1)) {
+								TimeLeavingWork x = integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks()
+										.get(i);
+								integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().get(i)
+										.setWorkNo(new WorkNo(y.getWorkNo()));
+								if (x.getAttendanceStamp().isPresent()
+										&& x.getAttendanceStamp().get().getStamp().get().getTimeDay() != null) {
+									x.getAttendanceStamp().get().getStamp().get().getTimeDay()
+											.setTimeWithDay(Optional.ofNullable(y.getStart()));
+									x.getAttendanceStamp().get().getStamp().get().getTimeDay().getReasonTimeChange()
+											.setTimeChangeMeans(TimeChangeMeans.REAL_STAMP);
+								}
+								if (x.getLeaveStamp().isPresent()
+										&& x.getLeaveStamp().get().getStamp().get().getTimeDay() != null) {
+									x.getLeaveStamp().get().getStamp().get().getTimeDay()
+											.setTimeWithDay(Optional.ofNullable(y.getEnd()));
+									x.getLeaveStamp().get().getStamp().get().getTimeDay().getReasonTimeChange()
+											.setTimeChangeMeans(TimeChangeMeans.REAL_STAMP);
+								}
+								x.setCanceledLate(false);
+								x.setCanceledEarlyLeave(false);
 							}
 						}
-						if(integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().size() > 1 
+						if (integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().size() > 1
 								&& prepareWorkOutput.getScheduleTimeZone().size() < 2) {
 							integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().remove(1);
 						}
@@ -1450,7 +1401,7 @@ public class ScheduleCreatorExecutionTransaction {
 			List<ExWorkPlaceHistoryImported> mapWorkplaceHist, ScheduleCreator creator) {
 		WorkScheduleMasterReferenceAtr workplaceHistItem = itemDto.get().getScheduleMethod().get()
 				.getWorkScheduleBusCal().get().getReferenceBusinessDayCalendar();
-		
+
 		WorkScheduleMasterReferenceAtr referenceBasicWork = itemDto.get().getScheduleMethod().get()
 				.getWorkScheduleBusCal().get().getReferenceBasicWork();
 		ScheduleErrorLogGeterCommand geterCommand = new ScheduleErrorLogGeterCommand(command.getExecutionId(),

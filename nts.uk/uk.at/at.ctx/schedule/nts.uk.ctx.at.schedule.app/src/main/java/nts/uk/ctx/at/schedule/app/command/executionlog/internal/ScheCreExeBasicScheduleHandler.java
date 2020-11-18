@@ -500,20 +500,20 @@ public class ScheCreExeBasicScheduleHandler {
 	// 就業時間帯再設定
 	private BasicScheduleSaveCommand resetWorkTime(BasicScheduleResetCommand command,
 			BasicScheduleSaveCommand commandSave) {
-
+		// comment để fix bug 111066
 		// check 就業時間帯再設定 is TRUE
-		if (command.getResetAtr().getResetWorkingHours()) {
-			WorkTimeSetGetterCommand commandGetter = new WorkTimeSetGetterCommand();
-			commandGetter.setWorktypeCode(command.getWorkTypeCode());
-			commandGetter.setCompanyId(command.getCompanyId());
-			commandGetter.setWorkingCode(command.getWorkingCode());
-			Optional<PrescribedTimezoneSetting> optionalWorkTimeSet = this.scheCreExeWorkTimeHandler
-					.getScheduleWorkHour(commandGetter);
-			if (optionalWorkTimeSet.isPresent()) {
-				PrescribedTimezoneSetting workTimeSet = optionalWorkTimeSet.get();
-				commandSave.updateWorkScheduleTimeZones(workTimeSet);
-			}
-		}
+//		if (command.getResetAtr().getResetWorkingHours()) {
+//			WorkTimeSetGetterCommand commandGetter = new WorkTimeSetGetterCommand();
+//			commandGetter.setWorktypeCode(command.getWorkTypeCode());
+//			commandGetter.setCompanyId(command.getCompanyId());
+//			commandGetter.setWorkingCode(command.getWorkingCode());
+//			Optional<PrescribedTimezoneSetting> optionalWorkTimeSet = this.scheCreExeWorkTimeHandler
+//					.getScheduleWorkHour(commandGetter);
+//			if (optionalWorkTimeSet.isPresent()) {
+//				PrescribedTimezoneSetting workTimeSet = optionalWorkTimeSet.get();
+//				commandSave.updateWorkScheduleTimeZones(workTimeSet);
+//			}
+//		}
 		return commandSave;
 	}
 	
