@@ -37,6 +37,9 @@ module nts.uk.ui.koExtentions {
         .fc-container:not(.ie) .fc-timegrid thead td .fc-scroller {
             overflow: hidden !important;
         }
+        .fc-container .fc-v-event {
+            border-width: 2px;
+        }
         .fc-container .fc-scrollgrid table {
             border-right-style: solid;
             border-bottom-style: hidden;
@@ -114,95 +117,6 @@ module nts.uk.ui.koExtentions {
             color: #fff;
             background-color: #00B050;
         }`;
-
-    @component({
-        name: 'fc-events',
-        template: `<td data-bind="i18n: '勤怠時間'"></td>
-        <!-- ko foreach: { data: $component.data, as: 'day' } -->
-        <td class="fc-event-note" data-bind="css: { 'no-data': !day.length }">
-            <div data-bind="foreach: { data: day, as: 'note' }">
-                <div data-bind="text: note"></div>
-            </div>
-        </td>
-        <!-- /ko -->`
-    })
-    export class FullCalendarEventHeaderComponent extends ko.ViewModel {
-        constructor(private data: KnockoutComputed<string[][]>) {
-            super();
-
-            if (!this.data) {
-                this.data = ko.computed(() => []);
-            }
-        }
-
-        created() {
-
-        }
-
-        mounted() {
-            const vm = this;
-            const { $el, data } = vm;
-
-            ko.computed({
-                read: () => {
-                    const ds = ko.unwrap(data);
-
-                    if (ds.length) {
-                        $el.style.display = null;
-                    } else {
-                        $el.style.display = 'none';
-                    }
-
-                    $($el).find('[data-bind]').removeAttr('data-bind');
-                },
-                disposeWhenNodeIsRemoved: $el
-            });
-        }
-    }
-
-    @component({
-        name: 'fc-times',
-        template: `<td data-bind="i18n: '作業時間'"></td>
-        <!-- ko foreach: { data: $component.data, as: 'time' } -->
-        <td data-bind="text: $component.formatTime(time)"></td>
-        <!-- /ko -->`
-    })
-    export class FullCalendarTimesHeaderComponent extends ko.ViewModel {
-        constructor(private data: KnockoutComputed<number[]>) {
-            super();
-
-            if (!this.data) {
-                this.data = ko.computed(() => []);
-            }
-        }
-
-        mounted() {
-            const vm = this;
-            const { $el, data } = vm;
-
-            ko.computed({
-                read: () => {
-                    const ds = ko.unwrap(data);
-
-                    if (ds.length) {
-                        $el.style.display = null;
-                    } else {
-                        $el.style.display = 'none';
-                    }
-
-                    $($el).find('[data-bind]').removeAttr('data-bind');
-                },
-                disposeWhenNodeIsRemoved: $el
-            });
-        }
-
-        formatTime(time: number) {
-            const hour = Math.floor(time / 60);
-            const minute = Math.floor(time % 60);
-
-            return `${hour}:${_.padStart(`${minute}`, 2, '0')}`;
-        }
-    }
 
     @handler({
         bindingName: COMPONENT_NAME,
@@ -433,15 +347,6 @@ module nts.uk.ui.koExtentions {
             const $el = $(vm.$el);
             const $fc = $el.find('div.fc').get(0);
             const FC: FullCalendar | null = _.get(window, 'FullCalendar') || null;
-            const mappedEvents = (events: fc.EventApi[] | KnockoutObservableArray<fc.EventApi>) => {
-                const wraped = ko.unwrap(events) as fc.EventApi[];
-
-                return wraped.map(m => ({
-                    ...m,
-                    start: formatDate(m.start),
-                    end: formatDate(m.end),
-                }));
-            };
             const updateActive = () => {
                 $el
                     .find('.fc-header-toolbar button')
@@ -483,7 +388,10 @@ module nts.uk.ui.koExtentions {
                     });
             };
 
+
+            const weekends: KnockoutObservable<boolean> = ko.observable(true);
             const datesSet: KnockoutObservable<DATES_SET | null> = ko.observable(null);
+            const selectedEvents: KnockoutObservableArray<fc.EventApi> = ko.observableArray([]);
 
             const timesSet: KnockoutComputed<number[]> = ko.computed({
                 read() {
@@ -542,9 +450,7 @@ module nts.uk.ui.koExtentions {
                 disposeWhenNodeIsRemoved: vm.$el
             });
 
-            const weekends: KnockoutObservable<boolean> = ko.observable(true);
-
-            const initialViewComputed = ko.computed({
+            const computedView = ko.computed({
                 read: () => {
                     const iv = ko.unwrap(initialView);
 
@@ -570,7 +476,28 @@ module nts.uk.ui.koExtentions {
                     }
                 },
                 disposeWhenNodeIsRemoved: vm.$el
-            })
+            });
+
+            const computedEvents = ko.computed({
+                read: () => {
+                    const rawEvents = ko.unwrap(events) as fc.EventApi[];
+                    const sltedEvents = ko.unwrap(selectedEvents) as fc.EventApi[];
+                    const isSelected = (m: fc.EventApi) => {
+                        return !!_.find(sltedEvents, (e: any) => {
+                            return formatDate(e.start) === formatDate(m.start)
+                                && formatDate(e.end) === formatDate(m.end);
+                        });
+                    };
+
+                    return rawEvents.map(m => ({
+                        ...m,
+                        start: formatDate(m.start),
+                        end: formatDate(m.end),
+                        borderColor: isSelected(m) ? '#000' : 'transparent'
+                    }));
+                },
+                disposeWhenNodeIsRemoved: vm.$el
+            });
 
             if (version.match(/IE/)) {
                 $el.addClass('ie');
@@ -704,8 +631,8 @@ module nts.uk.ui.koExtentions {
                     right: 'copy-day'
                 },
                 themeSystem: 'default',
-                initialView: ko.unwrap(initialViewComputed),
-                events: mappedEvents(events),
+                initialView: ko.unwrap(computedView),
+                events: ko.unwrap(computedEvents),
                 locale: ko.unwrap(locale),
                 firstDay: ko.unwrap(firstDay),
                 weekends: ko.unwrap(weekends),
@@ -721,30 +648,22 @@ module nts.uk.ui.koExtentions {
                 slotEventOverlap: false,
                 // hiddenDays: [5, 6],
                 dayHeaderContent: (opts: any) => moment(opts.date).format('DD(ddd)'),
-                eventDidMount: (arg) => {
-                    const { id, title, groupId } = arg.event;
-
-                    // draw new event
-                    if (!id && !groupId && !title) {
-                        calendar.trigger('eventClick', {
-                            el: arg.el,
-                            event: arg.event,
-                            jsEvent: null,
-                            view: calendar.view
-                        });
-                    }
+                eventDidMount: (args) => {
                 },
-                eventClick: (evt) => {
-                    if (evt.el) {
-                        if (dataEvent.ctrl) {
-                            return;
-                        }
+                dateClick: (args) => {
+                    selectedEvents([]);
+                },
+                eventClick: (args) => {
+                    const cloned = _.cloneDeep(args.event);
 
-                        dataEvent.popup(true);
-                        dataEvent.event(evt.event);
+                    if (!ko.unwrap(dataEvent.ctrl)) {
+                        selectedEvents([cloned]);
+                    } else {
+                        selectedEvents.push(cloned);
                     }
                 },
                 eventDragStart: (evt) => {
+                    // selectedEvents([]);
                 },
                 eventDrop: (evt) => {
                     if (evt.event.allDay) {
@@ -775,6 +694,8 @@ module nts.uk.ui.koExtentions {
                     if (ko.isObservable(events)) {
                         events(evts);
                     }
+
+                    selectedEvents([]);
                 },
                 eventResize: () => {
                     const evts: any[] = calendar
@@ -801,6 +722,8 @@ module nts.uk.ui.koExtentions {
                     if (ko.isObservable(events)) {
                         events(evts);
                     }
+
+                    selectedEvents([]);
                 },
                 eventContent: (args: any) => {
                     const { type } = args.view;
@@ -853,33 +776,43 @@ module nts.uk.ui.koExtentions {
                 },
                 eventOverlap: false, // (stillEvent) => stillEvent.allDay,
                 select: (arg) => {
-                    calendar.unselect();
-                    calendar.addEvent(arg);
+                    const { start, end } = arg;
 
-                    const evts: any[] = calendar
-                        .getEvents()
-                        .map(({
-                            id,
-                            start,
-                            end,
-                            title,
-                            display,
-                            groupId,
-                            backgroundColor
-                        }) => ({
-                            id,
-                            start,
-                            end,
-                            title,
-                            display,
-                            groupId,
-                            backgroundColor
-                        }));
+                    $.Deferred()
+                        .resolve(true)
+                        .then(() => {
+                            calendar.unselect();
+                            calendar.addEvent(arg);
+                        })
+                        .then(() => {
+                            const evts: any[] = calendar
+                                .getEvents()
+                                .map(({
+                                    id,
+                                    start,
+                                    end,
+                                    title,
+                                    display,
+                                    groupId,
+                                    backgroundColor
+                                }) => ({
+                                    id,
+                                    start,
+                                    end,
+                                    title,
+                                    display,
+                                    groupId,
+                                    backgroundColor
+                                }));
 
-                    // update data sources
-                    if (ko.isObservable(events)) {
-                        events(evts);
-                    }
+                            // update data sources
+                            if (ko.isObservable(events)) {
+                                events(evts);
+                            }
+                        })
+                        .then(() => {
+                            selectedEvents([{ start, end } as any]);
+                        });
                 },
                 selectOverlap: false, // (evt) => evt.allDay,
                 selectAllow: (evt) => evt.start.getDate() === evt.end.getDate(),
@@ -909,6 +842,7 @@ module nts.uk.ui.koExtentions {
                 datesSet: (dateInfo) => {
                     const { start, end } = dateInfo;
 
+                    selectedEvents([]);
                     datesSet({ start, end });
                     event.datesSet.apply(viewModel, [start, end]);
                 },
@@ -950,15 +884,13 @@ module nts.uk.ui.koExtentions {
             weekends.subscribe(w => calendar.setOption('weekends', w));
 
             // change view
-            initialViewComputed.subscribe((view) => calendar.changeView(view));
+            computedView.subscribe((view) => calendar.changeView(view));
 
-            if (ko.isObservable(events)) {
-                events.subscribe((evts) => {
-                    calendar.removeAllEvents();
+            computedEvents.subscribe((evts) => {
+                calendar.removeAllEvents();
 
-                    mappedEvents(evts).forEach(e => calendar.addEvent(e));
-                });
-            }
+                evts.forEach(e => calendar.addEvent(e));
+            });
 
             // set locale
             if (ko.isObservable(locale)) {
@@ -1024,7 +956,7 @@ module nts.uk.ui.koExtentions {
             vm.initalEvents();
 
             // test item
-            _.extend(window, { calendar, params });
+            _.extend(window, { calendar, params, computedEvents, selectedEvents });
         }
 
         public destroyed() {
@@ -1237,6 +1169,97 @@ module nts.uk.ui.koExtentions {
             template: `COPY`
         })
         export class FullCalendarCopyComponent extends ko.ViewModel {
+        }
+
+
+
+        @component({
+            name: 'fc-events',
+            template: `<td data-bind="i18n: '勤怠時間'"></td>
+        <!-- ko foreach: { data: $component.data, as: 'day' } -->
+        <td class="fc-event-note" data-bind="css: { 'no-data': !day.length }">
+            <div data-bind="foreach: { data: day, as: 'note' }">
+                <div data-bind="text: note"></div>
+            </div>
+        </td>
+        <!-- /ko -->`
+        })
+        export class FullCalendarEventHeaderComponent extends ko.ViewModel {
+            constructor(private data: KnockoutComputed<string[][]>) {
+                super();
+
+                if (!this.data) {
+                    this.data = ko.computed(() => []);
+                }
+            }
+
+            created() {
+
+            }
+
+            mounted() {
+                const vm = this;
+                const { $el, data } = vm;
+
+                ko.computed({
+                    read: () => {
+                        const ds = ko.unwrap(data);
+
+                        if (ds.length) {
+                            $el.style.display = null;
+                        } else {
+                            $el.style.display = 'none';
+                        }
+
+                        $($el).find('[data-bind]').removeAttr('data-bind');
+                    },
+                    disposeWhenNodeIsRemoved: $el
+                });
+            }
+        }
+
+        @component({
+            name: 'fc-times',
+            template: `<td data-bind="i18n: '作業時間'"></td>
+        <!-- ko foreach: { data: $component.data, as: 'time' } -->
+        <td data-bind="text: $component.formatTime(time)"></td>
+        <!-- /ko -->`
+        })
+        export class FullCalendarTimesHeaderComponent extends ko.ViewModel {
+            constructor(private data: KnockoutComputed<number[]>) {
+                super();
+
+                if (!this.data) {
+                    this.data = ko.computed(() => []);
+                }
+            }
+
+            mounted() {
+                const vm = this;
+                const { $el, data } = vm;
+
+                ko.computed({
+                    read: () => {
+                        const ds = ko.unwrap(data);
+
+                        if (ds.length) {
+                            $el.style.display = null;
+                        } else {
+                            $el.style.display = 'none';
+                        }
+
+                        $($el).find('[data-bind]').removeAttr('data-bind');
+                    },
+                    disposeWhenNodeIsRemoved: $el
+                });
+            }
+
+            formatTime(time: number) {
+                const hour = Math.floor(time / 60);
+                const minute = Math.floor(time % 60);
+
+                return `${hour}:${_.padStart(`${minute}`, 2, '0')}`;
+            }
         }
     }
 }
