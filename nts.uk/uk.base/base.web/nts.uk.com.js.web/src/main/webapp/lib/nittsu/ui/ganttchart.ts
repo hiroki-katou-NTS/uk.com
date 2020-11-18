@@ -53,7 +53,13 @@ module nts.uk.ui.chart {
                 let parent = self.gcChart[options.lineNo][options.parent];
                 if (parent) {
                     parent.children.push(chart);
-                    if (parent.start > chart.start || parent.end < chart.end) show = false;
+                    if (chart.end <= parent.start || chart.start >= parent.end) show = false;
+                    else if (parent.start > chart.start) {
+                        chart.html.style.left = `${chart.origin[0] + parent.start * chart.unitToPx}px`;
+                        chart.html.style.width = `${(chart.end - parent.start) * chart.unitToPx - 1}px`;
+                    } else if (parent.end < chart.end) {
+                        chart.html.style.width = `${(parent.end - chart.start) * chart.unitToPx - 1}px`;
+                    }
                 }
             }
             

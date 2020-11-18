@@ -391,8 +391,8 @@ __viewContext.ready(function() {
                     //　流動勤務時間
                     let cgc = this.ruler.addChartWithType("Changeable", {
                         id: `lgc${i}`,
-                        start: 12,
-                        end: 60,
+                        start: 8,
+                        end: 65,
                         lineNo: i,
                         limitStartMax: 60,
                         limitEndMax: 72,
