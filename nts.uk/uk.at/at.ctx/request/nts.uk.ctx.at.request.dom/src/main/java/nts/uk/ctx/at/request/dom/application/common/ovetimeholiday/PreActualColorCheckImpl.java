@@ -183,15 +183,16 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 			
 			// アルゴリズム「1日分の勤怠時間を仮計算」を実行する
 			DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = 
-					dailyAttendanceTimeCaculation.getCalculation(
-							employeeID, 
-							appDate, 
-							judgmentWorkTypeResult.getCalcWorkType(), 
-							judgmentWorkTimeResult.getCalcWorkTime(), 
-							recordWorkInfoImport.getAttendanceStampTimeFirst(), 
-							judgmentStampResult.getCalcLeaveStamp(), 
-							breakStartTime, 
-							breakEndTime);
+					new DailyAttendanceTimeCaculationImport();
+//					dailyAttendanceTimeCaculation.getCalculation(
+//							employeeID, 
+//							appDate, 
+//							judgmentWorkTypeResult.getCalcWorkType(), 
+//							judgmentWorkTimeResult.getCalcWorkTime(), 
+//							recordWorkInfoImport.getAttendanceStampTimeFirst(), 
+//							judgmentStampResult.getCalcLeaveStamp(), 
+//							breakStartTime, 
+//							breakEndTime);
 			if(appType==ApplicationType.OVER_TIME_APPLICATION) {
 				actualLst.addAll(dailyAttendanceTimeCaculationImport.getOverTime().entrySet()
 						.stream().map(x -> OvertimeColorCheck.createActual(1, x.getKey(), x.getValue().getCalTime())).collect(Collectors.toList()));

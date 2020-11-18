@@ -102,14 +102,16 @@ public class OvertimeLeaveAppCommonSet {
 		return this.performanceExcessAtr != AppDateContradictionAtr.NOTCHECK;
 	}
 	/**
-	 * Refactor5
+	 * Refactor5 事前申請の超過状態をチェックする
 	 * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.設定.会社別.申請承認設定.残業休出申請共通設定.アルゴリズム.事前申請の超過状態をチェックする
 	 * @param overtimeAppAtr
 	 * @param advanceOp
 	 * @param achieveOp
 	 * @return
 	 */
-	public ExcessStatusOutput checkExcessStatus(PrePostAtr prePostInitAtr, Optional<ApplicationTime> advanceOp,
+	public ExcessStatusOutput checkExcessStatus(
+			PrePostAtr prePostInitAtr,
+			Optional<ApplicationTime> advanceOp,
 			Optional<ApplicationTime> subsequentOp) {
 		ExcessStatusOutput output =  new ExcessStatusOutput();
 		OutDateApplication outDateApplication = new OutDateApplication();
@@ -124,17 +126,29 @@ public class OvertimeLeaveAppCommonSet {
 			//　申請時間の超過状態．申請時間．type = 残業時間
 			//		　申請時間の超過状態．申請時間．frameNO = INPUT．「事後の申請時間．申請時間．frameNO」←条件：type = 残業時間
 			//		　申請時間の超過状態．申請時間．超過状態 = 超過なし
-			Optional<OvertimeApplicationSetting> normalOverTime = subsequent.getApplicationTime().stream().filter(x -> x.getAttendanceType() == AttendanceType_Update.NORMALOVERTIME).findFirst();
+			Optional<OvertimeApplicationSetting> normalOverTime = subsequent.getApplicationTime()
+																			.stream()
+																			.filter(x -> x.getAttendanceType() == AttendanceType_Update.NORMALOVERTIME)
+																			.findFirst();
 			if (normalOverTime.isPresent()) {
 				OvertimeApplicationSetting result = normalOverTime.get();
-				ExcessStateDetail exStateDetail = new ExcessStateDetail(result.getFrameNo(), result.getAttendanceType(), ExcessState.NO_EXCESS);
+				ExcessStateDetail exStateDetail = new ExcessStateDetail(
+						result.getFrameNo(),
+						result.getAttendanceType(),
+						ExcessState.NO_EXCESS);
 				excessStateDetail.add(exStateDetail);
 			}
 			// 申請時間の超過状態．申請時間．frameNO = INPUT．「事後の申請時間．申請時間．frameNO」←条件：type = 休出時間
-			Optional<OvertimeApplicationSetting> breakTime = subsequent.getApplicationTime().stream().filter(x -> x.getAttendanceType() == AttendanceType_Update.BREAKTIME).findFirst();
+			Optional<OvertimeApplicationSetting> breakTime = subsequent.getApplicationTime()
+																	   .stream()
+																	   .filter(x -> x.getAttendanceType() == AttendanceType_Update.BREAKTIME)
+																	   .findFirst();
 			if (breakTime.isPresent()) {
 				OvertimeApplicationSetting result = breakTime.get();
-				ExcessStateDetail exStateDetail = new ExcessStateDetail(result.getFrameNo(), result.getAttendanceType(), ExcessState.NO_EXCESS);
+				ExcessStateDetail exStateDetail = new ExcessStateDetail(
+						result.getFrameNo(),
+						result.getAttendanceType(),
+						ExcessState.NO_EXCESS);
 				excessStateDetail.add(exStateDetail);
 			}
 			if (subsequent.getOverTimeShiftNight().isPresent()) {
@@ -145,7 +159,9 @@ public class OvertimeLeaveAppCommonSet {
 				// INPUT．「事後の申請時間．休出深夜時間．法定区分 = 法定外休出」がある場合：
 				// INPUT．「事後の申請時間．休出深夜時間．法定区分 = 祝日休出」がある場合：
 				if (!CollectionUtil.isEmpty(midNightHolidayTimes)) {
-					excessStateMidnights = midNightHolidayTimes.stream().map(x -> new ExcessStateMidnight(ExcessState.NO_EXCESS, x.getLegalClf()) ).collect(Collectors.toList());
+					excessStateMidnights = midNightHolidayTimes.stream()
+															   .map(x -> new ExcessStateMidnight(ExcessState.NO_EXCESS, x.getLegalClf()) )
+															   .collect(Collectors.toList());
 					
 				}
 				
@@ -176,8 +192,15 @@ public class OvertimeLeaveAppCommonSet {
 			outDateApplication.getExcessStateDetail().forEach(item -> {
 				if (item.getType() == AttendanceType_Update.NORMALOVERTIME) {
 					FrameNo frame = item.getFrame();
-					Optional<OvertimeApplicationSetting> advanceResultOp = advance.getApplicationTime().stream().filter(x -> x.getAttendanceType() == AttendanceType_Update.NORMALOVERTIME && x.getFrameNo() == frame).findFirst();
-					Optional<OvertimeApplicationSetting> subsequentResultOp = subsequentOp.get().getApplicationTime().stream().filter(x -> x.getAttendanceType() == AttendanceType_Update.NORMALOVERTIME && x.getFrameNo() == frame).findFirst();
+					Optional<OvertimeApplicationSetting> advanceResultOp = advance.getApplicationTime()
+																				  .stream()
+																				  .filter(x -> x.getAttendanceType() == AttendanceType_Update.NORMALOVERTIME && x.getFrameNo() == frame)
+																				  .findFirst();
+					Optional<OvertimeApplicationSetting> subsequentResultOp = subsequentOp.get()
+																						  .getApplicationTime()
+																						  .stream()
+																						  .filter(x -> x.getAttendanceType() == AttendanceType_Update.NORMALOVERTIME && x.getFrameNo() == frame)
+																						  .findFirst();
 					Integer time1 = 0;
 					Integer time2 = 0;
 					if (advanceResultOp.isPresent()) {
@@ -266,7 +289,7 @@ public class OvertimeLeaveAppCommonSet {
 		return output;
 	}
 	/**
-	 * Refactor5
+	 * Refactor5 実績の超過状態をチェックする
 	 * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.設定.会社別.申請承認設定.残業休出申請共通設定.アルゴリズム.実績の超過状態をチェックする
 	 * @param prePostInitAtr
 	 * @param advanceOp
@@ -443,7 +466,7 @@ public class OvertimeLeaveAppCommonSet {
 		return this.isPerformanceExcessAtr();
 	}
 	/**
-	 * Refactor5
+	 * Refactor5 事前申請の時間超過をチェックするか
 	 * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.設定.会社別.申請承認設定.残業休出申請共通設定.アルゴリズム.事前申請の時間超過をチェックするか
 	 * @param overtimeAppAtr
 	 * @return
@@ -455,7 +478,7 @@ public class OvertimeLeaveAppCommonSet {
 		return this.isPreExcessDisplaySetting();
 	}
 	/**
-	 * Refactor5
+	 * Refactor5 事前申請・実績の時間超過をチェックする
 	 * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.設定.会社別.申請承認設定.残業休出申請共通設定.アルゴリズム.事前申請・実績の時間超過をチェックする
 	 * @param prePostInitAtr
 	 * @param advanceOp
@@ -463,19 +486,26 @@ public class OvertimeLeaveAppCommonSet {
 	 * @param achiveOp
 	 * @return
 	 */
-	public OverStateOutput checkPreApplication(PrePostAtr prePostInitAtr,
+	public OverStateOutput checkPreApplication(
+			PrePostAtr prePostInitAtr,
 			Optional<ApplicationTime> advanceOp,
 			Optional<ApplicationTime> subsequentOp,
 			Optional<ApplicationTime> achiveOp
 			) {
 		OverStateOutput output = new OverStateOutput();
 		// 事前申請の超過状態をチェックする
-		ExcessStatusOutput excessStatusOutput = this.checkExcessStatus(prePostInitAtr, advanceOp, subsequentOp);
+		ExcessStatusOutput excessStatusOutput = this.checkExcessStatus(
+				prePostInitAtr,
+				advanceOp,
+				subsequentOp);
 		// 取得した内容をOUTPUT「事前申請・実績の超過状態」にセットする
 		output.setIsExistApp(excessStatusOutput.getIsAlarm());
 		output.setAdvanceExcess(excessStatusOutput.getOutDateApplication());
 		// 実績の超過状態をチェックする
-		ExcessStatusAchivementOutput excessStatusAchivementOutput = this.checkExcessStatusAchivement(prePostInitAtr, subsequentOp, achiveOp);
+		ExcessStatusAchivementOutput excessStatusAchivementOutput = this.checkExcessStatusAchivement(
+				prePostInitAtr,
+				subsequentOp,
+				achiveOp);
 		// 取得した内容をOUTPUT「事前申請・実績の超過状態」にセットする
 		output.setAchivementStatus(excessStatusAchivementOutput.getExcessState());
 		output.setAchivementExcess(excessStatusAchivementOutput.getOutDateApplication());

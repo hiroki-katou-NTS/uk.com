@@ -20,4 +20,9 @@ public class HolidayMidNightTime {
 	private AttendanceTime attendanceTime;
 	// 法定区分
 	private StaturoryAtrOfHolidayWork legalClf;
+	
+	public HolidayMidNightTime(Integer attendanceTime, StaturoryAtrOfHolidayWork legalClf) {
+		this.attendanceTime = new AttendanceTime(attendanceTime);
+		this.legalClf = legalClf;
+	}
 }

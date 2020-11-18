@@ -409,14 +409,15 @@ public class AppHolidayWorkFinder {
 		String companyID = AppContexts.user().companyId();
 		
 		// 6.計算処理 : 
-		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(employeeID,
-				GeneralDate.fromString(appDate, DATE_FORMAT),
-				workTypeCD,
-				workTimeCD,
-				startTime,
-				endTime,
-				startTimeRests,
-				endTimeRests);
+		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = new DailyAttendanceTimeCaculationImport();
+//				dailyAttendanceTimeCaculation.getCalculation(employeeID,
+//				GeneralDate.fromString(appDate, DATE_FORMAT),
+//				workTypeCD,
+//				workTimeCD,
+//				startTime,
+//				endTime,
+//				startTimeRests,
+//				endTimeRests);
 		List<OvertimeInputCaculation> breaktimeInputCaculations = new ArrayList<>();
 				
 		for (Map.Entry<Integer, TimeWithCalculationImport> entry : dailyAttendanceTimeCaculationImport.getHolidayWorkTime().entrySet()) {

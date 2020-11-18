@@ -685,11 +685,14 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		OverStateOutput overStateOutput = null;
 		if (c1 || c2) {
 			// 事前申請・実績の時間超過をチェックする
-			overStateOutput = displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet().getOvertimeLeaveAppCommonSet().checkPreApplication(
-					appOverTime.getPrePostAtr(),
-					displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpPreAppContentDisplayLst().map(x -> x.get(0).getApOptional().map(y -> y.getApplicationTime())).orElse(Optional.empty()),
-					Optional.of(appOverTime.getApplicationTime()),
-					displayInfoOverTime.getInfoWithDateApplicationOp().map(x -> x.getApplicationTime()).orElse(Optional.empty()));
+			overStateOutput = displayInfoOverTime.getInfoNoBaseDate()
+					.getOverTimeAppSet()
+					.getOvertimeLeaveAppCommonSet()
+					.checkPreApplication(
+						appOverTime.getPrePostAtr(),
+						displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpPreAppContentDisplayLst().map(x -> x.get(0).getApOptional().map(y -> y.getApplicationTime())).orElse(Optional.empty()),
+						Optional.of(appOverTime.getApplicationTime()),
+						displayInfoOverTime.getInfoWithDateApplicationOp().map(x -> x.getApplicationTime()).orElse(Optional.empty()));
 			
 		}
 		// 取得した「事前申請・実績の超過状態．事前申請なし」をチェックする

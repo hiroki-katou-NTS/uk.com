@@ -52,8 +52,12 @@ import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetailRepositor
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail_Update;
 import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
+import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType_Update;
+import nts.uk.ctx.at.request.dom.application.overtime.HolidayMidNightTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
+import nts.uk.ctx.at.request.dom.application.overtime.OverTimeShiftNight;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeApplicationSetting;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeCheckResult;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeInputRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
@@ -76,6 +80,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.timeitem.BonusPayT
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.DuplicateStateAtr;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.DuplicationStatusOfTimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.RangeOfDayTimeZoneService;
@@ -1294,10 +1299,87 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 			Optional<String> workTimeCode,
 			List<TimeZone> timeZones,
 			List<BreakTimeSheet> breakTimes) {
-		// 1日分の勤怠時間を仮計算 (RQ23) waiting for QA
-		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = new DailyAttendanceTimeCaculationImport(); 
-		// 「申請時間<List>」をセットして返す pendding
+		breakTimes.stream().map(x -> x.getStartTime().v()).collect(Collectors.toList());
+		// 1日分の勤怠時間を仮計算 (RQ23)
+		List<ApplicationTime> output = new ArrayList<>();
+		ApplicationTime applicationTime = new ApplicationTime();
+		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(
+				employeeId,
+				date,
+				workTypeCode.orElse(null),
+				workTimeCode.orElse(null),
+				timeZones,
+				breakTimes.stream().map(x -> x.getStartTime().v()).collect(Collectors.toList()),
+				breakTimes.stream().map(x -> x.getEndTime().v()).collect(Collectors.toList()));
+		// 「申請時間」をセットして返す
 		
-		return Collections.emptyList();
+		List<OvertimeApplicationSetting> overtimeApplicationSetting = new ArrayList<OvertimeApplicationSetting>();
+		
+		List<OvertimeApplicationSetting> overTimes = dailyAttendanceTimeCaculationImport.getOverTime()
+																   .entrySet()
+																   .stream()
+																   .map(x -> x.getValue().getCalTime() > x.getValue().getTime() ? new OvertimeApplicationSetting(
+																									   x.getKey(),
+																									   AttendanceType_Update.NORMALOVERTIME,
+																									   x.getValue().getCalTime())
+																		   		: null )
+																   .filter(y -> y != null)
+																   .collect(Collectors.toList());
+		overtimeApplicationSetting.addAll(overTimes);
+		
+		List<OvertimeApplicationSetting> holidayTimes = dailyAttendanceTimeCaculationImport.getHolidayWorkTime()
+																   .entrySet()
+																   .stream()
+																   .map(x -> x.getValue().getCalTime() > x.getValue().getTime() ? new OvertimeApplicationSetting(
+																									   x.getKey(),
+																									   AttendanceType_Update.BREAKTIME,
+																									   x.getValue().getCalTime())
+																		   		: null )
+																   .filter(y -> y != null)
+																   .collect(Collectors.toList());
+		overtimeApplicationSetting.addAll(holidayTimes);
+		
+		
+		List<OvertimeApplicationSetting> bonusPayTimes = dailyAttendanceTimeCaculationImport.getBonusPayTime()
+				   .entrySet()
+				   .stream()
+				   .map(x -> x.getValue() > 0 ? new OvertimeApplicationSetting(
+								   x.getKey(),
+								   AttendanceType_Update.BONUSPAYTIME,
+								   x.getValue())
+						   : null
+						   		)
+				   .filter(y -> y != null)
+				   .collect(Collectors.toList());
+		overtimeApplicationSetting.addAll(bonusPayTimes);
+		
+		List<OvertimeApplicationSetting> specBonusPayTimes = dailyAttendanceTimeCaculationImport.getSpecBonusPayTime()
+				   .entrySet()
+				   .stream()
+				   .map(x -> x.getValue() > 0 ? new OvertimeApplicationSetting(
+								   x.getKey(),
+								   AttendanceType_Update.BONUSSPECIALDAYTIME,
+								   x.getValue())
+						   : null
+						   		)
+				   .filter(y -> y != null)
+				   .collect(Collectors.toList());
+		overtimeApplicationSetting.addAll(specBonusPayTimes);
+		applicationTime.setApplicationTime(overtimeApplicationSetting);
+		OverTimeShiftNight overTimeShiftNight = new OverTimeShiftNight();
+		overTimeShiftNight.setMidNightOutSide(new TimeWithDayAttr(600));
+		overTimeShiftNight.setOverTimeMidNight(new TimeWithDayAttr(600));
+		
+		List<HolidayMidNightTime> midNightHolidayTimes = new ArrayList<HolidayMidNightTime>();
+		
+		HolidayMidNightTime holidayMidNightTime = new HolidayMidNightTime(100, StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork);
+		midNightHolidayTimes.add(holidayMidNightTime);
+		
+		overTimeShiftNight.setMidNightHolidayTimes(midNightHolidayTimes);
+		applicationTime.setOverTimeShiftNight(Optional.of(overTimeShiftNight));
+		
+		
+		output.add(applicationTime);
+		return output;
 	}
 }

@@ -766,9 +766,10 @@ public class AppOvertimeFinder_Old {
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
 		// 6.計算処理 : 
-		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(employeeID,
-				GeneralDate.fromString(appDate, DATE_FORMAT),
-				workTypeCode, siftCD, startTime, endTime, startTimeRests , endTimeRests);
+		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = new DailyAttendanceTimeCaculationImport();
+//				dailyAttendanceTimeCaculation.getCalculation(employeeID,
+//				GeneralDate.fromString(appDate, DATE_FORMAT),
+//				workTypeCode, siftCD, startTime, endTime, startTimeRests , endTimeRests);
 		Map<Integer,TimeWithCalculationImport> overTime = dailyAttendanceTimeCaculationImport.getOverTime();
 		List<OvertimeInputCaculation> overtimeInputCaculations = convertMaptoList(overTime,dailyAttendanceTimeCaculationImport.getFlexTime(),dailyAttendanceTimeCaculationImport.getMidNightTime());
 		List<CaculationTime> overTimeInputs = new ArrayList<>();

@@ -446,6 +446,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 		calculationResult.setOverStateOutput(overStateOutput);
 		calculationResult.setApplicationTimes(applicationTimes);
 		
+		ouput.setCalculationResult(calculationResult);
+		
 		return ouput;
 	}
 

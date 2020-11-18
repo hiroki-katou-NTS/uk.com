@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DailyAttendanceTimeCaculationImport {
-	//残業枠No,残業時間
+		//残業枠No,残業時間
 		private Map<Integer,TimeWithCalculationImport> overTime;
 		
 		//休出枠,休出時間

@@ -22,4 +22,9 @@ public class OvertimeApplicationSetting {
 	// 申請時間
 	private TimeWithDayAttr applicationTime;
 	
+	public OvertimeApplicationSetting(Integer frameNo, AttendanceType_Update attendanceType, Integer applicationTime) {
+		this.frameNo = new FrameNo(frameNo);
+		this.attendanceType = attendanceType;
+		this.applicationTime = new TimeWithDayAttr(applicationTime);
+	}
 }
