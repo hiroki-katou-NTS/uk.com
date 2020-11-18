@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.service.aggregateprocess.clscodecfm;
+package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.service.clscodecfm;
 
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.calendar.period.DatePeriod;

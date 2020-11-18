@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.service.aggregateprocess.est36timecfm;
+package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.service.est36timecfm;
 
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeCompanyRepository;

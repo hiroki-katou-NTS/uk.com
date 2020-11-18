@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.service.aggregateprocess.positioncodecfm;
+package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.service.positioncodecfm;
 
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.workplace.EmployeeInfoImported;

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.service.aggregateprocess.esttimeamountcfm;
+package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.service.esttimeamountcfm;
 
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.shift.estimate.company.CompanyEstablishmentAdaptor;

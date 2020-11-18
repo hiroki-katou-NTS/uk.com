@@ -1,18 +1,18 @@
-package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.service.aggregateprocess;
+package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.service;
 
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.workplace.EmployeeInfoImported;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.service.aggregateprocess.clscodecfm.ClsCodeCfmService;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.service.aggregateprocess.est36timecfm.Est36TimeCfmService;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.service.aggregateprocess.esttimeamountcfm.EstTimeAmountCfmService;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.service.aggregateprocess.positioncodecfm.PositionCodeCfmService;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.service.aggregateprocess.publichdcfm.PublicHdCfmService;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.service.aggregateprocess.reftimesetcfm.RefTimeSetCfmService;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.service.aggregateprocess.workplacecodecfm.WorkplaceCodeCfmService;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.service.clscodecfm.ClsCodeCfmService;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.service.est36timecfm.Est36TimeCfmService;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.service.esttimeamountcfm.EstTimeAmountCfmService;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.service.positioncodecfm.PositionCodeCfmService;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.service.publichdcfm.PublicHdCfmService;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.service.reftimesetcfm.RefTimeSetCfmService;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.service.workplacecodecfm.WorkplaceCodeCfmService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.extractresult.AlarmListExtractionInfoWorkplaceDto;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.extractresult.ExtractResultDto;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.*;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.service.aggregateprocess.empcodecfm.EmpCodeCfmService;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.service.empcodecfm.EmpCodeCfmService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.service.EmployeeInfoByWorkplaceService;
 
 import javax.ejb.Stateless;
