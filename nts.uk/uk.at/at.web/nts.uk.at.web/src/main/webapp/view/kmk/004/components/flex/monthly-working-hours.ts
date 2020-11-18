@@ -1,6 +1,7 @@
 /// <reference path="../../../../../lib/nittsu/viewcontext.d.ts" />
 
 import FlexScreenData = nts.uk.at.kmk004.components.flex.FlexScreenData;
+import YearItem = nts.uk.at.kmk004.components.flex.YearItem;
 const template = `
 	
 	
@@ -126,7 +127,7 @@ class MonthlyWorkingHours extends ko.ViewModel {
 
 	openQDialog() {
 		let vm = this;
-		vm.$window.modal('/view/kmk/004/q/index.xhtml');
+		vm.$window.modal('/view/kmk/004/q/index.xhtml', { years: _.map(vm.screenData().yearList(), (yearItem: YearItem) => { return yearItem.year; }) });
 	}
 
 	calTotalTime(attributeName: string) {
