@@ -481,7 +481,7 @@ module nts.uk.at.view.test.vm {
             let self = this;
             nts.uk.ui.block.invisible();
             if (self.listEmpSetShare().length != 1) {
-                nts.uk.ui.dialog.alertError({ messageId: 'Have select one employee !!!' });
+                nts.uk.ui.dialog.alertError({ messageId: '一人従業員のみを選択する !!!' });
                 nts.uk.ui.block.clear();
                 return;
             }
@@ -669,10 +669,10 @@ module nts.uk.at.view.test.vm {
             };
 
 
-            setShared('kdl045Data', paramKsu003);
+            setShared('dataShareTo045', paramKsu003); 
             nts.uk.ui.windows.sub.modal("/view/kdl/045/a/index.xhtml", { dialogClass: "no-close" })
                 .onClosed(() => {
-                    let result = nts.uk.ui.windows.getShared('resultKdl045');
+                    let result = nts.uk.ui.windows.getShared('dataFromKdl045');
                     if(result){
                         self.result(JSON.stringify(result));
                     }

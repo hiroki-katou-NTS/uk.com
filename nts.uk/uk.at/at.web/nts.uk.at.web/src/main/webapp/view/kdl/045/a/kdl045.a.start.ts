@@ -139,6 +139,13 @@ module nts.uk.at.view.kdl045.a {
             $('.show-popup-uniontimea867').click(function() {
                 $('.popup-uniontimea867').ntsPopup("toggle");
             });
+            setTimeout(function() {
+                if(screenModel.canModified){
+                    $('#a4-2').focus();    
+                }else{
+                    $('#closeDialog-2').focus();    
+                }
+            }, 100);
 
         });//end screenModel
     });
