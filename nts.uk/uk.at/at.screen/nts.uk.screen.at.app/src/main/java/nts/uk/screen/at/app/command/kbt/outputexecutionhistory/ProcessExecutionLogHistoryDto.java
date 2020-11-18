@@ -12,6 +12,7 @@ import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionTask
 import nts.uk.ctx.at.function.dom.processexecution.createlogfileexecution.CalTimeRangeDateTimeToString;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -63,7 +64,8 @@ public class ProcessExecutionLogHistoryDto implements ProcessExecutionLogHistory
     /* 前回終了日時*/
     private GeneralDateTime lastEndExecDateTime;
     /* 各処理の終了状態 */
-    private List<ProcessExecutionTaskLogDto> taskLogList;
+    @Builder.Default
+    private List<ProcessExecutionTaskLogDto> taskLogList = new ArrayList<>();
 
 	private String rangeDateTime;
 
@@ -106,7 +108,7 @@ public class ProcessExecutionLogHistoryDto implements ProcessExecutionLogHistory
         return taskLogList.stream()
                 .map(item -> ExecutionTaskLog.builder()
                         .procExecTask(EnumAdaptor.valueOf(item.getTaskId(), ProcessExecutionTask.class))
-                        .status(Optional.ofNullable(EnumAdaptor.valueOf(item.getStatusCd(), EndStatus.class)))
+                        .status(Optional.ofNullable(item.getStatusCd()).map(data -> EnumAdaptor.valueOf(data, EndStatus.class)))
                         .lastExecDateTime(Optional.ofNullable(item.getLastExecDateTime()))
                         .lastEndExecDateTime(Optional.ofNullable(item.getLastEndExecDateTime()))
                         .errorSystem(Optional.ofNullable(item.getErrorSystem()))

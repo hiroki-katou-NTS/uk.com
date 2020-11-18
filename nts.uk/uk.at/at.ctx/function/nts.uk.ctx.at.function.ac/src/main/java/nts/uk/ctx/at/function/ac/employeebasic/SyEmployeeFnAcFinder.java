@@ -35,11 +35,11 @@ public class SyEmployeeFnAcFinder implements SyEmployeeFnAdapter {
 				export.getPName(),
 				export.getGender(),
 				export.getBirthDay(),
-				export.getPMailAddr().v(),
+				export.getPMailAddr() != null ? export.getPMailAddr().v() : null,
 				export.getEmployeeCode(),
 				export.getEntryDate(),
 				export.getRetiredDate(),
-				export.getCompanyMailAddr().v()
+				export.getCompanyMailAddr() != null ? export.getCompanyMailAddr().v() : null
 				);
 	}
 	@Override

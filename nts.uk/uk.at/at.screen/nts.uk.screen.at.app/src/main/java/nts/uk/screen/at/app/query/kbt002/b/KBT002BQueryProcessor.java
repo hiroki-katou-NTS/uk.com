@@ -21,6 +21,8 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 

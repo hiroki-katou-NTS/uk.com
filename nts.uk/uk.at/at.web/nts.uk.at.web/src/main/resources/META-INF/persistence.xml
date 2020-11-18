@@ -16,6 +16,7 @@
 		<jar-file>lib/nts.uk.ctx.workflow.infra.jar</jar-file>
 		<jar-file>lib/nts.uk.ctx.sys.env.infra.jar</jar-file>
 		<jar-file>lib/nts.uk.ctx.sys.auth.infra.jar</jar-file> 
+		<jar-file>lib/nts.uk.ctx.sys.assist.infra.jar</jar-file>
 		<jar-file>lib/nts.uk.ctx.sys.gateway.infra.jar</jar-file> 
 		<jar-file>lib/nts.uk.ctx.sys.portal.infra.jar</jar-file>
 		<jar-file>lib/nts.uk.ctx.sys.log.infra.jar</jar-file>

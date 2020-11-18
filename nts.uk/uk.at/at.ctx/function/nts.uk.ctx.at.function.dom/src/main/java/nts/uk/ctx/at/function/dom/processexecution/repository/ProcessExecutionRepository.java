@@ -11,6 +11,8 @@ public interface ProcessExecutionRepository {
 	
 	Optional<UpdateProcessAutoExecution> getProcessExecutionByCidAndExecCd(String companyId, String execItemCd);
 	
+	List<UpdateProcessAutoExecution> findByCidAndExecItemCds(String cid, List<String> execItemCd);
+	
 	void insert(UpdateProcessAutoExecution domain);
 	
 	void update(UpdateProcessAutoExecution domain);

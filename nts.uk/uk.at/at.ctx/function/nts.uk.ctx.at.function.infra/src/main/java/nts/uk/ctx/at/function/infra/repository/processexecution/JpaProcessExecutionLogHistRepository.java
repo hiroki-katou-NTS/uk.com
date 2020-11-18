@@ -1,7 +1,13 @@
 package nts.uk.ctx.at.function.infra.repository.processexecution;
 
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.util.List;
+import java.util.Optional;
+
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogHistory;
@@ -10,12 +16,6 @@ import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtExecutionTaskLo
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutionLogHistory;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.jdbc.JDBCUtil;
-
-import javax.ejb.Stateless;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.util.List;
-import java.util.Optional;
 //@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class JpaProcessExecutionLogHistRepository extends JpaRepository implements ProcessExecutionLogHistRepository {
@@ -198,8 +198,8 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository implemen
 	public List<ProcessExecutionLogHistory> getByCompanyIdAndDateAndEmployeeName(String companyId, GeneralDateTime startDateTime, GeneralDateTime endDateTime) {
 		return this.queryProxy().query(SELECT_ALL_BY_CID_START_DATE_END_DATE, KfnmtProcessExecutionLogHistory.class)
 				.setParameter("companyId", companyId)
-				.setParameter("startDate", startDateTime.toDate())
-				.setParameter("endDate", endDateTime.toDate())
+				.setParameter("startDate", startDateTime)
+				.setParameter("endDate", endDateTime)
 				.getList(ProcessExecutionLogHistory::createFromMemento);
 	}
 

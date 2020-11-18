@@ -25,6 +25,8 @@ public class JpaProcessExecutionRepository extends JpaRepository implements Proc
 			+ "WHERE pe.kfnmtProcExecPK.companyId = :companyId ORDER BY pe.kfnmtProcExecPK.execItemCd ASC";
 	private static final String SELECT_BY_CID_AND_EXEC_CD = SELECT_ALL
 			+ "WHERE pe.kfnmtProcExecPK.companyId = :companyId AND pe.kfnmtProcExecPK.execItemCd = :execItemCd ";
+	private static final String SELECY_BY_CID_AND_EXEC_CDS = SELECT_ALL
+			+ "WHERE pe.kfnmtProcExecPK.companyId = :companyId AND pe.kfnmtProcExecPK.execItemCd IN :execItemCds";
 	
 	@Override
 	public List<UpdateProcessAutoExecution> getProcessExecutionByCompanyId(String companyId) {
@@ -114,5 +116,13 @@ public class JpaProcessExecutionRepository extends JpaRepository implements Proc
 		KfnmtProcessExecution entity = new KfnmtProcessExecution();
 		domain.setMemento(AppContexts.user().contractCode(), entity);
 		return entity;
+	}
+
+	@Override
+	public List<UpdateProcessAutoExecution> findByCidAndExecItemCds(String cid, List<String> execItemCd) {
+		return this.queryProxy().query(SELECY_BY_CID_AND_EXEC_CDS, KfnmtProcessExecution.class)
+				.setParameter("companyId", cid)
+				.setParameter("execItemCds", execItemCd)
+				.getList(entity -> UpdateProcessAutoExecution.createFromMemento(cid, entity));
 	}
 }

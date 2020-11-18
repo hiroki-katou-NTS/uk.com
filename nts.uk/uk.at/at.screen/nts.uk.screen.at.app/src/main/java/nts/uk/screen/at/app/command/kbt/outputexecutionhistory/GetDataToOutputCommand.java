@@ -16,5 +16,5 @@ public class GetDataToOutputCommand {
     private GeneralDateTime endDate;
 
     /** 社員名を出力するか */
-    private boolean isExportEmployeeName;
+    private Boolean isExportEmployeeName;
 }

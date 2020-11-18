@@ -12,7 +12,7 @@ module nts.uk.at.view.kbt002.k {
   export class KBT002KViewModel extends ko.ViewModel {
     empNames: KnockoutObservableArray<any> = ko.observableArray([]);
 
-    selectEmpName: KnockoutObservable<number> = ko.observable(2);
+    selectEmpName: KnockoutObservable<number> = ko.observable(1);
     dateValue: KnockoutObservable<any> = ko.observable({});
     startDateString: KnockoutObservable<string> = ko.observable('');
     endDateString: KnockoutObservable<string> = ko.observable('');
@@ -43,15 +43,21 @@ module nts.uk.at.view.kbt002.k {
 
     getDataExportCsv() {
       const vm = this;
-      const command: GetDataExportCSVModel = new GetDataExportCSVModel({
-        isExportEmployeeName: vm.selectEmpName() === 2,
-        startDate: moment.utc(vm.dateValue().startDate, DATE_FORMAT).toISOString(),
-        endDate: moment.utc(vm.dateValue().endDate, DATE_FORMAT).toISOString()
+      vm.$validate().then((valid: boolean) => {
+        if (valid) {
+          const command: GetDataExportCSVModel = new GetDataExportCSVModel({
+            isExportEmployeeName: vm.selectEmpName() === 2,
+            startDate: moment.utc(vm.dateValue().startDate, DATE_FORMAT).toISOString(),
+            endDate: moment.utc(vm.dateValue().endDate, DATE_FORMAT).toISOString()
+          });
+    
+          vm.$blockui('grayout');
+          nts.uk.request.exportFile(API.exportCSV, command)
+            .done(res => console.log(res))
+            .fail(err => vm.$dialog.info({ messageId: err.messageId }))
+            .always(() => vm.$blockui('clear'));
+        }
       });
-
-      vm.$blockui('grayout');
-      nts.uk.request.exportFile(API.exportCSV, command)
-        .always(() => vm.$blockui('clear'));
     }
 
     closeDialog() {
