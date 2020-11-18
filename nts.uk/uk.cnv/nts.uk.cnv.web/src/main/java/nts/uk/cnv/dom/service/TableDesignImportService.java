@@ -21,10 +21,10 @@ import net.sf.jsqlparser.statement.create.table.CreateTable;
 import net.sf.jsqlparser.statement.create.table.Index;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.cnv.dom.databasetype.DataType;
-import nts.uk.cnv.dom.databasetype.DataTypeDefine;
-import nts.uk.cnv.dom.databasetype.DatabaseType;
-import nts.uk.cnv.dom.databasetype.UkDataType;
+import nts.uk.cnv.dom.tabledefinetype.DataType;
+import nts.uk.cnv.dom.tabledefinetype.TableDefineType;
+import nts.uk.cnv.dom.tabledefinetype.UkDataType;
+import nts.uk.cnv.dom.tabledefinetype.databasetype.DatabaseType;
 import nts.uk.cnv.dom.tabledesign.ColumnDesign;
 import nts.uk.cnv.dom.tabledesign.Indexes;
 import nts.uk.cnv.dom.tabledesign.TableDesign;
@@ -39,7 +39,7 @@ public class TableDesignImportService {
 	 * @throws JSQLParserException
 	 */
 	public static AtomTask regist(Require require, String createTable, String createIndexes, String comment, String type) throws JSQLParserException {
-		DataTypeDefine typeDefine;
+		TableDefineType typeDefine;
 		if("uk".equals(type)) {
 			typeDefine = new UkDataType();
 		}
@@ -53,7 +53,7 @@ public class TableDesignImportService {
 		});
 	}
 
-	private static TableDesign ddlToDomain(String createTable, String createIndexes, String comment, DataTypeDefine typeDefine) throws JSQLParserException {
+	private static TableDesign ddlToDomain(String createTable, String createIndexes, String comment, TableDefineType typeDefine) throws JSQLParserException {
 		CCJSqlParserManager pm = new CCJSqlParserManager();
 
 		boolean isClusteredPK = true;
@@ -88,7 +88,7 @@ public class TableDesignImportService {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static TableDesign toDomain(CreateTable statement, List<CreateIndex> createIndex, DataTypeDefine typeDefine,
+	private static TableDesign toDomain(CreateTable statement, List<CreateIndex> createIndex, TableDefineType typeDefine,
 			String comment, Map<String, Boolean> indexClusteredMap, boolean isClusteredPK) {
 		GeneralDateTime now = GeneralDateTime.now();
 

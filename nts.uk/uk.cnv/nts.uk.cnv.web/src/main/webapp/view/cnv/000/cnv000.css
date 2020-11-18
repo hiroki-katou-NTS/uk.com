@@ -2,6 +2,27 @@
 	font-family: "Meiryo UI";
 }
 
+#header {
+	height: 61px;
+}
+
+label.title {
+	font-size: 24px;
+	margin: 10px 10px;
+}
+
+.form-label {
+	margin: 10px 10px;
+}
+
+.fixed-flex-layout {
+	margin: 20px 5px;
+}
+
+legend {
+  border: 1px;
+}
+
 .tabledesign_uk{
 	background-color: #EEFFEE;
 }

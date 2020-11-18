@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import nts.uk.cnv.dom.databasetype.DataType;
+import nts.uk.cnv.dom.tabledefinetype.DataType;
 import nts.uk.cnv.dom.tabledesign.ColumnDesign;
 
 public final class Constants {
@@ -56,8 +56,11 @@ public final class Constants {
 		add (new ColumnDesign(6, "UPD_CCD", DataType.CHAR, 4, 0, true, false, 0, false, 0, "", "", ""));
 		add (new ColumnDesign(7, "UPD_SCD", DataType.CHAR, 12, 0, true, false, 0, false, 0, "", "", ""));
 		add (new ColumnDesign(8, "UPD_PG", DataType.CHAR, 14, 0, true, false, 0, false, 0, "", "", ""));
-		add (new ColumnDesign(9, "EXCLUS_VER", DataType.INT, 8, 0, false, false, 0, false, 0, "", "", ""));
+		add (new ColumnDesign(9, "EXCLUS_VER", DataType.INT, 8, 0, false, false, 0, false, 0, "0", "", ""));
 	}} );
+
+	/** RLS対応のDDL生成のためのpostgreユーザ名 */
+	public static final String rlsUserName = "ukuser";
 
     /**
      * static class

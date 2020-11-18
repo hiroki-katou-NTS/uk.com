@@ -5,8 +5,8 @@ import java.util.Optional;
 import lombok.Getter;
 import nts.uk.cnv.dom.conversionsql.ColumnExpression;
 import nts.uk.cnv.dom.conversionsql.ConversionSQL;
-import nts.uk.cnv.dom.pattern.ConversionPattern;
-import nts.uk.cnv.dom.pattern.ReferencedParentPattern;
+import nts.uk.cnv.dom.conversiontable.pattern.ConversionPattern;
+import nts.uk.cnv.dom.conversiontable.pattern.ReferencedParentPattern;
 
 /**
  * １列分の変換表

@@ -1,6 +1,3 @@
-/**
- *
- */
 package nts.uk.cnv.dom.pattern;
 
 import java.util.Arrays;
@@ -15,8 +12,9 @@ import nts.uk.cnv.dom.conversionsql.Join;
 import nts.uk.cnv.dom.conversionsql.JoinAtr;
 import nts.uk.cnv.dom.conversionsql.OnSentence;
 import nts.uk.cnv.dom.conversionsql.TableName;
-import nts.uk.cnv.dom.databasetype.DatabaseType;
+import nts.uk.cnv.dom.conversiontable.pattern.CodeToIdPattern;
 import nts.uk.cnv.dom.service.ConversionInfo;
+import nts.uk.cnv.dom.tabledefinetype.databasetype.DatabaseType;
 
 /**
  * @author ai_muto

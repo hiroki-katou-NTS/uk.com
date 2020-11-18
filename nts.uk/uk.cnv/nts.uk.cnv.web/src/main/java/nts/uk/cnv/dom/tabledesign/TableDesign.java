@@ -8,8 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.cnv.dom.constants.Constants;
-import nts.uk.cnv.dom.databasetype.DataTypeDefine;
-import nts.uk.cnv.dom.databasetype.UkDataType;
+import nts.uk.cnv.dom.tabledefinetype.TableDefineType;
+import nts.uk.cnv.dom.tabledefinetype.UkDataType;
 
 @AllArgsConstructor
 @Getter
@@ -23,11 +23,24 @@ public class TableDesign {
 	private List<ColumnDesign> columns;
 	private List<Indexes> indexes;
 
-	public String createDdl() {
-		return this.createDdl(new UkDataType());
+	public String createTableSql() {
+		return this.createSimpleTableSql(new UkDataType());
 	}
 
-	public String createDdl(DataTypeDefine datatypedefine) {
+	public String createSimpleTableSql(TableDefineType defineType) {
+		return createTableSql(defineType, false, false);
+	}
+
+	public String createFullTableSql(TableDefineType defineType) {
+		return createTableSql(defineType, true, true);
+	}
+
+	private String createTableSql(TableDefineType define, boolean withComment, boolean withRLS) {
+
+		String tableContaint = indexes.stream().anyMatch(idx -> !idx.isIndex())
+				? ",\r\n" + tableContaint()
+				: "";
+
 		String index = "";
 		List<Indexes> indexList = indexes.stream().filter(idx -> idx.isIndex()).collect(Collectors.toList());
 		if(!indexList.isEmpty())
@@ -40,14 +53,30 @@ public class TableDesign {
 			index = index + ";";
 		}
 
-		String tableContaint = indexes.stream().anyMatch(idx -> !idx.isIndex())
-				? ",\r\n" + tableContaint()
-				: "";
+		String comments = "";
+		if(withComment) {
+			List<String> commentList = new ArrayList<>();
+
+			commentList.add(define.tableCommentDdl(name, comment));
+
+			this.columns.stream()
+				.forEach(col -> commentList.add(define.columnCommentDdl(name, col.getName(), col.getComment())));
+
+			comments = String.join("\r\n", commentList);
+		}
+
+		String rls = "";
+		if(withRLS) {
+			rls = define.rlsDdl(name);
+		}
+
 		return "CREATE TABLE " + this.name + "(\r\n" +
-						columnContaint(datatypedefine) +
+						columnContaint(define) +
 						tableContaint +
 					");\r\n\r\n" +
-					index;
+					index + "\r\n" +
+					comments + "\r\n" +
+					rls;
 	}
 
 	private String tableContaint() {
@@ -60,7 +89,7 @@ public class TableDesign {
 				) + "\r\n";
 	}
 
-	private String columnContaint(DataTypeDefine datatypedefine) {
+	private String columnContaint(TableDefineType datatypedefine) {
 		List<ColumnDesign> newList = new ArrayList<>();
 		newList.addAll(Constants.FixColumns);
 		newList.addAll(this.columns);

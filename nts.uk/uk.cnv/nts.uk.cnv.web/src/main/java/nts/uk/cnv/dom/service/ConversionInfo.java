@@ -3,7 +3,8 @@ package nts.uk.cnv.dom.service;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nts.uk.cnv.dom.databasetype.DatabaseType;
+import nts.uk.cnv.dom.tabledefinetype.databasetype.DatabaseType;
+
 /**
  * コンバート情報
  * @author ai_muto

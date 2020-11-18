@@ -18,9 +18,9 @@ import mockit.integration.junit4.JMockit;
 import nts.uk.cnv.dom.conversiontable.ConversionRecord;
 import nts.uk.cnv.dom.conversiontable.ConversionTable;
 import nts.uk.cnv.dom.conversiontable.ConversionTableTestHelper;
-import nts.uk.cnv.dom.databasetype.DatabaseType;
-import nts.uk.cnv.dom.pattern.manager.AdditionalConversionCode;
-import nts.uk.cnv.dom.pattern.manager.ParentJoinPatternManager;
+import nts.uk.cnv.dom.conversiontable.pattern.manager.AdditionalConversionCode;
+import nts.uk.cnv.dom.conversiontable.pattern.manager.ParentJoinPatternManager;
+import nts.uk.cnv.dom.tabledefinetype.databasetype.DatabaseType;
 
 @RunWith(JMockit.class)
 public class CreateConversionCodeServiceTest {

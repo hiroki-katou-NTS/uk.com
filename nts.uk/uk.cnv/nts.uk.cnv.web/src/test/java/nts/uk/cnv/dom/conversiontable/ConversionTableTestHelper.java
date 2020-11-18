@@ -10,10 +10,10 @@ import nts.uk.cnv.dom.conversionsql.Join;
 import nts.uk.cnv.dom.conversionsql.JoinAtr;
 import nts.uk.cnv.dom.conversionsql.OnSentence;
 import nts.uk.cnv.dom.conversionsql.TableName;
-import nts.uk.cnv.dom.pattern.CodeToIdPattern;
-import nts.uk.cnv.dom.pattern.FixedValuePattern;
-import nts.uk.cnv.dom.pattern.NotChangePattern;
-import nts.uk.cnv.dom.pattern.ParentJoinPattern;
+import nts.uk.cnv.dom.conversiontable.pattern.CodeToIdPattern;
+import nts.uk.cnv.dom.conversiontable.pattern.FixedValuePattern;
+import nts.uk.cnv.dom.conversiontable.pattern.NotChangePattern;
+import nts.uk.cnv.dom.conversiontable.pattern.ParentJoinPattern;
 import nts.uk.cnv.dom.service.ConversionInfo;
 
 public class ConversionTableTestHelper {

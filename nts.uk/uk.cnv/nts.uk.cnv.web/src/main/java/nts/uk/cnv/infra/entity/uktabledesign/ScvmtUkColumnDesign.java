@@ -14,7 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
-import nts.uk.cnv.dom.databasetype.DataType;
+import nts.uk.cnv.dom.tabledefinetype.DataType;
 import nts.uk.cnv.dom.tabledesign.ColumnDesign;
 
 @Getter

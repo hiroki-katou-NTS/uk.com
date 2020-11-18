@@ -2,8 +2,8 @@ package nts.uk.cnv.dom.tabledesign;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.cnv.dom.databasetype.DataType;
-import nts.uk.cnv.dom.databasetype.DataTypeDefine;
+import nts.uk.cnv.dom.tabledefinetype.DataType;
+import nts.uk.cnv.dom.tabledefinetype.TableDefineType;
 
 @AllArgsConstructor
 @Getter
@@ -26,7 +26,7 @@ public class ColumnDesign {
 
 	private String check;
 
-	public String getColumnContaintDdl(DataTypeDefine datatypedefine) {
+	public String getColumnContaintDdl(TableDefineType datatypedefine) {
 		return "\t" + this.name + " " +
 				datatypedefine.dataType(this.type, this.maxLength, this.scale) +
 			(this.nullable ? " NULL" : " NOT NULL") +

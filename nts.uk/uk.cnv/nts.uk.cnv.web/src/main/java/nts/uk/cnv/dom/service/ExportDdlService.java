@@ -6,7 +6,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
-import nts.uk.cnv.dom.databasetype.DatabaseType;
+import nts.uk.cnv.dom.tabledefinetype.databasetype.DatabaseType;
 import nts.uk.cnv.dom.tabledesign.TableDesign;
 
 @Stateless
@@ -18,11 +18,14 @@ public class ExportDdlService {
 			throw new BusinessException(new RawErrorMessage("定義が見つかりません：" + tablename));
 		}
 
-		if("uk".equals(type))
-			return td.get().createDdl();
+		if("uk".equals(type)) {
+			return td.get().createTableSql();
+		}
 
 		DatabaseType dbtype = DatabaseType.valueOf(type);
-		return td.get().createDdl(dbtype.spec());
+		String createTableSql = td.get().createFullTableSql(dbtype.spec());
+
+		return createTableSql;
 	}
 
 	public interface Require {

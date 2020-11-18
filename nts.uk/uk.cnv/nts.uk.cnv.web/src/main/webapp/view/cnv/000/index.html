@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Table Design Importer & Exporter</title>
+<link rel="stylesheet" type="text/css" href="../../../lib/nittsu/ui/style/stylesheets/base.css">
 <link rel="stylesheet" type="text/css" href="cnv000.css">
 <script
   src="https://code.jquery.com/jquery-3.3.1.min.js"
@@ -13,67 +14,103 @@
 </head>
 
 <body>
-<h1>Table Design Importer & Exporter</h1>
-<h2 class="tabledesign_uk">UK</h2>
-<table>
-	<tr>
-		<td><div>import file folder path:</div></td>
-		<td style="width:30px;"></td>
-		<td><div>export file folder path:</div></td>
-	</tr>
-	<tr>
-		<td>
-			<input type="text" id="folderpath_import" style="font-size:80%; width:340px;"/>
-			<button id="import">import</button>
-		</td>
-		<td></td>
-		<td>
-			<input type="text" id="folderpath_export" style="font-size:80%; width:340px;"/>
-			<button id="export">export</button>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			RDBMS:
-			<input type="radio" id="uk_import" name="ddl_type_import" value="uk" checked="checked" style="font-size:80%">UK
-			<input type="radio" id="mssql_import" name="ddl_type_import" value="sqlserver" style="font-size:80%">SqlServer
-			<input type="radio" id="pg_import" name="ddl_type_import" value="postgres" style="font-size:80%">Postgres
-		</td>
-		<td></td>
-		<td>
-			RDBMS:
-			<input type="radio" id="uk_export" name="ddl_type_export" value="uk" checked="checked" style="font-size:80%">UK
-			<input type="radio" id="mssql_export" name="ddl_type_export" value="sqlserver" style="font-size:80%">SqlServer
-			<input type="radio" id="pg_export" name="ddl_type_export" value="postgres" style="font-size:80%">Postgres
-		</td>
-	</tr>
-</table>
-<h2 class="tabledesign_erp">ERP</h2>
-<table>
-	<tr>
-		<td><div>import file folder path:</div></td>
-		<td style="width:30px;"></td>
-		<td></td>
-	</tr>
-	<tr>
-		<td>
-			<input type="text" id="folderpath_import_erp" style="font-size:80%; width:340px;"/>
-			<button id="import_erp">import</button>
-		</td>
-		<td></td>
-		<td>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			RDBMS:
-			<input type="radio" id="mssql_import_erp" name="ddl_type_import_erp" value="sqlserver" checked="checked" style="font-size:80%">SqlServer
-		</td>
-		<td></td>
-		<td>
-		</td>
-	</tr>
-</table>
+<div id="messageDialog" title="">
+	<label id="lblMessage"></label>
+</div>
+<div id="master-wrapper" data-bind="with: content">
+	<div id="header">
+		<div id="menu-header">
+			<div id="logo-area" class="cf"><div id="logo"><img src="/nts.uk.cnv.web/master/images/kinjirou.png"></div></div>
+			<div id="nav-area" class="cf"></div>
+			<div id="pg-area" class="cf">
+				<div id="pg-name" class="title">CNV000 テーブル定義 インポート ＆ エクスポート</div>
+			</div>
+		</div>
+	</div>
+	<div id="master-content">
+		<div id="functions-area">
+		</div>
+		<div class="fixed-flex-layout cf">
+		<fieldset class="tabledesign_uk">
+			<legend>UK</legend>
+			<table>
+				<tr>
+					<td>
+						<div class="form-label required">
+							<label>import元フォルダ：</label>
+						</div>
+					</td>
+					<td style="width:30px;"></td>
+					<td>
+						<div class="form-label required">
+							<label>export先フォルダ：</label>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<input type="text" id="folderpath_import" style="width: 340px;" class="nts-editor nts-input reset-element">
+						<button id="import">import</button>
+					</td>
+					<td></td>
+					<td>
+						<input type="text" id="folderpath_export" style="width:340px;" class="nts-editor nts-input reset-element"/>
+						<button id="export">export</button>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						RDBMS:
+						<input type="radio" id="uk_import" name="ddl_type_import" value="uk" checked="checked" style="font-size:80%">UK
+						<input type="radio" id="mssql_import" name="ddl_type_import" value="sqlserver" style="font-size:80%">SqlServer
+						<input type="radio" id="pg_import" name="ddl_type_import" value="postgres" style="font-size:80%">Postgres
+					</td>
+					<td></td>
+					<td>
+						RDBMS:
+						<input type="radio" id="uk_export" name="ddl_type_export" value="uk" checked="checked" style="font-size:80%">UK
+						<input type="radio" id="mssql_export" name="ddl_type_export" value="sqlserver" style="font-size:80%">SqlServer
+						<input type="radio" id="pg_export" name="ddl_type_export" value="postgres" style="font-size:80%">Postgres
+					</td>
+				</tr>
+			</table>
+			</fieldset>
+		</div>
+		<div class="fixed-flex-layout cf">
+		<fieldset class="tabledesign_erp">
+			<legend>ERP</legend>
+			<table>
+				<tr>
+					<td>
+						<div class="form-label required">
+							<label>import元フォルダ：</label>
+						</div>
+					</td>
+					<td style="width:30px;"></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>
+						<input type="text" id="folderpath_import_erp" style="width:340px;" class="nts-editor nts-input reset-element"/>
+						<button id="import_erp">import</button>
+					</td>
+					<td></td>
+					<td>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						RDBMS:
+						<input type="radio" id="mssql_import_erp" name="ddl_type_import_erp" value="sqlserver" checked="checked" style="font-size:80%">SqlServer
+					</td>
+					<td></td>
+					<td>
+					</td>
+				</tr>
+			</table>
+		</fieldset>
+	</div>
+</div>
 <hr />
 <textarea id="result" style="font-size:80%; width:800px; height:200px;" disabled></textarea>
 

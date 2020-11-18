@@ -7,8 +7,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import nts.uk.cnv.dom.databasetype.DatabaseType;
 import nts.uk.cnv.dom.service.ConversionInfo;
+import nts.uk.cnv.dom.tabledefinetype.databasetype.DatabaseType;
 
 /**
  * @author ai_muto

@@ -15,10 +15,10 @@ import nts.uk.cnv.dom.conversiontable.ConversionRecord;
 import nts.uk.cnv.dom.conversiontable.ConversionSource;
 import nts.uk.cnv.dom.conversiontable.ConversionTable;
 import nts.uk.cnv.dom.conversiontable.OneColumnConversion;
-import nts.uk.cnv.dom.databasetype.DataType;
-import nts.uk.cnv.dom.pattern.ReferencedParentPattern;
-import nts.uk.cnv.dom.pattern.manager.AdditionalConversionCode;
-import nts.uk.cnv.dom.pattern.manager.ParentJoinPatternManager;
+import nts.uk.cnv.dom.conversiontable.pattern.ReferencedParentPattern;
+import nts.uk.cnv.dom.conversiontable.pattern.manager.AdditionalConversionCode;
+import nts.uk.cnv.dom.conversiontable.pattern.manager.ParentJoinPatternManager;
+import nts.uk.cnv.dom.tabledefinetype.DataType;
 
 /***
  * コンバートコードを生成する

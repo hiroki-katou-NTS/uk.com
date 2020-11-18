@@ -2,7 +2,7 @@ package nts.uk.cnv.app.command;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
-import nts.uk.cnv.dom.pattern.ConversionPatternValue;
+import nts.uk.cnv.dom.conversiontable.pattern.ConversionPatternValue;
 
 @Value
 @AllArgsConstructor

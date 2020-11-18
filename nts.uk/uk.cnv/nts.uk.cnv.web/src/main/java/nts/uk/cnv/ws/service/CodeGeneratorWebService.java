@@ -8,8 +8,8 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.cnv.app.dto.CodeGeneratorExcecuteDto;
 import nts.uk.cnv.app.service.CodeGenerator;
-import nts.uk.cnv.dom.databasetype.DatabaseType;
 import nts.uk.cnv.dom.service.ConversionInfo;
+import nts.uk.cnv.dom.tabledefinetype.databasetype.DatabaseType;
 
 @Path("cnv/codegenerator")
 @Produces("application/json")
