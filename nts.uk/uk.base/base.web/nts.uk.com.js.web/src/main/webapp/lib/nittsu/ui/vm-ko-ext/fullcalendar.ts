@@ -11,7 +11,24 @@ module nts.uk.ui.koExtentions {
             position: relative;
             overflow: hidden;
         }
+        .fc-container .fc-sidebar {
+            float: left;
+            width: 210px;
+            min-height: 1px;
+            overflow: hidden;
+            margin-right: 10px;
+            box-sizing: border-box;
+        }
+        .fc-container .fc-sidebar .datepicker-panel>ul[data-view='days']>li {
+            height: 30px;
+            line-height: 30px;
+        }
+        .fc-container .fc-sidebar .datepicker-panel>ul[data-view='days']>li.picked {
+            background-color: #ccc;
+            border-radius: 50%;
+        }
         .fc-container .fc-toolbar.fc-header-toolbar {
+            min-height: 33px;
             margin-bottom: 10px;
         }
         .fc-container .fc-timegrid thead>tr>td td:first-child {
@@ -146,6 +163,7 @@ module nts.uk.ui.koExtentions {
             ko.applyBindingsToNode(element, { component }, bindingContext);
 
             element.classList.add('fc-container');
+            element.classList.add('cf');
             element.removeAttribute('data-bind');
 
             return { controlsDescendantBindings: true };
@@ -244,7 +262,21 @@ module nts.uk.ui.koExtentions {
 
     @component({
         name: COMPONENT_NAME,
-        template: `<div class="fc"></div>
+        template: `<div class="fc-sidebar">
+            <div class="fc-toolbar fc-header-toolbar" data-bind="if: false">
+                <button data-bind="i18n: '作る'"></button>
+            </div>
+            <div class="fc-datepicker" data-bind="component: {
+                    name: 'fc-datepicker',
+                    params: { 
+                        date: $component.params.initialDate,
+                        weekStart: $component.params.firstDay
+                    }
+                }"></div>
+            <div class="fc-events"></div>
+            <div class="fc-component"></div>
+        </div>
+        <div class="fc-calendar"></div>
         <div data-bind="fc-copy"></div>
         <div data-bind="fc-editor: $component.dataEvent.event"></div>
         <style>${DEFAULT_STYLES}</style>
@@ -345,7 +377,7 @@ module nts.uk.ui.koExtentions {
             const { locale, event, events, scrollTime, firstDay, editable, initialDate, initialView, viewModel, attendanceTimes } = params;
 
             const $el = $(vm.$el);
-            const $fc = $el.find('div.fc').get(0);
+            const $fc = $el.find('div.fc-calendar').get(0);
             const FC: FullCalendar | null = _.get(window, 'FullCalendar') || null;
             const updateActive = () => {
                 $el
@@ -844,6 +876,47 @@ module nts.uk.ui.koExtentions {
 
                     selectedEvents([]);
                     datesSet({ start, end });
+
+                    if (ko.isObservable(initialDate)) {
+                        const fdy = ko.unwrap(firstDay);
+                        const idt = ko.unwrap(initialDate);
+                        const view = ko.unwrap(initialView);
+                        const mid = moment(idt);
+
+                        if (view === 'oneDay') {
+                            initialDate(start);
+                        } else if (['fiveDay', 'fullWeek', 'listWeek'].indexOf(view) > -1) {
+                            const changeable = !mid.clone()
+                                .isoWeekday(fdy)
+                                .isSame(start, 'week');
+
+                            if (changeable) {
+                                if (mid.isBefore(start, 'day')) {
+                                    initialDate(mid.add(1, 'week').toDate());
+                                } else {
+                                    initialDate(mid.subtract(1, 'week').toDate());
+                                }
+                            }
+                        } else if (view === 'fullMonth') {
+                            const smonth = moment(start);
+
+                            if (smonth.get('date') > 1) {
+                                smonth.add(1, 'month');
+                            }
+
+                            const changeable = !mid.clone().isSame(smonth, 'month');
+
+                            if (changeable) {
+                                if (mid.isBefore(start, 'day')) {
+                                    initialDate(mid.add(1, 'month').toDate());
+                                } else {
+                                    console.log('subtract', mid.toDate(), start, end);
+                                    initialDate(mid.subtract(1, 'month').toDate());
+                                }
+                            }
+                        }
+                    }
+
                     event.datesSet.apply(viewModel, [start, end]);
                 },
                 viewDidMount: (opts) => {
@@ -1260,6 +1333,94 @@ module nts.uk.ui.koExtentions {
 
                 return `${hour}:${_.padStart(`${minute}`, 2, '0')}`;
             }
+        }
+
+
+        const DATE_PICKER_TEMP = `<div class="datepicker-container">
+            <div class="datepicker-panel" data-view="years picker">
+            <ul>
+                <li data-view="month prev">&lsaquo;</li>
+                <li data-view="month current"></li>
+                <li data-view="month next">&rsaquo;</li>
+            </ul>
+            <ul data-view="week"></ul>
+            <ul data-view="days"></ul>
+            </div>
+            <div class="datepicker-panel" data-view="months picker">
+            <ul>
+                <li data-view="month prev">&lsaquo;</li>
+                <li data-view="month current"></li>
+                <li data-view="month next">&rsaquo;</li>
+            </ul>
+            <ul data-view="week"></ul>
+            <ul data-view="days"></ul>
+            </div>
+            <div class="datepicker-panel" data-view="days picker">
+            <ul>
+                <li data-view="month prev">&lsaquo;</li>
+                <li data-view="month current"></li>
+                <li data-view="month next">&rsaquo;</li>
+            </ul>
+            <ul data-view="week"></ul>
+            <ul data-view="days"></ul>
+            </div>
+        </div>`;
+
+        @component({
+            name: 'fc-datepicker',
+            template: 'DATE_PICKER'
+        })
+        export class FullCalendarDatepicker extends ko.ViewModel {
+
+            constructor(private params: DATEPICKER_PARAMS) {
+                super();
+            }
+
+            mounted() {
+                const vm = this;
+                const ds = 'destroy';
+                const { $el, params } = vm;
+
+                $el.innerHTML = '';
+
+                const $dp = $($el)
+                    .on('pick.datepicker', (evt: any) => {
+                        if (ko.isObservable(params.date)) {
+                            params.date(evt.date);
+                        }
+                    });
+
+                ko.computed({
+                    read: () => {
+                        const options: any = {
+                            inline: true,
+                            language: 'ja-JP',
+                            date: ko.unwrap(params.date),
+                            weekStart: ko.unwrap(params.weekStart),
+                            template: DATE_PICKER_TEMP
+                        };
+
+                        $dp
+                            .datepicker(ds)
+                            .datepicker(options);
+                    },
+                    disposeWhenNodeIsRemoved: $el
+                })
+
+                ko.computed({
+                    read: () => {
+                        $dp.datepicker('setDate', ko.unwrap(params.date));
+                    },
+                    disposeWhenNodeIsRemoved: $el
+                });
+
+                _.extend(window, { $dp });
+            }
+        }
+
+        type DATEPICKER_PARAMS = {
+            date: Date;
+            weekStart: 0 | 1 | 2 | 3 | 4 | 5 | 6,
         }
     }
 }
