@@ -8573,7 +8573,7 @@ module nts.uk.ui.exTable {
          * Get data source.
          */
         export function getDataSource($grid: HTMLElement) {
-            return ($.data($grid, internal.TANGI) || $.data($grid, internal.CANON)).dataSource;
+            return ($.data($grid, internal.TANGI) || $.data($grid, internal.CANON) || {}).dataSource;
         }
         
         /**
