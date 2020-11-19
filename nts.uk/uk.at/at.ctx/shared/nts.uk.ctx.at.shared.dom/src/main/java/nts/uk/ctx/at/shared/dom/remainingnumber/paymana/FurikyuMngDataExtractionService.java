@@ -59,8 +59,7 @@ public class FurikyuMngDataExtractionService {
 		String cid = AppContexts.user().companyId();
 		List<PayoutManagementData> payoutManagementData;
 		List<SubstitutionOfHDManagementData> substitutionOfHDManagementData;
-		List<PayoutSubofHDManagement> payoutSubofHDManagementLinkToPayout = new ArrayList<PayoutSubofHDManagement>();	
-		double useDays;
+		List<PayoutSubofHDManagement> payoutSubofHDManagementLinkToPayout = new ArrayList<PayoutSubofHDManagement>();
 		ComSubstVacation comSubstVacation;
 		Integer closureId;
 		// Step 振休管理データを管理するかチェック
@@ -118,8 +117,6 @@ public class FurikyuMngDataExtractionService {
 						.build();
 				return itemData;
 			}).collect(Collectors.toList());
-			// Step 月初の振休残数を取得
-			useDays = getNumberOfRemainingHolidays(empId);
 			// Step 振休管理設定を取得する
 			EmpComSubstVacation substVaca = getClassifiedManagementSetup(cid, emplManage.getEmploymentCode());
 			comSubstVacation = substVaca.getComSubstVacation().orElse(null);
@@ -129,17 +126,17 @@ public class FurikyuMngDataExtractionService {
 			Optional<PresentClosingPeriodExport> closing = this.find(cid, closureId);
 			DisplayRemainingNumberDataInformation result = DisplayRemainingNumberDataInformation.builder()
 					.employeeId(empId)
-					.totalRemainingNumber(useDays)
+					.totalRemainingNumber(0d)
 					.expirationDate(comSubstVacation != null
 						? comSubstVacation.getSetting().getExpirationDate().value
-						: substVaca.getEmpSubstVacation().get().getSetting().getExpirationDate().value)
+						: 0)
 					.remainingData(lstDataRemainDto)
 					.startDate(closing.get().getClosureStartDate())
 					.endDate(closing.get().getClosureEndDate())
 					.closureId(closureId)
 					.build();
 				
-		return result;
+			return result;
 		}
 	}
 	
@@ -199,7 +196,7 @@ public class FurikyuMngDataExtractionService {
 				.comSubstVacation(optComSubData)
 				.empSubstVacation(optEmpSubData)
 				.build();
-	}	
+	}
 	
 	// Step 月初の振休残数を取得
 	public double getNumberOfRemainingHolidays(String empId) {
