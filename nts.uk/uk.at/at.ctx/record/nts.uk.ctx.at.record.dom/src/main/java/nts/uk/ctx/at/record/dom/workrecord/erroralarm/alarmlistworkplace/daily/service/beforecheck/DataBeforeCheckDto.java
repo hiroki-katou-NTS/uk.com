@@ -3,9 +3,9 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.shared.dom.adapter.employee.PersonEmpBasicInfoImport;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -19,10 +19,27 @@ public class DataBeforeCheckDto {
     /**
      * List＜個人社員基本情報＞
      */
-    private List<PersonEmpBasicInfoImport> empInfos = new ArrayList<>();
+    private List<PersonEmpBasicInfoImport> personInfos;
+
+    /**
+     * List＜休職・休業社員ID＞
+     * List<休職休業履歴，休職休業履歴項目の名称>
+     */
+    private List<Object> empLeaves;
 
     /**
      * Map＜職場ID、List＜未登録打刻カード＞＞
+     * Map＜職場ID、List＜打刻日、未登録打刻カード＞＞
      */
-    private Map<String, List<Object>> unregistedStampCards;
+    private Map<String, List<Object>> unregistedStampCardsByWpMap;
+
+    /**
+     * List＜日次の外部予算実績＞
+     */
+    private List<Object> dailyExtBudgets;
+
+    /**
+     * Map＜社員ID、打刻＞
+     */
+    private Map<String, Stamp> stampByEmpMap;
 }

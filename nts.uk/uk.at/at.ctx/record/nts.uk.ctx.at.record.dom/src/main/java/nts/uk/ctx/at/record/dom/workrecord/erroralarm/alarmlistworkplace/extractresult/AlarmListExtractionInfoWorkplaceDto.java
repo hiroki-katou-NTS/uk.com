@@ -6,7 +6,7 @@ import lombok.Getter;
 import java.util.List;
 
 /**
- * アラーム抽出結果
+ * アラームリスト抽出情報（職場）
  *
  * @author Le Huu Dat
  */

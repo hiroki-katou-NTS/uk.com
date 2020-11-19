@@ -2,6 +2,8 @@ package nts.uk.ctx.at.function.dom.alarmworkplace.service.aggregateprocess;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.function.dom.adapter.workplace.WorkPlaceInforExport;
+import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.alarmlistworkplace.AggregateProcessAdapter;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternCode;
 import nts.uk.ctx.at.function.dom.alarmworkplace.AlarmPatternSettingWorkPlace;
@@ -41,7 +43,8 @@ public class AggregateProcessService {
     private AggregateProcessAdapter aggregateProcessAdapter;
     @Inject
     private AlarmListExtractInfoWorkplaceRepository alarmListExtractInfoWorkplaceRepo;
-
+    @Inject
+    private WorkplaceAdapter workplaceAdapter;
 
     public void process(String cid, String alarmPatternCode, List<String> workplaceIds) {
         // パラメータ．パターンコードをもとにドメインモデル「アラームリストパターン設定(職場別)」を取得する
@@ -66,15 +69,21 @@ public class AggregateProcessService {
             List<String> extractionIds;
             List<String> optionalIds;
             DatePeriod period = new DatePeriod(GeneralDate.today(), GeneralDate.today());
+
+            //[No.560]職場IDから職場の情報をすべて取得する //TODO Q&A 36575
+            List<WorkPlaceInforExport> workPlaceInfos = this.workplaceAdapter.getWorkplaceInforByWkpIds(cid, workplaceIds,
+                    GeneralDate.today());
+
             // ループ中のカテゴリをチェック
             switch (category) {
                 case MASTER_CHECK_BASIC:
                     alarmCheckWkpId = ((AlarmMasterBasicCheckCdt) conditionCtg.getCondition()).getAlarmCheckWkpID();
                     // アルゴリズム「マスタチェック(基本)の集計処理」を実行する
-                    alExtractInfos.addAll(aggregateProcessAdapter.processMasterCheckBasic(cid, period, alarmCheckWkpId, workplaceIds));
+                    alExtractInfos.addAll(aggregateProcessAdapter.processMasterCheckBasic(cid, period, alarmCheckWkpId, workplaceIds, workPlaceInfos));
                     break;
                 case MASTER_CHECK_DAILY:
                     alarmCheckWkpId = ((AlarmMasterDailyCheckCdt) conditionCtg.getCondition()).getAlarmCheckWkpID();
+                    alExtractInfos.addAll(aggregateProcessAdapter.processMasterCheckDaily(cid, period, alarmCheckWkpId, workplaceIds, workPlaceInfos));
                     // アルゴリズム「マスタチェック(日別)の集計処理」を実行する
                     break;
                 case MASTER_CHECK_WORKPLACE:

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.
 
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.workplace.EmployeeInfoImported;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.adapter.workplace.AlWorkPlaceInforImport;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.service.clscodecfm.ClsCodeCfmService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.service.est36timecfm.Est36TimeCfmService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.service.esttimeamountcfm.EstTimeAmountCfmService;
@@ -60,9 +61,11 @@ public class AggregateProcessMasterCheckBasicService {
      * @param period          期間
      * @param alarmCheckWkpId List＜職場のエラームチェックID＞
      * @param workplaceIds    List＜職場ID＞
-     * @return List＜アラーム抽出結果＞
+     * @param workPlaceInfos  List＜職場情報＞
+     * @return List＜アラームリスト抽出情報（職場）＞
      */
-    public List<AlarmListExtractionInfoWorkplaceDto> process(String cid, DatePeriod period, List<String> alarmCheckWkpId, List<String> workplaceIds) {
+    public List<AlarmListExtractionInfoWorkplaceDto> process(String cid, DatePeriod period, List<String> alarmCheckWkpId,
+                                                             List<String> workplaceIds, List<AlWorkPlaceInforImport> workPlaceInfos) {
         // 職場の社員の情報を取得する。
         Map<String, List<EmployeeInfoImported>> empInfoMap = employeeInfoByWorkplaceService.get(workplaceIds, period);
 
