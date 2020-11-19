@@ -39,8 +39,6 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 			vm.endDate = params.endDate;
 			vm.empInfoLst = params.empInfoLst;
 			vm.currentEmpInfo(_.find(vm.empInfoLst, o => o.empID == params.currentEmpID));
-			$("#eGrid").css('visibility','hidden');
-			vm.createIggrid();
 			vm.refreshDataSource();
 		}
 		
@@ -57,21 +55,11 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 				virtualizationMode: 'continuous',
 				dataRendered: () => {
 					vm.updateCellStyles();
-					vm.$nextTick(() => {
-						vm.$blockui('hide');
-					});
 				},
 				rendered: () => {
-			   		if($("#eGrid").css('visibility')=='hidden'){
-						vm.$nextTick(() => {
-							vm.$blockui('show');
-							$('#kaf018-e-cancel-btn').focus();
-						});
-					} else {
-						vm.$nextTick(() => {
-							vm.$blockui('hide');
-						});
-					} 	   
+					vm.$nextTick(() => {
+						vm.$blockui('hide');
+					});  
 			    },
 				columns: [
 					{ headerText: "", key: 'appID', width: 1, hidden: true },
@@ -196,8 +184,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 			vm.$blockui('show');
 			vm.$ajax(API.getApprSttStartByEmpDate, wsParam).done((data: Array<ApprSttEmpDateContentDto>) => {
 				vm.dataSource = _.map(data, o => new EmpDateContent(o, vm));
-				$("#eGrid").igGrid("option", "dataSource", vm.dataSource);
-				$("#eGrid").css('visibility','visible');
+				vm.createIggrid();
 			});
 		}
 	}
