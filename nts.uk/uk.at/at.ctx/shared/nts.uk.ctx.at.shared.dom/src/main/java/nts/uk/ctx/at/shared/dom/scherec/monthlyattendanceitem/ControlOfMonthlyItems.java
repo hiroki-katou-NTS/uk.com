@@ -1,10 +1,10 @@
 package nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.TimeInputUnit;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.HeaderBackgroundColor;
 
 /**
@@ -23,9 +23,9 @@ public class ControlOfMonthlyItems extends AggregateRoot {
 	private Optional<HeaderBackgroundColor> headerBgColorOfMonthlyPer;
 
 	/**時間項目の入力単位*/
-	private Optional<TimeInputUnit> inputUnitOfTimeItem;
+	private Optional<BigDecimal> inputUnitOfTimeItem;
 
-	public ControlOfMonthlyItems(String companyId, int itemMonthlyId, HeaderBackgroundColor headerBgColorOfMonthlyPer, TimeInputUnit inputUnitOfTimeItem) {
+	public ControlOfMonthlyItems(String companyId, int itemMonthlyId, HeaderBackgroundColor headerBgColorOfMonthlyPer, BigDecimal inputUnitOfTimeItem) {
 		super();
 		this.companyId = companyId;
 		this.itemMonthlyId = itemMonthlyId;

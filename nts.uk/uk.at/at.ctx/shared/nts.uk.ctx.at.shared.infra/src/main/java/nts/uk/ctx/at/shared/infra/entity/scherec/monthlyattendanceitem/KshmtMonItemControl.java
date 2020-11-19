@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.infra.entity.scherec.monthlyattendanceitem;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -9,8 +10,6 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.TimeInputUnit;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.HeaderBackgroundColor;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.ControlOfMonthlyItems;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -18,7 +17,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Getter
 @Entity
 @NoArgsConstructor
-@Table(name = "KSHST_MON_ITEM_CONTROL")
+@Table(name = "KSHMT_MON_ITEM_CONTROL")
 public class KshmtMonItemControl   extends UkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -29,15 +28,15 @@ public class KshmtMonItemControl   extends UkJpaEntity implements Serializable{
 	@Column(name = "HEADER_BACKGROUND_COLOR")
 	public String headerBgColorOfMonthlyPer;
 	
-	@Column(name = "TIME_INPUT_UNIT")
-	public Integer inputUnitOfTimeItem;
+	@Column(name = "INPUT_UNIT")
+	public BigDecimal inputUnitOfTimeItem;
 	
 	@Override
 	protected Object getKey() {
 		return krcmtControlOfMonthlyItemsPK;
 	}
 
-	public KshmtMonItemControl(KshmtMonItemControlPK krcmtControlOfMonthlyItemsPK, String headerBgColorOfMonthlyPer, Integer inputUnitOfTimeItem) {
+	public KshmtMonItemControl(KshmtMonItemControlPK krcmtControlOfMonthlyItemsPK, String headerBgColorOfMonthlyPer, BigDecimal inputUnitOfTimeItem) {
 		super();
 		this.krcmtControlOfMonthlyItemsPK = krcmtControlOfMonthlyItemsPK;
 		this.headerBgColorOfMonthlyPer = headerBgColorOfMonthlyPer;
@@ -51,7 +50,7 @@ public class KshmtMonItemControl   extends UkJpaEntity implements Serializable{
 					domain.getItemMonthlyId()
 						),
 				domain.getHeaderBgColorOfMonthlyPer().isPresent()?domain.getHeaderBgColorOfMonthlyPer().get().v():null,
-				domain.getInputUnitOfTimeItem().isPresent()?domain.getInputUnitOfTimeItem().get().value:null
+				domain.getInputUnitOfTimeItem().isPresent()?domain.getInputUnitOfTimeItem().get() : null
 				);
 	}
 
@@ -60,7 +59,7 @@ public class KshmtMonItemControl   extends UkJpaEntity implements Serializable{
 				this.krcmtControlOfMonthlyItemsPK.companyID,
 				this.krcmtControlOfMonthlyItemsPK.itemMonthlyID,
 				this.headerBgColorOfMonthlyPer!=null ? new HeaderBackgroundColor(this.headerBgColorOfMonthlyPer) : null,
-				this.inputUnitOfTimeItem!=null ? EnumAdaptor.valueOf(this.inputUnitOfTimeItem, TimeInputUnit.class) :null
+				this.inputUnitOfTimeItem
 				);
 	}
 	
