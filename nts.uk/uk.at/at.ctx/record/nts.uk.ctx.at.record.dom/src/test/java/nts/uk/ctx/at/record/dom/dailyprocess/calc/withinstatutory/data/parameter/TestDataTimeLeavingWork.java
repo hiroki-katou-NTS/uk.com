@@ -30,10 +30,11 @@ public class TestDataTimeLeavingWork {
 	 */
 	static Function<TestDataCsvRecord, WorkStamp> buildWorkStamp = record -> {
 		return new WorkStamp(
-				record.asInt("AfterRoundingTime", v -> new TimeWithDayAttr(v)),
 				record.asInt("timeWithDay", v -> new TimeWithDayAttr(v)),
 				record.asStrOpt("locationCode").map(v -> new WorkLocationCD(v)).orElse(null),
-				record.asEnum("stampSourceInfo", StampSourceInfo.class));
+				null, null);
+//				record.asEnum("timeChangeMeans", TimeChangeMeans.class),
+//				record.asEnum("engravingMethod", EngravingMethod.class));
 	};
 	
 	/**

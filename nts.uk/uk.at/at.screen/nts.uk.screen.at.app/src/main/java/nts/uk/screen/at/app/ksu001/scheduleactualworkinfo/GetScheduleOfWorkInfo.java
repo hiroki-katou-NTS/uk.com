@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package nts.uk.screen.at.app.ksu001.scheduleactualworkinfo;
 
@@ -45,6 +45,10 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.em
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
@@ -65,10 +69,10 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class GetScheduleOfWorkInfo {
-	
+
 	@Inject
 	private WorkScheduleRepository workScheduleRepo;
-	
+
 	@Inject
 	private EmpComHisAdapter empComHisAdapter;
 	@Inject
@@ -79,33 +83,33 @@ public class GetScheduleOfWorkInfo {
 	private EmpLeaveWorkHistoryAdapter empLeaveWorkHisAdapter;
 	@Inject
 	private EmploymentHisScheduleAdapter employmentHisScheduleAdapter;
-	
+
 	@Inject
 	private WorkTypeRepository workTypeRepo;
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepo;
-	
+
 	@Inject
 	private WorkTimeSettingService workTimeSettingService;
 	@Inject
 	private BasicScheduleService basicScheduleService;
-	
+
 	public List<WorkScheduleWorkInforDto> getDataScheduleOfWorkInfo(DisplayInWorkInfoParam param) {
-		
+
 		String companyId = AppContexts.user().companyId();
 		// step 1 start
 		// call 予定管理状態に応じて勤務予定を取得する
 		DatePeriod period = new DatePeriod(param.startDate, param.endDate);
 		RequireImpl RequireImpl = new RequireImpl(param.listSid, period, workScheduleRepo, empComHisAdapter, workCondRepo, empLeaveHisAdapter,
 				empLeaveWorkHisAdapter, employmentHisScheduleAdapter);
-		
+
 		// 管理状態と勤務予定Map
 		long start = System.nanoTime();
-		
+
 		Map<ScheManaStatuTempo, Optional<WorkSchedule>> mngStatusAndWScheMap =  WorkScheManaStatusService.getScheduleManagement(RequireImpl, param.listSid, period);
-		
-		System.out.println("thoi gian get data Schedule cua "+ param.listSid.size() + " employee: " + ((System.nanoTime() - start )/1000000) + "ms");	
-		
+
+		System.out.println("thoi gian get data Schedule cua "+ param.listSid.size() + " employee: " + ((System.nanoTime() - start )/1000000) + "ms");
+
 		List<WorkInfoOfDailyAttendance>  listWorkInfo = new ArrayList<WorkInfoOfDailyAttendance>();
 		mngStatusAndWScheMap.forEach((k,v)->{
 			if (v.isPresent()) {
@@ -113,23 +117,23 @@ public class GetScheduleOfWorkInfo {
 				listWorkInfo.add(workInfo);
 			}
 		});
-		// step 1 end 
-		
+		// step 1 end
+
 		// step 2
 		// call 日別勤怠の実績で利用する勤務種類と就業時間帯のリストを取得する
-		WorkTypeWorkTimeUseDailyAttendanceRecord wTypeWTimeUseDailyAttendRecord = GetListWtypeWtimeUseDailyAttendRecordService.getdata(listWorkInfo);  
-		
+		WorkTypeWorkTimeUseDailyAttendanceRecord wTypeWTimeUseDailyAttendRecord = GetListWtypeWtimeUseDailyAttendRecordService.getdata(listWorkInfo);
+
 		// step 3
 		List<WorkTypeCode> workTypeCodes = wTypeWTimeUseDailyAttendRecord.getLstWorkTypeCode().stream().filter(wt -> wt != null).collect(Collectors.toList());
 		List<String> lstWorkTypeCode     = workTypeCodes.stream().map(i -> i.toString()).collect(Collectors.toList());
 		//<<Public>> 指定した勤務種類をすべて取得する
-		List<WorkTypeInfor> lstWorkTypeInfor = this.workTypeRepo.getPossibleWorkTypeAndOrder(companyId, lstWorkTypeCode);
-		
+		List<WorkTypeInfor> lstWorkTypeInfor = this.workTypeRepo.getPossibleWorkTypeAndOrder(companyId, lstWorkTypeCode).stream().filter(wk -> wk.getAbolishAtr() == 0).collect(Collectors.toList());
+
 		// step 4
 		List<WorkTimeCode> workTimeCodes   = wTypeWTimeUseDailyAttendRecord.getLstWorkTimeCode().stream().filter(wt -> wt != null).collect(Collectors.toList());
 		List<String> lstWorkTimeCode       = workTimeCodes.stream().map(i -> i.toString()).collect(Collectors.toList());
 		List<WorkTimeSetting> lstWorkTimeSetting =  workTimeSettingRepo.getListWorkTimeSetByListCode(companyId, lstWorkTimeCode);
-		
+
 		// step 5
 		List<WorkScheduleWorkInforDto> listWorkScheduleWorkInfor = new ArrayList<>();
 		mngStatusAndWScheMap.forEach((k, v) -> {
@@ -160,15 +164,15 @@ public class GetScheduleOfWorkInfo {
 						.endTimeEditState(null)
 						.workHolidayCls(null)
 						.isEdit(true)   //
-						.isActive(true) // 
+						.isActive(true) //
 						.build();
-				
+
 				// ※Abc1
 				boolean isEdit = true;
 				if(dto.needToWork == false){
 					isEdit = false;
 				}
-				
+
 				// ※Abc2
 				boolean isActive = true;
 				if(dto.needToWork == false){
@@ -181,31 +185,40 @@ public class GetScheduleOfWorkInfo {
 				// step 5.2.1
 				WorkSchedule workSchedule = value.get();
 				WorkInformation workInformation = workSchedule.getWorkInfo().getRecordInfo();
-				
+
 				WorkInformation.Require require2 = new RequireWorkInforImpl(workTypeRepo,workTimeSettingRepo,workTimeSettingService, basicScheduleService);
 				Optional<WorkStyle> workStyle = Optional.empty();
 				if (workInformation.getWorkTypeCode() != null) {
 					workStyle = workInformation.getWorkStyle(require2); // workHolidayCls
 				}
-				
+
 				String workTypeCode = workInformation.getWorkTypeCode() == null  ? null : workInformation.getWorkTypeCode().toString();
 				String workTypeName = null;
+				boolean workTypeIsNotExit  = false;
+
 				Optional<WorkTypeInfor> workTypeInfor = lstWorkTypeInfor.stream().filter(i -> i.getWorkTypeCode().equals(workTypeCode)).findFirst();
 				if (workTypeInfor.isPresent()) {
 					workTypeName = workTypeInfor.get().getAbbreviationName();
+				} else if (!workTypeInfor.isPresent() && workTypeCode != null){
+					workTypeIsNotExit = true;
 				}
+
 				String workTimeCode = workInformation.getWorkTimeCode() == null  ? null : workInformation.getWorkTimeCode().toString();
-				Optional<WorkTimeSetting> workTimeSetting = lstWorkTimeSetting.stream().filter(i -> i.getWorktimeCode().toString().equals(workTimeCode)).findFirst(); 
+				Optional<WorkTimeSetting> workTimeSetting = lstWorkTimeSetting.stream().filter(i -> i.getWorktimeCode().toString().equals(workTimeCode)).findFirst();
 				String workTimeName = null;
+
+				boolean workTimeIsNotExit  = false;
 				if (workTimeSetting.isPresent()) {
 					if (workTimeSetting.get().getWorkTimeDisplayName() != null && workTimeSetting.get().getWorkTimeDisplayName().getWorkTimeAbName() != null ) {
 						workTimeName = workTimeSetting.get().getWorkTimeDisplayName().getWorkTimeAbName().toString();
 					}
+				} else  if (!workTimeSetting.isPresent() && workTimeCode != null){
+					workTimeIsNotExit = true;
 				}
-				
+
 				Integer startTime = null;
 				Integer endtTime = null;
-				
+
 				if (workTimeCode != null) {
 					if (workSchedule.getOptTimeLeaving().isPresent()) {
 						Optional<TimeLeavingWork> timeLeavingWork = workSchedule.getOptTimeLeaving().get().getTimeLeavingWorks().stream().filter(i -> i.getWorkNo().v() == 1).findFirst();
@@ -221,7 +234,7 @@ public class GetScheduleOfWorkInfo {
 							}
 						}
 					}
-					
+
 					if (workSchedule.getOptTimeLeaving().isPresent()) {
 						Optional<TimeLeavingWork> timeLeavingWork = workSchedule.getOptTimeLeaving().get().getTimeLeavingWorks().stream().filter(i -> i.getWorkNo().v() == 1).findFirst();
 						if (timeLeavingWork.isPresent()) {
@@ -237,12 +250,12 @@ public class GetScheduleOfWorkInfo {
 						}
 					}
 				}
-				
-				Optional<EditStateOfDailyAttd> workTypeEditStatus = workSchedule.getLstEditState().stream().filter(i -> i.getAttendanceItemId() == 1).findFirst();
-				Optional<EditStateOfDailyAttd> workTimeEditStatus = workSchedule.getLstEditState().stream().filter(i -> i.getAttendanceItemId() == 2).findFirst();
-				Optional<EditStateOfDailyAttd> startTimeEditStatus = workSchedule.getLstEditState().stream().filter(i -> i.getAttendanceItemId() == 3).findFirst();
-				Optional<EditStateOfDailyAttd> endTimeEditStatus = workSchedule.getLstEditState().stream().filter(i -> i.getAttendanceItemId() == 4).findFirst();
-				
+
+				Optional<EditStateOfDailyAttd> workTypeEditStatus = workSchedule.getLstEditState().stream().filter(i -> i.getAttendanceItemId() == 28).findFirst();
+				Optional<EditStateOfDailyAttd> workTimeEditStatus = workSchedule.getLstEditState().stream().filter(i -> i.getAttendanceItemId() == 29).findFirst();
+				Optional<EditStateOfDailyAttd> startTimeEditStatus = workSchedule.getLstEditState().stream().filter(i -> i.getAttendanceItemId() == 31).findFirst();
+				Optional<EditStateOfDailyAttd> endTimeEditStatus = workSchedule.getLstEditState().stream().filter(i -> i.getAttendanceItemId() == 34).findFirst();
+
 				WorkScheduleWorkInforDto dto = WorkScheduleWorkInforDto.builder()
 						.employeeId(key.getEmployeeID())
 						.date(key.getDate())
@@ -262,46 +275,48 @@ public class GetScheduleOfWorkInfo {
 						.endTime(endtTime)
 						.endTimeEditState(endTimeEditStatus.isPresent() ? new EditStateOfDailyAttdDto(endTimeEditStatus.get().getAttendanceItemId(), endTimeEditStatus.get().getEditStateSetting().value) : null)
 						.workHolidayCls(workStyle.isPresent() ? workStyle.get().value : null)
-						.isEdit(true)   //
-						.isActive(true) // 
+						.isEdit(true)
+						.isActive(true)
+						.workTypeIsNotExit(workTypeIsNotExit)
+						.workTimeIsNotExit(workTimeIsNotExit)
 						.build();
-				
+
 				// ※Abc1
 				boolean isEdit = true;
 				if(dto.confirmed == true || dto.needToWork == false){
 					isEdit = false;
 				}
-				
+
 				// ※Abc2
 				boolean isActive = true;
 				if(dto.needToWork == false){
 					isActive = false;
 				}
-				
+
 				dto.setEdit(isEdit);
 				dto.setActive(isActive);
-				
+
 				listWorkScheduleWorkInfor.add(dto);
 			}
 		});
-		
+
 		return listWorkScheduleWorkInfor;
 	}
-	
+
 	@AllArgsConstructor
 	private static class RequireWorkInforImpl implements WorkInformation.Require {
-		
+
 		private final String companyId = AppContexts.user().companyId();
-		
+
 		@Inject
 		private WorkTypeRepository workTypeRepo;
-		
+
 		@Inject
 		private WorkTimeSettingRepository workTimeSettingRepository;
-		
+
 		@Inject
 		private WorkTimeSettingService workTimeSettingService;
-		
+
 		@Inject
 		private BasicScheduleService basicScheduleService;
 
@@ -311,88 +326,107 @@ public class GetScheduleOfWorkInfo {
 		}
 
 		@Override
-		public Optional<WorkType> findByPK(String workTypeCd) {
+		public Optional<WorkType> getWorkType(String workTypeCd) {
 			return workTypeRepo.findByPK(companyId, workTypeCd);
 		}
 
 		@Override
-		public Optional<WorkTimeSetting> findByCode(String workTimeCode) {
+		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
 			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
 		}
 
 		@Override
-		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTimeCd,
-				String workTypeCd, Integer workNo) {
+		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd, Integer workNo) {
 			return workTimeSettingService .getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
 		}
 
 		@Override
-		public WorkStyle checkWorkDay(String workTypeCode) {
-			return basicScheduleService.checkWorkDay(workTypeCode);
+		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
 		}
+
+		@Override
+		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
 	}
-	
-	
+
+
 	@AllArgsConstructor
 	private static class RequireImpl implements WorkScheManaStatusService.Require {
-		
+
 		private NestedMapCache<String, GeneralDate, WorkSchedule> workScheduleCache;
 		private KeyDateHistoryCache<String, EmpEnrollPeriodImport> affCompanyHistByEmployeeCache;
 		private KeyDateHistoryCache<String, EmploymentPeriodImported> employmentPeriodCache;
 		private KeyDateHistoryCache<String, EmployeeLeaveJobPeriodImport> empLeaveJobPeriodCache;
 		private KeyDateHistoryCache<String, EmpLeaveWorkPeriodImport> empLeaveWorkPeriodCache;
 		private KeyDateHistoryCache<String, WorkingConditionItemWithPeriod> workCondItemWithPeriodCache;
-		
+
 		public RequireImpl(List<String> empIdList, DatePeriod period, WorkScheduleRepository workScheduleRepo,
 				EmpComHisAdapter empComHisAdapter, WorkingConditionRepository workCondRepo,
 				EmpLeaveHistoryAdapter empLeaveHisAdapter, EmpLeaveWorkHistoryAdapter empLeaveWorkHisAdapter,
 				EmploymentHisScheduleAdapter employmentHisScheduleAdapter) {
-			
+
 			long start1 = System.nanoTime();
 			List<WorkSchedule> lstWorkSchedule = workScheduleRepo.getList(empIdList, period);
 			workScheduleCache = NestedMapCache.preloadedAll(lstWorkSchedule.stream(),
 					workSchedule -> workSchedule.getEmployeeID(), workSchedule -> workSchedule.getYmd());
 			System.out.println("thoi gian get data WorkSchedule " + ((System.nanoTime() - start1 )/1000000) + "ms");
-			
+
 			long start2 = System.nanoTime();
 			List<EmpEnrollPeriodImport> affCompanyHists =  empComHisAdapter.getEnrollmentPeriod(empIdList, period);
 			affCompanyHistByEmployeeCache = KeyDateHistoryCache.loaded(affCompanyHists.stream()
 					.collect(Collectors.toMap( h -> h.getEmpID(), h -> Arrays.asList(DateHistoryCache.Entry.of(h.getDatePeriod(), h)))));
 			System.out.println("thoi gian get data affCompanyHistByEmp " + ((System.nanoTime() - start2 )/1000000) + "ms");
-			
+
 			long start3 = System.nanoTime();
 			List<EmploymentPeriodImported> listEmploymentPeriodImported = employmentHisScheduleAdapter.getEmploymentPeriod(empIdList, period);
 			employmentPeriodCache = KeyDateHistoryCache.loaded(listEmploymentPeriodImported.stream()
 					.collect(Collectors.toMap( h -> h.getEmpID(), h -> Arrays.asList(DateHistoryCache.Entry.of(h.getDatePeriod(), h)))));
 			System.out.println("thoi gian get data EmploymentPeriod " + ((System.nanoTime() - start3 )/1000000) + "ms");
-			
+
 			long start4 = System.nanoTime();
 			List<EmployeeLeaveJobPeriodImport> empLeaveJobPeriods = empLeaveHisAdapter.getLeaveBySpecifyingPeriod(empIdList, period);
 			empLeaveJobPeriodCache = KeyDateHistoryCache.loaded(empLeaveJobPeriods.stream()
 					.collect(Collectors.toMap( h -> h.getEmpID(), h -> Arrays.asList(DateHistoryCache.Entry.of(h.getDatePeriod(), h)))));
 			System.out.println("thoi gian get data EmployeeLeaveJob " + ((System.nanoTime() - start4 )/1000000) + "ms");
-			
+
 			long start5 = System.nanoTime();
 			List<EmpLeaveWorkPeriodImport> empLeaveWorkPeriods =  empLeaveWorkHisAdapter.getHolidayPeriod(empIdList, period);
 			empLeaveWorkPeriodCache = KeyDateHistoryCache.loaded(empLeaveWorkPeriods.stream()
 					.collect(Collectors.toMap( h -> h.getEmpID(), h -> Arrays.asList(DateHistoryCache.Entry.of(h.getDatePeriod(), h)))));
 			System.out.println("thoi gian get data EmpLeaveWork " + ((System.nanoTime() - start5 )/1000000) + "ms");
-			
+
 			long start6 = System.nanoTime();
 			List<WorkingConditionItemWithPeriod> listData = workCondRepo.getWorkingConditionItemWithPeriod(AppContexts.user().companyId(),empIdList, period);
 			workCondItemWithPeriodCache = KeyDateHistoryCache.loaded(listData.stream()
 					.collect(Collectors.toMap( h -> h.getWorkingConditionItem().getEmployeeId(), h -> Arrays.asList(DateHistoryCache.Entry.of(h.getDatePeriod(), h)))));
 			System.out.println("thoi gian get data WorkingConditionItem " + ((System.nanoTime() - start6 )/1000000) + "ms");
-			
-			System.out.println("thoi gian get data để lưu vào Cache " + ((System.nanoTime() - start1 )/1000000) + "ms");	
+
+			System.out.println("thoi gian get data để lưu vào Cache " + ((System.nanoTime() - start1 )/1000000) + "ms");
 		}
-		
+
 		@Override
 		public Optional<WorkSchedule> get(String employeeId, GeneralDate date) {
 			Optional<WorkSchedule> result = workScheduleCache.get(employeeId, date);
 			return result;
 		}
-		
+
 		@Override
 		public Optional<EmpEnrollPeriodImport> getAffCompanyHistByEmployee(String sid, GeneralDate startDate) {
 			Optional<EmpEnrollPeriodImport> data = affCompanyHistByEmployeeCache.get(sid, startDate);
@@ -423,6 +457,6 @@ public class GetScheduleOfWorkInfo {
 			return data;
 		}
 	}
-	
+
 
 }

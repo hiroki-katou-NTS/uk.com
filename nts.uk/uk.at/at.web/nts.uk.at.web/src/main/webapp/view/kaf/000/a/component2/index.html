@@ -3,6 +3,19 @@
 		<div class="cell col-1">
 			<div class="cell valign-center" data-bind="ntsFormLabel:{}, text: $i18n('KAF000_44')"></div>
 		</div>
-		<div class="cell valign-center" data-bind="text: employeeName"></div>
+		<div class="cell valign-center" data-bind="if: !isAgentMode">
+			<div data-bind="text: employeeName"></div>
+		</div>
+		<div class="cell valign-center" data-bind="if: isAgentMode">
+			<div id="list-box" data-bind="ntsListBox: {
+				options: employeeLst,
+				optionsValue: 'sid',
+				optionsText: 'bussinessName',
+				value: ko.observableArray([]),
+				rows: 6,
+				columns: [
+					{ key: 'bussinessName', length: 20 }
+				]}"></div>
+		</div>
 	</div>
 </div>

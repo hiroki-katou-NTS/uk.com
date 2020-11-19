@@ -32,7 +32,7 @@ public class MakeShiftMasterServiceTest {
 		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"), null);
 		new Expectations() {
 			{
-				requireWorkinfo.findByPK(workTypeCode);
+				requireWorkinfo.getWorkType(workTypeCode);
 				result = Optional.of(new WorkType());
 				
 				requireWorkinfo.checkNeededOfWorkTimeSetting(workTypeCode);
@@ -64,7 +64,7 @@ public class MakeShiftMasterServiceTest {
 		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"), null);
 		new Expectations() {
 			{
-				requireWorkinfo.findByPK(anyString);
+				requireWorkinfo.getWorkType(anyString);
 			}
 		};
 		NtsAssert.businessException("Msg_1608", () -> {
@@ -87,13 +87,13 @@ public class MakeShiftMasterServiceTest {
 		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"), null);
 		new Expectations() {
 			{
-				requireWorkinfo.findByPK(workTypeCode);
+				requireWorkinfo.getWorkType(workTypeCode);
 				result = Optional.of(new WorkType());
 				
 				requireWorkinfo.checkNeededOfWorkTimeSetting(workTypeCode);
 				result = SetupType.REQUIRED;
 				
-				requireWorkinfo.findByCode(workTimeCode.get());
+				requireWorkinfo.getWorkTime(workTimeCode.get());
 			}
 		};
 		NtsAssert.businessException("Msg_1609", () -> {
@@ -116,7 +116,7 @@ public class MakeShiftMasterServiceTest {
 		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"), null);
 		new Expectations() {
 			{
-				requireWorkinfo.findByPK(workTypeCode);
+				requireWorkinfo.getWorkType(workTypeCode);
 				result = Optional.of(new WorkType());
 				
 				requireWorkinfo.checkNeededOfWorkTimeSetting(workTypeCode);
@@ -145,7 +145,7 @@ public class MakeShiftMasterServiceTest {
 
 		new Expectations() {
 			{
-				requireWorkinfo.findByPK(workTypeCode);
+				requireWorkinfo.getWorkType(workTypeCode);
 				result = Optional.of(new WorkType());
 				
 				requireWorkinfo.checkNeededOfWorkTimeSetting(workTypeCode);
@@ -175,7 +175,7 @@ public class MakeShiftMasterServiceTest {
 
 		new Expectations() {
 			{
-				require.checkExists(companyId, workTypeCode, workTimeCode);
+				require.checkExistsByCode(companyId, shiftMasterCode);
 				result = true;
 				
 			}
@@ -200,7 +200,7 @@ public class MakeShiftMasterServiceTest {
 		ShiftMaster shiftMater = new ShiftMaster("companyId",new ShiftMasterCode(shiftMasterCode), displayInfor, workTypeCode, null);
 		new Expectations() {
 			{
-				requireWorkinfo.findByPK(shiftMater.getWorkTypeCode().v());
+				requireWorkinfo.getWorkType(shiftMater.getWorkTypeCode().v());
 				result = Optional.of(new WorkType());
 				
 				requireWorkinfo.checkNeededOfWorkTimeSetting(shiftMater.getWorkTypeCode().v());

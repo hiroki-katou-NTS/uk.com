@@ -11,6 +11,7 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTermi
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalName;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.ModelEmpInfoTer;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.MajorNameClassification;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.MajorNoClassification;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.NRRomVersion;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.NrlRemoteInputRange;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.NrlRemoteInputType;
@@ -60,7 +61,7 @@ public class JpaTimeRecordSetFormatListRepository extends JpaRepository implemen
 			return new KrcmtTrRemoteSetting(
 					new KrcmtTrRemoteSettingPK(code.v(), dom.getEmpInfoTerCode().v(), dom.getEmpInfoTerName().v()),
 					dom.getEmpInfoTerName().v(), dom.getRomVersion().v(), dom.getModelEmpInfoTer().value,
-					x.getMajorClassification().v(), x.getSmallClassification().v(), x.getType().value,
+					x.getMajorNo().v(), x.getMajorClassification().v(), x.getSmallNo().v(), x.getSmallClassification().v(), x.getType().value,
 					x.getNumberOfDigits().v(), x.getSettingValue().v(), x.getInputRange().v(), x.isRebootFlg() ? 1 : 0,
 					x.getCurrentValue().v());
 		}).collect(Collectors.toList());
@@ -77,7 +78,10 @@ public class JpaTimeRecordSetFormatListRepository extends JpaRepository implemen
 						NrlRemoteInputType.valueOf(x.type), new NumberOfDigits(x.numberOfDigits))
 								.settingValue(new SettingValue(x.settingValue))
 								.inputRange(new NrlRemoteInputRange(x.inputRange)).rebootFlg(x.rebootFlg == 1)
-								.value(new SettingValue(x.currentValue)).build())
+								.value(new SettingValue(x.currentValue))
+								.majorNo(new MajorNoClassification(x.majorNo))
+								.smallNo(new MajorNoClassification(x.smallNo))
+								.build())
 				.collect(Collectors.toList());
 		return new TimeRecordSetFormatList(new EmpInfoTerminalCode(lstEntity.get(0).pk.timeRecordCode),
 				new EmpInfoTerminalName(lstEntity.get(0).empInfoTerName), new NRRomVersion(lstEntity.get(0).romVersion),

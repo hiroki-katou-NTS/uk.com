@@ -57,22 +57,16 @@ public class ReflectActualStampAndStamp {
 	public TimeActualStamp reflect(TimeActualStamp timeActualStamp,Stamp stamp,boolean isReflectTimeStamp,TimeFrame timeFrame,GeneralDate ymd,WorkTimeCode workTimeCode) {
 		//if not (False←普通打刻反映するか＝False　AND　勤怠打刻(実打刻付き)．実打刻に値が入っている)
 		if(!(!isReflectTimeStamp && (timeActualStamp.getActualStamp().isPresent() 
-										&& timeActualStamp.getActualStamp().get().getAfterRoundingTime()!=null 
 										&& timeActualStamp.getActualStamp().get().getTimeDay().getTimeWithDay().isPresent() ))) {
 			
 			//日区分付き時刻を求める
 			TimeWithDayAttr timeWithDayAttr = TimeWithDayAttr.convertToTimeWithDayAttr(ymd,
 					stamp.getStampDateTime().toDate(), stamp.getStampDateTime().clockHourMinute().v());
-			//時刻を丸める
-			TimeWithDayAttr afterRouding = timeWithDayAttr;
-			if(workTimeCode !=null ) {
-				afterRouding = this.roundStamp(workTimeCode.v(), timeWithDayAttr,stamp.getType().getChangeClockArt());
-			}
 			//実打刻コピーする
 			TimeActualStamp timeStampCopy = new TimeActualStamp(timeActualStamp.getActualStamp(), timeActualStamp.getStamp(), timeActualStamp.getNumberOfReflectionStamp(), timeActualStamp.getOvertimeDeclaration(), timeActualStamp.getTimeVacation());
 			//打刻方法を打刻元情報に変換する
-			WorkTimeInformation timeDay = new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.REAL_STAMP, EngravingMethod.TIME_RECORD_ID_INPUT), timeWithDayAttr);
-			WorkStamp workStamp = new WorkStamp(afterRouding, timeDay, stamp.getRefActualResults().getWorkLocationCD());
+			WorkTimeInformation timeDay = new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.REAL_STAMP, Optional.of(EngravingMethod.TIME_RECORD_ID_INPUT)), timeWithDayAttr);
+			WorkStamp workStamp = new WorkStamp(timeDay, stamp.getRefActualResults().getWorkLocationCD());
 			timeStampCopy.setActualStamp(Optional.of(workStamp));
 			//時間帯枠（Temporary）。理由←外出理由
 			timeFrame.setGoOutReason(stamp.getType().getGoOutArt());
@@ -91,59 +85,4 @@ public class ReflectActualStampAndStamp {
 		
 		return timeActualStamp;
 	}
-	
-	/**
-	 * 外出・休憩時刻を丸める (new_2020)
-	 * @param workTimeCode
-	 * @param workStamp
-	 * @param attendanceAtr
-	 * @param actualStampAtr
-	 */
-	public TimeWithDayAttr roundStamp(String workTimeCode, TimeWithDayAttr timeWithDayAttr, ChangeClockArt changeClockArt) {
-		String companyId = AppContexts.user().companyId();
-		// ドメインモデル「丸め設定」を取得する (Lấy 「丸め設定」)
-		RoundingSet roudingTime = workTimeCode != null
-				? this.getRoudingTime(companyId, workTimeCode,
-						changeClockArt == ChangeClockArt.GO_OUT ? Superiority.GO_OUT : Superiority.TURN_BACK)
-				: null;
-
-		InstantRounding instantRounding = null;
-		if (roudingTime != null) {
-			instantRounding = new InstantRounding(roudingTime.getRoundingSet().getFontRearSection(),
-					roudingTime.getRoundingSet().getRoundingTimeUnit());
-		}
-		// 勤怠打刻．時刻を丸める (Làm tròn 勤怠打刻．時刻 )
-		if (instantRounding != null && timeWithDayAttr !=null) {
-			// block thời gian theo e num ( 1,5,6,10,15,20,30,60)
-			int blockTime = new Integer(instantRounding.getRoundingTimeUnit().description).intValue();
-			// tổng thời gian tuyền vào
-			int numberMinuteTimeOfDay = timeWithDayAttr.v().intValue();
-			// thời gian dư sau khi chia dư cho block time
-			int modTimeOfDay = numberMinuteTimeOfDay % blockTime;
-			// thoi gian thay doi sau khi lam tron
-			int timeChange = 0;
-			// làm tròn lên hay xuống
-			boolean isBefore = instantRounding.getFontRearSection() == FontRearSection.BEFORE;
-			if (isBefore) {
-				timeChange = (modTimeOfDay == 0) ? numberMinuteTimeOfDay : numberMinuteTimeOfDay - modTimeOfDay;
-			} else {
-				timeChange = (modTimeOfDay == 0) ? numberMinuteTimeOfDay
-						: numberMinuteTimeOfDay - modTimeOfDay + blockTime;
-			}
-			return new TimeWithDayAttr(timeChange);
-		} // end : nếu time khác giá trị default
-		return timeWithDayAttr;
-	}
-	
-	private RoundingSet getRoudingTime(String companyId, String workTimeCode, Superiority superiority) {
-		Optional<WorkTimezoneCommonSet> workTimezoneCommonSet = GetCommonSet.workTimezoneCommonSet(
-				requireService.createRequire(), companyId, workTimeCode);
-		if (workTimezoneCommonSet.isPresent()) {
-			WorkTimezoneStampSet stampSet = workTimezoneCommonSet.get().getStampSet();
-			return stampSet.getRoundingSets().stream().filter(item -> item.getSection() == superiority).findFirst().isPresent() ?
-					stampSet.getRoundingSets().stream().filter(item -> item.getSection() == superiority).findFirst().get() : null;
-		}
-		return null;
-	}
-
 }

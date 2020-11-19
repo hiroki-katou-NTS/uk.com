@@ -3,11 +3,11 @@ package nts.uk.ctx.at.record.infra.repository.divergence.time.reference;
 import java.math.BigDecimal;
 import java.util.Optional;
 
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceReferenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceReferenceTimeValue;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeGetMemento;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstDrt;
+import nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 

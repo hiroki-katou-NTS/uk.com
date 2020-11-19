@@ -13,4 +13,6 @@ public class AppListApproveCommand {
 	
 	private List<ListOfApplicationCmd> listOfApplicationCmds;
 	
+//	private List<ListOfAppTypesCmd> listOfAppTypes;
+	
 }

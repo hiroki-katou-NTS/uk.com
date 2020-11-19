@@ -17,6 +17,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApprovalDevice;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
@@ -52,9 +53,6 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 @Stateless
 public class AppContentServiceImpl implements AppContentService {
-	
-	private static final int PC = 0;
-	private static final int MOBILE = 1;
 	
 	@Inject
 	private AppReasonStandardRepository appReasonStandardRepository;
@@ -133,7 +131,9 @@ public class AppContentServiceImpl implements AppContentService {
 			Optional<HolidayAppType> opHolidayAppType) {
 		// 申請理由内容　＝　String.Empty
 		String result = Strings.EMPTY;
-		if(!(screenAtr != ScreenAtr.KAF018 && appReason!= null && appReasonDisAtr == DisplayAtr.DISPLAY)) {
+		if(!(screenAtr != ScreenAtr.KAF018 && 
+				((appReason!= null && Strings.isNotBlank(appReason.v())) || (appStandardReasonCD != null))  && 
+				appReasonDisAtr == DisplayAtr.DISPLAY)) {
 			return result;
 		}
 		// アルゴリズム「申請内容定型理由取得」を実行する
@@ -143,20 +143,30 @@ public class AppContentServiceImpl implements AppContentService {
 				// 申請理由内容　+＝　”申請理由：”を改行
 				result += "申請理由：  " + "\n";
 				// 申請理由内容　+＝　定型理由＋改行＋Input．申請理由
-				result += reasonForFixedForm.v() + "\n" + appReason.v();
+				result += reasonForFixedForm.v();
+				if(appReason!=null) {
+					result += "\n" + appReason.v();
+				}
 			} else {
 				// 申請理由内容　+＝　定型理由＋’　’＋Input．申請理由
-				result += reasonForFixedForm.v() + " " + appReason.v();
+				result += reasonForFixedForm.v();
+				if(appReason!=null) {
+					result += " " + appReason.v().replaceAll("\n", " ");	
+				}
 			}
 		} else {
 			if(screenAtr == ScreenAtr.KDL030) {
 				// 申請理由内容　+＝　”申請理由：”を改行
 				result += "申請理由：  " + "\n";
 				// 申請理由内容　+＝　Input．申請理由
-				result += appReason.v();
+				if(appReason!=null) {
+					result += appReason.v();	
+				}
 			} else {
 				// 申請理由内容　+＝　Input．申請理由
-				result += appReason.v();
+				if(appReason!=null) {
+					result += appReason.v().replaceAll("\n", " ");	
+				}
 			}
 		}
 		return result;
@@ -255,9 +265,10 @@ public class AppContentServiceImpl implements AppContentService {
 			// 申請内容　+＝　Input．勤務時間開始1
 			result += workTimeStart1 == null ? "" : workTimeStart1.getInDayTimeWithFormat();
 			// Input．勤務直帰1をチェック
-			if(goBackAtr1 == NotUseAtr.NOT_USE) {
+			result += I18NText.getText("CMM045_100");
+			if(goBackAtr1 == NotUseAtr.USE) {
 				// 申請内容　+＝　#CMM045_100　+　#CMM045_252
-				result += I18NText.getText("CMM045_100") + I18NText.getText("CMM045_252");
+				result += I18NText.getText("CMM045_252");
 			}
 			// 申請内容　+＝　Input．勤務時間終了1
 			result += workTimeEnd1 == null ? "" : workTimeEnd1.getInDayTimeWithFormat();
@@ -297,7 +308,7 @@ public class AppContentServiceImpl implements AppContentService {
 			List<WorkType> lstWkType, List<AttendanceItem> attendanceItemLst, ApplicationListAtr mode, ApprovalListDisplaySetting approvalListDisplaySetting,
 			ListOfApplication listOfApp, Map<String, List<ApprovalPhaseStateImport_New>> mapApproval, int device,
 			AppListExtractCondition appListExtractCondition, List<String> agentLst) {
-		if(device == PC) {
+		if(device == ApprovalDevice.PC.value) {
 			// ドメインモデル「申請」．申請種類をチェック (Check Domain「Application.ApplicationType
 			switch (application.getAppType()) {
 			case GO_RETURN_DIRECTLY_APPLICATION:
@@ -365,42 +376,42 @@ public class AppContentServiceImpl implements AppContentService {
 		if(mode == ApplicationListAtr.APPLICATION) {
 			switch (reflectedState) {
 			case NOTREFLECTED:
-				if(device==PC) {
+				if(device==ApprovalDevice.PC.value) {
 					reflectedStateString = "CMM045_62";
 				} else {
 					reflectedStateString = "CMMS45_7";
 				}
 				break;
 			case WAITREFLECTION:
-				if(device==PC) {
+				if(device==ApprovalDevice.PC.value) {
 					reflectedStateString = "CMM045_63";
 				} else {
 					reflectedStateString = "CMMS45_8";
 				}
 				break;
 			case REFLECTED:
-				if(device==PC) {
+				if(device==ApprovalDevice.PC.value) {
 					reflectedStateString = "CMM045_64";
 				} else {
 					reflectedStateString = "CMMS45_9";
 				}
 				break;
 			case DENIAL:
-				if(device==PC) {
+				if(device==ApprovalDevice.PC.value) {
 					reflectedStateString = "CMM045_65";
 				} else {
 					reflectedStateString = "CMMS45_11";
 				}
 				break;
 			case REMAND:
-				if(device==PC) {
+				if(device==ApprovalDevice.PC.value) {
 					reflectedStateString = "CMM045_66";
 				} else {
 					reflectedStateString = "CMMS45_36";
 				}
 				break;
 			case CANCELED:
-				if(device==PC) {
+				if(device==ApprovalDevice.PC.value) {
 					reflectedStateString = "CMM045_67";
 				} else {
 					reflectedStateString = "CMMS45_10";
@@ -491,18 +502,19 @@ public class AppContentServiceImpl implements AppContentService {
 			ApprovalBehaviorAtrImport_New phaseAtr, ApprovalBehaviorAtrImport_New frameAtr, int device) {
 		String result = Strings.EMPTY;
 		// 反映状態(trạng thái phản ánh)　＝　PC：#CMM045_62スマホ：#CMMS45_7
-		if(device==PC) {
+		if(device==ApprovalDevice.PC.value) {
 			result = "CMM045_62";
 		} else {
 			result = "CMMS45_7";
 		}
 		// 反映状態(trạng thái phản ánh)　＝　PC：#CMM045_64スマホ：#CMMS45_9
 		if(reflectedState==ReflectedState.REFLECTED) {
-			if(device==PC) {
+			if(device==ApprovalDevice.PC.value) {
 				result = "CMM045_64";
 			} else {
 				result = "CMMS45_9";
 			}
+			return result;
 		}
 		// 反映状態(trạng thái phản ánh)　＝　PC：#CMM045_63スマホ：#CMMS45_8
 		boolean condition1 = 
@@ -513,35 +525,39 @@ public class AppContentServiceImpl implements AppContentService {
 				((reflectedState==ReflectedState.WAITREFLECTION || reflectedState==ReflectedState.REFLECTED) &&
 						phaseAtr==ApprovalBehaviorAtrImport_New.APPROVED && frameAtr==ApprovalBehaviorAtrImport_New.APPROVED);
 		if(condition1) {
-			if(device==PC) {
+			if(device==ApprovalDevice.PC.value) {
 				result = "CMM045_63";
 			} else {
 				result = "CMMS45_8";
 			}
+			return result;
 		}
 		// 反映状態　＝　PC：#CMM045_65スマホ：#CMMS45_11
 		if(reflectedState==ReflectedState.DENIAL) {
-			if(device==PC) {
+			if(device==ApprovalDevice.PC.value) {
 				result = "CMM045_65";
 			} else {
 				result = "CMMS45_11";
 			}
+			return result;
 		}
 		// 反映状態　＝　PC：#CMM045_66スマホ：#CMMS45_36
 		if(reflectedState==ReflectedState.NOTREFLECTED && phaseAtr==ApprovalBehaviorAtrImport_New.REMAND) {
-			if(device==PC) {
+			if(device==ApprovalDevice.PC.value) {
 				result = "CMM045_66";
 			} else {
 				result = "CMMS45_36";
 			}
+			return result;
 		}
 		// 反映状態　＝　PC：#CMM045_67スマホ：#CMMS45_10
 		if(reflectedState==ReflectedState.CANCELED) {
-			if(device==PC) {
+			if(device==ApprovalDevice.PC.value) {
 				result = "CMM045_67";
 			} else {
 				result = "CMMS45_10";
 			}
+			return result;
 		}
 		return result;
 	}

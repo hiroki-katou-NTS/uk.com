@@ -35,6 +35,10 @@ import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalTimesPK;
  */
 @Stateless
 public class JpaTotalTimesRepository extends JpaRepository implements TotalTimesRepository {
+	
+	private static final String FIND_BY_COMPANY_ID_AND_USE_CLS = "SELECT a FROM KshstTotalTimes a "
+			+ " WHERE a.kshstTotalTimesPK.cid = :companyId"
+			+ " AND a.useAtr = :useAtr ";
 
 	/*
 	 * (non-Javadoc)
@@ -153,7 +157,7 @@ public class JpaTotalTimesRepository extends JpaRepository implements TotalTimes
 	@Override
 	public void update(TotalTimes totalTimes) {
 		Optional<KshstTotalTimes> optional = this.queryProxy().find(
-				new KshstTotalTimesPK(totalTimes.getCompanyId().v(), totalTimes.getTotalCountNo()),
+				new KshstTotalTimesPK(totalTimes.getCompanyId(), totalTimes.getTotalCountNo()),
 				KshstTotalTimes.class);
 
 		if (!optional.isPresent()) {
@@ -182,6 +186,16 @@ public class JpaTotalTimesRepository extends JpaRepository implements TotalTimes
 				.getList(x -> new TotalTimes(new JpaTotalTimesGetMemento(x))));
 		});
 		return resultList;
+	}
+
+	@Override
+	public List<TotalTimes> findByCompanyIdAndUseCls(String companyId, int useCls) {
+		return this.queryProxy().query(FIND_BY_COMPANY_ID_AND_USE_CLS, KshstTotalTimes.class)
+				.setParameter("companyId", companyId)
+				.setParameter("useAtr", useCls)
+				.getList().stream()
+				.map(x -> new TotalTimes(new JpaTotalTimesGetMemento(x)))
+				.collect(Collectors.toList());
 	}
 
 }

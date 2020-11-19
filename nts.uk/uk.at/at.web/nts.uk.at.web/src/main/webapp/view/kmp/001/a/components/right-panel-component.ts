@@ -43,7 +43,10 @@ module nts.uk.at.view.kmp001.a {
 <div>
 	<div>
 		<div class="list-card" 
-			data-bind="component: { name: 'card-list-component', params: { model: model, stampCardEdit: stampCardEdit, textInput: textInput}}"></div>
+			data-bind="component: { name: 'card-list-component', params: { model: model, 
+				stampCardEdit: stampCardEdit, 
+				textInput: textInput, 
+				methodEdit: methodEdit}}"></div>
 	</div>
 </div>
 `
@@ -56,12 +59,14 @@ module nts.uk.at.view.kmp001.a {
 		model!: Model;
 		stampCardEdit!: StampCardEdit;
 		textInput: KnockoutObservable<string>;
+		methodEdit: KnockoutObservable<boolean>;
 		created(params: any) {
 			const vm = this;
 
 			vm.model = params.model;
 			vm.stampCardEdit = params.stampCardEdit;
 			vm.textInput = params.textInput;
+			vm.methodEdit = params.methodEdit;
 		}
 
 		mounted() {
