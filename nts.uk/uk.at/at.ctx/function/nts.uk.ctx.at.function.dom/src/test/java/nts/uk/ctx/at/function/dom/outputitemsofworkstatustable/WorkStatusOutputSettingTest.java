@@ -4,15 +4,12 @@ import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.util.Arrays;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -53,7 +50,7 @@ public class WorkStatusOutputSettingTest {
     @Test
     public void test_03() {
         String settingId = "settingId";
-        val outputSettings = CreateDomain.dumData(code,name,eplId, settingId,settingCommon);
+        val outputSettings = DumData.dum(code,name,eplId, settingId,settingCommon);
         NtsAssert.invokeGetters(outputSettings);
     }
 

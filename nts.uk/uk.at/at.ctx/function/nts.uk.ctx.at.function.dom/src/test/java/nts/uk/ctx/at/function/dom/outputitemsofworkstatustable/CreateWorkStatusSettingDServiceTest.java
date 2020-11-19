@@ -4,7 +4,6 @@ import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
@@ -15,8 +14,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 
-
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -35,15 +32,15 @@ public class CreateWorkStatusSettingDServiceTest {
 
     private final String iD = "id";
 
-    private final List<OutputItem> outputItems = CreateDomain.outputItems;
+    private final List<OutputItem> outputItems = DumData.outputItems;
 
     @Test
     public void test_01() {
         val settingCategory = SettingClassificationCommon.STANDARD_SELECTION;
         new Expectations(AppContexts.class) {
             {
-                AppContexts.user().companyId();
-                result = cid;
+                AppContexts.user().employeeId();
+                result = empId;
 
             }
         };
@@ -64,8 +61,6 @@ public class CreateWorkStatusSettingDServiceTest {
         val settingCategory = SettingClassificationCommon.FREE_SETTING;
         new Expectations(AppContexts.class) {
             {
-                AppContexts.user().companyId();
-                result = cid;
                 AppContexts.user().employeeId();
                 result = empId;
             }
@@ -87,8 +82,7 @@ public class CreateWorkStatusSettingDServiceTest {
         val settingCategory = SettingClassificationCommon.STANDARD_SELECTION;
         new Expectations(AppContexts.class) {
             {
-                AppContexts.user().companyId();
-                result = cid;
+
                 AppContexts.user().employeeId();
                 result = empId;
             }

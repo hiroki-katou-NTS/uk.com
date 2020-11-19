@@ -1,15 +1,17 @@
 package nts.uk.ctx.at.function.dom.outputitemsofworkstatustable;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.EmployeeInfor;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.WorkPlaceInfo;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.*;
-
 
 import java.util.Arrays;
 import java.util.List;
 
-public class CreateDomain {
+public class DumData {
     public static final List<OutputItem> outputItems = Arrays.asList(
             new OutputItem(
                     0,
@@ -166,8 +168,8 @@ public class CreateDomain {
 
     );
 
-    public static WorkStatusOutputSettings dumData(OutputItemSettingCode code, OutputItemSettingName name,
-                                                   String eplId, String settingId, SettingClassificationCommon settingCommon) {
+    public static WorkStatusOutputSettings dum(OutputItemSettingCode code, OutputItemSettingName name,
+                                               String eplId, String settingId, SettingClassificationCommon settingCommon) {
         return new WorkStatusOutputSettings(
                 settingId,
                 code,
@@ -177,4 +179,55 @@ public class CreateDomain {
                 outputItems
         );
     }
+
+    public static final List<WorkPlaceInfo> workPlaceInfo = Arrays.asList(
+            new WorkPlaceInfo(
+                    "wplId01"
+                    , "wplCode01",
+                    "wplName01"),
+            new WorkPlaceInfo("wplId02"
+                    , "wplCode02",
+                    "wplName02")
+    );
+    public static final List<EmployeeInfor> employeeInfors = Arrays.asList(new EmployeeInfor(
+            "eplId01",
+            "eplCode01",
+            "eplName01",
+            "wplId01"
+
+    ), new EmployeeInfor(
+            "eplId01",
+            "eplCode01",
+            "eplName01",
+            "wplId01"
+    ));
+
+    public static final List<DisplayContentWorkStatus> expected = Arrays.asList(
+            new DisplayContentWorkStatus(
+                    "eplCode01",
+                    "eplName01",
+                    "wplCode01",
+                    "wplName01",
+                    Arrays.asList(
+                            new OutputItemOneLine(
+                                    0D,
+                                    "itemName01",
+                                    Arrays.asList(
+                                            new DailyValue(
+                                                    0D,
+                                                    EnumAdaptor.valueOf(1, CommonAttributesOfForms.class),
+                                                    "ABCABC",
+                                                    GeneralDate.today()
+                                            ),
+                                            new DailyValue(
+                                                    0D,
+                                                    EnumAdaptor.valueOf(1, CommonAttributesOfForms.class),
+                                                    "",
+                                                    GeneralDate.today().addDays(1)
+                                            )
+                                    )
+                            ))
+            )
+    );
+
 }

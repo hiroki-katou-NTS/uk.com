@@ -33,139 +33,14 @@ public class CreateDisplayContentWorkStatusDSTest {
     private CreateDisplayContentWorkStatusDService.Require require;
 
     private final DatePeriod datePeriod = new DatePeriod(GeneralDate.today(), GeneralDate.today().addDays(1));
-
-    private final List<EmployeeInfor> employeeInfors = Arrays.asList(new EmployeeInfor(
-            "eplId01",
-            "eplCode01",
-            "eplName01",
-            "wplId01"
-
-    ), new EmployeeInfor(
-            "eplId01",
-            "eplCode01",
-            "eplName01",
-            "wplId01"
-    ));
-    private final WorkStatusOutputSettings outputSettings01 = new WorkStatusOutputSettings(
-            "settingId",
-            new OutputItemSettingCode("outPutSettingCode"),
-            new OutputItemSettingName("oputSettingName"),
-            "employeeId",
-            EnumAdaptor.valueOf(1, SettingClassificationCommon.class),
-            Arrays.asList(
-                    new OutputItem(
-                            1,
-                            new FormOutputItemName("itemName01"),
-                            true,
-                            EnumAdaptor.valueOf(1, IndependentCalcClassic.class),
-                            EnumAdaptor.valueOf(1, DailyMonthlyClassification.class),
-                            EnumAdaptor.valueOf(1, CommonAttributesOfForms.class),
-                            Arrays.asList(
-                                    new OutputItemDetailAttItem(EnumAdaptor.valueOf(1, OperatorsCommonToForms.class), 1),
-                                    new OutputItemDetailAttItem(EnumAdaptor.valueOf(2, OperatorsCommonToForms.class), 1)
-                            )
-                    ),
-                    new OutputItem(
-                            2,
-                            new FormOutputItemName("itemName02"),
-                            true,
-                            EnumAdaptor.valueOf(2, IndependentCalcClassic.class),
-                            EnumAdaptor.valueOf(2, DailyMonthlyClassification.class),
-                            EnumAdaptor.valueOf(2, CommonAttributesOfForms.class),
-                            Arrays.asList(
-                                    new OutputItemDetailAttItem(
-                                            EnumAdaptor.valueOf(2, OperatorsCommonToForms.class),
-                                            2),
-                                    new OutputItemDetailAttItem(
-                                            EnumAdaptor.valueOf(1, OperatorsCommonToForms.class),
-                                            2)
-                            )
-                    ))
-
-    );
-    private final WorkStatusOutputSettings outputSettings02 = new WorkStatusOutputSettings(
-            "settingId",
-            new OutputItemSettingCode("outPutSettingCode"),
-            new OutputItemSettingName("oputSettingName"),
-            "employeeId",
-            EnumAdaptor.valueOf(1, SettingClassificationCommon.class),
-            Arrays.asList(
-                    new OutputItem(
-                            1,
-                            new FormOutputItemName("itemName01"),
-                            true,
-                            EnumAdaptor.valueOf(1, IndependentCalcClassic.class),
-                            EnumAdaptor.valueOf(1, DailyMonthlyClassification.class),
-                            EnumAdaptor.valueOf(3, CommonAttributesOfForms.class),
-                            Arrays.asList(
-                                    new OutputItemDetailAttItem(EnumAdaptor.valueOf(2, OperatorsCommonToForms.class), 1),
-                                    new OutputItemDetailAttItem(EnumAdaptor.valueOf(2, OperatorsCommonToForms.class), 1)
-                            )
-                    ),
-                    new OutputItem(
-                            2,
-                            new FormOutputItemName("itemName02"),
-                            true,
-                            EnumAdaptor.valueOf(2, IndependentCalcClassic.class),
-                            EnumAdaptor.valueOf(2, DailyMonthlyClassification.class),
-                            EnumAdaptor.valueOf(5, CommonAttributesOfForms.class),
-                            Arrays.asList(
-                                    new OutputItemDetailAttItem(
-                                            EnumAdaptor.valueOf(2, OperatorsCommonToForms.class),
-                                            2),
-                                    new OutputItemDetailAttItem(
-                                            EnumAdaptor.valueOf(1, OperatorsCommonToForms.class),
-                                            2)
-                            )
-                    ))
-
-    );
-    private final WorkStatusOutputSettings outputSettings03 = new WorkStatusOutputSettings(
-            "settingId",
-            new OutputItemSettingCode("outPutSettingCode"),
-            new OutputItemSettingName("oputSettingName"),
-            "employeeId",
-            EnumAdaptor.valueOf(1, SettingClassificationCommon.class),
-            Arrays.asList(
-                    new OutputItem(
-                            1,
-                            new FormOutputItemName("itemName01"),
-                            true,
-                            EnumAdaptor.valueOf(1, IndependentCalcClassic.class),
-                            EnumAdaptor.valueOf(1, DailyMonthlyClassification.class),
-                            EnumAdaptor.valueOf(3, CommonAttributesOfForms.class),
-                            Arrays.asList(
-                                    new OutputItemDetailAttItem(EnumAdaptor.valueOf(1, OperatorsCommonToForms.class), 1),
-                                    new OutputItemDetailAttItem(EnumAdaptor.valueOf(1, OperatorsCommonToForms.class), 1)
-                            )
-                    ),
-                    new OutputItem(
-                            2,
-                            new FormOutputItemName("itemName02"),
-                            true,
-                            EnumAdaptor.valueOf(2, IndependentCalcClassic.class),
-                            EnumAdaptor.valueOf(2, DailyMonthlyClassification.class),
-                            EnumAdaptor.valueOf(5, CommonAttributesOfForms.class),
-                            Arrays.asList(
-                                    new OutputItemDetailAttItem(
-                                            EnumAdaptor.valueOf(2, OperatorsCommonToForms.class),
-                                            2),
-                                    new OutputItemDetailAttItem(
-                                            EnumAdaptor.valueOf(1, OperatorsCommonToForms.class),
-                                            2)
-                            )
-                    ))
-
-    );
-    private final List<WorkPlaceInfo> workPlaceInfo = Arrays.asList(
-            new WorkPlaceInfo(
-                    "wplId01"
-                    , "wplCode01",
-                    "wplName01"),
-            new WorkPlaceInfo("wplId02"
-                    , "wplCode02",
-                    "wplName02")
-    );
+    private static final List<EmployeeInfor> employeeInfors = DumData.employeeInfors;
+    private static final List<WorkPlaceInfo> workPlaceInfo = DumData.workPlaceInfo;
+    private final OutputItemSettingCode code = new OutputItemSettingCode("ABC");
+    private final OutputItemSettingName name = new OutputItemSettingName("CBA");
+    private final String iD = "iD";
+    private final String empId = "employeeId";
+    private final SettingClassificationCommon settingCategory = SettingClassificationCommon.STANDARD_SELECTION;
+    private final WorkStatusOutputSettings domain = DumData.dum(code, name, empId, iD, settingCategory);
 
     @Test
     public void test_01() {
@@ -178,7 +53,7 @@ public class CreateDisplayContentWorkStatusDSTest {
         };
         NtsAssert.businessException("Msg_1816", () -> {
             CreateDisplayContentWorkStatusDService.displayContentsOfWorkStatus(require, datePeriod, employeeInfors,
-                    outputSettings01, workPlaceInfo);
+                    domain, workPlaceInfo);
         });
     }
 
@@ -196,7 +71,7 @@ public class CreateDisplayContentWorkStatusDSTest {
                 Arrays.asList(new AttendanceItemDtoValue(
                         1,
                         1,
-                        "ABC")
+                        "25")
                 )
         );
         new Expectations() {
@@ -210,331 +85,50 @@ public class CreateDisplayContentWorkStatusDSTest {
             }
         };
         val actual = CreateDisplayContentWorkStatusDService.displayContentsOfWorkStatus(require, datePeriod, employeeInfors,
-                outputSettings01, workPlaceInfo);
-        val expected = Arrays.asList(
-                new DisplayContentWorkStatus(
-                        "eplCode01",
-                        "eplName01",
-                        "wplCode01",
-                        "wplName01",
-                        Arrays.asList(
-                                new OutputItemOneLine(
-                                        0D,
-                                        "itemName01",
-                                        Arrays.asList(
-                                                new DailyValue(
-                                                        0D,
-                                                        EnumAdaptor.valueOf(1, CommonAttributesOfForms.class),
-                                                        "ABCABC",
-                                                        GeneralDate.today()
-                                                ),
-                                                new DailyValue(
-                                                        0D,
-                                                        EnumAdaptor.valueOf(1, CommonAttributesOfForms.class),
-                                                        "",
-                                                        GeneralDate.today().addDays(1)
-                                                )
-                                        )
-                                ),
-                                new OutputItemOneLine(
-                                        0D,
-                                        "itemName02",
-                                        Arrays.asList(
-                                                new DailyValue(
-                                                        0D,
-                                                        EnumAdaptor.valueOf(2, CommonAttributesOfForms.class),
-                                                        "",
-                                                        GeneralDate.today()
-                                                ),
-                                                new DailyValue(
-                                                        0D,
-                                                        EnumAdaptor.valueOf(2, CommonAttributesOfForms.class),
-                                                        "",
-                                                        GeneralDate.today().addDays(1)
-                                                )
-                                        )
-                                ))
-                )
-        );
+                domain, workPlaceInfo);
+        val expected = DumData.expected;
+        assertThat(actual.get(0).getEmployeeName()).isEqualTo(expected.get(0).getEmployeeName());
+        assertThat(actual.get(0).getEmployeeCode()).isEqualTo(expected.get(0).getEmployeeCode());
+        assertThat(actual.get(0).getWorkPlaceCode()).isEqualTo(expected.get(0).getWorkPlaceCode());
+        assertThat(actual.get(0).getWorkPlaceName()).isEqualTo(expected.get(0).getWorkPlaceName());
 
-        assertThat (actual.get(0).getEmployeeName()).isEqualTo(expected.get(0).getEmployeeName());
-        assertThat (actual.get(0).getEmployeeCode()).isEqualTo(expected.get(0).getEmployeeCode());
-        assertThat (actual.get(0).getWorkPlaceCode()).isEqualTo(expected.get(0).getWorkPlaceCode());
-        assertThat (actual.get(0).getWorkPlaceName()).isEqualTo(expected.get(0).getWorkPlaceName());
-
-        assertThat (actual.get(0).getOutputItemOneLines().get(0).getTotalOfOneLine())
+        assertThat(actual.get(0).getOutputItemOneLines().get(0).getTotalOfOneLine())
                 .isEqualTo(expected.get(0).getOutputItemOneLines().get(0).getTotalOfOneLine());
-        assertThat (actual.get(0).getOutputItemOneLines().get(0).getOutPutItemName())
+        assertThat(actual.get(0).getOutputItemOneLines().get(0).getOutPutItemName())
                 .isEqualTo(expected.get(0).getOutputItemOneLines().get(0).getOutPutItemName());
 
-        assertThat (actual.get(0).getOutputItemOneLines().get(1).getTotalOfOneLine())
+        assertThat(actual.get(0).getOutputItemOneLines().get(1).getTotalOfOneLine())
                 .isEqualTo(expected.get(0).getOutputItemOneLines().get(1).getTotalOfOneLine());
 
-        assertThat (actual.get(0).getOutputItemOneLines().get(1).getOutPutItemName())
+        assertThat(actual.get(0).getOutputItemOneLines().get(1).getOutPutItemName())
                 .isEqualTo(expected.get(0).getOutputItemOneLines().get(1).getOutPutItemName());
 
-        assertThat (actual.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getActualValue())
+        assertThat(actual.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getActualValue())
                 .isEqualTo(expected.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getActualValue());
 
-        assertThat (actual.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getAttributes())
+        assertThat(actual.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getAttributes())
                 .isEqualTo(expected.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getAttributes());
 
 
-        assertThat (actual.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getCharacterValue())
+        assertThat(actual.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getCharacterValue())
                 .isEqualTo(expected.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getCharacterValue());
 
-        assertThat (actual.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getDate())
+        assertThat(actual.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getDate())
                 .isEqualTo(expected.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getDate());
 
-        assertThat (actual.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(1).getActualValue())
+        assertThat(actual.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(1).getActualValue())
                 .isEqualTo(expected.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(1).getActualValue());
 
-        assertThat (actual.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(1).getAttributes())
+        assertThat(actual.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(1).getAttributes())
                 .isEqualTo(expected.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(1).getAttributes());
 
 
-        assertThat (actual.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(1).getCharacterValue())
+        assertThat(actual.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(1).getCharacterValue())
                 .isEqualTo(expected.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(1).getCharacterValue());
 
-        assertThat (actual.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(1).getDate())
+        assertThat(actual.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(1).getDate())
                 .isEqualTo(expected.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(1).getDate());
 
     }
 
-    @Test
-    public void test_03() {
-        val listSid = employeeInfors.stream().map(EmployeeInfor::getEmployeeId).collect(Collectors.toList());
-        val listEmployeeStatus = Arrays.asList(
-                new StatusOfEmployee("eplId01",
-                        Arrays.asList(
-                                new DatePeriod(GeneralDate.today(), GeneralDate.today().addDays(1))
-                        )));
-        val listAttd = new AttendanceResultDto(
-                "eplId01",
-                GeneralDate.today(),
-                Arrays.asList(new AttendanceItemDtoValue(
-                        1,
-                        1,
-                        "12")
-                )
-        );
-        new Expectations() {
-            {
-                require.getListAffComHistByListSidAndPeriod(listSid, datePeriod);
-                result = listEmployeeStatus;
-
-                require.getValueOf("eplId01", GeneralDate.today(),
-                        Arrays.asList(1, 1));
-                result = listAttd;
-            }
-        };
-        val actual = CreateDisplayContentWorkStatusDService.displayContentsOfWorkStatus(require, datePeriod, employeeInfors,
-                outputSettings02, workPlaceInfo);
-        val expected = Arrays.asList(
-                new DisplayContentWorkStatus(
-                        "eplCode01",
-                        "eplName01",
-                        "wplCode01",
-                        "wplName01",
-                        Arrays.asList(
-                                new OutputItemOneLine(
-                                        -24D,
-                                        "itemName01",
-                                        Arrays.asList(
-                                                new DailyValue(
-                                                        -24D,
-                                                        EnumAdaptor.valueOf(3, CommonAttributesOfForms.class),
-                                                        "",
-                                                        GeneralDate.today()
-                                                ),
-                                                new DailyValue(
-                                                        0D,
-                                                        EnumAdaptor.valueOf(3, CommonAttributesOfForms.class),
-                                                        "",
-                                                        GeneralDate.today().addDays(1)
-                                                )
-                                        )
-                                ),
-                                new OutputItemOneLine(
-                                        0D,
-                                        "itemName02",
-                                        Arrays.asList(
-                                                new DailyValue(
-                                                        0D,
-                                                        EnumAdaptor.valueOf(2, CommonAttributesOfForms.class),
-                                                        "",
-                                                        GeneralDate.today()
-                                                ),
-                                                new DailyValue(
-                                                        0D,
-                                                        EnumAdaptor.valueOf(2, CommonAttributesOfForms.class),
-                                                        "",
-                                                        GeneralDate.today().addDays(1)
-                                                )
-                                        )
-                                ))
-                )
-        );
-
-        assertThat (actual.get(0).getEmployeeName()).isEqualTo(expected.get(0).getEmployeeName());
-        assertThat (actual.get(0).getEmployeeCode()).isEqualTo(expected.get(0).getEmployeeCode());
-        assertThat (actual.get(0).getWorkPlaceCode()).isEqualTo(expected.get(0).getWorkPlaceCode());
-        assertThat (actual.get(0).getWorkPlaceName()).isEqualTo(expected.get(0).getWorkPlaceName());
-
-        assertThat (actual.get(0).getOutputItemOneLines().get(0).getTotalOfOneLine())
-                .isEqualTo(expected.get(0).getOutputItemOneLines().get(0).getTotalOfOneLine());
-        assertThat (actual.get(0).getOutputItemOneLines().get(0).getOutPutItemName())
-                .isEqualTo(expected.get(0).getOutputItemOneLines().get(0).getOutPutItemName());
-
-        assertThat (actual.get(0).getOutputItemOneLines().get(1).getTotalOfOneLine())
-                .isEqualTo(expected.get(0).getOutputItemOneLines().get(1).getTotalOfOneLine());
-
-        assertThat (actual.get(0).getOutputItemOneLines().get(1).getOutPutItemName())
-                .isEqualTo(expected.get(0).getOutputItemOneLines().get(1).getOutPutItemName());
-
-        assertThat (actual.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getActualValue())
-                .isEqualTo(expected.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getActualValue());
-
-        assertThat (actual.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getAttributes())
-                .isEqualTo(expected.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getAttributes());
-
-
-        assertThat (actual.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getCharacterValue())
-                .isEqualTo(expected.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getCharacterValue());
-
-        assertThat (actual.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getDate())
-                .isEqualTo(expected.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getDate());
-
-        assertThat (actual.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(1).getActualValue())
-                .isEqualTo(expected.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(1).getActualValue());
-
-        assertThat (actual.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(1).getAttributes())
-                .isEqualTo(expected.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(1).getAttributes());
-
-
-        assertThat (actual.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(1).getCharacterValue())
-                .isEqualTo(expected.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(1).getCharacterValue());
-
-        assertThat (actual.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(1).getDate())
-                .isEqualTo(expected.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(1).getDate());
-
-    }
-    @Test
-    public void test_04() {
-        val listSid = employeeInfors.stream().map(EmployeeInfor::getEmployeeId).collect(Collectors.toList());
-        val listEmployeeStatus = Arrays.asList(
-                new StatusOfEmployee("eplId01",
-                        Arrays.asList(
-                                new DatePeriod(GeneralDate.today(), GeneralDate.today().addDays(1))
-                        )));
-        val listAttd = new AttendanceResultDto(
-                "eplId01",
-                GeneralDate.today(),
-                Arrays.asList(new AttendanceItemDtoValue(
-                        1,
-                        1,
-                        "12")
-                )
-        );
-        new Expectations() {
-            {
-                require.getListAffComHistByListSidAndPeriod(listSid, datePeriod);
-                result = listEmployeeStatus;
-
-                require.getValueOf("eplId01", GeneralDate.today(),
-                        Arrays.asList(1, 1));
-                result = listAttd;
-            }
-        };
-        val actual = CreateDisplayContentWorkStatusDService.displayContentsOfWorkStatus(require, datePeriod, employeeInfors,
-                outputSettings03, workPlaceInfo);
-        val expected = Arrays.asList(
-                new DisplayContentWorkStatus(
-                        "eplCode01",
-                        "eplName01",
-                        "wplCode01",
-                        "wplName01",
-                        Arrays.asList(
-                                new OutputItemOneLine(
-                                        24D,
-                                        "itemName01",
-                                        Arrays.asList(
-                                                new DailyValue(
-                                                        24D,
-                                                        EnumAdaptor.valueOf(3, CommonAttributesOfForms.class),
-                                                        "",
-                                                        GeneralDate.today()
-                                                ),
-                                                new DailyValue(
-                                                        0D,
-                                                        EnumAdaptor.valueOf(3, CommonAttributesOfForms.class),
-                                                        "",
-                                                        GeneralDate.today().addDays(1)
-                                                )
-                                        )
-                                ),
-                                new OutputItemOneLine(
-                                        0D,
-                                        "itemName02",
-                                        Arrays.asList(
-                                                new DailyValue(
-                                                        0D,
-                                                        EnumAdaptor.valueOf(2, CommonAttributesOfForms.class),
-                                                        "",
-                                                        GeneralDate.today()
-                                                ),
-                                                new DailyValue(
-                                                        0D,
-                                                        EnumAdaptor.valueOf(2, CommonAttributesOfForms.class),
-                                                        "",
-                                                        GeneralDate.today().addDays(1)
-                                                )
-                                        )
-                                ))
-                )
-        );
-
-        assertThat (actual.get(0).getEmployeeName()).isEqualTo(expected.get(0).getEmployeeName());
-        assertThat (actual.get(0).getEmployeeCode()).isEqualTo(expected.get(0).getEmployeeCode());
-        assertThat (actual.get(0).getWorkPlaceCode()).isEqualTo(expected.get(0).getWorkPlaceCode());
-        assertThat (actual.get(0).getWorkPlaceName()).isEqualTo(expected.get(0).getWorkPlaceName());
-
-        assertThat (actual.get(0).getOutputItemOneLines().get(0).getTotalOfOneLine())
-                .isEqualTo(expected.get(0).getOutputItemOneLines().get(0).getTotalOfOneLine());
-        assertThat (actual.get(0).getOutputItemOneLines().get(0).getOutPutItemName())
-                .isEqualTo(expected.get(0).getOutputItemOneLines().get(0).getOutPutItemName());
-
-        assertThat (actual.get(0).getOutputItemOneLines().get(1).getTotalOfOneLine())
-                .isEqualTo(expected.get(0).getOutputItemOneLines().get(1).getTotalOfOneLine());
-
-        assertThat (actual.get(0).getOutputItemOneLines().get(1).getOutPutItemName())
-                .isEqualTo(expected.get(0).getOutputItemOneLines().get(1).getOutPutItemName());
-
-        assertThat (actual.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getActualValue())
-                .isEqualTo(expected.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getActualValue());
-
-        assertThat (actual.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getAttributes())
-                .isEqualTo(expected.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getAttributes());
-
-
-        assertThat (actual.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getCharacterValue())
-                .isEqualTo(expected.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getCharacterValue());
-
-        assertThat (actual.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getDate())
-                .isEqualTo(expected.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getDate());
-
-        assertThat (actual.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(1).getActualValue())
-                .isEqualTo(expected.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(1).getActualValue());
-
-        assertThat (actual.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(1).getAttributes())
-                .isEqualTo(expected.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(1).getAttributes());
-
-
-        assertThat (actual.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(1).getCharacterValue())
-                .isEqualTo(expected.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(1).getCharacterValue());
-
-        assertThat (actual.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(1).getDate())
-                .isEqualTo(expected.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(1).getDate());
-
-    }
 }

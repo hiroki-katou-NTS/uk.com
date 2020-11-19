@@ -23,23 +23,17 @@ public class UpdateWorkStatusSettingDServiceTest {
     private final OutputItemSettingCode code = new OutputItemSettingCode("ABC");
     private final OutputItemSettingName name = new OutputItemSettingName("CBA");
 
-    private final String cid = "companyId";
+    private final String iD = "iD";
     private final String empId = "employeeId";
 
     private final String settingId = "settingId";
-
-    private final List<OutputItem> outputItems = CreateDomain.outputItems;
+    private final SettingClassificationCommon settingCategory = SettingClassificationCommon.STANDARD_SELECTION;
+    private final List<OutputItem> outputItems = DumData.outputItems;
+    private final WorkStatusOutputSettings domain = DumData.dum(code,name,empId,iD,settingCategory);
 
     @Test
     public void test_01() {
-        val settingCategory = SettingClassificationCommon.STANDARD_SELECTION;
-        new Expectations(AppContexts.class) {
-            {
-                AppContexts.user().companyId();
-                result = cid;
 
-            }
-        };
         new Expectations() {
             {
                 require.getWorkStatusOutputSettings(settingId);
@@ -57,8 +51,6 @@ public class UpdateWorkStatusSettingDServiceTest {
         val settingCategory = SettingClassificationCommon.FREE_SETTING;
         new Expectations(AppContexts.class) {
             {
-                AppContexts.user().companyId();
-                result = cid;
                 AppContexts.user().employeeId();
                 result = empId;
             }
@@ -66,7 +58,7 @@ public class UpdateWorkStatusSettingDServiceTest {
         new Expectations() {
             {
                 require.getWorkStatusOutputSettings(settingId);
-                result = outputItems;
+                result = domain;
             }
         };
 
@@ -82,8 +74,6 @@ public class UpdateWorkStatusSettingDServiceTest {
         val settingCategory = SettingClassificationCommon.STANDARD_SELECTION;
         new Expectations(AppContexts.class) {
             {
-                AppContexts.user().companyId();
-                result = cid;
                 AppContexts.user().employeeId();
                 result = empId;
             }
@@ -91,7 +81,7 @@ public class UpdateWorkStatusSettingDServiceTest {
         new Expectations() {
             {
                 require.getWorkStatusOutputSettings(settingId);
-                result = outputItems;
+                result = domain;
             }
         };
 

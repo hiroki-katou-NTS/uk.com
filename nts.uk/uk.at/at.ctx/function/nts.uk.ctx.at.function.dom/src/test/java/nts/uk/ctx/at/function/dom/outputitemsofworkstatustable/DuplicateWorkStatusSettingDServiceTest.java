@@ -25,16 +25,18 @@ public class DuplicateWorkStatusSettingDServiceTest {
     private final OutputItemSettingCode outputItemSettingCode = new OutputItemSettingCode("ABC");
     private final OutputItemSettingName outputItemSettingName = new OutputItemSettingName("CBA");
     private final String cid = "companyId";
+    private final String iD = "iD";
     private final String employeeId = "employeeId";
     private final String settingId = "settingId";
-    private final List<OutputItem> outputItems = CreateDomain.outputItems;
-
+    private final List<OutputItem> outputItems = DumData.outputItems;
+    private final WorkStatusOutputSettings domain = DumData.dum(outputItemSettingCode,outputItemSettingName,
+            employeeId,iD,settingCategoryFree);
     @Test
     public void test_01() {
         new Expectations(AppContexts.class) {
             {
-                AppContexts.user().companyId();
-                result = cid;
+                AppContexts.user().employeeId();
+                result = "employeeId";
             }
         };
         new Expectations() {
@@ -60,7 +62,7 @@ public class DuplicateWorkStatusSettingDServiceTest {
         new Expectations() {
             {
                 require.getWorkStatusOutputSettings(settingId);
-                result = outputItems;
+                result = domain;
 
                 require.checkTheStandard(outputItemSettingCode.v());
                 result = true;
@@ -84,14 +86,14 @@ public class DuplicateWorkStatusSettingDServiceTest {
         new Expectations() {
             {
                 require.getWorkStatusOutputSettings(settingId);
-                result = outputItems;
+                result = domain;
 
                 require.checkFreedom(outputItemSettingCode.v(), employeeId);
                 result = true;
             }
         };
         NtsAssert.businessException("Msg_1753", () -> {
-            DuplicateWorkStatusSettingDomainService.duplicate(require, settingCategoryStandard, settingId, outputItemSettingCode,
+            DuplicateWorkStatusSettingDomainService.duplicate(require, settingCategoryFree, settingId, outputItemSettingCode,
                     outputItemSettingName);
         });
     }
@@ -107,14 +109,14 @@ public class DuplicateWorkStatusSettingDServiceTest {
         new Expectations(IdentifierUtil.class) {
             {
                 IdentifierUtil.randomUniqueId();
-                result = "id";
+                result = iD;
             }
         };
 
         new Expectations() {
             {
                 require.getWorkStatusOutputSettings(settingId);
-                result = outputItems;
+                result = domain;
 
                 require.checkFreedom(outputItemSettingCode.v(), employeeId);
                 result = false;
@@ -124,7 +126,7 @@ public class DuplicateWorkStatusSettingDServiceTest {
         NtsAssert.atomTask(() ->
                         DuplicateWorkStatusSettingDomainService.duplicate(require, settingCategoryFree, settingId, outputItemSettingCode,
                                 outputItemSettingName),
-                any -> require.duplicateConfigurationDetails(cid, settingId, outputItemSettingCode, outputItemSettingName)
+                any -> require.duplicateConfigurationDetails(settingId,iD,outputItemSettingCode, outputItemSettingName)
         );
     }
 
@@ -133,20 +135,20 @@ public class DuplicateWorkStatusSettingDServiceTest {
         new Expectations(AppContexts.class) {
             {
                 AppContexts.user().employeeId();
-                result = "employeeId";
+                result = employeeId;
             }
         };
         new Expectations(IdentifierUtil.class) {
             {
                 IdentifierUtil.randomUniqueId();
-                result = "id";
+                result = iD;
             }
         };
 
         new Expectations() {
             {
                 require.getWorkStatusOutputSettings(settingId);
-                result = outputItems;
+                result = domain;
 
                 require.checkTheStandard(outputItemSettingCode.v());
                 result = false;
@@ -154,9 +156,9 @@ public class DuplicateWorkStatusSettingDServiceTest {
             }
         };
         NtsAssert.atomTask(() ->
-                        DuplicateWorkStatusSettingDomainService.duplicate(require, settingCategoryFree, settingId, outputItemSettingCode,
+                        DuplicateWorkStatusSettingDomainService.duplicate(require, settingCategoryStandard, settingId, outputItemSettingCode,
                                 outputItemSettingName),
-                any -> require.duplicateConfigurationDetails(cid, settingId, outputItemSettingCode, outputItemSettingName)
+                any -> require.duplicateConfigurationDetails(settingId, iD,outputItemSettingCode, outputItemSettingName)
         );
 
     }
