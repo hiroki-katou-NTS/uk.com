@@ -25,6 +25,9 @@ module nts.uk.ui.koExtentions {
         }
         .fc-container .fc-sidebar .datepicker-panel>ul[data-view='days']>li.picked {
             background-color: #ccc;
+        }
+        .fc-container .fc-sidebar .datepicker-panel>ul[data-view='days']>li.picked,
+        .fc-container .fc-sidebar .datepicker-panel>ul[data-view='days']>li.highlighted {
             border-radius: 50%;
         }
         .fc-container .fc-toolbar.fc-header-toolbar {
@@ -268,10 +271,7 @@ module nts.uk.ui.koExtentions {
             </div>
             <div class="fc-datepicker" data-bind="component: {
                     name: 'fc-datepicker',
-                    params: { 
-                        date: $component.params.initialDate,
-                        weekStart: $component.params.firstDay
-                    }
+                    params: $component.params
                 }"></div>
             <div class="fc-events"></div>
             <div class="fc-component"></div>
@@ -878,17 +878,25 @@ module nts.uk.ui.koExtentions {
                     datesSet({ start, end });
 
                     if (ko.isObservable(initialDate)) {
+                        const locale = moment.locale();
                         const fdy = ko.unwrap(firstDay);
                         const idt = ko.unwrap(initialDate);
                         const view = ko.unwrap(initialView);
+
+                        moment
+                            .updateLocale(locale, {
+                                week: {
+                                    dow: fdy,
+                                    doy: 0
+                                }
+                            });
+
                         const mid = moment(idt);
 
                         if (view === 'oneDay') {
                             initialDate(start);
                         } else if (['fiveDay', 'fullWeek', 'listWeek'].indexOf(view) > -1) {
-                            const changeable = !mid.clone()
-                                .isoWeekday(fdy)
-                                .isSame(start, 'week');
+                            const changeable = !mid.isSame(start, 'week');
 
                             if (changeable) {
                                 if (mid.isBefore(start, 'day')) {
@@ -904,7 +912,7 @@ module nts.uk.ui.koExtentions {
                                 smonth.add(1, 'month');
                             }
 
-                            const changeable = !mid.clone().isSame(smonth, 'month');
+                            const changeable = !mid.isSame(smonth, 'month');
 
                             if (changeable) {
                                 if (mid.isBefore(start, 'day')) {
@@ -915,6 +923,14 @@ module nts.uk.ui.koExtentions {
                                 }
                             }
                         }
+
+                        moment
+                            .updateLocale(locale, {
+                                week: {
+                                    dow: 0,
+                                    doy: 0
+                                }
+                            });
                     }
 
                     event.datesSet.apply(viewModel, [start, end]);
@@ -1372,7 +1388,7 @@ module nts.uk.ui.koExtentions {
         })
         export class FullCalendarDatepicker extends ko.ViewModel {
 
-            constructor(private params: DATEPICKER_PARAMS) {
+            constructor(private params: PARAMS) {
                 super();
             }
 
@@ -1385,8 +1401,8 @@ module nts.uk.ui.koExtentions {
 
                 const $dp = $($el)
                     .on('pick.datepicker', (evt: any) => {
-                        if (ko.isObservable(params.date)) {
-                            params.date(evt.date);
+                        if (ko.isObservable(params.initialDate)) {
+                            params.initialDate(evt.date);
                         }
                     });
 
@@ -1395,8 +1411,8 @@ module nts.uk.ui.koExtentions {
                         const options: any = {
                             inline: true,
                             language: 'ja-JP',
-                            date: ko.unwrap(params.date),
-                            weekStart: ko.unwrap(params.weekStart),
+                            date: ko.unwrap(params.initialDate),
+                            weekStart: ko.unwrap(params.firstDay),
                             template: DATE_PICKER_TEMP
                         };
 
@@ -1416,11 +1432,6 @@ module nts.uk.ui.koExtentions {
 
                 _.extend(window, { $dp });
             }
-        }
-
-        type DATEPICKER_PARAMS = {
-            date: Date;
-            weekStart: 0 | 1 | 2 | 3 | 4 | 5 | 6,
         }
     }
 }
