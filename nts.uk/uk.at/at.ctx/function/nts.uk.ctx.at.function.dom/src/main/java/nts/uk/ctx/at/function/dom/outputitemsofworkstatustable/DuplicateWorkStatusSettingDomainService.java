@@ -28,7 +28,7 @@ public class DuplicateWorkStatusSettingDomainService {
             throw new BusinessException("Msg_1903");
         }
             // 1
-        Boolean isCheck;
+        boolean isCheck;
         if(settingCategory == SettingClassificationCommon.STANDARD_SELECTION){
             // 3.1定型選択の重複をチェックする(出力項目設定コード, 会社ID)
             isCheck = WorkStatusOutputSettings.checkDuplicateStandardSelections(require,settingCode.v());
