@@ -10,6 +10,7 @@ import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.*;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
+import nts.uk.shr.com.context.AppContexts;
 
 
 import javax.ejb.Stateless;
@@ -44,20 +45,18 @@ public class CreateConfigdetailCommandHandler extends CommandHandler<CreateConfi
         private WorkStatusOutputSettingsRepository workStatusOutputSettingsRepository;
 
         @Override
-        public void createNewFixedPhrase(String cid, WorkStatusOutputSettings outputSettings,
-                                         List<OutputItem> outputItemList,
-                                         List<OutputItemDetailSelectionAttendanceItem> attendanceItemList) {
-            workStatusOutputSettingsRepository.createNew(cid, outputSettings, outputItemList, attendanceItemList);
+        public void createNewFixedPhrase(WorkStatusOutputSettings outputSettings ) {
+            workStatusOutputSettingsRepository.createNew(AppContexts.user().companyId(), outputSettings);
         }
 
         @Override
-        public boolean checkTheStandard(String code, String cid) {
-            return workStatusOutputSettingsRepository.exist(new OutputItemSettingCode(code), cid);
+        public boolean checkTheStandard(String code) {
+            return workStatusOutputSettingsRepository.exist(new OutputItemSettingCode(code), AppContexts.user().companyId());
         }
 
         @Override
-        public boolean checkFreedom(String code, String cid, String employeeId) {
-            return workStatusOutputSettingsRepository.exist(new OutputItemSettingCode(code), cid, employeeId);
+        public boolean checkFreedom(String code, String employeeId) {
+            return workStatusOutputSettingsRepository.exist(new OutputItemSettingCode(code), AppContexts.user().companyId(), employeeId);
         }
     }
 }

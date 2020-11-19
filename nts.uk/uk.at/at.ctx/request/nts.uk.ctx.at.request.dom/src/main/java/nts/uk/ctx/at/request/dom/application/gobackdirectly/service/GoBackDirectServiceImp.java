@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -27,7 +29,10 @@ import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.TargetW
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback.GoBackReflect;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback.GoBackReflectRepository;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -46,6 +51,9 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 	
 	@Inject
 	private GoBackDirectlyRepository goBackDirectlyRepository;
+	
+	@Inject 
+	private WorkTimeSettingService workTimeSettingService;
 	
 	@Override
 	public InforGoBackCommonDirectOutput getDataAlgorithm(String companyId, Optional<List<GeneralDate>> dates ,
@@ -72,12 +80,73 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 		if (appDispInfoStartup.getAppDispInfoWithDateOutput().getOpWorkTimeLst().isPresent()) {
 			lstWts = appDispInfoStartup.getAppDispInfoWithDateOutput().getOpWorkTimeLst().get();
 		}
+		// 起動時の申請表示情報を取得する send from client KAF000 or KAFS00 appDispInfoStartup
+		
+		// 直行直帰申請起動時初期データを取得する
 		InforWorkGoBackDirectOutput inforWorkGoBackDirectOutput = this.getInfoWorkGoBackDirect(companyId, sid, date, baseDate, appEmployment, lstWts, appDispInfoStartup);
 		
 		// ドメインモデル「直行直帰申請の反映」より取得する 
 		Optional<GoBackReflect> goBackReflectOp = goBackDirectServiceImp.findByCompany(companyId);
 		if (goBackReflectOp.isPresent()) {
 			output.setGoBackReflect(goBackReflectOp.get());
+		}
+		output.setWorkType(inforWorkGoBackDirectOutput.getWorkType());
+		output.setWorkTime(inforWorkGoBackDirectOutput.getWorkTime());
+		output.setLstWorkType(inforWorkGoBackDirectOutput.getLstWorkType());
+		if (appDispInfoStartup.getAppDetailScreenInfo().isPresent()) {
+			if (appDispInfoStartup.getAppDetailScreenInfo().get().getOutputMode() == OutputMode.EDITMODE) {
+				//新規モード：ドメイン「直行直帰申請」がない。
+				// get Object
+				output.setGoBackDirectly(goBackDirectlyRepository.find(companyId, appDispInfoStartup.getAppDetailScreenInfo().get().getApplication().getAppID()));
+			}
+		}
+		output.setAppDispInfoStartup(appDispInfoStartup);
+		return output;
+	}
+	
+	@Override
+	public InforGoBackCommonDirectOutput getDataAlgorithmMobile(String companyId, Optional<List<GeneralDate>> dates,
+			Optional<String> sids, AppDispInfoStartupOutput appDispInfoStartup) {
+		InforGoBackCommonDirectOutput output =  new InforGoBackCommonDirectOutput();
+		String sid = null;
+		if (sids.isPresent()) {
+			sid = sids.get();
+		}
+		GeneralDate date = null;
+		if (dates.isPresent()) {
+			if (!dates.get().isEmpty()) {
+				date = dates.get().get(0);
+			}
+		}
+		GeneralDate baseDate = appDispInfoStartup.getAppDispInfoWithDateOutput().getBaseDate();
+
+		AppEmploymentSet appEmployment = null;
+		if (appDispInfoStartup.getAppDispInfoWithDateOutput().getOpEmploymentSet().isPresent()) {
+			appEmployment = appDispInfoStartup.getAppDispInfoWithDateOutput().getOpEmploymentSet().get();
+		}
+
+		List<WorkTimeSetting> lstWts = null;
+		if (appDispInfoStartup.getAppDispInfoWithDateOutput().getOpWorkTimeLst().isPresent()) {
+			lstWts = appDispInfoStartup.getAppDispInfoWithDateOutput().getOpWorkTimeLst().get();
+		}
+		// 起動時の申請表示情報を取得する send from client KAF000 or KAFS00 appDispInfoStartup
+		
+		// 直行直帰申請起動時初期データを取得する
+		InforWorkGoBackDirectOutput inforWorkGoBackDirectOutput = this.getInfoWorkGoBackDirect(companyId, sid, date, baseDate, appEmployment, lstWts, appDispInfoStartup);
+		
+		// ドメインモデル「直行直帰申請の反映」より取得する 
+		Optional<GoBackReflect> goBackReflectOp = goBackDirectServiceImp.findByCompany(companyId);
+		if (goBackReflectOp.isPresent()) {
+			output.setGoBackReflect(goBackReflectOp.get());
+		}
+		
+		// 所定時間帯を取得する
+		// ※勤務種類コード　OR　就業時間帯コード　がない場合：　処理を呼ばない
+		Boolean isUseTimeZone = StringUtils.isBlank(inforWorkGoBackDirectOutput.getWorkType()) || StringUtils.isBlank(inforWorkGoBackDirectOutput.getWorkTime());
+		if (!isUseTimeZone) {
+			PredetermineTimeSetForCalc predetermineTimeSetForCalc = workTimeSettingService.getPredeterminedTimezone(companyId, inforWorkGoBackDirectOutput.getWorkTime(), inforWorkGoBackDirectOutput.getWorkType(), null);
+			List<TimezoneUse> timezones = predetermineTimeSetForCalc.getTimezones();
+			output.setTimezones(timezones);
 		}
 		output.setWorkType(inforWorkGoBackDirectOutput.getWorkType());
 		output.setWorkTime(inforWorkGoBackDirectOutput.getWorkTime());
@@ -110,8 +179,8 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 		InitWkTypeWkTimeOutput initWkTypeWkTimeOutput = commonAlgorithm.initWorkTypeWorkTime(
 				employeeId,
 				baseDate,
-				lstWorkType,
-				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().isPresent() ? appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().get() : null,
+				lstWorkType.isEmpty() ? Collections.emptyList() : lstWorkType,
+				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().isPresent() ? appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().get() : Collections.emptyList(),
 				archievementDetail.isPresent() ? archievementDetail.get() : null);
 
 
@@ -214,6 +283,47 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 		output.setAppDispInfoStartup(appDispInfoStartupOutput);
 		return output;
 	}
+	
+	@Override
+	public InforGoBackCommonDirectOutput getDataDetailAlgorithmMobile(String companyId, String appId,
+			AppDispInfoStartupOutput appDispInfoStartupOutput) {
+		InforGoBackCommonDirectOutput output = new InforGoBackCommonDirectOutput();
+		// ドメインモデル「直行直帰申請の反映」より取得する
+		Optional<GoBackReflect> goBackReflect = goBackDirectServiceImp.findByCompany(companyId);
+		if (goBackReflect.isPresent()) {
+			output.setGoBackReflect(goBackReflect.get());
+		}
+		
+		// ドメインモデル「直行直帰申請」を取得する
+		Optional<GoBackDirectly> goBackDirectly = goBackDirectlyRepository.find(companyId, appId);
+		output.setGoBackDirectly(goBackDirectly);
+		// 起動時勤務種類リストを取得する
+		List<WorkType> lstWorkType = this.getWorkTypes(companyId, appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpEmploymentSet().isPresent() ? appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpEmploymentSet().get() : null);
+		output.setLstWorkType(lstWorkType);
+		
+		if (goBackDirectly.isPresent()) {
+			Optional<WorkInformation> dataWork = goBackDirectly.get().getDataWork();
+			if (dataWork.isPresent()) {
+				//直行直帰申請起動時の表示情報．勤務種類初期選択=取得したドメインモデル「直行直帰申請」．勤務情報．勤務種類 
+				output.setWorkType(dataWork.get().getWorkTypeCode().v());
+				//直行直帰申請起動時の表示情報．就業時間帯初期選択=取得したドメインモデル「直行直帰申請」．勤務情報．就業時間帯
+				if (dataWork.get().getWorkTimeCode() != null) {
+					output.setWorkTime(dataWork.get().getWorkTimeCode().v());
+				}
+			}
+		}
+		output.setAppDispInfoStartup(appDispInfoStartupOutput);
+		// 所定時間帯を取得する
+		// ※勤務種類コード　OR　就業時間帯コード　がない場合：　処理を呼ばない
+		Boolean isUseTimeZone = StringUtils.isBlank(output.getWorkType()) || StringUtils.isBlank(output.getWorkTime());
+		if (!isUseTimeZone) {
+			PredetermineTimeSetForCalc predetermineTimeSetForCalc = workTimeSettingService.getPredeterminedTimezone(companyId, output.getWorkTime(), output.getWorkType(), null);
+			List<TimezoneUse> timezones = predetermineTimeSetForCalc.getTimezones();
+			output.setTimezones(timezones);
+		}
+		
+		return output;
+	}
 
 	@Override
 	public InforGoBackCommonDirectOutput getDateChangeMobileAlgorithm(String companyId, List<GeneralDate> dates,
@@ -245,7 +355,19 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 				inforGoBackCommonDirectOutput.setGoBackDirectly(Optional.empty());
 			}
 		}
+		// 所定時間帯を取得する
+				// ※勤務種類コード　OR　就業時間帯コード　がない場合：　処理を呼ばない
+				Boolean isUseTimeZone = StringUtils.isBlank(inforWorkGoBackDirectOutput.getWorkType()) || StringUtils.isBlank(inforWorkGoBackDirectOutput.getWorkTime());
+				if (!isUseTimeZone) {
+					PredetermineTimeSetForCalc predetermineTimeSetForCalc = workTimeSettingService.getPredeterminedTimezone(companyId, inforWorkGoBackDirectOutput.getWorkTime(), inforWorkGoBackDirectOutput.getWorkType(), null);
+					List<TimezoneUse> timezones = predetermineTimeSetForCalc.getTimezones();
+					inforGoBackCommonDirectOutput.setTimezones(timezones);
+				}
 		return inforGoBackCommonDirectOutput;
 	}
+
+	
+
+	
 
 }

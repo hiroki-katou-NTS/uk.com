@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package nts.uk.screen.at.app.ksu001.changepage;
 
@@ -19,12 +19,12 @@ import nts.uk.ctx.at.schedule.app.find.shift.shiftpalletsorg.ShiftPalletsOrgDto;
 import nts.uk.ctx.at.schedule.app.find.shift.shijtpalletcom.ComPatternScreenDto;
 import nts.uk.ctx.at.schedule.app.find.shift.shijtpalletcom.PatternItemScreenDto;
 import nts.uk.ctx.at.schedule.app.find.shift.shijtpalletcom.WorkPairSetScreenDto;
-import nts.uk.ctx.at.schedule.dom.shift.management.Combinations;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletCombinations;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsCom;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsComRepository;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsOrg;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsOrgRepository;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.Combinations;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteCom;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteComRepository;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteCombinations;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteOrg;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteOrgRepository;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
@@ -32,6 +32,11 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.GetCombinationrAndWorkHolidayAtrService;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterRepository;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
@@ -50,7 +55,7 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class GetDataWhenChangePage {
-	
+
 	@Inject
 	private BasicScheduleService basicScheduleService;
 	@Inject
@@ -59,34 +64,34 @@ public class GetDataWhenChangePage {
 	private WorkTimeSettingRepository workTimeSettingRepository;
 	@Inject
 	private WorkTimeSettingService workTimeSettingService;
-	
+
 	@Inject
 	private ShiftMasterRepository shiftMasterRepo;
-	
-	
+
+
 	@Inject
-	private ShiftPalletsComRepository shiftPalletsComRepository;
+	private ShiftPaletteComRepository shiftPalletsComRepository;
 	@Inject
-	private ShiftPalletsOrgRepository shiftPalletsOrgRepository;
-	
+	private ShiftPaletteOrgRepository shiftPalletsOrgRepository;
+
 	public GetShiftPalChangePageResult gatData(ChangePageParam param) {
-		
+
 		GetShiftPalChangePageResult result = new GetShiftPalChangePageResult();
 		if (param.shiftPalletUnit == ShiftPalletUnit.COMPANY.value) {
-			
+
 			result = getShiftPalletCom(param);
-			
+
 		} else if (param.shiftPalletUnit == ShiftPalletUnit.WORKPLACE.value) {
-			
+
 			result = getShiftPalletWkp(param);
 		}
-		
+
 		List<String> listShiftMasterCodeOfPageSelectd     = result.listShiftMasterCodeOfPageSelectd;
-		
+
 		List<ShiftMasterMapWithWorkStyle> listShiftMaster = param.listShiftMasterNotNeedGetNew;
-		
-		GetCombinationrAndWorkHolidayAtrService.Require require = new RequireImpl(shiftMasterRepo, basicScheduleService, workTypeRepo,workTimeSettingRepository,workTimeSettingService, basicScheduleService);
-		
+
+		GetCombinationrAndWorkHolidayAtrService.Require require = new RequireImpl(shiftMasterRepo, basicScheduleService, workTypeRepo,workTimeSettingRepository,workTimeSettingService);
+
 		Map<ShiftMaster,Optional<WorkStyle>> sMap = GetCombinationrAndWorkHolidayAtrService.getCode(require,AppContexts.user().companyId(), listShiftMasterCodeOfPageSelectd);
 		List<String> listShiftMasterCodeFromUI = param.listShiftMasterNotNeedGetNew.stream().map(mapper -> mapper.getShiftMasterCode()).collect(Collectors.toList()); // ko cần get mới
 
@@ -103,27 +108,27 @@ public class GetDataWhenChangePage {
 		result.setListShiftMaster(listShiftMaster);
 		return result;
 	}
-	
+
 	public GetShiftPalChangePageResult getShiftPalletCom(ChangePageParam param) {
-		
+
 		//ShiftPalletsCom shiftPalletsCom = getShiftPalettebyComAndSpePage.getShiftPalletCom(param.pageNumberCom); dung phai goi ham nay, nhung ham nay dang tra ra data sai
-		
+
 		// cho a Hieu fix ham tren roi dung lai
-		List<ShiftPalletsCom> listShiftPalletsCom = shiftPalletsComRepository.findShiftPalletUse(AppContexts.user().companyId());
-		ShiftPalletsCom shiftPalletsCom = listShiftPalletsCom.stream().filter(item -> item.getPage() == param.pageNumberCom).findFirst().get();
+		List<ShiftPaletteCom> listShiftPalletsCom = shiftPalletsComRepository.findShiftPalletUse(AppContexts.user().companyId());
+		ShiftPaletteCom shiftPalletsCom = listShiftPalletsCom.stream().filter(item -> item.getPage() == param.pageNumberCom).findFirst().get();
 		//
-		
-		PageInfo pageInfo = null; 
-		TargetShiftPalette targetShiftPalette = null; 
-		
+
+		PageInfo pageInfo = null;
+		TargetShiftPalette targetShiftPalette = null;
+
 		if (shiftPalletsCom == null) {
 			return new GetShiftPalChangePageResult(pageInfo, targetShiftPalette, new ArrayList<>(), new ArrayList<>());
 		}
-		
+
 		List<ComPatternScreenDto> listShiftPalletComDto = new ArrayList<>();
-		
+
 		pageInfo = new PageInfo(shiftPalletsCom.getPage(),shiftPalletsCom.getShiftPallet().getDisplayInfor().getShiftPalletName().v());
-		
+
 		ComPatternScreenDto shiftPalletCom = new ComPatternScreenDto(shiftPalletsCom.getPage(),
 				shiftPalletsCom.getShiftPallet().getDisplayInfor().getShiftPalletName().v(),
 				shiftPalletsCom.getShiftPallet().getDisplayInfor().getShiftPalletAtr().value,
@@ -134,61 +139,61 @@ public class GetDataWhenChangePage {
 																					   d.getCombinations().stream()
 													.map(e -> new WorkPairSetScreenDto(e.getOrder(),
 															 						   e.getShiftCode().v()))
-																						.collect(Collectors.toList())))			   
+																						.collect(Collectors.toList())))
 																						.collect(Collectors.toList()));
 		listShiftPalletComDto.add(shiftPalletCom);
 		targetShiftPalette = new TargetShiftPalette(param.pageNumberCom, listShiftPalletComDto, null);
-		
+
 		// get List SHiftMasterCode
-		List<ShiftPalletCombinations> combinations = shiftPalletsCom.getShiftPallet().getCombinations();
-		List<String> listShiftMasterCodeOfPageSelectd = getListShiftMasterCode(combinations).stream().collect(Collectors.toList()); 
-		
-		return new GetShiftPalChangePageResult(pageInfo, targetShiftPalette, new ArrayList<>(), listShiftMasterCodeOfPageSelectd);									
+		List<ShiftPaletteCombinations> combinations = shiftPalletsCom.getShiftPallet().getCombinations();
+		List<String> listShiftMasterCodeOfPageSelectd = getListShiftMasterCode(combinations).stream().collect(Collectors.toList());
+
+		return new GetShiftPalChangePageResult(pageInfo, targetShiftPalette, new ArrayList<>(), listShiftMasterCodeOfPageSelectd);
 	}
-	
+
 	public GetShiftPalChangePageResult getShiftPalletWkp(ChangePageParam param) {
-		
+
 		//ShiftPalletsOrg shiftPalletsOrg = getShiftPalettebyOrgAndSpePage.getShiftPalletOrg(param.pageNumberOrg, param.workplaceId);
-		List<ShiftPalletsOrg> listShiftPalletsOrg = new ArrayList<>();
+		List<ShiftPaletteOrg> listShiftPalletsOrg = new ArrayList<>();
 		if (param.unit == 0) {
 			listShiftPalletsOrg = shiftPalletsOrgRepository.findbyWorkPlaceIdUse(0, param.workplaceId );
 		}else{
 			listShiftPalletsOrg = shiftPalletsOrgRepository.findbyWorkPlaceIdUse(1, param.workplaceGroupId );
 		}
-		
-		ShiftPalletsOrg shiftPalletsOrg = listShiftPalletsOrg.stream().filter(item -> item.getPage() == param.pageNumberCom).findFirst().get();
-			
-		
-		PageInfo pageInfo = null; 
+
+		ShiftPaletteOrg shiftPalletsOrg = listShiftPalletsOrg.stream().filter(item -> item.getPage() == param.pageNumberCom).findFirst().get();
+
+
+		PageInfo pageInfo = null;
 		TargetShiftPalette targetShiftPalette = null;
-		
+
 		if (shiftPalletsOrg == null) {
 			return new GetShiftPalChangePageResult(pageInfo, targetShiftPalette, new ArrayList<>(), new ArrayList<>());
 		}
-		
+
 		List<ShiftPalletsOrgDto> listShiftPalletOrgDto = new ArrayList<>();
 		pageInfo = new PageInfo(shiftPalletsOrg.getPage(), shiftPalletsOrg.getShiftPallet().getDisplayInfor().getShiftPalletName().v());
 		ShiftPalletsOrgDto shiftPalletsOrgDto = new ShiftPalletsOrgDto(shiftPalletsOrg, param.getWorkplaceId());
 		listShiftPalletOrgDto.add(shiftPalletsOrgDto);
-		
-		
+
+
 		targetShiftPalette = new TargetShiftPalette(param.pageNumberOrg, null, listShiftPalletOrgDto);
-		
+
 		// get List ShiftMasterCode
-		List<ShiftPalletCombinations> combinations = shiftPalletsOrg.getShiftPallet().getCombinations();
+		List<ShiftPaletteCombinations> combinations = shiftPalletsOrg.getShiftPallet().getCombinations();
 		List<String> listShiftMasterCodeOfPageSelectd = getListShiftMasterCode(combinations).stream().collect(Collectors.toList());
-		
-		return new GetShiftPalChangePageResult(pageInfo, targetShiftPalette, new ArrayList<>(), listShiftMasterCodeOfPageSelectd);	
+
+		return new GetShiftPalChangePageResult(pageInfo, targetShiftPalette, new ArrayList<>(), listShiftMasterCodeOfPageSelectd);
 	}
-	
-	public List<String> getListShiftMasterCode(List<ShiftPalletCombinations> shiftPalletCombinations){
-		
+
+	public List<String> getListShiftMasterCode(List<ShiftPaletteCombinations> shiftPalletCombinations){
+
 		Set<String>  listShiftMasterCodeOfPage = new HashSet<>();  // danh sach nay chỉ bao gôm những shiftMasterCode mới lấy.
-		
+
 		if (shiftPalletCombinations.isEmpty()) {
 			return new ArrayList<>();
 		}
-		
+
 		for (int i = 0; i < shiftPalletCombinations.size(); i++) {
 			List<Combinations> combinations = shiftPalletCombinations.get(i).getCombinations();
 			for (int j = 0; j < combinations.size(); j++) {
@@ -198,12 +203,12 @@ public class GetDataWhenChangePage {
 		}
 		return listShiftMasterCodeOfPage.stream().collect(Collectors.toList());
 	};
-	
+
 	@AllArgsConstructor
 	private static class RequireImpl implements GetCombinationrAndWorkHolidayAtrService.Require {
-		
+
 		private final String companyId = AppContexts.user().companyId();
-		
+
 		@Inject
 		private ShiftMasterRepository shiftMasterRepo;
 		@Inject
@@ -214,9 +219,7 @@ public class GetDataWhenChangePage {
 		private WorkTimeSettingRepository workTimeSettingRepository;
 		@Inject
 		private WorkTimeSettingService workTimeSettingService;
-		@Inject
-		private BasicScheduleService basicScheduleService;
-		
+
 		@Override
 		public List<ShiftMaster> getByListEmp(String companyID, List<String> lstShiftMasterCd) {
 			List<ShiftMaster> data = shiftMasterRepo.getByListShiftMaterCd2(companyId, lstShiftMasterCd);
@@ -235,23 +238,43 @@ public class GetDataWhenChangePage {
 		}
 
 		@Override
-		public Optional<WorkType> findByPK(String workTypeCd) {
+		public Optional<WorkType> getWorkType(String workTypeCd) {
 			return workTypeRepo.findByPK(companyId, workTypeCd);
 		}
 
 		@Override
-		public Optional<WorkTimeSetting> findByCode(String workTimeCode) {
+		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
 			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
 		}
 
 		@Override
-		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTimeCd, String workTypeCd, Integer workNo) {
+		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd, Integer workNo) {
 			return workTimeSettingService .getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
 		}
 
 		@Override
-		public WorkStyle checkWorkDay(String workTypeCode) {
-			return basicScheduleService.checkWorkDay(workTypeCode);
+		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
 		}
+
+		@Override
+		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
 	}
 }

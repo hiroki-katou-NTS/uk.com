@@ -37,7 +37,7 @@ module nts.uk.at.view.kaf000.a.component4.viewmodel {
                             </div>
                         </div>
                     </div>
-                    <div id="comment1" class="cell valign-top" style="vertical-align: middle; padding-left: 10px" data-bind="text: $vm.comment, visible: $vm.application().appType === 2"></div>
+                    <div id="comment1" class="cell valign-top" style="vertical-align: middle; padding-left: 10px" data-bind="text: $vm.comment1, visible: $vm.application().appType === 2"></div>
                 </div>
             </div>
         `
@@ -59,8 +59,11 @@ module nts.uk.at.view.kaf000.a.component4.viewmodel {
 
             vm.application = params.application;
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
+			if (!_.isEmpty(vm.application().appDate())) {
+				vm.appDate(vm.application().appDate());
+			}
 
-            vm.appDispInfoStartupOutput.subscribe(value => {
+            vm.appDispInfoStartupOutput.subscribe((value: any) => {
                 if(!vm.appType){
                     vm.appType = value.appDispInfoNoDateOutput.applicationSetting.appTypeSetting[0].appType;
                     if (vm.appType == AppType.ABSENCE_APPLICATION || vm.appType == AppType.WORK_CHANGE_APPLICATION || vm.appType == AppType.BUSINESS_TRIP_APPLICATION) {
@@ -82,8 +85,11 @@ module nts.uk.at.view.kaf000.a.component4.viewmodel {
                     }
                 }
             });
+        }
 
-            vm.appDate.subscribe(value => {
+		mounted() {
+			const vm = this;
+			vm.appDate.subscribe(value => {
             	if(vm.checkBoxValue()) {
             		return;
             	}
@@ -187,7 +193,7 @@ module nts.uk.at.view.kaf000.a.component4.viewmodel {
 	                }
                 }).always(() => vm.$blockui("hide"));
             });
-        }
+		}
     }
 
     const API = {

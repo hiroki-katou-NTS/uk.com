@@ -11,6 +11,8 @@ import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.*;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
+import nts.uk.shr.com.context.AppContexts;
+
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -44,25 +46,23 @@ public class UpdateSettingDetailCommandHandler extends CommandHandler<UpdateSett
     public class RequireImpl implements UpdateWorkStatusSettingDomainService.Require{
         private WorkStatusOutputSettingsRepository workStatusOutputSettingsRepository;
         @Override
-        public WorkStatusOutputSettings getWorkStatusOutputSettings(String cid, String settingId) {
-            return this.workStatusOutputSettingsRepository.getWorkStatusOutputSettings(cid,settingId);
+        public WorkStatusOutputSettings getWorkStatusOutputSettings( String settingId) {
+            return this.workStatusOutputSettingsRepository.getWorkStatusOutputSettings(AppContexts.user().companyId(),settingId);
         }
 
         @Override
-        public void update(String cid, String settingId, WorkStatusOutputSettings outputSettings,
-                           List<OutputItem> outputItemList,
-                           List<OutputItemDetailSelectionAttendanceItem> attendanceItemList) {
+        public void update( WorkStatusOutputSettings outputSettings) {
             this.workStatusOutputSettingsRepository
-                    .update(cid,settingId,outputSettings,outputItemList,attendanceItemList);
+                    .update(AppContexts.user().companyId(),outputSettings);
         }
         @Override
-        public boolean checkTheStandard(String code, String cid) {
-            return workStatusOutputSettingsRepository.exist(new OutputItemSettingCode(code), cid);
+        public boolean checkTheStandard(String code) {
+            return workStatusOutputSettingsRepository.exist(new OutputItemSettingCode(code), AppContexts.user().companyId());
         }
 
         @Override
-        public boolean checkFreedom(String code, String cid, String employeeId) {
-            return workStatusOutputSettingsRepository.exist(new OutputItemSettingCode(code), cid, employeeId);
+        public boolean checkFreedom(String code, String employeeId) {
+            return workStatusOutputSettingsRepository.exist(new OutputItemSettingCode(code), AppContexts.user().companyId(), employeeId);
         }
     }
 }

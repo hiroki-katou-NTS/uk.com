@@ -1,14 +1,16 @@
 package nts.uk.ctx.at.record.dom.affiliationinformation;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
+import nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode;
 
 /**
  * 
@@ -31,8 +33,9 @@ public class AffiliationInforOfDailyPerfor extends AggregateRoot {
 		super();
 		this.employeeId = employeeId;
 		this.ymd = ymd;
-		this.affiliationInfor = new AffiliationInforOfDailyAttd(employmentCode, jobTitleID, wplID, clsCode,businessTypeCode,
-				bonusPaySettingCode);
+		this.affiliationInfor = new AffiliationInforOfDailyAttd(employmentCode, jobTitleID, wplID, clsCode,
+				Optional.ofNullable(businessTypeCode),
+				Optional.ofNullable(bonusPaySettingCode));
 	}
 
 	public AffiliationInforOfDailyPerfor(String employeeId, GeneralDate ymd,

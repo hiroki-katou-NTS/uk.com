@@ -53,14 +53,14 @@ public class KfnmtRptWkRecItem extends UkJpaEntity implements Serializable {
         return pk;
     }
 
-    public static List<KfnmtRptWkRecItem> fromDomain(String cid, WorkStatusOutputSettings outputSettings, List<OutputItem> outputItemList){
-       return outputItemList.stream().map(e->new KfnmtRptWkRecItem(
+    public static List<KfnmtRptWkRecItem> fromDomain(String cid, WorkStatusOutputSettings outputSettings){
+       return outputSettings.getOutputItem().stream().map(e->new KfnmtRptWkRecItem(
                new KfnmtRptWkRecItemPk(outputSettings.getSettingId(),e.getRank()),
                AppContexts.user().contractCode(),
                cid,
                e.getName().v(),
                e.isPrintTargetFlag(),
-               e.getIndependentCalculaClassification().value,
+               e.getIndependentCalcClassic().value,
                e.getItemDetailAttributes().value
        )).collect(Collectors.toList());
     }

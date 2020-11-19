@@ -25,5 +25,13 @@ public interface CompanyDailyItemService {
 			List<DailyAttendanceAtr> itemAtrs);
 	
 	List<AttItemName> getDailyItemsNew(String cid, Optional<String> authorityId);
+	
+	/**
+	 * Find by attendance items.
+	 *
+	 * @param attendanceItems the attendance items
+	 * @return the list
+	 */
+	List<DailyItemDto> findByAttendanceItems(String companyId, List<Integer> attendanceItems);
 
 }

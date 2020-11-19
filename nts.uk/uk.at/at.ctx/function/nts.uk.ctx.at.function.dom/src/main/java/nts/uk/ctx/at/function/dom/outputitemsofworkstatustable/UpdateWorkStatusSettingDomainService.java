@@ -24,8 +24,7 @@ public class UpdateWorkStatusSettingDomainService {
                                          List<OutputItem> outputItemList
     ) {
         // 1. get: ⓪ -勤務状況の出力設定
-        val cid = AppContexts.user().companyId();
-        val oldItem = require.getWorkStatusOutputSettings(cid, settingId);
+        val oldItem = require.getWorkStatusOutputSettings(settingId);
         // 2. ⓪．isEmpty
         if (oldItem == null) {
             throw new BusinessException("Msg_1903");
@@ -34,6 +33,7 @@ public class UpdateWorkStatusSettingDomainService {
         WorkStatusOutputSettings outputSettings = null;
         val empId = AppContexts.user().employeeId();
         // 3.1設定区分 == 定型選択: ① create():勤務状況の出力設定
+
         if (settingCategory == SettingClassificationCommon.STANDARD_SELECTION) {
             outputSettings = new WorkStatusOutputSettings(
                     settingId,
@@ -41,7 +41,7 @@ public class UpdateWorkStatusSettingDomainService {
                     name,
                     null,
                     settingCategory,
-                    null
+                    outputItemList
             );
         }
         // 3.2 設定区分 == 自由設定: ① create():勤務状況の出力設定
@@ -52,20 +52,17 @@ public class UpdateWorkStatusSettingDomainService {
                     name,
                     empId,
                     settingCategory,
-                    null
+                    outputItemList
             );
         }
 
         // 4.② create():List<出力項目>
-        outputItemList.forEach(e -> e.setDailyMonthlyClassification(DailyMonthlyClassification.MONTHLY));
         // 5. ③ create(): List<演算子>、List<勤怠項目ID>: List<出力項目詳細の所属勤怠項目>;
-        List<OutputItemDetailSelectionAttendanceItem> itemListAttendanceItem = new ArrayList<>();
-        outputItemList.forEach(e -> itemListAttendanceItem.addAll(e.getSelectedAttendanceItemList()));
 
         WorkStatusOutputSettings finalOutputSettings = outputSettings;
         return AtomTask.of(() -> {
             // 7.1 設定区分 == 指定選択: 定型選択を更新する(会社ID, int, 勤務状況の出力設定, 勤務状況の出力項目, 勤務状況の出力項目詳細)
-                require.update(cid, settingId, finalOutputSettings, outputItemList, itemListAttendanceItem);
+                require.update(finalOutputSettings );
 
         });
     }
@@ -73,10 +70,9 @@ public class UpdateWorkStatusSettingDomainService {
     public interface Require extends WorkStatusOutputSettings.Require {
 
         // [1]	出力設定の詳細を取得する
-        WorkStatusOutputSettings getWorkStatusOutputSettings(String cid, String settingId);
+        WorkStatusOutputSettings getWorkStatusOutputSettings(String settingId);
         // [2]	定型選択を更新する
-        void update(String cid, String settingId, WorkStatusOutputSettings outputSettings,
-                    List<OutputItem> outputItemList, List<OutputItemDetailSelectionAttendanceItem> attendanceItemList);
+        void update(WorkStatusOutputSettings outputSettings);
 
     }
 }

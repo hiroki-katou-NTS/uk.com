@@ -8,7 +8,7 @@ module nts.uk.at.view.kwr003.c {
   const KWR003_C_OUTPUT = 'KWR003_C_RETURN';
 
   const PATHS = {
-    cloneSettingClassification: ''
+    cloneSettingClassification: 'at/function/kwr/003/c/duplicate'
   };
 
   @bean()
@@ -24,40 +24,28 @@ module nts.uk.at.view.kwr003.c {
 
     constructor(params: any) {
       super();
-      const vm = this;
+      const vm = this;      
+    }
 
-
-      vm.params({
-        settingListItemDetails: [], //設定区分
-        sourceCode: null, //複製元の設定ID
-        code: null,  //複製先_コード
-        name: null //複製先_名称
+    created(params: any) {
+      let vm = this;
+      vm.params({     
+        settingCategory: 0, //設定区分
+        settingId: null, //複製元の設定ID
+        settingCode: null,//複製先_コード
+        settingName: null//複製先_名称
       });
 
       vm.$window.storage(KWR003_C_INPUT).then((data) => {
         if (!_.isNil(data)) {
           vm.oldCode(data.code);
-          vm.oldName(data.name);
-
-          let cloneCode: any = !_.isNil(data.lastCode) ? parseInt(data.lastCode) + 1 : 1;
-          cloneCode = _.padStart(cloneCode, 2, '0');
-          vm.newCode(cloneCode);
-
-          let cloneName: any = data.name;
-          cloneName = cloneName.substring(0, cloneName.indexOf('_' + data.code));
-          cloneName = cloneName + '_' + cloneCode;
-          vm.newName(cloneName);
-
-          vm.params().sourceCode = data.code;
-          vm.params().code = data.cloneCode;
-          vm.params().name = data.cloneName;
-          vm.params().settingListItemDetails = data.settingListItemDetails;
+          vm.oldName(data.name);          
+          vm.params().settingId = data.settingId;
+          vm.params().settingCode = data.code;
+          vm.params().settingName = data.name;
+          vm.params().settingCategory = data.settingCategory;
         }
       });
-    }
-
-    created(params: any) {
-      let vm = this;
     }
 
     mounted() {
@@ -67,10 +55,7 @@ module nts.uk.at.view.kwr003.c {
     }
 
     proceed() {
-      let vm = this;
-
-      //vm.$window.storage(KWR003_C_OUTPUT, { code: vm.newCode(), name: vm.newName() });
-      //vm.$window.close();
+      let vm = this;      
       vm.cloneSettingClassification();
     }
 
@@ -87,37 +72,24 @@ module nts.uk.at.view.kwr003.c {
       const vm = this;
 
       vm.$blockui('show');
+      vm.params().settingCode = vm.newCode();
+      vm.params().settingName = vm.newName();
 
       vm.$ajax(PATHS.cloneSettingClassification, vm.params())
-        .done((response) => {
-          let hasErrors = vm.checkErrors();
-          if (hasErrors) {
-            vm.$window.storage(KWR003_C_OUTPUT, { code: vm.newCode(), name: vm.newName() });
-            vm.$blockui('hide');
-            vm.$window.close();
-          }
-        })
-        .fail((error) => {
+        .done((response) => {          
+          vm.$window.storage(KWR003_C_OUTPUT, { code: vm.newCode(), name: vm.newName() });          
           vm.$blockui('hide');
+          vm.$window.close();
+        })
+        .fail((error) => {      
+          //データが先に削除された - 1903    
+          //コードの重複 - Msg_1753
+          vm.$dialog.error({ messageId: error.messageId }).then(() => {
+            $('#closeDialog').focus();
+            vm.$blockui('hide');
+          });
         })
         .always(() => vm.$blockui('hide'));
-    }
-
-    checkErrors() {
-      const vm = this;
-      //データが先に削除された
-      vm.$dialog.error({ messageId: 'Msg_1903' }).then(() => {
-        $('#closeDialog').focus();
-        vm.$blockui('hide');
-      });
-
-      //コードの重複
-      vm.$dialog.error({ messageId: 'Msg_1753' }).then(() => {
-        $('#KWR003_C23').focus();
-        vm.$blockui('hide');
-      });
-
-      return false;
     }
   }
 }

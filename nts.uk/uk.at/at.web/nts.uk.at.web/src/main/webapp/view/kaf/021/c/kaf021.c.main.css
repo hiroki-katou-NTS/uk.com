@@ -1,0 +1,97 @@
+.kaf021c-content{
+    margin-left: 10px;
+    margin-top: 5px;
+}
+
+#tbl-control{
+    margin-top: 5px;
+    width: 1250px;
+}
+
+#tbl-control > .cell:nth-child(1){
+    width: 130px;
+}
+
+#tbl-control > .cell:nth-child(2){
+    width: auto;
+}
+
+.tbl-left{
+    width: 100%;
+    height: 25px;
+}
+
+.tbl-left > .cell:nth-child(1){
+    width: 80px;
+}
+
+.tbl-left > .cell:nth-child(2){
+    width: auto;
+}
+
+.tbl-right {
+    width: 100%;
+}
+
+.tbl-right > .cell:nth-child(1){
+    width: 100px;
+}
+
+.tbl-right > .cell:nth-child(2){
+    width: auto;
+}
+
+.tbl-right > .cell:nth-child(3){
+    width: auto;
+}
+
+#tbl-label{
+    margin-top: 5px;
+    width: 1250px;
+}
+
+#tbl-label > .cell:nth-child(1){
+    width: 300px;
+}
+
+#tbl-label > .cell:nth-child(2){
+    width: 400px;
+}
+
+.center-align {
+    text-align: center;
+}
+
+.right-align {
+    text-align: right;
+}
+
+#C1_9{
+    width: 500px;
+    margin-left: 10px;
+}
+
+#grid{
+    margin-top: 5px;
+}
+
+#grid .mgrid-header td{
+    vertical-align: middle !important;
+}
+
+#grid .mgrid-fixed:not(.mgrid-header) .mgrid-fixed-table tr:not(.mgrid-top-space):not(.mgrid-bottom-space), 
+#grid .mgrid-free:not(.mgrid-header) .mgrid-free-table tr:not(.mgrid-top-space):not(.mgrid-bottom-space){
+    height: 50px !important;
+}
+
+#grid .cell-edit .medit-container{
+    height: 47px !important;
+}
+
+#grid .padding-5{
+    padding: 0px 5px;;
+}
+
+#grid .padding-12{
+    padding: 0px 12px;;
+}

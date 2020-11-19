@@ -1,0 +1,72 @@
+#F2_1 {
+    margin-bottom: 10px;
+}
+
+#F8_4 {
+    vertical-align: inherit;
+}
+
+#F9_3 {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.message-area {
+    background-color: #f7efd4;
+    border: 1px solid #B1B1B1;
+    padding-top: 5px;
+    padding-right: 10px;
+    padding-bottom: 2rem;
+    padding-left: 10px;
+    margin-bottom: 5px;
+    min-width: 1230px;
+}
+
+.message-area .label {
+    white-space: pre-wrap;
+}
+
+.labelWorkplace span {
+    margin-left: 10px;
+}
+
+.mr-l {
+    margin-left: 10px;
+}
+
+.labelWorkplace {
+    padding-bottom: 3px;
+}
+
+.pd-b{
+    padding-bottom: 5px;
+}
+
+.cell {
+    vertical-align: top;
+}
+
+.lineContent td {
+    padding-bottom: 10px;
+}
+
+.table {
+    padding-top: 3px;
+}
+
+.min-day {
+    width: 17px;
+}
+
+.pd-tl {
+    padding-top: 10px;
+    padding-left: 20px;
+}
+
+.panel.ntsPanel.direction-right {
+    margin-right: 35px;
+}
+
+.pd-l {
+    padding-left: 5px;
+}

@@ -4,11 +4,13 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
     import Model = nts.uk.at.view.kaf009_ref.shr.viewmodel.Model;
     import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
     import Kaf000AViewModel = nts.uk.at.view.kaf000.a.viewmodel.Kaf000AViewModel;
+	import AppInitParam = nts.uk.at.view.kaf000.shr.viewmodel.AppInitParam;
 
     @bean()
     class Kaf009AViewModel extends Kaf000AViewModel {
 
 		appType: KnockoutObservable<number> = ko.observable(AppType.GO_RETURN_DIRECTLY_APPLICATION);
+		isAgentMode : KnockoutObservable<boolean> = ko.observable(false);
         application: KnockoutObservable<Application>;
         applicationTest: any = {
                 employeeID: this.$user.employeeId,
@@ -42,16 +44,33 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
             };
         model: Model;
         dataFetch: KnockoutObservable<ModelDto> = ko.observable(null);
-        mode: string = 'edit';
+        mode: KnockoutObservable<String> = ko.observable('edit');
         isSendMail: KnockoutObservable<Boolean>;
 
-        created(params: any) {
+        created(params: AppInitParam) {
             const vm = this;
+			let empLst: Array<string> = [],
+				dateLst: Array<string> = [];
             vm.isSendMail = ko.observable(false);
             vm.application = ko.observable(new Application(vm.appType()));
             vm.model = new Model(true, true, true, '', '', '', '');
+			if (!_.isEmpty(params)) {
+				if (!_.isEmpty(params.employeeIds)) {
+					empLst = params.employeeIds;
+				}
+				if (!_.isEmpty(params.baseDate)) {
+					let paramDate = moment(params.baseDate).format('YYYY/MM/DD');
+					dateLst = [paramDate];
+					vm.application().appDate(paramDate);
+					vm.application().opAppStartDate(paramDate);
+                    vm.application().opAppEndDate(paramDate);
+				}
+				if (params.isAgentMode) {
+					vm.isAgentMode(params.isAgentMode);
+				}
+			}
             vm.$blockui("show");
-            vm.loadData([], [], vm.appType())
+            vm.loadData(empLst, dateLst, vm.appType())
             .then((loadDataFlag: any) => {
                 vm.application().appDate.subscribe(value => {
                     console.log(value);
@@ -78,6 +97,11 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                         goBackApplication: ko.observable(res.goBackApplication),
                         isChangeDate: false
                     });
+					if (!_.isEmpty(params)) {
+						if (!_.isEmpty(params.baseDate)) {
+							vm.changeDate();
+						}
+					}
                 }
             }).fail((failData: any) => {
                 let param;

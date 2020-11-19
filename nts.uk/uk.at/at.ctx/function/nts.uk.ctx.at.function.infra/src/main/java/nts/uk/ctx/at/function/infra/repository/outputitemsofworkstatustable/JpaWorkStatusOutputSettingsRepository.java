@@ -7,17 +7,11 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.*;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.CommonAttributesOfForms;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.IndependentCalculationClassification;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.OperatorsCommonToForms;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.*;
 import nts.uk.ctx.at.function.infra.entity.outputitemsofworkstatustable.*;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -65,7 +59,7 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
         builderString.append("SELECT a ");
         builderString.append("FROM KfnmtRptWkRecSetting a ");
         builderString.append("WHERE a.companyId  =:cid ");
-        builderString.append(" AND  a.pk.iD  =:settingId ");
+        builderString.append(" AND  a.iD  =:settingId ");
         builderString.append(" ORDER BY  a.displayCode ");
         FIND_WORK_STATUS_SETTING = builderString.toString();
 
@@ -153,58 +147,63 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
 
         val result = this.queryProxy().query(FIND_WORK_STATUS_SETTING, KfnmtRptWkRecSetting.class)
                 .setParameter("cid", cid)
-                .setParameter("settingId", settingId).getSingle(JpaWorkStatusOutputSettingsRepository::toDomain);
-        if (!result.isPresent()) {
-            return null;
-        }
-        WorkStatusOutputSettings rs = result.get();
-        rs.setOutputItem(outputItem);
-        return rs;
+                .setParameter("settingId", settingId).getSingle(e -> JpaWorkStatusOutputSettingsRepository.toDomain(e, outputItem));
+        return result.orElse(null);
 
     }
 
     @Override
-    public void createNew(String cid, WorkStatusOutputSettings outputSettings, List<OutputItem> outputItemList, List<OutputItemDetailSelectionAttendanceItem> attendanceItemList) {
+    public void createNew(String cid, WorkStatusOutputSettings outputSettings) {
         val entitySetting = KfnmtRptWkRecSetting.fromDomain(outputSettings, cid);
         this.commandProxy().insert(entitySetting);
 
-        val listEntityItems = KfnmtRptWkRecItem.fromDomain(cid, outputSettings, outputItemList);
+        val listEntityItems = KfnmtRptWkRecItem.fromDomain(cid, outputSettings);
         if (!listEntityItems.isEmpty()) {
             this.commandProxy().insertAll(listEntityItems);
         }
-        val listEntityConst = KfnmtRptWkRecDispCont.fromDomain(cid, outputSettings, outputItemList, attendanceItemList);
+        val listEntityConst = KfnmtRptWkRecDispCont.fromDomain(cid, outputSettings);
         if (!listEntityConst.isEmpty()) {
             this.commandProxy().insertAll(listEntityConst);
         }
     }
 
     @Override
-    public void update(String cid, String settingId, WorkStatusOutputSettings outputSettings, List<OutputItem> outputItemList, List<OutputItemDetailSelectionAttendanceItem> attendanceItemList) {
+    public void update(String cid, WorkStatusOutputSettings outputSettings) {
+        val settingId = outputSettings.getSettingId();
         this.commandProxy().update(KfnmtRptWkRecSetting.fromDomain(outputSettings, cid));
-        this.commandProxy().updateAll(KfnmtRptWkRecItem.fromDomain(cid, outputSettings, outputItemList));
-        this.queryProxy().query(DELETE_WORK_STATUS_CONST_CID, KfnmtRptWkRecDispCont.class)
-                .setParameter("cid", cid)
-                .setParameter("settingId", settingId);
-        this.getEntityManager().flush();
-        this.commandProxy().insertAll(KfnmtRptWkRecDispCont.fromDomain(cid, outputSettings, outputItemList, attendanceItemList));
+        val entityItem = this.queryProxy().query(FIND_DELETE_WORK_STATUS_ITEM, KfnmtRptWkRecItem.class)
+                .setParameter("settingId", settingId).getList();
+        if (!CollectionUtil.isEmpty(entityItem)) {
+            this.commandProxy().removeAll(entityItem);
+            this.getEntityManager().flush();
+            this.commandProxy().insertAll(KfnmtRptWkRecItem.fromDomain(cid, outputSettings));
+        }
+        val entityConst = this.queryProxy().query(FIND_DELETE_WORK_STATUS_CONST, KfnmtRptWkRecDispCont.class)
+                .setParameter("settingId", settingId)
+                .getList();
+        if (!CollectionUtil.isEmpty(entityConst)) {
+            this.commandProxy().removeAll(entityConst);
+            this.getEntityManager().flush();
+            this.commandProxy().insertAll(KfnmtRptWkRecDispCont.fromDomain(cid, outputSettings));
+        }
 
     }
 
     @Override
     public void delete(String settingId) {
-        this.commandProxy().remove(KfnmtRptWkRecSetting.class, new KfnmtRptWkRecSettingPk(settingId));
-
-        val entityConst =  this.queryProxy().query(FIND_DELETE_WORK_STATUS_CONST, KfnmtRptWkRecDispCont.class)
-                .setParameter("settingId", settingId).getList();
-        if(!CollectionUtil.isEmpty(entityConst)){
+        this.commandProxy().remove(KfnmtRptWkRecSetting.class, settingId);
+        val entityConst = this.queryProxy().query(FIND_DELETE_WORK_STATUS_CONST, KfnmtRptWkRecDispCont.class)
+                .setParameter("settingId", settingId)
+                .getList();
+        if (!CollectionUtil.isEmpty(entityConst)) {
             this.commandProxy().removeAll(entityConst);
         }
         val entityItem = this.queryProxy().query(FIND_DELETE_WORK_STATUS_ITEM, KfnmtRptWkRecItem.class)
-                .setParameter("settingId", settingId).getList();
-        if(!CollectionUtil.isEmpty(entityItem)){
+                .setParameter("settingId", settingId)
+                .getList();
+        if (!CollectionUtil.isEmpty(entityItem)) {
             this.commandProxy().removeAll(entityItem);
         }
-        this.getEntityManager().flush();
     }
 
     @Override
@@ -215,7 +214,7 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
         if (optEntitySetting.isPresent()) {
             KfnmtRptWkRecSetting entitySetting = optEntitySetting.get();
             val entity = new KfnmtRptWkRecSetting(
-                    new KfnmtRptWkRecSettingPk(replicationDestinationSettingId),
+                    replicationDestinationSettingId,
                     entitySetting.contractCode,
                     entitySetting.companyId,
                     Integer.parseInt(duplicateCode.v()),
@@ -229,11 +228,11 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
                 .setParameter("cid", cid)
                 .setParameter("settingId", replicationSourceSettingId).getList();
         if (!optEntityItem.isEmpty()) {
-            val listItem = optEntityItem.stream().map(e->new KfnmtRptWkRecItem(
-                    new KfnmtRptWkRecItemPk(replicationDestinationSettingId,e.pk.itemPos),
+            val listItem = optEntityItem.stream().map(e -> new KfnmtRptWkRecItem(
+                    new KfnmtRptWkRecItemPk(replicationDestinationSettingId, e.pk.itemPos),
                     e.contractCode,
                     e.companyId,
-                    copyDestinationName.v(),
+                    e.itemName,
                     e.itemIsPrintEd,
                     e.itemType,
                     e.itemAtribute
@@ -244,15 +243,16 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
                 .setParameter("cid", cid)
                 .setParameter("settingId", replicationSourceSettingId).getList();
         if (!optEntityConst.isEmpty()) {
-        val listItem = optEntityConst.stream().map(e->new KfnmtRptWkRecDispCont(
-                    new KfnmtRptWkRecDispContPk(replicationDestinationSettingId,e.pk.itemPos,e.pk.attendanceId),
+            val listItem = optEntityConst.stream().map(e -> new KfnmtRptWkRecDispCont(
+                    new KfnmtRptWkRecDispContPk(replicationDestinationSettingId, e.pk.itemPos, e.pk.attendanceId),
                     e.contractCode,
                     e.companyId,
                     e.operator
-            ) ).collect(Collectors.toList());
+            )).collect(Collectors.toList());
             this.commandProxy().insertAll(listItem);
         }
     }
+
     @Override
     public boolean exist(OutputItemSettingCode code, String cid) {
         val displayCode = Integer.parseInt(code.v());
@@ -277,7 +277,7 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
     private static WorkStatusOutputSettings toDomain(KfnmtRptWkRecSetting entity) {
 
         return new WorkStatusOutputSettings(
-                entity.pk.getID(),
+                entity.iD,
                 new OutputItemSettingCode(Integer.toString(entity.displayCode)),
                 new OutputItemSettingName(entity.name),
                 entity.employeeId,
@@ -286,20 +286,32 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
         );
     }
 
+    private static WorkStatusOutputSettings toDomain(KfnmtRptWkRecSetting entity, List<OutputItem> listItems) {
+
+        return new WorkStatusOutputSettings(
+                entity.iD,
+                new OutputItemSettingCode(Integer.toString(entity.displayCode)),
+                new OutputItemSettingName(entity.name),
+                entity.employeeId,
+                EnumAdaptor.valueOf(entity.settingType, SettingClassificationCommon.class),
+                listItems
+        );
+    }
+
     private static OutputItem toDomain(KfnmtRptWkRecItem entity) {
         return new OutputItem(
                 entity.pk.itemPos,
                 new FormOutputItemName(entity.itemName),
                 entity.itemIsPrintEd,
-                EnumAdaptor.valueOf(entity.itemType, IndependentCalculationClassification.class),
-                null,
+                EnumAdaptor.valueOf(entity.itemType, IndependentCalcClassic.class),
+                DailyMonthlyClassification.DAILY,
                 EnumAdaptor.valueOf(entity.itemAtribute, CommonAttributesOfForms.class),
                 null
         );
     }
 
-    private static OutputItemDetailSelectionAttendanceItem toDomain(KfnmtRptWkRecDispCont entity) {
-        return new OutputItemDetailSelectionAttendanceItem(
+    private static OutputItemDetailAttItem toDomain(KfnmtRptWkRecDispCont entity) {
+        return new OutputItemDetailAttItem(
                 EnumAdaptor.valueOf(entity.operator, OperatorsCommonToForms.class),
                 entity.pk.attendanceId
         );

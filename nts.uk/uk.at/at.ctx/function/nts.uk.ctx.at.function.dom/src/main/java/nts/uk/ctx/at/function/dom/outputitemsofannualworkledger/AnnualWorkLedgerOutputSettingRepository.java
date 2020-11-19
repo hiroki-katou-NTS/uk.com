@@ -3,7 +3,7 @@ package nts.uk.ctx.at.function.dom.outputitemsofannualworkledger;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItem;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemDetailSelectionAttendanceItem;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemDetailAttItem;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
 
 import java.util.List;
@@ -25,13 +25,11 @@ public interface AnnualWorkLedgerOutputSettingRepository {
     Optional<AnnualWorkLedgerOutputSetting> getDetailsOfTheOutputSettings(String cid, String settingId);
 
     //	[4]	定型選択を新規作成する
-    void createNew(String cid, AnnualWorkLedgerOutputSetting outputSetting, List<DailyOutputItemsAnnualWorkLedger> outputItemsOfTheDayList,
-                   List<OutputItem> outputItemList, List<OutputItemDetailSelectionAttendanceItem> attendanceItemList);
+    void createNew(String cid, AnnualWorkLedgerOutputSetting outputSetting);
 
     // 	[5]	自由設定を新規作成する
     // 	[6]	定型選択を更新する
-    void update(String cid, String settingId, AnnualWorkLedgerOutputSetting outputSetting, List<DailyOutputItemsAnnualWorkLedger> outputItemsOfTheDayList, List<OutputItem> outputItemList,
-                List<OutputItemDetailSelectionAttendanceItem> attendanceItemList);
+    void update(String cid, String settingId, AnnualWorkLedgerOutputSetting outputSetting);
 
     //	[8]	設定の詳細を削除する
     void deleteSettingDetail(String settingId);

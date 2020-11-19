@@ -4,7 +4,6 @@ import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
@@ -15,8 +14,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 
-
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -35,49 +32,21 @@ public class CreateWorkStatusSettingDServiceTest {
 
     private final String iD = "id";
 
-    private final List<OutputItem> outputItems = Arrays.asList(
-            new OutputItem(
-                    1,
-                    new FormOutputItemName("itemName01"),
-                    true,
-                    EnumAdaptor.valueOf(1, IndependentCalculationClassification.class),
-                    EnumAdaptor.valueOf(1, DailyMonthlyClassification.class),
-                    EnumAdaptor.valueOf(3, CommonAttributesOfForms.class),
-                    Arrays.asList(
-                            new OutputItemDetailSelectionAttendanceItem(EnumAdaptor.valueOf(1, OperatorsCommonToForms.class), 1),
-                            new OutputItemDetailSelectionAttendanceItem(EnumAdaptor.valueOf(1, OperatorsCommonToForms.class), 1)
-                    )
-            ),
-            new OutputItem(
-                    2,
-                    new FormOutputItemName("itemName02"),
-                    true,
-                    EnumAdaptor.valueOf(2, IndependentCalculationClassification.class),
-                    EnumAdaptor.valueOf(2, DailyMonthlyClassification.class),
-                    EnumAdaptor.valueOf(5, CommonAttributesOfForms.class),
-                    Arrays.asList(
-                            new OutputItemDetailSelectionAttendanceItem(
-                                    EnumAdaptor.valueOf(2, OperatorsCommonToForms.class),
-                                    2),
-                            new OutputItemDetailSelectionAttendanceItem(
-                                    EnumAdaptor.valueOf(1, OperatorsCommonToForms.class),
-                                    2)
-                    )
-            ));
+    private final List<OutputItem> outputItems = DumData.outputItems;
 
     @Test
     public void test_01() {
         val settingCategory = SettingClassificationCommon.STANDARD_SELECTION;
         new Expectations(AppContexts.class) {
             {
-                AppContexts.user().companyId();
-                result = cid;
+                AppContexts.user().employeeId();
+                result = empId;
 
             }
         };
         new Expectations() {
             {
-                require.checkTheStandard(code.v(), cid);
+                require.checkTheStandard(code.v());
                 result = true;
             }
         };
@@ -92,15 +61,13 @@ public class CreateWorkStatusSettingDServiceTest {
         val settingCategory = SettingClassificationCommon.FREE_SETTING;
         new Expectations(AppContexts.class) {
             {
-                AppContexts.user().companyId();
-                result = cid;
                 AppContexts.user().employeeId();
                 result = empId;
             }
         };
         new Expectations() {
             {
-                require.checkFreedom(code.v(), cid, empId);
+                require.checkFreedom(code.v(), empId);
                 result = true;
             }
         };
@@ -115,15 +82,14 @@ public class CreateWorkStatusSettingDServiceTest {
         val settingCategory = SettingClassificationCommon.STANDARD_SELECTION;
         new Expectations(AppContexts.class) {
             {
-                AppContexts.user().companyId();
-                result = cid;
+
                 AppContexts.user().employeeId();
                 result = empId;
             }
         };
         new Expectations() {
             {
-                require.checkTheStandard(code.v(), cid);
+                require.checkTheStandard(code.v());
                 result = false;
             }
         };
@@ -137,7 +103,7 @@ public class CreateWorkStatusSettingDServiceTest {
                         CreateWorkStatusSettingDomainService.createSetting(require, code, name, settingCategory,
                                 outputItems),
 
-                any -> require.createNewFixedPhrase(any.get(),any.get(), any.get(), any.get())
+                any -> require.createNewFixedPhrase(any.get())
         );
 
     }
@@ -146,15 +112,13 @@ public class CreateWorkStatusSettingDServiceTest {
         val settingCategory = SettingClassificationCommon.FREE_SETTING;
         new Expectations(AppContexts.class) {
             {
-                AppContexts.user().companyId();
-                result = cid;
                 AppContexts.user().employeeId();
                 result = empId;
             }
         };
         new Expectations() {
             {
-                require.checkFreedom(code.v(), cid, empId);
+                require.checkFreedom(code.v(), empId);
                 result = false;
             }
         };
@@ -168,7 +132,7 @@ public class CreateWorkStatusSettingDServiceTest {
                         CreateWorkStatusSettingDomainService.createSetting(require, code, name, settingCategory,
                                 outputItems),
 
-                any -> require.createNewFixedPhrase(any.get(),any.get(), any.get(), any.get())
+                any -> require.createNewFixedPhrase(any.get())
         );
 
     }

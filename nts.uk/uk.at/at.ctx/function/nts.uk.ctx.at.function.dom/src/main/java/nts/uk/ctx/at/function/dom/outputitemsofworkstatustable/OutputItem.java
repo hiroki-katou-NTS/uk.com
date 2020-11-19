@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.CommonAttributesOfForms;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.DailyMonthlyClassification;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.IndependentCalculationClassification;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.IndependentCalcClassic;
 import org.eclipse.persistence.internal.xr.ValueObject;
 
 import java.util.List;
@@ -30,7 +30,7 @@ public class OutputItem extends ValueObject {
     private boolean printTargetFlag;
 
     // 	単独計算区分
-    private IndependentCalculationClassification independentCalculaClassification;
+    private IndependentCalcClassic independentCalcClassic;
 
     // 	日次月次区分
     private DailyMonthlyClassification dailyMonthlyClassification;
@@ -39,7 +39,7 @@ public class OutputItem extends ValueObject {
     private CommonAttributesOfForms itemDetailAttributes;
 
     //  選択勤怠項目リスト
-    private List<OutputItemDetailSelectionAttendanceItem> selectedAttendanceItemList;
+    private List<OutputItemDetailAttItem> selectedAttendanceItemList;
 
 
 }

@@ -33,7 +33,7 @@ public class WorkScheduleWorkInforDto {
 	//Khu vực Optional
 	// 勤務種類コード
 	public String workTypeCode;
-	// 勤務種類名
+	// 勤務種類名 tên viết tắt
 	public String workTypeName;
 	// 勤務種類編集状態
 	public EditStateOfDailyAttdDto workTypeEditStatus;
@@ -59,4 +59,9 @@ public class WorkScheduleWorkInforDto {
 	
 	//để check điều kiện ※Abc2 dùng cho màn ksu001
 	public boolean isActive;
+	
+	// dùng cho màn ksu001
+	public boolean workTypeIsNotExit; 
+	// dùng cho màn ksu001
+	public boolean workTimeIsNotExit;
 }

@@ -116,6 +116,13 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
 		
 		opBusinessTripInfoOutput: any;
 	}
+	
+	export interface AppInitParam {
+		appType: number,
+        employeeIds : Array<string>;
+        baseDate: string;
+		isAgentMode?: boolean;
+	}
     
     export module model {
         // loại người đăng nhập
@@ -257,7 +264,10 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
                         vm.$jump("com", "/view/ccg/008/a/index.xhtml");    
                     }
                 });   
-                return false;
+				if(recordDate == 0) {
+					return false;
+				}
+                return true;
             }
             
             if(_.isNull(opErrorFlag)) {
@@ -285,6 +295,51 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
                     vm.$jump("com", "/view/ccg/008/a/index.xhtml");    
                 }    
             });
+			if(recordDate == 0) {
+				return false;
+			}
+			return true;
         }
+
+		public static showMailResult(mailResult: Array<any>, vm: any) {
+			return new Promise((resolve: any) => {
+				if(_.isEmpty(mailResult)) {
+					resolve(true);
+				}
+				let msg = mailResult[0].value,
+					type = mailResult[0].type;
+				if(type=='info') {
+					return vm.$dialog.info(msg).then(() => {
+		           		return CommonProcess.showMailResult(_.slice(mailResult, 1), vm);	
+		        	});	
+				} else {
+					return vm.$dialog.error(msg).then(() => {
+		            	return CommonProcess.showMailResult(_.slice(mailResult, 1), vm);
+		        	});	
+				}
+	        });
+		}
+		
+		public static showConfirmResult(mailResult: Array<any>, vm: any) {
+			return new Promise((resolve: any) => {
+				if(_.isEmpty(mailResult)) {
+					resolve(true);
+				}
+				let msg = mailResult[0].value,
+					type = mailResult[0].type;
+				return vm.$dialog.confirm(msg).then((result: 'no' | 'yes' | 'cancel') => {
+					if (result === 'yes') {
+		            	return CommonProcess.showConfirmResult(_.slice(mailResult, 1), vm);
+		            }
+					resolve();
+	        	});	
+	        }).then((data: any) => {
+				if(data) {
+					alert('yes');
+				} else {
+					alert('no');
+				}		
+			});
+		}
     }
 }

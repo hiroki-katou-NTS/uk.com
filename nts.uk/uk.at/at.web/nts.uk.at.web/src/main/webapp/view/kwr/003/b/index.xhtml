@@ -19,6 +19,7 @@
         <com:ValidatorScript>
           nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode
           nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName
+          nts.uk.ctx.at.function.dom.attendancerecord.item.ItemName
         </com:ValidatorScript>
       </ui:define>
 
@@ -30,7 +31,7 @@
               tabindex="1"
               id="btnB11"
               class="normal"
-              data-bind="text: $i18n('KWR003_201'), click: addNewRow, enable: isEnableAddButton"
+              data-bind="text: $i18n('KWR003_201'), click: newSetting, enable: isEnableAddButton"
             />
             <!-- B1_2 -->
             <button
@@ -86,8 +87,8 @@
                     options: settingListItems,
                     optionsValue: 'code',
                     columns: [
-                      { headerText: $i18n('KWR003_207'), prop: 'code', width: 90 },
-                      { headerText: $i18n('KWR003_208'), prop: 'name', width: 230 }
+                      { headerText: $i18n('KWR003_207'), prop: 'code', width: 90, formatter: _.escape },
+                      { headerText: $i18n('KWR003_208'), prop: 'name', width: 230, formatter: _.escape }
                     ],
                     multiple: false,
                     value: currentCodeList
@@ -183,7 +184,7 @@
                                     value: name,
                                     required: true,
                                     name: $i18n('KWR003_215'),
-                                    constraint: 'ExportSettingName'
+                                    constraint: 'ItemName'
                                   }"
                           />
                         </td>

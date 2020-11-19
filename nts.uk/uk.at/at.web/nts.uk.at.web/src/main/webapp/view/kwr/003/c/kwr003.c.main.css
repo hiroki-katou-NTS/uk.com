@@ -15,8 +15,9 @@
   width: 120px;
 }
 .kwr-003c .d-flex .form-label {
-  margin-right: 32px;
-  width: 120px;
+  margin-right: 16px;
+  min-width: 120px;
+  width: 180px;
 }
 .kwr-003c .d-flex .code {
   width: 50px;
