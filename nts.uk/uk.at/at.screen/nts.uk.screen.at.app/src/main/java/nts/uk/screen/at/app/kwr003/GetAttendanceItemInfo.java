@@ -39,7 +39,7 @@ public class GetAttendanceItemInfo {
     private GetAttendanceIdByFormNumberQuery getAttendanceIdByFormNumberQuery;
 
     public AttendanceItemInfoDto getAttendanceItemInfo(int formNumberDisplay, boolean isDaily, boolean isMonthly) {
-        // TODO QA PARAMS (parsm đang tự đặt , ko theo tài liệu)
+        // TODO QA PARAMS (params đang tự đặt , ko theo tài liệu)
         val cid = AppContexts.user().companyId();
         val roleId = Optional.of(AppContexts.user().roles().forAttendance());
         List<AttItemDto> listDaily = new ArrayList<AttItemDto>();
