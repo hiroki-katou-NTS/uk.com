@@ -77,11 +77,4 @@ public interface OutputItemMonthlyWorkScheduleSetMemento {
 	 */
 	void setIsRemarkPrinted(Boolean isRemarkPrinted);
 	
-	/**
-	 * Sets the prints the remarks column.
-	 *
-	 * @param printSettingRemarksColumn the new prints the remarks column
-	 */
-	void setPrintRemarksColumn(PrintSettingRemarksColumn printSettingRemarksColumn);
-	
 }

@@ -9,7 +9,6 @@ import nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyAttendanceItemsDisp
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyOutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyOutputItemSettingName;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkScheduleGetMemento;
-import nts.uk.ctx.at.function.dom.monthlyworkschedule.PrintSettingRemarksColumn;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.TextSizeCommonEnum;
 @Data
 public class OutputItemMonthlyWorkScheduleDeleteCommand implements OutputItemMonthlyWorkScheduleGetMemento {
@@ -77,11 +76,4 @@ public class OutputItemMonthlyWorkScheduleDeleteCommand implements OutputItemMon
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	@Override
-	public PrintSettingRemarksColumn getPrintSettingRemarksColumn() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 }

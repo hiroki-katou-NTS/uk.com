@@ -77,11 +77,4 @@ public interface OutputItemMonthlyWorkScheduleGetMemento {
 	 * @return boolean
 	 */
 	Boolean getIsRemarkPrinted();
-	
-	/**
-	 * Gets the prints the setting remarks column.
-	 *
-	 * @return the prints the setting remarks column
-	 */
-	PrintSettingRemarksColumn getPrintSettingRemarksColumn();
 }

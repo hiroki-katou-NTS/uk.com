@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.infra.entity.monthlyworkschedule;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,7 +23,6 @@ import nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyOutputItemSettingCo
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyOutputItemSettingName;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkScheduleGetMemento;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkScheduleSetMemento;
-import nts.uk.ctx.at.function.dom.monthlyworkschedule.PrintSettingRemarksColumn;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.TextSizeCommonEnum;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -35,9 +35,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @EqualsAndHashCode(callSuper = true)
 public class KfnmtRptWkMonOut extends UkJpaEntity
 		implements OutputItemMonthlyWorkScheduleGetMemento, OutputItemMonthlyWorkScheduleSetMemento, Serializable {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	// column 出力項目ID 
 	@Id
@@ -78,7 +76,7 @@ public class KfnmtRptWkMonOut extends UkJpaEntity
 
 	// column 備考欄の印字設定
 	@Column(name = "IS_REMARK_PRINTED")
-	private Boolean isRemarkPrinted;
+	private BigDecimal isRemarkPrinted;
 
 	// column 備考入力No
 	@Column(name = "REMARK_INPUT_NO")
@@ -187,23 +185,12 @@ public class KfnmtRptWkMonOut extends UkJpaEntity
 
 	@Override
 	public Boolean getIsRemarkPrinted() {
-		return this.isRemarkPrinted;
+		return this.isRemarkPrinted == BigDecimal.ONE;
 	}
 
 	@Override
 	public void setIsRemarkPrinted(Boolean isRemarkPrinted) {
-		this.isRemarkPrinted = isRemarkPrinted ;
+		this.isRemarkPrinted = isRemarkPrinted ? BigDecimal.ONE : BigDecimal.valueOf(2) ;
 	}
 
-	@Override
-	public void setPrintRemarksColumn(PrintSettingRemarksColumn printSettingRemarksColumn) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public PrintSettingRemarksColumn getPrintSettingRemarksColumn() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

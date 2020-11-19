@@ -58,18 +58,7 @@ module nts.uk.at.view.kwr006.c {
                 self.outputItemPossibleLst = ko.observableArray([]);
 
                 self.currentCodeListSwap = ko.observableArray([]);
-                self.outputItemList = ko.observableArray([
-                    new ItemModel(1, "Demo01", 1),
-                    new ItemModel(2, "Demo02", 2),
-                    new ItemModel(3, "Demo03", 3),
-                    new ItemModel(4, "Demo04", 4),
-                    new ItemModel(5, "Demo05", 5),
-                    new ItemModel(6, "Demo06", 6),
-                    new ItemModel(7, "Demo07", 7),
-                    new ItemModel(8, "Demo08", 8),
-                    new ItemModel(9, "Demo09", 9),
-                    new ItemModel(10, "Demo10", 10),
-                ]);
+                self.outputItemList = ko.observableArray([]);
                 self.selectedCodeC2_3 = ko.observable();
 
                 self.enableBtnDel = ko.observable(false);
@@ -82,7 +71,7 @@ module nts.uk.at.view.kwr006.c {
                         nts.uk.ui.errors.clearAll();
                         self.C3_2_value(codeChoose.itemCode);
                         self.C3_3_value(codeChoose.itemName);
-                        let outputItemMonthlyWorkSchedule = _.find(self.allMainDom(), o => codeChoose.itemCode == o.itemCode);
+                        let outputItemMonthlyWorkSchedule = _.find(self.allMainDom(), (o: any) => codeChoose.itemCode == o.itemCode);
                         self.getOutputItemMonthlyWorkSchedule(outputItemMonthlyWorkSchedule.lstDisplayedAttendance);
                         self.enableBtnDel(true);
                         self.enableCodeC3_2(false);
@@ -158,7 +147,7 @@ module nts.uk.at.view.kwr006.c {
             */
             private getOutputItemMonthlyWorkSchedule(lstDisplayedAttendance?: any): void {
                 let self = this;
-                 let lstSwapLeft =_.sortBy(self.outputItemPossibleLst(), i => i.code);
+                let lstSwapLeft =_.sortBy(self.outputItemPossibleLst(), i => i.code);
                 let lstSwapRight = [];
                 if (lstDisplayedAttendance) {
                     _.forEach(lstDisplayedAttendance, (item, index) => {
@@ -200,7 +189,7 @@ module nts.uk.at.view.kwr006.c {
                                 value.code = self.mapIdCodeAtd[value.id];
                             })
                             KWR006DOutput.lstAtdChoose.lstDisplayTimeItem = _.sortBy(KWR006DOutput.lstAtdChoose.lstDisplayTimeItem, o => o.displayOrder);
-                            const chosen = _.filter(self.outputItemPossibleLst(), item => _.some(KWR006DOutput.lstAtdChoose.lstDisplayTimeItem, atd => atd.itemDaily == item.id));
+                            let chosen = _.filter(self.outputItemPossibleLst(), item => _.some(KWR006DOutput.lstAtdChoose.lstDisplayTimeItem, atd => atd.itemDaily == item.id));
 
                             var sortArr = _.map(KWR006DOutput.lstAtdChoose.lstDisplayTimeItem, 'itemDaily');
                             chosen = _.sortBy(chosen, function (item) {
@@ -508,10 +497,9 @@ module nts.uk.at.view.kwr006.c {
                 this.name = name;
             }
         }
-
         class FontSizeEnum {
-            static SMALL = 0;
-            static BIG = 1;
+            static SMALL = 1;
+            static BIG = 3;
         }
 
     }

@@ -15,7 +15,6 @@ import nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyAttendanceItemsDisp
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyOutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyOutputItemSettingName;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkScheduleGetMemento;
-import nts.uk.ctx.at.function.dom.monthlyworkschedule.PrintSettingRemarksColumn;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.TextSizeCommonEnum;
 
 
@@ -147,9 +146,4 @@ public class OutputItemMonthlyWorkScheduleCommand implements OutputItemMonthlyWo
 		return this.isRemarkPrinted;
 	}
 
-	@Override
-	public PrintSettingRemarksColumn getPrintSettingRemarksColumn() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }
