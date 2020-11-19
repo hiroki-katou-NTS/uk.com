@@ -350,10 +350,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				if(result) {
 					return vm.$ajax('at', API.checkBefore, commandCheck);
 				}
-			}).then((result) => {
-				if (result) {
+			}).then((result: CheckBeforeOutput) => {
+				if (!_.isEmpty(result.confirmMsgOutputs)) {
 					// xử lý confirmMsg
-					return vm.handleConfirmMessage(result);
+					return vm.handleConfirmMessage(result.confirmMsgOutputs);
 				}
 			}).then((result) => {
 				if(result) {
@@ -1180,6 +1180,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		companyId: string;
 		displayInfoOverTime: DisplayInfoOverTime;
 		appOverTime: AppOverTime;
+	}
+	interface CheckBeforeOutput {
+		appOverTime: AppOverTime;
+		confirmMsgOutputs: Array<any>;
 	}
 	
 	

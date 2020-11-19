@@ -900,7 +900,10 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 				appOverTime36,
 				mode);
 		// 取得した「確認メッセージリスト」と「残業申請」を返す
-		output.setAppOverTime(appOverTime36);
+		// output.setAppOverTime(appOverTime36);
+		// ３６上限チェック  is not done , so appOverTime = input appOverTime
+		output.setAppOverTime(appOverTime);
+		
 		output.setConfirmMsgOutputs(confirmMsgOutputs);
 		return output;
 	}
