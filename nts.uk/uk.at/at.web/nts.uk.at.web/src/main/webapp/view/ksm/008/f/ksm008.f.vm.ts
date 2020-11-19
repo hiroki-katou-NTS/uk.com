@@ -643,15 +643,13 @@ module nts.uk.at.ksm008.f {
                     workplaceGroupId: vm.workplaceGroupId
                 })
                 .done(data => {
-                    if (!_.isEmpty(data)) {
-                        data = _.orderBy(data, ['employeeCode'], ['asc']);
+                    data = _.orderBy(data, ['employeeCode'], ['asc']);
 
-                        vm.selectableEmployeeList(data.map((item: any) => {
-                            return new PersonInfo(item.employeeID, item.employeeCode, item.businessName);
-                        }));
+                    vm.selectableEmployeeList(data.map((item: any) => {
+                        return new PersonInfo(item.employeeID, item.employeeCode, item.businessName);
+                    }));
 
-                        vm.originalSelectableEmployeeList = vm.selectableEmployeeList();
-                    }
+                    vm.originalSelectableEmployeeList = vm.selectableEmployeeList();
 
                     dfd.resolve();
                 })
