@@ -26,7 +26,6 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerforma
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.repo.AttendanceTimeByWorkOfDailyRepository;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
-import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
@@ -128,8 +127,8 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	private AffiliationInforOfDailyPerforRepository affiliationInforOfDailyPerforRepository;
 	
 	/** リポジトリ：日別実績の勤務種別 */
-	@Inject
-	private WorkTypeOfDailyPerforRepository workTypeOfDailyPerforRepository;
+//	@Inject
+//	private WorkTypeOfDailyPerforRepository workTypeOfDailyPerforRepository;
 	
 	/** リポジトリ：日別実績のPCログオン情報 */
 	@Inject

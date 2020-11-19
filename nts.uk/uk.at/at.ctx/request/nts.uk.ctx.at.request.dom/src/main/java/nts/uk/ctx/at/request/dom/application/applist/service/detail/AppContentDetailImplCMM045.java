@@ -1100,7 +1100,7 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 					optionalItem.getOptionalItemName(), 
 					optionalItemApp.getOptionalItems().stream().filter(x -> x.getItemNo().v()==optionalItem.getOptionalItemNo().v()).findAny().get(), 
 					optionalItem.getOptionalItemAtr(), 
-					optionalItem.getUnit()));
+					optionalItem.getUnit().get()));
 		}
 		// アルゴリズム「申請内容（任意項目申請）」を実行する
 		return appContentService.getOptionalItemAppContent(

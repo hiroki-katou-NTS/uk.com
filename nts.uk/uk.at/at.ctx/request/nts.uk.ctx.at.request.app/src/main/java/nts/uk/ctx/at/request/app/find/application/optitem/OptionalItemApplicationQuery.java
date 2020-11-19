@@ -109,7 +109,7 @@ public class OptionalItemApplicationQuery {
             /* Kiểm tra giá trị nằm trong giới hạn, vượt ra ngoài khoảng giới hạn thì thông báo lỗi Msg_1692 */
             ControlOfAttendanceItems controlOfAttendanceItems = controlOfAttendanceItemsMap.get(inputOptionalItem.getItemNo() + OPTIONAL_ITEM_NO_CONVERT_CONST);
             if (controlOfAttendanceItems != null) {
-                Optional<TimeInputUnit> unit = controlOfAttendanceItems.getInputUnitOfTimeItem();
+                Optional<BigDecimal> unit = controlOfAttendanceItems.getInputUnitOfTimeItem();
             }
             /* kiểm tra bội của đơn vị, không phải là bội thì thông báo lỗi Msg_1693*/
             OptionalItem optionalItem = optionalItemMap.get(inputOptionalItem.getItemNo());
@@ -122,7 +122,7 @@ public class OptionalItemApplicationQuery {
                     amountLower = range.getAmountRange().get().getLowerLimit().get().v();
                 }
                 if (range.getAmountRange().isPresent() && range.getAmountRange().get().getUpperLimit().isPresent()) {
-                    amountLower = range.getAmountRange().get().getUpperLimit().get().v();
+                    amountUpper = range.getAmountRange().get().getUpperLimit().get().v();
                 }
                 if ((range.getLowerLimit().isSET() && amountLower != null && amountLower.compareTo(amount) > 0)
                         || (range.getUpperLimit().isSET() && amountUpper != null && amountUpper.compareTo(amount) < 0)) {

@@ -24,7 +24,7 @@ public class OptionalItemAppPubImp implements OptionalItemAppPub {
                 .map(optItem -> OptionalItemAppExport.builder()
                         .optionalItemName(optItem.getOptionalItemName().v())
                         .optionalItemNo(optItem.getOptionalItemNo().v())
-                        .optionalItemUnit(optItem.getUnit().v())
+                        .optionalItemUnit(optItem.getUnit().isPresent() ? optItem.getUnit().get().v() : null)
                         .calcResultRange(optItem.getCalcResultRange())
                         .optionalItemAtr(optItem.getOptionalItemAtr())
                         .build())

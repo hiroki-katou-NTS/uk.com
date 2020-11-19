@@ -41,8 +41,14 @@ public class AppOvertimeSettingWebservice extends WebService{
 	}
 
 	@POST
+	@Path("getOTQuota")
+	public List<OvertimeQuotaSetUseDto> getOvertimeQuota() {
+		return overtimeQuotaSetFinder.getOvertimeQuotaSettings();
+	}
+
+	@POST
 	@Path("getOTQuotaByAtr")
-	public List<OvertimeQuotaSetUseDto> getOvertimeQuota(Map<String, Integer> params) {
+	public List<OvertimeQuotaSetUseDto> getOvertimeQuotaByAtr(Map<String, Integer> params) {
 		Integer overtimeAtr = params.get("overtimeAtr");
 		Integer flexWorkAtr = params.get("flexWorkAtr");
 		return overtimeQuotaSetFinder.getOvertimeQuotaSettings(overtimeAtr, flexWorkAtr);

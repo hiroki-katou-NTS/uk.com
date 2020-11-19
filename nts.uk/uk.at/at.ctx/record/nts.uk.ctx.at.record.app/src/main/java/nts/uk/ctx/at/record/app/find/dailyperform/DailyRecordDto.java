@@ -13,7 +13,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.dto.AffiliationInforOfDailyPerforDto;
-import nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.dto.BusinessTypeOfDailyPerforDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.attendanceleavinggate.dto.AttendanceLeavingGateOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.calculationattribute.dto.CalcAttrOfDailyPerformanceDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
@@ -66,10 +65,10 @@ public class DailyRecordDto extends AttendanceItemCommon {
 	private AffiliationInforOfDailyPerforDto affiliationInfo;
 
 	/** 日別実績の勤務種別 */
-	@AttendanceItemLayout(layout = DAILY_BUSINESS_TYPE_CODE, jpPropertyName = DAILY_BUSINESS_TYPE_NAME, isOptional = true)
-	@JsonDeserialize(using = CustomOptionalDeserializer.class)
-	@JsonSerialize(using = CustomOptionalSerializer.class)
-	private Optional<BusinessTypeOfDailyPerforDto> businessType = Optional.empty();
+//	@AttendanceItemLayout(layout = DAILY_BUSINESS_TYPE_CODE, jpPropertyName = DAILY_BUSINESS_TYPE_NAME, isOptional = true)
+//	@JsonDeserialize(using = CustomOptionalDeserializer.class)
+//	@JsonSerialize(using = CustomOptionalSerializer.class)
+//	private Optional<BusinessTypeOfDailyPerforDto> businessType = Optional.empty();
 
 	/** エラー一覧： 社員の日別実績エラー一覧 */
 	// TODO: list?
@@ -226,15 +225,15 @@ public class DailyRecordDto extends AttendanceItemCommon {
 		return this;
 	}
 
-	public DailyRecordDto withBusinessType(BusinessTypeOfDailyPerforDto businessType) {
-		this.businessType = Optional.ofNullable(businessType);
-		return this;
-	}
-	
-	public DailyRecordDto withBusinessTypeO(Optional<BusinessTypeOfDailyPerforDto> businessType) {
-		this.businessType = businessType;
-		return this;
-	}
+//	public DailyRecordDto withBusinessType(BusinessTypeOfDailyPerforDto businessType) {
+//		this.businessType = Optional.ofNullable(businessType);
+//		return this;
+//	}
+//	
+//	public DailyRecordDto withBusinessTypeO(Optional<BusinessTypeOfDailyPerforDto> businessType) {
+//		this.businessType = businessType;
+//		return this;
+//	}
 
 	public DailyRecordDto withAffiliationInfo(AffiliationInforOfDailyPerforDto affiliationInfo) {
 		this.affiliationInfo = affiliationInfo;
@@ -467,7 +466,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 		dto.setWorkInfo(workInfo == null ? null : workInfo.clone());
 		dto.setCalcAttr(calcAttr == null ? null : calcAttr.clone());
 		dto.setAffiliationInfo(affiliationInfo == null ? null : affiliationInfo.clone());
-		dto.setBusinessType(businessType.map(b -> b.clone()));
+//		dto.setBusinessType(businessType.map(b -> b.clone()));
 		dto.setErrors(errors == null ? null : errors.stream().map(x -> x.clone()).collect(Collectors.toList()));
 		dto.setOutingTime(outingTime.map(o -> o.clone()));
 		dto.setBreakTime(breakTime.stream().map(b -> b.clone()).collect(Collectors.toList()));

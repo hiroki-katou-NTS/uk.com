@@ -26,7 +26,7 @@ module nts.uk.at.view.kaf020.shr.viewmodel {
                 <tr>
                     <td>
                         <!--B4_1-->
-                        <div class="label" data-bind="text: optionalItemName"></div>
+                        <div class="label" style="word-break: break-word" data-bind="text: optionalItemName"></div>
                     </td>
                     <td>
                         <!--B4_2-->

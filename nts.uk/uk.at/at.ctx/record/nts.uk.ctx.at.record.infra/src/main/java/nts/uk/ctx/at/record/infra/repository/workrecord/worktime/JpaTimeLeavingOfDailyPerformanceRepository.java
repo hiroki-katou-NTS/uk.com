@@ -521,7 +521,6 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 						+ " ATD_ACTUAL_SOURCE_INFO , ATD_STAMP_TIME , ATD_STAMP_PLACE_CODE, ATD_STAMP_SOURCE_INFO, ATD_NUMBER_STAMP, "
 						+ " LWK_ACTUAL_TIME, LWK_ACTUAL_PLACE_CODE , LWK_ACTUAL_SOURCE_INFO, LWK_STAMP_TIME, LWK_STAMP_PLACE_CODE , LWK_STAMP_SOURCE_INFO, LWK_NUMBER_STAMP , "
 						+ " ATD_OVERTIME, ATD_LATE_NIGHT_OVERTIME, ATD_BREAK_START,ATD_BREAK_END, LWK_OVERTIME, LWK_LATE_NIGHT_OVERTIME, LWK_BREAK_START, LWK_BREAK_END  ) "
-						+ " ATD_OVERTIME, ATD_LATE_NIGHT_OVERTIME, ATD_BREAK_START,ATD_BREAK_END, LWK_OVERTIME, LWK_LATE_NIGHT_OVERTIME, LWK_BREAK_START, LWK_BREAK_END  ) "
 						+ "VALUES( '" + timeLeavingOfDailyPerformance.getEmployeeId() + "' , "
 						+ timeLeavingWork.getWorkNo().v() + " , '" + timeLeavingOfDailyPerformance.getYmd() + "', " + 0
 						+", " + attActualTime + ", " + attActualStampLocationCode

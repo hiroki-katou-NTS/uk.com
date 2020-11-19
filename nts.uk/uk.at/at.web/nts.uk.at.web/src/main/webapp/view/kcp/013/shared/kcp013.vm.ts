@@ -378,6 +378,7 @@ module nts.uk.ui.at.kcp013.shared {
         id: string;
         code: string;
         name: string;
+        nameAb: string;
         tzStart1: number;
         tzEnd1: number;
         tzStart2: number;

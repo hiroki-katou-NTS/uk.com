@@ -7,4 +7,4 @@ import './s07';
 import './s08';
 import './s09';
 import './s12';
-import './s20';
+import './sample';
