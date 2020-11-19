@@ -126,7 +126,7 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 		createIggrid() {
 			const vm = this;
 			$("#dGrid").igGrid({
-				height: 508,
+				height: 526,
 				width: window.innerWidth - 40,
 				dataSource: vm.dataSource,
 				primaryKey: 'empID',
