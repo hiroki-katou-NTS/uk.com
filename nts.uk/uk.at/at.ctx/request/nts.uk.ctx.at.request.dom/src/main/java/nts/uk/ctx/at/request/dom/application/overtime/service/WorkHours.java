@@ -27,4 +27,25 @@ public class WorkHours {
 	private Optional<TimeWithDayAttr> endTimeOp1 = Optional.empty();
 	// 終了時刻2
 	private Optional<TimeWithDayAttr> endTimeOp2 = Optional.empty();
+	
+	public WorkHours(
+			Integer startTimeOp1,
+			Integer startTimeOp2,
+			Integer endTimeOp1,
+			Integer endTimeOp2
+			) {
+		if (startTimeOp1 != null) {
+			this.startTimeOp1 = Optional.of(new TimeWithDayAttr(startTimeOp1));
+		}
+		if (startTimeOp2 != null) {
+			this.startTimeOp2 = Optional.of(new TimeWithDayAttr(startTimeOp2));
+		}
+		if (endTimeOp1 != null) {
+			this.endTimeOp1 = Optional.of(new TimeWithDayAttr(endTimeOp1));
+		}
+		if (endTimeOp2 != null) {
+			this.endTimeOp2 = Optional.of(new TimeWithDayAttr(endTimeOp2));
+		}
+		
+	}
 }
