@@ -12,13 +12,22 @@ import org.apache.commons.lang3.StringUtils;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.CheckBeforeOutputDto;
+import nts.uk.ctx.at.request.dom.application.AppReason;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationDate;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.ReasonForReversion;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.CheckBeforeOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayInfoOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
+import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
+import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 
 @Stateless
 public class AppOvertimeFinder {
@@ -112,14 +121,32 @@ public class AppOvertimeFinder {
 	
 	public CheckBeforeOutputDto checkBeforeRegister(ParamCheckBeforeRegister param) {
 		CheckBeforeOutput output = null;
-		param.displayInfoOverTime.toDomain();
-		param.appOverTime.toDomain();
-//				overtimeService.checkErrorRegister(
-//				param.require,
-//				param.companyId,
-//				param.displayInfoOverTime.toDomain(),
-//				param.appOverTime.toDomain());
+		DisplayInfoOverTime displayInfoOverTime = param.displayInfoOverTime.toDomain();
+		Application application = this.createApplication(param.appOverTime.application);
+		AppOverTime appOverTime = param.appOverTime.toDomain();
+		appOverTime.setApplication(application);
+		overtimeService.checkErrorRegister(
+				param.require,
+				param.companyId,
+				displayInfoOverTime,
+				appOverTime);
 		return CheckBeforeOutputDto.fromDomain(output);
+	}
+	
+	public Application createApplication(ApplicationDto application) {
+		
+		return Application.createFromNew(
+				EnumAdaptor.valueOf(application.getPrePostAtr(), PrePostAtr.class),
+				application.getEmployeeID(),
+				ApplicationType.OVER_TIME_APPLICATION,
+				new ApplicationDate(GeneralDate.fromString(application.getAppDate(), PATTERN_DATE)),
+				application.getEnteredPerson(),
+				application.getOpStampRequestMode() == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(application.getOpStampRequestMode(), StampRequestMode.class)),
+				application.getOpReversionReason() == null ? Optional.empty() : Optional.of(new ReasonForReversion(application.getOpReversionReason())),
+				application.getOpAppStartDate() == null ? Optional.empty() : Optional.of(new ApplicationDate(GeneralDate.fromString(application.getOpAppStartDate(), PATTERN_DATE))),
+				application.getOpAppEndDate() == null ? Optional.empty() : Optional.of(new ApplicationDate(GeneralDate.fromString(application.getOpAppEndDate(), PATTERN_DATE))),
+				application.getOpAppReason() == null ? Optional.empty() : Optional.of(new AppReason(application.getOpAppReason())),
+				application.getOpAppStandardReasonCD() == null ? Optional.empty() : Optional.of(new AppStandardReasonCode(application.getOpAppStandardReasonCD())));
 	}
 	
 }

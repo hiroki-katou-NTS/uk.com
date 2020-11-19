@@ -333,6 +333,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			vm.$blockui("show");
 			let commandCheck = {} as ParamCheckBeforeRegister;
 			commandCheck.require = true;
+			commandCheck.companyId = vm.$user.companyId;
 			commandCheck.appOverTime = vm.toAppOverTime();
 			commandCheck.displayInfoOverTime = vm.dataSource;
 			

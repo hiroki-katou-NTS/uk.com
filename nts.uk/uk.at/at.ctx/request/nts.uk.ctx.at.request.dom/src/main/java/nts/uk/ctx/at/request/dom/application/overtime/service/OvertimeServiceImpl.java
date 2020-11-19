@@ -109,6 +109,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 	@Inject
 	private DetailBeforeUpdate detailBeforeUpdate;
 	
+	@Inject
+	NewBeforeRegister processBeforeRegister;
+	
 	@Override
 	public int checkOvertimeAtr(String url) {
 		if(url == null){
@@ -607,11 +610,11 @@ public class OvertimeServiceImpl implements OvertimeService {
 			AppOverTime appOverTime) {
 		CheckBeforeOutput output = new CheckBeforeOutput();
 		// 2-1.新規画面登録前の処理
-		List<ConfirmMsgOutput> confirmMsgOutputs = newBeforeRegister.processBeforeRegister_New(
+		List<ConfirmMsgOutput> confirmMsgOutputs = processBeforeRegister.processBeforeRegister_New(
 				companyId,
-				EmploymentRootAtr.COMMON, // QA 112515 done
+				EmploymentRootAtr.APPLICATION, // QA 112515 done
 				displayInfoOverTime.getIsProxy(),
-				appOverTime,
+				appOverTime.getApplication(),
 				appOverTime.getOverTimeClf(),
 				displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpErrorFlag().orElse(null),
 				Collections.emptyList(), 
