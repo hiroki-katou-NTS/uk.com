@@ -73,7 +73,7 @@
 
 		</ui:define>
 		<ui:define name="content">
-			<div data-bind="with: viewA">
+			<div id = "main-area" data-bind="with: viewA" style="overflow-y: hidden;">
 				<div id="functions-area">
 					<button  id="A1_1"  class="proceed"  tabindex="1" >#{i18n.getText('KSU001_1')}</button>
 					<button  id="A1_2"  class="proceed marginleft15px" tabindex="2">#{i18n.getText('KSU001_2')}</button>
@@ -380,7 +380,7 @@
 							</div>
 						</div>
 						<div style="clear: left"></div>
-						<div id="content-main" style="overflow-x: hidden;">
+						<div id="content-main">
 							<div style="white-space: nowrap;">
 								<div id="contain-view-left">
 									<button id="A6_1" tabindex="34" class="editMode" style="height: 38px;"
