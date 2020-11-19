@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.log.app.find.reference.record;
 
 import lombok.Builder;
 import lombok.Data;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
 
 import java.util.List;
@@ -149,6 +150,7 @@ public class LogBasicInfoAllDto {
 
 	public static LogBasicInfoAllDto fromDomain(LogBasicInformation domain) {
 		return LogBasicInfoAllDto.builder()
+				.parentKey(IdentifierUtil.randomUniqueId())
 				.userId(domain.getUserInfo().getUserId())
 				.userName(domain.getUserInfo().getUserName())
 				.employeeId(domain.getUserInfo().getEmployeeId())

@@ -569,15 +569,21 @@ module nts.uk.com.view.cli003.g.viewmodel {
         //Call server api
         registerLogSetNew() {
             let self = this;
-            if (self.mode() == MODE.INSERT
+            if(!(self.selectedCodeList().length === 0)) {
+                if (self.mode() == MODE.INSERT
                 || self.mode() == MODE.COPY) {
-                if (self.validateForm() && self.validateCode() && self.validateLogSetOutputItem()) {
-                    self.saveLogDisplaySet();
+                    if (self.validateForm() && self.validateCode() && self.validateLogSetOutputItem()) {
+                        self.saveLogDisplaySet();
+                    }
+                } else {
+                    if (self.validateForm() && self.validateLogSetOutputItem()) {
+                        self.updateLogDisplaySet();
+                    }
                 }
             } else {
-                if (self.validateForm() && self.validateLogSetOutputItem()) {
-                    self.updateLogDisplaySet();
-                }
+                alertError({ messageId: "Msg_2037" }).then(() => {
+                    self.setFocus();
+               });
             }
         }
 

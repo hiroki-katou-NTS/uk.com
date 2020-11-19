@@ -6,6 +6,10 @@ import lombok.Data;
 @Data
 @Builder
 public class LogDataCorrectChildrenDto {
+	/**
+	 * Help us generate table in screen F
+	 */
+	private String childrenKey;
 
     /**
      * 対象者 ユーザID

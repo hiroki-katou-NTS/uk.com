@@ -79,6 +79,7 @@ module nts.uk.com.view.cli003.b {
 
     //B2
     conditionDatasource: KnockoutObservableArray<LogSetItemDetailModalDisplay> = ko.observableArray([]);
+    listItemNo: KnockoutObservableArray<string> = ko.observableArray([]);
     conditionColumns: KnockoutObservableArray<any> = ko.observableArray([
       {
         headerText: this.$i18n("CLI003_90"),
@@ -229,7 +230,7 @@ module nts.uk.com.view.cli003.b {
         .getLogOutputItemByRecordType(String(logSet.recordType))
         .then((logOutputItems: LogOutputItem[]) => {
           vm.setLogSetInfo(logSet);
-          const logSetItemDetailsList = _.map(logSet.logSetOutputs, (item: any, index: number) => {
+          const logSetItemDetailsList = _.map(logSet.logSetOutputs, (item: any) => {
             const listCond: string[] = ["", "", "", "", "", ""];
             item.logSetItemDetails.map((itemDetail: any, i: number) => {
               const condSymbol = _.find(vm.symbolList(), (symbol) => symbol.code === itemDetail.sybol).name;
@@ -248,6 +249,10 @@ module nts.uk.com.view.cli003.b {
             );
           });
           vm.conditionDatasource(logSetItemDetailsList);
+
+          //get itemNo display
+          const listItemNo = _.map(logSet.logSetOutputs, (item: any) => String(item.itemNo));
+          vm.listItemNo(listItemNo);
         })
         .fail(() => {
           vm.$dialog.alert({ messageId: "Msg_1221" });
@@ -424,6 +429,7 @@ module nts.uk.com.view.cli003.b {
           selectedRuleCodeOperator: vm.operatorEmpSelectedRuleCode(),
           selectedRuleCodeTarget: vm.selectedEmpSelectedRuleCode(),
           targetEmployeeIdList: vm.selectedEmployeeCodeTarget(),
+          displayItemNo : vm.listItemNo()
         };
         vm.$window
           .storage('VIEW_B_DATA', data)
