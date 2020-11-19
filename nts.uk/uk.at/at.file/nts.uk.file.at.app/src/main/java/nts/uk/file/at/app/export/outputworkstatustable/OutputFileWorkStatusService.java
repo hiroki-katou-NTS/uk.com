@@ -67,7 +67,7 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
     @Override
     protected void handle(ExportServiceContext<OutputFileWorkStatusFileQuery> context) {
         OutputFileWorkStatusFileQuery query = context.getQuery();
-        YearMonth targetDate = query.getTargetDate();
+        YearMonth targetDate = new YearMonth(query.getTargetDate());
         List<String> lstEmpIds = query.getLstEmpIds();
         // TODO DANG QA
         val cl = closureRepository.findByClosureId(AppContexts.user().companyId(), query.getClosureId());

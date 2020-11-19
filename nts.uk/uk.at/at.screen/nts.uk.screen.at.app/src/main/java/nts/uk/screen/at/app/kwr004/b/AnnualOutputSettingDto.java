@@ -25,10 +25,10 @@ public class AnnualOutputSettingDto {
 
     public static AnnualOutputSettingDto setData(AnnualWorkLedgerOutputSetting domain){
         List<DailyOutputItemsDto> dailyOutputItems = domain.getDailyOutputItemList().stream().map(x ->
-            new DailyOutputItemsDto(x.getRank(),x.isPrintTargetFlag(),x.getName().v(),x.getAttribute().value,x.getIndependentCalcClassic().value)).
+            new DailyOutputItemsDto(x.getRank(),x.isPrintTargetFlag(),x.getName().v(),x.getItemDetailAttributes().value,x.getIndependentCalcClassic().value)).
             collect(Collectors.toList());
 
-        List<MonthlyOutputItemsDto> monthlyOutputItems = domain.getOutputItemList().stream().map(x ->
+        List<MonthlyOutputItemsDto> monthlyOutputItems = domain.getMonthlyOutputItemList().stream().map(x ->
             new MonthlyOutputItemsDto(x.getRank(),x.isPrintTargetFlag(),x.getName().v(),x.getItemDetailAttributes().value)).
             collect(Collectors.toList());
         return new AnnualOutputSettingDto(domain.getCode().v(),domain.getName().v(),dailyOutputItems, monthlyOutputItems);
