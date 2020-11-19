@@ -666,7 +666,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
 
         if (col == 3) {
             if (setting.getAppType() != ApplicationType.ABSENCE_APPLICATION)
-                return TextResource.localize("KAF022_100");
+                return TextResource.localize("KAF022_36");
             else {
                 if (row == 0) return TextResource.localize("KAF022_478");
                 else return TextResource.localize("KAF022_479");
@@ -674,7 +674,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
         }
 
         if (col == 4 && setting.getAppType() == ApplicationType.ABSENCE_APPLICATION)
-            return TextResource.localize("KAF022_100");
+            return TextResource.localize("KAF022_36");
 
         if (col == MAIN_COL_SIZE - 1) {
             if (row == 0) return setting.getDisplayFixedReason() == DisplayAtr.DISPLAY ? CHECK : NOT_CHECK;
