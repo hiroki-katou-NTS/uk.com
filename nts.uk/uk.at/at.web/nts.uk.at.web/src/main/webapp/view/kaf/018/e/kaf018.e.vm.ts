@@ -263,6 +263,8 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 					this.phase1 += vm.$i18n('KAF018_531', [phase1.countRemainApprover]);
 				}
 				
+			} else {
+				this.approvalStatus += " ";
 			}
 			let phase2 = _.find(apprSttEmpDateContentDto.phaseApproverSttLst, o => o.phaseOrder==2);
 			if(phase2) {
@@ -289,6 +291,8 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 				if(phase2.countRemainApprover) {
 					this.phase2 += vm.$i18n('KAF018_531', [phase2.countRemainApprover]);
 				}
+			} else {
+				this.approvalStatus += " ";
 			}
 			let phase3 = _.find(apprSttEmpDateContentDto.phaseApproverSttLst, o => o.phaseOrder==3);
 			if(phase3) {
@@ -315,6 +319,8 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 				if(phase3.countRemainApprover) {
 					this.phase3 += vm.$i18n('KAF018_531', [phase3.countRemainApprover]);
 				}
+			} else {
+				this.approvalStatus += " ";
 			}
 			let phase4 = _.find(apprSttEmpDateContentDto.phaseApproverSttLst, o => o.phaseOrder==4);
 			if(phase4) {
@@ -341,6 +347,8 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 				if(phase4.countRemainApprover) {
 					this.phase4 += vm.$i18n('KAF018_531', [phase4.countRemainApprover]);
 				}
+			} else {
+				this.approvalStatus += " ";
 			}
 			let phase5 = _.find(apprSttEmpDateContentDto.phaseApproverSttLst, o => o.phaseOrder==5);
 			if(phase5) {
@@ -367,6 +375,8 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 				if(phase5.countRemainApprover) {
 					this.phase5 += vm.$i18n('KAF018_531', [phase5.countRemainApprover]);
 				}
+			} else {
+				this.approvalStatus += " ";
 			}
 		}
 	}
