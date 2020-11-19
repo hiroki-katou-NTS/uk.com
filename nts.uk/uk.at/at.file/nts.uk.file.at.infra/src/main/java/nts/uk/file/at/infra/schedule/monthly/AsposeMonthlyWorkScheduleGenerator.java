@@ -923,10 +923,14 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		MonthlyWorkScheduleQuery query = queryData.getQuery();
 		//YearMonth endMonth = query.getEndYearMonth();
 		GeneralDate endDate = query.getBaseDate();
-		//MonthlyWorkScheduleCondition condition = query.getCondition();
+		MonthlyWorkScheduleCondition condition = query.getCondition();
 		
 		// Always has item because this has passed error check
-		OutputItemMonthlyWorkSchedule outSche = outputItemRepo.findByCidAndCode(companyId, query.getCode()).get();
+		OutputItemMonthlyWorkSchedule outSche = outputItemRepo.findBySelectionAndCidAndSidAndCode(
+				ItemSelectionEnum.valueOf(condition.getItemSettingType())
+				, companyId
+				, query.getCode()
+				, AppContexts.user().employeeId()).get();
 		
 		// Get all data from query data container
 		List<MonthlyRecordValuesExport> lstAttendanceResultImport = queryData.getLstAttendanceResultImport();
@@ -1074,8 +1078,11 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		MonthlyWorkScheduleQuery query = queryData.getQuery();
 		YearMonth endDate = query.getEndYearMonth();
 		// Always has item because this has passed error check
-		OutputItemMonthlyWorkSchedule outSche = outputItemRepo
-				.findByCidAndCode(AppContexts.user().companyId(), query.getCode()).get();
+		OutputItemMonthlyWorkSchedule outSche = outputItemRepo.findBySelectionAndCidAndSidAndCode(
+				ItemSelectionEnum.valueOf(query.getCondition().getItemSettingType())
+				, AppContexts.user().companyId()
+				, query.getCode()
+				, AppContexts.user().employeeId()).get();
 		
 		// Get all data from query data container
 		List<YearMonth> datePeriod = queryData.getMonthPeriod();
