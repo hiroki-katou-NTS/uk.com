@@ -1,6 +1,6 @@
 /// <reference path="../../generic.d.ts/fullcalendar/index.d.ts" />
 
-module nts.uk.ui.koExtentions {
+module nts.uk.ui.components.fullcalendar {
     const { version } = nts.uk.util.browser;
 
     const C_COMP_NAME = 'fc-copy';
@@ -139,6 +139,14 @@ module nts.uk.ui.koExtentions {
         .fc-container .fc-list-week-button.active {
             color: #fff;
             background-color: #00B050;
+        }
+        .fc-container .fc-events.tree-list {
+            cursor: pointer;
+            height: 200px;
+            margin-top: 10px;
+            padding: 5px 0 5px 5px;
+            overflow: hidden auto;
+            border: 1px solid #ccc;
         }`;
 
     @handler({
@@ -276,7 +284,7 @@ module nts.uk.ui.koExtentions {
                     name: 'fc-datepicker',
                     params: $component.params
                 }"></div>
-            <div class="fc-events"></div>
+            <div class="fc-events" data-bind="component: { name: 'fc-external-events' }"></div>
             <div class="fc-component"></div>
         </div>
         <div class="fc-calendar"></div>
@@ -380,6 +388,7 @@ module nts.uk.ui.koExtentions {
             const { locale, event, events, scrollTime, firstDay, editable, initialDate, initialView, viewModel, attendanceTimes } = params;
 
             const $el = $(vm.$el);
+            const $dg = $el.find('div.fc-events').get(0);
             const $fc = $el.find('div.fc-calendar').get(0);
             const FC: FullCalendar | null = _.get(window, 'FullCalendar') || null;
             const updateActive = () => {
@@ -571,6 +580,11 @@ module nts.uk.ui.koExtentions {
             dataEvent.ctrl.valueHasMutated();
             dataEvent.shift.valueHasMutated();
 
+            new FC.Draggable($dg, {
+                itemSelector: '.title',
+                eventData: (evt) => ({ title: evt.innerText })
+            });
+
             const calendar = new FC.Calendar($fc, {
                 customButtons: {
                     'current-day': {
@@ -732,6 +746,7 @@ module nts.uk.ui.koExtentions {
                 scrollTime: formatTime(ko.unwrap(scrollTime)),
                 initialDate: formatDate(ko.unwrap(initialDate)),
                 editable: ko.unwrap(editable),
+                droppable: ko.unwrap(editable),
                 selectable: ko.unwrap(editable),
                 selectMirror: true,
                 selectMinDistance: 4,
@@ -907,6 +922,9 @@ module nts.uk.ui.koExtentions {
                             selectedEvents([{ start, end } as any]);
                         });
                 },
+                drop: (info) => {
+
+                },
                 selectOverlap: false, // (evt) => evt.allDay,
                 selectAllow: (evt) => evt.start.getDate() === evt.end.getDate(),
                 slotLabelContent: (opts: any) => {
@@ -1003,6 +1021,7 @@ module nts.uk.ui.koExtentions {
             if (ko.isObservable(editable)) {
                 editable.subscribe(e => {
                     calendar.setOption('editable', e);
+                    calendar.setOption('droppable', e);
                     calendar.setOption('selectable', e);
 
                     if (e !== false) {
@@ -1444,6 +1463,63 @@ module nts.uk.ui.koExtentions {
                 });
 
                 _.extend(window, { $dp });
+            }
+        }
+
+        const options = ko.observableArray([{
+            title: 'Option 1',
+            childs: [{
+                title: 'Option 11'
+            }, {
+                title: 'Option 11'
+            }, {
+                title: 'Option 11'
+            }, {
+                title: 'Option 11'
+            }, {
+                title: 'Option 11'
+            }]
+        }, {
+            title: 'Option 112'
+        }, {
+            title: 'Option 2',
+            childs: [{
+                title: 'Option 11'
+            }, {
+                title: 'Option 11'
+            }, {
+                title: 'Option 11'
+            }, {
+                title: 'Option 11'
+            }, {
+                title: 'Option 11'
+            }]
+        }, {
+            title: 'Option 2',
+            childs: [{
+                title: 'Option 11'
+            }, {
+                title: 'Option 11'
+            }, {
+                title: 'Option 11'
+            }, {
+                title: 'Option 11'
+            }, {
+                title: 'Option 11'
+            }]
+        }]);
+
+        @component({
+            name: 'fc-external-events',
+            template: `<div></div>`
+        })
+        export class FullCalendarListEventComponent extends ko.ViewModel {
+
+            mounted() {
+                const vm = this;
+                const { $el } = vm;
+
+                ko.applyBindingsToNode($el, { component: { name: 'tree-list', params: { options } } });
             }
         }
     }

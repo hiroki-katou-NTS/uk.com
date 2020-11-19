@@ -4,6 +4,9 @@ type FullCalendar = {
     Calendar: {
         new(el: HTMLElement, optionOverrides?: fc.CalendarOptions): fc.Calendar;
     };
+    Draggable: {
+        new(el: HTMLElement, optionOverrides?: fc.ThirdPartyDraggableSettings): any;
+    }
 };
 
 module fc {
