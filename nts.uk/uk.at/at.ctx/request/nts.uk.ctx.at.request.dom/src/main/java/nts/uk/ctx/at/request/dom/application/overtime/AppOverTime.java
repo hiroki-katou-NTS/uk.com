@@ -44,4 +44,40 @@ public class AppOverTime extends Application {
 		super(application);
 	}
 	
+	public void setApplication(Application application) {
+		this.setVersion(application.getVersion());
+		this.setAppID(application.getAppID());
+		this.setPrePostAtr(application.getPrePostAtr());
+		this.setEmployeeID(application.getEmployeeID());
+		this.setAppType(application.getAppType());
+		this.setAppDate(application.getAppDate());
+		this.setEnteredPersonID(application.getEnteredPersonID());
+		this.setInputDate(application.getInputDate());
+		this.setReflectionStatus(application.getReflectionStatus());
+		this.setOpStampRequestMode(application.getOpStampRequestMode());
+		this.setOpReversionReason(application.getOpReversionReason());
+		this.setOpAppStartDate(application.getOpAppStartDate());
+		this.setOpAppEndDate(application.getOpAppEndDate());
+		this.setOpAppReason(application.getOpAppReason());
+		this.setOpAppStandardReasonCD(application.getOpAppStandardReasonCD());
+	}
+	public Application getApplication() {
+		return new Application(
+				this.getVersion(),
+				this.getAppID(),
+				this.getPrePostAtr(),
+				this.getEmployeeID(),
+				this.getAppType(),
+				this.getAppDate(),
+				this.getEnteredPersonID(),
+				this.getInputDate(),
+				this.getReflectionStatus(),
+				this.getOpStampRequestMode(),
+				this.getOpReversionReason(),
+				this.getOpAppStartDate(),
+				this.getOpAppEndDate(),
+				this.getOpAppReason(),
+				this.getOpAppStandardReasonCD());
+	}
+	
 }

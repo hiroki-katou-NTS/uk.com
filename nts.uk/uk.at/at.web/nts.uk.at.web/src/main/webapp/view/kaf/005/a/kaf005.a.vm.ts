@@ -238,9 +238,105 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				.always(() => self.$blockui('hide'));
 		}
 		
+		toAppOverTime() {
+			const vm = this;
+			let dataSource = vm.dataSource;
+			let appOverTime = {} as AppOverTime;
+			appOverTime.overTimeClf = dataSource.overtimeAppAtr;
+			let workInfo = vm.workInfo() as WorkInfo;
+			let workInfoOp = {} as WorkInformation;
+			// work type and time
+			// A4 ---
+			if (!_.isNil(workInfo.workType())) {
+				workInfoOp.workType = workInfo.workType().code;
+				workInfoOp.workTime = workInfo.workTime().code;
+				appOverTime.workInfoOp = workInfoOp;
+			}
+			appOverTime.workHoursOp = [] as Array<TimeZoneWithWorkNo>;
+			if (!_.isNil(workInfo.workHours1.start) 
+						&& !_.isNil(workInfo.workHours1.end)) {
+				let timeZone = {} as TimeZoneWithWorkNo;
+				timeZone.workNo = 1;
+				timeZone.timeZone = {} as TimeZone_New;
+				timeZone.timeZone.startTime = workInfo.workHours1.start();
+				timeZone.timeZone.endTime = workInfo.workHours1.end();		
+				appOverTime.workHoursOp.push(timeZone);	
+			}
+			
+			if (!_.isNil(workInfo.workHours2.start) 
+						&& !_.isNil(workInfo.workHours2.end)) {
+				let timeZone = {} as TimeZoneWithWorkNo;
+				timeZone.workNo = 2;
+				timeZone.timeZone = {} as TimeZone_New;
+				timeZone.timeZone.startTime = workInfo.workHours2.start();
+				timeZone.timeZone.endTime = workInfo.workHours2.end();		
+				appOverTime.workHoursOp.push(timeZone);	
+			}
+			// A5 ---
+			let restTime = vm.restTime() as Array<RestTime>;
+			appOverTime.breakTimeOp = [] as Array<TimeZoneWithWorkNo>;
+			_.forEach(restTime, (item: RestTime) => {
+				if (!_.isNil(item.start()) && !_.isNil(item.end())) {
+					let timeZone = {} as TimeZoneWithWorkNo;
+					timeZone.workNo = Number(item.frameNo);
+					timeZone.timeZone = {} as TimeZone_New;
+					timeZone.timeZone.startTime = item.start();
+					timeZone.timeZone.endTime = item.end();
+					appOverTime.breakTimeOp.push(timeZone);
+				}
+			});
+			
+			// A6 ---
+			appOverTime.applicationTime = {} as ApplicationTime;
+			let applicationTime = appOverTime.applicationTime;
+			applicationTime.applicationTime = [] as Array<OvertimeApplicationSetting>;
+			
+			let overTime = vm.overTime() as Array<OverTime>;
+			_.forEach(overTime, (item: OverTime) => {
+				if (!_.isNil(item.applicationTime())) {
+					let overtimeApplicationSetting = {} as OvertimeApplicationSetting;
+					overtimeApplicationSetting.applicationTime = item.applicationTime();
+					overtimeApplicationSetting.frameNo = Number(item.frameNo);
+					overtimeApplicationSetting.attendanceType = AttendanceType.NORMALOVERTIME;
+					applicationTime.applicationTime.push(overtimeApplicationSetting);
+				}
+			});
+			let holidayTime = vm.holidayTime() as Array<HolidayTime>;
+			_.forEach(holidayTime, (item: HolidayTime) => {
+				if (!_.isNil(item.start())) {
+					let overtimeApplicationSetting = {} as OvertimeApplicationSetting;
+					overtimeApplicationSetting.applicationTime = item.start();
+					overtimeApplicationSetting.frameNo = Number(item.frameNo);
+					overtimeApplicationSetting.attendanceType = AttendanceType.BREAKTIME;
+					applicationTime.applicationTime.push(overtimeApplicationSetting);
+				}
+			})
+			
+			applicationTime.reasonDissociation = [] as Array<ReasonDivergence>;
+			
+			
+			
+			// 
+			appOverTime.application = {} as ApplicationDto;
+			appOverTime.application = ko.toJS(vm.application);
+			appOverTime.application.employeeID = vm.$user.employeeId;
+			appOverTime.application.inputDate = moment(new Date()).format('YYYY/MM/DD HH:mm:ss');
+			appOverTime.application.enteredPerson = vm.$user.employeeId;
+			
+			
+			
+			return appOverTime;
+		}
+		
 		register() {
 			const vm = this;
 			vm.$blockui("show");
+			let commandCheck = {} as ParamCheckBeforeRegister;
+			commandCheck.require = true;
+			commandCheck.appOverTime = vm.toAppOverTime();
+			commandCheck.displayInfoOverTime = vm.dataSource;
+			
+			
 			// validate chung KAF000
 			vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
 			.then((isValid) => {
@@ -251,7 +347,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			}).then((result) => {
 				// check trước khi đăng kí
 				if(result) {
-					return vm.$ajax('at', API.checkBefore, ["Msg_26"]);
+					return vm.$ajax('at', API.checkBefore, commandCheck);
 				}
 			}).then((result) => {
 				if (result) {
@@ -752,7 +848,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 	const API = {
 		start: 'at/request/application/overtime/start',
 		changeDate: 'at/request/application/overtime/changeDate',
-		checkBefore: '',
+		checkBefore: 'at/request/application/overtime/checkBeforeRegister',
 		register: '',
 		calculate: 'at/request/application/overtime/calculate'
 	}
@@ -1010,6 +1106,79 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		startTime: number;
 		endTime: number;
 		breakTime: number;
+	}
+	interface TimeZoneWithWorkNo {
+		workNo: number;
+		timeZone: TimeZone_New;
+	}
+	interface TimeZone_New {
+		startTime: number;
+		endTime: number;
+	}
+	interface AppOverTime {
+		overTimeClf: number;
+		applicationTime: ApplicationTime;
+		breakTimeOp?: Array<TimeZoneWithWorkNo>;
+		workHoursOp?: Array<TimeZoneWithWorkNo>;
+		workInfoOp?: WorkInformation;
+		detailOverTimeOp?: AppOvertimeDetail;
+		application: ApplicationDto;
+	}
+	interface AppOvertimeDetail {
+		applicationTime: number;
+		yearMonth: number;
+		actualTime: number;
+		limitErrorTime: number;
+		limitAlarmTime: number;
+		exceptionLimitErrorTime: number;
+		exceptionLimitAlarmTime: number;
+		year36OverMonth: Array<number>;
+		numOfYear36Over: number;
+		actualTimeAnnual: number;
+		limitTime: number;
+		appTimeAgreeUpperLimit: number;
+		overTime: number;
+		upperLimitTimeMonth: number;
+		averageTimeLst: Array<Time36UpLimitMonth>;
+		upperLimitTimeAverage: number;
+		
+	}
+	interface Time36UpLimitMonth {
+		periodYearStart: number;
+		periodYearEnd: number;
+		averageTime: number;
+		totalTime: number;
+	}
+	interface ApplicationDto {
+		version: number;
+		appID: string;
+		prePostAtr: number;
+		employeeID: string;
+		appType: number;
+		appDate: string;
+		enteredPerson: string;
+		inputDate: string;
+		reflectionStatus: ReflectionStatus
+		opStampRequestMode?: number;
+		opReversionReason?: string;
+		opAppStartDate?: string;
+		opAppEndDate?: string;
+		opAppReason?: string;
+		opAppStandardReasonCD?: number;
+	}
+	interface ReflectionStatus {
+		
+	}
+	interface WorkInformation {
+		workType: string;
+		workTime: string;
+	}
+	
+	interface ParamCheckBeforeRegister {
+		require: boolean;
+		companyId: string;
+		displayInfoOverTime: DisplayInfoOverTime;
+		appOverTime: AppOverTime;
 	}
 	
 	

@@ -17,7 +17,7 @@ public class AgreeOverTimeCommand {
 		return new AgreeOverTimeOutput(
 				detailCurrentMonth.toDomain(),
 				detailNextMonth.toDomain(),
-				new YearMonth(Integer.valueOf(currentMonth)),
-				new YearMonth(Integer.valueOf(nextMonth)));
+				new YearMonth(Integer.valueOf(currentMonth.split("/")[0])*100 + Integer.valueOf(currentMonth.split("/")[1])),
+				new YearMonth(Integer.valueOf(nextMonth.split("/")[0])*100 + Integer.valueOf(nextMonth.split("/")[1])));
 	}
 }

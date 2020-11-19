@@ -12,9 +12,11 @@ import org.apache.commons.lang3.StringUtils;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.CheckBeforeOutputDto;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
+import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.CheckBeforeOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayInfoOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
 
@@ -108,8 +110,16 @@ public class AppOvertimeFinder {
 		return DisplayInfoOverTimeDto.fromDomainCalculation(output);
 	}
 	
-	public void checkBeforeRegister() {
-		
+	public CheckBeforeOutputDto checkBeforeRegister(ParamCheckBeforeRegister param) {
+		CheckBeforeOutput output = null;
+		param.displayInfoOverTime.toDomain();
+		param.appOverTime.toDomain();
+//				overtimeService.checkErrorRegister(
+//				param.require,
+//				param.companyId,
+//				param.displayInfoOverTime.toDomain(),
+//				param.appOverTime.toDomain());
+		return CheckBeforeOutputDto.fromDomain(output);
 	}
 	
 }

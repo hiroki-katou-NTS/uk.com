@@ -6,11 +6,14 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.request.app.find.application.gobackdirectly.ParamBeforeRegister;
 import nts.uk.ctx.at.request.app.find.application.overtime.AppOvertimeFinder;
 import nts.uk.ctx.at.request.app.find.application.overtime.DisplayInfoOverTimeDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.ParamCalculation;
+import nts.uk.ctx.at.request.app.find.application.overtime.ParamCheckBeforeRegister;
 import nts.uk.ctx.at.request.app.find.application.overtime.ParamOverTimeChangeDate;
 import nts.uk.ctx.at.request.app.find.application.overtime.ParamOverTimeStart;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.CheckBeforeOutputDto;
 /**
  * Refactor5 
  * @author hoangnd
@@ -44,8 +47,8 @@ public class OvertimeWebService extends WebService {
 	
 	@POST
 	@Path("checkBeforeRegister")
-	public DisplayInfoOverTimeDto checkBeforeRegister(ParamCalculation param) {
-		return appOvertimeFinder.calculate(param);
+	public CheckBeforeOutputDto checkBeforeRegister(ParamCheckBeforeRegister param) {
+		return appOvertimeFinder.checkBeforeRegister(param);
 	}
 	
 	
