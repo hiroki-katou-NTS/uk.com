@@ -203,7 +203,7 @@ module nts.uk.at.view.kmp001.a {
 					vm.validate()
 						.then((valid: boolean) => {
 							if (valid) {
-								if (!vm.methodEdit){
+								if (!ko.unwrap(vm.methodEdit)){
 									var s = (ko.toJS(vm.stampCardEdit.stampCardDigitNumber) - stampInput.length);
 
 									if (s > 0) {
