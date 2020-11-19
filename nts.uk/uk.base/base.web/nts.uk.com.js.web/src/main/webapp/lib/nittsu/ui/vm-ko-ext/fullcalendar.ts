@@ -1425,7 +1425,7 @@ module nts.uk.ui.koExtentions {
 
                 ko.computed({
                     read: () => {
-                        $dp.datepicker('setDate', ko.unwrap(params.date));
+                        $dp.datepicker('setDate', ko.unwrap(params.initialDate));
                     },
                     disposeWhenNodeIsRemoved: $el
                 });
