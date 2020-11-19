@@ -63,6 +63,9 @@ module nts.uk.ui.koExtentions {
         .fc-container .fc-scrollgrid table {
             border-right-style: solid;
             border-bottom-style: hidden;
+        }        
+        .fc-container .fc-button-group button {
+            min-width: 32px;
         }
         .fc-container .fc-button-group button:focus {
             z-index: 2;
@@ -570,6 +573,64 @@ module nts.uk.ui.koExtentions {
 
             const calendar = new FC.Calendar($fc, {
                 customButtons: {
+                    'current-day': {
+                        text: '今日',
+                        click: () => {
+                            if (ko.isObservable(initialDate)) {
+                                initialDate(new Date());
+                            } else {
+                                calendar.gotoDate(formatDate(new Date()));
+                            }
+                        }
+                    },
+                    'next-day': {
+                        text: '›',
+                        click: () => {
+                            if (ko.isObservable(initialDate)) {
+                                const date = ko.unwrap(initialDate);
+                                const view = ko.unwrap(initialView);
+
+                                switch (view) {
+                                    case 'oneDay':
+                                        initialDate(moment(date).add(1, 'day').toDate());
+                                        break;
+                                    default:
+                                    case 'fiveDay':
+                                    case 'fullWeek':
+                                    case 'listWeek':
+                                        initialDate(moment(date).add(1, 'week').toDate());
+                                        break;
+                                    case 'fullMonth':
+                                        initialDate(moment(date).add(1, 'month').toDate());
+                                        break;
+                                }
+                            }
+                        }
+                    },
+                    'preview-day': {
+                        text: '‹',
+                        click: () => {
+                            if (ko.isObservable(initialDate)) {
+                                const date = ko.unwrap(initialDate);
+                                const view = ko.unwrap(initialView);
+
+                                switch (view) {
+                                    case 'oneDay':
+                                        initialDate(moment(date).subtract(1, 'day').toDate());
+                                        break;
+                                    default:
+                                    case 'fiveDay':
+                                    case 'fullWeek':
+                                    case 'listWeek':
+                                        initialDate(moment(date).subtract(1, 'week').toDate());
+                                        break;
+                                    case 'fullMonth':
+                                        initialDate(moment(date).subtract(1, 'month').toDate());
+                                        break;
+                                }
+                            }
+                        }
+                    },
                     'copy-day': {
                         text: '1日分コピー',
                         click: (evt) => {
@@ -658,7 +719,7 @@ module nts.uk.ui.koExtentions {
                 },
                 height: '500px',
                 headerToolbar: {
-                    left: 'today prev,next one-day,five-day,full-week,full-month,list-week',
+                    left: 'current-day preview-day,next-day one-day,five-day,full-week,full-month,list-week',
                     center: 'title',
                     right: 'copy-day'
                 },
@@ -872,65 +933,17 @@ module nts.uk.ui.koExtentions {
                     return `fc-timegrid-slot-lane-${hour}`;
                 },
                 datesSet: (dateInfo) => {
+                    const current = moment().startOf('day');
                     const { start, end } = dateInfo;
+                    const $btn = $el.find('.fc-current-day-button');
 
                     selectedEvents([]);
                     datesSet({ start, end });
 
-                    if (ko.isObservable(initialDate)) {
-                        const locale = moment.locale();
-                        const fdy = ko.unwrap(firstDay);
-                        const idt = ko.unwrap(initialDate);
-                        const view = ko.unwrap(initialView);
-
-                        moment
-                            .updateLocale(locale, {
-                                week: {
-                                    dow: fdy,
-                                    doy: 0
-                                }
-                            });
-
-                        const mid = moment(idt);
-
-                        if (view === 'oneDay') {
-                            initialDate(start);
-                        } else if (['fiveDay', 'fullWeek', 'listWeek'].indexOf(view) > -1) {
-                            const changeable = !mid.isSame(start, 'week');
-
-                            if (changeable) {
-                                if (mid.isBefore(start, 'day')) {
-                                    initialDate(mid.add(1, 'week').toDate());
-                                } else {
-                                    initialDate(mid.subtract(1, 'week').toDate());
-                                }
-                            }
-                        } else if (view === 'fullMonth') {
-                            const smonth = moment(start);
-
-                            if (smonth.get('date') > 1) {
-                                smonth.add(1, 'month');
-                            }
-
-                            const changeable = !mid.isSame(smonth, 'month');
-
-                            if (changeable) {
-                                if (mid.isBefore(start, 'day')) {
-                                    initialDate(mid.add(1, 'month').toDate());
-                                } else {
-                                    console.log('subtract', mid.toDate(), start, end);
-                                    initialDate(mid.subtract(1, 'month').toDate());
-                                }
-                            }
-                        }
-
-                        moment
-                            .updateLocale(locale, {
-                                week: {
-                                    dow: 0,
-                                    doy: 0
-                                }
-                            });
+                    if (current.isBetween(start, end, 'date', '[)')) {
+                        $btn.attr('disabled', 'disabled');
+                    } else {
+                        $btn.removeAttr('disabled');
                     }
 
                     event.datesSet.apply(viewModel, [start, end]);
