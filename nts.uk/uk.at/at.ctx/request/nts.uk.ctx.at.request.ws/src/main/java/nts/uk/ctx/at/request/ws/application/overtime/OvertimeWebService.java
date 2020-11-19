@@ -42,5 +42,11 @@ public class OvertimeWebService extends WebService {
 		return appOvertimeFinder.calculate(param);
 	}
 	
+	@POST
+	@Path("checkBeforeRegister")
+	public DisplayInfoOverTimeDto checkBeforeRegister(ParamCalculation param) {
+		return appOvertimeFinder.calculate(param);
+	}
+	
 	
 }

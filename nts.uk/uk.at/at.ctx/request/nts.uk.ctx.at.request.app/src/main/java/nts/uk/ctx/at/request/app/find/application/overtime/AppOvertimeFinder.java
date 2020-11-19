@@ -108,4 +108,8 @@ public class AppOvertimeFinder {
 		return DisplayInfoOverTimeDto.fromDomainCalculation(output);
 	}
 	
+	public void checkBeforeRegister() {
+		
+	}
+	
 }
