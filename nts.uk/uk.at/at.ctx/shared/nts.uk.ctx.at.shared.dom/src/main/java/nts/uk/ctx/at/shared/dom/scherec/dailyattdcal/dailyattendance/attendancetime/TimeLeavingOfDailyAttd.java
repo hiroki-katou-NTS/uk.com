@@ -15,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.WorkInfoAndTimeZone;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.worktime.TimeLeaveChangeEvent;
@@ -221,6 +222,36 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 		}
 		
 		return null;
+	}
+	
+	public Optional<WorkStamp> getStampOfAttendanceStamp(WorkNo workNo) {
+		
+		Optional<TimeLeavingWork> timeLeavingWork = this.getAttendanceLeavingWork(workNo);
+		
+		if ( ! timeLeavingWork.isPresent() ) {
+			return Optional.empty();
+		}
+		
+		if ( ! timeLeavingWork.get().getAttendanceStamp().isPresent() ) {
+			return Optional.empty();
+		}
+		
+		return timeLeavingWork.get().getAttendanceStamp().get().getStamp();
+	}
+	
+	public Optional<WorkStamp> getStampOfLeaveStamp(WorkNo workNo) {
+		
+		Optional<TimeLeavingWork> timeLeavingWork = this.getAttendanceLeavingWork(workNo);
+		
+		if ( ! timeLeavingWork.isPresent() ) {
+			return Optional.empty();
+		}
+		
+		if ( ! timeLeavingWork.get().getLeaveStamp().isPresent() ) {
+			return Optional.empty();
+		}
+		
+		return timeLeavingWork.get().getLeaveStamp().get().getStamp();
 	}
 	
 	public static interface Require extends WorkInformation.Require{
