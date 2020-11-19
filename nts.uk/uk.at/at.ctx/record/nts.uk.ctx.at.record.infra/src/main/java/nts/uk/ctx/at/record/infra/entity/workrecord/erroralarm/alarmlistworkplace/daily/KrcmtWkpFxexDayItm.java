@@ -38,10 +38,6 @@ public class KrcmtWkpFxexDayItm extends UkJpaEntity {
     @Column(name = "FIRST_MESSAGE_DIS")
     public String firstMessageDisp;
 
-    /* メッセージを太字にする */
-    @Column(name = "MESSAGE_BOLD")
-    public boolean boldAtr;
-
     /* メッセージの色 */
     @Column(name = "MESSAGE_COLOR")
     public String messageColor;
@@ -58,7 +54,6 @@ public class KrcmtWkpFxexDayItm extends UkJpaEntity {
         entity.dailyCheckName = domain.getDailyCheckName();
         entity.alarmCheckCls = domain.getAlarmCheckCls().value;
         entity.firstMessageDisp = domain.getFirstMessageDisp().v();
-        entity.boldAtr = domain.isBoldAtr();
 
         entity.messageColor = domain.getMessageColor().map(i -> i.v()).orElse(null);
 
@@ -69,7 +64,6 @@ public class KrcmtWkpFxexDayItm extends UkJpaEntity {
         return FixedExtractionDayItems.create(
                 this.fixedCheckDayItems,
                 this.alarmCheckCls,
-                this.boldAtr,
                 this.dailyCheckName,
                 this.firstMessageDisp,
                 this.messageColor
