@@ -491,8 +491,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 // khởi tạo data localStorage khi khởi động lần đầu.
                 self.creatDataLocalStorege(data.dataBasicDto);
                 
-                self.setHeightScreen();
-                
                 __viewContext.viewModel.viewAB.filter(data.dataBasicDto.unit == 0 ? true : false);
                 __viewContext.viewModel.viewAB.workplaceIdKCP013(data.dataBasicDto.unit == 0 ? data.dataBasicDto.workplaceId : data.dataBasicDto.workplaceGroupId);
                 
@@ -515,6 +513,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.setUpdateMode();
                 self.setDataWorkType(data.listWorkTypeInfo);
                 self.checkEnableCombWTime();
+                self.setHeightScreen();
                 self.setPositionButonToRightToLeft();
                 self.flag = false;
                 dfd.resolve();
@@ -1710,7 +1709,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let leftmostDs = dataBindGrid.leftmostDs;
 
             leftmostColumns = [{
-                key: "codeNameOfEmp", headerText: getText("KSU001_56"), width: "160px", icon: { for: "body", class: "icon-leftmost", width: "25px" },
+                key: "codeNameOfEmp", headerText: getText("KSU001_205"), width: "160px", icon: { for: "body", class: "icon-leftmost", width: "25px" },
                 css: { whiteSpace: "pre" }, control: "link", handler: function(rData, rowIdx, key) { console.log(rowIdx); },
                 headerControl: "link", headerHandler: function() { alert("Link!"); }
             }];
@@ -1976,7 +1975,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             // update phan leftMost
             let leftmostDs = dataBindGrid.leftmostDs;
             let leftmostColumns = [{
-                key: "codeNameOfEmp", headerText: getText("KSU001_56"), width: "160px", icon: { for: "body", class: "icon-leftmost", width: "25px" },
+                key: "codeNameOfEmp", headerText: getText("KSU001_205"), width: "160px", icon: { for: "body", class: "icon-leftmost", width: "25px" },
                 css: { whiteSpace: "pre" }, control: "link", handler: function(rData, rowIdx, key) { console.log(rowIdx); },
                 headerControl: "link", headerHandler: function() { alert("Link!"); }
             }];
@@ -2376,12 +2375,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let itemLocal = uk.localStorage.getItem(self.KEY);
             let userInfor = JSON.parse(itemLocal.get());
             if (userInfor.gridHeightSelection == 1) {
-                $("#content-main").css('overflow-y', 'hidden');
                 $("#content-main").css('height', 'auto');
             } else {
-                var height = window.innerHeight - 205;
-                $("#content-main").css('overflow-y', 'scroll');
-                $("#content-main").css('height', height + 'px');
+                let heightGrid: number = parseInt(userInfor.heightGridSetting);
+                $("#main-area").css('height', window.innerHeight - 92 + 'px');
+                $("#main-area").css('overflow-y', 'scroll');
+                if(window.innerHeight - 92 > heightGrid + 295){
+                    $("#main-area").css('overflow-y', 'hidden');
+                }
             }
         }
         
