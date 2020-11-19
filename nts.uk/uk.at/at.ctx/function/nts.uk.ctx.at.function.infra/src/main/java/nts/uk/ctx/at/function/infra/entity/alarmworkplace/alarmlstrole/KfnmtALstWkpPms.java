@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.infra.entity.alarmworkplace.alarmlstrole;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.function.infra.entity.alarmworkplace.alarmpatternworkplace.KfnmtALstWkpPtn;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -13,6 +14,7 @@ import java.io.Serializable;
  */
 @AllArgsConstructor
 @Entity
+@NoArgsConstructor
 @Table(name = "KFNMT_ALSTWKP_PMS")
 public class KfnmtALstWkpPms extends UkJpaEntity implements Serializable {
 

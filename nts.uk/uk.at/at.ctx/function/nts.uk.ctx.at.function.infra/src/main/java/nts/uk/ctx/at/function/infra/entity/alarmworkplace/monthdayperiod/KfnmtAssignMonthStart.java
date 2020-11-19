@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.infra.entity.alarmworkplace.monthdayperiod;
 
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification;
@@ -16,6 +17,7 @@ import java.io.Serializable;
  * entity : 月数指定
  */
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "KFNMT_ASSIGN_MON_START")
 public class KfnmtAssignMonthStart extends UkJpaEntity implements Serializable {
