@@ -22,6 +22,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.TimezoneToUseHourlyHoliday;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
@@ -354,83 +355,83 @@ public class WorkSchedule implements DomainAggregate {
 	
 			case 157:
 				// 休憩開始時刻1(157)
-				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNumber(1, true);
+				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNo( new BreakFrameNo(1) , true);
 	
 			case 159:
 				// 休憩終了時刻1(159)
-				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNumber(1, false);
+				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNo( new BreakFrameNo(1), false);
 	
 			case 163:
 				// 休憩開始時刻2(163)
-				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNumber(2, true);
+				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNo( new BreakFrameNo(2), true);
 	
 			case 165:
 				// 休憩終了時刻2(165)
-				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNumber(2, false);
+				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNo( new BreakFrameNo(2), false);
 	
 			case 169:
 				// 休憩開始時刻3(169)
-				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNumber(3, true);
+				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNo( new BreakFrameNo(3), true);
 	
 			case 171:
 				// 休憩終了時刻3(171)
-				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNumber(3, false);
+				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNo( new BreakFrameNo(3), false);
 	
 			case 175:
 				// 休憩開始時刻4(175)
-				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNumber(4, true);
+				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNo( new BreakFrameNo(4), true);
 	
 			case 177:
 				// 休憩終了時刻4(177)
-				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNumber(4, false);
+				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNo( new BreakFrameNo(4), false);
 	
 			case 181:
 				// 休憩開始時刻5(181)
-				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNumber(5, true);
+				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNo( new BreakFrameNo(5), true);
 	
 			case 183:
 				// 休憩終了時刻5(183)
-				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNumber(5, false);
+				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNo( new BreakFrameNo(5), false);
 	
 			case 187:
 				// 休憩開始時刻6(187)
-				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNumber(6, true);
+				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNo( new BreakFrameNo(6), true);
 	
 			case 189:
 				// 休憩終了時刻6(189)
-				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNumber(6, false);
+				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNo( new BreakFrameNo(6), false);
 	
 			case 193:
 				// 休憩開始時刻7(193)
-				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNumber(7, true);
+				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNo( new BreakFrameNo(7), true);
 	
 			case 195:
 				// 休憩終了時刻7(195)
-				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNumber(7, false);
+				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNo( new BreakFrameNo(7), false);
 	
 			case 199:
 				// 休憩開始時刻8(199)
-				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNumber(8, true);
+				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNo( new BreakFrameNo(8), true);
 	
 			case 201:
 				// 休憩終了時刻8(201)
-				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNumber(8, false);
+				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNo( new BreakFrameNo(8), false);
 	
 			case 205:
 				// 休憩開始時刻9(205)
-				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNumber(9, true);
+				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNo( new BreakFrameNo(9), true);
 	
 			case 207:
 				// 休憩終了時刻9(207)
-				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNumber(9, false);
+				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNo( new BreakFrameNo(9), false);
 	
 			case 211:
 				// 休憩開始時刻10(211)
-				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNumber(10, true);
+				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNo( new BreakFrameNo(10), true);
 	
 			case 213:
 				// 休憩終了時刻10(213)
-				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNumber(10, false);
+				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNo( new BreakFrameNo(10), false);
 			default:
 				return Optional.empty();
 		}

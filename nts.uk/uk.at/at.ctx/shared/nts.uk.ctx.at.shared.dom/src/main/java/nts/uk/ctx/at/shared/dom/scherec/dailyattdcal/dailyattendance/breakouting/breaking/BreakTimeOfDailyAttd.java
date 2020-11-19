@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.objecttype.DomainObject;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -38,19 +39,21 @@ public class BreakTimeOfDailyAttd implements DomainObject {
 	}
 	
 	/**
-	 * 休憩時刻を取る
-	 * @param number 休憩時間帯NO　1~10
+	 * 休憩枠NOで休憩時刻を取る
+	 * @param breakFrameNo 休憩枠NO
 	 * @param startTime 開始時刻か
 	 * @return
 	 */
-	public Optional<TimeWithDayAttr> getBreakTimeWithNumber(int number, boolean startTime) {
+	public Optional<TimeWithDayAttr> getBreakTimeWithNo(BreakFrameNo breakFrameNo, boolean startTime) {
 		
-		if ( this.breakTimeSheets.size() < number ) return Optional.empty(); 
+		Optional<BreakTimeSheet> breakTimeSheet = this.breakTimeSheets.stream()
+															.filter( sheet -> sheet.getBreakFrameNo().equals(breakFrameNo))
+															.findFirst();
+		if ( !breakTimeSheet.isPresent() ) {
+			return Optional.empty();
+		}
 		
-		TimeWithDayAttr timeWithDay = startTime ? 
-				this.breakTimeSheets.get(number - 1).getStartTime() :
-				this.breakTimeSheets.get(number - 1).getEndTime();
-		
+		TimeWithDayAttr timeWithDay = startTime ? breakTimeSheet.get().getStartTime() : breakTimeSheet.get().getEndTime();
 		return Optional.of(timeWithDay);
 	}
 	
