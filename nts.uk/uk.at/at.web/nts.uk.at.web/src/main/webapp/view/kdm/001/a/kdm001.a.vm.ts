@@ -216,7 +216,8 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                                 columnKey: 'occurrenceDay',
                                 mergeOn: 'always',
                                 mergeStrategy: (prevRec: any, curRec: any, columnKey: any) =>
-                                    this.isMergeStrategy(prevRec, curRec, columnKey)
+                                    prevRec[ 'accrualDate' ] === curRec[ 'accrualDate' ]
+                                    && this.isMergeStrategy(prevRec, curRec, columnKey)
                             },
                             {
                                 columnKey: 'legalDistinction',
@@ -234,20 +235,20 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                                 columnKey: 'digestionDays',
                                 mergeOn: 'always',
                                 mergeStrategy: (prevRec: any, curRec: any, columnKey: any) =>
-                                    prevRec[ 'digestionDay' ] === curRec[ 'digestionDay' ] &&
-                                    this.isMergeStrategy(prevRec, curRec, columnKey)
+                                    prevRec[ 'digestionDay' ] === curRec[ 'digestionDay' ]
+                                    && this.isMergeStrategy(prevRec, curRec, columnKey)
                             },
                             {
                                 columnKey: 'dayLetf',
                                 mergeOn: 'always',
                                 mergeStrategy: (prevRec: any, curRec: any, columnKey: any) =>
-                                    this.isMergeStrategy(prevRec, curRec, columnKey)
+                                    prevRec['mergeCell'] === curRec['mergeCell'] && prevRec[columnKey] === curRec[columnKey]
                             },
                             {
                                 columnKey: 'usedDay',
                                 mergeOn: 'always',
                                 mergeStrategy: (prevRec: any, curRec: any, columnKey: any) =>
-                                    this.isMergeStrategy(prevRec, curRec, columnKey)
+                                    prevRec['mergeCell'] === curRec['mergeCell'] && prevRec[columnKey] === curRec[columnKey]
                             },
                             {
                                 columnKey: 'delete',
@@ -273,14 +274,14 @@ module nts.uk.at.view.kdm001.a.viewmodel {
               if(vm.listEmployee){
                 vm.selectedEmployeeObject= _.find(vm.listEmployee, item => { return item.employeeId === x; });
               }
-              this.updateDataList(false);
+              this.updateDataList(true);
             });
             vm.selectedPeriodItem.subscribe(period => {
                 if (period === 0) {
                     nts.uk.ui.errors.clearAll();
-                    this.updateDataList(false);
+                    this.updateDataList(true);
                 } else {
-                    this.updateDataList(false);
+                    this.updateDataList(true);
                 }
             });
         }
@@ -306,16 +307,13 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                 };
 
                 service.removePayout(data).done(() => {
-                    dialog.info({ messageId: "Msg_16" });
+                    dialog.info({ messageId: "Msg_16" })
+                        .then(() => self.updateDataList(true));
                 }).fail(function (res) {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId });
-                }).always(function () {
-                    block.clear();
-                    self.updateDataList(false);
-                });
-            }).then(() => {
-                block.clear();
-            });
+                    self.updateDataList(true);
+                }).always(() => block.clear());
+            }).then(() => block.clear());
         }
 
         openNewSubstituteData() {
@@ -327,7 +325,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
 
                 if (params.isSuccess) {
                     self.selectedPeriodItem(1);
-                    self.updateDataList(false);
+                    self.updateDataList(true);
                 }
 
                 $('#compositePayOutSubMngDataGrid').focus();
@@ -448,8 +446,10 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                             employeeId: emp.sid, employeeCode: emp.employeeCode, employeeName: emp.employeeName,
                             workplaceId: wp.workplaceId, workplaceCode: wp.code, workplaceName: wp.name
                         };
-                        self.employeeInputList.push(new EmployeeKcp009(emp.sid,
-                            emp.employeeCode, emp.employeeName, wp.name, wp.name));
+
+                        if (!_.find(self.employeeInputList(), item => item.id === emp.sid)) {
+                            self.employeeInputList.push(new EmployeeKcp009(emp.sid, emp.employeeCode, emp.employeeName, wp.name, wp.name));
+                        }
                         self.initKCP009();
                         dfd.resolve();
                     }
@@ -734,7 +734,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             if (params.accrualDate) {
                 dayOffPayout = params.accrualDate;
             }
-            this.accrualDate = params.unknownDatePayout ? dayOffPayout + "※" : dayOffPayout;
+            this.accrualDate = !_.isEmpty(params.occurrenceId) && params.occurrenceId !== 0 && _.isEmpty(params.accrualDate) ? getText('KDM001_160') : dayOffPayout;
             this.deadLine = params.deadLine;
             this.legalDistinction = params.legalDistinction;
             this.unUsedDays = params.unUsedDays;
@@ -746,7 +746,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             if (params.digestionDay) {
                 digestionDay = params.digestionDay;
             }
-            this.digestionDay = params.unknownDateSub ? digestionDay + "※" : digestionDay;
+            this.digestionDay = !_.isEmpty(params.digestionId) && params.digestionId !== 0 && _.isEmpty(params.digestionDay) ? getText('KDM001_160') : digestionDay;
             this.remainDays = params.remainDays;
 
             if (params.occurrenceDay > 0) {
