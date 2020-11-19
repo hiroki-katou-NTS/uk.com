@@ -31,7 +31,7 @@ module nts.uk.at.view.kaf004_ref.shr.b.viewmodel {
                                 value: $parent.workManagement.workTime,
                                 option: {timeWithDay: true, width: '90'},
                                 constraint: 'TimeWithDayAttr',
-                                enable: !ko.toJS($parent.condition8(1))
+                                enable: ko.toJS($parent.condition8(1))
                             }" />
                                 </span>
                                 <!-- A6_5 -->
@@ -66,7 +66,7 @@ module nts.uk.at.view.kaf004_ref.shr.b.viewmodel {
                                 value: $parent.workManagement.leaveTime,
                                 option: {timeWithDay: true, width: '90'},
                                 constraint: 'TimeWithDayAttr',
-                                enable: !ko.toJS($parent.condition8(2))
+                                enable: ko.toJS($parent.condition8(2))
                             }" />
                                 </span>
 
@@ -103,7 +103,7 @@ module nts.uk.at.view.kaf004_ref.shr.b.viewmodel {
                                 value: $parent.workManagement.workTime2,
                                 option: {timeWithDay: true, width: '90'},
                                 constraint: 'TimeWithDayAttr',
-                                enable: !ko.toJS($parent.condition8(3))
+                                enable: ko.toJS($parent.condition8(3))
                             }" />
                                 </span>
 
@@ -139,7 +139,7 @@ module nts.uk.at.view.kaf004_ref.shr.b.viewmodel {
                                 value: $parent.workManagement.leaveTime2,
                                 option: {timeWithDay: true, width: '90'},
                                 constraint: 'TimeWithDayAttr',
-                                enable: !ko.toJS($parent.condition8(4))
+                                enable: ko.toJS($parent.condition8(4))
                             }" />
                                 </span>
 

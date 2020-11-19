@@ -9,27 +9,27 @@ import lombok.val;
 //import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.FlexWithinWorkTimeSheet;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.HolidayWorkFrameTimeSheetForCalc;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.OutsideWorkTimeSheet;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.TimeSheetRoundingAtr;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.WithinOutingTotalTime;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AdditionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.ConditionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.DeductionTotalTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.FlexWithinWorkTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.HolidayWorkFrameTimeSheetForCalc;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManageReGetClass;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.OutsideWorkTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSheetRoundingAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.WithinOutingTotalTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTimeSheetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeFrame;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeSheet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.ManageReGetClass;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.TimevacationUseTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.enums.AdditionAtr;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.enums.GoOutReason;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexCalcSetting;
@@ -45,7 +45,7 @@ public class OutingTimeOfDaily {
 	//回数：休憩外出回数
 	private BreakTimeGoOutTimes workTime;
 	//外出理由：外出理由
-	private GoOutReason reason;
+	private GoingOutReason reason;
 	//休暇使用時間：日別実績の時間休暇使用時間
 	private TimevacationUseTimeOfDaily timeVacationUseOfDaily;
 	//計上用合計時間：外出合計時間
@@ -59,7 +59,7 @@ public class OutingTimeOfDaily {
 	/**
 	 * Constcutor
 	 */
-	public OutingTimeOfDaily(BreakTimeGoOutTimes workTime, GoOutReason reason,
+	public OutingTimeOfDaily(BreakTimeGoOutTimes workTime, GoingOutReason reason,
 			TimevacationUseTimeOfDaily timeVacationUseOfDaily, OutingTotalTime recordTotalTime,
 			OutingTotalTime deductionTotalTime, List<OutingTimeSheet> outingTimeSheets) {
 		super();
@@ -122,6 +122,9 @@ public class OutingTimeOfDaily {
 				new AttendanceTime(0),
 				new AttendanceTime(0),
 				new AttendanceTime(0),
+				new AttendanceTime(0),
+				Optional.empty(),
+				new AttendanceTime(0),
 				new AttendanceTime(0));
 		
 		OutingTotalTime recordTotalTime = OutingTotalTime.of(
@@ -156,7 +159,7 @@ public class OutingTimeOfDaily {
 		}
 		return new OutingTimeOfDaily(
 				goOutTimes,
-				GoOutReason.OFFICAL, 
+				GoingOutReason.UNION, 
 				useVacationTime, 
 				recordTotalTime, 
 				dedTotalTime,

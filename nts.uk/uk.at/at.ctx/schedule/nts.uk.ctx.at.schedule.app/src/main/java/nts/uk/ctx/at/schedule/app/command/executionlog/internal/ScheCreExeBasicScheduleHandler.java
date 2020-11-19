@@ -50,7 +50,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.WorkScheduleState;
 import nts.uk.ctx.at.schedule.dom.scheduleitemmanagement.ScheduleItem;
 import nts.uk.ctx.at.schedule.dom.scheduleitemmanagement.ScheduleItemManagementRepository;
 import nts.uk.ctx.at.shared.app.command.worktime.predset.dto.PrescribedTimezoneSettingDto;
-import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeHis;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
@@ -357,7 +357,7 @@ public class ScheCreExeBasicScheduleHandler {
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void resetAllDataToCommandSave(BasicScheduleResetCommand command, GeneralDate toDate,
-			EmployeeGeneralInfoImported empGeneralInfo, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis,
+			EmployeeGeneralInfoImported empGeneralInfo, List<BusinessTypeOfEmployeeHis> listBusTypeOfEmpHis,
 			List<BasicSchedule> listBasicSchedule, DateRegistedEmpSche dateRegistedEmpSche) {
 		String employeeId = command.getEmployeeId();
 		String workTypeCode = command.getWorkTypeCode();
@@ -500,20 +500,20 @@ public class ScheCreExeBasicScheduleHandler {
 	// 就業時間帯再設定
 	private BasicScheduleSaveCommand resetWorkTime(BasicScheduleResetCommand command,
 			BasicScheduleSaveCommand commandSave) {
-
+		// comment để fix bug 111066
 		// check 就業時間帯再設定 is TRUE
-		if (command.getResetAtr().getResetWorkingHours()) {
-			WorkTimeSetGetterCommand commandGetter = new WorkTimeSetGetterCommand();
-			commandGetter.setWorktypeCode(command.getWorkTypeCode());
-			commandGetter.setCompanyId(command.getCompanyId());
-			commandGetter.setWorkingCode(command.getWorkingCode());
-			Optional<PrescribedTimezoneSetting> optionalWorkTimeSet = this.scheCreExeWorkTimeHandler
-					.getScheduleWorkHour(commandGetter);
-			if (optionalWorkTimeSet.isPresent()) {
-				PrescribedTimezoneSetting workTimeSet = optionalWorkTimeSet.get();
-				commandSave.updateWorkScheduleTimeZones(workTimeSet);
-			}
-		}
+//		if (command.getResetAtr().getResetWorkingHours()) {
+//			WorkTimeSetGetterCommand commandGetter = new WorkTimeSetGetterCommand();
+//			commandGetter.setWorktypeCode(command.getWorkTypeCode());
+//			commandGetter.setCompanyId(command.getCompanyId());
+//			commandGetter.setWorkingCode(command.getWorkingCode());
+//			Optional<PrescribedTimezoneSetting> optionalWorkTimeSet = this.scheCreExeWorkTimeHandler
+//					.getScheduleWorkHour(commandGetter);
+//			if (optionalWorkTimeSet.isPresent()) {
+//				PrescribedTimezoneSetting workTimeSet = optionalWorkTimeSet.get();
+//				commandSave.updateWorkScheduleTimeZones(workTimeSet);
+//			}
+//		}
 		return commandSave;
 	}
 	
@@ -566,7 +566,7 @@ public class ScheCreExeBasicScheduleHandler {
 	 * @param toDate
 	 */
 	private boolean saveScheduleMaster(BasicScheduleSaveCommand commandSave, String executionId,
-			EmployeeGeneralInfoImported empGeneralInfo, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis) {
+			EmployeeGeneralInfoImported empGeneralInfo, List<BusinessTypeOfEmployeeHis> listBusTypeOfEmpHis) {
 		// 勤務予定マスタ情報を取得する
 		Optional<ScheduleMasterInformationDto> scheduleMasterInforOpt = this.scheduleMasterInformationService
 				.getScheduleMasterInformationDto(commandSave.getEmployeeId(), commandSave.getYmd(), executionId,

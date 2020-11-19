@@ -3,13 +3,13 @@ package nts.uk.ctx.at.record.app.find.dailyperform.common;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Data
@@ -23,10 +23,6 @@ public class TimeStampDto implements ItemConst {
 	@AttendanceItemValue(type = ValueType.TIME_WITH_DAY)
 	private Integer timesOfDay;
 
-	/** 丸め後の時刻 */
-	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = ROUNDING)
-	@AttendanceItemValue(type = ValueType.TIME_WITH_DAY)
-	private Integer afterRoundingTimesOfDay;
 
 	/** 場所コード */
 	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = PLACE)
@@ -38,19 +34,18 @@ public class TimeStampDto implements ItemConst {
 	public static TimeStampDto createTimeStamp(WorkStamp c) {
 		return  c == null || c.getTimeDay().getTimeWithDay()  == null || c.getTimeDay().getReasonTimeChange() ==null || c.getTimeDay().getReasonTimeChange().getTimeChangeMeans() ==null  || !c.getTimeDay().getTimeWithDay().isPresent()? null : new TimeStampDto(
 					c.getTimeDay().getTimeWithDay().isPresent() && c.getTimeDay().getTimeWithDay() !=null ? c.getTimeDay().getTimeWithDay().get().valueAsMinutes():null,
-												c.getAfterRoundingTime() == null ? null : c.getAfterRoundingTime().valueAsMinutes(),
 												!c.getLocationCode().isPresent() ? null : c.getLocationCode().get().v(),
 												c.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value);
 	}
 	
 	@Override
 	public TimeStampDto clone() {
-		return new TimeStampDto(timesOfDay, afterRoundingTimesOfDay, placeCode, stampSourceInfo);
+		return new TimeStampDto(timesOfDay, placeCode, stampSourceInfo);
 	}
 	
 	public static WorkStamp toDomain(TimeStampDto c) {
-		return c == null || c.getTimesOfDay() == null ? null : new WorkStamp(
-				c.getAfterRoundingTimesOfDay() == null ? TimeWithDayAttr.THE_PRESENT_DAY_0000 : new TimeWithDayAttr(c.getAfterRoundingTimesOfDay()),
+		return c == null || c.getTimesOfDay() == null ? null 
+				: new WorkStamp(
 				new TimeWithDayAttr(c.getTimesOfDay()),
 				c.getPlaceCode() == null ? null : new WorkLocationCD(c.getPlaceCode()),
 				c.stampInfo());

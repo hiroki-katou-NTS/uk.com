@@ -26,7 +26,6 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerforma
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.repo.AttendanceTimeByWorkOfDailyRepository;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
-import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
@@ -128,8 +127,8 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	private AffiliationInforOfDailyPerforRepository affiliationInforOfDailyPerforRepository;
 	
 	/** リポジトリ：日別実績の勤務種別 */
-	@Inject
-	private WorkTypeOfDailyPerforRepository workTypeOfDailyPerforRepository;
+//	@Inject
+//	private WorkTypeOfDailyPerforRepository workTypeOfDailyPerforRepository;
 	
 	/** リポジトリ：日別実績のPCログオン情報 */
 	@Inject
@@ -606,9 +605,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 			/** リポジトリ：日別実績の所属情報 */
 			val affiInfo = affiliationInforOfDailyPerforRepository.findByKey(employeeId, attendanceTime.getYmd());
 
-			/** リポジトリ：日別実績の勤務種別 */
-			val businessType = workTypeOfDailyPerforRepository.findByKey(employeeId, attendanceTime.getYmd());
-			if(!workInf.isPresent() || !affiInfo.isPresent() || !businessType.isPresent())//calAttr == null
+			if(!workInf.isPresent() || !affiInfo.isPresent())//calAttr == null
 				continue;
 			workInf.get().getWorkInformation().setVer(workInf.get().getVersion());
 			/** リポジトリ：日別実績のPCログオン情報 */

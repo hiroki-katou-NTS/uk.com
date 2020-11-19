@@ -4,8 +4,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.shared.dom.bonuspay.services.BPUnitUseSettingService;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.BPUnitUseSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.services.BPUnitUseSettingService;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BPUnitUseSetting;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

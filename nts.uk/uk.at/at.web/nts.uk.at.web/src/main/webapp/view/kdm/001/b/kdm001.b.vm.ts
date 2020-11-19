@@ -1,15 +1,17 @@
-module nts.uk.at.view.kdm001.b.viewmodel {
+﻿module nts.uk.at.view.kdm001.b.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import setShared = nts.uk.ui.windows.setShared;
     import dialog = nts.uk.ui.dialog;
     import getText = nts.uk.resource.getText;
     import modal = nts.uk.ui.windows.sub.modal;
     import block = nts.uk.ui.block;
+
     export class ScreenModel {
         periodOptionItem: KnockoutObservableArray<ItemModel>;
         selectedPeriodItem: KnockoutObservable<number>;
         dateValue: KnockoutObservable<any>;
         dispTotalRemainHours: KnockoutObservable<string> = ko.observable(null);
+        totalRemainingNumber: string = '';
         dispExpiredDate: KnockoutObservable<string> = ko.observable(null);
         closureEmploy: any;
         selectedEmployee: EmployeeInfo;
@@ -20,6 +22,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         compenSettingEmpExpiredDate: string
         isHaveError: KnockoutObservable<boolean> = ko.observable(false);
         unknowEmployeeInfo = false;
+        expiredDateText: string;
         //_____CCG001________
         ccgcomponent: GroupOption;
         listEmployeeKCP009: KnockoutObservableArray<EmployeeSearchDto>;
@@ -34,12 +37,17 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         selectedItem: KnockoutObservable<string> = ko.observable(null);
         isOnStartUp: boolean = true;
         tabindex: number = -1;
+        /** A4_3  凡例 */        
+        legendOptions: any;
+        startDate: string = '';
+        endDate: string = '';
+
         constructor() {
             let self = this;
             self.initSubstituteDataList();
             self.periodOptionItem = ko.observableArray([
                 new ItemModel(0, getText("KDM001_4")),
-                new ItemModel(1, getText("KDM001_5"))
+                new ItemModel(1, getText("KDM001_152"))
             ]);
             self.selectedPeriodItem = ko.observable(0);
             self.dateValue = ko.observable({});
@@ -91,6 +99,15 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                     self.convertEmployeeCcg01ToKcp009(data.listEmployee);
                 }
             }
+            /** A4_3  凡例 */ 
+            self.legendOptions = {											
+                // name: '#[KDM001_153]',
+                items: [
+                    { labelText: nts.uk.resource.getText("KDM001_154") },
+                    { labelText: nts.uk.resource.getText("KDM001_155") },
+                    { labelText: nts.uk.resource.getText("KDM001_156") }
+                ]
+            };
             self.selectedItem.subscribe(x => {
                 if (!self.isOnStartUp) {
                     self.selectedEmployee = _.find(self.listEmployee, item => { return item.employeeId === x; });
@@ -106,10 +123,18 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             });
             self.selectedPeriodItem.subscribe(x => {
                 if (x == 0){
+                    self.startPage()
+                    block.clear();
                     nts.uk.ui.errors.clearAll();
                 }
+                else if (x == 1){
+                    self.getSubstituteDataList(self.getSearchCondition());
+                    block.clear();
+                    nts.uk.ui.errors.clearAll();
+                }    
             });
         }
+
         openConfirmScreen() {
             let self = this, data;
             data = {
@@ -123,6 +148,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             };
             nts.uk.request.jump("/view/kdr/003/a/index.xhtml", { 'param': data });
         }
+
         openNewSubstituteData() {
             let self = this;
             setShared('KDM001_I_PARAMS', { selectedEmployee: self.selectedEmployee, closure: self.closureEmploy });
@@ -131,15 +157,18 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                 if (resParam) {
                     let isDataChanged = resParam.isChanged;
                     if (isDataChanged) {
+                        self.selectedPeriodItem(1);
                         self.getSubstituteDataList(self.getSearchCondition());
                     }
                 }
                 $('#substituteDataGrid').focus();
             });
         }
+
         goToScreenA() {
             nts.uk.request.jump("/view/kdm/001/a/index.xhtml");
         }
+
         filterByPeriod() {
             let self = this;
             if (!nts.uk.ui.errors.hasError()) {
@@ -147,6 +176,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                 $('#substituteDataGrid').focus();
             }
         }
+
         getSubstituteDataList(searchCondition: any, isShowMsg?: boolean) {
             let self = this;
             if (self.selectedPeriodItem() == 1){
@@ -154,6 +184,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             }
             if (!nts.uk.ui.errors.hasError()) {
                 service.getExtraHolidayData(searchCondition).done(function(result) {
+                    
                     if (self.unknowEmployeeInfo){ 
                         if (result.wkHistory){
                             self.selectedEmployee.workplaceId = result.wkHistory.workplaceId;
@@ -165,13 +196,13 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                     }
                     if (result.closureEmploy && result.sempHistoryImport){
                         self.closureEmploy = result.closureEmploy;
-                        self.listExtractData = result.extraData;
+                        self.listExtractData = result.remainingData;
+                        self.startDate = result.startDate;
+                        self.endDate = result.endDate;
                         self.convertToDisplayList(isShowMsg);
                         self.updateSubstituteDataList();
                         self.isHaveError(false);
-                        if (result.empSettingExpiredDate.length>0){
-                            self.dispExpiredDate(result.empSettingExpiredDate);
-                        } else self.dispExpiredDate(result.companySettingExpiredDate);
+                        self.dispExpiredDate(result.dispExpiredDate);
                     } else {
                         self.subData = [];
                         self.updateSubstituteDataList();
@@ -180,26 +211,32 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                         self.isHaveError(true);
                         dialog.alertError({messageId: 'Msg_1306'});
                     }
+                    self.totalRemainingNumber = result.totalRemainingNumber;
                 }).fail(function(result) {
-                    dialog.alertError(result.errorMessage);
+                    if (result.messageId && result.messageId === 'Msg_1731') {
+                        self.isHaveError(true);
+                    }
+                    self.subData = [];
+                    self.updateSubstituteDataList();
+                    dialog.alertError({ messageId: result.messageId, messageParams: result.parameterIds })
                 });
             }
         }
+
         getSearchCondition() {
-            let self = this, startDate, endDate, searchCondition = null;
-            startDate = moment.utc(self.dateValue().startDate, 'YYYY/MM/DD').toISOString();
-            endDate = moment.utc(self.dateValue().endDate, 'YYYY/MM/DD').toISOString();
-            searchCondition = null;
+            let self = this;
+            let searchCondition = null;
             if (self.selectedPeriodItem() == 1) {
-                searchCondition = { searchMode: 1, employeeId: self.selectedEmployee.employeeId, startDate: startDate, endDate: endDate };
+                searchCondition = { searchMode: 1, employeeId: self.selectedEmployee.employeeId, startDate: null, endDate: null };
             } else {
                 searchCondition = { searchMode: 0, employeeId: self.selectedEmployee.employeeId, startDate: null, endDate: null };
             }
             return searchCondition;
         }
+
         convertToDisplayList(isShowMsg?: boolean) {
             let self = this;
-            let totalRemain = 0, dayOffDate, occurredDays, remain, expired, requireDays, listData = [];
+            let totalRemain = 0, dayOffDate, remain, expired, listData = [];
             _.forEach(self.listExtractData, data => {
                 dayOffDate = data.dayOffDate;
                 remain = data.remain;
@@ -209,43 +246,65 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                     expired = expired * -1;
                 }
                 totalRemain += remain + expired;
-                if (remain != 0) {
-                    remain = remain.toFixed(1) + getText('KDM001_27');
-                }
-                if (expired != 0) { 
-                    expired = expired.toFixed(1) + getText('KDM001_27');
-                }
+
                 if (data.unknownDate == 1) {
                     if (!dayOffDate){
-                        dayOffDate = '※';
-                    } else dayOffDate += '※';
-                    
+                        dayOffDate = '';
+                    } else dayOffDate += '';
+                   
                 }
-                if (data.type == 0) {
-                    occurredDays = data.occurredDays;
-                    if (occurredDays != 0) {
-                        occurredDays = occurredDays.toFixed(1) + getText('KDM001_27');
-                    }
-                    listData.push(new SubstitutedData(data.id, dayOffDate, occurredDays, data.linked == 1 ? getText('KDM001_130') : "", null, null, null, remain, expired, data.linked, 0));
+
+                let substituedexpiredDate = '';
+                if (data.deadLine === '') {
+                    substituedexpiredDate = '';
+                } else if (moment.utc(self.startDate).isSameOrBefore(moment.utc(data.deadLine))
+                    && moment.utc(self.endDate).isSameOrAfter(moment.utc(data.deadLine))) {
+                    substituedexpiredDate = getText('KDM001_161', [data.deadLine]);
+                } else if (moment.utc(self.startDate).isSameOrAfter(moment.utc(data.deadLine)) && data.usedDay > 0) {
+                    substituedexpiredDate = getText('KDM001_162', [data.deadLine]);
                 } else {
-                    requireDays = data.requireDays;
-                    if (requireDays != 0) {
-                        requireDays = requireDays.toFixed(1) + getText('KDM001_27');
-                    }
-                    listData.push(new SubstitutedData(data.comDayOffID, null, null, null, dayOffDate, requireDays, data.linked == 1 ? getText('KDM001_130') : "", remain, expired, data.linked, 1));
+                    substituedexpiredDate = getText('KDM001_163', [data.deadLine]);
                 }
+
+                data.occurrenceHour = data.occurrenceHour === 0 ? '' : data.occurrenceHour;
+                data.digestionTimes = data.digestionTimes === 0 ? '' : data.digestionTimes;
+                data.usedTime = data.usedTime === 0 ? '' : data.usedTime;
+                data.remainingHours = data.remainingHours === 0 ? '' : data.remainingHours;
+
+                listData.push(new SubstitutedData(
+                    `${data.occurrenceId}${data.digestionId}`,
+                    data.occurrenceId,
+                    data.digestionId,
+                    !_.isEmpty(data.occurrenceId) && data.occurrenceId !== 0 && _.isEmpty(data.accrualDate) ? getText('KDM001_160') : data.accrualDate, // B4_1_1
+                    data.occurrenceDay === 0 ? '' : data.occurrenceDay + getText('KDM001_27') + data.occurrenceHour, //B4_2_2
+                    null,
+                    substituedexpiredDate, //B4_4_2
+                    !_.isEmpty(data.digestionId) && data.digestionId !== 0 && _.isEmpty(data.digestionDay) ? getText('KDM001_160') : data.digestionDay, //B4_2_3
+                    data.digestionDays > 0 ? data.digestionDays + getText('KDM001_27') + data.digestionTimes : data.digestionTimes, //B4_2_4
+                    null,
+                    data.dayLetf > 0 ? data.dayLetf + getText('KDM001_27') + data.remainingHours : data.remainingHours, //B4_2_5
+                    data.usedDay === 0 && data.usedTime === '' ? '' : data.usedDay + getText('KDM001_27') + data.usedTime, //B4_2_6
+                    null,
+                    null,
+                    data.mergeCell
+                ));
+
             });
-            if (isShowMsg && self.listExtractData.length == 0) {
+            if (isShowMsg && self.listExtractData.length === 0) {
                 dialog.alertError({ messageId: 'Msg_726' });
             }
             self.subData = listData;
-            self.dispTotalRemainHours(totalRemain + getText('KDM001_27'));
+            console.log("Data 1: ",self.subData);
+            
+            self.dispTotalRemainHours(self.totalRemainingNumber + getText('KDM001_27'));
         }
+
         initSubstituteDataList() {
             let self = this;
             self.showSubstiteDataGrid();
 
         }
+
         updateSubstituteDataList() {
             let self = this;
             $("#substituteDataGrid").igGrid("dataSourceObject", self.subData).igGrid("dataBind");
@@ -256,59 +315,102 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             let self = this;
             $("#substituteDataGrid").ntsGrid({
             	height: window.innerHeight - 400 + 'px',
-                name: 'Grid name',
                 dataSource: self.subData,
                 primaryKey: 'id',
                 virtualization: true,
-                hidePrimaryKey: true,
                 rowVirtualization: true,
                 virtualizationMode: 'continuous',
                 columns: [
                     { headerText: 'ID', key: 'id', dataType: 'string', width: '0px', hidden: true },
                     { headerText: 'linked', key: 'isLinked', dataType: 'string', width: '0px', hidden: true },
                     { headerText: 'dataType', key: 'dataType', dataType: 'string', width: '0px', hidden: true },
-                    { headerText: getText('KDM001_33'), template: '<div style="float:right"> ${substituedWorkingDate} </div>', key: 'substituedWorkingDate', dataType: 'string', width: '120px' },
+                    { headerText: 'occurrenceId', key: 'occurrenceId', dataType: 'string', width: '0px', hidden: true },
+                    { headerText: 'digestionId', key: 'digestionId', dataType: 'string', width: '0px', hidden: true },
+                    { headerText: 'mergeCell', key: 'mergeCell', dataType: 'string', width: '0px', hidden: true },
+                    { headerText: 'substituedexpiredDate', key: 'substituedexpiredDate', dataType: 'string', width: '0px',  hidden: true },
+                    { headerText: getText('KDM001_33') + ' ' + getText('KDM001_157'), template: '<div style="float:left"> ${substituedWorkingDate} ${substituedexpiredDate} </div>', key: 'substituedWorkingDate', dataType: 'string', width: '210px' },
                     { headerText: getText('KDM001_9'), template: '<div style="float:right"> ${substituedWorkingHours} </div>', key: 'substituedWorkingHours', dataType: 'string', width: '102px' },
-                    { headerText: getText('KDM001_124'), key: 'substituedWorkingPeg', dataType: 'string', width: '102px' },
-                    { headerText: getText('KDM001_34'), template: '<div style="float:right"> ${substituedHolidayDate} </div>', key: 'substituedHolidayDate', dataType: 'string', width: '120px' },
+                    { headerText: getText('KDM001_34'), template: '<div style="float:left"> ${substituedHolidayDate} </div>', key: 'substituedHolidayDate', dataType: 'string', width: '120px' },
                     { headerText: getText('KDM001_11'), template: '<div style="float:right"> ${substituteHolidayHours} </div>', key: 'substituteHolidayHours', dataType: 'string', width: '102px' },
-                    { headerText: getText('KDM001_124'), key: 'substituedHolidayPeg', dataType: 'string', width: '102px' },
                     { headerText: getText('KDM001_37'), template: '<div style="float:right"> ${remainHolidayHours} </div>', key: 'remainHolidayHours', dataType: 'string', width: '102px' },
-                    { headerText: getText('KDM001_20'), template: '<div style="float:right"> ${expiredHolidayHours} </div>', key: 'expiredHolidayHours', dataType: 'string', width: '102px' },
-                    { headerText: '', key: 'link', dataType: 'string', width: '86px', unbound: true, ntsControl: 'ButtonPegSetting' },
-                    { headerText: '', key: 'edit', dataType: 'string', width: '55px', unbound: true, ntsControl: 'ButtonCorrection' }
+                    { headerText: getText('KDM001_20'), template: '<div style="float:right"> ${expiredHolidayHours} </div>', key: 'expiredHolidayHours', dataType: 'string', width: '102px' },              
+                    { headerText: '', key: 'delete', dataType: 'string', width: '55px', unbound: true, ntsControl: 'ButtonCorrection' }
                 ],
                 features: [
                     {
-                        name: 'Paging',
-                        type: "local",
-                        pageSize: 15,
-                        pageSizeList : [15, 50, 100]
+                        name: 'CellMerging',
+                        mergeType: 'physical',
+                        columnSettings: [
+                            {
+                                columnKey: 'substituedWorkingDate',
+                                mergeOn: 'always',
+                                mergeStrategy: (prevRec: any, curRec: any, columnKey: any) =>
+                                    this.isMergeStrategy(prevRec, curRec, columnKey)
+                            },
+                            {
+                                columnKey: 'substituedWorkingHours',
+                                mergeOn: 'always',
+                                mergeStrategy: (prevRec: any, curRec: any, columnKey: any) =>
+                                    prevRec['substituedWorkingDate'] === curRec['substituedWorkingDate']
+                                    && this.isMergeStrategy(prevRec, curRec, columnKey)
+                            },
+                            {
+                                columnKey: 'substituedHolidayDate',
+                                mergeOn: 'always',
+                                mergeStrategy: (prevRec: any, curRec: any, columnKey: any) =>
+                                    this.isMergeStrategy(prevRec, curRec, columnKey)
+                            },
+                            {
+                                columnKey: 'substituteHolidayHours',
+                                mergeOn: 'always',
+                                mergeStrategy: (prevRec: any, curRec: any, columnKey: any) =>
+                                    prevRec['substituedHolidayDate'] === curRec['substituedHolidayDate']
+                                    && this.isMergeStrategy(prevRec, curRec, columnKey)
+                            },
+                            {
+                                columnKey: 'remainHolidayHours',
+                                mergeOn: 'always',
+                                mergeStrategy: (prevRec: any, curRec: any, columnKey: any) =>
+                                    prevRec['mergeCell'] === curRec['mergeCell'] && prevRec[columnKey] === curRec[columnKey]
+                            },
+                            {
+                                columnKey: 'expiredHolidayHours',
+                                mergeOn: 'always',
+                                mergeStrategy: (prevRec: any, curRec: any, columnKey: any) =>
+                                    prevRec['mergeCell'] === curRec['mergeCell'] && prevRec[columnKey] === curRec[columnKey]
+                            },
+                            {
+                                columnKey: 'delete',
+                                mergeOn: 'always',
+                                mergeStrategy: (prevRec: any, curRec: any) => prevRec['mergeCell'] === curRec['mergeCell']
+                            }
+                        ]
                     },
                     {
-                        name : 'Resizing',
-                        columnSettings: [
-                            { columnKey: "id", allowResizing: false },
-                            { columnKey: "isLinked", allowResizing: false },
-                            { columnKey: "substituedWorkingDate", allowResizing: false },
-                            { columnKey: "substituedWorkingHours", allowResizing: false },
-                            { columnKey: "substituedWorkingPeg", allowResizing: false },
-                            { columnKey: "substituedHolidayDate", allowResizing: false },
-                            { columnKey: "substituteHolidayHours", allowResizing: false },
-                            { columnKey: "substituedHolidayPeg", allowResizing: false },
-                            { columnKey: "remainHolidayHours", allowResizing: false },
-                            { columnKey: "expiredHolidayHours", allowResizing: false },
-                            { columnKey: "link", allowResizing: false },
-                            { columnKey: "edit", allowResizing: false }, 
-                        ],
-                    }
+                        name: 'Paging',
+                        type: "local",
+                        pageSize: 100,
+                        pageSizeList : [15, 50, 100]
+                    },
                 ],
-                ntsControls: [
-                    { name: 'ButtonPegSetting', text: getText('KDM001_22'), click: function(value) { self.pegSetting(value) }, controlType: 'Button' },
-                    { name: 'ButtonCorrection', text: getText('KDM001_23'), click: function(value) { self.doCorrection(value) }, controlType: 'Button' }
+                ntsControls: [                
+                    { name: 'ButtonCorrection', text: getText('KDM001_100'), click: (value: any) => { self.deleteHolidaySetting(value) }, controlType: 'Button' }
                 ]
+                
             });
+            
         }
+
+        isMergeStrategy(prevRec: any, curRec: any, columnKey: any): boolean {
+            if ($.type(prevRec[ columnKey ]) === 'string' &&
+                $.type(curRec[ columnKey ]) === 'string' &&
+                prevRec[ 'mergeCell' ] === curRec[ 'mergeCell' ] &&
+                !_.isEmpty(prevRec[ columnKey ])) {
+                    return prevRec[ columnKey ].toLowerCase() === curRec[ columnKey ].toLowerCase();
+            }
+            return false;
+        }
+
         disableLinkedData() {
             let self = this;
             if (self.subData) {
@@ -321,28 +423,48 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                 }
             }
         }
+
         startPage(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred(), searchCondition;
             block.invisible();
-            searchCondition = { employeeId: null, stateDate: null, endDate: null };
-            service.getInfoEmLogin().done(function(loginerInfo) {
-                service.getSubsitutionData(searchCondition).done(function(result) {
-                    if (result.extraHolidayManagementDataDto.closureEmploy && result.extraHolidayManagementDataDto.sempHistoryImport){
+            service.getInfoEmLogin().done(loginerInfo => {
+                service.getWpName().then((wp: any) => {
+                    if (!_.find(self.employeeInputList(), item => item.id === loginerInfo.sid)) {
+                        self.employeeInputList.push(new EmployeeKcp009(loginerInfo.sid,
+                            loginerInfo.employeeCode, loginerInfo.employeeName, wp.name, wp.name));
+
+                        self.selectedEmployee = {
+                            employeeId: loginerInfo.sid, employeeCode: loginerInfo.employeeCode, employeeName: loginerInfo.employeeName,
+                            workplaceId: wp.workplaceId, workplaceCode: wp.code, workplaceName: wp.name
+                        };
+                    }
+                    setTimeout(() => {
+                        self.initKCP009();
+                    }, 10);
+                    dfd.resolve();
+                });
+                const employeeId = self.selectedEmployee ? self.selectedEmployee.employeeId : null;
+                searchCondition = { searchMode: self.selectedPeriodItem(), employeeId: employeeId };
+                service.getExtraHolidayData(searchCondition).done(result => {
+                    if (result.closureEmploy && result.sempHistoryImport) {
                         let wkHistory = result.wkHistory;
-                        self.closureEmploy = result.extraHolidayManagementDataDto.closureEmploy;
+                        self.closureEmploy = result.closureEmploy;
                         self.listEmployee = [];
                         self.selectedEmployee = new EmployeeInfo(loginerInfo.sid, loginerInfo.employeeCode, loginerInfo.employeeName, wkHistory.workplaceId, wkHistory.workplaceCode, wkHistory.workplaceName);
                         self.listEmployee.push(self.selectedEmployee);
-                        self.employeeInputList.push(new EmployeeKcp009(loginerInfo.sid,
-                            loginerInfo.employeeCode, loginerInfo.employeeName, wkHistory.workplaceName, wkHistory.wkpDisplayName));
-                        self.listExtractData = result.extraHolidayManagementDataDto.extraData;
-                        self.convertToDisplayList();
+                        if (!_.find(self.employeeInputList(), item => item.id === loginerInfo.sid))
+                            self.employeeInputList.push(new EmployeeKcp009(loginerInfo.sid,
+                                loginerInfo.employeeCode, loginerInfo.employeeName, wkHistory.workplaceName, wkHistory.wkpDisplayName));
+                        self.listExtractData = result.remainingData;
+                        self.totalRemainingNumber = result.totalRemainingNumber;
+                        self.startDate = result.startDate;
+                        self.endDate = result.endDate;
+                        self.convertToDisplayList(true);
                         self.updateSubstituteDataList();
                         self.isHaveError(false);
-                        if (result.extraHolidayManagementDataDto.empSettingExpiredDate.length>0){
-                            self.dispExpiredDate(result.extraHolidayManagementDataDto.empSettingExpiredDate);
-                        } else self.dispExpiredDate(result.extraHolidayManagementDataDto.companySettingExpiredDate);
-                        self.initKCP009();
+                        if (result.dispExpiredDate){
+                            self.dispExpiredDate(result.dispExpiredDate);
+                        }
                         self.disableLinkedData();
                     }else{
                         self.subData = [];
@@ -353,15 +475,23 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                     }
                     dfd.resolve();
                 }).fail(function(result) {
-                    dialog.alertError(result.errorMessage).then(function() { nts.uk.ui.block.clear(); });
+                    self.subData = [];
+                    self.updateSubstituteDataList();
+                    if (result.messageId && result.messageId === 'Msg_1731') {
+                        self.isHaveError(true);
+                    }
+                    
+                    dialog.alertError({ messageId: result.messageId, messageParams: result.parameterIds }).then(() => block.clear());
                     dfd.reject();
                 });
             }).fail(function(result) {
-                dialog.alertError(result.errorMessage).then(function() { nts.uk.ui.block.clear(); });
+                dialog.alertError({ messageId: result.messageId, messageParams: result.parameterIds }).then(() => block.clear());
                 dfd.reject();
             });
+
             return dfd.promise();
         }
+
         initKCP009() {
             let self = this;
             //_______KCP009_______
@@ -400,7 +530,8 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                 return obj.employeeId == selectedItem;
             })
         }
-        pegSetting(value) {
+        
+        pegSetting(value: any) {
             let self = this, rowDataInfo;
             if (value.dataType == 0) {
                 rowDataInfo = _.find(self.listExtractData, x => {
@@ -433,45 +564,54 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                 });
             }
         }
-        doCorrection(value) {
-            let self = this, rowDataInfo;
-            if (value.dataType == 0) {
-                rowDataInfo = _.find(self.listExtractData, x => {
-                    return x.id === value.id;
-                });
-                setShared('KDM001_L_PARAMS', { row: rowDataInfo, selectedEmployee: self.selectedEmployee, closure: self.closureEmploy });
-                modal("/view/kdm/001/l/index.xhtml").onClosed(function() {
-                    let resParam = getShared("KDM001_L_PARAMS_RES");
-                    if (resParam) {
-                        let isDataChanged = resParam.isChanged; 
-                        if (isDataChanged) {
-                            self.getSubstituteDataList(self.getSearchCondition());
-                        }
-                    }
-                });
-            } else {
-                rowDataInfo = _.find(self.listExtractData, x => {
-                    return x.comDayOffID === value.id;
-                });
-                setShared('KDM001_M_PARAMS', { row: rowDataInfo, selectedEmployee: self.selectedEmployee, closure: self.closureEmploy });
-                modal("/view/kdm/001/m/index.xhtml").onClosed(function() {
-                    let resParam = getShared("KDM001_M_PARAMS_RES");
-                    if (resParam) {
-                        let isDataChanged = resParam.isChanged; 
-                        if (isDataChanged) {
-                            self.getSubstituteDataList(self.getSearchCondition());
-                        }
-                    }
-                });
-            }
+
+        // B4_2_9 削除
+        deleteHolidaySetting(value: any): void {
+            block.invisible();
+            //確認メッセージ（Msg_18）を表示する
+            dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                let self = this, rowDataInfo
+                if (value.dataType == 0) {
+                    rowDataInfo = _.find(self.listExtractData, x => {
+                        return x.id === value.id;
+                    });
+                } else {
+                    rowDataInfo = _.find(self.listExtractData, x => {
+                        return x.comDayOffID === value.id;
+                    });
+                }
+                let command = {
+                        leaveId: value.occurrenceId,
+                        comDayOffID: value.digestionId
+                };
+                service.deleteHolidaySetting(command)
+                    .then(() => dialog.info({ messageId: "Msg_16" }).then(() => self.getSubstituteDataList(self.getSearchCondition(), true)))
+                    .fail(error => {
+                        dialog.alertError(error);
+                        self.getSubstituteDataList(self.getSearchCondition(), true);
+                    })
+                    .always(() => block.clear());
+            })
+            .then(() => block.clear());
+        }
+
+        /**
+        * closeDialog
+        */
+        public closeDialog(): void {
+            nts.uk.ui.windows.close();
         }
     }
 
+
     export class SubstitutedData {
         id: string;
+        occurrenceId: string;
+        digestionId: string;
         substituedWorkingDate: string;
         substituedWorkingHours: string;
         substituedWorkingPeg: string;
+        substituedexpiredDate: string;
         substituedHolidayDate: string;
         substituteHolidayHours: string;
         substituedHolidayPeg: string;
@@ -479,13 +619,17 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         expiredHolidayHours: string;
         isLinked: number;
         dataType: number;
-        constructor(id: string, substituedWorkingDate: string, substituedWorkingHours: string, substituedWorkingPeg: string,
+        mergeCell: number;
+        constructor(id: string, occurrenceId: string, digestionId: string, substituedWorkingDate: string, substituedWorkingHours: string, substituedWorkingPeg: string, substituedexpiredDate: string,
             substituedHolidayDate: string, substituteHolidayHours: string, substituedHolidayPeg: string, remainHolidayHours: string,
-            expiredHolidayHours: string, isLinked: number, dataType: number) {
+            expiredHolidayHours: string, isLinked: number, dataType: number, mergeCell: number) {
             this.id = id;
+            this.occurrenceId = occurrenceId;
+            this.digestionId = digestionId;
             this.substituedWorkingDate = substituedWorkingDate;
             this.substituedWorkingHours = substituedWorkingHours;
             this.substituedWorkingPeg = substituedWorkingPeg;
+            this.substituedexpiredDate = substituedexpiredDate;
             this.substituedHolidayDate = substituedHolidayDate;
             this.substituteHolidayHours = substituteHolidayHours;
             this.substituedHolidayPeg = substituedHolidayPeg;
@@ -493,6 +637,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             this.expiredHolidayHours = expiredHolidayHours;
             this.isLinked = isLinked;
             this.dataType = dataType;
+            this.mergeCell = mergeCell;
         }
     }
 
@@ -611,4 +756,3 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         listEmployee: Array<EmployeeSearchDto>; // 検索結果
     }
 }
-

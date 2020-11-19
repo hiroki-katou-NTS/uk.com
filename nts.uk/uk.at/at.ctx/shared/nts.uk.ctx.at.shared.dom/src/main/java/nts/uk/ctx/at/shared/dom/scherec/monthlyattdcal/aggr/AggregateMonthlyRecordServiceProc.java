@@ -8,7 +8,6 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
-import java.util.stream.Collectors;
 
 import javax.enterprise.concurrent.ManagedExecutorService;
 
@@ -24,12 +23,10 @@ import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.util.value.MutableValue;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
-import nts.uk.ctx.at.shared.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.days.MonthlyDays;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.JobTitleId;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecMngInPeriodParamInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
@@ -63,7 +60,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.RemainDaysO
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveManagementService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveRemainNoMinus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.JobTitleId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
@@ -270,7 +267,8 @@ public class AggregateMonthlyRecordServiceProc {
 		this.IntegrateHistoryOfSameWorkSys(require, workingConditionItems);
 
 		// 所属情報の作成
-		val affiliationInfo = this.createAffiliationInfo(require, monthPeriod);
+		val affiliationInfo = this.createAffiliationInfo(monthPeriod);
+		
 		if (affiliationInfo == null) {
 			for (val errorInfo : this.errorInfos.values()) {
 				this.aggregateResult.getErrorInfos().putIfAbsent(errorInfo.getResourceId(), errorInfo);
@@ -1565,7 +1563,7 @@ public class AggregateMonthlyRecordServiceProc {
 	 *            期間
 	 * @return 月別実績の所属情報
 	 */
-	private AffiliationInfoOfMonthly createAffiliationInfo(RequireM2 require, DatePeriod datePeriod) {
+	private AffiliationInfoOfMonthly createAffiliationInfo(DatePeriod datePeriod) {
 
 		List<String> employeeIds = new ArrayList<>();
 		employeeIds.add(this.employeeId);
@@ -1575,11 +1573,8 @@ public class AggregateMonthlyRecordServiceProc {
 		if (this.monthlyCalculatingDailys.getWorkInfoOfDailyMap().containsKey(datePeriod.start())) {
 			isExistStartWorkInfo = true;
 		}
-		val firstInfoOfDailyList = require.dailyAffiliationInfors(employeeIds, datePeriod);
-		val sortedInfoOfDaily = firstInfoOfDailyList.entrySet().stream()
-				.sorted((a, b) -> a.getKey().compareTo(b.getKey()))
-				.map(c -> c.getValue()).collect(Collectors.toList());
-		if (firstInfoOfDailyList.size() <= 0) {
+		val workInfoOfDailyList = monthlyCalculatingDailys.getAffiInfoOfDailyMap();
+		if (workInfoOfDailyList.isEmpty()) {
 			if (isExistStartWorkInfo) {
 				val errorInfo = new MonthlyAggregationErrorInfo("003",
 						new ErrMessageContent(TextResource.localize("Msg_1157")));
@@ -1587,10 +1582,8 @@ public class AggregateMonthlyRecordServiceProc {
 			}
 			return null;
 		}
-		val firstInfoOfDaily = sortedInfoOfDaily.get(0);
-//		val firstWorkTypeOfDailyList = require.dailyWorkTypes(employeeIds, datePeriod);
-//		firstWorkTypeOfDailyList.sort((a, b) -> a.getDate().compareTo(b.getDate()));
-		if (!firstInfoOfDaily.getBusinessTypeCode().isPresent()) {
+		val firstInfoOfDaily = workInfoOfDailyList.get(datePeriod.start());
+		if (firstInfoOfDaily == null) {
 			if (isExistStartWorkInfo) {
 				val errorInfo = new MonthlyAggregationErrorInfo("003",
 						new ErrMessageContent(TextResource.localize("Msg_1157")));
@@ -1598,15 +1591,13 @@ public class AggregateMonthlyRecordServiceProc {
 			}
 			return null;
 		}
-//		val firstWorkTypeOfDaily = sortedInfoOfDaily.get(0);
-
 		// 月初の情報を作成
 		val firstInfo = AggregateAffiliationInfo.of(
 				firstInfoOfDaily.getEmploymentCode(),
 				new WorkplaceId(firstInfoOfDaily.getWplID()),
 				new JobTitleId(firstInfoOfDaily.getJobTitleID()),
 				firstInfoOfDaily.getClsCode(),
-				firstInfoOfDaily.getBusinessTypeCode().get());
+				firstInfoOfDaily.getBusinessTypeCode());
 
 		// 月末がシステム日付以降の場合、月初の情報を月末の情報とする
 		if (datePeriod.end().after(GeneralDate.today())) {
@@ -1617,32 +1608,13 @@ public class AggregateMonthlyRecordServiceProc {
 		}
 
 		// 月末の所属情報を取得
-		val lastInfoOfDailyOpt = require.dailyAffiliationInfor(this.employeeId, datePeriod.end());
-		if (!lastInfoOfDailyOpt.isPresent()) {
-			// val errorInfo = new MonthlyAggregationErrorInfo(
-			// "004", new ErrMessageContent(TextResource.localize("Msg_1157")));
-			// this.errorInfos.putIfAbsent(errorInfo.getResourceId(),
-			// errorInfo);
-			// return null;
+		val lastInfoOfDaily = workInfoOfDailyList.get(datePeriod.end());
+		if (lastInfoOfDaily == null) {
 
 			// 月別実績の所属情報を返す （エラーにせず、月末に月初の情報を入れる）
 			return AffiliationInfoOfMonthly.of(this.employeeId, this.yearMonth, this.closureId, this.closureDate,
 					firstInfo, firstInfo);
 		}
-		val lastInfoOfDaily = lastInfoOfDailyOpt.get();
-		val lastWorkTypeOfDailyOpt = require.dailyWorkType(this.employeeId, datePeriod.end());
-		if (!lastWorkTypeOfDailyOpt.isPresent()) {
-			// val errorInfo = new MonthlyAggregationErrorInfo(
-			// "004", new ErrMessageContent(TextResource.localize("Msg_1157")));
-			// this.errorInfos.putIfAbsent(errorInfo.getResourceId(),
-			// errorInfo);
-			// return null;
-
-			// 月別実績の所属情報を返す （エラーにせず、月末に月初の情報を入れる）
-			return AffiliationInfoOfMonthly.of(this.employeeId, this.yearMonth, this.closureId, this.closureDate,
-					firstInfo, firstInfo);
-		}
-		val lastWorkTypeOfDaily = lastWorkTypeOfDailyOpt.get();
 
 		// 月末の情報を作成
 		val lastInfo = AggregateAffiliationInfo.of(
@@ -1650,7 +1622,7 @@ public class AggregateMonthlyRecordServiceProc {
 				new WorkplaceId(lastInfoOfDaily.getWplID()),
 				new JobTitleId(lastInfoOfDaily.getJobTitleID()),
 				lastInfoOfDaily.getClsCode(),
-				lastWorkTypeOfDaily.getWorkTypeCode());
+				lastInfoOfDaily.getBusinessTypeCode());
 		
 		// 月別実績の所属情報を返す
 		return AffiliationInfoOfMonthly.of(this.employeeId, this.yearMonth, this.closureId, this.closureDate, firstInfo,
@@ -1669,7 +1641,7 @@ public class AggregateMonthlyRecordServiceProc {
 
 		// 月末の勤務情報を判断
 		val lastInfo = affiliationInfoOpt.get().getLastInfo();
-		if (lastInfo.getBusinessTypeCd().v().compareTo("0000002030") == 0) {
+		if (lastInfo.getBusinessTypeCd().map(c -> c.v()).orElse("").compareTo("0000002030") == 0) {
 
 			// 任意項目50にセット
 			this.aggregateResult.putAnyItemOrUpdate(AnyItemOfMonthly.of(this.employeeId, this.yearMonth, this.closureId,
@@ -1679,18 +1651,6 @@ public class AggregateMonthlyRecordServiceProc {
 
 	public static interface RequireM13 extends AttendanceTimeOfMonthly.RequireM1, TotalCountByPeriod.RequireM1,
 		MonthlyCalculation.RequireM4, VerticalTotalOfMonthly.RequireM1, ExcessOutsideWorkMng.RequireM5 {
-		
-	}
-	
-	public static interface RequireM2 { 
-		
-//		List<WorkTypeOfDailyPerformance> dailyWorkTypes(List<String> employeeId, DatePeriod ymd);
-		
-		Optional<WorkTypeOfDailyPerformance> dailyWorkType(String employeeId, GeneralDate ymd);
-
-		Optional<AffiliationInforOfDailyAttd> dailyAffiliationInfor(String employeeId, GeneralDate ymd);
-		
-		Map<GeneralDate, AffiliationInforOfDailyAttd> dailyAffiliationInfors(List<String> employeeId, DatePeriod ymd);
 		
 	}
 
@@ -1735,7 +1695,7 @@ public class AggregateMonthlyRecordServiceProc {
 	}
 	
 	public static interface RequireM15 extends MonthlyCalculatingDailys.RequireM4, RequireM13,
-		MonthlyOldDatas.RequireM1, RequireM14, RequireM2, RequireM8, RequireM10,
+		MonthlyOldDatas.RequireM1, RequireM14, RequireM8, RequireM10,
 		MonthlyCalculation.RequireM2, AttendanceTimeOfMonthly.RequireM2, RequireM11, RequireM12 {
 
 		List<WorkingConditionItem> workingConditionItem(String employeeId, DatePeriod datePeriod);

@@ -82,7 +82,7 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 		// INPUT．申請する開始日からINPUT．申請する終了日までループする
 		for(GeneralDate loopAppDate = appStartDate; loopAppDate.beforeOrEquals(appEndDate); loopAppDate = loopAppDate.addDays(1)) {
 			// 当月の申請をするかチェックする
-			if(loopAppDate.afterOrEquals(closureStartDate) && loopAppDate.beforeOrEquals(appEndDate)) {
+			if(loopAppDate.afterOrEquals(closureStartDate) && loopAppDate.beforeOrEquals(closureEndDate)) {
 				// システム日付とINPUT．申請表示情報(基準日関係あり)．申請締め切り日を比較する
 				if(GeneralDate.today().after(appDispInfoWithDateOutput.getOpAppDeadline().get())) {
 					// エラーメッセージ(Msg_327)

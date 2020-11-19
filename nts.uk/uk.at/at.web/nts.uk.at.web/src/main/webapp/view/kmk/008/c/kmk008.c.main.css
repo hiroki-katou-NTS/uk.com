@@ -1,25 +1,17 @@
-.tabpanel-1-contents-area-right-screen-c {
-	width: 400px;
-	margin-left: 40px;
-	margin-top: 10px;
+#C4_3 {
+	margin-top: 15px;
+	margin-bottom: 15px;
+	width: 375px;
 }
 
-.table-basic-setting-list-td-label {
-	background-color: #F7EFD4 !important;
+#C4_4 {
+	width: 287px;
 }
 
-.table-basic-setting-list {
-	width: 400px;
+#C4_5 {
+	width: 78px;
 }
 
-.table-basic-setting-list, th, td {
-	border: 1px solid gray;
-}
-
-.time-editor-custom-width {
-	width: 75px !important;
-	margin: 5px !important;
-}
-.table-basic-setting-list th {
-	height: 35px;
+#C4_16, #C4_25, #C4_30 {
+	color: blue;
 }

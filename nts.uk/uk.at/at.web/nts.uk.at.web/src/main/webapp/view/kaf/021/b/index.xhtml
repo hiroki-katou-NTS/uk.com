@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="/master/base.xhtml">
+    <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE"/>
+        <com:stylefile path="kaf021.b.main.css"/>
+        <com:scriptfile path="../common/kaf021.common.js"/>
+        <com:scriptfile path="kaf021.b.vm.js"/>
+        <com:ValidatorScript>
+            nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.AgreementOneYearTime
+            nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.ReasonsForAgreement
+        </com:ValidatorScript>
+    </ui:define>
+    <ui:define name="content">
+        <div id="content-area">
+            <div class="kaf021b-content">
+                <!--B1_1-->
+                <a class="goback" tabindex="2" data-bind="ntsLinkButton: { action: preScreen }, text: vm.$i18n('KAF021_20')"></a>
+                <!--B1_2-->
+                <div id="B1_2" class="panel panel-frame">
+                    <!--B1_3-->
+                    <div class="label" data-bind="text: vm.$i18n('KAF021_21')"></div>
+                </div>
+                <div id="tbl-control" class="table">
+                    <div class="cell valign-center">
+                    </div>
+                    <div class="cell valign-center">
+                        <!--B1_4-->
+                        <span class="label" data-bind="text: vm.$i18n('KAF021_22')"></span>
+                    </div>
+                    <div class="cell valign-center">
+                        <!--B2_1-->
+                        <button tabindex="1" class="proceed" data-bind="click: register, text: vm.$i18n('KAF021_24')"></button>
+                    </div>
+                </div>
+                <!--B4_14-->
+                <div id="grid"></div>
+            </div>
+            
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>
