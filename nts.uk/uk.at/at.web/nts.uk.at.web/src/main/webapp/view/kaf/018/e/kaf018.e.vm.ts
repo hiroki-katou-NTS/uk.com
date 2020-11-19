@@ -39,7 +39,9 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 			vm.endDate = params.endDate;
 			vm.empInfoLst = params.empInfoLst;
 			vm.currentEmpInfo(_.find(vm.empInfoLst, o => o.empID == params.currentEmpID));
-			vm.refreshDataSource();
+			vm.refreshDataSource().then(() => {
+				$("#kaf018-e-cancel-btn").focus();	
+			});
 		}
 		
 		createIggrid() {
@@ -182,7 +184,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 				endDate = vm.endDate,
 				wsParam = { empID, startDate, endDate };
 			vm.$blockui('show');
-			vm.$ajax(API.getApprSttStartByEmpDate, wsParam).done((data: Array<ApprSttEmpDateContentDto>) => {
+			return vm.$ajax(API.getApprSttStartByEmpDate, wsParam).done((data: Array<ApprSttEmpDateContentDto>) => {
 				vm.dataSource = _.map(data, o => new EmpDateContent(o, vm));
 				vm.createIggrid();
 			});
