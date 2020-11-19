@@ -836,6 +836,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 			DisplayInfoOverTime displayInfoOverTime,
 			AppOverTime appOverTime,
 			Integer mode) {
+		if (appOverTime == null) return;
 		// 画面のモードをチェックする
 		if (mode == 0) { // 新規モードの場合
 			List<GeneralDate> dates = new ArrayList<GeneralDate>();
@@ -890,7 +891,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 				Optional.empty(),
 				displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet().getOvertimeLeaveAppCommonSet());
 		// ３６上限チェック not done
-		AppOverTime appOverTime36 = new AppOverTime();
+		AppOverTime appOverTime36 = null;
 		
 		// 申請日の矛盾チェック
 		this.commonAlgorithmAB(

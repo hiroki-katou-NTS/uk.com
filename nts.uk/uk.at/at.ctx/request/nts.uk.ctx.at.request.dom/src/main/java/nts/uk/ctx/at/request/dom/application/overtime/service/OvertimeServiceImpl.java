@@ -104,9 +104,6 @@ public class OvertimeServiceImpl implements OvertimeService {
 	private PreActualColorCheck preActualColorCheck;
 	
 	@Inject
-	private NewBeforeRegister newBeforeRegister;
-	
-	@Inject
 	private DetailBeforeUpdate detailBeforeUpdate;
 	
 	@Inject

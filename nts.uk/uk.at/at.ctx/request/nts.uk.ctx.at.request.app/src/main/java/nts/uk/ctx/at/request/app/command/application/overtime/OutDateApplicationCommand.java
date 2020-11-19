@@ -24,7 +24,13 @@ public class OutDateApplicationCommand {
 	public List<ExcessStateDetailCommand> excessStateDetail;
 	
 	public OutDateApplication toDomain() {
-		
+		// dummy data
+		if (flex == null) {
+			flex = 0;
+		}
+		if (overTimeLate == null) {
+			overTimeLate = 0;
+		}
 		return new OutDateApplication(
 				EnumAdaptor.valueOf(flex, ExcessState.class),
 				CollectionUtil.isEmpty(excessStateMidnight) ?
