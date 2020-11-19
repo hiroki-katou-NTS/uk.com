@@ -38,7 +38,7 @@ public class AnnualWorkLedgerOutputSetting extends AggregateRoot {
     private String employeeId;
 
     // 	月次出力項目リスト-MONTHLY
-    private List<OutputItem> outputItemList;
+    private List<OutputItem> monthlyOutputItemList;
 
 
     // 	[C-0] 年間勤務台帳の出力設定を作成する

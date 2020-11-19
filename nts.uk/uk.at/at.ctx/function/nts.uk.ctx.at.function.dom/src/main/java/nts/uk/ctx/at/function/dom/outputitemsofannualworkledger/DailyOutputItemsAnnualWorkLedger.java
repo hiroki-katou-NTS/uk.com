@@ -30,13 +30,13 @@ public class DailyOutputItemsAnnualWorkLedger extends ValueObject {
     private IndependentCalcClassic independentCalcClassic;
 
     // 	日次月次区分
-    private DailyMonthlyClassification classification;
+    private DailyMonthlyClassification dailyMonthlyClassification;
 
     // 	属性
-    private CommonAttributesOfForms attribute;
+    private CommonAttributesOfForms itemDetailAttributes;
 
     // 	選択勤怠項目リスト
-    private List<OutputItemDetailAttItem> selectionAttendanceItem;
+    private List<OutputItemDetailAttItem> selectedAttendanceItemList;
 
     // 	[C-0] 出力項目を作成する
 
