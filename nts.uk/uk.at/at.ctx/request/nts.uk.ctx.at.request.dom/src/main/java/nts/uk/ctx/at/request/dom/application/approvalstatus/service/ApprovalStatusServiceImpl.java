@@ -1577,10 +1577,10 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			// クラス：承認枠(class: approval frame )
 			for(ApprovalFrameImport_New frame : phase.getListApprovalFrame()) {
 				// アルゴリズム「承認状況未承認者取得代行優先」を実行する
-				approverSpecialLst = this.getUnAppSubstitutePriority(
+				approverSpecialLst.addAll(this.getUnAppSubstitutePriority(
 						frame.getListApprover(),
 						appPair.getKey().getAppDate().getApplicationDate(), 
-						frame.getConfirmAtr());
+						frame.getConfirmAtr()));
 			}
 			// 承認者（リスト）
 			if(CollectionUtil.isEmpty(approverSpecialLst)) {
