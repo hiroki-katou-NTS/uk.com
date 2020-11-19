@@ -58,7 +58,7 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 			throw new RuntimeException("Invalid value!");
 		}
 		
-		List<TimeZone> predetermineZoneList = workInfoAndTimeZone.get().getListTimeZone();
+		List<TimeZone> predetermineZoneList = workInfoAndTimeZone.get().getTimeZones();
 		List<TimeLeavingWork> timeLeavingWorks = new ArrayList<>(); 
 		for ( int index = 0; index < predetermineZoneList.size(); index++) {
 			
