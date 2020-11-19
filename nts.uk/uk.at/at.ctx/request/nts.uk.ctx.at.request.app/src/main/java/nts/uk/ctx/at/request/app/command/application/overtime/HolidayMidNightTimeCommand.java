@@ -4,6 +4,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.overtime.HolidayMidNightTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
+import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 
 public class HolidayMidNightTimeCommand {
 	// 時間
@@ -14,6 +15,6 @@ public class HolidayMidNightTimeCommand {
 	public HolidayMidNightTime toDomain() {
 		return new HolidayMidNightTime(
 				new AttendanceTime(attendanceTime),
-				EnumAdaptor.valueOf(legalClf, StaturoryAtrOfHolidayWork.class));
+				StaturoryAtrOfHolidayWork.deicisionAtrByHolidayAtr(EnumAdaptor.valueOf(legalClf, HolidayAtr.class)));
 	}
 }

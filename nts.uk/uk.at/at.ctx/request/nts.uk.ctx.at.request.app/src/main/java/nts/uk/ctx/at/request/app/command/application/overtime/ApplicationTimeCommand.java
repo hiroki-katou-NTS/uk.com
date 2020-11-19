@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import nts.arc.enums.EnumAdaptor;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 
@@ -24,20 +24,20 @@ public class ApplicationTimeCommand {
 	public ApplicationTime toDomain() {
 		
 		return new ApplicationTime(
-				applicationTime.isEmpty() ? 
+				CollectionUtil.isEmpty(applicationTime) ? 
 						Collections.emptyList() :
 							applicationTime.stream()
 							.map(x -> x.toDomain())
 							.collect(Collectors.toList()),
-				flexOverTime != null ? Optional.of(EnumAdaptor.valueOf(flexOverTime, AttendanceTimeOfExistMinus.class)) : Optional.empty(),
+				flexOverTime != null ? Optional.of(new AttendanceTimeOfExistMinus(flexOverTime)) : Optional.empty(),
 				overTimeShiftNight!= null ? Optional.of(overTimeShiftNight.toDomain()) : Optional.empty(),
-				anyItem.isEmpty() ? 
+				CollectionUtil.isEmpty(anyItem) ? 
 						Optional.empty() :
 							Optional.ofNullable(
 									anyItem.stream()
 										.map(x -> x.toDomain())
 										.collect(Collectors.toList())),
-				reasonDissociation.isEmpty() ? 
+				CollectionUtil.isEmpty(reasonDissociation) ? 
 						Optional.empty() :
 							Optional.ofNullable(reasonDissociation.stream()
 								.map(x -> x.toDomain())

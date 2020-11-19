@@ -18,6 +18,6 @@ public class CheckBeforeOutputDto {
 	public static CheckBeforeOutputDto fromDomain(CheckBeforeOutput checkBeforeOutput) {
 		return new CheckBeforeOutputDto(
 				AppOverTimeDto.fromDomain(checkBeforeOutput.getAppOverTime()),
-				confirmMsgOutputs);
+				checkBeforeOutput.getConfirmMsgOutputs());
 	}
 }
