@@ -39,11 +39,11 @@ class TabPanel extends ko.ViewModel {
 					if (data.workPlace) {
 						vm.tabs.push('Com_Workplace');
 					}
-					if (data.employee) {
-						vm.tabs.push('Com_Person');
-					}
 					if (data.employment) {
 						vm.tabs.push('Com_Employment');
+					}
+					if (data.employee) {
+						vm.tabs.push('Com_Person');
 					}
                 })
                 .then(() => vm.$blockui('clear'));

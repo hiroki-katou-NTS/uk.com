@@ -24,18 +24,18 @@
                             <label data-bind="i18n: 'Com_Company'"></label>
                         </div>
                         <div>
-                            <div class="check-box">
-                                <div data-bind="ntsCheckBox: { checked: managerUnit}"></div>
+                            <div tabindex="1" class="check-box">
+                                <div class="check-box-unit" data-bind="ntsCheckBox: { checked: managerUnit}"></div>
                                 <label data-bind="i18n: 'KMK004_333'"></label>
                             </div>
                             <div class="label-column-select">
                                 <div class="ntsControl">
-                                    <label class="ntsRadioBox">
+                                    <label tabindex="2" class="ntsRadioBox">
                                         <input type="radio" data-bind="value: 1, checked: check, enable: managerUnit" />
                                         <span class="box"></span>
                                         <span data-bind="i18n: 'Com_Employment'"></span>
                                     </label>
-                                    <label class="ntsRadioBox">
+                                    <label tabindex="3" class="ntsRadioBox">
                                         <input type="radio" data-bind="value: 2, checked: check, enable: managerUnit" />
                                         <span class="box"></span>
                                         <span data-bind="i18n: 'Com_Workplace'"></span>
@@ -43,7 +43,7 @@
                                 </div>
                             </div>
                             <div class="check-box">
-                                <div data-bind="ntsCheckBox: { checked: model.employee}"></div>
+                                <div tabindex="4" data-bind="ntsCheckBox: { checked: model.employee}"></div>
                                 <label data-bind="i18n: 'Com_Person'"></label>
                             </div>
                         </div>
@@ -53,8 +53,8 @@
 				<div>
                     <div class="view-button">
                         <div>
-                            <button class="proceed x-large" data-bind="i18n: 'KMK004_335', click: setting"></button>
-                            <button class="large" data-bind="i18n: 'KMK004_336', click: closeDalog"></button>
+                            <button tabindex="5" class="proceed x-large" data-bind="i18n: 'KMK004_335', click: updateSetting"></button>
+                            <button tabindex="6" class="large" data-bind="i18n: 'KMK004_336', click: closeDalog"></button>
                         </div>
                     </div>
                 </div>

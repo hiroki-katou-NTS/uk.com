@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class UpdateUsageUnitSettingsInput {
+public class UsageUnitSettingCommand {
 
 	public boolean workPlace;
 	

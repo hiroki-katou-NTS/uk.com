@@ -1,1 +1,26 @@
 @import url("base.css");
+
+#year-list {
+	display: inline-block;
+}
+
+#monthly-list {
+	display: inline-block;
+	margin-left: 10px;
+}
+
+.basic-settings ,#expand-list {
+	border: solid 1px #000;
+	border-collapse: collapse;
+}
+.basic-settings th,td ,#expand-list th,td {
+	border: solid 1px #000;
+	padding: 5px;
+}
+#sidebar-area ~ div {
+    float: left;
+    width: calc(100vw - 140px);
+}
+div.form-label {
+	padding: 8px 10px 0 8px;
+}

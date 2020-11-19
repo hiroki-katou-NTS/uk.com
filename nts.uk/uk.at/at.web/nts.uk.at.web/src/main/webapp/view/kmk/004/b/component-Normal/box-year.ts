@@ -1,8 +1,10 @@
 /// <reference path="../../../../../lib/nittsu/viewcontext.d.ts" />
 
-module nts.uk.at.view.kmk004.b{
-    
+module nts.uk.at.view.kmk004.b {
+
     interface Params {
+        selectedYear: KnockoutObservable<number | null>;
+        change: KnockoutObservable<boolean>;
     }
 
     const template = `
@@ -13,19 +15,13 @@ module nts.uk.at.view.kmk004.b{
                 optionsText: 'value',
                 multiple: false,
                 value: selectedYear,
-                enable: false,
                 rows: 5,
                 columns: [
                     { key: 'statusValue', length: 1 },
                     { key: 'value', length: 2 }
                 ]}"></div>
         </div>
-        <style type="text/css" rel="stylesheet">
-                .listbox {
-                    max-width: 150px;
-                }
-        </style>
-        <style type="text/css" rel="stylesheet" data-bind="html: $component.style"></style>
+        <div class="node" data-bind="i18n: 'KMK004_212'"></div>
     `;
 
     @component({
@@ -35,33 +31,56 @@ module nts.uk.at.view.kmk004.b{
 
     class BoxYear extends ko.ViewModel {
 
-        public itemList: KnockoutObservableArray<IListYear> = ko.observableArray([]);
-        public selectedYear: KnockoutObservable<string> = ko.observable('');
+        public itemList: KnockoutObservableArray<IYear> = ko.observableArray([]);
+        public selectedYear: KnockoutObservable<number | null> = ko.observable(null);
+        public change: KnockoutObservable<boolean> = ko.observable(true);
 
-        created() {
+        created(params: Params) {
             const vm = this;
-            const faceData: IListYear[] = [{status: true, statusValue : '*', value: '2017'},
-            {status: false, statusValue : '', value: '2016'}
-            ,{status: true, statusValue : '*', value: '2018'}
-            ,{status: true, statusValue : '*', value: '2020'}];
 
-            vm.itemList(_.orderBy(faceData, ['value'],['desc']));
+            vm.selectedYear = params.selectedYear;
+            vm.change = params.change;
+
+            vm.reloadData(0);
+
+            vm.change
+                .subscribe(() => {
+                    ko.unwrap(vm.itemList)[0].statusValue = '*';
+                });
         }
 
+        reloadData(selectedIndex: number = 0) {
+            const vm = this;
+            const faceData: IYear[] = [{status: true, statusValue : '*', value: 2017},
+            {status: false, statusValue : '', value: 2016}
+            ,{status: true, statusValue : '', value: 2018}
+            ,{status: true, statusValue : '', value: 2020}];
+            // const faceData: IYear[] = [];
+
+            if (faceData.length > 0) {
+                vm.itemList(_.orderBy(faceData, ['value'], ['desc']));
+                vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].value);
+            }
+        }
     }
 
-    export interface IListYear {
+    export interface IYear {
         status: boolean;
         statusValue: string;
-        value: string;
+        value: number;
     }
 
-    // export class ListYear {
+    // export class Year {
     //     status: KnockoutObservable<boolean> = ko.observable(true);
     //     statusValue: KnockoutObservable<string> = ko.observable('');
     //     value: KnockoutObservable<string> = ko.observable('');
 
-    //     public create(params?: IListYear) {
+    //     constructor(param?: IYear) {
+    //         const md = this;
+    //         md.create(param);
+    //     }
+
+    //     public create(params?: IYear) {
     //         const self = this;
 
     //         if (params) {
