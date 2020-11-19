@@ -309,110 +309,132 @@ public class WorkSchedule implements DomainAggregate {
 		return value;
 	}
 	
-	private <T> T getAttendanceItemValue(int updateAttendanceItemID) {
+	@SuppressWarnings("unchecked")
+	private <T> Optional<T> getAttendanceItemValue(int updateAttendanceItemID) {
 		switch (updateAttendanceItemID) {
 			case 28:
 				// 勤務種類コード(28)
-				return (T) this.workInfo.getScheduleInfo().getWorkTypeCode();
-	
+				return (Optional<T>) Optional.of(this.workInfo.getRecordInfo().getWorkTypeCode());
 			case 29:
 				// 就業時間帯コード(29)
-				return (T) this.workInfo.getScheduleInfo().getWorkTimeCode();
+				return (Optional<T>) this.workInfo.getRecordInfo().getWorkTimeCodeNotNull();
 	
 			case 31:
 				// 出勤時刻1(31)
-				break;
+				if ( !this.optTimeLeaving.isPresent() ) {
+					return Optional.empty();
+				} 
+				return (Optional<T>) this.optTimeLeaving.get().getStampOfAttendanceStamp( 
+						new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(1));
+				
 	
 			case 34:
 				// 退勤時刻1(34)
-				break;
+				if ( !this.optTimeLeaving.isPresent() ) {
+					return Optional.empty();
+				} 
+				return (Optional<T>) this.optTimeLeaving.get().getStampOfLeaveStamp( 
+						new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(1));
+			case 41:
+				// 出勤時刻2(41)
+				if ( !this.optTimeLeaving.isPresent() ) {
+					return Optional.empty();
+				} 
+				return (Optional<T>) this.optTimeLeaving.get().getStampOfAttendanceStamp( 
+						new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(2));
+				
+	
+			case 44:
+				// 退勤時刻2(44)
+				if ( !this.optTimeLeaving.isPresent() ) {
+					return Optional.empty();
+				} 
+				return (Optional<T>) this.optTimeLeaving.get().getStampOfLeaveStamp( 
+						new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(2));
 	
 			case 157:
 				// 休憩開始時刻1(157)
-				break;
+				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNumber(1, true);
 	
 			case 159:
 				// 休憩終了時刻1(159)
-				break;
+				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNumber(1, false);
 	
 			case 163:
 				// 休憩開始時刻2(163)
-				break;
+				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNumber(2, true);
 	
 			case 165:
 				// 休憩終了時刻2(165)
-				break;
+				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNumber(2, false);
 	
 			case 169:
 				// 休憩開始時刻3(169)
-				break;
+				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNumber(3, true);
 	
 			case 171:
 				// 休憩終了時刻3(171)
-				break;
+				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNumber(3, false);
 	
 			case 175:
 				// 休憩開始時刻4(175)
-				break;
+				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNumber(4, true);
 	
 			case 177:
 				// 休憩終了時刻4(177)
-				break;
+				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNumber(4, false);
 	
 			case 181:
 				// 休憩開始時刻5(181)
-				break;
+				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNumber(5, true);
 	
 			case 183:
 				// 休憩終了時刻5(183)
-				break;
+				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNumber(5, false);
 	
 			case 187:
 				// 休憩開始時刻6(187)
-				break;
+				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNumber(6, true);
 	
 			case 189:
 				// 休憩終了時刻6(189)
-				break;
+				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNumber(6, false);
 	
 			case 193:
 				// 休憩開始時刻7(193)
-				break;
+				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNumber(7, true);
 	
 			case 195:
 				// 休憩終了時刻7(195)
-				break;
+				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNumber(7, false);
 	
 			case 199:
 				// 休憩開始時刻8(199)
-				break;
+				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNumber(8, true);
 	
 			case 201:
 				// 休憩終了時刻8(201)
-				break;
+				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNumber(8, false);
 	
 			case 205:
 				// 休憩開始時刻9(205)
-				break;
+				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNumber(9, true);
 	
 			case 207:
 				// 休憩終了時刻9(207)
-				break;
+				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNumber(9, false);
 	
 			case 211:
 				// 休憩開始時刻10(211)
-				break;
+				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNumber(10, true);
 	
 			case 213:
 				// 休憩終了時刻10(213)
-				break;
+				return (Optional<T>) this.lstBreakTime.get(0).getBreakTimeWithNumber(10, false);
 			default:
-				break;
+				return Optional.empty();
 		}
 
-		return null;
-	
-		
 	}
 	
 	/**
@@ -424,10 +446,14 @@ public class WorkSchedule implements DomainAggregate {
 	 */
 	private <T> T updateValueByHandCorrection(Require require, int updateAttendanceItemID, T value) {
 		
-		T existValue = this.getAttendanceItemValue(updateAttendanceItemID);
+		Optional<T> existValue = this.getAttendanceItemValue(updateAttendanceItemID);
 		
-		if ( existValue.equals(value)) {
-			return existValue;
+		if ( !existValue.isPresent() ) {
+			// TODO how can I do with this case?
+		}
+		
+		if ( existValue.get().equals(value)) {
+			return existValue.get();
 		}
 		
 		lstEditState.removeIf( editState -> editState.getAttendanceItemId() == updateAttendanceItemID);
