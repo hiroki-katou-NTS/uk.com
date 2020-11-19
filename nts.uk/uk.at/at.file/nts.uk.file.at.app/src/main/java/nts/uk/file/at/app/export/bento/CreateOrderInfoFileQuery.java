@@ -6,7 +6,6 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.app.find.reservation.bento.dto.*;
 import nts.uk.ctx.at.record.app.find.reservation.bento.query.ListBentoResevationQuery;
-import nts.uk.ctx.at.record.app.query.stamp.GetStampCardQuery;
 import nts.uk.ctx.at.record.dom.reservation.bento.*;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
@@ -16,6 +15,7 @@ import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoMenuByClo
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.service.GetStampCardQuery;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocation;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationRepository;
 import nts.uk.ctx.bs.company.dom.company.Company;
@@ -74,7 +74,7 @@ public class CreateOrderInfoFileQuery {
     private ListBentoResevationQuery query;
 
     @Inject
-    GetStampCardQuery getStampCardQuery;
+    private GetStampCardQuery getStampCardQuery;
 
     @Inject
     private PersonEmpBasicInfoPub personEmpBasicInfoPub;
