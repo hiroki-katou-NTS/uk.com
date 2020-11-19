@@ -45,7 +45,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 		createIggrid() {
 			const vm = this;
 			$("#eGrid").igGrid({
-				height: 501,
+				height: 503,
 				width: window.innerWidth - 40,
 				dataSource: vm.dataSource,
 				primaryKey: 'appID',
