@@ -1,7 +1,7 @@
 <template>
   <div class="kafs20a1">
     <!-- A1_2 -->
-    <label>{{ "KAFS20_13" | i18n }}</label>
+    <label class="title">{{ "KAFS20_13" | i18n }}</label>
     <!-- A1_3 -->
     <div class="field-set">
       <div

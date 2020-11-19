@@ -225,52 +225,55 @@ export class KafS20A2Component extends KafS00ShrComponent {
                 let params = {
                     optionalItemNos: settingNoItems,
                 };
+                const firstreq = vm.$http.post('at', API.getControlAttendance, params);
+                const seconreq = vm.$http.post('at', API.getListItemNo, params);
 
-                Promise.all([vm.$http.post('at', API.getControlAttendance, params), vm.$http.post('at', API.getListItemNo, params)]).then((res: any) => {
-                    vm.$mask('hide');
+                Promise.all([firstreq, seconreq])
+                    .then((res: any) => {
+                        vm.$mask('hide');
 
-                    let controlAttendances: IControlOfAttendanceItemsDto[] | null = res[0].data;
-                    let optionalNoItems: IOptionalItemDto[] | null = res[1].data;
+                        let controlAttendances: IControlOfAttendanceItemsDto[] | null = res[0].data;
+                        let optionalNoItems: IOptionalItemDto[] | null = res[1].data;
 
-                    settingNoItems.forEach((itemNo) => {
+                        settingNoItems.forEach((itemNo) => {
 
-                        let optionalItem = optionalNoItems.find((optionalItem) => {
+                            let optionalItem = optionalNoItems.find((optionalItem) => {
 
-                            return optionalItem.optionalItemNo === itemNo;
-                        });
-
-                        let controlAttendance = controlAttendances.find((controlAttend) => {
-
-                            return controlAttend.itemDailyID == 640 + itemNo;
-                        });
-                        if (vm.mode) {
-                            const { calcResultRange, optionalItemAtr, optionalItemName, optionalItemNo, unit } = optionalItem;
-                            const { lowerCheck, upperCheck, amountLower, amountUpper, numberLower, numberUpper, timeLower, timeUpper } = calcResultRange;
-                            const { inputUnitOfTimeItem, } = controlAttendance;
-
-                            vm.optionalItemApplication.push({
-                                lowerCheck,
-                                upperCheck,
-                                amountLower,
-                                amountUpper,
-                                numberLower,
-                                numberUpper,
-                                timeLower,
-                                timeUpper,
-                                amount: null,
-                                number: null,
-                                time: null,
-                                inputUnitOfTimeItem,
-                                optionalItemAtr,
-                                optionalItemName,
-                                optionalItemNo,
-                                unit
+                                return optionalItem.optionalItemNo === itemNo;
                             });
-                        }
+
+                            let controlAttendance = controlAttendances.find((controlAttend) => {
+
+                                return controlAttend.itemDailyID == 640 + itemNo;
+                            });
+                            if (vm.mode) {
+                                const { calcResultRange, optionalItemAtr, optionalItemName, optionalItemNo, unit } = optionalItem;
+                                const { lowerCheck, upperCheck, amountLower, amountUpper, numberLower, numberUpper, timeLower, timeUpper } = calcResultRange;
+                                const { inputUnitOfTimeItem, } = controlAttendance;
+
+                                vm.optionalItemApplication.push({
+                                    lowerCheck,
+                                    upperCheck,
+                                    amountLower,
+                                    amountUpper,
+                                    numberLower,
+                                    numberUpper,
+                                    timeLower,
+                                    timeUpper,
+                                    amount: null,
+                                    number: null,
+                                    time: null,
+                                    inputUnitOfTimeItem,
+                                    optionalItemAtr,
+                                    optionalItemName,
+                                    optionalItemNo,
+                                    unit
+                                });
+                            }
+                        });
+                    }).catch((error) => {
+                        vm.handleErrorMessage(error);
                     });
-                }).catch((error) => {
-                    vm.handleErrorMessage(error);
-                });
             }
         });
     }
@@ -336,7 +339,7 @@ export class KafS20A2Component extends KafS00ShrComponent {
             vm.$emit('nextToStep3', res);
         }).catch((error) => {
             vm.$mask('hide');
-             //show Msg_1691,1692,1693
+            //show Msg_1691,1692,1693
             if (error.messageId == 'Msg_1691' || error.messageId == 'Msg_1692' || error.messageId == 'Msg_1693') {
                 vm.$modal.warn({ messageId: error.messageId, messageParams: error.parameterIds[0] });
             } else {
@@ -381,7 +384,7 @@ export class KafS20A2Component extends KafS00ShrComponent {
             vm.$emit('nextToStep3', res);
         }).catch((error: any) => {
             vm.$mask('hide');
-             //show Msg_1691,1692,1693
+            //show Msg_1691,1692,1693
             if (error.messageId == 'Msg_1691' || error.messageId == 'Msg_1692' || error.messageId == 'Msg_1693') {
                 vm.$modal.warn({ messageId: error.messageId, messageParams: error.parameterIds[0] });
             } else {
