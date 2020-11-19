@@ -331,12 +331,15 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		register() {
 			const vm = this;
 			vm.$blockui("show");
+			let appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput);
 			let commandCheck = {} as ParamCheckBeforeRegister;
+			let applicationTemp = vm.toAppOverTime();
 			commandCheck.require = true;
 			commandCheck.companyId = vm.$user.companyId;
-			commandCheck.appOverTime = vm.toAppOverTime();
+			commandCheck.appOverTime = applicationTemp;
 			commandCheck.displayInfoOverTime = vm.dataSource;
 			
+			let appOverTimeTemp = null as AppOverTime;
 			
 			// validate chung KAF000
 			vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
@@ -351,16 +354,28 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					return vm.$ajax('at', API.checkBefore, commandCheck);
 				}
 			}).then((result: CheckBeforeOutput) => {
-				if (!_.isEmpty(result.confirmMsgOutputs)) {
+				if (!_.isNil(result)) {
+					appOverTimeTemp = result.appOverTime;
 					// xử lý confirmMsg
 					return vm.handleConfirmMessage(result.confirmMsgOutputs);
 				}
 			}).then((result) => {
 				if(result) {
+					let commandRegister = {} as RegisterCommand;
+					commandRegister.companyId = vm.$user.companyId;
+					appOverTimeTemp.application = applicationTemp.application;
+					commandRegister.appOverTime = appOverTimeTemp;
+					if (!_.isNil(appDispInfoStartupOutput.appDispInfoWithDateOutput.opListApprovalPhaseState)) {
+						commandRegister.approvalPhaseState = appDispInfoStartupOutput.appDispInfoWithDateOutput.opListApprovalPhaseState;
+					}
+					// 残業申請の表示情報．申請表示情報．申請設定（基準日関係なし）．メールサーバ設定済区分
+					commandRegister.isMail = appDispInfoStartupOutput.appDispInfoNoDateOutput.mailServerSet;
+					// 残業申請の表示情報．申請表示情報．申請設定（基準日関係なし）．申請設定．申請種類別設定
+					commandRegister.appTypeSetting = appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting[0];
 					// đăng kí 
-					return vm.$ajax('at', API.register, ["Msg_15"]).then(() => {
+					return vm.$ajax('at', API.register, commandRegister).then(() => {
 						return vm.$dialog.info({ messageId: "Msg_15"}).then(() => {
-							return true;
+							return true;	
 						});	
 					});
 				}
@@ -850,7 +865,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		start: 'at/request/application/overtime/start',
 		changeDate: 'at/request/application/overtime/changeDate',
 		checkBefore: 'at/request/application/overtime/checkBeforeRegister',
-		register: '',
+		register: 'at/request/application/overtime/register',
 		calculate: 'at/request/application/overtime/calculate'
 	}
 	class VisibleModel {
@@ -1184,6 +1199,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 	interface CheckBeforeOutput {
 		appOverTime: AppOverTime;
 		confirmMsgOutputs: Array<any>;
+	}
+	interface RegisterCommand {
+		companyId: string;
+		appOverTime: AppOverTime;
+		approvalPhaseState: Array<any>;
+		isMail: Boolean;
+		appTypeSetting: any;
 	}
 	
 	

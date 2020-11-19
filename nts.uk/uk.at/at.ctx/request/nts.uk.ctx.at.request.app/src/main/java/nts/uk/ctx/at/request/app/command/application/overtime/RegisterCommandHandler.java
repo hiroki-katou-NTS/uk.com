@@ -4,7 +4,9 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -25,6 +27,8 @@ import nts.uk.ctx.at.request.dom.application.overtime.service.OverTimeRegisterSe
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 
+@Stateless
+@Transactional
 public class RegisterCommandHandler extends CommandHandlerWithResult<RegisterCommand, ProcessResult> {
 	@Inject
 	private OverTimeRegisterService overTimeRegisterService;
