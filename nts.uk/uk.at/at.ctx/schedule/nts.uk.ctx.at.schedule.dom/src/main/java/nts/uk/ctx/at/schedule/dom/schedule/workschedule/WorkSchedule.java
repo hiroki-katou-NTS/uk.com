@@ -183,6 +183,261 @@ public class WorkSchedule implements DomainAggregate {
 				workSchedule.getOptSortTimeWork(), 
 				workSchedule.getOutingTime());
 	}
+	
+	/**
+	 * 勤怠項目を指定して値を手修正で変更する
+	 * @param require
+	 * @param updateInfoMap 変更する情報Map
+	 */
+	public <T> void specifyAttendanceThenUpdateValueByHandCorrection(
+			Require require,
+			Map<Integer, T> updateInfoMap) {
+		
+		updateInfoMap.forEach( (key, value) -> this.updateValueByHandCorrection(require, key, value));
+	}
+	
+	/**
+	 * 値の変更
+	 * @param updateAttendanceItemID
+	 * @param value
+	 * @return
+	 */
+	private <T> T updateValue(int updateAttendanceItemID, T value) {
+		
+		switch (updateAttendanceItemID) {
+			case 28:
+				// 勤務種類コード(28)
+				this.workInfo.getScheduleInfo().setWorkTypeCode((String) value);
+				break;
+			
+			case 29:
+				// 就業時間帯コード(29)
+				break;
+			
+			case 31:
+				// 出勤時刻1(31)
+				break;
+
+			case 34:
+				// 退勤時刻1(34)	
+				break;
+
+			case 157:
+				// 休憩開始時刻1(157)	
+				break;
+
+			case 159:
+				// 休憩終了時刻1(159)	
+				break;
+
+			case 163:
+				// 休憩開始時刻2(163)	
+				break;
+
+			case 165:
+				// 休憩終了時刻2(165)	
+				break;
+
+			case 169:
+				// 休憩開始時刻3(169)	
+				break;
+
+			case 171:
+				// 休憩終了時刻3(171)	
+				break;
+
+			case 175:
+				// 休憩開始時刻4(175)
+				break;
+
+			case 177:
+				// 休憩終了時刻4(177)	
+				break;
+
+			case 181:
+				// 休憩開始時刻5(181)	
+				break;
+
+			case 183:
+				// 休憩終了時刻5(183)	
+				break;
+
+			case 187:
+				// 休憩開始時刻6(187)	
+				break;
+
+			case 189:
+				// 休憩終了時刻6(189)	
+				break;
+
+	
+			case 193:
+				// 休憩開始時刻7(193)	
+				break;
+
+			case 195:
+				// 休憩終了時刻7(195)	
+				break;
+
+			case 199:
+				// 休憩開始時刻8(199)	
+				break;
+
+			case 201:
+				// 休憩終了時刻8(201)	
+				break;
+
+			case 205:
+				// 休憩開始時刻9(205)	
+				break;
+
+			case 207:
+				// 休憩終了時刻9(207)	
+				break;
+
+			case 211:
+				// 休憩開始時刻10(211)	
+				break;
+
+			case 213:
+				// 休憩終了時刻10(213)	
+				break;
+			default:
+				break;
+		}
+		
+		return value;
+	}
+	
+	private <T> T getAttendanceItemValue(int updateAttendanceItemID) {
+		switch (updateAttendanceItemID) {
+			case 28:
+				// 勤務種類コード(28)
+				return (T) this.workInfo.getScheduleInfo().getWorkTypeCode();
+	
+			case 29:
+				// 就業時間帯コード(29)
+				return (T) this.workInfo.getScheduleInfo().getWorkTimeCode();
+	
+			case 31:
+				// 出勤時刻1(31)
+				break;
+	
+			case 34:
+				// 退勤時刻1(34)
+				break;
+	
+			case 157:
+				// 休憩開始時刻1(157)
+				break;
+	
+			case 159:
+				// 休憩終了時刻1(159)
+				break;
+	
+			case 163:
+				// 休憩開始時刻2(163)
+				break;
+	
+			case 165:
+				// 休憩終了時刻2(165)
+				break;
+	
+			case 169:
+				// 休憩開始時刻3(169)
+				break;
+	
+			case 171:
+				// 休憩終了時刻3(171)
+				break;
+	
+			case 175:
+				// 休憩開始時刻4(175)
+				break;
+	
+			case 177:
+				// 休憩終了時刻4(177)
+				break;
+	
+			case 181:
+				// 休憩開始時刻5(181)
+				break;
+	
+			case 183:
+				// 休憩終了時刻5(183)
+				break;
+	
+			case 187:
+				// 休憩開始時刻6(187)
+				break;
+	
+			case 189:
+				// 休憩終了時刻6(189)
+				break;
+	
+			case 193:
+				// 休憩開始時刻7(193)
+				break;
+	
+			case 195:
+				// 休憩終了時刻7(195)
+				break;
+	
+			case 199:
+				// 休憩開始時刻8(199)
+				break;
+	
+			case 201:
+				// 休憩終了時刻8(201)
+				break;
+	
+			case 205:
+				// 休憩開始時刻9(205)
+				break;
+	
+			case 207:
+				// 休憩終了時刻9(207)
+				break;
+	
+			case 211:
+				// 休憩開始時刻10(211)
+				break;
+	
+			case 213:
+				// 休憩終了時刻10(213)
+				break;
+			default:
+				break;
+		}
+
+		return null;
+	
+		
+	}
+	
+	/**
+	 * 値を手修正で変更
+	 * @param require
+	 * @param updateAttendanceItemID
+	 * @param value
+	 * @return
+	 */
+	private <T> T updateValueByHandCorrection(Require require, int updateAttendanceItemID, T value) {
+		
+		T existValue = this.getAttendanceItemValue(updateAttendanceItemID);
+		
+		if ( existValue.equals(value)) {
+			return existValue;
+		}
+		
+		lstEditState.removeIf( editState -> editState.getAttendanceItemId() == updateAttendanceItemID);
+		lstEditState.add(EditStateOfDailyAttd.createByHandCorrection(require, updateAttendanceItemID, employeeID));
+		
+		return this.updateValue(updateAttendanceItemID, value);
+		
+	} 
+	
+	
 
 	/**
 	 * 時間休暇を取得する

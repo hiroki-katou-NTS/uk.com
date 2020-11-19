@@ -43,12 +43,12 @@ public class ErrorInfoOfWorkSchedule {
 	 * 勤怠項目のエラー
 	 * @param employeeId 社員ID
 	 * @param date　年月日
-	 * @param attendaceItemId 項目ID
+	 * @param attendanceItemId 項目ID
 	 * @param errorMessage　エラーメッセージ
 	 * @return
 	 */
 	public static ErrorInfoOfWorkSchedule attendanceItemError(
-			String employeeId, GeneralDate date, int attendaceItemId, String errorMessage) {
+			String employeeId, GeneralDate date, int attendanceItemId, String errorMessage) {
 		
 		// TODO how to get attendanceItemName
 		String attendanceItemName = "";
