@@ -248,7 +248,7 @@ module nts.uk.at.view.kml002.e {
       });
 
       vm.$ajax(PATH.wkpTimeZoneRegister, { 'timeZone': params }).done((data) => {
-        vm.$dialog.error({ messageId: 'Msg_15' }).then(() => {
+        vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
           vm.$blockui('hide');
         });
       }).fail().always(() => vm.$blockui('hide'));
