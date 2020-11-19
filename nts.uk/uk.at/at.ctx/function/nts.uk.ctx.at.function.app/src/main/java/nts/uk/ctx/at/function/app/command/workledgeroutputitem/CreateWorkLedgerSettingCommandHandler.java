@@ -55,10 +55,8 @@ public class CreateWorkLedgerSettingCommandHandler extends CommandHandler<Create
         private WorkLedgerOutputItemRepo ledgerOutputItemRepo;
 
         @Override
-        public void createWorkLedgerOutputSetting(WorkLedgerOutputItem outputSetting,
-                                                  List<AttendanceItemToPrint> outputItemList) {
-            ledgerOutputItemRepo.createNew(AppContexts.user().companyId(), outputSetting, outputItemList);
-
+        public void createWorkLedgerOutputSetting(WorkLedgerOutputItem outputSetting ) {
+            ledgerOutputItemRepo.createNew(AppContexts.user().companyId(), outputSetting);
         }
 
         @Override

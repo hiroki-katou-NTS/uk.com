@@ -4,9 +4,10 @@ package nts.uk.ctx.at.function.infra.entity.outputitemofworkledger;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.val;
-import nts.uk.ctx.at.function.dom.commonform.AttendanceItemToPrint;
 import nts.uk.ctx.at.function.dom.workledgeroutputitem.WorkLedgerOutputItem;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
+
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -14,6 +15,7 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -47,10 +49,12 @@ public class KfnmtRptRecDispCont extends UkJpaEntity implements Serializable {
         return pk;
     }
 
-    public static List<KfnmtRptRecDispCont>fromDomain(String cid, WorkLedgerOutputItem outputSetting,
-                                                      List<AttendanceItemToPrint> outputItemList){
-        val rs = new ArrayList<KfnmtRptRecDispCont>();
-
-        return rs;
+    public static List<KfnmtRptRecDispCont> fromDomain(WorkLedgerOutputItem outputSetting) {
+        return outputSetting.getOutputItemList().stream().map(e -> new KfnmtRptRecDispCont(
+                new KfnmtRptRecDispContPk(outputSetting.getId(), e.getAttendanceId()),
+                AppContexts.user().contractCode(),
+                AppContexts.user().companyId(),
+                e.getRanking()
+        )).collect(Collectors.toCollection(ArrayList::new));
     }
 }

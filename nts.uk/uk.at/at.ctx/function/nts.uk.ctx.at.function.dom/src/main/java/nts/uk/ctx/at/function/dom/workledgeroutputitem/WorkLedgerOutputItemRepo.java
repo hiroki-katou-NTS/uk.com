@@ -24,10 +24,10 @@ public interface WorkLedgerOutputItemRepo {
     WorkLedgerOutputItem getWorkStatusOutputSettings(String cid, String settingId);
 
     //	[4]	新規作成する
-    void createNew(String cid, WorkLedgerOutputItem outputSetting, List<AttendanceItemToPrint> outputItemList);
+    void createNew(String cid, WorkLedgerOutputItem outputSetting);
 
     //	[5]	更新する
-    void update(String cid, String settingId,WorkLedgerOutputItem outputSetting, List<AttendanceItemToPrint> outputItemList);
+    void update(String cid, String settingId,WorkLedgerOutputItem outputSetting);
 
     //	[6]	削除する
     void delete(String settingId);

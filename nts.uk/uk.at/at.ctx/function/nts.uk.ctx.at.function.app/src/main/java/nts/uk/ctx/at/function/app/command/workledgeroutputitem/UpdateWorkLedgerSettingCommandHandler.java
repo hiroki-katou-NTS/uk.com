@@ -7,10 +7,10 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.tran.AtomTask;
+import nts.uk.ctx.at.function.dom.commonform.AttendanceItemToPrint;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
-import nts.uk.ctx.at.function.dom.workledgeroutputitem.AttendanceItemToPrint;
 import nts.uk.ctx.at.function.dom.workledgeroutputitem.UpdateWorkLedgerSettingDomainService;
 import nts.uk.ctx.at.function.dom.workledgeroutputitem.WorkLedgerOutputItem;
 import nts.uk.ctx.at.function.dom.workledgeroutputitem.WorkLedgerOutputItemRepo;
@@ -69,7 +69,7 @@ public class UpdateWorkLedgerSettingCommandHandler extends CommandHandler<Update
         @Override
         public void updateWorkLedgerOutputItem(String id, WorkLedgerOutputItem outputSetting,
                                                List<AttendanceItemToPrint> outputItemList) {
-            workLedgerOutputItemRepo.update(AppContexts.user().companyId(), id, outputSetting, outputItemList);
+            workLedgerOutputItemRepo.update(AppContexts.user().companyId(), id, outputSetting);
 
         }
     }

@@ -7,10 +7,7 @@ import nts.uk.ctx.at.function.dom.workledgeroutputitem.WorkLedgerOutputItem;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 
 /**
@@ -23,8 +20,10 @@ import java.io.Serializable;
 public class KfnmtRptRecSetting extends UkJpaEntity implements Serializable {
     public static long serialVersionUID = 1L;
 
-    @EmbeddedId
-    public KfnmtRptRecSettingPk pk;
+    @Id
+    // ID->勤務台帳の出力項目.ID
+    @Column(name = "ID")
+    public String iD;
     //	契約コード
     @Column(name = "CONTRACT_CD")
     public String contractCode;
@@ -51,11 +50,11 @@ public class KfnmtRptRecSetting extends UkJpaEntity implements Serializable {
 
     @Override
     protected Object getKey() {
-        return pk;
+        return iD;
     }
     public static KfnmtRptRecSetting fromDomain(WorkLedgerOutputItem domain, String cid){
         return new KfnmtRptRecSetting(
-                new KfnmtRptRecSettingPk(domain.getId()),
+                domain.getId(),
                 AppContexts.user().contractCode(),
                 cid,
                 Integer.parseInt(domain.getCode().v()),
