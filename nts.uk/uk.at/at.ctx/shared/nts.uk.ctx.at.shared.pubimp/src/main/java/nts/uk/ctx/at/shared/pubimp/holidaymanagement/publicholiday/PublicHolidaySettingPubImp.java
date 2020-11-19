@@ -36,11 +36,11 @@ public class PublicHolidaySettingPubImp implements PublicHolidaySettingPub{
 		String companyId = AppContexts.user().companyId();
 		PublicHolidaySettingDto dto = new PublicHolidaySettingDto();
 		
-		Optional<PublicHolidaySetting> optPubHDSet = this.pubHdSetRepo.findByCID(companyId);
+		Optional<PublicHolidaySetting> optPubHDSet = this.pubHdSetRepo.get(companyId);
 		if (optPubHDSet.isPresent()) {
 			PublicHolidaySetting pubHDSet = optPubHDSet.get();
 			dto.setCompanyId(pubHDSet.getCompanyID());
-			dto.setIsManageComPublicHd(pubHDSet.isManageComPublicHd() == true ? MANAGE : NOT_MANAGE);
+			dto.setIsManageComPublicHd(pubHDSet.getIsManagePublicHoliday());
 			return Optional.of(dto);
 		} 
 		return Optional.empty();

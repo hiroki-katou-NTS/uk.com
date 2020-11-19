@@ -13,9 +13,12 @@ import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.shared.app.command.holidaysetting.configuration.HolidaySettingConfigSaveCommand;
 import nts.uk.ctx.at.shared.app.command.holidaysetting.configuration.HolidaySettingConfigSaveCommandHandler;
+import nts.uk.ctx.at.shared.app.command.holidaysetting.configuration.PublicHolidaySettingCommand;
 import nts.uk.ctx.at.shared.app.find.holidaysetting.configuration.HolidaySettingConfigDto;
 import nts.uk.ctx.at.shared.app.find.holidaysetting.configuration.HolidaySettingConfigFinder;
+import nts.uk.ctx.at.shared.app.find.holidaysetting.configuration.PublicHolidaySettingDto;
 import nts.uk.ctx.at.shared.app.find.holidaysetting.configuration.PublicHolidaySettingFindDto;
+import nts.uk.ctx.at.shared.app.find.holidaysetting.configuration.PublicHolidaySettingFinder;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfPublicHoliday;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.ManagementDistinction;
@@ -31,8 +34,11 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.Pu
 public class HolidaySettingConfigWebService extends WebService {
 	
 	/** The finder. */
+//	@Inject
+//	private HolidaySettingConfigFinder finder;
+	
 	@Inject
-	private HolidaySettingConfigFinder finder;
+	private PublicHolidaySettingFinder finder;
 	
 	/** The save handler. */
 	@Inject
@@ -45,8 +51,8 @@ public class HolidaySettingConfigWebService extends WebService {
 	 */
 	@Path("find")
 	@POST
-	public HolidaySettingConfigDto findData(){
-		return this.finder.findHolidaySettingConfigData();
+	public PublicHolidaySettingDto findData(){
+		return this.finder.findPubHdSetting();
 	}
 	
 	/**
@@ -56,7 +62,7 @@ public class HolidaySettingConfigWebService extends WebService {
 	 */
 	@Path("save")
 	@POST
-	public void saveData(HolidaySettingConfigSaveCommand command){
+	public void saveData(PublicHolidaySettingCommand command){
 		this.saveHandler.handle(command);
 	}
 	
@@ -124,6 +130,7 @@ public class HolidaySettingConfigWebService extends WebService {
 	@Path("findPublicHolidaySetting")
 	@POST
 	public PublicHolidaySettingFindDto findPublicHolidaySettingFindDto(){
-		return this.finder.findIsManage();
+//		return this.finder.findIsManage();
+		return null;
 	}
 }

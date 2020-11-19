@@ -46,12 +46,12 @@ public class CheckingPublicHolidayServiceImpl implements CheckingPublicHolidaySe
 		Year y =new Year(yearMonth.year());
 		CompanyId c = new CompanyId(companyId);
 		//公休設定
-		Optional<PublicHolidaySetting> optPublicHolidaySetting = this.publicHolidaySettingRepo.findByCID(companyId);
+		Optional<PublicHolidaySetting> optPublicHolidaySetting = this.publicHolidaySettingRepo.get(companyId);
 		if(optPublicHolidaySetting.isPresent()){
 			PublicHolidaySetting publicHolidaySetting = optPublicHolidaySetting.get();
-			if(isManageComPublicHd!=publicHolidaySetting.isManageComPublicHd()){
-				return false;
-			}
+//			if(isManageComPublicHd!=publicHolidaySetting.isManageComPublicHd()){
+//				return false;
+//			}
 			//ドメインモデル「社員月間日数設定」を取得する
 			Optional<EmployeeMonthDaySetting> optEmployeeMonthDaySetting = this.employeeMonthDaySettingRepo.findByYear(c, employeeId, y);
 			

@@ -13,10 +13,11 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.shared.app.find.holidaysetting.configuration.HolidaySettingConfigDto;
 import nts.uk.ctx.at.shared.app.find.holidaysetting.configuration.HolidaySettingConfigFinder;
 import nts.uk.ctx.at.shared.app.find.holidaysetting.configuration.PublicHolidayManagementUsageUnitFindDto;
 import nts.uk.ctx.at.shared.app.find.holidaysetting.configuration.PublicHolidayManagementUsageUnitFinder;
+import nts.uk.ctx.at.shared.app.find.holidaysetting.configuration.PublicHolidaySettingDto;
+import nts.uk.ctx.at.shared.app.find.holidaysetting.configuration.PublicHolidaySettingFinder;
 import nts.uk.ctx.at.shared.app.find.holidaysetting.employee.EmployeeMonthDaySettingFinder;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year;
@@ -24,6 +25,7 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.company.CompanyM
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.company.CompanyMonthDaySettingRepository;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidayCarryOverDeadline;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidayPeriod;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employee.EmployeeMonthDaySetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employee.EmployeeMonthDaySettingRepository;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employment.EmploymentMonthDaySetting;
@@ -56,7 +58,7 @@ import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
 public class HolidaySettingExportImpl implements MasterListData{
 	
 	@Inject
-	private HolidaySettingConfigFinder finder;
+	private PublicHolidaySettingFinder pubHdSettingFinder;	
 	
 	@Inject
 	private CompanyMonthDaySettingRepository companyMonthDaySettingFinder;
@@ -131,200 +133,32 @@ public class HolidaySettingExportImpl implements MasterListData{
 	public List<MasterData> getMasterDatas(MasterListExportQuery query) {
 		List<MasterData> datas = new ArrayList<>();
 		
+		PublicHolidaySettingDto optPubHdSetting = pubHdSettingFinder.findPubHdSetting();	
 		
-		HolidaySettingConfigDto optPubHDSet = finder.findHolidaySettingConfigData();
-		
-		if(optPubHDSet.getPubHdSet() !=null && optPubHDSet.getPubHdSet().getIsManageComPublicHd()==1){// 1
+		if(optPubHdSetting != null && optPubHdSetting.getManagePublicHoliday() == 1) {
+			int carryOverDeadline = optPubHdSetting.getPublicHdCarryOverDeadline();
+			int pubHdPeriodSetting = optPubHdSetting.getPublicHolidayPeriod();
 			//1
-			putDataCustom(datas,TextResource.localize("KMF002_75")+TextResource.localize("KMF002_61"),"","","",TextResource.localize("KMF002_62"),0);
-			int carryOverDeadline = optPubHDSet.getForwardSetOfPubHd().getCarryOverDeadline();
+			putDataCustom(datas,TextResource.localize("KMF002_61"),"","管理する",0);
+			
 			//2
-			putDataCustom(datas,TextResource.localize("KMF002_4"),"","","",getCarryOverDeadline(carryOverDeadline),1);
+			putDataCustom(datas,TextResource.localize("KMF002_4"),"",getCarryOverDeadline(carryOverDeadline),1);
 			//3
-			if(optPubHDSet.getForwardSetOfPubHd().getIsTransferWhenPublicHdIsMinus() ==1){
-				putDataCustom(datas,"",TextResource.localize("KMF002_7"),"","","○",0);
+			if(optPubHdSetting.getCarryOverNumberOfPublicHdIsNegative() ==1){
+				putDataCustom(datas,"",TextResource.localize("KMF002_7"),"○",0);
 			}else{
-				putDataCustom(datas,"",TextResource.localize("KMF002_7"),"","","-",0);
+				putDataCustom(datas,"",TextResource.localize("KMF002_7"),"-",0);
 			}
+			putDataCustom(datas,TextResource.localize("KMF002_72"),"",getPubHdPeriod(pubHdPeriodSetting), 1);
 			
-			if(optPubHDSet.getPubHdSet().getPublicHdManagementClassification() ==0){//1ヵ月
-				//4
-				putDataCustom(datas,TextResource.localize("KMF002_5"),TextResource.localize("KMF002_63"),"","",TextResource.localize("KMF002_63"),1);
-				//5
-				if(optPubHDSet.getPubHdSet().getPeriod()==0){
-					putDataCustom(datas,"",TextResource.localize("KMF002_6"),"","",TextResource.localize("KMF002_64"),0);
-				}else{
-					putDataCustom(datas,"",TextResource.localize("KMF002_6"),"","",TextResource.localize("KMF002_65"),0);
-				}
-				//6
-				putDataCustom(datas,"",TextResource.localize("KMF002_15"),TextResource.localize("KMF002_67"),"","",0);
-				//7
-				putDataCustom(datas,"","",TextResource.localize("KMF002_16"),TextResource.localize("KMF002_68"),"",0);
-				//8
-				putDataCustom(datas,"","","",TextResource.localize("KMF002_69"),"",0);
-				//9
-				putDataCustom(datas,"","","",TextResource.localize("KMF002_8"),"",0);
-
-			}else{//4週4休
-				//4
-				putDataCustom(datas,TextResource.localize("KMF002_5"),TextResource.localize("KMF002_66"),"","",TextResource.localize("KMF002_66"),1);
-				
-				//5
-				putDataCustom(datas,"",TextResource.localize("KMF002_6"),"","","",0);
-				
-				if(optPubHDSet.getPubHdSet().getDetermineStartD() == 0){
-					//6
-					putDataCustom(datas,"",TextResource.localize("KMF002_15"),TextResource.localize("KMF002_67"),"",TextResource.localize("KMF002_67"),0);
-					//7
-					putDataCustom(datas,"","",TextResource.localize("KMF002_16"),TextResource.localize("KMF002_68"),optPubHDSet.getPubHdSet().getFullDate(),1);
-					//8
-					putDataCustom(datas,"","","",TextResource.localize("KMF002_69"),"",1);
-					//9
-					putDataCustom(datas,"","","",TextResource.localize("KMF002_8"),"",1);
-					
-				}else{
-					putDataCustom(datas,"",TextResource.localize("KMF002_15"),TextResource.localize("KMF002_67"),"",TextResource.localize("KMF002_74"),0);
-					
-					String getSub = optPubHDSet.getPubHdSet().getDayMonth().toString();
-                    String subDay = "";
-                    String subMonth = "";
-                    String subDays = "";
-                     if(getSub.length()==3){
-                            subMonth = getSub.substring(0, 1);
-                            subDay = getSub.substring(1,3);
-                            
-                            if(subDay.substring(0,1).equals("0")){
-                            	subDays = getSub.substring(2,3);
-                            }else{
-                            	subDays = getSub.substring(1,3);
-                            }
-                     }else{
-                            subMonth = getSub.substring(0,2);
-                            subDay = getSub.substring(2,4);
-                            if(subDay.substring(0,1).equals("0")){
-                            	subDays = getSub.substring(3,4);
-                            }else{
-                            	subDays = getSub.substring(2,4);
-                            }
-                            
-                     }
-                    putDataCustom(datas,"","",TextResource.localize("KMF002_16"),TextResource.localize("KMF002_68"),"",1);
-					putDataCustom(datas,"","","",TextResource.localize("KMF002_69"),subMonth+TextResource.localize("KMF002_69"),1);
-					putDataCustom(datas,"","","",TextResource.localize("KMF002_8"),subDays+TextResource.localize("KMF002_8"),1);
-				}
-			}
-			//週間休日チェック
-			if(optPubHDSet.getPubHdSet().getIsWeeklyHdCheck() == 1){
-				//10
-				putDataCustom(datas,"",TextResource.localize("KMF002_46"),"","","○",0);
-			}else{
-				putDataCustom(datas,"",TextResource.localize("KMF002_46"),"","","-",0);
-			}
-			
-			putDataCustom(datas,"","",TextResource.localize("KMF002_47"),TextResource.localize("KMF002_48"),getStartDay(optPubHDSet.getWeekHdSet().getStartDay()),0);
-			putDataCustom(datas,"","",TextResource.localize("KMF002_49"),"",optPubHDSet.getWeekHdSet().getInLegalHoliday()+TextResource.localize("KMF002_8"),1);
-			putDataCustom(datas,"","",TextResource.localize("KMF002_50"),"",optPubHDSet.getWeekHdSet().getOutLegalHoliday()+TextResource.localize("KMF002_8"),1);
-			
-			if(optPubHDSet.getPubHdSet().getPublicHdManagementClassification() ==0){
-				putDataCustom(datas,"",TextResource.localize("KMF002_51"),TextResource.localize("KMF002_17"),"","",0);
-				putDataCustom(datas,"","","",TextResource.localize("KMF002_49"),"",1);
-				putDataCustom(datas,"","","",TextResource.localize("KMF002_50"),"",1);
-				putDataCustom(datas,"","","",TextResource.localize("KMF002_70"),"",1);
-				putDataCustom(datas,"","","",TextResource.localize("KMF002_71"),"",1);
-				
-				putDataCustom(datas,"","",TextResource.localize("KMF002_18"),"","",0);
-				putDataCustom(datas,"","","",TextResource.localize("KMF002_49"),"",1);
-				putDataCustom(datas,"","","",TextResource.localize("KMF002_50"),"",1);
-				putDataCustom(datas,"","","",TextResource.localize("KMF002_70"),"",1);
-				putDataCustom(datas,"","","",TextResource.localize("KMF002_71"),"",1);
-			}else{//４週４休チェック
-				//1週間
-				if (optPubHDSet.getFourWeekfourHdNumbSet().getIsOneWeekHoliday() == 1) {
-					putDataCustom(datas, "",TextResource.localize("KMF002_51"), TextResource.localize("KMF002_17"), "", "○", 0);
-					putDataCustom(datas, "", "", "", TextResource.localize("KMF002_49"),optPubHDSet.getFourWeekfourHdNumbSet().getInLegalHdOwph() +TextResource.localize("KMF002_8"), 1);
-					putDataCustom(datas, "", "", "", TextResource.localize("KMF002_50"),optPubHDSet.getFourWeekfourHdNumbSet().getOutLegalHdOwph() + TextResource.localize("KMF002_8"), 1);
-					if (optPubHDSet.getPubHdSet().getDetermineStartD() == 1) {
-						putDataCustom(datas, "", "", "",TextResource.localize("KMF002_70"),optPubHDSet.getFourWeekfourHdNumbSet().getInLegalHdLwhnoow() + TextResource.localize("KMF002_8"), 1);
-						putDataCustom(datas, "", "", "",TextResource.localize("KMF002_71"),optPubHDSet.getFourWeekfourHdNumbSet().getOutLegalHdLwhnoow() +TextResource.localize("KMF002_8"), 1);
-					} else {
-						putDataCustom(datas, "", "", "",TextResource.localize("KMF002_70"), "", 1);
-						putDataCustom(datas, "", "", "",TextResource.localize("KMF002_71"), "", 1);
-					}
-				}else{
-					putDataCustom(datas,"",TextResource.localize("KMF002_51"),TextResource.localize("KMF002_17"),"","-",0);
-					putDataCustom(datas,"","","",TextResource.localize("KMF002_49"),"",1);
-					putDataCustom(datas,"","","",TextResource.localize("KMF002_50"),"",1);
-					putDataCustom(datas,"","","",TextResource.localize("KMF002_70"),"",1);
-					putDataCustom(datas,"","","",TextResource.localize("KMF002_71"),"",1);
-				}
-				//4週間
-				if (optPubHDSet.getFourWeekfourHdNumbSet().getIsFourWeekHoliday() == 1) {
-					putDataCustom(datas, "", "", TextResource.localize("KMF002_18"), "", "○", 0);
-					putDataCustom(datas, "", "", "", TextResource.localize("KMF002_49"),optPubHDSet.getFourWeekfourHdNumbSet().getInLegalHdFwph() + TextResource.localize("KMF002_8"), 1);
-					putDataCustom(datas, "", "", "", TextResource.localize("KMF002_50"),optPubHDSet.getFourWeekfourHdNumbSet().getOutLegalHdFwph() + TextResource.localize("KMF002_8"), 1);
-					if (optPubHDSet.getPubHdSet().getDetermineStartD() == 1) {
-						putDataCustom(datas, "", "", "", TextResource.localize("KMF002_70"),optPubHDSet.getFourWeekfourHdNumbSet().getInLegalHdLwhnofw() + TextResource.localize("KMF002_8"), 1);
-						putDataCustom(datas, "", "", "", TextResource.localize("KMF002_71"),optPubHDSet.getFourWeekfourHdNumbSet().getOutLegalHdLwhnofw() + TextResource.localize("KMF002_8"), 1);
-					} else {
-						putDataCustom(datas, "", "", "", TextResource.localize("KMF002_70"), "", 1);
-						putDataCustom(datas, "", "", "", TextResource.localize("KMF002_71"), "", 1);
-					}
-				} else {
-					putDataCustom(datas, "", "", TextResource.localize("KMF002_18"), "", "-", 0);
-					putDataCustom(datas, "", "", "", TextResource.localize("KMF002_49"), "", 1);
-					putDataCustom(datas, "", "", "", TextResource.localize("KMF002_50"), "", 1);
-					putDataCustom(datas, "", "", "", TextResource.localize("KMF002_70"), "", 1);
-					putDataCustom(datas, "", "", "", TextResource.localize("KMF002_71"), "", 1);
-				}
-			}
-		}else if(optPubHDSet.getPubHdSet() !=null){
-			putDataCustom(datas,TextResource.localize("KMF002_75")+TextResource.localize("KMF002_61"),"","","","管理しない",0);
-			putDataCustom(datas,TextResource.localize("KMF002_4"),"","","","",1);
-			putDataCustom(datas,"",TextResource.localize("KMF002_7"),"","","",0);
-			putDataCustom(datas,TextResource.localize("KMF002_5"),TextResource.localize("KMF002_66"),"","","",1);
-			putDataCustom(datas,"",TextResource.localize("KMF002_6"),"","","",0);
-			putDataCustom(datas,"",TextResource.localize("KMF002_15"),TextResource.localize("KMF002_67"),"","",0);
-			putDataCustom(datas,"","",TextResource.localize("KMF002_16"),TextResource.localize("KMF002_68"),"",1);
-			putDataCustom(datas,"","","",TextResource.localize("KMF002_69"),"",1);
-			putDataCustom(datas,"","","",TextResource.localize("KMF002_8"),"",1);
-			putDataCustom(datas,"",TextResource.localize("KMF002_46"),"","","",0);
-			putDataCustom(datas,"","",TextResource.localize("KMF002_47"),TextResource.localize("KMF002_48"),"",0);
-			putDataCustom(datas,"","",TextResource.localize("KMF002_49"),"","",1);
-			putDataCustom(datas,"","",TextResource.localize("KMF002_50"),"","",1);
-			putDataCustom(datas,"",TextResource.localize("KMF002_51"),TextResource.localize("KMF002_17"),"","",0);
-			putDataCustom(datas,"","","",TextResource.localize("KMF002_49"),"",1);
-			putDataCustom(datas,"","","",TextResource.localize("KMF002_50"),"",1);
-			putDataCustom(datas,"","","",TextResource.localize("KMF002_70"),"",1);
-			putDataCustom(datas,"","","",TextResource.localize("KMF002_71"),"",1);
-			putDataCustom(datas,"","",TextResource.localize("KMF002_18"),"","",0);
-			putDataCustom(datas,"","","",TextResource.localize("KMF002_49"),"",1);
-			putDataCustom(datas,"","","",TextResource.localize("KMF002_50"),"",1);
-			putDataCustom(datas,"","","",TextResource.localize("KMF002_70"),"",1);
-			putDataCustom(datas,"","","",TextResource.localize("KMF002_71"),"",1);
+		}else if(optPubHdSetting !=null){
+			putDataCustom(datas,TextResource.localize("KMF002_61"),"","管理しない",0);
+			putDataCustom(datas,TextResource.localize("KMF002_4"),"","",1);
+			putDataCustom(datas,"",TextResource.localize("KMF002_7"),"",0);
 		}else{
-			putDataCustom(datas,TextResource.localize("KMF002_75")+TextResource.localize("KMF002_61"),"","","","",0);
-			putDataCustom(datas,TextResource.localize("KMF002_4"),"","","","",1);
-			putDataCustom(datas,"",TextResource.localize("KMF002_7"),"","","",0);
-			putDataCustom(datas,TextResource.localize("KMF002_5"),TextResource.localize("KMF002_66"),"","","",1);
-			putDataCustom(datas,"",TextResource.localize("KMF002_6"),"","","",0);
-			putDataCustom(datas,"",TextResource.localize("KMF002_15"),TextResource.localize("KMF002_67"),"","",0);
-			putDataCustom(datas,"","",TextResource.localize("KMF002_16"),TextResource.localize("KMF002_68"),"",1);
-			putDataCustom(datas,"","","",TextResource.localize("KMF002_69"),"",1);
-			putDataCustom(datas,"","","",TextResource.localize("KMF002_8"),"",1);
-			putDataCustom(datas,"",TextResource.localize("KMF002_46"),"","","",0);
-			putDataCustom(datas,"","",TextResource.localize("KMF002_47"),TextResource.localize("KMF002_48"),"",0);
-			putDataCustom(datas,"","",TextResource.localize("KMF002_49"),"","",1);
-			putDataCustom(datas,"","",TextResource.localize("KMF002_50"),"","",1);
-			putDataCustom(datas,"",TextResource.localize("KMF002_51"),TextResource.localize("KMF002_17"),"","",0);
-			putDataCustom(datas,"","","",TextResource.localize("KMF002_49"),"",1);
-			putDataCustom(datas,"","","",TextResource.localize("KMF002_50"),"",1);
-			putDataCustom(datas,"","","",TextResource.localize("KMF002_70"),"",1);
-			putDataCustom(datas,"","","",TextResource.localize("KMF002_71"),"",1);
-			putDataCustom(datas,"","",TextResource.localize("KMF002_18"),"","",0);
-			putDataCustom(datas,"","","",TextResource.localize("KMF002_49"),"",1);
-			putDataCustom(datas,"","","",TextResource.localize("KMF002_50"),"",1);
-			putDataCustom(datas,"","","",TextResource.localize("KMF002_70"),"",1);
-			putDataCustom(datas,"","","",TextResource.localize("KMF002_71"),"",1);
+			putDataCustom(datas,TextResource.localize("KMF002_61"),"","",0);
+			putDataCustom(datas,TextResource.localize("KMF002_4"),"","",1);
+			putDataCustom(datas,"",TextResource.localize("KMF002_7"),"",0);
 		}
 		return datas;
 	}
@@ -335,10 +169,6 @@ public class HolidaySettingExportImpl implements MasterListData{
 		columns.add(new MasterHeaderColumn(value1, TextResource.localize("KMF002_59"),
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(value2, "",
-				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(value3, "",
-				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(value4, "",
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(value5, TextResource.localize("KMF002_58"),
 				ColumnTextAlign.LEFT, "", true));
@@ -351,7 +181,6 @@ public class HolidaySettingExportImpl implements MasterListData{
 		data.put(value3, "");
 		data.put(value4, "");
 		data.put(value5, "");
-
 	}
 	
 	@Override
@@ -363,13 +192,11 @@ public class HolidaySettingExportImpl implements MasterListData{
 	public MasterListMode mainSheetMode() {
 		return MasterListMode.NONE;
 	}
-	private void putDataCustom(List<MasterData> datas,String column1, String column2, String column3, String column4,String column5, int possition) {
+	private void putDataCustom(List<MasterData> datas,String column1, String column2, String column5, int possition) {
 		Map<String, Object> data = new HashMap<>();
 		putEmptyDataOne(data);
 		data.put(value1,column1);
 		data.put(value2,column2);
-		data.put(value3,column3);
-		data.put(value4,column4);
 		data.put(value5,column5);
 		datas.add(alignMasterDataSheetRole(data,possition));
 	}
@@ -377,8 +204,6 @@ public class HolidaySettingExportImpl implements MasterListData{
 		MasterData masterData = new MasterData(data, null, "");
 		masterData.cellAt(value1).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 		masterData.cellAt(value2).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-		masterData.cellAt(value3).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-		masterData.cellAt(value4).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 		/** 0 is align left*/
 		if(possiton==0){
 			masterData.cellAt(value5).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
@@ -404,9 +229,10 @@ public class HolidaySettingExportImpl implements MasterListData{
 
 		Optional<CompanyStartMonthData> companyStartMonth=companyStartMonthAdapter.getComanyInfoByCid(companyId);
 		
-		HolidaySettingConfigDto optPubHDSet = finder.findHolidaySettingConfigData();
+//		HolidaySettingConfigDto optPubHDSet = finder.findHolidaySettingConfigData();
+		PublicHolidaySettingDto optPubHdSetting = pubHdSettingFinder.findPubHdSetting();
 		
-		if(optPubHDSet.getPubHdSet() != null && optPubHDSet.getPubHdSet().getIsManageComPublicHd()==1){// 1
+		if(optPubHdSetting != null && optPubHdSetting.getManagePublicHoliday() == 1){// 1
 			if(!CollectionUtil.isEmpty(listYear)){
 				for(int y=0;y<listYear.size();y++){
 					Optional<CompanyMonthDaySetting> optional = companyMonthDaySettingFinder.findByYear(new CompanyId(companyId), new Year(listYear.get(y)));
@@ -465,14 +291,17 @@ public class HolidaySettingExportImpl implements MasterListData{
 		wkpConfigInfoFindObject.setRestrictionOfReferenceRange(true);
 		int year = endDate-startDate;
 		List<Integer> listYear = new ArrayList<>();
-		HolidaySettingConfigDto optPubHDSet = finder.findHolidaySettingConfigData();
+		
+		PublicHolidaySettingDto optPubHdSetting = pubHdSettingFinder.findPubHdSetting();
+//		HolidaySettingConfigDto optPubHDSet = finder.findHolidaySettingConfigData();
+		
 		for(int i=0;i<year+1;i++){
 			listYear.add(startDate+i);
 		}
 
 		List<WorkplaceHierarchyDto> workplaceHierarchyDtos = spreadOutWorkplaceInfos(workplaceConfigInfoFinder.findAllByBaseDate(wkpConfigInfoFindObject));
 		
-		if (optPubHDSet.getPubHdSet().getIsManageComPublicHd()==1){// 1
+		if (optPubHdSetting.getManagePublicHoliday() == 1){// 1
 			List<String> listAllWorkPlaceIds = new ArrayList<>();
 			Map<String, Object> mapWorkPlaceByYears = new HashMap<>();
 			for(int y=0; y<listYear.size(); y++){
@@ -582,7 +411,8 @@ public class HolidaySettingExportImpl implements MasterListData{
 		
 		int year = endDate-startDate;
 		List<Integer> listYear = new ArrayList<>();
-		HolidaySettingConfigDto optPubHDSet = finder.findHolidaySettingConfigData();
+//		HolidaySettingConfigDto optPubHDSet = finder.findHolidaySettingConfigData();
+		PublicHolidaySettingDto optPubHdSetting = pubHdSettingFinder.findPubHdSetting();
 		for(int i=0;i<year+1;i++){
 			listYear.add(startDate+i);
 		}
@@ -606,7 +436,7 @@ public class HolidaySettingExportImpl implements MasterListData{
 				Comparator.comparing(EmploymentDto::getCode, Comparator.nullsLast(String::compareTo)))
 				.collect(Collectors.toList());
 			
-		if(optPubHDSet.getPubHdSet().getIsManageComPublicHd()==1){// 1
+		if(optPubHdSetting.getManagePublicHoliday() == 1){// 1
 			if (!CollectionUtil.isEmpty(listEmployeeExport)) {
 				Map<String, Object> data = new HashMap<>();
 				int startMonthFour = companyStartMonth.get().getStartMonth();
@@ -722,7 +552,9 @@ public class HolidaySettingExportImpl implements MasterListData{
 		
 		int year = endDate-startDate;
 		List<Integer> listYear = new ArrayList<>();
-		HolidaySettingConfigDto optPubHDSet = finder.findHolidaySettingConfigData();
+//		HolidaySettingConfigDto optPubHDSet = finder.findHolidaySettingConfigData();
+		PublicHolidaySettingDto optPubHdSetting = pubHdSettingFinder.findPubHdSetting();
+		
 		for(int i=0;i<year+1;i++){
 			listYear.add(startDate+i);
 		}
@@ -742,7 +574,7 @@ public class HolidaySettingExportImpl implements MasterListData{
 		List<RegulationInfoEmployeeDto> listmployee = getListRegulationInfoEmployeeDto(listFind, listAllIds);
 		
 		
-		if(optPubHDSet.getPubHdSet().getIsManageComPublicHd()==1){// 1
+		if(optPubHdSetting.getManagePublicHoliday() == 1){// 1
 			if(!CollectionUtil.isEmpty(listmployee)){
 				int startMonthFour = companyStartMonth.get().getStartMonth();
 				Map<String, Object> data = new HashMap<>();
@@ -860,11 +692,13 @@ public class HolidaySettingExportImpl implements MasterListData{
 	public List<SheetData> extraSheets(MasterListExportQuery query){
 		List<SheetData> listSheetData = new ArrayList<>();
 		
-		HolidaySettingConfigDto optPubHDSet = finder.findHolidaySettingConfigData();
+//		HolidaySettingConfigDto optPubHDSet = finder.findHolidaySettingConfigData();	
+		PublicHolidaySettingDto optPubHdSetting = pubHdSettingFinder.findPubHdSetting();
+		
 		
 		PublicHolidayManagementUsageUnitFindDto findData = finderPublicHolidayManagement.findData();
 
-		if(optPubHDSet.getPubHdSet() !=null && optPubHDSet.getPubHdSet().getPublicHdManagementClassification() ==0){//1ヵ月
+		if(optPubHdSetting !=null){//1ヵ月
 			
 			if(findData.getIsManageEmpPublicHd()==1 && findData.getIsManageEmployeePublicHd()==0 && findData.getIsManageWkpPublicHd()==0){
 				SheetData sheetDataTwo = new SheetData(getMasterDataTwo(query), getHeaderColumnTwos(query), null, null, TextResource.localize("KMF002_75"), MasterListMode.YEAR_RANGE);
@@ -901,7 +735,7 @@ public class HolidaySettingExportImpl implements MasterListData{
 				SheetData sheetDataTwo = new SheetData(getMasterDataTwo(query), getHeaderColumnTwos(query), null, null, TextResource.localize("KMF002_75"), MasterListMode.YEAR_RANGE);
 				listSheetData.add(sheetDataTwo);
 			}
-		}else if(optPubHDSet.getPubHdSet() ==null){
+		} else {
 			SheetData sheetDataTwo = new SheetData(getMasterDataTwo(query), getHeaderColumnTwos(query), null, null, TextResource.localize("KMF002_75"), MasterListMode.YEAR_RANGE);
 			listSheetData.add(sheetDataTwo);
 		}
@@ -940,56 +774,35 @@ public class HolidaySettingExportImpl implements MasterListData{
 	}
 	private String getCarryOverDeadline(int carryOverDeadline) {
 		String CarryOver = null;
-		switch(carryOverDeadline){
-			case 0:
-				CarryOver = TextResource.localize(PublicHolidayCarryOverDeadline._1_MONTH.nameId);
-				break;
-			case 1:
-				CarryOver = TextResource.localize(PublicHolidayCarryOverDeadline._2_MONTH.nameId);
-				break;
+		switch(carryOverDeadline){			
 			case 2:
-				CarryOver = TextResource.localize(PublicHolidayCarryOverDeadline._3_MONTH.nameId);
-				break;
-			case 3:
-				CarryOver = TextResource.localize(PublicHolidayCarryOverDeadline._4_MONTH.nameId);
-				break;
-			case 4:
-				CarryOver = TextResource.localize(PublicHolidayCarryOverDeadline._5_MONTH.nameId);
-				break;
-			case 5:
-				CarryOver = TextResource.localize(PublicHolidayCarryOverDeadline._6_MONTH.nameId);
-				break;
-			case 6:
-				CarryOver = TextResource.localize(PublicHolidayCarryOverDeadline._7_MONTH.nameId);
-				break;
-			case 7:
-				CarryOver = TextResource.localize(PublicHolidayCarryOverDeadline._8_MONTH.nameId);
-				break;
-			case 8:
-				CarryOver = TextResource.localize(PublicHolidayCarryOverDeadline._9_MONTH.nameId);
-				break;
-			case 9:
-				CarryOver = TextResource.localize(PublicHolidayCarryOverDeadline._10_MONTH.nameId);
-				break;
-			case 10:
-				CarryOver = TextResource.localize(PublicHolidayCarryOverDeadline._11_MONTH.nameId);
-				break;
-			case 11:
-				CarryOver = TextResource.localize(PublicHolidayCarryOverDeadline._12_MONTH.nameId);
-				break;
-			case 12:
 				CarryOver = TextResource.localize(PublicHolidayCarryOverDeadline.YEAR_END.nameId);
 				break;
-			case 13:
+			case 1:
 				CarryOver = TextResource.localize(PublicHolidayCarryOverDeadline.INDEFINITE.nameId);
 				break;
-			case 14:
+			case 0:
 				CarryOver = TextResource.localize(PublicHolidayCarryOverDeadline.CURRENT_MONTH.nameId);
 				break;
 			default:
 				break;
 		}
 		return CarryOver;
+	}
+	
+	private String getPubHdPeriod(int pubHdPeriodSetting) {
+		String pubHdPeriod = null;
+		switch(pubHdPeriodSetting){			
+			case 0:
+				pubHdPeriod = TextResource.localize(PublicHolidayPeriod.CLOSURE_PERIOD.nameId);
+				break;
+			case 1:
+				pubHdPeriod = TextResource.localize(PublicHolidayPeriod.FIRST_DAY_TO_LAST_DAY.nameId);
+				break;		
+			default:
+				break;
+		}
+		return pubHdPeriod;
 	}
 	private List<WorkplaceHierarchyDto> spreadOutWorkplaceInfos(List<WorkplaceHierarchyDto> workplaceHierarchyDtos) {
 		List<WorkplaceHierarchyDto> listWorkplaceHierarchyDtos = new ArrayList<>();
