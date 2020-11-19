@@ -555,7 +555,7 @@ module nts.uk.com.view.kwr002.a {
                                     , vm.employeeId
                                     , ''
                                     , vm.selectedCodeA8_5() === ItemSelectionType.STANDARD_SETTING ? vm.selectedCode() : vm.selectedCodeA8_8());
-                setShared("currentARESSelectCode",vm.selectedCode());
+                setShared("currentARESSelectCode",vm.selectedCodeA8_5() === ItemSelectionType.STANDARD_SETTING ? vm.selectedCode() : vm.selectedCodeA8_8());
                 setShared("dataTranferScreenB", vm.dataTranferScreenB);
                 nts.uk.ui.windows.sub.modal("/view/kwr/002/b/index.xhtml").onClosed(function() {
                     service.getAllAttendanceRecExpSet().then((result: AttendanceRecordExportSettingWrapperDto) => {

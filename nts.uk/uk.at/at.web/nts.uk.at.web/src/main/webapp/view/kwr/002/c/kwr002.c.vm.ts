@@ -71,7 +71,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             self.isSmallOrMedium = ko.observable(false);
             self.isSmall = ko.observable(false);
             self.useMonthApproverConfirm = ko.observable(false);
-            self.monthlyConfirmedDisplay = ko.observable(0);
+
 
             //            console.log(self.attendanceCode());
 
@@ -89,6 +89,8 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                 { value: 1, name: nts.uk.resource.getText("KWR002_195") },
                 { value: 0, name: nts.uk.resource.getText("KWR002_196") }
             ]);
+            self.monthlyConfirmedDisplay = ko.observable(0);
+
             self.tabs = ko.observableArray([
                 { id: 'tab-1', title: nts.uk.resource.getText("KWR002_88"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
                 { id: 'tab-2', title: nts.uk.resource.getText("KWR002_89"), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) }
@@ -482,7 +484,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                         self.useMonthApproverConfirm(aPUS.useMonthApproverConfirm);
                     }
                     if (aRES !== null) {
-                        self.monthlyConfirmedDisplay(aRES.monthlyConfirmedDisplay);
+                        self.monthlyConfirmedDisplay(aRES.monthlyConfirmedDisplay === null ? 0 : 1);
                     }
                 })
                 .fail(() => {
