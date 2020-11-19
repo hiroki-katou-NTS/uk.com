@@ -364,9 +364,12 @@ module nts.uk.at.ksm008.f {
                         if (!_.isEmpty(data.empsCanNotSameHolidays)) {
                             let empsCanNotSameHolidays = new Array<string>();
                             _.each(data.empsCanNotSameHolidays, (dataId: string) => {
-                                empsCanNotSameHolidays.push(_.find(vm.selectableEmployeeList(), i => {
+                                let personInfo = _.find(vm.selectableEmployeeList(), i => {
                                     return i.id == dataId
-                                }).code)
+                                });
+                                if (!_.isEmpty(personInfo)) {
+                                    empsCanNotSameHolidays.push(personInfo.code)
+                                }
                             });
                             vm.selectedableCodes(empsCanNotSameHolidays);
 
