@@ -122,7 +122,7 @@ public class OptionalItemApplicationQuery {
                     amountLower = range.getAmountRange().get().getLowerLimit().get().v();
                 }
                 if (range.getAmountRange().isPresent() && range.getAmountRange().get().getUpperLimit().isPresent()) {
-                    amountLower = range.getAmountRange().get().getUpperLimit().get().v();
+                    amountUpper = range.getAmountRange().get().getUpperLimit().get().v();
                 }
                 if ((range.getLowerLimit().isSET() && amountLower != null && amountLower.compareTo(amount) > 0)
                         || (range.getUpperLimit().isSET() && amountUpper != null && amountUpper.compareTo(amount) < 0)) {
