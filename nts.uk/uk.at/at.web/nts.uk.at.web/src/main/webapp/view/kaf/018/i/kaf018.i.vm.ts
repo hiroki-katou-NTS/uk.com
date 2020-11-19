@@ -90,14 +90,14 @@ module nts.uk.at.view.kaf018.i.viewmodel {
 							case 2:
 								vm.dailyUnconfirmByConfirmer(temp);
 								break;
+							case 5:
+								vm.monthlyUnconfirmByPrincipal(temp);
+								break;
 							case 3:
 								vm.monthlyUnconfirmByConfirmer(temp);
 								break;
 							case 4:
 								vm.workConfirmation(temp);
-								break;
-							case 5:
-								vm.monthlyUnconfirmByPrincipal(temp);
 								break;
 						}
 					});
@@ -223,14 +223,14 @@ module nts.uk.at.view.kaf018.i.viewmodel {
 							case 'tab-3':
 								mailType = 2;
 								break;
+							case 'tab-6':
+								mailType = 5;
+								break;
 							case 'tab-4':
 								mailType = 3;
 								break;
 							case 'tab-5':
 								mailType = 4;
-								break;
-							case 'tab-6':
-								mailType = 5;
 								break;
 						}
 						vm.$blockui("show");

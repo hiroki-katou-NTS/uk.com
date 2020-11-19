@@ -152,6 +152,9 @@ module nts.uk.at.view.kaf018.c.viewmodel {
 				vm.dataSource = data.wkpEmpMailLst;
 				$("#cGrid").igGrid("option", "dataSource", vm.dataSource);
 				$("#cGrid").css('visibility','visible');
+			}).fail((error) => {
+				vm.$dialog.error({ messageId: error.messageId, messageParams: error.parameterIds })
+				.then(() => vm.$window.close());
 			});
 		}
 		

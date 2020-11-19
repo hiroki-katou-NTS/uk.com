@@ -1622,7 +1622,25 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		String companyId = AppContexts.user().companyId();
 		List<ApprSttWkpEmpMailOutput> wkpEmpMailLst = new ArrayList<>();
 		// アルゴリズム「メール送信_メール本文取得」を実行する
-		ApprovalStatusMailTemp approvalStatusMailTemp = approvalStatusMailTempRepo.getApprovalStatusMailTempById(companyId, mailType.value).orElse(null);
+		Optional<ApprovalStatusMailTemp> opApprovalStatusMailTemp = approvalStatusMailTempRepo.getApprovalStatusMailTempById(companyId, mailType.value);
+		if(!opApprovalStatusMailTemp.isPresent()) {
+			switch (mailType) {
+			case APP_APPROVAL_UNAPPROVED:
+				throw new BusinessException("Msg_2042");
+			case DAILY_UNCONFIRM_BY_PRINCIPAL:
+				throw new BusinessException("Msg_2043");
+			case DAILY_UNCONFIRM_BY_CONFIRMER:
+				throw new BusinessException("Msg_2044");
+			case MONTHLY_UNCONFIRM_BY_PRINCIPAL:
+				throw new BusinessException("Msg_2045");
+			case MONTHLY_UNCONFIRM_BY_CONFIRMER:
+				throw new BusinessException("Msg_2046");
+			case WORK_CONFIRMATION:
+				throw new BusinessException("Msg_2047");
+			default:
+				break;
+			}
+		}
 		// アルゴリズム「メール送信_対象再取得_職場と対象社員」を実行
 		// xử lý giống màn hình B
 		List<ApprSttExecutionOutput> apprSttExecutionOutputLst = Collections.emptyList();
@@ -1640,12 +1658,22 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			
 			wkpEmpMailLst = this.getAppApproverToSendMail(apprSttExecutionOutputLst, period);
 			break;
+		case DAILY_UNCONFIRM_BY_PRINCIPAL:
+			break;
+		case DAILY_UNCONFIRM_BY_CONFIRMER:
+			break;
+		case MONTHLY_UNCONFIRM_BY_PRINCIPAL:
+			break;
+		case MONTHLY_UNCONFIRM_BY_CONFIRMER:
+			break;
+		case WORK_CONFIRMATION:
+			break;
 		default:
 			break;
 		}
-		// 
+		// アルゴリズム「メール送信_本人の情報を取得」を実行
 		wkpEmpMailLst = this.getPersonInfo(wkpEmpMailLst);
-		return new ApprSttSendMailInfoOutput(approvalStatusMailTemp, wkpEmpMailLst);
+		return new ApprSttSendMailInfoOutput(opApprovalStatusMailTemp.get(), wkpEmpMailLst);
 	}
 	
 	@Override
