@@ -31,25 +31,25 @@ public class AnnualWorkLedgerOutputSetting extends AggregateRoot {
     // 定型自由区分
     private SettingClassificationCommon standardFreeDivision;
 
-    // 日次出力項目リスト
+    // 日次出力項目リスト->DAILY
     private List<DailyOutputItemsAnnualWorkLedger> dailyOutputItemList;
 
     //社員ID
     private String employeeId;
 
-    // 	月次出力項目リスト
+    // 	月次出力項目リスト-MONTHLY
     private List<OutputItem> outputItemList;
 
 
     // 	[C-0] 年間勤務台帳の出力設定を作成する
 
     // [1]　定型選択の重複をチェックする
-    boolean checkDuplicateStandardSelection(Require require, OutputItemSettingCode code, String cid) {
+    public static boolean  checkDuplicateStandardSelection(Require require, OutputItemSettingCode code, String cid) {
         return require.checkTheStandard(code, cid);
     }
 
     // [2]　自由設定の重複をチェックする
-    boolean checkDuplicateFreeSettings(Require require, OutputItemSettingCode code, String cid, String employeeId) {
+    public static boolean checkDuplicateFreeSettings(Require require, OutputItemSettingCode code, String cid, String employeeId) {
         return require.checkFreedom(code, cid, employeeId);
     }
 

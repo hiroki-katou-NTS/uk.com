@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.dom.outputitemsofannualworkledger;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemDetailAttItem;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.CommonAttributesOfForms;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.DailyMonthlyClassification;
@@ -14,6 +15,7 @@ import java.util.List;
  * @author : chinh.hm
  */
 @AllArgsConstructor
+@Getter
 public class DailyOutputItemsAnnualWorkLedger extends ValueObject {
     // 	順位
     private int rank;
@@ -22,13 +24,13 @@ public class DailyOutputItemsAnnualWorkLedger extends ValueObject {
     private OutputItemNameOfAnnualWorkLedger name;
 
     //  印刷対象フラグ
-    private boolean printTtargetFlag;
+    private boolean printTargetFlag;
 
     // 	単独計算区分
     private IndependentCalcClassic independentCalcClassic;
 
     // 	日次月次区分
-    private DailyMonthlyClassification dailyMonthlyClassification;
+    private DailyMonthlyClassification classification;
 
     // 	属性
     private CommonAttributesOfForms attribute;
