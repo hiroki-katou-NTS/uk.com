@@ -32,5 +32,6 @@ public interface CompanyAdapter {
 	
 	Optional<CompanyImport622> getCompanyNotAbolitionByCid(String cid);
 	
+	// 年度の期間を取得
 	YearMonthPeriod get(String cid, int year);
 }

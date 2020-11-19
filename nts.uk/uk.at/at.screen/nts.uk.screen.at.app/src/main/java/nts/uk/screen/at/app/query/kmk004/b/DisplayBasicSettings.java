@@ -31,6 +31,7 @@ public class DisplayBasicSettings {
 		DisplayBasicSettingsDto result = new DisplayBasicSettingsDto();
 		String companyId = AppContexts.user().companyId();
 
+		// 1 get(ログイン会社)
 		Optional<RegularLaborTimeCom> regularLaborTimeCom = comRepo.find(companyId);
 
 		if (regularLaborTimeCom.isPresent()) {
@@ -38,6 +39,7 @@ public class DisplayBasicSettings {
 			result.setWeekly(regularLaborTimeCom.get().getWeeklyTime().getTime().v());
 		}
 
+		// 2 get(ログイン会社)
 		Optional<ComRegulaMonthActCalSet> comRegulaMonthActCalSet = actCalSetRepo.find(companyId);
 
 		if (comRegulaMonthActCalSet.isPresent()) {

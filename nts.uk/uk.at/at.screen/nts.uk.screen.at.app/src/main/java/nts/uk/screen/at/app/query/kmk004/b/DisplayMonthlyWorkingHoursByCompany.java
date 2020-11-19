@@ -34,7 +34,8 @@ public class DisplayMonthlyWorkingHoursByCompany {
 	public List<DisplayMonthlyWorkingDto> get(DisplayMonthlyWorkingInput param) {
 		String cid = AppContexts.user().companyId();
 		List<DisplayMonthlyWorkingDto> resutl = new ArrayList<>();
-
+		
+		// 1 年度の期間を取得(require, 会社ID, 年度)
 		YearMonthPeriod yearMonthPeriod = companyRepository.get(cid, param.year);
 		List<MonthlyWorkTimeSetCom> coms = new ArrayList<>();
 

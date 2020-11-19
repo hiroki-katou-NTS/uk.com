@@ -83,6 +83,7 @@ public class CompanyAdapterImp implements CompanyAdapter {
 
 	}
 	
+	// 年度の期間を取得
 	@Override
 	public YearMonthPeriod get(String cid, int year) {
 		return this.companyPub.getyearMonth(cid, year);
