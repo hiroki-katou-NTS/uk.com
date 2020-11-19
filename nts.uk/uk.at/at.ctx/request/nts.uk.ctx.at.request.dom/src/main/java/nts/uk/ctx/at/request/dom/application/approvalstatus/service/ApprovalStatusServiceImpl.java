@@ -1744,7 +1744,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 						.stream().map(y -> new MailTransmissionContentOutput(
 								y.getEmpID(), 
 								y.getEmpName(), 
-								y.getEmpName(), 
+								y.getEmpMail(), 
 								approvalStatusMailTemp.getMailSubject().v(), 
 								approvalStatusMailTemp.getMailContent().v()))
 						.collect(Collectors.toList()))
