@@ -41,33 +41,30 @@ public class DisplayMonthlyWorkingHoursByCompany {
 
 		switch (param.workType) {
 		case 0:
-			coms = monthlyWorkTimeSetRepo.findCompanyByPeriod(cid,
-					LaborWorkTypeAttr.REGULAR_LABOR, yearMonthPeriod);
+			coms = monthlyWorkTimeSetRepo.findCompanyByPeriod(cid, LaborWorkTypeAttr.REGULAR_LABOR, yearMonthPeriod);
 			break;
 		case 1:
-			coms = monthlyWorkTimeSetRepo.findCompanyByPeriod(cid,
-					LaborWorkTypeAttr.DEFOR_LABOR, yearMonthPeriod);
+			coms = monthlyWorkTimeSetRepo.findCompanyByPeriod(cid, LaborWorkTypeAttr.DEFOR_LABOR, yearMonthPeriod);
 			break;
 		case 2:
-			coms = monthlyWorkTimeSetRepo.findCompanyByPeriod(cid,
-					LaborWorkTypeAttr.FLEX, yearMonthPeriod);
+			coms = monthlyWorkTimeSetRepo.findCompanyByPeriod(cid, LaborWorkTypeAttr.FLEX, yearMonthPeriod);
 			break;
 		}
-		
+
 		resutl = coms.stream().map(m -> {
 			DisplayMonthlyWorkingDto s = new DisplayMonthlyWorkingDto(this.setNameMonth(m.getYm().month()),
-					m.getLaborTime().getLegalLaborTime().v(),
-					 m.getLaborTime().getWithinLaborTime().map(c -> c.v()).orElse(null),
-					 m.getLaborTime().getWeekAvgTime().map(c -> c.v()).orElse(null));
+					new LaborTime(m.getLaborTime().getLegalLaborTime().v(),
+							m.getLaborTime().getWithinLaborTime().map(c -> c.v()).orElse(null),
+							m.getLaborTime().getWeekAvgTime().map(c -> c.v()).orElse(null)));
 			return s;
 		}).collect(Collectors.toList());
 
 		return resutl;
 	}
-	
-	private String setNameMonth (int param) {
+
+	private String setNameMonth(int param) {
 		String name = "";
-		
+
 		switch (param) {
 		case 1:
 			name = MonthStr.ONE.month;
@@ -106,7 +103,7 @@ public class DisplayMonthlyWorkingHoursByCompany {
 			name = MonthStr.TWELVE.month;
 			break;
 		}
-		
+
 		return name;
 	}
 
