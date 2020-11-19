@@ -96,7 +96,16 @@ module nts.uk.at.view.kmk004.b {
             vm.$ajax(API.GET_WORK_TIME, input)
                 .then((data: IWorkTime[]) => {
                     if (data.length > 0) {
-                        vm.workTimes(data.map(m => new WorkTime({ ...m, parrent: vm.workTimes })));
+                        const data1:IWorkTime[] = [];
+                        data.map(m => {
+                            const laborTime: ILaborTime = {legalLaborTime: m.laborTime.legalLaborTime / 60,
+                                withinLaborTime: m.laborTime.weekAvgTime,
+                                weekAvgTime: m.laborTime.weekAvgTime};
+                            const s: IWorkTime = {yearMonth: m.yearMonth, laborTime: laborTime };
+                            data1.push(s);
+                        });
+
+                        vm.workTimes(data1.map(m => new WorkTime({ ...m, parrent: vm.workTimes })));
                     }
                 });
         }
@@ -104,7 +113,6 @@ module nts.uk.at.view.kmk004.b {
 }
 
 interface IWorkTime {
-    check: boolean;
     yearMonth: number;
     laborTime: ILaborTime;
 }
@@ -120,8 +128,6 @@ class WorkTime {
     yearMonth: KnockoutObservable<number | null> = ko.observable(null);
     nameMonth: KnockoutObservable<string> = ko.observable('');
     legalLaborTime: KnockoutObservable<number | null> = ko.observable(null);
-    withinLaborTime: KnockoutObservable<number | null> = ko.observable(null);
-    weekAvgTime: KnockoutObservable<number | null> = ko.observable(null);
 
     constructor(params?: IWorkTime & { parrent: KnockoutObservableArray<WorkTime> }) {
         const md = this;
@@ -132,11 +138,8 @@ class WorkTime {
 
     public create(param?: IWorkTime) {
         const md = this;
-        md.check(param.check)
         md.yearMonth(param.yearMonth);
         md.legalLaborTime(param.laborTime.legalLaborTime);
-        md.withinLaborTime(param.laborTime.withinLaborTime);
-        md.weekAvgTime(param.laborTime.weekAvgTime);
 
         switch (param.yearMonth.toString().substring(4, 6)) {
             case "01":
