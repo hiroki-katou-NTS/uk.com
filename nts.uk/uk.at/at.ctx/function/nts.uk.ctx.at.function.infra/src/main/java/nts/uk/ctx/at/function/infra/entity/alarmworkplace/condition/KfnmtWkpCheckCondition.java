@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.function.infra.entity.alarmworkplace.condition;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.EndDate;
@@ -22,6 +24,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "KFNMT_WRKPCHECK_CONDITION")
 public class KfnmtWkpCheckCondition extends UkJpaEntity implements Serializable {
 

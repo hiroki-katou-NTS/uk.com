@@ -9,6 +9,7 @@ import java.io.Serializable;
 
 @Embeddable
 @AllArgsConstructor
+@NoArgsConstructor
 public class KfnmtALstWkpPtnPk implements Serializable {
 
     private static final long serialVersionUID = 1L;

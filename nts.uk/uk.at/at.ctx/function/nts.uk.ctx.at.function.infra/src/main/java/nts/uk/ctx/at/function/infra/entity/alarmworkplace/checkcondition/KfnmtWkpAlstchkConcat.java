@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.infra.entity.alarmworkplace.checkcondition;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.AlarmCheckCdtWorkplaceCategory;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -11,6 +12,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Entity
 @Getter
+@NoArgsConstructor
 @Table(name = "KFNMT_WKP_ALSTCHK_CONCAT")
 public class KfnmtWkpAlstchkConcat extends UkJpaEntity implements Serializable {
 

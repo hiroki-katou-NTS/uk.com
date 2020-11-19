@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.infra.entity.alarmworkplace.checkcondition;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.Column;
@@ -13,6 +14,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Entity
 @Getter
+@NoArgsConstructor
 @Table(name = "KFNMT_CAT_MAP_EACHTYPE")
 public class KfnmtCatMapEachType extends UkJpaEntity implements Serializable {
 
