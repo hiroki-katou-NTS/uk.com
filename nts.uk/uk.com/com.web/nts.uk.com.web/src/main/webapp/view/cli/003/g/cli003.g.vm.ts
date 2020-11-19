@@ -708,11 +708,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
             const listSelectedLogOutputItems = [];
             for (let i = 0; i < self.selectedCodeList().length; i++) {
                 const item = self.selectedCodeList()[i];
-//                if (item.isShow == 1) {
                 listSelectedLogOutputItems.push(new LogSetOutputItemModal(self.logSetId(), item.code, i, item.isShow, item.detail));
-//                } else {
-//                    listSelectedLogOutputItems.push(new LogSetOutputItemModal(self.logSetId(), item.code, i, item.isShow, []));
-//                }
             }
             return listSelectedLogOutputItems;
         }
@@ -720,16 +716,6 @@ module nts.uk.com.view.cli003.g.viewmodel {
         validateLogSetOutputItem(): boolean {
             const self = this;
             self.logSetOutputItems(self.getListSetOutputItems());
-
-//            for (var i = 0; i < self.logSetOutputItems().length; i++) {
-//                const logSetOutputItem = self.logSetOutputItems()[i];
-//                if (logSetOutputItem.isUseFlag == 1) {
-//                    if (!self.validateLogSetOutputItemDetail(logSetOutputItem.logSetItemDetails)) {
-//                        alertError({ messageId: "Msg_1203", messageParams: [getText('CLI003_49')]});
-//                        return false;
-//                    }
-//                }
-//            }
             return true;
         }
 

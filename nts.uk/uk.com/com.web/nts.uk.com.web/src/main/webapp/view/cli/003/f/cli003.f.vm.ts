@@ -1218,8 +1218,6 @@ module nts.uk.com.view.cli003.f {
                     childrenDataProperty = "logPersonalUpdateChildrenDtos";
                 }
             }
-            console.log(childrenDataProperty)
-            console.log(dataSource)
             const updateHeight = () => {
                 const uh = (h: number) => $grid.igHierarchicalGrid('option', 'height', `${window.innerHeight - h}px`);
                 $.Deferred()

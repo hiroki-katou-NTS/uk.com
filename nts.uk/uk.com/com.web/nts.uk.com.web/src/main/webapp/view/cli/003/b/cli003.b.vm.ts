@@ -304,7 +304,7 @@ module nts.uk.com.view.cli003.b {
         default:
           vm.showOperator(true);
           break;
-      } 
+      }
     }
 
     //get recordType Name
@@ -340,7 +340,7 @@ module nts.uk.com.view.cli003.b {
             break;
           default:
             break;
-        } 
+        }
       }
     }
 
@@ -352,12 +352,14 @@ module nts.uk.com.view.cli003.b {
         .then(() => {
           vm.$window.modal("/view/cli/003/c/index.xhtml").then(() => {
             vm.$window.storage("operatorEmployeeCount").then((data) => {
-              if (data)
+              if(data) {
                 vm.operatorEmployeeCount(data);
-            })
+              }
+            });
             vm.$window.storage("selectedEmployeeCodeOperator").then((data) => {
-              if (data)
+              if(data) {
                 vm.selectedEmployeeCodeOperator(data);
+              }
             });
           });
         });
@@ -371,12 +373,14 @@ module nts.uk.com.view.cli003.b {
         .then(() => {
           vm.$window.modal("/view/cli/003/c/index.xhtml").then(() => {
             vm.$window.storage("targetEmployeeCount").then((data) => {
-              if (data)
+              if(data) {
                 vm.targetEmployeeCount(data);
+              }
             });
             vm.$window.storage("selectedEmployeeCodeTarget").then((data) => {
-              if (data)
+              if(data) {
                 vm.selectedEmployeeCodeTarget(data);
+              }
             });
           });
         });
@@ -405,8 +409,9 @@ module nts.uk.com.view.cli003.b {
       } else if (vm.selectedEmpSelectedRuleCode() === 1 && vm.targetEmployeeCount() === noOne) {
         vm.$dialog.error({ messageId: "Msg_1719" });
         return false;
-      } 
-      return true;
+      } else {
+        return true;
+      }
     }
 
     //jump to screen F
