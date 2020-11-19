@@ -10,7 +10,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 		closureLst: KnockoutObservableArray<ClosureItem> = ko.observableArray([]);
 		selectedClosureId: KnockoutObservable<number> = ko.observable(0);
 		dateValue: KnockoutObservable<any> = ko.observable({});
-		selectedIds: KnockoutObservableArray<number> = ko.observableArray([1, 2, 3, 4]);
+		selectedIds: KnockoutObservableArray<number> = ko.observableArray([]);
 		initDisplayOfApprovalStatus: InitDisplayOfApprovalStatus = {
 			// ページング行数
 			numberOfPage: 0,
