@@ -168,7 +168,8 @@ module nts.uk.at.view.kaf022.o.viewmodel {
         saveOTQuotaSet() {
             const self = this;
             nts.uk.ui.block.invisible();
-            service.registerOTQuota(ko.toJS(self.overTimeQuotaSettings)).done(() => {
+            const data = self.overTimeQuotaSettings().filter(i => !!_.find(self.overtimeWorkFrames(), s => s.no == i.overTimeFrame));
+            service.registerOTQuota(ko.toJS(data)).done(() => {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                     // self.closeDialog();
                 });

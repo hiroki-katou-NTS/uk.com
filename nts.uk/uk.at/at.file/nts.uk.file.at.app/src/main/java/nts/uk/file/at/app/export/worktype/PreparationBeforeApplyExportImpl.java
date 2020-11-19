@@ -739,7 +739,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
         if (!applicationSetting.isPresent()
                 || !appReflectOtHdWork.isPresent()
                 || !appReflectExecutionCondition.isPresent())
-            throw new BusinessException(new RawErrorMessage("Setting Data Not Found!"));
+            return data;
 
         data.addAll(getDataA4(applicationSetting.get().getAppDeadlineSetLst()));
         data.addAll(getDataA7(applicationSetting.get().getReceptionRestrictionSettings()));
@@ -991,7 +991,11 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
     }
 
     private  List<MasterData> getRepresentAppMasterData() {
+        List<MasterData> data = new ArrayList<>();
         String companyId = AppContexts.user().companyId();
+
+        Optional<ApplicationSetting> applicationSetting = appSettingRepo.findByCompanyId(companyId);
+        if (!applicationSetting.isPresent()) return data;
 
         List<StandardMenuNameQuery> queries = new ArrayList<>();
         queries.add(new StandardMenuNameQuery("KAF005", "A", Optional.of("overworkatr=0")));
@@ -1010,12 +1014,9 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
         queries.add(new StandardMenuNameQuery("KAF020", "A", Optional.empty()));
         List<StandardMenuNameExport> menuList = menuPub.getMenuDisplayName(companyId, queries);
 
-        Optional<ApplicationSetting> applicationSetting = appSettingRepo.findByCompanyId(companyId);
-        if (!applicationSetting.isPresent()) throw new BusinessException(new RawErrorMessage("Setting Data Not Found!"));
 
         List<AppSetForProxyApp> appSetForProxyApps = applicationSetting.get().getAppSetForProxyApps();
 
-        List<MasterData> data = new ArrayList<>();
         for (int row = 0; row < menuList.size(); row++) {
             StandardMenuNameExport menu = menuList.get(row);
             AppSetForProxyApp setting = appSetForProxyApps.stream().filter(o -> {
@@ -1077,7 +1078,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
         Optional<OvertimeAppSet> applySetting = overtimeAppSetRepo.findSettingByCompanyId(companyId);
         Optional<AppReflectOtHdWork> reflectSetting = otHdWorkAppReflectRepo.findByCompanyId(companyId);
         if (!applySetting.isPresent() || !reflectSetting.isPresent())
-            throw new BusinessException(new RawErrorMessage("Setting Data Not Found!"));
+            return data;
 
         OtWorkAppReflect overtimeWorkAppReflect = reflectSetting.get().getOvertimeWorkAppReflect();
         for (int row = 0; row < 21; row++) {
@@ -1272,13 +1273,14 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
     }
 
     private List<MasterData> getVacationMasterData() {
+        List<MasterData> data = new ArrayList<>();
         String companyId = AppContexts.user().companyId();
         Optional<HolidayApplicationSetting> applySetting = holidayApplicationSettingRepo.findSettingByCompanyId(companyId);
         Optional<VacationApplicationReflect> reflectSetting = holidayApplicationReflectRepo.findReflectByCompanyId(companyId);
         if (!applySetting.isPresent() || !reflectSetting.isPresent())
-            throw new BusinessException(new RawErrorMessage("Setting Data Not Found!"));
+            return data;
         applySetting.get().getHolidayApplicationTypeDisplayName().sort(Comparator.comparing(HolidayApplicationTypeDisplayName::getHolidayApplicationType));
-        List<MasterData> data = new ArrayList<>();
+
         for (int row = 0; row < 17; row++) {
             Map<String, MasterCellData> rowData = new HashMap<>();
             for (int col = 0; col < 3; col++) {
@@ -1351,12 +1353,13 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
     }
 
     private List<MasterData> getWorkChangeMasterData() {
+        List<MasterData> data = new ArrayList<>();
         String companyId = AppContexts.user().companyId();
         Optional<AppWorkChangeSet> applySetting = appWorkChangeSetRepo.findByCompanyId(companyId);
         Optional<ReflectWorkChangeApp> reflectSetting = appWorkChangeSetRepo.findByCompanyIdReflect(companyId);
         if (!applySetting.isPresent() || !reflectSetting.isPresent())
-            throw new BusinessException(new RawErrorMessage("Setting Data Not Found!"));
-        List<MasterData> data = new ArrayList<>();
+            return data;
+
         for (int row = 0; row < 8; row++) {
             Map<String, MasterCellData> rowData = new HashMap<>();
             for (int col = 0; col < 4; col++) {
@@ -1399,11 +1402,12 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
     }
 
     private List<MasterData> getBusinessTripMasterData() {
+        List<MasterData> data = new ArrayList<>();
         String companyId = AppContexts.user().companyId();
         Optional<AppTripRequestSet> setting = appTripRequestSetRepo.findById(companyId);
         if (!setting.isPresent())
-            throw new BusinessException(new RawErrorMessage("Setting Data Not Found!"));
-        List<MasterData> data = new ArrayList<>();
+            return data;
+
         for (int row = 0; row < 3; row++) {
             Map<String, MasterCellData> rowData = new HashMap<>();
             for (int col = 0; col < 4; col++) {
@@ -1434,11 +1438,12 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
     }
 
     private List<MasterData> getDirectGoBackMasterData() {
+        List<MasterData> data = new ArrayList<>();
         String companyId = AppContexts.user().companyId();
         Optional<GoBackReflect> setting = goBackReflectRepo.findByCompany(companyId);
         if (!setting.isPresent())
-            throw new BusinessException(new RawErrorMessage("Setting Data Not Found!"));
-        List<MasterData> data = new ArrayList<>();
+            return data;
+
         Map<String, MasterCellData> rowData = new HashMap<>();
         for (int col = 0; col < 3; col++) {
             String value;
@@ -1466,13 +1471,14 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
     }
 
     private List<MasterData> getHolidayWorkMasterData() {
+        List<MasterData> data = new ArrayList<>();
         String companyId = AppContexts.user().companyId();
         Optional<HolidayWorkAppSet> applySetting = holidayWorkAppSetRepo.findSettingByCompany(companyId);
         Optional<AppReflectOtHdWork> optionalAppReflectOtHdWork = otHdWorkAppReflectRepo.findByCompanyId(companyId);
         if (!applySetting.isPresent() || !optionalAppReflectOtHdWork.isPresent())
-            throw new BusinessException(new RawErrorMessage("Setting Data Not Found!"));
+            return data;
         HdWorkAppReflect reflectSetting = optionalAppReflectOtHdWork.get().getHolidayWorkAppReflect();
-        List<MasterData> data = new ArrayList<>();
+
         for (int row = 0; row < 20; row++) {
             Map<String, MasterCellData> rowData = new HashMap<>();
             for (int col = 0; col < 4; col++) {
@@ -1572,11 +1578,12 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
     }
 
     private List<MasterData> getTimeLeaveMasterData() {
+        List<MasterData> data = new ArrayList<>();
         String companyId = AppContexts.user().companyId();
         Optional<TimeLeaveApplicationReflect> setting = timeLeaveAppReflectRepo.findByCompany(companyId);
         if (!setting.isPresent())
-            throw new BusinessException(new RawErrorMessage("Setting Data Not Found!"));
-        List<MasterData> data = new ArrayList<>();
+            return data;
+
         for (int row = 0; row < 13; row++) {
             Map<String, MasterCellData> rowData = new HashMap<>();
             for (int col = 0; col < 3; col++) {
@@ -1641,12 +1648,13 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
     }
 
     private List<MasterData> getLateEarlyMasterData() {
+        List<MasterData> data = new ArrayList<>();
         String companyId = AppContexts.user().companyId();
         LateEarlyCancelAppSet applySetting = lateEarlyCancelRepo.getByCId(companyId);
         LateEarlyCancelReflect reflectSetting = lateEarlyCancelReflectRepo.getByCompanyId(companyId);
         if (applySetting == null || reflectSetting == null)
-            throw new BusinessException(new RawErrorMessage("Setting Data Not Found!"));
-        List<MasterData> data = new ArrayList<>();
+            return data;
+
         for (int row = 0; row < 2; row++) {
             Map<String, MasterCellData> rowData = new HashMap<>();
             for (int col = 0; col < 3; col++) {
@@ -1674,11 +1682,12 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
     }
 
     private List<MasterData> getStampMasterData() {
+        List<MasterData> data = new ArrayList<>();
         String companyId = AppContexts.user().companyId();
         Optional<AppStampSetting> applySetting = appStampSettingRepo.findSettingByCompanyId(companyId);
         Optional<StampAppReflect> reflectSetting = stampAppReflectRepo.findReflectByCompanyId(companyId);
         if (!applySetting.isPresent() || !reflectSetting.isPresent())
-            throw new BusinessException(new RawErrorMessage("Setting Data Not Found!"));
+            return data;
         String[] typeNames = {
                 TextResource.localize("KAF022_246"),
                 TextResource.localize("KAF022_247"),
@@ -1688,7 +1697,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
                 TextResource.localize("KAF022_697"),
                 TextResource.localize("KAF022_701")
         };
-        List<MasterData> data = new ArrayList<>();
+
         Map<String, MasterCellData> rowData1 = new HashMap<>();
         for (int col = 0; col < 4; col++) {
             String value;
@@ -1812,13 +1821,14 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
     }
 
     private List<MasterData> getSubstituteMasterData() {
+        List<MasterData> data = new ArrayList<>();
         String companyId = AppContexts.user().companyId();
         Optional<SubstituteHdWorkAppSet> applySetting = substituteHdWorkAppSetRepo.findSettingByCompany(companyId);
         Optional<SubstituteLeaveAppReflect> subLeaveReflectSetting = substituteLeaveAppReflectRepo.findSubLeaveAppReflectByCompany(companyId);
         Optional<SubstituteWorkAppReflect> subWorkReflectSetting = substituteWorkAppReflectRepo.findSubWorkAppReflectByCompany(companyId);
         if (!applySetting.isPresent() || !subLeaveReflectSetting.isPresent() || !subWorkReflectSetting.isPresent())
-            throw new BusinessException(new RawErrorMessage("Setting Data Not Found!"));
-        List<MasterData> data = new ArrayList<>();
+            return data;
+
         for (int row = 0; row < 11; row++) {
             Map<String, MasterCellData> rowData = new HashMap<>();
             for (int col = 0; col < 4; col++) {
@@ -1947,10 +1957,11 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
     }
 
     private List<MasterData> getApprovalDispMasterData() {
+        List<MasterData> data = new ArrayList<>();
         String companyId = AppContexts.user().companyId();
         Optional<ApprovalListDisplaySetting> setting = approvalListDispSetRepo.findByCID(companyId);
-        if (!setting.isPresent()) throw new BusinessException(new RawErrorMessage("Setting Data Not Found!"));
-        List<MasterData> data = new ArrayList<>();
+        if (!setting.isPresent()) return data;
+
         for (int row = 0; row < 5; row++) {
             Map<String, MasterCellData> rowData = new HashMap<>();
             for (int col = 0; col < 3; col++) {
@@ -1986,14 +1997,15 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
     }
 
     private List<MasterData> getMailMasterData() {
+        List<MasterData> data = new ArrayList<>();
         String companyId = AppContexts.user().companyId();
         Optional<ApplicationSetting> applicationSetting = appSettingRepo.findByCompanyId(companyId);
         AppEmailSet setting = appEmailSetRepo.findByCID(companyId);
         if (setting == null || !applicationSetting.isPresent())
-            throw new BusinessException(new RawErrorMessage("Setting Data Not Found!"));
+            return data;
         List<AppTypeSetting> appTypeSettings = applicationSetting.get().getAppTypeSettings();
         appTypeSettings.sort(Comparator.comparing(AppTypeSetting::getAppType));
-        List<MasterData> data = new ArrayList<>();
+
         for (int i = 0; i < appTypeSettings.size(); i++) {
             for (int row = 0; row < 2; row++) {
                 Map<String, MasterCellData> rowData = new HashMap<>();
@@ -2387,12 +2399,13 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
     }
 
     private List<MasterData> getWorkplaceMasterData() {
+        List<MasterData> data = new ArrayList<>();
         String companyId = AppContexts.user().companyId();
         List<WorkplaceInformation> workplaces = wkpInforRepo.findByCompany(companyId);
         Optional<RequestByCompany> companySetting = requestByCompanyRepo.findByCompanyId(companyId);
         List<RequestByWorkplace> workplaceSettings = requestByWorkplaceRepo.findByCompany(companyId);
-        if (!companySetting.isPresent()) throw new BusinessException(new RawErrorMessage("Setting Data Not Found!"));
-        List<MasterData> data = new ArrayList<>();
+        if (!companySetting.isPresent()) return data;
+
         companySetting.get().getApprovalFunctionSet().getAppUseSetLst().sort(Comparator.comparing(ApplicationUseSetting::getAppType));
         companySetting.get().getApprovalFunctionSet().getAppUseSetLst().forEach(setting -> {
             Map<String, MasterCellData> rowData = new HashMap<>();
