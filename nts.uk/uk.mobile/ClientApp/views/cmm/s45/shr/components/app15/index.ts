@@ -4,7 +4,7 @@ import { IAppDispInfoStartupOutput } from '../../../../../kaf/s04/a/define';
 import { OptionalItemApplication } from '../../../../../kaf/s20/a/define';
 
 @component({
-    name: 'cmms45shrcomponentsapp15',
+    name: 'CmmS45ComponentsApp15Component',
     route: '/cmm/s45/shr/components/app15',
     style: require('./style.scss'),
     template: require('./index.vue'),
@@ -81,7 +81,7 @@ export class CmmS45ShrComponentsApp15Component extends Vue {
                         return item.itemNo == controlAttendance.itemDailyID;
                     });
 
-                    const { calcResultRange, optionalItemAtr, optionalItemName, optionalItemNo, unit } = optionalItem;
+                    const { calcResultRange, optionalItemAtr, optionalItemName, optionalItemNo, unit,description } = optionalItem;
                     const { lowerCheck, upperCheck, amountLower, amountUpper, numberLower, numberUpper, timeLower, timeUpper } = calcResultRange;
 
                     const { amount, times, time } = item;
@@ -104,6 +104,7 @@ export class CmmS45ShrComponentsApp15Component extends Vue {
                         optionalItemName,
                         optionalItemNo,
                         unit,
+                        description
                     });
                     vm.$emit('loading-complete');
                 });

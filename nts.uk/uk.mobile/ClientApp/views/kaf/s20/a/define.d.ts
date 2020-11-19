@@ -16,6 +16,7 @@ export interface IOptionalItemDto {
         timeUpper: number | null;
         upperCheck: boolean;
     };
+    description: string | null;
     empConditionAtr: number | null;
     formulas: any[];
     optionalItemAtr: number | null;
@@ -63,6 +64,7 @@ export interface OptionalItemApplication {
     time: number | null;
     number: number | null;
     amount: number | null;
+    description: string | null;
 }
 
 interface optionalItems {

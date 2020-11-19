@@ -13,6 +13,7 @@ import {
     CmmS45ComponentsApp5Component,
     CmmS45ComponentsApp9Component,
     CmmS45ShrComponentsApp7Component,
+    CmmS45ShrComponentsApp15Component,
     CmmS45ShrComponentsAppsampleComponent
 } from 'views/cmm/s45/shr/components';
 

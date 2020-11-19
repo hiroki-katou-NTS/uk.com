@@ -184,7 +184,7 @@ export class KafS20A2Component extends KafS00ShrComponent {
                     return item.itemNo == controlAttendance.itemDailyID;
                 });
 
-                const { calcResultRange, optionalItemAtr, optionalItemName, optionalItemNo, unit } = optionalItem;
+                const { calcResultRange, optionalItemAtr, optionalItemName, optionalItemNo, unit,description } = optionalItem;
                 const { lowerCheck, upperCheck, amountLower, amountUpper, numberLower, numberUpper, timeLower, timeUpper } = calcResultRange;
 
                 const { amount, times, time } = item;
@@ -206,7 +206,8 @@ export class KafS20A2Component extends KafS00ShrComponent {
                     optionalItemAtr,
                     optionalItemName,
                     optionalItemNo,
-                    unit
+                    unit,
+                    description
                 });
             });
         }
@@ -247,7 +248,7 @@ export class KafS20A2Component extends KafS00ShrComponent {
                                 return controlAttend.itemDailyID == 640 + itemNo;
                             });
                             if (vm.mode) {
-                                const { calcResultRange, optionalItemAtr, optionalItemName, optionalItemNo, unit } = optionalItem;
+                                const { calcResultRange, optionalItemAtr, optionalItemName, optionalItemNo, unit,description } = optionalItem;
                                 const { lowerCheck, upperCheck, amountLower, amountUpper, numberLower, numberUpper, timeLower, timeUpper } = calcResultRange;
                                 const { inputUnitOfTimeItem, } = controlAttendance;
 
@@ -267,7 +268,8 @@ export class KafS20A2Component extends KafS00ShrComponent {
                                     optionalItemAtr,
                                     optionalItemName,
                                     optionalItemNo,
-                                    unit
+                                    unit,
+                                    description
                                 });
                             }
                         });
