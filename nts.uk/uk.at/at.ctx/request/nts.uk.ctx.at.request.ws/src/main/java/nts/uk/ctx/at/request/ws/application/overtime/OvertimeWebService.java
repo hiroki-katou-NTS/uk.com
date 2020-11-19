@@ -6,6 +6,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.request.app.command.application.overtime.RegisterCommand;
+import nts.uk.ctx.at.request.app.command.application.overtime.RegisterCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.ParamBeforeRegister;
 import nts.uk.ctx.at.request.app.find.application.overtime.AppOvertimeFinder;
 import nts.uk.ctx.at.request.app.find.application.overtime.DisplayInfoOverTimeDto;
@@ -14,6 +16,7 @@ import nts.uk.ctx.at.request.app.find.application.overtime.ParamCheckBeforeRegis
 import nts.uk.ctx.at.request.app.find.application.overtime.ParamOverTimeChangeDate;
 import nts.uk.ctx.at.request.app.find.application.overtime.ParamOverTimeStart;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.CheckBeforeOutputDto;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 /**
  * Refactor5 
  * @author hoangnd
@@ -25,6 +28,9 @@ public class OvertimeWebService extends WebService {
 	
 	@Inject
 	private AppOvertimeFinder appOvertimeFinder;
+	
+	@Inject
+	private RegisterCommandHandler registerCommandHandler;
 	
 	@POST
 	@Path("start")
@@ -49,6 +55,12 @@ public class OvertimeWebService extends WebService {
 	@Path("checkBeforeRegister")
 	public CheckBeforeOutputDto checkBeforeRegister(ParamCheckBeforeRegister param) {
 		return appOvertimeFinder.checkBeforeRegister(param);
+	}
+	
+	@POST
+	@Path("register")
+	public ProcessResult register(RegisterCommand command) {
+		return registerCommandHandler.handle(command);
 	}
 	
 	

@@ -11,8 +11,11 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTimeRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 
 @Stateless
 public class OverTimeRegisterServiceImpl implements OverTimeRegisterService {
@@ -32,12 +35,16 @@ public class OverTimeRegisterServiceImpl implements OverTimeRegisterService {
 	@Inject
 	private RegisterAtApproveReflectionInfoService registerService;
 	
+	@Inject 
+	NewAfterRegister newAfterRegister;
+	
 	@Override
-	public void register(
+	public ProcessResult register(
 			String companyId,
 			AppOverTime appOverTime,
 			List<ApprovalPhaseStateImport_New> lstApproval,
-			Boolean mailServerSet) {
+			Boolean mailServerSet,
+			AppTypeSetting appTypeSetting) {
 		Application application = (Application)appOverTime;
 		// 登録処理を実行
 		appRepository.insertApp(application, lstApproval);
@@ -48,7 +55,10 @@ public class OverTimeRegisterServiceImpl implements OverTimeRegisterService {
 		
 		
 		// 2-3.新規画面登録後の処理を実行 #112628
-		return;
+		return newAfterRegister.processAfterRegister(
+				application.getAppID(), 
+				appTypeSetting,
+				mailServerSet);
 	}
 
 	@Override
