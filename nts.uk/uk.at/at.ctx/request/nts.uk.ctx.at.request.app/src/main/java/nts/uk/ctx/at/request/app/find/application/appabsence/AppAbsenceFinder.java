@@ -32,7 +32,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMod
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.WorkTypeObjAppHoliday;
@@ -467,7 +467,7 @@ public class AppAbsenceFinder {
 		//ドメインモデル「休暇申請対象勤務種類」が取得できない場合 -> 〇
 		return true;
 	}
-	private List<HolidayAppTypeName> getHolidayAppTypeName(Optional<HdAppSet> hdAppSet,
+	private List<HolidayAppTypeName> getHolidayAppTypeName(Optional<HolidayApplicationSetting> hdAppSet,
 			List<HolidayAppTypeName> holidayAppTypes, AppEmploymentSetting appEmploymentSetting){
 		List<Integer> holidayAppTypeCodes = new ArrayList<>();
 		for(int hdType = 0; hdType <=7; hdType ++){
@@ -483,34 +483,15 @@ public class AppAbsenceFinder {
 //				throw new BusinessException("Msg_473");
 //			}
 		for (Integer holidayCode : holidayAppTypeCodes) {
-				switch (holidayCode) {
-				case 0://年休
-					holidayAppTypes.add(new HolidayAppTypeName(holidayCode,
-							hdAppSet.get().getYearHdName() == null ? "" : hdAppSet.get().getYearHdName().toString()));
-					break;
-				case 1://代休
-					holidayAppTypes.add(new HolidayAppTypeName(holidayCode,
-							hdAppSet.get().getObstacleName() == null ? "" : hdAppSet.get().getObstacleName().toString()));
-					break;
-				case 2:
-					holidayAppTypes.add(new HolidayAppTypeName(holidayCode,
-							hdAppSet.get().getAbsenteeism()== null ? "" : hdAppSet.get().getAbsenteeism().toString()));
-					break;
-				case 3:
-					holidayAppTypes.add(new HolidayAppTypeName(holidayCode,
-							hdAppSet.get().getSpecialVaca() == null ? "" : hdAppSet.get().getSpecialVaca().toString()));
-					break;
-				case 4://積立
-					holidayAppTypes.add(new HolidayAppTypeName(holidayCode,
-							hdAppSet.get().getYearResig() == null ? "" : hdAppSet.get().getYearResig().toString()));
-					break;
-				case 7://振休
-					holidayAppTypes.add(new HolidayAppTypeName(holidayCode,
-							hdAppSet.get().getFurikyuName() == null ? "" :  hdAppSet.get().getFurikyuName().toString()));
-					break;
-				default:
-					break;
-				}
+			holidayAppTypes.add(new HolidayAppTypeName(
+					holidayCode,
+					hdAppSet.isPresent()
+							? hdAppSet.get().getHolidayApplicationTypeDisplayName()
+									.stream()
+									.filter(i -> i.getHolidayApplicationType().value == holidayCode)
+									.findFirst().map(i -> i.getDisplayName().v()).orElse("")
+							: ""
+			));
 		}
 		return holidayAppTypes;
 

@@ -9,6 +9,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.*;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
@@ -30,10 +31,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.New
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.AppliedDate;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.UseAtr;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReason;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
@@ -88,7 +85,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 //	private ReserveLeaveManagerApdater rsvLeaMngApdater;
 	
 	@Inject
-	private HdAppSetRepository hdAppSetRepository;
+	private HolidayApplicationSettingRepository hdAppSetRepository;
 	
 	@Inject
 	private DisplayReasonRepository displayRep;
@@ -211,7 +208,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	}
 	
 	@Override
-	public List<ConfirmMsgOutput> checkDigestPriorityHd(boolean mode, HdAppSet hdAppSet, AppEmploymentSetting employmentSet, boolean subVacaManage,
+	public List<ConfirmMsgOutput> checkDigestPriorityHd(boolean mode, HolidayApplicationSetting hdAppSet, AppEmploymentSetting employmentSet, boolean subVacaManage,
 			boolean subHdManage, Double subVacaRemain, Double subHdRemain) {
 		List<ConfirmMsgOutput> result = new ArrayList<>();
 		// INPUT．「画面モード」を確認する
@@ -233,7 +230,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 			}
 		}
 		result = this.checkPriorityHoliday(
-				hdAppSet.getPridigCheck(), 
+				AppliedDate.CHECK_AVAILABLE, //hdAppSet.getPridigCheck(),
 				subVacaManage, 
 				subVacaTypeUseFlg, 
 				subHdManage,
@@ -398,7 +395,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	@Override
 	public HolidayRequestSetOutput getHolidayRequestSet(String companyID) {
 		// ドメインモデル「休暇申請設定」を取得する(lấy dữ liệu domain 「休暇申請設定」)
-		HdAppSet hdAppSet = hdAppSetRepository.getAll().get();
+		HolidayApplicationSetting hdAppSet = hdAppSetRepository.findSettingByCompanyId(companyID).get();
 		// ドメインモデル「申請理由表示」を取得する(lấy dữ liệu domain 「申請理由表示」)
 		List<DisplayReason> displayReasonLst = displayRep.findDisplayReason(companyID);
 		// 取得した情報を返す
@@ -680,10 +677,10 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	 * @param hdAppSet 休暇申請設定
 	 * @return
 	 */
-	private List<ConfirmMsgOutput> checkContradictionAppDate(String companyID, String employeeID, GeneralDate appDate, Integer alldayHalfDay, HdAppSet hdAppSet) {
+	private List<ConfirmMsgOutput> checkContradictionAppDate(String companyID, String employeeID, GeneralDate appDate, Integer alldayHalfDay, HolidayApplicationSetting hdAppSet) {
 		List<ConfirmMsgOutput> result = new ArrayList<>();
 		// ドメインモデル「休暇申請設定」を取得する
-		AppliedDate appliedDate = hdAppSet.getAppDateContra();
+		AppliedDate appliedDate = AppliedDate.CHECK_AVAILABLE; // hdAppSet.getAppDateContra();
 		//「申請日矛盾区分」をチェックする
 		if (appliedDate == AppliedDate.DONT_CHECK) {
 			return result;
@@ -756,7 +753,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 
 	@Override
 	public List<ConfirmMsgOutput> inconsistencyCheck(String companyID, String employeeID, GeneralDate startDate,
-			GeneralDate endDate, Integer alldayHalfDay, HdAppSet hdAppSet, boolean mode) {
+			GeneralDate endDate, Integer alldayHalfDay, HolidayApplicationSetting hdAppSet, boolean mode) {
 		List<ConfirmMsgOutput> result = new ArrayList<>();
 		// INPUT．モードをチェックする
 		if(!mode) {
@@ -775,7 +772,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 
 	@Override
 	public void checkRemainVacation(String companyID, AppAbsence appAbsence,
-			GeneralDate closureStartDate, HdAppSet hdAppSet, HolidayAppType holidayType) {
+			GeneralDate closureStartDate, HolidayApplicationSetting hdAppSet, HolidayAppType holidayType) {
 		/**	・代休チェック区分 - HolidayType: 1*/
 		boolean chkSubHoliday = false;
 		/**	・振休チェック区分  - HolidayType: 7*/
@@ -791,10 +788,10 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		/**	・超休チェック区分*/
 		boolean chkSuperBreak = true;
 		
-		chkSubHoliday = hdAppSet.getRegisShortLostHd().value == 1 && holidayType == HolidayAppType.SUBSTITUTE_HOLIDAY ? true : false;//休暇申請設定．代休残数不足登録できる
+//		chkSubHoliday = hdAppSet.getRegisShortLostHd().value == 1 && holidayType == HolidayAppType.SUBSTITUTE_HOLIDAY ? true : false;//休暇申請設定．代休残数不足登録できる
 		// chkPause = hdAppSet.getRegisInsuff().value == 1 && holidayType == HolidayAppType.REST_TIME ? true : false;//休暇申請設定．振休残数不足登録できる
-		chkAnnual = hdAppSet.getRegisNumYear().value == 1 && holidayType == HolidayAppType.ANNUAL_PAID_LEAVE ? true : false;//休暇申請設定．年休残数不足登録できる
-		chkFundingAnnual = hdAppSet.getRegisShortReser().value == 1 && holidayType == HolidayAppType.YEARLY_RESERVE ? true : false;//休暇申請設定．積立年休残数不足登録できる
+//		chkAnnual = hdAppSet.getRegisNumYear().value == 1 && holidayType == HolidayAppType.ANNUAL_PAID_LEAVE ? true : false;//休暇申請設定．年休残数不足登録できる
+//		chkFundingAnnual = hdAppSet.getRegisShortReser().value == 1 && holidayType == HolidayAppType.YEARLY_RESERVE ? true : false;//休暇申請設定．積立年休残数不足登録できる
 		
 //		Optional<GeneralDate> startDate = appAbsence.getApplication().getStartDate();
 //		Optional<GeneralDate> endDate = appAbsence.getApplication().getEndDate();
@@ -878,7 +875,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 
 	@Override
 	public List<ConfirmMsgOutput> holidayCommonCheck(String companyID, AppAbsence appAbsence,
-			GeneralDate closureStartDate, HdAppSet hdAppSet, HolidayAppType holidayType, Integer alldayHalfDay, boolean mode) {
+			GeneralDate closureStartDate, HolidayApplicationSetting hdAppSet, HolidayAppType holidayType, Integer alldayHalfDay, boolean mode) {
 		List<ConfirmMsgOutput> result = new ArrayList<>();
 		// 申請日の矛盾チェック
 //		List<ConfirmMsgOutput> confirmMsgLst1 = this.inconsistencyCheck(

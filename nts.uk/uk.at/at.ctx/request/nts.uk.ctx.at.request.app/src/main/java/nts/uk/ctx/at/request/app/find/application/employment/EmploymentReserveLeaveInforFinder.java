@@ -19,8 +19,9 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumb
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.rsvimport.RsvLeaManagerImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.rsvimport.RsvLeaveInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.rsvimport.TmpRsvLeaveMngImport;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.HolidayAppType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcess;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
@@ -36,7 +37,7 @@ public class EmploymentReserveLeaveInforFinder {
 	private ReserveLeaveManagerApdater rsvLeaManaApdater;
 
 	@Inject
-	private HdAppSetRepository repoHdAppSet;
+	private HolidayApplicationSettingRepository repoHdAppSet;
 
 	@Inject
 	private RemainNumberTempRequireService requireService;
@@ -82,9 +83,14 @@ public class EmploymentReserveLeaveInforFinder {
 			rsvLeaManaImp = new RsvLeaManagerImportDto(reserveLeaveInfo, grantRemainingList, tmpManageList);
 		}
 		//ドメインモデル「休暇申請設定」を取得する (Vacation application setting)
-		Optional<HdAppSet> hdAppSet = repoHdAppSet.getAll();
+		Optional<HolidayApplicationSetting> hdAppSet = repoHdAppSet.findSettingByCompanyId(AppContexts.user().companyId());
 		if (hdAppSet.isPresent()) {
-			yearResigName = hdAppSet.get().getYearResig().v();
+			yearResigName = hdAppSet.get().getHolidayApplicationTypeDisplayName()
+					.stream()
+					.filter(i -> i.getHolidayApplicationType() == HolidayAppType.YEARLY_RESERVE)
+					.findFirst()
+					.map(i -> i.getDisplayName().v())
+					.orElse("");
 		}
 		return new EmpRsvLeaveInforDto(lstEmpInfor, rsvLeaManaImp, employeeCode, employeeName, yearResigName, isRetentionManage);
 	}
