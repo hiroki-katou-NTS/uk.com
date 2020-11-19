@@ -224,6 +224,11 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 		return null;
 	}
 	
+	/**
+	 * 勤務NOで出勤打刻を取得する
+	 * @param workNo　勤務NO
+	 * @return
+	 */
 	public Optional<WorkStamp> getStampOfAttendanceStamp(WorkNo workNo) {
 		
 		Optional<TimeLeavingWork> timeLeavingWork = this.getAttendanceLeavingWork(workNo);
@@ -239,6 +244,11 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 		return timeLeavingWork.get().getAttendanceStamp().get().getStamp();
 	}
 	
+	/**
+	 * 勤務NOで退勤打刻を取得する
+	 * @param workNo　勤務NO
+	 * @return
+	 */
 	public Optional<WorkStamp> getStampOfLeaveStamp(WorkNo workNo) {
 		
 		Optional<TimeLeavingWork> timeLeavingWork = this.getAttendanceLeavingWork(workNo);
