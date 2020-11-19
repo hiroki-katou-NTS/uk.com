@@ -19,10 +19,10 @@ public class DumData {
                     true,
                     EnumAdaptor.valueOf(1, IndependentCalcClassic.class),
                     EnumAdaptor.valueOf(1, DailyMonthlyClassification.class),
-                    EnumAdaptor.valueOf(3, CommonAttributesOfForms.class),
+                    EnumAdaptor.valueOf(1, CommonAttributesOfForms.class),
                     Arrays.asList(
-                            new OutputItemDetailAttItem(EnumAdaptor.valueOf(1, OperatorsCommonToForms.class), 1),
-                            new OutputItemDetailAttItem(EnumAdaptor.valueOf(1, OperatorsCommonToForms.class), 1)
+                            new OutputItemDetailAttItem(EnumAdaptor.valueOf(1, OperatorsCommonToForms.class), 22),
+                            new OutputItemDetailAttItem(EnumAdaptor.valueOf(1, OperatorsCommonToForms.class), 2)
                     )
             ),
             new OutputItem(
@@ -35,10 +35,10 @@ public class DumData {
                     Arrays.asList(
                             new OutputItemDetailAttItem(
                                     EnumAdaptor.valueOf(2, OperatorsCommonToForms.class),
-                                    2),
+                                    1),
                             new OutputItemDetailAttItem(
                                     EnumAdaptor.valueOf(1, OperatorsCommonToForms.class),
-                                    2)
+                                    1)
                     )
             ),
             new OutputItem(
@@ -162,7 +162,7 @@ public class DumData {
                                     2),
                             new OutputItemDetailAttItem(
                                     EnumAdaptor.valueOf(1, OperatorsCommonToForms.class),
-                                    2)
+                                    5)
                     )
             )
 
@@ -184,10 +184,13 @@ public class DumData {
             new WorkPlaceInfo(
                     "wplId01"
                     , "wplCode01",
-                    "wplName01"),
-            new WorkPlaceInfo("wplId02"
-                    , "wplCode02",
-                    "wplName02")
+                    "wplName01")
+    );
+    public static final List<WorkPlaceInfo> workPlaceInfoFail = Arrays.asList(
+            new WorkPlaceInfo(
+                    "wplId09"
+                    , "wplCode09",
+                    "wplName09")
     );
     public static final List<EmployeeInfor> employeeInfors = Arrays.asList(new EmployeeInfor(
             "eplId01",
@@ -195,11 +198,14 @@ public class DumData {
             "eplName01",
             "wplId01"
 
-    ), new EmployeeInfor(
+    ));
+
+    public static final List<EmployeeInfor> employeeInforFail = Arrays.asList(new EmployeeInfor(
             "eplId01",
-            "eplCode01",
-            "eplName01",
-            "wplId01"
+            "eplCode05",
+            "eplName05",
+            "wplId05"
+
     ));
 
     public static final List<DisplayContentWorkStatus> expected = Arrays.asList(
@@ -215,13 +221,31 @@ public class DumData {
                                     Arrays.asList(
                                             new DailyValue(
                                                     0D,
-                                                    EnumAdaptor.valueOf(1, CommonAttributesOfForms.class),
-                                                    "ABCABC",
+                                                    CommonAttributesOfForms.WORK_TYPE,
+                                                    "TEST 02TEST 01",
                                                     GeneralDate.today()
                                             ),
                                             new DailyValue(
                                                     0D,
-                                                    EnumAdaptor.valueOf(1, CommonAttributesOfForms.class),
+                                                    CommonAttributesOfForms.WORK_TYPE,
+                                                    "",
+                                                    GeneralDate.today().addDays(1)
+                                            )
+                                    )
+                            ),
+                            new OutputItemOneLine(
+                                    1975D,
+                                    "itemName03",
+                                    Arrays.asList(
+                                            new DailyValue(
+                                                    1975D,
+                                                    CommonAttributesOfForms.NUMBER_OF_TIMES,
+                                                    "",
+                                                    GeneralDate.today()
+                                            ),
+                                            new DailyValue(
+                                                    0D,
+                                                    CommonAttributesOfForms.NUMBER_OF_TIMES,
                                                     "",
                                                     GeneralDate.today().addDays(1)
                                             )
@@ -229,5 +253,47 @@ public class DumData {
                             ))
             )
     );
+    public static WorkStatusOutputSettings dumDisplay(OutputItemSettingCode code, OutputItemSettingName name,
+                                               String eplId, String settingId, SettingClassificationCommon settingCommon) {
+        return new WorkStatusOutputSettings(
+                settingId,
+                code,
+                name,
+                eplId,
+                settingCommon,
+                outputItemDisplay
+        );
+    }
+    public static final List<OutputItem> outputItemDisplay = Arrays.asList(
+            new OutputItem(
+                    0,
+                    new FormOutputItemName("itemName01"),
+                    true,
+                    EnumAdaptor.valueOf(1, IndependentCalcClassic.class),
+                    EnumAdaptor.valueOf(1, DailyMonthlyClassification.class),
+                    EnumAdaptor.valueOf(1, CommonAttributesOfForms.class),
+                    Arrays.asList(
+                            new OutputItemDetailAttItem(EnumAdaptor.valueOf(1, OperatorsCommonToForms.class), 22),
+                            new OutputItemDetailAttItem(EnumAdaptor.valueOf(1, OperatorsCommonToForms.class), 2)
+                    )
+            ),
+            new OutputItem(
+                    2,
+                    new FormOutputItemName("itemName03"),
+                    true,
+                    EnumAdaptor.valueOf(2, IndependentCalcClassic.class),
+                    EnumAdaptor.valueOf(2, DailyMonthlyClassification.class),
+                    EnumAdaptor.valueOf(5, CommonAttributesOfForms.class),
+                    Arrays.asList(
+                            new OutputItemDetailAttItem(
+                                    EnumAdaptor.valueOf(2, OperatorsCommonToForms.class),
+                                    1 ),
+                            new OutputItemDetailAttItem(
+                                    EnumAdaptor.valueOf(1, OperatorsCommonToForms.class),
+                                    8)
+                    )
+            )
+    );
+
 
 }
