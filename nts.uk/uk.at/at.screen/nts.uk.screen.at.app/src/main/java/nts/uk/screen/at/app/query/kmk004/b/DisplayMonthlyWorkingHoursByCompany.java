@@ -12,7 +12,6 @@ import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetCom;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetRepo;
-import nts.uk.ctx.bs.company.dom.company.MonthStr;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -52,7 +51,7 @@ public class DisplayMonthlyWorkingHoursByCompany {
 		}
 
 		resutl = coms.stream().map(m -> {
-			DisplayMonthlyWorkingDto s = new DisplayMonthlyWorkingDto(this.setNameMonth(m.getYm().month()),
+			DisplayMonthlyWorkingDto s = new DisplayMonthlyWorkingDto(m.getYm().v(),
 					new LaborTime(m.getLaborTime().getLegalLaborTime().v(),
 							m.getLaborTime().getWithinLaborTime().map(c -> c.v()).orElse(null),
 							m.getLaborTime().getWeekAvgTime().map(c -> c.v()).orElse(null)));
@@ -61,50 +60,4 @@ public class DisplayMonthlyWorkingHoursByCompany {
 
 		return resutl;
 	}
-
-	private String setNameMonth(int param) {
-		String name = "";
-
-		switch (param) {
-		case 1:
-			name = MonthStr.ONE.month;
-			break;
-		case 2:
-			name = MonthStr.TWO.month;
-			break;
-		case 3:
-			name = MonthStr.THREE.month;
-			break;
-		case 4:
-			name = MonthStr.FOUR.month;
-			break;
-		case 5:
-			name = MonthStr.FIVE.month;
-			break;
-		case 6:
-			name = MonthStr.SIX.month;
-			break;
-		case 7:
-			name = MonthStr.SEVEN.month;
-			break;
-		case 8:
-			name = MonthStr.EIGHT.month;
-			break;
-		case 9:
-			name = MonthStr.NINE.month;
-			break;
-		case 10:
-			name = MonthStr.TEN.month;
-			break;
-		case 11:
-			name = MonthStr.ELEVEN.month;
-			break;
-		case 12:
-			name = MonthStr.TWELVE.month;
-			break;
-		}
-
-		return name;
-	}
-
 }

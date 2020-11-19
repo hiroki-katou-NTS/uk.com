@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class DisplayMonthlyWorkingDto {
 
 	// 年月
-	private String month;
+	private int yearMonth;
 	
 	// 労働時間
 	private LaborTime laborTime;
