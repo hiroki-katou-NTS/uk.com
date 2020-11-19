@@ -13,51 +13,51 @@ module nts.uk.at.view.kmk004 {
 				</tr>
 				<tr>
 					<td>4月度</td>
-					<td><span>177:08</span></td>
+					<td><input class = "col-3", data-bind="ntsTimeEditor: {value: time, inputFormat: 'time', enable: enable,}" /></td>
 				</tr>
 				<tr>
 					<td>5月度</td>
-					<td><span>177:08</span></td>
+					<td><input class = "col-3", data-bind="ntsTimeEditor: {value: time, inputFormat: 'time', enable: enable,}" /></td>
 				</tr>
 				<tr>
 					<td>6月度</td>
-					<td><span>177:08</span></td>
+					<td><input class = "col-3", data-bind="ntsTimeEditor: {value: time, inputFormat: 'time', enable: enable,}" /></td>
 				</tr>
 				<tr>
 					<td>7月度</td>
-					<td><span>177:08</span></td>
+					<td><input class = "col-3", data-bind="ntsTimeEditor: {value: time, inputFormat: 'time', enable: enable,}" /></td>
 				</tr>
 				<tr>
 					<td>8月度</td>
-					<td><span>177:08</span></td>
+					<td><input class = "col-3", data-bind="ntsTimeEditor: {value: time, inputFormat: 'time', enable: enable,}" /></td>
 				</tr>
 				<tr>
 					<td>9月度</td>
-					<td><span>177:08</span></td>
+					<td><input class = "col-3", data-bind="ntsTimeEditor: {value: time, inputFormat: 'time', enable: enable,}" /></td>
 				</tr>
 				<tr>
 					<td>10月度</td>
-					<td><span>177:08</span></td>
+					<td><input class = "col-3", data-bind="ntsTimeEditor: {value: time, inputFormat: 'time', enable: enable,}" /></td>
 				</tr>
 				<tr>
 					<td>11月度</td>
-					<td><span>177:08</span></td>
+					<td><input class = "col-3", data-bind="ntsTimeEditor: {value: time, inputFormat: 'time', enable: enable,}" /></td>
 				</tr>
 				<tr>
 					<td>12月度</td>
-					<td><span>177:08</span></td>
+					<td><input class = "col-3", data-bind="ntsTimeEditor: {value: time, inputFormat: 'time', enable: enable,}" /></td>
 				</tr>
 				<tr>
 					<td>1月度</td>
-					<td><span>177:08</span></td>
+					<td><input class = "col-3", data-bind="ntsTimeEditor: {value: time, inputFormat: 'time', enable: enable,}" /></td>
 				</tr>
 				<tr>
 					<td>2月度</td>
-					<td><span>177:08</span></td>
+					<td><input class = "col-3", data-bind="ntsTimeEditor: {value: time, inputFormat: 'time', enable: enable,}" /></td>
 				</tr>
 				<tr>
 					<td>3月度</td>
-					<td><span>177:08</span></td>
+					<td><input class = "col-3", data-bind="ntsTimeEditor: {value: time, inputFormat: 'time', enable: enable,}" /></td>
 				</tr>
 				<tr>
 					<td>計</td>
@@ -72,7 +72,6 @@ module nts.uk.at.view.kmk004 {
 			}
 			
 			.times-table td {
-				padding: 3px;
 				text-align: center;
 			}
 			
@@ -82,20 +81,9 @@ module nts.uk.at.view.kmk004 {
 			}
 			
 			.times-table {
-				width: 240px;
-			}
-			
-			.times-table span {
-				border: 1px solid #AAAAAA;
-				padding: 0 10px 0 10px;
-  				border-radius: 5px;
-			}
-			
-			.times-table {
                 padding: 15px;
                 border: 1px solid #AAAAAA;
                 border-radius: 15px;
-				width: 170px;
 				margin: 15px;
             }
 
@@ -107,6 +95,15 @@ module nts.uk.at.view.kmk004 {
                 border: 1px solid #AAAAAA;
 				text-align: center;
             }
+
+			.times-table td:nth-child(3)  {
+				padding: 3px;
+				display: block;
+    			width: 110px;
+			}
+			.col-3 {
+				width: 45px;
+			}
         </style>
         <style type="text/css" rel="stylesheet" data-bind="html: $component.style"></style>
     `;
@@ -117,10 +114,13 @@ module nts.uk.at.view.kmk004 {
 	})
 
 	class TimesTable extends ko.ViewModel {
-
+		enable: KnockoutObservable<boolean>;
+		time: KnockoutObservable<string>;
 		columns: any;
 		created() {
 			const vm = this;
+			vm.enable = ko.observable(true);
+			vm.time = ko.observable("00:00");
 		}
 
 	}

@@ -22,7 +22,7 @@ module nts.uk.at.view.kmk004 {
 							enable: enable}"></div>
 					</td>
 					<td>4月度</td>
-					<td><span>177:08</span></td>
+					<td><input class = "col-3", data-bind="ntsTimeEditor: {value: time, inputFormat: 'time', enable: enable,}" /></td>
 				</tr>
 				<tr>
 					<td>
@@ -34,7 +34,7 @@ module nts.uk.at.view.kmk004 {
 							enable: enable}"></div>
 					</td>
 					<td>5月度</td>
-					<td><span>177:08</span></td>
+					<td><input class = "col-3", data-bind="ntsTimeEditor: {value: time, inputFormat: 'time', enable: enable,}" /></td>
 				</tr>
 				<tr>
 					<td><div data-bind="ntsMultiCheckBox: {
@@ -44,7 +44,7 @@ module nts.uk.at.view.kmk004 {
 							value: selectedIds,
 							enable: enable}"></div></td>
 					<td>6月度</td>
-					<td><span>177:08</span></td>
+					<td><input class = "col-3", data-bind="ntsTimeEditor: {value: time, inputFormat: 'time', enable: enable,}" /></td>
 				</tr>
 				<tr>
 					<td><div data-bind="ntsMultiCheckBox: {
@@ -54,7 +54,7 @@ module nts.uk.at.view.kmk004 {
 							value: selectedIds,
 							enable: enable}"></div></td>
 					<td>7月度</td>
-					<td><span>177:08</span></td>
+					<td><input class = "col-3", data-bind="ntsTimeEditor: {value: time, inputFormat: 'time', enable: enable,}" /></td>
 				</tr>
 				<tr>
 					<td><div data-bind="ntsMultiCheckBox: {
@@ -64,7 +64,7 @@ module nts.uk.at.view.kmk004 {
 							value: selectedIds,
 							enable: enable}"></div></td>
 					<td>8月度</td>
-					<td><span>177:08</span></td>
+					<td><input class = "col-3", class = "col-3" data-bind="ntsTimeEditor: {value: time, inputFormat: 'time', enable: enable,}" /></td>
 				</tr>
 				<tr>
 					<td><div data-bind="ntsMultiCheckBox: {
@@ -74,7 +74,7 @@ module nts.uk.at.view.kmk004 {
 							value: selectedIds,
 							enable: enable}"></div></td>
 					<td>9月度</td>
-					<td><span>177:08</span></td>
+					<td ><input class = "col-3", data-bind="ntsTimeEditor: {value: time, inputFormat: 'time', enable: enable,}" /></td>
 				</tr>
 				<tr>
 					<td><div data-bind="ntsMultiCheckBox: {
@@ -84,7 +84,7 @@ module nts.uk.at.view.kmk004 {
 							value: selectedIds,
 							enable: enable}"></div></td>
 					<td>10月度</td>
-					<td><span>177:08</span></td>
+					<td><input class = "col-3", data-bind="ntsTimeEditor: {value: time, inputFormat: 'time', enable: enable,}" /></td>
 				</tr>
 				<tr>
 					<td><div data-bind="ntsMultiCheckBox: {
@@ -94,7 +94,7 @@ module nts.uk.at.view.kmk004 {
 							value: selectedIds,
 							enable: enable}"></div></td>
 					<td>11月度</td>
-					<td><span>177:08</span></td>
+					<td><input class = "col-3", data-bind="ntsTimeEditor: {value: time, inputFormat: 'time', enable: enable,}" /></td>
 				</tr>
 				<tr>
 					<td><div data-bind="ntsMultiCheckBox: {
@@ -104,7 +104,7 @@ module nts.uk.at.view.kmk004 {
 							value: selectedIds,
 							enable: enable}"></div></td>
 					<td>12月度</td>
-					<td><span>177:08</span></td>
+					<td><input class = "col-3", data-bind="ntsTimeEditor: {value: time, inputFormat: 'time', enable: enable,}" /></td>
 				</tr>
 				<tr>
 					<td><div data-bind="ntsMultiCheckBox: {
@@ -114,7 +114,7 @@ module nts.uk.at.view.kmk004 {
 							value: selectedIds,
 							enable: enable}"></div></td>
 					<td>1月度</td>
-					<td><span>177:08</span></td>
+					<td><input class = "col-3", data-bind="ntsTimeEditor: {value: time, inputFormat: 'time', enable: enable,}" /></td>
 				</tr>
 				<tr>
 					<td><div data-bind="ntsMultiCheckBox: {
@@ -124,7 +124,7 @@ module nts.uk.at.view.kmk004 {
 							value: selectedIds,
 							enable: enable}"></div></td>
 					<td>2月度</td>
-					<td><span>177:08</span></td>
+					<td><input class = "col-3", data-bind="ntsTimeEditor: {value: time, inputFormat: 'time', enable: enable,}" /></td>
 				</tr>
 				<tr>
 					<td><div data-bind="ntsMultiCheckBox: {
@@ -134,7 +134,7 @@ module nts.uk.at.view.kmk004 {
 							value: selectedIds,
 							enable: enable}"></div></td>
 					<td>3月度</td>
-					<td><span>177:08</span></td>
+					<td><input class = "col-3", data-bind="ntsTimeEditor: {value: time, inputFormat: 'time', enable: enable,}" /></td>
 				</tr>
 				<tr>
 					<td><div data-bind="ntsMultiCheckBox: {
@@ -144,7 +144,7 @@ module nts.uk.at.view.kmk004 {
 							value: selectedIds,
 							enable: enable}"></div></td>
 					<td>計</td>
-					<td>2091:18</td>
+					<td></td>
 				</tr>
 			</table>
 			
@@ -152,6 +152,13 @@ module nts.uk.at.view.kmk004 {
 			.view-o-times-table td:nth-child(2)  {
 				background: #E0F59E;
 				border: 1px solid #AAAAAA;
+				padding: 0 3px 0 3px;
+			}
+			
+			.view-o-times-table td:nth-child(3)  {
+				padding: 3px;
+				display: block;
+    			width: 100px;
 			}
 			
 			.view-o-times-table td {
@@ -163,17 +170,10 @@ module nts.uk.at.view.kmk004 {
 				background: #97D155;
 			}
 			
-			.view-o-times-table span {
-				border: 1px solid #AAAAAA;
-				padding: 0 10px 0 10px;
-  				border-radius: 5px;
-			}
-			
 			.view-o-times-table {
                 padding: 15px;
                 border: 1px solid #AAAAAA;
                 border-radius: 15px;
-				width: 190px;
 				margin: 15px;
             }
 
@@ -185,6 +185,12 @@ module nts.uk.at.view.kmk004 {
                 border: 1px solid #AAAAAA;
 				text-align: center;
             }
+			
+			.col-3 {
+				width: 65px;
+			}
+			
+
         </style>
         <style type="text/css" rel="stylesheet" data-bind="html: $component.style"></style>
     `;
@@ -198,18 +204,19 @@ module nts.uk.at.view.kmk004 {
 		itemList: KnockoutObservableArray<Time>;
 		selectedIds: KnockoutObservableArray<number>;
 		enable: KnockoutObservable<boolean>;
+		time: KnockoutObservable<string>;
 
 		columns: any;
 		created() {
 			const vm = this;
-			
+
 			vm.itemList = ko.observableArray([
-            new Time(1, ''),
-           
-        ]);
+				new Time(1, ''),
+
+			]);
 			vm.selectedIds = ko.observableArray([]);
-        	vm.enable = ko.observable(true);
-			
+			vm.enable = ko.observable(false);
+			vm.time = ko.observable("");
 		}
 
 	}
@@ -217,7 +224,7 @@ module nts.uk.at.view.kmk004 {
 	class Time {
 		id: number;
 		name: string;
-		constructor(id:number, name:string) {
+		constructor(id: number, name: string) {
 			var self = this;
 			self.id = id;
 			self.name = name;
