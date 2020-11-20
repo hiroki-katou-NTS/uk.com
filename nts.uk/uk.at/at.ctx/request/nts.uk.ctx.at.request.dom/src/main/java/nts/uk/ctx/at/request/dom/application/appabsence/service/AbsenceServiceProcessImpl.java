@@ -9,6 +9,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.DisplayReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.*;
 import org.apache.logging.log4j.util.Strings;
 
@@ -31,8 +32,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.New
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReason;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReasonRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.DisplayReason;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.HolidayType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.WorkTypeObjAppHoliday;
@@ -397,7 +397,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		// ドメインモデル「休暇申請設定」を取得する(lấy dữ liệu domain 「休暇申請設定」)
 		HolidayApplicationSetting hdAppSet = hdAppSetRepository.findSettingByCompanyId(companyID).get();
 		// ドメインモデル「申請理由表示」を取得する(lấy dữ liệu domain 「申請理由表示」)
-		List<DisplayReason> displayReasonLst = displayRep.findDisplayReason(companyID);
+		List<DisplayReason> displayReasonLst = displayRep.findByCompanyId(companyID);
 		// 取得した情報を返す
 		return new HolidayRequestSetOutput(hdAppSet, displayReasonLst);
 	}

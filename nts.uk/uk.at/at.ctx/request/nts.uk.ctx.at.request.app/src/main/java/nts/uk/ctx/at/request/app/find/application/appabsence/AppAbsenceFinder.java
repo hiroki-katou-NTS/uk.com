@@ -32,8 +32,8 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMod
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.DisplayReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.WorkTypeObjAppHoliday;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;

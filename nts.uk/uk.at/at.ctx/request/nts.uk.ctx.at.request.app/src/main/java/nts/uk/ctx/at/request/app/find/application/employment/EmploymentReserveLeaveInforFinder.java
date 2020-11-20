@@ -13,6 +13,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.ReserveLeaveManagerApdater;
@@ -21,7 +22,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumb
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.rsvimport.TmpRsvLeaveMngImport;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.HolidayAppType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcess;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;

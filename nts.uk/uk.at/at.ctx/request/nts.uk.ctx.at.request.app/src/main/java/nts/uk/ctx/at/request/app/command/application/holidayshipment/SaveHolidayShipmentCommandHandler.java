@@ -15,7 +15,6 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.HolidayAppType;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.enums.EnumAdaptor;
@@ -247,12 +246,12 @@ public class SaveHolidayShipmentCommandHandler
 			if (hdAppSetOpt.isPresent()) {
 				HolidayApplicationSetting hdSet = hdAppSetOpt.get();
 //				chkPause = hdSet.getRegisInsuff().value == 1 ? true : false;// 休暇申請設定．振休残数不足登録できる
-				appName = hdSet.getHolidayApplicationTypeDisplayName()
-						.stream()
-						.filter(i -> i.getHolidayApplicationType() == HolidayAppType.REST_TIME)
-						.findFirst()
-						.map(i -> i.getDisplayName().v())
-						.orElse("");
+//				appName = hdSet.getHolidayApplicationTypeDisplayName()
+//						.stream()
+//						.filter(i -> i.getHolidayApplicationType() == HolidayAppType.REST_TIME)
+//						.findFirst()
+//						.map(i -> i.getDisplayName().v())
+//						.orElse("");
 			}
 			
 			InterimRemainCheckInputParam inputParam = new InterimRemainCheckInputParam(companyID, sID,

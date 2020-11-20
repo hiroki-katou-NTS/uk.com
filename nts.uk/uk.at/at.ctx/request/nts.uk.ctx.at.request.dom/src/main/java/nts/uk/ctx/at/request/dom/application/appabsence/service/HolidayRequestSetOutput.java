@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReason;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.DisplayReason;
 
 /**
  * 

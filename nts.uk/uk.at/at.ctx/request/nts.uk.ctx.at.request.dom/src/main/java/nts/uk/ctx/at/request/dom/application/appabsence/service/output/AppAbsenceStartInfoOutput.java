@@ -11,7 +11,7 @@ import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.RemainVacationInfo;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReason;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.DisplayReason;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
