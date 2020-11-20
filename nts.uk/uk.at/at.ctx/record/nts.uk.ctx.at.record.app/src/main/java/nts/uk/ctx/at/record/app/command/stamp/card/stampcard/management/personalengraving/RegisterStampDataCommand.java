@@ -49,7 +49,7 @@ public class RegisterStampDataCommand {
 	private Double latitude;
 	private Double longitude;
 	
-	private Integer empInfoTerCode;
+	private String empInfoTerCode;
 	
 	public Relieve toRelieve() {
 		return new Relieve(AuthcMethod.valueOf(authcMethod), StampMeans.valueOf(stampMeans));
