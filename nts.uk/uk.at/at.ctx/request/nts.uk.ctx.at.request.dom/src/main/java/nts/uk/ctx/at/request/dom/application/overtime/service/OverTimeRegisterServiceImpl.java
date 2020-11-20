@@ -62,7 +62,7 @@ public class OverTimeRegisterServiceImpl implements OverTimeRegisterService {
 	}
 
 	@Override
-	public void update(String companyId, AppOverTime appOverTime) {
+	public ProcessResult update(String companyId, AppOverTime appOverTime) {
 		Application application = (Application) appOverTime;
 		// ドメインモデル「残業申請」を更新する
 		appUpdateRepository.update(application);
@@ -71,7 +71,7 @@ public class OverTimeRegisterServiceImpl implements OverTimeRegisterService {
 		// 暫定データの登録
 		
 		// アルゴリズム「4-2.詳細画面登録後の処理」を実行する
-		detailAfterUpdate.processAfterDetailScreenRegistration(
+		return detailAfterUpdate.processAfterDetailScreenRegistration(
 				companyId,
 				application.getAppID(),
 				null); //#112628
