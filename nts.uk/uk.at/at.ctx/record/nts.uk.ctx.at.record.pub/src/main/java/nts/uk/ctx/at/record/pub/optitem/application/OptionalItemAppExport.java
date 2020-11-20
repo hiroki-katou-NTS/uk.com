@@ -24,4 +24,6 @@ public class OptionalItemAppExport {
     private CalcResultRange calcResultRange;
 
     private OptionalItemAtr optionalItemAtr;
+
+    private String description;
 }

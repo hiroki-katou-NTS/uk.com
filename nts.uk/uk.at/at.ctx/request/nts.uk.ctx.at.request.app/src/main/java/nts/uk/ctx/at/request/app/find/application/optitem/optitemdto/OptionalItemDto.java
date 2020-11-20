@@ -23,6 +23,8 @@ public class OptionalItemDto {
      */
     private String unit;
 
+    private String description;
+
     /**
      * The optional item atr.
      */

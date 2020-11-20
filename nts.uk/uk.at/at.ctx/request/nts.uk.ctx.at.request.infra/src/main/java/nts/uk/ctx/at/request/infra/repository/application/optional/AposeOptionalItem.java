@@ -28,11 +28,11 @@ public class AposeOptionalItem {
             Cell cellD = cells.get("D" + (9 + i));
             cellD.setValue(printContent.get(i).getOptionalItemName());
             Cell cellH = cells.get("H" + (9 + i));
-            if (printContent.get(i).getOptionalItemAtr() == 0) {
+            if (printContent.get(i).getOptionalItemAtr() == 0 && printContent.get(i).getTime() != null) {
                 cellH.setValue(timeToString(printContent.get(i).getTime()));
-            } else if (printContent.get(i).getOptionalItemAtr() == 1) {
+            } else if (printContent.get(i).getOptionalItemAtr() == 1 && printContent.get(i).getTimes() != null) {
                 cellH.setValue(printContent.get(i).getTimes());
-            } else if (printContent.get(i).getOptionalItemAtr() == 2) {
+            } else if (printContent.get(i).getOptionalItemAtr() == 2 && printContent.get(i).getAmount() != null) {
                 cellH.setValue(printContent.get(i).getAmount());
             }
             Cell cellI = cells.get("I" + (9 + i));

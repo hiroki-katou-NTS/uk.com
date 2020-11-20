@@ -89,6 +89,7 @@ public class OptionalItemApplicationQuery {
                     optionalItemDto.setUnit(item.getOptionalItemUnit());
                     optionalItemDto.setCalcResultRange(calcResultRangeDto);
                     optionalItemDto.setOptionalItemAtr(item.getOptionalItemAtr().value);
+                    optionalItemDto.setDescription(item.getDescription());
                     return optionalItemDto;
                 }
         ).collect(Collectors.toList()));

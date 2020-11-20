@@ -25,4 +25,6 @@ public class OptionalItemImport {
     private CalcResultRange calcResultRange;
 
     private OptionalItemAtr optionalItemAtr;
+
+    private String description;
 }
