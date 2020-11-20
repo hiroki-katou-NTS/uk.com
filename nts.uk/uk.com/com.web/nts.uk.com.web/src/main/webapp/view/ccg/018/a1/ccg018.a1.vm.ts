@@ -60,10 +60,11 @@ module ccg018.a1.viewmodel {
             blockUI.invisible();
             service.findAllTopPageRoleSet()
             .then((data) => {
+                const arrayTemp: any = [];
                 _.forEach(vm.listRoleSet(), (x: RoleSet) => {
                     const dataObj: any = _.find(data, ['roleSetCode', x.roleSetCd]);
                     if (dataObj) {
-                        vm.lisTopPageRoleSet().push(new TopPageRoleSet({
+                        arrayTemp.push(new TopPageRoleSet({
                             roleSetCode: x.roleSetCd,
                             name: x.roleSetName,
                             loginMenuCode: dataObj.loginMenuCode,
@@ -73,7 +74,7 @@ module ccg018.a1.viewmodel {
                             menuClassification: dataObj.menuClassification
                         }));
                     } else {
-                        vm.lisTopPageRoleSet().push(new TopPageRoleSet({
+                        arrayTemp.push(new TopPageRoleSet({
                             roleSetCode: x.roleSetCd,
                             name: x.roleSetName,
                             loginMenuCode: '',
@@ -84,6 +85,7 @@ module ccg018.a1.viewmodel {
                         }));
                     }
                 });
+                vm.lisTopPageRoleSet(arrayTemp);
             })
             .always(() => blockUI.clear());
         }
