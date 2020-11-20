@@ -137,7 +137,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         pathToUp = '';
         
         // param kcp015
-        hasParams: KnockoutObservable<boolean> = ko.observable(true);
+        hasParams: KnockoutObservable<boolean> = ko.observable(false);
         visibleA31: KnockoutObservable<boolean> = ko.observable(true);
         visibleA32: KnockoutObservable<boolean> = ko.observable(true);
         visibleA33: KnockoutObservable<boolean> = ko.observable(true);
