@@ -26,7 +26,7 @@ module nts.uk.at.view.kaf020.shr.viewmodel {
                 <tr>
                     <td>
                         <!--B4_1-->
-                        <div class="label" style="word-break: break-word" data-bind="text: optionalItemName"></div>
+                        <div class="label" style="white-space: normal" data-bind="text: optionalItemName"></div>
                     </td>
                     <td>
                         <!--B4_2-->
@@ -51,6 +51,7 @@ module nts.uk.at.view.kaf020.shr.viewmodel {
                         <div class="label" data-bind="text: unit"></div>
                     </td>
                     <td>
+                        <div data-bind="text: description" style="word-break: normal"></div>
                         <div class="label">
                             <span data-bind="if:lowerCheck || upperCheck || unit ">
                                 <span data-bind="text: $vm.$i18n('KAF020_25')"></span>
