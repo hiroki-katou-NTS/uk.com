@@ -28,7 +28,7 @@ public class SendWorkTypeNamePubImpl implements SendNRDataPub<List<SendWorkTypeN
 	private WorkTypeRepository workTypeRepository;
 
 	@Override
-	public List<SendWorkTypeNameExport> send(Integer empInfoTerCode, String contractCode) {
+	public List<SendWorkTypeNameExport> send(String empInfoTerCode, String contractCode) {
 
 		RequireImpl impl = new RequireImpl(timeRecordReqSettingRepository, workTypeRepository);
 

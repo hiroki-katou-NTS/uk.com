@@ -38,7 +38,7 @@ public class EmpInfoTerScreenWS extends WebService {
 
 	@POST
 	@Path("getdetails/{empInfoTerCode}")
-	public GetSelectedTerminalInfoDto getDetails(@PathParam("empInfoTerCode") int empInforTerCode) {
+	public GetSelectedTerminalInfoDto getDetails(@PathParam("empInfoTerCode") String empInforTerCode) {
 		return this.getSelectedTerminalInfo.getDetails(empInforTerCode);
 	}
 

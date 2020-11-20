@@ -55,7 +55,7 @@ public class SendTimeRecordSettingServiceTest {
 	@Test
 	public void testSendEmpty() {
 
-		Optional<SendTimeRecordSetting> actual = SendTimeRecordSettingService.send(require, new EmpInfoTerminalCode(1),
+		Optional<SendTimeRecordSetting> actual = SendTimeRecordSettingService.send(require, new EmpInfoTerminalCode("1"),
 				new ContractCode("1"));
 		assertThat(actual).isEqualTo(Optional.empty());
 	}
@@ -77,7 +77,7 @@ public class SendTimeRecordSettingServiceTest {
 	public void testSendTimeRecord() {
 
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = Optional
-				.of(new ReqSettingBuilder(new EmpInfoTerminalCode(1), new ContractCode("1"), new CompanyId("1"), "1",
+				.of(new ReqSettingBuilder(new EmpInfoTerminalCode("1"), new ContractCode("1"), new CompanyId("1"), "1",
 						Arrays.asList(new EmployeeId("1")), Arrays.asList(1), Arrays.asList(new WorkTypeCode("1")))
 								.overTimeHoliday(false).applicationReason(false).stampReceive(false)
 								.reservationReceive(false).applicationReceive(false).timeSetting(false)
@@ -90,7 +90,7 @@ public class SendTimeRecordSettingServiceTest {
 				result = timeRecordReqSetting;
 			}
 		};
-		Optional<SendTimeRecordSetting> actual = SendTimeRecordSettingService.send(require, new EmpInfoTerminalCode(1),
+		Optional<SendTimeRecordSetting> actual = SendTimeRecordSettingService.send(require, new EmpInfoTerminalCode("1"),
 				new ContractCode("1"));
 
 		assertThat(actual.get()).isEqualTo(new SendTimeRecordSetting.SettingBuilder(false, false, false, false, false)
@@ -114,7 +114,7 @@ public class SendTimeRecordSettingServiceTest {
 	public void testSendTimeRecord2() {
 
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = Optional
-				.of(new ReqSettingBuilder(new EmpInfoTerminalCode(1), new ContractCode("1"), new CompanyId("1"), "1",
+				.of(new ReqSettingBuilder(new EmpInfoTerminalCode("1"), new ContractCode("1"), new CompanyId("1"), "1",
 						Arrays.asList(new EmployeeId("1")), Arrays.asList(1), Arrays.asList(new WorkTypeCode("1")))
 								.overTimeHoliday(true).applicationReason(true).stampReceive(true)
 								.reservationReceive(true).applicationReceive(true).timeSetting(true)
@@ -127,7 +127,7 @@ public class SendTimeRecordSettingServiceTest {
 				result = timeRecordReqSetting;
 			}
 		};
-		Optional<SendTimeRecordSetting> actual2 = SendTimeRecordSettingService.send(require, new EmpInfoTerminalCode(1),
+		Optional<SendTimeRecordSetting> actual2 = SendTimeRecordSettingService.send(require, new EmpInfoTerminalCode("1"),
 				new ContractCode("1"));
 
 		assertThat(actual2.get()).isEqualTo(new SendTimeRecordSetting.SettingBuilder(true, true, true, true, true)

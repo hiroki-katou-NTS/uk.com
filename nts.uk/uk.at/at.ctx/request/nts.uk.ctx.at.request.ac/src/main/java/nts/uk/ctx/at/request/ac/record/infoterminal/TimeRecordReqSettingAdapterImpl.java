@@ -23,7 +23,7 @@ public class TimeRecordReqSettingAdapterImpl implements TimeRecordReqSettingAdap
 	private TimeRecordReqSettingPub pub;
 
 	@Override
-	public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(Integer empInfoTerCode, String contractCode) {
+	public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(String empInfoTerCode, String contractCode) {
 		return pub.getTimeRecordReqSetting(empInfoTerCode, contractCode).map(x -> convertTo(x));
 	}
 

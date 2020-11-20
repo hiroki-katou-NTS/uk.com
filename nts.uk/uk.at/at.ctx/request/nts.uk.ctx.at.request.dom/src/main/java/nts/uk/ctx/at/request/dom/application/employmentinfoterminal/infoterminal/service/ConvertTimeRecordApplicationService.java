@@ -40,7 +40,7 @@ public class ConvertTimeRecordApplicationService {
 
 	// [1] 変換する
 	public static <T extends ApplicationReceptionData> Optional<AtomTask> converData(Require require,
-			Integer empInfoTerCode, String contractCode, T recept) {
+			String empInfoTerCode, String contractCode, T recept) {
 
 		Optional<EmpInfoTerminal> empInfoTerOpt = require.getEmpInfoTerminal(empInfoTerCode, contractCode);
 
@@ -87,7 +87,7 @@ public class ConvertTimeRecordApplicationService {
 
 	// [pvt-1] 就業情報端末通信用トップページアラームを作る
 	private static Optional<TopPageAlarmEmpInfoTerRQ> createLogEmpTer(Require require, String sid, String companyId,
-			Integer terCode, String cardNumber, String message) {
+			String terCode, String cardNumber, String message) {
 		List<String> lstSidApproval = require.getListEmpID(companyId, GeneralDate.today());
 
 		if (lstSidApproval.isEmpty())
@@ -128,7 +128,7 @@ public class ConvertTimeRecordApplicationService {
 	public static interface Require extends RegisterApplicationFromNR.Require {
 
 		// [R-1] 就業情報端末を取得する
-		public Optional<EmpInfoTerminal> getEmpInfoTerminal(Integer empInfoTerCode, String contractCode);
+		public Optional<EmpInfoTerminal> getEmpInfoTerminal(String empInfoTerCode, String contractCode);
 
 		// [R-2] 勤務種類を取得
 		public Optional<WorkType> findByPK(String companyId, String workTypeCd);
@@ -151,7 +151,7 @@ public class ConvertTimeRecordApplicationService {
 		public void insertLogAll(TopPageAlarmEmpInfoTerRQ alEmpInfo);
 
 		// [R-7] タイムレコードのﾘｸｴｽﾄ設定を取得する
-		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(Integer empInfoTerCode, String contractCode);
+		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(String empInfoTerCode, String contractCode);
 
 		// [R-9] 就業担当者の社員ID（List）を取得する
 		public List<String> getListEmpID(String companyID, GeneralDate referenceDate);
