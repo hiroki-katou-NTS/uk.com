@@ -1,8 +1,8 @@
 module nts.uk.com.view.ccg008.a.viewmodel {
     import commonModel = ccg.model;
-    import ntsFile = nts.uk.request.file; 
+    import ntsFile = nts.uk.request.file;
     import character = nts.uk.characteristics;
-    const MINUTESTOMILISECONDS = 60000; 
+    const MINUTESTOMILISECONDS = 60000;
     export class ScreenModel {
         tabs: KnockoutObservableArray<any>;
         selectedTab: KnockoutObservable<string>;
@@ -20,7 +20,7 @@ module nts.uk.com.view.ccg008.a.viewmodel {
         contentF1: JQuery;
         contentF2: JQuery;
         contentF3: JQuery;
-        isShowClosure: KnockoutObservable<boolean> = ko.observable(false); 
+        isShowClosure: KnockoutObservable<boolean> = ko.observable(false);
         closureSelected: KnockoutObservable<number> = ko.observable(1);
         lstClosure: KnockoutObservableArray<model.ItemCbbModel> = ko.observableArray([]);
         reloadInterval: KnockoutObservable<number> = ko.observable(0);
@@ -55,7 +55,7 @@ module nts.uk.com.view.ccg008.a.viewmodel {
                                                 ]);
             self.selectedSwitch = ko.observable(null);
             self.switchVisible = ko.observable(true);
-            
+
             // ver4 current month or next month
             self.selectedSwitch.subscribe(function(value){
                 character.save('cache', new model.Cache(self.closureSelected(), value));
@@ -63,7 +63,7 @@ module nts.uk.com.view.ccg008.a.viewmodel {
                 var transferData = __viewContext.transferred.value;
                 var fromScreen = transferData && transferData.screen ? transferData.screen : "other";
             });
-            
+
             self.closureSelected.subscribe(function(value){
                 self.selectedSwitch.valueHasMutated();
             });
@@ -79,7 +79,7 @@ module nts.uk.com.view.ccg008.a.viewmodel {
               }
             })
         }
-        
+
         start(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
@@ -90,13 +90,13 @@ module nts.uk.com.view.ccg008.a.viewmodel {
             service.getSetting().done(res => {
               if(res.reloadInterval){
                 self.reloadInterval(res.reloadInterval);
-                
+
               }
               if(user || res) {
                 self.isShowButtonSetting(true);
               }
               self.topPageSetting = res;
-              //var fromScreen = "login"; 
+              //var fromScreen = "login";
               if(fromScreen == "login"){
                 service.getCache().done((data: any) => {
                     character.save('cache', data).done(() => {
@@ -115,9 +115,9 @@ module nts.uk.com.view.ccg008.a.viewmodel {
                                 self.closureSelected(1);
                                 self.selectedSwitch(null);
                             }
-                        }); 
+                        });
                     });
-                });  
+                });
               }else{
                 // get combobox and switch button
                 character.restore('cache').done((obj: any)=>{
@@ -125,7 +125,7 @@ module nts.uk.com.view.ccg008.a.viewmodel {
                             if(obj.currentOrNextMonth){
                                 self.selectedSwitch(obj.currentOrNextMonth);
                             }else{
-                                self.selectedSwitch(null);    
+                                self.selectedSwitch(null);
                             }
                             self.closureSelected(obj.closureId)
                             nts.uk.ui.windows.setShared('cache', obj);
@@ -133,7 +133,7 @@ module nts.uk.com.view.ccg008.a.viewmodel {
                         self.closureSelected(1);
                         self.selectedSwitch(null);
                     }
-                });    
+                });
               }
               let param = {
                 topPageSetting: self.topPageSetting,
@@ -162,17 +162,17 @@ module nts.uk.com.view.ccg008.a.viewmodel {
                 self.isVisiableContentF3(false);
               }
               })
-              
+
             });
         })
-            
+
           // 会社の締めを取得する - Lấy closure company
           service.getClosure().done((data: any) => {
             self.lstClosure(data);
-              service.getTopPageByCode(fromScreen, self.topPageCode()).done((data: model.LayoutAllDto) => {
-                self.dataSource(data);
-                dfd.resolve();
-            });
+            //   service.getTopPageByCode(fromScreen, self.topPageCode()).done((data: model.LayoutAllDto) => {
+            //     self.dataSource(data);
+            //     dfd.resolve();
+            // });
           });
           self.isStart = false;
           return dfd.promise();
@@ -211,14 +211,14 @@ module nts.uk.com.view.ccg008.a.viewmodel {
               if (data.standardMenu.url) {// show standardmenu
                 var res = "/" + data.standardMenu.url.split("web/")[1];
                 var topPageUrl = "/view/ccg/008/a/index.xhtml";
-                if (res && topPageUrl != res.trim()) { 
-                    if (_.includes(data.standardMenu.url, ".at.")) { 
-                        nts.uk.request.jump("at", res);
-                    } else {
-                        nts.uk.request.jump(res);
-                    } 
+                if (res && topPageUrl != res.trim()) {
+                    // if (_.includes(data.standardMenu.url, ".at.")) {
+                    //     nts.uk.request.jump("at", res);
+                    // } else {
+                    //     nts.uk.request.jump(res);
+                    // }
                 }
-              } 
+              }
               // show toppage
             } else if (self.topPageSetting.menuClassification === MenuClassification.TopPage) {
               let layout1 = data.displayTopPage.layout1;
@@ -260,14 +260,14 @@ module nts.uk.com.view.ccg008.a.viewmodel {
                   }
                   let itemLayout: any;
                   itemLayout.url = origin + self.getUrl(item.widgetType);
-                  itemLayout.html = `<iframe src=  ${itemLayout.url}/>`; 
+                  itemLayout.html = `<iframe src=  ${itemLayout.url}/>`;
                   itemLayout.order = item.order;
                   dataLayout2.push(itemLayout);
                 });
                 dataLayout2 = _.orderBy(dataLayout2, ["order"], ["asc"]);
                 self.lstWidgetLayout2(dataLayout2);
               }
-              
+
               if (layout3) {
                 _.each(layout3, (item: WidgetSettingDto) => {
                   if(item.widgetType === 0 || item.widgetType === 1 || item.widgetType === 2 || item.widgetType === 3 || item.widgetType === 4 ){
@@ -278,7 +278,7 @@ module nts.uk.com.view.ccg008.a.viewmodel {
                   }
                   let itemLayout: any;
                   itemLayout.url = origin + self.getUrl(item.widgetType)
-                  itemLayout.html = `<iframe src=  ${itemLayout.url}/>`; 
+                  itemLayout.html = `<iframe src=  ${itemLayout.url}/>`;
                   itemLayout.order = item.order;
                   dataLayout3.push(itemLayout);
                 });
@@ -314,7 +314,7 @@ module nts.uk.com.view.ccg008.a.viewmodel {
               return '/nts.uk.at.web/view/kdp/001/a/index.xhtml';
             case 6:
               return '/nts.uk.at.web/view/ktg/031/a/index.xhtml';
-            case 7: 
+            case 7:
               return '/view/ccg/005/a/index.xhtml';
           }
         }
@@ -334,13 +334,13 @@ module nts.uk.com.view.ccg008.a.viewmodel {
               return 30;
             case 6:
               return 40;
-            case 7: 
+            case 7:
               return 50;
             case 8:
               return 60;
           }
         }
-        
+
     }
     export module model {
         /** Client Placement class */
@@ -372,29 +372,29 @@ module nts.uk.com.view.ccg008.a.viewmodel {
                 if(partType === 0){
                     if(topPageCode === "0001"){
                         this.url = origin + "/nts.uk.at.web/view/ktg/001/a/index.xhtml";
-                        this.html = '<iframe src="' + this.url + '"/>'; 
+                        this.html = '<iframe src="' + this.url + '"/>';
                     }else if(topPageCode === "0002"){
-                        this.url = origin + "/nts.uk.at.web/view/ktg/002/a/index.xhtml"; 
-                        this.html = '<iframe src="' + this.url + '"/>'; 
+                        this.url = origin + "/nts.uk.at.web/view/ktg/002/a/index.xhtml";
+                        this.html = '<iframe src="' + this.url + '"/>';
                     }else if(topPageCode === "0003"){
-                        this.url = origin + "/nts.uk.at.web/view/ktg/027/a/index.xhtml"; 
-                        this.html = '<iframe src="' + this.url + '"/>'; 
+                        this.url = origin + "/nts.uk.at.web/view/ktg/027/a/index.xhtml";
+                        this.html = '<iframe src="' + this.url + '"/>';
                     }else if(topPageCode === "0004"){
-                        this.url = origin + "/nts.uk.at.web/view/ktg/030/a/index.xhtml"; 
-                        this.html = '<iframe src="' + this.url + '"/>'; 
+                        this.url = origin + "/nts.uk.at.web/view/ktg/030/a/index.xhtml";
+                        this.html = '<iframe src="' + this.url + '"/>';
                     }else if(topPageCode === "0005"){
-                        this.url = origin + "/nts.uk.at.web/view/kdp/001/a/index.xhtml"; 
-                        this.html = '<iframe src="' + this.url + '"/>'; 
+                        this.url = origin + "/nts.uk.at.web/view/kdp/001/a/index.xhtml";
+                        this.html = '<iframe src="' + this.url + '"/>';
                     }else if(topPageCode === "0006"){
-                        this.url = origin + "/nts.uk.com.web/view/ktg/031/a/index.xhtml"; 
-                        this.html = '<iframe src="' + this.url + '"/>'; 
+                        this.url = origin + "/nts.uk.com.web/view/ktg/031/a/index.xhtml";
+                        this.html = '<iframe src="' + this.url + '"/>';
                     }else if(topPageCode === "9999"){
-                        this.url = origin + "/nts.uk.hr.web/view/jcg/004/a/index.xhtml"; 
-                        this.html = '<iframe src="' + this.url + '"/>'; 
+                        this.url = origin + "/nts.uk.hr.web/view/jcg/004/a/index.xhtml";
+                        this.html = '<iframe src="' + this.url + '"/>';
                     }
                 }else if(partType === 1){
                     this.url = origin + "/nts.uk.at.web/view/ktg/029/a/index.xhtml?code="+topPageCode;
-                    this.html = '<iframe src="' + this.url + '"/>';  
+                    this.html = '<iframe src="' + this.url + '"/>';
                 }else if(partType === 4){
                     this.url = url;
                     this.html = '<iframe src="' + this.url + '"/>';
@@ -404,10 +404,10 @@ module nts.uk.com.view.ccg008.a.viewmodel {
                 }
                 this.topPagePartID = topPagePartID;
                 this.partType = partType;
-                
+
             }
         }
-        
+
         export class ItemCbbModel {
             closureId: number;
             closureName: string;
@@ -416,7 +416,7 @@ module nts.uk.com.view.ccg008.a.viewmodel {
                 this.closureName = closureName;
             }
         }
-        
+
         export class Cache {
             closureId: number;
             currentOrNextMonth: number;
@@ -537,7 +537,7 @@ module nts.uk.com.view.ccg008.a.viewmodel {
         $.extend(this, init);
       }
     }
-    
+
     export class FlowMenuOutputCCG008 {
       flowCode: string;
       flowName: string;
@@ -573,16 +573,16 @@ module nts.uk.com.view.ccg008.a.viewmodel {
       logUpdateDisplay: number;
     }
 
-    export enum MenuClassification { 
+    export enum MenuClassification {
       /**0:標準 */
-      Standard = 0, 
+      Standard = 0,
       /**1:任意項目申請 */
-      OptionalItemApplication = 1, 
+      OptionalItemApplication = 1,
       /**2:携帯 */
-      MobilePhone = 2, 
+      MobilePhone = 2,
       /**3:タブレット */
       Tablet = 3,
-      /**4:コード名称 */ 
+      /**4:コード名称 */
       CodeName = 4,
       /**5:グループ会社メニュー */
       GroupCompanyMenu  = 5,
@@ -594,5 +594,5 @@ module nts.uk.com.view.ccg008.a.viewmodel {
       TopPage = 8,
       /**9:スマートフォン*/
       SmartPhone = 9
-   }; 
+   };
 }

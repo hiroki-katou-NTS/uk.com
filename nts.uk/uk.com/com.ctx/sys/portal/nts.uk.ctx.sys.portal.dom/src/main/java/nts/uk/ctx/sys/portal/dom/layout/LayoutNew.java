@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.sys.portal.dom.toppage.TopPageCode;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.ポータル.レイアウト.レイアウト（New）.レイアウト
@@ -62,11 +63,11 @@ public class LayoutNew extends AggregateRoot {
 		memento.setFlowMenuCd(this.flowMenuCd.map(t -> t.v()).orElse(null));
 		memento.setFlowMenuUpCd(this.flowMenuUpCd.map(t -> t.v()).orElse(null));
 		memento.setUrl(this.url.orElse(null));
-		memento.setWidgetSettings(this.widgetSettings);
+		memento.setWidgetSettings(AppContexts.user().contractCode(), this.widgetSettings);
 	}
 
 	public static interface MementoSetter {
-		public void setWidgetSettings(List<WidgetSetting> widgetSettings);
+		public void setWidgetSettings(String contractCode, List<WidgetSetting> widgetSettings);
 		public void setTopPageCode(String toppageCode);
 		public void setLayoutNo(BigDecimal layoutNo);
 		public void setLayoutType(BigDecimal layoutType);

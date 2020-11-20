@@ -95,4 +95,9 @@ public class LayoutDto implements LayoutNew.MementoSetter, LayoutNew.MementoGett
 	public void setUrl(String url) {
 		this.url = url;
 	}
+
+	@Override
+	public void setWidgetSettings(String contractCode, List<WidgetSetting> widgetSettings) {
+		
+	}
 }

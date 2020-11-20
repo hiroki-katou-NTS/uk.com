@@ -1,10 +1,9 @@
 package nts.uk.ctx.sys.portal.app.command.toppage;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -34,48 +33,31 @@ public class SaveLayoutWidgetCommandHandler extends CommandHandler< SaveLayoutCo
 	protected void handle(CommandHandlerContext<SaveLayoutCommand> context) {
 		SaveLayoutCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		Optional<LayoutNew> findLayout = layoutNewRepository.getByCidAndCode(companyId, command.getTopPageCode(), command.getLayoutNo());
+		command.setCid(companyId);
+		Optional<LayoutNew> findLayout = this.layoutNewRepository.getByCidAndCode(companyId, command.getTopPageCode(), command.getLayoutNo());
+		// 新規モード
+		LayoutNew layout = LayoutNew.createFromMemento(command);
 		if (findLayout.isPresent()) {
-			LayoutNew layoutChoose = findLayout.get();
-			// 「レイアウト.ウィジェット設定」が登録されている
-			List<WidgetSetting> lstWidget = layoutChoose.getWidgetSettings();
-			if (!lstWidget.isEmpty()) {
-				Map<WidgetType, WidgetSetting> mapExistedWidget = command.getWidgetSettings().stream().collect(Collectors.toMap(item -> item.getWidgetType(), item -> item));
-				List<WidgetSetting> lstWidgetNew = command.getWidgetSettings();
-				for(WidgetSetting setting: lstWidget) {
-					if (mapExistedWidget.get(setting.getWidgetType()) == null) {
-						// レイアウトの「ウィジェット設定」を削除する
-						layoutNewRepository.deleteWidget(companyId, command.getLayoutNo(), command.getTopPageCode(), BigDecimal.valueOf(setting.getWidgetType().value));
-					} else {
-						// レイアウトの「ウィジェット設定」を更新する
-						layoutNewRepository.updateWidget(layoutChoose, setting);
-						lstWidgetNew.removeIf(item -> item.getWidgetType() == setting.getWidgetType());
-					}
-				}
-				if (!lstWidgetNew.isEmpty()) {
-					for(WidgetSetting widget: lstWidgetNew) {
-						// レイアウトの「ウィジェット設定」を登録する
-						layoutNewRepository.insertWidget(layoutChoose, widget);
-					}
-				}
-			}
-		} else {
-			// 新規モード
-			List<WidgetSetting> widgetSettings = command.getWidgetSettings();
-			command.setWidgetSettings(new ArrayList<>());
-			LayoutNew layout = LayoutNew.createFromMemento(command);
-			
 			// ドメインモデル「レイアウト」を登録する
-			layoutNewRepository.insert(layout);
-			
-			if (!widgetSettings.isEmpty()) {
-				for(WidgetSetting widget: widgetSettings) {
-					// レイアウトの「ウィジェット設定」を登録する
-					layoutNewRepository.insertWidget(layout, widget);
-				}
-			}
+			List<WidgetSetting> listExistedWidget = findLayout.get().getWidgetSettings();
+			Map<WidgetType, WidgetSetting> mapUpdateWidget = layout.getWidgetSettings().stream()
+					.collect(Collectors.toMap(item -> item.getWidgetType(), Function.identity()));
+			Map<WidgetType, WidgetSetting> mapExistedWidget = listExistedWidget.stream()
+					.collect(Collectors.toMap(item -> item.getWidgetType(), Function.identity()));
+			// insert/update/delete widget list
+			List<WidgetSetting> listNewWidget = layout.getWidgetSettings().stream()
+					.filter(widget -> mapExistedWidget.get(widget.getWidgetType()) == null)
+					.collect(Collectors.toList());
+			List<WidgetSetting> listUpdateWidget = layout.getWidgetSettings().stream()
+					.filter(widget -> mapExistedWidget.get(widget.getWidgetType()) != null)
+					.collect(Collectors.toList());
+			List<WidgetSetting> listDeleteWidget = listExistedWidget.stream()
+					.filter(widget -> mapUpdateWidget.get(widget.getWidgetType()) == null)
+					.collect(Collectors.toList());
+			this.layoutNewRepository.insertListWidget(layout, listNewWidget);
+			this.layoutNewRepository.updateListWidget(layout, listUpdateWidget);
+			this.layoutNewRepository.deleteListWidget(layout, listDeleteWidget);
 		}
-		
 	}
 
 }

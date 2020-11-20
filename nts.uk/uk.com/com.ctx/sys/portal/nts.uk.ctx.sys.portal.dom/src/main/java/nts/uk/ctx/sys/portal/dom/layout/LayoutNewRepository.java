@@ -23,7 +23,7 @@ public interface LayoutNewRepository {
 	 * @param CompanyId
 	 * @param topPageCode
 	 */
-	void delete(String CompanyId, String topPageCd, BigDecimal layoutNo);
+	void delete(String companyId, String topPageCd, BigDecimal layoutNo);
 	
 	/**
 	 * 
@@ -53,9 +53,9 @@ public interface LayoutNewRepository {
 	
 	List<BigDecimal> getLstLayoutNo(String topPageCd);
 	
-	void insertWidget (LayoutNew layout, WidgetSetting widget);
+	void insertListWidget(LayoutNew layout, List<WidgetSetting> listWidget);
 	
-	void updateWidget (LayoutNew layout, WidgetSetting widget);
+	void updateListWidget(LayoutNew layout, List<WidgetSetting> listWidget);
 	
-	void deleteWidget (String CompanyId, BigDecimal LayoutNo, String topPageCd, BigDecimal widgetType);
+	void deleteListWidget(LayoutNew layout, List<WidgetSetting> listWidget);
 }

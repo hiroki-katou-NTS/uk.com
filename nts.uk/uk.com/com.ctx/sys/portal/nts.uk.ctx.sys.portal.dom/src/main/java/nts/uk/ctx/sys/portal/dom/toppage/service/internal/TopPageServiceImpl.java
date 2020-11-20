@@ -5,7 +5,6 @@
 package nts.uk.ctx.sys.portal.dom.toppage.service.internal;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,7 +16,6 @@ import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
 import nts.uk.ctx.sys.portal.dom.enums.System;
 import nts.uk.ctx.sys.portal.dom.layout.LayoutNew;
 import nts.uk.ctx.sys.portal.dom.layout.LayoutNewRepository;
-import nts.uk.ctx.sys.portal.dom.layout.WidgetSetting;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenu;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository;
 import nts.uk.ctx.sys.portal.dom.toppage.ToppageNew;
@@ -81,18 +79,9 @@ public class TopPageServiceImpl implements TopPageService {
 			// コピー元レイアウトが登録済みの場合
 			if (!lsLayoutsOld.isEmpty()) {
 				for(LayoutNew layout: lsLayoutsOld) {
-					List<WidgetSetting> widgetSettings = layout.getWidgetSettings();
-					layout.setWidgetSetting(new ArrayList<>());
 					layout.setTopPageCode(topPage.getTopPageCode().toString());
 					// コピー元「レイアウト」を元に「レイアウト」を新規登録する
 					layoutNewRepository.insert(layout);
-					
-					if (!widgetSettings.isEmpty()) {
-						for(WidgetSetting widget: widgetSettings) {
-							// レイアウトの「ウィジェット設定」を登録する
-							layoutNewRepository.insertWidget(layout, widget);
-						}
-					}
 				}
 			}
 		}

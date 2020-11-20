@@ -2,29 +2,45 @@
 
 module nts.uk.com.view.ccg015.e {
 
-  const KEY_DATA_PART_TYPE = 'data-part-type';
   const MENU_CREATION_LAYOUT_ID = 'menu-creation-layout';
   const CSS_CLASS_MENU_CREATION_ITEM_CONTAINER = 'menu-creation-item-container';
   const CSS_CLASS_MENU_CREATION_ITEM = 'menu-creation-item';
 
   @bean()
   export class ScreenModel extends ko.ViewModel {
-
-    placementList: KnockoutObservableArray<Placement> = ko.observableArray([]);
-    widgetList: KnockoutObservableArray<WidgetItem> = ko.observableArray([]);
-    isNewMode: KnockoutObservable<boolean> = ko.observable(true);
+    params: any = {};
     topPageCode: KnockoutObservable<string> = ko.observable('');
     layoutNo: KnockoutObservable<number> = ko.observable(0);
-    params: any = {};
-    layoutClone: JQuery;
-
-    // new params
     $menuCreationLayout: JQuery = null;
     isMouseInsideLayout: KnockoutObservable<boolean> = ko.observable(false);
+    itemList: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
+    sortedIds: string[] = [];
 
     created(params: any) {
       const vm = this;
       vm.params = params;
+      // Init sortableList binding
+      ko.bindingHandlers.sortableList = {
+        init: (element, valueAccessor) => {
+          const list: KnockoutObservableArray<ItemModel> = valueAccessor();
+          $(element).sortable({
+            update: (event, ui) => {
+              // figure out its new position
+              const oldPosition = _.findIndex(list(), (item) => item.itemType === ui.item.attr('id'));
+              const newPosition = _.findIndex(ui.item.parent().children(), (item) => item.id === ui.item.attr('id'));
+              // remove the item and add it back in the right spot
+              if (oldPosition >= 0 && newPosition >= 0) {
+                // retrieve our actual data item
+                const tempList = list();
+                const tempItem = tempList[oldPosition];
+                tempList.splice(oldPosition, 1);
+                tempList.splice(newPosition, 0, tempItem);
+                list(tempList);
+              }
+            }
+          });
+        },
+      };
     }
 
     mounted() {
@@ -32,89 +48,100 @@ module nts.uk.com.view.ccg015.e {
       // Init dropable layout
       vm.$menuCreationLayout = $(`#${MENU_CREATION_LAYOUT_ID}`);
       vm.$menuCreationLayout
-        .droppable({
-          accept: ".menu-creation-option:not(.disabled)",
-        })
         .mouseenter(() => {
-          console.log('enter');
           vm.isMouseInsideLayout(true);
         })
         .mouseleave(() => {
-          console.log('leave');
           vm.isMouseInsideLayout(false);
         });
       // Init dragable item
-      vm.initDragable();
-
-      // vm.draggableItem();
-      // vm.droppableItem();
-      // vm.draggableItemContainer2();
-      // vm.checkDataLayout(vm.params);
-      // vm.removeItem();
-    }
-
-    private initDragable() {
-      const vm = this;
       $(".menu-creation-option:not(.disabled)").draggable({
-        appendTo: `#${MENU_CREATION_LAYOUT_ID}`,
+        connectToSortable: `#${MENU_CREATION_LAYOUT_ID}`,
         helper: "clone",
         start: (event, ui) => {
           LayoutUtils.startDragItemFromMenu(ui);
         },
-        drag: (event, ui) => {
-          // const partSize = LayoutUtils.getPartSize(ui.helper.attr(KEY_DATA_PART_TYPE));
-          // vm.renderHoveringItemOnDrag(ui, partSize.width, partSize.height);
-        },
         stop: (event, ui) => {
-          if (vm.isMouseInsideLayout()) {
-            vm.createItemFromMenu(ui, ui.helper.attr(KEY_DATA_PART_TYPE));
-          }
+          const itemType = ui.helper.prevObject.attr('id');
+          const menuPosition = _.findIndex(vm.$menuCreationLayout.children(), (item) => item.classList.contains('menu-creation-option'));
+          // Remove drag item
+          ui.helper.remove();
+          // vm.$blockui('grayout');
+          setTimeout(() => {
+            if (vm.isMouseInsideLayout()) {
+              vm.createItem(itemType, menuPosition);
+            }
+            // vm.$blockui('clear');
+          }, 300);
         },
       });
-      $(".menu-creation-option.disabled").draggable('disable');
+      vm.loadData(vm.params);
     }
 
     /**
      * Create new item on drop from menu
      * @param item
      */
-    private createItemFromMenu(part: JQueryUI.DraggableEventUIParams, partType: string) {
+    private createItem(partType: string, position: number) {
       const vm = this;
-      // Remove drag item
-      // part.helper.remove();
       // Disable menu
-      $(`.menu-creation-option[${KEY_DATA_PART_TYPE}=${partType}]`)
-        .addClass('disabled');
-      vm.$nextTick(() => vm.initDragable());
-      // Add new item
-      const $newPart = $("<div>", { "class": CSS_CLASS_MENU_CREATION_ITEM_CONTAINER }).append($('<div>', { 'class': `${CSS_CLASS_MENU_CREATION_ITEM}` }));
-      switch (partType) {
-        case MenuPartType.PART_KTG_005:
-          break;
-        case MenuPartType.PART_KTG_001:
-          break;
-        case MenuPartType.PART_KTG_004:
-          break;
-        case MenuPartType.PART_KTG_026:
-          break;
-        case MenuPartType.PART_KTG_027:
-          break;
-        case MenuPartType.PART_KDP_001:
-          break;
-        case MenuPartType.PART_KTG_031:
-          break;
-        case MenuPartType.PART_CCG_005:
-          break;
-        default:
-          break;
+      LayoutUtils.disableMenu(partType);
+      let lastOrder = 0;
+      // Find max order in list
+      for (const item of vm.itemList()) {
+        if (item.order > lastOrder) {
+          lastOrder = item.order;
+        }
       }
-      vm.$menuCreationLayout.append($newPart);
+      // Add new item
+      const newItem: ItemModel = LayoutUtils.convertWidgetToItem(partType, lastOrder + 1);
+      if (newItem) {
+        vm.itemList.splice(position, 0, newItem);
+        // // Init sortable
+        // vm.$menuCreationLayout.sortable({
+        //   update: (event, ui) => {
+        //     // figure out its new position
+        //     const oldPosition = _.findIndex(vm.itemList(), (item) => item.itemType === ui.item.attr('id'));
+        //     const newPosition = _.findIndex(ui.item.parent().children(), (item) => item.id === ui.item.attr('id'));
+        //     // remove the item and add it back in the right spot
+        //     if (oldPosition >= 0 && newPosition >= 0) {
+        //       // retrieve our actual data item
+        //       const tempList = vm.itemList();
+        //       const tempItem = tempList[oldPosition];
+        //       tempList.splice(oldPosition, 1);
+        //       tempList.splice(newPosition, 0, tempItem);
+        //       vm.itemList(tempList);
+        //     }
+        //   }
+        // });
+      }
     }
 
+    // ウィジェットを取消する
+    public removeItem(itemType: string) {
+      const vm = this;
+      // Remove item in menu creation layout
+      const itemindex = _.findIndex(vm.itemList(), item => item.itemType === itemType);
+      if (itemindex >= 0) {
+        // Remove item data
+        const tempList = vm.itemList();
+        tempList.splice(itemindex, 1);
+        vm.itemList(tempList);
+        // Remove item DOM
+        vm.$menuCreationLayout
+          .find(`.${CSS_CLASS_MENU_CREATION_ITEM_CONTAINER}[id=${itemType}]`)
+          .remove();
+      }
+      // Enable item drag in menu
+      LayoutUtils.enableMenu(itemType);
+    }
 
+    close() {
+      const vm = this;
+      vm.$window.close();
+    }
 
-
-    checkDataLayout(params: any) {
+    loadData(params: any) {
       const vm = this;
       if (params) {
         if (params.topPageModel && params.topPageModel.topPageCode) {
@@ -133,190 +160,48 @@ module nts.uk.com.view.ccg015.e {
       vm.$blockui("grayout");
       vm.$ajax('/toppage/getLayout', layoutRquest)
         .then((result: any) => {
-          if (result) {
-            vm.isNewMode(false)
-          } else {
-            vm.isNewMode(true);
+          if (result.widgetSettings && result.widgetSettings.length) {
+            // Save item list
+            const itemList: ItemModel[] = _.chain(result.widgetSettings)
+              .map((item: any) => new WidgetTypeModel({
+                order: item.order,
+                widgetType: item.widgetType,
+              }))
+              .orderBy('order', 'asc')
+              .map((widget) => LayoutUtils.convertWidgetToItem(widget.widgetType.toString(), widget.order))
+              .filter((item) => item)
+              .value();
+            vm.itemList(itemList);
+            // Disable menu
+            for (const item of itemList) {
+              LayoutUtils.disableMenu(item.itemType);
+            }
           }
         })
         .always(() => vm.$blockui("clear"));
     }
 
-    saveListWidgetLayout() {
+    saveData() {
       const vm = this;
-      const widgetTest: WidgetItem = new WidgetItemImpl();
-      widgetTest.widgetType = 0;
-      widgetTest.order = 1;
-      vm.widgetList.push(widgetTest);
-
-      let data: any = {
-        cid: null,
+      const sortedWidgetList: WidgetTypeModel[] = _.map(vm.itemList(), (item, index) => new WidgetTypeModel({
+        order: index, // Set oder similar to list item order
+        widgetType: Number(item.itemType),
+      }));
+      const requestParams: any = {
         topPageCode: vm.topPageCode(),
         layoutNo: vm.layoutNo(),
         layoutType: 3,
-        flowMenuCd: null,
-        flowMenuUpCd: null,
-        url: null,
-        widgetSettings: [{ widgetType: 1, order: 1 }, { widgetType: 3, order: 2 }, { widgetType: 4, order: 3 }],
+        widgetSettings: sortedWidgetList,
       };
       vm.$blockui("grayout");
-      vm.$ajax('/toppage/saveLayoutWidget', data)
+      vm.$ajax('/toppage/saveLayoutWidget', requestParams)
         .then(() => {
-          vm.isNewMode(false);
           vm.$blockui("clear");
           vm.$dialog.info({ messageId: "Msg_15" });
         })
         .always(() => vm.$blockui("clear"));
     }
 
-    draggableItem() {
-      $('.box-item').draggable({
-        revert: true,
-        revertDuration: 0,
-        stack: ".draggable",
-        cursor: "pointer",
-        containment: '#content_layout',
-        iframeFix: true
-      });
-    }
-
-
-    draggableItemContainer2() {
-      // ko.bindingHandlers.sortableList = {
-      //   init: function(element, valueAccessor) {
-      //     var list = valueAccessor();
-      //     $(element).sortable({
-      //     })
-      //   }
-      // }
-    }
-
-    droppableItem() {
-      const vm = this;
-      $("#container2").droppable({
-        drop: function (event: any, ui) {
-          let itemid = $(event.originalEvent.toElement).attr("itemid");
-          $('.box-item').each(function () {
-            if ($(this).attr("itemid") === itemid) {
-              let placementItem: Placement = new Placement();
-              let widgetItem: WidgetItem;
-              let order: number = 0;
-              switch ($(this).attr("itemid")) {
-                case "itm-1":
-                  placementItem.placementId = "itm-1";
-                  placementItem.url = "/nts.uk.at.web/view/ktg/005/a/index.xhtml";
-                  placementItem.width = 0;
-                  placementItem.height = 0;
-                  placementItem.sort = 0;
-                  vm.placementList.push(placementItem);
-                  widgetItem.widgetType = 0;
-                  widgetItem.order = 1;
-                  vm.widgetList.push(widgetItem);
-                  break;
-                case "itm-2":
-                  placementItem.placementId = "itm-2";
-                  placementItem.url = "/nts.uk.at.web/view/ktg/001/a/index.xhtml";
-                  placementItem.width = 0;
-                  placementItem.height = 0;
-                  placementItem.sort = 0;
-                  vm.placementList.push(placementItem);
-                  widgetItem.widgetType = 1;
-                  widgetItem.order = 1;
-                  vm.widgetList.push(widgetItem);
-                  break;
-                case "itm-3":
-                  placementItem.placementId = "itm-3";
-                  placementItem.url = "/nts.uk.at.web/view/ktg/004/a/index.xhtml";
-                  placementItem.width = 0;
-                  placementItem.height = 0;
-                  placementItem.sort = 0;
-                  vm.placementList.push(placementItem);
-                  widgetItem.widgetType = 2;
-                  widgetItem.order = 1;
-                  vm.widgetList.push(widgetItem);
-                  break;
-                case "itm-4":
-                  placementItem.placementId = "itm-4";
-                  placementItem.url = "/nts.uk.at.web/view/ktg/026/a/index.xhtml";
-                  placementItem.width = 0;
-                  placementItem.height = 0;
-                  placementItem.sort = 0;
-                  vm.placementList.push(placementItem);
-                  widgetItem.widgetType = 3;
-                  widgetItem.order = 1;
-                  vm.widgetList.push(widgetItem);
-                  break;
-                case "itm-5":
-                  placementItem.placementId = "itm-5";
-                  placementItem.url = "/nts.uk.at.web/view/ktg/027/a/index.xhtml";
-                  placementItem.width = 0;
-                  placementItem.height = 0;
-                  placementItem.sort = 0;
-                  vm.placementList.push(placementItem);
-                  widgetItem.widgetType = 4;
-                  widgetItem.order = 1;
-                  vm.widgetList.push(widgetItem);
-                  break;
-                case "itm-6":
-                  placementItem.placementId = "itm-6";
-                  placementItem.url = "/nts.uk.at.web/view/kdp/001/a/index.xhtml";
-                  placementItem.width = 0;
-                  placementItem.height = 0;
-                  placementItem.sort = 0;
-                  vm.placementList.push(placementItem);
-                  widgetItem.widgetType = 5;
-                  widgetItem.order = 1;
-                  vm.widgetList.push(widgetItem);
-                  break;
-                case "itm-7":
-                  placementItem.placementId = "itm-7";
-                  placementItem.url = "/nts.uk.at.web/view/ktg/031/a/index.xhtml";
-                  placementItem.width = 0;
-                  placementItem.height = 0;
-                  placementItem.sort = 0;
-                  vm.placementList.push(placementItem);
-                  widgetItem.widgetType = 6;
-                  widgetItem.order = 1;
-                  vm.widgetList.push(widgetItem);
-                  break;
-                case "itm-8":
-                  placementItem.placementId = "itm-8";
-                  placementItem.url = "/nts.uk.com.web/view/ccg/005/a/index.xhtml";
-                  placementItem.width = 0;
-                  placementItem.height = 0;
-                  placementItem.sort = 0;
-                  vm.placementList.push(placementItem);
-                  widgetItem.widgetType = 7;
-                  widgetItem.order = 1;
-                  vm.widgetList.push(widgetItem);
-                  break;
-              }
-              // $(this).addClass("item_opacity").clone().removeClass("box-item item_opacity").addClass("item_choose fix_style_item").appendTo("#container2");
-              $(this).addClass("item_opacity").draggable({
-                disabled: true
-              });
-            }
-          });
-        },
-      });
-    }
-
-    // ウィジェットを取消する
-    removeItem(placementId: string) {
-      // Remove item in content 2
-      $("#container2").find("[itemid='" + placementId + "']").remove();
-      // Find item drag in content 1
-      let itemDrag: JQuery = $("#container1").find("[itemid='" + placementId + "']");
-      // Enable item drag in content 1
-      $(itemDrag).removeClass("item_opacity").draggable({
-        disabled: false
-      });
-    }
-
-    close() {
-      const vm = this;
-      vm.$window.close();
-    }
   }
 
   export class LayoutUtils {
@@ -331,12 +216,89 @@ module nts.uk.com.view.ccg015.e {
       // Init size + style for dragging item
       item.helper.css({ 'opacity': '0.7' });
     }
+
+    static enableMenu(partType: string) {
+      $(`#menu-item-container #${partType}.menu-creation-option`)
+        .removeClass('disabled')
+        .draggable('enable');
+    }
+
+    static disableMenu(partType: string) {
+      $(`#menu-item-container #${partType}.menu-creation-option`)
+        .addClass('disabled')
+        .draggable('disable');
+    }
+
+    static convertWidgetToItem(type: string, order: number): ItemModel {
+      let newItem: ItemModel = null;
+      switch (type) {
+        case MenuPartType.PART_KTG_005:
+          newItem = new ItemModel({
+            itemType: type,
+            url: '/nts.uk.at.web/view/ktg/005/a/index.xhtml',
+            order: order,
+          });
+          break;
+        case MenuPartType.PART_KTG_001:
+          newItem = new ItemModel({
+            itemType: type,
+            url: '/nts.uk.at.web/view/ktg/001/a/index.xhtml',
+            order: order,
+          });
+          break;
+        case MenuPartType.PART_KTG_004:
+          newItem = new ItemModel({
+            itemType: type,
+            url: '/nts.uk.at.web/view/ktg/004/a/index.xhtml',
+            order: order,
+          });
+          break;
+        case MenuPartType.PART_KTG_026:
+          newItem = new ItemModel({
+            itemType: type,
+            url: '/nts.uk.at.web/view/ktg/026/a/index.xhtml',
+            order: order,
+          });
+          break;
+        case MenuPartType.PART_KTG_027:
+          newItem = new ItemModel({
+            itemType: type,
+            url: '/nts.uk.at.web/view/ktg/027/a/index.xhtml',
+            order: order,
+          });
+          break;
+        case MenuPartType.PART_KDP_001:
+          newItem = new ItemModel({
+            itemType: type,
+            url: '/nts.uk.at.web/view/kdp/001/a/index.xhtml',
+            order: order,
+          });
+          break;
+        case MenuPartType.PART_KTG_031:
+          newItem = new ItemModel({
+            itemType: type,
+            url: '/nts.uk.at.web/view/ktg/031/a/index.xhtml',
+            order: order,
+          });
+          break;
+        case MenuPartType.PART_CCG_005:
+          newItem = new ItemModel({
+            itemType: type,
+            url: '/nts.uk.com.web/view/ccg/005/a/index.xhtml',
+            order: order,
+          });
+          break;
+        default:
+          break;
+      }
+      return newItem;
+    }
   }
 
   export enum MenuPartType {
-    PART_KTG_005 = '1',
+    PART_KTG_005 = '1', // Have setting
     PART_KTG_001 = '2',
-    PART_KTG_004 = '3',
+    PART_KTG_004 = '3', // Have setting
     PART_KTG_026 = '4',
     PART_KTG_027 = '5',
     PART_KDP_001 = '6',
@@ -344,21 +306,26 @@ module nts.uk.com.view.ccg015.e {
     PART_CCG_005 = '8',
   }
 
-  interface WidgetItem {
+  export class WidgetTypeModel {
     widgetType: number;
     order: number;
+
+    constructor(init?: Partial<WidgetTypeModel>) {
+      $.extend(this, init);
+    }
   }
 
-  class WidgetItemImpl implements WidgetItem {
-    widgetType: number;
+  export class ItemModel {
     order: number;
-  }
-
-  export class Placement {
-    placementId: string;
+    itemType: string;
     url: string;
     width: number;
     height: number;
-    sort: number;
+    isShowSetting: boolean;
+
+    constructor(init?: Partial<ItemModel>) {
+      $.extend(this, init);
+      this.isShowSetting = (init.itemType === MenuPartType.PART_KTG_004 || init.itemType === MenuPartType.PART_KTG_005);
+    }
   }
 }

@@ -33,7 +33,7 @@ public class LayoutTest {
 		assertThat(domain.getWidgetSettings().get(0).getOrder()).isEqualTo(mockDto.getWidgetSettings().get(0).getOrder());
 		assertThat(domain.getTopPageCode().v()).isEqualTo(mockDto.getTopPageCode());
 		assertThat(domain.getLayoutNo().v()).isEqualTo(mockDto.getLayoutNo());
-		assertThat(domain.getLayoutType().value).isEqualTo(mockDto.getLayoutType().intValue());
+		assertThat(domain.getLayoutType().value).isEqualTo(mockDto.getLayoutType());
 		assertThat(domain.getCid()).isEqualTo(mockDto.getCid());
 		assertThat(domain.getFlowMenuCd().get().v()).isEqualTo(mockDto.getFlowMenuCd());
 		assertThat(domain.getFlowMenuUpCd().get().v()).isEqualTo(mockDto.getFlowMenuUpCd());
@@ -56,7 +56,7 @@ public class LayoutTest {
 		assertThat(domain.getWidgetSettings().get(0).getOrder()).isEqualTo(mockDto.getWidgetSettings().get(0).getOrder());
 		assertThat(domain.getTopPageCode().v()).isEqualTo(mockDto.getTopPageCode());
 		assertThat(domain.getLayoutNo().v()).isEqualTo(mockDto.getLayoutNo());
-		assertThat(domain.getLayoutType().value).isEqualTo(mockDto.getLayoutType().intValue());
+		assertThat(domain.getLayoutType().value).isEqualTo(mockDto.getLayoutType());
 		assertThat(domain.getCid()).isEqualTo(mockDto.getCid());
 		assertThat(domain.getFlowMenuCd().get().v()).isEqualTo(mockDto.getFlowMenuCd());
 		assertThat(domain.getFlowMenuUpCd().get().v()).isEqualTo(mockDto.getFlowMenuUpCd());

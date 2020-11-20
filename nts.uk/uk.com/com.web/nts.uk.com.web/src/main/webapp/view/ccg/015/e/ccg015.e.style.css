@@ -1,163 +1,3 @@
-.float-left {
-  float: left;
-}
-
-/* margin css */
-.ml-7 {
-  margin-left: 7px;
-}
-
-.ml-10 {
-  margin-left: 10px;
-}
-
-.ml-20 {
-  margin-left: 20px;
-}
-
-.ml-40 {
-  margin-left: 40px;
-}
-
-/* padding css */
-.pt-10 {
-  padding-top: 10px;
-}
-
-.pb-10 {
-  padding-bottom: 10px;
-}
-
-.pl-10 {
-  padding-left: 10px;
-}
-
-.pl-20 {
-  padding-left: 20px;
-}
-
-.pr-10 {
-  padding-right: 10px;
-}
-
-.pt-20 {
-  padding-top: 20px;
-}
-
-.pd-0 {
-  padding: 0 0 0 0;
-}
-
-.pt-30 {
-  padding-top: 30px;
-}
-
-.w-100 {
-  width: 100%;
-}
-
-.w-490 {
-  width: 493px;
-  display: block;
-}
-
-.fix_items_center {
-  display: flex;
-  align-items: center;
-}
-
-.items-center {
-  font-weight: bold;
-  display: flex;
-  justify-content: center;
-}
-
-.inline_row {
-  display: inline-flex;
-}
-
-.fix_margin_layout {
-  margin: 20px 0px 0px 20px;
-}
-
-.width_left {
-  width: 38%;
-}
-
-.fix-margin {
-  height: 3px;
-}
-
-.widget_contents {
-  width: 466px;
-}
-
-.height_panel {
-  height: 500px;
-}
-
-.box-container {
-  height: 500px;
-}
-
-/* css item drag drop */
-.box-item {
-  z-index: 1000;
-}
-
-.border_items {
-  border: 1px solid #c5c5c5;
-}
-
-.scroll_container_2 {
-  overflow: scroll;
-}
-
-.item_opacity {
-  opacity: 0.4;
-}
-
-.fix_style_item {
-  left: 0px !important;
-  top: 0px !important;
-}
-
-.click_icons_item {
-  cursor: pointer;
-}
-
-#container2 {
-  overflow: auto;
-}
-
-.table_fix {
-  width: calc(100% - 40px);
-  margin: 0 20px;
-}
-
-.text_bold {
-  font-weight: bold;
-}
-
-.fix_panel {
-  padding-right: 0;
-  padding-top: 2px;
-  padding-left: 2px;
-}
-
-.w-col-icon {
-  width: 50px;
-  display: block;
-}
-
-.panel_left {
-  vertical-align: top;
-}
-
-.fix-text {
-  display: block;
-}
-
 /* Refactor CSS */
 .main-area {
   padding: 20px;
@@ -175,7 +15,7 @@
   align-items: flex-end;
 }
 .header-area > .header-label {
-  width: 250px;
+  width: 290px;
   margin-bottom: 20px;
 }
 .header-area > .layout-label {
@@ -188,7 +28,7 @@
 }
 
 .arrow-container {
-  width: 50px;
+  width: 90px;
   height: 320px;
   display: flex;
   justify-content: center;
@@ -205,7 +45,7 @@
   width: 0;
   height: 0;
   vertical-align: middle;
-  font-size: 1em;
+  font-size: 2em;
 }
 
 /* Left section */
@@ -218,6 +58,7 @@
   padding: 10px 5px;
 }
 .menu-creation-option {
+  z-index: 10;
   width: 100%;
   max-width: 200px;
   height: 40px;
@@ -236,32 +77,60 @@
 }
 
 /* Right section */
-.contents-area > #menu-creation-layout {
-  width: calc(100% - 200px - 50px);
-  height: 470px;
-  border: solid 2px #607d8b;
+.contents-area > .menu-creation-layout-container {
+  width: 470px;
+  height: calc(470px - 4px);
+  box-sizing: border-box;
   overflow: auto;
+  border: solid 2px #607d8b;
+}
+.contents-area > .menu-creation-layout-container > #menu-creation-layout {
+  position: relative;
+  width: 100%;
+  height: 100%;
 }
 .menu-creation-item-container {
-  margin: 2px;
+  padding: 2px;
   box-sizing: border-box;
-  width: calc(100% - 4px);
+}
+.menu-creation-item-container .menu-creation-item {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
   min-height: 60px;
   border: 1px solid #aaaaaa;
+  background-color: white;
 }
 
-.widget-setting {
+.menu-creation-item-container .menu-creation-item .widget-setting {
+  z-index: 9;
   position: absolute;
   top: 10px;
   right: 10px;
+  padding: 6px 8px;
   display: flex;
   flex-direction: row;
-  background-color: bisque;
+  border-radius: 4px;
+  /* background-color: rgba(0, 0, 0, 0.2); */
 }
-.widget-setting > i:not(:last-child) {
-  margin-right: 5px;
+.menu-creation-item-container .menu-creation-item .widget-setting > i {
+  cursor: pointer;
 }
-
-.widget-frame {
+.menu-creation-item-container .menu-creation-item .widget-setting > i:not(:last-child) {
+  margin-right: 8px;
+}
+.menu-creation-item-container .menu-creation-item .iframe-wrap {
+  position: relative;
+}
+.menu-creation-item-container .menu-creation-item .iframe-wrap:after {
+  content: "";
+  display: block;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.menu-creation-item-container .menu-creation-item .iframe-wrap .widget-frame {
   width: 100%;
 }
