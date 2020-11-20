@@ -31,11 +31,11 @@
 }
 
 .A6_hover:hover {
-    background-color: #007fff !important;
+    background-color: #007fff;
 }
 
 .A6_not_hover:hover {
-    background-color: #ffffff !important;
+    background-color: #ffffff;
 }
 
 #functon-area-row2 *, #contain-view-right * {
@@ -106,6 +106,11 @@
 
 #work-setting button, #person-setting button, #sort-order-setting button{
 	width: 110px;
+	margin-bottom: 10px;
+}
+
+#person-setting button{
+	width: auto;
 	margin-bottom: 10px;
 }
 
@@ -566,4 +571,8 @@ html {
 
 table th, table td {
 	padding: 2px 5px;
+}
+
+#functions-area {
+	overflow: unset !important;
 }

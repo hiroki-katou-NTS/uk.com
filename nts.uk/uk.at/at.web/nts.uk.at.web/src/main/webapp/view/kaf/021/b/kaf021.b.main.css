@@ -18,7 +18,7 @@
 }
 
 #tbl-control .cell:nth-child(1){
-    width: 265px;
+    width: 215px;
 }
 
 #tbl-control .cell:nth-child(2){
@@ -45,6 +45,14 @@
 
 #grid .cell-edit .medit-container{
     height: 47px !important;
+}
+
+#grid .padding-5{
+    padding: 0px 5px;;
+}
+
+#grid .padding-12{
+    padding: 0px 12px;;
 }
 
 .center-align {

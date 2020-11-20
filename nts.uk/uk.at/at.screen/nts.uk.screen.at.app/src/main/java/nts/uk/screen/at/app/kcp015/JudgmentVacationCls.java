@@ -23,7 +23,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author laitv
- *
+ * ScreenQuery 休暇の利用区分の判定
  */
 @Stateless
 public class JudgmentVacationCls {

@@ -43,12 +43,12 @@ module nts.uk.at.view.kaf022.b.viewmodel {
 
         itemListB362: KnockoutObservableArray<ItemModel> = ko.observableArray([
             {code: 0, name: getText('KAF022_173')},
-            {code: 1, name: getText('KAF022_712')},
+            {code: 1, name: getText('KAF022_175')},
         ]);
 
         itemListB372: KnockoutObservableArray<ItemModel> = ko.observableArray([
             {code: 0, name: getText('KAF022_173')},
-            {code: 1, name: getText('KAF022_174')},
+            {code: 1, name: getText('KAF022_175')},
         ]);
 
         itemListB5: KnockoutObservableArray<ItemModel> = ko.observableArray([
@@ -67,7 +67,9 @@ module nts.uk.at.view.kaf022.b.viewmodel {
         appDetailSetting: KnockoutObservable<AppDetailSetting>;
         overtimeAppReflect: KnockoutObservable<OvertimeAppReflect>;
 
-        overtimeWorkFrames: KnockoutObservableArray<any> = ko.observableArray([]);
+        // overtimeWorkFrames: KnockoutObservableArray<any> = ko.observableArray([]);
+
+        enableBtn: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
             const self = this;
@@ -86,8 +88,9 @@ module nts.uk.at.view.kaf022.b.viewmodel {
             if (allData.overtimeAppSetting) {
                 self.overtimeLeaveAppCommonSetting(new OvertimeLeaveAppCommonSetting(allData.overtimeAppSetting.overtimeLeaveAppCommonSetting));
                 self.appDetailSetting(new AppDetailSetting(allData.overtimeAppSetting.applicationDetailSetting));
+                self.enableBtn(true);
             }
-            self.overtimeWorkFrames(allData.overtimeWorkFrames || []);
+            // self.overtimeWorkFrames(allData.overtimeWorkFrames || []);
         }
 
         collectData(): any {
@@ -104,7 +107,7 @@ module nts.uk.at.view.kaf022.b.viewmodel {
 
         openODialog(): void {
             const self = this;
-            setShared("overtimeWorkFrames", self.overtimeWorkFrames());
+            // setShared("overtimeWorkFrames", self.overtimeWorkFrames());
             modal('/view/kaf/022/o/index.xhtml');
         }
 

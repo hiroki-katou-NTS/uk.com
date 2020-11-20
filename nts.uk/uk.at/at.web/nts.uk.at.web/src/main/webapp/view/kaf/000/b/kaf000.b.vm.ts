@@ -1,12 +1,14 @@
  /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.view.kaf000.b.viewmodel {
+	import character = nts.uk.characteristics;
     import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
     import UserType = nts.uk.at.view.kaf000.shr.viewmodel.model.UserType;
     import Status = nts.uk.at.view.kaf000.shr.viewmodel.model.Status;
     import ApprovalAtr = nts.uk.at.view.kaf000.shr.viewmodel.model.ApprovalAtr;
     import Application = nts.uk.at.view.kaf000.shr.viewmodel.Application;
 	import PrintContentOfEachAppDto = nts.uk.at.view.kaf000.shr.viewmodel.PrintContentOfEachAppDto;
+	import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
 
     @bean()
     class Kaf000BViewModel extends ko.ViewModel {
@@ -75,9 +77,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 		
 		appNameList: any = null;
 
-        created(listAppMeta: Array<string>, currentApp: string) {
+        created(params: any) {
             const vm = this;
-			nts.uk.characteristics.restore("AppListExtractCondition").then((obj) => {
+			character.restore("AppListExtractCondition").then((obj: any) => {
                 if (nts.uk.util.isNullOrUndefined(obj)) {
                     vm.displayGoback(false);
                 } else {
@@ -86,15 +88,15 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             });
             vm.listApp(__viewContext.transferred.value.listAppMeta);
             vm.currentApp(__viewContext.transferred.value.currentApp);
-            vm.appType = ko.observable(99);
+            vm.appType = ko.observable(null);
             vm.childParam = {
 				appType: vm.appType,
             	application: vm.application,
 				printContentOfEachAppDto: vm.opPrintContentOfEachApp,
                 approvalReason: vm.approvalReason,
                 appDispInfoStartupOutput: vm.appDispInfoStartupOutput,
-                eventUpdate: function(a) { vm.getChildUpdateEvent.apply(vm, [a]) },
-				eventReload: function(a) { vm.getChildReloadEvent.apply(vm, [a]) },
+                eventUpdate: function(a: any) { vm.getChildUpdateEvent.apply(vm, [a]) },
+				eventReload: function(a: any) { vm.getChildReloadEvent.apply(vm, [a]) },
             }
 			vm.$blockui("show");
 			vm.$ajax(API.getAppNameInAppList).then((data) => {
@@ -152,6 +154,10 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 vm.handlerExecuteErrorMsg(res);
             }).always(() => vm.$blockui("hide"));
         }
+
+		getAppType(key: string) {
+			return _.get(AppType, '[' + key + ']');
+		}
 
         setControlButton(
             userTypeValue: any, // phân loại người dùng
@@ -294,8 +300,27 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
             // nếu component con có bind event ra
             if(_.isFunction(vm.childUpdateEvent)) {
-                vm.childUpdateEvent().then(() => {
-					vm.loadData();
+                vm.childUpdateEvent().then((result: any) => {
+					if(result) {
+						vm.loadData();	
+					} else {
+						vm.$blockui('hide');
+					}
+				}).fail((res: any) => {
+					if(res) {
+						let a = [
+							AppType.OVER_TIME_APPLICATION, // 残業申請
+				            AppType.ABSENCE_APPLICATION, // 休暇申請
+				            AppType.HOLIDAY_WORK_APPLICATION, // 休出時間申請
+				            AppType.ANNUAL_HOLIDAY_APPLICATION, // 時間休暇申請
+				            AppType.COMPLEMENT_LEAVE_APPLICATION, // 振休振出申請
+				            AppType.OPTIONAL_ITEM_APPLICATION, // 任意項目申請    	
+						];
+						if(_.includes(a, vm.appType()) || vm.currentApp()=="sample") {
+							vm.handlerExecuteErrorMsg(res);		
+						}
+					}
+					vm.$blockui('hide')
 				});
             }
         }
@@ -334,7 +359,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             }).done((successData: any) => {
 				if(successData) {
 					vm.$dialog.info({ messageId: "Msg_16" }).then(() => {
-						nts.uk.characteristics.restore("AppListExtractCondition").then((obj) => {
+						character.restore("AppListExtractCondition").then((obj: any) => {
 							let param = 0;
 							if(obj.appListAtr==1) {
 								param = 1;		
@@ -372,7 +397,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             switch(res.messageId) {
             case "Msg_426":
                 vm.$dialog.error({ messageId: "Msg_426" }).then(() => {
-					nts.uk.characteristics.restore("AppListExtractCondition").then((obj) => {
+					character.restore("AppListExtractCondition").then((obj: any) => {
 						let param = 0;
 						if(obj.appListAtr==1) {
 							param = 1;		
@@ -388,7 +413,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 break;
             case "Msg_198":
                 vm.$dialog.error({ messageId: "Msg_198" }).then(() => {
-					nts.uk.characteristics.restore("AppListExtractCondition").then((obj) => {
+					character.restore("AppListExtractCondition").then((obj: any) => {
 						let param = 0;
 						if(obj.appListAtr==1) {
 							param = 1;		
@@ -422,7 +447,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
 		backtoCMM045() {
 			const vm = this;
-			nts.uk.characteristics.restore("AppListExtractCondition").then((obj) => {
+			character.restore("AppListExtractCondition").then((obj: any) => {
 				let param = 0;
 				if(obj.appListAtr==1) {
 					param = 1;		

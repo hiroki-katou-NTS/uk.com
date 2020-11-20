@@ -98,11 +98,11 @@ module nts.uk.at.view.kaf000.a.component6.viewmodel {
 
         getApproverAtr(approver) {
             if(approver.approvalAtrName() !='未承認'){
-                if(approver.representerName().length > 0){
-                    if(approver.representerMail().length > 0){
-                        return approver.representerName() + '(@)';
+                if(approver.agentName().length > 0){
+                    if(approver.agentMail().length > 0){
+                        return approver.agentName() + '(@)';
                     } else {
-                        return approver.representerName();
+                        return approver.agentName();
                     }
                 } else {
                     if(approver.approverMail().length > 0){

@@ -5,9 +5,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmployee;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository.BusinessTypeEmpService;
 import nts.uk.ctx.at.record.pub.dailyperform.businesstype.BusTypeOfEmpHimPub;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployee;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.repository.BusinessTypeEmpService;
 
 public class BusTypeOfEmpHisPubIml implements BusTypeOfEmpHimPub {
 

@@ -141,10 +141,10 @@ public class ChangeableWorkingTimeZonePerNo {
 	public class ContainsResult {
 
 		/** 含まれているか true:含まれている/false:含まれていない **/
-		public final boolean contains;
+		private final boolean contains;
 
 		/** 時間帯 **/
-		public final TimeSpanForCalc timeSpan;
+		private final TimeSpanForCalc timeSpan;
 
 	}
 
