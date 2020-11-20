@@ -447,6 +447,7 @@ module nts.uk.ui.components.fullcalendar {
 
                         const first = moment(start);
                         const diff: number = moment(end).diff(start, 'day');
+                        const mkend = first.clone().add(1, 'hour').toDate();
 
                         return _.range(0, diff, 1).map(m => {
                             const date = first.clone().add(m, 'day');
@@ -456,7 +457,7 @@ module nts.uk.ui.components.fullcalendar {
                                     date.isSame(d.start, 'date');
                             });
 
-                            return exists.reduce((p, c) => p += moment(c.end).diff(c.start, 'minute'), 0);
+                            return exists.reduce((p, c) => p += moment(c.end || mkend).diff(c.start, 'minute'), 0);
                         });
                     }
 
@@ -841,7 +842,7 @@ module nts.uk.ui.components.fullcalendar {
 
                     if (['timeGridDay', 'timeGridWeek'].indexOf(type) !== -1) {
                         return {
-                            html: `<div class="fc-event-time">${format(start)} - ${format(end)}</div>
+                            html: `<div class="fc-event-time">${format(start)} - ${format(end || moment(start).add(1, 'hour').toDate())}</div>
                             <div class="fc-event-title-container">
                                 <div class="fc-event-title fc-sticky">${title}</div>
                             </div>`
