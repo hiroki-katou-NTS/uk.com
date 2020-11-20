@@ -18,7 +18,7 @@ public class JpaFixedExtractionDayConRepository extends JpaRepository implements
     private static final String SELECT_ALL_FXEX_DAY_CON = "SELECT a FROM KrcmtWkpFxexDayCon a ";
 
     private static final String SELECT_RANGE_FXEX_DAY_CON_BY_ID = SELECT_ALL_FXEX_DAY_CON
-            + " WHERE a.pk.errorAlarmWorkplaceId IN :chkId ";
+            + " WHERE a.errorAlarmWorkplaceId IN :chkId ";
 
     @Override
     public List<FixedExtractionDayCon> getRange(List<String> errorAlarmWorkplaceId) {
