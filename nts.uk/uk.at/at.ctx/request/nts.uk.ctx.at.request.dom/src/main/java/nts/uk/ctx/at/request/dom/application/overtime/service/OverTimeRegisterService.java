@@ -28,7 +28,7 @@ public interface OverTimeRegisterService {
 	 * @param companyId
 	 * @param appOverTime
 	 */
-	public void update(
+	public ProcessResult update(
 			String companyId,
 			AppOverTime appOverTime
 			);
