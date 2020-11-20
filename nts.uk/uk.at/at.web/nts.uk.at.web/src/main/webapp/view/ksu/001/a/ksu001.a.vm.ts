@@ -3103,8 +3103,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     __viewContext.viewModel.viewAB.workplaceIdKCP013(input.unit == 0 ? input.workplaceId : input.workplaceGroupID);
                     __viewContext.viewModel.viewAB.filter(input.unit == 0 ? true : false);
                 } else {
-                    //__viewContext.viewModel.viewAC.workplaceModeName(data.dataBasicDto.designation);
-                    //$($("#Aa1_2 > button")[1]).html(data.dataBasicDto.designation);
+                    if (input.unit == 0) {
+                        $($("#Aa1_2 > button")[1]).html(getText('Com_Workplace'));
+                    } else {
+                        $($("#Aa1_2 > button")[1]).html(getText('Com_WorkplaceGroup'));
+                    }
 
                     self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
                     // set data shiftPallet
