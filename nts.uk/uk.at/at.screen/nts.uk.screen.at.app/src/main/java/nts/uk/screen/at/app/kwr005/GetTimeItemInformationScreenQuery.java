@@ -1,9 +1,6 @@
 package nts.uk.screen.at.app.kwr005;
 
 
-import lombok.val;
-import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.DailyMonthlyClassification;
 import nts.uk.screen.at.app.kwr003.AttendanceItemInfoDto;
 import nts.uk.screen.at.app.kwr003.GetAttendanceItemInfo;
 
@@ -19,9 +16,7 @@ public class GetTimeItemInformationScreenQuery {
     private GetAttendanceItemInfo getAttendanceItemInfo;
 
     public AttendanceItemInfoDto geInfo(int formNumberDisplay) {
-        int MONTHLY = 2;
-        val classification = EnumAdaptor.valueOf(MONTHLY, DailyMonthlyClassification.class);
-        return getAttendanceItemInfo.getAttendanceItemInfo(classification, formNumberDisplay,false,true);
+        return getAttendanceItemInfo.getAttendanceItemInfo(formNumberDisplay,false,true);
     }
 
 }
