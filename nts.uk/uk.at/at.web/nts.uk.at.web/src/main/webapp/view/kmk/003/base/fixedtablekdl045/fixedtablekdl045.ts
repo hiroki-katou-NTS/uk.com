@@ -213,7 +213,9 @@ module nts.fixedtablekdl045 {
                 if (!value) {
                     //$("#kkkk *").prop('disabled',true);
                     $('#kkkk').find('button').attr('disabled', 'disabled');
-                }    
+                } else{
+                   $('#btn-add').removeAttr("disabled");
+                }   
             });
             
             self.roudingDataSource = ko.observableArray([

@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.schedule.infra.entity.shift.management.shifttable;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Optional;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -10,9 +12,11 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.ShiftTableRule;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.ShiftTableRuleForOrganization;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -69,7 +73,17 @@ public class KrcmtShiftTableRuleForOrg extends ContractUkJpaEntity  implements S
 	}
 	
 	public ShiftTableRuleForOrganization toDomain() {
+		if(this.useWorkAvailabilityAtr == 0) {
+			return  new ShiftTableRuleForOrganization(  TargetOrgIdenInfor.createFromTargetUnit(TargetOrganizationUnit.valueOf(this.pk.targetUnit), this.pk.targetID),new ShiftTableRule(
+					NotUseAtr.valueOf(usePublicAtr), 
+					NotUseAtr.valueOf(useWorkAvailabilityAtr),
+					Optional.empty(), 
+					new ArrayList<>(),
+					Optional.empty()
+					));
+		}
 		return new ShiftTableRuleForOrganization(  TargetOrgIdenInfor.createFromTargetUnit(TargetOrganizationUnit.valueOf(this.pk.targetUnit), this.pk.targetID),
+				
 				krcmtShiftTableRuleForOrgAvai.toDomain(this.usePublicAtr, this.useWorkAvailabilityAtr));
 	}
 }

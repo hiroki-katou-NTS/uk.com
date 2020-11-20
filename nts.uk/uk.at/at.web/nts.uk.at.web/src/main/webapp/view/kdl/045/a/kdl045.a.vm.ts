@@ -151,6 +151,8 @@ module nts.uk.at.view.kdl045.a {
             informationStartup: any;
             moreInformation: any;
             workTimeForm : KnockoutObservable<number>;
+            
+            checkError : KnockoutObservable<boolean> = ko.observable(false);
             constructor() {
                 let self = this;
 
@@ -215,10 +217,6 @@ module nts.uk.at.view.kdl045.a {
                     shortW = getText('KDL045_64') + shortW + getText('KDL045_65');
                 }
                 self.basedate(self.employee().employeeInfo.workInfoDto.date + shortW);
-
-
-
-
 
                 //A5_2,A5_3
                 self.directAtr = ko.observable(self.employee().employeeInfo.workInfoDto.directAtr == 1 ? true : false);
@@ -395,7 +393,6 @@ module nts.uk.at.view.kdl045.a {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
-                self.getInformationStartup();
                 $.when(self.getInformationStartup()).done(function() {
                     self.displayInformationStartup();
                     self.workTime.valueHasMutated();
@@ -502,8 +499,9 @@ module nts.uk.at.view.kdl045.a {
                         self.workTime.valueHasMutated();
                         if(childData.selectedWorkTimeCode != ""){
                             //<<ScreenQuery>> 詳細情報を取得する 
-                            self.getMoreInformationOutput(childData.selectedWorkTypeCode, childData.selectedWorkTimeCode);
-                            self.displayMoreInformationOutput();
+                            $.when(self.getMoreInformationOutput(childData.selectedWorkTypeCode, childData.selectedWorkTimeCode)).done(function() {
+                                self.displayMoreInformationOutput();
+                            });
                         }
                     }
                 });
@@ -522,90 +520,16 @@ module nts.uk.at.view.kdl045.a {
                         self.employee().unit ==0?self.employee().targetId:null,
                         self.employee().unit ==1?self.employee().targetId:null)
                 }
-                 dfd.resolve();
-//                service.getInformationStartup(command).done(function (result) {
-//                    
-//                    dfd.resolve();
-//                }).fail(function (res: any) {
-//                    alertError({ messageId: "" });
-//                    block.clear();
-//                });
+                service.getInformationStartup(command).done(function (result) {
+                    self.informationStartup = new shareModelData.GetInformationStartupOutput(
+                        result.workTimezoneCommonSet, result.listUsageTimeAndType, result.showYourDesire == 1?true:false, result.workAvaiOfOneDayDto 
+                    );
+                    dfd.resolve();
+                }).fail(function (res: any) {
+                    alertError({ messageId: "" });
+                });
 
-                let timeRoundingSettingDto1 = {
-                    roundingTime: 100,
-                    rounding: 120
-                };
-
-                let timeRoundingSettingDto2 = {
-                    roundingTime: 100,
-                    rounding: 120
-                };
-
-                let intervalTimeDto = {
-                    intervalTime: 1,
-                    rounding: timeRoundingSettingDto2
-                };
-                let intervalTimeSettingDto = {
-                    useIntervalExemptionTime: true,
-                    intervalExemptionTimeRound: timeRoundingSettingDto1,
-                    intervalTime: intervalTimeDto,
-                    useIntervalTime: true,
-                };
-
-                let workTimezoneMedicalSetDto1 = {
-                    roundingSet: timeRoundingSettingDto1,
-                    workSystemAtr: 0,
-                    applicationTime: 33
-                }
-                let workTimezoneMedicalSetDto2 = {
-                    roundingSet: timeRoundingSettingDto2,
-                    workSystemAtr: 1,
-                    applicationTime: 40
-                }
-                let medicalSet: any = [workTimezoneMedicalSetDto1, workTimezoneMedicalSetDto2];
-
-                let workTimezoneCommonSet = {
-                    zeroHStraddCalculateSet: true,
-                    intervalSet: intervalTimeSettingDto,
-                    subHolTimeSet: [],
-                    raisingSalarySet: "ABC",
-                    medicalSet: medicalSet,
-                    goOutSet: null,
-                    stampSet: null,
-                    lateNightTimeSet: null,
-                    shortTimeWorkSet: null,
-                    extraordTimeSet: null,
-                    lateEarlySet: null,
-                    holidayCalculation: null
-                };
-
-                //
-                let listUsageTimeAndType: any = [];
-                listUsageTimeAndType.push(new shareModelData.UsageTimeAndType(0, 0));
-                listUsageTimeAndType.push(new shareModelData.UsageTimeAndType(1, 101));
-                listUsageTimeAndType.push(new shareModelData.UsageTimeAndType(2, 102));
-                listUsageTimeAndType.push(new shareModelData.UsageTimeAndType(3, 103));
-                listUsageTimeAndType.push(new shareModelData.UsageTimeAndType(4, 104));
-                listUsageTimeAndType.push(new shareModelData.UsageTimeAndType(5, 105));
-
-                //
-                let timeZoneList = [];
-                timeZoneList.push(new shareModelData.TimeSpanForCalcDto(50, 60));
-                timeZoneList.push(new shareModelData.TimeSpanForCalcDto(60, 70));
-                let listName = ["name2"];
-
-                let workAvailabilityDisplayInfoDto = new shareModelData.WorkAvailabilityDisplayInfoDto(
-                    shareModelData.AssignmentMethod.TIME_ZONE,
-                    listName,
-                    timeZoneList
-                );
-
-                let workAvailabilityOfOneDayDto = new shareModelData.WorkAvailabilityOfOneDayDto(
-                    "employeeId", "2020/01/01", "memo abc", workAvailabilityDisplayInfoDto
-                );
-                self.informationStartup = new shareModelData.GetInformationStartupOutput(
-                    workTimezoneCommonSet, listUsageTimeAndType, true, workAvailabilityOfOneDayDto
-                );
+                
                 
                 return dfd.promise();
             }
@@ -616,17 +540,20 @@ module nts.uk.at.view.kdl045.a {
                 let command = {
                     workType : self.workType(),
                     workTime : self.workTime(),
-                    workTime1: new shareModelData.TimeZoneDto(new shareModelData.TimeOfDayDto(self.timeRange1Value().startTime,0),new shareModelData.TimeOfDayDto(self.timeRange1Value().endTime,0)),
-                    workTime2: new shareModelData.TimeZoneDto(new shareModelData.TimeOfDayDto(self.timeRange2Value().startTime,0),new shareModelData.TimeOfDayDto(self.timeRange2Value().endTime,0))
+                    workTime1: new shareModelData.TimeZoneDto(new shareModelData.TimeOfDayDto(0,self.timeRange1Value().startTime),new shareModelData.TimeOfDayDto(0,self.timeRange1Value().endTime)),
+                    workTime2: self.isShowTimeRange2?new shareModelData.TimeZoneDto(new shareModelData.TimeOfDayDto(0,self.timeRange2Value().startTime),new shareModelData.TimeOfDayDto(0,self.timeRange2Value().endTime)):null
                 }
-//                 service.checkTimeIsIncorrect(command).done(function (result) {
-//                    
-//                    dfd.resolve();
-//                }).fail(function (res: any) {
-//                    alertError({ messageId: "" });
-//                    block.clear();
-//                });
-                 dfd.resolve();
+                nts.uk.ui.block.grayout();
+                service.checkTimeIsIncorrect(command).done(function (result) {
+                    self.checkError(result);
+                    dfd.resolve();
+                }).fail(function (res: any) {
+                    alertError({ messageId: res.messageId, messageParams: res.parameterIds  });
+                    self.checkError(true);
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                    dfd.resolve();
+                });
                 return dfd.promise();
             } 
 
@@ -638,75 +565,24 @@ module nts.uk.at.view.kdl045.a {
                     workType : self.workType(),
                     workTimeCode : self.workTime()
                 }
-//                 service.getMoreInformation(command).done(function (result) {
-//                    
-//                    dfd.resolve();
-//                }).fail(function (res: any) {
-//                    alertError({ messageId: "" });
-//                    block.clear();
-//                });
-                 dfd.resolve();
+                nts.uk.ui.block.grayout();
+                service.getMoreInformation(command).done(function (result) {
+                    self.moreInformation = new shareModelData.GetMoreInformationOutput(
+                        result.workTimezoneCommonSet,
+                        result.breakTime,
+                        result.workTimeForm
+                    );
+                    dfd.resolve();
+                }).fail(function (res: any) {
+                    alertError({ messageId: "" });
+                    block.clear();
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                    dfd.resolve();
+                });
                 
 
-                let timeRoundingSettingDto1 = {
-                    roundingTime: 100,
-                    rounding: 120
-                };
-
-                let timeRoundingSettingDto2 = {
-                    roundingTime: 100,
-                    rounding: 120
-                };
-
-                let intervalTimeDto = {
-                    intervalTime: 1,
-                    rounding: timeRoundingSettingDto2
-                };
-                let intervalTimeSettingDto = {
-                    useIntervalExemptionTime: true,
-                    intervalExemptionTimeRound: timeRoundingSettingDto1,
-                    intervalTime: intervalTimeDto,
-                    useIntervalTime: true,
-                };
-
-                let workTimezoneMedicalSetDto1 = {
-                    roundingSet: timeRoundingSettingDto1,
-                    workSystemAtr: 0,
-                    applicationTime: 55
-                }
-                let workTimezoneMedicalSetDto2 = {
-                    roundingSet: timeRoundingSettingDto2,
-                    workSystemAtr: 1,
-                    applicationTime: 66
-                }
-                let medicalSet: any = [workTimezoneMedicalSetDto1, workTimezoneMedicalSetDto2];
-
-                let timeZoneList = [];
-                timeZoneList.push(new shareModelData.TimeSpanForCalcDto(100, 120));
-                timeZoneList.push(new shareModelData.TimeSpanForCalcDto(121, 130));
-
-                let breakTime = new shareModelData.BreakTimeKdl045Dto(
-                    true, timeZoneList
-                );
-                let workTimezoneCommonSet = {
-                    zeroHStraddCalculateSet: true,
-                    intervalSet: intervalTimeSettingDto,
-                    subHolTimeSet: [],
-                    raisingSalarySet: "ABC",
-                    medicalSet: medicalSet,
-                    goOutSet: null,
-                    stampSet: null,
-                    lateNightTimeSet: null,
-                    shortTimeWorkSet: null,
-                    extraordTimeSet: null,
-                    lateEarlySet: null,
-                    holidayCalculation: null
-                };
-                self.moreInformation = new shareModelData.GetMoreInformationOutput(
-                    workTimezoneCommonSet,
-                    breakTime,
-                    5//not data
-                );
+               
                 return dfd.promise();
             }
 
@@ -817,52 +693,64 @@ module nts.uk.at.view.kdl045.a {
                 }
 
                 //A5_14,A5_16
-                let medicalSets = self.informationStartup.workTimezoneCommonSet.medicalSet;
-                for (let i = 0; i < medicalSets.length; i++) {
-                    if (medicalSets[i].workSystemAtr == 0) {//日勤
-                        self.dayShiftTime(self.showTimeByMinuteHaveValue0(medicalSets[i].applicationTime));
-                        continue;
+                if(self.informationStartup.workTimezoneCommonSet !=null){
+                    let medicalSets = self.informationStartup.workTimezoneCommonSet.medicalSet;
+                    for (let i = 0; i < medicalSets.length; i++) {
+                        if (medicalSets[i].workSystemAtr == 0) {//日勤
+                            self.dayShiftTime(self.showTimeByMinuteHaveValue0(medicalSets[i].applicationTime));
+                            continue;
+                        }
+                        if (medicalSets[i].workSystemAtr == 1) {//夜勤
+                            self.nightShiftTime(self.showTimeByMinuteHaveValue0(medicalSets[i].applicationTime));
+                            continue;
+                        }
                     }
-                    if (medicalSets[i].workSystemAtr == 1) {//夜勤
-                        self.nightShiftTime(self.showTimeByMinuteHaveValue0(medicalSets[i].applicationTime));
-                        continue;
-                    }
+                }else{
+                    self.dayShiftTime(0);
+                    self.nightShiftTime(0);
                 }
 
-                //A1_7
-                let assignmentMethod = self.informationStartup.workAvaiOfOneDayDto.workAvaiByHolidayDto.assignmentMethod;
-                self.isDisableA1_7(self.informationStartup.showYourDesire);
-                if (assignmentMethod == shareModelData.AssignmentMethod.HOLIDAY) {
-                    self.assignmentMethodName("休日");
-                    //nts.uk.resource.getText('Enum_AssignmentMethod_TIME_ZONE')
-                    self.isDisableA1_8(false);
-                } else if (assignmentMethod == shareModelData.AssignmentMethod.SHIFT) {
-                    self.assignmentMethodName("シフト");
-                    let nameList = self.informationStartup.workAvaiOfOneDayDto.workAvaiByHolidayDto.nameList;
-                    for (let i = 0; i < nameList.length; i++) {
-                        self.listDetail.push(getText('KDL045_49') + nameList[i]);
-                    }
-                } else {
-                    self.assignmentMethodName("時間帯");
-                    let timeZoneList = self.informationStartup.workAvaiOfOneDayDto.workAvaiByHolidayDto.timeZoneList;
-                    for (let i = 0; i < timeZoneList.length; i++) {
-                        self.listDetail.push(getText('KDL045_49') + self.showTimeByPeriod(timeZoneList[i].start, timeZoneList[i].end));
-                    }
-                }
-                self.listDetail();
-                if (self.listDetail().length < 1) {
-                    self.isDisableA1_8(false);
-                } else if (self.listDetail().length == 1) {
-                    if (self.informationStartup.showYourDesire == true) {
+                if(self.informationStartup.workAvaiOfOneDayDto !=null){
+                    //A1_7
+                    let assignmentMethod = self.informationStartup.workAvaiOfOneDayDto.workAvaiByHolidayDto.assignmentMethod;
+                    self.isDisableA1_7(self.informationStartup.showYourDesire);
+                    if (assignmentMethod == shareModelData.AssignmentMethod.HOLIDAY) {
+                        self.assignmentMethodName(getText('KDL045_46'));
+                        //nts.uk.resource.getText('Enum_AssignmentMethod_TIME_ZONE')
                         self.isDisableA1_8(false);
-                        self.isTextDisableA1_8(true);
-                        self.textDisableA1_8(self.listDetail()[0]);
+                    } else if (assignmentMethod == shareModelData.AssignmentMethod.SHIFT) {
+                        self.assignmentMethodName(getText('KDL045_47'));
+                        let nameList = self.informationStartup.workAvaiOfOneDayDto.workAvaiByHolidayDto.nameList;
+                        for (let i = 0; i < nameList.length; i++) {
+                            self.listDetail.push(getText('KDL045_49') + nameList[i]);
+                        }
+                    }else if (assignmentMethod == shareModelData.AssignmentMethod.TIME_ZONE) {
+                        self.assignmentMethodName(getText('KDL045_48'));
+                        let timeZoneList = self.informationStartup.workAvaiOfOneDayDto.workAvaiByHolidayDto.timeZoneList;
+                        for (let i = 0; i < timeZoneList.length; i++) {
+                            self.listDetail.push(getText('KDL045_49') + self.showTimeByPeriod(timeZoneList[i].start, timeZoneList[i].end));
+                        }
+                    } else {
+                        self.assignmentMethodName(getText('KDL045_66'));
                     }
-                } else {
-                    if (self.informationStartup.showYourDesire == true) {
-                        self.isDisableA1_8(true);
-                        self.isTextDisableA1_8(false);
+                    self.listDetail();
+                    if (self.listDetail().length < 1) {
+                        self.isDisableA1_8(false);
+                    } else if (self.listDetail().length == 1) {
+                        if (self.informationStartup.showYourDesire == true) {
+                            self.isDisableA1_8(false);
+                            self.isTextDisableA1_8(true);
+                            self.textDisableA1_8(self.listDetail()[0]);
+                        }
+                    } else {
+                        if (self.informationStartup.showYourDesire == true) {
+                            self.isDisableA1_8(true);
+                            self.isTextDisableA1_8(false);
+                        }
                     }
+                }else{
+                    self.assignmentMethodName(getText('KDL045_66'));
+                    self.isDisableA1_8(false);
                 }
             }
 
@@ -873,6 +761,7 @@ module nts.uk.at.view.kdl045.a {
 
             buttonDecision() {
                 let self = this;
+                
                 nts.uk.ui.errors.clearAll();
                 if (self.validate()) {
                     return;
@@ -881,48 +770,53 @@ module nts.uk.at.view.kdl045.a {
                 if (nts.uk.ui.errors.hasError()){
                     return;
                 }
-                let listBreakTimeZoneDto = [];
-                for(let i =0;i<self.dataSourceTime().length;i++){
-                    let temp = {
-                        startTime : self.dataSourceTime()[i].range1().startTime,
-                        endTime  : self.dataSourceTime()[i].range1().endTime,
-                        breakFrameNo : i+1     
-                    }
-                    listBreakTimeZoneDto.push(temp);
-                }
-                //対象社員の社員勤務予定dto
-                let workScheduleDto = {
-                        workTypeCode : self.workType(),//勤務種類コード
-                        workTimeCode : self.workTime(),//就業時間帯コード
-                        startTime1 : self.timeRange1Value().startTime,//開始時刻１
-                        endTime1 : self.timeRange1Value().endTime,//終了時刻１
-                        startTime2 : self.timeRange2Value().startTime,//開始時刻2
-                        endTime2 : self.timeRange2Value().endTime,//終了時刻2
-                        listBreakTimeZoneDto : listBreakTimeZoneDto //List<休憩時間帯>
-                    };
                 
-                let workInfoDto = {
-                        directAtr : self.directAtr()?1:0,//直行区分
-                        bounceAtr : self.bounceAtr()?1:0 //直帰区分
-                    };
-                
-                let fixedWorkInforDto = {
-                        workTypeName : self.workTypeName(),//勤務種類名称
-                        workTimeName : self.workTimeName(), //就業時間帯名称
-                        workType : self.workTimeForm(),//勤務タイプ
-                        fixBreakTime : self.fixBreakTime()
+                $.when(self.checkTimeIsIncorrect()).done(function() {
+                    if(!self.checkError()){
+                        let listBreakTimeZoneDto = [];
+                        for(let i =0;i<self.dataSourceTime().length;i++){
+                            let temp = {
+                                startTime : self.dataSourceTime()[i].range1().startTime,
+                                endTime  : self.dataSourceTime()[i].range1().endTime,
+                                breakFrameNo : i+1     
+                            }
+                            listBreakTimeZoneDto.push(temp);
+                        }
+                        //対象社員の社員勤務予定dto
+                        let workScheduleDto = {
+                                workTypeCode : self.workType(),//勤務種類コード
+                                workTimeCode : self.workTime(),//就業時間帯コード
+                                startTime1 : self.timeRange1Value().startTime,//開始時刻１
+                                endTime1 : self.timeRange1Value().endTime,//終了時刻１
+                                startTime2 : self.isShowTimeRange2 ? self.timeRange2Value().startTime:null,//開始時刻2
+                                endTime2 :  self.isShowTimeRange2 ?self.timeRange2Value().endTime:null,//終了時刻2
+                                listBreakTimeZoneDto : listBreakTimeZoneDto //List<休憩時間帯>
+                            };
                         
-                    };
-                
-                let resultKdl045 = {
-                    workScheduleDto: workScheduleDto,
-                    workInfoDto: workInfoDto,
-                    fixedWorkInforDto: fixedWorkInforDto
-                };
-
-
-                setShared('dataFromKdl045', resultKdl045);
-                nts.uk.ui.windows.close();
+                        let workInfoDto = {
+                                directAtr : self.directAtr()?1:0,//直行区分
+                                bounceAtr : self.bounceAtr()?1:0 //直帰区分
+                            };
+                        
+                        let fixedWorkInforDto = {
+                                workTypeName : self.workTypeName(),//勤務種類名称
+                                workTimeName : self.workTimeName(), //就業時間帯名称
+                                workType : self.workTimeForm(),//勤務タイプ
+                                fixBreakTime : self.fixBreakTime()
+                                
+                            };
+                        
+                        let resultKdl045 = {
+                            workScheduleDto: workScheduleDto,
+                            workInfoDto: workInfoDto,
+                            fixedWorkInforDto: fixedWorkInforDto
+                        };
+        
+        
+                        setShared('dataFromKdl045', resultKdl045);
+                        nts.uk.ui.windows.close();
+                    }
+                });
             }
 
             validate(): boolean {

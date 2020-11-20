@@ -23,7 +23,7 @@
 	<div id="kkkk" class="ui-iggrid kmk003-table-component" data-bind="attr: {tabindex: tabindex}">
 		<div class="fixed-table-button" data-bind="style: {width: width + 'px', 'margin-bottom': '3px'}" >
 		<com:ko tag="if" bind="isShowButton">
-			<button data-bind="click: addRowItem, enable: isEnaleAddButton, attr: {tabindex: tabindex}">#{i18n.getText('KDL045_27')}</button>
+			<button id="btn-add" data-bind="click: addRowItem, enable: isEnaleAddButton, attr: {tabindex: tabindex}">#{i18n.getText('KDL045_27')}</button>
 			<button class="danger" data-bind="click: removeItem, enable: isEnaleRemoveButton, attr: {tabindex: tabindex}">#{i18n.getText('KDL045_28')}</button>
 		</com:ko>
 		<com:ko tag="if" bind="helpImageUrl">

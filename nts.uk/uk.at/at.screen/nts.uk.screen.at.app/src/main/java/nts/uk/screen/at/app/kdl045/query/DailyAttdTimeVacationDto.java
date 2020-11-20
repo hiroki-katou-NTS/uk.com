@@ -1,8 +1,13 @@
 package nts.uk.screen.at.app.kdl045.query;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHdFrameNo;
 /**
  * 日別勤怠の時間休暇使用時間:Dto
  * @author tutk
@@ -56,6 +61,17 @@ public class DailyAttdTimeVacationDto {
 		this.childNursingLeaveDisplay = childNursingLeaveDisplay;
 		this.nursingCareLeave = nursingCareLeave;
 		this.nursingCareLeaveDisplay = nursingCareLeaveDisplay;
+	}
+	
+	public int totalVacationAddTime() {
+		return new TimevacationUseTimeOfDaily(
+				new AttendanceTime(this.timeAbbyakLeave), 
+				new AttendanceTime(this.timeOff), 
+				new AttendanceTime(this.excessPaidHoliday),
+				new AttendanceTime(this.specialHoliday),
+				Optional.ofNullable(this.frameNO == null ? null : new SpecialHdFrameNo(this.frameNO)),
+				new AttendanceTime(this.childNursingLeave), 
+				new AttendanceTime(this.nursingCareLeave)).totalVacationAddTime();
 	}
 	
 	
