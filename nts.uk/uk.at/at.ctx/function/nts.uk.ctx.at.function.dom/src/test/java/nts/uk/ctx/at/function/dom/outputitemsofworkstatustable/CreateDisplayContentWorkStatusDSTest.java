@@ -34,13 +34,15 @@ public class CreateDisplayContentWorkStatusDSTest {
 
     private final DatePeriod datePeriod = new DatePeriod(GeneralDate.today(), GeneralDate.today().addDays(1));
     private static final List<EmployeeInfor> employeeInfors = DumData.employeeInfors;
+    private static final List<EmployeeInfor> employeeInforFail = DumData.employeeInforFail;
     private static final List<WorkPlaceInfo> workPlaceInfo = DumData.workPlaceInfo;
+    private static final List<WorkPlaceInfo> workPlaceInfoFail = DumData.workPlaceInfoFail;
     private final OutputItemSettingCode code = new OutputItemSettingCode("ABC");
     private final OutputItemSettingName name = new OutputItemSettingName("CBA");
     private final String iD = "iD";
     private final String empId = "employeeId";
     private final SettingClassificationCommon settingCategory = SettingClassificationCommon.STANDARD_SELECTION;
-    private final WorkStatusOutputSettings domain = DumData.dum(code, name, empId, iD, settingCategory);
+    private final WorkStatusOutputSettings domain = DumData.dumDisplay(code, name, empId, iD, settingCategory);
 
     @Test
     public void test_01() {
@@ -71,16 +73,25 @@ public class CreateDisplayContentWorkStatusDSTest {
                 Arrays.asList(new AttendanceItemDtoValue(
                         1,
                         1,
-                        "25")
-                )
-        );
+                        "25"),
+                        new AttendanceItemDtoValue(
+                                1,
+                                8,
+                                "2000")
+                ,new AttendanceItemDtoValue(5,22,"TEST 02")
+                        ,new AttendanceItemDtoValue(5,2,"TEST 01")
+        ));
         new Expectations() {
             {
                 require.getListAffComHistByListSidAndPeriod(listSid, datePeriod);
                 result = listEmployeeStatus;
 
                 require.getValueOf("eplId01", GeneralDate.today(),
-                        Arrays.asList(1, 1));
+                        Arrays.asList(1, 8));
+                result = listAttd;
+
+                require.getValueOf("eplId01", GeneralDate.today(),
+                        Arrays.asList(22, 2));
                 result = listAttd;
             }
         };
@@ -97,38 +108,93 @@ public class CreateDisplayContentWorkStatusDSTest {
         assertThat(actual.get(0).getOutputItemOneLines().get(0).getOutPutItemName())
                 .isEqualTo(expected.get(0).getOutputItemOneLines().get(0).getOutPutItemName());
 
-        assertThat(actual.get(0).getOutputItemOneLines().get(1).getTotalOfOneLine())
-                .isEqualTo(expected.get(0).getOutputItemOneLines().get(1).getTotalOfOneLine());
-
-        assertThat(actual.get(0).getOutputItemOneLines().get(1).getOutPutItemName())
-                .isEqualTo(expected.get(0).getOutputItemOneLines().get(1).getOutPutItemName());
-
         assertThat(actual.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getActualValue())
                 .isEqualTo(expected.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getActualValue());
-
-        assertThat(actual.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getAttributes())
-                .isEqualTo(expected.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getAttributes());
-
-
-        assertThat(actual.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getCharacterValue())
-                .isEqualTo(expected.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getCharacterValue());
-
-        assertThat(actual.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getDate())
-                .isEqualTo(expected.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getDate());
 
         assertThat(actual.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(1).getActualValue())
                 .isEqualTo(expected.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(1).getActualValue());
 
+        assertThat(actual.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getAttributes())
+                .isEqualTo(expected.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getAttributes());
+
         assertThat(actual.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(1).getAttributes())
                 .isEqualTo(expected.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(1).getAttributes());
 
-
-        assertThat(actual.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(1).getCharacterValue())
-                .isEqualTo(expected.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(1).getCharacterValue());
+        assertThat(actual.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getCharacterValue())
+                .isEqualTo(expected.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getCharacterValue());
 
         assertThat(actual.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(1).getDate())
                 .isEqualTo(expected.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(1).getDate());
 
-    }
 
+        assertThat(actual.get(0).getOutputItemOneLines().get(1).getOutItemValue().get(0).getActualValue())
+                .isEqualTo(expected.get(0).getOutputItemOneLines().get(1).getOutItemValue().get(0).getActualValue());
+
+        assertThat(actual.get(0).getOutputItemOneLines().get(1).getOutItemValue().get(1).getActualValue())
+                .isEqualTo(expected.get(0).getOutputItemOneLines().get(1).getOutItemValue().get(1).getActualValue());
+
+        assertThat(actual.get(0).getOutputItemOneLines().get(1).getOutItemValue().get(0).getAttributes())
+                .isEqualTo(expected.get(0).getOutputItemOneLines().get(1).getOutItemValue().get(0).getAttributes());
+
+        assertThat(actual.get(0).getOutputItemOneLines().get(1).getOutItemValue().get(1).getAttributes())
+                .isEqualTo(expected.get(0).getOutputItemOneLines().get(1).getOutItemValue().get(1).getAttributes());
+
+        assertThat(actual.get(0).getOutputItemOneLines().get(1).getOutItemValue().get(0).getCharacterValue())
+                .isEqualTo(expected.get(0).getOutputItemOneLines().get(1).getOutItemValue().get(0).getCharacterValue());
+
+        assertThat(actual.get(0).getOutputItemOneLines().get(1).getOutItemValue().get(1).getDate())
+                .isEqualTo(expected.get(0).getOutputItemOneLines().get(1).getOutItemValue().get(1).getDate());
+    }
+    @Test
+    public void test_03() {
+        val listSid = employeeInforFail.stream().map(EmployeeInfor::getEmployeeId).collect(Collectors.toList());
+        val listEmployeeStatus = Arrays.asList(
+                new StatusOfEmployee("eplId05",
+                        Arrays.asList(
+                                new DatePeriod(GeneralDate.today(), GeneralDate.today().addDays(1))
+                        )));
+        new Expectations() {
+            {
+                require.getListAffComHistByListSidAndPeriod(listSid, datePeriod);
+                result = listEmployeeStatus;
+
+            }
+        };
+        val actual = CreateDisplayContentWorkStatusDService.displayContentsOfWorkStatus(require, datePeriod, employeeInfors,
+                domain, workPlaceInfoFail);
+
+        assertThat(actual.size()).isEqualTo(0);
+    }
+    @Test
+    public void test_04() {
+        val listSid = employeeInfors.stream().map(EmployeeInfor::getEmployeeId).collect(Collectors.toList());
+        val listEmployeeStatus = Arrays.asList(
+                new StatusOfEmployee("eplId01",
+                        Arrays.asList(
+                                new DatePeriod(GeneralDate.today(), GeneralDate.today().addDays(1))
+                        )));
+        val listAttd = new AttendanceResultDto(
+                "eplId05",
+                GeneralDate.today(),
+                Arrays.asList(new AttendanceItemDtoValue(
+                                1,
+                                1,
+                                "25"),
+                        new AttendanceItemDtoValue(
+                                1,
+                                8,
+                                "2000")
+                ));
+        new Expectations() {
+            {
+                require.getListAffComHistByListSidAndPeriod(listSid, datePeriod);
+                result = listEmployeeStatus;
+
+            }
+        };
+        val actual = CreateDisplayContentWorkStatusDService.displayContentsOfWorkStatus(require, datePeriod, employeeInfors,
+                domain, workPlaceInfoFail);
+
+        assertThat(actual.size()).isEqualTo(0);
+    }
 }

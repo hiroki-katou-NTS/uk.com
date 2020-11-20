@@ -3,7 +3,9 @@ package nts.uk.ctx.at.request.dom.application.approvalstatus.service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -14,6 +16,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
@@ -24,6 +27,7 @@ import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
@@ -37,6 +41,10 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTe
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailType;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApplicationApprContent;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApplicationsListOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmp;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmpDate;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmpDateSymbol;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttExecutionOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalStatusEmployeeOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppDetail;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
@@ -45,6 +53,8 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.Appro
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApproverOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApproverSpecial;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DailyStatus;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DisplayWorkplace;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.EmpPeriod;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.EmployeeEmailOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.MailTransmissionContentOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.MailTransmissionContentResultOutput;
@@ -78,7 +88,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approve
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.EmployeeBasicInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
-import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
@@ -92,6 +101,7 @@ import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameReposito
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.ctx.at.shared.dom.relationship.repository.RelationshipRepository;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.WorkplaceInforExport;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
@@ -106,7 +116,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	private EmployeeRequestAdapter employeeRequestAdapter;
 
 	@Inject
-	private ApplicationRepository appRepoNew;
+	private ApplicationRepository applicationRepository;
 
 	@Inject
 	private ApprovalStatusMailTempRepository approvalStatusMailTempRepo;
@@ -132,8 +142,8 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	@Inject
 	private AppStampRepository_Old repoAppStamp;
 
-	@Inject
-	private CollectAchievement collectAchievement;
+//	@Inject
+//	private CollectAchievement collectAchievement;
 
 	@Inject
 	private DailyAttendanceItemAdapter dailyAttendanceItemAdapter;
@@ -156,17 +166,11 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	@Inject
 	private AppDetailInfoRepository repoAppDetail;
 
-	@Inject
-	private ApplicationRepository repoApp;
-
 //	@Inject
 //	private RequestOfEachWorkplaceRepository repoRequestWkp;
 //
 //	@Inject
 //	private RequestOfEachCompanyRepository repoRequestCompany;
-
-	@Inject
-	private WorkplaceAdapter wkpAdapter;
 
 	@Inject
 	private EnvAdapter envAdapter;
@@ -176,6 +180,9 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	
 	@Inject
 	private AtEmployeeAdapter atEmployeeAdapter;
+	
+	@Inject
+	private ApprovalSttScreenRepository approvalSttScreenRepository;
 	
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
@@ -324,7 +331,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		String sId = approvalStt.getSid();
 		GeneralDate startDate = approvalStt.getStartDate();
 		GeneralDate endDate = approvalStt.getEndDate();
-		List<Application_New> listApp = appRepoNew.getListAppBySID(companyId, sId, startDate, endDate);
+		List<Application_New> listApp = applicationRepository.getListAppBySID(companyId, sId, startDate, endDate);
 		if (!listApp.isEmpty()) {
 			for (Application_New app : listApp) {
 				// 申請承認内容(リスト）
@@ -924,7 +931,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			ApprovalSttDetailRecord approvalSttDetail = this.getApplicationDetailRecord(appContent);
 			// アルゴリズム「承認状況申請内容取得休暇」を実行する
 			String relationshipName = this.getApprovalSttDetailVacation(app);
-			WkpHistImport wkp = wkpAdapter.findWkpBySid(app.getEmployeeID(), app.getAppDate());
+			WkpHistImport wkp = workplaceAdapter.findWkpBySid(app.getEmployeeID(), app.getAppDate());
 			int detailSet = this.detailSet(companyId, wkp.getWorkplaceId(), app.getAppType().value, endDateMax);
 			listApprovalSttAppDetail.add(new ApprovalSttAppDetail(appContent, appDispName.get(), listApprover,
 					approvalSttDetail, relationshipName, detailSet));
@@ -990,7 +997,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 					appInputSub = checkExit.getInputDateSub().toString("yyyy/MM/dd HH:mm");
 				} else {// not exist
 						// lay thong tin chung
-					Application sub = repoApp.findByID(companyId, appIdSync).get();
+					Application sub = applicationRepository.findByID(companyId, appIdSync).get();
 					appDateSub = sub.getAppDate().getApplicationDate().toString("yyyy/MM/dd");
 					appInputSub = sub.getInputDate().toString("yyyy/MM/dd HH:mm");
 				}
@@ -1197,5 +1204,230 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 				&& requestSetting.get().getApplicationSetting().getAppDisplaySetting().getPrePostAtrDisp().value == 1)
 			return true;
 		return false;
+	}
+
+	@Override
+	public List<ApprSttExecutionOutput> getStatusExecution(ApprSttExecutionParam param) {
+		DatePeriod period = new DatePeriod(GeneralDate.fromString(param.getStartDate(), "yyyy/MM/dd"), GeneralDate.fromString(param.getEndDate(), "yyyy/MM/dd"));
+		// アルゴリズム「状況取得_表示対象データの取得」を実行する
+		return this.getStatusDisplayData(period, param.getInitDisplayOfApprovalStatus(), param.getWkpInfoLst());
+	}
+
+	@Override
+	public List<ApprSttExecutionOutput> getStatusDisplayData(DatePeriod period, InitDisplayOfApprovalStatus initDisplayOfApprovalStatus,
+			List<DisplayWorkplace> displayWorkplaceLst) {
+		// アルゴリズム「状況取得_共通処理」を実行する
+		List<ApprSttExecutionOutput> result = getStatusCommonProcess(period, displayWorkplaceLst);
+		// 「申請の承認状況を表示する」を判定
+		if(initDisplayOfApprovalStatus.isApplicationApprovalFlg()) {
+			Map<String, Integer> mapUnApprAppCount = getStatusApplicationApproval(period);
+			mapUnApprAppCount.entrySet().stream().forEach(x -> {
+				result.stream().filter(y -> y.getWkpID().equals(x.getKey())).findAny().ifPresent(z -> {
+					z.setCountUnApprApp(x.getValue());
+				});
+			});
+		}
+		return result;
+	}
+
+	@Override
+	public List<ApprSttExecutionOutput> getStatusCommonProcess(DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst) {
+		List<ApprSttExecutionOutput> result = displayWorkplaceLst.stream()
+				.map(x -> new ApprSttExecutionOutput(x.getId(), x.getCode()))
+				.collect(Collectors.toList());
+		String companyId = AppContexts.user().companyId();
+		List<String> wkpIDLst = displayWorkplaceLst.stream().map(x -> x.getId()).collect(Collectors.toList());
+		List<String> wkpCDLst = displayWorkplaceLst.stream().map(x -> x.getCode()).collect(Collectors.toList());
+		// 一時テーブルを削除する
+		approvalSttScreenRepository.deleteTemporaryTable();
+		// パラメータをSQLのセッションパラメータにセットする
+		// không cần
+		// クエリモデル「対象職場を一時テーブルへセット」を実行する
+		approvalSttScreenRepository.setWorkPlaceTempTable(wkpIDLst);
+		// クエリモデル「雇用に合致する社員を取得する」を実行する
+		approvalSttScreenRepository.setEmployeeTemp(period, wkpCDLst);
+		// 職場別社員のカウント
+		Map<String, Integer> mapWkpEmpCount = approvalSttScreenRepository.getCountEmp();
+		mapWkpEmpCount.entrySet().stream().forEach(x -> {
+			result.stream().filter(y -> y.getWkpID().equals(x.getKey())).findAny().ifPresent(z -> {
+				z.setCountEmp(x.getValue());
+			});
+		});
+		// [No.560]職場IDから職場の情報を全て取得する
+		GeneralDate baseDate = GeneralDate.today();
+		List<WorkplaceInforExport> wkpInforLst = workplaceAdapter.getWorkplaceInforByWkpIds(companyId, wkpIDLst, baseDate);
+		wkpInforLst.stream().forEach(x -> {
+			result.stream().filter(y -> y.getWkpID().equals(x.getWorkplaceId())).findAny().ifPresent(z -> {
+				z.setWkpName(x.getWorkplaceName());
+			});
+		});
+		return result;
+	}
+	
+	@Override
+	public Map<String, Integer> getStatusApplicationApproval(DatePeriod period) {
+		// クエリモデル「期間中の「未承認の申請」の申請者、申請日」を実行する
+		approvalSttScreenRepository.setUnApprApp(period);
+		// クエリモデル「未承認社員を職場別にカウントする」を実行し「未承認社員の職場別カウント」とする
+		return approvalSttScreenRepository.getCountUnApprApp();
+	}
+
+	@Override
+	public List<ApprSttEmp> getApprSttStartByEmp(ApprSttEmpParam param) {
+		return getAppSttCreateByEmpLst(param.getWkpID());
+	}
+
+	@Override
+	public List<ApprSttEmp> getAppSttCreateByEmpLst(String wkpID) {
+		List<ApprSttEmp> apprSttEmpLst = new ArrayList<>();
+		// クエリモデル「対象社員から指定職場の社員を取得する」を実行する
+		List<EmpPeriod> empPeriodLst = approvalSttScreenRepository.getEmpFromWkp(wkpID);
+		List<EmployeeBasicInfoImport> employeeBasicInfoImportLst = workplaceAdapter.findBySIds(empPeriodLst.stream().map(x -> x.getEmpID()).collect(Collectors.toList()));
+		for(EmpPeriod empPeriod : empPeriodLst) {
+			DatePeriod period = getApprSttTargetPeriod(
+					empPeriod.getEmpID(), 
+					new DatePeriod(empPeriod.getEmploymentStartDate(), empPeriod.getEmploymentEndDate()), 
+					new DatePeriod(empPeriod.getClosureStartDate(), empPeriod.getClosureEndDate()), 
+					new DatePeriod(empPeriod.getCompanyInDate(), empPeriod.getCompanyOutDate()));
+			EmployeeBasicInfoImport employeeBasicInfoImport = employeeBasicInfoImportLst.stream().filter(x -> x.getEmployeeId().equals(empPeriod.getEmpID())).findAny().orElse(null);
+		
+			Map<Application, List<ApprovalPhaseStateImport_New>> mapApp = getApprSttApplication(empPeriod.getEmpID(), period);
+			
+			List<ApprSttEmpDate> dateInfoLst = createApprSttByDate(empPeriod.getEmpID(), period, mapApp);
+			apprSttEmpLst.add(new ApprSttEmp(empPeriod.getEmpCD(), employeeBasicInfoImport.getPName(), empPeriod.getEmpID(), dateInfoLst));
+		}
+		return apprSttEmpLst;
+	}
+
+	@Override
+	public DatePeriod getApprSttTargetPeriod(String employeeID, DatePeriod employmentPeriod, DatePeriod closurePeriod, DatePeriod inoutPeriod) {
+		GeneralDate start = closurePeriod.start();
+		GeneralDate end = closurePeriod.end();
+		if(employmentPeriod.start()!=null) {
+			// 雇用期間（開始日）≦締め期間（開始日）
+			if(employmentPeriod.start().after(closurePeriod.start())) {
+				// 対象期間.開始日＝雇用期間（開始日）
+				start = employmentPeriod.start();
+			} else {
+				// 対象期間.開始日＝締め期間（開始日）
+				start = closurePeriod.start();
+			}
+		}
+		// 対象期間.開始日≦入退社期間（入社年月日）
+		if(start.beforeOrEquals(inoutPeriod.start())) {
+			// 対象期間.開始日＝入退社期間（入社年月日）
+			start = inoutPeriod.start();
+		}
+		if(employmentPeriod.end()!=null) {
+			// 雇用期間（終了日）≧締め期間（終了日）
+			if(employmentPeriod.end().before(closurePeriod.end())) {
+				// 対象期間.終了日＝雇用期間（終了日）
+				end = employmentPeriod.end();
+			} else {
+				// 対象期間終了日＝締め期間（終了日）
+				end = closurePeriod.end();
+			}
+		}
+		// 対象期間.開始日≧入退社期間（退社年月日）
+		if(start.afterOrEquals(inoutPeriod.end())) {
+			// 対象期間.開始日＝入退社期間（退社年月日）
+			start = inoutPeriod.end();
+		}
+		// 期間　＝　「対象期間開始日、対象期間終了日」をセットする
+		return new DatePeriod(start, end);
+	}
+
+	@Override
+	public Map<Application, List<ApprovalPhaseStateImport_New>> getApprSttApplication(String employeeID, DatePeriod period) {
+		Map<Application, List<ApprovalPhaseStateImport_New>> mapApp = new HashMap<>();
+		String companyID = AppContexts.user().companyId();
+		// ドメインモデル「申請」を取得する
+		List<Application> appLst = applicationRepository.getApprSttByEmpPeriod(employeeID, period);
+		// imported（申請承認）「承認ルートの内容」を取得する
+		Map<String, List<ApprovalPhaseStateImport_New>> mapApproval = approvalStateAdapter.getApprovalRootContents(appLst.stream().map(x -> x.getAppID()).collect(Collectors.toList()), companyID);
+		for(Application app : appLst) {
+			mapApp.put(app, mapApproval.entrySet().stream().filter(x -> x.getKey().equals(app.getAppID())).findAny().map(x -> x.getValue()).orElse(Collections.emptyList()));
+		}
+		return mapApp;
+	}
+
+	@Override
+	public List<ApprSttEmpDate> createApprSttByDate(String employeeID, DatePeriod period, Map<Application, List<ApprovalPhaseStateImport_New>> mapApp) {
+		Map<GeneralDate, List<ApprSttEmpDateSymbol>> dateSttMap = new HashMap<>();
+		for(Application app : mapApp.keySet()) {
+			ApprSttEmpDateSymbol symbol = null;
+			// 申請.反映情報.実績反映状態
+			// アルゴリズム「反映状態を取得する」を実行する
+			ReflectedState reflectedState = app.getAppReflectedState();
+			switch (reflectedState) {
+			case REFLECTED:
+				// 
+				symbol = ApprSttEmpDateSymbol.REFLECTED;
+				break;
+			case WAITREFLECTION:
+				symbol = ApprSttEmpDateSymbol.WAITREFLECTION;
+				break;
+			case DENIAL:
+				symbol = ApprSttEmpDateSymbol.DENIAL;
+				break;
+			case NOTREFLECTED:
+				symbol = ApprSttEmpDateSymbol.NOTREFLECTED_REMAND;
+				break;
+			case REMAND:
+				symbol = ApprSttEmpDateSymbol.NOTREFLECTED_REMAND;
+				break;
+			default:
+				break;
+			}
+			if(symbol==null) {
+				continue;
+			}
+			
+			List<GeneralDate> dateLst = period.datesBetween();
+			boolean containDate = false;
+			if(app.getOpAppStartDate().isPresent()) {
+				if(dateLst.contains(app.getOpAppStartDate().get().getApplicationDate())) {
+					containDate = true;
+				}
+			}
+			Pair<GeneralDate, ApprSttEmpDateSymbol> pair = null;
+			
+			if(containDate) {
+				pair = Pair.of(app.getOpAppStartDate().get().getApplicationDate(), symbol);
+			} else {
+				pair = Pair.of(period.start(), symbol);
+			}
+			
+			if(dateSttMap.containsKey(pair.getKey())) {
+				if(!dateSttMap.get(pair.getKey()).contains(pair.getValue())) {
+					dateSttMap.get(pair.getKey()).add(pair.getValue());
+				}
+			} else {
+				List<ApprSttEmpDateSymbol> symbolLst = new ArrayList<>();
+				symbolLst.add(pair.getValue());
+				dateSttMap.put(pair.getKey(), symbolLst);
+			}
+		}
+		return dateSttMap.entrySet().stream().map(entry -> {
+			return new ApprSttEmpDate(entry.getKey(), entry.getValue().stream().sorted(Comparator.comparing(x -> x.value)).map(x -> x.name).collect(Collectors.joining("")));
+		}).collect(Collectors.toList());
+	}
+
+	@Override
+	public String getApprSttAppContent(String employeeID, List<DatePeriod> periodLst) {
+		for(DatePeriod period : periodLst) {
+			Map<Application,List<ApprovalPhaseStateImport_New>> mapApp = this.getApprSttApplication(employeeID, period);
+		}
+		return null;
+	}
+
+	@Override
+	public void getApprSttAppContentAdd(List<Map<Application,List<ApprovalPhaseStateImport_New>>> mapAppLst) {
+		// 申請承認内容(リスト)
+		for(Map<Application,List<ApprovalPhaseStateImport_New>> mapApp : mapAppLst) {
+			// アルゴリズム「反映状態を取得する」を実行する
+			ReflectedState ReflectedState = mapApp.entrySet().iterator().next().getKey().getAppReflectedState();
+		}
+		
 	}
 }

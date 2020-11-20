@@ -14,11 +14,11 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.workplace.ExWorkplaceHistItemImported;
 import nts.uk.ctx.at.schedule.dom.schedule.schedulemaster.ScheMasterInfo;
 import nts.uk.ctx.at.schedule.dom.schedule.schedulemaster.ScheMasterInfoRepository;
-import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeHis;
 
 /**
  * 職場・勤務種別変更期間を求める
@@ -35,7 +35,8 @@ public class RequestPeriodChangeDefault implements RequestPeriodChangeService {
 	
 	@Override
 	public List<DatePeriod> getPeriodChange(String employeeId, DatePeriod period,
-			List<ExWorkplaceHistItemImported> workplaceHistory, List<BusinessTypeOfEmpDto> worktypeHis,
+			List<ExWorkplaceHistItemImported> workplaceHistory, 
+			List<BusinessTypeOfEmployeeHis> worktypeHis, 
 			boolean isWorkplace, boolean recreate) {
 		// INPUT「異動時に再作成」 = FALSE
 		List<DatePeriod> result = new ArrayList<>();
@@ -104,12 +105,12 @@ public class RequestPeriodChangeDefault implements RequestPeriodChangeService {
 		}else {//◆INPUT．「変更比較対象」 =　勤務種別　の場合
 			Map<String, List<ScheMasterInfo>> mappedByWkType = listScheMasterInfo.stream().filter(c->c.getBusinessTypeCd() != null)
 					.collect(Collectors.groupingBy(c -> c.getBusinessTypeCd()));
-			Map<String, List<BusinessTypeOfEmpDto>> mapDateWtype = worktypeHis.stream().filter(c->c.getBusinessTypeCd() != null)
-					.collect(Collectors.groupingBy(c -> c.getBusinessTypeCd()));
+			Map<String, List<BusinessTypeOfEmployeeHis>> mapDateWtype = worktypeHis.stream().filter(c -> c.getEmployee().getBusinessTypeCode() != null)
+					.collect(Collectors.groupingBy(c -> c.getEmployee().getBusinessTypeCode().v()));
 			Set<GeneralDate> lstDateAll = new HashSet<>();
 			for (val itemData : mapDateWtype.entrySet()) {
 				String wtype = itemData.getKey();
-				List<DatePeriod> lstPeriod = itemData.getValue().stream().map(x -> new DatePeriod(x.getStartDate(),x.getEndDate()))
+				List<DatePeriod> lstPeriod = itemData.getValue().stream().map(x -> x.getHistory().span())
 						.collect(Collectors.toList());
 				 List<DatePeriod> afterMerge = new ArrayList<>();
 				 for(DatePeriod dateTemp : lstPeriod) {

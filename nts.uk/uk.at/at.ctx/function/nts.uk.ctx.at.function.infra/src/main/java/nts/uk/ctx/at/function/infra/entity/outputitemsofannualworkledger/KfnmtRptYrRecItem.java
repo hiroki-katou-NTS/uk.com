@@ -2,9 +2,9 @@ package nts.uk.ctx.at.function.infra.entity.outputitemsofannualworkledger;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.val;
 import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.AnnualWorkLedgerOutputSetting;
-import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.DailyOutputItemsAnnualWorkLedger;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItem;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.DailyMonthlyClassification;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -13,6 +13,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -61,18 +62,29 @@ public class KfnmtRptYrRecItem extends UkJpaEntity implements Serializable {
         return pk;
     }
 
-    public static List<KfnmtRptYrRecItem> fromDomain(AnnualWorkLedgerOutputSetting outputSetting,
-                                                     List<DailyOutputItemsAnnualWorkLedger> outputItemsOfTheDayList,
-                                                     List<OutputItem> outputItemList){
-        return outputItemList.stream().map(e->new KfnmtRptYrRecItem(
-                new KfnmtRptYrRecItemPk((outputSetting.getID()),e.getRank()),
+    public static List<KfnmtRptYrRecItem> fromDomain(AnnualWorkLedgerOutputSetting outputSetting) {
+        val rs = new ArrayList<KfnmtRptYrRecItem>();
+        rs.addAll(outputSetting.getMonthlyOutputItemList().stream().map(e -> new KfnmtRptYrRecItem(
+                new KfnmtRptYrRecItemPk((outputSetting.getID()), e.getRank()),
                 AppContexts.user().contractCode(),
                 AppContexts.user().companyId(),
                 e.getName().v(),
                 e.isPrintTargetFlag(),
                 e.getIndependentCalcClassic().value,
-                e.getDailyMonthlyClassification().value,
+                DailyMonthlyClassification.MONTHLY.value,
                 e.getItemDetailAttributes().value
-        ) ).collect(Collectors.toList());
+        )).collect(Collectors.toList()));
+        rs.addAll(outputSetting.getDailyOutputItemList().stream().map(e -> new KfnmtRptYrRecItem(
+                new KfnmtRptYrRecItemPk((outputSetting.getID()), e.getRank()),
+                AppContexts.user().contractCode(),
+                AppContexts.user().companyId(),
+                e.getName().v(),
+                e.isPrintTargetFlag(),
+                e.getIndependentCalcClassic().value,
+                DailyMonthlyClassification.DAILY.value,
+                e.getItemDetailAttributes().value
+        )).collect(Collectors.toList()));
+
+        return rs;
     }
 }

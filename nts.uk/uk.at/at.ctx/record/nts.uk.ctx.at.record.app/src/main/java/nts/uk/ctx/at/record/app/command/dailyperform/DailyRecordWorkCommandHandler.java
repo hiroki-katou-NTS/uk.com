@@ -25,8 +25,6 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyCorrectEventServiceCenter.CorrectResult;
 import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.AffiliationInforOfDailyPerformCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.AffiliationInforOfDailyPerformCommandUpdateHandler;
-import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.BusinessTypeOfDailyPerformCommandAddHandler;
-import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.BusinessTypeOfDailyPerformCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendanceleavinggate.AttendanceLeavingGateOfDailyCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendanceleavinggate.AttendanceLeavingGateOfDailyCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendanceleavinggate.PCLogInfoOfDailyCommandAddHandler;
@@ -76,10 +74,10 @@ import nts.uk.ctx.at.record.dom.monthly.updatedomain.UpdateAllDomainMonthService
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.CommandFacade;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
-import nts.uk.ctx.at.shared.dom.attendance.util.RecordHandler;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.RecordHandler;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
@@ -118,22 +116,6 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 	@Inject
 	@AttendanceItemLayout(layout = DAILY_AFFILIATION_INFO_CODE, jpPropertyName = DAILY_AFFILIATION_INFO_NAME, index = 3)
 	private AffiliationInforOfDailyPerformCommandUpdateHandler affiliationInfoUpdateHandler;
-
-	/** エラー一覧： 社員の日別実績エラー一覧 */
-	// @Inject
-	// @AttendanceItemLayout(layout = "D", jpPropertyName = "", index = 4)
-	// private EmployeeDailyPerErrorCommandAddHandler errorAddHandler;
-	// @Inject
-	// @AttendanceItemLayout(layout = "D", jpPropertyName = "", index = 4)
-	// private EmployeeDailyPerErrorCommandUpdateHandler errorUpdateHandler;
-
-	/** エラー一覧： 社員の日別実績エラー一覧 */
-	@Inject
-	@AttendanceItemLayout(layout = DAILY_BUSINESS_TYPE_CODE, jpPropertyName = DAILY_BUSINESS_TYPE_NAME, index = 4)
-	private BusinessTypeOfDailyPerformCommandAddHandler businessTypeAddHandler;
-	@Inject
-	@AttendanceItemLayout(layout = DAILY_BUSINESS_TYPE_CODE, jpPropertyName = DAILY_BUSINESS_TYPE_NAME, index = 4)
-	private BusinessTypeOfDailyPerformCommandUpdateHandler businessTypeUpdateHandler;
 
 	/** 外出時間帯: 日別実績の外出時間帯 */
 	@Inject
@@ -646,8 +628,6 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 			return isUpdate ? this.calcAttrUpdateHandler : this.calcAttrAddHandler;
 		case DAILY_AFFILIATION_INFO_CODE:
 			return isUpdate ? this.affiliationInfoUpdateHandler : this.affiliationInfoAddHandler;
-		case DAILY_BUSINESS_TYPE_CODE:
-			return isUpdate ? this.businessTypeUpdateHandler : this.businessTypeAddHandler;
 		case DAILY_OUTING_TIME_CODE:
 			return isUpdate ? this.outingTimeUpdateHandler : this.outingTimeAddHandler;
 		case DAILY_BREAK_TIME_CODE:

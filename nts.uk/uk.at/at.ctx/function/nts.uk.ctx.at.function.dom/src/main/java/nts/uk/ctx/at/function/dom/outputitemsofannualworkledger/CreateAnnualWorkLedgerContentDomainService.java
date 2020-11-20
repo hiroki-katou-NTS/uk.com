@@ -39,11 +39,11 @@ public class CreateAnnualWorkLedgerContentDomainService {
         val listEmployeeStatus = require.getListAffComHistByListSidAndPeriod(listSid, datePeriod);
 
         // 日次の場合 - 印刷対象フラグ　==　true
-        val dailyOutputItems = outputSetting.getOutputItemList().stream()
+        val dailyOutputItems = outputSetting.getMonthlyOutputItemList().stream()
                 .filter(x -> x.getDailyMonthlyClassification() == DailyMonthlyClassification.DAILY && x.isPrintTargetFlag())
                 .collect(Collectors.toList());
         // 月次の場合 - 印刷対象フラグ　==　true
-        val monthlyOutputItems = outputSetting.getOutputItemList().stream()
+        val monthlyOutputItems = outputSetting.getMonthlyOutputItemList().stream()
                 .filter(x -> x.getDailyMonthlyClassification() == DailyMonthlyClassification.MONTHLY && x.isPrintTargetFlag())
                 .collect(Collectors.toList());
 

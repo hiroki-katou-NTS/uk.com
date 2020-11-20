@@ -1,0 +1,112 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:com="http://xmlns.jcp.org/jsf/component"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <div class="sidebar-content-header custom-header" >
+        <div>
+            <span class="title">#{i18n.getText('KSM008_184')}</span>
+            <a tabindex="-1" class="goback"
+               data-bind="ntsLinkButton: { jump: backButon }">#{i18n.getText('KSM008_185')}</a>
+            <button tabindex="-1"  data-bind="click:jScreenClickNewButton">#{i18n.getText('KSM008_186')}</button>
+            <button tabindex="-1" class="proceed" data-bind="click:jScreenClickRegister, enable: $root.errors.isEmpty" >#{i18n.getText('KSM008_187')}</button>
+            <button tabindex="-1" class="danger" data-bind="enable:vm.isJScreenUpdateMode(),click:jScreenClickDeleteButton" >#{i18n.getText('KSM008_188')}</button>
+        </div>
+    </div>
+    <div class="contents-area custom-class">
+        <div>
+            <div class="label class-padding-btm-5"
+                 data-bind="text: vm.scheduleAlarmCheckCond().codeAndName">
+            </div>
+            <div class="label warning color-black"
+                 style="padding-bottom: 0;padding-top: 0; ">#{i18n.getText('KSM008_189')}</div><!-- I4_1-->
+            <div class="label warning color-black" style="padding-top: 0;white-space: pre-wrap;"
+                 data-bind="text: vm.scheduleAlarmCheckCond().descriptions"></div>
+        </div>
+        <div class="table custom_table_j1_x" >
+            <!-- j1_1-->
+            <div class="cell valign-center" style="width: 10%">
+                <div data-bind="ntsFormLabel: {inline: true, required: true, enable: true}, style:{marginBottom: '5px'}">#{i18n.getText('KSM008_203')}</div>
+            </div>
+            <!-- j1_2-->
+            <div class="cell valign-center" style="width: 4%">
+                <button id="J1_2"  tabindex="1"  data-bind="inline: true, click:openModalKDL046">#{i18n.getText('KSM008_204')}</button>
+            </div>
+            <!-- j1_3-->
+            <div class="cell valign-center" style="width: 9%">
+                <span class="label" data-bind="inline: true, text:vm.workPlace.workplaceCode"></span>
+            </div>
+            <!-- j1_4-->
+            <div class="cell valign-center" >
+                <span class="label" data-bind="inline: true, text:vm.workPlace.workplaceName"></span>
+            </div>
+        </div>
+        <div class="table" style="margin-top: 8px;">
+            <div class="cell valign-top">
+                <!-- j2-->
+                <div data-bind="ntsPanel:{width: '350px', direction: 'right', showIcon: false, visible: true}" >
+                    <!-- j2-1-->
+                    <table tabindex="2" id="single-list" data-bind="ntsGridList: {
+                            dataSource: jItems,
+                            primaryKey: 'code',
+                            columns: [ { headerText: '#{i18n.getText('KSM008_206')}', key: 'code', width: 80, formatter: _.escape },
+                                       { headerText: '#{i18n.getText('KSM008_207')}', key: 'name', width: 180, formatter: _.escape },
+                                       { headerText: '#{i18n.getText('KSM008_208')}', key: 'maxNumberOfDay', width: 80, formatter: _.escape }
+                                      ],
+                            deleteOptions : {visible : false},
+                            multiple: false,
+                            rows: 12,
+                            value: jScreenCurrentCode
+                        },name:#{i18n.getText('KSM008_205')}"></table>
+                </div>
+            </div>
+            <div class="cell valign-top">
+                <div class="table">
+                    <!-- J3_1 -->
+                    <div class="cell valign-center" style="width: 155px">
+                        <div data-bind="ntsFormLabel: { constraint: ['ConsecutiveWorkTimeCode','ConsecutiveWorkTimeName'], enable: true, required:true }">#{i18n.getText('KSM008_209')}</div>
+                    </div>
+                    <div class="cell valign-center">
+                        <!-- J3_2 -->
+                        <input tabindex="3" id="J3_2"
+                               data-bind="ntsTextEditor: {constraint: 'ConsecutiveWorkTimeCode', value: jScreenWorkingHour.code,enable: vm.isJScreenUpdateMode()?false:true, required: true, name: '#[KSM008_210]'}, style: { width: '27px', marginRight: '5px'}"/>
+                    </div>
+                    <div class="cell valign-center">
+                        <!-- J3_3  -->
+                        <input tabindex="4" id="J3_3"
+                               data-bind="ntsTextEditor: {constraint: 'ConsecutiveWorkTimeName', value: jScreenWorkingHour.name, required: true, name: '#[KSM008_211]'}"/>
+                    </div>
+                </div>
+                <div class="table" style="margin-top: 7px;">
+                    <!-- J4_1 -->
+                    <div class="cell valign-center" style="width: 155px">
+                        <div data-bind="ntsFormLabel: {enable: true, required:true}">#{i18n.getText('KSM008_212')}</div>
+                    </div>
+                    <!-- J4_2 -->
+                    <div class="cell valign-center">
+                        <button  id="J4_2" tabindex="5" data-bind="click: openKdl001ModalJScreen" style="margin-right: 5px;margin-left: 28px;width: 48px">#{i18n.getText('KSM008_213')}</button>
+                    </div>
+                    <!-- J4_3-->
+                    <div class="cell valign-center">
+                        <input style="width: 180px" data-bind="ntsTextEditor: {value: vm.jScreenWorkingHour.workHour, enable: false}"/>
+                    </div>
+                </div>
+                <div class="table" style="margin-top: 7px">
+                    <!-- J5_1 -->
+                    <div class="cell valign-center" style="width: 155px">
+                        <div data-bind="ntsFormLabel: { constraint: 'ConsecutiveNumberOfDays', enable: true, required:true}">#{i18n.getText('KSM008_215')}</div>
+                    </div>
+                    <!-- J5_2 -->
+                    <div class="cell valign-center">
+                        <input tabindex="6" id="J5_2"
+                               data-bind="ntsNumberEditor: {constraint: 'ConsecutiveNumberOfDays', value: jScreenWorkingHour.numberOfConDays, required: true, name: '#[KSM008_216]'}, style: { width: '27px', marginRight: '5px',marginLeft: '28px'}"/>
+                    </div>
+                    <!-- J5_3 -->
+                    <div class="cell valign-center">
+                        <span>#{i18n.getText('KSM008_217')}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ui:composition>

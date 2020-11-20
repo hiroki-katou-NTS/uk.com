@@ -19,8 +19,6 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.personnelcostsetting.PersonnelCostSettingAdapter;
-import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
-import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemService;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck.CalculationErrorCheckService;
@@ -34,17 +32,19 @@ import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus;
 import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus.MasterShareContainer;
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemIdContainer;
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.ManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.dailyprocess.calc.CalculateOption;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.service.AttendanceItemConvertFactory;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.service.AttendanceItemService;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemIdContainer;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil.AttendanceItemType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpCondition;
@@ -55,6 +55,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
+import nts.uk.ctx.at.shared.dom.worktime.common.JustCorrectionAtr;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 
@@ -197,6 +198,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 									  Optional.empty(),
 									  companySet,
 									  Collections.emptyList(),
+									  JustCorrectionAtr.USE,
 									  Optional.empty()
 									  ).getLst();
 		return result.stream().map(ts -> ts.getIntegrationOfDaily()).collect(Collectors.toList()); 
@@ -285,6 +287,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 				Optional.empty(),
 				companySet,
 				Collections.emptyList(),
+				JustCorrectionAtr.NOT_USE,
 				Optional.empty())
 				.getLst().stream().map(tc -> tc.getIntegrationOfDaily()).collect(Collectors.toList());
 	}
@@ -337,7 +340,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 			});
 
 		}
-		return commonPerCompany(CalculateOption.asDefault(), integrationOfDailys,true,Optional.empty(),Optional.empty(),closureList,Optional.of(executeLogId));
+		return commonPerCompany(CalculateOption.asDefault(), integrationOfDailys,true,Optional.empty(),Optional.empty(),closureList,JustCorrectionAtr.USE,Optional.of(executeLogId));
 	}
 
 
@@ -350,7 +353,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 			ManagePerCompanySet companySet,
 			List<ClosureStatusManagement> closureList,
 			String logId) {
-		val result = commonPerCompany(CalculateOption.asDefault(), integrationOfDaily,true,Optional.empty(),Optional.empty(),closureList,Optional.of(logId));
+		val result = commonPerCompany(CalculateOption.asDefault(), integrationOfDaily,true,Optional.empty(),Optional.empty(),closureList,JustCorrectionAtr.USE,Optional.of(logId));
 //		result.getLst().forEach(listItem ->{
 //			dailyCalculationEmployeeService.upDateCalcState(listItem);
 //		});
@@ -363,6 +366,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	 * @param integrationOfDaily 実績データたち
 	 * @param companySet 
 	 * @param closureList 
+	 * @param justCorrectionAtr ジャスト補正区分
 	 * @return 計算後実績データ
 	 */
 	@SuppressWarnings("rawtypes")
@@ -370,6 +374,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 													 ,Optional<Consumer<ProcessState>> counter, 
 													 Optional<ManagePerCompanySet> companySet, 
 													 List<ClosureStatusManagement> closureList,
+													 JustCorrectionAtr justCorrectionAtr,
 													 Optional<String> logId ) {
 		/***会社共通処理***/
 		if(integrationOfDailys.isEmpty()) 
@@ -415,7 +420,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 			//対象社員の締め取得
 			List<ClosureStatusManagement> closureByEmpId = getclosure(record.getKey(), closureList);
 			//日毎の処理
-			val returnValue = calcOnePerson(calcOption, comanyId,record.getValue(),companyCommonSetting,closureByEmpId);
+			val returnValue = calcOnePerson(calcOption, comanyId,record.getValue(),companyCommonSetting,closureByEmpId, justCorrectionAtr);
 			returnList.addAll(returnValue);
 			//人数カウントアップ
 //			if(counter.isPresent()) {
@@ -449,11 +454,12 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	 * @param recordList 実績データのリスト
 	 * @param companyCommonSetting 会社共通の設定
 	 * @param closureByEmpId 
+	 * @param justCorrectionAtr ジャスト補正区分
 	 * @return　実績データ
 	 */
 	@SuppressWarnings("rawtypes")
 	private List<ManageCalcStateAndResult> calcOnePerson(CalculateOption calcOption, String companyId, List<IntegrationOfDaily> recordList, ManagePerCompanySet companyCommonSetting,
-									List<ClosureStatusManagement> closureByEmpId){
+									List<ClosureStatusManagement> closureByEmpId,JustCorrectionAtr justCorrectionAtr){
 		
 		//社員の期間取得
 		val integraListByRecordAndEmpId = getIntegrationOfDailyByEmpId(recordList);
@@ -493,6 +499,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 				ManageCalcStateAndResult result = calculate.calculate(calcOption, record, 
 													companyCommonSetting,
 													personSetting.get(),
+													justCorrectionAtr,
 													findAndGetWorkInfo(record.getEmployeeId(),map,record.getYmd().addDays(-1)),
 													findAndGetWorkInfo(record.getEmployeeId(),map,record.getYmd().addDays(1)));
 

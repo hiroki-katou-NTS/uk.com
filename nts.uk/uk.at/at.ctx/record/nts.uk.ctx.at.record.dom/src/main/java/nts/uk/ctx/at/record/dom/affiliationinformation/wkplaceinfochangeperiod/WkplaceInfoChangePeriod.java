@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -17,7 +18,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyTempo;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkplaceHistItemImport;
-import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 
@@ -42,7 +43,9 @@ public class WkplaceInfoChangePeriod {
 		//ドメインモデル「日別実績の所属情報」を取得する
 		List<AffiliationInforOfDailyTempo> listAffiliationInforOfDailyPerfor = affInforOfDailyPerforRepo.finds(Arrays.asList(employeeId) , datePeriod)
 				.stream().map(x -> new AffiliationInforOfDailyTempo(x.getEmployeeId(), x.getYmd(), new EmploymentCode(x.getAffiliationInfor().getEmploymentCode().v()),
-						x.getAffiliationInfor().getJobTitleID(), x.getAffiliationInfor().getWplID(), new ClassificationCode(x.getAffiliationInfor().getClsCode().v()), new BonusPaySettingCode(x.getAffiliationInfor().getBonusPaySettingCode().v()))).collect(Collectors.toList());
+						x.getAffiliationInfor().getJobTitleID(), x.getAffiliationInfor().getWplID(), new ClassificationCode(x.getAffiliationInfor().getClsCode().v()), 
+						!x.getAffiliationInfor().getBonusPaySettingCode().isPresent()?null:new BonusPaySettingCode(x.getAffiliationInfor().getBonusPaySettingCode().get().v()))
+						).collect(Collectors.toList());
 		Map<String, List<AffiliationInforOfDailyTempo>> mappedByWp = listAffiliationInforOfDailyPerfor.stream()
 				.collect(Collectors.groupingBy(c -> c.getWplID()));
 		Map<String, List<ExWorkplaceHistItemImport>> mapDateWpl = workplaceItems.stream()

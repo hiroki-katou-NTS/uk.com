@@ -6,9 +6,9 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmMessage;
+import nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode;
 
 /**
  * The Class WorkTypeDivergenceTimeErrorAlarmMessage.

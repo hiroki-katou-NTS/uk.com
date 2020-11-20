@@ -11,23 +11,20 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.PreOvertimeReflectService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ExecutionTypeDaily;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ReflectWorkInforDomainServiceImpl;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.CopyWorkTypeWorkTime;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.EmbossingExecutionFlag;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.workschedulereflected.WorkScheduleReflected;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.OutputCreateDailyOneDay;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.AffiliationInforState;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ReflectWorkInforDomainService;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.PeriodInMasterList;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
@@ -151,7 +148,7 @@ public class CreateDailyResults {
 		Optional<BonusPaySetting> optBonusPaySetting = reflectWorkInforDomainServiceImpl.reflectBonusSettingDailyPer(companyId, employeeId, ymd,
 				integrationOfDaily.getWorkInformation(), integrationOfDaily.getAffiliationInfor(), periodInMasterList);
 		if(optBonusPaySetting.isPresent()) {
-			integrationOfDaily.getAffiliationInfor().setBonusPaySettingCode(optBonusPaySetting.get().getCode());
+			integrationOfDaily.getAffiliationInfor().setBonusPaySettingCode(Optional.ofNullable(optBonusPaySetting.get().getCode()));
 		}
 		// 計算区分を日別実績に反映する
 		integrationOfDaily.setCalAttr(reflectWorkInforDomainServiceImpl.reflectCalAttOfDaiPer(companyId, employeeId, ymd,

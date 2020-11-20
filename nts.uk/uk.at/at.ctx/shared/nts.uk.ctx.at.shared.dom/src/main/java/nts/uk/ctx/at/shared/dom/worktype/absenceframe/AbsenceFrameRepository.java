@@ -40,4 +40,13 @@ public interface AbsenceFrameRepository {
 	 * @param absenceFrame the absence frame
 	 */
 	void update(AbsenceFrame absenceFrame);
+	
+	/**
+	 * 使用不可の欠勤枠を取得する Nhận Absence frame không khả dụng
+	 *
+	 * @param cid 会社ID
+	 * @param useCls 使用区分
+	 * @return List＜欠勤枠＞
+	 */
+	List<AbsenceFrame> findByCompanyIdAndDeprecateClassification(String cid, int useCls);
 }

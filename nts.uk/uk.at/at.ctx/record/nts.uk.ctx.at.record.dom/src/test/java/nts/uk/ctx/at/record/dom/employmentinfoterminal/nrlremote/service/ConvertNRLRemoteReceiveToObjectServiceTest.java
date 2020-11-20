@@ -22,9 +22,11 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerSe
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal.EmpInfoTerminalBuilder;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalName;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.FullIpAddress;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.IPAddress;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.MacAddress;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.ModelEmpInfoTer;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.PartialIpAddress;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.TimeRecordSetFormatList;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 
@@ -55,16 +57,27 @@ public class ConvertNRLRemoteReceiveToObjectServiceTest {
 	@Test
 	public void test() throws FileNotFoundException {
 
-		FileInputStream input = new FileInputStream(
-				ConvertNRLRemoteReceiveToObjectServiceTest.class.getResource("nrlremote.xml").getFile());
-
+//		FileInputStream input = new FileInputStream(
+//				ConvertNRLRemoteReceiveToObjectServiceTest.class.getResource("nrlremote.xml").getFile());
+		
+		String data = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\r\n" + 
+				"<!DOCTYPE xml>\r\n" + 
+				"<doc>　\r\n" + 
+				"    <MAC_Address>00-14-22-01-23-45</MAC_Address>\r\n" + 
+				"	<payload>\r\n" + 
+				"		NRL-m,200,9@基本設定,ボリューム,sp_vol,num,1,5,0:9,0@@@@@sp_vol,68\r\n" + 
+				"	</payload>\r\n" + 
+				"</doc>";
+		InputStream input = new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8")));
+		
 		new Expectations() {
 			{
 				require.getEmpInfoTerWithMac(new MacAddress("00-14-22-01-23-45"), (ContractCode) any);
-				result = Optional.of(new EmpInfoTerminalBuilder(new IPAddress("192.168.1.1"),
+				result = Optional.of(new EmpInfoTerminalBuilder(Optional.of(new FullIpAddress(
+						new PartialIpAddress(192), new PartialIpAddress(168), new PartialIpAddress(1), new PartialIpAddress(1))),
 						new MacAddress("00-14-22-01-23-45"), new EmpInfoTerminalCode(1234),
-						new EmpInfoTerSerialNo("1111"), new EmpInfoTerminalName("AT"), new ContractCode("000000000000"))
-								.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).build());
+						Optional.of(new EmpInfoTerSerialNo("1111")), new EmpInfoTerminalName("AT"),
+						new ContractCode("000000000000")).modelEmpInfoTer(ModelEmpInfoTer.NRL_1).build());
 
 			}
 
