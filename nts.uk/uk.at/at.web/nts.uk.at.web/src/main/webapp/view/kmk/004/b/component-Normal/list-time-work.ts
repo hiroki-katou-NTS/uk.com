@@ -5,6 +5,7 @@ module nts.uk.at.view.kmk004.b {
     interface Params {
         selectedYear: KnockoutObservable<number | null>;
         change: KnockoutObservable<boolean>;
+        checkEmployee: KnockoutObservable<boolean>
     }
 
     const API = {
@@ -18,6 +19,9 @@ module nts.uk.at.view.kmk004.b {
             <table>
                 <tbody>
                     <tr>
+                        <!-- ko if: checkEmployee -->
+                            <td class= "check-row1"></td>
+                        <!-- /ko -->
                         <td class= "label-row1">
                             <div data-bind="i18n: 'KMK004_221'"></div>
                         </td>
@@ -27,20 +31,32 @@ module nts.uk.at.view.kmk004.b {
                     </tr>
                     <!-- ko foreach: workTimes -->
                     <tr>
+                        <!-- ko if: $parent.checkEmployee -->
+                            <td class= "check-column1">
+                                <div data-bind="ntsCheckBox: { checked: $data.check }"></div>
+                            </td>
+                        <!-- /ko -->
                         <td class="label-column1" data-bind="text: $data.nameMonth"></td>
                         <td class="label-column2">
-                            <input type="number" maxlength="6" class="lable-input" data-bind="ntsTextEditor: {value: $data.legalLaborTime, enable: $parent.ckeckNullYear}" />
+                            <!-- ko if: $parent.checkEmployee -->
+                                <input maxlength="6" class="lable-input" data-bind="ntsTextEditor: {value: $data.legalLaborTime, enable: $data.check}" />
+                            <!-- /ko -->
+                            <!-- ko ifnot: $parent.checkEmployee -->
+                                <input maxlength="6" class="lable-input" data-bind="ntsTextEditor: {value: $data.legalLaborTime, enable: $parent.ckeckNullYear}" />
+                            <!-- /ko -->
                         </td>
                     </tr>
                     <!-- /ko -->
-                    <tr>    
-                        <td class="label-column1">
-                            <div data-bind="i18n: 'KMK004_223'"></div>
-                        </td>
-                        <td class="label-column2">
-                            <div data-bind="text: total"></div>
-                        </td>
-                    </tr>
+                    <!-- ko ifnot: checkEmployee -->
+                        <tr>
+                            <td class="label-column1">
+                                <div data-bind="i18n: 'KMK004_223'"></div>
+                            </td>
+                            <td class="label-column2">
+                                <div data-bind="text: total"></div>
+                            </td>
+                        </tr>
+                    <!-- /ko -->
                 </tbody>
             </table>
         </div>
@@ -54,23 +70,40 @@ module nts.uk.at.view.kmk004.b {
     class ListTimeWork extends ko.ViewModel {
 
         public workTimes: KnockoutObservableArray<WorkTime> = ko.observableArray([]);
-        public total: KnockoutObservable<number | null> = ko.observable(null);
+        public total: KnockoutObservable<string> = ko.observable('');
         public selectedYear: KnockoutObservable<number | null> = ko.observable(null);
         public change: KnockoutObservable<boolean> = ko.observable(true);
         public ckeckNullYear: KnockoutObservable<boolean> = ko.observable(false);
+        public checkEmployee: KnockoutObservable<boolean> = ko.observable(false);
 
         created(params: Params) {
             const vm = this;
             vm.selectedYear = params.selectedYear;
             vm.change = params.change;
+            vm.checkEmployee = params.checkEmployee;
 
-            // vm.init();
+            vm.initList();
             vm.reloadData();
 
             vm.workTimes.subscribe((wts) => {
-                const total: number = wts.reduce((p, c) => p += Number(c.legalLaborTime()), 0);
+                const total: number = wts.reduce((p, c) => p += Number(
+                    parseInt(c.legalLaborTime().
+                        replace(':', '').
+                        substring(0, c.legalLaborTime().replace(':', '').length - 2)) * 60 +
+                    parseInt(c.legalLaborTime().
+                        replace(':', '').
+                        substring(c.legalLaborTime().replace(':', '').length - 2,
+                            c.legalLaborTime().replace(':', '').length)) * 60), 0);
+                
                 if (total > 0) {
-                    vm.total(total)
+                    var last = (total % 60).toString();
+
+                    if(last.length < 2) {
+                        last = '0' + last;
+                    }
+                    vm.total(Math.floor(total / 60) + ':' + last);
+                }else {
+                    vm.total("0:00");
                 }
             });
 
@@ -96,12 +129,19 @@ module nts.uk.at.view.kmk004.b {
             vm.$ajax(API.GET_WORK_TIME, input)
                 .then((data: IWorkTime[]) => {
                     if (data.length > 0) {
-                        const data1:IWorkTime[] = [];
+                        const data1: IWorkTime[] = [];
+                        var check: boolean = true;
+
+                        if (ko.unwrap(vm.checkEmployee)) {
+                            check = false;
+                        }
                         data.map(m => {
-                            const laborTime: ILaborTime = {legalLaborTime: m.laborTime.legalLaborTime / 60,
+                            const laborTime: ILaborTime = {
+                                legalLaborTime: m.laborTime.legalLaborTime,
                                 withinLaborTime: m.laborTime.weekAvgTime,
-                                weekAvgTime: m.laborTime.weekAvgTime};
-                            const s: IWorkTime = {yearMonth: m.yearMonth, laborTime: laborTime };
+                                weekAvgTime: m.laborTime.weekAvgTime
+                            };
+                            const s: IWorkTime = { check: check, yearMonth: m.yearMonth, laborTime: laborTime };
                             data1.push(s);
                         });
 
@@ -109,10 +149,61 @@ module nts.uk.at.view.kmk004.b {
                     }
                 });
         }
+
+        reloadList() {
+            const vm = this;
+            const list: IWorkTime[] = [];
+
+            ko.unwrap(vm.workTimes).map(m => {
+                const legalLaborTime: number = parseInt(ko.unwrap(m.legalLaborTime).replace(':', ''), 10);
+                const laborTime: ILaborTime = {
+                    legalLaborTime: legalLaborTime,
+                    withinLaborTime: null,
+                    weekAvgTime: null
+                }
+                const a: IWorkTime = {
+                    check: ko.unwrap(m.check),
+                    yearMonth: ko.unwrap(m.yearMonth),
+                    laborTime: laborTime
+                }
+                list.push(a);
+            });
+
+            vm.workTimes(list.map(m => new WorkTime({ ...m, parrent: vm.workTimes })));
+        }
+
+        initList() {
+            const vm = this,
+                laborTime: ILaborTime = {
+                    legalLaborTime: null,
+                    withinLaborTime: null,
+                    weekAvgTime: null
+                };
+            var check: boolean = true;
+
+            if (ko.unwrap(vm.checkEmployee)) {
+                check = false;
+            }
+
+            const IWorkTime1: IWorkTime[] = [{ check: check, yearMonth: 202001, laborTime: laborTime },
+            { check: check, yearMonth: 202002, laborTime: laborTime },
+            { check: check, yearMonth: 202003, laborTime: laborTime },
+            { check: check, yearMonth: 202004, laborTime: laborTime },
+            { check: check, yearMonth: 202005, laborTime: laborTime },
+            { check: check, yearMonth: 202006, laborTime: laborTime },
+            { check: check, yearMonth: 202007, laborTime: laborTime },
+            { check: check, yearMonth: 202008, laborTime: laborTime },
+            { check: check, yearMonth: 202009, laborTime: laborTime },
+            { check: check, yearMonth: 202010, laborTime: laborTime },
+            { check: check, yearMonth: 202011, laborTime: laborTime },
+            { check: check, yearMonth: 202012, laborTime: laborTime }];
+            vm.workTimes(IWorkTime1.map(m => new WorkTime({ ...m, parrent: vm.workTimes })));
+        }
     }
 }
 
 interface IWorkTime {
+    check: boolean;
     yearMonth: number;
     laborTime: ILaborTime;
 }
@@ -127,7 +218,7 @@ class WorkTime {
     check: KnockoutObservable<boolean> = ko.observable(false);
     yearMonth: KnockoutObservable<number | null> = ko.observable(null);
     nameMonth: KnockoutObservable<string> = ko.observable('');
-    legalLaborTime: KnockoutObservable<number | null> = ko.observable(null);
+    legalLaborTime: KnockoutObservable<string> = ko.observable('');
 
     constructor(params?: IWorkTime & { parrent: KnockoutObservableArray<WorkTime> }) {
         const md = this;
@@ -138,8 +229,21 @@ class WorkTime {
 
     public create(param?: IWorkTime) {
         const md = this;
+        md.check(param.check);
         md.yearMonth(param.yearMonth);
-        md.legalLaborTime(param.laborTime.legalLaborTime);
+
+        if (param.check) {
+            var firstLegalLabor = '0';
+            var lastLegalLabor = param.laborTime.legalLaborTime % 60 + '';
+
+            firstLegalLabor = Math.floor(param.laborTime.legalLaborTime / 60) + '';
+
+            if (lastLegalLabor.length < 2) {
+                lastLegalLabor = '0' + lastLegalLabor;
+            }
+
+            md.legalLaborTime(firstLegalLabor + ':' + lastLegalLabor);
+        }
 
         switch (param.yearMonth.toString().substring(4, 6)) {
             case "01":

@@ -209,6 +209,20 @@
 	height: 13px;
 }
 
+.list-time .check-row1 {
+	border-top: solid 1px #AAAAAA;
+	border-left: solid 1px #AAAAAA;
+	border-bottom: solid 1px #AAAAAA;
+	background: #97D155;
+}
+
+.list-time .check-column1 {
+	padding: 3px;
+	border-left: solid 1px #AAAAAA;
+	border-bottom: solid 1px #AAAAAA;
+	text-align: center;
+}
+
 /* View B */
 
 .view-b {
