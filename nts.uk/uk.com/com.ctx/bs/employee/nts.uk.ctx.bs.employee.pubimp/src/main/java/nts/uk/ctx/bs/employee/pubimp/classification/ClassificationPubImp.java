@@ -19,6 +19,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.bs.employee.app.find.affiliatedcompanyhistory.AffCompanyHistItemDto;
 import nts.uk.ctx.bs.employee.app.find.affiliatedcompanyhistory.AffiliatedCompanyHistoryFinder;
+import nts.uk.ctx.bs.employee.app.find.classification.affiliate.AffClassificationDto;
 import nts.uk.ctx.bs.employee.dom.classification.Classification;
 import nts.uk.ctx.bs.employee.dom.classification.ClassificationRepository;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistItem;
@@ -30,6 +31,7 @@ import nts.uk.ctx.bs.employee.pub.classification.ClassificationExport;
 import nts.uk.ctx.bs.employee.pub.classification.EmpClassifiExport;
 import nts.uk.ctx.bs.employee.pub.classification.SClsHistExport;
 import nts.uk.ctx.bs.employee.pub.classification.SyClassificationPub;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 
 /**
@@ -193,11 +195,14 @@ public class ClassificationPubImp implements SyClassificationPub {
 
 	@Override
 	public List<EmpClassifiExport> getByListSIDAndBasedate(GeneralDate baseDate, List<String> listempID) {
-		List<AffClassHistItem> listAffClassHistItem = affClassHistItemRepository.searchClassification(listempID, baseDate, new ArrayList<>());
-		if (listAffClassHistItem.isEmpty()) {
+		List<DateHistoryItem> history = affClassHistoryRepository.getByEmployeeListWithPeriod(AppContexts.user().companyId(),listempID, baseDate);
+		if(history.isEmpty())
 			return new ArrayList<>();
-		}
-		return listAffClassHistItem.stream().map(mapper -> {
+		List<AffClassHistItem> histItem = affClassHistItemRepository.getByHistoryIds(history.stream().map(i->i.identifier()).collect(Collectors.toList()));
+		if(histItem.isEmpty())
+			return new ArrayList<>();
+		
+		return histItem.stream().map(mapper -> {
 			return new EmpClassifiExport(mapper.getEmployeeId(), mapper.getClassificationCode().toString());
 		}).collect(Collectors.toList());
 	}

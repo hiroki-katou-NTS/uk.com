@@ -17,6 +17,8 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
+import org.apache.logging.log4j.util.Strings;
+
 import lombok.SneakyThrows;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
@@ -831,6 +833,13 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	}
 
 	private Optional<KrqdtApplication> findEntityByID(String appID) {
+		String companyID = AppContexts.user().companyId();
+		if(appID.equals("sample")) {
+			appID = new NtsStatement("select top 1 APP_ID from KRQDT_APPLICATION where CID = @companyID order by INS_DATE desc", this.jdbcProxy())
+					.paramString("companyID", companyID)
+					.getSingle(rec -> rec.getString("APP_ID")).get();
+		}
+		
 		String sql = "select a.EXCLUS_VER as aEXCLUS_VER, a.CONTRACT_CD as aCONTRACT_CD, a.CID as aCID, a.APP_ID as aAPP_ID, a.PRE_POST_ATR as aPRE_POST_ATR, " +
 				"a.INPUT_DATE as aINPUT_DATE, a.ENTERED_PERSON_SID as aENTERED_PERSON_SID, " +
 				"a.REASON_REVERSION as aREASON_REVERSION, a.APP_DATE as aAPP_DATE, a.FIXED_REASON as aFIXED_REASON, a.APP_REASON as aAPP_REASON, a.APP_TYPE as aAPP_TYPE, " +

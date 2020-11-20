@@ -71,17 +71,17 @@ public class ExternalBudgetWebService extends WebService {
 		return this.find.findAll();
 	}
 	
-	/**
-	 * get External Budget by atr 
-	 * @param param
-	 * @return
-	 * author: Hoang Yen
-	 */
-	@POST
-	@Path("findByAtr")
-	public List<ExternalBudgetDto> getByAtr(ParamExternalBudget param){
-		return this.find.findByAtr(param);
-	}
+//	/**
+//	 * get External Budget by atr
+//	 * @param param
+//	 * @return
+//	 * author: Hoang Yen
+//	 */
+//	@POST
+//	@Path("findByAtr")
+//	public List<ExternalBudgetDto> getByAtr(ParamExternalBudget param){
+//		return this.find.findByAtr(param);
+//	}
 	
 	/**
 	 * Insertbudget.

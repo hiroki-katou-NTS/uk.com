@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -482,7 +483,7 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 		}
 
 		// 変更可能な時間帯リストを作る
-		val timezones = Arrays.asList(ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd((new WorkNo(1)).toAttendance(), workOnDayOff));
+		val timezones = new ArrayList<>(Arrays.asList(ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd((new WorkNo(1)).toAttendance(), workOnDayOff)));
 		if (predTimeStg.isUseShiftTwo()) {
 			timezones.add(ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd((new WorkNo(2)).toAttendance(), workOnDayOff));
 		}
@@ -508,10 +509,8 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 			fixedRestTimezone = this.offdayWorkTimezone.getRestTimezone();
 		} else {
 			// 休出以外
-			fixedRestTimezone = this.lstHalfDayWorkTimezone.stream()
-									.filter( e -> e.getDayAtr() == amPmAtr )
-									.map( e -> e.getRestTimezone() )
-									.findFirst().get();
+			fixedRestTimezone = this.getFixHalfDayWorkTimezone(amPmAtr)
+									.map( e -> e.getRestTimezone() ).get();
 		}
 
 		return BreakTimeZone.createAsFixed(fixedRestTimezone.getRestTimezonesForCalc());
