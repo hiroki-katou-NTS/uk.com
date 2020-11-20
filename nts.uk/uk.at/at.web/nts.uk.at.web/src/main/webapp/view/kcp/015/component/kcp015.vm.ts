@@ -136,7 +136,7 @@ module nts.uk.ui.at.kcp015.shared {
 
                 vm.visibleA35Com(data.overtimeUseCls60H);
                 
-                vm.visibleA36Com(false);
+                vm.visibleA36Com(true);
                 
                 dfd.resolve();
             }).fail(function() {
