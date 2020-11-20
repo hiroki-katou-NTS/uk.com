@@ -96,17 +96,19 @@ module nts.uk.at.view.kwr006.c {
                 self.mapCodeIdAtd = {};
 
                 self.dataOutputType = ko.observableArray([
-                    new ItemModel(0, nts.uk.resource.getText("KWR006_92"), 1),
-                    new ItemModel(1, nts.uk.resource.getText("KWR006_93"), 0)
+                    new ItemModel(3, nts.uk.resource.getText("KWR006_92"), null),
+                    new ItemModel(1, nts.uk.resource.getText("KWR006_93"), null)
                 ]);
+
                 self.itemListAttribute = ko.observableArray([
-                    new ItemModel(0, nts.uk.resource.getText("KWR006_105"), 0),
-                    new ItemModel(1, nts.uk.resource.getText("KWR006_106"), 1),
-                    new ItemModel(2, nts.uk.resource.getText("KWR006_107"), 2),
-                    new ItemModel(3, nts.uk.resource.getText("KWR006_110"), 3),
-                    new ItemModel(4, nts.uk.resource.getText("KWR006_111"), 4),
-                    new ItemModel(5, nts.uk.resource.getText("KWR006_108"), 5)
+                    new ItemModel(0, nts.uk.resource.getText("KWR006_105"), null),
+                    new ItemModel(1, nts.uk.resource.getText("KWR006_106"), null),
+                    new ItemModel(2, nts.uk.resource.getText("KWR006_107"), null),
+                    new ItemModel(3, nts.uk.resource.getText("KWR006_110"), null),
+                    new ItemModel(4, nts.uk.resource.getText("KWR006_111"), null),
+                    new ItemModel(5, nts.uk.resource.getText("KWR006_108"), null)
                 ]);
+
                 self.C5_4_value = ko.observable(0);
                 self.C5_4_value.subscribe((value) => {
                     self.fillterByAttendanceType(value);
@@ -231,7 +233,7 @@ module nts.uk.at.view.kwr006.c {
                 self.currentRemarkInputContent(0);
                 self.isEnableRemarkInputContents(false);
                 self.C5_4_value(0);
-                self.C9_2_value(0);
+                self.C9_2_value(FontSizeEnum.BIG);
                 self.layoutId("");
             }
 
@@ -345,11 +347,7 @@ module nts.uk.at.view.kwr006.c {
                 let self = this;
 
                 $.when(self.getDataService(), self.getEnumRemarkInputContent()).done(function () {
-                    if (nts.uk.ui.windows.getShared('itemSelection') === 0 ) {
-                        self.selectedCodeC2_3(nts.uk.ui.windows.getShared('selectedCode'));
-                    } else {
-                        self.selectedCodeC2_3(nts.uk.ui.windows.getShared('selectedCodeFreeSetting'));
-                    }
+                    self.selectedCodeC2_3(nts.uk.ui.windows.getShared('selectedCode'));
                    
                     if (_.isNil(self.selectedCodeC2_3()))
                         self.newMode();

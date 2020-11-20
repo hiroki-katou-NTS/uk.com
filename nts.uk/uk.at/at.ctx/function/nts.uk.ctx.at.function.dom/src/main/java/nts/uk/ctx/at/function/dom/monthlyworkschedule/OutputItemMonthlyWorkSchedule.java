@@ -73,8 +73,7 @@ public class OutputItemMonthlyWorkSchedule extends AggregateRoot {
 	/**
 	 * Instantiates a new output item monthly work schedule.
 	 *
-	 * @param memento
-	 *            the memento
+	 * @param memento the memento
 	 */
 	public OutputItemMonthlyWorkSchedule(OutputItemMonthlyWorkScheduleGetMemento memento) {
 		if (memento.getCompanyID() == null) {
@@ -96,14 +95,10 @@ public class OutputItemMonthlyWorkSchedule extends AggregateRoot {
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento
-	 *            the memento
+	 * @param memento the memento
 	 */
 	public void saveToMemento(OutputItemMonthlyWorkScheduleSetMemento memento) {
-		if (this.companyID == null) {
-			this.companyID = AppContexts.user().companyId();
-		}
-		memento.setCompanyID(this.companyID);
+		memento.setCompanyID(this.companyID == null ? AppContexts.user().companyId() : this.companyID);
 		memento.setItemCode(this.itemCode);
 		memento.setItemName(this.itemName);
 		memento.setLayoutID(this.layoutID);

@@ -1,10 +1,13 @@
 package nts.uk.ctx.at.function.dom.monthlyworkschedule;
+
+import lombok.AllArgsConstructor;
+
 /**
  * The Enum TextSizeCommonEnum.
  */
 //@author ChienDM
 //帳票共通の文字の大きさ
-
+@AllArgsConstructor
 public enum TextSizeCommonEnum {
 	/** Small. */
 	// 小
@@ -17,24 +20,13 @@ public enum TextSizeCommonEnum {
 	BIG(3, "BIG");
 	
 	/** The value. */
-	public final Integer value;
+	public final int value;
 
 	/** The name id. */
 	public final String nameId;
 
 	/** The Constant values. */
 	private final static TextSizeCommonEnum[] values = TextSizeCommonEnum.values();
-
-	/**
-	 * Instantiates a new Setting classification common To forms.
-	 *
-	 * @param value  the value
-	 * @param nameId the name id
-	 */
-	private TextSizeCommonEnum(int value, String nameId) {
-		this.value = value;
-		this.nameId = nameId;
-	}
 
 	/**
 	 * Value of.

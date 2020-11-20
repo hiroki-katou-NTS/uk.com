@@ -39,6 +39,7 @@ import nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyFormatPerformanceAd
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyFormatPerformanceImport;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkSchedule;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkScheduleRepository;
+import nts.uk.ctx.at.function.dom.monthlyworkschedule.TextSizeCommonEnum;
 import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformAuthorRepo;
 import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformanceFunctionNo;
 import nts.uk.ctx.at.shared.app.service.workrule.closure.ClosureEmploymentService;
@@ -107,14 +108,11 @@ public class OutputItemMonthlyWorkScheduleFinder {
 	/** The Constant FUNCTION_NO. */
 	private static final int FUNCTION_NO = 6;
 
-	/** The Constant SHEET_NO_1. */
-	private static final int SHEET_NO_1 = 1;
+	/** The Constant LIMIT_DISPLAY_ITEMS_BIG_SIZE. */
+	private static final int LIMIT_DISPLAY_ITEMS_BIG_SIZE = 48;
 
-	/** The Constant LIMIT_DISPLAY_ITEMS. */
-	private static final int LIMIT_DISPLAY_ITEMS = 48;
-	
-	/** The Constant  For small cases FOR_SMALL_CASES. */
-	private static final int  FOR_SMALL_CASES = 60;
+	/** The Constant LIMIT_DISPLAY_ITEMS_SMALL_SIZE. */
+	private static final int LIMIT_DISPLAY_ITEMS_SMALL_SIZE = 60;
 	
 	/** The Constant */
 	
@@ -293,7 +291,9 @@ public class OutputItemMonthlyWorkScheduleFinder {
 		if (optOutputItemMonthlyWorkSchedule.isPresent()) {
 			throw new BusinessException("Msg_3");
 		} else {
-			List<DisplayTimeItemDto> dtos = getDomConvertMonthlyWork(companyId, copyCommand.getCodeSourceSerivce());
+			List<DisplayTimeItemDto> dtos = getDomConvertMonthlyWork(companyId
+					, copyCommand.getCodeSourceSerivce()
+					, TextSizeCommonEnum.valueOf(copyCommand.getFontSize()));
 			returnDto.setLstDisplayTimeItem(dtos);
 
 			Map<String, Object> kwr006Lst = this.findBySelectionAndCidAndSid(copyCommand.getItemType());
@@ -316,14 +316,12 @@ public class OutputItemMonthlyWorkScheduleFinder {
 
 	// アルゴリズム「月別勤務表用フォーマットをコンバートする」を実行する(Execute algorithm "Convert monthly work
 	// table format")
-	private List<DisplayTimeItemDto> getDomConvertMonthlyWork(String companyId, String code) {
+	private List<DisplayTimeItemDto> getDomConvertMonthlyWork(String companyId, String code, TextSizeCommonEnum fontSize) {
 
 		// Get domain 実績修正画面で利用するフォーマット from request list 402
 		Optional<MonthlyFormatPerformanceImport> optFormatPerformanceImport = monthlyFormatPerformanceAdapter
 				.getFormatPerformance(companyId);
-
-		SheetCorrectedMonthly sheetNo1 = new SheetCorrectedMonthly();
-
+		List<DisplayTimeItemDto> lstDataReturn = new ArrayList<>();
 		if (optFormatPerformanceImport.isPresent()) {
 			switch (optFormatPerformanceImport.get().getSettingUnitType()) {
 			case AUTHORITY: // In case of authority
@@ -333,44 +331,50 @@ public class OutputItemMonthlyWorkScheduleFinder {
 				// "display items for correction of daily performance")
 				MonPfmCorrectionFormat monPfmCorrectionFormat = monPfmCorrectionFormatRepository
 						.getMonPfmCorrectionFormat(companyId, code).get();
-				sheetNo1 = monPfmCorrectionFormat.getDisplayItem().getListSheetCorrectedMonthly().stream()
-						.filter(sheet -> sheet.getSheetNo() == SHEET_NO_1).findFirst().get();
+				
+				lstDataReturn = monPfmCorrectionFormat.getDisplayItem()
+						.getListSheetCorrectedMonthly().stream()
+						.sorted(Comparator.comparing(SheetCorrectedMonthly::getSheetNo))
+						.flatMap(t -> t.getListDisplayTimeItem().stream())
+						.sorted(Comparator.comparing(DisplayTimeItem::getDisplayOrder))
+						.map(item -> new DisplayTimeItemDto(item.getItemDaily()
+			    				  , item.getDisplayOrder()
+			    				  , item.getColumnWidthTable()))
+						.collect(Collectors.toList());
 				break;
 			case BUSINESS_TYPE:
 				// ドメインモデル「勤務種別日別実績の修正のフォーマット」を取得する (Acquire the domain model
 				// "Format of working type daily performance correction)
 				// 「日別実績の修正の表示項目」から表示項目を取得する (Acquire display items from
 				// "display items for correction of daily performance")
-
 				MonthlyRecordWorkType monthlyRecordWorkType = this.monthlyRecordWorkTypeRepository
 						.getMonthlyRecordWorkTypeByCode(companyId, code).get();
-				sheetNo1 = monthlyRecordWorkType.getDisplayItem().getListSheetCorrectedMonthly().stream()
-						.filter(sheet -> sheet.getSheetNo() == SHEET_NO_1).findFirst().get();
+
+				lstDataReturn = monthlyRecordWorkType.getDisplayItem()
+						.getListSheetCorrectedMonthly().stream()
+						.sorted(Comparator.comparing(SheetCorrectedMonthly::getSheetNo))
+						.flatMap(t -> t.getListDisplayTimeItem().stream())
+						.sorted(Comparator.comparing(DisplayTimeItem::getDisplayOrder))
+						.map(item -> new DisplayTimeItemDto(item.getItemDaily()
+			    				  , item.getDisplayOrder()
+			    				  , item.getColumnWidthTable()))
+						.collect(Collectors.toList());
 				break;
 			default:
 				break;
 			}
 		}
 
-		// sort list display item by display order
-		sheetNo1.setListDisplayTimeItem(sheetNo1.getListDisplayTimeItem().stream()
-				.sorted(Comparator.comparing(DisplayTimeItem::getDisplayOrder)).collect(Collectors.toList()));
-		
-		if (sheetNo1.getListDisplayTimeItem().size() <= 48) {
-			return sheetNo1
-					.getListDisplayTimeItem().stream().map(item -> new DisplayTimeItemDto(item.getItemDaily(),
-					item.getDisplayOrder(), item.getColumnWidthTable())).
-					limit(LIMIT_DISPLAY_ITEMS).collect(Collectors.toList());
-		} else if (sheetNo1.getListDisplayTimeItem().size() > 60) {
-			return sheetNo1
-					.getListDisplayTimeItem().stream().map(item -> new DisplayTimeItemDto(item.getItemDaily(),
-					item.getDisplayOrder(), item.getColumnWidthTable())).
-					limit(FOR_SMALL_CASES).collect(Collectors.toList());
-		}
-		return sheetNo1
-				.getListDisplayTimeItem().stream().map(item -> new DisplayTimeItemDto(item.getItemDaily(),
-				item.getDisplayOrder(), item.getColumnWidthTable())).collect(Collectors.toList());
-		
+		// 文字の大きさにより最大表示件数を求める
+		// 大の場合：48件までとする
+		// 小の場合：60件までとする
+		int numberDisplayItem = fontSize == TextSizeCommonEnum.SMALL
+								? LIMIT_DISPLAY_ITEMS_SMALL_SIZE
+								: LIMIT_DISPLAY_ITEMS_BIG_SIZE;
+
+		return lstDataReturn.stream()
+				.limit(numberDisplayItem)
+				.collect(Collectors.toList());
 	}
 
 	private List<TimeItemTobeDisplayDto> toDtoTimeItemTobeDisplay(List<MonthlyAttendanceItemsDisplay> lstDomainObject,

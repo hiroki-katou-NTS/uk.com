@@ -307,11 +307,12 @@ module nts.uk.at.view.kwr006.a {
                                 });
                             }
                         });
-                        // Show error in msg_1344
-//                        if (self.errorLogs().length > 0)
-//                            nts.uk.ui.dialog.alertError({ messageId: "Msg_1344", message: message("Msg_1344") + employeeStr, messageParams: [self.errorLogs().length]});
                         if (self.errorLogsNoWorkplace().length > 0)
-                            nts.uk.ui.dialog.alertError({ messageId: "Msg_1396", message: message("Msg_1396") + employeeStr, messageParams: [self.errorLogs().length]});
+                            nts.uk.ui.dialog.alertError({
+                                messageId: "Msg_1396",
+                                message: message("Msg_1396") + employeeStr,
+                                messageParams: [self.errorLogs().length]
+                            });
                     }).fail(function (error) {
                         nts.uk.ui.dialog.alertError({ messageId: error.message, messageParams: null});
                     }).always(function (error) {
@@ -362,11 +363,12 @@ module nts.uk.at.view.kwr006.a {
                                 });
                             }
                         });
-//                        // Show error in msg_1344
-//                        if (self.errorLogs().length > 0)
-//                            nts.uk.ui.dialog.alertError({ messageId: "Msg_1344", message: message("Msg_1344") + employeeStr, messageParams: [self.errorLogs().length]});
                         if (self.errorLogsNoWorkplace().length > 0)
-                            nts.uk.ui.dialog.alertError({ messageId: "Msg_1396", message: message("Msg_1396") + employeeStr, messageParams: [self.errorLogs().length]});
+                            nts.uk.ui.dialog.alertError({
+                                messageId: "Msg_1396",
+                                message: message("Msg_1396") + employeeStr,
+                                messageParams: [self.errorLogs().length]
+                            });
                     }).fail(function (error) {
                         nts.uk.ui.dialog.alertError({ messageId: error.message, messageParams: null});
                     }).always(function (error) {
@@ -377,14 +379,19 @@ module nts.uk.at.view.kwr006.a {
 
             public openScreenC(): void {
                 let self = this;
-                nts.uk.ui.windows.setShared('selectedCode', self.monthlyWorkScheduleConditionModel.selectedCode());
-                nts.uk.ui.windows.setShared('selectedCodeFreeSetting', self.monthlyWorkScheduleConditionModel.selectedCodeFreeSetting());
+                let codeShared = self.monthlyWorkScheduleConditionModel.itemSettingType() === ItemSelectionEnum.STANDARD_SELECTION
+                                ? self.monthlyWorkScheduleConditionModel.selectedCode()
+                                : self.monthlyWorkScheduleConditionModel.selectedCodeFreeSetting();
+                nts.uk.ui.windows.setShared('selectedCode', codeShared);
                 nts.uk.ui.windows.setShared('itemSelection', self.monthlyWorkScheduleConditionModel.itemSettingType());
                 nts.uk.ui.windows.sub.modal('/view/kwr/006/c/index.xhtml', { height: 750 }).onClosed(() => {
-                    self.loadListOutputItemMonthlyWorkSchedule().done(() => {
+                    self.loadListOutputItemMonthlyWorkSchedule().then(() => {
                         let data = nts.uk.ui.windows.getShared('selectedCodeScreenC');
-                        self.monthlyWorkScheduleConditionModel.selectedCode(data);
-                        self.monthlyWorkScheduleConditionModel.selectedCodeFreeSetting(data);
+                        if (self.monthlyWorkScheduleConditionModel.itemSettingType() === ItemSelectionEnum.STANDARD_SELECTION) {
+                            self.monthlyWorkScheduleConditionModel.selectedCode(data);
+                        } else {
+                            self.monthlyWorkScheduleConditionModel.selectedCodeFreeSetting(data);
+                        }
                     });
                 });
             }
