@@ -73,7 +73,7 @@
                     {{ 'KAF020_26' | i18n}}
                   </span>
                   <span v-if="item.lowerCheck">
-                    <span v-if="item.optionalItemAtr == 0">
+                    <span v-if="item.optionalItemAtr == 0 && item.timeLower != null">
                       {{ item.timeLower | timewd }}
                     </span>
                     <span v-if="item.optionalItemAtr == 1">
@@ -87,7 +87,7 @@
                     {{'KAF020_27' | i18n}}
                   </span>
                   <span v-if="item.upperCheck">
-                    <span v-if="item.optionalItemAtr == 0">
+                    <span v-if="item.optionalItemAtr == 0 && item.timeUpper != null">
                       {{ item.timeUpper | timewd }}
                     </span>
                     <span v-if="item.optionalItemAtr == 1">

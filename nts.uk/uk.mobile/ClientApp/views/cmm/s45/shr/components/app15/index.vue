@@ -59,7 +59,7 @@
                     {{ "KAF020_26" | i18n }}
                   </span>
                   <span v-if="item.lowerCheck">
-                    <span v-if="item.optionalItemAtr == 0">
+                    <span v-if="item.optionalItemAtr == 0 && item.timeLower != null">
                       {{ item.timeLower | timewd }}
                     </span>
                     <span v-if="item.optionalItemAtr == 1">
@@ -73,7 +73,7 @@
                     {{ "KAF020_27" | i18n }}
                   </span>
                   <span v-if="item.upperCheck">
-                    <span v-if="item.optionalItemAtr == 0">
+                    <span v-if="item.optionalItemAtr == 0 && item.timeUpper != null">
                       {{ item.timeUpper | timewd }}
                     </span>
                     <span v-if="item.optionalItemAtr == 1">
@@ -101,7 +101,7 @@
           </div>
           <!-- A2_6_4_1 -->
           <div class="position-relative mt-2">
-            <label class="pl-4" v-if="item.optionalItemAtr == 0">{{item.time | timewd}}{{item.unit}}</label>
+            <label class="pl-4" v-if="item.optionalItemAtr == 0 && item.time != null">{{item.time | timewd}}{{item.unit}}</label>
             <label class="pl-4" v-if="item.optionalItemAtr == 1">{{ item.number }}{{item.unit}}</label>
             <label class="pl-4" v-if="item.optionalItemAtr == 2">{{ item.amount }}{{item.unit}}</label>
           </div>
