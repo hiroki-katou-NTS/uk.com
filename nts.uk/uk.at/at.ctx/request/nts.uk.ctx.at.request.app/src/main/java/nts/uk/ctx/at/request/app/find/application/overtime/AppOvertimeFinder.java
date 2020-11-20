@@ -14,6 +14,7 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.CheckBeforeOutputDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.DetailOutputDto;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationDate;
@@ -125,12 +126,34 @@ public class AppOvertimeFinder {
 		Application application = this.createApplication(param.appOverTime.application);
 		AppOverTime appOverTime = param.appOverTime.toDomain();
 		appOverTime.setApplication(application);
-		overtimeService.checkErrorRegister(
+		output = overtimeService.checkErrorRegister(
 				param.require,
 				param.companyId,
 				displayInfoOverTime,
 				appOverTime);
 		return CheckBeforeOutputDto.fromDomain(output);
+	}
+	
+	public CheckBeforeOutputDto checkBeforeUpdate(ParamCheckBeforeRegister param) {
+		CheckBeforeOutput output = null;
+		DisplayInfoOverTime displayInfoOverTime = param.displayInfoOverTime.toDomain();
+		Application application = param.appOverTime.application.toDomain();
+		AppOverTime appOverTime = param.appOverTime.toDomain();
+		appOverTime.setApplication(application);
+		output = overtimeService.checkBeforeUpdate(
+				param.require,
+				param.companyId,
+				appOverTime,
+				displayInfoOverTime);
+		return CheckBeforeOutputDto.fromDomain(output);
+	}
+	
+	public DetailOutputDto getDetail(ParamDetail param) {
+		
+		return DetailOutputDto.fromDomain(overtimeService.getDetailData(
+				param.companyId,
+				param.appId,
+				param.appDispInfoStartup.toDomain()));
 	}
 	
 	public Application createApplication(ApplicationDto application) {

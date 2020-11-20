@@ -12,9 +12,11 @@ import nts.uk.ctx.at.request.app.find.application.overtime.AppOvertimeFinder;
 import nts.uk.ctx.at.request.app.find.application.overtime.DisplayInfoOverTimeDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.ParamCalculation;
 import nts.uk.ctx.at.request.app.find.application.overtime.ParamCheckBeforeRegister;
+import nts.uk.ctx.at.request.app.find.application.overtime.ParamDetail;
 import nts.uk.ctx.at.request.app.find.application.overtime.ParamOverTimeChangeDate;
 import nts.uk.ctx.at.request.app.find.application.overtime.ParamOverTimeStart;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.CheckBeforeOutputDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.DetailOutputDto;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 /**
  * Refactor5 
@@ -60,6 +62,18 @@ public class OvertimeWebService extends WebService {
 	@Path("register")
 	public ProcessResult register(RegisterCommand command) {
 		return registerCommandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("getDetail")
+	public DetailOutputDto getDetail(ParamDetail param) {
+		return appOvertimeFinder.getDetail(param);
+	}
+	
+	@POST
+	@Path("checkBeforeUpdate")
+	public CheckBeforeOutputDto checkBeforeUpdate(ParamCheckBeforeRegister param) {
+		return appOvertimeFinder.checkBeforeRegister(param);
 	}
 	
 	
