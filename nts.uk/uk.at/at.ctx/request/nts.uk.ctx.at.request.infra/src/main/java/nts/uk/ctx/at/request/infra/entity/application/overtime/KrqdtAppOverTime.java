@@ -58,14 +58,23 @@ public class KrqdtAppOverTime extends ContractUkJpaEntity implements Serializabl
 	@Column(name = "WORK_TIME_END2")
 	public Integer workTimeEnd2;
 	
-	@Column(name = "DIVERGENCE_NO")
-	public Integer divergenceNo;
+	@Column(name = "DIVERGENCE_NO1")
+	public Integer divergenceNo1;
 	
-	@Column(name = "DIVERGENCE_CD")
-	public String divergenceCD;
+	@Column(name = "DIVERGENCE_CD1")
+	public String divergenceCD1;
 	
-	@Column(name = "DIVERGENCE_REASON")
-	public String divergenceReason;
+	@Column(name = "DIVERGENCE_REASON1")
+	public String divergenceReason1;
+	
+	@Column(name = "DIVERGENCE_NO2")
+	public Integer divergenceNo2;
+	
+	@Column(name = "DIVERGENCE_CD2")
+	public String divergenceCD2;
+	
+	@Column(name = "DIVERGENCE_REASON2")
+	public String divergenceReason2;
 	
 	@Column(name = "FLEX_EXCESS_TIME")
 	public Integer flexExcessTime;

@@ -45,7 +45,7 @@ public class OverTimeRegisterServiceImpl implements OverTimeRegisterService {
 			List<ApprovalPhaseStateImport_New> lstApproval,
 			Boolean mailServerSet,
 			AppTypeSetting appTypeSetting) {
-		Application application = (Application)appOverTime;
+		Application application = appOverTime.getApplication();
 		// 登録処理を実行
 		appRepository.insertApp(application, lstApproval);
 		registerService.newScreenRegisterAtApproveInfoReflect(application.getEmployeeID(), application);

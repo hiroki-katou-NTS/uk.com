@@ -49,6 +49,7 @@ import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOverTime;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOverTimeDetM;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeDetail;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeDetailPk;
+import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimePK;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtOvertimeInput;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtOvertimeInputPK;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
@@ -83,7 +84,11 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 	}
 	private KrqdtAppOverTime toEntity(AppOverTime appOverTime) {
 		KrqdtAppOverTime krqdtAppOverTime = new KrqdtAppOverTime();
-		krqdtAppOverTime.krqdtAppOvertimePK.appId = appOverTime.getAppID();
+		KrqdtAppOvertimePK krqdtAppOvertimePK = new KrqdtAppOvertimePK(
+				AppContexts.user().companyId(),
+				appOverTime.getAppID());
+				
+		krqdtAppOverTime.krqdtAppOvertimePK = krqdtAppOvertimePK;
 		krqdtAppOverTime.overtimeAtr = appOverTime.getOverTimeClf().value;
 		krqdtAppOverTime.workTypeCode = appOverTime.getWorkInfoOp().map(x -> x.getWorkTypeCode().v()).orElse(null);
 		krqdtAppOverTime.workTimeCode = appOverTime.getWorkInfoOp().map(x -> x.getWorkTimeCode().v()).orElse(null);
@@ -98,6 +103,22 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 			}
 		});
 		// 
+		appOverTime.getApplicationTime()
+			.getReasonDissociation()
+			.orElse(Collections.emptyList())
+			.stream()
+			.forEach(item -> {
+				if (item.getDiviationTime() == 1) {
+					krqdtAppOverTime.divergenceNo1 = item.getDiviationTime();
+					krqdtAppOverTime.divergenceCD1 = item.getReasonCode().v();
+					krqdtAppOverTime.divergenceReason1 = item.getReason().v();		
+				} 
+				if (item.getDiviationTime() == 2) {
+					krqdtAppOverTime.divergenceNo2 = item.getDiviationTime();
+					krqdtAppOverTime.divergenceCD2 = item.getReasonCode().v();
+					krqdtAppOverTime.divergenceReason2 = item.getReason().v();
+				}
+			});
 		
 		// 
 		krqdtAppOverTime.flexExcessTime = appOverTime.getApplicationTime().getFlexOverTime().map(x -> x.v()).orElse(null);
@@ -298,11 +319,17 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 		
 		Integer workTimeEnd2 = res.getInt("WORK_TIME_END2");
 		
-		Integer divergenceNo = res.getInt("DIVERGENCE_NO");
+		Integer divergenceNo1 = res.getInt("DIVERGENCE_NO1");
 		
-		String divergenceCD = res.getString("DIVERGENCE_CD");
+		String divergenceCD1 = res.getString("DIVERGENCE_CD1");
 		
-		String divergenceReason = res.getString("DIVERGENCE_REASON");
+		String divergenceReason1 = res.getString("DIVERGENCE_REASON1");
+		
+		Integer divergenceNo2 = res.getInt("DIVERGENCE_NO2");
+		
+		String divergenceCD2 = res.getString("DIVERGENCE_CD2");
+		
+		String divergenceReason2 = res.getString("DIVERGENCE_REASON2");
 		
 		Integer flexExcessTime = res.getInt("FLEX_EXCESS_TIME");
 		
@@ -382,29 +409,54 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 			workHoursOp.add(timeZoneWithWorkNo);		
 		}
 		appOverTime.setOpReversionReason(Optional.empty());
-		ReasonDivergence reasonDivergence = new ReasonDivergence();
+		ReasonDivergence reasonDivergence1 = new ReasonDivergence();
+		ReasonDivergence reasonDivergence2 = new ReasonDivergence();
 		
 		ApplicationTime applicationTime = new ApplicationTime();
 		applicationTime.setFlexOverTime(Optional.ofNullable(flexExcessTime != null ? new AttendanceTimeOfExistMinus(flexExcessTime) : null));
 		// 112610
-		if (divergenceNo != null) {
-			reasonDivergence.setDiviationTime(divergenceNo);
+		if (divergenceNo1 != null) {
+			reasonDivergence1.setDiviationTime(divergenceNo1);
 		}
-		if (divergenceCD != null) {
-			DiverdenceReasonCode reasonCode = new DiverdenceReasonCode(divergenceCD);
-			reasonDivergence.setReasonCode(reasonCode);
+		if (divergenceCD1 != null) {
+			DiverdenceReasonCode reasonCode = new DiverdenceReasonCode(divergenceCD1);
+			reasonDivergence1.setReasonCode(reasonCode);
 		}
-		if (divergenceReason != null) {
-			DivergenceReason diReason = new DivergenceReason(divergenceReason);
-			reasonDivergence.setReason(diReason);
+		if (divergenceReason1 != null) {
+			DivergenceReason diReason = new DivergenceReason(divergenceReason1);
+			reasonDivergence1.setReason(diReason);
+		}
+		
+		if (divergenceNo2 != null) {
+			reasonDivergence2.setDiviationTime(divergenceNo2);
+		}
+		if (divergenceCD2 != null) {
+			DiverdenceReasonCode reasonCode = new DiverdenceReasonCode(divergenceCD2);
+			reasonDivergence2.setReasonCode(reasonCode);
+		}
+		if (divergenceReason2 != null) {
+			DivergenceReason diReason = new DivergenceReason(divergenceReason2);
+			reasonDivergence2.setReason(diReason);
 		}
 		List<ReasonDivergence> reasonDissociation;
-		if (reasonDivergence.isNullProp()) {
-			applicationTime.setReasonDissociation(Optional.empty());
-		} else {
+		List<ReasonDivergence> reasonDissociation2;
+		
+		if (!reasonDivergence1.isNullProp()) {
+			
 			reasonDissociation = new ArrayList<ReasonDivergence>();
-			reasonDissociation.add(reasonDivergence);
+			reasonDissociation.add(reasonDivergence1);
 			applicationTime.setReasonDissociation(Optional.of(reasonDissociation));
+		}
+		
+		if (!reasonDivergence2.isNullProp()) {
+			reasonDissociation2 = new ArrayList<ReasonDivergence>();
+			reasonDissociation2.add(reasonDivergence2);
+			if(!applicationTime.getReasonDissociation().isPresent()) {
+				applicationTime.setReasonDissociation(Optional.of(reasonDissociation2));
+			}
+			if (applicationTime.getReasonDissociation().isPresent()) {
+				applicationTime.getReasonDissociation().get().add(reasonDivergence2);			
+			} 
 		}
 
 		OverTimeShiftNight overTimeShiftNight = new OverTimeShiftNight();
