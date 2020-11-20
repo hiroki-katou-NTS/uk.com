@@ -9,7 +9,12 @@
 		<ui:define name="htmlHead">
 
 			<com:scriptfile set="IGNITE" />
-			<script>var dialogSize = { width: 300, height: 600 };</script>
+			<script>
+				var dialogSize = {
+					width : 500,
+					height : 570
+				};
+			</script>
 			<com:stylefile path="./kmk004.p.style.css" />
 			<com:scriptfile path="./kmk004.p.vm.js" />
 		</ui:define>
@@ -21,62 +26,131 @@
 				<!-- P2_1 -->
 				<div
 					data-bind="ntsFormLabel: { required: true, text: $i18n('KMK004_308') }"></div>
-
+				<br></br>
 				<!-- P2_2 -->
-				<label data-bind="text: $i18n('KMK004_309')"></label>
+				<label class="child-row" data-bind="text: $i18n('KMK004_309')"></label>
 
 				<!-- P2_3 -->
-				<input tabindex="1"
-					data-bind="ntsTextEditor: { value: day, required: true, name: '#[KMK004_309]' }" />
+				<input tabindex="1" class="input_time"
+					data-bind="ntsTimeEditor: { value: day, inputFormat: 'time', required: true, name: '#[KMK004_309]' }" />
 
 				<!-- P2_4 -->
 				<label data-bind="text: $i18n('KMK004_310')"></label>
 
 				<!-- P2_5 -->
-				<input tabindex="2"
-					data-bind="ntsTextEditor: { value: week, required: true, name: '#[KMK004_310]' }" />
-
+				<input tabindex="2" class="input_time"
+					data-bind="ntsTimeEditor: { value: week, inputFormat: 'time', required: true, name: '#[KMK004_310]' }" />
+				<br></br>
 				<!-- P3_1 -->
 				<div
 					data-bind="ntsFormLabel: { required: false, text: $i18n('KMK004_311') }"></div>
+				<br></br>
 
-				<!-- P3_2 -->
-				<label data-bind="text: $i18n('KMK004_312')"></label>
-
-				<!-- P3_3 -->
-				<div tabindex="3" class="cf"
-					data-bind="ntsSwitchButton: {
-								options: itemListP3_3,
-								optionsValue: 'code',
-								name: #[KMK004_312],
-								optionsText:'name',
-								value: selectedP3_3}"></div>
-
-				<!-- P3_4 -->
-				<label data-bind="text: $i18n('KMK004_315')"></label>
-
-				<!-- P3_5 -->
-				<div id="combo-box" tabindex="4"
-					data-bind="ntsComboBox: {
-									name: comboboxName,
+				<table id = "table">
+					<tr>
+						<td>
+							<!-- P3_2 --> <label class="child-row"
+							data-bind="text: $i18n('KMK004_312')"></label>
+						</td>
+						<td>
+							<!-- P3_3 -->
+							<div tabindex="3" class="cf"
+								data-bind="ntsSwitchButton: {
+										options: itemListP3_3,
+										optionsValue: 'code',
+										name: '#{i18n.getText('KMK004_312')}',
+										optionsText:'name',
+										value: selectedP3_3}"></div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<!-- P3_4 --> <label class="child-row"
+							data-bind="text: $i18n('KMK004_315')"></label>
+						</td>
+						<td>
+							<!-- P3_5 -->
+							<div id="combo-box" tabindex="4"
+								data-bind="ntsComboBox: {
+									name: '#{i18n.getText('KMK004_315')}',
 									options: itemListP3_5,
 									optionsValue: 'code',
 									visibleItemsCount: 12,
-									value: selectedCode,
+									value: selectedP3_5,
 									optionsText: 'name',
 									editable:  false,
 									enable: true,
 									required: false,
-									columns: [{ prop: 'code', length: 2 }]}">
-				</div>
+									columns: [{ prop: 'name', length: 5 }]}">
+							</div>
+						</td>
+						<td>
+							<!-- P3_6 --> <label
+							data-bind="text: $i18n('KMK004_316')"></label>
+						</td>
+						<td>
+							<!-- P3_7 -->
+							<div id="combo-box" tabindex="4"
+								data-bind="ntsComboBox: {
+									name: '#{i18n.getText('KMK004_316')}',
+									options: itemListP3_7,
+									optionsValue: 'code',
+									visibleItemsCount: 12,
+									value: selectedP3_7,
+									optionsText: 'name',
+									editable:  false,
+									enable: true,
+									required: false,
+									columns: [{ prop: 'name', length: 5 }]}">
+							</div>
+						</td>
+						<td>
+							<!-- P3_8 -->
+							<div data-bind="ntsCheckBox: { checked: checkedP3_8 } "></div> <label
+							data-bind="i18n: 'KMK004_317'"></label> <br></br>
+						</td>
+					</tr>
+				</table>
+
+				<!-- P4_1 -->
+				<div
+					data-bind="ntsFormLabel: { required: false, text: $i18n('KMK004_318') }"></div>
+				<br></br>
+				<!-- P4_2 -->
+				<div class="child-row"
+					data-bind="ntsCheckBox: { checked: checkedP4_2 } "></div>
+				<label data-bind="i18n: 'KMK004_319'"></label> <br></br>
+
+				<!-- P4_3 -->
+				<div class="child-row"
+					data-bind="ntsCheckBox: { checked: checkedP4_3 } "></div>
+				<label data-bind="i18n: 'KMK004_320'"></label> <br></br>
+
+				<!-- P5_1 -->
+				<div
+					data-bind="ntsFormLabel: { required: false, text: $i18n('KMK004_321') }"></div>
+				<br></br>
+
+				<!-- P5_2 -->
+				<div class="child-row"
+					data-bind="ntsCheckBox: { checked: checkedP4_2 } "></div>
+				<label data-bind="i18n: 'KMK004_322'"></label> <br></br>
+
+				<!-- P5_3 -->
+				<div class="child-row"
+					data-bind="ntsCheckBox: { checked: checkedP4_3 } "></div>
+				<label data-bind="i18n: 'KMK004_323'"></label>
+
 			</div>
+
 			<div id="functions-area-bottom">
 				<!-- P6_1 -->
-				<button tabindex="11" data-bind="click: register, i18n: 'KMK004_234'"
+				<button tabindex="11"
+					data-bind="click: register, i18n: 'KMK004_234'"
 					class="proceed large"></button>
 
 				<!-- P6_2 -->
-				<button tabindex="12" data-bind="click: close, i18n: 'KMK004_235"></button>
+				<button tabindex="12" data-bind="click: close, i18n: 'KMK004_235'"></button>
 
 				<!-- P6_3 -->
 				<button tabindex="13" class="danger" data-bind="i18n: 'KMK004_227'"></button>
