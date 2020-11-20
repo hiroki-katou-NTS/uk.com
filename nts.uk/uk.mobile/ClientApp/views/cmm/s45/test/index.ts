@@ -18,7 +18,7 @@ import { CmmS45DComponent } from '../d/index';
 })
 export class CmmS45TestComponent extends Vue {
     public title: string = 'CmmS45Test';
-    public text: string = '';
+    public text: string = 'sample';
 
     private gotoCMMS45C() {
         let self = this;
