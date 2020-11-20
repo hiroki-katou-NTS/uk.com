@@ -5,16 +5,15 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/base.xhtml">
+	<ui:composition template="/master/base.xhtml">
 		<ui:define name="htmlHead">
       <com:stylefile path="../../common/common.css" />
 			<com:stylefile path="ccg008.a.style.css" />
-			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="ccg008.a.start.js" />
-			<com:scriptfile path="ccg008.a.service.js" />
-			<com:scriptfile path="ccg008.a.vm.js" />
+      <com:scriptfile set="IGNITE" />
+			<com:scriptfile path="./ccg008.a.service.js" />
+      <com:scriptfile path="./ccg008.a.vm.js" />
+      <com:scriptfile path="/view/ktg/027/a/ktg027.a.vm.js"  of="nts.uk.at.web"/>
 		</ui:define>
-
 		<ui:define name="content">
 			<div id="contents-area">
 				<div id="ver4">
@@ -67,7 +66,7 @@
 				<div class="content">
           <div class="content-top">
             <div class="contents_layout" id="resizable">
-              <com:ko-if bind="isVisiableContentF2()">
+              <com:ko-if bind="layoutDisplayType() === 2 || layoutDisplayType() === 3">
                 <div class="contents_2" id="F2">
                   <div class="panel panel-frame widget_contents" data-bind="foreach: lstWidgetLayout2">
                     <div class="panel-content placeholder" data-bind="html: html"></div>
@@ -79,19 +78,20 @@
                   <com:ko-if bind="isShowUrlLayout1()">
                     <iframe class="iframe_fix" id="preview-iframe1" data-bind="attr:{src: urlIframe1}"></iframe>
                   </com:ko-if>
-                  <div data-bind="foreach: lstHtml">
+                  <!-- <div data-bind="foreach: lstHtml">
                     <div data-bind="html: html" id="F1-frame" ></div>
-                  </div>
+                  </div> -->
+                  <ktg027-component></ktg027-component>
                 </div>
               </div>
-              <com:ko-if bind="isVisiableContentF4()">
+              <com:ko-if bind="layoutDisplayType() === 1">
                 <div class="contents_2" id="F4">
                   <div class="panel panel-frame widget_contents" data-bind="foreach: lstWidgetLayout2">
                     <div class="panel-content placeholder" data-bind="html: html"></div>
                   </div>
                 </div>
               </com:ko-if>
-              <com:ko-if bind="isVisiableContentF3()">
+              <com:ko-if bind="layoutDisplayType() === 3">
                 <div class="contents_3" id="F3">
                   <div class="widget_contents panel panel-frame">
                     <div class="panel panel-frame widget_contents" data-bind="foreach: lstWidgetLayout3">
