@@ -88,14 +88,13 @@ public class DailyBeforeCheckService {
             // List<社員ID＞から打刻カードを全て取得する
             Map<String, StampNumber> stampCards = getStampCardQuery.getStampNumberBy(employeeIds);
 
-            Map<String, Stamp> empStamps = new HashMap<>();
+            Map<String, List<Stamp>> stampsByEmpMap = new HashMap<>();
             // ドメインモデル「打刻」を取得する
             for (Map.Entry<String, StampNumber> stampCard : stampCards.entrySet()) {
                 List<Stamp> stamps = stampDakokuRepo.getByCardAndPeriod(cid, Collections.singletonList(stampCard.getValue().v()), period);
-                if (CollectionUtil.isEmpty(stamps)) continue;
-                empStamps.put(stampCard.getKey(), stamps.get(0));
+                stampsByEmpMap.put(stampCard.getKey(), stamps);
             }
-            data.setStampByEmpMap(empStamps);
+            data.setStampsByEmpMap(stampsByEmpMap);
         }
 
         // 全て取得したデータを返す

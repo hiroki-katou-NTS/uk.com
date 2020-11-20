@@ -39,7 +39,7 @@ public class DataBeforeCheckDto {
     private List<Object> dailyExtBudgets;
 
     /**
-     * Map＜社員ID、打刻＞
+     * Map＜社員ID、List＜打刻＞＞
      */
-    private Map<String, Stamp> stampByEmpMap;
+    private Map<String, List<Stamp>> stampsByEmpMap;
 }
