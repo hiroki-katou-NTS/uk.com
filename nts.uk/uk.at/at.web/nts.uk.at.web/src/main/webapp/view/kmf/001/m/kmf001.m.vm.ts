@@ -4,10 +4,11 @@ module nts.uk.at.view.kmf001.m {
         import invisible = nts.uk.ui.block.invisible;
         import alertError = nts.uk.ui.dialog.alertError;
         import clear = nts.uk.ui.block.clear;
+        import getText = nts.uk.resource.getText;
 
         export class ScreenModel {
 
-            holidaySetting: KnockoutObservable<HolidaySetting> = ko.observable( new HolidaySetting() );
+            holidaySetting: KnockoutObservable<HolidaySetting>;
             constructor() {
                 let self = this;
             }
@@ -18,7 +19,9 @@ module nts.uk.at.view.kmf001.m {
                 let dfd = $.Deferred<any>();
                 invisible();
 
-                service.startUp().done( function() {
+                service.startUp().done( function( data ) {
+                    let fakeData = { startDay: '1', description: '2' }
+                    self.holidaySetting = ko.observable( new HolidaySetting( fakeData ) );
                     dfd.resolve();
                 } ).fail( function( res ) {
                     alertError( res.message );
@@ -30,27 +33,35 @@ module nts.uk.at.view.kmf001.m {
 
             private save(): void {
                 let self = this;
-                
+
                 nts.uk.ui.errors.clearAll();
                 let dfd = $.Deferred();
-                if(self.holidaySetting().selectedCategory() == 0 && self.holidaySetting().selectedClassification() == 0){
-                    $("#numberEditor-YMD").trigger("validate");
-                    $("#datePicker-YMD").trigger("validate");
-                    $("#radio-YMD").trigger("validate");
+                if ( self.holidaySetting().selectedCategory() == 0 && self.holidaySetting().selectedClassification() == 0 ) {
+                    $( "#numberEditor-YMD" ).trigger( "validate" );
+                    $( "#datePicker-YMD" ).trigger( "validate" );
+                    $( "#radio-YMD" ).trigger( "validate" );
                 }
-                else if(self.holidaySetting().selectedCategory() == 0 && self.holidaySetting().selectedClassification() == 1){
-                    $("#numberEditor1-MD").trigger("validate");
-                    $("#numberEditor2-MD").trigger("validate");
-                    $("#MonthDays-MD").trigger("validate");
-                    $("#radio-MD").trigger("validate");
+                else if ( self.holidaySetting().selectedCategory() == 0 && self.holidaySetting().selectedClassification() == 1 ) {
+                    $( "#numberEditor1-MD" ).trigger( "validate" );
+                    $( "#numberEditor2-MD" ).trigger( "validate" );
+                    $( "#MonthDays-MD" ).trigger( "validate" );
+                    $( "#radio-MD" ).trigger( "validate" );
                 }
-                else if(self.holidaySetting().selectedCategory() == 1){
-                    $("#numberEditor-1week").trigger("validate");
+                else if ( self.holidaySetting().selectedCategory() == 1 ) {
+                    $( "#numberEditor-1week" ).trigger( "validate" );
                 }
                 if ( nts.uk.ui.errors.hasError() ) {
                     return;
                 }
                 invisible();
+                //IF　M2_2に「１週」を選択している                                 
+                // AND　休日の設定情報.起算曜日がEmpty                              
+                //→　RETURN　エラーメッセージ（）を表示する Msg_2048
+                if ( self.holidaySetting().selectedCategory() == 1
+                    && self.holidaySetting().startingDay() == getText( 'KMF001_336' ) ) {
+                    alertError({ messageId: "Msg_2048" });
+                    return;
+                }
                 let command = {
                     //M6_4
                     nonStatutory: self.holidaySetting().nonStatutory(),
@@ -99,12 +110,21 @@ module nts.uk.at.view.kmf001.m {
                 unitID: "DAYS",
                 textalign: "right"
             } );
+            //M8_2
+            startingDay: KnockoutObservable<string> = ko.observable( '' );
+            //M8_3
+            description: KnockoutObservable<string> = ko.observable( '' );
             is4weeksAndMonthDay: KnockoutObservable<boolean> = ko.observable( false );
             is4weeksAndMonthDayYear: KnockoutObservable<boolean> = ko.observable( true );
             is1week: KnockoutObservable<boolean> = ko.observable( false );
-            constructor() {
+            constructor( data: any ) {
                 let self = this;
 
+                // KMF001_292 {０}から７日間 : {０} = 起算曜日
+                // 休日の設定情報.起算曜日がEmpty場合：KMF001_336を表示する       
+                self.startingDay( data.startDay == null ? getText( 'KMF001_336' ) : getText( 'KMF001_292', [data.startDay] ) );
+                //＃KMF001_293　｛0｝：　休日の設定情報.計算設定画面名
+                self.description( getText( 'KMF001_293', [data.description] ) );
                 self.selectedCategory.subscribe(( value ) => {
                     nts.uk.ui.errors.clearAll();
                     if ( value == 0 && self.selectedClassification() == 0 ) {
