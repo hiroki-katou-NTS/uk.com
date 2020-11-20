@@ -74,7 +74,8 @@ public class PredetermineTimeSetForCalc implements Cloneable{
 	/**
 	 * Aggregateの所定時間から計算用所定時間クラスへの変換
 	 */
-	public static PredetermineTimeSetForCalc convertFromAggregatePremiumTime(PredetemineTimeSetting predetermineTimeSet){
+	public static PredetermineTimeSetForCalc convertFromAggregatePremiumTime(PredetemineTimeSetting predetermineTimeSet) {
+		/** TODO: 三浦さんの処理待ち*/
 		return new PredetermineTimeSetForCalc(predetermineTimeSet.getPrescribedTimezoneSetting().getLstTimezone()
 											  ,predetermineTimeSet.getPrescribedTimezoneSetting().getMorningEndTime()
 											  ,predetermineTimeSet.getPrescribedTimezoneSetting().getAfternoonStartTime()

@@ -823,8 +823,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				if(predeteminaTimeSet.isPresent()) {
 					return predeteminaTimeSet;
 				} else {
-					// TODO: 三浦さんチームの実装待ち
-					predeteminaTimeSet = Optional.empty();
+					predeteminaTimeSet = predetemineTimeSetRepository.findByWorkTimeCode(cid, workTimeCode);
 				}
 				return predeteminaTimeSet;
 			}

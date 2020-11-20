@@ -50,7 +50,7 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem {
 	//短時間勤務時間帯区分 (短時間勤務区分)  7
 	private Optional<ShortTimeSheetAtr> shortTimeSheetAtr;
 	//控除区分 1
-	private final DeductionClassification deductionAtr;
+	private DeductionClassification deductionAtr;
 	//育児介護区分 6
 	private Optional<ChildCareAtr> childCareAtr;
 	
@@ -179,12 +179,18 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem {
 											this.childCareAtr);
 	}
 	
+	/** ○終了時刻に従って、外出時間帯を分割 */
+	public void changeToBreak() {
+		this.breakAtr = Finally.of(BreakClassification.BREAK_STAMP);
+		this.deductionAtr = DeductionClassification.BREAK;
+	}
+	
 	/**
 	 * 控除時間帯と控除時間帯の重複チェック
 	 * @param baseTimeSheet 現ループ中のリスト　
 	 * @param compareTimeSheet　次のループで取り出すリスト　
 	 */
-	public List<TimeSheetOfDeductionItem> DeplicateBreakGoOut(TimeSheetOfDeductionItem compareTimeSheet,WorkTimeMethodSet setMethod,RestClockManageAtr clockManage
+	public List<TimeSheetOfDeductionItem> deplicateBreakGoOut(TimeSheetOfDeductionItem compareTimeSheet,WorkTimeMethodSet setMethod,RestClockManageAtr clockManage
 															,boolean useFixedRestTime,FluidFixedAtr fluidFixedAtr,WorkTimeDailyAtr workTimeDailyAtr) {
 		List<TimeSheetOfDeductionItem> map = new ArrayList<TimeSheetOfDeductionItem>();
 		List<TimeSpanForDailyCalc> baseThisNotDupSpan = this.timeSheet.getNotDuplicationWith(compareTimeSheet.timeSheet);
@@ -552,7 +558,7 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem {
 	 * @param oneDayRange 1日の範囲
 	 * @return
 	 */
-	public Optional<TimeSpanForDailyCalc> getIncludeAttendanceOrLeaveDuplicateTimeSheet(TimeLeavingWork time,RestTimeOfficeWorkCalcMethod calcMethod,TimeSpanForDailyCalc oneDayRange) {
+	public Optional<TimeSpanForDailyCalc> getIncludeAttendanceOrLeaveDuplicateTimeSheet(TimeLeavingWork time, RestTimeOfficeWorkCalcMethod calcMethod, TimeSpanForDailyCalc oneDayRange) {
 		
 		TimeWithDayAttr newStart = oneDayRange.getStart();
 		TimeWithDayAttr newEnd = oneDayRange.getEnd();
@@ -578,9 +584,7 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem {
 				default:
 					throw new RuntimeException("unknown CalcMethodIfLeaveWorkDuringBreakTime:" + calcMethod);
 			}
-		}
-		else
-		{
+		} else {
 			//1日の計算範囲と出退勤の重複範囲取得
 			return oneDayRange.getDuplicatedWith(new TimeSpanForDailyCalc(time.getTimespan()));
 		}

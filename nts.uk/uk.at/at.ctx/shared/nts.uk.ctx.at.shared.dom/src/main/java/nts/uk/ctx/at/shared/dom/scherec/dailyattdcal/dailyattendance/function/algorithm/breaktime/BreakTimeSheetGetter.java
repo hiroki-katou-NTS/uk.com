@@ -7,16 +7,16 @@ import java.util.stream.Collectors;
 
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.DeductionTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PredetermineTimeSetForCalc;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionClassification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
@@ -78,7 +78,8 @@ public class BreakTimeSheetGetter {
 			} else if(wts.getWorkTimeDivision().getWorkTimeMethodSet() == WorkTimeMethodSet.FLOW_WORK) {
 				
 				/** 流動休憩 */
-				deductionTimeSheet = getDeductionTimeSheetOnFlexFlow(workType, workTimeSet, domainDaily, oneDayCalcRange, personDailySetting);
+				deductionTimeSheet = getDeductionTimeSheetOnFlexFlow(require, workType, workTimeSet, 
+						domainDaily, oneDayCalcRange, personDailySetting);
 			}
 			break;
 		case FLOW: /** 流動 */
@@ -111,26 +112,30 @@ public class BreakTimeSheetGetter {
 		return breakTimeSheet;
 	}
 	
-	private static List<TimeSheetOfDeductionItem> getDeductionTimeSheetOnFlexFlow(WorkType workType,
+	private static List<TimeSheetOfDeductionItem> getDeductionTimeSheetOnFlexFlow(RequireM3 require, WorkType workType,
 			IntegrationOfWorkTime workTime, IntegrationOfDaily integrationOfDaily,
 			CalculationRangeOfOneDay oneDayCalcRange, ManagePerPersonDailySet personDailySetting) {
 		
-		/** 所定時間帯を取得する*/
-		/** TODO: 三浦さんチームの実装待ち */
-		val attendanceLeaveWork = new TimeLeavingOfDailyAttd(null, null);
+		if (!integrationOfDaily.getAttendanceLeave().isPresent()) {
+			return new ArrayList<>();
+		}
 		
-		val timeLeavingWorks = attendanceLeaveWork.getTimeLeavingWorks().stream().map(c -> {
-			/** 遅刻・早退時間を計算 */
-			return oneDayCalcRange.calcLateTimeSheet(workType, workTime, integrationOfDaily, 
-					new ArrayList<>(), personDailySetting.getAddSetting().getVacationCalcMethodSet(),
-					c, oneDayCalcRange.getWithinWorkingTimeSheet().get());
-		}).collect(Collectors.toList());
+		val attendanceLeaveWorks = integrationOfDaily.getAttendanceLeave().map(c -> c.getTimeLeavingWorks()).orElse(new ArrayList<>());
 		
-		attendanceLeaveWork.setTimeLeavingWorks(timeLeavingWorks);
+		List<TimeLeavingWork> calcLateTimeLeavingWorksWorks = new ArrayList<>();
+		for(TimeLeavingWork timeLeavingWork : attendanceLeaveWorks) {
+			calcLateTimeLeavingWorksWorks.add(
+					oneDayCalcRange.calcLateTimeSheet(workType, workTime, integrationOfDaily,
+							new ArrayList<>(), personDailySetting.getAddSetting().getVacationCalcMethodSet(),
+							timeLeavingWork, 
+							new WithinWorkTimeSheet(new ArrayList<>(), new ArrayList<>(), Optional.empty(), Optional.empty())));
+		}
+		
+		val attendanceLeave = new TimeLeavingOfDailyAttd(calcLateTimeLeavingWorksWorks, new WorkTimes(calcLateTimeLeavingWorksWorks.size()));
 		
 		/** 流動休憩用の時間帯作成 */
-		val timeSheet = CalculationRangeOfOneDay.provisionalDeterminationOfDeductionTimeSheet(workType, workTime, integrationOfDaily, 
-				oneDayCalcRange.getOneDayOfRange(), attendanceLeaveWork, 
+		val timeSheet = oneDayCalcRange.provisionalDeterminationOfDeductionTimeSheet(workType, workTime, integrationOfDaily, 
+				oneDayCalcRange.getOneDayOfRange(), attendanceLeave, 
 				oneDayCalcRange.getPredetermineTimeSetForCalc());
 		
 		return timeSheet.getForDeductionTimeZoneList();
@@ -165,6 +170,11 @@ public class BreakTimeSheetGetter {
 		}
 	}
 
+	public static interface RequireM3 {
+
+		Optional<PredetemineTimeSetting> predetemineTimeSetting(String cid, String workTimeCode);
+	}
+
 	public static interface RequireM2 {
 		
 		Optional<WorkTimeSetting> workTimeSetting(String companyId, String workTimeCode);
@@ -176,11 +186,9 @@ public class BreakTimeSheetGetter {
 		Optional<FlexWorkSetting> flexWorkSetting(String companyId,String workTimeCode);
 	}
 
-	public static interface RequireM1 extends RequireM2 {
+	public static interface RequireM1 extends RequireM2, RequireM3 {
 		
 		Optional<WorkType> workType(String companyId, String workTypeCd);
-		
-		Optional<PredetemineTimeSetting> predetemineTimeSetting(String cid, String workTimeCode);
 		
 		CalculationRangeOfOneDay createOneDayRange(Optional<PredetemineTimeSetting> predetemineTimeSet,
 				IntegrationOfDaily integrationOfDaily, Optional<WorkTimezoneCommonSet> commonSet,

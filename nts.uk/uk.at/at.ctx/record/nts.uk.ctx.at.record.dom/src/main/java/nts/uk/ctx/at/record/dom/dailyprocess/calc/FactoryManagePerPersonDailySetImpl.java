@@ -104,17 +104,10 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 		
 			/*平日時*/
 			PredetermineTimeSetForCalc predetermineTimeSetByPersonWeekDay = this.getPredByPersonInfo(
-					nowWorkingItem.getWorkCategory().getWeekdayTime().getWorkTimeCode().get(),
-					shareContainer);
+					nowWorkingItem.getWorkCategory().getWeekdayTime().getWorkTimeCode().get(), shareContainer);
 			
-			return Optional.of(
-					new ManagePerPersonDailySet(
-					nowWorkingItem,
-					dailyUnit,
-					addSetting,
-					bonusPaySetting,
-					predetermineTimeSetByPersonWeekDay)
-				);
+			return Optional.of(new ManagePerPersonDailySet(nowWorkingItem, dailyUnit,
+								addSetting, bonusPaySetting, predetermineTimeSetByPersonWeekDay));
 		}
 		catch(RuntimeException e) {
 			return Optional.empty();

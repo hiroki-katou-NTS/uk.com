@@ -304,7 +304,7 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 		StringBuilder query = new StringBuilder("SELECT a, c, d, e, g, h FROM KrcdtDayTime a LEFT JOIN a.krcdtDayLeaveEarlyTime c ");
 		query.append("LEFT JOIN a.krcdtDayPremiumTime d ");
 		query.append("LEFT JOIN a.krcdtDayLateTime e ");
-		query.append("LEFT JOIN a.KrcdtDayShorttime g ");
+		query.append("LEFT JOIN a.krcdtDayShorttime g ");
 		query.append("LEFT JOIN a.krcdtDayOutingTime h ");	
 		query.append("WHERE a.krcdtDayTimePK.employeeID = :employeeId ");
 		query.append("AND a.krcdtDayTimePK.generalDate >= :start ");
@@ -345,7 +345,7 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 		StringBuilder query = new StringBuilder("SELECT a, c , d, e, g ,h FROM KrcdtDayTime a LEFT JOIN a.krcdtDayLeaveEarlyTime c ");
 		query.append("LEFT JOIN a.krcdtDayPremiumTime d ");
 		query.append("LEFT JOIN a.krcdtDayLateTime e ");
-		query.append("LEFT JOIN a.KrcdtDayShorttime g ");
+		query.append("LEFT JOIN a.krcdtDayShorttime g ");
 		query.append("LEFT JOIN a.krcdtDayOutingTime h ");	
 		query.append("WHERE a.krcdtDayTimePK.employeeID IN :employeeId ");
 		query.append("AND a.krcdtDayTimePK.generalDate IN :date");
@@ -368,7 +368,7 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 		StringBuilder query = new StringBuilder("SELECT a, c , d, e, g, h FROM KrcdtDayTime a LEFT JOIN a.krcdtDayLeaveEarlyTime c ");
 		query.append("LEFT JOIN a.krcdtDayPremiumTime d ");
 		query.append("LEFT JOIN a.krcdtDayLateTime e ");
-		query.append("LEFT JOIN a.KrcdtDayShorttime g ");	
+		query.append("LEFT JOIN a.krcdtDayShorttime g ");	
 		query.append("LEFT JOIN a.krcdtDayOutingTime h ");	
 		query.append("WHERE a.krcdtDayTimePK.employeeID IN :employeeId ");
 		query.append("AND a.krcdtDayTimePK.generalDate <= :end AND a.krcdtDayTimePK.generalDate >= :start");
