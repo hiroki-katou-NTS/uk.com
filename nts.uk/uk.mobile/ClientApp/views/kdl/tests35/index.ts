@@ -1,33 +1,30 @@
 import { Vue } from '@app/provider';
 import { component } from '@app/core/component';
+import {KdlS35Component} from '../s35/';
 
 @component({
-    name: 'kdls35',
-    route: '/kdl/s35',
+    name: 'kdltests35',
+    route: '/kdl/tests35',
     style: require('./style.scss'),
     template: require('./index.vue'),
+    components: {
+        'kdls35': KdlS35Component
+    },
     resource: require('./resources.json'),
     validations: {},
     constraints: []
 })
-export class KdlS35Component extends Vue {
-    public title: string = 'KdlS35';
+export class KdlTests35Component extends Vue {
+    public title: string = 'KdlTests35';
 
     public created() {
         const vm = this;
 
-
     }
 
-    public mounted() {
+    public openKDLS35() {
         const vm = this;
 
-        
-    }
-
-    public back() {
-        const vm = this;
-
-        vm.$close();
+        vm.$modal('kdls35',{});
     }
 }
