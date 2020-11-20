@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component"
+  xmlns:h="http://xmlns.jcp.org/jsf/html"
+>
+  <body>
+    <ui:composition template="../../../../master/dialog.xhtml">
+      <ui:define name="htmlHead">
+        <script>
+          var dialogSize = { width: 640, height: 300 };
+        </script>
+        <com:scriptfile set="IGNITE" />
+        <com:stylefile path="kwr005.c.main.css" />
+        <com:scriptfile path="kwr005.c.vm.js" />
+        <com:ValidatorScript>
+          nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode
+          nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName
+        </com:ValidatorScript>
+      </ui:define>
+
+      <ui:define name="content">
+        <div id="contents-area" class="kwr-003c">
+          <div class="row d-flex">
+            <div data-bind="text: $i18n('KWR005_301')"></div>
+            <div
+              data-bind="ntsFormLabel: { required: false, text: $i18n('KWR005_302')}"
+            ></div>            
+            <div class="textEditor">
+              <div class="code" data-bind="text: oldCode"></div>
+              <div data-bind="text: oldName"></div>              
+            </div>
+          </div>
+          <div class="row d-flex">
+            <div data-bind="text: $i18n('KWR005_303')"></div>            
+            <div
+              class="form-label required broken"
+              data-bind="ntsFormLabel: { 
+                    required: true, 
+                    text: $i18n('KWR005_302'), 
+                    constraint: ['OutputItemSettingCode', 'OutputItemSettingName']}"
+            ></div>
+            <div class="textEditor">
+              <input
+                id="KWR005_C23"
+                class="code"
+                tabindex="1"
+                data-bind="ntsTextEditor: {
+                      value: newCode, 
+                      required: true,
+                      constraint: 'OutputItemSettingCode',
+                      name: $i18n('KWR005_210')
+                    }"
+              />
+              <input
+                class="name"
+                tabindex="2"
+                data-bind="ntsTextEditor: {
+                      value: newName,
+                      required: true,
+                      constraint: 'OutputItemSettingName',
+                      name: $i18n('KWR005_211')
+                    }"
+              />
+            </div>
+          </div>
+        </div>
+        <div id="functions-area-bottom" class="btn-click">
+          <button
+            id="proceedDialog" 
+            tabindex="3"
+            data-bind="click: proceed, enable: $root.errors.isEmpty, text: $i18n('KWR005_304')"
+            class="proceed large"
+          />
+          <button id="closeDialog" tabindex="4" data-bind="click: cancel, text: $i18n('KWR005_305')" />
+        </div>
+      </ui:define>
+    </ui:composition>
+  </body>
+</html>

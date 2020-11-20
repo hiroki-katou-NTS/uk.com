@@ -1,10 +1,10 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
-module nts.uk.at.view.kwr003.b {
+module nts.uk.at.view.kwr005.b {
   const NUM_ROWS = 10;
-  const KWR003_B_INPUT = 'KWR003_WORK_STATUS_DATA';
-  const KWR003_B_OUTPUT = 'KWR003WORK_STATUS_RETURN';
-  const KWR003_C_INPUT = 'KWR003_C_DATA';
-  const KWR003_C_OUTPUT = 'KWR003_C_RETURN';
+  const KWR005_B_INPUT = 'KWR005_WORK_STATUS_DATA';
+  const KWR005_B_OUTPUT = 'KWR003WORK_STATUS_RETURN';
+  const KWR005_C_INPUT = 'KWR005_C_DATA';
+  const KWR005_C_OUTPUT = 'KWR005_C_RETURN';
 
   const PATH = {
     getSettingListWorkStatus: 'at/function/kwr/003/a/listworkstatus',
@@ -24,7 +24,8 @@ module nts.uk.at.view.kwr003.b {
     currentCode: KnockoutObservable<any>;
     currentCodeList: KnockoutObservable<string> = ko.observable(null);
     currentSettingCodeList: KnockoutObservableArray<any>;
-    settingRules: KnockoutObservableArray<any>;
+    printProperties: KnockoutObservableArray<any>;
+    printPropertyCode: KnockoutObservable<string> = ko.observable(null);
     //current setting
     attendance: KnockoutObservable<any> = ko.observable(null);
     attendanceCode: KnockoutObservable<string> = ko.observable(null);
@@ -32,6 +33,7 @@ module nts.uk.at.view.kwr003.b {
     settingCategory: KnockoutObservable<number> = ko.observable(0);
     settingId: KnockoutObservable<string> = ko.observable(null);
     settingListItemsDetails: KnockoutObservableArray<SettingForPrint> = ko.observableArray([]);
+    
     //----------------------
     isSelectAll: KnockoutObservable<boolean> = ko.observable(false);
     isEnableAddButton: KnockoutObservable<boolean> = ko.observable(false);
@@ -40,19 +42,10 @@ module nts.uk.at.view.kwr003.b {
     isEnableDuplicateButton: KnockoutObservable<boolean> = ko.observable(false);
     isNewMode: KnockoutObservable<boolean> = ko.observable(false);
 
-    //KDL 047, 048
-    shareParam = new SharedParams();
-
-    position: KnockoutObservable<number> = ko.observable(1);
-    attendanceItemName: KnockoutObservable<string> = ko.observable(null);
-    columnIndex: KnockoutObservable<number> = ko.observable(1);
-    isDisplayItemName: KnockoutObservable<boolean> = ko.observable(true);
-    isDisplayTitle: KnockoutObservable<boolean> = ko.observable(true);
-    isEnableComboBox: KnockoutObservable<number> = ko.observable(2);
-    isEnableTextEditor: KnockoutObservable<number> = ko.observable(2);
-    comboSelected: KnockoutObservable<any> = ko.observable(null);
-    tableSelected: KnockoutObservable<any> = ko.observable(null);
-
+    //swapList
+    currentCodeListSwap: KnockoutObservableArray<any> = ko.observableArray([]);
+    listItemsSwap: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
+    gridHeight: KnockoutObservable<number> = ko.observable(330);
 
     workStatusTableOutputItem: KnockoutObservable<any> = ko.observable(null);
     diligenceProjects: KnockoutObservableArray<DiligenceProject> = ko.observableArray([]);
@@ -74,67 +67,36 @@ module nts.uk.at.view.kwr003.b {
         vm.getSettingListItemsDetails();
       });
 
-      vm.settingRules = ko.observableArray([
-        { code: 1, name: vm.$i18n('KWR003_217') },
-        { code: 2, name: vm.$i18n('KWR003_218') }
+      vm.printProperties = ko.observableArray([
+        { code: 1, name: vm.$i18n('KWR005_114') },
+        { code: 2, name: vm.$i18n('KWR005_115') },
+        { code: 3, name: vm.$i18n('KWR005_116') },
+        { code: 4, name: vm.$i18n('KWR005_117') },
+        { code: 5, name: vm.$i18n('KWR005_118') },
+        { code: 6, name: vm.$i18n('KWR005_119') }
       ]);
 
-      vm.settingListItemsDetails.subscribe((newList) => {
-        if (!newList || newList.length <= 0) {
-          vm.isSelectAll(false);
-          return;
-        }
-        //Check if all the values in the settingListItemsDetails array are true:
-        let isSelectedAll: any = vm.settingListItemsDetails().every(item => item.isChecked() === true);
-        //there is least one item which is not checked
-        if (isSelectedAll === false) isSelectedAll = null;
-        vm.isSelectAll(isSelectedAll);
-      });
+      vm.columns = ko.observableArray([
+        { headerText: vm.$i18n('KWR005_107'), key: 'code', width: 80, formatter: _.escape },
+        { headerText: vm.$i18n('KWR005_108'), key: 'name', width: 160, formatter: _.escape },
+      ]);
 
-      // subscribe isSelectAll
-      vm.isSelectAll.subscribe(newValue => {
-        vm.selectAllChange(newValue);
-      });
-
-      //KDL 047, 048      
-      vm.shareParam.titleLine.displayFlag = vm.isDisplayTitle();
-      vm.shareParam.titleLine.layoutCode = vm.attendanceCode();
-      vm.shareParam.titleLine.layoutName = vm.attendanceName();
-
-      const positionText = vm.position() === 1 ? "上" : "下";
-      vm.shareParam.titleLine.directText = vm.$i18n('KWR002_131') + vm.columnIndex() + vm.$i18n('KWR002_132') + positionText + vm.$i18n('KWR002_133');
-      vm.shareParam.itemNameLine.displayFlag = vm.isDisplayItemName();
-      vm.shareParam.itemNameLine.displayInputCategory = vm.isEnableTextEditor();
-      vm.shareParam.itemNameLine.name = vm.attendanceItemName();
-      vm.shareParam.attribute.selectionCategory = vm.isEnableComboBox();
-      vm.shareParam.attribute.selected = vm.comboSelected();
-      vm.shareParam.selectedTime = vm.tableSelected();
-
-      vm.shareParam.attribute.attributeList = [
-        new AttendaceType(1, vm.$i18n('KWR002_141')),
-        new AttendaceType(2, vm.$i18n('KWR002_142')),
-        new AttendaceType(3, vm.$i18n('KWR002_143')),
-        /* new AttendaceType(4, vm.$i18n('KWR002_180')),
-        new AttendaceType(5, vm.$i18n('KWR002_181')),
-        new AttendaceType(6, vm.$i18n('KWR002_182')),
-        new AttendaceType(7, vm.$i18n('KWR002_183')) */
-      ]
-
-      vm.shareParam.attendanceItems = vm.diligenceProjects();
-      vm.shareParam.diligenceProjectList = vm.diligenceProjects();
-
+      for (let i = 0; i < 50; i++) {
+        vm.listItemsSwap.push(new ItemModel(i.toString(), '基本給', i.toString()));
+      }
     }
 
     created(params: any) {
       const vm = this;
+
+      const userAgent = window.navigator.userAgent;
+      let msie = userAgent.match(/Trident.*rv\:11\./);
+      if(!_.isNil(msie) && msie.index > -1) vm.gridHeight(335);
     }
 
     mounted() {
       const vm = this;
-      if (!!navigator.userAgent.match(/Trident.*rv\:11\./))
-        $("#multiGridList").ntsFixedTable({ height: 'auto' });
-      else
-        $("#multiGridList").ntsFixedTable({ height: 370 });
+      $("#swapList-grid1").igGrid("container").focus();
     }
 
     addRowItem(newRow?: SettingForPrint) {
@@ -173,7 +135,7 @@ module nts.uk.at.view.kwr003.b {
       vm.attendanceName(null);
       vm.isEnableAttendanceCode(true);
       vm.isNewMode(true);
-      $('#KWR003_B42').focus();
+      $('#KWR005_B42').focus();
     }
 
     /**
@@ -252,34 +214,13 @@ module nts.uk.at.view.kwr003.b {
         });
       })
         .fail((error) => {
-          switch (error.messageId) {
-            case 'Msg_1903':
-              vm.$dialog.error({  messageId: error.messageId }).then(() => {
-                reloadParams.code = null;
-                vm.loadSettingList(reloadParams);
-                $('#btnB11').focus();
-              });
-              //reloadParams.code = null;
-              //vm.loadSettingList(reloadParams);
-              //$('#btnB11').ntsError('set', { messageId: error.messageId });
-              break;
-
-            case 'Msg_1903':
-              $('#KWR003_B42').ntsError('set', { messageId: error.messageId });
-              break;
-          }
-          /*  if (error.messageId === 'Msg_1903') {
-             reloadParams.code = null;
-             vm.loadSettingList(reloadParams);
-             $('#btnB11').ntsError('set', { messageId: error.messageId });
-           }
- 
-           if (error.messageId === 'Msg_1753') {
-             $('#KWR003_B42').ntsError('set', { messageId: error.messageId });
-           } */
-
-          vm.$blockui('hide');
-
+          vm.$dialog.info({ messageId: error.messageId }).then(() => {
+            if (error.messageId === 1903) {
+              reloadParams.code = null;
+              vm.loadSettingList(reloadParams);
+            }
+            vm.$blockui('hide');
+          });
         })
         .always(() => vm.$blockui('hide'));
     }
@@ -308,7 +249,7 @@ module nts.uk.at.view.kwr003.b {
         newListItemsDetails.push(temp);
       });
 
-      //newListItemsDetails = _.orderBy(newListItemsDetails, [field], [sort_type]);
+      newListItemsDetails = _.orderBy(newListItemsDetails, [field], [sort_type]);
 
       return newListItemsDetails;
     }
@@ -321,26 +262,18 @@ module nts.uk.at.view.kwr003.b {
       const vm = this;
 
       vm.settingListItemsDetails([]);
-      let tempListItem: Array<SettingForPrint> = [];
-
       _.forEach(listItemsDetails, (x: any) => {
-        if (!_.isNil(x.name)) {
-          let newItem: SettingForPrint = new SettingForPrint(
-            x.id,
-            x.name,
-            x.setting,
-            x.selectionItem,
-            x.isChecked,
-            x.selectedItemList,
-            x.selected,
-            x.selectedTime
-          );
-          tempListItem.push(newItem);
-        }
-      });
-
-      _.forEach(tempListItem, (x: SettingForPrint) => {
-        vm.addRowItem(x);
+        let newItem: SettingForPrint = new SettingForPrint(
+          x.id,
+          x.name,
+          x.setting,
+          x.selectionItem,
+          x.isChecked,
+          x.selectedItemList,
+          x.selected,
+          x.selectedTime
+        );
+        vm.addRowItem(newItem);
       });
     }
 
@@ -406,20 +339,26 @@ module nts.uk.at.view.kwr003.b {
         settingId: selectedObj.id //複製元の設定ID 
       }
 
-      vm.$window.storage(KWR003_C_INPUT, params).then(() => {
+      vm.$window.storage(KWR005_C_INPUT, params).then(() => {
         vm.$window.modal('/view/kwr/003/c/index.xhtml').then(() => {
-          vm.$window.storage(KWR003_C_OUTPUT).then((data) => {
+          vm.$window.storage(KWR005_C_OUTPUT).then((data) => {
             if (_.isNil(data)) {
               return;
             }
-            //reload the work status table
-            params = { ...data, standOrFree: vm.settingCategory() };
-            vm.loadSettingList(params)
+
+            let duplicateItem = _.find(vm.settingListItems(), (x) => x.code === data.code);
+            if (!_.isNil(duplicateItem)) {
+              vm.$dialog.error({ messageId: 'Msg_1903' }).then(() => { });
+              return;
+            }
+
+            vm.settingListItems.push(data);
+            vm.currentCodeList(data.code);
           });
         });
       });
 
-      $('#KWR003_B43').focus();
+      $('#KWR005_B43').focus();
     }
 
     /**
@@ -427,7 +366,7 @@ module nts.uk.at.view.kwr003.b {
      */
     closeDialog() {
       const vm = this;
-      vm.$window.storage(KWR003_B_OUTPUT, vm.attendance());
+      vm.$window.storage(KWR005_B_OUTPUT, vm.attendance());
       vm.$window.close();
     }
 
@@ -445,15 +384,6 @@ module nts.uk.at.view.kwr003.b {
       vm.$blockui('show');
 
       vm.$ajax(PATH.getSettingLitsWorkStatusDetails, { settingId: selectedObj.id }).done((data) => {
-
-        vm.settingListItemsDetails([]);
-        if (!_.isNil(data) && !data.settingId) {
-          vm.$dialog.info({ messageId: 'Msg_1903' }).then(() => {
-            vm.loadSettingList({ standOrFree: vm.settingCategory(), code: null });
-          });
-          return;
-        }
-
         if (!_.isNil(data) && !_.isNil(data.outputItemList)) {
           //total output item which registered
           beginItems = data.outputItemList.length;
@@ -503,6 +433,7 @@ module nts.uk.at.view.kwr003.b {
               x.itemDetailAtt);
 
             listItemsDetails.push(newItem);
+            //vm.addRowItem(newItem);
           });
 
           //re-order the list
@@ -510,7 +441,7 @@ module nts.uk.at.view.kwr003.b {
           vm.createListItemAfterSorted(listItemsDetails);
         }
 
-        //if beginItems is less then NUM_ROWS | 10
+        //if beginItems is less then NUM_ROWS | 10     
         for (let i = beginItems; i < NUM_ROWS; i++) {
           let newItem: SettingForPrint = new SettingForPrint(i, null, 1, null, false);
           vm.addRowItem(newItem);
@@ -554,7 +485,7 @@ module nts.uk.at.view.kwr003.b {
       if (selectionItem.length > 0) {
         dataSelection = _.join(selectionItem, ' ');
         if (dataSelection.length > 20) {
-          dataSelection = dataSelection.substring(0, 19) + vm.$i18n('KWR003_219');
+          dataSelection = dataSelection.substring(0, 19) + vm.$i18n('KWR005_219');
         }
       }
 
@@ -584,12 +515,11 @@ module nts.uk.at.view.kwr003.b {
         }
       }
 
-      $('#KWR003_B43').focus();
+      $('#KWR005_B43').focus();
     }
 
     getWorkStatusTableOutput() {
       const vm = this;
-      
       vm.$blockui('show');
 
       vm.workStatusTableOutputItem = ko.observable({ listDaily: [], listMonthly: [] });
@@ -612,7 +542,7 @@ module nts.uk.at.view.kwr003.b {
 
     getSettingList() {
       const vm = this;
-      vm.$window.storage(KWR003_B_INPUT).then((data: any) => {
+      vm.$window.storage(KWR005_B_INPUT).then((data: any) => {
         if (!data) return;
         vm.settingCategory(data.standOrFree);
         vm.settingId(data.settingId);
@@ -623,9 +553,6 @@ module nts.uk.at.view.kwr003.b {
     loadSettingList(params: any) {
       const vm = this;
       let listWorkStatus: Array<any> = [];
-
-      vm.$blockui('grayout');
-
       vm.$ajax(PATH.getSettingListWorkStatus, { setting: params.standOrFree }).then((data) => {
         if (!_.isNil(data) && data.length > 0) {
           _.forEach(data, (item) => {
@@ -645,13 +572,12 @@ module nts.uk.at.view.kwr003.b {
           }
 
           vm.currentCodeList(code);
-          
+
         } else {
           //create new the settings list
           vm.newSetting();
         }
 
-        vm.$blockui('hide');
       });
     }
     /**
@@ -708,10 +634,11 @@ module nts.uk.at.view.kwr003.b {
 
           vm.settingListItemsDetails()[index].selected = attendanceItem.attribute;
           vm.settingListItemsDetails()[index].selectedTime = attendanceItem.attendanceId;
-          $('#textName' + row.id).focus();
-          /*  if (!attendanceItem.attendanceItemName) {
-             $('#textName' + row.id).ntsError('set', { messageId: "MsgB_1" });            
-           } */
+
+          if (!attendanceItem.attendanceItemName) {
+            $('#textName' + row.id).ntsError('set', { messageId: "MsgB_1" });
+            $('#textName' + row.id).focus();
+          }
         } else {
           vm.settingListItemsDetails()[index].name(null);
           vm.settingListItemsDetails()[index].selectionItem(null);
@@ -760,10 +687,10 @@ module nts.uk.at.view.kwr003.b {
             vm.settingListItemsDetails()[index].selectionItem(dataSelection);
             vm.settingListItemsDetails()[index].selectedTimeList(attendanceItem.selectedTimeList);
             vm.settingListItemsDetails()[index].selected = attendanceItem.attribute.selected;
-            $('#textName' + row.id).focus();
-            /*  if (!attendanceItem.itemNameLine.name) {
-               $('#textName' + row.id).ntsError('set', { messageId: "MsgB_1" });              
-             } */
+            if (!attendanceItem.itemNameLine.name) {
+              $('#textName' + row.id).ntsError('set', { messageId: "MsgB_1" });
+              $('#textName' + row.id).focus();
+            }
           }
         } else {
           vm.settingListItemsDetails()[index].name(null);

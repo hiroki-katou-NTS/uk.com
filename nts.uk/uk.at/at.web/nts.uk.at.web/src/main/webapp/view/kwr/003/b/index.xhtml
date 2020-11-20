@@ -103,7 +103,8 @@
                   data-bind="ntsFormLabel: { 
                     required: true, 
                     text: $i18n('KWR003_209'), 
-                    constraint: ['OutputItemSettingCode', 'OutputItemSettingName']}"
+                    constraint: ['OutputItemSettingCode', 'OutputItemSettingName']
+                  }"
                 ></div>
                 <div class="textEditor">
                   <input
@@ -183,7 +184,7 @@
                                   ntsTextEditor: { 
                                     value: name,
                                     required: true,
-                                    name: $i18n('KWR003_215'),
+                                    name: $vm.$i18n('KWR003_215'),
                                     constraint: 'FormOutputItemName'
                                   }"
                           />
@@ -200,7 +201,7 @@
                             }"
                           ></div>
                           <button
-                            data-bind="text: $i18n('KWR003_216'), click: function(data) { $vm.openDialogKDL(data) }"
+                            data-bind="text: $vm.$i18n('KWR003_216'), click: function(data) { $vm.openDialogKDL(data) }"
                           />
                         </td>
                         <td><span data-bind="text: selectionItem"></span></td>
