@@ -8,6 +8,7 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlistworkplac
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlCompareRange;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlCompareSingle;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlSingleFixed;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.Column;
@@ -64,6 +65,10 @@ public class KrcmtWkpSchedaiExCon extends UkJpaEntity {
     @Column(name = "CONDITION_COMPARE_ID")
     public String errorAlarmCheckID;
 
+    /* 会社ID */
+    @Column(name = "CID")
+    public String cid;
+
     @Override
     protected Object getKey() {
         return errorAlarmWorkplaceId;
@@ -87,6 +92,7 @@ public class KrcmtWkpSchedaiExCon extends UkJpaEntity {
         }
 
         entity.errorAlarmCheckID = domain.getErrorAlarmCheckID();
+        entity.cid = AppContexts.user().companyId();
 
         return entity;
     }

@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlistworkpla
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.applicationapproval.FixedExtractionAppapvItems;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.Column;
@@ -43,6 +44,10 @@ public class KrcmtWkpfxexAppapvItm extends UkJpaEntity {
     @Column(name = "MESSAGE_COLOR")
     public String messageColor;
 
+    /* 会社ID */
+    @Column(name = "CID")
+    public String cid;
+
     @Override
     protected Object getKey() {
         return checkItemAppapv;
@@ -55,8 +60,8 @@ public class KrcmtWkpfxexAppapvItm extends UkJpaEntity {
         entity.appapvCheckName = domain.getAppapvCheckName();
         entity.alarmCheckCls = domain.getAlarmCheckCls().value;
         entity.firstMessageDisp = domain.getFirstMessageDisp().v();
-
         entity.messageColor = domain.getMessageColor().map(i -> i.v()).orElse(null);
+        entity.cid = AppContexts.user().companyId();
 
         return entity;
     }
