@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.schedule.infra.entity.shift.management.shifttable;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Optional;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -10,7 +12,9 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.ShiftTableRule;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.ShiftTableRuleForCompany;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -72,6 +76,15 @@ public class KrcmtShiftTableRuleForCompany extends ContractUkJpaEntity implement
 	}
 	
 	public ShiftTableRuleForCompany toDomain() {
+		if(this.useWorkAvailabilityAtr == 0 ) {
+			return new ShiftTableRuleForCompany(new ShiftTableRule(
+					NotUseAtr.valueOf(usePublicAtr), 
+					NotUseAtr.valueOf(useWorkAvailabilityAtr),
+					Optional.empty(), 
+					new ArrayList<>(),
+					Optional.empty()
+					));
+		}
 		return new ShiftTableRuleForCompany(krcmtShiftTableRuleForCompanyAvai.toDomain(this.usePublicAtr, this.useWorkAvailabilityAtr));
 	}
 }

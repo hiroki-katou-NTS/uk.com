@@ -1,10 +1,36 @@
 package nts.uk.ctx.at.shared.app.workrule.workinghours;
 
-import javax.ejb.Stateless;
+import java.util.Optional;
 
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
+import lombok.AllArgsConstructor;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
+import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZonePerNo.ClockAreaAtr;
+import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZonePerNo.ContainsResult;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * TODO:«Query» 時刻が不正かチェックする
@@ -14,6 +40,30 @@ import nts.uk.shr.com.i18n.TextResource;
  */
 @Stateless
 public class CheckTimeIsIncorrect {
+	
+	@Inject
+	private WorkTypeRepository workTypeRepo;
+
+	@Inject
+	private WorkTimeSettingRepository workTimeSettingRepository;
+
+	@Inject
+	private WorkTimeSettingService workTimeSettingService;
+
+	@Inject
+	private BasicScheduleService basicScheduleService;
+	
+	@Inject
+	private FixedWorkSettingRepository fixedWorkSettingRepository;
+	
+	@Inject
+	private FlowWorkSettingRepository flowWorkSettingRepository;
+	
+	@Inject
+	private FlexWorkSettingRepository flexWorkSettingRepository;
+	
+	@Inject
+	private PredetemineTimeSettingRepository predetemineTimeSettingRepository;
 
 	/**
 	 * チェックする 
@@ -25,33 +75,108 @@ public class CheckTimeIsIncorrect {
 	public boolean check(String workType,String workTime,TimeZoneDto workTime1,TimeZoneDto workTime2) {
 		//1:Create()
 		WorkInformation wi = new WorkInformation(workType, workTime);
-		//TODO: 2: 変更可能な勤務時間帯のチェック(Require, 対象時刻区分, 勤務NO, 時刻(日区分付き))
-		IsInculededTimeZone check1 = new IsInculededTimeZone();
+		WorkInformation.Require require = new WorkInformationImpl(workTypeRepo, workTimeSettingRepository,
+				workTimeSettingService, basicScheduleService,fixedWorkSettingRepository,flowWorkSettingRepository,flexWorkSettingRepository,predetemineTimeSettingRepository);
+		
+		//2: 変更可能な勤務時間帯のチェック(Require, 対象時刻区分, 勤務NO, 時刻(日区分付き))
+		ContainsResult containsResult1 =  wi.containsOnChangeableWorkingTime(require, ClockAreaAtr.START, new WorkNo(1), new TimeWithDayAttr(workTime1.getStartTime().getTime()));
 		//3: 開始1の状態.含まれているか == false
-		if(!check1.isInculedeCheck()) {
-			throw new BusinessException("Msg_1772",TextResource.localize("KSU001_54",check1.getTimeZone().getStartTime().getTime().toString(),check1.getTimeZone().getEndTime().getTime().toString() ));
+		if(!containsResult1.isContains()) {
+			throw new BusinessException("Msg_1772",TextResource.localize("KSU001_54"),containsResult1.getTimeSpan().getStart().v().toString(),containsResult1.getTimeSpan().getEnd().v().toString());
 		}
 		//4:変更可能な勤務時間帯のチェック(Require, 対象時刻区分, 勤務NO, 時刻(日区分付き))
-		IsInculededTimeZone check2 = new IsInculededTimeZone();
+		ContainsResult containsResult2 =  wi.containsOnChangeableWorkingTime(require, ClockAreaAtr.END, new WorkNo(1), new TimeWithDayAttr(workTime1.getEndTime().getTime()));
 		//5:終了1の状態.含まれているか == false
-		if(!check2.isInculedeCheck()) {
-			throw new BusinessException("Msg_1772",TextResource.localize("KSU001_55",check2.getTimeZone().getStartTime().getTime().toString(),check2.getTimeZone().getEndTime().getTime().toString() ));
+		if(!containsResult2.isContains()) {
+			throw new BusinessException("Msg_1772",TextResource.localize("KSU001_55"),containsResult2.getTimeSpan().getStart().v().toString(),containsResult2.getTimeSpan().getEnd().v().toString());
 		}
 		
 		//6:
 		if(workTime2 != null) {
 			//6.1
-			IsInculededTimeZone check3 = new IsInculededTimeZone();
-			if(!check3.isInculedeCheck()) {
-				throw new BusinessException("Msg_1772",TextResource.localize("KSU001_56",check3.getTimeZone().getStartTime().getTime().toString(),check3.getTimeZone().getEndTime().getTime().toString() ));
+			ContainsResult containsResult3 =  wi.containsOnChangeableWorkingTime(require, ClockAreaAtr.START, new WorkNo(2), new TimeWithDayAttr(workTime2.getStartTime().getTime()));
+			if(!containsResult2.isContains()) {
+				throw new BusinessException("Msg_1772",TextResource.localize("KSU001_56"),containsResult3.getTimeSpan().getStart().v().toString(),containsResult3.getTimeSpan().getEnd().v().toString());
 			}
 			
 			//6.2
-			IsInculededTimeZone check4 = new IsInculededTimeZone();
-			if(!check3.isInculedeCheck()) {
-				throw new BusinessException("Msg_1772",TextResource.localize("KSU001_57",check4.getTimeZone().getStartTime().getTime().toString(),check4.getTimeZone().getEndTime().getTime().toString() ));
+			ContainsResult containsResult4 =  wi.containsOnChangeableWorkingTime(require, ClockAreaAtr.END, new WorkNo(2), new TimeWithDayAttr(workTime2.getEndTime().getTime()));
+			if(!containsResult4.isContains()) {
+				throw new BusinessException("Msg_1772",TextResource.localize("KSU001_57"),containsResult4.getTimeSpan().getStart().v().toString(),containsResult4.getTimeSpan().getEnd().v().toString());
 			}
 		}
 		return false;
+	}
+	
+	@AllArgsConstructor
+	public static class WorkInformationImpl implements WorkInformation.Require {
+
+		private final String companyId = AppContexts.user().companyId();
+
+		@Inject
+		private WorkTypeRepository workTypeRepo;
+
+		@Inject
+		private WorkTimeSettingRepository workTimeSettingRepository;
+
+		@Inject
+		private WorkTimeSettingService workTimeSettingService;
+
+		@Inject
+		private BasicScheduleService basicScheduleService;
+
+		@Inject
+		private FixedWorkSettingRepository fixedWorkSettingRepository;
+		
+		@Inject
+		private FlowWorkSettingRepository flowWorkSettingRepository;
+		
+		@Inject
+		private FlexWorkSettingRepository flexWorkSettingRepository;
+		
+		@Inject
+		private PredetemineTimeSettingRepository predetemineTimeSettingRepository;
+		
+		@Override
+		public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
+			return basicScheduleService.checkNeededOfWorkTimeSetting(workTypeCode);
+		}
+
+		@Override
+		public Optional<WorkType> getWorkType(String workTypeCd) {
+			return workTypeRepo.findByPK(companyId, workTypeCd);
+		}
+
+		@Override
+		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
+			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
+		}
+
+		@Override
+		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTimeCd, String workTypeCd,
+				Integer workNo) {
+			return workTimeSettingService.getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
+		}
+
+		@Override
+		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
+			return fixedWorkSettingRepository.findByKey(companyId, code.v()).get();
+		}
+
+		@Override
+		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
+			return flowWorkSettingRepository.find(companyId, code.v()).get();
+		}
+
+		@Override
+		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
+			return flexWorkSettingRepository.find(companyId, code.v()).get();
+		}
+
+		@Override
+		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
+			return predetemineTimeSettingRepository.findByWorkTimeCode(companyId, wktmCd.v()).get();
+		}
+
 	}
 }

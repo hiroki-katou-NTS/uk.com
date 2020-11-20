@@ -217,15 +217,6 @@ public class KrcmtShiftTableRuleForOrgAvai extends ContractUkJpaEntity implement
 	}
 	
 	public ShiftTableRule toDomain(int usePublicAtr,int useWorkAvailabilityAtr) {
-		if(useWorkAvailabilityAtr == 1) {
-			return new ShiftTableRule(
-					NotUseAtr.valueOf(usePublicAtr), 
-					NotUseAtr.valueOf(useWorkAvailabilityAtr),
-					Optional.empty(), 
-					new ArrayList<>(),
-					Optional.empty()
-					);
-		}
 		Optional<WorkAvailabilityRule> shiftTableSetting  = Optional.empty();
 		if(this.periodUnit !=null) {
 			if(this.periodUnit == WorkAvailabilityPeriodUnit.MONTHLY.value) {

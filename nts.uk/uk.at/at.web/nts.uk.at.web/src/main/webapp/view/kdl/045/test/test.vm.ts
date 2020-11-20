@@ -342,6 +342,22 @@ module nts.uk.at.view.test.vm {
                     self.workTypeName(childData.selectedWorkTypeName);
                     self.workTime(childData.selectedWorkTimeCode);
                     self.workTimeName(childData.selectedWorkTimeName);
+                    
+                     //A5_6,A5_7,A5_10,A5_11 
+                    let timeRange1ScreenModel = $("#a5-5-test").data("screenModel");
+                    if (timeRange1ScreenModel) {
+                        timeRange1ScreenModel.startTime(childData.first.start != null ? childData.first.start : 0);
+                        timeRange1ScreenModel.endTime(childData.first.end != null ? childData.first.end : 0);
+                    }
+
+                    let timeRange2ScreenModel = $("#a5-9-test").data("screenModel");
+                    if (timeRange2ScreenModel) {
+                        timeRange2ScreenModel.startTime(childData.second.start != null ? childData.second.start : 0);
+                        timeRange2ScreenModel.endTime(childData.second.end != null ? childData.second.end : 0);
+                    }
+                    setTimeout(function() {
+                            nts.uk.ui.errors.clearAll();
+                        }, 100);
 
                 }
             });
@@ -498,10 +514,12 @@ module nts.uk.at.view.test.vm {
                 listShortTime.push(new shareModelData.ShortTimeDto(1, 0, self.timeChildcareNursing1().startTime, self.timeChildcareNursing1().endTime));
                 listShortTime.push(new shareModelData.ShortTimeDto(2, 0, self.timeChildcareNursing2().startTime, self.timeChildcareNursing2().endTime));
             }
+            
+            
 
             let dataUsageTime: Array<shareModelData.DailyAttdTimeVacationDto> = [];
             dataUsageTime.push(new shareModelData.DailyAttdTimeVacationDto(self.timeAbbyakLeave(), self.timeOff(), self.excessPaidHoliday(), self.specialHoliday1(), 1, self.childNursingLeave(), self.nursingCareLeave()));
-            dataUsageTime.push(new shareModelData.DailyAttdTimeVacationDto(self.timeAbbyakLeave(), self.timeOff(), self.excessPaidHoliday(), self.specialHoliday2(), 2, self.childNursingLeave(), self.nursingCareLeave()));
+            dataUsageTime.push(new shareModelData.DailyAttdTimeVacationDto(0, 0, 0, self.specialHoliday2(), 2, 0, 0));
 
             let listTimeVacationAndType = [];
             //atwork1

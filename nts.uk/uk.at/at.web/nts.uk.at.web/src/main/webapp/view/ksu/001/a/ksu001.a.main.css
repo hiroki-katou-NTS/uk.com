@@ -109,6 +109,11 @@
 	margin-bottom: 10px;
 }
 
+#person-setting button{
+	width: auto;
+	margin-bottom: 10px;
+}
+
 .btnSelectMode {
 	float: left;
 }
@@ -566,4 +571,8 @@ html {
 
 table th, table td {
 	padding: 2px 5px;
+}
+
+#functions-area {
+	overflow: unset !important;
 }

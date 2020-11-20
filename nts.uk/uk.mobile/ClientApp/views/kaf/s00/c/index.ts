@@ -7,13 +7,6 @@ import { component, Prop, Watch } from '@app/core/component';
     template: require('./index.vue'),
     resource: require('./resources.json'),
     validations: {
-        // params: {
-        //     output: {
-        //         opAppReason: {
-        //             constraint: 'AppReason'
-        //         }         
-        //     }
-        // },
         opAppReason: {
             constraint: 'AppReason'
         } 

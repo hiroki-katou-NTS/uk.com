@@ -27,7 +27,6 @@ import nts.uk.ctx.at.shared.app.find.workrule.shiftmaster.TargetOrgIdenInforDto;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.WorkTimezoneCommonSetDto;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
@@ -36,9 +35,13 @@ import nts.uk.ctx.at.shared.dom.worktime.algorithm.getcommonset.GetCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
@@ -85,6 +88,18 @@ public class GetInformationStartup {
 
 	@Inject
 	private ShiftMasterRepository shiftMasterRepo;
+	
+	@Inject
+	private FixedWorkSettingRepository fixedWorkSettingRepository;
+	
+	@Inject
+	private FlowWorkSettingRepository flowWorkSettingRepository;
+	
+	@Inject
+	private FlexWorkSettingRepository flexWorkSettingRepository;
+	
+	@Inject
+	private PredetemineTimeSettingRepository predetemineTimeSettingRepository;
 
 	public GetInformationStartupOutput getInformationStartup(String employeeId, GeneralDate baseDate,
 			List<TimeVacationAndType> listTimeVacationAndType, String workTimeCode,
@@ -110,12 +125,7 @@ public class GetInformationStartup {
 			int total = 0;
 			for (DailyAttdTimeVacationDto dailyAttdTimeVacationDto : timeVacationAndType.getTimeVacation()
 					.getUsageTime()) {
-				total = total + dailyAttdTimeVacationDto.getTimeAbbyakLeave().intValue()
-						+ dailyAttdTimeVacationDto.getTimeOff().intValue()
-						+ dailyAttdTimeVacationDto.getExcessPaidHoliday().intValue()
-						+ dailyAttdTimeVacationDto.getSpecialHoliday().intValue()
-						+ dailyAttdTimeVacationDto.getChildNursingLeave().intValue()
-						+ dailyAttdTimeVacationDto.getNursingCareLeave().intValue();
+				total = total + dailyAttdTimeVacationDto.totalVacationAddTime();
 			}
 			listUsageTimeAndType.add(new UsageTimeAndType(timeVacationAndType.getTypeVacation(), total));
 		}
@@ -136,7 +146,7 @@ public class GetInformationStartup {
 		if (workAvailabilityOfOneDayOpt.isPresent()) {
 			WorkAvailabilityOfOneDay.Require requireWorkAvailabilityOfOneDay = new RequireWorkAvailabilityOfOneDayImpl(
 					workTypeRepo, workTimeSettingRepository, workTimeSettingService, basicScheduleService,
-					shiftMasterRepo);
+					shiftMasterRepo,fixedWorkSettingRepository,flowWorkSettingRepository,flexWorkSettingRepository,predetemineTimeSettingRepository);
 			WorkAvailabilityDisplayInfoOfOneDay WorkAvailabilityDisplayInfoOfOneDay = workAvailabilityOfOneDayOpt.get()
 					.getDisplayInformation(requireWorkAvailabilityOfOneDay);
 			data.setWorkAvaiOfOneDayDto(convertToDomain(WorkAvailabilityDisplayInfoOfOneDay));
@@ -198,6 +208,18 @@ public class GetInformationStartup {
 
 		@Inject
 		private ShiftMasterRepository shiftMasterRepo;
+		
+		@Inject
+		private FixedWorkSettingRepository fixedWorkSettingRepository;
+		
+		@Inject
+		private FlowWorkSettingRepository flowWorkSettingRepository;
+		
+		@Inject
+		private FlexWorkSettingRepository flexWorkSettingRepository;
+		
+		@Inject
+		private PredetemineTimeSettingRepository predetemineTimeSettingRepository;
 
 
 		@Override
@@ -210,10 +232,6 @@ public class GetInformationStartup {
 				Integer workNo) {
 			return workTimeSettingService.getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
 		}
-
-//		public WorkStyle checkWorkDay(String workTypeCode) {
-//			return basicScheduleService.checkWorkDay(workTypeCode);
-//		}
 
 		@Override
 		public Optional<ShiftMaster> getShiftMasterByWorkInformation(WorkTypeCode workTypeCode,
@@ -242,26 +260,22 @@ public class GetInformationStartup {
 
 		@Override
 		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
-			// TODO Auto-generated method stub
-			return null;
+			return fixedWorkSettingRepository.findByKey(companyId, code.v()).get();
 		}
 
 		@Override
 		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
-			// TODO Auto-generated method stub
-			return null;
+			return flowWorkSettingRepository.find(companyId, code.v()).get();
 		}
 
 		@Override
 		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
-			// TODO Auto-generated method stub
-			return null;
+			return flexWorkSettingRepository.find(companyId, code.v()).get();
 		}
 
 		@Override
 		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
-			// TODO Auto-generated method stub
-			return null;
+			return predetemineTimeSettingRepository.findByWorkTimeCode(companyId, wktmCd.v()).get();
 		}
 	}
 
