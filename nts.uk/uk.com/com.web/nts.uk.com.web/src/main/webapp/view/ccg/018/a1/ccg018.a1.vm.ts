@@ -39,55 +39,46 @@ module ccg018.a1.viewmodel {
             self.listSwitchDate(self.getSwitchDateLists());
             $('#A2-2').focus();
             const vm = this;
-            vm.getRoleSet();
-            vm.getAllTopPageRoleSet();
-        }
-
-        //ドメインモデル「ロールセット」を取得する
-        private getRoleSet() {
-            const vm = this;
-            blockUI.invisible();
+            blockUI.grayout();
             service.findAllRoleSet()
-            .then((data: any) => {
-                vm.listRoleSet(data);
-            })
-            .always(() => blockUI.clear());
-        }
-
-        // ドメインモデル「権限別トップページ設定」を取得
-        private getAllTopPageRoleSet() {
-            const vm = this;
-            blockUI.invisible();
-            service.findAllTopPageRoleSet()
-            .then((data) => {
-                const arrayTemp: any = [];
-                _.forEach(vm.listRoleSet(), (x: RoleSet) => {
-                    const dataObj: any = _.find(data, ['roleSetCode', x.roleSetCd]);
-                    if (dataObj) {
-                        arrayTemp.push(new TopPageRoleSet({
-                            roleSetCode: x.roleSetCd,
-                            name: x.roleSetName,
-                            loginMenuCode: dataObj.loginMenuCode,
-                            topMenuCode: dataObj.topMenuCode,
-                            switchingDate: dataObj.switchingDate,
-                            system: dataObj.system,
-                            menuClassification: dataObj.menuClassification
-                        }));
-                    } else {
-                        arrayTemp.push(new TopPageRoleSet({
-                            roleSetCode: x.roleSetCd,
-                            name: x.roleSetName,
-                            loginMenuCode: '',
-                            topMenuCode: '',
-                            switchingDate: 0,
-                            system: 0,
-                            menuClassification: 0
-                        }));
+                //ドメインモデル「ロールセット」を取得する
+                .then((data: any) => {
+                    vm.listRoleSet(data);
+                    return service.findAllTopPageRoleSet();
+                })
+                 // ドメインモデル「権限別トップページ設定」を取得
+                .then((data) => {
+                    const dataMap: any = {};
+                    for (const item of data) {
+                        dataMap[item.roleSetCode] = item;
                     }
-                });
-                vm.lisTopPageRoleSet(arrayTemp);
-            })
-            .always(() => blockUI.clear());
+                    const arrayTemp: TopPageRoleSet[] = _.map(vm.listRoleSet(), (x: RoleSet) => {
+                        const dataObj: any = dataMap[x.roleSetCd];
+                        if (dataObj) {
+                            return new TopPageRoleSet({
+                                roleSetCode: x.roleSetCd,
+                                name: x.roleSetName,
+                                loginMenuCode: dataObj.loginMenuCode,
+                                topMenuCode: dataObj.topMenuCode,
+                                switchingDate: dataObj.switchingDate,
+                                system: dataObj.system,
+                                menuClassification: dataObj.menuClassification
+                            });
+                        } else {
+                            return new TopPageRoleSet({
+                                roleSetCode: x.roleSetCd,
+                                name: x.roleSetName,
+                                loginMenuCode: '',
+                                topMenuCode: '',
+                                switchingDate: 0,
+                                system: 0,
+                                menuClassification: 0
+                            });
+                        }
+                    });
+                    vm.lisTopPageRoleSet(arrayTemp);
+                })
+                .always(() => blockUI.clear());
         }
 
         checkCategorySet(): void {
