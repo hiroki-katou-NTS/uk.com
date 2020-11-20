@@ -157,5 +157,10 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
         public AttendanceResultDto getValueOf(String employeeId, GeneralDate workingDate, Collection<Integer> itemIds) {
             return itemServiceAdapter.getValueOf(employeeId, workingDate, itemIds);
         }
+
+        @Override
+        public List<AttendanceResultDto> getValueOf(List<String> employeeIds, DatePeriod workingDatePeriod, Collection<Integer> itemIds) {
+            return itemServiceAdapter.getValueOf(employeeIds, workingDatePeriod, itemIds);
+        }
     }
 }
