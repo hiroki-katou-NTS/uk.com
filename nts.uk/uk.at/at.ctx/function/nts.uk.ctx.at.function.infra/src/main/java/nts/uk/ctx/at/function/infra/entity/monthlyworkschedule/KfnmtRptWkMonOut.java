@@ -185,12 +185,12 @@ public class KfnmtRptWkMonOut extends UkJpaEntity
 
 	@Override
 	public Boolean getIsRemarkPrinted() {
-		return this.isRemarkPrinted == BigDecimal.ONE;
+		return this.isRemarkPrinted.equals(BigDecimal.ONE);
 	}
 
 	@Override
 	public void setIsRemarkPrinted(Boolean isRemarkPrinted) {
-		this.isRemarkPrinted = isRemarkPrinted ? BigDecimal.ONE : BigDecimal.valueOf(2) ;
+		this.isRemarkPrinted = isRemarkPrinted ? BigDecimal.ONE : BigDecimal.ZERO;
 	}
 
 }

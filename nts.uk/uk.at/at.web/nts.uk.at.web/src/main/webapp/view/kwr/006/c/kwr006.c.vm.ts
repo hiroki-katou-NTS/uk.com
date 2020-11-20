@@ -29,9 +29,6 @@ module nts.uk.at.view.kwr006.c {
             C3_3_value: KnockoutObservable<string>;
             enableBtnDel: KnockoutObservable<boolean>;
             enableCodeC3_2: KnockoutObservable<boolean>;
-            //a8-2
-            // itemListConditionSet: KnockoutObservableArray<any>;
-            // selectedCodeA8_2: KnockoutObservable<number>;
 
             storeCurrentCodeBeforeCopy: KnockoutObservable<string>;
 
@@ -89,16 +86,8 @@ module nts.uk.at.view.kwr006.c {
                     { headerText: nts.uk.resource.getText("KWR006_40"), prop: 'code', width: 70 },
                     { headerText: nts.uk.resource.getText("KWR006_41"), prop: 'name', width: 180, formatter: _.escape }
                 ]);
-                // self.itemListConditionSet = ko.observableArray([
-                //     new BoxModel(0, nts.uk.resource.getText("KWR006_56")),
-                //     new BoxModel(1, nts.uk.resource.getText("KWR006_57"))
-                // ]);
                 self.items = ko.observableArray([]);
-                // self.selectedCodeA8_2 = ko.observable(0);
                 self.isEnableRemarkInputContents = ko.observable(false);
-                // self.isEnableRemarkInputContents = ko.computed(function () {
-                //     return self.selectedCodeA8_2() == 1;
-                // });
                 self.remarkInputContents = ko.observableArray([]);
                 self.storeCurrentCodeBeforeCopy = ko.observable('');
                 self.currentRemarkInputContent = ko.observable(0);
@@ -380,7 +369,7 @@ module nts.uk.at.view.kwr006.c {
                     self.allMainDom(data.outputItemMonthlyWorkSchedule);
                     // variable temporary 
                     self.outputItemPossibleLst(data.monthlyAttendanceItem);
-                    let arrCodeName = _.map(data.outputItemMonthlyWorkSchedule, value => {
+                    let arrCodeName = _.map(data.outputItemMonthlyWorkSchedule, (value: any) => {
                         return { code: value.itemCode, name: value.itemName };
                     });
                     self.outputItemList(arrCodeName);
@@ -396,19 +385,6 @@ module nts.uk.at.view.kwr006.c {
 
                 return dfd.promise();
             }
-
-            // /*
-            //     get Enum Setting Print
-            // */
-            // private getEnumSettingPrint(): JQueryPromise<void> {
-            //     let dfd = $.Deferred<void>();
-            //     let self = this;
-            //     service.getEnumSettingPrint().done(function (data: any) {
-            //         dfd.resolve();
-            //     })
-
-            //     return dfd.promise();
-            // }
 
             /*
              * get enum EnumRemarkInputContent
@@ -430,20 +406,6 @@ module nts.uk.at.view.kwr006.c {
                 return _.parseInt(args) - 1;
             }
 
-            /*
-              *  convert from DB remark input to value client       
-              */
-            private convertDBRemarkInputToValue(args: number): string {
-                return _.toString(args + 1);
-            }
-
-            private convertBoolToNum(value: boolean): number {
-                return value ? 1 : 0;
-            }
-
-            private convertNumToBool(value: number): boolean {
-                return value == 1 ? true : false;
-            }
             private fillterByAttendanceType(code: number) {
                 const vm = this;
                 const NOT_USE_ATR = 9;  // 日次の勤怠項目に関連するマスタの種類=9:するしない区分
@@ -477,7 +439,6 @@ module nts.uk.at.view.kwr006.c {
             }
         }
         }
-
         class ItemModel {
             code: number;
             name: string;
@@ -486,15 +447,6 @@ module nts.uk.at.view.kwr006.c {
                 this.code = code;
                 this.name = name;
                 this.id = id;
-            }
-        }
-
-        class BoxModel {
-            code: number;
-            name: string;
-            constructor(code: number, name: string) {
-                this.code = code;
-                this.name = name;
             }
         }
         class FontSizeEnum {
