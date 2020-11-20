@@ -7,10 +7,10 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.tran.AtomTask;
+import nts.uk.ctx.at.function.dom.commonform.AttendanceItemToPrint;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
-import nts.uk.ctx.at.function.dom.workledgeroutputitem.AttendanceItemToPrint;
 import nts.uk.ctx.at.function.dom.workledgeroutputitem.CreateWorkLedgerSettingDomainService;
 import nts.uk.ctx.at.function.dom.workledgeroutputitem.WorkLedgerOutputItem;
 import nts.uk.ctx.at.function.dom.workledgeroutputitem.WorkLedgerOutputItemRepo;
@@ -40,12 +40,11 @@ public class CreateWorkLedgerSettingCommandHandler extends CommandHandler<Create
         val name = new OutputItemSettingName(command.getName());
         SettingClassificationCommon settingCategory =
                 EnumAdaptor.valueOf(command.getSettingCategory(), SettingClassificationCommon.class);
-        List<Integer> rankingList = command.getRankingList();
-        List<Integer> attendanceIdList = command.getAttendanceIdList();
+        List<AttendanceItemToPrint> outputItemList = command.getOutputItemList();
         RequireImpl require = new RequireImpl(workLedgerOutputItemRepo);
 
         AtomTask persist = CreateWorkLedgerSettingDomainService.createSetting(require, code, name,
-                settingCategory, rankingList, attendanceIdList);
+                settingCategory, outputItemList);
         transaction.execute(persist::run);
 
     }
@@ -55,7 +54,7 @@ public class CreateWorkLedgerSettingCommandHandler extends CommandHandler<Create
         private WorkLedgerOutputItemRepo ledgerOutputItemRepo;
 
         @Override
-        public void createWorkLedgerOutputSetting(WorkLedgerOutputItem outputSetting ) {
+        public void createWorkLedgerOutputSetting(WorkLedgerOutputItem outputSetting) {
             ledgerOutputItemRepo.createNew(AppContexts.user().companyId(), outputSetting);
         }
 

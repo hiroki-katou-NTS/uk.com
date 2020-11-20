@@ -6,6 +6,7 @@ import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.function.dom.commonform.AttendanceItemToPrint;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
@@ -49,11 +50,9 @@ public class UpdateWorkLedgerSettingDomainServiceTest {
 			UpdateWorkLedgerSettingDomainService.updateSetting(
 					require,
 					"uid01",
-					code,
 					name,
 					SettingClassificationCommon.STANDARD_SELECTION,
-					Arrays.asList(11 , 12),
-					Arrays.asList(13 , 14)
+					Arrays.asList(new AttendanceItemToPrint(1, 1))
 			);
 		});
     }
@@ -86,16 +85,14 @@ public class UpdateWorkLedgerSettingDomainServiceTest {
 		val actual = UpdateWorkLedgerSettingDomainService.updateSetting(
 				require,
 				"uid02",
-				code,
 				name,
 				SettingClassificationCommon.STANDARD_SELECTION,
-				attendanceIdList,
-				rankingList
+				Arrays.asList(new AttendanceItemToPrint(1, 1))
 		);
 
 		NtsAssert.atomTask(
 				() -> actual,
-				any -> require.updateWorkLedgerOutputItem("uid02", any.get(), any.get())
+				any -> require.updateWorkLedgerOutputItem("uid02", any.get())
 		);
 	}
 
@@ -122,16 +119,14 @@ public class UpdateWorkLedgerSettingDomainServiceTest {
 		val actual = UpdateWorkLedgerSettingDomainService.updateSetting(
 				require,
 				"uid03",
-				code,
 				name,
 				SettingClassificationCommon.FREE_SETTING,
-				attendanceIdList,
-				rankingList
+				Arrays.asList(new AttendanceItemToPrint(1, 1))
 		);
 
 		NtsAssert.atomTask(
 				() -> actual,
-				any -> require.updateWorkLedgerOutputItem("uid03", any.get(), any.get())
+				any -> require.updateWorkLedgerOutputItem("uid03", any.get())
 		);
 	}
 }

@@ -4,6 +4,7 @@ package nts.uk.ctx.at.function.app.command.workledgeroutputitem;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.function.dom.commonform.AttendanceItemToPrint;
 
 import javax.ejb.Stateless;
 import java.util.List;
@@ -15,6 +16,5 @@ public class CreateWorkLedgerSettingCommand {
    private String code;
    private String name;
    private int settingCategory;
-   private List<Integer> rankingList;
-   private List<Integer> attendanceIdList;
+   List<AttendanceItemToPrint> outputItemList;
 }

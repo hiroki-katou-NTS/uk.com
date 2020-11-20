@@ -6,11 +6,9 @@ import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.function.dom.adapter.actualmultiplemonth.MonthlyRecordValueImport;
 import nts.uk.ctx.at.function.dom.commonform.GetClosureDateEmploymentDomainService;
 import nts.uk.ctx.at.function.dom.commonform.GetSuitableDateByClosureDateUtility;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemDetailSelectionAttendanceItem;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemDetailAttItem;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.StatusOfEmployee;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.CommonAttributesOfForms;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.DailyMonthlyClassification;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.OperatorsCommonToForms;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeBasicInfoImport;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceInfor;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
@@ -73,7 +71,7 @@ public class CreateWorkLedgerDisplayContentDomainService {
                     for (val monthlyItem : monthlyOutputItems) {
 
                         val listItem = monthlyItem.getSelectedAttendanceItemList();
-                        val itemIds = listItem.stream().map(OutputItemDetailSelectionAttendanceItem::getAttendanceItemId)
+                        val itemIds = listItem.stream().map(OutputItemDetailAttItem::getAttendanceItemId)
                                 .collect(Collectors.toList());
                         // 4  会社の月次項目を取得する->・List<月次の勤怠項目>
                         val monthlyAttendanceItems = require.getMonthlyItems(cid, Optional.empty(), itemIds, null);

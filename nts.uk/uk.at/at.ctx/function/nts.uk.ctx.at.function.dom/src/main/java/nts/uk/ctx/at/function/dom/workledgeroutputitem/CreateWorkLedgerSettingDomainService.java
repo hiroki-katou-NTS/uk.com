@@ -33,7 +33,6 @@ public class CreateWorkLedgerSettingDomainService {
 
         val employeeId = AppContexts.user().employeeId();
         val uid = IdentifierUtil.randomUniqueId();
-
         boolean checkResult = false;
         if (settingCategory == SettingClassificationCommon.STANDARD_SELECTION) {
             // 定型選択の重複をチェックする(コード, ログイン会社ID)
@@ -46,39 +45,17 @@ public class CreateWorkLedgerSettingDomainService {
         if (checkResult) {
             throw new BusinessException("Msg_1927");
         }
-        WorkLedgerOutputItem outputSettings = null;
+        WorkLedgerOutputItem finalOutputSettings = new WorkLedgerOutputItem(
+                uid,
+                code,
+                outputItemList,
+                name,
+                settingCategory,
+                settingCategory == SettingClassificationCommon.FREE_SETTING ? employeeId : null
+        );
 
-        // 3.1 設定区分 == 定型選択; create():勤怠状況の出力設定
-        if (settingCategory == SettingClassificationCommon.STANDARD_SELECTION) {
-            outputSettings = new WorkLedgerOutputItem(
-                    uid,
-                    code,
-                    outputItemList,
-                    name,
-                    settingCategory,
-                    null
-            );
-
-        }
-        // 3.2 設定区分 == 自由設定; create():勤怠状況の出力設定
-        if (settingCategory == SettingClassificationCommon.FREE_SETTING) {
-            outputSettings = new WorkLedgerOutputItem(
-                    uid,
-                    code,
-                    outputItemList,
-                    name,
-                    settingCategory,
-                    employeeId
-            );
-        }
-        WorkLedgerOutputItem finalOutputSettings = outputSettings;
         return AtomTask.of(() -> {
-            if (settingCategory == SettingClassificationCommon.STANDARD_SELECTION) {
-                require.createWorkLedgerOutputSetting(finalOutputSettings);
-            }
-            else if (settingCategory == SettingClassificationCommon.FREE_SETTING) {
-                require.createWorkLedgerOutputSetting(finalOutputSettings);
-            }
+            require.createWorkLedgerOutputSetting(finalOutputSettings);
         });
     }
 

@@ -38,17 +38,15 @@ public class UpdateWorkLedgerSettingCommandHandler extends CommandHandler<Update
 
         val command = commandHandlerContext.getCommand();
         String id = command.getId();
-        OutputItemSettingCode code = new OutputItemSettingCode(command.getCode());
         OutputItemSettingName name = new OutputItemSettingName(command.getName());
         SettingClassificationCommon settingCategory =
                 EnumAdaptor.valueOf(command.getSettingCategory(), SettingClassificationCommon.class);
-        List<Integer> rankingList = command.getRankingList();
-        List<Integer> attendanceIdList = command.getAttendanceIdList();
+        val outputItemLists = command.getOutputItemList();
 
         RequireImpl require = new RequireImpl(workLedgerOutputItemRepo);
 
         AtomTask persist = UpdateWorkLedgerSettingDomainService
-                .updateSetting(require,id,code,name,settingCategory,rankingList,attendanceIdList);
+                .updateSetting(require,id,name,settingCategory,outputItemLists);
         transaction.execute(persist::run);
 
     }
@@ -67,8 +65,7 @@ public class UpdateWorkLedgerSettingCommandHandler extends CommandHandler<Update
         }
 
         @Override
-        public void updateWorkLedgerOutputItem(String id, WorkLedgerOutputItem outputSetting,
-                                               List<AttendanceItemToPrint> outputItemList) {
+        public void updateWorkLedgerOutputItem(String id, WorkLedgerOutputItem outputSetting) {
             workLedgerOutputItemRepo.update(AppContexts.user().companyId(), id, outputSetting);
 
         }
