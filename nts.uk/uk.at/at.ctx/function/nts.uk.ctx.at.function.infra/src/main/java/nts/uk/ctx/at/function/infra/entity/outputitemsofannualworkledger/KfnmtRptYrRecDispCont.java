@@ -4,9 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.AnnualWorkLedgerOutputSetting;
-import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.DailyOutputItemsAnnualWorkLedger;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItem;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemDetailAttItem;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -52,7 +49,7 @@ public class KfnmtRptYrRecDispCont extends UkJpaEntity implements Serializable {
     public static List<KfnmtRptYrRecDispCont> fromDomain(AnnualWorkLedgerOutputSetting outputSetting){
 
         val rs = new ArrayList<KfnmtRptYrRecDispCont>();
-        for (val i:outputSetting.getOutputItemList() ) {
+        for (val i:outputSetting.getMonthlyOutputItemList() ) {
             rs.addAll(i.getSelectedAttendanceItemList().stream().map(e->new KfnmtRptYrRecDispCont(
                     new KfnmtRptYrRecDispContPk((outputSetting.getID()),i.getRank(),e.getAttendanceItemId()),
                     AppContexts.user().contractCode(),
@@ -61,7 +58,7 @@ public class KfnmtRptYrRecDispCont extends UkJpaEntity implements Serializable {
             ) ).collect(Collectors.toList()));
         }
         for (val i:outputSetting.getDailyOutputItemList() ) {
-            rs.addAll(i.getSelectionAttendanceItem().stream().map(e->new KfnmtRptYrRecDispCont(
+            rs.addAll(i.getSelectedAttendanceItemList().stream().map(e->new KfnmtRptYrRecDispCont(
                     new KfnmtRptYrRecDispContPk((outputSetting.getID()),i.getRank(),e.getAttendanceItemId()),
                     AppContexts.user().contractCode(),
                     AppContexts.user().companyId(),

@@ -64,7 +64,7 @@ public class KfnmtRptYrRecItem extends UkJpaEntity implements Serializable {
 
     public static List<KfnmtRptYrRecItem> fromDomain(AnnualWorkLedgerOutputSetting outputSetting) {
         val rs = new ArrayList<KfnmtRptYrRecItem>();
-        rs.addAll(outputSetting.getOutputItemList().stream().map(e -> new KfnmtRptYrRecItem(
+        rs.addAll(outputSetting.getMonthlyOutputItemList().stream().map(e -> new KfnmtRptYrRecItem(
                 new KfnmtRptYrRecItemPk((outputSetting.getID()), e.getRank()),
                 AppContexts.user().contractCode(),
                 AppContexts.user().companyId(),
@@ -82,7 +82,7 @@ public class KfnmtRptYrRecItem extends UkJpaEntity implements Serializable {
                 e.isPrintTargetFlag(),
                 e.getIndependentCalcClassic().value,
                 DailyMonthlyClassification.DAILY.value,
-                e.getAttribute().value
+                e.getItemDetailAttributes().value
         )).collect(Collectors.toList()));
 
         return rs;

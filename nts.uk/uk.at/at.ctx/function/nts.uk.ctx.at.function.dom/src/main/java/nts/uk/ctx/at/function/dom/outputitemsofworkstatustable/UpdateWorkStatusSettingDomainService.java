@@ -15,6 +15,7 @@ import java.util.List;
 
 /**
  * DomainService: 勤務状況の設定を更新する
+ *
  * @author chinh.hm
  */
 @Stateless
@@ -29,48 +30,27 @@ public class UpdateWorkStatusSettingDomainService {
         if (oldItem == null) {
             throw new BusinessException("Msg_1903");
         }
-
-        WorkStatusOutputSettings outputSettings = null;
         val empId = AppContexts.user().employeeId();
         // 3.1設定区分 == 定型選択: ① create():勤務状況の出力設定
-
-        if (settingCategory == SettingClassificationCommon.STANDARD_SELECTION) {
-            outputSettings = new WorkStatusOutputSettings(
-                    settingId,
-                    code,
-                    name,
-                    null,
-                    settingCategory,
-                    outputItemList
-            );
-        }
-        // 3.2 設定区分 == 自由設定: ① create():勤務状況の出力設定
-        if (settingCategory == SettingClassificationCommon.FREE_SETTING) {
-            outputSettings = new WorkStatusOutputSettings(
-                    settingId,
-                    code,
-                    name,
-                    empId,
-                    settingCategory,
-                    outputItemList
-            );
-        }
-
-        // 4.② create():List<出力項目>
-        // 5. ③ create(): List<演算子>、List<勤怠項目ID>: List<出力項目詳細の所属勤怠項目>;
-
-        WorkStatusOutputSettings finalOutputSettings = outputSettings;
+        WorkStatusOutputSettings finalOutputSettings = new WorkStatusOutputSettings(
+                settingId,
+                code,
+                name,
+                settingCategory == SettingClassificationCommon.STANDARD_SELECTION ? null : empId,
+                settingCategory,
+                outputItemList
+        );
         return AtomTask.of(() -> {
             // 7.1 設定区分 == 指定選択: 定型選択を更新する(会社ID, int, 勤務状況の出力設定, 勤務状況の出力項目, 勤務状況の出力項目詳細)
-                require.update(finalOutputSettings );
+            require.update(finalOutputSettings);
 
         });
     }
-
     public interface Require extends WorkStatusOutputSettings.Require {
 
         // [1]	出力設定の詳細を取得する
         WorkStatusOutputSettings getWorkStatusOutputSettings(String settingId);
+
         // [2]	定型選択を更新する
         void update(WorkStatusOutputSettings outputSettings);
 

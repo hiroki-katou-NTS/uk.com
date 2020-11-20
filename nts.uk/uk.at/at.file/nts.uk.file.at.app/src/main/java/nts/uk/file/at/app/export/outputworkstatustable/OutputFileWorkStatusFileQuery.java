@@ -19,7 +19,7 @@ public class OutputFileWorkStatusFileQuery {
     //「１」ExcelPdf区分
     private int mode;
     //「２」対象年月
-    private YearMonth targetDate;
+    private int targetDate;
     //「３」List<抽出社員>
     private List<String> lstEmpIds;
     // 「４」定型自由区分
