@@ -23,7 +23,8 @@ public class ExportDdlService {
 		}
 
 		DatabaseType dbtype = DatabaseType.valueOf(type);
-		String createTableSql = td.get().createFullTableSql(dbtype.spec());
+		//String createTableSql = td.get().createFullTableSql(dbtype.spec());
+		String createTableSql = td.get().createSimpleTableSql(dbtype.spec());
 
 		return createTableSql;
 	}
