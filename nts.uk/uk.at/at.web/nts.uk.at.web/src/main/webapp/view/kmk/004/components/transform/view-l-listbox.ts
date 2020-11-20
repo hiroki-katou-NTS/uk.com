@@ -54,11 +54,11 @@ module nts.uk.at.view.kmk004{
 
     }
 
-  /*  export interface IListYear {
-        status: boolean;
-        statusValue: string;
-        value: string;
-    }*/
+export interface IListYear {
+	status: boolean;
+	statusValue: string;
+    value: string;
+}
 
     // export class ListYear {
     //     status: KnockoutObservable<boolean> = ko.observable(true);

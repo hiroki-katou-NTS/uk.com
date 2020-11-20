@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/freelayout.xhtml">
+		<ui:define name="htmlHead">
+
+			<com:scriptfile set="IGNITE" />
+			<script>var dialogSize = { width: 300, height: 600 };</script>
+			<com:stylefile path="./kmk004.p.style.css" />
+			<com:scriptfile path="./kmk004.p.vm.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<div id="title">会社</div>
+				<hr></hr>
+				<!-- P2_1 -->
+				<div
+					data-bind="ntsFormLabel: { required: true, text: $i18n('KMK004_308') }"></div>
+
+				<!-- P2_2 -->
+				<label data-bind="text: $i18n('KMK004_309')"></label>
+
+				<!-- P2_3 -->
+				<input tabindex="1"
+					data-bind="ntsTextEditor: { value: day, required: true, name: '#[KMK004_309]' }" />
+
+				<!-- P2_4 -->
+				<label data-bind="text: $i18n('KMK004_310')"></label>
+
+				<!-- P2_5 -->
+				<input tabindex="2"
+					data-bind="ntsTextEditor: { value: week, required: true, name: '#[KMK004_310]' }" />
+
+				<!-- P3_1 -->
+				<div
+					data-bind="ntsFormLabel: { required: false, text: $i18n('KMK004_311') }"></div>
+
+				<!-- P3_2 -->
+				<label data-bind="text: $i18n('KMK004_312')"></label>
+
+				<!-- P3_3 -->
+				<div tabindex="3" class="cf"
+					data-bind="ntsSwitchButton: {
+								options: itemListP3_3,
+								optionsValue: 'code',
+								name: #[KMK004_312],
+								optionsText:'name',
+								value: selectedP3_3}"></div>
+
+				<!-- P3_4 -->
+				<label data-bind="text: $i18n('KMK004_315')"></label>
+
+				<!-- P3_5 -->
+				<div id="combo-box" tabindex="4"
+					data-bind="ntsComboBox: {
+									name: comboboxName,
+									options: itemListP3_5,
+									optionsValue: 'code',
+									visibleItemsCount: 12,
+									value: selectedCode,
+									optionsText: 'name',
+									editable:  false,
+									enable: true,
+									required: false,
+									columns: [{ prop: 'code', length: 2 }]}">
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<!-- P6_1 -->
+				<button tabindex="11" data-bind="click: register, i18n: 'KMK004_234'"
+					class="proceed large"></button>
+
+				<!-- P6_2 -->
+				<button tabindex="12" data-bind="click: close, i18n: 'KMK004_235"></button>
+
+				<!-- P6_3 -->
+				<button tabindex="13" class="danger" data-bind="i18n: 'KMK004_227'"></button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
