@@ -45,13 +45,13 @@ module nts.uk.at.view.kmk004.b {
 
             vm.change
                 .subscribe(() => {
-                    ko.unwrap(vm.itemList)[0].statusValue = '*';
+                    ko.unwrap(vm.itemList)[0].statusValue = '＊';
                 });
         }
 
         reloadData(selectedIndex: number = 0) {
             const vm = this;
-            const faceData: IYear[] = [{status: true, statusValue : '*', value: 2017},
+            const faceData: IYear[] = [{status: true, statusValue : '＊', value: 2017},
             {status: false, statusValue : '', value: 2016}
             ,{status: true, statusValue : '', value: 2018}
             ,{status: true, statusValue : '', value: 2020}];

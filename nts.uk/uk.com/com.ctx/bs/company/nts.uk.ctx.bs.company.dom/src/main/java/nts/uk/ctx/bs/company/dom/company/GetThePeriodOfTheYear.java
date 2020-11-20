@@ -27,6 +27,8 @@ public class GetThePeriodOfTheYear {
 	}
 	
 	public static interface Require{
+		
+		//	[R-1] 会社情報を取得する(会社ID)	
 		Optional<Company> getComanyInfoByCid(String cid);
 	}
 }
