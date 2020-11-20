@@ -15,7 +15,7 @@ module nts.uk.at.view.kaf020.b {
         appType: KnockoutObservable<number> = ko.observable(AppType.OPTIONAL_ITEM_APPLICATION);
         isSendMail: KnockoutObservable<boolean> = ko.observable(false);
         application: KnockoutObservable<Application> = ko.observable(new Application(this.appType()));
-        b4_2value: KnockoutObservable<string> = ko.observable('wait');
+        isAgentMode : KnockoutObservable<boolean> = ko.observable(false);
         code: string;
         dataFetch: KnockoutObservable<DetailSreenInfo> = ko.observable({
             applicationContents: ko.observableArray([])
