@@ -9,7 +9,7 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
- * 職場計の人件費・時間
+ * AggregateRoot: 職場計の人件費・時間
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務予定.シフト管理.シフト勤務.スケジュール集計.人件費・時間.職場計の人件費・時間
  * @author dan_pv
  *
