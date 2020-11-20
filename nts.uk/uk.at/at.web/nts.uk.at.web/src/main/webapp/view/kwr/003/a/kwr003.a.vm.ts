@@ -9,7 +9,7 @@ module nts.uk.at.view.kwr003.a {
   const KWR003_SAVE_DATA = 'WORK_SCHEDULE_STATUS_OUTPUT_CONDITIONS';
 
   const PATH = {
-    exportExcelPDF: 'at/function/kwr003/report/export',
+    exportExcelPDF: 'at/function/kwr/003/report/export',
     getSettingListWorkStatus: 'at/function/kwr/003/a/listworkstatus',
     checkDailyAuthor: 'at/function/kwr/checkdailyauthor',
   };
@@ -86,14 +86,6 @@ module nts.uk.at.view.kwr003.a {
         nts.uk.ui.errors.clearAll();
       });
 
-      /* vm.standardSelectedCode.subscribe((value) => {
-        vm.isEnableStdBtn(!nts.uk.util.isNullOrEmpty(value));
-      });
-
-      vm.freeSelectedCode.subscribe((value) => {
-        vm.isEnableFreeBtn(!nts.uk.util.isNullOrEmpty(value));
-      });
-       */
       vm.CCG001_load();
       vm.KCP005_load();
 
@@ -390,8 +382,7 @@ module nts.uk.at.view.kwr003.a {
         }
       });
 
-      vm.saveWorkScheduleOutputConditions().done(() => {
-        //vm.$blockui('grayout');
+      vm.saveWorkScheduleOutputConditions().done(() => {     
 
         let findObj = null;
 
@@ -402,8 +393,8 @@ module nts.uk.at.view.kwr003.a {
         }
         
         let baseDate = moment(vm.dpkYearMonth(), 'YYYY/MM').format('YYYY/MM');
-        let endOfMonth = moment().endOf('month').format('DD');
-        let currentDate = moment().format('DD');
+        //let endOfMonth = moment().endOf('month').format('DD');
+        //let currentDate = moment().format('DD');
 
         let params = {
           mode: mode, //ExcelPdf区分
@@ -416,12 +407,10 @@ module nts.uk.at.view.kwr003.a {
           closureId: vm.closureId() //締め日
         }
 
-        console.log(params);
-        //vm.$blockui('hide');
         nts.uk.request.exportFile(PATH.exportExcelPDF, params).done((response) => {
         }).fail().always(() => vm.$blockui('hide'));
       });
-      //create an excel file and redirect to download
+      
     }
 
     saveWorkScheduleOutputConditions(): JQueryPromise<void> {

@@ -28,7 +28,8 @@ module nts.uk.at.view.kwr003.c {
     }
 
     created(params: any) {
-      let vm = this;
+      const vm = this;
+     
       vm.params({     
         settingCategory: 0, //設定区分
         settingId: null, //複製元の設定ID
@@ -49,18 +50,18 @@ module nts.uk.at.view.kwr003.c {
     }
 
     mounted() {
-      let vm = this;
+      const vm = this;
 
       $('#KWR003_C23').focus();
     }
 
     proceed() {
-      let vm = this;      
+      const vm = this;      
       vm.cloneSettingClassification();
     }
 
     cancel() {
-      let vm = this;
+      const vm = this;
       vm.$window.storage(KWR003_C_OUTPUT, null);
       vm.$window.close();
     }
@@ -84,10 +85,11 @@ module nts.uk.at.view.kwr003.c {
         .fail((error) => {      
           //データが先に削除された - 1903    
           //コードの重複 - Msg_1753
-          vm.$dialog.error({ messageId: error.messageId }).then(() => {
+          $('#KWR003_C23').ntsError('set', { messageId: error.messageId });   
+         /*  vm.$dialog.error({ messageId: error.messageId }).then(() => {
             $('#closeDialog').focus();
             vm.$blockui('hide');
-          });
+          }); */
         })
         .always(() => vm.$blockui('hide'));
     }

@@ -132,7 +132,7 @@ module nts.uk.at.view.kwr003.b {
     mounted() {
       const vm = this;
       if (!!navigator.userAgent.match(/Trident.*rv\:11\./))
-        $("#multiGridList").ntsFixedTable({ height: 368 });
+        $("#multiGridList").ntsFixedTable({ height: 'auto' });
       else
         $("#multiGridList").ntsFixedTable({ height: 370 });
     }
@@ -143,7 +143,7 @@ module nts.uk.at.view.kwr003.b {
 
       if (!newRow) {
         let lastItem: any = _.last(vm.settingListItemsDetails());
-        let id = lastItem ? lastItem.id : 1;
+        let id = lastItem ? lastItem.id : 0;
         row = new SettingForPrint(id, null, 0, null, false);
       }
 
@@ -252,13 +252,34 @@ module nts.uk.at.view.kwr003.b {
         });
       })
         .fail((error) => {
-          vm.$dialog.info({ messageId: error.messageId }).then(() => {
-            if (error.messageId === 1903) {
-              reloadParams.code = null;
-              vm.loadSettingList(reloadParams);
-            }
-            vm.$blockui('hide');
-          });
+          switch (error.messageId) {
+            case 'Msg_1903':
+              vm.$dialog.error({  messageId: error.messageId }).then(() => {
+                reloadParams.code = null;
+                vm.loadSettingList(reloadParams);
+                $('#btnB11').focus();
+              });
+              //reloadParams.code = null;
+              //vm.loadSettingList(reloadParams);
+              //$('#btnB11').ntsError('set', { messageId: error.messageId });
+              break;
+
+            case 'Msg_1903':
+              $('#KWR003_B42').ntsError('set', { messageId: error.messageId });
+              break;
+          }
+          /*  if (error.messageId === 'Msg_1903') {
+             reloadParams.code = null;
+             vm.loadSettingList(reloadParams);
+             $('#btnB11').ntsError('set', { messageId: error.messageId });
+           }
+ 
+           if (error.messageId === 'Msg_1753') {
+             $('#KWR003_B42').ntsError('set', { messageId: error.messageId });
+           } */
+
+          vm.$blockui('hide');
+
         })
         .always(() => vm.$blockui('hide'));
     }
@@ -287,7 +308,7 @@ module nts.uk.at.view.kwr003.b {
         newListItemsDetails.push(temp);
       });
 
-      newListItemsDetails = _.orderBy(newListItemsDetails, [field], [sort_type]);
+      //newListItemsDetails = _.orderBy(newListItemsDetails, [field], [sort_type]);
 
       return newListItemsDetails;
     }
@@ -300,18 +321,26 @@ module nts.uk.at.view.kwr003.b {
       const vm = this;
 
       vm.settingListItemsDetails([]);
+      let tempListItem: Array<SettingForPrint> = [];
+
       _.forEach(listItemsDetails, (x: any) => {
-        let newItem: SettingForPrint = new SettingForPrint(
-          x.id,
-          x.name,
-          x.setting,
-          x.selectionItem,
-          x.isChecked,
-          x.selectedItemList,
-          x.selected,
-          x.selectedTime
-        );
-        vm.addRowItem(newItem);
+        if (!_.isNil(x.name)) {
+          let newItem: SettingForPrint = new SettingForPrint(
+            x.id,
+            x.name,
+            x.setting,
+            x.selectionItem,
+            x.isChecked,
+            x.selectedItemList,
+            x.selected,
+            x.selectedTime
+          );
+          tempListItem.push(newItem);
+        }
+      });
+
+      _.forEach(tempListItem, (x: SettingForPrint) => {
+        vm.addRowItem(x);
       });
     }
 
@@ -383,15 +412,9 @@ module nts.uk.at.view.kwr003.b {
             if (_.isNil(data)) {
               return;
             }
-
-            let duplicateItem = _.find(vm.settingListItems(), (x) => x.code === data.code);
-            if (!_.isNil(duplicateItem)) {
-              vm.$dialog.error({ messageId: 'Msg_1903' }).then(() => { });
-              return;
-            }
-
-            vm.settingListItems.push(data);
-            vm.currentCodeList(data.code);
+            //reload the work status table
+            params = { ...data, standOrFree: vm.settingCategory() };
+            vm.loadSettingList(params)
           });
         });
       });
@@ -420,12 +443,20 @@ module nts.uk.at.view.kwr003.b {
       let listDaily = vm.diligenceProjects();
 
       vm.$blockui('show');
-
+      //vm.settingListItemsDetails([]);
       vm.$ajax(PATH.getSettingLitsWorkStatusDetails, { settingId: selectedObj.id }).done((data) => {
+
+        vm.settingListItemsDetails([]);
+        if (!_.isNil(data) && !data.settingId) {
+          vm.$dialog.info({ messageId: 'Msg_1903' }).then(() => {
+            vm.loadSettingList({ standOrFree: vm.settingCategory(), code: null });
+          });
+          return;
+        }
+
         if (!_.isNil(data) && !_.isNil(data.outputItemList)) {
           //total output item which registered
           beginItems = data.outputItemList.length;
-
           //order by list
           let listItemsDetails: Array<SettingForPrint> = [];
           _.forEach(data.outputItemList, (x, index: number) => {
@@ -463,7 +494,7 @@ module nts.uk.at.view.kwr003.b {
             }
 
             let newItem: SettingForPrint = new SettingForPrint(
-              index + 1,
+              index,
               x.name,
               x.independentCalClassic,
               selectedItemText,
@@ -472,7 +503,6 @@ module nts.uk.at.view.kwr003.b {
               x.itemDetailAtt);
 
             listItemsDetails.push(newItem);
-            //vm.addRowItem(newItem);
           });
 
           //re-order the list
@@ -480,9 +510,9 @@ module nts.uk.at.view.kwr003.b {
           vm.createListItemAfterSorted(listItemsDetails);
         }
 
-        //if beginItems is less then NUM_ROWS | 10     
+        //if beginItems is less then NUM_ROWS | 10
         for (let i = beginItems; i < NUM_ROWS; i++) {
-          let newItem: SettingForPrint = new SettingForPrint(i + 1, null, 1, null, false);
+          let newItem: SettingForPrint = new SettingForPrint(i, null, 1, null, false);
           vm.addRowItem(newItem);
         }
 
@@ -499,7 +529,7 @@ module nts.uk.at.view.kwr003.b {
       //clear
       vm.settingListItemsDetails([])
       for (let i = 0; i < NUM_ROWS; i++) {
-        let newItem = new SettingForPrint(i + 1, null, 1, null, false);
+        let newItem = new SettingForPrint(i, null, 1, null, false);
         vm.addRowItem(newItem);
       }
     }
@@ -673,11 +703,10 @@ module nts.uk.at.view.kwr003.b {
 
           vm.settingListItemsDetails()[index].selected = attendanceItem.attribute;
           vm.settingListItemsDetails()[index].selectedTime = attendanceItem.attendanceId;
-
-          if (!attendanceItem.attendanceItemName) {
-            $('#textName' + row.id).ntsError('set', { messageId: "MsgB_1" });
-            $('#textName' + row.id).focus();
-          }
+          $('#textName' + row.id).focus();
+          /*  if (!attendanceItem.attendanceItemName) {
+             $('#textName' + row.id).ntsError('set', { messageId: "MsgB_1" });            
+           } */
         } else {
           vm.settingListItemsDetails()[index].name(null);
           vm.settingListItemsDetails()[index].selectionItem(null);
@@ -726,10 +755,10 @@ module nts.uk.at.view.kwr003.b {
             vm.settingListItemsDetails()[index].selectionItem(dataSelection);
             vm.settingListItemsDetails()[index].selectedTimeList(attendanceItem.selectedTimeList);
             vm.settingListItemsDetails()[index].selected = attendanceItem.attribute.selected;
-            if (!attendanceItem.itemNameLine.name) {
-              $('#textName' + row.id).ntsError('set', { messageId: "MsgB_1" });
-              $('#textName' + row.id).focus();
-            }
+            $('#textName' + row.id).focus();
+            /*  if (!attendanceItem.itemNameLine.name) {
+               $('#textName' + row.id).ntsError('set', { messageId: "MsgB_1" });              
+             } */
           }
         } else {
           vm.settingListItemsDetails()[index].name(null);

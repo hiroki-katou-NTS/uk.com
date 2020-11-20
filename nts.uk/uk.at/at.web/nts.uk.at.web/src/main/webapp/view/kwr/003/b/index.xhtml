@@ -19,7 +19,7 @@
         <com:ValidatorScript>
           nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode
           nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName
-          nts.uk.ctx.at.function.dom.attendancerecord.item.ItemName
+          nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.FormOutputItemName
         </com:ValidatorScript>
       </ui:define>
 
@@ -138,7 +138,7 @@
               </div>
               <div class="row">
                 <div class="ui-iggrid">
-                  <table id="multiGridList" width="100%">
+                  <table id="multiGridList">
                     <colgroup>
                       <col width="35px" />
                       <col width="190px" />
@@ -184,7 +184,7 @@
                                     value: name,
                                     required: true,
                                     name: $i18n('KWR003_215'),
-                                    constraint: 'ItemName'
+                                    constraint: 'FormOutputItemName'
                                   }"
                           />
                         </td>
