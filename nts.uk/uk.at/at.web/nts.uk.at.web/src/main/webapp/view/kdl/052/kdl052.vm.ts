@@ -79,6 +79,7 @@ module nts.uk.at.view.kdl052.screenModel {
             lstEmployees: params.employeeList,
             baseDate: params.baseDate
           }
+      vm.$blockui('grayout');
       // Call api get data
       vm.$ajax(API.startPage, command).then((result: any) => {
         if (result && result.lstEmployee) {
@@ -102,18 +103,19 @@ module nts.uk.at.view.kdl052.screenModel {
             vm.selectedCode(listSort[0].code);
             vm.nextStartDate(result.nextStartDate)
             $('#component-items-list').ntsListComponent(vm.listComponentOption);
-          // 取得したObject＜介護看護休暇設定＞．管理区分をチェックする。
         
         }
         
-      });
+      })
+      .always(() => vm.$blockui('clear'));
     }
 
     // event when change employee
     public onChangeId(sId : string) {
       const vm = this;
+      vm.$blockui('grayout');
       // call API changeId
-      vm.$ajax(`${API.changeId}/${sId}`).then((res: any)=>{
+      vm.$ajax(`${API.changeId}/${sId}`).then((res: any) => {
         let startdateDays = res.aggrResultOfChildCareNurse.startdateDays;
         vm.limitDays(vm.genDateTime(startdateDays.thisYear.limitDays,0));
         let childNursingUsed = vm.genDateTime(startdateDays.thisYear.usedDays.usedDay, startdateDays.thisYear.usedDays.usedTimes);
@@ -131,7 +133,8 @@ module nts.uk.at.view.kdl052.screenModel {
                             };
                         });
         vm.tableDatas(mappedList);
-      });
+      })
+      .always(() => vm.$blockui('clear'));
     }
 
     // format data

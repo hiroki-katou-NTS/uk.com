@@ -1,11 +1,5 @@
 module nts.uk.at.view.kdl051.test.screenModel {
-
-    import dialog = nts.uk.ui.dialog.info;
-    import text = nts.uk.resource.getText;
-    import formatDate = nts.uk.time.formatDate;
-    import block = nts.uk.ui.block;
-    import jump = nts.uk.request.jump;
-    import alError = nts.uk.ui.dialog.alertError;
+  
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
 

@@ -41,8 +41,9 @@ module nts.uk.at.view.kdl051.screenModel {
         baseDate: shareParam.baseDate,
         employeeIds: shareParam.employeeIds
       }
+      vm.$blockui('grayout');
       // call API startPage
-      vm.$ajax(API.startPage, startParam).then((res: any)=>{
+      vm.$ajax(API.startPage, startParam).then((res: any) => {
         if(res && res.lstEmp) {
           let mappedList: Employees[] =
                         _.map(res.lstEmp, (item: any) => {
@@ -61,6 +62,7 @@ module nts.uk.at.view.kdl051.screenModel {
           }
         }
       })
+      .always(() => vm.$blockui('clear'));
 
       vm.alreadySettingList = ko.observableArray([
         { code: '1', isAlreadySetting: true },
@@ -100,6 +102,7 @@ module nts.uk.at.view.kdl051.screenModel {
     // event when change employee
     public onChangeId(sId : string) {
       const vm = this;
+      vm.$blockui('grayout');
       // call API changeId
       vm.$ajax(`${API.changeId}/${sId}`).then((res: any)=>{
         let startdateDays = res.aggrResultOfChildCareNurse.startdateDays;
@@ -119,7 +122,8 @@ module nts.uk.at.view.kdl051.screenModel {
                             };
                         });
         vm.tableDatas(mappedList);
-      });
+      })
+      .always(() => vm.$blockui('clear'));
     }
 
     // format data
