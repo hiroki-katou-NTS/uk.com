@@ -23,7 +23,7 @@ module nts.uk.at.view.kwr003.a {
     // end variable of CCG001
 
     //panel left
-    dpkYearMonth: KnockoutObservable<number> = ko.observable(202010);
+    dpkYearMonth: KnockoutObservable<string> = ko.observable(moment().format('YYYYMM'));
 
     //panel right
     rdgSelectedId: KnockoutObservable<number> = ko.observable(0);
@@ -242,7 +242,7 @@ module nts.uk.at.view.kwr003.a {
       }
 
       if (!_.isNil(attendence) && !_.isNil(attendence.code)) {
-        let params = {
+        params = {
           code: attendence.code, //項目選択コード
           name: attendence.name,
           settingId: attendence.id,
@@ -358,7 +358,7 @@ module nts.uk.at.view.kwr003.a {
       return newListItems;
     }
 
-    exportExcelPDF( mode: number = 1) {
+    exportExcelPDF(mode: number = 1) {
       let vm = this,
         validateError: any = {}; //not error
 
@@ -382,35 +382,40 @@ module nts.uk.at.view.kwr003.a {
         }
       });
 
-      vm.saveWorkScheduleOutputConditions().done(() => {     
+      vm.saveWorkScheduleOutputConditions().done(() => {
 
         let findObj = null;
 
-        if( vm.rdgSelectedId() === 0 ) {
+        if (vm.rdgSelectedId() === 0) {
           findObj = _.find(vm.settingListItems1(), (x) => x.code === vm.standardSelectedCode());
-        } else  {
+        } else {
           findObj = _.find(vm.settingListItems2(), (x) => x.code === vm.freeSelectedCode());
         }
-        
-        let baseDate = moment(vm.dpkYearMonth(), 'YYYY/MM').format('YYYY/MM');
-        //let endOfMonth = moment().endOf('month').format('DD');
-        //let currentDate = moment().format('DD');
 
         let params = {
           mode: mode, //ExcelPdf区分
           lstEmpIds: lstEmployeeIds, //社員リスト
-          targetDate: baseDate, //対象年月,          
-          isZeroDisplay: vm.zeroDisplayClassification(),//ゼロ表示区分選択肢
-          pageBreak: vm.pageBreakSpecification(), //改ページ指定選択肢,
+          targetDate: vm.dpkYearMonth(), //対象年月,          
+          isZeroDisplay: vm.zeroDisplayClassification() ? true : false,//ゼロ表示区分選択肢
+          pageBreak: vm.pageBreakSpecification() ? true : false, //改ページ指定選択肢,
           standardFreeClassification: vm.rdgSelectedId(), //自由設定: A5_4_2   || 定型選択 : A5_3_2,
           settingId: findObj.id, //ゼロ表示区分,
-          closureId: vm.closureId() //締め日
+          closureId: vm.closureId() //締めID
         }
-
+        vm.$blockui('grayout');
         nts.uk.request.exportFile(PATH.exportExcelPDF, params).done((response) => {
-        }).fail().always(() => vm.$blockui('hide'));
+          vm.$blockui('hide');
+        }).fail((err) => {        
+          vm.$dialog.error({ messageId: 'Msg_1816' }).then(() => {
+            vm.$blockui('hide');
+            if (mode === 1)
+              $('#btnExportExcel').focus();
+            else
+              $('#btnExportPdf').focus();
+          });
+        }).always(() => vm.$blockui('hide'));
       });
-      
+
     }
 
     saveWorkScheduleOutputConditions(): JQueryPromise<void> {

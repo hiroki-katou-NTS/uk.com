@@ -443,7 +443,7 @@ module nts.uk.at.view.kwr003.b {
       let listDaily = vm.diligenceProjects();
 
       vm.$blockui('show');
-      //vm.settingListItemsDetails([]);
+
       vm.$ajax(PATH.getSettingLitsWorkStatusDetails, { settingId: selectedObj.id }).done((data) => {
 
         vm.settingListItemsDetails([]);
@@ -589,6 +589,7 @@ module nts.uk.at.view.kwr003.b {
 
     getWorkStatusTableOutput() {
       const vm = this;
+      
       vm.$blockui('show');
 
       vm.workStatusTableOutputItem = ko.observable({ listDaily: [], listMonthly: [] });
@@ -622,6 +623,9 @@ module nts.uk.at.view.kwr003.b {
     loadSettingList(params: any) {
       const vm = this;
       let listWorkStatus: Array<any> = [];
+
+      vm.$blockui('grayout');
+
       vm.$ajax(PATH.getSettingListWorkStatus, { setting: params.standOrFree }).then((data) => {
         if (!_.isNil(data) && data.length > 0) {
           _.forEach(data, (item) => {
@@ -641,12 +645,13 @@ module nts.uk.at.view.kwr003.b {
           }
 
           vm.currentCodeList(code);
-
+          
         } else {
           //create new the settings list
           vm.newSetting();
         }
 
+        vm.$blockui('hide');
       });
     }
     /**
