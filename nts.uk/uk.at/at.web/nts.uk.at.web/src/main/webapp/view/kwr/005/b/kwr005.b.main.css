@@ -1,0 +1,75 @@
+
+#master-wrapper {
+  height: auto;
+  overflow: hidden;
+}
+
+.kwr-005b #content-area {
+  padding: 20px;
+  overflow: hidden;
+}
+
+.kwr-005b .d-flex {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+.kwr-005b .d-flex:first-child {
+  margin-bottom: 24px;
+}
+.kwr-005b .d-flex .form-label {
+  margin-right: 32px;
+}
+.kwr-005b .d-flex .code {
+  width: 50px;
+}
+
+.kwr-005b .pull-left .panel.ntsPanel {
+  height: 450px;
+}
+
+.kwr-005b .nts-editor-wrapped .nts-editor.code {
+  max-width: 30px;
+  text-align: center;
+  margin-right: 15px;
+}
+.kwr-005b th.text-center,
+.kwr-005b td.text-center {
+  text-align: center;
+}
+
+.ntsSwapComponent.ntsMoveDataArea {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.ntsSwapList {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.ntsComponent.ntsUpDown .ntsUpButton  {
+  margin-top: 65px;
+}
+
+.B6_1 .ui-igcombo-wrapper {
+  width: 70px;
+}
+.swap-list-colum {
+  width: 285px;
+}
+.swap-list-colum:first-child {
+  margin-right: 95px;
+}
+.swap-list-colum:first-child .d-flex {
+  margin: 0;
+}
+.swap-list-colum:first-child .form-label {
+  margin-right: 60px;
+}
+.swap-list-colum:first-child .form-label + div {
+  margin-right: 15px;
+}
+.limit-items {
+  text-align: right;
+  padding-right: 43px;
+}

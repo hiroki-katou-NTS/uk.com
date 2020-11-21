@@ -1,12 +1,12 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
-module nts.uk.at.view.kwr003.a {
-  import common = nts.uk.at.view.kwr003.common;
+module nts.uk.at.view.kwr005.a {
+  import common = nts.uk.at.view.kwr005.common;
   import ComponentOption = kcp.share.list.ComponentOption;
 
-  const KWR003_B_INPUT = 'KWR003_WORK_STATUS_DATA';
-  const KWR003_B_OUTPUT = 'KWR003WORK_STATUS_RETURN';
-  const KWR003_SAVE_DATA = 'WORK_SCHEDULE_STATUS_OUTPUT_CONDITIONS';
+  const KWR005_B_INPUT = 'KWR005_WORK_STATUS_DATA';
+  const KWR005_B_OUTPUT = 'KWR003WORK_STATUS_RETURN';
+  const KWR005_SAVE_DATA = 'WORK_SCHEDULE_STATUS_OUTPUT_CONDITIONS';
 
   const PATH = {
     exportExcelPDF: 'at/function/kwr/003/report/export',
@@ -23,7 +23,7 @@ module nts.uk.at.view.kwr003.a {
     // end variable of CCG001
 
     //panel left
-    dpkYearMonth: KnockoutObservable<string> = ko.observable(moment().format('YYYYMM'));
+    dpkYearMonth: KnockoutObservable<number> = ko.observable(202010);
 
     //panel right
     rdgSelectedId: KnockoutObservable<number> = ko.observable(0);
@@ -62,6 +62,8 @@ module nts.uk.at.view.kwr003.a {
     isPermission51: KnockoutObservable<boolean> = ko.observable(false);
     itemSelection: KnockoutObservableArray<any> = ko.observableArray([]);
 
+    datepickerValue: KnockoutObservable<any> = ko.observable(null);
+
     constructor(params: any) {
       super();
       const vm = this;
@@ -81,11 +83,19 @@ module nts.uk.at.view.kwr003.a {
         vm.isEnableStdBtn(!nts.uk.util.isNullOrEmpty(vm.standardSelectedCode()));
         vm.isEnableFreeBtn(!nts.uk.util.isNullOrEmpty(vm.freeSelectedCode()));
         //focus
-        let focusId = value === 0 ? '#KWR003_105' : '#KWR003_106';
+        let focusId = value === 0 ? '#KWR005_105' : '#KWR005_106';
         $(focusId).focus();
         nts.uk.ui.errors.clearAll();
       });
 
+      /* vm.standardSelectedCode.subscribe((value) => {
+        vm.isEnableStdBtn(!nts.uk.util.isNullOrEmpty(value));
+      });
+
+      vm.freeSelectedCode.subscribe((value) => {
+        vm.isEnableFreeBtn(!nts.uk.util.isNullOrEmpty(value));
+      });
+       */
       vm.CCG001_load();
       vm.KCP005_load();
 
@@ -93,6 +103,8 @@ module nts.uk.at.view.kwr003.a {
 
     created(params: any) {
       const vm = this;
+
+      vm.datepickerValue({startDate: '2017/02/02', endDate: '2017/02/02'});
     }
 
     mounted() {
@@ -242,7 +254,7 @@ module nts.uk.at.view.kwr003.a {
       }
 
       if (!_.isNil(attendence) && !_.isNil(attendence.code)) {
-        params = {
+        let params = {
           code: attendence.code, //項目選択コード
           name: attendence.name,
           settingId: attendence.id,
@@ -250,9 +262,9 @@ module nts.uk.at.view.kwr003.a {
         }
       }
 
-      vm.$window.storage(KWR003_B_INPUT, ko.toJS(params)).then(() => {
-        vm.$window.modal('/view/kwr/003/b/index.xhtml').then(() => {
-          vm.$window.storage(KWR003_B_OUTPUT).then((data: any) => {
+      vm.$window.storage(KWR005_B_INPUT, ko.toJS(params)).then(() => {
+        vm.$window.modal('/view/kwr/005/b/index.xhtml').then(() => {
+          vm.$window.storage(KWR005_B_OUTPUT).then((data: any) => {
             if (data) {
               nts.uk.ui.errors.clearAll();
               vm.getSettingListWorkStatus(vm.rdgSelectedId(), data);
@@ -331,7 +343,7 @@ module nts.uk.at.view.kwr003.a {
         vm.$dialog.error({ messageId: 'Msg_1815' }).then(() => { });
 
         hasError.error = true;
-        hasError.focusId = 'KWR003_106';
+        hasError.focusId = 'KWR005_106';
         $('#' + hasError.focusId).ntsError('check');
         return hasError;
       }
@@ -339,7 +351,7 @@ module nts.uk.at.view.kwr003.a {
       if (vm.rdgSelectedId() === 0 && nts.uk.util.isNullOrEmpty(vm.standardSelectedCode())) {
         vm.$dialog.error({ messageId: 'Msg_1818' }).then(() => { });
         hasError.error = true;
-        hasError.focusId = 'KWR003_105';
+        hasError.focusId = 'KWR005_105';
         $('#' + hasError.focusId).ntsError('check');
         return hasError;
       }
@@ -358,7 +370,7 @@ module nts.uk.at.view.kwr003.a {
       return newListItems;
     }
 
-    exportExcelPDF(mode: number = 1) {
+    exportExcelPDF( mode: number = 1) {
       let vm = this,
         validateError: any = {}; //not error
 
@@ -383,39 +395,37 @@ module nts.uk.at.view.kwr003.a {
       });
 
       vm.saveWorkScheduleOutputConditions().done(() => {
+        //vm.$blockui('grayout');
 
         let findObj = null;
 
-        if (vm.rdgSelectedId() === 0) {
+        if( vm.rdgSelectedId() === 0 ) {
           findObj = _.find(vm.settingListItems1(), (x) => x.code === vm.standardSelectedCode());
-        } else {
+        } else  {
           findObj = _.find(vm.settingListItems2(), (x) => x.code === vm.freeSelectedCode());
         }
+        
+        let baseDate = moment(vm.dpkYearMonth(), 'YYYY/MM').format('YYYY/MM');
+        let endOfMonth = moment().endOf('month').format('DD');
+        let currentDate = moment().format('DD');
 
         let params = {
           mode: mode, //ExcelPdf区分
           lstEmpIds: lstEmployeeIds, //社員リスト
-          targetDate: vm.dpkYearMonth(), //対象年月,          
-          isZeroDisplay: vm.zeroDisplayClassification() ? true : false,//ゼロ表示区分選択肢
-          pageBreak: vm.pageBreakSpecification() ? true : false, //改ページ指定選択肢,
+          targetDate: baseDate, //対象年月,          
+          isZeroDisplay: vm.zeroDisplayClassification(),//ゼロ表示区分選択肢
+          pageBreak: vm.pageBreakSpecification(), //改ページ指定選択肢,
           standardFreeClassification: vm.rdgSelectedId(), //自由設定: A5_4_2   || 定型選択 : A5_3_2,
           settingId: findObj.id, //ゼロ表示区分,
-          closureId: vm.closureId() //締めID
+          closureId: vm.closureId() //締め日
         }
-        vm.$blockui('grayout');
-        nts.uk.request.exportFile(PATH.exportExcelPDF, params).done((response) => {
-          vm.$blockui('hide');
-        }).fail((err) => {        
-          vm.$dialog.error({ messageId: 'Msg_1816' }).then(() => {
-            vm.$blockui('hide');
-            if (mode === 1)
-              $('#btnExportExcel').focus();
-            else
-              $('#btnExportPdf').focus();
-          });
-        }).always(() => vm.$blockui('hide'));
-      });
 
+        console.log(params);
+        //vm.$blockui('hide');
+        nts.uk.request.exportFile(PATH.exportExcelPDF, params).done((response) => {
+        }).fail().always(() => vm.$blockui('hide'));
+      });
+      //create an excel file and redirect to download
     }
 
     saveWorkScheduleOutputConditions(): JQueryPromise<void> {
@@ -432,7 +442,7 @@ module nts.uk.at.view.kwr003.a {
         pageBreakSpecification: vm.pageBreakSpecification() //改ページ指定
       };
 
-      let storageKey: string = KWR003_SAVE_DATA + "_companyId_" + companyId + "_employeeId_" + employeeId;
+      let storageKey: string = KWR005_SAVE_DATA + "_companyId_" + companyId + "_employeeId_" + employeeId;
       vm.$window.storage(storageKey, data).then(() => {
         dfd.resolve();
       });
@@ -446,7 +456,7 @@ module nts.uk.at.view.kwr003.a {
         companyId: string = vm.$user.companyId,
         employeeId: string = vm.$user.employeeId;
 
-      let storageKey: string = KWR003_SAVE_DATA + "_companyId_" + companyId + "_employeeId_" + employeeId;
+      let storageKey: string = KWR005_SAVE_DATA + "_companyId_" + companyId + "_employeeId_" + employeeId;
 
       vm.$window.storage(storageKey).then((data: WorkScheduleOutputConditions) => {
         if (!_.isNil(data)) {
@@ -469,11 +479,11 @@ module nts.uk.at.view.kwr003.a {
     getItemSelection() {
       const vm = this;
 
-      vm.itemSelection.push({ id: 0, name: vm.$i18n('KWR003_105') });
+      vm.itemSelection.push({ id: 0, name: vm.$i18n('KWR005_6') });
 
       vm.$ajax(PATH.checkDailyAuthor, { roleId: vm.$user.role.attendance }).done((permission) => {
         vm.isPermission51(permission);
-        if (vm.isPermission51()) vm.itemSelection.push({ id: 1, name: vm.$i18n('KWR003_106') });
+        if (vm.isPermission51()) vm.itemSelection.push({ id: 1, name: vm.$i18n('KWR005_7') });
       });
     }
   }

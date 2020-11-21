@@ -19,7 +19,7 @@
         <com:ValidatorScript>
           nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode
           nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName
-          nts.uk.ctx.at.function.dom.attendancerecord.item.ItemName
+          nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.FormOutputItemName
         </com:ValidatorScript>
       </ui:define>
 
@@ -103,7 +103,8 @@
                   data-bind="ntsFormLabel: { 
                     required: true, 
                     text: $i18n('KWR003_209'), 
-                    constraint: ['OutputItemSettingCode', 'OutputItemSettingName']}"
+                    constraint: ['OutputItemSettingCode', 'OutputItemSettingName']
+                  }"
                 ></div>
                 <div class="textEditor">
                   <input
@@ -138,7 +139,7 @@
               </div>
               <div class="row">
                 <div class="ui-iggrid">
-                  <table id="multiGridList" width="100%">
+                  <table id="multiGridList">
                     <colgroup>
                       <col width="35px" />
                       <col width="190px" />
@@ -183,8 +184,8 @@
                                   ntsTextEditor: { 
                                     value: name,
                                     required: true,
-                                    name: $i18n('KWR003_215'),
-                                    constraint: 'ItemName'
+                                    name: $vm.$i18n('KWR003_215'),
+                                    constraint: 'FormOutputItemName'
                                   }"
                           />
                         </td>
@@ -200,7 +201,7 @@
                             }"
                           ></div>
                           <button
-                            data-bind="text: $i18n('KWR003_216'), click: function(data) { $vm.openDialogKDL(data) }"
+                            data-bind="text: $vm.$i18n('KWR003_216'), click: function(data) { $vm.openDialogKDL(data) }"
                           />
                         </td>
                         <td><span data-bind="text: selectionItem"></span></td>
