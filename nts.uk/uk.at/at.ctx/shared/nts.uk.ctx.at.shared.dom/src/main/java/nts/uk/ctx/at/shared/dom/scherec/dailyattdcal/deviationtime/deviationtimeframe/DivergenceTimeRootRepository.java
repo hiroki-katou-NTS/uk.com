@@ -11,4 +11,7 @@ public interface DivergenceTimeRootRepository {
 	 * @return 乖離時間
 	 */
 	public List<DivergenceTimeRoot> getList(List<Integer> frames);
+	
+	
+	public List<DivergenceTimeRoot> getAllDivTime(String companyId);
 }

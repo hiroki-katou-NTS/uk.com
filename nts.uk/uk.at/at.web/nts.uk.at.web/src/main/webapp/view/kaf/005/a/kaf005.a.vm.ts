@@ -77,8 +77,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						// param1.dateOp = '2020/11/13';
 						param1.overtimeAppAtr = OvertimeAppAtr.EARLY_NORMAL_OVERTIME;
 						param1.appDispInfoStartupDto = ko.toJS(vm.appDispInfoStartupOutput);
-						param1.startTimeSPR = 100;
-						param1.endTimeSPR = 200;
+						// param1.startTimeSPR = 100;
+						// param1.endTimeSPR = 200;
 						param1.isProxy = true;
 						let command = {
 							companyId: param1.companyId,
@@ -95,13 +95,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				}).then((successData: any) => {
 					if (successData) {
 						vm.dataSource = successData;
+						vm.visibleModel = vm.createVisibleModel(vm.dataSource);
 						vm.bindOverTimeWorks(vm.dataSource);
 						vm.bindWorkInfo(vm.dataSource);
 						vm.bindRestTime(vm.dataSource);
 						vm.bindHolidayTime(vm.dataSource);
 						vm.bindOverTime(vm.dataSource);
 						vm.bindMessageInfo(vm.dataSource);
-						vm.visibleModel = vm.createVisibleModel(vm.dataSource);
 					}
 				}).fail((failData: any) => {
 					// xử lý lỗi nghiệp vụ riêng
@@ -258,8 +258,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				appOverTime.workInfoOp = workInfoOp;
 			}
 			appOverTime.workHoursOp = [] as Array<TimeZoneWithWorkNo>;
-			if (!_.isNil(workInfo.workHours1.start)
-				&& !_.isNil(workInfo.workHours1.end)) {
+			if (!_.isNil(workInfo.workHours1.start())
+				&& !_.isNil(workInfo.workHours1.end())) {
 				let timeZone = {} as TimeZoneWithWorkNo;
 				timeZone.workNo = 1;
 				timeZone.timeZone = {} as TimeZone_New;
@@ -268,8 +268,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				appOverTime.workHoursOp.push(timeZone);
 			}
 
-			if (!_.isNil(workInfo.workHours2.start)
-				&& !_.isNil(workInfo.workHours2.end)) {
+			if (!_.isNil(workInfo.workHours2.start())
+				&& !_.isNil(workInfo.workHours2.end())) {
 				let timeZone = {} as TimeZoneWithWorkNo;
 				timeZone.workNo = 2;
 				timeZone.timeZone = {} as TimeZone_New;
@@ -490,9 +490,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			const self = this;
 			if (_.isNil(res)) {
 				let itemList = [
-					new ItemModel('1', '基本給'),
-					new ItemModel('2', '役職手当'),
-					new ItemModel('3', '基本給ながい文字列ながい文字列ながい文字列')
+					new ItemModel('1', ''),
+					new ItemModel('2', ''),
+					new ItemModel('3', '')
 				];
 				let messageArray = [] as Array<MessageInfo>;
 				let messageInfo = {} as MessageInfo;
@@ -522,6 +522,38 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					messageInfo[1].titleDrop(findNo2.divTimeName);
 					messageInfo[1].titleInput(findNo2.divTimeName);
 				}
+			}
+			let messageInfo1 = 	self.messageInfos()[0] as MessageInfo;
+			let messageInfo2 = 	self.messageInfos()[1] as MessageInfo;
+			// 
+			if (self.visibleModel.c11_1()) {
+				let itemList = [] as Array<ItemModel>;
+				let findResut = _.find(res.infoNoBaseDate.divergenceReasonInputMethod, { divergenceTimeNo: 1 });
+				_.forEach(findResut.reasons, (item: DivergenceReasonSelect) => {
+					let i = {} as ItemModel;
+					i.code = item.divergenceReasonCode;
+					i.name = self.$i18n('KAF005_340') + item.divergenceReasonCode + ' ' + item.reason;
+					itemList.push(i);
+					
+				});
+				messageInfo1.listDrop(itemList);
+			} else {
+				messageInfo1.selectedCode(null);
+			}
+			
+			if (self.visibleModel.c12_1()) {
+				let itemList = [] as Array<ItemModel>;
+				let findResut = _.find(res.infoNoBaseDate.divergenceReasonInputMethod, { divergenceTimeNo: 2 });
+				_.forEach(findResut.reasons, (item: DivergenceReasonSelect) => {
+					let i = {} as ItemModel;
+					i.code = item.divergenceReasonCode;
+					i.name = self.$i18n('KAF005_340') + item.divergenceReasonCode + ' ' + item.reason;
+					itemList.push(i);
+					
+				});
+				messageInfo2.listDrop(itemList);
+			} else {
+				messageInfo2.selectedCode(null);
 			}
 
 		}
@@ -707,7 +739,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			// 残業申請の表示情報．基準日に関係しない情報．利用する乖離理由．乖離理由を選択肢から選ぶ = true
 			let c11_1 = true;
 			let findResut = _.find(res.infoNoBaseDate.divergenceReasonInputMethod, { divergenceTimeNo: 1 });
-			let c11_1_1 = !_.isNil(findResut);
+			let c11_1_1 = _.isNil(findResut) ? false : !_.isEmpty(findResut.reasons);
 			let c11_1_2 = c11_1_1 ? findResut.divergenceReasonSelected : false;
 			c11_1 = c11_1_1 && c11_1_2;
 			visibleModel.c11_1(c11_1);
@@ -715,7 +747,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			// 「残業申請の表示情報．基準日に関係しない情報．利用する乖離理由．NO = 1」 <> empty　AND
 			// 残業申請の表示情報．基準日に関係しない情報．利用する乖離理由．乖離理由を入力する = true
 			let c11_2 = true;
-			let c11_2_1 = !_.isNil(findResut);
+			let c11_2_1 = _.isNil(findResut) ? false : !_.isEmpty(findResut.reasons);
 			let c11_2_2 = c11_2_1 ? findResut.divergenceReasonInputed : false;
 			c11_2 = c11_2_1 && c11_2_2;
 			visibleModel.c11_2(c11_2);
@@ -724,7 +756,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			// 残業申請の表示情報．基準日に関係しない情報．利用する乖離理由．乖離理由を選択肢から選ぶ = true
 			let c12_1 = true;
 			findResut = _.find(res.infoNoBaseDate.divergenceReasonInputMethod, { divergenceTimeNo: 2 });
-			let c12_1_1 = !_.isNil(findResut);
+			let c12_1_1 = _.isNil(findResut) ? false : !_.isEmpty(findResut.reasons);
 			let c12_1_2 = c12_1_1 ? findResut.divergenceReasonSelected : false;
 			c12_1 = c12_1_1 && c12_1_2;
 			visibleModel.c12_1(c12_1);
@@ -733,7 +765,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			// 残業申請の表示情報．基準日に関係しない情報．利用する乖離理由．乖離理由を入力する = true
 			let c12_2 = true;
 			findResut = _.find(res.infoNoBaseDate.divergenceReasonInputMethod, { divergenceTimeNo: 2 });
-			let c12_2_1 = !_.isNil(findResut);
+			let c12_2_1 = _.isNil(findResut) ? false : !_.isEmpty(findResut.reasons);
 			let c12_2_2 = c12_2_1 ? findResut.divergenceReasonInputed : false;
 			c12_2 = c12_2_2 && c12_2_2;
 			visibleModel.c12_2(c12_2);
@@ -1003,8 +1035,19 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		overTimeReflect: any;
 		overTimeAppSet: OvertimeAppSet;
 		agreeOverTimeOutput: AgreeOverTimeOutput;
-		divergenceReasonInputMethod: Array<any>;
+		divergenceReasonInputMethod: Array<DivergenceReasonInputMethod>;
 		divergenceTimeRoot: Array<DivergenceTimeRoot>;
+	}
+	interface DivergenceReasonInputMethod {
+		divergenceTimeNo: number;
+		divergenceReasonInputed: boolean;
+		divergenceReasonSelected: boolean;
+		reasons: Array<DivergenceReasonSelect>;
+	}
+	
+	interface DivergenceReasonSelect {
+		divergenceReasonCode: string;
+		reason: string;
 	}
 	interface DivergenceTimeRoot {
 		divergenceTimeNo: number;
@@ -1018,7 +1061,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		companyId: string;
 		divergenceReasonInputed: boolean;
 		divergenceReasonSelected: boolean;
-		reasons: Array<any>;
+		reasons: Array<DivergenceReasonSelect>;
 	}
 	interface OvertimeAppSet {
 		companyID: string;

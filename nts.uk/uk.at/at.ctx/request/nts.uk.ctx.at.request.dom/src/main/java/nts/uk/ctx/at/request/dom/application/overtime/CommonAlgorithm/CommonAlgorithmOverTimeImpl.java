@@ -362,11 +362,8 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 														   .filter(x -> x.getDivTimeUseSet() == DivergenceTimeUseSet.USE)
 														   .map(y -> y.getDivergenceTimeNo())
 														   .collect(Collectors.toList());
-			List<DivergenceReasonInputMethod> exportList = divergenceReasonInputMethod.getData(companyId, lstNo);
+			List<DivergenceReasonInputMethod> divergenceReasonInputMethodListFilter = divergenceReasonInputMethod.getData(companyId, lstNo);
 			
-			List<DivergenceReasonInputMethod> divergenceReasonInputMethodListFilter = exportList.stream()
-					.filter(x -> x.getDivergenceTimeNo() == DivergenceTimeUseSet.USE.value)
-					.collect(Collectors.toList());
 			if (divergenceReasonInputMethodListFilter.isEmpty()) {
 				return output; // emptyを返す
 			}
@@ -654,7 +651,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		// INPUT「申請時間詳細」<List>をチェックする
 		applicationTime.forEach(item -> {
 			if (item.getAttendanceType() == AttendanceType_Update.NORMALOVERTIME) {
-				if (item.getApplicationTime().v() > 0) {
+				if (item.getApplicationTime().v() <= 0) {
 					throw new BusinessException("Msg_1654");
 				}
 			}
