@@ -9,14 +9,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Getter
 @Setter
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrqdtOvertimeInputPK extends ContractUkJpaEntity implements Serializable{
+public class KrqdtOvertimeInputPK implements Serializable{
 
 	public static final long serialVersionUID = 1L;
 	
@@ -32,12 +31,5 @@ public class KrqdtOvertimeInputPK extends ContractUkJpaEntity implements Seriali
 
 	@Column(name = "FRAME_NO")
 	private Integer frameNo;
-
-	
-	@Override
-	protected Object getKey() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 }

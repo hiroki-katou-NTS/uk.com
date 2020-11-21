@@ -1,7 +1,7 @@
 <div data-bind="with: $parent">
 <div data-bind="if: workInfo">
 
-	<div class="table" data-bind="visible : true">
+	<div class="table" data-bind="if : visibleModel.c7()">
 		<div class="cell valign-center" style="width: 105px;">
 			<!--A4_1 勤務種類ラベル-->
 			<div class="valign-center control-group"
@@ -11,7 +11,7 @@
 			<div class="valign-center control-group"
 				data-bind="text: $i18n('KAF005_35'), ntsFormLabel:{required: true}"></div>
 		</div>
-		<div class="cell valign-top" data-bind="if: true" style="width: 25px;">
+		<div class="cell valign-top" data-bind="if: visibleModel.c26()" style="width: 25px;">
 			<!--A4_7 選択ボタン-->
 			<button tabindex="7" style="margin-left: 18px" class="workSelect"
 				data-bind="enable: true, click : openDialogKdl003, text: $i18n('KAF005_36')"></button>
@@ -35,7 +35,7 @@
 
 	<!--勤務時間 1-->
 	<div class="valign-center control-group">
-		<div class="table">
+		<div class="table" data-bind="if: visibleModel.c7()">
 			<div style="width: 113px" class="cell valign-top cm-column2">
 				<!--A4_8 勤務時間ラベル-->
 				<div class="lblTitle"
@@ -76,7 +76,7 @@
 		</div>
 		
 		
-		<div class="table">
+		<div class="table" data-bind="if: visibleModel.c29()">
 			<div style="width: 113px" class="cell valign-top cm-column2">
 				<div class="lblTitle"
 					

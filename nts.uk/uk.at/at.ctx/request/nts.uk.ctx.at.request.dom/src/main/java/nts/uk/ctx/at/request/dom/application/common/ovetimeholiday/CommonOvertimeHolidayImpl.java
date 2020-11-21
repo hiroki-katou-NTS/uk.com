@@ -1327,6 +1327,20 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 																   .filter(y -> y != null)
 																   .collect(Collectors.toList());
 		overtimeApplicationSetting.addAll(overTimes);
+		{
+			OvertimeApplicationSetting over = new OvertimeApplicationSetting(
+					1,
+					AttendanceType_Update.NORMALOVERTIME,
+					60);
+			overtimeApplicationSetting.add(over);
+		}
+		{
+			OvertimeApplicationSetting over = new OvertimeApplicationSetting(
+					2,
+					AttendanceType_Update.NORMALOVERTIME,
+					60);
+			overtimeApplicationSetting.add(over);
+		}
 		
 		List<OvertimeApplicationSetting> holidayTimes = dailyAttendanceTimeCaculationImport.getHolidayWorkTime()
 																   .entrySet()
@@ -1338,6 +1352,21 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 																		   		: null )
 																   .filter(y -> y != null)
 																   .collect(Collectors.toList());
+		
+		{
+			OvertimeApplicationSetting over = new OvertimeApplicationSetting(
+					1,
+					AttendanceType_Update.BREAKTIME,
+					200);
+			overtimeApplicationSetting.add(over);
+		}
+		{
+			OvertimeApplicationSetting over = new OvertimeApplicationSetting(
+					2,
+					AttendanceType_Update.BREAKTIME,
+					300);
+			overtimeApplicationSetting.add(over);
+		}
 		overtimeApplicationSetting.addAll(holidayTimes);
 		
 		

@@ -30,6 +30,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTimeRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType_Update;
 import nts.uk.ctx.at.request.dom.application.overtime.HolidayMidNightTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeShiftNight;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
@@ -81,8 +82,10 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 	@Override
 	public void add(AppOverTime appOverTime) {
 		this.commandProxy().insert(toEntity(appOverTime));
+		this.getEntityManager().flush();
 	}
 	private KrqdtAppOverTime toEntity(AppOverTime appOverTime) {
+		String cid = AppContexts.user().companyId();
 		KrqdtAppOverTime krqdtAppOverTime = new KrqdtAppOverTime();
 		KrqdtAppOvertimePK krqdtAppOvertimePK = new KrqdtAppOvertimePK(
 				AppContexts.user().companyId(),
@@ -160,9 +163,33 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 			}
 		});
 		krqdtAppOverTime.overtimeInputs = new ArrayList<KrqdtOvertimeInput>();
+//		// dumnny data
+		{
+			KrqdtOvertimeInput krqdtOvertimeInput = new KrqdtOvertimeInput(
+					new KrqdtOvertimeInputPK(
+							cid,
+							appOverTime.getAppID(),
+							AttendanceType_Update.NORMALOVERTIME.value,
+							1),
+					100,
+					null);
+			krqdtAppOverTime.overtimeInputs.add(krqdtOvertimeInput);
+		}
 		
+		{
+			KrqdtOvertimeInput krqdtOvertimeInput = new KrqdtOvertimeInput(
+					new KrqdtOvertimeInputPK(
+							cid,
+							appOverTime.getAppID(),
+							AttendanceType_Update.NORMALOVERTIME.value,
+							2),
+					200,
+					null);
+			krqdtAppOverTime.overtimeInputs.add(krqdtOvertimeInput);
+		}
+		// ------
 		List<OvertimeApplicationSetting> overtimeApplicationSettings = appOverTime.getApplicationTime().getApplicationTime();
-		if (CollectionUtil.isEmpty(overtimeApplicationSettings)) {
+		if (!CollectionUtil.isEmpty(overtimeApplicationSettings)) {
 			krqdtAppOverTime.overtimeInputs = overtimeApplicationSettings
 				.stream()
 				.map(x -> new KrqdtOvertimeInput(
@@ -172,7 +199,7 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 												x.getAttendanceType().value,
 												x.getFrameNo().v()),
 										x.getApplicationTime().v(),
-										krqdtAppOverTime))
+										null))
 				.collect(Collectors.toList());
 				
 									
@@ -200,7 +227,7 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 					time36AgreeUpperLimit.getAgreeUpperLimitMonth().getOverTime().v(),
 					time36AgreeUpperLimit.getAgreeUpperLimitMonth().getUpperLimitTime().v(),
 					time36AgreeUpperLimit.getAgreeUpperLimitAverage().getUpperLimitTime().v(),
-					krqdtAppOverTime,
+					null,
 					KrqdtAppOverTimeDetMs
 					);
 			krqdtAppOverTime.appOvertimeDetail = krqdtAppOvertimeDetail;

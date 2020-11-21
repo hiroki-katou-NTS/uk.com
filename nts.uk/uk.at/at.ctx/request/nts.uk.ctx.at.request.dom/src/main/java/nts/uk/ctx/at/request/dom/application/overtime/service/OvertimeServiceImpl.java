@@ -429,15 +429,17 @@ public class OvertimeServiceImpl implements OvertimeService {
 		// 【チェック内容】
 		// 取得したList「申請時間．type」 = 休出時間　がある場合
 		if (!CollectionUtil.isEmpty(applicationTimes)) {
+			List<Integer> noList = new ArrayList<Integer>();
 			applicationTimes.get(0).getApplicationTime().forEach(item -> {
 				// 休出時間をチェックする
 				if (item.getAttendanceType() == AttendanceType_Update.BREAKTIME) {
-					List<WorkdayoffFrame> workdayoffFrames = workdayoffFrameRepository.findByUseAtr(
-							companyId,
-							NotUseAtr.NOT_USE.value);
-					ouput.setWorkdayoffFrames(workdayoffFrames);
+					noList.add(item.getFrameNo().v());
 				}
 			});			
+			List<WorkdayoffFrame> workdayoffFrames = workdayoffFrameRepository.getWorkdayoffFrameBy(
+					companyId,
+					noList);
+			ouput.setWorkdayoffFrames(workdayoffFrames);
 		}
 		// OUTPUT「計算結果」をセットして取得した「休出枠」と一緒に返す
 		CalculationResult calculationResult = new CalculationResult();
@@ -460,6 +462,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 			Optional<Integer> startTimeSPR,
 			Optional<Integer> endTimeSPR,
 			Boolean isProxy) {
+		GeneralDate baseDate = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getBaseDate();
 		// get employeeId
 		String employeeId = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid();
 		DisplayInfoOverTime output = new DisplayInfoOverTime();
@@ -472,7 +475,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 		InfoBaseDateOutput infoBaseDateOutput = commonAlgorithmOverTime.getInfoBaseDate(
 				companyId,
 				employeeId,
-				dateOp.orElse(null),
+				baseDate,
 				overtimeAppAtr,
 				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().orElse(Collections.emptyList()),
 				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpEmploymentSet(),

@@ -141,6 +141,9 @@ div.form-label.broken {
 	display: inline-block;
 	margin-left: 15px;
 }
+.table-time-1{
+	display: inline-block;
+}
 .fix-margin-left{
 	margin-left:13px;
 }
