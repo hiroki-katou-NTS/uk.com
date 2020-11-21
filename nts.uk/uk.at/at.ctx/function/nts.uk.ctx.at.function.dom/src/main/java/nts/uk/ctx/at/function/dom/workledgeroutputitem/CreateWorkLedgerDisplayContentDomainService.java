@@ -1,17 +1,20 @@
 package nts.uk.ctx.at.function.dom.workledgeroutputitem;
 
 import lombok.val;
+import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.function.dom.adapter.actualmultiplemonth.MonthlyRecordValueImport;
+import nts.uk.ctx.at.function.dom.commonform.ClosureDateEmployment;
 import nts.uk.ctx.at.function.dom.commonform.GetClosureDateEmploymentDomainService;
 import nts.uk.ctx.at.function.dom.commonform.GetSuitableDateByClosureDateUtility;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemDetailAttItem;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.EmployeeInfor;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.StatusOfEmployee;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.WorkPlaceInfo;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.DailyMonthlyClassification;
-import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeBasicInfoImport;
-import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceInfor;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -39,71 +42,86 @@ public class CreateWorkLedgerDisplayContentDomainService {
     public static List<WorkLedgerDisplayContent> createWorkLedgerDisplayContent(
             Require require,
             DatePeriod datePeriod,
-            List<EmployeeBasicInfoImport> empInfoList,
+            List<EmployeeInfor> employeeInfoList,
             WorkLedgerOutputSetting workLedgerOutputSetting,
-            Map<String, WorkplaceInfor> lstWorkplaceInfor) {
+            List<WorkPlaceInfo> workPlaceInfo) {
 
-        List<String> empIdList = empInfoList.stream().map(EmployeeBasicInfoImport::getSid).collect(Collectors.toList());
+        val listSid = employeeInfoList.parallelStream().map(EmployeeInfor::getEmployeeId).collect(Collectors.toList());
         // ① = call() 社員の指定期間中の所属期間を取得する
-        val listEmployeeStatus = require.getAffiliateEmpListDuringPeriod(datePeriod, empIdList);
+        val listEmployeeStatus = require.getAffiliateEmpListDuringPeriod(datePeriod, listSid);
         val cid = AppContexts.user().companyId();
-        Map<String, EmployeeBasicInfoImport> lstEmployee = empInfoList.stream().collect(Collectors.toMap(EmployeeBasicInfoImport::getSid, i -> i));
-        Map<String, WorkplaceInfor> mapEmployeeWorkplace = new HashMap<>();
-        listEmployeeStatus.forEach(x -> {
-            WorkplaceInfor workplaceInfor = lstWorkplaceInfor.get(x.getEmployeeId());
-            mapEmployeeWorkplace.put(x.getEmployeeId(), workplaceInfor);
-        });
+        val roleId = Optional.of(AppContexts.user().roles().forAttendance());
+        val mapSids = employeeInfoList.parallelStream().collect(Collectors.toMap(EmployeeInfor::getEmployeeId, e -> e));
+
+        val mapWrps = workPlaceInfo.parallelStream().collect(Collectors.toMap(WorkPlaceInfo::getWorkPlaceId, e -> e));
         val baseDate = datePeriod.end();
         // ② = call() 基準日で社員の雇用と締め日を取得する
-        val closureDateEmploymentList = GetClosureDateEmploymentDomainService.getByDate(require, baseDate, empIdList);
+        val closureDateEmploymentList = GetClosureDateEmploymentDomainService.getByDate(require, baseDate, listSid);
 
-
+        val closureDayMap = closureDateEmploymentList.stream().collect(Collectors.toMap(ClosureDateEmployment::getEmployeeId, e -> e));
         val monthlyOutputItems = workLedgerOutputSetting.getOutputItemList().stream()
                 .filter(x -> x.getDailyMonthlyClassification() == DailyMonthlyClassification.MONTHLY && x.isPrintTargetFlag())
                 .collect(Collectors.toList());
         List<WorkLedgerDisplayContent> rs = new ArrayList<>();
-        //Loop 「社員の会社所属状況」の「対象社員」in ①
         listEmployeeStatus.parallelStream().forEach(e -> {
-                    List<MonthlyOutputLine> outputLines = new ArrayList<>();
-                    val eInfor = lstEmployee.get(e.getEmployeeId());
-                    val wInfor = mapEmployeeWorkplace.get(e.getEmployeeId());
+            val item = new WorkLedgerDisplayContent();
+            val eplInfo = mapSids.get(e.getEmployeeId());
+            if (eplInfo != null) {
+                item.setEmployeeCode(eplInfo.getEmployeeCode());
+                item.setEmployeeName(eplInfo.getEmployeeName());
+                val wplInfo = mapWrps.get(eplInfo.getWorkPlaceId());
+                if (wplInfo != null) {
+                    item.setWorkplaceCode(wplInfo.getWorkPlaceCode());
+                    item.setWorkplaceName(wplInfo.getWorkPlaceName());
+                } else return;
+            } else return;
+            val listAttIds = monthlyOutputItems.parallelStream().flatMap(i -> i.getSelectedAttendanceItemList()
+                    .stream().map(OutputItemDetailAttItem::getAttendanceItemId)).distinct().collect(Collectors.toCollection(ArrayList::new));
+            val attName = require.getMonthlyItems(cid, roleId, listAttIds, null).stream()
+                    .collect(Collectors.toMap(AttItemName::getAttendanceItemId, q -> q));
+            List<MonthlyRecordValueImport> listAttendancesz = new ArrayList<>();
+            val closureDay = closureDayMap.get(e.getEmployeeId()).getClosure().getClosureHistories()
+                    .get(0).getClosureDate().getClosureDay().v();
+            for (val date : e.getListPeriod()) {
+                val yearMonthPeriod = GetSuitableDateByClosureDateUtility.getByClosureDate(date, closureDay);
+                listAttendancesz.addAll(require.getActualMultipleMonth(Collections.singletonList(e.getEmployeeId()),
+                        yearMonthPeriod, listAttIds).get(e.getEmployeeId()));
+            }
+            Map<YearMonth, Map<Integer, ItemValue>> allValue = listAttendancesz.stream()
+                    .collect(Collectors.toMap(MonthlyRecordValueImport::getYearMonth,
+                            k -> k.getItemValues().stream()
+                                    .collect(Collectors.toMap(ItemValue::getItemId, l -> l))));
+            for (val j : monthlyOutputItems) {
+                val listAtts = j.getSelectedAttendanceItemList();
+                if (listAtts.isEmpty()) continue;
+                val listMonthlyOutputLine = new ArrayList<MonthlyOutputLine>();
+                for (val sub : listAtts) {
                     Double total = 0D;
-                    for (val monthlyItem : monthlyOutputItems) {
-
-                        val listItem = monthlyItem.getSelectedAttendanceItemList();
-                        val itemIds = listItem.stream().map(OutputItemDetailAttItem::getAttendanceItemId)
-                                .collect(Collectors.toList());
-                        // 4  会社の月次項目を取得する->・List<月次の勤怠項目>
-                        val monthlyAttendanceItems = require.getMonthlyItems(cid, Optional.empty(), itemIds, null);
-                        e.getListPeriod().parallelStream().forEach((DatePeriod period) -> {
-                            val getClosureDate = closureDateEmploymentList.parallelStream()
-                                    .filter(j -> j.getEmployeeId().equals(e.getEmployeeId())).findFirst();
-                            if (getClosureDate.isPresent()) {
-                                val closureHistory = getClosureDate.get().getClosure().getClosureHistories().get(0);
-                                val yearMonthPeriod = GetSuitableDateByClosureDateUtility.getByClosureDate(period,
-                                        closureHistory.getClosureDate().getClosureDay().v());
-                                val monthlyValue = require.getActualMultipleMonth(
-                                        new ArrayList<>(Collections.singletonList(e.getEmployeeId())),
-                                        yearMonthPeriod, itemIds).get(e.getEmployeeId());
-                                if (monthlyValue != null) {
-                                    List<MonthlyValue> lstMonthlyValue = new ArrayList<>();
-
-                                    
-                                }
-                            }
-                        });
-//                        val item = new MonthlyOutputLine(lstMonthlyValue, monthlyItem.getName().v(), monthlyItem.getRank(), total, monthlyItem.getItemDetailAttributes());
-//                        outputLines.add(item);
+                    val keySet = allValue.keySet();
+                    List<MonthlyValue> attendanceItemValueList = new ArrayList<>();
+                    for (val key : keySet) {
+                        val valueSub = allValue.get(key).get(sub.getAttendanceItemId());
+                        total += valueSub.doubleOrDefault();
+                        val monthly = new MonthlyValue(
+                                valueSub.doubleOrDefault(),
+                                key,
+                                valueSub.stringOrDefault()
+                        );
+                        attendanceItemValueList.add(monthly);
                     }
-
-                    rs.add(new WorkLedgerDisplayContent(
-                            outputLines,
-                            eInfor.getEmployeeCode(),
-                            eInfor.getEmployeeName(),
-                            wInfor.getWorkplaceCode(),
-                            wInfor.getWorkplaceName()));
+                    val outputLine = new MonthlyOutputLine(
+                            attendanceItemValueList,
+                            attName.get(sub.getAttendanceItemId()).getAttendanceItemName(),
+                            j.getRank(),
+                            total,
+                            j.getItemDetailAttributes()
+                    );
+                    listMonthlyOutputLine.add(outputLine);
                 }
-        );
+                item.setMonthlyDataList(listMonthlyOutputLine);
+                rs.add(item);
+            }
+        });
         return rs;
     }
 
