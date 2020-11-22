@@ -27,6 +27,7 @@
     </ui:define>
     <ui:define name="sidebar-content">
         <div id="tabpanel-1" role="tabpanel" data-bind="visible: $vm.isAttendance()">
+            <com:ko tag="if" bind="$vm.isAttendance()">
             <div class="sidebar-content-header">
                 <span class="title" data-bind="text: $i18n('Com_Company')"/>
                 <!-- D2_1 -->
@@ -149,6 +150,7 @@
                     </div>
                 </div>
             </div>
+            </com:ko>
         </div>
         <div id="tabpanel-2" role="tabpanel">
             <ui:include src="../e/index.xhtml"/>
