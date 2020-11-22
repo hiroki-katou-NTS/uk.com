@@ -11,7 +11,9 @@ import nts.uk.ctx.at.request.app.command.application.overtime.RegisterCommandHan
 import nts.uk.ctx.at.request.app.command.application.overtime.UpdateCommand;
 import nts.uk.ctx.at.request.app.command.application.overtime.UpdateCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.overtime.AppOvertimeFinder;
+import nts.uk.ctx.at.request.app.find.application.overtime.BreakTimeZoneSettingDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.DisplayInfoOverTimeDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.ParamBreakTime;
 import nts.uk.ctx.at.request.app.find.application.overtime.ParamCalculation;
 import nts.uk.ctx.at.request.app.find.application.overtime.ParamCheckBeforeRegister;
 import nts.uk.ctx.at.request.app.find.application.overtime.ParamDetail;
@@ -42,6 +44,12 @@ public class OvertimeWebService extends WebService {
 	@Path("start")
 	public DisplayInfoOverTimeDto start(ParamOverTimeStart param) {
 		return appOvertimeFinder.start(param);
+	}
+	
+	@POST
+	@Path("breakTimes")
+	public BreakTimeZoneSettingDto getBreakTime(ParamBreakTime param) {
+		return appOvertimeFinder.getBreakTime(param);
 	}
 	
 	@POST

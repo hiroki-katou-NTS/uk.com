@@ -25,10 +25,14 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.CheckBeforeOutput;
+import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.ICommonAlgorithmOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayInfoOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
 public class AppOvertimeFinder {
@@ -36,6 +40,9 @@ public class AppOvertimeFinder {
 	
 	@Inject
 	private OvertimeService overtimeService;
+	
+	@Inject
+	private ICommonAlgorithmOverTime commonAlgorithmOverTime;
 	
 	/**
 	 * Refactor5
@@ -155,6 +162,20 @@ public class AppOvertimeFinder {
 				param.appId,
 				param.appDispInfoStartup.toDomain()));
 	}
+	
+	public BreakTimeZoneSettingDto getBreakTime(ParamBreakTime param) {
+		return BreakTimeZoneSettingDto.fromDomain(commonAlgorithmOverTime.selectWorkTypeAndTime(
+				param.companyId,
+				new WorkTypeCode(param.workTypeCode),
+				new WorkTimeCode(param.workTimeCode),
+				param.startTime == null ? Optional.empty() : Optional.of(new TimeWithDayAttr(param.startTime)),
+				param.endTime == null ? Optional.empty() : Optional.of(new TimeWithDayAttr(param.endTime)),
+				CollectionUtil.isEmpty(param.actualContentDisplayDtos) ? Optional.empty() : 
+					(param.actualContentDisplayDtos.get(0).getOpAchievementDetail() == null ?
+							Optional.empty() : Optional.ofNullable(param.actualContentDisplayDtos.get(0).getOpAchievementDetail().toDomain()))
+				));
+	}
+	
 	
 	public Application createApplication(ApplicationDto application) {
 		
