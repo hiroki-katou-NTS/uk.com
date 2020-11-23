@@ -10,7 +10,9 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 		closureLst: KnockoutObservableArray<ClosureItem> = ko.observableArray([]);
 		selectedClosureId: KnockoutObservable<number> = ko.observable(0);
 		dateValue: KnockoutObservable<any> = ko.observable({});
+		selectAbleIDLst: KnockoutObservableArray<any> = ko.observableArray([]);
 		selectedIds: KnockoutObservableArray<number> = ko.observableArray([]);
+		useSet: any = null;
 		initDisplayOfApprovalStatus: InitDisplayOfApprovalStatus = {
 			// ページング行数
 			numberOfPage: 0,
@@ -75,7 +77,23 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 				}
 			});
 			vm.$blockui('show');
-			character.restore('InitDisplayOfApprovalStatus').then((obj: InitDisplayOfApprovalStatus) => {
+			vm.$ajax(API.getUseSetting).then((useSetResult: any) => {
+				let a = [{ 'id': 1, 'name': vm.$i18n('KAF018_318') }];
+				if(useSetResult) {
+					if((useSetResult.usePersonConfirm) || (useSetResult.useBossConfirm)) {
+						a.push({ 'id': 2, 'name': 'select2' });
+					}
+					if((useSetResult.monthlyIdentityConfirm) || (useSetResult.monthlyConfirm)) {
+						a.push({ 'id': 3, 'name': 'select3' });
+					}
+					if(useSetResult.employmentConfirm) {
+						a.push({ 'id': 4, 'name': vm.$i18n('KAF018_321') });
+					}
+				}
+				vm.useSet = useSetResult;
+				vm.selectAbleIDLst(a);
+				return character.restore('InitDisplayOfApprovalStatus');
+			}).then((obj: InitDisplayOfApprovalStatus) => {
 				if(obj) {
 					let a = [];
 					if(obj.applicationApprovalFlg) {
@@ -92,6 +110,8 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 					}
 					vm.selectedIds(a);
 					vm.initDisplayOfApprovalStatus = obj;
+				} else {
+					vm.selectedIds(_.map(vm.selectAbleIDLst(), (o: any) => o.id));
 				}
 				return vm.$ajax(API.getAppNameInAppList);
 			}).then((appNameLst: any) => {
@@ -142,7 +162,8 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 																	.filter((o: DisplayWorkplace) => _.includes(vm.multiSelectedWorkplaceId(), o.id))
 																	.sortBy('hierarchyCode').value(),
 					appNameLst: Array<any> = vm.appNameLst,
-					bParam: KAF018BParam = { closureItem, startDate, endDate, selectWorkplaceInfo, appNameLst };
+					useSet = vm.useSet,
+					bParam: KAF018BParam = { closureItem, startDate, endDate, selectWorkplaceInfo, appNameLst, useSet };
 				vm.$jump("/view/kaf/018/b/index.xhtml", bParam);
             });
 			
@@ -217,6 +238,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 
 	const API = {
 		getApprovalStatusActivation: "at/request/application/approvalstatus/getApprovalStatusActivation",
-		getAppNameInAppList: "at/request/application/screen/applist/getAppNameInAppList"
+		getAppNameInAppList: "at/request/application/screen/applist/getAppNameInAppList",
+		getUseSetting: "at/record/application/realitystatus/getUseSetting"
 	}
 }

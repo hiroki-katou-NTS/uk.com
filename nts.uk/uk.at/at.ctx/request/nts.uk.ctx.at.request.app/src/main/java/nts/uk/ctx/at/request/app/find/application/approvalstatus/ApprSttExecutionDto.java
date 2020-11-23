@@ -34,9 +34,44 @@ public class ApprSttExecutionDto {
 	private int countEmp;
 	
 	/**
-	 * 申請未承認
+	 * 申請未承認人数
 	 */
 	private int countUnApprApp;
+	
+	/**
+	 * 日別未確認人数
+	 */
+	private int countUnConfirmDay;
+	
+	/**
+	 * 日別未承認人数
+	 */
+	private int countUnApprDay;
+	
+	/**
+	 * 月別未確認人数
+	 */
+	private int countUnConfirmMonth;
+	
+	/**
+	 * 月別未承認人数
+	 */
+	private int countUnApprMonth;
+	
+	/**
+	 * 確定表示
+	 */
+	private boolean displayConfirm;
+	
+	/**
+	 * 確定者
+	 */
+	private String confirmPerson;
+	
+	/**
+	 * 日付
+	 */
+	private String date;
 	
 	public static ApprSttExecutionDto fromDomain(ApprSttExecutionOutput apprSttExecutionOutput) {
 		return new ApprSttExecutionDto(
@@ -46,6 +81,13 @@ public class ApprSttExecutionDto {
 				apprSttExecutionOutput.getHierarchyCode(), 
 				apprSttExecutionOutput.getEmpPeriodLst().stream().map(x -> EmpPeriodDto.fromDomain(x)).collect(Collectors.toList()),
 				apprSttExecutionOutput.getCountEmp(), 
-				apprSttExecutionOutput.getCountUnApprApp());
+				apprSttExecutionOutput.getCountUnApprApp(),
+				apprSttExecutionOutput.getCountUnConfirmDay(),
+				apprSttExecutionOutput.getCountUnApprDay(),
+				apprSttExecutionOutput.getCountUnConfirmMonth(),
+				apprSttExecutionOutput.getCountUnApprMonth(),
+				apprSttExecutionOutput.isDisplayConfirm(),
+				apprSttExecutionOutput.getConfirmPerson(),
+				apprSttExecutionOutput.getDate() == null ? null : apprSttExecutionOutput.getDate().toString());
 	}
 }
