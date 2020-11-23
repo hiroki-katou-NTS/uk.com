@@ -10,15 +10,20 @@ import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.ActualStatusC
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreAppCheckResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AgreeOverTimeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.DivergenceReasonSelect;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.HolidayWorkAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReason;
+import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 
 /**
  * 休日出勤申請起動時の表示情報
- * @author Doan Duy Hung
- *
+ * @author huylq
+ *Refactor5
  */
 @NoArgsConstructor
 @Getter
@@ -26,24 +31,9 @@ import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 public class AppHdWorkDispInfoOutput {
 	
 	/**
-	 * 申請表示情報
+	 * フレックス時間を表示する区分
 	 */
-	private AppDispInfoStartupOutput appDispInfoStartupOutput;
-	
-	/**
-	 * 休出申請指示
-	 */
-	private WithdrawalAppSet withdrawalAppSet;
-	
-	/**
-	 * 申請用時間外労働時間
-	 */
-	private AgreeOverTimeOutput agreeOverTimeOutput;
-	
-	/**
-	 * 休出時間枠
-	 */
-	private List<WorkdayoffFrame> breaktimeFrames;
+	private NotUseAtr dispFlexTime;
 	
 	/**
 	 * 乖離理由の入力を利用する
@@ -56,29 +46,47 @@ public class AppHdWorkDispInfoOutput {
 	private boolean useComboDivergenceReason;
 	
 	/**
+	 * 休出時間枠
+	 */
+	private WorkdayoffFrame workdayoffFrame;
+	
+	/**
+	 * 休出申請設定
+	 */
+	private HolidayWorkAppSet holidayWorkAppSet;
+
+	/**
 	 * 休日出勤申請起動時の表示情報(申請対象日関係あり)
 	 */
 	private HdWorkDispInfoWithDateOutput hdWorkDispInfoWithDateOutput;
 	
 	/**
-	 * 残業時間枠
+	 * 残業休日出勤申請の反映
 	 */
-	private String overtimeFrame;
+	private AppReflectOtHdWork hdWorkOvertimeReflect;
 	
 	/**
-	 * フレックス時間を表示する区分
+	 * 残業時間枠
 	 */
-	private boolean dispFlexTime;
+	private OvertimeWorkFrame overtimeFrame;
+	
+	/**
+	 * 申請用時間外労働時間
+	 */
+	private AgreeOverTimeOutput otWorkHoursForApplication;
+	
+	/**
+	 * 申請表示情報
+	 */
+	private AppDispInfoStartupOutput appDispInfoStartupOutput;
 	
 	/**
 	 * 乖離理由の選択肢
 	 */
-	private Optional<List<DivergenceReason>> comboDivergenceReason;
+	private Optional<DivergenceReasonSelect> comboDivergenceReason;
 	
-	private OvertimeRestAppCommonSetting overtimeRestAppCommonSetting;
-	
-	private PreAppCheckResult preAppCheckResult;
-	
-	private ActualStatusCheckResult actualStatusCheckResult;
-	
+	/**
+	 * 計算結果
+	 */
+	private Optional<HolidayWorkCalculationResult> calculationResult;
 }

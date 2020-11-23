@@ -8,7 +8,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.ActualStatus;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkDispInfoWithDateOutput;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkDispInfoWithDateOutput_Old;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HolidayWorkInstruction;
 import nts.uk.ctx.at.shared.app.command.worktime.common.dto.DeductionTimeDto;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
@@ -87,8 +87,8 @@ public class HdWorkDispInfoWithDateCmd {
 	 */
 	public List<DeductionTimeDto> deductionTimeLst;
 	
-	public HdWorkDispInfoWithDateOutput toDomain() {
-		HdWorkDispInfoWithDateOutput result = new HdWorkDispInfoWithDateOutput();
+	public HdWorkDispInfoWithDateOutput_Old toDomain() {
+		HdWorkDispInfoWithDateOutput_Old result = new HdWorkDispInfoWithDateOutput_Old();
 		result.setSubHdManage(subHdManage);
 		result.setAppHdWorkInstruction(appHdWorkInstruction);
 		result.setWorkTypeCD(workTypeCD);

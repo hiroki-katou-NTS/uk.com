@@ -1,116 +1,101 @@
 package nts.uk.ctx.at.request.app.find.application.holidaywork.dto;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
+import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.AppReflectOtHdWorkDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.ApplicationTimeDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.BreakTimeZoneSettingDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.OvertimeWorkFrameDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.WorkHoursDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.WorkdayoffFrameDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.DivergenceReasonDto;
+import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.hdworkapplicationsetting.HolidayWorkAppSetDto;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkDispInfoWithDateOutput;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HolidayWorkInstruction;
-import nts.uk.ctx.at.shared.app.find.worktime.common.dto.DeductionTimeDto;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
+/**
+ * Refactor5
+ * @author huylq
+ *
+ */
+@AllArgsConstructor
 @NoArgsConstructor
 public class HdWorkDispInfoWithDateDto {
-	
+
 	/**
 	 * 代休管理区分
 	 */
-	public boolean subHdManage;
+	private boolean subHdManage;
 	
 	/**
-	 * 休出申請指示
+	 * 勤務時間
 	 */
-	public HolidayWorkInstruction appHdWorkInstruction;
-	
-	/**
-	 * 初期選択勤務種類
-	 */
-	public String workTypeCD;
-	
-	/**
-	 * 初期選択就業時間帯
-	 */
-	public String workTimeCD;
-	
-	/**
-	 * 開始時刻
-	 */
-	public Integer startTime;
-	
-	/**
-	 * 終了時刻
-	 */
-	public Integer endTime;
-	
-	/**
-	 * 表示する実績内容
-	 */
-	public List<AchievementOutput> achievementOutputLst;
-	
-	/**
-	 * 実績状態
-	 */
-	public Integer actualStatus;
-	
-	/**
-	 * 勤怠時間の超過状態
-	 */
-	public String overtimeStatus;
-	
-	/**
-	 * 月別実績の36協定時間状態
-	 */
-	public Integer agreementTimeStatusOfMonthly;
-	
-	/**
-	 * 初期選択勤務種類名称
-	 */
-	public String workTypeName;
-	
-	/**
-	 * 初期選択就業時間帯名称
-	 */
-	public String workTimeName;
-	
-	/**
-	 * 勤務種類リスト
-	 */
-	public List<WorkTypeDto> workTypeLst;
+	private WorkHoursDto workHours;
 	
 	/**
 	 * 休憩時間帯設定リスト
 	 */
-	public List<DeductionTimeDto> deductionTimeLst;
+	private BreakTimeZoneSettingDto breakTimeZoneSettingList;
 	
-	public static HdWorkDispInfoWithDateDto fromDomain(HdWorkDispInfoWithDateOutput hdWorkDispInfoWithDateOutput) {
-		HdWorkDispInfoWithDateDto result = new HdWorkDispInfoWithDateDto();
-		result.subHdManage = hdWorkDispInfoWithDateOutput.isSubHdManage();
-		result.appHdWorkInstruction = hdWorkDispInfoWithDateOutput.getAppHdWorkInstruction();
-		result.workTypeCD = hdWorkDispInfoWithDateOutput.getWorkTypeCD();
-		result.workTimeCD = hdWorkDispInfoWithDateOutput.getWorkTimeCD();
-		result.startTime = hdWorkDispInfoWithDateOutput.getStartTime();
-		result.endTime = hdWorkDispInfoWithDateOutput.getEndTime();
-		result.achievementOutputLst = hdWorkDispInfoWithDateOutput.getAchievementOutputLst();
-		result.actualStatus = hdWorkDispInfoWithDateOutput.getActualStatus() == null ? null : hdWorkDispInfoWithDateOutput.getActualStatus().value;
-		result.overtimeStatus = hdWorkDispInfoWithDateOutput.getOvertimeStatus();
-		result.agreementTimeStatusOfMonthly = hdWorkDispInfoWithDateOutput.getAgreementTimeStatusOfMonthly() == null ? null : hdWorkDispInfoWithDateOutput.getAgreementTimeStatusOfMonthly().value;
-		result.workTypeName = hdWorkDispInfoWithDateOutput.getWorkTypeName();
-		result.workTimeName = hdWorkDispInfoWithDateOutput.getWorkTimeName();
-		result.workTypeLst = hdWorkDispInfoWithDateOutput.getWorkTypeLst().map(item -> item.stream().map(x -> WorkTypeDto.fromDomain(x)).collect(Collectors.toList()))
-				.orElse(Collections.emptyList());
-		if(hdWorkDispInfoWithDateOutput.getDeductionTimeLst() != null) {
-			result.deductionTimeLst = hdWorkDispInfoWithDateOutput.getDeductionTimeLst()
-					.map(item -> 
-						item.stream().map(domain -> {
-							DeductionTimeDto dto = new DeductionTimeDto();
-							domain.saveToMemento(dto);
-							return dto;
-						}).collect(Collectors.toList()))
-					.orElse(Collections.emptyList());
-		}
-		return result;
+	/**
+	 * 勤務種類リスト
+	 */
+	private List<WorkTypeDto> workTypeList;
+	
+	/**
+	 * 初期選択勤務種類
+	 */
+	private String initWorkType;
+	
+	/**
+	 * 初期選択勤務種類名称
+	 */
+	private String initWorkTypeName;
+	
+	/**
+	 * 初期選択就業時間帯
+	 */
+	private String initWorkTime;
+	
+	/**
+	 *初期選択就業時間帯名称
+	 */
+	private String initWorkTimeName;
+
+	/**
+	 * 勤怠時間の超過状態
+	 */
+	private OvertimeStatusDto overtimeStatus;
+	
+	/**
+	 * 実績の申請時間
+	 */
+	private ApplicationTimeDto actualApplicationTime;
+	
+	/**
+	 * 月別実績の36協定時間状態
+	 */
+	private Integer actualMonthlyAgreeTimeStatus;
+	
+	public static HdWorkDispInfoWithDateDto fromDomain(HdWorkDispInfoWithDateOutput domain) {
+		if(domain == null) return null;
+		List<WorkType> workTypeDomainList = domain.getWorkTypeList().orElse(new ArrayList<WorkType>());
+		
+		return new HdWorkDispInfoWithDateDto(domain.isSubHdManage(), WorkHoursDto.fromDomain(domain.getWorkHours()),
+				BreakTimeZoneSettingDto.fromDomain(domain.getBreakTimeZoneSettingList().isPresent() ? domain.getBreakTimeZoneSettingList().get() : null), 
+				workTypeDomainList.stream().map(workType -> WorkTypeDto.fromDomain(workType)).collect(Collectors.toList()), 
+				domain.getInitWorkType().isPresent() ? domain.getInitWorkType().get().v() : "", 
+				domain.getInitWorkTypeName().isPresent() ? domain.getInitWorkTypeName().get().v() : "", 
+				domain.getInitWorkTime().isPresent() ? domain.getInitWorkTime().get().v() : "", 
+				domain.getInitWorkTimeName().isPresent() ? domain.getInitWorkTimeName().get().v() : "", 
+				OvertimeStatusDto.fromDomain(domain.getOvertimeStatus()), 
+				ApplicationTimeDto.fromDomain(domain.getActualApplicationTime().orElse(null)), 
+				domain.getActualMonthlyAgreeTimeStatus().orElse(null).value);
 	}
-	
 }

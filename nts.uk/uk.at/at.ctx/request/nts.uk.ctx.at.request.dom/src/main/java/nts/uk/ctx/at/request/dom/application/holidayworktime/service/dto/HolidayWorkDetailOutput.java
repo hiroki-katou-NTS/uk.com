@@ -14,7 +14,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 @Setter
 public class HolidayWorkDetailOutput {
 	
-	private AppHdWorkDispInfoOutput appHdWorkDispInfoOutput;
+	private AppHdWorkDispInfoOutput_Old appHdWorkDispInfoOutput;
 	
 	private AppHolidayWork appHolidayWork;
 	

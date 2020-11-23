@@ -14,7 +14,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAt
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayService;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayService_Old;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.IFactoryHolidayWork;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
@@ -25,7 +25,7 @@ public class CreateHolidayWorkCommandHandler extends CommandHandlerWithResult<Cr
 	@Inject
 	private IFactoryHolidayWork factoryHolidayWork;
 	@Inject
-	private HolidayService holidayService;
+	private HolidayService_Old holidayService;
 	@Inject
 	private NewAfterRegister newAfterRegister;
 	@Inject

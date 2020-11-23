@@ -1,103 +1,101 @@
 package nts.uk.ctx.at.request.app.find.application.holidaywork.dto;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.AppReflectOtHdWorkDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.CalculationResultDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.DivergenceReasonSelectDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.InfoBaseDateOutputDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.InfoNoBaseDateDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.InfoWithDateApplicationDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.OvertimeWorkFrameDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.WorkdayoffFrameDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.DivergenceReasonDto;
-import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeRestAppCommonSettingDto;
-import nts.uk.ctx.at.request.app.find.setting.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSetDto;
-import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.ActualStatusCheckResult;
-import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreAppCheckResult;
+import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.hdworkapplicationsetting.HolidayWorkAppSetDto;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHdWorkDispInfoOutput;
-import nts.uk.ctx.at.shared.app.find.workdayoff.frame.WorkdayoffFrameFindDto;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr;
 
+/**
+ * Refactor5
+ * @author huylq
+ *
+ */
+@AllArgsConstructor
 @NoArgsConstructor
 public class AppHdWorkDispInfoDto {
 	
 	/**
-	 * 申請表示情報
+	 * フレックス時間を表示する区分
 	 */
-	public AppDispInfoStartupDto appDispInfoStartupOutput;
-	
-	/**
-	 * 休出申請指示
-	 */
-	public WithdrawalAppSetDto withdrawalAppSet;
-	
-	/**
-	 * 申請用時間外労働時間
-	 */
-	public AgreeOverTimeDto agreeOverTimeOutput;
-	
-	/**
-	 * 休出時間枠
-	 */
-	public List<WorkdayoffFrameFindDto> breaktimeFrames;
+	private boolean dispFlexTime;
 	
 	/**
 	 * 乖離理由の入力を利用する
 	 */
-	public boolean useInputDivergenceReason;
+	private boolean useInputDivergenceReason;
 	
 	/**
 	 * 乖離理由の選択肢を利用する
 	 */
-	public boolean useComboDivergenceReason;
+	private boolean useComboDivergenceReason;
+	
+	/**
+	 * 休出時間枠
+	 */
+	private WorkdayoffFrameDto workdayoffFrame;
+	
+	/**
+	 * 休出申請設定
+	 */
+	private HolidayWorkAppSetDto holidayWorkAppSet;
 	
 	/**
 	 * 休日出勤申請起動時の表示情報(申請対象日関係あり)
 	 */
-	public HdWorkDispInfoWithDateDto hdWorkDispInfoWithDateOutput;
+	private HdWorkDispInfoWithDateDto hdWorkDispInfoWithDateOutput;
+	
+	/**
+	 * 残業休日出勤申請の反映
+	 */
+	private AppReflectOtHdWorkDto hdWorkOvertimeReflect;
 	
 	/**
 	 * 残業時間枠
 	 */
-	public String overtimeFrame;
+	private OvertimeWorkFrameDto overtimeFrame;
 	
 	/**
-	 * フレックス時間を表示する区分
+	 * 申請用時間外労働時間
 	 */
-	public boolean dispFlexTime;
+	private AgreeOverTimeDto otWorkHoursForApplication;
+	
+	/**
+	 * 申請表示情報
+	 */
+	private AppDispInfoStartupDto appDispInfoStartupOutput;
 	
 	/**
 	 * 乖離理由の選択肢
 	 */
-	public List<DivergenceReasonDto> comboDivergenceReason;
+	private DivergenceReasonSelectDto comboDivergenceReason;
 	
-	public OvertimeRestAppCommonSettingDto overtimeRestAppCommonSettingDto;
+	/**
+	 * 計算結果
+	 */
+	private HolidayWorkCalculationResultDto calculationResult;
 	
-	public PreAppCheckResult preAppCheckResult;
-	
-	public ActualStatusCheckResult actualStatusCheckResult;
-	
-	public static AppHdWorkDispInfoDto fromDomain(AppHdWorkDispInfoOutput appHdWorkDispInfoOutput) {
-		AppHdWorkDispInfoDto result = new AppHdWorkDispInfoDto();
-		result.appDispInfoStartupOutput = AppDispInfoStartupDto.fromDomain(appHdWorkDispInfoOutput.getAppDispInfoStartupOutput());
-		result.withdrawalAppSet = WithdrawalAppSetDto.convertToDto(appHdWorkDispInfoOutput.getWithdrawalAppSet());
-		if(appHdWorkDispInfoOutput.getAgreeOverTimeOutput() != null) {
-			result.agreeOverTimeOutput = AgreeOverTimeDto.fromDomain(appHdWorkDispInfoOutput.getAgreeOverTimeOutput());
-		}
-		result.breaktimeFrames = appHdWorkDispInfoOutput.getBreaktimeFrames().stream().map(x -> {
-			WorkdayoffFrameFindDto dto = new WorkdayoffFrameFindDto();
-			x.saveToMemento(dto);
-			return dto;
-		}).collect(Collectors.toList());
-		result.useInputDivergenceReason = appHdWorkDispInfoOutput.isUseInputDivergenceReason();
-		result.useComboDivergenceReason = appHdWorkDispInfoOutput.isUseComboDivergenceReason();
-		result.hdWorkDispInfoWithDateOutput = HdWorkDispInfoWithDateDto.fromDomain(appHdWorkDispInfoOutput.getHdWorkDispInfoWithDateOutput());
-		result.overtimeFrame = appHdWorkDispInfoOutput.getOvertimeFrame();
-		result.dispFlexTime = appHdWorkDispInfoOutput.isDispFlexTime();
-		if(appHdWorkDispInfoOutput.getComboDivergenceReason() != null) {
-			result.comboDivergenceReason = appHdWorkDispInfoOutput.getComboDivergenceReason().map(item -> 
-				item.stream().map(x -> DivergenceReasonDto.fromDomain(x)).collect(Collectors.toList())
-			).orElse(Collections.emptyList());
-		}
-		result.overtimeRestAppCommonSettingDto = OvertimeRestAppCommonSettingDto.convertToDto(appHdWorkDispInfoOutput.getOvertimeRestAppCommonSetting());
-		result.preAppCheckResult = appHdWorkDispInfoOutput.getPreAppCheckResult();
-		result.actualStatusCheckResult = appHdWorkDispInfoOutput.getActualStatusCheckResult();
-		return result;
+	public static AppHdWorkDispInfoDto fromDomain(AppHdWorkDispInfoOutput domain) {
+		if(domain == null) return null;
+		return new AppHdWorkDispInfoDto(domain.getDispFlexTime().equals(NotUseAtr.USE), domain.isUseInputDivergenceReason(), domain.isUseComboDivergenceReason(), 
+				WorkdayoffFrameDto.fromDomain(domain.getWorkdayoffFrame()), HolidayWorkAppSetDto.fromDomain(domain.getHolidayWorkAppSet()), 
+				HdWorkDispInfoWithDateDto.fromDomain(domain.getHdWorkDispInfoWithDateOutput()), AppReflectOtHdWorkDto.fromDomain(domain.getHdWorkOvertimeReflect()), 
+				OvertimeWorkFrameDto.fromDomain(domain.getOvertimeFrame()), AgreeOverTimeDto.fromDomain(domain.getOtWorkHoursForApplication()), 
+				AppDispInfoStartupDto.fromDomain(domain.getAppDispInfoStartupOutput()), 
+				DivergenceReasonSelectDto.fromDomain(domain.getComboDivergenceReason().orElse(null)), 
+				HolidayWorkCalculationResultDto.fromDomain(domain.getCalculationResult().orElse(null)));
 	}
+
 }
