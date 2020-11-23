@@ -106,11 +106,19 @@ public class OptionalItemFinder {
     public List<OptionalItemDto> findByListNo(List<Integer> optionalItemNos) {
         List<OptionalItemDto> result = new ArrayList<>();
         List<OptionalItem> optionalItems = this.repository.findByListNos(AppContexts.user().companyId(), optionalItemNos);
+        List<Formula> formulas = this.formulaRepo.find(AppContexts.user().companyId());
         optionalItems.forEach(item -> {
             OptionalItemDto dto = new OptionalItemDto();
             item.saveToMemento(dto);
             // Set list formula.
-            dto.setFormulas(this.getFormulas(item));
+            List<FormulaDto> formulaDtos = formulas.stream().filter(
+                    formula -> formula.getOptionalItemNo().equals(item)
+            ).map(formula -> {
+                FormulaDto formulaDto = new FormulaDto();
+                formula.saveToMemento(formulaDto);
+                return formulaDto;
+            }).collect(Collectors.toList());
+            dto.setFormulas(formulaDtos);
             result.add(dto);
         });
         return result;
