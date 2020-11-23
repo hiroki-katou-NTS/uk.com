@@ -235,6 +235,7 @@ module nts.uk.at.ksm008.b {
                     vm.$blockui("grayout");
                     vm.$ajax(API.delete, {sid : selectedEmployee.id}).done((res) => {
                         vm.$dialog.info({messageId: "Msg_16"}).then(() => {
+                            vm.employeeList.valueHasMutated();
                             vm.selectedCode.valueHasMutated();
                         });
                     }).fail((err) => {
@@ -242,8 +243,6 @@ module nts.uk.at.ksm008.b {
                     }).always(() => {
                         vm.$blockui('clear');
                     });
-                    vm.employeeList.valueHasMutated();
-                    vm.selectedCode(selectedEmployee.code);
                 } else {
                     return;
                 }

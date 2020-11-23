@@ -164,7 +164,6 @@ module nts.uk.at.ksm008.c {
             vm.isWorkplaceMode(!_.isEmpty(data.workplaceId));
 
             return vm.$ajax(API.getEmployeeInfo, data).done(res => {
-                console.log(res);
                 if (res) {
                     let listEmployee = _.map(res, function (item: any) {
                         return {
@@ -342,8 +341,6 @@ module nts.uk.at.ksm008.c {
             vm.banCode(firtBanListItem.code);
             vm.banName(firtBanListItem.name);
             vm.numOfEmployeeLimit(firtBanListItem.upperLimit);
-            vm.targetSelectedCodes([]);
-            vm.selectedableCodes([]);
 
             if (listBanEmployee) {
                 let listTarget: any = [];
@@ -357,6 +354,9 @@ module nts.uk.at.ksm008.c {
                 vm.selectableEmployeeList(listSelectable);
                 vm.targetEmployeeList(listTarget);
             }
+
+            vm.targetSelectedCodes([]);
+            vm.selectedableCodes([]);
             $('#C7_3').focus();
         }
 
