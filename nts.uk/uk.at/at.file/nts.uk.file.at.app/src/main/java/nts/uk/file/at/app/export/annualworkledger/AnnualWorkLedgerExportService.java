@@ -129,7 +129,7 @@ public class AnnualWorkLedgerExportService extends ExportService<AnnualWorkLedge
         // 4 Call 基準日で社員の雇用と締め日を取得する
         RequireClosureDateEmploymentService require1 = new RequireClosureDateEmploymentService(
                 shareEmploymentAdapter, closureRepository, closureEmploymentRepository);
-        List<ClosureDateEmployment> lstClosureDateEmployment = GetClosureDateEmploymentDomainService.getByDate(require1, baseDate, lstEmpIds);
+        List<ClosureDateEmployment> lstClosureDateEmployment = GetClosureDateEmploymentDomainService.get(require1, baseDate, lstEmpIds);
         Map<String, ClosureDateEmployment> mapClosureDateEmployment = lstClosureDateEmployment.stream()
                 .collect(Collectors.toMap(ClosureDateEmployment::getEmployeeId, i -> i));
 
