@@ -1,0 +1,48 @@
+.view-f {
+    padding: 15px;
+}
+
+.view-f .title {
+    font-size: 25px;
+}
+
+.view-f .node {
+    text-align: right;
+    color: #0D86D1;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.view-f .lable-input {
+    width: 50px;
+    text-align: center;
+}
+
+.view-f .cf {
+    max-width: 299px;
+}
+
+.view-f .cf div {
+    margin-top: 10px;
+}
+
+.view-f .cf .content-change {
+    margin-left: 20px;
+}
+
+.view-f .cf .list-check-box {
+    width: 200px;
+    margin-left: 30px;
+}
+
+.view-f .cf .list-check-box div {
+   margin-top: 0px;
+}
+
+.list-buttom .button1 {
+    margin-left: 160px;
+}
+
+.list-buttom .button3 {
+    margin-left: 20px;
+}
