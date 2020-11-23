@@ -184,11 +184,10 @@ export class KafS20A2Component extends KafS00ShrComponent {
                     return item.itemNo == controlAttendance.itemDailyID;
                 });
 
-                const { calcResultRange, optionalItemAtr, optionalItemName, optionalItemNo, unit,description } = optionalItem;
+                const { calcResultRange, optionalItemAtr, optionalItemName, optionalItemNo, unit, description } = optionalItem;
                 const { lowerCheck, upperCheck, amountLower, amountUpper, numberLower, numberUpper, timeLower, timeUpper } = calcResultRange;
 
                 const { amount, times, time } = item;
-                const { inputUnitOfTimeItem, } = controlAttendance;
 
                 vm.optionalItemApplication.push({
                     lowerCheck,
@@ -202,7 +201,7 @@ export class KafS20A2Component extends KafS00ShrComponent {
                     amount,
                     number: times,
                     time,
-                    inputUnitOfTimeItem,
+                    inputUnitOfTimeItem: controlAttendance ? controlAttendance.inputUnitOfTimeItem : null,
                     optionalItemAtr,
                     optionalItemName,
                     optionalItemNo,
@@ -235,23 +234,14 @@ export class KafS20A2Component extends KafS00ShrComponent {
 
                         let controlAttendances: IControlOfAttendanceItemsDto[] | null = res[0].data;
                         let optionalNoItems: IOptionalItemDto[] | null = res[1].data;
+                        console.log(settingNoItems);
 
-                        settingNoItems.forEach((itemNo) => {
-
-                            let optionalItem = optionalNoItems.find((optionalItem) => {
-
-                                return optionalItem.optionalItemNo === itemNo;
-                            });
-
-                            let controlAttendance = controlAttendances.find((controlAttend) => {
-
-                                return controlAttend.itemDailyID == 640 + itemNo;
-                            });
+                        settingNoItems.forEach((itemNo: number) => {
+                            let optionalItem: IOptionalItemDto = _.find(optionalNoItems, { optionalItemNo: itemNo });
+                            let controlAttendance: IControlOfAttendanceItemsDto = _.find(controlAttendances, { itemDailyID: itemNo + 640 });
+                            const { calcResultRange, optionalItemAtr, optionalItemName, optionalItemNo, unit, description } = optionalItem;
+                            const { lowerCheck, upperCheck, amountLower, amountUpper, numberLower, numberUpper, timeLower, timeUpper } = calcResultRange;
                             if (vm.mode) {
-                                const { calcResultRange, optionalItemAtr, optionalItemName, optionalItemNo, unit,description } = optionalItem;
-                                const { lowerCheck, upperCheck, amountLower, amountUpper, numberLower, numberUpper, timeLower, timeUpper } = calcResultRange;
-                                const { inputUnitOfTimeItem, } = controlAttendance;
-
                                 vm.optionalItemApplication.push({
                                     lowerCheck,
                                     upperCheck,
@@ -264,7 +254,7 @@ export class KafS20A2Component extends KafS00ShrComponent {
                                     amount: null,
                                     number: null,
                                     time: null,
-                                    inputUnitOfTimeItem,
+                                    inputUnitOfTimeItem: controlAttendance ? controlAttendance.inputUnitOfTimeItem : null,
                                     optionalItemAtr,
                                     optionalItemName,
                                     optionalItemNo,
@@ -403,11 +393,11 @@ export class KafS20A2Component extends KafS00ShrComponent {
             return vm.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
         } else {
 
-            if (_.isArray(res.errors)) {
-                return vm.$modal.error({ messageId: res.errors[0].messageId, messageParams: res.parameterIds });
-            } else {
-                return vm.$modal.error({ messageId: res.errors.messageId, messageParams: res.parameterIds });
-            }
+            // if (_.isArray(res.errors)) {
+            //     return vm.$modal.error({ messageId: res.errors[0].messageId, messageParams: res.parameterIds });
+            // } else {
+            //     return vm.$modal.error({ messageId: res.errors[0].messageId, messageParams: res.parameterIds });
+            // }
         }
     }
 

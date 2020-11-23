@@ -5,15 +5,13 @@ import { OptionalItemApplication } from '../../../../../kaf/s20/a/define';
 
 @component({
     name: 'CmmS45ComponentsApp15Component',
-    route: '/cmm/s45/shr/components/app15',
     style: require('./style.scss'),
     template: require('./index.vue'),
-    resource: require('./resources.json'),
     validations: {},
     constraints: []
 })
 export class CmmS45ShrComponentsApp15Component extends Vue {
-    public title: string = 'CmmS45ShrComponentsApp15';
+
     public optionalItemApplication: OptionalItemApplication[] | null = [];
     public optionalItemSetting: ISettings = {
         name: '',
@@ -85,7 +83,6 @@ export class CmmS45ShrComponentsApp15Component extends Vue {
                     const { lowerCheck, upperCheck, amountLower, amountUpper, numberLower, numberUpper, timeLower, timeUpper } = calcResultRange;
 
                     const { amount, times, time } = item;
-                    const { inputUnitOfTimeItem, } = controlAttendance;
 
                     vm.optionalItemApplication.push({
                         lowerCheck,
@@ -99,7 +96,7 @@ export class CmmS45ShrComponentsApp15Component extends Vue {
                         amount,
                         number: times,
                         time,
-                        inputUnitOfTimeItem ,
+                        inputUnitOfTimeItem: controlAttendance ? controlAttendance.inputUnitOfTimeItem : null,
                         optionalItemAtr,
                         optionalItemName,
                         optionalItemNo,
