@@ -9,6 +9,10 @@
 	margin-left: 10px;
 }
 
+#show-explan, #monthly-list, #year-list {
+	float: left;
+}
+
 .basic-settings ,#expand-list {
 	border: solid 1px #000;
 	border-collapse: collapse;
@@ -23,4 +27,12 @@
 }
 div.form-label {
 	padding: 8px 10px 0 8px;
+}
+
+#employment-title, #work-type-title {
+	font-size: 1.6rem;
+}
+#selected-employee {
+	height: 18px;
+	display: block;
 }
