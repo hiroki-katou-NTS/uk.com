@@ -460,11 +460,14 @@ module nts.uk.at.ksm008.c {
                         code: vm.selectedProhibitedCode()
                     };
 
+                    let index = _.findIndex(vm.listBanWorkTogether(), i => i.code == vm.selectedProhibitedCode());
+
                     vm.$ajax(API.delete, data).done(() => {
                         vm.$dialog.info({messageId: "Msg_16"}).then(() => {
                             vm.getBanWorkListByCode().then(() => {
                                 if (vm.listBanWorkTogether().length) {
-                                    vm.selectedProhibitedCode(vm.listBanWorkTogether()[0].code);
+                                    let newIndex = index == 0 ? 0 : index - 1;
+                                    vm.selectedProhibitedCode(vm.listBanWorkTogether()[newIndex].code);
                                 } else {
                                     vm.swithchNewMode();
                                 }
