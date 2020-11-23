@@ -111,7 +111,10 @@
   display: flex;
   flex-direction: row;
   border-radius: 4px;
-  /* background-color: rgba(0, 0, 0, 0.2); */
+  visibility: hidden;
+}
+.menu-creation-item-container:hover .menu-creation-item .widget-setting {
+  visibility: visible;
 }
 .menu-creation-item-container .menu-creation-item .widget-setting > i {
   cursor: pointer;
