@@ -37,7 +37,7 @@ module nts.uk.at.view.kaf020.a {
         }
 
         mounted() {
-            $("#fixed-table").ntsFixedTable({height: 480, width: 1250});
+            $("#fixed-table").ntsFixedTable({height: 450, width: 1150});
             setTimeout(() => {
                 $("#pg-name").text("KAF020A " + nts.uk.resource.getText("KAF020_1"));
             }, 300);

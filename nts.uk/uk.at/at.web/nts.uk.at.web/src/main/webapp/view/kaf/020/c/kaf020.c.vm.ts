@@ -184,41 +184,17 @@ module nts.uk.at.view.kaf020.c.viewmodel {
                 },
             };
             vm.$blockui("show");
-            return vm.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
-                .then((valid: boolean) => {
-                    if (valid) {
-                        return vm.$ajax(PATH_API.update, command);
-                    }
-                }).done(res => {
+            return vm.$ajax(PATH_API.update, command).done(res => {
                     if (res) {
                         if (res) {
                             vm.printContent.opOptionalItemOutput = dataFetch.opOptionalItemOutput;
-                            vm.$dialog.info({messageId: "Msg_15"}).then(() => $(vm.$el).find('#A5_3').focus());
+                            vm.$dialog.info({messageId: "Msg_15"});
                         }
                     }
-                }).fail(err => {
-                    vm.handleError(err);
                 }).always(() => {
                     vm.$errors("clear");
                     vm.$blockui("hide");
                 });
-        }
-
-        handleError(err: any) {
-            const vm = this;
-            let param;
-
-            if (err.message && err.messageId) {
-                param = {messageId: err.messageId, messageParams: err.parameterIds};
-            } else {
-                if (err.message) {
-                    param = {message: err.message, messageParams: err.parameterIds};
-                } else {
-                    param = {messageId: err.messageId, messageParams: err.parameterIds};
-                }
-            }
-
-            vm.$dialog.error(param);
         }
 
     }
