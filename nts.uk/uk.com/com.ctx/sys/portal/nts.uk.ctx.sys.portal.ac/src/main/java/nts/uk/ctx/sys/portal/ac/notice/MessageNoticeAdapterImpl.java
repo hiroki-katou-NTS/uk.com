@@ -94,13 +94,14 @@ public class MessageNoticeAdapterImpl implements MessageNoticeAdapter {
 	 * @return
 	 */
 	public AnniversaryNoticeImport tranferData(AnniversaryNoticeExport exportData) {
-		return AnniversaryNoticeImport.builder()
-				.personalId(exportData.getPersonalId())
-				.noticeDay(exportData.getNoticeDay())
-				.seenDate(exportData.getSeenDate())
-				.anniversary(exportData.getAnniversary())
+		return AnniversaryNoticeImport.builder().personalId(exportData.getPersonalId())
+				.noticeDay(exportData.getNoticeDay()).seenDate(exportData.getSeenDate())
+				.anniversary(String.join("", String.valueOf(exportData.getAnniversary().getMonthValue()),
+						String.valueOf(exportData.getAnniversary().getDayOfMonth())))
 				.anniversaryTitle(exportData.getAnniversaryTitle())
 				.notificationMessage(exportData.getNotificationMessage())
+				.displayDate(String.join("-", String.valueOf(exportData.getAnniversary().getMonthValue()),
+						String.valueOf(exportData.getAnniversary().getDayOfMonth())))
 				.build();
 	}
 

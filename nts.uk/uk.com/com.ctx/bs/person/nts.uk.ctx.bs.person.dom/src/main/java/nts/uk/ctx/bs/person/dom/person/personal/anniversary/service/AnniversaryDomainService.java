@@ -43,7 +43,7 @@ public class AnniversaryDomainService {
 			anniversaryNotices = require.getTodayAnniversary(GeneralDate.today());
 		}
 		if (dateStart.compareTo(GeneralDate.today()) != 0 || dateEnd.compareTo(GeneralDate.today()) != 0) {
-			if (dateStart.compareTo(dateEnd) == 0) {
+			if (dateStart.year() == dateEnd.year()) {
 				anniversaryNotices = require.getByDatePeriod(new DatePeriod(dateStart, dateEnd));
 			} else {
 				GeneralDate date = GeneralDate.ymd(dateStart.year(), 12, 31);

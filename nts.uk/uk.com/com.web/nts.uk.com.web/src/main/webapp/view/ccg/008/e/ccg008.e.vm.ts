@@ -9,10 +9,10 @@ module nts.uk.at.view.ccg008.e.screenModel {
     isEditable: KnockoutObservable<boolean> = ko.observable(false);
     isRequired: KnockoutObservable<boolean> = ko.observable(false);
     selectFirstIfNull: KnockoutObservable<boolean> = ko.observable(false);
-    cId: KnockoutObservable<string> = ko.observable(__viewContext.user.companyId);
+    cId: KnockoutObservable<string> = ko.observable('');
     created(){
       const vm = this;
-      let data = nts.uk.ui.windows.getShared('DataFromScreenA');
+      const data = nts.uk.ui.windows.getShared('DataFromScreenA');
       vm.selectedCode(data.toString());
       vm.itemListCb = ko.observableArray([
         new ItemModel('0', ''),
@@ -26,21 +26,19 @@ module nts.uk.at.view.ccg008.e.screenModel {
         new ItemModel('8', '60')
     ]);
     }
-    mounted(){
 
-    }
     onClickDecision(){
       const vm = this;
-      let command: ToppageReloadSettingCommand = new ToppageReloadSettingCommand(vm.cId(), parseInt(vm.selectedCode()));
+      const command: ToppageReloadSettingCommand = new ToppageReloadSettingCommand(vm.cId(), parseInt(vm.selectedCode()));
       vm.$ajax('com','screen/com/ccg008/save',command).then(()=> {
         nts.uk.ui.windows.setShared('DataFromScreenE',parseInt(vm.selectedCode()));
-        this.$window.close()
+        this.$window.close();
       })
     }
     onClickCancel(){
       const vm = this;
       nts.uk.ui.windows.setShared('DataFromScreenE',parseInt(vm.selectedCode()));
-      this.$window.close()
+      this.$window.close();
     }
   }
 

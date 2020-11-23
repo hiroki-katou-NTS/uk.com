@@ -279,6 +279,16 @@ module nts.uk.com.view.ccg013.c.viewmodel {
             var self = this;
             let index = 1;
 
+            $(".nts-input").ntsError("validate");
+            setTimeout(function() {
+                if (!$(".nts-input").ntsError("hasError")) {
+                  return;
+                }
+              }, 300);
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
+
             if (self.titleMenuId()) {
                 _.each(self.newItems(), (item) => {
                     item.order = index;

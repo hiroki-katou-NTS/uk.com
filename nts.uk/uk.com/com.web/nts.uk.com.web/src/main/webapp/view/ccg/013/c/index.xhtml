@@ -6,7 +6,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 900, height: 600 };</script>
+			<script>var dialogSize = { width: 900, height: 620 };</script>
 			<com:stylefile path="ccg013.c.style.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="ccg013.c.start.js" />
@@ -29,7 +29,7 @@
 					<table id="table-top-content">
 						<tr>
 							<td>
-								<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG013_31')}</div>
+								<div data-bind="ntsFormLabel: { constraint: 'TitleBarName', required: true }">#{i18n.getText('CCG013_31')}</div>
 							</td>
 							<td>
 								<input id='C1_3' data-bind="ntsTextEditor: {
@@ -59,21 +59,25 @@
 									data-bind="ntsColorPicker: {name:'#[CCG013_23]', value: backgroundColor, enable: true, width: 50, required: true}" />
 							</td>
 						</tr>
+						<tr class="systemGroup">
+							<td>
+								<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('CCG013_47')}</div>
+							</td>
+							<td>
+								<div id="combo-box" tabindex="5" class="cbb-system-data" data-bind="ntsComboBox: {
+									options: systemList,
+									optionsValue: 'systemCode',
+									value: selectedSystemCode,
+									optionsText: 'systemName',
+									editable: false,
+									enable: true,
+									dropDownAttachedToBody: true,
+									columns: [
+										{ prop: 'systemName', length: 10 }
+									]}"></div>
+							</td>
+						</tr>
 					</table>
-					<div class="systemGroup">
-						<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('CCG013_47')}</div>
-						<div id="combo-box" tabindex="5" class="cbb-system-data" data-bind="ntsComboBox: {
-								options: systemList,
-								optionsValue: 'systemCode',
-								value: selectedSystemCode,
-								optionsText: 'systemName',
-								editable: false,
-								enable: true,
-								dropDownAttachedToBody: true,
-								columns: [
-									{ prop: 'systemName', length: 10 }
-								]}"></div>
-					</div>
 				</div>
 
 				<div class="left-contents">

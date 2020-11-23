@@ -68,7 +68,6 @@ table#table-top-content {
 }
 
 #table-top-content>tbody>tr>td>span.nts-editor-wrapped.ntsControl {
-	margin-left: 50px;
 	margin-right: 30px;
 }
 
@@ -98,3 +97,6 @@ button#c1_26 {
 	width: 160px;
 }
 
+div#combo-box {
+	margin-top: -15px;
+}

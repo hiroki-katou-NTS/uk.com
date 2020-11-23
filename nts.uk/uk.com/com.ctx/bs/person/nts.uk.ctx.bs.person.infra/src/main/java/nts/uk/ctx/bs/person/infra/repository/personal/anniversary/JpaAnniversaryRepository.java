@@ -29,12 +29,13 @@ public class JpaAnniversaryRepository extends JpaRepository implements Anniversa
             + " OR("
             + " CAST(CONCAT('{:todayNextYear}',　a.ANNIVERSARY_DATE) AS datetime2) >= CAST('{:anniversary}' as datetime2)"
             + " AND CAST(CONCAT('{:todayNextYear}',a.ANNIVERSARY_DATE) AS datetime2) <= DATEADD(day,　a.NOTIFICATION_DAYS,　CAST('{:anniversary}' as datetime2))"
-            + " )";
+            + " ) ORDER BY ANNIVERSARY_DATE ASC";
 
     //select by date period
     private static final String SELECT_BY_DATE_PERIOD = "SELECT a FROM BpsdtPsAnniversaryInfo a"
             + " WHERE a.bpsdtPsAnniversaryInfoPK.personalId = :personalId"
-            + " AND a.bpsdtPsAnniversaryInfoPK.anniversary IN :datePeriod";
+            + " AND :start <= a.bpsdtPsAnniversaryInfoPK.anniversary"
+            + " AND a.bpsdtPsAnniversaryInfoPK.anniversary <= :end";
 
     //select by person ID and anniversary
     private static final String SELECT_BY_PERSONAL_ID_AND_ANNIVERSARY = "SELECT a FROM BpsdtPsAnniversaryInfo a"
@@ -122,7 +123,7 @@ public class JpaAnniversaryRepository extends JpaRepository implements Anniversa
     }
 
     @Override
-    public Optional<AnniversaryNotice> getByPersonalIdAndAnniversary(String personalId, GeneralDate anniversary) {
+    public Optional<AnniversaryNotice> getByPersonalIdAndAnniversary(String personalId, String anniversary) {
         return this.queryProxy()
                 .query(SELECT_BY_PERSONAL_ID_AND_ANNIVERSARY, BpsdtPsAnniversaryInfo.class)
                 .setParameter("personalId", personalId)
@@ -159,7 +160,7 @@ public class JpaAnniversaryRepository extends JpaRepository implements Anniversa
                     entity.setAnniversaryTitle(item[12].toString());
                     entity.setNotificationMessage(item[13].toString());
                     entity.setNoticeDay(Integer.parseInt(item[14].toString()));
-
+                    entity.setSeenDate(GeneralDate.fromString(item[15].toString(), "yyyy-MM-dd hh:mm:ss.S"));
                     //create domain
                     AnniversaryNotice domain = new AnniversaryNotice();
                     domain.getMemento(entity);
@@ -174,7 +175,8 @@ public class JpaAnniversaryRepository extends JpaRepository implements Anniversa
         return this.queryProxy()
                 .query(SELECT_BY_DATE_PERIOD, BpsdtPsAnniversaryInfo.class)
                 .setParameter("personalId", loginPersonalId)
-                .setParameter("datePeriod", datePeriod)
+                .setParameter("start", datePeriod.start().month() + "" + datePeriod.start().day())
+                .setParameter("end", datePeriod.end().month() + "" + datePeriod.end().day())
                 .getList(AnniversaryNotice::createFromMemento);
     }
 }

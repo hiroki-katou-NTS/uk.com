@@ -16,6 +16,7 @@ module nts.uk.com.view.ccg020.a {
   @component({
     name: 'ccg020-component',
     template: `<div id="search-bar" class="cf">
+    <ccg003-component></ccg003-component>
     <i id="search-icon" data-bind="ntsIcon: { no: 19, width: 30, height: 30 }, click: openPopupSearchCategory" class="img-icon"></i>
     <input id="search" autocomplete="off" data-bind="ntsTextEditor: {
       value: valueSearch,
@@ -43,7 +44,7 @@ module nts.uk.com.view.ccg020.a {
   </div>
   <div id="message" class="cf">
     <i class="img" id="warning-msg" data-bind="ntsIcon: { no: 163, width: 20, height: 20 }, click: addEventClickWarningBtn, visible: isDisplayWarningMsg"></i>
-    <i class="img" id="notice-msg" data-bind="ntsIcon: { no: 164, width: 20, height: 20 }, click: addEventClickNoticeBtn"></i>
+    <i class="img" id="notice-msg" data-bind="ntsIcon: { no: 164, width: 20, height: 20 }"></i>
     <i class="img" id="new-notice-msg" data-bind="ntsIcon: { no: 165, width: 10, height: 10 }, visible: isDisplayNewNotice"></i>
   </div>`
   })
@@ -100,32 +101,13 @@ module nts.uk.com.view.ccg020.a {
             $userImage.ready(() => {
               $('<div/>')
                 .addClass('avatar')
-                .attr('id', 'A4_1_no_avatar')
+                .attr('id', 'avatar_id')
                 .text($('#user-name').text().substring(0, 2))
                 .appendTo($userImage);
             });
           }
         })
         .always(() => vm.$blockui('clear'));
-    }
-
-    private addEventClickNoticeBtn() {
-      const $message = $('#message');
-      $('<div/>')
-        .attr('id', 'popup-message')
-        .appendTo($message);
-      $('#popup-message').ntsPopup({
-        showOnStart: false,
-        dismissible: true,
-        position: {
-          my: 'right top',
-          at: 'right bottom',
-          of: '#notice-msg'
-        }
-      });
-      $('popup-message').append('#closure');
-      // CCG003を起動する（パネルイメージで実行）
-      $('#popup-message').ntsPopup('show');
     }
 
     private addEventClickWarningBtn() {

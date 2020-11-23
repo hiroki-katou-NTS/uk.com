@@ -39,53 +39,46 @@ module ccg018.a1.viewmodel {
             self.listSwitchDate(self.getSwitchDateLists());
             $('#A2-2').focus();
             const vm = this;
-            vm.getRoleSet();
-            vm.getAllTopPageRoleSet();
-        }
-
-        //ドメインモデル「ロールセット」を取得する
-        private getRoleSet() {
-            const vm = this;
-            blockUI.invisible();
+            blockUI.grayout();
             service.findAllRoleSet()
-            .then((data: any) => {
-                vm.listRoleSet(data);
-            })
-            .always(() => blockUI.clear());
-        }
-
-        // ドメインモデル「権限別トップページ設定」を取得
-        private getAllTopPageRoleSet() {
-            const vm = this;
-            blockUI.invisible();
-            service.findAllTopPageRoleSet()
-            .then((data) => {
-                _.forEach(vm.listRoleSet(), (x: RoleSet) => {
-                    const dataObj: any = _.find(data, ['roleSetCode', x.roleSetCd]);
-                    if (dataObj) {
-                        vm.lisTopPageRoleSet().push(new TopPageRoleSet({
-                            roleSetCode: x.roleSetCd,
-                            name: x.roleSetName,
-                            loginMenuCode: dataObj.loginMenuCode,
-                            topMenuCode: dataObj.topMenuCode,
-                            switchingDate: dataObj.switchingDate,
-                            system: dataObj.system,
-                            menuClassification: dataObj.menuClassification
-                        }));
-                    } else {
-                        vm.lisTopPageRoleSet().push(new TopPageRoleSet({
-                            roleSetCode: x.roleSetCd,
-                            name: x.roleSetName,
-                            loginMenuCode: '',
-                            topMenuCode: '',
-                            switchingDate: 0,
-                            system: 0,
-                            menuClassification: 0
-                        }));
+                //ドメインモデル「ロールセット」を取得する
+                .then((data: any) => {
+                    vm.listRoleSet(data);
+                    return service.findAllTopPageRoleSet();
+                })
+                 // ドメインモデル「権限別トップページ設定」を取得
+                .then((data) => {
+                    const dataMap: any = {};
+                    for (const item of data) {
+                        dataMap[item.roleSetCode] = item;
                     }
-                });
-            })
-            .always(() => blockUI.clear());
+                    const arrayTemp: TopPageRoleSet[] = _.map(vm.listRoleSet(), (x: RoleSet) => {
+                        const dataObj: any = dataMap[x.roleSetCd];
+                        if (dataObj) {
+                            return new TopPageRoleSet({
+                                roleSetCode: x.roleSetCd,
+                                name: x.roleSetName,
+                                loginMenuCode: dataObj.loginMenuCode,
+                                topMenuCode: dataObj.topMenuCode,
+                                switchingDate: dataObj.switchingDate,
+                                system: dataObj.system,
+                                menuClassification: dataObj.menuClassification
+                            });
+                        } else {
+                            return new TopPageRoleSet({
+                                roleSetCode: x.roleSetCd,
+                                name: x.roleSetName,
+                                loginMenuCode: '',
+                                topMenuCode: '',
+                                switchingDate: 0,
+                                system: 0,
+                                menuClassification: 0
+                            });
+                        }
+                    });
+                    vm.lisTopPageRoleSet(arrayTemp);
+                })
+                .always(() => blockUI.clear());
         }
 
         checkCategorySet(): void {
@@ -93,53 +86,6 @@ module ccg018.a1.viewmodel {
             if (self.categorySet() == null) {
                 self.categorySet(1);
             }
-        }
-
-        /**
-         * Find data in DB TOPPAGE_JOB_SET
-         */
-        findDataOfTopPageJobSet(listJobId: any): JQueryPromise<any> {
-            let self = this;
-            let dfd = $.Deferred();
-            self.items.removeAll();
-            service.findDataOfTopPageJobSet(listJobId)
-                .done(function(data) {
-                    _.forEach(listJobId, function(x) {
-                        let dataObj: any = _.find(data, ['jobId', x]),
-                            jobTitle = _.find(self.listJobTitle(), ['id', x]);
-                        if (dataObj) {
-                            self.items.push(new TopPageJobSet({
-                                code: jobTitle.code,
-                                name: jobTitle.name,
-                                loginMenuCd: dataObj.loginMenuCode,
-                                topMenuCd: dataObj.topMenuCode,
-                                personPermissionSet: dataObj.personPermissionSet,
-                                switchingDate: dataObj.switchingDate,
-                                jobId: x,
-                                system: dataObj.system,
-                                menuClassification: dataObj.menuClassification
-                            }));
-                        } else {
-                            self.items.push(new TopPageJobSet({
-                                code: jobTitle.code,
-                                name: jobTitle.name,
-                                loginMenuCd: '',
-                                topMenuCd: '',
-                                personPermissionSet: 0,
-                                switchingDate: 0,
-                                jobId: x,
-                                system: 0,
-                                menuClassification: 0
-                            }));
-                        }
-                    });
-                    dfd.resolve();
-                }).fail(function() {
-                    dfd.reject();
-                }).always(function() {
-                    blockUI.clear();
-                });
-            return dfd.promise();
         }
 
         /**
@@ -163,6 +109,7 @@ module ccg018.a1.viewmodel {
         }
 
         showNote() {
+            $('#popup-show-note').remove();
             const $table1 = $('#A2-4');
             $('<div/>')
                 .attr('id', 'popup-show-note')
@@ -180,7 +127,7 @@ module ccg018.a1.viewmodel {
             $('<div/>')
                 .text(nts.uk.resource.getText('CCG018_52'))
                 .appendTo($popUpShowNote);
-                $popUpShowNote.ntsPopup('show');
+            $popUpShowNote.ntsPopup('show');
         }
 
         private getSwitchDateLists() {

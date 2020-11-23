@@ -65,8 +65,8 @@ public class JpaLayoutNewRepository extends JpaRepository implements LayoutNewRe
 	}
 	
 	@Override
-	public void delete(String CompanyId, String topPageCd, BigDecimal layoutNo) {
-		SptmtLayoutPk pk = new SptmtLayoutPk(CompanyId, topPageCd, layoutNo);
+	public void delete(String companyId, String topPageCd, BigDecimal layoutNo) {
+		SptmtLayoutPk pk = new SptmtLayoutPk(companyId, topPageCd, layoutNo);
 		// delete
 		this.commandProxy().remove(SptmtLayout.class, pk);
 		
