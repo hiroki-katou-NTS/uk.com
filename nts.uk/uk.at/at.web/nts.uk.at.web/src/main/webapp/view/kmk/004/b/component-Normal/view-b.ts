@@ -13,8 +13,8 @@ module nts.uk.at.view.kmk004.b {
 			<div data-bind="i18n: 'KMK004_228'"></div>
 			<hr></hr>
 			<div class="header_title">
-				<div data-bind="ntsFormLabel: {}, i18n: 'KMK004_229'"></div>
-				<button data-bind="i18n: 'KMK004_231'"></button>
+				<div data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_229'"></div>
+				<button data-bind="i18n: 'KMK004_231', click: openDialogF"></button>
 			</div>
 			<div class="header_content">
 				<div data-bind="component: {
@@ -24,7 +24,7 @@ module nts.uk.at.view.kmk004.b {
 					}
 				}"></div>
 			</div>
-			<div data-bind="ntsFormLabel: {}, i18n: 'KMK004_232'"></div>
+			<div data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_232'"></div>
 		</div>
 		<div class="content">
 			<div>
@@ -86,6 +86,12 @@ module nts.uk.at.view.kmk004.b {
 		add() {
 			const vm = this;
 			vm.modeCheckChangeSetting.valueHasMutated();
+		}
+
+		openDialogF() {
+			const vm = this;
+			vm.$window
+				.modal('/view/kmk/004/f/index.xhtml');
 		}
     }
 }

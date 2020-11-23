@@ -31,7 +31,7 @@ module nts.uk.at.view.kmk004.b {
 				<hr></hr>
 				<div data-bind="i18n: 'Chung dep trai'"></div>
 				<div>
-					<div data-bind="ntsFormLabel: {}, i18n: 'KMK004_229'"></div>
+					<div data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_229'"></div>
 					<!-- ko if: modeCheckSetting -->
 						<button data-bind="i18n: 'KMK004_241'"></button>
 					<!-- /ko -->
@@ -47,7 +47,7 @@ module nts.uk.at.view.kmk004.b {
 						}
 					}"></div>
 				<!-- /ko -->
-				<div class="label1" data-bind="ntsFormLabel: {}, i18n: 'KMK004_232'"></div>
+				<div class="label1" data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_232'"></div>
 				<div class="content-data">
 					<div class="year">
 						<div>
