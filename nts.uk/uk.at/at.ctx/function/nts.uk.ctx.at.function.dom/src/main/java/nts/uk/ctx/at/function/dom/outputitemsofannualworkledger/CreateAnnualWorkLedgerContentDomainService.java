@@ -145,7 +145,7 @@ public class CreateAnnualWorkLedgerContentDomainService {
 
             // 「期間」の中にループを行い
             for (DatePeriod period : emp.getListPeriod()) {
-                val yearMonthPeriod = GetSuitableDateByClosureDateUtility.getByClosureDate(period, closureDay);
+                val yearMonthPeriod = GetSuitableDateByClosureDateUtility.convertPeriod(period, closureDay);
                 val monthlyRecordValues = (require.getActualMultipleMonth(
                         new ArrayList<>(Collections.singletonList(emp.getEmployeeId())), yearMonthPeriod, itemIds)).get(emp.getEmployeeId());
                 if (monthlyRecordValues != null) {

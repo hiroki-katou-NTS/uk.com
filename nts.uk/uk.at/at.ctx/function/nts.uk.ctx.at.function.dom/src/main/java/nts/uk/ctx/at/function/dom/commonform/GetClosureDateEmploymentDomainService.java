@@ -19,13 +19,13 @@ import java.util.stream.Collectors;
 @Stateless
 public class GetClosureDateEmploymentDomainService {
     /**
-     *
+     * [1] 取得する
      * @param require
      * @param baseDate 基準日：年月日
      * @param listSid List<社員ID>：社員ID
      * @return
      */
-    public static List<ClosureDateEmployment> getByDate(Require require, GeneralDate baseDate, List<String> listSid) {
+    public static List<ClosureDateEmployment> get(Require require, GeneralDate baseDate, List<String> listSid) {
         val companyId = AppContexts.user().companyId();
 
         // 雇用を取得する
@@ -51,6 +51,7 @@ public class GetClosureDateEmploymentDomainService {
 
     public static interface Require {
         /**
+         * [R-1] 社員ID（List）と指定期間から社員の雇用履歴を取得 (社員一覧, 期間)
          * nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter.findEmpHistoryVer2(String companyId, List<String> lstSID, GeneralDate baseDate)
          *
          * @param companyId
@@ -61,6 +62,7 @@ public class GetClosureDateEmploymentDomainService {
         Map<String, BsEmploymentHistoryImport> getEmploymentInfor(String companyId, List<String> listSid, GeneralDate baseDate);
 
         /**
+         * [R-2] 社員に対応する処理締めを取得する（社員ID、基準日
          * nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService.getClosureDataByEmployee(RequireM3 require, CacheCarrier cacheCarrier, String employeeId, GeneralDate baseDate)
          *
          * @param employeeId

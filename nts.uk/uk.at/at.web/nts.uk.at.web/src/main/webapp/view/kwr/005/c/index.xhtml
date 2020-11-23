@@ -24,9 +24,9 @@
       <ui:define name="content">
         <div id="contents-area" class="kwr-003c">
           <div class="row d-flex">
-            <div data-bind="text: $i18n('KWR005_301')"></div>
+            <div data-bind="text: $i18n('KWR005_202')"></div>
             <div
-              data-bind="ntsFormLabel: { required: false, text: $i18n('KWR005_302')}"
+              data-bind="ntsFormLabel: { required: false, text: $i18n('KWR005_203')}"
             ></div>            
             <div class="textEditor">
               <div class="code" data-bind="text: oldCode"></div>
@@ -34,12 +34,12 @@
             </div>
           </div>
           <div class="row d-flex">
-            <div data-bind="text: $i18n('KWR005_303')"></div>            
+            <div data-bind="text: $i18n('KWR005_204')"></div>            
             <div
               class="form-label required broken"
               data-bind="ntsFormLabel: { 
                     required: true, 
-                    text: $i18n('KWR005_302'), 
+                    text: $i18n('KWR005_203'), 
                     constraint: ['OutputItemSettingCode', 'OutputItemSettingName']}"
             ></div>
             <div class="textEditor">
@@ -51,7 +51,7 @@
                       value: newCode, 
                       required: true,
                       constraint: 'OutputItemSettingCode',
-                      name: $i18n('KWR005_210')
+                      name: $i18n('KWR005_203')
                     }"
               />
               <input
@@ -61,7 +61,7 @@
                       value: newName,
                       required: true,
                       constraint: 'OutputItemSettingName',
-                      name: $i18n('KWR005_211')
+                      name: $i18n('KWR005_203')
                     }"
               />
             </div>
@@ -71,10 +71,10 @@
           <button
             id="proceedDialog" 
             tabindex="3"
-            data-bind="click: proceed, enable: $root.errors.isEmpty, text: $i18n('KWR005_304')"
+            data-bind="click: proceed, enable: $root.errors.isEmpty, text: $i18n('KWR005_205')"
             class="proceed large"
           />
-          <button id="closeDialog" tabindex="4" data-bind="click: cancel, text: $i18n('KWR005_305')" />
+          <button id="closeDialog" tabindex="4" data-bind="click: cancel, text: $i18n('KWR005_206')" />
         </div>
       </ui:define>
     </ui:composition>

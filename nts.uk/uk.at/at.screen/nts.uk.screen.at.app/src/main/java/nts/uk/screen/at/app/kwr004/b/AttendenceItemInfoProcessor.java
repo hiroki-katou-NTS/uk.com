@@ -21,6 +21,7 @@ public class AttendenceItemInfoProcessor {
     public void getAttendenceItemInfo(RequestParams requestParams) {
         List<Integer> attendenceId = query.getAttendanceId(EnumAdaptor.valueOf(requestParams.getDailyMonthlyClass(), DailyMonthlyClassification.class),requestParams.getScreenNumber());
 
+        //TODO call screenQuery 003 còn đang QA
 
     }
 

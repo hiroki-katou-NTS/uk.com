@@ -51,7 +51,7 @@
               tabindex="4"
               id="btnB14"
               class="danger"
-              data-bind="text: $i18n('KWR005_105'), click: deteleSetting, enable: isEnableDeleteButton"
+              data-bind="text: $i18n('KWR005_105'), click: deleteSetting, enable: isEnableDeleteButton"
             />
             <!-- B1_2 -->
             <button
@@ -81,6 +81,7 @@
                 />
                 <table
                   id="multiList"
+                  tabindex="-1"
                   data-bind="ntsGridList: {
                     height: 355,
                     options: settingListItems,
@@ -104,28 +105,28 @@
                     text: $i18n('KWR005_109'), 
                     constraint: ['OutputItemSettingCode', 'OutputItemSettingName']}"
                 ></div>
-                <div class="textEditor">
+                <div class="textEditor" data-bind="with: mode">
                   <input
                     class="code"
                     tabindex="7"
-                    id="KWR005_B42"
+                    id="KWR005_B52"
                     data-bind="ntsTextEditor: {
-                      value: attendanceCode, 
+                      value: code, 
                       required: true,
                       constraint: 'OutputItemSettingCode',
-                      name: $i18n('KWR005_110'),
-                      enable: isEnableAttendanceCode
+                      name: $vm.$i18n('KWR005_110'),
+                      enable: $vm.isEnableAttendanceCode
                     }"
                   />
                   <input
                     class="name"
-                    id="KWR005_B43"
+                    id="KWR005_B53"
                     tabindex="8"
                     data-bind="ntsTextEditor: {
-                      value: attendanceName,
+                      value: name,
                       required: true,
                       constraint: 'OutputItemSettingName',
-                      name: $i18n('KWR005_111')
+                      name: $vm.$i18n('KWR005_111')
                     }"
                   />
                 </div>
@@ -139,15 +140,16 @@
                     <div data-bind="text: $i18n('KWR005_113')"></div>
                     <div
                       id="B6_3"
+                      tabindex="9"
                       data-bind="ntsComboBox: {
-                    name: 'KWR005_113',
-                    options: printProperties,
-                    optionsValue: 'code',
-                    visibleItemsCount: 5,
-                    value: printPropertyCode,
-                    optionsText: 'name',
-                    editable: false
-                  }"
+                        name: 'KWR005_113',
+                        options: printProperties,
+                        optionsValue: 'code',
+                        visibleItemsCount: 5,
+                        value: printPropertyCode,
+                        optionsText: 'name',
+                        editable: false
+                      }"
                     ></div>
                   </div>
                   <hr />
@@ -162,16 +164,17 @@
               <div class="row">
                 <div
                   id="swapList"
+                  tabindex="10"
                   data-bind="ntsSwapList: {
                   showSearchBox: { showLeft : true, showRight: true},
                   height: gridHeight,
                   dataSource: listItemsSwap,
                   disableMoveButton: false,
-                  primaryKey: 'code',
+                  primaryKey: 'attendanceItemId',
                   columns: columns,
                   value: currentCodeListSwap,
                   searchMode: 'filter',
-                  searchCriterion: ['code', 'name'],
+                  searchCriterion: ['attendanceItemId', 'attendanceItemName'],
                   draggable: false,
                   multipleDrag: { left: true, right: false },
                   innerDrag: { left: false, right: true },
