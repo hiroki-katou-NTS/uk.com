@@ -421,7 +421,7 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 
 					// create print area
 					PageSetup pageSetup = worksheet.getPageSetup();
-					pageSetup.setPrintArea(reportPageAddr + startNewPage);
+					
 					pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
 					pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
 					
@@ -441,6 +441,7 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 						pageSetup.setFitToPagesWide(1);
 					}
 					startNewPage += MAX_ROW_PER_EMPL;
+					pageSetup.setPrintArea(reportPageAddr + startNewPage);
 					
 				}
 				
