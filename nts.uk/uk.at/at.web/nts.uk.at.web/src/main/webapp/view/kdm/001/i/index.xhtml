@@ -162,7 +162,18 @@
 						<!-- I12_6 年月日 -->
 						<button class="width-112" id="I12_6" tabindex="14" data-bind="click: openKDL036, disable: isDisableOpenKDL036() ">#{i18n.getText('KDM001_159')}</button>
 						<!-- I12_7 -->
-						<span id="I12_7" class="label margin-left-15" data-bind="text: baseDate"></span>
+						<div class="grid">
+							<com:ko-foreach bind="displayLinkingDate">
+								<span>
+									<!-- I12_7 -->
+									<span id="I12_7" class="label margin-left-15" data-bind="text: outbreakDay"></span>
+									<!-- I12_8 -->
+									<span data-bind="if: dateOfUse !== 0">
+										<span id="I12_8" class="label margin-left-25" data-bind="text: dateOfUse + $i18n('KDM001_27')"></span>
+									</span>
+								</span>
+							</com:ko-foreach>
+						</div>
 					</div>
 					<!-- I13 残数 -->
 					<div class="label">#{i18n.getText('KDM001_84')}</div>
@@ -174,8 +185,8 @@
 					<div class="labelTitle"
 						data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDM001_85')}</div>
 					<!-- I15_1 残数 -->
-					<span class="label" data-bind="text: dayRemaining"></span>
-					<span class="label" data-bind="if: dayRemaining" >
+					<span class="label" data-bind="text: displayRemainDays"></span>
+					<span class="label" data-bind="if: displayRemainDays" >
 						<label data-bind="text: unitDay"></label>
 					</span>
 				</div>

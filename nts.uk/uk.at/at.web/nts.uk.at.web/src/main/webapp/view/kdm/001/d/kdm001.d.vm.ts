@@ -34,11 +34,32 @@ module nts.uk.at.view.kdm001.d.viewmodel {
         enableSplit: KnockoutObservable<boolean>              = ko.observable(true);
         unit: KnockoutObservable<string> = ko.observable(getText('KDM001_27'));
         baseDate: KnockoutObservable<string> = ko.observable('');
-        dataDate:KnockoutObservable<number> = ko.observable(0);
         linkingDates: KnockoutObservableArray<any> = ko.observableArray([]);
         isDisableOpenKDL035: KnockoutObservable<boolean> = ko.observable(true);
         checkLinkingDates: KnockoutObservable<boolean> = ko.observable(false);
+
+        // Update ver 48
         residualNumber: KnockoutObservable<number> = ko.observable(0);
+        kdl035Shared: KnockoutObservableArray<HolidayWorkSubHolidayLinkingMng> = ko.observableArray([]);
+        displayLinkingDate: KnockoutComputed<any[]> = ko.computed(() => {
+            return this.pickUp()
+                ? !_.isEmpty(this.dayOff())
+                    ? [{outbreakDay: moment.utc(this.dayOff()).format('YYYY/MM/DD'), dateOfUse: 0}]
+                    : [{outbreakDay: '', dateOfUse: 0}]
+                : this.kdl035Shared();
+        });
+
+        linkingDate: KnockoutComputed<number> = ko.computed(() => {
+            if (this.pickUp()) {
+                return 0.0;
+            }
+            let total = 0.0;
+            _.forEach(this.kdl035Shared(), (item: any) => total += item.dateOfUse);
+            return total;
+        });
+
+        displayRemainDays: KnockoutComputed<number> = ko.computed(() => this.residualNumber() + this.remainDays());
+        // End Update Ver48
 
         constructor() {
             let self = this;
@@ -82,9 +103,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
             self.checkedSplit.subscribe((v) => {
                 self.calRemainDays();
             });
-            
 
-            
             self.remainDays(null);
         }
 
@@ -105,11 +124,10 @@ module nts.uk.at.view.kdm001.d.viewmodel {
 
         public calRemainDays() {
           const vm = this;
-          const value1 = !vm.pickUp() || !vm.occurredDays()? 0 : vm.occurredDays();
+          const value1 = !vm.pickUp() || !vm.occurredDays() ? 0 : vm.occurredDays();
           const value2 = !vm.pause() || !vm.subDays() ? 0 : vm.subDays();
           const value3 = !vm.pause() || !vm.checkedSplit() || !vm.requiredDays() ? 0 : vm.requiredDays();
-          const value4 = !vm.pause || !vm.dataDate() ? 0 : vm.dataDate();
-          const remainDays = vm.residualNumber() + value1 + value4 - (value2 + value3)
+          const remainDays = vm.linkingDate() + value1 - (value2 + value3);
           vm.remainDays(remainDays);
         }
 
@@ -178,7 +196,9 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                 closureId: self.closureId(),
                 holidayDate: moment.utc(self.holidayDate(), 'YYYY/MM/DD').toISOString(),
                 subDays: self.subDays(),
-                linkingDates: linkingDates
+                linkingDates: linkingDates,
+                linkingDate: self.linkingDate(),
+                displayRemainDays: self.displayRemainDays()
             };
             
             service.save(data).done(result => {
@@ -236,11 +256,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                 }
             })
             .fail((res: any) => {
-                if (res && res.messageId === 'Msg_2017' || res.messageId === 'Msg_2018') {
-                    dialog.info(res).then(() => setShared('KDM001_A_PARAMS', {isSuccess: false}));
-                } else {
-                    dialog.info({ messageId: "Msg_737" }).then(() => setShared('KDM001_A_PARAMS', {isSuccess: false}));
-                }
+                dialog.info(res).then(() => setShared('KDM001_A_PARAMS', {isSuccess: false}));
             });
         }
         
@@ -284,13 +300,22 @@ module nts.uk.at.view.kdm001.d.viewmodel {
             // TODO open kdl 035
             modal("/view/kdl/035/a/index.xhtml").onClosed(() => {
                 // get List<振休振出紐付け管理> from KDL035
-                const kdl035Shared = getShared('KDL035_SHAREPARAM');
-                const linkingDates = kdl035Shared.linkingDates;
+                const kdl035Shared = getShared('KDL035_RESULT');
+                vm.kdl035Shared(kdl035Shared);
+                const linkingDates = _.map(kdl035Shared, (item: any) => item.outbreakDay);
                 if (linkingDates.length > 0) {
                     vm.linkingDates(linkingDates);
                     vm.checkLinkingDates(true);
                 }
             });
         }
+    }
+
+    interface HolidayWorkSubHolidayLinkingMng {
+        employeeId: string;
+        outbreakDay: string;
+        dateOfUse: string;
+        dayNumberUsed: number;
+        targetSelectionAtr: number;
     }
 }

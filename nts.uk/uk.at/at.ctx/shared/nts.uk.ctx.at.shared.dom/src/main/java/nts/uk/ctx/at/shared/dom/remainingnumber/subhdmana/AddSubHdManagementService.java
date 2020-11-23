@@ -53,8 +53,8 @@ public class AddSubHdManagementService {
 	/**
 	 * @param subHdManagementData
 	 */
-	public List<String> addProcessOfSHManagement(SubHdManagementData subHdManagementData) {
-		List<String> errorList = addSubSHManagement(subHdManagementData);
+	public List<String> addProcessOfSHManagement(SubHdManagementData subHdManagementData, Double linkingDate, Double displayRemainDays) {
+		List<String> errorList = addSubSHManagement(subHdManagementData, linkingDate, displayRemainDays);
 		if (!errorList.isEmpty()) {
 			return errorList;
 		} else {
@@ -186,7 +186,7 @@ public class AddSubHdManagementService {
 	 * 
 	 * @param subHdManagementData
 	 */
-	private List<String> addSubSHManagement(SubHdManagementData subHdManagementData) {
+	private List<String> addSubSHManagement(SubHdManagementData subHdManagementData, Double linkingDate, Double displayRemainDays) {
 		List<String> errorList = new ArrayList<>();
 		String companyId = AppContexts.user().companyId();
 		int closureId = subHdManagementData.getClosureId();
@@ -255,7 +255,7 @@ public class AddSubHdManagementService {
 			}
 		}
 		// アルゴリズム「休出代休日数チェック処理」を実行する
-		this.checkHolidayAndSubHoliday(subHdManagementData);
+		this.checkHolidayAndSubHoliday(subHdManagementData, linkingDate, displayRemainDays);
 		this.checkHistoryOfCompany(subHdManagementData.getEmployeeId()
 				, subHdManagementData.getDateHoliday()
 				, subHdManagementData.getDateSubHoliday()
@@ -345,17 +345,38 @@ public class AddSubHdManagementService {
 	 * @param subHdManagementData2
 	 * @return
 	 */
-	public void checkHolidayAndSubHoliday(SubHdManagementData subHdManagementData) {
+	public void checkHolidayAndSubHoliday(SubHdManagementData subHdManagementData, Double linkingDate, Double displayRemainDays) {
+		Double remainDays = displayRemainDays;
+		// 休出日数（I6_3）
+		Double selectedCodeHoliday = subHdManagementData.getSelectedCodeHoliday();
+		// 代休日数（I11_3）
+		Double selectedCodeSubHoliday = subHdManagementData.getSelectedCodeSubHoliday();
+		// 代休日数（I12_4）
+		Double selectedCodeOptionSubHoliday = subHdManagementData.getSelectedCodeOptionSubHoliday();
+
+		if (!subHdManagementData.getCheckedHoliday()) {
+			selectedCodeHoliday = 0.0;
+		} else {
+			linkingDate = 0.0;
+		}
+		if (!subHdManagementData.getCheckedSubHoliday()) {
+			selectedCodeSubHoliday = 0.0;
+		}
+		if (!subHdManagementData.getCheckedSplit()) {
+			selectedCodeOptionSubHoliday = 0.0;
+		}
+
 		// 代休残数をチェック
-		if (subHdManagementData.getDayRemaining() < 0) { // 振休残数＜0の場合
+		if (remainDays < 0) { // 振休残数＜0の場合
 			// エラーメッセージ「Msg_2031」を表示する
 			throw new BusinessException("Msg_2031");
 		}
-		
 		// 休出チェックボックスをチェックする
 		if (subHdManagementData.getCheckedHoliday()) { // チェックするの場合
+			// 代休残数　＝　休出日数（I6_3）+　紐付け日数（I12_8）-　代休日数（I11_3）-　代休日数（I12_4）
+			remainDays = selectedCodeHoliday + linkingDate - selectedCodeSubHoliday - selectedCodeOptionSubHoliday;
 			// 振休日数をチェック
-			if (subHdManagementData.getDayRemaining() >= 0.5) {
+			if (remainDays >= 0.5) {
 				// エラーメッセージ「Msg_2032」
 				throw new BusinessException("Msg_2032");
 			}
@@ -366,8 +387,10 @@ public class AddSubHdManagementService {
 		if (subHdManagementData.getCheckedSplit()) {
 			throw new BusinessException("Msg_1256");
 		}
+		// 代休残数　＝　紐付け日数（I12_8）-　代休日数（I11_3）
+		remainDays = linkingDate - selectedCodeSubHoliday;
 		// 代休日数をチェック
-		if (subHdManagementData.getDayRemaining() < 0) { // 代休残数　＜0
+		if (remainDays < 0) { // 代休残数　＜0
 			throw new BusinessException("Msg_2032");
 		}
 	}

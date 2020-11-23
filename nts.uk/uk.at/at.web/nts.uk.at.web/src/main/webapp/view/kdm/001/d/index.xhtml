@@ -180,10 +180,18 @@
 						<div id="D16_1" class="sub-label-title" data-bind="ntsFormLabel: {}">#{i18n.getText('KDM001_158')}</div>
 						<!-- D16_2 -->
 						<button class="width-112" id="D16_2" tabindex="14" data-bind="click: openKDL035, disable: isDisableOpenKDL035()">#{i18n.getText('KDM001_159')}</button>
-						<!-- D16_3 -->
-						<span id="D16_3" class="label margin-left-25" data-bind="text: baseDate"></span>
-						<!-- D16_4 -->
-						<span id="D16_4" class="label margin-left-25"></span>
+						<div class="grid">
+							<com:ko-foreach bind="displayLinkingDate">
+								<span>
+									<!-- D16_3 -->
+									<span id="D16_3" class="label margin-left-25" data-bind="text: outbreakDay"></span>
+									<!-- D16_4 -->
+									<span data-bind="if: dateOfUse !== 0">
+										<span id="D16_4" class="label margin-left-25" data-bind="text: dateOfUse + $i18n('KDM001_27')"></span>
+									</span>
+								</span>
+							</com:ko-foreach>
+						</div>
 					</div>
 					<!-- D13 残数 -->
 					<div class="label">#{i18n.getText('KDM001_84')}</div>
@@ -194,8 +202,8 @@
 					<!-- D15 残数 -->
 					<div id = "D15" class="labelTitle" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDM001_85')}</div>
 					<!-- D15_1 残数 -->
-					<span class="label" data-bind="text: remainDays" ></span>
-					<span class="label" data-bind="if: remainDays() || remainDays() ==0" >
+					<span class="label" data-bind="text: displayRemainDays" ></span>
+					<span class="label" data-bind="if: displayRemainDays() || displayRemainDays() === 0" >
 						<label data-bind="text: unit"></label>
 					</span>
 				</div>

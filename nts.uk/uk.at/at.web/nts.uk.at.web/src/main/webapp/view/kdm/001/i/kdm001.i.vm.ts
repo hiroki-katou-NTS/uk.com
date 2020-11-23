@@ -37,9 +37,30 @@ module nts.uk.at.view.kdm001.i.viewmodel {
         totalDay: KnockoutObservable<number> = ko.observable(null);
         unitDay: KnockoutObservable<string> = ko.observable(getText('KDM001_27'));
         baseDate: KnockoutObservable<string> = ko.observable('');
-        dataDate: KnockoutObservable<number> = ko.observable(0);
         isDisableOpenKDL036: KnockoutObservable<boolean> = ko.observable(true);
+
+        // Update ver 48
         residualNumber: KnockoutObservable<number> = ko.observable(0);
+        kdl036Shared: KnockoutObservableArray<HolidayWorkSubHolidayLinkingMng> = ko.observableArray([]);
+        displayLinkingDate: KnockoutComputed<any[]> = ko.computed(() => {
+            return this.checkedHoliday()
+                ? !_.isEmpty(this.dateHoliday())
+                    ? [{outbreakDay: moment.utc(this.dateHoliday()).format('YYYY/MM/DD'), dateOfUse: 0}]
+                    : [{outbreakDay: '', dateOfUse: 0}]
+                : this.kdl036Shared();
+        });
+
+        linkingDate: KnockoutComputed<number> = ko.computed(() => {
+            if (this.checkedHoliday()) {
+                return 0.0;
+            }
+            let total = 0.0;
+            _.forEach(this.kdl036Shared(), (item: any) => total += item.dateOfUse);
+            return total;
+        });
+
+        displayRemainDays: KnockoutComputed<number> = ko.computed(() => this.residualNumber() + parseFloat(this.dayRemaining()));
+        // End update ver48
 
         constructor() {
             let self = this;
@@ -152,6 +173,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
             });
             
         }
+
         getRemainDay(remainObject: any): string {
          const vm  = this;
             if ((!remainObject.checkBox1 && !remainObject.checkBox2) || (!remainObject.value1 && !remainObject.value2)) {
@@ -164,10 +186,9 @@ module nts.uk.at.view.kdm001.i.viewmodel {
             //分割消化.代休日数
             let value3 = !remainObject.checkBox2 || !remainObject.checkBox3 || !remainObject.value3 ? 0 : remainObject.value3;
 
-            let value4 = !remainObject.checkBox2 || vm.dataDate ? 0 : vm.dataDate;
-          return (value1 + value4 - (value2 + value3)).toString();
-       
+            return (value1 + vm.linkingDate() - (value2 + value3)).toString();
         }
+
         initScreen(): void {
             block.invisible();
             let self = this,
@@ -235,7 +256,9 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     selectedCodeOptionSubHoliday: self.selectedCodeOptionSubHoliday(),
                     dayRemaining: parseFloat(self.dayRemaining()),
                     closureId: self.closureId(),
-                    lstLinkingDate: linkingDates
+                    lstLinkingDate: linkingDates,
+                    linkingDate: self.linkingDate(),
+                    displayRemainDays: self.displayRemainDays()
                 };
                 if (!self.checkedSubHoliday()) {
                     data.selectedCodeSubHoliday = 0;
@@ -319,5 +342,13 @@ module nts.uk.at.view.kdm001.i.viewmodel {
             vm.listLinkingDate(listParam);
           });
         }
+    }
+
+    interface HolidayWorkSubHolidayLinkingMng {
+        employeeId: string;
+        outbreakDay: string;
+        dateOfUse: string;
+        dayNumberUsed: number;
+        targetSelectionAtr: number;
     }
 }
