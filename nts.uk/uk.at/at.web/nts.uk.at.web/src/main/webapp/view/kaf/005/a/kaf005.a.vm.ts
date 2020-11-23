@@ -607,9 +607,40 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					overTime.applicationTime = ko.observable(null);
 					overTime.preTime = ko.observable(null);
 					overTime.actualTime = ko.observable(null);
+					overTime.type = AttendanceType.NORMALOVERTIME;
+					overTime.visible = ko.computed(() => {
+						return self.visibleModel.c2();
+					}, self);
 					overTimeArray.push(overTime);
 			});
-
+			// A6_27 A6_32 of row
+			{
+				let overTime1 = {} as OverTime;
+				overTime1.frameNo = String(overTimeArray.length - 1);
+				overTime1.displayNo = ko.observable(self.$i18n('KAF005_63'));
+				overTime1.applicationTime = ko.observable(null);
+				overTime1.preTime = ko.observable(null);
+				overTime1.actualTime = ko.observable(null);
+				overTime1.type = AttendanceType.BONUSPAYTIME;
+				overTime1.visible = ko.computed(() => {
+						return self.visibleModel.c2() && self.visibleModel.c16();
+					}, self);
+				overTimeArray.push(overTime1);
+				
+				let overTime2 = {} as OverTime;
+				overTime2.frameNo = String(overTimeArray.length - 1);
+				overTime2.displayNo = ko.observable(self.$i18n('KAF005_65'));
+				overTime2.applicationTime = ko.observable(null);
+				overTime2.preTime = ko.observable(null);
+				overTime2.actualTime = ko.observable(null);
+				
+				overTime2.visible = ko.computed(() => {
+						return self.visibleModel.c2() && self.visibleModel.c16();
+					}, self);				
+				overTimeArray.push(overTime1);
+				
+				
+			}
 
 			// A6_8
 			let calculationResultOp = res.calculationResultOp;
@@ -819,15 +850,15 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			let c17 = res.infoBaseDateOutput.quotaOutput.flexTimeClf
 			visibleModel.c17(c17);
 
+			// ※15-3 = ×　AND　
+			// 「残業申請の表示情報．基準日に関係しない情報．残業休日出勤申請の反映．残業申請．事前．休憩・外出を申請反映する」= する
+			let c18_1 = true;
+			visibleModel.c18_1(c18_1);
 
 			// ※7 = ○　OR　※18-1 = ○
 			let c18 = true;
 			visibleModel.c18(c18);
 
-			// ※15-3 = ×　AND　
-			// 「残業申請の表示情報．基準日に関係しない情報．残業休日出勤申請の反映．残業申請．事前．休憩・外出を申請反映する」= する
-			let c18_1 = true;
-			visibleModel.c18_1(c18_1);
 
 
 			// 「残業申請の表示情報．基準日に関係しない情報．残業休日出勤申請の反映．残業申請．実績の勤務情報へ反映する」= する
@@ -857,8 +888,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			let c30_4 = true;
 			visibleModel.c30_4(c30_4);
 
-			let c30 = c30_1 || c30_2 || c30_3 || c30_4;
-			visibleModel.c30(c30);
+			// let c30 = c30_1 || c30_2 || c30_3 || c30_4;
+			// visibleModel.c30(c30);
 
 
 
@@ -996,30 +1027,52 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		breakTimes: 'at/request/application/overtime/breakTimes'
 	}
 	export class VisibleModel {
-		public c2: KnockoutObservable<Boolean> = ko.observable(true);
-		public c6: KnockoutObservable<Boolean> = ko.observable(true);
-		public c7: KnockoutObservable<Boolean> = ko.observable(true);
-		public c11_1: KnockoutObservable<Boolean> = ko.observable(true);
-		public c11_2: KnockoutObservable<Boolean> = ko.observable(true);
-		public c12_1: KnockoutObservable<Boolean> = ko.observable(true);
-		public c12_2: KnockoutObservable<Boolean> = ko.observable(true);
-		public c15_3: KnockoutObservable<Boolean> = ko.observable(null);
-		public c16: KnockoutObservable<Boolean> = ko.observable(true);
-		public c17: KnockoutObservable<Boolean> = ko.observable(true);
-		public c18: KnockoutObservable<Boolean> = ko.observable(true);
-		public c18_1: KnockoutObservable<Boolean> = ko.observable(true);
-		public c26: KnockoutObservable<Boolean> = ko.observable(true);
-		public c28: KnockoutObservable<Boolean> = ko.observable(true);
-		public c29: KnockoutObservable<Boolean> = ko.observable(true);
-		public c30: KnockoutObservable<Boolean> = ko.observable(true);
-		public c30_1: KnockoutObservable<Boolean> = ko.observable(true);
-		public c30_2: KnockoutObservable<Boolean> = ko.observable(true);
-		public c30_3: KnockoutObservable<Boolean> = ko.observable(true);
-		public c30_4: KnockoutObservable<Boolean> = ko.observable(true);
+		public c2: KnockoutObservable<Boolean>;
+		public c6: KnockoutObservable<Boolean>;
+		public c7: KnockoutObservable<Boolean>;
+		public c11_1: KnockoutObservable<Boolean>;
+		public c11_2: KnockoutObservable<Boolean>;
+		public c12_1: KnockoutObservable<Boolean>;
+		public c12_2: KnockoutObservable<Boolean>;
+		public c15_3: KnockoutObservable<Boolean>;
+		public c16: KnockoutObservable<Boolean>;
+		public c17: KnockoutObservable<Boolean>;
+		public c18: KnockoutObservable<Boolean>;
+		public c18_1: KnockoutObservable<Boolean>;
+		public c26: KnockoutObservable<Boolean>;
+		public c28: KnockoutObservable<Boolean>;
+		public c29: KnockoutObservable<Boolean>;
+		public c30_1: KnockoutObservable<Boolean>;
+		public c30_2: KnockoutObservable<Boolean>;
+		public c30_3: KnockoutObservable<Boolean>;
+		public c30_4: KnockoutObservable<Boolean>;
+		public c30: KnockoutObservable<Boolean>;
 
 
 		constructor() {
-
+			const self = this;
+			this.c2 = ko.observable(true);
+			this.c6 = ko.observable(true);
+			this.c7 = ko.observable(true);
+			this.c11_1 = ko.observable(true);
+			this.c11_2 = ko.observable(true);
+			this.c12_1 = ko.observable(true);
+			this.c12_2 = ko.observable(true);
+			this.c15_3 = ko.observable(null);
+			this.c16 = ko.observable(true);
+			this.c17 = ko.observable(true);
+			this.c18 = ko.observable(true);
+			this.c18_1 = ko.observable(true);
+			this.c26 = ko.observable(true);
+			this.c28 = ko.observable(true);
+			this.c29 = ko.observable(true);
+			this.c30_1 = ko.observable(true);
+			this.c30_2 = ko.observable(true);
+			this.c30_3 = ko.observable(true);
+			this.c30_4 = ko.observable(true);
+			this.c30 = ko.computed(() => {
+				return this.c30_1() || this.c30_2() || this.c30_3() || this.c30_4();
+			}, this)
 		}
 	}
 	enum NotUseAtr {
@@ -1185,12 +1238,16 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		NORMAL_OVERTIME,
 		EARLY_NORMAL_OVERTIME
 	}
-	enum AttendanceType {
+	export enum AttendanceType {
 
 		NORMALOVERTIME,
 		BREAKTIME,
 		BONUSPAYTIME,
-		BONUSSPECIALDAYTIME
+		BONUSSPECIALDAYTIME,
+		SHIFTNIGHT,
+		MIDNIGHT,
+		
+		
 	}
 
 	export interface FirstParam { // start param

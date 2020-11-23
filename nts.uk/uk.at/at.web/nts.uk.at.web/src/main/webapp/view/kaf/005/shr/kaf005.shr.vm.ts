@@ -1,4 +1,5 @@
 module nts.uk.at.view.kaf005.shr.viewmodel {
+	import AttendanceType = nts.uk.at.view.kaf005.a.viewmodel.AttendanceType;
 	const template = `
 <div class="container cf" data-bind="with: $parent">
 	<div class="cf valign-top control-group" data-bind="visible: visibleModel.c18()">
@@ -94,7 +95,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 					</tr>
 				</thead>
 				<tbody data-bind="foreach: overTime">
-					<tr data-bind="if: $parent.visibleModel.c2()">
+					<tr data-bind="if: visible()">
 						<!--A6_7 残業時間名称-->
 						<td class="header" data-bind="text: displayNo"></td>
 						<!--A6_8 残業申請時間入力-->
@@ -137,7 +138,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 					</tr>
 				</thead>
 				<tbody data-bind="foreach: overTime">
-					<tr>
+					<tr data-bind="if: visible()">
 						<!--A6_7 残業時間名称-->
 						<td class="header" data-bind="text: displayNo"></td>
 						<!--A6_8 残業申請時間入力-->
@@ -229,6 +230,10 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 
 
 
+
+
+
+
 	`
 	@component({
         name: 'kaf005-share',
@@ -290,6 +295,8 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 		applicationTime?: KnockoutObservable<number>;
 		preTime?: KnockoutObservable<number>;
 		actualTime?: KnockoutObservable<number>;
+		type: AttendanceType;
+		visible: KnockoutObservable<Boolean>;
 	}
 	export interface RestTime {
 		frameNo: string;
@@ -304,47 +311,9 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 		start?: KnockoutObservable<number>;
 		preApp?: KnockoutObservable<number>;
 		actualTime?: KnockoutObservable<number>;
+		type: AttendanceType;
+		visible: KnockoutObservable<Boolean>;
 	}
-	
-	export class OverTimeInput {
-            companyID: KnockoutObservable<string>;
-            appID: KnockoutObservable<string>;
-            attendanceID: KnockoutObservable<number>;
-            attendanceName: KnockoutObservable<string>;
-            frameNo: KnockoutObservable<number>;
-            timeItemTypeAtr: KnockoutObservable<number>;
-            frameName: KnockoutObservable<string>;
-            startTime: KnockoutObservable<number>;
-            endTime: KnockoutObservable<number>;
-            applicationTime: KnockoutObservable<number>;
-            nameID: KnockoutObservable<string>;
-            
-            constructor(
-                companyID: string,
-                appID: string,
-                attendanceID: number,
-                attendanceName: string,
-                frameNo: number,
-                timeItemTypeAtr: number,
-                frameName: string,
-                startTime: number,
-                endTime: number,
-                applicationTime: number,
-                nameID: string) {
-                this.companyID = ko.observable(companyID);
-                this.appID = ko.observable(appID);
-                this.attendanceID = ko.observable(attendanceID);
-                this.attendanceName = ko.observable(attendanceName);
-                this.frameNo = ko.observable(frameNo);
-                this.timeItemTypeAtr = ko.observable(timeItemTypeAtr);
-                this.frameName = ko.observable(frameName);
-                this.startTime = ko.observable(startTime);
-                this.endTime = ko.observable(endTime);
-                this.applicationTime = ko.observable(applicationTime);
-                this.nameID = ko.observable(nameID);
-                
-            }
-        }
 	
 	
 }
