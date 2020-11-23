@@ -70,8 +70,8 @@ module nts.uk.at.kmk004.components.flex {
 		);
 		//フレックス勤務所定労働時間取得
 		getFlexPredWorkTime: KnockoutObservable<IGetFlexPredWorkTime> = ko.observable({ reference: 0 });
-		yearList: KnockoutObservableArray<YearItem> = ko.observableArray([new YearItem(2020) ,new YearItem(2019)]);
-		selectedYear: KnockoutObservable<YearItem> = ko.observable(this.yearList()[0]);
+		yearList: KnockoutObservableArray<YearItem> = ko.observableArray([new YearItem(2020), new YearItem(2019)]);
+		selectedYear: KnockoutObservable<number> = ko.observable(2020);
 		monthlyWorkTimeSetComs: KnockoutObservableArray<MonthlyWorkTimeSetCom> = ko.observableArray([
 			new MonthlyWorkTimeSetCom({
 				month: 1,
@@ -91,18 +91,40 @@ module nts.uk.at.kmk004.components.flex {
 			})
 		]);
 
+		updateMode: KnockoutObservable<boolean> = ko.observable(true);
+
 		constructor(param?: IScreenData) {
-			let self = this;
+			const vm = this;
 			if (param) {
 				this.yearList(_.chain(param.yearList).map((item) => { return new YearItem(item); }).orderBy(['year'], ['desc']).value());
 				this.monthlyWorkTimeSetComs(_.map(param.monthlyWorkTimeSetComs, (item) => { return new MonthlyWorkTimeSetCom(item); }));
 				this.comFlexMonthActCalSet(param.comFlexMonthActCalSet);
 				this.getFlexPredWorkTime(param.getFlexPredWorkTime);
 			}
-			self.selectedYear.subscribe((value) => {
-				console.log(value);
+
+			vm.selectedYear.subscribe((value) => {
+				let yearList = ko.mapping.toJS(vm.yearList()),
+					yearItem: YearItem = _.find(yearList, ['year', parseInt(String(value))]);
+				vm.updateMode(!yearItem.isNew);
+				if (vm.updateMode()) {
+					//call API
+				} else {
+					vm.clearData();
+				}
 			});
 
+		}
+
+		clearData() {
+			const vm = this;
+			let workTimes = ko.mapping.toJS(vm.monthlyWorkTimeSetComs());
+			_.forEach(workTimes, function(item: IMonthlyWorkTimeSetCom) {
+				item.laborTime.withinLaborTime = 0;
+				item.laborTime.legalLaborTime = 0;
+				item.laborTime.weekAvgTime = 0;
+			});
+
+			vm.monthlyWorkTimeSetComs(_.map(workTimes, (item: IMonthlyWorkTimeSetCom) => { return new MonthlyWorkTimeSetCom(item); }));
 		}
 
 		updateData(param: IScreenData) {
@@ -114,18 +136,25 @@ module nts.uk.at.kmk004.components.flex {
 	}
 
 	export class YearItem {
+		isNewText: string;
+		isNew: boolean;
 		year: number;
 		yearName: string;
-		constructor(year: number) {
+
+		constructor(year: number, isNew?: boolean) {
 			this.year = year;
 			this.yearName = year.toString() + '年度';
+			this.isNewText = isNew ? '*' : '';
+			this.isNew = isNew ? isNew : false;
 		}
 	}
 
 
 
 	export class MonthlyWorkTimeSetCom {
+		//年月
 		month: number;
+		//月労働時間
 		laborTime: KnockoutObservable<MonthlyLaborTime>;
 
 		constructor(param: IMonthlyWorkTimeSetCom) {
