@@ -27,6 +27,57 @@ module nts.uk.ui.com.sample.fullcalendar {
             backgroundColor: 'transparent'
         }]);
 
+        dragItems: KnockoutObservableArray<any> = ko.observableArray([{
+            title: 'UK就業・詳細設計',
+            backgroundColor: '#ffc000'
+        }, {
+            title: 'UK就業機能強化・テスト設計',
+            backgroundColor: '#ff5050'
+        }, {
+            title: 'UKプロジェクト・概要設計',
+            backgroundColor: '#5b9bd5'
+        }, {
+            title: 'UKプロジェクト・統合テスト',
+            backgroundColor: '#92d050'
+        }]);
+
+        employees: KnockoutObservableArray<any> = ko.observableArray([{
+            id: '000001',
+            code: '000001',
+            name: '日通　太郎',
+            selected: true
+        }, {
+            id: '000002',
+            code: '000002',
+            name: '日通　一郎',
+            selected: false
+        }, {
+            id: '000003',
+            code: '000003',
+            name: '鈴木　太郎',
+            selected: false
+        }, {
+            id: '000004',
+            code: '000004',
+            name: '加藤　良太郎',
+            selected: false
+        }, {
+            id: '000005',
+            code: '000005',
+            name: '佐藤　花子',
+            selected: false
+        }, {
+            id: '000006',
+            code: '000006',
+            name: '佐藤　龍馬',
+            selected: false
+        }, {
+            id: '000007',
+            code: '000007',
+            name: '日通　二郎',
+            selected: false
+        }]);
+
         businessHours: KnockoutObservableArray<any> = ko.observableArray([{
             // days of week. an array of zero-based day of week integers (0=Sunday)
             daysOfWeek: [1, 2, 3, 4, 5], // Monday - Thursday

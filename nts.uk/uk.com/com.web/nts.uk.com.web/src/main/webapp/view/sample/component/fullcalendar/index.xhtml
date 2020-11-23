@@ -27,10 +27,12 @@
 				<button data-bind="click: $vm.changeVisible, timeClick: -1">Change view</button>
 			</div>
 			<div id="contents-area">
-				<div id="side-menu" class="cf"></div>
-				<div id="content" class="cf" data-bind="if: $vm.show">
+				<div id="side-menu" class="cf" style="display: none"></div>
+				<div id="content" class="cf" style="float: none; width: auto;" data-bind="if: $vm.show">
 					<div data-bind="
 						fullcalendar: $vm.events,
+						dragItems: $vm.dragItems,
+						employees: $vm.employees,
 						editable: $vm.editable,
 						firstDay: $vm.firstDay,
 						scrollTime: $vm.scrollTime,
