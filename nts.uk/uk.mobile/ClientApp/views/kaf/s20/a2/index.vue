@@ -130,6 +130,7 @@
             />
             <nts-number-editor
               v-model="item.amount"
+              @keypress="isNumber($event)"
               v-if="item.optionalItemAtr == 2"
               v-bind:show-title="false"
               v-bind:columns="{ input: 'col-10' }"
