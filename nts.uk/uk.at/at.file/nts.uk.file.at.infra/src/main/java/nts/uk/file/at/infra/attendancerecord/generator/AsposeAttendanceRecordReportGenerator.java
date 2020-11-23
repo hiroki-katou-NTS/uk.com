@@ -385,11 +385,13 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 			reportContext.setDataSource("exportDateTime", dataSource.getData().getExportDateTime());
 			reportContext.setDataSource("reportMonthHead", dataSource.getData().getMonthlyHeader());
 			reportContext.setDataSource("reportDayHead", dataSource.getData().getDailyHeader());
+			
 			// process data binginds in template
 			reportContext.processDesigner();
 
 			// Prepare template ranges
 			Worksheet templateSheet = worksheetCollection.get(0);
+			Range reportPageTmpl = templateSheet.getCells().createRange(reportPageAddr + MAX_ROW_PER_EMPL);
 			Range dailyWTmpl = templateSheet.getCells().createRange(dailyWeekRangeTmpAddr);
 			Range dailyBTmpl = templateSheet.getCells().createRange(dailyBRangeTmpAddr);
 			Range weeklyRangeTmpl = templateSheet.getCells().createRange(weeklyRangeTmpAddr);
@@ -405,18 +407,27 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 			// set sheet name report
 			String sheetName = data.getReportName();
 			// create new sheet from template sheet
+
 			worksheetCollection.get(worksheetCollection.addCopy(0)).setName(sheetName);
-			Worksheet worksheet = worksheetCollection.get(sheetName);
 			int startNewPage = 0;
+			
 			for (String employeeCd : reportDatas.keySet()) {
 				
 				// get list employee data
 				List<AttendanceRecordReportEmployeeData> reportEmployeeDatas = reportDatas.get(employeeCd);
-				Range reportPageTmpl = templateSheet.getCells().createRange(reportPageAddr + (MAX_ROW_PER_EMPL * reportDatas.keySet().size() * reportEmployeeDatas.size()));
+				reportPageTmpl = templateSheet.getCells().createRange(reportPageAddr + (MAX_ROW_PER_EMPL * reportDatas.keySet().size() * reportEmployeeDatas.size()));
+
 				// Generate employee report page
 				for (AttendanceRecordReportEmployeeData employeeData : reportEmployeeDatas) {
+					
+					if (dataSource.getMode() == EXPORT_PDF) {
+						sheetName = employeeCd + "-" + employeeData.getReportYearMonth();
+						worksheetCollection.get(worksheetCollection.addCopy(0)).setName(sheetName);
+						startNewPage = 0;
+					}
+					Worksheet worksheet = worksheetCollection.get(sheetName);
 					startNewPage = this.generateEmployeeReportPage(startNewPage, worksheet, employeeData, page,
-							reportPageTmpl, dailyWTmpl, dailyBTmpl, weeklyRangeTmpl, data.getFontSize());
+							reportPageTmpl, dailyWTmpl, dailyBTmpl, weeklyRangeTmpl, data.getFontSize(), dataSource.getMode());
 					page++;
 
 					// create print area
@@ -433,30 +444,31 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 					String currentFormattedDate = LocalDateTime.now().format(fullDateTimeFormatter);
 					pageSetup.setHeader(2, "&\"ＭＳ ゴシック\"&9 " + currentFormattedDate+"\npage&P");
 					
+					// Delete template column
+					if (dataSource.getData().getFontSize() == ExportFontSize.CHAR_SIZE_LARGE.value) {
+						worksheet.getCells().deleteColumns(42, 20, true);
+					} else if (dataSource.getData().getFontSize() == ExportFontSize.CHAR_SIZE_MEDIUM.value) {
+						worksheet.getCells().deleteColumns(50, 24, true);
+					} else {
+						worksheet.getCells().deleteColumns(58, 28, true);
+					}
+					
 					pageSetup.setPrintTitleRows(PRINT_TITLE_ROW);
 					if (dataSource.getMode() == EXPORT_EXCEL) {
 						pageSetup.setZoom(100);
+						startNewPage += MAX_ROW_PER_EMPL;
 					} else if (dataSource.getMode() == EXPORT_PDF) {
 						pageSetup.setFitToPagesTall(1);
 						pageSetup.setFitToPagesWide(1);
 					}
-					startNewPage += MAX_ROW_PER_EMPL;
 					pageSetup.setPrintArea(reportPageAddr + startNewPage);
-					
 				}
 				
-			}
-			// Delete template column
-			if (dataSource.getData().getFontSize() == ExportFontSize.CHAR_SIZE_LARGE.value) {
-				worksheet.getCells().deleteColumns(42, 20, true);
-			} else if (dataSource.getData().getFontSize() == ExportFontSize.CHAR_SIZE_MEDIUM.value) {
-				worksheet.getCells().deleteColumns(50, 24, true);
-			} else {
-				worksheet.getCells().deleteColumns(58, 28, true);
 			}
 			
 			// delete template sheet
 			worksheetCollection.removeAt(0);
+			
 			worksheetCollection.setActiveSheetIndex(0);
 			// Create file name
 			String fileName = data.getReportName() + "＿"
@@ -466,6 +478,7 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 				// save as excel file
 				reportContext.saveAsExcel(this.createNewFile(generatorContext, fileName + EXCEL_EXT));
 			} else if (dataSource.getMode() == EXPORT_PDF) {
+				worksheetCollection.removeAt(0);
 				// save as PDF file
 				reportContext.saveAsPdf(this.createNewFile(generatorContext, fileName + PDF_EXT));
 			}
@@ -530,7 +543,7 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 	 */
 	private int generateEmployeeReportPage(int startNewPage, Worksheet worksheet,
 			AttendanceRecordReportEmployeeData employeeData, int page, Range pageTmpl, Range dailyWTmpl,
-			Range dailyBTmpl, Range weeklyRangeTmpl, int fontSize) throws Exception {
+			Range dailyBTmpl, Range weeklyRangeTmpl, int fontSize, int mode) throws Exception {
 
 		String monthlyDataAddr = "";
 		String monthlyTitleFix = "";
@@ -621,7 +634,7 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 		Range monththDataRange = worksheet.getCells().createRange(String.format(monthlyDataAddr,
 				(startNewPage + MONTHLY_DATA_START_ROW), (startNewPage + MONTHLY_DATA_START_ROW + 1)));
 		
-		// voi TH next page thi copy lai phan monthly header, dau
+		// if case next page: copy monthly header
 		if (startNewPage > 0) {
 			// copy monthly header 
 			Range fixMonthyHeader = worksheet.getCells().createRange(monthlyTitleFix);
@@ -733,14 +746,17 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 			approvalRange.get(0, 0).setValue(APPROVAL);
 		}
 		// update start page row value
-//		startNewPage = dataRow.get(REPORT_START_PAGE_ROW) - 1;
+		if (mode == EXPORT_PDF) {
+			startNewPage = dataRow.get(REPORT_START_PAGE_ROW) - 1;
+		}
+		
 
 		VerticalPageBreakCollection vPageBreaks = worksheet.getVerticalPageBreaks();
 		vPageBreaks.add(endReportPageBreak + (startNewPage + 1 ));
 		HorizontalPageBreakCollection hPageBreaks = worksheet.getHorizontalPageBreaks();
 		hPageBreaks.add(endReportPageBreak + (startNewPage + 1 ));
 
-		return startNewPage;
+ 		return startNewPage;
 	}
 
 	/**

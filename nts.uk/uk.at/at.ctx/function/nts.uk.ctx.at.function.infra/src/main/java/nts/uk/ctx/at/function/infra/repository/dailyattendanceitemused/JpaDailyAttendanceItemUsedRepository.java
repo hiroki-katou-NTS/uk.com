@@ -20,16 +20,38 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAtte
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class JpaDailyAttendanceItemUsedRepository extends JpaRepository implements DailyAttendanceItemUsedRepository {
 
-	private static final String SELECT_DAILY_ATTENDANCE_ITEM = "SELECT d FROM KfnctAtdIdRptDai d"
-			+ " WHERE d.kfnctAtdIdRptDaiPK.companyId = :companyId"
-			+ "		AND (d.workDaily = :reportId"
-			+ "			OR d.workAttendance = :reportId"
-			+ "			OR d.atdWorkDaily = :reportId"
-			+ "			OR d.atdWorkAttendance = :reportId)";
-
+	private static final String SELECT_BY_WORK_DAILY = "SELECT d FROM KfnctAtdIdRptDai d"
+			+ " WHERE d.kfnctAtdIdRptDaiPK.companyId = :companyId AND d.workDaily = 1";
+	
+	private static final String SELECT_BY_WORK_ATTENDANCE = "SELECT d FROM KfnctAtdIdRptDai d"
+			+ " WHERE d.kfnctAtdIdRptDaiPK.companyId = :companyId AND d.workAttendance = 1";
+	
+	private static final String SELECT_BY_ATD_WORK_DAILY = "SELECT d FROM KfnctAtdIdRptDai d"
+			+ " WHERE d.kfnctAtdIdRptDaiPK.companyId = :companyId AND d.atdWorkDaily = 1";
+	
+	private static final String SELECT_BY_ATD_WORK_ATTENDANCE = "SELECT d FROM KfnctAtdIdRptDai d"
+			+ " WHERE d.kfnctAtdIdRptDaiPK.companyId = :companyId AND d.atdWorkAttendance = 1";
+	
 	@Override
 	public List<Integer> getAllDailyItemId(String companyId, BigDecimal reportId) {
-		return this.queryProxy().query(SELECT_DAILY_ATTENDANCE_ITEM, KfnctAtdIdRptDai.class)
+		String query = "";
+		switch (reportId.intValue()) {
+			case 1:
+				query = SELECT_BY_WORK_DAILY;
+				break;
+			case 2:
+				query = SELECT_BY_WORK_ATTENDANCE;
+				break;
+			case 6:
+				query = SELECT_BY_ATD_WORK_DAILY;
+				break;
+			case 7:
+				query = SELECT_BY_ATD_WORK_ATTENDANCE;
+				break;
+			default:
+				break;
+		}
+		return this.queryProxy().query(query, KfnctAtdIdRptDai.class)
 				.setParameter("companyId", companyId)
 				.setParameter("reportId", reportId)
 				.getList().stream().map(x -> x.getKfnctAtdIdRptDaiPK().getAttendanceItemId().intValue())
