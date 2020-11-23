@@ -128,30 +128,30 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 									if(!vm.initDisplayOfApprovalStatus.applicationApprovalFlg) {
 										$("#bGrid").igGrid("hideColumn", "countUnApprApp");
 									}
-//									$("#bGrid").igGrid("hideColumn", "countUnConfirmDay");
-//									$("#bGrid").igGrid("hideColumn", "countUnApprDay");
-//									$("#bGrid").igGrid("hideColumn", "countUnConfirmMonth");
-//									$("#bGrid").igGrid("hideColumn", "countUnApprMonth");
-//									$("#bGrid").igGrid("hideColumn", "displayConfirm");
-//									$("#bGrid").igGrid("hideColumn", "confirmPerson");
-//									$("#bGrid").igGrid("hideColumn", "date");
-									if(!useSet.usePersonConfirm || !vm.initDisplayOfApprovalStatus.confirmAndApprovalDailyFlg) {
-										$("#bGrid").igGrid("hideColumn", "countUnConfirmDay");
-									}
-									if(!useSet.useBossConfirm || !vm.initDisplayOfApprovalStatus.confirmAndApprovalDailyFlg) {
-										$("#bGrid").igGrid("hideColumn", "countUnApprDay");
-									}
-									if(!useSet.monthlyIdentityConfirm || !vm.initDisplayOfApprovalStatus.confirmAndApprovalMonthFlg) {
-										$("#bGrid").igGrid("hideColumn", "countUnConfirmMonth");	
-									}
-									if(!useSet.monthlyConfirm || !vm.initDisplayOfApprovalStatus.confirmAndApprovalMonthFlg) {
-										$("#bGrid").igGrid("hideColumn", "countUnApprMonth");
-									}
-									if(!useSet.employmentConfirm) {
-										$("#bGrid").igGrid("hideColumn", "displayConfirm");
-										$("#bGrid").igGrid("hideColumn", "confirmPerson");
-										$("#bGrid").igGrid("hideColumn", "date");
-									}
+									$("#bGrid").igGrid("hideColumn", "countUnConfirmDay");
+									$("#bGrid").igGrid("hideColumn", "countUnApprDay");
+									$("#bGrid").igGrid("hideColumn", "countUnConfirmMonth");
+									$("#bGrid").igGrid("hideColumn", "countUnApprMonth");
+									$("#bGrid").igGrid("hideColumn", "displayConfirm");
+									$("#bGrid").igGrid("hideColumn", "confirmPerson");
+									$("#bGrid").igGrid("hideColumn", "date");
+//									if(!useSet.usePersonConfirm || !vm.initDisplayOfApprovalStatus.confirmAndApprovalDailyFlg) {
+//										$("#bGrid").igGrid("hideColumn", "countUnConfirmDay");
+//									}
+//									if(!useSet.useBossConfirm || !vm.initDisplayOfApprovalStatus.confirmAndApprovalDailyFlg) {
+//										$("#bGrid").igGrid("hideColumn", "countUnApprDay");
+//									}
+//									if(!useSet.monthlyIdentityConfirm || !vm.initDisplayOfApprovalStatus.confirmAndApprovalMonthFlg) {
+//										$("#bGrid").igGrid("hideColumn", "countUnConfirmMonth");	
+//									}
+//									if(!useSet.monthlyConfirm || !vm.initDisplayOfApprovalStatus.confirmAndApprovalMonthFlg) {
+//										$("#bGrid").igGrid("hideColumn", "countUnApprMonth");
+//									}
+//									if(!useSet.employmentConfirm) {
+//										$("#bGrid").igGrid("hideColumn", "displayConfirm");
+//										$("#bGrid").igGrid("hideColumn", "confirmPerson");
+//										$("#bGrid").igGrid("hideColumn", "date");
+//									}
 									vm.getPageData();
 									vm.loadData(true);
 								}

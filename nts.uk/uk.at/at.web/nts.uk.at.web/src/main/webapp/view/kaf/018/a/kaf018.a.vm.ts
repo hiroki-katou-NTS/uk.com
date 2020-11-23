@@ -34,7 +34,6 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 		treeGrid: any;
 		multiSelectedWorkplaceId: KnockoutObservableArray<string> = ko.observableArray([]);
 		baseDate: KnockoutObservable<Date> = ko.observable(new Date());
-		alreadySettingList: KnockoutObservableArray<any> = ko.observableArray([]);
 		
 		created() {
 			const vm = this;
@@ -49,11 +48,14 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 				isShowSelectButton: true,
 				isDialog: true,
 				showIcon: true,
-				alreadySettingList: vm.alreadySettingList,
+				alreadySettingList: ko.observableArray([]),
 				maxRows: 15,
 				tabindex: 1,
 				systemType: 2
 			};
+			vm.dateValue.subscribe(value => {
+				vm.baseDate(new Date(value.endDate));
+			});
 			vm.selectedIds.subscribe(value => {
 				if(_.includes(value, 1)) {
 					vm.initDisplayOfApprovalStatus.applicationApprovalFlg = true;
