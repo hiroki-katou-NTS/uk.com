@@ -119,7 +119,6 @@ module nts.uk.ui.at.kcp013.shared {
                 width: $component.data.width,
                 enable: !ko.unwrap($component.data.disabled),
                 editable: false,
-                width: 800,
                 visibleItemsCount: 10,
                 value: $component.data.selected,
                 options: $component.data.dataSources,
