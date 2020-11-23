@@ -234,7 +234,6 @@ export class KafS20A2Component extends KafS00ShrComponent {
 
                         let controlAttendances: IControlOfAttendanceItemsDto[] | null = res[0].data;
                         let optionalNoItems: IOptionalItemDto[] | null = res[1].data;
-                        console.log(settingNoItems);
 
                         settingNoItems.forEach((itemNo: number) => {
                             let optionalItem: IOptionalItemDto = _.find(optionalNoItems, { optionalItemNo: itemNo });
