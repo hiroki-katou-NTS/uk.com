@@ -12,6 +12,8 @@ import { component } from '@app/core/component';
 })
 export class KdlS35Component extends Vue {
     public title: string = 'KdlS35';
+    public checkbox: number = 1;
+    public date: Date = new Date();
 
     public created() {
         const vm = this;
@@ -29,5 +31,11 @@ export class KdlS35Component extends Vue {
         const vm = this;
 
         vm.$close();
+    }
+
+    public decide() {
+        const vm = this;
+
+        alert('You clicked button decide');
     }
 }
