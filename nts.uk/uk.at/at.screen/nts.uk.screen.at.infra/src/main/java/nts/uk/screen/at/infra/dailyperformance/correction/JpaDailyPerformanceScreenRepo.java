@@ -181,7 +181,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	private final static String SEL_ATTENDANCE_ITEM;
 
-	private final static String SEL_ATTENDANCE_ITEM_CONTROL = "SELECT c FROM KshstControlOfAttendanceItems c WHERE c.kshstControlOfAttendanceItemsPK.companyID = :companyId AND c.kshstControlOfAttendanceItemsPK.itemDailyID IN :lstItem";
+	private final static String SEL_ATTENDANCE_ITEM_CONTROL = "SELECT c FROM KshmtDayAtdCtr c WHERE c.kshmtDayAtdCtrPK.companyID = :companyId AND c.kshmtDayAtdCtrPK.itemDailyID IN :lstItem";
 
 	
 //	private final static String SEL_ERROR_SETTING;
