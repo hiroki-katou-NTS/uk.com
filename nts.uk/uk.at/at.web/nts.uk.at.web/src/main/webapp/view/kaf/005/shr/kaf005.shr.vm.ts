@@ -107,7 +107,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 									inputFormat: 'time',
 									mode: 'time',
 									constraint:'OvertimeAppPrimitiveTime',
-									enable: true }" />
+									enable: $parent.visibleModel.c28() }" />
 						</td>
 						<!--A6_9 残業事前申請時間-->
 						<td class="right-content hoangnd"
@@ -150,7 +150,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 									inputFormat: 'time',
 									mode: 'time',
 									constraint:'OvertimeAppPrimitiveTime',
-									enable: true }" />
+									enable: $parent.visibleModel.c28() }" />
 						</td>
 					</tr>
 				</tbody>
@@ -205,7 +205,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 									value: start, 
 									constraint:'OvertimeAppPrimitiveTime',
 									inputFormat: 'time',
-									enable: false,
+									enable: $parent.visibleModel.c28(),
 									mode: 'time',
 									option: {width: '85px', timeWithDay: true}}" /></td>
 						<!--A5_7 終了時刻-->
@@ -224,6 +224,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 
 
 </div>
+
 
 
 
