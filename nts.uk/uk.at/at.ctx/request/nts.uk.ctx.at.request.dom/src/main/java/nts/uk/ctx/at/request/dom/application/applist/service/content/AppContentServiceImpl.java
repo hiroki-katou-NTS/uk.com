@@ -131,7 +131,9 @@ public class AppContentServiceImpl implements AppContentService {
 			Optional<HolidayAppType> opHolidayAppType) {
 		// 申請理由内容　＝　String.Empty
 		String result = Strings.EMPTY;
-		if(!(screenAtr != ScreenAtr.KAF018 && (appReason!= null && Strings.isNotBlank(appReason.v())) && appReasonDisAtr == DisplayAtr.DISPLAY)) {
+		if(!(screenAtr != ScreenAtr.KAF018 && 
+				((appReason!= null && Strings.isNotBlank(appReason.v())) || (appStandardReasonCD != null))  && 
+				appReasonDisAtr == DisplayAtr.DISPLAY)) {
 			return result;
 		}
 		// アルゴリズム「申請内容定型理由取得」を実行する
@@ -141,20 +143,30 @@ public class AppContentServiceImpl implements AppContentService {
 				// 申請理由内容　+＝　”申請理由：”を改行
 				result += "申請理由：  " + "\n";
 				// 申請理由内容　+＝　定型理由＋改行＋Input．申請理由
-				result += reasonForFixedForm.v() + "\n" + appReason.v();
+				result += reasonForFixedForm.v();
+				if(appReason!=null) {
+					result += "\n" + appReason.v();
+				}
 			} else {
 				// 申請理由内容　+＝　定型理由＋’　’＋Input．申請理由
-				result += reasonForFixedForm.v() + " " + appReason.v();
+				result += reasonForFixedForm.v();
+				if(appReason!=null) {
+					result += " " + appReason.v().replaceAll("\n", " ");	
+				}
 			}
 		} else {
 			if(screenAtr == ScreenAtr.KDL030) {
 				// 申請理由内容　+＝　”申請理由：”を改行
 				result += "申請理由：  " + "\n";
 				// 申請理由内容　+＝　Input．申請理由
-				result += appReason.v();
+				if(appReason!=null) {
+					result += appReason.v();	
+				}
 			} else {
 				// 申請理由内容　+＝　Input．申請理由
-				result += appReason.v();
+				if(appReason!=null) {
+					result += appReason.v().replaceAll("\n", " ");	
+				}
 			}
 		}
 		return result;
@@ -253,9 +265,10 @@ public class AppContentServiceImpl implements AppContentService {
 			// 申請内容　+＝　Input．勤務時間開始1
 			result += workTimeStart1 == null ? "" : workTimeStart1.getInDayTimeWithFormat();
 			// Input．勤務直帰1をチェック
-			if(goBackAtr1 == NotUseAtr.NOT_USE) {
+			result += I18NText.getText("CMM045_100");
+			if(goBackAtr1 == NotUseAtr.USE) {
 				// 申請内容　+＝　#CMM045_100　+　#CMM045_252
-				result += I18NText.getText("CMM045_100") + I18NText.getText("CMM045_252");
+				result += I18NText.getText("CMM045_252");
 			}
 			// 申請内容　+＝　Input．勤務時間終了1
 			result += workTimeEnd1 == null ? "" : workTimeEnd1.getInDayTimeWithFormat();
@@ -501,6 +514,7 @@ public class AppContentServiceImpl implements AppContentService {
 			} else {
 				result = "CMMS45_9";
 			}
+			return result;
 		}
 		// 反映状態(trạng thái phản ánh)　＝　PC：#CMM045_63スマホ：#CMMS45_8
 		boolean condition1 = 
@@ -516,6 +530,7 @@ public class AppContentServiceImpl implements AppContentService {
 			} else {
 				result = "CMMS45_8";
 			}
+			return result;
 		}
 		// 反映状態　＝　PC：#CMM045_65スマホ：#CMMS45_11
 		if(reflectedState==ReflectedState.DENIAL) {
@@ -524,6 +539,7 @@ public class AppContentServiceImpl implements AppContentService {
 			} else {
 				result = "CMMS45_11";
 			}
+			return result;
 		}
 		// 反映状態　＝　PC：#CMM045_66スマホ：#CMMS45_36
 		if(reflectedState==ReflectedState.NOTREFLECTED && phaseAtr==ApprovalBehaviorAtrImport_New.REMAND) {
@@ -532,6 +548,7 @@ public class AppContentServiceImpl implements AppContentService {
 			} else {
 				result = "CMMS45_36";
 			}
+			return result;
 		}
 		// 反映状態　＝　PC：#CMM045_67スマホ：#CMMS45_10
 		if(reflectedState==ReflectedState.CANCELED) {
@@ -540,6 +557,7 @@ public class AppContentServiceImpl implements AppContentService {
 			} else {
 				result = "CMMS45_10";
 			}
+			return result;
 		}
 		return result;
 	}

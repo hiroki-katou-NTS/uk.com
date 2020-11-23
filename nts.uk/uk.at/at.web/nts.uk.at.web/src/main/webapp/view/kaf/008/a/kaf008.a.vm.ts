@@ -5,11 +5,13 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
     import BusinessTripInfoDetail = nts.uk.at.view.kaf008_ref.shr.viewmodel.BusinessTripInfoDetail;
     import BusinessTripOutput = nts.uk.at.view.kaf008_ref.shr.viewmodel.BusinessTripOutput;
     import BusinessTripContent = nts.uk.at.view.kaf008_ref.shr.viewmodel.BusinessTripContent;
+	import AppInitParam = nts.uk.at.view.kaf000.shr.viewmodel.AppInitParam;
 
     @bean()
     class Kaf008AViewModel extends Kaf000AViewModel {
 
         appType: KnockoutObservable<number> = ko.observable(AppType.BUSINESS_TRIP_APPLICATION);
+		isAgentMode : KnockoutObservable<boolean> = ko.observable(false);
         application: KnockoutObservable<Application> = ko.observable(new Application(this.appType()));
         mode: number = 1;
         isSendMail: KnockoutObservable<boolean>;
@@ -26,18 +28,32 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
 
         appDate: KnockoutObservable<any> = ko.observable(null);
 
-        created(params: any) {
+        created(params: AppInitParam) {
             const vm = this;
-
+			let empLst: Array<string> = [],
+				dateLst: Array<string> = [];
             vm.isSendMail = ko.observable(false);
-
+			if (!_.isEmpty(params)) {
+				if (!_.isEmpty(params.employeeIds)) {
+					empLst = params.employeeIds;
+				}
+				if (!_.isEmpty(params.baseDate)) {
+					let paramDate = moment(params.baseDate).format('YYYY/MM/DD');
+					dateLst = [paramDate];
+					vm.application().appDate(paramDate);
+					vm.application().opAppStartDate(paramDate);
+                    vm.application().opAppEndDate(paramDate);
+				}
+				if (params.isAgentMode) {
+					vm.isAgentMode(params.isAgentMode);
+				}
+			}
             // 起動する
             vm.$blockui("show");
-            vm.loadData([], [], vm.appType())
+            vm.loadData(empLst, dateLst, vm.appType())
                 .then((loadDataFlag: boolean) => {
                     if (loadDataFlag) {
-                        const applicantList = [];
-                        const dateLst = [];
+                        const applicantList = empLst;
                         const appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput);
                         const command = {applicantList, dateLst, appDispInfoStartupOutput};
 
@@ -47,16 +63,21 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
                     return null;
                 }).then((successData: Model | null) => {
                 if (successData) {
-                    const {result, businessTripInfoOutputDto} = successData;
+                    const {result, businessTripInfoOutputDto, confirmMsgOutputs} = successData;
 
-                    if (result) {
-                        if (businessTripInfoOutputDto) {
-                            let cloneData = _.clone(vm.dataFetch());
-                            cloneData.businessTripOutput = businessTripInfoOutputDto;
-                            vm.dataFetch(cloneData);
-                            vm.businessTripOutput(businessTripInfoOutputDto)
-                        }
+                    if (businessTripInfoOutputDto) {
+                        let cloneData = _.clone(vm.dataFetch());
+                        cloneData.businessTripOutput = businessTripInfoOutputDto;
+                        vm.dataFetch(cloneData);
+                        vm.businessTripOutput(businessTripInfoOutputDto)
                     }
+
+
+					if (!_.isEmpty(params)) {
+						if (!_.isEmpty(params.baseDate)) {
+							vm.changeAppDate();
+						}
+					}
                 }
             }).fail((err: any) => {
                 vm.handleError(err)
@@ -191,7 +212,7 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
                 }
             }).fail(res => {
                 vm.handleError(res);
-            }));
+            })).always(() => vm.$blockui("hide"));;
         }
 
         focusDate() {

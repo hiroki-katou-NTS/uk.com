@@ -106,8 +106,6 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
  				WorkStamp attendActualStamp = attendanceStamp.getActualStamp().orElse(null);
  				WorkStamp attendStamp = attendanceStamp.getStamp().orElse(null);
  				if(attendActualStamp != null){
- 					krcdtTimeLeavingWork.attendanceActualRoudingTime = attendActualStamp.getAfterRoundingTime() == null 
- 							? null : attendActualStamp.getAfterRoundingTime().valueAsMinutes();
  	 				krcdtTimeLeavingWork.attendanceActualTime = attendActualStamp.getTimeDay().getTimeWithDay().isPresent() 
  	 						? attendActualStamp.getTimeDay().getTimeWithDay().get().valueAsMinutes() : null;
  	 				krcdtTimeLeavingWork.attendanceActualPlaceCode = !attendActualStamp.getLocationCode().isPresent() ? null 
@@ -116,8 +114,6 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
  	 						: attendActualStamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value;
  				}
  				if(attendStamp != null){
- 					krcdtTimeLeavingWork.attendanceStampRoudingTime = attendStamp.getAfterRoundingTime() == null 
- 							? null : attendStamp.getAfterRoundingTime().valueAsMinutes();
  	 				krcdtTimeLeavingWork.attendanceStampTime= attendStamp.getTimeDay().getTimeWithDay().isPresent() 
  	 						? attendStamp.getTimeDay().getTimeWithDay().get().valueAsMinutes() : null;
  	 				krcdtTimeLeavingWork.attendanceStampPlaceCode = !attendStamp.getLocationCode().isPresent() ? null 
@@ -131,8 +127,6 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
  				WorkStamp leaveActualStamp = c.getLeaveStamp().get().getActualStamp().orElse(null);
  				WorkStamp leaveStamp = c.getLeaveStamp().get().getStamp().orElse(null);
  				if(leaveActualStamp != null){
- 					krcdtTimeLeavingWork.leaveWorkActualRoundingTime = leaveActualStamp.getAfterRoundingTime() == null 
- 							? null : leaveActualStamp.getAfterRoundingTime().valueAsMinutes();
  	 				krcdtTimeLeavingWork.leaveWorkActualTime = leaveActualStamp.getTimeDay().getTimeWithDay().isPresent() 
  	 						? leaveActualStamp.getTimeDay().getTimeWithDay().get().valueAsMinutes() : null;
  	 				krcdtTimeLeavingWork.leaveWorkActualPlaceCode = !leaveActualStamp.getLocationCode().isPresent() ? null 
@@ -141,8 +135,6 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
  	 						: leaveActualStamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value;
  				}
  				if(leaveStamp != null){
- 					krcdtTimeLeavingWork.leaveWorkStampRoundingTime = leaveStamp.getAfterRoundingTime() == null 
- 							? null : leaveStamp.getAfterRoundingTime().valueAsMinutes();
  	 				krcdtTimeLeavingWork.leaveWorkStampTime= leaveStamp.getTimeDay().getTimeWithDay().isPresent() 
  	 						? leaveStamp.getTimeDay().getTimeWithDay().get().valueAsMinutes() : null;
  	 				krcdtTimeLeavingWork.leaveWorkStampPlaceCode = !leaveStamp.getLocationCode().isPresent() ? null 

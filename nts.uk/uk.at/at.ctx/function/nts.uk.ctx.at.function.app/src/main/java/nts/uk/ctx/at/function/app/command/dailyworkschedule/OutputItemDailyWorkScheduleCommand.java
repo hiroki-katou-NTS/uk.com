@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.AttendanceItemsDisplay;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.FontSizeEnum;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.NameWorkTypeOrHourZone;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleGetMemento;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
@@ -24,7 +25,9 @@ import nts.uk.ctx.at.function.dom.dailyworkschedule.RemarkInputContent;
  */
 @Setter
 @NoArgsConstructor
-public class OutputItemDailyWorkScheduleCommand implements OutputItemDailyWorkScheduleGetMemento{
+public class OutputItemDailyWorkScheduleCommand implements OutputItemDailyWorkScheduleGetMemento {
+	
+	private String layoutId;
 
 	/** The item code. */
 	private String itemCode;
@@ -43,10 +46,20 @@ public class OutputItemDailyWorkScheduleCommand implements OutputItemDailyWorkSc
 	
 	/** The remark input no. */
 	private int remarkInputNo;
+
+	// 文字の大きさ
+	private int fontSize;
 	
 	// This variable used to know is new mode when save.
 	@Getter
 	private boolean newMode; 
+	
+	@Getter
+	private int selectionType; 
+	
+	@Getter
+	private String employeeId;
+	
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleGetMemento#getItemCode()
@@ -70,9 +83,9 @@ public class OutputItemDailyWorkScheduleCommand implements OutputItemDailyWorkSc
 	@Override
 	public List<AttendanceItemsDisplay> getLstDisplayedAttendance() {
 		return lstDisplayedAttendance.stream()
-										.map(command -> {
-											return new AttendanceItemsDisplay(command.getSortBy(), command.getItemToDisplay());
-										}).collect(Collectors.toList());
+				.map(command -> {
+					return new AttendanceItemsDisplay(command.getSortBy(), command.getItemToDisplay());
+				}).collect(Collectors.toList());
 	}
 
 	/* (non-Javadoc)
@@ -81,18 +94,9 @@ public class OutputItemDailyWorkScheduleCommand implements OutputItemDailyWorkSc
 	@Override
 	public List<PrintRemarksContent> getLstRemarkContent() {
 		return lstRemarkContent.stream()
-									.map(command -> {
-										return new PrintRemarksContent(command.getUsedClassification(), 
-																									command.getPrintItem());
-									}).collect(Collectors.toList());
-	}
-
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleGetMemento#getCompanyID()
-	 */
-	@Override
-	public String getCompanyID() {
-		return null;
+				.map(command -> {
+					return new PrintRemarksContent(command.getUsedClassification(), command.getPrintItem());
+				}).collect(Collectors.toList());
 	}
 
 	/* (non-Javadoc)
@@ -109,5 +113,15 @@ public class OutputItemDailyWorkScheduleCommand implements OutputItemDailyWorkSc
 	@Override
 	public RemarkInputContent getRemarkInputNo() {
 		return RemarkInputContent.valueOf(this.remarkInputNo);
+	}
+
+	@Override
+	public FontSizeEnum getFontSize() {
+		return FontSizeEnum.valueOf(this.fontSize);
+	}
+
+	@Override
+	public String getLayoutId() {
+		return this.layoutId;
 	}
 }

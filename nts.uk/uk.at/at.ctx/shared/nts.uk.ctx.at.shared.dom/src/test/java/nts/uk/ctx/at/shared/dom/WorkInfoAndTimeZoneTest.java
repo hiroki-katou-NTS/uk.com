@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.shared.dom;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,34 +18,27 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @RunWith(JMockit.class)
 public class WorkInfoAndTimeZoneTest {
 
-	// if workTime == null;
 	@Test
-	public void testWorkInfoAndTimeZoneWorkType_1() {
-		List<TimeZone> listTimeZone = new ArrayList<>();
+	public void getters() {
 		WorkType workType = new WorkType();
-		listTimeZone.add(new TimeZone());
-		WorkInfoAndTimeZone workInfoAndTimeZone = WorkInfoAndTimeZone.create(workType, // dummy
-				null, listTimeZone);// dummy
-		assertThat(workInfoAndTimeZone.getWorkType()).isEqualTo(workType);
-		assertThat(workInfoAndTimeZone.getWorkTime().isPresent()).isFalse();
-		assertThat(workInfoAndTimeZone.getListTimeZone().isEmpty()).isTrue();
+		WorkInfoAndTimeZone workInfoAndTimeZone = WorkInfoAndTimeZone.createWithoutWorkTime(workType);
+		NtsAssert.invokeGetters(workInfoAndTimeZone);
 	}
 
 	// if workTime != null;
 	@Test
-	public void testWorkInfoAndTimeZoneWorkType_2() {
+	public void testWorkInfoAndTimeZoneWorkType() {
 		List<TimeZone> listTimeZone = new ArrayList<>();
 		WorkType workType = new WorkType();
 		WorkTimeSetting workTime = new WorkTimeSetting();
 		listTimeZone.add( new TimeZone( new TimeWithDayAttr(1),new TimeWithDayAttr(2)));
 		listTimeZone.add( new TimeZone( new TimeWithDayAttr(3),new TimeWithDayAttr(4)));
 		listTimeZone.add( new TimeZone( new TimeWithDayAttr(2),new TimeWithDayAttr(5)));
-		WorkInfoAndTimeZone workInfoAndTimeZone = new WorkInfoAndTimeZone(workType, // dummy
-				workTime, listTimeZone);// dummy
+		WorkInfoAndTimeZone workInfoAndTimeZone = WorkInfoAndTimeZone.create(workType, workTime, listTimeZone);
 		assertThat(workInfoAndTimeZone.getWorkType()).isEqualTo(workType);
 		assertThat(workInfoAndTimeZone.getWorkTime().get()).isEqualTo(workTime);
-		assertThat(workInfoAndTimeZone.getListTimeZone()).isEqualTo(listTimeZone);
-		
+		assertThat(workInfoAndTimeZone.getTimeZones()).isEqualTo(listTimeZone);
+
 	}
 
 	// if param is workType
@@ -53,17 +46,11 @@ public class WorkInfoAndTimeZoneTest {
 	public void testGetWorkType() {
 		WorkType workType = new WorkType();
 
-		WorkInfoAndTimeZone workInfoAndTimeZone = new WorkInfoAndTimeZone(workType);// dummy
+		WorkInfoAndTimeZone workInfoAndTimeZone = WorkInfoAndTimeZone.createWithoutWorkTime(workType);
+
 		assertThat(workInfoAndTimeZone.getWorkType()).isEqualTo(workType);
 		assertThat(workInfoAndTimeZone.getWorkTime().isPresent()).isFalse();
-		assertThat(workInfoAndTimeZone.getListTimeZone().isEmpty()).isTrue();
-	}
-
-	@Test
-	public void getters() {
-		WorkType workType = new WorkType();
-		WorkInfoAndTimeZone workInfoAndTimeZone = new WorkInfoAndTimeZone(workType);// dummy
-		NtsAssert.invokeGetters(workInfoAndTimeZone);
+		assertThat(workInfoAndTimeZone.getTimeZones().isEmpty()).isTrue();
 	}
 
 }

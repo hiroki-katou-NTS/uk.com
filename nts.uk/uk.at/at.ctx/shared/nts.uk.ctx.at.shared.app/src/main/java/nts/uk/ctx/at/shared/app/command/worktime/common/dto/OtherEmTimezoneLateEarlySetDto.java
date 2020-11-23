@@ -44,16 +44,7 @@ public class OtherEmTimezoneLateEarlySetDto implements OtherEmTimezoneLateEarlyS
 				this.delTimeRoundingSet.getRounding());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.worktime.common.
-	 * OtherEmTimezoneLateEarlySetGetMemento#getStampExactlyTimeIsLateEarly()
-	 */
-	@Override
-	public boolean getStampExactlyTimeIsLateEarly() {
-		return this.stampExactlyTimeIsLateEarly;
-	}
+
 
 	/*
 	 * (non-Javadoc)

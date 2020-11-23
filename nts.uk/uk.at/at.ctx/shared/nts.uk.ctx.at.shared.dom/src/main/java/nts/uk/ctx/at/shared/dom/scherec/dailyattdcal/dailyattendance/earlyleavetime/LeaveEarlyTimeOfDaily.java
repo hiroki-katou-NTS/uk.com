@@ -41,7 +41,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 
 
 /**
- * 日別実績の早退時間
+ * 日別勤怠の早退時間
  * @author ken_takasu
  *
  */
@@ -237,5 +237,12 @@ public class LeaveEarlyTimeOfDaily {
 			result = totalAddTime;
 		}
 		return result;
+	}
+	
+	public void  resetData() {
+		this.leaveEarlyTime = TimeWithCalculation.sameTime(new AttendanceTime(0));
+		this.leaveEarlyDeductionTime = TimeWithCalculation.sameTime(new AttendanceTime(0));
+		this. timePaidUseTime =  TimevacationUseTimeOfDaily.defaultValue();
+		this.intervalTime =  IntervalExemptionTime.defaultValue();
 	}
 }

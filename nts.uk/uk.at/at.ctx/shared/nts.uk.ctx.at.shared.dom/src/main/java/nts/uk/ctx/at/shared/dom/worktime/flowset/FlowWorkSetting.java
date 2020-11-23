@@ -4,13 +4,23 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.val;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
+import nts.uk.ctx.at.shared.dom.workrule.BreakTimeZone;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
+import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZone;
+import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZonePerNo;
+import nts.uk.ctx.at.shared.dom.worktime.WorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -28,7 +38,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 // 流動勤務設定
 @Getter
 @NoArgsConstructor
-public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable{
+public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable, WorkSetting {
 
 	/** The company id. */
 	// 会社ID
@@ -65,6 +75,12 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable{
 	/** The flow setting. */
 	// 流動設定
 	private FlowWorkDedicateSetting flowSetting;
+
+	/** 就業時間帯コード */
+	@Override
+	public WorkTimeCode getWorkTimeCode() {
+		return this.workingCode;
+	}
 
 	/**
 	 * Instantiates a new flow work setting.
@@ -112,10 +128,10 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable{
 	 * @param other
 	 *            the other
 	 */
-	public void correctData(ScreenMode screenMode, WorkTimeDivision workTimeType, FlowWorkSetting other) {		
+	public void correctData(ScreenMode screenMode, WorkTimeDivision workTimeType, FlowWorkSetting other) {
 		// Dialog J: list stamp timezone
 		this.stampReflectTimezone.correctData(screenMode, other.getStampReflectTimezone());
-		
+
 		// Tab 2 + 5 + 7
 		if (workTimeType.getWorkTimeDailyAtr() == WorkTimeDailyAtr.REGULAR_WORK
 				&& workTimeType.getWorkTimeMethodSet() == WorkTimeMethodSet.FLOW_WORK) {
@@ -125,7 +141,7 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable{
 			this.halfDayWorkTimezone.correctData(screenMode, other.getHalfDayWorkTimezone());
 			// Tab 7
 			this.offdayWorkTimezone.correctData(screenMode, other.getOffdayWorkTimezone());
-			
+
 			this.restSetting.correctData(screenMode,other.getRestSetting(),other.getHalfDayWorkTimezone().getRestTimezone().isFixRestTime());
 		} else {
 			// Tab 2
@@ -135,7 +151,7 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable{
 			// Tab 7
 			this.offdayWorkTimezone = other.getOffdayWorkTimezone();
 		}
-		
+
 		// Tab 8 -> 16
 		this.commonSetting.correctData(screenMode, other.getCommonSetting());
 	}
@@ -149,13 +165,13 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable{
 	public void correctDefaultData(ScreenMode screenMode) {
 		// Dialog J: list stamp timezone
 		this.stampReflectTimezone.correctDefaultData(screenMode);
-		
+
 		// Tab 2 + 5: restore 平日勤務時間帯
 		this.halfDayWorkTimezone.correctDefaultData(screenMode);
-		
+
 		// Tab 7
 		this.offdayWorkTimezone.correctDefaultData(screenMode);
-		
+
 		// Tab 8 -> 16
 		this.commonSetting.correctDefaultData(screenMode);
 		//Dialog H
@@ -173,7 +189,8 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable{
 			this.halfDayWorkTimezone.correctDefaultData();
 		}
 	}
-	
+
+
 	/**
  	 * create this Instance
  	 * TODO 必要に応じてcloneする変数を増やす。
@@ -198,7 +215,7 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable{
 		}
 		return cloned;
 	}
-	
+
 	/**
 	 * 平日勤務時間帯.勤務時間帯.残業時間帯を取得する(就業時間帯NOの昇順）
 	 * @return 残業時間帯
@@ -208,7 +225,7 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable{
 		lstOTTimezone.sort((f,s) -> f.getWorktimeNo().compareTo(s.getWorktimeNo()));
 		return lstOTTimezone;
 	}
-	
+
 	/**
 	 * 平日勤務時間帯.勤務時間帯.休出時間帯を取得する(就業時間帯NOの昇順）
 	 * @return 休出時間帯
@@ -218,7 +235,7 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable{
 				.sorted((f,s) -> f.getWorktimeNo().compareTo(s.getWorktimeNo()))
 				.collect(Collectors.toList());
 	}
-	
+
 	/**
 	 * 勤務種類から流動勤務の休憩時間帯を取得する
 	 * @param workType
@@ -230,7 +247,7 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable{
 		}
 		return this.halfDayWorkTimezone.getRestTimezone();
 	}
-	
+
 	/**
 	 * 勤務種類から就業時間帯Noと法定内残業枠Noを取得する
 	 * @return Map<就業時間帯No, 法定内の残業枠No>
@@ -239,5 +256,90 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable{
 		return this.getHalfDayWorkTimezoneLstOTTimezone().stream()
 				//就業時間帯の残業枠はOvertimeWorkFrameNoになっている為、OverTimeFrameNoへ変換する必要がある。
 				.collect(Collectors.toMap(k->new EmTimezoneNo(k.getWorktimeNo()), v->new OverTimeFrameNo(v.getInLegalOTFrameNo().v().intValue())));
+	}
+
+
+	/**
+	 * 変更可能な勤務時間帯を取得する
+	 * @param require Require
+	 * @return 変更可能な時間帯
+	 */
+	@Override
+	public ChangeableWorkingTimeZone getChangeableWorkingTimeZone(WorkSetting.Require require) {
+		
+		val predTimeStg = this.getPredetermineTimeSetting(require);
+		val workAbleOneDay = predTimeStg.getOneDaySpan();
+		val workAbleMorning = predTimeStg.getHalfDayOfAmSpan();
+		val workAbleEvening = predTimeStg.getHalfDayOfPmSpan();
+		
+		List<ChangeableWorkingTimeZonePerNo> oneDayList = new ArrayList<>();
+		List<ChangeableWorkingTimeZonePerNo> morningList = new ArrayList<>();
+		List<ChangeableWorkingTimeZonePerNo> eveningList = new ArrayList<>();
+		
+		this.addShift(1, oneDayList, morningList, eveningList, workAbleOneDay, workAbleMorning, workAbleEvening);
+		
+		if(predTimeStg.isUseShiftTwo()) {
+			
+			this.addShift(2, oneDayList, morningList, eveningList, workAbleOneDay, workAbleMorning, workAbleEvening);
+			
+		}
+		
+		return new ChangeableWorkingTimeZone(oneDayList, morningList, eveningList, oneDayList);
+	}
+	/**
+	 * add shift
+	 * @param workNo
+	 * @param oneDays
+	 * @param morningDays
+	 * @param eveningDays
+	 * @param workAbleOneDay
+	 * @param workAbleMorning
+	 * @param workAbleEvening
+	 */
+	private void addShift(
+			  int workNo
+			, List<ChangeableWorkingTimeZonePerNo> oneDays
+			, List<ChangeableWorkingTimeZonePerNo> morningDays
+			, List<ChangeableWorkingTimeZonePerNo> eveningDays
+			, TimeSpanForCalc workAbleOneDay
+			, TimeSpanForCalc  workAbleMorning
+			, TimeSpanForCalc workAbleEvening) {
+		
+		oneDays.add(this.createChangeableWkTzPerNo(workNo, workAbleOneDay));
+		morningDays.add(this.createChangeableWkTzPerNo(workNo, workAbleMorning));
+		eveningDays.add(this.createChangeableWkTzPerNo(workNo, workAbleEvening));
+		
+	}
+
+	/**
+	 * 休憩時間帯を取得する
+	 * @param isWorkingOnDayOff 休出か
+	 * @param amPmAtr 午前午後区分
+	 * @return 休憩時間
+	 */
+	@Override
+	public BreakTimeZone getBreakTimeZone(boolean isWorkingOnDayOff, AmPmAtr amPmAtr) {
+		val breakTimeZone = isWorkingOnDayOff ?
+				this.offdayWorkTimezone.getRestTimeZone(): this.halfDayWorkTimezone.getRestTimezone();
+		
+		if(!breakTimeZone.isFixRestTime()) {
+			return BreakTimeZone.createAsNotFixed(Collections.emptyList());
+		}
+		
+		return BreakTimeZone.createAsFixed(breakTimeZone.getFixedRestTimezone().getRestTimezonesForCalc());
+	}
+	
+	/**
+	 * convert to ChangeableWorkingTimeZonePerNo
+	 * @param workNo
+	 * @param timeSpan
+	 * @return
+	 */
+	private ChangeableWorkingTimeZonePerNo createChangeableWkTzPerNo(int workNo, TimeSpanForCalc timeSpan ) {
+		return ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd(
+				new WorkNo(workNo).toAttendance() ,timeSpan);
+	}
+
+	public static interface Require {
 	}
 }
