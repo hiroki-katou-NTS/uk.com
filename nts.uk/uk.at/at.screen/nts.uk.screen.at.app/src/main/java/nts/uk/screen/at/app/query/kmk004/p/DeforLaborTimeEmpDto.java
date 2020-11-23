@@ -3,8 +3,8 @@ package nts.uk.screen.at.app.query.kmk004.p;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.emp.EmpDeforLaborMonthActCalSet;
-import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeEmp;
+import nts.uk.ctx.at.record.app.command.workrecord.monthcal.common.DeforWorkTimeAggrSetDto;
+import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.WorkingTimeSettingDto;
 
 /**
  * 
@@ -17,9 +17,9 @@ import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLabor
 public class DeforLaborTimeEmpDto {
 
 	//雇用別変形労働法定労働時間
-	private DeforLaborTimeEmp deforLaborTimeEmp;
+	private WorkingTimeSettingDto deforLaborTimeEmp;
 	
 	//雇用別変形労働集計設定
-	private EmpDeforLaborMonthActCalSet setting;
+	private DeforWorkTimeAggrSetDto setting;
 	
 }

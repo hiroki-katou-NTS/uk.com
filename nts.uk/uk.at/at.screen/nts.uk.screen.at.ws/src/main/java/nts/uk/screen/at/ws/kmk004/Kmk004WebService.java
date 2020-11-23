@@ -101,7 +101,7 @@ public class Kmk004WebService extends WebService{
 	
 	// Employee
 	@POST
-	@Path("viewP/emp/basicSetting/{empId}")
+	@Path("viewP/sha/basicSetting/{empId}")
 	public DeforLaborTimeShaDto getshaBasicSetting(@PathParam("empId") String empId) {
 		return shaBasicSetting.get(empId);
 	}

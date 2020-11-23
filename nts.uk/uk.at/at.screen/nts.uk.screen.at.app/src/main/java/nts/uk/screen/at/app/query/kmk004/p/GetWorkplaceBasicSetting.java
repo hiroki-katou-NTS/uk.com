@@ -5,6 +5,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.record.app.command.workrecord.monthcal.common.DeforWorkTimeAggrSetDto;
+import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.WorkingTimeSettingDto;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.wkp.WkpDeforLaborMonthActCalSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.wkp.WkpDeforLaborMonthActCalSetRepo;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeWkp;
@@ -36,14 +38,14 @@ public class GetWorkplaceBasicSetting {
 		Optional<DeforLaborTimeWkp> optTimeWkp = timeWkpRepo.find(cid, wkpId);
 
 		if (optTimeWkp.isPresent()) {
-			deforLaborWkpDto.setDeforLaborTimeWkp(optTimeWkp.get());
+			deforLaborWkpDto.setDeforLaborTimeWkp(WorkingTimeSettingDto.fromDomain(optTimeWkp.get()));
 		}
 
 		// 変形労働時間勤務の法定内集計設定
 		Optional<WkpDeforLaborMonthActCalSet> optMonthActCalSet = monthActCalSetRepo.find(cid, wkpId);
 
 		if (optMonthActCalSet.isPresent()) {
-			deforLaborWkpDto.setSetting(optMonthActCalSet.get());
+			deforLaborWkpDto.setSetting(DeforWorkTimeAggrSetDto.fromDomain(optMonthActCalSet.get()));
 		}
 
 		return deforLaborWkpDto;
