@@ -43,32 +43,32 @@ public class HdWorkDispInfoWithDateOutput {
 	/**
 	 * 休憩時間帯設定リスト
 	 */
-	private Optional<BreakTimeZoneSetting> breakTimeZoneSettingList;
+	private Optional<BreakTimeZoneSetting> breakTimeZoneSettingList = Optional.empty();
 	
 	/**
 	 * 勤務種類リスト
 	 */
-	private Optional<List<WorkType>> workTypeList;
+	private Optional<List<WorkType>> workTypeList = Optional.empty();
 	
 	/**
 	 * 初期選択勤務種類
 	 */
-	private Optional<WorkTypeCode> initWorkType;
+	private Optional<WorkTypeCode> initWorkType = Optional.empty();
 	
 	/**
 	 * 初期選択勤務種類名称
 	 */
-	private Optional<WorkTypeName> initWorkTypeName;
+	private Optional<WorkTypeName> initWorkTypeName = Optional.empty();
 	
 	/**
 	 * 初期選択就業時間帯
 	 */
-	private Optional<WorkTimeCode> initWorkTime;
+	private Optional<WorkTimeCode> initWorkTime = Optional.empty();
 	
 	/**
 	 *初期選択就業時間帯名称
 	 */
-	private Optional<WorkTimeName> initWorkTimeName;
+	private Optional<WorkTimeName> initWorkTimeName = Optional.empty();
 	
 	/**
 	 * 勤怠時間の超過状態
@@ -78,10 +78,10 @@ public class HdWorkDispInfoWithDateOutput {
 	/**
 	 * 実績の申請時間
 	 */
-	private Optional<ApplicationTime> actualApplicationTime;
+	private Optional<ApplicationTime> actualApplicationTime = Optional.empty();
 	
 	/**
 	 * 月別実績の36協定時間状態
 	 */
-	private Optional<AgreementTimeStatusOfMonthly> actualMonthlyAgreeTimeStatus;
+	private Optional<AgreementTimeStatusOfMonthly> actualMonthlyAgreeTimeStatus = Optional.empty();
 }

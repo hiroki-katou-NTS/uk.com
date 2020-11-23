@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.AppReflectOtHdWorkDto;
@@ -26,6 +27,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
  */
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 public class HdWorkDispInfoWithDateDto {
 
 	/**
@@ -96,6 +98,6 @@ public class HdWorkDispInfoWithDateDto {
 				domain.getInitWorkTimeName().isPresent() ? domain.getInitWorkTimeName().get().v() : "", 
 				OvertimeStatusDto.fromDomain(domain.getOvertimeStatus()), 
 				ApplicationTimeDto.fromDomain(domain.getActualApplicationTime().orElse(null)), 
-				domain.getActualMonthlyAgreeTimeStatus().orElse(null).value);
+				domain.getActualMonthlyAgreeTimeStatus().isPresent() ? domain.getActualMonthlyAgreeTimeStatus().get().value : 0);
 	}
 }

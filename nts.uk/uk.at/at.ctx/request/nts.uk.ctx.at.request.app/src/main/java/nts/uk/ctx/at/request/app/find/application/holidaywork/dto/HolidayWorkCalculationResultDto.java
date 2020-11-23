@@ -1,7 +1,12 @@
 package nts.uk.ctx.at.request.app.find.application.holidaywork.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.request.app.find.application.common.AppDetailScreenInfoDto;
+import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoNoDateDto;
+import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
+import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoWithDateDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.ApplicationTimeDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.OverStateOutputDto;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CalculatedFlag;
@@ -14,6 +19,7 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.Holiday
  */
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 public class HolidayWorkCalculationResultDto {
 
 	/**

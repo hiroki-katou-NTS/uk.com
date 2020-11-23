@@ -83,10 +83,10 @@ public class AppHdWorkDispInfoOutput {
 	/**
 	 * 乖離理由の選択肢
 	 */
-	private Optional<DivergenceReasonSelect> comboDivergenceReason;
+	private Optional<DivergenceReasonSelect> comboDivergenceReason = Optional.empty();
 	
 	/**
 	 * 計算結果
 	 */
-	private Optional<HolidayWorkCalculationResult> calculationResult;
+	private Optional<HolidayWorkCalculationResult> calculationResult = Optional.empty();
 }

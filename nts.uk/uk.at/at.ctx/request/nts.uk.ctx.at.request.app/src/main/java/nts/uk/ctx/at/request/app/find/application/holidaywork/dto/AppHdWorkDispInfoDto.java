@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.app.find.application.holidaywork.dto;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.AppReflectOtHdWorkDto;
@@ -25,6 +26,7 @@ import nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr;
  */
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 public class AppHdWorkDispInfoDto {
 	
 	/**
@@ -89,12 +91,16 @@ public class AppHdWorkDispInfoDto {
 	
 	public static AppHdWorkDispInfoDto fromDomain(AppHdWorkDispInfoOutput domain) {
 		if(domain == null) return null;
-		return new AppHdWorkDispInfoDto(domain.getDispFlexTime().equals(NotUseAtr.USE), domain.isUseInputDivergenceReason(), domain.isUseComboDivergenceReason(), 
-				WorkdayoffFrameDto.fromDomain(domain.getWorkdayoffFrame()), HolidayWorkAppSetDto.fromDomain(domain.getHolidayWorkAppSet()), 
-				HdWorkDispInfoWithDateDto.fromDomain(domain.getHdWorkDispInfoWithDateOutput()), AppReflectOtHdWorkDto.fromDomain(domain.getHdWorkOvertimeReflect()), 
-				OvertimeWorkFrameDto.fromDomain(domain.getOvertimeFrame()), AgreeOverTimeDto.fromDomain(domain.getOtWorkHoursForApplication()), 
+		return new AppHdWorkDispInfoDto(domain.getDispFlexTime().equals(NotUseAtr.USE), 
+				domain.isUseInputDivergenceReason(), domain.isUseComboDivergenceReason(), 
+				WorkdayoffFrameDto.fromDomain(domain.getWorkdayoffFrame()), 
+				HolidayWorkAppSetDto.fromDomain(domain.getHolidayWorkAppSet()), 
+				HdWorkDispInfoWithDateDto.fromDomain(domain.getHdWorkDispInfoWithDateOutput()), 
+				AppReflectOtHdWorkDto.fromDomain(domain.getHdWorkOvertimeReflect()), 
+				domain.getOvertimeFrame() != null ? OvertimeWorkFrameDto.fromDomain(domain.getOvertimeFrame()) : null, 
+				domain.getOtWorkHoursForApplication() != null ? AgreeOverTimeDto.fromDomain(domain.getOtWorkHoursForApplication()) : null, 
 				AppDispInfoStartupDto.fromDomain(domain.getAppDispInfoStartupOutput()), 
-				DivergenceReasonSelectDto.fromDomain(domain.getComboDivergenceReason().orElse(null)), 
+				domain.getComboDivergenceReason().isPresent() ? DivergenceReasonSelectDto.fromDomain(domain.getComboDivergenceReason().get()) : null, 
 				HolidayWorkCalculationResultDto.fromDomain(domain.getCalculationResult().orElse(null)));
 	}
 
