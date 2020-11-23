@@ -53,7 +53,6 @@ public class JpaDailyAttendanceItemUsedRepository extends JpaRepository implemen
 		}
 		return this.queryProxy().query(query, KfnctAtdIdRptDai.class)
 				.setParameter("companyId", companyId)
-				.setParameter("reportId", reportId)
 				.getList().stream().map(x -> x.getKfnctAtdIdRptDaiPK().getAttendanceItemId().intValue())
 				.collect(Collectors.toList());
 	}
