@@ -150,7 +150,7 @@ public interface AbsenceServiceProcess {
 	 * @return
 	 */
 	public AppAbsenceStartInfoOutput holidayTypeChangeProcess(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, 
-			boolean displayHalfDayValue, Integer alldayHalfDay, HolidayAppType holidayType);
+			List<String> appDates, HolidayAppType holidayType);
 	
 	/**
 	 * 終日半日休暇変更時処理

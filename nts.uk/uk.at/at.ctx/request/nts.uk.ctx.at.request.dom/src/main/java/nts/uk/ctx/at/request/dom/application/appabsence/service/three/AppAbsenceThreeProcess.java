@@ -7,7 +7,9 @@ import nts.uk.ctx.at.request.dom.application.appabsence.AbsenceWorkType;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
+import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.TargetWorkTypeByApp;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
  * @author loivt
@@ -40,6 +42,6 @@ public interface AppAbsenceThreeProcess {
 	 * @param displayHalfDayValue 勤務種類組み合わせ全表示チェック
 	 * @return
 	 */
-	public List<WorkType> getWorkTypeDetails(AppEmploymentSetting appEmploymentWorkType,String companyID,HolidayAppType holidayType,int alldayHalfDay, boolean displayHalfDayValue);
+	public List<WorkType> getWorkTypeDetails(String companyID,HolidayAppType holidayType,Optional<List<TargetWorkTypeByApp>> workType);
 
 }

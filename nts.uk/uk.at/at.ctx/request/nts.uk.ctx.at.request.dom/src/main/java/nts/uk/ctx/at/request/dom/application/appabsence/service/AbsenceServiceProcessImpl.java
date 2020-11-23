@@ -13,7 +13,6 @@ import javax.inject.Inject;
 import org.apache.logging.log4j.util.Strings;
 
 import lombok.val;
-import lombok.experimental.var;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.cache.CacheCarrier;
@@ -21,6 +20,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.four.AppAbsenceFourProcess;
@@ -41,14 +41,16 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.Con
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.smartphone.CommonAlgorithmMobile;
+import nts.uk.ctx.at.request.dom.application.common.service.smartphone.output.AppReasonOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.AppliedDate;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.UseAtr;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReason;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReasonRepository;
+import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.HolidayType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.WorkTypeObjAppHoliday;
@@ -77,7 +79,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRule
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRuleRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AnnualHoliday;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcess;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcess.RequireM4;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcessCommon;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AnnualHolidaySetOutput;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.LeaveSetOutput;
@@ -185,6 +186,9 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	@Inject
 	private RemainNumberTempRequireService requireService;
 	
+	@Inject
+	private CommonAlgorithmMobile commonAlg;
+	
 	@Override
 	public SpecialLeaveInfor getSpecialLeaveInfor(String workTypeCode) {
 		SpecialLeaveInfor specialLeaveInfor = new SpecialLeaveInfor();
@@ -257,7 +261,6 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	    
 	    // 10-3.振休の設定を取得する
 	    LeaveSetOutput leaveSet = AbsenceTenProcess.getSetForLeave(require, cache, companyID, sID, baseDate);
-//	    LeaveSetOutput leaveSet = null;
 	    
 	    // 10-5.60H超休の設定を取得する
 	    SixtyHourSettingOutput setting60H = absenceCommon.getSixtyHourSetting(companyID, sID, baseDate);
@@ -269,9 +272,11 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	    NursingLeaveSetting nursingLeaveSetting = this.getNursingLeaveSetting(companyID, NursingCategory.Nursing);
 	    
 	    // 代休の紐付け管理区分を取得する
+	    // pending for refactor domain
 	    CompensatoryLeaveComSetting compensatoryLeaveComSetting = this.getCompLeaveComSetting(companyID);
 	    
 	    // 振休の紐付け管理区分を取得する
+        // pending for refactor domain
 	    ComSubstVacation comSubstVacation = this.getComSubstVacation(companyID);
 	    
 	    // OUTPUTを作成して返す
@@ -286,11 +291,13 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	    SubstituteLeaveManagement substituteLeaveManagement = new SubstituteLeaveManagement(
 	            EnumAdaptor.valueOf(substituationHoliday.getDigestiveUnit(), TimeDigestiveUnit.class), 
 	            EnumAdaptor.valueOf(substituationHoliday.isTimeOfPeriodFlg() ? 1 : 0, ManageDistinct.class), 
-	            compensatoryLeaveComSetting.getIsManaged(), 
+//	            compensatoryLeaveComSetting.getIsManaged(),
+	            ManageDistinct.YES,
 	            EnumAdaptor.valueOf(substituationHoliday.isSubstitutionFlg() ? 1 : 0, ManageDistinct.class));
 	    
 	    HolidayManagement holidayManagement = new HolidayManagement(
-	            comSubstVacation.getSetting().getIsManage(), 
+//	            comSubstVacation.getSetting().getIsManage(),
+	            ManageDistinct.YES,
 	            EnumAdaptor.valueOf(leaveSet.isSubManageFlag() ? 1 : 0, ManageDistinct.class));
 	    
 	    Overtime60HManagement overtime60hManagement = new Overtime60HManagement(
@@ -298,14 +305,16 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	            EnumAdaptor.valueOf(setting60H.getSixtyHourOverDigestion(), TimeDigestiveUnit.class));
 	    
 	    NursingCareLeaveManagement nursingCareLeaveManagement = new NursingCareLeaveManagement(
-	            childNursingLeaveSetting.getManageType(), 
+//	            childNursingLeaveSetting.getManageType(), 
+	            ManageDistinct.YES,
 	            // Mock data START
 	            TimeDigestiveUnit.OneHour, 
 	            ManageDistinct.YES, 
 	            TimeDigestiveUnit.OneHour, 
 	            ManageDistinct.YES, 
 	            // Mock data END
-	            nursingLeaveSetting.getManageType());
+//	            nursingLeaveSetting.getManageType());
+	            ManageDistinct.YES);
 	    
 		return new CheckDispHolidayType(
 		        annualLeaveManagement, 
@@ -330,12 +339,13 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 
     private NursingLeaveSetting getNursingLeaveSetting(String companyID, NursingCategory nursingType) {
 	    // ドメインモデル「介護看護休暇設定」を取得する (Lấy domain NursingLeaveSetting)
-	    List<NursingLeaveSetting> nursingLeaveSettings = nursingLeaveSettingRepo.findByCompanyId(companyID)
-	            .stream().filter(setting -> setting.getNursingCategory().equals(nursingType))
-	            .collect(Collectors.toList());
-	    
-	    
-        return nursingLeaveSettings.size() > 0 ? nursingLeaveSettings.get(0) : null;
+//	    List<NursingLeaveSetting> nursingLeaveSettings = nursingLeaveSettingRepo.findByCompanyId(companyID)
+//	            .stream().filter(setting -> setting.getNursingCategory().equals(nursingType))
+//	            .collect(Collectors.toList());
+//	    
+//	    
+//        return nursingLeaveSettings.size() > 0 ? nursingLeaveSettings.get(0) : null;
+        return null;
     }
 
     @Override
@@ -737,39 +747,43 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	}
 	@Override
 	public AppAbsenceStartInfoOutput holidayTypeChangeProcess(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, 
-			boolean displayHalfDayValue, Integer alldayHalfDay, HolidayAppType holidayType) {
-//		AppEmploymentSetting employmentSet = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmploymentSet();
-//
-//		// INPUT．「休暇申請起動時の表示情報．勤務種類一覧」をクリアする
-//		appAbsenceStartInfoOutput.setWorkTypeLst(new ArrayList<>());
-//		// 勤務種類を取得する
-//		List<WorkType> workTypes = appAbsenceThreeProcess.getWorkTypeDetails(
-//				employmentSet, 
-//				companyID, 
-//				holidayType, 
-//				alldayHalfDay,
-//				displayHalfDayValue);
-//		// 返ってきた「勤務種類<List>」を「休暇申請起動時の表示情報」にセットする
-//		appAbsenceStartInfoOutput.setWorkTypeLst(workTypes);
-//		// 「休暇申請起動時の表示情報．選択中の勤務種類」を更新する
-//		List<String> workTypeCDLst = workTypes.stream().map(x -> x.getWorkTypeCode().v()).collect(Collectors.toList());
-//		Optional<String> selectedWorkTypeCD = appAbsenceStartInfoOutput.getSelectedWorkTypeCD();
-//		if(!selectedWorkTypeCD.isPresent() || !workTypeCDLst.contains(selectedWorkTypeCD.get())) {
-//			if(appAbsenceStartInfoOutput.getHdAppSet().getDisplayUnselect() == UseAtr.USE) {
-//				appAbsenceStartInfoOutput.setSelectedWorkTypeCD(Optional.empty());
-//			} else {
-//				appAbsenceStartInfoOutput.setSelectedWorkTypeCD(workTypes.stream().findFirst().map(x -> x.getWorkTypeCode().v()));
-//			}
-//		}
-//		// 勤務種類変更時処理
-//		appAbsenceStartInfoOutput = this.workTypeChangeProcess(
-//				companyID, 
-//				appAbsenceStartInfoOutput, 
-//				holidayType, 
-//				appAbsenceStartInfoOutput.getSelectedWorkTypeCD());
-//		// 返ってきた「休暇申請起動時の表示情報」を返す
-//		return appAbsenceStartInfoOutput;
-		return null;
+			List<String> appDates, HolidayAppType holidayType) {
+//	    AppEmploymentSet employmentSet = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpEmploymentSet().get();
+
+		// INPUT．「休暇申請起動時の表示情報．勤務種類一覧」をクリアする
+		appAbsenceStartInfoOutput.setWorkTypeLst(new ArrayList<>());
+		
+		// 申請理由表示区分を取得する
+		AppReasonOutput appReason = commonAlg.getAppReasonDisplay(companyID, ApplicationType.ABSENCE_APPLICATION, Optional.of(holidayType));
+		
+		// 勤務種類を取得する
+		List<String> workTypes = appAbsenceThreeProcess.getWorkTypeDetails(
+				companyID,
+				holidayType,
+				appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpEmploymentSet().isPresent() ? 
+				        Optional.ofNullable(appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpEmploymentSet().get().getTargetWorkTypeByAppLst()) : Optional.empty()
+				);
+		// 返ってきた「勤務種類<List>」を「休暇申請起動時の表示情報」にセットする
+		appAbsenceStartInfoOutput.setWorkTypeLst(workTypes);
+		// 「休暇申請起動時の表示情報．選択中の勤務種類」を更新する
+		List<String> workTypeCDLst = workTypes.stream().map(x -> x.getWorkTypeCode().v()).collect(Collectors.toList());
+		Optional<String> selectedWorkTypeCD = appAbsenceStartInfoOutput.getSelectedWorkTypeCD();
+		if(!selectedWorkTypeCD.isPresent() || !workTypeCDLst.contains(selectedWorkTypeCD.get())) {
+			if(appAbsenceStartInfoOutput.getHdAppSet().getDisplayUnselect() == UseAtr.USE) {
+				appAbsenceStartInfoOutput.setSelectedWorkTypeCD(Optional.empty());
+			} else {
+				appAbsenceStartInfoOutput.setSelectedWorkTypeCD(workTypes.stream().findFirst().map(x -> x.getWorkTypeCode().v()));
+			}
+		}
+		// 勤務種類変更時処理
+		appAbsenceStartInfoOutput = this.workTypeChangeProcess(
+				companyID, 
+				appAbsenceStartInfoOutput, 
+				holidayType, 
+				appAbsenceStartInfoOutput.getSelectedWorkTypeCD());
+		// 返ってきた「休暇申請起動時の表示情報」を返す
+		return appAbsenceStartInfoOutput;
+//		return null;
 	}
 
 	@Override
@@ -779,7 +793,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		// INPUT．「休暇種類」を確認する
 		if(holidayType.isPresent()) {
 			// 休暇種類変更時処理
-			return this.holidayTypeChangeProcess(companyID, appAbsenceStartInfoOutput, displayHalfDayValue, alldayHalfDay, holidayType.get());
+//			return this.holidayTypeChangeProcess(companyID, appAbsenceStartInfoOutput, displayHalfDayValue, alldayHalfDay, holidayType.get());
 		}
 		// 返ってきた「休暇申請起動時の表示情報」を返す
 		return appAbsenceStartInfoOutput;

@@ -18,6 +18,7 @@ import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AbsenceCheckReg
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceDetailDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceStartInfoDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ChangeRelationShipDto;
+import nts.uk.ctx.at.request.app.find.application.appabsence.dto.DisplayAllScreenParam;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.HolidayAppTypeName;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ParamGetAllAppAbsence;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.SpecAbsenceParam;
@@ -193,14 +194,13 @@ public class AppAbsenceFinder {
 	 * @param alldayHalfDay
 	 * @return
 	 */
-	public AppAbsenceStartInfoDto getAllDisplay(ParamGetAllAppAbsence param) {
+	public AppAbsenceStartInfoDto getAllDisplay(DisplayAllScreenParam param) {
 		String companyID = AppContexts.user().companyId();
 		AppAbsenceStartInfoOutput appAbsenceStartInfoOutput = absenseProcess.holidayTypeChangeProcess(
 				companyID, 
-				param.getAppAbsenceStartInfoDto().toDomain(companyID), 
-				param.isDisplayHalfDayValue(), 
-				param.getAlldayHalfDay(), 
-				EnumAdaptor.valueOf(param.getHolidayType(), HolidayAppType.class));
+				param.getStartInfo().toDomain(companyID), 
+				param.getAppDates(),
+				EnumAdaptor.valueOf(param.getHolidayAppType(), HolidayAppType.class));
 		
 		return AppAbsenceStartInfoDto.fromDomain(appAbsenceStartInfoOutput);
 	}
@@ -292,12 +292,12 @@ public class AppAbsenceFinder {
 		// INPUT．「休暇種類」を確認する
 		if(holidayType!=null) {
 			// 休暇種類変更時処理
-			appAbsenceStartInfoOutput = absenseProcess.holidayTypeChangeProcess(
-					companyID, 
-					appAbsenceStartInfoOutput, 
-					displayHalfDayValue, 
-					alldayHalfDay, 
-					EnumAdaptor.valueOf(holidayType, HolidayAppType.class));
+//			appAbsenceStartInfoOutput = absenseProcess.holidayTypeChangeProcess(
+//					companyID, 
+//					appAbsenceStartInfoOutput, 
+//					displayHalfDayValue, 
+//					alldayHalfDay, 
+//					EnumAdaptor.valueOf(holidayType, HolidayAppType.class));
 		}
 		// 返ってきた「休暇申請起動時の表示情報」を返す
 		return AppAbsenceStartInfoDto.fromDomain(appAbsenceStartInfoOutput);
