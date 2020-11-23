@@ -9,7 +9,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 	@bean()
 	export class Kaf010ViewModel extends Kaf000AViewModel {
 
-		appType: KnockoutObservable<number> = ko.observable(AppType.LEAVE_TIME_APPLICATION);
+		appType: KnockoutObservable<number> = ko.observable(AppType.HOLIDAY_WORK_APPLICATION);
 		isAgentMode : KnockoutObservable<boolean> = ko.observable(false);
 		application: KnockoutObservable<Application> = ko.observable(new Application(this.appType()));
 		isSendMail: KnockoutObservable<Boolean>;
@@ -45,6 +45,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 					}
 				}).then((successData: any) => {
 					if (successData) {
+						console.log(successData);
 						if (!_.isEmpty(params)) {
 							if (!_.isEmpty(params.baseDate)) {
 								

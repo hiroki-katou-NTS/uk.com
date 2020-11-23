@@ -101,7 +101,7 @@ public class HolidayServiceImpl implements HolidayService {
 		QuotaOuput quotaOutput = commonOverTimeAlgorithm.getOvertimeQuotaSetUse(companyId, employeeId, applicationDate.orElse(null), 
 				OvertimeAppAtr.EARLY_NORMAL_OVERTIME, infoNoBaseDate.getOverTimeAppSet());
 		appHdWorkDispInfoOutput.setDispFlexTime(NotUseAtr.valueOf(quotaOutput.getFlexTimeClf() ? 1 : 0));
-		appHdWorkDispInfoOutput.setOvertimeFrame(quotaOutput.getOverTimeQuotaList().isEmpty() ? quotaOutput.getOverTimeQuotaList().get(0) : null);
+		appHdWorkDispInfoOutput.setOvertimeFrame(!quotaOutput.getOverTimeQuotaList().isEmpty() ? quotaOutput.getOverTimeQuotaList().get(0) : null);
 		
 		//	乖離理由の表示区分を取得する
 		ReasonDissociationOutput reasonDissociationOutput = commonOverTimeAlgorithm.getInfoNoBaseDate(companyId, ApplicationType.HOLIDAY_WORK_APPLICATION, 
