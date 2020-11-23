@@ -10,9 +10,14 @@ module nts.uk.at.kmk004.q {
 	@bean()
 	export class ViewModel extends ko.ViewModel {
 
-		year: KnockoutObservable<number> ;
-		register() {
+		year: KnockoutObservable<string> = ko.observable();
 
+		register() {
+			let vm = this;
+			
+			vm.$window.close({
+				year: vm.year()
+			});
 		}
 
 		close() {
@@ -22,11 +27,7 @@ module nts.uk.at.kmk004.q {
 
 		created(params?: IParams) {
 			let vm = this;
-			if (params && params.years.length) {
-				vm.year = ko.observable(_.max(params.years) + 1);
-			} else {
-				vm.year = ko.observable(parseInt(moment().format("YYYY")));
-			}
+			vm.year((params && params.years.length) ? String(_.max(params.years) + 1) : moment().format("YYYY"));
 		}
 
 		mounted() {
