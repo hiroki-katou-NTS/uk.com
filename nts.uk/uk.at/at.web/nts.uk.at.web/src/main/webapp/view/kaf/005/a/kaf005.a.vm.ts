@@ -29,6 +29,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		messageInfos: KnockoutObservableArray<any> = ko.observableArray([]);
 		dataSource: DisplayInfoOverTime;
 		visibleModel: VisibleModel = new VisibleModel();
+		isCalculation: Boolean = false;
 		created(params: AppInitParam) {
 			// new 
 			const vm = this;
@@ -602,7 +603,17 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			}
 			self.restTime(_.clone(restTimeArray));
 		}
-
+		
+		setColorForOverTime(isCalculation: Boolean, overTimes: Array<OverTime>) {
+			if (!isCalculation) {
+				
+				return;
+			}
+			
+			
+			
+		}
+		
 		bindOverTime(res: DisplayInfoOverTime) {
 			const self = this;
 			let overTimeArray = [] as Array<OverTime>;
@@ -613,9 +624,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					let overTime = {} as OverTime;
 					overTime.frameNo = String(item.overtimeWorkFrNo);
 					overTime.displayNo = ko.observable(item.overtimeWorkFrName);
-					overTime.applicationTime = ko.observable(null);
-					overTime.preTime = ko.observable(null);
-					overTime.actualTime = ko.observable(null);
+					overTime.applicationTime = ko.observable(self.isCalculation ? 0 : null);
+					overTime.preTime = ko.observable(self.isCalculation ? 0 : null);
+					overTime.actualTime = ko.observable(self.isCalculation ? 0 : null);
 					overTime.type = AttendanceType.NORMALOVERTIME;
 					overTime.visible = ko.computed(() => {
 						return self.visibleModel.c2();
@@ -627,9 +638,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				let overTime1 = {} as OverTime;
 				overTime1.frameNo = String(_.isEmpty(overTimeArray) ? 0 : overTimeArray.length);
 				overTime1.displayNo = ko.observable(self.$i18n('KAF005_63'));
-				overTime1.applicationTime = ko.observable(null);
-				overTime1.preTime = ko.observable(null);
-				overTime1.actualTime = ko.observable(null);
+				overTime1.applicationTime = ko.observable(self.isCalculation ? 0 : null);
+				overTime1.preTime = ko.observable(self.isCalculation ? 0 : null);
+				overTime1.actualTime = ko.observable(self.isCalculation ? 0 : null);
 				overTime1.type = AttendanceType.BONUSPAYTIME;
 				overTime1.visible = ko.computed(() => {
 						return self.visibleModel.c2() && self.visibleModel.c16();
@@ -639,9 +650,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				let overTime2 = {} as OverTime;
 				overTime2.frameNo = String(overTimeArray.length - 1);
 				overTime2.displayNo = ko.observable(self.$i18n('KAF005_65'));
-				overTime2.applicationTime = ko.observable(null);
-				overTime2.preTime = ko.observable(null);
-				overTime2.actualTime = ko.observable(null);
+				overTime2.applicationTime = ko.observable(self.isCalculation ? 0 : null);
+				overTime2.preTime = ko.observable(self.isCalculation ? 0 : null);
+				overTime2.actualTime = ko.observable(self.isCalculation ? 0 : null);
 				
 				overTime2.visible = ko.computed(() => {
 						return self.visibleModel.c2() && self.visibleModel.c16();
@@ -660,7 +671,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						_.forEach(applicationTime, (item: OvertimeApplicationSetting) => {
 							let findOverTimeArray = _.find(overTimeArray, { frameNo: String(item.frameNo) }) as OverTime;
 							if (!_.isNil(findOverTimeArray) && item.attendanceType == AttendanceType.NORMALOVERTIME) {
-								findOverTimeArray.applicationTime(item.applicationTime);
+								findOverTimeArray.applicationTime(!self.isCalculation ? null : item.applicationTime);
 							}
 						});
 					}
@@ -702,7 +713,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			}
 
 			self.overTime(overTimeArray);
-
+			self.setColorForOverTime(self.isCalculation, self.overTime());
 
 		}
 
@@ -1082,6 +1093,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					if (res) {
 						self.dataSource.calculationResultOp = res.calculationResultOp;
 						self.dataSource.workdayoffFrames = res.workdayoffFrames;
+						self.isCalculation = true;
 						self.bindOverTime(self.dataSource);
 						self.bindHolidayTime(self.dataSource);
 					}
