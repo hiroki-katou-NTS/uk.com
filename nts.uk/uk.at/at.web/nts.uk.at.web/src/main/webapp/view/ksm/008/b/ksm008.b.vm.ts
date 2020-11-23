@@ -133,7 +133,8 @@ module nts.uk.at.ksm008.b {
                         let lstEmployee = _.map(res.personInfos, function (item: any) {
                             return {id: item.employeeID, code: item.employeeCode, name: item.businessName, workplaceName: ''};
                         });
-                        vm.employeeList(_.orderBy(lstEmployee, ['code'],['asc']));
+                        lstEmployee = _.orderBy(lstEmployee, ['code'],['asc']);
+                        vm.employeeList(lstEmployee);
                         if (!reload) {
                             vm.selectedCode(lstEmployee[0].code);
                         }
@@ -259,7 +260,8 @@ module nts.uk.at.ksm008.b {
             let employeeSearchs: UnitModel[] = _.map(dataList, function (data: any) {
                 return {id: data.employeeId, code: data.employeeCode, name: data.employeeName, workplaceName: ''}
             });
-            vm.employeeList(_.orderBy(employeeSearchs, ['code'],['asc']));
+            employeeSearchs = _.orderBy(employeeSearchs, ['code'],['asc']);
+            vm.employeeList(employeeSearchs);
             if (employeeSearchs && employeeSearchs.length > 0) {
                 vm.selectedCode(employeeSearchs[0].code);
             };
