@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.dom.application.applist.service.content;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -229,11 +228,11 @@ public class AppContentServiceImpl implements AppContentService {
 				// 打刻申請出力用Tmp.取消
 				if(!item.isCancel()) {
 					// 申請内容＋＝$.項目名＋'　'＋$.開始時刻＋#CMM045_100(～)＋$.終了時刻
-					result += MessageFormat.format(item.getOpItemName().orElse(""), 
-							item.getOpStartTime().map(x -> x.getFullText()).orElse("") + I18NText.getText("CMM045_100") + item.getOpEndTime().map(x -> x.getFullText()).orElse(""));
+					result += item.getOpItemName().orElse("") + " " +
+							item.getOpStartTime().map(x -> x.getFullText()).orElse("") + I18NText.getText("CMM045_100") + item.getOpEndTime().map(x -> x.getFullText()).orElse("");
 				} else {
 					// 申請内容＋＝$.項目名＋'　'＋#CMM045_292(取消)
-					result += MessageFormat.format(item.getOpItemName().orElse(""), I18NText.getText("CMM045_292"));
+					result += item.getOpItemName().orElse("") + " " + I18NText.getText("CMM045_292");
 				}
 			}
 		}
