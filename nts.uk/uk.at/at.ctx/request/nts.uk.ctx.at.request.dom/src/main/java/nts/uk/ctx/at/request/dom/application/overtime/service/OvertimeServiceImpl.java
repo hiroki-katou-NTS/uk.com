@@ -646,6 +646,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 		Optional<AppOverTime> appOverTimeOp = appOverTimeRepository.find(companyId, appId);
 		if (!appOverTimeOp.isPresent()) return null;
 		AppOverTime appOverTime = appOverTimeOp.get();
+		Application application = appDispInfoStartupOutput.getAppDetailScreenInfo().map(x -> x.getApplication()).orElse(null);
+		appOverTime.setApplication(application);
 		// 基準日に関係ない情報を取得する
 		InfoNoBaseDate infoNoBaseDate = commonAlgorithmOverTime.getInfoNoBaseDate(
 				companyId,

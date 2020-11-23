@@ -14,7 +14,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -71,12 +70,17 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 	public static final String FIND_BY_ID = "SELECT *  "
 			+ "FROM KRQDT_APP_OVERTIME as a INNER JOIN KRQDT_APPLICATION as b ON a.APP_ID = b.APP_ID"
 			+ " WHERE a.APP_ID = @appID AND a.CID = @companyId";
+	
+	public static final String SELECT_ALL_BY_JPA = "SELECT a FROM KrqdtAppOverTime as a WHERE a.krqdtAppOvertimePK.cid = :cid and a.krqdtAppOvertimePK.appId = :appId";
+	
 	@Override
 	public Optional<AppOverTime> find(String companyId, String appId) {
-		return new NtsStatement(FIND_BY_ID, this.jdbcProxy())
-				.paramString("appID", appId)
-				.paramString("companyId", companyId)
-				.getSingle(res -> toDomain(res));
+		return this.queryProxy()
+				   .query(SELECT_ALL_BY_JPA, KrqdtAppOverTime.class)
+				   .setParameter("cid", companyId)
+				   .setParameter("appId", appId)
+				   .getSingle(x -> x.toDomain());
+		
 	}
 	// KrqdtAppOverTime
 	@Override
@@ -280,6 +284,7 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 		updateAppOverTime.get().appOvertimeDetail = krqdtAppOverTime.appOvertimeDetail;
 		
 		this.commandProxy().update(updateAppOverTime.get());
+		this.getEntityManager().flush();
 	}
 	public AppOverTime toDomain(NtsResultRecord res) {
 		String pattern = "yyyy/MM/dd HH:mm:ss";

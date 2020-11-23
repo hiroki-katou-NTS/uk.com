@@ -1,7 +1,10 @@
 package nts.uk.ctx.at.request.infra.entity.application.overtime;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -13,8 +16,26 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
+import nts.uk.ctx.at.request.dom.application.overtime.HolidayMidNightTime;
+import nts.uk.ctx.at.request.dom.application.overtime.OverTimeShiftNight;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
+import nts.uk.ctx.at.request.dom.application.overtime.ReasonDivergence;
+import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.DivergenceReason;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DiverdenceReasonCode;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -167,5 +188,212 @@ public class KrqdtAppOverTime extends ContractUkJpaEntity implements Serializabl
 		return krqdtAppOvertimePK;
 	}
 	
+	public AppOverTime toDomain() {
+		if (getKey() == null) return null;
+		AppOverTime appOverTime = new AppOverTime();
+		
+		appOverTime.setOverTimeClf(EnumAdaptor.valueOf(overtimeAtr, OvertimeAppAtr.class));
+		if (StringUtils.isNotBlank(workTimeCode) || StringUtils.isNotBlank(workTimeCode)) {
+			WorkInformation workInformation = new WorkInformation("", "");
+			appOverTime.setWorkInfoOp(Optional.of(workInformation));
+			if (StringUtils.isNotBlank(workTypeCode)) {
+				workInformation.setWorkTypeCode(workTypeCode);
+			}
+			if (StringUtils.isNotBlank(workTimeCode)) {
+				workInformation.setWorkTimeCode(workTimeCode);
+			}
+		}
+		List<TimeZoneWithWorkNo> workHoursOp = new ArrayList<TimeZoneWithWorkNo>();
+		List<TimeZoneWithWorkNo> breakTimeOp = new ArrayList<TimeZoneWithWorkNo>();
+		if (workTimeStart1 != null && workTimeEnd1 != null) {
+			
+			TimeZoneWithWorkNo timeZoneWithWorkNo = new TimeZoneWithWorkNo(1, workTimeStart1, workTimeEnd1);
+			workHoursOp.add(timeZoneWithWorkNo);
+			appOverTime.setWorkHoursOp(Optional.of(workHoursOp));
+		}
+		if (workTimeStart2 != null && workTimeEnd2 != null) {
+			
+			TimeZoneWithWorkNo timeZoneWithWorkNo = new TimeZoneWithWorkNo(2, workTimeStart2, workTimeEnd2);
+			workHoursOp.add(timeZoneWithWorkNo);		
+		}
+		appOverTime.setOpReversionReason(Optional.empty());
+		ReasonDivergence reasonDivergence1 = new ReasonDivergence();
+		ReasonDivergence reasonDivergence2 = new ReasonDivergence();
+		
+		ApplicationTime applicationTime = new ApplicationTime();
+		applicationTime.setFlexOverTime(Optional.ofNullable(flexExcessTime != null ? new AttendanceTimeOfExistMinus(flexExcessTime) : null));
+		// 112610
+		if (divergenceNo1 != null) {
+			reasonDivergence1.setDiviationTime(divergenceNo1);
+		}
+		if (divergenceCD1 != null) {
+			DiverdenceReasonCode reasonCode = new DiverdenceReasonCode(divergenceCD1);
+			reasonDivergence1.setReasonCode(reasonCode);
+		}
+		if (divergenceReason1 != null) {
+			DivergenceReason diReason = new DivergenceReason(divergenceReason1);
+			reasonDivergence1.setReason(diReason);
+		}
+		
+		if (divergenceNo2 != null) {
+			reasonDivergence2.setDiviationTime(divergenceNo2);
+		}
+		if (divergenceCD2 != null) {
+			DiverdenceReasonCode reasonCode = new DiverdenceReasonCode(divergenceCD2);
+			reasonDivergence2.setReasonCode(reasonCode);
+		}
+		if (divergenceReason2 != null) {
+			DivergenceReason diReason = new DivergenceReason(divergenceReason2);
+			reasonDivergence2.setReason(diReason);
+		}
+		List<ReasonDivergence> reasonDissociation;
+		List<ReasonDivergence> reasonDissociation2;
+		
+		if (!reasonDivergence1.isNullProp()) {
+			
+			reasonDissociation = new ArrayList<ReasonDivergence>();
+			reasonDissociation.add(reasonDivergence1);
+			applicationTime.setReasonDissociation(Optional.of(reasonDissociation));
+		}
+		
+		if (!reasonDivergence2.isNullProp()) {
+			reasonDissociation2 = new ArrayList<ReasonDivergence>();
+			reasonDissociation2.add(reasonDivergence2);
+			if(!applicationTime.getReasonDissociation().isPresent()) {
+				applicationTime.setReasonDissociation(Optional.of(reasonDissociation2));
+			}
+			if (applicationTime.getReasonDissociation().isPresent()) {
+				applicationTime.getReasonDissociation().get().add(reasonDivergence2);			
+			} 
+		}
+
+		OverTimeShiftNight overTimeShiftNight = new OverTimeShiftNight();
+		if (overTimeNight == null 
+				&& totalNight == null
+				&& legalHdNight == null 
+				&& nonLegalHdNight == null 
+				&& nonLegalPublicHdNight == null) {
+			applicationTime.setOverTimeShiftNight(Optional.empty());
+			
+		} else {
+			if (overTimeNight != null) {
+				overTimeShiftNight.setOverTimeMidNight(new TimeWithDayAttr(overTimeNight));
+			}
+			if (totalNight != null) {
+				overTimeShiftNight.setMidNightOutSide(new TimeWithDayAttr(totalNight));
+			}
+			List<HolidayMidNightTime> midNightHolidayTimes = new ArrayList<HolidayMidNightTime>();
+			if (legalHdNight != null) {
+				HolidayMidNightTime holidayMidNightTime = new HolidayMidNightTime();
+				holidayMidNightTime.setAttendanceTime(new AttendanceTime(legalHdNight));
+				holidayMidNightTime.setLegalClf(StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork);
+				midNightHolidayTimes.add(holidayMidNightTime);
+			}
+			
+			if (nonLegalHdNight != null) {
+				HolidayMidNightTime holidayMidNightTime = new HolidayMidNightTime();
+				holidayMidNightTime.setAttendanceTime(new AttendanceTime(nonLegalHdNight));
+				holidayMidNightTime.setLegalClf(StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork);
+				midNightHolidayTimes.add(holidayMidNightTime);
+			}
+			
+			
+			if (nonLegalPublicHdNight != null) {
+				HolidayMidNightTime holidayMidNightTime = new HolidayMidNightTime();
+				holidayMidNightTime.setAttendanceTime(new AttendanceTime(nonLegalPublicHdNight));
+				holidayMidNightTime.setLegalClf(StaturoryAtrOfHolidayWork.PublicHolidayWork);
+				midNightHolidayTimes.add(holidayMidNightTime);
+			}
+			applicationTime.setOverTimeShiftNight(Optional.of(overTimeShiftNight));
+			
+		}
+		
+		if (breakTimeStart1 != null && breakTimeEnd1 != null) {
+			TimeZoneWithWorkNo timeZoneWithWorkNo = new TimeZoneWithWorkNo(1, breakTimeStart1, breakTimeEnd1);
+			breakTimeOp.add(timeZoneWithWorkNo);
+			appOverTime.setBreakTimeOp(Optional.of(breakTimeOp));
+		}
+		
+		if (breakTimeStart2 != null && breakTimeEnd2 != null) {
+			TimeZoneWithWorkNo timeZoneWithWorkNo = new TimeZoneWithWorkNo(1, breakTimeStart2, breakTimeEnd2);
+			breakTimeOp.add(timeZoneWithWorkNo);
+			if (!appOverTime.getBreakTimeOp().isPresent()) {
+				appOverTime.setBreakTimeOp(Optional.of(breakTimeOp));				
+			}
+		}
+		if (breakTimeStart3 != null && breakTimeEnd3 != null) {
+			TimeZoneWithWorkNo timeZoneWithWorkNo = new TimeZoneWithWorkNo(1, breakTimeStart3, breakTimeEnd3);
+			breakTimeOp.add(timeZoneWithWorkNo);
+			if (!appOverTime.getBreakTimeOp().isPresent()) {
+				appOverTime.setBreakTimeOp(Optional.of(breakTimeOp));				
+			}
+		}
+		if (breakTimeStart4 != null && breakTimeEnd4 != null) {
+			TimeZoneWithWorkNo timeZoneWithWorkNo = new TimeZoneWithWorkNo(1, breakTimeStart4, breakTimeEnd4);
+			breakTimeOp.add(timeZoneWithWorkNo);
+			if (!appOverTime.getBreakTimeOp().isPresent()) {
+				appOverTime.setBreakTimeOp(Optional.of(breakTimeOp));				
+			}
+		}
+		
+		if (breakTimeStart5 != null && breakTimeEnd5 != null) {
+			TimeZoneWithWorkNo timeZoneWithWorkNo = new TimeZoneWithWorkNo(1, breakTimeStart5, breakTimeEnd5);
+			breakTimeOp.add(timeZoneWithWorkNo);
+			if (!appOverTime.getBreakTimeOp().isPresent()) {
+				appOverTime.setBreakTimeOp(Optional.of(breakTimeOp));				
+			}
+		}
+		
+		if (breakTimeStart6 != null && breakTimeEnd6 != null) {
+			TimeZoneWithWorkNo timeZoneWithWorkNo = new TimeZoneWithWorkNo(1, breakTimeStart6, breakTimeEnd6);
+			breakTimeOp.add(timeZoneWithWorkNo);
+			if (!appOverTime.getBreakTimeOp().isPresent()) {
+				appOverTime.setBreakTimeOp(Optional.of(breakTimeOp));				
+			}
+		}
+		
+		if (breakTimeStart7 != null && breakTimeEnd7 != null) {
+			TimeZoneWithWorkNo timeZoneWithWorkNo = new TimeZoneWithWorkNo(1, breakTimeStart7, breakTimeEnd7);
+			breakTimeOp.add(timeZoneWithWorkNo);
+			if (!appOverTime.getBreakTimeOp().isPresent()) {
+				appOverTime.setBreakTimeOp(Optional.of(breakTimeOp));				
+			}
+		}
+		
+		if (breakTimeStart8 != null && breakTimeEnd8 != null) {
+			TimeZoneWithWorkNo timeZoneWithWorkNo = new TimeZoneWithWorkNo(1, breakTimeStart8, breakTimeEnd8);
+			breakTimeOp.add(timeZoneWithWorkNo);
+			if (!appOverTime.getBreakTimeOp().isPresent()) {
+				appOverTime.setBreakTimeOp(Optional.of(breakTimeOp));				
+			}
+		}
+		
+		if (breakTimeStart9 != null && breakTimeEnd9 != null) {
+			TimeZoneWithWorkNo timeZoneWithWorkNo = new TimeZoneWithWorkNo(1, breakTimeStart9, breakTimeEnd9);
+			breakTimeOp.add(timeZoneWithWorkNo);
+			if (!appOverTime.getBreakTimeOp().isPresent()) {
+				appOverTime.setBreakTimeOp(Optional.of(breakTimeOp));				
+			}
+		}
+		
+		if (breakTimeStart10 != null && breakTimeEnd10 != null) {
+			TimeZoneWithWorkNo timeZoneWithWorkNo = new TimeZoneWithWorkNo(1, breakTimeStart10, breakTimeEnd10);
+			breakTimeOp.add(timeZoneWithWorkNo);
+			if (!appOverTime.getBreakTimeOp().isPresent()) {
+				appOverTime.setBreakTimeOp(Optional.of(breakTimeOp));				
+			}
+		}
+		if (appOvertimeDetail != null) {
+			appOverTime.setDetailOverTimeOp(Optional.of(appOvertimeDetail.toDomain()));
+		}
+		if (!CollectionUtil.isEmpty(overtimeInputs)) {
+			appOverTime.setApplicationTime(new ApplicationTime());
+			appOverTime.getApplicationTime().setApplicationTime(overtimeInputs.stream()
+																			  .map(x -> x.toDomain())
+																			  .collect(Collectors.toList()));
+		}
+		
+		return appOverTime;
+	}
 	
 }

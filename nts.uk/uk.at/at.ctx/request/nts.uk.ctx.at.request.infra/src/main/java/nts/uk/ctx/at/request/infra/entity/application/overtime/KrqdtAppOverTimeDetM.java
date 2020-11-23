@@ -13,6 +13,7 @@ import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeUpperLimitPerMonth;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * Refactor5
@@ -49,6 +50,17 @@ public class KrqdtAppOverTimeDetM extends ContractUkJpaEntity implements Seriali
 	@Override
 	protected Object getKey() {
 		return null;
+	}
+	
+	
+	public Time36AgreeUpperLimitPerMonth toDomain() {
+		if (getKey() == null) return null;
+		Time36AgreeUpperLimitPerMonth time36AgreeUpperLimitPerMonth = new Time36AgreeUpperLimitPerMonth(
+				krqdtAppOverTimeDetMPK.startYm,
+				krqdtAppOverTimeDetMPK.endYm,
+				avTime,
+				totalTime);
+		return time36AgreeUpperLimitPerMonth;
 	}
 
 }
