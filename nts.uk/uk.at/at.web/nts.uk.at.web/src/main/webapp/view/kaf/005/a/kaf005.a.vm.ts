@@ -599,15 +599,15 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			let overTimeArray = [] as Array<OverTime>;
 			let overTimeQuotaList = res.infoBaseDateOutput.quotaOutput.overTimeQuotaList as Array<OvertimeWorkFrame>;
 			if (_.isEmpty(res.infoBaseDateOutput.quotaOutput.overTimeQuotaList)) return;
-			// A6_7
-			_.forEach(overTimeQuotaList, (item: OvertimeWorkFrame) => {
-				let overTime = {} as OverTime;
-				overTime.frameNo = String(item.overtimeWorkFrNo);
-				overTime.displayNo = ko.observable(item.overtimeWorkFrName);
-				overTime.applicationTime = ko.observable(null);
-				overTime.preTime = ko.observable(null);
-				overTime.actualTime = ko.observable(null);
-				overTimeArray.push(overTime);
+				// A6_7
+				_.forEach(overTimeQuotaList, (item: OvertimeWorkFrame) => {
+					let overTime = {} as OverTime;
+					overTime.frameNo = String(item.overtimeWorkFrNo);
+					overTime.displayNo = ko.observable(item.overtimeWorkFrName);
+					overTime.applicationTime = ko.observable(null);
+					overTime.preTime = ko.observable(null);
+					overTime.actualTime = ko.observable(null);
+					overTimeArray.push(overTime);
 			});
 
 
@@ -767,7 +767,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			visibleModel.c6(c6);
 
 			// 「残業申請の表示情報．基準日に関係しない情報．残業申請設定．申請詳細設定．時刻計算利用区分」= する
-			let c7 = res.infoNoBaseDate.overTimeAppSet.applicationDetailSetting.timeInputUse == NotUseAtr.USE
+			let c7 = res.infoNoBaseDate.overTimeAppSet.applicationDetailSetting.timeCalUse == NotUseAtr.USE
 			visibleModel.c7(c7);
 
 			// 「残業申請の表示情報．基準日に関係しない情報．利用する乖離理由．NO = 1」 <> empty And
@@ -1026,7 +1026,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		Not_USE,
 		USE
 	}
-	interface ParamCalculationCMD {
+	export interface ParamCalculationCMD {
 		companyId: string;
 		employeeId: string;
 		dateOp: string;
@@ -1036,7 +1036,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		achieveApplicationTime: ApplicationTime;
 		workContent: WorkContent;
 	}
-	interface DisplayInfoOverTime {
+	export interface DisplayInfoOverTime {
 		infoBaseDateOutput: InfoBaseDateOutput;
 		infoNoBaseDate: InfoNoBaseDate;
 		workdayoffFrames: Array<WorkdayoffFrame>;
@@ -1046,17 +1046,17 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		calculationResultOp?: CalculationResult;
 		infoWithDateApplicationOp?: InfoWithDateApplication;
 	}
-	interface WorkdayoffFrame {
+	export interface WorkdayoffFrame {
 		workdayoffFrNo: number;
 		workdayoffFrName: string;
 	}
-	interface CalculationResult {
+	export interface CalculationResult {
 		flag: number;
 		overTimeZoneFlag: number;
 		overStateOutput: any;
 		applicationTimes: Array<ApplicationTime>;
 	}
-	interface ParamBreakTime {
+	export interface ParamBreakTime {
 		companyId: string;
 		workTypeCode: string;
 		workTimeCode: string;
@@ -1065,36 +1065,36 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		actualContentDisplayDtos: any;
 	}
 	
-	interface InfoWithDateApplication {
+	export interface InfoWithDateApplication {
 		workTypeCD?: string;
 		workTimeCD?: string;
 		workHours?: WorkHoursDto;
 		breakTime?: BreakTimeZoneSetting;
 		applicationTime?: ApplicationTime;
 	}
-	interface BreakTimeZoneSetting {
+	export interface BreakTimeZoneSetting {
 		timeZones?: Array<TimeZone>;
 	}
-	interface TimeZone {
+	export interface TimeZone {
 		frameNo: number;
 		start: number;
 		end: number;
 	}
-	interface WorkHoursDto {
+	export interface WorkHoursDto {
 		startTimeOp1: number;
 		endTimeOp1: number;
 		startTimeOp2: number;
 		endTimeOp2: number;
 	}
-	interface InfoBaseDateOutput {
+	export interface InfoBaseDateOutput {
 		worktypes: Array<WorkType>;
 		quotaOutput: QuotaOuput;
 	}
-	interface QuotaOuput {
+	export interface QuotaOuput {
 		flexTimeClf: boolean;
 		overTimeQuotaList: Array<OvertimeWorkFrame>;
 	}
-	interface OvertimeWorkFrame {
+	export interface OvertimeWorkFrame {
 		companyId: string;
 		overtimeWorkFrNo: number;
 		useClassification: number;
@@ -1102,63 +1102,63 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		overtimeWorkFrName: string;
 
 	}
-	interface WorkType {
+	export interface WorkType {
 		workTypeCode: string;
 		name: string;
 	}
 
-	interface WorkTime {
+	export interface WorkTime {
 		worktimeCode: string;
 		workTimeDisplayName: WorkTimeDisplayName;
 	}
-	interface WorkTimeDisplayName {
+	export interface WorkTimeDisplayName {
 		workTimeName: string;
 	}
-	interface InfoNoBaseDate {
+	export interface InfoNoBaseDate {
 		overTimeReflect: any;
 		overTimeAppSet: OvertimeAppSet;
 		agreeOverTimeOutput: AgreeOverTimeOutput;
 		divergenceReasonInputMethod: Array<DivergenceReasonInputMethod>;
 		divergenceTimeRoot: Array<DivergenceTimeRoot>;
 	}
-	interface DivergenceReasonInputMethod {
+	export interface DivergenceReasonInputMethod {
 		divergenceTimeNo: number;
 		divergenceReasonInputed: boolean;
 		divergenceReasonSelected: boolean;
 		reasons: Array<DivergenceReasonSelect>;
 	}
 	
-	interface DivergenceReasonSelect {
+	export interface DivergenceReasonSelect {
 		divergenceReasonCode: string;
 		reason: string;
 	}
-	interface DivergenceTimeRoot {
+	export interface DivergenceTimeRoot {
 		divergenceTimeNo: number;
 		companyId: string;
 		divTimeUseSet: number;
 		divTimeName: string;
 		divType: number;
 	}
-	interface DivergenceReasonInputMethod {
+	export interface DivergenceReasonInputMethod {
 		divergenceTimeNo: number;
 		companyId: string;
 		divergenceReasonInputed: boolean;
 		divergenceReasonSelected: boolean;
 		reasons: Array<DivergenceReasonSelect>;
 	}
-	interface OvertimeAppSet {
+	export interface OvertimeAppSet {
 		companyID: string;
 		overtimeLeaveAppCommonSetting: any;
 		overtimeQuotaSet: Array<any>;
 		applicationDetailSetting: any;
 	}
-	interface AgreeOverTimeOutput {
+	export interface AgreeOverTimeOutput {
 		detailCurrentMonth: AgreementTimeImport;
 		detailNextMonth: AgreementTimeImport;
 		currentMonth: string;
 		nextMonth: string;
 	}
-	interface AgreementTimeImport {
+	export interface AgreementTimeImport {
 		employeeId: string;
 		confirmed?: AgreeTimeOfMonthExport;
 		afterAppReflect?: AgreeTimeOfMonthExport;
@@ -1166,7 +1166,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		afterAppReflectMax?: AgreMaxTimeOfMonthExport;
 		errorMessage?: string;
 	}
-	interface AgreeTimeOfMonthExport {
+	export interface AgreeTimeOfMonthExport {
 		agreementTime: number;
 		limitErrorTime: number;
 		limitAlarmTime: number
@@ -1174,7 +1174,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		exceptionLimitAlarmTime?: number;
 		status: number
 	}
-	interface AgreMaxTimeOfMonthExport {
+	export interface AgreMaxTimeOfMonthExport {
 		agreementTime: number;
 		maxTime: number;
 		status: number;
@@ -1193,7 +1193,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		BONUSSPECIALDAYTIME
 	}
 
-	interface FirstParam { // start param
+	export interface FirstParam { // start param
 		companyId: string; // 会社ID
 		appType?: number; // 申請種類
 		sids?: Array<string>; // 申請者リスト
@@ -1207,7 +1207,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		isProxy: boolean; // 代行申請か
 	}
 
-	interface SecondParam { // start param
+	export interface SecondParam { // start param
 		companyId: string; // 会社ID
 		employeeId: string; // 社員ID
 		appDate: string; // 申請日
@@ -1217,7 +1217,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		achivementApplicationTime: ApplicationTime; // 実績の申請時間
 		workContent: WorkContent; // 勤務内容
 	}
-	interface OvertimeLeaveAppCommonSet {
+	export interface OvertimeLeaveAppCommonSet {
 		preExcessDisplaySetting: number; // 事前超過表示設定
 		extratimeExcessAtr: number; // 時間外超過区分
 		extratimeDisplayAtr: number; // 時間外表示区分
@@ -1227,63 +1227,63 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		overrideSet: number; // 実績超過打刻優先設定
 
 	}
-	interface ApplicationTime {
+	export interface ApplicationTime {
 		applicationTime: Array<OvertimeApplicationSetting>; //  申請時間
 		flexOverTime: number; // フレックス超過時間
 		overTimeShiftNight: OverTimeShiftNight; // 就業時間外深夜時間
 		anyItem: Array<AnyItemValue>; // 任意項目
 		reasonDissociation: Array<any>; // 乖離理由
 	}
-	interface OvertimeApplicationSetting {
+	export interface OvertimeApplicationSetting {
 		frameNo: number;
 		attendanceType: number;
 		applicationTime: number
 	}
-	interface OverTimeShiftNight {
+	export interface OverTimeShiftNight {
 		midNightHolidayTimes: Array<any>;
 		midNightOutSide: number;
 		overTimeMidNight: number;
 	}
-	interface AnyItemValue {
+	export interface AnyItemValue {
 		itemNo: number;
 		times: number;
 		amount: number;
 		time: number
 	}
-	interface ReasonDivergence {
+	export interface ReasonDivergence {
 
 		reason: DivergenceReason;
 		reasonCode: string;
 		diviationTime: number;
 	}
-	interface DivergenceReason {
+	export interface DivergenceReason {
 
 	}
-	interface WorkContent {
+	export interface WorkContent {
 		workTypeCode: string;
 		workTimeCode: string;
 		timeZones: Array<TimeZone>;
 		breakTimes: Array<BreakTimeSheet>;
 	}
-	interface TimeZone {
+	export interface TimeZone {
 		start: number;
 		end: number;
 	}
-	interface BreakTimeSheet {
+	export interface BreakTimeSheet {
 		breakFrameNo: number;
 		startTime: number;
 		endTime: number;
 		breakTime: number;
 	}
-	interface TimeZoneWithWorkNo {
+	export interface TimeZoneWithWorkNo {
 		workNo: number;
 		timeZone: TimeZone_New;
 	}
-	interface TimeZone_New {
+	export interface TimeZone_New {
 		startTime: number;
 		endTime: number;
 	}
-	interface AppOverTime {
+	export interface AppOverTime {
 		overTimeClf: number;
 		applicationTime: ApplicationTime;
 		breakTimeOp?: Array<TimeZoneWithWorkNo>;
@@ -1292,7 +1292,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		detailOverTimeOp?: AppOvertimeDetail;
 		application: ApplicationDto;
 	}
-	interface AppOvertimeDetail {
+	export interface AppOvertimeDetail {
 		applicationTime: number;
 		yearMonth: number;
 		actualTime: number;
@@ -1311,13 +1311,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		upperLimitTimeAverage: number;
 
 	}
-	interface Time36UpLimitMonth {
+	export interface Time36UpLimitMonth {
 		periodYearStart: number;
 		periodYearEnd: number;
 		averageTime: number;
 		totalTime: number;
 	}
-	interface ApplicationDto {
+	export interface ApplicationDto {
 		version: number;
 		appID: string;
 		prePostAtr: number;
@@ -1334,25 +1334,25 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		opAppReason?: string;
 		opAppStandardReasonCD?: number;
 	}
-	interface ReflectionStatus {
+	export interface ReflectionStatus {
 
 	}
-	interface WorkInformation {
+	export interface WorkInformation {
 		workType: string;
 		workTime: string;
 	}
 
-	interface ParamCheckBeforeRegister {
+	export interface ParamCheckBeforeRegister {
 		require: boolean;
 		companyId: string;
 		displayInfoOverTime: DisplayInfoOverTime;
 		appOverTime: AppOverTime;
 	}
-	interface CheckBeforeOutput {
+	export interface CheckBeforeOutput {
 		appOverTime: AppOverTime;
 		confirmMsgOutputs: Array<any>;
 	}
-	interface RegisterCommand {
+	export interface RegisterCommand {
 		companyId: string;
 		appOverTime: AppOverTime;
 		approvalPhaseState: Array<any>;
