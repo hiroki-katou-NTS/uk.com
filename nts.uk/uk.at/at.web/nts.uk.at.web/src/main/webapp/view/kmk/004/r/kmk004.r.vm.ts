@@ -9,7 +9,7 @@ module nts.uk.at.kmk004.r {
 	@bean()
 	export class ViewModel extends ko.ViewModel {
 		param: IParam = {
-			screenMode: 'WORK_PLACE',
+			screenMode: 'EMPLOYMENT',
 			data: [],
 			selectedCode: null,
 			alreadySettingList: []
@@ -91,7 +91,9 @@ module nts.uk.at.kmk004.r {
 					tabindex: 1,
 					systemType: 2
 				};
-
+			var windowSize = nts.uk.ui.windows.getSelf();
+            windowSize.$dialog.dialog("option", "width", 500);
+            windowSize.$dialog.dialog("option", "height", 530);
 			$('#work-place-list').ntsTreeComponent(wpOption);
 		}
 
@@ -108,7 +110,6 @@ module nts.uk.at.kmk004.r {
 					alreadySettingList: vm.screenData().alreadySettingList,
 					maxRows: 9
 				};
-
 			$('#employment-list').ntsListComponent(empOption);
 		}
 
@@ -131,6 +132,9 @@ module nts.uk.at.kmk004.r {
 			};
 
 			$('#employee-list').ntsListComponent(employeeOption);
+			var windowSize = nts.uk.ui.windows.getSelf();
+            windowSize.$dialog.dialog("option", "width", 380);
+            windowSize.$dialog.dialog("option", "height", 450);
 
 		}
 	}
