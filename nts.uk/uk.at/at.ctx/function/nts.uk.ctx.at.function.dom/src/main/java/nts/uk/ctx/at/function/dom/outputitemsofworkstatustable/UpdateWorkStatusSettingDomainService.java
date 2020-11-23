@@ -5,12 +5,10 @@ import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.DailyMonthlyClassification;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
-import java.util.ArrayList;
 import java.util.List;
 
 /**

@@ -44,7 +44,6 @@ public class CreateDisplayContentWorkStatusDService {
         listEmployeeStatus.parallelStream().forEach(e -> {
 
             val item = new DisplayContentWorkStatus();
-            val itemOneLines = new ArrayList<OutputItemOneLine>();
             val eplInfo = mapSids.get(e.getEmployeeId());
             if (eplInfo != null) {
                 item.setEmployeeCode(eplInfo.getEmployeeCode());
@@ -68,13 +67,13 @@ public class CreateDisplayContentWorkStatusDService {
                     .collect(Collectors.toMap(AttendanceResultDto::getWorkingDate,
                             k -> k.getAttendanceItems().stream()
                                     .collect(Collectors.toMap(AttendanceItemDtoValue::getItemId, l -> l))));
-            allValue.forEach((key, value1) -> {
-                for (val j : outputItems) {
+            val itemOneLines = new ArrayList<OutputItemOneLine>();
+            for (val j : outputItems) {
+
+                val itemValue = new ArrayList<DailyValue>();
+                allValue.forEach((key, value1) -> {
                     val listAtId = j.getSelectedAttendanceItemList();
-                    if (listAtId.isEmpty()) {
-                        continue;
-                    }
-                    val itemValue = new ArrayList<DailyValue>();
+
                     StringBuilder character = new StringBuilder();
                     Double actualValue = 0D;
                     if (j.getItemDetailAttributes() == CommonAttributesOfForms.WORK_TYPE ||
@@ -106,19 +105,23 @@ public class CreateDisplayContentWorkStatusDService {
                                 key
                         ));
                     }
-                    val total = itemValue.parallelStream().filter(q -> q.getActualValue() != null)
-                            .mapToDouble(DailyValue::getActualValue).sum();
-                    itemOneLines.add(
-                            new OutputItemOneLine(
-                                    total,
-                                    j.getName().v(),
-                                    itemValue
-                            ));
-                    item.setOutputItemOneLines(itemOneLines);
-                }
-            });
+
+
+                });
+                val total = itemValue.parallelStream().filter(q -> q.getActualValue() != null)
+                        .mapToDouble(DailyValue::getActualValue).sum();
+                itemOneLines.add(
+                        new OutputItemOneLine(
+                                total,
+                                j.getName().v(),
+                                itemValue
+                        ));
+                item.setOutputItemOneLines(itemOneLines);
+            }
+
             rs.add(item);
         });
+
         if (rs.isEmpty()) {
             throw new BusinessException("Msg_1816");
         }
@@ -128,8 +131,6 @@ public class CreateDisplayContentWorkStatusDService {
     public interface Require {
         //[RQ 588] 社員の指定期間中の所属期間を取得する
         List<StatusOfEmployee> getListAffComHistByListSidAndPeriod(List<String> sid, DatePeriod datePeriod);
-
-        AttendanceResultDto getValueOf(String employeeId, GeneralDate workingDate, Collection<Integer> itemIds);
 
         List<AttendanceResultDto> getValueOf(List<String> employeeIds, DatePeriod workingDatePeriod, Collection<Integer> itemIds);
     }

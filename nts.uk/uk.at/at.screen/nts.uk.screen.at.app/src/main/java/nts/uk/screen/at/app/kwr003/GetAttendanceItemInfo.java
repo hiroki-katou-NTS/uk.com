@@ -17,6 +17,7 @@ import nts.uk.shr.com.context.AppContexts;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -41,15 +42,17 @@ public class GetAttendanceItemInfo {
     public AttendanceItemInfoDto getAttendanceItemInfo(int formNumberDisplay, boolean isDaily, boolean isMonthly) {
         // TODO QA PARAMS (params đang tự đặt , ko theo tài liệu)
         val cid = AppContexts.user().companyId();
-        val roleId = Optional.of(AppContexts.user().roles().forAttendance());
+        val roleId = Optional.ofNullable(AppContexts.user().roles().forAttendance());
         List<AttItemDto> listDaily = new ArrayList<AttItemDto>();
         if (isDaily) {
             //  （1:日次）
-            val listAttdanceIdOfDaily = new ArrayList<Integer>(getAttendanceIdByFormNumberQuery.getAttendanceId(DailyMonthlyClassification.DAILY, formNumberDisplay));
+            val listAttdanceIdOfDaily = getAttendanceIdByFormNumberQuery.getAttendanceId(DailyMonthlyClassification.DAILY, formNumberDisplay);
             //  「使用不可の勤怠項目を除く」
             val listAttId = this.attendanceItemNameService.getAvaiableAttendanceItem(cid, TypeOfItem.Daily, listAttdanceIdOfDaily);
             //勤怠項目の種類　（1:日次）
-            val itemDailys = dailyItemService.getDailyItems(cid, roleId, listAttId, null);
+            val itemAtrs = Arrays.asList(DailyAttendanceAtr.Classification,
+                    DailyAttendanceAtr.Time, DailyAttendanceAtr.Charater);
+            val itemDailys = dailyItemService.getDailyItems(cid, roleId, listAttId, itemAtrs);
             listDaily.addAll(itemDailys.stream().map(e -> new AttItemDto(
                     e.getAttendanceItemId(),
                     e.getAttendanceItemName(),
@@ -61,11 +64,13 @@ public class GetAttendanceItemInfo {
         List<AttItemDto> listMonthly = new ArrayList<AttItemDto>();
         if (isMonthly) {
             //  （2:月次）
-            val listAttdanceIdOfMonthly = new ArrayList<Integer>(getAttendanceIdByFormNumberQuery.getAttendanceId(DailyMonthlyClassification.MONTHLY, formNumberDisplay));
+            val listAttdanceIdOfMonthly = getAttendanceIdByFormNumberQuery.getAttendanceId(DailyMonthlyClassification.MONTHLY, formNumberDisplay);
             //  「使用不可の勤怠項目を除く」
+            val itemAtrs = Arrays.asList(MonthlyAttendanceItemAtr.AMOUNT,
+                    MonthlyAttendanceItemAtr.REFER_TO_MASTER, MonthlyAttendanceItemAtr.CODE, MonthlyAttendanceItemAtr.CLASSIFICATION);
             val listAttId = this.attendanceItemNameService.getAvaiableAttendanceItem(cid, TypeOfItem.Monthly, listAttdanceIdOfMonthly);
             // 勤怠項目の種類　（2:月次）
-            val itemMonthlys = monthlyItemService.getMonthlyItems(cid, roleId, listAttId, null);
+            val itemMonthlys = monthlyItemService.getMonthlyItems(cid, roleId, listAttId, itemAtrs);
             listMonthly.addAll(itemMonthlys.stream().map(e -> new AttItemDto(
                     e.getAttendanceItemId(),
                     e.getAttendanceItemName(),
@@ -77,6 +82,7 @@ public class GetAttendanceItemInfo {
         return new AttendanceItemInfoDto(listDaily, listMonthly);
 
     }
+
     private Integer convertDailyToAttForms(Integer typeOfAttendanceItem, int masterType) {
         if (typeOfAttendanceItem == DailyAttendanceAtr.Code.value &&
                 masterType == TypesMasterRelatedDailyAttendanceItem.WORK_TYPE.value) {
