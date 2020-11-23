@@ -407,10 +407,18 @@ module nts.uk.at.ksm008.c {
             let orgInfo = ko.toJS(vm.targetOrganizationInfor());
 
             vm.$errors("clear");
-            const params = {
-                unit: orgInfo.unit,
-                workplaceId: orgInfo.workplaceId
-            };
+            let params;
+            if (vm.isWorkplaceMode()) {
+                params = {
+                    unit: orgInfo.unit,
+                    workplaceId: orgInfo.workplaceId
+                };
+            } else {
+                params = {
+                    unit: orgInfo.unit,
+                    workplaceGroupId: orgInfo.workplaceGroupId
+                };
+            }
             vm.$window
                 .storage('dataShareDialog046', params)
                 .then(() => vm.$window.modal('at', '/view/kdl/046/a/index.xhtml'))

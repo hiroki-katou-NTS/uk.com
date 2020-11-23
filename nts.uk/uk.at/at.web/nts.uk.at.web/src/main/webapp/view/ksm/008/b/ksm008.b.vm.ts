@@ -133,7 +133,7 @@ module nts.uk.at.ksm008.b {
                         let lstEmployee = _.map(res.personInfos, function (item: any) {
                             return {id: item.employeeID, code: item.employeeCode, name: item.businessName, workplaceName: ''};
                         });
-                        vm.employeeList(lstEmployee);
+                        vm.employeeList(_.orderBy(lstEmployee, ['code'],['asc']));
                         if (!reload) {
                             vm.selectedCode(lstEmployee[0].code);
                         }
@@ -169,6 +169,7 @@ module nts.uk.at.ksm008.b {
             });
 
             vm.simultanceList(lstSimultance);
+            vm.multiSelectedCode([]);
         }
 
         getListSimultaneous(code: string) {
@@ -181,7 +182,7 @@ module nts.uk.at.ksm008.b {
                        return {id: item.employeeID, code: item.employeeCode, name: item.businessName, workplaceName: ''};
                    });
                    vm.multiSelectedCode([]);
-                   vm.simultanceList(lstEmployee);
+                   vm.simultanceList(_.orderBy(lstEmployee, ['code'],['asc']));
                    vm.enableDeleteBtn(true);
                    vm.screenMode = MODE.EDIT_MODE;
                } else {
@@ -258,7 +259,7 @@ module nts.uk.at.ksm008.b {
             let employeeSearchs: UnitModel[] = _.map(dataList, function (data: any) {
                 return {id: data.employeeId, code: data.employeeCode, name: data.employeeName, workplaceName: ''}
             });
-            vm.employeeList(employeeSearchs);
+            vm.employeeList(_.orderBy(employeeSearchs, ['code'],['asc']));
             if (employeeSearchs && employeeSearchs.length > 0) {
                 vm.selectedCode(employeeSearchs[0].code);
             };
@@ -403,15 +404,16 @@ module nts.uk.at.ksm008.b {
                 .then(() => vm.$window.storage('CDL009Output'))
                 .then((data) => {
                     if (data && data.length) {
+                        vm.$blockui("grayout");
                         vm.$ajax(API.getEmpInfo, { sids: data}).done((res) => {
                             let lstEmployee = _.map(res, function (item: any) {
                                 return {id: item.employeeID, code: item.employeeCode, name: item.businessName, workplaceName: ''};
                             });
+                            vm.simultanceList(_.orderBy(_.unionBy(lstEmployee, listAfterClick, i => i.id), ['code'],['asc']));
                             vm.multiSelectedCode([]);
-                            vm.simultanceList(_.unionBy(lstEmployee, listAfterClick, i => i.id));
                         }).fail((err) => {
                             vm.$dialog.error(err);
-                        })
+                        }).always(() => { vm.$blockui('clear'); });
                     }
                 });
         }
