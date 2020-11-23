@@ -148,6 +148,12 @@ public class ProcessExecutionWebService extends WebService {
 	public List<ExecutionItemInfomationDto> getProcExecLogList() {
 		return this.execLogFinder.findAll();
 	}
+	
+	@POST 
+	@Path("getExecItemInfo/{execItemCd}")
+	public ExecutionItemInfomationDto getProcExecLog(@PathParam("execItemCd") String execItemCd) {
+		return this.execLogFinder.findOne(execItemCd);
+	}
 
 	@POST
 	@Path("execute")

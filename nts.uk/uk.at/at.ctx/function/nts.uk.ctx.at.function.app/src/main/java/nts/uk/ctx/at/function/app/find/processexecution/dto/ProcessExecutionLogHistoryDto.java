@@ -62,13 +62,17 @@ public class ProcessExecutionLogHistoryDto implements ProcessExecutionLogHistory
     /* 前回終了日時*/
     private GeneralDateTime lastEndExecDateTime;
     /* 各処理の終了状態 */
-    private List<ProcessExecutionTaskLogDto> taskLogList;
+    private List<ProcessExecutionTaskLogDto> taskLogListDto;
 
 	private String rangeDateTime;
 
 	private String errorSystemText;
 
 	private String errorBusinessText;
+	
+	private String overallStatusText;
+	
+	private String overallErrorText;
 
     @Override
     public EachProcessPeriod getEachProcPeriod() {
@@ -102,10 +106,10 @@ public class ProcessExecutionLogHistoryDto implements ProcessExecutionLogHistory
 
     @Override
     public List<ExecutionTaskLog> getTaskLogList() {
-        return taskLogList.stream()
+        return taskLogListDto.stream()
                 .map(item -> ExecutionTaskLog.builder()
                         .procExecTask(EnumAdaptor.valueOf(item.getTaskId(), ProcessExecutionTask.class))
-                        .status(Optional.ofNullable(EnumAdaptor.valueOf(item.getStatusCd(), EndStatus.class)))
+                        .status(Optional.ofNullable(item.getStatusCd()).map(data -> EnumAdaptor.valueOf(data, EndStatus.class)))
                         .lastExecDateTime(Optional.ofNullable(item.getLastExecDateTime()))
                         .lastEndExecDateTime(Optional.ofNullable(item.getLastEndExecDateTime()))
                         .errorSystem(Optional.ofNullable(item.getErrorSystem()))
@@ -117,16 +121,8 @@ public class ProcessExecutionLogHistoryDto implements ProcessExecutionLogHistory
 
     @Override
     public void setTaskLogList(List<ExecutionTaskLog> taskLogList) {
-        this.taskLogList = taskLogList.stream()
-                .map(item -> ProcessExecutionTaskLogDto.builder()
-                        .taskId(item.getProcExecTask().value)
-                        .statusCd(item.getStatus().map(e -> e.value).orElse(null))
-                        .status(item.getStatus().map(e -> e.name).orElse(null))
-                        .lastExecDateTime(item.getLastExecDateTime().orElse(null))
-                        .lastEndExecDateTime(item.getLastEndExecDateTime().orElse(null))
-                        .errorSystem(item.getErrorSystem().orElse(null))
-                        .errorBusiness(item.getErrorBusiness().orElse(null))
-                        .build())
+        this.taskLogListDto = taskLogList.stream()
+                .map(ProcessExecutionTaskLogDto::fromDomain)
                 .collect(Collectors.toList());
     }
     
@@ -139,6 +135,8 @@ public class ProcessExecutionLogHistoryDto implements ProcessExecutionLogHistory
         }
     	dto.setErrorSystemText(domain.getErrorSystem().map(error -> error ? HAVE_ERROR : NOT_HAVE_ERROR).orElse(null));
         dto.setErrorBusinessText(domain.getErrorBusiness().map(error -> error ? HAVE_ERROR : NOT_HAVE_ERROR).orElse(null));
+        dto.setOverallErrorText(domain.getOverallError().map(data -> data.name).orElse(null));
+        dto.setOverallStatusText(domain.getOverallStatus().map(data -> data.name).orElse(null));
         return dto;
     }
 }

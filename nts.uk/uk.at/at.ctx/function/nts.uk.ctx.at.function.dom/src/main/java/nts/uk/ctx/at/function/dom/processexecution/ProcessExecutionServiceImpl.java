@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.dom.processexecution;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -121,6 +122,8 @@ public class ProcessExecutionServiceImpl implements ProcessExecutionService {
 		// 実行平均時間を計算する
 		Integer sumExecutionTime = listHistory.stream()
 				.filter(history -> history.getLastEndExecDateTime().isPresent() && history.getLastExecDateTime().isPresent())
+				.sorted(Comparator.comparing(item -> item.getLastExecDateTime().get()))
+				.limit(10)
 				.mapToInt(history -> history.getLastEndExecDateTime().get().seconds() - history.getLastExecDateTime().get().seconds())
 				.sum();
 		

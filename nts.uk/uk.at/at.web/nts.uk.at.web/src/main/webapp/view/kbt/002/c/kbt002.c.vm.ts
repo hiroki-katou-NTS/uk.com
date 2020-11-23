@@ -76,7 +76,7 @@ module nts.uk.at.view.kbt002.c {
         vm.execItemName(params.execItemName);
         vm.cloudCreationFlag(params.cloudCreationFlag);
         vm.getExecSetting();
-      } 
+      }
     }
 
     mounted() {
@@ -113,8 +113,8 @@ module nts.uk.at.view.kbt002.c {
         vm.$validate(['#endTime', '#endDate']).then((textEditorValid: boolean) => {
           if (allValid && textEditorValid) {
             vm.processSaveExecSetting();
-          } 
-        })
+          }
+        });
       });
     }
 
@@ -161,7 +161,6 @@ module nts.uk.at.view.kbt002.c {
           if (res) {
             vm.$dialog.info({ messageId: "Msg_15" })
             .then(() => {
-              // nts.uk.ui.windows.setShared('inputScreenB', { params: params });
               vm.$window.close(params);
             });
           }
@@ -267,7 +266,7 @@ module nts.uk.at.view.kbt002.c {
     name: string;
 
     constructor(init?: Partial<OneDayRepIntervalModel>) {
-      $.extend(this, init)
+      $.extend(this, init);
     }
   }
 

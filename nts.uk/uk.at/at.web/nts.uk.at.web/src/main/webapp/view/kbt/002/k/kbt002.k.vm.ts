@@ -53,7 +53,6 @@ module nts.uk.at.view.kbt002.k {
     
           vm.$blockui('grayout');
           nts.uk.request.exportFile(API.exportCSV, command)
-            .done(res => console.log(res))
             .fail(err => vm.$dialog.info({ messageId: err.messageId }))
             .always(() => vm.$blockui('clear'));
         }

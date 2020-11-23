@@ -4,6 +4,7 @@ module nts.uk.at.view.kbt002.f {
 
   const API = {
     getExecItemInfoList: "at/function/processexec/getExecItemInfoList",
+    getExecItemInfo: "at/function/processexec/getExecItemInfo/{0}",
     execute: 'at/function/processexec/execute',
     terminate: 'at/function/processexec/terminate',
     changeSetting: 'at/function/processexec/changeSetting',
@@ -59,10 +60,10 @@ module nts.uk.at.view.kbt002.f {
     /**
      * アルゴリズム「起動時処理」を実行する
      */
-    private getExecItemInfoList() {
+    private getExecItemInfoList(): JQueryPromise<any> {
       const vm = this;
       vm.$blockui('grayout');
-      vm.$ajax(API.getExecItemInfoList)
+      return vm.$ajax(API.getExecItemInfoList)
         .then((response) => {
           vm.$blockui('clear');
           vm.dataSource(response);
@@ -74,7 +75,19 @@ module nts.uk.at.view.kbt002.f {
         .always(() => vm.$blockui('clear'));
     }
 
-    private initGridList() {
+    private getExecItemInfo(execItemCd: string): JQueryPromise<any> {
+      const vm = this;
+      return vm.$ajax(nts.uk.text.format(API.getExecItemInfo, execItemCd))
+        .then(res => {
+          const data = _.find(vm.dataSourceModel(), { execItemCd: res.execItemCd });
+          const index = vm.dataSourceModel().indexOf(data);
+          vm.dataSourceModel().splice(index, 1, new ExecutionItemInfomationModel(vm, res));
+          vm.dataSource().splice(_.findIndex(vm.dataSource(), { execItemCd: res.execItemCd }), 1, res);
+          vm.initGridList(index);
+        });
+    }
+
+    private initGridList(index: number = null) {
       const vm = this;
       if (vm.$grid.data("igGrid")) {
         vm.$grid.ntsGrid("destroy");
@@ -239,6 +252,7 @@ module nts.uk.at.view.kbt002.f {
               $(`.nts-grid-control-isTaskExecution-${nts.uk.text.padLeft(item.execItemCd, '0', 2)} button`).attr("disabled", "disabled");
             }
           });
+          $("#F2_1").igGrid("virtualScrollTo", index);
         });
       });
     }
@@ -258,7 +272,8 @@ module nts.uk.at.view.kbt002.f {
           execType: 1,
         });
         vm.$ajax(API.execute, command)
-          .then(res => vm.repeatCheckAsyncResult(res.id))
+          .then(res => vm.repeatCheckAsyncResult(res.id, selectedItem))
+          .then(() => vm.getExecItemInfo(execItemCd))
           .fail((err) => {
             vm.$dialog.error({ messageId: err.messageId });
             return vm.getExecItemInfoList();
@@ -267,43 +282,44 @@ module nts.uk.at.view.kbt002.f {
       }
     }
 
-    private repeatCheckAsyncResult(taskId: any) {
+    private repeatCheckAsyncResult(taskId: any, selectedItem: any) {
       const vm = this;
-      nts.uk.deferred.repeat(conf => conf
+      return nts.uk.deferred.repeat(conf => conf
         .task(() => {
           return (nts.uk.request as any).asyncTask.getInfo(taskId)
-            .then((info: any) => {
+            .done((res: any) => {
               //ExecuteProcessExecCommandHandler
-              const message101 = vm.getAsyncData(info.taskDatas, "message101").valueAsString;
+              const message101 = vm.getAsyncData(res.taskDatas, "message101").valueAsString;
               if (message101 === "Msg_1101" && vm.isOnceMessage101()) {
                 vm.isOnceMessage101(false);
                 vm.$dialog.alert({ messageId: message101 });
-                vm.getExecItemInfoList();
+                // vm.getExecItemInfoList();
               }
               //TerminateProcessExecutionCommandHandler
-              const currentStatusIsOneOrTwo = vm.getAsyncData(info.taskDatas, "currentStatusIsOneOrTwo").valueAsString;
+              const currentStatusIsOneOrTwo = vm.getAsyncData(res.taskDatas, "currentStatusIsOneOrTwo").valueAsString;
               if (currentStatusIsOneOrTwo === "Msg_1102" && vm.isOnceCurrentStatus()) {
                 vm.isOnceCurrentStatus(false);
                 vm.$dialog.alert({ messageId: currentStatusIsOneOrTwo });
-                vm.getExecItemInfoList();
+                // vm.getExecItemInfoList();
               }
-              const interupt = vm.getAsyncData(info.taskDatas, "interupt").valueAsString;
+              const interupt = vm.getAsyncData(res.taskDatas, "interupt").valueAsString;
               if (interupt === "true" && vm.isOnceInterupt()) {
                 vm.isOnceInterupt(false);
-                vm.getExecItemInfoList();
+                // vm.getExecItemInfoList();
               }
-              const createSchedule = vm.getAsyncData(info.taskDatas, "createSchedule").valueAsString;
+              const createSchedule = vm.getAsyncData(res.taskDatas, "createSchedule").valueAsString;
               if (createSchedule === "done" && vm.isCreateSchedule()) {
                 vm.isCreateSchedule(false);
-                vm.getExecItemInfoList();
+
               }
-              const task = vm.getAsyncData(info.taskDatas, "taskId").valueAsString;
+              const task = vm.getAsyncData(res.taskDatas, "taskId").valueAsString;
               if (!nts.uk.text.isNullOrEmpty(task)) {
                 vm.taskTerminate(task);
               }
-            });
+            })
+            .fail((err: any) => vm.$dialog.error({ messageId: err.messageId }));
         })
-        .while(info => info.pending || info.running)
+        .while(infor => infor.pending || infor.running)
         .pause(1000));
     }
 
@@ -330,7 +346,8 @@ module nts.uk.at.view.kbt002.f {
           taskTerminate: vm.taskTerminate(),
         });
         vm.$ajax(API.terminate, command)
-          .then(res => vm.repeatCheckAsyncResult(res.id))
+          .then(res => vm.repeatCheckAsyncResult(res.id, selectedItem))
+          .then(() => vm.getExecItemInfo(execItemCd))
           .fail((err) => {
             vm.$dialog.error({ messageId: err.messageId });
             return vm.getExecItemInfoList();
@@ -384,11 +401,12 @@ module nts.uk.at.view.kbt002.f {
      */
     private changeSetting(execItemCd: string, $item: JQuery) {
       const vm = this;
-      vm.$dialog.confirm({ messageId: "Msg_1846" })
+      const selectedItem = _.find(vm.dataSource(), { execItemCd: execItemCd });
+      if ($item.find("button").filter(`.${SELECTED_CLASS}`)[0].getAttribute("data-swbtn") !== String(selectedItem.executionTaskSetting.enabledSetting)) {
+        vm.$dialog.confirm({ messageId: "Msg_1846" })
         .then((result: 'no' | 'yes' | 'cancel') => {
           if (result === 'yes') {
             // logic for yes case
-            const selectedItem: any = _.find(vm.dataSource(), { execItemCd: execItemCd });
             if (selectedItem) {
               const command: ChangeExecutionTaskSettingCommand = new ChangeExecutionTaskSettingCommand(selectedItem.executionTaskSetting);
               // Update date format
@@ -400,24 +418,28 @@ module nts.uk.at.view.kbt002.f {
               }
               vm.$ajax(API.changeSetting, command)
                 .then((res) => {
-                  vm.dataSource().splice(vm.dataSource().indexOf(selectedItem), 1, res);
+                  selectedItem.executionTaskSetting = res;
+                  vm.rebind(selectedItem);
                 })
                 .fail((err) => {
-                  vm.revertSwitch($item);
+                  vm.revertSwitch($item, selectedItem);
                   vm.$dialog.alert({ messageId: err.messageId });
                 });
             }
           } else {
-            vm.revertSwitch($item);
+            vm.revertSwitch($item, selectedItem);
           }
         });
+      }
     }
 
-    private revertSwitch($item: JQuery) {
-      const onButton = $item.find(`.${SELECTED_CLASS}`);
-      const offButton = $item.find(`:not(.${SELECTED_CLASS})`);
-      onButton.removeClass(SELECTED_CLASS);
-      offButton.addClass(SELECTED_CLASS);
+    private revertSwitch($item: JQuery, selectedItem: any) {
+      const onButton = $item.find("button").filter(`.${SELECTED_CLASS}`);
+      const offButton = $item.find("button").filter(`:not(.${SELECTED_CLASS})`);
+      if (onButton[0].getAttribute("data-swbtn") !== String(selectedItem.executionTaskSetting.enabledSetting)) {
+        onButton.removeClass(SELECTED_CLASS);
+        offButton.addClass(SELECTED_CLASS);
+      }
     }
 
     /**
@@ -442,6 +464,16 @@ module nts.uk.at.view.kbt002.f {
         });
     }
 
+    private rebind(dataToReplace: any) {
+      const vm = this;
+      const data = _.find(vm.dataSourceModel(), { execItemCd: dataToReplace.execItemCd });
+      const index = vm.dataSourceModel().indexOf(data);
+      data.isTaskExecution = dataToReplace.executionTaskSetting.enabledSetting;
+      data.nextExecDate = dataToReplace.executionTaskSetting.nextExecDateTime ? 
+                          moment.utc(dataToReplace.executionTaskSetting.nextExecDateTime).format(DATETIME_FORMAT) : 
+                          vm.$i18n('KBT002_165');
+      vm.initGridList(index);
+    }
   }
 
   export class ExecutionItemInfomationModel {

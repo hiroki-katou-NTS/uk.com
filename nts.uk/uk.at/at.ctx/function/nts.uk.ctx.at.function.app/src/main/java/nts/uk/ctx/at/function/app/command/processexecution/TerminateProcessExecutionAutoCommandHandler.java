@@ -247,10 +247,10 @@ public class TerminateProcessExecutionAutoCommandHandler extends AsyncCommandHan
         for (ExecutionTaskLog task : processExecutionLogHistory.getTaskLogList()) {
             if (task.getStatus() == null || !task.getStatus().isPresent()) {
                 if (task.getProcExecTask() == statusStop) {
-                    task.setStatus(Optional.of(EndStatus.FORCE_END));
+                    task.setStatus(EndStatus.FORCE_END);
                     for (ExecutionTaskLog taskAfter : processExecutionLogHistory.getTaskLogList()) {
                         if (taskAfter.getProcExecTask().value > task.getProcExecTask().value) {
-                            taskAfter.setStatus(Optional.of(EndStatus.NOT_IMPLEMENT));
+                            taskAfter.setStatus(EndStatus.NOT_IMPLEMENT);
                         }
                     }
 

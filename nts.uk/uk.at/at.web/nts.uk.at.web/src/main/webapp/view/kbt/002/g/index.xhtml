@@ -88,7 +88,7 @@
 								<com:ko-if bind="taskId !== 5">
 									<td style="text-align: center;">
 										<button tabindex="1" class="setting small"
-											data-bind="click: function(data, event) { $parent.openDetailDialog(data, event)}, enable: (errorBusiness == true &amp;&amp; taskId !== 13) || (errorBusiness !== true &amp;&amp; taskId === 13)"
+											data-bind="click: function(data, event) { $parent.openDetailDialog(data, event)}, enable: (errorBusiness == true &amp;&amp; taskId !== 13) || (status === 1 &amp;&amp; taskId === 13)"
 											data-code="${taskId}" style="width: 100px;">#{i18n.getText('KBT002_146')}</button>
 									</td>
 								</com:ko-if>

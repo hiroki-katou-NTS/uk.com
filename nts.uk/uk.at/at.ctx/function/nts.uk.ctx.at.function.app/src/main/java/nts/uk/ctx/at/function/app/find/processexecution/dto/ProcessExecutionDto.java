@@ -162,21 +162,21 @@ public class ProcessExecutionDto {
 									.map(o -> ProcessExecutionDto.getValueMonthDay(o))
 									.orElse(null));
 				}
-				PersonalScheduleCreationTarget target = perSchedule.getTarget();
-				if (target != null) {
-					TargetClassification targetClassification = target.getCreationTarget();
-					if (targetClassification != null) {
-						builder = builder
-								.creationTarget(targetClassification.value);
-					}
-					TargetSetting targetSetting = target.getTargetSetting();
-					if (targetSetting != null) {
-						builder = builder
-								.recreateWorkType(targetSetting.isRecreateWorkType())
-								.createEmployee(targetSetting.isCreateEmployee())
-								.recreateTransfer(targetSetting.isRecreateTransfer());
-					}
-				}
+//				PersonalScheduleCreationTarget target = perSchedule.getTarget();
+//				if (target != null) {
+//					TargetClassification targetClassification = target.getCreationTarget();
+//					if (targetClassification != null) {
+//						builder = builder
+//								.creationTarget(targetClassification.value);
+//					}
+//					TargetSetting targetSetting = target.getTargetSetting();
+//					if (targetSetting != null) {
+//						builder = builder
+//								.recreateWorkType(targetSetting.isRecreateWorkType())
+//								.createEmployee(targetSetting.isCreateEmployee())
+//								.recreateTransfer(targetSetting.isRecreateTransfer());
+//					}
+//				}
 			}
 			DailyPerformanceCreation dailyPerf = execSetting.getDailyPerf();
 			if (dailyPerf != null) {

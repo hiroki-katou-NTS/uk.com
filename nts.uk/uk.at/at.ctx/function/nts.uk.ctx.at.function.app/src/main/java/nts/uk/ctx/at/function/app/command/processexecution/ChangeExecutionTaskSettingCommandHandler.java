@@ -39,13 +39,13 @@ import nts.uk.shr.com.task.schedule.UkJobScheduler;
 //@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ChangeExecutionTaskSettingCommandHandler
 		extends CommandHandlerWithResult<ChangeExecutionTaskSettingCommand, ExecutionTaskSettingDto> {
-	
+
 	@Inject
 	private ProcessExecutionLogManageRepository processExecutionLogManageRepository;
-	
+
 	@Inject
 	private UkJobScheduler scheduler;
-	
+
 	@Inject
 	private SaveExecutionTaskSettingCommandHandler saveExecutionTaskSettingCommandHandler;
 
@@ -66,10 +66,12 @@ public class ChangeExecutionTaskSettingCommandHandler
 				}
 				// 「実行中」以外の場合
 				executionTaskSetting[0] = command.toDomain();
+				executionTaskSetting[0].setEnabledSetting(!executionTaskSetting[0].isEnabledSetting());
 				// バッチのスケジュールを削除する
 				this.scheduler.unscheduleOnCurrentCompany(SortingProcessScheduleJob.class, command.getScheduleId());
 				if (command.getEndScheduleId() != null) {
-					this.scheduler.unscheduleOnCurrentCompany(SortingProcessEndScheduleJob.class, command.getEndScheduleId());
+					this.scheduler.unscheduleOnCurrentCompany(SortingProcessEndScheduleJob.class,
+							command.getEndScheduleId());
 				}
 				// 次回実行日時作成処理（実行タスク設定）
 				List<String> cronList = saveExecutionTaskSettingCommandHandler.getCron(saveCommand);
@@ -79,7 +81,7 @@ public class ChangeExecutionTaskSettingCommandHandler
 				scheduletimeData.put("execItemCd", command.getExecItemCd());
 				String scheduleIdDef = "KBT002_" + command.getExecItemCd();
 				String scheduleIdEnd = scheduleIdDef + "_end";
-				
+
 				// sheet 補足資料⑤
 				// compare system date and system time
 				GeneralDate startDate = command.getStartDate();
@@ -92,20 +94,21 @@ public class ChangeExecutionTaskSettingCommandHandler
 						startDate = GeneralDate.today();
 					}
 				}
-				UkJobScheduleOptions options = UkJobScheduleOptions.builder(SortingProcessScheduleJob.class, scheduleIdDef, cron)
-						.userData(scheduletimeData).startDate(startDate).endDate(endDate)
-						.startClock(new StartTime(command.getStartTime())).endClock(new EndTime(command.getEndTime()))
-						.build();
-				UkJobScheduleOptions optionsEnd = UkJobScheduleOptions.builder(SortingProcessEndScheduleJob.class, scheduleIdEnd, cron)
-						.userData(scheduletimeData).startDate(startDate).endDate(endDate)
-						.startClock(new StartTime(command.getStartTime())).endClock(new EndTime(command.getEndTime()))
-						.build();
+				UkJobScheduleOptions options = UkJobScheduleOptions
+						.builder(SortingProcessScheduleJob.class, scheduleIdDef, cron).userData(scheduletimeData)
+						.startDate(startDate).endDate(endDate).startClock(new StartTime(command.getStartTime()))
+						.endClock(command.getEndTime() != null ? new EndTime(command.getEndTime()) : null).build();
+				UkJobScheduleOptions optionsEnd = UkJobScheduleOptions
+						.builder(SortingProcessEndScheduleJob.class, scheduleIdEnd, cron).userData(scheduletimeData)
+						.startDate(startDate).endDate(endDate).startClock(new StartTime(command.getStartTime()))
+						.endClock(command.getEndTime() != null ? new EndTime(command.getEndTime()) : null).build();
 				String scheduleId = this.schedule(options);
 				String endScheduleId = this.schedule(optionsEnd);
 				// INPUT「実行タスク設定．更新処理有効設定」を確認する
 				if (executionTaskSetting[0].isEnabledSetting()) {
 					// アルゴリズム「次回実行日時作成処理」を実行する
-					Optional<GeneralDateTime> nextExecDateTime = this.getNextExecDateTime(executionTaskSetting[0], scheduleId);
+					Optional<GeneralDateTime> nextExecDateTime = this.getNextExecDateTime(executionTaskSetting[0],
+							scheduleId);
 					executionTaskSetting[0].setNextExecDateTime(nextExecDateTime);
 				} else {
 					// 次回実行日時をNULLとする
@@ -114,7 +117,7 @@ public class ChangeExecutionTaskSettingCommandHandler
 				// 取得した内容をINPUT「実行タスク設定」にセットする
 				executionTaskSetting[0].setScheduleId(scheduleId);
 				executionTaskSetting[0].setEndScheduleId(Optional.ofNullable(endScheduleId));
-				
+
 				try {
 					// 登録処理
 					this.performRegister(executionTaskSetting[0], saveCommand);
@@ -129,12 +132,12 @@ public class ChangeExecutionTaskSettingCommandHandler
 		}
 		return null;
 	}
-	
+
 	@Transactional(value = TxType.REQUIRED, rollbackOn = Exception.class)
 	private String schedule(UkJobScheduleOptions options) {
 		return this.scheduler.scheduleOnCurrentCompany(options).getScheduleId();
 	}
-	
+
 	private Optional<GeneralDateTime> getNextExecDateTime(ExecutionTaskSetting domain, String scheduleId) {
 		// アルゴリズム「スケジュールされたバッチ処理の次回実行日時を取得する」を実行する
 		Optional<GeneralDateTime> nextExecDateTime = this.scheduler.getNextFireTime(scheduleId);
@@ -151,21 +154,10 @@ public class ChangeExecutionTaskSettingCommandHandler
 			GeneralDate endDate = domain.getEndDate().getEndDate().get();
 			if (domain.getEndTime().getEndTimeCls().equals(EndTimeClassification.YES)) {
 				EndTime endTime = domain.getEndTime().getEndTime().get();
-				endDateTime = GeneralDateTime.ymdhms(
-						endDate.year(),
-						endDate.month(),
-						endDate.day(),
-						endTime.hour(),
-						endTime.minute(),
-						0);	
+				endDateTime = GeneralDateTime.ymdhms(endDate.year(), endDate.month(), endDate.day(), endTime.hour(),
+						endTime.minute(), 0);
 			} else {
-				endDateTime = GeneralDateTime.ymdhms(
-						endDate.year(),
-						endDate.month(),
-						endDate.day(),
-						0,
-						0,
-						0);	
+				endDateTime = GeneralDateTime.ymdhms(endDate.year(), endDate.month(), endDate.day(), 0, 0, 0);
 			}
 		}
 		// 終了日時を過ぎていない、もしくは終了日時なし
@@ -179,16 +171,12 @@ public class ChangeExecutionTaskSettingCommandHandler
 			return Optional.empty();
 		}
 	}
-	
-	private void performRegister(ExecutionTaskSetting domain, SaveExecutionTaskSettingCommand command) throws Exception {
-		domain.setEnabledSetting(!domain.isEnabledSetting());
+
+	private void performRegister(ExecutionTaskSetting domain, SaveExecutionTaskSettingCommand command)
+			throws Exception {
 		this.saveExecutionTaskSettingCommandHandler.saveTaskSetting(
-				command, 
-				domain, 
-				AppContexts.user().companyId(),
-				command.getRepeatMonthDateList().stream()
-					.map(x -> EnumAdaptor.valueOf(x, RepeatMonthDaysSelect.class)).collect(Collectors.toList()),
-				domain.getScheduleId(),
-				domain.getEndScheduleId().orElse(null));
+				command, domain, AppContexts.user().companyId(), command.getRepeatMonthDateList().stream()
+						.map(x -> EnumAdaptor.valueOf(x, RepeatMonthDaysSelect.class)).collect(Collectors.toList()),
+				domain.getScheduleId(), domain.getEndScheduleId().orElse(null));
 	}
 }

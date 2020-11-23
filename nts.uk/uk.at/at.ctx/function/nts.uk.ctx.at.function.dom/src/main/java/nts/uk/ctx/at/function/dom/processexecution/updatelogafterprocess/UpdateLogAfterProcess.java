@@ -157,10 +157,10 @@ public class UpdateLogAfterProcess {
 				// step ドメインモデル「更新処理自動実行ログ」を更新する (update domain 「更新処理自動実行ログ」)
 				procExecLog.getTaskLogList().forEach(task -> {
 					if (processExecutionTask.value == task.getProcExecTask().value) {
-						task.setLastEndExecDateTime(Optional.ofNullable(GeneralDateTime.now()));
-						task.setErrorSystem(Optional.ofNullable(true));
-						task.setErrorBusiness(Optional.ofNullable(true));
-						task.setStatus(Optional.ofNullable(isStopExec ? EndStatus.FORCE_END : EndStatus.SUCCESS));
+						task.setLastEndExecDateTime(GeneralDateTime.now());
+						task.setErrorSystem(true);
+						task.setErrorBusiness(true);
+						task.setStatus(isStopExec ? EndStatus.FORCE_END : EndStatus.SUCCESS);
 					}
 				});
 				this.procExecLogRepo.update(procExecLog);
@@ -169,10 +169,10 @@ public class UpdateLogAfterProcess {
 				// step ドメインモデル「更新処理自動実行ログ」を更新する (update domain 「更新処理自動実行ログ」)
 				procExecLog.getTaskLogList().forEach(task -> {
 					if (processExecutionTask.value == task.getProcExecTask().value) {
-						task.setLastEndExecDateTime(Optional.ofNullable(GeneralDateTime.now()));
-						task.setErrorSystem(Optional.ofNullable(false));
-						task.setErrorBusiness(Optional.ofNullable(false));
-						task.setStatus(Optional.ofNullable(isStopExec ? EndStatus.FORCE_END : EndStatus.SUCCESS));
+						task.setLastEndExecDateTime(GeneralDateTime.now());
+						task.setErrorSystem(false);
+						task.setErrorBusiness(false);
+						task.setStatus(isStopExec ? EndStatus.FORCE_END : EndStatus.SUCCESS);
 					}
 				});
 				this.procExecLogRepo.update(procExecLog);
@@ -184,10 +184,10 @@ public class UpdateLogAfterProcess {
 				// ドメインモデル「更新処理自動実行ログ」を更新する
 				procExecLog.getTaskLogList().forEach(task -> {
 					if (processExecutionTask.value == task.getProcExecTask().value) {
-						task.setLastEndExecDateTime(Optional.ofNullable(GeneralDateTime.now()));
-						task.setErrorSystem(Optional.ofNullable(true));
-						task.setErrorBusiness(Optional.ofNullable(false));
-						task.setStatus(Optional.ofNullable(isStopExec ? EndStatus.FORCE_END : EndStatus.SUCCESS));
+						task.setLastEndExecDateTime(GeneralDateTime.now());
+						task.setErrorSystem(true);
+						task.setErrorBusiness(false);
+						task.setStatus(isStopExec ? EndStatus.FORCE_END : EndStatus.SUCCESS);
 					}
 				});
 				this.procExecLogRepo.update(procExecLog);
@@ -196,10 +196,10 @@ public class UpdateLogAfterProcess {
 				// ドメインモデル「更新処理自動実行ログ」を更新する
 				procExecLog.getTaskLogList().forEach(task -> {
 					if (processExecutionTask.value == task.getProcExecTask().value) {
-						task.setLastEndExecDateTime(Optional.ofNullable(GeneralDateTime.now()));
-						task.setErrorSystem(Optional.ofNullable(false));
-						task.setErrorBusiness(Optional.ofNullable(false));
-						task.setStatus(Optional.ofNullable(isStopExec ? EndStatus.FORCE_END : EndStatus.SUCCESS));
+						task.setLastEndExecDateTime(GeneralDateTime.now());
+						task.setErrorSystem(false);
+						task.setErrorBusiness(false);
+						task.setStatus(isStopExec ? EndStatus.FORCE_END : EndStatus.SUCCESS);
 					}
 				});
 				this.procExecLogRepo.update(procExecLog);
@@ -517,7 +517,7 @@ public class UpdateLogAfterProcess {
 			EndStatus status) {
 		procExecLog.getTaskLogList().forEach(task -> {
 			if (execTask.value == task.getProcExecTask().value) {
-				task.setStatus(Optional.ofNullable(status));
+				task.setStatus(status);
 			}
 		});
 	}

@@ -9,6 +9,8 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -35,10 +37,12 @@ public class ProcessExecutionLogHistoryFinder {
 
     public List<ProcessExecutionLogHistoryDto> findListDateRange(String execItemCd, GeneralDate startDate, GeneralDate endDate) {
         String companyId = AppContexts.user().companyId();
-        //GeneralDate.fromString(startDate,"yyyy/mm/dd").date()
         List<ProcessExecutionLogHistory> lstProcessExecutionLogHistory = this.procExecLogHstRepo.getByDateRange(companyId,
                 execItemCd, GeneralDateTime.legacyDateTime(startDate.date()), GeneralDateTime.legacyDateTime(endDate.date()));
-        return lstProcessExecutionLogHistory.stream().map(ProcessExecutionLogHistoryDto::fromDomain).collect(Collectors.toList());
+        return lstProcessExecutionLogHistory.stream()
+        		.map(ProcessExecutionLogHistoryDto::fromDomain)
+        		.sorted(Comparator.comparing(ProcessExecutionLogHistoryDto::getLastExecDateTime).reversed())
+        		.collect(Collectors.toList());
     }
 
 }

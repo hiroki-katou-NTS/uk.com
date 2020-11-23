@@ -48,7 +48,7 @@ module nts.uk.at.view.kbt002.l {
         }
         vm.tableOfGoals(vm.$i18n("KBT002_327", [String(data.numberOfTargetTable)]));
       })
-      .always(() => vm.$blockui("clear"));  
+      .always(() => vm.$blockui("clear"));
     }
 
     public closeDialog() {

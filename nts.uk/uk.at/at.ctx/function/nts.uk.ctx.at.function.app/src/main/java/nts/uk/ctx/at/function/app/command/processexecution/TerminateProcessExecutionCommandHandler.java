@@ -81,8 +81,7 @@ public class TerminateProcessExecutionCommandHandler extends AsyncCommandHandler
 
         //「待機中」 or 「無効」の場合
         if (processExecLogMan.getCurrentStatus().isPresent()
-        		&& (processExecLogMan.getCurrentStatus().get().value == 1 
-        		|| processExecLogMan.getCurrentStatus().get().value == 2)) {
+        		&& !processExecLogMan.getCurrentStatus().get().equals(CurrentExecutionStatus.RUNNING)) {
 //			dataSetter.setData("currentStatusIsOneOrTwo", "Msg_1102");
             throw new BusinessException("Msg_1102");
         }
@@ -296,10 +295,10 @@ public class TerminateProcessExecutionCommandHandler extends AsyncCommandHandler
         for (ExecutionTaskLog task : processExecutionLogHistory.getTaskLogList()) {
             if (task.getStatus() == null || !task.getStatus().isPresent()) {
                 if (task.getProcExecTask() == statusStop) {
-                    task.setStatus(Optional.of(EndStatus.FORCE_END));
+                    task.setStatus(EndStatus.FORCE_END);
                     for (ExecutionTaskLog taskAfter : processExecutionLogHistory.getTaskLogList()) {
                         if (taskAfter.getProcExecTask().value > task.getProcExecTask().value) {
-                            taskAfter.setStatus(Optional.of(EndStatus.NOT_IMPLEMENT));
+                            taskAfter.setStatus(EndStatus.NOT_IMPLEMENT);
                         }
                     }
 
