@@ -20,7 +20,6 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTermi
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalName;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.FullIpAddress;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.IPAddress;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.MacAddress;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.ModelEmpInfoTer;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.PartialIpAddress;
@@ -95,7 +94,7 @@ public class ReceiveNRRemoteSettingServiceTest {
 				require.getEmpInfoTerWithMac(new MacAddress("00-14-22-01-23-45"), (ContractCode) any);
 				result = Optional.of(new EmpInfoTerminalBuilder(Optional.of(new FullIpAddress(
 						new PartialIpAddress(192), new PartialIpAddress(168), new PartialIpAddress(1), new PartialIpAddress(1))),
-						new MacAddress("00-14-22-01-23-45"), new EmpInfoTerminalCode(1234),
+						new MacAddress("00-14-22-01-23-45"), new EmpInfoTerminalCode("1234"),
 						Optional.of(new EmpInfoTerSerialNo("1111")), new EmpInfoTerminalName("AT"), new ContractCode("000000000000"))
 								.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).build());
 

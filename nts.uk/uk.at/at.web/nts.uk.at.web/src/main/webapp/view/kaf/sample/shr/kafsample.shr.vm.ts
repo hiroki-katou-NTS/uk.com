@@ -3,7 +3,7 @@ module nts.uk.at.view.kafsample.shr.viewmodel {
     @component({
         name: 'kafsample-share',
         template: `
-       		<div>
+       		<div data-bind="with: $parent">
 				<div class="table">
 					<div class="cell col-1">
 						<!-- A7 -->
@@ -13,7 +13,7 @@ module nts.uk.at.view.kafsample.shr.viewmodel {
 						<!-- A7_1 -->
 						<input class="inputTime" data-bind="ntsTimeWithDayEditor: { 
 														constraint:'TimeWithDayAttr',
-														value: $parent.time, 
+														value: time, 
 														enable: true, 
 														readonly: false,	
 														required: true,

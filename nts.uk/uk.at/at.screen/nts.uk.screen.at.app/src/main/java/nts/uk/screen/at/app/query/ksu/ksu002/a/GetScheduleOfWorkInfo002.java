@@ -45,6 +45,10 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.em
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
@@ -60,7 +64,7 @@ import nts.uk.screen.at.app.query.ksu.ksu002.a.input.GetDateInfoDuringThePeriodI
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * 
+ *
  * @author chungnt ScreenQuery : 勤務予定を取得する
  */
 
@@ -110,7 +114,7 @@ public class GetScheduleOfWorkInfo002 {
 				listWorkInfo.add(workInfo);
 			}
 		});
-		
+
 		// call 日別勤怠の実績で利用する勤務種類と就業時間帯のリストを取得する
 		WorkTypeWorkTimeUseDailyAttendanceRecord wTypeWTimeUseDailyAttendRecord = GetListWtypeWtimeUseDailyAttendRecordService
 				.getdata(listWorkInfo);
@@ -135,14 +139,14 @@ public class GetScheduleOfWorkInfo002 {
 
 			boolean needToWork = key.getScheManaStatus().needCreateWorkSchedule();
 			if (!value.isPresent()) {
-				
+
 				// KSU002
 				List<String> sids = new ArrayList<>();
 				sids.add(AppContexts.user().employeeId());
 				GetDateInfoDuringThePeriodInput param1 = new GetDateInfoDuringThePeriodInput();
 				param1.setGeneralDate(key.getDate());
 				param1.setSids(sids);
-				
+
 				WorkScheduleWorkInforDto dto = WorkScheduleWorkInforDto.builder().employeeId(key.getEmployeeID())
 						.date(key.getDate()).haveData(false).achievements(null).confirmed(false).needToWork(needToWork)
 						.supportCategory(SupportCategory.NOT_CHEERING.value).workTypeCode(null).workTypeName(null)
@@ -168,7 +172,7 @@ public class GetScheduleOfWorkInfo002 {
 				String workTypeCode = Optional
 						.ofNullable(workInformation.getWorkTypeCode())
 						.map(m -> m.v())
-						.orElse(null);				
+						.orElse(null);
 
 				String workTypeName = lstWorkTypeInfor
 						.stream()
@@ -176,12 +180,12 @@ public class GetScheduleOfWorkInfo002 {
 						.findFirst()
 						.map(m -> m.getAbbreviationName())
 						.orElse(workTypeCode == null ? null : workTypeCode + "{#KSU002_31}");
-				
+
 				String workTimeCode = workInformation
 						.getWorkTimeCodeNotNull()
 						.map(m -> m.v())
 						.orElse(null);
-				
+
 				String workTimeName = lstWorkTimeSetting
 						.stream()
 						.filter(i -> i.getWorktimeCode().v().equals(workTimeCode))
@@ -192,17 +196,17 @@ public class GetScheduleOfWorkInfo002 {
 
 				Integer startTime = null;
 				Integer endtTime = null;
-				
-				boolean confirmed = workSchedule.getConfirmedATR().value == ConfirmedATR.CONFIRMED.value; 
-				
+
+				boolean confirmed = workSchedule.getConfirmedATR().value == ConfirmedATR.CONFIRMED.value;
+
 				Optional<TimeLeavingWork> tlwork =  workSchedule.getOptTimeLeaving()
 				.map(m -> m.getTimeLeavingWorks())
 				.map(m -> m.stream().filter(f -> f.getWorkNo().v() == 1).findFirst())
 				.orElse(Optional.empty());
-				
+
 
 				if (workTimeCode != null) {
-					
+
 					if (tlwork.isPresent()){
 						startTime = tlwork.get().getAttendanceStamp()
 								.map(m -> m.getStamp())
@@ -212,7 +216,7 @@ public class GetScheduleOfWorkInfo002 {
 								.map(m -> m.get())
 								.map(m -> m.v())
 								.orElse(null);
-						
+
 						endtTime = tlwork.get().getLeaveStamp()
 								.map(m ->  m.getStamp())
 								.orElse(null)
@@ -239,7 +243,7 @@ public class GetScheduleOfWorkInfo002 {
 				GetDateInfoDuringThePeriodInput param1 = new GetDateInfoDuringThePeriodInput();
 				param1.setGeneralDate(key.getDate());
 				param1.setSids(sids);
-				
+
 				WorkScheduleWorkInforDto dto = WorkScheduleWorkInforDto.builder().employeeId(key.getEmployeeID())
 						.date(key.getDate()).haveData(true).achievements(null)
 						.confirmed(confirmed)
@@ -302,12 +306,12 @@ public class GetScheduleOfWorkInfo002 {
 		}
 
 		@Override
-		public Optional<WorkType> findByPK(String workTypeCd) {
+		public Optional<WorkType> getWorkType(String workTypeCd) {
 			return workTypeRepo.findByPK(companyId, workTypeCd);
 		}
 
 		@Override
-		public Optional<WorkTimeSetting> findByCode(String workTimeCode) {
+		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
 			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
 		}
 
@@ -318,8 +322,27 @@ public class GetScheduleOfWorkInfo002 {
 		}
 
 		@Override
-		public WorkStyle checkWorkDay(String workTypeCode) {
-			return basicScheduleService.checkWorkDay(workTypeCode);
+		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
 		}
 	}
 
@@ -370,8 +393,8 @@ public class GetScheduleOfWorkInfo002 {
 					.loaded(listData.stream().collect(Collectors.toMap(h -> h.getWorkingConditionItem().getEmployeeId(),
 							h -> Arrays.asList(DateHistoryCache.Entry.of(h.getDatePeriod(), h)))));
 		}
-		
-		public static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) 
+
+		public static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor)
 	    {
 	        Map<Object, Boolean> map = new ConcurrentHashMap<>();
 	        return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;

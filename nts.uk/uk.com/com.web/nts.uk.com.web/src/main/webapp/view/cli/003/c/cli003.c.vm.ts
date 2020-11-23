@@ -10,7 +10,7 @@ module nts.uk.com.view.cli003.c {
     id: string;
     code: string;
     name: string;
-    affiliationName: string; 
+    affiliationName: string;
     constructor(id: string, code: string, name: string, affiliationName: string) {
         this.id = id;
         this.code = code;
