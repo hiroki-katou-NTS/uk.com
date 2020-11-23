@@ -94,33 +94,30 @@ public class PayoutManagementDataService {
 		}
 	}
 	
-	private List<String> checkHolidate(Boolean pickUp, Boolean pause,Boolean checkedSplit, Double requiredDays,Double subDays, Double occurredDays){
-		List<String> errors = new ArrayList<String>();
-		if (pause) {
-			if (checkedSplit) {
-				if (!ItemDays.HALF_DAY.value.equals(subDays)) {
-					errors.add("Msg_1256_SubDays");
-					return errors;
-				} else if (!ItemDays.HALF_DAY.value.equals(requiredDays)){
-					errors.add("Msg_1256_RequiredDays");
-					return errors;
-				}
-			}
-		}
-		if (pickUp) {
-			if (checkedSplit) {
-				if (!ItemDays.ONE_DAY.value.equals(occurredDays)) {
-					errors.add("Msg_1256_OccurredDays");
-					return errors;
-				}
-			} else if (pause && !occurredDays.equals(subDays)){
-					errors.add("Msg_1257_OccurredDays");
-					return errors;
-			}
+	private void checkHolidate(Boolean pickUp, Boolean pause,Boolean checkedSplit, Double remainDays) {
+		// 振休残数をチェック
+		if (remainDays < 0) {// 振休残数＜0の場合
+			// エラーメッセージ「Msg_2029」を表示する
+			throw new BusinessException("Msg_2019");
 		}
 		
-		return errors;
-}
+		// 振出チェックボックスをチェックする
+		if (pickUp) {// チェックするの場合
+			if (remainDays >= 0.5) {
+				throw new BusinessException("Msg_2030");
+			}
+			return;
+		}
+		// 分割消化チェックボックスをチェック
+		if (pause) {// チェックする
+			throw new BusinessException("Msg_1256");
+		}
+		
+		// 振休日数をチェック
+		if (remainDays < 0) {
+			throw new BusinessException("Msg_2030");
+		}
+	}
 	
 	private boolean checkInfoPayMana(String cId, String sId, GeneralDate date) {
 		Optional<PayoutManagementData> payout = payoutManagementDataRepository.find(cId, sId,date);
@@ -139,7 +136,7 @@ public class PayoutManagementDataService {
 	}
 	
 	public List<String> addPayoutManagement(String sid, Boolean pickUp, Boolean pause,Boolean checkedSplit, PayoutManagementData payMana,SubstitutionOfHDManagementData subMana,
-				SubstitutionOfHDManagementData splitMana,  Double requiredDays,  int closureId, List<String> linkingDates) {
+				SubstitutionOfHDManagementData splitMana,  Double requiredDays,  int closureId, List<String> linkingDates, Double remainDays) {
 		List<String> errors = new ArrayList<String>();
 		YearMonth processYearMonth = GeneralDate.today().yearMonth();
 		Optional<GeneralDate> closureDate = this.getClosureDate(closureId, processYearMonth);
@@ -171,7 +168,7 @@ public class PayoutManagementDataService {
 				}
 			}
 		}
-		errors.addAll(checkHolidate(pickUp, pause, checkedSplit, splitMana.getRequiredDays().v(),subMana.getRequiredDays().v(), payMana.getOccurredDays().v() ));
+		this.checkHolidate(pickUp, pause, checkedSplit, remainDays);
 		this.checkHistoryOfCompany(sid
 				, payMana.getPayoutDate().getDayoffDate().orElse(null)
 				, subMana.getHolidayDate().getDayoffDate().orElse(null)

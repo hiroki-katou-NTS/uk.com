@@ -209,9 +209,6 @@ public class ExtraHolidayManagementService {
 		// 代休残数データ情報を作成する Tạo thông tin dữ liệu số ngày nghỉ bù còn lại
 		List<RemainInfoData> lstRemainData = this.getRemainInfoData(employeeId, listLeaveData, listCompensatoryData, listLeaveComDayOffManagement);
 		
-		// 月初の代休残数を取得 Nhận số nghỉ bù còn lại lúc đầu tháng
-		Double carryforwardDays = this.getDayOffRemainOfBeginMonth(cid, employeeId);
-		
 		// 管理区分設定を取得 Nhận Setting phân loại quản lý
 		// ドメインモデル「雇用代休管理設定」を取得する Get domain model 「雇用代休管理設定」
 		CompensatoryLeaveEmSetting empSetting = compensLeaveEmSetRepository.find(cid, manageDistinct.getEmploymentCode());
@@ -252,7 +249,7 @@ public class ExtraHolidayManagementService {
 		// 「表示残数データ情報」を作成 Tạo "Thông tin dữ liệu còn lại hiển thị"
 		DisplayRemainingNumberDataInformation result = DisplayRemainingNumberDataInformation.builder()
 				.employeeId(employeeId)
-				.totalRemainingNumber(carryforwardDays)
+				.totalRemainingNumber(0d)
 				.dispExpiredDate(compLeavCom != null
 					? compLeavCom.getCompensatoryAcquisitionUse().getExpirationTime().description
 					: empSetting.getCompensatoryAcquisitionUse().getExpirationTime().description)
@@ -263,7 +260,7 @@ public class ExtraHolidayManagementService {
 				.wkHistory(sWkpHistImport.orElse(null))
 				.sempHistoryImport(empHistoryImport)
 				.build();
-		
+
 		// 作成した「表示残数データ情報」を返す Trả về "Thông tin dữ liệu còn lại hiển thị" đã tạo
 		return result;
 	}

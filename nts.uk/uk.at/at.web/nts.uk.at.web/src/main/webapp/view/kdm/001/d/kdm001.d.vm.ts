@@ -38,6 +38,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
         linkingDates: KnockoutObservableArray<any> = ko.observableArray([]);
         isDisableOpenKDL035: KnockoutObservable<boolean> = ko.observable(true);
         checkLinkingDates: KnockoutObservable<boolean> = ko.observable(false);
+        residualNumber: KnockoutObservable<number> = ko.observable(0);
 
         constructor() {
             let self = this;
@@ -60,13 +61,13 @@ module nts.uk.at.view.kdm001.d.viewmodel {
             });
             self.pickUp.subscribe((v) => {
                 self.calRemainDays();
-                if(v){
-                  self.baseDate = self.dayOff
+                if(v) {
+                  self.baseDate = self.dayOff;
                 }
                 if(!v && self.pause()) {
                   self.isDisableOpenKDL035(false);
                 }else {
-                  self.isDisableOpenKDL035(true)
+                  self.isDisableOpenKDL035(true);
                 }
             });
             self.pause.subscribe((v) => {
@@ -108,7 +109,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
           const value2 = !vm.pause() || !vm.subDays() ? 0 : vm.subDays();
           const value3 = !vm.pause() || !vm.checkedSplit() || !vm.requiredDays() ? 0 : vm.requiredDays();
           const value4 = !vm.pause || !vm.dataDate() ? 0 : vm.dataDate();
-          const remainDays = value1 + value4 - (value2 + value3)
+          const remainDays = vm.residualNumber() + value1 + value4 - (value2 + value3)
           vm.remainDays(remainDays);
         }
 
@@ -133,6 +134,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                 self.employeeId(info.selectedEmployee.employeeId);
                 self.employeeName(info.selectedEmployee.employeeName);
                 self.closureId(info.closureId);
+                self.residualNumber(info.residualNumber);
             }
             
             block.clear();
@@ -171,7 +173,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                 subDayoffDate: moment.utc(self.subDayoffDate(), 'YYYY/MM/DD').toISOString(),
                 lawAtr: self.lawAtr(),
                 requiredDays: self.requiredDays(),
-                remainDays: Math.abs(self.remainDays()),
+                remainDays: self.remainDays(),
                 checkedSplit: self.checkedSplit(),
                 closureId: self.closureId(),
                 holidayDate: moment.utc(self.holidayDate(), 'YYYY/MM/DD').toISOString(),
@@ -282,7 +284,8 @@ module nts.uk.at.view.kdm001.d.viewmodel {
             // TODO open kdl 035
             modal("/view/kdl/035/a/index.xhtml").onClosed(() => {
                 // get List<振休振出紐付け管理> from KDL035
-                const linkingDates: Array<any> = getShared('linkingDates');
+                const kdl035Shared = getShared('KDL035_SHAREPARAM');
+                const linkingDates = kdl035Shared.linkingDates;
                 if (linkingDates.length > 0) {
                     vm.linkingDates(linkingDates);
                     vm.checkLinkingDates(true);

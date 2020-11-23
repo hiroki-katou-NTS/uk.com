@@ -106,21 +106,6 @@ public class AddSubHdManagementService {
 					}
 				}
 			}
-
-//			if (subHdManagementData.getCheckedHoliday() && subHdManagementData.getCheckedSubHoliday()) {
-//				// 	ドメインモデル「振休休出振付け管理」に紐付きチェックされているもの全てを追加する
-//				int targetSelectionAtr = 2; // 固定値：手動
-//				int usedHours = 0;
-//				if (subHdManagementData.getCheckedSplit()) {
-//					LeaveComDayOffManagement domainLeaveComDayOffManagementSub = new LeaveComDayOffManagement(
-//							subHdManagementData.getEmployeeId(),
-//							comDayOffIDSub, subHdManagementData.getSelectedCodeOptionSubHoliday(), usedHours, targetSelectionAtr);
-//					repoLeaveComDayOffMana.add(domainLeaveComDayOffManagementSub);
-//				} 
-//				LeaveComDayOffManagement domainLeaveComDayOffManagement = new LeaveComDayOffManagement(leaveId,
-//						comDayOffID, subHdManagementData.getSelectedCodeSubHoliday(), usedHours, targetSelectionAtr);
-//				repoLeaveComDayOffMana.add(domainLeaveComDayOffManagement);
-//			}
 			
 		}
 		//	Input．List＜紐付け日付＞をチェック Check Input．List＜紐付け日付＞
@@ -270,7 +255,7 @@ public class AddSubHdManagementService {
 			}
 		}
 		// アルゴリズム「休出代休日数チェック処理」を実行する
-		errorList.addAll(checkHolidayAndSubHoliday(subHdManagementData));
+		this.checkHolidayAndSubHoliday(subHdManagementData);
 		this.checkHistoryOfCompany(subHdManagementData.getEmployeeId()
 				, subHdManagementData.getDateHoliday()
 				, subHdManagementData.getDateSubHoliday()
@@ -360,45 +345,31 @@ public class AddSubHdManagementService {
 	 * @param subHdManagementData2
 	 * @return
 	 */
-	public List<String> checkHolidayAndSubHoliday(SubHdManagementData subHdManagementData) {
-		List<String> errorList = new ArrayList<>();
-		// 代休チェックボックスをチェックする
-		if (subHdManagementData.getCheckedSubHoliday()) {
-			// 分割消化フラグをチェックする
-			if (subHdManagementData.getCheckedSplit()) {
-				// １日目の代休日数をチェックする
-				if (!ItemDays.HALF_DAY.value.equals(subHdManagementData.getSelectedCodeSubHoliday())) {
-					errorList.add("Msg_1256_1");
-				} else if (!ItemDays.HALF_DAY.value.equals(subHdManagementData.getSelectedCodeOptionSubHoliday())) {
-					errorList.add("Msg_1256_2");
-				}
-				if (!errorList.isEmpty()) {
-					return errorList;
-				}
-			}
-			errorList.addAll(this.checkHolidayAfterSubHoliday(subHdManagementData));
+	public void checkHolidayAndSubHoliday(SubHdManagementData subHdManagementData) {
+		// 代休残数をチェック
+		if (subHdManagementData.getDayRemaining() < 0) { // 振休残数＜0の場合
+			// エラーメッセージ「Msg_2031」を表示する
+			throw new BusinessException("Msg_2031");
 		}
-		return errorList;
-	}
-
-	private List<String> checkHolidayAfterSubHoliday(SubHdManagementData subHdManagementData) {
-		List<String> errorList = new ArrayList<>();
+		
 		// 休出チェックボックスをチェックする
-		if (subHdManagementData.getCheckedHoliday()) {
-			// 休出日数をチェックする
-			if (subHdManagementData.getCheckedSplit()) {
-				if (!ItemDays.ONE_DAY.value.equals(subHdManagementData.getSelectedCodeHoliday())) {
-					errorList.add("Msg_1256_3");
-				}
-			} else {
-				// 休出日数と１日目代休日数をチェックする
-				if (!subHdManagementData.getSelectedCodeHoliday()
-						.equals(subHdManagementData.getSelectedCodeSubHoliday())) {
-					errorList.add("Msg_1259");
-				}
+		if (subHdManagementData.getCheckedHoliday()) { // チェックするの場合
+			// 振休日数をチェック
+			if (subHdManagementData.getDayRemaining() >= 0.5) {
+				// エラーメッセージ「Msg_2032」
+				throw new BusinessException("Msg_2032");
 			}
+			return;
 		}
-		return errorList;
+		
+		// 分割消化チェックボックスをチェック
+		if (subHdManagementData.getCheckedSplit()) {
+			throw new BusinessException("Msg_1256");
+		}
+		// 代休日数をチェック
+		if (subHdManagementData.getDayRemaining() < 0) { // 代休残数　＜0
+			throw new BusinessException("Msg_2032");
+		}
 	}
 
 	/**

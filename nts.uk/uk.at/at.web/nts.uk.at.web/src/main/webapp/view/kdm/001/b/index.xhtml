@@ -52,8 +52,17 @@
 		</div>
 		<!-- B5 -->
 		<div class=" panel panel-frame person-info-panel flex valign-center width-790">
-			<div data-bind="if: selectedPeriodItem() == 0">
-				<label>#{i18n.getText('KDM001_38')}</label> <label data-bind="text: dispTotalRemainHours"></label>
+			<div class="flex">
+				<!-- Update ver48 -->
+				<!-- B5_2 振休残数 -->
+				<span class="residualNumber">
+					<label data-bind="text: displayResidualNumber"/>
+				</span>
+				<!-- B5_3 振休残数期限切れ -->
+				<span>
+					<label data-bind="text: displayExpiredNumber"/>
+				</span>
+				<!-- End update ver48 -->
 			</div>
 			<div style="margin-left: auto;">
 				<label>#{i18n.getText('KDM001_40')}</label> <label data-bind="text: dispExpiredDate"></label>

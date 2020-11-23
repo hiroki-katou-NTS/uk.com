@@ -41,13 +41,36 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         expirationDateRes: number = 0;
         /** A4_3  凡例 */
         legendOptions: any = {
-            // name: '#[KDM001_153]',
             items: [
                 { labelText: nts.uk.resource.getText("KDM001_154") },
                 { labelText: nts.uk.resource.getText("KDM001_155") },
                 { labelText: nts.uk.resource.getText("KDM001_156") }
             ]
         };
+
+        // Update ver48
+        remainingData: KnockoutObservableArray<any> = ko.observableArray([]);
+
+        residualNumber: KnockoutComputed<number> = ko.computed(() => {
+            let total = 0;
+            _.map(this.remainingData(), item => {
+                total += item.dayLetf;
+            });
+            return total;
+        });
+
+        displayResidualNumber: KnockoutComputed<string> = ko.computed(() => getText('KDM001_25', [this.residualNumber()]));
+
+        expiredNumber: KnockoutComputed<number> = ko.computed(() => {
+            let total = 0;
+            _.map(this.remainingData(), item => {
+                total += item.usedDay;
+            });
+            return total;
+        });
+
+        displayExpiredNumber: KnockoutComputed<string> = ko.computed(() => getText('KDM001_26', [this.expiredNumber()]));
+        // End update ver48
 
         constructor() {
             const vm = this;
@@ -318,7 +341,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
 
         openNewSubstituteData() {
             let self = this;
-            setShared('KDM001_D_PARAMS', { selectedEmployee: self.selectedEmployeeObject, closureId: self.closureID });
+            setShared('KDM001_D_PARAMS', { selectedEmployee: self.selectedEmployeeObject, closureId: self.closureID, residualNumber: self.residualNumber() });
 
             modal("/view/kdm/001/d/index.xhtml").onClosed(function () {
                 let params = getShared('KDM001_A_PARAMS');
@@ -365,6 +388,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             if (!nts.uk.ui.errors.hasError()) {
                 service.getFurikyuMngDataExtraction(empId, isPeriod).done(function (res: any) {
                     let arrayResponse = res.remainingData;
+                    self.remainingData(res.remainingData);
                     let compositePayOutSubMngDataArray: CompositePayOutSubMngData[] = [];
                     for (let i = 0; i < arrayResponse.length; i++) {
                         compositePayOutSubMngDataArray.push(new CompositePayOutSubMngData(arrayResponse[i], res.startDate, res.endDate));

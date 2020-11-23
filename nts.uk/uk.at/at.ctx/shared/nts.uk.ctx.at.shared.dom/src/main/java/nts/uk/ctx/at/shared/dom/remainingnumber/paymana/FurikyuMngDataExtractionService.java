@@ -46,7 +46,7 @@ public class FurikyuMngDataExtractionService {
 	@Inject
 	private ComSubstVacationRepository comSubstVacationRepository;
 	
-	@Inject 
+	@Inject
 	private ClosureEmploymentRepository closureEmploymentRepository;
 	
 	@Inject
@@ -130,14 +130,14 @@ public class FurikyuMngDataExtractionService {
 					.totalRemainingNumber(0d)
 					.expirationDate(comSubstVacation != null
 						? comSubstVacation.getSetting().getExpirationDate().value
-						: 0)
+						: substVaca.getEmpSubstVacation().get().getSetting().getExpirationDate().value)
 					.remainingData(lstDataRemainDto)
 					.startDate(closing.get().getClosureStartDate())
 					.endDate(closing.get().getClosureEndDate())
 					.closureId(closureId)
 					.build();
 				
-			return result;
+		return result;
 		}
 	}
 	
@@ -197,7 +197,7 @@ public class FurikyuMngDataExtractionService {
 				.comSubstVacation(optComSubData)
 				.empSubstVacation(optEmpSubData)
 				.build();
-	}
+	}	
 	
 	// Step 月初の振休残数を取得
 	public double getNumberOfRemainingHolidays(String empId) {

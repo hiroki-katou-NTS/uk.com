@@ -39,6 +39,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
         baseDate: KnockoutObservable<string> = ko.observable('');
         dataDate: KnockoutObservable<number> = ko.observable(0);
         isDisableOpenKDL036: KnockoutObservable<boolean> = ko.observable(true);
+        residualNumber: KnockoutObservable<number> = ko.observable(0);
 
         constructor() {
             let self = this;
@@ -180,6 +181,8 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                 if (info.closure && info.closure.closureId) {
                     self.closureId(info.closure.closureId);
                 }
+                self.residualNumber(info.residualNumber);
+
             }
             block.clear();
         }
@@ -230,7 +233,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     checkedSplit: self.checkedSplit(),
                     dateOptionSubHoliday: moment.utc(self.dateOptionSubHoliday(), 'YYYY/MM/DD').toISOString(),
                     selectedCodeOptionSubHoliday: self.selectedCodeOptionSubHoliday(),
-                    dayRemaining: Math.abs(parseFloat(self.dayRemaining())),
+                    dayRemaining: parseFloat(self.dayRemaining()),
                     closureId: self.closureId(),
                     lstLinkingDate: linkingDates
                 };
@@ -299,9 +302,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     });
                 })
                 .fail(err => {
-                    if (err && err.messageId === 'Msg_2017' || err.messageId === 'Msg_2018') {
-                        dialog.info(err);
-                    }
+                    dialog.info(err);
                 });
                 block.clear();
             }

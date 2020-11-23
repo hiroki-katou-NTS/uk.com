@@ -106,8 +106,6 @@
 						</div>
 						<!-- A4  表 -->
 						<div class="div-table-row">
-							<!-- A4_0  説明 -->
-							<!-- <label style="line-height: 35px;">#{i18n.getText('KDM001_123')}</label> -->
 							<!-- A4_3  凡例 -->
 							<button id="A4_3" class="margin-bottom-15" data-bind="ntsLegendButton: legendOptions"></button>
 							<!-- A4_1 -->
@@ -116,23 +114,23 @@
 					</div>
 					<!-- A5 個人情報パネル-->
 					<div class="panel panel-frame person-info-panel flex valign-center width-815">
-						<com:ko-if bind="selectedPeriodItem() == 0">
-							<div style="margin-left: 10px;">
-								<!-- A5_2 振休残数合計-->
-								<label>#{i18n.getText('KDM001_25')}</label>
-								<!-- A5_3 振休残数合計-->
-								<label data-bind="text: totalRemainingNumber"></label>
-								<!-- A5_4 日-->
-								<label>#{i18n.getText('KDM001_27')}</label>
-							</div>
-						</com:ko-if>
+					<div style="margin-left: 10px;display: flex;">
+						<!-- Update ver48 -->
+						<!-- A5_2 振休残数 -->
+						<span class="residualNumber">
+							<label data-bind="text: displayResidualNumber"/>
+						</span>
+						<!-- A5_3 振休残数期限切れ -->
+						<span>
+							<label data-bind="text: displayExpiredNumber"/>
+						</span>
+						<!-- End update ver48 -->
+					</div>
 						<div style="margin-left: auto; margin-right: 10px;">
 							<!-- A5_6 振休使用期限-->
 							<label>#{i18n.getText('KDM001_29')}</label>
 							<!-- A5_7 振休使用期限-->
 							<label data-bind="text: expirationDate"></label>
-							<!-- A5_8 月 - Design stupid-->
-							<!-- <label>#{i18n.getText('KDM001_31')}</label> -->
 						</div>
 					</div>
 				</div>

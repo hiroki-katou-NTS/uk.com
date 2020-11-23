@@ -42,6 +42,30 @@
         startDate: string = '';
         endDate: string = '';
 
+        // Update ver48
+        remainingData: KnockoutObservableArray<any> = ko.observableArray([]);
+
+        residualNumber: KnockoutComputed<number> = ko.computed(() => {
+            let total = 0;
+            _.map(this.remainingData(), item => {
+                total += item.dayLetf;
+            });
+            return total;
+        });
+
+        displayResidualNumber: KnockoutComputed<string> = ko.computed(() => getText('KDM001_38', [this.residualNumber()]));
+
+        expiredNumber: KnockoutComputed<number> = ko.computed(() => {
+            let total = 0;
+            _.map(this.remainingData(), item => {
+                total += item.usedDay;
+            });
+            return total;
+        });
+
+        displayExpiredNumber: KnockoutComputed<string> = ko.computed(() => getText('KDM001_39', [this.expiredNumber()]));
+        // End update ver48
+
         constructor() {
             let self = this;
             self.initSubstituteDataList();
@@ -122,16 +146,16 @@
                 self.isOnStartUp = false;
             });
             self.selectedPeriodItem.subscribe(x => {
-                if (x == 0){
+                if (x === 0) {
                     self.startPage()
                     block.clear();
                     nts.uk.ui.errors.clearAll();
                 }
-                else if (x == 1){
-                    self.getSubstituteDataList(self.getSearchCondition());
+                else if (x === 1) {
+                    self.getSubstituteDataList(self.getSearchCondition(), true);
                     block.clear();
                     nts.uk.ui.errors.clearAll();
-                }    
+                }
             });
         }
 
@@ -151,7 +175,7 @@
 
         openNewSubstituteData() {
             let self = this;
-            setShared('KDM001_I_PARAMS', { selectedEmployee: self.selectedEmployee, closure: self.closureEmploy });
+            setShared('KDM001_I_PARAMS', { selectedEmployee: self.selectedEmployee, closure: self.closureEmploy, residualNumber: self.residualNumber() });
             modal("/view/kdm/001/i/index.xhtml").onClosed(function() {
                 let resParam = getShared("KDM001_I_PARAMS_RES");
                 if (resParam) {
@@ -197,6 +221,7 @@
                     if (result.closureEmploy && result.sempHistoryImport){
                         self.closureEmploy = result.closureEmploy;
                         self.listExtractData = result.remainingData;
+                        self.remainingData(result.remainingData);
                         self.startDate = result.startDate;
                         self.endDate = result.endDate;
                         self.convertToDisplayList(isShowMsg);
@@ -236,23 +261,8 @@
 
         convertToDisplayList(isShowMsg?: boolean) {
             let self = this;
-            let totalRemain = 0, dayOffDate, remain, expired, listData = [];
+            const listData: any[] = [];
             _.forEach(self.listExtractData, data => {
-                dayOffDate = data.dayOffDate;
-                remain = data.remain;
-                expired = data.expired;
-                if (data.type ==1 ){
-                    remain = remain * -1;
-                    expired = expired * -1;
-                }
-                totalRemain += remain + expired;
-
-                if (data.unknownDate == 1) {
-                    if (!dayOffDate){
-                        dayOffDate = '';
-                    } else dayOffDate += '';
-                   
-                }
 
                 let substituedexpiredDate = '';
                 if (data.deadLine === '') {
@@ -456,6 +466,7 @@
                             self.employeeInputList.push(new EmployeeKcp009(loginerInfo.sid,
                                 loginerInfo.employeeCode, loginerInfo.employeeName, wkHistory.workplaceName, wkHistory.wkpDisplayName));
                         self.listExtractData = result.remainingData;
+                        self.remainingData(result.remainingData);
                         self.totalRemainingNumber = result.totalRemainingNumber;
                         self.startDate = result.startDate;
                         self.endDate = result.endDate;
