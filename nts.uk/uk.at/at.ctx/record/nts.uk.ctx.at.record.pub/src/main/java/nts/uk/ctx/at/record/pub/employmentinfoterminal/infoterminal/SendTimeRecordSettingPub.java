@@ -4,5 +4,5 @@ import java.util.Optional;
 
 public interface SendTimeRecordSettingPub {
 
-	public Optional<SendTimeRecordSettingExport> send(Integer empInfoTerCode, String contractCode);
+	public Optional<SendTimeRecordSettingExport> send(String empInfoTerCode, String contractCode);
 }

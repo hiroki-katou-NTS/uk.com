@@ -1,123 +1,263 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
-<body>
-	<ui:composition template="../../../../master/dialog.xhtml">
-		<ui:define name="htmlHead">
-			<script>
-				var dialogSize = {
-					width : 820,
-					height : 430
-				};
-			</script>
-			<com:ValidatorScript>
-				nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.VerticalInputItem
-			</com:ValidatorScript>
-			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="../main.css" />
-			<com:scriptfile path="kml002.b.vm.js" />
-			<com:scriptfile path="kml002.b.start.js" />
-			<com:scriptfile path="kml002.b.service.js" />
-		</ui:define>
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component"
+  xmlns:h="http://xmlns.jcp.org/jsf/html"
+>
+  <body>
+    <ui:composition template="../../../../master/base.xhtml">
+      <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE" />
+        <com:stylefile path="kml002.b.main.css" />
+        <com:scriptfile path="kml002.b.vm.js" />
+      </ui:define>
 
-		<!-- PAGE CONTENT -->
-		<ui:define name="content">
-		
-			<!-- BEGIN CONTENT AREA-->
-			<div id="contents-area">
-				<table class="cal-formula-form-data">
-					<tr>
-						<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('KML002_18')}</div></td>
-						<td><span data-bind="text: attrLabel"></span></td>
-						<td></td>
-						<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('KML002_19')}</div></td>
-						<td><span data-bind="text: itemNameLabel"></span></td>
-					</tr>
-				</table>
-				
-				<hr />
-				
-				<table class="cal-formula-input-form">
-					<tr>
-						<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KML002_149')}</div></td>
-						<td></td>
-						<td></td>
-						<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KML002_150')}</div></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td rowspan="2">
-							<div tabindex="1" data-bind="ntsRadioBoxGroup: {
-								options: radioForm,
-								optionsValue: 'id',
-								optionsText: 'name',
-								value: settingMethod1,
-								enable: true}"></div>
-						</td>
-						<td>
-							<div tabindex="2" class="project-item" data-bind="ntsComboBox: {
-								options: verticalCalItems,
-								optionsValue: 'itemCode',
-								value: selectedItem1,
-								optionsText: 'itemName',
-								enable: enableVerticalCalItem1,
-								columns: [
-									{ prop: 'itemName', length: 10 }
-								]}"></div>
-						</td>
-						<td rowspan="2">
-							<div tabindex="3" class="operator-item" data-bind="ntsComboBox: {
-								options: operatorItem,
-								optionsValue: 'operatorCode',
-								value: selectedOperator,
-								optionsText: 'operatorName',
-								enable: true,
-								columns: [
-									{ prop: 'operatorName', length: 2 }
-								]}"></div>
-						</td>
-						<td rowspan="2">
-							<div tabindex="4" data-bind="ntsRadioBoxGroup: {
-								options: radioForm,
-								optionsValue: 'id',
-								optionsText: 'name',
-								value: settingMethod2,
-								enable: true}"></div>
-						</td>
-						<td>
-							<div tabindex="5" class="project-item" data-bind="ntsComboBox: {
-								options: verticalCalItems,
-								optionsValue: 'itemCode',
-								value: selectedItem2,
-								optionsText: 'itemName',
-								enable: enableVerticalCalItem2,
-								columns: [
-									{ prop: 'itemName', length: 10 }
-								]}"></div>
-						</td>
-					</tr>
-					<tr>
-						<td><input tabindex="6" class="numerical" data-bind="ntsNumberEditor: { value: verticalInputItem1, enable: enableVerticalInputItem1, constraint:['VerticalInputItem'] }" /></td>						
-						
-						<td><input tabindex="7" class="numerical" data-bind="ntsNumberEditor: { value: verticalInputItem2, enable: enableVerticalInputItem2, constraint:['VerticalInputItem'] }" /></td>
-					</tr>
-				</table>
-			</div>
-			<!-- END CONTENT AREA-->
-			
-			<!-- BEGIN FUNCTION AREA-->
-			<div id="functions-area-bottom">
-				<button tabindex="8" id="submit-btn" class="x-large proceed"
-					data-bind="click: submit">#{i18n.getText('KML002_40')}</button>
-				<button tabindex="9" id="cancel-btn" data-bind="click: cancel"
-					class="large">#{i18n.getText('KML002_41')}</button>
-			</div>
-			<!-- END FUNCTION AREA-->
-
-		</ui:define>
-	</ui:composition>
-</body>
+      <ui:define name="content">
+        <div id="functions-area" class="functions-area">
+          <!-- Go back Style -->
+          <a
+            class="goback"
+            data-bind="ntsLinkButton: { jump: '/view/kml/002/a/index.xhtml'}, text: $i18n('KML002_8')"
+            tabindex="1"
+          ></a>
+          <button
+            tabindex="2"
+            id="btnRegister"
+            class="proceed"
+            data-bind="text: $i18n('KML002_9'), click: registerScheduleRosterInfor"
+          />
+          <button
+            tabindex="3"
+            class="normal"
+            data-bind="text: $i18n('KML002_116'), click: openDialogKDL024"
+          />
+          <div class="pull-right link-button menu">
+            <span tabindex="4" data-bind="text: $i18n('KML002_10')"></span>
+            <div class="sub-menu-links">
+              <a
+                class="goout link-button"
+                data-bind="ntsLinkButton: { jump: '/view/kml/001/a/index.xhtml' }, text: $i18n('KML002_11')"
+              ></a>
+              <a
+                class="goout link-button"
+                data-bind="ntsLinkButton: { jump: '/view/kmk/009/a/index.xhtml' }, text: $i18n('KML002_12')"
+              ></a>
+              <a
+                class="goout link-button"
+                data-bind="ntsLinkButton: { jump: '/view/ksu/006/a/index.xhtml' }, text: $i18n('KML002_117')"
+              ></a>
+            </div>
+          </div>
+        </div>
+        <div id="contents-area" class="kml-002-b">
+          <div
+            data-bind="ntsFormLabel: { required: false, text: $i18n('KML002_13')}"
+          ></div>
+          <div
+            class="content-table nts-fixed-header-container ui-iggrid nts-fixed-header"
+          >
+            <table id="fixed-table">
+              <colgroup>
+                <col width="170px" />
+                <col width="165px" />
+                <col width="60px" />
+                <col width="550px" />
+              </colgroup>
+              <thead>
+                <tr>
+                  <th
+                    class="ui-widget-header"
+                    data-bind="text: $i18n('KML002_14')"
+                  ></th>
+                  <th
+                    class="ui-widget-header"
+                    data-bind="text: $i18n('KML002_15')"
+                  ></th>
+                  <th
+                    class="ui-widget-header text-center"
+                    data-bind="text: $i18n('KML002_16')"
+                  ></th>
+                  <th
+                    class="ui-widget-header"
+                    data-bind="text: $i18n('KML002_17')"
+                  ></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td data-bind="text: $i18n('KML002_18')"></td>
+                  <td>
+                    <div
+                      id="B322"
+                      tabindex="5"
+                      class="cf"
+                      data-bind="ntsSwitchButton: {
+                      name: $i18n('KML002_19'),
+                      options: switchOptions,
+                      optionsValue: 'code',
+                      optionsText: 'name',
+                      value: laborCostTime
+                    }"
+                    ></div>
+                  </td>
+                  <td class="text-center">
+                    <button id="B323"
+                      tabindex="6"
+                      data-bind="text: $i18n('KML002_22'), click: openDialogScreenD, enable: laborCostTime() === 1"
+                    />
+                  </td>
+                  <td data-bind="text: $i18n('KML002_23')"></td>
+                </tr>
+                <tr>
+                  <td data-bind="text: $i18n('KML002_24')"></td>
+                  <td>
+                    <div
+                      id="B332"
+                      class="cf"
+                      tabindex="7"
+                      data-bind="ntsSwitchButton: {
+                      name: $i18n('KML002_26'),
+                      options: switchOptions,
+                      optionsValue: 'code',
+                      optionsText: 'name',
+                      value: externalBudgetResults
+                    }"
+                    ></div>
+                  </td>
+                  <td class="text-center"></td>
+                  <td data-bind="text: $i18n('KML002_26')"></td>
+                </tr>
+                <tr>
+                  <td data-bind="text: $i18n('KML002_27')"></td>
+                  <td>
+                    <div
+                      id="B342"
+                      class="cf"
+                      tabindex="8"
+                      data-bind="ntsSwitchButton: {
+                      name: $i18n('KML002_28'),
+                      options: switchOptions,
+                      optionsValue: 'code',
+                      optionsText: 'name',
+                      value: countingNumberTimes
+                    }"
+                    ></div>
+                  </td>
+                  <td class="text-center">
+                    <button id="B343"
+                      tabindex="9"
+                      data-bind="text: $i18n('KML002_22'), click: openDialogScreenG, enable: countingNumberTimes() === 1"
+                    />
+                  </td>
+                  <td data-bind="text: $i18n('KML002_29')"></td>
+                </tr>
+                <tr>
+                  <td data-bind="text: $i18n('KML002_30')"></td>
+                  <td>
+                    <div
+                      id="B352"
+                      tabindex="10"
+                      class="cf"
+                      data-bind="ntsSwitchButton: {
+                      name: $i18n('KML002_31'),
+                      options: switchOptions,
+                      optionsValue: 'code',
+                      optionsText: 'name',
+                      value: numberPassengersWorkingHours
+                    }"
+                    ></div>
+                  </td>
+                  <td class="text-center"></td>
+                  <td data-bind="text: $i18n('KML002_32')"></td>
+                </tr>
+                <tr>
+                  <td data-bind="text: $i18n('KML002_33')"></td>
+                  <td>
+                    <div
+                      id="B362"
+                      tabindex="11"
+                      class="cf"
+                      data-bind="ntsSwitchButton: {
+                      name: $i18n('KML002_34'),
+                      options: switchOptions,
+                      optionsValue: 'code',
+                      optionsText: 'name',
+                      value: timeZoneNumberPeople
+                    }"
+                    ></div>
+                  </td>
+                  <td class="text-center">
+                    <button id="B363"
+                      tabindex="12"
+                      data-bind="text: $i18n('KML002_22'), click: openDialogScreenE, enable: timeZoneNumberPeople() === 1"
+                    />
+                  </td>
+                  <td data-bind="text: $i18n('KML002_35')"></td>
+                </tr>
+                <tr>
+                  <td data-bind="text: $i18n('KML002_36')"></td>
+                  <td>
+                    <div
+                      id="B372"
+                      tabindex="13"
+                      class="cf"
+                      data-bind="ntsSwitchButton: {
+                      name: $i18n('KML002_37'),
+                      options: switchOptions,
+                      optionsValue: 'code',
+                      optionsText: 'name',
+                      value: numberOfEmployees
+                    }"
+                    ></div>
+                  </td>
+                  <td class="text-center"></td>
+                  <td data-bind="text: $i18n('KML002_38')"></td>
+                </tr>
+                <tr>
+                  <td data-bind="text: $i18n('KML002_39')"></td>
+                  <td>
+                    <div
+                      id="B382"
+                      tabindex="14"
+                      class="cf"
+                      data-bind="ntsSwitchButton: {
+                      name: $i18n('KML002_40'),
+                      options: switchOptions,
+                      optionsValue: 'code',
+                      optionsText: 'name',
+                      value: numberOfPeopleClassified
+                    }"
+                    ></div>
+                  </td>
+                  <td class="text-center"></td>
+                  <td data-bind="text: $i18n('KML002_41')"></td>
+                </tr>
+                <tr>
+                  <td data-bind="text: $i18n('KML002_42')"></td>
+                  <td>
+                    <div
+                      id="B392"
+                      tabindex="15"
+                      class="cf"
+                      data-bind="ntsSwitchButton: {
+                      name: $i18n('KML002_43'),
+                      options: switchOptions,
+                      optionsValue: 'code',
+                      optionsText: 'name',
+                      value: numberOfPositions
+                    }"
+                    ></div>
+                  </td>
+                  <td class="text-center"></td>
+                  <td data-bind="text: $i18n('KML002_44')"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </ui:define>
+    </ui:composition>
+  </body>
 </html>
