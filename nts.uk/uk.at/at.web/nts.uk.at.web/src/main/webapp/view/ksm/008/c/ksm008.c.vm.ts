@@ -466,7 +466,7 @@ module nts.uk.at.ksm008.c {
                         vm.$dialog.info({messageId: "Msg_16"}).then(() => {
                             vm.getBanWorkListByCode().then(() => {
                                 if (vm.listBanWorkTogether().length) {
-                                    let newIndex = index == 0 ? 0 : index - 1;
+                                    let newIndex = index == 0 ? 0 : index;
                                     vm.selectedProhibitedCode(vm.listBanWorkTogether()[newIndex].code);
                                 } else {
                                     vm.swithchNewMode();
