@@ -173,7 +173,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 				data-bind="text: $i18n('KAF005_70'), ntsFormLabel: {required: true}"></div>
 		</div>
 
-		<div class="table-time">
+		<div class="table-time holidayTime1">
 			<table id="fixed-table-holiday">
 				<colgroup>
 					<col width="109px" />
@@ -195,7 +195,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 					</tr>
 				</thead>
 				<tbody data-bind="foreach: holidayTime">
-					<tr>
+					<tr data-bind="if: visible()">
 						<!--A5_5 休憩時間順序-->
 						<td class="header" data-bind="text: displayNo"></td>
 						<!--A5_6 開始時刻-->
@@ -218,6 +218,45 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 				</tbody>
 			</table>
 		</div>
+		
+		<div class="table-time holidayTime2">
+			<table id="fixed-table-holiday-1">
+				<colgroup>
+					<col width="109px" />
+					<col width="115px" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th class="ui-widget-header" rowspan="2"></th>
+						<!--A5_3 開始ラベル-->
+						<th class="ui-widget-header" rowspan="2"
+							data-bind="text: $i18n('KAF005_71')"></th>
+					</tr>
+				</thead>
+				<tbody data-bind="foreach: holidayTime">
+					<tr data-bind="if: visible()">
+						<!--A5_5 休憩時間順序-->
+						<td class="header" data-bind="text: displayNo"></td>
+						<!--A5_6 開始時刻-->
+						<td><input tabindex="12" class="right-content"
+							data-bind="
+								ntsTimeEditor: {
+									name: '#[KAF005_337]', 
+									value: start, 
+									constraint:'OvertimeAppPrimitiveTime',
+									inputFormat: 'time',
+									enable: $parent.visibleModel.c28(),
+									mode: 'time',
+									option: {width: '85px', timeWithDay: true}}" />
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		
+		
+		
+		
 	</div>
 
 
@@ -225,12 +264,6 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 
 
 </div>
-
-
-
-
-
-
 
 
 
@@ -250,6 +283,9 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 		overtTimeMountTable1: boolean = false;
 		overtTimeMountTable2: boolean = false;
 		
+		holidayTimeMountTable1: boolean = false;
+		holidayTimeMountTable2: boolean = false;
+		
 		created(params: any) {
 			const self = this;
 			self.visibleModel = params.visibleModel;
@@ -267,25 +303,41 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 			self.visibleModel.c15_3.subscribe((value: any) => {
 				if (!_.isNil(value)) {
 					if (value) {
+						
 						$(".overTime2").hide();
 						$(".overTime1").show();
+						$(".holidayTime2").hide();
+						$(".holidayTime1").show();
+						
 						if (!self.overtTimeMountTable1) {
 							$("#fixed-overtime-hour-table").ntsFixedTable({ height: 216 });
 							self.overtTimeMountTable1 = true;
 						}
+						if (!self.holidayTimeMountTable1) {
+							$("#fixed-table-holiday").ntsFixedTable({ height: 120 });
+							self.holidayTimeMountTable1 = true;
+						}
 						
 					} else {
+						
 						$(".overTime1").hide();
 						$(".overTime2").show();
+						$(".holidayTime1").hide();
+						$(".holidayTime2").show();
+						
 						if (!self.overtTimeMountTable2) {
 							$("#fixed-overtime-hour-table-1").ntsFixedTable({ height: 216 });
 							self.overtTimeMountTable2 = true;
 						}
 						
+						if (!self.holidayTimeMountTable2) {
+							$("#fixed-table-holiday-1").ntsFixedTable({ height: 120 });
+							self.holidayTimeMountTable2 = true;
+						}
+						
 					}
 				}
 			})
-			$("#fixed-table-holiday").ntsFixedTable({ height: 120 });
 			
 		}
 	}

@@ -67,6 +67,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 							vm.changeDate();
 						}
 					});
+					vm.application().prePostAtr.subscribe(value => {
+						if (_.isEmpty(value)) {
+							if (vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr != 0) {
+								vm.visibleModel.c15_3(!ko.toJS(vm.visibleModel.c15_3));								
+							}
+						}
+					});
 					if (loadDataFlag) {
 						let param1 = {
 
@@ -169,6 +176,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		createHolidayTime(holidayTime: KnockoutObservableArray<RestTime>) {
 			const self = this;
 			let holidayTimeArray = [];
+			/*
 			let length = 10;
 			for (let i = 1; i < length + 1; i++) {
 				let item = {} as HolidayTime;
@@ -180,6 +188,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				holidayTimeArray.push(item);
 			}
 			holidayTime(holidayTimeArray);
+			 */
 		}
 		createOverTime(overTime: KnockoutObservableArray<OverTime>) {
 			const self = this;
@@ -616,7 +625,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			// A6_27 A6_32 of row
 			{
 				let overTime1 = {} as OverTime;
-				overTime1.frameNo = String(overTimeArray.length - 1);
+				overTime1.frameNo = String(_.isEmpty(overTimeArray) ? 0 : overTimeArray.length);
 				overTime1.displayNo = ko.observable(self.$i18n('KAF005_63'));
 				overTime1.applicationTime = ko.observable(null);
 				overTime1.preTime = ko.observable(null);
@@ -699,20 +708,80 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 
 		bindHolidayTime(res: DisplayInfoOverTime) {
 			const self = this;
-			let holidayTimeArray = self.holidayTime() as Array<HolidayTime>;
+			let holidayTimeArray = [] as Array<HolidayTime>;
 			let workdayoffFrames = res.workdayoffFrames as Array<WorkdayoffFrame>;
 
 			let calculationResultOp = res.calculationResultOp;
 			// A7_7
 			if (!_.isEmpty(workdayoffFrames)) {
 				_.forEach(workdayoffFrames, (item: WorkdayoffFrame) => {
-					let findHolidayTimeArray = _.find(holidayTimeArray, { frameNo: String(item.workdayoffFrNo) }) as HolidayTime;
-					if (!_.isNil(findHolidayTimeArray)) {
-						findHolidayTimeArray.displayNo(item.workdayoffFrName);
-					}
+					// let findHolidayTimeArray = _.find(holidayTimeArray, { frameNo: String(item.workdayoffFrNo) }) as HolidayTime;
+					let itemPush = {} as HolidayTime;
+					// if (!_.isNil(findHolidayTimeArray)) {
+						
+					//	findHolidayTimeArray.displayNo(item.workdayoffFrName);
+					// }
+					itemPush.frameNo = String(item.workdayoffFrNo);
+					itemPush.displayNo = ko.observable(item.workdayoffFrName);
+					itemPush.start = ko.observable(null);
+					itemPush.preApp = ko.observable(null);
+					itemPush.actualTime = ko.observable(null);
+					itemPush.type = AttendanceType.BREAKTIME;
+					itemPush.visible = ko.computed(() => {
+						return self.visibleModel.c30_1();
+					}, this);
+					holidayTimeArray.push(itemPush);
+					
 				})
 			}
-
+			
+			// A7_11 A_15 A_19
+			{
+				let item = {} as HolidayTime;
+				// A7_11
+				item.frameNo = String(_.isEmpty(holidayTimeArray) ? 0 : holidayTimeArray.length);
+				item.displayNo = ko.observable(self.$i18n('KAF005_341'));
+				item.start = ko.observable(null);
+				item.preApp = ko.observable(null);
+				item.actualTime = ko.observable(null);
+				item.type = AttendanceType.MIDDLE_BREAK_TIME;
+				item.visible = ko.computed(() => {
+									return self.visibleModel.c30_2();
+								}, this);
+				holidayTimeArray.push(item);	
+			}
+			
+			{
+				let item = {} as HolidayTime;
+				// A7_11
+				item.frameNo = String(_.isEmpty(holidayTimeArray) ? 0 : holidayTimeArray.length);
+				item.displayNo = ko.observable(self.$i18n('KAF005_342'));
+				item.start = ko.observable(null);
+				item.preApp = ko.observable(null);
+				item.actualTime = ko.observable(null);
+				item.type = AttendanceType.MIDDLE_EXORBITANT_HOLIDAY;
+				item.visible = ko.computed(() => {
+									return self.visibleModel.c30_3();
+								}, this);
+				holidayTimeArray.push(item);	
+			}
+			
+			{
+				let item = {} as HolidayTime;
+				// A7_11
+				item.frameNo = String(_.isEmpty(holidayTimeArray) ? 0 : holidayTimeArray.length);
+				item.displayNo = ko.observable(self.$i18n('KAF005_343'));
+				item.start = ko.observable(null);
+				item.preApp = ko.observable(null);
+				item.actualTime = ko.observable(null);
+				item.type = AttendanceType.MIDDLE_HOLIDAY_HOLIDAY;
+				item.visible = ko.computed(() => {
+									return self.visibleModel.c30_4();
+								}, this);
+				holidayTimeArray.push(item);	
+			}
+			
+			
 
 			// A7_8
 			if (!_.isEmpty(calculationResultOp)) {
@@ -721,10 +790,12 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					let applicationTime = calculationResultOp.applicationTimes[0].applicationTime;
 					if (!_.isEmpty(applicationTime)) {
 						_.forEach(applicationTime, (item: OvertimeApplicationSetting) => {
-							let findHolidayTimeArray = _.find(holidayTimeArray, { frameNo: String(item.frameNo) }) as HolidayTime;
-
-							if (!_.isNil(findHolidayTimeArray) && item.attendanceType == AttendanceType.BREAKTIME) {
-								findHolidayTimeArray.start(item.applicationTime);
+							if (item.attendanceType == AttendanceType.BREAKTIME) {
+								let findHolidayTimeArray = _.find(holidayTimeArray, { frameNo: String(item.frameNo) }) as HolidayTime;
+	
+								if (!_.isNil(findHolidayTimeArray)) {
+									findHolidayTimeArray.start(item.applicationTime);
+								}								
 							}
 						})
 					}
@@ -838,8 +909,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 
 			// （「事前事後区分」が表示する　AND　「事前事後区分」が「事後」を選択している）　OR
 			// （「事前事後区分」が表示しない　AND　「残業申請の表示情報．申請表示情報．申請表示情報(基準日関係あり)．事前事後区分」= 「事後」）
-			let c15_3 = true;
+			let c15_3 = false;
 			visibleModel.c15_3(c15_3);
+			if (res.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr == 0) {
+				c15_3 = res.appDispInfoStartup.appDispInfoWithDateOutput.prePostAtr == 1;
+				visibleModel.c15_3(c15_3);
+			}
+			
 
 			// 「残業申請の表示情報．基準日に関係しない情報．残業休日出勤申請の反映．時間外深夜時間を反映する」= する
 			let c16 = res.infoNoBaseDate.overTimeReflect.nightOvertimeReflectAtr == NotUseAtr.USE;
@@ -1007,6 +1083,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						self.dataSource.calculationResultOp = res.calculationResultOp;
 						self.dataSource.workdayoffFrames = res.workdayoffFrames;
 						self.bindOverTime(self.dataSource);
+						self.bindHolidayTime(self.dataSource);
 					}
 				})
 				.fail((res: any) => {
@@ -1244,8 +1321,14 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		BREAKTIME,
 		BONUSPAYTIME,
 		BONUSSPECIALDAYTIME,
-		SHIFTNIGHT,
 		MIDNIGHT,
+		SHIFTNIGHT,
+		MIDDLE_BREAK_TIME,
+		MIDDLE_EXORBITANT_HOLIDAY,
+		MIDDLE_HOLIDAY_HOLIDAY
+		
+		
+		
 		
 		
 	}
