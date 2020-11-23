@@ -188,32 +188,13 @@ module nts.uk.at.view.kaf020.c.viewmodel {
                     if (res) {
                         if (res) {
                             vm.printContent.opOptionalItemOutput = dataFetch.opOptionalItemOutput;
-                            vm.$dialog.info({messageId: "Msg_15"}).then(() => $(vm.$el).find('#A5_3').focus());
+                            vm.$dialog.info({messageId: "Msg_15"});
                         }
                     }
-                }).fail(err => {
-                    vm.handleError(err);
                 }).always(() => {
                     vm.$errors("clear");
                     vm.$blockui("hide");
                 });
-        }
-
-        handleError(err: any) {
-            const vm = this;
-            let param;
-
-            if (err.message && err.messageId) {
-                param = {messageId: err.messageId, messageParams: err.parameterIds};
-            } else {
-                if (err.message) {
-                    param = {message: err.message, messageParams: err.parameterIds};
-                } else {
-                    param = {messageId: err.messageId, messageParams: err.parameterIds};
-                }
-            }
-
-            vm.$dialog.error(param);
         }
 
     }
