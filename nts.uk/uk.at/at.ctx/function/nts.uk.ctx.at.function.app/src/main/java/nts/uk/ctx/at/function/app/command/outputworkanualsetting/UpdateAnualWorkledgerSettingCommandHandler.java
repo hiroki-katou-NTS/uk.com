@@ -20,6 +20,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -40,10 +41,9 @@ public class UpdateAnualWorkledgerSettingCommandHandler extends CommandHandler<U
         List<DailyOutputItemsAnnualWorkLedger> dailyOutputItems = command.getDailyOutputItems().stream().map(DailyOutputItemsCommand::toDomain).collect(Collectors.toList());
         List<OutputItem> monthlyOutputItems = command.getMonthlyOutputItems().stream().map(MonthlyOutputItemsCommand::toDomain).collect(Collectors.toList());
         AtomTask persist = UpdateAnualWorkLedgerDomainService.updateSetting(
-            require, new OutputItemSettingCode(command.getCode()),
-            new OutputItemSettingName(command.getName()),
-            EnumAdaptor.valueOf(command.getSettingCategory(), SettingClassificationCommon.class),
-            dailyOutputItems,monthlyOutputItems
+                require, command.getID(), new OutputItemSettingCode(command.getCode()),
+                new OutputItemSettingName(command.getName()), EnumAdaptor.valueOf(command.getSettingCategory(),
+                        SettingClassificationCommon.class), dailyOutputItems, monthlyOutputItems
         );
 
         transaction.execute(persist::run);
@@ -55,12 +55,17 @@ public class UpdateAnualWorkledgerSettingCommandHandler extends CommandHandler<U
 
         @Override
         public boolean checkTheStandard(OutputItemSettingCode code, String cid) {
-            return repository.exist(code,cid);
+            return repository.exist(code, cid);
         }
 
         @Override
         public boolean checkFreedom(OutputItemSettingCode code, String cid, String employeeId) {
-            return repository.exist(code,cid,employeeId);
+            return repository.exist(code, cid, employeeId);
+        }
+
+        @Override
+        public Optional<AnnualWorkLedgerOutputSetting> getSetting(String settingId) {
+            return Optional.empty();
         }
 
         @Override
