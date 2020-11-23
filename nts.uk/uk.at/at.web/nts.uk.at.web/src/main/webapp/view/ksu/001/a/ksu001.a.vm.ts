@@ -860,14 +860,20 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             if (self.selectedModeDisplayInBody() == 'shift')
                 return;
-            let workTypeCodeSave = uk.localStorage.getItem('workTypeCodeSelected');
-            if (!workTypeCodeSave.isPresent()) {
+            let item = uk.localStorage.getItem(self.KEY);
+            let userInfor = {};
+            if (item.isPresent()) {
+                userInfor = JSON.parse(item.get());
+            }
+            
+            let workTypeCodeSave = item.isPresent() ? userInfor.workTypeCodeSelected : '';
+            if (workTypeCodeSave == '') {
                 if (__viewContext.viewModel.viewAB.listWorkType()[0].workTimeSetting == 2) {
                     __viewContext.viewModel.viewAB.disabled(true);
                 }
             } else {
-                let objWtime = _.filter(__viewContext.viewModel.viewAB.listWorkType(), function(o) { return o.workTypeCode == workTypeCodeSave.get(); });
-                if (objWtime.length > 0 && objWtime[0].workTimeSetting == 2) {
+                let objWtype = _.filter(__viewContext.viewModel.viewAB.listWorkType(), function(o) { return o.workTypeCode == workTypeCodeSave; });
+                if (objWtype.length > 0 && objWtype[0].workTimeSetting == 2) {
                     __viewContext.viewModel.viewAB.disabled(true);
                 }
             }
