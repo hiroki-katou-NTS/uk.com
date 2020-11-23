@@ -184,12 +184,7 @@ module nts.uk.at.view.kaf020.c.viewmodel {
                 },
             };
             vm.$blockui("show");
-            return vm.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
-                .then((valid: boolean) => {
-                    if (valid) {
-                        return vm.$ajax(PATH_API.update, command);
-                    }
-                }).done(res => {
+            return vm.$ajax(PATH_API.update, command).done(res => {
                     if (res) {
                         if (res) {
                             vm.printContent.opOptionalItemOutput = dataFetch.opOptionalItemOutput;
