@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.BasicFixedExtractionCondition;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -17,7 +17,7 @@ import java.io.Serializable;
 @Entity
 @Getter
 @Table(name = "KRCMT_WKP_BASIC_FXEXCON")
-public class KrcmtWkpBasicFxexCon extends UkJpaEntity implements Serializable {
+public class KrcmtWkpBasicFxexCon extends ContractUkJpaEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

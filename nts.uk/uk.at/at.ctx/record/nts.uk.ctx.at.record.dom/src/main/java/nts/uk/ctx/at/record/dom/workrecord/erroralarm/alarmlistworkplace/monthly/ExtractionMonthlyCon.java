@@ -98,7 +98,7 @@ public class ExtractionMonthlyCon extends AggregateRoot {
                 EnumAdaptor.valueOf(orderNumber, FixedCheckMonthlyItemName.class),
                 EnumAdaptor.valueOf(checkMonthlyItemsType, CheckMonthlyItemsType.class),
                 useAtr,
-                errorAlarmCheckID,
+                    errorAlarmCheckID,
                 checkConditions,
                 AverageValueItem.create(checkTarget, averageNumberOfDays, averageNumberOfTimes, averageTime, averageRatio),
                 new NameAlarmExtractionCondition(monExtracConName),
