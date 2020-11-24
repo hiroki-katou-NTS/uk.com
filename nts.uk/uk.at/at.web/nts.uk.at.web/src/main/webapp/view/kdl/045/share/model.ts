@@ -189,7 +189,7 @@ module nts.uk.at.view {
             }
             private showTimeByMinute(time: number): string {
                 let timeShow = (time != null && time > 0) ?
-                    (time / 60 >= 10 ? Math.floor(time / 60) + '' : '0' + Math.floor(time / 60))
+                    Math.floor(time / 60)
                     + ':' + (time % 60 >= 10 ? time % 60 + '' : '0' + time % 60) : '';
                 return timeShow;
             }

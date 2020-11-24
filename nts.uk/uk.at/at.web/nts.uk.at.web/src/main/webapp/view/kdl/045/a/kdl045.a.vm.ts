@@ -165,7 +165,7 @@ module nts.uk.at.view.kdl045.a {
                 self.selectedTab = ko.observable('tab-1');
 
                 self.dataSourceTime = ko.observableArray([]);
-                let breakTimeNo = self.employee().employeeInfo.workScheduleDto.listBreakTimeZoneDto[0].breakTimeSheets;
+                let breakTimeNo = self.employee().employeeInfo.workScheduleDto.listBreakTimeZoneDto[0].breakTimeSheets.sort((x,y) => {return x.startTime - y.startTime});
                 for (let i = 0; i < breakTimeNo.length; i++) {
                     let tempBreakTime = breakTimeNo[i];
                     self.dataSourceTime().push({ range1: ko.observable({ startTime: tempBreakTime.startTime, endTime: tempBreakTime.endTime, breakFrameNo: tempBreakTime.breakFrameNo,
@@ -426,8 +426,8 @@ module nts.uk.at.view.kdl045.a {
                     self.nightShiftTime(self.showTimeByMinuteHaveValue0(0));
                     
                     //A5_6,A5_7,A5_10,A5_11 = 0
-                    self.timeRange1Value(0,0);
-                    self.timeRange2Value(0,0);
+                    self.timeRange1Value({startTime: 0, endTime: 0});
+                    self.timeRange2Value({startTime: 0, endTime: 0});
 
                     self.timeA10_1(self.showTimeByPeriod(0, 0));
                     self.timeA10_2(self.showTimeByPeriod(0, 0));
@@ -605,7 +605,7 @@ module nts.uk.at.view.kdl045.a {
                 let listData: any = [];
                 if (self.moreInformation.breakTime != null) {
                     //A5_23
-                    let breakTime = self.moreInformation.breakTime.timeZoneList;
+                    let breakTime = self.moreInformation.breakTime.timeZoneList.sort((x,y) => {return x.start - y.start});
                     for (let i = 0; i < self.moreInformation.breakTime.timeZoneList.length; i++) {
                         let tempBreakTime = breakTime[i];
                         listData.push({
@@ -895,23 +895,23 @@ module nts.uk.at.view.kdl045.a {
 
             private showTimeByPeriod(startTime: number, endTime: number): string {
                 let start = (startTime != null || startTime <= 0) ?
-                    (startTime / 60 >= 10 ? Math.floor(startTime / 60) + '' : '0' + Math.floor(startTime / 60))
+                    Math.floor(startTime / 60)
                     + ':' + (startTime % 60 >= 10 ? startTime % 60 + '' : '0' + startTime % 60) : '';
                 let end = (endTime != null || endTime <= 0) ?
-                    (endTime / 60 >= 10 ? Math.floor(endTime / 60) + '' : '0' + Math.floor(endTime / 60))
+                    Math.floor(endTime / 60)
                     + ':' + (endTime % 60 >= 10 ? endTime % 60 + '' : '0' + endTime % 60) : '';
                 return start + getText('KDL045_50') + end;
             }
 
             private showTimeByMinute(time: number): string {
                 let timeShow = (time != null && time > 0) ?
-                    (time / 60 >= 10 ? Math.floor(time / 60) + '' : '0' + Math.floor(time / 60))
+                    Math.floor(time / 60)
                     + ':' + (time % 60 >= 10 ? time % 60 + '' : '0' + time % 60) : '';
                 return timeShow;
             }
             private showTimeByMinuteHaveValue0(time: number): string {
                 let timeShow = time != null ?
-                    (time / 60 >= 10 ? Math.floor(time / 60) + '' : '0' + Math.floor(time / 60))
+                    Math.floor(time / 60)
                     + ':' + (time % 60 >= 10 ? time % 60 + '' : '0' + time % 60) : '';
                 return timeShow;
             }
@@ -923,7 +923,7 @@ module nts.uk.at.view.kdl045.a {
                         width: 243, template:
                         `<div data-bind="ntsTimeRangeEditor: {required: true,
                             enable: true,
-                            inputFormat: 'time',
+                            inputFormat: 'time', 
                             startTimeNameId: '#[KDL045_32]',
                             endTimeNameId: '#[KDL045_33]',
                             startConstraint: 'TimeWithDayAttr',
