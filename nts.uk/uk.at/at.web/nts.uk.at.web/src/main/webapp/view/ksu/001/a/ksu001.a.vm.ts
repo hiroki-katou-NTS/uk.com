@@ -442,6 +442,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     self.inputDataValidate(param).done(() => {
                         self.checkExitCellUpdated();
                     });*/
+                    self.checkExitCellUpdated();
                 } else {
                     self.checkExitCellUpdated();
                 }
@@ -2938,10 +2939,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let userInfor = JSON.parse(item.get());
             if (userInfor.updateMode == 'stick') {
                 $("#extable").exTable("stickUndo");
-            } else if (userInfor.updateMode = 'copyPaste') {
+            } else if (userInfor.updateMode == 'copyPaste') {
                 $("#extable").exTable("copyUndo");
-            } else if (userInfor.updateMode = 'edit') {
-                console.log('grid chua support undo o mode nay');
+            } else if (userInfor.updateMode == 'edit') {
+                $("#extable").exTable("editUndo");
             }
             self.checkExitCellUpdated();
             self.enableBtnRedo(true);
@@ -2955,8 +2956,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 $("#extable").exTable("stickRedo");
             } else if (userInfor.updateMode == 'copyPaste') {
                 $("#extable").exTable("copyRedo");
-            } else if (userInfor.updateMode = 'edit') {
-                console.log('grid chua support redo o mode nay');
+            } else if (userInfor.updateMode == 'edit') {
+                $("#extable").exTable("editRedo");
             }
             self.checkExitCellUpdated();
         }
@@ -2998,6 +2999,24 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     // check redo
                     let $grid2 = $("#extable").find("." + "ex-body-detail");
                     let redoStack = $grid2.data("redo-stack");
+                    if (!redoStack || redoStack.length === 0) {
+                        self.enableBtnRedo(false);
+                    } else {
+                        self.enableBtnRedo(true);
+                    }
+                } else if (userInfor.updateMode == 'edit') {
+                    // check undo
+                    let $grid1 = $("#extable").find("." + "ex-body-detail");
+                    let histories = $grid1.data("edit-history");
+                    if (!histories || histories.length === 0){
+                        self.enableBtnUndo(false);
+                    } else {
+                        self.enableBtnUndo(true);
+                    }
+                    
+                    // check redo
+                    let $grid2 = $("#extable").find("." + "ex-body-detail");
+                    let redoStack = $grid2.data("edit-redo-stack");
                     if (!redoStack || redoStack.length === 0) {
                         self.enableBtnRedo(false);
                     } else {
