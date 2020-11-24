@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.pub.monthly.agreement;
+package nts.uk.ctx.at.record.pub.monthly.agreement.export;
 
 import lombok.Builder;
 import lombok.Getter;
