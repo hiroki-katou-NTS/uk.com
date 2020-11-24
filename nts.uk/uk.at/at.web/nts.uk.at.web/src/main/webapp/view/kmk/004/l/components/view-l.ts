@@ -14,7 +14,7 @@ module nts.uk.at.view.kmk004.l {
 					<hr></hr>
 					<div class="header_title">
 						<div data-bind="ntsFormLabel: {}, i18n: 'KMK004_229'"></div>
-						<button data-bind="i18n: 'KMK004_231'"></button>
+						<button data-bind="i18n: 'KMK004_231', click: openViewP"></button>
 					</div>
 					<div class="header_content">
 						<div data-bind="component: {
@@ -62,6 +62,10 @@ module nts.uk.at.view.kmk004.l {
 
 		mounted() {
 			
+		}
+		
+		openViewP() {
+			nts.uk.ui.windows.sub.modal('at','/view/kmk/004/p/index.xhtml');
 		}
     }
 }

@@ -9,7 +9,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.DeforWorkTimeAggrSet;
 
 /**
  * The Class DeforWorkTimeAggrSetDto.
@@ -33,30 +32,4 @@ public class DeforWorkTimeAggrSetDto {
 	/** The settlement period. */
 	private DeforLaborSettlementPeriodDto settlementPeriod;
 
-	/**
-	 * 
-	 * @param domain
-	 * @return DeforWorkTimeAggrSetDto
-	 */
-	public static DeforWorkTimeAggrSetDto fromDomain (DeforWorkTimeAggrSet domain) {
-		
-		ExcessOutsideTimeSetRegDto aggregateTimeSetDto = 
-				new ExcessOutsideTimeSetRegDto(domain.getAggregateTimeSet().isLegalOverTimeWork(),
-						domain.getAggregateTimeSet().isLegalHoliday(),
-						domain.getAggregateTimeSet().isSurchargeWeekMonth(),
-						domain.getAggregateTimeSet().isExceptLegalHdwk());
-		
-		ExcessOutsideTimeSetRegDto excessOutsideTimeSetDto = 
-				new ExcessOutsideTimeSetRegDto(domain.getExcessOutsideTimeSet().isLegalOverTimeWork(),
-						domain.getAggregateTimeSet().isLegalHoliday(),
-						domain.getAggregateTimeSet().isSurchargeWeekMonth(),
-						domain.getAggregateTimeSet().isExceptLegalHdwk());
-		
-		DeforLaborSettlementPeriodDto settlementPeriodDto =
-				new DeforLaborSettlementPeriodDto(domain.getSettlementPeriod().getStartMonth().v(),
-						domain.getSettlementPeriod().getPeriod().v(),
-						domain.getSettlementPeriod().isRepeat());
-		
-		return new DeforWorkTimeAggrSetDto(aggregateTimeSetDto, excessOutsideTimeSetDto, domain.getDeforLaborCalSetting().isOtTransCriteria(), settlementPeriodDto);
-	}
 }
