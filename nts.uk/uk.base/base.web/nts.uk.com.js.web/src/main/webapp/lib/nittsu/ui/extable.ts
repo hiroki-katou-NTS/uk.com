@@ -7065,6 +7065,12 @@ module nts.uk.ui.exTable {
                 case "copyRedo":
                     redoCopy(self);
                     break;
+                case "editUndo":
+                    undoEdit(self);
+                    break;
+                case "editRedo":
+                    redoEdit(self);
+                    break;
                 case "pasteValidate":
                     setPasteValidate(self, params[0]);
                     break;
@@ -7817,6 +7823,46 @@ module nts.uk.ui.exTable {
         }
         
         /**
+         * Undo edit.
+         */
+        function undoEdit($container: JQuery) {
+            let exTable = $container.data(NAMESPACE);
+            if (!exTable || exTable.updateMode !== EDIT) return;
+            let $grid = $container.find(`.${BODY_PRF + DETAIL}`);
+            let histories = $grid.data(internal.EDIT_HISTORY);
+            if (!histories || histories.length === 0) return;
+            let item = histories.pop();
+            if (_.has(item.value, "value")) item.value = item.value.value;
+            let ds = internal.getDataSource($grid[0]);
+            let currentItem = _.cloneDeep(item);
+            currentItem.value = ((ds || {})[currentItem.rowIndex] || {})[currentItem.columnKey];
+            update.gridCell($grid[0], item.rowIndex, item.columnKey, item.innerIdx, item.value, true);
+            internal.removeChange($grid[0], item);
+            let redoStack = $grid.data(internal.EDIT_REDO_STACK);
+            if (!redoStack) {
+                $grid.data(internal.EDIT_REDO_STACK, [ currentItem ]);
+            } else {
+                redoStack.push(currentItem);
+            }
+        }
+        
+        /**
+         * Redo edit.
+         */
+        function redoEdit($container: JQuery) {
+            let exTable = $container.data(NAMESPACE);
+            if (!exTable || exTable.updateMode !== EDIT) return;
+            let $grid = $container.find(`.${BODY_PRF + DETAIL}`);
+            let redoStack = $grid.data(internal.EDIT_REDO_STACK);
+            if (!redoStack || redoStack.length === 0) return;
+            let item = redoStack.pop();
+            let ds = internal.getDataSource($grid[0]),
+                value = ((ds || {})[item.rowIndex] || {})[item.columnKey];
+            update.gridCell($grid[0], item.rowIndex, item.columnKey, item.innerIdx, item.value);
+            update.pushEditHistory($grid[0], new selection.Cell(item.rowIndex, item.columnKey, value, item.innerIdx), item.updateTarget); 
+        }
+        
+        /**
          * Paste validate.
          */
         function setPasteValidate($container: JQuery, validate: any) {
@@ -8206,6 +8252,7 @@ module nts.uk.ui.exTable {
         export let COPY_HISTORY: string = "copy-history";
         export let REDO_STACK: string = "redo-stack";
         export let EDIT_HISTORY: string = "edit-history";
+        export let EDIT_REDO_STACK: string = "edit-redo-stack";
         export let TARGET_EDIT_HISTORY: string = "target-edit-history";
         export let OTHER_EDIT_HISTORY: string = "other-edit-history";
         export let STICK_HISTORY: string = "stick-history";
