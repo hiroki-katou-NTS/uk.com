@@ -5,12 +5,10 @@ import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
-import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.DumData;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItem;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.WorkStatusOutputSettings;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
 import nts.uk.shr.com.context.AppContexts;
 import org.junit.Test;
@@ -32,8 +30,6 @@ public class UpdateAnualWorkLedgerDSTest {
     private final OutputItemSettingName name = new OutputItemSettingName("name");
 
     private final String settingId = "settingId";
-
-    private final WorkStatusOutputSettings domain = DumData.dum(code,name,"empId",settingId,SettingClassificationCommon.STANDARD_SELECTION);
 
     @Test
     public void test_01() {
@@ -65,7 +61,7 @@ public class UpdateAnualWorkLedgerDSTest {
                 UpdateAnualWorkLedgerDomainService.updateSetting(require, settingId, code, name, settingCategory,
                     dailyoutputItems,outputItems),
 
-            any -> require.updateSetting(any.get())
+            any -> require.updateSetting(any.get(),any.get())
         );
 
     }
@@ -91,7 +87,7 @@ public class UpdateAnualWorkLedgerDSTest {
                 UpdateAnualWorkLedgerDomainService.updateSetting(require, settingId, code, name, settingCategory,
                     dailyoutputItems,outputItems),
 
-            any -> require.updateSetting(any.get())
+            any -> require.updateSetting(any.get(),any.get())
         );
 
     }

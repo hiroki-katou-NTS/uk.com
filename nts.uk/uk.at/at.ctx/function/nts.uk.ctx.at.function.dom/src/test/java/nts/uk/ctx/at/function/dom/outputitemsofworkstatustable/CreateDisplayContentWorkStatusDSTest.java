@@ -18,12 +18,14 @@ import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClas
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 
 @RunWith(JMockit.class)
@@ -41,8 +43,8 @@ public class CreateDisplayContentWorkStatusDSTest {
     private final OutputItemSettingName name = new OutputItemSettingName("CBA");
     private final String iD = "iD";
     private final String empId = "employeeId";
-    private final SettingClassificationCommon settingCategory = SettingClassificationCommon.STANDARD_SELECTION;
-    private final WorkStatusOutputSettings domain = DumData.dumDisplay(code, name, empId, iD, settingCategory);
+    private final SettingClassificationCommon settingCategoryStandard = SettingClassificationCommon.STANDARD_SELECTION;
+    private final WorkStatusOutputSettings domainsStandard = DumData.dumDisplay(code, name, empId, iD, settingCategoryStandard);
 
     @Test
     public void test_01() {
@@ -72,37 +74,77 @@ public class CreateDisplayContentWorkStatusDSTest {
             }
         };
         val actual = CreateDisplayContentWorkStatusDService.displayContentsOfWorkStatus(require, datePeriod, employeeInfors,
-                domain, workPlaceInfo);
+                domainsStandard, workPlaceInfo);
         val expected = DumData.expected;
-        assertThat(actual.get(0).getEmployeeName()).isEqualTo(expected.get(0).getEmployeeName());
-        assertThat(actual.get(0).getEmployeeCode()).isEqualTo(expected.get(0).getEmployeeCode());
-        assertThat(actual.get(0).getWorkPlaceCode()).isEqualTo(expected.get(0).getWorkPlaceCode());
-        assertThat(actual.get(0).getWorkPlaceName()).isEqualTo(expected.get(0).getWorkPlaceName());
 
-        assertThat(actual.get(0).getOutputItemOneLines().get(0).getTotalOfOneLine())
-                .isEqualTo(expected.get(0).getOutputItemOneLines().get(0).getTotalOfOneLine());
-        assertThat(actual.get(0).getOutputItemOneLines().get(0).getOutPutItemName())
-                .isEqualTo(expected.get(0).getOutputItemOneLines().get(0).getOutPutItemName());
+        assertThat(actual)
+                .extracting(
+                        DisplayContentWorkStatus::getEmployeeName,
+                        DisplayContentWorkStatus::getEmployeeCode,
+                        DisplayContentWorkStatus::getWorkPlaceCode,
+                        DisplayContentWorkStatus::getWorkPlaceName)
+                .containsExactly(
+                        tuple(expected.get(0).getEmployeeName(),
+                                expected.get(0).getEmployeeCode(),
+                                expected.get(0).getWorkPlaceCode(),
+                                expected.get(0).getWorkPlaceName()));
 
-        assertThat(actual.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getActualValue())
-                .isEqualTo(expected.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getActualValue());
+        assertThat(actual.get(0).getOutputItemOneLines())
+                .extracting(
+                        d -> d.getOutItemValue().size(),
+                        OutputItemOneLine::getOutPutItemName,
+                        OutputItemOneLine::getTotalOfOneLine)
 
+                .containsExactly(
+                        tuple(expected.get(0).getOutputItemOneLines().get(0).getOutItemValue().size(),
+                                expected.get(0).getOutputItemOneLines().get(0).getOutPutItemName(),
+                                expected.get(0).getOutputItemOneLines().get(0).getTotalOfOneLine()
+                        ),
+                        tuple(expected.get(0).getOutputItemOneLines().get(1).getOutItemValue().size(),
+                                expected.get(0).getOutputItemOneLines().get(1).getOutPutItemName(),
+                                expected.get(0).getOutputItemOneLines().get(1).getTotalOfOneLine()
+                        )
 
+                );
 
-        assertThat(actual.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getAttributes())
-                .isEqualTo(expected.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getAttributes());
+        assertThat(actual.get(0).getOutputItemOneLines().get(0).getOutItemValue())
+                .extracting(
+                        DailyValue::getDate,
+                        DailyValue::getActualValue,
+                        DailyValue::getCharacterValue,
+                        DailyValue::getAttributes
+                )
+                .containsExactly(
+                        tuple(expected.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getDate(),
+                                expected.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getActualValue(),
+                                expected.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getCharacterValue(),
+                                expected.get(0).getOutputItemOneLines().get(0).getOutItemValue().get(0).getAttributes()
 
-        assertThat(actual.get(0).getOutputItemOneLines().get(1).getOutItemValue().get(0).getActualValue())
-                .isEqualTo(expected.get(0).getOutputItemOneLines().get(1).getOutItemValue().get(0).getActualValue());
+                        )
 
-        assertThat(actual.get(0).getOutputItemOneLines().get(1).getOutItemValue().get(0).getAttributes())
-                .isEqualTo(expected.get(0).getOutputItemOneLines().get(1).getOutItemValue().get(0).getAttributes());
+                );
+        assertThat(actual.get(0).getOutputItemOneLines().get(1).getOutItemValue())
+                .extracting(
+                        DailyValue::getDate,
+                        DailyValue::getActualValue,
+                        DailyValue::getCharacterValue,
+                        DailyValue::getAttributes
+                )
+                .containsExactly(
+                        tuple(expected.get(0).getOutputItemOneLines().get(1).getOutItemValue().get(0).getDate(),
+                                expected.get(0).getOutputItemOneLines().get(1).getOutItemValue().get(0).getActualValue(),
+                                expected.get(0).getOutputItemOneLines().get(1).getOutItemValue().get(0).getCharacterValue(),
+                                expected.get(0).getOutputItemOneLines().get(1).getOutItemValue().get(0).getAttributes()
 
-        assertThat(actual.get(0).getOutputItemOneLines().get(1).getOutItemValue().get(0).getCharacterValue())
-                .isEqualTo(expected.get(0).getOutputItemOneLines().get(1).getOutItemValue().get(0).getCharacterValue());
+                        )
 
+                );
     }
 
+    /**
+     * TEST CASE :Throw exception
+     * - Fail  employee info
+     */
     @Test
     public void test_02() {
         val listSid = employeeInforFail.stream().map(EmployeeInfor::getEmployeeId).collect(Collectors.toList());
@@ -118,11 +160,18 @@ public class CreateDisplayContentWorkStatusDSTest {
 
             }
         };
+
         NtsAssert.businessException("Msg_1816", () -> {
             CreateDisplayContentWorkStatusDService.displayContentsOfWorkStatus(require, datePeriod, employeeInfors,
-                    domain, workPlaceInfo);
+                    domainsStandard, workPlaceInfo);
         });
     }
+
+    /**
+     * TEST CASE :Throw exception
+     * <p>
+     * - Fail  workplace info
+     */
     @Test
     public void test_03() {
         val listSid = employeeInfors.stream().map(EmployeeInfor::getEmployeeId).collect(Collectors.toList());
@@ -140,12 +189,18 @@ public class CreateDisplayContentWorkStatusDSTest {
         };
         NtsAssert.businessException("Msg_1816", () -> {
             CreateDisplayContentWorkStatusDService.displayContentsOfWorkStatus(require, datePeriod, employeeInfors,
-                    domain, workPlaceInfo);
+                    domainsStandard, workPlaceInfoFail);
         });
     }
+
+    /**
+     * TEST CASE :Throw exception
+     * - Fail employee info
+     * - Fail  workplace info
+     */
     @Test
     public void test_04() {
-        val listSid = employeeInfors.stream().map(EmployeeInfor::getEmployeeId).collect(Collectors.toList());
+        val listSid = employeeInforFail.stream().map(EmployeeInfor::getEmployeeId).collect(Collectors.toList());
         val listEmployeeStatus = Arrays.asList(
                 new StatusOfEmployee("eplId01",
                         Arrays.asList(
@@ -159,9 +214,66 @@ public class CreateDisplayContentWorkStatusDSTest {
             }
         };
         NtsAssert.businessException("Msg_1816", () -> {
-            CreateDisplayContentWorkStatusDService.displayContentsOfWorkStatus(require, datePeriod, employeeInfors,
-                    domain, workPlaceInfoFail);
+            CreateDisplayContentWorkStatusDService.displayContentsOfWorkStatus(require, datePeriod, employeeInforFail,
+                    domainsStandard, workPlaceInfoFail);
         });
+    }
+
+    /**
+     * TEST CASE : Value of list AttendanceId return null
+     */
+    @Test
+    public void test_05() {
+        val listSid = employeeInfors.stream().map(EmployeeInfor::getEmployeeId).collect(Collectors.toList());
+        val listEmployeeStatus = Arrays.asList(
+                new StatusOfEmployee("eplId01",
+                        Arrays.asList(
+                                new DatePeriod(GeneralDate.today(), GeneralDate.today().addDays(1))
+                        )));
+        new Expectations() {
+            {
+                require.getListAffComHistByListSidAndPeriod(listSid, datePeriod);
+                result = listEmployeeStatus;
+
+                require.getValueOf(Collections.singletonList("eplId01"), new DatePeriod(GeneralDate.today(), GeneralDate.today().addDays(1)), Arrays.asList(22, 2, 1, 8));
+                result = null;
+            }
+        };
+        val itemValue = new ArrayList<DailyValue>();
+        val listOutPut = new ArrayList<OutputItemOneLine>();
+        listOutPut.add(new OutputItemOneLine(
+                0D,
+                "itemName01",
+                itemValue));
+        listOutPut.add(new OutputItemOneLine(
+                0D,
+                "itemName03",
+                itemValue));
+
+
+        val actual = CreateDisplayContentWorkStatusDService.displayContentsOfWorkStatus(require, datePeriod, employeeInfors,
+                domainsStandard, workPlaceInfo);
+        val expected = Arrays.asList(new DisplayContentWorkStatus(
+                "eplCode01",
+                "eplName01",
+                "wplCode01",
+                "wplName01",
+                listOutPut
+        ));
+        assertThat(actual.get(0).getOutputItemOneLines().get(0).getOutItemValue().size()).isEqualTo(0);
+        assertThat(actual.get(0).getOutputItemOneLines().get(1).getOutItemValue().size()).isEqualTo(0);
+        assertThat(actual)
+                .extracting(
+                        DisplayContentWorkStatus::getEmployeeName,
+                        DisplayContentWorkStatus::getEmployeeCode,
+                        DisplayContentWorkStatus::getWorkPlaceCode,
+                        DisplayContentWorkStatus::getWorkPlaceName
+                )
+                .containsExactly(
+                        tuple(expected.get(0).getEmployeeName(),
+                                expected.get(0).getEmployeeCode(),
+                                expected.get(0).getWorkPlaceCode(),
+                                expected.get(0).getWorkPlaceName()));
     }
 
 }

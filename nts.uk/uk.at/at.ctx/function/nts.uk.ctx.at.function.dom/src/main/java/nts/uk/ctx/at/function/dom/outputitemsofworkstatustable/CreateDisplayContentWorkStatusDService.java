@@ -61,7 +61,9 @@ public class CreateDisplayContentWorkStatusDService {
 
             List<AttendanceResultDto> listAttendancesz = new ArrayList<>();
             for (val date : e.getListPeriod()) {
-                listAttendancesz.addAll(require.getValueOf(Collections.singletonList(e.getEmployeeId()), date, listIds));
+                val listValue = require.getValueOf(Collections.singletonList(e.getEmployeeId()), date, listIds);
+                if (listValue == null) continue;
+                listAttendancesz.addAll(listValue);
             }
             Map<GeneralDate, Map<Integer, AttendanceItemDtoValue>> allValue = listAttendancesz.stream()
                     .collect(Collectors.toMap(AttendanceResultDto::getWorkingDate,
