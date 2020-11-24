@@ -4,16 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification;
-import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.EndMonth;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.ExtractFromStartMonth;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.MonthNo;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.SpecifyEndMonth;
+import nts.uk.ctx.at.function.dom.alarmworkplace.month.EndMonth;
 import nts.uk.ctx.at.function.infra.entity.alarmworkplace.condition.KfnmtWkpCheckCondition;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Optional;
 
 /**
  * entity : 月数指定
@@ -53,11 +54,9 @@ public class KfnmtAssignMonthEnd extends UkJpaEntity implements Serializable {
     public KfnmtWkpCheckCondition checkCondition;
 
     public EndMonth toDomain() {
-
-        return new EndMonth(EnumAdaptor.valueOf(specifyEndMonth, SpecifyEndMonth.class),
-            EnumAdaptor.valueOf(1, ExtractFromStartMonth.class), //TODO not exist extractFromStartMonth in entity thì how to map ?
-            new MonthNo(EnumAdaptor.valueOf(monthPrevious, PreviousClassification.class),monthNo,curentMonth));
-
+        return new EndMonth(specifyEndMonth,
+            Optional.of(new MonthNo(EnumAdaptor.valueOf(monthPrevious, PreviousClassification.class), monthNo, curentMonth))
+        );
     }
 
     public void fromEntity(KfnmtAssignMonthEnd newEntity) {
@@ -72,10 +71,9 @@ public class KfnmtAssignMonthEnd extends UkJpaEntity implements Serializable {
 
         KfnmtAssignMonthEnd entity = new KfnmtAssignMonthEnd();
         entity.pk = new KfnmtAssignMonthEndPk(AppContexts.user().companyId(), patternCD, category);
-        entity.contractCode =AppContexts.user().contractCode();
+        entity.contractCode = AppContexts.user().contractCode();
         entity.specifyEndMonth = domain.getSpecifyEndMonth().value;
 
-        //TODO entity thiếu ExtractFromStartMonth extractFromStartMonth
         if (domain.getEndMonthNo().isPresent()) {
             entity.monthNo = domain.getEndMonthNo().get().getMonthNo();
             entity.curentMonth = domain.getEndMonthNo().get().isCurentMonth();

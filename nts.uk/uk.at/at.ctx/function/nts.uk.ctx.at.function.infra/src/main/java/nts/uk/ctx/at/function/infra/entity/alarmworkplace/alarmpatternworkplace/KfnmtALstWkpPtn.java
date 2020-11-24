@@ -42,8 +42,8 @@ public class KfnmtALstWkpPtn extends UkJpaEntity implements Serializable {
     @JoinTable(name = "KFNMT_ALSTWKP_PMS")
     public List<KfnmtALstWkpPms> alarmPerSet;
 
-    @OneToOne(mappedBy = "kfnmtALstWkpPtn", cascade = CascadeType.ALL, orphanRemoval = true, fetch=FetchType.LAZY)
-    @JoinTable(name = "KFNMT_PTN_MAP_CAT")
+    @OneToMany(mappedBy = "kfnmtALstWkpPtn", cascade = CascadeType.ALL, orphanRemoval = true, fetch=FetchType.LAZY)
+    @JoinTable(name = "KFNMT_WRKPCHECK_CONDITION")
     public List<KfnmtWkpCheckCondition> checkConList;
 
     @Override
