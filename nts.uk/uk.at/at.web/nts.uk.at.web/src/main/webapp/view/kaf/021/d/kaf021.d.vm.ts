@@ -353,11 +353,11 @@ module nts.uk.at.kaf021.d {
             let cellStates: Array<common.CellState> = [];
 
             _.forEach(vm.datas, (data: any) => {
-                if (!vm.isEnableApproval(data.approvalStatusdata, data.confirmStatus, data.canApprove, data.canConfirm)) {
+                if (!vm.isEnableApproval(data.approvalStatus, data.confirmStatus, data.canApprove, data.canConfirm)) {
                     cellStates.push(new common.CellState(data.applicantId, 'approvalChecked', [disableCell]));
                 }
 
-                if (!vm.isEnableDeny(data.approvalStatusdata, data.confirmStatus, data.canApprove, data.canConfirm)) {
+                if (!vm.isEnableDeny(data.approvalStatus, data.confirmStatus, data.canApprove, data.canConfirm)) {
                     cellStates.push(new common.CellState(data.applicantId, 'denialChecked', [disableCell]));
                 }
 
