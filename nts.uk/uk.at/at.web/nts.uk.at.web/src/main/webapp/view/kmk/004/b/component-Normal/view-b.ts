@@ -90,8 +90,10 @@ module nts.uk.at.view.kmk004.b {
 
 		openDialogF() {
 			const vm = this;
+			const params = { type: 'Com_Company'};
 			vm.$window
-				.modal('/view/kmk/004/f/index.xhtml');
+				.storage('KMK004F', params)
+				.then(() => vm.$window.modal('at', '/view/kmk/004/f/index.xhtml'));
 		}
     }
 }

@@ -1,5 +1,6 @@
 .view-f {
     padding: 15px;
+    height: 450px;
 }
 
 .view-f .title {
@@ -37,6 +38,10 @@
 
 .view-f .cf .list-check-box div {
    margin-top: 0px;
+}
+
+.list-buttom {
+    margin-top: 11px;
 }
 
 .list-buttom .button1 {
