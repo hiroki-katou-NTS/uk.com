@@ -19,6 +19,7 @@ import nts.uk.ctx.at.record.app.find.optitem.OptItemEnumDto;
 import nts.uk.ctx.at.record.app.find.optitem.OptionalItemDto;
 import nts.uk.ctx.at.record.app.find.optitem.OptionalItemFinder;
 import nts.uk.ctx.at.record.app.find.optitem.OptionalItemHeaderDto;
+import nts.uk.ctx.at.record.app.find.optitem.OutputOptItemWithControl;
 import nts.uk.ctx.at.record.app.find.optitem.language.OptionalItemNameOther;
 import nts.uk.ctx.at.record.app.find.optitem.language.OptionalItemNameOtherFinder;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
@@ -52,7 +53,7 @@ public class OptionalItemWs extends WebService {
 	 */
 	@POST
 	@Path("find/{itemNo}/{langId}")
-	public OptionalItemDto find(@PathParam("itemNo") Integer itemNo, @PathParam("langId") String langId) {
+	public OutputOptItemWithControl find(@PathParam("itemNo") Integer itemNo, @PathParam("langId") String langId) {
 		return this.finder.findWithLang(itemNo, langId);
 	}
 

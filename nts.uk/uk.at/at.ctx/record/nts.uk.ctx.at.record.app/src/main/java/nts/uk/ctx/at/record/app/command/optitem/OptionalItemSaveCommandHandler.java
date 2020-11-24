@@ -14,6 +14,9 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.ControlOfAttendanceItemsRepository;
+import nts.uk.ctx.at.shared.dom.scherec.event.PerformanceAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.ControlOfMonthlyItemsRepository;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemNameOther;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemNameOtherRepository;
@@ -50,6 +53,12 @@ public class OptionalItemSaveCommandHandler extends CommandHandler<OptionalItemS
 	
 	@Inject
 	private OptionalItemNameOtherRepository itemNameOtherRepo;
+	
+	@Inject
+    private ControlOfMonthlyItemsRepository monthlyControlRepository;
+    
+    @Inject
+    private ControlOfAttendanceItemsRepository dailyControlRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -99,6 +108,11 @@ public class OptionalItemSaveCommandHandler extends CommandHandler<OptionalItemS
 
 			// update optional item.
 			this.optItemRepo.update(dom);
+			
+			// update control unit item
+			if (dom.getPerformanceAtr().equals(PerformanceAtr.MONTHLY_PERFORMANCE)) {
+			    
+			}
 
 			// Remove all existing formulas
 			this.formulaRepo.remove(companyId, optionalItemNo);

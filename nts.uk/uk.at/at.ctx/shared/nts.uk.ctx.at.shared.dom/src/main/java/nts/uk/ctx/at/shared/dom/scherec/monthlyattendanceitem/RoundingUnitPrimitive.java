@@ -1,22 +1,24 @@
 package nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem;
 
-import nts.arc.primitive.IntegerPrimitiveValue;
-import nts.arc.primitive.constraint.IntegerRange;
+import java.math.BigDecimal;
+
+import nts.arc.primitive.DecimalPrimitiveValue;
+import nts.arc.primitive.constraint.DecimalRange;
 
 /**
  * @author anhnm
  * 丸め単位
  *
  */
-@IntegerRange(min = 0, max = 100000)
-public class RoundingUnitPrimitive extends IntegerPrimitiveValue<RoundingUnitPrimitive> {
+@DecimalRange(min = "0.5", max = "100000")
+public class RoundingUnitPrimitive extends DecimalPrimitiveValue<RoundingUnitPrimitive> {
 
     /**
      * 
      */
     private static final long serialVersionUID = 1L;
 
-    public RoundingUnitPrimitive(Integer rawValue) {
+    public RoundingUnitPrimitive(BigDecimal rawValue) {
         super(rawValue);
     }
 
