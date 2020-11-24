@@ -371,7 +371,7 @@
                               <th class="ui-widget-header">
                                  <div tabindex="-1" data-bind="ntsCheckBox: {
                                        checked: checkedAllFormula,
-                                       enable: isUsed,
+                                       enable: isUsed &amp;&amp; usageAtr() === 1 &amp;&amp; selectedClac() === 1,
                                        text: '' }"></div>
                               </th>
                               <th class="ui-widget-header">#{i18n.getText('KMK002_33')}</th>
