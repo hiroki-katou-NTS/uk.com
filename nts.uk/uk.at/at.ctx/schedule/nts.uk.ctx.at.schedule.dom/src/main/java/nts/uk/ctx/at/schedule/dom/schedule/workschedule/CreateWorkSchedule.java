@@ -48,7 +48,7 @@ public class CreateWorkSchedule {
 				workSchedule = WorkSchedule.createByHandCorrectionWithWorkInformation(require, employeeId, date, workInformation);
 			} catch (BusinessException e) {
 				
-				if (e.getMessage().equals("Msg_430")) {
+				if (e.getMessageId().equals("Msg_430")) {
 					return ResultOfRegisteringWorkSchedule.createWithError(employeeId, date, "Msg_430");
 				}
 			}
