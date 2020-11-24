@@ -327,5 +327,9 @@ module nts.uk.com.view.ccg015.e {
       $.extend(this, init);
       this.isShowSetting = (init.itemType === MenuPartType.PART_KTG_004 || init.itemType === MenuPartType.PART_KTG_005);
     }
+
+    public isKTG031() {
+      return this.itemType === MenuPartType.PART_KTG_031;
+    }
   }
 }
