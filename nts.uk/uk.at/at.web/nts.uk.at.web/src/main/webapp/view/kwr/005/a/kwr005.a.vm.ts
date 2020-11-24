@@ -150,7 +150,7 @@ module nts.uk.at.view.kwr005.a {
         /** Advanced search properties */
         showEmployment: true,
         showDepartment: false,
-        showWorkplace: true,
+        showWorkplace: false,
         showClassification: true,
         showJobTitle: true,
         showWorktype: true,
@@ -333,14 +333,14 @@ module nts.uk.at.view.kwr005.a {
 
       //【社員】が選択されていません。
       if (nts.uk.util.isNullOrEmpty(vm.multiSelectedCode())) {
-        vm.$dialog.error({ messageId: 'Msg_1812' }).then(() => { });
+        vm.$dialog.error({ messageId: 'Msg_1923' }).then(() => { });
         hasError.error = true;
         hasError.focusId = 'kcp005';
         return hasError;
       }
       //自由設定が選択されていません。 
       if (vm.rdgSelectedId() === 1 && nts.uk.util.isNullOrEmpty(vm.freeSelectedCode())) {
-        vm.$dialog.error({ messageId: 'Msg_1815' }).then(() => { });
+        vm.$dialog.error({ messageId: 'Msg_1924' }).then(() => { });
 
         hasError.error = true;
         hasError.focusId = 'KWR005_106';
@@ -349,7 +349,7 @@ module nts.uk.at.view.kwr005.a {
       }
       //定型選択が選択されていません。 
       if (vm.rdgSelectedId() === 0 && nts.uk.util.isNullOrEmpty(vm.standardSelectedCode())) {
-        vm.$dialog.error({ messageId: 'Msg_1818' }).then(() => { });
+        vm.$dialog.error({ messageId: 'Msg_1925' }).then(() => { });
         hasError.error = true;
         hasError.focusId = 'KWR005_105';
         $('#' + hasError.focusId).ntsError('check');

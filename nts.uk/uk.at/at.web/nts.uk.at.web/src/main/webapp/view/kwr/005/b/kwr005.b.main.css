@@ -52,7 +52,7 @@
 }
 
 .B6_1 .ui-igcombo-wrapper {
-  width: 70px;
+  width: 80px;
 }
 .swap-list-colum {
   width: 285px;
@@ -64,7 +64,7 @@
   margin: 0;
 }
 .swap-list-colum:first-child .form-label {
-  margin-right: 60px;
+  margin-right: 50px;
 }
 .swap-list-colum:first-child .form-label + div {
   margin-right: 15px;

@@ -47,7 +47,7 @@ module nts.uk.at.view.kwr005.b {
     listItemsSwap: KnockoutObservableArray<AttendanceDto> = ko.observableArray([]);
     gridHeight: KnockoutObservable<number> = ko.observable(330);
 
-    mode: KnockoutObservable<ModeData> = ko.observable(new ModeData());
+    mode: KnockoutObservable<ModelData> = ko.observable(new ModelData());
 
     constructor(params: any) {
       super();
@@ -55,7 +55,7 @@ module nts.uk.at.view.kwr005.b {
       const vm = this;
 
       //get output info
-      vm.getWorkStatusTableOutput();
+      //vm.getWorkStatusTableOutput();
 
       vm.getSettingList();
 
@@ -66,11 +66,11 @@ module nts.uk.at.view.kwr005.b {
       });
 
       vm.printProperties = ko.observableArray([
-        { code: 1, name: vm.$i18n('KWR005_114') },
-        { code: 2, name: vm.$i18n('KWR005_115') },
-        { code: 3, name: vm.$i18n('KWR005_116') },
-        { code: 4, name: vm.$i18n('KWR005_117') },
-        { code: 5, name: vm.$i18n('KWR005_118') },
+        { code: 5, name: vm.$i18n('KWR005_114') },
+        { code: 1, name: vm.$i18n('KWR005_115') },
+        { code: 2, name: vm.$i18n('KWR005_116') },
+        { code: 3, name: vm.$i18n('KWR005_117') },
+        { code: 4, name: vm.$i18n('KWR005_118') },
         { code: 6, name: vm.$i18n('KWR005_119') }
       ]);
 
@@ -99,7 +99,7 @@ module nts.uk.at.view.kwr005.b {
 
     mounted() {
       const vm = this;
-      $("#swapList-grid1").igGrid("container").focus();
+      //$("#swapList-grid1").igGrid("container").focus();
     }
 
 
@@ -171,6 +171,7 @@ module nts.uk.at.view.kwr005.b {
       const vm = this;
 
       vm.$blockui('show');
+
       const params = {
         settingId: vm.settingId() //該当する設定ID
       };
@@ -178,18 +179,20 @@ module nts.uk.at.view.kwr005.b {
       vm.$dialog.confirm({ messageId: 'Msg_18' }).then((answer: string) => {
         if (answer === 'yes') {
           vm.$ajax(PATH.deleteSettingItemDetails, params)
-            .done(() => {
-              vm.$dialog.info({ messageId: 'Msg_16' }).then(() => {
-                vm.loadSettingList({ standOrFree: vm.settingCategory(), code: null });
-                vm.$blockui('hide');
-              })
-            })
-            .always(() => {
+          .done(() => {
+            vm.$dialog.info({ messageId: 'Msg_16' }).then(() => {
+              vm.loadSettingList({ standOrFree: vm.settingCategory(), code: null });
               vm.$blockui('hide');
             })
-            .fail((error) => {
-
-            });
+          })
+          .always(() => {
+            vm.$blockui('hide');
+          })
+          .fail((error) => {
+            vm.$dialog.error({ messageId: error.messageId }).then(() => {              
+              vm.$blockui('hide');
+            })
+          });
         }
       });
     }
@@ -245,8 +248,23 @@ module nts.uk.at.view.kwr005.b {
     /**
      * Get setting list items details
      */
-    getSettingListItemsDetails() {
+    getSettingListItemsDetails(settingId: string) : Array<AttendanceDto> {
       const vm = this;
+
+      vm.currentCodeListSwap([]);
+
+      //call to server
+      /* vm.$blockui('show');
+      vm.$ajax(PATH.getSettingLitsWorkStatusDetails, { settingId: settingId })
+      .done((result) => {
+        if( result ) {
+
+        }
+        vm.$blockui('hide')
+      })
+      .fail()
+      .always(() => vm.$blockui('hide')); */
+
       vm.currentCodeListSwap.push(new AttendanceDto('001', 'items '));
       vm.currentCodeListSwap.push(new AttendanceDto('002', 'items '));
       vm.currentCodeListSwap.push(new AttendanceDto('045', 'items '));
@@ -262,7 +280,7 @@ module nts.uk.at.view.kwr005.b {
     createDefaultSettingDetails() {
       const vm = this;
 
-      let newMode: ModeData = new ModeData();
+      let newMode: ModelData = new ModelData();
       vm.mode(newMode);
 
     }
@@ -279,11 +297,11 @@ module nts.uk.at.view.kwr005.b {
           vm.isEnableDuplicateButton(true);
           vm.isNewMode(false);
 
-          let newMode: ModeData = new ModeData();
+          let newMode: ModelData = new ModelData();
           newMode.code(selectedObj.code);
           newMode.name(selectedObj.name);
-          newMode.settingId(selectedObj.id);
-          newMode.selectedItems(vm.getSettingListItemsDetails());
+          newMode.settingId(selectedObj.id);          
+          newMode.selectedItems(vm.getSettingListItemsDetails(selectedObj.id));
           vm.mode(newMode);
         }
       }
@@ -296,10 +314,7 @@ module nts.uk.at.view.kwr005.b {
 
       vm.$blockui('show');
 
-      //vm.workStatusTableOutputItem = ko.observable({ listDaily: [], listMonthly: [] });
-
-      vm.$ajax(PATH.getFormInfo, { formNumberDisplay: 8 }).done((result) => {
-        //vm.workStatusTableOutputItem(result);
+      vm.$ajax(PATH.getFormInfo, { formNumberDisplay: 8 }).done((result) => {      
         if (result && result.listDaily) {
           _.forEach(result.listDaily, (item) => {
             vm.listItemsSwap.push(new AttendanceDto(
@@ -326,6 +341,9 @@ module nts.uk.at.view.kwr005.b {
     loadSettingList(params: any) {
       const vm = this;
       let listWorkStatus: Array<any> = [];
+
+      vm.$blockui('grayout');
+
       vm.$ajax(PATH.getSettingListWorkStatus, { setting: params.standOrFree }).then((data) => {
         if (!_.isNil(data) && data.length > 0) {
           _.forEach(data, (item) => {
@@ -350,7 +368,7 @@ module nts.uk.at.view.kwr005.b {
           //create new the settings list
           vm.newSetting();
         }
-
+        vm.$blockui('hide');
       });
     }
   }
@@ -367,13 +385,13 @@ module nts.uk.at.view.kwr005.b {
     }
   }
 
-  export class ModeData {
+  export class ModelData {
     code?: KnockoutObservable<string>;
     name?: KnockoutObservable<string>;
     settingId?: KnockoutObservable<string>;
-    selectedItems?: KnockoutObservableArray<string>;
+    selectedItems?: KnockoutObservableArray<AttendanceDto>;
 
-    constructor(code?: string, name?: string, settingId?: string, selectedItems?: Array<string>) {
+    constructor(code?: string, name?: string, settingId?: string, selectedItems?: Array<AttendanceDto>) {
       this.code = ko.observable(code);
       this.name = ko.observable(name);
       this.settingId = ko.observable(settingId);
