@@ -154,11 +154,11 @@ public class JpaAttendanceRecordExportSettingRepo extends JpaRepository
 	public void save(AttendanceRecordFreeSetting domain) {
 		for (AttendanceRecordExportSetting subDomain : domain.getAttendanceRecordExportSettings()) {
 			KfnmtRptWkAtdOut entity = new KfnmtRptWkAtdOut();
-			subDomain.saveToMemento(entity);
 			entity.setContractCd(AppContexts.user().contractCode());
 			entity.setCid(domain.getCid().v());
 			entity.setItemSelType(domain.getItemSelectionType().value);
 			entity.setSid(domain.getEmployeeId().v());
+			subDomain.saveToMemento(entity);
 			this.deleteSealStamp(domain.getCid().v(), subDomain.getLayoutId());
 			
 			Optional<AttendanceRecordExportSetting> ares = this.findByLayoutId(subDomain.getLayoutId());
