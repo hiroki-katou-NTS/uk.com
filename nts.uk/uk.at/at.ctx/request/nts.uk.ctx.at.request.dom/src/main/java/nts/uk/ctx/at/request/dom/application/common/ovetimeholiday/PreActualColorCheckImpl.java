@@ -636,6 +636,17 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 				
 			}
 			// アルゴリズム「1日分の勤怠時間を仮計算」を実行する
+			List<TimeZone> timeZones = new ArrayList<TimeZone>();
+			Optional<AchievementDetail> opAcOptional = acuActualContentDisplay.map(x -> x.getOpAchievementDetail()).orElse(Optional.empty());
+			// 1 QA
+			timeZones.add(new TimeZone(
+					new TimeWithDayAttr(opAcOptional.map(x -> x.getOpWorkTime().orElse(0)).orElse(0)),
+					new TimeWithDayAttr(opAcOptional.map(x -> x.getOpLeaveTime().orElse(0)).orElse(0))));
+			//2
+			timeZones.add(new TimeZone(
+					new TimeWithDayAttr(opAcOptional.map(x -> x.getOpWorkTime2().orElse(0)).orElse(0)),
+					new TimeWithDayAttr(opAcOptional.map(x -> x.getOpDepartureTime2().orElse(0)).orElse(0))));
+			
 			// 1日分の勤怠時間を仮計算 (RQ23)
 			output = convertApplicationList(
 					companyId,
@@ -643,7 +654,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 					date,
 					workTypeCode == null ? Optional.empty() : Optional.of(workTimeCode.v()),
 					workTimeCode == null ? Optional.empty() : Optional.ofNullable(workTimeCode.v()),
-					Collections.emptyList(),
+					timeZones,
 					breakTimes).get(0);
 			
 		}
