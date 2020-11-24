@@ -484,7 +484,9 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                         self.useMonthApproverConfirm(aPUS.useMonthApproverConfirm);
                     }
                     if (aRES !== null) {
-                        self.monthlyConfirmedDisplay(aRES.monthlyConfirmedDisplay === null ? 0 : 1);
+                        self.monthlyConfirmedDisplay(aRES.monthlyConfirmedDisplay);
+                    } else {
+                        self.monthlyConfirmedDisplay(0);
                     }
                 })
                 .fail(() => {

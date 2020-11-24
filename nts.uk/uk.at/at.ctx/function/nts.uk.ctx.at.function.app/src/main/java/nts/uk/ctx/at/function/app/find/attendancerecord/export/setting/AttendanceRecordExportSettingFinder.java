@@ -84,6 +84,7 @@ public class AttendanceRecordExportSettingFinder {
 				dto.setName(item.getName().toString());
 				dto.setSealUseAtr(item.getSealUseAtr());
 				dto.setNameUseAtr(item.getNameUseAtr().value);
+				dto.setMonthlyConfirmedDisplay(item.getMonthlyConfirmedDisplay().value);
 				return dto;
 			}).collect(Collectors.toList());
 		}
@@ -101,6 +102,7 @@ public class AttendanceRecordExportSettingFinder {
 				dto.setName(item.getName().toString());
 				dto.setSealUseAtr(item.getSealUseAtr());
 				dto.setNameUseAtr(item.getNameUseAtr().value);
+				dto.setMonthlyConfirmedDisplay(item.getMonthlyConfirmedDisplay().value);
 				return dto;
 			}).collect(Collectors.toList());
 		}
