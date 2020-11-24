@@ -515,33 +515,8 @@ module nts.uk.ui.components.fullcalendar {
 
                         const view = ko.unwrap(initialView);
 
-                        switch (view) {
-                            case 'oneDay':
-                                if (e.className.match(/one-day/)) {
-                                    e.classList.add('active');
-                                }
-                                break;
-                            case 'fiveDay':
-                                if (e.className.match(/five-day/)) {
-                                    e.classList.add('active');
-                                }
-                                break;
-                            default:
-                            case 'fullWeek':
-                                if (e.className.match(/full-week/)) {
-                                    e.classList.add('active');
-                                }
-                                break;
-                            case 'fullMonth':
-                                if (e.className.match(/full-month/)) {
-                                    e.classList.add('active');
-                                }
-                                break;
-                            case 'listWeek':
-                                if (e.className.match(/list-week/)) {
-                                    e.classList.add('active');
-                                }
-                                break;
+                        if (e.className.match(toKebabCase(view))) {
+                            e.classList.add('active');
                         }
                     });
             };
