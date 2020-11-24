@@ -13,7 +13,7 @@
 
     <ui:define name="content">
       <div class="contents">
-        <button id="show-ccg003" style="margin-left: 100px;">Show CCG003</button>
+        <button id="notice-msg" style="margin-left: 100px;">Show CCG003</button>
         <!-- A0 お知らせ表示 -->
         <div id="A0" class="panel panel-frame panel-ccg003">
           <div class="top-content">
@@ -29,7 +29,7 @@
               </div>
               <div>
                 <!-- A3 ☓アイコン -->
-                <img id="close-ccg003" class="img-close" src="../resource/CCG003_1.png" data-bind="click: closeWindow" />
+                <i data-bind="ntsIcon: { no: 174, width: 25, height: 15 }, click: closeWindow"></i>
               </div>
             </div>
           </div>
@@ -63,14 +63,14 @@
                   <span class="limited-label mw-400" data-bind="text: anniversaryNotice.anniversaryTitle"></span>
                   <!-- A5_1 NEWアイコン -->
                   <com:ko-if bind="$vm.anniversaries()[$index()].flag">
-                    <img id="A5_1" class="new-img mt-5" src="../resource/CCG003_2.png" />
+                    <i data-bind="ntsIcon: { no: 175, width: 25, height: 15 }"></i>
                   </com:ko-if>
                 </div>
                 <div class="mr-data no-border-radius">
                   <!-- A5_2 記念日内容 -->
                   <div>
                     <span class="break-space" data-bind="text: anniversaryNotice.notificationMessage"></span>
-                    <span data-bind="text: $vm.$i18n('CCG003_16', [anniversaryNotice.anniversary])"></span>
+                    <span data-bind="text: $vm.$i18n('CCG003_16', [anniversaryNotice.displayDate])"></span>
                   </div>
                 </div>
               </div>
@@ -83,7 +83,7 @@
                   <span class="limited-label mw-400" data-bind="text: message.notificationMessage"></span>
                   <!-- A6_1 NEWアイコン -->
                   <com:ko-if bind="$vm.msgNotices()[$index()].flag">
-                    <img id="A6_1" class="new-img mt-5" src="../resource/CCG003_2.png" />
+                    <i data-bind="ntsIcon: { no: 175, width: 25, height: 15 }"></i>
                   </com:ko-if>
                 </h3>
                 <!-- A6_2 メッセージ内容 -->

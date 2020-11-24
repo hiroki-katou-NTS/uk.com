@@ -1,7 +1,6 @@
 package nts.uk.ctx.sys.portal.app.find.toppage;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -9,11 +8,10 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.sys.portal.dom.layout.LayoutNew;
 import nts.uk.ctx.sys.portal.dom.layout.WidgetSetting;
-import nts.uk.ctx.sys.portal.dom.layout.WidgetType;
 
 @Getter
 @Setter
-public class LayoutNewDto implements LayoutNew.MementoSetter, LayoutNew.MementoGetter {
+public class LayoutNewDto implements LayoutNew.MementoSetter {
 	
 	/** ウィジェット設定 */
 	private List<WidgetSettingDto> widgetSettings;
@@ -33,16 +31,7 @@ public class LayoutNewDto implements LayoutNew.MementoSetter, LayoutNew.MementoG
 	private String url;
 
 	@Override
-	public List<WidgetSetting> getWidgetSettings() {
-		if (this.widgetSettings == null) {
-			return new ArrayList<WidgetSetting>();
-		}
-		return this.widgetSettings.stream()
-				.map(x -> new WidgetSetting(WidgetType.valueOf(x.getWidgetType()), x.getOrder())).collect(Collectors.toList());
-	}
-
-	@Override
-	public void setWidgetSettings(List<WidgetSetting> widgetSettings) {
+	public void setWidgetSettings(String contractCode, List<WidgetSetting> widgetSettings) {
 		if (widgetSettings == null) {
 			return;
 		}
@@ -52,74 +41,14 @@ public class LayoutNewDto implements LayoutNew.MementoSetter, LayoutNew.MementoG
 				.build())
 				.collect(Collectors.toList());
 	}
-	
-	@Override
-	public String getTopPageCode() {
-		return this.topPageCode;
-	}
-
-	@Override
-	public void setTopPageCode(String toppageCode) {
-		this.topPageCode = toppageCode;
-	}
-
-	@Override
-	public BigDecimal getLayoutNo() {
-		return BigDecimal.valueOf(this.layoutNo);
-	}
 
 	@Override
 	public void setLayoutNo(BigDecimal layoutNo) {
 		this.layoutNo = layoutNo.intValue();
 	}
-
-	@Override
-	public BigDecimal getLayoutType() {
-		return BigDecimal.valueOf(this.layoutType);
-	}
 	
 	@Override
 	public void setLayoutType(BigDecimal layoutType) {
 		this.layoutType = layoutType.intValue();
-	}
-
-	@Override
-	public String getCid() {
-		return this.cid;
-	}
-
-	@Override
-	public void setCid(String cid) {
-		this.cid = cid;
-	}
-
-	@Override
-	public String getFlowMenuCd() {
-		return this.flowMenuCd;
-	}
-	
-	@Override
-	public void setFlowMenuCd(String flowMenuCd) {
-		this.flowMenuCd = flowMenuCd;
-	}
-
-	@Override
-	public String getFlowMenuUpCd() {
-		return this.flowMenuUpCd;
-	}
-
-	@Override
-	public void setFlowMenuUpCd(String flowMenuUpCd) {
-		this.flowMenuUpCd = flowMenuUpCd;
-	}
-
-	@Override
-	public String getUrl() {
-		return this.url;
-	}
-
-	@Override
-	public void setUrl(String url) {
-		this.url = url;
 	}
 }

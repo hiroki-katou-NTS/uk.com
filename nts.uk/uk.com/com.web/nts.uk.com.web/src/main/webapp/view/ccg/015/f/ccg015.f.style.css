@@ -30,7 +30,6 @@
   height: 549px;
   max-height: 549px;
   margin: 10px 10px 0px 10px;
-  overflow: auto;
 }
 
 .scroll_resize {
@@ -38,5 +37,15 @@
 }
 
 .h_100 {
+  overflow: scroll;
   height: 100%;
+}
+
+.iframe_fix {
+  width: 100%;
+  height: 100%;
+}
+
+#F1-frame {
+  position: absolute;
 }

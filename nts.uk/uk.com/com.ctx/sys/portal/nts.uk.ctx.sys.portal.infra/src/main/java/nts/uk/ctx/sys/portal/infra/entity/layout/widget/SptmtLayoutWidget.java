@@ -1,7 +1,6 @@
 package nts.uk.ctx.sys.portal.infra.entity.layout.widget;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -42,7 +41,7 @@ public class SptmtLayoutWidget extends UkJpaEntity implements Serializable {
 	private String contractCd;
 
 	@Column(name = "WIDGET_DISP")
-	private BigDecimal widgetDisp;
+	private Integer widgetDisp;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumns({ @JoinColumn(name = "LAYOUT_NO", referencedColumnName = "LAYOUT_NO", insertable = false, updatable = false),

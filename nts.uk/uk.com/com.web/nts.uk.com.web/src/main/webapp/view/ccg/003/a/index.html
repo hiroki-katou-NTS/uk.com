@@ -1,0 +1,86 @@
+<div class="contents">
+  <!-- A0 お知らせ表示 -->
+  <div id="A0" class="panel panel-frame panel-ccg003">
+    <div class="top-content">
+      <!-- A1 対象日 -->
+      <div id="A1"><span data-bind="text: systemDate"></span>
+      </div>
+      <div class="fw-right">
+        <div>
+          <com:ko-if bind="roleFlag">
+            <!-- A2 メッセージ入力 -->
+            <a id="A2" class="mr-5" href="#" data-bind="click: openScreenB, text: $component.$i18n('CCG003_4')"></a>
+          </com:ko-if>
+        </div>
+        <div>
+          <!-- A3 ☓アイコン -->
+          <i data-bind="ntsIcon: { no: 174, width: 25, height: 15 }, click: closeWindow"></i>
+        </div>
+      </div>
+    </div>
+    <!-- A4 絞り込み -->
+    <div id="A4" class="w-490" data-bind="ntsAccordion: {}">
+      <!-- ヘッダテキスト -->
+      <h3 class="bg-accordion-1 no-border-bottom" data-bind="text: $component.$i18n('CCG003_5')"></h3>
+      <div class="bg-accordion-1 no-border-radius pl-10">
+        <div class="row-inline">
+          <!-- A4_1 表示期間(ラベル) -->
+          <span id="A4_1" class="auto-margin" data-bind="text: $component.$i18n('CCG003_6')"></span>
+          <!-- A4_2 表示期間 -->
+          <div id="daterangepicker" tabindex="1" class="ml-10" data-bind="ntsDateRangePicker: {
+            required: false,
+            enable: true,
+            showNextPrevious: false,
+            value: dateValue,
+            maxRange: 'oneMonth'}"
+          />
+          <!-- A4_3 絞込 -->
+          <button id="A4_3" tabindex="2" class="small pl-10 pr-10 ml-90" data-bind="click: onClickFilter, text: $component.$i18n('CCG003_7')"></button>
+        </div>
+      </div>
+    </div>
+    <div class="auto-overflow">
+      <div data-bind="foreach: anniversaries">
+        <!-- A5 記念日 -->
+        <div class="w-490" data-bind="ntsAccordion: {}, click: $component.onClickAnniversary.bind($component, $index)">
+          <div class="bg-schedule-focus">
+            <!-- ヘッダテキスト -->
+            <span class="limited-label mw-400" data-bind="text: anniversaryNotice.anniversaryTitle"></span>
+            <!-- A5_1 NEWアイコン -->
+            <span data-bind="if: $component.anniversaries()[$index()].flag">
+              <i data-bind="ntsIcon: { no: 175, width: 25, height: 15 }"></i>
+            </span>
+          </div>
+          <div class="mr-data no-border-radius">
+            <!-- A5_2 記念日内容 -->
+            <div>
+              <span class="break-space" data-bind="text: anniversaryNotice.notificationMessage"></span>
+              <span class="block-5" data-bind="text: $component.$i18n('CCG003_16', [anniversaryNotice.anniversary])"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-bind="foreach: msgNotices">
+        <!-- A6 メッセージ -->
+        <div class="w-490" data-bind="ntsAccordion: {activate: $component.onClickMessageNotice.bind($component, message.creatorID, message.inputDate, $index)}">
+          <h3 class="bg-schedule-focus">
+            <!-- ヘッダテキスト -->
+            <span class="limited-label mw-400" data-bind="text: message.notificationMessage"></span>
+            <!-- A6_1 NEWアイコン -->
+            <span data-bind="if: $component.msgNotices()[$index()].flag">
+              <i data-bind="ntsIcon: { no: 175, width: 25, height: 15 }"></i>
+            </span>
+          </h3>
+          <!-- A6_2 メッセージ内容 -->
+          <div class="mr-data no-border-radius">
+            <div>
+              <span class="break-space" data-bind="html: messageDisplay"></span>
+              <span class="block-5" data-bind="text: $component.$i18n('CCG003_8', [creator])"></span>
+              <span class="block-5" data-bind="text: $component.$i18n('CCG003_9', [dateDisplay])"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

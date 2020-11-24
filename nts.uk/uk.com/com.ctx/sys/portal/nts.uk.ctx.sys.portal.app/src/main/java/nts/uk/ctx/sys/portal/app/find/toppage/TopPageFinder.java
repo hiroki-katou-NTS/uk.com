@@ -1,17 +1,20 @@
 /******************************************************************
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
- *****************************************************************/ 
+ *****************************************************************/
 package nts.uk.ctx.sys.portal.app.find.toppage;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
+import org.apache.commons.lang3.StringUtils;
 
 import nts.uk.ctx.sys.portal.dom.enums.TopPagePartType;
 import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenu;
@@ -36,12 +39,12 @@ public class TopPageFinder {
 	private TopPageRepository topPageRepository;
 	@Inject
 	private ToppageNewRepository toppageNewRepository;
-	@Inject 
+	@Inject
 	private FlowMenuRepository flowMenuRepository;
-    @Inject
-    private CreateFlowMenuRepository CFlowMenuRepo;
-    @Inject
-    private LayoutNewRepository layoutNewRepository;
+	@Inject
+	private CreateFlowMenuRepository CFlowMenuRepo;
+	@Inject
+	private LayoutNewRepository layoutNewRepository;
 
 	public List<TopPageItemDto> findAll(String companyId) {
 		// 会社の「トップページ」を全て取得する
@@ -73,70 +76,70 @@ public class TopPageFinder {
 
 	public LayoutNewDto getLayout(String topPageCd, int layoutNo) {
 		String companyId = AppContexts.user().companyId();
-		//	ドメインモデル「レイアウト」を取得する
-		Optional<LayoutNew> layout1 = layoutNewRepository.getByCidAndCode(companyId, topPageCd, BigDecimal.valueOf(0));
+		// ドメインモデル「レイアウト」を取得する
+		Optional<LayoutNew> layout1 = layoutNewRepository.getByCidAndCode(companyId, topPageCd,
+				BigDecimal.valueOf(layoutNo));
 		if (layout1.isPresent()) {
 			LayoutNewDto layoutDto = toDto(layout1.get());
 			return layoutDto;
-		} 
+		}
 		return null;
 	}
 
 	public List<FlowMenuOutput> getFlowMenuOrFlowMenuUploadList(String cId, String topPageCd, int layoutType) {
 		List<FlowMenuOutput> listFlow = new ArrayList<FlowMenuOutput>();
-		//	ドメインモデル「レイアウト」を取得する
+		// ドメインモデル「レイアウト」を取得する
 		Optional<LayoutNew> layout1 = layoutNewRepository.getByCidAndCode(cId, topPageCd, BigDecimal.valueOf(0));
-		if (layout1.isPresent()) {
-			//	アルゴリズム「フローメニューの作成リストを取得する」を実行する
-			if(layoutType == LayoutType.FLOW_MENU.value) {
-	            //    アルゴリズム「フローメニューの作成リストを取得する」を実行する
-	            //    Inputフローコードが指定されている場合
-	            if(layout1.get().getFlowMenuCd().isPresent()) {
-	                Optional<CreateFlowMenu> data =  CFlowMenuRepo.findByPk(cId, layout1.get().getFlowMenuCd().get().v());
-	                if(data.isPresent()) {
-	                	FlowMenuOutput item = FlowMenuOutput.builder()
-	                            .flowCode(data.get().getFlowMenuCode().v())
-	                            .flowName(data.get().getFlowMenuName().v())
-	                            .fileId(data.get().getFlowMenuLayout().map(x-> x.getFileId()).orElse(""))
-	                            .build();
-	                    listFlow.add(item);
-	                }
-	            } else {
-		            List<CreateFlowMenu> listData = CFlowMenuRepo.findByCid(cId);
-		            listFlow = listData.stream().map(item -> FlowMenuOutput.builder()
-		                    .flowCode(item.getFlowMenuCode().v())
-		                    .flowName(item.getFlowMenuName().v())
-		                    .fileId(item.getFlowMenuLayout().map(x-> x.getFileId()).orElse(""))
-		                    .build())
-		                    .collect(Collectors.toList());
-		        }
-			}
-			//	アルゴリズム「フローメニュー（アップロード）リストを取得する」を実行する
-			else if (layoutType == LayoutType.FLOW_MENU_UPLOAD.value) {
-				// Inputフローコードが指定されている場合
-				if (layout1.get().getFlowMenuCd().isPresent()) {
-					Optional<FlowMenu> data = flowMenuRepository.findByCodeAndType(cId, layout1.get().getFlowMenuCd().get().v(), TopPagePartType.FlowMenu.value);
-					if(data.isPresent()) {
-	                	FlowMenuOutput item = FlowMenuOutput.builder()
-	                            .flowCode(data.get().getCode().v())
-	                            .flowName(data.get().getName().v())
-	                            .fileId(data.get().getFileID())
-	                            .build();
-	                    listFlow.add(item);
-	                }
-				} else {
-					List<FlowMenu> lstData = flowMenuRepository.findByType(cId, TopPagePartType.FlowMenu.value);
-					listFlow = lstData.stream().map(item -> FlowMenuOutput.builder()
-		                    .flowCode(item.getCode().v())
-		                    .flowName(item.getName().v())
-		                    .fileId(item.getFileID())
-		                    .build())
-		                    .collect(Collectors.toList());
-				}
-			}
-			return listFlow;
+		if (!layout1.isPresent()) {
+			return Collections.emptyList();
 		}
-		return null;
+		// アルゴリズム「フローメニューの作成リストを取得する」を実行する
+		if (layoutType == LayoutType.FLOW_MENU.value) {
+			// アルゴリズム「フローメニューの作成リストを取得する」を実行する
+			// Inputフローコードが指定されている場合
+			if (layout1.get().getFlowMenuCd().isPresent() && !StringUtils.isEmpty(layout1.get().getFlowMenuCd().get().v())) {
+				Optional<CreateFlowMenu> data = CFlowMenuRepo.findByPk(cId, layout1.get().getFlowMenuCd().get().v());
+				if (data.isPresent()) {
+					FlowMenuOutput item = FlowMenuOutput.builder()
+							.flowCode(data.get().getFlowMenuCode().v())
+							.flowName(data.get().getFlowMenuName().v())
+							.fileId(data.get().getFlowMenuLayout().map(x -> x.getFileId()).orElse(""))
+							.build();
+					listFlow.add(item);
+				}
+			} else {
+				listFlow = CFlowMenuRepo.findByCid(cId).stream()
+						.map(item -> FlowMenuOutput.builder()
+								.flowCode(item.getFlowMenuCode().v())
+								.flowName(item.getFlowMenuName().v())
+								.fileId(item.getFlowMenuLayout().map(x -> x.getFileId()).orElse(""))
+								.build())
+						.collect(Collectors.toList());
+			}
+		} else if (layoutType == LayoutType.FLOW_MENU_UPLOAD.value) {
+			// アルゴリズム「フローメニュー（アップロード）リストを取得する」を実行する
+			// Inputフローコードが指定されている場合
+			if (layout1.get().getFlowMenuCd().isPresent() && !StringUtils.isEmpty(layout1.get().getFlowMenuCd().get().v())) {
+				Optional<FlowMenu> data = flowMenuRepository.findByCodeAndType(cId, layout1.get().getFlowMenuCd().get().v(), TopPagePartType.FlowMenu.value);
+				if (data.isPresent()) {
+					FlowMenuOutput item = FlowMenuOutput.builder()
+							.flowCode(data.get().getCode().v())
+							.flowName(data.get().getName().v())
+							.fileId(data.get().getFileID())
+							.build();
+					listFlow.add(item);
+				}
+			} else {
+				listFlow = this.flowMenuRepository.findByType(cId, TopPagePartType.FlowMenu.value).stream()
+						.map(item -> FlowMenuOutput.builder()
+								.flowCode(item.getCode().v())
+								.flowName(item.getName().v())
+								.fileId(item.getFileID())
+								.build())
+						.collect(Collectors.toList());
+			}
+		}
+		return listFlow;
 	}
 
 	private LayoutNewDto toDto(LayoutNew domain) {

@@ -27,6 +27,7 @@ public class JpaToppageNewRepository extends JpaRepository implements ToppageNew
 	@Override
 	public void insert(ToppageNew domain) {
 		SptmtToppage entity = JpaToppageNewRepository.toEntity(domain);
+		entity.setCid(AppContexts.user().companyId());
 		entity.setContractCd(AppContexts.user().contractCode());
 		// insert
 		this.commandProxy().insert(entity);
@@ -35,6 +36,7 @@ public class JpaToppageNewRepository extends JpaRepository implements ToppageNew
 	@Override
 	public void update(ToppageNew domain) {
 		SptmtToppage entity = JpaToppageNewRepository.toEntity(domain);
+		entity.setCid(AppContexts.user().companyId());
 		SptmtToppagePk pk = new SptmtToppagePk(entity.getCid(), entity.getTopPageCode());
 		SptmtToppage oldEntity = this.queryProxy().find(pk, SptmtToppage.class).get();
 		oldEntity.setLayoutDisp(entity.getLayoutDisp());

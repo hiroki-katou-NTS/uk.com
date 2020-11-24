@@ -13,7 +13,7 @@ public class MessageNoticeHelper {
 	private static final String CREATOR_ID = "31559a03-1f9a-47ea-8ae5-85364ff7e3fc";
 	private static final GeneralDateTime INPUT_DATE = GeneralDateTime.ymdhms(2020, 10, 10, 10, 10, 10);
 	private static final GeneralDateTime MODIFIED_DATE = GeneralDateTime.ymdhms(2020, 10, 10, 10, 10, 10);
-	private static final TargetInformationDto TARGET_INFOR = TargetInformationDto.builder().destination(1)
+	private static final TargetInformationDto TARGET_INFOR = TargetInformationDto.builder().destination(2)
 			.targetSIDs(Arrays.asList("dbbf9205-9052-4dd0-b0c7-649261372fe0")).targetWpids(new ArrayList<String>())
 			.build();
 	private static final TargetInformationDto TARGET_INFOR_NULL_DEST = TargetInformationDto.builder().destination(null)

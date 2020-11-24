@@ -77,10 +77,11 @@ public class SptmtLayout extends UkJpaEntity implements Serializable, LayoutNew.
 	}
 
 	@Override
-	public void setWidgetSettings(List<WidgetSetting> widgetSettings) {
+	public void setWidgetSettings(String contractCode, List<WidgetSetting> widgetSettings) {
 		this.widgetSettings = widgetSettings.stream().map(t -> {
 			SptmtLayoutWidget result = new SptmtLayoutWidget();
-			result.setWidgetDisp(BigDecimal.valueOf(t.getWidgetType().value));
+			result.setWidgetDisp(t.getWidgetType().value);
+			result.setContractCd(contractCode);
 			SptmtLayoutWidgetPK pk = new SptmtLayoutWidgetPK();
 			pk.cid = this.id.cid;
 			pk.layoutNo = this.id.layoutNo;

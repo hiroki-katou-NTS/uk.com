@@ -21,8 +21,9 @@ import nts.uk.ctx.sys.portal.app.command.toppage.DeleteTopPageCommand;
 import nts.uk.ctx.sys.portal.app.command.toppage.DeleteTopPageCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.toppage.RegisterTopPageCommand;
 import nts.uk.ctx.sys.portal.app.command.toppage.RegisterTopPageCommandHandler;
-import nts.uk.ctx.sys.portal.app.command.toppage.SaveLayoutFlowMenuCommand;
+import nts.uk.ctx.sys.portal.app.command.toppage.SaveLayoutCommand;
 import nts.uk.ctx.sys.portal.app.command.toppage.SaveLayoutFlowMenuCommandHandler;
+import nts.uk.ctx.sys.portal.app.command.toppage.SaveLayoutWidgetCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.toppage.UpdateTopPageCommand;
 import nts.uk.ctx.sys.portal.app.command.toppage.UpdateTopPageCommandHandler;
 import nts.uk.ctx.sys.portal.app.find.toppage.FlowMenuOutput;
@@ -65,6 +66,9 @@ public class TopPageWebService extends WebService {
 	
 	@Inject
 	private SaveLayoutFlowMenuCommandHandler saveLayoutFlowMenuCommandHandler;
+	
+	@Inject
+	private SaveLayoutWidgetCommandHandler saveLayoutWidgetCommandHandler;
 	
 	@Inject
 	private DisplayMyPageFinder displayMyPageFinder;
@@ -158,8 +162,14 @@ public class TopPageWebService extends WebService {
 	
 	@POST
 	@Path("saveLayoutFlowMenu")
-	public void insertLayout(SaveLayoutFlowMenuCommand layout) {
+	public void insertLayout(SaveLayoutCommand layout) {
 		saveLayoutFlowMenuCommandHandler.handle(layout);
+	}
+	
+	@POST
+	@Path("saveLayoutWidget")
+	public void insertLayoutWidget(SaveLayoutCommand layout) {
+		saveLayoutWidgetCommandHandler.handle(layout);
 	}
 	
 	@POST

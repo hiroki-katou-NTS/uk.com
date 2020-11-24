@@ -57,7 +57,7 @@ public class TopPageTest {
 		//given
 		TopPageDto mockDtoNull = TopPageDto.builder().build();
 		//when
-		ToppageNew domain =  new ToppageNew();
+		ToppageNew domain = new ToppageNew();
 		domain.getMemento(mockDtoNull);
 		//then
 		NtsAssert.invokeGetters(domain);

@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.sys.portal.app.command.toppage;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -12,7 +11,6 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.sys.portal.app.find.toppage.TopPageNewDto;
 import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
 import nts.uk.ctx.sys.portal.dom.enums.System;
 import nts.uk.ctx.sys.portal.dom.standardmenu.MenuDisplayName;
@@ -26,53 +24,54 @@ import nts.uk.shr.com.context.AppContexts;
  * The Class UpdateTopPageCommandHandler.
  */
 @Stateless
-public class UpdateTopPageCommandHandler extends CommandHandler<UpdateTopPageCommand>{
-	
+public class UpdateTopPageCommandHandler extends CommandHandler<UpdateTopPageCommand> {
+
 	/** The top page repository. */
 	@Inject
 	private ToppageNewRepository toppageNewRepository;
-	
+
 	@Inject
 	private StandardMenuRepository standardMenuRepository;
-	
-	/* (non-Javadoc)
-	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.
+	 * CommandHandlerContext)
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<UpdateTopPageCommand> context) {
 		UpdateTopPageCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 		// 対象の「トップページ」を取得する
-		Optional<ToppageNew> findTopPage = toppageNewRepository.getByCidAndCode(companyId,command.getTopPageCode());
-		TopPageNewDto memento = new TopPageNewDto();
-		memento.setCid(companyId);
-		memento.setLayoutDisp(BigDecimal.valueOf(command.getLayoutDisp()));
-		memento.setTopPageCode(command.getTopPageCode());
-		memento.setTopPageName(command.getTopPageName());
-		ToppageNew topPage = ToppageNew.createFromMemento(memento);
+		Optional<ToppageNew> findTopPage = toppageNewRepository.getByCidAndCode(companyId, command.getTopPageCode());
+		ToppageNew topPage = ToppageNew.createFromMemento(command);
 		// ドメインモデル「トップページ」を更新する
-		if(findTopPage.isPresent()) {
+		if (findTopPage.isPresent()) {
 			toppageNewRepository.update(topPage);
 		} else {
 			toppageNewRepository.insert(topPage);
 		}
 		// ドメインモデル「標準メニュー」を取得する
-		Optional<StandardMenu> standarMenu = 
-				standardMenuRepository.findByCIDSystemMenuClassificationCode(companyId, System.COMMON.value, MenuClassification.TopPage.value,  topPage.getTopPageCode().toString());
+		Optional<StandardMenu> standarMenu = standardMenuRepository.findByCIDSystemMenuClassificationCode(companyId,
+				System.COMMON.value, MenuClassification.TopPage.value, topPage.getTopPageCode().toString());
 		if (standarMenu.isPresent()) {
 			// ドメインモデル「標準メニュー」を更新する
 			StandardMenu standardMenuUpdate = standarMenu.get();
 			standardMenuUpdate.setTargetItems(findTopPage.get().getTopPageName().toString());
 			standardMenuUpdate.setDisplayName(new MenuDisplayName(findTopPage.get().getTopPageName().toString()));
 			// ドメインモデル「標準メニュー」を更新する
-			standardMenuRepository.updateStandardMenu(standardMenuUpdate);;
+			standardMenuRepository.updateStandardMenu(standardMenuUpdate);
+			;
 		} else {
 			// アルゴリズム「標準メニューを新規登録する」を実行する
-			// アルゴリズム「標準メニューを新規登録する」を実行する
-			int maxDisplayOrder = standardMenuRepository.maxOrderStandardMenu(companyId, System.COMMON.value, MenuClassification.TopPage.value);
-			StandardMenu standardMenu = StandardMenu.toNewDomain(companyId, System.COMMON.value, MenuClassification.TopPage.value,
-					"A", "toppagecode=" + topPage.getTopPageCode(), "CCG008", topPage.getTopPageCode().v(), topPage.getTopPageName().v(),
-					topPage.getTopPageName().v(), maxDisplayOrder + 1, 0, "/nts.uk.com.web/view/ccg/008/a/index.xhtml", 1, 0, 1, 1, 0);
+			int maxDisplayOrder = standardMenuRepository.maxOrderStandardMenu(companyId, System.COMMON.value,
+					MenuClassification.TopPage.value);
+			StandardMenu standardMenu = StandardMenu.toNewDomain(companyId, System.COMMON.value,
+					MenuClassification.TopPage.value, "A", "toppagecode=" + topPage.getTopPageCode(), "CCG008",
+					topPage.getTopPageCode().v(), topPage.getTopPageName().v(), topPage.getTopPageName().v(),
+					maxDisplayOrder + 1, 0, "/nts.uk.com.web/view/ccg/008/a/index.xhtml", 1, 0, 1, 1, 0);
 			// 画面項目「トップページ一覧」に登録した内容を追加する
 			standardMenuRepository.insertStandardMenu(standardMenu);
 		}

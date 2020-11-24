@@ -44,9 +44,6 @@ public class MessageNoticeScreenQuery {
 	@Inject
 	private MessageNoticeRepository messageNoticeRepository;
 
-	@Inject
-	private MessageNoticeService messageNoticeService;
-
 	/**
 	 * UKDesign.UniversalK.共通.CCG_メニュートップページ.CCG003_お知らせ機能.A：お知らせ表示.メニュー別OCD.社員が宛先のお知らせの内容を取得する
 	 * @param period 期間
@@ -58,7 +55,7 @@ public class MessageNoticeScreenQuery {
 		MessageNoticeRequireImpl require = new MessageNoticeRequireImpl(messageNoticeAdapter, messageNoticeRepository);
 		String sid = AppContexts.user().employeeId();
 		// 1. 期間で全て参照できるメッセージを取得する(require, 社員ID, 期間)
-		List<MessageNotice> listMsg = messageNoticeService.getAllMsgInPeriod(require, period, sid);
+		List<MessageNotice> listMsg = MessageNoticeService.getAllMsgInPeriod(require, period, sid);
 		
 		// 2. Not　List<お知らせメッセージ＞　IS Empty
 		if (!listMsg.isEmpty()) { // List<お知らせメッセージ＞　IS Empty
@@ -205,7 +202,7 @@ public class MessageNoticeScreenQuery {
 		MessageNoticeRequireImpl require = new MessageNoticeRequireImpl(messageNoticeAdapter, messageNoticeRepository);
 		String sid = AppContexts.user().employeeId();
 		// 新メッセージがあるか
-		boolean isNewMsg = this.messageNoticeService.isNewMsg(require, sid);
+		boolean isNewMsg = MessageNoticeService.isNewMsg(require, sid);
 		// 新記念日があるか
 		boolean isNewAnniversary = this.messageNoticeAdapter.isTodayHaveNewAnniversary();
 		return isNewMsg || isNewAnniversary;

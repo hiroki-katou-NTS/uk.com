@@ -3392,6 +3392,9 @@ public class ProgramsManager {
             "/view/ksm/008/i/index.xhtml");
     public static final Program KSM008K = new Program(WebAppId.AT, ProgramIdConsts.KSM008K, "KSM008_146",
             "/view/ksm/008/k/index.xhtml");
+    public static final Program KSM008L = new Program(WebAppId.AT, ProgramIdConsts.KSM008L, "KSM008_147",
+            "/view/ksm/008/k/index.xhtml");
+		
     /**
      * CCG003B
      */

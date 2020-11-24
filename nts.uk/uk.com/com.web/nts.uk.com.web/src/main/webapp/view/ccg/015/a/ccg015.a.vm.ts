@@ -1,13 +1,13 @@
-module nts.uk.com.view.ccg015.a.screenModel {
+/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
-  import setShared = nts.uk.ui.windows.setShared;
-  import getShared = nts.uk.ui.windows.getShared;
+module nts.uk.com.view.ccg015.a {
 
   @bean()
-  export class ViewModel extends ko.ViewModel {
+  export class ScreenModel extends ko.ViewModel {
 
     openScreenCCG034() {
-
+      const vm = this;
+      vm.$jump('/view/ccg/034/a/index.xhtml');
     }
 
     openDialogCCG030() {
@@ -16,7 +16,8 @@ module nts.uk.com.view.ccg015.a.screenModel {
     }
 
     openScreenCCG018() {
-
+      const vm = this;
+      vm.$jump('/view/ccg/018/a/index.xhtml');
     }
 
     openScreenCCG015() {

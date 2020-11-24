@@ -46,8 +46,8 @@ module nts.uk.com.view.ccg003.c {
     isVisibleDestination: KnockoutComputed<boolean> = ko.computed(() =>
       this.isNewMode() || moment.utc(this.dateValue().startDate, 'YYYY/MM/DD').isBefore(moment.utc(new Date(), 'YYYY/MM/DD')));
 
-    parentParam: ParentParam = new ParentParam();
-    isStartUpdateMode: boolean = false;
+    parentParam = new ParentParam();
+    isStartUpdateMode = false;
 
     workPlaceIdList: KnockoutObservableArray<string> = ko.observableArray([]);
     workPlaceName: KnockoutObservableArray<string> = ko.observableArray([]);
@@ -62,10 +62,10 @@ module nts.uk.com.view.ccg003.c {
     employeeText: KnockoutComputed<string> = ko.computed(() => {
       return this.employeeName().join(COMMA);
     });
-    employeeReferenceRange: number = 0;
-    startDateOnUpdateMode: string = '';
+    employeeReferenceRange = 0;
+    startDateOnUpdateMode = '';
 
-    startDateOfMsgUpdate: string = '';
+    startDateOfMsgUpdate = '';
 
     created(parentParam: ParentParam) {
       const vm = this;
@@ -89,7 +89,7 @@ module nts.uk.com.view.ccg003.c {
           }
           if (_.isNull(vm.notificationCreated().workplaceInfo)) {
             const workplaceInfo = this.notificationCreated().workplaceInfo;
-            vm.workPlaceTxtRefer(workplaceInfo.workplaceCode + ' ' + workplaceInfo.workplaceName);
+            vm.workPlaceTxtRefer(`${workplaceInfo.workplaceCode} ${workplaceInfo.workplaceName}`);
           }
           vm.isStartUpdateMode = false;
         }
@@ -132,39 +132,45 @@ module nts.uk.com.view.ccg003.c {
       }
 
       const params: NotificationParams = new NotificationParams({
-        refeRange: vm.parentParam.employeeReferenceRange,
+        refeRange: vm.employeeReferenceRange,
         msg: msg
       });
       vm.$blockui('show');
       this.$ajax('com', API.notificationCreatedByEmp, params)
         .then((response: NotificationCreated) => {
-          if (response) {
-            vm.notificationCreated(response);
-            if (this.employeeReferenceRange === EmployeeReferenceRange.DEPARTMENT_ONLY) {
-              // ※新規モード又は更新モード(宛先区分≠職場選択)
-              if (_.isNull(response.workplaceInfo) && this.destination() !== DestinationClassification.WORKPLACE) {
-                vm.workPlaceIdList([response.workplaceInfo.workplaceId]);
-                vm.workPlaceName([response.workplaceInfo.workplaceName]);
-              }
-            }
-            // ※　ロール.参照範囲＝全社員　OR　部門・職場(配下含む）の場合
-            if (vm.employeeReferenceRange === EmployeeReferenceRange.ALL_EMPLOYEE || vm.employeeReferenceRange === EmployeeReferenceRange.DEPARTMENT_AND_CHILD) {
-              const targetWkps = response.targetWkps;
-              const workPlaceIdList = _.map(targetWkps, wkp => wkp.workplaceId);
-              const workPlaceName = _.map(targetWkps, wkp => wkp.workplaceName);
-              vm.workPlaceIdList(workPlaceIdList);
-              vm.workPlaceName(workPlaceName);
-            }
-
-            const targetEmps = response.targetEmps;
-            const employeeInfoId = _.map(targetEmps, emp => emp.sid);
-            const employeeName = _.map(targetEmps, emp => emp.bussinessName);
-            vm.employeeName(employeeName);
-            vm.employeeInfoId(employeeInfoId);
+          if (!response) {
+            return;
           }
+          vm.noticeCreated(response);
         })
         .fail(error => vm.$dialog.error(error))
         .always(() => vm.$blockui('hide'));
+    }
+
+    noticeCreated(data: NotificationCreated) {
+      const vm = this;
+      vm.notificationCreated(data);
+      if (this.employeeReferenceRange === EmployeeReferenceRange.DEPARTMENT_ONLY) {
+        // ※新規モード又は更新モード(宛先区分≠職場選択)
+        if (_.isNull(data.workplaceInfo) && this.destination() !== DestinationClassification.WORKPLACE) {
+          vm.workPlaceIdList([data.workplaceInfo.workplaceId]);
+          vm.workPlaceName([data.workplaceInfo.workplaceName]);
+        }
+      }
+      // ※　ロール.参照範囲＝全社員　OR　部門・職場(配下含む）の場合
+      if (vm.employeeReferenceRange === EmployeeReferenceRange.ALL_EMPLOYEE || vm.employeeReferenceRange === EmployeeReferenceRange.DEPARTMENT_AND_CHILD) {
+        const targetWkps = data.targetWkps;
+        const workPlaceIdList = _.map(targetWkps, wkp => wkp.workplaceId);
+        const workPlaceName = _.map(targetWkps, wkp => wkp.workplaceName);
+        vm.workPlaceIdList(workPlaceIdList);
+        vm.workPlaceName(workPlaceName);
+      }
+
+      const targetEmps = data.targetEmps;
+      const employeeInfoId = _.map(targetEmps, emp => emp.sid);
+      const employeeName = _.map(targetEmps, emp => emp.bussinessName);
+      vm.employeeName(employeeName);
+      vm.employeeInfoId(employeeInfoId);
     }
 
     /**
@@ -297,11 +303,10 @@ module nts.uk.com.view.ccg003.c {
       vm.$ajax('com', API.registerMessageNotice, command)
         .then(() => {
           vm.$dialog.info({ messageId: 'Msg_15' })
-            .then(() => this.$window.close({ isClose: true }))
+            .then(() => this.$window.close({ isClose: false }))
         })
         .fail(error => vm.$dialog.error(error))
         .always(() => vm.$blockui('hide'));
-
     }
 
     /**
