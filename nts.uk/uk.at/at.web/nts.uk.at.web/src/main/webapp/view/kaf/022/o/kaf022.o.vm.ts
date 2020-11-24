@@ -50,7 +50,7 @@ module nts.uk.at.view.kaf022.o.viewmodel {
             $("#fixed-table-o4").ntsFixedTable({});
 
             self.selectedOvertimeAppAtr.subscribe(value => {
-                if (value) {
+                if (value != null) {
                     self.manualChange = true;
                     nts.uk.ui.block.invisible();
                     $.when(self.getData(value, self.selectedFlexWorkAtr()), service.getOTQuota()).done((result1, allOtQuotaSettings: Array<OTQuota>) => {
@@ -126,23 +126,25 @@ module nts.uk.at.view.kaf022.o.viewmodel {
                 dfd = $.Deferred();
             nts.uk.ui.block.invisible();
             service.getOTFrames().done((otFrames: Array<any>) => {
-                $.when(self.getData(self.selectedOvertimeAppAtr(), self.selectedFlexWorkAtr()), service.getOTQuota()).done((result1: any, allOtQuotaSettings: Array<OTQuota>) => {
-                    self.overtimeWorkFrames(_.sortBy(otFrames, ["overtimeWorkFrNo"]).map(f => {
-                        return new OTWorkFrame(
-                            !!_.find(self.overTimeQuotaSettings(), s => s.overTimeFrame == f.overtimeWorkFrNo),
-                            f.overtimeWorkFrNo,
-                            f.overtimeWorkFrName,
-                            self.selectedOvertimeAppAtr() != OVERTIME.EARLY_NORMAL || !_.find(allOtQuotaSettings, s => s.flexAtr == self.selectedFlexWorkAtr() && s.overtimeAtr != OVERTIME.EARLY_NORMAL && s.overTimeFrame == f.overtimeWorkFrNo),
-                            self.handleCheck
-                        );
-                    }));
-                    dfd.resolve();
-                }).fail((error: any) => {
-                    dfd.reject();
-                    alert(error);
-                }).always(() => {
-                    nts.uk.ui.block.clear();
-                });
+                self.overtimeWorkFrames(_.sortBy(otFrames, ["overtimeWorkFrNo"]).map(f => {
+                    return new OTWorkFrame(
+                        false,
+                        f.overtimeWorkFrNo,
+                        f.overtimeWorkFrName,
+                        true,
+                        self.handleCheck
+                    );
+                }));
+                self.selectedOvertimeAppAtr.valueHasMutated();
+                dfd.resolve();
+                // $.when(self.getData(self.selectedOvertimeAppAtr(), self.selectedFlexWorkAtr()), service.getOTQuota()).done((result1: any, allOtQuotaSettings: Array<OTQuota>) => {
+                //
+                // }).fail((error: any) => {
+                //     dfd.reject();
+                //     alert(error);
+                // }).always(() => {
+                //     nts.uk.ui.block.clear();
+                // });
             }).fail((error: any) => {
                 dfd.reject();
                 alert(error);
@@ -156,7 +158,7 @@ module nts.uk.at.view.kaf022.o.viewmodel {
             let self = this,
                 dfd = $.Deferred();
             service.getOTQuotaByAtr(overtimeAtr, flexWorkAtr).done((otQuotaSettings: Array<OTQuota>) => {
-                self.overTimeQuotaSettings(otQuotaSettings);
+                self.overTimeQuotaSettings(otQuotaSettings.filter(o => !!_.find(self.overtimeWorkFrames(), f => f.no == o.overTimeFrame)));
                 dfd.resolve();
             }).fail((error: any) => {
                 dfd.reject();

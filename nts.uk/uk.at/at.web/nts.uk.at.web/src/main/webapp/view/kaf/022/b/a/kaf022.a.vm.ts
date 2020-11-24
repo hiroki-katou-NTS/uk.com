@@ -247,7 +247,7 @@ module nts.uk.at.view.kaf022.a.viewmodel {
             self.approvalSetting(new ItemA17(
                 allData.applicationSetting ? allData.applicationSetting.recordDate : 0,
                 allData.approvalSettingDto ? allData.approvalSettingDto.prinFlg : 0,
-                allData.jobAssign ? allData.jobAssign.isConcurrently : false
+                false //allData.jobAssign ? allData.jobAssign.isConcurrently : false
             ));
         }
 
