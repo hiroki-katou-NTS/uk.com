@@ -848,36 +848,44 @@ public class AggregateMonthlyRecordServiceProc {
 				empCondition = Optional.of(this.companySets.getEmpConditionMap().get(optionalItemNo));
 			}
 			val bsEmploymentHistOpt = this.employeeSets.getEmployment(period.end());
-			if (optionalItem.checkTermsOfUse(empCondition, bsEmploymentHistOpt)) {
+			switch(optionalItem.checkTermsOfUseMonth(empCondition, bsEmploymentHistOpt)){
+			case USE:
 				// 利用する
-
-				// 初期化
-				AnyItemAggrResult result = AnyItemAggrResult.of(optionalItemNo, optionalItem);
-
-				// 「実績区分」を判断
-				if (optionalItem.getPerformanceAtr() == PerformanceAtr.DAILY_PERFORMANCE || isWeek) {
-
-					// 日別実績 縦計処理
-					result = AnyItemAggrResult.calcFromDailys(optionalItemNo, optionalItem, anyItemTotals);
-				} else if (this.aggregateResult.getAttendanceTime().isPresent()) {
-					val attendanceTime = this.aggregateResult.getAttendanceTime().get();
-
-					// 月別実績 計算処理
-					result = AnyItemAggrResult.calcFromMonthly(require, optionalItemNo, optionalItem, attendanceTime, anyItems,
-							this.companySets);
+				{
+					// 初期化
+					AnyItemAggrResult result = AnyItemAggrResult.of(optionalItemNo, optionalItem);
+	
+					// 「実績区分」を判断
+					if (optionalItem.getPerformanceAtr() == PerformanceAtr.DAILY_PERFORMANCE || isWeek) {
+	
+						// 日別実績 縦計処理
+						result = AnyItemAggrResult.calcFromDailys(optionalItemNo, optionalItem, anyItemTotals);
+					} else if (this.aggregateResult.getAttendanceTime().isPresent()) {
+						val attendanceTime = this.aggregateResult.getAttendanceTime().get();
+	
+						// 月別実績 計算処理
+						result = AnyItemAggrResult.calcFromMonthly(require, optionalItemNo, optionalItem, attendanceTime, anyItems,
+								this.companySets);
+					}
+					results.put(optionalItemNo, result);
+					anyItems.add(
+							AnyItemOfMonthly.of(this.employeeId, this.yearMonth, this.closureId, this.closureDate, result));
+					break;
 				}
-				results.put(optionalItemNo, result);
-				anyItems.add(
-						AnyItemOfMonthly.of(this.employeeId, this.yearMonth, this.closureId, this.closureDate, result));
-			} else {
+			case DAILY_VTOTAL:
+				// 日別縦計する
+				{
+					// 日別実績 縦計処理
+					AnyItemAggrResult result = AnyItemAggrResult.calcFromDailys(optionalItemNo, optionalItem,
+							anyItemTotals);
+					results.put(optionalItemNo, result);
+					anyItems.add(
+							AnyItemOfMonthly.of(this.employeeId, this.yearMonth, this.closureId, this.closureDate, result));
+					break;
+				}
+			case NOT_USE:
 				// 利用しない
-
-				// 日別実績 縦計処理
-				AnyItemAggrResult result = AnyItemAggrResult.calcFromDailys(optionalItemNo, optionalItem,
-						anyItemTotals);
-				results.put(optionalItemNo, result);
-				anyItems.add(
-						AnyItemOfMonthly.of(this.employeeId, this.yearMonth, this.closureId, this.closureDate, result));
+				break;
 			}
 		}
 

@@ -88,7 +88,10 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PreviousAndNextDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.SchedulePerformance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareCalcRange;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareTimezoneResult;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.declare.DeclareSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpCondition;
@@ -99,7 +102,6 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.JustCorrectionAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.RoundingTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
@@ -117,12 +119,14 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepositor
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetermineTime;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeAggregateRoot;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.primitive.WorkplaceCode;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -319,6 +323,16 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			ManagePerCompanySet companyCommonSetting, ManagePerPersonDailySet personCommonSetting,
 			DailyRecordToAttendanceItemConverter converter, JustCorrectionAtr justCorrectionAtr,
 			Optional<WorkInfoOfDailyPerformance> yesterDayInfo,Optional<WorkInfoOfDailyPerformance> tomorrowDayInfo) {
+		
+		// 編集状態から「申告反映」のデータを削除する
+		integrationOfDaily.removeEditStateForDeclare();
+		
+		// 個人情報「労働制」を取得 
+		if (personCommonSetting.getPersonInfo().getLaborSystem() == WorkingSystem.EXCLUDED_WORKING_CALCULATE){
+			// 就業計算対象外処理
+			return ManageCalcStateAndResult.successCalcForNoCalc(integrationOfDaily, attendanceItemConvertFactory);
+		}
+		
 		// 出退勤打刻順序不正のチェック
 		// ※他の打刻順序不正は計算処理を実施する必要があるため、ここでは弾かない
 		// 不正の場合、勤務情報の計算ステータス→未計算にしつつ、エラーチェックは行う必要有）
@@ -380,6 +394,23 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			return ManageCalcStateAndResult.failCalc(integrationOfDaily, attendanceItemConvertFactory);
 		}
 		
+		// 申告時間帯の作成
+		DeclareTimezoneResult declare = createDeclare(
+				converter,
+				record,
+				clonedIntegrationOfDaily,
+				TimeSheetAtr.RECORD,
+				companyCommonSetting,
+				personCommonSetting,
+				justCorrectionAtr,
+				yesterDayInfo,
+				tomorrowDayInfo,
+				workType,
+				integrationOfWorkTime,
+				schedule);
+		// ※　エラーアラームチェックのため、日別実績(Work)に保存
+		integrationOfDaily.setDeclareCalcRange(declare.getDeclareCalcRange());
+		
 		ManageReGetClass scheduleManageReGetClass = new ManageReGetClass(
 				schedule.get().getCalculationRangeOfOneDay(),
 				companyCommonSetting,
@@ -397,7 +428,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				integrationOfDaily);
 
 		// 実際の計算処理
-		val calcResult = calcRecord(recordManageReGetClass, scheduleManageReGetClass, converter);
+		val calcResult = calcRecord(recordManageReGetClass, scheduleManageReGetClass, converter, declare);
 		return ManageCalcStateAndResult.successCalc(calcResult);
 	}
 
@@ -627,11 +658,15 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	 * 作成した時間帯から時間を計算する
 	 * @param recordReGetClass 実績
 	 * @param scheduleReGetClass 予定
-	 * @param converter
+	 * @param converter 日別実績コンバータ
+	 * @param declareResult 申告時間帯作成結果
 	 * @return 日別実績(Work)
 	 */
-	private IntegrationOfDaily calcRecord(ManageReGetClass recordReGetClass, ManageReGetClass scheduleReGetClass,
-			DailyRecordToAttendanceItemConverter converter) {
+	private IntegrationOfDaily calcRecord(
+			ManageReGetClass recordReGetClass,
+			ManageReGetClass scheduleReGetClass,
+			DailyRecordToAttendanceItemConverter converter,
+			DeclareTimezoneResult declareResult) {
 		String companyId = AppContexts.user().companyId();
 
 		GeneralDate targetDate = recordReGetClass.getIntegrationOfDaily().getYmd();
@@ -707,7 +742,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				scheduleReGetClass.getLeaveLateSet().isPresent() ? scheduleReGetClass.getLeaveLateSet().get()
 						: new DeductLeaveEarly(1, 1),
 				schePred, converter, recordReGetClass.getCompanyCommonSetting(), personalSetting,
-				decisionWorkTimeCode(recordReGetClass.getIntegrationOfDaily().getWorkInformation(), recordReGetClass.getPersonDailySetting(), workType)));
+				decisionWorkTimeCode(recordReGetClass.getIntegrationOfDaily().getWorkInformation(), recordReGetClass.getPersonDailySetting(), workType),
+				declareResult));
 
 		/* 日別実績への項目移送 */
 		return recordReGetClass.getIntegrationOfDaily();
@@ -1409,5 +1445,120 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				integrationOfDaily.getYmd()));
 		
 		return breakTimeOfDailyList;
+	}
+	
+	/**
+	 * 申告時間帯の作成
+	 * @param converter 日別実績コンバータ
+	 * @param calcRangeRecord １日の計算範囲（実績用）
+	 * @param integrationOfDaily 日別実績(Work)
+	 * @param timeSheetAtr 実働or予定時間帯作成から呼び出されたか
+	 * @param companyCommonSetting 会社別設定管理
+	 * @param personCommonSetting 社員設定管理
+	 * @param justCorrectionAtr ジャスト補正区分
+	 * @param yesterDayInfo 前日の勤務情報
+	 * @param tomorrowDayInfo 翌日の勤務情報
+	 * @param workTypeOpt 当日の勤務種類
+	 * @param integrationOfWorkTime 統合就業時間帯（実績用）
+	 * @param schedulePerformance 予定実績
+	 * @return 申告時間帯作成結果
+	 */
+	private DeclareTimezoneResult createDeclare(
+			DailyRecordToAttendanceItemConverter converter,
+			Optional<CalculationRangeOfOneDay> calcRangeRecord,
+			IntegrationOfDaily integrationOfDaily,
+			TimeSheetAtr timeSheetAtr,
+			ManagePerCompanySet companyCommonSetting,
+			ManagePerPersonDailySet personCommonSetting,
+			JustCorrectionAtr justCorrectionAtr,
+			Optional<WorkInfoOfDailyPerformance> yesterDayInfo,
+			Optional<WorkInfoOfDailyPerformance> tomorrowDayInfo,
+			Optional<WorkType> workTypeOpt,
+			Optional<IntegrationOfWorkTime> integrationOfWorkTime,
+			Optional<SchedulePerformance> schedulePerformance) {
+		
+		DeclareTimezoneResult result = new DeclareTimezoneResult();
+		
+		// 実績の時間帯が未作成の時、処理しない
+		if (!calcRangeRecord.isPresent()) return result;
+		// 勤務種類がない時、処理しない
+		if (!workTypeOpt.isPresent()) return result;
+		// 就業時間帯を確認する
+		if (!integrationOfWorkTime.isPresent()) return result;
+		// 勤務形態を取得する
+		WorkTimeDivision workTimeDivision = integrationOfWorkTime.get().getWorkTimeSetting().getWorkTimeDivision();
+		if (workTimeDivision.isFlex()) return result;
+		// 申告設定の取得
+		if (!companyCommonSetting.getDeclareSet().isPresent()) return result;
+		DeclareSet declareSet = companyCommonSetting.getDeclareSet().get();
+		if (declareSet.getUsageAtr() == NotUseAtr.NOT_USE) return result;
+		
+		String companyId = AppContexts.user().companyId();					// 会社ID
+		WorkType workType = workTypeOpt.get();								// 勤務種類
+		WorkTimeCode workTimeCode = integrationOfWorkTime.get().getCode();	// 就業時間帯コード
+		
+		// 日別勤怠（Work）をcloneする　→　申告用:日別実績(Work)
+		IntegrationOfDaily itgOfDailyForDeclare = converter.setData(integrationOfDaily).toDomain();
+		// 統合就業時間帯を作成する　→　申告用:統合就業時間帯
+		Optional<IntegrationOfWorkTime> itgOfWorkTimeForDeclareOpt = this.createIntegrationOfWorkTime(
+				companyCommonSetting.getShareContainer(),
+				companyId,
+				personCommonSetting,
+				itgOfDailyForDeclare.getWorkInformation());
+		if (!itgOfWorkTimeForDeclareOpt.isPresent()) return result;
+		IntegrationOfWorkTime itgOfWorkTimeForDeclare = itgOfWorkTimeForDeclareOpt.get();
+		// 所定時間設定の取得
+		Optional<PredetemineTimeSetting> predTimeSet = getPredetermineTimeSetFromShareContainer(
+				companyCommonSetting.getShareContainer(), companyId, workTimeCode.v());
+		// ※　休日の場合など、もともと働く日じゃない場合は所定時間を0にしたい
+		if (!predTimeSet.isPresent()) {
+			predTimeSet = Optional.of(new PredetemineTimeSetting(companyId, new AttendanceTime(0),
+					workTimeCode,
+					new PredetermineTime(
+							new BreakDownTimeDay(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0)),
+							new BreakDownTimeDay(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0))),
+					false, new PrescribedTimezoneSetting(new TimeWithDayAttr(0), new TimeWithDayAttr(0),
+							Collections.emptyList()),
+					new TimeWithDayAttr(0), false));
+
+		}
+		// 申告計算範囲の作成
+		DeclareCalcRange declareCalcRange = DeclareCalcRange.create(
+				companyId, workType, itgOfWorkTimeForDeclare, itgOfDailyForDeclare,
+				calcRangeRecord.get(), declareSet, predTimeSet, companyCommonSetting);
+		// 申告エラーチェック
+		if (declareSet.checkError(declareCalcRange.isHolidayWork(), declareCalcRange.getAttdLeave())) return result;
+		// 残業休出枠設定を調整する
+		declareCalcRange.adjustOvertimeHolidayWorkFrameSet(itgOfWorkTimeForDeclare, workType);
+		// 出退勤時刻を申告処理用に調整する
+		if (itgOfDailyForDeclare.getAttendanceLeave().isPresent()){
+			declareCalcRange.adjustAttdLeaveClock(
+					itgOfDailyForDeclare.getAttendanceLeave().get().getTimeLeavingWorks(), workType);
+		}
+		// デフォルト設定のインスタオンスを生成する
+		if (itgOfWorkTimeForDeclare.getFixedWorkSetting().isPresent()){
+			itgOfWorkTimeForDeclare.getFixedWorkSetting().get().setCommonSetting(
+					WorkTimezoneCommonSet.generateDefault());
+		}
+		if (itgOfWorkTimeForDeclare.getFlowWorkSetting().isPresent()){
+			itgOfWorkTimeForDeclare.getFlowWorkSetting().get().setCommonSetting(
+					WorkTimezoneCommonSet.generateDefault());
+		}
+		// 時間帯の作成
+		Optional<CalculationRangeOfOneDay> calcRangeDeclare = createRecord(
+				itgOfDailyForDeclare,
+				TimeSheetAtr.RECORD,
+				companyCommonSetting,
+				personCommonSetting,
+				JustCorrectionAtr.NOT_USE,
+				yesterDayInfo,
+				tomorrowDayInfo,
+				Optional.of(workType),
+				Optional.of(itgOfWorkTimeForDeclare),
+				schedulePerformance);
+		// 申告時間帯作成結果を返す
+		result.setCalcRangeOfOneDay(calcRangeDeclare);
+		result.setDeclareCalcRange(Optional.of(declareCalcRange));
+		return result;
 	}
 }

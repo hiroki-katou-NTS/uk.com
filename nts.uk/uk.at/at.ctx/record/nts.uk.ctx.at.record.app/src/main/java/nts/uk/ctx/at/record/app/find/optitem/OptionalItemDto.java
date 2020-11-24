@@ -11,6 +11,7 @@ import lombok.Setter;
 import nts.uk.ctx.at.record.app.find.optitem.calculation.FormulaDto;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.CalcResultRange;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.CalcUsageAtr;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.EmpConditionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemName;
@@ -38,6 +39,9 @@ public class OptionalItemDto implements OptionalItemSetMemento {
 
 	/** The usage classification. */
 	private int usageAtr;
+
+	/** The calculation atr. */
+	private int calcAtr;
 
 	/** The emp condition classification. */
 	private int empConditionAtr;
@@ -113,6 +117,16 @@ public class OptionalItemDto implements OptionalItemSetMemento {
 		this.usageAtr = optionalItemUsageClassification.value;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemSetMemento#
+	 * setCalcAtr(nts.uk.ctx.at.shared.dom.scherec.optitem.CalcUsageAtr)
+	 */
+	@Override
+	public void setCalcAtr(CalcUsageAtr calcAtr) {
+		this.calcAtr = calcAtr.value;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

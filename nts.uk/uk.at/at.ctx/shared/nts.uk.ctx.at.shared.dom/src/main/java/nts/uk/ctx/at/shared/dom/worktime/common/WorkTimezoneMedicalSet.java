@@ -6,7 +6,9 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
@@ -79,5 +81,18 @@ public class WorkTimezoneMedicalSet extends WorkTimeDomainObject implements Clon
 			throw new RuntimeException("AggregateTotalTimeSpentAtWork clone error.");
 		}
 		return cloned;
+	}
+	
+	/**
+	 * デフォルト設定のインスタンスを生成する
+	 * @param workSystemAtr 勤務体系区分
+	 * @return 就業時間帯の医療設定
+	 */
+	public static WorkTimezoneMedicalSet generateDefault(WorkSystemAtr workSystemAtr){
+		WorkTimezoneMedicalSet domain = new WorkTimezoneMedicalSet();
+		domain.roundingSet = new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN);
+		domain.workSystemAtr = workSystemAtr;
+		domain.applicationTime = new OneDayTime(0);
+		return domain;
 	}
 }

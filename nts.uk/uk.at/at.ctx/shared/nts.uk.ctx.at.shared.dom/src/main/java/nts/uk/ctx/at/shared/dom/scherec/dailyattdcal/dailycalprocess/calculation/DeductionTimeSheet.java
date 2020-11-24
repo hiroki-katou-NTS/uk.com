@@ -123,7 +123,7 @@ public class DeductionTimeSheet {
 	 * @param predetermineTimeSetForCalc 所定時間設定(計算用クラス)
 	 * @return 控除項目の時間帯(List)
 	 */
-	private static List<TimeSheetOfDeductionItem> createDedctionTimeSheet(
+	public static List<TimeSheetOfDeductionItem> createDedctionTimeSheet(
 			DeductionAtr dedAtr,
 			WorkType todayWorkType,
 			IntegrationOfWorkTime integrationOfWorkTime,

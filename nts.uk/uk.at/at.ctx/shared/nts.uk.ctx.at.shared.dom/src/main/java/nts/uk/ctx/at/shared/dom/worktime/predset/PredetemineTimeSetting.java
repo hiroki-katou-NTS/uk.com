@@ -337,4 +337,16 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 	public void setStartDateClock(int value) {
 		this.startDateClock = new TimeWithDayAttr(value);
 	}
+	
+	/**
+	 * 2回勤務かどうかの判断処理
+	 * @return true=2回勤務する,false=2回勤務しない
+	 */
+	public boolean checkTwoTimesWork(){
+		Optional<TimezoneUse> timezoneUse = this.getTimeSheetOf(2);
+		if (timezoneUse.isPresent()){
+			if (timezoneUse.get().getUseAtr() == UseSetting.USE) return true;
+		}
+		return false;
+	}
 }
