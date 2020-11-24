@@ -411,6 +411,7 @@ module nts.uk.at.ksm008.b {
                             let lstEmployee = _.map(res, function (item: any) {
                                 return {id: item.employeeID, code: item.employeeCode, name: item.businessName, workplaceName: ''};
                             });
+                            lstEmployee = _.reject(lstEmployee, { code: vm.selectedCode() });
                             vm.simultanceList(_.orderBy(_.unionBy(lstEmployee, listAfterClick, i => i.id), ['code'],['asc']));
                             vm.multiSelectedCode([]);
                         }).fail((err) => {
