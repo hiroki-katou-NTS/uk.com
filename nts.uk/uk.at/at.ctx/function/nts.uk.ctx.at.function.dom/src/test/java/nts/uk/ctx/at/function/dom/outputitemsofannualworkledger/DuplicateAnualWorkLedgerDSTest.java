@@ -24,9 +24,6 @@ public class DuplicateAnualWorkLedgerDSTest {
     @Injectable
     private DuplicateAnualWorkLedgerDomainService.Require require;
 
-    private final List<OutputItem> outputItems = DumData.outputItems;
-    private final List<DailyOutputItemsAnnualWorkLedger> dailyoutputItems = DumData.dailyOutputItemList;
-
     private final OutputItemSettingCode code = new OutputItemSettingCode("code");
     private final OutputItemSettingName name = new OutputItemSettingName("name");
 

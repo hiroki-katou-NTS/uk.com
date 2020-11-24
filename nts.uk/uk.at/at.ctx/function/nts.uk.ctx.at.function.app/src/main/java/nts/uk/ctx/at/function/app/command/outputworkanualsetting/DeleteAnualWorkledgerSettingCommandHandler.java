@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.function.app.command.outputworkanualsetting;
 
-
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
