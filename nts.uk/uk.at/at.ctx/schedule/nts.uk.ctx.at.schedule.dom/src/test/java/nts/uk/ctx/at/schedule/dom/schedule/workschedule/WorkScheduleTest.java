@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.tuple;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -27,6 +28,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTotalTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
@@ -46,6 +49,24 @@ public class WorkScheduleTest {
 	
 	@Injectable
 	OutingTimeOfDailyAttd outingTime;
+	
+	@Injectable
+	static WorkInfoOfDailyAttendance workInfo;
+	
+	@Mocked
+	static AffiliationInforOfDailyAttd affInfo;
+	
+	@Injectable
+	static TimevacationUseTimeOfDaily timeVacationUseOfDaily;
+	
+	@Injectable
+	static BreakTimeGoOutTimes workTime;
+	
+	@Injectable
+	static OutingTotalTime recordTotalTime;
+	
+	@Injectable
+	static OutingTotalTime deductionTotalTime;
 	
 	@Test
 	public void getters() {
@@ -100,6 +121,52 @@ public class WorkScheduleTest {
 		assertThat ( result.getWorkInfo() ).isEqualTo( workInfo );
 		assertThat ( result.getOptTimeLeaving().get() ).isEqualTo( timeLeaving );
 		
+	}
+	
+	@Test
+	public void testConfirm() {
+		
+		WorkSchedule target = Helper.createWithConfirmAtr(ConfirmedATR.UNSETTLED);
+		target.confirm();
+		
+		assertThat(target.getConfirmedATR()).isEqualTo(ConfirmedATR.CONFIRMED);
+	}
+	
+	@Test
+	public void testRemoveConfirm() {
+		
+		WorkSchedule target = Helper.createWithConfirmAtr(ConfirmedATR.CONFIRMED);
+		target.removeConfirm();
+		
+		assertThat(target.getConfirmedATR()).isEqualTo(ConfirmedATR.UNSETTLED);
+	}
+	
+	@Test
+	public void testRemoveHandCorrections() {
+		
+		List<EditStateOfDailyAttd> editStateList = new ArrayList<>( Arrays.asList(
+				new EditStateOfDailyAttd(1, EditStateSetting.HAND_CORRECTION_MYSELF),
+				new EditStateOfDailyAttd(2, EditStateSetting.HAND_CORRECTION_OTHER),
+				new EditStateOfDailyAttd(3, EditStateSetting.REFLECT_APPLICATION),
+				new EditStateOfDailyAttd(4, EditStateSetting.IMPRINT),
+				new EditStateOfDailyAttd(5, EditStateSetting.HAND_CORRECTION_MYSELF),
+				new EditStateOfDailyAttd(6, EditStateSetting.HAND_CORRECTION_OTHER),
+				new EditStateOfDailyAttd(7, EditStateSetting.REFLECT_APPLICATION),
+				new EditStateOfDailyAttd(8, EditStateSetting.IMPRINT)));
+		
+		WorkSchedule target = Helper.createWithEditStateList(editStateList);
+		target.removeHandCorrections();
+		
+		assertThat(target.getLstEditState())
+			.extracting( 
+					e -> e.getAttendanceItemId(), 
+					e -> e.getEditStateSetting())
+			.containsExactly( 
+					tuple(3, EditStateSetting.REFLECT_APPLICATION),
+					tuple(4, EditStateSetting.IMPRINT),
+					tuple(7, EditStateSetting.REFLECT_APPLICATION),
+					tuple(8, EditStateSetting.IMPRINT)
+					);
 	}
 	
 	/**
@@ -561,24 +628,6 @@ public class WorkScheduleTest {
 	
 	static class Helper {
 		
-		@Injectable
-		static WorkInfoOfDailyAttendance workInfo;
-		
-		@Injectable
-		static AffiliationInforOfDailyAttd affInfo;
-		
-		@Injectable
-		static TimevacationUseTimeOfDaily timeVacationUseOfDaily;
-		
-		@Injectable
-		static BreakTimeGoOutTimes workTime;
-		
-		@Injectable
-		static OutingTotalTime recordTotalTime;
-		
-		@Injectable
-		static OutingTotalTime deductionTotalTime;
-		
 		/**
 		 * @param optTimeLeaving 出退勤
 		 * @param optAttendanceTime 勤怠時間
@@ -603,6 +652,36 @@ public class WorkScheduleTest {
 					optAttendanceTime, // parameter
 					Optional.empty(),
 					outingTime); // parameter
+		}
+		
+		static WorkSchedule createWithConfirmAtr(ConfirmedATR confirmAtr) {
+			return new WorkSchedule(
+					"employeeID",
+					GeneralDate.today(),
+					confirmAtr,
+					workInfo,
+					affInfo, 
+					Collections.emptyList(),
+					Collections.emptyList(),
+					Optional.empty(),
+					Optional.empty(),
+					Optional.empty(),
+					Optional.empty());
+		}
+		
+		static WorkSchedule createWithEditStateList(List<EditStateOfDailyAttd> editStateList) {
+			return new WorkSchedule(
+					"employeeID",
+					GeneralDate.today(),
+					ConfirmedATR.UNSETTLED,
+					workInfo,
+					affInfo, 
+					Collections.emptyList(),
+					editStateList,
+					Optional.empty(),
+					Optional.empty(),
+					Optional.empty(),
+					Optional.empty());
 		}
 		
 		static OutingTimeOfDaily createOutingTimeOfDailyWithReason(GoingOutReason reason) {
