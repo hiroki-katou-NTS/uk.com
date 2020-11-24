@@ -28,6 +28,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
@@ -464,7 +465,27 @@ public class WorkSchedule implements DomainAggregate {
 		
 	} 
 	
+	/**
+	 * 確定する
+	 */
+	public void confirm() {
+		this.confirmedATR = ConfirmedATR.CONFIRMED;
+	}
 	
+	/**
+	 * 確定を解除する
+	 */
+	public void removeConfirm() {
+		this.confirmedATR = ConfirmedATR.UNSETTLED;
+	}
+	
+	/**
+	 * 手修正を解除する
+	 */
+	public void removeHandCorrections() {
+		this.lstEditState.removeIf( editState -> editState.getEditStateSetting() == EditStateSetting.HAND_CORRECTION_MYSELF );
+		this.lstEditState.removeIf( editState -> editState.getEditStateSetting() == EditStateSetting.HAND_CORRECTION_OTHER );
+	}
 
 	/**
 	 * 時間休暇を取得する
