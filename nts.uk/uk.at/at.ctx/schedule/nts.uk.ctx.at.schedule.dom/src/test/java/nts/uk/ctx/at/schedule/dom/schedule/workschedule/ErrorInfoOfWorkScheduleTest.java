@@ -16,7 +16,7 @@ public class ErrorInfoOfWorkScheduleTest {
 		
 		assertThat(result.getEmployeeId()).isEqualTo("empId");
 		assertThat( result.getDate() ).isEqualToComparingFieldByField( GeneralDate.ymd(2020, 11, 1));
-		assertThat( result.getItemName()).isEmpty();
+		assertThat( result.getAttendanceItemId()).isEmpty();
 		assertThat( result.getErrorMessage()).isEqualTo("msg");
 		
 	}
@@ -29,8 +29,7 @@ public class ErrorInfoOfWorkScheduleTest {
 		
 		assertThat(result.getEmployeeId()).isEqualTo("empId");
 		assertThat( result.getDate() ).isEqualToComparingFieldByField( GeneralDate.ymd(2020, 11, 1));
-		// TODO update
-		assertThat( result.getItemName().get()).isEqualTo("");
+		assertThat( result.getAttendanceItemId().get()).isEqualTo( 1 );
 		assertThat( result.getErrorMessage()).isEqualTo("msg");
 		
 	}
