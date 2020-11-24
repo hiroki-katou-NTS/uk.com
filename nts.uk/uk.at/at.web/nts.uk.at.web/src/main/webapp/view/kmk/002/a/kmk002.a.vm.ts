@@ -1355,6 +1355,7 @@ module nts.uk.at.view.kmk002.a {
                                 self.optionalItem.isUsed(true);
                             } else {
                                 self.optionalItem.isUsed(false);
+                                $(".description").ntsError('clear');
                             }
                             if (!vl && !self.optionalItem.hasChanged && !self.isInit) {
                                 if (self.optionalItem.calcFormulas().length > 0) {
@@ -1443,6 +1444,11 @@ module nts.uk.at.view.kmk002.a {
              */
             private isValidData(): boolean {
                 let self = this;
+
+                if (self.optionalItem.usageAtr() === 1 && self.langId === "ja") {
+                    // validate input description
+                    $(".description").ntsError("check");
+                }
 
                 // validate input optional item name
                 $('#inpName').ntsEditor('validate');
