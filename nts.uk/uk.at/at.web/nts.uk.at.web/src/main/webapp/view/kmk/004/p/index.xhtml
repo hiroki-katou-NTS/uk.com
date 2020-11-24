@@ -11,8 +11,8 @@
 			<com:scriptfile set="IGNITE" />
 			<script>
 				var dialogSize = {
-					width : 500,
-					height : 570
+					width : 450,
+					height : 600
 				};
 			</script>
 			<com:stylefile path="./kmk004.p.style.css" />
@@ -21,8 +21,9 @@
 
 		<ui:define name="content">
 			<div id="contents-area">
-				<div id="title">会社</div>
+				<div id="title" data-bind= "text: title" ></div>
 				<hr></hr>
+				<div id="message" data-bind= "text: message" ></div>
 				<!-- P2_1 -->
 				<div
 					data-bind="ntsFormLabel: { required: true, text: $i18n('KMK004_308') }"></div>
@@ -31,15 +32,15 @@
 				<label class="child-row" data-bind="text: $i18n('KMK004_309')"></label>
 
 				<!-- P2_3 -->
-				<input tabindex="1" class="input_time"
-					data-bind="ntsTimeEditor: { value: day, inputFormat: 'time', required: true, name: '#[KMK004_309]' }" />
+				<input tabindex="1" id="inputP2_3" class="input_time"
+					data-bind="ntsTimeEditor: { value: day, inputFormat: 'time', mode: 'time', required: true, name: '#[KMK004_309]' }" />
 
 				<!-- P2_4 -->
 				<label data-bind="text: $i18n('KMK004_310')"></label>
 
 				<!-- P2_5 -->
 				<input tabindex="2" class="input_time"
-					data-bind="ntsTimeEditor: { value: week, inputFormat: 'time', required: true, name: '#[KMK004_310]' }" />
+					data-bind="ntsTimeEditor: { value: week, inputFormat: 'time', mode: 'time', required: true, name: '#[KMK004_310]' }" />
 				<br></br>
 				<!-- P3_1 -->
 				<div
@@ -80,7 +81,7 @@
 									optionsText: 'name',
 									editable:  false,
 									enable: true,
-									required: false,
+									required: requiredP3,
 									columns: [{ prop: 'name', length: 5 }]}">
 							</div>
 						</td>
@@ -100,7 +101,7 @@
 									optionsText: 'name',
 									editable:  false,
 									enable: true,
-									required: false,
+									required: requiredP3,
 									columns: [{ prop: 'name', length: 5 }]}">
 							</div>
 						</td>
@@ -133,12 +134,12 @@
 
 				<!-- P5_2 -->
 				<div class="child-row"
-					data-bind="ntsCheckBox: { checked: checkedP4_2 } "></div>
+					data-bind="ntsCheckBox: { checked: checkedP5_2 } "></div>
 				<label data-bind="i18n: 'KMK004_322'"></label> <br></br>
 
 				<!-- P5_3 -->
 				<div class="child-row"
-					data-bind="ntsCheckBox: { checked: checkedP4_3 } "></div>
+					data-bind="ntsCheckBox: { checked: checkedP5_3 } "></div>
 				<label data-bind="i18n: 'KMK004_323'"></label>
 
 			</div>
@@ -153,7 +154,7 @@
 				<button tabindex="12" data-bind="click: close, i18n: 'KMK004_235'"></button>
 
 				<!-- P6_3 -->
-				<button tabindex="13" class="danger" data-bind="i18n: 'KMK004_227'"></button>
+				<button tabindex="13" class="danger" data-bind="i18n: 'KMK004_227', visible: visibleP6_3 "></button>
 			</div>
 		</ui:define>
 	</ui:composition>
