@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.dom.outputitemsofworkstatustable;
 
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
@@ -11,11 +12,13 @@ import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.EmployeeInfor
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.WorkPlaceInfo;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 public class DumData {
+    public static final List<DailyValue> listEmpty = Collections.emptyList();
     public static final List<OutputItem> outputItems = Arrays.asList(
             new OutputItem(
                     0,
@@ -561,9 +564,9 @@ public class DumData {
                                     "itemName01",
                                     Arrays.asList(
                                             new DailyValue(
-                                                    null,
+                                                    0.0,
                                                     CommonAttributesOfForms.WORK_TYPE,
-                                                    "TEST 02",
+                                                    "TEST 02TEST 01",
                                                     GeneralDate.today()
                                             )
                                     )
@@ -575,13 +578,16 @@ public class DumData {
                                             new DailyValue(
                                                     1975D,
                                                     CommonAttributesOfForms.NUMBER_OF_TIMES,
-                                                    null,
+                                                    "",
                                                     GeneralDate.today()
                                             )
                                     )
                             ))
             )
     );
+
+
+
     public static WorkStatusOutputSettings dumDisplay(OutputItemSettingCode code, OutputItemSettingName name,
                                                String eplId, String settingId, SettingClassificationCommon settingCommon) {
         return new WorkStatusOutputSettings(
