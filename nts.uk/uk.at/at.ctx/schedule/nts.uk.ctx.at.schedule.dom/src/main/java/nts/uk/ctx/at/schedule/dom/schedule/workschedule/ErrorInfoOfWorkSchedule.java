@@ -20,8 +20,8 @@ public class ErrorInfoOfWorkSchedule {
 	/** 年月日 */
 	private GeneralDate date;
 	
-	/** 項目名 */
-	private Optional<String> itemName;
+	/** 項目Id */
+	private Optional<Integer> attendanceItemId;
 	
 	/** エラーメッセージ */
 	private String errorMessage;
@@ -50,10 +50,7 @@ public class ErrorInfoOfWorkSchedule {
 	public static ErrorInfoOfWorkSchedule attendanceItemError(
 			String employeeId, GeneralDate date, int attendanceItemId, String errorMessage) {
 		
-		// TODO how to get attendanceItemName
-		String attendanceItemName = "";
-		
-		return new ErrorInfoOfWorkSchedule(employeeId, date, Optional.of(attendanceItemName), errorMessage);
+		return new ErrorInfoOfWorkSchedule(employeeId, date, Optional.of(attendanceItemId), errorMessage);
 	}
 
 }
