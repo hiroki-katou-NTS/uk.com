@@ -1,4 +1,3 @@
-
 .header-image-no-event {
     background-size: contain;
     width: 16px;
@@ -32,11 +31,11 @@
 }
 
 .A6_hover:hover {
-    background-color: #007fff !important;
+    background-color: #007fff;
 }
 
 .A6_not_hover:hover {
-    background-color: #ffffff !important;
+    background-color: #ffffff;
 }
 
 #functon-area-row2 *, #contain-view-right * {
@@ -71,11 +70,11 @@
 }
 
 #A1_11 {
-	margin-left: 48px !important;
+	margin-left: 45px !important;
 }
 
 #A1_12 {
-	margin-left: 78px !important;	
+	margin-left: 77px !important;	
 }
 
 .hope {
@@ -101,16 +100,17 @@
 	width: 80px;
 }
 
-.compensation, .paid, .exsess, .substitute, .fundedPaid , .supportsetting {
-	width: 105px;
-}
-
 #work-setting, #person-setting, #sort-order-setting {
 	margin-left: 10px;
 }
 
 #work-setting button, #person-setting button, #sort-order-setting button{
 	width: 110px;
+	margin-bottom: 10px;
+}
+
+#person-setting button{
+	width: auto;
 	margin-bottom: 10px;
 }
 
@@ -164,31 +164,22 @@
 	width: 12px !important;
 }
 
-#button-top {
-	margin-left: 22px;
-}
-
-#button-bot {
-	margin: 15px;
-	margin-left: 22px;
-}
-
 #multi-list_container {
 	margin-left: 7px !important;
 	margin-top: 16px !important;
 }
 
-#A1_10_1 {
-	width: 362px !important;
-	height: 85px;
+#A1_10 {
+	display: inline;
+	margin-left: 0px;
 }
 
 #A1_7_1 {
-	width: 440px !important;
+	width: 390px !important;
 	height: 100px;
 }
 
-#A1_10_1, #A1_12_1, #A4_1,#A1_7_1, #A5_1, #A16 {
+#A1_12_1, #A4_1,#A1_7_1, #A5_1, #A16 {
 	border: solid 6px #fff !important;
 	border-radius: 3.5px !important;
 	box-shadow: 1px 1px 5px 2px #888 !important;
@@ -487,6 +478,10 @@ html {
 	margin-left: 60px !important;
 }
 
+#showPopup {	
+	margin-left: 0px !important;
+}
+
 #A3_1 {
 	background: #edfac2;
 	width: max-content;
@@ -576,4 +571,8 @@ html {
 
 table th, table td {
 	padding: 2px 5px;
+}
+
+#functions-area {
+	overflow: unset !important;
 }

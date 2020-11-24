@@ -5,29 +5,32 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.DayOfWeek;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.CompanyEvent;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.EventName;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.WorkplaceEvent;
-import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.item.SpecificDateItem;
-import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.primitives.SpecificDateItemNo;
-import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.primitives.SpecificName;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.HolidayName;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.item.SpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.primitives.SpecificDateItemNo;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.primitives.SpecificName;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateItem;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 
 /**
- * 年月日情報 UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務予定.シフト管理
+ * 年月日情報
+ * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務予定.シフト管理
  * 
  * @author HieuLt
  *
  */
 @Getter
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class DateInformation {
 	/** 年月日 **/
 	private final GeneralDate ymd;
@@ -35,6 +38,8 @@ public class DateInformation {
 	private final DayOfWeek dayOfWeek;
 	/** 祝日であるか **/
 	private final boolean isHoliday;
+	/** 祝日名称 **/
+	private Optional<HolidayName> holidayName;
 	/** 特定日であるか **/
 	private final boolean isSpecificDay;
 	/** 職場行事名称 **/
@@ -56,11 +61,19 @@ public class DateInformation {
 	 */
 	public static DateInformation create(Require require, GeneralDate ymd, TargetOrgIdenInfor targetOrgIdenInfor) {
 		boolean isSpecificDay = false;
+		boolean isPublicHoliday = false;
+		Optional<HolidayName> holidayName = Optional.empty();
 		Optional<EventName> workplaceEventName = Optional.empty();
 		Optional<EventName> optCompanyEventName = Optional.empty();
 		List<SpecificName> lstSpecDayNameWorkplace = new ArrayList<>();
 		List<SpecificName> lstSpecDayNameCom = new ArrayList<>();
-		boolean existPublicHoliday = require.getHolidaysByDate(ymd);
+		
+		//$祝日 = require.祝日を取得する(年月日)								
+		Optional<PublicHoliday> pubHoliday = require.getHolidaysByDate(ymd);
+		if(pubHoliday.isPresent()) {
+			isPublicHoliday = true;
+			holidayName = Optional.of(pubHoliday.get().getHolidayName());
+		}
 
 		// if 対象組織.単位 == 職場
 		if (targetOrgIdenInfor.getUnit().value == TargetOrganizationUnit.WORKPLACE.value) {
@@ -117,7 +130,7 @@ public class DateInformation {
 
 		}
 
-		return new DateInformation(ymd, ymd.dayOfWeekEnum(), existPublicHoliday, isSpecificDay, workplaceEventName,
+		return new DateInformation(ymd, ymd.dayOfWeekEnum(), isPublicHoliday, holidayName, isSpecificDay, workplaceEventName,
 				optCompanyEventName, lstSpecDayNameWorkplace, lstSpecDayNameCom);
 
 	}
@@ -160,13 +173,13 @@ public class DateInformation {
 		Optional<CompanyEvent> findCompanyEventByPK(GeneralDate date);
 
 		/**
-		 * [R-5] 祝日が存在するか PublicHolidayRepository 祝日Repository.exists(会社ID, 年月日)
+		 * [R-5] 祝日を取得する PublicHolidayRepository 祝日Repository.get(会社ID, 年月日)
 		 * 
 		 * @param companyID
 		 * @param date
 		 * @return
 		 */
-		boolean getHolidaysByDate(GeneralDate date);
+		Optional<PublicHoliday> getHolidaysByDate(GeneralDate date);
 
 		/**
 		 * [R-6] 特定日項目リストを取得する SpecificDateItemRepository

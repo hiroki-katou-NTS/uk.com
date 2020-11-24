@@ -26,5 +26,7 @@ public class AcquireWorkHours {
 	private String remark;
 	/** 使用区分 */
 	private int useDistintion;
+	
+	private String nameAb;
 
 }
