@@ -21,7 +21,9 @@ module nts.uk.com.view.ccg034.a {
     flowMenuColumns: { headerText: string, key: string, width: string }[] = [];
     selectedFlowMenuId: KnockoutObservable<string> = ko.observable('');
     selectedFlowMenu: KnockoutObservable<FlowMenuModel> = ko.observable(null);
-    isNewMode: KnockoutObservable<boolean> = ko.observable(true);
+    isNewMode: KnockoutObservable<boolean> = ko.observable(true).extend({
+      notify: 'always' 
+    });
     enablePreview: KnockoutObservable<boolean> = ko.computed(() => {
       const vm = this;
       return !vm.isNewMode() && vm.selectedFlowMenu() && vm.selectedFlowMenu().fileId != null;
@@ -38,8 +40,6 @@ module nts.uk.com.view.ccg034.a {
     mounted() {
       const vm = this;
       vm.$blockui("grayout");
-      vm.getFlowMenuList()
-        .always(() => vm.$blockui("clear"));
       vm.selectedFlowMenuId.subscribe(value => {
         if (value) {
           vm.selectFlowMenu();
@@ -47,21 +47,29 @@ module nts.uk.com.view.ccg034.a {
       });
       vm.isNewMode.subscribe(value => {
         if (value) {
-          $("#A4_2").focus();
+          $("input").filter("#A4_2").focus();
         } else {
-          $("#A4_3").focus();
+          $("input").filter("#A4_3").focus();
         }
       });
       vm.isNewMode.valueHasMutated();
+
+      vm.getFlowMenuList()
+        .then(() => {
+          if (vm.flowMenuList().length > 0) {
+            vm.selectedFlowMenuId(vm.flowMenuList()[0].flowMenuCode);
+          }
+        })
+        .always(() => vm.$blockui("clear"));
     }
 
     public changeToNewMode() {
       const vm = this;
+      vm.isNewMode(true);
       vm.selectedFlowMenuId('');
       vm.selectedFlowMenu(null);
       vm.toppagePartCode('');
       vm.toppagePartName('');
-      vm.isNewMode(true);
     }
 
     private selectFlowMenu() {
@@ -89,6 +97,7 @@ module nts.uk.com.view.ccg034.a {
         });
     }
 
+    // Open Preview dialog
     public openDialogB() {
       const vm = this;
       const params = {
@@ -105,6 +114,7 @@ module nts.uk.com.view.ccg034.a {
       }
     }
 
+    // Open duplicate dialog
     public openDialogC() {
       const vm = this;
       vm.$window.modal("/view/ccg/034/c/index.xhtml", vm.selectedFlowMenu())
@@ -113,10 +123,13 @@ module nts.uk.com.view.ccg034.a {
             vm.getFlowMenuList().then(() => {
               vm.selectedFlowMenuId(res.flowMenuCode);
             });
+          } else {
+            vm.isNewMode.valueHasMutated();
           }
         });
     }
 
+    // Open Create flow menu dialog
     public openDialogD() {
       const vm = this;
       const params = {
@@ -162,11 +175,11 @@ module nts.uk.com.view.ccg034.a {
         .always(() => vm.$blockui("clear"));
     }
 
-    private saveSuccessHandler() {
+    private saveSuccessHandler(): JQueryPromise<any> {
       const vm = this;
       vm.$blockui("clear");
-      vm.$dialog.info({ messageId: 'Msg_15' });
-      return vm.getFlowMenuList();
+      return vm.$dialog.info({ messageId: 'Msg_15' })
+        .then(() => vm.getFlowMenuList());
     }
 
     public deleteFlowMenu() {
@@ -183,12 +196,20 @@ module nts.uk.com.view.ccg034.a {
               // Show message + reload list
               .then(() => {
                 vm.$blockui("clear");
-                vm.$dialog.info({ messageId: "Msg_16" });
-                vm.changeToNewMode();
-                return vm.getFlowMenuList();
+                return vm.$dialog.info({ messageId: "Msg_16" });
+              })
+              .then(() => vm.getFlowMenuList())
+              .then(() => {
+                if (vm.flowMenuList().length > 0) {
+                  vm.selectedFlowMenuId(vm.flowMenuList()[0].flowMenuCode);
+                } else {
+                  vm.changeToNewMode();
+                }
               })
               .fail((err) => vm.$dialog.error({ messageId: err.messageId }))
               .always(() => vm.$blockui("clear"));
+          } else {
+            vm.isNewMode.valueHasMutated();
           }
         });
     }
