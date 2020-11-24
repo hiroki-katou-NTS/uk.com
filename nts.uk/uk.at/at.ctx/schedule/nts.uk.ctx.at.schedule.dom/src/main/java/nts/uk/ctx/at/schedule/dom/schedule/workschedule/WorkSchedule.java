@@ -165,7 +165,7 @@ public class WorkSchedule implements DomainAggregate {
 		// 勤怠項目ID = 勤務種類(1)
 		EditStateOfDailyAttd editStateOfDailyAttd = EditStateOfDailyAttd.createByHandCorrection(require, 1, employeeId);
 		
-		List<EditStateOfDailyAttd> editStateOfDailyAttdList = Arrays.asList(editStateOfDailyAttd);
+		List<EditStateOfDailyAttd> editStateOfDailyAttdList = new ArrayList<>( Arrays.asList(editStateOfDailyAttd) );
 		
 		if ( workInformation.getWorkTimeCodeNotNull().isPresent() ) {
 			// 勤怠項目ID　= 就業時間帯(2)
@@ -538,7 +538,7 @@ public class WorkSchedule implements DomainAggregate {
 			}
 			
 			//時間休暇
-			val timeVacation = new TimeVacation( Arrays.asList(leavingTimeSpan.get()), lateTime.getTimePaidUseTime() );
+			val timeVacation = new TimeVacation( new ArrayList<>( Arrays.asList(leavingTimeSpan.get()) ), lateTime.getTimePaidUseTime() );
 
 			result.put(lateType, timeVacation);
 		}
@@ -573,7 +573,7 @@ public class WorkSchedule implements DomainAggregate {
 			}
 			
 			//時間休暇
-			val timeVacation = new TimeVacation( Arrays.asList(leavingTimeSpan.get()), earlyTime.getTimePaidUseTime() );
+			val timeVacation = new TimeVacation( new ArrayList<>( Arrays.asList(leavingTimeSpan.get())), earlyTime.getTimePaidUseTime() );
 			
 			result.put(earlyType, timeVacation);
 		}
