@@ -14,6 +14,7 @@ import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.DailyOutputItems
 import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.UpdateAnualWorkLedgerDomainService;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItem;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -69,8 +70,8 @@ public class UpdateAnualWorkledgerSettingCommandHandler extends CommandHandler<U
         }
 
         @Override
-        public void updateSetting(AnnualWorkLedgerOutputSetting outputSettings) {
-
+        public void updateSetting(String settingId, AnnualWorkLedgerOutputSetting outputSettings) {
+            repository.update(AppContexts.user().companyId(),settingId,outputSettings);
         }
     }
 }

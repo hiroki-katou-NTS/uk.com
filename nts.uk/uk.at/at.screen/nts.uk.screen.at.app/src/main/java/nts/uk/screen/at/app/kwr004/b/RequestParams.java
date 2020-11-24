@@ -5,7 +5,9 @@ import lombok.Getter;
 @Getter
 public class RequestParams {
 
-    private int dailyMonthlyClass;
+    // A5_2 設定区分
+    private int settingClassification;
 
-    private int screenNumber;
+    private int formNumberDisplay;
+
 }

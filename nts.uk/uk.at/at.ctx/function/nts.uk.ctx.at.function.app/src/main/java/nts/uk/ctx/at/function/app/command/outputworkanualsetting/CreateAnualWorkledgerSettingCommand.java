@@ -15,7 +15,7 @@ import java.util.List;
 public class CreateAnualWorkledgerSettingCommand {
 
     //ID -> GUID
-    private final String iD;
+    private final String id;
 
     //コード
     private String code;

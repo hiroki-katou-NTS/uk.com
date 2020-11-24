@@ -40,7 +40,7 @@ public class UpdateAnualWorkLedgerDomainService {
         );
 
         return AtomTask.of(() -> {
-            require.updateSetting(setting);
+            require.updateSetting(settingId,setting);
         });
     }
 
@@ -49,6 +49,6 @@ public class UpdateAnualWorkLedgerDomainService {
         Optional<AnnualWorkLedgerOutputSetting> getSetting(String settingId);
 
         //  [1]定型選択を新規作成する
-        void updateSetting(AnnualWorkLedgerOutputSetting outputSettings);
+        void updateSetting(String settingId,AnnualWorkLedgerOutputSetting outputSettings);
     }
 }
