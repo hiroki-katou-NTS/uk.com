@@ -224,7 +224,22 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 			}
 			switch(apprSttEmpDateContentDto.application.appType) {
 				case AppType.OVER_TIME_APPLICATION:
+					break;
 	            case AppType.STAMP_APPLICATION:
+					let appStampNameInfo = _.find(vm.appNameLst, (o: any) => {
+						let condition1 = o.appType == apprSttEmpDateContentDto.application.appType;
+						let condition2 = false;
+						if(apprSttEmpDateContentDto.application.opStampRequestMode==0) {
+							condition2 = o.opApplicationTypeDisplay==3;
+						} else {
+							condition2 = o.opApplicationTypeDisplay==4;
+						}
+						return condition1 && condition2;
+					});
+					if(appStampNameInfo) {
+						this.appType = appStampNameInfo.appName;
+					}
+					break;
 				default:
 					let appNameInfo = _.find(vm.appNameLst, (o: any) => o.appType == apprSttEmpDateContentDto.application.appType);
 					if(appNameInfo) {

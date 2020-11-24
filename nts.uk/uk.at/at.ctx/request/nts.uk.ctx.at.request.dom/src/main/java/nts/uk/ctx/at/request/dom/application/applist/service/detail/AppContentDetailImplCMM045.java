@@ -838,7 +838,7 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 			// ドメインモデル「レコーダイメージ申請」を取得する
 			AppRecordImage appRecordImage = appRecordImageRepository.findByAppID(companyID, application.getAppID()).get();
 			// 申請内容＝#CMM045_293＋'　'＋レコーダイメージ申請.打刻区分
-			String result = I18NText.getText("CMM045_239") + " " + appRecordImage.getAppStampCombinationAtr().name;
+			String result = I18NText.getText("CMM045_293") + " " + appRecordImage.getAppStampCombinationAtr().name;
 			// レコーダイメージ申請.外出理由がemptyでない場合
 			if(appRecordImage.getAppStampGoOutAtr().isPresent()) {
 				// 申請内容＋＝#CMM045_230：{0}＝外出理由（Enum）
@@ -937,32 +937,32 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 		for(StampAppOutputTmp itemTmp : listTmp) {
 			if(itemTmp.getTimeItem() == 0 && itemTmp.getStampAtr() == TimeStampAppEnum.ATTEENDENCE_OR_RETIREMENT.value) {
 				// 項目名＝#KAF002_65（勤務時間）：枠NO
-				itemTmp.setOpItemName(Optional.of(I18NText.getText("KAF002_65")));
+				itemTmp.setOpItemName(Optional.of(I18NText.getText("KAF002_65", itemTmp.getStampFrameNo().v().toString())));
 			}
 			if(itemTmp.getTimeItem() == 0 && itemTmp.getStampAtr() == TimeStampAppEnum.EXTRAORDINARY.value) {
 				// 項目名＝#KAF002_66（臨時時間）：枠NO
-				itemTmp.setOpItemName(Optional.of(I18NText.getText("KAF002_66")));
+				itemTmp.setOpItemName(Optional.of(I18NText.getText("KAF002_66", itemTmp.getStampFrameNo().v().toString())));
 			}
 			if(itemTmp.getTimeItem() == 0 && itemTmp.getStampAtr() == TimeStampAppEnum.GOOUT_RETURNING.value) {
 				// 項目名＝#KAF002_67（外出時間）：枠NO
 				// 項目名＋＝#CMM045_230（）：{0}=打刻申請出力用Tmp.外出理由
 				if(itemTmp.getOpGoOutReasonAtr().isPresent()) {
-					itemTmp.setOpItemName(Optional.of(I18NText.getText("KAF002_67") + I18NText.getText("CMM045_230", itemTmp.getOpGoOutReasonAtr().get().nameId)));
+					itemTmp.setOpItemName(Optional.of(I18NText.getText("KAF002_67", itemTmp.getStampFrameNo().v().toString()) + I18NText.getText("CMM045_230", itemTmp.getOpGoOutReasonAtr().get().nameId)));
 				} else {
-					itemTmp.setOpItemName(Optional.of(I18NText.getText("KAF002_67")));
+					itemTmp.setOpItemName(Optional.of(I18NText.getText("KAF002_67", itemTmp.getStampFrameNo().v().toString())));
 				}
 			}
 			if(itemTmp.getTimeItem() == 1 && itemTmp.getStampAtr() == TimeZoneStampClassification.BREAK.value) {
 				// 項目名＝#KAF002_75（休憩時間）：枠NO
-				itemTmp.setOpItemName(Optional.of(I18NText.getText("KAF002_75")));
+				itemTmp.setOpItemName(Optional.of(I18NText.getText("KAF002_75", itemTmp.getStampFrameNo().v().toString())));
 			}
 			if(itemTmp.getTimeItem() == 1 && itemTmp.getStampAtr() == TimeZoneStampClassification.PARENT.value) {
 				// 項目名＝#KAF002_68（育児時間）：枠NO
-				itemTmp.setOpItemName(Optional.of(I18NText.getText("KAF002_68")));
+				itemTmp.setOpItemName(Optional.of(I18NText.getText("KAF002_68", itemTmp.getStampFrameNo().v().toString())));
 			}
 			if(itemTmp.getTimeItem() == 1 && itemTmp.getStampAtr() == TimeZoneStampClassification.NURSE.value) {
 				// 項目名＝#KAF002_69（介護時間）：枠NO
-				itemTmp.setOpItemName(Optional.of(I18NText.getText("KAF002_69")));
+				itemTmp.setOpItemName(Optional.of(I18NText.getText("KAF002_69", itemTmp.getStampFrameNo().v().toString())));
 			}
 		}
 		// アルゴリズム「申請内容（打刻申請）」を実行する

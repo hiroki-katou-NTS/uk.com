@@ -41,7 +41,7 @@
 						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_315')}</div>
 					</div>
 					<div class="cell valign-bottom">
-						<div id="kaf000-a-component4-rangeDate"
+						<div id="kaf018-a-rangeDate"
 							data-bind="ntsDateRangePicker: {
 													name: $i18n('KAF018_316'),
 													required: true,
@@ -64,12 +64,7 @@
 						</div>
 						<div class="table">
 							<div id="kaf018-a-checkBoxLst" data-bind="ntsMultiCheckBox: {
-													options: ko.observableArray([
-														{ 'id': 1, 'name': $i18n('KAF018_318') },
-														{ 'id': 2, 'name': 'select2' },
-														{ 'id': 3, 'name': 'select3' },
-														{ 'id': 4, 'name': $i18n('KAF018_321') },
-													]),
+													options: selectAbleIDLst,
 													optionsValue: 'id',
 													optionsText: 'name',
 													value: selectedIds }"></div>
