@@ -203,8 +203,8 @@ module nts.uk.at.view.kmk002.a {
                 this.unit = ko.observable('');
                 this.note = ko.observable('');
                 this.description = ko.observable('');
-                this.dailyUnit = ko.observable('1');
-                this.monthlyUnit = ko.observable('0');
+                this.dailyUnit = ko.observable('');
+                this.monthlyUnit = ko.observable('');
 
                 // flags
                 this.hasChanged = false;
@@ -354,25 +354,25 @@ module nts.uk.at.view.kmk002.a {
                     self.setApplyFormula();
                 });
 
-                self.selectedClac.subscribe(vl => {
-                    if (!vl && !self.hasChanged) {
-                        if (self.calcFormulas().length > 0) {
-                            nts.uk.ui.dialog.confirm({ messageId: 'Msg_1714' }).ifYes(() => {
-                                // remove all formulas
-                            self.removeAllFormulas();
+                // self.usageAtr.subscribe(vl => {
+                //     if (!vl && !self.hasChanged) {
+                //         if (self.calcFormulas().length > 0) {
+                //             nts.uk.ui.dialog.confirm({ messageId: 'Msg_1714' }).ifYes(() => {
+                //                 // remove all formulas
+                //             self.removeAllFormulas();
 
-                            // reset calc result range.
-                            self.calcResultRange.resetValue();
+                //             // reset calc result range.
+                //             self.calcResultRange.resetValue();
 
-                            self.checkSelectedAtr();
+                //             self.checkSelectedAtr();
 
-                            }).ifNo(() => {
-                                // get old value from stash
-                                self.optionalItemAtr(self.optionalItemAtrStash);
-                            })
-                        }
-                    }
-                });
+                //             }).ifNo(() => {
+                //                 // get old value from stash
+                //                 self.optionalItemAtr(self.optionalItemAtrStash);
+                //             })
+                //         }
+                //     }
+                // });
 
                 // Event on performanceAtr value changed
                 self.performanceAtr.subscribe(value => {
@@ -514,7 +514,7 @@ module nts.uk.at.view.kmk002.a {
             /**
              * Remove all formula.
              */
-            private removeAllFormulas(): void {
+            public removeAllFormulas(): void {
                 let self = this;
 
                 // clear error
@@ -1298,6 +1298,7 @@ module nts.uk.at.view.kmk002.a {
             optionalItem: OptionalItem;
             hasSelected: KnockoutObservable<boolean>;
             langId: any;
+            isInit: boolean = false;
 
             constructor(langId: any) {
                 let self = this;
@@ -1343,6 +1344,7 @@ module nts.uk.at.view.kmk002.a {
                 // Select first item
                 // if (self.optionalItemHeaders().length > 0) {
                     let itemNo = self.optionalItemHeaders()[0].itemNo;
+                    self.isInit = true;
                     self.selectedCode(itemNo);
     
                     self.loadOptionalItemDetail(itemNo).done(() => {
@@ -1354,6 +1356,24 @@ module nts.uk.at.view.kmk002.a {
                             } else {
                                 self.optionalItem.isUsed(false);
                             }
+                            if (!vl && !self.optionalItem.hasChanged && !self.isInit) {
+                                if (self.optionalItem.calcFormulas().length > 0) {
+                                    nts.uk.ui.dialog.confirm({ messageId: 'Msg_1714' }).ifYes(() => {
+                                        // remove all formulas
+                                    self.optionalItem.removeAllFormulas();
+        
+                                    // reset calc result range.
+                                    self.optionalItem.calcResultRange.resetValue();
+        
+                                    self.optionalItem.checkSelectedAtr();
+        
+                                    }).ifNo(() => {
+                                        // get old value from stash
+                                        self.optionalItem.optionalItemAtr(self.optionalItem.optionalItemAtrStash);
+                                    })
+                                }
+                            }
+                            self.isInit = false;
                         });
     
                         // force to check enable/disable condition
@@ -1512,7 +1532,15 @@ module nts.uk.at.view.kmk002.a {
                         self.optionalItem.getExcludedOptItems = self.getExcludedOptItems.bind(self);
 
                         // convert dto to view model.
-                        self.optionalItem.fromDto(res);
+                        self.optionalItem.fromDto(res.optionalItem);
+
+                        if (res.controlUnit) {
+                            if (res.optionalItem.performanceAtr === 0) {
+                                self.optionalItem.dailyUnit = res.controlUnit.inputUnitOfTimeItem;
+                            } else {
+                                self.optionalItem.monthlyUnit = res.controlUnit.inputUnitOfTimeItem;
+                            }
+                        }
 
                         // focus optional item name input
                         $('#inpName').focus();
