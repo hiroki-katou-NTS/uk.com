@@ -92,7 +92,10 @@ public final class AttendanceItemUtilRes {
 				AttendanceItemDataGate current = source.get(prop).orElse(null);
 
 				if (current == null) {
-					result.addAll(i.getValue());
+					AttendanceItemDataGate emptyData = source.newInstanceOf(prop);
+					collect(result, emptyData, 
+							groupNext(nextLayout, i.getValue(), idxLayout), 
+							nextLayout, enumPlus, idxPlus, idxLayout);
 					return;
 				} 
 
@@ -102,29 +105,26 @@ public final class AttendanceItemUtilRes {
 			} else {
 				List<AttendanceItemDataGate> listV = source.gets(prop);
 				
-				if (CollectionUtil.isEmpty(listV)) {
-					result.addAll(i.getValue());
-					return;
-				}
+				Supplier<AttendanceItemDataGate> defaultGetter = () -> source.newInstanceOf(prop);
 
 				switch (ct) {
 				case IDX_LIST:
-					processListIdx(result, listV, i.getValue(), nextLayout, enumPlus, idxLayout);
+					processListIdx(result, listV, i.getValue(), nextLayout, enumPlus, idxLayout, defaultGetter);
 					break;
 				case ENUM_LIST:
-					processListEnum(result, listV, i.getValue(), nextLayout, idxPlus, idxLayout);
+					processListEnum(result, listV, i.getValue(), nextLayout, idxPlus, idxLayout, defaultGetter);
 					break;
 				case IDX_ENUM_LIST:
-					processListAll(result, listV, i.getValue(), nextLayout, idxLayout);
+					processListAll(result, listV, i.getValue(), nextLayout, idxLayout, defaultGetter);
 					break;
 				case ENUM_HAVE_IDX:
-					processEnumBeforeIdx(result, listV, i.getValue(), nextLayout, idxLayout);
+					processEnumBeforeIdx(result, listV, i.getValue(), nextLayout, idxLayout, defaultGetter);
 					break;
 				case IDX_IN_ENUM:
-					processIdxAfterEnum(result, listV, i.getValue(), nextLayout, idxLayout);
+					processIdxAfterEnum(result, listV, i.getValue(), nextLayout, idxLayout, defaultGetter);
 					break;
 				case IDX_IN_IDX:
-					processListIdx(result, listV, i.getValue(), nextLayout, enumPlus, idxLayout + 1);
+					processListIdx(result, listV, i.getValue(), nextLayout, enumPlus, idxLayout + 1, defaultGetter);
 					break;
 				default:
 					break;
@@ -211,29 +211,29 @@ public final class AttendanceItemUtilRes {
 	}
 	
 	private static void processListIdx(List<ItemValue> result, List<AttendanceItemDataGate> listV, 
-			List<ItemValue> items, int layout, Optional<String> enumPlus, int idxLayout) {
+			List<ItemValue> items, int layout, Optional<String> enumPlus, int idxLayout, Supplier<AttendanceItemDataGate> defaultGetter) {
 		
 		for (Entry<Integer, List<ItemValue>> g : groupIdx(items, idxLayout).entrySet()) {
 			int idx = g.getKey();
 			
 			internalProcess(result, listV, layout, g.getValue(), 
-					enumPlus, Optional.of(idx), l -> l.isNo(idx), idxLayout);
+					enumPlus, Optional.of(idx), l -> l.isNo(idx), idxLayout, defaultGetter);
 		}
 	} 
 	
 	private static void processListEnum(List<ItemValue> result, List<AttendanceItemDataGate> listV, 
-			List<ItemValue> items, int layout, Optional<Integer> idxPlus, int idxLayout) {
+			List<ItemValue> items, int layout, Optional<Integer> idxPlus, int idxLayout, Supplier<AttendanceItemDataGate> defaultGetter) {
 		
 		for (Entry<String, List<ItemValue>> g : groupEnum(items).entrySet()) {
 			String enumT = g.getKey();
 
 			internalProcess(result, listV, layout, g.getValue(), 
-					Optional.of(enumT), idxPlus, l -> l.isEnum(enumT), idxLayout);
+					Optional.of(enumT), idxPlus, l -> l.isEnum(enumT), idxLayout, defaultGetter);
 		}
 	} 
 	
 	private static void processListAll(List<ItemValue> result, List<AttendanceItemDataGate> listV, 
-			List<ItemValue> items, int layout, int idxLayout) {
+			List<ItemValue> items, int layout, int idxLayout, Supplier<AttendanceItemDataGate> defaultGetter) {
 		
 		for (Entry<String, List<ItemValue>> g : groupEnum(items).entrySet()) {
 			int idx = getIdx(g.getKey(), idxLayout);
@@ -241,12 +241,12 @@ public final class AttendanceItemUtilRes {
 			
 			internalProcess(result, listV, layout, g.getValue(), 
 					Optional.of(enumT), Optional.of(idx),
-					l -> l.isEnum(enumT) && l.isNo(idx), idxLayout);
+					l -> l.isEnum(enumT) && l.isNo(idx), idxLayout, defaultGetter);
 		}
 	} 
 	
 	private static void processEnumBeforeIdx(List<ItemValue> result, List<AttendanceItemDataGate> listV, 
-			List<ItemValue> items, int layout, int idxLayout) {
+			List<ItemValue> items, int layout, int idxLayout, Supplier<AttendanceItemDataGate> defaultGetter) {
 		
 		for (Entry<String, List<ItemValue>> g : groupEnum(items).entrySet()) {
 			int idx = getIdx(g.getKey(), idxLayout);
@@ -254,12 +254,12 @@ public final class AttendanceItemUtilRes {
 			
 			internalProcess(result, listV, layout, g.getValue(), 
 					Optional.of(enumT), Optional.of(idx), 
-					l -> l.isEnum(enumT), idxLayout);
+					l -> l.isEnum(enumT), idxLayout, defaultGetter);
 		}
 	}
 	
 	private static void processIdxAfterEnum(List<ItemValue> result, List<AttendanceItemDataGate> listV, 
-			List<ItemValue> items, int layout, int idxLayout) {
+			List<ItemValue> items, int layout, int idxLayout, Supplier<AttendanceItemDataGate> defaultGetter) {
 		
 		for (Entry<String, List<ItemValue>> g : groupEnum(items).entrySet()) {
 			int idx = getIdx(g.getKey(), idxLayout);
@@ -267,19 +267,20 @@ public final class AttendanceItemUtilRes {
 			
 			internalProcess(result, listV, layout, g.getValue(), 
 					Optional.of(enumT), Optional.of(idx),
-					l -> l.isNo(idx), idxLayout);
+					l -> l.isNo(idx), idxLayout, defaultGetter);
 		}
 	}
 
 	private static void internalProcess(List<ItemValue> result, List<AttendanceItemDataGate> listV, 
 			int layout, List<ItemValue> groupItems, 
 			Optional<String> enumT, Optional<Integer> idx,
-			Predicate<AttendanceItemDataGate> checker, int idxLayout) {
-		AttendanceItemDataGate current = listV.stream().filter(checker).findFirst().orElse(null);
+			Predicate<AttendanceItemDataGate> checker, int idxLayout,
+			Supplier<AttendanceItemDataGate> defaultGetter) {
+		AttendanceItemDataGate current = listV == null ? defaultGetter.get() : listV.stream().filter(checker).findFirst().orElse(null);
 		
 		if (current == null) { 
-//			current = defaultGetter.get();
-			result.addAll(groupItems);
+			current = defaultGetter.get();
+			collect(result, current, groupNext(layout, groupItems, idxLayout), layout, enumT, idx, idxLayout);
 			return;
 		} 
 		collect(result, current, groupNext(layout, groupItems, idxLayout), layout, enumT, idx, idxLayout);
