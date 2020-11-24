@@ -14,7 +14,7 @@ import nts.uk.ctx.at.request.app.find.application.overtime.dto.EmployeeOvertimeD
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorResult;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailScreenInitModeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork_Old;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHolidayWorkPreAndReferDto;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.SiftType;
@@ -252,7 +252,7 @@ public class AppHolidayWorkDto {
 	private DetailScreenInitModeOutput detailScreenInitModeOutput;
 	private PreActualColorResult preActualColorResult;
 	
-	public static AppHolidayWorkDto fromDomain(AppHolidayWork appHolidayWork){
+	public static AppHolidayWorkDto fromDomain(AppHolidayWork_Old appHolidayWork){
 //		return new AppHolidayWorkDto(
 //				appHolidayWork.getVersion(),
 //				ApplicationDto_New.fromDomain(appHolidayWork.getApplication()), 

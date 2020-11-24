@@ -23,6 +23,7 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkD
 import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.ICommonAlgorithmOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OverTimeContent;
+import nts.uk.ctx.at.request.dom.application.overtime.service.WorkContent;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkHours;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.PrePostInitAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.HolidayWorkAppSet;
@@ -31,6 +32,8 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdwo
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
 import nts.uk.ctx.at.request.dom.workrecord.dailyrecordprocess.dailycreationwork.BreakTimeZoneSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcessCommon;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.SettingSubstituteHolidayProcess;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.SubstitutionHolidayOutput;
@@ -42,6 +45,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
@@ -207,36 +211,8 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 		hdWorkDispInfoWithDateOutput.setInitWorkTimeName(Optional.ofNullable(initWorkTime.orElse(null).getWorkTimeDisplayName().getWorkTimeName()));
 		
 		//	初期表示する出退勤時刻を取得する
-		OverTimeContent overTimeContent = new OverTimeContent();
-		WorkHours workHoursSPR = new WorkHours();
-		workHoursSPR.setStartTimeOp1(Optional.empty());
-		workHoursSPR.setStartTimeOp2(Optional.empty());
-		workHoursSPR.setEndTimeOp1(Optional.empty());
-		workHoursSPR.setEndTimeOp2(Optional.empty());
-		WorkHours workHoursActual = new WorkHours();
-		if(!actualContentDisplayList.isEmpty()) {
-			ActualContentDisplay actualContentDisplay = actualContentDisplayList.get(0);
-			if (actualContentDisplay.getOpAchievementDetail().isPresent()) {
-				AchievementDetail achievementDetail = actualContentDisplay.getOpAchievementDetail().get();
-				if (achievementDetail.getOpWorkTime().isPresent()) {
-					workHoursActual.setStartTimeOp1(Optional.of(new TimeWithDayAttr(achievementDetail.getOpWorkTime().get())));
-				}
-				if (achievementDetail.getOpLeaveTime().isPresent()) {
-					workHoursActual.setEndTimeOp1(Optional.of(new TimeWithDayAttr(achievementDetail.getOpLeaveTime().get())));
-				}
-				if (achievementDetail.getOpWorkTime2().isPresent()) {
-					workHoursActual.setStartTimeOp2(Optional.of(new TimeWithDayAttr(achievementDetail.getOpWorkTime2().get())));
-				}
-				if (achievementDetail.getOpDepartureTime2().isPresent()) {
-					workHoursActual.setEndTimeOp2(Optional.of(new TimeWithDayAttr(achievementDetail.getOpDepartureTime2().get())));
-				}
-			}
-		}
+		OverTimeContent overTimeContent = this.getOverTimeContent(initWorkTypeCd, initWorkTimeCd, actualContentDisplayList);
 		
-		overTimeContent.setWorkTypeCode(initWorkTypeCd);
-		overTimeContent.setWorkTimeCode(initWorkTimeCd);
-		overTimeContent.setSPRTime(Optional.of(workHoursSPR));
-		overTimeContent.setActualTime(Optional.of(workHoursActual));
 		WorkHours workHours = commonAlgorithmOverTime.initAttendanceTime(companyId, date, overTimeContent, holidayWorkSetting.getApplicationDetailSetting());
 		hdWorkDispInfoWithDateOutput.setWorkHours(workHours);
 		
@@ -284,6 +260,70 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 		return result;
 	}
 
-	
+	public WorkContent getWorkContent(HdWorkDispInfoWithDateOutput hdWorkDispInfoWithDateOutput) {
+		WorkContent workContent = new WorkContent();
+		workContent.setWorkTypeCode(hdWorkDispInfoWithDateOutput.getInitWorkType().isPresent()
+				? Optional.of(hdWorkDispInfoWithDateOutput.getInitWorkType().get().v())
+				: Optional.empty());
+		workContent.setWorkTimeCode(hdWorkDispInfoWithDateOutput.getInitWorkTime().isPresent()
+				? Optional.of(hdWorkDispInfoWithDateOutput.getInitWorkTime().get().v())
+				: Optional.empty());
+		TimeZone timeZoneNo1 = new TimeZone(hdWorkDispInfoWithDateOutput.getWorkHours().getStartTimeOp1().orElse(null),
+				hdWorkDispInfoWithDateOutput.getWorkHours().getEndTimeOp1().orElse(null));
+		TimeZone timeZoneNo2 = new TimeZone(hdWorkDispInfoWithDateOutput.getWorkHours().getStartTimeOp2().orElse(null),
+				hdWorkDispInfoWithDateOutput.getWorkHours().getEndTimeOp2().orElse(null));
+		List<TimeZone> timeZones = new ArrayList<TimeZone>();
+		timeZones.add(timeZoneNo1);
+		timeZones.add(timeZoneNo2);
+		workContent.setTimeZones(timeZones);
+
+		List<BreakTimeSheet> breakTimes = new ArrayList<BreakTimeSheet>();
+		if (hdWorkDispInfoWithDateOutput.getBreakTimeZoneSettingList().isPresent()) {
+			List<DeductionTime> timeZoneList = hdWorkDispInfoWithDateOutput.getBreakTimeZoneSettingList().get()
+					.getTimeZones();
+			for (int i = 1; i < timeZoneList.size() + 1 && i <= 10; i++) {
+				TimeZone timeZone = timeZoneList.get(i - 1);
+				BreakTimeSheet breakTimeSheet = new BreakTimeSheet(new BreakFrameNo(i), timeZone.getStart(),
+						timeZone.getEnd());
+				breakTimes.add(breakTimeSheet);
+			}
+		}
+		workContent.setBreakTimes(breakTimes);
+		return workContent;
+	}
+
+	public OverTimeContent getOverTimeContent(Optional<WorkTypeCode> workTypeCode, Optional<WorkTimeCode> workTimeCode, List<ActualContentDisplay> actualContentDisplayList) {
+		OverTimeContent overTimeContent = new OverTimeContent();
+		WorkHours workHoursSPR = new WorkHours();
+		workHoursSPR.setStartTimeOp1(Optional.empty());
+		workHoursSPR.setStartTimeOp2(Optional.empty());
+		workHoursSPR.setEndTimeOp1(Optional.empty());
+		workHoursSPR.setEndTimeOp2(Optional.empty());
+		WorkHours workHoursActual = new WorkHours();
+		if(!actualContentDisplayList.isEmpty()) {
+			ActualContentDisplay actualContentDisplay = actualContentDisplayList.get(0);
+			if (actualContentDisplay.getOpAchievementDetail().isPresent()) {
+				AchievementDetail achievementDetail = actualContentDisplay.getOpAchievementDetail().get();
+				if (achievementDetail.getOpWorkTime().isPresent()) {
+					workHoursActual.setStartTimeOp1(Optional.of(new TimeWithDayAttr(achievementDetail.getOpWorkTime().get())));
+				}
+				if (achievementDetail.getOpLeaveTime().isPresent()) {
+					workHoursActual.setEndTimeOp1(Optional.of(new TimeWithDayAttr(achievementDetail.getOpLeaveTime().get())));
+				}
+				if (achievementDetail.getOpWorkTime2().isPresent()) {
+					workHoursActual.setStartTimeOp2(Optional.of(new TimeWithDayAttr(achievementDetail.getOpWorkTime2().get())));
+				}
+				if (achievementDetail.getOpDepartureTime2().isPresent()) {
+					workHoursActual.setEndTimeOp2(Optional.of(new TimeWithDayAttr(achievementDetail.getOpDepartureTime2().get())));
+				}
+			}
+		}
+		
+		overTimeContent.setWorkTypeCode(workTypeCode);
+		overTimeContent.setWorkTimeCode(workTimeCode);
+		overTimeContent.setSPRTime(Optional.of(workHoursSPR));
+		overTimeContent.setActualTime(Optional.of(workHoursActual));
+		return overTimeContent;
+	}
 
 }

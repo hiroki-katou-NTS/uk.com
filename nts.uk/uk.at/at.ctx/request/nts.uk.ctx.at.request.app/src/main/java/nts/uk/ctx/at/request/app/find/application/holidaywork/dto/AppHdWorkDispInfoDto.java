@@ -103,5 +103,4 @@ public class AppHdWorkDispInfoDto {
 				domain.getComboDivergenceReason().isPresent() ? DivergenceReasonSelectDto.fromDomain(domain.getComboDivergenceReason().get()) : null, 
 				HolidayWorkCalculationResultDto.fromDomain(domain.getCalculationResult().orElse(null)));
 	}
-
 }

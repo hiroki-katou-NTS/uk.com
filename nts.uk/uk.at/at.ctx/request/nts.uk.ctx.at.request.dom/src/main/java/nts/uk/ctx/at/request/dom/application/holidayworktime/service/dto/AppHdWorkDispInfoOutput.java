@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,6 +26,7 @@ import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
  * @author huylq
  *Refactor5
  */
+@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter

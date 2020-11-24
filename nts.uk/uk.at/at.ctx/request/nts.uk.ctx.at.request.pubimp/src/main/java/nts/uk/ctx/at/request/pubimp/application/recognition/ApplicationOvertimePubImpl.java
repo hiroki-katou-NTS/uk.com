@@ -20,8 +20,8 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork_Old;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository_Old;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
@@ -40,7 +40,7 @@ public class ApplicationOvertimePubImpl implements ApplicationOvertimePub {
 	private OvertimeRepository repoOvertime;
 	
 	@Inject
-	private AppHolidayWorkRepository appHdWorkRepository;
+	private AppHolidayWorkRepository_Old appHdWorkRepository;
 	
 	/**
 	 * Request list No.236
@@ -50,7 +50,7 @@ public class ApplicationOvertimePubImpl implements ApplicationOvertimePub {
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<ApplicationOvertimeExport> acquireTotalApplicationOverTimeHours(String sId, GeneralDate startDate, GeneralDate endDate) {
 		String companyId = AppContexts.user().companyId();
-		Map<String, AppHolidayWork> mapHd = new HashMap<>();
+		Map<String, AppHolidayWork_Old> mapHd = new HashMap<>();
 		Map<String, AppOverTime_Old> mapOt = new HashMap<>();
 		List<ApplicationOvertimeExport> results = new ArrayList<>();
 		//条件を元に、ドメインモデル「残業申請」を取得する
@@ -99,7 +99,7 @@ public class ApplicationOvertimePubImpl implements ApplicationOvertimePub {
 		List<ApplicationOvertimeExport> bonus = new ArrayList<>();
 		//tinh thoi gian over night bo sung theo Don lam ngay nghi
 		for(Map.Entry<GeneralDate, String> entry : mapAppHdw.entrySet()) {
-			AppHolidayWork hdDetail = mapHd.get(entry.getValue());
+			AppHolidayWork_Old hdDetail = mapHd.get(entry.getValue());
 			List<HolidayWorkInput> hdWorkInput = hdDetail.getHolidayWorkInputs();
 			int cal = 0;
 			//休日出勤申請．残業時間1～10

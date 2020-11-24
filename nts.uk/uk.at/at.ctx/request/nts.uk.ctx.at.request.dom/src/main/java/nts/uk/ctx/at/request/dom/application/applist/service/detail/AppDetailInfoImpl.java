@@ -33,8 +33,8 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.C
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.SyncState;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork_Old;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository_Old;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
@@ -79,7 +79,7 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository {
 	@Inject
 	private OvertimeWorkFrameRepository repoOverTimeFr;
 	@Inject
-	private AppHolidayWorkRepository repoHolidayWork;
+	private AppHolidayWorkRepository_Old repoHolidayWork;
 	@Inject
 	private WorkTypeRepository repoWorkType;
 	@Inject
@@ -216,8 +216,8 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository {
 	@Override
 	public AppHolidayWorkFull getAppHolidayWorkInfo(String companyId, String appId, List<WorkType> lstWkType,
 			List<WorkTimeSetting> lstWkTime) {
-		Map<String, AppHolidayWork> appHdWork = repoHolidayWork.getListAppHdWorkFrame(companyId, Arrays.asList(appId));
-		AppHolidayWork hdWork = appHdWork.get(appId);
+		Map<String, AppHolidayWork_Old> appHdWork = repoHolidayWork.getListAppHdWorkFrame(companyId, Arrays.asList(appId));
+		AppHolidayWork_Old hdWork = appHdWork.get(appId);
 		List<HolidayWorkInput> lstHdWkInput = hdWork.getHolidayWorkInputs();
 		List<OverTimeFrame> lstFrame = new ArrayList<>();
 		for (HolidayWorkInput hdwk : lstHdWkInput) {
@@ -525,13 +525,13 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository {
 		// 3.残業時間 - NORMALOVERTIME
 		List<OvertimeWorkFrame> lstOtWork = repoOverTimeFr.getAllOvertimeWorkFrame(companyId);
 		// get list appHoliday detail
-		Map<String, AppHolidayWork> mapHdFrame = repoHolidayWork.getListAppHdWorkFrame(companyId, lstAppId);
+		Map<String, AppHolidayWork_Old> mapHdFrame = repoHolidayWork.getListAppHdWorkFrame(companyId, lstAppId);
 		if (mapHdFrame.isEmpty()) {
 			return new ArrayList<>();
 		}
 		Map<String, String> mapWorkTimeName = new HashMap<>();
 		for (String appId : lstAppId) {
-			AppHolidayWork hdWork = mapHdFrame.get(appId);
+			AppHolidayWork_Old hdWork = mapHdFrame.get(appId);
 			List<HolidayWorkInput> lstHdInput = hdWork.getHolidayWorkInputs();
 			List<OverTimeFrame> lstFrame = new ArrayList<>();
 			for (HolidayWorkInput hd : lstHdInput) {

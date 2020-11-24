@@ -1,134 +1,103 @@
 package nts.uk.ctx.at.request.dom.application.holidayworktime;
 
-import java.util.List;
 import java.util.Optional;
 
-import org.apache.logging.log4j.util.Strings;
-
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
+import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr;
+import nts.uk.ctx.at.request.dom.application.Application;
+
 
 /**
- * @author loivt
  * 休日出勤申請
+ * @author huylq
+ *Refactor5
  */
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class AppHolidayWork extends AggregateRoot{
+@Getter
+@Setter
+public class AppHolidayWork extends Application{
 	
 	/**
-	 * application
+	 * 勤務情報
 	 */
-	private Application application;
-	/**
-	 * 会社ID
-	 * companyID
-	 */
-	private String companyID;
-	/**
-	 * 申請ID
-	 */
-	private String appID;
-	/**
-	 * 残業申請時間設定
-	 */
-	private List<HolidayWorkInput> holidayWorkInputs;
-	/**
-	 * 勤務種類コード
-	 */
-	private WorkTypeCode workTypeCode;
-	/**
-	 * 就業時間帯
-	 */
-	private WorkTimeCode workTimeCode;
+	private WorkInformation workInformation;
 	
 	/**
-	 * 勤務時間
+	 * 申請時間
 	 */
-	private HolidayWorkClock workClock1;
+	private ApplicationTime applicationTime;
 	
 	/**
-	 * 勤務時間2
+	 * 直帰区分
 	 */
-	private HolidayWorkClock workClock2;
+	private NotUseAtr backHomeAtr;
 	
 	/**
-	 * 乖離定型理由
+	 * 直行区分
 	 */
-	private String divergenceReason;
+	private NotUseAtr goWorkAtr;
+	
 	/**
-	 * 就業時間外深夜時間
+	 * 休憩時間帯
 	 */
-	private int holidayShiftNight;
+	private Optional<TimeZoneWithWorkNo> breakTime = Optional.empty();
+	
+	/**
+	 * 勤務時間帯
+	 */
+	private Optional<TimeZoneWithWorkNo> workingTime = Optional.empty();
+	
 	/**
 	 * 時間外時間の詳細
 	 */
-	private Optional<AppOvertimeDetail> appOvertimeDetail;
+	private Optional<AppOvertimeDetail> appOvertimeDetail = Optional.empty();
 	
-	public AppHolidayWork(String companyID,
-						String appID,
-						String workTypeCode, 
-						String workTimeCode, 
-						Integer workClockStart1,
-						Integer workClockEnd1,
-						Integer workClockStart2,
-						Integer workClockEnd2,
-						int goAtr1,
-						int backAtr1,
-						int goAtr2,
-						int backAtr2,
-						String divergenceReason,
-						int holidayShiftNight){
-		this.companyID = companyID;
-		this.appID = appID;
-		this.workTypeCode = Strings.isBlank(workTypeCode) ? null : new WorkTypeCode(workTypeCode);
-		this.workTimeCode = Strings.isBlank(workTimeCode) ? null : new WorkTimeCode(workTimeCode);
-		this.workClock1 = HolidayWorkClock.validateTime(workClockStart1, workClockEnd1,goAtr1,backAtr1);
-		this.workClock2 = HolidayWorkClock.validateTime(workClockStart2, workClockEnd2,goAtr2,backAtr2);
-		this.divergenceReason = divergenceReason;
-		this.holidayShiftNight = holidayShiftNight;
+	public AppHolidayWork(Application application) {
+		super(application);
 	}
 	
-	public static AppHolidayWork createSimpleFromJavaType(String companyID,
-														String appID, 
-														String workTypeCode, 
-														String workTimeCode, 
-														Integer workClockStart1,
-														Integer workClockEnd1,
-														Integer workClockStart2,
-														Integer workClockEnd2,
-														int goAtr1,
-														int backAtr1,
-														int goAtr2,
-														int backAtr2,
-														String divergenceReason,
-														int overTimeShiftNight ){
-		return new AppHolidayWork(companyID,
-				appID,
-				workTypeCode,
-				workTimeCode,
-				workClockStart1,
-				workClockEnd1,
-				workClockStart2,
-				workClockEnd2,
-				goAtr1,
-				backAtr1,
-				goAtr2,
-				backAtr2,
-				divergenceReason,
-				overTimeShiftNight);
-		
+	public void setApplication(Application application) {
+		this.setVersion(application.getVersion());
+		this.setAppID(application.getAppID());
+		this.setPrePostAtr(application.getPrePostAtr());
+		this.setEmployeeID(application.getEmployeeID());
+		this.setAppType(application.getAppType());
+		this.setAppDate(application.getAppDate());
+		this.setEnteredPersonID(application.getEnteredPersonID());
+		this.setInputDate(application.getInputDate());
+		this.setReflectionStatus(application.getReflectionStatus());
+		this.setOpStampRequestMode(application.getOpStampRequestMode());
+		this.setOpReversionReason(application.getOpReversionReason());
+		this.setOpAppStartDate(application.getOpAppStartDate());
+		this.setOpAppEndDate(application.getOpAppEndDate());
+		this.setOpAppReason(application.getOpAppReason());
+		this.setOpAppStandardReasonCD(application.getOpAppStandardReasonCD());
 	}
-
+	
+	public Application getApplication() {
+		return new Application(
+				this.getVersion(),
+				this.getAppID(),
+				this.getPrePostAtr(),
+				this.getEmployeeID(),
+				this.getAppType(),
+				this.getAppDate(),
+				this.getEnteredPersonID(),
+				this.getInputDate(),
+				this.getReflectionStatus(),
+				this.getOpStampRequestMode(),
+				this.getOpReversionReason(),
+				this.getOpAppStartDate(),
+				this.getOpAppEndDate(),
+				this.getOpAppReason(),
+				this.getOpAppStandardReasonCD());
+	}
 }

@@ -16,7 +16,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInf
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.TimeWithCalculationImport;
 import nts.uk.ctx.at.request.dom.application.holidayinstruction.HolidayInstruct;
 import nts.uk.ctx.at.request.dom.application.holidayinstruction.HolidayInstructRepository;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository_Old;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInputRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHolidayWorkPreAndReferDto;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HolidayWorkInstruction;
@@ -44,7 +44,7 @@ public class HolidayPreProcessImpl implements HolidayPreProcess {
 	@Inject
 	private ApplicationRepository applicationRepository;
 	@Inject
-	private AppHolidayWorkRepository appHolidayWorkRepository;
+	private AppHolidayWorkRepository_Old appHolidayWorkRepository;
 	@Inject
 	private HolidayWorkInputRepository holidayWorkInputRepository;
 	@Inject

@@ -38,8 +38,8 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Achieve
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.brkoffsupchangemng.BrkOffSupChangeMng;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.brkoffsupchangemng.BrkOffSupChangeMngRepository;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork_Old;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository_Old;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHdWorkDispInfoOutput_Old;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkBreakTimeSetOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkCheckRegisterOutput;
@@ -85,7 +85,7 @@ public class HolidayServiceImpl_Old implements HolidayService_Old {
 	@Inject
 	private ApplicationApprovalService appRepository;
 	@Inject
-	private AppHolidayWorkRepository appHolidayWorkRepository;
+	private AppHolidayWorkRepository_Old appHolidayWorkRepository;
 	@Inject
 	private BusinessDayCalendarAdapter businessDayCalendarAdapter;
 	@Inject
@@ -349,7 +349,7 @@ public class HolidayServiceImpl_Old implements HolidayService_Old {
     }
 
 	@Override
-	public void createHolidayWork(AppHolidayWork domain, Application newApp) {
+	public void createHolidayWork(AppHolidayWork_Old domain, Application newApp) {
 		//Register application
 		// error EA refactor 4
 		/*appRepository.insert(newApp);*/
@@ -723,7 +723,7 @@ public class HolidayServiceImpl_Old implements HolidayService_Old {
 	
 	@Override
 	public HdWorkCheckRegisterOutput checkBeforeRegister(String companyID, AppHdWorkDispInfoOutput_Old appHdWorkDispInfoOutput,
-			Application application, boolean agentAtr, AppHolidayWork holidayWorkDomain, int calculateFlg) {
+			Application application, boolean agentAtr, AppHolidayWork_Old holidayWorkDomain, int calculateFlg) {
 		HdWorkCheckRegisterOutput result = new HdWorkCheckRegisterOutput();
 		List<ConfirmMsgOutput> outputLst = new ArrayList<>();
 		// 申請全般登録時チェック処理
@@ -767,7 +767,7 @@ public class HolidayServiceImpl_Old implements HolidayService_Old {
 			GeneralDate baseDate, ApplicationType appType, Application application, UseAtr timeCalUse,
 			UseAtr timeInputUse, AppDateContradictionAtr appDateContradictionAtr, boolean agentAtr, boolean mode,
 			List<AchievementOutput> achievementOutputLst, List<PreAppContentDisplay> appDetailContentLst, HolidayWorkInstruction appHdWorkInstruction, 
-			AppHolidayWork holidayWorkDomain, int calculateFlg, AppHdWorkDispInfoOutput_Old appHdWorkDispInfoOutput) {
+			AppHolidayWork_Old holidayWorkDomain, int calculateFlg, AppHdWorkDispInfoOutput_Old appHdWorkDispInfoOutput) {
 		HdWorkCheckRegisterOutput output = new HdWorkCheckRegisterOutput();
 		List<ConfirmMsgOutput> outputLst = new ArrayList<>();
 		// 勤務種類、就業時間帯チェックのメッセージを表示
@@ -1042,7 +1042,7 @@ public class HolidayServiceImpl_Old implements HolidayService_Old {
     }
 	@Override
 	public HdWorkCheckRegisterOutput checkBeforeUpdate(String companyID, Application application, AppHdWorkDispInfoOutput_Old appHdWorkDispInfoOutput,
-			int calculateFlg, AppHolidayWork holidayWorkDomain) {
+			int calculateFlg, AppHolidayWork_Old holidayWorkDomain) {
 		HdWorkCheckRegisterOutput result = new HdWorkCheckRegisterOutput();
 		List<ConfirmMsgOutput> outputLst = new ArrayList<>();
 		// 4-1.詳細画面登録前の処理

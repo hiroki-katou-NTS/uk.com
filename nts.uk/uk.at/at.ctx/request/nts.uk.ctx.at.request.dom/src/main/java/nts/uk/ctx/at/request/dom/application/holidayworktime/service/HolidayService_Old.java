@@ -9,7 +9,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.other.PreAppContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork_Old;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHdWorkDispInfoOutput_Old;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkBreakTimeSetOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkCheckRegisterOutput;
@@ -80,7 +80,7 @@ public interface HolidayService_Old {
 	 * @param domain
 	 * @param newApp
 	 */
-	void createHolidayWork(AppHolidayWork domain, Application newApp);
+	void createHolidayWork(AppHolidayWork_Old domain, Application newApp);
 	
 	/**
 	 * 11.休出申請（振休変更）削除
@@ -163,7 +163,7 @@ public interface HolidayService_Old {
 	 * @return
 	 */
 	public HdWorkCheckRegisterOutput checkBeforeRegister(String companyID, AppHdWorkDispInfoOutput_Old appHdWorkDispInfoOutput, Application application, 
-			boolean agentAtr, AppHolidayWork holidayWorkDomain, int calculateFlg);
+			boolean agentAtr, AppHolidayWork_Old holidayWorkDomain, int calculateFlg);
 	
 	/**
 	 * 3.個別エラーチェック
@@ -186,7 +186,7 @@ public interface HolidayService_Old {
 	public HdWorkCheckRegisterOutput individualErrorCheck(String companyID, String employeeID, GeneralDate appDate, GeneralDate baseDate, ApplicationType appType, 
 			Application application, UseAtr timeCalUse, UseAtr timeInputUse, AppDateContradictionAtr appDateContradictionAtr, boolean agentAtr, 
 			boolean mode, List<AchievementOutput> achievementOutputLst, List<PreAppContentDisplay> appDetailContentLst, HolidayWorkInstruction appHdWorkInstruction, 
-			AppHolidayWork holidayWorkDomain, int calculateFlg, AppHdWorkDispInfoOutput_Old appHdWorkDispInfoOutput);
+			AppHolidayWork_Old holidayWorkDomain, int calculateFlg, AppHdWorkDispInfoOutput_Old appHdWorkDispInfoOutput);
 	
 	/**
 	 * 7.休出申請（詳細）起動処理
@@ -205,6 +205,6 @@ public interface HolidayService_Old {
 	 * @return
 	 */
 	public HdWorkCheckRegisterOutput checkBeforeUpdate(String companyID, Application application, AppHdWorkDispInfoOutput_Old appHdWorkDispInfoOutput,
-			int calculateFlg, AppHolidayWork holidayWorkDomain);
+			int calculateFlg, AppHolidayWork_Old holidayWorkDomain);
 }
 	

@@ -42,8 +42,8 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.Abs
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork_Old;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
@@ -87,7 +87,7 @@ public class BusinessTripServiceImlp implements BusinessTripService {
     private WorkTimeSettingRepository wkTimeRepo;
 
     @Inject
-    private AppHolidayWorkRepository appHolidayWorkRepository;
+    private AppHolidayWorkRepository_Old appHolidayWorkRepository;
 
     @Inject
     private AbsenceLeaveAppRepository absRepo;
@@ -485,7 +485,7 @@ public class BusinessTripServiceImlp implements BusinessTripService {
         switch (appType) {
             case HOLIDAY_WORK_APPLICATION:
                 //休日出勤申請 6
-                Optional<AppHolidayWork> appHolidayWork = appHolidayWorkRepository.getFullAppHolidayWork(cid, appId);
+                Optional<AppHolidayWork_Old> appHolidayWork = appHolidayWorkRepository.getFullAppHolidayWork(cid, appId);
                 if (appHolidayWork.isPresent()) {
                     wkTypeCd = appHolidayWork.get().getWorkTypeCode().v();
                     wkTimeCd = appHolidayWork.get().getWorkTimeCode() == null ? null : appHolidayWork.get().getWorkTimeCode().v();

@@ -23,8 +23,15 @@ import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHdWorkDispI
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHdWorkDispInfoDto_Old;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHolidayWorkDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HdWorkCheckRegisterDto;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HolidayWorkCalculationResultDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HolidayWorkDetailDto;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamCalculationHolidayWork;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamCheckBeforeRegister;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamHolidayWorkChangeDate;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamHolidayWorkChangeWork;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamRegister;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHolidayWorkParamPC;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.CheckBeforeOutputDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.RecordWorkParamHoliday;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.ParamCalculateOvertime;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.ParamChangeAppDate;
@@ -36,6 +43,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.Con
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
+import nts.uk.ctx.at.shared.app.command.worktime.common.dto.HolidayCalculationDto;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.DeductionTimeDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -56,6 +64,42 @@ public class HolidayWorkWebService extends WebService{
 	@Path("startNew")
 	public AppHdWorkDispInfoDto getStartNew(AppHolidayWorkParamPC param) {
 		return appHolidayWorkFinder.getStartNew(param);
+	}
+	
+	@POST
+	@Path("calculate")
+	public HolidayWorkCalculationResultDto calculate(ParamCalculationHolidayWork param) {
+		return appHolidayWorkFinder.calculate(param);
+	}
+	
+	@POST
+	@Path("checkBeforeRegister")
+	public CheckBeforeOutputDto checkBeforeRegister(ParamCheckBeforeRegister param) {
+		return null;
+	}
+	
+	@POST
+	@Path("register")
+	public void register(ParamRegister param) {
+		
+	}
+	
+	@POST
+	@Path("changeAppDate")
+	public AppHdWorkDispInfoDto changeAppDate(ParamHolidayWorkChangeDate param) {
+		return appHolidayWorkFinder.changeAppDate(param);
+	}
+	
+	@POST
+	@Path("changeWorkTime")
+	public AppHdWorkDispInfoDto changeWorkTime(ParamHolidayWorkChangeWork param) {
+		return appHolidayWorkFinder.changeWorkTime(param);
+	}
+	
+	@POST
+	@Path("selectWork")
+	public AppHdWorkDispInfoDto selectWork(ParamHolidayWorkChangeWork param) {
+		return appHolidayWorkFinder.selectWork(param);
 	}
 	
 	

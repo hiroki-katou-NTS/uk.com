@@ -2,16 +2,10 @@ package nts.uk.ctx.at.request.infra.entity.application.holidaywork;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
@@ -19,14 +13,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeDetail_Old;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * @author loivt
  * 休日出勤申請
+ * @author huylq
+ *Refactor5
  */
 @Entity
 @Table(name = "KRQDT_APP_HOLIDAY_WORK")
@@ -34,169 +27,126 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrqdtAppHolidayWork extends UkJpaEntity implements Serializable {
+public class KrqdtAppHolidayWork extends UkJpaEntity implements Serializable{
+
 	private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected KrqdtAppHolidayWorkPK krqdtAppHolidayWorkPK;
     
-    /**
-     * 排他バージョン
-     */
     @Version
 	@Column(name="EXCLUS_VER")
 	public Long version;
     
-    /**
-     * 勤務種類コード
-     */
-    @Column(name = "WORKTYPE_CD")
-    private String workTypeCode;
+    @Column(name = "WORK_TYPE_CD")
+	public String workTypeCode;
+	
+	@Column(name = "WORK_TIME_CD")
+	public String workTimeCode;
+	
+	@Column(name = "WORK_TIME_START1")
+	public Integer workTimeStart1;
+	
+	@Column(name = "WORK_TIME_END1")
+	public Integer workTimeEnd1;
+	
+	@Column(name = "GO_WORK_ATR")
+	public Integer goWorkAtr;
+	
+	@Column(name = "BACK_HOME_ATR")
+	public Integer backHomeAtr;
+	
+	@Column(name = "WORK_TIME_START2")
+	public Integer workTimeStart2;
+	
+	@Column(name = "WORK_TIME_END2")
+	public Integer workTimeEnd2;
+	
+	@Column(name = "DIVERGENCE_TIME_NO")
+	public Integer divergenceTimeNo;
+	
+	@Column(name = "DIVERGENCE_CD")
+	public Integer divergenceCode;
+	
+	@Column(name = "DIVERGENCE_REASON")
+	public Integer divergenceReason;
+	
+	@Column(name = "OVERTIME_NIGHT")
+	public Integer overtimeNight;
+	
+	@Column(name = "TOTAL_NIGHT")
+	public Integer totalNight;
+	
+	@Column(name = "LEGAL_HD_NIGHT")
+	public Integer legalHdNight;
+	
+	@Column(name = "NON_LEGAL_HD_NIGHT")
+	public Integer nonLegalHdNight;
+	
+	@Column(name = "NON_LEGAL_PUBLIC_HD_NIGHT")
+	public Integer nonLegalPublicHdNight;
+	
+	@Column(name = "BREAK_TIME_START1")
+	public Integer breakTimeStart1;
+	
+	@Column(name = "BREAK_TIME_END1")
+	public Integer breakTimeEnd1;
+	
+	@Column(name = "BREAK_TIME_START2")
+	public Integer breakTimeStart2;
+	
+	@Column(name = "BREAK_TIME_END2")
+	public Integer breakTimeEnd2;
+	
+	@Column(name = "BREAK_TIME_START3")
+	public Integer breakTimeStart3;
+	
+	@Column(name = "BREAK_TIME_END3")
+	public Integer breakTimeEnd3;
+	
+	@Column(name = "BREAK_TIME_START4")
+	public Integer breakTimeStart4;
+	
+	@Column(name = "BREAK_TIME_END4")
+	public Integer breakTimeEnd4;
+	
+	@Column(name = "BREAK_TIME_START5")
+	public Integer breakTimeStart5;
+	
+	@Column(name = "BREAK_TIME_END5")
+	public Integer breakTimeEnd5;
+	
+	@Column(name = "BREAK_TIME_START6")
+	public Integer breakTimeStart6;
+	
+	@Column(name = "BREAK_TIME_END6")
+	public Integer breakTimeEnd6;
+	
+	@Column(name = "BREAK_TIME_START7")
+	public Integer breakTimeStart7;
+	
+	@Column(name = "BREAK_TIME_END7")
+	public Integer breakTimeEnd7;
+	
+	@Column(name = "BREAK_TIME_START8")
+	public Integer breakTimeStart8;
+	
+	@Column(name = "BREAK_TIME_END8")
+	public Integer breakTimeEnd8;
+	
+	@Column(name = "BREAK_TIME_START9")
+	public Integer breakTimeStart9;
+	
+	@Column(name = "BREAK_TIME_END9")
+	public Integer breakTimeEnd9;
+	
+	@Column(name = "BREAK_TIME_START10")
+	public Integer breakTimeStart10;
+	
+	@Column(name = "BREAK_TIME_END10")
+	public Integer breakTimeEnd10;
     
-    /**
-     * 就業時間帯
-     */
-    @Column(name = "WORKTIME_CD")
-    private String workTimeCode;
-    
-    /**
-     * 勤務開始時刻
-     */
-    @Column(name = "WORK_CLOCK_START1")
-    private Integer workClockStart1;
-    
-    /**
-     * 勤務終了時刻
-     */
-    @Column(name = "WORK_CLOCK_END1")
-    private Integer workClockEnd1;
-    
-    /**
-     * 直行区分
-     */
-    @Column(name = "GO_ATR_1")
-    private int goAtr1;
-    
-    /**
-     * 直帰区分
-     */
-    @Column(name = "BACK_ATR_1")
-    private int backAtr1;
-    
-    /**
-     * 勤務開始時刻2
-     */
-    @Column(name = "WORK_CLOCK_START2")
-    private Integer workClockStart2;
-    
-    /**
-     * 勤務終了時刻2
-     */
-    @Column(name = "WORK_CLOCK_END2")
-    private Integer workClockEnd2;
-    
-    /**
-     * 直行区分2
-     */
-    @Column(name = "GO_ATR_2")
-    private int goAtr2;
-    
-    /**
-     * 直帰区分2
-     */
-    @Column(name = "BACK_ATR_2")
-    private int backAtr2;
-    
-    /**
-     * 乖離定型理由
-     */
-    @Column(name = "DIVERGENCE_REASON")
-    private String divergenceReason;
-    
-    /**
-     * 就業時間外深夜時間
-     */
-    @Column(name = "HOLIDAY_SHIFT_NIGHT")
-    private Integer holidayShiftNight;
-    
-    @OneToMany(targetEntity=KrqdtHolidayWorkInput.class, mappedBy="appHolidayWork", cascade = CascadeType.ALL)
-    @JoinTable(name = "KRQDT_HOLIDAY_WORK_INPUT")
-	public List<KrqdtHolidayWorkInput> holidayWorkInputs;
-
-	@OneToOne(targetEntity = KrqdtAppOvertimeDetail_Old.class, mappedBy = "appHolidayWork", cascade = CascadeType.ALL)
-	@JoinTable(name = "KRQDT_APP_OVERTIME_DETAIL")
-	public KrqdtAppOvertimeDetail_Old appOvertimeDetail;
-
-	@Override
+    @Override
 	protected Object getKey() {
 		return krqdtAppHolidayWorkPK;
 	}
-
-	public KrqdtAppHolidayWork fromDomainValue(AppHolidayWork appHolidayWork){
-		this.version = appHolidayWork.getVersion();
-		this.setWorkTypeCode(appHolidayWork.getWorkTypeCode() == null ? null : appHolidayWork.getWorkTypeCode().v());
-		this.setWorkTimeCode(appHolidayWork.getWorkTimeCode() == null ? null : appHolidayWork.getWorkTimeCode().v());
-		this.setWorkClockStart1(appHolidayWork.getWorkClock1().getStartTime() == null ? null : appHolidayWork.getWorkClock1().getStartTime().v());
-		this.setWorkClockEnd1(appHolidayWork.getWorkClock1().getEndTime() == null ? null : appHolidayWork.getWorkClock1().getEndTime().v());
-		this.setGoAtr1(appHolidayWork.getWorkClock1().getGoAtr().value);
-		this.setBackAtr1(appHolidayWork.getWorkClock1().getBackAtr().value);
-		this.setWorkClockStart2(appHolidayWork.getWorkClock2().getStartTime() == null ? null : appHolidayWork.getWorkClock2().getStartTime().v());
-		this.setWorkClockEnd2(appHolidayWork.getWorkClock2().getEndTime()== null ? null : appHolidayWork.getWorkClock2().getEndTime().v());
-		this.setGoAtr2(appHolidayWork.getWorkClock2().getGoAtr().value);
-		this.setBackAtr2(appHolidayWork.getWorkClock2().getBackAtr().value);
-		this.setHolidayShiftNight(appHolidayWork.getHolidayShiftNight());
-		this.setDivergenceReason(appHolidayWork.getDivergenceReason());
-		for(int i = 0; i< appHolidayWork.getHolidayWorkInputs().size(); i++){
-			HolidayWorkInput holidayWorkInputInput = appHolidayWork.getHolidayWorkInputs().get(i);
-			this.getHolidayWorkInputs().stream().filter(
-					x -> x.krqdtHolidayWorkInputPK.getAttendanceType()== holidayWorkInputInput.getAttendanceType().value 
-					&& x.krqdtHolidayWorkInputPK.getFrameNo()==holidayWorkInputInput.getFrameNo())
-			.findAny()
-			.map(x -> {
-				x.fromDomainValue(holidayWorkInputInput);
-				return Optional.ofNullable(null);
-			}).orElseGet(()->{
-				KrqdtHolidayWorkInput krqdtOvertimeInput = new KrqdtHolidayWorkInput(
-						new KrqdtHolidayWorkInputPK(
-								appHolidayWork.getCompanyID(),
-								appHolidayWork.getAppID(),
-								holidayWorkInputInput.getAttendanceType().value,
-								holidayWorkInputInput.getFrameNo()
-						), 
-						holidayWorkInputInput.getStartTime() == null ? null : holidayWorkInputInput.getStartTime().v(), 
-						holidayWorkInputInput.getEndTime() == null ? null : holidayWorkInputInput.getEndTime().v(), 
-						holidayWorkInputInput.getApplicationTime().v());
-				this.holidayWorkInputs.add(krqdtOvertimeInput);
-				return null;
-			});
-		}
-		this.appOvertimeDetail = KrqdtAppOvertimeDetail_Old.toEntity(appHolidayWork.getAppOvertimeDetail());
-		return this;
-	}
-	
-	public AppHolidayWork toDomain(){
-		AppHolidayWork appHolidayWork = new AppHolidayWork(
-				this.krqdtAppHolidayWorkPK.getCid(), 
-				this.krqdtAppHolidayWorkPK.getAppId(), 
-				this.getWorkTypeCode(), 
-				this.getWorkTimeCode(), 
-				this.getWorkClockStart1(), 
-				this.getWorkClockEnd1(), 
-				this.getWorkClockStart2(), 
-				this.getWorkClockEnd2(),
-				this.goAtr1,
-				this.backAtr1,
-				this.goAtr2,
-				this.backAtr2,
-				this.getDivergenceReason(), 
-				this.getHolidayShiftNight());
-		appHolidayWork.setHolidayWorkInputs(this.holidayWorkInputs.stream().map(x -> x.toDomain()).collect(Collectors.toList()));
-		appHolidayWork.setVersion(this.version);
-		if(this.appOvertimeDetail == null) {
-			appHolidayWork.setAppOvertimeDetail(Optional.empty());
-		} else {
-			appHolidayWork.setAppOvertimeDetail(Optional.of(this.appOvertimeDetail.toDomain()));
-		}
-		return appHolidayWork;
-	}
-    
 }

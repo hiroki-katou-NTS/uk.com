@@ -19,8 +19,8 @@ import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertim
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.IErrorCheckBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork_Old;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository_Old;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayService_Old;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.IFactoryHolidayWork;
@@ -73,7 +73,7 @@ public class CheckBeforeRegisterHolidayWork {
 	private HolidayService_Old holidayService;
 	
 	@Inject
-	private AppHolidayWorkRepository appHolidayWorkRepository;
+	private AppHolidayWorkRepository_Old appHolidayWorkRepository;
 	
 	@Inject
 	private ApplicationRepository applicationRepository;
@@ -297,7 +297,7 @@ public class CheckBeforeRegisterHolidayWork {
 		return new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null, preActualColorResult);
 	}*/
 
-	public OvertimeCheckResultDto CheckBeforeRegister(int calculateFlg, Application app, AppHolidayWork appHolidayWork, boolean actualExceedConfirm) {
+	public OvertimeCheckResultDto CheckBeforeRegister(int calculateFlg, Application app, AppHolidayWork_Old appHolidayWork, boolean actualExceedConfirm) {
 		String companyID = AppContexts.user().companyId();
 		OvertimeCheckResultDto result = new OvertimeCheckResultDto(0, 0, 0, false, null);
 		// ３６協定時間上限チェック（月間）

@@ -1,88 +1,60 @@
 package nts.uk.ctx.at.request.app.find.application.holidaywork.dto;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import lombok.Data;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculationImport;
-import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
+import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.request.app.command.application.overtime.ApplicationTimeCommand;
+import nts.uk.ctx.at.request.app.command.application.overtime.WorkContentCommand;
+import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeLeaveAppCommonSetCommand;
+import nts.uk.ctx.at.request.app.find.application.overtime.ApplicationTimeDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.WorkContentDto;
+import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeLeaveAppCommonSetDto;
+
+/**
+ * Refactor5
+ * @author huylq
+ *
+ */
 @Data
+@NoArgsConstructor
 public class ParamCalculationHolidayWork {
-	/**
-	 * OvertimeInputDtos
-	 */
-	private List<CaculationTime> breakTimes;
 	
 	/**
-	 * bonusTimes
+	 * 会社ID
 	 */
-	private List<CaculationTime> bonusTimes;
+	private String companyId;
+	
 	/**
-	 * prePostAtr
+	 * 社員ID
+	 */
+	private String employeeId;
+	
+	/**
+	 * 申請対象日
+	 */
+	private String date;
+	
+	/**
+	 * 事前事後区分
 	 */
 	private int prePostAtr;
-	/**
-	 * appDate
-	 */
-	private String appDate;
 	
 	/**
-	 * siftCD
+	 * 残業休出申請共通設定
 	 */
-	private String siftCD;
-
-	/**
-	 * workTypeCode
-	 */
-	private String workTypeCode;
+	private OvertimeLeaveAppCommonSetCommand overtimeLeaveAppCommonSet;
 	
 	/**
-	 * inputDate
+	 * 事前の申請時間
 	 */
-	private String inputDate;
+	private ApplicationTimeCommand preApplicationTime;
 	
 	/**
-	 * employeeID
+	 * 実績の申請時間
 	 */
-	private String employeeID;
-	/**
-	 * startTime
-	 */
-	private Integer startTime;
-	/**
-	 * endTime
-	 */
-	private Integer endTime;
-	/**
-	 * startTimeRest
-	 */
-	private List<Integer> startTimeRests;
-	/**
-	 * endTimeRest
-	 */
-	private List<Integer> endTimeRests;
+	private ApplicationTimeCommand actualApplicationTime;
 	
-	DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport;
-	
-	public List<Integer> getStartTimeRests() {
-		List<Integer> result=  new ArrayList<Integer>();
-		startTimeRests.forEach(x->{
-			if (x != null) {
-				result.add(x);
-			}
-		});
-
-		return result;
-	}
-	
-	public List<Integer> getEndTimeRests() {
-		List<Integer> result=  new ArrayList<Integer>();
-		endTimeRests.forEach(x->{
-			if (x != null) {
-				result.add(x);
-			}
-		});
-
-		return result;
-	}
+	/**
+	 * 勤務内容
+	 */
+	private WorkContentCommand workContent;
 }

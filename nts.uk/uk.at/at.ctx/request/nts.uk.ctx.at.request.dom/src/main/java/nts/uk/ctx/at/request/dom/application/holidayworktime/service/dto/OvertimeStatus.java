@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 
@@ -8,6 +9,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
  * @author huylq
  *Refactor5
  */
+@AllArgsConstructor
 @Data
 public class OvertimeStatus {
 

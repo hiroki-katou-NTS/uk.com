@@ -150,5 +150,5 @@ public class CreateHolidayWorkCommand {
 	
 	private boolean actualExceedConfirm;
 	
-	private AppHdWorkDispInfoCmd appHdWorkDispInfoCmd;
+	private AppHdWorkDispInfoCmd_Old appHdWorkDispInfoCmd;
 }

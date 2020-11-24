@@ -63,7 +63,7 @@ private static final long serialVersionUID = 1L;
     	@PrimaryKeyJoinColumn(name="CID", referencedColumnName="CID"),
     	@PrimaryKeyJoinColumn(name="APP_ID", referencedColumnName="APP_ID")
     })
-	public KrqdtAppHolidayWork appHolidayWork;
+	public KrqdtAppHolidayWork_Old appHolidayWork;
     
     public KrqdtHolidayWorkInput(KrqdtHolidayWorkInputPK pk , Integer startTime, Integer endTime, Integer appTime){
     	this.krqdtHolidayWorkInputPK = pk;
