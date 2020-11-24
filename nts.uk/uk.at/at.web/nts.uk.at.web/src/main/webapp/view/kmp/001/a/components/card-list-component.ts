@@ -66,6 +66,7 @@ module nts.uk.at.view.kmp001.a {
 					}
 					if (ko.unwrap(vm.textInput) === ko.unwrap(vm.textInputTemporary)) {
 						vm.methodEdit(true);
+						vm.$errors('clear');
 					}
 				});
 
@@ -97,6 +98,9 @@ module nts.uk.at.view.kmp001.a {
 						rowSelectionChanged: function(evt, ui) {
 							const selectedRows = ui.selectedRows.map(m => m.index) as number[];
 							const stampCard = ko.unwrap(vm.model.stampCardDto);
+							if(ko.unwrap(vm.methodEdit)) {
+								vm.$errors('clear');
+							}
 
 							vm.model.selectedStampCardIndex(ui.row.index);
 
@@ -169,7 +173,6 @@ module nts.uk.at.view.kmp001.a {
 					const ck = ko.toJS(vm.constraint);
 					vm.stampCardEdit.update(data);
 					vm.ic_card(data.ic_card);
-					console.log(ko.unwrap(vm.attendance));
 
 					vm.$validate.constraint(ck)
 						.then((constraint) => {
@@ -201,7 +204,7 @@ module nts.uk.at.view.kmp001.a {
 					vm.textInput(data);
 					vm.methodEdit(true);
 					vm.textInputTemporary(data);
-					vm.stampCardEdit()
+					// vm.stampCardEdit()
 				})
 				.then(() => {
 					vm.$errors('clear');

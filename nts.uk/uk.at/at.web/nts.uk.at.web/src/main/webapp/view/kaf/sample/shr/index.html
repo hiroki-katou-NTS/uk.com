@@ -1,4 +1,4 @@
-<div>
+<div data-bind="with: $parent">
 	<div class="table">
 		<div class="cell col-1">
 			<!-- A7 -->
@@ -8,7 +8,7 @@
 			<!-- A7_1 -->
 			<input class="inputTime" data-bind="ntsTimeWithDayEditor: { 
 											constraint:'TimeWithDayAttr',
-											value: $parent.time, 
+											value: time, 
 											enable: true, 
 											readonly: false,	
 											required: true,

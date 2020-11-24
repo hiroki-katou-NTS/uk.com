@@ -60,6 +60,10 @@ module nts.uk.at.view.kafsample.a.viewmodel {
 				vm.$blockui("hide"); 
 				$('#kaf000-a-component4-singleDate').focus();
 			});
+			
+			vm.application.subscribe(app => {
+				// console.log('changeDateCustom');
+			});
 		}
 		
 		register() {

@@ -5,6 +5,7 @@ module nts.uk.at.view.kaf022.s.viewmodel {
     import dialogConfirm =  nts.uk.ui.dialog.confirm;
     import alert = nts.uk.ui.dialog.alertError;
     import getText = nts.uk.resource.getText;
+    import getShared = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {
         listReason: KnockoutObservableArray<IAppReasonStandard> = ko.observableArray([]);
@@ -69,7 +70,7 @@ module nts.uk.at.view.kaf022.s.viewmodel {
                 if (!_.isNil(value)) {
                     nts.uk.ui.errors.clearAll();
                     const tmp = _.find(self.listAppType(), a => a.key == value);
-                    self.listReasonByAppType(_.sortBy(self.listReason().filter(r => r.appType == tmp.appType && r.holidayAppType == tmp.holidayAppType), ['reasonCode']));
+                    self.listReasonByAppType(_.sortBy(self.listReason().filter(r => r.appType == tmp.appType && r.holidayAppType == tmp.holidayAppType), ['dispOrder']));
                     if (self.listReasonByAppType().length > 0) {
                         if (self.selectedReasonCode() == self.listReasonByAppType()[0].reasonCode)
                             self.selectedReasonCode.valueHasMutated();
@@ -92,10 +93,10 @@ module nts.uk.at.view.kaf022.s.viewmodel {
             nts.uk.ui.block.invisible();
             service.getReason().done((lstData: Array<any>) => {
                 if (lstData.length > 0) {
-                    const tmp = [];
+                    const listOrder: Array<any> = [];
                     lstData.forEach(d => {
                         d.reasonTypeItemLst.forEach(i => {
-                            tmp.push({
+                            listOrder.push({
                                 reasonCode: i.appStandardReasonCD,
                                 dispOrder: i.displayOrder,
                                 reasonTemp: i.reasonForFixedForm,
@@ -105,13 +106,12 @@ module nts.uk.at.view.kaf022.s.viewmodel {
                             })
                         });
                     });
-                    const listOrder = _.orderBy(tmp, ['dispOrder'], ['asc']);
                     self.listReason(listOrder);
                     if (isNullOrEmpty(currentCode)) {
                         self.selectedAppType.valueHasMutated();
                     } else {
                         const tmp = _.find(self.listAppType(), a => a.key == self.selectedAppType());
-                        self.listReasonByAppType(self.listReason().filter(r => r.appType == tmp.appType && r.holidayAppType == tmp.holidayAppType));
+                        self.listReasonByAppType(_.sortBy(self.listReason().filter(r => r.appType == tmp.appType && r.holidayAppType == tmp.holidayAppType), ['dispOrder']));
                         if (self.selectedReasonCode() == currentCode)
                             self.selectedReasonCode.valueHasMutated();
                         else
@@ -135,7 +135,12 @@ module nts.uk.at.view.kaf022.s.viewmodel {
         /** get data when start dialog **/
         startPage(): JQueryPromise<any> {
             const self = this;
-            return self.getData();
+            return self.getData().done(() => {
+                const params = getShared("KAF022S_PARAMS");
+                if (params) {
+                    self.selectedAppType(params.holidayAppType ? params.appType + "-" + params.holidayAppType : params.appType.toString());
+                }
+            });
         }
 
         // new button

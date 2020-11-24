@@ -907,11 +907,10 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 		public decide(): void {
 			let vm = this;
 			if (vm.promise()) {
-				vm.$dialog.confirm({messageId: "Msg_1738"}).then((result: 'yes' | 'no') => {
-					if (result === 'yes') {
-						vm.register();
-					}
+				vm.$dialog.error({messageId: "Msg_1738"}).then(()=> {
+                    $('#A1_35').focus();
 				});
+
 			} else {
 				vm.register();
 			}

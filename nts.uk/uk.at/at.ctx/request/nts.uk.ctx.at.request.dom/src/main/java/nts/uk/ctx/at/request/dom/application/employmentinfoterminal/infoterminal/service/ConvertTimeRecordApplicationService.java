@@ -1,29 +1,30 @@
 package nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.EmpInfoTerminal;
-import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.ErrorNRCom;
 import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.NRHelper;
 import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.StampCard;
 import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.TimeRecordReqSetting;
+import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.log.RogerFlagRQ;
+import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.log.TopPageAlEmpInfoTerDetailRQ;
+import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.log.TopPageAlarmEmpInfoTerRQ;
+import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.log.TopPageAlarmManagerTrRQ;
 import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.receive.AppVacationReceptionData;
 import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.receive.AppWorkHolidayReceptionData;
 import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.receive.ApplicationCategory;
 import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.receive.ApplicationReceptionData;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
-import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
-import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
+import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
@@ -39,11 +40,11 @@ public class ConvertTimeRecordApplicationService {
 
 	// [1] 変換する
 	public static <T extends ApplicationReceptionData> Optional<AtomTask> converData(Require require,
-			Integer empInfoTerCode, String contractCode, T recept) {
+			String empInfoTerCode, String contractCode, T recept) {
 
 		Optional<EmpInfoTerminal> empInfoTerOpt = require.getEmpInfoTerminal(empInfoTerCode, contractCode);
 
-		Optional<TimeRecordReqSetting> requestSetting = require.getTimeRecordReqSetting(empInfoTerCode);
+		Optional<TimeRecordReqSetting> requestSetting = require.getTimeRecordReqSetting(empInfoTerCode, contractCode);
 
 		// $就業情報端末 = Optional.empty() || $タイムレコードのﾘｸｴｽﾄ設定 = Optional.empty()
 		if (!empInfoTerOpt.isPresent() || !requestSetting.isPresent())
@@ -65,92 +66,58 @@ public class ConvertTimeRecordApplicationService {
 			workingConItemOpt = require.getBySidAndStandardDate(stampCard.get().getEmployeeId(),
 					NRHelper.createGeneralDate(((AppWorkHolidayReceptionData) recept).getAppYMD()));
 		}
-		Object obj = empInfoTerOpt.get().createApplication(requestSetting.get().getCompanyId().v(), recept, workTypeOpt,
-				workingConItemOpt, stampCard.get().getEmployeeId());
-		return createAppication(require, recept, obj);
-		// TODO: ※処理にエラーがある場合、別の申請受信データの処理を続行、
-		//return Optional.empty();
-	}
 
-	private static <T extends ApplicationReceptionData> Optional<AtomTask> createAppication(Require require, T recept,
-			Object object) {
-		ApplicationCategory cate = ApplicationCategory.valueStringOf(recept.getApplicationCategory());
-		switch (cate) {
+		try {
+			Application obj = empInfoTerOpt.get().createApplication(requestSetting.get().getCompanyId().v(), recept,
+					workTypeOpt, workingConItemOpt, stampCard.get().getEmployeeId());
+			return createApplication(require, requestSetting.get().getCompanyId().v(), recept, obj);
+		} catch (BusinessException bEx) {
+			// ※処理にエラーがある場合、別の申請受信データの処理を続行、
+			AtomTask atomTaskEx = AtomTask.of(() -> {
 
-		// 打刻申請
-		case STAMP:
-//			if (canCreateData(require, ((AppStamp) object).getApplication_New())) {
-//				return Optional.of(AtomTask.of(() -> {
-//					require.insert((AppStamp) object);
-//				}));
-//			}
-			// AppStamp
-			return Optional.empty();
-
-		// 残業申請
-		case OVERTIME:
-			// AppOverTime
-//			if (canCreateData(require, ((AppOverTime) object).getApplication())) {
-//				return Optional.of(AtomTask.of(() -> {
-//					require.insert((AppOverTime) object);
-//				}));
-//			}
-			return Optional.empty();
-
-		// 休暇申請
-		case VACATION:
-			// AppAbsence
-//			if (canCreateData(require, ((AppAbsence) object).getApplication())) {
-//				return Optional.of(AtomTask.of(() -> {
-//					require.insert((AppAbsence) object);
-//				}));
-//			}
-			return Optional.empty();
-
-		// 勤務変更申請
-		case WORK_CHANGE:
-			// AppWorkChange
-			// TODO: sua thiet ke, chua sua code
-//			if (canCreateData(require, ((AppWorkChange) object).getApplication_New())) {
-//				return Optional.of(AtomTask.of(() -> {
-//
-//				}));
-//			}
-			return Optional.empty();
-
-		// 休日出勤時間申請
-		case WORK_HOLIDAY:
-			// AppHolidayWork
-//			if (canCreateData(require, ((AppHolidayWork) object).getApplication())) {
-//				return Optional.of(AtomTask.of(() -> {
-//					require.insert((AppHolidayWork) object);
-//				}));
-//			}
-			return Optional.empty();
-
-		// 遅刻早退取消申請
-		case LATE:
-			// LateOrLeaveEarly
-//			if (canCreateData(require, ((LateOrLeaveEarly) object).getApplication())) {
-//				return Optional.of(AtomTask.of(() -> {
-//					require.insert((LateOrLeaveEarly) object);
-//				}));
-//			}
-			return Optional.empty();
-
-		// 時間年休申請
-		case ANNUAL:
-			// TODO: chua co domain
-			return Optional.empty();
-
-		default:
-			return Optional.empty();
+				Optional<TopPageAlarmEmpInfoTerRQ> alEmpTer = createLogEmpTer(require, stampCard.get().getEmployeeId(),
+						requestSetting.get().getCompanyId().v(), empInfoTerCode, recept.getIdNumber(),
+						bEx.getMessage());
+				if (alEmpTer.isPresent())
+					require.insertLogAll(alEmpTer.get());
+			});
+			return Optional.of(atomTaskEx);
 		}
 	}
 
-	private static boolean canCreateData(Require require, Application_New appNew) {
-		List<Application_New> listAppNew = require.getApplication(appNew.getPrePostAtr(), appNew.getInputDate(),
-				appNew.getAppDate(), appNew.getAppType(), appNew.getEmployeeID());
+	// [pvt-1] 就業情報端末通信用トップページアラームを作る
+	private static Optional<TopPageAlarmEmpInfoTerRQ> createLogEmpTer(Require require, String sid, String companyId,
+			String terCode, String cardNumber, String message) {
+		List<String> lstSidApproval = require.getListEmpID(companyId, GeneralDate.today());
+
+		if (lstSidApproval.isEmpty())
+			return Optional.empty();
+
+		List<TopPageAlarmManagerTrRQ> lstManagerTr = lstSidApproval.stream()
+				.map(x -> new TopPageAlarmManagerTrRQ(x, RogerFlagRQ.ALREADY_READ)).collect(Collectors.toList());
+		TopPageAlEmpInfoTerDetailRQ detail = new TopPageAlEmpInfoTerDetailRQ(0, message, new EmployeeId(sid),
+				cardNumber);
+
+		return Optional.of(new TopPageAlarmEmpInfoTerRQ(companyId, lstManagerTr, terCode, Arrays.asList(detail)));
+
+	}
+
+	private static <T extends ApplicationReceptionData> Optional<AtomTask> createApplication(Require require,
+			String cid, T recept, Application object) {
+		// if( require.申請Repository.get($申請.事前事後区分, $申請.入力日, $申請.申請日, $申請.申請種類,
+		// $申請.申請者).isPresent)
+		if (canCreateData(require, object)) {
+			return Optional.of(AtomTask.of(() -> {
+				// 申請を登録する
+				RegisterApplicationFromNR.register(require, cid, object);
+			}));
+		}
+		return Optional.empty();
+	}
+
+	private static boolean canCreateData(Require require, Application appNew) {
+		List<Application> listAppNew = require.getApplication(appNew.getPrePostAtr(), appNew.getInputDate(),
+				appNew.getAppDate().getApplicationDate(), appNew.getAppType(), appNew.getEmployeeID());
 		if (listAppNew.isEmpty()) {
 			return true;
 		} else {
@@ -158,10 +125,10 @@ public class ConvertTimeRecordApplicationService {
 		}
 	}
 
-	public static interface Require {
+	public static interface Require extends RegisterApplicationFromNR.Require {
 
 		// [R-1] 就業情報端末を取得する
-		public Optional<EmpInfoTerminal> getEmpInfoTerminal(Integer empInfoTerCode, String contractCode);
+		public Optional<EmpInfoTerminal> getEmpInfoTerminal(String empInfoTerCode, String contractCode);
 
 		// [R-2] 勤務種類を取得
 		public Optional<WorkType> findByPK(String companyId, String workTypeCd);
@@ -171,38 +138,23 @@ public class ConvertTimeRecordApplicationService {
 
 		// [R-4] 申請を取得する
 		// 事前事後区分, 入力日, 申請日, 申請種類, 申請者
-		public List<Application_New> getApplication(PrePostAtr prePostAtr, GeneralDateTime inputDate,
-				GeneralDate appDate, ApplicationType appType, String employeeID);
+		public List<Application> getApplication(PrePostAtr prePostAtr, GeneralDateTime inputDate, GeneralDate appDate,
+				ApplicationType appType, String employeeID);
 
 		// [R-5] 打刻カードを取得する
 		public Optional<StampCard> getByCardNoAndContractCode(String contractCode, String stampNumber);
 
-		// [R-６] エラーNR-通信を作る
-		public void insert(ErrorNRCom errorNR);
+//		// [R-６] エラーNR-通信を作る
+//		public void insert(ErrorNRCom errorNR);
+
+		// [R-6] 就業情報端末通信用トップページアラームを作る
+		public void insertLogAll(TopPageAlarmEmpInfoTerRQ alEmpInfo);
 
 		// [R-7] タイムレコードのﾘｸｴｽﾄ設定を取得する
-		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(Integer empInfoTerCode);
+		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(String empInfoTerCode, String contractCode);
 
-		// [R-8] 打刻申請を作る
-		public void insert(AppStamp appStamp);
-
-		// [R-9] 残業申請を作る
-		public void insert(AppOverTime_Old appOverTime);
-
-		// [R-10] 休暇申請を作る
-		public void insert(AppAbsence appAbsence);
-
-		// [R-11] 勤務変更申請を作る
-		public void insert(AppWorkChange appWorkChange);
-
-		// [R-12] 休日出勤時間申請を作る
-		public void insert(AppHolidayWork appHolidayWork);
-
-		// [R-13] 遅刻早退取消申請を作る
-		public void insert(LateOrLeaveEarly lateOrLeaveEarly);
-
-		// [R-14] 時間年休申請を作る
-		public void insert();
+		// [R-9] 就業担当者の社員ID（List）を取得する
+		public List<String> getListEmpID(String companyID, GeneralDate referenceDate);
 
 	}
 
