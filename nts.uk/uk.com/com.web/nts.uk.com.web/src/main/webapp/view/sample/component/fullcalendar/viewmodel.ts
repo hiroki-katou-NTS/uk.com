@@ -101,6 +101,7 @@ module nts.uk.ui.com.sample.fullcalendar {
         slotDuration: KnockoutObservable<number> = ko.observable(30);
         initialDate: KnockoutObservable<Date> = ko.observable(new Date());
         initialView: KnockoutObservable<string> = ko.observable('fullWeek');
+        availableView: KnockoutObservableArray<string> = ko.observableArray(['oneDay', 'fullWeek'])
 
         attendanceTimes: KnockoutObservableArray<any> = ko.observableArray([{
             date: moment().toDate(),
