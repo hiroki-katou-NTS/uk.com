@@ -49,7 +49,7 @@ public class EmpInfoTerminal implements DomainAggregate {
 	 * コード
 	 */
 	@Getter
-	private final Integer empInfoTerCode;
+	private final String empInfoTerCode;
 
 	/**
 	 * シリアルNO
@@ -242,7 +242,7 @@ public class EmpInfoTerminal implements DomainAggregate {
 		/**
 		 * コード
 		 */
-		private Integer empInfoTerCode;
+		private String empInfoTerCode;
 
 		/**
 		 * シリアルNO
@@ -275,7 +275,7 @@ public class EmpInfoTerminal implements DomainAggregate {
 		@Getter
 		private Optional<String> empInfoTerMemo;
 
-		public EmpInfoTerminalBuilder(Optional<String> ipAddress, String macAddress, Integer empInfoTerCode,
+		public EmpInfoTerminalBuilder(Optional<String> ipAddress, String macAddress, String empInfoTerCode,
 				Optional<String> terSerialNo, String empInfoTerName, String contractCode) {
 			this.ipAddress = ipAddress;
 			this.macAddress = macAddress;

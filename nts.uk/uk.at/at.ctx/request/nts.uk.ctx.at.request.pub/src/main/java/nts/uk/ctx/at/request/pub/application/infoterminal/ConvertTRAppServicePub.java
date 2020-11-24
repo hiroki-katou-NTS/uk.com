@@ -6,7 +6,7 @@ import nts.arc.task.tran.AtomTask;
 
 public interface ConvertTRAppServicePub {
 
-	public <T extends ApplicationReceptionDataExport> Optional<AtomTask> converData(Integer empInfoTerCode,
+	public <T extends ApplicationReceptionDataExport> Optional<AtomTask> converData(String empInfoTerCode,
 			String contractCode, T recept);
 
 }

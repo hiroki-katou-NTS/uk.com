@@ -39,7 +39,7 @@ public class DetailScreenBeforeImpl implements DetailScreenBefore {
 		}
 		Application application = opApp.get();
 		// 15-1.詳細画面の承認コメントを取得する
-		DetailScreenApprovalData detailScreenApprovalData = getApprovalDetail(appID);
+		DetailScreenApprovalData detailScreenApprovalData = this.getApprovalDetail(application.getAppID());
 		
 		return new DetailScreenAppData(application, detailScreenApprovalData);
 	}

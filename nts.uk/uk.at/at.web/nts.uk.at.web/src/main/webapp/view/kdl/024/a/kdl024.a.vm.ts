@@ -10,7 +10,7 @@ module kdl024.a.viewmodel {
         // Details Item
         currentItem: KnockoutObservable<BudgetItem>;
         // Switch Rouding Rules
-        roundingRules: KnockoutObservableArray<any>;
+        //roundingRules: KnockoutObservableArray<any>;
         // Combobox Section Type
         itemListCbb: KnockoutObservableArray<ItemModelCbb>;
 
@@ -33,17 +33,17 @@ module kdl024.a.viewmodel {
             // Details
             self.currentItem = ko.observable(null)
             // Switch button 
-            self.roundingRules = ko.observableArray([
+            /* self.roundingRules = ko.observableArray([
                 { unitId: 0, unitName: nts.uk.resource.getText('KDL024_10') },
                 { unitId: 1, unitName: nts.uk.resource.getText('KDL024_11') }
-            ]);
+            ]); */
             // Combobox Section Type
             self.itemListCbb = ko.observableArray([
                 new ItemModelCbb(0, nts.uk.resource.getText('Enum_Attribute_Section_Time')),
-                new ItemModelCbb(1, nts.uk.resource.getText('Enum_Attribute_Section_PeopleNum')),
                 new ItemModelCbb(2, nts.uk.resource.getText('Enum_Attribute_Section_Money')),
-                new ItemModelCbb(3, nts.uk.resource.getText('Enum_Attribute_Section_Numeric')),
-                new ItemModelCbb(4, nts.uk.resource.getText('Enum_Attribute_Section_Price'))
+                //new ItemModelCbb(1, nts.uk.resource.getText('Enum_Attribute_Section_PeopleNum')),                
+                //new ItemModelCbb(3, nts.uk.resource.getText('Enum_Attribute_Section_Numeric')),
+                //new ItemModelCbb(4, nts.uk.resource.getText('Enum_Attribute_Section_Price'))
             ]);
         }
 
@@ -57,6 +57,8 @@ module kdl024.a.viewmodel {
                 nts.uk.ui.block.clear();
                 if (lstBudget.length > 0) {
                     self.isNew(false);
+                    //order by externalBudgetCode asc
+                    lstBudget = _.orderBy(lstBudget, 'externalBudgetCode', 'asc');
                     self.listBudget(lstBudget);
                     self.findItemByIndex(0);
                     _.defer(() => { $("#inpName").focus(); });
@@ -92,7 +94,7 @@ module kdl024.a.viewmodel {
                         externalBudgetCode: self.currentItem().externalBudgetCode(),
                         externalBudgetName: self.currentItem().externalBudgetName(),
                         budgetAtr: self.currentItem().budgetAtr(),
-                        unitAtr: self.currentItem().unitAtr()
+                        //unitAtr: self.currentItem().unitAtr()
                     });
                     //Re-sort
                     self.listBudget(_.orderBy(self.listBudget(), ['externalBudgetCode'], ['asc']));
@@ -114,7 +116,7 @@ module kdl024.a.viewmodel {
                         self.listBudget.remove(updateItem);
                         updateItem.externalBudgetName = self.currentItem().externalBudgetName();
                         updateItem.budgetAtr = self.currentItem().budgetAtr();
-                        updateItem.unitAtr = self.currentItem().unitAtr();
+                        //updateItem.unitAtr = self.currentItem().unitAtr();
                         self.listBudget.push(updateItem);
                     }
                     self.listBudget(_.orderBy(self.listBudget(), ['externalBudgetCode'], ['asc']));
@@ -190,7 +192,7 @@ module kdl024.a.viewmodel {
             var currentItem = _.find(self.listBudget(), function(item) { return item.externalBudgetCode == externalBudgetCode; });
             if (currentItem !== undefined) {
                 self.isNew(false);
-                self.currentItem(new BudgetItem(currentItem.externalBudgetCode, currentItem.externalBudgetName, currentItem.budgetAtr, currentItem.unitAtr));
+                self.currentItem(new BudgetItem(currentItem.externalBudgetCode, currentItem.externalBudgetName, currentItem.budgetAtr)); //, currentItem.unitAtr
                 $('#inpName').focus();
             }
             else {
@@ -233,7 +235,7 @@ module kdl024.a.viewmodel {
         externalBudgetCode: string;
         externalBudgetName: string;
         budgetAtr: number;
-        unitAtr: number;
+        //unitAtr: number;
     }
 
     /** Budget Observable Class */
@@ -242,12 +244,12 @@ module kdl024.a.viewmodel {
         externalBudgetName: KnockoutObservable<string>;
         budgetAtr: KnockoutObservable<number>;
         unitAtr: KnockoutObservable<number>;
-        constructor(externalBudgetCode: string, externalBudgetName: string, budgetAtr: number, unitAtr: number) {
+        constructor(externalBudgetCode: string, externalBudgetName: string, budgetAtr: number) { //, unitAtr: number
             var self = this;
             self.externalBudgetCode = ko.observable(externalBudgetCode);
             self.externalBudgetName = ko.observable(externalBudgetName);
             self.budgetAtr = ko.observable(budgetAtr);
-            self.unitAtr = ko.observable(unitAtr);
+            //self.unitAtr = ko.observable(unitAtr);
         }
     }
     
