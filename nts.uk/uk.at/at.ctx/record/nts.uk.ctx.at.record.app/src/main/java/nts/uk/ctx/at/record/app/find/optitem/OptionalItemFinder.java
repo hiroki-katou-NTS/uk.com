@@ -23,7 +23,9 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttenda
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AtItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.TypeOfItemImport;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.ControlOfAttendanceItemsRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.ControlOfMonthlyItemsRepository;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemName;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemNameOther;
@@ -81,6 +83,15 @@ public class OptionalItemFinder {
 	@Inject
 	private OptionalItemNameOtherRepository optItemNameOtherRepository;
 	
+	@Inject
+	private ControlOfMonthlyItemsRepository monthlyControlRepository;
+	
+	@Inject
+	private ControlOfAttendanceItemsRepository dailyControlRepository;
+	
+	@Inject
+	private OptionalItemService optionalItemService;
+	
 	/**
 	 * Find.
 	 *
@@ -121,6 +132,9 @@ public class OptionalItemFinder {
 			if (item.getCalcAtr() == CalculationAtr.ITEM_SELECTION.value) {
 
 				item.getItemSelection().getAttendanceItems().forEach(attendanceItem -> {
+				    System.out.println(attendanceItem.getAttendanceItemId());
+				    System.out.println(attendanceItems.get(attendanceItem.getAttendanceItemId()));
+				    System.out.println(attendanceItems.get(attendanceItem.getAttendanceItemId()).getName());
 					String attendanceName = attendanceItems.get(attendanceItem.getAttendanceItemId()).getName();
 					Integer attendanceDisplayNumber = attendanceItems.get(attendanceItem.getAttendanceItemId())
 							.getDisplayNumber();
@@ -247,7 +261,7 @@ public class OptionalItemFinder {
 		return listDto;
 	}
 	
-	public OptionalItemDto findWithLang(Integer optionalItemNo, String langId) {
+	public OutputOptItemWithControl findWithLang(Integer optionalItemNo, String langId) {
 		OptionalItemDto dto = new OptionalItemDto();
 		OptionalItem optionalItem = this.repository.find(AppContexts.user().companyId(), optionalItemNo);
 		optionalItem.saveToMemento(dto);
@@ -262,7 +276,7 @@ public class OptionalItemFinder {
 			}
 		}
 
-		return dto;
+		return new OutputOptItemWithControl(dto, this.optionalItemService.getItemControl(dto.getPerformanceAtr(), optionalItemNo));
 	}
 	
 	public List<OptionalItemHeaderDto> findAllWithLang(String langId) {
