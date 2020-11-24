@@ -94,6 +94,13 @@ public class AttItemFinder {
 				attendanceItemIds, itemAtrs);
 	}
 	
+	/**
+	 * 利用しない任意項目を外す
+	 * 
+	 * @param items
+	 * @param dailyFlg
+	 * @return list attandance items
+	 */
 	public List<AttItemOutput> removeUnusedItems(List<AttItemName> items, boolean dailyFlg) {
 	    String companyId = AppContexts.user().companyId();
 	    List<AttItemOutput> result = new ArrayList<AttItemOutput>();
@@ -102,8 +109,12 @@ public class AttItemFinder {
 	        items.stream().filter(item -> {
 	            Integer frameNo = item.getFrameCategory();
 	            OptionalItem optionalItem = null;
+	            // 「勤怠項目と枠の紐付け」の枠カテゴリを判別する
 	            if (frameNo != null && frameNo == 8) {
+	                // ドメインモデル「任意項目」を取得する
 	                optionalItem = this.optionalRepo.find(companyId, frameNo);
+	                // Input．「月次の勤怠項目」から利用しない勤怠項目を消す
+	                // return false not add to list result
 	                if (dailyFlg && optionalItem.getPerformanceAtr().equals(PerformanceAtr.MONTHLY_PERFORMANCE)) {
 	                    return false;
 	                }
@@ -119,6 +130,7 @@ public class AttItemFinder {
 	        }).collect(Collectors.toList());
 	    }
 	    
+	    // return result list attandance items
 	    return result;
 	}
 }

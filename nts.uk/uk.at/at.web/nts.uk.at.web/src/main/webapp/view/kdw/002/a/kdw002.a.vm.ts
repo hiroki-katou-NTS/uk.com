@@ -257,9 +257,16 @@ module nts.uk.at.view.kdw002.a {
                     if (self.roundingUnitValue) {
                         AtItems.inputUnitOfTimeItem = self.roundingUnitValue();
                     }
+                    nts.uk.ui.block.invisible();
                     service.updateDaily(AtItems).done(x => {
                         infor(nts.uk.resource.getMessage("Msg_15", []));
                         $("#colorID").focus();
+                    }).fail((fail) => {
+                        if (fail) {
+                          this.$dialog.error({ messageId: fail.messageId })  
+                        };
+                    }).always(() => {
+                        nts.uk.ui.block.clear();
                     });
                 } else {
                     AtItems.itemMonthlyID = attendanceItem.attendanceItemId;
@@ -269,10 +276,17 @@ module nts.uk.at.view.kdw002.a {
                     if (self.roundingUnitValue) {
                         AtItems.inputUnitOfTimeItem = self.roundingUnitValue();
                     }
+                    nts.uk.ui.block.invisible();
                     service.updateMonthly(AtItems).done(x => {
 
                         infor(nts.uk.resource.getMessage("Msg_15", []));
                         $("#colorID").focus();
+                    }).fail((fail) => {
+                        if (fail) {
+                          this.$dialog.error({ messageId: fail.messageId })  
+                        };
+                    }).always(() => {
+                        nts.uk.ui.block.clear();
                     });
                 }
             }
