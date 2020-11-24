@@ -365,4 +365,10 @@ module nts.uk.at.kaf021.common {
         averageTimeLimit: number;
     }
 
+    export function getProcessingDate(processingMonth: number){
+        if (!processingMonth) return new Date();
+        let year = processingMonth.toString().substr(0, 4);
+        let month = processingMonth.toString().substr(4, 2);
+        return new Date(year + "/" + month + "/01");
+    }
 }

@@ -17,7 +17,6 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTermi
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalName;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.FullIpAddress;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.IPAddress;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.MacAddress;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.ModelEmpInfoTer;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.MonitorIntervalTime;
@@ -27,8 +26,8 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo.EmpInfo
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.infra.entity.employmentinfoterminal.infoterminal.KrcmtTimeRecorder;
 import nts.uk.ctx.at.record.infra.entity.employmentinfoterminal.infoterminal.KrcmtTimeRecorderPK;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
@@ -62,7 +61,7 @@ public class JpaEmpInfoTerminalRepository extends JpaRepository implements EmpIn
 	@Override
 	public void updateSerialNo(EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode,
 			EmpInfoTerSerialNo terSerialNo) {
-		jdbcProxy().query(UPDATE_SERIALNO).paramString("serialNo", terSerialNo.v()).paramInt("cd", empInfoTerCode.v())
+		jdbcProxy().query(UPDATE_SERIALNO).paramString("serialNo", terSerialNo.v()).paramString("cd", empInfoTerCode.v())
 				.paramString("contractCode", contractCode.v()).execute();
 	}
 
@@ -101,7 +100,7 @@ public class JpaEmpInfoTerminalRepository extends JpaRepository implements EmpIn
 	public List<EmpInfoTerminal> getEmpInfoTerminalNotIncludeCode(ContractCode contractCode,
 			EmpInfoTerminalCode empInfoTerCode) {
 		return this.queryProxy().query(FIND_NOT_INCLUDE_CODE, KrcmtTimeRecorder.class).setParameter("contractCode", contractCode.v())
-					.setParameter("code", empInfoTerCode.v().intValue()).getList().stream().map(e -> toDomain(e)).collect(Collectors.toList());
+					.setParameter("code", empInfoTerCode.v()).getList().stream().map(e -> toDomain(e)).collect(Collectors.toList());
 	}
 	
 	private KrcmtTimeRecorder toEntity(EmpInfoTerminal domain) {

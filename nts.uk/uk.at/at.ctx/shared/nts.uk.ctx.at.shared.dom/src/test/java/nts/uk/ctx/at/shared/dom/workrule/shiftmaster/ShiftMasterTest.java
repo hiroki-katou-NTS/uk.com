@@ -40,7 +40,7 @@ public class ShiftMasterTest {
 		ShiftMaster shiftMater = new ShiftMaster("companyId",new ShiftMasterCode(shiftMasterCode), displayInfor, workTypeCode,workTimeCode);
 		new Expectations() {
 			{
-				requireWorkInfo.findByPK(shiftMater.getWorkTypeCode().v());
+				requireWorkInfo.getWorkType(shiftMater.getWorkTypeCode().v());
 			}
 		};
 		NtsAssert.businessException("Msg_1608", () -> shiftMater.checkError(requireWorkInfo));
@@ -55,13 +55,13 @@ public class ShiftMasterTest {
 		ShiftMaster shiftMater = new ShiftMaster("companyId",new ShiftMasterCode(shiftMasterCode), displayInfor, workTypeCode,workTimeCode);
 		new Expectations() {
 			{
-				requireWorkInfo.findByPK(shiftMater.getWorkTypeCode().v());
+				requireWorkInfo.getWorkType(shiftMater.getWorkTypeCode().v());
 				result = Optional.of(new WorkType());
 				
 				requireWorkInfo.checkNeededOfWorkTimeSetting(shiftMater.getWorkTypeCode().v());
 				result = SetupType.REQUIRED;
 				
-				requireWorkInfo.findByCode(workTimeCode);
+				requireWorkInfo.getWorkTime(workTimeCode);
 				
 			}
 		};
@@ -79,7 +79,7 @@ public class ShiftMasterTest {
 		shiftMater.removeWorkTimeInHolydayWorkType();
 		new Expectations() {
 			{
-				requireWorkInfo.findByPK(shiftMater.getWorkTypeCode().v());
+				requireWorkInfo.getWorkType(shiftMater.getWorkTypeCode().v());
 				result = Optional.of(new WorkType());
 				
 				requireWorkInfo.checkNeededOfWorkTimeSetting(shiftMater.getWorkTypeCode().v());
@@ -98,7 +98,7 @@ public class ShiftMasterTest {
 		ShiftMaster shiftMater = new ShiftMaster("companyId",new ShiftMasterCode(shiftMasterCode), displayInfor, workTypeCode,workTimeCode);
 		new Expectations() {
 			{
-				requireWorkInfo.findByPK(shiftMater.getWorkTypeCode().v());
+				requireWorkInfo.getWorkType(shiftMater.getWorkTypeCode().v());
 				result = Optional.of(new WorkType());
 				
 				requireWorkInfo.checkNeededOfWorkTimeSetting(shiftMater.getWorkTypeCode().v());

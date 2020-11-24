@@ -36,13 +36,13 @@ module nts.uk.at.view.ksu001.a {
             if (userInfor.updateMode == 'copyPaste') {
                 setTimeout(() => {
                     __viewContext.viewModel.viewA.setCoppyStyler();
-                }, 100);
+                }, 800);
             }
 
             $(window).resize(function() {
-                __viewContext.viewModel.viewA.setHeightScreen();
                 __viewContext.viewModel.viewA.setPositionButonDownAndHeightGrid();
                 __viewContext.viewModel.viewA.setPositionButonToRight();
+                __viewContext.viewModel.viewA.setHeightScreen();
             });
 
             nts.uk.ui.block.clear();

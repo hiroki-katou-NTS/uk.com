@@ -32,7 +32,7 @@ public class BasicScheduleResetCommand {
 	
 	/** The reset atr. */
 	// 再設定区分
-	private final ResetAtr resetAtr;
+	//private final ResetAtr resetAtr;
 	
 	/** The confirm. */
 	// 作成時に確定済みにする
@@ -40,7 +40,7 @@ public class BasicScheduleResetCommand {
 	
 	/** The re create atr. */
 	// 再作成区分
-	private final int reCreateAtr;
+	//private final int reCreateAtr;
 	
 	// 会社共通のマスタキャッシュ
 	private final Object companySetting;
@@ -65,8 +65,8 @@ public class BasicScheduleResetCommand {
 		this.confirm = content.getConfirm();
 		this.employeeId = scheduleCreator.getEmployeeId();
 		this.executionId = command.getExecutionId();
-		this.reCreateAtr = content.getReCreateContent().getReCreateAtr().value;
-		this.resetAtr = content.getReCreateContent().getResetAtr();
+//		this.reCreateAtr = content.getReCreateContent().getReCreateAtr().value;
+//		this.resetAtr = content.getReCreateContent().getResetAtr();
 		this.companySetting = companySetting;
 	}
 	

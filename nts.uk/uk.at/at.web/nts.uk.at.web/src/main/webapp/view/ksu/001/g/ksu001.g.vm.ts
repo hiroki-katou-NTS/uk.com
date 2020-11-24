@@ -20,11 +20,11 @@ module nts.uk.at.view.ksu001.g {
         loadWorkAvailabilityOfOneDay(): void {
             const self = this,
             method = [
-            { id: '', Name: "なし" },
-            { id: getText('KSU001_4038'), Name: getText('KSU001_4038') },
-            { id: getText('KSU001_4035'), Name: getText('KSU001_4035') },
-            { id: getText('KSU001_4036'), Name: getText('KSU001_4036') }
-            ]
+				{ id: '', Name: "なし" },
+				{ id: getText('KSU001_4038'), Name: getText('KSU001_4038') },
+				{ id: getText('KSU001_4035'), Name: getText('KSU001_4035') },
+				{ id: getText('KSU001_4036'), Name: getText('KSU001_4036') }
+            ];
             let listData: Array<any> = [];    
             let dataAll: Array<any> = [];            
             let arrOneDay: Array<any> = [];
@@ -116,12 +116,12 @@ module nts.uk.at.view.ksu001.g {
                         autoGenerateColumns: false,                        
                         responseDatakey: "results",
                         columns: [
-                            { headerText: getText('KSU001_4032'), key: "desireDay", dataType: "string" },                          
-                            { headerText: getText('KSU001_4033'), key: "employeeCdName", dataType: "string", width: "30%" },
+                            { headerText: getText('KSU001_4032'), key: "desireDay", dataType: "string", width: "17%" },                          
+                            { headerText: getText('KSU001_4033'), key: "employeeCdName", dataType: "string", width: "20%" },
                             { headerText: getText('KSU001_4034'), key: "method", dataType: "string" },
                             { headerText: getText('KSU001_4035'), key: "shift" },
                             { headerText: getText('KSU001_4036'), key: "timezone" },
-                            { headerText: getText('KSU001_4037'), key: "remarks", height: "20px" }
+                            { headerText: getText('KSU001_4037'), key: "remarks" }
                         ],
 
                         features: [
@@ -144,10 +144,11 @@ module nts.uk.at.view.ksu001.g {
                                 filterDialogContainment: "window",
                                 filterSummaryAlwaysVisible: false,
                                 caseSensitive: false,
+ 								dropDownClosing: self.dropDownClosing,
                                 columnSettings: [
                                     {
                                         columnKey: 'desireDay',                                          
-                                        conditionList: ["same", "beforeAndEqual", "afterAndEqual"],                                       
+                                        conditionList: ["same", "afterAndEqual", "beforeAndEqual"],                                       
                                         customConditions: {                                           
                                             same: {
                                                 labelText: getText('KSU001_4056'),
@@ -155,21 +156,23 @@ module nts.uk.at.view.ksu001.g {
                                                 requireExpr: true,
                                                 filterFunc: self.equal
                                             },
-                                            afterAndEqual: {
+                                            beforeAndEqual: {
                                                 labelText: getText('KSU001_4060'),
                                                 expressionText: getText('KSU001_4061'),
                                                 requireExpr: true,
                                                 filterFunc: self.beforeAndEqual
                                             },
-                                            beforeAndEqual: {
+                                            afterAndEqual: {
                                                 labelText: getText('KSU001_4058'),
                                                 expressionText: getText('KSU001_4059'),                                              
                                                 requireExpr: true,
                                                 filterFunc: self.afterAndEqual
                                             },
-                                        }
+                                        },
+                                        defaultExpressions: [
+                                            { cond: "same" }
+                                        ]
                                     },
-									// { columnKey: 'employeeCdName', conditionList: ["contains", "doesNotContain"] },
 									{ columnKey: 'employeeCdName', 
                                         conditionList: ["contain", "notContain"],                                       
                                         customConditions: {                                           
@@ -208,7 +211,8 @@ module nts.uk.at.view.ksu001.g {
 							},
 							
 							{
-								name: "Tooltips",
+                                name: "Tooltips",
+                                style: "popover",
 								columnSettings: [
 									{ columnKey: "employeeCdName", allowTooltips: true },
 									{ columnKey: "remarks", allowTooltips: true },
@@ -217,7 +221,10 @@ module nts.uk.at.view.ksu001.g {
 									{ columnKey: "shift", allowTooltips: false },
 									{ columnKey: "timezone", allowTooltips: false }
 								],
-								visibility: "overflow"
+                                visibility: "overflow",
+                                cursorLeftOffset: 30,
+                                cursorTopOffset: 50
+                               
 							}                                                  
                         ]                        
                     }); 
@@ -239,7 +246,9 @@ module nts.uk.at.view.ksu001.g {
                 self.$blockui('hide');              
             });         
         }
-
+		dropDownClosing(e, arg) {
+            $('input:first').attr('placeholder', $('input:first').attr('placeholder').split('<=').join('').split('>=').join('').split('＝').join(''));  
+        } 
         equal(value, expression, dataType, ignoreCase, preciseDateFormat) {
             if (isNaN(parseInt(expression))) {
                 return parseInt(value.split('/').join('')) == 99999999;
