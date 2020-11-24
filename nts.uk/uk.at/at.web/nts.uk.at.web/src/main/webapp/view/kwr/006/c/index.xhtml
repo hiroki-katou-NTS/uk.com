@@ -62,6 +62,7 @@
 										optionsValue: 'code', 
 										columns: columns,
 										multiple: false,
+										columnResize: true,
 										value: selectedCodeC2_3,
 										rows: 10
 									}"></table>
@@ -151,7 +152,7 @@
 												innerDrag: { left: false, right: true },
 												outerDrag: { left: true, right: true },
 												afterMoveLeft: sortItems,
-												itemsLimit: { right: 48 }
+												itemsLimit: limitAttendanceItem
 											}"></div>
 										<!--Updown Button-->
 										<div id="up-down" data-bind="ntsUpDown: {
