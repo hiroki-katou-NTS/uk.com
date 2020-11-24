@@ -18,18 +18,18 @@ import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.SgwmtPasswordPolicy;
 public class JpaPasswordPolicyRepository extends JpaRepository implements PasswordPolicyRepository {
 	
 	/** The select by contract code. */
-	private static  final String SELECT_BY_CONTRACT_CODE = "SELECT c FROM SgwmtPasswordPolicy c WHERE c.contractCode = :contractCode";
+	private static  final String SELECT_BY_CONTRACT_CODE = "SELECT c FROM SgwmtPasswordPolicy c WHERE c.contractCd = :contractCd";
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.gateway.dom.securitypolicy.PasswordPolicyRepository#getPasswordPolicy(nts.uk.ctx.sys.gateway.dom.login.ContractCode)
 	 */
 	@Override
-	public Optional<PasswordPolicy> getPasswordPolicy(ContractCode contractCode) {
-		Optional<SgwmtPasswordPolicy> sgwstPasswordPolicyOptional = this.queryProxy()
+	public Optional<PasswordPolicy> getPasswordPolicy(ContractCode contractCd) {
+		Optional<SgwmtPasswordPolicy> sgwmtPasswordPolicyOptional = this.queryProxy()
 				.query(SELECT_BY_CONTRACT_CODE, SgwmtPasswordPolicy.class)
-				.setParameter("contractCode", contractCode, ContractCode.class).getSingle();
-		if (sgwstPasswordPolicyOptional.isPresent()) {
-			return Optional.ofNullable(this.toDomain(sgwstPasswordPolicyOptional.get()));
+				.setParameter("contractCd", contractCd, ContractCode.class).getSingle();
+		if (sgwmtPasswordPolicyOptional.isPresent()) {
+			return Optional.ofNullable(this.toDomain(sgwmtPasswordPolicyOptional.get()));
 		}
 		return Optional.empty();
 	}
@@ -84,15 +84,15 @@ public class JpaPasswordPolicyRepository extends JpaRepository implements Passwo
 	 * @param sgwstPasswordPolicy the sgwst password policy
 	 * @return the password policy
 	 */
-	private PasswordPolicy toDomain(SgwmtPasswordPolicy sgwstPasswordPolicy) {
-		return PasswordPolicy.createFromJavaType(sgwstPasswordPolicy.contractCode,
-				sgwstPasswordPolicy.notificationPasswordChange.intValue(),
-				sgwstPasswordPolicy.loginCheck.intValue() == 1 ? true : false,
-				sgwstPasswordPolicy.initialPasswordChange.intValue() == 1 ? true : false,
-				sgwstPasswordPolicy.isUse.intValue() == 1 ? true : false, sgwstPasswordPolicy.historyCount.intValue(),
-				sgwstPasswordPolicy.lowestDigits.intValue(), sgwstPasswordPolicy.validityPeriod.intValue(),
-				sgwstPasswordPolicy.numberOfDigits.intValue(), sgwstPasswordPolicy.symbolCharacters.intValue(),
-				sgwstPasswordPolicy.alphabetDigit.intValue());
+	private PasswordPolicy toDomain(SgwmtPasswordPolicy sgwmtPasswordPolicy) {
+		return PasswordPolicy.createFromJavaType(sgwmtPasswordPolicy.contractCd,
+				sgwmtPasswordPolicy.notificationPasswordChange.intValue(),
+				sgwmtPasswordPolicy.loginCheck.intValue() == 1 ? true : false,
+				sgwmtPasswordPolicy.initialPasswordChange.intValue() == 1 ? true : false,
+				sgwmtPasswordPolicy.isUse.intValue() == 1 ? true : false, sgwmtPasswordPolicy.historyCount.intValue(),
+				sgwmtPasswordPolicy.lowestDigits.intValue(), sgwmtPasswordPolicy.validityPeriod.intValue(),
+				sgwmtPasswordPolicy.numberOfDigits.intValue(), sgwmtPasswordPolicy.symbolCharacters.intValue(),
+				sgwmtPasswordPolicy.alphabetDigit.intValue());
 	}
 
 	/**

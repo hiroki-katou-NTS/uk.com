@@ -10,18 +10,17 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "SGWST_PASSWORD_POLICY")
-public class SgwmtPasswordPolicy extends ContractUkJpaEntity implements Serializable {
+@Table(name = "SGWMT_PASSWORD_POLICY")
+public class SgwmtPasswordPolicy  implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name = "CONTRACT_CODE")
-	public String contractCode;
+	@Column(name = "CONTRACT_CD")
+	public String contractCd;
 	@Column(name = "NOTIFICATION_PASSWORD_CHANGE")
 	public BigDecimal notificationPasswordChange;
 	@Column(name = "LOGIN_CHECK")
@@ -45,7 +44,7 @@ public class SgwmtPasswordPolicy extends ContractUkJpaEntity implements Serializ
 
 	@Override
 	protected Object getKey() {
-		return this.contractCode;
+		return this.contractCd;
 	}
 
 }

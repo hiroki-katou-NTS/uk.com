@@ -11,16 +11,17 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "SGWST_ACC_LOCK_POLICY")
-public class SgwstAccountLockPolicy extends ContractUkJpaEntity implements Serializable {
+@Table(name = "SGWMT_ACC_LOCK_POLICY")
+public class SgwstAccountLockPolicy implements Serializable {
 	private static final long serialVersionUID = 1L;
+
 	@Id
-	@Column(name = "CONTRACT_CODE")
-	public String contractCode;
+	@Column(name = "CONTRACT_CD")
+	public String contractCd; 
+	
 	@Column(name = "ERROR_COUNT")
 	public BigDecimal errorCount;
 	@Column(name = "LOCK_INTERVAL")
@@ -31,7 +32,7 @@ public class SgwstAccountLockPolicy extends ContractUkJpaEntity implements Seria
 	public BigDecimal isUse;
 	@Override
 	protected Object getKey() {
-		return this.contractCode;
+		return this.contractCd;
 	}
 
 }

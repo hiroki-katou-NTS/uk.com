@@ -12,8 +12,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
-
 
 /**
  * The persistent class for the SSPCT_MASTERCOPY_CATEGORY database table.
@@ -24,8 +22,8 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="SSPMT_MASTERCOPY_CATEGORY")
-public class SspctMastercopyCategory extends ContractUkJpaEntity implements Serializable {
+@Table(name="SSPCT_MASTERCOPY_CATEGORY")
+public class SspctMastercopyCategory  implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/** The category no. */
@@ -45,8 +43,4 @@ public class SspctMastercopyCategory extends ContractUkJpaEntity implements Seri
 	@Column(name="SYSTEM_TYPE")
 	private BigDecimal systemType;
 
-	@Override
-	protected Object getKey() {
-		return this.categoryNo;
-	}
 }
