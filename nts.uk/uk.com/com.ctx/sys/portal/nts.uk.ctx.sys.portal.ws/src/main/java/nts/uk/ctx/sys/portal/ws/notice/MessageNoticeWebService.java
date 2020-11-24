@@ -115,6 +115,7 @@ public class MessageNoticeWebService extends WebService {
 		this.updateHandler.handle(command);
 	}
 
+	@POST
 	@Path("/is-new-notice")
 	public boolean isNewNotice() {
 		return this.screenQuery.isNewMsg();

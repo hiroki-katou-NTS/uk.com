@@ -150,6 +150,7 @@ div#user-image {
   display: inline;
   position: relative;
   bottom: 2px;
+  padding: 4px 1px 4px 1px;
 }
 
 #header #menu-header #logo-area > #user-info {
