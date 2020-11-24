@@ -539,4 +539,15 @@ public class WorkType extends AggregateRoot implements Cloneable, Serializable{
 	public void setWorkTypeCode(WorkTypeCode workTypeCode) {
 		this.workTypeCode = workTypeCode;
 	}
+	
+	/**
+	 * 休出かどうかの判断
+	 * @return true=休出,false=休出ではない
+	 */
+	public boolean isHolidayWork(){
+		if (this.isOneDay()){
+			if (this.dailyWork.getOneDay() == WorkTypeClassification.HolidayWork) return true;
+		}
+		return false;
+	}
 }

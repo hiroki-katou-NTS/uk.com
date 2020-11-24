@@ -7,7 +7,6 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
@@ -153,5 +152,25 @@ public class RoundingTime {
 		}
 
 		return newTimeLeavingWork;
+	}
+	
+	/**
+	 * デフォルト設定のインスタンスを生成する
+	 * @return 時刻の丸め
+	 */
+	public static RoundingTime generateDefault(){
+		RoundingTime domain = new RoundingTime();
+		domain.attendanceMinuteLaterCalculate = NotUseAtr.NOT_USE;
+		domain.leaveWorkMinuteAgoCalculate = NotUseAtr.NOT_USE;
+		domain.roundingSets = new ArrayList<>();
+		domain.roundingSets.add(new RoundingSet(
+				new InstantRounding(FontRearSection.AFTER, RoundingTimeUnit.ONE), Superiority.ATTENDANCE));
+		domain.roundingSets.add(new RoundingSet(
+				new InstantRounding(FontRearSection.BEFORE, RoundingTimeUnit.ONE), Superiority.OFFICE_WORK));
+		domain.roundingSets.add(new RoundingSet(
+				new InstantRounding(FontRearSection.AFTER, RoundingTimeUnit.ONE), Superiority.GO_OUT));
+		domain.roundingSets.add(new RoundingSet(
+				new InstantRounding(FontRearSection.BEFORE, RoundingTimeUnit.ONE), Superiority.TURN_BACK));
+		return domain;
 	}
 }

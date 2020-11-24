@@ -48,6 +48,10 @@ public class KrcstOptionalItem extends UkJpaEntity implements Serializable {
 	@Column(name = "USAGE_ATR")
 	private int usageAtr;
 
+	/** The calculation atr. */
+	@Column(name = "CALC_ATR")
+	private int calcAtr;
+
 	/** The performance atr. */
 	@Column(name = "PERFORMANCE_ATR")
 	private int performanceAtr;

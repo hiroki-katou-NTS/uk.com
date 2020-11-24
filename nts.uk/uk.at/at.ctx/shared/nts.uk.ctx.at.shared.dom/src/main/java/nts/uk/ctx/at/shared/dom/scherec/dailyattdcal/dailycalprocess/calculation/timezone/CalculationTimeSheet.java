@@ -635,4 +635,31 @@ public abstract class CalculationTimeSheet {
 		this.deductionTimeSheet.clear();
 		this.deductionTimeSheet.addAll(this.getDupliRangeTimeSheet(ded));
 	}
+	
+	/**
+	 * 時間帯を前から指定時間分抜き出す
+	 * @param time 指定時間
+	 * @return 日別計算時間帯
+	 */
+	public Optional<TimeSpanForDailyCalc> extractForward(TimeWithDayAttr time){
+		// 不要になる時間　←　全体の時間　－　指定時間
+		int diff = this.calcTotalTime().valueAsMinutes() - time.valueAsMinutes();
+		// 時間帯を指定時間に従って縮小
+		return this.contractTimeSheet(new TimeWithDayAttr(diff));
+	}
+	
+	/**
+	 * 時間帯を後ろから指定時間分抜き出す
+	 * @param time 指定時間
+	 * @return 日別計算時間帯
+	 */
+	public Optional<TimeSpanForDailyCalc> extractBackword(TimeWithDayAttr time){
+		// 時間帯を指定時間に従って縮小
+		Optional<TimeSpanForDailyCalc> diff = this.contractTimeSheet(time);
+		// 必要になる時間帯を判断し、返す
+		if (!diff.isPresent()) return Optional.empty();
+		return Optional.of(new TimeSpanForDailyCalc(
+				new TimeWithDayAttr(diff.get().getEnd().valueAsMinutes()),
+				new TimeWithDayAttr(this.getTimeSheet().getEnd().valueAsMinutes())));
+	}
 }

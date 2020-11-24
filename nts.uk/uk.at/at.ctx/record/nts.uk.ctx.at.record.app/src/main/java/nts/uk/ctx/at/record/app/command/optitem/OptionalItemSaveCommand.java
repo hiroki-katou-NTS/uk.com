@@ -12,6 +12,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.app.command.optitem.calculation.FormulaDto;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.CalcResultRange;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.CalcUsageAtr;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.EmpConditionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemGetMemento;
@@ -40,6 +41,9 @@ public class OptionalItemSaveCommand implements OptionalItemGetMemento {
 
 	/** The usage classification. */
 	private int usageAtr;
+
+	/** The calculation atr. */
+	private int calcAtr;
 
 	/** The emp condition classification. */
 	private int empConditionAtr;
@@ -111,6 +115,15 @@ public class OptionalItemSaveCommand implements OptionalItemGetMemento {
 	@Override
 	public OptionalItemUsageAtr getOptionalItemUsageAtr() {
 		return EnumAdaptor.valueOf(this.usageAtr, OptionalItemUsageAtr.class);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemGetMemento#getCalcAtr()
+	 */
+	@Override
+	public CalcUsageAtr getCalcAtr() {
+		return EnumAdaptor.valueOf(this.calcAtr, CalcUsageAtr.class);
 	}
 
 	/*

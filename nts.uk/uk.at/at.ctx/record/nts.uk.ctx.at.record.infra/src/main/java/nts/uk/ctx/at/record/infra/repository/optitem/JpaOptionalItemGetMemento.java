@@ -9,6 +9,7 @@ import nts.uk.ctx.at.record.infra.entity.optitem.KrcstCalcResultRange;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcstOptionalItem;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.CalcResultRange;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.CalcUsageAtr;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.EmpConditionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemGetMemento;
@@ -105,6 +106,15 @@ public class JpaOptionalItemGetMemento implements OptionalItemGetMemento {
 		return EnumAdaptor.valueOf(this.typeValue.getUsageAtr(), OptionalItemUsageAtr.class);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemGetMemento#getCalcAtr()
+	 */
+	@Override
+	public CalcUsageAtr getCalcAtr() {
+		return EnumAdaptor.valueOf(this.typeValue.getCalcAtr(), CalcUsageAtr.class);
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

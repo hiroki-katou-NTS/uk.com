@@ -6,7 +6,9 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
@@ -85,5 +87,19 @@ public class OtherEmTimezoneLateEarlySet extends WorkTimeDomainObject implements
 			throw new RuntimeException("OtherEmTimezoneLateEarlySet clone error.");
 		}
 		return cloned;
+	}
+	
+	/**
+	 * デフォルト設定のインスタンスを生成する
+	 * @param lateEarlyAtr 遅刻早退区分
+	 */
+	public static OtherEmTimezoneLateEarlySet generateDefault(LateEarlyAtr lateEarlyAtr){
+		OtherEmTimezoneLateEarlySet domain = new OtherEmTimezoneLateEarlySet();
+		domain.lateEarlyAtr = lateEarlyAtr;
+		domain.delTimeRoundingSet = new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN);
+		domain.stampExactlyTimeIsLateEarly = false;
+		domain.graceTimeSet = new GraceTimeSetting(false, new LateEarlyGraceTime(0));
+		domain.recordTimeRoundingSet = new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN);
+		return domain;
 	}
 }

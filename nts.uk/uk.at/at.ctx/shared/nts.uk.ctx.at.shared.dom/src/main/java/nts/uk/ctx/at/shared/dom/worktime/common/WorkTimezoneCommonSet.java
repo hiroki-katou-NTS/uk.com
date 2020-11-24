@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -11,7 +12,11 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
+import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
@@ -228,5 +233,33 @@ public class WorkTimezoneCommonSet extends WorkTimeDomainObject implements Clone
 		}
 		return cloned;
 	}
-	
+
+	/**
+	 * デフォルト設定のインスタンスを生成する
+	 * @return 就業時間帯の共通設定
+	 */
+	public static WorkTimezoneCommonSet generateDefault(){
+		TimeRoundingSetting noRounding = new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN);
+		
+		WorkTimezoneCommonSet domain = new WorkTimezoneCommonSet();
+		domain.zeroHStraddCalculateSet = false;
+		domain.intervalSet = IntervalTimeSetting.generateDefault();
+		domain.subHolTimeSet = new ArrayList<>();
+		domain.subHolTimeSet.add(WorkTimezoneOtherSubHolTimeSet.generateDefault(
+				new WorkTimeCode("000"), CompensatoryOccurrenceDivision.FromOverTime));
+		domain.subHolTimeSet.add(WorkTimezoneOtherSubHolTimeSet.generateDefault(
+				new WorkTimeCode("000"), CompensatoryOccurrenceDivision.WorkDayOffTime));
+		domain.medicalSets = new ArrayList<>();
+		domain.medicalSets.add(WorkTimezoneMedicalSet.generateDefault(WorkSystemAtr.DAY_SHIFT));
+		domain.medicalSets.add(WorkTimezoneMedicalSet.generateDefault(WorkSystemAtr.NIGHT_SHIFT));
+		domain.goOutSet = WorkTimezoneGoOutSet.generateDefault();
+		domain.stampSet = WorkTimezoneStampSet.generateDefault();
+		domain.lateNightTimeSet = new WorkTimezoneLateNightTimeSet(noRounding);
+		domain.shortTimeWorkSet = new WorkTimezoneShortTimeWorkSet(false, false, false);
+		domain.extraordTimeSet = WorkTimezoneExtraordTimeSet.generateDefault();
+		domain.lateEarlySet = WorkTimezoneLateEarlySet.generateDefault();
+		domain.holidayCalculation = new HolidayCalculation(NotUseAtr.NOT_USE);
+		domain.raisingSalarySet = Optional.empty();
+		return domain;
+	}
 }

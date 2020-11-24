@@ -6,7 +6,10 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
@@ -71,5 +74,19 @@ public class IntervalTimeSetting extends WorkTimeDomainObject implements Cloneab
 			throw new RuntimeException("IntervalTimeSetting clone error.");
 		}
 		return cloned;
+	}
+	
+	/**
+	 * デフォルト設定のインスタンスを生成する
+	 * @return インターバル時間設定
+	 */
+	public static IntervalTimeSetting generateDefault(){
+		IntervalTimeSetting domain = new IntervalTimeSetting();
+		domain.useIntervalExemptionTime = false;
+		domain.intervalExemptionTimeRound = new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN);
+		domain.intervalTime = new IntervalTime(
+				new AttendanceTime(0), new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN));
+		domain.useIntervalTime = false;
+		return domain;
 	}
 }
