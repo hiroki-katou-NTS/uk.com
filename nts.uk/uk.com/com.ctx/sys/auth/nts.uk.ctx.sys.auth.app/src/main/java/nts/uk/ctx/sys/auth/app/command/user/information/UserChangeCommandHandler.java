@@ -62,7 +62,7 @@ public class UserChangeCommandHandler extends CommandHandler<UserChangeCommand> 
 		Optional<User> currentUser = userRepository.getByUserID(userId);
         currentUser.ifPresent(current -> {
            current.setLanguage(EnumAdaptor.valueOf(language, Language.class));
-            //userRepository.update(current);
+            userRepository.update(current);
         });
 	}
 

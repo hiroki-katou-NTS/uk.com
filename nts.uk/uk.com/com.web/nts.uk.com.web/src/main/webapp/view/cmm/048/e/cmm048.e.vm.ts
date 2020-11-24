@@ -4,7 +4,7 @@ module nts.uk.com.view.cmm048.e {
   @bean()
   export class ViewModel extends ko.ViewModel {
     fileId: KnockoutObservable<string> = ko.observable('');
-    showEditAction : KnockoutObservable<boolean> = ko.observable(false);
+    showEditAction: KnockoutObservable<boolean> = ko.observable(false);
     created(params: string) {
       const vm = this;
       vm.fileId(params);
@@ -23,6 +23,19 @@ module nts.uk.com.view.cmm048.e {
       if (vm.fileId()) {
         $(".edit-action-container").show();
         $("#upload").ntsImageEditor("selectByFileId", vm.fileId());
+      }
+      $("#upload").bind("imgloaded", () => {
+        $(".edit-action-container").show();
+      });
+      try {
+        $("#upload").ntsImageEditor("selectByFileId", {
+          actionOnClose: () => {
+            $(".checkbox-holder").hide();
+            $('.upload-btn').focus();
+          }
+        });
+      } catch (Error) {
+        $('.upload-btn').focus();
       }
     }
 

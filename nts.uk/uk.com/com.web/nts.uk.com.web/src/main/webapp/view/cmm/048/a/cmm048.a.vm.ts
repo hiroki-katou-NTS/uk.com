@@ -222,8 +222,8 @@ module nts.uk.com.view.cmm048.a {
           vm.ListOtherContact.push(
             new OtherContactViewModel(
               i,
-              otherContactSetting.contactName,
-              otherContactPs.address, 
+              vm.$i18n("CMM048_86", [otherContactSetting.contactName]),
+              otherContactPs.address,
               otherContactSetting.contactUsageSetting === 2,
               otherContactSetting.contactUsageSetting !== 0,
               otherContactPs.isDisplay
@@ -233,7 +233,7 @@ module nts.uk.com.view.cmm048.a {
           vm.ListOtherContact.push(
             new OtherContactViewModel(
               i,
-              otherContactSetting.contactName,
+              vm.$i18n("CMM048_86", [otherContactSetting.contactName]),
               '',
               otherContactSetting.contactUsageSetting === 2,
               otherContactSetting.contactUsageSetting !== 0,
