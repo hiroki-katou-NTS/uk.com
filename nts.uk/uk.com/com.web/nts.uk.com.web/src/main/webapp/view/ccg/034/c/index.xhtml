@@ -33,7 +33,10 @@
           <!-- C2_2 コード/名称 -->
           <div id="C2_2" class="column-label" data-bind="ntsFormLabel: {}">#{i18n.getText('CCG034_31')}</div>
           <!-- C2_3 元設定名 -->
-          <label id="C2_3" class="column-value" data-bind="text: flowMenuInfo"></label>
+          <div id="C2_3" data-bind="with: flowMenu">
+            <label id="C2_3_1" data-bind="text: flowMenuCode"></label>
+            <label id="C2_3_2" data-bind="text: flowMenuName"></label>
+          </div>
         </div>
         <div class="div-line flex valign-center">
           <!-- C3_1 コピー先情報： -->

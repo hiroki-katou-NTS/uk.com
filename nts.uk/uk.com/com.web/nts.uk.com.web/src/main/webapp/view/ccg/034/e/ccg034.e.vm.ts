@@ -43,6 +43,7 @@ module nts.uk.com.view.ccg034.e {
       vm.isBoldValue(vm.partData.isBold);
       vm.textColorValue(vm.partData.textColor);
       vm.backgroundColorValue(vm.partData.backgroundColor);
+      $("#E1_2").focus();
     }
 
     /**

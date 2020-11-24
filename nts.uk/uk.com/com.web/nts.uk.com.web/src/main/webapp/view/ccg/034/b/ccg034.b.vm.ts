@@ -22,6 +22,7 @@ module nts.uk.com.view.ccg034.b {
     mounted() {
       const vm = this;
       vm.extract();
+      $("#B1_1").focus();
     }
 
     private extract() {

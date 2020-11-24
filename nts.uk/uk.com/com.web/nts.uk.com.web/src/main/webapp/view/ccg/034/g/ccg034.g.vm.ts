@@ -41,6 +41,7 @@ module nts.uk.com.view.ccg034.g {
       vm.url(vm.partData.url);
       vm.fontSize(vm.partData.fontSize);
       vm.isBold(vm.partData.isBold);
+      $("#G1_2").focus();
     }
 
     /**

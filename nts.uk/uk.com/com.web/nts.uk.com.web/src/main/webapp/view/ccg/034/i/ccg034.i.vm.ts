@@ -47,6 +47,7 @@ module nts.uk.com.view.ccg034.i {
         nts.uk.request.ajax("/shr/infra/file/storage/infor/" + vm.fileId()).then((res: any) => vm.uploadFinished(res));
       }
       vm.createPopUp();
+      $("#I2").focus();
     }
 
     uploadFinished(data: any) {

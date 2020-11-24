@@ -23,6 +23,10 @@ module nts.uk.com.view.ccg034.c {
       vm.flowMenuInfo(`${vm.flowMenu.flowMenuCode} ${vm.flowMenu.flowMenuName}`);
     }
 
+    mounted() {
+      $("#C3_3").focus();
+    }
+
     public duplicate() {
       const vm = this;
       vm.$validate().then((valid: boolean) => {
