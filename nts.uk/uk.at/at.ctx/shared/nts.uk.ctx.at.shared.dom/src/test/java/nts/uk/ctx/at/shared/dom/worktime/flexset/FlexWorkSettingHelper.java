@@ -92,32 +92,6 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 public class FlexWorkSettingHelper {
-	@Injectable
-	static FlowRestTimezone flowRestTimeZone;
-	
-	@Injectable
-	static TimezoneOfFixedRestTimeSet fixedRestTimeSet;
-	
-	@Injectable
-	static List<FlexHalfDayWorkTime> flexHalfDayWorkTimes;
-	
-	@Injectable
-	static ApplyAtr isUse;
-	
-	@Injectable 
-	static TimeSheet timeSheet;
-	
-	 @Injectable 
-	 static FlowRestTimezone flowResTimeZone;
-	 
-	 @Injectable 
-	 static FlowRestSetting hereAfterRestSet;
-	 
-	 @Injectable
-	 static FlexOffdayWorkTime flexOffdayWorkTime;
-	 
-	 @Injectable
-	 static FlowWorkRestTimezone flexHalfRestTimezone;
 	 
 	public static FlexWorkSetting createFlexOffRestTimeZone(FlowWorkRestTimezone offRestTimeZone) {
 		val offdayWorkTimeImpl = new FlexOffdayWorkTimeGetMementoImpl(Arrays.asList(new HDWorkTimeSheetSetting()), offRestTimeZone);
@@ -156,6 +130,7 @@ public class FlexWorkSettingHelper {
 	
 	
 	public static FlexWorkSetting createNotUse(List<OverTimeOfTimeZoneSetImpl> overTimes, AmPmAtr amPM) {
+		val flexHalfRestTimezone = new FlowWorkRestTimezone();
 		val flexHalfDayWorkTimes = Arrays.asList(
 				  FlexHalfDayWorkTimeHelper.createWorkTime(amPM, flexHalfRestTimezone
 						  , OverTimeOfTimeZoneSetHelper.createOverTimeList(overTimes)
@@ -168,11 +143,12 @@ public class FlexWorkSettingHelper {
 								 EmTimeZoneSetHelper.createWorkingTimezoneList(new EmTimeFrameNo(2) , TimeWithDayAttr.hourMinute( 5,  0 ), TimeWithDayAttr.hourMinute( 12, 0 ))
 						))
 				);
-		return new FlexWorkSetting(new FlexWorkSettingImpl(ApplyAtr.NOT_USE, flexHalfDayWorkTimes, flexOffdayWorkTime, true));
+		return new FlexWorkSetting(new FlexWorkSettingImpl(ApplyAtr.NOT_USE, flexHalfDayWorkTimes, new FlexOffdayWorkTime(), true));
 	}
 	
 	
 	public static FlexWorkSetting createUse_One_Day(List<OverTimeOfTimeZoneSetImpl> overTimes) {
+		val flexHalfRestTimezone = new FlowWorkRestTimezone();
 		//就業時間帯
 		val flexHalfDayWorkTimes = Arrays.asList(
 				  FlexHalfDayWorkTimeHelper.createWorkTime(AmPmAtr.ONE_DAY, flexHalfRestTimezone
@@ -191,10 +167,11 @@ public class FlexWorkSettingHelper {
 								 EmTimeZoneSetHelper.createWorkingTimezoneList(new EmTimeFrameNo(3) , TimeWithDayAttr.hourMinute( 13,  0 ), TimeWithDayAttr.hourMinute( 29, 0 ))
 						))
 				);
-		return new FlexWorkSetting(new FlexWorkSettingImpl(ApplyAtr.USE, flexHalfDayWorkTimes, flexOffdayWorkTime, true));
+		return new FlexWorkSetting(new FlexWorkSettingImpl(ApplyAtr.USE, flexHalfDayWorkTimes, new FlexOffdayWorkTime(), true));
 	}
 	
 	public static FlexWorkSetting createUse_AM(List<OverTimeOfTimeZoneSetImpl> overTimes) {
+		val flexHalfRestTimezone = new FlowWorkRestTimezone();
 		//就業時間帯
 		val flexHalfDayWorkTimes = Arrays.asList(
 				  FlexHalfDayWorkTimeHelper.createWorkTime(AmPmAtr.ONE_DAY, flexHalfRestTimezone
@@ -213,10 +190,11 @@ public class FlexWorkSettingHelper {
 								 EmTimeZoneSetHelper.createWorkingTimezoneList(new EmTimeFrameNo(3) , TimeWithDayAttr.hourMinute( 13,  0 ), TimeWithDayAttr.hourMinute( 29, 0 ))
 						))
 				);
-		return new FlexWorkSetting(new FlexWorkSettingImpl(ApplyAtr.USE, flexHalfDayWorkTimes, flexOffdayWorkTime, true));
+		return new FlexWorkSetting(new FlexWorkSettingImpl(ApplyAtr.USE, flexHalfDayWorkTimes, new FlexOffdayWorkTime(), true));
 	}
 	
 	public static FlexWorkSetting createUse_PM(List<OverTimeOfTimeZoneSetImpl> overTimes) {
+		val flexHalfRestTimezone = new FlowWorkRestTimezone();
 		//就業時間帯
 		val flexHalfDayWorkTimes = Arrays.asList(
 				  FlexHalfDayWorkTimeHelper.createWorkTime(AmPmAtr.ONE_DAY, flexHalfRestTimezone
@@ -235,25 +213,29 @@ public class FlexWorkSettingHelper {
 								 EmTimeZoneSetHelper.createWorkingTimezoneList(new EmTimeFrameNo(3) , TimeWithDayAttr.hourMinute( 13,  0 ), TimeWithDayAttr.hourMinute( 29, 0 ))
 						))
 				);
-		return new FlexWorkSetting(new FlexWorkSettingImpl(ApplyAtr.USE, flexHalfDayWorkTimes, flexOffdayWorkTime, true));
+		return new FlexWorkSetting(new FlexWorkSettingImpl(ApplyAtr.USE, flexHalfDayWorkTimes, new FlexOffdayWorkTime(), true));
+	}
+	
+	public static HDWorkTimeSheetSetting createHdWorkTimeSheet(TimeWithDayAttr start, TimeWithDayAttr end){
+		
+		return new HDWorkTimeSheetSetting(new HDWorkTimeSheetSettingImpl(start, end));
 	}
 	
 	
 	
 	public static FlowWorkRestTimezone createOffRestTimeZone(boolean isFixed, TimezoneOfFixedRestTimeSet fixedRestTimeSet) {
 		
-		return new FlowWorkRestTimezone(isFixed, fixedRestTimeSet, flowResTimeZone);
+		return new FlowWorkRestTimezone(isFixed, fixedRestTimeSet, new FlowRestTimezone());
 		
 	}
 	
 	public static FlexWorkSetting createFlexWorkSetting(List<HDWorkTimeSheetSetting> lstWorkTimezone) {
 		
-		val offRestTimeZone = new FlowWorkRestTimezone(true, fixedRestTimeSet, flowRestTimeZone);
+		val offRestTimeZone = new FlowWorkRestTimezone(true, new TimezoneOfFixedRestTimeSet(), new FlowRestTimezone());
 		
 		val offdayWorkTimeImpl = new FlexOffdayWorkTimeGetMementoImpl(lstWorkTimezone, offRestTimeZone);
-
-		// コアタイムを使用しない
-		val flexWorkSetting = new FlexWorkSetting(new FlexWorkSettingImpl(isUse, flexHalfDayWorkTimes, new FlexOffdayWorkTime(offdayWorkTimeImpl), false));
+		
+		val flexWorkSetting = new FlexWorkSetting(new FlexWorkSettingImpl(ApplyAtr.USE, Collections.emptyList(), new FlexOffdayWorkTime(offdayWorkTimeImpl), false));
 
 		return flexWorkSetting;
 	}
