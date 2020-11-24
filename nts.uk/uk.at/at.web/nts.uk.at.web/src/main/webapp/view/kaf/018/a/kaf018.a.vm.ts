@@ -35,7 +35,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 		multiSelectedWorkplaceId: KnockoutObservableArray<string> = ko.observableArray([]);
 		baseDate: KnockoutObservable<Date> = ko.observable(new Date());
 		
-		created() {
+		created(params: KAF018BParam) {
 			const vm = this;
 			vm.treeGrid = {
 				isShowAlreadySet: false,
@@ -123,10 +123,33 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 				vm.closureLst(_.map(data.closureList, (o: any) => {
 					return new ClosureItem(o.closureHistories[0].closureId, o.closureHistories[0].closeName, o.closureMonth);
 				}));
-				vm.selectedClosureId(_.head(vm.closureLst()).closureId);
-				vm.dateValue().startDate = data.startDate;
-				vm.dateValue().endDate = data.endDate;
-				vm.dateValue.valueHasMutated();
+				if(params) {
+					vm.multiSelectedWorkplaceId(_.map(params.selectWorkplaceInfo, o => o.id));
+					vm.selectedClosureId(params.closureItem.closureId);
+					vm.dateValue().startDate = params.startDate;
+					vm.dateValue().endDate = params.endDate;
+					vm.dateValue.valueHasMutated();
+					let a = [];
+					if(params.initDisplayOfApprovalStatus.applicationApprovalFlg) {
+						a.push(1);	
+					}
+					if(params.initDisplayOfApprovalStatus.confirmAndApprovalDailyFlg) {
+						a.push(2);	
+					}
+					if(params.initDisplayOfApprovalStatus.confirmAndApprovalMonthFlg) {
+						a.push(3);	
+					}
+					if(params.initDisplayOfApprovalStatus.confirmEmploymentFlg) {
+						a.push(4);	
+					}
+					vm.selectedIds(a);
+					vm.initDisplayOfApprovalStatus = params.initDisplayOfApprovalStatus;
+				} else {
+					vm.selectedClosureId(_.head(vm.closureLst()).closureId);
+					vm.dateValue().startDate = data.startDate;
+					vm.dateValue().endDate = data.endDate;
+					vm.dateValue.valueHasMutated();	
+				}
 				return $('#tree-grid').ntsTreeComponent(vm.treeGrid).done(() => {
 					vm.fullWorkplaceInfo = vm.flattenWkpTree(_.cloneDeep($('#tree-grid').getDataList()));
 					vm.selectedClosureId.subscribe(() => $('#tree-grid').focusTreeGridComponent());
@@ -165,7 +188,8 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 																	.sortBy('hierarchyCode').value(),
 					appNameLst: Array<any> = vm.appNameLst,
 					useSet = vm.useSet,
-					bParam: KAF018BParam = { closureItem, startDate, endDate, selectWorkplaceInfo, appNameLst, useSet };
+					initDisplayOfApprovalStatus = vm.initDisplayOfApprovalStatus,
+					bParam: KAF018BParam = { closureItem, startDate, endDate, selectWorkplaceInfo, appNameLst, useSet, initDisplayOfApprovalStatus };
 				vm.$jump("/view/kaf/018/b/index.xhtml", bParam);
             });
 			

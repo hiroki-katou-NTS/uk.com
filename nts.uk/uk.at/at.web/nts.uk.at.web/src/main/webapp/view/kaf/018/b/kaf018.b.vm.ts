@@ -12,6 +12,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 	
 	@bean()
 	class Kaf018BViewModel extends ko.ViewModel {
+		params: KAF018BParam = null;
 		appNameLst: Array<any> = [];
 		closureItem: ClosureItem;
 		startDate: string;
@@ -38,6 +39,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 		
 		created(params: KAF018BParam) {
 			const vm = this;
+			vm.params = params;
 			vm.$blockui('show');
 			vm.appNameLst = params.appNameLst;
 			vm.closureItem = params.closureItem;
@@ -384,7 +386,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 		
 		goBackA() {
 			const vm = this;
-			vm.$jump('/view/kaf/018/a/index.xhtml');
+			vm.$jump('/view/kaf/018/a/index.xhtml', vm.params);
 		}
 	}
 	
@@ -395,6 +397,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 		selectWorkplaceInfo: Array<DisplayWorkplace>;
 		appNameLst: Array<any>;
 		useSet: any;
+		initDisplayOfApprovalStatus: InitDisplayOfApprovalStatus;
 	}
 
 	export interface ApprSttExecutionDto {
