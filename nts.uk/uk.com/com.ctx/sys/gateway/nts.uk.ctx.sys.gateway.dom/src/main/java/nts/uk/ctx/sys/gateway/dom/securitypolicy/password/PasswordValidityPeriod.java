@@ -15,4 +15,8 @@ public class PasswordValidityPeriod extends DecimalPrimitiveValue<PasswordValidi
 		super(rawValue);
 	}
 
+	public boolean isUnlimited() {
+		// 0なら無期限
+		return v().intValue() == 0;
+	}
 }

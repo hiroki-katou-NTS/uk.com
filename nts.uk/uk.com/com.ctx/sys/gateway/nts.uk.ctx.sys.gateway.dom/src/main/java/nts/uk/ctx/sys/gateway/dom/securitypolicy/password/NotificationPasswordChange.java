@@ -15,4 +15,12 @@ public class NotificationPasswordChange extends DecimalPrimitiveValue<Notificati
 		super(rawValue);
 	}
 
+	/**
+	 * 事前通知をするか
+	 * @return
+	 */
+	public boolean needsNotify(int remainingDays) {
+		int value = v().intValue();
+		return value != 0 && remainingDays <= value;
+	}
 }

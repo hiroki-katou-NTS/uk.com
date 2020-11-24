@@ -7,6 +7,7 @@ package nts.uk.ctx.sys.shared.dom.employee;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoDtoExport;
 
 /**
  * The Class EmployeeDto.
@@ -63,5 +64,13 @@ public class EmployeeImport {
 		this(companyId, personalId, employeeId, employeeCode);
 		
 		this.employeeName = employeeName;
+	}
+	
+	public static EmployeeImport of(EmployeeInfoDtoExport export) {
+		return new EmployeeImport(
+				export.getCompanyId(), 
+				export.getPersonId(), 
+				export.getEmployeeId(),
+				export.getEmployeeCode());
 	}
 }

@@ -10,6 +10,7 @@ import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicyRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicyRepository;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.complexity.PasswordComplexityRequirement;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -24,10 +25,11 @@ public class UpdateAccountPolicyCommandHandler extends CommandHandler<UpdateAcco
 	protected void handle(CommandHandlerContext<UpdateAccountPolicyCommand> context) {
 		UpdateAccountPolicyCommand command = context.getCommand();
 		String contractCode = AppContexts.user().contractCode();
+		PasswordComplexityRequirement complexity = PasswordComplexityRequirement.createFromJavaType(
+				command.lowestDigits, command.numberOfDigits, command.symbolCharacters, command.alphabetDigit);
 		PasswordPolicy passwordPolicy = PasswordPolicy.createFromJavaType(contractCode,
 				command.notificationPasswordChange, command.loginCheck, command.initialPasswordChange,
-				command.isPasswordUse, command.historyCount, command.lowestDigits, command.validityPeriod,
-				command.numberOfDigits, command.symbolCharacters, command.alphabetDigit);
+				command.isPasswordUse, command.historyCount, command.validityPeriod, complexity);
 		this.passwordPolicyRepository.updatePasswordPolicy(passwordPolicy);
 		AccountLockPolicy accountLockPolicy = AccountLockPolicy.createFromJavaType(contractCode, command.errorCount,
 				command.lockInterval, command.lockOutMessage, command.isAccLockUse);

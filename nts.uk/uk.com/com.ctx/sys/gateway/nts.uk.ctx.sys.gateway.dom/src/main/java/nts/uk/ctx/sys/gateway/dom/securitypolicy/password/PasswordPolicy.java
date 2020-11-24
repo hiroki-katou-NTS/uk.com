@@ -3,8 +3,14 @@ package nts.uk.ctx.sys.gateway.dom.securitypolicy.password;
 import java.math.BigDecimal;
 
 import lombok.Getter;
+import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.changelog.PasswordChangeLog;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.complexity.PasswordComplexityRequirement;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.validate.PasswordValidationOnLogin;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.validate.PasswordValidationOnLogin.Status;
+import nts.uk.ctx.sys.shared.dom.user.password.PassStatus;
 
 @Getter
 public class PasswordPolicy extends AggregateRoot {
@@ -14,16 +20,12 @@ public class PasswordPolicy extends AggregateRoot {
 	private boolean initialPasswordChange;
 	private boolean isUse;
 	private PasswordHistoryCount historyCount;
-	private PasswordLowestDigits lowestDigits;
 	private PasswordValidityPeriod validityPeriod;
-	private NumberOfDigits numberOfDigits;
-	private SymbolCharacters symbolCharacters;
-	private AlphabetDigit alphabetDigit;
+	private PasswordComplexityRequirement complexityRequirement;
 
 	public PasswordPolicy(ContractCode contractCode, NotificationPasswordChange notificationPasswordChange,
 			boolean loginCheck, boolean initialPasswordChange, boolean isUse, PasswordHistoryCount historyCount,
-			PasswordLowestDigits lowestDigits, PasswordValidityPeriod validityPeriod, NumberOfDigits numberOfDigits,
-			SymbolCharacters symbolCharacters, AlphabetDigit alphabetDigit) {
+			PasswordValidityPeriod validityPeriod, PasswordComplexityRequirement complexityRequirement) {
 		super();
 		this.contractCode = contractCode;
 		this.notificationPasswordChange = notificationPasswordChange;
@@ -31,25 +33,74 @@ public class PasswordPolicy extends AggregateRoot {
 		this.initialPasswordChange = initialPasswordChange;
 		this.isUse = isUse;
 		this.historyCount = historyCount;
-		this.lowestDigits = lowestDigits;
 		this.validityPeriod = validityPeriod;
-		this.numberOfDigits = numberOfDigits;
-		this.symbolCharacters = symbolCharacters;
-		this.alphabetDigit = alphabetDigit;
+		this.complexityRequirement = complexityRequirement;
 	}
 
 	public static PasswordPolicy createFromJavaType(String contractCode, int notificationPasswordChange,
-			boolean loginCheck, boolean initialPasswordChange, boolean isUse, int historyCount, int lowestDigits,
-			int validityPeriod, int numberOfDigits, int symbolCharacters, int alphabetDigit) {
+			boolean loginCheck, boolean initialPasswordChange, boolean isUse, int historyCount, 
+			int validityPeriod, PasswordComplexityRequirement complexityRequirement) {
 		return new PasswordPolicy(new ContractCode(contractCode),
 				new NotificationPasswordChange(new BigDecimal(notificationPasswordChange)), loginCheck,
 				initialPasswordChange, isUse, new PasswordHistoryCount(new BigDecimal(historyCount)),
-				new PasswordLowestDigits(new BigDecimal(lowestDigits)),
 				new PasswordValidityPeriod(new BigDecimal(validityPeriod)),
-				new NumberOfDigits(new BigDecimal(numberOfDigits)),
-				new SymbolCharacters(new BigDecimal(symbolCharacters)),
-				new AlphabetDigit(new BigDecimal(alphabetDigit)));
+				complexityRequirement);
 
 	}
 
+	public PasswordValidationOnLogin validateOnLogin(
+			ValidateOnLoginRequire require,
+			String userId,
+			String password,
+			PassStatus passwordStatus) {
+		
+		if (!loginCheck || !isUse) {
+			return PasswordValidationOnLogin.ok();
+		}
+		
+		// 初期パスワード
+		if (initialPasswordChange && passwordStatus.equals(PassStatus.InitPassword)) {
+			return PasswordValidationOnLogin.error(Status.INITIAL);
+		}
+			
+		// 文字構成をチェック
+		if (!complexityRequirement.validatePassword(password)) {
+			return PasswordValidationOnLogin.error(Status.VIOLATED);
+		}
+		
+		// 有効期限をチェック
+		if (!validityPeriod.isUnlimited()) {
+			int remainingDays = calculateRemainingDays(require, userId);
+			
+			// 有効期限切れ
+			if (remainingDays < 0) {
+				return PasswordValidationOnLogin.error(Status.EXPIRED);
+			}
+			
+			// 期限切れが近い通知
+			if (notificationPasswordChange.needsNotify(remainingDays)) {
+				return PasswordValidationOnLogin.expiresSoon(remainingDays);
+			}
+		}
+
+		return PasswordValidationOnLogin.ok();
+	}
+	
+	public static interface ValidateOnLoginRequire {
+		
+		PasswordChangeLog getPasswordChangeLog(String userId);
+	}
+	
+	/**
+	 * パスワードの残り有効日数を求める
+	 * @param user
+	 * @return
+	 */
+	private int calculateRemainingDays(ValidateOnLoginRequire require, String userId) {
+		
+		val changeLog = require.getPasswordChangeLog(userId);
+		int ageInDays = changeLog.latestLog().ageInDays();
+		
+		return validityPeriod.v().intValue() - ageInDays;
+	}
 }

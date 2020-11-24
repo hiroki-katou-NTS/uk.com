@@ -5,9 +5,11 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicyRepository;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.complexity.PasswordComplexityRequirement;
 import nts.uk.ctx.sys.gateway.pub.securitypolicy.PasswordPolicyDto;
 import nts.uk.ctx.sys.gateway.pub.securitypolicy.PasswordPolicyPublisher;
 @Stateless
@@ -19,7 +21,18 @@ public class PasswordPolicyPublisherImpl implements PasswordPolicyPublisher{
 		Optional<PasswordPolicy> passwordPolicyOpt = this.PasswordPolicyRepo.getPasswordPolicy(new ContractCode(contractCode));
 		if(passwordPolicyOpt.isPresent()){
 			PasswordPolicy passwordPolicy = passwordPolicyOpt.get();
-			return Optional.ofNullable(new PasswordPolicyDto(contractCode, passwordPolicy.getNotificationPasswordChange().v().signum(), passwordPolicy.isLoginCheck(), passwordPolicy.isInitialPasswordChange(), passwordPolicy.isUse(), passwordPolicy.getHistoryCount().v().intValue(), passwordPolicy.getLowestDigits().v().intValue(), passwordPolicy.getValidityPeriod().v().intValue(), passwordPolicy.getNumberOfDigits().v().intValue(), passwordPolicy.getSymbolCharacters().v().intValue(), passwordPolicy.getAlphabetDigit().v().intValue())); 
+			return Optional.ofNullable(new PasswordPolicyDto(
+					contractCode,
+					passwordPolicy.getNotificationPasswordChange().v().signum(),
+					passwordPolicy.isLoginCheck(),
+					passwordPolicy.isInitialPasswordChange(),
+					passwordPolicy.isUse(),
+					passwordPolicy.getHistoryCount().v().intValue(),
+					passwordPolicy.getComplexityRequirement().getMinimumLength().v(),
+					passwordPolicy.getValidityPeriod().v().intValue(),
+					passwordPolicy.getComplexityRequirement().getNumeralDigits().v(),
+					passwordPolicy.getComplexityRequirement().getSymbolDigits().v(),
+					passwordPolicy.getComplexityRequirement().getAlphabetDigits().v())); 
 		}
 		return Optional.empty();
 	}
@@ -30,14 +43,17 @@ public class PasswordPolicyPublisherImpl implements PasswordPolicyPublisher{
 	}
 	
 	private PasswordPolicy toDomain(PasswordPolicyDto passwordPolicy) {
+		
+		val complexity = PasswordComplexityRequirement.createFromJavaType(
+				passwordPolicy.lowestDigits, passwordPolicy.numberOfDigits, passwordPolicy.symbolCharacters,
+				passwordPolicy.alphabetDigit);
+		
 		return PasswordPolicy.createFromJavaType(passwordPolicy.getContractCode(),
 				passwordPolicy.getNotificationPasswordChange(),
 				passwordPolicy.isLoginCheck(),
 				passwordPolicy.initialPasswordChange,
 				passwordPolicy.isUse, passwordPolicy.historyCount,
-				passwordPolicy.lowestDigits, passwordPolicy.validityPeriod,
-				passwordPolicy.numberOfDigits, passwordPolicy.symbolCharacters,
-				passwordPolicy.alphabetDigit);
+				passwordPolicy.validityPeriod, complexity);
 	}
 
 }

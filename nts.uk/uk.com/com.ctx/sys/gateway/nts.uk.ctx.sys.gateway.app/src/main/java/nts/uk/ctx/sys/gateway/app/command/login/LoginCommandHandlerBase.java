@@ -13,9 +13,8 @@ import nts.arc.task.tran.TransactionService;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.gateway.app.command.login.session.BuildLoginEmployeeSession;
 import nts.uk.ctx.sys.gateway.dom.login.CheckIfCanLogin;
+import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
 import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthentication;
-import nts.uk.ctx.sys.shared.dom.employee.EmployeeImport;
-import nts.uk.ctx.sys.shared.dom.user.User;
 
 /**
  * TenantLocatorを想定したログイン処理の基底クラス
@@ -30,7 +29,6 @@ import nts.uk.ctx.sys.shared.dom.user.User;
 public abstract class LoginCommandHandlerBase<
 		Command extends LoginCommandHandlerBase.TenantAuth,
 		Authen extends LoginCommandHandlerBase.AuthenticationResult,
-		Author extends LoginCommandHandlerBase.AuthorizationResult<Result>,
 		Result,
 		Req extends LoginCommandHandlerBase.Require>
 		extends CommandHandlerWithResult<Command, Result> {
@@ -53,7 +51,7 @@ public abstract class LoginCommandHandlerBase<
 		// テナント認証
 		val opTenant = require.getTenantAuthentication(command.getTenantCode());
 		if(!opTenant.isPresent()) {
-			return getResultOnFailTenantAuth();
+			return tenantAuthencationFailed();
 		}
 		val tenant = opTenant.get();
 		
@@ -63,37 +61,45 @@ public abstract class LoginCommandHandlerBase<
 		if(!passwordVerify || !available) {
 			// テナント認証失敗
 			/* テナントロケーターのdisconnect処理 */
-			return getResultOnFailTenantAuth();
+			return tenantAuthencationFailed();
 		}
 		
 		Authen authen = authenticate(require, command);
 		
-		Author author;
-		if (authen.isSuccess()) {
-			authorize(require, authen);
-			session.build(require, authen.getEmployee(), authen.getUser());
-			author = processSuccess(require, authen);
-		} else {
-			author = processFailure(require, authen);
+		if (!authen.isSuccess()) {
+			authen.getAtomTask().ifPresent(t -> transaction.execute(t));
+			return employeeAuthenticationFailed(require, authen);
 		}
+		
+		// 認可
+		AtomTask authorTask = authorize(require, authen);
+		
 		/* ログインログ */
 		
 		
 		transaction.execute(() -> {
 			authen.getAtomTask().ifPresent(t -> t.run());
-			author.getAtomTask().ifPresent(t -> t.run());
+			authorTask.run();
 		});
 		
-		return author.getLoginResult();
+		return loginCompleted(require, authen);
 	}
 	
-	private void authorize(Req require, Authen authen) {
+	/**
+	 * 認可処理（override可能）
+	 * 認証が終わった社員に対して、実際にログインできるかの判定と、権限付与（セッション構築）を行う
+	 * @param require
+	 * @param authen
+	 * @return
+	 */
+	protected AtomTask authorize(Req require, Authen authen) {
 		
-		val result = CheckIfCanLogin.check(
-				require,
-				authen.getUser().getContractCode().v(),
-				authen.getEmployee().getCompanyId(),
-				authen.getEmployee().getEmployeeId());
+		val result = CheckIfCanLogin.check(require, authen.getIdentified());
+		
+		// セッション構築
+		session.build(require, authen.getIdentified().getEmployee(), authen.getIdentified().getUser());
+		
+		return AtomTask.none();
 	}
 	
 	/**
@@ -101,7 +107,7 @@ public abstract class LoginCommandHandlerBase<
 	 * @param 
 	 * @return
 	 */
-	protected abstract Result getResultOnFailTenantAuth();
+	protected abstract Result tenantAuthencationFailed();
 	
 	/**
 	 * 認証処理本体
@@ -110,20 +116,21 @@ public abstract class LoginCommandHandlerBase<
 	 * @return
 	 */
 	protected abstract Authen authenticate(Req require, Command command);
-	
+
 	/**
-	 * 認証成功時の処理
-	 * @param state
+	 * 社員認証失敗時の処理
+	 * @param authen
 	 * @return
 	 */
-	protected abstract Author processSuccess(Req require, Authen state);
+	protected abstract Result employeeAuthenticationFailed(Req require, Authen authen);
 	
 	/**
-	 * 認証失敗時の処理
-	 * @param state
+	 * ログイン成功時の処理
+	 * @param authen
 	 * @return
 	 */
-	protected abstract Author processFailure(Req require, Authen state);
+	protected abstract Result loginCompleted(Req require, Authen authen);
+	
 	
 	public static interface TenantAuth {
 		
@@ -139,9 +146,7 @@ public abstract class LoginCommandHandlerBase<
 		
 		boolean isSuccess();
 		
-		EmployeeImport getEmployee();
-		
-		User getUser();
+		IdentifiedEmployeeInfo getIdentified();
 		
 		Optional<AtomTask> getAtomTask();
 	}

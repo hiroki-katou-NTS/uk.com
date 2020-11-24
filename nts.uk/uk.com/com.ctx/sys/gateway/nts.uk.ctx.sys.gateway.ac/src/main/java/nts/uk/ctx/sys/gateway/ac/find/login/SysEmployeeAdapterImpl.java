@@ -70,33 +70,6 @@ public class SysEmployeeAdapterImpl implements SysEmployeeAdapter {
 		// Return
 		return Optional.empty();
 	}
-	
-	@Override
-	public Optional<EmployeeImport> getCurrentInfoBySid(String employeeId) {
-		Optional<EmployeeDataMngInfoExport> optEmployee = syEmployeePub.getSdataMngInfo(employeeId);
-		
-		if(!optEmployee.isPresent()) {
-			return Optional.empty();
-		}
-		
-		EmployeeDataMngInfoExport employee = optEmployee.get();
-		EmployeeImport employeeImp = new EmployeeImport(
-				employee.getCompanyId(), 
-				employee.getPersonId(), 
-				employee.getEmployeeId(), 
-				employee.getEmployeeCode());
-		
-		// 削除フラグを追加
-		// 影響を抑えるためコンストラクタは不使用
-		if(employee.getDeletedStatus() == 0) {
-			employeeImp.setDeleted(false);
-		} else {
-
-			employeeImp.setDeleted(true);
-		}
-		return Optional.of(employeeImp);
-	}
-
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter#getByPid(java.lang.String, java.lang.String)

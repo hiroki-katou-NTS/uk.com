@@ -1,7 +1,8 @@
 package nts.uk.ctx.sys.gateway.app.command.login.password;
 
 import lombok.Data;
-
+import nts.arc.error.BusinessException;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.gateway.app.command.login.LoginCommandHandlerBase;
 
 @Data
@@ -25,5 +26,19 @@ public class PasswordAuthenticateCommand implements LoginCommandHandlerBase.Tena
 	@Override
 	public String getTenantPasswordPlainText() {
 		return this.contractPassword;
+	}
+	
+	/**
+	 * 入力チェック
+	 */
+	public void checkInput() {
+		// 社員コードが未入力でないかチェック
+		if (StringUtil.isNullOrEmpty(employeeCode, true)) {
+			throw new BusinessException("Msg_312");
+		}
+		// パスワードが未入力でないかチェック
+		if (StringUtil.isNullOrEmpty(password, true)) {
+			throw new BusinessException("Msg_310");
+		}
 	}
 }

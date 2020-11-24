@@ -105,7 +105,7 @@ public class User extends AggregateRoot {
 		return !StringUtil.isNullOrEmpty(this.associatedPersonID.get(), false);
 	}
 	
-	public boolean comparePassword(String password) {
+	public boolean isCorrectPassword(String password) {
 		Verifier salt = PasswordHash.verifyThat(password, this.getUserID());
 		return salt.isEqualTo(this.getPassword().toString());
 	}

@@ -12,6 +12,8 @@ import org.apache.commons.codec.net.URLCodec;
 
 import com.onelogin.saml2.util.Constants;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.Value;
 import lombok.val;
@@ -19,23 +21,22 @@ import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
 import nts.arc.task.tran.AtomTask;
 import nts.gul.security.saml.SamlResponseValidator;
 import nts.gul.security.saml.SamlResponseValidator.ValidateException;
+import nts.gul.security.saml.SamlSetting;
 import nts.gul.security.saml.ValidSamlResponse;
 import nts.uk.ctx.sys.gateway.app.command.login.LoginCommandHandlerBase;
 import nts.uk.ctx.sys.gateway.app.command.login.LoginRequire;
+import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.saml.FindSamlSetting;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.saml.IdpUserAssociation;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.saml.IdpUserAssociationRepository;
-import nts.uk.ctx.sys.shared.dom.employee.EmployeeImport;
-import nts.uk.ctx.sys.shared.dom.employee.SysEmployeeAdapter;
-import nts.uk.ctx.sys.shared.dom.user.FindUser;
-import nts.uk.ctx.sys.shared.dom.user.User;
+import nts.uk.ctx.sys.shared.dom.employee.EmployeeDataManageInfoAdapter;
+import nts.uk.ctx.sys.shared.dom.user.UserRepository;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class SamlValidateCommandHandler extends LoginCommandHandlerBase<
 													SamlValidateCommand, 
 													SamlValidateCommandHandler.AuthenResult, 
-													SamlValidateCommandHandler.AuthorResult, 
 													ValidateInfo, 
 													SamlValidateCommandHandler.Require>{
 	
@@ -46,11 +47,14 @@ public class SamlValidateCommandHandler extends LoginCommandHandlerBase<
 	private IdpUserAssociationRepository idpUserAssociationRepository;
 	
 	@Inject
-	private SysEmployeeAdapter employeeAdapter;
+	private EmployeeDataManageInfoAdapter employeeDataManageInfoAdapter;
+
+	@Inject
+	private UserRepository userRepository;
 	
 	// テナント認証失敗時
 	@Override
-	protected ValidateInfo getResultOnFailTenantAuth() {
+	protected ValidateInfo tenantAuthencationFailed() {
 		return ValidateInfo.failedToAuthTenant();
 	}
 	
@@ -68,90 +72,107 @@ public class SamlValidateCommandHandler extends LoginCommandHandlerBase<
 		UkRelayState relayState = UkRelayState.deserialize(serializedRelayState);
 		
 		// RelayStateのテナント情報からSAMLSettingを取得
-		val optSamlSetting = findSamlSetting.find(relayState.getTenantCode());
-		if(!optSamlSetting.isPresent()) {
-			// SAMLSettingが取得できなかった場合
-			return AuthenResult.failed("Msg_1980");
+		SamlSetting samlSetting;
+		{
+			val opt = findSamlSetting.find(relayState.getTenantCode());
+			if(!opt.isPresent()) {
+				return AuthenResult.failed(CauseOfFailure.NO_SAML_SETTING);
+			}
+			samlSetting = opt.get();
 		}
-	
+
 		// SAMLResponseの検証処理
-		val samlSetting = optSamlSetting.get();
 		samlSetting.setSignatureAlgorithm(Constants.RSA_SHA1);
 		ValidSamlResponse validateResult;
 		try {
 			validateResult = SamlResponseValidator.validate(request, samlSetting);
 		} catch (ValidateException e) {
-			// 認証に失敗
-			return AuthenResult.failed("Msg_1988");
+			return AuthenResult.failed(CauseOfFailure.INVALID_SAML_RESPONSE);
 		}
 
 		// Idpユーザと社員の紐付けから社員を特定
 		Optional<IdpUserAssociation> optAssociation = idpUserAssociationRepository.findByIdpUser(validateResult.getIdpUser());
 		if (!optAssociation.isPresent()) {
-			// 社員特定できない
-			return AuthenResult.failed("Msg_1989");
+			return AuthenResult.failed(CauseOfFailure.NO_ASSOCIATION);
 		}
 		
-		Optional<EmployeeImport> optEmployee = employeeAdapter.getCurrentInfoBySid(optAssociation.get().getEmployeeId());
-		if (!optEmployee.isPresent()) {
-			// 社員が存在しない
-			return AuthenResult.failed("Msg_1990");
-		}
-		val employee = optEmployee.get();
-		if(employee.isDeleted()) {
-			// 社員が削除されている
-			return AuthenResult.failed("Msg_1993");
+		// 識別
+		IdentifiedEmployeeInfo identified;
+		{
+			val opt = identify(optAssociation.get().getEmployeeId());
+			if (!opt.isPresent()) {
+				return AuthenResult.failed(CauseOfFailure.EMPLOYEE_NOT_FOUND);
+			}
+			identified = opt.get();
 		}
 		
-		// 認証成功
-		Optional<User> optUser = FindUser.byEmployeeId(require, employee.getEmployeeId());
-		return AuthenResult.success(optEmployee.get(), optUser.get(), relayState.getRequestUrl());
+		return AuthenResult.success(identified, relayState.getRequestUrl());
 	}
 	
-	// 認証成功時の処理
+	/**
+	 * 識別
+	 * @param employeeId
+	 * @return
+	 */
+	private Optional<IdentifiedEmployeeInfo> identify(String employeeId) {
+
+		val employee = employeeDataManageInfoAdapter.findByEmployeeId(employeeId);
+		if (!employee.isPresent() || employee.get().isDeleted()) {
+			return Optional.empty();
+		}
+		
+		val user = userRepository.getByAssociatedPersonId(employee.get().getPersonId());
+		if (!user.isPresent()) {
+			return Optional.empty();
+		}
+		
+		return Optional.of(new IdentifiedEmployeeInfo(employee.get(), user.get()));
+	}
+
+	// 社員認証失敗時の処理
 	@Override
-	protected AuthorResult processSuccess(Require require, AuthenResult state) {
-		/* ログインチェック  */
-		return AuthorResult.of(ValidateInfo.successToValidSaml(state.requestUrl));
+	protected ValidateInfo employeeAuthenticationFailed(Require require, AuthenResult state) {
+		return ValidateInfo.failedToValidSaml(state.errorMessage);
 	}
 	
-	// 認証失敗時の処理
+	// ログイン成功時の処理
 	@Override
-	protected AuthorResult processFailure(Require require, AuthenResult state) {
-		return AuthorResult.of(ValidateInfo.failedToValidSaml(state.errorMessage));
+	protected ValidateInfo loginCompleted(Require require, AuthenResult state) {
+		return ValidateInfo.successToValidSaml(state.requestUrl);
 	}
 	
 	@Value
 	static class AuthenResult implements LoginCommandHandlerBase.AuthenticationResult{
 		
 		private boolean isSuccess;
-		private EmployeeImport employee;
-		private User user;
+		private IdentifiedEmployeeInfo identified;
 		private String requestUrl;
 		private String errorMessage;
 		private Optional<AtomTask> atomTask;
 		
-		public static AuthenResult success(EmployeeImport employeeImport, User user, String requestUrl) {
-			return new AuthenResult(true, employeeImport, user, requestUrl, null, Optional.empty());
+		public static AuthenResult success(IdentifiedEmployeeInfo identified, String requestUrl) {
+			return new AuthenResult(true, identified, requestUrl, null, Optional.empty());
 		}
 		
-		public static AuthenResult failed(String errorMessage) {
-			return new AuthenResult(false, null, null, null, errorMessage, Optional.empty());
-		}
-	}
-
-	@Value
-	static class AuthorResult implements LoginCommandHandlerBase.AuthorizationResult<ValidateInfo> {
-		Optional<AtomTask> atomTask;
-		ValidateInfo loginResult;
-		
-		public static AuthorResult of(ValidateInfo loginResult) {
-			return new AuthorResult(Optional.empty(), loginResult);
+		public static AuthenResult failed(CauseOfFailure cause) {
+			return new AuthenResult(false, null, null, cause.getErrorMessageId(), Optional.empty());
 		}
 	}
 	
-	public static interface Require extends FindUser.RequireByEmployeeId, 
-											LoginCommandHandlerBase.Require {
+	@RequiredArgsConstructor
+	@Getter
+	public enum CauseOfFailure {
+		
+		NO_SAML_SETTING("Msg_1980"),
+		INVALID_SAML_RESPONSE("Msg_1988"),
+		NO_ASSOCIATION("Msg_1989"),
+		EMPLOYEE_NOT_FOUND("Msg_1990"),
+		;
+		
+		private final String errorMessageId;
+	}
+	
+	public static interface Require extends LoginCommandHandlerBase.Require {
 	}
 	
 	@Override
@@ -161,10 +182,5 @@ public class SamlValidateCommandHandler extends LoginCommandHandlerBase<
 	
 	public class RequireImpl extends LoginRequire.BaseImpl implements Require {
 
-		@Override
-		public Optional<String> getPersonalIdByEmployeeId(String employeeId) {
-			return employeeAdapter.getCurrentInfoBySid(employeeId)
-					.map(e -> e.getPersonalId());
-		}
 	}
 }

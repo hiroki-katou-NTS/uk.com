@@ -23,25 +23,25 @@ public class SgwstPasswordPolicy extends UkJpaEntity implements Serializable {
 	@Column(name = "CONTRACT_CODE")
 	public String contractCode;
 	@Column(name = "NOTIFICATION_PASSWORD_CHANGE")
-	public BigDecimal notificationPasswordChange;
+	public int notificationPasswordChange;
 	@Column(name = "LOGIN_CHECK")
-	public BigDecimal loginCheck;
+	public boolean loginCheck;
 	@Column(name = "INITIAL_PASSWORD_CHANGE")
-	public BigDecimal initialPasswordChange;
+	public boolean initialPasswordChange;
 	@Column(name = "IS_USE")
-	public BigDecimal isUse;
+	public boolean isUse;
 	@Column(name = "HISTORY_COUNT")
-	public BigDecimal historyCount;
+	public int historyCount;
 	@Column(name = "LOWEST_DIGITS")
-	public BigDecimal lowestDigits;
+	public int lowestDigits;
 	@Column(name = "VALIDITY_PERIOD")
-	public BigDecimal validityPeriod;
+	public int validityPeriod;
 	@Column(name = "NUMBER_OF_DIGITS")
-	public BigDecimal numberOfDigits;
+	public int numberOfDigits;
 	@Column(name = "SYMBOL_CHARACTERS")
-	public BigDecimal symbolCharacters;
+	public int symbolCharacters;
 	@Column(name = "ALPHABET_DIGIT")
-	public BigDecimal alphabetDigit;
+	public int alphabetDigit;
 
 	@Override
 	protected Object getKey() {

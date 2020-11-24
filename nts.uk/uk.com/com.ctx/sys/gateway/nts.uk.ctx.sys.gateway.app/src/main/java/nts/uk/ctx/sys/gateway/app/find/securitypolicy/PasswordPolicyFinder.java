@@ -35,9 +35,10 @@ public class PasswordPolicyFinder {
 		return new PasswordPolicyDto(
 				passwordPolicy.getNotificationPasswordChange().v().intValue(), passwordPolicy.isLoginCheck(),
 				passwordPolicy.isInitialPasswordChange(), passwordPolicy.isUse(),
-				passwordPolicy.getHistoryCount().v().intValue(), passwordPolicy.getLowestDigits().v().intValue(),
-				passwordPolicy.getValidityPeriod().v().intValue(), passwordPolicy.getNumberOfDigits().v().intValue(),
-				passwordPolicy.getSymbolCharacters().v().intValue(), passwordPolicy.getAlphabetDigit().v().intValue());
+				passwordPolicy.getHistoryCount().v().intValue(), passwordPolicy.getComplexityRequirement().getMinimumLength().v(),
+				passwordPolicy.getValidityPeriod().v().intValue(), passwordPolicy.getComplexityRequirement().getNumeralDigits().v(),
+				passwordPolicy.getComplexityRequirement().getSymbolDigits().v(),
+				passwordPolicy.getComplexityRequirement().getNumeralDigits().v());
 	}
 
 }

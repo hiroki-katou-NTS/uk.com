@@ -1,9 +1,12 @@
 package nts.uk.ctx.sys.gateway.dom.login.password;
 
-import lombok.Value;
+import java.util.Optional;
+
 import lombok.val;
-import nts.arc.task.tran.AtomTask;
-import nts.uk.ctx.sys.shared.dom.user.FindUser;
+import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicy;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.validate.PasswordValidationOnLogin;
+import nts.uk.ctx.sys.shared.dom.employee.EmployeeDataMngInfoImport;
 import nts.uk.ctx.sys.shared.dom.user.User;
 
 /**
@@ -11,50 +14,92 @@ import nts.uk.ctx.sys.shared.dom.user.User;
  */
 public class AuthenticateEmployeePassword {
 
-	public static Result authenticate(Require require, String companyId, String employeeCode, String password) {
+	public static AuthenticateEmployeePasswordResult authenticate(
+			Require require,
+			String tenantCode,
+			String companyId,
+			String employeeCode,
+			String password) {
 		
-		User user;
+		// 識別
+		IdentifiedEmployeeInfo identified;
 		{
-			val userOpt = FindUser.byEmployeeCode(require, companyId, employeeCode);
-			
-			if (!userOpt.isPresent()) {
-				// 識別失敗
-				return Result.failed();
+			val opt = identify(require, companyId, employeeCode);
+			if (!opt.isPresent()) {
+				return AuthenticateEmployeePasswordResult.notFoundUser();
 			}
-			
-			user = userOpt.get();
+			identified = opt.get();
 		}
 		
-		if (!user.comparePassword(password)) {
-			// 認証失敗
+		val user = identified.getUser();
+		
+		// 認証
+		if (!user.isCorrectPassword(password)) {
 			val atomTask = FailedAuthenticateEmployeePassword.failed(require, user.getUserID());
-			return Result.failed(atomTask);
+			return AuthenticateEmployeePasswordResult.failedAuthentication(atomTask);
 		}
 		
-		return Result.succeeded();
+		// パスワードリセット
+		if (user.getPassStatus().isReset()) {
+			return AuthenticateEmployeePasswordResult.succeededWithResetPassword(identified);
+		}
+		
+		// パスワードポリシー
+		val passwordPolicyResult = checkPasswordPolicy(require, tenantCode, password, user);
+		
+		return AuthenticateEmployeePasswordResult.succeeded(identified, passwordPolicyResult);
 	}
+	
+	/**
+	 * 社員コードにより識別する
+	 * @param require
+	 * @param companyId
+	 * @param employeeCode
+	 * @return
+	 */
+	private static Optional<IdentifiedEmployeeInfo> identify(Require require, String companyId, String employeeCode) {
+
+		val employee = require.getEmployeeDataMngInfoImportByEmployeeCode(companyId, employeeCode);
+		if (!employee.isPresent()) {
+			return Optional.empty();
+		}
+		
+		val user = require.getUserByPersonId(employee.get().getPersonId());
+		if (!user.isPresent()) {
+			return Optional.empty();
+		}
+		
+		return Optional.of(new IdentifiedEmployeeInfo(employee.get(), user.get()));
+	}
+	
+	/**
+	 * パスワードポリシーへの準拠チェック
+	 * @param require
+	 * @param tenantCode
+	 * @param password
+	 * @param user
+	 * @return
+	 */
+	private static PasswordValidationOnLogin checkPasswordPolicy(
+			Require require,
+			String tenantCode,
+			String password,
+			User user) {
+		
+		return require.getPasswordPolicy(tenantCode)
+				.map(p -> p.validateOnLogin(require, user.getUserID(), password, user.getPassStatus()))
+				.orElse(PasswordValidationOnLogin.ok());
+	}
+	
 	
 	public static interface Require extends
-			FindUser.RequireByEmployeeCode,
-			FailedAuthenticateEmployeePassword.Require {
+			FailedAuthenticateEmployeePassword.Require,
+			PasswordPolicy.ValidateOnLoginRequire {
 		
-	}
-	
-	@Value
-	public static class Result {
-		boolean isSuccess;
-		AtomTask atomTask;
+		Optional<EmployeeDataMngInfoImport> getEmployeeDataMngInfoImportByEmployeeCode(String companyId, String employeeCode);
 		
-		public static Result succeeded() {
-			return new Result(true, AtomTask.of(() -> {}));
-		}
+		Optional<User> getUserByPersonId(String personId);
 		
-		public static Result failed() {
-			return failed(AtomTask.of(() -> {}));
-		}
-		
-		public static Result failed(AtomTask atomTask) {
-			return new Result(false, atomTask);
-		}
+		Optional<PasswordPolicy> getPasswordPolicy(String tenantCode);
 	}
 }

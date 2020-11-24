@@ -13,4 +13,8 @@ public enum PassStatus {
 	private PassStatus(int type) {
 		this.value = type;
 	}
+	
+	public boolean isReset() {
+		return this == Reset;
+	}
 }

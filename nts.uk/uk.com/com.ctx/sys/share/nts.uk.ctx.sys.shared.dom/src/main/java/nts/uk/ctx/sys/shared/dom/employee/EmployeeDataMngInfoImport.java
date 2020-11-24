@@ -3,6 +3,7 @@ package nts.uk.ctx.sys.shared.dom.employee;
 import lombok.Builder;
 import lombok.Data;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.bs.employee.pub.employee.EmployeeDataMngInfoExport;
 
 //社員データ管理情報 <imported>
 @Data
@@ -32,4 +33,20 @@ public class EmployeeDataMngInfoImport {
 
 	/** 外部コード */
 	private String externalCode;
+	
+	public static EmployeeDataMngInfoImport of(EmployeeDataMngInfoExport export) {
+		return new EmployeeDataMngInfoImport(
+				export.getCompanyId(),
+				export.getPersonId(),
+				export.getEmployeeId(),
+				export.getEmployeeCode(),
+				SDelAtr.valueOf(export.getDeletedStatus()),
+				export.getDeleteDateTemporary(),
+				export.getRemoveReason(),
+				export.getExternalCode());
+	}
+	
+	public boolean isDeleted() {
+		return deletedStatus == SDelAtr.DELETED;
+	}
 }

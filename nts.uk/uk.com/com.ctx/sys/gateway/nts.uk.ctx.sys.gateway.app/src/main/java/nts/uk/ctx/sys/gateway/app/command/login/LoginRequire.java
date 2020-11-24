@@ -15,15 +15,10 @@ import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthentication;
 import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationRepository;
 import nts.uk.ctx.sys.shared.dom.company.CompanyInforImport;
 import nts.uk.ctx.sys.shared.dom.company.CompanyInformationAdapter;
-import nts.uk.ctx.sys.shared.dom.user.User;
-import nts.uk.ctx.sys.shared.dom.user.UserRepository;
 import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
 
 @Stateless
 public class LoginRequire {
-	
-	@Inject
-	private UserRepository userRepository;
 	
 	@Inject
 	private CompanyInformationAdapter companyInformationAdapter;
@@ -41,7 +36,6 @@ public class LoginRequire {
 	public <R extends LoginRequire.BaseImpl> void setup(R require) {
 		
 		require.setDependencies(
-				userRepository,
 				companyInformationAdapter,
 				tenantAuthenticationRepository,
 				authorizeAdapter);
@@ -55,18 +49,15 @@ public class LoginRequire {
 	
 	public static class BaseImpl implements CommonRequire {
 
-		private UserRepository userRepository;
 		private CompanyInformationAdapter companyInformationAdapter;
 		private TenantAuthenticationRepository tenantAuthenticationRepository;
 		private LoginAuthorizeAdapter authorizeAdapter;
 
 		public void setDependencies(
-				UserRepository userRepository,
 				CompanyInformationAdapter companyInformationAdapter,
 				TenantAuthenticationRepository tenantAuthenticationRepository,
 				LoginAuthorizeAdapter authorizeAdapter) {
 
-			this.userRepository = userRepository;
 			this.companyInformationAdapter = companyInformationAdapter;
 			this.tenantAuthenticationRepository = tenantAuthenticationRepository;
 			this.authorizeAdapter = authorizeAdapter;
@@ -105,18 +96,7 @@ public class LoginRequire {
 			// TODO Auto-generated method stub
 			return null;
 		}
-
-		@Override
-		public Optional<String> getPersonalIdByEmployeeId(String employeeId) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public Optional<User> getUser(String personalId) {
-			return userRepository.getByAssociatedPersonId(personalId);
-		}
-
+		
 		@Override
 		public LoginUserRoles getLoginUserRoles(String userId) {
 			return authorizeAdapter.buildUserRoles(userId);

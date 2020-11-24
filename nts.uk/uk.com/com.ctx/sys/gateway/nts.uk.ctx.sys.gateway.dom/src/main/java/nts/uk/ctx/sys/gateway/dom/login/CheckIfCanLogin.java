@@ -13,7 +13,11 @@ import nts.uk.ctx.sys.shared.dom.user.FindUser;
  */
 public class CheckIfCanLogin {
 
-	public static Result check(Require require, String tenantCode, String companyId, String employeeId) {
+	public static Result check(Require require, IdentifiedEmployeeInfo identified) {
+
+		String tenantCode = identified.getUser().getContractCode().v();
+		String companyId = identified.getEmployee().getCompanyId();
+		String userId = identified.getUser().getUserID();
 		
 		// 会社の廃止
 		val company = require.getCompanyInforImport(companyId);
@@ -21,19 +25,9 @@ public class CheckIfCanLogin {
 			
 		}
 		
-		val user = FindUser.byEmployeeId(require, employeeId).get();
-		
 		// システム利用停止
-		val status = CheckSystemAvailability.isAvailable(require, tenantCode, companyId, user.getUserID());
+		val status = CheckSystemAvailability.isAvailable(require, tenantCode, companyId, userId);
 		if (!status.isAvailable()) {
-			
-		}
-		
-		// アカウントロック
-		boolean isAccountLocked = require.getAccountLockPolicy(tenantCode)
-				.map(p -> p.isLocked(require, user.getUserID()))
-				.orElse(false);
-		if (isAccountLocked) {
 			
 		}
 		
@@ -45,12 +39,9 @@ public class CheckIfCanLogin {
 	}
 	
 	public static interface Require extends
-			CheckSystemAvailability.Require,
-			AccountLockPolicy.RequireIsLocked,
-			FindUser.RequireByEmployeeId {
+			CheckSystemAvailability.Require {
 		
 		CompanyInforImport getCompanyInforImport(String companyId);
 		
-		Optional<AccountLockPolicy> getAccountLockPolicy(String tenantCode);
 	}
 }
