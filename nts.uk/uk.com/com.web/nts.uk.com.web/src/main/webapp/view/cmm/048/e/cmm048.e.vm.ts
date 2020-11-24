@@ -4,7 +4,6 @@ module nts.uk.com.view.cmm048.e {
   @bean()
   export class ViewModel extends ko.ViewModel {
     fileId: KnockoutObservable<string> = ko.observable('');
-    showEditAction: KnockoutObservable<boolean> = ko.observable(false);
     created(params: string) {
       const vm = this;
       vm.fileId(params);
@@ -45,6 +44,7 @@ module nts.uk.com.view.cmm048.e {
       vm.$window.modal("/view/cmm/048/f/index.xhtml").then((uri: string) => {
         if (uri) {
           $(".edit-action-container").show();
+
           $("#upload").ntsImageEditor("showByUrl", { url: uri });
         }
       });
@@ -64,7 +64,6 @@ module nts.uk.com.view.cmm048.e {
       vm.$blockui('grayout');
       let isImageLoaded = $("#upload").ntsImageEditor("getImgStatus");
       if (isImageLoaded.imgOnView) {
-        $(".edit-action-container").show();
         if ($("#upload").data("cropper") == undefined) {
           vm.closeDialog();
           return;
