@@ -78,10 +78,15 @@ public class BreakTimeOfDailyService {
 		BreakTimeOfDailyPerformance breakTimeRecord = getWithDefaul(Optional.ofNullable(dailyPerformance),
 							() -> getBreakTimeDefault(wi.getEmployeeId(), wi.getYmd()));
 
+		List<BreakTimeOfDailyAttd> breakTimeAttd = new ArrayList<>();
+		if(Optional.ofNullable(breakTimeRecord.getTimeZone()).isPresent()) {
+			breakTimeAttd = Arrays.asList(breakTimeRecord.getTimeZone());
+		}
+		
 		DailyRecordToAttendanceItemConverter converter = convertFactory.createDailyConverter()
 				.employeeId(wi.getEmployeeId())
 				.workingDate(wi.getYmd())
-				.withBreakTime(Arrays.asList(breakTimeRecord.getTimeZone()));
+				.withBreakTime(breakTimeAttd);
 
 		List<ItemValue> beforeCorrectItemValues = converter.convert(CorrectEventConts.BREAK_TIME_ITEMS);
 		
@@ -107,7 +112,12 @@ public class BreakTimeOfDailyService {
 		working.getBreakTime().removeIf(b -> b.getBreakType() == BreakType.REFER_WORK_TIME);
 		working.getBreakTime().add(breakTime.getTimeZone());
 		
-		List<ItemValue> afterCorrectItemValues = converter.withBreakTime(Arrays.asList(breakTime.getTimeZone()))
+		List<BreakTimeOfDailyAttd> breakTimeAttd = new ArrayList<>();
+		if(Optional.ofNullable(breakTime.getTimeZone()).isPresent()) {
+			breakTimeAttd = Arrays.asList(breakTime.getTimeZone());
+		}
+		
+		List<ItemValue> afterCorrectItemValues = converter.withBreakTime(breakTimeAttd)
 															.convert(CorrectEventConts.BREAK_TIME_ITEMS);
 		
 		afterCorrectItemValues.removeAll(beforeCorrectItemValues);

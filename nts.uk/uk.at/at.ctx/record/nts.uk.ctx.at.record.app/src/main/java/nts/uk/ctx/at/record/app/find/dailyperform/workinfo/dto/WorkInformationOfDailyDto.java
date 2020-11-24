@@ -143,8 +143,7 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 				backStraightAtr == NotUseAttribute.Not_use.value ? NotUseAttribute.Not_use : NotUseAttribute.Use, date, 
 				ConvertHelper.getEnum(dayOfWeek, DayOfWeek.class),
 				ConvertHelper.mapTo(this.getScheduleTimeZone(), 
-						(c) -> new ScheduleTimeSheet(c.getNo(), c.getWorking(), c.getLeave()),
-						(c) -> c.getLeave() != null && c.getWorking() != null));
+						(c) -> new ScheduleTimeSheet(c.getNo(), c.getWorking(), c.getLeave())));
 		domain.setVersion(this.version);
 		domain.getWorkInformation().setVer(this.version);
 		return domain.getWorkInformation();
