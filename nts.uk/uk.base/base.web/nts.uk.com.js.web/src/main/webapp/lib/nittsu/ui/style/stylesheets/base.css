@@ -1661,21 +1661,21 @@ button {
 /* line 118, ../sass/components/_button.scss */
 button:focus {
   border-color: #0096f2;
-  box-shadow: 0 3px 2px rgba(0,150,242, 1);
+  box-shadow: 0 3px 2px #0096f2;
 }
 /* line 121, ../sass/components/_button.scss */
 button:focus.small {
-  box-shadow: 0 3px 2px rgba(0,150,242, 1);
+  box-shadow: 0 3px 2px #0096f2;
   /* END: SAME ALL SIZES */
 }
 /* line 126, ../sass/components/_button.scss */
 button:focus.large {
-  box-shadow: 0 4px 3px rgba(0,150,242, 1);
+  box-shadow: 0 4px 3px #0096f2;
   /* END: SAME ALL SIZES */
 }
 /* line 134, ../sass/components/_button.scss */
 button:focus.x-large {
-  box-shadow: 0 5px 3px rgba(0,150,242, 1);
+  box-shadow: 0 5px 3px #0096f2;
   /* END: SAME ALL SIZES */
 }
 /* line 143, ../sass/components/_button.scss */
