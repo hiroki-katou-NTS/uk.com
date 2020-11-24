@@ -1,0 +1,42 @@
+.kaf018-f-header-empName {
+	text-align: center !important;
+	vertical-align: middle !important;
+}
+
+.kaf018-f-column-empName {
+	vertical-align: middle !important;
+	color: #0066CC;
+	text-decoration: underline;
+}
+
+.kaf018-f-header-stt {
+	text-align: center !important;
+	vertical-align: middle !important;
+	white-space: inherit !important;
+}
+
+.kaf018-f-column-stt {
+	text-align: center !important;
+	vertical-align: middle !important;
+}
+
+.kaf018-f-header-date {
+	text-align: center !important;
+	vertical-align: middle !important;
+}
+
+.kaf018-f-header-saturday {
+	text-align: center !important;
+	vertical-align: middle !important;
+	background-color: #8BD8FF !important;
+}
+
+.kaf018-f-header-sunday {
+	text-align: center !important;
+	vertical-align: middle !important;
+	background-color: #FABF8F !important;
+}
+
+.kaf018-f-column-date {
+	text-align: center;
+}
