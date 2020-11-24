@@ -8,6 +8,10 @@
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
 
+			<com:ValidatorScript>
+				 nts.uk.ctx.at.request.dom.application.lateorleaveearly.TimeDay
+			</com:ValidatorScript>
+
 			<com:stylefile path="./style.css" />
 			<com:stylefile path="../components/style.css" />
 			<com:scriptfile path="./kmk004.b.vm.js" />
@@ -35,7 +39,7 @@
 
 		<ui:define name="content">
 			<div data-bind="let: { selected: ko.observable('Com_Company') }">
-				<div id="sidebar-area" style="height: 100vh; float: left" data-bind="component: {
+				<div id="sidebar-area" style="height: calc(100vh - 90px); float: left" data-bind="component: {
 						name: 'ko-panel',
 						params:{ 
 							model: selected
