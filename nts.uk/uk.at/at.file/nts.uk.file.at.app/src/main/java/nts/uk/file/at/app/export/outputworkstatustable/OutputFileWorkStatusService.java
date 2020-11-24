@@ -108,11 +108,12 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
         // 5 Call 勤務状況表の表示内容を作成する:
         val listData = CreateDisplayContentWorkStatusDService.displayContentsOfWorkStatus(require, datePeriod,
                 employeeInfoList, workStatusOutputSetting, placeInfoList);
+        val mapListData = listData.stream().map(DisplayContentWorkStatus::getWorkPlaceCode).distinct().collect(Collectors.toList());
 
         val listRs = new ArrayList<ExportExcelDto>();
-        for (int i = 0; i < listData.size(); i++) {
-            val wplCode = listData.get(i).getWorkPlaceCode();
-            val item = listData.stream().filter(e -> e.getWorkPlaceCode().equals(wplCode)).map(j -> new DisplayContentWorkStatus(
+
+        mapListData.forEach(e -> {
+            val item = listData.stream().filter(i -> i.getWorkPlaceCode().equals(e)).map(j -> new DisplayContentWorkStatus(
                     j.getEmployeeCode(),
                     j.getEmployeeName(),
                     j.getWorkPlaceCode(),
@@ -120,11 +121,11 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
                     j.getOutputItemOneLines()
             )).collect(Collectors.toList());
             listRs.add(new ExportExcelDto(
-                    listData.get(i).getWorkPlaceCode(),
-                    listData.get(i).getWorkPlaceName(),
+                    item.get(0).getWorkPlaceCode(),
+                    item.get(0).getWorkPlaceName(),
                     item
             ));
-        }
+        });
         val result = new OutPutWorkStatusContent(
                 listRs,
                 datePeriod,
