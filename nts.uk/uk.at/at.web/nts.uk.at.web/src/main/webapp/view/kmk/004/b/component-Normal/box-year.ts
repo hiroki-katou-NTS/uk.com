@@ -60,6 +60,8 @@ module nts.uk.at.view.kmk004.b {
             if (faceData.length > 0) {
                 vm.itemList(_.orderBy(faceData, ['value'], ['desc']));
                 vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].value);
+            } else {
+                vm.selectedYear(null);
             }
         }
     }

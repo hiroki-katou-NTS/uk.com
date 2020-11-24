@@ -9,9 +9,10 @@ module nts.uk.at.kmk004.r {
 	@bean()
 	export class ViewModel extends ko.ViewModel {
 		param: IParam = {
-			screenMode: 'WORK_PLACE',
+			screenMode: 'EMPLOYMENT',
 			data: [],
-			selectedCode: null
+			selectedCode: null,
+			alreadySettingList: []
 		};
 
 		screenData: KnockoutObservable<ScreenData> = ko.observable(new ScreenData(this.param));
@@ -64,26 +65,41 @@ module nts.uk.at.kmk004.r {
 		}
 
 		initWorkPlace() {
-			let vm = this,
-				listComponentOption = {
-					isShowAlreadySet: false,
-					isMultiSelect: false,
-					isMultipleUse: true,
-					listType: ListType.WORKPLACE,
-					selectType: SelectType.SELECT_BY_SELECTED_CODE,
-					selectedCode: vm.screenData().selectedCode,
-					isDialog: true,
-					isShowNoSelectRow: false,
-					alreadySettingList: ko.observableArray([]),
-					maxRows: 9
+			const vm = this,
+				StartMode = {
+					WORKPLACE: 0,
+					DEPARTMENT: 1
+				},
+				SelectionType = {
+					SELECT_BY_SELECTED_CODE: 1,
+					SELECT_ALL: 2,
+					SELECT_FIRST_ITEM: 3,
+					NO_SELECT: 4
 				};
-
-			$('#work-place-list').ntsListComponent(listComponentOption);
+				let wpOption = {
+					isShowAlreadySet: false,
+					isMultipleUse: true,
+					isMultiSelect: false,
+					startMode: StartMode.WORKPLACE,
+					selectedId: vm.screenData().selectedCode,
+					baseDate: ko.observable(new Date()),
+					selectType: SelectionType.SELECT_FIRST_ITEM,
+					isShowSelectButton: true,
+					isDialog: true,
+					alreadySettingList: vm.screenData().alreadySettingList,
+					maxRows: 10,
+					tabindex: 1,
+					systemType: 2
+				};
+			var windowSize = nts.uk.ui.windows.getSelf();
+            windowSize.$dialog.dialog("option", "width", 500);
+            windowSize.$dialog.dialog("option", "height", 530);
+			$('#work-place-list').ntsTreeComponent(wpOption);
 		}
 
 		initEmployment() {
 			let vm = this,
-				listComponentOption = {
+				empOption = {
 					isShowAlreadySet: false,
 					isMultiSelect: false,
 					listType: ListType.EMPLOYMENT,
@@ -91,16 +107,15 @@ module nts.uk.at.kmk004.r {
 					selectedCode: vm.screenData().selectedCode,
 					isDialog: true,
 					isShowNoSelectRow: false,
-					alreadySettingList: ko.observableArray([]),
+					alreadySettingList: vm.screenData().alreadySettingList,
 					maxRows: 9
 				};
-
-			$('#employment-list').ntsListComponent(listComponentOption);
+			$('#employment-list').ntsListComponent(empOption);
 		}
 
 		initEmployee() {
 			let vm = this;
-			let listComponentOption = {
+			let employeeOption = {
 				isShowAlreadySet: false,
 				isMultiSelect: false,
 				listType: ListType.EMPLOYEE,
@@ -109,14 +124,17 @@ module nts.uk.at.kmk004.r {
 				selectedCode: vm.screenData().selectedCode,
 				isDialog: true,
 				isShowNoSelectRow: false,
-				alreadySettingList: ko.observableArray([]),
+				alreadySettingList: vm.screenData().alreadySettingList,
 				isShowWorkPlaceName: false,
 				isShowSelectAllButton: false,
 				disableSelection: false,
 				maxRows: 9
 			};
 
-			$('#employee-list').ntsListComponent(listComponentOption);
+			$('#employee-list').ntsListComponent(employeeOption);
+			var windowSize = nts.uk.ui.windows.getSelf();
+            windowSize.$dialog.dialog("option", "width", 380);
+            windowSize.$dialog.dialog("option", "height", 450);
 
 		}
 	}
@@ -124,10 +142,12 @@ module nts.uk.at.kmk004.r {
 	export class ScreenData {
 		data: KnockoutObservableArray<any> = ko.observableArray([]);
 		selectedCode: KnockoutObservable<string> = ko.observable();
+		alreadySettingList: KnockoutObservableArray<any> = ko.observableArray([]);
 		constructor(param?: IParam) {
 			if (param) {
 				this.data(param.data);
 				this.selectedCode(param.selectedCode);
+				this.alreadySettingList(param.alreadySettingList);
 			}
 		}
 
@@ -137,7 +157,10 @@ module nts.uk.at.kmk004.r {
 		screenMode: 'WORK_PLACE' | 'EMPLOYMENT' | 'EMPLOYEE';
 		data: Array<any>;//EMPLOYEE = UnitModel
 		selectedCode: string;
+		alreadySettingList: Array<any>;
 	}
+
+
 
 	enum ListType {
 		EMPLOYMENT = 1,

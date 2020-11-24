@@ -5,7 +5,7 @@ module nts.uk.at.view.kmk004.b {
 	<div class="sidebar-content-header">
 		<div class="title" data-bind="i18n: 'Com_Company'"></div>
 		<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmk/004/a/index.xhtml' },i18n: 'KMK004_224'"></a>
-		<button class="proceed" data-bind="i18n: 'KMK004_225', click: add"></button>
+		<button class="proceed" data-bind="i18n: 'KMK004_225', click: add, enable: existYear"></button>
 		<button class="danger" data-bind="i18n: 'KMK004_227'"></button>
 	</div>
 	<div class="view-b">
@@ -13,8 +13,8 @@ module nts.uk.at.view.kmk004.b {
 			<div data-bind="i18n: 'KMK004_228'"></div>
 			<hr></hr>
 			<div class="header_title">
-				<div data-bind="ntsFormLabel: {}, i18n: 'KMK004_229'"></div>
-				<button data-bind="i18n: 'KMK004_231'"></button>
+				<div data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_229'"></div>
+				<button data-bind="i18n: 'KMK004_231', click: openDialogF"></button>
 			</div>
 			<div class="header_content">
 				<div data-bind="component: {
@@ -24,7 +24,7 @@ module nts.uk.at.view.kmk004.b {
 					}
 				}"></div>
 			</div>
-			<div data-bind="ntsFormLabel: {}, i18n: 'KMK004_232'"></div>
+			<div data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_232'"></div>
 		</div>
 		<div class="content">
 			<div>
@@ -42,7 +42,8 @@ module nts.uk.at.view.kmk004.b {
 					name: 'time-work',
 					params:{
 						selectedYear: selectedYear,
-						change: changeYear
+						change: changeYear,
+						checkEmployee: checkEmployee
 					}
 				}"></div>
 			</div>
@@ -63,10 +64,19 @@ module nts.uk.at.view.kmk004.b {
 		
 		public modeCheckChangeSetting: KnockoutObservable<string> = ko.observable('');
 		public selectedYear: KnockoutObservable<number| null> = ko.observable(null);
-        public changeYear: KnockoutObservable<boolean> = ko.observable(true);
+		public changeYear: KnockoutObservable<boolean> = ko.observable(true);
+		public checkEmployee: KnockoutObservable<boolean> = ko.observable(false);
+		public existYear: KnockoutObservable<boolean> = ko.observable(false);
 
 		created(params: Params) {
+			const vm = this;
 
+			vm.selectedYear
+			.subscribe(() => {
+				if(vm.selectedYear != null) {
+					vm.existYear(true);
+				}
+			});
 		}
 
 		mounted() {
@@ -76,6 +86,14 @@ module nts.uk.at.view.kmk004.b {
 		add() {
 			const vm = this;
 			vm.modeCheckChangeSetting.valueHasMutated();
+		}
+
+		openDialogF() {
+			const vm = this;
+			const params = { type: 'Com_Company'};
+			vm.$window
+				.storage('KMK004F', params)
+				.then(() => vm.$window.modal('at', '/view/kmk/004/f/index.xhtml'));
 		}
     }
 }

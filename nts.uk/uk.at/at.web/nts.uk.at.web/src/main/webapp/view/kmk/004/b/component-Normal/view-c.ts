@@ -23,7 +23,7 @@ module nts.uk.at.view.kmk004.b {
 					<hr></hr>
 					<div data-bind="i18n: ''"></div>
 					<div>
-						<div data-bind="ntsFormLabel: {}, i18n: 'KMK004_229'"></div>
+						<div data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_229'"></div>
 						<!-- ko if: modeCheckSetting -->
 							<button data-bind="i18n: 'KMK004_239'"></button>
 						<!-- /ko -->
@@ -39,7 +39,7 @@ module nts.uk.at.view.kmk004.b {
 							}
 						}"></div>
 					<!-- /ko -->
-					<div class="label1" data-bind="ntsFormLabel: {}, i18n: 'KMK004_232'"></div>
+					<div class="label1" data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_232'"></div>
 					<div class="content-data">
 						<div class="year">
 							<div>
@@ -48,12 +48,17 @@ module nts.uk.at.view.kmk004.b {
 							<div class= "box-year" data-bind="component: {
 								name: 'box-year',
 								params:{
+									selectedYear: selectedYear,
+									change: changeYear
 								}
 							}"></div>
 						</div>
 						<div class= "time-work" data-bind="component: {
 							name: 'time-work',
 							params:{
+								selectedYear: selectedYear,
+								change: changeYear,
+								checkEmployee: checkEmployee
 							}
 						}"></div>
 					</div>
@@ -75,6 +80,9 @@ module nts.uk.at.view.kmk004.b {
 
 		public modeCheckSetting: KnockoutObservable<boolean> = ko.observable(true);
 		public modeCheckChangeSetting: KnockoutObservable<string> = ko.observable('');
+		public selectedYear: KnockoutObservable<number| null> = ko.observable(null);
+		public changeYear: KnockoutObservable<boolean> = ko.observable(true);
+		public checkEmployee: KnockoutObservable<boolean> = ko.observable(false);
 		
 		created(params: Params) {
 

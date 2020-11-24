@@ -1,6 +1,6 @@
 #sidebar-area ~ div {
 	float: left;
-	width: 100vh;
+	height: calc(100vh - 90px);
 }
 
 .sidebar-content-header .title {
@@ -10,7 +10,7 @@
 /*ViewC*/
 .view-c-kmk004 {
 	padding: 10px;
-	width: 100vw;
+	width: calc(100vw - 158px);
 	float: left;
 }
 
@@ -31,7 +31,7 @@
 }
 
 .sidebar-content-header {
-	width: 100vw;
+	width: calc(100vw -100px);
 }
 
 .view-c-kmk004 .right-content .setting {
@@ -61,7 +61,7 @@
 /* View D */
 .view-d-kmk004 {
 	padding: 10px;
-	width: 100vw;
+	width: calc(100vw - 158px);
 	float: left;
 }
 
@@ -112,7 +112,7 @@
 /* View E */
 .view-e-kmk004 {
 	padding: 10px;
-	width: 100vw;
+	width: calc(100vw - 158px);
 	float: left;
 }
 
@@ -207,6 +207,20 @@
 	width: 60px;
 	text-align: center;
 	height: 13px;
+}
+
+.list-time .check-row1 {
+	border-top: solid 1px #AAAAAA;
+	border-left: solid 1px #AAAAAA;
+	border-bottom: solid 1px #AAAAAA;
+	background: #97D155;
+}
+
+.list-time .check-column1 {
+	padding: 3px;
+	border-left: solid 1px #AAAAAA;
+	border-bottom: solid 1px #AAAAAA;
+	text-align: center;
 }
 
 /* View B */

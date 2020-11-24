@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+    <ui:composition template="/master/dialog.xhtml">
+        <ui:define name="htmlHead">
+
+            <com:scriptfile set="IGNITE" />
+
+            <com:ValidatorScript>
+                nts.uk.ctx.at.shared.dom.common.DailyTime
+                nts.uk.ctx.at.shared.dom.common.WeeklyTime
+            </com:ValidatorScript>
+
+            <script>var dialogSize = { width: 500, height: 610 };</script>
+            <com:stylefile path="./style.css" />
+            <com:scriptfile path="./kmk004.f.vm.js" />
+
+        </ui:define>
+        <ui:define name="content">
+            <div id="contents-area">
+                <div class="view-f">
+                    <label class="title" data-bind="i18n: input.type"></label>
+                    <hr>
+                    </hr>
+                    <!-- ko if: checkCompany -->
+                        <div class="node" data-bind="i18n: 'KMK004_344'"></div>
+                    <!-- /ko -->
+                    <div class="cf">
+                        <div data-bind="ntsFormLabel: { inline: true, required: true}, i18n: 'KMK004_239'"></div>
+                        <div class="content-change">
+                            <label data-bind="i18n: 'KMK004_240'"></label>
+                            <input tabindex="1" class="lable-input input-forcus" data-bind="ntsTimeEditor: {value: model.workingTimeSetting.dailyTime, inputFormat: 'H:mm',
+                                constraint: 'DailyTime'}" />
+                            <label data-bind="i18n: 'KMK004_241'"></label>
+                            <input tabindex="2" class="lable-input" data-bind="ntsTimeEditor: {value: model.workingTimeSetting.weeklyTime, inputFormat: 'H:mm',
+                                constraint: 'WeeklyTime'}" />
+                        </div>
+                        <div data-bind="ntsFormLabel: { inline: true }, i18n: 'KMK004_242'"></div>
+                        <div tabindex="3" class="content-change" data-bind="ntsSwitchButton: {
+                            options: $vm.swInsurrance,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: valueInsurrance
+                            }">
+                        </div>
+                        <div class="list-check-box">
+                            <div tabindex="4"
+                                data-bind="ntsCheckBox: { checked: model.regularWorkTimeAggrSet.aggregateTimeSet.legalOverTimeWork, enable: valueInsurrance() == 1}">
+                                #{i18n.getText('KMK004_246')}
+                            </div>
+                            <div tabindex="5"
+                                data-bind="ntsCheckBox: { checked: model.regularWorkTimeAggrSet.aggregateTimeSet.legalHoliday, enable: valueInsurrance() == 1}">
+                                #{i18n.getText('KMK004_247')}</div>
+                        </div>
+                        <div data-bind="ntsFormLabel: { inline: true}, i18n: 'KMK004_248'"></div>
+                        <div tabindex="6" class="content-change" data-bind="ntsSwitchButton: {
+                            options: swInsurrance,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: valueSurcharges}">
+                        </div>
+                        <div class="list-check-box">
+                            <div tabindex="7"
+                                data-bind="ntsCheckBox: { checked: model.regularWorkTimeAggrSet.excessOutsideTimeSet.legalOverTimeWork, enable: valueSurcharges() == 1}">
+                                #{i18n.getText('KMK004_252')}
+                            </div>
+                            <div tabindex="8"
+                                data-bind="ntsCheckBox: { checked: model.regularWorkTimeAggrSet.excessOutsideTimeSet.legalHoliday, enable: valueSurcharges() == 1}">
+                                #{i18n.getText('KMK004_253')}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="functions-area-bottom">
+                <button tabindex="9" class="proceed x-large button1" data-bind="i18n: 'KMK004_234'"></button>
+                <button tabindex="10" class="large" data-bind="i18n: 'KMK004_235', click: closeDialog"></button>
+                <!-- ko if: checkCompany -->
+                    <button tabindex="11" class="danger button3" data-bind="i18n: 'KMK004_236'"></button>
+                <!-- /ko -->
+            </div>
+        </ui:define>
+    </ui:composition>
+</body>
+
+</html>

@@ -28,7 +28,7 @@ module nts.uk.at.view.kmk004.b {
 
                     isShowAlreadySet: true,
 						isMultipleUse: false,
-						isMultiSelect: true,
+						isMultiSelect: false,
 						startMode: 0,
 						selectedId: vm.selectedId,
 						baseDate: vm.baseDate,

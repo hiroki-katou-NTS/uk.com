@@ -14,15 +14,19 @@ const template = `
 			<button data-bind="click: openQDialog , i18n: 'KMK004_233'" ></button>
 		</div>
 	
-		<div class="div_line" style="display:flex;">
+		<div class="div_line" >
 		
-			<div style="width:90px;" id="year-list" data-bind="ntsListBox: {
+			<div id="year-list" data-bind="ntsListBox: {
 				options: screenData().yearList,
 				optionsValue: 'year',
 				optionsText: 'yearName',
 				multiple: false,
 				value: screenData().selectedYear,
-				rows:5
+				rows:5,
+				columns:[
+				{ key: 'isNotSave', length: 1 },
+				{ key: 'yearName', length: 4 }
+				]
 				}"></div>
 			
 			<div id="monthly-list">
@@ -78,7 +82,7 @@ const template = `
 									
 				</table>		
 			</div>
-			<div style="margin-left: 10px;" ><a id="show-explan" class="hyperlink" data-bind="i18n: 'KMK004_269'"></a> </div>
+			<div style="margin-left: 10px;    display: inline-block;" ><a id="show-explan" class="hyperlink" data-bind="i18n: 'KMK004_269'"></a> </div>
 		</div>
 	</div>
 	<div id="explan-popup">
@@ -127,7 +131,16 @@ class MonthlyWorkingHours extends ko.ViewModel {
 
 	openQDialog() {
 		let vm = this;
-		vm.$window.modal('/view/kmk/004/q/index.xhtml', { years: _.map(vm.screenData().yearList(), (yearItem: YearItem) => { return yearItem.year; }) });
+		vm.$window.modal('/view/kmk/004/q/index.xhtml', { years: _.map(vm.screenData().yearList(), (yearItem: YearItem) => { return yearItem.year; }) }).then((result) => {
+			if (result) {
+				let yearList = vm.screenData().yearList();
+				yearList.push(new YearItem(Number(result.year), true));
+				vm.screenData().yearList(_.orderBy(yearList, ['year'], ['desc']));
+				vm.screenData().updateMode(false);
+				vm.screenData().selectedYear(vm.screenData().yearList()[0].year);
+				
+			}
+		});
 	}
 
 	calTotalTime(attributeName: string) {

@@ -201,8 +201,8 @@ module nts.uk.at.view.kmk004.b {
     }
 
     class TabSetting {
-        daily: KnockoutObservable<string> = ko.observable('8:00');
-        weekly: KnockoutObservable<string> = ko.observable('40:00');
+        daily: KnockoutObservable<string> = ko.observable('');
+        weekly: KnockoutObservable<string> = ko.observable('');
         deforWorkSurchargeWeekMonth: KnockoutObservable<boolean> = ko.observable(true);
         deforWorkLegalOverTimeWork: KnockoutObservable<boolean> = ko.observable(true);;
         deforWorkLegalHoliday: KnockoutObservable<boolean> = ko.observable(true);;
@@ -214,16 +214,28 @@ module nts.uk.at.view.kmk004.b {
             const self = this;
 
             if (params) {
-                var daily = params.daily % 60 + '';
-                if (daily.length < 2) {
-                    daily = daily + '0';
+                var firstDaily = '';
+                var lastDaily = params.daily % 60 + '';
+
+                if (params.daily / 60 > 1) {
+                    firstDaily = Math.floor(params.daily / 60) + '';
                 }
-                var weekly = params.weekly % 60 + '';
-                if (weekly.length <2) {
-                    weekly = weekly + '0';
+
+                if (lastDaily.length < 2) {
+                    lastDaily = '0' + lastDaily;
                 }
-                self.daily(params.daily / 60 + ':' + daily);
-                self.weekly(params.weekly / 60 + ':' + weekly);
+                var firstWeekly = '';
+
+                if (params.weekly / 60 > 1) {
+                    firstWeekly = Math.floor(params.weekly / 60) + '';
+                }
+
+                var lastWeekly = params.weekly % 60 + '';
+                if (lastWeekly.length < 2) {
+                    lastWeekly = '0' + lastWeekly;
+                }
+                self.daily(firstDaily + ':' + lastDaily);
+                self.weekly(firstWeekly + ':' + lastWeekly);
                 self.deforWorkSurchargeWeekMonth(params.deforWorkSurchargeWeekMonth);
                 self.deforWorkLegalOverTimeWork(params.deforWorkLegalOverTimeWork);
                 self.deforWorkLegalHoliday(params.deforWorkLegalHoliday);
