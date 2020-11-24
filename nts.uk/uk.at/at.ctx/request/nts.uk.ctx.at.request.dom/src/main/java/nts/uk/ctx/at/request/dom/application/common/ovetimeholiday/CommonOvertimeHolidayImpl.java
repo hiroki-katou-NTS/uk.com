@@ -1302,7 +1302,6 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 			Optional<String> workTimeCode,
 			List<TimeZone> timeZones,
 			List<BreakTimeSheet> breakTimes) {
-		breakTimes.stream().map(x -> x.getStartTime().v()).collect(Collectors.toList());
 		// 1日分の勤怠時間を仮計算 (RQ23)
 		List<ApplicationTime> output = new ArrayList<>();
 		ApplicationTime applicationTime = new ApplicationTime();
