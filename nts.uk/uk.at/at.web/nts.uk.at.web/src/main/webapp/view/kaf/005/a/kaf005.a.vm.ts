@@ -308,10 +308,12 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			_.forEach(overTime, (item: OverTime) => {
 				if (!_.isNil(item.applicationTime())) {
 					let overtimeApplicationSetting = {} as OvertimeApplicationSetting;
-					overtimeApplicationSetting.applicationTime = item.applicationTime();
-					overtimeApplicationSetting.frameNo = Number(item.frameNo);
-					overtimeApplicationSetting.attendanceType = AttendanceType.NORMALOVERTIME;
-					applicationTime.applicationTime.push(overtimeApplicationSetting);
+					if (item.applicationTime() > 0) {
+						overtimeApplicationSetting.applicationTime = item.applicationTime();
+						overtimeApplicationSetting.frameNo = Number(item.frameNo);
+						overtimeApplicationSetting.attendanceType = AttendanceType.NORMALOVERTIME;
+						applicationTime.applicationTime.push(overtimeApplicationSetting);						
+					}
 				}
 			});
 			let holidayTime = vm.holidayTime() as Array<HolidayTime>;
@@ -604,12 +606,83 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			self.restTime(_.clone(restTimeArray));
 		}
 		
-		setColorForOverTime(isCalculation: Boolean, overTimes: Array<OverTime>) {
+		setColorForOverTime(isCalculation: Boolean, dataSource: DisplayInfoOverTime) {
+			const self = this;
 			if (!isCalculation) {
 				
 				return;
 			}
+			let overTimes = self.overTime() as Array<OverTime>;
+			let overStateOutput = dataSource.calculationResultOp.overStateOutput;
 			
+			
+			_.forEach(overTimes, (item: OverTime) => {
+				if (item.type == AttendanceType.NORMALOVERTIME) {
+					let backgroundColor = '';
+					// ・事前申請超過：「残業申請の表示情報．計算結果．事前申請・実績の超過状態」を確認する
+					if (!_.isNil(overStateOutput.advanceExcess)) {
+						let excessStateDetail = overStateOutput.advanceExcess.excessStateDetail;
+						if (!_.isEmpty(excessStateDetail)) {
+							let result = _.find(excessStateDetail, (i: ExcessStateDetail) => {
+								return i.frame == Number(item.frameNo) && i.type == AttendanceType.NORMALOVERTIME;
+							});
+							if (!_.isNil(result)) {
+								if (result.excessState == ExcessState.EXCESS_ALARM) {
+									backgroundColor = BACKGROUND_COLOR.bgC4;
+								}
+							}
+						}
+						
+					}
+					
+					
+					// ・実績申請超過：「残業申請の表示情報．計算結果．事前申請・実績の超過状態」を確認する
+					if (!_.isNil(overStateOutput.achivementExcess)) {
+						let excessStateDetail = overStateOutput.advanceExcess.excessStateDetail;
+						if (!_.isEmpty(excessStateDetail)) {
+							let result = _.find(excessStateDetail, (i: ExcessStateDetail) => {
+								return i.frame == Number(item.frameNo) && i.type == AttendanceType.NORMALOVERTIME;
+							});
+							if (!_.isNil(result)) {
+								if (result.excessState == ExcessState.EXCESS_ERROR) {
+									backgroundColor = BACKGROUND_COLOR.bgC2;
+								} else if (result.excessState == ExcessState.EXCESS_ALARM) {
+									backgroundColor = BACKGROUND_COLOR.bgC3;
+								}
+								
+							}
+						}
+						
+					}
+					
+					// ・計算値：「残業申請の表示情報．計算結果」を確認する
+					if (!_.isNil(dataSource.calculationResultOp.applicationTimes)) {
+						let applicationTime = dataSource.calculationResultOp.applicationTimes[0].applicationTime;
+						if (!_.isEmpty(applicationTime)) {
+							let result = _.find(applicationTime, (i: OvertimeApplicationSetting) => {
+								return i.frameNo == Number(item.frameNo) && i.attendanceType == AttendanceType.NORMALOVERTIME;
+							});
+							if (!_.isNil(result)) {
+								if (result.applicationTime > 0) {
+									backgroundColor = BACKGROUND_COLOR.bgC1;									
+								}
+							}
+						}
+					}
+					
+					item.backgroundColor(backgroundColor);
+					
+					
+				} else if (item.type == AttendanceType.BONUSPAYTIME){
+					
+					
+					
+				} else if (item.type == AttendanceType.BONUSSPECIALDAYTIME) {
+					
+					
+					
+				}
+			});
 			
 			
 		}
@@ -625,12 +698,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					overTime.frameNo = String(item.overtimeWorkFrNo);
 					overTime.displayNo = ko.observable(item.overtimeWorkFrName);
 					overTime.applicationTime = ko.observable(self.isCalculation ? 0 : null);
-					overTime.preTime = ko.observable(self.isCalculation ? 0 : null);
-					overTime.actualTime = ko.observable(self.isCalculation ? 0 : null);
+					overTime.preTime = ko.observable(null);
+					overTime.actualTime = ko.observable(null);
 					overTime.type = AttendanceType.NORMALOVERTIME;
 					overTime.visible = ko.computed(() => {
 						return self.visibleModel.c2();
 					}, self);
+					overTime.backgroundColor = ko.observable('');
 					overTimeArray.push(overTime);
 			});
 			// A6_27 A6_32 of row
@@ -639,12 +713,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				overTime1.frameNo = String(_.isEmpty(overTimeArray) ? 0 : overTimeArray.length);
 				overTime1.displayNo = ko.observable(self.$i18n('KAF005_63'));
 				overTime1.applicationTime = ko.observable(self.isCalculation ? 0 : null);
-				overTime1.preTime = ko.observable(self.isCalculation ? 0 : null);
-				overTime1.actualTime = ko.observable(self.isCalculation ? 0 : null);
+				overTime1.preTime = ko.observable(null);
+				overTime1.actualTime = ko.observable(null);
 				overTime1.type = AttendanceType.BONUSPAYTIME;
 				overTime1.visible = ko.computed(() => {
 						return self.visibleModel.c2() && self.visibleModel.c16();
 					}, self);
+				overTime1.backgroundColor = ko.observable('');	
 				overTimeArray.push(overTime1);
 				
 				let overTime2 = {} as OverTime;
@@ -656,7 +731,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				
 				overTime2.visible = ko.computed(() => {
 						return self.visibleModel.c2() && self.visibleModel.c16();
-					}, self);				
+					}, self);
+					
+				overTime2.backgroundColor = ko.observable('');					
 				overTimeArray.push(overTime1);
 				
 				
@@ -686,10 +763,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					let applicationTime = apOptional.applicationTime;
 					if (!_.isEmpty(applicationTime)) {
 						_.forEach(applicationTime, (item: OvertimeApplicationSetting) => {
-							let findOverTimeArray = _.find(overTimeArray, { frameNo: item.frameNo }) as HolidayTime;
+							let findOverTimeArray = _.find(overTimeArray, { frameNo: item.frameNo }) as OverTime;
 
-							if (!findOverTimeArray && item.attendanceType == AttendanceType.NORMALOVERTIME) {
-								findOverTimeArray.preApp(item.applicationTime);
+							if (!_.isNil(findOverTimeArray) && item.attendanceType == AttendanceType.NORMALOVERTIME) {
+								findOverTimeArray.preTime(item.applicationTime);
 							}
 						})
 					}
@@ -702,9 +779,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					let applicationTime = infoWithDateApplicationOp.applicationTime.applicationTime;
 					if (!_.isEmpty(applicationTime)) {
 						_.forEach(applicationTime, (item: OvertimeApplicationSetting) => {
-							let findOverTimeArray = _.find(overTimeArray, { frameNo: item.frameNo }) as HolidayTime;
+							let findOverTimeArray = _.find(overTimeArray, { frameNo: item.frameNo }) as OverTime;
 
-							if (!findOverTimeArray && item.attendanceType == AttendanceType.NORMALOVERTIME) {
+							if (!_.isNil(findOverTimeArray) && item.attendanceType == AttendanceType.NORMALOVERTIME) {
 								findOverTimeArray.actualTime(item.applicationTime);
 							}
 						})
@@ -713,7 +790,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			}
 
 			self.overTime(overTimeArray);
-			self.setColorForOverTime(self.isCalculation, self.overTime());
+			self.setColorForOverTime(self.isCalculation, self.dataSource);
 
 		}
 
@@ -867,7 +944,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		}
 		getFormatTime(number: number) {
 			if (_.isNil(number)) return '';
-			return (formatTime("ClockDay_Short_HM", 10));
+			return (formatTime("Time_Short_HM", number));
 		}
 		createVisibleModel(res: DisplayInfoOverTime) {
 			const self = this;
@@ -1115,6 +1192,18 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		calculate: 'at/request/application/overtime/calculate',
 		breakTimes: 'at/request/application/overtime/breakTimes'
 	}
+	
+	const BACKGROUND_COLOR = {
+		// 計算値
+		bgC1: '#F69164',
+		// 超過エラー
+		bgC2: '#FD4D4D',
+		// 超過アラーム
+		bgC3: '#F6F636',
+		// 事前超過
+		bgC4: '#ffc0cb'
+		
+	}
 	export class VisibleModel {
 		public c2: KnockoutObservable<Boolean>;
 		public c6: KnockoutObservable<Boolean>;
@@ -1195,8 +1284,40 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 	export interface CalculationResult {
 		flag: number;
 		overTimeZoneFlag: number;
-		overStateOutput: any;
+		overStateOutput: OverStateOutput;
 		applicationTimes: Array<ApplicationTime>;
+	}
+	export interface OverStateOutput {
+		isExistApp: boolean;
+		advanceExcess: OutDateApplication;
+		achivementStatus: number;
+		achivementExcess: OutDateApplication;
+	}
+	export enum ExcessState {
+		NO_EXCESS,
+		EXCESS_ALARM,
+		EXCESS_ERROR
+	}
+	export interface OutDateApplication {
+		flex: number;
+		excessStateMidnight: Array<ExcessStateMidnight>;
+		overTimeLate: number;
+		excessStateDetail: Array<ExcessStateDetail>;
+		
+	}
+	export interface ExcessStateMidnight {
+		excessState: number;
+		legalCfl: number;
+	}
+	export enum StaturoryAtrOfHolidayWork {
+		WithinPrescribedHolidayWork,
+		ExcessOfStatutoryHolidayWork,
+		PublicHolidayWork
+	}
+	export interface ExcessStateDetail {
+		frame: number;
+		type: number;
+		excessState: number
 	}
 	export interface ParamBreakTime {
 		companyId: string;

@@ -2,7 +2,8 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 	import AttendanceType = nts.uk.at.view.kaf005.a.viewmodel.AttendanceType;
 	const template = `
 <div class="container cf" data-bind="with: $parent">
-	<div class="cf valign-top control-group" data-bind="visible: visibleModel.c18()">
+	<div class="cf valign-top control-group"
+		data-bind="visible: visibleModel.c18()">
 		<!--A5_1 休憩時間ラベル-->
 		<div class="cm-column" style="display: inline-block; width: 100px">
 			<div class="lblTitle pull-left"
@@ -53,18 +54,18 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 			</table>
 		</div>
 	</div>
-	
-	
-	
+
+
+
 	<!-- calculate button A5_8-->
 	<div data-bind="if: visibleModel.c7()" style="margin-bottom: 20px">
 		<button style="width: 100px; margin-left: 200px"
 			data-bind="text: $i18n('KAF005_43'), click: calculate"
 			class="caret-bottom caret-inline"></button>
 	</div>
-	
-	
-	
+
+
+
 	<!-- over time hours -->
 	<div class="cf valign-top control-group" data-bind="visible: true">
 		<!--A6_1 残業時間ラベル-->
@@ -99,9 +100,10 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 						<!--A6_7 残業時間名称-->
 						<td class="header" data-bind="text: displayNo"></td>
 						<!--A6_8 残業申請時間入力-->
-						<td><input tabindex="12"
-							class="right-content overtimeHoursCheck"
+						<td data-bind="style: {'background-color': backgroundColor()}"><input
+							tabindex="12" class="right-content overtimeHoursCheck"
 							data-bind=" 
+								style: {'background-color': backgroundColor()},
 								ntsTimeEditor: { 
 									value: applicationTime,
 									option: {width: '85px', timeWithDay: true},
@@ -142,9 +144,10 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 						<!--A6_7 残業時間名称-->
 						<td class="header" data-bind="text: displayNo"></td>
 						<!--A6_8 残業申請時間入力-->
-						<td><input tabindex="12"
-							class="right-content overtimeHoursCheck"
+						<td data-bind="style: {'background-color': backgroundColor()}"><input
+							tabindex="12" class="right-content overtimeHoursCheck"
 							data-bind=" 
+								style: {'background-color': backgroundColor()},
 								ntsTimeEditor: { 
 									value: applicationTime,
 									option: {width: '85px', timeWithDay: true},
@@ -166,7 +169,8 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 
 
 	<!-- holiday time -->
-	<div class="cf valign-top control-group" data-bind="visible: visibleModel.c30()">
+	<div class="cf valign-top control-group"
+		data-bind="visible: visibleModel.c30()">
 		<!--A5_1 休憩時間ラベル-->
 		<div class="cm-column" style="display: inline-block; width: 100px">
 			<div class="lblTitle pull-left"
@@ -218,7 +222,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 				</tbody>
 			</table>
 		</div>
-		
+
 		<div class="table-time holidayTime2">
 			<table id="fixed-table-holiday-1">
 				<colgroup>
@@ -253,10 +257,10 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 				</tbody>
 			</table>
 		</div>
-		
-		
-		
-		
+
+
+
+
 	</div>
 
 
@@ -264,6 +268,9 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 
 
 </div>
+
+
+
 
 
 
@@ -285,6 +292,8 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 		
 		holidayTimeMountTable1: boolean = false;
 		holidayTimeMountTable2: boolean = false;
+		
+		backgroundColor: KnockoutObservable<Boolean> = ko.observable(false);
 		
 		created(params: any) {
 			const self = this;
@@ -349,6 +358,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 		actualTime?: KnockoutObservable<number>;
 		type: AttendanceType;
 		visible: KnockoutObservable<Boolean>;
+		backgroundColor: KnockoutObservable<string>;
 	}
 	export interface RestTime {
 		frameNo: string;
@@ -365,6 +375,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 		actualTime?: KnockoutObservable<number>;
 		type: AttendanceType;
 		visible: KnockoutObservable<Boolean>;
+		backgroundColor: KnockoutObservable<string>;
 	}
 	
 	
