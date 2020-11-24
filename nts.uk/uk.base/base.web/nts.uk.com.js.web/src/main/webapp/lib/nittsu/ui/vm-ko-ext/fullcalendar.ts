@@ -652,19 +652,13 @@ module nts.uk.ui.components.fullcalendar {
             }
 
             dataEvent.alt
-                .subscribe((c) => {
-                    $el.attr('alt', c + '');
-                });
+                .subscribe((c) => $el.attr('alt', +c));
 
             dataEvent.ctrl
-                .subscribe((c) => {
-                    $el.attr('ctrl', c + '');
-                });
+                .subscribe((c) => $el.attr('ctrl', +c));
 
             dataEvent.shift
-                .subscribe((c) => {
-                    $el.attr('shift', c + '');
-                });
+                .subscribe((c) => $el.attr('shift', +c));
 
             dataEvent.alt.valueHasMutated();
             dataEvent.ctrl.valueHasMutated();
