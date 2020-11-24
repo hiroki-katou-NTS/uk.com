@@ -28,26 +28,26 @@ public class GetWorkplaceBasicSetting {
 	@Inject
 	private WkpDeforLaborMonthActCalSetRepo monthActCalSetRepo;
 
-	public DeforLaborWkpDto get(String wkpId) {
+	public DeforLaborComDto get(String wkpId) {
 
 		String cid = AppContexts.user().companyId();
 		
-		DeforLaborWkpDto deforLaborWkpDto = new DeforLaborWkpDto();
+		DeforLaborComDto deforLaborDto = new DeforLaborComDto();
 
 		// 労働時間設定
 		Optional<DeforLaborTimeWkp> optTimeWkp = timeWkpRepo.find(cid, wkpId);
 
 		if (optTimeWkp.isPresent()) {
-			deforLaborWkpDto.setDeforLaborTimeWkp(WorkingTimeSettingDto.fromDomain(optTimeWkp.get()));
+			deforLaborDto.setDeforLaborTimeComDto(WorkingTimeSettingDto.fromDomain(optTimeWkp.get()));
 		}
 
 		// 変形労働時間勤務の法定内集計設定
 		Optional<WkpDeforLaborMonthActCalSet> optMonthActCalSet = monthActCalSetRepo.find(cid, wkpId);
 
 		if (optMonthActCalSet.isPresent()) {
-			deforLaborWkpDto.setSetting(DeforWorkTimeAggrSetDto.fromDomain(optMonthActCalSet.get()));
+			deforLaborDto.setSettingDto(DeforWorkTimeAggrSetDto.fromDomain(optMonthActCalSet.get()));
 		}
 
-		return deforLaborWkpDto;
+		return deforLaborDto;
 	}
 }

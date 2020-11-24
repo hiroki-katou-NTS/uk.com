@@ -28,26 +28,26 @@ public class GetEmpBasicSetting {
 	@Inject
 	private EmpDeforLaborMonthActCalSetRepo monthActCalSetRepo;
 
-	public DeforLaborTimeEmpDto get(String empCode) {
+	public DeforLaborComDto get(String empCode) {
 
 		String cid = AppContexts.user().companyId();
 		
-		DeforLaborTimeEmpDto deforLaborTimeEmpDto = new DeforLaborTimeEmpDto();
+		DeforLaborComDto deforLaborcomDto = new DeforLaborComDto();
 
 		// 労働時間設定
 		Optional<DeforLaborTimeEmp> optTimeEmp = timeEmpRepo.find(cid, empCode);
 
 		if (optTimeEmp.isPresent()) {
-			deforLaborTimeEmpDto.setDeforLaborTimeEmp(WorkingTimeSettingDto.fromDomain(optTimeEmp.get()));
+			deforLaborcomDto.setDeforLaborTimeComDto(WorkingTimeSettingDto.fromDomain(optTimeEmp.get()));
 		}
 
 		// 変形労働時間勤務の法定内集計設定
 		Optional<EmpDeforLaborMonthActCalSet> optMonthActCalSet = monthActCalSetRepo.find(cid, empCode);
 
 		if (optMonthActCalSet.isPresent()) {
-			deforLaborTimeEmpDto.setSetting(DeforWorkTimeAggrSetDto.fromDomain(optMonthActCalSet.get()));
+			deforLaborcomDto.setSettingDto(DeforWorkTimeAggrSetDto.fromDomain(optMonthActCalSet.get()));
 		}
 
-		return deforLaborTimeEmpDto;
+		return deforLaborcomDto;
 	}
 }

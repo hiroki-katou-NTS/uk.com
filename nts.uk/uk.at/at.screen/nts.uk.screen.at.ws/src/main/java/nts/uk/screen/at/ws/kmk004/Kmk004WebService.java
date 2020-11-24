@@ -15,9 +15,6 @@ import nts.uk.screen.at.app.query.kmk004.b.DisplayMonthlyWorkingDto;
 import nts.uk.screen.at.app.query.kmk004.b.DisplayMonthlyWorkingHoursByCompany;
 import nts.uk.screen.at.app.query.kmk004.b.DisplayMonthlyWorkingInput;
 import nts.uk.screen.at.app.query.kmk004.p.DeforLaborComDto;
-import nts.uk.screen.at.app.query.kmk004.p.DeforLaborTimeEmpDto;
-import nts.uk.screen.at.app.query.kmk004.p.DeforLaborTimeShaDto;
-import nts.uk.screen.at.app.query.kmk004.p.DeforLaborWkpDto;
 import nts.uk.screen.at.app.query.kmk004.p.GetComBasicSetting;
 import nts.uk.screen.at.app.query.kmk004.p.GetEmpBasicSetting;
 import nts.uk.screen.at.app.query.kmk004.p.GetShaBasicSetting;
@@ -88,21 +85,21 @@ public class Kmk004WebService extends WebService{
 	// Workplace
 	@POST
 	@Path("viewP/wkp/basicSetting/{wkpId}")
-	public DeforLaborWkpDto getWkpBasicSetting(@PathParam("wkpId") String wkpId) {
+	public DeforLaborComDto getWkpBasicSetting(@PathParam("wkpId") String wkpId) {
 		return wkpBasicSetting.get(wkpId);
 	}
 	
 	// Employment
 	@POST
 	@Path("viewP/emp/basicSetting/{empCode}")
-	public DeforLaborTimeEmpDto getEmpBasicSetting(@PathParam("empCode") String empCode) {
+	public DeforLaborComDto getEmpBasicSetting(@PathParam("empCode") String empCode) {
 		return empBasicSetting.get(empCode);
 	}
 	
 	// Employee
 	@POST
 	@Path("viewP/sha/basicSetting/{empId}")
-	public DeforLaborTimeShaDto getshaBasicSetting(@PathParam("empId") String empId) {
+	public DeforLaborComDto getshaBasicSetting(@PathParam("empId") String empId) {
 		return shaBasicSetting.get(empId);
 	}
 }

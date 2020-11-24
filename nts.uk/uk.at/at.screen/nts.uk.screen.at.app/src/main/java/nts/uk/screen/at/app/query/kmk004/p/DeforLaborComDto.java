@@ -16,10 +16,10 @@ import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.WorkingTimeSet
 @Data
 public class DeforLaborComDto {
 
-	// 会社別変形労働法定労働時間
+	// 別変形労働法定労働時間
 	private WorkingTimeSettingDto deforLaborTimeComDto;
 
-	// 会社別変形労働集計設定
+	// 別変形労働集計設定
 	private DeforWorkTimeAggrSetDto settingDto;
 
 }

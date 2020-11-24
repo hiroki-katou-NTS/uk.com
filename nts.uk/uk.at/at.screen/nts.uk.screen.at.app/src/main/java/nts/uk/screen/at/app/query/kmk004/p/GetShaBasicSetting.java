@@ -28,27 +28,27 @@ public class GetShaBasicSetting {
 	@Inject
 	private ShaDeforLaborMonthActCalSetRepo monthActCalSetRepo;
 
-	public DeforLaborTimeShaDto get(String empId) {
+	public DeforLaborComDto get(String empId) {
 		
 		String companyId = AppContexts.user().companyId();
 
-		DeforLaborTimeShaDto deforLaborTimeShaDto = new DeforLaborTimeShaDto();
+		DeforLaborComDto deforLaborComDto = new DeforLaborComDto();
 
 		// 労働時間設定
 		Optional<DeforLaborTimeSha> optTimeSha = timeShaRepo.find(companyId, empId);
 
 		if (optTimeSha.isPresent()) {
-			deforLaborTimeShaDto.setDeforLaborTimeSha(WorkingTimeSettingDto.fromDomain(optTimeSha.get()));
+			deforLaborComDto.setDeforLaborTimeComDto(WorkingTimeSettingDto.fromDomain(optTimeSha.get()));
 		}
 
 		// 変形労働時間勤務の法定内集計設定
 		Optional<ShaDeforLaborMonthActCalSet> optMonthActCalSet = monthActCalSetRepo.find(companyId, empId);
 
 		if (optMonthActCalSet.isPresent()) {
-			deforLaborTimeShaDto.setSetting(DeforWorkTimeAggrSetDto.fromDomain(optMonthActCalSet.get()));
+			deforLaborComDto.setSettingDto(DeforWorkTimeAggrSetDto.fromDomain(optMonthActCalSet.get()));
 		}
 
-		return deforLaborTimeShaDto;
+		return deforLaborComDto;
 	}
 
 }
