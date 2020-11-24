@@ -4,12 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.applicationapproval.FixedExtractionAppapvCon;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 /**
  * Entity: アラームリスト（職場）申請承認の固定抽出条件
@@ -21,7 +22,7 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_WKPFXEX_APPAPV_CON")
-public class KrcmtWkpfxexAppapvCon extends UkJpaEntity {
+public class KrcmtWkpfxexAppapvCon extends ContractUkJpaEntity implements Serializable {
 
     /* 職場のエラーアラームチェックID */
     @Id

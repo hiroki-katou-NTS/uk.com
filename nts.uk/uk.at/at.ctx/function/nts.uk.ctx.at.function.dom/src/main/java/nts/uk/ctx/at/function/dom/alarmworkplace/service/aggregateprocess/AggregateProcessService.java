@@ -65,9 +65,11 @@ public class AggregateProcessService {
 
             if (!conditionCtgOpt.isPresent()) continue;
             AlarmCheckCdtWorkplaceCategory conditionCtg = conditionCtgOpt.get();
-            List<String> alarmCheckWkpId;
-            List<String> extractionIds;
-            List<String> optionalIds;
+
+            // Dùng hàm trong inteface
+            List<String> alarmCheckWkpId = conditionCtg.getCondition().getAlarmCheckWkpID();
+            List<String> optionalIds = conditionCtg.getCondition().getListOptionalIDs();
+
             DatePeriod period = new DatePeriod(GeneralDate.today(), GeneralDate.today());
 
             //[No.560]職場IDから職場の情報をすべて取得する //TODO Q&A 36575
@@ -77,31 +79,23 @@ public class AggregateProcessService {
             // ループ中のカテゴリをチェック
             switch (category) {
                 case MASTER_CHECK_BASIC:
-                    alarmCheckWkpId = ((AlarmMasterBasicCheckCdt) conditionCtg.getCondition()).getAlarmCheckWkpID();
                     // アルゴリズム「マスタチェック(基本)の集計処理」を実行する
                     alExtractInfos.addAll(aggregateProcessAdapter.processMasterCheckBasic(cid, period, alarmCheckWkpId, workplaceIds, workPlaceInfos));
                     break;
                 case MASTER_CHECK_DAILY:
-                    alarmCheckWkpId = ((AlarmMasterDailyCheckCdt) conditionCtg.getCondition()).getAlarmCheckWkpID();
                     alExtractInfos.addAll(aggregateProcessAdapter.processMasterCheckDaily(cid, period, alarmCheckWkpId, workplaceIds, workPlaceInfos));
                     // アルゴリズム「マスタチェック(日別)の集計処理」を実行する
                     break;
                 case MASTER_CHECK_WORKPLACE:
-                    alarmCheckWkpId = ((AlarmMasterWkpCheckCdt) conditionCtg.getCondition()).getAlarmCheckWkpID();
                     // アルゴリズム「マスタチェック(職場)の集計処理」を実行する
                     break;
                 case SCHEDULE_DAILY:
-                    extractionIds = ((AlarmScheduleCheckCdt) conditionCtg.getCondition()).getListExtractionIDs();
-                    optionalIds = ((AlarmScheduleCheckCdt) conditionCtg.getCondition()).getListOptionalIDs();
                     // アルゴリズム「スケジュール／日次の集計処理」を実行する
                     break;
                 case MONTHLY:
-                    extractionIds = ((AlarmScheduleCheckCdt) conditionCtg.getCondition()).getListExtractionIDs();
-                    optionalIds = ((AlarmScheduleCheckCdt) conditionCtg.getCondition()).getListOptionalIDs();
                     // アルゴリズム「月次の集計処理」を実行する
                     break;
                 case APPLICATION_APPROVAL:
-                    alarmCheckWkpId = ((AlarmAppApprovalCheckCdt) conditionCtg.getCondition()).getAlarmCheckWkpID();
                     // アルゴリズム「申請承認の集計処理」を実行する
                     break;
             }

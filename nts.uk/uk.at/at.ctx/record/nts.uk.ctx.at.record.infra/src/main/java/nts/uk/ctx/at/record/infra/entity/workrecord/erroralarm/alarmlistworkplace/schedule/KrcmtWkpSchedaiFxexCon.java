@@ -4,12 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.schedule.FixedExtractionScheduleCon;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 /**
  * Entity: アラームリスト（職場別）スケジュール／日次の固定抽出条件
@@ -20,7 +21,7 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_WKP_SCHEDAI_FXEXCON")
-public class KrcmtWkpSchedaiFxexCon extends UkJpaEntity {
+public class KrcmtWkpSchedaiFxexCon extends ContractUkJpaEntity implements Serializable {
 
     /* 職場のエラーアラームチェックID */
     @Id

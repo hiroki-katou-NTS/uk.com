@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.ExtractionCondition;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -18,4 +19,13 @@ public class AlarmMonthlyCheckCdt implements ExtractionCondition {
 
     private List<String> listOptionalIDs;
 
+    @Override
+    public List<String> getAlarmCheckWkpID() {
+        return this.listExtractionIDs;
+    }
+
+    @Override
+    public List<String> getListOptionalIDs() {
+        return this.listOptionalIDs;
+    }
 }

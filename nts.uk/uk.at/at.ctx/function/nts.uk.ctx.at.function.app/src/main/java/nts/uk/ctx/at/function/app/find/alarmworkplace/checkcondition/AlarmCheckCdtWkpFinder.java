@@ -162,13 +162,13 @@ public class AlarmCheckCdtWkpFinder {
                 }
                 // スケジュール／日次
                 case SCHEDULE_DAILY: {
-                    List<String> fixedIds = ((AlarmScheduleCheckCdt) firstCategory.getCondition()).getListExtractionIDs();
+                    List<String> fixedIds = ((AlarmScheduleCheckCdt) firstCategory.getCondition()).getAlarmCheckWkpID();
                     List<String> opIds = ((AlarmScheduleCheckCdt) firstCategory.getCondition()).getListOptionalIDs();
                     break;
                 }
                 // 月次
                 case MONTHLY: {
-                    List<String> ids = ((AlarmMonthlyCheckCdt) firstCategory.getCondition()).getListExtractionIDs();
+                    List<String> ids = ((AlarmMonthlyCheckCdt) firstCategory.getCondition()).getAlarmCheckWkpID();
                     List<String> opIds = ((AlarmMonthlyCheckCdt) firstCategory.getCondition()).getListOptionalIDs();
                     break;
                 }
