@@ -1,6 +1,7 @@
 /// <reference path="../../generic.d.ts/fullcalendar/index.d.ts" />
 
 module nts.uk.ui.components.fullcalendar {
+    const { randomId } = nts.uk.util;
     const { version } = nts.uk.util.browser;
 
     const CM2KBC = /([a-z0-9]|(?=[A-Z]))([A-Z])/g;
@@ -234,10 +235,11 @@ module nts.uk.ui.components.fullcalendar {
             const initialView = allBindingsAccessor.get('initialView');
             const availableView = allBindingsAccessor.get('availableView');
             const slotDuration = allBindingsAccessor.get('slotDuration');
+            const breakTime = allBindingsAccessor.get('breakTime');
             const businessHours = allBindingsAccessor.get('businessHours');
             const attendanceTimes = allBindingsAccessor.get('attendanceTimes');
 
-            const params = { events, employees, dragItems, event, locale, initialDate, initialView, availableView, scrollTime, editable, firstDay, slotDuration, attendanceTimes, businessHours, viewModel };
+            const params = { events, employees, dragItems, event, locale, initialDate, initialView, availableView, scrollTime, editable, firstDay, slotDuration, attendanceTimes, breakTime, businessHours, viewModel };
             const component = { name, params };
 
             ko.applyBindingsToNode(element, { component }, bindingContext);
@@ -282,10 +284,13 @@ module nts.uk.ui.components.fullcalendar {
         SAT = 6
     }
 
-    type BUSINESSHOUR = {
-        daysOfWeek: DAY_OF_WEEK[];
+    type BUSSINESTIME = {
         startTime: number;
         endTime: number;
+    }
+
+    type BUSINESSHOUR = BUSSINESTIME & {
+        daysOfWeek: DAY_OF_WEEK[];
     };
 
     type ATTENDANCE_TIME = {
@@ -310,6 +315,7 @@ module nts.uk.ui.components.fullcalendar {
         editable: boolean | KnockoutObservable<boolean>;
         firstDay: DAY_OF_WEEK | KnockoutObservable<DAY_OF_WEEK>;
         attendanceTimes: ATTENDANCE_TIME[] | KnockoutObservableArray<ATTENDANCE_TIME>;
+        breakTime: BUSSINESTIME | KnockoutObservable<undefined | BUSSINESTIME>;
         businessHours: BUSINESSHOUR[] | KnockoutObservableArray<BUSINESSHOUR>;
         event: {
             coppyDay: (from: Date, to: Date) => void;
@@ -375,6 +381,7 @@ module nts.uk.ui.components.fullcalendar {
                 <h3 data-bind="i18n: 'よく使う作業から作業項目'"></h3>
                 <ul data-bind="foreach: { data: $component.params.dragItems, as: 'item' }">
                     <li class="title" data-bind="attr: {
+                        'data-id': item.id,
                         'data-color': item.backgroundColor
                     }">
                         <div data-bind="style: {
@@ -416,6 +423,7 @@ module nts.uk.ui.components.fullcalendar {
                     employees: ko.observableArray([]),
                     dragItems: ko.observableArray([]),
                     attendanceTimes: ko.observableArray([]),
+                    breakTime: ko.observable(null),
                     businessHours: ko.observableArray([]),
                     event: {
                         coppyDay: (__: Date, ___: Date) => { },
@@ -424,7 +432,7 @@ module nts.uk.ui.components.fullcalendar {
                 };
             }
 
-            const { locale, event, events, employees, dragItems, scrollTime, initialDate, initialView, availableView, editable, firstDay, slotDuration, attendanceTimes, businessHours } = this.params;
+            const { locale, event, events, employees, dragItems, scrollTime, initialDate, initialView, availableView, editable, firstDay, slotDuration, attendanceTimes, breakTime, businessHours } = this.params;
 
             if (locale === undefined) {
                 this.params.locale = ko.observable('ja');
@@ -472,6 +480,10 @@ module nts.uk.ui.components.fullcalendar {
 
             if (attendanceTimes === undefined) {
                 this.params.attendanceTimes = ko.observableArray([]);
+            }
+
+            if (breakTime === undefined) {
+                this.params.breakTime = ko.observable(undefined);
             }
 
             if (businessHours === undefined) {
@@ -613,8 +625,8 @@ module nts.uk.ui.components.fullcalendar {
 
             const computedEvents = ko.computed({
                 read: () => {
-                    const rawEvents = ko.unwrap(events) as fc.EventApi[];
-                    const sltedEvents = ko.unwrap(selectedEvents) as fc.EventApi[];
+                    const rawEvents = ko.unwrap<fc.EventApi[]>(events);
+                    const sltedEvents = ko.unwrap<fc.EventApi[]>(selectedEvents);
                     const isSelected = (m: fc.EventApi) => {
                         return !!_.find(sltedEvents, (e: any) => {
                             return formatDate(e.start) === formatDate(m.start)
@@ -622,16 +634,35 @@ module nts.uk.ui.components.fullcalendar {
                         });
                     };
 
-                    return rawEvents.map(m => ({
+                    return [...rawEvents.map(m => ({
                         ...m,
                         allDay: false,
                         start: formatDate(m.start),
                         end: formatDate(m.end),
+                        // groupId: sltedEvents.length && isSelected(m) ? 'selected' : Date.now(),
                         borderColor: isSelected(m) ? '#000' : 'transparent'
-                    }));
+                    })), /*selectedEvents.length ? {
+                        groupId: 'selected',
+                        display: 'background',
+                        backgroundColor: 'transparent'
+                    } : null*/]
+                        .filter(f => !!f);
                 },
                 disposeWhenNodeIsRemoved: vm.$el
             });
+
+            dataEvent.alt
+                .subscribe((c) => $el.attr('alt', +c));
+
+            dataEvent.ctrl
+                .subscribe((c) => $el.attr('ctrl', +c));
+
+            dataEvent.shift
+                .subscribe((c) => $el.attr('shift', +c));
+
+            dataEvent.alt.valueHasMutated();
+            dataEvent.ctrl.valueHasMutated();
+            dataEvent.shift.valueHasMutated();
 
             if (version.match(/IE/)) {
                 $el.addClass('ie');
@@ -650,28 +681,6 @@ module nts.uk.ui.components.fullcalendar {
 
                 return;
             }
-
-            dataEvent.alt
-                .subscribe((c) => $el.attr('alt', +c));
-
-            dataEvent.ctrl
-                .subscribe((c) => $el.attr('ctrl', +c));
-
-            dataEvent.shift
-                .subscribe((c) => $el.attr('shift', +c));
-
-            dataEvent.alt.valueHasMutated();
-            dataEvent.ctrl.valueHasMutated();
-            dataEvent.shift.valueHasMutated();
-
-            const dragger = new FC.Draggable($dg, {
-                itemSelector: '.title',
-                eventData: (el) => ({
-                    title: el.innerText,
-                    borderColor: el.getAttribute('data-color'),
-                    backgroundColor: el.getAttribute('data-color')
-                })
-            });
 
             const viewButtons: {
                 [name: string]: fc.CustomButtonInput;
@@ -829,6 +838,42 @@ module nts.uk.ui.components.fullcalendar {
                 right: 'copy-day'
             };
 
+            const getEvents = (): fc.EventApi[] => calendar.getEvents()
+                .map(({
+                    id,
+                    start,
+                    end,
+                    title,
+                    display,
+                    backgroundColor,
+                    textColor,
+                    extendedProps
+                }) => ({
+                    id,
+                    start,
+                    end,
+                    title,
+                    display,
+                    backgroundColor,
+                    textColor,
+                    extendedProps
+                })) as any;
+            const mutatedEvents = () => {
+                if (ko.isObservable(events)) {
+                    events(getEvents().filter(f => f.display !== 'background'));
+                }
+            };
+
+            const dragger = new FC.Draggable($dg, {
+                itemSelector: '.title',
+                eventData: (el) => ({
+                    id: el.getAttribute('data-id'),
+                    title: el.innerText,
+                    borderColor: 'transparent',
+                    backgroundColor: el.getAttribute('data-color')
+                })
+            });
+
             const calendar = new FC.Calendar($fc, {
                 height: '500px',
                 themeSystem: 'default',
@@ -849,82 +894,57 @@ module nts.uk.ui.components.fullcalendar {
                 dayHeaders: true,
                 allDaySlot: false,
                 slotEventOverlap: false,
-                // hiddenDays: [5, 6],
                 dayHeaderContent: (opts: any) => moment(opts.date).format('DD(ddd)'),
-                eventDidMount: (args) => {
-                },
-                dateClick: () => {
-                    selectedEvents([]);
-                },
+                dateClick: () => selectedEvents([]),
+                eventLongPressDelay: 100,
                 eventClick: (args) => {
                     const cloned = _.cloneDeep(args.event);
 
                     if (!ko.unwrap(dataEvent.ctrl)) {
                         selectedEvents([cloned]);
                     } else {
-                        selectedEvents.push(cloned);
+                        const unwraped = ko.unwrap<fc.EventApi[]>(selectedEvents);
+
+                        if (unwraped.length === 0) {
+                            selectedEvents([cloned]);
+                        } else {
+                            const [first] = unwraped;
+                            const { id, start } = cloned;
+
+                            if (unwraped.map(m => m.id).indexOf(id) === -1) {
+                                if (moment(start).isSame(first.start, 'date')) {
+                                    selectedEvents.push(cloned);
+                                }
+                            } else {
+                                selectedEvents.remove(c => c.id === id);
+                            }
+                        }
                     }
                 },
+                eventMouseEnter: (args) => {
+                    // console.log('enter', args);
+                },
+                eventMouseLeave: (args) => {
+                    // console.log('leave', args);
+                },
                 eventDragStart: (evt) => {
-                    // selectedEvents([]);
+                    if (ko.unwrap(dataEvent.shift) && ko.unwrap<fc.EventApi[]>(selectedEvents).length) {
+                        selectedEvents([]);
+                    }
                 },
                 eventDrop: (evt) => {
                     if (evt.event.allDay) {
                         evt.revert();
                     }
 
-                    const evts: any[] = calendar
-                        .getEvents()
-                        .map(({
-                            id,
-                            start,
-                            end,
-                            title,
-                            display,
-                            groupId,
-                            backgroundColor
-                        }) => ({
-                            id,
-                            start,
-                            end,
-                            title,
-                            display,
-                            groupId,
-                            backgroundColor
-                        }));
-
                     // update data sources
-                    if (ko.isObservable(events)) {
-                        events(evts);
-                    }
+                    mutatedEvents();
 
                     selectedEvents([]);
                 },
                 eventResize: () => {
-                    const evts: any[] = calendar
-                        .getEvents()
-                        .map(({
-                            id,
-                            start,
-                            end,
-                            title,
-                            display,
-                            groupId,
-                            backgroundColor
-                        }) => ({
-                            id,
-                            start,
-                            end,
-                            title,
-                            display,
-                            groupId,
-                            backgroundColor
-                        }));
-
                     // update data sources
-                    if (ko.isObservable(events)) {
-                        events(evts);
-                    }
+                    mutatedEvents();
 
                     selectedEvents([]);
                 },
@@ -958,20 +978,8 @@ module nts.uk.ui.components.fullcalendar {
                         return {
                             html: `<h4>${title}</h4>
                             <div>Content 1</div>
-                            <div>Content 1</div>
-                            <div>Content 1</div>
-                            <div>Content 1</div>
-                            <div>Content 1</div>
-                            <div>Content 1</div>
-                            <div>Content 1</div>
-                            <div>Content 1</div>
-                            <div>Content 1</div>
-                            <div>Content 1</div>
-                            <div>Content 1</div>
-                            <div>Content 1</div>
-                            <div>Content 1</div>
-                            <div>Content 1</div>
-                            <div>Content 1</div>`
+                            <div>Content 2</div>
+                            <div>Content 3</div>`
                         };
                     }
 
@@ -988,38 +996,14 @@ module nts.uk.ui.components.fullcalendar {
                             calendar.addEvent(arg);
                         })
                         .then(() => {
-                            const evts: any[] = calendar
-                                .getEvents()
-                                .map(({
-                                    id,
-                                    start,
-                                    end,
-                                    title,
-                                    display,
-                                    groupId,
-                                    backgroundColor
-                                }) => ({
-                                    id,
-                                    start,
-                                    end,
-                                    title,
-                                    display,
-                                    groupId,
-                                    backgroundColor
-                                }));
-
                             // update data sources
-                            if (ko.isObservable(events)) {
-                                events(evts);
-                            }
-                        })
-                        .then(() => {
+                            mutatedEvents();
                             selectedEvents([{ start, end } as any]);
                         });
                 },
                 eventReceive: (info) => {
-                    const { title, start, backgroundColor } = info.event;
-                    const event: any = { title, start, end: moment(start).add(1, 'hour').toDate(), backgroundColor };
+                    const { id, title, start, backgroundColor } = info.event;
+                    const event: any = { id, title, start, end: moment(start).add(1, 'hour').toDate(), backgroundColor };
 
                     events.push(event);
                 },
@@ -1181,13 +1165,43 @@ module nts.uk.ui.components.fullcalendar {
             // set businessHours
             ko.computed({
                 read: () => {
+                    const breakTime: BUSSINESTIME = ko.unwrap(params.breakTime) as any;
                     const businessHours: BUSINESSHOUR[] = ko.unwrap(params.businessHours) as any;
 
-                    calendar.setOption('businessHours', businessHours.map((m) => ({
-                        ...m,
-                        startTime: formatTime(m.startTime),
-                        endTime: formatTime(m.endTime)
-                    })));
+                    if (!breakTime) {
+                        calendar.setOption('businessHours', businessHours.map((m) => ({
+                            ...m,
+                            startTime: formatTime(m.startTime),
+                            endTime: formatTime(m.endTime)
+                        })));
+                    } else {
+                        const { startTime, endTime } = breakTime;
+
+                        if (businessHours.length) {
+                            const starts = businessHours.map((m) => ({
+                                ...m,
+                                startTime: formatTime(m.startTime),
+                                endTime: m.startTime !== 0 && m.endTime !== 0 ? formatTime(startTime) : formatTime(0)
+                            }));
+                            const ends = businessHours.map((m) => ({
+                                ...m,
+                                startTime: m.startTime !== 0 && m.endTime !== 0 ? formatTime(endTime) : formatTime(0),
+                                endTime: formatTime(m.endTime)
+                            }));
+
+                            calendar.setOption('businessHours', [...starts, ...ends]);
+                        } else {
+                            calendar.setOption('businessHours', [{
+                                daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
+                                startTime: formatTime(0),
+                                endTime: formatTime(startTime)
+                            }, {
+                                daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
+                                startTime: formatTime(endTime),
+                                endTime: formatTime(24 * 60)
+                            }]);
+                        }
+                    }
                 },
                 disposeWhenNodeIsRemoved: vm.$el
             });

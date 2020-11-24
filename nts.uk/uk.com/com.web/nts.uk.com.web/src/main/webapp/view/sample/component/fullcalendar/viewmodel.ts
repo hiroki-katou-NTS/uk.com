@@ -4,39 +4,31 @@ module nts.uk.ui.com.sample.fullcalendar {
     @bean()
     export class ViewModel extends ko.ViewModel {
         events: KnockoutObservableArray<any> = ko.observableArray([{
+            id: '000001',
             title: 'Conference',
-            start: moment().set('hour', 8).set('minute', 0).toDate(),
+            start: moment().set('hour', 8).set('minute', 30).toDate(),
             end: moment().set('hour', 9).set('minute', 30).toDate()
-        },
-        {
-            groupId: 'abc',
+        }, {
+            id: '000002',
             title: 'Meeting',
             start: moment().set('hour', 9).set('minute', 30).toDate(),
-            end: moment().set('hour', 10).set('minute', 30).toDate()
-        },
-        {
-            groupId: 'abc',
-            title: 'Lunch',
-            start: moment().set('hour', 11).set('minute', 0).toDate(),
-            end: moment().set('hour', 12).set('minute', 0).toDate()
-        }, {
-            groupId: 'abc',
-            start: moment().set('hour', 9).set('minute', 30).toDate(),
-            end: moment().set('hour', 12).set('minute', 0).toDate(),
-            display: 'background',
-            backgroundColor: 'transparent'
+            end: moment().set('hour', 14).set('minute', 0).toDate()
         }]);
 
         dragItems: KnockoutObservableArray<any> = ko.observableArray([{
+            id: '000003',
             title: 'UK就業・詳細設計',
             backgroundColor: '#ffc000'
         }, {
+            id: '000004',
             title: 'UK就業機能強化・テスト設計',
             backgroundColor: '#ff5050'
         }, {
+            id: '000005',
             title: 'UKプロジェクト・概要設計',
             backgroundColor: '#5b9bd5'
         }, {
+            id: '000006',
             title: 'UKプロジェクト・統合テスト',
             backgroundColor: '#92d050'
         }]);
@@ -78,15 +70,15 @@ module nts.uk.ui.com.sample.fullcalendar {
             selected: false
         }]);
 
+        breakTime: KnockoutObservable<any> = ko.observable({
+            startTime: 60 * 12,
+            endTime: 60 * 13
+        });
+
         businessHours: KnockoutObservableArray<any> = ko.observableArray([{
             // days of week. an array of zero-based day of week integers (0=Sunday)
             daysOfWeek: [1, 2, 3, 4, 5], // Monday - Thursday
             startTime: 60 * 8 + 30, // '08:30:00'
-            endTime: 60 * 12 // '12:00:00'
-        }, {
-            // days of week. an array of zero-based day of week integers (0=Sunday)
-            daysOfWeek: [1, 2, 3, 4, 5], // Monday - Thursday
-            startTime: 60 * 13, // '13:00:00'
             endTime: 60 * 17 + 30 // '17:30:00'
         }, {
             daysOfWeek: [0, 6],
