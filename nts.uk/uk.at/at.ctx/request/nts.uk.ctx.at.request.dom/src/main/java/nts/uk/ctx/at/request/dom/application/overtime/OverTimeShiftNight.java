@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.com.time.TimeWithDayAttr;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**
  * Refactor5
@@ -20,7 +20,7 @@ public class OverTimeShiftNight {
 	// 休出深夜時間
 	private List<HolidayMidNightTime> midNightHolidayTimes;
 	// 合計外深夜時間
-	private TimeWithDayAttr midNightOutSide;
+	private AttendanceTime midNightOutSide;
 	// 残業深夜時間
-	private TimeWithDayAttr overTimeMidNight;
+	private AttendanceTime overTimeMidNight;
 }

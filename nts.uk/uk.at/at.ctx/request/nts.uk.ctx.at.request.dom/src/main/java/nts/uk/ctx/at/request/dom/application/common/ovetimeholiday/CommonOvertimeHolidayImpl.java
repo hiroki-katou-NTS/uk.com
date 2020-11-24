@@ -84,11 +84,13 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAt
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.DuplicateStateAtr;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.DuplicationStatusOfTimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.RangeOfDayTimeZoneService;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
+import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -1319,54 +1321,26 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 		List<OvertimeApplicationSetting> overTimes = dailyAttendanceTimeCaculationImport.getOverTime()
 																   .entrySet()
 																   .stream()
-																   .map(x -> x.getValue().getTime() > 0  ? new OvertimeApplicationSetting(
+																   .map(x -> x.getValue().getCalTime() > 0  ? new OvertimeApplicationSetting(
 																									   x.getKey(),
 																									   AttendanceType_Update.NORMALOVERTIME,
 																									   x.getValue().getTime())
 																		   		: null )
 																   .filter(y -> y != null)
 																   .collect(Collectors.toList());
+
 		overtimeApplicationSetting.addAll(overTimes);
-		{
-			OvertimeApplicationSetting over = new OvertimeApplicationSetting(
-					1,
-					AttendanceType_Update.NORMALOVERTIME,
-					60);
-			overtimeApplicationSetting.add(over);
-		}
-		{
-			OvertimeApplicationSetting over = new OvertimeApplicationSetting(
-					2,
-					AttendanceType_Update.NORMALOVERTIME,
-					60);
-			overtimeApplicationSetting.add(over);
-		}
 		
 		List<OvertimeApplicationSetting> holidayTimes = dailyAttendanceTimeCaculationImport.getHolidayWorkTime()
 																   .entrySet()
 																   .stream()
-																   .map(x -> x.getValue().getTime() > 0 ? new OvertimeApplicationSetting(
+																   .map(x -> x.getValue().getCalTime() > 0 ? new OvertimeApplicationSetting(
 																									   x.getKey(),
 																									   AttendanceType_Update.BREAKTIME,
 																									   x.getValue().getTime())
 																		   		: null )
 																   .filter(y -> y != null)
 																   .collect(Collectors.toList());
-		
-		{
-			OvertimeApplicationSetting over = new OvertimeApplicationSetting(
-					1,
-					AttendanceType_Update.BREAKTIME,
-					200);
-			overtimeApplicationSetting.add(over);
-		}
-		{
-			OvertimeApplicationSetting over = new OvertimeApplicationSetting(
-					2,
-					AttendanceType_Update.BREAKTIME,
-					300);
-			overtimeApplicationSetting.add(over);
-		}
 		overtimeApplicationSetting.addAll(holidayTimes);
 		
 		
@@ -1381,6 +1355,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 						   		)
 				   .filter(y -> y != null)
 				   .collect(Collectors.toList());
+		
 		overtimeApplicationSetting.addAll(bonusPayTimes);
 		
 		List<OvertimeApplicationSetting> specBonusPayTimes = dailyAttendanceTimeCaculationImport.getSpecBonusPayTime()
@@ -1394,21 +1369,32 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 						   		)
 				   .filter(y -> y != null)
 				   .collect(Collectors.toList());
+		
 		overtimeApplicationSetting.addAll(specBonusPayTimes);
+		
 		applicationTime.setApplicationTime(overtimeApplicationSetting);
+		
+		
+		
+		applicationTime.setFlexOverTime(Optional.of(new AttendanceTimeOfExistMinus(dailyAttendanceTimeCaculationImport.getFlexTime().getCalTime())));
+		
+		
 		OverTimeShiftNight overTimeShiftNight = new OverTimeShiftNight();
-		overTimeShiftNight.setMidNightOutSide(new TimeWithDayAttr(600));
-		overTimeShiftNight.setOverTimeMidNight(new TimeWithDayAttr(600));
 		
-		List<HolidayMidNightTime> midNightHolidayTimes = new ArrayList<HolidayMidNightTime>();
+		overTimeShiftNight.setMidNightOutSide(dailyAttendanceTimeCaculationImport.getTimeOutSideMidnight());
+		overTimeShiftNight.setOverTimeMidNight(dailyAttendanceTimeCaculationImport.getCalOvertimeMidnight());
 		
-		HolidayMidNightTime holidayMidNightTime = new HolidayMidNightTime(100, StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork);
-		midNightHolidayTimes.add(holidayMidNightTime);
+		List<HolidayMidNightTime> midNightHolidayTimes = dailyAttendanceTimeCaculationImport.getCalHolidayMidnight()
+										   .entrySet()
+										   .stream()
+										   .map(x -> new HolidayMidNightTime(
+												   x.getValue(),
+												   StaturoryAtrOfHolidayWork.deicisionAtrByHolidayAtr(EnumAdaptor.valueOf(x.getKey(), HolidayAtr.class))))
+										   .collect(Collectors.toList());
 		
 		overTimeShiftNight.setMidNightHolidayTimes(midNightHolidayTimes);
 		applicationTime.setOverTimeShiftNight(Optional.of(overTimeShiftNight));
 		
-		applicationTime.setFlexOverTime(Optional.of(new AttendanceTimeOfExistMinus(100)));
 		
 		
 		output.add(applicationTime);

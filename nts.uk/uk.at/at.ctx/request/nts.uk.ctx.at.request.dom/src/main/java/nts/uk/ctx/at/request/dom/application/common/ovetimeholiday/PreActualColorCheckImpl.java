@@ -566,7 +566,8 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 						.filter(x -> x.getAttendanceType() == AttendanceType_Update.NORMALOVERTIME.value || x.getFrameNo() == 12)
 						.findFirst();
 				if (isOverTimeMidNightOp.isPresent()) {
-					overTimeShiftNight.setMidNightOutSide(new TimeWithDayAttr(isOverTimeMidNightOp.get().getTime()));
+					overTimeShiftNight.setMidNightOutSide(
+							new AttendanceTime(isOverTimeMidNightOp.get().getTime()));
 					output.setOverTimeShiftNight(Optional.of(overTimeShiftNight));
 				}
 				

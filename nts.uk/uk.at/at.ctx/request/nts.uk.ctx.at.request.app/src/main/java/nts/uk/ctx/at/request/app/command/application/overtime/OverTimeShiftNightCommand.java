@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeShiftNight;
-import nts.uk.shr.com.time.TimeWithDayAttr;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 public class OverTimeShiftNightCommand {
 	// 休出深夜時間
@@ -23,7 +23,7 @@ public class OverTimeShiftNightCommand {
 							midNightHolidayTimes.stream()
 												.map(x -> x.toDomain())
 												.collect(Collectors.toList()),
-				new TimeWithDayAttr(midNightOutSide),
-				new TimeWithDayAttr(overTimeMidNight));
+				new AttendanceTime(midNightOutSide),
+				new AttendanceTime(overTimeMidNight));
 	}
 }

@@ -277,10 +277,10 @@ public class KrqdtAppOverTime extends ContractUkJpaEntity implements Serializabl
 			
 		} else {
 			if (overTimeNight != null) {
-				overTimeShiftNight.setOverTimeMidNight(new TimeWithDayAttr(overTimeNight));
+				overTimeShiftNight.setOverTimeMidNight(new AttendanceTime(overTimeNight));
 			}
 			if (totalNight != null) {
-				overTimeShiftNight.setMidNightOutSide(new TimeWithDayAttr(totalNight));
+				overTimeShiftNight.setMidNightOutSide(new AttendanceTime(totalNight));
 			}
 			List<HolidayMidNightTime> midNightHolidayTimes = new ArrayList<HolidayMidNightTime>();
 			if (legalHdNight != null) {
