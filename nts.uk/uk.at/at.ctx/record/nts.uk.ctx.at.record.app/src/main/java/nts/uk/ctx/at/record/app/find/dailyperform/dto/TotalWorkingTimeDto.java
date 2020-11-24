@@ -131,6 +131,12 @@ public class TotalWorkingTimeDto implements ItemConst, AttendanceItemDataGate {
 			return Optional.of(ItemValue.builder().value(workTimes).valueType(ValueType.COUNT));
 		case (HOLIDAY + ADD):
 			return Optional.of(ItemValue.builder().value(vacationAddTime).valueType(ValueType.TIME));
+		case (INTERVAL + TIME):
+			return Optional.of(ItemValue.builder().value(intervalTime).valueType(ValueType.TIME));
+		case (INTERVAL + ATTENDANCE):
+			return Optional.of(ItemValue.builder().value(intervalAttendanceClock).valueType(ValueType.TIME));
+		case (CALC + DIFF):
+			return Optional.of(ItemValue.builder().value(calcDiffTime).valueType(ValueType.TIME));
 		default:
 			break;
 		}
@@ -216,6 +222,9 @@ public class TotalWorkingTimeDto implements ItemConst, AttendanceItemDataGate {
 		case ACTUAL:
 		case COUNT:
 		case (HOLIDAY + ADD):
+		case (INTERVAL + TIME):
+		case (INTERVAL + ATTENDANCE):
+		case (CALC + DIFF):
 			return PropType.VALUE;
 		default:
 			break;
@@ -257,7 +266,16 @@ public class TotalWorkingTimeDto implements ItemConst, AttendanceItemDataGate {
 			workTimes = value.valueOrDefault(null);
 			break;
 		case (HOLIDAY + ADD):
-		vacationAddTime = value.valueOrDefault(null);
+			vacationAddTime = value.valueOrDefault(null);
+			break;
+		case (INTERVAL + TIME):
+			intervalTime = value.valueOrDefault(null);
+			break;
+		case (INTERVAL + ATTENDANCE):
+			intervalAttendanceClock = value.valueOrDefault(null);
+			break;
+		case (CALC + DIFF):
+			calcDiffTime = value.valueOrDefault(null);
 			break;
 		default:
 			break;
