@@ -1,0 +1,67 @@
+package nts.uk.ctx.sys.portal.dom.toppagealarm;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NonNull;
+import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDateTime;
+
+/**
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.ポータル.トップページアラーム（ver4～）.トップページアラーム
+ * 既読日時
+ */
+@Builder
+@AllArgsConstructor
+@Getter
+public class ToppageAlarmLog extends AggregateRoot {
+	
+	/**
+	 * 会社ID
+	 */
+	@NonNull
+	private String cid;
+	
+	/**
+	 * アラーム分類
+	 */
+	@NonNull
+	private AlarmClassification alarmClassification;
+	
+	/**
+	 * 識別キー
+	 */
+//	private IdentificationKey identificationKey;
+	// TODO
+	@NonNull
+	private String identificationKey;
+	
+	/**
+	 * 表示社員ID
+	 */
+	@NonNull
+	private String displaySId;
+	
+	/**
+	 * 表示社員区分
+	 */
+	@NonNull
+	private DisplayAtr displayAtr;
+	
+	/**
+	 * 既読日時
+	 */
+	@NonNull
+	private GeneralDateTime alreadyDatetime;
+	
+	@SuppressWarnings("unused")
+	private ToppageAlarmLog() {}
+	
+	/**
+	 * [1] 既読日時を更新する
+	 */
+	public void updateAlreadyDatetime() {
+		this.alreadyDatetime = GeneralDateTime.now();
+	}
+	
+}
