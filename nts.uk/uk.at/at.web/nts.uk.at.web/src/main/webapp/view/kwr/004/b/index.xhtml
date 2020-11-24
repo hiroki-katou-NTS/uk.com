@@ -83,12 +83,12 @@
                   id="multiList"
                   tabindex="6"
                   data-bind="ntsGridList: {
-                    height: 380,
+                    height: 370,
                     options: settingListItems,
                     optionsValue: 'code',
                     columns: [
-                      { headerText: $i18n('KWR004_56'), prop: 'code', width: 90 },
-                      { headerText: $i18n('KWR004_57'), prop: 'name', width: 230 }
+                      { headerText: $i18n('KWR004_56'), prop: 'code', width: 90, formatter: _.escape  },
+                      { headerText: $i18n('KWR004_57'), prop: 'name', width: 230, formatter: _.escape  }
                     ],
                     multiple: false,
                     value: currentCodeList
@@ -171,7 +171,7 @@
                           <td
                             class="bg-hover-none"
                             colspan="4"
-                            data-bind="text: $index() === 0 ? $i18n('KWR004_64') : $i18n('KWR004_65')"
+                            data-bind="text: $index() === 0 ?  $vm.$i18n('KWR004_64') : $vm.$i18n('KWR004_65')"
                           ></td>
                         </tr>
                       </com:ko-if>
@@ -192,7 +192,7 @@
                                   ntsTextEditor: { 
                                     value: name,
                                     required: true,
-                                    name: $i18n('KWR004_215'),
+                                    name: $vm.$i18n('KWR004_215'),
                                     constraint: 'ExportSettingName'
                                   }"
                           />
@@ -208,21 +208,21 @@
                                   optionsValue: 'code',
                                   optionsText: 'name',
                                   value: setting,
-                                  name: $i18n('KWR004_67')
+                                  name: $vm.$i18n('KWR004_67')
                                 }"
                               ></div>
                             </com:ko-if>
                             <button
                               tabindex="10"
                               class="btn-B4331"
-                              data-bind="text: $i18n('KWR004_67'), click: function(data) { $vm.openDialogKDL(data) }"
+                              data-bind="text: $vm.$i18n('KWR004_67'), click: function(data) { $vm.openDialogKDL(data) }"
                             />
                             <div
                               id="combo-box"
                               tabindex="10"
                               class="attribute-selection"
                               data-bind="ntsComboBox: {
-                                name: $i18n('KWR004_216'),
+                                name: $vm.$i18n('KWR004_216'),
                                 options: $vm.settingRules,
                                 optionsValue: 'code',
                                 visibleItemsCount: 4,
