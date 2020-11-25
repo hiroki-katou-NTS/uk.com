@@ -2878,17 +2878,23 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	 * @param reportData the report data
 	 * @param dateRow the date row
 	 */
-	private void writeHeaderData(MonthlyWorkScheduleQuery query, OutputItemMonthlyWorkSchedule outputItem, Worksheet sheet, MonthlyPerformanceReportData reportData, int dateRow) {
+	private void writeHeaderData(MonthlyWorkScheduleQuery query
+								, OutputItemMonthlyWorkSchedule outputItem
+								, Worksheet sheet
+								, MonthlyPerformanceReportData reportData
+								, int dateRow) {
+		String settingNameFontSize = outputItem.getTextSize() == TextSizeCommonEnum.BIG ? "14" : "11"; 
+		String companyDateFontSize = outputItem.getTextSize() == TextSizeCommonEnum.BIG ? "7" : "5.5"; 
 		// Company name
 		PageSetup pageSetup = sheet.getPageSetup();
-		pageSetup.setHeader(0, "&8&\"MS ゴシック\" " + reportData.getHeaderData().companyName);
+		pageSetup.setHeader(0, "&" + companyDateFontSize + "&\"MS ゴシック\" " + reportData.getHeaderData().companyName);
 		
 		// Output item name
-		pageSetup.setHeader(1, "&16&\"MS ゴシック\"" + outputItem.getItemName().v());
+		pageSetup.setHeader(1, "&" + settingNameFontSize + "&\"MS ゴシック\"" + outputItem.getItemName().v());
 		
 		// Set header date
 		DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm", Locale.JAPAN);
-		pageSetup.setHeader(2, "&8&\"MS ゴシック\" " + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P ");
+		pageSetup.setHeader(2, "&" + companyDateFontSize + "&\"MS ゴシック\" " + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P ");
 		
 		Cells cells = sheet.getCells();
 		Cell periodCell = cells.get(dateRow,0);
@@ -2925,29 +2931,17 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		MonthlyPerformanceHeaderData headerData = reportData.getHeaderData();
 		// Set fixed value
 		Cells cells = sheet.getCells();
+		// A2_1
+		Cell dateCell = cells.get(currentRow, 0);
+		dateCell.setValue(headerData.getFixedHeaderData().get(0));
 		
-//		if (condition.getOutputType() == MonthlyWorkScheduleCondition.EXPORT_BY_EMPLOYEE) {
-			// A2_1
-			Cell dateCell = cells.get(currentRow, 0);
-			dateCell.setValue(headerData.getFixedHeaderData().get(0));
-			
-			// A2_1
-			Cell closureCell = cells.get(currentRow, 2);
-			closureCell.setValue(headerData.getFixedHeaderData().get(1));
-			
-			// A2_4
-			Cell remarkCell = cells.get(currentRow, outputMonthlySchedule.getTextSize() == TextSizeCommonEnum.BIG ? 35 : 43);
-			remarkCell.setValue(headerData.getFixedHeaderData().get(2));
-//		}
-//		else {
-//			// B2_1
-//			Cell erAlCell = cells.get(currentRow, 0);
-//			erAlCell.setValue(headerData.getFixedHeaderData().get(0));
-//			
-//			// B2_4
-//			Cell dateCell = cells.get(currentRow, 31);
-//			dateCell.setValue(headerData.getFixedHeaderData().get(1));
-//		}
+		// A2_1
+		Cell closureCell = cells.get(currentRow, 2);
+		closureCell.setValue(headerData.getFixedHeaderData().get(1));
+		
+		// A2_4
+		Cell remarkCell = cells.get(currentRow, outputMonthlySchedule.getTextSize() == TextSizeCommonEnum.BIG ? 35 : 43);
+		remarkCell.setValue(headerData.getFixedHeaderData().get(2));
 	}
 	
 	/**
@@ -2980,9 +2974,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
             	// Row 3, 4, 5
             	Cell cell = cells.get(currentRow + i*2, DATA_COLUMN_INDEX[0] + j * 2); 
             	cell.setValue(outputItem.getItemName());
-            	
-//            	cell = cells.get(currentRow + i*2 + 1, DATA_COLUMN_INDEX[0] + j * 2); 
-//            	cell.setValue(outputItem.getItemCode());
+
             }
         }
 	}
