@@ -151,7 +151,7 @@ public class CreateWorkScheduleTest {
 	}
 	
 	@Test
-	public <T> void testCreate_Exception(@Injectable WorkInformation workInformation) {
+	public <T> void testCreate_Exception_430(@Injectable WorkInformation workInformation) {
 		
 		new Expectations() {{
 			require.getWorkSchedule(anyString, (GeneralDate) any);
@@ -188,6 +188,33 @@ public class CreateWorkScheduleTest {
 					GeneralDate.ymd(2020, 11, 1), 
 					Optional.empty(), 
 					"Msg_430"));
+		
+	}
+	
+	@Test
+	public <T> void testCreate_Exception_different430(@Injectable WorkInformation workInformation) {
+		
+		new Expectations() {{
+			require.getWorkSchedule(anyString, (GeneralDate) any);
+			//result = empty
+		}};
+		
+		new MockUp<WorkSchedule>() {
+			@Mock
+			public WorkSchedule createByHandCorrectionWithWorkInformation(Require require,
+					String employeeId,
+					GeneralDate date,
+					WorkInformation workInformation) {
+				throw new BusinessException("Msg_x");
+			}
+		};
+		
+		NtsAssert.businessException("Msg_x", () -> CreateWorkSchedule.create(
+				require, 
+				"empId", 
+				GeneralDate.ymd(2020, 11, 1), 
+				workInformation, 
+				new HashMap<>()));
 		
 	}
 	

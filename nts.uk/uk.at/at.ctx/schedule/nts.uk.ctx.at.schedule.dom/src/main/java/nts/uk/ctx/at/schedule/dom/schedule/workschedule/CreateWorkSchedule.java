@@ -42,15 +42,15 @@ public class CreateWorkSchedule {
 		Optional<WorkSchedule> registedWorkSchedule = require.getWorkSchedule(employeeId, date);
 		boolean isNewRegister = !registedWorkSchedule.isPresent();
 		
-		WorkSchedule workSchedule = null;
+		WorkSchedule workSchedule;
 		if ( isNewRegister ) {
 			try {
 				workSchedule = WorkSchedule.createByHandCorrectionWithWorkInformation(require, employeeId, date, workInformation);
 			} catch (BusinessException e) {
-				
-				if (e.getMessageId().equals("Msg_430")) {
+				if (e.getMessageId().equals("Msg_430")) 
 					return ResultOfRegisteringWorkSchedule.createWithError(employeeId, date, "Msg_430");
-				}
+				
+				throw e; // else
 			}
 		} else {
 			workSchedule = registedWorkSchedule.get();
