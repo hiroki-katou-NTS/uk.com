@@ -33,7 +33,7 @@
               <!-- A1_4 -->
               <label style="margin-left: 100px" data-bind="text: titleLine().directText"></label>
             </div>
-         </com:ko-if>  
+         </com:ko-if>
         </div>
         <!-- A2 -->
         <hr/>
@@ -71,7 +71,7 @@
              <div class="combo">
               <div data-bind="ntsFormLabel: {required: true}" >#{i18n.getText('KDL048_4')}</div>
               <!-- A5_2 -->
-              <div data-bind="ntsComboBox: {
+              <div id="A5_2" data-bind="ntsComboBox: {
                 name: '#[KDL048_4]',
                 options: attributeObject().attributeList,
                 optionsValue: 'attendanceTypeCode',

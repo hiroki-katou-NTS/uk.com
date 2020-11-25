@@ -2,7 +2,7 @@
 module nts.uk.at.view.kdl048.screenModel {
   import getShared = nts.uk.ui.windows.getShared;
   import setShared = nts.uk.ui.windows.setShared;
-  
+
   @bean()
   export class ViewModel extends ko.ViewModel {
     initParam: any;
@@ -14,6 +14,32 @@ module nts.uk.at.view.kdl048.screenModel {
     attendanceRecordName: KnockoutObservable<string> = ko.observable("");
     attributeObject: KnockoutObservable<AttributeObject> = ko.observable();
     valueCb: KnockoutObservable<number> = ko.observable(0);
+
+    exportAtr: number = 1;
+    filterCode: KnockoutComputed<number> = ko.computed(() => {
+      if (this.exportAtr === 1) {
+        return this.valueCb() === 4
+          ? 5
+          : this.valueCb() === 5
+            ? 2
+            : this.valueCb() === 7
+              ? 3
+              : null;
+      }
+
+      if (this.exportAtr === 2) {
+        return this.valueCb() === 4
+          ? 1
+          : this.valueCb() === 5
+            ? 2
+            : this.valueCb() === 6
+              ? 3
+              : this.valueCb() === 7
+                ? 4
+                : null;
+      }
+      return null;
+    });
     // A5_3
     currentCodeList: KnockoutObservableArray<any> = ko.observableArray([]);
     headers: any = ko.observableArray([this.$i18n("KDL048_6"), this.$i18n("KDL048_7")]);
@@ -53,7 +79,7 @@ module nts.uk.at.view.kdl048.screenModel {
       vm.itemNameLine(vm.initParam.itemNameLine);
       vm.paramSelectedTimeList(vm.initParam.selectedTimeList);
       vm.attendanceRecordName(vm.initParam.itemNameLine.name);
-
+      vm.exportAtr = vm.initParam.exportAtr;
       //data for table
       vm.tableDataA6 = vm.initParam.diligenceProjectList;
 
@@ -68,6 +94,8 @@ module nts.uk.at.view.kdl048.screenModel {
       vm.valueCb.subscribe(function (codeChange) {
         vm.onChangeItemCombo(codeChange);
       });
+      $(vm.$el).find('#A5_2').focus();
+
     }
 
     mounted() {
@@ -118,9 +146,9 @@ module nts.uk.at.view.kdl048.screenModel {
         }
       });
       const tableDatas = _.orderBy(
-        vm.tableDataA6.filter((data) => data.name.indexOf(name) != -1),
-        ["code"],
-        ["asc"]
+        vm.tableDataA6.filter((data) => data.attendanceAtr === vm.filterCode()),
+        ['code'],
+        ['asc']
       );
       if (tableDatas.length === 0) {
         vm.diligenceData([]);
@@ -358,7 +386,7 @@ module nts.uk.at.view.kdl048.screenModel {
     // 名称
     name: any;
     // 属性
-    attributes: any;
+    attendanceAtr: any;
     // 表示番号
     indicatesNumber: any;
 
@@ -373,13 +401,13 @@ module nts.uk.at.view.kdl048.screenModel {
     /** 勤怠項目名称 */
     attendanceItemName: string;
     /** 勤怠項目の属性 */
-    attributes: number;
+    attendanceAtr: number;
     /** マスタの種類 */
-    masterTypes: number | null;
+    masterType: number | null;
     /** 表示番号 */
     displayNumbers: number;
 
-    constructor(init?: Partial<DiligenceProject>) {
+    constructor(init?: Partial<AttributeOfAttendanceItem>) {
       $.extend(this, init);
     }
   }

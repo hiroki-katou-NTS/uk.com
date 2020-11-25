@@ -319,7 +319,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                                 item => new model.DiligenceProject({
                                     id: item.attendanceItemId,
                                     name: item.attendanceItemName,
-                                    attributes: item.attributes,
+                                    attendanceAtr: item.attendanceAtr,
                                     indicatesNumber: item.displayNumbers
                                 })
                             );
@@ -327,11 +327,11 @@ module nts.uk.com.view.kwr002.c.viewmodel {
 
                         if (!!calculateAttendanceRecord) {
                             let calculateAttendanceRecordList: Array<model.SelectedTimeItem> = [];
-                            calculateAttendanceRecord.addedItem.forEach(function(item) {
+                            calculateAttendanceRecord.addedItem.forEach((item: any) => {
                                 calculateAttendanceRecordList.push(new model.SelectedTimeItem({itemId: item.attendanceItemId, operator: vm.action.ADDITION}));
                             });
 
-                            calculateAttendanceRecord.subtractedItem.forEach(function(item) {
+                            calculateAttendanceRecord.subtractedItem.forEach((item: any) => {
                                 calculateAttendanceRecordList.push(new model.SelectedTimeItem({itemId: item.attendanceItemId, operator: vm.action.SUBTRACTION}));
                             });
 
@@ -369,7 +369,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                                 item => new model.DiligenceProject({
                                     id: item.attendanceItemId,
                                     name: item.attendanceItemName,
-                                    attributes: item.attributes,
+                                    attendanceAtr: item.attendanceAtr,
                                     indicatesNumber: item.displayNumbers
                                 })
                             );
@@ -377,10 +377,10 @@ module nts.uk.com.view.kwr002.c.viewmodel {
 
                         if (!!calculateAttendanceRecord) {
                             let calculateAttendanceRecordList: Array<model.SelectedTimeItem> = [];
-                            calculateAttendanceRecord.addedItem.forEach(function(item) {
+                            calculateAttendanceRecord.addedItem.forEach((item: any) => {
                                 calculateAttendanceRecordList.push(new model.SelectedTimeItem({itemId: item.attendanceItemId, operator: vm.action.ADDITION}));
                             });
-                            calculateAttendanceRecord.subtractedItem.forEach(function(item) {
+                            calculateAttendanceRecord.subtractedItem.forEach((item: any) => {
                                 calculateAttendanceRecordList.push(new model.SelectedTimeItem({itemId: item.attendanceItemId, operator: vm.action.SUBTRACTION}));
                             });
                             calculateAttendanceRecordList.sort((a, b) => { return Number(a.itemId) - Number(b.itemId); });
@@ -817,9 +817,9 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             /** 勤怠項目名称 */
             attendanceItemName: string;
             /** 勤怠項目の属性 */
-            attributes: number;
+            attendanceAtr: number;
             /** マスタの種類 */
-            masterTypes: number | null;
+            masterType: number | null;
             /** 表示番号 */
             displayNumbers: number;
         }
@@ -827,7 +827,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
         export class DiligenceProject {
             id: any;
             name: any;
-            attributes: any;
+            attendanceAtr: any;
             indicatesNumber: any;
 
             constructor(init?: Partial<DiligenceProject>) {

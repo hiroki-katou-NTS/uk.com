@@ -36,6 +36,16 @@ module nts.uk.at.view.kdl047.a.screenModel {
     isEnableTextEditor: KnockoutObservable<boolean> = ko.observable(false);
     isEnableComboBox: KnockoutObservable<boolean> = ko.observable(false);
 
+    filterObject: KnockoutComputed<{attendanceAtr: number, masterType: number}> = ko.computed(() => {
+      return this.selectedCode() === 1
+        ? {attendanceAtr: 0, masterType: 1}
+        : this.selectedCode() === 2
+          ? {attendanceAtr: 0, masterType: 2}
+          : this.selectedCode() === 3
+            ? {attendanceAtr: 6, masterType: null}
+            : {attendanceAtr: null, masterType: null};
+    });
+
     created() {
       const vm = this;
       vm.objectDisplay = getShared('attendanceItem');
@@ -58,13 +68,15 @@ module nts.uk.at.view.kdl047.a.screenModel {
       // Options A5_2
       vm.itemList(vm.objectDisplay.attribute.attributeList);
       // For Table
-      let tableDatas = [];
+      let tableDatas: any[] = [];
 
       _.each(vm.objectDisplay.attendanceItems, tmp => {
         tableDatas.push(new ItemModel({
           id: tmp.attendanceItemId,
           code: tmp.displayNumbers,
-          name: tmp.attendanceItemName
+          name: tmp.attendanceItemName,
+          attendanceAtr: tmp.attendanceAtr,
+          masterType: tmp.masterType
         }));
       });
       tableDatas = _.orderBy(tableDatas, ['code'], ['asc']);
@@ -72,7 +84,7 @@ module nts.uk.at.view.kdl047.a.screenModel {
       tableDatas.unshift(new ItemModel({
         id: -1,
         code: '',
-        name: this.$i18n('KDL047_10')
+        name: vm.$i18n('KDL047_10')
       }));
       vm.tableDatas(tableDatas);
       vm.selectedCode.subscribe((codeChanged) => {
@@ -87,7 +99,14 @@ module nts.uk.at.view.kdl047.a.screenModel {
           }
         });
         const tableDatas = _.orderBy(
-          vm.tableDatasClone().filter(data => data.name.indexOf(name) !== -1),
+          vm.tableDatasClone().filter(data => {
+            const attendanceAtr = vm.filterObject().attendanceAtr;
+            const masterType = vm.filterObject().masterType;
+            if (attendanceAtr === 6) {
+              return data.attendanceAtr === attendanceAtr;
+            }
+            return data.attendanceAtr === attendanceAtr && data.masterType === masterType;
+          }),
           ['code'], ['asc']
         );
         tableDatas.unshift(new ItemModel({
@@ -163,6 +182,8 @@ module nts.uk.at.view.kdl047.a.screenModel {
     id: any;
     code: any;
     name: string;
+    attendanceAtr: number;
+    masterType: number;
 
     constructor(init?: Partial<ItemModel>) {
       $.extend(this, init);
@@ -178,7 +199,7 @@ module nts.uk.at.view.kdl047.a.screenModel {
     exportAtr: number;
     attendanceId: number;
     attribute: number;
-  
+
     constructor(init?: Partial<AttendanceRecordExport>) {
       $.extend(this, init);
     }
@@ -260,9 +281,9 @@ module nts.uk.at.view.kdl047.a.screenModel {
     /** 勤怠項目名称 */
     attendanceItemName: string;
     /** 勤怠項目の属性 */
-    attributes: number;
+    attendanceAtr: number;
     /** マスタの種類 */
-    masterTypes: number | null;
+    masterType: number | null;
     /** 表示番号 */
     displayNumbers: number;
   }
