@@ -6,7 +6,7 @@ import lombok.Getter;
 import nts.uk.ctx.at.record.app.find.dailyperform.goout.dto.OutingTimeOfDailyPerformanceDto;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ConvertibleAttendanceItem;
 
 public class OutingTimeOfDailyPerformanceCommand extends DailyWorkCommonCommand {
 
@@ -15,14 +15,15 @@ public class OutingTimeOfDailyPerformanceCommand extends DailyWorkCommonCommand 
 
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
-		if(item == null) {
+		
+		if (item == null) {
 			this.data = Optional.empty();
-		}else {
-			OutingTimeOfDailyPerformance outingTimeOfDailyPerformance = new OutingTimeOfDailyPerformance(getEmployeeId(),
-					getWorkDate(), ((OutingTimeOfDailyPerformanceDto) item).toDomain(getEmployeeId(), getWorkDate()));
-			this.data = item == null || !item.isHaveData() ? Optional.empty()
-					: Optional.of(outingTimeOfDailyPerformance);
+			return;
 		}
+		OutingTimeOfDailyPerformance outingTimeOfDailyPerformance = new OutingTimeOfDailyPerformance(getEmployeeId(),
+				getWorkDate(), ((OutingTimeOfDailyPerformanceDto) item).toDomain(getEmployeeId(), getWorkDate()));
+		this.data = item == null || !item.isHaveData() ? Optional.empty()
+				: Optional.of(outingTimeOfDailyPerformance);
 	}
 
 	@Override

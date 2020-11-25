@@ -20,7 +20,6 @@ import nts.uk.ctx.at.shared.dom.WorkInfoAndTimeZone;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.GetShiftMasterByWorkplaceService;
@@ -30,6 +29,11 @@ import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterOrgRepository;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterOrganization;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterRepository;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.dto.ShiftMasterDto;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
@@ -40,40 +44,40 @@ import nts.uk.shr.com.context.AppContexts;
 
 /**
  *
- * 
+ *
  * @author anhdt
  *
  */
 @Stateless
 public class ShiftMasterOrgFinder {
-	
+
 	@Inject
 	private ShiftMasterOrgRepository shiftMasterOrgRp;
-	
+
 	@Inject
 	private ShiftMasterRepository shiftMasterRepo;
-	
+
 	@Inject
 	private WorkTimeSettingFinder workTimeFinder;
-	
+
 	@Inject
 	private WorkTypeRepository workTypeRepo;
-	
+
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepository;
-	
+
 	@Inject
 	private WorkTimeSettingService workTimeSettingService;
-	
+
 	@Inject
 	private BasicScheduleService basicScheduleService;
 
 	// 使用できるシフトマスタの勤務情報と補正済み所定時間帯を取得する
 	@SuppressWarnings("static-access")
 	public List<ShiftMasterDto> optainShiftMastersByWorkPlace(String targetId, Integer targetUnit) {
-		
+
 		GetUsableShiftMasterService.Require require = new UseableRequireImpl(shiftMasterOrgRp, shiftMasterRepo);
-		
+
 		TargetOrgIdenInfor target = null;
 		if(targetUnit != null && targetId != null) {
 			TargetOrganizationUnit unit = EnumAdaptor.valueOf(targetUnit, TargetOrganizationUnit.class);
@@ -85,88 +89,90 @@ public class ShiftMasterOrgFinder {
 		} else {
 			shiftMasters = GetUsableShiftMasterService.getUsableShiftMaster(require, target);
 		}
-				
+
 		if(CollectionUtil.isEmpty(shiftMasters)) {
 			return Collections.emptyList();
 		}
-		
+
 		List<String> workTimeCodes = shiftMasters.stream().map(s -> s.getWorkTimeCd()).collect(Collectors.toList());
-		
+
 		List<WorkTimeDto> workTimeInfos = workTimeFinder.findByCodes(workTimeCodes);
-		
+
 		shiftMasters.forEach(shiftMaster -> {
+			shiftMaster.setWorkTime1(shiftMaster.getWorkTime1().replace('~', '～'));
+			shiftMaster.setWorkTime2(shiftMaster.getWorkTime2().replace('~', '～'));
 			if(!StringUtils.isEmpty(shiftMaster.getWorkTimeCd())) {
 				Optional<WorkTimeDto> oWorkTime = workTimeInfos.stream().filter(wkt -> shiftMaster.getWorkTimeCd().equalsIgnoreCase(wkt.code)).findFirst();
-				
+
 				if(oWorkTime.isPresent()) {
 					WorkTimeDto worktime = oWorkTime.get();
-					shiftMaster.setWorkTime1(!StringUtils.isEmpty(worktime.workTime1) ? worktime.workTime1 : "");
-					shiftMaster.setWorkTime2(!StringUtils.isEmpty(worktime.workTime2) ? worktime.workTime2 : "");
-				}	
+					shiftMaster.setWorkTime1(!StringUtils.isEmpty(worktime.workTime1) ? worktime.workTime1.replace('~', '～') : "");
+					shiftMaster.setWorkTime2(!StringUtils.isEmpty(worktime.workTime2) ? worktime.workTime2.replace('~', '～') : "");
+				}
 			}
 		});
-		
+
 		return shiftMasters;
 
 	}
-	
+
 	// 対象のシフト情報を習得
 	public List<ShiftMasterDto> getShiftMastersByWorkPlace(String targetId, Integer targetUnit) {
 		Require require = new  RequireImpl(shiftMasterOrgRp, shiftMasterRepo);
-		
+
 		TargetOrgIdenInfor target = null;
 		if(targetUnit != null && targetId != null) {
 			TargetOrganizationUnit unit = EnumAdaptor.valueOf(targetUnit, TargetOrganizationUnit.class);
 			target = new TargetOrgIdenInfor(unit, Optional.ofNullable(targetId), Optional.ofNullable(targetId));
 		}
-		
+
 		if(target == null) {
 			return Collections.emptyList();
 		}
-		
-		@SuppressWarnings("static-access") 
+
+		@SuppressWarnings("static-access")
 		List<ShiftMasterDto> shiftMasters = GetShiftMasterByWorkplaceService.getShiftMasterByWorkplaceService(require, target);
 
-		
+
 		if(CollectionUtil.isEmpty(shiftMasters)) {
 			return Collections.emptyList();
 		}
-		
+
 		List<String> workTimeCodes = shiftMasters.stream().map(s -> s.getWorkTimeCd()).collect(Collectors.toList());
-		
+
 		List<WorkTimeDto> workTimeInfos = workTimeFinder.findByCodes(workTimeCodes);
-		
+
 		shiftMasters.forEach(shiftMaster -> {
 			if(!StringUtils.isEmpty(shiftMaster.getWorkTimeCd())) {
 				Optional<WorkTimeDto> oWorkTime = workTimeInfos.stream().filter(wkt -> shiftMaster.getWorkTimeCd().equalsIgnoreCase(wkt.code)).findFirst();
-				
+
 				if(oWorkTime.isPresent()) {
 					WorkTimeDto worktime = oWorkTime.get();
-					shiftMaster.setWorkTime1(!StringUtils.isEmpty(worktime.workTime1) ? worktime.workTime1 : "");
-					shiftMaster.setWorkTime2(!StringUtils.isEmpty(worktime.workTime2) ? worktime.workTime2 : "");
-				}	
+					shiftMaster.setWorkTime1(!StringUtils.isEmpty(worktime.workTime1) ? worktime.workTime1.replace('~', '～') : "");
+					shiftMaster.setWorkTime2(!StringUtils.isEmpty(worktime.workTime2) ? worktime.workTime2.replace('~', '～') : "");
+				}
 			}
 		});
-		
+
 		return shiftMasters;
 
 	}
-	
+
 	public AlreadySettingWorkplaceDto getAlreadySetting(int unit) {
 		AlreadySettingWorkplaceDto result = new AlreadySettingWorkplaceDto();
 		result.setWorkplaceIds(shiftMasterOrgRp.getAlreadySettingWorkplace(AppContexts.user().companyId(), unit)
 				.stream().map(d -> d.getTargetOrg().getWorkplaceId().get()).distinct().collect(Collectors.toList()));
 		return result;
 	}
-	
+
 	public AlreadySettingWorkplaceDto getAlreadySettingWplGr(int unit) {
 		AlreadySettingWorkplaceDto result = new AlreadySettingWorkplaceDto();
 		result.setWorkplaceGrpIds(shiftMasterOrgRp.getAlreadySettingWorkplaceGrp(AppContexts.user().companyId(), unit)
 					.stream().map(d -> d.getTargetOrg().getWorkplaceGroupId().get()).distinct().collect(Collectors.toList()));
-		
+
 		return result;
 	}
-	
+
 	// 職場グループのシフト情報を取得する
 	public OutPutShiftMasterDto getWorkgroupShiftInfo(String targetId) {
 		OutPutShiftMasterDto shiftMasterDto = new OutPutShiftMasterDto();
@@ -174,32 +180,32 @@ public class ShiftMasterOrgFinder {
 		GetShiftMasterByWorkplaceService.Require require = new RequireImpl(shiftMasterOrgRp, shiftMasterRepo);
 		TargetOrgIdenInfor targetOrg = TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(targetId);
 		Optional<ShiftMasterOrganization> shiftMasterOrg = require.getByTargetOrg(companyId, targetOrg);
-		
+
 		if(!shiftMasterOrg.isPresent()) {
 			shiftMasterDto =  new OutPutShiftMasterDto(new ArrayList<>(), null);
 		}
 		List<ShiftMasterDto> shiftMasterDtos = require.getByListShiftMaterCd(companyId, shiftMasterOrg.get().getListShiftMaterCode());
-		List<ShiftMastersDto> shiftMaster = shiftMasterDtos.stream().map(x-> 
+		List<ShiftMastersDto> shiftMaster = shiftMasterDtos.stream().map(x->
 		new ShiftMastersDto(x.getCompanyId(), x.getShiftMasterCode(), x.getShiftMasterName(), x.getColor(), x.getRemark())).collect(Collectors.toList());
 		WorkInformation information = new WorkInformation("", "");
-		
+
 		WorkInformation.Require require2 = new WorkInfoImpl(workTypeRepo,workTimeSettingRepository,workTimeSettingService, basicScheduleService);
 		Optional<WorkInfoAndTimeZone> timeZone = information.getWorkInfoAndTimeZone(require2);
 		Optional<WorkInfoTimeZoneTempo> tempo = timeZone.map(x-> WorkInfoTimeZoneTempo.toDto(x));
 		shiftMasterDto =  new OutPutShiftMasterDto(shiftMaster, tempo.isPresent() ? tempo.get() : null);
 		return shiftMasterDto;
 	}
-	
-		
+
+
 	@AllArgsConstructor
 	private static class RequireImpl implements GetShiftMasterByWorkplaceService.Require {
-		
+
 		@Inject
 		private ShiftMasterOrgRepository shiftMasterOrgRp;
-		
+
 		@Inject
 		private ShiftMasterRepository shiftMasterRepo;
-		
+
 		@Override
 		public Optional<ShiftMasterOrganization> getByTargetOrg(String companyId, TargetOrgIdenInfor targetOrg) {
 			return shiftMasterOrgRp.getByTargetOrg(companyId, targetOrg);
@@ -216,17 +222,17 @@ public class ShiftMasterOrgFinder {
 		}
 
 	}
-	
+
 	@AllArgsConstructor
 	private static class UseableRequireImpl implements GetUsableShiftMasterService.Require {
-		
+
 		private final String companyId = AppContexts.user().companyId();
 		@Inject
 		private ShiftMasterOrgRepository shiftMasterOrgRp;
-		
+
 		@Inject
 		private ShiftMasterRepository shiftMasterRepo;
-		
+
 		@Override
 		public Optional<ShiftMasterOrganization> getByTargetOrg(TargetOrgIdenInfor targetOrg) {
 			return shiftMasterOrgRp.getByTargetOrg(companyId, targetOrg);
@@ -243,21 +249,21 @@ public class ShiftMasterOrgFinder {
 		}
 
 	}
-	
+
 	@AllArgsConstructor
 	private static class WorkInfoImpl implements WorkInformation.Require {
-		
+
 		private final String companyId = AppContexts.user().companyId();
-		
+
 		@Inject
 		private WorkTypeRepository workTypeRepo;
-		
+
 		@Inject
 		private WorkTimeSettingRepository workTimeSettingRepository;
-		
+
 		@Inject
 		private WorkTimeSettingService workTimeSettingService;
-		
+
 		@Inject
 		private BasicScheduleService basicScheduleService;
 
@@ -267,26 +273,43 @@ public class ShiftMasterOrgFinder {
 		}
 
 		@Override
-		public Optional<WorkType> findByPK(String workTypeCd) {
+		public Optional<WorkType> getWorkType(String workTypeCd) {
 			return workTypeRepo.findByPK(companyId, workTypeCd);
 		}
 
 		@Override
-		public Optional<WorkTimeSetting> findByCode(String workTimeCode) {
+		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
 			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
 		}
 
 		@Override
-		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTimeCd,
-				String workTypeCd, Integer workNo) {
+		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd, Integer workNo) {
 			return workTimeSettingService .getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
 		}
 
 		@Override
-		public WorkStyle checkWorkDay(String workTypeCode) {
-			return basicScheduleService.checkWorkDay(workTypeCode);
+		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
 		}
-		
+
+		@Override
+		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
 
 	}
 

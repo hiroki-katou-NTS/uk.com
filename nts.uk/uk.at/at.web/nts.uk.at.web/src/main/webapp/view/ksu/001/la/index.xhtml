@@ -24,9 +24,9 @@
             <div id="functions-area">
                 <div>
                     <button tabindex="1" data-bind="click: clearData">#{i18n.getText('KSU001_3202')}</button>
-                    <button class="proceed" tabindex="2" data-bind="click: registerOrUpdate">#{i18n.getText('KSU001_3203')}</button>
+                    <button class="proceed" tabindex="2" data-bind="click: registerOrUpdate, enable: $root.errors.isEmpty">#{i18n.getText('KSU001_3203')}</button>
                     <button class="danger" tabindex="3" data-bind="click: remove, enable: enableDelete()">#{i18n.getText('KSU001_3204')}</button>
-                    <button style="margin-right: 3%; float:right" data-bind="click: closeDialog" tabindex="5">#{i18n.getText('KSU001_3206')}</button>
+                    <button data-bind="click: closeDialog" tabindex="5">#{i18n.getText('KSU001_3206')}</button>
                 </div>
             </div>
             <div id="contents-area" class="fixed-flex-layout">
@@ -39,7 +39,7 @@
                             dataSource: listScheduleTeam,
                             primaryKey: 'code',
                             columns: columns,
-                            row: 18,
+                            rows: 18,
                             multiple: false,
                             value: selectedCode
                         }"></table>
@@ -78,7 +78,7 @@
                                             value: scheduleTeamModel().name
                                         }" tabindex="7" />
                         </div>
-                        <div style="margin-left: 70px;" data-bind="ntsFormLabel:{ constraint:'ScheduleTeamRemarks'}">#{i18n.getText('KSU001_3210')}
+                        <div style="margin-left: 120px;" data-bind="ntsFormLabel:{ constraint:'ScheduleTeamRemarks'}">#{i18n.getText('KSU001_3210')}
                         </div>
                         <div class="input">
                             <input id="scheduleTeamRemarks" data-bind="ntsTextEditor:{
@@ -112,7 +112,7 @@
                             <i class="icon icon-searchbox"></i>
                         </div>
                         <div style="width: 300px" tabindex="9"
-                            data-bind="ntsSearchBox: {targetKey: 'employeeCd', comId: 'emp-list-left', searchMode: 'highlight', 
+                            data-bind="ntsSearchBox: {targetKey: 'employeeCd', comId: 'emp-list-left', searchMode: 'highlight', placeHolder: placeHolders,
                                             items: itemsLeft, selected: currentCodeListLeft, selectedKey: 'employeeCd', fields: ['employeeCd','businessName', 'teamName'], mode: 'igGrid'}" />
 
                         <div style="width: 96px;"></div>
@@ -132,16 +132,17 @@
                                             optionsValue: 'employeeCd',
                                             columns: columnsLeft,
                                             multiple: true,                                               
-                                            value: currentCodeListLeft
+                                            value: currentCodeListLeft,
+                                            rows: 10
                                         }">
                             </table>
                         </div>
                         <div class="arrow-button">
-                            <div>
-                                <button class="large btn-custom"  tabindex="12"  data-bind="click: moveItemLeftToRight" ><div class="valign-center " ><img src="img/arrow-right.png" /></div></button>
+                            <div>                               
+                                <button class="large btn-custom"  tabindex="12"  data-bind="click: moveItemLeftToRight" ><i data-bind="ntsIcon: { no: 132 }"></i></button>
                             </div>
-                            <div>
-                                <button class="large btn-custom" tabindex="13" data-bind="click: moveItemRightToLeft" ><div class="valign-center"><img src="img/arrow-left.png" /></div></button>
+                            <div>                               
+                                <button class="large btn-custom" tabindex="13" data-bind="click: moveItemRightToLeft" > <i data-bind="ntsIcon: { no: 133 }"></i></button>
                             </div>   
                         </div>
                         <div>
@@ -151,6 +152,7 @@
                                             optionsValue: 'employeeCd',
                                             columns: columnsRight,
                                             multiple: true,
+                                            rows: 10,
                                             value: currentCodeListRight
                                         }">
                             </table>

@@ -1,14 +1,17 @@
 package nts.uk.ctx.sys.assist.dom.deletedata;
 
+import java.util.List;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.assist.dom.storage.LoginInfo;
-import nts.uk.ctx.sys.assist.dom.system.SystemTypeEnum;
+import nts.uk.ctx.sys.assist.dom.storage.PatternCode;
+import nts.uk.ctx.sys.assist.dom.storage.StorageForm;
 
 @Getter
 @Setter
@@ -32,7 +35,7 @@ public class ResultDeletion extends AggregateRoot {
 
 	// 削除形態
 	/** The deletion type. */
-	private DelType delType;
+	private StorageForm delType;
 
 	// 削除済みファイル
 	/** The deletion files flag. */
@@ -40,16 +43,15 @@ public class ResultDeletion extends AggregateRoot {
 
 	// 削除セットコード
 	/** The deletion code. */
-	private DelCode delCode;
+	private PatternCode delCode;
 
 	// 対象人数
 	/** The number employees. */
 	private int numberEmployees;
 
-	// システム種類
-	/** The system type. */
-	private SystemTypeEnum systemType;
-
+	//field 実行結果
+	private List<ResultLogDeletion> listResultLogDeletions;
+	
 	// 実行者
 	/** The practitioner id. */
 	private String sId;
@@ -64,7 +66,7 @@ public class ResultDeletion extends AggregateRoot {
 
 	// 削除終了日時
 	/** The end date time deletion. */
-	private GeneralDateTime endDateTimeDel;
+	private Optional<GeneralDateTime> endDateTimeDel;
 
 	// ファイルID
 	/** The file id. */
@@ -85,13 +87,45 @@ public class ResultDeletion extends AggregateRoot {
 	//field ログイン情報
     private LoginInfo loginInfo;
     
-	public static ResultDeletion createFromJavatype(String delId, String companyId, String delName, int delType,
-			boolean isDeletedFilesFlg, String delCode, int numberEmployees, int systemType, String sId, int status,
-			GeneralDateTime startDateTimeDel, GeneralDateTime endDateTimeDel, String fileId, String fileName,
-			Integer fileSize, String passwordCompressFileEncrypt, LoginInfo loginInfo) {
-		return new ResultDeletion(delId, companyId, new DelName(delName), DelType.valueOf(delType), isDeletedFilesFlg,
-				new DelCode(delCode), numberEmployees, SystemTypeEnum.valueOf(systemType), sId,
-				SaveStatus.valueOf(status), startDateTimeDel, endDateTimeDel, fileId, new FileName(fileName), fileSize,
-				Optional.ofNullable(new PasswordCompressFileEncrypt(passwordCompressFileEncrypt)), loginInfo);
+	public static ResultDeletion createFromJavatype
+		(
+		String delId, 
+		String companyId, 
+		String delName, 
+		int delType,
+		boolean isDeletedFilesFlg, 
+		String delCode, 
+		int numberEmployees, 
+		List<ResultLogDeletion> listResultLogDeletions,
+		String sId, 
+		int status,
+		GeneralDateTime startDateTimeDel,
+		GeneralDateTime endDateTimeDel, 
+		String fileId, 
+		String fileName,
+		Integer fileSize, 
+		String passwordCompressFileEncrypt, 
+		LoginInfo loginInfo
+		){
+			return new ResultDeletion
+				(
+				delId, 
+				companyId, 
+				new DelName(delName), 
+				EnumAdaptor.valueOf(delType, StorageForm.class),
+				isDeletedFilesFlg,
+				new PatternCode(delCode), 
+				numberEmployees, 
+				listResultLogDeletions,
+				sId,
+				SaveStatus.valueOf(status), 
+				startDateTimeDel, 
+				Optional.ofNullable(endDateTimeDel), 
+				fileId, 
+				new FileName(fileName), 
+				fileSize,
+				Optional.ofNullable(new PasswordCompressFileEncrypt(passwordCompressFileEncrypt)), 
+				loginInfo
+				);
 	}
 }

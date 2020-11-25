@@ -10,17 +10,17 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.optitem.OptionalItemAtr;
-import nts.uk.ctx.at.shared.dom.optitem.OptionalItemNo;
-import nts.uk.ctx.at.shared.dom.optitem.calculation.CalcFormulaSetting;
-import nts.uk.ctx.at.shared.dom.optitem.calculation.CalculationAtr;
-import nts.uk.ctx.at.shared.dom.optitem.calculation.FormulaGetMemento;
-import nts.uk.ctx.at.shared.dom.optitem.calculation.FormulaId;
-import nts.uk.ctx.at.shared.dom.optitem.calculation.FormulaName;
-import nts.uk.ctx.at.shared.dom.optitem.calculation.Rounding;
-import nts.uk.ctx.at.shared.dom.optitem.calculation.Symbol;
-import nts.uk.ctx.at.shared.dom.optitem.calculation.disporder.DispOrder;
-import nts.uk.ctx.at.shared.dom.optitem.calculation.disporder.FormulaDispOrderGetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemNo;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.CalcFormulaSetting;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.CalculationAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.FormulaGetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.FormulaId;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.FormulaName;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.Rounding;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.Symbol;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.disporder.DispOrder;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.disporder.FormulaDispOrderGetMemento;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

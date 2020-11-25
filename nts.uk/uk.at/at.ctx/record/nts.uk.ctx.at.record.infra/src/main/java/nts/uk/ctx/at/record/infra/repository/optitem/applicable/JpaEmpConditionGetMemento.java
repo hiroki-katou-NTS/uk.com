@@ -9,9 +9,9 @@ import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.record.infra.entity.optitem.applicable.KrcstApplEmpCon;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.optitem.OptionalItemNo;
-import nts.uk.ctx.at.shared.dom.optitem.applicable.EmpConditionGetMemento;
-import nts.uk.ctx.at.shared.dom.optitem.applicable.EmploymentCondition;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemNo;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpConditionGetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmploymentCondition;
 
 /**
  * The Class JpaEmpConditionGetMemento.

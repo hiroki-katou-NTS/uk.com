@@ -12,7 +12,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.optitem.OptionalItemRepository;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
 import optitem.OptionalItemExport;
 import optitem.OptionalItemPub;
 

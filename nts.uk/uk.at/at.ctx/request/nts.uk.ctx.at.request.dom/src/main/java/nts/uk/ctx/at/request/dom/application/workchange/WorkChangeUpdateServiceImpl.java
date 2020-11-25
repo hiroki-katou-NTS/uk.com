@@ -14,6 +14,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 
 @Stateless
 public class WorkChangeUpdateServiceImpl implements IWorkChangeUpdateService {
@@ -34,7 +35,7 @@ public class WorkChangeUpdateServiceImpl implements IWorkChangeUpdateService {
 	private OtherCommonAlgorithm otherCommonAlg;
 
 	@Override
-	public ProcessResult updateWorkChange(String companyId, Application application, AppWorkChange workChange) {
+	public ProcessResult updateWorkChange(String companyId, Application application, AppWorkChange workChange, AppDispInfoStartupOutput appDispInfoStartup) {
 		// ドメインモデル「勤務変更申請」の更新をする
 		appRepository.update(application);
 
@@ -66,7 +67,7 @@ public class WorkChangeUpdateServiceImpl implements IWorkChangeUpdateService {
 //		interimRemainDataMngRegisterDateChange.registerDateChange(companyId, application.getEmployeeID(), listDate);
 
 		// アルゴリズム「4-2.詳細画面登録後の処理」を実行する
-		return detailAfterUpdate.processAfterDetailScreenRegistration(companyId, application.getAppID());
+		return detailAfterUpdate.processAfterDetailScreenRegistration(companyId, application.getAppID(), appDispInfoStartup);
 	}
 
 }

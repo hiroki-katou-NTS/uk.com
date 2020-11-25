@@ -43,6 +43,8 @@
 			<com:scriptfile path="/view/kaf/000/b/component7/kaf000.b.component7.js" />
 			<com:scriptfile path="/view/kaf/000/b/component8/kaf000.b.component8.js" />
 			<com:scriptfile path="/view/kaf/000/b/component9/kaf000.b.component9.js" />
+			<com:scriptfile path="/view/kaf/sample/shr/kafsample.shr.vm.js" />
+			<com:scriptfile path="/view/kaf/sample/b/kafsample.b.vm.js" />
 			<com:scriptfile path="/view/kaf/007/shr/kaf007.shr.vm.js" />
 			<com:scriptfile path="/view/kaf/008/shr/kaf008.shr.vm.js" />
 			<com:scriptfile path="/view/kaf/009/shr/kaf009.shr.vm.js" />
@@ -78,7 +80,7 @@
 						data-bind="if: displayApprovalButton">
 						<button class="proceed kaf000-function-btn"
 							data-bind="click: btnApprove,
-													enable: enableApprovalButton() &amp;&amp; errorEmpty()
+													enable: enableApprovalButton() &amp;&amp; $root.errors.isEmpty
 													">#{i18n.getText('KAF000_15')}</button>
 					</div>
 					<!-- B1_14 -->
@@ -93,7 +95,7 @@
 						data-bind="if: displayDenyButton">
 						<button class="kaf000-function-btn"
 							data-bind="click: btnDeny,
-									enable: enableDenyButton() &amp;&amp; errorEmpty()
+									enable: enableDenyButton() &amp;&amp; $root.errors.isEmpty
 									">#{i18n.getText('KAF000_16')}</button>
 					</div>
 					<!-- B1_15 -->
@@ -108,7 +110,7 @@
 						data-bind="if: displayReleaseButton">
 						<button class="kaf000-function-btn"
 							data-bind="click: btnRelease,
-									enable: enableReleaseButton()
+									enable: enableReleaseButton() &amp;&amp; $root.errors.isEmpty
 									">#{i18n.getText('KAF000_18')}</button>
 					</div>
 					<!-- B1_6 -->
@@ -116,7 +118,7 @@
 						data-bind="if: displayRemandButton">
 						<button class="kaf000-function-btn"
 							data-bind="click: btnRemand,
-									enable: enableRemandButton()
+									enable: enableRemandButton() &amp;&amp; $root.errors.isEmpty
 									   ">#{i18n.getText('KAF000_17')}</button>
 					</div>
 				</div>
@@ -125,13 +127,13 @@
 					<div class="controlButtonCell_kaf000"
 						data-bind="if: displayUpdateButton">
 						<button id = "updateKAF000" class="proceed kaf000-function-btn"
-							data-bind="click: updateData, enable: enableUpdateButton()">#{i18n.getText('KAF000_19')}</button>
+							data-bind="click: updateData, enable: enableUpdateButton() &amp;&amp; $root.errors.isEmpty">#{i18n.getText('KAF000_19')}</button>
 
 					</div>
 					<!-- B1_9 -->
 					<div class="controlButtonCell_kaf000">
 						<button class="kaf000-function-btn"
-							data-bind="click: btnPrint">#{i18n.getText('KAF000_20')}</button>
+							data-bind="click: btnPrint, enable: $root.errors.isEmpty">#{i18n.getText('KAF000_20')}</button>
 					</div>
 					<!-- B1_10 -->
 					<div class="controlButtonCell_kaf000" style="display: none">
@@ -149,7 +151,7 @@
 					<div class="controlButtonCell_kaf000"
 						data-bind="if: displayDeleteButton">
 						<button class="danger kaf000-function-btn"
-							data-bind="click: btnDelete, enable : enableDeleteButton()">#{i18n.getText('KAF000_23')}</button>
+							data-bind="click: btnDelete, enable : enableDeleteButton() &amp;&amp; $root.errors.isEmpty">#{i18n.getText('KAF000_23')}</button>
 					</div>
 				</div>
 				<div class="kaf000-function-div-cancel">
@@ -157,42 +159,48 @@
 					<div class="controlButtonCell_kaf000"
 						data-bind="if: displayCancelButton">
 						<button class="danger kaf000-function-btn"
-							data-bind="click: btnCancel, enable : enableCancelButton()">#{i18n.getText('KAF000_24')}</button>
+							data-bind="click: btnCancel, enable : enableCancelButton() &amp;&amp; $root.errors.isEmpty">#{i18n.getText('KAF000_24')}</button>
 					</div>
 				</div>
 			</div>
 			<div id="contents-area">
-				<div data-bind="if: ko.unwrap(appType) === 0">
+				<div data-bind="if: currentApp()=='sample'">
+					<div data-bind="if: ko.unwrap(appType) != null">
+						<div data-bind="component: {
+							name: 'kafsample-b',
+							params: childParam
+						}"></div>
+					</div>
+				</div>
+				<div data-bind="if: currentApp()!='sample'">
+				<div data-bind="if: ko.unwrap(appType) === getAppType('OVER_TIME_APPLICATION')">
 					APP TYPE = 0
 				</div>
-				<div data-bind="if: ko.unwrap(appType) === 1">
+				<div data-bind="if: ko.unwrap(appType) === getAppType('ABSENCE_APPLICATION')">
 					APP TYPE = 1
 				</div>
-				<div data-bind="if: ko.unwrap(appType) === 2">
+				<div data-bind="if: ko.unwrap(appType) === getAppType('WORK_CHANGE_APPLICATION')">
 					<div data-bind="component: {
 							name: 'kaf007-b',
 							params: childParam
 						}"></div>
 				</div>
-				<div data-bind="if: ko.unwrap(appType) === 3">
+				<div data-bind="if: ko.unwrap(appType) === getAppType('BUSINESS_TRIP_APPLICATION')">
 					<div data-bind="component: {
 							name: 'kaf008-b',
 							params: childParam
 						}"></div>
 				</div>
-				<div data-bind="if: ko.unwrap(appType) === 4">
+				<div data-bind="if: ko.unwrap(appType) === getAppType('GO_RETURN_DIRECTLY_APPLICATION')">
 					<div data-bind="component: {
 							name: 'kaf009-b',
 							params: childParam
 						}"></div>
 				</div>
-				<div data-bind="if: ko.unwrap(appType) === 9">
-					<div data-bind="component: {
-							name: 'kaf004-b',
-							params: childParam
-						}"></div>
+				<div data-bind="if: ko.unwrap(appType) === getAppType('HOLIDAY_WORK_APPLICATION')">
+					APP TYPE = 6
 				</div>
-				<div data-bind="if: ko.unwrap(appType) === 7">
+				<div data-bind="if: ko.unwrap(appType) === getAppType('STAMP_APPLICATION')">
 					<div data-bind="if: ko.toJS(application).opStampRequestMode == 0">
 						<div data-bind="component: {
 							name: 'kaf002-c',
@@ -205,6 +213,22 @@
 							params: childParam
 						}"></div>
 					</div>
+				</div>
+				<div data-bind="if: ko.unwrap(appType) === getAppType('ANNUAL_HOLIDAY_APPLICATION')">
+					APP TYPE = 8
+				</div>
+				<div data-bind="if: ko.unwrap(appType) === getAppType('EARLY_LEAVE_CANCEL_APPLICATION')">
+					<div data-bind="component: {
+							name: 'kaf004-b',
+							params: childParam
+						}"></div>
+				</div>
+				<div data-bind="if: ko.unwrap(appType) === getAppType('COMPLEMENT_LEAVE_APPLICATION')">
+					APP TYPE = 10
+				</div>
+				<div data-bind="if: ko.unwrap(appType) === getAppType('OPTIONAL_ITEM_APPLICATION')">
+					APP TYPE = 11
+				</div>
 				</div>
 			</div>
 		</ui:define>

@@ -26,13 +26,13 @@ import javax.persistence.criteria.Root;
 import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
-import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSetting;
-import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingRepository;
-import nts.uk.ctx.at.shared.dom.outsideot.UseClassification;
-import nts.uk.ctx.at.shared.dom.outsideot.breakdown.BreakdownItemNo;
-import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItem;
-import nts.uk.ctx.at.shared.dom.outsideot.overtime.Overtime;
-import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeNo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.UseClassification;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.BreakdownItemNo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.OutsideOTBRDItem;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.Overtime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeNo;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.KshstOutsideOtSet;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshstOutsideOtBrd;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshstOutsideOtBrdPK;
@@ -55,6 +55,15 @@ import nts.uk.ctx.at.shared.infra.repository.outsideot.overtime.JpaOvertimeSetMe
 @Stateless
 public class JpaOutsideOTSettingRepository extends JpaRepository
 		implements OutsideOTSettingRepository {
+	
+	public static final String FIND_BY_COMPANY_ID_AND_USE_CLS = "SELECT ost FROM KshstOutsideOtBrd ost"
+			+ "	WHERE ost.useAtr = :useAtr"
+			+ "		AND ost.kshstOutsideOtBrdPK.cid = :cid";
+	
+
+	public static final String FIND_OVER_TIME_BY_COMPANY_ID_AND_USE_CLS = "SELECT ot FROM KshstOverTime ot"
+			+ "	WHERE ot.useAtr = :useAtr"
+			+ "		AND ot.kshstOverTimePK.cid = :cid";
 	
 	/*
 	 * (non-Javadoc)
@@ -711,5 +720,24 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 				.collect(Collectors.toList());
 	}
 
+	@Override
+	public List<Overtime> getOverTimeByCompanyIdAndUseClassification(String companyId, int useClassification) {
+		return this.queryProxy().query(FIND_OVER_TIME_BY_COMPANY_ID_AND_USE_CLS, KshstOverTime.class)
+				.setParameter("useAtr", useClassification)
+				.setParameter("cid", companyId)
+				.getList().stream()
+				.map(t -> toDomain(t))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<OutsideOTBRDItem> getByCompanyIdAndUseClassification(String companyId, int useClassification) {
+		return this.queryProxy().query(FIND_BY_COMPANY_ID_AND_USE_CLS, KshstOutsideOtBrd.class)
+				.setParameter("useAtr", useClassification)
+				.setParameter("cid", companyId)
+				.getList().stream()
+				.map(t -> toDomain(t))
+				.collect(Collectors.toList());
+	}
 
 }

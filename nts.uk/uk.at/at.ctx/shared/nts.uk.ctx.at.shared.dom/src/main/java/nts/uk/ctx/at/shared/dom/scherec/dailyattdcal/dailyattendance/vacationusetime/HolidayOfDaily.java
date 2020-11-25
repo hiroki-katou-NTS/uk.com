@@ -25,13 +25,15 @@ public class HolidayOfDaily {
 	private SpecialHolidayOfDaily specialHoliday;
 	//年休
 	private AnnualOfDaily annual;
+	/** 振休 */
+	private TransferHolidayOfDaily transferHoliday;
 	
 	/**
 	 * Constructor 
 	 */
 	public HolidayOfDaily(AbsenceOfDaily absence, TimeDigestOfDaily timeDigest, YearlyReservedOfDaily yearlyReserved,
 			SubstituteHolidayOfDaily substitute, OverSalaryOfDaily overSalary, SpecialHolidayOfDaily specialHoliday,
-			AnnualOfDaily annual) {
+			AnnualOfDaily annual, TransferHolidayOfDaily transferHoliday) {
 		super();
 		this.absence = absence;
 		this.timeDigest = timeDigest;
@@ -40,6 +42,7 @@ public class HolidayOfDaily {
 		this.overSalary = overSalary;
 		this.specialHoliday = specialHoliday;
 		this.annual = annual;
+		this.transferHoliday = transferHoliday;
 	}
 	
 	public AttendanceTime calcTotalHolTime() {
@@ -47,7 +50,8 @@ public class HolidayOfDaily {
 								+ this.getSubstitute().getUseTime().valueAsMinutes()
 								+ this.getSpecialHoliday().getUseTime().valueAsMinutes()
 								+ this.getOverSalary().getUseTime().valueAsMinutes()
-								+ this.getYearlyReserved().getUseTime().valueAsMinutes());
+								+ this.getYearlyReserved().getUseTime().valueAsMinutes()
+								+ this.transferHoliday.getUseTime().valueAsMinutes());
 			 
 	}
 	

@@ -27,107 +27,48 @@ import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
-import nts.uk.ctx.at.shared.dom.common.times.AttendanceTimesMonth;
-import nts.uk.ctx.at.shared.dom.monthly.AttendanceTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.TimeMonthWithCalculation;
-import nts.uk.ctx.at.shared.dom.monthly.TimeMonthWithCalculationAndMinus;
-import nts.uk.ctx.at.shared.dom.monthly.affiliation.AffiliationInfoOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.affiliation.AggregateAffiliationInfo;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxTimeStatusOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.calc.AggregateTotalTimeSpentAtWork;
-import nts.uk.ctx.at.shared.dom.monthly.calc.MonthlyCalculation;
-import nts.uk.ctx.at.shared.dom.monthly.calc.actualworkingtime.IrregularWorkingTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.calc.actualworkingtime.RegularAndIrregularTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.calc.flex.ExcessFlexAtr;
-import nts.uk.ctx.at.shared.dom.monthly.calc.flex.FlexCarryforwardTime;
-import nts.uk.ctx.at.shared.dom.monthly.calc.flex.FlexShortDeductTime;
-import nts.uk.ctx.at.shared.dom.monthly.calc.flex.FlexTime;
-import nts.uk.ctx.at.shared.dom.monthly.calc.flex.FlexTimeCurrentMonth;
-import nts.uk.ctx.at.shared.dom.monthly.calc.flex.FlexTimeOfExcessOutsideTime;
-import nts.uk.ctx.at.shared.dom.monthly.calc.flex.FlexTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
-import nts.uk.ctx.at.shared.dom.monthly.calc.totalworkingtime.PrescribedWorkingTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.calc.totalworkingtime.WorkTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.calc.totalworkingtime.hdwkandcompleave.AggregateHolidayWorkTime;
-import nts.uk.ctx.at.shared.dom.monthly.calc.totalworkingtime.hdwkandcompleave.HolidayWorkTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.calc.totalworkingtime.overtime.AggregateOverTime;
-import nts.uk.ctx.at.shared.dom.monthly.calc.totalworkingtime.overtime.OverTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.calc.totalworkingtime.vacationusetime.AnnualLeaveUseTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.calc.totalworkingtime.vacationusetime.CompensatoryLeaveUseTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.calc.totalworkingtime.vacationusetime.RetentionYearlyUseTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.calc.totalworkingtime.vacationusetime.SpecialHolidayUseTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.calc.totalworkingtime.vacationusetime.VacationUseTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.excessoutside.ExcessOutSideWorkEachBreakdown;
-import nts.uk.ctx.at.shared.dom.monthly.excessoutside.ExcessOutsideWork;
-import nts.uk.ctx.at.shared.dom.monthly.excessoutside.ExcessOutsideWorkOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.totalcount.TotalCount;
-import nts.uk.ctx.at.shared.dom.monthly.totalcount.TotalCountByPeriod;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.VerticalTotalOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workclock.EndClockOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workclock.WorkClockOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workclock.pclogon.AggrPCLogonClock;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workclock.pclogon.AggrPCLogonDivergence;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workclock.pclogon.PCLogonClockOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workclock.pclogon.PCLogonDivergenceOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workclock.pclogon.PCLogonOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.WorkDaysOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.leave.AggregateLeaveDays;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.leave.AnyLeave;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.leave.LeaveOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.paydays.PayDaysOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.specificdays.AggregateSpecificDays;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.specificdays.SpecificDaysOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.AbsenceDaysOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.AggregateAbsenceDays;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.AggregateSpcVacationDays;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.AttendanceDaysOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.HolidayDaysOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.HolidayWorkDaysOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.PredeterminedDaysOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.RecruitmentDaysOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.SpcVacationDaysOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.TemporaryWorkTimesOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.TwoTimesWorkTimesOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.WorkDaysDetailOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.WorkTimesOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.WorkTimeOfMonthlyVT;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.attendanceleave.AttendanceLeaveGateTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.bonuspaytime.AggregateBonusPayTime;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.bonuspaytime.BonusPayTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.breaktime.BreakTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.divergencetime.AggregateDivergenceTime;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.divergencetime.DivergenceAtrOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.divergencetime.DivergenceTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.goout.AggregateGoOut;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.goout.GoOutForChildCare;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.goout.GoOutOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.holidaytime.HolidayTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.lateleaveearly.Late;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.lateleaveearly.LateLeaveEarlyOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.lateleaveearly.LeaveEarly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.medicaltime.MedicalTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.midnighttime.IllegalMidnightTime;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.midnighttime.MidnightTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.premiumtime.AggregatePremiumTime;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.premiumtime.PremiumTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.timevarience.BudgetTimeVarienceOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.ouen.OuenTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.JobTitleId;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.JobTitleId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateItemNo;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.BusinessTypeCode;
-import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.TimeMonthWithCalculation;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.TimeMonthWithCalculationAndMinus;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.affiliation.AffiliationInfoOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.affiliation.AggregateAffiliationInfo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.AggregateTotalTimeSpentAtWork;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.MonthlyCalculation;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.actualworkingtime.IrregularWorkingTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.actualworkingtime.RegularAndIrregularTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.flex.ExcessFlexAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.flex.FlexCarryforwardTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.flex.FlexShortDeductTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.flex.FlexTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.flex.FlexTimeCurrentMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.flex.FlexTimeOfExcessOutsideTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.flex.FlexTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.PrescribedWorkingTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.WorkTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.hdwkandcompleave.AggregateHolidayWorkTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.hdwkandcompleave.HolidayWorkTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.overtime.AggregateOverTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.overtime.OverTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.vacationusetime.AnnualLeaveUseTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.vacationusetime.CompensatoryLeaveUseTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.vacationusetime.RetentionYearlyUseTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.vacationusetime.SpecialHolidayUseTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.vacationusetime.VacationUseTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.excessoutside.ExcessOutSideWorkEachBreakdown;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.excessoutside.ExcessOutsideWork;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.excessoutside.ExcessOutsideWorkOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.ouen.OuenTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.totalcount.TotalCountByPeriod;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.VerticalTotalOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalCount;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
+import nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
-import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
-import nts.uk.ctx.at.shared.dom.worktype.CloseAtr;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -148,785 +89,97 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	public static final JpaEntityMapper<KrcdtMonMerge> MAPPER = new JpaEntityMapper<>(KrcdtMonMerge.class);
 
 	@EmbeddedId
-	public KrcdtMonMergePk krcdtMonMergePk;
+	public KrcdtMonMergePk id;
 	
 	@Version
 	@Column(name = "EXCLUS_VER")
 	public long version;
 
-	/** KRCDT_MON_AGGR_ABSN_DAYS 30 **/
-
-	/** 欠勤時間 */
-
-	@Column(name = "ABSENCE_TIME_1")
-	public double absenceTime1;
-
-	@Column(name = "ABSENCE_TIME_2")
-	public double absenceTime2;
-
-	@Column(name = "ABSENCE_TIME_3")
-	public double absenceTime3;
-
-	@Column(name = "ABSENCE_TIME_4")
-	public double absenceTime4;
-
-	@Column(name = "ABSENCE_TIME_5")
-	public double absenceTime5;
-
-	@Column(name = "ABSENCE_TIME_6")
-	public double absenceTime6;
-
-	@Column(name = "ABSENCE_TIME_7")
-	public double absenceTime7;
-
-	@Column(name = "ABSENCE_TIME_8")
-	public double absenceTime8;
-
-	@Column(name = "ABSENCE_TIME_9")
-	public double absenceTime9;
-
-	@Column(name = "ABSENCE_TIME_10")
-	public double absenceTime10;
-
-	@Column(name = "ABSENCE_TIME_11")
-	public double absenceTime11;
-
-	@Column(name = "ABSENCE_TIME_12")
-	public double absenceTime12;
-
-	@Column(name = "ABSENCE_TIME_13")
-	public double absenceTime13;
-
-	@Column(name = "ABSENCE_TIME_14")
-	public double absenceTime14;
-
-	@Column(name = "ABSENCE_TIME_15")
-	public double absenceTime15;
-
-	@Column(name = "ABSENCE_TIME_16")
-	public double absenceTime16;
-
-	@Column(name = "ABSENCE_TIME_17")
-	public double absenceTime17;
-
-	@Column(name = "ABSENCE_TIME_18")
-	public double absenceTime18;
-
-	@Column(name = "ABSENCE_TIME_19")
-	public double absenceTime19;
-
-	@Column(name = "ABSENCE_TIME_20")
-	public double absenceTime20;
-
-	@Column(name = "ABSENCE_TIME_21")
-	public double absenceTime21;
-
-	@Column(name = "ABSENCE_TIME_22")
-	public double absenceTime22;
-
-	@Column(name = "ABSENCE_TIME_23")
-	public double absenceTime23;
-
-	@Column(name = "ABSENCE_TIME_24")
-	public double absenceTime24;
-
-	@Column(name = "ABSENCE_TIME_25")
-	public double absenceTime25;
-
-	@Column(name = "ABSENCE_TIME_26")
-	public double absenceTime26;
-
-	@Column(name = "ABSENCE_TIME_27")
-	public double absenceTime27;
-
-	@Column(name = "ABSENCE_TIME_28")
-	public double absenceTime28;
-
-	@Column(name = "ABSENCE_TIME_29")
-	public double absenceTime29;
-
-	@Column(name = "ABSENCE_TIME_30")
-	public double absenceTime30;
-
-	/** 欠勤日数 */
-
-	@Column(name = "ABSENCE_DAYS_1")
-	public int absenceDay1;
-
-	@Column(name = "ABSENCE_DAYS_2")
-	public int absenceDay2;
-
-	@Column(name = "ABSENCE_DAYS_3")
-	public int absenceDay3;
-
-	@Column(name = "ABSENCE_DAYS_4")
-	public int absenceDay4;
-
-	@Column(name = "ABSENCE_DAYS_5")
-	public int absenceDay5;
-
-	@Column(name = "ABSENCE_DAYS_6")
-	public int absenceDay6;
-
-	@Column(name = "ABSENCE_DAYS_7")
-	public int absenceDay7;
-
-	@Column(name = "ABSENCE_DAYS_8")
-	public int absenceDay8;
-
-	@Column(name = "ABSENCE_DAYS_9")
-	public int absenceDay9;
-
-	@Column(name = "ABSENCE_DAYS_10")
-	public int absenceDay10;
-
-	@Column(name = "ABSENCE_DAYS_11")
-	public int absenceDay11;
-
-	@Column(name = "ABSENCE_DAYS_12")
-	public int absenceDay12;
-
-	@Column(name = "ABSENCE_DAYS_13")
-	public int absenceDay13;
-
-	@Column(name = "ABSENCE_DAYS_14")
-	public int absenceDay14;
-
-	@Column(name = "ABSENCE_DAYS_15")
-	public int absenceDay15;
-
-	@Column(name = "ABSENCE_DAYS_16")
-	public int absenceDay16;
-
-	@Column(name = "ABSENCE_DAYS_17")
-	public int absenceDay17;
-
-	@Column(name = "ABSENCE_DAYS_18")
-	public int absenceDay18;
-
-	@Column(name = "ABSENCE_DAYS_19")
-	public int absenceDay19;
-
-	@Column(name = "ABSENCE_DAYS_20")
-	public int absenceDay20;
-
-	@Column(name = "ABSENCE_DAYS_21")
-	public int absenceDay21;
-
-	@Column(name = "ABSENCE_DAYS_22")
-	public int absenceDay22;
-
-	@Column(name = "ABSENCE_DAYS_23")
-	public int absenceDay23;
-
-	@Column(name = "ABSENCE_DAYS_24")
-	public int absenceDay24;
-
-	@Column(name = "ABSENCE_DAYS_25")
-	public int absenceDay25;
-
-	@Column(name = "ABSENCE_DAYS_26")
-	public int absenceDay26;
-
-	@Column(name = "ABSENCE_DAYS_27")
-	public int absenceDay27;
-
-	@Column(name = "ABSENCE_DAYS_28")
-	public int absenceDay28;
-
-	@Column(name = "ABSENCE_DAYS_29")
-	public int absenceDay29;
-
-	@Column(name = "ABSENCE_DAYS_30")
-	public int absenceDay30;
-
-	/** KRCDT_MON_AGGR_BNSPY_TIME 10 **/
-
-	/** 加給時間 */
-	@Column(name = "BONUS_PAY_TIME_1")
-	public int bonusPayTime1;
-
-	@Column(name = "BONUS_PAY_TIME_2")
-	public int bonusPayTime2;
-
-	@Column(name = "BONUS_PAY_TIME_3")
-	public int bonusPayTime3;
-
-	@Column(name = "BONUS_PAY_TIME_4")
-	public int bonusPayTime4;
-
-	@Column(name = "BONUS_PAY_TIME_5")
-	public int bonusPayTime5;
-
-	@Column(name = "BONUS_PAY_TIME_6")
-	public int bonusPayTime6;
-
-	@Column(name = "BONUS_PAY_TIME_7")
-	public int bonusPayTime7;
-
-	@Column(name = "BONUS_PAY_TIME_8")
-	public int bonusPayTime8;
-
-	@Column(name = "BONUS_PAY_TIME_9")
-	public int bonusPayTime9;
-
-	@Column(name = "BONUS_PAY_TIME_10")
-	public int bonusPayTime10;
-
-	/** 特定加給時間 */
-	@Column(name = "SPEC_BONUS_PAY_TIME_1")
-	public int specificBonusPayTime1;
-
-	@Column(name = "SPEC_BONUS_PAY_TIME_2")
-	public int specificBonusPayTime2;
-
-	@Column(name = "SPEC_BONUS_PAY_TIME_3")
-	public int specificBonusPayTime3;
-
-	@Column(name = "SPEC_BONUS_PAY_TIME_4")
-	public int specificBonusPayTime4;
-
-	@Column(name = "SPEC_BONUS_PAY_TIME_5")
-	public int specificBonusPayTime5;
-
-	@Column(name = "SPEC_BONUS_PAY_TIME_6")
-	public int specificBonusPayTime6;
-
-	@Column(name = "SPEC_BONUS_PAY_TIME_7")
-	public int specificBonusPayTime7;
-
-	@Column(name = "SPEC_BONUS_PAY_TIME_8")
-	public int specificBonusPayTime8;
-
-	@Column(name = "SPEC_BONUS_PAY_TIME_9")
-	public int specificBonusPayTime9;
-
-	@Column(name = "SPEC_BONUS_PAY_TIME_10")
-	public int specificBonusPayTime10;
-
-	/** 休出加給時間 */
-	@Column(name = "HDWK_BONUS_PAY_TIME_1")
-	public int holidayWorkBonusPayTime1;
-
-	@Column(name = "HDWK_BONUS_PAY_TIME_2")
-	public int holidayWorkBonusPayTime2;
-
-	@Column(name = "HDWK_BONUS_PAY_TIME_3")
-	public int holidayWorkBonusPayTime3;
-
-	@Column(name = "HDWK_BONUS_PAY_TIME_4")
-	public int holidayWorkBonusPayTime4;
-
-	@Column(name = "HDWK_BONUS_PAY_TIME_5")
-	public int holidayWorkBonusPayTime5;
-
-	@Column(name = "HDWK_BONUS_PAY_TIME_6")
-	public int holidayWorkBonusPayTime6;
-
-	@Column(name = "HDWK_BONUS_PAY_TIME_7")
-	public int holidayWorkBonusPayTime7;
-
-	@Column(name = "HDWK_BONUS_PAY_TIME_8")
-	public int holidayWorkBonusPayTime8;
-
-	@Column(name = "HDWK_BONUS_PAY_TIME_9")
-	public int holidayWorkBonusPayTime9;
-
-	@Column(name = "HDWK_BONUS_PAY_TIME_10")
-	public int holidayWorkBonusPayTime10;
-
-	/** 休出特定加給時間 **/
-	@Column(name = "HDWK_SPEC_BNSPAY_TIME_1")
-	public int holidayWorkSpecificBonusPayTime1;
-
-	@Column(name = "HDWK_SPEC_BNSPAY_TIME_2")
-	public int holidayWorkSpecificBonusPayTime2;
-
-	@Column(name = "HDWK_SPEC_BNSPAY_TIME_3")
-	public int holidayWorkSpecificBonusPayTime3;
-
-	@Column(name = "HDWK_SPEC_BNSPAY_TIME_4")
-	public int holidayWorkSpecificBonusPayTime4;
-
-	@Column(name = "HDWK_SPEC_BNSPAY_TIME_5")
-	public int holidayWorkSpecificBonusPayTime5;
-
-	@Column(name = "HDWK_SPEC_BNSPAY_TIME_6")
-	public int holidayWorkSpecificBonusPayTime6;
-
-	@Column(name = "HDWK_SPEC_BNSPAY_TIME_7")
-	public int holidayWorkSpecificBonusPayTime7;
-
-	@Column(name = "HDWK_SPEC_BNSPAY_TIME_8")
-	public int holidayWorkSpecificBonusPayTime8;
-
-	@Column(name = "HDWK_SPEC_BNSPAY_TIME_9")
-	public int holidayWorkSpecificBonusPayTime9;
-
-	@Column(name = "HDWK_SPEC_BNSPAY_TIME_10")
-	public int holidayWorkSpecificBonusPayTime10;
-
-	/** KRCDT_MON_AGGR_DIVG_TIME 10 **/
-
-	/** 乖離フラグ - DIVERGENCE_ATR */
-	@Column(name = "DIVERGENCE_ATR_1")
-	public int divergenceAtr1;
-
-	@Column(name = "DIVERGENCE_ATR_2")
-	public int divergenceAtr2;
-
-	@Column(name = "DIVERGENCE_ATR_3")
-	public int divergenceAtr3;
-
-	@Column(name = "DIVERGENCE_ATR_4")
-	public int divergenceAtr4;
-
-	@Column(name = "DIVERGENCE_ATR_5")
-	public int divergenceAtr5;
-
-	@Column(name = "DIVERGENCE_ATR_6")
-	public int divergenceAtr6;
-
-	@Column(name = "DIVERGENCE_ATR_7")
-	public int divergenceAtr7;
-
-	@Column(name = "DIVERGENCE_ATR_8")
-	public int divergenceAtr8;
-
-	@Column(name = "DIVERGENCE_ATR_9")
-	public int divergenceAtr9;
-
-	@Column(name = "DIVERGENCE_ATR_10")
-	public int divergenceAtr10;
-
-	/** 乖離時間 - DIVERGENCE_TIME */
-	@Column(name = "DIVERGENCE_TIME_1")
-	public int divergenceTime1;
-
-	@Column(name = "DIVERGENCE_TIME_2")
-	public int divergenceTime2;
-
-	@Column(name = "DIVERGENCE_TIME_3")
-	public int divergenceTime3;
-
-	@Column(name = "DIVERGENCE_TIME_4")
-	public int divergenceTime4;
-
-	@Column(name = "DIVERGENCE_TIME_5")
-	public int divergenceTime5;
-
-	@Column(name = "DIVERGENCE_TIME_6")
-	public int divergenceTime6;
-
-	@Column(name = "DIVERGENCE_TIME_7")
-	public int divergenceTime7;
-
-	@Column(name = "DIVERGENCE_TIME_8")
-	public int divergenceTime8;
-
-	@Column(name = "DIVERGENCE_TIME_9")
-	public int divergenceTime9;
-
-	@Column(name = "DIVERGENCE_TIME_10")
-	public int divergenceTime10;
-
-	/** 控除時間 - DEDUCTION_TIME */
-	@Column(name = "DEDUCTION_TIME_1")
-	public int deductionTime1;
-
-	@Column(name = "DEDUCTION_TIME_2")
-	public int deductionTime2;
-
-	@Column(name = "DEDUCTION_TIME_3")
-	public int deductionTime3;
-
-	@Column(name = "DEDUCTION_TIME_4")
-	public int deductionTime4;
-
-	@Column(name = "DEDUCTION_TIME_5")
-	public int deductionTime5;
-
-	@Column(name = "DEDUCTION_TIME_6")
-	public int deductionTime6;
-
-	@Column(name = "DEDUCTION_TIME_7")
-	public int deductionTime7;
-
-	@Column(name = "DEDUCTION_TIME_8")
-	public int deductionTime8;
-
-	@Column(name = "DEDUCTION_TIME_9")
-	public int deductionTime9;
-
-	@Column(name = "DEDUCTION_TIME_10")
-	public int deductionTime10;
-
-	/** 控除後乖離時間 - DVRGEN_TIME_AFT_DEDU_1 **/
-	@Column(name = "DVRGEN_TIME_AFT_DEDU_1")
-	public int divergenceTimeAfterDeduction1;
-
-	@Column(name = "DVRGEN_TIME_AFT_DEDU_2")
-	public int divergenceTimeAfterDeduction2;
-
-	@Column(name = "DVRGEN_TIME_AFT_DEDU_3")
-	public int divergenceTimeAfterDeduction3;
-
-	@Column(name = "DVRGEN_TIME_AFT_DEDU_4")
-	public int divergenceTimeAfterDeduction4;
-
-	@Column(name = "DVRGEN_TIME_AFT_DEDU_5")
-	public int divergenceTimeAfterDeduction5;
-
-	@Column(name = "DVRGEN_TIME_AFT_DEDU_6")
-	public int divergenceTimeAfterDeduction6;
-
-	@Column(name = "DVRGEN_TIME_AFT_DEDU_7")
-	public int divergenceTimeAfterDeduction7;
-
-	@Column(name = "DVRGEN_TIME_AFT_DEDU_8")
-	public int divergenceTimeAfterDeduction8;
-
-	@Column(name = "DVRGEN_TIME_AFT_DEDU_9")
-	public int divergenceTimeAfterDeduction9;
-
-	@Column(name = "DVRGEN_TIME_AFT_DEDU_10")
-	public int divergenceTimeAfterDeduction10;
-
-	/* KRCDT_MON_AGGR_GOOUT 4 */
-
-	/** 月別実績の勤怠時間．縦計．勤務時間．外出．外出.回数- 私用外出回数 - 回数- GOOUT_TIMES_PRIVATE*/
-	@Column(name = "GOOUT_TIMES_PRIVATE")
-	public int goOutTimesPrivate;
-
-	/** 月別実績の勤怠時間．縦計．勤務時間．外出．外出.回数  - 公用外出回数 - 回数- GOOUT_TIMES_PUBLIC*/
-	@Column(name = "GOOUT_TIMES_PUBLIC")
-	public int goOutTimesPublic;
-
-	/** 月別実績の勤怠時間．縦計．勤務時間．外出．外出.回数  - 有償外出回数- 回数- GOOUT_TIMES_COMPENSATION*/
-	@Column(name = "GOOUT_TIMES_COMPENSATION")
-	public int goOutTimesCompensation;
-
-	/** 月別実績の勤怠時間．縦計．勤務時間．外出．外出.回数  - 組合外出回数- 回数- GOOUT_TIMES_UNION*/
-	@Column(name = "GOOUT_TIMES_UNION")
-	public int goOutTimesUnion;
-
-	/** 月別実績の勤怠時間．縦計．勤務時間．外出．外出．法定内時間 - 時間 - 私用法定内時間 - LEGAL_TIME_PRIVATE*/
-	@Column(name = "LEGAL_TIME_PRIVATE")
-	public int legalTimePrivate;
+	/** 開始年月日 */
+	@Column(name = "START_YMD")
+	public GeneralDate startYmd;
+
+	/** 終了年月日 */
+	@Column(name = "END_YMD")
+	public GeneralDate endYmd;
+
+	/** 集計日数 */
+	@Column(name = "AGGREGATE_DAYS")
+	public double aggregateDays;
 	
-	/** 月別実績の勤怠時間．縦計．勤務時間．外出．外出．法定内時間 - 時間 - 公用法定内時間- 時間 - LEGAL_TIME_PUBLIC*/
-	@Column(name = "LEGAL_TIME_PUBLIC")
-	public int legalTimePublic;
-
-	/** 月別実績の勤怠時間．縦計．勤務時間．外出．外出．法定内時間 - 時間 - 有償計算法定内時間 - LEGAL_TIME_COMPENSATION*/
-	@Column(name = "LEGAL_TIME_COMPENSATION")
-	public int legalTimeCompensation;
-
-	/** 月別実績の勤怠時間．縦計．勤務時間．外出．外出．法定内時間 - 時間 - 組合法定内時間  - LEGAL_TIME_UNION*/
-	@Column(name = "LEGAL_TIME_UNION")
-	public int legalTimeUnion;
-
-	/** 月別実績の勤怠時間．縦計．勤務時間．外出．外出．法定内時間 - 計算時間 - 私用計算法定外時間 - CALC_LEGAL_TIME_PRIVATE*/
-	@Column(name = "CALC_LEGAL_TIME_PRIVATE")
-	public int calcLegalTimePrivate;
-
-	/** 月別実績の勤怠時間．縦計．勤務時間．外出．外出．法定内時間 - 計算時間 - 公用計算法定内時間 - CALC_LEGAL_TIME_PUBLIC*/
-	@Column(name = "CALC_LEGAL_TIME_PUBLIC")
-	public int calcLegalTimePublic;
-
-	/** 月別実績の勤怠時間．縦計．勤務時間．外出．外出．法定内時間 - 計算時間 - 有償計算法定内時間 - CALC_LEGAL_TIME_COMPENSATION*/
-	@Column(name = "CALC_LEGAL_TIME_COMPENSATION")
-	public int calcLegalTimeCompensation;
-
-	/** 月別実績の勤怠時間．縦計．勤務時間．外出．外出．法定内時間 - 計算時間 - 組合計算法定内時間 - CALC_LEGAL_TIME_UNION*/
-	@Column(name = "CALC_LEGAL_TIME_UNION")
-	public int calcLegalTimeUnion;
-
-	/** 月別実績の勤怠時間．縦計．勤務時間．外出．外出．法定外時間 法定外時間  - 時間 - 私用法定外時間 - ILLEGAL_TIME_PRIVATE */
-	@Column(name = "ILLEGAL_TIME_PRIVATE")
-	public int illegalTimePrivate;
-
-	/** 月別実績の勤怠時間．縦計．勤務時間．外出．外出．法定外時間 法定外時間  - 時間 - 公用法定外時間 - ILLEGAL_TIME_PUBLIC */
-	@Column(name = "ILLEGAL_TIME_PUBLIC")
-	public int illegalTimePublic;
-
-	/** 月別実績の勤怠時間．縦計．勤務時間．外出．外出．法定外時間 法定外時間  - 時間 - 有償法定外時間 - ILLEGAL_TIME_COMPENSATION */
-	@Column(name = "ILLEGAL_TIME_COMPENSATION")
-	public int illegalTimeCompensation;
-
-	/** 月別実績の勤怠時間．縦計．勤務時間．外出．外出．法定外時間 法定外時間  - 時間 - 組合法定外時間 - ILLEGAL_TIME_UNION */
-	@Column(name = "ILLEGAL_TIME_UNION")
-	public int illegalTimeUnion;
-
-	/** 月別実績の勤怠時間．縦計．勤務時間．外出．外出．法定外時間 - 計算時間 - 私用計算法定外時間 - CALC_ILLEGAL_TIME_PRIVATE */
-	@Column(name = "CALC_ILLEGAL_TIME_PRIVATE")
-	public int calcIllegalTimePrivate;
-
-	/** 月別実績の勤怠時間．縦計．勤務時間．外出．外出．法定外時間 - 計算時間 - 公用計算法定外時間 - CALC_ILLEGAL_TIME_PUBLIC */
-	@Column(name = "CALC_ILLEGAL_TIME_PUBLIC")
-	public int calcIllegalTimePublic;
-
-	/** 月別実績の勤怠時間．縦計．勤務時間．外出．外出．法定外時間 - 計算時間 - 有償計算法定外時間 - CALC_ILLEGAL_TIME_COMPENSATION */
-	@Column(name = "CALC_ILLEGAL_TIME_COMPENSATION")
-	public int calcIllegalTimeCompensation;
-
-	/** 月別実績の勤怠時間．縦計．勤務時間．外出．外出．法定外時間 - 計算時間 - 組合計算法定外時間 - CALC_ILLEGAL_TIME_UNION */
-	@Column(name = "CALC_ILLEGAL_TIME_UNION")
-	public int calcIllegalTimeUnion;
-
-	/**月別実績の勤怠時間．縦計．勤務時間．外出．外出．合計時間 - 時間 - 私用合計時間 - TOTAL_TIME_PRIVATE */
-	@Column(name = "TOTAL_TIME_PRIVATE")
-	public int totalTimePrivate;
-
-	/**月別実績の勤怠時間．縦計．勤務時間．外出．外出．合計時間 - 時間 - 公用合計時間 - TOTAL_TIME_PUBLIC */
-	@Column(name = "TOTAL_TIME_PUBLIC")
-	public int totalTimePublic;
-
-	/**月別実績の勤怠時間．縦計．勤務時間．外出．外出．合計時間 - 時間 - 有償合計時間 - TOTAL_TIME_COMPENSATION */
-	@Column(name = "TOTAL_TIME_COMPENSATION")
-	public int totalTimeCompensation;
-
-	/**月別実績の勤怠時間．縦計．勤務時間．外出．外出．合計時間 - 時間 - 組合合計時間 - TOTAL_TIME_UNION */
-	@Column(name = "TOTAL_TIME_UNION")
-	public int totalTimeUnion;
-
-	/**月別実績の勤怠時間．縦計．勤務時間．外出．外出．合計時間 - 計算時間 - 私用計算合計時間  - CALC_TOTAL_TIME_PRIVATE */
-	@Column(name = "CALC_TOTAL_TIME_PRIVATE")
-	public int calcTotalTimePrivate;
-
-	/**月別実績の勤怠時間．縦計．勤務時間．外出．外出．合計時間 - 計算時間 - 公用計算合計時間  - CALC_TOTAL_TIME_PUBLIC */
-	@Column(name = "CALC_TOTAL_TIME_PUBLIC")
-	public int calcTotalTimePublic;
-
-	/**月別実績の勤怠時間．縦計．勤務時間．外出．外出．合計時間 - 計算時間 - 有償計算合計時間  -  CALC_TOTAL_TIME_COMPENSATION*/
-	@Column(name = "CALC_TOTAL_TIME_COMPENSATION")
-	public int calcTotalTimeCompensation;
-
-	/**月別実績の勤怠時間．縦計．勤務時間．外出．外出．合計時間 - 計算時間 - 組合計算合計時間  - CALC_TOTAL_TIME_UNION */
-	@Column(name = "CALC_TOTAL_TIME_UNION")
-	public int calcTotalTimeUnion;
-
-	/* KRCDT_MON_AGGR_HDWK_TIME 10 */
-
-	/** 休出時間 - HDWK_TIME_1 */
-	@Column(name = "HDWK_TIME_1")
-	public int holidayWorkTime1;
-
-	@Column(name = "HDWK_TIME_2")
-	public int holidayWorkTime2;
-
-	@Column(name = "HDWK_TIME_3")
-	public int holidayWorkTime3;
-
-	@Column(name = "HDWK_TIME_4")
-	public int holidayWorkTime4;
-
-	@Column(name = "HDWK_TIME_5")
-	public int holidayWorkTime5;
-
-	@Column(name = "HDWK_TIME_6")
-	public int holidayWorkTime6;
-
-	@Column(name = "HDWK_TIME_7")
-	public int holidayWorkTime7;
-
-	@Column(name = "HDWK_TIME_8")
-	public int holidayWorkTime8;
-
-	@Column(name = "HDWK_TIME_9")
-	public int holidayWorkTime9;
-
-	@Column(name = "HDWK_TIME_10")
-	public int holidayWorkTime10;
-
-	/** 計算休出時間 - CALC_HDWK_TIME_1 */
-	@Column(name = "CALC_HDWK_TIME_1")
-	public int calcHolidayWorkTime1;
-
-	@Column(name = "CALC_HDWK_TIME_2")
-	public int calcHolidayWorkTime2;
-
-	@Column(name = "CALC_HDWK_TIME_3")
-	public int calcHolidayWorkTime3;
-
-	@Column(name = "CALC_HDWK_TIME_4")
-	public int calcHolidayWorkTime4;
-
-	@Column(name = "CALC_HDWK_TIME_5")
-	public int calcHolidayWorkTime5;
-
-	@Column(name = "CALC_HDWK_TIME_6")
-	public int calcHolidayWorkTime6;
-
-	@Column(name = "CALC_HDWK_TIME_7")
-	public int calcHolidayWorkTime7;
-
-	@Column(name = "CALC_HDWK_TIME_8")
-	public int calcHolidayWorkTime8;
-
-	@Column(name = "CALC_HDWK_TIME_9")
-	public int calcHolidayWorkTime9;
-
-	@Column(name = "CALC_HDWK_TIME_10")
-	public int calcHolidayWorkTime10;
-
-	/** 事前休出時間 - BEFORE_HDWK_TIME_1 */
-	@Column(name = "BEFORE_HDWK_TIME_1")
-	public int beforeHolidayWorkTime1;
-
-	@Column(name = "BEFORE_HDWK_TIME_2")
-	public int beforeHolidayWorkTime2;
-
-	@Column(name = "BEFORE_HDWK_TIME_3")
-	public int beforeHolidayWorkTime3;
-
-	@Column(name = "BEFORE_HDWK_TIME_4")
-	public int beforeHolidayWorkTime4;
-
-	@Column(name = "BEFORE_HDWK_TIME_5")
-	public int beforeHolidayWorkTime5;
-
-	@Column(name = "BEFORE_HDWK_TIME_6")
-	public int beforeHolidayWorkTime6;
-
-	@Column(name = "BEFORE_HDWK_TIME_7")
-	public int beforeHolidayWorkTime7;
-
-	@Column(name = "BEFORE_HDWK_TIME_8")
-	public int beforeHolidayWorkTime8;
-
-	@Column(name = "BEFORE_HDWK_TIME_9")
-	public int beforeHolidayWorkTime9;
-
-	@Column(name = "BEFORE_HDWK_TIME_10")
-	public int beforeHolidayWorkTime10;
-
-	/** 振替時間 - TRN_TIME_1 */
-	@Column(name = "TRN_TIME_1")
-	public int transferTime1;
-
-	@Column(name = "TRN_TIME_2")
-	public int transferTime2;
-
-	@Column(name = "TRN_TIME_3")
-	public int transferTime3;
-
-	@Column(name = "TRN_TIME_4")
-	public int transferTime4;
-
-	@Column(name = "TRN_TIME_5")
-	public int transferTime5;
-
-	@Column(name = "TRN_TIME_6")
-	public int transferTime6;
-
-	@Column(name = "TRN_TIME_7")
-	public int transferTime7;
-
-	@Column(name = "TRN_TIME_8")
-	public int transferTime8;
-
-	@Column(name = "TRN_TIME_9")
-	public int transferTime9;
-
-	@Column(name = "TRN_TIME_10")
-	public int transferTime10;
-
-	/** 計算振替時間 - CALC_TRN_TIME_1 */
-	@Column(name = "CALC_TRN_TIME_1")
-	public int calcTransferTime1;
-
-	@Column(name = "CALC_TRN_TIME_2")
-	public int calcTransferTime2;
-
-	@Column(name = "CALC_TRN_TIME_3")
-	public int calcTransferTime3;
-
-	@Column(name = "CALC_TRN_TIME_4")
-	public int calcTransferTime4;
-
-	@Column(name = "CALC_TRN_TIME_5")
-	public int calcTransferTime5;
-
-	@Column(name = "CALC_TRN_TIME_6")
-	public int calcTransferTime6;
-
-	@Column(name = "CALC_TRN_TIME_7")
-	public int calcTransferTime7;
-
-	@Column(name = "CALC_TRN_TIME_8")
-	public int calcTransferTime8;
-
-	@Column(name = "CALC_TRN_TIME_9")
-	public int calcTransferTime9;
-
-	@Column(name = "CALC_TRN_TIME_10")
-	public int calcTransferTime10;
-
-	/** 振替時間 - LEGAL_HDWK_TIME_1 */
-	@Column(name = "LEGAL_HDWK_TIME_1")
-	public int legalHolidayWorkTime1;
-
-	@Column(name = "LEGAL_HDWK_TIME_2")
-	public int legalHolidayWorkTime2;
-
-	@Column(name = "LEGAL_HDWK_TIME_3")
-	public int legalHolidayWorkTime3;
-
-	@Column(name = "LEGAL_HDWK_TIME_4")
-	public int legalHolidayWorkTime4;
-
-	@Column(name = "LEGAL_HDWK_TIME_5")
-	public int legalHolidayWorkTime5;
-
-	@Column(name = "LEGAL_HDWK_TIME_6")
-	public int legalHolidayWorkTime6;
-
-	@Column(name = "LEGAL_HDWK_TIME_7")
-	public int legalHolidayWorkTime7;
-
-	@Column(name = "LEGAL_HDWK_TIME_8")
-	public int legalHolidayWorkTime8;
-
-	@Column(name = "LEGAL_HDWK_TIME_9")
-	public int legalHolidayWorkTime9;
-
-	@Column(name = "LEGAL_HDWK_TIME_10")
-	public int legalHolidayWorkTime10;
-
-	/** 法定内振替休出時間 - LEGAL_TRN_HDWK_TIME_1 */
-	@Column(name = "LEGAL_TRN_HDWK_TIME_1")
-	public int legalTransferHolidayWorkTime1;
-
-	@Column(name = "LEGAL_TRN_HDWK_TIME_2")
-	public int legalTransferHolidayWorkTime2;
-
-	@Column(name = "LEGAL_TRN_HDWK_TIME_3")
-	public int legalTransferHolidayWorkTime3;
-
-	@Column(name = "LEGAL_TRN_HDWK_TIME_4")
-	public int legalTransferHolidayWorkTime4;
-
-	@Column(name = "LEGAL_TRN_HDWK_TIME_5")
-	public int legalTransferHolidayWorkTime5;
-
-	@Column(name = "LEGAL_TRN_HDWK_TIME_6")
-	public int legalTransferHolidayWorkTime6;
-
-	@Column(name = "LEGAL_TRN_HDWK_TIME_7")
-	public int legalTransferHolidayWorkTime7;
-
-	@Column(name = "LEGAL_TRN_HDWK_TIME_8")
-	public int legalTransferHolidayWorkTime8;
-
-	@Column(name = "LEGAL_TRN_HDWK_TIME_9")
-	public int legalTransferHolidayWorkTime9;
-
-	@Column(name = "LEGAL_TRN_HDWK_TIME_10")
-	public int legalTransferHolidayWorkTime10;
-
+	/* KRCDT_MON_AFFILIATION - 月別実績の所属情報．月末の情報 */
+	/** 月初雇用コード */
+	@Column(name = "FIRST_EMP_CD")
+	public String firstEmploymentCd;
+
+	/** 月初職場ID */
+	@Column(name = "FIRST_WKP_ID")
+	public String firstWorkplaceId;
+
+	/** 月初職位ID */
+	@Column(name = "FIRST_JOB_ID")
+	public String firstJobTitleId;
+
+	/** 月初分類コード */
+	@Column(name = "FIRST_CLS_CD")
+	public String firstClassCd;
+
+	/** 月初勤務種別コード */
+	@Column(name = "FIRST_BUS_CD")
+	public String firstBusinessTypeCd;
+
+	/** 月末雇用コード */
+	@Column(name = "LAST_EMP_CD")
+	public String lastEmploymentCd;
+
+	/** 月末職場ID */
+	@Column(name = "LAST_WKP_ID")
+	public String lastWorkplaceId;
+
+	/** 月末職位ID */
+	@Column(name = "LAST_JOB_ID")
+	public String lastJobTitleId;
+
+	/** 月末分類コード */
+	@Column(name = "LAST_CLS_CD")
+	public String lastClassCd;
+
+	/** 月末勤務種別コード */
+	@Column(name = "LAST_BUS_CD")
+	public String lastBusinessTypeCd;
+	
+	/* KRCDT_MON_AGGR_TOTAL_WRK */
+	/** 所定内割増時間 */
+	@Column(name = "WITPRS_PREMIUM_TIME")
+	public int withinPrescribedPremiumTime;
+
+	/** 計画所定労働時間 */
+	@Column(name = "SCHE_PRS_WORK_TIME")
+	public int schedulePrescribedWorkingTime;
+
+	/** 実績所定労働時間 */
+	@Column(name = "RECD_PRS_WORK_TIME")
+	public int recordPrescribedWorkingTime;
+
+	/* KRCDT_MON_ATTENDANCE_TIME */
+
+	/** 法定労働時間 */
+	@Column(name = "STAT_WORKING_TIME")
+	public int statutoryWorkingTime;
+
+	/** 総労働時間 */
+	@Column(name = "TOTAL_WORKING_TIME")
+	public int totalWorkingTime;
+	
+	/** 就業時間 */
+	@Column(name = "WORK_TIME")
+	public int workTime;
+
+	/** 実働就業時間 */
+	@Column(name = "ACTWORK_TIME")
+	public int actualWorkTime;
+	
 	/** KRCDT_MON_AGGR_OVER_TIME 10 **/
-
 	/** 残業時間 - OVER_TIME_1 */
 	@Column(name = "OVER_TIME_1")
 	public int overTime1;
@@ -1144,105 +397,267 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	@Column(name = "LEGAL_TRNOVR_TIME_10")
 	public int legalTransferOverTime10;
 
-	/** KRCDT_MON_AGGR_PREM_TIME 10 **/
+	/* KRCDT_MON_AGGR_HDWK_TIME 10 */
+	/** 休出時間 - HDWK_TIME_1 */
+	@Column(name = "HDWK_TIME_1")
+	public int holidayWorkTime1;
 
-	/** 振替時間 - PREMIUM_TIME_1 */
-	@Column(name = "PREMIUM_TIME_1")
-	public int premiumTime1;
+	@Column(name = "HDWK_TIME_2")
+	public int holidayWorkTime2;
 
-	@Column(name = "PREMIUM_TIME_2")
-	public int premiumTime2;
+	@Column(name = "HDWK_TIME_3")
+	public int holidayWorkTime3;
 
-	@Column(name = "PREMIUM_TIME_3")
-	public int premiumTime3;
+	@Column(name = "HDWK_TIME_4")
+	public int holidayWorkTime4;
 
-	@Column(name = "PREMIUM_TIME_4")
-	public int premiumTime4;
+	@Column(name = "HDWK_TIME_5")
+	public int holidayWorkTime5;
 
-	@Column(name = "PREMIUM_TIME_5")
-	public int premiumTime5;
+	@Column(name = "HDWK_TIME_6")
+	public int holidayWorkTime6;
 
-	@Column(name = "PREMIUM_TIME_6")
-	public int premiumTime6;
+	@Column(name = "HDWK_TIME_7")
+	public int holidayWorkTime7;
 
-	@Column(name = "PREMIUM_TIME_7")
-	public int premiumTime7;
+	@Column(name = "HDWK_TIME_8")
+	public int holidayWorkTime8;
 
-	@Column(name = "PREMIUM_TIME_8")
-	public int premiumTime8;
+	@Column(name = "HDWK_TIME_9")
+	public int holidayWorkTime9;
 
-	@Column(name = "PREMIUM_TIME_9")
-	public int premiumTime9;
+	@Column(name = "HDWK_TIME_10")
+	public int holidayWorkTime10;
 
-	@Column(name = "PREMIUM_TIME_10")
-	public int premiumTime10;
+	/** 計算休出時間 - CALC_HDWK_TIME_1 */
+	@Column(name = "CALC_HDWK_TIME_1")
+	public int calcHolidayWorkTime1;
 
-	/** KRCDT_MON_AGGR_SPEC_DAYS 10 **/
+	@Column(name = "CALC_HDWK_TIME_2")
+	public int calcHolidayWorkTime2;
 
-	/** 特定日数 - SPECIFIC_DAYS_1 */
-	@Column(name = "SPECIFIC_DAYS_1")
-	public double specificDays1;
+	@Column(name = "CALC_HDWK_TIME_3")
+	public int calcHolidayWorkTime3;
 
-	@Column(name = "SPECIFIC_DAYS_2")
-	public double specificDays2;
+	@Column(name = "CALC_HDWK_TIME_4")
+	public int calcHolidayWorkTime4;
 
-	@Column(name = "SPECIFIC_DAYS_3")
-	public double specificDays3;
+	@Column(name = "CALC_HDWK_TIME_5")
+	public int calcHolidayWorkTime5;
 
-	@Column(name = "SPECIFIC_DAYS_4")
-	public double specificDays4;
+	@Column(name = "CALC_HDWK_TIME_6")
+	public int calcHolidayWorkTime6;
 
-	@Column(name = "SPECIFIC_DAYS_5")
-	public double specificDays5;
+	@Column(name = "CALC_HDWK_TIME_7")
+	public int calcHolidayWorkTime7;
 
-	@Column(name = "SPECIFIC_DAYS_6")
-	public double specificDays6;
+	@Column(name = "CALC_HDWK_TIME_8")
+	public int calcHolidayWorkTime8;
 
-	@Column(name = "SPECIFIC_DAYS_7")
-	public double specificDays7;
+	@Column(name = "CALC_HDWK_TIME_9")
+	public int calcHolidayWorkTime9;
 
-	@Column(name = "SPECIFIC_DAYS_8")
-	public double specificDays8;
+	@Column(name = "CALC_HDWK_TIME_10")
+	public int calcHolidayWorkTime10;
 
-	@Column(name = "SPECIFIC_DAYS_9")
-	public double specificDays9;
+	/** 事前休出時間 - BEFORE_HDWK_TIME_1 */
+	@Column(name = "BEFORE_HDWK_TIME_1")
+	public int beforeHolidayWorkTime1;
 
-	@Column(name = "SPECIFIC_DAYS_10")
-	public double specificDays10;
+	@Column(name = "BEFORE_HDWK_TIME_2")
+	public int beforeHolidayWorkTime2;
 
-	/** 休出特定日数 - HDWK_SPECIFIC_DAYS_1 */
-	@Column(name = "HDWK_SPECIFIC_DAYS_1")
-	public double holidayWorkSpecificDays1;
+	@Column(name = "BEFORE_HDWK_TIME_3")
+	public int beforeHolidayWorkTime3;
 
-	@Column(name = "HDWK_SPECIFIC_DAYS_2")
-	public double holidayWorkSpecificDays2;
+	@Column(name = "BEFORE_HDWK_TIME_4")
+	public int beforeHolidayWorkTime4;
 
-	@Column(name = "HDWK_SPECIFIC_DAYS_3")
-	public double holidayWorkSpecificDays3;
+	@Column(name = "BEFORE_HDWK_TIME_5")
+	public int beforeHolidayWorkTime5;
 
-	@Column(name = "HDWK_SPECIFIC_DAYS_4")
-	public double holidayWorkSpecificDays4;
+	@Column(name = "BEFORE_HDWK_TIME_6")
+	public int beforeHolidayWorkTime6;
 
-	@Column(name = "HDWK_SPECIFIC_DAYS_5")
-	public double holidayWorkSpecificDays5;
+	@Column(name = "BEFORE_HDWK_TIME_7")
+	public int beforeHolidayWorkTime7;
 
-	@Column(name = "HDWK_SPECIFIC_DAYS_6")
-	public double holidayWorkSpecificDays6;
+	@Column(name = "BEFORE_HDWK_TIME_8")
+	public int beforeHolidayWorkTime8;
 
-	@Column(name = "HDWK_SPECIFIC_DAYS_7")
-	public double holidayWorkSpecificDays7;
+	@Column(name = "BEFORE_HDWK_TIME_9")
+	public int beforeHolidayWorkTime9;
 
-	@Column(name = "HDWK_SPECIFIC_DAYS_8")
-	public double holidayWorkSpecificDays8;
+	@Column(name = "BEFORE_HDWK_TIME_10")
+	public int beforeHolidayWorkTime10;
 
-	@Column(name = "HDWK_SPECIFIC_DAYS_9")
-	public double holidayWorkSpecificDays9;
+	/** 振替時間 - TRN_TIME_1 */
+	@Column(name = "TRN_TIME_1")
+	public int transferTime1;
 
-	@Column(name = "HDWK_SPECIFIC_DAYS_10")
-	public double holidayWorkSpecificDays10;
+	@Column(name = "TRN_TIME_2")
+	public int transferTime2;
+
+	@Column(name = "TRN_TIME_3")
+	public int transferTime3;
+
+	@Column(name = "TRN_TIME_4")
+	public int transferTime4;
+
+	@Column(name = "TRN_TIME_5")
+	public int transferTime5;
+
+	@Column(name = "TRN_TIME_6")
+	public int transferTime6;
+
+	@Column(name = "TRN_TIME_7")
+	public int transferTime7;
+
+	@Column(name = "TRN_TIME_8")
+	public int transferTime8;
+
+	@Column(name = "TRN_TIME_9")
+	public int transferTime9;
+
+	@Column(name = "TRN_TIME_10")
+	public int transferTime10;
+
+	/** 計算振替時間 - CALC_TRN_TIME_1 */
+	@Column(name = "CALC_TRN_TIME_1")
+	public int calcTransferTime1;
+
+	@Column(name = "CALC_TRN_TIME_2")
+	public int calcTransferTime2;
+
+	@Column(name = "CALC_TRN_TIME_3")
+	public int calcTransferTime3;
+
+	@Column(name = "CALC_TRN_TIME_4")
+	public int calcTransferTime4;
+
+	@Column(name = "CALC_TRN_TIME_5")
+	public int calcTransferTime5;
+
+	@Column(name = "CALC_TRN_TIME_6")
+	public int calcTransferTime6;
+
+	@Column(name = "CALC_TRN_TIME_7")
+	public int calcTransferTime7;
+
+	@Column(name = "CALC_TRN_TIME_8")
+	public int calcTransferTime8;
+
+	@Column(name = "CALC_TRN_TIME_9")
+	public int calcTransferTime9;
+
+	@Column(name = "CALC_TRN_TIME_10")
+	public int calcTransferTime10;
+
+	/** 振替時間 - LEGAL_HDWK_TIME_1 */
+	@Column(name = "LEGAL_HDWK_TIME_1")
+	public int legalHolidayWorkTime1;
+
+	@Column(name = "LEGAL_HDWK_TIME_2")
+	public int legalHolidayWorkTime2;
+
+	@Column(name = "LEGAL_HDWK_TIME_3")
+	public int legalHolidayWorkTime3;
+
+	@Column(name = "LEGAL_HDWK_TIME_4")
+	public int legalHolidayWorkTime4;
+
+	@Column(name = "LEGAL_HDWK_TIME_5")
+	public int legalHolidayWorkTime5;
+
+	@Column(name = "LEGAL_HDWK_TIME_6")
+	public int legalHolidayWorkTime6;
+
+	@Column(name = "LEGAL_HDWK_TIME_7")
+	public int legalHolidayWorkTime7;
+
+	@Column(name = "LEGAL_HDWK_TIME_8")
+	public int legalHolidayWorkTime8;
+
+	@Column(name = "LEGAL_HDWK_TIME_9")
+	public int legalHolidayWorkTime9;
+
+	@Column(name = "LEGAL_HDWK_TIME_10")
+	public int legalHolidayWorkTime10;
+
+	/** 法定内振替休出時間 - LEGAL_TRN_HDWK_TIME_1 */
+	@Column(name = "LEGAL_TRN_HDWK_TIME_1")
+	public int legalTransferHolidayWorkTime1;
+
+	@Column(name = "LEGAL_TRN_HDWK_TIME_2")
+	public int legalTransferHolidayWorkTime2;
+
+	@Column(name = "LEGAL_TRN_HDWK_TIME_3")
+	public int legalTransferHolidayWorkTime3;
+
+	@Column(name = "LEGAL_TRN_HDWK_TIME_4")
+	public int legalTransferHolidayWorkTime4;
+
+	@Column(name = "LEGAL_TRN_HDWK_TIME_5")
+	public int legalTransferHolidayWorkTime5;
+
+	@Column(name = "LEGAL_TRN_HDWK_TIME_6")
+	public int legalTransferHolidayWorkTime6;
+
+	@Column(name = "LEGAL_TRN_HDWK_TIME_7")
+	public int legalTransferHolidayWorkTime7;
+
+	@Column(name = "LEGAL_TRN_HDWK_TIME_8")
+	public int legalTransferHolidayWorkTime8;
+
+	@Column(name = "LEGAL_TRN_HDWK_TIME_9")
+	public int legalTransferHolidayWorkTime9;
+
+	@Column(name = "LEGAL_TRN_HDWK_TIME_10")
+	public int legalTransferHolidayWorkTime10;
+	
+	/* KRCDT_MON_HDWK_TIME */
+	/** 休出合計時間 */
+	@Column(name = "TOTAL_HDWK_TIME")
+	public int totalHolidayWorkTime;
+
+	/** 計算休出合計時間 */
+	@Column(name = "CALC_TOTAL_HDWK_TIME")
+	public int calcTotalHolidayWorkTime;
+
+	/** 事前休出時間 */
+	@Column(name = "BEFORE_HDWK_TIME")
+	public int beforeHolidayWorkTime;
+
+	/** 振替合計時間 */
+	@Column(name = "TOTAL_TRN_TIME")
+	public int totalTransferTime;
+
+	/** 計算振替合計時間 */
+	@Column(name = "CALC_TOTAL_TRN_TIME")
+	public int calcTotalTransferTime;
+	
+	/* KRCDT_MON_OVER_TIME */
+	/** 残業合計時間 */
+	@Column(name = "TOTAL_OVER_TIME")
+	public int totalOverTime;
+
+	/** 計算残業合計時間 */
+	@Column(name = "CALC_TOTAL_OVER_TIME")
+	public int calcTotalOverTime;
+
+	/** 事前残業時間 */
+	@Column(name = "BEFORE_OVER_TIME")
+	public int beforeOverTime;
+
+	/** 振替残業合計時間 */
+	@Column(name = "TOTAL_TRNOVR_TIME")
+	public int totalTransferOverTime;
+
+	/** 計算振替残業合計時間 */
+	@Column(name = "CALC_TOTAL_TRNOVR_TIME")
+	public int calcTotalTransferOverTime;
 
 	/** KRCDT_MON_AGGR_TOTAL_SPT **/
-
 	/** 拘束残業時間 */
 	@Column(name = "SPENT_OVER_TIME")
 	public int overTimeSpentAtWork;
@@ -1262,237 +677,8 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	/** 総拘束時間 */
 	@Column(name = "TOTAL_SPENT_TIME")
 	public int totalTimeSpentAtWork;
-
-	/* KRCDT_MON_AGGR_TOTAL_WRK */
-
-	/** 就業時間 */
-	@Column(name = "WORK_TIME")
-	public int workTime;
-
-	/** 実働就業時間 */
-	@Column(name = "ACTWORK_TIME")
-	public int actualWorkTime;
-
-	/** 所定内割増時間 */
-	@Column(name = "WITPRS_PREMIUM_TIME")
-	public int withinPrescribedPremiumTime;
-
-	/** 計画所定労働時間 */
-	@Column(name = "SCHE_PRS_WORK_TIME")
-	public int schedulePrescribedWorkingTime;
-
-	/** 実績所定労働時間 */
-	@Column(name = "RECD_PRS_WORK_TIME")
-	public int recordPrescribedWorkingTime;
-
-	/* KRCDT_MON_ATTENDANCE_TIME */
-
-	/** 開始年月日 */
-	@Column(name = "START_YMD")
-	public GeneralDate startYmd;
-
-	/** 終了年月日 */
-	@Column(name = "END_YMD")
-	public GeneralDate endYmd;
-
-	/** 集計日数 */
-	@Column(name = "AGGREGATE_DAYS")
-	public double aggregateDays;
-
-	/** 法定労働時間 */
-	@Column(name = "STAT_WORKING_TIME")
-	public int statutoryWorkingTime;
-
-	/** 総労働時間 */
-	@Column(name = "TOTAL_WORKING_TIME")
-	public int totalWorkingTime;
-	
-	//月別実績の勤怠時間．縦計．勤務日数．特別休暇日数．特別休暇日数
-	/** 特別休暇日数1 */
-	@Column(name = "SPCVACT_DAYS_1")
-	public double spcVactDays1;
-
-	@Column(name = "SPCVACT_DAYS_2")
-	public double spcVactDays2;
-
-	@Column(name = "SPCVACT_DAYS_3")
-	public double spcVactDays3;
-
-	@Column(name = "SPCVACT_DAYS_4")
-	public double spcVactDays4;
-
-	@Column(name = "SPCVACT_DAYS_5")
-	public double spcVactDays5;
-
-	@Column(name = "SPCVACT_DAYS_6")
-	public double spcVactDays6;
-
-	@Column(name = "SPCVACT_DAYS_7")
-	public double spcVactDays7;
-
-	@Column(name = "SPCVACT_DAYS_8")
-	public double spcVactDays8;
-
-	@Column(name = "SPCVACT_DAYS_9")
-	public double spcVactDays9;
-
-	@Column(name = "SPCVACT_DAYS_10")
-	public double spcVactDays10;
-
-	@Column(name = "SPCVACT_DAYS_11")
-	public double spcVactDays11;
-
-	@Column(name = "SPCVACT_DAYS_12")
-	public double spcVactDays12;
-
-	@Column(name = "SPCVACT_DAYS_13")
-	public double spcVactDays13;
-
-	@Column(name = "SPCVACT_DAYS_14")
-	public double spcVactDays14;
-
-	@Column(name = "SPCVACT_DAYS_15")
-	public double spcVactDays15;
-
-	@Column(name = "SPCVACT_DAYS_16")
-	public double spcVactDays16;
-
-	@Column(name = "SPCVACT_DAYS_17")
-	public double spcVactDays17;
-
-	@Column(name = "SPCVACT_DAYS_18")
-	public double spcVactDays18;
-
-	@Column(name = "SPCVACT_DAYS_19")
-	public double spcVactDays19;
-
-	@Column(name = "SPCVACT_DAYS_20")
-	public double spcVactDays20;
-
-	@Column(name = "SPCVACT_DAYS_21")
-	public double spcVactDays21;
-
-	@Column(name = "SPCVACT_DAYS_22")
-	public double spcVactDays22;
-
-	@Column(name = "SPCVACT_DAYS_23")
-	public double spcVactDays23;
-
-	@Column(name = "SPCVACT_DAYS_24")
-	public double spcVactDays24;
-
-	@Column(name = "SPCVACT_DAYS_25")
-	public double spcVactDays25;
-
-	@Column(name = "SPCVACT_DAYS_26")
-	public double spcVactDays26;
-
-	@Column(name = "SPCVACT_DAYS_27")
-	public double spcVactDays27;
-
-	@Column(name = "SPCVACT_DAYS_28")
-	public double spcVactDays28;
-
-	@Column(name = "SPCVACT_DAYS_29")
-	public double spcVactDays29;
-
-	@Column(name = "SPCVACT_DAYS_30")
-	public double spcVactDays30;
-	
-	//月別実績の勤怠時間．縦計．勤務日数．特別休暇日数．特別休暇日数
-	/** 特別休暇時間1 */
-	@Column(name = "SPCVACT_TIME_1")
-	public double spcVactTime1;
-
-	@Column(name = "SPCVACT_TIME_2")
-	public double spcVactTime2;
-
-	@Column(name = "SPCVACT_TIME_3")
-	public double spcVactTime3;
-
-	@Column(name = "SPCVACT_TIME_4")
-	public double spcVactTime4;
-
-	@Column(name = "SPCVACT_TIME_5")
-	public double spcVactTime5;
-
-	@Column(name = "SPCVACT_TIME_6")
-	public double spcVactTime6;
-
-	@Column(name = "SPCVACT_TIME_7")
-	public double spcVactTime7;
-
-	@Column(name = "SPCVACT_TIME_8")
-	public double spcVactTime8;
-
-	@Column(name = "SPCVACT_TIME_9")
-	public double spcVactTime9;
-
-	@Column(name = "SPCVACT_TIME_10")
-	public double spcVactTime10;
-
-	@Column(name = "SPCVACT_TIME_11")
-	public double spcVactTime11;
-
-	@Column(name = "SPCVACT_TIME_12")
-	public double spcVactTime12;
-
-	@Column(name = "SPCVACT_TIME_13")
-	public double spcVactTime13;
-
-	@Column(name = "SPCVACT_TIME_14")
-	public double spcVactTime14;
-
-	@Column(name = "SPCVACT_TIME_15")
-	public double spcVactTime15;
-
-	@Column(name = "SPCVACT_TIME_16")
-	public double spcVactTime16;
-
-	@Column(name = "SPCVACT_TIME_17")
-	public double spcVactTime17;
-
-	@Column(name = "SPCVACT_TIME_18")
-	public double spcVactTime18;
-
-	@Column(name = "SPCVACT_TIME_19")
-	public double spcVactTime19;
-
-	@Column(name = "SPCVACT_TIME_20")
-	public double spcVactTime20;
-
-	@Column(name = "SPCVACT_TIME_21")
-	public double spcVactTime21;
-
-	@Column(name = "SPCVACT_TIME_22")
-	public double spcVactTime22;
-
-	@Column(name = "SPCVACT_TIME_23")
-	public double spcVactTime23;
-
-	@Column(name = "SPCVACT_TIME_24")
-	public double spcVactTime24;
-
-	@Column(name = "SPCVACT_TIME_25")
-	public double spcVactTime25;
-
-	@Column(name = "SPCVACT_TIME_26")
-	public double spcVactTime26;
-
-	@Column(name = "SPCVACT_TIME_27")
-	public double spcVactTime27;
-
-	@Column(name = "SPCVACT_TIME_28")
-	public double spcVactTime28;
-
-	@Column(name = "SPCVACT_TIME_29")
-	public double spcVactTime29;
-
-	@Column(name = "SPCVACT_TIME_30")
-	public double spcVactTime30;
 	
 	/* KRCDT_MON_FLEX_TIME */
-
 	/** フレックス時間 */
 	@Column(name = "FLEX_TIME")
 	public int flexTime;
@@ -1532,34 +718,15 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	/** フレックス繰越不足時間 */
 	@Column(name = "FLEX_CRYFWD_SHT_TIME")
 	public int flexCarryforwardShortageTime;
+	
+	//月別実績の勤怠時間．月の計算．36協定上限時間
+	/** 36協定上限時間 */
+	@Column(name = "AGREEMENT_REG_TIME")
+	public int agreementRegTime;
 
 	/** フレックス繰越不可時間 */
 	@Column(name = "FLEX_NOT_CRYFWD_TIME")
 	public int flexNotCarryforwardTime;
-
-	/** 超過フレ区分 */
-	@Column(name = "EXCESS_FLEX_ATR")
-	public int excessFlexAtr;
-
-	/** 原則時間 */
-	@Column(name = "PRINCIPLE_TIME")
-	public int principleTime;
-
-	/** 便宜上時間 */
-	@Column(name = "CONVENIENCE_TIME")
-	public int forConvenienceTime;
-
-	/** 年休控除日数 */
-	@Column(name = "ANNUAL_DEDUCT_DAYS")
-	public double annualLeaveDeductDays;
-
-	/** 欠勤控除時間 */
-	@Column(name = "ABSENCE_DEDUCT_TIME")
-	public int absenceDeductTime;
-
-	/** 控除前のフレックス不足時間 */
-	@Column(name = "SHORT_TIME_BFR_DEDUCT")
-	public int shotTimeBeforeDeduct;
 	
 	/** 当月精算フレックス時間 */
 	@Column(name = "FLEX_SETTLE_TIME")
@@ -1585,118 +752,31 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	@Column(name = "EXC_WA_TIME_CUR_OT")
 	public int excessWeekAveTimeCurrentOT;
 
-	/* KRCDT_MON_HDWK_TIME */
+	/** 超過フレ区分 */
+	@Column(name = "EXCESS_FLEX_ATR")
+	public int excessFlexAtr;
 
-	/** 休出合計時間 */
-	@Column(name = "TOTAL_HDWK_TIME")
-	public int totalHolidayWorkTime;
+	/** 原則時間 */
+	@Column(name = "PRINCIPLE_TIME")
+	public int principleTime;
 
-	/** 計算休出合計時間 */
-	@Column(name = "CALC_TOTAL_HDWK_TIME")
-	public int calcTotalHolidayWorkTime;
+	/** 便宜上時間 */
+	@Column(name = "CONVENIENCE_TIME")
+	public int forConvenienceTime;
 
-	/** 事前休出時間 */
-	@Column(name = "BEFORE_HDWK_TIME")
-	public int beforeHolidayWorkTime;
+	/** 年休控除日数 */
+	@Column(name = "ANNUAL_DEDUCT_DAYS")
+	public double annualLeaveDeductDays;
 
-	/** 振替合計時間 */
-	@Column(name = "TOTAL_TRN_TIME")
-	public int totalTransferTime;
+	/** 欠勤控除時間 */
+	@Column(name = "ABSENCE_DEDUCT_TIME")
+	public int absenceDeductTime;
 
-	/** 計算振替合計時間 */
-	@Column(name = "CALC_TOTAL_TRN_TIME")
-	public int calcTotalTransferTime;
-
-	/* KRCDT_MON_LEAVE */
-
-	/** 産前休業日数 */
-	@Column(name = "PRENATAL_LEAVE_DAYS")
-	public double prenatalLeaveDays;
-
-	/** 産後休業日数 */
-	@Column(name = "POSTPARTUM_LEAVE_DAYS")
-	public double postpartumLeaveDays;
-
-	/** 育児休業日数 */
-	@Column(name = "CHILDCARE_LEAVE_DAYS")
-	public double childcareLeaveDays;
-
-	/** 介護休業日数 */
-	@Column(name = "CARE_LEAVE_DAYS")
-	public double careLeaveDays;
-
-	/** 傷病休業日数 */
-	@Column(name = "INJILN_LEAVE_DAYS")
-	public double injuryOrIllnessLeaveDays;
-
-	/** 任意休業日数01 */
-	@Column(name = "ANY_LEAVE_DAYS_01")
-	public double anyLeaveDays01;
-
-	/** 任意休業日数02 */
-	@Column(name = "ANY_LEAVE_DAYS_02")
-	public double anyLeaveDays02;
-
-	/** 任意休業日数03 */
-	@Column(name = "ANY_LEAVE_DAYS_03")
-	public double anyLeaveDays03;
-
-	/** 任意休業日数04 */
-	@Column(name = "ANY_LEAVE_DAYS_04")
-	public double anyLeaveDays04;
-
-	/* KRCDT_MON_MEDICAL_TIME */
-	/** 月別実績の勤怠時間．縦計．勤務時間．医療時間 勤務時間 - 勤務時間 - 日勤勤務時間 - DAY_SHIFT_MEDICAL_TIME*/
-	@Column(name = "DAY_SHIFT_MEDICAL_TIME")
-	public int dayWorkMedicalTime;
-
-	/** 月別実績の勤怠時間．縦計．勤務時間．医療時間 勤務時間 - 控除時間 - 日勤控除時間 - DAY_SHIFT_DEDUCTION_TIME*/
-	/** 控除時間 */
-	@Column(name = "DAY_SHIFT_DEDUCTION_TIME")
-	public int dayDeductionTime;
-
-	/** 月別実績の勤怠時間．縦計．勤務時間．医療時間 勤務時間 - 申送時間- 日勤申送時間 - DAY_SHIFT_TAKEOVER_TIME*/
-	@Column(name = "DAY_SHIFT_TAKEOVER_TIME")
-	public int dayTakeOverTime;
-
-	//月別実績の勤怠時間．縦計．勤務時間．医療時間
-	
-	/** 勤務時間 - 夜勤控除時間 - NIGHT_SHIFT_MEDICAL_TIME*/
-	@Column(name = "NIGHT_SHIFT_MEDICAL_TIME")
-	public int nightMedicalTime;
-	
-	/** 控除時間 - 夜勤控除時間 - NIGHT_SHIFT_DEDUCTION_TIME  */
-	@Column(name = "NIGHT_SHIFT_DEDUCTION_TIME")
-	public int nightDeductionTime;
-
-	/** 申送時間 - 夜勤申送時間 - NIGHT_SHIFT_TAKEOVER_TIME*/
-	@Column(name = "NIGHT_SHIFT_TAKEOVER_TIME")
-	public int nightTakeOverTime;
-	
-	/* KRCDT_MON_OVER_TIME */
-
-	/** 残業合計時間 */
-	@Column(name = "TOTAL_OVER_TIME")
-	public int totalOverTime;
-
-	/** 計算残業合計時間 */
-	@Column(name = "CALC_TOTAL_OVER_TIME")
-	public int calcTotalOverTime;
-
-	/** 事前残業時間 */
-	@Column(name = "BEFORE_OVER_TIME")
-	public int beforeOverTime;
-
-	/** 振替残業合計時間 */
-	@Column(name = "TOTAL_TRNOVR_TIME")
-	public int totalTransferOverTime;
-
-	/** 計算振替残業合計時間 */
-	@Column(name = "CALC_TOTAL_TRNOVR_TIME")
-	public int calcTotalTransferOverTime;
+	/** 控除前のフレックス不足時間 */
+	@Column(name = "SHORT_TIME_BFR_DEDUCT")
+	public int shotTimeBeforeDeduct;
 
 	/* KRCDT_MON_REG_IRREG_TIME */
-
 	/** 月別実績の勤怠時間．時間外超過- 週割増合計時間 - 時間外超過用*/
 	@Column(name = "WEEK_TOTAL_PREM_TIME")
 	public int weeklyTotalPremiumTime;
@@ -1742,217 +822,6 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	/** 代休使用時間 */
 	@Column(name = "CMPLEV_USE_TIME")
 	public int compensatoryLeaveUseTime;
-
-	/* KRCDT_MON_VERTICAL_TOTAL */
-
-	/** 勤務日数 */
-	@Column(name = "WORK_DAYS")
-	public double workDays;
-
-	/** 勤務回数 */
-	@Column(name = "WORK_TIMES")
-	public int workTimes;
-
-	/** 二回勤務回数 */
-	@Column(name = "TWOTIMES_WORK_TIMES")
-	public int twoTimesWorkTimes;
-
-	/** 臨時勤務回数 */
-	@Column(name = "TEMPORARY_WORK_TIMES")
-	public int temporaryWorkTimes;
-
-	/** 所定日数 */
-	@Column(name = "PREDET_DAYS")
-	public double predetermineDays;
-
-	/** 休日日数 */
-	@Column(name = "HOLIDAY_DAYS")
-	public double holidayDays;
-
-	/** 出勤日数 */
-	@Column(name = "ATTENDANCE_DAYS")
-	public double attendanceDays;
-
-	/** 休出日数 */
-	@Column(name = "HOLIDAY_WORK_DAYS")
-	public double holidayWorkDays;
-
-	/** 欠勤合計日数 */
-	@Column(name = "TOTAL_ABSENCE_DAYS")
-	public double totalAbsenceDays;
-
-	/** 欠勤合計時間 */
-	@Column(name = "TOTAL_ABSENCE_TIME")
-	public int totalAbsenceTime;
-	
-	/** 月別実績の勤怠時間．縦計．勤務日数．振出日数- 日数 - 振出日数 - RECRUIT_DAYS*/
-	@Column(name = "RECRUIT_DAYS")
-	public double recruitDays;
-	
-	/** 月別実績の勤怠時間．縦計．勤務日数．特別休暇日数- 特別休暇合計時間  - 特別休暇合計日数- TOTAL_SPCVACT_DAYS */
-	@Column(name = "TOTAL_SPCVACT_DAYS")
-	public double totalSpcvactDays;
-	
-	/** 月別実績の勤怠時間．縦計．勤務日数．特別休暇日数- 特別休暇合計時間 - 特別休暇合計時間 - TOTAL_SPCVACT_TIME*/
-	@Column(name = "TOTAL_SPCVACT_TIME")
-	public int totalSpcvactTime;
-	
-	
-	/** 給与出勤日数 */
-	@Column(name = "PAY_ATTENDANCE_DAYS")
-	public double payAttendanceDays;
-
-	/** 給与欠勤日数 */
-	@Column(name = "PAY_ABSENCE_DAYS")
-	public double payAbsenceDays;
-
-	/** 育児外出回数 */
-	@Column(name = "CLDCAR_GOOUT_TIMES")
-	public int childcareGoOutTimes;
-
-	/** 育児外出時間 */
-	@Column(name = "CLDCAR_GOOUT_TIME")
-	public int childcareGoOutTime;
-
-	/** 介護外出回数 */
-	@Column(name = "CARE_GOOUT_TIMES")
-	public int careGoOutTimes;
-
-	/** 介護外出時間 */
-	@Column(name = "CARE_GOOUT_TIME")
-	public int careGoOutTime;
-
-	/** 割増深夜時間 */
-	@Column(name = "PREM_MIDNIGHT_TIME")
-	public int premiumMidnightTime;
-
-	/** 割増法定内時間外時間 */
-	@Column(name = "PREM_LGL_OUTWRK_TIME")
-	public int premiumLegalOutsideWorkTime;
-
-	/** 割増法定外時間外時間 */
-	@Column(name = "PREM_ILG_OUTWRK_TIME")
-	public int premiumIllegalOutsideWorkTime;
-
-	/** 割増法定内休出時間 */
-	@Column(name = "PREM_LGL_HDWK_TIME")
-	public int premiumLegalHolidayWorkTime;
-
-	/** 割増法定外休出時間 */
-	@Column(name = "PREM_ILG_HDWK_TIME")
-	public int premiumIllegalHolidayWorkTime;
-
-	/** 休憩時間 */
-	@Column(name = "BREAK_TIME")
-	public int breakTime;
-
-	/** 法定内休日時間 */
-	@Column(name = "LEGAL_HOLIDAY_TIME")
-	public int legalHolidayTime;
-
-	/** 法定外休日時間 */
-	@Column(name = "ILLEGAL_HOLIDAY_TIME")
-	public int illegalHolidayTime;
-
-	/** 法定外祝日休日時間 */
-	@Column(name = "ILLEGAL_SPCHLD_TIME")
-	public int illegalSpecialHolidayTime;
-
-	/** 残業深夜時間 */
-	@Column(name = "OVWK_MDNT_TIME")
-	public int overWorkMidnightTime;
-
-	/** 計算残業深夜時間 */
-	@Column(name = "CALC_OVWK_MDNT_TIME")
-	public int calcOverWorkMidnightTime;
-
-	/** 法定内深夜時間 */
-	@Column(name = "LGL_MDNT_TIME")
-	public int legalMidnightTime;
-
-	/** 計算法定内深夜時間 */
-	@Column(name = "CALC_LGL_MDNT_TIME")
-	public int calcLegalMidnightTime;
-
-	/** 法定外深夜時間 */
-	@Column(name = "ILG_MDNT_TIME")
-	public int illegalMidnightTime;
-
-	/** 計算法定外深夜時間 */
-	@Column(name = "CALC_ILG_MDNT_TIME")
-	public int calcIllegalMidnightTime;
-
-	/** 法定外事前深夜時間 */
-	@Column(name = "ILG_BFR_MDNT_TIME")
-	public int illegalBeforeMidnightTime;
-
-	/** 法定内休出深夜時間 */
-	@Column(name = "LGL_HDWK_MDNT_TIME")
-	public int legalHolidayWorkMidnightTime;
-
-	/** 計算法定内休出深夜時間 */
-	@Column(name = "CALC_LGL_HDWK_MDNT_TIME")
-	public int calcLegalHolidayWorkMidnightTime;
-
-	/** 法定外休出深夜時間 */
-	@Column(name = "ILG_HDWK_MDNT_TIME")
-	public int illegalHolidayWorkMidnightTime;
-
-	/** 計算法定外休出深夜時間 */
-	@Column(name = "CALC_ILG_HDWK_MDNT_TIME")
-	public int calcIllegalHolidayWorkMidnightTime;
-
-	/** 祝日休出深夜時間 */
-	@Column(name = "SPHD_HDWK_MDNT_TIME")
-	public int specialHolidayWorkMidnightTime;
-
-	/** 計算祝日休出深夜時間 */
-	@Column(name = "CALC_SPHD_HDWK_MDNT_TIME")
-	public int calcSpecialHolidayWorkMidnightTime;
-
-	/** 遅刻回数 */
-	@Column(name = "LATE_TIMES")
-	public int lateTimes;
-
-	/** 遅刻時間 */
-	@Column(name = "LATE_TIME")
-	public int lateTime;
-
-	/** 計算遅刻時間 */
-	@Column(name = "CALC_LATE_TIME")
-	public int calcLateTime;
-
-	/** 早退回数 */
-	@Column(name = "LEAVEEARLY_TIMES")
-	public int leaveEarlyTimes;
-
-	/** 早退時間 */
-	@Column(name = "LEAVEEARLY_TIME")
-	public int leaveEarlyTime;
-
-	/** 計算早退時間 */
-	@Column(name = "CALC_LEAVEEARLY_TIME")
-	public int calcLeaveEarlyTime;
-
-	/** 入退門出勤前時間 */
-	@Column(name = "ALGT_BFR_ATND_TIME")
-	public int attendanceLeaveGateBeforeAttendanceTime;
-
-	/** 入退門退勤後時間 */
-	@Column(name = "ALGT_AFT_LVWK_TIME")
-	public int attendanceLeaveGateAfterLeaveWorkTime;
-
-	/** 入退門滞在時間 */
-	@Column(name = "ALGT_STAYING_TIME")
-	public int attendanceLeaveGateStayingTime;
-
-	/** 入退門不就労時間 */
-	@Column(name = "ALGT_UNEMPLOYED_TIME")
-	public int attendanceLeaveGateUnemployedTime;
-
-	/** 予実差異時間 */
-	@Column(name = "BUDGET_VARIENCE_TIME")
-	public int budgetVarienceTime;
 
 	/* KRCDT_MON_EXCESS_OUTSIDE  */
 	@Column(name = "EXCESS_WEEK_TOTAL_PREM_TIME")
@@ -2116,9 +985,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	@Column(name = "EXCESS_TIME_5_10")
 	public int excessTime_5_10;
 
-
 	/* KRCDT_MON_AGREEMENT_TIME */
-
 	/** 月別実績の勤怠時間．月の計算．36協定時間 - 36協定時間 -36協定時間  -AGREEMENT_TIME*/
 	@Column(name = "AGREEMENT_TIME")
 	public int agreementTime;
@@ -2142,112 +1009,6 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	/**月別実績の勤怠時間．月の計算．36協定時間 - 状態- 状態  - AGREEMENT_STATUS*/
 	@Column(name = "AGREEMENT_STATUS")
 	public int status;
-
-	/* KRCDT_MON_AFFILIATION - 月別実績の所属情報．月末の情報 */
-	/** 月初雇用コード */
-	@Column(name = "FIRST_EMP_CD")
-	public String firstEmploymentCd;
-
-	/** 月初職場ID */
-	@Column(name = "FIRST_WKP_ID")
-	public String firstWorkplaceId;
-
-	/** 月初職位ID */
-	@Column(name = "FIRST_JOB_ID")
-	public String firstJobTitleId;
-
-	/** 月初分類コード */
-	@Column(name = "FIRST_CLS_CD")
-	public String firstClassCd;
-
-	/** 月初勤務種別コード */
-	@Column(name = "FIRST_BUS_CD")
-	public String firstBusinessTypeCd;
-
-	/** 月末雇用コード */
-	@Column(name = "LAST_EMP_CD")
-	public String lastEmploymentCd;
-
-	/** 月末職場ID */
-	@Column(name = "LAST_WKP_ID")
-	public String lastWorkplaceId;
-
-	/** 月末職位ID */
-	@Column(name = "LAST_JOB_ID")
-	public String lastJobTitleId;
-
-	/** 月末分類コード */
-	@Column(name = "LAST_CLS_CD")
-	public String lastClassCd;
-
-	/** 月末勤務種別コード */
-	@Column(name = "LAST_BUS_CD")
-	public String lastBusinessTypeCd;
-	
-	//月別実績の勤怠時間．縦計．勤務時刻．終業時刻 
-	/** 終業回数 -終業回数*/
-	@Column(name = "ENDWORK_TIMES")
-	public int endWorkTimes;
-
-	/** 終業合計時刻 - 終業合計時刻 */
-	@Column(name = "ENDWORK_TOTAL_CLOCK")
-	public int endWorkTotalClock;
-
-	/** 終業平均時刻 - 終業平均時刻 */
-	@Column(name = "ENDWORK_AVE_CLOCK")
-	public int endWorkAveClock;
-
-	//月別実績の勤怠時間．縦計．勤務時刻．PCログオン情報．PCログオン時刻．PCログオン時刻
-	/** ログオン平均時刻 - ログオン平均時刻*/
-	@Column(name = "LOGON_TOTAL_DAYS")
-	public double logOnTotalDays;
-
-	/** ログオン合計時刻 - ログオン合計時刻 */
-	@Column(name = "LOGON_TOTAL_CLOCK")
-	public int logOnTotalClock;
-
-	/** ログオン平均時刻 -ログオン平均時刻 */
-	@Column(name = "LOGON_AVE_CLOCK")
-	public int logOnAveClock;
-
-	//月別実績の勤怠時間．縦計．勤務時刻．PCログオン情報．PCログオン時刻．PCログオフ時刻
-	/** ログオフ合計日数 -ログオフ合計日数*/
-	@Column(name = "LOGOFF_TOTAL_DAYS")
-	public double logOffTotalDays;
-
-	/**ログオフ合計時刻 - ログオフ合計時刻 */
-	@Column(name = "LOGOFF_TOTAL_CLOCK")
-	public int logOffTotalClock;
-
-	/**ログオフ平均時刻 - ログオフ平均時刻 */
-	@Column(name = "LOGOFF_AVE_CLOCK")
-	public int logOffAveClock;
-
-	//月別実績の勤怠時間．縦計．勤務時刻．PCログオン情報．PCログオン乖離．PCログオン乖離
-	/** ログオン乖離日数 - ログオン乖離日数*/
-	@Column(name = "LOGON_DIV_DAYS")
-	public double logOnDivDays;
-	
-	/** ログオン乖離合計時間 - ログオン乖離合計時間*/
-	@Column(name = "LOGON_DIV_TOTAL_TIME")
-	public int logOnDivTotalTime;
-	
-	/** ログオン乖離平均時間- ログオン乖離平均時間*/
-	@Column(name = "LOGON_DIV_AVE_TIME")
-	public int logOnDivAveTime;
-	
-	//月別実績の勤怠時間．縦計．勤務時刻．PCログオン情報．PCログオン乖離．PCログオフ乖離
-	/** ログオフ乖離日数*/
-	@Column(name = "LOGOFF_DIV_DAYS")
-	public double logOffDivDays;
-	
-	/** ログオフ乖離合計時間*/
-	@Column(name = "LOGOFF_DIV_TOTAL_TIME")
-	public int logOffDivTotalTime;
-	
-	/**ログオフ乖離平均時間*/
-	@Column(name = "LOGOFF_DIV_AVE_TIME")
-	public int logOffDivAveTime;
 
 	//月別実績の勤怠時間．回数集計．回数集計
 	/** 回数集計時間1 */
@@ -2433,25 +1194,18 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	@Column(name = "TOTAL_COUNT_DAYS30")
 	public double totalCountDays30;
 	
-	//月別実績の勤怠時間．月の計算．36協定上限時間
-	/** 36協定上限時間 */
-	@Column(name = "AGREEMENT_REG_TIME")
-	public int agreementRegTime;
-
-	
-	
 	@Override
 	protected Object getKey() {
-		return this.krcdtMonMergePk;
+		return this.id;
 	}
 	
 	public 	MonthMergeKey toDomainKey() {
 		MonthMergeKey key = new MonthMergeKey();
-		key.setEmployeeId(this.krcdtMonMergePk.getEmployeeId());
-		key.setYearMonth(new YearMonth(this.krcdtMonMergePk.getYearMonth()));
-		key.setClosureId(EnumAdaptor.valueOf(this.krcdtMonMergePk.getClosureId(), ClosureId.class));
-		key.setClosureDate(new ClosureDate(this.krcdtMonMergePk.getClosureDay(),
-			(this.krcdtMonMergePk.getIsLastDay() == 1)));
+		key.setEmployeeId(this.id.getEmployeeId());
+		key.setYearMonth(new YearMonth(this.id.getYearMonth()));
+		key.setClosureId(EnumAdaptor.valueOf(this.id.getClosureId(), ClosureId.class));
+		key.setClosureDate(new ClosureDate(this.id.getClosureDay(),
+			(this.id.getIsLastDay() == 1)));
 		return key;
 	}
 
@@ -2572,466 +1326,6 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		return excessOutsideTime;
 	}
 
-	private void toEntityAbsenceDays1(AggregateAbsenceDays absenceDays) {
-		this.absenceDay1 = absenceDays == null || absenceDays.getDays() == null ? 0
-				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime1 = absenceDays == null || absenceDays.getTime() == null ? 0
-				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
-	}
-
-	private void toEntityAbsenceDays2(AggregateAbsenceDays absenceDays) {
-		this.absenceDay2 = absenceDays == null || absenceDays.getDays() == null ? 0
-				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime2 = absenceDays == null || absenceDays.getTime() == null ? 0
-				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
-	}
-
-	private void toEntityAbsenceDays3(AggregateAbsenceDays absenceDays) {
-		this.absenceDay3 = absenceDays == null || absenceDays.getDays() == null ? 0
-				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime3 = absenceDays == null || absenceDays.getTime() == null ? 0
-				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
-	}
-
-	private void toEntityAbsenceDays4(AggregateAbsenceDays absenceDays) {
-		this.absenceDay4 = absenceDays == null || absenceDays.getDays() == null ? 0
-				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime4 = absenceDays == null || absenceDays.getTime() == null ? 0
-				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
-	}
-
-	private void toEntityAbsenceDays5(AggregateAbsenceDays absenceDays) {
-		this.absenceDay5 = absenceDays == null || absenceDays.getDays() == null ? 0
-				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime5 = absenceDays == null || absenceDays.getTime() == null ? 0
-				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
-	}
-
-	private void toEntityAbsenceDays6(AggregateAbsenceDays absenceDays) {
-		this.absenceDay6 = absenceDays == null || absenceDays.getDays() == null ? 0
-				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime6 = absenceDays == null || absenceDays.getTime() == null ? 0
-				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
-	}
-
-	private void toEntityAbsenceDays7(AggregateAbsenceDays absenceDays) {
-		this.absenceDay7 = absenceDays == null || absenceDays.getDays() == null ? 0
-				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime7 = absenceDays == null || absenceDays.getTime() == null ? 0
-				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
-	}
-
-	private void toEntityAbsenceDays8(AggregateAbsenceDays absenceDays) {
-		this.absenceDay8 = absenceDays == null || absenceDays.getDays() == null ? 0
-				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime8 = absenceDays == null || absenceDays.getTime() == null ? 0
-				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
-	}
-
-	private void toEntityAbsenceDays9(AggregateAbsenceDays absenceDays) {
-		this.absenceDay9 = absenceDays == null || absenceDays.getDays() == null ? 0
-				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime9 = absenceDays == null || absenceDays.getTime() == null ? 0
-				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
-	}
-
-	private void toEntityAbsenceDays10(AggregateAbsenceDays absenceDays) {
-		this.absenceDay10 = absenceDays == null || absenceDays.getDays() == null ? 0
-				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime10 = absenceDays == null || absenceDays.getTime() == null ? 0
-				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
-	}
-
-	private void toEntityAbsenceDays11(AggregateAbsenceDays absenceDays) {
-		this.absenceDay11 = absenceDays == null || absenceDays.getDays() == null ? 0
-				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime11 = absenceDays == null || absenceDays.getTime() == null ? 0
-				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
-	}
-
-	private void toEntityAbsenceDays12(AggregateAbsenceDays absenceDays) {
-		this.absenceDay12 = absenceDays == null || absenceDays.getDays() == null ? 0
-				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime12 = absenceDays == null || absenceDays.getTime() == null ? 0
-				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
-	}
-
-	private void toEntityAbsenceDays13(AggregateAbsenceDays absenceDays) {
-		this.absenceDay13 = absenceDays == null || absenceDays.getDays() == null ? 0
-				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime13 = absenceDays == null || absenceDays.getTime() == null ? 0
-				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
-	}
-
-	private void toEntityAbsenceDays14(AggregateAbsenceDays absenceDays) {
-		this.absenceDay14 = absenceDays == null || absenceDays.getDays() == null ? 0
-				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime14 = absenceDays == null || absenceDays.getTime() == null ? 0
-				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
-	}
-
-	private void toEntityAbsenceDays15(AggregateAbsenceDays absenceDays) {
-		this.absenceDay15 = absenceDays == null || absenceDays.getDays() == null ? 0
-				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime15 = absenceDays == null || absenceDays.getTime() == null ? 0
-				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
-	}
-
-	private void toEntityAbsenceDays16(AggregateAbsenceDays absenceDays) {
-		this.absenceDay16 = absenceDays == null || absenceDays.getDays() == null ? 0
-				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime16 = absenceDays == null || absenceDays.getTime() == null ? 0
-				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
-	}
-
-	private void toEntityAbsenceDays17(AggregateAbsenceDays absenceDays) {
-		this.absenceDay17 = absenceDays == null || absenceDays.getDays() == null ? 0
-				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime17 = absenceDays == null || absenceDays.getTime() == null ? 0
-				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
-	}
-
-	private void toEntityAbsenceDays18(AggregateAbsenceDays absenceDays) {
-		this.absenceDay18 = absenceDays == null || absenceDays.getDays() == null ? 0
-				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime18 = absenceDays == null || absenceDays.getTime() == null ? 0
-				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
-	}
-
-	private void toEntityAbsenceDays19(AggregateAbsenceDays absenceDays) {
-		this.absenceDay19 = absenceDays == null || absenceDays.getDays() == null ? 0
-				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime19 = absenceDays == null || absenceDays.getTime() == null ? 0
-				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
-	}
-
-	private void toEntityAbsenceDays20(AggregateAbsenceDays absenceDays) {
-		this.absenceDay20 = absenceDays == null || absenceDays.getDays() == null ? 0
-				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime20 = absenceDays == null || absenceDays.getTime() == null ? 0
-				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
-	}
-
-	private void toEntityAbsenceDays21(AggregateAbsenceDays absenceDays) {
-		this.absenceDay21 = absenceDays == null || absenceDays.getDays() == null ? 0
-				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime21 = absenceDays == null || absenceDays.getTime() == null ? 0
-				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
-	}
-
-	private void toEntityAbsenceDays22(AggregateAbsenceDays absenceDays) {
-		this.absenceDay22 = absenceDays == null || absenceDays.getDays() == null ? 0
-				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime22 = absenceDays == null || absenceDays.getTime() == null ? 0
-				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
-	}
-
-	private void toEntityAbsenceDays23(AggregateAbsenceDays absenceDays) {
-		this.absenceDay23 = absenceDays == null || absenceDays.getDays() == null ? 0
-				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime23 = absenceDays == null || absenceDays.getTime() == null ? 0
-				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
-	}
-
-	private void toEntityAbsenceDays24(AggregateAbsenceDays absenceDays) {
-		this.absenceDay24 = absenceDays == null || absenceDays.getDays() == null ? 0
-				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime24 = absenceDays == null || absenceDays.getTime() == null ? 0
-				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
-	}
-
-	private void toEntityAbsenceDays25(AggregateAbsenceDays absenceDays) {
-		this.absenceDay25 = absenceDays == null || absenceDays.getDays() == null ? 0
-				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime25 = absenceDays == null || absenceDays.getTime() == null ? 0
-				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
-	}
-
-	private void toEntityAbsenceDays26(AggregateAbsenceDays absenceDays) {
-		this.absenceDay26 = absenceDays == null || absenceDays.getDays() == null ? 0
-				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime26 = absenceDays == null || absenceDays.getTime() == null ? 0
-				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
-	}
-
-	private void toEntityAbsenceDays27(AggregateAbsenceDays absenceDays) {
-		this.absenceDay27 = absenceDays == null || absenceDays.getDays() == null ? 0
-				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime27 = absenceDays == null || absenceDays.getTime() == null ? 0
-				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
-	}
-
-	private void toEntityAbsenceDays28(AggregateAbsenceDays absenceDays) {
-		this.absenceDay28 = absenceDays == null || absenceDays.getDays() == null ? 0
-				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime28 = absenceDays == null || absenceDays.getTime() == null ? 0
-				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
-	}
-
-	private void toEntityAbsenceDays29(AggregateAbsenceDays absenceDays) {
-		this.absenceDay29 = absenceDays == null || absenceDays.getDays() == null ? 0
-				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime29 = absenceDays == null || absenceDays.getTime() == null ? 0
-				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
-	}
-
-	private void toEntityAbsenceDays30(AggregateAbsenceDays absenceDays) {
-		this.absenceDay30 = absenceDays == null || absenceDays.getDays() == null ? 0
-				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime30 = absenceDays == null || absenceDays.getTime() == null ? 0
-				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
-	}
-
-	private void toEntityBonusPayTime1(AggregateBonusPayTime paytime) {
-		this.bonusPayTime1 = paytime.getBonusPayTime() == null ? 0 : paytime.getBonusPayTime().v();
-		this.specificBonusPayTime1 = paytime.getHolidayWorkSpecificBonusPayTime() == null ? 0
-				: paytime.getSpecificBonusPayTime().v();
-		this.holidayWorkBonusPayTime1 = paytime.getHolidayWorkBonusPayTime() == null ? 0
-				: paytime.getHolidayWorkBonusPayTime().v();
-		this.holidayWorkSpecificBonusPayTime1 = paytime.getHolidayWorkSpecificBonusPayTime() == null ? 0
-				: paytime.getHolidayWorkSpecificBonusPayTime().v();
-	}
-
-	private void toEntityBonusPayTime2(AggregateBonusPayTime paytime) {
-		this.bonusPayTime2 = paytime.getBonusPayTime() == null ? 0 : paytime.getBonusPayTime().v();
-		this.specificBonusPayTime2 = paytime.getHolidayWorkSpecificBonusPayTime() == null ? 0
-				: paytime.getSpecificBonusPayTime().v();
-		this.holidayWorkBonusPayTime2 = paytime.getHolidayWorkBonusPayTime() == null ? 0
-				: paytime.getHolidayWorkBonusPayTime().v();
-		this.holidayWorkSpecificBonusPayTime2 = paytime.getHolidayWorkSpecificBonusPayTime() == null ? 0
-				: paytime.getHolidayWorkSpecificBonusPayTime().v();
-	}
-
-	private void toEntityBonusPayTime3(AggregateBonusPayTime paytime) {
-		this.bonusPayTime3 = paytime.getBonusPayTime() == null ? 0 : paytime.getBonusPayTime().v();
-		this.specificBonusPayTime3 = paytime.getHolidayWorkSpecificBonusPayTime() == null ? 0
-				: paytime.getSpecificBonusPayTime().v();
-		this.holidayWorkBonusPayTime3 = paytime.getHolidayWorkBonusPayTime() == null ? 0
-				: paytime.getHolidayWorkBonusPayTime().v();
-		this.holidayWorkSpecificBonusPayTime3 = paytime.getHolidayWorkSpecificBonusPayTime() == null ? 0
-				: paytime.getHolidayWorkSpecificBonusPayTime().v();
-	}
-
-	private void toEntityBonusPayTime4(AggregateBonusPayTime paytime) {
-		this.bonusPayTime4 = paytime.getBonusPayTime() == null ? 0 : paytime.getBonusPayTime().v();
-		this.specificBonusPayTime4 = paytime.getHolidayWorkSpecificBonusPayTime() == null ? 0
-				: paytime.getSpecificBonusPayTime().v();
-		this.holidayWorkBonusPayTime4 = paytime.getHolidayWorkBonusPayTime() == null ? 0
-				: paytime.getHolidayWorkBonusPayTime().v();
-		this.holidayWorkSpecificBonusPayTime4 = paytime.getHolidayWorkSpecificBonusPayTime() == null ? 0
-				: paytime.getHolidayWorkSpecificBonusPayTime().v();
-	}
-
-	private void toEntityBonusPayTime5(AggregateBonusPayTime paytime) {
-		this.bonusPayTime5 = paytime.getBonusPayTime() == null ? 0 : paytime.getBonusPayTime().v();
-		this.specificBonusPayTime5 = paytime.getHolidayWorkSpecificBonusPayTime() == null ? 0
-				: paytime.getSpecificBonusPayTime().v();
-		this.holidayWorkBonusPayTime5 = paytime.getHolidayWorkBonusPayTime() == null ? 0
-				: paytime.getHolidayWorkBonusPayTime().v();
-		this.holidayWorkSpecificBonusPayTime5 = paytime.getHolidayWorkSpecificBonusPayTime() == null ? 0
-				: paytime.getHolidayWorkSpecificBonusPayTime().v();
-	}
-
-	private void toEntityBonusPayTime6(AggregateBonusPayTime paytime) {
-		this.bonusPayTime6 = paytime.getBonusPayTime() == null ? 0 : paytime.getBonusPayTime().v();
-		this.specificBonusPayTime6 = paytime.getHolidayWorkSpecificBonusPayTime() == null ? 0
-				: paytime.getSpecificBonusPayTime().v();
-		this.holidayWorkBonusPayTime6 = paytime.getHolidayWorkBonusPayTime() == null ? 0
-				: paytime.getHolidayWorkBonusPayTime().v();
-		this.holidayWorkSpecificBonusPayTime6 = paytime.getHolidayWorkSpecificBonusPayTime() == null ? 0
-				: paytime.getHolidayWorkSpecificBonusPayTime().v();
-	}
-
-	private void toEntityBonusPayTime7(AggregateBonusPayTime paytime) {
-		this.bonusPayTime7 = paytime.getBonusPayTime() == null ? 0 : paytime.getBonusPayTime().v();
-		this.specificBonusPayTime7 = paytime.getHolidayWorkSpecificBonusPayTime() == null ? 0
-				: paytime.getSpecificBonusPayTime().v();
-		this.holidayWorkBonusPayTime7 = paytime.getHolidayWorkBonusPayTime() == null ? 0
-				: paytime.getHolidayWorkBonusPayTime().v();
-		this.holidayWorkSpecificBonusPayTime7 = paytime.getHolidayWorkSpecificBonusPayTime() == null ? 0
-				: paytime.getHolidayWorkSpecificBonusPayTime().v();
-	}
-
-	private void toEntityBonusPayTime8(AggregateBonusPayTime paytime) {
-		this.bonusPayTime8 = paytime.getBonusPayTime() == null ? 0 : paytime.getBonusPayTime().v();
-		this.specificBonusPayTime8 = paytime.getHolidayWorkSpecificBonusPayTime() == null ? 0
-				: paytime.getSpecificBonusPayTime().v();
-		this.holidayWorkBonusPayTime8 = paytime.getHolidayWorkBonusPayTime() == null ? 0
-				: paytime.getHolidayWorkBonusPayTime().v();
-		this.holidayWorkSpecificBonusPayTime8 = paytime.getHolidayWorkSpecificBonusPayTime() == null ? 0
-				: paytime.getHolidayWorkSpecificBonusPayTime().v();
-	}
-
-	private void toEntityBonusPayTime9(AggregateBonusPayTime paytime) {
-		this.bonusPayTime9 = paytime.getBonusPayTime() == null ? 0 : paytime.getBonusPayTime().v();
-		this.specificBonusPayTime9 = paytime.getHolidayWorkSpecificBonusPayTime() == null ? 0
-				: paytime.getSpecificBonusPayTime().v();
-		this.holidayWorkBonusPayTime9 = paytime.getHolidayWorkBonusPayTime() == null ? 0
-				: paytime.getHolidayWorkBonusPayTime().v();
-		this.holidayWorkSpecificBonusPayTime9 = paytime.getHolidayWorkSpecificBonusPayTime() == null ? 0
-				: paytime.getHolidayWorkSpecificBonusPayTime().v();
-	}
-
-	private void toEntityBonusPayTime10(AggregateBonusPayTime paytime) {
-		this.bonusPayTime10 = paytime.getBonusPayTime() == null ? 0 : paytime.getBonusPayTime().v();
-		this.specificBonusPayTime10 = paytime.getHolidayWorkSpecificBonusPayTime() == null ? 0
-				: paytime.getSpecificBonusPayTime().v();
-		this.holidayWorkBonusPayTime10 = paytime.getHolidayWorkBonusPayTime() == null ? 0
-				: paytime.getHolidayWorkBonusPayTime().v();
-		this.holidayWorkSpecificBonusPayTime10 = paytime.getHolidayWorkSpecificBonusPayTime() == null ? 0
-				: paytime.getHolidayWorkSpecificBonusPayTime().v();
-	}
-
-	private void toEntityDivergenceTime1(AggregateDivergenceTime divergenceTime) {
-		this.divergenceAtr1 = divergenceTime.getDivergenceAtr() == null ? 0 : divergenceTime.getDivergenceAtr().value;
-		this.divergenceTime1 = divergenceTime.getDivergenceTime() == null ? 0 : divergenceTime.getDivergenceTime().v();
-		this.deductionTime1 = divergenceTime.getDeductionTime() == null ? 0 : divergenceTime.getDeductionTime().v();
-		this.divergenceTimeAfterDeduction1 = divergenceTime.getDivergenceTimeAfterDeduction() == null ? 0
-				: divergenceTime.getDivergenceTimeAfterDeduction().v();
-	}
-
-	private void toEntityDivergenceTime2(AggregateDivergenceTime divergenceTime) {
-		this.divergenceAtr2 = divergenceTime.getDivergenceAtr() == null ? 0 : divergenceTime.getDivergenceAtr().value;
-		this.divergenceTime2 = divergenceTime.getDivergenceTime() == null ? 0 : divergenceTime.getDivergenceTime().v();
-		this.deductionTime2 = divergenceTime.getDeductionTime() == null ? 0 : divergenceTime.getDeductionTime().v();
-		this.divergenceTimeAfterDeduction2 = divergenceTime.getDivergenceTimeAfterDeduction() == null ? 0
-				: divergenceTime.getDivergenceTimeAfterDeduction().v();
-	}
-
-	private void toEntityDivergenceTime3(AggregateDivergenceTime divergenceTime) {
-		this.divergenceAtr3 = divergenceTime.getDivergenceAtr() == null ? 0 : divergenceTime.getDivergenceAtr().value;
-		this.divergenceTime3 = divergenceTime.getDivergenceTime() == null ? 0 : divergenceTime.getDivergenceTime().v();
-		this.deductionTime3 = divergenceTime.getDeductionTime() == null ? 0 : divergenceTime.getDeductionTime().v();
-		this.divergenceTimeAfterDeduction3 = divergenceTime.getDivergenceTimeAfterDeduction() == null ? 0
-				: divergenceTime.getDivergenceTimeAfterDeduction().v();
-	}
-
-	private void toEntityDivergenceTime4(AggregateDivergenceTime divergenceTime) {
-		this.divergenceAtr4 = divergenceTime.getDivergenceAtr() == null ? 0 : divergenceTime.getDivergenceAtr().value;
-		this.divergenceTime4 = divergenceTime.getDivergenceTime() == null ? 0 : divergenceTime.getDivergenceTime().v();
-		this.deductionTime4 = divergenceTime.getDeductionTime() == null ? 0 : divergenceTime.getDeductionTime().v();
-		this.divergenceTimeAfterDeduction4 = divergenceTime.getDivergenceTimeAfterDeduction() == null ? 0
-				: divergenceTime.getDivergenceTimeAfterDeduction().v();
-	}
-
-	private void toEntityDivergenceTime5(AggregateDivergenceTime divergenceTime) {
-		this.divergenceAtr5 = divergenceTime.getDivergenceAtr() == null ? 0 : divergenceTime.getDivergenceAtr().value;
-		this.divergenceTime5 = divergenceTime.getDivergenceTime() == null ? 0 : divergenceTime.getDivergenceTime().v();
-		this.deductionTime5 = divergenceTime.getDeductionTime() == null ? 0 : divergenceTime.getDeductionTime().v();
-		this.divergenceTimeAfterDeduction5 = divergenceTime.getDivergenceTimeAfterDeduction() == null ? 0
-				: divergenceTime.getDivergenceTimeAfterDeduction().v();
-	}
-
-	private void toEntityDivergenceTime6(AggregateDivergenceTime divergenceTime) {
-		this.divergenceAtr6 = divergenceTime.getDivergenceAtr() == null ? 0 : divergenceTime.getDivergenceAtr().value;
-		this.divergenceTime6 = divergenceTime.getDivergenceTime() == null ? 0 : divergenceTime.getDivergenceTime().v();
-		this.deductionTime6 = divergenceTime.getDeductionTime() == null ? 0 : divergenceTime.getDeductionTime().v();
-		this.divergenceTimeAfterDeduction6 = divergenceTime.getDivergenceTimeAfterDeduction() == null ? 0
-				: divergenceTime.getDivergenceTimeAfterDeduction().v();
-	}
-
-	private void toEntityDivergenceTime7(AggregateDivergenceTime divergenceTime) {
-		this.divergenceAtr7 = divergenceTime.getDivergenceAtr() == null ? 0 : divergenceTime.getDivergenceAtr().value;
-		this.divergenceTime7 = divergenceTime.getDivergenceTime() == null ? 0 : divergenceTime.getDivergenceTime().v();
-		this.deductionTime7 = divergenceTime.getDeductionTime() == null ? 0 : divergenceTime.getDeductionTime().v();
-		this.divergenceTimeAfterDeduction7 = divergenceTime.getDivergenceTimeAfterDeduction() == null ? 0
-				: divergenceTime.getDivergenceTimeAfterDeduction().v();
-	}
-
-	private void toEntityDivergenceTime8(AggregateDivergenceTime divergenceTime) {
-		this.divergenceAtr8 = divergenceTime.getDivergenceAtr() == null ? 0 : divergenceTime.getDivergenceAtr().value;
-		this.divergenceTime8 = divergenceTime.getDivergenceTime() == null ? 0 : divergenceTime.getDivergenceTime().v();
-		this.deductionTime8 = divergenceTime.getDeductionTime() == null ? 0 : divergenceTime.getDeductionTime().v();
-		this.divergenceTimeAfterDeduction8 = divergenceTime.getDivergenceTimeAfterDeduction() == null ? 0
-				: divergenceTime.getDivergenceTimeAfterDeduction().v();
-	}
-
-	private void toEntityDivergenceTime9(AggregateDivergenceTime divergenceTime) {
-		this.divergenceAtr9 = divergenceTime.getDivergenceAtr() == null ? 0 : divergenceTime.getDivergenceAtr().value;
-		this.divergenceTime9 = divergenceTime.getDivergenceTime() == null ? 0 : divergenceTime.getDivergenceTime().v();
-		this.deductionTime9 = divergenceTime.getDeductionTime() == null ? 0 : divergenceTime.getDeductionTime().v();
-		this.divergenceTimeAfterDeduction9 = divergenceTime.getDivergenceTimeAfterDeduction() == null ? 0
-				: divergenceTime.getDivergenceTimeAfterDeduction().v();
-	}
-
-	public void toEntityDivergenceTime10(AggregateDivergenceTime divergenceTime) {
-		this.divergenceAtr10 = divergenceTime.getDivergenceAtr() == null ? 0 : divergenceTime.getDivergenceAtr().value;
-		this.divergenceTime10 = divergenceTime.getDivergenceTime() == null ? 0 : divergenceTime.getDivergenceTime().v();
-		this.deductionTime10 = divergenceTime.getDeductionTime() == null ? 0 : divergenceTime.getDeductionTime().v();
-		this.divergenceTimeAfterDeduction10 = divergenceTime.getDivergenceTimeAfterDeduction() == null ? 0
-				: divergenceTime.getDivergenceTimeAfterDeduction().v();
-	}
-
-	private void toEntityGoOut1(AggregateGoOut goOut) {
-		this.goOutTimesPrivate = goOut == null || goOut.getTimes() == null ? 0
-				: (goOut.getTimes().v() == null ? 0
-						: (goOut.getTimes().v() == null ? 0 : goOut.getTimes().v().intValue()));
-		this.legalTimePrivate = goOut == null || goOut.getLegalTime() == null ? 0
-				: (goOut.getLegalTime().getTime() == null ? 0 : goOut.getLegalTime().getTime().v());
-		this.calcLegalTimePrivate = goOut == null || goOut.getLegalTime() == null ? 0
-				: (goOut.getLegalTime().getCalcTime() == null ? 0 : goOut.getLegalTime().getCalcTime().v());
-		this.illegalTimePrivate = goOut == null || goOut.getIllegalTime() == null ? 0
-				: (goOut.getIllegalTime().getTime() == null ? 0 : goOut.getIllegalTime().getTime().v());
-		this.calcIllegalTimePrivate = goOut == null || goOut.getIllegalTime() == null ? 0
-				: (goOut.getIllegalTime().getCalcTime() == null ? 0 : goOut.getIllegalTime().getCalcTime().v());
-		this.totalTimePrivate = goOut == null || goOut.getTotalTime() == null ? 0
-				: (goOut.getTotalTime().getTime() == null ? 0 : goOut.getTotalTime().getTime().v());
-		this.calcTotalTimePrivate = goOut == null || goOut.getTotalTime() == null ? 0
-				: (goOut.getTotalTime().getCalcTime() == null ? 0 : goOut.getTotalTime().getCalcTime().v());
-	}
-
-	private void toEntityGoOut2(AggregateGoOut goOut) {
-		this.goOutTimesPublic = goOut == null || goOut.getTimes() == null ? 0
-				: (goOut.getTimes().v() == null ? 0
-						: (goOut.getTimes().v() == null ? 0 : goOut.getTimes().v().intValue()));
-		this.legalTimePublic = goOut == null || goOut.getLegalTime() == null ? 0
-				: (goOut.getLegalTime().getTime() == null ? 0 : goOut.getLegalTime().getTime().v());
-		this.calcLegalTimePublic = goOut == null || goOut.getLegalTime() == null ? 0
-				: (goOut.getLegalTime().getCalcTime() == null ? 0 : goOut.getLegalTime().getCalcTime().v());
-		this.illegalTimePublic = goOut == null || goOut.getIllegalTime() == null ? 0
-				: (goOut.getIllegalTime().getTime() == null ? 0 : goOut.getIllegalTime().getTime().v());
-		this.calcIllegalTimePublic = goOut == null || goOut.getIllegalTime() == null ? 0
-				: (goOut.getIllegalTime().getCalcTime() == null ? 0 : goOut.getIllegalTime().getCalcTime().v());
-		this.totalTimePublic = goOut == null || goOut.getTotalTime() == null ? 0
-				: (goOut.getTotalTime().getTime() == null ? 0 : goOut.getTotalTime().getTime().v());
-		this.calcTotalTimePublic = goOut == null || goOut.getTotalTime() == null ? 0
-				: (goOut.getTotalTime().getCalcTime() == null ? 0 : goOut.getTotalTime().getCalcTime().v());
-	}
-
-	private void toEntityGoOut3(AggregateGoOut goOut) {
-		this.goOutTimesCompensation = goOut == null || goOut.getTimes() == null ? 0
-				: (goOut.getTimes().v() == null ? 0
-						: (goOut.getTimes().v() == null ? 0 : goOut.getTimes().v().intValue()));
-		this.legalTimeCompensation = goOut == null || goOut.getLegalTime() == null ? 0
-				: (goOut.getLegalTime().getTime() == null ? 0 : goOut.getLegalTime().getTime().v());
-		this.calcLegalTimeCompensation = goOut == null || goOut.getLegalTime() == null ? 0
-				: (goOut.getLegalTime().getCalcTime() == null ? 0 : goOut.getLegalTime().getCalcTime().v());
-		this.illegalTimeCompensation = goOut == null || goOut.getIllegalTime() == null ? 0
-				: (goOut.getIllegalTime().getTime() == null ? 0 : goOut.getIllegalTime().getTime().v());
-		this.calcIllegalTimeCompensation = goOut == null || goOut.getIllegalTime() == null ? 0
-				: (goOut.getIllegalTime().getCalcTime() == null ? 0 : goOut.getIllegalTime().getCalcTime().v());
-		this.totalTimeCompensation = goOut == null || goOut.getTotalTime() == null ? 0
-				: (goOut.getTotalTime().getTime() == null ? 0 : goOut.getTotalTime().getTime().v());
-		this.calcTotalTimeCompensation = goOut == null || goOut.getTotalTime() == null ? 0
-				: (goOut.getTotalTime().getCalcTime() == null ? 0 : goOut.getTotalTime().getCalcTime().v());
-	}
-
-	private void toEntityGoOut4(AggregateGoOut goOut) {
-		this.goOutTimesUnion = goOut == null || goOut.getTimes() == null ? 0
-				: (goOut.getTimes().v() == null ? 0 : goOut.getTimes().v().intValue());
-		this.legalTimeUnion = goOut == null || goOut.getLegalTime() == null ? 0
-				: (goOut.getLegalTime().getTime() == null ? 0 : goOut.getLegalTime().getTime().v());
-		this.calcLegalTimeUnion = goOut == null || goOut.getLegalTime() == null ? 0
-				: (goOut.getLegalTime().getCalcTime() == null ? 0 : goOut.getLegalTime().getCalcTime().v());
-		this.illegalTimeUnion = goOut == null || goOut.getIllegalTime() == null ? 0
-				: (goOut.getIllegalTime().getTime() == null ? 0 : goOut.getIllegalTime().getTime().v());
-		this.calcIllegalTimeUnion = goOut == null || goOut.getIllegalTime() == null ? 0
-				: (goOut.getIllegalTime().getCalcTime() == null ? 0 : goOut.getIllegalTime().getCalcTime().v());
-		this.totalTimeUnion = goOut == null || goOut.getTotalTime() == null ? 0
-				: (goOut.getTotalTime().getTime() == null ? 0 : goOut.getTotalTime().getTime().v());
-		this.calcTotalTimeUnion = goOut == null || goOut.getTotalTime() == null ? 0
-				: (goOut.getTotalTime().getCalcTime() == null ? 0 : goOut.getTotalTime().getCalcTime().v());
-	}
 
 	/* KRCDT_MON_AGGR_HDWK_TIME 10 */
 	private void toEntityHolidayWorkTime1(AggregateHolidayWorkTime domain) {
@@ -3275,116 +1569,6 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		this.legalTransferOverTime10 = domain.getLegalTransferOverTime().v();
 	}
 
-	/** KRCDT_MON_AGGR_PREM_TIME 10 **/
-	private void toEntityPremiumTime1(AggregatePremiumTime domain) {
-		this.premiumTime1 = domain.getTime().v();
-
-	}
-
-	private void toEntityPremiumTime2(AggregatePremiumTime domain) {
-		this.premiumTime2 = domain.getTime().v();
-
-	}
-
-	private void toEntityPremiumTime3(AggregatePremiumTime domain) {
-		this.premiumTime3 = domain.getTime().v();
-
-	}
-
-	private void toEntityPremiumTime4(AggregatePremiumTime domain) {
-		this.premiumTime4 = domain.getTime().v();
-
-	}
-
-	private void toEntityPremiumTime5(AggregatePremiumTime domain) {
-		this.premiumTime5 = domain.getTime().v();
-	}
-
-	private void toEntityPremiumTime6(AggregatePremiumTime domain) {
-		this.premiumTime6 = domain.getTime().v();
-
-	}
-
-	private void toEntityPremiumTime7(AggregatePremiumTime domain) {
-		this.premiumTime7 = domain.getTime().v();
-
-	}
-
-	private void toEntityPremiumTime8(AggregatePremiumTime domain) {
-		this.premiumTime8 = domain.getTime().v();
-
-	}
-
-	private void toEntityPremiumTime9(AggregatePremiumTime domain) {
-		this.premiumTime9 = domain.getTime().v();
-
-	}
-
-	private void toEntityPremiumTime10(AggregatePremiumTime domain) {
-		this.premiumTime10 = domain.getTime().v();
-
-	}
-
-	/** KRCDT_MON_AGGR_SPEC_DAYS 10 **/
-	private void toEntitySpecificDays1(AggregateSpecificDays domain) {
-		this.specificDays1 = domain == null || domain.getSpecificDays() == null ? 0 : domain.getSpecificDays().v();
-		this.holidayWorkSpecificDays1 = domain == null || domain.getHolidayWorkSpecificDays() == null ? 0
-				: domain.getHolidayWorkSpecificDays().v();
-	}
-
-	private void toEntitySpecificDays2(AggregateSpecificDays domain) {
-		this.specificDays2 = domain == null || domain.getSpecificDays() == null ? 0 : domain.getSpecificDays().v();
-		this.holidayWorkSpecificDays2 = domain == null || domain.getHolidayWorkSpecificDays() == null ? 0
-				: domain.getHolidayWorkSpecificDays().v();
-	}
-
-	private void toEntitySpecificDays3(AggregateSpecificDays domain) {
-		this.specificDays3 = domain == null || domain.getSpecificDays() == null ? 0 : domain.getSpecificDays().v();
-		this.holidayWorkSpecificDays3 = domain == null || domain.getHolidayWorkSpecificDays() == null ? 0
-				: domain.getHolidayWorkSpecificDays().v();
-	}
-
-	private void toEntitySpecificDays4(AggregateSpecificDays domain) {
-		this.specificDays4 = domain == null || domain.getSpecificDays() == null ? 0 : domain.getSpecificDays().v();
-		this.holidayWorkSpecificDays4 = domain == null || domain.getHolidayWorkSpecificDays() == null ? 0
-				: domain.getHolidayWorkSpecificDays().v();
-	}
-
-	private void toEntitySpecificDays5(AggregateSpecificDays domain) {
-		this.specificDays5 = domain == null || domain.getSpecificDays() == null ? 0 : domain.getSpecificDays().v();
-		this.holidayWorkSpecificDays5 = domain == null || domain.getHolidayWorkSpecificDays() == null ? 0
-				: domain.getHolidayWorkSpecificDays().v();
-	}
-
-	private void toEntitySpecificDays6(AggregateSpecificDays domain) {
-		this.specificDays6 = domain == null || domain.getSpecificDays() == null ? 0 : domain.getSpecificDays().v();
-		this.holidayWorkSpecificDays6 = domain == null || domain.getHolidayWorkSpecificDays() == null ? 0
-				: domain.getHolidayWorkSpecificDays().v();
-	}
-
-	private void toEntitySpecificDays7(AggregateSpecificDays domain) {
-		this.specificDays7 = domain == null || domain.getSpecificDays() == null ? 0 : domain.getSpecificDays().v();
-		this.holidayWorkSpecificDays7 = domain == null || domain.getHolidayWorkSpecificDays() == null ? 0
-				: domain.getHolidayWorkSpecificDays().v();
-	}
-
-	private void toEntitySpecificDays8(AggregateSpecificDays domain) {
-		this.specificDays8 = domain == null || domain.getSpecificDays() == null ? 0 : domain.getSpecificDays().v();
-		this.holidayWorkSpecificDays8 = domain == null || domain.getHolidayWorkSpecificDays() == null ? 0
-				: domain.getHolidayWorkSpecificDays().v();
-	}
-
-	private void toEntitySpecificDays9(AggregateSpecificDays domain) {
-		this.specificDays9 = domain == null || domain.getSpecificDays() == null ? 0 : domain.getSpecificDays().v();
-		this.holidayWorkSpecificDays9 = domain == null || domain.getHolidayWorkSpecificDays() == null ? 0
-				: domain.getHolidayWorkSpecificDays().v();
-	}
-
-	private void toEntitySpecificDays10(AggregateSpecificDays domain) {
-		this.specificDays10 = domain == null || domain.getSpecificDays() == null ? 0 : domain.getSpecificDays().v();
-		this.holidayWorkSpecificDays10 = domain == null || domain.getHolidayWorkSpecificDays() == null ? 0
-				: domain.getHolidayWorkSpecificDays().v();
-	}
 
 	/* KRCDT_MON_AGGR_TOTAL_SPT */
 	private void toEntityTotalTimeSpentAtWork(AggregateTotalTimeSpentAtWork domain) {
@@ -3429,7 +1613,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 
 	/* KRCDT_MON_ATTENDANCE_TIME */
 	public void toEntityAttendanceTimeOfMonthly(AttendanceTimeOfMonthly domain,
-			KrcdtMonTimeSup ouenEntity) {
+			KrcdtMonTimeSup ouenEntity, KrcdtMonVerticalTotal verticalEntity) {
 		
 		this.startYmd = domain.getDatePeriod().start();
 		this.endYmd = domain.getDatePeriod().end();
@@ -3444,8 +1628,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		toEntityExcessOutsideWorkMerge(excessOutsideWork);
 		
 		/** 縦計 */
-		val verticalTotal = domain.getVerticalTotal();
-		toEntityVerticalTotal(verticalTotal);
+		verticalEntity.entity(domain.getVerticalTotal());
 		
 		/** 回数集計 */
 		val totalCount = domain.getTotalCount();
@@ -3517,182 +1700,20 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		this.calcTotalTransferTime = 0;
 		toEntityAggregateHolidayWorkTime(new HashMap<>());
 		
-		this.dayWorkMedicalTime = 0;
-		this.dayDeductionTime = 0;
-		this.dayTakeOverTime = 0;
-		this.nightMedicalTime = 0;
-		this.nightDeductionTime = 0;
-		this.nightTakeOverTime = 0;
-		
 		/** 総労働時間 */
 		this.totalWorkingTime = 0;
 		
 		/** 総拘束時間 */
 		toEntityTotalTimeSpentAtWork(null);
 		
-		/** 36協定時間 */
-		toEntityAgreementTimeOfMonthly(null);
-		
-		/** 36協定上限時間 */
-		toEntityAgreMaxTimeOfMonthly(null);
+//		/** 36協定時間 */
+//		toEntityAgreementTimeOfMonthly(null);
+//		
+//		/** 36協定上限時間 */
+//		toEntityAgreMaxTimeOfMonthly(null);
 		
 		/** 時間外超過 */
 		toEntityExcessOutsideWorkMerge(null);
-		
-		/** 縦計 */
-		this.attendanceDays = 0;
-		
-		/** 欠勤日数 */
-		this.totalAbsenceDays = 0;
-		this.totalAbsenceTime = 0;
-		toEntityAbsenceDays(new HashMap<>());
-		
-		/** 所定日数  */
-		this.predetermineDays = 0;
-		/** 勤務日数  */
-		this.workDays = 0;
-		/** 休日日数 */
-		this.holidayDays = 0;
-		
-		/** 特定日数 SpecificDaysOfMonthly */
-		toEntitySpecificDaysOfMonthly(new HashMap<>());
-		
-		/** 休出日数  */
-		this.holidayWorkDays = 0;
-		/** 給与用日数 */
-		this.payAttendanceDays = 0;
-		this.payAbsenceDays = 0;
-		/** 勤務回数  */
-		this.workTimes = 0;
-		/** 二回勤務回数 */
-		this.twoTimesWorkTimes = 0;
-		/** 臨時勤務回数 */
-		this.temporaryWorkTimes = 0;
-		
-		/** 休業 */
-		this.toEntityLeaveOfMonthly(null);
-		
-		/** 振出日数 */
-		this.recruitDays = 0;
-		
-		/** 特別休暇日数 */
-		this.totalSpcvactDays = 0;
-		this.totalSpcvactTime = 0;
-		this.toEntitySpcVacationDaysList(new HashMap<>());
-		
-		/** 加給時間 */
-		toEntityBonusPayTime(new HashMap<>());
-		
-		/** 外出 */
-		toEntityGoOut1(null);
-		toEntityGoOut2(null);
-		toEntityGoOut3(null);
-		toEntityGoOut4(null);
-		
-		/** 育児外出 */
-		this.childcareGoOutTimes = 0;
-		this.childcareGoOutTime = 0;
-		this.careGoOutTimes = 0;
-		this.careGoOutTime = 0;
-		
-		/** 割増時間 */
-		toEntityPremiumTimeOfMonthly(null);
-		
-		/** 休憩時間 */
-		toEntityBreakTime(null);
-		
-		/** 休日時間 */
-		toEntityHolidayTime(null);
-		
-		/** 深夜時間 */
-		this.overWorkMidnightTime = 0;
-		this.calcOverWorkMidnightTime = 0;
-		
-		/** 法定内深夜時間 */
-		this.legalMidnightTime = 0;
-		this.calcLegalMidnightTime = 0;
-		
-		/** 法定外深夜時間 */
-		this.illegalMidnightTime = 0;
-		this.calcIllegalMidnightTime = 0;
-		this.illegalBeforeMidnightTime = 0;
-		
-		/** 法定内休出深夜時間 */
-		this.legalHolidayWorkMidnightTime = 0;
-		this.calcLegalHolidayWorkMidnightTime = 0;
-		
-		/** 法定外休出深夜時間 */
-		this.illegalHolidayWorkMidnightTime = 0;
-		this.calcIllegalHolidayWorkMidnightTime = 0;
-		
-		/** 祝日休出深夜時間 */
-		this.specialHolidayWorkMidnightTime = 0;
-		this.calcSpecialHolidayWorkMidnightTime = 0;
-		
-		/** 遅刻早退 */
-		this.lateTimes = 0;
-		this.lateTime = 0;
-		this.calcLateTime = 0;
-		
-		/** 早退 */
-		this.leaveEarlyTimes = 0;
-		this.leaveEarlyTime = 0;
-		this.calcLeaveEarlyTime = 0;
-		
-		/** 出勤前時間 */
-		this.attendanceLeaveGateBeforeAttendanceTime = 0;
-		/** 退勤後時間 */
-		this.attendanceLeaveGateAfterLeaveWorkTime = 0;
-		/** 滞在時間 */
-		this.attendanceLeaveGateStayingTime = 0;
-		/** 不就労時間 */
-		this.attendanceLeaveGateUnemployedTime = 0;
-		
-		/** 予実差異時間 */
-		this.budgetVarienceTime  = 0;
-		
-		/** 乖離時間 */
-		toEntityDivergenceTimeOfMonthly(null);
-		
-		/** 医療時間 */
-		this.dayWorkMedicalTime = 0;
-		this.dayDeductionTime = 0;
-		this.dayTakeOverTime = 0;
-		this.nightMedicalTime = 0;
-		this.nightDeductionTime = 0;
-		this.nightTakeOverTime = 0;
-		
-		/** 勤務時刻 */
-		this.endWorkTimes = 0;
-		this.endWorkTotalClock = 0;
-		this.endWorkAveClock = 0;
-		
-		/** 合計日数 */
-		this.logOnTotalDays = 0;
-		/** 合計時刻 */
-		this.logOnTotalClock = 0;
-		/** 平均時刻 */
-		this.logOnAveClock = 0;
-		/** PCログオフ時刻 */
-		this.logOffTotalDays = 0;
-		this.logOffTotalClock = 0;
-		this.logOffAveClock = 0;
-		
-		/** PCログオン乖離 */
-		/** 日数 */
-		this.logOnDivDays = 0;
-		/** 合計時間 */
-		this.logOnDivTotalTime = 0;
-		/** 平均時間 */
-		this.logOnDivAveTime = 0;
-		
-		/** PCログオフ乖離 */		
-	    /** 日数 */
-	    this.logOffDivDays = 0;
-	    /** 合計時間 */
-	    this.logOffDivTotalTime = 0;
-	    /** 平均時間 */
-	    this.logOffDivAveTime = 0;
 		
 		/** 回数集計 */
 		toEntityTotalCount(new HashMap<>());
@@ -3727,13 +1748,13 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		val totalTimeSpentAtWork = monthlyCalculation.getTotalTimeSpentAtWork();
 		toEntityTotalTimeSpentAtWork(totalTimeSpentAtWork);
 		
-		/** 36協定時間 */
-		val agreementTime = monthlyCalculation.getAgreementTime();
-		toEntityAgreementTimeOfMonthly(agreementTime);
-		
-		/** 36協定上限時間 */
-		val agreMaxTime = monthlyCalculation.getAgreMaxTime();
-		toEntityAgreMaxTimeOfMonthly(agreMaxTime);
+//		/** 36協定時間 */
+//		val agreementTime = monthlyCalculation.getAgreementTime();
+//		toEntityAgreementTimeOfMonthly(agreementTime);
+//		
+//		/** 36協定上限時間 */
+//		val agreMaxTime = monthlyCalculation.getAgreMaxTime();
+//		toEntityAgreMaxTimeOfMonthly(agreMaxTime);
 	}
 
 	/* KRCDT_MON_FLEX_TIME */
@@ -3830,72 +1851,6 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		}
 	}
 
-	/* KRCDT_MON_LEAVE - リポジトリ：月別実績の休業 only update */
-	private void toEntityLeaveOfMonthly(LeaveOfMonthly domain) {
-		this.prenatalLeaveDays = 0.0;
-		this.postpartumLeaveDays = 0.0;
-		this.childcareLeaveDays = 0.0;
-		this.careLeaveDays = 0.0;
-		this.injuryOrIllnessLeaveDays = 0.0;
-		this.anyLeaveDays01 = 0.0;
-		this.anyLeaveDays02 = 0.0;
-		this.anyLeaveDays03 = 0.0;
-		this.anyLeaveDays04 = 0.0;
-		if(domain == null){
-			return;
-		}
-		val fixLeaveDaysMap = domain.getFixLeaveDays();
-		if (fixLeaveDaysMap.containsKey(CloseAtr.PRENATAL)) {
-			this.prenatalLeaveDays = fixLeaveDaysMap.get(CloseAtr.PRENATAL).getDays().v();
-		}
-		if (fixLeaveDaysMap.containsKey(CloseAtr.POSTPARTUM)) {
-			this.postpartumLeaveDays = fixLeaveDaysMap.get(CloseAtr.POSTPARTUM).getDays().v();
-		}
-		if (fixLeaveDaysMap.containsKey(CloseAtr.CHILD_CARE)) {
-			this.childcareLeaveDays = fixLeaveDaysMap.get(CloseAtr.CHILD_CARE).getDays().v();
-		}
-		if (fixLeaveDaysMap.containsKey(CloseAtr.CARE)) {
-			this.careLeaveDays = fixLeaveDaysMap.get(CloseAtr.CARE).getDays().v();
-		}
-		if (fixLeaveDaysMap.containsKey(CloseAtr.INJURY_OR_ILLNESS)) {
-			this.injuryOrIllnessLeaveDays = fixLeaveDaysMap.get(CloseAtr.INJURY_OR_ILLNESS).getDays().v();
-		}
-		val anyLeaveDaysMap = domain.getAnyLeaveDays();
-		if (anyLeaveDaysMap.containsKey(1)) {
-			this.anyLeaveDays01 = anyLeaveDaysMap.get(1).getDays().v();
-		}
-		if (anyLeaveDaysMap.containsKey(2)) {
-			this.anyLeaveDays02 = anyLeaveDaysMap.get(2).getDays().v();
-		}
-		if (anyLeaveDaysMap.containsKey(3)) {
-			this.anyLeaveDays03 = anyLeaveDaysMap.get(3).getDays().v();
-		}
-		if (anyLeaveDaysMap.containsKey(4)) {
-			this.anyLeaveDays04 = anyLeaveDaysMap.get(4).getDays().v();
-		}
-	}
-
-	/* KRCDT_MON_MEDICAL_TIME */
-	private void toEntityMedicalTimeOfMonthly(Map<WorkTimeNightShift, MedicalTimeOfMonthly>  medicalTime) {
-		for (WorkTimeNightShift i : medicalTime.keySet()) {
-			MedicalTimeOfMonthly domain = (MedicalTimeOfMonthly) medicalTime.get(i);
-			switch (i) {
-			case DAY_SHIFT:
-				this.dayWorkMedicalTime = domain.getWorkTime().v();
-				this.dayDeductionTime = domain.getDeducationTime().v();
-				this.dayTakeOverTime = domain.getTakeOverTime().v();
-				break;
-			case NIGHT_SHIFT:
-				this.nightMedicalTime = domain.getWorkTime().v();
-				this.nightDeductionTime = domain.getDeducationTime().v();
-				this.nightTakeOverTime = domain.getTakeOverTime().v();
-				break;
-			default:
-				break;
-			}
-		}
-	}
-
 	/* KRCDT_MON_OVER_TIME */
 	private void toEntityOverTimeOfMonthly(OverTimeOfMonthly domain) {
 		/** 残業合計時間 */
@@ -3933,632 +1888,6 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		this.retentionYearlyUseTime = domain.getRetentionYearly().getUseTime().v();
 		this.specialHolidayUseTime = domain.getSpecialHoliday().getUseTime().v();
 		this.compensatoryLeaveUseTime = domain.getCompensatoryLeave().getUseTime().v();
-	}
-	
-	/** KRCDT_MON_AGGR_SPEC_DAYS 10 **/
-	private void toEntitySpecificDaysOfMonthly(Map<SpecificDateItemNo, AggregateSpecificDays> specificDaysList) {
-		for (int i = 1; i <= 10; i++){
-			SpecificDateItemNo itemNo = new SpecificDateItemNo(i);
-			AggregateSpecificDays specificDay = new AggregateSpecificDays(itemNo);
-			if (specificDaysList.containsKey(itemNo)){
-				specificDay = specificDaysList.get(itemNo);
-			}
-			switch (i){
-			case 1:
-				this.toEntitySpecificDays1(specificDay); break;
-			case 2:
-				this.toEntitySpecificDays2(specificDay); break;
-			case 3:
-				this.toEntitySpecificDays3(specificDay); break;
-			case 4:
-				this.toEntitySpecificDays4(specificDay); break;
-			case 5:
-				this.toEntitySpecificDays5(specificDay); break;
-			case 6:
-				this.toEntitySpecificDays6(specificDay); break;
-			case 7:
-				this.toEntitySpecificDays7(specificDay); break;
-			case 8:
-				this.toEntitySpecificDays8(specificDay); break;
-			case 9:
-				this.toEntitySpecificDays9(specificDay); break;
-			case 10:
-				this.toEntitySpecificDays10(specificDay); break;
-			}
-		}
-	}
-	
-	private void toEntitySpcVacationDaysList(Map<Integer, AggregateSpcVacationDays> spcVacationDaysList) {
-		for (int i = 1; i <= 30; i++){
-			AggregateSpcVacationDays specificDay = new AggregateSpcVacationDays(i);
-			if (spcVacationDaysList.containsKey(i)){
-				specificDay = spcVacationDaysList.get(i);
-			}
-			switch (i){
-			case 1:
-				toEntitySpcVacationDays1(specificDay); break;
-			case 2:
-				toEntitySpcVacationDays2(specificDay); break;
-			case 3:
-				toEntitySpcVacationDays3(specificDay); break;
-			case 4:
-				toEntitySpcVacationDays4(specificDay); break;
-			case 5:
-				toEntitySpcVacationDays5(specificDay); break;
-			case 6:
-				toEntitySpcVacationDays6(specificDay); break;
-			case 7:
-				toEntitySpcVacationDays7(specificDay); break;
-			case 8:
-				toEntitySpcVacationDays8(specificDay); break;
-			case 9:
-				toEntitySpcVacationDays9(specificDay); break;
-			case 10:
-				toEntitySpcVacationDays10(specificDay); break;
-			case 11:
-				toEntitySpcVacationDays11(specificDay); break;
-			case 12:
-				toEntitySpcVacationDays12(specificDay); break;
-			case 13:
-				toEntitySpcVacationDays13(specificDay); break;
-			case 14:
-				toEntitySpcVacationDays14(specificDay); break;
-			case 15:
-				toEntitySpcVacationDays15(specificDay); break;
-			case 16:
-				toEntitySpcVacationDays16(specificDay); break;
-			case 17:
-				toEntitySpcVacationDays17(specificDay); break;
-			case 18:
-				toEntitySpcVacationDays18(specificDay); break;
-			case 19:
-				toEntitySpcVacationDays19(specificDay); break;
-			case 20:
-				toEntitySpcVacationDays20(specificDay); break;
-			case 21:
-				toEntitySpcVacationDays21(specificDay); break;
-			case 22:
-				toEntitySpcVacationDays22(specificDay); break;
-			case 23:
-				toEntitySpcVacationDays23(specificDay); break;
-			case 24:
-				toEntitySpcVacationDays24(specificDay); break;
-			case 25:
-				toEntitySpcVacationDays25(specificDay); break;
-			case 26:
-				toEntitySpcVacationDays26(specificDay); break;
-			case 27:
-				toEntitySpcVacationDays27(specificDay); break;
-			case 28:
-				toEntitySpcVacationDays28(specificDay); break;
-			case 29:
-				toEntitySpcVacationDays29(specificDay); break;
-			case 30:
-				toEntitySpcVacationDays30(specificDay); break;				
-			}
-		}
-	}
-	
-	/** 勤務日数 */
-	private void toEntityWorkDays(WorkDaysOfMonthly vtWorkDays) {
-		
-		/** 出勤日数 */
-		val attendanceDays =  vtWorkDays.getAttendanceDays();
-		this.attendanceDays = attendanceDays.getDays().v();
-		
-		/** 欠勤日数 */
-		val absenceDays =  vtWorkDays.getAbsenceDays();
-		this.totalAbsenceDays = absenceDays.getTotalAbsenceDays().v();
-		this.totalAbsenceTime = absenceDays.getTotalAbsenceTime().v();
-		toEntityAbsenceDays(absenceDays.getAbsenceDaysList());
-		
-		/** 所定日数  */
-		val predetermineDays = vtWorkDays.getPredetermineDays();
-		this.predetermineDays = predetermineDays.getPredeterminedDays().v();
-		
-		/** 勤務日数  */
-		val workDays = vtWorkDays.getWorkDays();
-		this.workDays = workDays.getDays().v();
-		
-		/** 休日日数 */
-		val holidayDays = vtWorkDays.getHolidayDays();
-		this.holidayDays = holidayDays.getDays().v();
-		
-		/** 特定日数 SpecificDaysOfMonthly */
-		val specificDays = vtWorkDays.getSpecificDays();
-		this.toEntitySpecificDaysOfMonthly(specificDays.getSpecificDays());
-		
-		/** 休出日数  */
-		val holidayWorkDays = vtWorkDays.getHolidayWorkDays();
-		this.holidayWorkDays = holidayWorkDays.getDays().v();
-		
-		/** 給与用日数 */
-		val payDays = vtWorkDays.getPayDays();
-		this.payAttendanceDays = payDays.getPayAttendanceDays().v();
-		this.payAbsenceDays = payDays.getPayAbsenceDays().v();
-		
-		/** 勤務回数  */
-		val workTimes = vtWorkDays.getWorkTimes();
-		this.workTimes = workTimes.getTimes().v();
-		
-		/** 二回勤務回数 */
-		val twoTimesWorkTimes = vtWorkDays.getTwoTimesWorkTimes();
-		this.twoTimesWorkTimes = twoTimesWorkTimes.getTimes().v();
-		
-		/** 臨時勤務回数 */
-		val temporaryWorkTimes = vtWorkDays.getTemporaryWorkTimes();
-		this.temporaryWorkTimes = temporaryWorkTimes.getTimes().v();
-		
-		/** 休業 */
-		val leave = vtWorkDays.getLeave();
-		this.toEntityLeaveOfMonthly(leave);
-		
-		/** 振出日数 */
-		val recruitmentDays = vtWorkDays.getRecruitmentDays();
-		this.recruitDays = recruitmentDays.getDays().v();
-		
-		/** 特別休暇日数 */
-		val specialVacationDays = vtWorkDays.getSpecialVacationDays();
-		this.totalSpcvactDays = specialVacationDays.getTotalSpcVacationDays().v();
-		this.totalSpcvactTime = specialVacationDays.getTotalSpcVacationTime().v();
-		this.toEntitySpcVacationDaysList(specialVacationDays.getSpcVacationDaysList());
-	}
-	
-	/** 勤務時間 */
-	private void toEntityWorkTime(WorkTimeOfMonthlyVT vtWorkTime) {
-		/** 加給時間 */
-		val bonusPayTime = vtWorkTime.getBonusPayTime();
-		toEntityBonusPayTime(bonusPayTime.getBonusPayTime());
-		
-		/** 外出 */
-		val goOuts = vtWorkTime.getGoOut();
-		
-		/** 外出 */
-		val  goOut = goOuts.getGoOuts();
-		toEntityGout(goOut);
-		
-		/** 育児外出 */
-		val childCare = goOuts.getGoOutForChildCares();
-		toEntityGoOutChildCare(childCare);
-		
-		/** 割増時間 */
-		val premiumTimes = vtWorkTime.getPremiumTime();
-		toEntityPremiumTimeOfMonthly(premiumTimes);
-		
-		/** 休憩時間 */
-		toEntityBreakTime(vtWorkTime.getBreakTime());
-		
-		/** 休日時間 */
-		toEntityHolidayTime(vtWorkTime.getHolidayTime());
-		
-		/** 深夜時間 */
-		toEntityMidNightTime(vtWorkTime.getMidnightTime());
-		
-		/** 遅刻早退 */
-		toEntityLateLeaveEarlyOfMonthly(vtWorkTime.getLateLeaveEarly());
-		
-		/** 入退門時間 */
-		toEntityAttendanceLeaveGateTimeOfMonthly(vtWorkTime.getAttendanceLeaveGateTime());
-		
-		/** 予実差異時間 */
-		this.budgetVarienceTime  = vtWorkTime.getBudgetTimeVarience().getTime().v();
-		
-		/** 乖離時間 */
-		toEntityDivergenceTimeOfMonthly(vtWorkTime.getDivergenceTime());
-		
-		/** 医療時間 */
-		Map<WorkTimeNightShift, MedicalTimeOfMonthly> medicalTime = vtWorkTime.getMedicalTime();
-		toEntityMedicalTimeOfMonthly(medicalTime);
-	}
-	
-	/** 乖離時間 */
-	private void toEntityDivergenceTimeOfMonthly(DivergenceTimeOfMonthly divergenceTime) {
-		/** 乖離時間 */
-		Map<Integer, AggregateDivergenceTime> divergenceTimeList = divergenceTime == null ? new HashMap<>() : divergenceTime.getDivergenceTimeList();
-		
-		for (int i = 1; i <= 10; i++){
-			AggregateDivergenceTime bonus = new AggregateDivergenceTime(i);
-			if (divergenceTimeList.containsKey(i)){
-				bonus = divergenceTimeList.get(i);
-			}
-			switch (i){
-			case 1:
-				this.toEntityDivergenceTime1(bonus); break;
-			case 2:
-				this.toEntityDivergenceTime2(bonus); break;
-			case 3:
-				this.toEntityDivergenceTime3(bonus); break;
-			case 4:
-				this.toEntityDivergenceTime4(bonus); break;
-			case 5:
-				this.toEntityDivergenceTime5(bonus); break;
-			case 6:
-				this.toEntityDivergenceTime6(bonus); break;
-			case 7:
-				this.toEntityDivergenceTime7(bonus); break;
-			case 8:
-				this.toEntityDivergenceTime8(bonus); break;
-			case 9:
-				this.toEntityDivergenceTime9(bonus); break;
-			case 10:
-				this.toEntityDivergenceTime10(bonus); break;
-			}
-		}
-	}
-	
-	/** KRCDT_MON_AGGR_ABSN_DAYS 30 **/
-	/** 欠勤日数 */
-	private void toEntityAbsenceDays(Map<Integer, AggregateAbsenceDays> absenceDaysList) {
-		for (int i = 1; i <= 30; i++){
-			AggregateAbsenceDays absenceDays = new AggregateAbsenceDays(i);
-			if (absenceDaysList.containsKey(i)){
-				absenceDays = absenceDaysList.get(i);
-			}
-			switch (i){
-			case 1:
-				toEntityAbsenceDays1(absenceDays);
-				break;
-			case 2:
-				toEntityAbsenceDays2(absenceDays);
-				break;
-			case 3:
-				toEntityAbsenceDays3(absenceDays);
-				break;
-			case 4:
-				toEntityAbsenceDays4(absenceDays);
-				break;
-			case 5:
-				toEntityAbsenceDays5(absenceDays);
-				break;
-			case 6:
-				toEntityAbsenceDays6(absenceDays);
-				break;
-			case 7:
-				toEntityAbsenceDays7(absenceDays);
-				break;
-			case 8:
-				toEntityAbsenceDays8(absenceDays);
-				break;
-			case 9:
-				toEntityAbsenceDays9(absenceDays);
-				break;
-			case 10:
-				toEntityAbsenceDays10(absenceDays);
-				break;
-			case 11:
-				toEntityAbsenceDays11(absenceDays);
-				break;
-			case 12:
-				toEntityAbsenceDays12(absenceDays);
-				break;
-			case 13:
-				toEntityAbsenceDays13(absenceDays);
-				break;
-			case 14:
-				toEntityAbsenceDays14(absenceDays);
-				break;
-			case 15:
-				toEntityAbsenceDays15(absenceDays);
-				break;
-			case 16:
-				toEntityAbsenceDays16(absenceDays);
-				break;
-			case 17:
-				toEntityAbsenceDays17(absenceDays);
-				break;
-			case 18:
-				toEntityAbsenceDays18(absenceDays);
-				break;
-			case 19:
-				toEntityAbsenceDays19(absenceDays);
-				break;
-			case 20:
-				toEntityAbsenceDays20(absenceDays);
-				break;
-			case 21:
-				toEntityAbsenceDays21(absenceDays);
-				break;
-			case 22:
-				toEntityAbsenceDays22(absenceDays);
-				break;
-			case 23:
-				toEntityAbsenceDays23(absenceDays);
-				break;
-			case 24:
-				toEntityAbsenceDays24(absenceDays);
-				break;
-			case 25:
-				toEntityAbsenceDays25(absenceDays);
-				break;
-			case 26:
-				toEntityAbsenceDays26(absenceDays);
-				break;
-			case 27:
-				toEntityAbsenceDays27(absenceDays);
-				break;
-			case 28:
-				toEntityAbsenceDays28(absenceDays);
-				break;
-			case 29:
-				toEntityAbsenceDays29(absenceDays);
-				break;
-			case 30:
-				toEntityAbsenceDays30(absenceDays);
-				break;
-			}
-		}
-	}
-	
-	/** 入退門時間 */
-	private void toEntityAttendanceLeaveGateTimeOfMonthly(AttendanceLeaveGateTimeOfMonthly attendanceLeaveGateTime) {
-		
-		/** 出勤前時間 */
-		this.attendanceLeaveGateBeforeAttendanceTime = attendanceLeaveGateTime.getTimeBeforeAttendance().v();
-		/** 退勤後時間 */
-		this.attendanceLeaveGateAfterLeaveWorkTime = attendanceLeaveGateTime.getTimeAfterLeaveWork().v();
-		/** 滞在時間 */
-		this.attendanceLeaveGateStayingTime = attendanceLeaveGateTime.getStayingTime().v();
-		/** 不就労時間 */
-		this.attendanceLeaveGateUnemployedTime = attendanceLeaveGateTime.getUnemployedTime().v();
-	}
-	
-	/** 遅刻早退 */
-	private void toEntityLateLeaveEarlyOfMonthly(LateLeaveEarlyOfMonthly lateLeaveEarly) {
-		
-		/** 遅刻 */
-		Late late = lateLeaveEarly.getLate();
-		this.lateTimes = late.getTimes().v();
-		this.lateTime = late.getTime().getTime().v();
-		this.calcLateTime = late.getTime().getCalcTime().v();
-		
-		/** 早退 */
-		LeaveEarly leaveEarly = lateLeaveEarly.getLeaveEarly();
-		this.leaveEarlyTimes = leaveEarly.getTimes().v();
-		this.leaveEarlyTime = leaveEarly.getTime().getTime().v();
-		this.calcLeaveEarlyTime = leaveEarly.getTime().getCalcTime().v();
-	}
-	
-	/** 深夜時間 */
-	private void toEntityMidNightTime(MidnightTimeOfMonthly midnightTime) {
-		/** 残業深夜時間 */
-		TimeMonthWithCalculation overWorkMidnightTime =  midnightTime.getOverWorkMidnightTime();
-		this.overWorkMidnightTime = overWorkMidnightTime.getTime().v();
-		this.calcOverWorkMidnightTime = overWorkMidnightTime.getCalcTime().v();
-		
-		/** 法定内深夜時間 */
-		TimeMonthWithCalculation legalMidnightTime = midnightTime.getLegalMidnightTime();
-		this.legalMidnightTime = legalMidnightTime.getTime().v();
-		this.calcLegalMidnightTime = legalMidnightTime.getCalcTime().v();
-		
-		/** 法定外深夜時間 */
-		IllegalMidnightTime illegalMidnightTime = midnightTime.getIllegalMidnightTime();
-		this.illegalMidnightTime = illegalMidnightTime.getTime().getTime().v();
-		this.calcIllegalMidnightTime = illegalMidnightTime.getTime().getCalcTime().v();
-		this.illegalBeforeMidnightTime = illegalMidnightTime.getBeforeTime().v();
-		
-		/** 法定内休出深夜時間 */
-		TimeMonthWithCalculation legalHolidayWorkMidnightTime = midnightTime.getLegalHolidayWorkMidnightTime();
-		this.legalHolidayWorkMidnightTime = legalHolidayWorkMidnightTime.getTime().v();
-		this.calcLegalHolidayWorkMidnightTime = legalHolidayWorkMidnightTime.getCalcTime().v();
-		
-		/** 法定外休出深夜時間 */
-		TimeMonthWithCalculation illegalHolidayWorkMidnightTime = midnightTime.getIllegalHolidayWorkMidnightTime();
-		this.illegalHolidayWorkMidnightTime = illegalHolidayWorkMidnightTime.getTime().v();
-		this.calcIllegalHolidayWorkMidnightTime = illegalHolidayWorkMidnightTime.getCalcTime().v();
-		
-		/** 祝日休出深夜時間 */
-		TimeMonthWithCalculation specialHolidayWorkMidnightTime = midnightTime.getSpecialHolidayWorkMidnightTime();
-		this.specialHolidayWorkMidnightTime = specialHolidayWorkMidnightTime.getTime().v();
-		this.calcSpecialHolidayWorkMidnightTime =specialHolidayWorkMidnightTime.getCalcTime().v();
-	}
-	
-	/** 休日時間 */
-	private void toEntityHolidayTime(HolidayTimeOfMonthly holidayTime) {
-		
-		this.legalHolidayTime = holidayTime == null ? 0 : holidayTime.getLegalHolidayTime().v();
-		this.illegalHolidayTime = holidayTime == null ? 0 : holidayTime.getIllegalHolidayTime().v();
-		this.illegalSpecialHolidayTime = holidayTime == null ? 0 : holidayTime.getIllegalSpecialHolidayTime().v();
-	}
-	
-	/** 休憩時間 */
-	private void toEntityBreakTime(BreakTimeOfMonthly breakTime) {
-		
-		this.breakTime = breakTime == null ? 0 : breakTime.getBreakTime().v();
-	}
-	
-	/** 割増時間 */
-	private void toEntityPremiumTimeOfMonthly(PremiumTimeOfMonthly premiumTimes) {
-		/** 割増時間 */
-		this.toEntityPremiumTime(premiumTimes == null ? new HashMap<>() : premiumTimes.getPremiumTime());
-		/** 深夜時間 */
-		this.premiumMidnightTime = premiumTimes == null ? 0 : premiumTimes.getMidnightTime().v();
-		/** 法定内時間外時間 */
-		this.premiumLegalOutsideWorkTime = premiumTimes == null ? 0 : premiumTimes.getLegalOutsideWorkTime().v();
-		/** 法定内休出時間 */
-		this.premiumIllegalOutsideWorkTime = premiumTimes == null ? 0 : premiumTimes.getIllegalOutsideWorkTime().v();
-		/** 法定外時間外時間 */
-		this.premiumLegalHolidayWorkTime = premiumTimes == null ? 0 : premiumTimes.getLegalHolidayWorkTime().v();
-		/** 法定外休出時間 */
-		this.premiumIllegalHolidayWorkTime = premiumTimes == null ? 0 : premiumTimes.getIllegalHolidayWorkTime().v();
-	}
-	
-	/** KRCDT_MON_AGGR_BNSPY_TIME 10 **/
-	private void toEntityBonusPayTime(Map<Integer, AggregateBonusPayTime> bonusPayTime) {
-		for (int i = 1; i <= 10; i++){
-			AggregateBonusPayTime bonus = new AggregateBonusPayTime(i);
-			if (bonusPayTime.containsKey(i)){
-				bonus = bonusPayTime.get(i);
-			}
-			switch (i){
-			case 1:
-				this.toEntityBonusPayTime1(bonus); break;
-			case 2:
-				this.toEntityBonusPayTime2(bonus); break;
-			case 3:
-				this.toEntityBonusPayTime3(bonus); break;
-			case 4:
-				this.toEntityBonusPayTime4(bonus); break;
-			case 5:
-				this.toEntityBonusPayTime5(bonus); break;
-			case 6:
-				this.toEntityBonusPayTime6(bonus); break;
-			case 7:
-				this.toEntityBonusPayTime7(bonus); break;
-			case 8:
-				this.toEntityBonusPayTime8(bonus); break;
-			case 9:
-				this.toEntityBonusPayTime9(bonus); break;
-			case 10:
-				this.toEntityBonusPayTime10(bonus); break;
-			}
-		}
-	}
-	
-	/** 外出 */
-	/** KRCDT_MON_AGGR_GOOUT 4 **/
-	private void toEntityGout(Map<GoingOutReason, AggregateGoOut> goOuts) {
-		
-		GoingOutReason reason1 = GoingOutReason.PRIVATE;
-		AggregateGoOut goOut1 = new AggregateGoOut(reason1);
-		if (goOuts.containsKey(reason1)) goOut1 = goOuts.get(reason1);
-		this.toEntityGoOut1(goOut1);
-		
-		GoingOutReason reason2 = GoingOutReason.PUBLIC;
-		AggregateGoOut goOut2 = new AggregateGoOut(reason2);
-		if (goOuts.containsKey(reason2)) goOut2 = goOuts.get(reason2);
-		this.toEntityGoOut2(goOut2);
-		
-		GoingOutReason reason3 = GoingOutReason.COMPENSATION;
-		AggregateGoOut goOut3 = new AggregateGoOut(reason3);
-		if (goOuts.containsKey(reason3)) goOut3 = goOuts.get(reason3);
-		this.toEntityGoOut3(goOut3);
-		
-		GoingOutReason reason4 = GoingOutReason.UNION;
-		AggregateGoOut goOut4 = new AggregateGoOut(reason4);
-		if (goOuts.containsKey(reason4)) goOut4 = goOuts.get(reason4);
-		this.toEntityGoOut4(goOut4);
-	}
-	
-	/** 育児外出 */
-	private void toEntityGoOutChildCare(Map<ChildCareAtr, GoOutForChildCare> goOutForChildCares) {
-		
-		ChildCareAtr atr1 = ChildCareAtr.CHILD_CARE;
-		GoOutForChildCare goOutForChildCare1 = new GoOutForChildCare(atr1);
-		if (goOutForChildCares.containsKey(atr1)) goOutForChildCare1 = goOutForChildCares.get(atr1);
-		this.childcareGoOutTimes = goOutForChildCare1.getTimes().v();
-		this.childcareGoOutTime = goOutForChildCare1.getTime().v();
-		
-		ChildCareAtr atr2 = ChildCareAtr.CARE;
-		GoOutForChildCare goOutForChildCare2 = new GoOutForChildCare(atr2);
-		if (goOutForChildCares.containsKey(atr2)) goOutForChildCare2 = goOutForChildCares.get(atr2);
-		this.careGoOutTimes = goOutForChildCare2.getTimes().v();
-		this.careGoOutTime = goOutForChildCare2.getTime().v();
-	}
-	
-	/** KRCDT_MON_AGGR_PREM_TIME 10 **/
-	private void toEntityPremiumTime(Map<Integer, AggregatePremiumTime> premiumTimes) {
-		for (int i = 1; i <= 10; i++){
-			AggregatePremiumTime premiumTime = new AggregatePremiumTime(i);
-			if (premiumTimes.containsKey(i)){
-				premiumTime = premiumTimes.get(i);
-			}
-			switch (i){
-			case 1:
-				this.toEntityPremiumTime1(premiumTime);
-				break;
-			case 2:
-				this.toEntityPremiumTime2(premiumTime);
-				break;
-			case 3:
-				this.toEntityPremiumTime3(premiumTime);
-				break;
-			case 4:
-				this.toEntityPremiumTime4(premiumTime);
-				break;
-			case 5:
-				this.toEntityPremiumTime5(premiumTime);
-				break;
-			case 6:
-				this.toEntityPremiumTime6(premiumTime);
-				break;
-			case 7:
-				this.toEntityPremiumTime7(premiumTime);
-				break;
-			case 8:
-				this.toEntityPremiumTime8(premiumTime);
-				break;
-			case 9:
-				this.toEntityPremiumTime9(premiumTime);
-				break;
-			case 10:
-				this.toEntityPremiumTime10(premiumTime);
-				break;
-			default:
-				break;
-			}
-		}
-	}
-	
-	/** 勤務時刻 */
-	private void toEntityWorkClock(WorkClockOfMonthly workClock) {
-		/** 終業時刻 */
-		val endClock = workClock.getEndClock();
-		this.endWorkTimes = endClock.getTimes().v();
-		this.endWorkTotalClock = endClock.getTotalClock().v();
-		this.endWorkAveClock = endClock.getAverageClock().v();
-		
-		/** PCログオン情報 */
-		val logonInfo = workClock.getLogonInfo();
-		
-		/** PCログオン時刻 */
-		val logonClock = logonInfo.getLogonClock();
-		
-		/** 合計日数 */
-		this.logOnTotalDays = logonClock.getLogonClock().getTotalDays().v();
-		/** 合計時刻 */
-		this.logOnTotalClock = logonClock.getLogonClock().getTotalClock().v();
-		/** 平均時刻 */
-		this.logOnAveClock = logonClock.getLogonClock().getAverageClock().v();
-		
-		/** PCログオフ時刻 */
-		val logoffClock = logonClock.getLogoffClock();
-		this.logOffTotalDays = logoffClock.getTotalDays().v();
-		this.logOffTotalClock = logoffClock.getTotalClock().v();
-		this.logOffAveClock = logoffClock.getAverageClock().v();
-		
-		/** PCログオン乖離 */
-		val logonDivergence = logonInfo.getLogonDivergence().getLogonDivergence();
-		
-		/** 日数 */
-		this.logOnDivDays = logonDivergence.getDays().v();
-		/** 合計時間 */
-		this.logOnDivTotalTime = logonDivergence.getTotalTime().v();
-		/** 平均時間 */
-		this.logOnDivAveTime = logonDivergence.getAverageTime().v();
-		
-		/** PCログオフ乖離 */		
-	    val logoffDivergence = logonInfo.getLogonDivergence().getLogoffDivergence();
-	    /** 日数 */
-	    this.logOffDivDays = logoffDivergence.getDays().v();
-	    /** 合計時間 */
-	    this.logOffDivTotalTime = logoffDivergence.getTotalTime().v();
-	    /** 平均時間 */
-	    this.logOffDivAveTime = logoffDivergence.getAverageTime().v();
-	}
-
-	/*  期間別の縦計 - KRCDT_MON_VERTICAL_TOTAL */
-	private void toEntityVerticalTotal(VerticalTotalOfMonthly domain) {
-		/** 勤務日数 */
-		val vtWorkDays = domain.getWorkDays();
-		/** 勤務時間 */
-		val vtWorkTime = domain.getWorkTime();
-		
-		toEntityWorkDays(vtWorkDays);
-		
-		toEntityWorkTime(vtWorkTime);
-		
-		/** 勤務時刻 */
-		toEntityWorkClock(domain.getWorkClock());
 	}
 	
 	private void toEntityTotalCount(Map<Integer, TotalCount> totalCountList) {
@@ -4870,22 +2199,22 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	/* KRCDT_MON_AGREEMENT_TIME */
-	private void toEntityAgreementTimeOfMonthly(AgreementTimeOfMonthly domain) {
-		this.agreementTime = domain == null ? 0 : domain.getAgreementTime().v();
-		this.limitErrorTime = domain == null ? 0 : domain.getLimitErrorTime().v();
-		this.limitAlarmTime = domain == null ? 0 : domain.getLimitAlarmTime().v();
-		this.exceptionLimitErrorTime = (domain != null && domain.getExceptionLimitErrorTime().isPresent()
-				? domain.getExceptionLimitErrorTime().get().v()
-				: null);
-		this.exceptionLimitAlarmTime = (domain != null && domain.getExceptionLimitAlarmTime().isPresent()
-				? domain.getExceptionLimitAlarmTime().get().v()
-				: null);
-		this.status = domain == null ? 0 : domain.getStatus().value;
-	}
+//	private void toEntityAgreementTimeOfMonthly(AgreementTimeOfMonthly domain) {
+//		this.agreementTime = domain == null ? 0 : domain.getAgreementTime().v();
+//		this.limitErrorTime = domain == null ? 0 : domain.getLimitErrorTime().v();
+//		this.limitAlarmTime = domain == null ? 0 : domain.getLimitAlarmTime().v();
+//		this.exceptionLimitErrorTime = (domain != null && domain.getExceptionLimitErrorTime().isPresent()
+//				? domain.getExceptionLimitErrorTime().get().v()
+//				: null);
+//		this.exceptionLimitAlarmTime = (domain != null && domain.getExceptionLimitAlarmTime().isPresent()
+//				? domain.getExceptionLimitAlarmTime().get().v()
+//				: null);
+//		this.status = domain == null ? 0 : domain.getStatus().value;
+//	}
 	
-	private void toEntityAgreMaxTimeOfMonthly(AgreMaxTimeOfMonthly domain) {
-		this.agreementRegTime = domain == null ? 0 : domain.getAgreementTime().v();
-	}
+//	private void toEntityAgreMaxTimeOfMonthly(AgreMaxTimeOfMonthly domain) {
+//		this.agreementRegTime = domain == null ? 0 : domain.getAgreementTime().v();
+//	}
 
 	/* KRCDT_MON_AFFILIATION */
 	public void toEntityAffiliationInfoOfMonthly(AffiliationInfoOfMonthly domain) {
@@ -4894,12 +2223,12 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		this.firstWorkplaceId = domain.getFirstInfo().getWorkplaceId().v();
 		this.firstJobTitleId = domain.getFirstInfo().getJobTitleId().v();
 		this.firstClassCd = domain.getFirstInfo().getClassCd().v();
-		this.firstBusinessTypeCd = domain.getFirstInfo().getBusinessTypeCd().v();
+		this.firstBusinessTypeCd = domain.getFirstInfo().getBusinessTypeCd().map(c -> c.v()).orElse(null);
 		this.lastEmploymentCd = domain.getLastInfo().getEmploymentCd().v();
 		this.lastWorkplaceId = domain.getLastInfo().getWorkplaceId().v();
 		this.lastJobTitleId = domain.getLastInfo().getJobTitleId().v();
 		this.lastClassCd = domain.getLastInfo().getClassCd().v();
-		this.lastBusinessTypeCd = domain.getLastInfo().getBusinessTypeCd().v();
+		this.lastBusinessTypeCd = domain.getLastInfo().getBusinessTypeCd().map(c -> c.v()).orElse(null);
 		
 		this.version = domain.getVersion();
 	}
@@ -4916,219 +2245,6 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		this.lastJobTitleId = "";
 		this.lastClassCd = "";
 		this.lastBusinessTypeCd = "";
-	}
-
-	/**
-	 * ドメインに変換
-	 * @return 集計加給時間
-	 */
-	private AggregateBonusPayTime toDomainBonusPayTime1() {
-		return AggregateBonusPayTime.of(new AttendanceTimeMonth(this.bonusPayTime1),
-				new AttendanceTimeMonth(this.specificBonusPayTime1),
-				new AttendanceTimeMonth(this.holidayWorkBonusPayTime1),
-				new AttendanceTimeMonth(this.holidayWorkSpecificBonusPayTime1));
-	}
-
-	private AggregateBonusPayTime toDomainBonusPayTime2() {
-		return AggregateBonusPayTime.of(new AttendanceTimeMonth(this.bonusPayTime2),
-				new AttendanceTimeMonth(this.specificBonusPayTime2),
-				new AttendanceTimeMonth(this.holidayWorkBonusPayTime2),
-				new AttendanceTimeMonth(this.holidayWorkSpecificBonusPayTime2));
-	}
-
-	private AggregateBonusPayTime toDomainBonusPayTime3() {
-		return AggregateBonusPayTime.of(new AttendanceTimeMonth(this.bonusPayTime3),
-				new AttendanceTimeMonth(this.specificBonusPayTime3),
-				new AttendanceTimeMonth(this.holidayWorkBonusPayTime3),
-				new AttendanceTimeMonth(this.holidayWorkSpecificBonusPayTime3));
-	}
-
-	private AggregateBonusPayTime toDomainBonusPayTime4() {
-		return AggregateBonusPayTime.of(new AttendanceTimeMonth(this.bonusPayTime4),
-				new AttendanceTimeMonth(this.specificBonusPayTime4),
-				new AttendanceTimeMonth(this.holidayWorkBonusPayTime4),
-				new AttendanceTimeMonth(this.holidayWorkSpecificBonusPayTime4));
-	}
-
-	private AggregateBonusPayTime toDomainBonusPayTime5() {
-		return AggregateBonusPayTime.of(new AttendanceTimeMonth(this.bonusPayTime5),
-				new AttendanceTimeMonth(this.specificBonusPayTime5),
-				new AttendanceTimeMonth(this.holidayWorkBonusPayTime5),
-				new AttendanceTimeMonth(this.holidayWorkSpecificBonusPayTime5));
-	}
-
-	private AggregateBonusPayTime toDomainBonusPayTime6() {
-		return AggregateBonusPayTime.of(new AttendanceTimeMonth(this.bonusPayTime6),
-				new AttendanceTimeMonth(this.specificBonusPayTime6),
-				new AttendanceTimeMonth(this.holidayWorkBonusPayTime6),
-				new AttendanceTimeMonth(this.holidayWorkSpecificBonusPayTime6));
-	}
-
-	private AggregateBonusPayTime toDomainBonusPayTime7() {
-		return AggregateBonusPayTime.of(new AttendanceTimeMonth(this.bonusPayTime7),
-				new AttendanceTimeMonth(this.specificBonusPayTime7),
-				new AttendanceTimeMonth(this.holidayWorkBonusPayTime7),
-				new AttendanceTimeMonth(this.holidayWorkSpecificBonusPayTime7));
-	}
-
-	private AggregateBonusPayTime toDomainBonusPayTime8() {
-		return AggregateBonusPayTime.of(new AttendanceTimeMonth(this.bonusPayTime8),
-				new AttendanceTimeMonth(this.specificBonusPayTime8),
-				new AttendanceTimeMonth(this.holidayWorkBonusPayTime8),
-				new AttendanceTimeMonth(this.holidayWorkSpecificBonusPayTime8));
-	}
-
-	private AggregateBonusPayTime toDomainBonusPayTime9() {
-		return AggregateBonusPayTime.of(new AttendanceTimeMonth(this.bonusPayTime9),
-				new AttendanceTimeMonth(this.specificBonusPayTime9),
-				new AttendanceTimeMonth(this.holidayWorkBonusPayTime9),
-				new AttendanceTimeMonth(this.holidayWorkSpecificBonusPayTime9));
-	}
-
-	private AggregateBonusPayTime toDomainBonusPayTime10() {
-		return AggregateBonusPayTime.of(new AttendanceTimeMonth(this.bonusPayTime10),
-				new AttendanceTimeMonth(this.specificBonusPayTime10),
-				new AttendanceTimeMonth(this.holidayWorkBonusPayTime10),
-				new AttendanceTimeMonth(this.holidayWorkSpecificBonusPayTime10));
-	}
-
-	/**
-	 * ドメインに変換
-	 * @return 集計乖離時間
-	 */
-	private AggregateDivergenceTime toDomainDivergenceTime1() {
-		return AggregateDivergenceTime.of(1,
-				new AttendanceTimeMonth(this.divergenceTime1),
-				new AttendanceTimeMonth(this.deductionTime1),
-				new AttendanceTimeMonth(this.divergenceTimeAfterDeduction1),
-				EnumAdaptor.valueOf(this.divergenceAtr1, DivergenceAtrOfMonthly.class));
-	}
-
-	private AggregateDivergenceTime toDomainDivergenceTime2() {
-		return AggregateDivergenceTime.of(2,
-				new AttendanceTimeMonth(this.divergenceTime2),
-				new AttendanceTimeMonth(this.deductionTime2),
-				new AttendanceTimeMonth(this.divergenceTimeAfterDeduction2),
-				EnumAdaptor.valueOf(this.divergenceAtr2, DivergenceAtrOfMonthly.class));
-	}
-
-	private AggregateDivergenceTime toDomainDivergenceTime3() {
-		return AggregateDivergenceTime.of(3,
-				new AttendanceTimeMonth(this.divergenceTime3),
-				new AttendanceTimeMonth(this.deductionTime3),
-				new AttendanceTimeMonth(this.divergenceTimeAfterDeduction3),
-				EnumAdaptor.valueOf(this.divergenceAtr3, DivergenceAtrOfMonthly.class));
-	}
-
-	private AggregateDivergenceTime toDomainDivergenceTime4() {
-		return AggregateDivergenceTime.of(4,
-				new AttendanceTimeMonth(this.divergenceTime4),
-				new AttendanceTimeMonth(this.deductionTime4),
-				new AttendanceTimeMonth(this.divergenceTimeAfterDeduction4),
-				EnumAdaptor.valueOf(this.divergenceAtr4, DivergenceAtrOfMonthly.class));
-	}
-
-	private AggregateDivergenceTime toDomainDivergenceTime5() {
-		return AggregateDivergenceTime.of(5,
-				new AttendanceTimeMonth(this.divergenceTime5),
-				new AttendanceTimeMonth(this.deductionTime5),
-				new AttendanceTimeMonth(this.divergenceTimeAfterDeduction5),
-				EnumAdaptor.valueOf(this.divergenceAtr5, DivergenceAtrOfMonthly.class));
-	}
-
-	private AggregateDivergenceTime toDomainDivergenceTime6() {
-		return AggregateDivergenceTime.of(6,
-				new AttendanceTimeMonth(this.divergenceTime6),
-				new AttendanceTimeMonth(this.deductionTime6),
-				new AttendanceTimeMonth(this.divergenceTimeAfterDeduction6),
-				EnumAdaptor.valueOf(this.divergenceAtr6, DivergenceAtrOfMonthly.class));
-	}
-
-	private AggregateDivergenceTime toDomainDivergenceTime7() {
-		return AggregateDivergenceTime.of(7,
-				new AttendanceTimeMonth(this.divergenceTime7),
-				new AttendanceTimeMonth(this.deductionTime7),
-				new AttendanceTimeMonth(this.divergenceTimeAfterDeduction7),
-				EnumAdaptor.valueOf(this.divergenceAtr7, DivergenceAtrOfMonthly.class));
-	}
-
-	private AggregateDivergenceTime toDomainDivergenceTime8() {
-		return AggregateDivergenceTime.of(8,
-				new AttendanceTimeMonth(this.divergenceTime8),
-				new AttendanceTimeMonth(this.deductionTime8),
-				new AttendanceTimeMonth(this.divergenceTimeAfterDeduction8),
-				EnumAdaptor.valueOf(this.divergenceAtr8, DivergenceAtrOfMonthly.class));
-	}
-
-	private AggregateDivergenceTime toDomainDivergenceTime9() {
-		return AggregateDivergenceTime.of(9,
-				new AttendanceTimeMonth(this.divergenceTime9),
-				new AttendanceTimeMonth(this.deductionTime9),
-				new AttendanceTimeMonth(this.divergenceTimeAfterDeduction9),
-				EnumAdaptor.valueOf(this.divergenceAtr9, DivergenceAtrOfMonthly.class));
-	}
-
-	private AggregateDivergenceTime toDomainDivergenceTime10() {
-		return AggregateDivergenceTime.of(10,
-				new AttendanceTimeMonth(this.divergenceTime10),
-				new AttendanceTimeMonth(this.deductionTime10),
-				new AttendanceTimeMonth(this.divergenceTimeAfterDeduction10),
-				EnumAdaptor.valueOf(this.divergenceAtr10, DivergenceAtrOfMonthly.class));
-	}
-
-	private AggregateGoOut toDomainGoOut1() {
-		return AggregateGoOut.of(
-				new AttendanceTimesMonth(this.goOutTimesPrivate),
-				new TimeMonthWithCalculation(
-						new AttendanceTimeMonth(this.legalTimePrivate),
-						new AttendanceTimeMonth(this.calcLegalTimePrivate)),
-				new TimeMonthWithCalculation(
-						new AttendanceTimeMonth(this.illegalTimePrivate),
-						new AttendanceTimeMonth(this.calcIllegalTimePrivate)),
-				new TimeMonthWithCalculation(
-						new AttendanceTimeMonth(this.totalTimePrivate),
-						new AttendanceTimeMonth(this.calcTotalTimePrivate)));
-	}
-
-	private AggregateGoOut toDomainGoOut2() {
-		return AggregateGoOut.of(new AttendanceTimesMonth(this.goOutTimesPublic),
-				new TimeMonthWithCalculation(
-						new AttendanceTimeMonth(this.legalTimePublic),
-						new AttendanceTimeMonth(this.calcLegalTimePublic)),
-				new TimeMonthWithCalculation(
-						new AttendanceTimeMonth(this.illegalTimePublic),
-						new AttendanceTimeMonth(this.calcIllegalTimePublic)),
-				new TimeMonthWithCalculation(
-						new AttendanceTimeMonth(this.totalTimePublic),
-						new AttendanceTimeMonth(this.calcTotalTimePublic)));
-	}
-
-	private AggregateGoOut toDomainGoOut3() {
-		return AggregateGoOut.of(
-				new AttendanceTimesMonth(this.goOutTimesCompensation),
-				new TimeMonthWithCalculation(
-						new AttendanceTimeMonth(this.legalTimeCompensation),
-						new AttendanceTimeMonth(this.calcLegalTimeCompensation)),
-				new TimeMonthWithCalculation(
-						new AttendanceTimeMonth(this.illegalTimeCompensation),
-						new AttendanceTimeMonth(this.calcIllegalTimeCompensation)),
-				new TimeMonthWithCalculation(
-						new AttendanceTimeMonth(this.totalTimeCompensation),
-						new AttendanceTimeMonth(this.calcTotalTimeCompensation)));
-	}
-
-	private AggregateGoOut toDomainGoOut4() {
-		return AggregateGoOut.of(
-				new AttendanceTimesMonth(this.goOutTimesUnion),
-				new TimeMonthWithCalculation(
-						new AttendanceTimeMonth(this.legalTimeUnion),
-						new AttendanceTimeMonth(this.calcLegalTimeUnion)),
-				new TimeMonthWithCalculation(
-						new AttendanceTimeMonth(this.illegalTimeUnion),
-						new AttendanceTimeMonth(this.calcIllegalTimeUnion)),
-				new TimeMonthWithCalculation(
-						new AttendanceTimeMonth(this.totalTimeUnion),
-						new AttendanceTimeMonth(this.calcTotalTimeUnion)));
 	}
 
 	/**
@@ -5408,141 +2524,6 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				new AttendanceTimeMonth(this.legalOverTime10),
 				new AttendanceTimeMonth(this.legalTransferOverTime10));
 	}
-
-	/** KRCDT_MON_AGGR_PREM_TIME 10 **/
-	/**
-	 * ドメインに変換
-	 * @return 集計割増時間
-	 */
-	private AggregatePremiumTime toDomainPremiumTime1() {
-		return AggregatePremiumTime.of(1, new AttendanceTimeMonth(this.premiumTime1));
-	}
-
-	private AggregatePremiumTime toDomainPremiumTime2() {
-		return AggregatePremiumTime.of(2, new AttendanceTimeMonth(this.premiumTime2));
-	}
-
-	private AggregatePremiumTime toDomainPremiumTime3() {
-		return AggregatePremiumTime.of(3, new AttendanceTimeMonth(this.premiumTime3));
-	}
-
-	private AggregatePremiumTime toDomainPremiumTime4() {
-		return AggregatePremiumTime.of(4, new AttendanceTimeMonth(this.premiumTime4));
-	}
-
-	private AggregatePremiumTime toDomainPremiumTime5() {
-		return AggregatePremiumTime.of(5, new AttendanceTimeMonth(this.premiumTime5));
-	}
-
-	private AggregatePremiumTime toDomainPremiumTime6() {
-		return AggregatePremiumTime.of(6, new AttendanceTimeMonth(this.premiumTime6));
-	}
-
-	private AggregatePremiumTime toDomainPremiumTime7() {
-		return AggregatePremiumTime.of(7, new AttendanceTimeMonth(this.premiumTime7));
-	}
-
-	private AggregatePremiumTime toDomainPremiumTime8() {
-		return AggregatePremiumTime.of(8, new AttendanceTimeMonth(this.premiumTime8));
-	}
-
-	private AggregatePremiumTime toDomainPremiumTime9() {
-		return AggregatePremiumTime.of(9, new AttendanceTimeMonth(this.premiumTime9));
-	}
-
-	private AggregatePremiumTime toDomainPremiumTime10() {
-		return AggregatePremiumTime.of(10, new AttendanceTimeMonth(this.premiumTime10));
-	}
-
-	/** KRCDT_MON_AGGR_SPEC_DAYS 10 **/
-	private List<AggregateSpecificDays> getSpecificDaysLst(){
-		List<AggregateSpecificDays> lst= new ArrayList<>();
-		lst.add(this.toDomainSpecificDays1());
-		lst.add(this.toDomainSpecificDays2());
-		lst.add(this.toDomainSpecificDays3());
-		lst.add(this.toDomainSpecificDays4());
-		lst.add(this.toDomainSpecificDays5());
-		lst.add(this.toDomainSpecificDays6());
-		lst.add(this.toDomainSpecificDays7());
-		lst.add(this.toDomainSpecificDays8());
-		lst.add(this.toDomainSpecificDays9());
-		lst.add(this.toDomainSpecificDays10());
-		return lst;
-	}
-	
-	/**
-	 * ドメインに変換
-	 * @return 集計特定日数
-	 */
-	private AggregateSpecificDays toDomainSpecificDays1(){
-		return AggregateSpecificDays.of(
-				new SpecificDateItemNo(1),
-				new AttendanceDaysMonth(this.specificDays1),
-				new AttendanceDaysMonth(this.holidayWorkSpecificDays1));
-	}
-	
-	private AggregateSpecificDays toDomainSpecificDays2() {
-		return AggregateSpecificDays.of(
-				new SpecificDateItemNo(2),
-				new AttendanceDaysMonth(this.specificDays2),
-				new AttendanceDaysMonth(this.holidayWorkSpecificDays2));
-	}
-
-	private AggregateSpecificDays toDomainSpecificDays3() {
-		return AggregateSpecificDays.of(
-				new SpecificDateItemNo(3), 
-				new AttendanceDaysMonth(this.specificDays3),
-				new AttendanceDaysMonth(this.holidayWorkSpecificDays3));
-	}
-
-	private AggregateSpecificDays toDomainSpecificDays4() {
-		return AggregateSpecificDays.of(
-				new SpecificDateItemNo(4), 
-				new AttendanceDaysMonth(this.specificDays4),
-				new AttendanceDaysMonth(this.holidayWorkSpecificDays4));
-	}
-
-	private AggregateSpecificDays toDomainSpecificDays5() {
-		return AggregateSpecificDays.of(
-				new SpecificDateItemNo(5), 
-				new AttendanceDaysMonth(this.specificDays5),
-				new AttendanceDaysMonth(this.holidayWorkSpecificDays5));
-	}
-
-	private AggregateSpecificDays toDomainSpecificDays6() {
-		return AggregateSpecificDays.of(
-				new SpecificDateItemNo(6), 
-				new AttendanceDaysMonth(this.specificDays6),
-				new AttendanceDaysMonth(this.holidayWorkSpecificDays6));
-	}
-
-	private AggregateSpecificDays toDomainSpecificDays7() {
-		return AggregateSpecificDays.of(
-				new SpecificDateItemNo(7), 
-				new AttendanceDaysMonth(this.specificDays7),
-				new AttendanceDaysMonth(this.holidayWorkSpecificDays7));
-	}
-
-	private AggregateSpecificDays toDomainSpecificDays8() {
-		return AggregateSpecificDays.of(
-				new SpecificDateItemNo(8), 
-				new AttendanceDaysMonth(this.specificDays8),
-				new AttendanceDaysMonth(this.holidayWorkSpecificDays8));
-	}
-
-	private AggregateSpecificDays toDomainSpecificDays9() {
-		return AggregateSpecificDays.of(
-				new SpecificDateItemNo(9), 
-				new AttendanceDaysMonth(this.specificDays9),
-				new AttendanceDaysMonth(this.holidayWorkSpecificDays9));
-	}
-
-	private AggregateSpecificDays toDomainSpecificDays10() {
-		return AggregateSpecificDays.of(
-				new SpecificDateItemNo(10), 
-				new AttendanceDaysMonth(this.specificDays10),
-				new AttendanceDaysMonth(this.holidayWorkSpecificDays10));
-	}
 	
 	/** KRCDT_MON_AGGR_TOTAL_SPT **/
 	
@@ -5616,10 +2597,10 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		AggregateTotalTimeSpentAtWork aggregateTotalTimeSpent = toDomainTotalTimeSpentAtWork();
 		
 		// 月別実績の36協定時間
-		AgreementTimeOfMonthly agreementTime =  toDomainAgreementTimeOfMonthly();
+//		AgreementTimeOfMonthly agreementTime =  toDomainAgreementTimeOfMonthly();
 		
-		// 月別実績の36協定上限時間
-		AgreMaxTimeOfMonthly agreMaxTime = toDomainAgreMaxTimeOfMonthly();
+//		// 月別実績の36協定上限時間
+//		AgreMaxTimeOfMonthly agreMaxTime = toDomainAgreMaxTimeOfMonthly();
 		
 		// 月別実績の月の計算
 		return  MonthlyCalculation.of(
@@ -5628,9 +2609,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				new AttendanceTimeMonth(this.statutoryWorkingTime),
 				aggregateTotalWorkingTime,
 				new AttendanceTimeMonth(this.totalWorkingTime), 
-				aggregateTotalTimeSpent, 
-				agreementTime,
-				agreMaxTime);
+				aggregateTotalTimeSpent);
 	}
 	
 	private List<TotalCount> getTotalCounts(){
@@ -5668,47 +2647,12 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		return lst;
 	}
 	
-	private List<AggregateSpcVacationDays> getSpcVacationDays(){
-		List<AggregateSpcVacationDays> lst = new ArrayList<>();
-		lst.add(toDomainSpcVacationDays(1, this.spcVactDays1, this.spcVactTime1));
-		lst.add(toDomainSpcVacationDays(2, this.spcVactDays2, this.spcVactTime2));
-		lst.add(toDomainSpcVacationDays(3, this.spcVactDays3, this.spcVactTime3));
-		lst.add(toDomainSpcVacationDays(4, this.spcVactDays4, this.spcVactTime4));
-		lst.add(toDomainSpcVacationDays(5, this.spcVactDays5, this.spcVactTime5));
-		lst.add(toDomainSpcVacationDays(6, this.spcVactDays6, this.spcVactTime6));
-		lst.add(toDomainSpcVacationDays(7, this.spcVactDays7, this.spcVactTime7));
-		lst.add(toDomainSpcVacationDays(8, this.spcVactDays8, this.spcVactTime8));
-		lst.add(toDomainSpcVacationDays(9, this.spcVactDays9, this.spcVactTime9));
-		lst.add(toDomainSpcVacationDays(10, this.spcVactDays10, this.spcVactTime10));
-		lst.add(toDomainSpcVacationDays(11, this.spcVactDays11, this.spcVactTime11));
-		lst.add(toDomainSpcVacationDays(12, this.spcVactDays12, this.spcVactTime12));
-		lst.add(toDomainSpcVacationDays(13, this.spcVactDays13, this.spcVactTime13));
-		lst.add(toDomainSpcVacationDays(14, this.spcVactDays14, this.spcVactTime14));
-		lst.add(toDomainSpcVacationDays(15, this.spcVactDays15, this.spcVactTime15));
-		lst.add(toDomainSpcVacationDays(16, this.spcVactDays16, this.spcVactTime16));
-		lst.add(toDomainSpcVacationDays(17, this.spcVactDays17, this.spcVactTime17));
-		lst.add(toDomainSpcVacationDays(18, this.spcVactDays18, this.spcVactTime18));
-		lst.add(toDomainSpcVacationDays(19, this.spcVactDays19, this.spcVactTime19));
-		lst.add(toDomainSpcVacationDays(20, this.spcVactDays20, this.spcVactTime20));
-		lst.add(toDomainSpcVacationDays(21, this.spcVactDays21, this.spcVactTime21));
-		lst.add(toDomainSpcVacationDays(22, this.spcVactDays22, this.spcVactTime22));
-		lst.add(toDomainSpcVacationDays(23, this.spcVactDays23, this.spcVactTime23));
-		lst.add(toDomainSpcVacationDays(24, this.spcVactDays24, this.spcVactTime24));
-		lst.add(toDomainSpcVacationDays(25, this.spcVactDays25, this.spcVactTime25));
-		lst.add(toDomainSpcVacationDays(26, this.spcVactDays26, this.spcVactTime26));
-		lst.add(toDomainSpcVacationDays(27, this.spcVactDays27, this.spcVactTime27));
-		lst.add(toDomainSpcVacationDays(28, this.spcVactDays28, this.spcVactTime28));
-		lst.add(toDomainSpcVacationDays(29, this.spcVactDays29, this.spcVactTime29));
-		lst.add(toDomainSpcVacationDays(30, this.spcVactDays30, this.spcVactTime30));
-		return lst;
-	}
-	
 	/** KRCDT_MON_ATTENDANCE_TIME **/
 	/**
 	 * ドメインに変換
 	 * @return 月別実績の勤怠時間
 	 */
-	public AttendanceTimeOfMonthly toDomainAttendanceTimeOfMonthly(KrcdtMonTimeSup ouen) {
+	public AttendanceTimeOfMonthly toDomainAttendanceTimeOfMonthly(KrcdtMonTimeSup ouen, KrcdtMonVerticalTotal vertical) {
 		
 		// 月別実績の月の計算
 		MonthlyCalculation monthlyCalculation = toDomainMonthlyCalculation();
@@ -5717,21 +2661,19 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		ExcessOutsideWorkOfMonthly excessOutsideWork = toDomainExcessOutsideWorkOfMonthly();
 		
 		// TODO:LamVT-HERE ----------------------------()()()()()()()()()()-----------
-		// 月別実績の縦計
-		VerticalTotalOfMonthly verticalTotal = toDomainVerticalTotalOfMonthly();
 		
 		// 期間別の回数集計
 		TotalCountByPeriod totalCount = toDomainTotalCountByPeriod(this.getTotalCounts());
 		
 		AttendanceTimeOfMonthly domain = AttendanceTimeOfMonthly.of(
-				this.krcdtMonMergePk.getEmployeeId(),
-				new YearMonth(this.krcdtMonMergePk.getYearMonth()),
-				ClosureId.valueOf(this.krcdtMonMergePk.getClosureId()),
-				new ClosureDate(this.krcdtMonMergePk.getClosureDay(), (this.krcdtMonMergePk.getIsLastDay() != 0)),
+				this.id.getEmployeeId(),
+				new YearMonth(this.id.getYearMonth()),
+				ClosureId.valueOf(this.id.getClosureId()),
+				new ClosureDate(this.id.getClosureDay(), (this.id.getIsLastDay() != 0)),
 				new DatePeriod(this.startYmd, this.endYmd),
 				monthlyCalculation,
 				excessOutsideWork,
-				verticalTotal,
+				vertical == null ? new VerticalTotalOfMonthly() : vertical.domain(),
 				totalCount,
 				new AttendanceDaysMonth(this.aggregateDays),
 				ouen == null ? OuenTimeOfMonthly.empty() : ouen.convertToOuen());
@@ -5827,72 +2769,6 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 
 		return aggrHolidayWorkTimeLst;
 	}	
-	/** KRCDT_MON_LEAVE - リポジトリ：月別実績の休業 only update **/
-	/**
-	 * ドメインに変換
-	 * @return 月別実績の休業
-	 */
-	private LeaveOfMonthly toDomainLeaveOfMonthly(){
-		
-		List<AggregateLeaveDays> fixLeaveDaysList = new ArrayList<>();
-		List<AnyLeave> anyLeaveDaysList = new ArrayList<>();
-		
-		if (this.prenatalLeaveDays != 0.0){
-			fixLeaveDaysList.add(AggregateLeaveDays.of(
-					CloseAtr.PRENATAL, new AttendanceDaysMonth(this.prenatalLeaveDays)));
-		}
-		if (this.postpartumLeaveDays != 0.0){
-			fixLeaveDaysList.add(AggregateLeaveDays.of(
-					CloseAtr.POSTPARTUM, new AttendanceDaysMonth(this.postpartumLeaveDays)));
-		}
-		if (this.childcareLeaveDays != 0.0){
-			fixLeaveDaysList.add(AggregateLeaveDays.of(
-					CloseAtr.CHILD_CARE, new AttendanceDaysMonth(this.childcareLeaveDays)));
-		}
-		if (this.careLeaveDays != 0.0){
-			fixLeaveDaysList.add(AggregateLeaveDays.of(
-					CloseAtr.CARE, new AttendanceDaysMonth(this.careLeaveDays)));
-		}
-		if (this.injuryOrIllnessLeaveDays != 0.0){
-			fixLeaveDaysList.add(AggregateLeaveDays.of(
-					CloseAtr.INJURY_OR_ILLNESS, new AttendanceDaysMonth(this.injuryOrIllnessLeaveDays)));
-		}
-		if (this.anyLeaveDays01 != 0.0){
-			anyLeaveDaysList.add(AnyLeave.of(1, new AttendanceDaysMonth(this.anyLeaveDays01)));
-		}
-		if (this.anyLeaveDays02 != 0.0){
-			anyLeaveDaysList.add(AnyLeave.of(2, new AttendanceDaysMonth(this.anyLeaveDays02)));
-		}
-		if (this.anyLeaveDays03 != 0.0){
-			anyLeaveDaysList.add(AnyLeave.of(3, new AttendanceDaysMonth(this.anyLeaveDays03)));
-		}
-		if (this.anyLeaveDays04 != 0.0){
-			anyLeaveDaysList.add(AnyLeave.of(4, new AttendanceDaysMonth(this.anyLeaveDays04)));
-		}
-		
-		val domain = LeaveOfMonthly.of(fixLeaveDaysList, anyLeaveDaysList);
-		return domain;
-	}
-	
-	/** KRCDT_MON_MEDICAL_TIME **/
-	/**
-	 * ドメインに変換
-	 * @return 月別実績の医療時間
-	 */
-	private List<MedicalTimeOfMonthly> toDomainMedicalTimeOfMonthly(){
-		List<MedicalTimeOfMonthly> medicalTimeLst = new ArrayList<>();
-		medicalTimeLst.add(MedicalTimeOfMonthly.of(
-				WorkTimeNightShift.DAY_SHIFT,
-				new AttendanceTimeMonth(this.dayWorkMedicalTime),
-				new AttendanceTimeMonth(this.dayDeductionTime),
-				new AttendanceTimeMonth(this.dayTakeOverTime)));
-		medicalTimeLst.add(MedicalTimeOfMonthly.of(
-				WorkTimeNightShift.NIGHT_SHIFT,
-				new AttendanceTimeMonth(this.nightMedicalTime),
-				new AttendanceTimeMonth(this.nightDeductionTime),
-				new AttendanceTimeMonth(this.nightTakeOverTime)));
-		return medicalTimeLst;
-	}
 	
 	/** KRCDT_MON_OVER_TIME **/
 	/**
@@ -5966,154 +2842,6 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 						new AttendanceTimeMonth(this.specialHolidayUseTime)),
 				CompensatoryLeaveUseTimeOfMonthly.of(
 						new AttendanceTimeMonth(this.compensatoryLeaveUseTime)));
-	}
-	
-	/** KRCDT_MON_VERTICAL_TOTAL **/
-	
-	/**
-	 * ドメインに変換
-	 * @param krcdtMonLeave 月別実績の休業
-	 * @param krcdtMonAggrAbsnDays 集計欠勤日数
-	 * @param krcdtMonAggrSpecDays 集計特定日数
-	 * @param krcdtMonAggrBnspyTime 集計加給時間
-	 * @param krcdtMonAggrGoout 集計外出
-	 * @param krcdtMonAggrPremTime 集計割増時間
-	 * @param krcdtMonAggrDivgTime 集計乖離時間
-	 * @param krcdtMonMedicalTime 月別実績の医療時間
-	 * @param krcdtMonWorkClock 月別実績の勤務時刻
-	 * @return 月別実績の縦計
-	 */
-	private VerticalTotalOfMonthly toDomainVerticalTotalOfMonthly(){
-
-		LeaveOfMonthly  krcdtMonLeave = this.toDomainLeaveOfMonthly();
-		List<AggregateAbsenceDays> krcdtMonAggrAbsnDays  = this.getAbsenceDaysLst();
-		List<AggregateSpecificDays> krcdtMonAggrSpecDays  = this.getSpecificDaysLst();
-		List<AggregateBonusPayTime> krcdtMonAggrBnspyTime = this.getBonusPayTimeLst();
-		List<AggregateGoOut> krcdtMonAggrGoout = this.getGoOutLst();
-		List<AggregatePremiumTime> krcdtMonAggrPremTime = this.getPremiumTimeLst();
-		List<AggregateDivergenceTime> krcdtMonAggrDivgTime = this.getDivergenceTimeLst();
-		List<MedicalTimeOfMonthly> krcdtMonMedicalTime = new ArrayList<>();
-		krcdtMonMedicalTime.addAll(this.toDomainMedicalTimeOfMonthly());
-		
-		// 育児外出
-		List<GoOutForChildCare> goOutForChildCares = new ArrayList<>();
-		if (this.childcareGoOutTimes != 0 || this.childcareGoOutTime != 0){
-			goOutForChildCares.add(GoOutForChildCare.of(
-					ChildCareAtr.CHILD_CARE,
-					new AttendanceTimesMonth(this.childcareGoOutTimes),
-					new AttendanceTimeMonth(this.childcareGoOutTime)));
-		}
-		if (this.careGoOutTimes != 0 || this.careGoOutTime != 0){
-			goOutForChildCares.add(GoOutForChildCare.of(
-					ChildCareAtr.CARE,
-					new AttendanceTimesMonth(this.careGoOutTimes),
-					new AttendanceTimeMonth(this.careGoOutTime)));
-		}
-		
-		// 月別実績の休業
-		LeaveOfMonthly leave = new LeaveOfMonthly();
-		if (krcdtMonLeave != null) leave = krcdtMonLeave;
-		
-		// 月別実績の勤務日数
-		val workDays = WorkDaysOfMonthly.of(
-				AttendanceDaysOfMonthly.of(new AttendanceDaysMonth(this.attendanceDays)),
-				AbsenceDaysOfMonthly.of(
-						new AttendanceDaysMonth(this.totalAbsenceDays),
-						new AttendanceTimeMonth(this.totalAbsenceTime),
-						krcdtMonAggrAbsnDays),
-				PredeterminedDaysOfMonthly.of(
-						new AttendanceDaysMonth(this.predetermineDays)),
-				WorkDaysDetailOfMonthly.of(new AttendanceDaysMonth(this.workDays)),
-				HolidayDaysOfMonthly.of(new AttendanceDaysMonth(this.holidayDays)),
-				SpecificDaysOfMonthly.of(
-						krcdtMonAggrSpecDays),
-				HolidayWorkDaysOfMonthly.of(new AttendanceDaysMonth(this.holidayWorkDays)),
-				PayDaysOfMonthly.of(
-						new AttendanceDaysMonth(this.payAttendanceDays),
-						new AttendanceDaysMonth(this.payAbsenceDays)),
-				WorkTimesOfMonthly.of(new AttendanceTimesMonth(this.workTimes)),
-				TwoTimesWorkTimesOfMonthly.of(new AttendanceTimesMonth(this.twoTimesWorkTimes)),
-				TemporaryWorkTimesOfMonthly.of(new AttendanceTimesMonth(this.temporaryWorkTimes)),
-				leave,
-				RecruitmentDaysOfMonthly.of(new AttendanceDaysMonth(new Double(this.recruitDays))),  // avoid compile error
-				SpcVacationDaysOfMonthly.of(new AttendanceDaysMonth(new Double(this.totalSpcvactDays)), new AttendanceTimeMonth(this.totalSpcvactTime), this.getSpcVacationDays())); // avoid compile error
-		
-		// 月別実績の勤務時間
-		val workTime = WorkTimeOfMonthlyVT.of(
-				BonusPayTimeOfMonthly.of(
-						krcdtMonAggrBnspyTime),
-				GoOutOfMonthly.of(
-						krcdtMonAggrGoout,
-						goOutForChildCares),
-				PremiumTimeOfMonthly.of(
-						krcdtMonAggrPremTime,
-						new AttendanceTimeMonth(this.premiumMidnightTime),
-						new AttendanceTimeMonth(this.premiumLegalOutsideWorkTime),
-						new AttendanceTimeMonth(this.premiumLegalHolidayWorkTime),
-						new AttendanceTimeMonth(this.premiumIllegalOutsideWorkTime),
-						new AttendanceTimeMonth(this.premiumIllegalHolidayWorkTime)),
-				BreakTimeOfMonthly.of(new AttendanceTimeMonth(this.breakTime)),
-				HolidayTimeOfMonthly.of(
-						new AttendanceTimeMonth(this.legalHolidayTime),
-						new AttendanceTimeMonth(this.illegalHolidayTime),
-						new AttendanceTimeMonth(this.illegalSpecialHolidayTime)),
-				MidnightTimeOfMonthly.of(
-						new TimeMonthWithCalculation(
-								new AttendanceTimeMonth(this.overWorkMidnightTime),
-								new AttendanceTimeMonth(this.calcOverWorkMidnightTime)),
-						new TimeMonthWithCalculation(
-								new AttendanceTimeMonth(this.legalMidnightTime),
-								new AttendanceTimeMonth(this.calcLegalMidnightTime)),
-						IllegalMidnightTime.of(
-								new TimeMonthWithCalculation(
-										new AttendanceTimeMonth(this.illegalMidnightTime),
-										new AttendanceTimeMonth(this.calcIllegalMidnightTime)),
-								new AttendanceTimeMonth(this.illegalBeforeMidnightTime)),
-						new TimeMonthWithCalculation(
-								new AttendanceTimeMonth(this.legalHolidayWorkMidnightTime),
-								new AttendanceTimeMonth(this.calcLegalHolidayWorkMidnightTime)),
-						new TimeMonthWithCalculation(
-								new AttendanceTimeMonth(this.illegalHolidayWorkMidnightTime),
-								new AttendanceTimeMonth(this.calcIllegalHolidayWorkMidnightTime)),
-						new TimeMonthWithCalculation(
-								new AttendanceTimeMonth(this.specialHolidayWorkMidnightTime),
-								new AttendanceTimeMonth(this.calcSpecialHolidayWorkMidnightTime))),
-				LateLeaveEarlyOfMonthly.of(
-						LeaveEarly.of(
-								new AttendanceTimesMonth(this.leaveEarlyTimes),
-								new TimeMonthWithCalculation(
-										new AttendanceTimeMonth(this.leaveEarlyTime),
-										new AttendanceTimeMonth(this.calcLeaveEarlyTime))),
-						Late.of(
-								new AttendanceTimesMonth(this.lateTimes),
-								new TimeMonthWithCalculation(
-										new AttendanceTimeMonth(this.lateTime),
-										new AttendanceTimeMonth(this.calcLateTime)))),
-				AttendanceLeaveGateTimeOfMonthly.of(
-						new AttendanceTimeMonth(this.attendanceLeaveGateBeforeAttendanceTime),
-						new AttendanceTimeMonth(this.attendanceLeaveGateAfterLeaveWorkTime),
-						new AttendanceTimeMonth(this.attendanceLeaveGateStayingTime),
-						new AttendanceTimeMonth(this.attendanceLeaveGateUnemployedTime)),
-				BudgetTimeVarienceOfMonthly.of(new AttendanceTimeMonthWithMinus(this.budgetVarienceTime)),
-				DivergenceTimeOfMonthly.of(krcdtMonAggrDivgTime), krcdtMonMedicalTime);
-		
-		
-		/** 終業時刻 */
-		EndClockOfMonthly endClock = EndClockOfMonthly.of(new AttendanceTimesMonth(this.endWorkTimes), new AttendanceTimeMonth(this.endWorkTotalClock), new AttendanceTimeMonth(this.endWorkAveClock));
-		/** PCログオン時刻 */
-		AggrPCLogonClock logonClock = AggrPCLogonClock.of(new AttendanceDaysMonth(this.logOnTotalDays), new AttendanceTimeMonth(this.logOnTotalClock), new AttendanceTimeMonth(this.logOnAveClock));
-		/** PCログオフ時刻 */
-		AggrPCLogonClock logoffClock = AggrPCLogonClock.of(new AttendanceDaysMonth(this.logOffTotalDays), new AttendanceTimeMonth(this.logOffTotalClock), new AttendanceTimeMonth(this.logOffAveClock));
-		/** PCログオン時刻 */
-		PCLogonClockOfMonthly logOnClock = PCLogonClockOfMonthly.of(logonClock, logoffClock);
-		/** PCログオフ乖離 */
-		AggrPCLogonDivergence logonDivergence = AggrPCLogonDivergence.of(new AttendanceDaysMonth(this.logOnDivDays), new AttendanceTimeMonth(this.logOnDivTotalTime), new AttendanceTimeMonth(this.logOnDivAveTime));
-		/** PCログオフ乖離 */
-		AggrPCLogonDivergence logoffDivergence = AggrPCLogonDivergence.of(new AttendanceDaysMonth(this.logOffDivDays), new AttendanceTimeMonth(this.logOffDivTotalTime), new AttendanceTimeMonth(this.logOffDivAveTime));
-		val workClock = WorkClockOfMonthly.of(endClock,
-				PCLogonOfMonthly.of(logOnClock, PCLogonDivergenceOfMonthly.of(logonDivergence, logoffDivergence)));
-		
-		return VerticalTotalOfMonthly.of(workDays, workTime, workClock);
 	}
 	
 	/** KRCDT_MON_EXCESS_OUTSIDE 50 **/
@@ -6203,30 +2931,30 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	 * ドメインに変換
 	 * @return 月別実績の36協定時間
 	 */
-	private AgreementTimeOfMonthly toDomainAgreementTimeOfMonthly(){
-		
-		return AgreementTimeOfMonthly.of(
-				new AttendanceTimeMonth(this.agreementTime),
-				new LimitOneMonth(this.limitErrorTime),
-				new LimitOneMonth(this.limitAlarmTime),
-		(this.exceptionLimitErrorTime == null ?
-						Optional.empty() : Optional.of(new LimitOneMonth(this.exceptionLimitErrorTime))),
-		(this.exceptionLimitAlarmTime == null ?
-						Optional.empty() : Optional.of(new LimitOneMonth(this.exceptionLimitAlarmTime))),
-				EnumAdaptor.valueOf(this.status, AgreementTimeStatusOfMonthly.class));
-	}
+//	private AgreementTimeOfMonthly toDomainAgreementTimeOfMonthly(){
+//		
+//		return AgreementTimeOfMonthly.of(
+//				new AttendanceTimeMonth(this.agreementTime),
+//				new LimitOneMonth(this.limitErrorTime),
+//				new LimitOneMonth(this.limitAlarmTime),
+//		(this.exceptionLimitErrorTime == null ?
+//						Optional.empty() : Optional.of(new LimitOneMonth(this.exceptionLimitErrorTime))),
+//		(this.exceptionLimitAlarmTime == null ?
+//						Optional.empty() : Optional.of(new LimitOneMonth(this.exceptionLimitAlarmTime))),
+//				EnumAdaptor.valueOf(this.status, AgreementTimeStatusOfMonthly.class));
+//	}
 	
 	/**
 	 * ドメインに変換
 	 * @return 月別実績の36協定上限時間
 	 */
-	private AgreMaxTimeOfMonthly toDomainAgreMaxTimeOfMonthly() {
-		
-		return AgreMaxTimeOfMonthly.of(
-				new AttendanceTimeMonth(this.agreementRegTime),
-				new LimitOneMonth(0),
-				AgreMaxTimeStatusOfMonthly.NORMAL);
-	}
+//	private AgreMaxTimeOfMonthly toDomainAgreMaxTimeOfMonthly() {
+//		
+//		return AgreMaxTimeOfMonthly.of(
+//				new AttendanceTimeMonth(this.agreementRegTime),
+//				new LimitOneMonth(0),
+//				AgreMaxTimeStatusOfMonthly.NORMAL);
+//	}
 	
 	/** KRCDT_MON_AFFILIATION **/
 	/**
@@ -6236,415 +2964,27 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	public AffiliationInfoOfMonthly toDomainAffiliationInfoOfMonthly(){
 		
 		AffiliationInfoOfMonthly domain = AffiliationInfoOfMonthly.of(
-				this.krcdtMonMergePk.getEmployeeId(),
-				new YearMonth(this.krcdtMonMergePk.getYearMonth()),
-				EnumAdaptor.valueOf(this.krcdtMonMergePk.getClosureId(), ClosureId.class),
-				new ClosureDate(this.krcdtMonMergePk.getClosureDay(), (this.krcdtMonMergePk.getIsLastDay() == 1)),
+				this.id.getEmployeeId(),
+				new YearMonth(this.id.getYearMonth()),
+				EnumAdaptor.valueOf(this.id.getClosureId(), ClosureId.class),
+				new ClosureDate(this.id.getClosureDay(), (this.id.getIsLastDay() == 1)),
 				AggregateAffiliationInfo.of(
 						new EmploymentCode(this.firstEmploymentCd),
 						new WorkplaceId(this.firstWorkplaceId),
 						new JobTitleId(this.firstJobTitleId),
 						new ClassificationCode(this.firstClassCd),
-						new BusinessTypeCode(this.firstBusinessTypeCd)),
+						Optional.ofNullable(this.firstBusinessTypeCd == null ? null : new BusinessTypeCode(this.firstBusinessTypeCd))),
 				AggregateAffiliationInfo.of(
 						new EmploymentCode(this.lastEmploymentCd),
 						new WorkplaceId(this.lastWorkplaceId),
 						new JobTitleId(this.lastJobTitleId),
 						new ClassificationCode(this.lastClassCd),
-						new BusinessTypeCode(this.lastBusinessTypeCd)));
+						Optional.ofNullable(this.lastBusinessTypeCd == null ? null : new BusinessTypeCode(this.lastBusinessTypeCd))));
 		
 		domain.setVersion(this.version);
 		
 		return domain;
 	}
-	
-	
-	private  List<AggregateBonusPayTime> getBonusPayTimeLst() {
-		List<AggregateBonusPayTime> merge = new ArrayList<>();
-		merge.add(toDomainBonusPayTime1());
-		merge.add(toDomainBonusPayTime2());
-		merge.add(toDomainBonusPayTime3());
-		merge.add(toDomainBonusPayTime4());
-		merge.add(toDomainBonusPayTime5());
-		merge.add(toDomainBonusPayTime6());
-		merge.add(toDomainBonusPayTime7());
-		merge.add(toDomainBonusPayTime8());
-		merge.add(toDomainBonusPayTime9());
-		merge.add(toDomainBonusPayTime10());
-		return merge;
-	}
-	private List<AggregateAbsenceDays> getAbsenceDaysLst(){
-		List<AggregateAbsenceDays> lst = new ArrayList<>();
-		lst.add(this.toDomainAbsenceDays1());
-		lst.add(this.toDomainAbsenceDays2());
-		lst.add(this.toDomainAbsenceDays3());
-		lst.add(this.toDomainAbsenceDays4());
-		lst.add(this.toDomainAbsenceDays5());
-		lst.add(this.toDomainAbsenceDays6());
-		lst.add(this.toDomainAbsenceDays7());
-		lst.add(this.toDomainAbsenceDays8());
-		lst.add(this.toDomainAbsenceDays9());
-		lst.add(this.toDomainAbsenceDays10());
-		lst.add(this.toDomainAbsenceDays11());
-		lst.add(this.toDomainAbsenceDays12());
-		lst.add(this.toDomainAbsenceDays13());
-		lst.add(this.toDomainAbsenceDays14());
-		lst.add(this.toDomainAbsenceDays15());
-		lst.add(this.toDomainAbsenceDays16());
-		lst.add(this.toDomainAbsenceDays17());
-		lst.add(this.toDomainAbsenceDays18());
-		lst.add(this.toDomainAbsenceDays19());
-		lst.add(this.toDomainAbsenceDays20());
-		lst.add(this.toDomainAbsenceDays21());
-		lst.add(this.toDomainAbsenceDays22());
-		lst.add(this.toDomainAbsenceDays23());
-		lst.add(this.toDomainAbsenceDays24());
-		lst.add(this.toDomainAbsenceDays25());
-		lst.add(this.toDomainAbsenceDays26());
-		lst.add(this.toDomainAbsenceDays27());
-		lst.add(this.toDomainAbsenceDays28());
-		lst.add(this.toDomainAbsenceDays29());
-		lst.add(this.toDomainAbsenceDays30());
-		return lst;
-	}
-	
-	private List<AggregateGoOut> getGoOutLst() {
-		List<AggregateGoOut> merge = new ArrayList<>();
-		merge.add(toDomainGoOut1());
-		merge.add(toDomainGoOut2());
-		merge.add(toDomainGoOut3());
-		merge.add(toDomainGoOut4());
-		return merge;
-	}
-	
-	private List<AggregatePremiumTime> getPremiumTimeLst() {
-		List<AggregatePremiumTime> merge = new ArrayList<>();
-		merge.add(toDomainPremiumTime1());
-		merge.add(toDomainPremiumTime2());
-		merge.add(toDomainPremiumTime3());
-		merge.add(toDomainPremiumTime4());
-		merge.add(toDomainPremiumTime5());
-		merge.add(toDomainPremiumTime6());
-		merge.add(toDomainPremiumTime7());
-		merge.add(toDomainPremiumTime8());
-		merge.add(toDomainPremiumTime9());
-		merge.add(toDomainPremiumTime10());
-		return merge;
-	}
-	
-	
-	private List<AggregateDivergenceTime> getDivergenceTimeLst() {
-		List<AggregateDivergenceTime> merge = new ArrayList<>();
-		merge.add(toDomainDivergenceTime1());
-		merge.add(toDomainDivergenceTime2());
-		merge.add(toDomainDivergenceTime3());
-		merge.add(toDomainDivergenceTime4());
-		merge.add(toDomainDivergenceTime5());
-		merge.add(toDomainDivergenceTime6());
-		merge.add(toDomainDivergenceTime7());
-		merge.add(toDomainDivergenceTime8());
-		merge.add(toDomainDivergenceTime9());
-		merge.add(toDomainDivergenceTime10());
-		return merge;
-	}
-	
-	private AggregateAbsenceDays toDomainAbsenceDays1() {
-		return AggregateAbsenceDays.of(1, new AttendanceDaysMonth(new Double(this.absenceDay1)),
-				new AttendanceTimeMonth((int) this.absenceTime1));
-	}
-
-	private AggregateAbsenceDays toDomainAbsenceDays2() {
-		return AggregateAbsenceDays.of(2, new AttendanceDaysMonth(new Double(this.absenceDay2)),
-				new AttendanceTimeMonth((int) this.absenceTime2));
-	}
-
-	private AggregateAbsenceDays toDomainAbsenceDays3() {
-		return AggregateAbsenceDays.of(3, new AttendanceDaysMonth(new Double(this.absenceDay3)),
-				new AttendanceTimeMonth((int) this.absenceTime3));
-	}
-
-	private AggregateAbsenceDays toDomainAbsenceDays4() {
-		return AggregateAbsenceDays.of(4, new AttendanceDaysMonth(new Double(this.absenceDay4)),
-				new AttendanceTimeMonth((int) this.absenceTime4));
-	}
-
-	private AggregateAbsenceDays toDomainAbsenceDays5() {
-		return AggregateAbsenceDays.of(5, new AttendanceDaysMonth(new Double(this.absenceDay5)),
-				new AttendanceTimeMonth((int) this.absenceTime5));
-	}
-
-	private AggregateAbsenceDays toDomainAbsenceDays6() {
-		return AggregateAbsenceDays.of(6, new AttendanceDaysMonth(new Double(this.absenceDay6)),
-				new AttendanceTimeMonth((int) this.absenceTime6));
-	}
-
-	private AggregateAbsenceDays toDomainAbsenceDays7() {
-		return AggregateAbsenceDays.of(7, new AttendanceDaysMonth(new Double(this.absenceDay7)),
-				new AttendanceTimeMonth((int) this.absenceTime7));
-	}
-
-	private AggregateAbsenceDays toDomainAbsenceDays8() {
-		return AggregateAbsenceDays.of(8, new AttendanceDaysMonth(new Double(this.absenceDay8)),
-				new AttendanceTimeMonth((int) this.absenceTime8));
-	}
-
-	private AggregateAbsenceDays toDomainAbsenceDays9() {
-		return AggregateAbsenceDays.of(9, new AttendanceDaysMonth(new Double(this.absenceDay9)),
-				new AttendanceTimeMonth((int) this.absenceTime9));
-	}
-
-	private AggregateAbsenceDays toDomainAbsenceDays10() {
-		return AggregateAbsenceDays.of(10, new AttendanceDaysMonth(new Double(this.absenceDay10)),
-				new AttendanceTimeMonth((int) this.absenceTime10));
-	}
-
-	private AggregateAbsenceDays toDomainAbsenceDays11() {
-		return AggregateAbsenceDays.of(11, new AttendanceDaysMonth(new Double(this.absenceDay11)),
-				new AttendanceTimeMonth((int) this.absenceTime11));
-	}
-
-	private AggregateAbsenceDays toDomainAbsenceDays12() {
-		return AggregateAbsenceDays.of(12,new AttendanceDaysMonth(new Double(this.absenceDay12)),
-				new AttendanceTimeMonth((int) this.absenceTime12));
-	}
-
-	private AggregateAbsenceDays toDomainAbsenceDays13() {
-		return AggregateAbsenceDays.of(13, new AttendanceDaysMonth(new Double(this.absenceDay13)),
-				new AttendanceTimeMonth((int) this.absenceTime13));
-	}
-
-	private AggregateAbsenceDays toDomainAbsenceDays14() {
-		return AggregateAbsenceDays.of(14, new AttendanceDaysMonth(new Double(this.absenceDay14)),
-				new AttendanceTimeMonth((int) this.absenceTime14));
-	}
-
-	private AggregateAbsenceDays toDomainAbsenceDays15() {
-		return AggregateAbsenceDays.of(15, new AttendanceDaysMonth(new Double(this.absenceDay15)),
-				new AttendanceTimeMonth((int) this.absenceTime15));
-	}
-
-	private AggregateAbsenceDays toDomainAbsenceDays16() {
-		return AggregateAbsenceDays.of(16, new AttendanceDaysMonth(new Double(this.absenceDay16)),
-				new AttendanceTimeMonth((int) this.absenceTime16));
-	}
-
-	private AggregateAbsenceDays toDomainAbsenceDays17() {
-		return AggregateAbsenceDays.of(17, new AttendanceDaysMonth(new Double(this.absenceDay17)),
-				new AttendanceTimeMonth((int) this.absenceTime17));
-	}
-
-	private AggregateAbsenceDays toDomainAbsenceDays18() {
-		return AggregateAbsenceDays.of(18 ,new AttendanceDaysMonth(new Double(this.absenceDay18)),
-				new AttendanceTimeMonth((int) this.absenceTime18));
-	}
-
-	private AggregateAbsenceDays toDomainAbsenceDays19() {
-		return AggregateAbsenceDays.of(19, new AttendanceDaysMonth(new Double(this.absenceDay19)),
-				new AttendanceTimeMonth((int) this.absenceTime19));
-	}
-
-	private AggregateAbsenceDays toDomainAbsenceDays20() {
-		return AggregateAbsenceDays.of(20, new AttendanceDaysMonth(new Double(this.absenceDay20)),
-				new AttendanceTimeMonth((int) this.absenceTime20));
-	}
-
-	private AggregateAbsenceDays toDomainAbsenceDays21() {
-		return AggregateAbsenceDays.of(21, new AttendanceDaysMonth(new Double(this.absenceDay21)),
-				new AttendanceTimeMonth((int) this.absenceTime21));
-	}
-
-	private AggregateAbsenceDays toDomainAbsenceDays22() {
-		return AggregateAbsenceDays.of(22, new AttendanceDaysMonth(new Double(this.absenceDay22)),
-				new AttendanceTimeMonth((int) this.absenceTime22));
-	}
-
-	private AggregateAbsenceDays toDomainAbsenceDays23() {
-		return AggregateAbsenceDays.of(23, new AttendanceDaysMonth(new Double(this.absenceDay23)),
-				new AttendanceTimeMonth((int) this.absenceTime23));
-	}
-
-	private AggregateAbsenceDays toDomainAbsenceDays24() {
-		return AggregateAbsenceDays.of(24, new AttendanceDaysMonth(new Double(this.absenceDay24)),
-				new AttendanceTimeMonth((int) this.absenceTime24));
-	}
-
-	private AggregateAbsenceDays toDomainAbsenceDays25() {
-		return AggregateAbsenceDays.of(25,new AttendanceDaysMonth(new Double(this.absenceDay25)),
-				new AttendanceTimeMonth((int) this.absenceTime25));
-	}
-
-	private AggregateAbsenceDays toDomainAbsenceDays26() {
-		return AggregateAbsenceDays.of(26, new AttendanceDaysMonth(new Double(this.absenceDay26)),
-				new AttendanceTimeMonth((int) this.absenceTime26));
-	}
-
-	private AggregateAbsenceDays toDomainAbsenceDays27() {
-		return AggregateAbsenceDays.of(27, new AttendanceDaysMonth(new Double(this.absenceDay27)),
-				new AttendanceTimeMonth((int) this.absenceTime27));
-	}
-
-	private AggregateAbsenceDays toDomainAbsenceDays28() {
-		return AggregateAbsenceDays.of(28, new AttendanceDaysMonth(new Double(this.absenceDay28)),
-				new AttendanceTimeMonth((int) this.absenceTime28));
-	}
-
-	private AggregateAbsenceDays toDomainAbsenceDays29() {
-		return AggregateAbsenceDays.of(29, new AttendanceDaysMonth(new Double(this.absenceDay29)),
-				new AttendanceTimeMonth((int) this.absenceTime29));
-	}
-
-	private AggregateAbsenceDays toDomainAbsenceDays30() {
-		return AggregateAbsenceDays.of(30, new AttendanceDaysMonth(new Double(this.absenceDay30)),
-				new AttendanceTimeMonth((int) this.absenceTime30));
-	}
-	
-	private void toEntitySpcVacationDays1(AggregateSpcVacationDays domain) {
-		this.spcVactDays1 = domain.getDays().v();
-		this.spcVactTime1 = domain.getTime().v();
-	}
-	
-	private void toEntitySpcVacationDays2(AggregateSpcVacationDays domain) {
-		this.spcVactDays2 = domain.getDays().v();
-		this.spcVactTime2 = domain.getTime().v();
-	}
-	
-		private void toEntitySpcVacationDays3(AggregateSpcVacationDays domain) {
-		this.spcVactDays3 = domain.getDays().v();
-		this.spcVactTime3 = domain.getTime().v();
-	}
-	
-	private void toEntitySpcVacationDays4(AggregateSpcVacationDays domain) {
-		this.spcVactDays4 = domain.getDays().v();
-		this.spcVactTime4 = domain.getTime().v();
-	}
-		
-	private void toEntitySpcVacationDays5(AggregateSpcVacationDays domain) {
-		this.spcVactDays5 = domain.getDays().v();
-		this.spcVactTime5 = domain.getTime().v();
-	}
-	
-	private void toEntitySpcVacationDays6(AggregateSpcVacationDays domain) {
-		this.spcVactDays6 = domain.getDays().v();
-		this.spcVactTime6 = domain.getTime().v();
-	}
-		private void toEntitySpcVacationDays7(AggregateSpcVacationDays domain) {
-		this.spcVactDays7 = domain.getDays().v();
-		this.spcVactTime7 = domain.getTime().v();
-	}
-	
-	private void toEntitySpcVacationDays8(AggregateSpcVacationDays domain) {
-		this.spcVactDays8 = domain.getDays().v();
-		this.spcVactTime8 = domain.getTime().v();
-	}	
-	
-	private void toEntitySpcVacationDays9(AggregateSpcVacationDays domain) {
-		this.spcVactDays9 = domain.getDays().v();
-		this.spcVactTime9 = domain.getTime().v();
-	}
-	
-	private void toEntitySpcVacationDays10(AggregateSpcVacationDays domain) {
-		this.spcVactDays10 = domain.getDays().v();
-		this.spcVactTime10 = domain.getTime().v();
-	}	
-	
-	
-	private void toEntitySpcVacationDays11(AggregateSpcVacationDays domain) {
-		this.spcVactDays11 = domain.getDays().v();
-		this.spcVactTime11 = domain.getTime().v();
-	}
-	
-	private void toEntitySpcVacationDays12(AggregateSpcVacationDays domain) {
-		this.spcVactDays12 = domain.getDays().v();
-		this.spcVactTime12 = domain.getTime().v();
-	}
-	
-		private void toEntitySpcVacationDays13(AggregateSpcVacationDays domain) {
-		this.spcVactDays13 = domain.getDays().v();
-		this.spcVactTime13 = domain.getTime().v();
-	}
-	
-	private void toEntitySpcVacationDays14(AggregateSpcVacationDays domain) {
-		this.spcVactDays14 = domain.getDays().v();
-		this.spcVactTime14 = domain.getTime().v();
-	}
-		
-	private void toEntitySpcVacationDays15(AggregateSpcVacationDays domain) {
-		this.spcVactDays15 = domain.getDays().v();
-		this.spcVactTime15 = domain.getTime().v();
-	}
-	
-	private void toEntitySpcVacationDays16(AggregateSpcVacationDays domain) {
-		this.spcVactDays16 = domain.getDays().v();
-		this.spcVactTime16 = domain.getTime().v();
-	}
-		private void toEntitySpcVacationDays17(AggregateSpcVacationDays domain) {
-		this.spcVactDays17 = domain.getDays().v();
-		this.spcVactTime17 = domain.getTime().v();
-	}
-	
-	private void toEntitySpcVacationDays18(AggregateSpcVacationDays domain) {
-		this.spcVactDays18 = domain.getDays().v();
-		this.spcVactTime18 = domain.getTime().v();
-	}	
-	
-	private void toEntitySpcVacationDays19(AggregateSpcVacationDays domain) {
-		this.spcVactDays19 = domain.getDays().v();
-		this.spcVactTime19 = domain.getTime().v();
-	}
-	
-	private void toEntitySpcVacationDays20(AggregateSpcVacationDays domain) {
-		this.spcVactDays20 = domain.getDays().v();
-		this.spcVactTime20 = domain.getTime().v();
-	}	
-	
-	private void toEntitySpcVacationDays21(AggregateSpcVacationDays domain) {
-		this.spcVactDays21 = domain.getDays().v();
-		this.spcVactTime21 = domain.getTime().v();
-	}
-	
-	private void toEntitySpcVacationDays22(AggregateSpcVacationDays domain) {
-		this.spcVactDays22 = domain.getDays().v();
-		this.spcVactTime22 = domain.getTime().v();
-	}
-	
-		private void toEntitySpcVacationDays23(AggregateSpcVacationDays domain) {
-		this.spcVactDays23 = domain.getDays().v();
-		this.spcVactTime23 = domain.getTime().v();
-	}
-	
-	private void toEntitySpcVacationDays24(AggregateSpcVacationDays domain) {
-		this.spcVactDays24 = domain.getDays().v();
-		this.spcVactTime24 = domain.getTime().v();
-	}
-		
-	private void toEntitySpcVacationDays25(AggregateSpcVacationDays domain) {
-		this.spcVactDays25 = domain.getDays().v();
-		this.spcVactTime25 = domain.getTime().v();
-	}
-	
-	private void toEntitySpcVacationDays26(AggregateSpcVacationDays domain) {
-		this.spcVactDays26 = domain.getDays().v();
-		this.spcVactTime26 = domain.getTime().v();
-	}
-		private void toEntitySpcVacationDays27(AggregateSpcVacationDays domain) {
-		this.spcVactDays27 = domain.getDays().v();
-		this.spcVactTime27 = domain.getTime().v();
-	}
-	
-	private void toEntitySpcVacationDays28(AggregateSpcVacationDays domain) {
-		this.spcVactDays28 = domain.getDays().v();
-		this.spcVactTime28 = domain.getTime().v();
-	}	
-	
-	private void toEntitySpcVacationDays29(AggregateSpcVacationDays domain) {
-		this.spcVactDays29 = domain.getDays().v();
-		this.spcVactTime29 = domain.getTime().v();
-	}
-	
-	private void toEntitySpcVacationDays30(AggregateSpcVacationDays domain) {
-		this.spcVactDays30 = domain.getDays().v();
-		this.spcVactTime30 = domain.getTime().v();
-	}	
 
 	private void toEntityTotalCount1(TotalCount domain) {
 		this.totalCountDays1 = domain.getCount().v();
@@ -6796,9 +3136,5 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	
 	private TotalCount toDomainTotalCount(int totalCountNo, double totalCountDays, int totalCountTime) {
 	    return TotalCount.of(totalCountNo, new AttendanceDaysMonth(totalCountDays), new AttendanceTimeMonth(totalCountTime));
-	}
-	
-	private AggregateSpcVacationDays toDomainSpcVacationDays(int spcVacationFrameNo, double days, double time) {
-	    return AggregateSpcVacationDays.of(spcVacationFrameNo, new AttendanceDaysMonth(days), new AttendanceTimeMonth((int)time));
 	}
 }

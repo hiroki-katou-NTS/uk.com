@@ -14,6 +14,7 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.EmpMedicalWorkFormHisItem;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.EmpMedicalWorkStyleHistoryRepository;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.NurseClassification;
@@ -63,6 +64,11 @@ public class GetDataAfterSortEmp {
 	
 	public  DataAfterSortEmpDto getData(OrderEmployeeParam param) {
 		List<EmployeeInformationDto> listEmpInfo = param.listEmpInfo;
+
+		listEmpInfo.sort( Comparator.comparing(EmployeeInformationDto :: getEmployeeCode));
+		
+		param.setListEmpInfo(listEmpInfo);
+		
 		List<String> listSidOrder = sortEmployees.getListEmp(param);
 		
 		listEmpInfo.sort(Comparator.comparing( v -> listSidOrder.indexOf(v.employeeId)));
@@ -125,7 +131,7 @@ public class GetDataAfterSortEmp {
 		}
 
 		@Override
-		public List<EmpMedicalWorkFormHisItem> get(List<String> listEmp, GeneralDate referenceDate) {
+		public List<EmpMedicalWorkFormHisItem> getEmpClassifications(List<String> listEmp, GeneralDate referenceDate) {
 			List<EmpMedicalWorkFormHisItem> data = empMedicalWorkStyleHistoryRepo.get(listEmp, referenceDate);
 			return data;
 		}

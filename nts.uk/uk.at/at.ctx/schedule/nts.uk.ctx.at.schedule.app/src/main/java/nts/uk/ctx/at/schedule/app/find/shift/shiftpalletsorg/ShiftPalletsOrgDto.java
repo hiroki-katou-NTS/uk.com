@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsOrg;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteOrg;
 
 @Data
 @NoArgsConstructor
@@ -21,7 +21,7 @@ public class ShiftPalletsOrgDto {
 	private String note;
 	private List<ShiftPalletDto> patternItem;
 	
-	public ShiftPalletsOrgDto(ShiftPalletsOrg org, String workplaceId) {
+	public ShiftPalletsOrgDto(ShiftPaletteOrg org, String workplaceId) {
 		super();
 		this.workplaceId = workplaceId;
 		this.groupNo = org.getPage();
@@ -33,5 +33,6 @@ public class ShiftPalletsOrgDto {
 					.stream()
 					.map(c -> new ShiftPalletDto(c))
 					.collect(Collectors.toList());
+	
 	}
 }

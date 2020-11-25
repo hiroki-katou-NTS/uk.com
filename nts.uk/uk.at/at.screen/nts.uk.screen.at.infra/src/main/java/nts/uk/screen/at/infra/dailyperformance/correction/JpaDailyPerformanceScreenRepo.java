@@ -74,7 +74,7 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtIdenti
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtWorktypeChangeable;
 import nts.uk.ctx.at.record.infra.entity.workrecord.workfixed.KrcstWorkFixed;
 import nts.uk.ctx.at.record.infra.entity.workrecord.workfixed.KrcstWorkFixedPK;
-import nts.uk.ctx.at.shared.dom.optitem.OptionalItemAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.infra.entity.scherec.dailyattendanceitem.KrcmtDailyAttendanceItem;
@@ -288,7 +288,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 //			+ " h.strDate <= :endDate AND h.endDate >= :startDate AND h.companyId = :companyId AND h.sid IN :sIds";
 
 	private static final String FIND_BY_PERIOD_INTO_END = "SELECT a FROM KrcdtMonMerge a "
-			+ "WHERE a.krcdtMonMergePk.employeeId IN :employeeIds " + "AND a.endYmd >= :startDate "
+			+ "WHERE a.id.employeeId IN :employeeIds " + "AND a.endYmd >= :startDate "
 			+ "AND a.endYmd <= :endDate " + "ORDER BY a.startYmd ";
 
 	private final static String GET_MONTH_ERROR;
@@ -1991,10 +1991,10 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	public List<AttendenceTimeMonthDto> findAttendenceTimeMonth(List<String> sids, DateRange dateRange) {
 		return this.queryProxy().query(FIND_BY_PERIOD_INTO_END, KrcdtMonMerge.class).setParameter("employeeIds", sids)
 				.setParameter("startDate", dateRange.getStartDate()).setParameter("endDate", dateRange.getEndDate())
-				.getList(c -> new AttendenceTimeMonthDto(c.krcdtMonMergePk.getEmployeeId(),
-						new YearMonth(c.krcdtMonMergePk.getYearMonth()),
-						ClosureId.valueOf(c.krcdtMonMergePk.getClosureId()),
-						new ClosureDate(c.krcdtMonMergePk.getClosureDay(), c.krcdtMonMergePk.getIsLastDay() == 1)));
+				.getList(c -> new AttendenceTimeMonthDto(c.id.getEmployeeId(),
+						new YearMonth(c.id.getYearMonth()),
+						ClosureId.valueOf(c.id.getClosureId()),
+						new ClosureDate(c.id.getClosureDay(), c.id.getIsLastDay() == 1)));
 	}
 
 	@Override

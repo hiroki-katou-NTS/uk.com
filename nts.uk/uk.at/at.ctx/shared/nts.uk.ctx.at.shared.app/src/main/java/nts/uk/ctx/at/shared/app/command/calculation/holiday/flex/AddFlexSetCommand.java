@@ -5,7 +5,7 @@ package nts.uk.ctx.at.shared.app.command.calculation.holiday.flex;
  */
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.FlexSet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.flex.FlexSet;
 
 @Data
 @AllArgsConstructor

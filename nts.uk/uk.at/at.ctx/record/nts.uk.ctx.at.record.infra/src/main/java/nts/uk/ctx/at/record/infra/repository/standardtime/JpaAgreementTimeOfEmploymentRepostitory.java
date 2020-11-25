@@ -11,8 +11,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfEmploymentRepostitory;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementTimeEmployment;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementTimeEmploymentPK;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementTimeOfEmployment;
-import nts.uk.ctx.at.shared.dom.standardtime.enums.LaborSystemtAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfEmployment;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 
 @Stateless
@@ -95,15 +95,17 @@ public class JpaAgreementTimeOfEmploymentRepostitory extends JpaRepository
 	
 	@Override
 	public List<AgreementTimeOfEmployment> findEmploymentSetting(String comId, List<String> employments) {
-		if(employments.isEmpty()){
-			return new ArrayList<>();
-		}
-		String query = "SELECT a FROM KmkmtAgeementTimeEmployment a WHERE a.kmkmtAgeementTimeEmploymentPK.companyId = :companyId"
-				+ " AND a.kmkmtAgeementTimeEmploymentPK.employmentCategoryCode IN :employments";
-		
-		return this.queryProxy().query(query, KmkmtAgeementTimeEmployment.class)
-				.setParameter("companyId", comId).setParameter("employments", employments)
-				.getList(f -> toDomain(f));
+//		if(employments.isEmpty()){
+//			return new ArrayList<>();
+//		}
+//		String query = "SELECT a FROM KmkmtAgeementTimeEmployment a WHERE a.kmkmtAgeementTimeEmploymentPK.companyId = :companyId"
+//				+ " AND a.kmkmtAgeementTimeEmploymentPK.employmentCategoryCode IN :employments";
+//		
+//		return this.queryProxy().query(query, KmkmtAgeementTimeEmployment.class)
+//				.setParameter("companyId", comId).setParameter("employments", employments)
+//				.getList(f -> toDomain(f));
+
+		return new ArrayList<>();
 	}
 
 	private KmkmtAgeementTimeEmployment toEntity(AgreementTimeOfEmployment agreementTimeOfEmployment) {
@@ -112,23 +114,26 @@ public class JpaAgreementTimeOfEmploymentRepostitory extends JpaRepository
 		entity.kmkmtAgeementTimeEmploymentPK = new KmkmtAgeementTimeEmploymentPK();
 		entity.kmkmtAgeementTimeEmploymentPK.companyId = agreementTimeOfEmployment.getCompanyId();
 		entity.kmkmtAgeementTimeEmploymentPK.employmentCategoryCode = agreementTimeOfEmployment
-				.getEmploymentCategoryCode();
-		entity.kmkmtAgeementTimeEmploymentPK.basicSettingId = agreementTimeOfEmployment.getBasicSettingId();
-		entity.laborSystemAtr = agreementTimeOfEmployment.getLaborSystemAtr().value;
-		entity.upperMonth = agreementTimeOfEmployment.getUpperAgreementSetting().getUpperMonth().valueAsMinutes();
-		entity.upperMonthAverage = agreementTimeOfEmployment.getUpperAgreementSetting().getUpperMonthAverage().valueAsMinutes();
+				.getEmploymentCategoryCode().v();
+		/** TODO: 36協定時間対応により、コメントアウトされた */
+//		entity.kmkmtAgeementTimeEmploymentPK.basicSettingId = agreementTimeOfEmployment.getBasicSettingId();
+//		entity.laborSystemAtr = agreementTimeOfEmployment.getLaborSystemAtr().value;
+//		entity.upperMonth = agreementTimeOfEmployment.getUpperAgreementSetting().getUpperMonth().valueAsMinutes();
+//		entity.upperMonthAverage = agreementTimeOfEmployment.getUpperAgreementSetting().getUpperMonthAverage().valueAsMinutes();
 
 		return entity;
 	}
 
 	private static AgreementTimeOfEmployment toDomain(KmkmtAgeementTimeEmployment kmkmtAgeementTimeEmployment) {
-		AgreementTimeOfEmployment agreementTimeOfEmployment = AgreementTimeOfEmployment.createJavaType(
-				kmkmtAgeementTimeEmployment.kmkmtAgeementTimeEmploymentPK.companyId,
-				kmkmtAgeementTimeEmployment.kmkmtAgeementTimeEmploymentPK.basicSettingId,
-				kmkmtAgeementTimeEmployment.laborSystemAtr,
-				kmkmtAgeementTimeEmployment.kmkmtAgeementTimeEmploymentPK.employmentCategoryCode,
-				kmkmtAgeementTimeEmployment.upperMonth, kmkmtAgeementTimeEmployment.upperMonthAverage);
-
-		return agreementTimeOfEmployment;
+		/** TODO: 36協定時間対応により、コメントアウトされた */
+		return null;
+//		AgreementTimeOfEmployment agreementTimeOfEmployment = AgreementTimeOfEmployment.createJavaType(
+//				kmkmtAgeementTimeEmployment.kmkmtAgeementTimeEmploymentPK.companyId,
+//				kmkmtAgeementTimeEmployment.kmkmtAgeementTimeEmploymentPK.basicSettingId,
+//				kmkmtAgeementTimeEmployment.laborSystemAtr,
+//				kmkmtAgeementTimeEmployment.kmkmtAgeementTimeEmploymentPK.employmentCategoryCode,
+//				kmkmtAgeementTimeEmployment.upperMonth, kmkmtAgeementTimeEmployment.upperMonthAverage);
+//
+//		return agreementTimeOfEmployment;
 	}
 }

@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampOutput;
 
 public interface AppCommonDomainServiceRegister {
@@ -30,7 +31,8 @@ public interface AppCommonDomainServiceRegister {
 	 * @return
 	 */
 	
-	public ProcessResult updateAppStamp(Application application, Optional<AppStamp> appStampOptional, Optional<AppRecordImage> appRecoderImageOptional, Boolean recoderFlag);
+	public ProcessResult updateAppStamp(Application application, Optional<AppStamp> appStampOptional, Optional<AppRecordImage> appRecoderImageOptional, Boolean recoderFlag,
+			AppDispInfoStartupOutput appDispInfoStartupOutput);
 	
 	
 	

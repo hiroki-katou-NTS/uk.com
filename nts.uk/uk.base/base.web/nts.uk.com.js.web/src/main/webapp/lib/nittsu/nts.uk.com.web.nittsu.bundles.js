@@ -220,7 +220,8 @@ var nts;
             var instance = null;
             var callback = null;
             var Felica = /** @class */ (function () {
-                function Felica() {
+                function Felica(once) {
+                    if (once === void 0) { once = true; }
                     var fc = this;
                     // create socket for connect to c# app
                     fc.socket = new WebSocket(WS_URI);
@@ -251,28 +252,63 @@ var nts;
                                 callback('disconnect', undefined, undefined);
                                 break;
                             case 'R':
+                                if (once) {
+                                    fc.socket.close();
+                                }
                                 callback('read', undefined, json.CardNo);
                                 break;
                         }
                     };
                 }
+                Felica.prototype.status = function () {
+                    var f = this;
+                    return f.socket.OPEN;
+                };
+                Felica.prototype.close = function () {
+                    var f = this;
+                    if (f.status()) {
+                        f.socket.close();
+                    }
+                };
                 return Felica;
             }());
             // export only create method for Felica class
-            function felica(cb) {
+            function felica(cb, once) {
+                if (once === void 0) { once = true; }
                 // if reconnect, close old connect
-                if (instance && instance.socket.OPEN) {
-                    instance.socket.close();
+                if (instance && instance.status()) {
+                    instance.close();
                 }
                 // register callback function
                 callback = cb;
                 // create new instance (and new socket connection)
-                return instance = new Felica();
+                return instance = new Felica(once);
             }
             devices.felica = felica;
         })(devices = uk.devices || (uk.devices = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/**
+ *
+ */
+(function () {
+    if (typeof window.CustomEvent === "function") {
+        return false;
+    }
+    var dp = {
+        bubbles: false,
+        cancelable: false,
+        detail: undefined
+    };
+    function CustomEvent(event, params) {
+        params = params || dp;
+        var evt = document.createEvent('CustomEvent');
+        evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+        return evt;
+    }
+    CustomEvent.prototype = window.Event.prototype;
+    _.extend(window, { CustomEvent: CustomEvent });
+})();
 var nts;
 (function (nts) {
     var uk;
@@ -4528,7 +4564,11 @@ var nts;
                     "/view/spr/index.xhtml",
                     "/view/ccg/007/",
                     "/view/kdw/003/a/index.xhtml",
-                    "/view/ccg/033/index.xhtml"
+                    "/view/ccg/033/index.xhtml",
+                    "/view/kdp/003/a/index.xhtml",
+                    "/view/kdp/003/f/index.xhtml",
+                    "/view/kdp/004/a/index.xhtml",
+                    "/view/kdp/005/a/index.xhtml"
                 ];
                 var cantCall = function () {
                     return !_.some(noSessionWebScreens, function (w) { return uk.request.location.current.rawUrl.indexOf(w) > -1; })
@@ -7669,6 +7709,7 @@ var nts;
                 var COPY_PASTE = "copyPaste";
                 var EDIT = "edit";
                 var STICK = "stick";
+                var DETERMINE = "determine";
                 var Connector = {};
                 var _scrollWidth, emptyCells = {};
                 var ExTable = /** @class */ (function () {
@@ -7709,6 +7750,7 @@ var nts;
                             ? options.showTooltipIfOverflow : false;
                         this.determination = options.determination;
                         this.errorMessagePopup = options.errorMessagePopup;
+                        this.customValidate = options.customValidate;
                         this.features = options.features;
                         $.data(this.$container, internal.X_OCCUPY, this.windowXOccupation);
                         $.data(this.$container, internal.Y_OCCUPY, this.windowYOccupation);
@@ -7882,6 +7924,7 @@ var nts;
                                 self.bodies[i].width = self.headers[i].width;
                                 self.bodies[i].determination = self.determination;
                                 self.bodies[i].errorMessagePopup = self.errorMessagePopup;
+                                self.bodies[i].customValidate = self.customValidate;
                                 self.setWrapperWidth(self.bodies[i], widthParts);
                                 $bodyWrapper = render.createWrapper(top, left, self.bodies[i]);
                                 pTable.owner.bodies.push($bodyWrapper);
@@ -8417,7 +8460,7 @@ var nts;
                         }
                         Painter.prototype.styleInnerCell = function (idx, innerCount) {
                             var self = this;
-                            var divStyle = "", borderStyle = "solid 1px transparent", dashedBorder = "dashed 1px #AAB7B8", incellHeight = (parseInt(self.options.rowHeight) - 2) / self.multilineCountInCell, incellCountInRow = Math.ceil(innerCount / self.multilineCountInCell);
+                            var divStyle = "", borderStyle = "solid 1px transparent", dashedBorder = "dashed 1px #ABB7B8", incellHeight = (parseInt(self.options.rowHeight) - 2) / self.multilineCountInCell, incellCountInRow = Math.ceil(innerCount / self.multilineCountInCell);
                             //                divStyle += `; border-top: ${borderStyle}; border-right: ${borderStyle}`;
                             if (idx < incellCountInRow * (self.multilineCountInCell - 1)) {
                                 divStyle += "; border-bottom: " + dashedBorder;
@@ -8487,6 +8530,7 @@ var nts;
                                     //                       cellHandler.rClick(div, column, helper.call(column.rightClick, rData, rowIdx, key));
                                     //                       spread.bindSticker(div, rowIdx, key, self.options);
                                 });
+                                // Separate det mode from other update mode
                                 style.detCell(self.$container, td, rowIdx, key, self.options.determination, self.$exTable);
                                 tdStyle += "; position: relative; padding: 0px;";
                                 td.style.cssText += tdStyle;
@@ -8537,6 +8581,7 @@ var nts;
                                 //                    cellHandler.rClick(td, column, helper.call(column.rightClick, rData, rowIdx, key));
                             }
                             //                spread.bindSticker(td, rowIdx , key, self.options);
+                            // Separate det mode from other update mode
                             style.detCell(self.$container, td, rowIdx, key, self.options.determination, self.$exTable);
                             td.style.cssText += tdStyle;
                             if (self.options.overflowTooltipOn)
@@ -8599,14 +8644,24 @@ var nts;
                                             var childCells = cell.querySelectorAll("." + render.CHILD_CELL_CLS);
                                             if (!uk.util.isNullOrUndefined(colorDef.innerIdx) && childCells.length > 0) {
                                                 var child = childCells[colorDef.innerIdx];
-                                                helper.addClassList(child, colorDef.clazz);
+                                                if (_.startsWith(colorDef.clazz, '#')) {
+                                                    helper.setBackgroundColor(child, colorDef.clazz);
+                                                }
+                                                else {
+                                                    helper.addClassList(child, colorDef.clazz);
+                                                }
                                                 if (colorDef.clazz === style.HIDDEN_CLS) {
                                                     $.data(child, "hide", child.textContent);
                                                     child.innerHTML = "";
                                                 }
                                             }
                                             else {
-                                                helper.addClassList(cell, colorDef.clazz);
+                                                if (_.startsWith(colorDef.clazz, '#')) {
+                                                    helper.setBackgroundColor(cell, colorDef.clazz);
+                                                }
+                                                else {
+                                                    helper.addClassList(cell, colorDef.clazz);
+                                                }
                                                 if (colorDef.clazz == style.HIDDEN_CLS) {
                                                     $.data(cell, "hide", cell.innerText);
                                                     cell.innerText = "";
@@ -8998,9 +9053,9 @@ var nts;
                             left: left,
                             width: width,
                             height: height,
-                            borderTop: "solid 1px #AAB7B8",
-                            borderRight: "solid 1px #AAB7B8",
-                            borderLeft: "solid 1px #AAB7B8"
+                            borderTop: "solid 1px #ABB7B8",
+                            borderRight: "solid 1px #ABB7B8",
+                            borderLeft: "solid 1px #ABB7B8"
                         };
                         if (maxWidth) {
                             style.maxWidth = maxWidth;
@@ -9022,7 +9077,7 @@ var nts;
                         }
                         else if (options.containerClass === BODY_PRF + LEFTMOST) {
                             style = wrapperStyles(top, left, options.width, options.height);
-                            style.borderBottom = "solid 1px #AAB7B8";
+                            style.borderBottom = "solid 1px #ABB7B8";
                         }
                         else {
                             style = wrapperStyles(top, left, options.width, options.height);
@@ -9053,7 +9108,7 @@ var nts;
                     /**
                      * Grid cell.
                      */
-                    function gridCell($grid, rowIdx, columnKey, innerIdx, valueObj, styleMaker) {
+                    function gridCell($grid, rowIdx, columnKey, innerIdx, valueObj, styleMaker, stickOrigData) {
                         var $exTable = helper.closest($grid, "." + NAMESPACE);
                         var x = helper.getExTableFromGrid($grid);
                         var updateMode = x.updateMode;
@@ -9071,63 +9126,85 @@ var nts;
                         }
                         var touched, backStyle, cStyle;
                         var $childCells = $cell.querySelectorAll("." + render.CHILD_CELL_CLS);
-                        if (styleMaker && _.isFunction(styleMaker)) {
-                            var style_1 = styleMaker(rowIdx, columnKey, innerIdx, valueObj);
-                            if (style_1 && $childCells.length === 0) {
-                                if (style_1.class)
-                                    helper.addClass($cell, style_1.class);
-                                else
-                                    $cell.style.color = style_1.textColor;
-                            }
-                            else if (style_1) {
-                                if (style_1.class) {
-                                    helper.addClass($childCells, style_1.class);
-                                }
-                                else {
-                                    _.forEach($childCells, function (c) {
-                                        c.style.color = style_1.textColor;
-                                    });
+                        if (_.isFunction(styleMaker)) {
+                            if ($childCells.length === 0) {
+                                var style_1 = styleMaker(rowIdx, columnKey, innerIdx, valueObj, stickOrigData);
+                                if (style_1) {
+                                    if (style_1.class)
+                                        helper.addClass($cell, style_1.class);
+                                    if (style_1.textColor)
+                                        $cell.style.color = style_1.textColor;
+                                    helper.setBackgroundColor($cell, style_1.background);
+                                    makeUp($grid, rowIdx, columnKey, innerIdx, style_1);
                                 }
                             }
-                            makeUp($grid, rowIdx, columnKey, style_1);
-                        }
-                        else if (styleMaker === true) {
-                            var cellStyles = $.data($grid, internal.D_CELLS_STYLE);
-                            if (cellStyles) {
-                                var styles = cellStyles[rowIdx];
-                                if (styles) {
-                                    styles = _.find(styles, function (c) { return c.columnKey === columnKey; });
-                                    var makeup = void 0;
-                                    if (styles && (makeup = styles.makeup))
-                                        cStyle = styles.makeup.pop();
-                                    backStyle = makeup[makeup.length - 1];
-                                }
+                            else {
+                                _.forEach($childCells, function (c, i) {
+                                    var style = styleMaker(rowIdx, columnKey, i, valueObj, stickOrigData);
+                                    if (style) {
+                                        if (style.class)
+                                            helper.addClass(c, style.class);
+                                        if (style.textColor)
+                                            c.style.color = style.textColor;
+                                        helper.setBackgroundColor(c, style.background);
+                                        makeUp($grid, rowIdx, columnKey, i, style);
+                                    }
+                                });
                             }
                         }
                         if ($childCells.length > 0) {
                             var fieldArr_1;
-                            if (gen.painter.options.updateMode === STICK) {
-                                fieldArr_1 = viewFn(viewMode);
-                            }
+                            //                if (gen.painter.options.updateMode === STICK) {
+                            fieldArr_1 = viewFn(viewMode);
+                            //                }
                             if (value.constructor === Array) {
+                                var styles_1;
+                                if (styleMaker === true) {
+                                    var cellStyles = $.data($grid, internal.D_CELLS_STYLE);
+                                    if (cellStyles) {
+                                        styles_1 = cellStyles[rowIdx];
+                                        if (styles_1) {
+                                            styles_1 = _.filter(styles_1, function (c) { return c.columnKey === columnKey; });
+                                        }
+                                    }
+                                }
                                 _.forEach(value, function (val, i) {
+                                    //                        if (innerIdx !== -1 && !_.isNil(innerIdx) && i !== innerIdx) return;
                                     var $c = $childCells[i];
-                                    $c.textContent = val;
+                                    if ($c.classList.contains(style.HIDDEN_CLS)) {
+                                        $.data($c, "hide", val);
+                                        $c.innerHTML = "";
+                                    }
+                                    else {
+                                        $c.textContent = val;
+                                    }
+                                    var innerStyle = _.find(styles_1, function (style) { return style.innerIdx === i; });
+                                    var makeup;
+                                    if (innerStyle && (makeup = innerStyle.makeup)) {
+                                        cStyle = innerStyle.makeup.pop();
+                                        backStyle = makeup[makeup.length - 1];
+                                    }
                                     if (backStyle) {
                                         if (backStyle.textColor) {
                                             $c.style.color = backStyle.textColor;
                                         }
-                                        else if (backStyle.class) {
+                                        if (backStyle.class) {
                                             $c.classList.remove(cStyle.class);
                                             $c.classList.add(backStyle.class);
+                                        }
+                                        if (backStyle.background) {
+                                            helper.setBackgroundColor($c, backStyle.background);
                                         }
                                     }
                                     else if (cStyle) {
                                         if (cStyle.textColor) {
                                             $c.style.color = null;
                                         }
-                                        else if (cStyle.class) {
+                                        if (cStyle.class) {
                                             $c.classList.remove(cStyle.class);
+                                        }
+                                        if (cStyle.background) {
+                                            $c.style.backgroundColor = null;
                                         }
                                     }
                                     if (fieldArr_1) {
@@ -9135,6 +9212,7 @@ var nts;
                                     }
                                     var cellObj = new selection.Cell(rowIdx, columnKey, valueObj, i);
                                     var mTouch = trace(origDs, $c, cellObj, fields, x.manipulatorId, x.manipulatorKey);
+                                    //                        if (innerIdx === - 1 || _.isNil(innerIdx)) {
                                     if ((!touched || (touched && !touched.dirty)) && mTouch && mTouch.dirty) {
                                         touched = mTouch;
                                         touched.idx = i;
@@ -9146,6 +9224,9 @@ var nts;
                                     }
                                     else
                                         touched = mTouch;
+                                    //                        } else if (i === innerIdx) {
+                                    //                            touched = mTouch;
+                                    //                        }
                                     if (mTouch && !mTouch.dirty) {
                                         events.popChange(x, rowIdx, cellObj);
                                     }
@@ -9156,7 +9237,13 @@ var nts;
                             }
                             else {
                                 var $c = $childCells[innerIdx];
-                                $c.textContent = value;
+                                if ($c.classList.contains(style.HIDDEN_CLS)) {
+                                    $.data($c, "hide", value);
+                                    $c.innerHTML = "";
+                                }
+                                else {
+                                    $c.textContent = value;
+                                }
                                 var cellObj = new selection.Cell(rowIdx, columnKey, valueObj, innerIdx);
                                 touched = trace(origDs, $c, cellObj, fields, x.manipulatorId, x.manipulatorKey);
                                 if (touched && !touched.dirty) {
@@ -9168,23 +9255,49 @@ var nts;
                             }
                         }
                         else {
-                            $cell.textContent = value;
+                            if (styleMaker === true) {
+                                var cellStyles = $.data($grid, internal.D_CELLS_STYLE);
+                                if (cellStyles) {
+                                    var style_2 = cellStyles[rowIdx];
+                                    if (style_2) {
+                                        style_2 = _.find(style_2, function (c) { return c.columnKey === columnKey; });
+                                        var makeup = void 0;
+                                        if (style_2 && (makeup = style_2.makeup)) {
+                                            cStyle = style_2.makeup.pop();
+                                            backStyle = makeup[makeup.length - 1];
+                                        }
+                                    }
+                                }
+                            }
                             if (backStyle) {
                                 if (backStyle.textColor) {
                                     $cell.style.color = backStyle.textColor;
                                 }
-                                else if (backStyle.class) {
+                                if (backStyle.class) {
                                     $cell.classList.remove(cStyle.class);
                                     $cell.classList.add(backStyle.class);
+                                }
+                                if (backStyle.background) {
+                                    helper.setBackgroundColor($cell, backStyle.background);
                                 }
                             }
                             else if (cStyle) {
                                 if (cStyle.textColor) {
                                     $cell.style.color = null;
                                 }
-                                else if (cStyle.class) {
+                                if (cStyle.class) {
                                     $cell.classList.remove(cStyle.class);
                                 }
+                                if (cStyle.background) {
+                                    $cell.style.backgroundColor = null;
+                                }
+                            }
+                            if ($cell.classList.contains(style.HIDDEN_CLS)) {
+                                $.data($cell, "hide", value);
+                                $cell.innerHTML = "";
+                            }
+                            else {
+                                $cell.textContent = value;
                             }
                             var cellObj = new selection.Cell(rowIdx, columnKey, valueObj, -1);
                             touched = trace(origDs, $cell, cellObj, fields, x.manipulatorId, x.manipulatorKey);
@@ -9201,7 +9314,7 @@ var nts;
                     /**
                      * Grid row.
                      */
-                    function gridRow($grid, rowIdx, data, styleMaker) {
+                    function gridRow($grid, rowIdx, data, styleMaker, stickOrigData) {
                         var $exTable = helper.closest($grid, "." + NAMESPACE);
                         var x = helper.getExTableFromGrid($grid);
                         var updateMode = x.updateMode;
@@ -9222,38 +9335,51 @@ var nts;
                                     var cellObj_1;
                                     var $target = $cells[index];
                                     var childCells_1 = $target.querySelectorAll("." + render.CHILD_CELL_CLS);
-                                    var cData = data[key];
-                                    if (styleMaker && _.isFunction(styleMaker)) {
-                                        var style_2 = styleMaker(rowIdx, key, -1, cData);
-                                        if (style_2 && childCells_1.length === 0) {
-                                            if (style_2.class)
-                                                helper.addClass($target, style_2.class);
-                                            else
-                                                $target.style.color = style_2.textColor;
-                                        }
-                                        else if (style_2) {
-                                            if (style_2.class)
-                                                helper.addClass(childCells_1, style_2.class);
-                                            else {
-                                                _.forEach(childCells_1, function (c) {
-                                                    c.style.color = style_2.textColor;
-                                                });
+                                    var cData_1 = data[key];
+                                    if (_.isFunction(styleMaker)) {
+                                        if (childCells_1.length === 0) {
+                                            var styleMake = styleMaker(rowIdx, key, -1, cData_1, stickOrigData && stickOrigData[key]);
+                                            if (styleMake) {
+                                                if (styleMake.class)
+                                                    helper.addClass($target, styleMake.class);
+                                                if (styleMake.textColor)
+                                                    $target.style.color = styleMake.textColor;
+                                                helper.setBackgroundColor($target, styleMake.background);
+                                                makeUp($grid, rowIdx, key, -1, styleMake);
                                             }
                                         }
-                                        makeUp($grid, rowIdx, key, style_2);
+                                        else {
+                                            _.forEach(childCells_1, function (c, i) {
+                                                var style = styleMaker(rowIdx, key, i, cData_1, stickOrigData && stickOrigData[key]);
+                                                if (style) {
+                                                    if (style.class)
+                                                        helper.addClass(c, style.class);
+                                                    if (style.textColor)
+                                                        c.style.color = style.textColor;
+                                                    helper.setBackgroundColor(c, style.background);
+                                                    makeUp($grid, rowIdx, key, i, style);
+                                                }
+                                            });
+                                        }
                                     }
                                     if (childCells_1.length > 0) {
                                         var fieldArr_2;
                                         if (_.isFunction(viewFn)) {
-                                            cData = helper.viewData(viewFn, viewMode, data[key]);
-                                            if (gen.painter.options.updateMode === STICK) {
-                                                fieldArr_2 = viewFn(viewMode);
-                                            }
+                                            cData_1 = helper.viewData(viewFn, viewMode, data[key]);
+                                            //                                if (gen.painter.options.updateMode === STICK) {
+                                            fieldArr_2 = viewFn(viewMode);
+                                            //                                }
                                         }
-                                        if (cData.constructor === Array) {
-                                            _.forEach(cData, function (d, i) {
+                                        if (cData_1.constructor === Array) {
+                                            _.forEach(cData_1, function (d, i) {
                                                 var $c = childCells_1[i];
-                                                $c.textContent = d;
+                                                if ($c.classList.contains(style.HIDDEN_CLS)) {
+                                                    $.data($c, "hide", d);
+                                                    $c.innerHTML = "";
+                                                }
+                                                else {
+                                                    $c.textContent = d;
+                                                }
                                                 if (updateMode === EDIT) {
                                                     validation.validate($exTable, $grid, $c, rowIdx, key, i, d);
                                                 }
@@ -9282,10 +9408,21 @@ var nts;
                                         }
                                     }
                                     else {
+                                        var fieldArr = void 0;
                                         if (_.isFunction(viewFn)) {
-                                            cData = helper.viewData(viewFn, viewMode, data[key]);
+                                            cData_1 = helper.viewData(viewFn, viewMode, data[key]);
+                                            fieldArr = viewFn(viewMode);
                                         }
-                                        $target.textContent = cData;
+                                        if ($target.classList.contains(style.HIDDEN_CLS)) {
+                                            $.data($target, "hide", cData_1);
+                                            $target.innerHTML = "";
+                                        }
+                                        else {
+                                            $target.textContent = cData_1;
+                                        }
+                                        if (fieldArr) {
+                                            fields = fieldArr;
+                                        }
                                         cellObj_1 = new selection.Cell(rowIdx, key, data[key], -1);
                                         touched = trace(origDs, $target, cellObj_1, fields, x.manipulatorId, x.manipulatorKey);
                                         if (touched && !touched.dirty) {
@@ -9305,11 +9442,11 @@ var nts;
                     /**
                      * Makeup.
                      */
-                    function makeUp($grid, rowIdx, key, hypo) {
+                    function makeUp($grid, rowIdx, key, innerIdx, hypo) {
                         var dCellsStyle = $.data($grid, internal.D_CELLS_STYLE);
                         if (!dCellsStyle) {
                             dCellsStyle = {};
-                            dCellsStyle[rowIdx] = [new style.Cell(rowIdx, key, [hypo])];
+                            dCellsStyle[rowIdx] = [new style.Cell(rowIdx, key, innerIdx, [hypo])];
                             $.data($grid, internal.D_CELLS_STYLE, dCellsStyle);
                             return;
                         }
@@ -9317,18 +9454,18 @@ var nts;
                         var cells = dCellsStyle[rowIdx];
                         if (cells) {
                             _.forEach(cells, function (c, i) {
-                                if (c.columnKey === key) {
+                                if (c.columnKey === key && c.innerIdx === innerIdx) {
                                     c.makeup.push(hypo);
                                     dup = true;
                                     return false;
                                 }
                             });
                             if (!dup) {
-                                cells.push(new style.Cell(rowIdx, key, [hypo]));
+                                cells.push(new style.Cell(rowIdx, key, innerIdx, [hypo]));
                             }
                         }
                         else {
-                            dCellsStyle[rowIdx] = [new style.Cell(rowIdx, key, [hypo])];
+                            dCellsStyle[rowIdx] = [new style.Cell(rowIdx, key, innerIdx, [hypo])];
                         }
                     }
                     /**
@@ -9434,11 +9571,12 @@ var nts;
                             containerElm.querySelector("table").replaceChild(tbody, containerElm.getElementsByTagName("tbody")[0]);
                             if (self.$container.classList.contains(BODY_PRF + DETAIL)) {
                                 //                    self.selectCellsIn();
-                                //                    self.dirtyCellsIn();
+                                //                    self.dirtyCellsIn(manual);
                                 //                    self.errorCellsIn();
-                                self.detCellsIn();
+                                self.detCellsIn(manual);
                                 //                    self.editCellIn();
                                 self.madeUpCellsIn();
+                                //                    self.detModeRemainsChanges();
                             }
                             else if (self.$container.classList.contains(BODY_PRF + LEFTMOST)) {
                                 self.selectedRowsIn();
@@ -9651,9 +9789,13 @@ var nts;
                         /**
                          * Dirty cells in.
                          */
-                        Cloud.prototype.dirtyCellsIn = function () {
+                        Cloud.prototype.dirtyCellsIn = function (manual) {
+                            if (!manual)
+                                return;
                             var self = this;
                             var $exTable = helper.closest(self.$container, "." + NAMESPACE);
+                            if (!$exTable)
+                                return;
                             var updateMode = $.data($exTable, NAMESPACE).updateMode;
                             var histories, targetHis, otherHis;
                             if (self.options.containerClass === BODY_PRF + LEFTMOST) {
@@ -9700,12 +9842,12 @@ var nts;
                         /**
                          * Det cells in.
                          */
-                        Cloud.prototype.detCellsIn = function () {
+                        Cloud.prototype.detCellsIn = function (manual) {
                             var self = this;
                             var det = $.data(self.$container, internal.DET);
                             if (!det)
                                 return;
-                            self.eachKey(det, function (obj) { return obj.columnKey; }, function (obj) { return !obj.uiReflected; }, function ($cell, obj) {
+                            self.eachKey(det, function (obj) { return obj.columnKey; }, function (obj) { return manual ? true : !obj.uiReflected; }, function ($cell, obj) {
                                 helper.markCellWith(style.DET_CLS, $cell);
                                 obj.uiReflected = true;
                             });
@@ -9741,6 +9883,30 @@ var nts;
                                     obj.uiReflected = true;
                                 }
                             });
+                        };
+                        /**
+                         * Det mode remains changes.
+                         */
+                        Cloud.prototype.detModeRemainsChanges = function () {
+                            var self = this;
+                            var $exTable = helper.closest(self.$container, "." + NAMESPACE);
+                            if (!$exTable)
+                                return;
+                            var exTable = $.data($exTable, NAMESPACE);
+                            if (exTable.updateMode === DETERMINE) {
+                                var modifies = exTable.modifications;
+                                self.eachKey(modifies, function (obj) { return obj.columnKey; }, function (obj) { return true; }, function ($cell, obj) {
+                                    var updateCls = update.OTHER_EDITED_CLS, rowObj = self.dataSource[obj.rowIndex];
+                                    if (!rowObj)
+                                        return;
+                                    if (rowObj[exTable.manipulatorKey] === exTable.manipulatorId) {
+                                        updateCls = update.TARGET_EDITED_CLS;
+                                    }
+                                    if (obj.innerIdx > -1) {
+                                        helper.markCellWith(updateCls, $cell, obj.innerIdx);
+                                    }
+                                });
+                            }
                         };
                         /**
                          * Each key.
@@ -9806,7 +9972,7 @@ var nts;
                      * Cell input.
                      */
                     function cellInput($cell, options, supplier) {
-                        if (uk.util.isNullOrUndefined(options.updateMode) || options.updateMode !== EDIT
+                        if (uk.util.isNullOrUndefined(options.updateMode) /*|| options.updateMode !== EDIT*/
                             || $cell.classList.contains(controls.LABEL_CLS))
                             return;
                         $cell.classList.add(update.EDITABLE_CLS);
@@ -9816,6 +9982,8 @@ var nts;
                                 return;
                             }
                             var $exTable = helper.closest($cell, "." + NAMESPACE);
+                            if ($.data($exTable, NAMESPACE).updateMode !== EDIT)
+                                return;
                             if (!selector.is(evt.target, "." + selection.CELL_SELECTED_CLS)) {
                                 var $detailContent = $exTable.querySelector("." + (BODY_PRF + DETAIL));
                                 var inputSelecting = $.data($detailContent, internal.INPUT_SELECTING);
@@ -9849,8 +10017,7 @@ var nts;
                                 }
                                 return;
                             }
-                            if (evt.ctrlKey && $.data($exTable, NAMESPACE).determination)
-                                return;
+                            //                if (evt.ctrlKey && $.data($exTable, NAMESPACE).determination) return;
                             update.edit($exTable, $cell, options.containerClass);
                         });
                         $cell.addXEventListener(events.KEY_UP, function () {
@@ -10020,7 +10187,7 @@ var nts;
                             }
                             $editor.style.width = "calc(100% - 1px)";
                             $editor.style.backgroundColor = "#FFF";
-                            $editor.style.border = "1px solid #AAB7B8";
+                            $editor.style.border = "1px solid #ABB7B8";
                             $editor.appendChild($input);
                             if (selector.is($cell, "div")) {
                                 $editor.style.height = "calc(100% - 2px)";
@@ -10163,6 +10330,9 @@ var nts;
                                     }).fail(function (res) {
                                         var $target = selection.cellAt($grid_1, editor_1.rowIdx, editor_1.columnKey);
                                         if ($target !== intan.NULL) {
+                                            var $parent = $editor.parentElement;
+                                            helper.removeClass($parent, update.EDIT_CELL_CLS);
+                                            triggerStopEdit($exTable, $parent, land, value);
                                             errors.add($exTable, $target, editor_1.rowIdx, editor_1.columnKey, editor_1.innerIdx, editor_1.value);
                                         }
                                         if (_.isFunction(columnDf_2.ajaxValidate.onFailed)) {
@@ -10266,9 +10436,10 @@ var nts;
                         var $body = !ui.land ? $exTable.querySelector("." + BODY_PRF + DETAIL) : $exTable.querySelector("." + ui.land);
                         var $cell = selection.cellAt($body, ui.rowIndex, ui.columnKey);
                         var result = validation.validate($body, $cell, ui.rowIndex, ui.columnKey, ui.innerIdx, ui.value, timeRangerDef);
-                        if (!result.isValid)
-                            return;
-                        ui.value = result.value;
+                        //            if (!result.isValid) return;
+                        if (result.isValid) {
+                            ui.value = result.value;
+                        }
                         var res = cellData($exTable, ui);
                         if (!uk.util.isNullOrUndefined(res)) {
                             var newValObj = ui.value;
@@ -10362,6 +10533,7 @@ var nts;
                                 }).fail(function (res) {
                                     var $target = selection.cellAt($grid_2, editor_2.rowIdx, editor_2.columnKey);
                                     if ($target !== intan.NULL) {
+                                        mo_1(helper.call(columnDf_3.ajaxValidate.onFailed, { rowIndex: editor_2.rowIdx, columnKey: editor_2.columnKey, innerIdx: editor_2.innerIdx }, res));
                                         errors.add($exTable, $target, editor_2.rowIdx, editor_2.columnKey, editor_2.innerIdx, editor_2.value);
                                     }
                                     if (_.isFunction(columnDf_3.ajaxValidate.onFailed)) {
@@ -10464,7 +10636,7 @@ var nts;
                         if (!gen)
                             return;
                         var cData = gen.dataSource[rowIdx][columnKey];
-                        var origDs = gen._origDs;
+                        var origDs = gen._origDs, viewFn = gen.painter.options.view, viewMode = gen.painter.options.viewMode;
                         var $table = helper.closest($grid, "." + NAMESPACE);
                         if (cData.constructor === Array) {
                             if (value.constructor === Array) {
@@ -10481,6 +10653,27 @@ var nts;
                                     events.trigger($table, events.CELL_UPDATED, new selection.Cell(rowIdx, columnKey, value, innerIdx));
                                 }
                             }
+                            //            } else if (cData && cData.constructor === Object) {
+                            //                if (innerIdx !== -1 && !_.isNil(innerIdx)) {
+                            //                    let fieldArr = viewFn(viewMode);
+                            //                    let tField = fieldArr[innerIdx];
+                            //                    gen.dataSource[rowIdx][columnKey][tField] = value[tField];
+                            //                    if (tField.slice(-4) === "Name") {
+                            //                        let codeFieldName = tField.substr(0, tField.length - 4) + "Code";
+                            //                        if (_.has(value, codeFieldName)) {
+                            //                            gen.dataSource[rowIdx][columnKey][codeFieldName] = value[codeFieldName];
+                            //                        }
+                            //                    }
+                            //                    
+                            //                    if (!helper.isEqual(origDs[rowIdx][columnKey], value, [ tField ])) {
+                            //                        events.trigger($table, events.CELL_UPDATED, new selection.Cell(rowIdx, columnKey, value, innerIdx));
+                            //                    }
+                            //                } else {
+                            //                    gen.dataSource[rowIdx][columnKey] = value;
+                            //                    if (!helper.isEqual(origDs[rowIdx][columnKey], value)) {
+                            //                        events.trigger($table, events.CELL_UPDATED, new selection.Cell(rowIdx, columnKey, value, -1));
+                            //                    }
+                            //                }
                         }
                         else {
                             gen.dataSource[rowIdx][columnKey] = value;
@@ -10520,11 +10713,12 @@ var nts;
                             || helper.isXCell($grid, gen.dataSource[rowIdx][pk], columnKey, style.HIDDEN_CLS, style.SEAL_CLS))
                             return;
                         var cData = gen.dataSource[rowIdx][columnKey];
-                        var opt = gen.options;
-                        if (!exTable.pasteOverWrite
+                        var opt = gen.options, fieldArr = opt.view(opt.viewMode);
+                        if ((!exTable.pasteOverWrite
                             && !helper.isEmpty(helper.viewData(opt.view, opt.viewMode, cData)))
+                            || _.every(fieldArr, function (f) { return _.isNil(value[f]) || value[f] === ""; }))
                             return;
-                        var changedData;
+                        var changedData, clonedVal = _.cloneDeep(value);
                         if (cData.constructor === Array) {
                             if (value.constructor === Array) {
                                 changedData = _.cloneDeep(cData);
@@ -10536,19 +10730,60 @@ var nts;
                                 changedData = cData[innerIdx];
                                 gen.dataSource[rowIdx][columnKey][innerIdx] = value;
                             }
-                        }
-                        else if (_.isObject(cData) && !_.isObject(value)) {
-                            return;
+                            //            } else if (_.isObject(cData)) {
+                            //                if (!_.isObject(value)) return;
+                            //                if (!_.isNil(innerIdx) && innerIdx !== -1) {
+                            //                    let tField = fieldArr[innerIdx];
+                            //                    changedData = _.cloneDeep(cData);
+                            //                    if (!helper.isEmpty(clonedVal[tField])) {
+                            //                        gen.dataSource[rowIdx][columnKey][tField] = clonedVal[tField];
+                            //                        if (tField.slice(-4) === "Name") {
+                            //                            let codeFieldName = tField.substr(0, tField.length - 4) + "Code";
+                            //                            if (_.has(clonedVal, codeFieldName)) {
+                            //                                gen.dataSource[rowIdx][columnKey][codeFieldName] = clonedVal[codeFieldName];
+                            //                            }
+                            //                        }
+                            //                    } else { 
+                            //                        clonedVal[tField] = gen.dataSource[rowIdx][columnKey][tField];
+                            //                        if (tField.slice(-4) === "Name") {
+                            //                            let codeFieldName = tField.substr(0, tField.length - 4) + "Code";
+                            //                            if (_.has(clonedVal, codeFieldName)) {
+                            //                                clonedVal[codeFieldName] = gen.dataSource[rowIdx][columnKey][codeFieldName];
+                            //                            }
+                            //                        }
+                            //                    }
+                            //                } else {
+                            //                    changedData = _.cloneDeep(cData);
+                            //                    _.forEach(fieldArr, f => {
+                            //                        if (!helper.isEmpty(clonedVal[f])) {
+                            //                            gen.dataSource[rowIdx][columnKey][f] = clonedVal[f];
+                            //                            if (f.slice(-4) === "Name") {
+                            //                                let codeFieldName = f.substr(0, f.length - 4) + "Code";
+                            //                                if (_.has(clonedVal, codeFieldName)) {
+                            //                                    gen.dataSource[rowIdx][columnKey][codeFieldName] = clonedVal[codeFieldName];
+                            //                                }
+                            //                            }
+                            //                        } else {
+                            //                            clonedVal[f] = gen.dataSource[rowIdx][columnKey][f];
+                            //                            if (f.slice(-4) === "Name") {
+                            //                                let codeFieldName = f.substr(0, f.length - 4) + "Code";
+                            //                                if (_.has(clonedVal, codeFieldName)) {
+                            //                                    clonedVal[codeFieldName] = gen.dataSource[rowIdx][columnKey][codeFieldName];
+                            //                                }
+                            //                            }
+                            //                        }
+                            //                    });
+                            //                }
                         }
                         else {
-                            changedData = cData;
+                            changedData = _.cloneDeep(cData);
                             gen.dataSource[rowIdx][columnKey] = value;
                         }
                         var sm, sticker = $.data($grid, internal.STICKER);
                         if (sticker) {
                             sm = sticker.styleMaker;
                         }
-                        var touched = render.gridCell($grid, rowIdx, columnKey, innerIdx, value, sm);
+                        var touched = render.gridCell($grid, rowIdx, columnKey, innerIdx, clonedVal, sm);
                         if (touched && touched.dirty) {
                             var cellObj = new selection.Cell(rowIdx, columnKey, changedData);
                             cellObj.setTarget(touched.updateTarget);
@@ -10571,17 +10806,50 @@ var nts;
                         var changedCells = [];
                         var origData = _.cloneDeep(data);
                         var clonedData = _.cloneDeep(data);
-                        var opt = gen.options;
+                        var opt = gen.options, fieldArr = opt.view(opt.viewMode), pkVal = gen.dataSource[rowIdx][pk];
                         _.assignInWith(gen.dataSource[rowIdx], clonedData, function (objVal, srcVal, key, obj, src) {
                             if ((!exTable.pasteOverWrite
                                 && !helper.isEmpty(helper.viewData(opt.view, opt.viewMode, objVal)))
                                 || helper.isDetCell($grid, rowIdx, key)
-                                || helper.isXCell($grid, gen.dataSource[rowIdx][pk], key, style.HIDDEN_CLS, style.SEAL_CLS)) {
+                                || helper.isXCell($grid, pkVal, key, style.HIDDEN_CLS, style.SEAL_CLS)
+                                || _.every(fieldArr, function (f) { return _.isNil(srcVal[f]) || srcVal[f] === ""; })) {
                                 src[key] = objVal;
+                                delete origData[key];
                                 return objVal;
                             }
-                            if (!uk.util.isNullOrUndefined(src[key]) && !helper.isEqual(src[key], obj[key])) {
-                                changedCells.push(new selection.Cell(rowIdx, key, objVal));
+                            if (!uk.util.isNullOrUndefined(src[key])) {
+                                /*if (fieldArr && fieldArr.length > 1 && _.isObject(srcVal)) {
+                                    let srcValCloned = _.cloneDeep(srcVal), cellPartialUpdate = false;
+                                    _.forEach(fieldArr, (f, i) => {
+                                        if ((!exTable.pasteOverWrite && !helper.isEmpty(objVal[f]))
+                                            || helper.isXInnerCell($grid, pkVal, key, i, style.HIDDEN_CLS, style.SEAL_CLS)
+                                            || helper.isEmpty(srcVal[f])) {
+                                            srcValCloned[f] = objVal[f];
+                                            origData[key][f] = objVal[f];
+                                            if (f.slice(-4) === "Name") {
+                                                let codeFieldName = f.substr(0, f.length - 4) + "Code";
+                                                if (_.has(srcValCloned, codeFieldName)) {
+                                                    srcValCloned[codeFieldName] = objVal[codeFieldName];
+                                                    origData[key][codeFieldName] = objVal[codeFieldName];
+                                                }
+                                            }
+                                            
+                                            cellPartialUpdate = true;
+                                            return;
+                                        }
+                                        
+                                        if (!helper.isEqual(srcVal[f], objVal[f])) {
+                                            changedCells.push(new selection.Cell(rowIdx, key, _.cloneDeep(objVal), i));
+                                        }
+                                    });
+                                    
+                                    if (cellPartialUpdate) return srcValCloned;
+                                } else*/ if (!helper.isEqual(src[key], obj[key])) {
+                                    changedCells.push(new selection.Cell(rowIdx, key, _.cloneDeep(objVal)));
+                                }
+                                else {
+                                    delete origData[key];
+                                }
                             }
                             else {
                                 delete origData[key];
@@ -10592,17 +10860,17 @@ var nts;
                             }
                             return srcVal;
                         });
-                        _.forEach(Object.keys(clonedData), function (k) {
-                            if (!helper.isEqual(clonedData[k], origData[k])) {
-                                delete origData[k];
-                            }
-                        });
+                        //            _.forEach(Object.keys(clonedData), function(k: any) {
+                        //                if (!helper.isEqual(clonedData[k], origData[k])) {
+                        //                    delete origData[k];
+                        //                }
+                        //            });
                         var sm, sticker = $.data($grid, internal.STICKER);
                         if (sticker) {
                             sm = sticker.styleMaker;
                         }
                         var touched = render.gridRow($grid, rowIdx, origData, sm);
-                        if (changedCells.length > 0) {
+                        if (changedCells.length > 0 && !_.isNil(touched)) {
                             changedCells.forEach(function (c) { return c.setTarget(touched.updateTarget); });
                             pushHistory($grid, changedCells, txId);
                             events.trigger($exTable, events.ROW_UPDATED, events.createRowUi(rowIdx, origData));
@@ -10612,22 +10880,42 @@ var nts;
                     /**
                      * Stick grid cell ow.
                      */
-                    function stickGridCellOw($grid, rowIdx, columnKey, innerIdx, value, styleMaker) {
+                    function stickGridCellOw($grid, rowIdx, columnKey, innerIdx, value, styleMaker, stickFields) {
                         var $exTable = helper.closest($grid, "." + NAMESPACE);
                         var exTable = $.data($exTable, NAMESPACE);
                         var gen = $.data($grid, internal.TANGI) || $.data($grid, internal.CANON);
-                        var pk = helper.getPrimaryKey($grid);
-                        if (!gen || helper.isDetCell($grid, rowIdx, columnKey)
-                            || helper.isXCell($grid, gen.dataSource[rowIdx][pk], columnKey, style.HIDDEN_CLS, style.SEAL_CLS))
+                        var pk = helper.getPrimaryKey($grid), pkVal = gen.dataSource[rowIdx][pk];
+                        if (!gen || helper.isDetCell($grid, rowIdx, columnKey))
                             return;
                         var cData = gen.dataSource[rowIdx][columnKey];
-                        var opt = gen.options;
+                        var opt = gen.options, fieldArr = opt.view(opt.viewMode), sticker = $.data($grid, internal.STICKER);
+                        if (!stickFields && sticker && sticker.fields) {
+                            stickFields = sticker.fields;
+                        }
                         if (!exTable.stickOverWrite
                             && !helper.isEmpty(helper.viewData(opt.view, opt.viewMode, cData)))
                             return;
+                        var clonedVal = _.cloneDeep(value);
+                        if (fieldArr && _.isObject(clonedVal)) {
+                            _.forEach(fieldArr, function (f, i) {
+                                if ((!exTable.stickOverWrite && !helper.isEmpty(cData[f]))
+                                    || helper.isXInnerCell($grid, pkVal, columnKey, i, style.HIDDEN_CLS, style.SEAL_CLS)
+                                    || !_.includes(stickFields, f)) {
+                                    clonedVal[f] = cData[f];
+                                    if (f.slice(-4) === "Name") {
+                                        var codeFieldName = f.substr(0, f.length - 4) + "Code";
+                                        if (_.has(clonedVal, codeFieldName)) {
+                                            clonedVal[codeFieldName] = cData[codeFieldName];
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                        else if (helper.isXCell($grid, pkVal, columnKey, style.HIDDEN_CLS, style.SEAL_CLS))
+                            return;
                         var changedData = _.cloneDeep(cData);
-                        gen.dataSource[rowIdx][columnKey] = value;
-                        var touched = render.gridCell($grid, rowIdx, columnKey, innerIdx, value, styleMaker);
+                        gen.dataSource[rowIdx][columnKey] = clonedVal;
+                        var touched = render.gridCell($grid, rowIdx, columnKey, innerIdx, clonedVal, styleMaker, _.cloneDeep(value));
                         if (!touched || !touched.dirty)
                             return;
                         if (!_.isNil(touched.idx) && touched.idx !== -1) {
@@ -10635,43 +10923,91 @@ var nts;
                         }
                         var cellObj = new selection.Cell(rowIdx, columnKey, changedData, innerIdx);
                         cellObj.setTarget(touched.updateTarget);
+                        if (stickFields) {
+                            cellObj.stickFields = stickFields;
+                        }
                         pushStickHistory($grid, [cellObj]);
-                        events.trigger($exTable, events.CELL_UPDATED, new selection.Cell(rowIdx, columnKey, value, innerIdx));
+                        events.trigger($exTable, events.CELL_UPDATED, new selection.Cell(rowIdx, columnKey, clonedVal, innerIdx));
                     }
                     update.stickGridCellOw = stickGridCellOw;
                     /**
                      * Stick grid row ow.
                      */
-                    function stickGridRowOw($grid, rowIdx, data, styleMaker) {
+                    function stickGridRowOw($grid, rowIdx, data, styleMaker, stickFields) {
                         var $exTable = helper.closest($grid, "." + NAMESPACE);
                         var exTable = $.data($exTable, NAMESPACE);
                         var gen = $.data($grid, internal.TANGI) || $.data($grid, internal.CANON);
                         var pk = helper.getPrimaryKey($grid);
+                        var sticker = $.data($grid, internal.STICKER);
+                        if (!stickFields && sticker && sticker.fields) {
+                            stickFields = sticker.fields;
+                        }
                         if (!gen)
                             return;
                         // Create history
                         var changedCells = [];
                         var origData = _.cloneDeep(data);
                         var clonedData = _.cloneDeep(data);
-                        var opt = gen.options, fieldArr = opt.view(opt.viewMode);
+                        var opt = gen.options, fieldArr = opt.view(opt.viewMode), pkVal = gen.dataSource[rowIdx][pk];
                         _.assignInWith(gen.dataSource[rowIdx], clonedData, function (objVal, srcVal, key, obj, src) {
                             if ((!exTable.stickOverWrite
                                 && !helper.isEmpty(helper.viewData(opt.view, opt.viewMode, objVal)))
-                                || helper.isDetCell($grid, rowIdx, key)
-                                || helper.isXCell($grid, gen.dataSource[rowIdx][pk], key, style.HIDDEN_CLS, style.SEAL_CLS)) {
+                                || helper.isDetCell($grid, rowIdx, key)) {
                                 src[key] = objVal;
+                                delete origData[key];
                                 return objVal;
                             }
                             if (!uk.util.isNullOrUndefined(src[key])) {
-                                if (fieldArr && _.isObject(srcVal)) {
+                                if (fieldArr && fieldArr.length > 1 && _.isObject(srcVal)) {
+                                    var srcValCloned_1 = _.cloneDeep(srcVal), cellPartialUpdate_1 = false;
                                     _.forEach(fieldArr, function (f, i) {
+                                        if ((!exTable.stickOverWrite && !helper.isEmpty(objVal[f]))
+                                            || helper.isXInnerCell($grid, pkVal, key, i, style.HIDDEN_CLS, style.SEAL_CLS)
+                                            || !_.includes(stickFields, f)) {
+                                            srcValCloned_1[f] = objVal[f];
+                                            origData[key][f] = objVal[f];
+                                            if (f.slice(-4) === "Name") {
+                                                var codeFieldName = f.substr(0, f.length - 4) + "Code";
+                                                if (_.has(srcValCloned_1, codeFieldName)) {
+                                                    srcValCloned_1[codeFieldName] = objVal[codeFieldName];
+                                                    origData[key][codeFieldName] = objVal[codeFieldName];
+                                                }
+                                            }
+                                            cellPartialUpdate_1 = true;
+                                            return;
+                                        }
                                         if (!helper.isEqual(srcVal[f], objVal[f])) {
                                             changedCells.push(new selection.Cell(rowIdx, key, _.cloneDeep(objVal), i));
                                         }
                                     });
+                                    if (cellPartialUpdate_1)
+                                        return srcValCloned_1;
                                 }
-                                else if (!helper.isEqual(src[key], obj[key])) {
-                                    changedCells.push(new selection.Cell(rowIdx, key, _.cloneDeep(objVal)));
+                                else {
+                                    if (stickFields && stickFields[0] === fieldArr[0]) {
+                                        var objValCloned = _.cloneDeep(objVal), tField = fieldArr[0];
+                                        if (!helper.isEqual(src[key], obj[key], fieldArr)
+                                            && !helper.isXInnerCell($grid, pkVal, key, null, style.HIDDEN_CLS, style.SEAL_CLS)) {
+                                            objValCloned[tField] = srcVal[tField];
+                                            if (tField.slice(-4) === "Name") {
+                                                var codeFieldName = tField.substr(0, tField.length - 4) + "Code";
+                                                if (_.has(objValCloned, codeFieldName)) {
+                                                    objValCloned[codeFieldName] = srcVal[codeFieldName];
+                                                }
+                                            }
+                                            changedCells.push(new selection.Cell(rowIdx, key, _.cloneDeep(objVal)));
+                                            origData[key] = objValCloned;
+                                            return objValCloned;
+                                        }
+                                        delete origData[key];
+                                        return objVal;
+                                    }
+                                    else if (!helper.isEqual(src[key], obj[key])) {
+                                        changedCells.push(new selection.Cell(rowIdx, key, _.cloneDeep(objVal)));
+                                    }
+                                    else {
+                                        delete origData[key];
+                                    }
                                 }
                             }
                             else {
@@ -10683,14 +11019,19 @@ var nts;
                             }
                             return srcVal;
                         });
-                        _.forEach(Object.keys(clonedData), function (k) {
-                            if (!helper.isEqual(clonedData[k], origData[k])) {
-                                delete origData[k];
-                            }
-                        });
-                        var touched = render.gridRow($grid, rowIdx, origData, styleMaker);
+                        //            _.forEach(Object.keys(clonedData), function(k: any) {
+                        //                if (!helper.isEqual(clonedData[k], origData[k])) {
+                        //                    delete origData[k];
+                        //                }
+                        //            });
+                        var touched = render.gridRow($grid, rowIdx, origData, styleMaker, _.cloneDeep(data));
                         if (changedCells.length > 0) {
-                            changedCells.forEach(function (c) { return c.setTarget(touched.updateTarget); });
+                            changedCells.forEach(function (c) {
+                                c.setTarget(touched.updateTarget);
+                                if (stickFields) {
+                                    c.stickFields = stickFields;
+                                }
+                            });
                             pushStickHistory($grid, changedCells);
                             events.trigger($exTable, events.ROW_UPDATED, events.createRowUi(rowIdx, origData, _.cloneDeep(changedCells)));
                         }
@@ -11034,8 +11375,7 @@ var nts;
                                 var cell = selectedCells[0];
                                 var ds = internal.getDataSource(self.$grid);
                                 var pk = helper.getPrimaryKey(self.$grid);
-                                if (helper.isDetCell(self.$grid, cell.rowIndex, cell.columnKey)
-                                    || helper.isXCell(self.$grid, ds[cell.rowIndex][pk], cell.columnKey, style.HIDDEN_CLS, style.SEAL_CLS))
+                                if (helper.isXCell(self.$grid, ds[cell.rowIndex][pk], cell.columnKey, style.HIDDEN_CLS /*, style.SEAL_CLS*/))
                                     return;
                                 this.mode = Mode.SINGLE;
                                 copiedData += _.isObject(selectedCells[0].value) ? JSON.stringify(selectedCells[0].value) : selectedCells[0].value;
@@ -11081,8 +11421,7 @@ var nts;
                                 }
                                 var ds = internal.getDataSource(self.$grid);
                                 var pk = helper.getPrimaryKey(self.$grid);
-                                if (helper.isDetCell(self.$grid, rowIndex, cell.columnKey)
-                                    || helper.isXCell(self.$grid, ds[rowIndex][pk], cell.columnKey, style.HIDDEN_CLS, style.SEAL_CLS)) {
+                                if (helper.isXCell(self.$grid, ds[rowIndex][pk], cell.columnKey, style.HIDDEN_CLS /*, style.SEAL_CLS*/)) {
                                     structure[rowIndex][columnIndex] = undefined;
                                 }
                                 else
@@ -11148,12 +11487,32 @@ var nts;
                          * Paste single cell.
                          */
                         Printer.prototype.pasteSingleCell = function (evt) {
+                            var _this = this;
                             var self = this;
                             var cbData = this.getClipboardContent(evt);
                             cbData = self.getContents(cbData);
                             if (_.isNil(cbData))
                                 return;
                             cbData = helper.getCellData(cbData);
+                            var validate = $.data(self.$grid, internal.PASTE_VALIDATE);
+                            if (_.isFunction(validate)) {
+                                var result = validate([cbData]);
+                                if (_.has(result, "done")) {
+                                    result.done(function (res) {
+                                        if (res === true) {
+                                            var selectedCells_1 = selection.getSelectedCells(_this.$grid);
+                                            var txId_1 = uk.util.randomId();
+                                            _.forEach(selectedCells_1, function (cell, index) {
+                                                update.gridCellOw(self.$grid, cell.rowIndex, cell.columnKey, -1, cbData, txId_1);
+                                            });
+                                        }
+                                        else if (_.isFunction(res)) {
+                                            res();
+                                        }
+                                    });
+                                }
+                                return;
+                            }
                             var selectedCells = selection.getSelectedCells(this.$grid);
                             var txId = uk.util.randomId();
                             _.forEach(selectedCells, function (cell, index) {
@@ -11164,19 +11523,38 @@ var nts;
                          * Paste range.
                          */
                         Printer.prototype.pasteRange = function (evt) {
-                            var cbData = this.getClipboardContent(evt);
+                            var self = this, cbData = this.getClipboardContent(evt);
                             cbData = this.getContents(cbData);
                             if (_.isNil(cbData))
                                 return;
-                            cbData = this.process(cbData);
+                            var objArr = [];
+                            cbData = this.process(cbData, objArr);
+                            var validate = $.data(self.$grid, internal.PASTE_VALIDATE);
+                            if (_.isFunction(validate) && objArr.length > 0) {
+                                var result = validate(objArr);
+                                if (_.has(result, "done")) {
+                                    result.done(function (res) {
+                                        if (res === true) {
+                                            self.updateWith(cbData);
+                                        }
+                                        else if (_.isFunction(res)) {
+                                            res();
+                                        }
+                                    });
+                                }
+                                return;
+                            }
                             this.updateWith(cbData);
                         };
                         /**
                          * Process.
                          */
-                        Printer.prototype.process = function (data) {
+                        Printer.prototype.process = function (data, objArr) {
                             var dataRows = _.map(data.split("\n"), function (row) {
                                 return _.map(row.split("\t"), function (cData) {
+                                    if (cData !== "null" && !_.isNil(cData) && cData !== "") {
+                                        objArr.push(helper.getCellData(cData));
+                                    }
                                     return cData.indexOf(",") > 0 ? cData.split(",") : cData;
                                 });
                             });
@@ -11235,11 +11613,31 @@ var nts;
                             if (!histories || histories.length === 0)
                                 return;
                             var tx = histories.pop();
-                            var redoStack = $.data(self.$grid, internal.REDO_STACK), ds = internal.getDataSource(self.$grid), currentItems = [];
+                            var redoStack = $.data(self.$grid, internal.REDO_STACK), ds = internal.getDataSource(self.$grid), currentItems = [], gen = $.data(self.$grid, internal.TANGI) || $.data(self.$grid, internal.CANON), viewFn = gen.painter.options.view, viewMode = gen.painter.options.viewMode, fieldArr;
+                            if (_.isFunction(viewFn)) {
+                                fieldArr = viewFn(viewMode);
+                            }
                             _.forEach(tx.items, function (item) {
                                 var currentItem = { rowIndex: item.rowIndex, columnKey: item.columnKey, innerIdx: -1 }, data = ds[item.rowIndex];
                                 if (!data)
                                     return;
+                                //                    let undoItem;
+                                //                    if (item.innerIdx !== -1 && !_.isNil(item.innerIdx)) {
+                                //                        undoItem = _.find(currentItems, ci => ci.rowIndex === item.rowIndex && ci.columnKey === item.columnKey && ci.innerIdx === item.innerIdx);
+                                //                    } else {
+                                //                        undoItem = _.find(currentItems, ci => ci.rowIndex === item.rowIndex && ci.columnKey === item.columnKey);
+                                //                    }
+                                //                    
+                                //                    if (undoItem) {
+                                //                        if (item.innerIdx !== -1 && !_.isNil(item.innerIdx)) {
+                                //                            let tField = fieldArr[item.innerIdx];
+                                //                            currentItem.value[tField] = undoItem.value[tField]; 
+                                //                        } else {
+                                //                            currentItem.value = undoItem.value;
+                                //                        }
+                                //                    } else {
+                                //                        currentItem.value = _.cloneDeep(data[item.columnKey]);
+                                //                    }
                                 currentItem.value = data[item.columnKey];
                                 currentItems.push(currentItem);
                                 update.gridCell(self.$grid, item.rowIndex, item.columnKey, -1, item.value, true);
@@ -11316,7 +11714,7 @@ var nts;
                     var Sticker = /** @class */ (function () {
                         function Sticker(data) {
                             this.mode = spread.MULTIPLE;
-                            this.validate = function () { return true; };
+                            this.validate = function () { var dfd = $.Deferred(); dfd.resolve(true); return dfd.promise(); };
                             this.data = data;
                         }
                         return Sticker;
@@ -11366,13 +11764,15 @@ var nts;
                      * Bind row sticker.
                      */
                     function bindRowSticker($row, rowIdx, options) {
-                        if (options.containerClass !== BODY_PRF + DETAIL || uk.util.isNullOrUndefined(options.updateMode)
-                            || options.updateMode !== STICK)
+                        if (options.containerClass !== BODY_PRF + DETAIL /*|| util.isNullOrUndefined(options.updateMode)
+                            || options.updateMode !== STICK*/)
                             return;
                         $row.addXEventListener(events.CLICK_EVT, function (evt) {
-                            if (evt.ctrlKey)
-                                return;
+                            //                if (evt.ctrlKey) return;
                             var $grid = helper.closest($row, "." + BODY_PRF + DETAIL);
+                            var exTable = helper.getExTableFromGrid($grid);
+                            if (exTable && exTable.updateMode !== STICK)
+                                return;
                             var sticker = $.data($grid, internal.STICKER);
                             if (!sticker || uk.util.isNullOrUndefined(sticker.data)
                                 || uk.util.isNullOrUndefined(sticker.validate))
@@ -11389,13 +11789,21 @@ var nts;
                             var colIndex = helper.indexOf(key, visibleColumns);
                             $.data($grid, internal.STICK_REDO_STACK, []);
                             if (sticker.mode === spread.SINGLE) {
-                                var result = void 0;
-                                if ((result = sticker.validate(rowIdx, key, sticker.data)) !== true) {
-                                    // TODO: show error
-                                    result();
-                                    return;
+                                if (_.isFunction(sticker.validate)) {
+                                    var validate = sticker.validate(rowIdx, key, sticker.data);
+                                    if (_.has(validate, "done")) {
+                                        validate.done(function (result) {
+                                            if (result === true) {
+                                                update.stickGridCellOw($grid, rowIdx, key, -1, sticker.data, sticker.styleMaker);
+                                            }
+                                            else
+                                                result();
+                                        });
+                                    }
                                 }
-                                update.stickGridCellOw($grid, rowIdx, key, -1, sticker.data, sticker.styleMaker);
+                                else {
+                                    update.stickGridCellOw($grid, rowIdx, key, -1, sticker.data, sticker.styleMaker);
+                                }
                                 return;
                             }
                             _.forEach(sticker.data, function (cData) {
@@ -11404,6 +11812,19 @@ var nts;
                                 if (!key)
                                     return false;
                             });
+                            if (_.isFunction(sticker.validate)) {
+                                var validate = sticker.validate(rowIdx, key, data);
+                                if (_.has(validate, "done")) {
+                                    validate.done(function (result) {
+                                        if (result === true) {
+                                            update.stickGridRowOw($grid, rowIdx, data, sticker.styleMaker);
+                                        }
+                                        else
+                                            result();
+                                    });
+                                }
+                                return;
+                            }
                             update.stickGridRowOw($grid, rowIdx, data, sticker.styleMaker);
                         });
                     }
@@ -11440,7 +11861,8 @@ var nts;
                     function validate($body, $cell, rowIdx, columnKey, innerIdx, value, timeRangerDef) {
                         var vtor = validation.mandate($body, columnKey, innerIdx);
                         var gen = $.data($body, internal.TANGI) || $.data($body, internal.CANON);
-                        var rowId = gen.dataSource[rowIdx][gen.primaryKey];
+                        var rowObj = gen.dataSource[rowIdx];
+                        var rowId = rowObj[gen.primaryKey];
                         timeRangerDef = timeRangerDef || $.data($body, internal.TIME_VALID_RANGE);
                         var formatValue;
                         if (vtor) {
@@ -11490,9 +11912,9 @@ var nts;
                                 isValid = true;
                                 formatValue = "";
                             }
-                            var $tbl = helper.closest($body, "." + NAMESPACE);
+                            var $tbl_1 = helper.closest($body, "." + NAMESPACE);
                             if (!isValid) {
-                                errors.add($tbl, $cell, rowIdx, columnKey, innerIdx, value);
+                                errors.add($tbl_1, $cell, rowIdx, columnKey, innerIdx, value);
                                 //                cellData($exTable, rowIdx, columnKey, innerIdx, value);
                                 //                    update.setText($cell, innerIdx, value);
                                 if (gen.options.errorMessagePopup) {
@@ -11501,12 +11923,37 @@ var nts;
                                 return Result.fail();
                             }
                             else {
+                                if (_.isFunction(gen.options.customValidate)) {
+                                    var result = gen.options.customValidate(rowIdx, columnKey, innerIdx, value, rowObj[columnKey]);
+                                    if (result && !result.isValid) {
+                                        errors.add($tbl_1, $cell, rowIdx, columnKey, innerIdx, value);
+                                        $.data($cell, internal.CUSTOM_ERR, true);
+                                        if (gen.options.errorMessagePopup) {
+                                            $.data($cell, internal.ERR_MSG, result.message);
+                                        }
+                                        return Result.fail();
+                                    }
+                                    $.data($cell, internal.CUSTOM_ERR, false);
+                                    _.forEach(result.innerErrorClear, function (innerErr) {
+                                        var $pCell = selection.cellAt($body, rowIdx, columnKey);
+                                        var childCells = $pCell.querySelectorAll("." + render.CHILD_CELL_CLS);
+                                        var $oCell = childCells ? childCells[innerErr] : $pCell;
+                                        if ($.data($oCell, internal.CUSTOM_ERR)) {
+                                            if (errors.any($oCell, innerErr))
+                                                errors.remove($tbl_1, $oCell, rowIdx, columnKey, innerErr);
+                                            if (gen.options.errorMessagePopup) {
+                                                $.data($oCell, internal.ERR_MSG, null);
+                                            }
+                                            $.data($oCell, internal.CUSTOM_ERR, false);
+                                        }
+                                    });
+                                }
                                 if (gen.options.errorMessagePopup) {
                                     $.data($cell, internal.ERR_MSG, null);
                                 }
                             }
                             if (errors.any($cell, innerIdx))
-                                errors.remove($tbl, $cell, rowIdx, columnKey, innerIdx);
+                                errors.remove($tbl_1, $cell, rowIdx, columnKey, innerIdx);
                         }
                         return Result.ok(formatValue);
                     }
@@ -11621,12 +12068,11 @@ var nts;
                         var targetTime = getComplement({ hour: hour, minute: minute, negative: negative });
                         if (!targetTime)
                             return false;
-                        var compareMax = compare(targetTime, maxTime);
-                        var compareMin = compare(targetTime, minTime);
+                        var compareMax = compare(targetTime, maxTime), compareMin = compare(targetTime, minTime);
                         if (compareMax > 0 || compareMin < 0)
                             return false;
-                        if ((targetTime.negative && maxTime.negative && compareMax === 0)
-                            || (targetTime.negative && minTime.negative && compareMin === 0))
+                        if ((maxTime.negative && targetTime.negative && compareMax === 0)
+                            || (minTime.negative && targetTime.negative && compareMin === 0))
                             return false;
                         return true;
                     }
@@ -13883,23 +14329,25 @@ var nts;
                     }());
                     style.CellStyleParam = CellStyleParam;
                     var Cell = /** @class */ (function () {
-                        function Cell(rowIndex, columnKey, makeup) {
+                        function Cell(rowIndex, columnKey, innerIdx, makeup) {
                             this.rowIndex = rowIndex;
                             this.columnKey = columnKey;
+                            this.innerIdx = innerIdx;
                             this.makeup = makeup;
                         }
                         return Cell;
                     }());
                     style.Cell = Cell;
                     function detColumn($grid, row, rowIdx, detOpt, $tbl) {
-                        //            let $tbl = helper.closest($grid, "." + NAMESPACE);
-                        //            let detOpt = $.data($tbl, NAMESPACE).determination;
                         if (!detOpt || !$grid.classList.contains(HEADER_PRF + DETAIL))
                             return;
                         _.forEach(detOpt.rows, function (i) {
                             if (i === rowIdx) {
                                 row.addXEventListener(events.MOUSE_DOWN, function (evt) {
-                                    if (!evt.ctrlKey)
+                                    if (!$tbl)
+                                        $tbl = helper.closest($grid, "." + NAMESPACE);
+                                    var updateMode = $.data($tbl, NAMESPACE).updateMode;
+                                    if (updateMode !== DETERMINE)
                                         return;
                                     var $main = helper.getMainTable($tbl);
                                     var gen = $.data($main, internal.TANGI) || $.data($main, internal.CANON);
@@ -13909,6 +14357,8 @@ var nts;
                                     var end = gen.endIndex || ds.length - 1;
                                     var $hCell = evt.target;
                                     var coord = helper.getCellCoord($hCell);
+                                    if (!coord)
+                                        return;
                                     var det = $.data($main, internal.DET);
                                     if (!det) {
                                         det = {};
@@ -13986,19 +14436,22 @@ var nts;
                     }
                     style.detColumn = detColumn;
                     function detCell($grid, $cell, rowIdx, columnKey, detOpt, $tbl) {
-                        //            let $tbl = helper.closest($grid, "." + NAMESPACE);
-                        //            let detOpt = $.data($tbl, NAMESPACE).determination;
                         if (!detOpt)
                             return;
                         if ($grid.classList.contains(BODY_PRF + LEFTMOST)) {
                             _.forEach(detOpt.columns, function (key) {
                                 if (key === columnKey) {
                                     $cell.addXEventListener(events.MOUSE_DOWN, function (evt) {
-                                        if (!evt.ctrlKey)
+                                        if (!$tbl)
+                                            $tbl = helper.closest($grid, "." + NAMESPACE);
+                                        var updateMode = $.data($tbl, NAMESPACE).updateMode;
+                                        if (updateMode !== DETERMINE)
                                             return;
                                         var $main = helper.getMainTable($tbl);
                                         var ds = internal.getDataSource($main);
                                         var coord = helper.getCellCoord($cell);
+                                        if (!coord)
+                                            return;
                                         var $targetRow = selection.rowAt($main, coord.rowIdx);
                                         if ($targetRow === intan.NULL || !$targetRow)
                                             return;
@@ -14065,12 +14518,22 @@ var nts;
                                 target = childCells;
                                 _.forEach(Array.prototype.slice.call(childCells), function (c) {
                                     c.addXEventListener(events.MOUSE_DOWN, function (evt) {
+                                        if (!$tbl)
+                                            $tbl = helper.closest($grid, "." + NAMESPACE);
+                                        var updateMode = $.data($tbl, NAMESPACE).updateMode;
+                                        if (updateMode !== DETERMINE)
+                                            return;
                                         onDetSingleCell(evt, $tbl, $cell, rowIdx, columnKey);
                                     });
                                 });
                                 return;
                             }
                             target.addXEventListener(events.MOUSE_DOWN, function (evt) {
+                                if (!$tbl)
+                                    $tbl = helper.closest($grid, "." + NAMESPACE);
+                                var updateMode = $.data($tbl, NAMESPACE).updateMode;
+                                if (updateMode !== DETERMINE)
+                                    return;
                                 onDetSingleCell(evt, $tbl, $cell, rowIdx, columnKey);
                             });
                         }
@@ -14080,7 +14543,7 @@ var nts;
                      * On det single cell.
                      */
                     function onDetSingleCell(evt, $tbl, $cell, rowIdx, columnKey) {
-                        if (!evt.ctrlKey || !helper.isDetable($cell))
+                        if (!helper.isDetable($cell))
                             return;
                         var $main = helper.getMainTable($tbl);
                         var ds = internal.getDataSource($main);
@@ -14172,6 +14635,9 @@ var nts;
                             case "stickData":
                                 setStickData(self, params[0]);
                                 break;
+                            case "stickFields":
+                                setStickFields(self, params[0]);
+                                break;
                             case "stickValidate":
                                 setStickValidate(self, params[0]);
                                 break;
@@ -14189,6 +14655,9 @@ var nts;
                                 break;
                             case "copyRedo":
                                 redoCopy(self);
+                                break;
+                            case "pasteValidate":
+                                setPasteValidate(self, params[0]);
                                 break;
                             case "clearHistories":
                                 clearHistories(self, params[0]);
@@ -14558,18 +15027,55 @@ var nts;
                             return exTable.updateMode;
                         if (exTable.updateMode === mode)
                             return;
-                        exTable.setUpdateMode(mode);
-                        exTable.modifications = {};
                         if (occupation) {
                             events.trigger($container[0], events.OCCUPY_UPDATE, occupation);
                         }
                         var $grid = $container.find("." + BODY_PRF + DETAIL);
-                        render.begin($grid[0], _.cloneDeep(helper.getOrigDS($grid[0])), exTable.detailContent);
-                        selection.tickRows($container.find("." + BODY_PRF + LEFTMOST)[0], true);
-                        if (mode === COPY_PASTE) {
-                            selection.checkUp($container[0]);
-                            copy.on($grid[0], mode);
-                            return;
+                        if (mode !== DETERMINE) {
+                            if (exTable.updateMode !== DETERMINE) {
+                                // Keep states while switching to new mode
+                                if (exTable.updateMode === EDIT) {
+                                    var editor = $container.data(update.EDITOR);
+                                    var inputSelecting = $grid.data(internal.INPUT_SELECTING);
+                                    if (editor) {
+                                        update.outsideClick($container[0], null, true);
+                                    }
+                                    else if (inputSelecting) {
+                                        selection.clearInnerCell($grid[0], inputSelecting.rowIdx, inputSelecting.columnKey, inputSelecting.innerIdx);
+                                    }
+                                }
+                                else if (exTable.updateMode === COPY_PASTE) {
+                                    selection.clearAll($grid[0]);
+                                }
+                                exTable.setUpdateMode(mode);
+                                //                    exTable.modifications = {};
+                                //                    render.begin($grid[0], _.cloneDeep(helper.getOrigDS($grid[0])), exTable.detailContent);
+                                //                    selection.tickRows($container.find("." + BODY_PRF + LEFTMOST)[0], true);
+                            }
+                            else {
+                                exTable.setUpdateMode(mode);
+                            }
+                            if (mode === COPY_PASTE) {
+                                selection.checkUp($container[0]);
+                                copy.on($grid[0], mode);
+                                return;
+                            }
+                        }
+                        else {
+                            if (exTable.updateMode === EDIT) {
+                                var editor = $container.data(update.EDITOR);
+                                var inputSelecting = $grid.data(internal.INPUT_SELECTING);
+                                if (editor) {
+                                    update.outsideClick($container[0], null, true);
+                                }
+                                else if (inputSelecting) {
+                                    selection.clearInnerCell($grid[0], inputSelecting.rowIdx, inputSelecting.columnKey, inputSelecting.innerIdx);
+                                }
+                            }
+                            else if (exTable.updateMode === COPY_PASTE) {
+                                selection.clearAll($grid[0]);
+                            }
+                            exTable.setUpdateMode(mode);
                         }
                         selection.off($container[0]);
                         copy.off($grid[0], mode);
@@ -14642,7 +15148,9 @@ var nts;
                         }
                         var table = helper.getMainTable($container[0]), updateViewMode = false;
                         var ds = helper.getOrigDS(table);
-                        exTable.modifications = {};
+                        if (updateMode !== DETERMINE) {
+                            exTable.modifications = {};
+                        }
                         if (viewMode && exTable.viewMode !== viewMode) {
                             if (exTable.updateMode === EDIT) {
                                 //                if (errors.occurred($container[0])) return;
@@ -14752,6 +15260,21 @@ var nts;
                         }
                     }
                     /**
+                     * Set stick fields.
+                     */
+                    function setStickFields($container, fields) {
+                        var $grid = $container.find("." + (BODY_PRF + DETAIL));
+                        var sticker = $grid.data(internal.STICKER);
+                        if (!sticker) {
+                            sticker = new spread.Sticker();
+                            sticker.fields = fields;
+                            $grid.data(internal.STICKER, sticker);
+                        }
+                        else {
+                            sticker.fields = fields;
+                        }
+                    }
+                    /**
                      * Set stick validate.
                      */
                     function setStickValidate($container, validate) {
@@ -14803,7 +15326,7 @@ var nts;
                                     value = data[i.columnKey];
                                     itemsByKey[i.columnKey] = value;
                                 }
-                                currentItems.push({ rowIndex: i.rowIndex, columnKey: i.columnKey, innerIdx: innerIdx, value: value });
+                                currentItems.push({ rowIndex: i.rowIndex, columnKey: i.columnKey, innerIdx: innerIdx, value: value, stickFields: i.stickFields });
                             }
                             update.gridCell($grid[0], i.rowIndex, i.columnKey, innerIdx, i.value, true);
                             internal.removeChange($grid[0], i);
@@ -14832,14 +15355,14 @@ var nts;
                             return;
                         if (items.length == 1) {
                             var item = items[0];
-                            update.stickGridCellOw($grid[0], item.rowIndex, item.columnKey, item.innerIdx, item.value, sticker.styleMaker);
+                            update.stickGridCellOw($grid[0], item.rowIndex, item.columnKey, item.innerIdx, item.value, sticker.styleMaker, item.stickFields);
                         }
                         else {
                             var data_1 = {};
                             _.forEach(items, function (item) {
                                 data_1[item.columnKey] = item.value;
                             });
-                            update.stickGridRowOw($grid[0], items[0].rowIndex, data_1, sticker.styleMaker);
+                            update.stickGridRowOw($grid[0], items[0].rowIndex, data_1, sticker.styleMaker, items[0].stickFields);
                         }
                     }
                     /**
@@ -14867,6 +15390,13 @@ var nts;
                         if (!printer)
                             return;
                         printer.redo();
+                    }
+                    /**
+                     * Paste validate.
+                     */
+                    function setPasteValidate($container, validate) {
+                        var $grid = $container.find("." + (BODY_PRF + DETAIL));
+                        $grid.data(internal.PASTE_VALIDATE, validate);
                     }
                     /**
                      * Clear histories.
@@ -15256,6 +15786,7 @@ var nts;
                     internal.OTHER_EDIT_HISTORY = "other-edit-history";
                     internal.STICK_HISTORY = "stick-history";
                     internal.STICK_REDO_STACK = "stick-redo-stack";
+                    internal.PASTE_VALIDATE = "paste-validate";
                     internal.TOOLTIP = "tooltip";
                     internal.CONTEXT_MENU = "context-menu";
                     internal.POPUP = "popup";
@@ -15267,6 +15798,7 @@ var nts;
                     internal.COLUMN_IN = "column-in";
                     internal.INPUT_SELECTING = "input-selecting";
                     internal.ERR_MSG = "error-msg";
+                    internal.CUSTOM_ERR = "custom-err";
                     internal.ERR_POPUP = "error-popup";
                     internal.PRINTER_INST = "printer-inst";
                     /**
@@ -16042,8 +16574,11 @@ var nts;
                      */
                     function areSameCells(one, other) {
                         if (parseInt(one.rowIndex) !== parseInt(other.rowIndex)
-                            || one.columnKey !== other.columnKey
-                            || one.innerIdx !== other.innerIdx)
+                            || one.columnKey !== other.columnKey)
+                            return false;
+                        if (one.innerIdx !== -1 && !_.isNil(one.innerIdx)
+                            && other.innerIdx !== -1 && !_.isNil(other.innerIdx)
+                            && one.innerIdx !== other.innerIdx)
                             return false;
                         return true;
                     }
@@ -16075,6 +16610,24 @@ var nts;
                         return result !== undefined;
                     }
                     helper.isXCell = isXCell;
+                    /**
+                     * Is xInnerCell.
+                     */
+                    function isXInnerCell($grid, rowId, key, innerIdx) {
+                        var clazz = [];
+                        for (var _i = 4; _i < arguments.length; _i++) {
+                            clazz[_i - 4] = arguments[_i];
+                        }
+                        var cellsStyle = $.data($grid, internal.CELLS_STYLE);
+                        if (!cellsStyle)
+                            return;
+                        var result = _.find(cellsStyle, function (deco) {
+                            return deco.columnKey === key && deco.rowId === rowId
+                                && (_.isNil(innerIdx) ? true : deco.innerIdx === innerIdx) && clazz.some(function (c) { return deco.clazz === c; });
+                        });
+                        return result !== undefined;
+                    }
+                    helper.isXInnerCell = isXInnerCell;
                     /**
                      * Is xcell shown.
                      */
@@ -16371,7 +16924,9 @@ var nts;
                      * Remove class.
                      */
                     function removeClass1n(node, clazz) {
-                        if (node && node.constructor !== HTMLCollection) {
+                        if (!node || !clazz)
+                            return;
+                        if (node.constructor !== HTMLCollection) {
                             var children = node.querySelectorAll("." + render.CHILD_CELL_CLS);
                             if (children.length > 0)
                                 removeClass(children, clazz);
@@ -16392,7 +16947,9 @@ var nts;
                      * Add class.
                      */
                     function addClass(node, clazz) {
-                        if (node && node.constructor !== HTMLCollection && node.constructor !== NodeList) {
+                        if (!node || !clazz)
+                            return;
+                        if (node.constructor !== HTMLCollection && node.constructor !== NodeList) {
                             node.classList.add(clazz);
                             return;
                         }
@@ -16407,7 +16964,9 @@ var nts;
                      * Remove class.
                      */
                     function removeClass(node, clazz) {
-                        if (node && node.constructor !== HTMLCollection && node.constructor !== NodeList) {
+                        if (!node || !clazz)
+                            return;
+                        if (node.constructor !== HTMLCollection && node.constructor !== NodeList) {
                             node.classList.remove(clazz);
                             return;
                         }
@@ -16447,13 +17006,22 @@ var nts;
                      * Add class.
                      */
                     function addClassList(cell, clazz) {
-                        if (!clazz)
+                        if (!cell || !clazz)
                             return;
                         clazz.split(" ").forEach(function (c, i) {
                             cell.classList.add(c);
                         });
                     }
                     helper.addClassList = addClassList;
+                    /**
+                     * Set background color.
+                     */
+                    function setBackgroundColor(cell, colorCode) {
+                        if (!cell || !colorCode)
+                            return;
+                        cell.style.backgroundColor = colorCode;
+                    }
+                    helper.setBackgroundColor = setBackgroundColor;
                 })(helper || (helper = {}));
                 var widget;
                 (function (widget) {
@@ -16547,8 +17115,7 @@ var nts;
                                 return;
                             self.$selector.addXEventListener(event ? event : events.MOUSE_DOWN, function (evt) {
                                 self.getTable();
-                                if (evt.ctrlKey && $.data(helper.closest(self.$table, "." + NAMESPACE), NAMESPACE).determination)
-                                    return;
+                                //                    if (evt.ctrlKey && $.data(helper.closest(self.$table, "." + NAMESPACE), NAMESPACE).determination) return;
                                 self.click(evt);
                             });
                         };
@@ -19536,9 +20103,11 @@ var nts;
                         $input.attr('autocomplete', 'off');
                         $input.on('keydown', function (evt) {
                             var target = evt.target, start = target.selectionStart, end = target.selectionEnd;
-                            $input.data(_kc, evt);
-                            $input.data(_rg, { start: start, end: end });
-                            $input.data(_val, target.value);
+                            if (!$input.data(_kc)) {
+                                $input.data(_kc, evt);
+                                $input.data(_rg, { start: start, end: end });
+                                $input.data(_val, target.value);
+                            }
                         });
                         $input.on('paste', function (evt) {
                             var rd = ko.toJS(data), constraint = rd.constraint, str = evt.originalEvent.clipboardData.getData('text');
@@ -19546,7 +20115,7 @@ var nts;
                             setTimeout(function () {
                                 if (str.match(/^(-?)(\d+\.\d+|\d+)$/)) {
                                     if (constraint) {
-                                        var numb = Number(str), primitive = window['__viewContext'].primitiveValueConstraints[constraint];
+                                        var numb = Number(str), primitive = __viewContext.primitiveValueConstraints[constraint];
                                         if (primitive) {
                                             var min = primitive.min, max = primitive.max, dlen = primitive.mantissaMaxLength || 0;
                                             if (numb >= min && numb <= max) {
@@ -19634,10 +20203,7 @@ var nts;
                                     ival = '0.';
                                 }
                                 if (dval) {
-                                    if (ival.match(/^(-?)(\d+\.\d+|\d+)$/)) {
-                                        ival = ival;
-                                    }
-                                    else if (ival.match(/^\-+$/)) {
+                                    if (ival.match(/^\-+$/)) {
                                         ival = '-';
                                     }
                                     else if (ival.match(/^\.+$/)) {
@@ -19646,15 +20212,9 @@ var nts;
                                     else if (ival.match(/^\-+(0*)\.+$/)) {
                                         ival = '-0.';
                                     }
-                                    else {
-                                        ival = ival;
-                                    }
-                                }
-                                else if (ival.match(/(-?)(\d*)(\.*)(\d*)/)) {
-                                    ival = ival;
                                 }
                                 if (constraint) {
-                                    var primitive = window['__viewContext'].primitiveValueConstraints[constraint];
+                                    var primitive = __viewContext.primitiveValueConstraints[constraint];
                                     if (primitive) {
                                         var min = primitive.min, max = primitive.max, maxL = primitive.maxLength, dlen = primitive.mantissaMaxLength || 0;
                                         switch (primitive.valueType) {
@@ -19802,12 +20362,14 @@ var nts;
                                     }
                                 }
                                 else {
-                                    // check length & decimal length
-                                    var dlen = rd.option.decimallength;
-                                    if (dlen) {
-                                        var match = ival.match(/\.\d+$/);
-                                        if (match && match[0].length > dlen + 1) {
-                                            ival = dval;
+                                    if (rd.option) {
+                                        // check length & decimal length
+                                        var dlen = rd.option.decimallength;
+                                        if (dlen) {
+                                            var match = ival.match(/\.\d+$/);
+                                            if (match && match[0].length > dlen + 1) {
+                                                ival = dval;
+                                            }
                                         }
                                     }
                                     if (ival.match(/^0\d+$/)) {
@@ -19844,6 +20406,9 @@ var nts;
                                     }
                                 }, 0);
                             }
+                            $input.data(_kc, null);
+                            $input.data(_rg, null);
+                            $input.data(_val, null);
                         });
                         $input.on('blur', function (evt) {
                             var value = $input.val();
@@ -20204,89 +20769,103 @@ var nts;
                  */
                 var NtsFormLabelBindingHandler = /** @class */ (function () {
                     function NtsFormLabelBindingHandler() {
-                    }
-                    /**
-                     * Init.
-                     */
-                    NtsFormLabelBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        element.classList.add('form-label');
-                    };
-                    /**
-                     * Update
-                     */
-                    NtsFormLabelBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var accessor = valueAccessor(), label = element.querySelector('label'), constraint = element.querySelector('i'), isInline = ko.unwrap(accessor.inline) === true, isEnable = ko.unwrap(accessor.enable) !== false, isRequired = ko.unwrap(accessor.required) === true, text = !_.isNil(accessor.text) ? ko.unwrap(accessor.text) : (!!label ? label.innerHTML : element.innerHTML), cssClass = !_.isNil(accessor.cssClass) ? ko.unwrap(accessor.cssClass) : '', primitive = !_.isNil(accessor.constraint) ? ko.unwrap(accessor.constraint) : '';
-                        // clear old html
-                        element.innerHTML = '';
-                        // show enable or disabled style
-                        if (!isEnable) {
-                            element.classList.add('disabled');
-                        }
-                        else {
-                            element.classList.remove('disabled');
-                        }
-                        // show inline mode or broken mode
-                        if (!!isRequired) {
-                            element.classList.add('required');
-                        }
-                        else {
-                            element.classList.remove('required');
-                        }
-                        if (!!isInline) {
-                            element.classList.add('inline');
-                            element.classList.remove('broken');
-                            // fix height (inline mode)
-                            element.style.height = '37px';
-                            element.style.lineHeight = '37px';
-                        }
-                        else {
-                            element.classList.remove('inline');
-                        }
-                        // init new label element
-                        if (!label) {
-                            label = document.createElement('label');
-                        }
-                        // init new constraint element
-                        if (!constraint) {
-                            constraint = document.createElement('i');
-                        }
-                        // append label tag to control
-                        element
-                            .appendChild(label);
-                        label.innerHTML = text;
-                        // add css class to label
-                        if (!!cssClass) {
-                            label.classList.add(cssClass);
-                        }
-                        // show primitive constraint if exist
-                        if (!!primitive) {
-                            if (!isInline) {
-                                element.classList.add('broken');
-                            }
-                            // append constraint
-                            element.appendChild(constraint);
-                            if (_.isArray(primitive)) {
-                                var miss = _.map(primitive, function (p) { return __viewContext.primitiveValueConstraints[p]; });
-                                if (miss.indexOf(false) > -1) {
-                                    constraint.innerHTML = 'UNKNOW_PRIMITIVE';
-                                }
-                                else {
-                                    constraint.innerHTML = uk.util.getConstraintMes(primitive);
-                                }
+                        /**
+                         * Update
+                         */
+                        this.update = function (element, valueAccessor, _allBindingsAccessor, _viewModel, _bindingContext) {
+                            var accessor = valueAccessor();
+                            var label = element.querySelector('label');
+                            var constraint = element.querySelector('i');
+                            var isInline = ko.unwrap(accessor.inline) === true;
+                            var isEnable = ko.unwrap(accessor.enable) !== false;
+                            var isRequired = ko.unwrap(accessor.required) === true;
+                            var text = !_.isNil(accessor.text) ? ko.unwrap(accessor.text) : (!!label ? label.innerHTML : element.innerHTML);
+                            var cssClass = !_.isNil(accessor.cssClass) ? ko.unwrap(accessor.cssClass) : '';
+                            var primitive = !_.isNil(accessor.constraint) ? ko.unwrap(accessor.constraint) : '';
+                            var primitiveValueConstraints = __viewContext.primitiveValueConstraints;
+                            // clear old html
+                            element.innerHTML = '';
+                            // show enable or disabled style
+                            if (!isEnable) {
+                                element.classList.add('disabled');
                             }
                             else {
-                                if (!__viewContext.primitiveValueConstraints[primitive]) {
-                                    constraint.innerHTML = 'UNKNOW_PRIMITIVE';
+                                element.classList.remove('disabled');
+                            }
+                            // show inline mode or broken mode
+                            if (!!isRequired) {
+                                element.classList.add('required');
+                            }
+                            else {
+                                element.classList.remove('required');
+                            }
+                            if (!!isInline) {
+                                element.classList.add('inline');
+                                element.classList.remove('broken');
+                                // fix height (inline mode)
+                                element.style.height = '37px';
+                                element.style.lineHeight = '37px';
+                            }
+                            else {
+                                element.classList.remove('inline');
+                                // fix height (not inline mode)
+                                element.style.height = null;
+                                element.style.lineHeight = null;
+                            }
+                            // init new label element
+                            if (!label) {
+                                label = document.createElement('label');
+                            }
+                            // init new constraint element
+                            if (!constraint) {
+                                constraint = document.createElement('i');
+                            }
+                            // append label tag to control
+                            element
+                                .appendChild(label);
+                            label.innerHTML = text;
+                            // add css class to label
+                            if (!!cssClass) {
+                                label.classList.add(cssClass);
+                            }
+                            // show primitive constraint if exist
+                            if (!!primitive) {
+                                if (!isInline) {
+                                    element.classList.add('broken');
+                                }
+                                // append constraint
+                                element.appendChild(constraint);
+                                if (_.isArray(primitive)) {
+                                    var miss = _.map(primitive, function (p) { return primitiveValueConstraints[p]; });
+                                    if (miss.indexOf(undefined) > -1) {
+                                        constraint.innerHTML = 'UNKNOW_PRIMITIVE';
+                                    }
+                                    else {
+                                        constraint.innerHTML = uk.util.getConstraintMes(primitive);
+                                    }
                                 }
                                 else {
-                                    constraint.innerHTML = uk.util.getConstraintMes(primitive);
+                                    if (!primitiveValueConstraints[primitive]) {
+                                        constraint.innerHTML = 'UNKNOW_PRIMITIVE';
+                                    }
+                                    else {
+                                        constraint.innerHTML = uk.util.getConstraintMes(primitive);
+                                    }
                                 }
                             }
-                        }
+                        };
+                    }
+                    NtsFormLabelBindingHandler.prototype.init = function (element) {
+                        element.classList.add('form-label');
                     };
+                    NtsFormLabelBindingHandler = __decorate([
+                        handler({
+                            bindingName: 'ntsFormLabel'
+                        })
+                    ], NtsFormLabelBindingHandler);
                     return NtsFormLabelBindingHandler;
                 }());
-                ko.bindingHandlers['ntsFormLabel'] = new NtsFormLabelBindingHandler();
+                koExtentions.NtsFormLabelBindingHandler = NtsFormLabelBindingHandler;
             })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -46122,10 +46701,13 @@ var nts;
                 var SafeClickBindingHandler = /** @class */ (function () {
                     function SafeClickBindingHandler() {
                         this.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                            var lastPreventTime = new Date().getTime(), originalFunction = valueAccessor(), newValueAccesssor = function () {
+                            var lastPreventTime = new Date().getTime();
+                            var originalFunction = valueAccessor();
+                            var newValueAccesssor = function () {
                                 return function () {
-                                    var currentPreventTime = new Date().getTime(), time = currentPreventTime - lastPreventTime, timeClick = ko.toJS(allBindingsAccessor().timeClick), _timeClick = _.isNumber(timeClick) ? timeClick : 500;
-                                    if (time > _timeClick) {
+                                    var time = Date.now() - lastPreventTime;
+                                    var timeClick = ko.toJS(allBindingsAccessor.get('timeClick'));
+                                    if (time > (_.isNumber(timeClick) ? timeClick : 500)) {
                                         //pass through the arguments
                                         originalFunction.apply(viewModel, arguments);
                                     }
@@ -46136,9 +46718,14 @@ var nts;
                             originalClick.init(element, newValueAccesssor, allBindingsAccessor, viewModel, bindingContext);
                         };
                     }
+                    SafeClickBindingHandler = __decorate([
+                        handler({
+                            bindingName: 'click'
+                        })
+                    ], SafeClickBindingHandler);
                     return SafeClickBindingHandler;
                 }());
-                ko.bindingHandlers['click'] = new SafeClickBindingHandler();
+                koExtentions.SafeClickBindingHandler = SafeClickBindingHandler;
             })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -47601,6 +48188,17 @@ var nts;
                             //self.$root.data("img-status", self.buildImgStatus("img loading", 2, false));
                             self.changeStatus(ImageStatus.lOADING);
                             var target = self.helper.getUrl(query);
+                            var uri = self.helper.data.url;
+                            // support base64 url
+                            if (uri.match(/^(data:image\/)/)) {
+                                var fileName = nts.uk.util.randomId();
+                                var fileType = uri.substring(uri.indexOf('/') + 1, uri.indexOf(';base64'));
+                                self.backupData(null, fileName + "." + fileType, fileType, 3 * (uri.length / 4));
+                                self.$imagePreview.attr("src", uri);
+                                self.$imagePreview.closest(".image-holder").removeClass(".image-upload-icon");
+                                self.$imagePreview.closest(".image-container").removeClass(".container-no-upload-background");
+                                return;
+                            }
                             var xhr = self.getXRequest();
                             if (xhr === null) {
                                 self.destroyImg(query);
@@ -47814,17 +48412,21 @@ var nts;
                  */
                 var NtsLetBindingHandler = /** @class */ (function () {
                     function NtsLetBindingHandler() {
-                        this.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        this.init = function (element, valueAccessor, _allBindingsAccessor, _viewModel, bindingContext) {
                             // Make a modified binding context, with extra properties, and apply it to descendant elements
                             ko.applyBindingsToDescendants(bindingContext.extend(valueAccessor), element);
                             return { controlsDescendantBindings: true };
                         };
-                        this.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) { };
                     }
+                    NtsLetBindingHandler = __decorate([
+                        handler({
+                            virtual: true,
+                            bindingName: 'let'
+                        })
+                    ], NtsLetBindingHandler);
                     return NtsLetBindingHandler;
                 }());
-                ko.virtualElements.allowedBindings.let = true;
-                ko.bindingHandlers['let'] = new NtsLetBindingHandler();
+                koExtentions.NtsLetBindingHandler = NtsLetBindingHandler;
             })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -47996,6 +48598,67 @@ var nts;
             })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts_1.uk || (nts_1.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var bindings;
+            (function (bindings) {
+                var P_URL = 'https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js';
+                var PrettyPrintBindingHandler = /** @class */ (function () {
+                    function PrettyPrintBindingHandler() {
+                    }
+                    PrettyPrintBindingHandler.prototype.init = function (element, valueAccessor, allValueAccessor) {
+                        var lang = valueAccessor() || 'xml';
+                        var value = allValueAccessor.get('code');
+                        var html = value || element.innerHTML
+                            .trim()
+                            .replace(/\n/g, '')
+                            .replace(/\]\]--\>$/g, '')
+                            .replace(/^\<\!--\[CDATA\[/g, '');
+                        $.Deferred()
+                            .resolve()
+                            .then(function () {
+                            var pr = _.get(window, 'PR');
+                            if (!pr) {
+                                var st = $('<style>', {
+                                    type: 'text/css',
+                                    rel: 'stylesheet',
+                                    html: "\n                            .prettyprint {\n                                box-sizing: border-box;\n                                background: #f5f5f5;\n                                max-width: 100%;\n                                padding: 5px !important;\n                                margin: 10px 0;\n                                border: none !important;\n                                overflow: auto;\n                                border-radius: 5px;\n                            }\n                            .prettyprint,\n                            .prettyprint * {\n                                font-family: Consolas;\n                            }".trim().replace(/\s{1,}/g, ' ')
+                                });
+                                st.appendTo(document.head);
+                                return $.getScript(P_URL);
+                            }
+                            return pr;
+                        })
+                            .then(function () { return PR; })
+                            .then(function (_a) {
+                            var prettyPrintOne = _a.prettyPrintOne;
+                            var match = html.match(/\s{2,}/g);
+                            var matctgm = function (p, c) { return c.length < p.length ? c : p; };
+                            if (match) {
+                                var min = match.reduce(matctgm, match[0]);
+                                html = html.replace(new RegExp(min, 'g'), '\n');
+                            }
+                            element.innerHTML = prettyPrintOne(_.escape(html), lang, false);
+                            element.classList.add('prettyprint');
+                        });
+                        return { controlsDescendantBindings: true };
+                    };
+                    PrettyPrintBindingHandler = __decorate([
+                        handler({
+                            bindingName: 'prettify'
+                        })
+                    ], PrettyPrintBindingHandler);
+                    return PrettyPrintBindingHandler;
+                }());
+                bindings.PrettyPrintBindingHandler = PrettyPrintBindingHandler;
+            })(bindings = ui.bindings || (ui.bindings = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
 var NtsSortableBindingHandler = /** @class */ (function () {
     function NtsSortableBindingHandler() {
@@ -48752,49 +49415,13 @@ var nts;
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
 /// <reference path="./viewcontext.d.ts" />
-var prefix = 'nts.uk.storage', OPENWD = 'OPEN_WINDOWS_DATA', _a = nts.uk, ui = _a.ui, request = _a.request, resource = _a.resource, windows = ui.windows, block = ui.block, dialog = ui.dialog, $storeSession = function (name, params) {
-    if (arguments.length === 2) {
-        // setter method
-        var $value = JSON.stringify({ $value: params }), $saveValue_1 = btoa(_.map($value, function (s) { return s.charCodeAt(0); }).join('-'));
-        return $.Deferred().resolve()
-            .then(function () {
-            nts.uk.localStorage.setItem(prefix + "." + name, $saveValue_1);
-        })
-            .then(function () { return $storeSession(name); });
-    }
-    else if (arguments.length === 1) {
-        // getter method
-        return $.Deferred().resolve()
-            .then(function () {
-            var $result = nts.uk.localStorage.getItem(prefix + "." + name);
-            if ($result.isPresent()) {
-                var $string = atob($result.value)
-                    .split('-').map(function (s) { return String.fromCharCode(Number(s)); })
-                    .join('');
-                return JSON.parse($string).$value;
-            }
-            return windows.getShared(name);
-        });
-    }
-}, $storage = function ($data) {
-    if (arguments.length === 1) {
-        return $storeSession(OPENWD, $data);
-    }
-    else if (arguments.length === 0) {
-        return $.Deferred().resolve()
-            .then(function () { return $storeSession(OPENWD); })
-            .then(function (value) {
-            nts.uk.localStorage.removeItem(prefix + "." + OPENWD);
-            return value;
-        });
-    }
-};
 /** Create new ViewModel and automatic binding to __viewContext */
 function bean(dialogOption) {
     return function (ctor) {
         __viewContext.ready(function () {
-            $storage().then(function ($params) {
+            nts.uk.ui.viewmodel.$storage().then(function ($params) {
                 var $viewModel = new ctor($params), $created = $viewModel['created'];
+                _.extend($viewModel, { $el: undefined });
                 // hook to created function
                 if ($created && _.isFunction($created)) {
                     $created.apply($viewModel, [$params]);
@@ -48802,7 +49429,17 @@ function bean(dialogOption) {
                 // hook to mounted function
                 $viewModel.$nextTick(function () {
                     var $mounted = $viewModel['mounted'];
+                    var kvm = nts.uk.ui._viewModel.kiban;
                     _.extend($viewModel, { $el: document.querySelector('#master-wrapper') });
+                    if (kvm) {
+                        ko.computed({
+                            read: function () {
+                                $viewModel.$validate.valid(!kvm.errorDialogViewModel.errors().length);
+                            },
+                            owner: $viewModel,
+                            disposeWhenNodeIsRemoved: $viewModel.$el
+                        });
+                    }
                     if ($mounted && _.isFunction($mounted)) {
                         $mounted.apply($viewModel, []);
                     }
@@ -48825,6 +49462,7 @@ function component(options) {
                     viewModel: {
                         createViewModel: function ($params, $el) {
                             var $viewModel = new ctor($params), $created = $viewModel['created'];
+                            _.extend($viewModel, { $el: undefined });
                             // hook to created function
                             if ($created && _.isFunction($created)) {
                                 $created.apply($viewModel, [$params]);
@@ -48832,11 +49470,22 @@ function component(options) {
                             // hook to mounted function
                             $viewModel.$nextTick(function () {
                                 var $mounted = $viewModel['mounted'];
+                                var kvm = nts.uk.ui._viewModel.kiban;
                                 _.extend($viewModel, { $el: $el.element });
+                                if (kvm) {
+                                    ko.computed({
+                                        read: function () {
+                                            $viewModel.$validate.valid(!kvm.errorDialogViewModel.errors().length);
+                                        },
+                                        owner: $viewModel,
+                                        disposeWhenNodeIsRemoved: $el.element
+                                    });
+                                }
                                 if ($mounted && _.isFunction($mounted)) {
                                     $mounted.apply($viewModel, []);
                                 }
                             });
+                            // run if component mode
                             Object.defineProperty($viewModel, 'dispose', {
                                 value: function dispose() {
                                     if (typeof $viewModel.destroyed === 'function') {
@@ -48863,442 +49512,617 @@ function handler(params) {
         var _a;
     };
 }
-// create base viewmodel for all implement
-function BaseViewModel() { }
-function $i18n(text, params) {
-    return resource.getText(text, params);
-}
-function $jump() {
-    var args = Array.prototype.slice.apply(arguments), params = args.length === 3 && _.isString(args[0]) && _.isString(args[1]) ? args[2] :
-        (args.length == 2 && _.indexOf(args[1], '.xhtml')) > -1 ? null : args[1];
-    if (window.top === window.self) {
-        $storage(params).then(function () { return request.jump.apply(null, args); });
-    }
-    else {
-        // jump from dialog or frame
-        $storage(params).then(function () { return request.jumpFromDialogOrFrame.apply(null, args); });
-    }
-}
-;
-BaseViewModel.prototype.$i18n = $i18n;
-Object.defineProperties($i18n, {
-    text: {
-        value: $i18n
-    },
-    message: {
-        value: resource.getMessage
-    },
-    controlName: {
-        value: resource.getControlName
-    }
-});
-BaseViewModel.prototype.$ajax = request.ajax;
-BaseViewModel.prototype.$nextTick = ko.tasks.schedule;
-BaseViewModel.prototype.$user = __viewContext['user'];
-BaseViewModel.prototype.$program = __viewContext['program'];
-var $date = {
-    diff: 0,
-    tick: -1,
-    now: function () {
-        return Date.now();
-    },
-    today: function () {
-        return $date.now();
-    }
-};
-var getTime = function () {
-    request.ajax('/server/time/now').then(function (time) {
-        _.extend($date, {
-            diff: moment(time, 'YYYY-MM-DDTHH:mm:ss').diff(moment())
-        });
-    });
-};
-// get date time now
-getTime();
-BaseViewModel.prototype.$date = Object.defineProperties($date, {
-    now: {
-        value: function $now() {
-            return moment().add($date.diff, 'ms').toDate();
-        }
-    },
-    today: {
-        value: function $today() {
-            return moment($date.now()).startOf('day').toDate();
-        }
-    },
-    interval: {
-        value: function $interval(interval) {
-            // clear default intervale
-            clearInterval($date.tick);
-            // set new interface
-            $date.tick = setInterval(getTime, interval);
-        }
-    }
-});
-BaseViewModel.prototype.$dialog = Object.defineProperties({}, {
-    info: {
-        value: function $info() {
-            var dfd = $.Deferred();
-            var args = Array.prototype.slice.apply(arguments);
-            dialog.info.apply(null, args).then(function () { return dfd.resolve(); });
-            return dfd.promise();
-        }
-    },
-    alert: {
-        value: function $alert() {
-            var dfd = $.Deferred();
-            var args = Array.prototype.slice.apply(arguments);
-            dialog.alert.apply(null, args).then(function () { return dfd.resolve(); });
-            return dfd.promise();
-        }
-    },
-    error: {
-        value: function $error() {
-            var dfd = $.Deferred();
-            var args = Array.prototype.slice.apply(arguments);
-            dialog.error.apply(null, args).then(function () { return dfd.resolve(); });
-            return dfd.promise();
-        }
-    },
-    confirm: {
-        value: function $confirm() {
-            var dfd = $.Deferred();
-            var args = Array.prototype.slice.apply(arguments);
-            var $cf = dialog.confirm.apply(null, args);
-            $cf.ifYes(function () {
-                dfd.resolve('yes');
-            });
-            $cf.ifNo(function () {
-                dfd.resolve('no');
-            });
-            $cf.ifCancel(function () {
-                dfd.resolve('cancel');
-            });
-            return dfd.promise();
-        }
-    }
-});
-BaseViewModel.prototype.$jump = $jump;
-Object.defineProperties($jump, {
-    self: {
-        value: function $to() {
-            $jump.apply(null, Array.prototype.slice.apply(arguments, []).slice());
-        }
-    },
-    blank: {
-        value: function $other() {
-            var args = Array.prototype.slice.apply(arguments, []), params = args.length === 3 && _.isString(args[0]) && _.isString(args[1]) ? args[2] :
-                (args.length == 2 && _.indexOf(args[1], '.xhtml')) > -1 ? null : args[1];
-            $storage(params).then(function () { return request.jumpToNewWindow.apply(null, args); });
-        }
-    }
-});
-var $size = function (height, width) {
-    var wd = nts.uk.ui.windows.getSelf();
-    if (wd) {
-        wd.setSize(height, width);
-    }
-};
-Object.defineProperties($size, {
-    width: {
-        value: function (width) {
-            var wd = nts.uk.ui.windows.getSelf();
-            if (wd) {
-                wd.setWidth(width);
-            }
-        }
-    },
-    height: {
-        value: function (height) {
-            var wd = nts.uk.ui.windows.getSelf();
-            if (wd) {
-                wd.setHeight(height);
-            }
-        }
-    }
-});
-BaseViewModel.prototype.$window = Object.defineProperties({}, {
-    size: {
-        value: $size
-    },
-    close: {
-        value: function $close(result) {
-            if (window.top !== window) {
-                $.Deferred().resolve()
-                    .then(function () { return $storage(result); })
-                    .then(function () { return windows.close(); });
-            }
-        }
-    },
-    modal: {
-        value: function $modal(webapp, path, params) {
-            var jdf = $.Deferred();
-            var nowapp = ['at', 'pr', 'hr', 'com'].indexOf(webapp) === -1;
-            if (nowapp) {
-                $storage(path).then(function () {
-                    windows.sub.modal(webapp)
-                        .onClosed(function () {
-                        var localShared = windows.container.localShared;
-                        _.each(localShared, function (value, key) {
-                            windows.setShared(key, value);
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui_35) {
+            var viewmodel;
+            (function (viewmodel) {
+                var prefix = 'nts.uk.storage', OPENWD = 'OPEN_WINDOWS_DATA', _a = nts.uk, ui = _a.ui, request = _a.request, resource = _a.resource, windows = ui.windows, block = ui.block, dialog = ui.dialog, $storeSession = function (name, params) {
+                    if (arguments.length === 2) {
+                        // setter method
+                        if (params === undefined) {
+                            return $.Deferred()
+                                .resolve(true)
+                                .then(function () {
+                                nts.uk.localStorage.removeItem(prefix + "." + name);
+                            })
+                                .then(function () { return $storeSession(name); });
+                        }
+                        var $value = JSON.stringify({ $value: params }), $saveValue_1 = btoa(_.map($value, function (s) { return s.charCodeAt(0); }).join('-'));
+                        return $.Deferred()
+                            .resolve(true)
+                            .then(function () {
+                            nts.uk.localStorage.setItem(prefix + "." + name, $saveValue_1);
+                        })
+                            .then(function () { return $storeSession(name); });
+                    }
+                    else if (arguments.length === 1) {
+                        // getter method
+                        return $.Deferred()
+                            .resolve(true)
+                            .then(function () {
+                            var $result = nts.uk.localStorage.getItem(prefix + "." + name);
+                            if ($result.isPresent()) {
+                                var $string = atob($result.value)
+                                    .split('-').map(function (s) { return String.fromCharCode(Number(s)); })
+                                    .join('');
+                                var shared = JSON.parse($string).$value;
+                                if (shared !== undefined) {
+                                    return shared;
+                                }
+                            }
+                            return windows.getShared(name);
                         });
-                        $storage().then(function ($data) {
-                            jdf.resolve($data);
+                    }
+                };
+                viewmodel.$storage = function ($data) {
+                    if (arguments.length === 1) {
+                        return $storeSession(OPENWD, $data);
+                    }
+                    else if (arguments.length === 0) {
+                        return $.Deferred()
+                            .resolve(true)
+                            .then(function () { return $storeSession(OPENWD); })
+                            .then(function (value) {
+                            nts.uk.localStorage.removeItem(prefix + "." + OPENWD);
+                            return value;
+                        });
+                    }
+                };
+                // create base viewmodel for all implement
+                function BaseViewModel() { }
+                function $i18n(text, params) {
+                    return resource.getText(text, params);
+                }
+                function $jump() {
+                    var args = Array.prototype.slice.apply(arguments), params = args.length === 3 && _.isString(args[0]) && _.isString(args[1]) ? args[2] :
+                        (args.length == 2 && _.indexOf(args[1], '.xhtml')) > -1 ? null : args[1];
+                    if (window.top === window.self) {
+                        viewmodel.$storage(params).then(function () { return request.jump.apply(null, args); });
+                    }
+                    else {
+                        // jump from dialog or frame
+                        viewmodel.$storage(params).then(function () { return request.jumpFromDialogOrFrame.apply(null, args); });
+                    }
+                }
+                ;
+                BaseViewModel.prototype.$i18n = $i18n;
+                Object.defineProperties($i18n, {
+                    text: {
+                        value: $i18n
+                    },
+                    message: {
+                        value: resource.getMessage
+                    },
+                    controlName: {
+                        value: resource.getControlName
+                    }
+                });
+                BaseViewModel.prototype.$ajax = request.ajax;
+                BaseViewModel.prototype.$nextTick = ko.tasks.schedule;
+                BaseViewModel.prototype.$user = __viewContext['user'];
+                BaseViewModel.prototype.$program = __viewContext['program'];
+                var $date = {
+                    diff: 0,
+                    tick: -1,
+                    now: function () {
+                        return Date.now();
+                    },
+                    today: function () {
+                        return $date.now();
+                    }
+                };
+                var getTime = function () {
+                    request.ajax('/server/time/now').then(function (time) {
+                        _.extend($date, {
+                            diff: moment(time, 'YYYY-MM-DDTHH:mm:ss').diff(moment())
                         });
                     });
+                };
+                // get date time now
+                getTime();
+                BaseViewModel.prototype.$date = Object.defineProperties($date, {
+                    now: {
+                        value: function $now() {
+                            return moment().add($date.diff, 'ms').toDate();
+                        }
+                    },
+                    today: {
+                        value: function $today() {
+                            return moment($date.now()).startOf('day').toDate();
+                        }
+                    },
+                    interval: {
+                        value: function $interval(interval) {
+                            // clear default intervale
+                            clearInterval($date.tick);
+                            // set new interface
+                            $date.tick = setInterval(getTime, interval);
+                        }
+                    }
                 });
-            }
-            else {
-                $storage(params).then(function () {
-                    windows.sub.modal(webapp, path)
-                        .onClosed(function () {
-                        var localShared = windows.container.localShared;
-                        _.each(localShared, function (value, key) {
-                            windows.setShared(key, value);
-                        });
-                        $storage().then(function ($data) {
-                            jdf.resolve($data);
-                        });
+                BaseViewModel.prototype.$dialog = Object.defineProperties({}, {
+                    info: {
+                        value: function $info() {
+                            var dfd = $.Deferred();
+                            var args = Array.prototype.slice.apply(arguments);
+                            dialog.info.apply(null, args).then(function () { return dfd.resolve(); });
+                            return dfd.promise();
+                        }
+                    },
+                    alert: {
+                        value: function $alert() {
+                            var dfd = $.Deferred();
+                            var args = Array.prototype.slice.apply(arguments);
+                            dialog.alert.apply(null, args).then(function () { return dfd.resolve(); });
+                            return dfd.promise();
+                        }
+                    },
+                    error: {
+                        value: function $error() {
+                            var dfd = $.Deferred();
+                            var args = Array.prototype.slice.apply(arguments);
+                            dialog.error.apply(null, args).then(function () { return dfd.resolve(); });
+                            return dfd.promise();
+                        }
+                    },
+                    confirm: {
+                        value: function $confirm() {
+                            var dfd = $.Deferred();
+                            var args = Array.prototype.slice.apply(arguments);
+                            var $cf = dialog.confirm.apply(null, args);
+                            $cf.ifYes(function () {
+                                dfd.resolve('yes');
+                            });
+                            $cf.ifNo(function () {
+                                dfd.resolve('no');
+                            });
+                            $cf.ifCancel(function () {
+                                dfd.resolve('cancel');
+                            });
+                            return dfd.promise();
+                        }
+                    }
+                });
+                BaseViewModel.prototype.$jump = $jump;
+                Object.defineProperties($jump, {
+                    self: {
+                        value: function $to() {
+                            $jump.apply(null, Array.prototype.slice.apply(arguments, []).slice());
+                        }
+                    },
+                    blank: {
+                        value: function $other() {
+                            var args = Array.prototype.slice.apply(arguments, []), params = args.length === 3 && _.isString(args[0]) && _.isString(args[1]) ? args[2] :
+                                (args.length == 2 && _.indexOf(args[1], '.xhtml')) > -1 ? null : args[1];
+                            viewmodel.$storage(params).then(function () { return request.jumpToNewWindow.apply(null, args); });
+                        }
+                    }
+                });
+                var $shared = [];
+                var $size = function (height, width) {
+                    var wd = nts.uk.ui.windows.getSelf();
+                    if (wd) {
+                        wd.setSize(height, width);
+                    }
+                };
+                Object.defineProperties($size, {
+                    width: {
+                        value: function (width) {
+                            var wd = nts.uk.ui.windows.getSelf();
+                            if (wd) {
+                                wd.setWidth(width);
+                            }
+                        }
+                    },
+                    height: {
+                        value: function (height) {
+                            var wd = nts.uk.ui.windows.getSelf();
+                            if (wd) {
+                                wd.setHeight(height);
+                            }
+                        }
+                    }
+                });
+                BaseViewModel.prototype.$window = Object.defineProperties({}, {
+                    mode: {
+                        get: function () {
+                            return window === window.top ? 'view' : 'modal';
+                        }
+                    },
+                    size: {
+                        value: $size
+                    },
+                    close: {
+                        value: function $close(result) {
+                            if (window.top !== window) {
+                                $.Deferred()
+                                    .resolve(true)
+                                    .then(function () { return viewmodel.$storage(result); })
+                                    .then(function () { return windows.close(); });
+                            }
+                        }
+                    },
+                    modal: {
+                        value: function $modal(webapp, path, params, options) {
+                            var jdf = $.Deferred();
+                            var nowapp = ['at', 'pr', 'hr', 'com'].indexOf(webapp) === -1;
+                            if (nowapp) {
+                                viewmodel.$storage(path)
+                                    .then(function () {
+                                    windows.sub.modal(webapp, params)
+                                        .onClosed(function () {
+                                        var localShared = windows.container.localShared;
+                                        _.each(localShared, function (value, key) {
+                                            $shared.push(key);
+                                            windows.setShared(key, value);
+                                        });
+                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || (_.keys(localShared).length ? localShared : undefined)); });
+                                    });
+                                });
+                            }
+                            else {
+                                viewmodel.$storage(params)
+                                    .then(function () {
+                                    windows.sub.modal(webapp, path, options)
+                                        .onClosed(function () {
+                                        var localShared = windows.container.localShared;
+                                        _.each(localShared, function (value, key) {
+                                            $shared.push(key);
+                                            windows.setShared(key, value);
+                                        });
+                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || (_.keys(localShared).length ? localShared : undefined)); });
+                                    });
+                                });
+                            }
+                            return jdf.promise();
+                        }
+                    },
+                    modeless: {
+                        value: function $modeless(webapp, path, params, options) {
+                            var jdf = $.Deferred();
+                            var nowapp = ['at', 'pr', 'hr', 'com'].indexOf(webapp) === -1;
+                            if (nowapp) {
+                                viewmodel.$storage(path)
+                                    .then(function () {
+                                    windows.sub.modeless(webapp, params)
+                                        .onClosed(function () {
+                                        var localShared = windows.container.localShared;
+                                        _.each(localShared, function (value, key) {
+                                            $shared.push(key);
+                                            windows.setShared(key, value);
+                                        });
+                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || (_.keys(localShared).length ? localShared : undefined)); });
+                                    });
+                                });
+                            }
+                            else {
+                                viewmodel.$storage(params)
+                                    .then(function () {
+                                    windows.sub.modeless(webapp, path, options)
+                                        .onClosed(function () {
+                                        var localShared = windows.container.localShared;
+                                        _.each(localShared, function (value, key) {
+                                            $shared.push(key);
+                                            windows.setShared(key, value);
+                                        });
+                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || (_.keys(localShared).length ? localShared : undefined)); });
+                                    });
+                                });
+                            }
+                            return jdf.promise();
+                        }
+                    },
+                    shared: {
+                        value: function $share(name, params) {
+                            if (arguments.length === 1) {
+                                return $.Deferred()
+                                    .resolve(true)
+                                    .then(function () {
+                                    var shared = windows.getShared(name);
+                                    if ($shared.indexOf(name) > -1) {
+                                        windows.setShared(name, undefined);
+                                        // remove shared
+                                        _.remove($shared, function (c) { return c === name; });
+                                    }
+                                    return shared;
+                                });
+                            }
+                            else {
+                                return $.Deferred()
+                                    .resolve(true)
+                                    .then(function () { return windows.setShared(name, params); })
+                                    .then(function () { return windows.getShared(name); });
+                            }
+                        }
+                    },
+                    storage: {
+                        value: function $storage(name, params) {
+                            if (arguments.length == 1) {
+                                return $storeSession(name)
+                                    .then(function (value) {
+                                    if ($shared.indexOf(name) > -1) {
+                                        windows.setShared(name, undefined);
+                                        // remove shared
+                                        _.remove($shared, function (c) { return c === name; });
+                                    }
+                                    return value;
+                                });
+                            }
+                            else {
+                                return $.Deferred()
+                                    .resolve(true)
+                                    .then(function () {
+                                    return $storeSession(name, params)
+                                        .then(function () { return windows.setShared(name, params); });
+                                })
+                                    .then(function () { return $storeSession(name); });
+                            }
+                        }
+                    }
+                });
+                // Hàm blockui được wrapper lại để gọi cho thống nhất
+                BaseViewModel.prototype.$blockui = function $blockui(act) {
+                    return $.Deferred().resolve()
+                        .then(function () {
+                        switch (act) {
+                            default:
+                            case 'hide':
+                            case 'clear':
+                                block.clear();
+                                break;
+                            case 'show':
+                            case 'invisible':
+                                block.invisible();
+                                break;
+                            case 'grayout':
+                                block.grayout();
+                                break;
+                        }
                     });
+                };
+                BaseViewModel.prototype.$errors = function $errors() {
+                    var kvm = nts.uk.ui._viewModel.kiban;
+                    var args = Array.prototype.slice.apply(arguments);
+                    if (args.length == 1) {
+                        // if action is clear, call validate clear action
+                        if (args[0] === 'clear') {
+                            return $.Deferred()
+                                .resolve(true)
+                                .then(function () { return $('.nts-input').ntsError('clear'); })
+                                .then(function () { return kvm.errorDialogViewModel.errors([]); })
+                                .then(function () { return !$('.nts-input').ntsError('hasError'); });
+                        }
+                        else {
+                            var errors_3 = args[0];
+                            return $.Deferred()
+                                .resolve(true)
+                                .then(function () {
+                                _.each(errors_3, function (value, key) { return $(key).ntsError('set', value); });
+                            })
+                                .then(function () { return !$(_.keys(errors_3).join(', ')).ntsError('hasError'); });
+                        }
+                    }
+                    else if (args.length === 2) {
+                        var name_1 = args[0], messageId_1 = args[1];
+                        if (name_1 === 'clear') {
+                            if (_.isString(messageId_1)) {
+                                var $selector_1 = messageId_1;
+                                return $.Deferred()
+                                    .resolve(true)
+                                    .then(function () { return $($selector_1).ntsError('clear'); })
+                                    .then(function () { return !$($selector_1).ntsError('hasError'); });
+                            }
+                            else if (_.isArray(messageId_1)) {
+                                var $selectors_1 = messageId_1.join(', ');
+                                return $.Deferred()
+                                    .resolve(true)
+                                    .then(function () { return $($selectors_1).ntsError('clear'); })
+                                    .then(function () { return !$($selectors_1).ntsError('hasError'); });
+                            }
+                        }
+                        else {
+                            if (_.isString(messageId_1)) {
+                                return $.Deferred()
+                                    .resolve(true)
+                                    .then(function () { return $(name_1).ntsError('set', { messageId: messageId_1 }); })
+                                    .then(function () { return !$(name_1).ntsError('hasError'); });
+                            }
+                            else {
+                                return $.Deferred()
+                                    .resolve(true)
+                                    .then(function () { return $(name_1).ntsError('set', messageId_1); })
+                                    .then(function () { return !$(name_1).ntsError('hasError'); });
+                            }
+                        }
+                    }
+                    else if (args.length > 2) {
+                        if (args[0] === 'clear') {
+                            var $selectors_2 = args.join(', ').replace(/^clear ,/, '');
+                            return $.Deferred()
+                                .resolve(true)
+                                .then(function () { return $($selectors_2).ntsError('clear'); })
+                                .then(function () { return !$($selectors_2).ntsError('hasError'); });
+                        }
+                    }
+                    return $.Deferred()
+                        .resolve(true)
+                        .then(function () { return !$('.nts-input').ntsError('hasError'); });
+                    ;
+                };
+                // Hàm validate được wrapper lại để có thể thực hiện promisse
+                var $validate = function $validate(act) {
+                    var args = Array.prototype.slice.apply(arguments);
+                    if (args.length === 0) {
+                        return $.Deferred()
+                            .resolve(true)
+                            .then(function () { return $('.nts-input').trigger("validate"); })
+                            .then(function () { return !$('.nts-input').ntsError('hasError'); });
+                    }
+                    else if (args.length === 1) {
+                        var selectors_1 = '';
+                        if (_.isString(act)) {
+                            selectors_1 = act;
+                        }
+                        else if (_.isArray(act)) {
+                            selectors_1 = act.join(', ');
+                        }
+                        return $.Deferred()
+                            .resolve(true)
+                            .then(function () { return $(selectors_1).trigger("validate"); })
+                            .then(function () { return !$(selectors_1).ntsError('hasError'); });
+                    }
+                    else {
+                        var selectors_2 = args.join(', ');
+                        return $.Deferred()
+                            .resolve(true)
+                            .then(function () { return $(selectors_2).trigger("validate"); })
+                            .then(function () { return !$(selectors_2).ntsError('hasError'); });
+                    }
+                };
+                Object.defineProperties($validate, {
+                    valid: {
+                        value: ko.observable(true)
+                    },
+                    constraint: {
+                        value: function $constraint(name, value) {
+                            if (arguments.length === 0) {
+                                return $.Deferred()
+                                    .resolve(true)
+                                    .then(function () { return __viewContext.primitiveValueConstraints; });
+                            }
+                            else if (arguments.length === 1) {
+                                return $.Deferred()
+                                    .resolve(true)
+                                    .then(function () { return _.get(__viewContext.primitiveValueConstraints, name); });
+                            }
+                            else {
+                                return $.Deferred()
+                                    .resolve(true)
+                                    .then(function () { return ui.validation.writeConstraint(name, value); });
+                            }
+                        }
+                    }
                 });
-            }
-            return jdf.promise();
-        }
-    },
-    modeless: {
-        value: function $modeless(webapp, path, params) {
-            var jdf = $.Deferred();
-            var nowapp = ['at', 'pr', 'hr', 'com'].indexOf(webapp) === -1;
-            if (nowapp) {
-                $storage(path).then(function () {
-                    windows.sub.modeless(webapp)
-                        .onClosed(function () {
-                        var localShared = windows.container.localShared;
-                        _.each(localShared, function (value, key) {
-                            windows.setShared(key, value);
-                        });
-                        $storage().then(function ($data) {
-                            jdf.resolve($data);
-                        });
-                    });
-                });
-            }
-            else {
-                $storage(params).then(function () {
-                    windows.sub.modeless(webapp, path)
-                        .onClosed(function () {
-                        var localShared = windows.container.localShared;
-                        _.each(localShared, function (value, key) {
-                            windows.setShared(key, value);
-                        });
-                        $storage().then(function ($data) {
-                            jdf.resolve($data);
-                        });
-                    });
-                });
-            }
-            return jdf.promise();
-        }
-    },
-    storage: {
-        value: function $storage(name, params) {
-            if (arguments.length == 1) {
-                return $storeSession(name);
-            }
-            else {
-                return $.Deferred().resolve()
-                    .then(function () {
-                    $storeSession(name, params);
-                    // for old page
-                    windows.setShared(name, params);
-                })
-                    .then(function () { return $storeSession(name); });
-            }
-        }
-    }
-});
-// Hàm blockui được wrapper lại để gọi cho thống nhất
-BaseViewModel.prototype.$blockui = function $blockui(act) {
-    return $.Deferred().resolve()
-        .then(function () {
-        switch (act) {
-            default:
-            case 'hide':
-            case 'clear':
-                block.clear();
-                break;
-            case 'show':
-            case 'invisible':
-                block.invisible();
-                break;
-            case 'grayout':
-                block.grayout();
-                break;
-        }
-    });
-};
-BaseViewModel.prototype.$errors = function $errors() {
-    var args = Array.prototype.slice.apply(arguments);
-    if (args.length == 1) {
-        // if action is clear, call validate clear action
-        if (args[0] === 'clear') {
-            return $.Deferred().resolve()
-                .then(function () { return $('.nts-input').ntsError('clear'); })
-                .then(function () { return !$('.nts-input').ntsError('hasError'); });
-        }
-        else {
-            var errors_3 = args[0];
-            return $.Deferred().resolve()
-                .then(function () {
-                _.each(errors_3, function (value, key) { return $(key).ntsError('set', value); });
-            })
-                .then(function () { return !$(_.keys(errors_3).join(', ')).ntsError('hasError'); });
-        }
-    }
-    else if (args.length === 2) {
-        var name_1 = args[0], messageId_1 = args[1];
-        if (name_1 === 'clear') {
-            if (_.isString(messageId_1)) {
-                var $selector_1 = messageId_1;
-                return $.Deferred().resolve()
-                    .then(function () { return $($selector_1).ntsError('clear'); })
-                    .then(function () { return !$($selector_1).ntsError('hasError'); });
-            }
-            else if (_.isArray(messageId_1)) {
-                var $selectors_1 = messageId_1.join(', ');
-                return $.Deferred().resolve()
-                    .then(function () { return $($selectors_1).ntsError('clear'); })
-                    .then(function () { return !$($selectors_1).ntsError('hasError'); });
-            }
-        }
-        else {
-            if (_.isString(messageId_1)) {
-                return $.Deferred().resolve()
-                    .then(function () { return $(name_1).ntsError('set', { messageId: messageId_1 }); })
-                    .then(function () { return !$(name_1).ntsError('hasError'); });
-            }
-            else {
-                return $.Deferred().resolve()
-                    .then(function () { return $(name_1).ntsError('set', messageId_1); })
-                    .then(function () { return !$(name_1).ntsError('hasError'); });
-            }
-        }
-    }
-    else if (args.length > 2) {
-        if (args[0] === 'clear') {
-            var $selectors_2 = args.join(', ').replace(/^clear ,/, '');
-            return $.Deferred().resolve()
-                .then(function () { return $($selectors_2).ntsError('clear'); })
-                .then(function () { return !$($selectors_2).ntsError('hasError'); });
-        }
-    }
-    return $.Deferred().resolve()
-        .then(function () { return !$('.nts-input').ntsError('hasError'); });
-    ;
-};
-// Hàm validate được wrapper lại để có thể thực hiện promisse
-var $validate = function $validate(act) {
-    var args = Array.prototype.slice.apply(arguments);
-    if (args.length === 0) {
-        return $.Deferred().resolve()
-            .then(function () { return $('.nts-input').trigger("validate"); })
-            .then(function () { return !$('.nts-input').ntsError('hasError'); });
-    }
-    else if (args.length === 1) {
-        var selectors_1 = '';
-        if (_.isString(act)) {
-            selectors_1 = act;
-        }
-        else if (_.isArray(act)) {
-            selectors_1 = act.join(', ');
-        }
-        return $.Deferred().resolve()
-            .then(function () { return $(selectors_1).trigger("validate"); })
-            .then(function () { return !$(selectors_1).ntsError('hasError'); });
-    }
-    else {
-        var selectors_2 = args.join(', ');
-        return $.Deferred().resolve()
-            .then(function () { return $(selectors_2).trigger("validate"); })
-            .then(function () { return !$(selectors_2).ntsError('hasError'); });
-    }
-};
-Object.defineProperty($validate, "constraint", {
-    value: function $constraint(name, value) {
-        if (arguments.length === 0) {
-            return $.Deferred().resolve()
-                .then(function () { return __viewContext.primitiveValueConstraints; });
-        }
-        else if (arguments.length === 1) {
-            return $.Deferred().resolve()
-                .then(function () { return _.get(__viewContext.primitiveValueConstraints, name); });
-        }
-        else {
-            return $.Deferred().resolve()
-                .then(function () { return ui.validation.writeConstraint(name, value); });
-        }
-    }
-});
-BaseViewModel.prototype.$validate = $validate;
-Object.defineProperty(ko, 'ViewModel', { value: BaseViewModel });
-var I18nBindingHandler = /** @class */ (function () {
-    function I18nBindingHandler() {
-    }
-    I18nBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor) {
-        var msg = ko.unwrap(valueAccessor());
-        var params = ko.unwrap(allBindingsAccessor.get('params'));
-        $(element).text(nts.uk.resource.getText(msg, params));
-    };
-    I18nBindingHandler = __decorate([
-        handler({
-            bindingName: 'i18n',
-            validatable: true,
-            virtual: false
-        })
-    ], I18nBindingHandler);
-    return I18nBindingHandler;
-}());
-var IconBindingHandler = /** @class */ (function () {
-    function IconBindingHandler() {
-    }
-    IconBindingHandler.prototype.update = function (el, value) {
-        ko.computed(function () {
-            var numb = ko.toJS(value());
-            var url = "/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/" + numb + ".png";
-            $.get(url)
-                .then(function () {
-                $(el).css({
-                    'background-image': "url('" + url + "')",
-                    'background-repeat': 'no-repeat',
-                    'background-position': 'center'
-                });
-            });
-        });
-    };
-    IconBindingHandler = __decorate([
-        handler({
-            bindingName: 'icon',
-            validatable: true,
-            virtual: false
-        })
-    ], IconBindingHandler);
-    return IconBindingHandler;
-}());
-var DateBindingHandler = /** @class */ (function () {
-    function DateBindingHandler() {
-    }
-    DateBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor) {
-        var date = ko.unwrap(valueAccessor());
-        var format = ko.unwrap(allBindingsAccessor.get('format')) || 'YYYY/MM/DD';
-        $(element).text(moment(date).format(format));
-    };
-    DateBindingHandler = __decorate([
-        handler({
-            bindingName: 'date',
-            validatable: true,
-            virtual: false
-        })
-    ], DateBindingHandler);
-    return DateBindingHandler;
-}());
+                BaseViewModel.prototype.$validate = $validate;
+                Object.defineProperty(ko, 'ViewModel', { value: BaseViewModel });
+            })(viewmodel = ui_35.viewmodel || (ui_35.viewmodel = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var bindings;
+            (function (bindings) {
+                var i18n;
+                (function (i18n) {
+                    var I18nBindingHandler = /** @class */ (function () {
+                        function I18nBindingHandler() {
+                        }
+                        I18nBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor) {
+                            var msg = ko.unwrap(valueAccessor());
+                            var params = ko.unwrap(allBindingsAccessor.get('params'));
+                            $(element).text(nts.uk.resource.getText(msg, params));
+                        };
+                        I18nBindingHandler = __decorate([
+                            handler({
+                                bindingName: 'i18n',
+                                validatable: true,
+                                virtual: false
+                            })
+                        ], I18nBindingHandler);
+                        return I18nBindingHandler;
+                    }());
+                    i18n.I18nBindingHandler = I18nBindingHandler;
+                })(i18n = bindings.i18n || (bindings.i18n = {}));
+            })(bindings = ui.bindings || (ui.bindings = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var bindings;
+            (function (bindings) {
+                var icon;
+                (function (icon) {
+                    var icons = [];
+                    var IconBindingHandler = /** @class */ (function () {
+                        function IconBindingHandler() {
+                        }
+                        IconBindingHandler.prototype.update = function (el, value, allBindingsAccessor) {
+                            var numb = ko.unwrap(value());
+                            var size = allBindingsAccessor.get('size') || 'contain';
+                            var url = "/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/" + numb + ".png";
+                            $.Deferred()
+                                .resolve(true)
+                                .then(function () { return icons.indexOf(numb) > -1; })
+                                .then(function (exist) { return !!exist || $.get(url); })
+                                .then(function () {
+                                if (icons.indexOf(numb) === -1) {
+                                    icons.push(numb);
+                                }
+                                $(el).css({
+                                    'background-image': "url('" + url + "')",
+                                    'background-repeat': 'no-repeat',
+                                    'background-position': 'center',
+                                    'background-size': size
+                                });
+                            });
+                        };
+                        IconBindingHandler = __decorate([
+                            handler({
+                                bindingName: 'icon',
+                                validatable: true,
+                                virtual: false
+                            })
+                        ], IconBindingHandler);
+                        return IconBindingHandler;
+                    }());
+                    icon.IconBindingHandler = IconBindingHandler;
+                })(icon = bindings.icon || (bindings.icon = {}));
+            })(bindings = ui.bindings || (ui.bindings = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var bindings;
+            (function (bindings) {
+                var date;
+                (function (date_1) {
+                    var DateBindingHandler = /** @class */ (function () {
+                        function DateBindingHandler() {
+                        }
+                        DateBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor) {
+                            var date = ko.unwrap(valueAccessor());
+                            var format = ko.unwrap(allBindingsAccessor.get('format')) || 'YYYY/MM/DD';
+                            $(element).text(moment(date).format(format));
+                        };
+                        DateBindingHandler = __decorate([
+                            handler({
+                                bindingName: 'date',
+                                validatable: true,
+                                virtual: false
+                            })
+                        ], DateBindingHandler);
+                        return DateBindingHandler;
+                    }());
+                    date_1.DateBindingHandler = DateBindingHandler;
+                })(date = bindings.date || (bindings.date = {}));
+            })(bindings = ui.bindings || (ui.bindings = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
 //# sourceMappingURL=nts.uk.com.web.nittsu.bundles.js.map

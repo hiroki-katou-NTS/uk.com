@@ -4,6 +4,9 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 
+/**
+ * 	AggregateRoot : 外部予算実績項目
+ */
 @Getter
 public class ExternalBudget extends AggregateRoot {
 
@@ -27,6 +30,16 @@ public class ExternalBudget extends AggregateRoot {
 		this.unitAtr = unitAtr;
 	}
 
+	//TODO Task: #34236, Q&A: #34363
+	public ExternalBudget(String companyId, ExternalBudgetCd externalBudgetCd, ExternalBudgetName externalBudgetName,
+			BudgetAtr budgetAtr) {
+		super();
+		this.companyId = companyId;
+		this.externalBudgetCd = externalBudgetCd;
+		this.externalBudgetName = externalBudgetName;
+		this.budgetAtr = budgetAtr;
+	}
+
 	/**
 	 * Create instance using Java type parameters.
 	 * 
@@ -36,11 +49,11 @@ public class ExternalBudget extends AggregateRoot {
 	 *            externalBudgetCd
 	 * @return ExternalBudget
 	 */
+	//TODO Task: #34236, Q&A: #34363
 	public static ExternalBudget createFromJavaType(String companyId, String externalBudgetCd,
-			String externalBudgetName, int budgetAtr, int unitAtr) {
+			String externalBudgetName, int budgetAtr) {
 		return new ExternalBudget(companyId, new ExternalBudgetCd(externalBudgetCd),
-				new ExternalBudgetName(externalBudgetName), EnumAdaptor.valueOf(budgetAtr, BudgetAtr.class),
-				EnumAdaptor.valueOf(unitAtr, UnitAtr.class));
+				new ExternalBudgetName(externalBudgetName), EnumAdaptor.valueOf(budgetAtr, BudgetAtr.class));
 	}
 
 }

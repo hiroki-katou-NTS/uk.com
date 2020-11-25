@@ -1,0 +1,71 @@
+.kml-002-c {
+}
+.functions-area {
+  overflow: inherit !important;
+}
+.functions-area .link-button.menu {
+  margin-right: 15px;
+  position: relative;
+  width: 188px;
+  text-align: right;
+}
+
+.functions-area .menu .sub-menu-links {
+  position: absolute;
+  top: 100%;
+  width: 188px;
+  right: 0;
+  display: none;
+  z-index: 9999;
+}
+
+.functions-area .menu:hover .sub-menu-links {
+  display: block;
+}
+
+.functions-area .sub-menu-links .ntsControl {
+  display: block;
+}
+.functions-area .sub-menu-links .link-button {
+  width: 100%;  
+  background-color:#FEC6C6;
+  margin-bottom: 1px;  
+}
+.functions-area .sub-menu-links .link-button:hover {
+  color: #000 !important;
+}
+.kml-002-c .content-table {
+  border-top: solid 1px #B1B1B1;
+  margin-top: 10px;
+  padding-top: 10px;
+  max-width: 975px;
+}
+
+#master-wrapper div#contents-area.kml-002-c {
+  padding-left: 30px;
+}
+
+.kml-002-c .content-table .text-center {
+  text-align: center;
+}
+.kml-002-c .content-table tbody td:first-child {
+  background-color: #edfac2;
+}
+.kml-002-c .content-table tbody td:nth-child(4) {
+  white-space: break-spaces;
+}
+#fixed-table {
+  width: 100%;
+}
+#fixed-table tbody tr td:nth-child(2) {
+  text-align: center;
+}
+#fixed-table tbody tr td:nth-child(3) button {
+  width: 100%;
+  margin-top: 2px;
+  margin-bottom: 5px;
+}
+#fixed-table tbody tr td:nth-child(2) button {
+  margin-top: 2px;
+  margin-bottom: 2px;
+}

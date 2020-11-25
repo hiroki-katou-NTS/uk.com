@@ -27,8 +27,8 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.infra.entity.optitem.applicable.KrcstApplEmpCon;
 import nts.uk.ctx.at.record.infra.entity.optitem.applicable.KrcstApplEmpConPK_;
 import nts.uk.ctx.at.record.infra.entity.optitem.applicable.KrcstApplEmpCon_;
-import nts.uk.ctx.at.shared.dom.optitem.applicable.EmpCondition;
-import nts.uk.ctx.at.shared.dom.optitem.applicable.EmpConditionRepository;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpCondition;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpConditionRepository;
 
 /**
  * The Class JpaEmpConditionRepository.

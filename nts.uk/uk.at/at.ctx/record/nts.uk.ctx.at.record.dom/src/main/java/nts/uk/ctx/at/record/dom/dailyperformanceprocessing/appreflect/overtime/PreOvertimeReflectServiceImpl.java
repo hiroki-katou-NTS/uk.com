@@ -16,7 +16,6 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.repo.Attenda
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
-import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
@@ -47,7 +46,6 @@ import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
-import nts.uk.ctx.at.shared.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
@@ -72,8 +70,8 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 	private EmployeeDailyPerErrorRepository employeeDailyPerError;
 	@Inject
 	private OutingTimeOfDailyPerformanceRepository outingTime;
-	@Inject
-	private WorkTypeOfDailyPerforRepository workTypeOfDailyPerforRepository;
+//	@Inject
+//	private WorkTypeOfDailyPerforRepository workTypeOfDailyPerforRepository;
 	@Inject
 	private BreakTimeOfDailyPerformanceRepository breakTimeOfDaily;
 	@Inject
@@ -162,7 +160,7 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 		Optional<AffiliationInforOfDailyPerfor> findByKey = affiliationInfor.finds(emps, dates).stream().findFirst();
 		//日別実績の勤務種別
 		//EA bỏ root này rồi
-		Optional<WorkTypeOfDailyPerformance> workType = workTypeOfDailyPerforRepository.finds(emps, dates).stream().findFirst();
+//		Optional<WorkTypeOfDailyPerformance> workType = workTypeOfDailyPerforRepository.finds(emps, dates).stream().findFirst();
 		//日別実績のPCログオン情報
 		Optional<PCLogOnInfoOfDaily> pcLogOnDarta = pcLogOnInfo.finds(emps, dates).stream().findFirst();
 		//社員の日別実績エラー一覧
@@ -194,7 +192,10 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 		List<RemarksOfDailyPerform> remark = remarks.getRemarksBykey(employeeId, dateData);
 		//日別実績の臨時出退勤
 		Optional<TemporaryTimeOfDailyPerformance> temporaryData = temporary.finds(emps, dates).stream().findFirst();
-		IntegrationOfDaily integration = new IntegrationOfDaily(workInfor != null?workInfor.getWorkInformation():null, 
+		IntegrationOfDaily integration = new IntegrationOfDaily(
+				employeeId,
+				dateData,
+				workInfor != null?workInfor.getWorkInformation():null, 
 				calAtrrOfDailyData != null?calAtrrOfDailyData.getCalcategory():null, 
 				findByKey.isPresent() ? findByKey.get().getAffiliationInfor() : null,
 				// workType,

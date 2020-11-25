@@ -36,5 +36,10 @@ public class PGInfomationDto {
 	 * 起動履歴の記録
 	 */
 	private TargetSettingDto bootHistoryRecord;
+	
+	/**
+	 * プログラムコード
+	 */
+	private String programCd;
 
 }

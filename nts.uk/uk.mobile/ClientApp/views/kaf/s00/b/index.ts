@@ -1,5 +1,7 @@
 import { Vue, _, moment } from '@app/provider';
 import { component, Prop, Watch } from '@app/core/component';
+import { vmOf } from 'vue/types/umd';
+import { AppType } from 'views/kaf/s00';
 
 @component({
     name: 'kafs00b',
@@ -7,66 +9,72 @@ import { component, Prop, Watch } from '@app/core/component';
     template: require('./index.vue'),
     resource: require('./resources.json'),
     validations: {
-        params: {
-            output: {
-                prePostAtr: {
-                    selectCheck: {
-                        test(value: number) {
-                            const vm = this;
-                            if (value == null || value < 0 || value > 1) {
-                                document.getElementById('prePostSelect').className += ' invalid';
-
-                                return false;
-                            }
-                            let prePostSelectElement = document.getElementById('prePostSelect');
-                            if (!_.isNull(prePostSelectElement)) {
-                                prePostSelectElement.classList.remove('invalid');
-                            }
-
-                            return true;
-                        },
-                        messageId: 'MsgB_30'
-                    }
-                }
-            }
-        },
         date: {
+            selectCheck: {
+                test(value: any) {
+                    const vm = this;
+                    if (!vm.params.newModeContent.initSelectMultiDay) {
+                        if (vm.params.isChangeDateError) {
+                            return false;
+                        }
+                    }
+
+                    return true;
+                },
+                messageId: 'MsgB_30'
+            },
             required: true
         },
         dateRange: {
+            selectCheck: {
+                test(value: any) {
+                    const vm = this;
+                    if (vm.params.newModeContent.initSelectMultiDay) {
+                        if (vm.params.isChangeDateError) {
+                            return false;
+                        }
+                    }
+
+                    return true;
+                },
+                messageId: 'MsgB_30'
+            },
             required: true,
             dateRange: true
+        },
+        prePostAtr: {
+            selectCheck: {
+                test(value: number) {
+                    const vm = this;
+                    if (value == null || value < 0 || value > 1) {
+                        document.getElementById('prePostSelect').className += ' invalid';
+
+                        return false;
+                    }
+                    let prePostSelectElement = document.getElementById('prePostSelect');
+                    if (!_.isNull(prePostSelectElement)) {
+                        prePostSelectElement.classList.remove('invalid');
+                    }
+
+                    return true;
+                },
+                messageId: 'MsgB_30'
+            }
         }
     },
     constraints: []
 })
 export class KafS00BComponent extends Vue {
     @Prop({ default: () => ({}) })
-    public params: {
-        // KAFS00_B_起動情報
-        input: {
-            // 画面モード
-            mode: ScreenMode;
-            // 申請表示設定
-            appDisplaySetting: any;
-            // 新規モード内容
-            newModeContent?: NewModeContent;
-            // 詳細モード内容
-            detailModeContent?: DetailModeContent;
-        },
-        output: {
-            // 事前事後区分
-            prePostAtr: number;
-            // 申請開始日
-            startDate: Date;
-            // 申請終了日
-            endDate: Date;
-        }
-    };
+    public params: KAFS00BParams;
     public prePostResource: Array<Object> = [];
     public dateSwitchResource: Array<Object> = [];
+    public prePostAtr: number = null;
     public date: Date = null;
-    public dateRange: any = {};
+    public dateRange: any = {
+        start: null,
+        end: null
+    };
 
     public created() {
         const self = this;
@@ -84,17 +92,27 @@ export class KafS00BComponent extends Vue {
             code: true,
             text: 'KAFS00_13'
         }];
-        self.dateRange = {
-            start: null,
-            end: null,
-        };
-        if (self.$input.newModeContent.appTypeSetting[0].displayInitialSegment != 2) {
-            self.$output.prePostAtr = self.$input.newModeContent.appTypeSetting[0].displayInitialSegment;
-        } else {
-            self.$output.prePostAtr = null;
+        self.initFromParams();
+    }
+
+    @Watch('params')
+    public paramsWatcher() {
+        const self = this;
+        self.initFromParams();
+    }
+
+    private initFromParams() {
+        const self = this;
+        if (!self.params) {
+            return;
         }
-        if (self.$input.newModeContent) {
-            if (self.$input.newModeContent.initSelectMultiDay) {
+        if (self.params.newModeContent) {
+            if (self.params.newModeContent.appTypeSetting[0].displayInitialSegment != 2) {
+                self.prePostAtr = self.params.newModeContent.appTypeSetting[0].displayInitialSegment;
+            } else {
+                self.prePostAtr = null;
+            }
+            if (self.params.newModeContent.initSelectMultiDay) {
                 self.$updateValidator('dateRange', { validate: true });
                 self.$updateValidator('date', { validate: false });
             } else {
@@ -102,46 +120,35 @@ export class KafS00BComponent extends Vue {
                 self.$updateValidator('date', { validate: true });
             }
             if (self.displayPrePost) {
-                self.$updateValidator('params.output.prePostAtr', { validate: true });
+                self.$updateValidator('prePostAtr', { validate: true });
             } else {
-                self.$updateValidator('params.output.prePostAtr', { validate: false });
+                self.$updateValidator('prePostAtr', { validate: false });
             }
         }
-        if (self.$input.detailModeContent) {
+        if (self.params.detailModeContent) {
+            self.prePostAtr = self.params.detailModeContent.prePostAtr;
             self.$updateValidator('dateRange', { validate: false });
             self.$updateValidator('date', { validate: false });
-            self.$updateValidator('params.output.prePostAtr', { validate: false });
+            self.$updateValidator('prePostAtr', { validate: false });
         }
-    }
-
-    get $input() {
-        const self = this;
-
-        return self.params.input;
-    }
-
-    get $output() {
-        const self = this;
-
-        return self.params.output;
     }
 
     get displayPrePost() {
         const self = this;
 
-        return self.$input.appDisplaySetting.prePostDisplayAtr == 0 ? false : true;
+        return self.params.appDisplaySetting.prePostDisplayAtr == 0 ? false : true;
     }
 
     get enablePrePost() {
         const self = this;
 
-        return self.$input.newModeContent.appTypeSetting[0].canClassificationChange;
+        return self.params.newModeContent.appTypeSetting[0].canClassificationChange;
     }
 
     get displayMultiDaySwitch() {
         const self = this;
 
-        return self.$input.newModeContent.useMultiDaySwitch;
+        return self.params.newModeContent.useMultiDaySwitch;
     }
 
     get ScreenMode() {
@@ -151,33 +158,160 @@ export class KafS00BComponent extends Vue {
     get prePostAtrName() {
         const self = this;
 
-        return _.find(self.prePostResource, (o: any) => o.code == self.$input.detailModeContent.prePostAtr).text;
+        return _.find(self.prePostResource, (o: any) => o.code == self.params.detailModeContent.prePostAtr).text;
     }
 
-    @Watch('$input.newModeContent.initSelectMultiDay')
+    @Watch('params.newModeContent.initSelectMultiDay')
     public initSelectMultiDayWatcher(value: any) {
         const self = this;
-        if (value) {
-            self.$updateValidator('dateRange', { validate: true });
-            self.$updateValidator('date', { validate: false });
-        } else {
-            self.$updateValidator('dateRange', { validate: false });
-            self.$updateValidator('date', { validate: true });
-        }
+        new Promise((resolve) => {
+            self.$validate('clear');
+            setTimeout(() => {
+                resolve(true);
+            }, 300);
+        }).then(() => {
+            if (value) {
+                self.$updateValidator('dateRange', { validate: true });
+                self.$updateValidator('date', { validate: false });
+                self.$validate('dateRange');
+                if (self.$valid) {
+                    self.$emit('kaf000BChangeDate',
+                        {
+                            startDate: self.dateRange.start,
+                            endDate: self.dateRange.end
+                        }); 
+                }
+                 
+            } else {
+                self.$updateValidator('dateRange', { validate: false });
+                self.$updateValidator('date', { validate: true });
+                self.$validate('date');
+                if (self.$valid) {
+                    self.$emit('kaf000BChangeDate',
+                        {
+                            startDate: self.date,
+                            endDate: self.date
+                        }); 
+                }
+            }
+        });
     }
 
     @Watch('date')
-    public dateWatcher() {
+    public dateWatcher(value) {
         const self = this;
-        self.$output.startDate = self.date;
-        self.$output.endDate = self.date;
+        if (!self.params.appDispInfoStartupOutput) {
+            self.$emit('kaf000BChangeDate',
+            {
+                startDate: value,
+                endDate: value
+            }); 
+
+            return;
+        }
+        self.params.isChangeDateError = null;
+        let appDate = moment(value).format('YYYY/MM/DD'), 
+            startDate = moment(value).format('YYYY/MM/DD'),
+            endDate = moment(value).format('YYYY/MM/DD'),
+            appDispInfoStartupOutput = self.params.appDispInfoStartupOutput,
+            opOvertimeAppAtr = null;
+        self.$mask('show');
+        self.$http.post('at', API.changeAppDate, { appDate, startDate, endDate, appDispInfoStartupOutput, opOvertimeAppAtr }).then((data: any) => {
+            self.$nextTick(() => self.$mask('hide'));
+            let appDispInfoWithDateOutput = data.data;
+            self.params.isChangeDateError = !self.validateChangeDate(appDispInfoWithDateOutput);
+            self.$validate('date');
+            if (self.$valid) {
+                appDispInfoStartupOutput.appDispInfoWithDateOutput = appDispInfoWithDateOutput;
+                self.$emit('kaf000BChangeDate', { startDate, endDate, appDispInfoStartupOutput });   
+            }
+        });
     }
 
     @Watch('dateRange')
-    public dateRangeWatcher() {
+    public dateRangeWatcher(value) {
         const self = this;
-        self.$output.startDate = self.dateRange.start;
-        self.$output.endDate = self.dateRange.end;
+        if (!self.params.appDispInfoStartupOutput) {
+            self.$emit('kaf000BChangeDate',
+            {
+                startDate: value.start,
+                endDate: value.end
+            });  
+
+            return;
+        }
+        self.params.isChangeDateError = null;
+        let appDate = moment(value.start).format('YYYY/MM/DD'), 
+            startDate = moment(value.start).format('YYYY/MM/DD'),
+            endDate = moment(value.end).format('YYYY/MM/DD'),
+            appDispInfoStartupOutput = self.params.appDispInfoStartupOutput,
+            opOvertimeAppAtr = null;
+        new Promise((resolve) => {
+            self.$validate('clear');
+            setTimeout(() => {
+                resolve(true);
+            }, 200);
+        })
+        .then(() => self.$validate('dateRange'))
+        .then(() => self.$valid)
+        .then((valid: boolean) => {
+            if (valid) {
+                self.$mask('show');
+                self.$http.post('at', API.changeAppDate, { appDate, startDate, endDate, appDispInfoStartupOutput, opOvertimeAppAtr }).then((data: any) => {
+                    self.$nextTick(() => self.$mask('hide'));
+                    let appDispInfoWithDateOutput = data.data;
+                    self.params.isChangeDateError = !self.validateChangeDate(appDispInfoWithDateOutput);
+                    self.$validate('dateRange');
+                    if (self.$valid) {
+                        appDispInfoStartupOutput.appDispInfoWithDateOutput = appDispInfoWithDateOutput;
+                        self.$emit('kaf000BChangeDate', { startDate, endDate, appDispInfoStartupOutput });   
+                    }
+                });
+            }
+        });
+    }
+
+    @Watch('prePostAtr')
+    public prePostAtrWatcher() {
+        const self = this;
+        if (self.displayPrePost) {
+            self.$emit('kaf000BChangePrePost', self.prePostAtr);
+        }
+    }
+
+    private validateChangeDate(appDispInfoWithDateOutput: any) {
+        const self = this;
+        let useDivision = appDispInfoWithDateOutput.approvalFunctionSet.appUseSetLst[0].useDivision,
+            opErrorFlag = appDispInfoWithDateOutput.opErrorFlag,
+            msgID = '';
+        if (useDivision == 0) {
+            self.$modal.error('Msg_323');
+
+            return false;
+        }
+        
+        if (_.isNull(opErrorFlag)) {
+            return true;    
+        }
+        switch (opErrorFlag) {
+            case 1:
+                msgID = 'Msg_324';
+                break;
+            case 2: 
+                msgID = 'Msg_238';
+                break;
+            case 3:
+                msgID = 'Msg_237';
+                break;
+            default: 
+                break;
+        }  
+        if (_.isEmpty(msgID)) { 
+            return true;
+        }
+        self.$modal.error({ messageId: msgID });
+        
+        return false;
     }
 }
 
@@ -206,7 +340,7 @@ interface NewModeContent {
 // 詳細モード内容
 interface DetailModeContent {
     // 事前事後区分
-    prePostAtr: string;
+    prePostAtr: number;
     // 申請者名
     employeeName: string;
     // 申請開始日
@@ -214,3 +348,22 @@ interface DetailModeContent {
     // 申請終了日
     endDate: string;
 }
+
+// KAFS00_B_起動情報
+export interface KAFS00BParams {
+    // 画面モード
+    mode: ScreenMode;
+    // 申請表示設定
+    appDisplaySetting: any;
+    // 新規モード内容
+    newModeContent?: NewModeContent;
+    // 詳細モード内容
+    detailModeContent?: DetailModeContent;
+
+    appDispInfoStartupOutput?: any;
+    isChangeDateError?: boolean;
+}
+
+const API = {
+    changeAppDate: 'at/request/application/changeAppDate'
+};

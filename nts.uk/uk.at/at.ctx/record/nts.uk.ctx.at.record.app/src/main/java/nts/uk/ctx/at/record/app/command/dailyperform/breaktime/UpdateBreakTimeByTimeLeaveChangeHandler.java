@@ -48,6 +48,8 @@ public class UpdateBreakTimeByTimeLeaveChangeHandler extends
 		Optional<TimeLeavingOfDailyPerformance> timeLeavingOfDailyPerformance =command.cachedTimeLeave;
 		Optional<TimeLeavingOfDailyAttd> timeLeavingOfDailyAttd = timeLeavingOfDailyPerformance.isPresent()?Optional.ofNullable(timeLeavingOfDailyPerformance.get().getAttendance()):Optional.empty();
 		IntegrationOfDaily working = new IntegrationOfDaily(
+				command.employeeId,
+				command.targetDate,
 				wi.getWorkInformation(), //workInformation
 				null, //calAttr
 				null, //affiliationInfor
@@ -64,8 +66,6 @@ public class UpdateBreakTimeByTimeLeaveChangeHandler extends
 				command.cachedEditState.isPresent() ? command.cachedEditState.get().stream().map(c->c.getEditState()).collect(Collectors.toList()) : new ArrayList<>(),
 				Optional.empty(),//tempTime
 				new ArrayList<>());//remarks
-		working.setEmployeeId(command.employeeId);
-		working.setYmd(command.targetDate);
 		command.cachedBreackTime.ifPresent(b -> {
 			working.getBreakTime().add(b.getTimeZone());
 		});

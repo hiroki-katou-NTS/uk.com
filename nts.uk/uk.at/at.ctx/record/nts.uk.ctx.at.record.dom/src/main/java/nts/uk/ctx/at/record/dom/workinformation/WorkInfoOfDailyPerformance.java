@@ -53,7 +53,7 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot {
 	public WorkInfoOfDailyPerformance(String employeeId, GeneralDate ymd,WorkInfoOfDailyAttendance workInfo) {
 		this.employeeId = employeeId;
 		this.ymd = ymd;
-		this.workInformation = workInfo;
+		setWorkInformation(workInfo);
 	} 
 	
 	/**
@@ -132,6 +132,18 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot {
 	public WorkInfoOfDailyPerformance(String employeeId, GeneralDate ymd) {
 		this.employeeId = employeeId;
 		this.ymd = ymd;
+	}
+	@Override
+	public void setVersion(long version) {
+		super.setVersion(version);
+		if (this.workInformation != null) {
+			this.workInformation.setVer(version);
+		}
+	}
+	
+	public void setWorkInformation(WorkInfoOfDailyAttendance info) {
+		this.workInformation = info;
+		setVersion(info.getVer());
 	}
 	
 	

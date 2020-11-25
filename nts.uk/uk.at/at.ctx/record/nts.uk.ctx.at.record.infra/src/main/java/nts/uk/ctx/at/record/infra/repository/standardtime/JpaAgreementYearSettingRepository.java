@@ -15,8 +15,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementYearSettingRepository;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementYearSetting;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementYearSettingPK;
-//import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgreementMonthSet;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementYearSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exceptsetting.AgreementYearSetting;
 
 @Stateless
 public class JpaAgreementYearSettingRepository extends JpaRepository implements AgreementYearSettingRepository {
@@ -24,11 +23,17 @@ public class JpaAgreementYearSettingRepository extends JpaRepository implements 
 	private static final String FIND;
 
 	private static final String FIND_BY_KEY;
+
 	private static final String DEL_BY_KEY;
 
 	private static final String IS_EXIST_DATA;
+
 	private static final String FIND_BY_ID;
+
 	private static final String FIND_BY_IDS;
+	private static final String FIND_BY_SID_AND_YEAR;
+
+	private static final String FIND_BY_LIST_SID;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -74,6 +79,21 @@ public class JpaAgreementYearSettingRepository extends JpaRepository implements 
 		builderString.append("WHERE a.kmkmtAgeementYearSettingPK.employeeId IN :employeeIds ");
 		builderString.append("AND a.kmkmtAgeementYearSettingPK.yearValue = :yearValue ");
 		FIND_BY_IDS = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM KmkmtAgeementYearSetting a ");
+		builderString.append("WHERE a.kmkmtAgeementYearSettingPK.employeeId IN :employeeIds ");
+		FIND_BY_LIST_SID = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM KmkmtAgeementYearSetting a ");
+		builderString.append("WHERE a.kmkmtAgeementYearSettingPK.employeeId = :employeeId ");
+		builderString.append("AND a.kmkmtAgeementYearSettingPK.yearValue = :year ");
+		builderString.append("ORDER BY a.kmkmtAgeementYearSettingPK.yearValue DESC ");
+		FIND_BY_SID_AND_YEAR = builderString.toString();
+
 	}
 
 	@Override
@@ -104,6 +124,32 @@ public class JpaAgreementYearSettingRepository extends JpaRepository implements 
 	}
 
 	@Override
+	public void delete(AgreementYearSetting agreementYearSetting) {
+		this.commandProxy().remove(toEntity(agreementYearSetting));
+	}
+
+	@Override
+	public List<AgreementYearSetting> findByListEmployee(List<String> employeeIds) {
+		if (employeeIds == null || employeeIds.isEmpty())
+			return Collections.emptyList();
+		List<AgreementYearSetting> result = new ArrayList<>();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			result.addAll(this.queryProxy().query(FIND_BY_LIST_SID, KmkmtAgeementYearSetting.class)
+					.setParameter("employeeIds", splitData)
+					.getList(f -> toDomain(f)));
+		});
+		return result;
+	}
+	
+	@Override
+	public Optional<AgreementYearSetting> findBySidAndYear(String employeeId, int year) {
+		return this.queryProxy().query(FIND_BY_SID_AND_YEAR, KmkmtAgeementYearSetting.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("year", year)
+				.getSingle(f -> toDomain(f));
+	}
+
+	@Override
 	public void add(AgreementYearSetting agreementYearSetting) {
 		this.commandProxy().insert(toEntity(agreementYearSetting));
 	}
@@ -117,9 +163,8 @@ public class JpaAgreementYearSettingRepository extends JpaRepository implements 
 		
 		if (entity.isPresent()) {
 			KmkmtAgeementYearSetting data = entity.get();
-			data.errorOneYear = new BigDecimal(agreementYearSetting.getErrorOneYear().valueAsMinutes());
-			data.alarmOneYear = new BigDecimal(agreementYearSetting.getAlarmOneYear().valueAsMinutes());
-			
+			data.errorOneYear = agreementYearSetting.getOneYearTime().getError().valueAsMinutes();
+			data.alarmOneYear = agreementYearSetting.getOneYearTime().getAlarm().valueAsMinutes();
 			this.commandProxy().update(data);
 		}
 
@@ -157,7 +202,7 @@ public class JpaAgreementYearSettingRepository extends JpaRepository implements 
 		AgreementYearSetting agreementYearSetting = AgreementYearSetting.createFromJavaType(
 				kmkmtAgeementYearSetting.kmkmtAgeementYearSettingPK.employeeId,
 				kmkmtAgeementYearSetting.kmkmtAgeementYearSettingPK.yearValue.intValue(),
-				kmkmtAgeementYearSetting.errorOneYear.intValue(), kmkmtAgeementYearSetting.alarmOneYear.intValue());
+				kmkmtAgeementYearSetting.errorOneYear, kmkmtAgeementYearSetting.alarmOneYear);
 		return agreementYearSetting;
 	}
 
@@ -166,10 +211,9 @@ public class JpaAgreementYearSettingRepository extends JpaRepository implements 
 
 		entity.kmkmtAgeementYearSettingPK = new KmkmtAgeementYearSettingPK();
 		entity.kmkmtAgeementYearSettingPK.employeeId = agreementYearSetting.getEmployeeId();
-		entity.kmkmtAgeementYearSettingPK.yearValue = new BigDecimal(agreementYearSetting.getYearValue());
-		entity.alarmOneYear = new BigDecimal(agreementYearSetting.getAlarmOneYear().v());
-		entity.errorOneYear = new BigDecimal(agreementYearSetting.getErrorOneYear().v());
-
+		entity.kmkmtAgeementYearSettingPK.yearValue = new BigDecimal(agreementYearSetting.getYearValue().v());
+		entity.errorOneYear = agreementYearSetting.getOneYearTime().getError().valueAsMinutes();
+		entity.alarmOneYear = agreementYearSetting.getOneYearTime().getAlarm().valueAsMinutes();
 		return entity;
 	}
 }

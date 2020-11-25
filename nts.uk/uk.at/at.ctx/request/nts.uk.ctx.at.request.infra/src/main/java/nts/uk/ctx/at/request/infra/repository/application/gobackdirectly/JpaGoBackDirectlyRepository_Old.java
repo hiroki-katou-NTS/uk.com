@@ -15,11 +15,15 @@ import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly_Old;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository_Old;
 import nts.uk.ctx.at.request.infra.entity.application.gobackdirectly.KrqdtGoBackDirectly_Old;
 import nts.uk.ctx.at.request.infra.entity.application.gobackdirectly.KrqdtGoBackDirectlyPK_Old;
-
+/**
+ * 「古いクラス → 削除予定 → 使わないでください (Old Class → Delete plan → Please don't use it)」
+ * @author phuongdv
+ *
+ */
 @Stateless
 public class JpaGoBackDirectlyRepository_Old extends JpaRepository implements GoBackDirectlyRepository_Old {
 
-	public static final String SELECT_NO_WHERE = "SELECT c FROM KrqdtGoBackDirectly c";
+	public static final String SELECT_NO_WHERE = "SELECT c FROM KrqdtGoBackDirectly_Old c";
 
 	public static final String SELECT_WITH_APP_ID = SELECT_NO_WHERE 
 			+ " WHERE c.krqdtGoBackDirectlyPK.companyID =:companyID"

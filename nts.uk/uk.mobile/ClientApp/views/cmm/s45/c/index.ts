@@ -10,7 +10,10 @@ import {
     CmmS45ComponentsApp2Component,
     CmmS45ComponentsApp3Component,
     CmmS45ComponentsApp4Component,
-    CmmS45ComponentsApp5Component
+    CmmS45ComponentsApp5Component,
+    CmmS45ComponentsApp9Component,
+    CmmS45ShrComponentsApp7Component,
+    CmmS45ShrComponentsAppsampleComponent
 } from 'views/cmm/s45/shr/components';
 
 @component({
@@ -23,11 +26,14 @@ import {
     components: {
         // khai báo virtual tag name
         'approved': ApprovedComponent,
+        'appsample': CmmS45ShrComponentsAppsampleComponent,
         'app1': CmmS45ComponentsApp1Component,
         'app2': CmmS45ComponentsApp2Component,
         'app3': CmmS45ComponentsApp3Component,
         'app4': CmmS45ComponentsApp4Component,
         'app5': CmmS45ComponentsApp5Component,
+        'app9': CmmS45ComponentsApp9Component,
+        'app7': CmmS45ShrComponentsApp7Component,
         'render': {
             template: `<div class="">{{params.id}} {{params.name}}</div>`,
             props: ['params']
@@ -53,6 +59,7 @@ export class CmmS45CComponent extends Vue {
     };
     // 差し戻し理由
     public reversionReason: string = '';
+    public isLoadingComplete = false;
     public created() {
         let self = this;
         self.listAppMeta = self.params.listAppMeta;
@@ -61,12 +68,12 @@ export class CmmS45CComponent extends Vue {
         Object.defineProperty(self.appState, 'getName', {
             get() {
                 switch (this.appStatus) {
-                    case 0: return 'CMMS45_7'; // 反映状態 = 未反映
-                    case 1: return 'CMMS45_8'; // 反映状態 = 反映待ち
-                    case 2: return 'CMMS45_9'; // 反映状態 = 反映済
-                    case 3: return 'CMMS45_10'; // 反映状態 = 取消済
-                    case 4: return 'CMMS45_36'; // 反映状態 = 差し戻し
-                    case 5: return 'CMMS45_11'; // 反映状態 = 否認
+                    case ReflectedState.NOTREFLECTED: return 'CMMS45_7'; // 反映状態 = 未反映
+                    case ReflectedState.WAITREFLECTION: return 'CMMS45_8'; // 反映状態 = 反映待ち
+                    case ReflectedState.REFLECTED: return 'CMMS45_9'; // 反映状態 = 反映済
+                    case ReflectedState.CANCELED: return 'CMMS45_10'; // 反映状態 = 取消済
+                    case ReflectedState.REMAND: return 'CMMS45_36'; // 反映状態 = 差し戻し
+                    case ReflectedState.DENIAL: return 'CMMS45_11'; // 反映状態 = 否認
                     default: break;
                 }
             }
@@ -75,12 +82,12 @@ export class CmmS45CComponent extends Vue {
         Object.defineProperty(self.appState, 'getClass', {
             get() {
                 switch (this.appStatus) {
-                    case 0: return 'apply-unapproved'; // 反映状態 = 未反映
-                    case 1: return 'apply-approved'; // 反映状態 = 反映待ち
-                    case 2: return 'apply-reflected'; // 反映状態 = 反映済
-                    case 3: return 'apply-cancel'; // 反映状態 = 取消済
-                    case 4: return 'apply-return'; // 反映状態 = 差し戻し
-                    case 5: return 'apply-denial'; // 反映状態 = 否認
+                    case ReflectedState.NOTREFLECTED: return 'apply-unapproved'; // 反映状態 = 未反映
+                    case ReflectedState.WAITREFLECTION: return 'apply-approved'; // 反映状態 = 反映待ち
+                    case ReflectedState.REFLECTED: return 'apply-reflected'; // 反映状態 = 反映済
+                    case ReflectedState.CANCELED: return 'apply-cancel'; // 反映状態 = 取消済
+                    case ReflectedState.REMAND: return 'apply-return'; // 反映状態 = 差し戻し
+                    case ReflectedState.DENIAL: return 'apply-denial'; // 反映状態 = 否認
                     default: break;
                 }
             }
@@ -89,12 +96,12 @@ export class CmmS45CComponent extends Vue {
         Object.defineProperty(self.appState, 'getNote', {
             get() {
                 switch (this.appStatus) {
-                    case 0: return 'CMMS45_39'; // 反映状態 = 未反映
-                    case 1: return 'CMMS45_37'; // 反映状態 = 反映待ち
-                    case 2: return 'CMMS45_38'; // 反映状態 = 反映済
-                    case 3: return 'CMMS45_42'; // 反映状態 = 取消済
-                    case 4: return 'CMMS45_40'; // 反映状態 = 差し戻し
-                    case 5: return 'CMMS45_41'; // 反映状態 = 否認
+                    case ReflectedState.NOTREFLECTED: return 'CMMS45_39'; // 反映状態 = 未反映
+                    case ReflectedState.WAITREFLECTION: return 'CMMS45_37'; // 反映状態 = 反映待ち
+                    case ReflectedState.REFLECTED: return 'CMMS45_38'; // 反映状態 = 反映済
+                    case ReflectedState.CANCELED: return 'CMMS45_42'; // 反映状態 = 取消済
+                    case ReflectedState.REMAND: return 'CMMS45_40'; // 反映状態 = 差し戻し
+                    case ReflectedState.DENIAL: return 'CMMS45_41'; // 反映状態 = 否認
                     default: break;
                 }
             }
@@ -103,6 +110,7 @@ export class CmmS45CComponent extends Vue {
 
     public mounted() {
         let self = this;
+        self.isLoadingComplete = false;
         self.$mask('show');
         self.initData();
     }
@@ -121,9 +129,9 @@ export class CmmS45CComponent extends Vue {
                 self.appState.version = appDetailScreenInfoDto.application.version;
                 self.reversionReason = appDetailScreenInfoDto.application.opReversionReason;
                 self.appType = appDetailScreenInfoDto.application.appType;
-                self.$mask('hide');
+                //self.$mask('hide');
             }).catch((res: any) => {
-                self.$mask('hide');
+                // self.$mask('hide');
                 if (res.messageId == 'Msg_426') {
                     self.$modal.error('Msg_426').then(() => {
                         self.back();
@@ -193,6 +201,7 @@ export class CmmS45CComponent extends Vue {
         self.showApproval = false;
         self.appCount++;
         self.currentApp = self.listAppMeta[self.appCount];
+        self.isLoadingComplete = false;
         self.$mask('show');
         self.initData();
     }
@@ -204,6 +213,7 @@ export class CmmS45CComponent extends Vue {
         self.showApproval = false;
         self.appCount--;
         self.currentApp = self.listAppMeta[self.appCount];
+        self.isLoadingComplete = false;
         self.$mask('show');
         self.initData();
     }
@@ -242,6 +252,14 @@ export class CmmS45CComponent extends Vue {
             self.$goto('cmms45a', { 'CMMS45_FromMenu': true });
         }
     }
+    public loadingComplete() {
+        const self = this;
+        self.$nextTick(() => {
+            self.$mask('hide');
+            self.isLoadingComplete = true;
+        });
+        
+    }
 
     // kích hoạt nút xóa đơn
     public deleteApp(): void {
@@ -250,8 +268,9 @@ export class CmmS45CComponent extends Vue {
             .then((v) => {
                 if (v == 'yes') {
                     self.$mask('show');
-                    self.$http.post('at', API.delete, self.appTransferData.appDispInfoStartupOutput
-                    ).then((resDelete: any) => {
+                    self.$http.post('at', API.delete, {
+                        appDispInfoStartupOutput: self.appTransferData.appDispInfoStartupOutput    
+                    }).then((resDelete: any) => {
                         self.$mask('hide');
                         self.$modal.info('Msg_16').then(() => {
                             self.params.action = 1;
@@ -271,14 +290,14 @@ export class CmmS45CComponent extends Vue {
     public get displayDeleteButton() {
         let self = this;
 
-        return self.appState.reflectStatus == 0 || self.appState.reflectStatus == 5;
+        return self.appState.reflectStatus == ReflectedState.NOTREFLECTED || self.appState.reflectStatus == ReflectedState.REMAND;
     }
 
     // hiển thị nút cập nhật đơn
     public get displayUpdateButton() {
         let self = this;
 
-        return self.appState.reflectStatus == 0 || self.appState.reflectStatus == 5;
+        return self.appState.reflectStatus == ReflectedState.NOTREFLECTED || self.appState.reflectStatus == ReflectedState.REMAND;
     }
 
     // hiển thị menu chỉnh sửa đơn
@@ -293,11 +312,12 @@ export class CmmS45CComponent extends Vue {
         const self = this;
         switch (self.appType) {
             case 2:
-                if (self.$router.currentRoute.name == 'kafs07a') {
-                    self.$close(self.appTransferData.appDetail);
-                } else {
-                    self.$goto('kafs07a', self.appTransferData.appDetail);
-                }
+                self.$goto('kafs07a', self.appTransferData.appDetail);
+                // if (self.$router.currentRoute.name == 'kafs07a') {
+                //     self.$close(self.appTransferData.appDetail);
+                // } else {
+                //     self.$goto('kafs07a', self.appTransferData.appDetail);
+                // }
                 break;
             case 3:
                 if (self.$router.currentRoute.name == 'kafs08a') {
@@ -308,6 +328,22 @@ export class CmmS45CComponent extends Vue {
                 break;
             case 4:
                 self.$goto('kafs09a', self.appTransferData.appDetail);
+                // if (self.$router.currentRoute.name == 'kafs09a') {
+                //     self.$close(self.appTransferData.appDetail);
+                // } else {
+                //     self.$goto('kafs09a', self.appTransferData.appDetail);
+                // }
+                break;
+            case 9:
+                self.$goto('kafs04a',self.appTransferData.appDetail);
+                break;
+            case 7:
+                if (self.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opStampRequestMode == 0) {
+                    self.$goto('kafs02a', self.appTransferData.appDetail);
+                }
+                if (self.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opStampRequestMode == 1) {
+                    self.$goto('kafs02c', self.appTransferData.appDetail);
+                }
                 break;
             default:
                 break;
@@ -472,6 +508,9 @@ export class CmmS45CComponent extends Vue {
         if (opComboReason) {
             return opComboReason.reasonForFixedForm;
         }
+        if (_.isEmpty(vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD)) {
+            return '';
+        }
 
         return vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD + ' ' + vm.$i18n('CMMS45_87');
     }
@@ -482,9 +521,18 @@ export class CmmS45CComponent extends Vue {
             return '';
         }
 
-        return vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason;
+        return _.escape(vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason).replace(/\n/g, '<br/>');
     }
 
+}
+
+export enum ReflectedState {
+    NOTREFLECTED = 0, // 未反映
+    WAITREFLECTION = 1, // 反映待ち
+    REFLECTED = 2, // 反映済
+    CANCELED = 3, // 取消済
+    REMAND = 4, // 差し戻し
+    DENIAL = 5 // 否認
 }
 
 const API = {

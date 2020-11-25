@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.entity.daily.leaveearlytime; 
 
 import java.io.Serializable;
+import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -16,11 +17,13 @@ import nts.arc.time.GeneralDate;
 //import nts.uk.ctx.at.record.infra.entity.daily.actualworktime.KrcdtDayAttendanceTime;
 import nts.uk.ctx.at.record.infra.entity.daily.time.KrcdtDayTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.IntervalExemptionTime;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.TimevacationUseTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHdFrameNo;
+import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHdFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.IntervalExemptionTime;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -56,6 +59,15 @@ public class KrcdtDayLeaveEarlyTime  extends UkJpaEntity implements Serializable
 	/*特別休暇使用時間*/
 	@Column(name = "SP_VACTN_USE_TIME")
 	public int spVactnUseTime;
+	/*特別休暇枠NO*/
+	@Column(name = "SPHD_NO")
+	public Integer specialHdFrameNo;
+	/*子の看護休暇使用時間*/
+	@Column(name = "CHILD_CARE_USE_TIME")
+	public int childCareUseTime;
+	/*介護休暇使用時間*/
+	@Column(name = "CARE_USE_TIME")
+	public int careUseTime;
 	
 //	@ManyToOne
 //	@JoinColumns(value = { 
@@ -109,21 +121,31 @@ public class KrcdtDayLeaveEarlyTime  extends UkJpaEntity implements Serializable
 			this.overPayVactnUseTime = vacationUse.getSixtyHourExcessHolidayUseTime() == null ? 0 : vacationUse.getSixtyHourExcessHolidayUseTime().valueAsMinutes();
 			//特別休暇
 			this.spVactnUseTime = vacationUse.getTimeSpecialHolidayUseTime() == null ? 0 : vacationUse.getTimeSpecialHolidayUseTime().valueAsMinutes();
+			/*特別休暇枠No*/
+			this.specialHdFrameNo = vacationUse.getSpecialHolidayFrameNo().map(c -> c.v()).orElse(null);
+			/*子の看護休暇使用時間*/
+			this.childCareUseTime = vacationUse.getTimeChildCareHolidayUseTime() == null ? 0 : vacationUse.getTimeCareHolidayUseTime().valueAsMinutes();
+			/*介護休暇使用時間*/
+			this.careUseTime = vacationUse.getTimeCareHolidayUseTime() == null ? 0 : vacationUse.getTimeCareHolidayUseTime().valueAsMinutes();
 		}
 	}
 	
 	
 	
 	public LeaveEarlyTimeOfDaily toDomain() {
-		TimevacationUseTimeOfDaily timeVacation = new TimevacationUseTimeOfDaily(new AttendanceTime(this.timeAnallvUseTime),
-																				 new AttendanceTime(this.timeCmpnstlvUseTime),
-																				 new AttendanceTime(this.overPayVactnUseTime),
-																				 new AttendanceTime(this.spVactnUseTime));
+		TimevacationUseTimeOfDaily timeVacation = new TimevacationUseTimeOfDaily(
+				new AttendanceTime(this.timeAnallvUseTime),
+				new AttendanceTime(this.timeCmpnstlvUseTime),
+				new AttendanceTime(this.overPayVactnUseTime),
+				new AttendanceTime(this.spVactnUseTime),
+				Optional.ofNullable(this.specialHdFrameNo == null ? null : new SpecialHdFrameNo(this.specialHdFrameNo)),
+				new AttendanceTime(this.childCareUseTime),
+				new AttendanceTime(this.careUseTime));
 		
 		return new LeaveEarlyTimeOfDaily(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.leaveEarlyTime), new AttendanceTime(this.calcLeaveEarlyTime)),
 										 TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.leaveEarlyDedctTime), new AttendanceTime(this.calcLeaveEarlyDedctTime)),
 										 new WorkNo(this.krcdtDayLeaveEarlyTimePK == null ? null : this.krcdtDayLeaveEarlyTimePK.workNo),
 										 timeVacation,
-										 new IntervalExemptionTime(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0)));
+										 new IntervalExemptionTime(new AttendanceTime(0)));
 	}
 }

@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.monthly.remain.AnnualLeaveGrantRemaining;
-import nts.uk.ctx.at.shared.dom.monthly.vacation.annualleave.AnnualLeave;
-import nts.uk.ctx.at.shared.dom.monthly.vacation.annualleave.AnnualLeaveMaxRemainingTime;
-import nts.uk.ctx.at.shared.dom.monthly.vacation.annualleave.HalfDayAnnualLeave;
-import nts.uk.ctx.at.shared.dom.monthly.vacation.annualleave.RealAnnualLeave;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remain.AnnualLeaveGrantRemaining;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeave;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveMaxRemainingTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.HalfDayAnnualLeave;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.RealAnnualLeave;
 
 /**
  * 年休情報残数

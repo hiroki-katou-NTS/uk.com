@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.AffiliationInforOfDailyPerformCommand;
-import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.BusinessTypeOfDailyPerformCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendanceleavinggate.AttendanceLeavingGateOfDailyCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendanceleavinggate.PCLogInfoOfDailyCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendancetime.AttendanceTimeOfDailyPerformCommand;
@@ -28,7 +27,6 @@ import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.AttendanceTimeBy
 import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.TimeLeavingOfDailyPerformanceCommand;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.AttendanceTimeByWorkOfDaily;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
@@ -39,12 +37,12 @@ import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TemporaryTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.AttendanceLeavingGateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.PCLogOnInfoOfDailyAttd;
@@ -68,10 +66,6 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 	/** 所属情報： 日別実績の所属情報 */
 	@Getter
 	private final AffiliationInforOfDailyPerformCommand affiliationInfo = new AffiliationInforOfDailyPerformCommand();
-	
-	/** 所属情報： 日別実績の所属情報 */
-	@Getter
-	private final BusinessTypeOfDailyPerformCommand businessType = new BusinessTypeOfDailyPerformCommand();
 
 	/** エラー一覧： 社員の日別実績エラー一覧 */
 	// TODO: list?
@@ -138,8 +132,6 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 			return this.calcAttr;
 		case DAILY_AFFILIATION_INFO_CODE:
 			return this.affiliationInfo;
-		case DAILY_BUSINESS_TYPE_CODE:
-			return this.businessType;
 		case DAILY_OUTING_TIME_CODE:
 			return this.outingTime;
 		case DAILY_BREAK_TIME_CODE:
@@ -187,7 +179,6 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 		this.affiliationInfo.setRecords(fullDto.getAffiliationInfo());
 		fullDto.getErrors().stream().forEach(c -> this.errors.setRecords(c));
 		this.outingTime.setRecords(fullDto.getOutingTime().orElse(null));
-		this.businessType.setRecords(fullDto.getBusinessType().orElse(null));
 		fullDto.getBreakTime().stream().forEach(c -> this.breakTime.setRecords(c));
 		this.attendanceTime.setRecords(fullDto.getAttendanceTime().orElse(null));
 		this.attendanceTimeByWork.setRecords(fullDto.getAttendanceTimeByWork().orElse(null));
@@ -209,7 +200,6 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 		this.workInfo.forEmployee(employeId);
 		this.calcAttr.forEmployee(employeId);
 		this.affiliationInfo.forEmployee(employeId);
-		this.businessType.forEmployee(employeId);
 		this.errors.forEmployee(employeId);
 		this.outingTime.forEmployee(employeId);
 		this.breakTime.forEmployee(employeId);
@@ -232,7 +222,6 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 		this.workInfo.withDate(date);
 		this.calcAttr.withDate(date);
 		this.affiliationInfo.withDate(date);
-		this.businessType.withDate(date);
 		this.errors.withDate(date);
 		this.outingTime.withDate(date);
 		this.breakTime.withDate(date);
@@ -269,7 +258,6 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 //				.withErrors(errors.getData())
 				.withWorkInfo(workInfo.toDto())
 				.workingDate(getWorkDate())
-				.withBusinessTypeO(businessType.toDto())
 				.complete();
 	}
 

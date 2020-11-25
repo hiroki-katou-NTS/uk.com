@@ -8,6 +8,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationuse
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.SpecialHolidayOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.SubstituteHolidayOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.TimeDigestOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.TransferHolidayOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.VacationClass;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.YearlyReservedOfDaily;
 
@@ -21,5 +22,6 @@ public class CalcDefaultValue {
 			new SubstituteHolidayOfDaily(DEFAULT_TIME, DEFAULT_TIME),
 			new OverSalaryOfDaily(DEFAULT_TIME, DEFAULT_TIME),
 			new SpecialHolidayOfDaily(DEFAULT_TIME, DEFAULT_TIME),
-			new AnnualOfDaily(DEFAULT_TIME, DEFAULT_TIME)));;
+			new AnnualOfDaily(DEFAULT_TIME, DEFAULT_TIME),
+			new TransferHolidayOfDaily(DEFAULT_TIME)));;
 }

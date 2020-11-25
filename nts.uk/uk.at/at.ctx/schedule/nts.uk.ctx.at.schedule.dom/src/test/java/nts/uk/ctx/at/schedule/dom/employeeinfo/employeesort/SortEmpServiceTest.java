@@ -2,7 +2,6 @@ package nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,7 +19,7 @@ import mockit.MockUp;
 import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.adapter.jobtitle.PositionImport;
-import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.SortEmpService.Require;
+import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.SortEmpService_ba.Require;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.EmpLicenseClassification;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.GetEmpLicenseClassificationService;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.LicenseClassification;
@@ -50,7 +49,7 @@ public class SortEmpServiceTest {
 			}
 		};
 
-		List<String> listData = SortEmpService.sortEmpTheirOrder(require, ymd, lstEmpId);
+		List<String> listData = SortEmpService_ba.sortEmpTheirOrder(require, ymd, lstEmpId);
 
 		assertThat(listData).extracting(d -> d).containsExactly("emp1", "emp2", "emp3");
 	}
@@ -64,7 +63,7 @@ public class SortEmpServiceTest {
 	public void testSortEmpTheirOrder_team1() {
 		GeneralDate ymd = GeneralDate.today();
 		List<String> lstEmpId = Arrays.asList("emp1", "emp2", "emp3");
-		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortOrder.SORT_ASC, SortType.SCHEDULE_TEAM));
+		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortType.SCHEDULE_TEAM, SortOrder.SORT_ASC));
 		SortSetting sortSetting = new SortSetting("cid", listOrderedList);
 		new Expectations() {
 			{
@@ -75,7 +74,7 @@ public class SortEmpServiceTest {
 			}
 		};
 
-		List<String> listData = SortEmpService.sortEmpTheirOrder(require, ymd, lstEmpId);
+		List<String> listData = SortEmpService_ba.sortEmpTheirOrder(require, ymd, lstEmpId);
 
 		assertThat(listData).extracting(d -> d).containsExactly("emp1", "emp2", "emp3");
 	}
@@ -88,12 +87,13 @@ public class SortEmpServiceTest {
 	public void testSortEmpTheirOrder_team2() {
 		GeneralDate ymd = GeneralDate.today();
 		List<String> lstEmpId = Arrays.asList("emp1", "emp2", "emp3", "emp4");
-		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortOrder.SORT_ASC, SortType.SCHEDULE_TEAM));
+		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortType.SCHEDULE_TEAM, SortOrder.SORT_ASC));
 		SortSetting sortSetting = new SortSetting("cid", listOrderedList);
 		List<BelongScheduleTeam> listBelongScheduleTeam = Arrays.asList(
 				new BelongScheduleTeam("emp1", "wkp1", new ScheduleTeamCd("S2")),
 				new BelongScheduleTeam("emp2", "wkp2", new ScheduleTeamCd("S1")),
-				new BelongScheduleTeam("emp3", "wkp3", new ScheduleTeamCd("S3")));
+				new BelongScheduleTeam("emp3", "wkp3", new ScheduleTeamCd("S3")),
+				new BelongScheduleTeam("emp4", "wkp4", null));
 
 		new Expectations() {
 			{
@@ -105,7 +105,7 @@ public class SortEmpServiceTest {
 			}
 		};
 
-		List<String> listData = SortEmpService.sortEmpTheirOrder(require, ymd, lstEmpId);
+		List<String> listData = SortEmpService_ba.sortEmpTheirOrder(require, ymd, lstEmpId);
 
 		assertThat(listData).extracting(d -> d).containsExactly("emp2", "emp1", "emp3", "emp4");
 	}
@@ -118,7 +118,7 @@ public class SortEmpServiceTest {
 	public void testSortEmpTheirOrder_rank1() {
 		GeneralDate ymd = GeneralDate.today();
 		List<String> lstEmpId = Arrays.asList("emp1", "emp2", "emp3");
-		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortOrder.SORT_ASC, SortType.RANK));
+		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortType.RANK, SortOrder.SORT_ASC));
 		SortSetting sortSetting = new SortSetting("cid", listOrderedList);
 
 		new Expectations() {
@@ -130,7 +130,7 @@ public class SortEmpServiceTest {
 			}
 		};
 
-		List<String> listData = SortEmpService.sortEmpTheirOrder(require, ymd, lstEmpId);
+		List<String> listData = SortEmpService_ba.sortEmpTheirOrder(require, ymd, lstEmpId);
 
 		assertThat(listData).extracting(d -> d).containsExactly("emp1", "emp2", "emp3");
 	}
@@ -144,7 +144,7 @@ public class SortEmpServiceTest {
 	public void testSortEmpTheirOrder_rank2() {
 		GeneralDate ymd = GeneralDate.today();
 		List<String> lstEmpId = Arrays.asList("emp1", "emp2", "emp3");
-		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortOrder.SORT_ASC, SortType.RANK));
+		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortType.RANK, SortOrder.SORT_ASC));
 		SortSetting sortSetting = new SortSetting("cid", listOrderedList);
 		RankPriority rankPriority = new RankPriority("000000000000-0001", // dummy
 				new ArrayList<RankCode>(Arrays.asList(new RankCode("R1"), new RankCode("R2"), new RankCode("R3"))));
@@ -160,7 +160,7 @@ public class SortEmpServiceTest {
 			}
 		};
 
-		List<String> listData = SortEmpService.sortEmpTheirOrder(require, ymd, lstEmpId);
+		List<String> listData = SortEmpService_ba.sortEmpTheirOrder(require, ymd, lstEmpId);
 
 		assertThat(listData).extracting(d -> d).containsExactly("emp1", "emp2", "emp3");
 	}
@@ -174,14 +174,16 @@ public class SortEmpServiceTest {
 	public void testSortEmpTheirOrder_rank3() {
 		GeneralDate ymd = GeneralDate.today();
 		List<String> lstEmpId = Arrays.asList("emp1", "emp2", "emp3");
-		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortOrder.SORT_ASC, SortType.RANK));
+		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortType.RANK, SortOrder.SORT_ASC));
 		SortSetting sortSetting = new SortSetting("cid", listOrderedList);
 		RankPriority rankPriority = new RankPriority("000000000000-0001", // dummy
 				new ArrayList<RankCode>(Arrays.asList(new RankCode("R1"), new RankCode("R2"), new RankCode("R3"))));
 		List<EmployeeRank> listEmployeeRank = Arrays.asList(
 				new EmployeeRank("emp1", new RankCode("R1")),
 				new EmployeeRank("emp3", new RankCode("R3")),
-				new EmployeeRank("emp2", new RankCode("R2")));
+				new EmployeeRank("emp2", new RankCode("R2")),
+				new EmployeeRank("emp3", new RankCode("R6")),
+				new EmployeeRank("emp2", null));
 		new Expectations() {
 			{
 				require.get();
@@ -195,7 +197,7 @@ public class SortEmpServiceTest {
 			}
 		};
 
-		List<String> listData = SortEmpService.sortEmpTheirOrder(require, ymd, lstEmpId);
+		List<String> listData = SortEmpService_ba.sortEmpTheirOrder(require, ymd, lstEmpId);
 
 		assertThat(listData).extracting(d -> d).containsExactly("emp1", "emp2", "emp3");
 	}
@@ -209,7 +211,7 @@ public class SortEmpServiceTest {
 	public void testSortEmpTheirOrder_category1() {
 		GeneralDate ymd = GeneralDate.today();
 		List<String> lstEmpId = Arrays.asList("emp1", "emp2", "emp3");
-		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortOrder.SORT_ASC, SortType.LISENCE_ATR));
+		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortType.LISENCE_ATR, SortOrder.SORT_ASC));
 		SortSetting sortSetting = new SortSetting("cid", listOrderedList);
 		new Expectations() {
 			{
@@ -224,7 +226,7 @@ public class SortEmpServiceTest {
 				return new ArrayList<>();
 			}
 		};
-		List<String> listData = SortEmpService.sortEmpTheirOrder(require, ymd, lstEmpId);
+		List<String> listData = SortEmpService_ba.sortEmpTheirOrder(require, ymd, lstEmpId);
 
 		assertThat(listData).extracting(d -> d).containsExactly("emp1", "emp2", "emp3");
 	}
@@ -238,7 +240,7 @@ public class SortEmpServiceTest {
 	public void testSortEmpTheirOrder_category2() {
 		GeneralDate ymd = GeneralDate.today();
 		List<String> lstEmpId = Arrays.asList("emp1", "emp2", "emp3");
-		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortOrder.SORT_ASC, SortType.LISENCE_ATR));
+		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortType.LISENCE_ATR, SortOrder.SORT_ASC));
 		SortSetting sortSetting = new SortSetting("cid", listOrderedList);
 		new Expectations() {
 			{
@@ -257,7 +259,7 @@ public class SortEmpServiceTest {
 				return lstEmpLicense;
 			}
 		};
-		List<String> listData = SortEmpService.sortEmpTheirOrder(require, ymd, lstEmpId);
+		List<String> listData = SortEmpService_ba.sortEmpTheirOrder(require, ymd, lstEmpId);
 
 		assertThat(listData).extracting(d -> d).containsExactly("emp1", "emp2", "emp3");
 	}
@@ -271,7 +273,7 @@ public class SortEmpServiceTest {
 	public void testSortEmpTheirOrder_position1() {
 		GeneralDate ymd = GeneralDate.today();
 		List<String> lstEmpId = Arrays.asList("emp1", "emp2", "emp3");
-		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortOrder.SORT_ASC, SortType.POSITION));
+		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortType.POSITION, SortOrder.SORT_ASC));
 		SortSetting sortSetting = new SortSetting("cid", listOrderedList);
 		new Expectations() {
 			{
@@ -283,7 +285,7 @@ public class SortEmpServiceTest {
 				require.getCompanyPosition(ymd);
 			}
 		};
-		List<String> listData = SortEmpService.sortEmpTheirOrder(require, ymd, lstEmpId);
+		List<String> listData = SortEmpService_ba.sortEmpTheirOrder(require, ymd, lstEmpId);
 
 		assertThat(listData).extracting(d -> d).containsExactly("emp1", "emp2", "emp3");
 	}
@@ -298,10 +300,10 @@ public class SortEmpServiceTest {
 	public void testSortEmpTheirOrder_position2() {
 		GeneralDate ymd = GeneralDate.today();
 		List<String> lstEmpId = Arrays.asList("emp1", "emp2", "emp3");
-		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortOrder.SORT_ASC, SortType.POSITION));
+		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortType.POSITION, SortOrder.SORT_ASC));
 		SortSetting sortSetting = new SortSetting("cid", listOrderedList);
-		List<EmployeePosition> listEmployeePosition = Arrays.asList(new EmployeePosition("emp1", "job2"),
-				new EmployeePosition("emp2", "job1"), new EmployeePosition("emp3", "job3"));
+		List<EmployeePosition> listEmployeePosition = Arrays.asList(new EmployeePosition("emp1", "job2","jobtitleCode"),
+				new EmployeePosition("emp2", "job1","jobtitleCode"));
 		new Expectations() {
 			{
 				require.get();
@@ -313,7 +315,7 @@ public class SortEmpServiceTest {
 				require.getCompanyPosition(ymd);
 			}
 		};
-		List<String> listData = SortEmpService.sortEmpTheirOrder(require, ymd, lstEmpId);
+		List<String> listData = SortEmpService_ba.sortEmpTheirOrder(require, ymd, lstEmpId);
 
 		assertFalse(listData.isEmpty());
 		assertThat(listData).extracting(d -> d).containsExactly("emp1", "emp2", "emp3");
@@ -329,7 +331,7 @@ public class SortEmpServiceTest {
 	public void testSortEmpTheirOrder_position3() {
 		GeneralDate ymd = GeneralDate.today();
 		List<String> lstEmpId = Arrays.asList("emp1", "emp2", "emp3");
-		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortOrder.SORT_ASC, SortType.POSITION));
+		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortType.POSITION, SortOrder.SORT_ASC));
 		SortSetting sortSetting = new SortSetting("cid", listOrderedList);
 
 		List<PositionImport> listPositionImport = Arrays.asList(
@@ -347,7 +349,7 @@ public class SortEmpServiceTest {
 				result = listPositionImport;
 			}
 		};
-		List<String> listData = SortEmpService.sortEmpTheirOrder(require, ymd, lstEmpId);
+		List<String> listData = SortEmpService_ba.sortEmpTheirOrder(require, ymd, lstEmpId);
 
 		assertThat(listData).extracting(d -> d).containsExactly("emp1", "emp2", "emp3");
 	}
@@ -362,15 +364,15 @@ public class SortEmpServiceTest {
 	public void testSortEmpTheirOrder_position4() {
 		GeneralDate ymd = GeneralDate.today();
 		List<String> lstEmpId = Arrays.asList("emp1", "emp2", "emp3", "emp4");
-		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortOrder.SORT_ASC, SortType.POSITION));
+		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortType.POSITION, SortOrder.SORT_ASC));
 		SortSetting sortSetting = new SortSetting("cid", listOrderedList);
-		List<EmployeePosition> listEmployeePosition = Arrays.asList(new EmployeePosition("emp3", "job2"),
-				new EmployeePosition("emp2", "job1"), new EmployeePosition("emp1", "job3"));
+		List<EmployeePosition> listEmployeePosition = Arrays.asList(new EmployeePosition("emp3", "job2","jobName2"),
+				new EmployeePosition("emp2", "job1","jobtitleCode"), new EmployeePosition("emp1", "job3","jobtitleCode"));
 		List<PositionImport> listPositionImport = Arrays.asList(
 				new PositionImport("job0", "jobCd0", "jobName0"),
 				new PositionImport("job2", "jobCd2", "jobName1"),
 				new PositionImport("job1", "jobCd1", "jobName2"),
-				new PositionImport("job3", "jobCd2", "jobName2"));
+				new PositionImport("job3", "jobtitleCode", "jobName3"));
 		new Expectations() {
 			{
 				require.get();
@@ -383,9 +385,9 @@ public class SortEmpServiceTest {
 				result = listPositionImport;
 			}
 		};
-		List<String> listData = SortEmpService.sortEmpTheirOrder(require, ymd, lstEmpId);
+		List<String> listData = SortEmpService_ba.sortEmpTheirOrder(require, ymd, lstEmpId);
 
-		assertThat(listData).extracting(d -> d).containsExactly("emp3", "emp2", "emp1",  "emp4");
+		assertThat(listData).extracting(d -> d).containsExactly("emp1", "emp2", "emp3",  "emp4");
 	}
 
 	/**
@@ -397,7 +399,7 @@ public class SortEmpServiceTest {
 	public void testSortEmpTheirOrder_classification1() {
 		GeneralDate ymd = GeneralDate.today();
 		List<String> lstEmpId = Arrays.asList("emp1", "emp2", "emp3");
-		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortOrder.SORT_ASC, SortType.CLASSIFY));
+		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortType.CLASSIFY, SortOrder.SORT_ASC));
 		SortSetting sortSetting = new SortSetting("cid", listOrderedList);
 
 		new Expectations() {
@@ -405,10 +407,10 @@ public class SortEmpServiceTest {
 				require.get();
 				result = Optional.of(sortSetting);
 
-				require.get(ymd, lstEmpId);
+				require.getEmpClassifications(ymd, lstEmpId);
 			}
 		};
-		List<String> listData = SortEmpService.sortEmpTheirOrder(require, ymd, lstEmpId);
+		List<String> listData = SortEmpService_ba.sortEmpTheirOrder(require, ymd, lstEmpId);
 
 		assertThat(listData).extracting(d -> d).containsExactly("emp1", "emp2", "emp3");
 	}
@@ -422,7 +424,7 @@ public class SortEmpServiceTest {
 	public void testSortEmpTheirOrder_classification2() {
 		GeneralDate ymd = GeneralDate.today();
 		List<String> lstEmpId = Arrays.asList("emp1", "emp2", "emp3");
-		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortOrder.SORT_ASC, SortType.CLASSIFY));
+		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortType.CLASSIFY, SortOrder.SORT_ASC));
 		SortSetting sortSetting = new SortSetting("cid", listOrderedList);
 		List<EmpClassifiImport> listEmpClassifiImport = Arrays.asList(new EmpClassifiImport("emp3", "class1"),
 				new EmpClassifiImport("emp2", "class2"), new EmpClassifiImport("emp1", "class3"));
@@ -431,11 +433,11 @@ public class SortEmpServiceTest {
 				require.get();
 				result = Optional.of(sortSetting);
 
-				require.get(ymd, lstEmpId);
+				require.getEmpClassifications(ymd, lstEmpId);
 				result = listEmpClassifiImport;
 			}
 		};
-		List<String> listData = SortEmpService.sortEmpTheirOrder(require, ymd, lstEmpId);
+		List<String> listData = SortEmpService_ba.sortEmpTheirOrder(require, ymd, lstEmpId);
 
 		assertThat(listData).extracting(d -> d).containsExactly("emp3", "emp2", "emp1");
 	}
@@ -448,7 +450,7 @@ public class SortEmpServiceTest {
 	public void testSortBySpecSortingOrder_team3() {
 		GeneralDate ymd = GeneralDate.today();
 		List<String> lstEmpId = Arrays.asList("emp1", "emp2", "emp3");
-		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortOrder.SORT_ASC, SortType.RANK));
+		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortType.RANK, SortOrder.SORT_ASC),new OrderedList(SortType.SCHEDULE_TEAM, SortOrder.SORT_ASC));
 		SortSetting sortSetting = new SortSetting("cid", listOrderedList);
 		new Expectations() {
 			{
@@ -456,7 +458,22 @@ public class SortEmpServiceTest {
 			}
 		};
 
-		List<String> listData = SortEmpService.sortBySpecSortingOrder(require, ymd, lstEmpId, sortSetting);
+		List<String> listData = SortEmpService_ba.sortBySpecSortingOrder(require, ymd, lstEmpId, sortSetting);
+
+		assertThat(listData).extracting(d -> d).containsExactly("emp1", "emp2", "emp3");
+	}
+	
+	/**
+	 * sortPriorities.size() == 0
+	 */
+	@Test
+	public void testRearranges_1() {
+		GeneralDate ymd = GeneralDate.today();
+		List<String> lstEmpId = Arrays.asList("emp1", "emp2", "emp3");
+		List<OrderedList> listOrderedList = new ArrayList<>();
+		SortSetting sortSetting = new SortSetting("cid", listOrderedList);
+
+		List<String> listData = SortEmpService_ba.sortBySpecSortingOrder(require, ymd, lstEmpId, sortSetting);
 
 		assertThat(listData).extracting(d -> d).containsExactly("emp1", "emp2", "emp3");
 	}

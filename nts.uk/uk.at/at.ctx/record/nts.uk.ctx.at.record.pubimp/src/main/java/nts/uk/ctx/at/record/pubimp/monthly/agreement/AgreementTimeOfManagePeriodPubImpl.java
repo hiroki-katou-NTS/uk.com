@@ -1,29 +1,23 @@
 package nts.uk.ctx.at.record.pubimp.monthly.agreement;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.val;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.standardtime.export.GetAgreementTimeOfMngPeriod;
-import nts.uk.ctx.at.record.pub.monthly.agreement.AgreementTimeBreakdown;
-import nts.uk.ctx.at.record.pub.monthly.agreement.AgreementTimeOfManagePeriod;
-import nts.uk.ctx.at.record.pub.monthly.agreement.AgreementTimeOfManagePeriodPub;
-import nts.uk.ctx.at.record.pub.monthly.agreement.AgreementTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.common.Year;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfManagePeriodRepository;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
+import nts.arc.time.calendar.Year;
 import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreementTimeOfMngPeriod;
+import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
+import nts.uk.ctx.at.record.pub.monthly.agreement.AgreementTimeOfManagePeriodPub;
+import nts.uk.ctx.at.record.pub.monthly.agreement.export.AgreementTimeOfManagePeriodExport;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriodRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
 
 /**
  * 実装：管理期間の36協定時間の取得
@@ -32,115 +26,52 @@ import nts.arc.time.calendar.period.YearMonthPeriod;
 @Stateless
 public class AgreementTimeOfManagePeriodPubImpl implements AgreementTimeOfManagePeriodPub {
 
-	/** 管理期間の36協定時間 */
 	@Inject
-	private AgreementTimeOfManagePeriodRepository agreementTimeRepo;
-	/** 管理期間の36協定時間を取得 */
+	private AgreementTimeOfManagePeriodRepository agreementTimeOfManagePeriodRepo;
 	@Inject
-	private GetAgreementTimeOfMngPeriod getAgreementTimeOfMngPeriod;
+	private AgreementOperationSettingRepository agreementOperationSettingRepo;
 	
 	@Override
-	public Optional<AgreementTimeOfManagePeriod> find(String employeeId, YearMonth yearMonth) {
+	public List<AgreementTimeOfManagePeriodExport> get(String sid, Year year) {
 		
-		val srcAgreementTimeOpt = this.agreementTimeRepo.find(employeeId, yearMonth);
-		if (!srcAgreementTimeOpt.isPresent()) return Optional.empty();
-		return Optional.of(this.toPubDomain(srcAgreementTimeOpt.get()));
+		return GetAgreementTimeOfMngPeriod.get(createRequire(), sid, year).stream()
+				.map(c -> AgreementTimeOfManagePeriodExport.copy(c)).collect(Collectors.toList());
+	}
+	@Override
+	public Map<String, List<AgreementTimeOfManagePeriodExport>> get(
+			List<String> sids, Year year) {
+		
+		return GetAgreementTimeOfMngPeriod.get(createRequire(), sids, year)
+				.entrySet().stream()
+				.collect(Collectors.toMap(c -> c.getKey(), 
+										c -> c.getValue().stream()
+													.map(x -> AgreementTimeOfManagePeriodExport.copy(x))
+													.collect(Collectors.toList())));
+	}
+	@Override
+	public List<AgreementTimeOfManagePeriodExport> get(List<String> sids, YearMonthPeriod ymPeriod) {
+		
+		return  GetAgreementTimeOfMngPeriod.get(createRequire(), sids, ymPeriod).stream()
+				.map(c -> AgreementTimeOfManagePeriodExport.copy(c)).collect(Collectors.toList());
 	}
 	
-	@Override
-	public Map<YearMonth, AttendanceTimeMonth> getTimeByPeriod(String employeeId, YearMonthPeriod period) {
+	private GetAgreementTimeOfMngPeriod.RequireM1 createRequire() {
 		
-		List<String> employeeIds = new ArrayList<>();
-		employeeIds.add(employeeId);
-		
-		List<YearMonth> ymRange = new ArrayList<>();
-		YearMonth startYm = YearMonth.of(period.start().year(), period.start().month());
-		YearMonth endYm = period.end();
-		while (startYm.lessThanOrEqualTo(endYm)){
-			ymRange.add(startYm);
-			startYm = startYm.addMonths(1);
-		}
-		
-		val srcAgreementTimeList = this.agreementTimeRepo.findBySidsAndYearMonths(employeeIds, ymRange);
-		Map<YearMonth, AttendanceTimeMonth> result = new HashMap<>();
-		for (val srcAgreementTime : srcAgreementTimeList){
-			result.put(srcAgreementTime.getYearMonth(),
-					srcAgreementTime.getAgreementTime().getAgreementTime().getAgreementTime());
-		}
-		
-		return result;
-	}
-	
-	@Override
-	public List<AgreementTimeOfManagePeriod> findByYear(String employeeId, Year year) {
+		return new GetAgreementTimeOfMngPeriod.RequireM1() {
+			
+			@Override
+			public List<AgreementTimeOfManagePeriod> agreementTimeOfManagePeriod(List<String> sids,
+					List<YearMonth> yearMonths) {
+				
+				return agreementTimeOfManagePeriodRepo.findBySidsAndYearMonths(sids, yearMonths);
+			}
+			
+			@Override
+			public Optional<AgreementOperationSetting> agreementOperationSetting(String cid) {
 
-		val srcAgreementTimeList = this.getAgreementTimeOfMngPeriod.algorithm(employeeId, year);
-		
-		return srcAgreementTimeList.stream().map(c -> this.toPubDomain(c)).collect(Collectors.toList());
-	}
+				return agreementOperationSettingRepo.find(cid);
+			}
+		};
+	} 
 	
-	private AgreementTimeOfManagePeriod toPubDomain(
-			nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfManagePeriod fromDomain){
-		
-		val fromAgreementTime = fromDomain.getAgreementTime().getAgreementTime();
-		LimitOneMonth fromLimitErrorTime = null;
-		if (fromAgreementTime.getExceptionLimitErrorTime().isPresent()){
-			fromLimitErrorTime = new LimitOneMonth(fromAgreementTime.getExceptionLimitErrorTime().get().v());
-		}
-		LimitOneMonth fromLimitAlarmTime = null;
-		if (fromAgreementTime.getExceptionLimitAlarmTime().isPresent()){
-			fromLimitAlarmTime = new LimitOneMonth(fromAgreementTime.getExceptionLimitAlarmTime().get().v());
-		}
-		val fromBreakdown = fromDomain.getAgreementTime().getBreakdown();
-		
-		return AgreementTimeOfManagePeriod.of(
-				fromDomain.getEmployeeId(),
-				fromDomain.getYearMonth(),
-				fromDomain.getYear(),
-				AgreementTimeOfMonthly.of(
-						fromAgreementTime.getAgreementTime(),
-						new LimitOneMonth(fromAgreementTime.getLimitErrorTime().v()),
-						new LimitOneMonth(fromAgreementTime.getLimitAlarmTime().v()),
-						Optional.ofNullable(fromLimitErrorTime),
-						Optional.ofNullable(fromLimitAlarmTime),
-						fromAgreementTime.getStatus()),
-				AgreementTimeBreakdown.of(
-						fromBreakdown.getOverTime(),
-						fromBreakdown.getTransferOverTime(),
-						fromBreakdown.getHolidayWorkTime(),
-						fromBreakdown.getTransferTime(),
-						fromBreakdown.getFlexLegalTime(),
-						fromBreakdown.getFlexIllegalTime(),
-						fromBreakdown.getWithinPrescribedPremiumTime(),
-						fromBreakdown.getWeeklyPremiumTime(),
-						fromBreakdown.getMonthlyPremiumTime()));
-	}
-
-	@Override
-	public Map<String, Map<YearMonth, AttendanceTimeMonth>> getTimeByPeriod(List<String> employeeIds,
-			YearMonthPeriod period) {
-		
-		val srcAgreementTimeList = this.agreementTimeRepo.findBySidsAndYearMonths(employeeIds, period.yearMonthsBetween());
-//		Map<String, Map<YearMonth, AttendanceTimeMonth>> result = new HashMap<>();
-//		List<String> employeeIdsError = srcAgreementTimeList.stream().map( e->e.getEmployeeId()).distinct().collect(Collectors.toList());
-		
-		Map<String, Map<YearMonth, AttendanceTimeMonth>> data =  srcAgreementTimeList.stream().collect(Collectors.groupingBy(c -> c.getEmployeeId(), 
-				Collectors.collectingAndThen(Collectors.toList(), 
-						list -> list.stream().collect(Collectors.toMap(c -> c.getYearMonth(), 
-									c -> c.getAgreementTime().getAgreementTime().getAgreementTime())))));
-		
-//		for(String employeeId: employeeIdsError) {			
-//			Map<YearMonth, AttendanceTimeMonth> mapAttendanceTime = new HashMap<>();
-//			val agreementTimeList = srcAgreementTimeList.stream().filter( e->e.getEmployeeId().equals(employeeId)).collect(Collectors.toList());
-//			
-//			for (val srcAgreementTime : agreementTimeList){
-//				mapAttendanceTime.put(srcAgreementTime.getYearMonth(),
-//						srcAgreementTime.getAgreementTime().getAgreementTime().getAgreementTime());
-//			}
-//			
-//			result.put(employeeId, mapAttendanceTime);
-//		}
-
-		return data;
-	}
 }

@@ -6,7 +6,7 @@ import lombok.Getter;
 import nts.uk.ctx.at.record.app.find.dailyperform.specificdatetttr.dto.SpecificDateAttrOfDailyPerforDto;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ConvertibleAttendanceItem;
 
 public class SpecificDateAttrOfDailyCommand extends DailyWorkCommonCommand {
 
@@ -15,14 +15,15 @@ public class SpecificDateAttrOfDailyCommand extends DailyWorkCommonCommand {
 
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
-		if(item == null) {
-			this.data = Optional.empty(); 
-		}else {
-			SpecificDateAttrOfDailyPerfor specificDateAttrOfDailyPerfor = new SpecificDateAttrOfDailyPerfor(getEmployeeId(),
-					getWorkDate(), ((SpecificDateAttrOfDailyPerforDto) item).toDomain(getEmployeeId(), getWorkDate()));
-			this.data = item == null || !item.isHaveData() ? Optional.empty() 
-					: Optional.of(specificDateAttrOfDailyPerfor);
+		
+		if (item == null) {
+			this.data = Optional.empty();
+			return;
 		}
+		SpecificDateAttrOfDailyPerfor specificDateAttrOfDailyPerfor = new SpecificDateAttrOfDailyPerfor(getEmployeeId(),
+				getWorkDate(), ((SpecificDateAttrOfDailyPerforDto) item).toDomain(getEmployeeId(), getWorkDate()));
+		this.data = item == null || !item.isHaveData() ? Optional.empty() 
+				: Optional.of(specificDateAttrOfDailyPerfor);
 	}
 
 	@Override

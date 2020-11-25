@@ -14,7 +14,6 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.DeductionTimeSheetAdjustDuplicationTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
@@ -34,7 +33,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.WorkingBreakTimeAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.LateTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.LeaveEarlyTimeSheet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedRestCalculateMethod;
@@ -495,21 +493,22 @@ public class DeductionTimeSheet {
 	/**
 	 * 固定勤務 時に就業時間帯orスケマスタから設定を取得する
 	 * 
-	 * @param restCalc
-	 *            固定給系の計算方法
+	 * @param restCalc 固定給系の計算方法
 	 * @return 休 時間帯
 	 */
 	public static List<TimeSheetOfDeductionItem> getFixedBreakTimeSheet(Optional<FixedRestCalculateMethod> calcRest,
 			List<BreakTimeOfDailyAttd> breakTimeOfDailyList) {
 		// 就業時間帯を参照
 		if (calcRest.get().isReferToMaster()) {
-			return breakTimeOfDailyList.stream().filter(tc -> tc.getBreakType().isReferWorkTime()).findFirst().get()
-					.changeAllTimeSheetToDeductionItem();
+			return breakTimeOfDailyList.stream().filter(tc -> tc.getBreakType().isReferWorkTime())
+					.findFirst().map(c ->  c.changeAllTimeSheetToDeductionItem())
+					.orElse(new ArrayList<>());
 		}
 		// スケを参照
 		else {
-			BreakTimeOfDailyAttd test = breakTimeOfDailyList.stream().filter(tc -> tc.getBreakType().isReferSchedule()).findFirst().get();
-			return test.changeAllTimeSheetToDeductionItem();
+			return breakTimeOfDailyList.stream().filter(tc -> tc.getBreakType().isReferSchedule())
+					.findFirst().map(c ->  c.changeAllTimeSheetToDeductionItem())
+					.orElse(new ArrayList<>());
 		}
 	}
 

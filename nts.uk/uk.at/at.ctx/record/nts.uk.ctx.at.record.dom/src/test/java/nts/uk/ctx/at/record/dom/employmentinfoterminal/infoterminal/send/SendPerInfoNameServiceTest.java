@@ -51,7 +51,7 @@ public class SendPerInfoNameServiceTest {
 	@Test
 	public void testSendEmpty() {
 
-		List<SendPerInfoName> actual = SendPerInfoNameService.send(require, new EmpInfoTerminalCode(1),
+		List<SendPerInfoName> actual = SendPerInfoNameService.send(require, new EmpInfoTerminalCode("1"),
 				new ContractCode("1"));
 		assertThat(actual).isEqualTo(Collections.emptyList());
 	}
@@ -60,7 +60,7 @@ public class SendPerInfoNameServiceTest {
 	public void testSendEmptySid() {
 
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = Optional
-				.of(new ReqSettingBuilder(new EmpInfoTerminalCode(1), new ContractCode("1"), new CompanyId("1"), "1",
+				.of(new ReqSettingBuilder(new EmpInfoTerminalCode("1"), new ContractCode("1"), new CompanyId("1"), "1",
 						Collections.emptyList(), null, null).overTimeHoliday(true).build());
 		new Expectations() {
 			{
@@ -69,7 +69,7 @@ public class SendPerInfoNameServiceTest {
 				result = timeRecordReqSetting;
 			}
 		};
-		List<SendPerInfoName> actual = SendPerInfoNameService.send(require, new EmpInfoTerminalCode(1),
+		List<SendPerInfoName> actual = SendPerInfoNameService.send(require, new EmpInfoTerminalCode("1"),
 				new ContractCode("1"));
 		assertThat(actual).isEqualTo(Collections.emptyList());
 	}
@@ -79,7 +79,7 @@ public class SendPerInfoNameServiceTest {
 	public void test() {
 
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = Optional
-				.of(new ReqSettingBuilder(new EmpInfoTerminalCode(1), new ContractCode("1"), new CompanyId("1"), "1",
+				.of(new ReqSettingBuilder(new EmpInfoTerminalCode("1"), new ContractCode("1"), new CompanyId("1"), "1",
 						Arrays.asList(new EmployeeId("1"), new EmployeeId("2")), null, null).overTimeHoliday(true)
 								.build());
 
@@ -95,8 +95,9 @@ public class SendPerInfoNameServiceTest {
 
 				require.getByCardNoAndContractCode((List<String>) any);
 				result = Arrays.asList(
-						new StampCard("1", "1", new StampNumber("1"), GeneralDate.today(), new ContractCode("1")),
-						new StampCard("2", "2", new StampNumber("2"), GeneralDate.today(), new ContractCode("1")));
+						new StampCard(new ContractCode("1"), new StampNumber("1"), "1",  GeneralDate.today(), "1"),
+						new StampCard(new ContractCode("1"), new StampNumber("2"), "2",  GeneralDate.today(), "2")
+				);
 
 				require.getByListSID((List<String>) any);
 				result = Arrays.asList(new EmployeeDto("1", "AAAA", "AAAAAAAAAA01234567892C"),
@@ -104,7 +105,7 @@ public class SendPerInfoNameServiceTest {
 
 			}
 		};
-		List<SendPerInfoName> actual = SendPerInfoNameService.send(require, new EmpInfoTerminalCode(1),
+		List<SendPerInfoName> actual = SendPerInfoNameService.send(require, new EmpInfoTerminalCode("1"),
 				new ContractCode("1"));
 		assertThat(actual)
 				.extracting(d -> d.getIdNumber(), d -> d.getPerName(), d -> d.getDepartmentCode(),
@@ -119,7 +120,7 @@ public class SendPerInfoNameServiceTest {
 	public void testEmpNull() {
 
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = Optional
-				.of(new ReqSettingBuilder(new EmpInfoTerminalCode(1), new ContractCode("1"), new CompanyId("1"), "1",
+				.of(new ReqSettingBuilder(new EmpInfoTerminalCode("1"), new ContractCode("1"), new CompanyId("1"), "1",
 						Arrays.asList(new EmployeeId("1"), new EmployeeId("2")), null, null).overTimeHoliday(true)
 								.build());
 
@@ -136,8 +137,8 @@ public class SendPerInfoNameServiceTest {
 
 				require.getByCardNoAndContractCode((List<String>) any);
 				result = Arrays.asList(
-						new StampCard("1", "1", new StampNumber("1"), GeneralDate.today(), new ContractCode("1")),
-						new StampCard("2", "2", new StampNumber("2"), GeneralDate.today(), new ContractCode("1")));
+						new StampCard(new ContractCode("1"), new StampNumber("1"), "1",  GeneralDate.today(), "1"),
+						new StampCard(new ContractCode("1"), new StampNumber("2"), "2",  GeneralDate.today(), "2"));
 
 				require.getByListSID((List<String>) any);
 				result = Arrays.asList(new EmployeeDto("1", "AAAA", "AAAAAAAAAA01234567892C"),
@@ -145,7 +146,7 @@ public class SendPerInfoNameServiceTest {
 
 			}
 		};
-		List<SendPerInfoName> actual = SendPerInfoNameService.send(require, new EmpInfoTerminalCode(1),
+		List<SendPerInfoName> actual = SendPerInfoNameService.send(require, new EmpInfoTerminalCode("1"),
 				new ContractCode("1"));
 		assertThat(actual)
 				.extracting(d -> d.getIdNumber(), d -> d.getPerName(), d -> d.getDepartmentCode(),
