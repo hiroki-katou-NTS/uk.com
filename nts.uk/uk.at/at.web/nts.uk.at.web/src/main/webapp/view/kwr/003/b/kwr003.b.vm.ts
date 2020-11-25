@@ -249,6 +249,7 @@ module nts.uk.at.view.kwr003.b {
         vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
           vm.settingAttendance();
           vm.$blockui('hide');
+          $('#KWR003_B43').focus();
         });
       })
         .fail((error) => {
@@ -308,8 +309,6 @@ module nts.uk.at.view.kwr003.b {
         newListItemsDetails.push(temp);
       });
 
-      //newListItemsDetails = _.orderBy(newListItemsDetails, [field], [sort_type]);
-
       return newListItemsDetails;
     }
 
@@ -350,7 +349,6 @@ module nts.uk.at.view.kwr003.b {
     deteleSetting() {
       const vm = this;
 
-
       vm.$blockui('show');
       const params = {
         settingId: vm.settingId() //該当する設定ID
@@ -371,6 +369,8 @@ module nts.uk.at.view.kwr003.b {
             .fail((error) => {
 
             });
+        } else {
+          vm.$blockui('hide');
         }
       });
     }
@@ -554,9 +554,9 @@ module nts.uk.at.view.kwr003.b {
 
       if (selectionItem.length > 0) {
         dataSelection = _.join(selectionItem, ' ');
-        if (dataSelection.length > 20) {
+        /* if (dataSelection.length > 20) {
           dataSelection = dataSelection.substring(0, 19) + vm.$i18n('KWR003_219');
-        }
+        } */
       }
 
       return dataSelection;
