@@ -625,6 +625,7 @@ module nts.uk.ui.components.fullcalendar {
 
             const computedEvents = ko.computed({
                 read: () => {
+                    const cptEvents: any[] = [];
                     const rawEvents = ko.unwrap<fc.EventApi[]>(events);
                     const sltedEvents = ko.unwrap<fc.EventApi[]>(selectedEvents);
                     const isSelected = (m: fc.EventApi) => {
@@ -634,19 +635,49 @@ module nts.uk.ui.components.fullcalendar {
                         });
                     };
 
-                    return [...rawEvents.map(m => ({
-                        ...m,
-                        allDay: false,
-                        start: formatDate(m.start),
-                        end: formatDate(m.end),
-                        // groupId: sltedEvents.length && isSelected(m) ? 'selected' : Date.now(),
-                        borderColor: isSelected(m) ? '#000' : 'transparent'
-                    })), /*selectedEvents.length ? {
-                        groupId: 'selected',
-                        display: 'background',
-                        backgroundColor: 'transparent'
-                    } : null*/]
-                        .filter(f => !!f);
+                    rawEvents.forEach(e => {
+                        if (!isSelected(e)) {
+                            cptEvents.push({
+                                ...e,
+                                allDay: false,
+                                start: formatDate(e.start),
+                                end: formatDate(e.end),
+                                borderColor: 'transparent',
+                                durationEditable: true
+                            });
+                        } else {
+                            if (sltedEvents.length === 1) {
+                                cptEvents.push({
+                                    ...e,
+                                    allDay: false,
+                                    start: formatDate(e.start),
+                                    end: formatDate(e.end),
+                                    borderColor: '#000',
+                                    durationEditable: true
+                                });
+                            } else {
+                                cptEvents.push({
+                                    ...e,
+                                    allDay: false,
+                                    groupId: 'selected',
+                                    start: formatDate(e.start),
+                                    end: formatDate(e.end),
+                                    borderColor: '#000',
+                                    durationEditable: false
+                                });
+                            }
+                        }
+                    });
+
+                    if (sltedEvents.length > 1) {
+                        cptEvents.push({
+                            groupId: 'selected',
+                            display: 'background',
+                            backgroundColor: 'transparent'
+                        });
+                    }
+
+                    return cptEvents;
                 },
                 disposeWhenNodeIsRemoved: vm.$el
             });
@@ -942,7 +973,10 @@ module nts.uk.ui.components.fullcalendar {
 
                     selectedEvents([]);
                 },
-                eventResize: () => {
+                eventResize: (args) => {
+                    if (!!args.event.groupId) {
+                        return false;
+                    }
                     // update data sources
                     mutatedEvents();
 
