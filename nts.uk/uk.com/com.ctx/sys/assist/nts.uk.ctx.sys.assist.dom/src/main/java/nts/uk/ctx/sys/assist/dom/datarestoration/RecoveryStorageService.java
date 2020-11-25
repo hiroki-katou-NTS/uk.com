@@ -38,6 +38,7 @@ import nts.uk.ctx.sys.assist.dom.category.StorageRangeSaved;
 import nts.uk.ctx.sys.assist.dom.datarestoration.common.CsvFileUtil;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.shr.com.i18n.TextResource;
 
 @Stateless
 public class RecoveryStorageService {
@@ -416,7 +417,8 @@ public class RecoveryStorageService {
 				return condition;
 			}
 		}
-		
+		saveLogDataRecoverServices.saveErrorLogDataRecover(dataRecoveryProcessId, "", "", null,
+				TextResource.localize("CMF003_644"), "");
 		return condition;
 	}
 	
