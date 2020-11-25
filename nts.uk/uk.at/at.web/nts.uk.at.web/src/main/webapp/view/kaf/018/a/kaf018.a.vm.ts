@@ -30,7 +30,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 			confirmAndApprovalDailyFlg: false
 		};
 		fullWorkplaceInfo: Array<DisplayWorkplace> = [];
-		
+		employmentCDLst: Array<string> = [];
 		treeGrid: any;
 		multiSelectedWorkplaceId: KnockoutObservableArray<string> = ko.observableArray([]);
 		baseDate: KnockoutObservable<Date> = ko.observable(new Date());
@@ -123,6 +123,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 				vm.closureLst(_.map(data.closureList, (o: any) => {
 					return new ClosureItem(o.closureHistories[0].closureId, o.closureHistories[0].closeName, o.closureMonth);
 				}));
+				vm.employmentCDLst = data.listEmploymentCD;
 				if(params) {
 					vm.multiSelectedWorkplaceId(_.map(params.selectWorkplaceInfo, o => o.id));
 					vm.selectedClosureId(params.closureItem.closureId);
@@ -152,7 +153,20 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 				}
 				return $('#tree-grid').ntsTreeComponent(vm.treeGrid).done(() => {
 					vm.fullWorkplaceInfo = vm.flattenWkpTree(_.cloneDeep($('#tree-grid').getDataList()));
-					vm.selectedClosureId.subscribe(() => $('#tree-grid').focusTreeGridComponent());
+					vm.selectedClosureId.subscribe((value) => {
+						vm.$blockui('show');
+						vm.$ajax(`${API.changeClosure}/${value}`).then((changeDateData) => {
+							vm.employmentCDLst = changeDateData.listEmploymentCD;
+							vm.dateValue().startDate = changeDateData.startDate;
+							vm.dateValue().endDate = changeDateData.endDate;
+							vm.dateValue.valueHasMutated();	
+							$('#tree-grid').ntsTreeComponent(vm.treeGrid).done(() => {
+								vm.fullWorkplaceInfo = vm.flattenWkpTree(_.cloneDeep($('#tree-grid').getDataList()));
+								$('#tree-grid').focusTreeGridComponent();
+								vm.$blockui('hide');
+							});
+						});
+					});
 				});
 			}).then(() => {
 				vm.$blockui('hide');
@@ -189,7 +203,8 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 					appNameLst: Array<any> = vm.appNameLst,
 					useSet = vm.useSet,
 					initDisplayOfApprovalStatus = vm.initDisplayOfApprovalStatus,
-					bParam: KAF018BParam = { closureItem, startDate, endDate, selectWorkplaceInfo, appNameLst, useSet, initDisplayOfApprovalStatus };
+					employmentCDLst = vm.employmentCDLst,
+					bParam: KAF018BParam = { closureItem, startDate, endDate, selectWorkplaceInfo, appNameLst, useSet, initDisplayOfApprovalStatus, employmentCDLst };
 				vm.$jump("/view/kaf/018/b/index.xhtml", bParam);
             });
 			
@@ -265,6 +280,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 	const API = {
 		getApprovalStatusActivation: "at/request/application/approvalstatus/getApprovalStatusActivation",
 		getAppNameInAppList: "at/request/application/screen/applist/getAppNameInAppList",
-		getUseSetting: "at/record/application/realitystatus/getUseSetting"
+		getUseSetting: "at/record/application/realitystatus/getUseSetting",
+		changeClosure: "at/request/application/approvalstatus/changeClosure"
 	}
 }

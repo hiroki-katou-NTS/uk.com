@@ -78,7 +78,8 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 				endDate = vm.endDate,
 				wkpInfoLst = _.filter(vm.selectWorkplaceInfo, o => _.includes(vm.pageData, o.id)),
 				initDisplayOfApprovalStatus = vm.initDisplayOfApprovalStatus,
-				wsParam = { closureId, processingYm, startDate, endDate, wkpInfoLst, initDisplayOfApprovalStatus };
+				employmentCDLst = vm.params.employmentCDLst,
+				wsParam = { closureId, processingYm, startDate, endDate, wkpInfoLst, initDisplayOfApprovalStatus, employmentCDLst };
 			vm.$ajax('at', API.getStatusExecution, wsParam)
 			.then((data: Array<ApprSttExecutionDto>) => {
 				_.forEach(vm.dataSource, x => {
@@ -380,7 +381,8 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 				startDate = vm.startDate,
 				endDate = vm.endDate,
 				selectWorkplaceInfo = vm.selectWorkplaceInfo,
-				cParam: KAF018CParam = { mailType, closureItem, startDate, endDate, selectWorkplaceInfo };
+				employmentCDLst = vm.params.employmentCDLst,
+				cParam: KAF018CParam = { mailType, closureItem, startDate, endDate, selectWorkplaceInfo, employmentCDLst };
 			vm.$window.modal('/view/kaf/018/c/index.xhtml', cParam, dialogSize);
 		}
 		
@@ -398,6 +400,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 		appNameLst: Array<any>;
 		useSet: any;
 		initDisplayOfApprovalStatus: InitDisplayOfApprovalStatus;
+		employmentCDLst: Array<string>;
 	}
 
 	export interface ApprSttExecutionDto {

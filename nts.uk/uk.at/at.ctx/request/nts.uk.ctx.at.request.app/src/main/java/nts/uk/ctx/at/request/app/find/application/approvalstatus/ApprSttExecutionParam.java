@@ -21,4 +21,5 @@ public class ApprSttExecutionParam {
 	private String endDate;
 	private List<DisplayWorkplace> wkpInfoLst;
 	private InitDisplayOfApprovalStatus initDisplayOfApprovalStatus;
+	private List<String> employmentCDLst;
 }

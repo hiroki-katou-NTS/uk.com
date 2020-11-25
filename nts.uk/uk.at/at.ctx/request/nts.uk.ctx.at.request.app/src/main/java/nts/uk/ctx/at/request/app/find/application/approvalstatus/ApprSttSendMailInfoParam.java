@@ -20,4 +20,5 @@ public class ApprSttSendMailInfoParam {
 	private String startDate;
 	private String endDate;
 	private List<DisplayWorkplace> wkpInfoLst;
+	private List<String> employmentCDLst;
 }

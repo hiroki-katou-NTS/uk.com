@@ -136,16 +136,16 @@ public interface ApprovalStatusService {
 	 * @param param
 	 * @param wkpIDLst
 	 */
-	public List<ApprSttExecutionOutput> getStatusExecution(ClosureId closureId, YearMonth processingYm,
-			DatePeriod period, InitDisplayOfApprovalStatus initDisplayOfApprovalStatus, List<DisplayWorkplace> displayWorkplaceLst);
+	public List<ApprSttExecutionOutput> getStatusExecution(ClosureId closureId, YearMonth processingYm, DatePeriod period, 
+			InitDisplayOfApprovalStatus initDisplayOfApprovalStatus, List<DisplayWorkplace> displayWorkplaceLst, List<String> employmentCDLst);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.B:承認・確認状況の照会.アルゴリズム.B:状況取得_表示対象データの取得.B:状況取得_表示対象データの取得
 	 * @param param
 	 * @param wkpIDLst
 	 */
-	public List<ApprSttExecutionOutput> getStatusDisplayData(ClosureId closureId, YearMonth processingYm,
-			DatePeriod period, InitDisplayOfApprovalStatus initDisplayOfApprovalStatus, List<DisplayWorkplace> displayWorkplaceLst);
+	public List<ApprSttExecutionOutput> getStatusDisplayData(ClosureId closureId, YearMonth processingYm, DatePeriod period, 
+			InitDisplayOfApprovalStatus initDisplayOfApprovalStatus, List<DisplayWorkplace> displayWorkplaceLst, List<String> employmentCDLst);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.B:承認・確認状況の照会.アルゴリズム.B:状況取得_共通処理.B:状況取得_共通処理
@@ -153,7 +153,7 @@ public interface ApprovalStatusService {
 	 * @param wkpIDLst
 	 */
 	public List<ApprSttExecutionOutput> getStatusCommonProcess(ClosureId closureId, YearMonth processingYm,
-			DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst);
+			DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst, List<String> employmentCDLst);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.B:承認・確認状況の照会.アルゴリズム.B:状況取得_申請承認.B:状況取得_申請承認
@@ -221,7 +221,7 @@ public interface ApprovalStatusService {
 	 * @param apprSttExecutionOutputLst
 	 */
 	public ApprSttSendMailInfoOutput getApprSttSendMailInfo(ApprovalStatusMailType mailType, ClosureId closureId, YearMonth processingYm,
-			DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst);
+			DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst, List<String> employmentCDLst);
 	
 	/**
 	 * C:メール送信承認者を取得

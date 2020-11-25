@@ -140,7 +140,8 @@ module nts.uk.at.view.kaf018.c.viewmodel {
 				startDate = params.startDate,
 				endDate = params.endDate,
 				wkpInfoLst = params.selectWorkplaceInfo,
-				wsParam = { mailType, closureId, processingYm, startDate, endDate, wkpInfoLst };
+				employmentCDLst = params.employmentCDLst,
+				wsParam = { mailType, closureId, processingYm, startDate, endDate, wkpInfoLst, employmentCDLst };
 			vm.$blockui('show');	
 			vm.$ajax('at', API.getEmpSendMailInfo, wsParam).then((data: any) => {
 				vm.urlApprovalEmbed(data.approvalStatusMailTempDto.urlApprovalEmbed == 1 ? true: false);
@@ -241,6 +242,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
 		startDate: string;
 		endDate: string;
 		selectWorkplaceInfo: Array<DisplayWorkplace>;
+		employmentCDLst: Array<string>;
 	}
 	
 	interface ApprSttWkpEmpMailOutput {

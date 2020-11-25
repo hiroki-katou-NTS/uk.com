@@ -16,8 +16,6 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -110,6 +108,8 @@ import nts.uk.ctx.at.request.dom.application.stamp.AppStamp_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode_Old;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDispSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
@@ -1249,17 +1249,17 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	}
 
 	@Override
-	public List<ApprSttExecutionOutput> getStatusExecution(ClosureId closureId, YearMonth processingYm,
-			DatePeriod period, InitDisplayOfApprovalStatus initDisplayOfApprovalStatus, List<DisplayWorkplace> displayWorkplaceLst) {
+	public List<ApprSttExecutionOutput> getStatusExecution(ClosureId closureId, YearMonth processingYm, DatePeriod period, 
+			InitDisplayOfApprovalStatus initDisplayOfApprovalStatus, List<DisplayWorkplace> displayWorkplaceLst, List<String> employmentCDLst) {
 		// アルゴリズム「状況取得_表示対象データの取得」を実行する
-		return this.getStatusDisplayData(closureId, processingYm, period, initDisplayOfApprovalStatus, displayWorkplaceLst);
+		return this.getStatusDisplayData(closureId, processingYm, period, initDisplayOfApprovalStatus, displayWorkplaceLst, employmentCDLst);
 	}
 
 	@Override
-	public List<ApprSttExecutionOutput> getStatusDisplayData(ClosureId closureId, YearMonth processingYm,
-			DatePeriod period, InitDisplayOfApprovalStatus initDisplayOfApprovalStatus, List<DisplayWorkplace> displayWorkplaceLst) {
+	public List<ApprSttExecutionOutput> getStatusDisplayData(ClosureId closureId, YearMonth processingYm, DatePeriod period, 
+			InitDisplayOfApprovalStatus initDisplayOfApprovalStatus, List<DisplayWorkplace> displayWorkplaceLst, List<String> employmentCDLst) {
 		// アルゴリズム「状況取得_共通処理」を実行する
-		List<ApprSttExecutionOutput> result = this.getStatusCommonProcess(closureId, processingYm, period, displayWorkplaceLst);
+		List<ApprSttExecutionOutput> result = this.getStatusCommonProcess(closureId, processingYm, period, displayWorkplaceLst, employmentCDLst);
 		// 「申請の承認状況を表示する」を判定
 		if(initDisplayOfApprovalStatus.isApplicationApprovalFlg()) {
 			Map<String, Integer> mapUnApprAppCount = this.getStatusApplicationApproval(period);
@@ -1274,14 +1274,12 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 
 	@Override
 	public List<ApprSttExecutionOutput> getStatusCommonProcess(ClosureId closureId, YearMonth processingYm,
-			DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst) {
+			DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst, List<String> employmentCDLst) {
 		List<ApprSttExecutionOutput> result = displayWorkplaceLst.stream()
 				.map(x -> new ApprSttExecutionOutput(x))
 				.collect(Collectors.toList());
 		String companyId = AppContexts.user().companyId();
 		List<String> wkpIDLst = displayWorkplaceLst.stream().map(x -> x.getId()).collect(Collectors.toList());
-		List<String> empCDLst = closureEmploymentRepository.findByClosureId(companyId, closureId.value)
-				.stream().map(x -> x.getEmploymentCD()).collect(Collectors.toList());
 		// 一時テーブルを削除する
 		approvalSttScreenRepository.deleteTemporaryTable();
 		// パラメータをSQLのセッションパラメータにセットする
@@ -1289,7 +1287,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		// クエリモデル「対象職場を一時テーブルへセット」を実行する
 		approvalSttScreenRepository.setWorkPlaceTempTable(wkpIDLst);
 		// クエリモデル「雇用に合致する社員を取得する」を実行する
-		approvalSttScreenRepository.setEmployeeTemp(period, empCDLst);
+		approvalSttScreenRepository.setEmployeeTemp(period, employmentCDLst);
 		// 職場別社員のカウント
 		Map<String, Integer> mapWkpEmpCount = approvalSttScreenRepository.getCountEmp();
 		mapWkpEmpCount.entrySet().stream().forEach(x -> {
@@ -1618,7 +1616,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 
 	@Override
 	public ApprSttSendMailInfoOutput getApprSttSendMailInfo(ApprovalStatusMailType mailType, ClosureId closureId, YearMonth processingYm,
-			DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst) {
+			DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst, List<String> employmentCDLst) {
 		String companyId = AppContexts.user().companyId();
 		List<ApprSttWkpEmpMailOutput> wkpEmpMailLst = new ArrayList<>();
 		// アルゴリズム「メール送信_メール本文取得」を実行する
@@ -1644,7 +1642,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		// アルゴリズム「メール送信_対象再取得_職場と対象社員」を実行
 		// xử lý giống màn hình B
 		List<ApprSttExecutionOutput> apprSttExecutionOutputLst = Collections.emptyList();
-		List<ApprSttExecutionOutput> apprSttExecutionOutputFullLst = this.getStatusCommonProcess(closureId, processingYm, period, displayWorkplaceLst);
+		List<ApprSttExecutionOutput> apprSttExecutionOutputFullLst = this.getStatusCommonProcess(closureId, processingYm, period, displayWorkplaceLst, employmentCDLst);
 		switch (mailType) {
 		case APP_APPROVAL_UNAPPROVED:
 			// アルゴリズム「メール送信_対象再取得_申請」を実行
