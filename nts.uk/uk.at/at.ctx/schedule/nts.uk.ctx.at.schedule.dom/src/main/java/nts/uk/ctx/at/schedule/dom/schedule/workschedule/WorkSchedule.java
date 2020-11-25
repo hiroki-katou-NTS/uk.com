@@ -210,8 +210,7 @@ public class WorkSchedule implements DomainAggregate {
 			case 31:
 				// 出勤時刻1(31)
 				this.optTimeLeaving.get()
-					.getAttendanceLeavingWork(
-							new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(1))
+					.getAttendanceLeavingWork( 1 )
 					.get()
 					.getAttendanceStamp().get().setStamp( Optional.of( (WorkStamp) value) );
 				break;
@@ -219,16 +218,14 @@ public class WorkSchedule implements DomainAggregate {
 			case 34:
 				// 退勤時刻1(34)	
 				this.optTimeLeaving.get()
-					.getAttendanceLeavingWork(
-							new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(1))
+					.getAttendanceLeavingWork( 1 )
 					.get()
 					.getLeaveStamp().get().setStamp( Optional.of( (WorkStamp) value) );
 				break;
 			case 41:
 				// 出勤時刻2(41)
 				this.optTimeLeaving.get()
-					.getAttendanceLeavingWork(
-							new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(2))
+					.getAttendanceLeavingWork( 2 )
 					.get()
 					.getAttendanceStamp().get().setStamp( Optional.of( (WorkStamp) value) );
 				break;
@@ -236,10 +233,9 @@ public class WorkSchedule implements DomainAggregate {
 			case 44:
 				// 退勤時刻2(44)
 				this.optTimeLeaving.get()
-				.getAttendanceLeavingWork(
-						new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(2))
-				.get()
-				.getLeaveStamp().get().setStamp( Optional.of( (WorkStamp) value) );
+					.getAttendanceLeavingWork( 2 )
+					.get()
+					.getLeaveStamp().get().setStamp( Optional.of( (WorkStamp) value) );
 				break;
 			default:
 				break;
