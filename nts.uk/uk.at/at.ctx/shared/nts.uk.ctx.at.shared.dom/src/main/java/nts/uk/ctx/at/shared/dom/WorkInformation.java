@@ -364,19 +364,7 @@ public class WorkInformation {
 			return false;
 		}
 		
-		if ( !this.workTimeCode.isPresent() && !otherObject.getWorkTimeCodeNotNull().isPresent() ) {
-			return true;
-		}
-		
-		if ( this.workTimeCode.isPresent() && !otherObject.getWorkTimeCodeNotNull().isPresent() ) {
-			return false;
-		}
-		
-		if ( !this.workTimeCode.isPresent() && otherObject.getWorkTimeCodeNotNull().isPresent() ) {
-			return false;
-		}
-		
-		return this.workTimeCode.get().v().equals( otherObject.getWorkTimeCodeNotNull().get().v());
+		return this.workTimeCode.equals( otherObject.getWorkTimeCodeNotNull());
 	}
 
 	public static interface Require
