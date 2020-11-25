@@ -264,7 +264,7 @@ module nts.uk.ui.components.fullcalendar {
         shift: KnockoutObservable<boolean>;
         popup: KnockoutObservable<boolean>;
         mouse: KnockoutObservable<boolean>;
-        event: KnockoutObservable<null | fc.EventApi>;
+        copy: KnockoutObservable<boolean>;
         [key: string]: KnockoutObservable<any>;
     };
     type J_EVENT = (evt: JQueryEventObject) => void;
@@ -353,7 +353,7 @@ module nts.uk.ui.components.fullcalendar {
         shift: ko.observable(false),
         popup: ko.observable(false),
         mouse: ko.observable(false),
-        event: ko.observable(null)
+        copy: ko.observable(false)
     });
 
     @component({
@@ -626,42 +626,82 @@ module nts.uk.ui.components.fullcalendar {
             const computedEvents = ko.computed({
                 read: () => {
                     const cptEvents: any[] = [];
-                    const rawEvents = ko.unwrap<fc.EventApi[]>(events);
+                    const rawEvents = ko.unwrap<any>(events);
                     const sltedEvents = ko.unwrap<fc.EventApi[]>(selectedEvents);
-                    const isSelected = (m: fc.EventApi) => {
+                    const breakTime = ko.unwrap<BUSSINESTIME>(params.breakTime);
+                    const isSelected = (m: fc.EventApi) =>  {
                         return !!_.find(sltedEvents, (e: any) => {
                             return formatDate(e.start) === formatDate(m.start)
                                 && formatDate(e.end) === formatDate(m.end);
                         });
                     };
-
-                    rawEvents.forEach(e => {
-                        if (!isSelected(e)) {
+                    const pushEvent = (e: fc.EventApi) => {
+                        if (!breakTime || isSelected(e)) {
                             cptEvents.push({
                                 ...e,
-                                allDay: false,
+                                id: randomId(),
                                 start: formatDate(e.start),
-                                end: formatDate(e.end),
+                                end: formatDate(e.end)
+                            });
+                        } else {
+                            const { startTime, endTime } = breakTime;
+                            const mStart = moment(e.start);
+                            const mEnd = moment(e.end);
+                            const startRTime = mStart.get("hour") * 60 + mStart.get('minute');
+                            const endRTime = mEnd.get('hour') * 60 + mEnd.get('minute');
+
+                            if (startTime >= startRTime && startTime >= endRTime) {
+                                cptEvents.push({
+                                    ...e,
+                                    id: randomId(),
+                                    start: formatDate(e.start),
+                                    end: formatDate(e.end)
+                                });
+                            } else if (endTime <= startRTime && endTime <= endRTime) {
+                                cptEvents.push({
+                                    ...e,
+                                    id: randomId(),
+                                    start: formatDate(e.start),
+                                    end: formatDate(e.end)
+                                });
+                            } else {
+                                if (startRTime < startTime) {
+                                    // const endTime = mEnd.set('hour', Math.floor(startTime / 60)).set('minute', Math.floor(startTime % 60)).toDate();
+
+                                    cptEvents.push({
+                                        ...e,
+                                        id: randomId(),
+                                        start: formatDate(e.start),
+                                        end: formatDate(e.end)
+                                    });
+                                } else {
+
+                                }
+                            }
+                        }
+                    };
+
+                    rawEvents.forEach((e: any) => {
+                        if (!isSelected(e)) {
+                            pushEvent({
+                                ...e,
+                                allDay: false,
                                 borderColor: 'transparent',
                                 durationEditable: true
                             });
                         } else {
                             if (sltedEvents.length === 1) {
-                                cptEvents.push({
+                                pushEvent({
                                     ...e,
                                     allDay: false,
-                                    start: formatDate(e.start),
-                                    end: formatDate(e.end),
                                     borderColor: '#000',
                                     durationEditable: true
                                 });
                             } else {
-                                cptEvents.push({
+                                pushEvent({
                                     ...e,
                                     allDay: false,
                                     groupId: 'selected',
-                                    start: formatDate(e.start),
-                                    end: formatDate(e.end),
                                     borderColor: '#000',
                                     durationEditable: false
                                 });
@@ -871,7 +911,6 @@ module nts.uk.ui.components.fullcalendar {
 
             const getEvents = (): fc.EventApi[] => calendar.getEvents()
                 .map(({
-                    id,
                     start,
                     end,
                     title,
@@ -880,7 +919,6 @@ module nts.uk.ui.components.fullcalendar {
                     textColor,
                     extendedProps
                 }) => ({
-                    id,
                     start,
                     end,
                     title,
@@ -931,7 +969,7 @@ module nts.uk.ui.components.fullcalendar {
                 eventClick: (args) => {
                     const cloned = _.cloneDeep(args.event);
 
-                    if (!ko.unwrap(dataEvent.ctrl)) {
+                    if (!ko.unwrap(dataEvent.shift)) {
                         selectedEvents([cloned]);
                     } else {
                         const unwraped = ko.unwrap<fc.EventApi[]>(selectedEvents);
@@ -960,6 +998,7 @@ module nts.uk.ui.components.fullcalendar {
                 },
                 eventDragStart: (evt) => {
                     if (ko.unwrap(dataEvent.shift) && ko.unwrap<fc.EventApi[]>(selectedEvents).length) {
+                        dataEvent.copy(true);
                         selectedEvents([]);
                     }
                 },
@@ -968,10 +1007,17 @@ module nts.uk.ui.components.fullcalendar {
                         evt.revert();
                     }
 
+                    if (ko.unwrap(dataEvent.shift) && ko.unwrap(dataEvent.copy)) {
+                        console.log(evt);
+                        dataEvent.copy(false);
+                    }
+
                     // update data sources
                     mutatedEvents();
 
-                    selectedEvents([]);
+                    if (ko.unwrap<fc.EventApi>(selectedEvents).length < 2) {
+                        selectedEvents([]);
+                    }
                 },
                 eventResize: (args) => {
                     if (!!args.event.groupId) {
