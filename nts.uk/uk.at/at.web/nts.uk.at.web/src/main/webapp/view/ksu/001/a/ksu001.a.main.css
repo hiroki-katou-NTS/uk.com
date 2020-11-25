@@ -31,11 +31,11 @@
 }
 
 .A6_hover:hover {
-    background-color: #007fff !important;
+    background-color: #007fff;
 }
 
 .A6_not_hover:hover {
-    background-color: #ffffff !important;
+    background-color: #ffffff;
 }
 
 #functon-area-row2 *, #contain-view-right * {
@@ -109,6 +109,11 @@
 	margin-bottom: 10px;
 }
 
+#person-setting button{
+	width: auto;
+	margin-bottom: 10px;
+}
+
 .btnSelectMode {
 	float: left;
 }
@@ -170,7 +175,7 @@
 }
 
 #A1_7_1 {
-	width: 440px !important;
+	width: 390px !important;
 	height: 100px;
 }
 
@@ -566,4 +571,8 @@ html {
 
 table th, table td {
 	padding: 2px 5px;
+}
+
+#functions-area {
+	overflow: unset !important;
 }

@@ -7,8 +7,8 @@ public class EmpLicenseClassificationDto {
 	/** 社員ID**/
 	public String empID;
 	/**	免許区分 **/
-	public Integer licenseClassification;
-	public EmpLicenseClassificationDto(String empID, Integer licenseClassification) {
+	public String licenseClassification;
+	public EmpLicenseClassificationDto(String empID, String licenseClassification) {
 		super();
 		this.empID = empID;
 		this.licenseClassification = licenseClassification;

@@ -6,6 +6,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange_Old;
 
+/**
+ * 「古いクラス → 削除予定 → 使わないでください (Old Class → Delete plan → Please don't use it)」
+ * @author HoangND
+ *
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

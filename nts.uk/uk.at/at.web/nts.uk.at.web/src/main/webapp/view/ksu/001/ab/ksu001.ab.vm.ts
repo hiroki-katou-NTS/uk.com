@@ -21,47 +21,59 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
         
         width: KnockoutObservable<number>;
         tabIndex: KnockoutObservable<number | string>;
-        filter: KnockoutObservable<boolean>;
+        filter: KnockoutObservable<boolean> = ko.observable(false);
         disabled: KnockoutObservable<boolean>;
         workplaceIdKCP013: KnockoutObservable<string> = ko.observable('');
         selected: KnockoutObservable<string> | KnockoutObservableArray<string>;
         dataSources: KnockoutObservableArray<WorkTimeModel>;
         showMode: KnockoutObservable<SHOW_MODE>;
+        check: KnockoutObservable<boolean>;
 
         constructor(id, listWorkType) { //id : workplaceId || workplaceGroupId; 
             let self = this;
-            let workTypeCodeSave = uk.localStorage.getItem('workTypeCodeSelected');
-            let workTimeCodeSave = uk.localStorage.getItem('workTimeCodeSelected');
+            
+            let item = uk.localStorage.getItem(self.KEY);
+            let userInfor: IUserInfor = {};
+            if (item.isPresent()) {
+                userInfor = JSON.parse(item.get());
+            }
+            
+            let workTypeCodeSave = item.isPresent() ? userInfor.workTypeCodeSelected : '';
+            let workTimeCodeSave = item.isPresent() ? userInfor.workTimeCodeSelected : '';
+            
             let workTimeCode = '';
-            if (workTimeCodeSave.isPresent()) {
-                if (workTimeCodeSave.get() === 'none') {
+            if (workTimeCodeSave != '') {
+                if (workTimeCodeSave === 'none') {
                     workTimeCode = '';
-                } else if (workTimeCodeSave.get() === 'deferred') {
+                } else if (workTimeCodeSave === 'deferred') {
                     workTimeCode = ' ';
                 } else {
-                    workTimeCode = workTimeCodeSave.get();
+                    workTimeCode = workTimeCodeSave;
                 }
             }
             self.isRedColor = false;
             self.listWorkType = ko.observableArray([]);
             
-            self.width = ko.observable(500);
+            self.width    = ko.observable(800);
             self.tabIndex = ko.observable('');
-            self.filter = ko.observable(true);
             self.disabled = ko.observable(false);
-            self.selected = ko.observable(workTimeCodeSave.isPresent() ? workTimeCode : '');
+            self.selected = ko.observable(workTimeCodeSave != '' ? workTimeCode : '');
             self.dataSources = ko.observableArray([]);
             self.showMode = ko.observable(SHOW_MODE.BOTTLE);
+            self.check    = ko.observable(false);
 
             self.dataCell = {};
             
-            self.selectedWorkTypeCode = ko.observable(workTypeCodeSave.isPresent() ? workTypeCodeSave.get() : '');
-            self.workTimeCode = ko.observable(workTimeCodeSave.isPresent() ? workTimeCodeSave.get() : '');
+            self.selectedWorkTypeCode = ko.observable(workTypeCodeSave);
+            self.workTimeCode = ko.observable(workTimeCodeSave);
             self.selectedWorkTypeCode.subscribe((newValue) => {
                 if (newValue == null || newValue == undefined)
                     return;
-                uk.localStorage.setItem("workTypeCodeSelected", newValue);
-
+                let item = uk.localStorage.getItem(self.KEY);
+                let userInfor: IUserInfor = JSON.parse(item.get());
+                userInfor.workTypeCodeSelected = newValue;
+                uk.localStorage.setItemAsJson(self.KEY, userInfor);
+                
                 let workType = _.filter(self.listWorkType(), function(o) { return o.workTypeCode == newValue; });
                 console.log(workType);
                 if (workType.length > 0) {
@@ -80,7 +92,10 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                     return;
                 console.log(wkpTimeCd);
                 
-                uk.localStorage.setItem("workTimeCodeSelected", wkpTimeCd);
+                let item = uk.localStorage.getItem(self.KEY);
+                let userInfor: IUserInfor = JSON.parse(item.get());
+                userInfor.workTimeCodeSelected = wkpTimeCd;
+                uk.localStorage.setItemAsJson(self.KEY, userInfor);
                 
                 let ds = ko.unwrap(self.dataSources);
 
@@ -128,7 +143,9 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                         workTimeCode: null,
                         workTimeName: null,
                         startTime   : '',
-                        endTime     : ''
+                        endTime     : '',
+                        achievements: false,
+                        workHolidayCls: objWorkType[0].workStyle
                     });
                     self.isRedColor = true;
                 } else if (objWorkType[0].workTimeSetting != 2 && self.dataCell.objWorkTime.code == '') {
@@ -140,7 +157,9 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                         workTimeCode: null,
                         workTimeName: null,
                         startTime   : '',
-                        endTime     : ''
+                        endTime     : '',
+                        achievements: false,
+                        workHolidayCls: objWorkType[0].workStyle
                     });
                     self.isRedColor = true;
                 } else if (objWorkType[0].workTimeSetting != 2 && self.dataCell.objWorkTime.code == ' ') {
@@ -152,7 +171,9 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                         workTimeCode: null,
                         workTimeName: null,
                         startTime   : '',
-                        endTime     : ''
+                        endTime     : '',
+                        achievements: false,
+                        workHolidayCls: objWorkType[0].workStyle
                     });
                     self.isRedColor = true;
                 } else {
@@ -165,9 +186,11 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                         workTypeCode: objWorkType[0].workTypeCode,
                         workTypeName: objWorkType[0].name,
                         workTimeCode: (objWorkTime != null)    ? (objWorkTime.code) : null,
-                        workTimeName: (objWorkTime != null     && objWorkTime.code != '') ? (objWorkTime.name) : null,
+                        workTimeName: (objWorkTime != null     && objWorkTime.code != '') ? (objWorkTime.nameAb) : null,
                         startTime   : (objWorkTime != null > 0 && objWorkTime.code != '') ? (startTime) : '',
-                        endTime     : (objWorkTime != null > 0 && objWorkTime.code != '') ? (endTime) : ''
+                        endTime     : (objWorkTime != null > 0 && objWorkTime.code != '') ? (endTime) : '',
+                        achievements: false,
+                        workHolidayCls: objWorkType[0].workStyle
                     });
                     self.isRedColor = false;
                 }
@@ -182,7 +205,9 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                         workTimeCode: null,
                         workTimeName: null,
                         startTime   : '',
-                        endTime     : ''
+                        endTime     : '',
+                        achievements: false,
+                        workHolidayCls: objWorkType[0].workStyle
                     });
                     self.isRedColor = true;
                 } else if (objWorkType[0].workTimeSetting != 2 && self.dataCell.objWorkTime.code == '') {
@@ -194,7 +219,9 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                         workTimeCode: null,
                         workTimeName: null,
                         startTime   : '',
-                        endTime     : ''
+                        endTime     : '',
+                        achievements: false,
+                        workHolidayCls: objWorkType[0].workStyle
                     });
                     self.isRedColor = true;
                 } else if (objWorkType[0].workTimeSetting != 2 && self.dataCell.objWorkTime.code == ' ') {
@@ -206,7 +233,9 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                         workTimeCode: null,
                         workTimeName: null,
                         startTime   : '',
-                        endTime     : ''
+                        endTime     : '',
+                        achievements: false,
+                        workHolidayCls: objWorkType[0].workStyle
                     });
                     self.isRedColor = true;
                 } else {
@@ -215,7 +244,9 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                         workTypeCode: objWorkType[0].workTypeCode,
                         workTypeName: objWorkType[0].name,
                         workTimeCode: (objWorkTime != null) ? (objWorkTime.code) : null,
-                        workTimeName: (objWorkTime != null &&  objWorkTime.code != '') ? (objWorkTime.name) : null
+                        workTimeName: (objWorkTime != null &&  objWorkTime.code != '') ? (objWorkTime.nameAb) : null,
+                        achievements: false,
+                        workHolidayCls: objWorkType[0].workStyle
                     });
                     self.isRedColor = false;
                 }

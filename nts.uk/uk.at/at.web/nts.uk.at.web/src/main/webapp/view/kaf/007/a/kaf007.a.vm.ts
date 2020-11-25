@@ -106,7 +106,7 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 		changeAppDate() {
 			const vm = this;
 
-			vm.$errors("clear");
+			// vm.$errors("clear");
 			let startDate = vm.application().opAppStartDate(),
 				endDate = vm.application().opAppEndDate();
 			let appDates = []

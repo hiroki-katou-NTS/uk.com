@@ -35,7 +35,7 @@ public class StampRecordDto {
 	private String stampArt;
 	private String stampArtName;
 	private Integer revervationAtr;
-	private Integer empInfoTerCode;
+	private String empInfoTerCode;
 	private String timeStampType;
 
 	// stamp
