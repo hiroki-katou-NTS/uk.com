@@ -112,7 +112,7 @@ module nts.uk.at.view.ktg004.a.viewmodel {
 			if(data == null || data == undefined || data == 0 || data == '0'){
 				return '00:00';
 			}else{
-				return Math.floor(data / 60) + ":" + data % 60;
+				return (data < 0 ? '-': '') + moment(Math.floor(data / (data < 0 ? -60: 60)) + ":" + Math.abs(data % 60),'hh:mm').format('HH:mm');
 			}
 		}
 	}
