@@ -54,7 +54,7 @@ public class SendOvertimeNameServiceTest {
 	@Test
 	public void testSendEmpty() {
 
-		Optional<SendOvertimeName> actual = SendOvertimeNameService.send(require, new EmpInfoTerminalCode(1),
+		Optional<SendOvertimeName> actual = SendOvertimeNameService.send(require, new EmpInfoTerminalCode("1"),
 				new ContractCode("1"));
 		assertThat(actual).isEqualTo(Optional.empty());
 	}
@@ -63,7 +63,7 @@ public class SendOvertimeNameServiceTest {
 	public void testSend() {
 
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = Optional
-				.of(new ReqSettingBuilder(new EmpInfoTerminalCode(1), new ContractCode("1"), new CompanyId("1"), "1",
+				.of(new ReqSettingBuilder(new EmpInfoTerminalCode("1"), new ContractCode("1"), new CompanyId("1"), "1",
 						null, null, null).overTimeHoliday(true).build());
 
 		new Expectations() {
@@ -81,7 +81,7 @@ public class SendOvertimeNameServiceTest {
 			}
 		};
 
-		Optional<SendOvertimeName> actual = SendOvertimeNameService.send(require, new EmpInfoTerminalCode(1),
+		Optional<SendOvertimeName> actual = SendOvertimeNameService.send(require, new EmpInfoTerminalCode("1"),
 				new ContractCode("1"));
 
 		assertThat(actual.get().getOvertimes()).extracting(d -> d.getSendOvertimeNo(), d -> d.getSendOvertimeName())
