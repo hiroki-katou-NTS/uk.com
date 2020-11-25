@@ -45,7 +45,6 @@ import nts.uk.ctx.at.request.dom.application.stamp.AppStampOnlineRecord;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp_Old;
-import nts.uk.ctx.at.request.dom.application.stamp.DestinationTimeApp;
 import nts.uk.ctx.at.request.dom.application.stamp.DestinationTimeZoneApp;
 import nts.uk.ctx.at.request.dom.application.stamp.StampFrameNo;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
@@ -883,29 +882,19 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 					Optional.empty(),
 					opEndTimeStampApp.map(x -> x.getTimeOfDay())));
 		});
-//		for(TimeStampApp timeStampApp : appStamp.getListTimeStampApp()) {
-//			listTmp.add(new StampAppOutputTmp(
-//					0,
-//					false,
-//					timeStampApp.getDestinationTimeApp().getTimeStampAppEnum().value,
-//				 	new StampFrameNo(timeStampApp.getDestinationTimeApp().getEngraveFrameNo()),
-//					Optional.of(timeStampApp.getTimeOfDay()),
-//					timeStampApp.getAppStampGoOutAtr(),
-//					Optional.empty(),
-//					Optional.of(timeStampApp.getTimeOfDay())));
-//		}
 		// 「打刻申請.時刻の取消」よりリストを収集する
-		for(DestinationTimeApp destinationTimeApp : appStamp.getListDestinationTimeApp()) {
+		appStamp.getListDestinationTimeApp().stream().collect(Collectors.groupingBy(x -> x.getEngraveFrameNo()))
+		.entrySet().forEach(entry -> {
 			listTmp.add(new StampAppOutputTmp(
 					0,
 					true,
-					destinationTimeApp.getTimeStampAppEnum().value,
-				 	new StampFrameNo(destinationTimeApp.getEngraveFrameNo()),
-					Optional.empty(),
-					Optional.empty(),
+					entry.getValue().get(0).getTimeStampAppEnum().value,
+				 	new StampFrameNo(entry.getKey()),
+				 	Optional.empty(),
+				 	Optional.empty(),
 					Optional.empty(),
 					Optional.empty()));
-		}
+		});
 		// 「打刻申請.時間帯」よりリストを収集する
 		for(TimeStampAppOther timeStampAppOther : appStamp.getListTimeStampAppOther()) {
 			listTmp.add(new StampAppOutputTmp(
