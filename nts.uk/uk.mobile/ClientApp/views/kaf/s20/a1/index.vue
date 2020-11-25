@@ -11,7 +11,7 @@
       >
         <button
           type="button"
-          class="btn btn-success btn-block btn-lg col-10 bg-blue-grey-50"
+          class="btn btn-success btn-block btn-lg col-10 btn-wrap-text bg-blue-grey-50"
           v-on:click="nextToStep2(item)"
         >
           {{ item.name }}
