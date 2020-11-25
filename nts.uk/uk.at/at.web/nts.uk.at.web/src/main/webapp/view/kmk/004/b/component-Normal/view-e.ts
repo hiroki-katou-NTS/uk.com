@@ -2,16 +2,18 @@
 
 module nts.uk.at.view.kmk004.b {
 	const template = `
-	<div class="sidebar-content-header">
-	<div class="title" data-bind="i18n: 'Com_Person'"></div>
-	<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmk/004/a/index.xhtml' },i18n: 'KMK004_224'"></a>
-	<button class="proceed" data-bind="i18n: 'KMK004_225'"></button>
-	<button data-bind="i18n: 'KMK004_226'"></button>
-	<button class="danger" data-bind="i18n: 'KMK004_227'"></button>
+	<div id="functions-area">
+		<div class="sidebar-content-header">
+			<div class="title" data-bind="i18n: 'Com_Person'"></div>
+			<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmk/004/a/index.xhtml' },i18n: 'KMK004_224'"></a>
+			<button class="proceed" data-bind="i18n: 'KMK004_225'"></button>
+			<button data-bind="i18n: 'KMK004_226'"></button>
+			<button class="danger" data-bind="i18n: 'KMK004_227'"></button>
+		</div>
 	</div>
 	<div class="view-e-kmk004">
 		<div class="left-content">
-			<div data-bind="component: {
+			<div clss="cpn-ccg001" data-bind="component: {
 				name: 'ccg001',
 				params:{
 					employees: employees

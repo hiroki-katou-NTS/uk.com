@@ -2,11 +2,13 @@
 
 module nts.uk.at.view.kmk004.b {
 	const template = `
-	<div class="sidebar-content-header">
-		<div class="title" data-bind="i18n: 'Com_Company'"></div>
-		<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmk/004/a/index.xhtml' },i18n: 'KMK004_224'"></a>
-		<button class="proceed" data-bind="i18n: 'KMK004_225', click: add, enable: existYear"></button>
-		<button class="danger" data-bind="i18n: 'KMK004_227'"></button>
+	<div id="functions-area">
+		<div class="sidebar-content-header">
+			<label class="title" data-bind="i18n: 'Com_Company'"></label>
+			<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmk/004/a/index.xhtml' },i18n: 'KMK004_224'"></a>
+			<button class="proceed" data-bind="i18n: 'KMK004_225', click: add, enable: existYear"></button>
+			<button class="danger" data-bind="i18n: 'KMK004_227'"></button>
+		</div>
 	</div>
 	<div class="view-b">
 		<div class="header-b">
