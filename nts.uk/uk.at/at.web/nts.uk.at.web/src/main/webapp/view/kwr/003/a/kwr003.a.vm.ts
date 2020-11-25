@@ -406,7 +406,7 @@ module nts.uk.at.view.kwr003.a {
         nts.uk.request.exportFile(PATH.exportExcelPDF, params).done((response) => {
           vm.$blockui('hide');
         }).fail((err) => {        
-          vm.$dialog.error({ messageId: 'Msg_1816' }).then(() => {
+          vm.$dialog.error({ messageId: err.messageId }).then(() => { //'Msg_1816' 
             vm.$blockui('hide');
             if (mode === 1)
               $('#btnExportExcel').focus();

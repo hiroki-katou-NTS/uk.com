@@ -93,7 +93,7 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
         builderString = new StringBuilder();
         builderString.append("SELECT a  ");
         builderString.append("FROM KfnmtRptYrRecItem a ");
-        builderString.append(" AND  a.pk.iD  =:settingId ");
+        builderString.append(" WHERE  a.pk.iD  =:settingId ");
         FIND_DELETE_WORK_ITEM = builderString.toString();
 
         builderString = new StringBuilder();
@@ -166,7 +166,6 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
         }
     }
 
-
     @Override
     public void update(String cid, String settingId, AnnualWorkLedgerOutputSetting outputSetting) {
         this.commandProxy().update(KfnmtRptYrRecSetting.fromDomain(cid, outputSetting));
@@ -185,7 +184,6 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
             this.commandProxy().insertAll(KfnmtRptYrRecDispCont.fromDomain(outputSetting));
         }
     }
-
 
     @Override
     public void deleteSettingDetail(String settingId) {

@@ -14,9 +14,6 @@ import java.util.List;
 @Setter
 public class CreateAnualWorkledgerSettingCommand {
 
-    //ID -> GUID
-    private final String id;
-
     //コード
     private String code;
 
