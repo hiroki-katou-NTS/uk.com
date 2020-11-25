@@ -116,7 +116,7 @@ public class ChangeableWorkingTimeZonePerNo {
 	 *
 	 */
 	@AllArgsConstructor
-	public enum ClockAreaAtr {
+	public static enum ClockAreaAtr {
 
 		/** 開始時刻 **/
 		START(1),
@@ -138,7 +138,7 @@ public class ChangeableWorkingTimeZonePerNo {
 	 */
 	@Getter
 	@RequiredArgsConstructor
-	public class ContainsResult {
+	public static class ContainsResult {
 
 		/** 含まれているか true:含まれている/false:含まれていない **/
 		private final boolean contains;

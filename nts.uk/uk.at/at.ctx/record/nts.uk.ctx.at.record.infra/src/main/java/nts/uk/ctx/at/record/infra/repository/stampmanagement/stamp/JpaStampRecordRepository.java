@@ -121,7 +121,7 @@ public class JpaStampRecordRepository extends JpaRepository implements StampReco
 		return new StampRecord(new ContractCode(entity.pk.contractCd), new StampNumber(entity.pk.cardNumber),
 				entity.pk.stampDateTime, new StampTypeDisplay(entity.stampTypeDisplay),
 				Optional.ofNullable(entity.empInfoTerCode == null ? null
-						: new EmpInfoTerminalCode(Integer.valueOf(entity.empInfoTerCode))));
+						: new EmpInfoTerminalCode(entity.empInfoTerCode)));
 	}
 
 

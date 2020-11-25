@@ -1,7 +1,10 @@
 package nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal;
 
-import nts.arc.primitive.IntegerPrimitiveValue;
-import nts.arc.primitive.constraint.IntegerMaxValue;
+import nts.arc.primitive.constraint.CharType;
+import nts.arc.primitive.constraint.StringCharType;
+import nts.arc.primitive.constraint.StringMaxLength;
+import nts.uk.shr.com.primitive.CodePrimitiveValue;
+import nts.uk.shr.com.primitive.ZeroPaddedCode;
 
 /**
  * 
@@ -10,12 +13,14 @@ import nts.arc.primitive.constraint.IntegerMaxValue;
  *	就業情報端末コード	
  */
 
-@IntegerMaxValue(9999)
-public class EmpInfoTerminalCode extends IntegerPrimitiveValue<EmpInfoTerminalCode>{
+@StringCharType(CharType.ALPHA_NUMERIC)
+@StringMaxLength(4)
+@ZeroPaddedCode
+public class EmpInfoTerminalCode extends CodePrimitiveValue<EmpInfoTerminalCode>{
 	
 	private static final long serialVersionUID = 1L;
 
-	public EmpInfoTerminalCode(Integer rawValue) {
+	public EmpInfoTerminalCode(String rawValue) {
 		super(rawValue);
 	}
 }

@@ -7,7 +7,7 @@ module nts.uk.at.view.kaf000.test.viewmodel {
         
         created(params: any) {
             const vm = this;
-            vm.simpleValue = ko.observable("9658a9f8-398d-443b-a210-10b8f1f3b86f"); 
+            vm.simpleValue = ko.observable("sample"); 
         }
     
         mounted() {
