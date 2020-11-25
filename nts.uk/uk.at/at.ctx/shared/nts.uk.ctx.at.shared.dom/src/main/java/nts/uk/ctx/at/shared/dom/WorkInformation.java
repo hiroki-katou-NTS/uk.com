@@ -353,7 +353,31 @@ public class WorkInformation {
 
 	}
 
-
+	/**
+	 * Equals
+	 * @param otherObject 比較対象
+	 * @return true if same workType and same workTime
+	 */
+	public boolean equals(WorkInformation otherObject) {
+		
+		if ( ! this.workTypeCode.v().equals(otherObject.getWorkTypeCode().v()) ) {
+			return false;
+		}
+		
+		if ( !this.workTimeCode.isPresent() && !otherObject.getWorkTimeCodeNotNull().isPresent() ) {
+			return true;
+		}
+		
+		if ( this.workTimeCode.isPresent() && !otherObject.getWorkTimeCodeNotNull().isPresent() ) {
+			return false;
+		}
+		
+		if ( !this.workTimeCode.isPresent() && otherObject.getWorkTimeCodeNotNull().isPresent() ) {
+			return false;
+		}
+		
+		return this.workTimeCode.get().v().equals( otherObject.getWorkTimeCodeNotNull().get().v());
+	}
 
 	public static interface Require
 		extends	WorkTimeSetting.Require
