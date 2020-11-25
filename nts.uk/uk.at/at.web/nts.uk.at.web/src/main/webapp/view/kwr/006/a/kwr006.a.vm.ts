@@ -239,7 +239,11 @@ module nts.uk.at.view.kwr006.a {
                 const getFreeSettingAuthority = service.getFreeSettingAuthority().done((role) => {
                     self.freeSettingEnabled(role.freeSettingAuthority);
                 });
-                $.when(self.loadListOutputItemMonthlyWorkSchedule(), self.loadPeriod(), getCurrentLoginerRole, getFreeSettingAuthority).done(() => {
+                $.when(self.loadOutputFreeSetting()
+                     , self.loadOutputStandardSetting()
+                     , self.loadPeriod()
+                     , getCurrentLoginerRole
+                     , getFreeSettingAuthority).done(() => {
                         self.loadWorkScheduleOutputCondition().done(() => dfd.resolve());
                 });
                 return dfd.promise();
@@ -350,8 +354,7 @@ module nts.uk.at.view.kwr006.a {
                                     employeeStr += "\n" + error.employeeCode + " " + error.employeeName;
                                     self.errorLogs.push(errorEmployee);
                                 });
-                            }
-                            else if (item.key.substring(0, 6) == "NOWPK_") {
+                            } else if (item.key.substring(0, 6) == "NOWPK_") {
                                 var errors = JSON.parse(item.valueAsString);
                                 _.forEach(errors, error => {
                                     var errorEmployee : EmployeeError = {
@@ -385,7 +388,7 @@ module nts.uk.at.view.kwr006.a {
                 nts.uk.ui.windows.setShared('selectedCode', codeShared);
                 nts.uk.ui.windows.setShared('itemSelection', self.monthlyWorkScheduleConditionModel.itemSettingType());
                 nts.uk.ui.windows.sub.modal('/view/kwr/006/c/index.xhtml', { height: 750 }).onClosed(() => {
-                    self.loadListOutputItemMonthlyWorkSchedule().then(() => {
+                    $.when(self.loadOutputFreeSetting() , self.loadOutputStandardSetting()).then(() => {
                         let data = nts.uk.ui.windows.getShared('selectedCodeScreenC');
                         if (self.monthlyWorkScheduleConditionModel.itemSettingType() === ItemSelectionEnum.STANDARD_SELECTION) {
                             self.monthlyWorkScheduleConditionModel.selectedCode(data);
@@ -447,7 +450,7 @@ module nts.uk.at.view.kwr006.a {
                 return dfd.promise();
             }
 
-            private loadListOutputItemMonthlyWorkSchedule(): JQueryPromise<void> {
+            private loadOutputStandardSetting() : JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
                 service.findAllOutputItemMonthlyWorkSchedule(ItemSelectionEnum.STANDARD_SELECTION).done(data => {
@@ -455,6 +458,12 @@ module nts.uk.at.view.kwr006.a {
                     self.itemCodeStandardSelection(_.map(datas, item => new ItemModel(item.itemCode, item.itemName)));
                     dfd.resolve();
                 });
+                return dfd.promise();
+            }
+
+            private loadOutputFreeSetting() : JQueryPromise<void> {
+                let self = this;
+                let dfd = $.Deferred<void>();
                 service.findAllOutputItemMonthlyWorkSchedule(ItemSelectionEnum.FREE_SETTING).done(data => {
                     let datas = _.sortBy(data, item => item.itemCode);
                     self.itemCodeFreeSetting(_.map(datas, item => new ItemModel(item.itemCode, item.itemName)));
@@ -611,14 +620,20 @@ module nts.uk.at.view.kwr006.a {
                 self.displayType = ko.observable(1);
                 self.itemDisplaySwitch = ko.observable(0);
             }
-            public updateData(data: MonthlyWorkScheduleConditionDto): void {
+            public updateData(data: MonthlyWorkScheduleConditionDto, authorityFreeSetting: boolean): void {
                 let self = this;
                 self.companyId = data.companyId;
                 self.userId = data.userId;
-                self.selectedCode(data.selectedCode);
+                self.itemSettingType(data.itemSettingType === ItemSelectionEnum.FREE_SETTING && authorityFreeSetting 
+                                    ? data.itemSettingType
+                                    : ItemSelectionEnum.STANDARD_SELECTION);
+                if (data.itemSettingType === ItemSelectionEnum.STANDARD_SELECTION) {
+                    self.selectedCode(data.selectedCode);
+                } else {
+                    self.selectedCodeFreeSetting(data.selectedCodeFreeSetting);
+                }
                 self.outputType(data.outputType);
                 self.pageBreakIndicator(data.pageBreakIndicator);
-                self.itemSettingType(data.itemSettingType ? data.itemSettingType: ItemSelectionEnum.STANDARD_SELECTION);
                 self.displayType(data.displayType ? data.displayType: 0);
                 self.itemDisplaySwitch(data.itemDisplaySwitch ? data.itemDisplaySwitch: 0);
                 self.totalOutputSetting.updateData(data.totalOutputSetting);
@@ -630,6 +645,7 @@ module nts.uk.at.view.kwr006.a {
                 dto.companyId = self.companyId;
                 dto.userId = self.userId;
                 dto.selectedCode = self.selectedCode();
+                dto.selectedCodeFreeSetting = self.selectedCodeFreeSetting();
                 dto.outputType = self.outputType();
                 dto.pageBreakIndicator = self.pageBreakIndicator(); 
                 dto.itemSettingType = self.itemSettingType(); 

@@ -67,7 +67,7 @@ module nts.uk.at.view.kwr006.a {
                 itemSettingType: number;
                 displayType: number;
                 itemDisplaySwitch: number;
-                selectedCodeFreeSetting: KnockoutObservable<string>;
+                selectedCodeFreeSetting: string;
             }
 
             export interface WorkScheduleSettingTotalOutputDto {
