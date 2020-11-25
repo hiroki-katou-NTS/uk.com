@@ -14,6 +14,8 @@ import nts.uk.ctx.at.record.dom.workrecord.remainingnumbermanagement.RCAnnualHol
 import nts.uk.ctx.at.record.pub.workrecord.remainingnumbermanagement.AnnualHolidayManagementPub;
 import nts.uk.ctx.at.record.pub.workrecord.remainingnumbermanagement.AttendRateAtNextHolidayExport;
 import nts.uk.ctx.at.record.pub.workrecord.remainingnumbermanagement.NextAnnualLeaveGrantExport;
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 
 @Stateless
 public class AnnualHolidayManagementPubImpl implements AnnualHolidayManagementPub {
@@ -32,7 +34,7 @@ public class AnnualHolidayManagementPubImpl implements AnnualHolidayManagementPu
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<NextAnnualLeaveGrantExport> acquireNextHolidayGrantDate(String companyId, String employeeId,
 			Optional<GeneralDate> referenceDate) {
-		return rAnnualHolidayManagement.acquireNextHolidayGrantDate(companyId, employeeId, referenceDate).stream()
+		return rAnnualHolidayManagement.acquireNextHolidayGrantDate(new CompanyId(companyId), new EmployeeId(employeeId), referenceDate).stream()
 				.map(x -> new NextAnnualLeaveGrantExport(x.getGrantDate(), x.getGrantDays(), x.getTimes(),
 						x.getTimeAnnualLeaveMaxDays(), x.getTimeAnnualLeaveMaxTime(),
 						x.getHalfDayAnnualLeaveMaxTimes()))
@@ -50,7 +52,7 @@ public class AnnualHolidayManagementPubImpl implements AnnualHolidayManagementPu
 	@Override
 	public Optional<AttendRateAtNextHolidayExport> getDaysPerYear(String companyId, String employeeId) {
 
-		return rAnnualHolidayManagement.getDaysPerYear(companyId, employeeId).map(x -> {
+		return rAnnualHolidayManagement.getDaysPerYear(new CompanyId(companyId), new EmployeeId(employeeId)).map(x -> {
 			return new AttendRateAtNextHolidayExport(x.getNextHolidayGrantDate(), x.getNextHolidayGrantDays(),
 					x.getAttendanceRate(), x.getAttendanceDays(), x.getPredeterminedDays(), x.getAnnualPerYearDays());
 		});

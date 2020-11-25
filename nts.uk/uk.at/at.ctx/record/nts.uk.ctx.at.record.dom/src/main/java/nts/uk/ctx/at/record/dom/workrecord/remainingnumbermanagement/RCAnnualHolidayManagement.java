@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.NextAnnualLeaveGrant;
 
 public interface RCAnnualHolidayManagement {
@@ -15,7 +17,7 @@ public interface RCAnnualHolidayManagement {
 	 * @param sId
 	 * @return
 	 */
-	List<NextAnnualLeaveGrant> acquireNextHolidayGrantDate(String cId, String sId, Optional<GeneralDate> referenceDate);
+	List<NextAnnualLeaveGrant> acquireNextHolidayGrantDate(CompanyId cId, EmployeeId sId, Optional<GeneralDate> referenceDate);
 
 	/**
 	 * RequestList323 
@@ -26,6 +28,6 @@ public interface RCAnnualHolidayManagement {
 	 * @return
 	 */
 
-	public Optional<AttendRateAtNextHoliday> getDaysPerYear(String companyId, String employeeId);
+	public Optional<AttendRateAtNextHoliday> getDaysPerYear(CompanyId cId, EmployeeId sId);
 
 }

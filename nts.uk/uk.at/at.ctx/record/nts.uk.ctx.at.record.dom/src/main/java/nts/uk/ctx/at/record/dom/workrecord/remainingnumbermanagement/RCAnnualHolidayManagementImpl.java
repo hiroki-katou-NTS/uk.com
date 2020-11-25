@@ -16,6 +16,8 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
@@ -53,12 +55,12 @@ public class RCAnnualHolidayManagementImpl implements RCAnnualHolidayManagement 
 	 */
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public List<NextAnnualLeaveGrant> acquireNextHolidayGrantDate(String companyId, String employeeId, Optional<GeneralDate> referenceDate) {
+	public List<NextAnnualLeaveGrant> acquireNextHolidayGrantDate(CompanyId companyId, EmployeeId employeeId, Optional<GeneralDate> referenceDate) {
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
 		
 		// ドメインモデル「年休社員基本情報」を取得
-		Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfo = annLeaEmpBasicInfoRepository.get(employeeId);
+		Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfo = annLeaEmpBasicInfoRepository.get(employeeId.v());
 		
 		if(!annualLeaveEmpBasicInfo.isPresent()) {
 			return Collections.emptyList();
@@ -68,8 +70,8 @@ public class RCAnnualHolidayManagementImpl implements RCAnnualHolidayManagement 
 		Optional<DatePeriod> period = createCalRangeNextYearHdGrant(referenceDate);
 		
 		// 次回年休付与を計算
-		List<NextAnnualLeaveGrant> result = calculateNextHolidayGrant(require, cacheCarrier, companyId, 
-				employeeId, period, annualLeaveEmpBasicInfo);
+		List<NextAnnualLeaveGrant> result = calculateNextHolidayGrant(require, cacheCarrier, companyId.v(), 
+				employeeId.v(), period, annualLeaveEmpBasicInfo);
 		
 		// 次回年休付与を返す
 		return result;
@@ -148,20 +150,20 @@ public class RCAnnualHolidayManagementImpl implements RCAnnualHolidayManagement 
 	 */
 
 	@Override
-	public Optional<AttendRateAtNextHoliday> getDaysPerYear(String companyId, String employeeId) {
+	public Optional<AttendRateAtNextHoliday> getDaysPerYear(CompanyId companyId, EmployeeId employeeId) {
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
 		
 		AttendRateAtNextHoliday result = null;
 		
 		// 「年休社員基本情報」を取得
-		Optional<AnnualLeaveEmpBasicInfo> basicInfoOpt = this.annLeaEmpBasicInfoRepository.get(employeeId);
+		Optional<AnnualLeaveEmpBasicInfo> basicInfoOpt = this.annLeaEmpBasicInfoRepository.get(employeeId.v());
 		if (!basicInfoOpt.isPresent()) return Optional.empty();
 		AnnualLeaveEmpBasicInfo basicInfo = basicInfoOpt.get();
 		
 		// 次回年休付与を計算
 		List<NextAnnualLeaveGrant> nextAnnLeaGrantList = CalcNextAnnualLeaveGrantDate.algorithm(require, cacheCarrier,
-				companyId, employeeId, Optional.empty(),
+				companyId.v(), employeeId.v(), Optional.empty(),
 				Optional.empty(), basicInfoOpt, Optional.empty(), Optional.empty());
 		
 		// List先頭の次回年休付与を出力用クラスにセット
@@ -170,7 +172,7 @@ public class RCAnnualHolidayManagementImpl implements RCAnnualHolidayManagement 
 
 		// 年休出勤率を計算する
 		Optional<CalYearOffWorkAttendRate> attendanceRateOpt = CalcAnnLeaAttendanceRate.algorithm(require, cacheCarrier,
-				companyId, employeeId, nextAnnualLeaveGrant.getGrantDate(), Optional.empty());
+				companyId.v(), employeeId.v(), nextAnnualLeaveGrant.getGrantDate(), Optional.empty());
 		Double attendanceRate = 0.0;
 		Double attendanceDays = 0.0;
 		Double predeterminedDays = 0.0;
