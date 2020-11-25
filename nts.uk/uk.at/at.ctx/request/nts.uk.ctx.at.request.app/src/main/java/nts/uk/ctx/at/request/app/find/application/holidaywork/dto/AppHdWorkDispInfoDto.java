@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.app.find.application.holidaywork.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -47,7 +48,7 @@ public class AppHdWorkDispInfoDto {
 	/**
 	 * 休出時間枠
 	 */
-	private WorkdayoffFrameDto workdayoffFrame;
+	private List<WorkdayoffFrameDto> workdayoffFrameList;
 	
 	/**
 	 * 休出申請設定
@@ -67,7 +68,7 @@ public class AppHdWorkDispInfoDto {
 	/**
 	 * 残業時間枠
 	 */
-	private OvertimeWorkFrameDto overtimeFrame;
+	private List<OvertimeWorkFrameDto> overtimeFrameList;
 	
 	/**
 	 * 申請用時間外労働時間
@@ -93,11 +94,17 @@ public class AppHdWorkDispInfoDto {
 		if(domain == null) return null;
 		return new AppHdWorkDispInfoDto(domain.getDispFlexTime().equals(NotUseAtr.USE), 
 				domain.isUseInputDivergenceReason(), domain.isUseComboDivergenceReason(), 
-				WorkdayoffFrameDto.fromDomain(domain.getWorkdayoffFrame()), 
+				domain.getWorkdayoffFrameList()
+					.stream()
+					.map(workdayoffFrame -> WorkdayoffFrameDto.fromDomain(workdayoffFrame))
+					.collect(Collectors.toList()), 
 				HolidayWorkAppSetDto.fromDomain(domain.getHolidayWorkAppSet()), 
 				HdWorkDispInfoWithDateDto.fromDomain(domain.getHdWorkDispInfoWithDateOutput()), 
 				AppReflectOtHdWorkDto.fromDomain(domain.getHdWorkOvertimeReflect()), 
-				domain.getOvertimeFrame() != null ? OvertimeWorkFrameDto.fromDomain(domain.getOvertimeFrame()) : null, 
+				domain.getOvertimeFrameList()
+					.stream()
+					.map(overtimeFrame -> OvertimeWorkFrameDto.fromDomain(overtimeFrame))
+					.collect(Collectors.toList()), 
 				domain.getOtWorkHoursForApplication() != null ? AgreeOverTimeDto.fromDomain(domain.getOtWorkHoursForApplication()) : null, 
 				AppDispInfoStartupDto.fromDomain(domain.getAppDispInfoStartupOutput()), 
 				domain.getComboDivergenceReason().isPresent() ? DivergenceReasonSelectDto.fromDomain(domain.getComboDivergenceReason().get()) : null, 

@@ -50,7 +50,7 @@ public class AppHdWorkDispInfoOutput {
 	/**
 	 * 休出時間枠
 	 */
-	private WorkdayoffFrame workdayoffFrame;
+	private List<WorkdayoffFrame> workdayoffFrameList;
 	
 	/**
 	 * 休出申請設定
@@ -70,7 +70,7 @@ public class AppHdWorkDispInfoOutput {
 	/**
 	 * 残業時間枠
 	 */
-	private OvertimeWorkFrame overtimeFrame;
+	private List<OvertimeWorkFrame> overtimeFrameList;
 	
 	/**
 	 * 申請用時間外労働時間

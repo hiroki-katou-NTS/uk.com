@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.request.app.command.application.holidaywork;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -54,12 +56,12 @@ public class AppHolidayWorkCmd {
 	/**
 	 * 休憩時間帯
 	 */
-	private TimeZoneWithWorkNoCommand breakTime;
+	private List<TimeZoneWithWorkNoCommand> breakTimeList;
 	
 	/**
 	 * 勤務時間帯
 	 */
-	private TimeZoneWithWorkNoCommand workingTime;
+	private List<TimeZoneWithWorkNoCommand> workingTimeList;
 	
 	/**
 	 * 時間外時間の詳細
@@ -69,13 +71,13 @@ public class AppHolidayWorkCmd {
 	public ApplicationDto application;
 	
 	public AppHolidayWorkCmd(WorkInformationCommand workInformation, ApplicationTimeCommand applicationTime, boolean backHomeAtr, boolean goWorkAtr, 
-			TimeZoneWithWorkNoCommand breakTime, TimeZoneWithWorkNoCommand workingTime, AppOvertimeDetailCommand appOvertimeDetail) {
+			List<TimeZoneWithWorkNoCommand> breakTime, List<TimeZoneWithWorkNoCommand> workingTime, AppOvertimeDetailCommand appOvertimeDetail) {
 		this.workInformation = workInformation;
 		this.applicationTime = applicationTime;
 		this.backHomeAtr = backHomeAtr;
 		this.goWorkAtr = goWorkAtr;
-		this.breakTime = breakTime;
-		this.workingTime = workingTime;
+		this.breakTimeList = breakTime;
+		this.workingTimeList = workingTime;
 		this.appOvertimeDetail = appOvertimeDetail;
 	}
 	
@@ -86,7 +88,8 @@ public class AppHolidayWorkCmd {
 	public AppHolidayWork toDomain() {
 		return new AppHolidayWork(this.workInformation.toDomain(), this.applicationTime.toDomain(), 
 				this.backHomeAtr ? NotUseAtr.USE : NotUseAtr.NOT_USE, this.goWorkAtr ? NotUseAtr.USE : NotUseAtr.NOT_USE, 
-				Optional.ofNullable(this.breakTime.toDomain()), Optional.ofNullable(this.workingTime.toDomain()), 
+				Optional.ofNullable(this.breakTimeList.stream().map(breakTime -> breakTime.toDomain()).collect(Collectors.toList())), 
+				Optional.ofNullable(this.workingTimeList.stream().map(workingTime -> workingTime.toDomain()).collect(Collectors.toList())), 
 				Optional.ofNullable(this.appOvertimeDetail.toDomain(AppContexts.user().companyId(), application.getAppID())));
 	}
 }

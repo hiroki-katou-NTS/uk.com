@@ -1,12 +1,14 @@
 package nts.uk.ctx.at.request.app.find.application.holidaywork.dto;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.AppOvertimeDetailDto;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CheckBeforeOutput;
 
 /**
  * Refactor5
@@ -24,9 +26,8 @@ public class CheckBeforeOutputDto {
 	//	時間外時間の詳細
 	private AppOvertimeDetailDto appOverTimeDetail;
 	
-	public static CheckBeforeOutputDto fromDomain() {
-		//CheckBeforeOutput domain
-		//huytodo 
-		return null;
+	public static CheckBeforeOutputDto fromDomain(CheckBeforeOutput domain) {
+		return new CheckBeforeOutputDto(domain.getConfirmMsgOutputs(), 
+				AppOvertimeDetailDto.fromDomain(Optional.ofNullable(domain.getAppOvertimeDetail())));
 	}
 }

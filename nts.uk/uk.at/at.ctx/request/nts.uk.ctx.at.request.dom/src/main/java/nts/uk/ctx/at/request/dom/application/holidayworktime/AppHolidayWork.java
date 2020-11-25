@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.holidayworktime;
 
+import java.util.List;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
@@ -48,12 +49,12 @@ public class AppHolidayWork extends Application{
 	/**
 	 * 休憩時間帯
 	 */
-	private Optional<TimeZoneWithWorkNo> breakTime = Optional.empty();
+	private Optional<List<TimeZoneWithWorkNo>> breakTimeList = Optional.empty();
 	
 	/**
 	 * 勤務時間帯
 	 */
-	private Optional<TimeZoneWithWorkNo> workingTime = Optional.empty();
+	private Optional<List<TimeZoneWithWorkNo>> workingTimeList = Optional.empty();
 	
 	/**
 	 * 時間外時間の詳細

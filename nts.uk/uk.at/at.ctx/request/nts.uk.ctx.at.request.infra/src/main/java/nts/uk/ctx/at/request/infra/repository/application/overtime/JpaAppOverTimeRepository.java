@@ -232,6 +232,7 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 					time36AgreeUpperLimit.getAgreeUpperLimitMonth().getUpperLimitTime().v(),
 					time36AgreeUpperLimit.getAgreeUpperLimitAverage().getUpperLimitTime().v(),
 					null,
+					null,
 					KrqdtAppOverTimeDetMs
 					);
 			krqdtAppOverTime.appOvertimeDetail = krqdtAppOvertimeDetail;

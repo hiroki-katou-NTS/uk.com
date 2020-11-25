@@ -28,6 +28,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeUpperLim
 import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeUpperLimitAverage;
 import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeUpperLimitMonth;
 import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeUpperLimitPerMonth;
+import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtAppHolidayWork;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
@@ -96,6 +97,11 @@ public class KrqdtAppOvertimeDetail extends ContractUkJpaEntity implements Seria
 	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
 			@PrimaryKeyJoinColumn(name = "APP_ID", referencedColumnName = "APP_ID") })
 	public KrqdtAppOverTime appOvertime;
+	
+	@OneToOne
+	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
+			@PrimaryKeyJoinColumn(name = "APP_ID", referencedColumnName = "APP_ID") })
+	public KrqdtAppHolidayWork appHolidayWork;
 	
 	
 	@OneToMany(targetEntity = KrqdtAppOverTimeDetM.class, mappedBy = "appOvertimeDetail", cascade = CascadeType.ALL, orphanRemoval = true)

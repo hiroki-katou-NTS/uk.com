@@ -15,6 +15,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.CheckBeforeRegisterHolidayWork;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.CreateHolidayWorkCommand;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.CreateHolidayWorkCommandHandler;
+import nts.uk.ctx.at.request.app.command.application.holidaywork.RegisterCommand;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.UpdateHolidayWorkCommand;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.UpdateHolidayWorkCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.AppHolidayWorkFinder;
@@ -29,7 +30,6 @@ import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamCalculati
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamCheckBeforeRegister;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamHolidayWorkChangeDate;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamHolidayWorkChangeWork;
-import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamRegister;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHolidayWorkParamPC;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.CheckBeforeOutputDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.RecordWorkParamHoliday;
@@ -75,12 +75,12 @@ public class HolidayWorkWebService extends WebService{
 	@POST
 	@Path("checkBeforeRegister")
 	public CheckBeforeOutputDto checkBeforeRegister(ParamCheckBeforeRegister param) {
-		return null;
+		return appHolidayWorkFinder.checkBeforeRegister(param);
 	}
 	
 	@POST
 	@Path("register")
-	public void register(ParamRegister param) {
+	public void register(RegisterCommand param) {
 		
 	}
 	

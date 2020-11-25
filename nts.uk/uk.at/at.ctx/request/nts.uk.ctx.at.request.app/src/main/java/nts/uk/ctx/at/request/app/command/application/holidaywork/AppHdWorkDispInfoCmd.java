@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.app.command.application.holidaywork;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -50,7 +51,7 @@ public class AppHdWorkDispInfoCmd {
 	/**
 	 * 休出時間枠
 	 */
-	private WorkdayoffFrameCommand workdayoffFrame;
+	private List<WorkdayoffFrameCommand> workdayoffFrameList;
 	
 	/**
 	 * 休出申請設定
@@ -70,7 +71,7 @@ public class AppHdWorkDispInfoCmd {
 	/**
 	 * 残業時間枠
 	 */
-	private OvertimeWorkFrameCommand overtimeFrame;
+	private List<OvertimeWorkFrameCommand> overtimeFrameList;
 	
 	/**
 	 * 申請用時間外労働時間
@@ -97,9 +98,12 @@ public class AppHdWorkDispInfoCmd {
 		
 		return new AppHdWorkDispInfoOutput(this.dispFlexTime ? NotUseAtr.USE : NotUseAtr.NOT_USE, 
 				this.useInputDivergenceReason, this.useComboDivergenceReason, 
-				this.workdayoffFrame.toDomain(), this.holidayWorkAppSet.toDomain(companyId), 
+				this.workdayoffFrameList.stream().map(workdayoffFrame -> workdayoffFrame.toDomain()).collect(Collectors.toList()), 
+				this.holidayWorkAppSet.toDomain(companyId), 
 				this.hdWorkDispInfoWithDate.toDomain(), 
-				this.hdWorkOvertimeReflect.toDomain(), this.overtimeFrame.toDomain(), this.otWorkHoursForApplication.toDomain(), 
+				this.hdWorkOvertimeReflect.toDomain(), 
+				this.overtimeFrameList.stream().map(overtimeFrame -> overtimeFrame.toDomain()).collect(Collectors.toList()), 
+				this.otWorkHoursForApplication.toDomain(), 
 				this.appDispInfoStartup.toDomain(), Optional.of(this.comboDivergenceReason.toDomain()), 
 				Optional.of(this.calculationResult.toDomain()));
 	}
