@@ -487,11 +487,16 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 	}
 
 	@Override
-	public InitWkTypeWkTimeOutput initWorkTypeWorkTime(String employeeID, GeneralDate date, List<WorkType> workTypeLst,
-			List<WorkTimeSetting> workTimeLst, AchievementDetail achievementDetail) {
+	public InitWkTypeWkTimeOutput initWorkTypeWorkTime(
+			String employeeID,
+			GeneralDate date,
+			GeneralDate inputDate,
+			List<WorkType> workTypeLst,
+			List<WorkTimeSetting> workTimeLst,
+			AchievementDetail achievementDetail) {
 		String companyID = AppContexts.user().companyId();
 		// 申請日付チェック
-		if(date != null && achievementDetail != null) {
+		if(inputDate != null && achievementDetail != null) {
 			// INPUT．「実績詳細」をチェックする
 			if(Strings.isNotBlank(achievementDetail.getWorkTypeCD()) 
 					&& Strings.isNotBlank(achievementDetail.getWorkTimeCD())

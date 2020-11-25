@@ -7,6 +7,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -77,7 +78,7 @@ public class ApplicationDetailSetting {
 			ApplicationType appType,
 			PrePostAtr prePostAtr,
 			Optional<AppOverTime> overTime,
-			Optional<AppOverTime> holiday
+			Optional<AppHolidayWork> holiday
 			) {
 		// INPUT．「事前事後区分」を確認する
 		if (prePostAtr == PrePostAtr.PREDICT) return;

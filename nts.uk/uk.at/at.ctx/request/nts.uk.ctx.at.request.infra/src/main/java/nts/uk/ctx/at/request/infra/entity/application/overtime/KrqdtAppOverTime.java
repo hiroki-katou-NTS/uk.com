@@ -304,7 +304,9 @@ public class KrqdtAppOverTime extends ContractUkJpaEntity implements Serializabl
 				holidayMidNightTime.setLegalClf(StaturoryAtrOfHolidayWork.PublicHolidayWork);
 				midNightHolidayTimes.add(holidayMidNightTime);
 			}
+			overTimeShiftNight.setMidNightHolidayTimes(midNightHolidayTimes);
 			applicationTime.setOverTimeShiftNight(Optional.of(overTimeShiftNight));
+		
 			
 		}
 		
@@ -392,6 +394,7 @@ public class KrqdtAppOverTime extends ContractUkJpaEntity implements Serializabl
 																			  .map(x -> x.toDomain())
 																			  .collect(Collectors.toList()));
 		}
+		appOverTime.setApplicationTime(applicationTime);
 		
 		return appOverTime;
 	}
