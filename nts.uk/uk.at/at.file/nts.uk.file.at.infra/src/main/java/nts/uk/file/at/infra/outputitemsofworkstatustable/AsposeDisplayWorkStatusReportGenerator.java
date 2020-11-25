@@ -109,6 +109,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
 
     public void printData(Worksheet worksheet, OutPutWorkStatusContent content) throws Exception {
         Cells cells = worksheet.getCells();
+        HorizontalPageBreakCollection pageBreaks = worksheet.getHorizontalPageBreaks();
         int pages = 1;
         int countRow = 3;
         int countItem = 3;
@@ -119,21 +120,20 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
         int maxColumn = cells.getMaxColumn();
         val listDate = content.getPeriod().datesBetween();
         for (int q = 0; q < content.getExcelDtoList().size(); q++) {
-            // Check and break page
-            if (content.isPageBreak()) {
-                val check = checkAndBreakPage(worksheet, countItem, pages);
-                if (check != null) {
-                    countRow = check.getCount();
-                    if (check.isBreak()) {
-                        pages += 1;
-                        cells.copyRows(cells, 0, countRow, 3);
-                        countRow += 3;
-                        countItem = 3;
-                    }
-                }
-            }
             // Get data
             val dataSource = content.getExcelDtoList().get(q);
+            // Check and break page
+            if (content.isPageBreak()) {
+                if (q != 0) {
+                    pageBreaks.add(countRow);
+                    pages++;
+                   // countRow = MAX_EMP_IN_PAGE * q;
+                    cells.copyRows(cells, 0, countRow, 3);
+                    countRow += 3;
+                    countItem = 3;
+                }
+            }
+
             cells.copyRow(cells, 3, countRow);
             cells.clearContents(CellArea.createCellArea(countRow, 0, countRow, maxColumn));
             cells.merge(countRow, 0, 1, maxColumnData, true, true);
@@ -148,7 +148,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
                 if (content.isPageBreak()) {
                     val check = checkAndBreakPage(worksheet, countItem, pages);
                     if (check != null) {
-                        countRow = check.getCount();
+                        //countRow = check.getCount();
                         if (check.isBreak()) {
                             pages += 1;
                             cells.copyRows(cells, 0, countRow, 3);
@@ -165,8 +165,27 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
                     }
                 }
                 val detail = data.get(i);
+                val checkCountRow = detail.getOutputItemOneLines().size() - (MAX_EMP_IN_PAGE - countItem);
                 val code = detail.getEmployeeCode();
                 val name = detail.getEmployeeName();
+                if (checkCountRow > 0) {
+                    pageBreaks.add(countRow);
+                    pages++;
+                    //countRow += MAX_EMP_IN_PAGE - countItem;
+                    pages += 1;
+                    cells.copyRows(cells, 0, countRow, 3);
+                    countRow += 3;
+                    countItem = 3;
+                    cells.copyRow(cells, 3, countRow);
+                    cells.clearContents(CellArea.createCellArea(countRow, 0, countRow, maxColumn));
+                    cells.merge(countRow, 0, 1, maxColumnData, true, true);
+                    cells.get(countRow, 0).getStyle().setVerticalAlignment(TextAlignmentType.LEFT);
+                    cells.get(countRow, 0).setValue("★ " + TextResource.localize("KWR003_404") + dataSource.getWorkPlaceCode() + "  " + dataSource.getWorkPlaceName());
+                    countRow++;
+                    countItem++;
+
+                }
+
                 cells.copyRow(cells, 4, countRow);
                 cells.clearContents(CellArea.createCellArea(countRow, 0,
                         countRow, maxColumn));
