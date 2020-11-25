@@ -21,6 +21,7 @@ module nts.uk.at.view.kmk004.f {
         public valueInsurrance: KnockoutObservable<string> = ko.observable('1');
         public valueSurcharges: KnockoutObservable<string> = ko.observable('1');
         public checkCompany: KnockoutObservable<boolean> = ko.observable(true);
+        public attendance: KnockoutObservable<boolean> = ko.observable(false);
 
         public model: Model = new Model();
         public input: Input = new Input();
@@ -98,8 +99,8 @@ interface IWorkingTimeSetting {
 }
 
 class WorkingTimeSetting {
-    dailyTime: KnockoutObservable<number> = ko.observable(0);
-    weeklyTime: KnockoutObservable<number> = ko.observable(0);
+    dailyTime: KnockoutObservable<number> = ko.observable(480);
+    weeklyTime: KnockoutObservable<number> = ko.observable(2400);
 
     constructor(params?: IWorkingTimeSetting) {
         const md = this;
