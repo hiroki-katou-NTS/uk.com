@@ -1,6 +1,5 @@
-
-.image-preview-container, .image-editor-component {
-  margin-right: 10px;
+.image-preview-container,
+.image-editor-component {
   margin-left: 10px;
 }
 .crop-icon {
@@ -12,6 +11,11 @@
 .cropper-view-box {
   border-radius: 50% !important;
   outline: 0 !important;
+}
+
+.image-preview-container {
+  position: absolute !important;
+  bottom: auto;
 }
 
 .cropper-view-box {
@@ -39,7 +43,6 @@
   padding-top: 10px;
 }
 
-#upload{
+#upload {
   padding-top: 10px;
 }
-

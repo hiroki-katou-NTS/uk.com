@@ -72,7 +72,7 @@ module nts.uk.com.view.ccg020.a {
       vm.addSearchBar();
       vm.getListMenu();
       vm.isDisplayWarning();
-      // vm.isDisplayNewNoticeFunc();
+      vm.isDisplayNewNoticeFunc();
       vm.$nextTick(() => vm.getAvatar());
       $('#radio-search-category').on('click', () => {
         vm.searchPlaceholder(vm.searchCategory() === 0 ? vm.$i18n('CCG002_7') : vm.$i18n('CCG002_6'));
@@ -111,7 +111,7 @@ module nts.uk.com.view.ccg020.a {
     }
 
     private addEventClickWarningBtn() {
-      nts.uk.ui.dialog.info(__viewContext.program.operationSetting.message);
+      nts.uk.ui.dialog.alertError(__viewContext.program.operationSetting.message);
     }
 
     /* Screen CCG002 */
