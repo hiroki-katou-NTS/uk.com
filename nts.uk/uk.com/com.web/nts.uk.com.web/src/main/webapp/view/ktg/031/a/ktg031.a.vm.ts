@@ -3,9 +3,9 @@
 module nts.uk.com.view.ktg031.a {
 
   const API = {
-    findBySystem: "sys/portal/pginfomation/findBySystem",
-    updateLogSetting: "sys/portal/logsettings/update",
-    // ...
+    findAlarmData: "sys/portal/toppageAlarm/findAlarmData",
+    changeToRead: 'sys/portal/toppageAlarm/changeAlarmToReaded',
+    changeToUnread: 'sys/portal/toppageAlarm/changeAlarmToUnread',
   }
 
   @component({
@@ -44,13 +44,13 @@ module nts.uk.com.view.ktg031.a {
                     <span data-bind="text: $component.$i18n('KTG031_13')"></span>
                   </td>
                   <td>
-                    <span class="limited-label" data-bind="text: message"></span>
+                    <span class="limited-label" data-bind="text: displayMessage"></span>
                   </td>
                   <td class="column-action">
                     <div data-bind="ntsCheckBox: { checked: isReaded }"></div>
                   </td>
                   <td class="column-action">
-                    <i class="img-icon" data-bind="ntsIcon: {no: 178, width: 20, height: 20}, click: function() { $component.openUrl(url); }"></i>
+                    <i class="img-icon" data-bind="ntsIcon: {no: 178, width: 20, height: 20}, click: function() { $component.openUrl(linkUrl); }"></i>
                   </td>
                 </tr>
               </tbody>
@@ -129,74 +129,69 @@ module nts.uk.com.view.ktg031.a {
   })
   export class Ktg031ComponentViewModel extends ko.ViewModel {
     isEmployee: KnockoutObservable<boolean> = ko.observable(false);
-    selectedAlarmType: KnockoutObservable<number> = ko.observable(0);
+    selectedAlarmType: KnockoutObservable<number> = ko.observable(null);
     listAlarmType: KnockoutObservableArray<{ code: number, name: string }> = ko.observableArray([]);
-    listAlarm: KnockoutObservableArray<AlarmDto> = ko.observableArray();
+    listAlarm: KnockoutObservableArray<AlarmDisplayDataDto> = ko.observableArray();
     $grid: JQuery;
 
     created(params: any) {
       const vm = this;
       vm.listAlarmType([
-        { code: 0, name: vm.$i18n("未読のみ") },
-        { code: 1, name: vm.$i18n("全て表示") },
+        { code: 0, name: vm.$i18n('Enum_ToppageAlarmDisplay_UNREAD') },
+        { code: 1, name: vm.$i18n('Enum_ToppageAlarmDisplay_ALL') },
       ]);
-      vm.listAlarm([
-        new AlarmDto({
-          dateMonth: '7/21',
-          message: 'testtesttesttesttesttesttesttesttesttesttesttesttesttesttest',
-          isReaded: true,
-          url: 'https://www.google.com.vn/'
-        }),
-        new AlarmDto({
-          dateMonth: '7/22',
-          message: 'testtesttesttesttesttesttesttesttesttesttesttesttesttesttest',
-          isReaded: false,
-          url: 'https://www.google.com.vn/'
-        }),
-        new AlarmDto({
-          dateMonth: '7/21',
-          message: 'testtesttesttesttesttesttesttesttesttesttesttesttesttesttest',
-          isReaded: true,
-          url: 'https://www.google.com.vn/'
-        }),
-        new AlarmDto({
-          dateMonth: '7/22',
-          message: 'testtesttesttesttesttesttesttesttesttesttesttesttesttesttest',
-          isReaded: false,
-          url: 'https://www.google.com.vn/'
-        }),
-        new AlarmDto({
-          dateMonth: '7/21',
-          message: 'testtesttesttesttesttesttesttesttesttesttesttesttesttesttest',
-          isReaded: true,
-          url: 'https://www.google.com.vn/'
-        }),
-        new AlarmDto({
-          dateMonth: '7/22',
-          message: 'testtesttesttesttesttesttesttesttesttesttesttesttesttesttest',
-          isReaded: false,
-          url: 'https://www.google.com.vn/'
-        }),
-        new AlarmDto({
-          dateMonth: '7/21',
-          message: 'testtesttesttesttesttesttesttesttesttesttesttesttesttesttest',
-          isReaded: true,
-          url: 'https://www.google.com.vn/'
-        }),
-        new AlarmDto({
-          dateMonth: '7/22',
-          message: 'testtesttesttesttesttesttesttesttesttesttesttesttesttesttest',
-          isReaded: false,
-          url: 'https://www.google.com.vn/'
-        }),
-      ]);
+      vm.selectedAlarmType.subscribe(value => vm.loadAlarmData(value));
+      vm.selectedAlarmType(0);
     }
 
-    mounted() {
+    loadAlarmData(displayType: number) {
       const vm = this;
-      vm.$grid = $('#ktg031-grid');
-      $("#ktg031-grid tr:nth-child(even)").addClass("even");
-      $("#ktg031-grid tr:nth-child(odd)").addClass("odd");
+      vm.$blockui('grayout');
+      vm.$ajax(`${API.findAlarmData}/${displayType}`)
+        .then((res: any[]) => {
+          vm.listAlarm(_.map(res, (item) => new AlarmDisplayDataDto(item)));
+          // Render row backgournd color
+          vm.$nextTick(() => {
+            vm.$grid = $('#ktg031-grid');
+            $("#ktg031-grid tr:nth-child(even)").addClass("even");
+            $("#ktg031-grid tr:nth-child(odd)").addClass("odd");
+          });
+        })
+        .always(() => vm.$blockui('clear'));
+    }
+
+    changeToRead(companyId: string, sId: string, displayAtr: number, alarmClassification: number, identificationKey: string) {
+      const vm = this;
+      const command = new ToppageAlarmDataReadCommand({
+        companyId: companyId,
+        sId: sId,
+        displayAtr: displayAtr,
+        alarmClassification: alarmClassification,
+        identificationKey: identificationKey,
+      });
+      vm.$blockui('grayout');
+      vm.$ajax(API.changeToRead, command)
+        .then((res) => {
+          console.log(res);
+        })
+        .always(() => vm.$blockui('clear'));
+    }
+
+    changeToUnread(companyId: string, sId: string, displayAtr: number, alarmClassification: number, identificationKey: string) {
+      const vm = this;
+      const command = new ToppageAlarmDataUnreadCommand({
+        companyId: companyId,
+        sId: sId,
+        displayAtr: displayAtr,
+        alarmClassification: alarmClassification,
+        identificationKey: identificationKey,
+      });
+      vm.$blockui('grayout');
+      vm.$ajax(API.changeToUnread, command)
+        .then((res) => {
+          console.log(res);
+        })
+        .always(() => vm.$blockui('clear'));
     }
 
     openDialogSetting() {
@@ -205,20 +200,60 @@ module nts.uk.com.view.ktg031.a {
     }
 
     openUrl(url: string) {
-      // TODO
-      console.log(url);
+      if (url) {
+        window.open(url, "_blank");
+      }
     }
 
   }
 
-  class AlarmDto {
-    id: string;
+  class AlarmDisplayDataDto {
+    alarmClassification: number;
+    occurrenceDateTime: string;
+    displayMessage: string;
+    companyId: string;
+    sId: string;
+    displayAtr: number;
+    identificationKey: string;
+    linkUrl: string;
+    alreadyDatetime: string;
+    // Client info
     dateMonth: string;
-    message: string;
     isReaded: boolean;
-    url: string;
 
-    constructor(init?: Partial<AlarmDto>) {
+    constructor(init?: Partial<AlarmDisplayDataDto>) {
+      $.extend(this, init);
+      const occurrenceDateTime = moment.utc(this.occurrenceDateTime);
+      this.dateMonth = occurrenceDateTime.format('MM/DD');
+      let isReaded = false;
+      if (this.alreadyDatetime) {
+        const alreadyDatetime = moment.utc(this.alreadyDatetime);
+        isReaded = occurrenceDateTime.isBefore(alreadyDatetime);
+      }
+      this.isReaded = isReaded;
+    }
+  }
+
+  class ToppageAlarmDataReadCommand {
+    companyId: string;
+    sId: string;
+    displayAtr: number;
+    alarmClassification: number;
+    identificationKey: string;
+
+    constructor(init?: Partial<ToppageAlarmDataReadCommand>) {
+      $.extend(this, init);
+    }
+  }
+
+  class ToppageAlarmDataUnreadCommand {
+    companyId: string;
+    sId: string;
+    displayAtr: number;
+    alarmClassification: number;
+    identificationKey: string;
+
+    constructor(init?: Partial<ToppageAlarmDataUnreadCommand>) {
       $.extend(this, init);
     }
   }

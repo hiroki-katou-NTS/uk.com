@@ -1,10 +1,12 @@
 package nts.uk.ctx.sys.portal.infra.repository.toppagealarm;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.AlarmClassification;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.DisplayAtr;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.ToppageAlarmLog;
@@ -21,6 +23,11 @@ public class JpaToppageAlarmLogRepository extends JpaRepository implements Toppa
 			+ " AND m.pk.idenKey = :idenKey"
 			+ " AND m.pk.dispSid = :dispSid"
 			+ " AND m.pk.dispAtr = :dispAtr";
+	// Select all
+	private static final String QUERY_SELECT_BY_EMPLOYEE = QUERY_SELECT_ALL
+			+ " WHERE m.pk.cId = :cId"
+			+ " AND m.pk.dispSid = :sId"
+			+ " AND (m.alreadyDatetime = NULL OR m.alreadyDatetime >= :afterDateTime)";
 	
 	@Override
 	public void insert(String contractCd, ToppageAlarmLog domain) {
@@ -51,6 +58,16 @@ public class JpaToppageAlarmLogRepository extends JpaRepository implements Toppa
 				.setParameter("dispSid", sId)
 				.setParameter("dispAtr", String.valueOf(dispAtr.value))
 				.getSingle(SptdtToppageKidoku::toDomain);
+	}
+
+	@Override
+	public List<ToppageAlarmLog> getByEmployee(String companyId, String sId, GeneralDateTime afterDateTime) {
+		return this.queryProxy()
+				.query(QUERY_SELECT_BY_EMPLOYEE, SptdtToppageKidoku.class)
+				.setParameter("cId", companyId)
+				.setParameter("sId", sId)
+				.setParameter("afterDateTime", afterDateTime)
+				.getList(SptdtToppageKidoku::toDomain);
 	}
 
 }

@@ -16,9 +16,11 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.sys.portal.dom.placement.externalurl.Url;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.AlarmClassification;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.DisplayAtr;
+import nts.uk.ctx.sys.portal.dom.toppagealarm.DisplayMessage;
+import nts.uk.ctx.sys.portal.dom.toppagealarm.IdentificationKey;
+import nts.uk.ctx.sys.portal.dom.toppagealarm.LinkURL;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.ToppageAlarmData;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -64,14 +66,12 @@ public class SptdtToppageAlarm extends UkJpaEntity implements Serializable {
 		return ToppageAlarmData.builder()
 				.cid(this.pk.cId)
 				.alarmClassification(AlarmClassification.valueOf(Integer.parseInt(this.pk.alarmCls)))
-				// TODO
-				.identificationKey(this.pk.idenKey)
+				.identificationKey(new IdentificationKey(this.pk.idenKey))
 				.displaySId(this.pk.dispSid)
 				.displayAtr(DisplayAtr.valueOf(Integer.parseInt(this.pk.dispAtr)))
 				.occurrenceDateTime(this.crtDatetime)
-				.displayMessage(this.messege)
-//				.targetEmployeeId(this.pk.)
-				.linkUrl(Optional.ofNullable(this.linkUrl).map(Url::new))
+				.displayMessage(new DisplayMessage(this.messege))
+				.linkUrl(Optional.ofNullable(this.linkUrl).map(LinkURL::new))
 				.build();
 	}
 	
@@ -80,14 +80,14 @@ public class SptdtToppageAlarm extends UkJpaEntity implements Serializable {
 				.pk(SptdtToppageAlarmPK.builder()
 						.cId(domain.getCid())
 						.alarmCls(String.valueOf(domain.getAlarmClassification().value))
-						.idenKey(domain.getIdentificationKey())
+						.idenKey(domain.getIdentificationKey().v())
 						.dispSid(domain.getDisplaySId())
 						.dispAtr(String.valueOf(domain.getDisplayAtr().value))
 						.build())
 				.contractCd(contractCd)
 				.crtDatetime(domain.getOccurrenceDateTime())
-				.messege(domain.getDisplayMessage())
-				.linkUrl(domain.getLinkUrl().map(Url::v).orElse(null))
+				.messege(domain.getDisplayMessage().v())
+				.linkUrl(domain.getLinkUrl().map(LinkURL::v).orElse(null))
 				.build();
 	}
 

@@ -79,10 +79,21 @@
                     </com:ko>
                   </div>
                   <div class="iframe-wrap">
-                    <com:ko tag="if" bind="isKTG031()">
-                      <ktg031-component></ktg031-component>
+                    <com:ko tag="if" bind="isComponent()">
+                      <com:ko tag="if" bind="isKTG026()">
+                        <ktg026-component></ktg026-component>
+                      </com:ko>
+                      <com:ko tag="if" bind="isKTG027()">
+                        <ktg027-component></ktg027-component>
+                      </com:ko>
+                      <com:ko tag="if" bind="isKTG031()">
+                        <ktg031-component></ktg031-component>
+                      </com:ko>
+                      <com:ko tag="if" bind="isCCG005()">
+                        <ccg005-component></ccg005-component>
+                      </com:ko>
                     </com:ko>
-                    <com:ko tag="ifnot" bind="isKTG031()">
+                    <com:ko tag="ifnot" bind="isComponent()">
                       <iframe class="widget-frame" data-bind="attr:{ src: url }" />
                     </com:ko>
                   </div>

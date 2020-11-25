@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NonNull;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.sys.portal.dom.placement.externalurl.Url;
 
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.ポータル.トップページアラーム（ver4～）.トップページアラーム
@@ -34,10 +33,8 @@ public class ToppageAlarmData extends AggregateRoot {
 	/**
 	 * 識別キー
 	 */
-//	private IdentificationKey identificationKey;
-	// TODO
 	@NonNull
-	private String identificationKey;
+	private IdentificationKey identificationKey;
 	
 	/**
 	 * 表示社員ID
@@ -65,22 +62,14 @@ public class ToppageAlarmData extends AggregateRoot {
 	/**
 	 * 表示メッセージ
 	 */
-//	private DisplayMessage displayMessage;
-	// TODO
 	@NonNull
-	private String displayMessage;
-	
-	/**
-	 * 対象社員ID
-	 */
-	@NonNull
-	private String targetEmployeeId;
+	private DisplayMessage displayMessage;
 
 	/**
 	 * リンクURL
 	 */
 	@NonNull
-	private Optional<Url> linkUrl;
+	private Optional<LinkURL> linkUrl;
 	
 	@SuppressWarnings("unused")
 	private ToppageAlarmData() {}

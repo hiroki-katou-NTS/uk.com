@@ -1,11 +1,14 @@
 package nts.uk.ctx.sys.portal.infra.repository.toppagealarm;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.sys.portal.dom.toppagealarm.AlarmClassification;
+import nts.uk.ctx.sys.portal.dom.toppagealarm.DisplayAtr;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.ToppageAlarmData;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.ToppageAlarmDataRepository;
 import nts.uk.ctx.sys.portal.infra.entity.toppagealarm.SptdtToppageAlarm;
@@ -14,6 +17,12 @@ import nts.uk.ctx.sys.portal.infra.entity.toppagealarm.SptdtToppageAlarm;
 public class JpaToppageAlarmDataRepository extends JpaRepository implements ToppageAlarmDataRepository {
 	// Select all
 	private static final String QUERY_SELECT_ALL = "SELECT m FROM SptdtToppageAlarm m";
+	private static final String QUERY_SELECT_ONE = QUERY_SELECT_ALL
+			+ " WHERE m.pk.cId = :cId"
+			+ " AND m.pk.alarmCls = :alarmCls"
+			+ " AND m.pk.idenKey = :idenKey"
+			+ " AND m.pk.dispSid = :dispSid"
+			+ " AND m.pk.dispAtr = :dispAtr";
 	// Select unread
 	private static final String QUERY_SELECT_UNREAD = QUERY_SELECT_ALL
 			+ " LEFT JOIN SptdtToppageKidoku h ON m.pk.cId = h.pk.cId"
@@ -23,7 +32,7 @@ public class JpaToppageAlarmDataRepository extends JpaRepository implements Topp
 			+ " AND m.pk.dispAtr = h.pk.dispAtr"
 			+ " WHERE m.pk.cId = :cId"
 			+ " AND m.pk.dispSid = :sId"
-			+ " AND m.crtDatetime >= :lastYear"
+			+ " AND m.crtDatetime >= :afterDateTime"
 			+ " AND (h.alreadyDatetime = NULL OR m.crtDatetime > h.alreadyDatetime)";
 	// Select unread + read
 	private static final String QUERY_SELECT_UNREAD_READ = QUERY_SELECT_ALL
@@ -34,7 +43,7 @@ public class JpaToppageAlarmDataRepository extends JpaRepository implements Topp
 			+ " AND m.pk.dispAtr = h.pk.dispAtr"
 			+ " WHERE m.pk.cId = :cId"
 			+ " AND m.pk.dispSid = :sId"
-			+ " AND m.crtDatetime >= :lastYear";
+			+ " AND m.crtDatetime >= :afterDateTime";
 	
 	@Override
 	public void insert(String contractCd, ToppageAlarmData domain) {
@@ -57,23 +66,35 @@ public class JpaToppageAlarmDataRepository extends JpaRepository implements Topp
 	}
 
 	@Override
-	public List<ToppageAlarmData> getUnread(String companyId, String sId) {
+	public Optional<ToppageAlarmData> get(String companyId, AlarmClassification alarmCls, String idenKey, String sId,
+			DisplayAtr dispAtr) {
+		return this.queryProxy()
+				.query(QUERY_SELECT_ONE, SptdtToppageAlarm.class)
+				.setParameter("cId", companyId)
+				.setParameter("alarmCls", String.valueOf(alarmCls.value))
+				.setParameter("idenKey", idenKey)
+				.setParameter("dispSid", sId)
+				.setParameter("dispAtr", String.valueOf(dispAtr.value))
+				.getSingle(SptdtToppageAlarm::toDomain);
+	}
+
+	@Override
+	public List<ToppageAlarmData> getUnread(String companyId, String sId, GeneralDateTime afterDateTime) {
 		return this.queryProxy()
 				.query(QUERY_SELECT_UNREAD, SptdtToppageAlarm.class)
 				.setParameter("cId", companyId)
 				.setParameter("sId", sId)
-				.setParameter("lastYear", GeneralDateTime.now().addYears(-1))
+				.setParameter("afterDateTime", afterDateTime)
 				.getList(SptdtToppageAlarm::toDomain);
 	}
 
 	@Override
-	public List<ToppageAlarmData> getAll(String companyId, String sId) {
+	public List<ToppageAlarmData> getAll(String companyId, String sId, GeneralDateTime afterDateTime) {
 		return this.queryProxy()
 				.query(QUERY_SELECT_UNREAD_READ, SptdtToppageAlarm.class)
 				.setParameter("cId", companyId)
 				.setParameter("sId", sId)
-				.setParameter("lastYear", GeneralDateTime.now().addYears(-1))
+				.setParameter("afterDateTime", afterDateTime)
 				.getList(SptdtToppageAlarm::toDomain);
 	}
-
 }

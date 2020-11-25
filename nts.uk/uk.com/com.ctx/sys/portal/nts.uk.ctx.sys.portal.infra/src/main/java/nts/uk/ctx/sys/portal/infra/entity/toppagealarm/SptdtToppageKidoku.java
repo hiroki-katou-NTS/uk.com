@@ -17,6 +17,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.AlarmClassification;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.DisplayAtr;
+import nts.uk.ctx.sys.portal.dom.toppagealarm.IdentificationKey;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.ToppageAlarmLog;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -35,7 +36,7 @@ public class SptdtToppageKidoku extends UkJpaEntity implements Serializable {
 	private long version;
 	
 	@EmbeddedId
-	private SptdtToppageAlarmPK pk;
+	private SptdtToppageKidokuPK pk;
 	
 	// column 契約コード
 	@Basic(optional = false)
@@ -55,8 +56,7 @@ public class SptdtToppageKidoku extends UkJpaEntity implements Serializable {
 		return ToppageAlarmLog.builder()
 				.cid(this.pk.cId)
 				.alarmClassification(AlarmClassification.valueOf(Integer.parseInt(this.pk.alarmCls)))
-				// TODO
-				.identificationKey(this.pk.idenKey)
+				.identificationKey(new IdentificationKey(this.pk.idenKey))
 				.displaySId(this.pk.dispSid)
 				.displayAtr(DisplayAtr.valueOf(Integer.parseInt(this.pk.dispAtr)))
 				.alreadyDatetime(this.alreadyDatetime)
@@ -65,10 +65,10 @@ public class SptdtToppageKidoku extends UkJpaEntity implements Serializable {
 	
 	public static SptdtToppageKidoku toEntity(String contractCd, ToppageAlarmLog domain) {
 		return SptdtToppageKidoku.builder()
-				.pk(SptdtToppageAlarmPK.builder()
+				.pk(SptdtToppageKidokuPK.builder()
 						.cId(domain.getCid())
 						.alarmCls(String.valueOf(domain.getAlarmClassification().value))
-						.idenKey(domain.getIdentificationKey())
+						.idenKey(domain.getIdentificationKey().v())
 						.dispSid(domain.getDisplaySId())
 						.dispAtr(String.valueOf(domain.getDisplayAtr().value))
 						.build())

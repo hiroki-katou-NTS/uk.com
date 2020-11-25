@@ -31,10 +31,8 @@ public class ToppageAlarmLog extends AggregateRoot {
 	/**
 	 * 識別キー
 	 */
-//	private IdentificationKey identificationKey;
-	// TODO
 	@NonNull
-	private String identificationKey;
+	private IdentificationKey identificationKey;
 	
 	/**
 	 * 表示社員ID
@@ -62,6 +60,11 @@ public class ToppageAlarmLog extends AggregateRoot {
 	 */
 	public void updateAlreadyDatetime() {
 		this.alreadyDatetime = GeneralDateTime.now();
+	}
+	
+	public void changeToUnread(GeneralDateTime occurrenceDateTime) {
+		GeneralDateTime unreadDateTime = occurrenceDateTime.addMinutes(-1);
+		this.alreadyDatetime = unreadDateTime;
 	}
 	
 }
