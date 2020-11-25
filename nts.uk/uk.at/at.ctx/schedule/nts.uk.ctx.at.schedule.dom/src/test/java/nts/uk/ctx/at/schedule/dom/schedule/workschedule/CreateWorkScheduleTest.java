@@ -312,7 +312,79 @@ public class CreateWorkScheduleTest {
 	
 	@SuppressWarnings("unchecked")
 	@Test
-	public <T> void testCreate_isNotNewRegister_hasError(
+	public <T> void testCreate_isNotNewRegister_workInfoNotSame_hasError(
+			@Injectable WorkInformation workInformation,
+			@Mocked WorkSchedule workSchedule,
+			@Mocked Builder builder) {
+		
+		new Expectations() {{
+			require.getWorkSchedule(anyString, (GeneralDate) any);
+			result = Optional.of(workSchedule);
+			
+			workSchedule.getWorkInfo().getRecordInfo().equals( (WorkInformation) any );
+			result = false;
+		}};
+		
+		new Expectations() {{
+			
+			// 勤怠項目31
+			workInformation.containsOnChangeableWorkingTime(require, ClockAreaAtr.START, new WorkNo(1), (TimeWithDayAttr) any);
+			times = 0; 
+			
+			// 勤怠項目34
+			workInformation.containsOnChangeableWorkingTime(require, ClockAreaAtr.END, new WorkNo(1), (TimeWithDayAttr) any);
+			result = new ContainsResult( true, new TimeSpanForCalc(new TimeWithDayAttr(1), new TimeWithDayAttr(2)));
+			
+			// 勤怠項目41
+			workInformation.containsOnChangeableWorkingTime(require, ClockAreaAtr.START, new WorkNo(2), (TimeWithDayAttr) any);
+			result = new ContainsResult( false, new TimeSpanForCalc(new TimeWithDayAttr(1), new TimeWithDayAttr(2)));
+			
+			// 勤怠項目44
+			workInformation.containsOnChangeableWorkingTime(require, ClockAreaAtr.END, new WorkNo(2), (TimeWithDayAttr) any);
+			result = new ContainsResult( false, new TimeSpanForCalc(new TimeWithDayAttr(1), new TimeWithDayAttr(2)));
+			
+			builder.build().buildMessage();
+			result = "msg";
+		}};
+		
+		Map<Integer, T> updateInfoMap = new HashMap<>();
+		// updateInfoMap.put(31, value)
+		updateInfoMap.put(34, (T) new TimeWithDayAttr(34));
+		updateInfoMap.put(41, (T) new TimeWithDayAttr(41));
+		updateInfoMap.put(44, (T) new TimeWithDayAttr(44));
+		
+		ResultOfRegisteringWorkSchedule result = CreateWorkSchedule.create(
+				require, 
+				"empId", 
+				GeneralDate.ymd(2020, 11, 1), 
+				workInformation, 
+				updateInfoMap);
+		
+		assertThat( result.getAtomTask() ).isEmpty();
+		assertThat( result.getErrorInfomation())
+			.extracting( 
+					e -> e.getEmployeeId(),
+					e -> e.getDate(),
+					e -> e.getAttendanceItemId(),
+					e -> e.getErrorMessage())
+			.containsExactly( 
+				tuple(
+					"empId", 
+					GeneralDate.ymd(2020, 11, 1), 
+					Optional.of(41), 
+					"msg"),
+				tuple(
+					"empId",
+					GeneralDate.ymd(2020, 11, 1),
+					Optional.of(44),
+					"msg"
+						));
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public <T> void testCreate_isNotNewRegister_workInfoSame_hasError(
 			@Injectable WorkInformation workInformation,
 			@Injectable WorkSchedule workSchedule,
 			@Mocked Builder builder) {
@@ -320,6 +392,9 @@ public class CreateWorkScheduleTest {
 		new Expectations() {{
 			require.getWorkSchedule(anyString, (GeneralDate) any);
 			result = Optional.of(workSchedule);
+			
+			workSchedule.getWorkInfo().getRecordInfo().equals( (WorkInformation) any );
+			result = true;
 		}};
 		
 		new Expectations() {{
