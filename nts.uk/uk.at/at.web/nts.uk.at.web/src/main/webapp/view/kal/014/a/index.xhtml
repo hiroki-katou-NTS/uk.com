@@ -50,7 +50,7 @@
                         </table>
                     </div>
                 </div>
-                <div class="cell valign-top">
+                <div class="cell valign-top" data-bind="with: $vm.alarmPatterSet">
                     <div class="table">
                         <!-- A3_1 -->
                         <div class="cell valign-center">
@@ -59,17 +59,17 @@
                         <div class="cell valign-center">
                             <!-- A3_2 -->
                             <input tabindex="6" id="A3_2"
-                                   data-bind="ntsTextEditor: {constraint: 'AlarmPatternCode', value: alarmPattern.code,enable: true,required: true, name: '#[KAL014_15]'}, style: { width: '27px', marginRight: '5px'}"/>
+                                   data-bind="ntsTextEditor: {constraint: 'AlarmPatternCode', value: alarmPatternCD,enable: true,required: true, name: '#[KAL014_15]'}, style: { width: '27px', marginRight: '5px'}"/>
                         </div>
                         <div class="cell valign-center">
                             <!-- A3_3 -->
                             <input tabindex="7" id="A3_3"
-                                   data-bind="ntsTextEditor: {constraint: 'AlarmPatternName', value: alarmPattern.name, required: true, name: '#[KAL014_16]'}"/>
+                                   data-bind="ntsTextEditor: {constraint: 'AlarmPatternName', value: alarmPatternName, required: true, name: '#[KAL014_16]'}"/>
                         </div>
                     </div>
                     <!-- A4_1 -->
                     <div id="tab-panel" tabindex="8" style="padding: 15px 12px 15px 0px;"
-                         data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+                         data-bind="ntsTabPanel: { dataSource: $vm.tabs, active: $vm.selectedTab}">
                         <!-- A4_2 -->
                         <div class="tab-content-1">
                             <div class="table">
@@ -88,10 +88,10 @@
                                 <div tabindex="9" id="swap-list" data-bind="ntsSwapList: {
                                     showSearchBox: { showLeft : true, showRight: true},
                                     height: 300,
-                                    dataSource: itemsSwap,
+                                    dataSource: $vm.itemsSwap,
                                     primaryKey: 'code',
-                                    columns: columns,
-                                    value: currentCodeListSwap
+                                    columns: $vm.columns,
+                                    value: allCtgCdSelected
                                 }"></div>
                             </div>
                         </div>
@@ -113,7 +113,7 @@
                                         <th class="ui-widget-header"></th>
                                     </tr>
                                     </thead>
-                                    <tbody data-bind="foreach: tableItems">
+                                    <tbody data-bind="foreach: $vm.tableItems">
                                     <tr>
                                         <!-- A6_4 -->
                                         <td><span class="label" data-bind="text:categoryName"></span></td>
@@ -140,10 +140,10 @@
                                     <!-- A7_2 -->
                                     <div tabindex="12" class="cf" data-bind="ntsSwitchButton: {
                                         name: 'Sample Switch',
-                                        options: roundingRules,
+                                        options: $vm.roundingRules,
                                         optionsValue: 'code',
                                         optionsText: 'name',
-                                        value: selectedRuleCode,
+                                        value: alarmPerSet().authSetting,
                                         required: true,
                                         enable: true }">
                                     </div>
@@ -157,12 +157,12 @@
                                 <div class="cell valign-center">
                                     <!-- A8_2 -->
                                     <input tabindex="-1" id="A8_2" style="margin-left: 40px;"
-                                           data-bind="ntsTextEditor: {value: vm.selectedExecutePermission}"/>
+                                           data-bind="ntsTextEditor: {value: alarmPerSet().roleIdDis}"/>
                                 </div>
                                 <div class="cell valign-center">
                                     <!-- A8_3 -->
                                     <button tabindex="13" style="margin-left: 15px;"
-                                            data-bind="click:clickConfiguration">#{i18n.getText('KAL014_33')}</button>
+                                            data-bind="click:$vm.clickConfiguration">#{i18n.getText('KAL014_33')}</button>
                                 </div>
                             </div>
                         </div>

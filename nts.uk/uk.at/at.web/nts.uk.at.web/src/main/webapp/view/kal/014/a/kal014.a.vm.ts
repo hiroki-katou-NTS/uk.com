@@ -1,7 +1,10 @@
 module nts.uk.at.kal014.a {
 
     import common=nts.uk.at.kal014.common;
-    const PATH_API = {}
+    const PATH_API = {
+        GET_ALL_SETTING: 'at/record/alarmwrkp/screen/getAll',
+        GET_SETTING_BYCODE: 'alarmworkplace/patternsetting/getPatternSetting',
+    }
 
     const SCREEN = {
         B: 'B',
@@ -27,6 +30,7 @@ module nts.uk.at.kal014.a {
         roundingRules: KnockoutObservableArray<any>;
         selectedRuleCode: any;
         workPalceCategory: any;
+        alarmPatterSet : KnockoutObservable<AlarmPatternObject>= ko.observable(null);
 
         constructor(props: any) {
             super();
@@ -67,7 +71,8 @@ module nts.uk.at.kal014.a {
             array = [];
             //TODO change mock data with master data
             for (var i = 0; i < 100; i++) {
-                array.push(new ItemModel(i, '基本給', "カテゴリ"));
+                let value = i + "";
+                array.push(new ItemModel(_.padStart(value, 3, '0'), '基本給', "カテゴリ"));
             }
             vm.itemsSwap(array);
             vm.columns = ko.observableArray([
@@ -85,16 +90,16 @@ module nts.uk.at.kal014.a {
             vm.isNewMode = ko.observable(true);
             vm.selectedExecutePermission = ko.observable("");
             $("#fixed-table").ntsFixedTable({height: 320, width: 830});
+            vm.getAllSettingData(null);
         }
 
         created() {
             const vm = this;
             _.extend(window, {vm});
-            for (let i = 0; i < 100; i++) {
-                vm.gridItems.push(new GridItem("code " + i + "", "name " + i));
-            }
             vm.currentCode.subscribe((code:any)=>{
-                alert(code);
+                vm.getSelectedData(code).done(()=>{
+                    $("#A3_3").focus();
+                });
                 //TODO write server side logic and call API here
             });
         }
@@ -103,6 +108,89 @@ module nts.uk.at.kal014.a {
             this.itemsSwap.shift();
         }
 
+        getAllSettingData(selectedCd?: string): JQueryPromise<any>{
+            const vm = this;
+            let dfd = $.Deferred();
+            vm.$ajax(PATH_API.GET_ALL_SETTING)
+                .done((data: Array<IAlarmPatternSet> )=>{
+                    if (!data || data.length <= 0){
+                        // Set to New Mode
+                        dfd.resolve();
+                        return;
+                    }
+                    vm.gridItems( _.map(data, x=> new GridItem(x.alarmPatternCD, x.alarmPatternName)));
+                    // In case of update mode select on updated item
+                    if (selectedCd){
+                        vm.currentCode(selectedCd);
+                    } else {
+                        // In case of init screen select on first item
+                        vm.currentCode(vm.gridItems()[0].code);
+                    }
+                    dfd.resolve();
+                })
+                .fail( (err: any) =>{
+                    vm.$dialog.error(err);
+                    dfd.reject();
+                });
+            return dfd.promise();
+
+        }
+
+        getSelectedData(alarmCd: string): JQueryPromise<any>{
+            const vm = this;
+            let dfd = $.Deferred();
+            // Get Data of select item
+            vm.$ajax(PATH_API.GET_SETTING_BYCODE,{patternCode: alarmCd})
+                .done((data: IAlarmPatternObject)=>{
+                    console.log(data);
+                    let perSet: WkpAlarmPermissionSettingDto ;
+                    perSet = new WkpAlarmPermissionSettingDto(data.alarmPerSet);
+                    let checkCon: Array<WkpCheckConditionDto> = [];
+
+                    _.forEach(data.checkConList, (value)=>{
+                        checkCon.push(vm.createDataforCategory(value));
+                    });
+                    vm.alarmPatterSet(new AlarmPatternObject(data.alarmPatternCD,data.alarmPatternName,perSet,checkCon));
+                })
+                .fail(()=>{
+
+                });
+
+
+            return dfd.promise();
+        }
+
+
+        createDataforCategory(data: IWkpCheckConditionDto): WkpCheckConditionDto{
+            const vm = this;
+            let extracDai: WkpExtractionPeriodDailyDto,
+                extracSingMon: WkpSingleMonthDto,
+                listExtracMon: WkpExtractionPeriodMonthlyDto;
+            switch (data.alarmCategory) {
+                // 月次
+                case vm.workPalceCategory.MONTHLY:
+                    extracSingMon = new WkpSingleMonthDto(data.singleMonth);
+                    break
+
+                // マスタチェック(基本)
+                case vm.workPalceCategory.MASTER_CHECK_BASIC:
+                // マスタチェック(職場)
+                case vm.workPalceCategory.MASTER_CHECK_WORKPLACE:
+                    listExtracMon = new WkpExtractionPeriodMonthlyDto(data.listExtractionMonthly);
+                    break;
+
+                //マスタチェック(日次)
+                case vm.workPalceCategory.MASTER_CHECK_DAILY:
+                // スケジュール／日次
+                case vm.workPalceCategory.SCHEDULE_DAILY:
+                // 申請承認
+                case vm.workPalceCategory.APPLICATION_APPROVAL:
+                    extracDai = new WkpExtractionPeriodDailyDto(data.extractionDaily);
+                    break
+            }
+
+            return new WkpCheckConditionDto(data.alarmCategory,data.checkConditionCodes,extracDai,listExtracMon,extracSingMon);
+        }
         /**
          * This function is responsible to click per item action and take decision which screen will open
          * @param item
@@ -198,11 +286,11 @@ module nts.uk.at.kal014.a {
     }
 
     class ItemModel {
-        code: number;
+        code: string;
         name: string;
         category: string;
 
-        constructor(code: number, name: string, category: string) {
+        constructor(code: string, name: string, category: string) {
             this.code = code;
             this.name = name;
             this.category = category;
@@ -298,6 +386,17 @@ module nts.uk.at.kal014.a {
         }
     }
 
+    interface IAlarmPatternSet{
+        /**
+         * アラームリストパターンコード
+         */
+        alarmPatternCD: string;
+        /**
+         * アラームリストパターン名称
+         */
+        alarmPatternName: string;
+    }
+
     class GridItem {
         code: string
         name: string;
@@ -318,5 +417,222 @@ module nts.uk.at.kal014.a {
             this.code = ko.observable(code);
             this.name = ko.observable(name);
         };
+    }
+
+    class AlarmPatternObject{
+        // アラームリストパターンコード
+        alarmPatternCD: KnockoutObservable<string> = ko.observable(null);
+        // アラームリストパターン名称
+        alarmPatternName: KnockoutObservable<string> = ko.observable(null);
+        // アラームリスト権限設定
+        alarmPerSet: KnockoutObservable<WkpAlarmPermissionSettingDto> = ko.observable(null);
+        // チェック条件
+        checkConList: KnockoutObservableArray<WkpCheckConditionDto> = ko.observableArray(null);
+        allCtgCdSelected: KnockoutObservableArray<ItemModel>  = ko.observableArray(null);
+
+        constructor(alarmPatternCD:string,alarmPatternName: string, alarmPerSet: WkpAlarmPermissionSettingDto, checkConList:                        Array<WkpCheckConditionDto> ){
+            this.alarmPatternCD(alarmPatternCD);
+            this.alarmPatternName(alarmPatternName);
+            this.alarmPerSet(alarmPerSet);
+            this.checkConList(checkConList);
+            this.allCtgCdSelected(_.flatMap(checkConList,(value: any )=>{
+                return new ItemModel(value.checkConditionCodes(),'基本給', "カテゴリ");
+            }))
+        }
+    }
+
+    class WkpAlarmPermissionSettingDto {
+        authSetting: KnockoutObservable<boolean>= ko.observable(null);
+        roleIds: KnockoutObservableArray<string>= ko.observableArray(null);
+        roleIdDis: KnockoutObservable<string>= ko.observable(null);
+        constructor(data: IWkpAlarmPermissionSettingDto){
+            this.authSetting(data.authSetting);
+            this.roleIds(data.roleIds);
+            this.roleIdDis(_.join(data.roleIds, ','))
+        }
+    }
+
+    class WkpCheckConditionDto {
+        alarmCategory: KnockoutObservable<number>= ko.observable(null);
+        checkConditionCodes: KnockoutObservableArray<string>= ko.observableArray(null);
+        extractionDaily: KnockoutObservable<WkpExtractionPeriodDailyDto>= ko.observable(null);
+        listExtractionMonthly: KnockoutObservable<WkpExtractionPeriodMonthlyDto>= ko.observable(null);
+        singleMonth: KnockoutObservable<WkpSingleMonthDto>= ko.observable(null);
+
+        constructor(alarmCategory: number, checkConditionCodes: Array<string>,
+                    extractionDaily: WkpExtractionPeriodDailyDto,listExtractionMonthly: WkpExtractionPeriodMonthlyDto,
+                    singleMonth: WkpSingleMonthDto){
+            this.alarmCategory(alarmCategory);
+            this.checkConditionCodes(checkConditionCodes);
+            this.extractionDaily(extractionDaily);
+            this.listExtractionMonthly(listExtractionMonthly);
+            this.singleMonth(singleMonth);
+
+        }
+    }
+    class WkpExtractionPeriodDailyDto {
+
+        //Start date
+        strSpecify: KnockoutObservable<number>= ko.observable(null);
+        strPreviousMonth?: KnockoutObservable<number>= ko.observable(null);
+        strMonth?: KnockoutObservable<number>= ko.observable(null);
+        strCurrentMonth?: KnockoutObservable<boolean>= ko.observable(null);
+        strPreviousDay?: KnockoutObservable<number>= ko.observable(null);
+        strMakeToDay?: KnockoutObservable<boolean>= ko.observable(null);
+        strDay?: KnockoutObservable<number>= ko.observable(null);
+
+        //End date
+        endSpecify: KnockoutObservable<number>= ko.observable(null);
+        endPreviousDay?: KnockoutObservable<number>= ko.observable(null);
+        endMakeToDay?: KnockoutObservable<boolean>= ko.observable(null);
+        endDay?: KnockoutObservable<number>= ko.observable(null);
+        endPreviousMonth?:KnockoutObservable<number>= ko.observable(null);
+        endCurrentMonth?: KnockoutObservable<boolean>= ko.observable(null);
+        endMonth?:KnockoutObservable<number>= ko.observable(null);
+
+        constructor(data: IWkpExtractionPeriodDailyDto){
+            this.strSpecify(data.strSpecify);
+            this.strMonth(data.strMonth);
+            this.strCurrentMonth(data.strCurrentMonth);
+            this.strPreviousDay(data.strPreviousDay);
+            this.strMakeToDay(data.strMakeToDay);
+            this.strDay(data.strDay);
+
+            this.endSpecify(data.endSpecify);
+            this.endPreviousDay(data.endPreviousDay);
+            this.endMonth(data.endMonth);
+            this.endCurrentMonth(data.endCurrentMonth);
+            this.endPreviousMonth(data.endPreviousMonth);
+            this.endDay(data.endDay);
+            this.endMakeToDay(data.endMakeToDay);
+        }
+
+    }
+
+     class WkpExtractionPeriodMonthlyDto {
+
+        //Start month
+        strSpecify: KnockoutObservable<number>= ko.observable(null);
+        strMonth?:KnockoutObservable<number>= ko.observable(null);
+        strCurrentMonth?: KnockoutObservable<boolean>= ko.observable(null);
+        strPreviousAtr?: KnockoutObservable<number>= ko.observable(null);
+        yearType?:KnockoutObservable<number>= ko.observable(null);
+        designatedMonth?: KnockoutObservable<number>= ko.observable(null);
+
+        //End Month
+        endSpecify: KnockoutObservable<number>= ko.observable(null);
+        extractFromStartMonth: KnockoutObservable<number>= ko.observable(null);
+        endMonth?: KnockoutObservable<number>= ko.observable(null);
+        endCurrentMonth?: KnockoutObservable<boolean>= ko.observable(null);
+        endPreviousAtr?: KnockoutObservable<number> = ko.observable(null);
+
+        constructor(data: IWkpExtractionPeriodMonthlyDto){
+                this.strSpecify(data.strSpecify);
+                this.strMonth(data.strMonth);
+                this.strCurrentMonth(data.strCurrentMonth);
+                this.strPreviousAtr(data.strPreviousAtr);
+                this.yearType(data.yearType);
+                this.designatedMonth(data.designatedMonth);
+
+                this.endSpecify(data.endSpecify);
+                this.extractFromStartMonth(data.extractFromStartMonth);
+                this.endMonth(data.endMonth);
+                this.endCurrentMonth(data.endCurrentMonth);
+                this.endPreviousAtr(data.endPreviousAtr);
+        }
+    }
+    class WkpSingleMonthDto {
+
+        /** 前・先区分  */
+        monthPrevious: KnockoutObservable<number>;
+        /** 月数 */
+        monthNo: KnockoutObservable<number>;
+        /** 当月とする */
+        curentMonth: KnockoutObservable<boolean>;
+
+        constructor(data: IWkpSingleMonthDto){
+            this.monthPrevious(data.monthPrevious);
+            this.monthNo(data.monthNo);
+            this.curentMonth(data.curentMonth);
+        }
+    }
+
+    // Interface
+    interface IAlarmPatternObject{
+        /**
+         * アラームリストパターンコード
+         */
+        alarmPatternCD: string;
+        /**
+         * アラームリストパターン名称
+         */
+        alarmPatternName: string;
+        /**
+         * アラームリスト権限設定
+         */
+        alarmPerSet: IWkpAlarmPermissionSettingDto;
+        /**
+         * チェック条件
+         */
+        checkConList: Array<IWkpCheckConditionDto> ;
+    }
+
+    interface IWkpAlarmPermissionSettingDto {
+        authSetting: boolean;
+        roleIds: Array<string>;
+    }
+
+    interface IWkpCheckConditionDto {
+        alarmCategory: number;
+        checkConditionCodes: Array<string>;
+        extractionDaily: IWkpExtractionPeriodDailyDto;
+        listExtractionMonthly: IWkpExtractionPeriodMonthlyDto;
+        singleMonth: IWkpSingleMonthDto;
+    }
+    interface IWkpExtractionPeriodDailyDto {
+
+        //Start date
+        strSpecify: number;
+        strPreviousMonth?: number;
+        strMonth?: number;
+        strCurrentMonth?: boolean;
+        strPreviousDay?: number;
+        strMakeToDay?: boolean;
+        strDay?: number;
+
+        //End date
+        endSpecify: number;
+        endPreviousDay?: number;
+        endMakeToDay?: boolean;
+        endDay?:number;
+        endPreviousMonth?:number;
+        endCurrentMonth?: boolean;
+        endMonth?:number;
+    }
+    interface IWkpExtractionPeriodMonthlyDto {
+
+        //Start month
+        strSpecify: number;
+        strMonth?:number;
+        strCurrentMonth?: boolean;
+        strPreviousAtr?: number;
+        yearType?:number;
+        designatedMonth?: number;
+
+        //End Month
+        endSpecify: number;
+        extractFromStartMonth: number;
+        endMonth?: number;
+        endCurrentMonth?: boolean;
+        endPreviousAtr?: number ;
+    }
+    interface IWkpSingleMonthDto {
+
+        /** 前・先区分  */
+        monthPrevious: number;
+        /** 月数 */
+        monthNo: number;
+        /** 当月とする */
+        curentMonth: boolean;
     }
 }

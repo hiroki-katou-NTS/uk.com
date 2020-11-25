@@ -37,7 +37,7 @@ public class AlarmPatternSettingWorkPlaceWS {
 
     @POST
     @Path("getPatternSetting")
-    public List<WkpCheckConditionDto> selectPattern(RequestParam requestParam) {
+    public WkpAlarmPatternSettingDto selectPattern(RequestParam requestParam) {
         return finder.selectPatternSetting(requestParam);
     }
 
