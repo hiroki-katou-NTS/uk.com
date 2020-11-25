@@ -12,7 +12,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 
 /**
@@ -24,8 +23,8 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="SSPMT_MASTERCOPY_DATA")
-public class SspctMastercopyData extends ContractUkJpaEntity implements Serializable {
+@Table(name="SSPCT_MASTERCOPY_DATA")
+public class SspctMastercopyData implements Serializable {
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -61,13 +60,5 @@ public class SspctMastercopyData extends ContractUkJpaEntity implements Serializ
 	/** The table name. */
 	@Column(name="TABLE_NAME")
 	private String tableName;
-
-	/* (non-Javadoc)
-	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
-	 */
-	@Override
-	protected Object getKey() {
-		return this.id;
-	}
 
 }
