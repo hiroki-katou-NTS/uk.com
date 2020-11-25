@@ -31,27 +31,17 @@ public class AffiliationInforOfDailyAttd implements DomainObject  {
 		//勤務種別コード
 		private Optional<BusinessTypeCode> businessTypeCode;
 		//加給コード : optional
-		private BonusPaySettingCode bonusPaySettingCode;
+		private Optional<BonusPaySettingCode> bonusPaySettingCode;
+
 		public AffiliationInforOfDailyAttd(EmploymentCode employmentCode, String jobTitleID, String wplID,
-				ClassificationCode clsCode, BonusPaySettingCode bonusPaySettingCode) {
+				ClassificationCode clsCode, Optional<BusinessTypeCode> businessTypeCode,
+				Optional<BonusPaySettingCode> bonusPaySettingCode) {
 			super();
 			this.employmentCode = employmentCode;
 			this.jobTitleID = jobTitleID;
 			this.wplID = wplID;
 			this.clsCode = clsCode;
+			this.businessTypeCode = businessTypeCode;
 			this.bonusPaySettingCode = bonusPaySettingCode;
 		}
-		public AffiliationInforOfDailyAttd(EmploymentCode employmentCode, String jobTitleID, String wplID,
-				ClassificationCode clsCode, BusinessTypeCode businessTypeCode,
-				BonusPaySettingCode bonusPaySettingCode) {
-			super();
-			this.employmentCode = employmentCode;
-			this.jobTitleID = jobTitleID;
-			this.wplID = wplID;
-			this.clsCode = clsCode;
-			this.businessTypeCode = Optional.ofNullable(businessTypeCode);
-			this.bonusPaySettingCode = bonusPaySettingCode;
-		}
-		
-		
 }

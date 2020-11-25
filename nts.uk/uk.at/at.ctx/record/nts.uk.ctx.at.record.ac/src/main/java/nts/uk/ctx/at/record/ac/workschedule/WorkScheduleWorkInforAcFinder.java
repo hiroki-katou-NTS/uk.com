@@ -72,7 +72,7 @@ public class WorkScheduleWorkInforAcFinder implements WorkScheduleWorkInforAdapt
 	}
 
 	private WorkStampImport convertToWorkStamp(WorkStampExport domain) {
-		return new WorkStampImport(domain.getAfterRoundingTime(), new WorkTimeInformationImport(
+		return new WorkStampImport(domain.getTimeDay().getTimeWithDay(), new WorkTimeInformationImport(
 				new ReasonTimeChangeImport(domain.getTimeDay().getReasonTimeChange().getTimeChangeMeans(),
 						domain.getTimeDay().getReasonTimeChange().getEngravingMethod()),
 				domain.getTimeDay().getTimeWithDay()),

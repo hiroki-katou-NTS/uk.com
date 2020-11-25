@@ -117,7 +117,7 @@ public class CancelAppStamp {
 	}
 
 	private static void removeTimeStamp(TimeActualStamp stamp) {
-		stamp.setStamp(Optional.of(new WorkStamp(null,
+		stamp.setStamp(Optional.of(new WorkStamp(
 				new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.APPLICATION, null), null), Optional.empty())));
 	}
 

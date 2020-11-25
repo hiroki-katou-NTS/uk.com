@@ -64,17 +64,17 @@ public class CreateScheduledSnapshotService {
 		
 		/** 遅刻時間の時間休暇使用時間の合計 */
 		val lateTime = totalWorkTime.getLateTimeOfDaily().stream()
-				.mapToInt(c -> c.getTimePaidUseTime().sum().valueAsMinutes())
+				.mapToInt(c -> c.getTimePaidUseTime().totalVacationAddTime())
 				.sum();
 		
 		/** 早退時間の時間休暇使用時間の合計 */
 		val leaveEarlyTime = totalWorkTime.getLeaveEarlyTimeOfDaily().stream()
-				.mapToInt(c -> c.getTimePaidUseTime().sum().valueAsMinutes())
+				.mapToInt(c -> c.getTimePaidUseTime().totalVacationAddTime())
 				.sum();
 		
 		/** 外出時間の時間休暇使用時間の取得 */
 		val outTime = totalWorkTime.getOutingTimeOfDailyPerformance().stream()
-				.mapToInt(c -> c.getTimeVacationUseOfDaily().sum().valueAsMinutes())
+				.mapToInt(c -> c.getTimeVacationUseOfDaily().totalVacationAddTime())
 				.sum();
 		
 		/** 合計して返す */

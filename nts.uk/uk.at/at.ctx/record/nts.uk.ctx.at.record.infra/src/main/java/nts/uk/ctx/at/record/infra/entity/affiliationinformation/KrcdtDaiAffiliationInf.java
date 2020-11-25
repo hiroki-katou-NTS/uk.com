@@ -77,8 +77,8 @@ public class KrcdtDaiAffiliationInf extends UkJpaEntity implements Serializable 
 				affiliationInforOfDailyPerfor.getAffiliationInfor().getJobTitleID(),
 				affiliationInforOfDailyPerfor.getAffiliationInfor().getClsCode().v(),
 				affiliationInforOfDailyPerfor.getAffiliationInfor().getWplID(),
-				affiliationInforOfDailyPerfor.getAffiliationInfor().getBonusPaySettingCode() == null 
-					? null : affiliationInforOfDailyPerfor.getAffiliationInfor().getBonusPaySettingCode().v(),
+				!affiliationInforOfDailyPerfor.getAffiliationInfor().getBonusPaySettingCode().isPresent() 
+					? null : affiliationInforOfDailyPerfor.getAffiliationInfor().getBonusPaySettingCode().get().v(),
 				affiliationInforOfDailyPerfor.getAffiliationInfor().getBusinessTypeCode().isPresent()
 					? affiliationInforOfDailyPerfor.getAffiliationInfor().getBusinessTypeCode().get().v():null		
 				);

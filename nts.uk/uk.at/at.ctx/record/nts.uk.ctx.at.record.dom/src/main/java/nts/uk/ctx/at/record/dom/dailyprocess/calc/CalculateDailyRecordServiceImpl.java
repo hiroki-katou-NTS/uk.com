@@ -80,7 +80,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.SchedulePerformance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionClassification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpCondition;
@@ -90,7 +89,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryO
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.JustCorrectionAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.RoundingTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
@@ -173,6 +172,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	 *            計算をするための会社共通設定
 	 * @param personCommonSetting
 	 *            計算をするための個人共通設定
+	 * @param justCorrectionAtr
+	 *           ジャスト補正区分
 	 * @param yesterDayInfo
 	 *            前日の勤務情報
 	 * @param tomorrowDayInfo
@@ -181,7 +182,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	 */
 	@Override
 	public ManageCalcStateAndResult calculate(CalculateOption calculateOption, IntegrationOfDaily integrationOfDaily,
-			ManagePerCompanySet companyCommonSetting, ManagePerPersonDailySet personCommonSetting,
+			ManagePerCompanySet companyCommonSetting, ManagePerPersonDailySet personCommonSetting,JustCorrectionAtr justCorrectionAtr,
 			Optional<WorkInfoOfDailyPerformance> yesterDayInfo, Optional<WorkInfoOfDailyPerformance> tomorrowDayInfo) {
 
 		DailyRecordToAttendanceItemConverter converter = attendanceItemConvertFactory.createDailyConverter();
@@ -199,7 +200,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		// }
 		// 実績データの計算
 		ManageCalcStateAndResult result = this.calcDailyAttendancePerformance(integrationOfDaily, companyCommonSetting,
-				personCommonSetting, converter, yesterDayInfo, tomorrowDayInfo);
+				personCommonSetting, converter, justCorrectionAtr,yesterDayInfo, tomorrowDayInfo);
 
 		if (!calculateOption.isSchedule()) {
 			// 大塚モードの処理
@@ -235,8 +236,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 
 	private ManageCalcStateAndResult calcDailyAttendancePerformance(IntegrationOfDaily integrationOfDaily,
 			ManagePerCompanySet companyCommonSetting, ManagePerPersonDailySet personCommonSetting,
-			DailyRecordToAttendanceItemConverter converter, Optional<WorkInfoOfDailyPerformance> yesterDayInfo,
-			Optional<WorkInfoOfDailyPerformance> tomorrowDayInfo) {
+			DailyRecordToAttendanceItemConverter converter, JustCorrectionAtr justCorrectionAtr,
+			Optional<WorkInfoOfDailyPerformance> yesterDayInfo,Optional<WorkInfoOfDailyPerformance> tomorrowDayInfo) {
 		// 出退勤打刻順序不正のチェック
 		// ※他の打刻順序不正は計算処理を実施する必要があるため、ここでは弾かない
 		// 不正の場合、勤務情報の計算ステータス→未計算にしつつ、エラーチェックは行う必要有）
@@ -252,6 +253,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				companyCommonSetting,
 				personCommonSetting,
 				converter,
+				justCorrectionAtr,
 				yesterDayInfo,
 				tomorrowDayInfo);
 		
@@ -271,11 +273,13 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				personCommonSetting,
 				clonedIntegrationOfDaily.getWorkInformation());
 		
+		// 時間帯の作成
 		Optional<CalculationRangeOfOneDay> record = createRecord(
 				clonedIntegrationOfDaily,
 				TimeSheetAtr.RECORD,
 				companyCommonSetting,
 				personCommonSetting,
+				justCorrectionAtr,
 				yesterDayInfo,
 				tomorrowDayInfo,
 				workType,
@@ -313,6 +317,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	 * @param timeSheetAtr 実働or予定時間帯作成から呼び出されたか
 	 * @param companyCommonSetting 会社別設定管理
 	 * @param personCommonSetting 社員設定管理
+	 * @param justCorrectionAtr ジャスト補正区分
 	 * @param yesterDayInfo 前日の勤務情報
 	 * @param tomorrowDayInfo 翌日の勤務情報
 	 * @param workType 当日の勤務種類
@@ -325,6 +330,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			TimeSheetAtr timeSheetAtr,
 			ManagePerCompanySet companyCommonSetting,
 			ManagePerPersonDailySet personCommonSetting,
+			JustCorrectionAtr justCorrectionAtr,
 			Optional<WorkInfoOfDailyPerformance> yesterDayInfo,
 			Optional<WorkInfoOfDailyPerformance> tomorrowDayInfo,
 			Optional<WorkType> workType,
@@ -365,7 +371,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				
 				return getPredetermineTimeSetFromShareContainer(companyCommonSetting.getShareContainer(), cid, workTimeCode);
 			}
-		}, integrationOfDaily, commonSet, true, workType.get(), workTimeCode);
+		}, integrationOfDaily, commonSet, true, workType.get(), justCorrectionAtr, workTimeCode);
 		
 		/**
 		 * 勤務種類が休日系なら、所定時間の時間を変更する
@@ -644,12 +650,13 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	 * @param integrationOfDaily 日別実績(Work)
 	 * @param isOotsukaMode
 	 * @param workType
+	 * @param justCorrectionAtr
 	 * @return 1日の計算範囲
 	 */
 	public static CalculationRangeOfOneDay createOneDayCalculationRange(RequireM1 require, 
-			IntegrationOfDaily integrationOfDaily,
-			Optional<WorkTimezoneCommonSet> commonSet, boolean isOotsukaMode, WorkType workType,
-			Optional<WorkTimeCode> workTimeCode) {
+			IntegrationOfDaily integrationOfDaily, Optional<WorkTimezoneCommonSet> commonSet,
+			boolean isOotsukaMode, WorkType workType, JustCorrectionAtr justCorrectionAtr,  Optional<WorkTimeCode> workTimeCode) {
+		
 		String companyId = AppContexts.user().companyId();
 		String employeeId = integrationOfDaily.getEmployeeId();
 		GeneralDate targetDate = integrationOfDaily.getYmd();
@@ -680,20 +687,17 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		/* 日別実績の出退勤時刻セット */
 		timeLeavingOfDailyPerformance = correctStamp(integrationOfDaily.getAttendanceLeave(), employeeId, targetDate);
 
-		/* ジャストタイムの判断するための設定取得 */
-		boolean justLate = false;
-		boolean justEarlyLeave = false;
-		if (commonSet.isPresent()) {
-			justLate = commonSet.get().getLateEarlySet().getOtherEmTimezoneLateEarlySet(LateEarlyAtr.LATE)
-					.isStampExactlyTimeIsLateEarly();
-			justEarlyLeave = commonSet.get().getLateEarlySet().getOtherEmTimezoneLateEarlySet(LateEarlyAtr.EARLY)
-					.isStampExactlyTimeIsLateEarly();
-		}
-		// この区分は本来は引数として計算処理の呼出し口から渡されます（2018/6/6現在は引数として渡されていないので一時的に固定値を渡しています）
-		JustCorrectionAtr justCorrectionAtr = JustCorrectionAtr.USE;
 
+		//ジャスト遅刻、早退による時刻補正
+		RoundingTime roundingTimeinfo = commonSet.get().getStampSet().getRoundingTime();
+		List<TimeLeavingWork> justTimeLeavingWorks = roundingTimeinfo.justTImeCorrection(justCorrectionAtr, timeLeavingOfDailyPerformance.get().getTimeLeavingWorks());
+		
+		
+		//丸め処理
+		List<TimeLeavingWork> roundingTimeLeavingWorks = roundingTimeinfo.roundingttendance(justTimeLeavingWorks);
+		
 		return new CalculationRangeOfOneDay(Finally.empty(), Finally.empty(), calcRangeOfOneDay,
-				timeLeavingOfDailyPerformance.get().calcJustTime(justLate, justEarlyLeave, justCorrectionAtr), // ジャスト遅刻、早退による時刻補正
+				new TimeLeavingOfDailyAttd(roundingTimeLeavingWorks,timeLeavingOfDailyPerformance.get().getWorkTimes()), // ジャスト遅刻、早退による時刻補正、丸め処理後の値
 				PredetermineTimeSetForCalc.convertMastarToCalc(predetermineTimeSet.get())/* 所定時間帯(計算用) */,
 				toDayWorkInfo, Optional.empty());
 	}
@@ -710,14 +714,15 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	 * @param companyCommonSetting 会社別設定管理
 	 * @param personCommonSetting 社員設定管理
 	 * @param converter
+	 * @param justCorrectionAtr ジャスト補正区分
 	 * @param yesterDayInfo 昨日の勤務情報
 	 * @param tomorrowDayInfo 明日の勤務情報
 	 * @return 予定実績
 	 */
 	private Optional<SchedulePerformance> createSchedule(IntegrationOfDaily integrationOfDaily,
 			ManagePerCompanySet companyCommonSetting, ManagePerPersonDailySet personCommonSetting,
-			DailyRecordToAttendanceItemConverter converter, Optional<WorkInfoOfDailyPerformance> yesterDayInfo,
-			Optional<WorkInfoOfDailyPerformance> tomorrowDayInfo) {
+			DailyRecordToAttendanceItemConverter converter, JustCorrectionAtr justCorrectionAtr,
+			Optional<WorkInfoOfDailyPerformance> yesterDayInfo,Optional<WorkInfoOfDailyPerformance> tomorrowDayInfo) {
 		val integrationOfDailyForSchedule = converter.setData(integrationOfDaily).toDomain();
 		// 予定時間１ ここで、「勤務予定を取得」～「計算区分を変更」を行い、日別実績(Work)をReturnとして受け取る
 		IntegrationOfDaily afterScheduleIntegration = createScheduleTimeSheet(integrationOfDailyForSchedule);
@@ -744,6 +749,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				TimeSheetAtr.SCHEDULE,
 				companyCommonSetting,
 				personCommonSetting,
+				justCorrectionAtr,
 				yesterDayInfo,
 				tomorrowDayInfo,
 				workType.isPresent()
@@ -831,9 +837,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			@Override
 			public CalculationRangeOfOneDay createOneDayRange(Optional<PredetemineTimeSetting> predetemineTimeSet,
 					IntegrationOfDaily integrationOfDaily, Optional<WorkTimezoneCommonSet> commonSet, WorkType workType,
-					Optional<WorkTimeCode> workTimeCode) {
+					JustCorrectionAtr justCorrectionAtr, Optional<WorkTimeCode> workTimeCode) {
 				
-				return createOneDayCalculationRange(this, integrationOfDaily, commonSet, false, workType, workTimeCode);
+				return createOneDayCalculationRange(this, integrationOfDaily, commonSet, false, workType, justCorrectionAtr, workTimeCode);
 			}
 		};
 	}
@@ -856,8 +862,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		
 		List<TimeLeavingWork> scheduleTimeSheetList = new ArrayList<TimeLeavingWork>(); 
 		for(ScheduleTimeSheet schedule : workInfo.getScheduleTimeSheets()) {
-			WorkStamp attendance = new WorkStamp(schedule.getAttendance(),schedule.getAttendance(), new WorkLocationCD("01"), TimeChangeMeans.AUTOMATIC_SET );
-			WorkStamp leaving    = new WorkStamp(schedule.getLeaveWork(),schedule.getLeaveWork(), new WorkLocationCD("01"), TimeChangeMeans.AUTOMATIC_SET );
+			WorkStamp attendance = new WorkStamp(schedule.getAttendance(), new WorkLocationCD("01"), TimeChangeMeans.AUTOMATIC_SET );
+			WorkStamp leaving    = new WorkStamp(schedule.getLeaveWork(), new WorkLocationCD("01"), TimeChangeMeans.AUTOMATIC_SET );
 			TimeActualStamp atStamp = new TimeActualStamp(attendance,attendance,workInfo.getScheduleTimeSheets().size());
 			TimeActualStamp leStamp = new TimeActualStamp(leaving,leaving,workInfo.getScheduleTimeSheets().size());
 			TimeLeavingWork timeLeavingWork = new TimeLeavingWork(schedule.getWorkNo(),atStamp,leStamp);
@@ -1021,9 +1027,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 
 		/*出退勤がない場合は時刻0：00で作っておく*/
 		if (!timeLeavingOfDailyPerformance.isPresent()) {
-			WorkStamp attendance = new WorkStamp(new TimeWithDayAttr(0), new TimeWithDayAttr(0),
+			WorkStamp attendance = new WorkStamp(new   TimeWithDayAttr(0),
 					new WorkLocationCD("01"), TimeChangeMeans.AUTOMATIC_SET,null);
-			WorkStamp leaving = new WorkStamp(new TimeWithDayAttr(0), new TimeWithDayAttr(0), 
+			WorkStamp leaving = new WorkStamp(new  TimeWithDayAttr(0), 
 					new WorkLocationCD("01"), TimeChangeMeans.AUTOMATIC_SET,null);
 			TimeActualStamp stamp = new TimeActualStamp(attendance, leaving, 1);
 			TimeLeavingWork timeLeavingWork = new TimeLeavingWork(new WorkNo(1), stamp, stamp);

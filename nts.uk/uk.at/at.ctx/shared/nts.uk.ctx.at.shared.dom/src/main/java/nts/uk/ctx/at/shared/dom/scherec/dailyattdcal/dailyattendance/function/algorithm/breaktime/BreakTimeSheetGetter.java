@@ -18,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.JustCorrectionAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
@@ -60,7 +61,7 @@ public class BreakTimeSheetGetter {
 		/** 「１日の計算範囲」クラスを作成 */
 		val oneDayCalcRange = require.createOneDayRange(require.predetemineTimeSetting(cid, workTimeSet.getCode().v()), 
 				domainDaily, Optional.of(workTimeSet.getCommonSetting()), 
-				workType, Optional.of(workTimeSet.getCode()));
+				workType, JustCorrectionAtr.USE, Optional.of(workTimeSet.getCode()));
 		
 		List<TimeSheetOfDeductionItem> deductionTimeSheet = new ArrayList<>();
 		
@@ -199,6 +200,6 @@ public class BreakTimeSheetGetter {
 		
 		CalculationRangeOfOneDay createOneDayRange(Optional<PredetemineTimeSetting> predetemineTimeSet,
 				IntegrationOfDaily integrationOfDaily, Optional<WorkTimezoneCommonSet> commonSet,
-				WorkType workType, Optional<WorkTimeCode> workTimeCode);
+				WorkType workType, JustCorrectionAtr justCorrectionAtr, Optional<WorkTimeCode> workTimeCode);
 	}
 }

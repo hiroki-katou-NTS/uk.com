@@ -12,7 +12,6 @@ import org.junit.runner.RunWith;
 import mockit.integration.junit4.JMockit;
 import nts.uk.ctx.at.record.dom.applicationcancel.GetReflectOutGoFrameNumber.ReflectOutGoFrameNumberResult;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
@@ -20,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @RunWith(JMockit.class)
@@ -106,14 +106,14 @@ public class GetReflectOutGoFrameNumberTest {
 		// 日別勤怠の外出時間帯
 		OutingTimeSheet outSheet = new OutingTimeSheet(new OutingFrameNo(no),
 				Optional.of(new TimeActualStamp(null,
-						new WorkStamp(new TimeWithDayAttr(startTime),
+						new WorkStamp(
 								new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, null),
 										new TimeWithDayAttr(startTime)),
 								Optional.empty()),
 						0)),
 				new AttendanceTime(600), new AttendanceTime(600), GoingOutReason.PUBLIC,
 				Optional.of(new TimeActualStamp(null,
-						new WorkStamp(new TimeWithDayAttr(endTime),
+						new WorkStamp(
 								new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, null),
 										new TimeWithDayAttr(endTime)),
 								Optional.empty()),

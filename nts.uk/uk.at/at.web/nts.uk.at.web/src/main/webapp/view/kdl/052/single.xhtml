@@ -1,0 +1,134 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<head>
+</head>
+<body>
+	<ui:composition template="../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kdl052.style.css" />
+			<com:scriptfile path="kdl052.vm.js" />
+			<script>var dialogSize = { width: 543 , height: 550};</script>
+		</ui:define>
+		<ui:define name="content">
+      <com:ko-if bind="manageDisabled()">
+        <div class="kdl052-content">
+          <div class="inline-row mt-20">
+            <div class="w-120 ml-40">
+              <!-- A2_1 -->
+              <div id="A2_1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDL052_5')}</div>
+            </div>
+            <div>
+              <!-- A2_2 -->
+              <label data-bind="text:selectedCode"> </label>
+              <label
+                class="select-name"
+                data-bind="text:selectedName"
+              ></label>
+            </div>
+          </div>
+          <hr class="hr-single-style" />
+          <div class="inline-row mt-8">
+            <div class="w-120 ml-40">
+              <!-- A2_3-->
+              <div id="A2_3" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL052_6')}</div>
+            </div>
+            <div>
+              <!-- A3_4 -->
+              <table class="width-table border-table table-a3-4">
+                <tr class="header-color">
+                  <th class="width-cols text-left">
+                    <!-- A3_5 -->
+                    <span id="A3_5">#{i18n.getText('KDL052_12')}</span>
+                  </th>
+                  <th class="width-cols text-left">
+                    <!-- A3_6 -->
+                    <span id="A3_6">#{i18n.getText('KDL052_13')}</span>
+                  </th>
+                  <th class="width-cols text-left">
+                    <!-- A3_7 -->
+                    <span id="A3_7">#{i18n.getText('KDL052_14')}</span>
+                  </th>
+                </tr>
+                <tr>
+                  <!-- A3_8 -->
+                  <td class="border" data-bind="text: limitDays()"></td>
+                  <!-- A3_9 -->
+                  <td class="border" data-bind="text: childNursingUsed()"></td>
+                  <!-- A3_10 -->
+                  <td class="border" data-bind="text: childNursingRemaining()"></td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <div class="inline-row mt-25">
+            <div class="w-120 ml-40">
+              <!-- A3_1 -->
+              <span id="A3_1">#{i18n.getText('KDL052_10')}</span>
+            </div>
+            <div>
+              <!-- A3_2 -->
+              <span id="A3_2" data-bind="text: nextStartDate()"></span>
+            </div>
+          </div>
+          <div class="mt-10">
+            <!-- A3_3 -->
+            <span id="A3_3" class="ml-40">#{i18n.getText('KDL052_11')}</span>
+          </div>
+          <div class="inline-row mt-10">
+            <div class="ml-40 height-table-2">
+              <!-- A2_4 -->
+              <table
+                  id="single-list"
+                  tabindex="4"
+                  data-bind="ntsGridList: {
+                    name: '#[KDL047_5]',
+                    height: 400,
+                    width: 357,
+                    columns: tableColumns,
+                    options: tableDatas,
+                    optionsValue: 'id',
+                    multiple: false,
+                    value: currentCode,
+                    rows: 5
+                  }"
+                ></table>
+            </div>
+          </div>
+        </div>
+    </com:ko-if>
+      <com:ko-if bind="!manageDisabled()">
+        <div class="right-content">
+          <div class="inline-row mt-20">
+            <div class="w-120 ml-40">
+              <!-- A2_1 -->
+              <div id="A2_1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDL052_5')}</div>
+            </div>
+            <div>
+              <!-- A2_2 -->
+              <label data-bind="text:selectedCode"> </label>
+              <label
+                class="select-name"
+                data-bind="text:selectedName"
+              ></label>
+            </div>
+          </div>
+          <hr class="hr-style-multi" />
+          <div class="inline-row mt-25 ml-140">
+            <!-- A5 -->
+            <span id="A5" class="h3-style">#{i18n.getText('KDL052_16')}</span>
+          </div>
+        </div>
+      </com:ko-if>
+      <div id="functions-area-bottom">
+        <!-- btn close dialog -->
+        <button class="large" id="btnCancel" data-bind="click: close">#{i18n.getText('KDL052_15')}</button>
+      </div>
+    </ui:define>
+  </ui:composition>
+</body>
+</html>

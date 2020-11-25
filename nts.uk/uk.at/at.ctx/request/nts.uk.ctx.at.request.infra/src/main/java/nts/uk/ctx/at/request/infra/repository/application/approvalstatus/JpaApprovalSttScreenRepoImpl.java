@@ -16,6 +16,7 @@ import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprovalSttScreenRepository;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.EmpPeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -41,8 +42,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 		String sql = 
 				"drop table IF EXISTS KAF018_WORKPLACE; " +
 				"drop table IF EXISTS KAF018_SKBSYITERM; " +
-				"drop table IF EXISTS KAF_MSNSNS; "; 
-				// "drop table IF EXISTS #KAF018B_PARAM; ";
+				"drop table IF EXISTS KAF_MSNSNS; ";
 		new NtsStatement(sql, this.jdbcProxy()).execute();
 		this.getEntityManager().flush();
 		// this.getEntityManager().createNativeQuery(sql).executeUpdate();
@@ -190,7 +190,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 	public void setUnApprApp(DatePeriod period) {
 		String sql = 
 				"SELECT             SRI.EMPLOYEE_ID as APP_SID,SRI.APPROVAL_RECORD_DATE as APP_DATE,SRI.ROOT_STATE_ID " +
-				"INTO    #KAF_MSNSNS " +
+				"INTO    KAF_MSNSNS " +
 				"FROM               WWFDT_APPROVAL_ROOT_STATE SRI " +
 				"INNER JOIN         WWFDT_APPROVAL_PHASE_ST SFI " +
 				"ON                 SRI.ROOT_STATE_ID = SFI.ROOT_STATE_ID " +
@@ -212,11 +212,11 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 	public Map<String, Integer> getCountUnApprApp() {
 		Map<String, Integer> result = new HashMap<>();
 		String sql = 
-				"SELECT MSNSHIN.WORKPLACE_ID,COUNT(MSNSHIN.SID) AS COUNTSID" +
+				"SELECT MSNSHIN.WORKPLACE_ID,COUNT(MSNSHIN.SID) AS COUNTSID " +
 				"FROM ( " +
 				"	SELECT DISTINCT SKBSYITERM.WORKPLACE_ID,SKBSYITERM.SID " +
-				"	FROM #KAF018_SKBSYITERM SKBSYITERM " +
-				"	INNER JOIN  #KAF_MSNSNS MSNSNS " +
+				"	FROM KAF018_SKBSYITERM SKBSYITERM " +
+				"	INNER JOIN  KAF_MSNSNS MSNSNS " +
 				"	ON              SKBSYITERM.SID  = MSNSNS.APP_SID " +
 				"	WHERE           SKBSYITERM.WORK_ST <= MSNSNS.APP_DATE " +
 				"	AND             SKBSYITERM.COMP_ST <= MSNSNS.APP_DATE " +
@@ -240,5 +240,25 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 			this.deleteTemporaryTable();
 		}
 		return result;
+	}
+
+	@Override
+	public List<EmpPeriod> getEmpFromWkp(String wkpID) {
+		String sql = 
+				"SELECT WORKPLACE_ID,SID,EMP_CD,WORK_ST,WORK_ED,COMP_ST,COMP_ED,KYO_ST,KYO_ED " +
+				"FROM   KAF018_SKBSYITERM " +
+				"WHERE  WORKPLACE_ID =　@wkpID; ";
+		return new NtsStatement(sql, this.jdbcProxy()).paramString("wkpID", wkpID).getList(rec -> {
+			return new EmpPeriod(
+					rec.getString("WORKPLACE_ID"), 
+					rec.getString("SID"), 
+					rec.getString("EMP_CD"), 
+					rec.getGeneralDate("WORK_ST"), 
+					rec.getGeneralDate("WORK_ED"), 
+					rec.getGeneralDate("COMP_ST"), 
+					rec.getGeneralDate("COMP_ED"), 
+					rec.getGeneralDate("KYO_ST"), 
+					rec.getGeneralDate("KYO_ED"));
+		});
 	}
 }

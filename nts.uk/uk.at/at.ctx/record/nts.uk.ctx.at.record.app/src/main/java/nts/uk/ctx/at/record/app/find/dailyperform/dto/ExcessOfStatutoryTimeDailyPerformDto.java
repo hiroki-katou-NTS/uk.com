@@ -59,7 +59,7 @@ public class ExcessOfStatutoryTimeDailyPerformDto implements ItemConst {
 	}
 
 	private ExcessOfStatutoryMidNightTime toExcessOfStatutory() {
-		return excessOfStatutoryMidNightTime == null ? new ExcessOfStatutoryMidNightTime(TimeDivergenceWithCalculation.defaultValue(), AttendanceTime.ZERO) 
+		return excessOfStatutoryMidNightTime == null ? new ExcessOfStatutoryMidNightTime(TimeDivergenceWithCalculation.defaultValue(), AttendanceTime.ZERO)
 											: new ExcessOfStatutoryMidNightTime(
 												excessOfStatutoryMidNightTime.getTime().createTimeDivWithCalc(),
 												toAttendanceTime(excessOfStatutoryMidNightTime.getBeforeApplicationTime()));

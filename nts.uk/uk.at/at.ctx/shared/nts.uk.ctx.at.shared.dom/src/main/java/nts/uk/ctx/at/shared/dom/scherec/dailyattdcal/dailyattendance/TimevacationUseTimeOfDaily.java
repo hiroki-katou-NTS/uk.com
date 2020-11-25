@@ -7,6 +7,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AdditionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.DeductionOffSetTime;
+import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHdFrameNo;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -25,22 +26,44 @@ public class TimevacationUseTimeOfDaily {
 	private AttendanceTime sixtyHourExcessHolidayUseTime;
 	//特別休暇使用時間
 	private AttendanceTime timeSpecialHolidayUseTime;
-	
+	//特別休暇枠NO
+	private Optional<SpecialHdFrameNo> specialHolidayFrameNo;
+	//子の看護休暇使用時間
+	private AttendanceTime timeChildCareHolidayUseTime;
+	//介護休暇使用時間
+	private AttendanceTime timeCareHolidayUseTime;
 	/**
 	 * Constructor 
 	 */
-	public TimevacationUseTimeOfDaily(AttendanceTime timeAnnualLeaveUseTime,
-			AttendanceTime timeCompensatoryLeaveUseTime, AttendanceTime sixtyHourExcessHolidayUseTime,
-			AttendanceTime timeSpecialHolidayUseTime) {
+	public TimevacationUseTimeOfDaily(
+			AttendanceTime timeAnnualLeaveUseTime,
+			AttendanceTime timeCompensatoryLeaveUseTime, 
+			AttendanceTime sixtyHourExcessHolidayUseTime,
+			AttendanceTime timeSpecialHolidayUseTime,
+			Optional<SpecialHdFrameNo> specialHolidayFrameNo,
+			AttendanceTime timeChildCareHolidayUseTime,
+			AttendanceTime timeCareHolidayUseTime) {
 		super();
 		this.timeAnnualLeaveUseTime = timeAnnualLeaveUseTime;
 		this.timeCompensatoryLeaveUseTime = timeCompensatoryLeaveUseTime;
 		this.sixtyHourExcessHolidayUseTime = sixtyHourExcessHolidayUseTime;
 		this.timeSpecialHolidayUseTime = timeSpecialHolidayUseTime;
+		
+		this.specialHolidayFrameNo = specialHolidayFrameNo.isPresent()?specialHolidayFrameNo:Optional.empty();
+		
+		this.timeChildCareHolidayUseTime = timeChildCareHolidayUseTime;
+		this.timeCareHolidayUseTime = timeCareHolidayUseTime;
 	}
 	
 	public static TimevacationUseTimeOfDaily defaultValue(){
-		return new TimevacationUseTimeOfDaily(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0));
+		return new TimevacationUseTimeOfDaily(
+				new AttendanceTime(0),
+				new AttendanceTime(0),
+				new AttendanceTime(0),
+				new AttendanceTime(0),
+				Optional.empty(),
+				new AttendanceTime(0),
+				new AttendanceTime(0));
 	}
 	
 	/**
@@ -56,7 +79,7 @@ public class TimevacationUseTimeOfDaily {
 	}
 
 	/**
-	 * 合計使用時間の計算
+	 * 加算使用時間の計算
 	 * @param holidayAddtionSet
 	 * @return
 	 */
@@ -69,22 +92,34 @@ public class TimevacationUseTimeOfDaily {
 			if(holidayAddtionSet.get().getAdditionVacationSet().getSpecialHoliday()==NotUseAtr.USE) {
 				result = result + this.timeSpecialHolidayUseTime.valueAsMinutes();
 			}
-			result = result + this.timeCompensatoryLeaveUseTime.valueAsMinutes() + this.sixtyHourExcessHolidayUseTime.valueAsMinutes();
+			result = result + this.timeCompensatoryLeaveUseTime.valueAsMinutes()
+							+ this.sixtyHourExcessHolidayUseTime.valueAsMinutes()
+							+ this.timeChildCareHolidayUseTime.valueAsMinutes()
+							+ this.timeCareHolidayUseTime.valueAsMinutes();
 		}else {
 			result = this.timeAnnualLeaveUseTime.valueAsMinutes()
 					+this.timeCompensatoryLeaveUseTime.valueAsMinutes()
 					+this.sixtyHourExcessHolidayUseTime.valueAsMinutes()
-					+this.timeSpecialHolidayUseTime.valueAsMinutes();
+					+this.timeSpecialHolidayUseTime.valueAsMinutes()
+					+this.timeChildCareHolidayUseTime.valueAsMinutes()
+					+this.timeCareHolidayUseTime.valueAsMinutes();
 		}	
 		return result;
 	}
 	
-	/** 合計使用時間 */
-	public AttendanceTime sum() {
+	/**
+	 * 
+	 * 合計使用時間の計算
+	 */
+	public int  totalVacationAddTime(){
+		int result = 0;
 		
-		return this.timeAnnualLeaveUseTime
-						.addHours(this.timeCompensatoryLeaveUseTime.valueAsMinutes())
-						.addHours(this.timeSpecialHolidayUseTime.valueAsMinutes())
-						.addHours(this.sixtyHourExcessHolidayUseTime.valueAsMinutes());
+		result = this.timeAnnualLeaveUseTime.valueAsMinutes()
+				+ this.timeCompensatoryLeaveUseTime.valueAsMinutes()
+				+ this.sixtyHourExcessHolidayUseTime.valueAsMinutes()
+				+ this.timeSpecialHolidayUseTime.valueAsMinutes()
+				+ this.timeChildCareHolidayUseTime.valueAsMinutes()
+				+ this.timeCareHolidayUseTime.valueAsMinutes();
+		return result;
 	}
 }

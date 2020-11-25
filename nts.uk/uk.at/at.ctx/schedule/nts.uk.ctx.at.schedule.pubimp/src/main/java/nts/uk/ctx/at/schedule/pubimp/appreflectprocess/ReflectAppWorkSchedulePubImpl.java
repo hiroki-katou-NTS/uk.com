@@ -37,12 +37,16 @@ import nts.uk.ctx.at.shared.dom.dailyprocess.calc.CalculateDailyRecordServiceCen
 import nts.uk.ctx.at.shared.dom.dailyprocess.calc.CalculateOption;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ICorrectionAttendanceRule;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
@@ -67,9 +71,6 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 	private WorkTimeSettingService workTimeSettingService;
 
 	@Inject
-	private BasicScheduleService basicScheduleService;
-
-	@Inject
 	private WorkScheduleRepository workScheduleRepository;
 
 	@Inject
@@ -90,11 +91,14 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 	@Override
 	public Pair<Object, AtomTask> process(Object application, GeneralDate date, Object reflectStatus, int preAppWorkScheReflectAttr) {
 		String companyId = AppContexts.user().companyId();
+		
 		RequireImpl impl = new RequireImpl(companyId, workTypeRepo, workTimeSettingRepository, service,
-				workTimeSettingService, basicScheduleService, workScheduleRepository, convertDailyRecordToAd,
+				workTimeSettingService, workScheduleRepository, convertDailyRecordToAd,
 				correctionAttendanceRule, calculateDailyRecordServiceCenterNew, requestSettingAdapter, snapshotRepo);
-		Pair<ReflectStatusResultShare, AtomTask> result = ReflectApplicationWorkSchedule.process(impl, companyId, 
+		
+		Pair<ReflectStatusResultShare, AtomTask> result = ReflectApplicationWorkSchedule.process(impl, companyId,
 				(ApplicationShare) application, date, (ReflectStatusResultShare) reflectStatus, preAppWorkScheReflectAttr);
+		
 		return Pair.of(result.getLeft(), result.getRight());
 	}
 
@@ -111,8 +115,6 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 
 		private final WorkTimeSettingService workTimeSettingService;
 
-		private final BasicScheduleService basicScheduleService;
-
 		private final WorkScheduleRepository workScheduleRepository;
 
 		private final DailyRecordConverter convertDailyRecordToAd;
@@ -126,12 +128,12 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 		private DailySnapshotWorkRepository snapshotRepo;
 
 		@Override
-		public Optional<WorkType> findByPK(String workTypeCd) {
+		public Optional<WorkType> getWorkType(String workTypeCd) {
 			return workTypeRepo.findByPK(companyId, workTypeCd);
 		}
 
 		@Override
-		public Optional<WorkTimeSetting> findByCode(String workTimeCode) {
+		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
 			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
 		}
 
@@ -141,14 +143,8 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 		}
 
 		@Override
-		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTimeCd, String workTypeCd,
-				Integer workNo) {
+		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd, Integer workNo) {
 			return workTimeSettingService.getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
-		}
-
-		@Override
-		public WorkStyle checkWorkDay(String workTypeCode) {
-			return basicScheduleService.checkWorkDay(workTypeCode);
 		}
 
 		@Override
@@ -241,5 +237,30 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 			
 			return snapshotRepo.find(sid, ymd);
 		}
+		
+		@Override
+		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
 	}
 }

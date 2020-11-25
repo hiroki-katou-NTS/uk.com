@@ -43,7 +43,7 @@ public class EmpInfoTerminal implements DomainAggregate {
 	 * IPアドレス
 	 */
 	@Getter
-	private Optional<IPAddress> ipAddress;
+	private Optional<FullIpAddress> ipAddress;
 
 	/**
 	 * MACアドレス
@@ -177,7 +177,7 @@ public class EmpInfoTerminal implements DomainAggregate {
 		/**
 		 * IPアドレス
 		 */
-		private Optional<IPAddress> ipAddress;
+		private Optional<FullIpAddress> ipAddress;
 
 		/**
 		 * MACアドレス
@@ -224,7 +224,7 @@ public class EmpInfoTerminal implements DomainAggregate {
 		 */
 		private Optional<EmpInfoTerMemo> empInfoTerMemo;
 
-		public EmpInfoTerminalBuilder(Optional<IPAddress> ipAddress, MacAddress macAddress,
+		public EmpInfoTerminalBuilder(Optional<FullIpAddress> ipAddress, MacAddress macAddress,
 				EmpInfoTerminalCode empInfoTerCode, Optional<EmpInfoTerSerialNo> terSerialNo,
 				EmpInfoTerminalName empInfoTerName, ContractCode contractCode) {
 			this.ipAddress = ipAddress;

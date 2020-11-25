@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.E
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 
 @Stateless
-public class WorkUpdateServiceImpl implements WorkUpdateService{
+public class WorkUpdateServiceImpl implements WorkUpdateService {
 
 	/**
 	 * 日別実績の編集状態

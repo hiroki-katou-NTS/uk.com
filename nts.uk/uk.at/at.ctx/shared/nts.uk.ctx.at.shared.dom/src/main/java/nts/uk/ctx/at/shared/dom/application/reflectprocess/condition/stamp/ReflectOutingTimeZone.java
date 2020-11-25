@@ -11,7 +11,6 @@ import lombok.val;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.application.stamp.StartEndClassificationShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.TimeStampAppShare;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
@@ -20,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 
 /**
  * @author thanh_nx
@@ -70,7 +70,7 @@ public class ReflectOutingTimeZone {
 							CancelAppStamp.createItemId(87, data.getDestinationTimeApp().getEngraveFrameNo(), 7)));
 			return Pair.of(
 					new OutingTimeSheet(new OutingFrameNo(data.getDestinationTimeApp().getEngraveFrameNo().intValue()),
-							Optional.of(new TimeActualStamp(null, new WorkStamp(data.getTimeOfDay(),
+							Optional.of(new TimeActualStamp(null, new WorkStamp(
 									new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.APPLICATION, null),
 											data.getTimeOfDay()),
 									data.getWorkLocationCd()), 0)),
@@ -86,7 +86,7 @@ public class ReflectOutingTimeZone {
 					new OutingFrameNo(data.getDestinationTimeApp().getEngraveFrameNo().intValue()), Optional.empty(),
 					null, null, data.getAppStampGoOutAtr().map(x -> GoingOutReason.valueOf(x.value)).orElse(null),
 					Optional.of(new TimeActualStamp(null,
-							new WorkStamp(data.getTimeOfDay(),
+							new WorkStamp(
 									new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.APPLICATION, null),
 											data.getTimeOfDay()),
 									data.getWorkLocationCd()),

@@ -39,7 +39,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancet
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
@@ -72,6 +71,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.Ac
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.TotalWorkingTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.IntervalExemptionTime;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
@@ -111,14 +111,14 @@ public class ReflectApplicationHelper {
 
 		TimeLeavingWork work = new TimeLeavingWork(new WorkNo(no), null, null);
 		work.setAttendanceStamp(Optional.of(new TimeActualStamp(null,
-				new WorkStamp(new TimeWithDayAttr(480),
+				new WorkStamp(
 						new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, null),
 								new TimeWithDayAttr(480)),
 						Optional.empty()),
 				0)));
 
 		work.setLeaveStamp(Optional.of(new TimeActualStamp(null,
-				new WorkStamp(new TimeWithDayAttr(1200),
+				new WorkStamp(
 						new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, null),
 								new TimeWithDayAttr(1200)),
 						Optional.empty()),
@@ -145,14 +145,14 @@ public class ReflectApplicationHelper {
 		// 日別勤怠の出退勤
 		TimeLeavingWork work = new TimeLeavingWork(new WorkNo(no), null, null);
 		work.setAttendanceStamp(Optional.of(new TimeActualStamp(null,
-				new WorkStamp(new TimeWithDayAttr(480),
+				new WorkStamp(
 						new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, null),
 								new TimeWithDayAttr(480)),
 						Optional.empty()),
 				0)));
 
 		work.setLeaveStamp(Optional.of(new TimeActualStamp(null,
-				new WorkStamp(new TimeWithDayAttr(1200),
+				new WorkStamp(
 						new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, null),
 								new TimeWithDayAttr(1200)),
 						Optional.empty()),
@@ -170,14 +170,14 @@ public class ReflectApplicationHelper {
 		// 日別勤怠の外出時間帯
 		OutingTimeSheet outSheet = new OutingTimeSheet(new OutingFrameNo(1),
 				Optional.of(new TimeActualStamp(null,
-						new WorkStamp(new TimeWithDayAttr(480),
+						new WorkStamp(
 								new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, null),
 										new TimeWithDayAttr(480)),
 								Optional.empty()),
 						0)),
 				new AttendanceTime(600), new AttendanceTime(600), GoingOutReason.PUBLIC,
 				Optional.of(new TimeActualStamp(null,
-						new WorkStamp(new TimeWithDayAttr(480),
+						new WorkStamp(
 								new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, null),
 										new TimeWithDayAttr(480)),
 								Optional.empty()),
@@ -214,13 +214,13 @@ public class ReflectApplicationHelper {
 		lateTimeOfDaily.add(new LateTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(111)),
 				TimeWithCalculation.sameTime(new AttendanceTime(111)), new WorkNo(no),
 				new TimevacationUseTimeOfDaily(new AttendanceTime(111), new AttendanceTime(111),
-						new AttendanceTime(111), new AttendanceTime(111)),
+						new AttendanceTime(111), new AttendanceTime(111), Optional.empty(), new AttendanceTime(111), new AttendanceTime(111)),
 				new IntervalExemptionTime(new AttendanceTime(111))));
 		List<LeaveEarlyTimeOfDaily> leaveEarlyTimeOfDaily = new ArrayList<>();
 		leaveEarlyTimeOfDaily.add(new LeaveEarlyTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(111)),
 				TimeWithCalculation.sameTime(new AttendanceTime(111)), new WorkNo(no),
 				new TimevacationUseTimeOfDaily(new AttendanceTime(111), new AttendanceTime(111),
-						new AttendanceTime(111), new AttendanceTime(111)),
+						new AttendanceTime(111), new AttendanceTime(111), Optional.empty(), new AttendanceTime(111), new AttendanceTime(111)),
 				new IntervalExemptionTime(new AttendanceTime(111))));
 		AttendanceTimeOfDailyAttendance attTime = new AttendanceTimeOfDailyAttendance(null,
 				ActualWorkingTimeOfDaily.of(new TotalWorkingTime(null, null, null, null, null, lateTimeOfDaily,

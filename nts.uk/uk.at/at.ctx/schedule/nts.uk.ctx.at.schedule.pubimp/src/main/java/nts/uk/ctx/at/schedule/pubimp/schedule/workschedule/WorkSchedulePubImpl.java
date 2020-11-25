@@ -84,7 +84,7 @@ public class WorkSchedulePubImpl implements WorkSchedulePub {
 	}
 
 	private WorkStampExport convertToWorkStamp(WorkStamp domain) {
-		return new WorkStampExport(domain.getAfterRoundingTime().v(), new WorkTimeInformationExport(
+		return new WorkStampExport( new WorkTimeInformationExport(
 				new ReasonTimeChangeExport(domain.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value,
 						domain.getTimeDay().getReasonTimeChange().getEngravingMethod().isPresent()
 								? domain.getTimeDay().getReasonTimeChange().getEngravingMethod().get().value

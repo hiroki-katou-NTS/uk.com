@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendance
 
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,6 +26,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class TimeLeavingWork extends DomainObject{
 	
 	/** 勤務NO */
@@ -37,7 +39,6 @@ public class TimeLeavingWork extends DomainObject{
 	private boolean canceledLate;
 	/** 早退を取り消した */
 	private boolean CanceledEarlyLeave;
-	
 	
 	private TimeSpanForCalc timespan;
 	

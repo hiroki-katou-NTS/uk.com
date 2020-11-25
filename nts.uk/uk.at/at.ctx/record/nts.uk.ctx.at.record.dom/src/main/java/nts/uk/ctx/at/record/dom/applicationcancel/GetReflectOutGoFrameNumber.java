@@ -29,20 +29,24 @@ public class GetReflectOutGoFrameNumber {
 			int goOutBefore = Integer.MIN_VALUE, goOutAfter =  Integer.MIN_VALUE;
 			int attBefore =  Integer.MIN_VALUE, attAfter =  Integer.MIN_VALUE;
 
-			if (after.getGoOut().isPresent() && after.getGoOut().get().getStamp().isPresent()) {
-				goOutAfter = after.getGoOut().get().getStamp().get().getAfterRoundingTime().v();
+			if (after.getGoOut().isPresent() && after.getGoOut().get().getStamp().isPresent()
+					&& after.getGoOut().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
+				goOutAfter = after.getGoOut().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
 			}
 
-			if (before.getGoOut().isPresent() && before.getGoOut().get().getStamp().isPresent()) {
-				goOutBefore = before.getGoOut().get().getStamp().get().getAfterRoundingTime().v();
+			if (before.getGoOut().isPresent() && before.getGoOut().get().getStamp().isPresent()
+					&& before.getGoOut().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
+				goOutBefore = before.getGoOut().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
 			}
 
-			if (after.getComeBack().isPresent() && after.getComeBack().get().getStamp().isPresent()) {
-				attAfter = after.getComeBack().get().getStamp().get().getAfterRoundingTime().v();
+			if (after.getComeBack().isPresent() && after.getComeBack().get().getStamp().isPresent()
+					&& after.getComeBack().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
+				attAfter = after.getComeBack().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
 			}
 
-			if (before.getComeBack().isPresent() && before.getComeBack().get().getStamp().isPresent()) {
-				attBefore = before.getComeBack().get().getStamp().get().getAfterRoundingTime().v();
+			if (before.getComeBack().isPresent() && before.getComeBack().get().getStamp().isPresent()
+					&& before.getComeBack().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
+				attBefore = before.getComeBack().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
 			}
 
 			if (goOutBefore != goOutAfter || attBefore != attAfter) {
