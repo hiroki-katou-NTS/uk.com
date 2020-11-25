@@ -257,7 +257,7 @@ export interface IAppDispInfoStartupOutput {
             opAppStartDate: string;
             opAppEndDate: string;
             opAppReason: string;
-            opAppStandardReasonCD?: number;
+            opAppStandardReasonCD?: number | string;
         };
         approvalLst: any[];
         authorComment: string;
@@ -315,7 +315,7 @@ export interface IApplication {
     inputDate: string;
     opAppEndDate: string;
     opAppReason: string | null;
-    opAppStandardReasonCD?: number;
+    opAppStandardReasonCD?: number | string;
     opAppStartDate: string;
     opReversionReason: null;
     opStampRequestMode: null;

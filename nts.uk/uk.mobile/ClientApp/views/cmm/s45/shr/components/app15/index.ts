@@ -68,7 +68,7 @@ export class CmmS45ShrComponentsApp15Component extends Vue {
 
                 const { application } = appDetail;
                 const { optionalItems } = application;
-
+                
                 optionalItems.forEach((item) => {
                     let optionalItem = appDetail.optionalItems.find((optionalItem) => {
 
@@ -105,6 +105,7 @@ export class CmmS45ShrComponentsApp15Component extends Vue {
                     });
                     vm.$emit('loading-complete');
                 });
+                vm.optionalItemApplication.sort((a,b) => a.optionalItemNo - b.optionalItemNo);
             });
         });
     }

@@ -23,13 +23,22 @@ import { IAppDispInfoStartupOutput, IApplication, IRes } from '../../s04/a/defin
         optionalItemApplication: {
             amount: {
                 loop: true,
-                required: true,
                 constraint: 'AnyItemAmount'
+            },
+            number: {
+                loop: true,
+                constraint: 'AnyItemTimes'
+            },
+            time: {
+                loop: true,
+                constraint: 'AnyItemTime'
             }
         }
     },
     constraints: [
-        'nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemAmount'
+        'nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemAmount',
+        'nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTimes',
+        'nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTime'
     ]
 })
 export class KafS20A2Component extends KafS00ShrComponent {
@@ -161,7 +170,7 @@ export class KafS20A2Component extends KafS00ShrComponent {
                 inputDate: '',
                 opAppEndDate: '',
                 opAppReason: '',
-                opAppStandardReasonCD: 0,
+                opAppStandardReasonCD: '',
                 opAppStartDate: '',
                 opReversionReason: null,
                 opStampRequestMode: null,
@@ -221,6 +230,7 @@ export class KafS20A2Component extends KafS00ShrComponent {
                     description
                 });
             });
+            vm.optionalItemApplication.sort((a,b) => a.optionalItemNo - b.optionalItemNo);
         }
 
         vm.$auth.user.then((user: any) => {
@@ -246,6 +256,9 @@ export class KafS20A2Component extends KafS00ShrComponent {
 
                         let controlAttendances: IControlOfAttendanceItemsDto[] = res[0].data;
                         let optionalNoItems: IOptionalItemDto[] = res[1].data;
+
+                        //sort
+                        optionalNoItems.sort((a,b) => a.optionalItemNo - b.optionalItemNo);
 
                         settingNoItems.forEach((itemNo: number) => {
                             let optionalItem = optionalNoItems.find((optionalItem) => {
@@ -280,8 +293,11 @@ export class KafS20A2Component extends KafS00ShrComponent {
                                     unit,
                                     description
                                 });
+                                vm.optionalItemApplication.sort((a,b) => a.optionalItemNo - b.optionalItemNo);
                             }
                         });
+
+                        vm.$updateValidator();
 
                     }).catch((error) => {
                         vm.handleErrorMessage(error);

@@ -116,16 +116,18 @@
           <!-- A2_6_4_1 -->
           <div class="position-relative mt-2">
             <nts-time-editor
-              v-model="item.time"
+              v-model="optionalItemApplication[index].time"
               v-if="item.optionalItemAtr == 0"
               v-bind:show-title="false"
+              v-bind:record-id="index"
               time-input-type="time-with-day"
               v-bind:columns="{ input: 'col-10' }"
             />
             <nts-number-editor
-              v-model="item.number"
+              v-model="optionalItemApplication[index].number"
               v-if="item.optionalItemAtr == 1"
               v-bind:show-title="false"
+              v-bind:record-id="index"
               v-bind:columns="{ input: 'col-10' }"
             />
             <nts-number-editor

@@ -10,7 +10,7 @@
         </div>
       </div>
       <!-- B1_4_2 -->
-      <div class="accordion">
+      <div class="accordion py-2">
         <div class="card">
           <div class="card-header">
             <button class="btn btn-link" type="button">
