@@ -341,7 +341,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                         const index = vm.findAttendanceRecItem(new model.AttendanceRecItem('', 0, '', columnIndex, position, exportAtr, '', 0));
                         if (index >= 0) {
                             attendanceItem.selectedTimeList = _.map(vm.attendanceRecItemList()[index].attendanceId,
-                                (item: any) => new model.SelectedTimeItem({itemId: item.attendanceItemId, operator: item.action}));
+                                (item: any) => new model.SelectedTimeItem({itemId: item.code, operator: item.action}));
                             attendanceItem.attribute.selected = vm.attendanceRecItemList()[index].attribute;
                         }
 

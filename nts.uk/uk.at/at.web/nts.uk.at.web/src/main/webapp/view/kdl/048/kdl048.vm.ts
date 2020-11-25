@@ -100,6 +100,7 @@ module nts.uk.at.view.kdl048.screenModel {
           }
         });
       });
+
     }
 
     // event when change item combo box
@@ -110,7 +111,7 @@ module nts.uk.at.view.kdl048.screenModel {
       }
       vm.currentCodeList2([]);
       vm.dataSelectedItemList([]);
-      let name;
+      let name: any;
       _.each(vm.attributeObject().attributeList, (itemcb: any) => {
         if (itemcb.attendanceTypeCode === codeChange) {
           name = itemcb.attendanceTypeName;
@@ -213,7 +214,7 @@ module nts.uk.at.view.kdl048.screenModel {
               exportAtr:  vm.objectDisplay.exportAtr,
               attendanceId: vm.dataSelectedItemList(),
               attribute: vm.valueCb()
-          });
+            });
           }
           // 項目名行の表示フラグ == False：表示しない
           // 項目名行の表示フラグ == True：表示すると表示入力区分 == １：表示のみ
@@ -228,7 +229,7 @@ module nts.uk.at.view.kdl048.screenModel {
               exportAtr:  vm.objectDisplay.exportAtr,
               attendanceId: vm.dataSelectedItemList(),
               attribute: vm.valueCb()
-          });
+            });
           }
           vm.$window.close();
         }
