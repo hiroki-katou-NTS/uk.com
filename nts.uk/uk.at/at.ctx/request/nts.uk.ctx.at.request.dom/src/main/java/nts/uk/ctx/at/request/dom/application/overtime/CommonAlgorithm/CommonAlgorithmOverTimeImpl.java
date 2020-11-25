@@ -442,6 +442,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		}
 		// 09_勤務種類就業時間帯の初期選択をセットする
 		InitWkTypeWkTimeOutput initWkTypeWkTimeOutput = commonAlgorithm.initWorkTypeWorkTime(employeeId,
+				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getBaseDate(),
 				dateOp.orElse(null),
 				workTypeLst,
 				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().orElse(Collections.emptyList()),
