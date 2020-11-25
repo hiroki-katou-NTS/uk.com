@@ -56,28 +56,47 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 					key: 'empID',
 					width: '300px',
 					headerCssClass: 'kaf018-d-header-empName',
-					columnCssClass: 'kaf018-d-column-empName',
 					formatter: (key: string) => vm.getDispEmpName(key)
 				}
 			);
 			let dateRangeNumber = moment(vm.endDate,'YYYY/MM/DD').diff(moment(vm.startDate,'YYYY/MM/DD'), 'days');
 			for(let i = 0; i <= dateRangeNumber; i++) {
-				vm.columns.push(
-					{ 
-						headerText: moment(moment(vm.startDate,'YYYY/MM/DD').add(i, 'd')).date(),
-						headerCssClass: vm.getHeaderCss(i),
-						group: [
-							{ 
-								headerText: moment(moment(vm.startDate,'YYYY/MM/DD').add(i, 'd')).format('ddd'),
-								key: 'dateInfoLst',
-								width: '60px',
-								headerCssClass: vm.getHeaderCss(i),
-								columnCssClass: 'kaf018-d-column-date',
-								formatter: (value: any) => vm.getStatusByDay(value, i)
-							}
-						]
-					}
-				);
+				if( i < dateRangeNumber) {
+					vm.columns.push(
+						{ 
+							headerText: moment(moment(vm.startDate,'YYYY/MM/DD').add(i, 'd')).date(),
+							headerCssClass: vm.getHeaderCss(i),
+							group: [
+								{ 
+									headerText: moment(moment(vm.startDate,'YYYY/MM/DD').add(i, 'd')).format('ddd'),
+									key: 'dateInfoLst',
+									width: '60px',
+									headerCssClass: vm.getHeaderCss(i),
+									columnCssClass: 'kaf018-d-column-date',
+									formatter: (value: any) => vm.getStatusByDay(value, i)
+								}
+							]
+						}
+					);	
+				} else {
+					vm.columns.push(
+						{ 
+							headerText: moment(moment(vm.startDate,'YYYY/MM/DD').add(i, 'd')).date(),
+							headerCssClass: vm.getHeaderCss(i),
+							group: [
+								{ 
+									headerText: moment(moment(vm.startDate,'YYYY/MM/DD').add(i, 'd')).format('ddd'),
+									key: 'dateInfoLst',
+									width: '77px',
+									headerCssClass: vm.getHeaderCss(i),
+									columnCssClass: 'kaf018-d-column-date',
+									formatter: (value: any) => vm.getStatusByDay(value, i)
+								}
+							]
+						}
+					);	
+				}
+				
 			}
 			let empID = '',
 				empCD = '',
@@ -98,7 +117,7 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 		getDispEmpName(value: string) {
 			const vm = this;
 			let	empInfo: EmpInfo = _.find(vm.dataSource, o => o.empID==value);
-			return empInfo.empCD + '　　　　' + empInfo.empName;
+			return '<span class="kaf018-d-column-empName">' + empInfo.empCD + '</span>' + '　　　　' + '<span class="kaf018-d-column-empName">' + empInfo.empName + '</span>';
 		}
 		
 		getHeaderCss(value: any) {

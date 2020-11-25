@@ -75,7 +75,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 					{ headerText: vm.$i18n('KAF018_390'), key: 'phase2', width: 250 },
 					{ headerText: vm.$i18n('KAF018_391'), key: 'phase3', width: 250 },
 					{ headerText: vm.$i18n('KAF018_392'), key: 'phase4', width: 250 },
-					{ headerText: vm.$i18n('KAF018_393'), key: 'phase5', width: 250 }
+					{ headerText: vm.$i18n('KAF018_393'), key: 'phase5', width: 267 }
 				],
 				features: [
 					{
