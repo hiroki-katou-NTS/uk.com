@@ -122,21 +122,28 @@ public class BreakTimeSheetGetter {
 		
 		val attendanceLeaveWorks = integrationOfDaily.getAttendanceLeave().map(c -> c.getTimeLeavingWorks()).orElse(new ArrayList<>());
 		
+		val withinWorkTimeSheet = new WithinWorkTimeSheet(new ArrayList<>(), new ArrayList<>(), Optional.empty(), Optional.empty());
+		
 		List<TimeLeavingWork> calcLateTimeLeavingWorksWorks = new ArrayList<>();
 		for(TimeLeavingWork timeLeavingWork : attendanceLeaveWorks) {
 			calcLateTimeLeavingWorksWorks.add(
 					oneDayCalcRange.calcLateTimeSheet(workType, workTime, integrationOfDaily,
 							new ArrayList<>(), personDailySetting.getAddSetting().getVacationCalcMethodSet(),
 							timeLeavingWork, 
-							new WithinWorkTimeSheet(new ArrayList<>(), new ArrayList<>(), Optional.empty(), Optional.empty())));
+							withinWorkTimeSheet));
 		}
 		
 		val attendanceLeave = new TimeLeavingOfDailyAttd(calcLateTimeLeavingWorksWorks, new WorkTimes(calcLateTimeLeavingWorksWorks.size()));
 		
+		val lateTimeSheet = withinWorkTimeSheet.getWithinWorkTimeFrame().stream()
+												.filter(c -> c.getLateTimeSheet().isPresent())
+												.map(c -> c.getLateTimeSheet().get())
+												.collect(Collectors.toList());
+		
 		/** 流動休憩用の時間帯作成 */
 		val timeSheet = oneDayCalcRange.provisionalDeterminationOfDeductionTimeSheet(workType, workTime, integrationOfDaily, 
 				oneDayCalcRange.getOneDayOfRange(), attendanceLeave, 
-				oneDayCalcRange.getPredetermineTimeSetForCalc());
+				oneDayCalcRange.getPredetermineTimeSetForCalc(), lateTimeSheet);
 		
 		return timeSheet.getForDeductionTimeZoneList();
 	}

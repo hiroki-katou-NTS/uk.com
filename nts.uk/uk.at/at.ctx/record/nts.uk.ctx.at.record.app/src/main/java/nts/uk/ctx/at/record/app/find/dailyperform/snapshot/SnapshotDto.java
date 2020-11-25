@@ -61,8 +61,8 @@ public class SnapshotDto extends AttendanceItemCommon {
 			dto.setEmployeeId(sid);
 			dto.setYmd(ymd);
 			dto.setPredetermineTime(snapshot.getPredetermineTime().v());
-			dto.setWorkTime(snapshot.getWorkInfo().getWorkTypeCode().v());
-			dto.setWorkType(snapshot.getWorkInfo().getWorkTimeCodeNotNull().map(c -> c.v()).orElse(null));
+			dto.setWorkTime(snapshot.getWorkInfo().getWorkTimeCodeNotNull().map(c -> c.v()).orElse(null));
+			dto.setWorkType(snapshot.getWorkInfo().getWorkTypeCode().v());
 			dto.exsistData();
 		}
 		return dto;
@@ -70,6 +70,10 @@ public class SnapshotDto extends AttendanceItemCommon {
 
 	@Override
 	public SnapShot toDomain(String employeeId, GeneralDate date) {
+		
+		if (!this.isHaveData()) {
+			return null;
+		}
 		
 		return SnapShot.of(new WorkInformation(workType, workTime), new AttendanceTime(predetermineTime));
 	}

@@ -243,7 +243,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		val stampIncorrectError = dailyRecordCreateErrorAlermService.stampIncorrect(integrationOfDaily);
 		val lackOfstampError = dailyRecordCreateErrorAlermService.lackOfTimeLeavingStamping(integrationOfDaily);
 		//if (stampIncorrectError != null || lackOfstampError != null) {
-		if (!stampIncorrectError.isPresent() || (!lackOfstampError.isEmpty() && lackOfstampError.get(0) != null)) {
+		if (stampIncorrectError.isPresent() || (!lackOfstampError.isEmpty() && lackOfstampError.get(0) != null)) {
 			return ManageCalcStateAndResult.failCalc(integrationOfDaily, attendanceItemConvertFactory);
 		}
 		

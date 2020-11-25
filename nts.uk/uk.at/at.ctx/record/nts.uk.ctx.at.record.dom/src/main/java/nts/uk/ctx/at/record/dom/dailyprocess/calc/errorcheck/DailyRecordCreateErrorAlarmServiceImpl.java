@@ -99,19 +99,25 @@ public class DailyRecordCreateErrorAlarmServiceImpl implements DailyRecordCreate
 		TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance = new TimeLeavingOfDailyPerformance(empId,
 				targetDate, integrationOfDaily.getAttendanceLeave().orElse(null));
 		// 出勤系打刻漏れをチェックする
-		returnList.add(this.lackOfStamping.lackOfStamping(companyId, empId, targetDate, workInfoOfDailyPerformance,timeLeavingOfDailyPerformance));
+		this.lackOfStamping.lackOfStamping(companyId, empId, targetDate, workInfoOfDailyPerformance,timeLeavingOfDailyPerformance).ifPresent(c -> {
+			returnList.add(c);
+		});
 		// 外出系打刻漏れをチェックする
-		OutingTimeOfDailyPerformance outingTime = integrationOfDaily.getOutingTime().isPresent()?new OutingTimeOfDailyPerformance(empId, targetDate, integrationOfDaily.getOutingTime().get()):null; 
+		OutingTimeOfDailyPerformance outingTime = integrationOfDaily.getOutingTime().map(c -> new OutingTimeOfDailyPerformance(empId, targetDate, c)).orElse(null);
 		returnList.addAll(goingOutStampLeakageChecking.goingOutStampLeakageChecking(companyId, empId, targetDate,
 				outingTime));
 		// 休憩系打刻漏れをチェックする
-		integrationOfDaily.getBreakTime().ifPresent(tc ->{
-			returnList.add(breakTimeStampLeakageChecking.breakTimeStampLeakageChecking(companyId, empId, targetDate,new BreakTimeOfDailyPerformance(empId, targetDate, tc)));
+		integrationOfDaily.getBreakTime().ifPresent(tc -> {
+			breakTimeStampLeakageChecking.breakTimeStampLeakageChecking(companyId, empId, targetDate, new BreakTimeOfDailyPerformance(empId, targetDate, tc)).ifPresent(c -> {
+				returnList.add(c);
+			});
 		});
 		// 臨時系打刻漏れをチェックする
-		TemporaryTimeOfDailyPerformance temporaryTimeOfDailyPerformance = integrationOfDaily.getTempTime().isPresent()?new TemporaryTimeOfDailyPerformance(empId, targetDate, integrationOfDaily.getTempTime().get()):null;
-		returnList.add(missingOfTemporaryStampChecking.missingOfTemporaryStampChecking(companyId, empId, targetDate,
-				temporaryTimeOfDailyPerformance));
+		TemporaryTimeOfDailyPerformance temporaryTime = integrationOfDaily.getTempTime().map(c -> new TemporaryTimeOfDailyPerformance(empId, targetDate, c)).orElse(null);
+		missingOfTemporaryStampChecking.missingOfTemporaryStampChecking(companyId, empId, targetDate, temporaryTime).ifPresent(c -> {
+					returnList.add(c);
+				});
+		
 		return returnList;
 	}
 	
@@ -123,12 +129,13 @@ public class DailyRecordCreateErrorAlarmServiceImpl implements DailyRecordCreate
 		String empId = integrationOfDaily.getEmployeeId();
 		GeneralDate targetDate = integrationOfDaily.getYmd();
 		// 出勤系打刻漏れをチェックする
-		WorkInfoOfDailyPerformance workInfoOfDailyPerformance = new WorkInfoOfDailyPerformance(empId, targetDate,
-				integrationOfDaily.getWorkInformation());
-		TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance = new TimeLeavingOfDailyPerformance(empId,
+		WorkInfoOfDailyPerformance workInfo = new WorkInfoOfDailyPerformance(empId, targetDate, integrationOfDaily.getWorkInformation());
+		TimeLeavingOfDailyPerformance timeLeaving = new TimeLeavingOfDailyPerformance(empId,
 				targetDate, integrationOfDaily.getAttendanceLeave().orElse(null));
 		// 出勤系打刻漏れをチェックする
-		returnList.add(this.lackOfStamping.lackOfStamping(companyId, empId, targetDate, workInfoOfDailyPerformance,timeLeavingOfDailyPerformance));
+		this.lackOfStamping.lackOfStamping(companyId, empId, targetDate, workInfo,timeLeaving).ifPresent(c -> {
+			returnList.add(c);
+		});
 		return returnList;
 	}
 	

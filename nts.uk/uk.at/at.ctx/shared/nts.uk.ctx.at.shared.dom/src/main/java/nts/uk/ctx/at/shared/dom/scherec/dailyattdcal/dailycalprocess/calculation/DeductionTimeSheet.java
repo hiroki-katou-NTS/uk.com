@@ -37,6 +37,7 @@ import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestTimeOfficeWorkCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.TotalRoundingSet;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -506,10 +507,11 @@ public class DeductionTimeSheet {
 			TimeSpanForDailyCalc oneDayOfRange,
 			TimeLeavingOfDailyAttd attendanceLeaveWork,
 			PredetermineTimeSetForCalc predetermineTimeSetForCalc, 
-			WithinWorkTimeSheet withinWorkingTimeSheet) {
+			List<LateTimeSheet> lateTimeSheet) {
 
 		// 固定休憩か流動休憩か確認する
-		if (integrationOfWorkTime.getFlowWorkRestTimezone(todayWorkType).get().isFixRestTime()) {// 固定休憩の場合
+		if (integrationOfWorkTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeForm() == WorkTimeForm.FIXED
+				|| integrationOfWorkTime.getFlowWorkRestTimezone(todayWorkType).get().isFixRestTime()) {// 固定休憩の場合
 			return createDedctionTimeSheet(
 					dedAtr,
 					todayWorkType,
@@ -526,7 +528,7 @@ public class DeductionTimeSheet {
 					todayWorkType,
 					integrationOfWorkTime,
 					integrationOfDaily,
-					oneDayOfRange, withinWorkingTimeSheet);
+					oneDayOfRange, lateTimeSheet);
 			
 		}
 	}
@@ -534,7 +536,7 @@ public class DeductionTimeSheet {
 	/** 控除時間帯の作成 */
 	private static List<TimeSheetOfDeductionItem> createDedctionTimeSheetFlow(DeductionAtr deductionAtr, WorkType workType, 
 			IntegrationOfWorkTime workTime, IntegrationOfDaily dailyRecord, TimeSpanForDailyCalc oneDayOfRange, 
-			WithinWorkTimeSheet withinWorkingTimeSheet) {
+			List<LateTimeSheet> lateTimeSheet) {
 		
 		/** ○計算範囲の取得 */
 		
@@ -552,11 +554,6 @@ public class DeductionTimeSheet {
 		val flowRestTimeSheet = workTime.getFlowWorkRestTimezone(workType)
 										.map(c -> c.getFlowRestTimezone().getFlowRestSet(oneDayOfRange))
 										.orElseGet(() -> new ArrayList<>());
-		
-		val lateTimeSheet = withinWorkingTimeSheet.getWithinWorkTimeFrame().stream()
-				.filter(c -> c.getLateTimeSheet().isPresent())
-				.map(c -> c.getLateTimeSheet().get())
-				.collect(Collectors.toList());
 		
 		/** △休憩計算開始時刻を取得 */
 		val startBreakTime = getStartBreakTime(lateTimeSheet, workTime, oneDayOfRange);

@@ -16,7 +16,7 @@ public class SnapshotOfDailyPerformCommand extends DailyWorkCommonCommand {
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
 		this.data = item == null || !item.isHaveData() ? Optional.empty() 
-				: Optional.of(((SnapshotDto) item).toDomain(getEmployeeId(), getWorkDate()));
+				: Optional.ofNullable(((SnapshotDto) item).toDomain(getEmployeeId(), getWorkDate()));
 	}
 
 	@Override

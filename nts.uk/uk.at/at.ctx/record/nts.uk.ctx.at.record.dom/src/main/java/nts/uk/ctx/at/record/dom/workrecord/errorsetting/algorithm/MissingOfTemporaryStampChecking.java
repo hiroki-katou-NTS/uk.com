@@ -20,7 +20,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Stateless
 public class MissingOfTemporaryStampChecking {
 
-	public EmployeeDailyPerError missingOfTemporaryStampChecking(String companyID, String employeeID,
+	public Optional<EmployeeDailyPerError> missingOfTemporaryStampChecking(String companyID, String employeeID,
 			GeneralDate processingDate, TemporaryTimeOfDailyPerformance temporaryTimeOfDailyPerformance) {
 
 		EmployeeDailyPerError employeeDailyPerError = null;
@@ -94,6 +94,6 @@ public class MissingOfTemporaryStampChecking {
 						new ErrorAlarmWorkRecordCode("S001"), attendanceItemIds);
 			}
 		}
-		return employeeDailyPerError;
+		return Optional.ofNullable(employeeDailyPerError);
 	}
 }
