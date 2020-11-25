@@ -7,9 +7,10 @@
 <body>
 	<ui:composition template="/master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<com:ValidatorScript>
-			</com:ValidatorScript>
-
+			<script>var dialogSize = { width: 450, height: 700 };</script>
+			<com:EnumScript>
+				nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.CarryforwardSetInShortageFlex
+			</com:EnumScript>
 			<com:scriptfile set="IGNITE" />
 
 			<com:stylefile path="./kmk004.k.style.css" />
@@ -17,8 +18,160 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="functions-area"></div>
-			<div id="contents-area" >
+			<div id="contents-area">
+				<div class="div_line">
+					<!-- K1_1 -->
+					<label style="font-size: 1.5rem;" data-bind="text:getTitle()"></label>
+					<!-- K1_2 -->
+					<hr />
+					<!-- K1_3 -->
+					<label style="float: right;" data-bind="text:getMessage()"></label>
+				</div>
+				<div class="div_line">
+					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_270')}</div>
+				</div>
+				<div class="div_line">
+					<!-- K3_2 -->
+					<label class="ml-20">#{i18n.getText('KMK004_271')}</label>
+					<!-- K3_3 -->
+					<div style="margin-left: 70px;"
+						data-bind="ntsSwitchButton: {
+									name: '#[KMK004_271]',
+									options: [ { code: 1, name: '#{i18n.getText('KMK004_272')}'},
+									            { code: 2, name: '#{i18n.getText('KMK004_273')}'}]
+									            ,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: screenData().clearingPeriod,
+									required: false,
+									enable: true }"></div>
+				</div>
+				<div class="div_line" style="align-items: center; display: flex;">
+					<!-- K3_4 -->
+					<label class="ml-20">#{i18n.getText('KMK004_274')}</label>
+					<!-- K3_5 -->
+					<div style="margin-left: 89px;"
+						data-bind="ntsComboBox: {
+											name: '#[KMK004_274]',
+											options: startMonthLst,
+											optionsValue: 'code',
+											visibleItemsCount: 12,
+											value: screenData().selectedMonth,
+											optionsText: 'name',
+											editable: false,
+											enable: screenData().clearingPeriod() == 2 ,
+											width:'65px',
+											required: false,
+											selectFirstIfNull: true,
+											columns: [
+												{ prop: 'name', length: 2 }
+											],
+											dropDownAttachedToBody:false
+											}"></div>
+					<!-- K3_6 -->
+					<label class="ml-20">#{i18n.getText('KMK004_275')}</label>
+					<!-- K3_7 -->
+					<div class="ml-20"
+						data-bind="ntsComboBox: {
+											name: '#[KMK004_275]',
+											options: [ { code: 2, name: '2ヶ月'},
+									            { code: 3, name: '3ヶ月'}],
+											optionsValue: 'code',
+											visibleItemsCount: 12,
+											value: screenData().selectedStage,
+											optionsText: 'name',
+											editable: false,
+											width:'75px',
+											enable: screenData().clearingPeriod() == 2,
+											required: false,
+											selectFirstIfNull: true,
+											columns: [
+												{ prop: 'name', length: 4 }
+											]}"></div>
+
+				</div>
+				<div class="div_line">
+					<!-- K3_8 -->
+					<label class="ml-20">#{i18n.getText('KMK004_276')}</label>
+					<!-- K3_9 -->
+					<div style="margin-left: 33px;"
+						data-bind="ntsSwitchButton: {
+									name: '#[KMK004_276]',
+									options: carryforwardSetInShortageFlex,
+									optionsValue: 'value',
+									optionsText: 'name',
+									value: screenData().selectedInShortageFlex,
+									required: false,
+									enable: screenData().clearingPeriod() == 2 }"></div>
+				</div>
+				<div class="div_line">
+					<!-- K4_1-->
+					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_279')}</div>
+					<!-- K4_2-->
+					<div style="margin-left:25px;"
+						data-bind="ntsRadioBoxGroup: {
+								options: [{id:1, name:'#{i18n.getText('KMK004_280')}'},
+								{id:2, name:'#{i18n.getText('KMK004_281')}'}],
+								optionsValue: 'id',
+								optionsText: 'name',
+								value: screenData().monthCountingMethod,
+								enable: true}"></div>
+				</div>
+				<div class="div_line">
+					<!-- K5_1-->
+					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_282')}</div>
+				</div>
+				<div class="div_line">
+					<!-- K5_2-->
+					<div class="ml-20"
+						data-bind="ntsCheckBox: { checked: screenData().includeOvertimeHours,enable:screenData().monthCountingMethod() == 1 }">#{i18n.getText('KMK004_283')}</div>
+					<!-- K5_3-->
+					<div class="ml-20"
+						data-bind="ntsCheckBox: { checked: screenData().includeNonStatutoryLeave}">#{i18n.getText('KMK004_284')}</div>
+				</div>
+				<div class="div_line">
+					<!-- K6_1-->
+					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_285')}</div>
+				</div>
+				<div class="div_line">
+
+					<!-- K5_2-->
+					<div class="ml-20"
+						data-bind="ntsCheckBox: { checked: screenData().legalFlextime }">#{i18n.getText('KMK004_286')}</div>
+				</div>
+
+				<div class="div_line" data-bind="if:screenMode == 'Company'">
+					<!-- K7_1-->
+					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_287')}</div>
+					<!-- K7_2-->
+					<div
+						data-bind="ntsSwitchButton: {
+									name: '#[KMK004_287]',
+									options: [ { code: 1, name: '#{i18n.getText('KMK004_288')}'},
+									            { code: 2, name: '#{i18n.getText('KMK004_289')}'}],
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: screenData().UseRegularWorkingHours,
+									required: false,
+									enable: true }"></div>
+
+
+				</div>
+				<div class="div_line">
+					<!--K7_3-->
+					<label data-bind="visible:screenMode !== 'Company'"
+						style="margin-left: 149px;">#{i18n.getText('KMK004_290')}</label>
+				</div>
+
+			</div>
+
+			<div id="functions-area-bottom">
+				<!-- K8_1 -->
+				<button data-bind="click: register" class="proceed large">#{i18n.getText('KMK004_234')}</button>
+				<!-- K8_2 -->
+				<button data-bind="click: close">#{i18n.getText('KMK004_235')}</button>
+				<!-- K8_3 -->
+				<button class="danger" data-bind="click: remove,visible:screenMode !== 'Company'">#{i18n.getText('KMK004_236')}</button>
 				
 			</div>
 		</ui:define>
