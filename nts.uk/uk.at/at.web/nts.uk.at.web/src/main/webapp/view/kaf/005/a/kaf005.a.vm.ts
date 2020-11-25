@@ -308,22 +308,59 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			_.forEach(overTime, (item: OverTime) => {
 				if (!_.isNil(item.applicationTime())) {
 					let overtimeApplicationSetting = {} as OvertimeApplicationSetting;
-					if (item.applicationTime() > 0) {
-						overtimeApplicationSetting.applicationTime = item.applicationTime();
-						overtimeApplicationSetting.frameNo = Number(item.frameNo);
-						overtimeApplicationSetting.attendanceType = AttendanceType.NORMALOVERTIME;
-						applicationTime.applicationTime.push(overtimeApplicationSetting);						
+					let overTimeShiftNight = {} as OverTimeShiftNight;
+					if (item.type == AttendanceType.NORMALOVERTIME) {
+						if (item.applicationTime() > 0) {
+							overtimeApplicationSetting.applicationTime = item.applicationTime();
+							overtimeApplicationSetting.frameNo = Number(item.frameNo);
+							overtimeApplicationSetting.attendanceType = AttendanceType.NORMALOVERTIME;
+							applicationTime.applicationTime.push(overtimeApplicationSetting);					
+						}
+					} else if (item.type == AttendanceType.MIDNIGHT_OUTSIDE) {
+						if (!_.isNil(item.applicationTime())) {
+							if (item.applicationTime() > 0) {
+								overTimeShiftNight.overTimeMidNight = item.applicationTime();							
+							}
+						}
+					} else if (item.type == AttendanceType.FLEX_OVERTIME) {
+						if (!_.isNil(item.applicationTime())) {
+							if (item.applicationTime() > 0) {
+								applicationTime.flexOverTime = item.applicationTime();							
+							}
+						}
 					}
 				}
 			});
+			// Type = 加給時間
+			if (_.isNil(vm.dataSource.calculationResultOp)) {
+				let calculationResult = vm.dataSource.calculationResultOp;
+				if (calculationResult.flag == 0 && calculationResult.overTimeZoneFlag == 0) {
+					if (!_.isEmpty(calculationResult.applicationTimes)) {
+						let applicationTime_ = calculationResult.applicationTimes[0];
+						if (!_.isEmpty(applicationTime_.applicationTime)) {
+							_.forEach(applicationTime_.applicationTime, (item: OvertimeApplicationSetting) => {
+								applicationTime.applicationTime.push(item);
+							});
+						}
+					}
+				}
+			}
+			
+			
+			
+			
+			
+			// A_7
 			let holidayTime = vm.holidayTime() as Array<HolidayTime>;
 			_.forEach(holidayTime, (item: HolidayTime) => {
-				if (!_.isNil(item.start())) {
-					let overtimeApplicationSetting = {} as OvertimeApplicationSetting;
-					overtimeApplicationSetting.applicationTime = item.start();
-					overtimeApplicationSetting.frameNo = Number(item.frameNo);
-					overtimeApplicationSetting.attendanceType = AttendanceType.BREAKTIME;
-					applicationTime.applicationTime.push(overtimeApplicationSetting);
+				if (!_.isNil(item.start()) && item.type == AttendanceType.BREAKTIME) {
+					if (item.start() > 0) {
+						let overtimeApplicationSetting = {} as OvertimeApplicationSetting;
+						overtimeApplicationSetting.applicationTime = item.start();
+						overtimeApplicationSetting.frameNo = Number(item.frameNo);
+						overtimeApplicationSetting.attendanceType = AttendanceType.BREAKTIME;
+						applicationTime.applicationTime.push(overtimeApplicationSetting);						
+					}
 				}
 			})
 
@@ -331,7 +368,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 
 
 
-			// 
+			// common application
 			appOverTime.application = {} as ApplicationDto;
 			appOverTime.application = ko.toJS(vm.application);
 			appOverTime.application.employeeID = vm.$user.employeeId;
