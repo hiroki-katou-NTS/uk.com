@@ -210,32 +210,32 @@ public class WorkSchedule implements DomainAggregate {
 			case 31:
 				// 出勤時刻1(31)
 				this.optTimeLeaving.get()
-					.getAttendanceLeavingWork( 1 )
-					.get()
-					.getAttendanceStamp().get().setStamp( Optional.of( (WorkStamp) value) );
+					.getAttendanceLeavingWork( 1 ).get()
+					.getAttendanceStamp().get()
+					.setStamp( Optional.of( (WorkStamp) value) );
 				break;
 
 			case 34:
 				// 退勤時刻1(34)	
 				this.optTimeLeaving.get()
-					.getAttendanceLeavingWork( 1 )
-					.get()
-					.getLeaveStamp().get().setStamp( Optional.of( (WorkStamp) value) );
+					.getAttendanceLeavingWork( 1 ).get()
+					.getLeaveStamp().get()
+					.setStamp( Optional.of( (WorkStamp) value) );
 				break;
 			case 41:
 				// 出勤時刻2(41)
 				this.optTimeLeaving.get()
-					.getAttendanceLeavingWork( 2 )
-					.get()
-					.getAttendanceStamp().get().setStamp( Optional.of( (WorkStamp) value) );
+					.getAttendanceLeavingWork( 2 ).get()
+					.getAttendanceStamp().get()
+					.setStamp( Optional.of( (WorkStamp) value) );
 				break;
 
 			case 44:
 				// 退勤時刻2(44)
 				this.optTimeLeaving.get()
-					.getAttendanceLeavingWork( 2 )
-					.get()
-					.getLeaveStamp().get().setStamp( Optional.of( (WorkStamp) value) );
+					.getAttendanceLeavingWork( 2 ).get()
+					.getLeaveStamp().get()
+					.setStamp( Optional.of( (WorkStamp) value) );
 				break;
 			default:
 				break;
@@ -255,24 +255,28 @@ public class WorkSchedule implements DomainAggregate {
 			case 31:
 				// 出勤時刻1(31)
 				return (T) this.optTimeLeaving.get()
-						.getAttendanceLeavingWork(1)
-						.get().getAttendanceStamp().get().getStamp().get();
+						.getAttendanceLeavingWork(1).get()
+						.getAttendanceStamp().get()
+						.getStamp().get();
 				
 			case 34:
 				// 退勤時刻1(34)
 				return (T) this.optTimeLeaving.get()
-						.getAttendanceLeavingWork(1)
-						.get().getLeaveStamp().get().getStamp().get();
+						.getAttendanceLeavingWork(1).get()
+						.getLeaveStamp().get()
+						.getStamp().get();
 			case 41:
 				// 出勤時刻2(41)
 				return (T) this.optTimeLeaving.get()
-						.getAttendanceLeavingWork(2)
-						.get().getAttendanceStamp().get().getStamp().get();
+						.getAttendanceLeavingWork(2).get()
+						.getAttendanceStamp().get()
+						.getStamp().get();
 			case 44:
 				// 退勤時刻2(44)
 				return (T) this.optTimeLeaving.get()
-						.getAttendanceLeavingWork(2)
-						.get().getLeaveStamp().get().getStamp().get();
+						.getAttendanceLeavingWork(2).get()
+						.getLeaveStamp().get()
+						.getStamp().get();
 			default:
 				return null;
 		}
