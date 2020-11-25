@@ -46,12 +46,12 @@ public class HolidayAcqManageByYMDTest {
 	
 	@Test
 	public void test_getManagementPeriod() {
-		HolidayAcqManageByYMD holidayAcqManageByYMD = new HolidayAcqManageByYMD(GeneralDate.ymd(2020, 11, 11), new FourWeekDays(4.0));
+		HolidayAcqManageByYMD holidayAcqManageByYMD = new HolidayAcqManageByYMD(GeneralDate.ymd(2020, 11, 12), new FourWeekDays(4.0));
 		HolidayAcqManaPeriod result = holidayAcqManageByYMD.getManagementPeriod(require, GeneralDate.ymd(2020, 11, 11));
 		
 		assertThat(result.getHolidayDays().v()).isEqualTo(4.0);
 		assertThat(result.getPeriod())
-				.isEqualTo(new DatePeriod(GeneralDate.ymd(2020, 11, 11), GeneralDate.ymd(2020, 12, 8)));
+				.isEqualTo(new DatePeriod(GeneralDate.ymd(2020, 11, 12), GeneralDate.ymd(2020, 12, 9)));
 	}
 
 }
