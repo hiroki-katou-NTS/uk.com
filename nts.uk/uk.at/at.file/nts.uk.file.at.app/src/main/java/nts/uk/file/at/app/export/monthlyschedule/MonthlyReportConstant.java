@@ -30,6 +30,10 @@ public class MonthlyReportConstant {
 	/** The Constant FONT_SIZE. */
 	public static final double BIG_SIZE = 6;
 	public static final double SMALL_SIZE = 4.5;
+	public static final String BIG_SIZE_HEADER_SETTING = "14";
+	public static final String SMALL_SIZE_HEADER_SETTING = "11";
+	public static final String BIG_SIZE_HEADER_COMPANY_DATE = "7";
+	public static final String SMALL_SIZE_HEADER_COMPANY_DATE = "5";
 	
 	/** The Constant DATA_PREFIX. */
 	public static final String DATA_PREFIX = "DATA_";

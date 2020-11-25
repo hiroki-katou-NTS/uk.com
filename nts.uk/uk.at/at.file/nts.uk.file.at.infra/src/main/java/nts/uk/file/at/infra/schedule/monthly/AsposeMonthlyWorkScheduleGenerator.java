@@ -2883,8 +2883,12 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 								, Worksheet sheet
 								, MonthlyPerformanceReportData reportData
 								, int dateRow) {
-		String settingNameFontSize = outputItem.getTextSize() == TextSizeCommonEnum.BIG ? "14" : "11"; 
-		String companyDateFontSize = outputItem.getTextSize() == TextSizeCommonEnum.BIG ? "7" : "5.5"; 
+		String settingNameFontSize = outputItem.getTextSize() == TextSizeCommonEnum.BIG
+						? MonthlyReportConstant.BIG_SIZE_HEADER_SETTING
+						: MonthlyReportConstant.SMALL_SIZE_HEADER_SETTING; 
+		String companyDateFontSize = outputItem.getTextSize() == TextSizeCommonEnum.BIG 
+						? MonthlyReportConstant.BIG_SIZE_HEADER_COMPANY_DATE
+						: MonthlyReportConstant.SMALL_SIZE_HEADER_COMPANY_DATE; ; 
 		// Company name
 		PageSetup pageSetup = sheet.getPageSetup();
 		pageSetup.setHeader(0, "&" + companyDateFontSize + "&\"MS ゴシック\" " + reportData.getHeaderData().companyName);
