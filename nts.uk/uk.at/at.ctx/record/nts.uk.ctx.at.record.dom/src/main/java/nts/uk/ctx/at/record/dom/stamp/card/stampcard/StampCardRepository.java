@@ -97,4 +97,6 @@ public interface StampCardRepository {
 	 */
 	List<StampCard> getLstStampCardByLstSidAndContractCd(List<String> sids, String contractCd);
 
+	List<StampCard> getListStampCardByCardNumbers(List<String> cardNos);
+
 }
