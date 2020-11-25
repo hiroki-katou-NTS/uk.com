@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.service.est36timecfm;
 
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeCompanyRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.BasicCheckName;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.extractresult.ExtractResultDto;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMessage;
@@ -9,6 +8,7 @@ import nts.uk.ctx.at.shared.dom.scherec.alarm.alarmlistactractionresult.AlarmVal
 import nts.uk.ctx.at.shared.dom.scherec.alarm.alarmlistactractionresult.AlarmValueMessage;
 import nts.uk.ctx.at.shared.dom.scherec.alarm.alarmlistactractionresult.MessageDisplay;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfCompany;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.Company36AgreedHoursRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
 import nts.uk.shr.com.i18n.TextResource;
 
@@ -27,7 +27,7 @@ import java.util.Optional;
 public class Est36TimeCfmService {
 
     @Inject
-    private AgreementTimeCompanyRepository agreementTimeCompanyRepo;
+    private Company36AgreedHoursRepository company36AgreedHoursRepo;
 
     /**
      * ３６協定目安時間確認
@@ -42,11 +42,11 @@ public class Est36TimeCfmService {
         List<ExtractResultDto> results = new ArrayList<>();
 
         // ドメインモデル「会社３６協定時間」を取得する。
-        Optional<AgreementTimeOfCompany> generalSettingOpt = agreementTimeCompanyRepo.find(cid,
+        Optional<AgreementTimeOfCompany> generalSettingOpt = company36AgreedHoursRepo.getByCid(cid,
                 LaborSystemtAtr.GENERAL_LABOR_SYSTEM);
 
         // ドメインモデル「会社３６協定時間」を取得する。
-        Optional<AgreementTimeOfCompany> systemSettingOpt = agreementTimeCompanyRepo.find(cid,
+        Optional<AgreementTimeOfCompany> systemSettingOpt = company36AgreedHoursRepo.getByCid(cid,
                 LaborSystemtAtr.DEFORMATION_WORKING_TIME_SYSTEM);
 
         // 取得したデータをチェック

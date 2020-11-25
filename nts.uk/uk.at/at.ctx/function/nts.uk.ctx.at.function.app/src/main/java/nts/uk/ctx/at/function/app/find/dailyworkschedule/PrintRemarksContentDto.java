@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.function.app.find.dailyworkschedule;
 
+import java.util.List;
+
 import lombok.Data;
 
 /**
@@ -18,4 +20,8 @@ public class PrintRemarksContentDto {
 	
 	/** The print item. */
 	private int printItem;
+	
+	private String divergenceReasonCode;
+	
+	private List<String> reasonForDivergence;
 }

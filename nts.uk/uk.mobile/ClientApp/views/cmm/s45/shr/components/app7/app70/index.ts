@@ -77,10 +77,32 @@ export class CmmS45ShrComponentsApp70Component extends Vue {
             this.fetchData(vm.params);
         });
 
+        vm.$watch('params.appDispInfoStartupOutput', (newV, oldV) => {
+            vm.resetData();
+            vm.fetchData(vm.params);
+        });
     }
 
     public mounted() {
 
+    }
+
+    private resetData() {
+        const self = this;
+
+        self.listWorkHours = [];
+        self.listTempoHours = [];
+        self.listOutingHours = [];
+        self.listBreakHours = [];
+        self.listNursingHours = [];
+        self.listParentHours = [];
+
+        self.listDestWorkHour = [];
+        self.listDestTempoHour = [];
+        self.listDestOutingHour = [];
+        self.listDestBreakHour = [];
+        self.listDestNursingHour = [];
+        self.listDestParentHour = [];
     }
 
     private fetchData(params: any) {
@@ -287,11 +309,11 @@ export class CmmS45ShrComponentsApp70Component extends Vue {
         }
 
         if (!_.isEmpty(self.listDestinationTimeApp)) {
-            self.listDestinationTimeApp.forEach((item) => {
+            self.listDestinationTimeApp.forEach((item: DestinationTimeAppDto) => {
                 // cancel workHour (type = 0)
                 if (item.timeStampAppEnum === 0) {
                     self.listDestWorkHour.push(item.engraveFrameNo);
-                    if (_.filter(self.listDestWorkHour,  (x) => x = item.engraveFrameNo).length === 0) {
+                    if (_.filter(self.listWorkHours, (x) => x.frame === item.engraveFrameNo).length > 0) {
                         self.listWorkHours = _.map(self.listWorkHours, (o: TimeSetDisp) => {
                             if (o.frame === item.engraveFrameNo) {
                                 o.cancelAtr = true;
@@ -308,7 +330,7 @@ export class CmmS45ShrComponentsApp70Component extends Vue {
                 // cancel tempoHour (type = 1)
                 if (item.timeStampAppEnum === 1) {
                     self.listDestTempoHour.push(item.engraveFrameNo);
-                    if (_.filter(self.listDestTempoHour,  (x) => x = item.engraveFrameNo).length === 0) {
+                    if (_.filter(self.listTempoHours, (x) => x.frame === item.engraveFrameNo).length > 0) {
                         self.listTempoHours = _.map(self.listTempoHours, (o: TimeSetDisp) => {
                             if (o.frame === item.engraveFrameNo) {
                                 o.cancelAtr = true;
@@ -325,7 +347,7 @@ export class CmmS45ShrComponentsApp70Component extends Vue {
                 // cancel outingHour (type = 2)
                 if (item.timeStampAppEnum === 2) {
                     self.listDestOutingHour.push(item.engraveFrameNo);
-                    if (_.filter(self.listDestOutingHour,  (x) => x = item.engraveFrameNo).length === 0) {
+                    if (_.filter(self.listOutingHours, (x) => x.frame === item.engraveFrameNo).length > 0) {
                         self.listOutingHours = _.map(self.listOutingHours, (o: TimeSetDisp) => {
                             if (o.frame === item.engraveFrameNo) {
                                 o.cancelAtr = true;
@@ -342,11 +364,11 @@ export class CmmS45ShrComponentsApp70Component extends Vue {
         }
 
         if (!_.isEmpty(self.listDestinationTimeZoneApp)) {
-            self.listDestinationTimeZoneApp.forEach((item) => {
+            self.listDestinationTimeZoneApp.forEach((item: DestinationTimeZoneAppDto) => {
                 // cancel breakHour (type = 2)
                 if (item.timeZoneStampClassification === 2) {
                     self.listDestBreakHour.push(item.engraveFrameNo);
-                    if (_.filter(self.listDestBreakHour,  (x) => x = item.engraveFrameNo).length === 0) {
+                    if (_.filter(self.listBreakHours, (x) => x.frame === item.engraveFrameNo).length > 0) {
                         self.listBreakHours = _.map(self.listBreakHours, (o: TimeSetDisp) => {
                             if (o.frame === item.engraveFrameNo) {
                                 o.cancelAtr = true;
@@ -363,7 +385,7 @@ export class CmmS45ShrComponentsApp70Component extends Vue {
                 // cancel parentHour (type = 0)
                 if (item.timeZoneStampClassification === 0) {
                     self.listDestParentHour.push(item.engraveFrameNo);
-                    if (_.filter(self.listDestParentHour,  (x) => x = item.engraveFrameNo).length === 0) {
+                    if (_.filter(self.listParentHours, (x) => x.frame === item.engraveFrameNo).length > 0) {
                         self.listParentHours = _.map(self.listParentHours, (o: TimeSetDisp) => {
                             if (o.frame === item.engraveFrameNo) {
                                 o.cancelAtr = true;
@@ -380,7 +402,7 @@ export class CmmS45ShrComponentsApp70Component extends Vue {
                 // cancel nursing (type = 1)
                 if (item.timeZoneStampClassification === 1) {
                     self.listDestNursingHour.push(item.engraveFrameNo);
-                    if (_.filter(self.listDestNursingHour,  (x) => x = item.engraveFrameNo).length === 0) {
+                    if (_.filter(self.listNursingHours, (x) => x.frame === item.engraveFrameNo).length > 0) {
                         self.listNursingHours = _.map(self.listNursingHours, (o: TimeSetDisp) => {
                             if (o.frame === item.engraveFrameNo) {
                                 o.cancelAtr = true;
@@ -419,14 +441,15 @@ export class CmmS45ShrComponentsApp70Component extends Vue {
 
                         return x;
                     });
-                } else {
-                    // neu chua co item trong list workHours -> tao moi
-                    let workHour: TimeSetDisp;
-                    workHour = new TimeSetDisp(item.frameNo === 1 ? 'KAFS02_4' : 'KAFS02_6', item.frameNo, item.opStartTime, item.opEndTime, null, null, false);
-
-
-                    self.listWorkHours.push(workHour);
                 }
+                //  else {
+                //     // neu chua co item trong list workHours -> tao moi
+                //     let workHour: TimeSetDisp;
+                //     workHour = new TimeSetDisp(item.frameNo === 1 ? 'KAFS02_4' : 'KAFS02_6', item.frameNo, item.opStartTime, item.opEndTime, null, null, false);
+
+
+                //     self.listWorkHours.push(workHour);
+                // }
             });
 
             // tempoHour
@@ -440,13 +463,14 @@ export class CmmS45ShrComponentsApp70Component extends Vue {
 
                         return x;
                     });
-                } else {
-                    // neu chua co item trong list tempoHour -> tao moi
-                    let tempohour: TimeSetDisp;
-                    tempohour = new TimeSetDisp('KAFS02_7', item.frameNo, item.opStartTime, item.opEndTime, null, null, false);
-
-                    self.listTempoHours.push(tempohour);
                 }
+                // else {
+                //     // neu chua co item trong list tempoHour -> tao moi
+                //     let tempohour: TimeSetDisp;
+                //     tempohour = new TimeSetDisp('KAFS02_7', item.frameNo, item.opStartTime, item.opEndTime, null, null, false);
+
+                //     self.listTempoHours.push(tempohour);
+                // }
             });
 
             // outingHours
@@ -460,13 +484,14 @@ export class CmmS45ShrComponentsApp70Component extends Vue {
 
                         return x;
                     });
-                } else {
-                    // neu chua co item trong list workHours -> tao moi
-                    let outingHour: TimeSetDisp;
-                    outingHour = new TimeSetDisp('KAFS02_9', item.frameNo, item.opStartTime, item.opEndTime, null, null, item.opGoOutReasonAtr);
-
-                    self.listOutingHours.push(outingHour);
                 }
+                // else {
+                //     // neu chua co item trong list workHours -> tao moi
+                //     let outingHour: TimeSetDisp;
+                //     outingHour = new TimeSetDisp('KAFS02_9', item.frameNo, item.opStartTime, item.opEndTime, null, null, item.opGoOutReasonAtr);
+
+                //     self.listOutingHours.push(outingHour);
+                // }
             });
 
             // breakHours
@@ -480,13 +505,14 @@ export class CmmS45ShrComponentsApp70Component extends Vue {
 
                         return x;
                     });
-                } else {
-                    // neu chua co item trong list breakHours -> tao moi
-                    let breakHour: TimeSetDisp;
-                    breakHour = new TimeSetDisp('KAFS02_12', item.frameNo, item.opStartTime, item.opEndTime, null, null, false);
-
-                    self.listBreakHours.push(breakHour);
                 }
+                // else {
+                //     // neu chua co item trong list breakHours -> tao moi
+                //     let breakHour: TimeSetDisp;
+                //     breakHour = new TimeSetDisp('KAFS02_12', item.frameNo, item.opStartTime, item.opEndTime, null, null, false);
+
+                //     self.listBreakHours.push(breakHour);
+                // }
             });
 
             // parentingHours
@@ -500,13 +526,14 @@ export class CmmS45ShrComponentsApp70Component extends Vue {
 
                         return x;
                     });
-                } else {
-                    // neu chua co item trong list parentingHours -> tao moi
-                    let parentHour: TimeSetDisp;
-                    parentHour = new TimeSetDisp('KAFS02_13', item.frameNo, item.opStartTime, item.opEndTime, null, null, false);
-
-                    self.listParentHours.push(parentHour);
                 }
+                // else {
+                //     // neu chua co item trong list parentingHours -> tao moi
+                //     let parentHour: TimeSetDisp;
+                //     parentHour = new TimeSetDisp('KAFS02_13', item.frameNo, item.opStartTime, item.opEndTime, null, null, false);
+
+                //     self.listParentHours.push(parentHour);
+                // }
             });
 
             // nursingHours
@@ -520,13 +547,14 @@ export class CmmS45ShrComponentsApp70Component extends Vue {
 
                         return x;
                     });
-                } else {
-                    // neu chua co item trong list nursingHours -> tao moi
-                    let nursingHour: TimeSetDisp;
-                    nursingHour = new TimeSetDisp('KAFS02_15', item.frameNo, item.opStartTime, item.opEndTime, null, null, false);
-
-                    self.listNursingHours.push(nursingHour);
                 }
+                // else {
+                //     // neu chua co item trong list nursingHours -> tao moi
+                //     let nursingHour: TimeSetDisp;
+                //     nursingHour = new TimeSetDisp('KAFS02_15', item.frameNo, item.opStartTime, item.opEndTime, null, null, false);
+
+                //     self.listNursingHours.push(nursingHour);
+                // }
             });
         }
 
@@ -578,11 +606,11 @@ export class CmmS45ShrComponentsApp70Component extends Vue {
             }
         });
     }
-    
+
     get condition4() {
         const self = this;
 
-        if (self.dataFetch.appStampReflectOptional.temporaryAttendence === 1) {
+        if (self.dataFetch.appStampReflectOptional.temporaryAttendence === 1 && self.dataFetch.useTemporary) {
             return true;
         }
 
@@ -651,6 +679,18 @@ export class CmmS45ShrComponentsApp70Component extends Vue {
         }
 
         return true;
+    }
+
+    public dispHRFrame(itemWH: TimeSetDisp) {
+        const self = this;
+
+        if (itemWH.frame === self.listWorkHours.length) {
+            if (self.listTempoHours.length > 0) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
 

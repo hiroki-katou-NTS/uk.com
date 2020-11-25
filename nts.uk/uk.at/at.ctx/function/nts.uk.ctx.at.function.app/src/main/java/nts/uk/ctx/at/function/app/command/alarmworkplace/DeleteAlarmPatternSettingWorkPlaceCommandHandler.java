@@ -19,6 +19,6 @@ public class DeleteAlarmPatternSettingWorkPlaceCommandHandler extends CommandHan
     @Override
     protected void handle(CommandHandlerContext<DeleteAlarmPatternSettingWorkPlaceCommand> context) {
         DeleteAlarmPatternSettingWorkPlaceCommand command = context.getCommand();
-        repository.delete(AppContexts.user().companyId(),command.getCode());
+        repository.delete(AppContexts.user().companyId(), command.getCode());
     }
 }

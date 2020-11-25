@@ -6,6 +6,8 @@ import java.util.List;
 
 @Data
 public class AlarmPermissionSettingCommand {
-	private boolean authSetting;
-	private List<String> roleIds;
+
+    private boolean authSetting;
+
+    private List<String> roleIds;
 }

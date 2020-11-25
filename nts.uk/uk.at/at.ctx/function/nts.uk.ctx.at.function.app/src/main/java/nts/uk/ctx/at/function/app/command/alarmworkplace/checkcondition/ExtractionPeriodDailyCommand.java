@@ -13,51 +13,47 @@ import nts.uk.ctx.at.function.dom.alarmworkplace.ExtractionPeriodDaily;
 @Data
 public class ExtractionPeriodDailyCommand {
 
-	//Start date
-	private int strSpecify;
+    //Start date
+    private int strSpecify;
 
-	private Integer strPreviousMonth;
+    private Integer strPreviousMonth;
 
-	private Integer strMonth;
+    private Integer strMonth;
 
-	private Boolean strCurrentMonth;
+    private Integer strPreviousDay;
 
-	private Integer strPreviousDay;
+    private Integer strDay;
 
-	private Integer strDay;
+    //End date
 
-	//End date
+    private int endSpecify;
 
-	private int endSpecify;
+    private Integer endPreviousDay;
 
-	private Integer endPreviousDay;
+    private Integer endDay;
 
-	private Boolean endMakeToDay;
+    private Integer endPreviousMonth;
 
-	private Integer endDay;
+    private Integer endMonth;
 
-	private Integer endPreviousMonth;
+    public static ExtractionPeriodDaily toDomain(ExtractionPeriodDailyCommand command) {
 
-	private Integer endMonth;
-	
-	public static ExtractionPeriodDaily toDomain(ExtractionPeriodDailyCommand command){
-		
-		StartDate startDate = new StartDate(command.strSpecify);
-		
-		if(command.strSpecify == StartSpecify.DAYS.value){
-			startDate.setStartDay(EnumAdaptor.valueOf(command.strPreviousDay, PreviousClassification.class), command.strDay, command.strDay == 0);
-		}else if(command.strSpecify == StartSpecify.MONTH.value){
-			startDate.setStartMonth(EnumAdaptor.valueOf(command.strPreviousMonth, PreviousClassification.class), command.strMonth, command.strMonth == SpecifiedMonth.CURRENTMONTH.value);
-		}
-		
-		EndDate endDate = new EndDate(command.endSpecify);
-		
-		if(command.endSpecify == EndSpecify.DAYS.value){
-			endDate.setEndDay(EnumAdaptor.valueOf(command.endPreviousDay, PreviousClassification.class),command.endDay, command.endDay == 0);
-		}else if(command.endSpecify == EndSpecify.MONTH.value){
-			endDate.setEndMonth(EnumAdaptor.valueOf(command.endPreviousMonth, PreviousClassification.class), command.endMonth, command.endMonth == SpecifiedMonth.CURRENTMONTH.value);
-		}
-		
-		return new ExtractionPeriodDaily(startDate, endDate);
-	}
+        StartDate startDate = new StartDate(command.strSpecify);
+
+        if (command.strSpecify == StartSpecify.DAYS.value) {
+            startDate.setStartDay(EnumAdaptor.valueOf(command.strPreviousDay, PreviousClassification.class), command.strDay, command.strDay == 0);
+        } else if (command.strSpecify == StartSpecify.MONTH.value) {
+            startDate.setStartMonth(EnumAdaptor.valueOf(command.strPreviousMonth, PreviousClassification.class), command.strMonth, command.strMonth == SpecifiedMonth.CURRENTMONTH.value);
+        }
+
+        EndDate endDate = new EndDate(command.endSpecify);
+
+        if (command.endSpecify == EndSpecify.DAYS.value) {
+            endDate.setEndDay(EnumAdaptor.valueOf(command.endPreviousDay, PreviousClassification.class), command.endDay, command.endDay == 0);
+        } else if (command.endSpecify == EndSpecify.MONTH.value) {
+            endDate.setEndMonth(EnumAdaptor.valueOf(command.endPreviousMonth, PreviousClassification.class), command.endMonth, command.endMonth == SpecifiedMonth.CURRENTMONTH.value);
+        }
+
+        return new ExtractionPeriodDaily(startDate, endDate);
+    }
 }

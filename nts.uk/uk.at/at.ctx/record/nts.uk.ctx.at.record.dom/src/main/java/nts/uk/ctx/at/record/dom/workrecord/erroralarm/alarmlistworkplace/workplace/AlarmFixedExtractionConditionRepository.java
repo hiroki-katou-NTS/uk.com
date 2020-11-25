@@ -8,4 +8,6 @@ public interface AlarmFixedExtractionConditionRepository {
 
     List<AlarmFixedExtractionCondition> getByIDs(List<String> ids);
 
+    List<AlarmFixedExtractionCondition> getBy(List<String> ids, boolean useAtr);
+
 }

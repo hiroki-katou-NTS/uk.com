@@ -9,12 +9,13 @@ import java.util.List;
 public interface AggregateProcessAdapter {
     List<AlarmListExtractInfoWorkplace> processMasterCheckBasic(String cid, DatePeriod period,
                                                                 List<String> alarmCheckWkpId,
-                                                                List<String> workplaceIds,
-                                                                List<WorkPlaceInforExport> workPlaceInfos);
+                                                                List<String> workplaceIds);
 
     List<AlarmListExtractInfoWorkplace> processMasterCheckDaily(String cid, DatePeriod period,
                                                                 List<String> alarmCheckWkpId,
-                                                                List<String> workplaceIds,
-                                                                List<WorkPlaceInforExport> workPlaceInfos);
+                                                                List<String> workplaceIds);
 
+    List<AlarmListExtractInfoWorkplace> processMasterCheckWorkplace(String cid, DatePeriod period,
+                                                                    List<String> alarmCheckWkpId,
+                                                                    List<String> workplaceIds);
 }

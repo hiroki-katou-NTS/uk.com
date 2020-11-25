@@ -16,6 +16,7 @@ public class JpaAlarmPatternSettingWorkPlaceRepository extends JpaRepository imp
     private static final String SELECT;
 
     private static final String SELECT_BY_ALARM_PATTERN_CD;
+
     private static final String SELECT_BY_CID;
 
     static {
@@ -59,7 +60,7 @@ public class JpaAlarmPatternSettingWorkPlaceRepository extends JpaRepository imp
 
     @Override
     public List<AlarmPatternSettingWorkPlace> findByCompanyId(String cid) {
-        return this.queryProxy().query(SELECT_BY_ALARM_PATTERN_CD, KfnmtALstWkpPtn.class)
+        return this.queryProxy().query(SELECT_BY_CID, KfnmtALstWkpPtn.class)
             .setParameter("companyId", cid).getList(KfnmtALstWkpPtn::toDomain);
     }
 

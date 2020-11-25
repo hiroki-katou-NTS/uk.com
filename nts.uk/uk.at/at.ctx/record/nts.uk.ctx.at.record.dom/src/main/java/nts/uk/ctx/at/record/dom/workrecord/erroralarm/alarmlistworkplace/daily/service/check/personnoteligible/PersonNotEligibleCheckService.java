@@ -45,7 +45,7 @@ public class PersonNotEligibleCheckService {
         GeneralDate criteriaDate = GeneralDate.today();
         // Input．List＜個人社員基本情報＞をループする
         for (PersonEmpBasicInfoImport personInfo : personInfos) {
-            // 次回年休付与日を取得する
+            // 期間中の年休残数を取得
             Optional<AggrResultOfAnnualLeave> aggrResultOpt = GetAnnLeaRemNumWithinPeriodProc.algorithm(
                     require, cacheCarrier, cid, personInfo.getEmployeeId(),
                     period, InterimRemainMngMode.OTHER, criteriaDate,

@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.statement.EmployeeGeneralInfoAdapter;
 import nts.uk.ctx.at.function.dom.statement.dtoimport.EmployeeGeneralInfoImport;
 import nts.uk.ctx.at.record.dom.affiliationinformation.wkplaceinfochangeperiod.WkplaceInfoChangePeriod;
@@ -20,9 +21,8 @@ import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.workplace.ExWorkplaceHistI
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.schedulemaster.requestperiodchange.RequestPeriodChangeService;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkplaceHistItemImport;
-import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
-import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpHisAdaptor;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeHis;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeService;
 
 /**
  * 承認結果の再反映期間を計算する
@@ -46,9 +46,9 @@ public class CalPeriodApprovalResult {
 	
 	@Inject
 	private RequestPeriodChangeService requestPeriodChangeService;
-	
+
 	@Inject
-	private BusinessTypeOfEmpHisAdaptor businessTypeOfEmpHisAdaptor;
+	private BusinessTypeOfEmployeeService businessTypeOfEmpHisService;
 	
 	@Inject
 	private WkTypeInfoChangePeriod wkTypeInfoChangePeriod;
@@ -107,7 +107,7 @@ public class CalPeriodApprovalResult {
 				listDatePeriodWorkplace = wkplaceInfoChangePeriod.getWkplaceInfoChangePeriod(employeeId, newPeriod,
 						workplaceItems, isRecreateTransfer);
 				// 職場・勤務種別変更期間を求める
-				List<DatePeriod> dataWorkplace = requestPeriodChangeService.getPeriodChange(employeeId, newPeriod,workplaceItems2, Collections.emptyList(), true, isRecreateTransfer);
+				List<DatePeriod> dataWorkplace = requestPeriodChangeService.getPeriodChange(employeeId, newPeriod,workplaceItems2, new ArrayList<>(), true, isRecreateTransfer);
 				listDatePeriodWorkplace.addAll(dataWorkplace);
 			}
 		}
@@ -115,7 +115,7 @@ public class CalPeriodApprovalResult {
 		//INPUT．「勤務種別変更時に再作成」をチェックする
 		if(isRecreateTypeChangePerson) {	
 			//<<Public>> 社員ID(List)、期間で期間分の勤務種別情報を取得する
-			List<BusinessTypeOfEmpDto> listBusinessTypeOfEmpDto = businessTypeOfEmpHisAdaptor.findByCidSidBaseDate(companyId, Arrays.asList(employeeId), newPeriod);
+			List<BusinessTypeOfEmployeeHis> listBusinessTypeOfEmpDto = businessTypeOfEmpHisService.find(Arrays.asList(employeeId), newPeriod);
 			//勤務種別情報変更期間を求める
 			listDatePeriodWorktype = wkTypeInfoChangePeriod.getWkTypeInfoChangePeriod(employeeId, newPeriod, listBusinessTypeOfEmpDto, isRecreateTypeChangePerson);
 			//職場・勤務種別変更期間を求める

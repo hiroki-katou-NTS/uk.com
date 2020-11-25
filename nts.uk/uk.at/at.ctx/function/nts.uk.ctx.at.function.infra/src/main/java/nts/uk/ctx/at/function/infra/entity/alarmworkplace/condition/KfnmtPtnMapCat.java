@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.infra.entity.alarmworkplace.condition;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
@@ -21,6 +22,9 @@ public class KfnmtPtnMapCat extends UkJpaEntity implements Serializable {
     @EmbeddedId
     public KfnmtPtnMapCatPk pk;
 
+    @Column(name = "CONTRACT_CD")
+    public String contractCode;
+
     @Override
     protected Object getKey() {
         return this.pk;
@@ -36,7 +40,7 @@ public class KfnmtPtnMapCat extends UkJpaEntity implements Serializable {
     public KfnmtPtnMapCat(KfnmtPtnMapCatPk pk) {
         super();
         this.pk = pk;
+        this.contractCode = AppContexts.user().contractCode();
     }
-
 
 }

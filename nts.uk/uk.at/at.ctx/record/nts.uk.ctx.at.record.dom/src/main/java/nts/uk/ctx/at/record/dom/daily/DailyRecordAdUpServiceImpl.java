@@ -17,7 +17,6 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.repo.Attenda
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
-import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
@@ -51,7 +50,6 @@ import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
-import nts.uk.ctx.at.shared.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.shr.com.context.AppContexts;
@@ -67,9 +65,6 @@ public class DailyRecordAdUpServiceImpl implements DailyRecordAdUpService {
 
 	@Inject
 	private CalAttrOfDailyPerformanceRepository calAttrRepo;
-
-	@Inject
-	private WorkTypeOfDailyPerforRepository workTypeRepo;
 
 	@Inject
 	private TimeLeavingOfDailyPerformanceRepository timeLeavingRepo;
@@ -142,17 +137,6 @@ public class DailyRecordAdUpServiceImpl implements DailyRecordAdUpService {
 	@Override
 	public void adUpCalAttr(CalAttrOfDailyPerformance calAttr) {
 		calAttrRepo.update(calAttr);
-	}
-
-	@Override
-	public void adUpWorkType(Optional<WorkTypeOfDailyPerformance> businessType) {
-		if (!businessType.isPresent())
-			return;
-		if(workTypeRepo.findByKey(businessType.get().getEmployeeId(), businessType.get().getDate()).isPresent()) {
-			workTypeRepo.update(businessType.get());
-		}else {
-			workTypeRepo.add(businessType.get());
-		}
 	}
 
 	@Override

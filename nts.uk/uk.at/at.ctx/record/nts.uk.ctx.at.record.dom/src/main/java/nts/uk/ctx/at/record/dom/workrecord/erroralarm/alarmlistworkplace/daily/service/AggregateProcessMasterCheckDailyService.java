@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.
 
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.workplace.EmployeeInfoImported;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.adapter.workplace.AlWorkPlaceInforImport;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.*;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.service.beforecheck.DailyBeforeCheckService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.service.beforecheck.DataBeforeCheckDto;
@@ -41,11 +40,10 @@ public class AggregateProcessMasterCheckDailyService {
      * @param period          期間
      * @param alarmCheckWkpId List＜職場のエラームチェックID＞
      * @param workplaceIds    List＜職場ID＞
-     * @param workPlaceInfos  List＜職場情報＞
      * @return List＜アラームリスト抽出情報（職場）＞
      */
     public List<AlarmListExtractionInfoWorkplaceDto> process(String cid, DatePeriod period, List<String> alarmCheckWkpId,
-                                                             List<String> workplaceIds, List<AlWorkPlaceInforImport> workPlaceInfos) {
+                                                             List<String> workplaceIds) {
         // 職場ID一覧から社員情報を取得する。
         Map<String, List<EmployeeInfoImported>> empInfosByWp = employeeInfoByWorkplaceService.get(workplaceIds, period);
 
@@ -71,6 +69,6 @@ public class AggregateProcessMasterCheckDailyService {
         // 取得したList＜アラーム抽出結果（職場別）＞を返す
         return dailyCheckService.process(cid, empInfosByWp, data.getPersonInfos(), data.getEmpLeaves(),
                 data.getUnregistedStampCardsByWpMap(), data.getDailyExtBudgets(),
-                period, fixedExtractDayCons, fixedExtractDayItems, data.getStampsByEmpMap(), workPlaceInfos);
+                period, fixedExtractDayCons, fixedExtractDayItems, data.getStampsByEmpMap());
     }
 }

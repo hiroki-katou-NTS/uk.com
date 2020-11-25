@@ -23,15 +23,9 @@ public class WkpExtractionPeriodMonthlyDto {
 
 	private Integer strPreviousAtr;
 
-	private Integer yearType;
-
-	private Integer designatedMonth;
-
 	//End Month
 
 	private int endSpecify;
-
-	private int extractFromStartMonth;
 
 	private Integer endMonth;
 
@@ -45,10 +39,7 @@ public class WkpExtractionPeriodMonthlyDto {
 			domain.getStartMonth().getStrMonthNo().isPresent() ? domain.getStartMonth().getStrMonthNo().get().getMonthNo() : null,
 			domain.getStartMonth().getStrMonthNo().isPresent() ? domain.getStartMonth().getStrMonthNo().get().isCurentMonth() : null,
 			domain.getStartMonth().getStrMonthNo().isPresent() ? domain.getStartMonth().getStrMonthNo().get().getMonthPrevious().value : null,
-			domain.getStartMonth().getFixedMonthly().isPresent() ? domain.getStartMonth().getFixedMonthly().get().getYearSpecifiedType().value : null,
-			domain.getStartMonth().getFixedMonthly().isPresent() ? domain.getStartMonth().getFixedMonthly().get().getDesignatedMonth() : null,
 			domain.getEndMonth().getSpecifyEndMonth().value,
-			domain.getEndMonth().getExtractFromStartMonth().value,
 			domain.getEndMonth().getEndMonthNo().isPresent() ? domain.getEndMonth().getEndMonthNo().get().getMonthNo() : null,
 			domain.getEndMonth().getEndMonthNo().isPresent() ? domain.getEndMonth().getEndMonthNo().get().isCurentMonth() : null,
 			domain.getEndMonth().getEndMonthNo().isPresent() ? domain.getEndMonth().getEndMonthNo().get().getMonthPrevious().value : null

@@ -106,7 +106,7 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 		changeAppDate() {
 			const vm = this;
 
-			vm.$errors("clear");
+			// vm.$errors("clear");
 			let startDate = vm.application().opAppStartDate(),
 				endDate = vm.application().opAppEndDate();
 			let appDates = []
@@ -123,8 +123,12 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 				if (valid) {
 					return vm.$blockui("show").then(() => vm.$ajax(API.changeAppDate, command));
 				}
+
+				vm.model().appDispInfoStartupOutput().appDispInfoWithDateOutput.opErrorFlag = vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opErrorFlag;
 			}).done((res: any) => {
-				vm.fetchData(res);
+				if (res) {
+					vm.fetchData(res);
+				}
 			}).fail(err => {
 				console.log(err)
 				if (err.messageId === "Msg_43") {

@@ -1,20 +1,19 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
 import java.util.List;
-//import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
-import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakTimeGoOutTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 
 /** 日別実績の外出時間 */
 @Data
@@ -100,7 +99,11 @@ public class GoOutTimeSheetDailyPerformDto implements ItemConst {
 				valication.getTimeAnnualLeaveUseTime() == null ? null : valication.getTimeAnnualLeaveUseTime().valueAsMinutes(), 
 				valication.getSixtyHourExcessHolidayUseTime() == null ? null : valication.getSixtyHourExcessHolidayUseTime().valueAsMinutes(), 
 				valication.getTimeSpecialHolidayUseTime() == null ? null : valication.getTimeSpecialHolidayUseTime().valueAsMinutes(),
-				valication.getTimeCompensatoryLeaveUseTime() == null ? null : valication.getTimeCompensatoryLeaveUseTime().valueAsMinutes());
+				valication.getTimeCompensatoryLeaveUseTime() == null ? null : valication.getTimeCompensatoryLeaveUseTime().valueAsMinutes(),
+				valication.getSpecialHolidayFrameNo().map(c -> c.v()).orElse(null),
+				valication.getTimeChildCareHolidayUseTime() == null ? null : valication.getTimeChildCareHolidayUseTime().valueAsMinutes(),
+				valication.getTimeCareHolidayUseTime() == null ? null : valication.getTimeCareHolidayUseTime().valueAsMinutes()
+				);
 	}
 	
 	public OutingTimeOfDaily toDomain(){

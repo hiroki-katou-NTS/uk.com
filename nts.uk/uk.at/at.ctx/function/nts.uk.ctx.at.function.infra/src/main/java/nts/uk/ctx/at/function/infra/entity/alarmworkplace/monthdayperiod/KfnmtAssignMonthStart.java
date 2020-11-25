@@ -4,14 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification;
-import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.StartMonth;
-import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.YearSpecifiedType;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.MonthNo;
+import nts.uk.ctx.at.function.dom.alarmworkplace.month.StartMonth;
 import nts.uk.ctx.at.function.infra.entity.alarmworkplace.condition.KfnmtWkpCheckCondition;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Optional;
 
 /**
  * entity : 月数指定
@@ -51,10 +52,9 @@ public class KfnmtAssignMonthStart extends UkJpaEntity implements Serializable {
     public KfnmtWkpCheckCondition checkCondition;
 
     public StartMonth toDomain() {
-        StartMonth endMonth = new StartMonth(specifyStartMonth);
-        endMonth.setFixedMonth(EnumAdaptor.valueOf(1, YearSpecifiedType.class), 1); //TODO not exist fixedMonthly in entity thì how to map ?
-        endMonth.setStartMonth(EnumAdaptor.valueOf(monthPrevious, PreviousClassification.class),monthNo,curentMonth);
-        return endMonth;
+        return new StartMonth(specifyStartMonth,
+            Optional.of(new MonthNo(EnumAdaptor.valueOf(monthPrevious, PreviousClassification.class), monthNo, curentMonth))
+        );
     }
 
     public void fromEntity(KfnmtAssignMonthStart newEntity) {
@@ -69,10 +69,8 @@ public class KfnmtAssignMonthStart extends UkJpaEntity implements Serializable {
 
         KfnmtAssignMonthStart entity = new KfnmtAssignMonthStart();
         entity.pk = new KfnmtAssignMonthStartPk(AppContexts.user().companyId(), patternCD, category);
-        entity.contractCode =AppContexts.user().contractCode();
+        entity.contractCode = AppContexts.user().contractCode();
         entity.specifyStartMonth = domain.getSpecifyStartMonth().value;
-
-        //TODO entity thiếu Optional<FixedMonthly> fixedMonthly
         if (domain.getStrMonthNo().isPresent()) {
             entity.monthNo = domain.getStrMonthNo().get().getMonthNo();
             entity.curentMonth = domain.getStrMonthNo().get().isCurentMonth();

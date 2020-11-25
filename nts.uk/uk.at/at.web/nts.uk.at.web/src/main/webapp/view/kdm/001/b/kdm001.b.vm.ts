@@ -197,6 +197,8 @@
                     if (result.closureEmploy && result.sempHistoryImport){
                         self.closureEmploy = result.closureEmploy;
                         self.listExtractData = result.remainingData;
+                        self.startDate = result.startDate;
+                        self.endDate = result.endDate;
                         self.convertToDisplayList(isShowMsg);
                         self.updateSubstituteDataList();
                         self.isHaveError(false);
@@ -247,8 +249,8 @@
 
                 if (data.unknownDate == 1) {
                     if (!dayOffDate){
-                        dayOffDate = '※';
-                    } else dayOffDate += '※';
+                        dayOffDate = '';
+                    } else dayOffDate += '';
                    
                 }
 
@@ -259,35 +261,36 @@
                     && moment.utc(self.endDate).isSameOrAfter(moment.utc(data.deadLine))) {
                     substituedexpiredDate = getText('KDM001_161', [data.deadLine]);
                 } else if (moment.utc(self.startDate).isSameOrAfter(moment.utc(data.deadLine)) && data.usedDay > 0) {
-                    substituedexpiredDate = getText('KDM001_162', [data.deadLine])
+                    substituedexpiredDate = getText('KDM001_162', [data.deadLine]);
                 } else {
-                    substituedexpiredDate = getText('KDM001_163', [data.deadLine])
+                    substituedexpiredDate = getText('KDM001_163', [data.deadLine]);
                 }
 
                 data.occurrenceHour = data.occurrenceHour === 0 ? '' : data.occurrenceHour;
                 data.digestionTimes = data.digestionTimes === 0 ? '' : data.digestionTimes;
                 data.usedTime = data.usedTime === 0 ? '' : data.usedTime;
+                data.remainingHours = data.remainingHours === 0 ? '' : data.remainingHours;
 
                 listData.push(new SubstitutedData(
                     `${data.occurrenceId}${data.digestionId}`,
                     data.occurrenceId,
                     data.digestionId,
-                    (_.isEmpty(data.occurrenceId) || data.occurrenceId !== 0) && _.isEmpty(data.accrualDate) ? getText('KDM001_160') : data.accrualDate, // B4_1_1
-                    data.occurrenceDay + getText('KDM001_27') + data.occurrenceHour, //B4_2_2
+                    !_.isEmpty(data.occurrenceId) && data.occurrenceId !== 0 && _.isEmpty(data.accrualDate) ? getText('KDM001_160') : data.accrualDate, // B4_1_1
+                    data.occurrenceDay === 0 ? '' : data.occurrenceDay + getText('KDM001_27') + data.occurrenceHour, //B4_2_2
                     null,
                     substituedexpiredDate, //B4_4_2
-                    (_.isEmpty(data.digestionId) || data.digestionId !== 0) && _.isEmpty(data.digestionDay) ? getText('KDM001_160') : data.digestionDay, //B4_2_3
+                    !_.isEmpty(data.digestionId) && data.digestionId !== 0 && _.isEmpty(data.digestionDay) ? getText('KDM001_160') : data.digestionDay, //B4_2_3
                     data.digestionDays > 0 ? data.digestionDays + getText('KDM001_27') + data.digestionTimes : data.digestionTimes, //B4_2_4
                     null,
                     data.dayLetf > 0 ? data.dayLetf + getText('KDM001_27') + data.remainingHours : data.remainingHours, //B4_2_5
-                    data.usedDay + getText('KDM001_27') + data.usedTime, //B4_2_6
+                    data.usedDay === 0 && data.usedTime === '' ? '' : data.usedDay + getText('KDM001_27') + data.usedTime, //B4_2_6
                     null,
                     null,
                     data.mergeCell
                 ));
 
             });
-            if (isShowMsg && self.listExtractData.length == 0) {
+            if (isShowMsg && self.listExtractData.length === 0) {
                 dialog.alertError({ messageId: 'Msg_726' });
             }
             self.subData = listData;
@@ -325,9 +328,9 @@
                     { headerText: 'digestionId', key: 'digestionId', dataType: 'string', width: '0px', hidden: true },
                     { headerText: 'mergeCell', key: 'mergeCell', dataType: 'string', width: '0px', hidden: true },
                     { headerText: 'substituedexpiredDate', key: 'substituedexpiredDate', dataType: 'string', width: '0px',  hidden: true },
-                    { headerText: getText('KDM001_33') + ' ' +getText('KDM001_157'), template: '<div style="float:right"> ${substituedWorkingDate} ${substituedexpiredDate} </div>', key: 'substituedWorkingDate', dataType: 'string', width: '210px' },
+                    { headerText: getText('KDM001_33') + ' ' + getText('KDM001_157'), template: '<div style="float:left"> ${substituedWorkingDate} ${substituedexpiredDate} </div>', key: 'substituedWorkingDate', dataType: 'string', width: '210px' },
                     { headerText: getText('KDM001_9'), template: '<div style="float:right"> ${substituedWorkingHours} </div>', key: 'substituedWorkingHours', dataType: 'string', width: '102px' },
-                    { headerText: getText('KDM001_34'), template: '<div style="float:right"> ${substituedHolidayDate} </div>', key: 'substituedHolidayDate', dataType: 'string', width: '120px' },
+                    { headerText: getText('KDM001_34'), template: '<div style="float:left"> ${substituedHolidayDate} </div>', key: 'substituedHolidayDate', dataType: 'string', width: '120px' },
                     { headerText: getText('KDM001_11'), template: '<div style="float:right"> ${substituteHolidayHours} </div>', key: 'substituteHolidayHours', dataType: 'string', width: '102px' },
                     { headerText: getText('KDM001_37'), template: '<div style="float:right"> ${remainHolidayHours} </div>', key: 'remainHolidayHours', dataType: 'string', width: '102px' },
                     { headerText: getText('KDM001_20'), template: '<div style="float:right"> ${expiredHolidayHours} </div>', key: 'expiredHolidayHours', dataType: 'string', width: '102px' },              
@@ -348,7 +351,8 @@
                                 columnKey: 'substituedWorkingHours',
                                 mergeOn: 'always',
                                 mergeStrategy: (prevRec: any, curRec: any, columnKey: any) =>
-                                    this.isMergeStrategy(prevRec, curRec, columnKey)
+                                    prevRec['substituedWorkingDate'] === curRec['substituedWorkingDate']
+                                    && this.isMergeStrategy(prevRec, curRec, columnKey)
                             },
                             {
                                 columnKey: 'substituedHolidayDate',
@@ -359,9 +363,26 @@
                             {
                                 columnKey: 'substituteHolidayHours',
                                 mergeOn: 'always',
-                                mergeStrategy: (prevRec: any, curRec: any, columnKey: any) => {
-                                    this.isMergeStrategy(prevRec, curRec, columnKey)
-                                }
+                                mergeStrategy: (prevRec: any, curRec: any, columnKey: any) =>
+                                    prevRec['substituedHolidayDate'] === curRec['substituedHolidayDate']
+                                    && this.isMergeStrategy(prevRec, curRec, columnKey)
+                            },
+                            {
+                                columnKey: 'remainHolidayHours',
+                                mergeOn: 'always',
+                                mergeStrategy: (prevRec: any, curRec: any, columnKey: any) =>
+                                    prevRec['mergeCell'] === curRec['mergeCell'] && prevRec[columnKey] === curRec[columnKey]
+                            },
+                            {
+                                columnKey: 'expiredHolidayHours',
+                                mergeOn: 'always',
+                                mergeStrategy: (prevRec: any, curRec: any, columnKey: any) =>
+                                    prevRec['mergeCell'] === curRec['mergeCell'] && prevRec[columnKey] === curRec[columnKey]
+                            },
+                            {
+                                columnKey: 'delete',
+                                mergeOn: 'always',
+                                mergeStrategy: (prevRec: any, curRec: any) => prevRec['mergeCell'] === curRec['mergeCell']
                             }
                         ]
                     },
@@ -407,18 +428,24 @@
             let self = this, dfd = $.Deferred(), searchCondition;
             block.invisible();
             service.getInfoEmLogin().done(loginerInfo => {
-                if (!_.find(self.employeeInputList(), item => item.id === loginerInfo.sid)) {
-                    self.employeeInputList.push(new EmployeeKcp009(loginerInfo.sid,
-                        loginerInfo.employeeCode, loginerInfo.employeeName, '', ''));
-                }
-                self.initKCP009();
+                service.getWpName().then((wp: any) => {
+                    if (!_.find(self.employeeInputList(), item => item.id === loginerInfo.sid)) {
+                        self.employeeInputList.push(new EmployeeKcp009(loginerInfo.sid,
+                            loginerInfo.employeeCode, loginerInfo.employeeName, wp.name, wp.name));
 
-                self.selectedEmployee = new EmployeeInfo(self.selectedItem(), '', '', '', '', '');
-
+                        self.selectedEmployee = {
+                            employeeId: loginerInfo.sid, employeeCode: loginerInfo.employeeCode, employeeName: loginerInfo.employeeName,
+                            workplaceId: wp.workplaceId, workplaceCode: wp.code, workplaceName: wp.name
+                        };
+                    }
+                    setTimeout(() => {
+                        self.initKCP009();
+                    }, 10);
+                    dfd.resolve();
+                });
                 const employeeId = self.selectedEmployee ? self.selectedEmployee.employeeId : null;
                 searchCondition = { searchMode: self.selectedPeriodItem(), employeeId: employeeId };
                 service.getExtraHolidayData(searchCondition).done(result => {
-                    console.log("Data: ",result);
                     if (result.closureEmploy && result.sempHistoryImport) {
                         let wkHistory = result.wkHistory;
                         self.closureEmploy = result.closureEmploy;
@@ -430,16 +457,15 @@
                                 loginerInfo.employeeCode, loginerInfo.employeeName, wkHistory.workplaceName, wkHistory.wkpDisplayName));
                         self.listExtractData = result.remainingData;
                         self.totalRemainingNumber = result.totalRemainingNumber;
-                        self.convertToDisplayList();
+                        self.startDate = result.startDate;
+                        self.endDate = result.endDate;
+                        self.convertToDisplayList(true);
                         self.updateSubstituteDataList();
                         self.isHaveError(false);
                         if (result.dispExpiredDate){
                             self.dispExpiredDate(result.dispExpiredDate);
                         }
-                        self.initKCP009();
                         self.disableLinkedData();
-                        self.startDate = result.startDate;
-                        self.endDate = result.endDate;
                     }else{
                         self.subData = [];
                         self.updateSubstituteDataList();
@@ -454,13 +480,15 @@
                     if (result.messageId && result.messageId === 'Msg_1731') {
                         self.isHaveError(true);
                     }
-                    dialog.alertError({ messageId: result.messageId, messageParams: result.parameterIds }).then(function() { block.clear(); });
+                    
+                    dialog.alertError({ messageId: result.messageId, messageParams: result.parameterIds }).then(() => block.clear());
                     dfd.reject();
                 });
             }).fail(function(result) {
-                dialog.alertError({ messageId: result.messageId, messageParams: result.parameterIds }).then(function() { block.clear(); });
+                dialog.alertError({ messageId: result.messageId, messageParams: result.parameterIds }).then(() => block.clear());
                 dfd.reject();
             });
+
             return dfd.promise();
         }
 
@@ -557,13 +585,12 @@
                         comDayOffID: value.digestionId
                 };
                 service.deleteHolidaySetting(command)
-                    .then(() => dialog.info({ messageId: "Msg_16" }))
-                    .fail(error => dialog.alertError(error))
-                    .always(() => {
-                        self.startPage()
-                        self.getSubstituteDataList(self.getSearchCondition());
-                        block.clear();
-                    });
+                    .then(() => dialog.info({ messageId: "Msg_16" }).then(() => self.getSubstituteDataList(self.getSearchCondition(), true)))
+                    .fail(error => {
+                        dialog.alertError(error);
+                        self.getSubstituteDataList(self.getSearchCondition(), true);
+                    })
+                    .always(() => block.clear());
             })
             .then(() => block.clear());
         }

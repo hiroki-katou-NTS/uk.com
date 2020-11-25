@@ -16,6 +16,7 @@ public class JpaAlarmFixedExtractionConditionRepository extends JpaRepository im
 
     private static final String GET_ALL = "select f from KrcmtWkpFxexCon f";
     private static final String GET_BY_IDS = GET_ALL + " where f.pk.id in :ids";
+    private static final String GET_BY_IDS_USE_ATR = GET_ALL + " where f.pk.id in :ids AND useAtr = :useAtr ";
 
     @Override
     public List<AlarmFixedExtractionCondition> getByID(String id) {
@@ -27,6 +28,15 @@ public class JpaAlarmFixedExtractionConditionRepository extends JpaRepository im
         return this.queryProxy()
                 .query(GET_BY_IDS, KrcmtWkpFxexCon.class)
                 .setParameter("ids", ids)
+                .getList(KrcmtWkpFxexCon::toDomain);
+    }
+
+    @Override
+    public List<AlarmFixedExtractionCondition> getBy(List<String> ids, boolean useAtr) {
+        return this.queryProxy()
+                .query(GET_BY_IDS, KrcmtWkpFxexCon.class)
+                .setParameter("ids", ids)
+                .setParameter("useAtr", useAtr)
                 .getList(KrcmtWkpFxexCon::toDomain);
     }
 

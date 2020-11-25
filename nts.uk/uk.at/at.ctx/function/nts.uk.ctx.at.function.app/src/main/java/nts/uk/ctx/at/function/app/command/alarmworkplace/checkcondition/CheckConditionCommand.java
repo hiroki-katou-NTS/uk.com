@@ -8,9 +8,13 @@ import java.util.List;
 public class CheckConditionCommand {
 
     private int alarmCategory;
+
     private List<String> checkConditionCodes;
+
     private ExtractionPeriodDailyCommand extractionPeriodDaily;
+
     private ExtractionPeriodMonthlyCommand extractionMonthly;
-    private SingaleMonthCommand singaleMonthCommand;
+
+    private SingleMonthCommand singleMonthCommand;
 
 }

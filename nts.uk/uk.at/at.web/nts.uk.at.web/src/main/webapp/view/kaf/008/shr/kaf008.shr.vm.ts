@@ -8,12 +8,12 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                         <div class="flex valign-center A5">
                             <div id="A5_1" data-bind="ntsFormLabel: {text: $i18n('KAF008_20')}"></div>
                             <div id="A5_2">
-                                <span  data-bind="text: $i18n('KAF008_21')"></span>
+                                <span  data-bind="i18n : 'KAF008_21'"></span>
                             </div>
                             <input tab-index="4" id="A5_3" data-bind="ntsTimeWithDayEditor: {name: '#[KAF008_21]',
                                             value: departureTime, enable: enableInput, required: false, option: {timeWithDay: true}}"/>
                             <div id="A5_4">
-                                <span  data-bind="text: $i18n('KAF008_22')"></span>
+                                <span  data-bind="i18n : 'KAF008_22'"></span>
                             </div>
                             <input tab-index="5" id="A5_5" data-bind="ntsTimeWithDayEditor: {name: '#[KAF008_22]',
                                             value: returnTime, enable: enableInput, required: false, option: {timeWithDay: true}}"/>
@@ -36,13 +36,13 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                                 </colgroup>
                                 <THEAD>
                                 <tr>
-                                    <th class="ui-widget-header" data-bind="text: $i18n('KAF008_24')"></th>
-                                    <th class="ui-widget-header" data-bind="text: $i18n('KAF008_25')"></th>
-                                    <th class="ui-widget-header" data-bind="text: $i18n('KAF008_26')"></th>
-                                    <th class="ui-widget-header" data-bind="text: $i18n('KAF008_27')"></th>
-                                    <th class="ui-widget-header" data-bind="text: $i18n('KAF008_28')"></th>
-                                    <th class="ui-widget-header" data-bind="text: $i18n('KAF008_29')"></th>
-                                    <th class="ui-widget-header" data-bind="text: $i18n('KAF008_30')"></th>
+                                    <th class="ui-widget-header" data-bind="i18n : 'KAF008_24'"></th>
+                                    <th class="ui-widget-header" data-bind="i18n : 'KAF008_25'"></th>
+                                    <th class="ui-widget-header" data-bind="i18n : 'KAF008_26'"></th>
+                                    <th class="ui-widget-header" data-bind="i18n : 'KAF008_27'"></th>
+                                    <th class="ui-widget-header" data-bind="i18n : 'KAF008_28'"></th>
+                                    <th class="ui-widget-header" data-bind="i18n : 'KAF008_29'"></th>
+                                    <th class="ui-widget-header" data-bind="i18n : 'KAF008_30'"></th>
                                 </tr>
                                 </THEAD>
                     
@@ -56,7 +56,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                                         <td>
                                             <div class="div_line code" id="A10_D2" tab-index="7">
                                                 <input data-bind="ntsTextEditor: {
-                                                name: $i18n('KAF008_31'),
+                                                name: '#[KAF008_31]',
                                                 value: wkTypeCd,
                                                 enable: $parent.enableInput(),
                                                 required: true,
@@ -75,7 +75,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                                         <td>
                                             <div class="div_line code" id="A10_D4">
                                                 <input tab-index="9" data-bind="ntsTextEditor: {
-                                                name: $i18n('KAF008_33'),
+                                                name: '#[KAF008_33]',
                                                 value: wkTimeCd,
                                                 enable: $parent.enableInput(),
                                                 constraint: 'WorkTimeCode'
@@ -93,7 +93,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                                         <td>
                                             <div id="A10_D6" class="div_line time" >
                                                 <input data-bind="ntsTimeWithDayEditor: {
-                                                            name: $i18n('KAF008_35'),
+                                                            name: '#[KAF008_35]',
                                                             constraint:'TimeWithDayAttr',
                                                             value: start,
                                                             enable: $parent.enableInput(),
@@ -106,7 +106,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                                         <td>
                                             <div class="div_line time" id="A10_D7">
                                                 <input data-bind="ntsTimeWithDayEditor: {
-                                                            name: $i18n('KAF008_36'),
+                                                            name: '#[KAF008_36]',
                                                             constraint:'TimeWithDayAttr',
                                                             value: end,
                                                             enable: $parent.enableInput(),
@@ -172,37 +172,39 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                         });
                     }
 
-                    let lstContent = _.map(tripOutput.businessTripActualContent, function (content, index) {
-                        let eachContent = new TripContentDisp(
-                            content.date,
-                            content.opAchievementDetail.workTypeCD,
-                            content.opAchievementDetail.opWorkTypeName || "マスタ未登録",
-                            content.opAchievementDetail.workTimeCD,
-                            content.opAchievementDetail.opWorkTimeName,
-                            content.opAchievementDetail.opWorkTime,
-                            content.opAchievementDetail.opLeaveTime
-                        );
-                        eachContent.wkTypeCd.subscribe(code => {
-                            vm.$errors("clear").then(() => {
-                                vm.changeWorkTypeCode(tripOutput, content, code, index);
+                    let checkContent = _.filter(tripOutput.businessTripActualContent, i => i.opAchievementDetail == null);
+                    if (_.isEmpty(checkContent)) {
+                        let lstContent = _.map(tripOutput.businessTripActualContent, function (content, index) {
+                            let eachContent = new TripContentDisp(
+                                content.date,
+                                content.opAchievementDetail.workTypeCD,
+                                content.opAchievementDetail.opWorkTypeName || "マスタ未登録",
+                                content.opAchievementDetail.workTimeCD,
+                                content.opAchievementDetail.opWorkTimeName,
+                                content.opAchievementDetail.opWorkTime,
+                                content.opAchievementDetail.opLeaveTime
+                            );
+                            eachContent.wkTypeCd.subscribe(code => {
+                                vm.$errors("clear").then(() => {
+                                    vm.changeWorkTypeCode(tripOutput, content, code, index);
+                                });
                             });
-                        });
-                        eachContent.wkTimeCd.subscribe(code => {
-                            vm.$errors("clear").then(() => {
-                                vm.changeWorkTimeCode(tripOutput, content, code, index);
+                            eachContent.wkTimeCd.subscribe(code => {
+                                vm.$errors("clear").then(() => {
+                                    vm.changeWorkTimeCode(tripOutput, content, code, index);
+                                });
                             });
+                            eachContent.start.subscribe(startValue => {
+                                content.opAchievementDetail.opWorkTime = startValue;
+                            });
+                            eachContent.end.subscribe(endValue => {
+                                content.opAchievementDetail.opLeaveTime = endValue;
+                            });
+                            return eachContent;
                         });
-                        eachContent.start.subscribe(startValue => {
-                            content.opAchievementDetail.opWorkTime = startValue;
-                        });
-                        eachContent.end.subscribe(endValue => {
-                            content.opAchievementDetail.opLeaveTime = endValue;
-                        });
-                        return eachContent;
-                    });
-                    vm.items(lstContent);
-                }
-                ;
+                        vm.items(lstContent);
+                    }
+                };
             });
         }
 

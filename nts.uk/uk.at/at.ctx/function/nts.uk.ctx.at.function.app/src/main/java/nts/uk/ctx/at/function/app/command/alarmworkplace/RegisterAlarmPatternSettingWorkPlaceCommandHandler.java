@@ -5,7 +5,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.function.app.command.alarmworkplace.checkcondition.ExtractionPeriodDailyCommand;
 import nts.uk.ctx.at.function.app.command.alarmworkplace.checkcondition.ExtractionPeriodMonthlyCommand;
-import nts.uk.ctx.at.function.app.command.alarmworkplace.checkcondition.SingaleMonthCommand;
+import nts.uk.ctx.at.function.app.command.alarmworkplace.checkcondition.SingleMonthCommand;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternCode;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode;
 import nts.uk.ctx.at.function.dom.alarmworkplace.AlarmPatternSettingWorkPlace;
@@ -42,7 +42,7 @@ public class RegisterAlarmPatternSettingWorkPlaceCommandHandler extends CommandH
                 checkConList.add(new CheckCondition(
                     EnumAdaptor.valueOf(x.getAlarmCategory(), WorkplaceCategory.class),
                     x.getCheckConditionCodes().stream().map(AlarmCheckConditionCode::new).collect(Collectors.toList()),
-                    SingaleMonthCommand.toDomain(x.getSingaleMonthCommand())
+                    SingleMonthCommand.toDomain(x.getSingleMonthCommand())
                 ));
             } else if (x.getAlarmCategory() == WorkplaceCategory.MASTER_CHECK_BASIC.value || x.getAlarmCategory() == WorkplaceCategory.MASTER_CHECK_WORKPLACE.value) {
                 checkConList.add(new CheckCondition(
@@ -50,7 +50,8 @@ public class RegisterAlarmPatternSettingWorkPlaceCommandHandler extends CommandH
                     x.getCheckConditionCodes().stream().map(AlarmCheckConditionCode::new).collect(Collectors.toList()),
                     ExtractionPeriodMonthlyCommand.toDomain(x.getExtractionMonthly())
                 ));
-            } else if (x.getAlarmCategory() == WorkplaceCategory.MASTER_CHECK_DAILY.value || x.getAlarmCategory() == WorkplaceCategory.SCHEDULE_DAILY.value) {
+            } else if (x.getAlarmCategory() == WorkplaceCategory.MASTER_CHECK_DAILY.value || x.getAlarmCategory() == WorkplaceCategory.SCHEDULE_DAILY.value ||
+                x.getAlarmCategory() == WorkplaceCategory.APPLICATION_APPROVAL.value) {
                 checkConList.add(new CheckCondition(
                     EnumAdaptor.valueOf(x.getAlarmCategory(), WorkplaceCategory.class),
                     x.getCheckConditionCodes().stream().map(AlarmCheckConditionCode::new).collect(Collectors.toList()),
@@ -64,7 +65,8 @@ public class RegisterAlarmPatternSettingWorkPlaceCommandHandler extends CommandH
             command.getPatternCode(),
             AppContexts.user().companyId(),
             new AlarmPermissionSetting(command.getAlarmPerSet().isAuthSetting(), command.getAlarmPerSet().getRoleIds()),
-            command.getPatternName());
+            command.getPatternName()
+        );
 
         Optional<AlarmPatternSettingWorkPlace> settingWorkPlace = repository.getBy(AppContexts.user().companyId(), new AlarmPatternCode(command.getPatternCode()));
 

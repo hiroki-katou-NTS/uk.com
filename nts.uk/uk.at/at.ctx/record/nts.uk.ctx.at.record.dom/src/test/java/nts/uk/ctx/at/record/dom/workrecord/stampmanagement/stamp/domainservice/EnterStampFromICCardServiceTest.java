@@ -66,7 +66,7 @@ public class EnterStampFromICCardServiceTest {
 		
 		new Expectations() {
 			{
-				require.getByCardNoAndContractCode("DUMMY", "DUMMY");
+				require.getByCardNoAndContractCode(anyString, anyString);
 			}
 		};
 

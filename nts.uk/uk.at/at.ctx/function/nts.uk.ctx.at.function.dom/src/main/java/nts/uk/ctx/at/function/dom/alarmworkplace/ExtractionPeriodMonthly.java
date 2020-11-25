@@ -2,10 +2,8 @@ package nts.uk.ctx.at.function.dom.alarmworkplace;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.EndMonth;
-import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.SpecifyEndMonth;
-import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.SpecifyStartMonth;
-import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.StartMonth;
+import nts.uk.ctx.at.function.dom.alarmworkplace.month.EndMonth;
+import nts.uk.ctx.at.function.dom.alarmworkplace.month.StartMonth;
 
 @Getter
 @NoArgsConstructor

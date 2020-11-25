@@ -17,6 +17,15 @@
       </button>
     </div>
 
+    <div class="card card-label" v-if="!mode">
+      <!-- C0 -->
+      <div class="card-header uk-bg-accordion mt-2 mb-n2">
+        <span>{{ "KAFS02_30" | i18n }}</span>
+      </div>
+
+      <div class="mt-3">{{ data.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName }}</div>
+    </div>
+
     <div class="card card-label">
       <!-- C2 -->
       <div class="card-header uk-bg-accordion mt-2 mb-n2">
@@ -26,7 +35,9 @@
 
       <!-- C2_1 -->
       <div class="mt-4">
+        <div class="mt-n2" v-if="!mode">{{ $dt(date, 'YYYY/MM/DD') }}</div>
         <nts-date-input
+          v-if="mode"
           v-bind:showTitle="false"
           v-on:changeDate="changeDate"
           v-model="date"

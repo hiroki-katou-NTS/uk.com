@@ -13,11 +13,15 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.TargetSelectionAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.TypeOffsetJudgment;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SyEmployeeImport;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SysEmpAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
@@ -42,6 +46,9 @@ public class AddSubHdManagementService {
 
 	@Inject
 	private LeaveComDayOffManaRepository repoLeaveComDayOffMana;
+	
+	@Inject
+	private SysEmpAdapter syEmployeeAdapter;
 
 	/**
 	 * @param subHdManagementData
@@ -151,12 +158,17 @@ public class AddSubHdManagementService {
 					//	未使用日数、未使用時間数を計算 Tính toán số ngày/ số giờ chưa sử dụng
 					if (leaveManagementData.getOccurredDays().v() - compensatoryDayOffManaData.getRequireDays().v() > 0) {
 						unUsedDay = leaveManagementData.getOccurredDays().v() - compensatoryDayOffManaData.getRequireDays().v();
-					} else if (leaveManagementData.getOccurredDays().v() - compensatoryDayOffManaData.getRequireDays().v() <= 0.0 || unUsedDay > 0) {
+					}
+					
+					if (leaveManagementData.getOccurredDays().v() - compensatoryDayOffManaData.getRequireDays().v() <= 0.0 || unUsedDay > 0) {
 						unUsedDay = 0.0;
 					}
+					
 					if (leaveManagementData.getOccurredTimes().v() - compensatoryDayOffManaData.getRequiredTimes().v() > 0) {
 						unUsedHour = leaveManagementData.getOccurredTimes().v() - compensatoryDayOffManaData.getRequiredTimes().v();
-					} else if (leaveManagementData.getOccurredTimes().v() - compensatoryDayOffManaData.getRequiredTimes().v() < 0 || unUsedHour > 0) {
+					}
+					
+					if (leaveManagementData.getOccurredTimes().v() - compensatoryDayOffManaData.getRequiredTimes().v() < 0 || unUsedHour > 0) {
 						unUsedHour = 0;
 					}
 					//	ループ中の「休出管理データ」を更新する Update "Data quản lý đi làm ngày nghỉ" trong vòng lặp
@@ -259,6 +271,11 @@ public class AddSubHdManagementService {
 		}
 		// アルゴリズム「休出代休日数チェック処理」を実行する
 		errorList.addAll(checkHolidayAndSubHoliday(subHdManagementData));
+		this.checkHistoryOfCompany(subHdManagementData.getEmployeeId()
+				, subHdManagementData.getDuedateHoliday()
+				, subHdManagementData.getDateSubHoliday()
+				, subHdManagementData.getDateOptionSubHoliday()
+				, TypeOffsetJudgment.REAMAIN.value);
 		return errorList;
 	}
 
@@ -322,7 +339,7 @@ public class AddSubHdManagementService {
 				errorList.add("Msg_1441");
 			}
 			// 分割消化.代休（年月日）と締め日をチェックする
-			if (!closureDate.get().after(splitDate.get())) {
+			if (closureDate.isPresent() && !closureDate.get().after(splitDate.get())) {
 				errorList.add("Msg_1442");
 			}
 			// 分割消化.休出（年月日）と代休（年月日）をチェックする
@@ -410,5 +427,49 @@ public class AddSubHdManagementService {
 			return Optional.empty();
 		}
 		return Optional.of(closurePeriod.start());
+	}
+	
+	/**
+	 * 所属会社履歴をチェック
+	 * @param sid 社員ID
+	 * @param occurrenceDate 発生日
+	 * @param digestionDate 消化日
+	 * @param dividedDigestionDate 分割消化日
+	 * @param flag 振休・代休区分
+	 */
+	private void checkHistoryOfCompany(String sid, GeneralDate occurrenceDate, GeneralDate digestionDate, GeneralDate dividedDigestionDate, Integer flag) {
+		SyEmployeeImport sysEmp = syEmployeeAdapter.getPersonInfor(sid);
+		
+		if (flag == TypeOffsetJudgment.ABSENCE.value) {
+			if (occurrenceDate != null && occurrenceDate.before(sysEmp.getEntryDate())) {
+				throw new BusinessException("Msg_2017", "Com_SubstituteWork");
+			} else if (digestionDate != null && digestionDate.before(sysEmp.getEntryDate())) {
+				throw new BusinessException("Msg_2017", "Com_SubstituteHoliday");
+			} else if (dividedDigestionDate != null && dividedDigestionDate.before(sysEmp.getEntryDate())) {
+				throw new BusinessException("Msg_2017", "分割消化");
+			} else if (occurrenceDate != null && occurrenceDate.after(sysEmp.getRetiredDate())) {
+				throw new BusinessException("Msg_2018", "Com_SubstituteWork");
+			} else if (digestionDate != null && digestionDate.after(sysEmp.getRetiredDate())) {
+				throw new BusinessException("Msg_2018", "Com_SubstituteHoliday");
+			} else if (dividedDigestionDate != null && dividedDigestionDate.after(sysEmp.getRetiredDate())) {
+				throw new BusinessException("Msg_2018", "分割消化");
+			}
+		}
+		
+		if (flag == TypeOffsetJudgment.REAMAIN.value) {
+			if (occurrenceDate != null && occurrenceDate.before(sysEmp.getEntryDate())) {
+				throw new BusinessException("Msg_2017", "休出");
+			} else if (digestionDate != null && digestionDate.before(sysEmp.getEntryDate())) {
+				throw new BusinessException("Msg_2017", "Com_CompensationHoliday");
+			} else if (dividedDigestionDate != null && dividedDigestionDate.before(sysEmp.getEntryDate())) {
+				throw new BusinessException("Msg_2017", "分割消化");
+			} else if (occurrenceDate != null && occurrenceDate.after(sysEmp.getRetiredDate())) {
+				throw new BusinessException("Msg_2018", "休出");
+			} else if (digestionDate != null && digestionDate.after(sysEmp.getRetiredDate())) {
+				throw new BusinessException("Msg_2018", "Com_CompensationHoliday");
+			} else if (dividedDigestionDate != null && dividedDigestionDate.after(sysEmp.getRetiredDate())) {
+				throw new BusinessException("Msg_2018", "分割消化");
+			}
+		}
 	}
 }
