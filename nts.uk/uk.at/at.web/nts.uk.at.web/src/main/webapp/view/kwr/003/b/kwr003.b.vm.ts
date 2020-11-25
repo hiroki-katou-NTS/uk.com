@@ -471,7 +471,7 @@ module nts.uk.at.view.kwr003.b {
             if (x.independentCalClassic === 2) {
               _.forEach(attendanceItemList, (element: any) => {
                 let findObj = _.find(listDaily, (listItem: any) => listItem.attendanceItemId === element.attendanceItemId);
-                if (findObj) {
+                if (!_.isNil(findObj)) {
                   dataItemsWithOperation.push({
                     itemId: element.attendanceItemId,
                     indicatesNumber: element.attendanceItemId,
@@ -484,7 +484,7 @@ module nts.uk.at.view.kwr003.b {
               selectedItemText = vm.createDataSelection(dataItemsWithOperation);
             } else {
               let findObj = _.find(listDaily, (listItem: any) => listItem.attendanceItemId === attendanceItemList[0].attendanceItemId);
-              if (findObj) selectedItemText = findObj.name;
+              if (!_.isNil(findObj)) selectedItemText = findObj.name;
               dataItemsWithOperation.push({
                 itemId: attendanceItemList[0].attendanceItemId,
                 indicatesNumber: attendanceItemList[0].attendanceItemId,
