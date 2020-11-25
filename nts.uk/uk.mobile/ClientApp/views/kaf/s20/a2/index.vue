@@ -55,7 +55,7 @@
       </div>
       <!-- A2_6_2 -->
       <div v-if="!!optionalItemApplication">
-        <div v-for="(item, index) in optionalItemApplication" v-bind:key="index">
+        <div v-for="(item, index) of optionalItemApplication" v-bind:key="index">
           <div class="accordion py-2 position-relative">
             <div class="card">
               <div class="card-header">
@@ -129,10 +129,10 @@
               v-bind:columns="{ input: 'col-10' }"
             />
             <nts-number-editor
-              v-model="item.amount"
-              @keypress="isNumber($event)"
+              v-model="optionalItemApplication[index].amount"
               v-if="item.optionalItemAtr == 2"
               v-bind:show-title="false"
+              v-bind:record-id="index"
               v-bind:columns="{ input: 'col-10' }"
             />
             <span class="position-absolute">{{ item.unit }}</span>

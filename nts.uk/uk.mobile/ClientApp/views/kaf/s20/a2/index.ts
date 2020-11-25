@@ -19,8 +19,18 @@ import { IAppDispInfoStartupOutput, IApplication, IRes } from '../../s04/a/defin
         'KafS00CComponent': KafS00CComponent,
     },
     resource: require('./resources.json'),
-    validations: {},
-    constraints: []
+    validations: {
+        optionalItemApplication: {
+            amount: {
+                loop: true,
+                required: true,
+                constraint: 'AnyItemAmount'
+            }
+        }
+    },
+    constraints: [
+        'nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemAmount'
+    ]
 })
 export class KafS20A2Component extends KafS00ShrComponent {
     public title: string = 'KafS20A2';
@@ -29,7 +39,7 @@ export class KafS20A2Component extends KafS00ShrComponent {
     public kafS00CParams: KAFS00CParams | null = null;
     public appDispInfoStartupOutput: IAppDispInfoStartupOutput | null = null;
     public application!: IApplication;
-    public optionalItemApplication: OptionalItemApplication[] | null = [];
+    public optionalItemApplication: OptionalItemApplication[] = [];
     public isValidateAll: boolean = true;
 
     @Prop({ default: () => [] })
@@ -166,6 +176,8 @@ export class KafS20A2Component extends KafS00ShrComponent {
         const vm = this;
         const { OPTIONAL_ITEM_APPLICATION } = AppType;
 
+        Object.assign(window, { vm });
+
         //mode edit
         if (vm.params.appDetail != null) {
             vm.optionalItemApplication = [];
@@ -232,14 +244,22 @@ export class KafS20A2Component extends KafS00ShrComponent {
                     .then((res: any) => {
                         vm.$mask('hide');
 
-                        let controlAttendances: IControlOfAttendanceItemsDto[] | null = res[0].data;
-                        let optionalNoItems: IOptionalItemDto[] | null = res[1].data;
+                        let controlAttendances: IControlOfAttendanceItemsDto[] = res[0].data;
+                        let optionalNoItems: IOptionalItemDto[] = res[1].data;
 
                         settingNoItems.forEach((itemNo: number) => {
-                            let optionalItem: IOptionalItemDto = _.find(optionalNoItems, { optionalItemNo: itemNo });
-                            let controlAttendance: IControlOfAttendanceItemsDto = _.find(controlAttendances, { itemDailyID: itemNo + 640 });
+                            let optionalItem = optionalNoItems.find((optionalItem) => {
+
+                                return optionalItem.optionalItemNo == itemNo;
+                            });
+                            let controlAttendance = controlAttendances.find((controlAttendance) => {
+            
+                                return itemNo == controlAttendance.itemDailyID - 640;
+                            });
+
                             const { calcResultRange, optionalItemAtr, optionalItemName, optionalItemNo, unit, description } = optionalItem;
                             const { lowerCheck, upperCheck, amountLower, amountUpper, numberLower, numberUpper, timeLower, timeUpper } = calcResultRange;
+                            
                             if (vm.mode) {
                                 vm.optionalItemApplication.push({
                                     lowerCheck,
@@ -262,6 +282,7 @@ export class KafS20A2Component extends KafS00ShrComponent {
                                 });
                             }
                         });
+
                     }).catch((error) => {
                         vm.handleErrorMessage(error);
                     });
@@ -274,11 +295,11 @@ export class KafS20A2Component extends KafS00ShrComponent {
         evt = (evt) ? evt : window.event;
         const charCode = (evt.which) ? evt.which : evt.keyCode;
         if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-          evt.preventDefault();
+            evt.preventDefault();
         } else {
-          return true;
+            return true;
         }
-      }
+    }
 
     public backToStep1() {
         const vm = this;
