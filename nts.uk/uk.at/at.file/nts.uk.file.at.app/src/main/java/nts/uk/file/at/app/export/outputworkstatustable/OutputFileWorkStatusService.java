@@ -3,6 +3,7 @@ package nts.uk.file.at.app.export.outputworkstatustable;
 import lombok.AllArgsConstructor;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
@@ -70,8 +71,12 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
         YearMonth targetDate = new YearMonth(query.getTargetDate());
         List<String> lstEmpIds = query.getLstEmpIds();
         // TODO DANG QA
-        val cl = closureRepository.findByClosureId(AppContexts.user().companyId(), query.getClosureId());
-        val closureDate = cl.get(0).getClosureDate();
+        val cl = closureRepository.findById(AppContexts.user().companyId(), query.getClosureId());
+        val basedateNow = GeneralDate.today();
+        if(!cl.isPresent() ||cl.get().getHistoryByBaseDate(basedateNow) == null){
+            throw new BusinessException("Còn QA");
+        }
+        val closureDate = cl.get().getHistoryByBaseDate(basedateNow).getClosureDate();
         DatePeriod datePeriod = this.getFromClosureDate(targetDate, closureDate);
         // [No.600]社員ID（List）から社員コードと表示名を取得（削除社員考慮）
         List<EmployeeBasicInfoImport> lstEmployeeInfo = empEmployeeAdapter.getEmpInfoLstBySids(lstEmpIds, datePeriod, true, true);
@@ -79,8 +84,7 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
         String companyId = AppContexts.user().companyId();
         CompanyBsImport companyInfo = companyBsAdapter.getCompanyByCid(companyId);
         // 3 Call 社員ID（List）と基準日から所属職場IDを取得
-        GeneralDate lastDate = GeneralDate.ymd(targetDate.year(), targetDate.month(), targetDate.lastDateInMonth());
-        GeneralDate baseDate = lastDate;
+        GeneralDate baseDate = datePeriod.end();
         List<AffAtWorkplaceImport> lstAffAtWorkplaceImport = affWorkplaceAdapter
                 .findBySIdAndBaseDate(lstEmpIds, baseDate);
         List<EmployeeInfor> employeeInfoList = new ArrayList<EmployeeInfor>();

@@ -97,8 +97,13 @@ public class AnnualWorkLedgerExportService extends ExportService<AnnualWorkLedge
         YearMonth yearMonthStart = new YearMonth(query.getStartMonth());
         YearMonth yearMonthEnd = new YearMonth(query.getEndMonth());
         YearMonthPeriod yearMonthPeriod = new YearMonthPeriod(yearMonthStart, yearMonthEnd);
-        val cl = closureRepository.findByClosureId(AppContexts.user().companyId(), query.getClosureId());
-        val closureDate = cl.get(0).getClosureDate();
+
+        val cl = closureRepository.findById(AppContexts.user().companyId(), query.getClosureId());
+        val basedateNow = GeneralDate.today();
+        if(!cl.isPresent() ||cl.get().getHistoryByBaseDate(basedateNow) == null){
+            throw new BusinessException("Còn QA");
+        }
+        val closureDate = cl.get().getHistoryByBaseDate(basedateNow).getClosureDate();
         List<String> lstEmpIds = query.getLstEmpIds();
         DatePeriod datePeriod = this.getFromClosureDate(yearMonthStart, yearMonthEnd, closureDate.getClosureDay().v());
         GeneralDate baseDate = datePeriod.end();

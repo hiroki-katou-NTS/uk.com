@@ -52,27 +52,37 @@ public class CreateAnnualWorkLedgerContentDomainService {
 
             val employee = lstEmployee.get(emp.getEmployeeId());
             val workplaceInfo = lstWorkplaceInfor.get(emp.getEmployeeId());
-            val closureDateEmployment = lstClosureDateEmployment.get(emp.getEmployeeId());
-            if (employee == null || workplaceInfo == null || closureDateEmployment == null) return;
 
-            val closureHistory = closureDateEmployment.getClosure().getClosureHistories().get(0);
-            val closureDay = closureHistory.getClosureDate().getClosureDay().v();
+            if (employee == null || workplaceInfo == null) return;
 
             // 日次データ
             val dailyData = getDailyData(require, emp, dailyOutputItems);
             // 月次データ
-            val lstMonthlyData = getMonthlyData(require, emp, monthlyOutputItems, closureDay);
+            List<MonthlyData> lstMonthlyData = new ArrayList<>();
+            String closureDate = null;
+            String employmentCode = null;
+            String employmentName = null;
+            if (lstClosureDateEmployment.size() > 0) {
+                val closureDateEmployment = lstClosureDateEmployment.get(emp.getEmployeeId());
+                val closureHistory = closureDateEmployment.getClosure().getClosureHistories().get(0);
+                val closureDay = closureHistory.getClosureDate().getClosureDay().v();
+
+                lstMonthlyData = getMonthlyData(require, emp, monthlyOutputItems, closureDay);
+                closureDate = closureHistory.getClosureName().v();
+                employmentCode = closureDateEmployment.getEmploymentCode();
+                employmentName = closureDateEmployment.getEmploymentName();
+            }
 
             AnnualWorkLedgerContent model = new AnnualWorkLedgerContent(
                     dailyData,
                     lstMonthlyData,
                     employee.getEmployeeCode(),
                     employee.getEmployeeName(),
-                    closureHistory.getClosureName().v(),
+                    closureDate,
                     workplaceInfo.getWorkplaceCode(),
                     workplaceInfo.getWorkplaceName(),
-                    closureDateEmployment.getEmploymentCode(),
-                    closureDateEmployment.getEmploymentName()
+                    employmentCode,
+                    employmentName
             );
             result.add(model);
         });
