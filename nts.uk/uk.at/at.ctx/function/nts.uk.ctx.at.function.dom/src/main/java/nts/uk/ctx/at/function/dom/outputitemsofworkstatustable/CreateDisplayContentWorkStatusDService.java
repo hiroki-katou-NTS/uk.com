@@ -119,7 +119,6 @@ public class CreateDisplayContentWorkStatusDService {
                         ));
                 item.setOutputItemOneLines(itemOneLines);
             }
-            System.out.println(item.getEmployeeCode() + item.getWorkPlaceName());
             rs.add(item);
         });
 
