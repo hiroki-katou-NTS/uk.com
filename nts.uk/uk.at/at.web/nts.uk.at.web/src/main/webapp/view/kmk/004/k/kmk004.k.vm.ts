@@ -11,11 +11,9 @@ module nts.uk.at.kmk004.k {
 	@bean()
 	export class ViewModel extends ko.ViewModel {
 
-		title = '';
-
 		screenData: KnockoutObservable<ScreenData> = ko.observable(new ScreenData());
 
-		screenMode: 'Company' | 'Workplace' | 'Employment' | 'Person' = 'Workplace';
+		screenMode: 'Com_Company' | 'Com_Workplace' | 'Com_Employment' | 'Com_Person' = 'Com_Workplace';
 
 		startMonthLst = ko.observableArray([]);
 
@@ -24,7 +22,10 @@ module nts.uk.at.kmk004.k {
 		created(param?: any) {
 			const vm = this;
 			vm.initMonthLst();
-			if (vm.screenMode !== 'Company') {
+			if (param) {
+				vm.screenMode = param.screenMode;
+			}
+			if (vm.screenMode !== 'Com_Company') {
 				let windowSize = nts.uk.ui.windows.getSelf();
 				windowSize.$dialog.dialog("option", "height", 695);
 			}
@@ -51,17 +52,12 @@ module nts.uk.at.kmk004.k {
 
 			const vm = this
 				, msgs = [
-					{ mode: 'Company', msg: '' },
-					{ mode: 'Workplace', msg: 'KMK004_344' },
-					{ mode: 'Employment', msg: 'KMK004_345' },
-					{ mode: 'Person', msg: 'KMK004_346' }];
+					{ mode: 'Com_Company', msg: '' },
+					{ mode: 'Com_Workplace', msg: 'KMK004_344' },
+					{ mode: 'Com_Employment', msg: 'KMK004_345' },
+					{ mode: 'Com_Person', msg: 'KMK004_346' }];
 
 			return vm.$i18n.text(_.find(msgs, ['mode', vm.screenMode]).msg);
-		}
-
-		getTitle() {
-			const vm = this;
-			return vm.$i18n.text('Com_' + vm.screenMode);
 		}
 
 		close() {

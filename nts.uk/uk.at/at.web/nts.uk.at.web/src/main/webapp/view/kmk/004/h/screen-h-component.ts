@@ -15,12 +15,15 @@ const template = `
 							<div id="work-place-list"></div>
 						</div>
 						<div style="display:inline-block">
-							<label id="work-type-title" data-bind="i18n:'KMK004_268'"></label>
-								<hr/>
+							<label id="flex-title" data-bind="i18n:'KMK004_268'"></label>
+							<hr/>
 							<label id="selected-work-place" data-bind="i18n:workPlaceName"></label>
 							<div style="margin-top: 20px;" data-bind="component: {
 								name: 'basic-settings-company',
-								params: {screenData:screenData}
+								params: {
+											screenData:screenData,
+											screenMode:header
+										}
 								}">
 						</div>
 						<div data-bind="component: {

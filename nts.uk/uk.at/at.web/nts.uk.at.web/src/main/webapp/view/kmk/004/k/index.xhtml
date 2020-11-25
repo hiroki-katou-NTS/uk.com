@@ -21,7 +21,7 @@
 			<div id="contents-area">
 				<div class="div_line">
 					<!-- K1_1 -->
-					<label style="font-size: 1.5rem;" data-bind="text:getTitle()"></label>
+					<label style="font-size: 1.5rem;" data-bind="i18n:screenMode"></label>
 					<!-- K1_2 -->
 					<hr />
 					<!-- K1_3 -->
@@ -140,7 +140,7 @@
 						data-bind="ntsCheckBox: { checked: screenData().legalFlextime }">#{i18n.getText('KMK004_286')}</div>
 				</div>
 
-				<div class="div_line" data-bind="if:screenMode == 'Company'">
+				<div class="div_line" data-bind="if:screenMode == 'Com_Company'">
 					<!-- K7_1-->
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_287')}</div>
 					<!-- K7_2-->
@@ -159,7 +159,7 @@
 				</div>
 				<div class="div_line">
 					<!--K7_3-->
-					<label data-bind="visible:screenMode !== 'Company'"
+					<label data-bind="visible:screenMode !== 'Com_Company'"
 						style="margin-left: 149px;">#{i18n.getText('KMK004_290')}</label>
 				</div>
 
@@ -171,7 +171,7 @@
 				<!-- K8_2 -->
 				<button data-bind="click: close">#{i18n.getText('KMK004_235')}</button>
 				<!-- K8_3 -->
-				<button class="danger" data-bind="click: remove,visible:screenMode !== 'Company'">#{i18n.getText('KMK004_236')}</button>
+				<button class="danger" data-bind="click: remove,visible:screenMode !== 'Com_Company'">#{i18n.getText('KMK004_236')}</button>
 				
 			</div>
 		</ui:define>

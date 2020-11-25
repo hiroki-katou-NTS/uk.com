@@ -9,10 +9,15 @@ const template = `
 								params: {isShowCopyButton: false , header:header }
 							}"></div>
 					</div>
-					<div style="padding: 10px;">
+					<div style="padding: 10px;display: inline-block;">
+						<label id="flex-title" data-bind="i18n:'KMK004_268'"></label>
+						<hr/>
 						<div data-bind="component: {
 							name: 'basic-settings-company',
-							params: {screenData:screenData}
+							params: {
+											screenData:screenData,
+											screenMode:header
+									}
 							}">
 						</div>
 						<div data-bind="component: {
