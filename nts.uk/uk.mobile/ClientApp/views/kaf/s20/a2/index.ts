@@ -89,7 +89,7 @@ export class KafS20A2Component extends KafS00ShrComponent {
                     vm.kafS00BParams = {
                         appDisplaySetting,
                         newModeContent: {
-                            useMultiDaySwitch: true,
+                            useMultiDaySwitch: false,
                             initSelectMultiDay: false,
                             appTypeSetting,
                             appDate: null,

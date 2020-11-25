@@ -11,7 +11,7 @@
       >
         <button
           type="button"
-          class="btn btn-success btn-block btn-lg col-10"
+          class="btn btn-success btn-block btn-lg col-10 bg-blue-grey-50"
           v-on:click="nextToStep2(item)"
         >
           {{ item.name }}
@@ -19,7 +19,7 @@
         <div class="col-2 text-center">
           <button
             type="button"
-            class="btn btn-success btn-block btn-lg icon-button"
+            class="btn btn-success btn-block btn-lg icon-button bg-blue-grey-100"
             v-on:click="showDescription(item)"
           >
             <fa-font icon="far fa-lightbulb" size="lg" />
