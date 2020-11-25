@@ -32,9 +32,7 @@ public class CreateAnnualWorkLedgerContentDomainService {
         List<AnnualWorkLedgerContent> result = new ArrayList<>();
 
         List<String> listSid = new ArrayList<>(lstEmployee.keySet());
-        if (listSid.size() == 0) {
-            throw new BusinessException("Msg_1862");
-        }
+
         // 1 - Call 社員の指定期間中の所属期間を取得する
         val listEmployeeStatus = require.getListAffComHistByListSidAndPeriod(listSid, datePeriod);
 
@@ -76,7 +74,9 @@ public class CreateAnnualWorkLedgerContentDomainService {
             );
             result.add(model);
         }
-
+        if (result.size() == 0 ) {
+            throw new BusinessException("Msg_1802");
+        }
         return result;
     }
 

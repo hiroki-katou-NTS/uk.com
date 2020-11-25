@@ -108,6 +108,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
     }
 
     public void printData(Worksheet worksheet, OutPutWorkStatusContent content) throws Exception {
+        boolean isWplPrinted = false;
         Cells cells = worksheet.getCells();
         HorizontalPageBreakCollection pageBreaks = worksheet.getHorizontalPageBreaks();
         int pages = 1;
@@ -127,7 +128,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
                 if (q != 0) {
                     pageBreaks.add(countRow);
                     pages++;
-                   // countRow = MAX_EMP_IN_PAGE * q;
+                    // countRow = MAX_EMP_IN_PAGE * q;
                     cells.copyRows(cells, 0, countRow, 3);
                     countRow += 3;
                     countItem = 3;
@@ -139,6 +140,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
             cells.merge(countRow, 0, 1, maxColumnData, true, true);
             cells.get(countRow, 0).getStyle().setVerticalAlignment(TextAlignmentType.LEFT);
             cells.get(countRow, 0).setValue("★ " + TextResource.localize("KWR003_404") + dataSource.getWorkPlaceCode() + "  " + dataSource.getWorkPlaceName());
+            isWplPrinted = true;
             countRow++;
             countItem++;
             val data = dataSource.getData();
@@ -164,11 +166,20 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
                         }
                     }
                 }
+
                 val detail = data.get(i);
                 val checkCountRow = detail.getOutputItemOneLines().size() - (MAX_EMP_IN_PAGE - countItem);
                 val code = detail.getEmployeeCode();
                 val name = detail.getEmployeeName();
                 if (checkCountRow > 0) {
+
+                    if (isWplPrinted) {
+                        //cells.deleteRow(countRow -1);
+                        cells.clearRange(countRow - 1, 0, countRow - 1, maxColumn);
+                        System.out.println("Index:" + "-----------------" + countRow);
+                        countRow--;
+
+                    }
                     pageBreaks.add(countRow);
                     pages++;
                     //countRow += MAX_EMP_IN_PAGE - countItem;
@@ -192,6 +203,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
                 cells.merge(countRow, 0, 1, maxColumnData, true, true);
                 cells.get(countRow, 0).getStyle().setVerticalAlignment(TextAlignmentType.LEFT);
                 cells.get(countRow, 0).setValue("★ " + TextResource.localize("KWR003_405") + code + "   " + name);
+                isWplPrinted = false;
                 countRow++;
                 countItem++;
                 val itemOneLines = detail.getOutputItemOneLines();

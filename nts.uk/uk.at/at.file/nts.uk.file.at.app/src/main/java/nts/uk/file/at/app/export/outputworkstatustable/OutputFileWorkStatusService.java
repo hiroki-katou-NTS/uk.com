@@ -108,18 +108,24 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
         // 5 Call 勤務状況表の表示内容を作成する:
         val listData = CreateDisplayContentWorkStatusDService.displayContentsOfWorkStatus(require, datePeriod,
                 employeeInfoList, workStatusOutputSetting, placeInfoList);
-        val mapListData = listData.stream().map(DisplayContentWorkStatus::getWorkPlaceCode).distinct().collect(Collectors.toList());
-
+        val rss = listData.stream().filter(Objects::isNull).collect(Collectors.toList());
+        if(0 != rss.size()){
+            val check = true;
+        }
+        val wplaceSort = listData.stream().map(DisplayContentWorkStatus::getWorkPlaceCode).distinct().collect(Collectors.toCollection(TreeSet::new));
         val listRs = new ArrayList<ExportExcelDto>();
 
-        mapListData.forEach(e -> {
-            val item = listData.stream().filter(i -> i.getWorkPlaceCode().equals(e)).map(j -> new DisplayContentWorkStatus(
-                    j.getEmployeeCode(),
-                    j.getEmployeeName(),
-                    j.getWorkPlaceCode(),
-                    j.getWorkPlaceName(),
-                    j.getOutputItemOneLines()
-            )).collect(Collectors.toList());
+        wplaceSort.forEach(e -> {
+            val item = listData.stream().filter(i -> i.getWorkPlaceCode().equals(e))
+                    .sorted(Comparator.comparing(DisplayContentWorkStatus::getEmployeeCode))
+                    .map(j -> new DisplayContentWorkStatus(
+                            j.getEmployeeCode(),
+                            j.getEmployeeName(),
+                            j.getWorkPlaceCode(),
+                            j.getWorkPlaceName(),
+                            j.getOutputItemOneLines()
+                    )).collect(Collectors.toList());
+
             listRs.add(new ExportExcelDto(
                     item.get(0).getWorkPlaceCode(),
                     item.get(0).getWorkPlaceName(),

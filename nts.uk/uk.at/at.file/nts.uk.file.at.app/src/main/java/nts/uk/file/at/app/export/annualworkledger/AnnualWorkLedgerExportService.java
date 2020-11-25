@@ -1,6 +1,7 @@
 package nts.uk.file.at.app.export.annualworkledger;
 
 import lombok.AllArgsConstructor;
+import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.layer.app.file.export.ExportService;
@@ -97,7 +98,8 @@ public class AnnualWorkLedgerExportService extends ExportService<AnnualWorkLedge
         GeneralDate startMonth = query.getStartMonth();
         GeneralDate endMonth = query.getEndMonth();
         YearMonthPeriod yearMonthPeriod = new YearMonthPeriod(startMonth.yearMonth(), endMonth.yearMonth());
-        ClosureDate closureDate = new ClosureDate(query.getClosureDate().getClosureDay(), query.getClosureDate().getLastDayOfMonth());
+        val cl = closureRepository.findByClosureId(AppContexts.user().companyId(), query.getClosureId());
+        val closureDate = cl.get(0).getClosureDate();
         List<String> lstEmpIds = query.getLstEmpIds();
         DatePeriod datePeriod = this.getFromClosureDate(startMonth, endMonth, closureDate.getClosureDay().v());
         GeneralDate baseDate = datePeriod.end();

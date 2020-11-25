@@ -30,5 +30,5 @@ public class AnnualWorkLedgerFileQuery {
     private boolean isZeroDisplay;
 
     // 締め日
-    private ClosureDateDto closureDate;
+    private int  closureId;;
 }
