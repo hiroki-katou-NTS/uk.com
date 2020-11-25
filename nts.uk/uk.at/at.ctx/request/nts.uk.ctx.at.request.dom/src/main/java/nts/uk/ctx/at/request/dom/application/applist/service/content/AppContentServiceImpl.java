@@ -245,10 +245,9 @@ public class AppContentServiceImpl implements AppContentService {
 	}
 
 	@Override
-	public String getWorkChangeGoBackContent(ApplicationType appType, String workTypeName, String workTimeName,
-			NotUseAtr goWorkAtr1, TimeWithDayAttr workTimeStart1, NotUseAtr goBackAtr1, TimeWithDayAttr workTimeEnd1,
-			TimeWithDayAttr breakTimeStart1, TimeWithDayAttr breakTimeEnd1, DisplayAtr appReasonDisAtr,
-			AppReason appReason, Application application) {
+	public String getWorkChangeGoBackContent(ApplicationType appType, String workTypeName, String workTimeName, NotUseAtr goWorkAtr1, TimeWithDayAttr workTimeStart1, 
+			NotUseAtr goBackAtr1, TimeWithDayAttr workTimeEnd1, TimeWithDayAttr workTimeStart2, TimeWithDayAttr workTimeEnd2,
+			TimeWithDayAttr breakTimeStart1, TimeWithDayAttr breakTimeEnd1, DisplayAtr appReasonDisAtr, AppReason appReason, Application application) {
 		// 申請内容　＝　String.Empty ( Nội dung application = 　String.Empty)
 		String result = Strings.EMPTY;
 		if(appType == ApplicationType.WORK_CHANGE_APPLICATION) {
@@ -284,6 +283,10 @@ public class AppContentServiceImpl implements AppContentService {
 			}
 		}
 		if(appType == ApplicationType.WORK_CHANGE_APPLICATION) {
+			if(workTimeStart2!=null && workTimeEnd2!=null) {
+				// 申請内容　+＝　’　’＋Input．勤務時間開始2＋#CMM045_100＋Input．勤務時間終了2
+				result += " " + workTimeStart2.getInDayTimeWithFormat() + I18NText.getText("CMM045_100") + workTimeEnd2.getInDayTimeWithFormat();
+			}
 			if(!(breakTimeStart1==null || breakTimeStart1.v()==0 || breakTimeEnd1 == null || breakTimeEnd1.v()==0)) {
 				result += " " + I18NText.getText("CMM045_251") + breakTimeStart1.getInDayTimeWithFormat() + breakTimeEnd1.getInDayTimeWithFormat();
 			}
