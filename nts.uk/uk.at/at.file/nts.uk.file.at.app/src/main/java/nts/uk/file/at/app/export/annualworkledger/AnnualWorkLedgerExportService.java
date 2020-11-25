@@ -7,6 +7,7 @@ import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.function.app.find.annualworkledger.AnnualWorkLedgerOutputSettingFinder;
@@ -37,7 +38,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsImport;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -94,14 +94,13 @@ public class AnnualWorkLedgerExportService extends ExportService<AnnualWorkLedge
     @Override
     protected void handle(ExportServiceContext<AnnualWorkLedgerFileQuery> context) {
         AnnualWorkLedgerFileQuery query = context.getQuery();
-
-        GeneralDate startMonth = query.getStartMonth();
-        GeneralDate endMonth = query.getEndMonth();
-        YearMonthPeriod yearMonthPeriod = new YearMonthPeriod(startMonth.yearMonth(), endMonth.yearMonth());
+        YearMonth yearMonthStart = new YearMonth(query.getStartMonth());
+        YearMonth yearMonthEnd = new YearMonth(query.getEndMonth());
+        YearMonthPeriod yearMonthPeriod = new YearMonthPeriod(yearMonthStart, yearMonthEnd);
         val cl = closureRepository.findByClosureId(AppContexts.user().companyId(), query.getClosureId());
         val closureDate = cl.get(0).getClosureDate();
         List<String> lstEmpIds = query.getLstEmpIds();
-        DatePeriod datePeriod = this.getFromClosureDate(startMonth, endMonth, closureDate.getClosureDay().v());
+        DatePeriod datePeriod = this.getFromClosureDate(yearMonthStart, yearMonthEnd, closureDate.getClosureDay().v());
         GeneralDate baseDate = datePeriod.end();
         String companyId = AppContexts.user().companyId();
 
@@ -160,7 +159,7 @@ public class AnnualWorkLedgerExportService extends ExportService<AnnualWorkLedge
         displayGenerator.generate(context.getGeneratorContext(), dataSource);
     }
 
-    private DatePeriod getFromClosureDate(GeneralDate startMonth, GeneralDate endMonth, int closureDay) {
+    private DatePeriod getFromClosureDate(YearMonth startMonth, YearMonth endMonth, int closureDay) {
         GeneralDate startDate = GeneralDate.ymd(startMonth.year(), startMonth.month(),
                 Math.min(closureDay, startMonth.lastDateInMonth())).addDays(1);
         GeneralDate endDate = GeneralDate.ymd(endMonth.year(), endMonth.month(),
@@ -202,9 +201,10 @@ public class AnnualWorkLedgerExportService extends ExportService<AnnualWorkLedge
         }
 
         @Override
-        public List<AttendanceResultDto> getValueOf(String employeeId, DatePeriod workingDatePeriod, Collection<Integer> itemIds) {
-            return itemServiceAdapter.getValueOf(Collections.singletonList(employeeId), workingDatePeriod, itemIds);
+        public List<AttendanceResultDto> getValueOf(List<String> employeeIds, DatePeriod workingDatePeriod, Collection<Integer> itemIds) {
+            return itemServiceAdapter.getValueOf(employeeIds, workingDatePeriod, itemIds);
         }
+
 
         @Override
         public Map<String, List<MonthlyRecordValueImport>> getActualMultipleMonth(List<String> employeeIds, YearMonthPeriod period, List<Integer> itemIds) {
