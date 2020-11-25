@@ -137,7 +137,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         pathToUp = '';
         
         // param kcp015
-        hasParams: KnockoutObservable<boolean> = ko.observable(true);
+        hasParams: KnockoutObservable<boolean> = ko.observable(false);
         visibleA31: KnockoutObservable<boolean> = ko.observable(true);
         visibleA32: KnockoutObservable<boolean> = ko.observable(true);
         visibleA33: KnockoutObservable<boolean> = ko.observable(true);
@@ -860,14 +860,20 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             if (self.selectedModeDisplayInBody() == 'shift')
                 return;
-            let workTypeCodeSave = uk.localStorage.getItem('workTypeCodeSelected');
-            if (!workTypeCodeSave.isPresent()) {
+            let item = uk.localStorage.getItem(self.KEY);
+            let userInfor = {};
+            if (item.isPresent()) {
+                userInfor = JSON.parse(item.get());
+            }
+            
+            let workTypeCodeSave = item.isPresent() ? userInfor.workTypeCodeSelected : '';
+            if (workTypeCodeSave == '') {
                 if (__viewContext.viewModel.viewAB.listWorkType()[0].workTimeSetting == 2) {
                     __viewContext.viewModel.viewAB.disabled(true);
                 }
             } else {
-                let objWtime = _.filter(__viewContext.viewModel.viewAB.listWorkType(), function(o) { return o.workTypeCode == workTypeCodeSave.get(); });
-                if (objWtime.length > 0 && objWtime[0].workTimeSetting == 2) {
+                let objWtype = _.filter(__viewContext.viewModel.viewAB.listWorkType(), function(o) { return o.workTypeCode == workTypeCodeSave; });
+                if (objWtype.length > 0 && objWtype[0].workTimeSetting == 2) {
                     __viewContext.viewModel.viewAB.disabled(true);
                 }
             }
@@ -3103,8 +3109,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     __viewContext.viewModel.viewAB.workplaceIdKCP013(input.unit == 0 ? input.workplaceId : input.workplaceGroupID);
                     __viewContext.viewModel.viewAB.filter(input.unit == 0 ? true : false);
                 } else {
-                    //__viewContext.viewModel.viewAC.workplaceModeName(data.dataBasicDto.designation);
-                    //$($("#Aa1_2 > button")[1]).html(data.dataBasicDto.designation);
+                    if (input.unit == 0) {
+                        $($("#Aa1_2 > button")[1]).html(getText('Com_Workplace'));
+                    } else {
+                        $($("#Aa1_2 > button")[1]).html(getText('Com_WorkplaceGroup'));
+                    }
 
                     self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
                     // set data shiftPallet

@@ -72,7 +72,7 @@ public class AllReservationRequest extends NRLRequest<Frame> {
 					record.get(FieldName.RSV_MENU), record.get(FieldName.RSV_YMD), record.get(FieldName.RSV_HMS),
 					record.get(FieldName.RSV_QUAN));
 
-			Optional<AtomTask> result = convertTRReservationAdapter.convertData(Integer.parseInt(nrlNo.trim()), "000000000000", reservData);
+			Optional<AtomTask> result = convertTRReservationAdapter.convertData(nrlNo.trim(), "000000000000", reservData);
 			if (result.isPresent())
 				result.get().run();
 		}

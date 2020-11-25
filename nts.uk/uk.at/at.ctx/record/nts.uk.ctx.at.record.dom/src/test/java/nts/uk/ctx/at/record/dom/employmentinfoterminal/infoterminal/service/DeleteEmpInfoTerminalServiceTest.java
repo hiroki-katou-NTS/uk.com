@@ -7,28 +7,15 @@ import java.util.Optional;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.adapter.imploymentinfoterminal.infoterminal.EmpInfoTerminalComStatusImport;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.ConvertEmbossCategory;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.CreateStampInfo;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerSerialNo;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal.EmpInfoTerminalBuilder;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalName;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.IPAddress;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.MacAddress;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.ModelEmpInfoTer;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.MonitorIntervalTime;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.OutPlaceConvert;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.ResultOfDeletion;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 
@@ -48,7 +35,7 @@ public class DeleteEmpInfoTerminalServiceTest {
 	@Test
 	public void testDeleteEmpInfoTerminalService_1() {
 		ContractCode contractCode = new ContractCode("contract");
-		EmpInfoTerminalCode empInfoTerminalCode = new EmpInfoTerminalCode(1);
+		EmpInfoTerminalCode empInfoTerminalCode = new EmpInfoTerminalCode("1");
 		Optional<EmpInfoTerminalComStatusImport> empInfoTerminalComStatusImport = DeleteEmpInfoTerminalServiceTestHelper.createEmpInfoTerminalComStatusImport();
 		new Expectations() {
 			{
@@ -58,13 +45,13 @@ public class DeleteEmpInfoTerminalServiceTest {
 				result = empInfoTerminalComStatusImport;
 			}
 		};
-		ResultOfDeletion resultOfDeletion = DeleteEmpInfoTerminalService.create(require, contractCode.v(), empInfoTerminalCode.v().intValue());
+		ResultOfDeletion resultOfDeletion = DeleteEmpInfoTerminalService.create(require, contractCode.v(), empInfoTerminalCode.v());
 		
 		assertThat(resultOfDeletion.isError()).isTrue();
 		assertThat(resultOfDeletion.getDeleteEmpInfoTerminal()).isEmpty();
 		
 		NtsAssert.atomTask(
-				() -> DeleteEmpInfoTerminalService.create(require, contractCode.v(), empInfoTerminalCode.v().intValue()).getDeleteEmpInfoTerminalComStatus().get(),
+				() -> DeleteEmpInfoTerminalService.create(require, contractCode.v(), empInfoTerminalCode.v()).getDeleteEmpInfoTerminalComStatus().get(),
 				any -> require.delete(empInfoTerminalComStatusImport.get()));
 		
 	}
@@ -76,7 +63,7 @@ public class DeleteEmpInfoTerminalServiceTest {
 	@Test
 	public void testDeleteEmpInfoTerminalService_2() {
 		ContractCode contractCode = new ContractCode("1");
-		EmpInfoTerminalCode empInfoTerminalCode = new EmpInfoTerminalCode(1);
+		EmpInfoTerminalCode empInfoTerminalCode = new EmpInfoTerminalCode("1");
 		Optional<EmpInfoTerminal> empInfoTerminal = DeleteEmpInfoTerminalServiceTestHelper.createEmpInfoTerminal();
 		new Expectations() {
 			{
@@ -87,13 +74,13 @@ public class DeleteEmpInfoTerminalServiceTest {
 			}
 		};
 		
-		ResultOfDeletion resultOfDeletion = DeleteEmpInfoTerminalService.create(require, contractCode.v(), empInfoTerminalCode.v().intValue());
+		ResultOfDeletion resultOfDeletion = DeleteEmpInfoTerminalService.create(require, contractCode.v(), empInfoTerminalCode.v());
 		
 		assertThat(resultOfDeletion.isError()).isFalse();
 		assertThat(resultOfDeletion.getDeleteEmpInfoTerminalComStatus()).isEmpty();
 		
 		NtsAssert.atomTask(
-				() -> DeleteEmpInfoTerminalService.create(require, contractCode.v(), empInfoTerminalCode.v().intValue()).getDeleteEmpInfoTerminal().get(),
+				() -> DeleteEmpInfoTerminalService.create(require, contractCode.v(), empInfoTerminalCode.v()).getDeleteEmpInfoTerminal().get(),
 				any -> require.delete(empInfoTerminal.get())
 		);
 	}
@@ -105,7 +92,7 @@ public class DeleteEmpInfoTerminalServiceTest {
 	@Test
 	public void testDeleteEmpInfoTerminalService_3() {
 		ContractCode contractCode = new ContractCode("1");
-		EmpInfoTerminalCode empInfoTerminalCode = new EmpInfoTerminalCode(1);
+		EmpInfoTerminalCode empInfoTerminalCode = new EmpInfoTerminalCode("1");
 		
 		Optional<EmpInfoTerminal> empInfoTerminal = DeleteEmpInfoTerminalServiceTestHelper.createEmpInfoTerminal();
 		Optional<EmpInfoTerminalComStatusImport> empInfoTerminalComStatusImport = DeleteEmpInfoTerminalServiceTestHelper.createEmpInfoTerminalComStatusImport();
@@ -119,7 +106,7 @@ public class DeleteEmpInfoTerminalServiceTest {
 			}
 		};
 		
-		ResultOfDeletion resultOfDeletion = DeleteEmpInfoTerminalService.create(require, contractCode.v(), empInfoTerminalCode.v().intValue());
+		ResultOfDeletion resultOfDeletion = DeleteEmpInfoTerminalService.create(require, contractCode.v(), empInfoTerminalCode.v());
 		assertThat(resultOfDeletion.isError()).isFalse();
 		
 		NtsAssert.atomTask(
@@ -139,7 +126,7 @@ public class DeleteEmpInfoTerminalServiceTest {
 	@Test
 	public void testDeleteEmpInfoTerminalService_4() {
 		ContractCode contractCode = new ContractCode("1");
-		EmpInfoTerminalCode empInfoTerminalCode = new EmpInfoTerminalCode(1);
+		EmpInfoTerminalCode empInfoTerminalCode = new EmpInfoTerminalCode("1");
 		new Expectations() {
 			{
 				require.getEmpInfoTerminal(empInfoTerminalCode, contractCode);
@@ -149,7 +136,7 @@ public class DeleteEmpInfoTerminalServiceTest {
 			}
 		};
 		
-		ResultOfDeletion resultOfDeletion = DeleteEmpInfoTerminalService.create(require, contractCode.v(), empInfoTerminalCode.v().intValue());
+		ResultOfDeletion resultOfDeletion = DeleteEmpInfoTerminalService.create(require, contractCode.v(), empInfoTerminalCode.v());
 		
 		assertThat(resultOfDeletion.isError()).isTrue();
 		assertThat(resultOfDeletion.getDeleteEmpInfoTerminal()).isEmpty();

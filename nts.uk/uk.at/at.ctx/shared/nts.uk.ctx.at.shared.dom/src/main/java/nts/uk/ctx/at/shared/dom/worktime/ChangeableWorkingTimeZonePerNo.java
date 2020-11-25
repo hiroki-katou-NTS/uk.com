@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.shared.dom.worktime;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
@@ -84,7 +84,7 @@ public class ChangeableWorkingTimeZonePerNo {
 
 		return new ContainsResult(
 							timeSpan.contains(time)	// 時間帯が時刻を含むか
-						,	timeSpan	// 対応する時間帯
+						,	Optional.of(timeSpan) 	// 対応する時間帯
 					);
 
 	}
@@ -116,7 +116,7 @@ public class ChangeableWorkingTimeZonePerNo {
 	 *
 	 */
 	@AllArgsConstructor
-	public enum ClockAreaAtr {
+	public static enum ClockAreaAtr {
 
 		/** 開始時刻 **/
 		START(1),
@@ -124,7 +124,7 @@ public class ChangeableWorkingTimeZonePerNo {
 		END(2),
 		;
 
-		public final int value;
+		private final int value;
 
 	}
 
@@ -136,15 +136,30 @@ public class ChangeableWorkingTimeZonePerNo {
 	 * @author kumiko_otake
 	 *
 	 */
-	@Getter
-	@RequiredArgsConstructor
-	public class ContainsResult {
+	@Value
+	public static class ContainsResult {
 
 		/** 含まれているか true:含まれている/false:含まれていない **/
 		private final boolean contains;
-
 		/** 時間帯 **/
-		private final TimeSpanForCalc timeSpan;
+		private final Optional<TimeSpanForCalc> timeSpan;
+
+		/**
+		 * 含まれている
+		 * @param timeSpan 時間帯
+		 * @return
+		 */
+		public static ContainsResult contains( TimeSpanForCalc timeSpan ) {
+			return new ContainsResult( true, Optional.of( timeSpan ) );
+		}
+
+		/**
+		 * 含まれていない
+		 * @return
+		 */
+		public static ContainsResult notContains() {
+			return new ContainsResult( false, Optional.empty() );
+		}
 
 	}
 

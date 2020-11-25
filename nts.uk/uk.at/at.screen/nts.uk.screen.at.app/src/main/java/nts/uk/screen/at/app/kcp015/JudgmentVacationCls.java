@@ -43,7 +43,7 @@ public class JudgmentVacationCls {
 		
 		KCP015Dto result = new KCP015Dto();
 		
-		// step1
+		// step1   button A3_3 KALMT_ANNUAL_PAID_LEAVE
 		// call 年休の使用区分を取得する
 		boolean isManageAnnualLeave = false;
 		String companyId = AppContexts.user().companyId();
@@ -52,7 +52,7 @@ public class JudgmentVacationCls {
 			isManageAnnualLeave = annualLeaveSet.isManaged();
 		result.clsOfAnnualHoliday = isManageAnnualLeave;
 		
-		// step2
+		// step2  button A3_4 KMFMT_RETENTION_YEARLY
 		Optional<RetentionYearlySetting> retentionYearlySet = retentionYearlySettingRepo.findByCompanyId(companyId);
 		if (retentionYearlySet.isPresent()) {
 			result.divisionOfAnnualHoliday = retentionYearlySet.get().getManagementCategory().value == ManageDistinct.YES.value;
@@ -60,7 +60,7 @@ public class JudgmentVacationCls {
 			result.divisionOfAnnualHoliday = false;
 		}
 		
-		// step3
+		// step3  button A3_1 KCLMT_COMPENS_LEAVE_COM
 		CompensatoryLeaveComSetting compensatoryLeaveComSet = compensLeaveComSetRepo.find( companyId);
 		if(compensatoryLeaveComSet != null){
 			result.subLeaveUseDivision = compensatoryLeaveComSet.isManaged();
@@ -68,7 +68,7 @@ public class JudgmentVacationCls {
 			result.subLeaveUseDivision = false;
 		}
 		
-		// step4
+		// step4  button A3_2 KSVST_COM_SUBST_VACATION
 		Optional<ComSubstVacation> comSubstVacation = comSubstVacationRepo.findById(companyId);
 		if (comSubstVacation.isPresent()) {
 			result.dvisionOfZhenxiuUse = comSubstVacation.get().isManaged();
@@ -76,7 +76,7 @@ public class JudgmentVacationCls {
 			result.dvisionOfZhenxiuUse = false;
 		}
 		
-		// step5
+		// step5   button A3_5 KSHST_COM_60H_VACATION
 		Optional<Com60HourVacation> com60HourVacation = com60HourVacationRepo.findById(companyId);
 		if (com60HourVacation.isPresent()) {
 			result.overtimeUseCls60H = com60HourVacation.get().isManaged();
