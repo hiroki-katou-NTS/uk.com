@@ -73,7 +73,7 @@ public class CreateWorkSchedule {
 			}
 		}
 		
-		workSchedule.specifyAttendanceThenUpdateValueByHandCorrection(require, updateInfoMap);
+		workSchedule.changeAttendanceTimeByHandCorrection(require, updateInfoMap);
 		WorkSchedule correctedResult = require.correctWorkSchedule(workSchedule);
 		
 		// TODO		

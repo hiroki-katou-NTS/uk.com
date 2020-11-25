@@ -476,7 +476,7 @@ public class CreateWorkScheduleTest {
 			workInformation.containsOnChangeableWorkingTime(require, ClockAreaAtr.END, new WorkNo(1), (TimeWithDayAttr) any);
 			result = new ContainsResult( true, new TimeSpanForCalc(new TimeWithDayAttr(1), new TimeWithDayAttr(2)));
 			
-			workSchedule.specifyAttendanceThenUpdateValueByHandCorrection(require, (Map<Integer, T>) any);
+			workSchedule.changeAttendanceTimeByHandCorrection(require, (Map<Integer, T>) any);
 			}};
 		
 		Map<Integer, T> updateInfoMap = new HashMap<>();
@@ -518,7 +518,7 @@ public class CreateWorkScheduleTest {
 			workInformation.containsOnChangeableWorkingTime(require, ClockAreaAtr.END, new WorkNo(1), (TimeWithDayAttr) any);
 			result = new ContainsResult( true, new TimeSpanForCalc(new TimeWithDayAttr(1), new TimeWithDayAttr(2)));
 			
-			workSchedule.specifyAttendanceThenUpdateValueByHandCorrection(require, (Map<Integer, T>) any);
+			workSchedule.changeAttendanceTimeByHandCorrection(require, (Map<Integer, T>) any);
 			
 			require.correctWorkSchedule(workSchedule);
 			result = workSchedule;
