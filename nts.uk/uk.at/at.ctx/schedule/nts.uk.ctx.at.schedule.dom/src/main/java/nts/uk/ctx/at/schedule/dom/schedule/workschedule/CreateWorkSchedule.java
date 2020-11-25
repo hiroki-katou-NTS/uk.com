@@ -69,7 +69,7 @@ public class CreateWorkSchedule {
 					CreateWorkSchedule.checkTimeSpan(require, employeeId, date, workInformation, updateInfoMap);
 			
 			if ( !errorList.isEmpty() ) {
-				ResultOfRegisteringWorkSchedule.createWithErrorList(errorList);
+				return ResultOfRegisteringWorkSchedule.createWithErrorList(errorList);
 			}
 		}
 		
