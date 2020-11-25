@@ -42,7 +42,7 @@ public class UpdateAnualWorkledgerSettingCommandHandler extends CommandHandler<U
         List<DailyOutputItemsAnnualWorkLedger> dailyOutputItems = command.getDailyOutputItems().stream().map(DailyOutputItemsCommand::toDomain).collect(Collectors.toList());
         List<OutputItem> monthlyOutputItems = command.getMonthlyOutputItems().stream().map(MonthlyOutputItemsCommand::toDomain).collect(Collectors.toList());
         AtomTask persist = UpdateAnualWorkLedgerDomainService.updateSetting(
-                require, command.getID(), new OutputItemSettingCode(command.getCode()),
+                require, command.getId(), new OutputItemSettingCode(command.getCode()),
                 new OutputItemSettingName(command.getName()), EnumAdaptor.valueOf(command.getSettingCategory(),
                         SettingClassificationCommon.class), dailyOutputItems, monthlyOutputItems
         );
@@ -66,7 +66,7 @@ public class UpdateAnualWorkledgerSettingCommandHandler extends CommandHandler<U
 
         @Override
         public Optional<AnnualWorkLedgerOutputSetting> getSetting(String settingId) {
-            return Optional.empty();
+            return repository.getDetailsOfTheOutputSettings(AppContexts.user().companyId(),settingId);
         }
 
         @Override

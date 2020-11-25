@@ -13,7 +13,7 @@ import java.util.List;
 public class UpdateAnualWorkledgerSettingCommand {
 
     //ID -> GUID
-    private final String iD;
+    private final String id;
 
     //コード
     private String code;
