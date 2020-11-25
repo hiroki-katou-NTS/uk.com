@@ -244,7 +244,7 @@ module nts.uk.at.view.kwr006.a {
                      , self.loadPeriod()
                      , getCurrentLoginerRole
                      , getFreeSettingAuthority).done(() => {
-                        self.loadWorkScheduleOutputCondition().done(() => dfd.resolve());
+                        self.loadWorkScheduleOutputCondition(self.freeSettingEnabled()).done(() => dfd.resolve());
                 });
                 return dfd.promise();
             }
@@ -438,12 +438,12 @@ module nts.uk.at.view.kwr006.a {
             /**
              * Load domain characteristic: WorkScheduleOutputCondition
              */
-            private loadWorkScheduleOutputCondition(): JQueryPromise<void> {
+            private loadWorkScheduleOutputCondition(authorityFreeSetting: boolean): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
                 service.restoreCharacteristic().done(data => {
                     if (!_.isNil(data)) {
-                        self.monthlyWorkScheduleConditionModel.updateData(data);
+                        self.monthlyWorkScheduleConditionModel.updateData(data, authorityFreeSetting);
                     }
                     dfd.resolve();
                 });

@@ -14,8 +14,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import nts.arc.enums.EnumAdaptor;
-import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.function.app.command.monthlyworkschedule.OutputItemMonthlyWorkScheduleCommand;
 import nts.uk.ctx.at.function.app.command.monthlyworkschedule.OutputItemMonthlyWorkScheduleCopyCommand;
@@ -29,7 +27,6 @@ import nts.uk.ctx.at.function.app.find.monthlyworkschedule.MonthlyPerformanceDat
 import nts.uk.ctx.at.function.app.find.monthlyworkschedule.MonthlyReturnItemDto;
 import nts.uk.ctx.at.function.app.find.monthlyworkschedule.OutputItemMonthlyWorkScheduleDto;
 import nts.uk.ctx.at.function.app.find.monthlyworkschedule.OutputItemMonthlyWorkScheduleFinder;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.RemarkInputContent;
 
 /**
  * The Class OutputItemMonthlyWorkScheduleWS.
@@ -111,17 +108,6 @@ public class OutputItemMonthlyWorkScheduleWS extends WebService {
 		this.outputItemMonthlyWorkScheduleDeleteHandler.handle(command);
 	}
 
-//	/**
-//	 * Gets the enum setting print.
-//	 *
-//	 * @return the enum setting print
-//	 */
-//	@Path("enumSettingPrint")
-//	@POST
-//	public List<EnumConstant> getEnumSettingPrint() {
-//		return EnumAdaptor.convertToValueNameList(PrintSettingRemarksColumn.class);
-//	}
-
 	/**
 	 * Find copy.
 	 *
@@ -143,17 +129,6 @@ public class OutputItemMonthlyWorkScheduleWS extends WebService {
 	@POST
 	public MonthlyReturnItemDto executeCopy(OutputItemMonthlyWorkScheduleCopyCommand copy) {
 		return this.outputItemMonthlyWorkScheduleFinder.executeCopy(copy);
-	}
-	
-	/**
-	 * Gets the enum remark input content.
-	 *
-	 * @return the enum remark input content
-	 */
-	@Path("enumRemarkInputContent")
-	@POST
-	public List<EnumConstant> getEnumRemarkInputContent(){
-		return EnumAdaptor.convertToValueNameList(RemarkInputContent.class);
 	}
 
 	@Path("get/monthlyPeriod")

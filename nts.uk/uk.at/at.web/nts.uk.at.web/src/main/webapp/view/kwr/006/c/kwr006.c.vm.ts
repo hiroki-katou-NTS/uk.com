@@ -88,7 +88,13 @@ module nts.uk.at.view.kwr006.c {
                 ]);
                 self.items = ko.observableArray([]);
                 self.isEnableRemarkInputContents = ko.observable(false);
-                self.remarkInputContents = ko.observableArray([]);
+                self.remarkInputContents = ko.observableArray([
+                    new ItemModel(0, nts.uk.resource.getText("KWR006_79"), null),
+                    new ItemModel(1, nts.uk.resource.getText("KWR006_80"), null),
+                    new ItemModel(2, nts.uk.resource.getText("KWR006_81"), null),
+                    new ItemModel(3, nts.uk.resource.getText("KWR006_82"), null),
+                    new ItemModel(4, nts.uk.resource.getText("KWR006_83"), null)
+                ]);
                 self.storeCurrentCodeBeforeCopy = ko.observable('');
                 self.currentRemarkInputContent = ko.observable(0);
 
@@ -346,7 +352,7 @@ module nts.uk.at.view.kwr006.c {
                 var dfd = $.Deferred<void>();
                 let self = this;
 
-                $.when(self.getDataService(), self.getEnumRemarkInputContent()).done(function () {
+                $.when(self.getDataService()).done(function () {
                     self.selectedCodeC2_3(nts.uk.ui.windows.getShared('selectedCode'));
                    
                     if (_.isNil(self.selectedCodeC2_3()))
@@ -381,19 +387,6 @@ module nts.uk.at.view.kwr006.c {
                     dfd.resolve();
                 })
 
-                return dfd.promise();
-            }
-
-            /*
-             * get enum EnumRemarkInputContent
-            */
-            private getEnumRemarkInputContent(): JQueryPromise<void> {
-                let dfd = $.Deferred<void>();
-                let self = this;
-                service.getEnumRemarkInputContent().done(function (data: any) {
-                    self.remarkInputContents(data);
-                    dfd.resolve();
-                })
                 return dfd.promise();
             }
 

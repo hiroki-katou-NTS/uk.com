@@ -2891,10 +2891,10 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 						: MonthlyReportConstant.SMALL_SIZE_HEADER_COMPANY_DATE; ; 
 		// Company name
 		PageSetup pageSetup = sheet.getPageSetup();
-		pageSetup.setHeader(0, "&" + companyDateFontSize + "&\"MS ゴシック\" " + reportData.getHeaderData().companyName);
+		pageSetup.setHeader(0, "&\"" + companyDateFontSize + "\"&\"MS ゴシック\" " + reportData.getHeaderData().companyName);
 		
 		// Output item name
-		pageSetup.setHeader(1, "&" + settingNameFontSize + "&\"MS ゴシック\"" + outputItem.getItemName().v());
+		pageSetup.setHeader(1, "&\"" + settingNameFontSize + "\"&\"MS ゴシック\"" + outputItem.getItemName().v());
 		
 		// Set header date
 		DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm", Locale.JAPAN);
