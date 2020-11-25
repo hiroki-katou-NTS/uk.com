@@ -1014,10 +1014,15 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			if (!_.isEmpty(calculationResultOp)) {
 
 				if (!_.isEmpty(calculationResultOp.applicationTimes)) {
+					
 					let applicationTime = calculationResultOp.applicationTimes[0].applicationTime;
+					
 					if (!_.isEmpty(applicationTime)) {
+						
 						_.forEach(applicationTime, (item: OvertimeApplicationSetting) => {
+							
 							if (item.attendanceType == AttendanceType.BREAKTIME) {
+								
 								let findHolidayTimeArray = _.find(holidayTimeArray, { frameNo: String(item.frameNo) }) as HolidayTime;
 	
 								if (!_.isNil(findHolidayTimeArray)) {
@@ -1025,10 +1030,45 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 								}								
 							}
 						})
+						
+						
 					}
+					// A7_12 , A7_16, A7_20
+					let appRoot = calculationResultOp.applicationTimes[0];
+					if (!_.isNil(appRoot.overTimeShiftNight)) {
+						let midNightHolidayTimes = appRoot.overTimeShiftNight.midNightHolidayTimes;
+						if (!_.isEmpty(midNightHolidayTimes)) {
+							_.forEach(midNightHolidayTimes, (item: HolidayMidNightTime) => {
+								if (item.legalClf == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork) {
+									let findItem = _.find(holidayTimeArray, (i: HolidayTime) => i.type == AttendanceType.MIDDLE_BREAK_TIME);
+									if (!_.isNil(findItem)) {
+										findItem.start(item.attendanceTime);
+									}
+								} else if (item.legalClf == StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork) {
+									let findItem = _.find(holidayTimeArray, (i: HolidayTime) => i.type == AttendanceType.MIDDLE_EXORBITANT_HOLIDAY);
+									if (!_.isNil(findItem)) {
+										findItem.start(item.attendanceTime);
+									}
+								} else if (item.legalClf == StaturoryAtrOfHolidayWork.PublicHolidayWork) {
+									let findItem = _.find(holidayTimeArray, (i: HolidayTime) => i.type == AttendanceType.MIDDLE_HOLIDAY_HOLIDAY);
+									if (!_.isNil(findItem)) {
+										findItem.start(item.attendanceTime);
+									}
+								}
+							});
+						}
+					}
+					
+					
+					
 				}
 
 			}
+			
+			
+			
+			
+			
 			// A7_28
 			 
 			
@@ -1054,10 +1094,85 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						})
 					}
 				}
-			}
-
+				// A7_13 A7_17 A7_21
+				let appRoot = opPreAppContentDisplayLst[0];
+					if (!_.isNil(appRoot.overTimeShiftNight)) {
+						let midNightHolidayTimes = appRoot.overTimeShiftNight.midNightHolidayTimes;
+						if (!_.isEmpty(midNightHolidayTimes)) {
+							_.forEach(midNightHolidayTimes, (item: HolidayMidNightTime) => {
+								if (item.legalClf == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork) {
+									let findItem = _.find(holidayTimeArray, (i: HolidayTime) => i.type == AttendanceType.MIDDLE_BREAK_TIME);
+									if (!_.isNil(findItem)) {
+										findItem.start(item.attendanceTime);
+									}
+								} else if (item.legalClf == StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork) {
+									let findItem = _.find(holidayTimeArray, (i: HolidayTime) => i.type == AttendanceType.MIDDLE_EXORBITANT_HOLIDAY);
+									if (!_.isNil(findItem)) {
+										findItem.start(item.attendanceTime);
+									}
+								} else if (item.legalClf == StaturoryAtrOfHolidayWork.PublicHolidayWork) {
+									let findItem = _.find(holidayTimeArray, (i: HolidayTime) => i.type == AttendanceType.MIDDLE_HOLIDAY_HOLIDAY);
+									if (!_.isNil(findItem)) {
+										findItem.start(item.attendanceTime);
+									}
+								}
+							});
+						}
+					}
+				
+				}
+			
+			
+			
+			
+			
+		
 			// A7_10
-			// 申請日に関係する情報．実績の申請時間．申請時間．申請時間
+			
+			if (!_.isNil(res.infoWithDateApplicationOp)) {
+				if (!_.isEmpty(res.infoWithDateApplicationOp.applicationTime)) {
+					let apOptional = res.infoWithDateApplicationOp.applicationTime;
+					if (apOptional) {
+						let applicationTime = apOptional.applicationTime;
+						if (!_.isEmpty(applicationTime)) {
+							_.forEach(applicationTime, (item: OvertimeApplicationSetting) => {
+								let findHolidayTimeArray = _.find(holidayTimeArray, { frameNo: String(item.frameNo) }) as HolidayTime;
+	
+								if (!_.isNil(findHolidayTimeArray) && item.attendanceType == AttendanceType.BREAKTIME) {
+									findHolidayTimeArray.preApp(item.applicationTime);
+								}
+							})
+						}
+					}
+					// A7_14 A7_18 A7_20
+					let appRoot = res.infoWithDateApplicationOp.applicationTime;
+						if (!_.isNil(appRoot.overTimeShiftNight)) {
+							let midNightHolidayTimes = appRoot.overTimeShiftNight.midNightHolidayTimes;
+							if (!_.isEmpty(midNightHolidayTimes)) {
+								_.forEach(midNightHolidayTimes, (item: HolidayMidNightTime) => {
+									if (item.legalClf == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork) {
+										let findItem = _.find(holidayTimeArray, (i: HolidayTime) => i.type == AttendanceType.MIDDLE_BREAK_TIME);
+										if (!_.isNil(findItem)) {
+											findItem.start(item.attendanceTime);
+										}
+									} else if (item.legalClf == StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork) {
+										let findItem = _.find(holidayTimeArray, (i: HolidayTime) => i.type == AttendanceType.MIDDLE_EXORBITANT_HOLIDAY);
+										if (!_.isNil(findItem)) {
+											findItem.start(item.attendanceTime);
+										}
+									} else if (item.legalClf == StaturoryAtrOfHolidayWork.PublicHolidayWork) {
+										let findItem = _.find(holidayTimeArray, (i: HolidayTime) => i.type == AttendanceType.MIDDLE_HOLIDAY_HOLIDAY);
+										if (!_.isNil(findItem)) {
+											findItem.start(item.attendanceTime);
+										}
+									}
+								});
+							}
+						}
+					
+					}
+
+			}
 			
 			
 
@@ -1783,6 +1898,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		approvalPhaseState: Array<any>;
 		isMail: Boolean;
 		appTypeSetting: any;
+	}
+	export interface HolidayMidNightTime {
+		attendanceTime: number;
+		legalClf: number;
 	}
 
 
