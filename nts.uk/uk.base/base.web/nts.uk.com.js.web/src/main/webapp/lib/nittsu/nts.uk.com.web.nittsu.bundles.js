@@ -13286,6 +13286,7 @@ var nts;
                                 && width >= parseFloat($detailHeader.style.maxWidth)) {
                                 width = parseFloat($detailHeader.style.maxWidth);
                             }
+                            width = Math.max(width, 160);
                             if (adjustMiddle instanceof Event) {
                                 $container.style.width = (parseFloat($container.style.width) + (width - parseFloat($detailBody.style.width))) + "px";
                             }
@@ -13316,6 +13317,7 @@ var nts;
                             && width >= parseFloat($detailHeader.style.maxWidth) + scrollWidth) {
                             width = parseFloat($detailHeader.style.maxWidth) + scrollWidth;
                         }
+                        width = Math.max(width, 160);
                         $detailHeader.style.width = (width - scrollWidth) + "px";
                         if (adjustMiddle instanceof Event) {
                             $container.style.width = (parseFloat($container.style.width)
