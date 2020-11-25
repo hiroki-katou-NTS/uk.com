@@ -385,7 +385,7 @@ module nts.uk.at.view.knr001.a {
          */
         export class EmpInfoTerminalModel{
             //  端末No
-            empInfoTerCode: KnockoutObservable<number>;
+            empInfoTerCode: KnockoutObservable<string>;
             //  名称
             empInfoTerName: KnockoutObservable<string>;
             //  機種: combobox

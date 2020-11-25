@@ -371,6 +371,7 @@ module nts.uk.at.ksm008.f {
                             vm.selectedableCodes(empsCanNotSameHolidays);
 
                             vm.moveItemToRight();
+                            vm.selectedTargetCode([]);
                         }
 
                         if (data.checkDayReference) {
@@ -405,13 +406,12 @@ module nts.uk.at.ksm008.f {
                         vm.updateEnable = true;
                         vm.deleteEnable(true);
                         vm.modifyEnable(false);
+
+                        $("#input-workTypeName").focus();
                     }
                 })
                 .fail(res => {
                     vm.$dialog.error(res);
-                })
-                .always(() => {
-                    $("#input-workTypeName").focus();
                 });
         }
 
@@ -517,6 +517,7 @@ module nts.uk.at.ksm008.f {
                     vm.$dialog.info({messageId: "Msg_15"}).then(() => {
                         vm.getAllBanHolidayTogether().done(() => {
                             vm.selectedCode(vm.selectedCodeDisplay());
+                            $("#input-workTypeName").focus();
                         });
                     });
                 })
@@ -524,7 +525,6 @@ module nts.uk.at.ksm008.f {
                     vm.$dialog.error(res);
                 })
                 .always(() => {
-                    $("#input-workTypeName").focus();
                     vm.$blockui("clear");
                 });
         }
@@ -553,6 +553,7 @@ module nts.uk.at.ksm008.f {
                     vm.$dialog.info({messageId: "Msg_15"}).then(() => {
                         vm.getAllBanHolidayTogether().done(() => {
                             vm.getDetail(vm.selectedCode());
+                            $("#input-workTypeName").focus();
                         })
                     });
                 })
@@ -560,7 +561,6 @@ module nts.uk.at.ksm008.f {
                     vm.$dialog.error(res);
                 })
                 .always(() => {
-                    $("#input-workTypeName").focus();
                     vm.$blockui("clear");
                 });
         }
@@ -581,17 +581,15 @@ module nts.uk.at.ksm008.f {
                         .done(() => {
                             vm.$dialog.info({messageId: "Msg_16"}).then(() => {
                                 vm.getAllBanHolidayTogether(true);
+                                $("#input-workTypeName").focus();
                             })
                         })
                         .fail(res => {
                             vm.$dialog.error(res);
                         })
                         .always(() => {
-                            $("#input-workTypeName").focus();
                             vm.$blockui("clear");
                         });
-                } else {
-                    $("#input-workTypeName").focus();
                 }
             });
         }

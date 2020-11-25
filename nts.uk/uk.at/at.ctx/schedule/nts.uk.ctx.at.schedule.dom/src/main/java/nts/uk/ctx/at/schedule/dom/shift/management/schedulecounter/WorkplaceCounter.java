@@ -11,6 +11,7 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
 
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務予定.シフト管理.シフト勤務.スケジュール集計.職場計
+ * AggregateRoot : 職場計
  * @author dan_pv
  *
  */

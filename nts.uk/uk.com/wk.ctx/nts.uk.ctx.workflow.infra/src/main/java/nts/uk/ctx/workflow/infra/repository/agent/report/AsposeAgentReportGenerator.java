@@ -35,6 +35,12 @@ public class AsposeAgentReportGenerator extends AsposeCellsReportGenerator imple
             TextResource.localize("Com_Jobtitle")
     );
 
+    private static final List<Double> COLUMNS_WIDTH = Arrays.asList(
+            10.0, 14.0, 17.0, 17.0, 9.0,
+            10.1, 10.1,
+            10.0, 14.0, 17.0, 17.0, 9.0
+    );
+
     private static final int HEADER_ROW = 0;
     private static final int START_COLUMN = 0;
     private static final int DATA_START_ROW = 1;
@@ -54,6 +60,8 @@ public class AsposeAgentReportGenerator extends AsposeCellsReportGenerator imple
         HEADER_STYLE_GREEN.setForegroundColor(Color.fromArgb(198, 224, 180));
         HEADER_STYLE_GREEN.setVerticalAlignment(TextAlignmentType.CENTER);
         HEADER_STYLE_GREEN.setHorizontalAlignment(TextAlignmentType.CENTER);
+        HEADER_STYLE_GREEN.getFont().setName("ＭＳ ゴシック");
+        HEADER_STYLE_GREEN.getFont().setSize(10);
 
         HEADER_STYLE_BLUE = new Style();
         HEADER_STYLE_BLUE.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
@@ -64,6 +72,8 @@ public class AsposeAgentReportGenerator extends AsposeCellsReportGenerator imple
         HEADER_STYLE_BLUE.setForegroundColor(Color.fromArgb(197, 241, 247));
         HEADER_STYLE_BLUE.setVerticalAlignment(TextAlignmentType.CENTER);
         HEADER_STYLE_BLUE.setHorizontalAlignment(TextAlignmentType.CENTER);
+        HEADER_STYLE_BLUE.getFont().setName("ＭＳ ゴシック");
+        HEADER_STYLE_BLUE.getFont().setSize(10);
 
         CELL_STYLE = new Style();
         CELL_STYLE.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
@@ -71,6 +81,9 @@ public class AsposeAgentReportGenerator extends AsposeCellsReportGenerator imple
         CELL_STYLE.setBorder(BorderType.LEFT_BORDER, CellBorderType.THIN, Color.getBlack());
         CELL_STYLE.setBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getBlack());
         CELL_STYLE.setVerticalAlignment(TextAlignmentType.CENTER);
+        CELL_STYLE.getFont().setName("ＭＳ ゴシック");
+        CELL_STYLE.getFont().setSize(9);
+        CELL_STYLE.setTextWrapped(true);
     }
 
     @Inject
@@ -90,11 +103,11 @@ public class AsposeAgentReportGenerator extends AsposeCellsReportGenerator imple
 
         addPageBreaks(sheet, dataSource.getData());
 
-        try {
-            sheet.autoFitColumns();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            sheet.autoFitColumns();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
         reportContext.saveAsExcel(this.createNewFile(generatorContext, getReportName(dataSource.getFileName())));
     }
@@ -104,21 +117,28 @@ public class AsposeAgentReportGenerator extends AsposeCellsReportGenerator imple
 
         sheet.getPageSetup().setPaperSize(PaperSizeType.PAPER_A_4);
         sheet.getPageSetup().setOrientation(PageOrientationType.LANDSCAPE);
+        sheet.getPageSetup().setTopMargin(2.5);
+        sheet.getPageSetup().setHeaderMargin(1);
         sheet.getPageSetup().setLeftMargin(1);
         sheet.getPageSetup().setRightMargin(1);
         sheet.getPageSetup().setBottomMargin(1);
         sheet.getPageSetup().setFitToPagesWide(1);
         sheet.getPageSetup().setFitToPagesTall(0);
+        sheet.getPageSetup().setCenterHorizontally(true);
 
         companyAdapter.getCurrentCompany().ifPresent(info -> {
             sheet.getPageSetup().setHeader(0, "&\"ＭＳ ゴシック\"&10 " + info.getCompanyName());
         });
-        sheet.getPageSetup().setHeader(1, "&\"ＭＳ ゴシック\"&16 " + TextResource.localize("CMM044_33"));
+        sheet.getPageSetup().setHeader(1, "&\"ＭＳ ゴシック,Bold\"&16 " + TextResource.localize("CMM044_33"));
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm", Locale.JAPAN);
         String currentFormattedDate = LocalDateTime.now().format(fullDateTimeFormatter);
         sheet.getPageSetup().setHeader(2, "&\"ＭＳ ゴシック\"&10 " + currentFormattedDate+"\npage &P");
 
         sheet.getPageSetup().setPrintTitleRows("$1:$1");
+
+        for (int j = 0; j < COLUMNS_WIDTH.size(); j++) {
+            sheet.getCells().setColumnWidth(START_COLUMN + j, COLUMNS_WIDTH.get(j));
+        }
     }
 
     private void createTableHeader (Worksheet sheet) {
@@ -132,6 +152,7 @@ public class AsposeAgentReportGenerator extends AsposeCellsReportGenerator imple
         }
         sheet.getCells().merge(HEADER_ROW, START_COLUMN, 1, 2);
         sheet.getCells().merge(HEADER_ROW, START_COLUMN + 7, 1, 2);
+        sheet.getCells().setRowHeight(HEADER_ROW, 21);
     }
 
     private void createTableBody (Worksheet sheet, List<LinkedHashMap<String, String>> data) {

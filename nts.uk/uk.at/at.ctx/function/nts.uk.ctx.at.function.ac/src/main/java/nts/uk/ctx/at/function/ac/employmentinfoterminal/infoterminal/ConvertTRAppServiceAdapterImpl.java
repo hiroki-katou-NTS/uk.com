@@ -24,7 +24,7 @@ public class ConvertTRAppServiceAdapterImpl implements ConvertTRAppServiceAdapte
 	private ConvertTRAppServicePub pub;
 
 	@Override
-	public Optional<AtomTask> converData(Integer empInfoTerCode, String contractCode,
+	public Optional<AtomTask> converData(String empInfoTerCode, String contractCode,
 			ApplicationReceptionDataImport recept) {
 
 		return pub.converData(empInfoTerCode, contractCode, covertTo(recept));

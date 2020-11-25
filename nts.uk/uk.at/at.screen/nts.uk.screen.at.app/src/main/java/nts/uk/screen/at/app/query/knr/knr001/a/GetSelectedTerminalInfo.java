@@ -29,7 +29,7 @@ public class GetSelectedTerminalInfo {
 	@Inject
 	private WorkLocationRepository workPlaceRepository;
 
-	public GetSelectedTerminalInfoDto getDetails(int empInforTerCode) {
+	public GetSelectedTerminalInfoDto getDetails(String empInforTerCode) {
 		
 		ContractCode contractCode = new ContractCode(AppContexts.user().contractCode());
 		

@@ -135,12 +135,12 @@
 							<table>
 								<tr>
 									<td>
-										<div id="G4_1" data-bind="ntsFormLabel: {}">#{i18n.getText('CLI003_38')}</div>
+										<div id="G4_1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CLI003_38')}</div>
 									</td>
 									<td>
-										<div id="labelSwapList">
-											<div id="G4_3">#{i18n.getText('CLI003_39')}</div>
-											<div id="G4_7">#{i18n.getText('CLI003_40')}</div>
+										<div id="labelSwapList" class="flex valign-center">
+											<label id="G4_3">#{i18n.getText('CLI003_39')}</label>
+											<div id="G4_7" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CLI003_40')}</div>
 										</div>
 									</td>
 								</tr>
