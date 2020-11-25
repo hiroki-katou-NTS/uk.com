@@ -392,6 +392,7 @@ public class KrqdtAppOverTime extends ContractUkJpaEntity implements Serializabl
 																			  .map(x -> x.toDomain())
 																			  .collect(Collectors.toList()));
 		}
+		appOverTime.setApplicationTime(applicationTime);
 		
 		return appOverTime;
 	}
