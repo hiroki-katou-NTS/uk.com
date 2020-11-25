@@ -493,6 +493,7 @@ module nts.uk.at.view.kdl045.a {
                             timeRange2ScreenModel.startTime(childData.second.start != null ? childData.second.start : 0);
                             timeRange2ScreenModel.endTime(childData.second.end != null ? childData.second.end : 0);
                         }
+                        
                         setTimeout(function() {
                             nts.uk.ui.errors.clearAll();
                         }, 100);
@@ -501,6 +502,9 @@ module nts.uk.at.view.kdl045.a {
                             //<<ScreenQuery>> 詳細情報を取得する 
                             $.when(self.getMoreInformationOutput(childData.selectedWorkTypeCode, childData.selectedWorkTimeCode)).done(function() {
                                 self.displayMoreInformationOutput();
+                                if(childData.second.start == null && childData.second.end == null){
+                                    self.isEnableA5_9(false);    
+                                }
                             });
                         }
                     }
@@ -541,7 +545,7 @@ module nts.uk.at.view.kdl045.a {
                     workType : self.workType(),
                     workTime : self.workTime(),
                     workTime1: new shareModelData.TimeZoneDto(new shareModelData.TimeOfDayDto(0,self.timeRange1Value().startTime),new shareModelData.TimeOfDayDto(0,self.timeRange1Value().endTime)),
-                    workTime2: self.isShowTimeRange2?new shareModelData.TimeZoneDto(new shareModelData.TimeOfDayDto(0,self.timeRange2Value().startTime),new shareModelData.TimeOfDayDto(0,self.timeRange2Value().endTime)):null
+                    workTime2: self.isShowTimeRange2 && self.isEnableA5_9()?new shareModelData.TimeZoneDto(new shareModelData.TimeOfDayDto(0,self.timeRange2Value().startTime),new shareModelData.TimeOfDayDto(0,self.timeRange2Value().endTime)):null
                 }
                 nts.uk.ui.block.grayout();
                 service.checkTimeIsIncorrect(command).done(function (result) {
@@ -761,73 +765,107 @@ module nts.uk.at.view.kdl045.a {
 
             buttonDecision() {
                 let self = this;
-                
+                if (_.isNil(self.workType()) || self.workType() == "") {
+                    $('#a4-2').ntsError('set',{ messageId: 'Msg_218', messageParams: [getText('KDL045_8')] });
+                    $('#a4-2').focus();
+                    return;
+                }
                 nts.uk.ui.errors.clearAll();
-                if (self.validate()) {
-                    return;
-                }
-                $('.nts-input').trigger('change');
-                if (nts.uk.ui.errors.hasError()){
-                    return;
-                }
-                
-                $.when(self.checkTimeIsIncorrect()).done(function() {
-                    if(!self.checkError()){
-                        let listBreakTimeZoneDto = [];
-                        for(let i =0;i<self.dataSourceTime().length;i++){
-                            let temp = {
-                                startTime : self.dataSourceTime()[i].range1().startTime,
-                                endTime  : self.dataSourceTime()[i].range1().endTime,
-                                breakFrameNo : i+1     
-                            }
-                            listBreakTimeZoneDto.push(temp);
-                        }
-                        //対象社員の社員勤務予定dto
-                        let workScheduleDto = {
-                                workTypeCode : self.workType(),//勤務種類コード
-                                workTimeCode : self.workTime(),//就業時間帯コード
-                                startTime1 : self.timeRange1Value().startTime,//開始時刻１
-                                endTime1 : self.timeRange1Value().endTime,//終了時刻１
-                                startTime2 : self.isShowTimeRange2 ? self.timeRange2Value().startTime:null,//開始時刻2
-                                endTime2 :  self.isShowTimeRange2 ?self.timeRange2Value().endTime:null,//終了時刻2
-                                listBreakTimeZoneDto : listBreakTimeZoneDto //List<休憩時間帯>
-                            };
-                        
-                        let workInfoDto = {
-                                directAtr : self.directAtr()?1:0,//直行区分
-                                bounceAtr : self.bounceAtr()?1:0 //直帰区分
-                            };
-                        
-                        let fixedWorkInforDto = {
-                                workTypeName : self.workTypeName(),//勤務種類名称
-                                workTimeName : self.workTimeName(), //就業時間帯名称
-                                workType : self.workTimeForm(),//勤務タイプ
-                                fixBreakTime : self.fixBreakTime()
-                                
-                            };
-                        
-                        let resultKdl045 = {
-                            workScheduleDto: workScheduleDto,
-                            workInfoDto: workInfoDto,
-                            fixedWorkInforDto: fixedWorkInforDto
-                        };
-        
-        
-                        setShared('dataFromKdl045', resultKdl045);
-                        nts.uk.ui.windows.close();
+                if(_.isNil(self.workTime()) == false && self.workTime() !="" ){
+                    if (self.validate()) {
+                        return;
                     }
-                });
+                    $('.nts-input').trigger('change');
+                    if (nts.uk.ui.errors.hasError()){
+                        return;
+                    }
+                
+                
+                    $.when(self.checkTimeIsIncorrect()).done(function() {
+                        if(!self.checkError()){
+                            let listBreakTimeZoneDto = [];
+                            for(let i =0;i<self.dataSourceTime().length;i++){
+                                let temp = {
+                                    startTime : self.dataSourceTime()[i].range1().startTime,
+                                    endTime  : self.dataSourceTime()[i].range1().endTime,
+                                    breakFrameNo : i+1     
+                                }
+                                listBreakTimeZoneDto.push(temp);
+                            }
+                            //対象社員の社員勤務予定dto
+                            let workScheduleDto = {
+                                    workTypeCode : self.workType(),//勤務種類コード
+                                    workTimeCode : self.workTime()==""?null:self.workTime(),//就業時間帯コード
+                                    startTime1 : self.timeRange1Value().startTime,//開始時刻１
+                                    endTime1 : self.timeRange1Value().endTime,//終了時刻１
+                                    startTime2 : self.isShowTimeRange2 ? self.timeRange2Value().startTime:null,//開始時刻2
+                                    endTime2 :  self.isShowTimeRange2 ?self.timeRange2Value().endTime:null,//終了時刻2
+                                    listBreakTimeZoneDto : listBreakTimeZoneDto //List<休憩時間帯>
+                                };
+                            
+                            let workInfoDto = {
+                                    directAtr : self.directAtr()?1:0,//直行区分
+                                    bounceAtr : self.bounceAtr()?1:0 //直帰区分
+                                };
+                            
+                            let fixedWorkInforDto = {
+                                    workTypeName : self.workTypeName(),//勤務種類名称
+                                    workTimeName : self.workTimeName(), //就業時間帯名称
+                                    workType : self.workTimeForm(),//勤務タイプ
+                                    fixBreakTime : self.fixBreakTime()
+                                    
+                                };
+                            
+                            let resultKdl045 = {
+                                workScheduleDto: workScheduleDto,
+                                workInfoDto: workInfoDto,
+                                fixedWorkInforDto: fixedWorkInforDto
+                            };
+            
+            
+                            setShared('dataFromKdl045', resultKdl045);
+                            nts.uk.ui.windows.close();
+                        }
+                    });
+                }else{
+                    //対象社員の社員勤務予定dto
+                    let workScheduleDto = {
+                            workTypeCode : self.workType(),//勤務種類コード
+                            workTimeCode : null,//就業時間帯コード
+                            startTime1 : null,//開始時刻１
+                            endTime1 : null,//終了時刻１
+                            startTime2 : null,//開始時刻2
+                            endTime2 :  null,//終了時刻2
+                            listBreakTimeZoneDto : [] //List<休憩時間帯>
+                        };
+                    
+                    let workInfoDto = {
+                            directAtr : 0,//直行区分
+                            bounceAtr : 0 //直帰区分
+                        };
+                    
+                    let fixedWorkInforDto = {
+                            workTypeName : self.workTypeName(),//勤務種類名称
+                            workTimeName : null, //就業時間帯名称
+                            workType : null,//勤務タイプ
+                            fixBreakTime : false
+                            
+                        };
+                    
+                    let resultKdl045 = {
+                        workScheduleDto: workScheduleDto,
+                        workInfoDto: workInfoDto,
+                        fixedWorkInforDto: fixedWorkInforDto
+                    };
+    
+                    setShared('dataFromKdl045', resultKdl045);
+                    nts.uk.ui.windows.close();
+                }
             }
 
             validate(): boolean {
                 let self = this;
                 let checkError = false;
-                
-                if (_.isNil(self.workType()) || self.workType() == "") {
-                    $('#a4-2').ntsError('set',{ messageId: 'Msg_218', messageParams: [getText('KDL045_8')] });
-                    $('#a4-2').focus();
-                    checkError =  true;
-                }
                 if(self.isShowTimeRange2){
                     if(self.isEnableA5_9() && self.timeRange2Value().startTime <= self.timeRange1Value().endTime && self.timeRange2Value().endTime > self.timeRange1Value().startTime ){
                         $('#a5-5').ntsError('set',{ messageId: 'Msg_515', messageParams: [getText('KDL045_12')] });
