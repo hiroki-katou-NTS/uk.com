@@ -50,7 +50,8 @@ public class RegisterAlarmPatternSettingWorkPlaceCommandHandler extends CommandH
                     x.getCheckConditionCodes().stream().map(AlarmCheckConditionCode::new).collect(Collectors.toList()),
                     ExtractionPeriodMonthlyCommand.toDomain(x.getExtractionMonthly())
                 ));
-            } else if (x.getAlarmCategory() == WorkplaceCategory.MASTER_CHECK_DAILY.value || x.getAlarmCategory() == WorkplaceCategory.SCHEDULE_DAILY.value) {
+            } else if (x.getAlarmCategory() == WorkplaceCategory.MASTER_CHECK_DAILY.value || x.getAlarmCategory() == WorkplaceCategory.SCHEDULE_DAILY.value ||
+                x.getAlarmCategory() == WorkplaceCategory.APPLICATION_APPROVAL.value) {
                 checkConList.add(new CheckCondition(
                     EnumAdaptor.valueOf(x.getAlarmCategory(), WorkplaceCategory.class),
                     x.getCheckConditionCodes().stream().map(AlarmCheckConditionCode::new).collect(Collectors.toList()),

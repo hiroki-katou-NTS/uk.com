@@ -60,7 +60,9 @@ public class WkpCheckConditionDto {
                 lstCode,
                 WkpExtractionPeriodMonthlyDto.setdata(periodMonthly)
             );
-        } else if (domain.getWorkplaceCategory().value == WorkplaceCategory.MASTER_CHECK_DAILY.value || domain.getWorkplaceCategory().value == WorkplaceCategory.SCHEDULE_DAILY.value) {
+        } else if (domain.getWorkplaceCategory().value == WorkplaceCategory.MASTER_CHECK_DAILY.value ||
+            domain.getWorkplaceCategory().value == WorkplaceCategory.SCHEDULE_DAILY.value ||
+            domain.getWorkplaceCategory().value == WorkplaceCategory.APPLICATION_APPROVAL.value) {
             ExtractionPeriodDaily periodDaily = ((ExtractionPeriodDaily) domain.getRangeToExtract());
             return new WkpCheckConditionDto(
                 domain.getWorkplaceCategory().value,

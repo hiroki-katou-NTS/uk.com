@@ -15,6 +15,7 @@ import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.WorkplaceCategor
 import nts.uk.ctx.at.function.infra.entity.alarmworkplace.alarmpatternworkplace.KfnmtALstWkpPtn;
 import nts.uk.ctx.at.function.infra.entity.alarmworkplace.monthdayperiod.*;
 import nts.uk.ctx.at.function.infra.entity.alarmworkplace.singlemonth.KfnmtAssignNumofMon;
+import nts.uk.ctx.at.function.infra.entity.alarmworkplace.singlemonth.KfnmtAssignNumofMonPk;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -34,6 +35,9 @@ public class KfnmtWkpCheckCondition extends UkJpaEntity implements Serializable 
     @EmbeddedId
     public KfnmtWkpCheckConditionPK pk;
 
+    @Column(name = "CONTRACT_CD")
+    public String contractCode;
+
     @Override
     protected Object getKey() {
         return this.pk;
@@ -45,53 +49,53 @@ public class KfnmtWkpCheckCondition extends UkJpaEntity implements Serializable 
             @JoinColumn(name = "ALARM_PATTERN_CD", referencedColumnName = "ALARM_PATTERN_CD", insertable = false, updatable = false)})
     public KfnmtALstWkpPtn kfnmtALstWkpPtn;
 
-    @OneToMany(mappedBy = "checkCondition", cascade = CascadeType.ALL, orphanRemoval = true, fetch=FetchType.LAZY)
+    @OneToMany(mappedBy = "checkCondition", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinTable(name = "KFNMT_PTN_MAP_CAT")
     public List<KfnmtPtnMapCat> checkConItems;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch=FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinColumns({
         @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
         @JoinColumn(name = "ALARM_PATTERN_CD", referencedColumnName = "ALARM_PATTERN_CD", insertable = false, updatable = false),
         @JoinColumn(name = "CATEGORY", referencedColumnName = "CATEGORY", insertable = false, updatable = false)})
     public KfnmtAssignNumofMon kfnmtAssignNumofMon;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch=FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinColumns({
         @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
         @JoinColumn(name = "ALARM_PATTERN_CD", referencedColumnName = "ALARM_PATTERN_CD", insertable = false, updatable = false),
         @JoinColumn(name = "CATEGORY", referencedColumnName = "CATEGORY", insertable = false, updatable = false)})
     public KfnmtAssignMonthStart kfnmtAssignMonthStart;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch=FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinColumns({
         @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
         @JoinColumn(name = "ALARM_PATTERN_CD", referencedColumnName = "ALARM_PATTERN_CD", insertable = false, updatable = false),
         @JoinColumn(name = "CATEGORY", referencedColumnName = "CATEGORY", insertable = false, updatable = false)})
     public KfnmtAssignMonthEnd kfnmtAssignMonthEnd;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch=FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinColumns({
         @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
         @JoinColumn(name = "ALARM_PATTERN_CD", referencedColumnName = "ALARM_PATTERN_CD", insertable = false, updatable = false),
         @JoinColumn(name = "CATEGORY", referencedColumnName = "CATEGORY", insertable = false, updatable = false)})
     public KfnmtAssignDayEnd kfnmtAssignDayEnd;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch=FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinColumns({
         @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
         @JoinColumn(name = "ALARM_PATTERN_CD", referencedColumnName = "ALARM_PATTERN_CD", insertable = false, updatable = false),
         @JoinColumn(name = "CATEGORY", referencedColumnName = "CATEGORY", insertable = false, updatable = false)})
     public KfnmtAssignDayStart kfnmtAssignDayStart;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch=FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinColumns({
         @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
         @JoinColumn(name = "ALARM_PATTERN_CD", referencedColumnName = "ALARM_PATTERN_CD", insertable = false, updatable = false),
         @JoinColumn(name = "CATEGORY", referencedColumnName = "CATEGORY", insertable = false, updatable = false)})
     public KfnmtAssignDatelineStart kfnmtAssignDatelineStart;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch=FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinColumns({
         @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
         @JoinColumn(name = "ALARM_PATTERN_CD", referencedColumnName = "ALARM_PATTERN_CD", insertable = false, updatable = false),
@@ -101,6 +105,7 @@ public class KfnmtWkpCheckCondition extends UkJpaEntity implements Serializable 
     public KfnmtWkpCheckCondition(KfnmtWkpCheckConditionPK pk, List<KfnmtPtnMapCat> checkConItems, KfnmtAssignNumofMon assignNumofMon) {
         super();
         this.pk = pk;
+        this.contractCode = AppContexts.user().contractCode();
         this.checkConItems = checkConItems;
         this.kfnmtAssignNumofMon = assignNumofMon;
     }
@@ -108,6 +113,7 @@ public class KfnmtWkpCheckCondition extends UkJpaEntity implements Serializable 
     public KfnmtWkpCheckCondition(KfnmtWkpCheckConditionPK pk, List<KfnmtPtnMapCat> checkConItems) {
         super();
         this.pk = pk;
+        this.contractCode = AppContexts.user().contractCode();
         this.checkConItems = checkConItems;
     }
 
@@ -116,6 +122,7 @@ public class KfnmtWkpCheckCondition extends UkJpaEntity implements Serializable 
                                   KfnmtAssignMonthEnd assignMonthEnd) {
         super();
         this.pk = pk;
+        this.contractCode = AppContexts.user().contractCode();
         this.checkConItems = checkConItems;
         this.kfnmtAssignMonthStart = assignMonthStart;
         this.kfnmtAssignMonthEnd = assignMonthEnd;
@@ -129,6 +136,7 @@ public class KfnmtWkpCheckCondition extends UkJpaEntity implements Serializable 
                                   KfnmtAssignDatelineEnd assignDatelineEnd) {
         super();
         this.pk = pk;
+        this.contractCode = AppContexts.user().contractCode();
         this.checkConItems = checkConItems;
         this.kfnmtAssignDayStart = assignDayStart;
         this.kfnmtAssignDatelineStart = assignDatelineStart;
@@ -145,7 +153,8 @@ public class KfnmtWkpCheckCondition extends UkJpaEntity implements Serializable 
         } else if (this.pk.category == WorkplaceCategory.MASTER_CHECK_BASIC.value || this.pk.category == WorkplaceCategory.MASTER_CHECK_WORKPLACE.value) {
             extractPeriod = new ExtractionPeriodMonthly(kfnmtAssignMonthStart.toDomain(), kfnmtAssignMonthEnd.toDomain());
 
-        } else if (this.pk.category == WorkplaceCategory.MASTER_CHECK_DAILY.value || this.pk.category == WorkplaceCategory.SCHEDULE_DAILY.value) {
+        } else if (this.pk.category == WorkplaceCategory.MASTER_CHECK_DAILY.value || this.pk.category == WorkplaceCategory.SCHEDULE_DAILY.value ||
+            this.pk.category == WorkplaceCategory.APPLICATION_APPROVAL.value) {
             extractPeriod = new ExtractionPeriodDaily(
                 // Start day
                 toStartDate(),
@@ -203,7 +212,8 @@ public class KfnmtWkpCheckCondition extends UkJpaEntity implements Serializable 
                 KfnmtAssignMonthEnd.toEntity(((ExtractionPeriodMonthly) domain.getRangeToExtract()).getEndMonth(), patternCD, category)
 
             );
-        } else if (category == WorkplaceCategory.MASTER_CHECK_DAILY.value || category == WorkplaceCategory.SCHEDULE_DAILY.value) {
+        } else if (category == WorkplaceCategory.MASTER_CHECK_DAILY.value || category == WorkplaceCategory.SCHEDULE_DAILY.value ||
+            category == WorkplaceCategory.APPLICATION_APPROVAL.value) {
 
             return new KfnmtWkpCheckCondition(
                 new KfnmtWkpCheckConditionPK(AppContexts.user().companyId(), patternCD, category),
@@ -236,32 +246,84 @@ public class KfnmtWkpCheckCondition extends UkJpaEntity implements Serializable 
     public void fromEntity(KfnmtWkpCheckCondition entity) {
 
         if (entity.pk.category == WorkplaceCategory.MONTHLY.value) {
-            if (this.kfnmtAssignNumofMon != null)
+            if (entity.kfnmtAssignNumofMon != null) {
+                if (this.kfnmtAssignNumofMon == null){
+                    this.kfnmtAssignNumofMon = new KfnmtAssignNumofMon();
+                    this.kfnmtAssignNumofMon.pk = new KfnmtAssignNumofMonPk(AppContexts.user().companyId(),entity.pk.alarmPatternCD,entity.pk.category);
+                }
                 this.kfnmtAssignNumofMon.fromEntity(entity.kfnmtAssignNumofMon);
+            } else {
+                this.kfnmtAssignNumofMon = null;
+            }
         } else if (entity.pk.category == WorkplaceCategory.MASTER_CHECK_BASIC.value || entity.pk.category == WorkplaceCategory.MASTER_CHECK_WORKPLACE.value) {
-            if (this.kfnmtAssignMonthStart != null)
+            if (entity.kfnmtAssignMonthStart != null) {
+                if (this.kfnmtAssignMonthStart == null){
+                    this.kfnmtAssignMonthStart = new KfnmtAssignMonthStart();
+                    this.kfnmtAssignMonthStart.pk = new KfnmtAssignMonthStartPk(AppContexts.user().companyId(),entity.pk.alarmPatternCD,entity.pk.category);
+                }
                 this.kfnmtAssignMonthStart.fromEntity(entity.kfnmtAssignMonthStart);
+            } else {
+                this.kfnmtAssignMonthStart = null;
+            }
 
-            if (this.kfnmtAssignMonthEnd != null)
+            if (entity.kfnmtAssignMonthEnd != null) {
+                if (this.kfnmtAssignMonthEnd == null){
+                    this.kfnmtAssignMonthEnd = new KfnmtAssignMonthEnd();
+                    this.kfnmtAssignMonthEnd.pk = new KfnmtAssignMonthEndPk(AppContexts.user().companyId(),entity.pk.alarmPatternCD,entity.pk.category);
+                }
                 this.kfnmtAssignMonthEnd.fromEntity(entity.kfnmtAssignMonthEnd);
+            } else {
+                this.kfnmtAssignMonthEnd = null;
+            }
 
-        } else if (entity.pk.category == WorkplaceCategory.MASTER_CHECK_DAILY.value || entity.pk.category == WorkplaceCategory.SCHEDULE_DAILY.value) {
-            if (this.kfnmtAssignDayStart != null)
+        } else if (entity.pk.category == WorkplaceCategory.MASTER_CHECK_DAILY.value || entity.pk.category == WorkplaceCategory.SCHEDULE_DAILY.value ||
+            entity.pk.category == WorkplaceCategory.APPLICATION_APPROVAL.value) {
+            if (entity.kfnmtAssignDayStart != null) {
+                if (this.kfnmtAssignDayStart == null) {
+                    this.kfnmtAssignDayStart = new KfnmtAssignDayStart();
+                    this.kfnmtAssignDayStart.pk = new KfnmtAssignDayStartPk(AppContexts.user().companyId(),entity.pk.alarmPatternCD,entity.pk.category);
+                }
                 this.kfnmtAssignDayStart.fromEntity(entity.kfnmtAssignDayStart);
+            } else {
+                this.kfnmtAssignDayStart = null;
+            }
 
-            if (this.kfnmtAssignDatelineStart != null)
+            if (entity.kfnmtAssignDatelineStart != null) {
+                if (this.kfnmtAssignDatelineStart == null) {
+                    this.kfnmtAssignDatelineStart = new KfnmtAssignDatelineStart();
+                    this.kfnmtAssignDatelineStart.pk = new KfnmtAssignDatelineStartPk(AppContexts.user().companyId(),entity.pk.alarmPatternCD,entity.pk.category);
+                }
                 this.kfnmtAssignDatelineStart.fromEntity(entity.kfnmtAssignDatelineStart);
+            } else {
+                this.kfnmtAssignDatelineStart = null;
+            }
 
-            if (this.kfnmtAssignDayEnd != null)
+            if (entity.kfnmtAssignDayEnd != null) {
+                if (this.kfnmtAssignDayEnd == null) {
+                    this.kfnmtAssignDayEnd = new KfnmtAssignDayEnd();
+                    this.kfnmtAssignDayEnd.pk = new KfnmtAssignDayEndPk(AppContexts.user().companyId(),entity.pk.alarmPatternCD,entity.pk.category);
+
+                }
                 this.kfnmtAssignDayEnd.fromEntity(entity.kfnmtAssignDayEnd);
+            } else {
+                this.kfnmtAssignDayEnd = null;
+            }
 
-            if (this.kfnmtAssignDatelineEnd != null)
+            if (entity.kfnmtAssignDatelineEnd != null) {
+                if (this.kfnmtAssignDatelineEnd == null) {
+                    this.kfnmtAssignDatelineEnd = new KfnmtAssignDatelineEnd();
+                    this.kfnmtAssignDatelineEnd.pk = new KfnmtAssignDatelineEndPk(AppContexts.user().companyId(),entity.pk.alarmPatternCD,entity.pk.category);
+                }
                 this.kfnmtAssignDatelineEnd.fromEntity(entity.kfnmtAssignDatelineEnd);
+            } else {
+                this.kfnmtAssignDatelineEnd = null;
+
+            }
         }
 
         this.checkConItems.removeIf(item -> !entity.checkConItems.contains(item));
-        entity.checkConItems.forEach( item ->{
-            if(!this.checkConItems.contains(item)) this.checkConItems.add(item);
+        entity.checkConItems.forEach(item -> {
+            if (!this.checkConItems.contains(item)) this.checkConItems.add(item);
         });
 
     }
