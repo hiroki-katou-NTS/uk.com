@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.
 
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.workplace.EmployeeInfoImported;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.adapter.workplace.AlWorkPlaceInforImport;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.FixedExtractionDayCon;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.FixedExtractionDayItems;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.service.check.leave.LeaveCheckService;
@@ -63,7 +62,6 @@ public class DailyCheckService {
      * @param fixedExtractDayCons         List＜アラームリスト（職場）日別の固定抽出条件＞
      * @param fixedCheckDayItems          List＜アラームリスト（職場）日別の固定抽出項目＞
      * @param stampsByEmpMap              Map＜社員ID、List＜打刻＞＞
-     * @param workPlaceInfos              List＜職場情報＞
      * @return List＜アラームリスト抽出情報（職場）＞
      */
     public List<AlarmListExtractionInfoWorkplaceDto> process(String cid,
@@ -75,8 +73,7 @@ public class DailyCheckService {
                                                              DatePeriod period,
                                                              List<FixedExtractionDayCon> fixedExtractDayCons,
                                                              List<FixedExtractionDayItems> fixedCheckDayItems,
-                                                             Map<String, List<Stamp>> stampsByEmpMap,
-                                                             List<AlWorkPlaceInforImport> workPlaceInfos) {
+                                                             Map<String, List<Stamp>> stampsByEmpMap) {
         List<AlarmListExtractionInfoWorkplaceDto> alarmListResults = new ArrayList<>();
 
         // Input．List＜アラームリスト（職場）日別の固定抽出条件＞をループする
@@ -142,7 +139,7 @@ public class DailyCheckService {
 
             // 「アラームリスト抽出情報（職場）」を作成してList＜アラームリスト抽出情報（職場）＞に追加
             AlarmListExtractionInfoWorkplaceDto alarmListResult = new AlarmListExtractionInfoWorkplaceDto(
-                    fixedExtractDayCon.getErrorAlarmWorkplaceId(), 1, extractResults);
+                    fixedExtractDayCon.getErrorAlarmWorkplaceId(), 2, extractResults);
             alarmListResults.add(alarmListResult);
         }
 

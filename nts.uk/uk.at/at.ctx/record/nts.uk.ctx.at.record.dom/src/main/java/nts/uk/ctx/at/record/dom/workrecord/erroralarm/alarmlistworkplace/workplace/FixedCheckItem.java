@@ -14,7 +14,7 @@ public enum FixedCheckItem {
     // 目安時間・金額時間の未設定
     ESTIMATED_OR_AMOUNT_TIME_NOT_SET(4, "目安時間・金額時間の未設定"),
     // 管理者未登録
-    NOT_REGISTERED(4, "管理者未登録");
+    NOT_REGISTERED(5, "管理者未登録");
 
     public int value;
 

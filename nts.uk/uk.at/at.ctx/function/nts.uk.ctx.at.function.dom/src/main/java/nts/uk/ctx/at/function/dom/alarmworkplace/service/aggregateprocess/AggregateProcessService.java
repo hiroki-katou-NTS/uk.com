@@ -72,22 +72,19 @@ public class AggregateProcessService {
 
             DatePeriod period = new DatePeriod(GeneralDate.today(), GeneralDate.today());
 
-            //[No.560]職場IDから職場の情報をすべて取得する //TODO Q&A 36575
-            List<WorkPlaceInforExport> workPlaceInfos = this.workplaceAdapter.getWorkplaceInforByWkpIds(cid, workplaceIds,
-                    GeneralDate.today());
-
             // ループ中のカテゴリをチェック
             switch (category) {
                 case MASTER_CHECK_BASIC:
                     // アルゴリズム「マスタチェック(基本)の集計処理」を実行する
-                    alExtractInfos.addAll(aggregateProcessAdapter.processMasterCheckBasic(cid, period, alarmCheckWkpId, workplaceIds, workPlaceInfos));
+                    alExtractInfos.addAll(aggregateProcessAdapter.processMasterCheckBasic(cid, period, alarmCheckWkpId, workplaceIds));
                     break;
                 case MASTER_CHECK_DAILY:
-                    alExtractInfos.addAll(aggregateProcessAdapter.processMasterCheckDaily(cid, period, alarmCheckWkpId, workplaceIds, workPlaceInfos));
+                    alExtractInfos.addAll(aggregateProcessAdapter.processMasterCheckDaily(cid, period, alarmCheckWkpId, workplaceIds));
                     // アルゴリズム「マスタチェック(日別)の集計処理」を実行する
                     break;
                 case MASTER_CHECK_WORKPLACE:
                     // アルゴリズム「マスタチェック(職場)の集計処理」を実行する
+                    alExtractInfos.addAll(aggregateProcessAdapter.processMasterCheckWorkplace(cid, period, alarmCheckWkpId, workplaceIds));
                     break;
                 case SCHEDULE_DAILY:
                     // アルゴリズム「スケジュール／日次の集計処理」を実行する
