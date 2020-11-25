@@ -484,11 +484,12 @@ module nts.uk.at.view.kwr003.b {
               selectedItemText = vm.createDataSelection(dataItemsWithOperation);
             } else {
               let findObj = _.find(listDaily, (listItem: any) => listItem.attendanceItemId === attendanceItemList[0].attendanceItemId);
-              if (!_.isNil(findObj)) selectedItemText = findObj.name;
+              //if (!_.isNil(findObj)) selectedItemText = findObj.name;
+              selectedItemText = !_.isNil(findObj) ? findObj.name : '';
               dataItemsWithOperation.push({
                 itemId: attendanceItemList[0].attendanceItemId,
                 indicatesNumber: attendanceItemList[0].attendanceItemId,
-                name: findObj.name,
+                name: selectedItemText, //findObj.name
                 operator: 1
               });
             }
