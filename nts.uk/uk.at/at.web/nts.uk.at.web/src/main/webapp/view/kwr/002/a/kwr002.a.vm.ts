@@ -642,6 +642,7 @@ module nts.uk.com.view.kwr002.a {
                     self.selectedCode(condition.standardSelectionCode);
                     self.selectedCodeA8_8(condition.freeSelectionCode);
                     self.selectedDataZeroDisplayType(condition.zeroDisplayType);
+                    self.selectedCodeA8_5(condition.selectionType);
                 })
             }
 
@@ -659,7 +660,7 @@ module nts.uk.com.view.kwr002.a {
                             , ''
                             , companyId
                             , userId
-                            , 0
+                            , self.selectedDataZeroDisplayType()
                             , ''
                             , '');
                     } else {
@@ -669,7 +670,7 @@ module nts.uk.com.view.kwr002.a {
                             , self.selectedCodeA8_8()
                             , companyId
                             , userId
-                            , 0
+                            , self.selectedDataZeroDisplayType()
                             , self.filterLayoutId(self.selectedCode(),ItemSelectionType.STANDARD_SETTING)
                             , self.filterLayoutId(self.selectedCodeA8_8(),ItemSelectionType.FREE_SETTING)
                         );
