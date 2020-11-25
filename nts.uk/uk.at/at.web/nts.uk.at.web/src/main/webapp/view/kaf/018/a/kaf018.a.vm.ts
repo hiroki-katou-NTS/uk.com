@@ -153,6 +153,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 				}
 				return $('#tree-grid').ntsTreeComponent(vm.treeGrid).done(() => {
 					vm.fullWorkplaceInfo = vm.flattenWkpTree(_.cloneDeep($('#tree-grid').getDataList()));
+					$('#multiple-tree-grid-tree-grid').igTreeGrid("option", "height", "392px");
 					vm.selectedClosureId.subscribe((value) => {
 						vm.$blockui('show');
 						vm.$ajax(`${API.changeClosure}/${value}`).then((changeDateData) => {
@@ -162,6 +163,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 							vm.dateValue.valueHasMutated();	
 							$('#tree-grid').ntsTreeComponent(vm.treeGrid).done(() => {
 								vm.fullWorkplaceInfo = vm.flattenWkpTree(_.cloneDeep($('#tree-grid').getDataList()));
+								$('#multiple-tree-grid-tree-grid').igTreeGrid("option", "height", "392px");
 								$('#tree-grid').focusTreeGridComponent();
 								vm.$blockui('hide');
 							});
