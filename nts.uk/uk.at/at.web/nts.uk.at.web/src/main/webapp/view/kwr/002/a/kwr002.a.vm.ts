@@ -660,7 +660,7 @@ module nts.uk.com.view.kwr002.a {
                             , ''
                             , companyId
                             , userId
-                            , self.selectedDataZeroDisplayType()
+                            , data.zeroDisplayType
                             , ''
                             , '');
                     } else {
@@ -670,7 +670,7 @@ module nts.uk.com.view.kwr002.a {
                             , self.selectedCodeA8_8()
                             , companyId
                             , userId
-                            , self.selectedDataZeroDisplayType()
+                            , data.zeroDisplayType
                             , self.filterLayoutId(self.selectedCode(),ItemSelectionType.STANDARD_SETTING)
                             , self.filterLayoutId(self.selectedCodeA8_8(),ItemSelectionType.FREE_SETTING)
                         );
