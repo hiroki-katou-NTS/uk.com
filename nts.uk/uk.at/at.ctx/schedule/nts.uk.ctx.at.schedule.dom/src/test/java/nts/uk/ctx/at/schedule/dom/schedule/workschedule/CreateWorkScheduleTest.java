@@ -321,7 +321,7 @@ public class CreateWorkScheduleTest {
 			require.getWorkSchedule(anyString, (GeneralDate) any);
 			result = Optional.of(workSchedule);
 			
-			workSchedule.getWorkInfo().getRecordInfo().equals( (WorkInformation) any );
+			workSchedule.getWorkInfo().getRecordInfo().isSame( (WorkInformation) any );
 			result = false;
 		}};
 		
@@ -393,7 +393,7 @@ public class CreateWorkScheduleTest {
 			require.getWorkSchedule(anyString, (GeneralDate) any);
 			result = Optional.of(workSchedule);
 			
-			workSchedule.getWorkInfo().getRecordInfo().equals( (WorkInformation) any );
+			workSchedule.getWorkInfo().getRecordInfo().isSame( (WorkInformation) any );
 			result = true;
 		}};
 		

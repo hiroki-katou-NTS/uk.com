@@ -354,11 +354,11 @@ public class WorkInformation {
 	}
 
 	/**
-	 * Equals
+	 * 同一か
 	 * @param otherObject 比較対象
-	 * @return true if same workType and same workTime
+	 * @return true if they are same workType and same workTime
 	 */
-	public boolean equals(WorkInformation otherObject) {
+	public boolean isSame(WorkInformation otherObject) {
 		
 		if ( ! this.workTypeCode.v().equals(otherObject.getWorkTypeCode().v()) ) {
 			return false;

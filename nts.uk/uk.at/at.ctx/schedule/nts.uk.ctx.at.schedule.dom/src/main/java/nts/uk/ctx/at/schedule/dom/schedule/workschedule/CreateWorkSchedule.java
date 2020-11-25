@@ -43,7 +43,7 @@ public class CreateWorkSchedule {
 		boolean isNewRegister = !registedWorkSchedule.isPresent();
 		
 		WorkSchedule workSchedule;
-		if ( isNewRegister || ! registedWorkSchedule.get().getWorkInfo().getRecordInfo().equals(workInformation) ) {
+		if ( isNewRegister || ! registedWorkSchedule.get().getWorkInfo().getRecordInfo().isSame(workInformation) ) {
 			try {
 				workSchedule = WorkSchedule.createByHandCorrectionWithWorkInformation(require, employeeId, date, workInformation);
 			} catch (BusinessException e) {
