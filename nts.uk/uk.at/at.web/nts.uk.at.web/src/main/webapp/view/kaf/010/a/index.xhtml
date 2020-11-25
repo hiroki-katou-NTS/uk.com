@@ -28,18 +28,21 @@
 			<com:scriptfile path="/view/kaf/000/a/component6/kaf000.a.component6.js" />
 			<com:scriptfile path="/view/kaf/000/a/component7/kaf000.a.component7.js" />
 			<com:scriptfile path="/view/kaf/000/a/component8/kaf000.a.component8.js" />
-            <com:scriptfile path="/view/kaf/000/a/kaf000.a.vm.js" />
-            
+			<com:scriptfile path="/view/kaf/000/a/kaf000.a.vm.js" />
+			<com:scriptfile path="/view/kaf/010/shr/header/kaf010.shr.header.vm.js" />
+			<com:scriptfile path="/view/kaf/010/shr/work_info/kaf010.shr.work_info.vm.js" />
+            <com:scriptfile path="/view/kaf/010/shr/time/kaf010.shr.time.vm.js" />
 			<!-- <com:scriptfile path="/view/kaf/010/shr/kaf010.shr.vm.js" /> -->
 			<!-- <com:scriptfile path="/view/kaf/010/shr/header/kaf010.shr.header.vm.js" /> -->
 			<!-- <com:scriptfile path="/view/kaf/010/shr/footer/kaf010.shr.footer.vm.js" /> -->
 			<com:scriptfile path="/view/kaf/010/a/kaf010.a.vm.js" />
-			<!-- <com:stylefile path="/view/kaf/010/shr/kaf010.share.style.css" /> -->
+			<com:stylefile path="/view/kaf/010/shr/kaf010.share.style.css" />
 
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
 				<button class="proceed" data-bind="click: register, enable: $root.errors.isEmpty" tabindex="1">#{i18n.getText('KAF010_10')}</button>
+				<button>#{i18n.getText('KAF010_340')}</button>
 				<div data-bind="component: { name: 'kaf000-a-component7',
 											params: {
 												appType: appType,
@@ -53,6 +56,11 @@
 												appType: appType,
 												appDispInfoStartupOutput: appDispInfoStartupOutput
 											} }"></div>
+				<div data-bind="component: { name: 'kaf010-share-header',
+											params: {
+												overTimeWork: overTimeWork
+											}
+											}"></div>
 
 				<div class="table">
 					<div class="cell" style="width: 825px;" data-bind="component: { name: 'kaf000-a-component2',
@@ -61,29 +69,36 @@
 										application: application,
 										appDispInfoStartupOutput: appDispInfoStartupOutput,
 										isAgentMode: isAgentMode
-                                          } }"></div>
+                                          }}"></div>
                  	<div class="cell" style="position: absolute;" data-bind="component: { name: 'kaf000-a-component8',
 									params: {
 										appType: appType,
 										application: application,
 										appDispInfoStartupOutput: appDispInfoStartupOutput
-									} }"></div>
+									}}"></div>
 				</div>
 				<div data-bind="component: { name: 'kaf000-a-component3',
 											params: {
 												appType: appType,
 												application: application,
 												appDispInfoStartupOutput: appDispInfoStartupOutput
-											} }"></div>
+											}}"></div>
 				<div data-bind="component: { name: 'kaf000-a-component4',
 											params: {
 												appType: appType,
 												application: application,
 												appDispInfoStartupOutput: appDispInfoStartupOutput
-											} }"></div>
-				
-				<div style="height: 100px; background-color: red">filler</div>
-				
+											}}"></div>
+				<div data-bind="component: { name: 'kaf010-share-work-info',
+											params: {
+												workInfo: workInfo
+											}}"></div>
+				<div data-bind="component: { name: 'kaf010-share-time',
+											params: {
+												
+											}
+							
+										}"></div>
 				<div data-bind="component: { name: 'kaf000-a-component5',
 											params: {
 												appType: appType,
