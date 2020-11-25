@@ -8,7 +8,7 @@ module nts.uk.at.view.kmk004.b {
     }
 
     const template = `
-        <div class="listbox">
+        <div tabindex="6" class="listbox">
             <div id="list-box" data-bind="ntsListBox: {
                 options: itemList,
                 optionsValue: 'value',

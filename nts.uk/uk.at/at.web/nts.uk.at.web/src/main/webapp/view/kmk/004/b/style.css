@@ -58,6 +58,7 @@
 
 .view-c-kmk004 .right-content .time-work {
 	margin-left: 190px;
+	width: 190px;
 }
 
 /* View D */
@@ -271,6 +272,7 @@
 
 .view-b .content .data .box-year {
 	display: inline-block;
+	height: 100px;
 }
 
 .view-b .content .data .time-work {

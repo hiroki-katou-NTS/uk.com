@@ -3,8 +3,8 @@
 module nts.uk.at.view.kmk004.a {
 	@bean()
 	export class ViewModel extends ko.ViewModel {
-		public flexWorkManaging: KnockoutObservable<boolean> = ko.observable(false);
-		public useDeformedLabor: KnockoutObservable<boolean> = ko.observable(false);
+		public flexWorkManaging: KnockoutObservable<boolean> = ko.observable(true);
+		public useDeformedLabor: KnockoutObservable<boolean> = ko.observable(true);
 
 		create() {
 		}
