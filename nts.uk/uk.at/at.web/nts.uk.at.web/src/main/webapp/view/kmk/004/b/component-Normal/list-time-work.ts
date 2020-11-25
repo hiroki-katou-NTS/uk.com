@@ -39,10 +39,26 @@ module nts.uk.at.view.kmk004.b {
                         <td class="label-column1" data-bind="text: $data.nameMonth"></td>
                         <td class="label-column2">
                             <!-- ko if: $parent.checkEmployee -->
-                                <input maxlength="6" class="lable-input" data-bind="ntsTextEditor: {value: $data.legalLaborTime, enable: $data.check}" />
+                                <input class="lable-input" 
+                                    data-bind="ntsTimeEditor: {
+                                        value: $data.legalLaborTime,
+                                        enable: $data.check,
+                                        inputFormat: 'time',
+                                        option: {
+                                            width: '60px',
+                                            textalign: 'center'}, 
+                                        mode: 'time'}" />
                             <!-- /ko -->
                             <!-- ko ifnot: $parent.checkEmployee -->
-                                <input maxlength="6" class="lable-input" data-bind="ntsTextEditor: {value: $data.legalLaborTime, enable: $parent.ckeckNullYear}" />
+                                <input class="lable-input" 
+                                    data-bind="ntsTimeEditor: {
+                                        value: $data.legalLaborTime,
+                                        enable: $parent.ckeckNullYear, 
+                                        inputFormat: 'time',
+                                        option: {
+                                            width: '60px',
+                                            textalign: 'center'}, 
+                                        mode: 'time'}"/>
                             <!-- /ko -->
                         </td>
                     </tr>
@@ -86,25 +102,16 @@ module nts.uk.at.view.kmk004.b {
             vm.reloadData();
 
             vm.workTimes.subscribe((wts) => {
-                const total: number = wts.reduce((p, c) => p += Number(
-                    parseInt(c.legalLaborTime().
-                        replace(':', '').
-                        substring(0, c.legalLaborTime().replace(':', '').length - 2)) * 60 +
-                    parseInt(c.legalLaborTime().
-                        replace(':', '').
-                        substring(c.legalLaborTime().replace(':', '').length - 2,
-                            c.legalLaborTime().replace(':', '').length)) * 60), 0);
-                
-                if (total > 0) {
-                    var last = (total % 60).toString();
+                const total: number = wts.reduce((p, c) => p += Number(c.legalLaborTime()), 0);
+                const finst: string = Math.floor(total / 60) + '';
+                var last: string = total % 60 + '';
 
-                    if(last.length < 2) {
-                        last = '0' + last;
-                    }
-                    vm.total(Math.floor(total / 60) + ':' + last);
-                }else {
-                    vm.total("0:00");
+                if (last.length < 2){
+                    last = '0' + last;
                 }
+                
+                vm.total(finst + ':' + last);
+
             });
 
             vm.selectedYear
@@ -154,22 +161,22 @@ module nts.uk.at.view.kmk004.b {
             const vm = this;
             const list: IWorkTime[] = [];
 
-            ko.unwrap(vm.workTimes).map(m => {
-                const legalLaborTime: number = parseInt(ko.unwrap(m.legalLaborTime).replace(':', ''), 10);
-                const laborTime: ILaborTime = {
-                    legalLaborTime: legalLaborTime,
-                    withinLaborTime: null,
-                    weekAvgTime: null
-                }
-                const a: IWorkTime = {
-                    check: ko.unwrap(m.check),
-                    yearMonth: ko.unwrap(m.yearMonth),
-                    laborTime: laborTime
-                }
-                list.push(a);
-            });
+            // ko.unwrap(vm.workTimes).map(m => {
+            //     const legalLaborTime: number = parseInt(ko.unwrap(m.legalLaborTime).replace(':', ''), 10);
+            //     const laborTime: ILaborTime = {
+            //         legalLaborTime: legalLaborTime,
+            //         withinLaborTime: null,
+            //         weekAvgTime: null
+            //     }
+            //     const a: IWorkTime = {
+            //         check: ko.unwrap(m.check),
+            //         yearMonth: ko.unwrap(m.yearMonth),
+            //         laborTime: laborTime
+            //     }
+            //     list.push(a);
+            // });
 
-            vm.workTimes(list.map(m => new WorkTime({ ...m, parrent: vm.workTimes })));
+            // vm.workTimes(list.map(m => new WorkTime({ ...m, parrent: vm.workTimes })));
         }
 
         initList() {
@@ -218,7 +225,7 @@ class WorkTime {
     check: KnockoutObservable<boolean> = ko.observable(false);
     yearMonth: KnockoutObservable<number | null> = ko.observable(null);
     nameMonth: KnockoutObservable<string> = ko.observable('');
-    legalLaborTime: KnockoutObservable<string> = ko.observable('');
+    legalLaborTime: KnockoutObservable<number> = ko.observable(0);
 
     constructor(params?: IWorkTime & { parrent: KnockoutObservableArray<WorkTime> }) {
         const md = this;
@@ -233,16 +240,16 @@ class WorkTime {
         md.yearMonth(param.yearMonth);
 
         if (param.check) {
-            var firstLegalLabor = '0';
-            var lastLegalLabor = param.laborTime.legalLaborTime % 60 + '';
+            // var firstLegalLabor = '0';
+            // var lastLegalLabor = param.laborTime.legalLaborTime % 60 + '';
 
-            firstLegalLabor = Math.floor(param.laborTime.legalLaborTime / 60) + '';
+            // firstLegalLabor = Math.floor(param.laborTime.legalLaborTime / 60) + '';
 
-            if (lastLegalLabor.length < 2) {
-                lastLegalLabor = '0' + lastLegalLabor;
-            }
+            // if (lastLegalLabor.length < 2) {
+            //     lastLegalLabor = '0' + lastLegalLabor;
+            // }
 
-            md.legalLaborTime(firstLegalLabor + ':' + lastLegalLabor);
+            md.legalLaborTime(param.laborTime.legalLaborTime);
         }
 
         switch (param.yearMonth.toString().substring(4, 6)) {

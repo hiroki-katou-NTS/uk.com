@@ -15,12 +15,15 @@ const template = `
 							<div id="employee-list"></div>
 						</div>
 						<div style="display:inline-block">
-							<label id="employment-title" data-bind="i18n:'KMK004_268'"></label>
-								<hr/>
+							<label id="flex-title" data-bind="i18n:'KMK004_268'"></label>
+							<hr/>
 							<label id="selected-employee" data-bind="i18n:employeeName"></label>
 							<div style="margin-top: 20px;" data-bind="component: {
 								name: 'basic-settings-company',
-								params: {screenData:screenData}
+								params: {
+											screenData:screenData,
+											screenMode:header
+										}
 								}">
 						</div>
 						<div data-bind="component: {
@@ -58,8 +61,8 @@ class ScreenJComponent extends ko.ViewModel {
 	employeeList: KnockoutObservableArray<EmployeeModel> = ko.observableArray([]);
 
 	alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel> = ko.observableArray([]);
-	
-	
+
+
 
 	created(params: any) {
 		let vm = this;
@@ -130,7 +133,7 @@ class ScreenJComponent extends ko.ViewModel {
 				returnDataFromCcg001: function(data: Ccg001ReturnedData) {
 					let listEmployee = _.map(data.listEmployee, (item) => { return new EmployeeModel(item); });
 					vm.employeeList(listEmployee);
-					if(listEmployee.length){
+					if (listEmployee.length) {
 						vm.selectedCode(listEmployee[0].code);
 					}
 				}
@@ -177,7 +180,7 @@ class ScreenJComponent extends ko.ViewModel {
 
 			vm.employeeName(selectedItem ? selectedItem.name : '');
 		});
-			vm.$blockui("hide");
+		vm.$blockui("hide");
 		vm.selectedCode.valueHasMutated();
 	}
 
@@ -190,7 +193,7 @@ class EmployeeModel {
 	workplaceName: string;
 	isAlreadySetting: boolean;
 	optionalColumn?: any;
-	
+
 	constructor(param: EmployeeSearchDto, isAlreadySetting?: boolean) {
 		this.id = param.employeeId;
 		this.code = param.employeeCode;

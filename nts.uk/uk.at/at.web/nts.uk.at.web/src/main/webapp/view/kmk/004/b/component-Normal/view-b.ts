@@ -2,11 +2,13 @@
 
 module nts.uk.at.view.kmk004.b {
 	const template = `
-	<div class="sidebar-content-header">
-		<div class="title" data-bind="i18n: 'Com_Company'"></div>
-		<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmk/004/a/index.xhtml' },i18n: 'KMK004_224'"></a>
-		<button class="proceed" data-bind="i18n: 'KMK004_225', click: add, enable: existYear"></button>
-		<button class="danger" data-bind="i18n: 'KMK004_227'"></button>
+	<div id="functions-area">
+		<div class="sidebar-content-header">
+			<label class="title" data-bind="i18n: 'Com_Company'"></label>
+			<a tabindex="1" class="goback" data-bind="ntsLinkButton: { jump: '/view/kmk/004/a/index.xhtml' },i18n: 'KMK004_224'"></a>
+			<button tabindex="2" class="proceed" data-bind="i18n: 'KMK004_225', click: add, enable: existYear"></button>
+			<button tabindex="3" class="danger" data-bind="i18n: 'KMK004_227', click: remote, enable: existYear"></button>
+		</div>
 	</div>
 	<div class="view-b">
 		<div class="header-b">
@@ -14,7 +16,7 @@ module nts.uk.at.view.kmk004.b {
 			<hr></hr>
 			<div class="header_title">
 				<div data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_229'"></div>
-				<button data-bind="i18n: 'KMK004_231', click: openDialogF"></button>
+				<button tabindex="4" data-bind="i18n: 'KMK004_231', click: openDialogF"></button>
 			</div>
 			<div class="header_content">
 				<div data-bind="component: {
@@ -28,7 +30,7 @@ module nts.uk.at.view.kmk004.b {
 		</div>
 		<div class="content">
 			<div>
-				<button data-bind="i18n: 'KMK004_233'"></button>
+				<button tabindex="5" data-bind="i18n: 'KMK004_233'"></button>
 			</div>
 			<div class= "data">
 				<div class= "box-year" data-bind="component: {
@@ -38,7 +40,7 @@ module nts.uk.at.view.kmk004.b {
 						change: changeYear
 					}
 				}"></div>
-				<div class= "time-work" data-bind="component: {
+				<div tabindex="7" class= "time-work" data-bind="component: {
 					name: 'time-work',
 					params:{
 						selectedYear: selectedYear,
@@ -81,11 +83,24 @@ module nts.uk.at.view.kmk004.b {
 
 		mounted() {
 			
+			$(document).ready(function () {
+                $('.listbox').focus();
+            });
 		}
 
 		add() {
 			const vm = this;
 			vm.modeCheckChangeSetting.valueHasMutated();
+
+			$(document).ready(function () {
+                $('.listbox').focus();
+            });
+		}
+
+		remote() {
+			$(document).ready(function () {
+                $('.listbox').focus();
+            });
 		}
 
 		openDialogF() {

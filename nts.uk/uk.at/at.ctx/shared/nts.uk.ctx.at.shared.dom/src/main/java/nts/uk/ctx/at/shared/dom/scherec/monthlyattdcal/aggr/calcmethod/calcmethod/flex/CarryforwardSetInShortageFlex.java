@@ -8,9 +8,9 @@ import nts.uk.shr.com.i18n.TextResource;
  */
 public enum CarryforwardSetInShortageFlex {
 	/** 当月積算 */
-	CURRENT_MONTH_INTEGRATION(0, TextResource.localize("当月清算")),
+	CURRENT_MONTH_INTEGRATION(0, TextResource.localize("KMK004_277")),
 	/** 翌月繰越 */
-	NEXT_MONTH_CARRYFORWARD(1, TextResource.localize("翌月繰越"));
+	NEXT_MONTH_CARRYFORWARD(1, TextResource.localize("KMK004_278"));
 
 	/** The Constant values. */
 	private final static CarryforwardSetInShortageFlex[] values = CarryforwardSetInShortageFlex.values();

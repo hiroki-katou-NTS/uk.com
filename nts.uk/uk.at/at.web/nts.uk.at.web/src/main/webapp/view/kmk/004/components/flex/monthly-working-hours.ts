@@ -49,25 +49,31 @@ const template = `
 												<td  data-bind="css: { hidden: !$parent.isShowCheckbox }"><div data-bind="ntsCheckBox: { checked:$data.laborTime().checkbox }"></div></td>
 												<td class="bg-green" style="text-align:center;" ><span data-bind="text: $data.month + '月度'"></span></td>
 												<td ><input  data-bind="
-												ntsTimeWithDayEditor: {
+												ntsTimeEditor: {
 														name:'#[KMK004_264]',
 														value: $data.laborTime().withinLaborTime,
 														enable: $data.laborTime().checkbox,
-														option: {timeWithDay: false,width: '80px'}
+														inputFormat: 'time', 
+														mode: 'time',
+														option: {textalign: 'center',width: '60px'}
 														}"
 												/></td>
 												<td ><input  data-bind="
-												ntsTimeWithDayEditor: {name:'#[KMK004_265]',
+												ntsTimeEditor: {name:'#[KMK004_265]',
 														value: $data.laborTime().legalLaborTime,
 														enable: $data.laborTime().checkbox,
-														option: {timeWithDay: false,width: '80px'}
+														inputFormat: 'time', 
+														mode: 'time',
+														option: {textalign: 'center',width: '60px'}
 														}"
 												/></td>
 												<td ><input  data-bind="
-												ntsTimeWithDayEditor: {name:'#[KMK004_266]',
+												ntsTimeEditor: {name:'#[KMK004_266]',
 														value: $data.laborTime().weekAvgTime,
 														enable: $data.laborTime().checkbox,
-														option: {timeWithDay: false,width: '80px'}
+														inputFormat: 'time', 
+														mode: 'time',
+														option: {textalign: 'center',width: '60px'}
 														}"
 												/></td>
 											</tr>

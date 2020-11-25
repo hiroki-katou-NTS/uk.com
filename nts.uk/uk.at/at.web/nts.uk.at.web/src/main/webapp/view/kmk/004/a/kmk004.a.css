@@ -36,6 +36,10 @@
     color: #97D155;
 }
 
+.caret-inline:after {
+    margin-left: -4px;
+}
+
 .view-kwk .right_content {
     float: left;
     width: 300px;
