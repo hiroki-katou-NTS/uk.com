@@ -175,7 +175,7 @@ public class MakeShiftMasterServiceTest {
 
 		new Expectations() {
 			{
-				require.checkExists(companyId, workTypeCode, workTimeCode);
+				require.checkExistsByCode(companyId, shiftMasterCode);
 				result = true;
 				
 			}

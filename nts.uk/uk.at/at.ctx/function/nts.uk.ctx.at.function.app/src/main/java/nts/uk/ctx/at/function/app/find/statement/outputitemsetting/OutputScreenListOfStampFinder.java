@@ -2,7 +2,9 @@ package nts.uk.ctx.at.function.app.find.statement.outputitemsetting;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -216,7 +218,7 @@ public class OutputScreenListOfStampFinder {
 				String optSupportCard = "";
 				String workLocationName = "";
 				String workTimeName = "";
-				boolean isAddress = false;
+				Boolean isAddress = false;
 				
 				if (stamp.getRefActualResults().getWorkLocationCD().isPresent()) {
 					val workLocationCode = stamp.getRefActualResults().getWorkLocationCD().get();
@@ -233,7 +235,12 @@ public class OutputScreenListOfStampFinder {
 
 				// Local Infor
 				if (stamp.getLocationInfor().isPresent()) {
-					local = this.getLocation(stamp.getLocationInfor().get(), isAddress);
+					Map<String, Boolean> gLocation = this.getLocation(stamp.getLocationInfor().get());
+					if (!gLocation.isEmpty()) {
+						Map.Entry<String, Boolean> entry = gLocation.entrySet().iterator().next();
+						local = entry.getKey();
+						isAddress = entry.getValue();
+					}
 				}
 
 				// Support Card
@@ -298,10 +305,12 @@ public class OutputScreenListOfStampFinder {
 		return result;
 	}
 	
-	private String getLocation(StampLocationInfor stampLocationInfor, boolean isAddress) {
-		isAddress = false;
+	private Map<String, Boolean> getLocation(StampLocationInfor stampLocationInfor) {
+		Map<String, Boolean> result = new HashMap<>();
+		
 		if (stampLocationInfor.getPositionInfor() == null) {
-			return "";
+			result.put("", false);
+			return result;
 		} else {
 			try {
 				URL url = new URL("http://geoapi.heartrails.com/api/xml?method=searchByGeoLocation"
@@ -313,24 +322,27 @@ public class OutputScreenListOfStampFinder {
 				NodeList nodelist = doc.getElementsByTagName("location");
 				if(nodelist.getLength() > 0) {
 					Element element = (Element) nodelist.item(0);
-					isAddress = true;
-					return element.getElementsByTagName("prefecture").item(0).getTextContent() + element.getElementsByTagName("city").item(0).getTextContent() + element.getElementsByTagName("town").item(0).getTextContent();
+					result.put(element.getElementsByTagName("prefecture").item(0).getTextContent() + element.getElementsByTagName("city").item(0).getTextContent() + element.getElementsByTagName("town").item(0).getTextContent(), true);		
+					return result;
 				}else {
-					return String.format("%.6f", stampLocationInfor.getPositionInfor().getLatitude()) + " " + String.format("%.6f", stampLocationInfor.getPositionInfor().getLongitude());
+					result.put(String.format("%.6f", stampLocationInfor.getPositionInfor().getLatitude()) + " " + String.format("%.6f", stampLocationInfor.getPositionInfor().getLongitude()), false);
+					return result;
 				}
 			} catch (Exception e) {
-				return String.format("%.6f", stampLocationInfor.getPositionInfor().getLatitude()) + " " + String.format("%.6f", stampLocationInfor.getPositionInfor().getLongitude());
+				result.put(String.format("%.6f", stampLocationInfor.getPositionInfor().getLatitude()) + " " + String.format("%.6f", stampLocationInfor.getPositionInfor().getLongitude()), false);
+				return result;
 			}
 		}
 	}
 
 	public List<CardNoStampInfo> createCardNoStampQuery(DatePeriod datePerriod) {
+		String contractCode = AppContexts.user().contractCode();
 		// RetrieveNoStampCardRegisteredService
 		// 1取得する(@Require, 期間): 打刻情報リスト
 		// 打刻カード未登録の打刻データを取得する
 		RetrieveNoStampCardRegisteredService.Require requireCardNo = new RequireCardNoIml(stampRecordRepository,
 				stampDakokuRepository);
-		List<StampInfoDisp> listStampInfoDisp = RetrieveNoStampCardRegisteredService.get(requireCardNo, datePerriod);
+		List<StampInfoDisp> listStampInfoDisp = RetrieveNoStampCardRegisteredService.get(requireCardNo, datePerriod, contractCode);
 		List<RefectActualResult> listRefectActual = listStampInfoDisp.stream().map(c -> c.getStamp())
 				.filter(t -> !t.isEmpty()).distinct().map(g -> g.get(0).getRefActualResults())
 				.collect(Collectors.toList());
@@ -367,7 +379,7 @@ public class OutputScreenListOfStampFinder {
 			String overtimeHours = "";
 			String lateNightTime = "";
 			String workLocationName = "";
-			boolean isAddress = false;
+			Boolean isAddress = false;
 			// String latitude = "";
 			// longitude = "";
 
@@ -394,7 +406,12 @@ public class OutputScreenListOfStampFinder {
 
 				val locationInfo = stampInfoDisp.getStamp().get(0).getLocationInfor();
 				if (locationInfo.isPresent()) {
-					localInfor = this.getLocation(locationInfo.get(), isAddress);
+					Map<String, Boolean> gLocation = this.getLocation(locationInfo.get());
+					if (!gLocation.isEmpty()) {
+						Map.Entry<String, Boolean> entry = gLocation.entrySet().iterator().next();
+						localInfor = entry.getKey();
+						isAddress = entry.getValue();
+					}
 				}
 				if (refActualResults.getCardNumberSupport().isPresent()) {
 					supportCard = refActualResults.getCardNumberSupport().get();
@@ -492,7 +509,7 @@ public class OutputScreenListOfStampFinder {
 		@Override
 		public List<Stamp> getStempRcNotResgistNumberStamp(String contractCode, DatePeriod period) {
 			// TODO Auto-generated method stub
-			return stampDakokuRepo.getStempRcNotResgistNumberStamp(AppContexts.user().contractCode(),period);
+			return stampDakokuRepo.getStempRcNotResgistNumberStamp(contractCode, period);
 		}	
 	}
 

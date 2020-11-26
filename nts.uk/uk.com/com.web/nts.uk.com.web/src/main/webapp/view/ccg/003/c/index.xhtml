@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+  <ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+      <com:scriptfile set="IGNITE" />
+      <com:ValidatorScript>
+        nts.uk.ctx.sys.portal.dom.notice.NotificationMessage
+      </com:ValidatorScript>
+      <script>var dialogSize = { width: 600, height: 560 };</script>
+      <com:stylefile path="ccg003.c.style.css" />
+      <com:scriptfile path="ccg003.c.vm.js" />
+    </ui:define>
+
+    <ui:define name="content">
+      <div id="contents-area">
+        <div class="flex mt-5">
+          <!-- C1_1	メッセージ(ラベル) -->
+          <div id="C1_1" data-bind="ntsFormLabel: { constraint: 'NotificationMessage', required: true }">
+            #{i18n.getText('CCG003_20')}</div>
+          <!-- C1_2	メッセージ -->
+          <textarea id="C1_2" tabindex="1"
+            data-bind="ntsMultilineEditor: { name:'#[CCG003_20]', value: messageText, constraint: 'NotificationMessage', required: true }" />
+        </div>
+        <div class="flex mt-10">
+          <div class="left w-p-15">
+            <!-- C2_1	宛先(ラベル) -->
+            <div id="C2_1" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CCG003_21')}</div>
+          </div>
+          <div class="left w-p-85 ml-15">
+            <com:ko-if bind="isVisibleAllEmployees()">
+              <div class="mt-5">
+                  <span class="ntsControl">
+                    <label class="ntsRadioBox">
+                      <!-- C2_2_1	宛先(全社員) -->
+                      <input type="radio" name="destination" data-bind="checkedValue: 0, checked: destination, enable: isVisibleDestination" />
+                      <span class="box"></span><span class="label">#{i18n.getText('CCG003_22')}</span>
+                    </label>
+                  </span>
+              </div>
+            </com:ko-if>
+
+            <div class="mt-10">
+              <span class="ntsControl flex">
+                <label class="ntsRadioBox">
+                  <!-- C2_2_2 宛先(職場) -->
+                  <input type="radio" name="destination" data-bind="checkedValue: 1, checked: destination, enable: isVisibleDestination" />
+                  <span class="box"></span><span class="label">#{i18n.getText('CCG003_23')}</span>
+                </label>
+                <com:ko-if bind="isVisibleWorkplaceList()">
+                  <!-- C2_3_2	職場選択 -->
+                  <button id="C2_3_2" data-bind="enable: isActiveWorkplaceBtn, click: openCDL008Dialog" tabindex="3" class="small ml-15 mr-10">#{i18n.getText('CCG003_25')}</button>
+                  <!-- C2_4_2	職場リスト -->
+                  <input id="C2_4_2" data-bind="ntsTextEditor: {value: workPlaceText, enable: false}" class="ml-5 w-300" />
+                </com:ko-if>
+                <com:ko-if bind="!isVisibleWorkplaceList()">
+                  <!-- C2_5_2	対象職場 -->
+                  <label id="C2_5_2" class="ml-15" data-bind="text: workPlaceTxtRefer"></label>
+                </com:ko-if>
+              </span>
+            </div>
+
+            <div class="mt-5">
+              <span class="ntsControl flex">
+                <label class="ntsRadioBox">
+                  <!-- C2_2_3 宛先(社員) -->
+                  <input type="radio" name="destination" data-bind="checkedValue: 2, checked: destination, enable: isVisibleDestination" />
+                  <span class="box"></span><span class="label">#{i18n.getText('CCG003_24')}</span>
+                </label>
+                <!-- C2_3_3	社員選択 -->
+                <button id="C2_3_3" data-bind="enable: isActiveEmployeeBtn, click: openCDL009Dialog" tabindex="4" class="small ml-15 mr-10">#{i18n.getText('CCG003_25')}</button>
+                <!-- C2_4_3	社員リスト -->
+                <input id="C2_4_3" data-bind="ntsTextEditor: {value: employeeText, enable: false}" class="ml-5 w-300"/>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="clear-both flex mt-15">
+          <!-- C3_1	表示期間(ラベル) -->
+          <div id="C3_1" class="left" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CCG003_26')}</div>
+          <!-- C3_2	表示期間 -->
+          <div id="C3_2" class="left ml-20" tabindex="5" data-bind="ntsDateRangePicker: {
+            required: false,
+            enable: true,
+            showNextPrevious: false,
+            value: dateValue}"
+          ></div>
+        </div>
+        <div class="flex mt-15 ml-p-15">
+          <!-- C4	更新日表示 -->
+          <label id="C4" class="ml-13" data-bind="updateDate"></label>
+        </div>
+      </div>
+
+      <div id="functions-area-bottom">
+        <!-- C20_1 登録 -->
+        <button id="C20_1" class="proceed pl-15 pr-15 left ml-60" data-bind="enable: $root.errors.isEmpty, click: onClickRegister">#{i18n.getText('CCG003_28')}</button>
+        <!-- C20_2 削除 -->
+        <button id="C20_2" data-bind="enable: isActiveDelete, click: onClickDelete" class="danger pl-15 pr-15 left ml-60">#{i18n.getText('CCG003_29')}</button>
+        <!-- C20_3 戻る -->
+        <button id="C20_3" data-bind="click: closeWindow" class="pl-15 pr-15 right mr-60">#{i18n.getText('CCG003_30')}</button>
+      </div>
+    </ui:define>
+  </ui:composition>
+</body>
+</html>

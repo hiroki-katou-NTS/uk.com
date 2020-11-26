@@ -38,6 +38,11 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 			+ "WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
 			+ "AND (s.ccgmtStandardMenuPK.classification = :menu_classification OR s.afterLoginDisplay = :afterLoginDisplay) "
 			+ "ORDER BY s.ccgmtStandardMenuPK.classification ASC,s.ccgmtStandardMenuPK.code ASC";
+	private static final String SELECT_BY_MENU_AND_WEB_SETTING = SEL 
+			+ "WHERE s.ccgmtStandardMenuPK.companyId = :cid "
+			+ "AND s.ccgmtStandardMenuPK.classification = :classification "
+			+ "AND s.menuAtr = :menuAtr "
+			+ "AND s.webMenuSetting = :webSetting";
 
 	private static final String GET_ALL_STANDARD_MENU_BY_ATR = "SELECT s FROM CcgstStandardMenu s WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
 			+ "AND s.webMenuSetting = :webMenuSetting " + "AND s.menuAtr = :menuAtr";
@@ -76,6 +81,12 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 			+ "ORDER BY s.ccgmtStandardMenuPK.system ASC, "
 			+ "s.ccgmtStandardMenuPK.classification ASC, "
 			+ "s.programId ASC";
+	
+	private static final String FIND_BY_CID_SYSTEM__MENUCLASSIFICATION_CODE = SEL
+			+ "WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
+			+ "AND s.ccgmtStandardMenuPK.system = :system "
+			+ "AND s.ccgmtStandardMenuPK.classification = :classification "
+			+ "AND s.ccgmtStandardMenuPK.code = :code ";
 
 	public CcgstStandardMenu insertToEntity(StandardMenu domain) {
 		 CcgstStandardMenuPK ccgstStandardMenuPK = new CcgstStandardMenuPK(domain.getCompanyId(), domain.getCode().v(), domain.getSystem().value, domain.getClassification().value);
@@ -413,5 +424,26 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 				.setParameter("programIds", programIds)
 				.setParameter("screenId", screenId)
 				.getList(x -> toDomain(x));
+	}
+	
+	@Override
+	public List<StandardMenu> findByMenuAndWebMenuDisplay(String cid, int classification, int menuAtr, int webSetting) {
+		return this.queryProxy().query(SELECT_BY_MENU_AND_WEB_SETTING, CcgstStandardMenu.class)
+				.setParameter("cid", cid)
+				.setParameter("classification", classification)
+				.setParameter("menuAtr", menuAtr)
+				.setParameter("webSetting", webSetting)
+				.getList(this::toDomain);
+	}
+
+	@Override
+	public Optional<StandardMenu> findByCIDSystemMenuClassificationCode(String cid, int system, int classification,
+			String code) {
+		return this.queryProxy().query(FIND_BY_CID_SYSTEM__MENUCLASSIFICATION_CODE, CcgstStandardMenu.class)
+				.setParameter("companyId", cid)
+				.setParameter("system", system)
+				.setParameter("classification", classification)
+				.setParameter("code", code)
+				.getSingle(x-> toDomain(x));
 	}
 }

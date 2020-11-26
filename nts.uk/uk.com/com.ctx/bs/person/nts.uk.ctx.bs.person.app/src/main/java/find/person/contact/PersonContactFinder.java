@@ -5,12 +5,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
-import nts.uk.ctx.bs.person.dom.person.contact.PersonContact;
-import nts.uk.ctx.bs.person.dom.person.contact.PersonContactRepository;
+import nts.uk.ctx.bs.person.dom.person.personal.contact.PersonalContact;
+import nts.uk.ctx.bs.person.dom.person.personal.contact.PersonalContactRepository;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
@@ -24,7 +22,7 @@ import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 public class PersonContactFinder implements PeregFinder<PersonContactDto>{
 
 	@Inject
-	private PersonContactRepository perContactRepo;
+	private PersonalContactRepository personalContactRepository;
 	
 	@Override
 	public String targetCategoryCode() {
@@ -43,7 +41,7 @@ public class PersonContactFinder implements PeregFinder<PersonContactDto>{
 
 	@Override
 	public PeregDomainDto getSingleData(PeregQuery query) {
-		Optional<PersonContact> perContact = perContactRepo.getByPId(query.getPersonId());
+		Optional<PersonalContact> perContact = personalContactRepository.getByPersonalId(query.getPersonId());
 		if(perContact.isPresent())
 			return PersonContactDto.createFromDomain(perContact.get());
 		return null;
@@ -71,11 +69,11 @@ public class PersonContactFinder implements PeregFinder<PersonContactDto>{
 			result.add(new GridPeregDomainDto(c.getEmployeeId(), c.getPersonId(), null));
 		});
 		
-		List<PersonContact> personContactLst = perContactRepo.getByPersonIdList(pids);
+		List<PersonalContact> personContactLst = personalContactRepository.getByPersonalIds(pids);
 
 		result.stream().forEach(c -> {
-			Optional<PersonContact> perOpt = personContactLst.stream()
-					.filter(emp -> emp.getPersonId().equals(c.getPersonId())).findFirst();
+			Optional<PersonalContact> perOpt = personContactLst.stream()
+					.filter(emp -> emp.getPersonalId().equals(c.getPersonId())).findFirst();
 			c.setPeregDomainDto(perOpt.isPresent() == true ? PersonContactDto.createFromDomain(perOpt.get()) : null);
 		});
 
@@ -92,11 +90,11 @@ public class PersonContactFinder implements PeregFinder<PersonContactDto>{
 			result.add(new GridPeregDomainBySidDto(c.getEmployeeId(), c.getPersonId(), new ArrayList<>()));
 		});
 		
-		List<PersonContact> personContactLst = perContactRepo.getByPersonIdList(pids);
+		List<PersonalContact> personContactLst = personalContactRepository.getByPersonalIds(pids);
 
 		result.stream().forEach(c -> {
-			Optional<PersonContact> perOpt = personContactLst.stream()
-					.filter(emp -> emp.getPersonId().equals(c.getPersonId())).findFirst();
+			Optional<PersonalContact> perOpt = personContactLst.stream()
+					.filter(emp -> emp.getPersonalId().equals(c.getPersonId())).findFirst();
 			c.setPeregDomainDto(perOpt.isPresent() == true ? Arrays.asList(PersonContactDto.createFromDomain(perOpt.get())) : new ArrayList<>());
 		});
 

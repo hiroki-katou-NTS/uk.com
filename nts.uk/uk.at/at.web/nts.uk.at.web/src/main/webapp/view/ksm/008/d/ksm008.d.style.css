@@ -1,0 +1,58 @@
+.float-right {
+    float: right;
+}
+
+.padding-15 {
+    padding: 0 15px 0 15px;
+}
+
+.padding-5 {
+    padding: 5px;
+}
+
+.margin-15 {
+    margin: 10px 15px 0 15px;
+}
+
+.width-form-label {
+    width: 180px;
+}
+
+.label-warning {
+    font-size: 1rem;
+    background-color: #F7EFD4;
+    color: black;
+    display: inline-block;
+    box-sizing: border-box;
+    width: 100%;
+    white-space: pre-wrap;
+}
+
+.cell {
+    vertical-align: top;
+}
+
+.caret-inline:after {
+    border-width: 20px 70px 20px 70px;
+    color: #97D155;
+    margin-left: 100px;
+}
+
+.display-inline-block {
+    display: inline-block;
+}
+
+div.ntsControl.ntsHelpButton {
+    float: right;
+}
+
+.panel.panel-frame {
+    border: 1px solid #B1B1B1;
+    border-radius: 7px;
+}
+
+.ntsRadioBox span.label {
+    display: inline-block;
+    padding-left: 10px;
+    padding-right: 5px;
+}

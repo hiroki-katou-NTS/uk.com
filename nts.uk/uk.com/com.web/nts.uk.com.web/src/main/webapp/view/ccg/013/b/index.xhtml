@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 527, height: 620 };</script>
+			<script>var dialogSize = { width: 533, height: 620 };</script>
 			<com:ValidatorScript>
 					nts.uk.ctx.sys.portal.dom.webmenu.MenuBarName
 				</com:ValidatorScript>
@@ -25,7 +25,7 @@
 				<span>#{i18n.getText('CCG013_17')}</span>
 				<table class="control">
 					<tr>
-						<td><div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CCG013_18')}</div></td>
+						<td><div data-bind="ntsFormLabel: { constraint: 'MenuBarName', required: true }">#{i18n.getText('CCG013_18')}</div></td>
 						<td><input class="menu-bar-name"
 							data-bind="ntsTextEditor: {name: '#[CCG013_18]',value: nameMenuBar, constraint: 'MenuBarName', required: true, option: {width: '160px'} }, hasFocus: true" /></td>
 						<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CCG013_19')}</div></td>
@@ -77,8 +77,6 @@
 									value: selectedStandardMenuKey,
 									enable: selectedRadioAtcClass()==1
 								}"></table>
-
-
 				</div>
 			</div>
 

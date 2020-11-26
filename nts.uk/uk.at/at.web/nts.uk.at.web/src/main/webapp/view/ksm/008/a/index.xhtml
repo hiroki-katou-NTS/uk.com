@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+>
+<body>
+<ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <com:ValidatorScript>
+            nts.uk.ctx.at.schedulealarm.dom.alarmcheck.AlarmCheckMessage
+        </com:ValidatorScript>
+        <com:stylefile path="./styles.css"/>
+        <com:scriptfile path="./ksm008.a.vm.js"/>
+    </ui:define>
+    <ui:define name="content">
+        <div id="functions-area">
+            <!--A1-->
+            <button tabindex="1" data-bind="click: register, enable: $root.errors.isEmpty" class="proceed">#{i18n.getText('KSM008_12')}</button>
+        </div>
+        <div id="contents-area">
+            <!--A2-->
+            <div tabindex="2" class="table">
+                <table id="fixed-table">
+                    <colgroup>
+                        <col width="70px"/>
+                        <col width="50px"/>
+                        <col width="1080px"/>
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <!--A3-->
+                        <th class="ui-widget-header">#{i18n.getText('KSM008_6')}</th>
+                        <!--A4-->
+                        <th class="ui-widget-header" colspan="2"> #{i18n.getText('KSM008_7')}</th>
+                    </tr>
+                    </thead>
+                    <tbody data-bind="foreach: {data: alarmList, as: 'alarm'}">
+                    <tr>
+                        <!--A5_1-->
+                        <td style="vertical-align: top; text-align: center" rowspan="2">
+                            <div data-bind="if : $vm.checkDisplayButton(alarm.code)">
+                                <button class="setting"
+                                        data-bind="click: function(){ return $parent.toScreen(alarm.code)},
+                                               attr: {tabindex: $index()*$index()*10 + 3}
+                                               ">
+                                    #{i18n.getText('KSM008_8')}
+                                </button>
+                            </div>
+                        </td>
+                        <!--A5_2_1-->
+                        <!--A5_2_2-->
+                        <!--A5_2_3-->
+                        <td class="condition p5" colspan="2">
+                            <div style="width: 270px; display: inline-block;">
+                                <span class="label" data-bind="text: alarm.code"></span>
+                                <span class="label" data-bind="text: alarm.name"></span>
+                            </div>
+                            <button tabindex="-1"
+                                    data-bind="ntsHelpButton: { position: 'right top', enable: true }">?
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <!--A5_3-->
+                        <td style="border-top: none"></td>
+                        <td data-bind="foreach: subConditions">
+                            <div>
+                                <div class="message-area">
+                                    <div class="label" data-bind="text: explanation"></div>
+                                </div>
+                                <div class="flex valign-center pb5">
+                                    <!--A5_3_2-->
+                                    <div data-bind="ntsFormLabel:{constraint:['AlarmCheckMessage'], required: true }">#{i18n.getText('KSM008_9')}</div>
+                                    <!--A5_3_3-->
+                                    <input class="message" data-bind="ntsTextEditor: {value:  message.message ,
+                                                            constraint: 'AlarmCheckMessage',
+                                                            required: true,
+                                                            enable:true,
+                                                            readonly: false},
+                                                            attr: {tabindex: $parentContext.$index()*$parentContext.$index()*10 + $index() + 4,
+                                                                   id: $parent.code() + '' + subCode()
+                                                            }"/>
+                                    <!--    A5_3_4-->
+                                    <button data-bind="click: function(){  return $parents[1].getDefaultMsg($parent.code(), subCode(), message)},
+                                            attr: {tabindex: $parentContext.$index()*$parentContext.$index()*10 + 5}"
+                                            style="margin-left: 10px">#{i18n.getText('KSM008_11')}</button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

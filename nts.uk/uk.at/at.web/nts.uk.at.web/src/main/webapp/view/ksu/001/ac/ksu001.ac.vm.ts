@@ -10,7 +10,10 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
         
         palletUnit: KnockoutObservableArray<any> = ko.observableArray([]);
         selectedpalletUnit: KnockoutObservable<number> ;
+        enableSwitchBtn: KnockoutObservable<boolean> = ko.observable(true);
         overwrite: KnockoutObservable<boolean> = ko.observable(true);
+        enableCheckBoxOverwrite: KnockoutObservable<boolean> = ko.observable(true);
+        enableBtnOpenDialogJB1: KnockoutObservable<boolean> = ko.observable(true);
 
         dataSourceCompany: KnockoutObservableArray<any> = ko.observableArray([null, null, null, null, null, null, null, null, null, null]);
         dataSourceWorkplace: KnockoutObservableArray<any> = ko.observableArray([null, null, null, null, null, null, null, null, null, null]);
@@ -36,6 +39,9 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
 
         textButtonArrWkpPattern: KnockoutObservableArray<any> = ko.observableArray([]);
         listShiftWork: any[] = ko.observableArray([]);
+        listPageComIsEmpty: boolean = false;
+        listPageWkpIsEmpty: boolean = false;
+        
         KEY : string = 'USER_INFOR';
 
         constructor() {
@@ -326,6 +332,15 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
             let self = this;
             self.modeCompany(true);
             self.listPageInfo = listPageInfo;
+            
+            // truowng hop khong co page nao duoc dang ky
+            if (listPageInfo.length == 0) {
+                self.listPageComIsEmpty = true;
+                $("#extable").exTable("stickData", []);
+            } else {
+                self.listPageComIsEmpty = false;
+            }
+
             //set default for listTextButton and dataSource
             self.dataSourceCompany([null, null, null, null, null, null, null, null, null, null]);
             self.textButtonArrComPattern([]);
@@ -411,6 +426,15 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
             let self = this;
             self.modeCompany(false);
             self.listPageInfo = listPageInfo;
+            
+            // truowng hop khong co page nao duoc dang ky
+            if (listPageInfo.length == 0) {
+                self.listPageWkpIsEmpty = true;
+                $("#extable").exTable("stickData", []);
+            } else {
+                self.listPageWkpIsEmpty = false;
+            }
+            
             //set default for listTextButton and dataSource
             self.dataSourceWorkplace([null, null, null, null, null, null, null, null, null, null]);
             self.textButtonArrComPattern([]);
@@ -656,6 +680,14 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                         $($('.ntsButtonTableButton')[index]).addClass('withContent');
                     }
                 });
+
+                if (__viewContext.viewModel.viewA.mode() === 'confirm') {
+                    if (self.selectedpalletUnit() == 1) { // 1 : mode company , 2: mode workPlace
+                        $('#tableButton1 button').addClass('disabledShiftControl');
+                    } else {
+                        $('#tableButton2 button').addClass('disabledShiftControl');
+                    }
+                }
                 nts.uk.ui.block.clear();
             }).fail(function() {
                 nts.uk.ui.block.clear();
@@ -736,9 +768,23 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
             nts.uk.ui.block.grayout();
             service.getShiftPallets(param).done((data) => {
                 self.handleInitCom(
-                    data.listPageInfo,
+                    data.listPageInfo, 
                     data.targetShiftPalette.shiftPalletCom,
                     pageNumber);
+                
+                // truowng hop khong co page nao duoc dang ky
+                if (data.listPageInfo.length == 0) {
+                    //$('#tableButton1 button').addClass('disabledShiftControl');
+                    // set css table button
+                    _.each($('.ntsButtonTableButton'), function(buttonTbl, index) {
+                        if ($('.ntsButtonTableButton')[index].innerHTML == "+") {
+                            $($('.ntsButtonTableButton')[index]).addClass('nowithContent');
+                        } else {
+                            $($('.ntsButtonTableButton')[index]).addClass('withContent');
+                        }
+                    });
+                }
+                
                 nts.uk.ui.block.clear();
                 dfd.resolve();
             }).fail(function() {
@@ -771,6 +817,19 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                     data.listPageInfo,
                     data.targetShiftPalette.shiftPalletWorkPlace,
                     pageNumber);
+                
+                // truowng hop khong co page nao duoc dang ky
+                if (data.listPageInfo.length == 0) {
+                    // set css table button
+                    _.each($('.ntsButtonTableButton'), function(buttonTbl, index) {
+                        if ($('.ntsButtonTableButton')[index].innerHTML == "+") {
+                            $($('.ntsButtonTableButton')[index]).addClass('nowithContent');
+                        } else {
+                            $($('.ntsButtonTableButton')[index]).addClass('withContent');
+                        }
+                    });
+                }
+                
                 nts.uk.ui.block.clear();
                 dfd.resolve();
             }).fail(function() {

@@ -7,11 +7,14 @@ import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainObject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.SystemFixedErrorAlarm;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.secondorder.medical.MedicalCareTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedule.WorkScheduleTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.enums.CheckExcessAtr;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.enums.SystemFixedErrorAlarm;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.CheckExcessAtr;
 /**
  * 日別勤怠の勤怠時間 (new)
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared(勤務予定、勤務実績).日の勤怠計算.日別勤怠.実働時間.日別勤怠の勤怠時間
@@ -83,5 +86,32 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 						this.workScheduleTimeOfDaily, time, this.stayingTime, this.budgetTimeVariance,
 						this.unEmployedTime
 				); 
+	}
+	
+	/**
+	 * 遅刻時間を取得する
+	 * @return
+	 */
+	public List<LateTimeOfDaily> getLateTimeOfDaily(){
+		//@勤務時間.総労働時間.遅刻時間
+		return this.actualWorkingTimeOfDaily.getTotalWorkingTime().getLateTimeOfDaily();
+	}
+	
+	/**
+	 * 早退時間を取得する
+	 * @return
+	 */
+	public List<LeaveEarlyTimeOfDaily> getLeaveEarlyTimeOfDaily(){
+		//@勤務時間.総労働時間.早退時間
+		return this.actualWorkingTimeOfDaily.getTotalWorkingTime().getLeaveEarlyTimeOfDaily();
+	}
+	
+	/**
+	 * 外出時間を取得する
+	 * @return
+	 */
+	public List<OutingTimeOfDaily> getOutingTimeOfDaily() {
+		//@勤務時間.総労働時間.外出時間
+		return this.actualWorkingTimeOfDaily.getTotalWorkingTime().getOutingTimeOfDailyPerformance();
 	}
 }

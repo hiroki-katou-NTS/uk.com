@@ -162,4 +162,44 @@ public class StandardMenu extends AggregateRoot {
 				EnumAdaptor.valueOf(webMenuSetting, WebMenuSetting.class), afterLoginDisplay, programId, screenId,
 				queryString, logLoginDisplay, logStartDisplay, logUpdateDisplay);
 	}
+
+	/**
+	 * 
+	 * @param 会社ID:                               companyId
+	 * @param システム:                               system
+	 * @param メニュー分類 :                            classification
+	 * @param 画面ID:                               screenId
+	 * @param クエリ文字列:                            queryString
+	 * @param プログラムID:                            programId
+	 * @param コード:                                 code
+	 * @param 対象項目:                              targetItems
+	 * @param 表示名称:                              displayName
+	 * @param 表示順:                                displayOrder
+	 * @param メニュー属性:                             menuAtr
+	 * @param URL:                                  url
+	 * @param Webメニュー設定表示区分:                   webMenuSetting
+	 * @param ログイン後表示区分:                        afterLoginDisplay
+	 * @param ログ設定表示．ログイン履歴記録表示区分:        logLoginDisplay
+	 * @param ログ設定表示．起動履歴記録表示区分:          logStartDisplay
+	 * @param ログ設定表示．修正履歴（データ）記録表示区分:    logUpdateDisplay
+	 * @return
+	 */
+	public static StandardMenu toNewDomain(String companyId, int system, int classification, String screenId, String queryString,
+			String programId, String code, String targetItems, String displayName,
+			int displayOrder, int menuAtr, String url,  int webMenuSetting,
+			int afterLoginDisplay, int logLoginDisplay, int logStartDisplay, int logUpdateDisplay) {
+		return new StandardMenu(companyId, new MenuCode(code), targetItems, new MenuDisplayName(displayName),
+				displayOrder, EnumAdaptor.valueOf(menuAtr, MenuAtr.class), url,
+				EnumAdaptor.valueOf(system, System.class),
+				EnumAdaptor.valueOf(classification, MenuClassification.class),
+				EnumAdaptor.valueOf(webMenuSetting, WebMenuSetting.class), afterLoginDisplay, programId, screenId,
+				queryString, logLoginDisplay, logStartDisplay, logUpdateDisplay);
+	}
+	
+	public void setDataItem(String queryString, String code, String targetItems, String displayName) {
+		this.queryString = queryString;
+		this.code = new MenuCode(code);
+		this.targetItems = targetItems;
+		this.displayName = new MenuDisplayName(displayName);
+	}
 }

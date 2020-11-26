@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+  <ui:composition template="../../../../master/freelayout.xhtml">
+    <ui:define name="htmlHead">
+        <com:stylefile path="ccg003.a.style.css" />
+        <com:scriptfile path="ccg003.a.vm.js" />
+    </ui:define>
+
+    <ui:define name="content">
+      <div class="contents">
+        <button id="notice-msg" style="margin-left: 100px;">Show CCG003</button>
+        <!-- A0 お知らせ表示 -->
+        <div id="A0" class="panel panel-frame panel-ccg003">
+          <div class="top-content">
+            <!-- A1 対象日 -->
+            <div id="A1"><span data-bind="text: systemDate"></span>
+            </div>
+            <div class="fw-right">
+              <div>
+                <com:ko-if bind="roleFlag">
+                  <!-- A2 メッセージ入力 -->
+                  <a id="A2" class="mr-5" href="#" data-bind="click: openScreenB">#{i18n.getText('CCG003_4')}</a>
+                </com:ko-if>
+              </div>
+              <div>
+                <!-- A3 ☓アイコン -->
+                <i data-bind="ntsIcon: { no: 174, width: 25, height: 15 }, click: closeWindow"></i>
+              </div>
+            </div>
+          </div>
+          <!-- A4 絞り込み -->
+          <div id="A4" class="w-490" data-bind="ntsAccordion: {}">
+            <!-- ヘッダテキスト -->
+            <h3 class="bg-accordion-1 no-border-bottom">#{i18n.getText('CCG003_5')}</h3>
+            <div class="bg-accordion-1 no-border-radius pl-10">
+              <div class="row-inline">
+                <!-- A4_1 表示期間(ラベル) -->
+                <span id="A4_1" class="auto-margin">#{i18n.getText('CCG003_6')}</span>
+                <!-- A4_2 表示期間 -->
+                <div id="daterangepicker" tabindex="1" class="ml-10" data-bind="ntsDateRangePicker: {
+                  required: false,
+                  enable: true,
+                  showNextPrevious: false,
+                  value: dateValue,
+                  maxRange: 'oneMonth'}"
+                />
+                <!-- A4_3 絞込 -->
+                <button id="A4_3" tabindex="2" class="small pl-10 pr-10 ml-90" data-bind="click: onClickFilter">#{i18n.getText('CCG003_7')}</button>
+              </div>
+            </div>
+          </div>
+          <div class="auto-overflow">
+            <div data-bind="foreach: anniversaries">
+              <!-- A5 記念日 -->
+              <div class="w-490" data-bind="ntsAccordion: {}, click: $vm.onClickAnniversary.bind($vm, $index)">
+                <div class="bg-schedule-focus">
+                  <!-- ヘッダテキスト -->
+                  <span class="limited-label mw-400" data-bind="text: anniversaryNotice.anniversaryTitle"></span>
+                  <!-- A5_1 NEWアイコン -->
+                  <com:ko-if bind="$vm.anniversaries()[$index()].flag">
+                    <i data-bind="ntsIcon: { no: 175, width: 25, height: 15 }"></i>
+                  </com:ko-if>
+                </div>
+                <div class="mr-data no-border-radius">
+                  <!-- A5_2 記念日内容 -->
+                  <div>
+                    <span class="break-space" data-bind="text: anniversaryNotice.notificationMessage"></span>
+                    <span data-bind="text: $vm.$i18n('CCG003_16', [anniversaryNotice.displayDate])"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div data-bind="foreach: msgNotices">
+              <!-- A6 メッセージ -->
+              <div class="w-490" data-bind="ntsAccordion: {activate: $vm.onClickMessageNotice.bind($vm, message.creatorID, message.inputDate, $index)}">
+                <h3 class="bg-schedule-focus">
+                  <!-- ヘッダテキスト -->
+                  <span class="limited-label mw-400" data-bind="text: message.notificationMessage"></span>
+                  <!-- A6_1 NEWアイコン -->
+                  <com:ko-if bind="$vm.msgNotices()[$index()].flag">
+                    <i data-bind="ntsIcon: { no: 175, width: 25, height: 15 }"></i>
+                  </com:ko-if>
+                </h3>
+                <!-- A6_2 メッセージ内容 -->
+                <div class="mr-data no-border-radius">
+                  <div>
+                    <span class="break-space" data-bind="html: messageDisplay"></span>
+                    <span class="block-5" data-bind="text: $vm.$i18n('CCG003_8', [creator])"></span>
+                    <span class="block-5" data-bind="text: $vm.$i18n('CCG003_9', [dateDisplay])"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ui:define>
+  </ui:composition>
+</body>
+</html>

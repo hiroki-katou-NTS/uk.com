@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.sys.auth.app.find.roleset;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -49,6 +50,7 @@ public class RoleSetFinder {
 
     /**
      * Get all Role set by company id
+     * 	 ドメインモデル「ロールセット」を取得する
      * @return
      */
     public List<RoleSetDto> findAll() {
@@ -56,6 +58,7 @@ public class RoleSetFinder {
     	List<String> listRoleSetCD = lstRoleSet.stream().map(item->item.getRoleSetCd().v()).collect(Collectors.toList());
     	List<RoleSetLinkWebMenuImport> roleSetLinkWebMenu = roleSetLinkWebMenuAdapter.findAllWebMenuByListRoleSetCd(listRoleSetCD);
     	return lstRoleSet.stream().map(item -> RoleSetDto.build(item, buildWebMenuDto(item.getRoleSetCd().v(), roleSetLinkWebMenu)))
+    			.sorted(Comparator.comparing(RoleSetDto::getRoleSetCd))
     			.collect(Collectors.toList());
     }
 

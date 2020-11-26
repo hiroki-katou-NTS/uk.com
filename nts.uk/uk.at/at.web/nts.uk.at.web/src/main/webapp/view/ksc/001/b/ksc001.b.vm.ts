@@ -1,3 +1,4 @@
+/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 module nts.uk.at.view.ksc001.b {
 
 	import NtsWizardStep = service.model.NtsWizardStep;
@@ -451,9 +452,9 @@ module nts.uk.at.view.ksc001.b {
 					self.overwriteConfirmedData( false );
 				}
 
-				//fix screen on 1280
+				//fix screen on 1280 & 1366
 				if( window.outerWidth <= 1400 ) {
-					$( '#contents-area' ).addClass( 'fix-2180' );
+					$( '#contents-area' ).addClass( 'fix-1360' );
 				}
 
 				return dfd.promise();
@@ -482,10 +483,10 @@ module nts.uk.at.view.ksc001.b {
 				self.kcp005EmployeeList( dataList );
 
 				_.each( dataList,( employeeSearch ) => {
-
 					let employeeCode = employeeSearch.employeeCode.trim ();
+					let isExistedEmployeeCode = _.find(listSelectedEmpCode, (x) => x === employeeCode);
 
-					if ( !listSelectedEmpCode.includes ( employeeCode ) ) {
+					if ( _.isNil(isExistedEmployeeCode) ) {
 						employeeIds.push ( employeeSearch.employeeId );
 						employeeSearchs.push ( {
 							code : employeeSearch.employeeCode,
@@ -494,7 +495,6 @@ module nts.uk.at.view.ksc001.b {
 						} );
 						listSelectedEmpCode.push(employeeCode );
 					}
-
 				});
 
 				// update employee list by ccg001 search
@@ -722,7 +722,7 @@ module nts.uk.at.view.ksc001.b {
 					if (!self.recreateConverter() && !self.recreateEmployeeOffWork()
 						&& !self.recreateDirectBouncer() && !self.recreateShortTimeWorkers()) {
 						nts.uk.ui.dialog.error({messageId: "Msg_1734"});
-						$('.checkboxSetting').focus();
+						$('.b51checkLists .checkBoxGroup ').focus();
 						return;
 					}
 				}

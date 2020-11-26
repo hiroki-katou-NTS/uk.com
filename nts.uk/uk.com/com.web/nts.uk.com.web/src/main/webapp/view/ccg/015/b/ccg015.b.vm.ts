@@ -1,222 +1,381 @@
-module nts.uk.pr.view.ccg015.b {
-    export module viewmodel {
-        import MyPageSettingDto = nts.uk.pr.view.ccg015.b.service.model.MyPageSettingDto;
-        import TopPagePartUseSettingItemDto = nts.uk.pr.view.ccg015.b.service.model.TopPagePartUseSettingItemDto;
-        import block = nts.uk.ui.block;
-        export class ScreenModel {
-            useDivisionOptions: KnockoutObservableArray<any>;
-            permissionDivisionOptions: KnockoutObservableArray<any>;
-            selectedUsingMyPage　: KnockoutObservable<number>;
+/// <reference path='../../../../lib/nittsu/viewcontext.d.ts' />
 
-            tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
-            selectedTab: KnockoutObservable<string>;
-            myPageSettingModel: KnockoutObservable<MyPageSettingModel>;
-            columns: KnockoutObservable<any>;
-            currentCode: KnockoutObservable<any>;
-            data: KnockoutObservable<MyPageSettingDto>;
-            constructor() {
-                var self = this;
-                self.useDivisionOptions = ko.observableArray([
-                    { code: '1', name: nts.uk.resource.getText("CCG015_22") },
-                    { code: '0', name: nts.uk.resource.getText("CCG015_23") }
-                ]);
-                self.permissionDivisionOptions = ko.observableArray([
-                    { code: '1', name: nts.uk.resource.getText("CCG015_33") },
-                    { code: '0', name: nts.uk.resource.getText("CCG015_34") }
-                ]);
-                self.selectedUsingMyPage = ko.observable(0);
-                self.tabs = ko.observableArray([
-                    { id: 'tab_standar_widget', title: nts.uk.resource.getText("Enum_TopPagePartType_StandardWidget"), content: '#standar_widget', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab_optional_widget', title: nts.uk.resource.getText("Enum_TopPagePartType_OptionalWidget"), content: '#optional_widget', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab_dash_board', title: nts.uk.resource.getText("Enum_TopPagePartType_DashBoard"), content: '#dash_board', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab_flow_menu', title: nts.uk.resource.getText("Enum_TopPagePartType_FlowMenu"), content: '#flow_menu', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab_url', title: nts.uk.resource.getText("Enum_TopPagePartType_ExternalUrl"), content: '#url', enable: ko.observable(true), visible: ko.observable(true) }
-                ]);
-                self.selectedTab = ko.observable('tab_standar_widget');
-                self.myPageSettingModel = ko.observable(new MyPageSettingModel());
-                self.columns = ko.observableArray([
-                    { headerText: nts.uk.resource.getText("CCG015_11"), width: "70px", key: 'itemCode', dataType: "string", hidden: false },
-                    { headerText: nts.uk.resource.getText("CCG015_12"), width: "350px", key: 'itemName', dataType: "string", formatter: _.escape },
-                    { headerText: nts.uk.resource.getText("CCG015_29"), key: 'useItem', width: "200px", controlType: 'switch' }
-                ]);
-                this.currentCode = ko.observable("w1");
-                self.data = ko.observable(null);
-            }
-            start(): JQueryPromise<any> {
-                var self = this;
-                var dfd = $.Deferred();
-                block.invisible();
-                service.loadMyPageSetting().done(function(data: MyPageSettingDto) {
-                    if (data) {
-                        self.data(data);
-                        self.loadDataToScreen(data);
-                        self.setData(data);
-                        dfd.resolve();
-                        block.clear();
-                    } else {
-                        service.loadDefaultMyPageSetting().done(function(dataDefault: MyPageSettingDto) {
-                            self.data(dataDefault);
-                            self.loadDataToScreen(dataDefault);
-                            self.setData(dataDefault);
-                            dfd.resolve();
-                            block.clear();
-                        });
-                    }
-                });
-                return dfd.promise();
-            }
-            private loadDataToScreen(data: MyPageSettingDto) {
-                var self = this;
-                var dataSort = _.sortBy(data.topPagePartUseSettingDto, ['partType', 'partItemCode', 'partItemName']);
-                //reset item
-                self.myPageSettingModel().topPagePartSettingItems()[0].settingItems([]);
-                self.myPageSettingModel().topPagePartSettingItems()[1].settingItems([]);
-                self.myPageSettingModel().topPagePartSettingItems()[2].settingItems([]);
-                self.myPageSettingModel().topPagePartSettingItems()[3].settingItems([]);
-                self.myPageSettingModel().topPagePartSettingItems()[4].settingItems([]);
+module nts.uk.com.view.ccg015.b {
 
-                self.myPageSettingModel().useMyPage(data.useMyPage);
-                self.myPageSettingModel().topPagePartSettingItems()[0].usePart(data.useStandarWidget);
-                self.myPageSettingModel().topPagePartSettingItems()[1].usePart(data.useOptionalWidget);
-                self.myPageSettingModel().topPagePartSettingItems()[2].usePart(data.useDashboard);
-                self.myPageSettingModel().topPagePartSettingItems()[3].usePart(data.useFlowMenu);
-                self.myPageSettingModel().topPagePartSettingItems()[4].usePart(data.externalUrlPermission);
-                var StandarWidget = [], 
-                    OptionalWidget = [], 
-                    Dashboard = [], 
-                    FlowMenu = [];
-                
-                dataSort.forEach(function(item, index) {
-                    if (item.partType == TopPagePartsEnum.StandarWidget) {
-                        StandarWidget.push(new SettingItemsModel(item.partItemCode, item.partItemName, item.useDivision,item.topPagePartId));
-                    }
-                    if (item.partType == TopPagePartsEnum.OptionalWidget) {
-                        OptionalWidget.push(new SettingItemsModel(item.partItemCode, item.partItemName, item.useDivision,item.topPagePartId));
-                    }
-                    if (item.partType == TopPagePartsEnum.Dashboard) {
-                        Dashboard.push(new SettingItemsModel(item.partItemCode, item.partItemName, item.useDivision,item.topPagePartId));
-                    }
-                    if (item.partType == TopPagePartsEnum.FlowMenu) {
-                        FlowMenu.push(new SettingItemsModel(item.partItemCode, item.partItemName, item.useDivision,item.topPagePartId));
-                    }
-                });
-                self.myPageSettingModel().topPagePartSettingItems()[0].settingItems(StandarWidget);
-                self.myPageSettingModel().topPagePartSettingItems()[1].settingItems(OptionalWidget);
-                self.myPageSettingModel().topPagePartSettingItems()[2].settingItems(Dashboard);
-                self.myPageSettingModel().topPagePartSettingItems()[3].settingItems(FlowMenu);
-            }
-            private setData(data: MyPageSettingDto) {
-                data.topPagePartUseSettingDto.forEach(function(item, index) {
-                    if (item.partType == TopPagePartsEnum.StandarWidget) {
-                        $("#standarWidget-list").ntsGridListFeature('switch', 'setValue', item.partItemCode, 'useItem', item.useDivision);
-                    }
-                    if (item.partType == TopPagePartsEnum.OptionalWidget) {
-                        $("#optionalWidget-list").ntsGridListFeature('switch', 'setValue', item.partItemCode, 'useItem', item.useDivision);
-                    }
-                    if (item.partType == TopPagePartsEnum.Dashboard) {
-                        $("#dashboard-list").ntsGridListFeature('switch', 'setValue', item.partItemCode, 'useItem', item.useDivision);
-                    }
-                    if (item.partType == TopPagePartsEnum.FlowMenu) {
-                        $("table#flow-list").ntsGridListFeature('switch', 'setValue', item.partItemCode, 'useItem', item.useDivision);
-                    }
-                });
-            }
+  // URL API backend
+  const API = {
+    findAllTopPageItem: "/toppage/findAll",
+    getTopPageItemDetail: "/toppage/topPageDetail",
+    registerTopPage: "/toppage/create",
+    updateTopPage: "/toppage/update",
+    removeTopPage: "/toppage/remove"
+  };
 
-            private collectData(): MyPageSettingDto {
-                var self = this;
-                var items: Array<TopPagePartUseSettingItemDto> = [];
+  @bean()
+  export class ScreenModel extends ko.ViewModel {
+    listTopPage: KnockoutObservableArray<Node> = ko.observableArray<Node>([]);
+    toppageSelectedCode: KnockoutObservable<string> = ko.observable(null);
+    topPageModel: KnockoutObservable<TopPageViewModel> = ko.observable(new TopPageViewModel());
+    topPageModelParam: KnockoutObservable<TopPageModelParams> = ko.observable(new TopPageModelParams());
+    columns: KnockoutObservable<any> = ko.observableArray([]);
+    isNewMode: KnockoutObservable<boolean> = ko.observable(true);
+    selectedId: KnockoutObservable<number> = ko.observable(null);
+    isVisiableButton1: KnockoutObservable<boolean> = ko.observable(true);
+    isVisiableButton2: KnockoutObservable<boolean> = ko.observable(false);
+    isVisiableButton3: KnockoutObservable<boolean> = ko.observable(false);
+    button1Text: KnockoutObservable<string> = ko.observable('');
+    button2Text: KnockoutObservable<string> = ko.observable('');
 
-                var collectData: MyPageSettingDto = {
-                    companyId: "",
-                    useMyPage: self.myPageSettingModel().useMyPage(),
-                    useStandarWidget: self.myPageSettingModel().topPagePartSettingItems()[0].usePart(),
-                    useOptionalWidget: self.myPageSettingModel().topPagePartSettingItems()[1].usePart(),
-                    useDashboard: self.myPageSettingModel().topPagePartSettingItems()[2].usePart(),
-                    useFlowMenu: self.myPageSettingModel().topPagePartSettingItems()[3].usePart(),
-                    externalUrlPermission: self.myPageSettingModel().topPagePartSettingItems()[4].usePart(),
-                    topPagePartUseSettingDto: []
-                }
-                self.myPageSettingModel().topPagePartSettingItems().forEach(function(item, index) {
-                    item.settingItems().forEach(function(item2, index2) {
-                        if (item2.useItem != UseType.Use && item2.useItem != UseType.NotUse) {
-                            var settingItem: TopPagePartUseSettingItemDto = {
-                                companyId: "",
-                                partItemCode: item2.itemCode,
-                                partItemName: item2.itemName,
-                                useDivision: item2.useItem,
-                                partType: item.partType(),
-                                topPagePartId: item2.topPagePartId
-                            }
-                        }
-                        else {
-                            var settingItem: TopPagePartUseSettingItemDto = {
-                                companyId: "",
-                                partItemCode: item2.itemCode,
-                                partItemName: item2.itemName,
-                                useDivision: item2.useItem,
-                                partType: item.partType(),
-                                topPagePartId: item2.topPagePartId
-                            }
-                        }
-                        if (settingItem.partType != TopPagePartsEnum.ExternalUrl) {
-                            items.push(settingItem);
-                        }
-                    });
-                });
-                collectData.topPagePartUseSettingDto = items;
-                return collectData;
-            }
-            
-            private updateMyPageSetting() {
-                var self = this;
-                service.updateMyPageSetting(self.collectData()).done(function() {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                        nts.uk.ui.windows.close();
-                    });
-                });
-            }
+    breakNewMode: boolean = false;
+    itemList: KnockoutObservableArray<ItemModel> = ko.observableArray([
+      new ItemModel(0, ''),
+      new ItemModel(1, ''),
+      new ItemModel(2, ''),
+      new ItemModel(3, '')
+    ]);
+
+    created() {
+      // トップページを選択する
+      const vm = this;
+      vm.columns = ko.observableArray([
+        { headerText: vm.$i18n("CCG015_11"), width: "50px", key: 'code', dataType: "string", hidden: false },
+        { headerText: vm.$i18n("CCG015_12"), width: "260px", key: 'nodeText', dataType: "string", formatter: _.escape }
+      ]);
+      vm.selectedId.subscribe((value: number) => {
+        const isLayout2or3: boolean = (value === LayoutType.LAYOUT_TYPE_2 || value === LayoutType.LAYOUT_TYPE_3);
+        vm.button1Text(isLayout2or3 ? vm.$i18n("CCG015_60") : vm.$i18n("CCG015_59"));
+        vm.button2Text(isLayout2or3 ? vm.$i18n("CCG015_59") : vm.$i18n("CCG015_60"));
+        // Render layout
+        if (value === LayoutType.LAYOUT_TYPE_0) {
+          vm.isVisiableButton1(true);
+          vm.isVisiableButton2(false);
+          vm.isVisiableButton3(false);
+        } else if (value === LayoutType.LAYOUT_TYPE_1) {
+          vm.isVisiableButton1(true);
+          vm.isVisiableButton2(true);
+          vm.isVisiableButton3(false);
+        } else if (value === LayoutType.LAYOUT_TYPE_2) {
+          vm.isVisiableButton1(true);
+          vm.isVisiableButton2(true);
+          vm.isVisiableButton3(false);
+        } else {
+          vm.isVisiableButton1(true);
+          vm.isVisiableButton2(true);
+          vm.isVisiableButton3(true);
         }
-        export class MyPageSettingModel {
-            useMyPage: KnockoutObservable<number>;
-            topPagePartSettingItems: KnockoutObservableArray<PartItemModel>;
-            constructor() {
-                this.useMyPage = ko.observable(0);
-                this.topPagePartSettingItems = ko.observableArray<PartItemModel>([new PartItemModel(0), new PartItemModel(1), new PartItemModel(2), new PartItemModel(3), new PartItemModel(4)]);
-            }
-        }
-        export class PartItemModel {
-            partType: KnockoutObservable<number>;
-            usePart: KnockoutObservable<number>;
-            settingItems: KnockoutObservableArray<SettingItemsModel>;
-            constructor(partType: number) {
-                this.partType = ko.observable(partType);
-                this.usePart = ko.observable(0);
-                this.settingItems = ko.observableArray<SettingItemsModel>([new SettingItemsModel("", "", 0, "")]);
-            }
-        }
-        export class SettingItemsModel {
-            itemCode: string;
-            itemName: string;
-            useItem: number;
-            topPagePartId: string;
-            constructor(itemCode: string, itemName: string, useItem: number, topPagePartId: string) {
-                this.itemCode = itemCode;
-                this.itemName = itemName;
-                this.useItem = useItem;
-                this.topPagePartId = topPagePartId;
-            }
-        }
-        
-        export enum TopPagePartsEnum {
-            StandarWidget = 0,
-            OptionalWidget = 1,
-            Dashboard = 2,
-            FlowMenu = 3,
-            ExternalUrl = 4
-        }
-        export enum UseType {
-            Use = 1,
-            NotUse = 0,
-        }
+      });
+      vm.loadTopPageList();
     }
+
+    mounted() {
+      const vm = this;
+      vm.selectedId(1);
+      vm.toppageSelectedCode.subscribe((selectedTopPageCode: string) => {
+        if (selectedTopPageCode) {
+          vm.isNewMode(false);
+          vm.breakNewMode = false;
+          vm.$blockui("grayout");
+          vm.$ajax(`${API.getTopPageItemDetail}/${selectedTopPageCode}`)
+            .then((data: TopPageDto) => {
+              vm.loadTopPageItemDetail(data);
+              $('.save-error').ntsError('clear');
+            })
+            .always(() => vm.$blockui("clear"));
+          $("#inp_name").focus();
+        } else {
+          // 新規のトップページを作成する
+          vm.isNewMode(true);
+          vm.breakNewMode = true;
+          vm.topPageModel(new TopPageViewModel());
+          if (nts.uk.ui.errors.hasError()) {
+            nts.uk.ui.errors.clearAll();
+          }
+        }
+      });
+    }
+
+    private loadTopPageList(selectedCode?: string): JQueryPromise<void> {
+      const vm = this;
+      const dfd = $.Deferred<void>();
+      vm.$blockui("grayout");
+      vm.$ajax(API.findAllTopPageItem)
+        .then((data: Array<TopPageItemDto>) => {
+          // if data # empty
+          if (data.length > 0) {
+            const listTopPage: Node[] = _.map(data, (item) => new Node(item.topPageCode, item.topPageName, null));
+            vm.listTopPage(listTopPage);
+            vm.toppageSelectedCode(selectedCode || data[0].topPageCode);
+          } else {
+            vm.listTopPage([]);
+            vm.topPageModel(new TopPageViewModel());
+            vm.isNewMode(true);
+            $("#inp_code").focus();
+          }
+          dfd.resolve();
+        })
+        .fail((err) => dfd.fail(err))
+        .always(() => vm.$blockui("clear"));
+      return dfd.promise();
+    }
+
+    //load top page Item
+    private loadTopPageItemDetail(data: TopPageDto) {
+      const vm = this;
+      vm.topPageModel().topPageCode(data.topPageCode);
+      vm.topPageModel().topPageName(data.topPageName);
+      vm.topPageModel().layoutDisp(data.layoutDisp);
+      vm.selectedId(data.layoutDisp);
+    }
+
+    private collectData(): TopPageModelParams {
+      const vm = this;
+      return new TopPageModelParams({
+        topPageCode: vm.topPageModel().topPageCode(),
+        topPageName: vm.topPageModel().topPageName(),
+        layoutDisp: vm.selectedId(),
+      });
+    }
+
+    newTopPage() {
+      const vm = this;
+      vm.topPageModel(new TopPageViewModel());
+      vm.isNewMode(true);
+      vm.breakNewMode = true;
+      vm.toppageSelectedCode("");
+      if (nts.uk.ui.errors.hasError()) {
+        nts.uk.ui.errors.clearAll();
+      }
+    }
+
+    saveTopPage() {
+      const vm = this;
+      vm.$validate()
+        .then((valid: boolean) => {
+          if (valid) {
+            //check update or create
+            if (vm.listTopPage().length === 0) {
+              vm.isNewMode(true);
+            }
+            const param = vm.collectData();
+            if (vm.isNewMode()) {
+              vm.$blockui('grayout');
+              vm.$ajax(API.registerTopPage, param)
+                .then(() => {
+                  vm.$blockui("clear");
+                  vm.$dialog.info({ messageId: "Msg_15" });
+                  vm.loadTopPageList(param.topPageCode);
+                })
+                .fail((err) => {
+                  vm.$blockui("clear");
+                  vm.$dialog.alert({ messageId: err.messageId, messageParams: err.parameterIds })
+                });
+            } else {
+              vm.$blockui('grayout');
+              vm.$ajax(API.updateTopPage, param)
+                .then(() => {
+                  vm.$blockui("clear");
+                  vm.$dialog.info({ messageId: "Msg_15" });
+                  vm.loadTopPageList(param.topPageCode);
+                })
+                .fail((err) => {
+                  vm.$blockui("clear");
+                  vm.$dialog.alert({ messageId: err.messageId, messageParams: err.parameterIds })
+                });
+            }
+          }
+        });
+    }
+
+    copyTopPage() {
+      const vm = this;
+      const dataCopy = {
+        topPageCode: vm.topPageModel().topPageCode(),
+        topPageName: vm.topPageModel().topPageName(),
+        layoutDisp: vm.topPageModel().layoutDisp()
+      };
+      vm.$window.modal("/view/ccg/015/c/index.xhtml", dataCopy)
+        .then((codeOfNewTopPage: string) => {
+          if (codeOfNewTopPage) {
+            vm.loadTopPageList(codeOfNewTopPage);
+          }
+        });
+    }
+
+    removeTopPage() {
+      const vm = this;
+      vm.$dialog.confirm({ messageId: 'Msg_18' })
+        .then((result: 'no' | 'yes' | 'cancel') => {
+          if (result === 'yes') {
+            const removeCode = vm.toppageSelectedCode();
+            const removeIndex = vm.getIndexOfRemoveItem(removeCode);
+            const listLength = vm.listTopPage().length;
+            vm.$blockui("grayout");
+            vm.$ajax(API.removeTopPage, { topPageCode: vm.toppageSelectedCode() })
+              .then(() => {
+                // delete success
+                vm.$blockui("clear");
+                vm.$dialog.info({ messageId: "Msg_16" })
+                  .then(() => {
+                    //remove follow
+                    vm.loadTopPageList().then(() => {
+                      const lst = vm.listTopPage();
+                      if (lst.length > 0) {
+                        if (removeIndex < listLength - 1) {
+                          vm.toppageSelectedCode(lst[removeIndex].code);
+                        } else {
+                          vm.toppageSelectedCode(lst[removeIndex - 1].code);
+                        }
+                      }
+                    });
+                  });
+              })
+              .always(() => vm.$blockui("clear"));
+          }
+        });
+    }
+
+    private getIndexOfRemoveItem(code: string): number {
+      const vm = this;
+      _.forEach(vm.listTopPage(), (item, index) => {
+        if (item.code === code) {
+          return index;
+        }
+      });
+      return 0;
+    }
+
+    // レイアウト設定を起動する
+    openDialogButton1() {
+      const vm = this;
+      const frame: number = (vm.selectedId() === LayoutType.LAYOUT_TYPE_0 || vm.selectedId() === LayoutType.LAYOUT_TYPE_1) ? 1 : 2;
+      const topPageModel: TopPageModelParams = vm.topPageModelParam();
+      topPageModel.topPageCode = vm.topPageModel().topPageCode();
+      topPageModel.topPageName = vm.topPageModel().topPageName();
+      topPageModel.layoutDisp = vm.topPageModel().layoutDisp();
+      vm.topPageModelParam(topPageModel);
+      const dataScreen = {
+        topPageModel: vm.topPageModelParam(),
+        frame: frame
+      };
+      if (vm.selectedId() === LayoutType.LAYOUT_TYPE_0 || vm.selectedId() === LayoutType.LAYOUT_TYPE_1) {
+        vm.$window.modal('/view/ccg/015/d/index.xhtml', dataScreen);
+      } else {
+        vm.$window.modal('/view/ccg/015/e/index.xhtml', dataScreen);
+      }
+    }
+
+    // レイアウト設定を起動する
+    openDialogButton2() {
+      const vm = this;
+      const frame: number = (vm.selectedId() === LayoutType.LAYOUT_TYPE_2 || vm.selectedId() === LayoutType.LAYOUT_TYPE_3) ? 1 : 2;
+      const topPageModel: TopPageModelParams = vm.topPageModelParam();
+      topPageModel.topPageCode = vm.topPageModel().topPageCode();
+      topPageModel.topPageName = vm.topPageModel().topPageName();
+      vm.topPageModelParam(topPageModel);
+      const dataScreen = {
+        topPageModel: vm.topPageModelParam(),
+        frame: frame
+      };
+      if (vm.selectedId() === LayoutType.LAYOUT_TYPE_2 || vm.selectedId() === LayoutType.LAYOUT_TYPE_3) {
+        vm.$window.modal('/view/ccg/015/d/index.xhtml', dataScreen);
+      } else {
+        vm.$window.modal('/view/ccg/015/e/index.xhtml', dataScreen);
+      }
+    }
+
+    // レイアウト設定を起動する
+    openDialogButton3() {
+      const vm = this;
+      const topPageModel: TopPageModelParams = vm.topPageModelParam();
+      topPageModel.topPageCode = vm.topPageModel().topPageCode();
+      topPageModel.topPageName = vm.topPageModel().topPageName();
+      vm.topPageModelParam(topPageModel);
+      const dataScreen = {
+        topPageModel: vm.topPageModelParam(),
+        frame: 3
+      };
+      vm.$window.modal('/view/ccg/015/e/index.xhtml', dataScreen);
+    }
+
+    // プレビューを表示する
+    openDialogCCG015F() {
+      const vm = this;
+      const topPageModel: TopPageModelParams = vm.topPageModelParam();
+      topPageModel.topPageCode = vm.topPageModel().topPageCode();
+      topPageModel.topPageName = vm.topPageModel().topPageName();
+      vm.topPageModelParam(topPageModel);
+      const data = {
+        topPageModel: vm.topPageModelParam(),
+        selectedId: vm.selectedId(),
+      };
+      vm.$window.modal('/view/ccg/015/f/index.xhtml', data);
+    }
+  }
+
+  export class Node {
+    code: string;
+    name: string;
+    nodeText: string;
+    custom: string;
+    childs: Array<Node>;
+
+    constructor(code: string, name: string, childs: Array<Node>) {
+      const vm = this;
+      vm.code = code;
+      vm.name = name;
+      vm.nodeText = name;
+      vm.childs = childs;
+      vm.custom = 'Random' + new Date().getTime();
+    }
+  }
+
+  export class TopPageViewModel {
+    topPageCode: KnockoutObservable<string>;
+    topPageName: KnockoutObservable<string>;
+    layoutDisp: KnockoutObservable<number>;
+
+    constructor() {
+      this.topPageCode = ko.observable('');
+      this.topPageName = ko.observable('');
+      this.layoutDisp = ko.observable(0);
+    }
+  }
+
+  export interface TopPageItemDto {
+    topPageCode: string;
+    topPageName: string;
+  }
+
+  export interface TopPageDto {
+    cid: string;
+    topPageCode: string;
+    topPageName: string;
+    layoutDisp: number;
+  }
+
+  export class TopPageModelParams {
+    topPageCode?: string;
+    topPageName?: string;
+    layoutDisp?: number;
+
+    constructor(init?: Partial<TopPageModelParams>) {
+      $.extend(this, init);
+    }
+  }
+
+  class ItemModel {
+    code: number;
+    name: string;
+    constructor(code: number, name: string) {
+      this.code = code;
+      this.name = name;
+    }
+  }
+
+  enum LayoutType {
+    LAYOUT_TYPE_0 = 0,
+    LAYOUT_TYPE_1 = 1,
+    LAYOUT_TYPE_2 = 2,
+    LAYOUT_TYPE_3 = 3,
+  }
 }

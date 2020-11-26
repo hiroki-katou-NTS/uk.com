@@ -385,7 +385,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                 let dataObject = new TimePlaceOutput(i);
                 if (!self.isPreAtr()) {
                     _.forEach(extraordinaryTime, item => {
-                        if (item.frameNo == i) {
+                        if (item.frameNo +2  == i) {
                             dataObject.opStartTime = item.opStartTime;
                             dataObject.opEndTime = item.opEndTime;
                             dataObject.opWorkLocationCD = item.opWorkLocationCD;
