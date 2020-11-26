@@ -64,15 +64,16 @@ public class CreateAnnualWorkLedgerContentDomainService {
             String employmentName = null;
             if (lstClosureDateEmployment.size() > 0) {
                 val closureDateEmployment = lstClosureDateEmployment.get(emp.getEmployeeId());
-                val closureHistory = closureDateEmployment.getClosure().getClosureHistories().get(0);
-                val closureDay = closureHistory.getClosureDate().getClosureDay().v();
-
-                lstMonthlyData = getMonthlyData(require, emp, monthlyOutputItems, closureDay);
-                closureDate = closureHistory.getClosureName().v();
-                employmentCode = closureDateEmployment.getEmploymentCode();
-                employmentName = closureDateEmployment.getEmploymentName();
+                val closure = closureDateEmployment.getClosure();
+                if (closure != null && closure.getClosureHistories().size() > 0) {
+                    val closureHistory = closure.getClosureHistories().get(0);
+                    val closureDay = closureHistory.getClosureDate().getClosureDay().v();
+                    lstMonthlyData = getMonthlyData(require, emp, monthlyOutputItems, closureDay);
+                    closureDate = closureHistory.getClosureName().v();
+                    employmentCode = closureDateEmployment.getEmploymentCode();
+                    employmentName = closureDateEmployment.getEmploymentName();
+                }
             }
-
             AnnualWorkLedgerContent model = new AnnualWorkLedgerContent(
                     dailyData,
                     lstMonthlyData,
@@ -95,14 +96,14 @@ public class CreateAnnualWorkLedgerContentDomainService {
     /**
      * 日次データ
      */
-    private static DailyData getDailyData(Require require, StatusOfEmployee emp, List<OutputItem> dailyOutputItems) {
+    private static DailyData getDailyData(Require require, StatusOfEmployee emp, List<DailyOutputItemsAnnualWorkLedger> dailyOutputItemList) {
         List<DailyValue> lstRightValue = new ArrayList<>();
         List<DailyValue> lstLeftValue = new ArrayList<>();
         String rightColumnName = null;
         CommonAttributesOfForms rightAttribute = null;
         String leftColumnName = null;
         CommonAttributesOfForms leftAttribute = null;
-        val listIds = dailyOutputItems.stream()
+        val listIds = dailyOutputItemList.stream()
                 .flatMap(x -> x.getSelectedAttendanceItemList().stream()
                         .map(OutputItemDetailAttItem::getAttendanceItemId))
                 .distinct().collect(Collectors.toCollection(ArrayList::new));
@@ -117,8 +118,8 @@ public class CreateAnnualWorkLedgerContentDomainService {
                         k -> k.getAttendanceItems().stream()
                                 .collect(Collectors.toMap(AttendanceItemDtoValue::getItemId, l -> l))));
         // Loop 出力項目 日次
-        for (int index = 0; index < dailyOutputItems.size(); index++) {
-            OutputItem item = dailyOutputItems.get(index);
+        for (int index = 0; index < dailyOutputItemList.size(); index++) {
+            DailyOutputItemsAnnualWorkLedger item = dailyOutputItemList.get(index);
             if (index > 1) {
                 break;
             }

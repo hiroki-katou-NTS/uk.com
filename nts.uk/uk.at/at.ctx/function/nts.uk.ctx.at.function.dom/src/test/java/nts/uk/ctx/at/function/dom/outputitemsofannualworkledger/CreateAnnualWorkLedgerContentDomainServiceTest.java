@@ -8,7 +8,10 @@ import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.AttendanceItemDtoValue;
+import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.AttendanceResultDto;
 import nts.uk.ctx.at.function.dom.commonform.ClosureDateEmployment;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemDetailAttItem;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.StatusOfEmployee;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeBasicInfoImport;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceInfor;
@@ -16,6 +19,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @RunWith(JMockit.class)
@@ -112,22 +116,39 @@ public class CreateAnnualWorkLedgerContentDomainServiceTest {
      */
     @Test
     public void test_04() {
-        List<String> listSid = new ArrayList<>(lstEmployeeFail.keySet());
+        List<String> listSid = new ArrayList<>(lstEmployee.keySet());
         val listEmployeeStatus = Arrays.asList(
                 new StatusOfEmployee("eplId01",
                         Arrays.asList(
                                 new DatePeriod(GeneralDate.today(), GeneralDate.today().addDays(1))
                         )));
+        val listIds = outputSetting.getDailyOutputItemList().stream().filter(DailyOutputItemsAnnualWorkLedger::isPrintTargetFlag)
+                .flatMap(x -> x.getSelectedAttendanceItemList().stream()
+                        .map(OutputItemDetailAttItem::getAttendanceItemId))
+                .distinct().collect(Collectors.toCollection(ArrayList::new));
+        val listValue = Arrays.asList(new AttendanceResultDto(
+                "eplId01",
+                GeneralDate.today(),
+                Arrays.asList(
+                        new AttendanceItemDtoValue(1, 1, "25"),
+                        new AttendanceItemDtoValue(2, 2, "2000"),
+                        new AttendanceItemDtoValue(3, 3, "TEST 02"),
+                        new AttendanceItemDtoValue(5, 4, "TEST 01")
+                ))
+        );
         new Expectations() {
             {
                 require.getListAffComHistByListSidAndPeriod(listSid, datePeriod);
                 result = listEmployeeStatus;
+                require.getValueOf(Collections.singletonList(listEmployeeStatus.get(0).getEmployeeId()),
+                        listEmployeeStatus.get(0).getListPeriod().get(0), listIds);
+                result = listValue;
 
             }
         };
 
 
-        val actual = CreateAnnualWorkLedgerContentDomainService.getData(require, datePeriod, lstEmployeeFail,
+        val actual = CreateAnnualWorkLedgerContentDomainService.getData(require, datePeriod, lstEmployee,
                 outputSetting, lstWorkplaceInfor, lstClosureDateEmployment);
 
     }
