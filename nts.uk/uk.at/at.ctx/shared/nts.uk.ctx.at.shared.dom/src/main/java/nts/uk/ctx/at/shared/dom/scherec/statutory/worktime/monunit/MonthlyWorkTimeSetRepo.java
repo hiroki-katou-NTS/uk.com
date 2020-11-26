@@ -25,9 +25,25 @@ public interface MonthlyWorkTimeSetRepo {
 
 	public List<MonthlyWorkTimeSetWkp> findWorkplace(String cid, String workplaceId, LaborWorkTypeAttr laborAttr, int year);
 	
-	public List<MonthlyWorkTimeSetEmp> findEmploymentbyCid(String cid);
+	public List<MonthlyWorkTimeSetEmp> findEmploymentbyCid(String cid, LaborWorkTypeAttr laborAttr);
 	
 	public List<MonthlyWorkTimeSetCom> findCompanyByPeriod(String cid, LaborWorkTypeAttr laborAttr, YearMonthPeriod yearMonthPeriod);
+	
+	/**
+	 * @author chungnt
+	 * Find by Cid
+	 * @param cid
+	 * @return
+	 */
+	List<MonthlyWorkTimeSetSha> findEmployeeByCid(String cid, LaborWorkTypeAttr laborAttr);
+	
+	/**
+	 * @author chungnt
+	 * @param cid
+	 * @param laborAttr
+	 * @return
+	 */
+	List<MonthlyWorkTimeSetWkp> findWorkplace(String cid, LaborWorkTypeAttr laborAttr);
 	
 	public List<String> findEmploymentCD(String cid, int year);
 	
