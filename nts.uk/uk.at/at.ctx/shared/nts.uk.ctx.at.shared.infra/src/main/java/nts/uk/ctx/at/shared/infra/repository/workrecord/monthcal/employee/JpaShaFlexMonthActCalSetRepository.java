@@ -4,7 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.workrecord.monthcal.employee;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -19,6 +21,9 @@ import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.employee.KrcstShaFl
  */
 @Stateless
 public class JpaShaFlexMonthActCalSetRepository extends JpaRepository implements ShaFlexMonthActCalSetRepo {
+	
+	private static final String SELECT_BY_CID = "SELECT c FROM KrcstShaFlexMCalSet c"
+			+ " WHERE c.krcstShaFlexMCalSetPK.cid = :cid";
 
 	/*
 	 * (non-Javadoc)
@@ -101,6 +106,15 @@ public class JpaShaFlexMonthActCalSetRepository extends JpaRepository implements
 										e.aggregateTimeSetting(), 
 										e.flexTimeHandle(), 
 										e.getKrcstShaFlexMCalSetPK().getSid());
+	}
+
+	@Override
+	public List<ShaFlexMonthActCalSet> findAllShaByCid(String cid) {
+		List<KrcstShaFlexMCalSet> entitys = this.queryProxy().query(SELECT_BY_CID, KrcstShaFlexMCalSet.class)
+				.setParameter("cid", cid).getList();
+		return entitys.stream().map(m -> {
+			return toDomain(m);
+		}).collect(Collectors.toList());
 	}
 
 }
