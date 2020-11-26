@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.holidayworktime.commonalgorithm;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -17,6 +18,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorCheck;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
@@ -27,11 +29,14 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkB
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType_Update;
+import nts.uk.ctx.at.request.dom.application.overtime.ExcessState;
+import nts.uk.ctx.at.request.dom.application.overtime.OutDateApplication;
 import nts.uk.ctx.at.request.dom.application.overtime.OverStateOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeApplicationSetting;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.ICommonAlgorithmOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OverTimeContent;
+import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkContent;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkHours;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.PrePostInitAtr;
@@ -102,6 +107,9 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 	
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
+	
+	@Inject
+	private OvertimeService overtimeService;
 
 	@Override
 	public HolidayWorkAppSet getHolidayWorkSetting(String companyId) {
@@ -367,17 +375,69 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 		}
 		
 		//	事前申請が必須か確認する
-//		appHdWorkDispInfoOutput.getHolidayWorkAppSet().getApplicationDetailSetting().checkAdvanceApp(ApplicationType.HOLIDAY_WORK_APPLICATION, 
-//				appHolidayWork.getApplication().getPrePostAtr(), Optional.empty(), 
-//				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpPreAppContentDisplayLst()
-//					.orElse(Collections.emptyList()).get(0).getApOptional()); //huytodo last param is AppHolidayWork
+		appHdWorkDispInfoOutput.getHolidayWorkAppSet().getApplicationDetailSetting().checkAdvanceApp(ApplicationType.HOLIDAY_WORK_APPLICATION, 
+				appHolidayWork.getApplication().getPrePostAtr(), Optional.empty(), 
+				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpPreAppContentDisplayLst()
+					.orElse(Collections.emptyList()).get(0).getAppHolidayWork());
 		
 		//	事前申請・実績超過チェック
-//		OverStateOutput overStateOutput = appHdWorkDispInfoOutput.getHolidayWorkAppSet().getOvertimeLeaveAppCommonSet()
-//				.checkPreApplication(appHolidayWork.getApplication().getPrePostAtr(), 
-//						appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput()
-//						.getOpPreAppContentDisplayLst().orElse(Collections.emptyList()).get(0).getAppHolidayWork().orElse(null).getApplicationTime(), 
-//						subsequentOp, achiveOp);
+		List<ConfirmMsgOutput> confirmMsgOutputs = new ArrayList<ConfirmMsgOutput>();
+		OverStateOutput overStateOutput = appHdWorkDispInfoOutput.getHolidayWorkAppSet().getOvertimeLeaveAppCommonSet()
+				.checkPreApplication(appHolidayWork.getApplication().getPrePostAtr(), 
+						Optional.ofNullable(appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput()
+						.getOpPreAppContentDisplayLst().orElse(Collections.emptyList()).get(0).getAppHolidayWork().orElse(null).getApplicationTime()), 
+						Optional.ofNullable(appHolidayWork.getApplicationTime()), 
+						appHdWorkDispInfoOutput.getHdWorkDispInfoWithDateOutput().getActualApplicationTime());
+		if(overStateOutput.getIsExistApp()) {
+			confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1508", Collections.emptyList()));
+		} else {
+			OutDateApplication outDateApplication = overStateOutput.getAdvanceExcess();
+			boolean testExcessStateDetail = !outDateApplication.getExcessStateDetail().stream()
+					.filter(excessStateDetail -> excessStateDetail.getExcessState().equals(ExcessState.EXCESS_ALARM)).collect(Collectors.toList()).isEmpty();
+			boolean testExcessStateMidnight = !outDateApplication.getExcessStateMidnight().stream()
+					.filter(excessStateMidnight -> excessStateMidnight.getExcessState().equals(ExcessState.EXCESS_ALARM)).collect(Collectors.toList()).isEmpty();
+			boolean testFlex = outDateApplication.getFlex().equals(ExcessState.EXCESS_ALARM);
+			boolean testOverTimeLate = outDateApplication.getOverTimeLate().equals(ExcessState.EXCESS_ALARM);
+			if(testExcessStateDetail || testExcessStateMidnight || testFlex || testOverTimeLate) {
+				
+				confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_424", 
+						Arrays.asList(appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid()))); //huytodo
+			}
+		}
+		switch(overStateOutput.getAchivementStatus()) {
+			case EXCESS_ERROR:
+				throw new BusinessException("Msg_1746");//huytodo
+			case EXCESS_ALARM:
+				confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1745", Collections.emptyList()));//huytodo
+				break;
+			case NO_EXCESS:
+				OutDateApplication outDateApplication = overStateOutput.getAchivementExcess();
+				if(!outDateApplication.getExcessStateDetail().stream()
+						.filter(excessStateDetail -> excessStateDetail.getExcessState().equals(ExcessState.EXCESS_ERROR)).collect(Collectors.toList()).isEmpty()
+						|| !outDateApplication.getExcessStateMidnight().stream()
+						.filter(excessStateMidnight -> excessStateMidnight.getExcessState().equals(ExcessState.EXCESS_ERROR)).collect(Collectors.toList()).isEmpty()
+						|| outDateApplication.getFlex().equals(ExcessState.EXCESS_ERROR)
+						|| outDateApplication.getOverTimeLate().equals(ExcessState.EXCESS_ERROR)) {
+					throw new BusinessException("Msg_1748"); //huytodo
+				} else {
+					if(!outDateApplication.getExcessStateDetail().stream()
+							.filter(excessStateDetail -> excessStateDetail.getExcessState().equals(ExcessState.EXCESS_ALARM)).collect(Collectors.toList()).isEmpty()
+							|| !outDateApplication.getExcessStateMidnight().stream()
+							.filter(excessStateMidnight -> excessStateMidnight.getExcessState().equals(ExcessState.EXCESS_ALARM)).collect(Collectors.toList()).isEmpty()
+							|| outDateApplication.getFlex().equals(ExcessState.EXCESS_ALARM)
+							|| outDateApplication.getOverTimeLate().equals(ExcessState.EXCESS_ALARM)) {
+						confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1747", Collections.emptyList()));//huytodo
+					}
+				}
+				break;
+				default: break;
+		}
+		
+		//	申請時の乖離時間をチェックする
+		overtimeService.checkDivergenceTime(require, ApplicationType.HOLIDAY_WORK_APPLICATION, 
+				Optional.empty(), Optional.empty(), appHdWorkDispInfoOutput.getHolidayWorkAppSet().getOvertimeLeaveAppCommonSet()); //huytodo Optional.of(appHolidayWork);
+		
+		//	社員に対応する締め期間を取得する
 		return null;
 	}
 

@@ -22,7 +22,7 @@ import nts.uk.ctx.at.request.app.find.application.holidaywork.AppHolidayWorkFind
 import nts.uk.ctx.at.request.app.find.application.holidaywork.AppHolidayWorkFinder_Old;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHdWorkDispInfoDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHdWorkDispInfoDto_Old;
-import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHolidayWorkDto;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHolidayWorkDto_Old;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HdWorkCheckRegisterDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HolidayWorkCalculationResultDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HolidayWorkDetailDto;

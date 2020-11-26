@@ -116,8 +116,8 @@ public class AppHolidayWorkFinder {
 		// 	計算（従業員）
 		List<PreAppContentDisplay> opPreAppContentDisplayLst = appHdWorkDispInfoOutput.getAppDispInfoStartupOutput()
 				.getAppDispInfoWithDateOutput().getOpPreAppContentDisplayLst().orElse(new ArrayList<>());
-		Optional<AppOverTime> apOptional = !opPreAppContentDisplayLst.isEmpty()
-				? opPreAppContentDisplayLst.get(0).getApOptional()
+		Optional<AppHolidayWork> appHolidayWork = !opPreAppContentDisplayLst.isEmpty()
+				? opPreAppContentDisplayLst.get(0).getAppHolidayWork()
 				: Optional.empty();
 
 		WorkContent workContent = commonHolidayWorkAlgorithm.getWorkContent(appHdWorkDispInfoOutput.getHdWorkDispInfoWithDateOutput());
@@ -129,7 +129,7 @@ public class AppHolidayWorkFinder {
 						: Optional.empty(),
 				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getPrePostAtr(),
 				appHdWorkDispInfoOutput.getHolidayWorkAppSet().getOvertimeLeaveAppCommonSet(),
-				apOptional.isPresent() ? apOptional.get().getApplicationTime() : null,
+				appHolidayWork.isPresent() ? appHolidayWork.get().getApplicationTime() : null,
 				appHdWorkDispInfoOutput.getHdWorkDispInfoWithDateOutput().getActualApplicationTime().orElse(null),
 				workContent);
 		appHdWorkDispInfoOutput.setCalculationResult(Optional.ofNullable(calculationResult));
@@ -200,7 +200,7 @@ public class AppHolidayWorkFinder {
 				Optional.ofNullable(param.getDateList().isEmpty() ? GeneralDate.fromString(param.getDateList().get(0), PATTERN_DATE) : null), 
 				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getPrePostAtr(), 
 				appHdWorkDispInfoOutput.getHolidayWorkAppSet().getOvertimeLeaveAppCommonSet(), 
-				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpPreAppContentDisplayLst().orElse(null).get(0).getApOptional().orElse(null).getApplicationTime(), 
+				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpPreAppContentDisplayLst().orElse(null).get(0).getAppHolidayWork().orElse(null).getApplicationTime(), 
 				appHdWorkDispInfoOutput.getHdWorkDispInfoWithDateOutput().getActualApplicationTime().orElse(null), 
 				workContent);
 		appHdWorkDispInfoOutput.setCalculationResult(Optional.ofNullable(calculationResult));

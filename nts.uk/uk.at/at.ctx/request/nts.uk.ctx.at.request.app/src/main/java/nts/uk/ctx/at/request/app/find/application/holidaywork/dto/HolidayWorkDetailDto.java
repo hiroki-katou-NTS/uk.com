@@ -12,7 +12,7 @@ public class HolidayWorkDetailDto {
 	
 	public AppHdWorkDispInfoDto_Old appHdWorkDispInfoOutput;
 	
-	public AppHolidayWorkDto appHolidayWork;
+	public AppHolidayWorkDto_Old appHolidayWork;
 	
 	public List<CaculationTime> caculationTimes;
 	
@@ -21,7 +21,7 @@ public class HolidayWorkDetailDto {
 	public static HolidayWorkDetailDto fromDomain(HolidayWorkDetailOutput holidayWorkDetailOutput) {
 		HolidayWorkDetailDto result = new HolidayWorkDetailDto();
 		result.appHdWorkDispInfoOutput = AppHdWorkDispInfoDto_Old.fromDomain(holidayWorkDetailOutput.getAppHdWorkDispInfoOutput());
-		result.appHolidayWork = AppHolidayWorkDto.fromDomain(holidayWorkDetailOutput.getAppHolidayWork());
+		result.appHolidayWork = AppHolidayWorkDto_Old.fromDomain(holidayWorkDetailOutput.getAppHolidayWork());
 		result.caculationTimes = holidayWorkDetailOutput.getCaculationTimes();
 		result.preActualColorResult = holidayWorkDetailOutput.getPreActualColorResult();
 		return result;

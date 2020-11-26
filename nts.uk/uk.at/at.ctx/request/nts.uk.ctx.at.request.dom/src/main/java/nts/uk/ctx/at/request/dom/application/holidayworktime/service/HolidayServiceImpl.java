@@ -193,7 +193,7 @@ public class HolidayServiceImpl implements HolidayService {
 		
 		HolidayWorkCalculationResult calculationResult = this.calculate(companyId, employeeId, Optional.ofNullable(dateList.get(0)), 
 				appDispInfoWithDateOutput.getPrePostAtr(), appHdWorkDispInfoOutput.getHolidayWorkAppSet().getOvertimeLeaveAppCommonSet(), 
-				appDispInfoWithDateOutput.getOpPreAppContentDisplayLst().orElse(Collections.emptyList()).get(0).getApOptional().orElse(null).getApplicationTime(), 
+				appDispInfoWithDateOutput.getOpPreAppContentDisplayLst().orElse(Collections.emptyList()).get(0).getAppHolidayWork().orElse(null).getApplicationTime(), 
 				hdWorkDispInfoWithDateOutput.getActualApplicationTime().orElse(null), workContent);
 		appHdWorkDispInfoOutput.setCalculationResult(Optional.ofNullable(calculationResult));
 		
