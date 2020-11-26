@@ -61,8 +61,8 @@ module nts.uk.at.view.kwr004.c {
       const vm = this;
       vm.$blockui('show');
 
-      vm.params().code = vm.newCode();
-      vm.params().name = vm.newName();
+      vm.params().settingCode = vm.newCode();
+      vm.params().settingName = vm.newName();
 
       vm.$ajax(PATH.cloneSettingClassification, vm.params()).done(() => {
         vm.$dialog.info( { messageId: 'Msg_15' }).then(() => {
@@ -72,11 +72,27 @@ module nts.uk.at.view.kwr004.c {
         });
        
       }).fail((err) => {
-        vm.$dialog.error( { messageId: err.messageId }).then(() => {
-          vm.$blockui('hide');
-        });
+        vm.showError(err.messageId);
+        vm.$blockui('hide');   
       }).always( () => vm.$blockui('hide'));
      
+    }
+
+    showError(messageId: string) {
+      const vm = this;
+      switch (messageId) {
+        case 'Msg_1898':
+          vm.$dialog.error({ messageId: messageId }).then(() => {    
+            vm.$blockui('hide');     
+            $('#btnB11').focus();
+          });
+          break;
+
+        case 'Msg_1859':
+          $('#KWR004_B32').ntsError('set', { messageId: messageId });
+          vm.$blockui('hide');
+          break;
+      }
     }
 
     cancel() {

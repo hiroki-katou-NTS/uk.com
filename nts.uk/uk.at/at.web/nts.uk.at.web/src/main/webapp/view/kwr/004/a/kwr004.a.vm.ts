@@ -60,11 +60,13 @@ module nts.uk.at.view.kwr004.a {
     itemListSetting: KnockoutObservableArray<any> = ko.observableArray([]);
     hasPermission51: KnockoutObservable<boolean> = ko.observable(false);
     closureId: KnockoutObservable<number> = ko.observable(0);
+    
+    enum : Array<any> = [];
 
     constructor(params: any) {
       super();
       const vm = this;
-
+      vm.enum = __viewContext.enums.SettingClassificationCommon;
       //get settings for Stand or Free
       vm.getSettingListItems(0); //定型選択      
       vm.getSettingListItems(1); //自由設定
@@ -80,7 +82,7 @@ module nts.uk.at.view.kwr004.a {
     }
 
     created(params: any) {
-      const vm = this;
+      const vm = this;      
     }
 
     mounted() {
@@ -224,20 +226,18 @@ module nts.uk.at.view.kwr004.a {
      * */
 
     showDialogScreenB() {
-      const vm = this;
-
-      let selectedItem = vm.rdgSelectedId();
-      let attendanceItem = selectedItem ? vm.freeSelectedCode() : vm.standardSelectedCode();
-      let findInList = selectedItem ? vm.settingListItems1() : vm.settingListItems2();
+      const vm = this;     
+      let attendanceItem = vm.rdgSelectedId() === vm.enum[1].value ? vm.freeSelectedCode() : vm.standardSelectedCode();
+      let findInList = vm.rdgSelectedId() === vm.enum[1].value ? vm.settingListItems2() : vm.settingListItems1();
       let attendance: any = _.find( findInList, (x) => x.code === attendanceItem);
 
       if (_.isNil(attendance)) attendance = _.head(findInList);
 
       let params = {
-        code: attendance.code,
-        name: attendance.name,
-        settingId: attendance.settingId,
-        itemSelection: vm.rdgSelectedId
+        code: !_.isNil(attendance) ? attendance.code : null,
+        name: !_.isNil(attendance) ? attendance.name : null,
+        settingId: !_.isNil(attendance) ? attendance.settingId : null,
+        itemSelection: vm.rdgSelectedId()
       }
 
       vm.$window.storage(KWR004_B_INPUT, ko.toJS(params)).then(() => {
@@ -286,14 +286,14 @@ module nts.uk.at.view.kwr004.a {
         endDate: endDate
       });
 
-      vm.itemListSetting.push({ id: 0, name: vm.$i18n('KWR004_14') });
+      vm.itemListSetting.push({ id: vm.enum[0].value, name: vm.$i18n('KWR004_14') });
 
       vm.$ajax(PATH.getPermission51)
         .done((result) => {
           if (result) {
             if (result.hasAuthority) {
               vm.allowFreeSetting(result.hasAuthority);
-              vm.itemListSetting.push({ id: 1, name: vm.$i18n('KWR004_15') });
+              vm.itemListSetting.push({ id: vm.enum[1].value, name: vm.$i18n('KWR004_15') });
             }
             //システム日付の月　＜　期首月　
             if (_.toInteger(result.startMonth) > _.toInteger(moment().format('MM'))) {
@@ -319,21 +319,20 @@ module nts.uk.at.view.kwr004.a {
         settingClassification: type
       }
 
-      let listItems = [];
+      let listItems: Array<ItemModel> = [];
       vm.$ajax(PATH.getSettingList, params)
-      .done((result) => {
-        console.log(result);
+      .done((result) => {     
         if(!_.isNil(result)) {
           _.forEach(result, (item) => {
-            listItems.push( new ItemModel(item.code, item.name, item.settingId ));
+            let code = _.padStart(item.code, 2, '0');
+            listItems.push( new ItemModel(code, item.name, item.settingId ));
           });
+          if(type === 0) 
+            vm.settingListItems1(listItems);
+          else
+            vm.settingListItems2(listItems);
         }
-      }).fail();
-
-      if(type === 0) 
-        vm.settingListItems1(listItems);
-      else
-        vm.settingListItems2(listItems);
+      }).fail();     
     }
 
     exportExcel() {
