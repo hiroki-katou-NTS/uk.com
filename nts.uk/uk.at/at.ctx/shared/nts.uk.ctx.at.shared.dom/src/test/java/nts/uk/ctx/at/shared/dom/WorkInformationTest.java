@@ -796,13 +796,24 @@ public class WorkInformationTest {
 			result = chgWrkTz;
 		}};
 
-		// Execute
-		val result = instance.containsOnChangeableWorkingTime(require, checkTarget, cwtzPerNoList.get(1).getWorkNo().toTemporary(), time);
+		// Pattern: 指定された勤務NOがリストに存在しない
+		{
+			// Execute
+			val result = instance.containsOnChangeableWorkingTime(require, checkTarget, new WorkNo(3), time);
 
-		// Assertion
-		val expected = cwtzPerNoList.get(1).contains(time, checkTarget);
-		assertThat( result.isContains() ).isEqualTo( expected.isContains() );
-		assertThat( result.getTimeSpan() ).isEqualTo( expected.getTimeSpan() );
+			// Assertion
+			assertThat( result.isContains() ).isFalse();
+			assertThat( result.getTimeSpan() ).isEmpty();
+		}
+
+		// Pattern: 指定された勤務NOがリストに存在する
+		{
+			// Execute
+			val result = instance.containsOnChangeableWorkingTime(require, checkTarget, cwtzPerNoList.get(1).getWorkNo().toTemporary(), time);
+
+			// Assertion
+			assertThat( result ).isEqualTo( cwtzPerNoList.get(1).contains(time, checkTarget) );
+		}
 
 	}
 
