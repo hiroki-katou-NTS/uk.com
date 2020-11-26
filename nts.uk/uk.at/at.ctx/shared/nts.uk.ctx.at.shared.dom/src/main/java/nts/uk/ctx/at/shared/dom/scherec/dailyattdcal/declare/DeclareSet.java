@@ -124,6 +124,8 @@ public class DeclareSet extends AggregateRoot {
 		if (this.checkErrorOvertimeFrame()) return true;
 		// 申告設定休出枠エラーチェック
 		if (this.checkErrorHolidayWorkFrame()) return true;
+		// 申告設定深夜エラーチェック
+		if (this.checkErrorMidnightFrame()) return true;
 		// 申告時間枠エラーチェック
 		List<DeclareTimeFrameError> errors = this.checkErrorFrame(isHolidayWork, attdLeave);
 		if (errors.size() > 0) return true;
@@ -180,7 +182,7 @@ public class DeclareSet extends AggregateRoot {
 		
 		// 枠設定を確認する
 		if (this.frameSet == DeclareFrameSet.OT_HDWK_SET){
-			// 残業枠を確認する
+			// 休出枠を確認する
 			if (this.holidayWorkFrame.getHolidayWork().isPresent()){	// 休出 
 				if (this.holidayWorkFrame.getHolidayWorkMn().isPresent()){	// 休出深夜
 				}
@@ -193,6 +195,30 @@ public class DeclareSet extends AggregateRoot {
 					return true;
 				}
 				else{
+				}
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * 申告設定深夜枠エラーチェック
+	 * @return true=エラーあり,false=エラーなし
+	 */
+	public boolean checkErrorMidnightFrame(){
+		
+		// 枠設定を確認する
+		if (this.frameSet == DeclareFrameSet.OT_HDWK_SET){
+			// 深夜時間自動計算を確認する
+			if (this.midnightAutoCalc == NotUseAtr.USE){
+				// 残業枠を確認する
+				if (!this.overtimeFrame.getEarlyOvertimeMn().isPresent() ||		// 早出残業深夜
+					!this.overtimeFrame.getOvertimeMn().isPresent()){			// 普通残業深夜 
+					return true;
+				}
+				// 休出枠を確認する
+				if (!this.holidayWorkFrame.getHolidayWorkMn().isPresent()){		// 休出深夜 
+					return true;
 				}
 			}
 		}

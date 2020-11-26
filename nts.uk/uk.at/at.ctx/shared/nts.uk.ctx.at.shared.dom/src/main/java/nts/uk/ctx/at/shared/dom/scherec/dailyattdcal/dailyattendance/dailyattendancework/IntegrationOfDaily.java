@@ -275,12 +275,17 @@ public class IntegrationOfDaily {
 		// 申告設定残業枠エラーチェック
 		if (declareSet.checkErrorOvertimeFrame()){
 			// システムエラーとする
-			throw new BusinessException("Msg_2052");
+			throw new BusinessException("Msg_2053");
 		}
 		// 申告設定休出枠エラーチェック
 		if (declareSet.checkErrorHolidayWorkFrame()){
 			// システムエラーとする
-			throw new BusinessException("Msg_2053");
+			throw new BusinessException("Msg_2054");
+		}
+		// 申告設定深夜枠エラーチェック
+		if (declareSet.checkErrorMidnightFrame()){
+			// システムエラーとする
+			throw new BusinessException("Msg_2055");
 		}
 		// 申告時間枠エラーチェック
 		List<DeclareTimeFrameError> frameErrors = declareSet.checkErrorFrame(

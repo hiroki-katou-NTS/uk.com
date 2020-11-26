@@ -11,7 +11,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.declare.DeclareSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.declare.DeclareSetRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.declare.HdwkFrameEachHdAtr;
 import nts.uk.ctx.at.shared.infra.entity.dailyattdcal.declare.KrcmtDeclareSet;
-import nts.uk.ctx.at.shared.infra.entity.dailyattdcal.declare.KrcmtDeclareSetPK;
 
 /**
  * リポジトリ実装：申告設定
@@ -35,7 +34,7 @@ public class JpaDeclareSetRepository extends JpaRepository implements DeclareSet
 			entity = entityOpt.get();
 		}
 		else{
-			entity.pk = new KrcmtDeclareSetPK(declareSet.getCompanyId());
+			entity.companyId = declareSet.getCompanyId();
 		}
 		
 		entity.usageAtr = declareSet.getUsageAtr().value;
@@ -92,7 +91,7 @@ public class JpaDeclareSetRepository extends JpaRepository implements DeclareSet
 	private DeclareSet convertToDomain(KrcmtDeclareSet entity){
 		
 		return DeclareSet.createFromJavaType(
-				entity.pk.companyId,
+				entity.companyId,
 				entity.usageAtr,
 				entity.frameSet,
 				entity.mnAutoCalc,
