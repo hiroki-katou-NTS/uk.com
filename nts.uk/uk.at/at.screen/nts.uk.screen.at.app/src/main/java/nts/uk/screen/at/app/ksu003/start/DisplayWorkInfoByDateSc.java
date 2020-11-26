@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -19,8 +18,10 @@ import nts.arc.layer.app.cache.KeyDateHistoryCache;
 import nts.arc.layer.app.cache.NestedMapCache;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.app.find.dailyperform.dto.TimeSpanForCalcDto;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.WorkInformationDto;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.TimeVacation;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.workschedule.domainservice.WorkScheManaStatusService;
@@ -29,11 +30,12 @@ import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeave
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveWorkHistoryAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveWorkPeriodImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmployeeLeaveJobPeriodImport;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.TimezoneToUseHourlyHoliday;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.GetWorkInforUsedDailyAttenRecordService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
@@ -42,8 +44,7 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.em
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
 import nts.uk.screen.at.app.ksu001.start.SupportCategory;
-import nts.uk.screen.at.app.ksu003.start.dto.BreakTimeOfDailyAttdDto;
-import nts.uk.screen.at.app.ksu003.start.dto.BreakTimeZoneDto;
+import nts.uk.screen.at.app.ksu003.start.dto.DailyAttdTimeVacationDto;
 import nts.uk.screen.at.app.ksu003.start.dto.DisplayWorkInfoByDateDto;
 import nts.uk.screen.at.app.ksu003.start.dto.DisplayWorkInfoParam;
 import nts.uk.screen.at.app.ksu003.start.dto.EmployeeWorkInfoDto;
@@ -54,6 +55,7 @@ import nts.uk.screen.at.app.ksu003.start.dto.TimeOfDayDto;
 import nts.uk.screen.at.app.ksu003.start.dto.TimeVacationAndTypeDto;
 import nts.uk.screen.at.app.ksu003.start.dto.TimeVacationDto;
 import nts.uk.screen.at.app.ksu003.start.dto.TimeZoneDto;
+import nts.uk.screen.at.app.ksu003.start.dto.WorkInforDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -82,58 +84,87 @@ public class DisplayWorkInfoByDateSc {
 	@Inject
 	private GetFixedWorkInformation fixedWorkInformation;
 
+	// return ・List<社員勤務情報　dto,社員勤務予定　dto,勤務固定情報　dto>
 	public List<DisplayWorkInfoByDateDto> displayDataKsu003(DisplayWorkInfoParam param) {
 		GeneralDate generalDate = GeneralDate.fromString(param.getDate(), "yyyy/MM/dd");
 		DatePeriod period = new DatePeriod(generalDate, generalDate);
+		
 		List<DisplayWorkInfoByDateDto> dateDtos = new ArrayList<>();
-		List<WorkInformation> lstWorkInfo = new ArrayList<>(); // 勤務情報
-		List<FixedWorkInformationDto> lstFixedDto = new ArrayList<>();
-		List<TimeVacationAndTypeDto> listTimeVacationAndType = new ArrayList<>();
 		
 		RequireWorkScheManaStatusImpl requireImpl = new RequireWorkScheManaStatusImpl(param.getLstEmpId(), period,
 				workScheduleRepo, empComHisAdapter, workCondRepo, empLeaveHisAdapter, empLeaveWorkHisAdapter,
 				employmentHisScheduleAdapter);
-		// 1 .
+		
+		// 1 .取得する(Require, List<社員ID>, 期間):Map<社員の予定管理状態, Optional<勤務予定>>
 		Map<ScheManaStatuTempo, Optional<WorkSchedule>> mapScheMana = WorkScheManaStatusService
 				.getScheduleManagement(requireImpl, param.getLstEmpId(), period);
-
+		List<ScheWorkDto> workDtos = mapScheMana.entrySet().stream().map(mapper-> new ScheWorkDto(mapper.getKey().getEmployeeID(), mapper.getKey(), mapper.getValue())).collect(Collectors.toList());
+		workDtos = workDtos.stream().sorted((a, b) -> param.getLstEmpId().indexOf(a.getEmpId()) - param.getLstEmpId().indexOf(b.getEmpId())).collect(Collectors.toList());
 		// 2
-		mapScheMana.entrySet().stream().forEach(action -> {
+		for (ScheWorkDto action : workDtos) {
+			
+			FixedWorkInformationDto inforDto = null; // List＜勤務固定情報　dto>, List<休憩時間帯>
+			
 			EmployeeWorkInfoDto workInfoDto = null; // 社員勤務情報
+			
 			EmployeeWorkScheduleDto workScheduleDto = null; // 社員勤務予定
-			FixedWorkInforDto fixedWorkInforDto = null; // 勤務固定情報
 			DisplayWorkInfoByDateDto infoByDateDto = null;
-			List<WorkInfoOfDailyAttendance> workInfoOfDailyAttendances = new ArrayList<>();
-			WorkInformation workInformation = null;// 勤務情報
 			List<TimeVacationAndTypeDto> typeDto = new ArrayList<>();
 			List<TimeZoneDto> shortTime  = new ArrayList<>();
 			
-			ScheManaStatuTempo key = action.getKey(); // 予定管理状態
-			Optional<WorkSchedule> value = action.getValue(); // 勤務予定
+			List<WorkInfoOfDailyAttendance> workInfoOfDailyAttendances = new ArrayList<>();
+			List<WorkInformation> lstWorkInformation = new ArrayList<>();// 勤務情報
+			Integer editState = null;
+			Integer startTime1 = null;
+			Integer startTime1Status = null;
+			Integer startTime2 = null;
+			Integer startTime2Status = null;
+			String workTypeCode = null;
+			Integer workTypeStatus = null;
+			String workTimeCode = null;
+			Optional<EditStateOfDailyAttd> editStateSet4 = null;
+			Integer workTimeStatus = null;
+			Integer endTime1 = null;
+			Optional<EditStateOfDailyAttd> editStateSet5 = null;
+			Integer endTime1Status = null;
+			Integer endTime2 = null;
+			Optional<EditStateOfDailyAttd> editStateSet6 = null;
+			Integer endTime2Status = null;
+			
+			ScheManaStatuTempo key = action.getManaStatuTempo(); // 予定管理状態
+			Optional<WorkSchedule> value = Optional.ofNullable(action.getSchedule()); // 勤務予定
 			// 2.1
-			boolean checkScheStatus = action.getKey().getScheManaStatus().needCreateWorkSchedule();
+			boolean checkScheStatus = key.getScheManaStatus().needCreateWorkSchedule();
 
 			// 2.3
-			if (action.getValue().isPresent()) {
-				// 2.3.1
+			if (value.isPresent()) {
+				// 2.3.1 日別勤怠の実績で利用する勤務情報のリストを取得する
 				workInfoOfDailyAttendances.add(value.get().getWorkInfo());
-				workInformation = GetWorkInforUsedDailyAttenRecordService.getListWorkInfo(workInfoOfDailyAttendances).get(0);
-				lstWorkInfo.add(workInformation);
+				lstWorkInformation = GetWorkInforUsedDailyAttenRecordService.getListWorkInfo(workInfoOfDailyAttendances);
 				
 				// 2.3.2 取得する(List<勤務情報>)
-				// TQP cần QA lại là dùng schedule info hay record
-				WorkInformationDto informationDto = new WorkInformationDto(value.get().getWorkInfo().getRecordInfo().getWorkTypeCode().v(),
-						value.get().getWorkInfo().getRecordInfo().getWorkTimeCode() != null ? value.get().getWorkInfo().getRecordInfo().getWorkTimeCode().v() : null);
 				// SC 勤務固定情報を取得する
-				FixedWorkInformationDto inforDto = fixedWorkInformation.getFixedWorkInfo(informationDto);
-				lstFixedDto.add(inforDto);
+				List<WorkInforDto> informationDtos = lstWorkInformation.stream()
+						.map(x-> new WorkInforDto(x.getWorkTypeCode().v(), x.getWorkTimeCode() != null ? x.getWorkTimeCode().v() : null)).collect(Collectors.toList());
+				inforDto = fixedWorkInformation.getFixedWorkInfo(informationDtos);
 				
-				// 2.3.3
+				// 2.3.3 時間休暇を取得する():Map<時間休暇種類, 時間休暇>
 				// Đợi bên nhật làm TQP
-				Map<Integer, TimeVacationDto> map = new HashMap<>();
+				Map<TimezoneToUseHourlyHoliday, TimeVacation> map = value.get().getTimeVacation();
+				
 				if(!map.isEmpty()) {
 					// ※存在しない場合はempty
-					typeDto = map.entrySet().stream().map(x-> new TimeVacationAndTypeDto(x.getKey(), x.getValue())).collect(Collectors.toList());
+					
+					typeDto = map.entrySet().stream().map(x-> 
+					new TimeVacationAndTypeDto(x.getKey().value, new TimeVacationDto(
+							x.getValue().getTimeList().stream().map(y-> new TimeSpanForCalcDto(y.getStart().v(), y.getEnd().v())).collect(Collectors.toList()), 
+							new DailyAttdTimeVacationDto(x.getValue().getUseTime().getTimeAnnualLeaveUseTime().v(),
+									x.getValue().getUseTime().getTimeCompensatoryLeaveUseTime().v(),
+									x.getValue().getUseTime().getSixtyHourExcessHolidayUseTime().v(),
+									x.getValue().getUseTime().getTimeSpecialHolidayUseTime().v(),
+									x.getValue().getUseTime().getSpecialHolidayFrameNo().get().v(),
+									x.getValue().getUseTime().getTimeChildCareHolidayUseTime().v(),
+									x.getValue().getUseTime().getTimeCareHolidayUseTime().v())))).collect(Collectors.toList());
 				}
 				
 				shortTime = value.get().getOptSortTimeWork().get().getShortWorkingTimeSheets().
@@ -169,21 +200,22 @@ public class DisplayWorkInfoByDateSc {
 						shortTime) ;
 				
 				// List＜休憩時間帯＞＝勤務予定．休憩時間帯
-				List<BreakTimeOfDailyAttdDto> listBreakTimeZoneDto = value.get().getLstBreakTime().
-						stream().map(x-> new BreakTimeOfDailyAttdDto(x.getBreakType().value, x.getBreakTimeSheets().
-								stream().map(y -> new BreakTimeZoneDto(y.getBreakFrameNo().v(), y.getStartTime().v(), y.getEndTime().v(), 
-										y.getBreakTime().v())).collect(Collectors.toList()))).collect(Collectors.toList());
+				List<BreakTimeSheet> timeSheets = value.get().getLstBreakTime().stream().flatMap(x-> x.getBreakTimeSheets().stream()).collect(Collectors.toList());
+				// comment tạm, cần sửa lại TQP
+				List<TimeSpanForCalcDto> listBreakTimeZoneDto = inforDto.getListBreakTimeZoneDto(); //timeSheets.stream().map(x-> new TimeSpanForCalcDto(x.getStartTime().v(), x.getEndTime().v())).collect(Collectors.toList()); 
 				
 				// Lấy ID để so sánh ở \\192.168.50.4\share\500_新構想開発\04_設計\40_ドメイン設計\ドメイン仕様書\UK\at_就業\shared.scherec_shared(勤務予定、勤務実績)
 				// 休憩時間帯編集状態 = 勤務予定．編集状態．編集状態
 				Optional<EditStateOfDailyAttd> editStateDaily = value.get().getLstEditState().stream()
 						.filter(x -> x.getAttendanceItemId() == 535).findFirst();
-				Integer editState = editStateDaily.isPresent() && editStateDaily.get().getEditStateSetting() != null ? editStateDaily.get().getEditStateSetting().value : null;
+				editState = editStateDaily.isPresent() && editStateDaily.get().getEditStateSetting() != null ? editStateDaily.get().getEditStateSetting().value : null;
 
 				// 開始時刻 1= 勤務予定．出退勤．出退勤．出勤
 				Optional<TimeLeavingWork> dailyAttd = value.get().getOptTimeLeaving().get().getTimeLeavingWorks()
 						.stream().filter(x -> x.getWorkNo().v() == 1).findFirst();
-				Integer startTime1 = null;
+				startTime1 = null;
+		
+				
 				if (dailyAttd.isPresent()) {
 					startTime1 = dailyAttd.get().getAttendanceStamp().get().getStamp().get().getTimeDay()
 							.getTimeWithDay().get().v();
@@ -192,13 +224,13 @@ public class DisplayWorkInfoByDateSc {
 				// 開始時刻1編集状態 = 勤務予定．編集状態．編集状態
 				Optional<EditStateOfDailyAttd> editStateSet = value.get().getLstEditState().stream()
 						.filter(x -> x.getAttendanceItemId() == 31).findFirst();
-				Integer startTime1Status = null;
+				
 				startTime1Status = editStateSet.isPresent() && editStateSet.get().getEditStateSetting() != null ? editStateSet.get().getEditStateSetting().value : null;
 
 				// 開始時刻 2= 勤務予定．出退勤．出退勤．出勤
 				Optional<TimeLeavingWork> dailyAttd2 = value.get().getOptTimeLeaving().get().getTimeLeavingWorks()
 						.stream().filter(x -> x.getWorkNo().v() == 2).findFirst();
-				Integer startTime2 = null;
+				
 				if (dailyAttd2.isPresent()) {
 					startTime2 = dailyAttd2.get().getAttendanceStamp().get().getStamp().get().getTimeDay()
 							.getTimeWithDay().get().v();
@@ -207,49 +239,48 @@ public class DisplayWorkInfoByDateSc {
 				// 開始時刻2編集状態 = 勤務予定．編集状態．編集状態
 				Optional<EditStateOfDailyAttd> editStateSet2 = value.get().getLstEditState().stream()
 						.filter(x -> x.getAttendanceItemId() == 41).findFirst();
-				Integer startTime2Status = null;
+				
 				startTime2Status = editStateSet2.isPresent() && editStateSet2.get().getEditStateSetting()!= null ?  editStateSet2.get().getEditStateSetting().value : null;
 
 				// 勤務種類コード = 勤務予定．勤務情報．勤務実績の勤務情報．勤務種類コード
-				String workTypeCode = value.get().getWorkInfo().getRecordInfo().getWorkTypeCode().v();
+				workTypeCode = value.get().getWorkInfo().getRecordInfo().getWorkTypeCode().v();
 
 				// 勤務種類編集状態 = 勤務予定．編集状態．編集状態
 				Optional<EditStateOfDailyAttd> editStateSet3 = value.get().getLstEditState().stream()
 						.filter(x -> x.getAttendanceItemId() == 28).findFirst();
-				Integer workTypeStatus = null;
+				
 				workTypeStatus = editStateSet3.isPresent() && editStateSet3.get().getEditStateSetting() != null ? editStateSet3.get().getEditStateSetting().value : null;
 
 				// 就業時間帯コード = 勤務予定．勤務情報．勤務実績の勤務情報．就業時間帯コード
-				String workTimeCode = value.get().getWorkInfo().getRecordInfo().getWorkTimeCode() == null ? null : value.get().getWorkInfo().getRecordInfo().getWorkTimeCode().v();
+				workTimeCode = value.get().getWorkInfo().getRecordInfo().getWorkTimeCode() == null ? null : value.get().getWorkInfo().getRecordInfo().getWorkTimeCode().v();
 
 				// 就業時間帯編集状態 = 勤務予定．編集状態．編集状態
-				Optional<EditStateOfDailyAttd> editStateSet4 = value.get().getLstEditState().stream()
+				editStateSet4 = value.get().getLstEditState().stream()
 						.filter(x -> x.getAttendanceItemId() == 29).findFirst();
-				Integer workTimeStatus = editStateSet4.isPresent() && editStateSet4.get().getEditStateSetting() != null ? editStateSet4.get().getEditStateSetting().value : null;
+				workTimeStatus = editStateSet4.isPresent() && editStateSet4.get().getEditStateSetting() != null ? editStateSet4.get().getEditStateSetting().value : null;
 
 				// 終了時刻 1= 勤務予定．出退勤．出退勤．退勤
-				Integer endTime1 = null;
 				if(dailyAttd.isPresent()) {
 					endTime1 = dailyAttd.get().getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get()
 							.v();
 				}
 
 				// 終了時刻1編集状態 = 勤務予定．編集状態．編集状態
-				Optional<EditStateOfDailyAttd> editStateSet5 = value.get().getLstEditState().stream()
+				editStateSet5 = value.get().getLstEditState().stream()
 						.filter(x -> x.getAttendanceItemId() == 34).findFirst();
-				Integer endTime1Status = editStateSet5.isPresent() && editStateSet5.get().getEditStateSetting() != null ? editStateSet5.get().getEditStateSetting().value : null;
+				endTime1Status = editStateSet5.isPresent() && editStateSet5.get().getEditStateSetting() != null ? editStateSet5.get().getEditStateSetting().value : null;
 
 				// 終了時刻 2= 勤務予定．出退勤．出退勤．退勤
-				Integer endTime2 = null;
+				
 				if(dailyAttd2.isPresent()) {
 				endTime2 = dailyAttd2.get().getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay()
 						.get().v();
 				}
 				
 				// 終了時刻2編集状態 = 勤務予定．編集状態．編集状態
-				Optional<EditStateOfDailyAttd> editStateSet6 = value.get().getLstEditState().stream()
+				editStateSet6 = value.get().getLstEditState().stream()
 						.filter(x -> x.getAttendanceItemId() == 44).findFirst();
-				Integer endTime2Status = editStateSet6.isPresent() && editStateSet6.get().getEditStateSetting() != null ? editStateSet6.get().getEditStateSetting().value : null;
+				endTime2Status = editStateSet6.isPresent() && editStateSet6.get().getEditStateSetting() != null ? editStateSet6.get().getEditStateSetting().value : null;
 				 
 				workScheduleDto = new EmployeeWorkScheduleDto(
 						startTime1, startTime1Status, endTime1, endTime1Status, 
@@ -264,16 +295,20 @@ public class DisplayWorkInfoByDateSc {
 				workInfoDto = new EmployeeWorkInfoDto(1, 0, 0, 0, // SupportAtr.NOT_CHEERING = 0
 						checkScheStatus == true ? 1 : 0, key.getEmployeeID(), key.getDate().toString(), null, 
 								null, 
-						new ArrayList<>(), null, null, null);
+						new ArrayList<>(), null, null, new ArrayList<>());
+				
+				workScheduleDto = null;
 			}
 			
-			infoByDateDto = new DisplayWorkInfoByDateDto(key.getEmployeeID(), workInfoDto, workScheduleDto, fixedWorkInforDto);
+			infoByDateDto = new DisplayWorkInfoByDateDto(key.getEmployeeID(), workInfoDto, workScheduleDto, inforDto == null ? null : inforDto.getFixedWorkInforDto().get(0));
 			dateDtos.add(infoByDateDto);
-		});
+		};
 		
-		return dateDtos.stream().sorted((object1, object2) -> {
-			return Integer.compare(param.getLstEmpId().indexOf(object1.getEmpId()), param.getLstEmpId().indexOf(object2.getEmpId()));
-		}).collect(Collectors.toList());
+		dateDtos = dateDtos.stream().sorted((object1, object2) -> {
+			 			return Integer.compare(param.getLstEmpId().indexOf(object1.getEmpId()), param.getLstEmpId().indexOf(object2.getEmpId()));
+			 		}).collect(Collectors.toList());
+		
+		return dateDtos;
 	}
 
 	@AllArgsConstructor

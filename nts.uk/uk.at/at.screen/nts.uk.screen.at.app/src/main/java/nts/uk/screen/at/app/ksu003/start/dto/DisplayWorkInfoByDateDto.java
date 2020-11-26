@@ -1,8 +1,12 @@
 package nts.uk.screen.at.app.ksu003.start.dto;
 
+import java.util.List;
+
+import lombok.AllArgsConstructor;
 import lombok.Value;
 
 @Value
+@AllArgsConstructor
 public class DisplayWorkInfoByDateDto {
 	
 		private String empId;

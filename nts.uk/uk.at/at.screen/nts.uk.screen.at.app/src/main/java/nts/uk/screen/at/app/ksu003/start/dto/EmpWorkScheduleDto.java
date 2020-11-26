@@ -11,7 +11,7 @@ import lombok.Value;
 import nts.uk.ctx.at.record.app.find.dailyperform.dto.TimeSpanForCalcDto;
 
 @Value
-public class EmployeeWorkScheduleDto {
+public class EmpWorkScheduleDto {
 	//開始時刻１
 	private Integer startTime1;
 	 //開始時刻１編集状態
@@ -29,7 +29,7 @@ public class EmployeeWorkScheduleDto {
 	//終了時刻2編集状態 
 	private Integer endTime2Status;
 	//List<休憩時間帯>
-	private List<TimeSpanForCalcDto> listBreakTimeZoneDto;
+	private List<BreakTimeOfDailyAttdDto> listBreakTimeZoneDto;
 	//勤務種類コード
 	private String workTypeCode;
 	//休憩時間帯編集状態 

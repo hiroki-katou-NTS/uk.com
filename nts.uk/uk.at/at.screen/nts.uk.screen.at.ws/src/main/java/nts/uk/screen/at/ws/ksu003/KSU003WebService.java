@@ -26,6 +26,7 @@ import nts.uk.screen.at.app.ksu003.start.dto.DisplayWorkInfoByDateDto;
 import nts.uk.screen.at.app.ksu003.start.dto.DisplayWorkInfoParam;
 import nts.uk.screen.at.app.ksu003.start.dto.FixedWorkInformationDto;
 import nts.uk.screen.at.app.ksu003.start.dto.GetInfoInitStartKsu003Dto;
+import nts.uk.screen.at.app.ksu003.start.dto.WorkInforDto;
 
 /**
  * 
@@ -66,7 +67,7 @@ public class KSU003WebService extends WebService{
 	@POST
 	@Path("getfixedworkinfo")
 	// 勤務固定情報を取得する
-	public FixedWorkInformationDto getFixedWorkInformation(WorkInformationDto information){
+	public FixedWorkInformationDto getFixedWorkInformation(List<WorkInforDto> information){
 		FixedWorkInformationDto data = fixedWorkInformation.getFixedWorkInfo(information);
 		return data;
 	}
@@ -90,7 +91,7 @@ public class KSU003WebService extends WebService{
 	@POST
 	@Path("getEmpWorkFixedWorkInfo")
 	// 社員勤務予定と勤務固定情報を取得する
-	public EmpWorkFixedWorkInfoDto getEmpWorkFixedWorkInfo(WorkInformationDto information){
+	public EmpWorkFixedWorkInfoDto getEmpWorkFixedWorkInfo(List<WorkInforDto> information){
 		EmpWorkFixedWorkInfoDto data = fixedWorkInfoSc.getEmpWorkFixedWorkInfo(information);
 		return data;
 	}
@@ -98,7 +99,7 @@ public class KSU003WebService extends WebService{
 	@POST
 	@Path("changeWorkType")
 	// 勤務種類を変更する
-	public ChangeWorkTypeDto changeWorkType(WorkInformationDto information){
+	public ChangeWorkTypeDto changeWorkType(WorkInforDto information){
 		ChangeWorkTypeDto data = changeWorkType.changeWorkType(information);
 		return data;
 	}

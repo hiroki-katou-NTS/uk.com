@@ -13,15 +13,20 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.screen.at.app.ksu003.start.dto.WorkInforDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -44,22 +49,36 @@ public class ChangeWorkTypeSc {
 
 	@Inject
 	private BasicScheduleService basicScheduleService;
+	
+	@Inject
+	private FixedWorkSettingRepository fixedWorkSet;
+	
+	@Inject
+	private FlowWorkSettingRepository flowWorkSet;
+	
+	@Inject
+	private FlexWorkSettingRepository flexWorkSet ;
+	
+	@Inject
+	private PredetemineTimeSettingRepository predetemineTimeSet;
 
-	public ChangeWorkTypeDto changeWorkType(WorkInformationDto information) {
+	public ChangeWorkTypeDto changeWorkType(WorkInforDto information) {
 		String companyId = AppContexts.user().companyId();
 		ChangeWorkTypeDto workTypeDto = null;
-		// 1 .
-		WorkInformation workInformation = new WorkInformation(information.getWorkType(), information.getWorkTime());
+		// 1 .create()
+		WorkInformation workInformation = new WorkInformation(information.getWorkTypeCode(), information.getWorkTimeCode());
 		WorkInformationImpl impl = new WorkInformationImpl(workTypeRepo, workTimeSettingRepository,
-				workTimeSettingService, basicScheduleService);
+				workTimeSettingService, basicScheduleService, fixedWorkSet, flowWorkSet, flexWorkSet, predetemineTimeSet);
 		
 		// 2 .出勤・休日系の判定(Require)
 		Optional<WorkStyle> workStyle = workInformation.getWorkStyle(impl);
 		
 		// 3 .get(会社ID、勤務種類コード):勤務種類
-		Optional<WorkType> workType = workTypeRepo.findByPK(companyId, information.getWorkType());
+		Optional<WorkType> workType = workTypeRepo.findByPK(companyId, information.getWorkTypeCode());
+		if(workStyle.isPresent()) {
+			workTypeDto = new ChangeWorkTypeDto(workStyle.get().value != 0 ? false : true, workType.get().getName().v());
+		}
 		
-		workTypeDto = new ChangeWorkTypeDto(workStyle.get().value != 0 ? false : true, workType.get().getName().v());
 		
 		return workTypeDto;
 	}
@@ -80,6 +99,18 @@ public class ChangeWorkTypeSc {
 
 		@Inject
 		private BasicScheduleService basicScheduleService;
+		
+		@Inject
+		private FixedWorkSettingRepository fixedWorkSet;
+		
+		@Inject
+		private FlowWorkSettingRepository flowWorkSet;
+		
+		@Inject
+		private FlexWorkSettingRepository flexWorkSet ;
+		
+		@Inject
+		private PredetemineTimeSettingRepository predetemineTimeSet;
 
 		@Override
 		public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
@@ -97,33 +128,34 @@ public class ChangeWorkTypeSc {
 		}
 
 		@Override
-		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTimeCd, String workTypeCd,
+		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd,
 				Integer workNo) {
+			// đang để tạm vị trí của workTimeCd, workTypeCd - cần sửa lại sau - TQP
 			return workTimeSettingService.getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
 		}
 
 		@Override
 		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
-			// TODO Auto-generated method stub
-			return null;
+			Optional<FixedWorkSetting> workSetting = fixedWorkSet.findByKey(companyId, code.v());
+			return workSetting.isPresent() ? workSetting.get() : null;
 		}
 
 		@Override
 		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
-			// TODO Auto-generated method stub
-			return null;
+			Optional<FlowWorkSetting> workSetting =  flowWorkSet.find(companyId, code.v());
+			return workSetting.isPresent() ? workSetting.get() : null;
 		}
 
 		@Override
 		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
-			// TODO Auto-generated method stub
-			return null;
+			Optional<FlexWorkSetting> workSetting = flexWorkSet.find(companyId, code.v());
+			return workSetting.isPresent() ? workSetting.get() : null;
 		}
 
 		@Override
 		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
-			// TODO Auto-generated method stub
-			return null;
+			Optional<PredetemineTimeSetting> workSetting = predetemineTimeSet.findByWorkTimeCode(companyId, wktmCd.v());
+			return workSetting.isPresent() ? workSetting.get() : null;
 		}
 
 	}
