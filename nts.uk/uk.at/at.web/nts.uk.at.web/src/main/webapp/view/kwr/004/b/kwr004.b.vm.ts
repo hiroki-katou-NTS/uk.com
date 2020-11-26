@@ -339,7 +339,7 @@ module nts.uk.at.view.kwr004.b {
           [], //selectedTimeList
           dailyAttributes, //dailyAttributes,
           -1, //selectedCategory
-          i < 2 //type
+          i < 2 //type: true: daily or false: monthly
         );
         tempSettings.push(newItem);
       }
@@ -421,7 +421,7 @@ module nts.uk.at.view.kwr004.b {
           [], //selectedTimeList
           dailyAttributes, //dailyAttributes
           -1, //selectedCategory
-          i < 2 //type: daily or monthly
+          i < 2 //type: true: daily or false: monthly
         );
         vm.addRowItem(newItem);
       }
@@ -584,7 +584,7 @@ module nts.uk.at.view.kwr004.b {
         new AttendaceType(7, vm.$i18n('KWR002_183'))
       ]
 
-      if (row.type === 1) {
+      if (!row.type) {
         vm.shareParam.attribute.attributeList.push(new AttendaceType(6, vm.$i18n('KWR002_182')));
         vm.shareParam.diligenceProjectList = vm.diligenceProjectsMonthly(); //KDL048
       }
