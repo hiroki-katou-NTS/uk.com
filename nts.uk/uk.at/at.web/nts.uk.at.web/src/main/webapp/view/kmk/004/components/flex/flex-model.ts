@@ -92,6 +92,8 @@ module nts.uk.at.kmk004.components.flex {
 		]);
 
 		updateMode: KnockoutObservable<boolean> = ko.observable(true);
+		setting: KnockoutObservable<ScreenMonthlySetting> = ko.observable(new ScreenMonthlySetting());
+
 
 		constructor(param?: IScreenData) {
 			const vm = this;
@@ -133,6 +135,18 @@ module nts.uk.at.kmk004.components.flex {
 			this.comFlexMonthActCalSet(param.comFlexMonthActCalSet);
 			this.getFlexPredWorkTime(param.getFlexPredWorkTime);
 		}
+	}
+
+	class ScreenMonthlySetting {
+		useRegularWorkingHours: KnockoutObservable<number> = ko.observable(1);
+		constructor(param?: IScreenMonthlySetting) {
+			if (param) {
+				this.useRegularWorkingHours(param.useRegularWorkingHours);
+			}
+		}
+	}
+	interface IScreenMonthlySetting {
+		useRegularWorkingHours: number;
 	}
 
 	export class YearItem {

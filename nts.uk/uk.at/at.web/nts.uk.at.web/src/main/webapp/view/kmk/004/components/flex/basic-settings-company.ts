@@ -1,11 +1,15 @@
 /// <reference path="../../../../../lib/nittsu/viewcontext.d.ts" />
 
-	const template = `
+const template = `
 	<div>
 		<div data-bind="ntsFormLabel: {} , i18n: 'KMK004_229'"></div>
 		<button data-bind="click: openKDialog , i18n: 'KMK004_231'" ></button>
 	</div>
-	<div class="div_line">
+	<div class="div_line" 
+		style="
+		border-radius: 10px;
+	    border: solid thin black;
+	    padding: 15px 0px 15px 15px;">
 		<table class="basic-settings">
 			<tr class="bg-green">
 				<th data-bind="i18n: 'KMK004_254'"></th>
@@ -17,17 +21,17 @@
 				<td data-bind="text:getSettlePeriodText()"></td>
 				<td data-bind="text:screenData().comFlexMonthActCalSet().insufficSet.startMonth + '月'"></td>
 				<td data-bind="text:screenData().comFlexMonthActCalSet().insufficSet.period + 'ヵ月'"></td>
-				<td data-bind="tegetCarryforwardSetText()"></td>
+				<td data-bind="text:getCarryforwardSetText()"></td>
 			</tr>
 		</table>
 		<table style="width: 620px;" class="basic-settings">
 			<tr class="bg-green">
 				<th data-bind="i18n: 'KMK004_258'"></th>
-				<th data-bind="i18n: 'KMK004_262'"></th>
+				<th data-bind="i18n: 'KMK004_262' , visible: screenMode== 'Com_Company' "></th>
 			</tr>
 			<tr>
 				<td data-bind="text:getAggrMethodText()"></td>
-				<td data-bind="text:getReferenceText()"></td>
+				<td data-bind="text:getReferenceText(), visible: screenMode== 'Com_Company'"></td>
 			</tr>
 		</table>
 		<table style="width: 620px;" class="basic-settings">
@@ -43,67 +47,70 @@
 		</table>
 	</div>
 	`;
-	const COMPONENT_NAME = 'basic-settings-company';
+const COMPONENT_NAME = 'basic-settings-company';
 
-	@component({
-		name: COMPONENT_NAME,
-		template
-	})
-	
-	class BasicSettingsCompany extends ko.ViewModel {
+@component({
+	name: COMPONENT_NAME,
+	template
+})
 
-		screenData: KnockoutObservable<FlexScreenData>;
+class BasicSettingsCompany extends ko.ViewModel {
 
-		created(params: IParam) {
-			let vm = this;
-			vm.screenData = params.screenData;
-		}
+	screenData: KnockoutObservable<FlexScreenData>;
+	screenMode: string = '';
 
-		openKDialog() {
-			let vm = this;
-			vm.$window.modal('/view/kmk/004/k/index.xhtml');
-		}
-
-		getSettlePeriodText() {
-			let vm = this;
-			return vm.$i18n.text(_.find(__viewContext.enums.SettlePeriod, ['value', vm.screenData().comFlexMonthActCalSet().insufficSet.settlePeriod]).name);
-		}
-
-		getCarryforwardSetText() {
-			let vm = this
-			return vm.$i18n.text(_.find(__viewContext.enums.CarryforwardSetInShortageFlex, ['value', vm.screenData().comFlexMonthActCalSet().insufficSet.carryforwardSet]).name);
-		}
-
-		getAggrMethodText() {
-			let vm = this
-			return vm.$i18n.text(_.find(__viewContext.enums.FlexAggregateMethod, ['value', vm.screenData().comFlexMonthActCalSet().aggrMethod]).name);
-		}
-
-		getReferenceText() {
-			let vm = this
-			return vm.$i18n.text(_.find(__viewContext.enums.ReferencePredTimeOfFlex, ['value', vm.screenData().getFlexPredWorkTime().reference]).name);
-		}
-
-		getIncludeOverTimeText() {
-			let vm = this
-			return vm.$i18n.text(vm.screenData().comFlexMonthActCalSet().flexTimeHandle.includeOverTime == true ? "KMK004_283" : "KMK004_260");
-		}
-
-		getIncludeIllegalHdwk() {
-			let vm = this
-			return vm.$i18n.text(vm.screenData().comFlexMonthActCalSet().flexTimeHandle.includeIllegalHdwk == true ? "KMK004_284" : "KMK004_337");
-		}
-
-		getAggregateSetText() {
-			let vm = this
-			return vm.$i18n.text(_.find(__viewContext.enums.AggregateSetting, ['value', vm.screenData().comFlexMonthActCalSet().legalAggrSet.aggregateSet]).name);
-		}
-
+	created(params: IParam) {
+		let vm = this;
+		vm.screenData = params.screenData;
+		vm.screenMode = params.screenMode;
 	}
 
-	interface IParam {
-		screenData: KnockoutObservable<FlexScreenData>;
+	openKDialog() {
+		let vm = this;
+		vm.$window.modal('/view/kmk/004/k/index.xhtml', { screenMode: vm.screenMode });
 	}
 
-	
-	
+	getSettlePeriodText() {
+		let vm = this;
+		return vm.$i18n.text(_.find(__viewContext.enums.SettlePeriod, ['value', vm.screenData().comFlexMonthActCalSet().insufficSet.settlePeriod]).name);
+	}
+
+	getCarryforwardSetText() {
+		let vm = this
+		return vm.$i18n.text(_.find(__viewContext.enums.CarryforwardSetInShortageFlex, ['value', vm.screenData().comFlexMonthActCalSet().insufficSet.carryforwardSet]).name);
+	}
+
+	getAggrMethodText() {
+		let vm = this
+		return vm.$i18n.text(_.find(__viewContext.enums.FlexAggregateMethod, ['value', vm.screenData().comFlexMonthActCalSet().aggrMethod]).name);
+	}
+
+	getReferenceText() {
+		let vm = this
+		return vm.$i18n.text(_.find(__viewContext.enums.ReferencePredTimeOfFlex, ['value', vm.screenData().getFlexPredWorkTime().reference]).name);
+	}
+
+	getIncludeOverTimeText() {
+		let vm = this
+		return vm.$i18n.text(vm.screenData().comFlexMonthActCalSet().flexTimeHandle.includeOverTime == true ? "KMK004_283" : "KMK004_260");
+	}
+
+	getIncludeIllegalHdwk() {
+		let vm = this
+		return vm.$i18n.text(vm.screenData().comFlexMonthActCalSet().flexTimeHandle.includeIllegalHdwk == true ? "KMK004_284" : "KMK004_337");
+	}
+
+	getAggregateSetText() {
+		let vm = this
+		return vm.$i18n.text(_.find(__viewContext.enums.AggregateSetting, ['value', vm.screenData().comFlexMonthActCalSet().legalAggrSet.aggregateSet]).name);
+	}
+
+}
+
+interface IParam {
+	screenData: KnockoutObservable<FlexScreenData>;
+	screenMode: string;
+}
+
+
+
