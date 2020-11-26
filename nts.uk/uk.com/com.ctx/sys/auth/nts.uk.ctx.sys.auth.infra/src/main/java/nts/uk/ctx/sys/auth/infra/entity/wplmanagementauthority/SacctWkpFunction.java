@@ -12,13 +12,13 @@ import nts.uk.ctx.sys.auth.dom.wplmanagementauthority.DailyPerformanceFunctionNo
 import nts.uk.ctx.sys.auth.dom.wplmanagementauthority.FeatureDescriptionOfDailyPerformance;
 import nts.uk.ctx.sys.auth.dom.wplmanagementauthority.FeatureNameOfDailyPerformance;
 import nts.uk.ctx.sys.auth.dom.wplmanagementauthority.WorkPlaceFunction;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KASMT_WORPLACE_FUNCTION")
-public class KacmtWorkPlaceFunction extends ContractUkJpaEntity implements Serializable {
+@Table(name = "SACCT_WKP_FUNCTION")
+public class SacctWkpFunction extends UkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
@@ -43,7 +43,7 @@ public class KacmtWorkPlaceFunction extends ContractUkJpaEntity implements Seria
 		return this.functionNo;
 	}
 
-	public KacmtWorkPlaceFunction(int functionNo, boolean initialValue, String displayName, int displayOrder,
+	public SacctWkpFunction(int functionNo, boolean initialValue, String displayName, int displayOrder,
 			String description) {
 		super();
 		this.functionNo = functionNo;
@@ -53,8 +53,8 @@ public class KacmtWorkPlaceFunction extends ContractUkJpaEntity implements Seria
 		this.description = description;
 	}
 	
-	public static KacmtWorkPlaceFunction toEntity(WorkPlaceFunction domain) {
-		return new KacmtWorkPlaceFunction(
+	public static SacctWkpFunction toEntity(WorkPlaceFunction domain) {
+		return new SacctWkpFunction(
 					Integer.parseInt(domain.getFunctionNo().toString()),
 					domain.isInitialValue(),
 					domain.getDisplayName().v(),
