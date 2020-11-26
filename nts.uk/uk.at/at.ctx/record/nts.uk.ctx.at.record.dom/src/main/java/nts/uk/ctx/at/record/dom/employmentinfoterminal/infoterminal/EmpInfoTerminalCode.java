@@ -12,7 +12,7 @@ import nts.uk.shr.com.primitive.ZeroPaddedCode;
  *         就業情報端末コード
  */
 
-@StringCharType(CharType.ALPHA_NUMERIC)
+@StringCharType(CharType.NUMERIC)
 @StringMaxLength(4)
 @ZeroPaddedCode
 public class EmpInfoTerminalCode extends CodePrimitiveValue<EmpInfoTerminalCode> {
