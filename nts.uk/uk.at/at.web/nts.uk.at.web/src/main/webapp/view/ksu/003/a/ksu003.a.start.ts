@@ -33,23 +33,30 @@ module nts.uk.at.view.ksu003.a {
 			position: {
 				my: 'left top',
 				at: 'left bottom+3',
-				of: $('#note-sort')
-			}
+				of: $('#note-sort'),
+			},
+			showOnStart: false,
+			dismissible: false
 		});
 
 		$('#note-sort').click(function() {
 			$('#A3_4').ntsPopup("toggle");
 		});
+
+		$(".ui-igcombo-list").click(function() {
+			$('#A3_4').ntsPopup("hide");
+		});
+
+
 	}
 	$(window).resize(function() {
 		let self = this;
 		if (window.innerHeight < 700) {
-			$("#note-sort").css({ "margin-left": 1022 + 'px' });
+			$("#note-sort").css({ "margin-left": 1022 + 'px !important' });
 			$(".close").css({ "margin-right": 45 + 'px !important' });
-			$("#note-color").css({ "margin-right": 57 + 'px' });
-		}else{
-		$("#note-sort").css({ "margin-left": 1043 + 'px' });
-		} 
-		let screenModel = new viewmodel.ScreenModel();
+			$("#note-color").css({ "margin-right": 57 + 'px !important' });
+		} else {
+			$("#note-sort").css({ "margin-left": 1043 + 'px ' });
+		}
 	});
 }

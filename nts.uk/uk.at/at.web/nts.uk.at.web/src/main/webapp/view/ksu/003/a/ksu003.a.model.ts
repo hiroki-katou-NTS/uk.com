@@ -48,7 +48,7 @@ module nts.uk.at.view.ksu003.a.model {
 		endTime1: KnockoutObservable<number>; //終了時刻１
 		startTime2: KnockoutObservable<number>; //開始時刻2
 		endTime2: KnockoutObservable<number>; //終了時刻2
-		listBreakTimeZoneDto: KnockoutObservableArray<BreakTimeOfDailyAttdDto> //List<休憩時間帯>
+		listBreakTimeZoneDto: KnockoutObservableArray<TimeSpanForCalcDto> //List<休憩時間帯>
 		workTypeCode: KnockoutObservable<string>;
 		workTimeCode: KnockoutObservable<string>;//社員コード
 		workTimeName: KnockoutObservable<string>;//社員名称   
@@ -57,7 +57,7 @@ module nts.uk.at.view.ksu003.a.model {
 			endTime1: number,
 			startTime2: number,
 			endTime2: number,
-			listBreakTimeZoneDto: Array<BreakTimeOfDailyAttdDto>,
+			listBreakTimeZoneDto: Array<TimeSpanForCalcDto>,
 			workTypeCode: string,
 			workTimeCode: string,
 			workTimeName: string) {
@@ -78,7 +78,7 @@ module nts.uk.at.view.ksu003.a.model {
 		endTime1: number; //終了時刻１
 		startTime2: number; //開始時刻2
 		endTime2: number; //終了時刻2
-		listBreakTimeZoneDto: Array<BreakTimeOfDailyAttdDto> //List<休憩時間帯>
+		listBreakTimeZoneDto: Array<TimeSpanForCalcDto> //List<休憩時間帯>
 		workTypeCode: string;//勤務種類コード
 		workTimeCode: string;//就業時間帯コード
 		workTimeName: string; //就業時間帯名称
@@ -382,7 +382,7 @@ module nts.uk.at.view.ksu003.a.model {
 		startTime2Status: number; //開始時刻2編集状態 : EditStateSetting
 		endTime2: number; //終了時刻2
 		endTime2Status: number; //終了時刻2編集状態 : EditStateSetting
-		listBreakTimeZoneDto: Array<BreakTimeOfDailyAttdDto> //List<休憩時間帯>
+		listBreakTimeZoneDto: Array<TimeSpanForCalcDto> //List<休憩時間帯>
 		workTypeCode: string;//勤務種類コード
 		breakTimeStatus: number;//休憩時間帯編集状態 : EditStateSetting
 		workTypeStatus: number;//勤務種類編集状態 : EditStateSetting
@@ -400,7 +400,7 @@ module nts.uk.at.view.ksu003.a.model {
 		startTime2Status: number; //開始時刻2編集状態 : EditStateSetting
 		endTime2: number; //終了時刻2
 		endTime2Status: number; //終了時刻2編集状態 : EditStateSetting
-		listBreakTimeZoneDto: Array<BreakTimeOfDailyAttdDto> //List<休憩時間帯> (EA : List＜休憩時間帯＞＝勤務予定．休憩時間帯) 
+		listBreakTimeZoneDto: Array<TimeSpanForCalcDto> //List<休憩時間帯> (EA : List＜休憩時間帯＞＝勤務予定．休憩時間帯) 
 		workTypeCode: string;//勤務種類コード
 		breakTimeStatus: number;//休憩時間帯編集状態 : EditStateSetting
 		workTypeStatus: number;//勤務種類編集状態 : EditStateSetting
@@ -428,13 +428,13 @@ module nts.uk.at.view.ksu003.a.model {
 	/**
 	 * 日別勤怠の休憩時間帯   (EA : List＜休憩時間帯＞＝勤務予定．休憩時間帯) 
 	 */
-	export class BreakTimeOfDailyAttdDto {
-		breakType: number; //休憩種類 : 0: 就業時間帯から参照 (or 実績) and 1: スケジュールから参照 (or 予定)
-		breakTimeSheets: Array<BreakTimeZoneDto>;//時間帯
-		constructor(breakType: number,
-			breakTimeSheets: Array<BreakTimeZoneDto>) {
-			this.breakType = breakType;
-			this.breakTimeSheets = breakTimeSheets;
+	export class TimeSpanForCalcDto {
+		startTime: number; //開始 - 勤怠打刻(実打刻付き)
+		endTime: number; //終了 - 勤怠打刻(実打刻付き)
+		constructor(startTime: number,
+			endTime: number) {
+			this.startTime = startTime;
+			this.endTime = endTime;
 
 		}
 	}
@@ -466,10 +466,10 @@ module nts.uk.at.view.ksu003.a.model {
 		coreEndTime: number; //コア終了時刻
 		overtimeHours: Array<ChangeableWorkTime>; //List<残業時間帯>
 		startTimeRange1: TimeZoneDto; //日付開始時刻範囲時間帯1
-		etartTimeRange1: TimeZoneDto;//日付終了時刻範囲時間帯1
+		endTimeRange1: TimeZoneDto;//日付終了時刻範囲時間帯1
 		workTypeName: string;//勤務種類名称
 		startTimeRange2: TimeZoneDto; //日付開始時刻範囲時間帯2
-		etartTimeRange2: TimeZoneDto;//日付終了時刻範囲時間帯2
+		endTimeRange2: TimeZoneDto;//日付終了時刻範囲時間帯2
 		fixBreakTime: number; //休憩時間帯を固定にする (0:false 1:true)
 		workType: number;//勤務タイプ : WorkTimeForm
 	}
@@ -481,23 +481,23 @@ module nts.uk.at.view.ksu003.a.model {
 		coreEndTime: number; //コア終了時刻
 		overtimeHours: Array<ChangeableWorkTime>; //List<残業時間帯>
 		startTimeRange1: TimeZoneDto; //日付開始時刻範囲時間帯1
-		etartTimeRange1: TimeZoneDto;//日付終了時刻範囲時間帯1
+		endTimeRange1: TimeZoneDto;//日付終了時刻範囲時間帯1
 		workTypeName: string;//勤務種類名称
 		startTimeRange2: TimeZoneDto; //日付開始時刻範囲時間帯2
-		etartTimeRange2: TimeZoneDto;//日付終了時刻範囲時間帯2
+		endTimeRange2: TimeZoneDto;//日付終了時刻範囲時間帯2
 		fixBreakTime: number; //休憩時間帯を固定にする (0:false 1:true)
 		workType: number;//勤務タイプ : WorkTimeForm
-		constructor(param: FixedWorkInforDto) {
+		constructor(param: IFixedWorkInforDto) {
 			let self = this;
 			self.workTimeName = param.workTimeName;
 			self.coreStartTime = param.coreStartTime;
 			self.coreEndTime = param.coreEndTime;
 			self.overtimeHours = param.overtimeHours;
 			self.startTimeRange1 = param.startTimeRange1;
-			self.etartTimeRange1 = param.etartTimeRange1;
+			self.endTimeRange1 = param.endTimeRange1;
 			self.workTypeName = param.workTypeName;
 			self.startTimeRange2 = param.startTimeRange2;
-			self.etartTimeRange2 = param.etartTimeRange2;
+			self.endTimeRange1 = param.endTimeRange1;
 			self.fixBreakTime = param.fixBreakTime;
 			self.workType = param.workType;
 		}
@@ -672,14 +672,14 @@ module nts.uk.at.view.ksu003.a.model {
 
 		// 勤務固定情報　dto
 		startTimeRange: model.TimeZoneDto; //日付開始時刻範囲時間帯1
-		etartTimeRange: model.TimeZoneDto;//日付終了時刻範囲時間帯1
+		endTimeRange: model.TimeZoneDto;//日付終了時刻範囲時間帯1
 
 	}
 
 	export interface IBreakTime {
 		empId: string;
 		color: string;
-		lstBreakTime: Array<model.BreakTimeOfDailyAttdDto>;
+		lstBreakTime: Array<model.TimeSpanForCalcDto>;
 		fixBreakTime: number;
 	}
 

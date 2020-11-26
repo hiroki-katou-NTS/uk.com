@@ -20,6 +20,9 @@
 	height: 25px;
 	margin-left: 37px;
 }
+.ui-igcombo-list{
+	max-height: 130px !important;
+}
 
 #targetDate, #prev-button, #next-button, #functon-area-row2-left,
 	#operation-unit {
@@ -155,20 +158,35 @@
 #extable-ksu003 td, #extable-ksu003 td>* {
 	font-size: 10.5px;
 }
+#extable-ksu003 > div.ex-body-leftmost > table > tbody > tr > td.xseal > button{
+	pointer-events:none;
+	cursor: not-allowed;
+    background-color: #DDDDD2 !important;
+}
 
+#extable-ksu003 > div.ex-body-leftmost > table > tbody > tr > td.xcell > a.x-link:hover {
+	text-decoration: none !important;
+	color:black !important;
+}
+
+#extable-ksu003 > div.ex-body-leftmost > table > tbody > tr > td.xcell > a.x-link {
+	text-align: left;
+}
 .xheader *, .ex-body-detail *, .ex-body-vert-sum *, .ex-body-horz-sum *
 	{
 	text-align: center;
 }
 
-.x-link {
-	white-space: nowrap;
-	text-align: left;
-	margin-left: 22px;
+.x-link:hover {
+	cursor: initial !important;
 }
 
+ .x-link {
+	margin-top : 2px;
+	white-space: nowrap;
+} 
 #note-sort {
-	margin-left: 1050px !important;
+	margin-left: 1050px;
 	margin-top: -2px !important;
 }
 

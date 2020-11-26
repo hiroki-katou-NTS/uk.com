@@ -10,8 +10,13 @@ module nts.uk.at.view.ksu003.a {
 			displayDataKsu003: "screen/at/schedule/displayDataKsu003",
 			sortEmployee: "screen/at/schedule/sortEmployee",
 			getEmpWorkFixedWorkInfo: "screen/at/schedule/getEmpWorkFixedWorkInfo",
-			changeWorkType: "screen/at/schedule/changeWorkType"
+			changeWorkType: "screen/at/schedule/changeWorkType",
+            checkTimeIsIncorrect: "ctx/at/shared/workrule/workinghours/checkTimeIsIncorrect"
 		};
+		
+		export function checkTimeIsIncorrect(command : any): JQueryPromise<any> {
+            return nts.uk.request.ajax( "at", servicePath.checkTimeIsIncorrect, command);
+        }
 
         /**
          * ①<<ScreenQuery>> 初期起動の情報取得
