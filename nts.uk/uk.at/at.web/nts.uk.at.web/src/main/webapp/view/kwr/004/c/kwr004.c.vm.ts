@@ -7,8 +7,8 @@ module nts.uk.at.view.kwr004.c {
   const KWR004_C_INPUT = 'KWR004_C_DATA';
   const KWR004_C_OUTPUT = 'KWR004_C_RETURN';
 
-  const PATHS = {
-    cloneSettingClassification: ''
+  const PATH = {
+    cloneSettingClassification: 'at/function/kwr004/duplicate'
   };
 
   @bean()
@@ -27,10 +27,10 @@ module nts.uk.at.view.kwr004.c {
       const vm = this;
 
       vm.params({
-        settingListItemDetails: [], //設定区分
-        sourceCode: null, //複製元の設定ID
-        code: null,  //複製先_コード
-        name: null //複製先_名称
+        settingCategory : 1,
+        settingId : null,
+        settingCode :null,
+        settingName : null
       });
 
       vm.$window.storage(KWR004_C_INPUT).then((data) => {
@@ -38,21 +38,10 @@ module nts.uk.at.view.kwr004.c {
           vm.oldCode(data.code);
           vm.oldName(data.name);
 
-          let cloneCode: any = !_.isNil(data.lastCode) ? parseInt(data.lastCode) + 1 : 1;
-          cloneCode = _.padStart(cloneCode, 2, '0');
-          vm.newCode(cloneCode);
-
-          let cloneName: any = data.name;
-          if( cloneName.indexOf('_' + data.code) !== -1)
-            cloneName = cloneName.substring(0, cloneName.indexOf('_' + data.code));
-        
-          cloneName = cloneName + '_' + cloneCode;
-          vm.newName(cloneName);
-
-          vm.params().sourceCode = data.code;
-          vm.params().code = data.cloneCode;
-          vm.params().name = data.cloneName;
-          vm.params().settingListItemDetails = data.settingListItemDetails;
+          vm.params().settingId = data.settingId;
+          vm.params().settingName = data.code;
+          vm.params().settingName = data.name;
+          vm.params().settingCategory = data.settingCategory;
         }
       });
 
@@ -70,10 +59,24 @@ module nts.uk.at.view.kwr004.c {
 
     proceed() {
       const vm = this;
+      vm.$blockui('show');
 
-      vm.$window.storage(KWR004_C_OUTPUT, { code: vm.newCode(), name: vm.newName()});
-      vm.$window.close();
-      //vm.cloneSettingClassification();
+      vm.params().code = vm.newCode();
+      vm.params().name = vm.newName();
+
+      vm.$ajax(PATH.cloneSettingClassification, vm.params()).done(() => {
+        vm.$dialog.info( { messageId: 'Msg_15' }).then(() => {
+          vm.$window.storage(KWR004_C_OUTPUT, { code: vm.newCode(), name: vm.newName()});
+          vm.$blockui('hide');
+          vm.$window.close();
+        });
+       
+      }).fail((err) => {
+        vm.$dialog.error( { messageId: err.messageId }).then(() => {
+          vm.$blockui('hide');
+        });
+      }).always( () => vm.$blockui('hide'));
+     
     }
 
     cancel() {
