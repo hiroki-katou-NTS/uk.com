@@ -319,7 +319,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					} else if (item.type == AttendanceType.MIDNIGHT_OUTSIDE) {
 						if (!_.isNil(item.applicationTime())) {
 							if (item.applicationTime() > 0) {
-								overTimeShiftNight.overTimeMidNight = item.applicationTime();							
+								overTimeShiftNight.overTimeMidNight = item.applicationTime();
+								applicationTime.overTimeShiftNight = overTimeShiftNight;					
 							}
 						}
 					} else if (item.type == AttendanceType.FLEX_OVERTIME) {
@@ -329,6 +330,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 							}
 						}
 					}
+					
 				}
 			});
 			// Type = 加給時間
@@ -819,15 +821,15 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				overTime2.frameNo = String(overTimeArray.length - 1);
 				overTime2.displayNo = ko.observable(self.$i18n('KAF005_65'));
 				overTime2.applicationTime = ko.observable(self.isCalculation ? 0 : null);
-				overTime2.preTime = ko.observable(self.isCalculation ? 0 : null);
-				overTime2.actualTime = ko.observable(self.isCalculation ? 0 : null);
-				overTime1.type = AttendanceType.FLEX_OVERTIME;
+				overTime2.preTime = ko.observable(null);
+				overTime2.actualTime = ko.observable(null);
+				overTime2.type = AttendanceType.FLEX_OVERTIME;
 				overTime2.visible = ko.computed(() => {
 						return self.visibleModel.c2() && self.visibleModel.c16();
 					}, self);
 					
 				overTime2.backgroundColor = ko.observable('');					
-				overTimeArray.push(overTime1);
+				overTimeArray.push(overTime2);
 				
 				
 			}
