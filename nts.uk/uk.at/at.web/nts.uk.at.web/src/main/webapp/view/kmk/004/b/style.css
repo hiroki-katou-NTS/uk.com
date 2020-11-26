@@ -61,6 +61,7 @@
 	width: 190px;
 }
 
+
 /* View D */
 .view-d-kmk004 {
 	padding: 10px;
@@ -84,7 +85,6 @@
 	font-size: 20px;
 }
 
-
 .view-d-kmk004 .right-content .setting {
 	margin-top: 30px;
 }
@@ -107,6 +107,10 @@
 
 .view-d-kmk004 .right-content .time-work {
 	margin-left: 190px;
+}
+
+.view-d-kmk004 .right-content .name {
+	margin-bottom: 15px;
 }
 
 /* View E */

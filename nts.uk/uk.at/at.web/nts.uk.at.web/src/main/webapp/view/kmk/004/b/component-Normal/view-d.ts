@@ -16,6 +16,8 @@ module nts.uk.at.view.kmk004.b {
 			<div data-bind="component: {
 				name: 'kcp001',
 				params:{
+					emloyment: emloyment,
+					alreadySettings: alreadySettings
 				}
 			}"></div>
 		</div>
@@ -23,7 +25,7 @@ module nts.uk.at.view.kmk004.b {
 			<div>
 				<p data-bind="i18n: 'KMK004_228'"></p>
 				<hr></hr>
-				<div data-bind="i18n: 'Chung dep trai'"></div>
+				<div class="name" data-bind="i18n: emloyment.name"></div>
 				<div>
 					<div data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_229'"></div>
 					<!-- ko if: modeCheckSetting -->
@@ -86,6 +88,8 @@ module nts.uk.at.view.kmk004.b {
 		public changeYear: KnockoutObservable<boolean> = ko.observable(true);
 		public checkEmployee: KnockoutObservable<boolean> = ko.observable(false);
 		public existYear: KnockoutObservable<boolean> = ko.observable(false);
+		public emloyment: Employment = new Employment();
+		public alreadySettings: KnockoutObservableArray<AlreadySettingEmployment> = ko.observableArray([]);
 
 		created(params: Params) {
 			const vm = this;
