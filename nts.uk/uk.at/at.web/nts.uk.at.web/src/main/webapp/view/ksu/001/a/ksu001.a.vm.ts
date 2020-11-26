@@ -2301,7 +2301,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 
                 $(".toLeft").css("margin-left", "190px");
                 
-                let marginleft = $("#extable").width() - 160 - 27 - 27 - 30 - 10;
+                let marginleft = $('#extable').width() - 160 - 32 - 32 -30;
                 $(".toRight").css('margin-left', marginleft + 'px');
             } else {
                 if (self.showA9) {
@@ -2340,6 +2340,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         setPositionButonToRightToLeft() {
             let self = this;
             self.indexBtnToLeft = 0;
+            $('#btnControlLeftRight').width($("#extable").width() + 10);
 
             let marginleftOfbtnToRight: number = 0;
             let marginleftOfbtnToLeft: number = 190 + self.widthMid;
@@ -2367,11 +2368,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     $("#main-area").css('overflow-y', 'hidden');
                 }
             }
+            $("#sub-content-main").width($('#extable').width() + 30);
         }
         
         setPositionButonToRight() {
             let self = this;
             let marginleftOfbtnToRight: number = 0;
+            $('#btnControlLeftRight').width($("#extable").width() + 10);
             if (self.showA9) {
                 let displayA9 = $('.ex-body-middle').css('display');
                 if(displayA9 == 'none'){
@@ -2382,7 +2385,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             } else {
                 marginleftOfbtnToRight = $('#extable').width() - 32 - 3;
             }
-            $('.toRight').css('margin-left', marginleftOfbtnToRight + 'px');
+            self.targetOrganizationName(marginleftOfbtnToRight + ' ' + window.innerWidth);
+            $('.toRight').css('margin-left', marginleftOfbtnToRight <= 101 ? 101 : marginleftOfbtnToRight + 'px');
         }
         
         setPositionButonDownAndHeightGrid() {
