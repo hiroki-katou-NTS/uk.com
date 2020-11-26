@@ -36,8 +36,8 @@ module nts.uk.at.view.kwr004.a {
     zeroDisplayClassification: KnockoutObservable<number> = ko.observable(0);
     pageBreakSpecification: KnockoutObservable<number> = ko.observable(0);
     isWorker: KnockoutObservable<boolean> = ko.observable(true);
-    settingListItems: KnockoutObservableArray<any> = ko.observableArray([]);
-
+    settingListItems1: KnockoutObservableArray<any> = ko.observableArray([]);
+    settingListItems2: KnockoutObservableArray<any> = ko.observableArray([]);
     // start declare KCP005
     listComponentOption: any;
     selectedCode: KnockoutObservable<string>;
@@ -65,7 +65,9 @@ module nts.uk.at.view.kwr004.a {
       super();
       const vm = this;
 
-      vm.getSettingListItems();
+      //get settings for Stand or Free
+      vm.getSettingListItems(0); //定型選択      
+      vm.getSettingListItems(1); //自由設定
 
       vm.rdgSelectedId.subscribe((value) => {
         vm.isEnableSelectedCode(value === common.StandardOrFree.Standard);
@@ -73,8 +75,6 @@ module nts.uk.at.view.kwr004.a {
 
       vm.CCG001_load();
       vm.KCP005_load();
-
-      //vm.getItemListSetting();
       vm.initialWorkStatusInformation();
 
     }
@@ -227,51 +227,29 @@ module nts.uk.at.view.kwr004.a {
       const vm = this;
 
       let selectedItem = vm.rdgSelectedId();
-      let attendenceItem = selectedItem ? vm.freeSelectedCode() : vm.standardSelectedCode();
-      let attendence: any = _.find(vm.settingListItems(), (x) => x.code === attendenceItem);
+      let attendanceItem = selectedItem ? vm.freeSelectedCode() : vm.standardSelectedCode();
+      let findInList = selectedItem ? vm.settingListItems1() : vm.settingListItems2();
+      let attendance: any = _.find( findInList, (x) => x.code === attendanceItem);
 
-      if (_.isNil(attendence)) attendence = _.head(vm.settingListItems());
+      if (_.isNil(attendance)) attendance = _.head(findInList);
 
       let params = {
-        code: attendence.code,
-        name: attendence.name,
+        code: attendance.code,
+        name: attendance.name,
+        settingId: attendance.settingId,
         itemSelection: vm.rdgSelectedId
       }
 
       vm.$window.storage(KWR004_B_INPUT, ko.toJS(params)).then(() => {
         vm.$window.modal('/view/kwr/004/b/index.xhtml').then(() => {
           vm.$window.storage(KWR004_B_OUTPUT).then((data: any) => {
-
-            if (data) {
-              switch (data.status) {
-                case 0:
-                  //update new name after changed from screen B
-                  let index = _.findIndex(vm.settingListItems(), (x) => x.code === data.code);
-                  let tempListItems = vm.settingListItems();
-                  tempListItems[index] = new ItemModel(
-                    data.code,
-                    data.name.substring(0, data.name.indexOf('_' + data.code))
-                  );
-                  vm.settingListItems([]);
-                  vm.settingListItems(tempListItems);
-                  //reselect
-                  vm.standardSelectedCode(data.code);
-                  vm.freeSelectedCode(data.code);
-
-                  break;
-                case 1:
-                  //add new an item into settingListItems
-                  vm.settingListItems.push(new ItemModel(data.code, data.name));
-                  break;
-                //deleted
-                case 2:
-                  //remove item that's deleted from screen B
-                  vm.settingListItems(_.filter(vm.settingListItems(), (x) => x.code !== data.code));
-                  break;
-              }
+            vm.getSettingListItems(vm.rdgSelectedId());
+            if(!_.isNil(data)) {
+              if( vm.rdgSelectedId() === 0) vm.standardSelectedCode(data.code);
+              else vm.freeSelectedCode(data.code);
             }
-            //settingListItems
           });
+
           $('#btnExportExcel').focus();
         });
       });
@@ -335,46 +313,27 @@ module nts.uk.at.view.kwr004.a {
         .fail();
     }
 
-    getSettingListItems() {
+    getSettingListItems( type: number) {
       const vm = this;
       let params = {
-        settingClassification: vm.rdgSelectedId()
+        settingClassification: type
       }
+
+      let listItems = [];
       vm.$ajax(PATH.getSettingList, params)
       .done((result) => {
         console.log(result);
+        if(!_.isNil(result)) {
+          _.forEach(result, (item) => {
+            listItems.push( new ItemModel(item.code, item.name, item.settingId ));
+          });
+        }
       }).fail();
 
-     /*  vm.$ajax(PATH.initScreen)
-      .done((result) => {
-        console.log(result);
-      }).fail(); */
-      
-      let listItems: any = [
-        new ItemModel('001', '予定勤務種類', _.random(100000, 999999).toString()),
-        new ItemModel('003', '予定勤務種類', _.random(100000, 999999).toString()),
-        new ItemModel('004', '予定勤務種類', _.random(100000, 999999).toString()),
-        new ItemModel('005', '予定勤務種類', _.random(100000, 999999).toString()),
-        new ItemModel('002', 'Seoul Korea', _.random(100000, 999999).toString()),
-        new ItemModel('006', 'Paris France', _.random(100000, 999999).toString()),
-        new ItemModel('007', '予定勤務種類', _.random(100000, 999999).toString()),
-        new ItemModel('008', '予定勤務種類', _.random(100000, 999999).toString()),
-        new ItemModel('009', '予定勤務種類', _.random(100000, 999999).toString()),
-        new ItemModel('010', '予定勤務種類', _.random(100000, 999999).toString()),
-        new ItemModel('011', '予定勤務種類', _.random(100000, 999999).toString()),
-        new ItemModel('013', '予定勤務種類', _.random(100000, 999999).toString()),
-        new ItemModel('014', '予定勤務種類', _.random(100000, 999999).toString()),
-        new ItemModel('015', '予定勤務種類', _.random(100000, 999999).toString()),
-        new ItemModel('012', 'Seoul Korea', _.random(100000, 999999).toString()),
-        new ItemModel('016', 'Paris France', _.random(100000, 999999).toString()),
-        new ItemModel('017', '予定勤務種類', _.random(100000, 999999).toString()),
-        new ItemModel('018', '予定勤務種類', _.random(100000, 999999).toString()),
-        new ItemModel('019', '予定勤務種類', _.random(100000, 999999).toString()),
-        new ItemModel('020', '予定勤務種類', _.random(100000, 999999).toString()),
-      ];
-
-      listItems = _.orderBy(listItems, 'code', 'asc');
-      vm.settingListItems(listItems);
+      if(type === 0) 
+        vm.settingListItems1(listItems);
+      else
+        vm.settingListItems2(listItems);
     }
 
     exportExcel() {
@@ -403,9 +362,9 @@ module nts.uk.at.view.kwr004.a {
 
       let settingId = null, findObj = null;
       if( vm.rdgSelectedId() === 0 ) {
-        findObj = _.find(vm.settingListItems(), (x) => x.code === vm.standardSelectedCode());
+        findObj = _.find(vm.settingListItems1(), (x) => x.code === vm.standardSelectedCode());
       } else {
-        findObj = _.find(vm.settingListItems(), (x) => x.code === vm.freeSelectedCode());
+        findObj = _.find(vm.settingListItems2(), (x) => x.code === vm.freeSelectedCode());
       }
 
       if( !_.isNil(findObj)) settingId = findObj.settingId;
@@ -429,13 +388,6 @@ module nts.uk.at.view.kwr004.a {
           vm.$dialog.error({ messageId: 'Msg_1860'}).then(() => { vm.$blockui('hide'); });
         }).always(() => vm.$blockui('hide'));        
       });
-    }
-
-    getItemListSetting() {
-      const vm = this;
-
-      vm.itemListSetting.push({ id: 0, name: vm.$i18n('KWR004_14') });
-      vm.itemListSetting.push({ id: 1, name: vm.$i18n('KWR004_15') });
     }
 
     checkErrorConditions() {

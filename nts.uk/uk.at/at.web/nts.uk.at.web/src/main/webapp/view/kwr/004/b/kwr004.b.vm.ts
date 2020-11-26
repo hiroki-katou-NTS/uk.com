@@ -81,8 +81,7 @@ module nts.uk.at.view.kwr004.b {
       vm.currentCodeList.subscribe((newCode: any) => {
         nts.uk.ui.errors.clearAll();
         if (_.isNil(newCode)) return;
-        //vm.getSettingListItemsDetails();
-        //vm.getSettingListForPrint(newCode);
+        vm.getSettingListItemsDetails(newCode);
       });
 
       vm.settingListItemsDetails.subscribe((newList) => {
@@ -166,7 +165,7 @@ module nts.uk.at.view.kwr004.b {
     addNewRow() {
       const vm = this;
       //vm.addRowItem();
-      vm.creatDefaultSettingDetails();
+      vm.createDefaultSettingDetails();
 
       vm.isEnableDuplicateButton(false);
       vm.isEnableDeleteButton(false);
@@ -181,37 +180,19 @@ module nts.uk.at.view.kwr004.b {
     registerSetting() {
       const vm = this;
 
-      //sort before get info and save
-      let templateSetting = vm.settingListItemsDetails();
-      //set reset
-      vm.settingListItemsDetails([])
-      //sort daily
-      let twoItemList: Array<SettingForPrint> = _.dropRight(templateSetting, templateSetting.length - 2);
-      twoItemList = vm.sortSettingListItemsDetails(twoItemList, 2);
-      if (!_.isNil(twoItemList)) {
-        _.forEach(twoItemList, (x) => {
-          vm.settingListItemsDetails.push(x);
-        });
-      }
-      //sort monthly
-      let eightItemList: Array<SettingForPrint> = _.drop(templateSetting, 2);
-      eightItemList = vm.sortSettingListItemsDetails(eightItemList, 8);
-      if (!_.isNil(eightItemList)) {
-        _.forEach(eightItemList, (x) => {
-          vm.settingListItemsDetails.push(x);
-        });
-      }
+      //order before save to database
+      vm.orderSettingListItemsDetails();
 
       let params = {
-        id: null,
-        code: null,
-        name: null,
+        id: vm.isNewMode() ? null : vm.settingId(),
+        code: vm.attendanceCode(),
+        name: vm.attendanceName(),
         settingCategory: vm.itemSelection(),
         employeeI: vm.$user.employeeId,
         dailyOutputItems: vm.getDailyOutputItems(),
         monthlyOutputItems: vm.getMonthlyOutputItems()
       };
-
+      
       console.log(params);
 
       const path_url = (vm.isNewMode()) ? PATH.createSetting : PATH.updateSetting;
@@ -252,6 +233,31 @@ module nts.uk.at.view.kwr004.b {
       vm.isNewMode(false);
     }
 
+    orderSettingListItemsDetails() {
+      const vm = this;
+      //sort before get info and save
+      let templateSetting = vm.settingListItemsDetails();
+      //set reset
+      vm.settingListItemsDetails([])
+      //sort daily
+      let twoItemList: Array<SettingForPrint> = _.dropRight(templateSetting, templateSetting.length - 2);
+      twoItemList = vm.sortSettingListItemsDetails(twoItemList, 2);
+      if (!_.isNil(twoItemList)) {
+        _.forEach(twoItemList, (x) => {
+          vm.settingListItemsDetails.push(x);
+        });
+      }
+      //sort monthly
+      let eightItemList: Array<SettingForPrint> = _.drop(templateSetting, 2);
+      eightItemList = vm.sortSettingListItemsDetails(eightItemList, 8);
+      if (!_.isNil(eightItemList)) {
+        _.forEach(eightItemList, (x) => {
+          vm.settingListItemsDetails.push(x);
+        });
+      }
+    }
+
+
     getDailyOutputItems() {
       let dailyOutputItems = [];
       const vm = this;
@@ -288,7 +294,7 @@ module nts.uk.at.view.kwr004.b {
       let monthlyOutputItems = [];
       const vm = this;
 
-      //get daily
+      //get monthly
       let eightItemList = _.drop(vm.settingListItemsDetails(), 2);
       _.forEach(eightItemList, (x, index) => {
         let monthlyItem = {
@@ -329,24 +335,34 @@ module nts.uk.at.view.kwr004.b {
       let from = tempSettings.length;
       for (let i = from; i < max_row; i++) {
         let dailyAttributes = i < 2 ? vm.dailyAloneAttributes() : vm.monthlyAttributes();
-        let newItem = new SettingForPrint(
-          i + 1, //id
-          null, //name
-          i < 2 ? 1 : 2, //indCalcClassic
-          null, //selectionItem
-          false, //checked
-          0, //itemAttribute
-          [], //selectedTimeList
-          dailyAttributes, //dailyAttributes,
-          -1, //selectedCategory
-          i < 2 //type: true: daily or false: monthly
-        );
+        let newItem = new SettingForPrint( i + 1, null, i < 2 ? 1 : 2, null, false, 0, [], dailyAttributes, -1, i < 2);
         tempSettings.push(newItem);
       }
 
       return tempSettings;
     }
 
+    getSettingListItemsDetails( newCode: string) {
+      const vm = this;
+
+      let findObj = _.find(vm.settingListItems(), (x) => x.code === newCode);
+      let settingId = null;
+
+      if(!_.isNil(findObj)) {
+        settingId = findObj.settingId;
+        vm.attendanceCode(findObj.code);
+        vm.attendanceName(findObj.name);
+      }
+
+      vm.$blockui('show');
+      vm.$ajax(PATH.getSettingDetail, {settingId: settingId })
+      .done((result) => {
+
+        vm.orderSettingListItemsDetails();
+      })
+      .fail()
+      .always(() => vm.$blockui('hide'))
+    }
 
     deleteSetting() {
       const vm = this;
@@ -370,8 +386,8 @@ module nts.uk.at.view.kwr004.b {
       let params = {
         code: vm.attendanceCode(), //複製元の設定ID
         name: vm.attendanceName(),
-        lastCode: !_.isNil(lastItem) ? lastItem.code : null,
-        settingListItems: vm.settingListItemsDetails() //設定区分
+        settingId: vm.settingId(),
+        settingCategory: vm.itemSelection()
       }
 
       vm.$window.storage(KWR004_C_INPUT, params).then(() => {
@@ -380,16 +396,9 @@ module nts.uk.at.view.kwr004.b {
             console.log(data);
             if (_.isNil(data)) {
               return;
-            }
-
-            /* let duplicateItem = _.find(vm.settingListItems(), (x) => x.code === data.code);
-            if (!_.isNil(duplicateItem)) {
-              vm.$dialog.error({ messageId: 'Msg_1903' }).then(() => { });
-              return;
-            }
-
-            vm.settingListItems.push(data);
-            vm.currentCodeList(data.code);    */
+            } 
+            //reload screen B
+            vm.getSettingItemsLeft(data.code);
           });
         });
       });
@@ -405,27 +414,15 @@ module nts.uk.at.view.kwr004.b {
     /**
      *
     */
-    creatDefaultSettingDetails(from: number = 0) {
+    createDefaultSettingDetails(from: number = 0) {
       const vm = this;
       //clear
       vm.settingListItemsDetails([]);
       for (let i = from; i < NUM_ROWS; i++) {
         let dailyAttributes = i < 2 ? vm.dailyAloneAttributes() : vm.monthlyAttributes();
-        let newItem = new SettingForPrint(
-          i + 1, //id
-          null, //name
-          i < 2 ? 1 : 2, //indCalcClassic
-          null, //selectionItem
-          false, //checked
-          0, //itemAttribute
-          [], //selectedTimeList
-          dailyAttributes, //dailyAttributes
-          -1, //selectedCategory
-          i < 2 //type: true: daily or false: monthly
-        );
+        let newItem = new SettingForPrint( i + 1, null, i < 2 ? 1 : 2, null, false, 0, [], dailyAttributes, -1, i < 2);        
         vm.addRowItem(newItem);
       }
-      console.log(vm.settingListItemsDetails());
     }
 
     createDataSelection(selectedTimeList: Array<any>) {
@@ -442,10 +439,7 @@ module nts.uk.at.view.kwr004.b {
       });
 
       if (selectionItem.length > 0) {
-        dataSelection = _.join(selectionItem, ' ');
-        /* if (dataSelection.length > 20) {
-          dataSelection = dataSelection.substring(0, 19) + vm.$i18n('KWR003_219');
-        } */
+        dataSelection = _.join(selectionItem, ' ');       
       }
 
       return dataSelection;
@@ -483,7 +477,7 @@ module nts.uk.at.view.kwr004.b {
         }
       });
     }
-
+    
     getSettingItemsLeft(currentCode: string) {
       const vm = this;
 
