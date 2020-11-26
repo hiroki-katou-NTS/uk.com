@@ -19,6 +19,10 @@ public class EmpPeriodParam {
 	
 	private String empCD;
 	
+	private String workplaceStartDate;
+	
+	private String workplaceEndDate;
+	
 	private String companyInDate;
 	
 	private String companyOutDate;
@@ -36,6 +40,8 @@ public class EmpPeriodParam {
 				wkpID, 
 				empID, 
 				empCD, 
+				GeneralDate.fromString(workplaceStartDate, "yyyy/MM/dd"), 
+				GeneralDate.fromString(workplaceEndDate, "yyyy/MM/dd"), 
 				GeneralDate.fromString(companyInDate, "yyyy/MM/dd"), 
 				GeneralDate.fromString(companyOutDate, "yyyy/MM/dd"), 
 				employmentStartDate == null ? null : GeneralDate.fromString(employmentStartDate, "yyyy/MM/dd"), 

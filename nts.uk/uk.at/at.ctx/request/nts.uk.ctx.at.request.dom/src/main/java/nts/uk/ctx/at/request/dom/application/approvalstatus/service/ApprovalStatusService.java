@@ -29,6 +29,7 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.MailT
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.PhaseApproverStt;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.SendMailResultOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnApprovalSendMail;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.WkpEmpMail;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.WorkplaceInfor;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeEmailImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
@@ -161,10 +162,24 @@ public interface ApprovalStatusService {
 	 * @param end
 	 * @return
 	 */
-	public Map<String, Integer> getStatusApplicationApproval(DatePeriod period);
+	public Map<String, Integer> getStatusApplicationApproval(DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst, List<String> employmentCDLst);
 	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.D:社員別申請承認状況ダイアログ.アルゴリズム.D:承認状況社員別起動.D:承認状況社員別起動
+	 * @param wkpID
+	 * @param period
+	 * @param empPeriodLst
+	 * @return
+	 */
 	public List<ApprSttEmp> getApprSttStartByEmp(String wkpID, DatePeriod period, List<EmpPeriod> empPeriodLst);
 	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.D:社員別申請承認状況ダイアログ.アルゴリズム.D:承認状況社員別一覧作成.D:承認状況社員別一覧作成
+	 * @param wkpID
+	 * @param paramPeriod
+	 * @param empPeriodLst
+	 * @return
+	 */
 	public List<ApprSttEmp> getAppSttCreateByEmpLst(String wkpID, DatePeriod paramPeriod, List<EmpPeriod> empPeriodLst);
 	
 	/**
@@ -185,6 +200,13 @@ public interface ApprovalStatusService {
 	 */
 	public List<Pair<Application,List<ApprovalPhaseStateImport_New>>> getApprSttApplication(String employeeID, DatePeriod period);
 	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.D:社員別申請承認状況ダイアログ.アルゴリズム.D:承認状況日別状態作成.D:承認状況日別状態作成
+	 * @param employeeID
+	 * @param period
+	 * @param appPairLst
+	 * @return
+	 */
 	public List<ApprSttEmpDate> createApprSttByDate(String employeeID, DatePeriod period, List<Pair<Application,List<ApprovalPhaseStateImport_New>>> appPairLst);
 	
 	/**
@@ -222,6 +244,12 @@ public interface ApprovalStatusService {
 	 */
 	public ApprSttSendMailInfoOutput getApprSttSendMailInfo(ApprovalStatusMailType mailType, ClosureId closureId, YearMonth processingYm,
 			DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst, List<String> employmentCDLst);
+	
+	/**
+	 * C:メール送信_対象再取得_申請
+	 * @return
+	 */
+	public List<EmpPeriod> getMailCountUnApprApp(DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst, List<String> employmentCDLst);
 	
 	/**
 	 * C:メール送信承認者を取得

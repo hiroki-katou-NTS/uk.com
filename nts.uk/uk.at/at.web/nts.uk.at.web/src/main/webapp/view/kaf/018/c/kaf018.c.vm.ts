@@ -159,29 +159,6 @@ module nts.uk.at.view.kaf018.c.viewmodel {
 			});
 		}
 		
-		getCountEmp(value: string) {
-			const vm = this;
-			let	wkpInfo: ApprSttWkpEmpMailOutput = _.find(vm.dataSource, o => o.wkpID==value);
-			if(wkpInfo) {
-				switch(vm.mailType) {
-					case ApprovalStatusMailType.APP_APPROVAL_UNAPPROVED:
-						return wkpInfo.countEmp + vm.$i18n('KAF018_527');
-					case ApprovalStatusMailType.DAILY_UNCONFIRM_BY_PRINCIPAL:
-						return;
-					case ApprovalStatusMailType.DAILY_UNCONFIRM_BY_CONFIRMER:
-						return;
-					case ApprovalStatusMailType.MONTHLY_UNCONFIRM_BY_PRINCIPAL:
-						return;
-					case ApprovalStatusMailType.MONTHLY_UNCONFIRM_BY_CONFIRMER:
-						return;
-					case ApprovalStatusMailType.WORK_CONFIRMATION:
-						return;
-					default:
-						return;
-				}
-			}
-		}
-		
 		displayEmpMail(value: string) {
 			const vm = this;
 			let empMailLst = _.find(vm.dataSource, o => o.wkpID == value).empMailLst;
