@@ -236,7 +236,7 @@ module nts.uk.at.view.kdw002.a {
                 AtItems = {
                     companyID: ""
                 };
-                if (_.isEmpty(self.roundingUnitValue()) && self.frameCategory() === 8) {
+                if ((self.roundingUnitValue() === null || self.roundingUnitValue() === "") && self.frameCategory() === 8) {
                     nts.uk.ui.dialog.error({ messageId: "Msg_1713" }).then(() => nts.uk.ui.block.clear());
                     // nts.uk.ui.block.clear();
                     return;
@@ -245,9 +245,9 @@ module nts.uk.at.view.kdw002.a {
                 if (self.headerColorValue()) {
                     AtItems.headerBgColorOfDailyPer = self.headerColorValue();
                 }
-                if (self.timeInputEnable()) {
-                    AtItems.inputUnitOfTimeItem = self.timeInputCurrentCode();
-                }
+                // if (self.timeInputEnable()) {
+                //     AtItems.inputUnitOfTimeItem = self.timeInputCurrentCode();
+                // }
 
                 if (self.isDaily) {
                     AtItems.itemDailyID = attendanceItem.attendanceItemId;

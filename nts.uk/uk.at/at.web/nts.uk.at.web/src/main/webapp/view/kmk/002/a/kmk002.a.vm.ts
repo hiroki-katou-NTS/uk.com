@@ -1355,7 +1355,9 @@ module nts.uk.at.view.kmk002.a {
                                 self.optionalItem.isUsed(true);
                             } else {
                                 self.optionalItem.isUsed(false);
-                                $(".description").ntsError('clear');
+                                if ($("#description").ntsError("hasError")) {
+                                    $("#description").ntsError('clear');
+                                }
                             }
                             if (!vl && !self.optionalItem.hasChanged && !self.isInit) {
                                 if (self.optionalItem.calcFormulas().length > 0) {
@@ -1386,7 +1388,9 @@ module nts.uk.at.view.kmk002.a {
                                 self.hasSelected(true);
                                 self.loadOptionalItemDetail(itemNo);
                                 // clear error.
-                                $('.nts-editor').ntsError('clear');
+                                if ($('.nts-editor').ntsError("hasError")){
+                                    $('.nts-editor').ntsError('clear');
+                                }
                             } else {
                                 self.optionalItem.clearAll();
                                 self.hasSelected(false);
@@ -1447,7 +1451,7 @@ module nts.uk.at.view.kmk002.a {
 
                 if (self.optionalItem.usageAtr() === 1 && self.langId === "ja") {
                     // validate input description
-                    $(".description").ntsError("check");
+                    $("#description").ntsError("check");
                 }
 
                 // validate input optional item name

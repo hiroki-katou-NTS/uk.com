@@ -112,7 +112,7 @@ public class AttItemFinder {
 	            // 「勤怠項目と枠の紐付け」の枠カテゴリを判別する
 	            if (frameNo != null && frameNo == 8) {
 	                // ドメインモデル「任意項目」を取得する
-	                optionalItem = this.optionalRepo.find(companyId, frameNo);
+	                optionalItem = this.optionalRepo.find(companyId, item.getFrameNo());
 	                // Input．「月次の勤怠項目」から利用しない勤怠項目を消す
 	                // return false not add to list result
 	                if (dailyFlg && optionalItem.getPerformanceAtr().equals(PerformanceAtr.MONTHLY_PERFORMANCE)) {

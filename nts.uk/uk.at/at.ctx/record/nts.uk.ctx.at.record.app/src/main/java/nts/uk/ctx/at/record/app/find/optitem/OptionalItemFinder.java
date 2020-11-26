@@ -132,9 +132,6 @@ public class OptionalItemFinder {
 			if (item.getCalcAtr() == CalculationAtr.ITEM_SELECTION.value) {
 
 				item.getItemSelection().getAttendanceItems().forEach(attendanceItem -> {
-				    System.out.println(attendanceItem.getAttendanceItemId());
-				    System.out.println(attendanceItems.get(attendanceItem.getAttendanceItemId()));
-				    System.out.println(attendanceItems.get(attendanceItem.getAttendanceItemId()).getName());
 					String attendanceName = attendanceItems.get(attendanceItem.getAttendanceItemId()).getName();
 					Integer attendanceDisplayNumber = attendanceItems.get(attendanceItem.getAttendanceItemId())
 							.getDisplayNumber();
