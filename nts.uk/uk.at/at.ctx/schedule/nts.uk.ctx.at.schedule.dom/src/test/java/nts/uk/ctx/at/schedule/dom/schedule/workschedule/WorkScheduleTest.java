@@ -12,6 +12,7 @@ import java.util.Optional;
 
 import org.junit.Test;
 
+import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Mocked;
@@ -23,14 +24,19 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.TimezoneToUseHourlyHoliday;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakTimeGoOutTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTotalTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
@@ -121,6 +127,149 @@ public class WorkScheduleTest {
 		assertThat ( result.getWorkInfo() ).isEqualTo( workInfo );
 		assertThat ( result.getOptTimeLeaving().get() ).isEqualTo( timeLeaving );
 		
+	}
+	
+	@Test
+	public void testGetAttendanceItemValue(
+			@Injectable WorkStamp start1,
+			@Injectable WorkStamp end1,
+			@Injectable WorkStamp start2,
+			@Injectable WorkStamp end2
+			) {
+
+		TimeLeavingOfDailyAttd timeLeaving = 
+				Helper.createTimeLeavingOfDailyAttd(start1, end1, Optional.of( start2 ), Optional.of( end2 ));
+		
+		
+		WorkSchedule workSchedule = Helper.createWithParams( Optional.of(timeLeaving), new ArrayList<EditStateOfDailyAttd>() );
+		
+		val start1_OfWorkSchedule = NtsAssert.Invoke.privateMethod(workSchedule, "getAttendanceItemValue", 31 );
+		val end1_OfWorkSchedule = NtsAssert.Invoke.privateMethod(workSchedule, "getAttendanceItemValue", 34 );
+		val start2_OfWorkSchedule = NtsAssert.Invoke.privateMethod(workSchedule, "getAttendanceItemValue", 41 );
+		val end2_OfWorkSchedule = NtsAssert.Invoke.privateMethod(workSchedule, "getAttendanceItemValue", 44 );
+		
+		assertThat( start1_OfWorkSchedule ).isEqualTo( start1 );
+		assertThat( end1_OfWorkSchedule ).isEqualTo( end1 );
+		assertThat( start2_OfWorkSchedule ).isEqualTo( start2 );
+		assertThat( end2_OfWorkSchedule ).isEqualTo( end2 );
+		
+	}
+	
+	@Test
+	public void testUpdateValue(
+			@Injectable WorkStamp start1,
+			@Injectable WorkStamp end1,
+			@Injectable WorkStamp start2,
+			@Injectable WorkStamp end2,
+			@Injectable WorkStamp newStart1,
+			@Injectable WorkStamp newEnd1,
+			@Injectable WorkStamp newStart2,
+			@Injectable WorkStamp newEnd2
+			) {
+
+		TimeLeavingOfDailyAttd timeLeaving = 
+				Helper.createTimeLeavingOfDailyAttd(start1, end1, Optional.of( start2 ), Optional.of( end2 ));
+		
+		
+		WorkSchedule workSchedule = Helper.createWithParams( Optional.of(timeLeaving), new ArrayList<EditStateOfDailyAttd>() );
+		
+		NtsAssert.Invoke.privateMethod(workSchedule, "updateValue", 31, newStart1 );
+		NtsAssert.Invoke.privateMethod(workSchedule, "updateValue", 34, newEnd1 );
+		NtsAssert.Invoke.privateMethod(workSchedule, "updateValue", 41, newStart2 );
+		NtsAssert.Invoke.privateMethod(workSchedule, "updateValue", 44, newEnd2 );
+		
+		val start1_OfWorkSchedule = workSchedule.getOptTimeLeaving().get()
+				.getAttendanceLeavingWork(1).get()
+				.getAttendanceStamp().get()
+				.getStamp().get();
+		val end1_OfWorkSchedule = workSchedule.getOptTimeLeaving().get()
+				.getAttendanceLeavingWork(1).get()
+				.getLeaveStamp().get()
+				.getStamp().get();
+		val start2_OfWorkSchedule = workSchedule.getOptTimeLeaving().get()
+				.getAttendanceLeavingWork(2).get()
+				.getAttendanceStamp().get()
+				.getStamp().get();
+		val end2_OfWorkSchedule = workSchedule.getOptTimeLeaving().get()
+				.getAttendanceLeavingWork(2).get()
+				.getLeaveStamp().get()
+				.getStamp().get();
+		
+		assertThat( start1_OfWorkSchedule ).isEqualTo( newStart1 );
+		assertThat( end1_OfWorkSchedule ).isEqualTo( newEnd1 );
+		assertThat( start2_OfWorkSchedule ).isEqualTo( newStart2 );
+		assertThat( end2_OfWorkSchedule ).isEqualTo( newEnd2 );
+		
+	}
+	
+	@Test
+	public void testUpdateValueByHandCorrection_sameValue(
+			@Injectable WorkStamp start1,
+			@Injectable WorkStamp end1
+			) {
+		
+		TimeLeavingOfDailyAttd timeLeaving = 
+				Helper.createTimeLeavingOfDailyAttd(start1, end1, Optional.empty(), Optional.empty());
+		
+		List<EditStateOfDailyAttd> editStateList = new ArrayList<>( Arrays.asList( 
+				new EditStateOfDailyAttd(31, EditStateSetting.IMPRINT )
+				));
+		
+		WorkSchedule workSchedule = Helper.createWithParams( Optional.of(timeLeaving), editStateList);
+		
+		// Act
+		NtsAssert.Invoke.privateMethod(workSchedule, "updateValueByHandCorrection", require, 31, start1);
+		
+		
+		// Assert
+		val start1_OfWorkSchedule = workSchedule.getOptTimeLeaving().get()
+												.getAttendanceLeavingWork(1).get()
+												.getAttendanceStamp().get()
+												.getStamp().get();
+		EditStateOfDailyAttd editStateOfItem31 = workSchedule.getLstEditState().stream()
+				.filter( e -> e.getAttendanceItemId() == 31 )
+				.findFirst().get();
+		
+		assertThat( start1_OfWorkSchedule ).isEqualTo( start1 );
+		assertThat( editStateOfItem31.getEditStateSetting() ).isEqualTo( EditStateSetting.IMPRINT );
+	}
+	
+	@Test
+	public void testUpdateValueByHandCorrection_differentValue(
+			@Injectable WorkStamp start1,
+			@Injectable WorkStamp end1,
+			@Injectable WorkStamp newStart1
+			) {
+		
+		TimeLeavingOfDailyAttd timeLeaving = 
+				Helper.createTimeLeavingOfDailyAttd(start1, end1, Optional.empty(), Optional.empty());
+		
+		List<EditStateOfDailyAttd> editStateList = new ArrayList<>( Arrays.asList( 
+				new EditStateOfDailyAttd(31, EditStateSetting.IMPRINT )
+				));
+		
+		WorkSchedule workSchedule = Helper.createWithParams( Optional.of(timeLeaving), editStateList);
+		
+		new Expectations() {{
+			require.getLoginEmployeeId();
+			result = workSchedule.getEmployeeID();
+		}};
+		
+		// Act
+		NtsAssert.Invoke.privateMethod(workSchedule, "updateValueByHandCorrection", require, 31, newStart1);
+		
+		
+		// Assert
+		val start1_OfWorkSchedule = workSchedule.getOptTimeLeaving().get()
+												.getAttendanceLeavingWork(1).get()
+												.getAttendanceStamp().get()
+												.getStamp().get();
+		EditStateOfDailyAttd editStateOfItem31 = workSchedule.getLstEditState().stream()
+				.filter( e -> e.getAttendanceItemId() == 31 )
+				.findFirst().get();
+		
+		assertThat( start1_OfWorkSchedule ).isEqualTo( newStart1 );
+		assertThat( editStateOfItem31.getEditStateSetting() ).isEqualTo( EditStateSetting.HAND_CORRECTION_MYSELF );
 	}
 	
 	@Test
@@ -654,6 +803,30 @@ public class WorkScheduleTest {
 					outingTime); // parameter
 		}
 		
+		/**
+		 * @param optTimeLeaving 出退勤
+		 * @param editStateList 編修状態
+		 * @return
+		 */
+		static WorkSchedule createWithParams(
+				Optional<TimeLeavingOfDailyAttd> optTimeLeaving,
+				List<EditStateOfDailyAttd> editStateList
+				) {
+			
+			return new WorkSchedule(
+					"employeeID",
+					GeneralDate.today(),
+					ConfirmedATR.UNSETTLED,
+					workInfo,
+					affInfo, 
+					Collections.emptyList(),
+					editStateList, 
+					optTimeLeaving,
+					Optional.empty(), 
+					Optional.empty(),
+					Optional.empty()); 
+		}
+		
 		static WorkSchedule createWithConfirmAtr(ConfirmedATR confirmAtr) {
 			return new WorkSchedule(
 					"employeeID",
@@ -703,6 +876,26 @@ public class WorkScheduleTest {
 					recordTotalTime,
 					deductionTotalTime,
 					Collections.emptyList());
+			
+		}
+		
+		static TimeLeavingOfDailyAttd createTimeLeavingOfDailyAttd(
+				WorkStamp start1,
+				WorkStamp end1,
+				Optional<WorkStamp> start2,
+				Optional<WorkStamp> end2) {
+			
+			TimeActualStamp timeActualStampStart1 = new TimeActualStamp(Optional.empty(), Optional.of(start1), 1, Optional.empty(), Optional.empty());
+			TimeActualStamp timeActualStampEnd1 = new TimeActualStamp(Optional.empty(), Optional.of(end1), 1, Optional.empty(), Optional.empty());
+			TimeLeavingWork timeLeavingWork1 = new TimeLeavingWork(new WorkNo(1), Optional.of(timeActualStampStart1), Optional.of(timeActualStampEnd1), false, false);
+			if ( !start2.isPresent() || !end2.isPresent() ) {
+				return new TimeLeavingOfDailyAttd( Arrays.asList(timeLeavingWork1), new WorkTimes(1));
+			}
+			
+			TimeActualStamp timeActualStampStart2 = new TimeActualStamp(Optional.empty(), start2, 1, Optional.empty(), Optional.empty());
+			TimeActualStamp timeActualStampEnd2 = new TimeActualStamp(Optional.empty(), end2, 1, Optional.empty(), Optional.empty());
+			TimeLeavingWork timeLeavingWork2 = new TimeLeavingWork(new WorkNo(2), Optional.of(timeActualStampStart2), Optional.of(timeActualStampEnd2), false, false);
+			return new TimeLeavingOfDailyAttd( Arrays.asList(timeLeavingWork1, timeLeavingWork2), new WorkTimes(2) );
 			
 		}
 		
