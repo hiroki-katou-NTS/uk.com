@@ -558,7 +558,6 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			let holidayTimeArray = [] as Array<HolidayTime>;
 			let workdayoffFrames = res.workdayoffFrames as Array<WorkdayoffFrame>;
 
-			let calculationResultOp = res.calculationResultOp;
 			// A7_7
 			if (!_.isEmpty(workdayoffFrames)) {
 				_.forEach(workdayoffFrames, (item: WorkdayoffFrame) => {
@@ -631,59 +630,41 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			
 
 			// A7_8
-			if (!_.isEmpty(calculationResultOp)) {
-
-				if (!_.isEmpty(calculationResultOp.applicationTimes)) {
-					
-					let applicationTime = calculationResultOp.applicationTimes[0].applicationTime;
-					
-					if (!_.isEmpty(applicationTime)) {
-						
-						_.forEach(applicationTime, (item: OvertimeApplicationSetting) => {
-							
-							if (item.attendanceType == AttendanceType.BREAKTIME) {
-								
-								let findHolidayTimeArray = _.find(holidayTimeArray, { frameNo: String(item.frameNo) }) as HolidayTime;
-	
-								if (!_.isNil(findHolidayTimeArray)) {
-									findHolidayTimeArray.start(item.applicationTime);
-								}								
-							}
-						})
-						
-						
-					}
-					// A7_12 , A7_16, A7_20
-					let appRoot = calculationResultOp.applicationTimes[0];
-					if (!_.isNil(appRoot.overTimeShiftNight)) {
-						let midNightHolidayTimes = appRoot.overTimeShiftNight.midNightHolidayTimes;
-						if (!_.isEmpty(midNightHolidayTimes)) {
-							_.forEach(midNightHolidayTimes, (item: HolidayMidNightTime) => {
-								if (item.legalClf == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork) {
-									let findItem = _.find(holidayTimeArray, (i: HolidayTime) => i.type == AttendanceType.MIDDLE_BREAK_TIME);
-									if (!_.isNil(findItem)) {
-										findItem.start(item.attendanceTime);
-									}
-								} else if (item.legalClf == StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork) {
-									let findItem = _.find(holidayTimeArray, (i: HolidayTime) => i.type == AttendanceType.MIDDLE_EXORBITANT_HOLIDAY);
-									if (!_.isNil(findItem)) {
-										findItem.start(item.attendanceTime);
-									}
-								} else if (item.legalClf == StaturoryAtrOfHolidayWork.PublicHolidayWork) {
-									let findItem = _.find(holidayTimeArray, (i: HolidayTime) => i.type == AttendanceType.MIDDLE_HOLIDAY_HOLIDAY);
-									if (!_.isNil(findItem)) {
-										findItem.start(item.attendanceTime);
-									}
-								}
-							});
-						}
-					}
-					
-					
-					
-				}
-
+			// A7_12 , A7_16, A7_20
+			
+			let overTimeShiftNight = self.appOverTime.applicationTime.overTimeShiftNight;
+			let midNightHolidayTimes = [] as Array<HolidayMidNightTime>;
+			if (!_.isNil(overTimeShiftNight)) {
+				midNightHolidayTimes = overTimeShiftNight.midNightHolidayTimes;
 			}
+			_.forEach(holidayTimeArray, (item: HolidayTime) => {
+				if (item.type == AttendanceType.BREAKTIME) {
+					let findResult = _.find(self.appOverTime.applicationTime.applicationTime, (i: OvertimeApplicationSetting) => {
+						return item.frameNo == String(i.frameNo) && item.type == i.attendanceType;
+					})
+					if (!_.isNil(holidayTimeArray)) {
+						item.start(findResult.applicationTime);
+					}
+				} else if (item.type == AttendanceType.MIDDLE_BREAK_TIME) {
+					
+					let findResult = _.find(midNightHolidayTimes, (i: HolidayMidNightTime) => i.legalClf == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork);
+					if (!_.isNil(findResult)) {
+						item.start(findResult.attendanceTime);
+					}
+				} else if (item.type == AttendanceType.MIDDLE_EXORBITANT_HOLIDAY) {
+					let findResult = _.find(midNightHolidayTimes, (i: HolidayMidNightTime) => i.legalClf == StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork);
+					if (!_.isNil(findResult)) {
+						item.start(findResult.attendanceTime);
+					}
+				} else if (item.type == AttendanceType.MIDDLE_HOLIDAY_HOLIDAY) {
+					let findResult = _.find(midNightHolidayTimes, (i: HolidayMidNightTime) => i.legalClf == StaturoryAtrOfHolidayWork.PublicHolidayWork);
+					if (!_.isNil(findResult)) {
+						item.start(findResult.attendanceTime);
+					}
+				}
+			});
+			
+			
 			
 			
 			
@@ -899,8 +880,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					} else {							
 						findOverTimeArray.applicationTime(!self.isCalculation ? null : 0);							
 					}
-						
-					
+									
 				}
 			}
 			
@@ -1441,7 +1421,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		applicationTime: number
 	}
 	export interface OverTimeShiftNight {
-		midNightHolidayTimes: Array<any>;
+		midNightHolidayTimes: Array<HolidayMidNightTime>;
 		midNightOutSide: number;
 		overTimeMidNight: number;
 	}
