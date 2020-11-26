@@ -72,7 +72,10 @@ module nts.uk.at.view.kmf001.m {
                     //M7_2
                     addHolidayValue: self.holidaySetting().addHolidayValue(),
                     //M5_2
-                    standardDate: self.holidaySetting().standardDate()
+                    standardDate: self.holidaySetting().standardDate(),
+                    
+                    holidayCheckUnit : self.holidaySetting().selectedCategory()
+                    
 
                 };
                 service.save( command ).done( function() {
