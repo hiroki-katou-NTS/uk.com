@@ -62,17 +62,17 @@ public class CreateAnnualWorkLedgerContentDomainService {
             String closureDate = null;
             String employmentCode = null;
             String employmentName = null;
-            if (lstClosureDateEmployment.size() > 0) {
-                val closureDateEmployment = lstClosureDateEmployment.get(emp.getEmployeeId());
-                val closure = closureDateEmployment.getClosure();
-                if (closure != null && closure.getClosureHistories().size() > 0) {
-                    val closureHistory = closure.getClosureHistories().get(0);
-                    val closureDay = closureHistory.getClosureDate().getClosureDay().v();
-                    lstMonthlyData = getMonthlyData(require, emp, monthlyOutputItems, closureDay);
-                    closureDate = closureHistory.getClosureName().v();
-                    employmentCode = closureDateEmployment.getEmploymentCode();
-                    employmentName = closureDateEmployment.getEmploymentName();
-                }
+            if (lstClosureDateEmployment.size() == 0) return;
+            val closureDateEmployment = lstClosureDateEmployment.getOrDefault(emp.getEmployeeId(),null);
+            val closure = closureDateEmployment.getClosure();
+            if (closure != null && closure.getClosureHistories().size() > 0) {
+                val closureHistory = closure.getClosureHistories().get(0);
+                val closureDay = closureHistory.getClosureDate().getClosureDay().v();
+                lstMonthlyData = getMonthlyData(require, emp, monthlyOutputItems, closureDay);
+                closureDate = closureHistory.getClosureName().v();
+                employmentCode = closureDateEmployment.getEmploymentCode();
+                employmentName = closureDateEmployment.getEmploymentName();
+
             }
             AnnualWorkLedgerContent model = new AnnualWorkLedgerContent(
                     dailyData,
