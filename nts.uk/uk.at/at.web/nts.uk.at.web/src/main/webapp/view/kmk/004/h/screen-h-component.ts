@@ -55,8 +55,6 @@ class ScreenHComponent extends ko.ViewModel {
 
 	screenData: KnockoutObservable<FlexScreenData> = ko.observable(new FlexScreenData());
 
-	wpSelectedId: KnockoutObservable<any> = ko.observable();
-
 	alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel> = ko.observableArray([]);
 
 	screenMode = '';
@@ -94,7 +92,7 @@ class ScreenHComponent extends ko.ViewModel {
 			isMultipleUse: false,
 			isMultiSelect: false,
 			startMode: StartMode.WORKPLACE,
-			selectedId: vm.wpSelectedId,
+			selectedId: vm.screenData().selected,
 			baseDate: ko.observable(new Date()),
 			selectType: SelectionType.SELECT_FIRST_ITEM,
 			isShowSelectButton: true,
@@ -108,7 +106,7 @@ class ScreenHComponent extends ko.ViewModel {
 		vm.$blockui('invisible');
 		$('#work-place-list').ntsTreeComponent(workPlaceGrid).done(() => {
 
-			vm.wpSelectedId.subscribe((value) => {
+			vm.screenData().selected.subscribe((value) => {
 				let datas: Array<UnitModel> = $('#work-place-list').getDataList()
 
 					, flat: any = function(wk: UnitModel) {
@@ -121,7 +119,7 @@ class ScreenHComponent extends ko.ViewModel {
 				vm.workPlaceName(selectedItem ? selectedItem.name : '');
 			});
 			vm.$blockui("hide");
-			vm.wpSelectedId.valueHasMutated();
+			vm.screenData().selected.valueHasMutated();
 		});
 
 	}

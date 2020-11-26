@@ -17,8 +17,8 @@
 			</com:EnumScript>
 
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
-			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="../components/sidebar-button.js" />
 			<com:scriptfile path="../components/tab-panel.js" />
 			<com:scriptfile path="../components/flex/basic-settings-company.js" />
@@ -31,14 +31,17 @@
 			<com:scriptfile path="kmk004.g.vm.js" />
 			<com:stylefile path="kmk004.g.style.css" />
 			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js"
+				of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
 		</ui:define>
 
 
 		<ui:define name="content">
-		<div data-bind="let: { selected: ko.observable('Com_Company') }">
-				<div id="sidebar-area" style="height: calc(100vh - 142px); float: left" data-bind="component: {
+			<div data-bind="let: { selected: ko.observable('Com_Company') }">
+				<div id="sidebar-area"
+					style="height: calc(100vh - 142px); float: left"
+					data-bind="component: {
 						name: 'ko-panel',
 						params:{ 
 							model: selected
@@ -46,7 +49,7 @@
 					}">
 				</div>
 				<div data-bind="if: selected() === 'Com_Company'">
-					 <div
+					<div
 						data-bind="component: {
 								name: 'screen-g-component',
 								params:{screenMode:selected()}
@@ -61,7 +64,7 @@
 						}">
 					</div>
 				</div>
-				<div data-bind="if: selected() === 'Com_Person'">
+				<div data-bind="if: selected() === 'Com_Employment'">
 					<div
 						data-bind="component: {
 								name: 'screen-i-component',
@@ -69,7 +72,7 @@
 						}">
 					</div>
 				</div>
-				<div data-bind="if: selected() === 'Com_Employment'">
+				<div data-bind="if: selected() === 'Com_Person'">
 					<div
 						data-bind="component: {
 								name: 'screen-j-component',

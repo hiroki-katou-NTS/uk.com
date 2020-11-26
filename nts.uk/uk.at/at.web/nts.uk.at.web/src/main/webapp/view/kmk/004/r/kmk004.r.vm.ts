@@ -9,7 +9,7 @@ module nts.uk.at.kmk004.r {
 	@bean()
 	export class ViewModel extends ko.ViewModel {
 		param: IParam = {
-			screenMode: 'Com_Workplace',
+			screenMode: 'Com_Employment',
 			data: [],
 			selectedCode: null,
 			alreadySettingList: []
@@ -24,7 +24,6 @@ module nts.uk.at.kmk004.r {
 			}
 			if (vm.param.screenMode === 'Com_Employment') {
 				return vm.$i18n.text('KMK004_348');
-
 			}
 			if (vm.param.screenMode === 'Com_Person') {
 				return vm.$i18n.text('KMK004_349');
@@ -83,7 +82,7 @@ module nts.uk.at.kmk004.r {
 					startMode: StartMode.WORKPLACE,
 					selectedId: vm.screenData().selectedCode,
 					baseDate: ko.observable(new Date()),
-					selectType: SelectionType.SELECT_FIRST_ITEM,
+					selectType: SelectionType.SELECT_BY_SELECTED_CODE,
 					isShowSelectButton: true,
 					isDialog: true,
 					alreadySettingList: vm.screenData().alreadySettingList,

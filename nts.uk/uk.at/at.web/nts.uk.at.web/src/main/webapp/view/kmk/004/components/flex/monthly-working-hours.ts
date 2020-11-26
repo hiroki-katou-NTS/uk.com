@@ -105,7 +105,7 @@ const COMPONENT_NAME = 'monthly-working-hours';
 class MonthlyWorkingHours extends ko.ViewModel {
 
 	screenData: KnockoutObservable<FlexScreenData>;
-	
+
 	screenMode: string = 'Com_Workplace';
 
 	popUpShow = false;
@@ -113,7 +113,7 @@ class MonthlyWorkingHours extends ko.ViewModel {
 	created(param: IParam) {
 		let vm = this;
 		vm.screenData = param.screenData;
-		vm.screenMode =  param.screenMode;
+		vm.screenMode = param.screenMode;
 		console.log(vm.screenData().setting().useRegularWorkingHours());
 	}
 
@@ -143,7 +143,7 @@ class MonthlyWorkingHours extends ko.ViewModel {
 				vm.screenData().yearList(_.orderBy(yearList, ['year'], ['desc']));
 				vm.screenData().updateMode(false);
 				vm.screenData().selectedYear(vm.screenData().yearList()[0].year);
-				
+
 			}
 		});
 	}

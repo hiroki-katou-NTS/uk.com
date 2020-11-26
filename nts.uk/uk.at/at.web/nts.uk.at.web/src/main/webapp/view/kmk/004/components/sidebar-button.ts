@@ -36,11 +36,29 @@ class SidebarButton extends ko.ViewModel {
 
 	openRDialog() {
 		const vm = this;
-		vm.$window.modal('/view/kmk/004/r/index.xhtml',{
-			screenMode: vm.screenData,
-			data: [],
-			selectedCode: null,
-			alreadySettingList: []
+
+		let datas = [];
+
+		if (vm.screenMode == 'Com_Workplace') {
+			datas = $('#work-place-list').getDataList();
+		}
+		if (vm.screenMode == 'Com_Employment') {
+			datas = $('#empt-list-setting').getDataList();
+		}
+		if (vm.screenMode == 'Com_Person') {
+			datas = $('#employee-list').getDataList();
+		}
+
+		vm.screenMode == 'Com_Employment';
+
+		let alreadySettingList = _.chain(datas).filter(['isAlreadySetting', true]).map((item: any) => { return vm.screenMode == 'Com_Employment' ? item.code : item.id; }).value();
+
+
+		vm.$window.modal('/view/kmk/004/r/index.xhtml', {
+			screenMode: vm.screenMode,
+			data: datas,
+			selectedCode: vm.screenData().selected(),
+			alreadySettingList: alreadySettingList
 		}).then(() => {
 
 		});

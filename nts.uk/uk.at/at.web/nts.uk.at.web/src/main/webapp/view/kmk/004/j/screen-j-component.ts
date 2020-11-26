@@ -55,9 +55,7 @@ class ScreenJComponent extends ko.ViewModel {
 
 	screenData: KnockoutObservable<FlexScreenData> = ko.observable(new FlexScreenData());
 
-	header = '';
-
-	selectedCode: KnockoutObservable<string> = ko.observable();
+	screenMode = '';
 
 	employeeName: KnockoutObservable<string> = ko.observable('');
 
@@ -70,7 +68,7 @@ class ScreenJComponent extends ko.ViewModel {
 	created(params: any) {
 		let vm = this;
 
-		vm.header = params.header;
+		vm.screenMode = params.screenMode;
 		vm.initCCG001();
 
 		/*	vm.$blockui('invisible')
@@ -137,7 +135,7 @@ class ScreenJComponent extends ko.ViewModel {
 					let listEmployee = _.map(data.listEmployee, (item) => { return new EmployeeModel(item); });
 					vm.employeeList(listEmployee);
 					if (listEmployee.length) {
-						vm.selectedCode(listEmployee[0].code);
+						vm.screenData().selected(listEmployee[0].code);
 					}
 				}
 			};
@@ -167,7 +165,7 @@ class ScreenJComponent extends ko.ViewModel {
 			listType: ListType.EMPLOYEE,
 			employeeInputList: vm.employeeList,
 			selectType: SelectType.SELECT_BY_SELECTED_CODE,
-			selectedCode: vm.selectedCode,
+			selectedCode: vm.screenData().selected,
 			isDialog: true,
 			isShowNoSelectRow: false,
 			alreadySettingList: vm.alreadySettingList,
@@ -176,7 +174,7 @@ class ScreenJComponent extends ko.ViewModel {
 			disableSelection: false
 		});
 
-		vm.selectedCode.subscribe((value) => {
+		vm.screenData().selected.subscribe((value) => {
 			let datas: Array<EmployeeModel> = vm.employeeList(),
 
 				selectedItem: EmployeeModel = _.find(datas, ['code', value]);
@@ -184,7 +182,7 @@ class ScreenJComponent extends ko.ViewModel {
 			vm.employeeName(selectedItem ? selectedItem.name : '');
 		});
 		vm.$blockui("hide");
-		vm.selectedCode.valueHasMutated();
+		vm.screenData().selected.valueHasMutated();
 	}
 
 }

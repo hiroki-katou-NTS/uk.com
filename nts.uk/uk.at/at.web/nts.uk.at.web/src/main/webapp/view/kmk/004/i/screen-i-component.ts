@@ -57,8 +57,6 @@ class ScreenIComponent extends ko.ViewModel {
 
 	screenMode = '';
 
-	selectedCode: KnockoutObservable<string> = ko.observable();
-
 	employmentName: KnockoutObservable<string> = ko.observable('');
 
 	alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel> = ko.observableArray([]);
@@ -96,7 +94,7 @@ class ScreenIComponent extends ko.ViewModel {
 				isMultiSelect: false,
 				listType: ListType.EMPLOYMENT,
 				selectType: SelectType.SELECT_FIRST_ITEM,
-				selectedCode: vm.selectedCode,
+				selectedCode: vm.screenData().selected,
 				isDialog: true,
 				isShowNoSelectRow: false,
 				alreadySettingList: vm.alreadySettingList,
@@ -105,7 +103,7 @@ class ScreenIComponent extends ko.ViewModel {
 		vm.$blockui('grayout');
 		$('#empt-list-setting').ntsListComponent(listComponentOption).done(() => {
 
-			vm.selectedCode.subscribe((value) => {
+			vm.screenData().selected.subscribe((value) => {
 				let datas: Array<EmploymentUnitModel> = $('#empt-list-setting').getDataList(),
 
 					selectedItem: EmploymentUnitModel = _.find(datas, ['code', value]);
@@ -113,7 +111,7 @@ class ScreenIComponent extends ko.ViewModel {
 				vm.employmentName(selectedItem ? selectedItem.name : '');
 			});
 			vm.$blockui("hide");
-			vm.selectedCode.valueHasMutated();
+			vm.screenData().selected.valueHasMutated();
 		});
 	}
 
