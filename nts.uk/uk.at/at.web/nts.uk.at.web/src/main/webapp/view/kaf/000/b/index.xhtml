@@ -34,6 +34,7 @@
 			<com:stylefile path="/view/kaf/000/b/kaf000.b.css" />
 			<com:stylefile path="/view/kaf/008/shr/kaf008.share.style.css" />
 			<com:scriptfile path="/view/kaf/000/shr/kaf000.shr.vm.js" />
+			<com:stylefile path="/view/kaf/005/shr/kaf005.share.style.css" />
 			<com:scriptfile path="/view/kaf/000/b/component1/kaf000.b.component1.js" />
 			<com:scriptfile path="/view/kaf/000/b/component2/kaf000.b.component2.js" />
 			<com:scriptfile path="/view/kaf/000/b/component3/kaf000.b.component3.js" />
@@ -48,6 +49,7 @@
 			<com:scriptfile path="/view/kaf/007/shr/kaf007.shr.vm.js" />
 			<com:scriptfile path="/view/kaf/008/shr/kaf008.shr.vm.js" />
 			<com:scriptfile path="/view/kaf/009/shr/kaf009.shr.vm.js" />
+			<com:scriptfile path="/view/kaf/005/shr/kaf005.shr.vm.js" />
 			<com:scriptfile path="/view/kaf/007/b/kaf007.b.vm.js" />
 			<com:scriptfile path="/view/kaf/008/b/kaf008.b.vm.js" />
 			<com:scriptfile path="/view/kaf/002/m/kaf002.m.vm.js" />
@@ -55,6 +57,11 @@
 			<com:scriptfile path="/view/kaf/002/d/kaf002.d.vm.js" />
 			<com:scriptfile path="/view/kaf/009/b/kaf009.b.vm.js" />
 			<com:scriptfile path="/view/kaf/004/b/kaf004.b.vm.js" />
+			<com:scriptfile path="/view/kaf/005/shr/footer/kaf005.shr.footer.vm.js" />
+			<com:scriptfile path="/view/kaf/005/shr/header/kaf005.shr.header.vm.js" />
+			<com:scriptfile path="/view/kaf/005/shr/work_info/kaf005.shr.work_info.vm.js" />
+			<com:scriptfile path="/view/kaf/005/shr/kaf005.shr.vm.js" />
+			<com:scriptfile path="/view/kaf/005/b/kaf005.b.vm.js" />
 			<com:scriptfile path="/view/kaf/000/b/kaf000.b.vm.js" />
 		</ui:define>
 		<ui:define name="content">
@@ -174,7 +181,10 @@
 				</div>
 				<div data-bind="if: currentApp()!='sample'">
 				<div data-bind="if: ko.unwrap(appType) === getAppType('OVER_TIME_APPLICATION')">
-					APP TYPE = 0
+					<div data-bind="component: {
+							name: 'kaf005-b',
+							params: childParam
+						}"></div>
 				</div>
 				<div data-bind="if: ko.unwrap(appType) === getAppType('ABSENCE_APPLICATION')">
 					APP TYPE = 1
