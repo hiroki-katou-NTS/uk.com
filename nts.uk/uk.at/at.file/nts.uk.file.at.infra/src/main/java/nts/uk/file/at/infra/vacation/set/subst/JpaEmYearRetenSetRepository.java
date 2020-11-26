@@ -21,7 +21,7 @@ import java.util.Map;
 @Stateless
 public class JpaEmYearRetenSetRepository  extends JpaRepository implements EmplYearlyRetenSetRepository {
     private static final String GET_EMPLOY_YEARLY_RETEN =
-            "SELECT EC.EMP_CTR_CD , " +
+            "SELECT EC.EMPCD , " +
                     "EM.NAME, " +
                     "EC.MANAGE_ATR " +
                     "                    FROM ( " +

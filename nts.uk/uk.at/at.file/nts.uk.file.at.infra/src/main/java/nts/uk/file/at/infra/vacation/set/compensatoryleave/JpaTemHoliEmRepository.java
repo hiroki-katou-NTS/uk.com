@@ -39,8 +39,6 @@ public class JpaTemHoliEmRepository extends JpaRepository implements TemHoliEmpl
         try (PreparedStatement stmt = this.connection().prepareStatement(GET_TEM_HOLIDAYS_EMPLOYEE)) {
             stmt.setString(1, cid);
             stmt.setString(2, cid);
-            stmt.setString(3, cid);
-            stmt.setString(4, cid);
             NtsResultSet result = new NtsResultSet(stmt.executeQuery());
             result.forEach(i->{
                 datas.addAll(buildMasterListData(i));
