@@ -43,7 +43,6 @@ public class CreateDisplayContentWorkStatusDService {
 
         listEmployeeStatus.parallelStream().forEach(e -> {
 
-
             val item = new DisplayContentWorkStatus();
             val eplInfo = mapSids.get(e.getEmployeeId());
             if (eplInfo != null) {
