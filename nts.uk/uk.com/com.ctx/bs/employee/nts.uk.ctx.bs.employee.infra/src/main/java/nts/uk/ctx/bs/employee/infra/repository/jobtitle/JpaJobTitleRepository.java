@@ -20,6 +20,7 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitle;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleRepository;
@@ -306,5 +307,40 @@ public class JpaJobTitleRepository extends JpaRepository implements JobTitleRepo
 						new JpaJobTitleGetMemento(companyId, item, mapBsymtJobHist.get(item))))
 				.collect(Collectors.toList());
 
+	}
+
+	@Override
+	public List<JobTitle> findByDatePeriod(String companyId, DatePeriod datePeriod) {
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		CriteriaQuery<BsymtJobHist> cq = criteriaBuilder.createQuery(BsymtJobHist.class);
+		Root<BsymtJobHist> root = cq.from(BsymtJobHist.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+		lstpredicateWhere.add(criteriaBuilder
+			.equal(root.get(BsymtJobHist_.bsymtJobHistPK).get(BsymtJobHistPK_.cid), companyId));
+		lstpredicateWhere.add(
+			criteriaBuilder.lessThanOrEqualTo(root.get(BsymtJobHist_.startDate), datePeriod.end()));
+		lstpredicateWhere.add(
+			criteriaBuilder.greaterThanOrEqualTo(root.get(BsymtJobHist_.endDate), datePeriod.start()));
+
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		// Get result
+		List<BsymtJobHist> listBsymtJobHist = em.createQuery(cq).getResultList();
+
+		// Create map
+		Map<String, List<BsymtJobHist>> mapBsymtJobHist = listBsymtJobHist.stream()
+			.collect(Collectors.groupingBy(item -> item.getBsymtJobHistPK().getJobId()));
+
+		// Return
+		return mapBsymtJobHist.keySet().stream()
+			.map(item -> new JobTitle(
+				new JpaJobTitleGetMemento(companyId, item, mapBsymtJobHist.get(item))))
+			.collect(Collectors.toList());
 	}
 }

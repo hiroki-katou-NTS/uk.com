@@ -1,5 +1,6 @@
 package nts.uk.ctx.bs.employee.pub.workplace.affiliate;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -7,29 +8,27 @@ import java.util.Optional;
 
 /**
  * 所属職場履歴項目Exported
- * @author HieuLt
- *
  */
 @Getter
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class AffWorkplaceHistoryItemExport {
 
 	/** The history Id. */
 	// 履歴ID
-	private final String historyId;
+	private String historyId;
 
 	/** The Employee Id. */
 	// 社員ID
-	private final String employeeId;
+	private String employeeId;
 
 	/** The workplaceId. */
 	// 職場ID
-	private final String  workplaceId;
+	private String  workplaceId;
 
 	/** The normalWorkplaceCode. */
 	// 通常職場コード
-	private final String  normalWorkplaceId;
+	private String  normalWorkplaceId;
 
-	private final Optional<String> workLocationCode;
+	private Optional<String> workLocationCode;
 
 }

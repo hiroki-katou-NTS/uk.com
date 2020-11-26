@@ -14,20 +14,20 @@ import java.util.stream.Collectors;
 
 @Stateless
 public class AffWorkplaceHistoryItemPubImpl implements AffWorkplaceHistoryItemPub {
-	
-	@Inject
-	private AffWorkplaceHistoryItemRepository repo;
 
-	@Override
-	public List<AffWorkplaceHistoryItemExport> getListAffWkpHistItem(DatePeriod basedate, List<String> workplaceId) {
-		List<AffWorkplaceHistoryItem> historyItems = repo.getAffWkpHistItemByListWkpIdAndDatePeriod(basedate,workplaceId);
-		return historyItems.stream().map(x -> {
-			return new AffWorkplaceHistoryItemExport(
-				x.getHistoryId(),
-				x.getEmployeeId(),
-				x.getWorkplaceId(),
-				x.getNormalWorkplaceId(),
-				x.getWorkLocationCode().isPresent() ? Optional.of(x.getWorkLocationCode().get().v()) : Optional.empty());
-		}).collect(Collectors.toList());
-	}
+    @Inject
+    private AffWorkplaceHistoryItemRepository repo;
+
+    @Override
+    public List<AffWorkplaceHistoryItemExport> getListAffWkpHistItem(DatePeriod basedate, List<String> workplaceId) {
+        List<AffWorkplaceHistoryItem> historyItems = repo.getAffWkpHistItemByListWkpIdAndDatePeriod(basedate, workplaceId);
+        return historyItems.stream().map(x -> {
+            return new AffWorkplaceHistoryItemExport(
+                x.getHistoryId(),
+                x.getEmployeeId(),
+                x.getWorkplaceId(),
+                x.getNormalWorkplaceId(),
+                x.getWorkLocationCode().isPresent() ? Optional.of(x.getWorkLocationCode().get().v()) : Optional.empty());
+        }).collect(Collectors.toList());
+    }
 }
