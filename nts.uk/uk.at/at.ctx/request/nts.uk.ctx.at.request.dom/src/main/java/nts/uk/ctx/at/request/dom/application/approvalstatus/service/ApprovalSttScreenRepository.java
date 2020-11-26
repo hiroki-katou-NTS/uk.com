@@ -3,24 +3,31 @@ package nts.uk.ctx.at.request.dom.application.approvalstatus.service;
 import java.util.List;
 import java.util.Map;
 
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.EmpPeriod;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.WkpEmpMail;
 
 public interface ApprovalSttScreenRepository {
 	
-	public String deleteTemporaryTable();
+	public List<EmpPeriod> getCountEmp(GeneralDate startDate, GeneralDate endDate, List<String> wkpIDLst, List<String> employmentCDLst);
 	
-	public String setSqlSessionParam(DatePeriod period);
+	public Map<String, Integer> getCountUnApprApp(GeneralDate startDate, GeneralDate endDate, List<String> wkpIDLst, List<String> employmentCDLst);
 	
-	public String setWorkPlaceTempTable(List<String> wkpIDLst);
+	public Map<String, Integer> getCountDayResult(GeneralDate startDate, GeneralDate endDate, List<String> wkpIDLst, List<String> employmentCDLst);
 	
-	public String setEmployeeTemp(DatePeriod period, List<String> empCDLst);
+	public Map<String, Integer> getCountMonthResult(GeneralDate startDate, GeneralDate endDate, List<String> wkpIDLst, List<String> employmentCDLst);
 	
-	public Map<String, Integer> getCountEmp();
+	public Map<String, Integer> getCountWorkConfirm(GeneralDate startDate, GeneralDate endDate, List<String> wkpIDLst, List<String> employmentCDLst);
 	
-	public void setUnApprApp(DatePeriod period);
+	public List<EmpPeriod> getMailCountUnApprApp(GeneralDate startDate, GeneralDate endDate, List<String> wkpIDLst, List<String> employmentCDLst);
 	
-	public Map<String, Integer> getCountUnApprApp();
+	public List<WkpEmpMail> getMailCountUnConfirmDay(GeneralDate startDate, GeneralDate endDate, List<String> wkpIDLst, List<String> employmentCDLst);
 	
-	public List<EmpPeriod> getEmpFromWkp(String wkpID);
+	public List<WkpEmpMail> getMailCountUnApprDay(GeneralDate startDate, GeneralDate endDate, List<String> wkpIDLst, List<String> employmentCDLst);
+	
+	public List<WkpEmpMail> getMailCountUnConfirmMonth(GeneralDate startDate, GeneralDate endDate, List<String> wkpIDLst, List<String> employmentCDLst);
+	
+	public List<WkpEmpMail> getMailCountUnApprMonth(GeneralDate startDate, GeneralDate endDate, List<String> wkpIDLst, List<String> employmentCDLst);
+	
+	public List<WkpEmpMail> getMailCountWorkConfirm(GeneralDate startDate, GeneralDate endDate, List<String> wkpIDLst, List<String> employmentCDLst);
 }

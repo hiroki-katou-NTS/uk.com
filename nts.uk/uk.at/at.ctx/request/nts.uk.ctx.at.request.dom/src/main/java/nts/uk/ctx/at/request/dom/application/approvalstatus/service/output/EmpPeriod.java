@@ -20,6 +20,10 @@ public class EmpPeriod {
 	
 	private String empCD;
 	
+	private GeneralDate workplaceStartDate;
+	
+	private GeneralDate workplaceEndDate;
+	
 	private GeneralDate companyInDate;
 	
 	private GeneralDate companyOutDate;

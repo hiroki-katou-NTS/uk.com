@@ -376,11 +376,30 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 				height = 600;
 			}
 			let dialogSize = { width: 900, height: height },
+				existData = _.chain(vm.dataSource).filter(o => {
+					switch(mailTypeParam) {
+						case ApprovalStatusMailType.APP_APPROVAL_UNAPPROVED:
+							let countUnApprApp = o.countUnApprApp ? true : false;
+							return countUnApprApp && _.includes(vm.pageData, o.wkpID);
+						case ApprovalStatusMailType.DAILY_UNCONFIRM_BY_PRINCIPAL:
+							return false;
+						case ApprovalStatusMailType.DAILY_UNCONFIRM_BY_CONFIRMER:
+							return false;
+						case ApprovalStatusMailType.MONTHLY_UNCONFIRM_BY_PRINCIPAL:
+							return false;
+						case ApprovalStatusMailType.MONTHLY_UNCONFIRM_BY_CONFIRMER:
+							return false;
+						case ApprovalStatusMailType.WORK_CONFIRMATION:
+							return false;
+						default:
+							return false;
+					}
+				}).map(o => o.wkpID).value(),
 				mailType = mailTypeParam,
 				closureItem = vm.closureItem,
 				startDate = vm.startDate,
 				endDate = vm.endDate,
-				selectWorkplaceInfo = vm.selectWorkplaceInfo,
+				selectWorkplaceInfo = _.filter(vm.selectWorkplaceInfo, o => _.includes(existData, o.id)),
 				employmentCDLst = vm.params.employmentCDLst,
 				cParam: KAF018CParam = { mailType, closureItem, startDate, endDate, selectWorkplaceInfo, employmentCDLst };
 			vm.$window.modal('/view/kaf/018/c/index.xhtml', cParam, dialogSize);
