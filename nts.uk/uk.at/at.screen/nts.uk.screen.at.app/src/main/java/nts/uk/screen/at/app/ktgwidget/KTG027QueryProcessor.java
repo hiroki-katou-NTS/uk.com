@@ -386,7 +386,7 @@ public class KTG027QueryProcessor {
 		SWkpHistImport sWkpHistImport = employeeAdapter.getSWkpHistByEmployeeID(sID, referencePeriod.get().end());
 
 		// [No.573]職場の下位職場を基準職場を含めて取得する
-		List<String> lstWorkPlaceId = workplacePub.getAllChildrenOfWorkplaceId(cID, referencePeriod.get().end(),
+		List<String> lstWorkPlaceId = workplacePub.getWorkplaceIdAndChildren(cID, referencePeriod.get().end(),
 				sWkpHistImport.getWorkplaceId());
 
 		// 期間内に特定の職場（List）に所属している社員一覧を取得

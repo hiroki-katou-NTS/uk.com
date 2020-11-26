@@ -134,6 +134,8 @@ module nts.uk.com.view.ccg034.d {
       }
       // Re-calculate resolution
       vm.calculateResolution();
+      // Focus
+      $("#D6").focus();
     }
 
     /**

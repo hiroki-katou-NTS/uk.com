@@ -4,7 +4,7 @@ import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
- * 記念日のタイトル
+ * メモ:汎用文字列PrimitiveValue
  */
 @StringMaxLength(200)
 public class Remark extends StringPrimitiveValue<Remark> {

@@ -6,7 +6,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
 /**
  * 記念日のタイトル
  */
-@StringMaxLength(20)
+@StringMaxLength(40)
 public class ContactName extends StringPrimitiveValue<ContactName> {
     /**
      *

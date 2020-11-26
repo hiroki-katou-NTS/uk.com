@@ -93,6 +93,7 @@ module nts.uk.com.view.ccg034.f {
         }
       });
       vm.findMenuData();
+      $("#F6_2").focus();
     }
 
     private findMenuData() {
