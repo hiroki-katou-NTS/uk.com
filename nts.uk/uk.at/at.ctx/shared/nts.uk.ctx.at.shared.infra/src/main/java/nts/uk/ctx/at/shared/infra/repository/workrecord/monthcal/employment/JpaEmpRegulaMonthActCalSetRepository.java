@@ -23,7 +23,7 @@ import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.employment.KrcstEmp
 @Stateless
 public class JpaEmpRegulaMonthActCalSetRepository extends JpaRepository implements EmpRegulaMonthActCalSetRepo {
 
-	private static final String SELECT_BY_CID = "SELECT c FROM KwkdtStampCard c"
+	private static final String SELECT_BY_CID = "SELECT c FROM KrcstEmpRegMCalSet c"
 			+ " WHERE c.krcstEmpRegMCalSetPK.cid = :cid";
 	
 	/*
