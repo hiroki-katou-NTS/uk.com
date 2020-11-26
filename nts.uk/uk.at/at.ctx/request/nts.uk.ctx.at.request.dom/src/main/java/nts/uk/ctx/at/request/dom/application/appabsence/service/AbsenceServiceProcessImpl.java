@@ -711,36 +711,35 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	}
 
 	@Override
-	public AppAbsenceStartInfoOutput workTypeChangeProcess(String companyID,
+	public AppAbsenceStartInfoOutput workTypeChangeProcess(String companyID, List<String> appDates,
 			AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, HolidayAppType holidayType, Optional<String> workTypeCD) {
-//		// INPUT．「休暇申請起動時の表示情報．選択中の勤務種類」にセットする
-//		appAbsenceStartInfoOutput.setSelectedWorkTypeCD(workTypeCD);
-//		// 就業時間帯の表示制御フラグを確認する
-//		boolean controlDispWorkingHours = appAbsenceFourProcess.getDisplayControlWorkingHours(
-//				workTypeCD.orElse(null), 
-//				Optional.of(appAbsenceStartInfoOutput.getHdAppSet()), 
-//				companyID);
-//		// 返ってきた「就業時間帯表示フラグ」を「休暇申請起動時の表示情報」にセットする
-//		appAbsenceStartInfoOutput.setWorkHoursDisp(controlDispWorkingHours);
-//		// INPUT．「休暇種類」をチェックする
-//		if(holidayType == HolidayAppType.SPECIAL_HOLIDAY) {
-//			// 特別休暇の上限情報取得する
-//			appAbsenceStartInfoOutput = this.getSpecAbsenceUpperLimit(companyID, appAbsenceStartInfoOutput, workTypeCD);
-//		}
-//		// 取得した「就業時間帯表示フラグ」を確認する
-//		if(controlDispWorkingHours) {
-//			// 就業時間帯変更時処理
-//			appAbsenceStartInfoOutput = this.workTimesChangeProcess(
-//					companyID, 
-//					appAbsenceStartInfoOutput, 
-//					workTypeCD.get(), 
-//					appAbsenceStartInfoOutput.getSelectedWorkTimeCD(), 
-//					holidayType);
-//		}
-//		// 返ってきた「休暇申請起動時の表示情報」を返す
-//		return appAbsenceStartInfoOutput;
+		// INPUT．「休暇申請起動時の表示情報．選択中の勤務種類」にセットする
+		appAbsenceStartInfoOutput.setSelectedWorkTypeCD(workTypeCD);
+		// 就業時間帯の表示制御フラグを確認する
+		boolean controlDispWorkingHours = appAbsenceFourProcess.getDisplayControlWorkingHours(
+				workTypeCD, 
+				appAbsenceStartInfoOutput.getVacationAppReflect(), 
+				companyID);
+		// 返ってきた「就業時間帯表示フラグ」を「休暇申請起動時の表示情報」にセットする
+		appAbsenceStartInfoOutput.setWorkHoursDisp(controlDispWorkingHours);
+		// INPUT．「休暇種類」をチェックする
+		if(holidayType == HolidayAppType.SPECIAL_HOLIDAY) {
+			// 特別休暇の上限情報取得する
+			appAbsenceStartInfoOutput = this.getSpecAbsenceUpperLimit(companyID, appAbsenceStartInfoOutput, workTypeCD);
+		}
+		// 取得した「就業時間帯表示フラグ」を確認する
+		if(controlDispWorkingHours) {
+			// 就業時間帯変更時処理
+			appAbsenceStartInfoOutput = this.workTimesChangeProcess(
+					companyID, 
+					appAbsenceStartInfoOutput, 
+					workTypeCD.get(), 
+					appAbsenceStartInfoOutput.getSelectedWorkTimeCD(), 
+					holidayType);
+		}
+		// 返ってきた「休暇申請起動時の表示情報」を返す
+		return appAbsenceStartInfoOutput;
 	    
-	    return null;
 	}
 	public WorkTypeObjAppHoliday geWorkTypeObjAppHoliday(AppEmploymentSetting x, int hdType) {
 		return x.getListWTOAH().stream().filter(y -> y.getSwingOutAtr().isPresent() ? y.getSwingOutAtr().get().value == hdType : y.getHolidayAppType().isPresent() ? y.getHolidayAppType().get().value == hdType : false).findFirst().get();
@@ -757,33 +756,47 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		AppReasonOutput appReason = commonAlg.getAppReasonDisplay(companyID, ApplicationType.ABSENCE_APPLICATION, Optional.of(holidayType));
 		
 		// 勤務種類を取得する
-		List<String> workTypes = appAbsenceThreeProcess.getWorkTypeDetails(
+		List<WorkType> workTypes = appAbsenceThreeProcess.getWorkTypeDetails(
 				companyID,
 				holidayType,
 				appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpEmploymentSet().isPresent() ? 
 				        Optional.ofNullable(appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpEmploymentSet().get().getTargetWorkTypeByAppLst()) : Optional.empty()
 				);
-		// 返ってきた「勤務種類<List>」を「休暇申請起動時の表示情報」にセットする
+//		// 「休暇申請起動時の表示情報．選択中の勤務種類」を更新する
+//		List<String> workTypeCDLst = workTypes.stream().map(x -> x.getWorkTypeCode().v()).collect(Collectors.toList());
+//		Optional<String> selectedWorkTypeCD = appAbsenceStartInfoOutput.getSelectedWorkTypeCD();
+//		if(!selectedWorkTypeCD.isPresent() || !workTypeCDLst.contains(selectedWorkTypeCD.get())) {
+//			if(appAbsenceStartInfoOutput.getHdAppSet().getDisplayUnselect() == UseAtr.USE) {
+//				appAbsenceStartInfoOutput.setSelectedWorkTypeCD(Optional.empty());
+//			} else {
+//				appAbsenceStartInfoOutput.setSelectedWorkTypeCD(workTypes.stream().findFirst().map(x -> x.getWorkTypeCode().v()));
+//			}
+//		}
+		
+		// 「休暇申請起動時の表示情報」を更新する
+		appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().setDisplayAppReason(appReason.getDisplayAppReason());
+		appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().setDisplayStandardReason(appReason.getDisplayStandardReason());
+		appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().setReasonTypeItemLst(appReason.getReasonTypeItemLst());
 		appAbsenceStartInfoOutput.setWorkTypeLst(workTypes);
-		// 「休暇申請起動時の表示情報．選択中の勤務種類」を更新する
-		List<String> workTypeCDLst = workTypes.stream().map(x -> x.getWorkTypeCode().v()).collect(Collectors.toList());
+		
 		Optional<String> selectedWorkTypeCD = appAbsenceStartInfoOutput.getSelectedWorkTypeCD();
-		if(!selectedWorkTypeCD.isPresent() || !workTypeCDLst.contains(selectedWorkTypeCD.get())) {
-			if(appAbsenceStartInfoOutput.getHdAppSet().getDisplayUnselect() == UseAtr.USE) {
-				appAbsenceStartInfoOutput.setSelectedWorkTypeCD(Optional.empty());
-			} else {
-				appAbsenceStartInfoOutput.setSelectedWorkTypeCD(workTypes.stream().findFirst().map(x -> x.getWorkTypeCode().v()));
-			}
+		if (selectedWorkTypeCD.isPresent()) {
+		    appAbsenceStartInfoOutput.setSelectedWorkTypeCD(
+		            appAbsenceStartInfoOutput.getWorkTypeLst().stream().filter(x -> x.getWorkTypeCode().v().equals(selectedWorkTypeCD)).collect(Collectors.toList()).size() > 0
+		                    ? appAbsenceStartInfoOutput.getSelectedWorkTypeCD() : Optional.of(workTypes.get(0).getWorkTypeCode().v()));
+		} else {
+		    appAbsenceStartInfoOutput.setSelectedWorkTypeCD(Optional.of(workTypes.get(0).getWorkTypeCode().v()));
 		}
+		
 		// 勤務種類変更時処理
 		appAbsenceStartInfoOutput = this.workTypeChangeProcess(
 				companyID, 
+				appDates, 
 				appAbsenceStartInfoOutput, 
 				holidayType, 
 				appAbsenceStartInfoOutput.getSelectedWorkTypeCD());
 		// 返ってきた「休暇申請起動時の表示情報」を返す
 		return appAbsenceStartInfoOutput;
-//		return null;
 	}
 
 	@Override

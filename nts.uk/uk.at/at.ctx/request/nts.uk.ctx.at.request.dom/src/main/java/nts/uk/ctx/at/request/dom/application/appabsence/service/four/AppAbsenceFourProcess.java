@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.application.appabsence.service.four;
 import java.util.Optional;
 
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflect;
 
 /**
  * @author loivt
@@ -16,5 +17,5 @@ public interface AppAbsenceFourProcess {
 	 * @param companyID
 	 * @return
 	 */
-	public boolean getDisplayControlWorkingHours(String workTypeCd,Optional<HdAppSet> hdAppSet,String companyID);
+	public boolean getDisplayControlWorkingHours(Optional<String> workTypeCd, VacationApplicationReflect vacationAppReflect, String companyID);
 }

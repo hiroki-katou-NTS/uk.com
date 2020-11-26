@@ -14,7 +14,7 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
                         options: workTypeLst,
                         optionsValue: 'workTypeCode',
                         optionsText: 'workTypeCode' + ' ' + 'name',
-                        value: selectedWorkType,
+                        value: selectedWorkTypeCD,
                         required: true
                     }"></div>
                 </div>
@@ -155,7 +155,7 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
 
     class Kaf006Tab2ViewModel extends ko.ViewModel {
         workTypeLst: KnockoutObservableArray<any> = ko.observableArray([]);
-        selectedWorkType: KnockoutObservable<any> = ko.observable();
+        selectedWorkTypeCD: KnockoutObservable<any> = ko.observable();
         isChagneWorkHour: KnockoutObservable<boolean> = ko.observable(true);
 
         // 60H超休
@@ -181,7 +181,7 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
 
             if (params) {
                 vm.workTypeLst = params.workTypeLst;
-                vm.selectedWorkType = params.selectedWorkType;
+                vm.selectedWorkTypeCD = params.selectedWorkTypeCD;
             }
 
             // vm.total = ko.observable(nts.uk.time.format.byId("Time_Short_HM", (vm.over60H() ? vm.over60H() : 0) + (vm.timeOff() ? vm.timeOff() : 0) 

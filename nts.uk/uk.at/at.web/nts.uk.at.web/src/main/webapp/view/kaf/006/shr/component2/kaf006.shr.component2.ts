@@ -45,10 +45,24 @@ module nts.uk.at.view.kaf006.shr.component2.viewmodel {
                 }
             });
 
-            // check selected item
-            vm.selectedType.subscribe(() => {
-                console.log(this.selectedType())
-            });
+            // // check selected item
+            // vm.selectedType.subscribe(() => {
+            //     console.log(this.selectedType())
+            //     let command = {};
+
+            //     vm.$blockui("show");
+            //     vm.$ajax(API.getAllAppForLeave, command).done((result) => {
+
+            //     }).fail((fail) => {
+
+            //     }).always(() => {
+            //         vm.$blockui("hide");
+            //     })
+            // });
         }
     }
+
+    // const API = {
+	// 	getAllAppForLeave: 'at/request/application/appforleave/getAllAppForLeave'
+    // }
 }

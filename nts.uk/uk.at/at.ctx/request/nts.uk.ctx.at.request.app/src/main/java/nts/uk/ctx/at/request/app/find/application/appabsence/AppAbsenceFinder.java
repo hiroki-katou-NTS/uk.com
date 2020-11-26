@@ -361,14 +361,15 @@ public class AppAbsenceFinder {
 	 * @return
 	 */
 	public AppAbsenceStartInfoDto getChangeWorkType(ParamGetAllAppAbsence param) {
-		String companyID = AppContexts.user().companyId();
-		AppAbsenceStartInfoOutput appAbsenceStartInfoOutput = param.getAppAbsenceStartInfoDto().toDomain(companyID);
-		appAbsenceStartInfoOutput = absenseProcess.workTypeChangeProcess(
-				companyID, 
-				appAbsenceStartInfoOutput, 
-				EnumAdaptor.valueOf(param.getHolidayType(), HolidayAppType.class), 
-				Optional.ofNullable(param.getWorkTypeCode()));
-		return AppAbsenceStartInfoDto.fromDomain(appAbsenceStartInfoOutput);
+//		String companyID = AppContexts.user().companyId();
+//		AppAbsenceStartInfoOutput appAbsenceStartInfoOutput = param.getAppAbsenceStartInfoDto().toDomain(companyID);
+//		appAbsenceStartInfoOutput = absenseProcess.workTypeChangeProcess(
+//				companyID, 
+//				appAbsenceStartInfoOutput, 
+//				EnumAdaptor.valueOf(param.getHolidayType(), HolidayAppType.class), 
+//				Optional.ofNullable(param.getWorkTypeCode()));
+//		return AppAbsenceStartInfoDto.fromDomain(appAbsenceStartInfoOutput);
+	    return null;
 	}
 
 	/**

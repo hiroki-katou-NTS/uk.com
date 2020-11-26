@@ -137,7 +137,7 @@ public interface AbsenceServiceProcess {
 	 * @param workTypeCD 勤務種類コード<Optional>
 	 * @return
 	 */
-	public AppAbsenceStartInfoOutput workTypeChangeProcess(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, HolidayAppType holidayType, 
+	public AppAbsenceStartInfoOutput workTypeChangeProcess(String companyID, List<String> appDates, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, HolidayAppType holidayType, 
 			Optional<String> workTypeCD);
 	
 	/**

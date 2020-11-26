@@ -35,9 +35,6 @@ public class AppAbsenceThreeProcessImpl implements AppAbsenceThreeProcess {
 	@Inject
 	private HdAppSetRepository hdRep;
 	
-	@Inject
-	private WorkTypeRepository workTypeRepo;
-	
 	// 1.勤務種類を取得する（新規）
 	@Override
 	public List<AbsenceWorkType> getWorkTypeCodes(List<AppEmploymentSetting> appEmploymentWorkType, String companyID,
@@ -157,22 +154,30 @@ public class AppAbsenceThreeProcessImpl implements AppAbsenceThreeProcess {
 		// INPUT．「休暇申請対象勤務種類」を確認する
 		List<WorkType> workTypes = new ArrayList<WorkType>();
 		if (targetWorkTypes.isPresent()) {
-		    workTypes = getWorkTypeByHolidayType(companyID,holidayType.value).stream().map(x -> x.getWorkTypeCode().v()).collect(Collectors.toList());
+		    workTypes = getWorkTypeByHolidayType(companyID,holidayType.value);
 		} else {
 		    if (CollectionUtil.isEmpty(targetWorkTypes.get())) {
-		        workTypes = getWorkTypeByHolidayType(companyID,holidayType.value).stream().map(x -> x.getWorkTypeCode().v()).collect(Collectors.toList());
+		        workTypes = getWorkTypeByHolidayType(companyID,holidayType.value);
 		    } else {
 		        for (TargetWorkTypeByApp wt : targetWorkTypes.get()) {
 		            if (!CollectionUtil.isEmpty(wt.getWorkTypeLst())) {
-		                workTypes.addAll(wt.getWorkTypeLst());
+		                workTypes.addAll(workTypeRepository.findNotDeprecatedByListCode(companyID, wt.getWorkTypeLst()));
 		            }
 		        }
 		    }
 		}
 		
 		// 勤務種類コード(ASC)でソートする
-		// (Sort workTypeCode theo ASC)
-		Collections.sort(workTypes);
+		//Sắp xếp theo disorder;
+        List<WorkType> disOrderList = workTypes.stream().filter(w -> w.getDispOrder() != null)
+              .sorted(Comparator.comparing(WorkType::getDispOrder)).collect(Collectors.toList());
+
+        List<WorkType> wkTypeCDList = workTypes.stream().filter(w -> w.getDispOrder() == null)
+              .sorted(Comparator.comparing(WorkType::getWorkTypeCode)).collect(Collectors.toList());
+
+        disOrderList.addAll(wkTypeCDList);
+
+        workTypes = disOrderList;
 		
 		return workTypes;
 	}
