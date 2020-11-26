@@ -31,8 +31,8 @@
               <span class="flex">
                 <span @click="clickTitle('classAnniversary', index)" class="title">
                   {{ item.anniversaryNotice.anniversaryTitle }}
-                  <img :src="iconNew" class="iconNew" v-if="item.flag">
                 </span>
+                <img :src="iconNew" class="iconNew" v-if="item.flag">
               </span>
             </div>
             <div class="collapse">
