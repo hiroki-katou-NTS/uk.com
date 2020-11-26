@@ -202,14 +202,12 @@
             if (!nts.uk.ui.errors.hasError()) {
                 service.getExtraHolidayData(searchCondition).done(function(result) {
 
-                    if (self.unknowEmployeeInfo){
-                        if (result.wkHistory){
-                            self.selectedEmployee.workplaceId = result.wkHistory.workplaceId;
-                            self.selectedEmployee.workplaceCode = result.wkHistory.workplaceCode;
-                            self.selectedEmployee.workplaceName = result.wkHistory.workplaceName;
-                            self.selectedEmployee.employeeCode = result.employeeCode;
-                            self.selectedEmployee.employeeName = result.employeeName;
-                        }
+                    if (result.wkHistory) {
+                        self.selectedEmployee.workplaceId = result.wkHistory.workplaceId;
+                        self.selectedEmployee.workplaceCode = result.wkHistory.workplaceCode;
+                        self.selectedEmployee.workplaceName = result.wkHistory.workplaceName;
+                        self.selectedEmployee.employeeCode = result.employeeCode;
+                        self.selectedEmployee.employeeName = result.employeeName;
                     }
                     if (result.closureEmploy && result.sempHistoryImport){
                         self.closureEmploy = result.closureEmploy;
