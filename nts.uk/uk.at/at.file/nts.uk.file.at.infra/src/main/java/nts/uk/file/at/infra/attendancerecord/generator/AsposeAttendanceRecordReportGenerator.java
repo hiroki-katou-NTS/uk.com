@@ -13,6 +13,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
+import com.aspose.cells.BackgroundType;
 import com.aspose.cells.BorderType;
 import com.aspose.cells.Cell;
 import com.aspose.cells.CellBorderType;
@@ -739,11 +740,17 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 		// generate display a confirmation mark in month
 		if (employeeData.isApprovalStatus()) {
 			Range approvalRange =  worksheet.getCells().createRange(reportApproval);
-			approvalRange.setOutlineBorder(BorderType.TOP_BORDER, CellBorderType.THICK, Color.getRed());
-			approvalRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THICK, Color.getRed());
-			approvalRange.setOutlineBorder(BorderType.LEFT_BORDER, CellBorderType.THICK, Color.getRed());
-			approvalRange.setOutlineBorder(BorderType.RIGHT_BORDER, CellBorderType.THICK, Color.getRed());
-			approvalRange.get(0, 0).setValue(APPROVAL);
+			approvalRange.setOutlineBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getRed());
+			approvalRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getRed());
+			approvalRange.setOutlineBorder(BorderType.LEFT_BORDER, CellBorderType.THIN, Color.getRed());
+			approvalRange.setOutlineBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getRed());
+			Cell approvalCell = approvalRange.get(0, 0);
+			Style style = new Style();
+			style.copy(approvalCell.getStyle());
+			style.setPattern(BackgroundType.SOLID);
+			style.setForegroundColor(Color.fromArgb(252, 228, 214));
+			approvalCell.setStyle(style);
+			approvalCell.setValue(APPROVAL);
 		}
 		// update start page row value
 		if (mode == EXPORT_PDF) {
@@ -895,4 +902,5 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 		style.setHorizontalAlignment(TextAlignmentType.LEFT);
 		cell.setStyle(style);
 	}
+	
 }
