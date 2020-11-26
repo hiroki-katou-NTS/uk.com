@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.function.dom.outputitemsofworkstatustable;
 
-import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
@@ -12,7 +11,6 @@ import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.EmployeeInfor
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.WorkPlaceInfo;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.*;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;

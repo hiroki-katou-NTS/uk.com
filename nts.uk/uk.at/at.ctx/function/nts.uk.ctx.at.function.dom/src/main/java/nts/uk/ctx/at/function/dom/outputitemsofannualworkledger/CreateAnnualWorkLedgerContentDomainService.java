@@ -64,6 +64,7 @@ public class CreateAnnualWorkLedgerContentDomainService {
             String employmentName = null;
             if (lstClosureDateEmployment.size() == 0) return;
             val closureDateEmployment = lstClosureDateEmployment.getOrDefault(emp.getEmployeeId(),null);
+            if(closureDateEmployment == null) return;
             val closure = closureDateEmployment.getClosure();
             if (closure != null && closure.getClosureHistories().size() > 0) {
                 val closureHistory = closure.getClosureHistories().get(0);

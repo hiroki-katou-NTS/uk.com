@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.function.dom.outputitemsofannualworkledger;
 
 import lombok.val;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.commonform.ClosureDateEmployment;
+import nts.uk.ctx.at.function.dom.commonform.GetClosureDateEmploymentDomainServiceTest;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.FormOutputItemName;
@@ -10,11 +12,11 @@ import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemDetailA
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.*;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeBasicInfoImport;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceInfor;
+import nts.uk.ctx.at.shared.dom.workrule.closure.*;
+import nts.arc.time.YearMonth;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DumDataTest {
     public static Map<String, EmployeeBasicInfoImport> lstEmployee() {
@@ -35,6 +37,7 @@ public class DumDataTest {
                 , "wplIGName2", "wplIECode2"));
         return rs;
     }
+
     public static Map<String, WorkplaceInfor> lstWorkplaceInforFail() {
         val rs = new HashMap<String, WorkplaceInfor>();
 
@@ -44,6 +47,7 @@ public class DumDataTest {
                 , "wplIGName2", "wplIECode2"));
         return rs;
     }
+
     public static Map<String, EmployeeBasicInfoImport> lstEmployeeFail() {
         val rs = new HashMap<String, EmployeeBasicInfoImport>();
 
@@ -52,14 +56,15 @@ public class DumDataTest {
         return rs;
 
     }
+
     public static Map<String, ClosureDateEmployment> lstClosureDateEmployment()
 
     {
-
+        val closure = GetClosureDateEmploymentDomainServiceTest.createClosure();
         val rs = new HashMap<String, ClosureDateEmployment>();
 
-        rs.put("eplId01", new ClosureDateEmployment("eplId01", "employeeCode1", "employeeName1", null));
-        rs.put("sid2", new ClosureDateEmployment("sid2", "employeeCode2", "employeeName2", null));
+        rs.put("eplId01", new ClosureDateEmployment("eplId01", "employeeCode1", "employeeName1", closure));
+        rs.put("sid2", new ClosureDateEmployment("sid2", "employeeCode2", "employeeName2", closure));
 
         return rs;
     }
@@ -188,7 +193,7 @@ public class DumDataTest {
                     DailyMonthlyClassification.MONTHLY,
                     CommonAttributesOfForms.TIME,
                     Arrays.asList(
-                            new OutputItemDetailAttItem(OperatorsCommonToForms.SUBTRACTION, 22),
+                            new OutputItemDetailAttItem(OperatorsCommonToForms.SUBTRACTION, 1),
                             new OutputItemDetailAttItem(OperatorsCommonToForms.SUBTRACTION, 2)
                     )
             ),
@@ -201,7 +206,7 @@ public class DumDataTest {
                     CommonAttributesOfForms.TIME,
                     Arrays.asList(
                             new OutputItemDetailAttItem(OperatorsCommonToForms.SUBTRACTION, 1),
-                            new OutputItemDetailAttItem(OperatorsCommonToForms.SUBTRACTION, 21)
+                            new OutputItemDetailAttItem(OperatorsCommonToForms.SUBTRACTION, 3)
                     )
             ),
             new OutputItem(
@@ -212,8 +217,8 @@ public class DumDataTest {
                     DailyMonthlyClassification.MONTHLY,
                     CommonAttributesOfForms.TIME,
                     Arrays.asList(
-                            new OutputItemDetailAttItem(OperatorsCommonToForms.SUBTRACTION, 33),
-                            new OutputItemDetailAttItem(OperatorsCommonToForms.SUBTRACTION, 11)
+                            new OutputItemDetailAttItem(OperatorsCommonToForms.SUBTRACTION, 1),
+                            new OutputItemDetailAttItem(OperatorsCommonToForms.SUBTRACTION, 5)
                     )
             ),
             new OutputItem(
@@ -224,8 +229,8 @@ public class DumDataTest {
                     DailyMonthlyClassification.MONTHLY,
                     CommonAttributesOfForms.TIME,
                     Arrays.asList(
-                            new OutputItemDetailAttItem(OperatorsCommonToForms.SUBTRACTION, 55),
-                            new OutputItemDetailAttItem(OperatorsCommonToForms.SUBTRACTION, 2)
+                            new OutputItemDetailAttItem(OperatorsCommonToForms.SUBTRACTION, 1),
+                            new OutputItemDetailAttItem(OperatorsCommonToForms.SUBTRACTION, 4)
                     )
             ),
             new OutputItem(
@@ -236,8 +241,8 @@ public class DumDataTest {
                     DailyMonthlyClassification.MONTHLY,
                     CommonAttributesOfForms.TIME,
                     Arrays.asList(
-                            new OutputItemDetailAttItem(OperatorsCommonToForms.SUBTRACTION, 22),
-                            new OutputItemDetailAttItem(OperatorsCommonToForms.SUBTRACTION, 2)
+                            new OutputItemDetailAttItem(OperatorsCommonToForms.SUBTRACTION, 1),
+                            new OutputItemDetailAttItem(OperatorsCommonToForms.SUBTRACTION, 3)
                     )
             ),
             new OutputItem(
@@ -248,7 +253,7 @@ public class DumDataTest {
                     DailyMonthlyClassification.MONTHLY,
                     CommonAttributesOfForms.TIME,
                     Arrays.asList(
-                            new OutputItemDetailAttItem(OperatorsCommonToForms.SUBTRACTION, 222),
+                            new OutputItemDetailAttItem(OperatorsCommonToForms.SUBTRACTION, 2),
                             new OutputItemDetailAttItem(OperatorsCommonToForms.SUBTRACTION, 2)
                     )
             ),
@@ -260,7 +265,7 @@ public class DumDataTest {
                     DailyMonthlyClassification.MONTHLY,
                     CommonAttributesOfForms.TIME,
                     Arrays.asList(
-                            new OutputItemDetailAttItem(OperatorsCommonToForms.SUBTRACTION, 22),
+                            new OutputItemDetailAttItem(OperatorsCommonToForms.SUBTRACTION, 5),
                             new OutputItemDetailAttItem(OperatorsCommonToForms.SUBTRACTION, 2)
                     )
             ),
@@ -272,37 +277,36 @@ public class DumDataTest {
                     DailyMonthlyClassification.MONTHLY,
                     CommonAttributesOfForms.TIME,
                     Arrays.asList(
-                            new OutputItemDetailAttItem(OperatorsCommonToForms.SUBTRACTION, 12),
+                            new OutputItemDetailAttItem(OperatorsCommonToForms.SUBTRACTION, 5),
                             new OutputItemDetailAttItem(OperatorsCommonToForms.SUBTRACTION, 2)
                     )
             ),
             new OutputItem(
                     8,
-                    new FormOutputItemName("itemName08"),
-                    true,
-                    IndependentCalcClassic.CACULATION,
-                    DailyMonthlyClassification.MONTHLY,
-                    CommonAttributesOfForms.TIME,
-                    Arrays.asList(
-                            new OutputItemDetailAttItem(OperatorsCommonToForms.SUBTRACTION, 22),
-                            new OutputItemDetailAttItem(OperatorsCommonToForms.SUBTRACTION, 252)
-                    )
-            ),
-            new OutputItem(
-                    9,
                     new FormOutputItemName("itemName09"),
                     true,
                     IndependentCalcClassic.CACULATION,
                     DailyMonthlyClassification.MONTHLY,
                     CommonAttributesOfForms.TIME,
                     Arrays.asList(
-                            new OutputItemDetailAttItem(OperatorsCommonToForms.SUBTRACTION, 72),
-                            new OutputItemDetailAttItem(OperatorsCommonToForms.SUBTRACTION, 12)
+                            new OutputItemDetailAttItem(OperatorsCommonToForms.SUBTRACTION, 3),
+                            new OutputItemDetailAttItem(OperatorsCommonToForms.SUBTRACTION, 1)
+                    )
+            ),
+            new OutputItem(
+                    9,
+                    new FormOutputItemName("itemName10"),
+                    true,
+                    IndependentCalcClassic.CACULATION,
+                    DailyMonthlyClassification.MONTHLY,
+                    CommonAttributesOfForms.TIME,
+                    Arrays.asList(
+                            new OutputItemDetailAttItem(OperatorsCommonToForms.SUBTRACTION, 2),
+                            new OutputItemDetailAttItem(OperatorsCommonToForms.SUBTRACTION, 3)
                     )
             )
 
     );
-
     public static AnnualWorkLedgerOutputSetting outputSetting = new AnnualWorkLedgerOutputSetting(
             "id",
             new OutputItemSettingCode("code"),
@@ -311,6 +315,72 @@ public class DumDataTest {
             dailyOutputItemList,
             "sid",
             monthlyOutputItemList
+
+    );
+    private static DailyData dailyData = new DailyData(
+            Arrays.asList(new DailyValue(-2000D, "", GeneralDate.today().addDays(1))),
+            Arrays.asList(new DailyValue(0D, "25", GeneralDate.today().addDays(1))),
+            "itemName02",
+            CommonAttributesOfForms.TIME,
+            "itemName01",
+            CommonAttributesOfForms.WORK_TYPE
+    );
+
+    private static List<MonthlyData> lstMonthlyData = Arrays.asList(
+            new MonthlyData(
+                    Collections.emptyList(),
+                    "itemname01",
+                    CommonAttributesOfForms.TIME
+            ), new MonthlyData(
+                    Collections.emptyList(),
+                    "itemname02",
+                    CommonAttributesOfForms.TIME
+            ), new MonthlyData(
+                    Collections.emptyList(),
+                    "itemname03",
+                    CommonAttributesOfForms.TIME
+            ), new MonthlyData(
+                    Collections.emptyList(),
+                    "itemname04",
+                    CommonAttributesOfForms.TIME
+            ), new MonthlyData(
+                    Collections.emptyList(),
+                    "itemname05",
+                    CommonAttributesOfForms.TIME
+            ), new MonthlyData(
+                    Collections.emptyList(),
+                    "itemname06",
+                    CommonAttributesOfForms.TIME
+            ), new MonthlyData(
+                    Collections.emptyList(),
+                    "itemname07",
+                    CommonAttributesOfForms.TIME
+            ), new MonthlyData(
+                    Collections.emptyList(),
+                    "itemname08",
+                    CommonAttributesOfForms.TIME
+            ), new MonthlyData(
+                    Collections.emptyList(),
+                    "itemname09",
+                    CommonAttributesOfForms.TIME
+            ), new MonthlyData(
+                    Collections.emptyList(),
+                    "itemname10",
+                    CommonAttributesOfForms.TIME
+            ));
+
+
+    public static List<AnnualWorkLedgerContent> expected = Arrays.asList(new AnnualWorkLedgerContent(
+                    dailyData,
+            lstMonthlyData,
+                    "employeeCode1",
+                    "employeeName1",
+                    "AA",
+                    "wplIdCode1",
+                    "wplIdName1",
+                    "employeeCode1",
+                    "employeeName1"
+            )
 
     );
 

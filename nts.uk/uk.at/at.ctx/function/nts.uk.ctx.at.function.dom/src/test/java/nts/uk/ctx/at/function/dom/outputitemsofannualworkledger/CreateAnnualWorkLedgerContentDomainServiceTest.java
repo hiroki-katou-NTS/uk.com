@@ -112,7 +112,6 @@ public class CreateAnnualWorkLedgerContentDomainServiceTest {
 
     /**
      * TEST CASE :Throw exception
-     * - Fail  employee  info
      */
     @Test
     public void test_04() {
@@ -150,6 +149,7 @@ public class CreateAnnualWorkLedgerContentDomainServiceTest {
 
         val actual = CreateAnnualWorkLedgerContentDomainService.getData(require, datePeriod, lstEmployee,
                 outputSetting, lstWorkplaceInfor, lstClosureDateEmployment);
+        val expected = DumDataTest.expected;
 
     }
 }
