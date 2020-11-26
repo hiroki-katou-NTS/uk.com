@@ -12,10 +12,10 @@ public class AnnualWorkLedgerFileQuery {
     private int mode;
 
     // A2_3 期間入力 - 開始月
-    private GeneralDate startMonth;
+    private int startMonth;
 
     // A2_3 期間入力 - 終了月
-    private GeneralDate endMonth;
+    private int endMonth;
 
     // A3_2 社員リスト
     private List<String> lstEmpIds;
@@ -30,5 +30,5 @@ public class AnnualWorkLedgerFileQuery {
     private boolean isZeroDisplay;
 
     // 締め日
-    private ClosureDateDto closureDate;
+    private int  closureId;;
 }

@@ -71,7 +71,6 @@ public class CreateDisplayContentWorkStatusDService {
                                     .collect(Collectors.toMap(AttendanceItemDtoValue::getItemId, l -> l))));
             val itemOneLines = new ArrayList<OutputItemOneLine>();
             for (val j : outputItems) {
-
                 val itemValue = new ArrayList<DailyValue>();
                 allValue.forEach((key, value1) -> {
                     val listAtId = j.getSelectedAttendanceItemList();
@@ -80,11 +79,10 @@ public class CreateDisplayContentWorkStatusDService {
                     Double actualValue = 0D;
                     if (j.getItemDetailAttributes() == CommonAttributesOfForms.WORK_TYPE ||
                             j.getItemDetailAttributes() == CommonAttributesOfForms.WORKING_HOURS) {
-
                         for (val d : listAtId) {
-                            val sub = value1.get(d.getAttendanceItemId());
-                            if (sub.getValue() == null) continue;
-                            character.append((value1.get(d.getAttendanceItemId()).getValue()));
+                            val sub = value1.getOrDefault(d.getAttendanceItemId(), null);
+                            if (sub == null || sub.getValue() == null) continue;
+                            character.append(sub.getValue());
                         }
                         itemValue.add(
                                 new DailyValue(
@@ -95,10 +93,10 @@ public class CreateDisplayContentWorkStatusDService {
                                 ));
                     } else {
                         for (val d : listAtId) {
-                            val sub = value1.get(d.getAttendanceItemId());
-                            if (sub.getValue() == null) continue;
+                            val sub = value1.getOrDefault(d.getAttendanceItemId(), null);
+                            if (sub == null || sub.getValue() == null) continue;
                             actualValue = actualValue + ((d.getOperator() == OperatorsCommonToForms.ADDITION ? 1 : -1) *
-                                    Double.parseDouble(value1.get(d.getAttendanceItemId()).getValue()));
+                                    Double.parseDouble(sub.getValue()));
                         }
                         itemValue.add(new DailyValue(
                                 actualValue,
@@ -120,13 +118,13 @@ public class CreateDisplayContentWorkStatusDService {
                         ));
                 item.setOutputItemOneLines(itemOneLines);
             }
-
             rs.add(item);
         });
 
         if (rs.isEmpty()) {
             throw new BusinessException("Msg_1816");
         }
+
         return rs;
     }
 

@@ -20,6 +20,6 @@ public class AttendenceItemInfoProcessor {
     private GetAttendanceItemInfo getAttendanceItemInfo;
 
     public AttendanceItemInfoDto getInfo(RequestParams requestParams) {
-        return getAttendanceItemInfo.getAttendanceItemInfo(requestParams.getFormNumberDisplay(),true,false);
+        return getAttendanceItemInfo.getAttendanceItemInfo(requestParams.getFormNumberDisplay(),true,true);
     }
 }
