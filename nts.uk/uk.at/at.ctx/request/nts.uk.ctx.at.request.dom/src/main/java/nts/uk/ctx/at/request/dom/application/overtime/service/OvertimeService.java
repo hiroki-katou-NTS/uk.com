@@ -10,6 +10,7 @@ import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
@@ -172,7 +173,7 @@ public interface OvertimeService {
 			Boolean require,
 			ApplicationType appType,
 			Optional<AppOverTime> appOverOptional,
-			Optional<AppOverTime> appHolidayOptional,
+			Optional<AppHolidayWork> appHolidayOptional,
 			OvertimeLeaveAppCommonSet overtimeLeaveAppCommonSet
 			);
 	/**
