@@ -11,9 +11,12 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
@@ -44,6 +47,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdwo
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.HolidayWorkAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
 import nts.uk.ctx.at.request.dom.workrecord.dailyrecordprocess.dailycreationwork.BreakTimeZoneSetting;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcessCommon;
@@ -52,6 +56,7 @@ import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.apprefle
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWorkRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -110,6 +115,9 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 	
 	@Inject
 	private OvertimeService overtimeService;
+	
+	@Inject
+	private RemainNumberTempRequireService requireService;
 
 	@Override
 	public HolidayWorkAppSet getHolidayWorkSetting(String companyId) {
@@ -399,7 +407,12 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 			boolean testFlex = outDateApplication.getFlex().equals(ExcessState.EXCESS_ALARM);
 			boolean testOverTimeLate = outDateApplication.getOverTimeLate().equals(ExcessState.EXCESS_ALARM);
 			if(testExcessStateDetail || testExcessStateMidnight || testFlex || testOverTimeLate) {
-				
+				outDateApplication.getExcessStateDetail().stream()
+				.filter(excessStateDetail -> excessStateDetail.getType().equals(AttendanceType_Update.NORMALOVERTIME) 
+						&& excessStateDetail.getExcessState().equals(ExcessState.EXCESS_ALARM))
+				.map(excessStateDetail -> {
+					return excessStateDetail;
+				}).collect(Collectors.toList());
 				confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_424", 
 						Arrays.asList(appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid()))); //huytodo
 			}
@@ -435,9 +448,13 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 		
 		//	申請時の乖離時間をチェックする
 		overtimeService.checkDivergenceTime(require, ApplicationType.HOLIDAY_WORK_APPLICATION, 
-				Optional.empty(), Optional.empty(), appHdWorkDispInfoOutput.getHolidayWorkAppSet().getOvertimeLeaveAppCommonSet()); //huytodo Optional.of(appHolidayWork);
+				Optional.empty(), Optional.of(appHolidayWork), appHdWorkDispInfoOutput.getHolidayWorkAppSet().getOvertimeLeaveAppCommonSet());
 		
 		//	社員に対応する締め期間を取得する
+		val requireM3 = requireService.createRequire();
+        val cacheCarrier = new CacheCarrier();
+        DatePeriod closingPeriod = ClosureService.findClosurePeriod(requireM3, cacheCarrier, appHolidayWork.getApplication().getEmployeeID(), 
+        		appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getBaseDate());
 		return null;
 	}
 
