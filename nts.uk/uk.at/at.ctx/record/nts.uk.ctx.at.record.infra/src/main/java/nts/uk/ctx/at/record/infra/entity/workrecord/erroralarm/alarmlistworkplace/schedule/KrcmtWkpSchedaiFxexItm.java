@@ -40,6 +40,10 @@ public class KrcmtWkpSchedaiFxexItm extends ContractUkJpaEntity implements Seria
     @Column(name = "FIRST_MESSAGE_DIS")
     public String firstMessageDisp;
 
+    /* メッセージを太字にする */
+    @Column(name = "MESSAGE_BOLD")
+    public boolean boldAtr;
+
     /* メッセージの色 */
     @Column(name = "MESSAGE_COLOR")
     public String messageColor;
@@ -60,6 +64,7 @@ public class KrcmtWkpSchedaiFxexItm extends ContractUkJpaEntity implements Seria
         entity.scheduleCheckName = domain.getScheduleCheckName();
         entity.alarmCheckCls = domain.getAlarmCheckCls().value;
         entity.firstMessageDisp = domain.getFirstMessageDisp().v();
+        entity.boldAtr = domain.isBoldAtr();
         entity.messageColor = domain.getMessageColor().map(i -> i.v()).orElse(null);
         entity.cid = AppContexts.user().companyId();
 
@@ -71,6 +76,7 @@ public class KrcmtWkpSchedaiFxexItm extends ContractUkJpaEntity implements Seria
                 this.fixedCheckDayItemName,
                 this.alarmCheckCls,
                 this.scheduleCheckName,
+                this.boldAtr,
                 this.firstMessageDisp,
                 this.messageColor
         );

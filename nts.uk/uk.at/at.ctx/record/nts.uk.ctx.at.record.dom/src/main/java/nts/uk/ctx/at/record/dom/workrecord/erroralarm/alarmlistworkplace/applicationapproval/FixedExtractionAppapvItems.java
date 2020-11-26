@@ -34,6 +34,11 @@ public class FixedExtractionAppapvItems extends AggregateRoot {
     private String appapvCheckName;
 
     /**
+     * メッセージを太字にする
+     */
+    private boolean boldAtr;
+
+    /**
      * 最初表示するメッセージ
      */
     private DisplayMessage firstMessageDisp;
@@ -49,18 +54,21 @@ public class FixedExtractionAppapvItems extends AggregateRoot {
      * @param checkItemAppapv  No
      * @param alarmCheckCls    アラームチェック区分
      * @param appapvCheckName  申請承認チェック名称
+     * @param boldAtr          メッセージを太字にする
      * @param firstMessageDisp 最初表示するメッセージ
      * @param messageColor     メッセージの色
      */
     public static FixedExtractionAppapvItems create(int checkItemAppapv,
                                                     int alarmCheckCls,
                                                     String appapvCheckName,
+                                                    boolean boldAtr,
                                                     String firstMessageDisp,
                                                     String messageColor) {
 
         return new FixedExtractionAppapvItems(EnumAdaptor.valueOf(checkItemAppapv, CheckItemAppapv.class),
                 EnumAdaptor.valueOf(alarmCheckCls, AlarmCheckClassification.class),
                 appapvCheckName,
+                boldAtr,
                 new DisplayMessage(firstMessageDisp),
                 messageColor != null ? Optional.of(new ColorCode(messageColor)) : Optional.empty());
     }
