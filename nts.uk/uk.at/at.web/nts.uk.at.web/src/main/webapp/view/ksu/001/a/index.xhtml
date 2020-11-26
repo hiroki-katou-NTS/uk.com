@@ -90,13 +90,12 @@
 						data-bind="component: {
 								name: 'kcp015-component',
 								params: {
-								hasParams  : hasParams,
-	                            visibleA31 : visibleA31 ,
-	                            visibleA32 : visibleA32 ,
-	                            visibleA33 : visibleA33 ,
-	                            visibleA34 : visibleA34 ,
-	                            visibleA35 : visibleA35 ,
-	                            visibleA36 : visibleA36,
+	                            visibleA31 : ko.observable(true),
+	                            visibleA32 : ko.observable(true),
+	                            visibleA33 : ko.observable(true),
+	                            visibleA34 : ko.observable(true),
+	                            visibleA35 : ko.observable(true),
+	                            visibleA36 : ko.observable(true),
 	                            sids       : sids,
 	                            baseDate   : baseDate
 								}
