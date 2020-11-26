@@ -30,7 +30,7 @@ public interface FourWeekHolidayAcqMana extends HolidayAcquisitionManagement {
 	 */
 	default DatePeriod make4Weeks(GeneralDate startDate, GeneralDate referenceDate) {
 		int cycleDay = 7*4;
-		int currentNumberOfCycles = new DatePeriod(startDate, referenceDate).datesBetween().size()/cycleDay; 
+		int currentNumberOfCycles = (new DatePeriod(startDate, referenceDate).datesBetween().size() -1)/cycleDay; 
 		startDate = startDate.addDays(currentNumberOfCycles*cycleDay);
 		return new DatePeriod(startDate, startDate.addDays(cycleDay-1));
 	}

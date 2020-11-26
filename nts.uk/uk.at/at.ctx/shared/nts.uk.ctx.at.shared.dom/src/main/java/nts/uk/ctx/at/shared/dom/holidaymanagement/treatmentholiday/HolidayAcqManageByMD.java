@@ -54,7 +54,7 @@ public class HolidayAcqManageByMD implements FourWeekHolidayAcqMana, DomainValue
 		//$期間 = [prv-1] 4週間を作る($起算年月日,基準日)
 		DatePeriod period = this.make4Weeks(startingDate, ymd);
 		//$週間数 = (切り捨て(($期間.終了日 - $起算年月日) / (7 * 4)) ) + 1
-		int numberOfWeeks = new DatePeriod(startingDate,period.end()).datesBetween().size()/(7*4) + 1; 
+		int numberOfWeeks = (new DatePeriod(startingDate,period.end()).datesBetween().size()-1)/(7*4) + 1; 
 		
 		if(numberOfWeeks<13) {
 			//return 休日取得の管理期間#($期間,@4週間の休日日数)

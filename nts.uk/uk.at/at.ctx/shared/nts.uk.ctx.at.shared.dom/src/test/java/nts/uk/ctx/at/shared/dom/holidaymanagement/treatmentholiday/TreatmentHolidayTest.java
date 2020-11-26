@@ -60,8 +60,8 @@ public class TreatmentHolidayTest {
 		
 		HolidayNumberManagement result = treatmentHoliday.getNumberHoliday(require, GeneralDate.ymd(2020, 11, 11));
 		assertThat( result.getAddNonstatutoryHolidays()).isEqualTo(treatmentHoliday.getAddNonstatutoryHolidays());
-		assertThat( result.getPeriod()).isEqualTo(new DatePeriod(GeneralDate.ymd(2020, 11, 03), GeneralDate.ymd(2020, 12, 30))); 
-		assertThat( result.getHolidayDays().v()).isEqualTo(5.0);
+		assertThat( result.getPeriod()).isEqualTo(new DatePeriod(GeneralDate.ymd(2020, 11, 03), GeneralDate.ymd(2020, 11, 30))); 
+		assertThat( result.getHolidayDays().v()).isEqualTo(4.0);
 	}
 	
 	/**
@@ -69,12 +69,12 @@ public class TreatmentHolidayTest {
 	 */
 	@Test
 	public void test_getNumberHoliday_3() {
-		HolidayAcqManageByYMD holidayAcqManageByYMD = new HolidayAcqManageByYMD(GeneralDate.ymd(2020, 11, 11), new FourWeekDays(4.0));
+		HolidayAcqManageByYMD holidayAcqManageByYMD = new HolidayAcqManageByYMD(GeneralDate.ymd(2020, 12, 1), new FourWeekDays(4.0));
 		TreatmentHoliday treatmentHoliday = new TreatmentHoliday("companyId", NotUseAtr.USE, holidayAcqManageByYMD);
 		
-		HolidayNumberManagement result = treatmentHoliday.getNumberHoliday(require, GeneralDate.ymd(2020, 11, 11));
+		HolidayNumberManagement result = treatmentHoliday.getNumberHoliday(require, GeneralDate.ymd(2020, 6, 11));
 		assertThat( result.getAddNonstatutoryHolidays()).isEqualTo(treatmentHoliday.getAddNonstatutoryHolidays());
-		assertThat( result.getPeriod()).isEqualTo(new DatePeriod(GeneralDate.ymd(2020, 11, 11), GeneralDate.ymd(2020, 12, 8))); 
+		assertThat( result.getPeriod()).isEqualTo(new DatePeriod(GeneralDate.ymd(2020, 12, 1), GeneralDate.ymd(2020, 12, 28))); 
 		assertThat( result.getHolidayDays()).isEqualTo(holidayAcqManageByYMD.getFourWeekHoliday());
 	}
 
