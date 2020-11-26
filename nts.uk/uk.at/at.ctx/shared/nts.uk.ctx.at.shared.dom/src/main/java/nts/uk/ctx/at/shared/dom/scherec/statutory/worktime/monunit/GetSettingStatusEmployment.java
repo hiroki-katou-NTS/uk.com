@@ -31,7 +31,7 @@ public class GetSettingStatusEmployment {
 	 */
 	public static List<String> getSettingEmployment(Require require, String cid, LaborWorkTypeAttr laborWorkTypeAttr) {
 
-		List<String> employmentCodes1 = require.findEmploymentbyCid(cid)
+		List<String> employmentCodes1 = require.findEmploymentbyCid(cid, laborWorkTypeAttr)
 			.stream()
 			.map(m -> m.getEmployment().v())
 			.collect(Collectors.toList());
@@ -76,7 +76,7 @@ public class GetSettingStatusEmployment {
 	public static interface Require {
 
 		// [R-1] 雇用別月単位労働時間を取得する(会社ID)
-		List<MonthlyWorkTimeSetEmp> findEmploymentbyCid(String cid);
+		List<MonthlyWorkTimeSetEmp> findEmploymentbyCid(String cid, LaborWorkTypeAttr laborAttr);
 
 		// [R-2] 雇用別通常勤務法定労働時間を取得する(会社ID)
 		List<RegularLaborTimeEmp> findListByCid(String cid);
