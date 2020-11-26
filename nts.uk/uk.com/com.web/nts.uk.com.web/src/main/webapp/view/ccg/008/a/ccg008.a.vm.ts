@@ -27,55 +27,54 @@ module nts.uk.com.view.ccg008.a.screenModel {
     closureSelected: KnockoutObservable<number> = ko.observable(1);
     lstClosure: KnockoutObservableArray<ItemCbbModel> = ko.observableArray([]);
     reloadInterval: KnockoutObservable<number> = ko.observable(0);
-    lstWidgetLayout2: KnockoutObservableArray<ItemLayout> = ko.observableArray([]);
-    lstWidgetLayout3: KnockoutObservableArray<ItemLayout> = ko.observableArray([]);
-    isShowUrlLayout1: KnockoutObservable<boolean> = ko.observable(false);
-    urlIframe1: KnockoutObservable<string> = ko.observable("");
-    lstHtml: KnockoutObservableArray<string> = ko.observableArray([]);
+    paramWidgetLayout2: KnockoutObservableArray<WidgetSettingDto> = ko.observableArray([]);
+    paramWidgetLayout3: KnockoutObservableArray<WidgetSettingDto> = ko.observableArray([]);
+    paramIframe1: KnockoutObservable<DisplayInTopPage> = ko.observable();
     topPageSetting: any;
     isShowSwitch: KnockoutObservable<boolean> = ko.observable(false);
     isShowButtonRefresh: KnockoutObservable<boolean> = ko.observable(false);
     isShowButtonSetting: KnockoutObservable<boolean> = ko.observable(false);
     dataToppage: KnockoutObservable<DataTopPage> = ko.observable(null);
     layoutDisplayType: KnockoutObservable<number> = ko.observable(null);
+    visible: KnockoutObservable<boolean> = ko.observable(false);
 
     created() {
-      var self = this;
+      const vm = this;
       var transferData = __viewContext.transferred.value;
       var code = transferData && transferData.topPageCode ? transferData.topPageCode : "";
       var fromScreen = transferData && transferData.screen ? transferData.screen : "other";
-      self.$ajax("com", API.getLoginUser).then((user) => {
-        self.$ajax("com", API.getSetting).then((res) => {
+      vm.$ajax("com", API.getLoginUser).then((user) => {
+        vm.$ajax("com", API.getSetting).then((res) => {
           if (res.reloadInterval) {
-            self.reloadInterval(res.reloadInterval);
+            vm.reloadInterval(res.reloadInterval);
           }
           if (user || res) {
-            self.isShowButtonSetting(true);
+            vm.isShowButtonSetting(true);
           }
-          self.topPageSetting = res;
+          vm.topPageSetting = res;
           //var fromScreen = "login";
           if (fromScreen == "login") {
-           self.$ajax("com", API.getCache).then((data: any) => {
+            vm.$ajax("com", API.getCache).then((data: any) => {
               character.save("cache", data).then(() => {
-                self.topPageCode(code);
+                vm.topPageCode(code);
                 character.restore("cache").then((obj: any) => {
                   if (obj) {
                     const endDate = moment.utc(obj.endDate, "YYYY/MM/DD");
                     if (
                       endDate
-                        .add(self.topPageSetting.switchingDate)
+                        .add(vm.topPageSetting.switchingDate)
                         .isSameOrAfter(moment.utc(new Date(), "YYYY/MM/DD"))
                     ) {
-                      self.selectedSwitch(1);
+                      vm.selectedSwitch(1);
                     } else {
-                      self.selectedSwitch(2);
+                      vm.selectedSwitch(2);
                       obj.currentOrNextMonth = 2;
                     }
-                    self.closureSelected(obj.closureId);
+                    vm.closureSelected(obj.closureId);
                     nts.uk.ui.windows.setShared("cache", obj);
                   } else {
-                    self.closureSelected(1);
-                    self.selectedSwitch(null);
+                    vm.closureSelected(1);
+                    vm.selectedSwitch(null);
                   }
                 });
               });
@@ -85,26 +84,26 @@ module nts.uk.com.view.ccg008.a.screenModel {
             character.restore("cache").done((obj: any) => {
               if (obj) {
                 if (obj.currentOrNextMonth) {
-                  self.selectedSwitch(obj.currentOrNextMonth);
+                  vm.selectedSwitch(obj.currentOrNextMonth);
                 } else {
-                  self.selectedSwitch(null);
+                  vm.selectedSwitch(null);
                 }
-                self.closureSelected(obj.closureId);
+                vm.closureSelected(obj.closureId);
                 nts.uk.ui.windows.setShared("cache", obj);
               } else {
-                self.closureSelected(1);
-                self.selectedSwitch(null);
+                vm.closureSelected(1);
+                vm.selectedSwitch(null);
               }
             });
           }
-          self.dataToppage(null);
-          self.callApiTopPage(self);
+          vm.dataToppage(null);
+          vm.callApiTopPage(vm);
         });
       });
 
       // 会社の締めを取得する - Lấy closure company
       service.getClosure().done((data: any) => {
-        self.lstClosure(data);
+        vm.lstClosure(data);
       });
 
       _.extend(window, { vm: self });
@@ -145,9 +144,11 @@ module nts.uk.com.view.ccg008.a.screenModel {
           fromScreen: fromScreen,
           topPageCode: code,
         };
-
+        vm.layoutDisplayType(null);
         vm.$ajax("com", API.getDisplayTopPage, param).then((data: DataTopPage) => {
+          if (data.displayTopPage) {
           vm.layoutDisplayType(data.displayTopPage.layoutDisplayType);
+          }
           $(".content-top").resizable();
           vm.getToppage(data);
         });
@@ -162,7 +163,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
     getToppage(data: DataTopPage) {
       const vm = this;
       const origin: string = window.location.origin;
-      if ( data.displayTopPage.layoutDisplayType !== 0 && data.displayTopPage.layout2) {
+      if (data.displayTopPage && data.displayTopPage.layoutDisplayType !== 0 && data.displayTopPage.layout2) {
         vm.isShowButtonRefresh(true);
       }
       if (vm.topPageSetting.menuClassification !== MenuClassification.TopPage) {
@@ -184,65 +185,31 @@ module nts.uk.com.view.ccg008.a.screenModel {
         const layout2 = data.displayTopPage.layout2;
         const layout3 = data.displayTopPage.layout3;
         if (layout1) {
-          if (data.displayTopPage.urlLayout1) {
-            vm.isShowUrlLayout1(true);
-            vm.urlIframe1(data.displayTopPage.urlLayout1);
-          } else {
-            const lstFileId = ko.observableArray([]);
-            _.each(data.displayTopPage.layout1, (item: any) => {
-              const fileId = item.fileId;
-              lstFileId().push(fileId);
-            });
-            const param = {
-              lstFileId: lstFileId(),
-            };
-            vm.$ajax("com", API.extract, param).then((res: any) => {
-              const mappedList: any = _.map(res, (item: any) => {
-                const width = item.htmlContent.match(/(?<=width: )[0-9A-Za-z]+(?=;)/)[0];
-                const height = item.htmlContent.match(/(?<=height: )[0-9A-Za-z]+(?=;)/)[0];
-                return {html: `<iframe style="width: ${width}; height: ${height};" srcdoc='${item.htmlContent}'></iframe>`};
-              });
-              vm.lstHtml(mappedList);
-            });
-          }
+          vm.paramIframe1(data.displayTopPage);
+          vm.visible(true)
         }
-        let dataLayout2: ItemLayout[] = [];
-        let dataLayout3: ItemLayout[] = [];
-        vm.lstWidgetLayout2([]);
-        vm.lstWidgetLayout3([]);
         if (layout2) {
           _.each(layout2, (item: WidgetSettingDto) => {
-            if (item.widgetType === 0 || item.widgetType === 1 || item.widgetType === 2 ||item.widgetType === 3 || item.widgetType === 4) {
+            if([0,1,2,3,4].indexOf(item.widgetType) > -1) {
               vm.isShowSwitch(true);
             }
             if (item.widgetType === 1) {
               vm.isShowClosure(true);
             }
-            const itemLayout: ItemLayout = new ItemLayout();
-            itemLayout.url = origin + vm.getUrl(item.widgetType);
-            itemLayout.html = `<iframe style="width:450px" src=  ${itemLayout.url}/>`;
-            itemLayout.order = item.order;
-            dataLayout2.push(itemLayout);
           });
-          dataLayout2 = _.orderBy(dataLayout2, ["order"], ["asc"]);
-          vm.lstWidgetLayout2(dataLayout2);
+          vm.paramWidgetLayout2(layout2);
         }
         if (layout3) {
           _.each(layout3, (item: WidgetSettingDto) => {
-            if ( item.widgetType === 0 || item.widgetType === 1 || item.widgetType === 2 || item.widgetType === 3 || item.widgetType === 4) {
+            if([0,1,2,3,4].indexOf(item.widgetType) > -1) {
               vm.isShowSwitch(true);
             }
+          
             if (item.widgetType === 1) {
               vm.isShowClosure(true);
             }
-            const itemLayout: ItemLayout = new ItemLayout();
-            itemLayout.url = origin + vm.getUrl(item.widgetType);
-            itemLayout.html = `<iframe style="width:450px" src= "${itemLayout.url}"'/>`;
-            itemLayout.order = item.order;
-            dataLayout3.push(itemLayout);
           });
-          dataLayout3 = _.orderBy(dataLayout3, ["order"], ["asc"]);
-          vm.lstWidgetLayout3(dataLayout3);
+          vm.paramWidgetLayout3(layout2);
         }
       }
     }
@@ -257,37 +224,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
           self.reloadInterval(result);
         });
     }
-
-    getUrl(type: any) {
-      let url = "";
-      switch (type) {
-        case 0:
-          url = "/nts.uk.at.web/view/ktg/005/a/index.xhtml";
-          break;
-        case 1:
-          url = "/nts.uk.at.web/view/ktg/001/a/index.xhtml";
-          break;
-        case 2:
-          url = "/nts.uk.at.web/view/ktg/004/a/index.xhtml";
-          break;
-        case 3:
-          url = "/nts.uk.at.web/view/ktg/026/a/index.xhtml";
-          break;
-        case 4:
-          url = "/nts.uk.at.web/view/ktg/027/a/index.xhtml";
-          break;
-        case 5:
-          url = "/nts.uk.at.web/view/kdp/001/a/index.xhtml";
-          break;
-        case 6:
-          url = "/nts.uk.at.web/view/ktg/031/a/index.xhtml";
-          break;
-        case 7:
-          url = "/view/ccg/005/a/index.xhtml";
-          break;
-      }
-      return url;
-    }
+    
     getMinutes(value: number) {
       let minutes = 0;
       switch (value) {
@@ -413,7 +350,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
     url: string;
     html: string;
     order: number;
-    constructor(init?: Partial<StandardMenuDto>) {
+    constructor(init?: Partial<ItemLayout>) {
       $.extend(this, init);
     }
   }

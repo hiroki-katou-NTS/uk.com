@@ -46,12 +46,6 @@
 	min-width: 85px;
 }
 
-#ver4{
-    z-index: 1;
-    margin-left: calc(100vw - 300px);
-    position: absolute;
-}
-
 #setting{
 	margin-top: 40px;
   margin-right: -250px;
@@ -67,7 +61,7 @@
 
 #closure{
 	margin-right: 30px;
-    outline: none;
+  outline: none;
 }
 .content {
   padding: 10px;

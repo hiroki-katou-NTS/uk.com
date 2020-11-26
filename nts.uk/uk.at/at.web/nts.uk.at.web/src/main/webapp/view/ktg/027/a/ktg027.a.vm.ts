@@ -13,6 +13,7 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
     padding-left: 5px;
     width: 445x;
     height: 450px;
+    border: 1px solid #B1B1B1;
   }
   .addSign {
     background: url("../image/addSign.png");
@@ -167,7 +168,6 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
   a:link, a:visited {
     color: inherit;
   }
-  
   a:hover, a:active {
    color:forestgreen;
   }`;
@@ -210,7 +210,7 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
             <!-- A2_1 -->
             <th style="width: 133px;" data-bind="i18n: 'KTG027_7'">}/th>
             <!-- A2_2 -->
-            <th>#{i18n.getText('KTG027_4')}</th>
+            <th data-bind="i18n: 'KTG027_4'"></th>
             <th class="w-200">
               <!-- A2_3 -->
               <span class="fixed45">45:00</span>
@@ -261,7 +261,7 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
       const vm = this;
       vm.$blockui("grayout");
       //get currentOrNextMonth in cache
-      vm.currentOrNextMonth(1);
+      vm.currentOrNextMonth(getShared('cache').currentOrNextMonth);
       //call API init
       vm.$ajax("at", API.getDataInit + vm.currentOrNextMonth())
         .then((response) => {
@@ -345,8 +345,8 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
       const vm = this;
       let listOvertimeByEmp: AgreementTimeDetail[] = [];
       vm.listShowData([]);
-      // vm.$blockui("grayout");
-      vm.$ajax(
+      vm.$blockui("grayout");
+      vm.$ajax('at',
         API.getDataWhenChangeDate + vm.closureId() + "/" + dateChange
       ).then((response) => {
         if (!response.overtimeOfSubordinateEmployees) {
@@ -372,8 +372,8 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
           });
           vm.listShowData(lstTemp);
         }
-      });
-      // .always(() => vm.$blockui("clear"))
+      })
+      .always(() => vm.$blockui("clear"))
     }
 
     // event open screen KTG026

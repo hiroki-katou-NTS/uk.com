@@ -12,6 +12,8 @@
       <com:scriptfile set="IGNITE" />
 			<com:scriptfile path="./ccg008.a.service.js" />
       <com:scriptfile path="./ccg008.a.vm.js" />
+      <com:scriptfile path="./layout1Component.vm.js" />
+      <com:scriptfile path="./layout2Component.vm.js" />
       <com:scriptfile path="/view/ktg/027/a/ktg027.a.vm.js"  of="nts.uk.at.web"/>
 		</ui:define>
 		<ui:define name="content">
@@ -68,37 +70,49 @@
             <div class="contents_layout" id="resizable">
               <com:ko-if bind="layoutDisplayType() === 2 || layoutDisplayType() === 3">
                 <div class="contents_2" id="F2">
-                  <div class="panel panel-frame widget_contents" data-bind="foreach: lstWidgetLayout2">
+                  <!-- <div class="panel panel-frame widget_contents" data-bind="foreach: lstWidgetLayout2">
                     <div class="panel-content placeholder" data-bind="html: html"></div>
-                  </div>
+                  </div> -->
+                  <layout2-component params= "item:paramWidgetLayout2()"></layout2-component>
                 </div>
               </com:ko-if>
-              <div class="contents_1" id="F1">
-                <div class="panel panel-frame">
-                  <com:ko-if bind="isShowUrlLayout1()">
-                    <iframe class="iframe_fix" id="preview-iframe1" data-bind="attr:{src: urlIframe1}"></iframe>
-                  </com:ko-if>
-                  <!-- <div data-bind="foreach: lstHtml">
-                    <div data-bind="html: html" id="F1-frame" ></div>
+              <com:ko-if bind="visible()">
+                <div class="contents_1" id="F1">
+                  <!-- <div class="panel panel-frame">
+                    <com:ko-if bind="isShowUrlLayout1()">
+                      <iframe class="iframe_fix" id="preview-iframe1" data-bind="attr:{src: urlIframe1}"></iframe>
+                    </com:ko-if>
+                    <div data-bind="foreach: lstHtml">
+                      <div data-bind="html: html" id="F1-frame" ></div>
+                    </div>
                   </div> -->
-                  <ktg027-component></ktg027-component>
+                  <layout1-component params= "item: paramIframe1()"></layout1-component>
                 </div>
-              </div>
+              </com:ko-if>
               <com:ko-if bind="layoutDisplayType() === 1">
                 <div class="contents_2" id="F4">
-                  <div class="panel panel-frame widget_contents" data-bind="foreach: lstWidgetLayout2">
+                  <!-- <div class="panel panel-frame widget_contents" data-bind="foreach: lstWidgetLayout2">
                     <div class="panel-content placeholder" data-bind="html: html"></div>
-                  </div>
+                    <com:ko-if bind="url.indexOf('.xhtml') > -1">
+                      <iframe style="width:450px" data-bind="attr: { src: url }" />
+                    </com:ko-if>
+                    <com:ko-if bind="url.indexOf('.js') > -1">
+                        <div data-bind="component: { name: name }"></div>
+                    </com:ko-if>
+                  </div> -->
+                  <layout2-component params= "item:paramWidgetLayout2()"></layout2-component>
                 </div>
               </com:ko-if>
               <com:ko-if bind="layoutDisplayType() === 3">
                 <div class="contents_3" id="F3">
-                  <div class="widget_contents panel panel-frame">
+                  <!-- <div class="widget_contents panel panel-frame">
                     <div class="panel panel-frame widget_contents" data-bind="foreach: lstWidgetLayout3">
                       <div class="panel-content placeholder" data-bind="html: html"></div>
                     </div>
-                  </div>
+                  </div> -->
+                  <layout2-component params= "item:paramWidgetLayout2()"></layout2-component>
                 </div>
+                
               </com:ko-if>
             </div>
           </div>
