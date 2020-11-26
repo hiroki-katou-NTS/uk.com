@@ -28,9 +28,11 @@
         <div class="accordion">
           <div ref="classAnniversary" class="card">
             <div class="card-header uk-bg-schedule-focus" @click="onClickAnniversary(index)">
-              <span @click="clickTitle('classAnniversary', index)" class="title">
-                {{ item.anniversaryNotice.anniversaryTitle }}
-                <img :src="iconNew" class="iconNew" v-if="item.flag">
+              <span class="flex">
+                <span @click="clickTitle('classAnniversary', index)" class="title">
+                  {{ item.anniversaryNotice.anniversaryTitle }}
+                  <img :src="iconNew" class="iconNew" v-if="item.flag">
+                </span>
               </span>
             </div>
             <div class="collapse">
