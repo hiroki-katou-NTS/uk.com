@@ -8,6 +8,7 @@ module nts.uk.at.view.kaf022.x {
             dateValue: KnockoutObservable<any>;
             daysUnit: KnockoutObservable<number>;
             targetSelectionAtr: KnockoutObservable<number>;
+            selected: KnockoutObservable<string>;
 
             constructor() {
                 const self = this;
@@ -15,6 +16,7 @@ module nts.uk.at.view.kaf022.x {
                 self.dateValue = ko.observable({startDate: null, endDate: null});
                 self.daysUnit = ko.observable(0.5);
                 self.targetSelectionAtr = ko.observable(0);
+                self.selected = ko.observable(null);
             }
 
             openKdl035() {
@@ -40,12 +42,13 @@ module nts.uk.at.view.kaf022.x {
                     actualContentDisplayList: [],
 
                     // List<振出振休紐付け管理>
-                    managementData: []
+                    managementData: JSON.parse(self.selected()) || []
                 };
                 setShared("KDL036_PARAMS", params);
                 modal("/view/kdl/036/a/index.xhtml").onClosed(() => {
                     const data = getShared("KDL036_RESULT");
-                    console.log(data);
+                    if (data)
+                        self.selected(JSON.stringify(data));
                 });
             }
         }

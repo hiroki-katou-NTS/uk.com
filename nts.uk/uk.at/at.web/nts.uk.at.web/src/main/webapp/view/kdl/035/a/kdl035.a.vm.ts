@@ -17,7 +17,8 @@ module nts.uk.at.view.kdl035.a.viewmodel {
 
         substituteHolidayList: KnockoutObservableArray<string> = ko.observableArray([]);
         substituteWorkInfoList: KnockoutObservableArray<SubstituteWorkInfo> = ko.observableArray([]);
-        requiredNumberOfDays: KnockoutObservable<number>;
+        requiredNumberOfDays: KnockoutObservable<number>; // min = 0
+        requiredNumberOfDays_2: KnockoutObservable<number>; // actual computing
 
         displayedPeriod: KnockoutObservable<string>;
         displayedRequiredNumberOfDays: KnockoutObservable<string>;
@@ -32,8 +33,8 @@ module nts.uk.at.view.kdl035.a.viewmodel {
                 self.endDate(params.period.endDate);
                 self.daysUnit = params.daysUnit;
                 self.targetSelectionAtr = params.targetSelectionAtr;
-                self.actualContentDisplayList = params.actualContentDisplayList;
-                self.managementData = params.managementData;
+                self.actualContentDisplayList = params.actualContentDisplayList || [];
+                self.managementData = params.managementData || [];
             }
 
             self.requiredNumberOfDays = ko.computed(() => {
@@ -43,6 +44,14 @@ module nts.uk.at.view.kdl035.a.viewmodel {
                     if (info.checked()) selected += info.remainingNumber
                 });
                 return required - selected < 0 ? 0 : required - selected;
+            }, self);
+            self.requiredNumberOfDays_2 = ko.computed(() => {
+                const required = self.substituteHolidayList().length * self.daysUnit;
+                let selected = 0;
+                self.substituteWorkInfoList().forEach(info => {
+                    if (info.checked()) selected += info.remainingNumber
+                });
+                return required - selected;
             }, self);
             self.displayedPeriod = ko.computed(() => {
                 if (self.startDate() == self.endDate())
@@ -68,20 +77,31 @@ module nts.uk.at.view.kdl035.a.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             block.invisible();
-            service.initScreen({
+            const initParams = {
                 employeeId: self.employeeId,
                 startDate: new Date(self.startDate()).toISOString(),
                 endDate: new Date(self.endDate()).toISOString(),
                 daysUnit: self.daysUnit,
                 targetSelectionAtr: self.targetSelectionAtr,
-                actualContentDisplayList: self.actualContentDisplayList,
-                managementData: self.managementData
-            }).done(function(result: ParamsData) {
+                actualContentDisplayList: _.cloneDeep(self.actualContentDisplayList),
+                managementData: _.cloneDeep(self.managementData)
+            };
+            initParams.actualContentDisplayList.forEach(c => {
+                c.date = new Date(c.date).toISOString();
+            });
+            initParams.managementData.forEach(d => {
+                d.outbreakDay = new Date(d.outbreakDay).toISOString();
+                d.dateOfUse = new Date(d.dateOfUse).toISOString();
+            });
+            service.initScreen(initParams).done(function(result: ParamsData) {
                 self.daysUnit = result.daysUnit;
                 self.targetSelectionAtr = result.targetSelectionAtr;
                 self.substituteHolidayList(result.substituteHolidayList);
                 const tmp = self.managementData.map(d => d.outbreakDay);
                 self.substituteWorkInfoList(result.substituteWorkInfoList.map(info => new SubstituteWorkInfo(tmp.indexOf(info.substituteWorkDate) >= 0, info, self.requiredNumberOfDays)));
+                if (self.requiredNumberOfDays_2() < 0) {
+                    dialog.alert({messageId: "Msg_1761"});
+                }
                 dfd.resolve();
             }).fail(function(error: any) {
                 dialog.alert(error);
@@ -95,6 +115,10 @@ module nts.uk.at.view.kdl035.a.viewmodel {
             const self = this;
             if (self.requiredNumberOfDays() > 0) {
                 dialog.alert({messageId: "Msg_1762"});
+                return;
+            }
+            if (self.requiredNumberOfDays_2() < 0) {
+                dialog.alert({messageId: "Msg_1761"});
                 return;
             }
             const data: ParamsData = {
