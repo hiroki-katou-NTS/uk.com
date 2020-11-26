@@ -97,7 +97,7 @@ public class OtherEmTimezoneLateEarlySet extends WorkTimeDomainObject implements
 		OtherEmTimezoneLateEarlySet domain = new OtherEmTimezoneLateEarlySet();
 		domain.lateEarlyAtr = lateEarlyAtr;
 		domain.delTimeRoundingSet = new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN);
-		domain.stampExactlyTimeIsLateEarly = false;
+//		domain.stampExactlyTimeIsLateEarly = false;
 		domain.graceTimeSet = new GraceTimeSetting(false, new LateEarlyGraceTime(0));
 		domain.recordTimeRoundingSet = new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN);
 		return domain;
