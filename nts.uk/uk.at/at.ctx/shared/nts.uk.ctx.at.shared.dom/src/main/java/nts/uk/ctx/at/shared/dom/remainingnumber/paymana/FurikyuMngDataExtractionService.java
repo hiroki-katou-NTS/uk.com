@@ -12,6 +12,8 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.employee.PersonEmpBasicInfoImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.EmploymentHistShareImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
@@ -53,7 +55,13 @@ public class FurikyuMngDataExtractionService {
 	
 	@Inject
 	private ClosureRepository closureRepo;
-	
+
+	@Inject
+	private SysWorkplaceAdapter syWorkplaceAdapter;
+
+	@Inject
+	private EmpEmployeeAdapter empEmployeeAdapter;
+
 	public DisplayRemainingNumberDataInformation getFurikyuMngDataExtractionUpdate(String empId, boolean isPeriod) {		
 		String cid = AppContexts.user().companyId();
 		List<PayoutManagementData> payoutManagementData;
@@ -93,7 +101,17 @@ public class FurikyuMngDataExtractionService {
 				}).collect(Collectors.toList());
 				payoutSubofHDManagementLinkToPayout.addAll(payoutSubofHDManaRepository.getByListDate(empId, listSubDate));
 			}
-			
+
+			GeneralDate baseDate = GeneralDate.today();
+			Optional<SWkpHistImport> sWkpHistImport = syWorkplaceAdapter.findBySid(empId, baseDate);
+			List<String> employeeIds = new ArrayList<>();
+			employeeIds.add(empId);
+			List<PersonEmpBasicInfoImport> employeeBasicInfo = empEmployeeAdapter.getPerEmpBasicInfo(employeeIds);
+			PersonEmpBasicInfoImport personEmpBasicInfoImport = null;
+			if (!employeeBasicInfo.isEmpty()) {
+				personEmpBasicInfoImport = employeeBasicInfo.get(0);
+			}
+
 			// Step 振休残数データ情報を作成
 			List<RemainInfoData> lstRemainData = this.getRemainInfoData(payoutManagementData, substitutionOfHDManagementData, payoutSubofHDManagementLinkToPayout, empId);
 			List<RemainInfoDto> lstDataRemainDto =  lstRemainData.stream().map(item -> {
@@ -132,12 +150,15 @@ public class FurikyuMngDataExtractionService {
 					.startDate(closing.get().getClosureStartDate())
 					.endDate(closing.get().getClosureEndDate())
 					.closureId(closureId)
+					.wkHistory(sWkpHistImport.orElse(null))
+					.employeeCode(personEmpBasicInfoImport.getEmployeeCode())
+					.employeeName(personEmpBasicInfoImport.getBusinessName())
 					.build();
-				
-		return result;
+
+			return result;
 		}
 	}
-	
+
 	// Step 振休管理データを管理するかチェック
 	public EmploymentManageDistinctDto getEmploymentManageDistinct(String compId, String empId) {
 		// Step 管理区分 ＝ 管理しない

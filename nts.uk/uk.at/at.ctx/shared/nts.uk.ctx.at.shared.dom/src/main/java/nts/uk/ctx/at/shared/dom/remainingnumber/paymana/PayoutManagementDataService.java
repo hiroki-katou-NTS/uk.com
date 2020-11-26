@@ -92,7 +92,7 @@ public class PayoutManagementDataService {
 			}
 		}
 	}
-	
+
 	private void checkHolidate(Boolean pickUp, Boolean pause, Boolean checkedSplit, Double remainDays, Double occurredDays, Double linkingDate, Double subDay, Double requiredDays) {
 		if (!pickUp) {
 			occurredDays = 0.0;
@@ -115,13 +115,13 @@ public class PayoutManagementDataService {
 		if (pickUp) {// チェックするの場合
 			// 振休残数　＝　振休日数（D6_3）+　紐付け日数（D16_4）-　振休日数（D11_3）-　振休日数（D12_4）
 			remainDays = occurredDays + linkingDate - subDay - requiredDays;
-			if (remainDays >= 0.5) {
+			if (pause && (remainDays < 0 || remainDays >= 0.5)) {
 				throw new BusinessException("Msg_2030");
 			}
 			return;
 		}
 		// 分割消化チェックボックスをチェック
-		if (pause) {// チェックする
+		if (checkedSplit) {// チェックする
 			// エラーメッセージ「Msg_1256」を表示する
 			throw new BusinessException("Msg_1256");
 		}

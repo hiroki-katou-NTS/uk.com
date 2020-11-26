@@ -84,4 +84,8 @@ public interface SubstitutionOfHDManaDataRepository {
 	List<SubstitutionOfHDManagementData> getByYmdUnOffset(String cid, String sid, GeneralDate ymd, double unOffseDays);
 	
 	List<SubstitutionOfHDManagementData> getAllBySid(String sid);
+	
+	void delete(List<SubstitutionOfHDManagementData> listItem);
+	
+	List<SubstitutionOfHDManagementData> getByListId(List<String> subOfHDIDs);
 }

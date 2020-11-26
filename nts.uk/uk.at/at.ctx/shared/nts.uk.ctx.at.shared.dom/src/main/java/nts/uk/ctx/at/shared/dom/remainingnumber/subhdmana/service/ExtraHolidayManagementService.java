@@ -75,13 +75,13 @@ public class ExtraHolidayManagementService {
 
 	@Inject
 	private EmpEmployeeAdapter empEmployeeAdapter;
-	
+
 	@Inject
 	private ShareEmploymentAdapter shareEmploymentAdapter;
-	
+
 	@Inject
 	private ClosureRepository closureRepo;
-	
+
 	public ExtraHolidayManagementOutput dataExtractionProcessing(int searchMode, String employeeId) {
 		String cid = AppContexts.user().companyId();
 		List<LeaveManagementData> listLeaveData = null;
@@ -156,33 +156,33 @@ public class ExtraHolidayManagementService {
 		List<CompensatoryDayOffManaData> listCompensatoryData = null;
 		List<LeaveComDayOffManagement> listLeaveComDayOffManagement = new ArrayList<>();
 		SEmpHistoryImport empHistoryImport = null;
-		
+
 		if (employeeId == null || employeeId.isEmpty()) {
 			employeeId = AppContexts.user().employeeId();
 		}
 		// 代休管理データを管理するかチェック Check xem có quản lý dữ liệu quản lý nghỉ bù không
 		EmploymentManageDistinctDto manageDistinct = this.checkManageSubstituteHolidayManagementData(employeeId);
-		
+
 		// 取得した管理区分をチェック Check phân loại quản lý đã nhận
 		if (manageDistinct.getIsManage().equals(ManageDistinct.NO)) { // 「管理しない」の場合 Trường hợp không quản lý
 			// エラーメッセージ「Msg_1731」を表示 hiển thị error msg
 			throw new BusinessException("Msg_1731", "Com_CompensationHoliday");
 		}
-		
+
 		// Input．設定期間区分をチェック Check Input.Phân loại thời gian setting
 		if (searchMode == 0) { // 「現在の残数状況」の場合
 			// ドメイン「休出管理データ」を取得する (lấy data chỉ định dựa vào domain 「休出管理データ」) 'data quản lý đi làm ngày nghỉ')
 			listLeaveData = leaveManaDataRepository.getBySidAndStateAtr(cid, employeeId, DigestionAtr.UNUSED);
-			
+
 			// ドメイン「代休管理データ」を取得する (lấy data chị định dựa vào domain 「代休管理データ」'data quản lý ngày nghỉ thay thế')
 			listCompensatoryData = comDayOffManaDataRepository.getByReDay(cid, employeeId);
 		}
-		
+
 		if (searchMode == 1) { // 「全ての状況」の場合
 			listLeaveData = leaveManaDataRepository.getBySid(cid, employeeId);
 			listCompensatoryData = comDayOffManaDataRepository.getBySid(cid, employeeId);
 		}
-		
+
 		// ドメイン「休出代休紐付け管理」を取得する (Lấy data chỉ định theo domain 「休出代休紐付け管理」 'quản lý liên quan đến đi làm ngày nghỉ và ngày nghỉ thay thế')
 		List<GeneralDate> lstOccDate = new ArrayList<GeneralDate>();
 		List<GeneralDate> lstDigestDate = new ArrayList<GeneralDate>();
@@ -203,12 +203,12 @@ public class ExtraHolidayManagementService {
 		if (sEmpHistoryImport.isPresent()) {
 			empHistoryImport = sEmpHistoryImport.get();
 		}
-		
+
 		listLeaveComDayOffManagement.addAll(leaveComDayOffManaRepository.getByListOccDigestDate(employeeId, lstOccDate, lstDigestDate));
-		
+
 		// 代休残数データ情報を作成する Tạo thông tin dữ liệu số ngày nghỉ bù còn lại
 		List<RemainInfoData> lstRemainData = this.getRemainInfoData(employeeId, listLeaveData, listCompensatoryData, listLeaveComDayOffManagement);
-		
+
 		// 管理区分設定を取得 Nhận Setting phân loại quản lý
 		// ドメインモデル「雇用代休管理設定」を取得する Get domain model 「雇用代休管理設定」
 		CompensatoryLeaveEmSetting empSetting = compensLeaveEmSetRepository.find(cid, manageDistinct.getEmploymentCode());
@@ -217,16 +217,23 @@ public class ExtraHolidayManagementService {
 			// ドメインモデル「代休管理設定」を取得する Get modain model 「代休管理設定」
 			compLeavCom = compensLeaveComSetRepository.find(cid);
 		}
-		
+
 		// 締めIDを取得する Nhân shime ID (ID chốt)
 		Optional<ClosureEmployment> closureEmployment = closureEmploymentRepository.findByEmploymentCD(cid, manageDistinct.getEmploymentCode());
 		Integer closureId = closureEmployment.map(ClosureEmployment::getClosureId).orElse(null);
 		
-		GeneralDate baseDate = GeneralDate.today();
-		Optional<SWkpHistImport> sWkpHistImport = syWorkplaceAdapter.findBySid(employeeId, baseDate);
-		
 		// 処理年月と締め期間を取得する Nhận khoảng thời gian chốt và tháng năm xử lý
 		Optional<PresentClosingPeriodExport> closing = this.find(cid, closureId);
+		
+		GeneralDate baseDate = GeneralDate.today();
+		Optional<SWkpHistImport> sWkpHistImport = syWorkplaceAdapter.findBySid(employeeId, baseDate);
+		List<String> employeeIds = new ArrayList<>();
+		employeeIds.add(employeeId);
+		List<PersonEmpBasicInfoImport> employeeBasicInfo = empEmployeeAdapter.getPerEmpBasicInfo(employeeIds);
+		PersonEmpBasicInfoImport personEmpBasicInfoImport = null;
+		if (!employeeBasicInfo.isEmpty()) {
+			personEmpBasicInfoImport = employeeBasicInfo.get(0);
+		}
 		
 		List<RemainInfoDto> lstDataRemainDto =  lstRemainData.stream()
 				.map(item -> RemainInfoDto.builder()
@@ -259,6 +266,8 @@ public class ExtraHolidayManagementService {
 				.closureEmploy(closureEmployment.orElse(null))
 				.wkHistory(sWkpHistImport.orElse(null))
 				.sempHistoryImport(empHistoryImport)
+				.employeeCode(personEmpBasicInfoImport.getEmployeeCode())
+				.employeeName(personEmpBasicInfoImport.getBusinessName())
 				.build();
 
 		// 作成した「表示残数データ情報」を返す Trả về "Thông tin dữ liệu còn lại hiển thị" đã tạo

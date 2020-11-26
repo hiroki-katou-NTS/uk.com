@@ -294,17 +294,17 @@ module nts.uk.at.view.kdm001.a.viewmodel {
               vm.dateValue.valueHasMutated();
             });
             vm.selectedItem.subscribe(x => {
-              if(vm.listEmployee){
-                vm.selectedEmployeeObject= _.find(vm.listEmployee, item => { return item.employeeId === x; });
+              if(vm.listEmployee) {
+                vm.selectedEmployeeObject = _.find(vm.listEmployee, item => item.employeeId === x);
               }
-              this.updateDataList(true);
+              vm.updateDataList(true);
             });
             vm.selectedPeriodItem.subscribe(period => {
                 if (period === 0) {
                     nts.uk.ui.errors.clearAll();
-                    this.updateDataList(true);
+                    vm.updateDataList(true);
                 } else {
-                    this.updateDataList(true);
+                    vm.updateDataList(true);
                 }
             });
         }
@@ -323,18 +323,22 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         public removeData(value: CompositePayOutSubMngData) {
             block.invisible();
             dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                let self = this;
-                let data = {
-                    payoutId: value.occurrenceId !== '' ? value.occurrenceId : null,
-                    subOfHDID: value.digestionId !== '' ? value.digestionId : null
+                const vm = this;
+                const mergeCell = value.mergeCell;
+                const listItem: CompositePayOutSubMngData[] = _.filter(vm.compositePayOutSubMngData(), item => item.mergeCell = mergeCell);
+                const payoutIds = _.map(listItem, item => item.occurrenceId);
+                const subOfHDIDs = _.map(listItem, item => item.digestionId);
+                const data = {
+                    payoutId: payoutIds,
+                    subOfHDID: subOfHDIDs
                 };
 
                 service.removePayout(data).done(() => {
                     dialog.info({ messageId: "Msg_16" })
-                        .then(() => self.updateDataList(true));
+                        .then(() => vm.updateDataList(true));
                 }).fail(function (res) {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId });
-                    self.updateDataList(true);
+                    vm.updateDataList(true);
                 }).always(() => block.clear());
             }).then(() => block.clear());
         }
@@ -419,13 +423,33 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                             $("#compositePayOutSubMngDataGrid").ntsGrid("enableNtsControlAt", rowId, "edit", 'Button');
                         }
                     });
-                    
+
+                    if (_.isNil(res.wkHistory)) {
+                        self.selectedEmployeeObject = {
+                            employeeId: res.employeeId,
+                            employeeCode: res.employeeCode,
+                            employeeName: res.employeeName,
+                            workplaceId: '',
+                            workplaceCode: '',
+                            workplaceName: ''
+                        };
+                    } else {
+                        self.selectedEmployeeObject = {
+                            employeeId: res.employeeId,
+                            employeeCode: res.employeeCode,
+                            employeeName: res.employeeName,
+                            workplaceId: res.wkHistory.workplaceId,
+                            workplaceCode: res.wkHistory.workplaceCode,
+                            workplaceName: res.wkHistory.workplaceName
+                        };
+                    }
+
                 }).fail(function (res: any) {
                   dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
                     if(res.messageId === 'Msg_1731'){
                       self.newDataDisable(true);
                     }
-                    
+
                     self.compositePayOutSubMngData([]);
                     console.log(res);
                 });
@@ -447,7 +471,28 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                     // add dialog
                     dialog.alertError({ messageId: "Msg_1306" });
 
-                }).fail(function (res: any) {
+                    if (_.isNil(res.wkHistory)) {
+                        self.selectedEmployeeObject = {
+                            employeeId: res.employeeId,
+                            employeeCode: res.employeeCode,
+                            employeeName: res.employeeName,
+                            workplaceId: '',
+                            workplaceCode: '',
+                            workplaceName: ''
+                        };
+                    } else {
+                        self.selectedEmployeeObject = {
+                            employeeId: res.employeeId,
+                            employeeCode: res.employeeCode,
+                            employeeName: res.employeeName,
+                            workplaceId: res.wkHistory.workplaceId,
+                            workplaceCode: res.wkHistory.workplaceCode,
+                            workplaceName: res.wkHistory.workplaceName
+                        };
+                    }
+
+                })
+                .fail((res: any) => {
                     self.compositePayOutSubMngData([]);
                     console.log(res);
                 });

@@ -40,6 +40,11 @@ public class JpaLeaveComDayOffManaRepository extends JpaRepository implements Le
 	
 	private static final String QUERY_BY_SID = String.join(" ", QUERY, " WHERE lc.krcmtLeaveDayOffManaPK.sid = :sid");
 	
+	private static final String DELETE_BY_SID = "DELETE FROM KrcmtLeaveDayOffMana a"
+			+ " WHERE (a.krcmtLeaveDayOffManaPK.sid = :sid1 OR a.krcmtLeaveDayOffManaPK.sid = :sid2)"
+			+ " AND a.krcmtLeaveDayOffManaPK.occDate IN :occDates"
+			+ " AND a.krcmtLeaveDayOffManaPK.digestDate IN :digestDates";
+	
 	@Override
 	public void add(LeaveComDayOffManagement domain) {
 		this.commandProxy().insert(toEntity(domain));
@@ -217,5 +222,15 @@ public class JpaLeaveComDayOffManaRepository extends JpaRepository implements Le
 		return lstEntity.stream()
 				.map(item-> toDomain(item))
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public void delete(String sid1, String sid2, List<GeneralDate> occDates, List<GeneralDate> digestDates) {
+		this.getEntityManager().createQuery(DELETE_BY_SID)
+			.setParameter("sid1", sid1)
+			.setParameter("sid2", sid2)
+			.setParameter("occDates", occDates)
+			.setParameter("digestDates", digestDates)
+			.executeUpdate();
 	}
 }

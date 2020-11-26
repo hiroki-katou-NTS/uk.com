@@ -279,6 +279,13 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 		}
 		return Optional.empty();
 	}
+	
+	@Override
+	public List<LeaveManagementData> getListByLeaveId(List<String> leaveIDs) {
+		String QUERY_BY_ID = "SELECT s FROM KrcmtLeaveManaData s WHERE s.leaveID IN :leaveIDs";
+		return this.queryProxy().query(QUERY_BY_ID, KrcmtLeaveManaData.class).setParameter("leaveIDs", leaveIDs)
+				.getList(x -> toDomain(x));
+	}
 
 	@Override
 	public void udpateByHolidaySetting(String leaveId, Boolean isCheckedExpired, GeneralDate expiredDate,

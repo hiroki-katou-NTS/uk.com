@@ -421,6 +421,13 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 				.map(x -> toDomain(x))
 				.collect(Collectors.toList());
 	}
+
+	@Override
+	public List<CompensatoryDayOffManaData> getListComdayOffId(List<String> comDayOffId) {
+		String QUERY_BY_ID = "SELECT s FROM KrcmtComDayoffMaData s WHERE s.comDayOffID IN :comDayOffID";
+		return this.queryProxy().query(QUERY_BY_ID, KrcmtComDayoffMaData.class).setParameter("comDayOffID", comDayOffId)
+				.getList(x -> toDomain(x));
+	}
 	
 
 	/* (non-Javadoc)

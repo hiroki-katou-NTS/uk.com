@@ -41,4 +41,11 @@ public interface LeaveComDayOffManaRepository {
 	 * @return List leave company dayOff management 休出代休紐付け管理
 	 */
 	List<LeaveComDayOffManagement> getByListOccDigestDate(String sid, List<GeneralDate> lstOccDate, List<GeneralDate> lstDigestDate);
+	
+	/**
+	 * @param sid
+	 * @param occDate
+	 * @param digestDate
+	 */
+	void delete(String sid1, String sid2, List<GeneralDate> occDate, List<GeneralDate> digestDate);
 }

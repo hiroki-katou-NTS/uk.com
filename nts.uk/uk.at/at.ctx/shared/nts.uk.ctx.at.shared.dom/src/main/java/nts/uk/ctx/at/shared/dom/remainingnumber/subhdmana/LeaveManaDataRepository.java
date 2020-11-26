@@ -132,4 +132,11 @@ public interface LeaveManaDataRepository {
 	 * @return List<LeaveManagementData> List<休出管理データ＞
 	 */
 	List<LeaveManagementData> getBySidAndDatOff(String sid, List<GeneralDate> dayOffs);
+	
+	
+	/**
+	 * @param leaveManaId
+	 * @return
+	 */
+	List<LeaveManagementData> getListByLeaveId(List<String> leaveIDs);
 }

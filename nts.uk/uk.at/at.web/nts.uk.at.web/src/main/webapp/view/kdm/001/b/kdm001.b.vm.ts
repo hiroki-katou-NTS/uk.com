@@ -125,7 +125,6 @@
             }
             /** A4_3  凡例 */ 
             self.legendOptions = {											
-                // name: '#[KDM001_153]',
                 items: [
                     { labelText: nts.uk.resource.getText("KDM001_154") },
                     { labelText: nts.uk.resource.getText("KDM001_155") },
@@ -141,21 +140,14 @@
                     } else {
                         self.unknowEmployeeInfo = false;
                     }
-                    self.getSubstituteDataList(self.getSearchCondition());
+                    self.getSubstituteDataList(self.getSearchCondition(), true);
                 }
                 self.isOnStartUp = false;
             });
             self.selectedPeriodItem.subscribe(x => {
-                if (x === 0) {
-                    self.startPage()
-                    block.clear();
-                    nts.uk.ui.errors.clearAll();
-                }
-                else if (x === 1) {
-                    self.getSubstituteDataList(self.getSearchCondition(), true);
-                    block.clear();
-                    nts.uk.ui.errors.clearAll();
-                }
+                self.getSubstituteDataList(self.getSearchCondition(), true);
+                block.clear();
+                nts.uk.ui.errors.clearAll();
             });
         }
 
@@ -201,15 +193,16 @@
             }
         }
 
-        getSubstituteDataList(searchCondition: any, isShowMsg?: boolean) {
+        getSubstituteDataList(searchCondition: any, isShowMsg?: boolean): JQueryPromise<void> {
             let self = this;
+            const dfd = $.Deferred()
             if (self.selectedPeriodItem() == 1){
                 $("#daterangepicker .ntsDatepicker").trigger("validate");
             }
             if (!nts.uk.ui.errors.hasError()) {
                 service.getExtraHolidayData(searchCondition).done(function(result) {
-                    
-                    if (self.unknowEmployeeInfo){ 
+
+                    if (self.unknowEmployeeInfo){
                         if (result.wkHistory){
                             self.selectedEmployee.workplaceId = result.wkHistory.workplaceId;
                             self.selectedEmployee.workplaceCode = result.wkHistory.workplaceCode;
@@ -243,18 +236,21 @@
                     }
                     self.subData = [];
                     self.updateSubstituteDataList();
-                    dialog.alertError({ messageId: result.messageId, messageParams: result.parameterIds })
+                    dialog.alertError({ messageId: result.messageId, messageParams: result.parameterIds });
+                    dfd.reject();
                 });
             }
+
+            return dfd.promise();
         }
 
         getSearchCondition() {
             let self = this;
             let searchCondition = null;
             if (self.selectedPeriodItem() == 1) {
-                searchCondition = { searchMode: 1, employeeId: self.selectedEmployee.employeeId, startDate: null, endDate: null };
+                searchCondition = { searchMode: 1, employeeId: self.selectedEmployee.employeeId };
             } else {
-                searchCondition = { searchMode: 0, employeeId: self.selectedEmployee.employeeId, startDate: null, endDate: null };
+                searchCondition = { searchMode: 0, employeeId: self.selectedEmployee.employeeId };
             }
             return searchCondition;
         }
@@ -403,7 +399,7 @@
                         pageSizeList : [15, 50, 100]
                     },
                 ],
-                ntsControls: [                
+                ntsControls: [
                     { name: 'ButtonCorrection', text: getText('KDM001_100'), click: (value: any) => { self.deleteHolidaySetting(value) }, controlType: 'Button' }
                 ]
                 
@@ -580,26 +576,22 @@
         deleteHolidaySetting(value: any): void {
             block.invisible();
             //確認メッセージ（Msg_18）を表示する
-            dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                let self = this, rowDataInfo
-                if (value.dataType == 0) {
-                    rowDataInfo = _.find(self.listExtractData, x => {
-                        return x.id === value.id;
-                    });
-                } else {
-                    rowDataInfo = _.find(self.listExtractData, x => {
-                        return x.comDayOffID === value.id;
-                    });
-                }
-                let command = {
-                        leaveId: value.occurrenceId,
-                        comDayOffID: value.digestionId
+            dialog.confirm({ messageId: 'Msg_18' }).ifYes(() => {
+                const vm = this;
+                const mergeCell = value.mergeCell;
+                const listItem: SubstitutedData[] = _.filter(vm.subData, item => item.mergeCell = mergeCell);
+                const leaveId = _.map(listItem, item => item.occurrenceId);
+                const comDayOffID = _.map(listItem, item => item.digestionId);
+                const command = {
+                    leaveId: leaveId,
+                    comDayOffID: comDayOffID
                 };
                 service.deleteHolidaySetting(command)
-                    .then(() => dialog.info({ messageId: "Msg_16" }).then(() => self.getSubstituteDataList(self.getSearchCondition(), true)))
+                    .then(() => dialog.info({ messageId: 'Msg_16' })
+                        .then(() => vm.getSubstituteDataList(vm.getSearchCondition(), true)))
                     .fail(error => {
                         dialog.alertError(error);
-                        self.getSubstituteDataList(self.getSearchCondition(), true);
+                        vm.getSubstituteDataList(vm.getSearchCondition(), true);
                     })
                     .always(() => block.clear());
             })

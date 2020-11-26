@@ -434,5 +434,19 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 				.getList();
 		return list.stream().map(i -> toDomain(i)).collect(Collectors.toList());
 	}
+	
+	@Override
+	public void delete(List<PayoutManagementData> payoutManagementDatas) {
+		String QUERY_DELETE_LIST_ID = "DELETE FROM KrcmtPayoutManaData a WHERE a.payoutId IN :payoutIds";
+		List<String> payoutIds = payoutManagementDatas.stream().map(x -> x.getPayoutId()).collect(Collectors.toList());
+		this.getEntityManager().createQuery(QUERY_DELETE_LIST_ID).setParameter("payoutIds", payoutIds).executeUpdate();
+	}
+	
+	@Override
+	public List<PayoutManagementData> getByListId(List<String> payoutIds) {
+		String QUERY_BY_LIST_ID = "SELECT s FROM KrcmtPayoutManaData s WHERE s.payoutId IN :payoutIds";
+		return this.queryProxy().query(QUERY_BY_LIST_ID, KrcmtPayoutManaData.class).setParameter("payoutIds", payoutIds)
+				.getList(x -> toDomain(x));
+	}
 
 }
