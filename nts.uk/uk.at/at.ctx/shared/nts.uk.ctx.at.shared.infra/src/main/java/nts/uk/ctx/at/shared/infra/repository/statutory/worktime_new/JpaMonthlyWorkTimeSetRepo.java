@@ -50,7 +50,14 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 			+ "AND x.pk.ym <= :end AND x.pk.empCD = :empCD";
 	
 	private static final String SELECT_EMP_BY_CID = "SELECT x FROM KshmtLegalTimeMEmp x "
-			+ "WHERE x.pk.cid = :cid ";
+			+ "WHERE x.pk.cid = :cid AND x.pk.type = :type";
+	
+	private static final String SELECT_YEAR_SYA_BY_CID_TYPE = "SELECT x FROM KshmtLegalTimeMSya x "
+			+ "WHERE x.pk.cid = :cid AND x.pk.type = :type";
+	
+	private static final String SELECT_YEAR_WKP_BY_CID_TYPE = "SELECT x FROM KshmtLegalTimeMWkp x "
+			+ "WHERE x.pk.cid = :cid AND x.pk.type = :type AND x.pk.ym >= :start "
+			+ "AND x.pk.ym <= :end AND x.pk.wkpId = :wkpId";
 
 	@Override
 	public Optional<MonthlyWorkTimeSetCom> findCompany(String cid, LaborWorkTypeAttr laborAttr, YearMonth ym) {
@@ -312,14 +319,6 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 					.getList().forEach(c -> commandProxy().remove(cid));
 	}
 
-	@Override
-	public List<MonthlyWorkTimeSetEmp> findEmploymentbyCid(String cid) {
-		List<KshmtLegalTimeMEmp> kshmtLegalTimeMEmps =  this.queryProxy().query(SELECT_EMP_BY_CID, KshmtLegalTimeMEmp.class)
-				.setParameter("cid", cid)
-				.getList();
-		
-		return null;
-	}
 
 	@Override
 	public List<MonthlyWorkTimeSetCom> findCompanyByPeriod(String cid, LaborWorkTypeAttr laborAttr,
@@ -344,5 +343,29 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 				.setParameter("start", Integer.parseInt(start))
 				.setParameter("end", Integer.parseInt(end))
 				.getList(c -> MonthlyWorkTimeSetCom.of(cid, laborAttr, new YearMonth(c.pk.ym), c.domain()));
+	}
+
+	@Override
+	public List<MonthlyWorkTimeSetEmp> findEmploymentbyCid(String cid, LaborWorkTypeAttr laborAttr) {
+		return this.queryProxy().query(SELECT_EMP_BY_CID, KshmtLegalTimeMEmp.class)
+				.setParameter("cid", cid)
+				.setParameter("type", laborAttr.value)
+				.getList(c -> MonthlyWorkTimeSetEmp.of(cid, new EmploymentCode(c.pk.empCD), laborAttr, new YearMonth(c.pk.ym), c.domain()));
+	}
+
+	@Override
+	public List<MonthlyWorkTimeSetSha> findEmployeeByCid(String cid, LaborWorkTypeAttr laborAttr) {
+		return this.queryProxy().query(SELECT_YEAR_SYA_BY_CID_TYPE, KshmtLegalTimeMSya.class)
+				.setParameter("cid", cid)
+				.setParameter("type", laborAttr.value)
+				.getList(c -> MonthlyWorkTimeSetSha.of(cid, c.pk.sid, laborAttr, new YearMonth(c.pk.ym), c.domain()));
+	}
+
+	@Override
+	public List<MonthlyWorkTimeSetWkp> findWorkplace(String cid, LaborWorkTypeAttr laborAttr) {
+		return this.queryProxy().query(SELECT_YEAR_WKP_BY_CID_TYPE, KshmtLegalTimeMWkp.class)
+				.setParameter("cid", cid)
+				.setParameter("type", laborAttr.value)
+				.getList(c -> MonthlyWorkTimeSetWkp.of(cid, c.pk.wkpId, laborAttr, new YearMonth(c.pk.ym), c.domain()));
 	}
 }
