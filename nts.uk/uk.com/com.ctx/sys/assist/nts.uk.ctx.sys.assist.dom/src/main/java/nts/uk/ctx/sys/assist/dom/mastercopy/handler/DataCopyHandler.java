@@ -100,6 +100,7 @@ public class DataCopyHandler {
     @SuppressWarnings("unchecked")
     public void doCopy() {
         // Get all company zero data
+    	// ゼロ契約ゼロ会社から初期値をSELECT
         Query sq = this.entityManager.createNativeQuery(this.selectQuery)
                 .setParameter(1, DefaultSettingKeys.COMPANY_ID);
         List<Object> sourceObjects = sq.getResultList();
@@ -109,14 +110,16 @@ public class DataCopyHandler {
         int keySize = keys.size();
         int keyCheck = keySize - 1;
 
-        Query selectQueryTarget = this.entityManager.createNativeQuery(this.selectQuery).setParameter(1,
-                this.companyId);
+        // 既存データをSELECT
+        Query selectQueryTarget = this.entityManager.createNativeQuery(this.selectQuery)
+        		.setParameter(1, this.companyId);
         List<Object> oldDatas = selectQueryTarget.getResultList();
 
         switch (copyMethod) {
             case REPLACE_ALL:
-                Query dq = this.entityManager.createNativeQuery(this.deleteQuery).setParameter(1,
-                        this.companyId);
+            	// 既存データをDELETE（会社IDのみ指定で全削除）
+                Query dq = this.entityManager.createNativeQuery(this.deleteQuery)
+                		.setParameter(1, this.companyId);
                 dq.executeUpdate();
             case DO_NOTHING:
                 if(copyMethod != CopyMethod.REPLACE_ALL && !oldDatas.isEmpty()){
