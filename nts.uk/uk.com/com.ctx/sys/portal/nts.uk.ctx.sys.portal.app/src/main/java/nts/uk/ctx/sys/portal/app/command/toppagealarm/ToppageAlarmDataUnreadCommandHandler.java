@@ -39,7 +39,7 @@ public class ToppageAlarmDataUnreadCommandHandler extends CommandHandler<Toppage
 				command.getCompanyId(), 
 				AlarmClassification.valueOf(command.getAlarmClassification()), 
 				command.getIdentificationKey(), 
-				command.getSId(), 
+				command.getSid(), 
 				DisplayAtr.valueOf(command.getDisplayAtr()));
 		if (!oExistedData.isPresent()) {
 			return;
@@ -48,7 +48,7 @@ public class ToppageAlarmDataUnreadCommandHandler extends CommandHandler<Toppage
 				command.getCompanyId(), 
 				AlarmClassification.valueOf(command.getAlarmClassification()), 
 				command.getIdentificationKey(), 
-				command.getSId(), 
+				command.getSid(), 
 				DisplayAtr.valueOf(command.getDisplayAtr()));
 		if (!oExistedLog.isPresent()) {
 			return;

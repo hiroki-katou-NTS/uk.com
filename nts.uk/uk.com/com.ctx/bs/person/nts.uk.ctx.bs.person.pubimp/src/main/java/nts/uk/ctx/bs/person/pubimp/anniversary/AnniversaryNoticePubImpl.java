@@ -30,7 +30,7 @@ public class AnniversaryNoticePubImpl implements AnniversaryNoticePub {
     	AnniversaryDomainService.Require require = new RequireImpl(anniversaryRepository);
     	
         Map<AnniversaryNotice, Boolean> anniversaries = anniversaryDomainService.setFlag(require, datePeriod);
-        Map<AnniversaryNoticeExport, Boolean> result = new HashMap<AnniversaryNoticeExport, Boolean>();
+        Map<AnniversaryNoticeExport, Boolean> result = new HashMap<>();
         if (anniversaries.isEmpty()) {
             return result;
         }

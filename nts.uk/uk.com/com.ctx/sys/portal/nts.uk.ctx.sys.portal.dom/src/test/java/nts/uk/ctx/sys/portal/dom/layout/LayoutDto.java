@@ -98,6 +98,6 @@ public class LayoutDto implements LayoutNew.MementoSetter, LayoutNew.MementoGett
 
 	@Override
 	public void setWidgetSettings(String contractCode, List<WidgetSetting> widgetSettings) {
-		
+		this.widgetSettings = widgetSettings;
 	}
 }

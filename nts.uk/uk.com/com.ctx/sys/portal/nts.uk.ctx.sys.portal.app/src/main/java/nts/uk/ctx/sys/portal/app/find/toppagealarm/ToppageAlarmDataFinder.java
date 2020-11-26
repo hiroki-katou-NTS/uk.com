@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.portal.app.find.toppagealarm;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -63,8 +64,26 @@ public class ToppageAlarmDataFinder {
 								item.getDisplayAtr()), 
 						Functions.identity()));
 		
-		// 3:
+		// 3: 並び順：  発生日時順、識別キー、表示社員区分
+		Comparator<ToppageAlarmData> compareByAlarmClassification = (o1, o2) -> {
+			int returnValue = 0;
+			Integer firstItemIndex = o1.getAlarmClassification().order;
+			Integer secondItemIndex = o2.getAlarmClassification().order;
+			if (firstItemIndex > secondItemIndex) {
+			    returnValue = 1;
+			} else if (firstItemIndex < secondItemIndex) {
+			    returnValue = -1;
+			}
+			return returnValue;
+		};
+		Comparator<ToppageAlarmData> compareByOccurrenceDateTime = Comparator.comparing(ToppageAlarmData::getOccurrenceDateTime);
+		Comparator<ToppageAlarmData> compareByIdenKey = Comparator.comparing(ToppageAlarmData::getIdentificationKey);
+		Comparator<ToppageAlarmData> compareBySid = Comparator.comparing(ToppageAlarmData::getDisplaySId);
 		return listAlarmData.stream()
+				.sorted(compareByAlarmClassification
+						.thenComparing(compareByOccurrenceDateTime)
+						.thenComparing(compareByIdenKey)
+						.thenComparing(compareBySid))
 				.map(item -> {
 					ToppageAlarmLog alarmLog = mapAlarmLog.get(this.buildUniqueKey(
 							item.getCid(), 

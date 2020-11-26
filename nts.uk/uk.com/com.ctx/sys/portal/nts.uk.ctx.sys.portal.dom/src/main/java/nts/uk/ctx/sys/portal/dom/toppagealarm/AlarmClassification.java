@@ -6,24 +6,27 @@ package nts.uk.ctx.sys.portal.dom.toppagealarm;
  */
 public enum AlarmClassification {
 	/** アラームリスト */
-	ALARM_LIST(0),
+	ALARM_LIST(1, 2),
 	
 	/** 更新処理自動実行業務エラー */
-	AUTO_EXEC_BUSINESS_ERR(1),
+	AUTO_EXEC_BUSINESS_ERR(2, 1),
 	
 	/** 更新処理自動実行動作異常 */
-	AUTO_EXEC_OPERATION_ERR(2),
+	AUTO_EXEC_OPERATION_ERR(3, 0),
 	
 	/** ヘルス×ライフメッセージ */
-	HEALTH_LIFE_MESSAGE(3);
+	HEALTH_LIFE_MESSAGE(4, 3);
 
 	public final int value;
+	
+	public final int order;
 
 	/** The Constant values. */
 	private final static AlarmClassification[] values = AlarmClassification.values();
 
-	private AlarmClassification(int type) {
+	private AlarmClassification(int type, int order) {
 		this.value = type;
+		this.order = order;
 	}
 	
 	public static AlarmClassification valueOf(Integer value) {

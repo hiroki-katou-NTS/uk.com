@@ -7,7 +7,7 @@ public class ToppageAlarmDataReadCommand {
 
 	private String companyId;
 	
-	private String sId;
+	private String sid;
 	
 	private Integer displayAtr;
 	

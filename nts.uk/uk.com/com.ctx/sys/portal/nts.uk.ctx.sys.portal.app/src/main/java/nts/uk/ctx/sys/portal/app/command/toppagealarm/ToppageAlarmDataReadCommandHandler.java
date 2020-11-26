@@ -35,19 +35,19 @@ public class ToppageAlarmDataReadCommandHandler extends CommandHandler<ToppageAl
 				command.getCompanyId(), 
 				AlarmClassification.valueOf(command.getAlarmClassification()), 
 				command.getIdentificationKey(), 
-				command.getSId(), 
+				command.getSid(), 
 				DisplayAtr.valueOf(command.getDisplayAtr()));
 		
 		if (oExistedLog.isPresent()) {
 			ToppageAlarmLog updateLog = oExistedLog.get();
-			updateLog.updateAlreadyDatetime();
+			updateLog.updateAlreadyDatetime(); 
 			this.toppageAlarmLogRepo.update(contractCd, updateLog);
 		} else {
 			ToppageAlarmLog newLog = ToppageAlarmLog.builder()
 					.cid(command.getCompanyId())
 					.alarmClassification(AlarmClassification.valueOf(command.getAlarmClassification()))
 					.identificationKey(new IdentificationKey(command.getIdentificationKey()))
-					.displaySId(command.getSId())
+					.displaySId(command.getSid())
 					.displayAtr(DisplayAtr.valueOf(command.getDisplayAtr()))
 					.build();
 			newLog.updateAlreadyDatetime();

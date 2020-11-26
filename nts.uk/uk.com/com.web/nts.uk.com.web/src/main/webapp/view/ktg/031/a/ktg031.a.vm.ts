@@ -148,40 +148,42 @@ module nts.uk.com.view.ktg031.a {
       const vm = this;
       vm.$blockui('grayout');
       vm.$ajax(`${API.findAlarmData}/${displayType}`)
-        .then((res: any[]) => {
-          vm.listAlarm(_.map(res, (item) => new AlarmDisplayDataDto(item)));
-          // Render row backgournd color
-          vm.$nextTick(() => {
-            vm.$grid = $('#ktg031-grid');
-            $("#ktg031-grid tr:nth-child(even)").addClass("even");
-            $("#ktg031-grid tr:nth-child(odd)").addClass("odd");
-          });
-        })
+        .then((res: any[]) => vm.setListAlarm(res))
         .always(() => vm.$blockui('clear'));
     }
 
-    changeToRead(companyId: string, sId: string, displayAtr: number, alarmClassification: number, identificationKey: string) {
+    changeToRead(companyId: string, sid: string, displayAtr: number, alarmClassification: number, identificationKey: string) {
       const vm = this;
       const command = new ToppageAlarmDataReadCommand({
         companyId: companyId,
-        sId: sId,
+        sid: sid,
         displayAtr: displayAtr,
         alarmClassification: alarmClassification,
         identificationKey: identificationKey,
       });
       vm.$blockui('grayout');
       vm.$ajax(API.changeToRead, command)
-        .then((res) => {
-          console.log(res);
-        })
+        .then((res) => vm.$ajax(`${API.findAlarmData}/${vm.selectedAlarmType()}`))
+        .then((res: any[]) => vm.setListAlarm(res))
         .always(() => vm.$blockui('clear'));
     }
 
-    changeToUnread(companyId: string, sId: string, displayAtr: number, alarmClassification: number, identificationKey: string) {
+    setListAlarm(res: any[]) {
+      const vm = this;
+      vm.listAlarm(_.map(res, (item) => new AlarmDisplayDataDto(vm, item)));
+      // Render row backgournd color
+      vm.$nextTick(() => {
+        vm.$grid = $('#ktg031-grid');
+        $("#ktg031-grid tr:nth-child(even)").addClass("even");
+        $("#ktg031-grid tr:nth-child(odd)").addClass("odd");
+      });
+    }
+
+    changeToUnread(companyId: string, sid: string, displayAtr: number, alarmClassification: number, identificationKey: string) {
       const vm = this;
       const command = new ToppageAlarmDataUnreadCommand({
         companyId: companyId,
-        sId: sId,
+        sid: sid,
         displayAtr: displayAtr,
         alarmClassification: alarmClassification,
         identificationKey: identificationKey,
@@ -200,9 +202,37 @@ module nts.uk.com.view.ktg031.a {
     }
 
     openUrl(url: string) {
+      const vm = this;
       if (url) {
-        window.open(url, "_blank");
+        const origin: string = window.location.origin;
+        if (url.indexOf(origin) !== -1) {
+          // UK system pages
+          const comPath = 'nts.uk.com.web';
+          const comPagePath = vm.getUKSystemPath(url, comPath);
+          if (comPagePath) {
+            vm.$jump.self("com", comPagePath);
+            return;
+          }
+
+          const atPath = 'nts.uk.at.web';
+          const atPagePath = vm.getUKSystemPath(url, atPath);
+          if (atPagePath) {
+            vm.$jump.self("at", atPagePath);
+            return;
+          }
+        } else {
+          // Other system pages
+          window.open(url);
+        }
       }
+    }
+
+    private getUKSystemPath(url: string, path: string): string {
+      const pathIndex = url.lastIndexOf(path);
+      if (pathIndex !== -1) {
+        return url.substring(pathIndex + path.length, url.length);
+      }
+      return null;
     }
 
   }
@@ -212,31 +242,39 @@ module nts.uk.com.view.ktg031.a {
     occurrenceDateTime: string;
     displayMessage: string;
     companyId: string;
-    sId: string;
+    sid: string;
     displayAtr: number;
     identificationKey: string;
     linkUrl: string;
     alreadyDatetime: string;
     // Client info
     dateMonth: string;
-    isReaded: boolean;
+    isReaded: KnockoutObservable<boolean>;
 
-    constructor(init?: Partial<AlarmDisplayDataDto>) {
+    constructor(vm: Ktg031ComponentViewModel, init?: Partial<AlarmDisplayDataDto>) {
       $.extend(this, init);
-      const occurrenceDateTime = moment.utc(this.occurrenceDateTime);
-      this.dateMonth = occurrenceDateTime.format('MM/DD');
+      const model = this;
+      const occurrenceDateTime = moment.utc(model.occurrenceDateTime);
+      model.dateMonth = occurrenceDateTime.format('MM/DD');
       let isReaded = false;
-      if (this.alreadyDatetime) {
-        const alreadyDatetime = moment.utc(this.alreadyDatetime);
+      if (model.alreadyDatetime) {
+        const alreadyDatetime = moment.utc(model.alreadyDatetime);
         isReaded = occurrenceDateTime.isBefore(alreadyDatetime);
       }
-      this.isReaded = isReaded;
+      model.isReaded = ko.observable(isReaded);
+      model.isReaded.subscribe((value) => {
+        if (value) {
+          vm.changeToRead(model.companyId, model.sid, model.displayAtr, model.alarmClassification, model.identificationKey);
+        } else {
+          vm.changeToUnread(model.companyId, model.sid, model.displayAtr, model.alarmClassification, model.identificationKey);
+        }
+      });
     }
   }
 
   class ToppageAlarmDataReadCommand {
     companyId: string;
-    sId: string;
+    sid: string;
     displayAtr: number;
     alarmClassification: number;
     identificationKey: string;
@@ -248,7 +286,7 @@ module nts.uk.com.view.ktg031.a {
 
   class ToppageAlarmDataUnreadCommand {
     companyId: string;
-    sId: string;
+    sid: string;
     displayAtr: number;
     alarmClassification: number;
     identificationKey: string;

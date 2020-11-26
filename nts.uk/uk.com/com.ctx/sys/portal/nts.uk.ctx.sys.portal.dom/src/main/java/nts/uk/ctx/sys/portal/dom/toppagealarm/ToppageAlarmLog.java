@@ -49,7 +49,6 @@ public class ToppageAlarmLog extends AggregateRoot {
 	/**
 	 * 既読日時
 	 */
-	@NonNull
 	private GeneralDateTime alreadyDatetime;
 	
 	@SuppressWarnings("unused")
