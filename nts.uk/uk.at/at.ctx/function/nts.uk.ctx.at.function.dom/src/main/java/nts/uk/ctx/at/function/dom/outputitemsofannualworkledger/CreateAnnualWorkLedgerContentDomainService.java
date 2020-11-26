@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.dom.outputitemsofannualworkledger;
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.function.dom.adapter.actualmultiplemonth.MonthlyRecordValueImport;
@@ -18,6 +19,7 @@ import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.DailyMonthl
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.OperatorsCommonToForms;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeBasicInfoImport;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceInfor;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 
 import javax.ejb.Stateless;
 import java.util.*;
@@ -63,8 +65,8 @@ public class CreateAnnualWorkLedgerContentDomainService {
             String employmentCode = null;
             String employmentName = null;
             if (lstClosureDateEmployment.size() == 0) return;
-            val closureDateEmployment = lstClosureDateEmployment.getOrDefault(emp.getEmployeeId(),null);
-            if(closureDateEmployment == null) return;
+            val closureDateEmployment = lstClosureDateEmployment.getOrDefault(emp.getEmployeeId(), null);
+            if (closureDateEmployment == null) return;
             val closure = closureDateEmployment.getClosure();
             if (closure != null && closure.getClosureHistories().size() > 0) {
                 val closureHistory = closure.getClosureHistories().get(0);
@@ -182,45 +184,56 @@ public class CreateAnnualWorkLedgerContentDomainService {
     private static List<MonthlyData> getMonthlyData(Require require, StatusOfEmployee emp, List<OutputItem> monthlyOutputItems, int closureDay) {
         List<MonthlyData> lstMonthlyData = new ArrayList<>();
         // Loop 出力項目 月次
+        val listIds = monthlyOutputItems.stream()
+                .flatMap(x -> x.getSelectedAttendanceItemList().stream()
+                        .map(OutputItemDetailAttItem::getAttendanceItemId))
+                .distinct().collect(Collectors.toCollection(ArrayList::new));
+        List<MonthlyRecordValueImport> listAttendancesz = new ArrayList<>();
+        for (val period : emp.getListPeriod()) {
+            val yearMonthPeriod = GetSuitableDateByClosureDateUtility.convertPeriod(period, closureDay);
+            val monthlyRecordValues = (require.getActualMultipleMonth(
+                    new ArrayList<>(Collections.singletonList(emp.getEmployeeId())), yearMonthPeriod, listIds)).get(emp.getEmployeeId());
+            if (monthlyRecordValues == null) continue;
+            listAttendancesz.addAll(monthlyRecordValues);
+        }
+        Map<YearMonth, Map<Integer, ItemValue>> allValue = listAttendancesz.stream()
+                .collect(Collectors.toMap(MonthlyRecordValueImport::getYearMonth,
+                        k -> k.getItemValues().stream()
+                                .collect(Collectors.toMap(ItemValue::getItemId, l -> l))));
+        // Loop 出力項目 日次
         for (OutputItem monthlyItem : monthlyOutputItems) {
             List<MonthlyValue> lstMonthlyValue = new ArrayList<>();
-            val itemIds = monthlyItem.getSelectedAttendanceItemList().stream().map(OutputItemDetailAttItem::getAttendanceItemId).collect(Collectors.toList());
             // 「期間」の中にループを行い
-            for (DatePeriod period : emp.getListPeriod()) {
-                val yearMonthPeriod = GetSuitableDateByClosureDateUtility.convertPeriod(period, closureDay);
-                val monthlyRecordValues = (require.getActualMultipleMonth(
-                        new ArrayList<>(Collections.singletonList(emp.getEmployeeId())), yearMonthPeriod, itemIds)).get(emp.getEmployeeId());
+            allValue.forEach((key, value1) -> {
+                val monthlyRecordValues = monthlyItem.getSelectedAttendanceItemList();
                 if (monthlyRecordValues != null) {
-                    for (val monthlyRecordValue : monthlyRecordValues) {
-                        lstMonthlyValue.add(fromMonthlyRecordValue(monthlyRecordValue, monthlyItem));
-                    }
+                    lstMonthlyValue.add(fromMonthlyRecordValue(monthlyItem, monthlyRecordValues, value1, key));
                 }
-            }
+            });
 
             lstMonthlyData.add(new MonthlyData(lstMonthlyValue, monthlyItem.getName().v(), monthlyItem.getItemDetailAttributes()));
         }
         return lstMonthlyData;
     }
 
-    private static MonthlyValue fromMonthlyRecordValue(MonthlyRecordValueImport monthlyRecordValue, OutputItem item) {
+    private static MonthlyValue fromMonthlyRecordValue(OutputItem monthlyItem, List<OutputItemDetailAttItem> selectedAttendanceItemList, Map<Integer, ItemValue> itemValueMap, YearMonth ym) {
         StringBuilder character = new StringBuilder();
         Double actualValue = 0d;
-
-        for (OutputItemDetailAttItem ite : item.getSelectedAttendanceItemList()) {
-            val subItem = (monthlyRecordValue.getItemValues().stream().
-                    filter(x -> x.getItemId() == ite.getAttendanceItemId()).findFirst());
-            if (subItem.isPresent()) {
-                val rawValue = subItem.get().getValue();
-                if (item.getItemDetailAttributes() == CommonAttributesOfForms.WORK_TYPE ||
-                        item.getItemDetailAttributes() == CommonAttributesOfForms.WORKING_HOURS) {
+        for (OutputItemDetailAttItem d : selectedAttendanceItemList) {
+            val subItem = itemValueMap.getOrDefault(d.getAttendanceItemId(), null);
+            if (subItem != null) {
+                val rawValue = subItem.getValue();
+                if (monthlyItem.getItemDetailAttributes() == CommonAttributesOfForms.WORK_TYPE ||
+                        monthlyItem.getItemDetailAttributes() == CommonAttributesOfForms.WORKING_HOURS) {
                     character.append(rawValue);
                 } else {
                     Double value = rawValue == null ? 0 : Double.parseDouble(rawValue);
-                    actualValue += value * (ite.getOperator() == OperatorsCommonToForms.ADDITION ? 1 : -1);
+                    actualValue += value * (d.getOperator() == OperatorsCommonToForms.ADDITION ? 1 : -1);
                 }
             }
         }
-        return new MonthlyValue(actualValue, character.toString(), monthlyRecordValue.getYearMonth());
+
+        return new MonthlyValue(actualValue, character.toString(), ym);
     }
 
     public static interface Require {
