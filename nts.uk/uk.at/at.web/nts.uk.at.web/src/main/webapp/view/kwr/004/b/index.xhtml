@@ -9,6 +9,11 @@
   <body>
     <ui:composition template="../../../../master/dialog.xhtml">
       <ui:define name="htmlHead">
+        <com:EnumScript>
+          nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr
+          nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr
+          nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.IndependentCalcClassic
+        </com:EnumScript>
         <script>
           var dialogSize = { width: 1200, height: 720 };
         </script>
@@ -17,9 +22,11 @@
         <com:scriptfile path="kwr004.b.vm.js" />
 
         <com:ValidatorScript>
-          nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode
-          nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingName
-        </com:ValidatorScript>
+          nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode
+          nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName
+          nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.FormOutputItemName
+        </com:ValidatorScript>        
+      
       </ui:define>
 
       <ui:define name="content">
@@ -51,7 +58,7 @@
               tabindex="4"
               id="btnB14"
               class="danger"
-              data-bind="text: $i18n('KWR004_54'), click: deteleSetting, enable: isEnableDeleteButton"
+              data-bind="text: $i18n('KWR004_54'), click: deleteSetting, enable: isEnableDeleteButton"
             />
             <!-- B1_2 -->
             <button
@@ -62,7 +69,7 @@
             />
           </div>
           <!-- A1_2-->
-          <div id="content-area">
+          <div id="content-area" class="cf">
             <div class="pull-left">
               <div
                 data-bind="ntsPanel:{direction: 'right', showIcon: true, visible: true}"
@@ -88,7 +95,7 @@
                     optionsValue: 'code',
                     columns: [
                       { headerText: $i18n('KWR004_56'), prop: 'code', width: 90, formatter: _.escape  },
-                      { headerText: $i18n('KWR004_57'), prop: 'name', width: 230, formatter: _.escape  }
+                      { headerText: $i18n('KWR004_57'), prop: 'name', width: 210, formatter: _.escape  }
                     ],
                     multiple: false,
                     value: currentCodeList
@@ -103,7 +110,7 @@
                   data-bind="ntsFormLabel: { 
                     required: true, 
                     text: $i18n('KWR004_58'), 
-                    constraint: ['ExportSettingCode', 'ExportSettingName']}"
+                    constraint: ['OutputItemSettingCode', 'OutputItemSettingName']}"
                 ></div>
                 <div class="textEditor">
                   <input
@@ -113,7 +120,7 @@
                     data-bind="ntsTextEditor: {
                       value: attendanceCode, 
                       required: true,
-                      constraint: 'ExportSettingCode',
+                      constraint: 'OutputItemSettingCode',
                       name: $i18n('KWR004_59'),
                       enable: isEnableAttendanceCode
                     }"
@@ -125,7 +132,7 @@
                     data-bind="ntsTextEditor: {
                       value: attendanceName,
                       required: true,
-                      constraint: 'ExportSettingName',
+                      constraint: 'OutputItemSettingName',
                       name: $i18n('KWR004_60')
                     }"
                   />
@@ -142,8 +149,8 @@
                     <colgroup>
                       <col width="35px" />
                       <col width="150px" />
+                      <col width="240px" />
                       <col width="250px" />
-                      <col width="220px" />
                     </colgroup>
                     <thead>
                       <tr>
@@ -191,9 +198,9 @@
                             data-bind="attr: { id: 'textName' + id }, 
                                   ntsTextEditor: { 
                                     value: name,
-                                    required: true,
+                                    required: required,
                                     name: $vm.$i18n('KWR004_215'),
-                                    constraint: 'ExportSettingName'
+                                    constraint: 'FormOutputItemName'
                                   }"
                           />
                         </td>
@@ -204,10 +211,10 @@
                                 class="cf"
                                 tabindex="10"
                                 data-bind="ntsSwitchButton: {
-                                  options: $vm.settingRules,
+                                  options: $vm.enumIndependentCalculation,
                                   optionsValue: 'code',
                                   optionsText: 'name',
-                                  value: setting,
+                                  value: independentCalcClassic,
                                   name: $vm.$i18n('KWR004_67')
                                 }"
                               ></div>
@@ -223,10 +230,10 @@
                               class="attribute-selection"
                               data-bind="ntsComboBox: {
                                 name: $vm.$i18n('KWR004_216'),
-                                options: $vm.settingRules,
+                                options: dailyAttributes,
                                 optionsValue: 'code',
                                 visibleItemsCount: 4,
-                                value: selectedCode,
+                                value: itemAttribute,
                                 optionsText: 'name',
                                 editable: false,
                                 enable: true,
@@ -236,7 +243,7 @@
                             ></div>
                           </div>
                         </td>
-                        <td><span data-bind="text: selectionItem"></span></td>
+                        <td><span class="limited-label" data-bind="text: selectionItem"></span></td>
                       </tr>
                     </tbody>
                   </table>

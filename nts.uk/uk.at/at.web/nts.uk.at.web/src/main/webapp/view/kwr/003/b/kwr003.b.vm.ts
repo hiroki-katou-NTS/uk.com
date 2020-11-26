@@ -259,25 +259,13 @@ module nts.uk.at.view.kwr003.b {
                 reloadParams.code = null;
                 vm.loadSettingList(reloadParams);
                 $('#btnB11').focus();
-              });
-              //reloadParams.code = null;
-              //vm.loadSettingList(reloadParams);
-              //$('#btnB11').ntsError('set', { messageId: error.messageId });
+              });             
               break;
 
-            case 'Msg_1903':
+            case 'Msg_1753':
               $('#KWR003_B42').ntsError('set', { messageId: error.messageId });
               break;
-          }
-          /*  if (error.messageId === 'Msg_1903') {
-             reloadParams.code = null;
-             vm.loadSettingList(reloadParams);
-             $('#btnB11').ntsError('set', { messageId: error.messageId });
-           }
- 
-           if (error.messageId === 'Msg_1753') {
-             $('#KWR003_B42').ntsError('set', { messageId: error.messageId });
-           } */
+          } 
 
           vm.$blockui('hide');
 
@@ -709,10 +697,7 @@ module nts.uk.at.view.kwr003.b {
 
           vm.settingListItemsDetails()[index].selected = attendanceItem.attribute;
           vm.settingListItemsDetails()[index].selectedTime = attendanceItem.attendanceId;
-          $('#textName' + row.id).focus();
-          /*  if (!attendanceItem.attendanceItemName) {
-             $('#textName' + row.id).ntsError('set', { messageId: "MsgB_1" });            
-           } */
+          $('#textName' + row.id).focus();        
         } else {
           vm.settingListItemsDetails()[index].name(null);
           vm.settingListItemsDetails()[index].selectionItem(null);
