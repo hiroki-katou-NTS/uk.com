@@ -6,7 +6,7 @@ import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
- * 記念日のタイトル
+ * メールアドレス
  */
 @StringCharType(CharType.ANY_HALF_WIDTH)
 @StringMaxLength(256)
