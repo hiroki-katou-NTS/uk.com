@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.app.command.statutory.worktime.app;
+package nts.uk.ctx.at.shared.app.command.statutory.worktime;
 
 import lombok.Value;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
