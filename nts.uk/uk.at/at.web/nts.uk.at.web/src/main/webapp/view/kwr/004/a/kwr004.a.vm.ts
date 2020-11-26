@@ -10,8 +10,9 @@ module nts.uk.at.view.kwr004.a {
   const KWR004_SAVE_DATA = 'WORK_SCHEDULE_STATUS_CONDITIONS';
 
   const PATH = {
-    getPermission51: 'at/function/kwr/beginmonthofcompany/checkauthor',
-    exportExcel: 'at/function/kwr004/report/export'
+    getPermission51: 'at/screen/kwr004/a/initScreen',
+    exportExcel: 'at/function/kwr004/report/export',
+    getSettingList: 'at/screen/kwr004/a/getSetting',
   };
 
   @bean()
@@ -55,7 +56,7 @@ module nts.uk.at.view.kwr004.a {
     // end KCP005
 
     mode: KnockoutObservable<common.UserSpecificInformation> = ko.observable(null);
-    allowFreeSetting: KnockoutObservable<boolean> = ko.observable(true);
+    allowFreeSetting: KnockoutObservable<boolean> = ko.observable(false);
     itemListSetting: KnockoutObservableArray<any> = ko.observableArray([]);
     hasPermission51: KnockoutObservable<boolean> = ko.observable(false);
     closureId: KnockoutObservable<number> = ko.observable(0);
@@ -234,6 +235,7 @@ module nts.uk.at.view.kwr004.a {
       let params = {
         code: attendence.code,
         name: attendence.name,
+        itemSelection: vm.rdgSelectedId
       }
 
       vm.$window.storage(KWR004_B_INPUT, ko.toJS(params)).then(() => {
@@ -308,16 +310,11 @@ module nts.uk.at.view.kwr004.a {
 
       vm.itemListSetting.push({ id: 0, name: vm.$i18n('KWR004_14') });
 
-      const params = {
-        cid: vm.$user.companyId,
-        roleId: vm.$user.role.attendance
-      }
-
-      vm.$ajax(PATH.getPermission51, params)
+      vm.$ajax(PATH.getPermission51)
         .done((result) => {
           if (result) {
-            vm.allowFreeSetting(result.author);
-            if (result.author) {
+            if (result.hasAuthority) {
+              vm.allowFreeSetting(result.hasAuthority);
               vm.itemListSetting.push({ id: 1, name: vm.$i18n('KWR004_15') });
             }
             //システム日付の月　＜　期首月　
@@ -340,7 +337,19 @@ module nts.uk.at.view.kwr004.a {
 
     getSettingListItems() {
       const vm = this;
+      let params = {
+        settingClassification: vm.rdgSelectedId()
+      }
+      vm.$ajax(PATH.getSettingList, params)
+      .done((result) => {
+        console.log(result);
+      }).fail();
 
+     /*  vm.$ajax(PATH.initScreen)
+      .done((result) => {
+        console.log(result);
+      }).fail(); */
+      
       let listItems: any = [
         new ItemModel('001', '予定勤務種類', _.random(100000, 999999).toString()),
         new ItemModel('003', '予定勤務種類', _.random(100000, 999999).toString()),
