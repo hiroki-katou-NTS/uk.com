@@ -764,6 +764,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 		
 		overTimeShiftNight.setMidNightHolidayTimes(midNightHolidayTimes);
 		applicationTime.setOverTimeShiftNight(Optional.of(overTimeShiftNight));
+		output.add(applicationTime);
 		return output;
 	}
 

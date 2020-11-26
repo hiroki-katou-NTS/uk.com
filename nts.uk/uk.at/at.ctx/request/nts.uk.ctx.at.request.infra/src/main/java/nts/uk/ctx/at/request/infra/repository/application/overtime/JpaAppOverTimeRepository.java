@@ -129,8 +129,8 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 		
 		// 
 		krqdtAppOverTime.flexExcessTime = appOverTime.getApplicationTime().getFlexOverTime().map(x -> x.v()).orElse(null);
-		krqdtAppOverTime.overTimeNight = appOverTime.getApplicationTime().getOverTimeShiftNight().map(x -> x.getOverTimeMidNight().v()).orElse(null);
-		krqdtAppOverTime.totalNight = appOverTime.getApplicationTime().getOverTimeShiftNight().map(x -> x.getMidNightOutSide().v()).orElse(null);
+		krqdtAppOverTime.overTimeNight = appOverTime.getApplicationTime().getOverTimeShiftNight().map(x -> x.getOverTimeMidNight() == null ? null : x.getOverTimeMidNight().v()).orElse(null);
+		krqdtAppOverTime.totalNight = appOverTime.getApplicationTime().getOverTimeShiftNight().map(x -> x.getMidNightOutSide() == null ? null : x.getMidNightOutSide().v()).orElse(null);
 		
 		List<TimeZoneWithWorkNo> breakTimes = appOverTime.getBreakTimeOp().orElse(Collections.emptyList());
 		breakTimes.stream().forEach(item -> {

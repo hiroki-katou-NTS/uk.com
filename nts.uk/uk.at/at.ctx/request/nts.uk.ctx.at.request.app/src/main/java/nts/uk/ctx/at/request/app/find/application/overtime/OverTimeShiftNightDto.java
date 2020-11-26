@@ -24,7 +24,7 @@ public class OverTimeShiftNightDto {
 					.stream()
 					.map(x -> HolidayMidNightTimeDto.fromDomain(x))
 					.collect(Collectors.toList()),
-				overTimeShiftNight.getMidNightOutSide().v(),
-				overTimeShiftNight.getOverTimeMidNight().v());
+				overTimeShiftNight.getMidNightOutSide() == null ? null : overTimeShiftNight.getMidNightOutSide().v(),
+				overTimeShiftNight.getOverTimeMidNight() == null ? null : overTimeShiftNight.getOverTimeMidNight().v());
 	}
 }
