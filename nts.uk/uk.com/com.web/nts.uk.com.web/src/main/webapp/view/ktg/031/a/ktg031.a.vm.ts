@@ -142,6 +142,7 @@ module nts.uk.com.view.ktg031.a {
       ]);
       vm.selectedAlarmType.subscribe(value => vm.loadAlarmData(value));
       vm.selectedAlarmType(0);
+      vm.isEmployee(__viewContext.user.isEmployee);
     }
 
     loadAlarmData(displayType: number) {
@@ -197,8 +198,8 @@ module nts.uk.com.view.ktg031.a {
     }
 
     openDialogSetting() {
-      // TODO
-      console.log('setting');
+      const vm = this;
+      vm.$window.modal('/view/ktg/031/b/index.xhtml');
     }
 
     openUrl(url: string) {

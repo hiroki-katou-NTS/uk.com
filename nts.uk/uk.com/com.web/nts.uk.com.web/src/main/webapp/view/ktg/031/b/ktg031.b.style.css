@@ -1,13 +1,6 @@
-#list{
-	margin-top: 20px;
-	margin-left: 20px;
+.table-container {
+  box-sizing: border-box;
+  padding: 20px 20px 0px 20px;
+  display: flex;
+  justify-content: center;
 }
-
-#labelTop{
-	margin-left: 20px
-}
-
-#single-list > tbody > tr > td:nth-child(1){
-	background: #CFF1A5 !important;	
-	text-align: right;
-}    
