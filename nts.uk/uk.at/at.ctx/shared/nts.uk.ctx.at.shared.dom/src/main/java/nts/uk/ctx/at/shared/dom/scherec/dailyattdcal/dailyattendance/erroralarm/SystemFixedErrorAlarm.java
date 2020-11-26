@@ -84,7 +84,7 @@ public enum SystemFixedErrorAlarm {
 
 	NOT_CREATE("S025"),
 	
-	//申告
+	//設定外申告
 	DECLARE("S026"),
 	
 	//乖離時間1エラー
