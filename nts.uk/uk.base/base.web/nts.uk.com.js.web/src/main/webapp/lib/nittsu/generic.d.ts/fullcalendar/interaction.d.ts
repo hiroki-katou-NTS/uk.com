@@ -1,4 +1,4 @@
-module fc {
+module FullCalendar {
     class PointerDragging {
         containerEl: EventTarget;
         subjectEl: HTMLElement | null;
@@ -38,7 +38,6 @@ module fc {
         createEventFromTouch(ev: TouchEvent, isFirst?: boolean): PointerDragEvent;
     }
 
-
     class ElementMirror {
         isVisible: boolean;
         origScreenX?: number;
@@ -60,7 +59,6 @@ module fc {
         updateElPosition(): void;
         getMirrorEl(): HTMLElement;
     }
-
 
     abstract class ScrollGeomCache extends ScrollController {
         clientRect: Rect;
@@ -145,7 +143,6 @@ module fc {
         setAutoScrollEnabled(bool: boolean): void;
     }
 
-
     interface DateClickArg extends DatePointApi {
         dayEl: HTMLElement;
         jsEvent: MouseEvent;
@@ -217,9 +214,8 @@ module fc {
     };
 
     type ExtraListenerRefiners = typeof LISTENER_REFINERS;
-    
-    interface CalendarListenerRefiners extends ExtraListenerRefiners {
-    }
+
+    interface CalendarListenerRefiners extends ExtraListenerRefiners { }
 
     type DragMetaGenerator = DragMetaInput | ((el: HTMLElement) => DragMetaInput);
 

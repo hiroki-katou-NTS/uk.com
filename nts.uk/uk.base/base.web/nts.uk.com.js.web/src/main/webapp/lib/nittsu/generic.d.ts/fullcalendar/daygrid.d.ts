@@ -1,4 +1,4 @@
-module fc {
+module FullCalendar {
     abstract class TableView<State = Dictionary> extends DateComponent<ViewProps, State> {
         protected headerElRef: RefObject<HTMLTableCellElement>;
         renderSimpleLayout(headerRowContent: ChunkConfigRowContent, bodyContent: (contentArg: ChunkContentCallbackArgs) => VNode): createElement.JSX.Element;

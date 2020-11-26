@@ -1,4 +1,4 @@
-module fc {
+module FullCalendar {
     class AllDaySplitter extends Splitter {
         getKeyInfo(): {
             allDay: {};
@@ -13,13 +13,13 @@ module fc {
         private dateProfile;
         private slatMetas;
         constructor(positions: PositionCache, dateProfile: DateProfile, slatMetas: TimeSlatMeta[]);
-        safeComputeTop(date: DateMarker): number;
-        computeDateTop(when: DateMarker, startOfDayDate?: DateMarker): number;
+        safeComputeTop(date: Date): number;
+        computeDateTop(when: Date, startOfDayDate?: Date): number;
         computeTimeTop(duration: Duration): number;
     }
 
     interface TimeSlatMeta {
-        date: DateMarker;
+        date: Date;
         time: Duration;
         key: string;
         isoTimeStr: string;
@@ -62,8 +62,8 @@ module fc {
 
     interface TimeColsSeg extends Seg {
         col: number;
-        start: DateMarker;
-        end: DateMarker;
+        start: Date;
+        end: Date;
     }
 
     interface DayTimeColsProps {
@@ -110,14 +110,13 @@ module fc {
 
     type ExtraOptionRefiners = typeof OPTION_REFINERS;
 
-    interface BaseOptionRefiners extends ExtraOptionRefiners {
-    }
+    interface BaseOptionRefiners extends ExtraOptionRefiners { }
 
     interface TimeColsProps {
         cells: TableCellModel[];
         dateProfile: DateProfile;
         slotDuration: Duration;
-        nowDate: DateMarker;
+        nowDate: Date;
         todayRange: DateRange;
         businessHourSegs: TimeColsSeg[];
         bgEventSegs: TimeColsSeg[];

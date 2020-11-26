@@ -218,7 +218,7 @@ module nts.uk.ui.components.fullcalendar {
         virtual: false
     })
     export class FullCalendarBindingHandler implements KnockoutBindingHandler {
-        init(element: HTMLElement, valueAccessor: () => KnockoutObservableArray<fc.EventApi>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
+        init(element: HTMLElement, valueAccessor: () => KnockoutObservableArray<FullCalendar.EventApi>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
             const name = COMPONENT_NAME;
 
             const events = valueAccessor();
@@ -308,9 +308,9 @@ module nts.uk.ui.components.fullcalendar {
 
     type PARAMS = {
         viewModel: any;
-        events: fc.EventApi[] | KnockoutObservableArray<fc.EventApi>;
+        events: FullCalendar.EventApi[] | KnockoutObservableArray<FullCalendar.EventApi>;
         employees: EMPLOYEE[] | KnockoutObservableArray<EMPLOYEE>;
-        dragItems: fc.EventApi[] | KnockoutObservableArray<fc.EventApi>;
+        dragItems: FullCalendar.EventApi[] | KnockoutObservableArray<FullCalendar.EventApi>;
         locale: LOCALE | KnockoutObservable<LOCALE>;
         initialView: INITIAL_VIEW | KnockoutObservable<INITIAL_VIEW>;
         availableView: INITIAL_VIEW[] | KnockoutObservableArray<INITIAL_VIEW>;
@@ -524,7 +524,7 @@ module nts.uk.ui.components.fullcalendar {
             const $el = $(vm.$el);
             const $dg = $el.find('div.fc-events').get(0);
             const $fc = $el.find('div.fc-calendar').get(0);
-            const FC: FullCalendar | null = _.get(window, 'FullCalendar') || null;
+            const FC: FullCalendar.FullCalendar | null = _.get(window, 'FullCalendar') || null;
             const updateActive = () => {
                 $el
                     .find('.fc-header-toolbar button')
@@ -548,7 +548,7 @@ module nts.uk.ui.components.fullcalendar {
             const timesSet: KnockoutComputed<number[]> = ko.computed({
                 read() {
                     const ds = ko.unwrap(datesSet);
-                    const evts: fc.EventApi[] = ko.unwrap(events) as any;
+                    const evts: FullCalendar.EventApi[] = ko.unwrap(events) as any;
 
                     if (ds) {
                         const { start, end } = ds;
@@ -559,7 +559,7 @@ module nts.uk.ui.components.fullcalendar {
 
                         return _.range(0, diff, 1).map(m => {
                             const date = first.clone().add(m, 'day');
-                            const exists = _.filter(evts, (d: fc.EventApi) => {
+                            const exists = _.filter(evts, (d: FullCalendar.EventApi) => {
                                 return !d.allDay &&
                                     d.display !== 'background' &&
                                     date.isSame(d.start, 'date');
@@ -636,7 +636,7 @@ module nts.uk.ui.components.fullcalendar {
                     const cptEvents: any[] = [];
                     const rawEvents = ko.unwrap<any>(events);
                     const sltedEvents = ko.unwrap<SELECTEDEVENT[]>(selectedEvents);
-                    const isSelected = (m: fc.EventApi) => {
+                    const isSelected = (m: FullCalendar.EventApi) => {
                         return !!_.find(sltedEvents, (e: any) => {
                             return formatDate(e.start) === formatDate(m.start)
                                 && formatDate(e.end) === formatDate(m.end);
@@ -685,7 +685,8 @@ module nts.uk.ui.components.fullcalendar {
                         cptEvents.push({
                             groupId: 'selected',
                             display: 'background',
-                            backgroundColor: 'transparent'
+                            backgroundColor: 'transparent',
+                            durationEditable: false
                         });
                     }
 
@@ -726,7 +727,7 @@ module nts.uk.ui.components.fullcalendar {
             }
 
             const viewButtons: {
-                [name: string]: fc.CustomButtonInput;
+                [name: string]: FullCalendar.CustomButtonInput;
             } = {
                 'one-day': {
                     text: '日',
@@ -805,7 +806,7 @@ module nts.uk.ui.components.fullcalendar {
                 }
             };
             const customButtons: {
-                [name: string]: fc.CustomButtonInput;
+                [name: string]: FullCalendar.CustomButtonInput;
             } = {
                 'current-day': {
                     text: '今日',
@@ -875,13 +876,13 @@ module nts.uk.ui.components.fullcalendar {
                 }
             };
 
-            const headerToolbar: fc.ToolbarInput = {
+            const headerToolbar: FullCalendar.ToolbarInput = {
                 left: 'current-day preview-day,next-day',
                 center: 'title',
                 right: 'copy-day'
             };
 
-            const getEvents = (): fc.EventApi[] => calendar.getEvents()
+            const getEvents = (): FullCalendar.EventApi[] => calendar.getEvents()
                 .map(({
                     start,
                     end,
@@ -963,51 +964,41 @@ module nts.uk.ui.components.fullcalendar {
                         }
                     }
                 },
-                eventMouseEnter: (args) => {
-                    // console.log('enter', args);
-                },
-                eventMouseLeave: (args) => {
-                    // console.log('leave', args);
-                },
-                eventDragStart: (evt) => {
-                    if (ko.unwrap(dataEvent.shift) && ko.unwrap<SELECTEDEVENT[]>(selectedEvents).length) {
+                eventDragStart: () => {
+                    if (ko.unwrap(dataEvent.shift)) {
                         dataEvent.copy(true);
-                        selectedEvents([]);
+
+                        if (ko.unwrap<SELECTEDEVENT[]>(selectedEvents).length) {
+                            selectedEvents([]);
+                        } else {
+                            selectedEvents.valueHasMutated();
+                        }
                     }
                 },
                 eventDrop: (evt) => {
-                    if (evt.event.allDay) {
-                        evt.revert();
-                    }
-
                     // update data sources
                     mutatedEvents();
 
                     if (ko.unwrap(dataEvent.shift) && ko.unwrap(dataEvent.copy)) {
                         dataEvent.copy(false);
-                    }
 
-                    if (ko.unwrap<SELECTEDEVENT[]>(selectedEvents).length < 2) {
-                        selectedEvents([]);
-                    } else {
                         const { start, end } = evt.event;
                         const others = evt.relatedEvents.map(({ start, end }) => ({ start, end }));
 
                         selectedEvents([{ start, end }, ...others]);
+                    } else {
+                        selectedEvents([]);
                     }
                 },
-                eventResize: (args) => {
-                    if (!!args.event.groupId) {
-                        return false;
-                    }
+                eventResize: () => {
                     // update data sources
                     mutatedEvents();
 
                     selectedEvents([]);
                 },
-                eventContent: (args: any) => {
+                eventContent: (args: FullCalendar.EventContentArg) => {
                     const { type } = args.view;
-                    const { start, end, title, extendedProps } = args.event as fc.EventApi;
+                    const { start, end, title, extendedProps } = args.event as FullCalendar.EventApi;
                     const { descriptions } = extendedProps;
                     const hour = (value: Date) => moment(value).format('H');
                     const format = (value: Date) => moment(value).format('HH:mm');
@@ -1042,7 +1033,7 @@ module nts.uk.ui.components.fullcalendar {
 
                     return undefined;
                 },
-                eventOverlap: false, // (stillEvent) => stillEvent.allDay,
+                eventOverlap: false,
                 select: (arg) => {
                     const { start, end } = arg;
 
@@ -1393,7 +1384,7 @@ module nts.uk.ui.components.fullcalendar {
 
                 return { controlsDescendantBindings: true };
             }
-            update(element: HTMLElement, valueAccessor: () => KnockoutObservable<null | fc.EventApi>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
+            update(element: HTMLElement, valueAccessor: () => KnockoutObservable<null | FullCalendar.EventApi>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
                 const name = E_COMP_NAME;
                 const params = valueAccessor();
                 const event = ko.unwrap(params);
@@ -1441,7 +1432,7 @@ module nts.uk.ui.components.fullcalendar {
             </div>`
         })
         export class FullCalendarEditorComponent extends ko.ViewModel {
-            constructor(private data: KnockoutObservable<null | fc.EventApi>) {
+            constructor(private data: KnockoutObservable<null | FullCalendar.EventApi>) {
                 super();
             }
 
@@ -1492,7 +1483,7 @@ module nts.uk.ui.components.fullcalendar {
             virtual: false
         })
         export class FullCalendarCopyBindingHandler implements KnockoutBindingHandler {
-            init(element: HTMLElement, valueAccessor: () => fc.EventApi, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
+            init(element: HTMLElement, valueAccessor: () => FullCalendar.EventApi, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
                 const name = C_COMP_NAME;
                 const component = { name, params: valueAccessor() };
 

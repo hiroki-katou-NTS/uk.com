@@ -1,16 +1,14 @@
-const FullCalendar: FullCalendar;
-
-type FullCalendar = {
-    Calendar: {
-        new(el: HTMLElement, optionOverrides?: fc.CalendarOptions): fc.Calendar;
+module FullCalendar {
+    interface FullCalendar {
+        Calendar: {
+            new(el: HTMLElement, optionOverrides?: CalendarOptions): Calendar;
+        };
+        Draggable: {
+            new(el: HTMLElement, optionOverrides?: ThirdPartyDraggableSettings): any;
+        }
     };
-    Draggable: {
-        new(el: HTMLElement, optionOverrides?: fc.ThirdPartyDraggableSettings): any;
-    }
-};
 
-module fc {
-    export class Calendar extends CalendarApi {
+    class Calendar extends CalendarApi {
         currentData: CalendarData;
         renderRunner: DelayedRunner;
         el: HTMLElement;
@@ -93,25 +91,23 @@ module fc {
     type ClassNamesInput = string | string[];
     function parseClassNames(raw: ClassNamesInput): string[];
 
-
-    type DateMarker = Date;
-    function addWeeks(m: DateMarker, n: number): Date;
-    function addDays(m: DateMarker, n: number): Date;
-    function addMs(m: DateMarker, n: number): Date;
+    function addWeeks(m: Date, n: number): Date;
+    function addDays(m: Date, n: number): Date;
+    function addMs(m: Date, n: number): Date;
     function diffWeeks(m0: any, m1: any): number;
     function diffDays(m0: any, m1: any): number;
-    function diffDayAndTime(m0: DateMarker, m1: DateMarker): Duration;
-    function diffWholeWeeks(m0: DateMarker, m1: DateMarker): number;
-    function diffWholeDays(m0: DateMarker, m1: DateMarker): number;
-    function startOfDay(m: DateMarker): DateMarker;
-    function isValidDate(m: DateMarker): boolean;
+    function diffDayAndTime(m0: Date, m1: Date): Duration;
+    function diffWholeWeeks(m0: Date, m1: Date): number;
+    function diffWholeDays(m0: Date, m1: Date): number;
+    function startOfDay(m: Date): Date;
+    function isValidDate(m: Date): boolean;
 
     interface CalendarSystem {
-        getMarkerYear(d: DateMarker): number;
-        getMarkerMonth(d: DateMarker): number;
-        getMarkerDay(d: DateMarker): number;
-        arrayToMarker(arr: number[]): DateMarker;
-        markerToArray(d: DateMarker): number[];
+        getMarkerYear(d: Date): number;
+        getMarkerMonth(d: Date): number;
+        getMarkerDay(d: Date): number;
+        arrayToMarker(arr: number[]): Date;
+        markerToArray(d: Date): number[];
     }
 
     interface DateRangeInput {
@@ -120,20 +116,20 @@ module fc {
     }
 
     interface OpenDateRange {
-        start: DateMarker | null;
-        end: DateMarker | null;
+        start: Date | null;
+        end: Date | null;
     }
 
     interface DateRange {
-        start: DateMarker;
-        end: DateMarker;
+        start: Date;
+        end: Date;
     }
 
     function intersectRanges(range0: OpenDateRange, range1: OpenDateRange): OpenDateRange;
     function rangesEqual(range0: OpenDateRange, range1: OpenDateRange): boolean;
     function rangesIntersect(range0: OpenDateRange, range1: OpenDateRange): boolean;
     function rangeContainsRange(outerRange: OpenDateRange, innerRange: OpenDateRange): boolean;
-    function rangeContainsMarker(range: OpenDateRange, date: DateMarker | number): boolean;
+    function rangeContainsMarker(range: OpenDateRange, date: Date | number): boolean;
 
     interface PointerDragEvent {
         origEvent: UIEvent;
@@ -219,7 +215,7 @@ module fc {
         view: ViewApi;
     }
 
-    function getDefaultEventEnd(allDay: boolean, marker: DateMarker, context: CalendarContext): DateMarker;
+    function getDefaultEventEnd(allDay: boolean, marker: Date, context: CalendarContext): Date;
 
     interface RenderHookProps<ContentArg> {
         hookProps: ContentArg;
@@ -231,7 +227,7 @@ module fc {
         children: RenderHookPropsChildren;
         elRef?: Ref<any>;
     }
-    
+
     type RenderHookPropsChildren = (rootElRef: Ref<any>, classNames: string[], innerElRef: Ref<any>, innerContent: ComponentChildren) => ComponentChildren;
     interface ContentTypeHandlers {
         [contentKey: string]: () => (el: HTMLElement, contentVal: any) => void;
@@ -489,7 +485,7 @@ module fc {
 
 
     interface ZonedMarker {
-        marker: DateMarker;
+        marker: Date;
         timeZoneOffset: number;
     }
     interface ExpandedZonedMarker extends ZonedMarker {
@@ -516,7 +512,7 @@ module fc {
         timeZone: string;
         locale: Locale;
         calendarSystem: CalendarSystem;
-        computeWeekNumber: (d: DateMarker) => number;
+        computeWeekNumber: (d: Date) => number;
         weekText: string;
         cmdFormatter?: CmdFormatterFunc;
         defaultSeparator: string;
@@ -534,7 +530,7 @@ module fc {
     }
     interface RecurringType<RecurringData> {
         parse: (refined: EventRefined, dateEnv: DateEnv) => ParsedRecurring<RecurringData> | null;
-        expand: (typeData: any, framingRange: DateRange, dateEnv: DateEnv) => DateMarker[];
+        expand: (typeData: any, framingRange: DateRange, dateEnv: DateEnv) => Date[];
     }
 
     abstract class NamedTimeZoneImpl {
@@ -767,7 +763,7 @@ module fc {
     interface CalendarDataManagerState {
         dynamicOptionOverrides: CalendarOptions;
         currentViewType: string;
-        currentDate: DateMarker;
+        currentDate: Date;
         dateProfile: DateProfile;
         businessHours: EventStore;
         eventSources: EventSourceHash;
@@ -964,7 +960,7 @@ module fc {
 
     interface NowIndicatorRootProps {
         isAxis: boolean;
-        date: DateMarker;
+        date: Date;
         children: RenderHookPropsChildren;
     }
     interface NowIndicatorContentArg {
@@ -977,7 +973,7 @@ module fc {
 
 
     interface WeekNumberRootProps {
-        date: DateMarker;
+        date: Date;
         defaultFormat: DateFormatter;
         children: RenderHookPropsChildren;
     }
@@ -998,7 +994,7 @@ module fc {
         isPast: boolean;
         isFuture: boolean;
     }
-    function getDateMeta(date: DateMarker, todayRange?: DateRange, nowDate?: DateMarker, dateProfile?: DateProfile): DateMeta;
+    function getDateMeta(date: Date, todayRange?: DateRange, nowDate?: Date, dateProfile?: DateProfile): DateMeta;
     function getDayClassNames(meta: DateMeta, theme: Theme): string[];
     function getSlotClassNames(meta: DateMeta, theme: Theme): string[];
 
@@ -1032,7 +1028,7 @@ module fc {
 
 
     interface DayCellHookPropsInput {
-        date: DateMarker;
+        date: Date;
         dateProfile: DateProfile;
         todayRange: DateRange;
         dateEnv: DateEnv;
@@ -1041,7 +1037,7 @@ module fc {
         extraProps?: Dictionary;
     }
     interface DayCellContentArg extends DateMeta {
-        date: DateMarker;
+        date: Date;
         view: ViewApi;
         dayNumberText: string;
         [extraProp: string]: any;
@@ -1049,7 +1045,7 @@ module fc {
     type DayCellMountArg = MountArg<DayCellContentArg>;
     interface DayCellRootProps {
         elRef?: Ref<any>;
-        date: DateMarker;
+        date: Date;
         dateProfile: DateProfile;
         todayRange: DateRange;
         showDayNumber?: boolean;
@@ -1062,7 +1058,7 @@ module fc {
         render(): createElement.JSX.Element;
     }
     interface DayCellContentProps {
-        date: DateMarker;
+        date: Date;
         dateProfile: DateProfile;
         todayRange: DateRange;
         showDayNumber?: boolean;
@@ -1278,8 +1274,8 @@ module fc {
     function computeSegEndResizable(seg: Seg, context: ViewContext): boolean;
     function buildSegTimeText(seg: Seg, timeFormat: DateFormatter, context: ViewContext, defaultDisplayEventTime?: boolean,
         defaultDisplayEventEnd?: boolean,
-        startOverride?: DateMarker, endOverride?: DateMarker): string;
-    function getSegMeta(seg: Seg, todayRange: DateRange, nowDate?: DateMarker): {
+        startOverride?: Date, endOverride?: Date): string;
+    function getSegMeta(seg: Seg, todayRange: DateRange, nowDate?: Date): {
         isPast: boolean;
         isFuture: boolean;
         isToday: boolean;
@@ -1339,11 +1335,11 @@ module fc {
         type: 'NEXT';
     } | {
         type: 'CHANGE_DATE';
-        dateMarker: DateMarker;
+        Date: Date;
     } | {
         type: 'CHANGE_VIEW_TYPE';
         viewType: string;
-        dateMarker?: DateMarker;
+        Date?: Date;
     } | {
         type: 'SELECT_DATES';
         selection: DateSpan;
@@ -1477,7 +1473,7 @@ module fc {
         off<ListenerName extends keyof CalendarListeners>(handlerName: ListenerName, handler: CalendarListeners[ListenerName]): void;
         trigger<ListenerName extends keyof CalendarListeners>(handlerName: ListenerName, ...args: Parameters<CalendarListeners[ListenerName]>): void;
         changeView(viewType: string, dateOrRange?: DateRangeInput | DateInput): void;
-        zoomTo(dateMarker: DateMarker, viewType?: string): void;
+        zoomTo(Date: Date, viewType?: string): void;
         private getUnitViewSpec;
         prev(): void;
         next(): void;
@@ -1546,14 +1542,14 @@ module fc {
     };
     class DateProfileGenerator {
         protected props: DateProfileGeneratorProps;
-        nowDate: DateMarker;
+        nowDate: Date;
         isHiddenDayHash: boolean[];
         constructor(props: DateProfileGeneratorProps);
-        buildPrev(currentDateProfile: DateProfile, currentDate: DateMarker, forceToValid?: boolean): DateProfile;
-        buildNext(currentDateProfile: DateProfile, currentDate: DateMarker, forceToValid?: boolean): DateProfile;
-        build(currentDate: DateMarker, direction?: any, forceToValid?: boolean): DateProfile;
+        buildPrev(currentDateProfile: DateProfile, currentDate: Date, forceToValid?: boolean): DateProfile;
+        buildNext(currentDateProfile: DateProfile, currentDate: Date, forceToValid?: boolean): DateProfile;
+        build(currentDate: Date, direction?: any, forceToValid?: boolean): DateProfile;
         buildValidRange(): OpenDateRange;
-        buildCurrentRangeInfo(date: DateMarker, direction: any): {
+        buildCurrentRangeInfo(date: Date, direction: any): {
             duration: any;
             unit: any;
             range: any;
@@ -1563,19 +1559,19 @@ module fc {
             start: Date;
             end: Date;
         };
-        buildRangeFromDuration(date: DateMarker, direction: any, duration: Duration, unit: any): any;
-        buildRangeFromDayCount(date: DateMarker, direction: any, dayCount: any): {
+        buildRangeFromDuration(date: Date, direction: any, duration: Duration, unit: any): any;
+        buildRangeFromDayCount(date: Date, direction: any, dayCount: any): {
             start: Date;
             end: Date;
         };
-        buildCustomVisibleRange(date: DateMarker): DateRange;
+        buildCustomVisibleRange(date: Date): DateRange;
         buildRenderRange(currentRange: DateRange, currentRangeUnit: any, isRangeAllDay: any): DateRange;
         buildDateIncrement(fallback: any): Duration;
         refineRange(rangeInput: DateRangeInput | undefined): DateRange | null;
         initHiddenDays(): void;
         trimHiddenDays(range: DateRange): DateRange | null;
         isHiddenDay(day: any): boolean;
-        skipHiddenDays(date: DateMarker, inc?: number, isExclusive?: boolean): Date;
+        skipHiddenDays(date: Date, inc?: number, isExclusive?: boolean): Date;
     }
 
 
@@ -1838,8 +1834,7 @@ module fc {
         _scrollRequest: Identity<(arg: any) => void>;
     };
     type BuiltInCalendarListenerRefiners = typeof CALENDAR_LISTENER_REFINERS;
-    interface CalendarListenerRefiners extends BuiltInCalendarListenerRefiners {
-    }
+    interface CalendarListenerRefiners extends BuiltInCalendarListenerRefiners { }
     type CalendarListenersLoose = RefinedOptionsFromRefiners<Required<CalendarListenerRefiners>>;
     type CalendarListeners = Required<CalendarListenersLoose>;
     const CALENDAR_OPTION_REFINERS: {
@@ -1853,10 +1848,9 @@ module fc {
         eventSources: Identity<EventSourceInput[]>;
     };
     type BuiltInCalendarOptionRefiners = typeof CALENDAR_OPTION_REFINERS;
-    interface CalendarOptionRefiners extends BuiltInCalendarOptionRefiners {
-    }
+    interface CalendarOptionRefiners extends BuiltInCalendarOptionRefiners { }
 
-    export type CalendarOptions = BaseOptions & CalendarListenersLoose & RawOptionsFromRefiners<Required<CalendarOptionRefiners>>;
+    type CalendarOptions = BaseOptions & CalendarListenersLoose & RawOptionsFromRefiners<Required<CalendarOptionRefiners>>;
 
     type CalendarOptionsRefined = BaseOptionsRefined & CalendarListenersLoose & RefinedOptionsFromRefiners<Required<CalendarOptionRefiners>>;
 
@@ -1872,9 +1866,9 @@ module fc {
         didMount: Identity<DidMountHandler<MountArg<SpecificViewContentArg>>>;
         willUnmount: Identity<WillUnmountHandler<MountArg<SpecificViewContentArg>>>;
     };
+
     type BuiltInViewOptionRefiners = typeof VIEW_OPTION_REFINERS;
-    interface ViewOptionRefiners extends BuiltInViewOptionRefiners {
-    }
+    interface ViewOptionRefiners extends BuiltInViewOptionRefiners { }
     type ViewOptions = BaseOptions & CalendarListenersLoose & RawOptionsFromRefiners<Required<ViewOptionRefiners>>;
     type ViewOptionsRefined = BaseOptionsRefined & CalendarListenersLoose & RefinedOptionsFromRefiners<Required<ViewOptionRefiners>>;
     function refineProps<Refiners extends GenericRefiners, Raw extends RawOptionsFromRefiners<Refiners>>(input: Raw, refiners: Refiners): {
@@ -1910,12 +1904,15 @@ module fc {
         simpleNumberFormat: Intl.NumberFormat;
         options: CalendarOptionsRefined;
     }
+
     interface LocaleInput extends CalendarOptions {
         code: string;
     }
+
     type LocaleInputMap = {
         [code: string]: LocaleInput;
     };
+
     interface RawLocaleInfo {
         map: LocaleInputMap;
         defaultCode: string;
@@ -1934,8 +1931,8 @@ module fc {
         defaultSeparator?: string;
     }
     type DateInput = Date | string | number | number[];
-    interface DateMarkerMeta {
-        marker: DateMarker;
+    interface DateMeta {
+        marker: Date;
         isTimeUnspecified: boolean;
         forcedTzo: number | null;
     }
@@ -1952,47 +1949,46 @@ module fc {
         cmdFormatter?: CmdFormatterFunc;
         defaultSeparator: string;
         constructor(settings: DateEnvSettings);
-        createMarker(input: DateInput): DateMarker;
-        createNowMarker(): DateMarker;
-        createMarkerMeta(input: DateInput): DateMarkerMeta;
+        createMarker(input: DateInput): Date;
+        createNowMarker(): Date;
+        createMarkerMeta(input: DateInput): DateMeta;
         parse(s: string): {
             marker: Date;
             isTimeUnspecified: boolean;
             forcedTzo: any;
         };
-        getYear(marker: DateMarker): number;
-        getMonth(marker: DateMarker): number;
-        add(marker: DateMarker, dur: Duration): DateMarker;
-        subtract(marker: DateMarker, dur: Duration): DateMarker;
-        addYears(marker: DateMarker, n: number): Date;
-        addMonths(marker: DateMarker, n: number): Date;
-        diffWholeYears(m0: DateMarker, m1: DateMarker): number;
-        diffWholeMonths(m0: DateMarker, m1: DateMarker): number;
-        greatestWholeUnit(m0: DateMarker, m1: DateMarker): {
+        getYear(marker: Date): number;
+        getMonth(marker: Date): number;
+        add(marker: Date, dur: Duration): Date;
+        subtract(marker: Date, dur: Duration): Date;
+        addYears(marker: Date, n: number): Date;
+        addMonths(marker: Date, n: number): Date;
+        diffWholeYears(m0: Date, m1: Date): number;
+        diffWholeMonths(m0: Date, m1: Date): number;
+        greatestWholeUnit(m0: Date, m1: Date): {
             unit: string;
             value: number;
         };
-        countDurationsBetween(m0: DateMarker, m1: DateMarker, d: Duration): number;
-        startOf(m: DateMarker, unit: string): Date;
-        startOfYear(m: DateMarker): DateMarker;
-        startOfMonth(m: DateMarker): DateMarker;
-        startOfWeek(m: DateMarker): DateMarker;
-        computeWeekNumber(marker: DateMarker): number;
-        format(marker: DateMarker, formatter: DateFormatter, dateOptions?: {
+        countDurationsBetween(m0: Date, m1: Date, d: Duration): number;
+        startOf(m: Date, unit: string): Date;
+        startOfYear(m: Date): Date;
+        startOfMonth(m: Date): Date;
+        startOfWeek(m: Date): Date;
+        computeWeekNumber(marker: Date): number;
+        format(marker: Date, formatter: DateFormatter, dateOptions?: {
             forcedTzo?: number;
         }): string;
-        formatRange(start: DateMarker, end: DateMarker, formatter: DateFormatter, dateOptions?: {
+        formatRange(start: Date, end: Date, formatter: DateFormatter, dateOptions?: {
             forcedStartTzo?: number;
             forcedEndTzo?: number;
             isEndExclusive?: boolean;
             defaultSeparator?: string;
         }): string;
-        formatIso(marker: DateMarker, extraOptions?: any): string;
+        formatIso(marker: Date, extraOptions?: any): string;
         timestampToMarker(ms: number): Date;
-        offsetForMarker(m: DateMarker): number;
-        toDate(m: DateMarker, forcedTzo?: number): Date;
+        offsetForMarker(m: Date): number;
+        toDate(m: Date, forcedTzo?: number): Date;
     }
-
 
     interface CalendarContext {
         dateEnv: DateEnv;
@@ -2003,7 +1999,6 @@ module fc {
         getCurrentData(): CalendarData;
         calendarApi: CalendarApi;
     }
-
 
     const EVENT_UI_REFINERS: {
         display: StringConstructor;
@@ -2064,7 +2059,6 @@ module fc {
         [defId: string]: EventDef;
     };
 
-
     interface EventStore {
         defs: EventDefHash;
         instances: EventInstanceHash;
@@ -2084,6 +2078,7 @@ module fc {
         eventDrag: EventInteractionState | null;
         eventResize: EventInteractionState | null;
     }
+
     abstract class Splitter<PropsType extends SplittableProps = SplittableProps> {
         private getKeysForEventDefs;
         private splitDateSelection;
@@ -2109,7 +2104,6 @@ module fc {
         private _splitIndividualUi;
         private _splitInteraction;
     }
-
 
     type ConstraintInput = 'businessHours' | string | EventInput | EventInput[];
     type Constraint = 'businessHours' | string | EventStore | false;
@@ -2229,7 +2223,6 @@ module fc {
         xhr?: XMLHttpRequest;
     }) => void, failure: (error: EventSourceError) => void) => (void | PromiseLike<EventInput[]>);
 
-
     class EventSourceApi {
         private context;
         internalEventSource: EventSource<any>;
@@ -2239,7 +2232,6 @@ module fc {
         get id(): string;
         get url(): string;
     }
-
 
     interface FormatDateOptions extends NativeFormatterOptions {
         locale?: string;
@@ -2251,11 +2243,9 @@ module fc {
     function formatDate(dateInput: DateInput, options?: FormatDateOptions): string;
     function formatRange(startInput: DateInput, endInput: DateInput, options: FormatRangeOptions): string;
 
-
     function computeVisibleDayRange(timedRange: OpenDateRange, nextDayThreshold?: Duration): OpenDateRange;
     function isMultiDayRange(range: DateRange): boolean;
-    function diffDates(date0: DateMarker, date1: DateMarker, dateEnv: DateEnv, largeUnit?: string): Duration;
-
+    function diffDates(date0: Date, date1: Date, dateEnv: DateEnv, largeUnit?: string): Duration;
 
     function removeExact(array: any, exactVal: any): number;
     function isArraysEqual(a0: any, a1: any, equalityFunc?: (v0: any, v1: any) => boolean): boolean;
@@ -2272,7 +2262,6 @@ module fc {
             [key: string]: Res;
         };
 
-
     function removeElement(el: HTMLElement): void;
     function elementClosest(el: HTMLElement, selector: string): HTMLElement;
     function elementMatches(el: HTMLElement, selector: string): HTMLElement;
@@ -2281,17 +2270,13 @@ module fc {
     function applyStyle(el: HTMLElement, props: Dictionary): void;
     function applyStyleProp(el: HTMLElement, name: string, val: any): void;
 
-
     function getCanVGrowWithinCell(): boolean;
 
-
-    function buildNavLinkData(date: DateMarker, type?: string): string;
-
+    function buildNavLinkData(date: Date, type?: string): string;
 
     function preventDefault(ev: any): void;
     function listenBySelector(container: HTMLElement, eventType: string, selector: string, handler: (ev: Event, matchedTarget: HTMLElement) => void): () => void;
     function whenTransitionDone(el: HTMLElement, callback: (ev: Event) => void): void;
-
 
     interface EdgeInfo {
         borderLeft: number;
@@ -2317,9 +2302,7 @@ module fc {
     function computeHeightAndMargins(el: HTMLElement): number;
     function getClippingParents(el: HTMLElement): HTMLElement[];
 
-
     function unpromisify(func: any, success: any, failure?: any): void;
-
 
     class PositionCache {
         els: HTMLElement[];
@@ -2336,7 +2319,6 @@ module fc {
         getWidth(leftIndex: number): number;
         getHeight(topIndex: number): number;
     }
-
 
     abstract class ScrollController {
         abstract getScrollTop(): number;
@@ -2379,7 +2361,6 @@ module fc {
         getClientWidth(): number;
     }
 
-
     interface CalendarDataProviderProps {
         optionOverrides: any;
         calendarApi: CalendarApi;
@@ -2393,7 +2374,6 @@ module fc {
         componentDidUpdate(prevProps: CalendarDataProviderProps): void;
     }
 
-
     interface ViewDef {
         type: string;
         component: ViewComponentType;
@@ -2401,8 +2381,8 @@ module fc {
         defaults: ViewOptions;
     }
 
-    function formatDayString(marker: DateMarker): string;
-    function formatIsoTimeString(marker: DateMarker): string;
+    function formatDayString(marker: Date): string;
+    function formatIsoTimeString(marker: Date): string;
 
     function parse(str: any): {
         marker: Date;
@@ -2410,12 +2390,9 @@ module fc {
         timeZoneOffset: any;
     };
 
-
     const config: any;
 
-
     const globalLocales: LocaleInput[];
-
 
     function createPlugin(input: PluginDefInput): PluginDef;
 
@@ -2441,7 +2418,7 @@ module fc {
 
     interface DayHeaderProps {
         dateProfile: DateProfile;
-        dates: DateMarker[];
+        dates: Date[];
         datesRepDistinctDays: boolean;
         renderIntro?: () => VNode;
     }
@@ -2450,12 +2427,10 @@ module fc {
         render(): createElement.JSX.Element;
     }
 
-
     function computeFallbackHeaderFormat(datesRepDistinctDays: boolean, dayCnt: number): DateFormatter;
 
-
     interface TableDateCellProps {
-        date: DateMarker;
+        date: Date;
         dateProfile: DateProfile;
         todayRange: DateRange;
         colCnt: number;
@@ -2481,7 +2456,6 @@ module fc {
         render(): createElement.JSX.Element;
     }
 
-
     interface DaySeriesSeg {
         firstIndex: number;
         lastIndex: number;
@@ -2490,13 +2464,12 @@ module fc {
     }
     class DaySeriesModel {
         cnt: number;
-        dates: DateMarker[];
+        dates: Date[];
         indices: number[];
         constructor(range: DateRange, dateProfileGenerator: DateProfileGenerator);
         sliceRange(range: DateRange): DaySeriesSeg | null;
         private getDateDayIndex;
     }
-
 
     interface DayTableSeg extends Seg {
         row: number;
@@ -2505,7 +2478,7 @@ module fc {
     }
     interface DayTableCell {
         key: string;
-        date: DateMarker;
+        date: Date;
         extraHookProps?: Dictionary;
         extraDataAttrs?: Dictionary;
         extraClassNames?: string[];
@@ -2514,7 +2487,7 @@ module fc {
         rowCnt: number;
         colCnt: number;
         cells: DayTableCell[][];
-        headerDates: DateMarker[];
+        headerDates: Date[];
         private daySeries;
         constructor(daySeries: DaySeriesModel, breakOnWeeks: boolean);
         private buildCells;
@@ -2522,7 +2495,6 @@ module fc {
         private buildHeaderDates;
         sliceRange(range: DateRange): DayTableSeg[];
     }
-
 
     interface SliceableProps {
         dateSelection: DateSpan;
@@ -2552,7 +2524,7 @@ module fc {
         protected forceDayIfListItem: boolean;
         sliceProps(props: SliceableProps, dateProfile: DateProfile, nextDayThreshold: Duration | null, context: CalendarContext, ...extraArgs: ExtraArgs): SlicedProps<SegType>;
         sliceNowDate(
-            date: DateMarker, context: CalendarContext, ...extraArgs: ExtraArgs): SegType[];
+            date: Date, context: CalendarContext, ...extraArgs: ExtraArgs): SegType[];
         private _sliceBusinessHours;
         private _sliceEventStore;
         private _sliceInteraction;
@@ -2561,13 +2533,10 @@ module fc {
         private sliceEventRange;
     }
 
-
     function isInteractionValid(interaction: EventInteractionState, context: CalendarContext): boolean;
     function isPropsValid(state: SplittableProps, context: CalendarContext, dateSpanMeta?: {}, filterConfig?: any): boolean;
 
-
     function requestJson(method: string, url: string, params: Dictionary, successCallback: any, failureCallback: any): void;
-
 
     type OverflowValue = 'auto' | 'hidden' | 'scroll' | 'visible';
     interface ScrollerProps {
@@ -2592,7 +2561,6 @@ module fc {
         getYScrollbarWidth(): number;
     }
 
-
     class RefMap<RefType> {
         masterCallback?: (val: RefType | null, key: string) => void;
         currentMap: {
@@ -2606,7 +2574,6 @@ module fc {
         collect(startIndex?: number, endIndex?: number, step?: number): RefType[];
         getAll(): RefType[];
     }
-
 
     interface SimpleScrollGridProps {
         cols: ColProps[];
@@ -2662,19 +2629,18 @@ module fc {
 
     function getIsRtlScrollbarOnLeft(): boolean;
 
-
     interface NowTimerProps {
         unit: string;
-        children: (now: DateMarker, todayRange: DateRange) => ComponentChildren;
+        children: (now: Date, todayRange: DateRange) => ComponentChildren;
     }
     interface NowTimerState {
-        nowDate: DateMarker;
+        nowDate: Date;
         todayRange: DateRange;
     }
     class NowTimer extends Component<NowTimerProps, NowTimerState> {
         static contextType: Context<ViewContext>;
         context: ViewContext;
-        initialNowDate: DateMarker;
+        initialNowDate: Date;
         initialNowQueriedMs: number;
         timeoutId: any;
         constructor(props: NowTimerProps, context: ViewContext);
@@ -2699,6 +2665,7 @@ module fc {
         isFuture: boolean;
         isToday: boolean;
     }
+
     interface EventRootProps extends MinimalEventProps {
         timeText: string;
         disableDragging?: boolean;
@@ -2706,13 +2673,13 @@ module fc {
         defaultContent: (hookProps: EventContentArg) => ComponentChildren;
         children: (rootElRef: Ref<any>, classNames: string[], innerElRef: Ref<any>, innerContent: ComponentChildren, hookProps: EventContentArg) => ComponentChildren;
     }
+
     class EventRoot extends BaseComponent<EventRootProps> {
         elRef: RefObject<HTMLElement>;
         render(): createElement.JSX.Element;
         componentDidMount(): void;
         componentDidUpdate(prevProps: EventRootProps): void;
     }
-
 
     interface StandardEventProps extends MinimalEventProps {
         extraClassNames: string[];
@@ -2739,5 +2706,7 @@ module fc {
 
     const BgEvent: (props: BgEventProps) => createElement.JSX.Element;
 
-    export const version: string;
+    const version: string;
 }
+
+declare const FullCalendar: FullCalendar.FullCalendar;
