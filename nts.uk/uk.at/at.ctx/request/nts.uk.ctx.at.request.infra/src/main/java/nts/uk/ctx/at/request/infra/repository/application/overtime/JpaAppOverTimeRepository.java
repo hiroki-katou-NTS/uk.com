@@ -131,6 +131,25 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 		krqdtAppOverTime.flexExcessTime = appOverTime.getApplicationTime().getFlexOverTime().map(x -> x.v()).orElse(null);
 		krqdtAppOverTime.overTimeNight = appOverTime.getApplicationTime().getOverTimeShiftNight().map(x -> x.getOverTimeMidNight() == null ? null : x.getOverTimeMidNight().v()).orElse(null);
 		krqdtAppOverTime.totalNight = appOverTime.getApplicationTime().getOverTimeShiftNight().map(x -> x.getMidNightOutSide() == null ? null : x.getMidNightOutSide().v()).orElse(null);
+		if (appOverTime.getApplicationTime().getOverTimeShiftNight().isPresent()) {
+			if (!CollectionUtil.isEmpty(appOverTime.getApplicationTime().getOverTimeShiftNight().get().getMidNightHolidayTimes())) {
+				appOverTime.getApplicationTime()
+							.getOverTimeShiftNight()
+							.get()
+							.getMidNightHolidayTimes()
+							.stream()
+							.forEach(i -> {
+								if (i.getLegalClf() == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork) {
+									krqdtAppOverTime.legalHdNight = i.getAttendanceTime().v();
+								} else if (i.getLegalClf() == StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork) {
+									krqdtAppOverTime.nonLegalHdNight = i.getAttendanceTime().v();
+								} else if (i.getLegalClf() == StaturoryAtrOfHolidayWork.PublicHolidayWork) {
+									krqdtAppOverTime.nonLegalPublicHdNight = i.getAttendanceTime().v();
+								}
+							});
+			}
+		}
+		
 		
 		List<TimeZoneWithWorkNo> breakTimes = appOverTime.getBreakTimeOp().orElse(Collections.emptyList());
 		breakTimes.stream().forEach(item -> {
@@ -167,30 +186,6 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 			}
 		});
 		krqdtAppOverTime.overtimeInputs = new ArrayList<KrqdtOvertimeInput>();
-//		// dumnny data
-		{
-			KrqdtOvertimeInput krqdtOvertimeInput = new KrqdtOvertimeInput(
-					new KrqdtOvertimeInputPK(
-							cid,
-							appOverTime.getAppID(),
-							AttendanceType_Update.NORMALOVERTIME.value,
-							1),
-					100,
-					null);
-			krqdtAppOverTime.overtimeInputs.add(krqdtOvertimeInput);
-		}
-		
-		{
-			KrqdtOvertimeInput krqdtOvertimeInput = new KrqdtOvertimeInput(
-					new KrqdtOvertimeInputPK(
-							cid,
-							appOverTime.getAppID(),
-							AttendanceType_Update.NORMALOVERTIME.value,
-							2),
-					200,
-					null);
-			krqdtAppOverTime.overtimeInputs.add(krqdtOvertimeInput);
-		}
 		// ------
 		List<OvertimeApplicationSetting> overtimeApplicationSettings = appOverTime.getApplicationTime().getApplicationTime();
 		if (!CollectionUtil.isEmpty(overtimeApplicationSettings)) {
