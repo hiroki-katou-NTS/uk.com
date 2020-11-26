@@ -325,7 +325,8 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                 const vm = this;
                 const mergeCell = value.mergeCell;
-                const listItem: CompositePayOutSubMngData[] = _.filter(vm.compositePayOutSubMngData(), item => item.mergeCell = mergeCell);
+                const listItem: CompositePayOutSubMngData[] = _.filter(vm.compositePayOutSubMngData(),
+                    item => _.toNumber(item.mergeCell) === _.toNumber(mergeCell));
                 const payoutIds = _.map(listItem, item => item.occurrenceId);
                 const subOfHDIDs = _.map(listItem, item => item.digestionId);
                 const data = {

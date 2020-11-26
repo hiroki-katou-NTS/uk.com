@@ -579,7 +579,8 @@
             dialog.confirm({ messageId: 'Msg_18' }).ifYes(() => {
                 const vm = this;
                 const mergeCell = value.mergeCell;
-                const listItem: SubstitutedData[] = _.filter(vm.subData, item => item.mergeCell = mergeCell);
+                const listItem: SubstitutedData[] = _.filter(vm.subData,
+                    item => _.toNumber(item.mergeCell) === _.toNumber(mergeCell));
                 const leaveId = _.map(listItem, item => item.occurrenceId);
                 const comDayOffID = _.map(listItem, item => item.digestionId);
                 const command = {
