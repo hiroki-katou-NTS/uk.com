@@ -6,7 +6,10 @@ const template = `
 								<div
 									data-bind="component: {
 								name: 'sidebar-button',
-								params: {isShowCopyButton: true , header:header }
+								params: {
+											screenData:screenData ,
+											screenMode:screenMode
+										}
 							}"></div>
 					</div>
 					<div style="padding: 10px; display: flex;">
@@ -22,7 +25,7 @@ const template = `
 								name: 'basic-settings-company',
 								params: {
 											screenData:screenData,
-											screenMode:header
+											screenMode:screenMode
 										}
 								}">
 						</div>
@@ -30,7 +33,7 @@ const template = `
 								name: 'monthly-working-hours',
 								params: {
 											screenData:screenData,
-											isShowCheckbox:false
+											screenMode:screenMode
 										}
 								}">
 						</div>
@@ -56,14 +59,14 @@ class ScreenHComponent extends ko.ViewModel {
 
 	alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel> = ko.observableArray([]);
 
-	header = '';
+	screenMode = '';
 
 	workPlaceName: KnockoutObservable<string> = ko.observable('');
 
 	created(params: any) {
 		const vm = this;
 
-		vm.header = params.header;
+		vm.screenMode = params.screenMode;
 		/*	vm.$blockui('invisible')
 				.then(() => vm.$ajax(API_URL.START_PAGE))
 				.then((data: IScreenData) => {

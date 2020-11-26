@@ -6,7 +6,10 @@ const template = `
 								<div
 									data-bind="component: {
 								name: 'sidebar-button',
-								params: {isShowCopyButton: true , header:header }
+								params: {
+											screenData:screenData ,
+											screenMode:screenMode
+										}
 							}"></div>
 					</div>
 					<div id="com-ccg001"></div>
@@ -22,7 +25,7 @@ const template = `
 								name: 'basic-settings-company',
 								params: {
 											screenData:screenData,
-											screenMode:header
+											screenMode:screenMode
 										}
 								}">
 						</div>
@@ -30,7 +33,7 @@ const template = `
 								name: 'monthly-working-hours',
 								params: {
 											screenData:screenData,
-											isShowCheckbox:false
+											screenMode:screenMode
 										}
 								}">
 						</div>
