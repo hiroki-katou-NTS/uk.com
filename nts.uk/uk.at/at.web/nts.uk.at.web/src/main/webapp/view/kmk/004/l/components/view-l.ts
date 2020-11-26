@@ -1,6 +1,8 @@
 /// <reference path="../../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.view.kmk004.l {
+	import IParam = nts.uk.at.view.kmk004.p.IParam;
+	
 	const template = `
 	<div class="sidebar-content-header">
 		<div class="title" data-bind="i18n: 'Com_Company'"></div>
@@ -46,8 +48,7 @@ module nts.uk.at.view.kmk004.l {
 	</div>
 	`;
 
-	interface Params {
-	}
+	
 
 	@component({
 		name: 'view-l',
@@ -55,9 +56,13 @@ module nts.uk.at.view.kmk004.l {
     })
     
 	export class ViewLComponent extends ko.ViewModel {
+		constructor(private params: IParam){
+			super();
+		}
 		
-		created(params: Params) {
-
+		created() {
+			let vm = this;
+			vm.params = {sidebarType : "Com_Company", wkpId: '', empCode :'', empId: '', titleName:''}
 		}
 
 		mounted() {
@@ -65,7 +70,8 @@ module nts.uk.at.view.kmk004.l {
 		}
 		
 		openViewP() {
-			nts.uk.ui.windows.sub.modal('at','/view/kmk/004/p/index.xhtml');
+			let vm = this;
+			vm.$window.modal('at', '/view/kmk/004/p/index.xhtml', vm.params)
 		}
     }
 }

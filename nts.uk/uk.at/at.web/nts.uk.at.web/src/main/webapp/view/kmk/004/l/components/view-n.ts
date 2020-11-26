@@ -1,6 +1,7 @@
 /// <reference path="../../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.view.kmk004.l {
+	import IParam = nts.uk.at.view.kmk004.p.IParam;
 	import tree = kcp.share.tree;
 
 	const template = `
@@ -29,7 +30,7 @@ module nts.uk.at.view.kmk004.l {
 						
 						<div class="header_title">
 							<div data-bind="ntsFormLabel: {}, i18n: 'KMK004_229'"></div>
-							<button data-bind="i18n: 'KMK004_338'"></button>
+							<button data-bind="i18n: 'KMK004_338', click: openViewP"></button>
 						</div>
 						<div class="header_content">
 							<div data-bind="visible: false, component: {
@@ -62,10 +63,6 @@ module nts.uk.at.view.kmk004.l {
 		</tr>
 	</table>
 	`;
-
-	interface Params {
-
-	}
 
 	export class ListType {
 		static EMPLOYMENT = 1;
@@ -108,7 +105,11 @@ module nts.uk.at.view.kmk004.l {
 		selectClosureTypeList: KnockoutObservableArray<any>;
 		currentItemName: KnockoutObservable<string>;
 
-		created(params: Params) {
+		constructor(private params: IParam){
+			super();
+		}
+		
+		created() {
 			let vm = this;
 			vm.selectedCode = ko.observable('1');
 			vm.multiSelectedCode = ko.observableArray(['0', '1', '4']);
@@ -144,6 +145,7 @@ module nts.uk.at.view.kmk004.l {
 
 			vm.employeeList = ko.observableArray<UnitModel>([]);
 			vm.currentItemName = ko.observable('');
+			vm.params = {sidebarType : "Com_Employment", wkpId: '', empCode :'', empId: '', titleName:''}
 		}
 
 		mounted() {
@@ -166,10 +168,17 @@ module nts.uk.at.view.kmk004.l {
 					
 					if (selectedItem) {
 						vm.currentItemName(selectedItem.name);
+						vm.params.empCode = newValue;
+						vm.params.titleName = vm.currentItemName();
 					}
 				});
 				vm.selectedCode.valueHasMutated();
 			});
+		}
+		
+		openViewP() {
+			let vm = this;
+			vm.$window.modal('at', '/view/kmk/004/p/index.xhtml', vm.params)
 		}
 	}
 }

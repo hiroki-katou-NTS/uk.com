@@ -3,6 +3,7 @@
 module nts.uk.at.view.kmk004.l {
 	import tree = kcp.share.tree;
 	import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
+	import IParam = nts.uk.at.view.kmk004.p.IParam;
 
 	const template = `
 		<div class="sidebar-content-header">
@@ -33,7 +34,7 @@ module nts.uk.at.view.kmk004.l {
 						
 						<div class="header_title">
 							<div data-bind="ntsFormLabel: {}, i18n: 'KMK004_229'"></div>
-							<button data-bind="i18n: 'KMK004_338'"></button>
+							<button data-bind="i18n: 'KMK004_338', click: openViewP"></button>
 						</div>
 						<div class="header_content">
 							<div data-bind="visible: false, component: {
@@ -66,10 +67,6 @@ module nts.uk.at.view.kmk004.l {
 		</tr>
 	</table>
 	`;
-
-	interface Params {
-
-	}
 
 	interface UnitModel {
 		id?: string;
@@ -105,8 +102,11 @@ module nts.uk.at.view.kmk004.l {
 		employeeList: KnockoutObservableArray<UnitModel>;
 		currentItemName: KnockoutObservable<string>;
 
-
-		created(params: Params) {
+		constructor(private params: IParam){
+			super();
+		}
+		
+		created() {
 			const vm = this;
 			vm.ccg001ComponentOption = {
 				/** Common properties */
@@ -165,10 +165,10 @@ module nts.uk.at.view.kmk004.l {
 			vm.currentItemName = ko.observable('');
 
 			this.employeeList = ko.observableArray<UnitModel>([
-				{ id: '1a', code: '000000000001', name: '日通　社員1', workplaceName: 'HN' },
-				{ id: '2b', code: '000000000002', name: '日通　社員2', workplaceName: 'HN' },
-				{ id: '3c', code: '000000000003', name: '日通　社員3', workplaceName: 'HN' },
-				{ id: '4d', code: '000000000004', name: '日通　社員4', workplaceName: 'HN' },
+				{ id: '1a', code: 'bdb8fb2a-35b5-47c5-8828-74c4fdde4c7a', name: '日通　社員1', workplaceName: 'HN' },
+				{ id: '2b', code: 'ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570', name: '日通　社員2', workplaceName: 'HN' },
+				{ id: '3c', code: '07b39c1f-c02e-4354-aa9d-650b0597a0e7', name: '日通　社員3', workplaceName: 'HN' },
+				{ id: '4d', code: '02a5ab6b-ebff-41ff-91ec-ed1adfa93b9f', name: '日通　社員4', workplaceName: 'HN' },
 				{ id: '58', code: '000000000005', name: '日通　社員5', workplaceName: 'HN' },
 				{ id: '6f', code: '000000000006', name: '日通　社員6', workplaceName: 'HN' },
 				{ id: '7g', code: '000000000007', name: '日通　社員7', workplaceName: 'HN' },
@@ -190,6 +190,7 @@ module nts.uk.at.view.kmk004.l {
 				isShowSelectAllButton: vm.isShowSelectAllButton(),
 				disableSelection: vm.disableSelection()
 			};
+			vm.params = {sidebarType : "Com_Person", wkpId: '', empCode :'', empId: '', titleName:''}
 		}
 
 		mounted() {
@@ -214,11 +215,18 @@ module nts.uk.at.view.kmk004.l {
 					
 					if (selectedItem) {
 						vm.currentItemName(selectedItem.code + " " + selectedItem.name);
+						vm.params.empId = newValue;
+						vm.params.titleName = vm.currentItemName();
 					}
 				});
 				vm.selectedCode.valueHasMutated();
 			});
 
+		}
+		
+		openViewP() {
+			let vm = this;
+			vm.$window.modal('at', '/view/kmk/004/p/index.xhtml', vm.params)
 		}
 	}
 

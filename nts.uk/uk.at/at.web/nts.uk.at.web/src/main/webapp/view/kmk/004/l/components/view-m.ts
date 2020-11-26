@@ -2,6 +2,7 @@
 
 module nts.uk.at.view.kmk004.l {
 	import tree = kcp.share.tree;
+	import IParam = nts.uk.at.view.kmk004.p.IParam;
 
 	const template = `
 	<div class="sidebar-content-header">
@@ -29,7 +30,7 @@ module nts.uk.at.view.kmk004.l {
 						
 						<div class="header_title">
 							<div data-bind="ntsFormLabel: {}, i18n: 'KMK004_229'"></div>
-							<button data-bind="i18n: 'KMK004_338'"></button>
+							<button data-bind="i18n: 'KMK004_338', click: openViewP"></button>
 						</div>
 						<div class="header_content">
 							<div data-bind="visible: false, component: {
@@ -63,10 +64,6 @@ module nts.uk.at.view.kmk004.l {
 	</table>
 	`;
 
-	interface Params {
-
-	}
-
 	interface UnitModel {
 		id: string;
 		code: string;
@@ -90,7 +87,11 @@ module nts.uk.at.view.kmk004.l {
 		treeGrid: tree.TreeComponentOption;
 		selectedItemText: KnockoutObservable<string> = ko.observable('');
 		
-		created(params: Params) {
+		constructor(private params: IParam){
+			super();
+		}
+		
+		created() {
 			const vm = this;
 
 			vm.baseDate = ko.observable(new Date());
@@ -110,7 +111,8 @@ module nts.uk.at.view.kmk004.l {
 				tabindex: 1,
 				systemType: 2
 			};
-
+			
+			vm.params = {sidebarType : "Com_Workplace", wkpId: '', empCode :'', empId: '', titleName:''}
 		}
 
 		mounted() {
@@ -120,9 +122,16 @@ module nts.uk.at.view.kmk004.l {
 					let workplaces = $('#workplace-list').getDataList();
 					let selectedItem: UnitModel = _.find(workplaces, ['id', data]);
 					vm.selectedItemText(selectedItem ? selectedItem.name : '');
+					vm.params.wkpId = data;
+					vm.params.titleName = vm.selectedItemText();
 				});
 				vm.selectedId.valueHasMutated();
 			});
+		}
+		
+		openViewP() {
+			let vm = this;
+			vm.$window.modal('at', '/view/kmk/004/p/index.xhtml', vm.params)
 		}
 	}
 }
