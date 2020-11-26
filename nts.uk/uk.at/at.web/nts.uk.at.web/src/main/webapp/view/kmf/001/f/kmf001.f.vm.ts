@@ -78,6 +78,8 @@ module nts.uk.pr.view.kmf001.f {
             inputOverHalfDay: any;
             inputOverAll: any;
             inputWorkAll: any;
+            manageDeadline: KnockoutObservable<number> = ko.observable( 0 );
+            managementClassification: KnockoutObservable<number> = ko.observable( 0 );
             
             deleteEnable: KnockoutObservable<boolean>;
             
