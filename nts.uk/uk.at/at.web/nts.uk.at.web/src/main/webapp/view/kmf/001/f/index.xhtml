@@ -121,6 +121,38 @@
 										]}"></div>
 							</td>
 						</tr>
+						<!-- F4_1, F4_2 -->
+						<tr>
+							<td class="pad_left_30" colspan="2"><label>#{i18n.getText('KMF001_327')}</label></td>
+							<td class="pad_over_left_80" style="padding-left: 70px;">
+								<div  
+									data-bind="ntsRadioBoxGroup: {
+                                    name: '#{i18n.getText('KMF001_327')}',
+                                    options: [ { code: 0, name: '#{i18n.getText('KMF001_328')}' },
+                                            { code: 1, name: '#{i18n.getText('KMF001_329')}' }],
+                                    optionsValue: 'code',
+                                    optionsText: 'name',
+                                    value: manageDeadline }" />
+							</td>
+						</tr>
+						<!-- F4_3, F4_4, F4_5 -->
+						<tr>
+							<td class="pad_left_30" colspan="2"><label>#{i18n.getText('KMF001_330')}</label></td>
+							<td class="pad_over_left_80">
+								<span 
+								data-bind="ntsSwitchButton: {
+												name: '#[KMF001_330]',
+												options: ko.observableArray([
+					                				{ code: 0, name: '#{i18n.getText('KMF001_331')}' },
+					                				{ code: 1, name: '#{i18n.getText('KMF001_332')}' }
+					            				]),
+												optionsValue: 'code',
+												optionsText: 'name',
+												value: managementClassification,
+												enable: true }"/>
+								<label>#{i18n.getText('KMF001_333')}</label>
+							</td>
+						</tr>
 						
 						<tr>
 							<td colspan="6">
@@ -187,7 +219,7 @@
 							</td>
 						</tr>
 						<tr>
-							<td class="pad_left_30"><div tabindex="10"
+							<td class="pad_left_30" colspan="3"><div tabindex="10"
 									data-bind="ntsCheckBox: { checked: checkWorkTime, enable: isManageCompen}">#{i18n.getText('KMF001_80')}</div></td>
 						</tr>
 						<tr>
@@ -229,7 +261,7 @@
 							<td class="pad_left_30"><!-- <div tabindex="15"
 									data-bind="ntsCheckBox: { checked: checkOverTime, enable: isManageCompen}">#{i18n.getText('KMF001_84')}</div> -->
 									<div tabindex="15"
-									data-bind="ntsCheckBox: { checked: checkOverTime, enable: true">#{i18n.getText('KMF001_84')}</div>
+									data-bind="ntsCheckBox: { checked: checkOverTime, enable: true}">#{i18n.getText('KMF001_84')}</div>
 									</td>
 						</tr>
 						<tr>

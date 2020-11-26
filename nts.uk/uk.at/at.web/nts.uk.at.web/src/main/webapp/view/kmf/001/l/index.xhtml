@@ -136,6 +136,37 @@
 									</div>
 								</td>
 							</tr>
+							<tr>
+								<!-- L4_1 -->
+								<td><label>#{i18n.getText('KMF001_52')}</label></td>
+								<!-- L4_2 -->
+								<td>
+									<span tabindex="8" 
+										data-bind="ntsSwitchButton: {
+													options: $parent.manageDistinctList,
+													optionsValue: 'value',
+													optionsText: 'localizedName',
+													value: selectedtimeManagement,
+													enable: enableNursing }">
+									</span>
+								</td>
+							</tr>
+							<tr>
+								<!-- L4_3 -->
+								<td><label>#{i18n.getText('KMF001_53')}</label></td>
+								<!-- L4_4 -->
+								<td>
+									<div id="combo-box-work-absence" tabindex="8" 
+												data-bind="ntsComboBox: {
+													options: $parent.digestionList,
+													optionsValue: 'code',
+													visibleItemsCount: 5,
+													value: digestion,
+													optionsText: 'name',
+													enable: enableNursing}">
+											</div>
+								</td>
+							</tr>
 						</table>
 					</div>
 					<!-- END 子の看護休暇の設定-->
@@ -242,6 +273,37 @@
 												required: enableNursing}">
 										</div>
 									</div>
+								</td>
+							</tr>
+							<tr>
+								<!-- L5_1 -->
+								<td><label>#{i18n.getText('KMF001_52')}</label></td>
+								<!-- L5_2 -->
+								<td>
+									<span tabindex="8" 
+										data-bind="ntsSwitchButton: {
+													options: $parent.manageDistinctList,
+													optionsValue: 'value',
+													optionsText: 'localizedName',
+													value: selectedtimeManagement,
+													enable: enableNursing }">
+									</span>
+								</td>
+							</tr>
+							<tr>
+								<!-- L5_3 -->
+								<td><label>#{i18n.getText('KMF001_53')}</label></td>
+								<!-- L5_4 -->
+								<td>
+									<div id="combo-box-work-absence" tabindex="8" 
+												data-bind="ntsComboBox: {
+													options: $parent.digestionList,
+													optionsValue: 'code',
+													visibleItemsCount: 5,
+													value: digestion,
+													optionsText: 'name',
+													enable: enableNursing}">
+											</div>
 								</td>
 							</tr>
 						</table>
