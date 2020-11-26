@@ -27,6 +27,7 @@ import nts.uk.ctx.at.shared.dom.common.days.YearlyDays;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveGrantDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingTimes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes;
@@ -101,7 +102,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
-	
+
 	public static final JpaEntityMapper<KrcdtMonRemain> MAPPER = new JpaEntityMapper<>(KrcdtMonRemain.class);
 
 	/** プライマリキー */
@@ -117,9 +118,9 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 	/** 終了年月日 */
 	@Column(name = "END_DATE")
 	public GeneralDate endDate;
-	
+
 	/* KRCDT_MON_ANNLEA_REMAIN - エンティティ：年休月別残数データ */
-	
+
 	/** 年休使用日数 */
 	@Column(name = "AL_USED_DAYS")
 	public double annleaUsedDays;
@@ -350,7 +351,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 	public Double rsvleaGrantDays;
 
 	/* KRCDT_MON_SP_REMAIN */
-	
+
 	/** 特別休暇月別残数データ．特別休暇．使用数．使用日数 */
 	@Column(name = "SP_USED_DAYS_1")
 	public double useDays1;
@@ -644,7 +645,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 	public Integer useTimes19;
 	@Column(name = "SP_USED_TIMES_20")
 	public Integer useTimes20;
-	
+
 	/** 特別休暇月別残数データ．実特別休暇．使用数．使用日数 .実特別休暇使用日数 */
 	@Column(name = "SP_FACT_USED_DAYS_1")
 	public double factUseDays1;
@@ -728,7 +729,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 	public double beforeFactUseDays19;
 	@Column(name = "SP_FACT_USED_DAYS_BE_20")
 	public double beforeFactUseDays20;
-	
+
 	/** 特別休暇月別残数データ．実特別休暇．使用数．使用日数.使用日数付与後 */
 	@Column(name = "SP_FACT_USED_DAYS_AF_1")
 	public Double afterFactUseDays1;
@@ -1190,7 +1191,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 	public Integer beforeRemainMinutes19;
 	@Column(name = "SP_REM_MINUTES_BEFORE_20")
 	public Integer beforeRemainMinutes20;
-	
+
 	/** 特別休暇月別残数データ．実特別休暇．残数付与前.日数 */
 	@Column(name = "SP_FACT_REM_DAYS_BE_1")
 	public double beforeFactRemainDays1;
@@ -1568,7 +1569,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 	public int grantAtr19;
 	@Column(name = "SP_GRANT_ATR_20")
 	public int grantAtr20;
-	
+
 	/** 特別休暇月別残数データ．特別休暇付与情報.付与日数 */
 	@Column(name = "SP_GRANT_DAYS_1")
 	public Double grantDays1;
@@ -1612,7 +1613,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 	public Double grantDays20;
 
 	/* KRCDT_MON_DAYOFF_REMAIN */
-	
+
 	/** 発生日数 */
 	@Column(name = "DO_OCCURRED_DAYS")
 	public double dayOffOccurredDays;
@@ -1645,7 +1646,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 	public Integer dayOffUnUsedTimes;
 
 	/* KRCDT_MON_SUBOFHD_REMAIN */
-	
+
 	/** 発生日数 */
 	@Column(name = "SB_OCCURRED_DAYS")
 	public double subofHdOccurredDays;
@@ -1663,7 +1664,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 	public double subofHdUnUsedDays;
 
 	/* KRCDT_MON_SUBOFHD_REMAIN */
-	
+
 	/** 使用日数 */
 	@Column(name = "CH_USED_DAYS")
 	public double childUsedDays;
@@ -1682,7 +1683,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 	/** 使用時間付与後 */
 	@Column(name = "CH_USED_MINUTES_AFTER")
 	public Integer childUsedMinutesAfter;
-	
+
 	/* KRCDT_MON_CARE_HD_REMAIN */
 
 	/** 使用日数 */
@@ -1703,7 +1704,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 	/** 使用時間付与後 */
 	@Column(name = "CA_USED_MINUTES_AFTER")
 	public Integer careUsedMinutesAfter;
-	
+
 	@Override
 	protected Object getKey() {
 		return krcdtMonRemainPk;
@@ -1713,7 +1714,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		this.startDate = GeneralDate.min();
 		this.endDate = GeneralDate.max();
 	}
-	
+
 	public MonthMergeKey toDomainKey() {
 		MonthMergeKey key = new MonthMergeKey();
 		key.setEmployeeId(this.krcdtMonRemainPk.getEmployeeId());
@@ -1723,7 +1724,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 			(this.krcdtMonRemainPk.getIsLastDay() == 1)));
 		return key;
 	}
-	
+
 	public void toEntityRemainMerge(RemainMerge domain) {
 		this.toEntityMonAnnleaRemain(domain.getAnnLeaRemNumEachMonth());
 		this.toEntityRsvLeaRemNumEachMonth(domain.getRsvLeaRemNumEachMonth());
@@ -1736,10 +1737,10 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 
 	public RemainMerge toDomain(){
 		RemainMerge domains = new RemainMerge();
-		domains.setMonthMergeKey(new MonthMergeKey(this.krcdtMonRemainPk.getEmployeeId(), 
-								new YearMonth(this.getKrcdtMonRemainPk().getYearMonth()), 
-								EnumAdaptor.valueOf(this.getKrcdtMonRemainPk().getClosureId(), ClosureId.class), 
-								new ClosureDate(this.getKrcdtMonRemainPk().getClosureDay(), 
+		domains.setMonthMergeKey(new MonthMergeKey(this.krcdtMonRemainPk.getEmployeeId(),
+								new YearMonth(this.getKrcdtMonRemainPk().getYearMonth()),
+								EnumAdaptor.valueOf(this.getKrcdtMonRemainPk().getClosureId(), ClosureId.class),
+								new ClosureDate(this.getKrcdtMonRemainPk().getClosureDay(),
 										this.getKrcdtMonRemainPk().getIsLastDay() == 1 ? true : false)));
 		domains.setAnnLeaRemNumEachMonth(this.toDomainAnnLeaRemNumEachMonth());
 		domains.setRsvLeaRemNumEachMonth(this.toDomainRsvLeaRemNumEachMonth());
@@ -1750,20 +1751,20 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		domains.setMonChildHdRemain(this.toDomainMonChildHdRemain());
 		return domains;
 	}
-	
+
 	/** KRCDT_MON_ANNLEA_REMAIN - エンティティ：年休月別残数データ */
 	public void toEntityMonAnnleaRemain(AnnLeaRemNumEachMonth domain) {
-		
+
 		this.deleteMonAnnleaRemain();
 		if (domain == null) return;
-		
+
 		// 年休：使用数
-		
+
 		val normal = domain.getAnnualLeave();
 		val normalUsed = normal.getUsedNumberInfo().getUsedNumber();
 		val normalUsedBefore = normal.getUsedNumberInfo().getUsedNumberBeforeGrant();
 		val normalUsedAfterOpt = normal.getUsedNumberInfo().getUsedNumberAfterGrantOpt();
-		
+
 		this.closureStatus = domain.getClosureStatus().value;
 		this.startDate = domain.getClosurePeriod().start();
 		this.endDate = domain.getClosurePeriod().end();
@@ -1779,7 +1780,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 //				this.annleaUsedMinutesAfter = normalUsedTime.getUsedTimeAfterGrant().get().v();
 //			}
 		}
-		
+
 		this.annleaUsedTimes = normal.getUsedNumberInfo().getAnnualLeaveUsedTimes().v();
 		if (normalUsedAfterOpt.isPresent()) {
 			this.annleaUsedDaysAfter = normalUsedAfterOpt.get().getUsedDays().getUsedDayNumber().v();
@@ -1787,7 +1788,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				this.annleaUsedMinutesAfter = normalUsedAfterOpt.get().getUsedTime().get().getUsedTime().v();
 			}
 		}
-		
+
 		val real = domain.getRealAnnualLeave();
 		val realUsed = real.getUsedNumberInfo().getUsedNumber();
 		val realUsedBefore = real.getUsedNumberInfo().getUsedNumberBeforeGrant();
@@ -1808,13 +1809,13 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				this.annleaFactUsedMinutesAfter = realUsedAfterOpt.get().getUsedTime().get().getUsedTime().v();
 			}
 		}
-	
+
 		// 年休：残数
 		val normalR = domain.getAnnualLeave();
 		val normalRemain = normalR.getRemainingNumberInfo().getRemainingNumber();
 		val normalRemainBefore = normalR.getRemainingNumberInfo().getRemainingNumberBeforeGrant();
 		val normalRemainAfterOpt = normalR.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt();
-		
+
 		this.annleaRemainingDays = normalRemain.getTotalRemainingDays().v();
 		if (normalRemain.getTotalRemainingTime().isPresent()) {
 			this.annleaRemainingMinutes = normalRemain.getTotalRemainingTime().get().v();
@@ -1851,7 +1852,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				this.annleaFactRemainingMinutesAfter = realRemainAfterOpt.get().getTotalRemainingTime().get().v();
 			}
 		}
-		
+
 
 		// 年休：未消化数
 		val normalUndigest = domain.getUndigestedNumber();
@@ -1991,25 +1992,25 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		this.annleaDeductionDaysAfter = null;
 		this.annleaAttendanceRate = null;
 	}
-	
+
 	/** KRCDT_MON_RSVLEA_REMAIN */
 	public void toEntityRsvLeaRemNumEachMonth(RsvLeaRemNumEachMonth domain) {
 
 		this.deleteRsvLeaRemNumEachMonth();
 		if (domain == null) return;
-		
+
 		val normal = domain.getReserveLeave();
 		val normalUsed = normal.getUsedNumber().getUsedDays();
 		val normalUsedBefore = normal.getUsedNumber().getUsedDaysBeforeGrant();
 		val normalUsedAfter = normal.getUsedNumber().getUsedDaysAfterGrant();
-		
+
 		val real = domain.getRealReserveLeave();
 		val realUsed = real.getUsedNumber();
 
 		this.closureStatus = domain.getClosureStatus().value;
 		this.startDate = domain.getClosurePeriod().start();
 		this.endDate = domain.getClosurePeriod().end();
-		
+
 		// 積立年休：使用数
 		this.rsvleaUsedDays = normalUsed.v();
 		this.rsvleaUsedDaysBefore = normalUsedBefore.v();
@@ -2023,12 +2024,12 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		if (realUsed.getUsedDaysAfterGrant().isPresent()) {
 			this.rsvleaFactUsedDaysAfter = realUsed.getUsedDaysAfterGrant().get().v();
 		}
-		
+
 		// 積立年休：残数
 		val normalRemain = normal.getRemainingNumberInfo().getRemainingNumber();
 		val normalRemainBefore = normal.getRemainingNumberInfo().getRemainingNumberBeforeGrant();
 		val normalRemainAfterOpt = normal.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt();
-		
+
 		this.rsvleaRemainingDays = normalRemain.getTotalRemainingDays().v();
 		this.rsvleaRemainingDaysBefore = normalRemainBefore.getTotalRemainingDays().v();
 		if (normalRemainAfterOpt.isPresent()) {
@@ -2041,7 +2042,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		val realRemain = real.getRemainingNumberInfo().getRemainingNumber();
 		val realRemainBefore = real.getRemainingNumberInfo().getRemainingNumberBeforeGrant();
 		val realRemainAfterOpt = real.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt();
-		
+
 		this.rsvleaFactRemainingDays = realRemain.getTotalRemainingDays().v();
 		this.rsvleaFactRemainingDaysBefore = realRemainBefore.getTotalRemainingDays().v();
 		if (realRemainAfterOpt.isPresent()) {
@@ -2062,7 +2063,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 			this.rsvleaGrantDays = grantInfo.getGrantDays().v();
 		}
 	}
-	
+
 	public void deleteRsvLeaRemNumEachMonth(){
 		this.rsvleaUsedDays = 0.0;
 		this.rsvleaUsedDaysBefore = 0.0;
@@ -2104,12 +2105,12 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		getSpecHolRemain(domain, 19).ifPresent(c -> this.toEntityMonthSpeRemain19(c));
 		getSpecHolRemain(domain, 20).ifPresent(c -> this.toEntityMonthSpeRemain20(c));
 	}
-	
+
 	private Optional<SpecialHolidayRemainData> getSpecHolRemain(List<SpecialHolidayRemainData> domain, int no) {
 		return domain.stream().filter(c -> c.getSpecialHolidayCd() == no)
 				.findFirst();
 	}
-	
+
 	public void toEntitySpeRemain(SpecialHolidayRemainData domain) {
 		switch (domain.getSpecialHolidayCd()){
 		case 1:		this.toEntityMonthSpeRemain1(domain);	break;
@@ -2135,12 +2136,12 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		default:	break;
 		}
 	}
-	
+
 	public void toEntitySpeRemains(List<SpecialHolidayRemainData> domains) {
 		this.deleteAllSpeRemains();
 		for (val domain : domains) this.toEntitySpeRemain(domain);
 	}
-	
+
 	public void deleteAllSpeRemains(){
 		for (int i = 1; i <= 20; i++) this.deleteSpeRemain(i);
 	}
@@ -2170,128 +2171,130 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		default:	break;
 		}
 	}
-	
+
 	private EntitySpeRemainAtom toEntityMonthSpeRemain(SpecialHolidayRemainData domain) {
 
-		EntitySpeRemainAtom result = new EntitySpeRemainAtom();
-		
-		if (domain == null) return result;
-
-		val specialLeave = domain.getSpecialLeave();
-		val actualSpecial = domain.getActualSpecial();
-		if (specialLeave == null) return result;
-		if (actualSpecial == null) return result;
-		
-		this.closureStatus = domain.getClosureStatus().value;
-		this.startDate = domain.getClosurePeriod().start();
-		this.endDate = domain.getClosurePeriod().end();
-		
-		// 特別休暇：使用数
-		val specialUseNumber = specialLeave.getUsedNumberInfo().getUsedNumber();
-		val specialUseNumberBefore = specialLeave.getUsedNumberInfo().getUsedNumberBeforeGrant();
-		val specialUseNumberAfterOpt = specialLeave.getUsedNumberInfo().getUsedNumberAfterGrantOpt();
-		
-		result.useDays = specialUseNumber.getUseDays().getUseDays().v();
-		result.beforeUseDays = specialUseNumberBefore.getUseDays().getUseDays().v();
-		if (specialUseNumberAfterOpt.isPresent()){
-			result.afterUseDays = specialUseNumberAfterOpt.get().getUseDays().getUseDays().v();
-		}
-		if (specialUseNumber.getUseTimes().isPresent()){
-			val specialUseTime = specialUseNumber.getUseTimes().get();
-			result.useMinutes = specialUseTime.getUseTimes().v();
-		}
-		if (specialUseNumberBefore.getUseTimes().isPresent()){
-			result.beforeUseMinutes = specialUseNumberBefore.getUseTimes().get().getUseTimes().v();
-		}
-		if (specialUseNumberAfterOpt.isPresent()){
-			if (specialUseNumberAfterOpt.get().getUseTimes().isPresent()){
-				result.afterUseMinutes = specialUseNumberAfterOpt.get().getUseTimes().get().getUseTimes().v();
-			}
-		}
-		result.useTimes = specialUseTime.getUseNumber().v();
-		
-		
-		
-		
-		// 実特別休暇：使用数
-		val actualUseNumber = actualSpecial.getUseNumber();
-		result.factUseDays = actualUseNumber.getUseDays().getUseDays().v();
-		result.beforeFactUseDays = actualUseNumber.getUseDays().getBeforeUseGrantDays().v();
-		if (actualUseNumber.getUseDays().getAfterUseGrantDays().isPresent()){
-			result.afterFactUseDays = actualUseNumber.getUseDays().getAfterUseGrantDays().get().v();
-		}
-		if (actualUseNumber.getUseTimes().isPresent()){
-			val actualUseTime = actualUseNumber.getUseTimes().get();
-			result.factUseMinutes = actualUseTime.getUseTimes().v();
-			result.beforeFactUseMinutes = actualUseTime.getBeforeUseGrantTimes().v();
-			if (actualUseTime.getAfterUseGrantTimes().isPresent()){
-				result.afterFactUseMinutes = actualUseTime.getAfterUseGrantTimes().get().v();
-			}
-			result.factUseTimes = actualUseTime.getUseNumber().v();
-		}
-		
-		// 特別休暇：残数
-		val specialRemain = specialLeave.getRemain();
-		result.remainDays = specialRemain.getDays().v();
-		if (specialRemain.getTime().isPresent()){
-			result.remainMinutes = specialRemain.getTime().get().v();
-		}
-		
-		// 実特別休暇：残数
-		val actualRemain = actualSpecial.getRemain();
-		result.factRemainDays = actualRemain.getDays().v();
-		if (actualRemain.getTime().isPresent()){
-			result.factRemainMinutes = actualRemain.getTime().get().v();
-		}
-		
-		// 特別休暇：残数付与前
-		val specialRemainBefore = specialLeave.getBeforeRemainGrant();
-		result.beforeRemainDays = specialRemainBefore.getDays().v();
-		if (specialRemainBefore.getTime().isPresent()){
-			result.beforeRemainMinutes = specialRemainBefore.getTime().get().v();
-		}
-		
-		// 実特別休暇：残数付与前
-		val actualRemainBefore = actualSpecial.getBeforRemainGrant();
-		result.beforeFactRemainDays = actualRemainBefore.getDays().v();
-		if (actualRemainBefore.getTime().isPresent()){
-			result.beforeFactRemainMinutes = actualRemainBefore.getTime().get().v();
-		}
-		
-		// 特別休暇：残数付与後
-		if (specialLeave.getAfterRemainGrant().isPresent()){
-			val specialRemainAfter = specialLeave.getAfterRemainGrant().get();
-			result.afterRemainDays = specialRemainAfter.getDays().v();
-			if (specialRemainAfter.getTime().isPresent()){
-				result.afterRemainMinutes = specialRemainAfter.getTime().get().v();
-			}
-		}
-		
-		// 実特別休暇：残数付与後
-		if (actualSpecial.getAfterRemainGrant().isPresent()){
-			val actualRemainAfter = actualSpecial.getAfterRemainGrant().get();
-			result.afterFactRemainDays = actualRemainAfter.getDays().v();
-			if (actualRemainAfter.getTime().isPresent()){
-				result.afterFactRemainMinutes = actualRemainAfter.getTime().get().v();
-			}
-		}
-		
-		// 特別休暇：未消化数
-		val undegest = specialLeave.getUnDegestionNumber();
-		result.notUseDays = undegest.getDays().v();
-		if (undegest.getTimes().isPresent()){
-			result.notUseMinutes = undegest.getTimes().get().v();
-		}
-		
-		// 付与区分
-		result.grantAtr = (domain.isGrantAtr() ? 1 : 0);
-		
-		// 特別休暇付与情報：付与日数
-		if (domain.getGrantDays().isPresent()){
-			result.grantDays = domain.getGrantDays().get().v();
-		}
-		
-		return result;
+//		EntitySpeRemainAtom result = new EntitySpeRemainAtom();
+//
+//		if (domain == null) return result;
+//
+//		val specialLeave = domain.getSpecialLeave();
+//		val actualSpecial = domain.getActualSpecial();
+//		if (specialLeave == null) return result;
+//		if (actualSpecial == null) return result;
+//
+//		this.closureStatus = domain.getClosureStatus().value;
+//		this.startDate = domain.getClosurePeriod().start();
+//		this.endDate = domain.getClosurePeriod().end();
+//
+//		// 特別休暇：使用数
+//		val specialUseNumber = specialLeave.getUsedNumberInfo().getUsedNumber();
+//		val specialUseNumberBefore = specialLeave.getUsedNumberInfo().getUsedNumberBeforeGrant();
+//		val specialUseNumberAfterOpt = specialLeave.getUsedNumberInfo().getUsedNumberAfterGrantOpt();
+//
+//		result.useDays = specialUseNumber.getUseDays().getUseDays().v();
+//		result.beforeUseDays = specialUseNumberBefore.getUseDays().getUseDays().v();
+//		if (specialUseNumberAfterOpt.isPresent()){
+//			result.afterUseDays = specialUseNumberAfterOpt.get().getUseDays().getUseDays().v();
+//		}
+//		if (specialUseNumber.getUseTimes().isPresent()){
+//			val specialUseTime = specialUseNumber.getUseTimes().get();
+//			result.useMinutes = specialUseTime.getUseTimes().v();
+//		}
+//		if (specialUseNumberBefore.getUseTimes().isPresent()){
+//			result.beforeUseMinutes = specialUseNumberBefore.getUseTimes().get().getUseTimes().v();
+//		}
+//		if (specialUseNumberAfterOpt.isPresent()){
+//			if (specialUseNumberAfterOpt.get().getUseTimes().isPresent()){
+//				result.afterUseMinutes = specialUseNumberAfterOpt.get().getUseTimes().get().getUseTimes().v();
+//			}
+//		}
+//		result.useTimes = specialUseTime.getUseNumber().v();
+//
+//
+//
+//
+//		// 実特別休暇：使用数
+//		val actualUseNumber = actualSpecial.getUseNumber();
+//		result.factUseDays = actualUseNumber.getUseDays().getUseDays().v();
+//		result.beforeFactUseDays = actualUseNumber.getUseDays().getBeforeUseGrantDays().v();
+//		if (actualUseNumber.getUseDays().getAfterUseGrantDays().isPresent()){
+//			result.afterFactUseDays = actualUseNumber.getUseDays().getAfterUseGrantDays().get().v();
+//		}
+//		if (actualUseNumber.getUseTimes().isPresent()){
+//			val actualUseTime = actualUseNumber.getUseTimes().get();
+//			result.factUseMinutes = actualUseTime.getUseTimes().v();
+//			result.beforeFactUseMinutes = actualUseTime.getBeforeUseGrantTimes().v();
+//			if (actualUseTime.getAfterUseGrantTimes().isPresent()){
+//				result.afterFactUseMinutes = actualUseTime.getAfterUseGrantTimes().get().v();
+//			}
+//			result.factUseTimes = actualUseTime.getUseNumber().v();
+//		}
+//
+//		// 特別休暇：残数
+//		val specialRemain = specialLeave.getRemain();
+//		result.remainDays = specialRemain.getDays().v();
+//		if (specialRemain.getTime().isPresent()){
+//			result.remainMinutes = specialRemain.getTime().get().v();
+//		}
+//
+//		// 実特別休暇：残数
+//		val actualRemain = actualSpecial.getRemain();
+//		result.factRemainDays = actualRemain.getDays().v();
+//		if (actualRemain.getTime().isPresent()){
+//			result.factRemainMinutes = actualRemain.getTime().get().v();
+//		}
+//
+//		// 特別休暇：残数付与前
+//		val specialRemainBefore = specialLeave.getBeforeRemainGrant();
+//		result.beforeRemainDays = specialRemainBefore.getDays().v();
+//		if (specialRemainBefore.getTime().isPresent()){
+//			result.beforeRemainMinutes = specialRemainBefore.getTime().get().v();
+//		}
+//
+//		// 実特別休暇：残数付与前
+//		val actualRemainBefore = actualSpecial.getBeforRemainGrant();
+//		result.beforeFactRemainDays = actualRemainBefore.getDays().v();
+//		if (actualRemainBefore.getTime().isPresent()){
+//			result.beforeFactRemainMinutes = actualRemainBefore.getTime().get().v();
+//		}
+//
+//		// 特別休暇：残数付与後
+//		if (specialLeave.getAfterRemainGrant().isPresent()){
+//			val specialRemainAfter = specialLeave.getAfterRemainGrant().get();
+//			result.afterRemainDays = specialRemainAfter.getDays().v();
+//			if (specialRemainAfter.getTime().isPresent()){
+//				result.afterRemainMinutes = specialRemainAfter.getTime().get().v();
+//			}
+//		}
+//
+//		// 実特別休暇：残数付与後
+//		if (actualSpecial.getAfterRemainGrant().isPresent()){
+//			val actualRemainAfter = actualSpecial.getAfterRemainGrant().get();
+//			result.afterFactRemainDays = actualRemainAfter.getDays().v();
+//			if (actualRemainAfter.getTime().isPresent()){
+//				result.afterFactRemainMinutes = actualRemainAfter.getTime().get().v();
+//			}
+//		}
+//
+//		// 特別休暇：未消化数
+//		val undegest = specialLeave.getUnDegestionNumber();
+//		result.notUseDays = undegest.getDays().v();
+//		if (undegest.getTimes().isPresent()){
+//			result.notUseMinutes = undegest.getTimes().get().v();
+//		}
+//
+//		// 付与区分
+//		result.grantAtr = (domain.isGrantAtr() ? 1 : 0);
+//
+//		// 特別休暇付与情報：付与日数
+//		if (domain.getGrantDays().isPresent()){
+//			result.grantDays = domain.getGrantDays().get().v();
+//		}
+//
+//		return result;
+		//ooooo 要修正 jinno
+		return null;
 	}
 
 	private void toEntityMonthSpeRemain1(SpecialHolidayRemainData domain) {
@@ -2993,17 +2996,17 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		this.grantAtr20 = entity.grantAtr;
 		this.grantDays20 = entity.grantDays;
 	}
-	
+
 	/** KRCDT_MON_DAYOFF_REMAIN **/
 	public void toEntityDayOffRemainDayAndTimes(MonthlyDayoffRemainData domain) {
-		
+
 		this.deleteDayOffRemainDayAndTimes();
 		if (domain == null) return;
-		
+
 		this.closureStatus = domain.getClosureStatus().value;
 		this.startDate = domain.getStartDate();
 		this.endDate = domain.getEndDate();
-		
+
 		this.dayOffOccurredDays = domain.getOccurrenceDayTimes().getDay().v();
 		if (domain.getOccurrenceDayTimes().getTime().isPresent()){
 			this.dayOffOccurredTimes = domain.getOccurrenceDayTimes().getTime().get().v();
@@ -3025,7 +3028,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 			this.dayOffUnUsedTimes = domain.getUnUsedDayTimes().getTime().get().v();
 		}
 	}
-	
+
 	public void deleteDayOffRemainDayAndTimes(){
 		this.dayOffOccurredDays = 0.0;
 		this.dayOffOccurredTimes = null;
@@ -3038,7 +3041,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		this.dayOffUnUsedDays = 0.0;
 		this.dayOffUnUsedTimes = null;
 	}
-	
+
 	/** KRCDT_MON_SUBOFHD_REMAIN */
 	public void toEntityAbsenceLeaveRemainData(AbsenceLeaveRemainData domain) {
 		this.deleteAbsenceLeaveRemainData();
@@ -3052,7 +3055,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		this.subofHdCarryForWardDays = domain.getCarryforwardDays().v();
 		this.subofHdUnUsedDays = domain.getUnUsedDays().v();
 	}
-	
+
 	public void deleteAbsenceLeaveRemainData(){
 		this.subofHdOccurredDays = 0.0;
 		this.subofHdUsedDays = 0.0;
@@ -3060,7 +3063,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		this.subofHdCarryForWardDays = 0.0;
 		this.subofHdUnUsedDays = 0.0;
 	}
-	
+
 	/** KRCDT_MON_CHILD_HD_REMAIN **/
 	public void toEntityChildRemainData(MonChildHdRemain domain){
 		this.deleteChildRemainData();
@@ -3075,7 +3078,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		this.childUsedMinutesBefore = domain.getUsedMinutesBefore().v();
 		this.childUsedMinutesAfter = domain.getUsedMinutesAfter().v();
 	}
-	
+
 	public void deleteChildRemainData(){
 		this.childUsedDays = 0.0;
 		this.childUsedDaysBefore = 0.0;
@@ -3084,7 +3087,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		this.childUsedMinutesBefore = null;
 		this.childUsedMinutesAfter = null;
 	}
-	
+
 	/** KRCDT_MON_CARE_HD_REMAIN **/
 	public void toEntityCareRemainData(MonCareHdRemain domain){
 		this.deleteCareRemainData();
@@ -3099,7 +3102,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		this.careUsedMinutesBefore = domain.getUsedMinutesBefore().v();
 		this.careUsedMinutesAfter = domain.getUsedMinutesAfter().v();
 	}
-	
+
 	public void deleteCareRemainData(){
 		this.careUsedDays = 0.0;
 		this.careUsedDaysBefore = 0.0;
@@ -3108,30 +3111,30 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		this.careUsedMinutesBefore = null;
 		this.careUsedMinutesAfter = null;
 	}
-	
+
 	/**
 	 * KRCDT_MON_ANNLEA_REMAIN
 	 * ドメインに変換
 	 * @return 年休月別残数データ
 	 */
 	public AnnLeaRemNumEachMonth toDomainAnnLeaRemNumEachMonth(){
-		
+
 		// 年休：使用時間
 		UsedMinutes valUsedMinutesAfter = null;
 		if (this.annleaUsedMinutesAfter != null){
 			valUsedMinutesAfter = new UsedMinutes(this.annleaUsedMinutesAfter);
 		}
-		TimeAnnualLeaveUsedTime valUsedTime = null;
+		AnnualLeaveUsedTime valUsedTime = null;
 		if (this.annleaUsedTimes != null &&
 			this.annleaUsedMinutes != null &&
 			this.annleaUsedMinutesBefore != null){
-			valUsedTime = TimeAnnualLeaveUsedTime.of(
+			valUsedTime = AnnualLeaveUsedTime.of(
 					new UsedTimes(this.annleaUsedTimes),
 					new UsedMinutes(this.annleaUsedMinutes),
 					new UsedMinutes(this.annleaUsedMinutesBefore),
 					Optional.ofNullable(valUsedMinutesAfter));
 		}
-		
+
 		// 年休：残数付与後
 		AnnualLeaveRemainingNumber valRemainAfter = null;
 		if (this.annleaRemainingDaysAfter != null){
@@ -3144,7 +3147,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 					Optional.ofNullable(valRemainMinutesAfter),
 					new ArrayList<>());
 		}
-		
+
 		// 年休
 		AnnualLeaveUsedDayNumber valUsedDaysAfter = null;
 		if (this.annleaUsedDaysAfter != null){
@@ -3197,7 +3200,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 					new UsedMinutes(this.annleaFactUsedMinutesBefore),
 					Optional.ofNullable(valFactUsedMinutesAfter));
 		}
-		
+
 		// 実年休：残数付与後
 		AnnualLeaveRemainingNumber valFactRemainAfter = null;
 		if (this.annleaFactRemainingDaysAfter != null){
@@ -3210,7 +3213,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 					Optional.ofNullable(valFactRemainMinutesAfter),
 					new ArrayList<>());
 		}
-		
+
 		// 実年休
 		AnnualLeaveUsedDayNumber valFactUsedDaysAfter = null;
 		if (this.annleaFactUsedDaysAfter != null){
@@ -3240,7 +3243,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 						Optional.ofNullable(valFactRemainMinutesBefore),
 						new ArrayList<>()),
 				Optional.ofNullable(valFactRemainAfter));
-		
+
 		// 半日年休
 		HalfDayAnnualLeave halfDayAnnualLeave = null;
 		if (this.annleaHalfRemainingTimes != null &&
@@ -3265,7 +3268,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 							new UsedTimes(this.annleaHalfUsedTimesBefore),
 							Optional.ofNullable(valHalfUsedTimesAfter)));
 		}
-		
+
 		// 実半日年休
 		HalfDayAnnualLeave realHalfDayAnnualLeave = null;
 		if (this.annleaFactHalfRemainingTimes != null &&
@@ -3290,7 +3293,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 							new UsedTimes(this.annleaFactHalfUsedTimesBefore),
 							Optional.ofNullable(valFactHalfUsedTimesAfter)));
 		}
-		
+
 		// 年休付与情報
 		AnnualLeaveGrant annualLeaveGrant = null;
 		if (this.annleaGrantDays != null &&
@@ -3309,7 +3312,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 					new MonthlyDays((double)this.annleaDeductionDaysAfter),
 					new AttendanceRate(this.annleaAttendanceRate));
 		}
-		
+
 		// 上限残時間
 		AnnualLeaveMaxRemainingTime maxRemainingTime = null;
 		if (this.annleaTimeRemainingMinutes != null &&
@@ -3323,7 +3326,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 					new RemainingMinutes(this.annleaTimeRemainingMinutesBefore),
 					Optional.ofNullable(valTimeRemainMinutesAfter));
 		}
-		
+
 		// 実上限残時間
 		AnnualLeaveMaxRemainingTime realMaxRemainingTime = null;
 		if (this.annleaFactTimeRemainingMinutes != null &&
@@ -3337,7 +3340,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 					new RemainingMinutes(this.annleaFactTimeRemainingMinutesBefore),
 					Optional.ofNullable(valFactTimeRemainMinutesAfter));
 		}
-		
+
 		return AnnLeaRemNumEachMonth.of(
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
@@ -3358,14 +3361,14 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 						new MonthlyDays((double)this.annleaDeductionDays)),
 				(this.annleaGrantAtr != 0));
 	}
-	
+
 	/**
 	 * KRCDT_MON_RSVLEA_REMAIN
 	 * ドメインに変換
 	 * @return 年休月別残数データ
 	 */
 	public RsvLeaRemNumEachMonth toDomainRsvLeaRemNumEachMonth(){
-		
+
 		// 積立年休月別残数明細を分類する
 		List<ReserveLeaveRemainingDetail> normalDetail = new ArrayList<>();
 		List<ReserveLeaveRemainingDetail> normalDetailBefore = new ArrayList<>();
@@ -3373,7 +3376,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		List<ReserveLeaveRemainingDetail> realDetail = new ArrayList<>();
 		List<ReserveLeaveRemainingDetail> realDetailBefore = new ArrayList<>();
 		List<ReserveLeaveRemainingDetail> realDetailAfter = new ArrayList<>();
-		
+
 		// 積立年休：残数付与後
 		ReserveLeaveRemainingNumber valRemainAfter = null;
 		if (this.rsvleaRemainingDaysAfter != null){
@@ -3381,7 +3384,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 					new ReserveLeaveRemainingDayNumber(this.rsvleaRemainingDaysAfter),
 					normalDetailAfter);
 		}
-		
+
 		// 積立年休
 		ReserveLeaveUsedDayNumber valUsedDaysAfter = null;
 		if (this.rsvleaUsedDaysAfter != null){
@@ -3409,13 +3412,13 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 					new ReserveLeaveRemainingDayNumber(this.rsvleaFactRemainingDaysAfter),
 					realDetailAfter);
 		}
-		
+
 		// 実積立年休
 		ReserveLeaveUsedDayNumber valFactUsedDaysAfter = null;
 		if (this.rsvleaFactUsedDaysAfter != null){
 			valFactUsedDaysAfter = new ReserveLeaveUsedDayNumber(this.rsvleaFactUsedDaysAfter);
 		}
-		RealReserveLeave realReserveLeave = RealReserveLeave.of(
+		ReserveLeave realReserveLeave = ReserveLeave.of(
 				ReserveLeaveUsedNumber.of(
 						new ReserveLeaveUsedDayNumber(this.rsvleaFactUsedDays),
 						new ReserveLeaveUsedDayNumber(this.rsvleaFactUsedDaysBefore),
@@ -3427,14 +3430,14 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 						new ReserveLeaveRemainingDayNumber(this.rsvleaFactRemainingDaysBefore),
 						realDetailBefore),
 				Optional.ofNullable(valFactRemainAfter));
-		
+
 		// 積立年休付与情報
 		ReserveLeaveGrant reserveLeaveGrant = null;
 		if (this.rsvleaGrantDays != null){
 			reserveLeaveGrant = ReserveLeaveGrant.of(
 					new ReserveLeaveGrantDayNumber(this.rsvleaGrantDays));
 		}
-		
+
 		return RsvLeaRemNumEachMonth.of(
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
@@ -3447,7 +3450,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				Optional.ofNullable(reserveLeaveGrant),
 				(this.rsvleaGrantAtr != 0));
 	}
-	
+
 	/**
 	 * KRCDT_MON_SP_REMAIN
 	 * 特別休暇月別残数データ
@@ -3476,7 +3479,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		merge.add(this.toDomainSpecialHolidayRemainData20());
 		return merge;
 	}
-	
+
 	public List<SpecialHolidayRemainData> toDomainSpecialHolidayRemainList(){
 		List<SpecialHolidayRemainData> results = new ArrayList<>();
 		results.add(this.toDomainSpecialHolidayRemainData1());
@@ -3501,7 +3504,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		results.add(this.toDomainSpecialHolidayRemainData20());
 		return results;
 	}
-	
+
 	public Optional<SpecialHolidayRemainData> toDomainSpecialHolidayRemain(int speCode){
 		switch (speCode){
 		case 1:
@@ -3548,7 +3551,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 			return Optional.empty();
 		}
 	}
-	
+
 	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData(
 			int dataNo,
 			double useDays,
@@ -3581,7 +3584,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 			Integer notUseMinutes,
 			int grantAtr,
 			Double grantDays){
-		
+
 		// 実特別休暇の各属性
 		SpecialLeavaRemainTime valFactRemainTimes = null;
 		if (factRemainMinutes != null){
@@ -3619,7 +3622,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 					new ActualSpecialLeaveRemainDay(afterFactRemainDays),
 					Optional.ofNullable(valAfterFactRemainTimes));
 		}
-		
+
 		// 実特別休暇
 		ActualSpecialLeave actualSpecial = new ActualSpecialLeave(
 				new ActualSpecialLeaveRemain(
@@ -3635,7 +3638,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 								Optional.ofNullable(valAfterFactUseDays)),
 						Optional.ofNullable(actualUseTime)),
 				Optional.ofNullable(actualAfterRemainGrant));
-		
+
 		// 特別休暇の各属性
 		SpecialLeavaRemainTime valRemainTimes = null;
 		if (remainMinutes != null){
@@ -3677,7 +3680,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 					new SpecialLeaveRemainDay(afterRemainDays),
 					Optional.ofNullable(valAfterRemainTimes));
 		}
-		
+
 		// 特別休暇
 		SpecialLeave specialLeave = new SpecialLeave(
 				new SpecialLeaveRemain(
@@ -3694,15 +3697,15 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 						Optional.ofNullable(specialUseTime)),
 				new SpecialLeaveUnDigestion(
 						new SpecialLeaveRemainDay(notUseDays),
-						Optional.ofNullable(valNotUseTime)), 
+						Optional.ofNullable(valNotUseTime)),
 				Optional.ofNullable(specialAfterRemainGrant));
-		
+
 		// 付与日数
 		SpecialLeaveGrantUseDay valGrantDays = null;
 		if (grantDays != null){
 			valGrantDays = new SpecialLeaveGrantUseDay(grantDays);
 		}
-		
+
 		// 特別休暇月別残数データ//
 		return new SpecialHolidayRemainData(
 				this.krcdtMonRemainPk.getEmployeeId(),
@@ -3717,7 +3720,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				Optional.ofNullable(valGrantDays),
 				(grantAtr == 1));
 	}
-	
+
 	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData1(){
 		return this.toDomainSpecialHolidayRemainData(
 				1,
@@ -3752,7 +3755,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				this.grantAtr1,
 				this.grantDays1);
 	}
-	
+
 	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData2(){
 		return this.toDomainSpecialHolidayRemainData(
 				2,
@@ -3787,7 +3790,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				this.grantAtr2,
 				this.grantDays2);
 	}
-	
+
 	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData3(){
 		return this.toDomainSpecialHolidayRemainData(
 				3,
@@ -3822,7 +3825,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				this.grantAtr3,
 				this.grantDays3);
 	}
-	
+
 	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData4(){
 		return this.toDomainSpecialHolidayRemainData(
 				4,
@@ -3857,7 +3860,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				this.grantAtr4,
 				this.grantDays4);
 	}
-	
+
 	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData5(){
 		return this.toDomainSpecialHolidayRemainData(
 				5,
@@ -3892,7 +3895,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				this.grantAtr5,
 				this.grantDays5);
 	}
-	
+
 	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData6(){
 		return this.toDomainSpecialHolidayRemainData(
 				6,
@@ -3927,7 +3930,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				this.grantAtr6,
 				this.grantDays6);
 	}
-	
+
 	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData7(){
 		return this.toDomainSpecialHolidayRemainData(
 				7,
@@ -3962,7 +3965,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				this.grantAtr7,
 				this.grantDays7);
 	}
-	
+
 	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData8(){
 		return this.toDomainSpecialHolidayRemainData(
 				8,
@@ -3997,7 +4000,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				this.grantAtr8,
 				this.grantDays8);
 	}
-	
+
 	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData9(){
 		return this.toDomainSpecialHolidayRemainData(
 				9,
@@ -4032,7 +4035,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				this.grantAtr9,
 				this.grantDays9);
 	}
-	
+
 	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData10(){
 		return this.toDomainSpecialHolidayRemainData(
 				10,
@@ -4067,7 +4070,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				this.grantAtr10,
 				this.grantDays10);
 	}
-	
+
 	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData11(){
 		return this.toDomainSpecialHolidayRemainData(
 				11,
@@ -4102,7 +4105,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				this.grantAtr11,
 				this.grantDays11);
 	}
-	
+
 	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData12(){
 		return this.toDomainSpecialHolidayRemainData(
 				12,
@@ -4137,7 +4140,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				this.grantAtr12,
 				this.grantDays12);
 	}
-	
+
 	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData13(){
 		return this.toDomainSpecialHolidayRemainData(
 				13,
@@ -4172,7 +4175,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				this.grantAtr13,
 				this.grantDays13);
 	}
-	
+
 	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData14(){
 		return this.toDomainSpecialHolidayRemainData(
 				14,
@@ -4207,7 +4210,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				this.grantAtr14,
 				this.grantDays14);
 	}
-	
+
 	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData15(){
 		return this.toDomainSpecialHolidayRemainData(
 				15,
@@ -4242,7 +4245,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				this.grantAtr15,
 				this.grantDays15);
 	}
-	
+
 	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData16(){
 		return this.toDomainSpecialHolidayRemainData(
 				16,
@@ -4277,7 +4280,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				this.grantAtr16,
 				this.grantDays16);
 	}
-	
+
 	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData17(){
 		return this.toDomainSpecialHolidayRemainData(
 				17,
@@ -4312,7 +4315,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				this.grantAtr17,
 				this.grantDays17);
 	}
-	
+
 	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData18(){
 		return this.toDomainSpecialHolidayRemainData(
 				18,
@@ -4347,7 +4350,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				this.grantAtr18,
 				this.grantDays18);
 	}
-	
+
 	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData19(){
 		return this.toDomainSpecialHolidayRemainData(
 				19,
@@ -4382,7 +4385,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				this.grantAtr19,
 				this.grantDays19);
 	}
-	
+
 	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData20(){
 		return this.toDomainSpecialHolidayRemainData(
 				20,
@@ -4417,14 +4420,14 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				this.grantAtr20,
 				this.grantDays20);
 	}
-	
+
 	/**
 	 * KRCDT_MON_DAYOFF_REMAIN
 	 * 代休月別残数データ
 	 * @return MonthlyDayoffRemainData
 	 */
 	public MonthlyDayoffRemainData toDomainMonthlyDayoffRemainData() {
-		
+
 		return new MonthlyDayoffRemainData(
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
@@ -4439,15 +4442,15 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 						this.dayOffOccurredTimes == null ? Optional.empty() : Optional.ofNullable(
 								new RemainDataTimesMonth(this.dayOffOccurredTimes))),
 				new DayOffDayAndTimes(
-						new RemainDataDaysMonth(this.dayOffUsedDays), 
+						new RemainDataDaysMonth(this.dayOffUsedDays),
 						this.dayOffUsedMinutes == null ? Optional.empty() : Optional.ofNullable(
 								new RemainDataTimesMonth(this.dayOffUsedMinutes))),
 				new DayOffRemainDayAndTimes(
-						new AttendanceDaysMonthToTal(this.dayOffRemainingDays), 
+						new AttendanceDaysMonthToTal(this.dayOffRemainingDays),
 						this.dayOffRemainingMinutes == null ? Optional.empty() : Optional.ofNullable(
 								new RemainingMinutes(this.dayOffRemainingMinutes))),
 				new DayOffRemainDayAndTimes(
-						new AttendanceDaysMonthToTal(this.dayOffCarryforwardDays), 
+						new AttendanceDaysMonthToTal(this.dayOffCarryforwardDays),
 						this.dayOffCarryforwardMinutes == null ? Optional.empty() : Optional.ofNullable(
 								new RemainingMinutes(this.dayOffCarryforwardMinutes))),
 				new DayOffDayAndTimes(
@@ -4455,14 +4458,14 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 						this.dayOffUnUsedTimes == null ? Optional.empty() : Optional.ofNullable(
 								new RemainDataTimesMonth(this.dayOffUnUsedTimes))));
 	}
-	
+
 	/**
 	 * KRCDT_MON_SUBOFHD_REMAIN
 	 * 振休使用日数合計
 	 * @return AbsenceLeaveRemainData
 	 */
 	public AbsenceLeaveRemainData toDomainAbsenceLeaveRemainData() {
-		
+
 		return new AbsenceLeaveRemainData(
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
@@ -4478,14 +4481,14 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				new AttendanceDaysMonthToTal(this.subofHdCarryForWardDays),
 				new RemainDataDaysMonth(this.subofHdUnUsedDays));
 	}
-	
+
 	/**
 	 * KRCDT_MON_CHILD_HD_REMAIN
 	 * 子の看護月別残数データ
 	 * @return MonChildHdRemain
 	 */
 	public MonChildHdRemain toDomainMonChildHdRemain(){
-		
+
 		return new MonChildHdRemain(
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
@@ -4502,14 +4505,14 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				new MonChildHdMinutes(this.childUsedMinutesBefore == null ? 0 : this.childUsedMinutesBefore),
 				new MonChildHdMinutes(this.childUsedMinutesAfter == null ? 0 : this.childUsedMinutesAfter));
 	}
-	
+
 	/**
 	 * KRCDT_MON_CARE_HD_REMAIN
 	 * 介護休暇月別残数データ
 	 * @return MonCareHdRemain
 	 */
 	public MonCareHdRemain toDomainMonCareHdRemain(){
-	
+
 		return new MonCareHdRemain(
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),

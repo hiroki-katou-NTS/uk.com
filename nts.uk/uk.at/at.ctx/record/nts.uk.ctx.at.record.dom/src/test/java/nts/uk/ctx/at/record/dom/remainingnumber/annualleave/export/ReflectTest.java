@@ -12,7 +12,8 @@ public class ReflectTest {
 	@Test
 	public void test1(){
 
-		Class<ReflectClass1> aggClass = ReflectClass1.class;
+		Class<nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.InPeriodOfSpecialLeaveResultInfor>
+			aggClass = nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.InPeriodOfSpecialLeaveResultInfor.class;
 
 		System.out.println(aggClass.getName());
 
