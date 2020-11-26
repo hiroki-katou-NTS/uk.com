@@ -992,34 +992,41 @@ module nts.uk.com.view.cmm049.a {
      */
     public register() {
       const vm = this;
-      vm.emailData[vm.selectedEmailClassification] = _.chain(vm.mailFunctionDataSource)
-        .filter((item) => item.isChecked)
-        .map((item) => item.functionId)
-        .value();
-      const userInformationUseMethodDto: UserInformationUseMethodDto = vm.getUserInformationUseMethodDto(vm.getOtherContactDtos());
 
-      /**
-       * 登録する時利用のチェック処理
-       * すべて機能が利用してない場合
-       */
-      if (
-        vm.profileSelectedId() === 2 &&
-        vm.passwordSelectedId() === 2 &&
-        vm.noticeSelectedId() === 2 &&
-        vm.speechSelectedId() === 2
-      ) {
-        vm.$dialog.error({ messageId: "Msg_1778" });
-      } else {
-        const command = new UserInformationUseMethodSaveCommand({
-          userInformationUseMethodDto: userInformationUseMethodDto,
-        });
-        vm.$blockui("grayout");
-        vm.$ajax(API.insertOrUpdate, command)
-          .always(() => {
-            vm.$blockui("clear");
-            this.closeDialog();
-          });
-      }
+      // check error
+      vm.$validate().then((valid: boolean) => {
+        if (valid) { 
+          vm.emailData[vm.selectedEmailClassification] = _.chain(vm.mailFunctionDataSource)
+            .filter((item) => item.isChecked)
+            .map((item) => item.functionId)
+            .value();
+          const userInformationUseMethodDto: UserInformationUseMethodDto = vm.getUserInformationUseMethodDto(vm.getOtherContactDtos());
+
+          /**
+           * 登録する時利用のチェック処理
+           * すべて機能が利用してない場合
+           */
+          if (
+            vm.profileSelectedId() === 2 &&
+            vm.passwordSelectedId() === 2 &&
+            vm.noticeSelectedId() === 2 &&
+            vm.speechSelectedId() === 2
+          ) {
+            vm.$dialog.error({ messageId: "Msg_1778" });
+          } else {
+            const command = new UserInformationUseMethodSaveCommand({
+              userInformationUseMethodDto: userInformationUseMethodDto,
+            });
+            vm.$blockui("grayout");
+            vm.$ajax(API.insertOrUpdate, command)
+              .always(() => {
+                vm.$blockui("clear");
+                this.closeDialog();
+              });
+          }
+        }
+      });
+
     }
   }
 
@@ -1249,7 +1256,7 @@ module nts.uk.com.view.cmm049.a {
     }
   }
 
-  export class  UserInformationUseMethodSaveCommand {
+  export class UserInformationUseMethodSaveCommand {
     userInformationUseMethodDto: UserInformationUseMethodDto;
 
     constructor(init?: Partial<UserInformationUseMethodSaveCommand>) {

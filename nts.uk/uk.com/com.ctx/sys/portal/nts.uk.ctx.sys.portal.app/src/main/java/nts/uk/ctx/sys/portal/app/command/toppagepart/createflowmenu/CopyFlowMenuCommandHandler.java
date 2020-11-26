@@ -47,15 +47,17 @@ public class CopyFlowMenuCommandHandler extends CommandHandler<CopyFlowMenuComma
 		Optional<CreateFlowMenu> optCreateFlowMenu = this.createFlowMenuRepository
 				.findByPk(AppContexts.user().companyId(), command.getFlowMenuCode());
 		// 2. not フローメニュー作成 empty
-		optCreateFlowMenu.ifPresent(data -> data.getFlowMenuLayout().ifPresent(layout -> {
-			fileIds.add(layout.getFileId());
-			layout.getFileAttachmentSettings().stream().forEach(setting -> fileIds.add(setting.getFileId()));
-			layout.getImageSettings().stream()
-					.filter(setting -> setting.getIsFixed().equals(FixedClassification.RANDOM))
-					.forEach(setting -> fileIds.add(setting.getFileId().get()));
+		optCreateFlowMenu.ifPresent(data -> {
+			data.getFlowMenuLayout().ifPresent(layout -> {
+				fileIds.add(layout.getFileId());
+				layout.getFileAttachmentSettings().stream().forEach(setting -> fileIds.add(setting.getFileId()));
+				layout.getImageSettings().stream()
+						.filter(setting -> setting.getIsFixed().equals(FixedClassification.RANDOM))
+						.forEach(setting -> fileIds.add(setting.getFileId().get()));
+			});
+			// 3. delete(ログイン会社ID、フローメニューコード)
 			this.createFlowMenuRepository.delete(data);
-		}));
-		// 3. delete(ログイン会社ID、フローメニューコード)
+		});
 		if (command.getCreateFlowMenu().getFileId() != null) {
 			try {
 				// 4. Input内容のファイルIDを別のファイルIDで作成する
