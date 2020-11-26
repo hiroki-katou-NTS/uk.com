@@ -25,9 +25,9 @@ public class GetSettingStatusEmployment {
 	 * [1]設定済みの雇用を取得する
 	 * 
 	 * @param require
-	 * @param cid
-	 * @param laborWorkTypeAttr
-	 * @return ListeploymentCode
+	 * @param cid 					会社ID
+	 * @param laborWorkTypeAttr 	労働勤務区分
+	 * @return ListeploymentCode 	List<雇用コード>
 	 */
 	public static List<String> getSettingEmployment(Require require, String cid, LaborWorkTypeAttr laborWorkTypeAttr) {
 
