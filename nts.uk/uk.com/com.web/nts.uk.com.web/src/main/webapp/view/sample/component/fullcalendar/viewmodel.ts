@@ -1,36 +1,89 @@
+const SAMPLE_DESCRIPTION = `
+TO　Lamくん、Vuongくん
+トップページ実装の件、大橋さんと相談しました。
+Knockout.jsで下記要件を満たせるなら、変更したいとのことです。
+①②③とも問題ないかを教えてください。
+
+■要件
+①他システムのサイトを表示できる。
+　（ドメインが異なるサイトを表示するのは、脆弱性診断でNG（SamOriginポリシー）であるが、
+　　社内のポータルサイトを表示できる必要がある。）
+②各ウィジェットの内容が表示できる。
+③フローメニューを表示できる。
+　（フローメニューの作成で作ったhtmlファイルと、htmlファイルをアップロードしたフローメニューを表示できる。
+`;
+
 module nts.uk.ui.com.sample.fullcalendar {
     const F_DATE = 'YYYY-MM-DDTHH:mm:00';
 
     @bean()
     export class ViewModel extends ko.ViewModel {
         events: KnockoutObservableArray<any> = ko.observableArray([{
-            id: '000001',
+            title: "UK就業機能強化・テスト設計",
+            start: moment().subtract(2, 'day').set('hour', 8).set('minute', 30).toDate(),// "2020-11-25T06:00:00.000Z",
+            end: moment().subtract(2, 'day').set('hour', 10).set('minute', 30).toDate(),//"2020-11-25T10:30:00.000Z",
+            backgroundColor: "#ff5050",
+            extendedProps: {
+                id: ''
+            }
+        }/*,
+        {
+            "start": "2020-11-25T01:30:00.000Z",
+            "end": "2020-11-25T05:00:00.000Z",
+            "title": "UK就業・詳細設計",
+            "backgroundColor": "#ffc000",
+            "textColor": "",
+            "extendedProps": {}
+        },
+        {
+            "start": "2020-11-24T06:00:00.000Z",
+            "end": "2020-11-24T10:30:00.000Z",
+            "title": "UK就業機能強化・テスト設計",
+            "backgroundColor": "#ff5050",
+            "textColor": "",
+            "extendedProps": {}
+        }*/, {
             title: 'Conference',
             start: moment().set('hour', 8).set('minute', 30).toDate(),
-            end: moment().set('hour', 9).set('minute', 30).toDate()
+            end: moment().set('hour', 9).set('minute', 30).toDate(),
+            extendedProps: {
+                id: '000001',
+                descriptions: SAMPLE_DESCRIPTION.trim()
+            }
         }, {
-            id: '000002',
             title: 'Meeting',
             start: moment().set('hour', 9).set('minute', 30).toDate(),
-            end: moment().set('hour', 14).set('minute', 0).toDate()
+            end: moment().set('hour', 14).set('minute', 0).toDate(),
+            extendedProps: {
+                id: '000002',
+                descriptions: SAMPLE_DESCRIPTION.trim()
+            }
         }]);
 
         dragItems: KnockoutObservableArray<any> = ko.observableArray([{
-            id: '000003',
             title: 'UK就業・詳細設計',
-            backgroundColor: '#ffc000'
+            backgroundColor: '#ffc000',
+            extendedProps: {
+                id: '000003'
+            }
         }, {
-            id: '000004',
             title: 'UK就業機能強化・テスト設計',
-            backgroundColor: '#ff5050'
+            backgroundColor: '#ff5050',
+            extendedProps: {
+                id: '000004'
+            }
         }, {
-            id: '000005',
             title: 'UKプロジェクト・概要設計',
-            backgroundColor: '#5b9bd5'
+            backgroundColor: '#5b9bd5',
+            extendedProps: {
+                id: '000005'
+            }
         }, {
-            id: '000006',
             title: 'UKプロジェクト・統合テスト',
-            backgroundColor: '#92d050'
+            backgroundColor: '#92d050',
+            extendedProps: {
+                id: '000006'
+            }
         }]);
 
         employees: KnockoutObservableArray<any> = ko.observableArray([{
@@ -93,7 +146,7 @@ module nts.uk.ui.com.sample.fullcalendar {
         slotDuration: KnockoutObservable<number> = ko.observable(30);
         initialDate: KnockoutObservable<Date> = ko.observable(new Date());
         initialView: KnockoutObservable<string> = ko.observable('fullWeek');
-        availableView: KnockoutObservableArray<string> = ko.observableArray(['oneDay', 'fullWeek'])
+        availableView: KnockoutObservableArray<string> = ko.observableArray(['oneDay', 'fullWeek', 'listWeek']);
 
         attendanceTimes: KnockoutObservableArray<any> = ko.observableArray([{
             date: moment().toDate(),
