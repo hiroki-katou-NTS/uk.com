@@ -118,6 +118,9 @@ module nts.uk.ui.components.fullcalendar {
         .fc-container:not(.ie) .fc-timegrid thead td .fc-scroller {
             overflow: hidden !important;
         }
+        .fc-container .fc .fc-list-sticky .fc-list-day>th {
+            z-index: 1;
+        }
         .fc-container .fc-v-event {
             overflow: hidden;
             border-width: 2px;
@@ -519,7 +522,7 @@ module nts.uk.ui.components.fullcalendar {
         public mounted() {
             const vm = this;
             const { params, dataEvent } = vm;
-            const { locale, event, events, scrollTime, firstDay, editable, initialDate, initialView, availableView, viewModel, attendanceTimes } = params;
+            const { locale, event, events, dragItems, scrollTime, firstDay, editable, initialDate, initialView, availableView, viewModel, attendanceTimes } = params;
 
             const $el = $(vm.$el);
             const $dg = $el.find('div.fc-events').get(0);
@@ -906,14 +909,31 @@ module nts.uk.ui.components.fullcalendar {
 
             const dragger = new FC.Draggable($dg, {
                 itemSelector: '.title',
-                eventData: (el) => ({
-                    title: el.innerText,
-                    borderColor: 'transparent',
-                    backgroundColor: el.getAttribute('data-color'),
-                    extendedProps: {
-                        id: el.getAttribute('data-id')
+                eventData: (el) => {
+                    const id = el.getAttribute('data-id');
+                    const unwraped = ko.unwrap<FullCalendar.EventApi[]>(dragItems);
+
+                    if (id) {
+                        const exist = _.find(unwraped, (e: FullCalendar.EventApi) => e.id === id);
+
+                        if (exist) {
+                            const { title, backgroundColor, extendedProps } = exist;
+
+                            return {
+                                title,
+                                backgroundColor,
+                                extendedProps,
+                                borderColor: 'transparent'
+                            };
+                        }
                     }
-                })
+
+                    return {
+                        title: el.innerText,
+                        borderColor: 'transparent',
+                        backgroundColor: el.getAttribute('data-color')
+                    };
+                }
             });
 
             const calendar = new FC.Calendar($fc, {
@@ -929,19 +949,20 @@ module nts.uk.ui.components.fullcalendar {
                 editable: ko.unwrap(editable),
                 droppable: ko.unwrap(editable),
                 selectable: ko.unwrap(editable),
-                dropAccept: () => !!ko.unwrap(editable),
                 selectMirror: true,
                 selectMinDistance: 4,
                 nowIndicator: true,
                 dayHeaders: true,
                 allDaySlot: false,
                 slotEventOverlap: false,
-                dayHeaderContent: (opts: any) => moment(opts.date).format('DD(ddd)'),
+                eventOverlap: false,
+                selectOverlap: false,
                 dateClick: () => selectedEvents([]),
-                eventLongPressDelay: 100,
-                eventClick: (args) => {
-                    const cloned = _.cloneDeep(args.event);
-                    const { start, end } = cloned;
+                dropAccept: () => !!ko.unwrap(editable),
+                dayHeaderContent: (opts: FullCalendar.DayHeaderContentArg) => moment(opts.date).format('DD(ddd)'),
+                eventClick: (args: FullCalendar.EventClickArg) => {
+                    const { event } = args;
+                    const { start, end } = event;
 
                     if (!ko.unwrap(dataEvent.shift)) {
                         selectedEvents([{ start, end }]);
@@ -975,15 +996,15 @@ module nts.uk.ui.components.fullcalendar {
                         }
                     }
                 },
-                eventDrop: (evt) => {
+                eventDrop: (args: FullCalendar.EventDropArg) => {
                     // update data sources
                     mutatedEvents();
 
                     if (ko.unwrap(dataEvent.shift) && ko.unwrap(dataEvent.copy)) {
                         dataEvent.copy(false);
 
-                        const { start, end } = evt.event;
-                        const others = evt.relatedEvents.map(({ start, end }) => ({ start, end }));
+                        const { start, end } = args.event;
+                        const others = args.relatedEvents.map(({ start, end }) => ({ start, end }));
 
                         selectedEvents([{ start, end }, ...others]);
                     } else {
@@ -998,7 +1019,7 @@ module nts.uk.ui.components.fullcalendar {
                 },
                 eventContent: (args: FullCalendar.EventContentArg) => {
                     const { type } = args.view;
-                    const { start, end, title, extendedProps } = args.event as FullCalendar.EventApi;
+                    const { start, end, title, extendedProps } = args.event;
                     const { descriptions } = extendedProps;
                     const hour = (value: Date) => moment(value).format('H');
                     const format = (value: Date) => moment(value).format('HH:mm');
@@ -1033,8 +1054,7 @@ module nts.uk.ui.components.fullcalendar {
 
                     return undefined;
                 },
-                eventOverlap: false,
-                select: (arg) => {
+                select: (arg: FullCalendar.DateSelectArg) => {
                     const { start, end } = arg;
 
                     $.Deferred()
@@ -1049,17 +1069,17 @@ module nts.uk.ui.components.fullcalendar {
                             selectedEvents([{ start, end }]);
                         });
                 },
-                eventReceive: (info) => {
+                eventReceive: (info: FullCalendar.EventReceiveLeaveArg) => {
                     const { id, title, start, backgroundColor } = info.event;
                     const event: any = { id, title, start, end: moment(start).add(1, 'hour').toDate(), backgroundColor };
 
                     events.push(event);
                 },
-                selectOverlap: false, // (evt) => evt.allDay,
                 selectAllow: (evt) => evt.start.getDate() === evt.end.getDate(),
-                slotLabelContent: (opts: any) => {
+                slotLabelContent: (opts: FullCalendar.SlotLabelContentArg) => {
                     const { milliseconds } = opts.time;
-                    const min = milliseconds / 1000 / 60;
+
+                    const min = milliseconds / 60000;
                     const hour = Math.floor(min / 60);
                     const minite = Math.floor(min % 60);
 
@@ -1067,7 +1087,8 @@ module nts.uk.ui.components.fullcalendar {
                 },
                 slotLabelClassNames: (opts) => {
                     const { milliseconds } = opts.time;
-                    const min = milliseconds / 1000 / 60;
+
+                    const min = milliseconds / 60000;
                     const hour = Math.floor(min / 60);
                     const minite = Math.floor(min % 60);
 
@@ -1075,7 +1096,7 @@ module nts.uk.ui.components.fullcalendar {
                 },
                 slotLaneClassNames: (opts) => {
                     const { milliseconds } = opts.time;
-                    const min = milliseconds / 1000 / 60;
+                    const min = milliseconds / 60000;
                     const hour = Math.floor(min / 60);
 
                     return `fc-timegrid-slot-lane-${hour}`;
@@ -1282,22 +1303,19 @@ module nts.uk.ui.components.fullcalendar {
         public selectEmployee(item: EMPLOYEE) {
             const vm = this;
             const { params } = vm;
-            const { editable, employees } = params;
+            const { employees } = params;
+            const unwraped = ko.unwrap<EMPLOYEE[]>(employees);
 
-            if (!!ko.unwrap(editable)) {
-                const unwraped = ko.unwrap(employees) as EMPLOYEE[];
-
-                _.each(unwraped, (emp: EMPLOYEE) => {
-                    if (emp.code === item.code) {
-                        emp.selected = true;
-                    } else {
-                        emp.selected = false;
-                    }
-                });
-
-                if (ko.isObservable(employees)) {
-                    employees(unwraped);
+            _.each(unwraped, (emp: EMPLOYEE) => {
+                if (emp.code === item.code) {
+                    emp.selected = true;
+                } else {
+                    emp.selected = false;
                 }
+            });
+
+            if (ko.isObservable(employees)) {
+                employees(unwraped);
             }
         }
 
