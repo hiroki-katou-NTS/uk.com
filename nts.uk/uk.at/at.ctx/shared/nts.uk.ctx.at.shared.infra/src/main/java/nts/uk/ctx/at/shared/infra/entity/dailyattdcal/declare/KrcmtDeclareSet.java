@@ -3,12 +3,13 @@ package nts.uk.ctx.at.shared.infra.entity.dailyattdcal.declare;
 import java.io.Serializable;
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * エンティティ：申告設定
@@ -18,9 +19,13 @@ import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_DECLARE_SET")
-public class KrcmtDeclareSet extends ContractCompanyUkJpaEntity implements Serializable{
+public class KrcmtDeclareSet extends UkJpaEntity implements Serializable{
 
 	private static final long serialVersionUID = 1L;
+
+	/** プライマリキー */
+	@EmbeddedId
+	public KrcmtDeclareSetPK pk;
 	
 	/** 申告利用区分 */
 	@Column(name = "USAGE_ATR")
@@ -84,6 +89,6 @@ public class KrcmtDeclareSet extends ContractCompanyUkJpaEntity implements Seria
 	
 	@Override
 	protected Object getKey() {
-		return this.companyId;
+		return this.pk.companyId;
 	}
 }
