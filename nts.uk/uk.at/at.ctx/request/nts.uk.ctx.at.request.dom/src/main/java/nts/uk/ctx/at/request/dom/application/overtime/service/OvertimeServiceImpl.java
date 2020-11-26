@@ -34,6 +34,8 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlg
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHdWorkDispInfoOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTimeRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
@@ -590,7 +592,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 			Boolean require,
 			ApplicationType appType,
 			Optional<AppOverTime> appOverOptional,
-			Optional<AppOverTime> appHolidayOptional,
+			Optional<AppHolidayWork> appHolidayOptional,
 			OvertimeLeaveAppCommonSet overtimeLeaveAppCommonSet) {
 		// 「@登録時の乖離時間チェック」をチェックする
 		if (overtimeLeaveAppCommonSet.getCheckDeviationRegister() == nts.uk.shr.com.enumcommon.NotUseAtr.NOT_USE) return;
