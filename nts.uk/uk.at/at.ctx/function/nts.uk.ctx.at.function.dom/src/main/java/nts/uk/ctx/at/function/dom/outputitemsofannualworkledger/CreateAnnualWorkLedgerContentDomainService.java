@@ -39,7 +39,7 @@ public class CreateAnnualWorkLedgerContentDomainService {
         val listEmployeeStatus = require.getListAffComHistByListSidAndPeriod(listSid, datePeriod);
 
         // 日次の場合 - 印刷対象フラグ　==　true
-        val dailyOutputItems = outputSetting.getMonthlyOutputItemList().stream()
+        val dailyOutputItems = outputSetting.getDailyOutputItemList().stream()
                 .filter(x -> x.getDailyMonthlyClassification() == DailyMonthlyClassification.DAILY && x.isPrintTargetFlag())
                 .collect(Collectors.toList());
         // 月次の場合 - 印刷対象フラグ　==　true
@@ -87,7 +87,7 @@ public class CreateAnnualWorkLedgerContentDomainService {
             result.add(model);
         });
         if (result.size() == 0) {
-            throw new BusinessException("Msg_1802");
+            throw new BusinessException("Msg_1860");
         }
         return result;
     }

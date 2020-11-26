@@ -20,8 +20,8 @@ public class DumDataTest {
     public static Map<String, EmployeeBasicInfoImport> lstEmployee() {
         val rs = new HashMap<String, EmployeeBasicInfoImport>();
 
-        rs.put("sid1", new EmployeeBasicInfoImport("sid1", "employeeCode1", "employeeName1"));
-        rs.put("sid2", new EmployeeBasicInfoImport("sid2", "employeeCode2", "employeeName2"));
+        rs.put("eplId01", new EmployeeBasicInfoImport("eplId01", "employeeCode1", "employeeName1"));
+        rs.put("eplId02", new EmployeeBasicInfoImport("eplId02", "employeeCode2", "employeeName2"));
         return rs;
 
     }
@@ -29,20 +29,36 @@ public class DumDataTest {
     public static Map<String, WorkplaceInfor> lstWorkplaceInfor() {
         val rs = new HashMap<String, WorkplaceInfor>();
 
-        rs.put("sid1", new WorkplaceInfor("wplId1", "wplIdHCode1", "wplIdCode1", "wplIdName1", "wplIdDName1"
+        rs.put("eplId01", new WorkplaceInfor("wplId1", "wplIdHCode1", "wplIdCode1", "wplIdName1", "wplIdDName1"
                 , "wplIGName1", "wplIECode1"));
-        rs.put("sid2", new WorkplaceInfor("wplId2", "wplIdHCode2", "wplIdCode2", "wplIdName2", "wplIdDName2"
+        rs.put("eplId02", new WorkplaceInfor("wplId2", "wplIdHCode2", "wplIdCode2", "wplIdName2", "wplIdDName2"
                 , "wplIGName2", "wplIECode2"));
         return rs;
     }
+    public static Map<String, WorkplaceInfor> lstWorkplaceInforFail() {
+        val rs = new HashMap<String, WorkplaceInfor>();
 
+        rs.put("eplId011", new WorkplaceInfor("wplId1", "wplIdHCode1", "wplIdCode1", "wplIdName1", "wplIdDName1"
+                , "wplIGName1", "wplIECode1"));
+        rs.put("eplId021", new WorkplaceInfor("wplId2", "wplIdHCode2", "wplIdCode2", "wplIdName2", "wplIdDName2"
+                , "wplIGName2", "wplIECode2"));
+        return rs;
+    }
+    public static Map<String, EmployeeBasicInfoImport> lstEmployeeFail() {
+        val rs = new HashMap<String, EmployeeBasicInfoImport>();
+
+        rs.put("eplId013", new EmployeeBasicInfoImport("eplId01", "employeeCode1", "employeeName1"));
+        rs.put("eplId024", new EmployeeBasicInfoImport("eplId02", "employeeCode2", "employeeName2"));
+        return rs;
+
+    }
     public static Map<String, ClosureDateEmployment> lstClosureDateEmployment()
 
     {
 
         val rs = new HashMap<String, ClosureDateEmployment>();
 
-        rs.put("sid1", new ClosureDateEmployment("sid1", "employeeCode1", "employeeName1", null));
+        rs.put("eplId01", new ClosureDateEmployment("eplId01", "employeeCode1", "employeeName1", null));
         rs.put("sid2", new ClosureDateEmployment("sid2", "employeeCode2", "employeeName2", null));
 
         return rs;
