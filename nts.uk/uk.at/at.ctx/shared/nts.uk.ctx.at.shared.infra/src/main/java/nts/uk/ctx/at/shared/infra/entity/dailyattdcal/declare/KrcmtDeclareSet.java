@@ -3,8 +3,8 @@ package nts.uk.ctx.at.shared.infra.entity.dailyattdcal.declare;
 import java.io.Serializable;
 
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -23,9 +23,10 @@ public class KrcmtDeclareSet extends UkJpaEntity implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
-	/** プライマリキー */
-	@EmbeddedId
-	public KrcmtDeclareSetPK pk;
+	/** 会社ID */
+	@Id
+	@Column(name = "CID")
+	public String companyId;
 	
 	/** 申告利用区分 */
 	@Column(name = "USAGE_ATR")
@@ -89,6 +90,6 @@ public class KrcmtDeclareSet extends UkJpaEntity implements Serializable{
 	
 	@Override
 	protected Object getKey() {
-		return this.pk.companyId;
+		return this.companyId;
 	}
 }
