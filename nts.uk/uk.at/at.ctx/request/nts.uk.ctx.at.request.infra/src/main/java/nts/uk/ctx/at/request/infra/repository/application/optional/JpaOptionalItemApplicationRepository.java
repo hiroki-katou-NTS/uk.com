@@ -48,7 +48,7 @@ public class JpaOptionalItemApplicationRepository extends JpaRepository implemen
     }
 
     @Override
-    public void update(OptionalItemApplication domain, Application application) {
+    public void  update(OptionalItemApplication domain, Application application) {
         String cid = AppContexts.user().companyId();
         Optional<KrqdtApplication> applicationEntity = this.queryProxy().query(FIND_APPLICATION, KrqdtApplication.class)
                 .setParameter("cId", cid)
@@ -56,6 +56,7 @@ public class JpaOptionalItemApplicationRepository extends JpaRepository implemen
         if (applicationEntity.isPresent()) {
             KrqdtApplication krqdtApplication = applicationEntity.get();
             krqdtApplication.setOpAppReason(application.getOpAppReason().isPresent() ? application.getOpAppReason().get().v() : null);
+            krqdtApplication.setOpAppStandardReasonCD(application.getOpAppStandardReasonCD().isPresent() ? application.getOpAppStandardReasonCD().get().v() : null);
             this.commandProxy().update(applicationEntity.get());
         }
         Map<Integer, KrqdtAppAnyv> entityMap = this.queryProxy().query(FIND_OPTIONAL_ITEM_ENTITY, KrqdtAppAnyv.class)
@@ -92,6 +93,18 @@ public class JpaOptionalItemApplicationRepository extends JpaRepository implemen
             optionalItemApplication.get().setOptionalItems(collect);
         }
         return optionalItemApplication;
+    }
+
+    @Override
+    public void remove(OptionalItemApplication optItemApp) {
+        List<KrqdtAppAnyv> entities = this.toEntity(optItemApp);
+        List<KrqdtAppAnyvPk> keys = entities.stream().map(i -> new KrqdtAppAnyvPk(
+                i.getKrqdtAppAnyvPk().companyID,
+                i.getKrqdtAppAnyvPk().appID,
+                i.getKrqdtAppAnyvPk().anyvCd,
+                i.getKrqdtAppAnyvPk().anyvNo - 640
+        )).collect(Collectors.toList());
+        this.commandProxy().removeAll(KrqdtAppAnyv.class, keys);
     }
 
     private OptionalItemApplication toDomain(NtsResultRecord res) {

@@ -137,17 +137,17 @@ module nts.uk.at.view.kaf020.b {
                 if (valid) {
                     vm.$ajax(PATH_API.register, command).done(result => {
                         if (result != undefined) {
-                            vm.$dialog.info({messageId: "Msg_15"});
-                            let contents: Array<OptionalItemApplicationContent> = [];
-                            vm.dataFetch().applicationContents().forEach(item => {
-                                contents.push({
-                                    ...item,
-                                    time: ko.observable(''),
-                                    times: ko.observable(),
-                                    amount: ko.observable(),
-                                })
-                            })
-                            vm.dataFetch({applicationContents: ko.observableArray(contents), name: vm.dataFetch().name});
+                            vm.$dialog.info({messageId: "Msg_15"}).then(() => window.location.reload());
+                            // let contents: Array<OptionalItemApplicationContent> = [];
+                            // vm.dataFetch().applicationContents().forEach(item => {
+                            //     contents.push({
+                            //         ...item,
+                            //         time: ko.observable(''),
+                            //         times: ko.observable(),
+                            //         amount: ko.observable(),
+                            //     })
+                            // })
+                            // vm.dataFetch({applicationContents: ko.observableArray(contents), name: vm.dataFetch().name});
                         }
                     }).fail(err => {
                         vm.$dialog.error(err);
