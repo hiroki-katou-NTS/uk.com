@@ -376,7 +376,7 @@ public class AddSubHdManagementService {
 			// 代休残数　＝　休出日数（I6_3）+　紐付け日数（I12_8）-　代休日数（I11_3）-　代休日数（I12_4）
 			remainDays = selectedCodeHoliday + linkingDate - selectedCodeSubHoliday - selectedCodeOptionSubHoliday;
 			// 振休日数をチェック
-			if (subHdManagementData.getCheckedSubHoliday() && (remainDays <0 || remainDays >= 0.5)) {
+			if (subHdManagementData.getCheckedSubHoliday() && remainDays < 0) {
 				// エラーメッセージ「Msg_2032」
 				throw new BusinessException("Msg_2032");
 			}
