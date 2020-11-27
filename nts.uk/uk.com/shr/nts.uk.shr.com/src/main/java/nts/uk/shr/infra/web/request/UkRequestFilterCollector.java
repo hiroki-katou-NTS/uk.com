@@ -11,6 +11,7 @@ import nts.arc.layer.ws.preprocess.RequestFilterMapping;
 import nts.arc.layer.ws.preprocess.filters.RequestPerformanceLogFilter;
 import nts.arc.system.ServerSystemProperties;
 import nts.arc.web.session.HttpSubSessionFilter;
+import nts.uk.shr.com.security.ipaddress.IpAddressRestrictor;
 import nts.uk.shr.infra.application.auth.WindowsAccountCatcher;
 import nts.uk.shr.infra.web.session.BatchRequestProcessor;
 import nts.uk.shr.infra.web.session.ScreenLoginSessionValidator;
@@ -49,11 +50,14 @@ public class UkRequestFilterCollector implements RequestFilterCollector {
 			FILTERS.add(RequestFilterMapping.map(PathPattern.ALL_SCREENS, new StartPageLogWriter()));
 			FILTERS.add(RequestFilterMapping.map(PathPattern.ALL_WEB_APIS, new HttpSubSessionFilter()));
 //			RequestFilterMapping.map(PathPattern.ALL_WEB_APIS, new CsrfProtectionFilter(PathsNoSession.WEB_APIS)),
+			FILTERS.add(RequestFilterMapping.map(PathPattern.ALL_REQUESTS, new StopUseFilter()));
+			
+			// アクセス制限
+			FILTERS.add(RequestFilterMapping.map(PathPattern.ALL_REQUESTS, new IpAddressRestrictor()));
 		
 			// This must be executed last
 			// 最後じゃなくても大丈夫かもしれないが、処理内容を考えると、念の為、最後にしておきたい。
 			FILTERS.add(RequestFilterMapping.map(PathPattern.ALL_REQUESTS, new ContextHolderSwitch()));
-			FILTERS.add(RequestFilterMapping.map(PathPattern.ALL_REQUESTS, new StopUseFilter()));
 	}
 
 	@Override
