@@ -1,8 +1,4 @@
 package nts.uk.ctx.at.request.ws.application.holidaywork;
-import java.util.ArrayList;
-/*import nts.uk.ctx.at.shared.dom.employmentrules.employmenttimezone.BreakTimeZoneSharedOutPut;*/
-import java.util.List;
-import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -11,43 +7,18 @@ import javax.ws.rs.Produces;
 
 import lombok.Value;
 import nts.arc.layer.ws.WebService;
-import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.app.command.application.holidaywork.CheckBeforeRegisterHolidayWork;
-import nts.uk.ctx.at.request.app.command.application.holidaywork.CreateHolidayWorkCommand;
-import nts.uk.ctx.at.request.app.command.application.holidaywork.CreateHolidayWorkCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.RegisterCommand;
-import nts.uk.ctx.at.request.app.command.application.holidaywork.RegisterCommandHandler;
-import nts.uk.ctx.at.request.app.command.application.holidaywork.UpdateHolidayWorkCommand;
-import nts.uk.ctx.at.request.app.command.application.holidaywork.UpdateHolidayWorkCommandHandler;
+import nts.uk.ctx.at.request.app.command.application.holidaywork.HolidayWorkRegisterCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.AppHolidayWorkFinder;
-import nts.uk.ctx.at.request.app.find.application.holidaywork.AppHolidayWorkFinder_Old;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHdWorkDispInfoDto;
-import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHdWorkDispInfoDto_Old;
-import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHolidayWorkDto_Old;
-import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HdWorkCheckRegisterDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HolidayWorkCalculationResultDto;
-import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HolidayWorkDetailDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamCalculationHolidayWork;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamCheckBeforeRegister;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamHolidayWorkChangeDate;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamHolidayWorkChangeWork;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHolidayWorkParamPC;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.CheckBeforeOutputDto;
-import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.RecordWorkParamHoliday;
-import nts.uk.ctx.at.request.app.find.application.overtime.dto.ParamCalculateOvertime;
-import nts.uk.ctx.at.request.app.find.application.overtime.dto.ParamChangeAppDate;
-import nts.uk.ctx.at.request.app.find.application.overtime.dto.RecordWorkDto;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
-import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorResult;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
-import nts.uk.ctx.at.shared.app.command.worktime.common.dto.HolidayCalculationDto;
-import nts.uk.ctx.at.shared.app.find.worktime.common.dto.DeductionTimeDto;
-import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * Refactor5
@@ -62,7 +33,7 @@ public class HolidayWorkWebService extends WebService{
 	private AppHolidayWorkFinder appHolidayWorkFinder;
 	
 	@Inject
-	private RegisterCommandHandler registerCommandHandler;
+	private HolidayWorkRegisterCommandHandler registerCommandHandler;
 	
 	@POST
 	@Path("startNew")

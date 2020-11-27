@@ -7,6 +7,11 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Process
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHdWorkDispInfoOutput;
 
+/**
+ * Refactor5
+ * @author huylq
+ *
+ */
 public interface HolidayWorkRegisterService {
 
 	/**

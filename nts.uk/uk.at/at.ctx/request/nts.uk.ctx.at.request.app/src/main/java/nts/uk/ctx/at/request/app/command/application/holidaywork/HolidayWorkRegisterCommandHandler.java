@@ -33,7 +33,7 @@ import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardRe
  */
 @Stateless
 @Transactional
-public class RegisterCommandHandler extends CommandHandlerWithResult<RegisterCommand, ProcessResult>{
+public class HolidayWorkRegisterCommandHandler extends CommandHandlerWithResult<RegisterCommand, ProcessResult>{
 	
 	@Inject
 	private HolidayWorkRegisterService holidayWorkRegisterService;

@@ -11,9 +11,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
@@ -35,14 +32,12 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CheckBe
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkBreakTimeSetOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.InitWorkTypeWorkTime;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.InitWorkTypeWorkTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType_Update;
 import nts.uk.ctx.at.request.dom.application.overtime.ExcessState;
 import nts.uk.ctx.at.request.dom.application.overtime.OutDateApplication;
 import nts.uk.ctx.at.request.dom.application.overtime.OverStateOutput;
-import nts.uk.ctx.at.request.dom.application.overtime.OvertimeApplicationSetting;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.ICommonAlgorithmOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OverTimeContent;
@@ -327,52 +322,101 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 			confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1508", Collections.emptyList()));
 		} else {
 			OutDateApplication outDateApplication = overStateOutput.getAdvanceExcess();
-			boolean testExcessStateDetail = !outDateApplication.getExcessStateDetail().stream()
-					.filter(excessStateDetail -> excessStateDetail.getExcessState().equals(ExcessState.EXCESS_ALARM)).collect(Collectors.toList()).isEmpty();
-			boolean testExcessStateMidnight = !outDateApplication.getExcessStateMidnight().stream()
-					.filter(excessStateMidnight -> excessStateMidnight.getExcessState().equals(ExcessState.EXCESS_ALARM)).collect(Collectors.toList()).isEmpty();
-			boolean testFlex = outDateApplication.getFlex().equals(ExcessState.EXCESS_ALARM);
-			boolean testOverTimeLate = outDateApplication.getOverTimeLate().equals(ExcessState.EXCESS_ALARM);
-			if(testExcessStateDetail || testExcessStateMidnight || testFlex || testOverTimeLate) {
-				outDateApplication.getExcessStateDetail().stream()
-				.filter(excessStateDetail -> excessStateDetail.getType().equals(AttendanceType_Update.NORMALOVERTIME) 
-						&& excessStateDetail.getExcessState().equals(ExcessState.EXCESS_ALARM))
-				.map(excessStateDetail -> {
-					return excessStateDetail;
-				}).collect(Collectors.toList());
-				confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_424", 
-						Arrays.asList(appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid()))); //huytodo TextResource.localize("KAF005_20") demo
+			ConfirmMsgOutput confirmMsgOutput = 
+					this.checkExcessWithMessage(outDateApplication, appHdWorkDispInfoOutput, "Msg_424", ExcessState.EXCESS_ALARM, false);
+			if(confirmMsgOutput != null) {
+				confirmMsgOutputs.add(confirmMsgOutput);
 			}
 		}
 		switch(overStateOutput.getAchivementStatus()) {
 			case EXCESS_ERROR:
-				throw new BusinessException("Msg_1746");//huytodo
+				throw new BusinessException("Msg_1746", "employeeName", appHolidayWork.getApplication().getAppDate().getApplicationDate().toString());//huytodo employeeName
 			case EXCESS_ALARM:
-				confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1745", Collections.emptyList()));//huytodo
+				confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1745", 
+						Arrays.asList("employeeName", appHolidayWork.getApplication().getAppDate().getApplicationDate().toString())));//huytodo employeeName
 				break;
 			case NO_EXCESS:
 				OutDateApplication outDateApplication = overStateOutput.getAchivementExcess();
-				if(!outDateApplication.getExcessStateDetail().stream()
-						.filter(excessStateDetail -> excessStateDetail.getExcessState().equals(ExcessState.EXCESS_ERROR)).collect(Collectors.toList()).isEmpty()
-						|| !outDateApplication.getExcessStateMidnight().stream()
-						.filter(excessStateMidnight -> excessStateMidnight.getExcessState().equals(ExcessState.EXCESS_ERROR)).collect(Collectors.toList()).isEmpty()
-						|| outDateApplication.getFlex().equals(ExcessState.EXCESS_ERROR)
-						|| outDateApplication.getOverTimeLate().equals(ExcessState.EXCESS_ERROR)) {
-					throw new BusinessException("Msg_1748"); //huytodo
-				} else {
-					if(!outDateApplication.getExcessStateDetail().stream()
-							.filter(excessStateDetail -> excessStateDetail.getExcessState().equals(ExcessState.EXCESS_ALARM)).collect(Collectors.toList()).isEmpty()
-							|| !outDateApplication.getExcessStateMidnight().stream()
-							.filter(excessStateMidnight -> excessStateMidnight.getExcessState().equals(ExcessState.EXCESS_ALARM)).collect(Collectors.toList()).isEmpty()
-							|| outDateApplication.getFlex().equals(ExcessState.EXCESS_ALARM)
-							|| outDateApplication.getOverTimeLate().equals(ExcessState.EXCESS_ALARM)) {
-						confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1747", Collections.emptyList()));//huytodo
-					}
+				
+				this.checkExcessWithMessage(outDateApplication, appHdWorkDispInfoOutput, "Msg_1748", ExcessState.EXCESS_ERROR, true);
+				
+				ConfirmMsgOutput confirmMsgOutput = 
+						this.checkExcessWithMessage(outDateApplication, appHdWorkDispInfoOutput, "Msg_1747", ExcessState.EXCESS_ALARM, false);
+				if(confirmMsgOutput != null) {
+					confirmMsgOutputs.add(confirmMsgOutput);
 				}
 				break;
-				default: break;
+			default: break;
 		}
 		return confirmMsgOutputs;
+	}
+	
+	public ConfirmMsgOutput checkExcessWithMessage(OutDateApplication outDateApplication, AppHdWorkDispInfoOutput appHdWorkDispInfoOutput,
+			String messageId, ExcessState excessState, boolean isErrorMessage) {
+		List<String> messageContentList = new ArrayList<String>();
+		
+		List<Integer> overtimeFrameNoList = outDateApplication.getExcessStateDetail().stream()
+							.filter(excessStateDetail -> excessStateDetail.getType().equals(AttendanceType_Update.NORMALOVERTIME) 
+									&& excessStateDetail.getExcessState().equals(excessState))
+							.map(excessStateDetail -> excessStateDetail.getFrame().v()).collect(Collectors.toList());
+		List<Integer> workdayoffFrameNoList = outDateApplication.getExcessStateDetail().stream()
+							.filter(excessStateDetail -> excessStateDetail.getType().equals(AttendanceType_Update.BREAKTIME) && 
+									excessStateDetail.getExcessState().equals(excessState))
+							.map(excessStateDetail -> excessStateDetail.getFrame().v()).collect(Collectors.toList());
+		
+		appHdWorkDispInfoOutput.getOvertimeFrameList().stream()
+		.filter(overtimeFrame -> overtimeFrameNoList.contains(overtimeFrame.getOvertimeWorkFrNo().v().intValue()))
+		.map(overtimeFrame -> {
+			messageContentList.add(overtimeFrame.getOvertimeWorkFrName().v());
+			return overtimeFrame;
+		});
+		appHdWorkDispInfoOutput.getWorkdayoffFrameList().stream()
+		.filter(workdayoffFrame -> workdayoffFrameNoList.contains(workdayoffFrame.getWorkdayoffFrNo().v().intValue()))
+		.map(workdayoffFrame -> {
+			messageContentList.add(workdayoffFrame.getWorkdayoffFrName().v());
+			return workdayoffFrame;
+		});
+		
+		outDateApplication.getExcessStateMidnight().stream()
+		.filter(excessStateMidnight -> excessStateMidnight.getExcessState().equals(excessState))
+		.map(excessStateMidnight -> {
+			switch(excessStateMidnight.getLegalCfl()) {
+				case WithinPrescribedHolidayWork:
+					messageContentList.add(TextResource.localize("KAF005_341"));
+					break;
+				case ExcessOfStatutoryHolidayWork:
+					messageContentList.add(TextResource.localize("KAF005_342"));
+					break;
+				case PublicHolidayWork:
+					messageContentList.add(TextResource.localize("KAF005_343"));
+					break;
+					default: break;
+			}
+			return excessStateMidnight;
+		});
+		
+		if(outDateApplication.getFlex().equals(excessState)) {
+			messageContentList.add(TextResource.localize("KAF005_63"));
+		}
+		
+		if(outDateApplication.getOverTimeLate().equals(excessState)) {
+			messageContentList.add(TextResource.localize("KAF005_65"));
+		}
+		
+		if(!messageContentList.isEmpty()) {
+			String messageContent = messageContentList.stream().collect(Collectors.joining(", "));
+			if(isErrorMessage) {
+				throw new BusinessException(messageId, 
+						appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getBussinessName(),
+						messageContent);
+			} else {
+				return new ConfirmMsgOutput(messageId, 
+						Arrays.asList(appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getBussinessName(), 
+								messageContent));
+			}
+		} else {
+			return null;
+		}
 	}
 	
 	@Override

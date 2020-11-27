@@ -1,13 +1,9 @@
 package nts.uk.ctx.at.request.app.find.application.holidaywork.dto;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.request.app.find.application.overtime.BreakTimeZoneSettingDto;
-import nts.uk.ctx.at.request.app.find.application.overtime.WorkHoursDto;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.OvertimeStatus;
-import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 
 /**
  * Refactor5
@@ -16,6 +12,7 @@ import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
  */
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 public class OvertimeStatusDto {
 
 	/**
