@@ -22,7 +22,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_WKPFXEX_APPAPV_ITM")
-public class KrcmtWkpfxexAppapvItm extends ContractUkJpaEntity  implements Serializable {
+public class KrcmtWkpfxexAppapvItm extends ContractUkJpaEntity implements Serializable {
 
     /* No */
     @Id
@@ -40,6 +40,10 @@ public class KrcmtWkpfxexAppapvItm extends ContractUkJpaEntity  implements Seria
     /* 最初表示するメッセージ */
     @Column(name = "FIRST_MESSAGE_DIS")
     public String firstMessageDisp;
+
+    /* メッセージを太字にする */
+    @Column(name = "MESSAGE_BOLD")
+    public boolean boldAtr;
 
     /* メッセージの色 */
     @Column(name = "MESSAGE_COLOR")
@@ -61,6 +65,7 @@ public class KrcmtWkpfxexAppapvItm extends ContractUkJpaEntity  implements Seria
         entity.appapvCheckName = domain.getAppapvCheckName();
         entity.alarmCheckCls = domain.getAlarmCheckCls().value;
         entity.firstMessageDisp = domain.getFirstMessageDisp().v();
+        entity.boldAtr = domain.isBoldAtr();
         entity.messageColor = domain.getMessageColor().map(i -> i.v()).orElse(null);
         entity.cid = AppContexts.user().companyId();
 
@@ -72,6 +77,7 @@ public class KrcmtWkpfxexAppapvItm extends ContractUkJpaEntity  implements Seria
                 this.checkItemAppapv,
                 this.alarmCheckCls,
                 this.appapvCheckName,
+                this.boldAtr,
                 this.firstMessageDisp,
                 this.messageColor
         );

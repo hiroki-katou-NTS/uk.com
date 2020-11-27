@@ -236,6 +236,30 @@ public class JobTitlePubImp implements SyJobTitlePub {
 		}).collect(Collectors.toList());
 	}
 
+	@Override
+	public List<JobTitleInfoExport> findByDatePeriod(String companyId, DatePeriod datePeriod) {
+
+		// Query
+		List<JobTitle> jobTitles = this.jobTitleRepository.findByDatePeriod(companyId, datePeriod);
+		List<JobTitleInfo> jobTitleInfos = new ArrayList<>();
+		jobTitles.forEach(x -> {
+			x.getJobTitleHistories().forEach(i -> {
+				val jobtitle = this.jobTitleInfoRepository.find(x.getCompanyId().v(),x.getJobTitleId(),i.identifier());
+				jobtitle.ifPresent(jobTitleInfos::add);
+			});
+		});
+		return jobTitleInfos.stream().map(x -> {
+			return new JobTitleInfoExport(
+				x.getCompanyId().v(),
+				x.getJobTitleId(),
+				x.isManager(),
+				x.getJobTitleId(),
+				x.getJobTitleCode().v(),
+				x.getJobTitleName().v(),
+				x.getSequenceCode().v());
+		}).collect(Collectors.toList());
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

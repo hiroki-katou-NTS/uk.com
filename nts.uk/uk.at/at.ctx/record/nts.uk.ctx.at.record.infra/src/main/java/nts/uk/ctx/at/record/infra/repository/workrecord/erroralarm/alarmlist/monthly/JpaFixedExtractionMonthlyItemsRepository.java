@@ -8,6 +8,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,7 +17,7 @@ import java.util.Optional;
 public class JpaFixedExtractionMonthlyItemsRepository extends JpaRepository implements FixedExtractionMonthlyItemsRepository {
 
     @Override
-    public Optional<FixedExtractionMonthlyItems> getBy(List<FixedCheckMonthlyItemName> nos) {
-        return Optional.empty();
+    public List<FixedExtractionMonthlyItems> getBy(List<FixedCheckMonthlyItemName> nos) {
+        return new ArrayList<>();
     }
 }

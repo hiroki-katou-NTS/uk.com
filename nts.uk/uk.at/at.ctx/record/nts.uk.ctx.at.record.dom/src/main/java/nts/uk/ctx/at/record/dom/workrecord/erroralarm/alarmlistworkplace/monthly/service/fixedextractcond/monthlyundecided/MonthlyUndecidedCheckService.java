@@ -11,10 +11,7 @@ import nts.uk.shr.com.i18n.TextResource;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務実績.勤務実績.勤務実績のエラーアラーム設定.アラームリスト（職場）.月次のアラームチェック.アルゴリズム.月次の集計処理.固定抽出条件をチェック.月次データ未確定をチェックする
@@ -38,6 +35,7 @@ public class MonthlyUndecidedCheckService {
      */
     public List<ExtractResultDto> check(String cid, Map<String, List<EmployeeInfoImported>> empInfosByWpMap,
                                         List<Object> closures, YearMonth ym) {
+        List<ExtractResultDto> results = new ArrayList<>();
         // Input．Map＜職場ID、List＜社員情報＞＞をループする
         for (Map.Entry<String, List<EmployeeInfoImported>> empInfosByWp : empInfosByWpMap.entrySet()) {
             for (Object closure : closures) {
@@ -57,8 +55,11 @@ public class MonthlyUndecidedCheckService {
                             Optional.ofNullable(TextResource.localize("KAL020_400", "closure name")),//TODO
                             Optional.empty(),
                             empInfosByWp.getKey());
+                    results.add(result);
                 }
             }
         }
+
+        return results;
     }
 }

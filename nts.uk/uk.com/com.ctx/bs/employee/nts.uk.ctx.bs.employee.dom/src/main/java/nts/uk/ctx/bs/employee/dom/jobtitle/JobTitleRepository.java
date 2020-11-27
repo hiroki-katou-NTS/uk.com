@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Interface JobTitleRepository.
@@ -84,5 +85,7 @@ public interface JobTitleRepository {
 
     // fix bug 
 	List<JobTitle> findAllById(String companyId, List<String> positionIds, GeneralDate baseDate);
-    
+
+	List<JobTitle> findByDatePeriod(String companyId, DatePeriod datePeriod);
+
 }

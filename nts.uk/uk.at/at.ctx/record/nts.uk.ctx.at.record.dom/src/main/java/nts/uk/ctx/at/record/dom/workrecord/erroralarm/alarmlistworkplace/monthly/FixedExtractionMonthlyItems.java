@@ -35,6 +35,11 @@ public class FixedExtractionMonthlyItems extends AggregateRoot {
     private String monthlyCheckName;
 
     /**
+     * メッセージを太字にする
+     */
+    private boolean boldAtr;
+
+    /**
      * 最初表示するメッセージ
      */
     private DisplayMessage firstMessageDisp;
@@ -50,18 +55,21 @@ public class FixedExtractionMonthlyItems extends AggregateRoot {
      * @param no               No
      * @param alarmCheckCls    アラームチェック区分
      * @param monthlyCheckName 月次チェック名称
+     * @param boldAtr                   メッセージを太字にする
      * @param firstMessageDisp 最初表示するメッセージ
      * @param messageColor     メッセージの色
      */
     public static FixedExtractionMonthlyItems create(int no,
                                                      int alarmCheckCls,
                                                      String monthlyCheckName,
+                                                     boolean boldAtr,
                                                      String firstMessageDisp,
                                                      String messageColor) {
 
         return new FixedExtractionMonthlyItems(EnumAdaptor.valueOf(no, FixedCheckMonthlyItemName.class),
                 EnumAdaptor.valueOf(alarmCheckCls, AlarmCheckClassification.class),
                 monthlyCheckName,
+                boldAtr,
                 new DisplayMessage(firstMessageDisp),
                 messageColor != null ? Optional.of(new ColorCode(messageColor)) : Optional.empty());
     }
