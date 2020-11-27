@@ -93,22 +93,30 @@ export class Ccgs03AComponent extends Vue {
     const endDate = moment.utc(this.dateValue.end, 'YYYY/MM/DD');
     const baseDate = moment.utc(new Date(), 'YYYY/MM/DD');
     if (startDate.isAfter(baseDate) || endDate.isAfter(baseDate)) {
-      this.$modal.error({ messageId: 'Msg_1833' });
-      this.$mask('hide');
+      this.$modal.error({
+        messageId: 'Msg_1833'
+      })
+      .then(() => this.$mask('hide'));
 
       return;
     }
 
     if (startDate.isAfter(endDate)) {
-      this.$modal.error({ messageId: 'FND_E_SPAN_REVERSED', messageParams: [this.$i18n('CCGS03_6').toString()] });
-      this.$mask('hide');
+      this.$modal.error({
+        messageId: 'FND_E_SPAN_REVERSED',
+        messageParams: [this.$i18n('CCGS03_6').toString()]
+      })
+      .then(() => this.$mask('hide'));
 
       return;
     }
 
     if (startDate.add(1, 'M').isBefore(endDate)) {
-      this.$modal.error({ messageId: 'FND_E_SPAN_OVER_MONTH', messageParams: [this.$i18n('CCGS03_6').toString()] });
-      this.$mask('hide');
+      this.$modal.error({
+        messageId: 'FND_E_SPAN_OVER_MONTH',
+        messageParams: [this.$i18n('CCGS03_6').toString()]
+      })
+      .then(() => this.$mask('hide'));
 
       return;
     }
