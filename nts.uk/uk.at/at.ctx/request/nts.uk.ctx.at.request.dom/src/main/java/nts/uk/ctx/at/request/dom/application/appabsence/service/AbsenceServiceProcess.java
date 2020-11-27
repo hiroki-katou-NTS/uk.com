@@ -176,8 +176,8 @@ public interface AbsenceServiceProcess {
 	 * @param mourningAtr 喪主区分<Optional>
 	 * @return
 	 */
-	public AbsenceCheckRegisterOutput checkBeforeRegister(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, Application application,
-			AppAbsence appAbsence, Integer alldayHalfDay, boolean agentAtr, Optional<Boolean> mourningAtr);
+	/*public AbsenceCheckRegisterOutput checkBeforeRegister(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, Application application,
+			AppAbsence appAbsence, Integer alldayHalfDay, boolean agentAtr, Optional<Boolean> mourningAtr);*/
 	
 	/**
 	 * 申請日の矛盾チェック
@@ -299,7 +299,7 @@ public interface AbsenceServiceProcess {
 	 * @param mournerAtr 喪主区分<Optional>
 	 * @return
 	 */
-	public AbsenceCheckOutput checkAppAbsenceRegister(boolean mode, String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput,ApplyForLeave appBeforeChange,ApplyForLeave appAfterChange);
+	public AbsenceCheckRegisterOutput checkAppAbsenceRegister(boolean mode, String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput,ApplyForLeave appBeforeChange,ApplyForLeave appAfterChange);
 	
 	/**
 	 * 勤務種類・就業時間帯情報を取得する
@@ -321,8 +321,8 @@ public interface AbsenceServiceProcess {
 	 * @param mourningAtr 喪主区分<Optional>
 	 * @return
 	 */
-	public AbsenceCheckRegisterOutput checkBeforeUpdate(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, Application application,
-			AppAbsence appAbsence, Integer alldayHalfDay, boolean agentAtr, Optional<Boolean> mourningAtr);
+	/*public AbsenceCheckRegisterOutput checkBeforeUpdate(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, Application application,
+			AppAbsence appAbsence, Integer alldayHalfDay, boolean agentAtr, Optional<Boolean> mourningAtr);*/
 	
 	/**
 	 * 1.休暇申請（新規）起動処理
