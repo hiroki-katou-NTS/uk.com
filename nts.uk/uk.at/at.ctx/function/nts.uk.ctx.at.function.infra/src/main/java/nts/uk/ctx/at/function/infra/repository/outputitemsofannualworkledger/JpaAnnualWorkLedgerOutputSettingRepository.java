@@ -258,8 +258,8 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
         val rs = this.queryProxy().query(FIND_WORK_ITEM_BY_CODE, KfnmtRptYrRecSetting.class)
                 .setParameter("cid", cid)
                 .setParameter("displayCode", displayCode)
-                .getSingleOrNull(JpaAnnualWorkLedgerOutputSettingRepository::toDomain);
-        return rs != null;
+                .getList(JpaAnnualWorkLedgerOutputSettingRepository::toDomain);
+        return rs != null && rs.size() != 0;
     }
 
     @Override
@@ -269,8 +269,8 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
                 .setParameter("cid", cid)
                 .setParameter("employeeId", employeeId)
                 .setParameter("displayCode", displayCode)
-                .getSingleOrNull(JpaAnnualWorkLedgerOutputSettingRepository::toDomain);
-        return rs != null;
+                .getList(JpaAnnualWorkLedgerOutputSettingRepository::toDomain);
+        return rs != null && rs.size() != 0;
     }
 
     private static AnnualWorkLedgerOutputSetting toDomain(KfnmtRptYrRecSetting entity) {
