@@ -183,6 +183,7 @@ module nts.uk.at.view.kwr004.b {
       };
 
       const path_url = (vm.isNewMode()) ? PATH.createSetting : PATH.updateSetting;
+
       vm.$blockui('show');
       vm.$ajax(path_url, params)
         .done((result) => {
@@ -315,7 +316,7 @@ module nts.uk.at.view.kwr004.b {
       let from = tempSettings.length;
       for (let i = from; i < max_row; i++) {
         let dailyAttributes = vm.dailyOrMonthlyAttributes(i < 2 ? 1 : 2);
-        let newItem = new SettingForPrint(i + 1, null, i < 2 ? 1 : 2, null, false, 0, [], dailyAttributes, -1, i < 2);
+        let newItem = new SettingForPrint(i + 1, null, i < 2 ? 1 : 2, null, false, 0, [], dailyAttributes, i < 2);
         tempSettings.push(newItem);
       }
 
@@ -375,7 +376,6 @@ module nts.uk.at.view.kwr004.b {
           x.attribute, //b4_3_3_2 - selected code
           [], //B4_3_3_2 属性選択
           dailyAttributes, //b4_3_3_2
-          x.attribute, //selected category from kdl048, kdl047
           maxItems < 8 //daily or monthly
         );
         vm.addRowItem(newItem);
@@ -385,7 +385,7 @@ module nts.uk.at.view.kwr004.b {
       if (from < maxItems) {        
         for (let i = from; i < maxItems; i++) {
           let dailyAttributes = vm.dailyOrMonthlyAttributes(i < 2 ? 1 : 2);
-          let newItem = new SettingForPrint(i + step, null, i < 2 ? 1 : 2, null, false, 0, [], dailyAttributes, -1, i < 2);
+          let newItem = new SettingForPrint(i + step, null, i < 2 ? 1 : 2, null, false, 0, [], dailyAttributes, i < 2);
           vm.addRowItem(newItem);
         }
       }
@@ -470,7 +470,7 @@ module nts.uk.at.view.kwr004.b {
       vm.settingListItemsDetails([]);
       for (let i = from; i < NUM_ROWS; i++) {
         let dailyAttributes = i < 2 ? vm.dailyAloneAttributes() : vm.monthlyAttributes();
-        let newItem = new SettingForPrint(i + 1, null, i < 2 ? 1 : 2, null, false, 0, [], dailyAttributes, -1, i < 2);
+        let newItem = new SettingForPrint(i + 1, null, i < 2 ? 1 : 2, null, false, 0, [], dailyAttributes, i < 2);
         vm.addRowItem(newItem);
       }
     }
@@ -548,18 +548,14 @@ module nts.uk.at.view.kwr004.b {
       const vm = this;
 
       vm.shareParam.itemNameLine.name = row.name();
-      vm.shareParam.attribute.selected = row.selectedCategory(); //setting Category
+      vm.shareParam.attribute.selected = row.itemAttribute(); //setting Category
       vm.shareParam.selectedTime = row.selectedTime;
-      /* vm.shareParam.attribute.attributeList = [
+      vm.shareParam.attribute.attributeList = [
         new AttendanceType(1, vm.$i18n('KWR002_141')),
         new AttendanceType(2, vm.$i18n('KWR002_142')),
         new AttendanceType(3, vm.$i18n('KWR002_143'))
-      ] */
-      vm.shareParam.attribute.attributeList = [
-        new AttendanceType(4, vm.$i18n('KWR002_180')),
-        new AttendanceType(5, vm.$i18n('KWR002_181')),
-        new AttendanceType(7, vm.$i18n('KWR002_183'))
       ]
+     
       nts.uk.ui.windows.setShared('attendanceItem', vm.shareParam, true);
       nts.uk.ui.windows.sub.modal('/view/kdl/047/a/index.xhtml').onClosed(() => {
         const attendanceItem = nts.uk.ui.windows.getShared('attendanceRecordExport');
@@ -585,7 +581,7 @@ module nts.uk.at.view.kwr004.b {
           listItem.operator = '+'; //+
           vm.settingListItemsDetails()[index].required(true);
           vm.settingListItemsDetails()[index].selectedTimeList.push(listItem);
-          vm.settingListItemsDetails()[index].selectedCategory(attendanceItem.attribute);
+          vm.settingListItemsDetails()[index].itemAttribute(attendanceItem.attribute);
           vm.settingListItemsDetails()[index].selectedTime = attendanceItem.attendanceId;
           vm.settingListItemsDetails()[index].selectionItem(findAttendanceName.attendanceItemName);
           $('#textName' + row.id).focus();
@@ -594,7 +590,7 @@ module nts.uk.at.view.kwr004.b {
           vm.settingListItemsDetails()[index].selectionItem(null);
           vm.settingListItemsDetails()[index].selectedTimeList([]);
           vm.settingListItemsDetails()[index].selectedTime = -1;
-          vm.settingListItemsDetails()[index].selectedCategory(-1);
+          vm.settingListItemsDetails()[index].itemAttribute(-1);
           vm.settingListItemsDetails()[index].required(false);
         }
       });
@@ -611,12 +607,12 @@ module nts.uk.at.view.kwr004.b {
 
       if (!row.type) {
         vm.shareParam.attribute.attributeList.push(new AttendanceType(6, vm.$i18n('KWR002_182')));
-        vm.shareParam.diligenceProjectList = vm.diligenceProjects();//vm.diligenceProjectsMonthly(); //KDL048
+        vm.shareParam.diligenceProjectList = vm.diligenceProjectsMonthly(); //KDL048
       } else
         vm.shareParam.diligenceProjectList = vm.diligenceProjects(); //KDL048
 
       vm.shareParam.itemNameLine.name = row.name();
-      vm.shareParam.attribute.selected = row.selectedCategory(); //setting Category
+      vm.shareParam.attribute.selected = row.itemAttribute(); //setting Category
       if (!_.isNil(row.selectedTimeList())) {
         vm.shareParam.selectedTimeList = row.selectedTimeList();
       }
@@ -624,6 +620,7 @@ module nts.uk.at.view.kwr004.b {
       nts.uk.ui.windows.setShared('attendanceItem', vm.shareParam, true);
       nts.uk.ui.windows.sub.modal('/view/kdl/048/index.xhtml').onClosed(() => {
         const attendanceItem = nts.uk.ui.windows.getShared('attendanceRecordExport');       
+        //console.log(attendanceItem);
         if (!attendanceItem) return;
         let index = _.findIndex(vm.settingListItemsDetails(), (o: any) => { return o.id === row.id; });
         if (attendanceItem.selectedTimeList.length > 0) {
@@ -635,7 +632,7 @@ module nts.uk.at.view.kwr004.b {
             vm.settingListItemsDetails()[index].required(true);
             vm.settingListItemsDetails()[index].selectionItem(dataSelection);
             vm.settingListItemsDetails()[index].selectedTimeList(attendanceItem.selectedTimeList);
-            vm.settingListItemsDetails()[index].selectedCategory(attendanceItem.itemNameLine.displayInputCategory);
+            vm.settingListItemsDetails()[index].itemAttribute(attendanceItem.itemNameLine.displayInputCategory);
             $('#textName' + row.id).focus();
           }
         } else {
@@ -643,7 +640,7 @@ module nts.uk.at.view.kwr004.b {
           vm.settingListItemsDetails()[index].selectionItem(null);
           vm.settingListItemsDetails()[index].selectedTimeList([]);
           vm.settingListItemsDetails()[index].selectedTime = -1;
-          vm.settingListItemsDetails()[index].selectedCategory(-1);
+          vm.settingListItemsDetails()[index].itemAttribute(-1);
           vm.settingListItemsDetails()[index].required(false);
         }
       });
@@ -756,8 +753,7 @@ module nts.uk.at.view.kwr004.b {
     isChecked: KnockoutObservable<boolean> = ko.observable(false);
     name: KnockoutObservable<string> = ko.observable(null);
     required: KnockoutObservable<boolean> = ko.observable(false);
-    independentCalcClassic: KnockoutObservable<number> = ko.observable(1);
-    selectedCategory: KnockoutObservable<number> = ko.observable(-1);
+    independentCalcClassic: KnockoutObservable<number> = ko.observable(1);   
     selectedTime: number = -1;
     selectionItem: KnockoutObservable<string> = ko.observable(null);
     itemAttribute: KnockoutObservable<number> = ko.observable(0);
@@ -774,7 +770,6 @@ module nts.uk.at.view.kwr004.b {
       itemAttribute?: number,
       selectedTimeList?: Array<any>,
       dailyAttributes?: Array<any>,
-      selectedCategory?: number,
       type: boolean = false
     ) {
       this.name(name || '');
@@ -785,7 +780,6 @@ module nts.uk.at.view.kwr004.b {
       this.itemAttribute(itemAttribute);
       this.selectedTimeList(selectedTimeList || []);
       this.dailyAttributes(dailyAttributes || []);
-      this.selectedCategory(selectedCategory || -1)
       this.type = type;
     }
   }
