@@ -193,6 +193,8 @@ module nts.uk.at.kdp003.a {
 
 			$(vm.$el).attr('id', 'stamp-employee-selection');
 
+			$(vm.$el).find('.nts-datepicker-wrapper input').attr('readonly', 'readonly');
+
 			$grid
 				.igGrid({
 					showHeader: false,
