@@ -336,6 +336,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                             });
 
                             attendanceItem.selectedTimeList = calculateAttendanceRecordList;
+                            attendanceItem.attribute.selected = calculateAttendanceRecord.attribute;
                         }
 
                         const index = vm.findAttendanceRecItem(new model.AttendanceRecItem('', 0, '', columnIndex, position, exportAtr, '', 0));
@@ -385,6 +386,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                             });
                             calculateAttendanceRecordList.sort((a, b) => { return Number(a.itemId) - Number(b.itemId); });
                             attendanceItem.selectedTimeList = calculateAttendanceRecordList;
+                            attendanceItem.attribute.selected = calculateAttendanceRecord.attribute;
                         }
 
                         const index = vm.findAttendanceRecItem(new model.AttendanceRecItem('', 0, '', columnIndex, position, exportAtr, '', 0));
