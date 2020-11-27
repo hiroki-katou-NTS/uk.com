@@ -143,14 +143,14 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
                 try {
                     val date = GeneralDate.ymd(yearMonth.year(), yearMonth.month(), day);
                     val leftData = dailyData.getLstLeftValue().stream().filter(x -> x.getDate().compareTo(date) == 0).findFirst();
-                    if (leftData.isPresent()) {
+                    if (leftData.isPresent() && dailyData.getLeftAttribute()!=null) {
                         // D2_1
                         cells.get(firstRow + 6 + di, 2 + mi * 2)
                                 .setValue(this.formatValue(leftData.get().getActualValue(), leftData.get().getCharacterValue(), dailyData.getLeftAttribute(), dataSource.isZeroDisplay()));
                     }
 
                     val rightData = dailyData.getLstLeftValue().stream().filter(x -> x.getDate().compareTo(date) == 0).findFirst();
-                    if (rightData.isPresent()) {
+                    if (rightData.isPresent()&& dailyData.getRightAttribute()!= null) {
                         cells.get(firstRow + 6 + di, 3 + mi * 2)
                                 .setValue(this.formatValue(rightData.get().getActualValue(), rightData.get().getCharacterValue(), dailyData.getRightAttribute(), dataSource.isZeroDisplay()));
                     }
@@ -173,7 +173,7 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
                 // F1_1
                 cells.get(rowIndex, 0).setValue(dataRow.getOutputItemName());
                 val monthlyData = dataRow.getLstMonthlyValue().stream().filter(x -> x.getDate().compareTo(yearMonth) == 0).findFirst();
-                if (monthlyData.isPresent()) {
+                if (monthlyData.isPresent()&& dataRow.getAttribute()!= null) {
                     // F2_1
                     cells.get(rowIndex, 2 + mi * 2)
                             .setValue(this.formatValue(monthlyData.get().getActualValue(), monthlyData.get().getCharacterValue(), dataRow.getAttribute(), dataSource.isZeroDisplay()));
