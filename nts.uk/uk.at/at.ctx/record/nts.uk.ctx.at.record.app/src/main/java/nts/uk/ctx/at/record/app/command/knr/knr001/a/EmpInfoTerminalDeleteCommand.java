@@ -5,6 +5,6 @@ import lombok.Value;
 @Value
 public class EmpInfoTerminalDeleteCommand {
 	
-	private int empInfoTerCode;
+	private String empInfoTerCode;
 
 }
