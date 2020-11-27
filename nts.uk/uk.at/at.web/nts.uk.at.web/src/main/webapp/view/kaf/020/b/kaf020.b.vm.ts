@@ -15,7 +15,7 @@ module nts.uk.at.view.kaf020.b {
         appType: KnockoutObservable<number> = ko.observable(AppType.OPTIONAL_ITEM_APPLICATION);
         isSendMail: KnockoutObservable<boolean> = ko.observable(false);
         application: KnockoutObservable<Application> = ko.observable(new Application(this.appType()));
-        isAgentMode : KnockoutObservable<boolean> = ko.observable(false);
+        isAgentMode: KnockoutObservable<boolean> = ko.observable(false);
         code: string;
         dataFetch: KnockoutObservable<DetailSreenInfo> = ko.observable({
             applicationContents: ko.observableArray([])
@@ -28,13 +28,27 @@ module nts.uk.at.view.kaf020.b {
 
         created(params: any) {
             const vm = this;
-            if (params != undefined)
-                vm.code =
-                    params.code;
+            if (params != undefined) {
+                nts.uk.characteristics.save("KAF020InitParams", params)
+                vm.code = params.code;
+
+            } else {
+                nts.uk.characteristics.restore("KAF020InitParams").then((cacheParams: any) => {
+                    if (cacheParams != undefined) {
+                        vm.code = cacheParams.code;
+                    }
+                })
+            }
             vm.$blockui("show");
             vm.loadData([], [], vm.appType()).then((loadFlag) => {
                 if (loadFlag) {
-                    return vm.fetchData(params);
+                    if (params != undefined) {
+                        return vm.fetchData(params);
+                    } else {
+                        nts.uk.characteristics.restore("KAF020InitParams").then((cacheParams: any) => {
+                            return vm.fetchData(cacheParams);
+                        });
+                    }
                 }
             }).then((response: any) => {
 
@@ -60,8 +74,8 @@ module nts.uk.at.view.kaf020.b {
                         unit: optionalItem.unit,
                         inputUnitOfTimeItem: controlOfAttendanceItem ? controlOfAttendanceItem.inputUnitOfTimeItem : null,
                         description: optionalItem.description,
-                        timeUpper: optionalItem.calcResultRange.timeUpper ? nts.uk.time.format.byId("Clock_Short_HM", optionalItem.calcResultRange.timeUpper) : null,
-                        timeLower: optionalItem.calcResultRange.timeLower ? nts.uk.time.format.byId("Clock_Short_HM", optionalItem.calcResultRange.timeLower) : null,
+                        timeUpper: optionalItem.calcResultRange.timeUpper != null ? nts.uk.time.format.byId("Clock_Short_HM", optionalItem.calcResultRange.timeUpper) : null,
+                        timeLower: optionalItem.calcResultRange.timeLower != null ? nts.uk.time.format.byId("Clock_Short_HM", optionalItem.calcResultRange.timeLower) : null,
                         amountLower: optionalItem.calcResultRange.amountLower,
                         amountUpper: optionalItem.calcResultRange.amountUpper,
                         numberLower: optionalItem.calcResultRange.numberLower,
@@ -69,7 +83,7 @@ module nts.uk.at.view.kaf020.b {
                         upperCheck: optionalItem.calcResultRange.upperCheck,
                         lowerCheck: optionalItem.calcResultRange.lowerCheck,
                         time: ko.observable(''),
-                        number: ko.observable(),
+                        times: ko.observable(),
                         amount: ko.observable(),
                         detail: ''
                     });
@@ -103,9 +117,9 @@ module nts.uk.at.view.kaf020.b {
             vm.dataFetch().applicationContents().forEach((item: OptionalItemApplicationContent) => {
                 optionalItems.push({
                     itemNo: item.optionalItemNo,
-                    times: item.number() || null,
-                    amount: item.amount() || null,
-                    time: item.time() || null
+                    times: item.times(),
+                    amount: item.amount(),
+                    time: item.time()
                 });
             })
             let command = {
@@ -116,13 +130,30 @@ module nts.uk.at.view.kaf020.b {
                     optionalItems
                 }
             }
-            vm.$ajax(PATH_API.register, command).done(result => {
-                if (result != undefined) {
-                    vm.$dialog.info({messageId: "Msg_15"});
+            vm.$validate([
+                '.ntsControl',
+                '.nts-input'
+            ]).then((valid: boolean) => {
+                if (valid) {
+                    vm.$ajax(PATH_API.register, command).done(result => {
+                        if (result != undefined) {
+                            vm.$dialog.info({messageId: "Msg_15"}).then(() => window.location.reload());
+                            // let contents: Array<OptionalItemApplicationContent> = [];
+                            // vm.dataFetch().applicationContents().forEach(item => {
+                            //     contents.push({
+                            //         ...item,
+                            //         time: ko.observable(''),
+                            //         times: ko.observable(),
+                            //         amount: ko.observable(),
+                            //     })
+                            // })
+                            // vm.dataFetch({applicationContents: ko.observableArray(contents), name: vm.dataFetch().name});
+                        }
+                    }).fail(err => {
+                        vm.$dialog.error(err);
+                        // vm.handleError(err);
+                    });
                 }
-            }).fail(err => {
-                vm.$dialog.error(err);
-                // vm.handleError(err);
             });
         }
 

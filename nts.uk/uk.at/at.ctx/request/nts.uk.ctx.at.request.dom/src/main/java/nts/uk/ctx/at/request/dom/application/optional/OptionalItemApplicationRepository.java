@@ -11,4 +11,6 @@ public interface OptionalItemApplicationRepository {
     void update(OptionalItemApplication optItemApp, Application application);
 
     Optional<OptionalItemApplication> getByAppId(String companyId, String appId);
+
+    void remove(OptionalItemApplication optItemApp);
 }

@@ -48,7 +48,7 @@ public class JpaOptionalItemApplicationRepository extends JpaRepository implemen
     }
 
     @Override
-    public void update(OptionalItemApplication domain, Application application) {
+    public void  update(OptionalItemApplication domain, Application application) {
         String cid = AppContexts.user().companyId();
         Optional<KrqdtApplication> applicationEntity = this.queryProxy().query(FIND_APPLICATION, KrqdtApplication.class)
                 .setParameter("cId", cid)
@@ -56,6 +56,7 @@ public class JpaOptionalItemApplicationRepository extends JpaRepository implemen
         if (applicationEntity.isPresent()) {
             KrqdtApplication krqdtApplication = applicationEntity.get();
             krqdtApplication.setOpAppReason(application.getOpAppReason().isPresent() ? application.getOpAppReason().get().v() : null);
+            krqdtApplication.setOpAppStandardReasonCD(application.getOpAppStandardReasonCD().isPresent() ? application.getOpAppStandardReasonCD().get().v() : null);
             this.commandProxy().update(applicationEntity.get());
         }
         Map<Integer, KrqdtAppAnyv> entityMap = this.queryProxy().query(FIND_OPTIONAL_ITEM_ENTITY, KrqdtAppAnyv.class)
@@ -63,14 +64,21 @@ public class JpaOptionalItemApplicationRepository extends JpaRepository implemen
                 .setParameter("appId", domain.getAppID())
                 .getList().stream().collect(Collectors.toMap(x -> x.getKrqdtAppAnyvPk().anyvNo, x -> x));
         if (entityMap.size() > 0) {
+            List<KrqdtAppAnyv> removeEntity = new ArrayList<>();
             domain.getOptionalItems().forEach(item -> {
-                KrqdtAppAnyv krqdtAppAnyv = entityMap.get(Integer.sum(item.getItemNo().v(), OPTIONAL_ITEM_NO_CONVERT_CONST));
-                krqdtAppAnyv.setTimes(item.getTimes().isPresent() ? item.getTimes().get().v() : null);
-                krqdtAppAnyv.setTime(item.getTime().isPresent() ? item.getTime().get().v() : null);
-                krqdtAppAnyv.setMoneyValue(item.getAmount().isPresent() ? item.getAmount().get().v() : null);
+                if (!item.getTime().isPresent() && !item.getTimes().isPresent() && !item.getAmount().isPresent()) {
+                    removeEntity.add(entityMap.get(Integer.sum(item.getItemNo().v(), OPTIONAL_ITEM_NO_CONVERT_CONST)));
+                } else {
+                    KrqdtAppAnyv krqdtAppAnyv = entityMap.get(Integer.sum(item.getItemNo().v(), OPTIONAL_ITEM_NO_CONVERT_CONST));
+                    krqdtAppAnyv.setTimes(item.getTimes().isPresent() ? item.getTimes().get().v() : null);
+                    krqdtAppAnyv.setTime(item.getTime().isPresent() ? item.getTime().get().v() : null);
+                    krqdtAppAnyv.setMoneyValue(item.getAmount().isPresent() ? item.getAmount().get().v() : null);
+                }
             });
             this.commandProxy().updateAll(entityMap.values());
+            this.commandProxy().removeAll(removeEntity);
         }
+
     }
 
     @Override
@@ -85,6 +93,18 @@ public class JpaOptionalItemApplicationRepository extends JpaRepository implemen
             optionalItemApplication.get().setOptionalItems(collect);
         }
         return optionalItemApplication;
+    }
+
+    @Override
+    public void remove(OptionalItemApplication optItemApp) {
+        List<KrqdtAppAnyv> entities = this.toEntity(optItemApp);
+        List<KrqdtAppAnyvPk> keys = entities.stream().map(i -> new KrqdtAppAnyvPk(
+                i.getKrqdtAppAnyvPk().companyID,
+                i.getKrqdtAppAnyvPk().appID,
+                i.getKrqdtAppAnyvPk().anyvCd,
+                i.getKrqdtAppAnyvPk().anyvNo - 640
+        )).collect(Collectors.toList());
+        this.commandProxy().removeAll(KrqdtAppAnyv.class, keys);
     }
 
     private OptionalItemApplication toDomain(NtsResultRecord res) {

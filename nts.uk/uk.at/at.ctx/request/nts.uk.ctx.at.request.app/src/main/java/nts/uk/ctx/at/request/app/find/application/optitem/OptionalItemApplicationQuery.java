@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.app.find.application.optitem;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.request.app.command.application.optionalitem.OptionalItemApplicationCommand;
 import nts.uk.ctx.at.request.app.find.application.optitem.optitemdto.*;
+import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.optionalitemappsetting.OptItemSetDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.optionalitemappsetting.OptionalItemAppSetDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.optionalitemappsetting.OptionalItemAppSetFinder;
 import nts.uk.ctx.at.request.dom.adapter.OptionalItemAdapter;
@@ -90,6 +91,7 @@ public class OptionalItemApplicationQuery {
                     optionalItemDto.setCalcResultRange(calcResultRangeDto);
                     optionalItemDto.setOptionalItemAtr(item.getOptionalItemAtr().value);
                     optionalItemDto.setDescription(item.getDescription());
+                    optionalItemDto.setDispOrder(setting.getSettingItems().stream().filter(i -> i.getNo() == item.getOptionalItemNo()).findFirst().map(OptItemSetDto::getDispOrder).orElse(1));
                     return optionalItemDto;
                 }
         ).collect(Collectors.toList()));
@@ -109,9 +111,7 @@ public class OptionalItemApplicationQuery {
             AnyItemValueDto inputOptionalItem = iterator.next();
             /* Kiểm tra giá trị nằm trong giới hạn, vượt ra ngoài khoảng giới hạn thì thông báo lỗi Msg_1692 */
             ControlOfAttendanceItems controlOfAttendanceItems = controlOfAttendanceItemsMap.get(inputOptionalItem.getItemNo() + OPTIONAL_ITEM_NO_CONVERT_CONST);
-            if (controlOfAttendanceItems != null) {
-                Optional<BigDecimal> unit = controlOfAttendanceItems.getInputUnitOfTimeItem();
-            }
+            Optional<BigDecimal> unit = controlOfAttendanceItems != null ? controlOfAttendanceItems.getInputUnitOfTimeItem() : Optional.empty();
             /* kiểm tra bội của đơn vị, không phải là bội thì thông báo lỗi Msg_1693*/
             OptionalItem optionalItem = optionalItemMap.get(inputOptionalItem.getItemNo());
             CalcResultRange range = optionalItem.getCalcResultRange();
@@ -129,9 +129,9 @@ public class OptionalItemApplicationQuery {
                         || (range.getUpperLimit().isSET() && amountUpper != null && amountUpper.compareTo(amount) < 0)) {
                     throw new BusinessException("Msg_1692", "KAF020_22");
                 }
-//                if (unit.isPresent() && (amount % unit.get().value != 0)) {
-//                    throw new BusinessException("Msg_1693");
-//                }
+                if (unit.isPresent() && (amount % unit.get().intValue() != 0)) {
+                    throw new BusinessException("Msg_1693");
+                }
                 register = true;
             }
             if (inputOptionalItem.getTimes() != null) {
@@ -148,9 +148,9 @@ public class OptionalItemApplicationQuery {
                         || (range.getUpperLimit().isSET() && numberUpper != null && numberUpper.compareTo(times.doubleValue()) < 0)) {
                     throw new BusinessException("Msg_1692", "KAF020_22");
                 }
-//                if (unit.isPresent() && (times % unit.get().value != 0)) {
-//                    throw new BusinessException("Msg_1693");
-//                }
+                if (unit.isPresent() && (times.doubleValue() % unit.get().doubleValue() != 0)) {
+                    throw new BusinessException("Msg_1693");
+                }
                 register = true;
             }
             if (inputOptionalItem.getTime() != null) {
@@ -167,9 +167,9 @@ public class OptionalItemApplicationQuery {
                         || (range.getUpperLimit().isSET() && timeUpper != null && timeUpper.compareTo(time) < 0)) {
                     throw new BusinessException("Msg_1692", "KAF020_22");
                 }
-//                if (unit.isPresent() && (time % unit.get().value != 0)) {
-//                    throw new BusinessException("Msg_1693", "KAF020_22");
-//                }
+                if (unit.isPresent() && (time % unit.get().intValue() != 0)) {
+                    throw new BusinessException("Msg_1693", "KAF020_22");
+                }
                 register = true;
             }
         }
