@@ -9,12 +9,12 @@
 		<span class="title">#{i18n.getText('CCG018_45')}</span>
 		<a id="A1-4" class="goback" data-bind="click: jumpToCcg015 ,ntsLinkButton: { }">#{i18n.getText('CCG018_50')}</a>
 		<button tabindex="-1" id="A1-5" class="proceed"
-			data-bind="click: save, enable: isEmpty">#{i18n.getText('CCG018_3')}</button>
+			data-bind="click: save, enable: isNotEmpty">#{i18n.getText('CCG018_3')}</button>
 	</div>
 
 	<div id="contents-area">
 		<div id="A2-4">
-			<table class="table1">
+			<table class="table1" tabindex="-1">
 				<thead>
 					<tr>
 						<th id="A2_H1" class="tbl-th">#{i18n.getText('CCG018_8')}</th>
@@ -27,7 +27,7 @@
 						<th id="A2_H5" class="tbl-th" data-bind="visible: isVisible">#{i18n.getText('CCG018_10')}</th>
 					</tr>
 				</thead>
-				<tbody style="height:397px !important;" data-bind="foreach: lisTopPageRoleSet, style: {'width': isVisible()? '797px':'733px'}">
+				<tbody style="max-height:397px !important; height: fit-content;" data-bind="foreach: lisTopPageRoleSet, style: {'width': isVisible()? '797px':'733px'}">
 					<tr>
 						<td id="A2_D1" class="tbl-td" data-bind="text: roleSetCode"></td>
 						<td id="A2_D2" class="tbl-td" data-bind="text: name"></td>

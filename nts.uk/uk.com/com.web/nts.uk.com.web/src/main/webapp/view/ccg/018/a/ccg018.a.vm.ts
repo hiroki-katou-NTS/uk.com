@@ -28,7 +28,7 @@ module ccg018.a.viewmodel {
         start(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            $.when(self.findBySystemMenuCls(), self.findDataForAfterLoginDis(), self.findByCId()).done(function() {
+            $.when(self.findBySystemMenuCls(), self.findDataForAfterLoginDis()).done(function() {
                 dfd.resolve();
             }).fail(function(err) {
                 dfd.reject();

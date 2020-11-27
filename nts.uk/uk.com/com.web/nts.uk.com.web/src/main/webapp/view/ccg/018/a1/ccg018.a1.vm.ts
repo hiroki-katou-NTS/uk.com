@@ -7,7 +7,7 @@ module ccg018.a1.viewmodel {
         isVisible: KnockoutObservable<boolean>;
         categorySet: KnockoutObservable<number>;
         listJobTitle: KnockoutObservableArray<any>;
-        isEmpty: KnockoutObservable<boolean>;
+        isNotEmpty: KnockoutObservable<boolean> = ko.observable(false);
         referenceDate: string = nts.uk.resource.getText("CCG018_6");
         listSwitchDate: KnockoutObservableArray<number> = ko.observableArray();
         listRoleSet: KnockoutObservableArray<RoleSet> = ko.observableArray([]);
@@ -25,9 +25,6 @@ module ccg018.a1.viewmodel {
             self.comboItemsAfterLogin(baseModel.comboItemsAfterLogin);
             self.comboItemsAsTopPage(baseModel.comboItemsAsTopPage);
 
-            self.isEmpty = ko.computed(function() {
-                return !nts.uk.ui.errors.hasError();
-            });
             self.categorySet.subscribe((newValue) => {
                 if (newValue == 0) {
                     $("#width-tbody").addClass("width-tbody");
@@ -40,6 +37,10 @@ module ccg018.a1.viewmodel {
             $('#A2-2').focus();
             const vm = this;
             blockUI.grayout();
+            vm.listRoleSet.subscribe(value => {
+                vm.isNotEmpty(value.length !== 0);
+            });
+
             service.findAllRoleSet()
                 //ドメインモデル「ロールセット」を取得する
                 .then((data: any) => {
@@ -102,7 +103,9 @@ module ccg018.a1.viewmodel {
             ccg018.a1.service.update(command)
                 .done(() => {
                     blockUI.clear();
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" })
+                    .then(() => $('.table1').focus());
+                    
                 }).fail((error) => {
                     nts.uk.ui.dialog.alertError(error.message);
                 }).always(() => blockUI.clear());
