@@ -226,7 +226,6 @@ module ccg018.b.viewmodel {
             vm.isSelectedFirst(false);
             $.when(vm.findTopPagePersonSet()).then(() => {
               vm.currentCode(vm.selectedItem().code);
-              vm.selectedItemAfterLogin(`${obj.loginMenuCode}${obj.loginSystem}${obj.loginMenuCls}`);
               vm.isEnable(true);
               nts.uk.ui.dialog.info({ messageId: "Msg_15" });
             });
