@@ -1,7 +1,11 @@
 package nts.uk.ctx.at.shared.app.command.statutory.worktime.monthlyworkinghours;
 
 import lombok.AllArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetCom;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 
@@ -11,8 +15,10 @@ import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTi
 public class MonthlyWorkTimeSetComCommand extends MonthlyWorkTimeSetCommand {
 
 	public MonthlyWorkTimeSetCom toDomain() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return MonthlyWorkTimeSetCom.of(AppContexts.user().companyId(),
+				EnumAdaptor.valueOf(this.getLaborAttr(), LaborWorkTypeAttr.class), new YearMonth(this.getYm()),
+				this.getLaborTime().toDomain());
 	}
 
 }
