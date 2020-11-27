@@ -2,6 +2,7 @@ package nts.uk.ctx.bs.person.dom.person.personal.anniversary.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -53,7 +54,7 @@ public class AnniversaryDomainService {
 				anniversaryNotices.addAll(anniversaryNoticeList);
 			}
 		}
-		Map<AnniversaryNotice, Boolean> anniversaryNoticeMap = new HashMap<>();
+		Map<AnniversaryNotice, Boolean> anniversaryNoticeMap = new LinkedHashMap<>();
 		for (AnniversaryNotice anniversaryNotice : anniversaryNotices) {
 			anniversaryNoticeMap.put(anniversaryNotice, anniversaryNotice.isNewAnniversary(dateEnd));
 		}

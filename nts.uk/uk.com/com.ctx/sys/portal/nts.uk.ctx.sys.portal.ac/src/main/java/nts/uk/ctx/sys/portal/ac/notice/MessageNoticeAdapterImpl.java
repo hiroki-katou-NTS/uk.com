@@ -3,6 +3,7 @@ package nts.uk.ctx.sys.portal.ac.notice;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -77,7 +78,7 @@ public class MessageNoticeAdapterImpl implements MessageNoticeAdapter {
 	@Override
 	public Map<AnniversaryNoticeImport, Boolean> setFlag(DatePeriod datePeriod) {
 		Map<AnniversaryNoticeExport, Boolean> dataExport = anniversaryNoticePub.setFlag(datePeriod);
-		Map<AnniversaryNoticeImport, Boolean> result = new HashMap<AnniversaryNoticeImport, Boolean>();
+		Map<AnniversaryNoticeImport, Boolean> result = new LinkedHashMap<AnniversaryNoticeImport, Boolean>();
 		if (dataExport.isEmpty()) {
 			return result;
 		}
