@@ -9,10 +9,8 @@ package nts.uk.ctx.at.shared.dom.scherec.totaltimes;
  */
 public enum UseAtr {
 
-	/** The Not use. */
 	NotUse(0, "使用しない", "Enum_UseAtr_NotUse"),
 
-	/** The Use. */
 	Use(1, "使用する", "Enum_UseAtr_Use");
 
 	/** The value. */
@@ -30,12 +28,9 @@ public enum UseAtr {
 	/**
 	 * Instantiates a new work type atr.
 	 *
-	 * @param value
-	 *            the value
-	 * @param nameId
-	 *            the name id
-	 * @param description
-	 *            the description
+	 * @param value the value
+	 * @param nameId the name id
+	 * @param description the description
 	 */
 	private UseAtr(int value, String nameId, String description) {
 		this.value = value;
@@ -46,24 +41,20 @@ public enum UseAtr {
 	/**
 	 * Value of.
 	 *
-	 * @param value
-	 *            the value
+	 * @param value the value
 	 * @return the summary atr
 	 */
 	public static UseAtr valueOf(Integer value) {
-		// Invalid object.
 		if (value == null) {
 			return null;
 		}
 
-		// Find value.
 		for (UseAtr val : UseAtr.values) {
 			if (val.value == value) {
 				return val;
 			}
 		}
 
-		// Not found.
 		return null;
 	}
 }

@@ -4,6 +4,6 @@ import java.util.List;
 
 public interface SendNRDataPub<T extends List<? extends SendNRInfoDataExport>> {
 
-	public T send(Integer empInfoTerCode, String contractCode);
+	public T send(String empInfoTerCode, String contractCode);
 
 }

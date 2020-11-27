@@ -61,8 +61,8 @@ import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeave
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveWorkHistoryAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveWorkPeriodImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmployeeLeaveJobPeriodImport;
-import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
-import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpHisAdaptor;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeHis;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeService;
 import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.ConditionEmployee;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -146,7 +146,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	private WorkTimeSettingRepository workTimeSettingRepository;
 
 	@Inject
-	private BusinessTypeOfEmpHisAdaptor businessTypeOfEmpHisAdaptor;
+	private BusinessTypeOfEmployeeService businessTypeOfEmpHisService;
 
 	@Inject
 	private FixedWorkSettingRepository fixedWorkSettingRepository;
@@ -519,8 +519,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		// ドメインモデル「社員の勤務種別の履歴」を取得する
 		// ドメインモデル「社員の勤務種別」を取得する
 		// <<Public>> 社員ID(List)、期間で期間分の勤務種別情報を取得する
-		List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis = this.businessTypeOfEmpHisAdaptor
-				.findByCidSidBaseDate(companyId, employeeIds, period);
+		List<BusinessTypeOfEmployeeHis> listBusTypeOfEmpHis = this.businessTypeOfEmpHisService.find(employeeIds, period);
 		empGeneralInfo.setListBusTypeOfEmpHis(listBusTypeOfEmpHis);
 		// Imported(就業)「社員の在職状態」を取得する
 		Map<String, List<EmploymentInfoImported>> mapEmploymentStatus = this.employmentStatusAdapter

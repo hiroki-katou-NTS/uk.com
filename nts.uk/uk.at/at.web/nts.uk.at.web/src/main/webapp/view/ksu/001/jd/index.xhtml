@@ -9,7 +9,7 @@
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { width: 650, height: 260 };</script>
 			<com:ValidatorScript>
-				nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletName
+				nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteName
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ksu001.jd.main.css" />
@@ -36,7 +36,7 @@
 						<td style="width: 100px"><span class="label">#{i18n.getText('KSU001_155')}</span>
 						</td>
 						<td style="width: 130px">
-							<div data-bind="ntsFormLabel: {constraint: 'ShiftPalletName',required: true}">
+							<div data-bind="ntsFormLabel: {constraint: 'ShiftPaletteName',required: true}">
 								#{i18n.getText('KSU001_156')}</div> 
 						</td>
 						<td>
@@ -54,7 +54,7 @@
 						</td>
 						<td style="width: 150px; text-align: center;"><input tabindex="2" id="input-desName" style="width: 70px" 
 							data-bind="ntsTextEditor: 
-							{value: desName, constraint:'ShiftPalletName',required: true, name: '#[KSU001_160]'}" />
+							{value: desName, constraint:'ShiftPaletteName',required: true, name: '#[KSU001_160]'}" />
 						</td> 
 					</tr>
 				</table>

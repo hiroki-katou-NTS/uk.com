@@ -1,9 +1,7 @@
 package nts.uk.ctx.at.schedule.app.find.shift.shiftpalletsorg;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -12,20 +10,16 @@ import javax.inject.Inject;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeam;
-import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeamRepository;
-import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.domainservice.SwapEmpOnScheduleTeamService;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsOrg;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsOrgRepository;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteOrg;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteOrgRepository;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.DisplayInfoOrganization;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.WorkplaceInfo;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.WorkplaceGroupAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.WorkplaceGroupImport;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.AffWorkplaceAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.WorkplaceExportServiceAdapter;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.AffWorkplaceGroupImport;
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.DisplayInfoOrganization;
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 
 /**
  * 
@@ -37,7 +31,7 @@ public class ShiftPalletsOrgFinder {
 	
 
 	@Inject
-	private ShiftPalletsOrgRepository shiftPalletsOrgRepository;
+	private ShiftPaletteOrgRepository shiftPalletsOrgRepository;
 
 	@Inject
 	private WorkplaceGroupAdapter groupAdapter;
@@ -51,7 +45,7 @@ public class ShiftPalletsOrgFinder {
 	public List<ShiftPalletsOrgDto> getbyWorkPlaceId(String workplaceId) {
 	
 			// 0 = work place
-			List<ShiftPalletsOrg> shiftPalletsOrg = shiftPalletsOrgRepository.findbyWorkPlaceId(0, workplaceId);
+			List<ShiftPaletteOrg> shiftPalletsOrg = shiftPalletsOrgRepository.findbyWorkPlaceId(0, workplaceId);
 			List<ShiftPalletsOrgDto> result = shiftPalletsOrg.stream().map(c -> new ShiftPalletsOrgDto(c, workplaceId))
 					.collect(Collectors.toList());
 			return result;
@@ -61,7 +55,7 @@ public class ShiftPalletsOrgFinder {
 	//	List<ShiftPalletsOrgDtoJB> data = new ArrayList();
 		// 0 = work place
 		RequireImpl require = new RequireImpl(groupAdapter, serviceAdapter, wplAdapter);
-		List<ShiftPalletsOrg> shiftPalletsOrg = shiftPalletsOrgRepository.findbyWorkPlaceId(0, workplaceId);
+		List<ShiftPaletteOrg> shiftPalletsOrg = shiftPalletsOrgRepository.findbyWorkPlaceId(0, workplaceId);
 		TargetOrgIdenInfor target = TargetOrgIdenInfor.creatIdentifiWorkplace(workplaceId);
 		DisplayInfoOrganization data = target.getDisplayInfor(require, GeneralDate.today());
 		String displayName = data.getDisplayName();
@@ -75,7 +69,7 @@ public class ShiftPalletsOrgFinder {
 		// 1 = work place group
 		RequireImpl require = new RequireImpl(groupAdapter, serviceAdapter, wplAdapter);
 		TargetOrgIdenInfor target = TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(workplaceGrId);
-		List<ShiftPalletsOrg> shiftPalletsOrg = shiftPalletsOrgRepository.findbyWorkPlaceId(1, workplaceGrId);
+		List<ShiftPaletteOrg> shiftPalletsOrg = shiftPalletsOrgRepository.findbyWorkPlaceId(1, workplaceGrId);
 		DisplayInfoOrganization data = target.getDisplayInfor(require, GeneralDate.today());
 		String displayName = data.getDisplayName();
 		List<ShiftPalletsOrgDto> list = shiftPalletsOrg.stream().map(c -> new ShiftPalletsOrgDto(c, workplaceGrId ))

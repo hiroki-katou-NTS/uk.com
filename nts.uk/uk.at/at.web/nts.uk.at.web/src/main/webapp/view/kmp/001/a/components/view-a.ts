@@ -19,7 +19,10 @@ module nts.uk.at.view.kmp001.a {
 			<div class="float-left model-component" 
 				data-bind="component: { 
 					name: 'editor-area', 
-					params: { model: model, stampCardEdit: stampCardEdit, textInput: textInput}}">
+					params: { model: model, 
+						stampCardEdit: stampCardEdit, 
+						textInput: textInput, 
+						methodEdit: methodEdit}}">
 			</div>
 		<div>
 `;
@@ -48,6 +51,7 @@ module nts.uk.at.view.kmp001.a {
 		public mode: KnockoutObservable<MODE> = ko.observable('new');
 		public stampCardEdit: share.StampCardEdit = new share.StampCardEdit();
 		public textInput: KnockoutObservable<string> = ko.observable('');
+		public methodEdit:KnockoutObservable<boolean> = ko.observable(false);
 
 		created() {
 			const vm = this;
@@ -199,43 +203,56 @@ module nts.uk.at.view.kmp001.a {
 					vm.validate()
 						.then((valid: boolean) => {
 							if (valid) {
-								var s = (ko.toJS(vm.stampCardEdit.stampCardDigitNumber) - stampInput.length);
+								if (!ko.unwrap(vm.methodEdit)){
+									var s = (ko.toJS(vm.stampCardEdit.stampCardDigitNumber) - stampInput.length);
 
-								if (s > 0) {
-									switch (ko.toJS(vm.stampCardEdit.stampCardEditMethod)) {
-										case 1:
-											for (var i = 0; i < s; i++) {
-												stampInput = "0" + stampInput;
-											}
-											break;
-										case 2:
-											for (var i = 0; i < s; i++) {
-												stampInput = stampInput + "0";
-											}
-											break;
-										case 3:
-											for (var i = 0; i < s; i++) {
-												stampInput = " " + stampInput;
-											}
-											break;
-										case 4:
-											for (var i = 0; i < s; i++) {
-												stampInput = stampInput + " ";
-											}
-											break;
+									if (s > 0) {
+										switch (ko.toJS(vm.stampCardEdit.stampCardEditMethod)) {
+											case 1:
+												for (var i = 0; i < s; i++) {
+													stampInput = "0" + stampInput;
+												}
+												break;
+											case 2:
+												for (var i = 0; i < s; i++) {
+													stampInput = stampInput + "0";
+												}
+												break;
+											case 3:
+												for (var i = 0; i < s; i++) {
+													stampInput = " " + stampInput;
+												}
+												break;
+											case 4:
+												for (var i = 0; i < s; i++) {
+													stampInput = stampInput + " ";
+												}
+												break;
+										}
 									}
 								}
 
 								const commandNew = { employeeId: ko.toJS(model.employeeId), cardNumber: stampInput };
 
 								vm.$ajax(KMP001A_API.ADD, commandNew)
-									.then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
+									.then(() => {
+										if (ko.unwrap(vm.methodEdit)) {
+											vm.$errors('clear');
+										}
+										vm.$dialog.info({ messageId: 'Msg_15' });
+									})
 									.then(() => vm.$blockui("invisible"))
 									.then(() => vm.textInput(''))
 									.then(() => vm.reloadData(index))
 									.then(() => vm.model.code.valueHasMutated())
 									.fail((err: any) => {
-										vm.$dialog.error({ messageId: err.messageId });
+										if (ko.unwrap(vm.methodEdit)) {
+											vm.$errors('clear');
+										}
+										$('.ip-stamp-card').blur();
+										setTimeout(() => {
+											vm.$dialog.error({ messageId: err.messageId });
+										},50 );
 									})
 									.always(() => vm.$blockui("clear"));
 							}

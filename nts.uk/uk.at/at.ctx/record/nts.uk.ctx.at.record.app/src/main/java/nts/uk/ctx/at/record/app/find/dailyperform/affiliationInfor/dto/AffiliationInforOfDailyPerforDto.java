@@ -7,16 +7,16 @@ import lombok.EqualsAndHashCode;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
-import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.BusinessTypeCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
+import nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -61,8 +61,8 @@ public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 			dto.setClassificationCode(domain.getAffiliationInfor().getClsCode() == null ? null : domain.getAffiliationInfor().getClsCode().v());
 			dto.setEmploymentCode(domain.getAffiliationInfor().getEmploymentCode() == null ? null : domain.getAffiliationInfor().getEmploymentCode().v());
 			dto.setJobId(domain.getAffiliationInfor().getJobTitleID());
-			dto.setSubscriptionCode(domain.getAffiliationInfor().getBonusPaySettingCode() == null ? null 
-					: domain.getAffiliationInfor().getBonusPaySettingCode().v());
+			dto.setSubscriptionCode(!domain.getAffiliationInfor().getBonusPaySettingCode().isPresent() ? null 
+					: domain.getAffiliationInfor().getBonusPaySettingCode().get().v());
 			dto.setWorkplaceID(domain.getAffiliationInfor().getWplID());
 			dto.setBaseDate(domain.getYmd());
 			dto.setEmployeeId(domain.getEmployeeId());
@@ -80,8 +80,8 @@ public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 			dto.setClassificationCode(domain.getClsCode() == null ? null : domain.getClsCode().v());
 			dto.setEmploymentCode(domain.getEmploymentCode() == null ? null : domain.getEmploymentCode().v());
 			dto.setJobId(domain.getJobTitleID());
-			dto.setSubscriptionCode(domain.getBonusPaySettingCode() == null ? null 
-					: domain.getBonusPaySettingCode().v());
+			dto.setSubscriptionCode(!domain.getBonusPaySettingCode().isPresent()? null 
+					: domain.getBonusPaySettingCode().get().v());
 			dto.setWorkplaceID(domain.getWplID());
 			dto.setBaseDate(ymd);
 			dto.setEmployeeId(employeeID);
