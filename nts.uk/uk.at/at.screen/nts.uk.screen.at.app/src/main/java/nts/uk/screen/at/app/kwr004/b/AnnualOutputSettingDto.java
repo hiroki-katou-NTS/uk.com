@@ -23,14 +23,31 @@ public class AnnualOutputSettingDto {
     // 	月次出力項目リスト-MONTHLY
     private List<MonthlyOutputItemsDto> monthlyOutputItems;
 
-    public static AnnualOutputSettingDto setData(AnnualWorkLedgerOutputSetting domain){
+    public static AnnualOutputSettingDto setData(AnnualWorkLedgerOutputSetting domain) {
         List<DailyOutputItemsDto> dailyOutputItems = domain.getDailyOutputItemList().stream().map(x ->
-            new DailyOutputItemsDto(x.getRank(),x.isPrintTargetFlag(),x.getName().v(),x.getItemDetailAttributes().value,x.getIndependentCalcClassic().value)).
-            collect(Collectors.toList());
+            new DailyOutputItemsDto(
+                x.getRank(),
+                x.isPrintTargetFlag(),
+                x.getName().v(),
+                x.getItemDetailAttributes().value,
+                x.getIndependentCalcClassic().value,
+                x.getSelectedAttendanceItemList().stream().map(i -> new OutputItemDetailAttItemDto(
+                    i.getOperator().value,
+                    i.getAttendanceItemId()
+                )).collect(Collectors.toList())
+            )).collect(Collectors.toList());
 
         List<MonthlyOutputItemsDto> monthlyOutputItems = domain.getMonthlyOutputItemList().stream().map(x ->
-            new MonthlyOutputItemsDto(x.getRank(),x.isPrintTargetFlag(),x.getName().v(),x.getItemDetailAttributes().value)).
-            collect(Collectors.toList());
-        return new AnnualOutputSettingDto(domain.getCode().v(),domain.getName().v(),dailyOutputItems, monthlyOutputItems);
+            new MonthlyOutputItemsDto(
+                x.getRank(),
+                x.isPrintTargetFlag(),
+                x.getName().v(),
+                x.getItemDetailAttributes().value,
+                x.getSelectedAttendanceItemList().stream().map(i -> new OutputItemDetailAttItemDto(
+                    i.getOperator().value,
+                    i.getAttendanceItemId()
+                )).collect(Collectors.toList())
+            )).collect(Collectors.toList());
+        return new AnnualOutputSettingDto(domain.getCode().v(), domain.getName().v(), dailyOutputItems, monthlyOutputItems);
     }
 }

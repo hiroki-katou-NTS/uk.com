@@ -2,6 +2,9 @@ package nts.uk.screen.at.app.kwr004.b;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemDetailAttItem;
+
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -22,5 +25,6 @@ public class DailyOutputItemsDto {
     // B4_5	単独計算区分
     private int independentCalcClassic;
 
+    private List<OutputItemDetailAttItemDto> selectedListItems ;
 
 }

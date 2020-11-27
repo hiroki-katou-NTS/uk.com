@@ -3,6 +3,8 @@ package nts.uk.screen.at.app.kwr004.b;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 public class MonthlyOutputItemsDto {
@@ -18,5 +20,7 @@ public class MonthlyOutputItemsDto {
 
     // B4_3_3_2	属性
     private int attribute;
+
+    private List<OutputItemDetailAttItemDto> selectedListItems ;
 
 }
