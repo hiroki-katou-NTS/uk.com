@@ -30,11 +30,14 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		dataSource: DisplayInfoOverTime;
 		visibleModel: VisibleModel = new VisibleModel();
 		isCalculation: Boolean = false;
+		urlParam: string;
 		created(params: AppInitParam) {
 			// new 
 			const vm = this;
+			vm.urlParam = $(location).attr('search').split("=")[1];
+			
 			vm.application = ko.observable(new Application(ko.toJS(vm.appType)));
-
+			
 			vm.createRestTime(vm.restTime);
 			vm.createHolidayTime(vm.holidayTime);
 			vm.createOverTime(vm.overTime);
@@ -81,7 +84,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						} as FirstParam;
 						param1.companyId = vm.$user.companyId;
 						// param1.dateOp = '2020/11/13';
-						param1.overtimeAppAtr = OvertimeAppAtr.EARLY_OVERTIME;
+						param1.overtimeAppAtr = vm.getOverTimeAtrByUrl();
 						param1.appDispInfoStartupDto = ko.toJS(vm.appDispInfoStartupOutput);
 						// param1.startTimeSPR = 100;
 						// param1.endTimeSPR = 200;
@@ -158,6 +161,17 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 
 
 		}
+		
+		getOverTimeAtrByUrl() {
+			const self = this;
+			if (self.urlParam == '0') {
+				return OvertimeAppAtr.EARLY_OVERTIME;
+			} else if (self.urlParam == '1') {
+				return OvertimeAppAtr.NORMAL_OVERTIME;
+			} else {
+				return OvertimeAppAtr.EARLY_NORMAL_OVERTIME;
+			}
+		}
 
 		createRestTime(restTime: KnockoutObservableArray<RestTime>) {
 			const self = this;
@@ -217,7 +231,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			} as FirstParam;
 			param1.companyId = self.$user.companyId;
 			param1.dateOp = ko.toJS(self.appDispInfoStartupOutput).appDispInfoWithDateOutput.baseDate;
-			param1.overtimeAppAtr = OvertimeAppAtr.EARLY_NORMAL_OVERTIME;
+			param1.overtimeAppAtr = self.getOverTimeAtrByUrl();
 			param1.appDispInfoStartupDto = ko.toJS(self.appDispInfoStartupOutput);
 			// param1.startTimeSPR = 100;
 			// param1.endTimeSPR = 200;
@@ -319,7 +333,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					} else if (item.type == AttendanceType.MIDNIGHT_OUTSIDE) {
 						if (!_.isNil(item.applicationTime())) {
 							if (item.applicationTime() > 0) {
-								overTimeShiftNight.overTimeMidNight = item.applicationTime();							
+								overTimeShiftNight.overTimeMidNight = item.applicationTime();
+								applicationTime.overTimeShiftNight = overTimeShiftNight;					
 							}
 						}
 					} else if (item.type == AttendanceType.FLEX_OVERTIME) {
@@ -329,6 +344,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 							}
 						}
 					}
+					
 				}
 			});
 			// Type = 加給時間
@@ -350,7 +366,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			
 			
 			
-			// A_7
+			// A7_8
 			let holidayTime = vm.holidayTime() as Array<HolidayTime>;
 			_.forEach(holidayTime, (item: HolidayTime) => {
 				if (!_.isNil(item.start()) && item.type == AttendanceType.BREAKTIME) {
@@ -363,6 +379,58 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					}
 				}
 			})
+			// A7_12
+			{
+				let findResult = _.find(holidayTime, (i: HolidayTime) => i.type == AttendanceType.MIDDLE_BREAK_TIME);
+				if (!_.isNil(findResult) && findResult.start() > 0) {
+					if (_.isNil(applicationTime.overTimeShiftNight)) {
+						applicationTime.overTimeShiftNight = {} as OverTimeShiftNight;
+						applicationTime.overTimeShiftNight.midNightHolidayTimes = [];
+					}
+					let holidayMidNightTime = {} as HolidayMidNightTime;
+					holidayMidNightTime.attendanceTime = findResult.start();
+					holidayMidNightTime.legalClf = StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork;
+					if (_.isEmpty(applicationTime.overTimeShiftNight.midNightHolidayTimes)) {
+						applicationTime.overTimeShiftNight.midNightHolidayTimes = [];
+					}
+					applicationTime.overTimeShiftNight.midNightHolidayTimes.push(holidayMidNightTime);
+				}
+			}
+			// A7_16
+			{
+				let findResult = _.find(holidayTime, (i: HolidayTime) => i.type == AttendanceType.MIDDLE_EXORBITANT_HOLIDAY);
+				if (!_.isNil(findResult) && findResult.start() > 0) {
+					if (_.isNil(applicationTime.overTimeShiftNight)) {
+						applicationTime.overTimeShiftNight = {} as OverTimeShiftNight;
+						applicationTime.overTimeShiftNight.midNightHolidayTimes = [];
+					}
+					let holidayMidNightTime = {} as HolidayMidNightTime;
+					holidayMidNightTime.attendanceTime = findResult.start();
+					holidayMidNightTime.legalClf = StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork;
+					if (_.isEmpty(applicationTime.overTimeShiftNight.midNightHolidayTimes)) {
+						applicationTime.overTimeShiftNight.midNightHolidayTimes = [];
+					}
+					applicationTime.overTimeShiftNight.midNightHolidayTimes.push(holidayMidNightTime);
+				}
+			}
+			// A7_20
+			{
+				let findResult = _.find(holidayTime, (i: HolidayTime) => i.type == AttendanceType.MIDDLE_HOLIDAY_HOLIDAY);
+				if (!_.isNil(findResult) && findResult.start() > 0) {
+					if (_.isNil(applicationTime.overTimeShiftNight)) {
+						applicationTime.overTimeShiftNight = {} as OverTimeShiftNight;
+						applicationTime.overTimeShiftNight.midNightHolidayTimes = [];
+					}
+					let holidayMidNightTime = {} as HolidayMidNightTime;
+					holidayMidNightTime.attendanceTime = findResult.start();
+					holidayMidNightTime.legalClf = StaturoryAtrOfHolidayWork.PublicHolidayWork;
+					if (_.isEmpty(applicationTime.overTimeShiftNight.midNightHolidayTimes)) {
+						applicationTime.overTimeShiftNight.midNightHolidayTimes = [];
+					}
+					applicationTime.overTimeShiftNight.midNightHolidayTimes.push(holidayMidNightTime);
+				}
+			}
+			
 
 			applicationTime.reasonDissociation = [] as Array<ReasonDivergence>;
 
@@ -644,10 +712,218 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		}
 		setColorForHolidayTime(isCalculation: Boolean, dataSource: DisplayInfoOverTime) {
 			const self = this;
-			if (!isCalculation) {
+			if (!isCalculation || _.isNil(dataSource.calculationResultOp)) {
 				
 				return;
 			}
+			let holidayTimes = self.holidayTime() as Array<HolidayTime>;
+			let overStateOutput = dataSource.calculationResultOp.overStateOutput;
+			
+			_.forEach(holidayTimes, (item: OverTime) => {
+				let backgroundColor = '';
+				if (item.type == AttendanceType.BREAKTIME) {
+					if (!_.isNil(overStateOutput)) {
+						// ・計算値：「残業申請の表示情報．計算結果」を確認する
+						if (!_.isNil(dataSource.calculationResultOp.applicationTimes)) {
+							let applicationTime = dataSource.calculationResultOp.applicationTimes[0].applicationTime;
+							if (!_.isEmpty(applicationTime)) {
+								let result = _.find(applicationTime, (i: OvertimeApplicationSetting) => {
+									return i.frameNo == Number(item.frameNo) && i.attendanceType == AttendanceType.BREAKTIME;
+								});
+								if (!_.isNil(result)) {
+									if (result.applicationTime > 0) {
+										backgroundColor = BACKGROUND_COLOR.bgC1;									
+									}
+								}
+							}
+						}
+						// ・事前申請超過：「残業申請の表示情報．計算結果．事前申請・実績の超過状態」を確認する
+						if (!_.isNil(overStateOutput.advanceExcess)) {
+							let excessStateDetail = overStateOutput.advanceExcess.excessStateDetail;
+							if (!_.isEmpty(excessStateDetail)) {
+								let result = _.find(excessStateDetail, (i: ExcessStateDetail) => {
+									return i.frame == Number(item.frameNo) && i.type == AttendanceType.BREAKTIME;
+								});
+								if (!_.isNil(result)) {
+									if (result.excessState == ExcessState.EXCESS_ALARM) {
+										backgroundColor = BACKGROUND_COLOR.bgC4;
+									}
+								}
+							}
+							
+						}
+						
+						
+						// ・実績申請超過：「残業申請の表示情報．計算結果．事前申請・実績の超過状態」を確認する
+						if (!_.isNil(overStateOutput.achivementExcess)) {
+							let excessStateDetail = overStateOutput.advanceExcess.excessStateDetail;
+							if (!_.isEmpty(excessStateDetail)) {
+								let result = _.find(excessStateDetail, (i: ExcessStateDetail) => {
+									return i.frame == Number(item.frameNo) && i.type == AttendanceType.BREAKTIME;
+								});
+								if (!_.isNil(result)) {
+									if (result.excessState == ExcessState.EXCESS_ERROR) {
+										backgroundColor = BACKGROUND_COLOR.bgC2;
+									} else if (result.excessState == ExcessState.EXCESS_ALARM) {
+										backgroundColor = BACKGROUND_COLOR.bgC3;
+									}
+									
+								}
+							}
+							
+						}
+						
+					}
+					
+					
+					
+					
+					
+				} else if (item.type == AttendanceType.MIDDLE_BREAK_TIME) {
+					// 計算結果．申請時間．就業時間外深夜時間．休出深夜時間．時間 > 0
+					// 法定区分 = 法定内休出
+					if (!_.isEmpty(dataSource.calculationResultOp.applicationTimes)) {
+						let overTimeShiftNight = dataSource.calculationResultOp.applicationTimes[0].overTimeShiftNight;
+						if (!_.isNil(overTimeShiftNight)) {
+							if (!_.isEmpty(overTimeShiftNight.midNightHolidayTimes)) {
+								let findResult = _.find(overTimeShiftNight.midNightHolidayTimes, (i: HolidayMidNightTime) => i.legalClf == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork);
+								if (!_.isNil(findResult)) {
+									if (findResult.attendanceTime > 0) {
+										backgroundColor = BACKGROUND_COLOR.bgC1;										
+									}
+								}
+							}
+						}
+					}
+					
+					// 事前申請・実績の超過状態．事前超過．休出深夜時間．法定区分 = 法定内休出
+					// 事前申請・実績の超過状態．事前超過．休出深夜時間．超過状態 = 超過アラーム
+					if (!_.isNil(overStateOutput.advanceExcess)) {
+						let excessStateMidnight = overStateOutput.advanceExcess.excessStateMidnight;
+						if (!_.isEmpty(excessStateMidnight)) {
+							let findResult = _.find(excessStateMidnight, (i: ExcessStateMidnight) => i.legalCfl == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork);
+								if (!_.isNil(findResult)) {
+									if (findResult.excessState == ExcessState.EXCESS_ALARM) {
+										backgroundColor = BACKGROUND_COLOR.bgC4;										
+									}
+								}
+						}
+					}
+					
+					if (!_.isNil(overStateOutput.achivementExcess)) {
+						let excessStateMidnight = overStateOutput.achivementExcess.excessStateMidnight;
+						if (!_.isEmpty(excessStateMidnight)) {
+							let findResult = _.find(excessStateMidnight, (i: ExcessStateMidnight) => i.legalCfl == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork);
+								if (!_.isNil(findResult)) {
+									if (findResult.excessState == ExcessState.EXCESS_ALARM) {
+										backgroundColor = BACKGROUND_COLOR.bgC3;										
+									} else if (findResult.excessState == ExcessState.EXCESS_ERROR) {
+										backgroundColor = BACKGROUND_COLOR.bgC2;	
+									}
+								}
+						}
+					}
+					
+					
+					
+				} else if (item.type == AttendanceType.MIDDLE_EXORBITANT_HOLIDAY) {
+					// 計算結果．申請時間．就業時間外深夜時間．休出深夜時間．時間 > 0
+					// 法定区分 = 法定内休出
+					if (!_.isEmpty(dataSource.calculationResultOp.applicationTimes)) {
+						let overTimeShiftNight = dataSource.calculationResultOp.applicationTimes[0].overTimeShiftNight;
+						if (!_.isNil(overTimeShiftNight)) {
+							if (!_.isEmpty(overTimeShiftNight.midNightHolidayTimes)) {
+								let findResult = _.find(overTimeShiftNight.midNightHolidayTimes, (i: HolidayMidNightTime) => i.legalClf == StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork);
+								if (!_.isNil(findResult)) {
+									if (findResult.attendanceTime > 0) {
+										backgroundColor = BACKGROUND_COLOR.bgC1;										
+									}
+								}
+							}
+						}
+					}
+					
+					// 事前申請・実績の超過状態．事前超過．休出深夜時間．法定区分 = 法定内休出
+					// 事前申請・実績の超過状態．事前超過．休出深夜時間．超過状態 = 超過アラーム
+					if (!_.isNil(overStateOutput.advanceExcess)) {
+						let excessStateMidnight = overStateOutput.advanceExcess.excessStateMidnight;
+						if (!_.isEmpty(excessStateMidnight)) {
+							let findResult = _.find(excessStateMidnight, (i: ExcessStateMidnight) => i.legalCfl == StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork);
+								if (!_.isNil(findResult)) {
+									if (findResult.excessState == ExcessState.EXCESS_ALARM) {
+										backgroundColor = BACKGROUND_COLOR.bgC4;										
+									}
+								}
+						}
+					}
+					
+					if (!_.isNil(overStateOutput.achivementExcess)) {
+						let excessStateMidnight = overStateOutput.achivementExcess.excessStateMidnight;
+						if (!_.isEmpty(excessStateMidnight)) {
+							let findResult = _.find(excessStateMidnight, (i: ExcessStateMidnight) => i.legalCfl == StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork);
+								if (!_.isNil(findResult)) {
+									if (findResult.excessState == ExcessState.EXCESS_ALARM) {
+										backgroundColor = BACKGROUND_COLOR.bgC3;										
+									} else if (findResult.excessState == ExcessState.EXCESS_ERROR) {
+										backgroundColor = BACKGROUND_COLOR.bgC2;	
+									}
+								}
+						}
+					}
+					
+				} else if (item.type == AttendanceType.MIDDLE_HOLIDAY_HOLIDAY) {
+					// 計算結果．申請時間．就業時間外深夜時間．休出深夜時間．時間 > 0
+					// 法定区分 = 法定内休出
+					if (!_.isEmpty(dataSource.calculationResultOp.applicationTimes)) {
+						let overTimeShiftNight = dataSource.calculationResultOp.applicationTimes[0].overTimeShiftNight;
+						if (!_.isNil(overTimeShiftNight)) {
+							if (!_.isEmpty(overTimeShiftNight.midNightHolidayTimes)) {
+								let findResult = _.find(overTimeShiftNight.midNightHolidayTimes, (i: HolidayMidNightTime) => i.legalClf == StaturoryAtrOfHolidayWork.PublicHolidayWork);
+								if (!_.isNil(findResult)) {
+									if (findResult.attendanceTime > 0) {
+										backgroundColor = BACKGROUND_COLOR.bgC1;										
+									}
+								}
+							}
+						}
+					}
+					
+					// 事前申請・実績の超過状態．事前超過．休出深夜時間．法定区分 = 法定内休出
+					// 事前申請・実績の超過状態．事前超過．休出深夜時間．超過状態 = 超過アラーム
+					if (!_.isNil(overStateOutput.advanceExcess)) {
+						let excessStateMidnight = overStateOutput.advanceExcess.excessStateMidnight;
+						if (!_.isEmpty(excessStateMidnight)) {
+							let findResult = _.find(excessStateMidnight, (i: ExcessStateMidnight) => i.legalCfl == StaturoryAtrOfHolidayWork.PublicHolidayWork);
+								if (!_.isNil(findResult)) {
+									if (findResult.excessState == ExcessState.EXCESS_ALARM) {
+										backgroundColor = BACKGROUND_COLOR.bgC4;										
+									}
+								}
+						}
+					}
+					
+					if (!_.isNil(overStateOutput.achivementExcess)) {
+						let excessStateMidnight = overStateOutput.achivementExcess.excessStateMidnight;
+						if (!_.isEmpty(excessStateMidnight)) {
+							let findResult = _.find(excessStateMidnight, (i: ExcessStateMidnight) => i.legalCfl == StaturoryAtrOfHolidayWork.PublicHolidayWork);
+								if (!_.isNil(findResult)) {
+									if (findResult.excessState == ExcessState.EXCESS_ALARM) {
+										backgroundColor = BACKGROUND_COLOR.bgC3;										
+									} else if (findResult.excessState == ExcessState.EXCESS_ERROR) {
+										backgroundColor = BACKGROUND_COLOR.bgC2;	
+									}
+								}
+						}
+					}
+					
+				}
+			item.backgroundColor(backgroundColor);
+
+			});
+			
+			
+			
+			
 		}
 		
 		setColorForOverTime(isCalculation: Boolean, dataSource: DisplayInfoOverTime) {
@@ -664,6 +940,22 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				let backgroundColor = '';
 				if (item.type == AttendanceType.NORMALOVERTIME) {
 					if (!_.isNil(overStateOutput)) {
+						
+						// ・計算値：「残業申請の表示情報．計算結果」を確認する
+						if (!_.isNil(dataSource.calculationResultOp.applicationTimes)) {
+							let applicationTime = dataSource.calculationResultOp.applicationTimes[0].applicationTime;
+							if (!_.isEmpty(applicationTime)) {
+								let result = _.find(applicationTime, (i: OvertimeApplicationSetting) => {
+									return i.frameNo == Number(item.frameNo) && i.attendanceType == AttendanceType.NORMALOVERTIME;
+								});
+								if (!_.isNil(result)) {
+									if (result.applicationTime > 0) {
+										backgroundColor = BACKGROUND_COLOR.bgC1;									
+									}
+								}
+							}
+						}
+						
 						// ・事前申請超過：「残業申請の表示情報．計算結果．事前申請・実績の超過状態」を確認する
 						if (!_.isNil(overStateOutput.advanceExcess)) {
 							let excessStateDetail = overStateOutput.advanceExcess.excessStateDetail;
@@ -702,20 +994,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						
 					}
 					
-					// ・計算値：「残業申請の表示情報．計算結果」を確認する
-					if (!_.isNil(dataSource.calculationResultOp.applicationTimes)) {
-						let applicationTime = dataSource.calculationResultOp.applicationTimes[0].applicationTime;
-						if (!_.isEmpty(applicationTime)) {
-							let result = _.find(applicationTime, (i: OvertimeApplicationSetting) => {
-								return i.frameNo == Number(item.frameNo) && i.attendanceType == AttendanceType.NORMALOVERTIME;
-							});
-							if (!_.isNil(result)) {
-								if (result.applicationTime > 0) {
-									backgroundColor = BACKGROUND_COLOR.bgC1;									
-								}
-							}
-						}
-					}
+					
 					
 					
 					
@@ -723,36 +1002,52 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					
 					// 事前申請・実績の超過状態．事前超過．残業深夜の超過状態 = 超過アラーム
 					if (!_.isNil(overStateOutput)) {
+						
+						if (!_.isNil(dataSource.calculationResultOp.applicationTimes)) {
+							let applicationTime = dataSource.calculationResultOp.applicationTimes[0];
+							if (!_.isEmpty(applicationTime)) {
+								if (!_.isNil(applicationTime.overTimeShiftNight)) {
+									if (applicationTime.overTimeShiftNight.overTimeMidNight > 0) {
+										backgroundColor = BACKGROUND_COLOR.bgC1;
+									}
+								}
+							}
+						}
+						
+						
 						if (!_.isNil(overStateOutput.advanceExcess)) {
 							if (overStateOutput.advanceExcess.overTimeLate == ExcessState.EXCESS_ALARM) {								
 								backgroundColor = BACKGROUND_COLOR.bgC4;
 							}							
 						}
 						if (!_.isNil(overStateOutput.achivementExcess)) {
-							// 事前申請・実績の超過状態．実績超過．残業深夜の超過状態 = 超過エラー
-							if (overStateOutput.achivementExcess.overTimeLate == ExcessState.EXCESS_ERROR) {								
-								backgroundColor = BACKGROUND_COLOR.bgC2;
-							}
 							// 事前申請・実績の超過状態．実績超過．残業深夜の超過状態 = 超過アラーム
 							if (overStateOutput.achivementExcess.overTimeLate == ExcessState.EXCESS_ALARM) {								
 								backgroundColor = BACKGROUND_COLOR.bgC3;
 							}
-						}
-					}
-					
-					if (!_.isNil(dataSource.calculationResultOp.applicationTimes)) {
-						let applicationTime = dataSource.calculationResultOp.applicationTimes[0];
-						if (!_.isEmpty(applicationTime)) {
-							if (!_.isNil(applicationTime.overTimeShiftNight)) {
-								if (applicationTime.overTimeShiftNight.overTimeMidNight > 0) {
-									backgroundColor = BACKGROUND_COLOR.bgC1;
-								}
+							// 事前申請・実績の超過状態．実績超過．残業深夜の超過状態 = 超過エラー
+							if (overStateOutput.achivementExcess.overTimeLate == ExcessState.EXCESS_ERROR) {								
+								backgroundColor = BACKGROUND_COLOR.bgC2;
 							}
 						}
 					}
 					
 					
+					
+					
 				} else if (item.type == AttendanceType.FLEX_OVERTIME) {
+					
+					
+					if (!_.isNil(dataSource.calculationResultOp.applicationTimes)) {
+							let applicationTime = dataSource.calculationResultOp.applicationTimes[0];
+							if (!_.isEmpty(applicationTime)) {
+								if (!_.isNil(applicationTime.flexOverTime)) {
+									if (applicationTime.flexOverTime > 0) {
+										backgroundColor = BACKGROUND_COLOR.bgC1;
+									}
+								}
+							}
+						}
 					
 					if (!_.isNil(overStateOutput)) {
 						if (!_.isNil(overStateOutput.advanceExcess)) {
@@ -761,13 +1056,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 							}							
 						}
 						if (!_.isNil(overStateOutput.achivementExcess)) {
-							// 事前申請・実績の超過状態．実績超過．残業深夜の超過状態 = 超過エラー
-							if (overStateOutput.achivementExcess.flex == ExcessState.EXCESS_ERROR) {								
-								backgroundColor = BACKGROUND_COLOR.bgC2;
-							}
 							// 事前申請・実績の超過状態．実績超過．残業深夜の超過状態 = 超過アラーム
 							if (overStateOutput.achivementExcess.flex == ExcessState.EXCESS_ALARM) {								
 								backgroundColor = BACKGROUND_COLOR.bgC3;
+							}
+							// 事前申請・実績の超過状態．実績超過．残業深夜の超過状態 = 超過エラー
+							if (overStateOutput.achivementExcess.flex == ExcessState.EXCESS_ERROR) {								
+								backgroundColor = BACKGROUND_COLOR.bgC2;
 							}
 						}
 					}
@@ -819,15 +1114,15 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				overTime2.frameNo = String(overTimeArray.length - 1);
 				overTime2.displayNo = ko.observable(self.$i18n('KAF005_65'));
 				overTime2.applicationTime = ko.observable(self.isCalculation ? 0 : null);
-				overTime2.preTime = ko.observable(self.isCalculation ? 0 : null);
-				overTime2.actualTime = ko.observable(self.isCalculation ? 0 : null);
-				overTime1.type = AttendanceType.FLEX_OVERTIME;
+				overTime2.preTime = ko.observable(null);
+				overTime2.actualTime = ko.observable(null);
+				overTime2.type = AttendanceType.FLEX_OVERTIME;
 				overTime2.visible = ko.computed(() => {
 						return self.visibleModel.c2() && self.visibleModel.c16();
 					}, self);
 					
 				overTime2.backgroundColor = ko.observable('');					
-				overTimeArray.push(overTime1);
+				overTimeArray.push(overTime2);
 				
 				
 			}
@@ -853,7 +1148,15 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			{				
 				let findOverTimeArray = _.find(overTimeArray, (i: OverTime) =>  i.type == AttendanceType.MIDNIGHT_OUTSIDE) as OverTime;
 				if (!_.isNil(findOverTimeArray)) {
-					findOverTimeArray.applicationTime(!self.isCalculation ? null : 0);
+					if (!_.isNil(res.calculationResultOp)) {
+						if (!_.isEmpty(res.calculationResultOp.applicationTimes)) {
+							let overTimeShiftNight = res.calculationResultOp.applicationTimes[0].overTimeShiftNight;
+							if (!_.isNil(overTimeShiftNight)) {
+								findOverTimeArray.applicationTime(!self.isCalculation ? null : overTimeShiftNight.overTimeMidNight);															
+							}
+						}
+						
+					}
 				}
 			}
 			
@@ -1214,7 +1517,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			
 
 			self.holidayTime(holidayTimeArray);
-			self.setColorForOverTime(self.isCalculation, self.dataSource);
+			self.setColorForHolidayTime(self.isCalculation, self.dataSource);
 
 		}
 
@@ -1817,7 +2120,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		applicationTime: number
 	}
 	export interface OverTimeShiftNight {
-		midNightHolidayTimes: Array<any>;
+		midNightHolidayTimes: Array<HolidayMidNightTime>;
 		midNightOutSide: number;
 		overTimeMidNight: number;
 	}

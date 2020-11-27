@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeShiftNight;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
@@ -18,12 +19,12 @@ public class OverTimeShiftNightCommand {
 	public OverTimeShiftNight toDomain() {
 		
 		return new OverTimeShiftNight(
-				midNightHolidayTimes.isEmpty() ? 
+				CollectionUtil.isEmpty(midNightHolidayTimes) ? 
 							Collections.emptyList() : 
 							midNightHolidayTimes.stream()
 												.map(x -> x.toDomain())
 												.collect(Collectors.toList()),
-				new AttendanceTime(midNightOutSide),
-				new AttendanceTime(overTimeMidNight));
+				midNightOutSide == null ? null : new AttendanceTime(midNightOutSide),
+				overTimeMidNight == null ? null : new AttendanceTime(overTimeMidNight));
 	}
 }

@@ -5,6 +5,12 @@
 														appType: appType,
 														appDispInfoStartupOutput: appDispInfoStartupOutput	
 													} }"></div>
+													
+	<div data-bind="component: { name: 'kaf005-share-header',
+											params: {
+												overTimeWork: overTimeWork
+											}
+											}"></div>												
 	<div
 		data-bind="component: { name: 'kaf000-b-component2', 
 													params: {
@@ -51,6 +57,16 @@
 	<div
 		data-bind="component: { name: 'kaf005-share-work-info', 
 								params: {} }"></div>
+								
+	<div data-bind="component: { name: 'kaf005-share',
+											params: {
+												restTime: restTime,
+												holidayTime: holidayTime,
+												overTime: overTime,
+												visibleModel: visibleModel
+											}
+							
+										}"></div>
 	<div
 		data-bind="component: { name: 'kaf000-b-component7', 
 													params: {
@@ -58,6 +74,7 @@
 														application: application,
 														appDispInfoStartupOutput: appDispInfoStartupOutput
 													} }"></div>
+	<div data-bind="component: { name: 'kaf005-share-footer'}"></div>												
 	<div
 		data-bind="component: { name: 'kaf000-b-component8', 
 													params: {

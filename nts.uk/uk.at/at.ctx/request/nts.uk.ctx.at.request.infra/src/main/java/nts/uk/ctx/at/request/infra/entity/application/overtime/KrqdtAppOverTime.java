@@ -388,13 +388,12 @@ public class KrqdtAppOverTime extends ContractUkJpaEntity implements Serializabl
 		if (appOvertimeDetail != null) {
 			appOverTime.setDetailOverTimeOp(Optional.of(appOvertimeDetail.toDomain()));
 		}
+		appOverTime.setApplicationTime(applicationTime);
 		if (!CollectionUtil.isEmpty(overtimeInputs)) {
-			appOverTime.setApplicationTime(new ApplicationTime());
 			appOverTime.getApplicationTime().setApplicationTime(overtimeInputs.stream()
 																			  .map(x -> x.toDomain())
 																			  .collect(Collectors.toList()));
 		}
-		appOverTime.setApplicationTime(applicationTime);
 		
 		return appOverTime;
 	}

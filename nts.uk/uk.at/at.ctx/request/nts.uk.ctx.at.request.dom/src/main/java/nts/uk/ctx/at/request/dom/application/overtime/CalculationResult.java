@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.overtime;
 
+import java.util.Collections;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -24,5 +25,5 @@ public class CalculationResult {
 	// 事前申請・実績の超過状態
 	private OverStateOutput overStateOutput;
 	// 申請時間
-	private List<ApplicationTime> applicationTimes;
+	private List<ApplicationTime> applicationTimes = Collections.emptyList();
 }
