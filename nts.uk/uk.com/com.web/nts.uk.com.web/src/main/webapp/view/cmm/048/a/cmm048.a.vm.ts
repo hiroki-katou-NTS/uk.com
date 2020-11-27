@@ -274,8 +274,7 @@ module nts.uk.com.view.cmm048.a {
       const vm = this;
       if (data.anniversaryNotices.length !== 0) {
         const list: AnniversaryNotificationViewModel[] = [];
-        const datas = _.orderBy(data.anniversaryNotices, ["anniversary"], ["ASC"]);
-        _.map(datas, (anniversary: AnniversaryNoticeDto) => {
+        _.map(data.anniversaryNotices, (anniversary: AnniversaryNoticeDto) => {
           const newItem: AnniversaryNotificationViewModel =
             new AnniversaryNotificationViewModel(
               anniversary.anniversary,
@@ -546,40 +545,45 @@ module nts.uk.com.view.cmm048.a {
 
     public save() {
       const vm = this;
-      const userChange = vm.getUserCommand();
-      const avatar = vm.getUserAvatarCommand();
-      const listAnniversary = vm.getAnniversaryNoticeCommandList();
-      const personalContact = vm.getPersonalContactCommand();
-      const employeeContact = vm.getEmployeeContactCommand();
+      vm.$validate().then((valid: boolean) => {
+        if (valid) {
+          const userChange = vm.getUserCommand();
+          const avatar = vm.getUserAvatarCommand();
+          const listAnniversary = vm.getAnniversaryNoticeCommandList();
+          const personalContact = vm.getPersonalContactCommand();
+          const employeeContact = vm.getEmployeeContactCommand();
 
-      const personalCommand = new PersonalCommand({
-        avatar: avatar,
-        anniversaryNotices: listAnniversary,
-        personalContact: personalContact
-      });
+          const personalCommand = new PersonalCommand({
+            avatar: avatar,
+            anniversaryNotices: listAnniversary,
+            personalContact: personalContact
+          });
 
-      const contactCommand = new ContactCommand({
-        employeeContact: employeeContact
-      });
+          const contactCommand = new ContactCommand({
+            employeeContact: employeeContact
+          });
 
-      const userChangeCommand = new UserChangeCommand({
-        userChange: userChange
+          const userChangeCommand = new UserChangeCommand({
+            userChange: userChange
+          });
+          vm.$blockui('grayout');
+          $.when(
+            vm.$ajax(API.updateEmployeeContact, contactCommand),
+            vm.$ajax(API.updatePersonInformation, personalCommand),
+            vm.$ajax(API.updateUserChange, userChangeCommand)
+          ).then(() => {
+            vm.$blockui('clear');
+            vm.$dialog.info({ messageId: 'Msg_15' });
+          }).fail((error: any) => {
+            vm.$blockui('clear');
+            vm.$dialog.error(error);
+          })
+            .always(() => vm.$blockui('clear'));
+        }
       });
-      vm.$blockui('grayout');
-      $.when(
-        vm.$ajax(API.updateEmployeeContact, contactCommand),
-        vm.$ajax(API.updatePersonInformation, personalCommand),
-        vm.$ajax(API.updateUserChange, userChangeCommand)
-      ).then(() => {
-        vm.$blockui('clear');
-        vm.$dialog.info({ messageId: 'Msg_15' });
-      }).fail((error: any) => {
-        vm.$blockui('clear');
-        vm.$dialog.error(error);
-      })
-        .always(() => vm.$blockui('clear'));
     }
   }
+  
   enum LANGUAGE {
     /**
    * 日本語
