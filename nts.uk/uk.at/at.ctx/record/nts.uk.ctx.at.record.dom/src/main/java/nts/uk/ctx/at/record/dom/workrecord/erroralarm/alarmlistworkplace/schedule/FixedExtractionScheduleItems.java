@@ -34,6 +34,11 @@ public class FixedExtractionScheduleItems extends AggregateRoot {
     private String scheduleCheckName;
 
     /**
+     * メッセージを太字にする
+     */
+    private boolean boldAtr;
+
+    /**
      * 最初表示するメッセージ
      */
     private DisplayMessage firstMessageDisp;
@@ -49,18 +54,21 @@ public class FixedExtractionScheduleItems extends AggregateRoot {
      * @param fixedCheckDayItemName No
      * @param alarmCheckCls         アラームチェック区分
      * @param scheduleCheckName     スケジュール／日次チェック名称
+     * @param boldAtr               メッセージを太字にする
      * @param firstMessageDisp      最初表示するメッセージ
      * @param messageColor          メッセージの色
      */
     public static FixedExtractionScheduleItems create(int fixedCheckDayItemName,
                                                       int alarmCheckCls,
                                                       String scheduleCheckName,
+                                                      boolean boldAtr,
                                                       String firstMessageDisp,
                                                       String messageColor) {
 
         return new FixedExtractionScheduleItems(EnumAdaptor.valueOf(fixedCheckDayItemName, FixedCheckDayItemName.class),
                 EnumAdaptor.valueOf(alarmCheckCls, AlarmCheckClassification.class),
                 scheduleCheckName,
+                boldAtr,
                 new DisplayMessage(firstMessageDisp),
                 messageColor != null ? Optional.of(new ColorCode(messageColor)) : Optional.empty());
     }
