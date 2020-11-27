@@ -28,8 +28,8 @@ public class JpaComSubstVacatRepository extends JpaRepository implements ComSubs
             "SELECT " +
                     " VA.MANAGE_ATR, " +
                     " VA.EXPIRATION_DATE_SET, " +
-                    " VA.ALLOW_PREPAID_LEAVE " +
-                    " VA.EXP_DATE_MNG_METHOD " +
+                    " VA.ALLOW_PREPAID_LEAVE, " +
+                    " VA.EXP_DATE_MNG_METHOD, " +
                     " VA.LINK_MNG_ATR " +
                     "FROM KSHMT_HDSUB_CMP VA " +
                     "WHERE VA.CID = ?";

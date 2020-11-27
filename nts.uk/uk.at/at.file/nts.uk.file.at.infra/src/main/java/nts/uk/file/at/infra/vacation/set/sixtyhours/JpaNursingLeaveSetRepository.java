@@ -3,6 +3,8 @@ package nts.uk.file.at.infra.vacation.set.sixtyhours;
 import nts.arc.i18n.I18NText;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.file.at.app.export.vacation.set.EmployeeSystemImpl;
 import nts.uk.file.at.app.export.vacation.set.nursingleave.NursingLeaveSetRepository;
 import nts.uk.file.at.infra.vacation.set.DataEachBox;
@@ -32,14 +34,18 @@ public class JpaNursingLeaveSetRepository extends JpaRepository implements Nursi
                     "                     LV.STR_MD,   " +
                     "                     LV.NUM_LEAVE_DAY,  " +
                     "                     LV.NUM_PERSON,  " +
-                    "                     LV.SPE_HOLIDAY,  " +
-                    "                     LV.WORK_ABS,  " +
+                    "                     LV.HDSP_FRAME_NO,  " +
+                    "                     LV.ABSENCE_FRAME_NO,  " +
+                    "					  LV.TIME_MANAGE_ATR,"+
+                    "					  LV.DIGESTIVE_UNIT,"+
                     "                     LV2.NURSING_TYPE AS NURSING_TYPE_LV2 ,  " +
                     "                     LV2.MANAGE_ATR AS MANAGE_ATR_LV2,  " +
                     "                     LV2.STR_MD AS STR_MD_LV2,  " +
                     "                     LV2.STR_MD AS STR_MD_LV2,  " +
                     "                     LV2.NUM_LEAVE_DAY  AS NUM_LEAVE_DAY_LV2,  " +
                     "                     LV2.NUM_PERSON  AS NUM_PERSON_LV2,  " +
+                    "					  LV2.TIME_MANAGE_ATR AS TIME_MANAGE_ATR_LV2 ,"+
+                    "					  LV2.DIGESTIVE_UNIT AS DIGESTIVE_UNIT_LV2 ,"+
                     "                     SF.NAME,  " +
                     "                     AF.NAME AS NAME_AF ," +
                     "                     SF1.NAME AS NAME_SF1,  " +
@@ -51,10 +57,10 @@ public class JpaNursingLeaveSetRepository extends JpaRepository implements Nursi
                     "                     WHERE LVA.CID = ? AND LVA.NURSING_TYPE = 0   " +
                     "                     ) AS LV  " +
                     "                    INNER JOIN KNLMT_NURSING_LEAVE_SET LV2 ON LV2.CID = LV.CID AND LV2.NURSING_TYPE = 1   " +
-                    "                    LEFT JOIN KSHMT_SPHD_FRAME SF ON SF.CID = LV.CID AND SF.SPHD_FRAME_NO = LV2.SPE_HOLIDAY " +
-                    "                    LEFT JOIN KSHMT_ABSENCE_FRAME AF ON AF.CID = LV.CID AND AF.ABSENCE_FRAME_NO = LV2.WORK_ABS " +
-                    "LEFT JOIN KSHMT_SPHD_FRAME SF1 ON SF1.CID = LV.CID AND SF1.SPHD_FRAME_NO = LV.SPE_HOLIDAY   " +
-                    "                    LEFT JOIN KSHMT_ABSENCE_FRAME AF1 ON AF1.CID = LV.CID AND AF1.ABSENCE_FRAME_NO = LV.WORK_ABS  ;";
+                    "                    LEFT JOIN KSHMT_SPHD_FRAME SF ON SF.CID = LV.CID AND SF.SPHD_FRAME_NO = LV2.HDSP_FRAME_NO  " +
+                    "                    LEFT JOIN KSHMT_ABSENCE_FRAME AF ON AF.CID = LV.CID AND AF.ABSENCE_FRAME_NO = LV2.ABSENCE_FRAME_NO " +
+                    "				     LEFT JOIN KSHMT_SPHD_FRAME SF1 ON SF1.CID = LV.CID AND SF1.SPHD_FRAME_NO = LV.HDSP_FRAME_NO  " +
+                    "                    LEFT JOIN KSHMT_ABSENCE_FRAME AF1 ON AF1.CID = LV.CID  AND AF1.ABSENCE_FRAME_NO = LV.ABSENCE_FRAME_NO ;";
 
 
     @Override
@@ -134,7 +140,6 @@ public class JpaNursingLeaveSetRepository extends JpaRepository implements Nursi
                 , new DataEachBox(/*24_26*/I18NText.getText("KMF001_53"), ColumnTextAlign.LEFT)
                 , new DataEachBox(null, ColumnTextAlign.LEFT)
                 ,/*25_16*/ new DataEachBox(null, ColumnTextAlign.LEFT)));
-        //TODO:
         // Row 8
         datas.add(buildARow(new DataEachBox(/*24_14*/I18NText.getText("KMF001_242"), ColumnTextAlign.LEFT)
                 , new DataEachBox(null, ColumnTextAlign.LEFT)
@@ -179,7 +184,22 @@ public class JpaNursingLeaveSetRepository extends JpaRepository implements Nursi
                 , new DataEachBox(null, ColumnTextAlign.LEFT)
                 , new DataEachBox( /*24_24*/I18NText.getText("KMF001_241"), ColumnTextAlign.LEFT)
                 ,/*25_14*/ new DataEachBox(null, ColumnTextAlign.LEFT))
+        
         );
+     // Row 14.1
+        datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
+                , new DataEachBox(null, ColumnTextAlign.LEFT)
+                , new DataEachBox(null, ColumnTextAlign.LEFT)
+                , new DataEachBox(/*24_27*/ I18NText.getText("KMF001_52"), ColumnTextAlign.LEFT)
+                , new DataEachBox(/*25_17*/ null, ColumnTextAlign.LEFT)
+		));
+		// Row 14.2
+        datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
+                , new DataEachBox(null, ColumnTextAlign.LEFT)
+                , new DataEachBox(null, ColumnTextAlign.LEFT)
+                , new DataEachBox(/*24_28*/ I18NText.getText("KMF001_53"), ColumnTextAlign.LEFT)
+                , new DataEachBox(/*25_18*/ null, ColumnTextAlign.LEFT)		
+		));
         return datas;
     }
 
@@ -238,8 +258,23 @@ public class JpaNursingLeaveSetRepository extends JpaRepository implements Nursi
                     , new DataEachBox(null, ColumnTextAlign.LEFT)
                     , new DataEachBox(null, ColumnTextAlign.LEFT)
                     , new DataEachBox(/*24_13*/ I18NText.getText("KMF001_241"), ColumnTextAlign.LEFT)
-                    , new DataEachBox(/*25_7*/ rs.getString("NAME_AF1") == null ? "なし " : rs.getString("NAME_AF1"), ColumnTextAlign.LEFT))
-            );
+                    , new DataEachBox(/*25_7*/ rs.getString("NAME_AF1") == null ? "なし " : rs.getString("NAME_AF1"), ColumnTextAlign.LEFT)
+            ));
+            		
+    		// Row 7.1
+            datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
+                    , new DataEachBox(null, ColumnTextAlign.LEFT)
+                    , new DataEachBox(/*24_25*/ I18NText.getText("KMF001_52"), ColumnTextAlign.LEFT)
+                    , new DataEachBox(null, ColumnTextAlign.LEFT)
+                    , new DataEachBox(/*25_15*/ ManageDistinct.valueOf(Integer.parseInt(rs.getString("TIME_MANAGE_ATR"))).nameId, ColumnTextAlign.LEFT)
+    		));
+    		// Row 7.2
+            datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
+                    , new DataEachBox(null, ColumnTextAlign.LEFT)
+                    , new DataEachBox(/*24_26*/ I18NText.getText("KMF001_53"), ColumnTextAlign.LEFT)
+                    , new DataEachBox(null, ColumnTextAlign.LEFT)
+                    , new DataEachBox(/*25_16*/ rs.getString("DIGESTIVE_UNIT") ==null?null: TimeDigestiveUnit.valueOf(Integer.parseInt(rs.getString("DIGESTIVE_UNIT"))).nameId, ColumnTextAlign.LEFT)		
+    		));
         } else {
             // Row 2 validated by 16
             datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
@@ -277,6 +312,20 @@ public class JpaNursingLeaveSetRepository extends JpaRepository implements Nursi
                     , new DataEachBox(null, ColumnTextAlign.LEFT)
                     , new DataEachBox(/*24_13*/ I18NText.getText("KMF001_241"), ColumnTextAlign.LEFT)
                     ,/*25_7*/ new DataEachBox(null, ColumnTextAlign.LEFT)));
+            // Row 7.1
+            datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
+                    , new DataEachBox(null, ColumnTextAlign.LEFT)
+                    , new DataEachBox(/*24_25*/ I18NText.getText("KMF001_52"), ColumnTextAlign.LEFT)
+                    , new DataEachBox(null, ColumnTextAlign.LEFT)
+                    , new DataEachBox(/*25_15*/ null, ColumnTextAlign.LEFT)
+    		));
+    		// Row 7.2
+            datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
+                    , new DataEachBox(null, ColumnTextAlign.LEFT)
+                    , new DataEachBox(/*24_26*/ I18NText.getText("KMF001_53"), ColumnTextAlign.LEFT)
+                    , new DataEachBox(null, ColumnTextAlign.LEFT)
+                    , new DataEachBox(/*25_16*/ null, ColumnTextAlign.LEFT)		
+    		));
         }
 
 
@@ -330,6 +379,20 @@ public class JpaNursingLeaveSetRepository extends JpaRepository implements Nursi
                     , new DataEachBox(/*24_24*/I18NText.getText("KMF001_241"), ColumnTextAlign.LEFT)
                     , new DataEachBox( /*25_14*/ rs.getString("NAME_AF") == null ? "なし " : rs.getString("NAME_AF"), ColumnTextAlign.LEFT)
             ));
+            // Row 14.1
+            datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
+                    , new DataEachBox(null, ColumnTextAlign.LEFT)
+                    , new DataEachBox(/*24_27*/ I18NText.getText("KMF001_52"), ColumnTextAlign.LEFT)
+                    , new DataEachBox(null, ColumnTextAlign.LEFT)
+                    , new DataEachBox(/*25_17*/ ManageDistinct.valueOf(Integer.parseInt(rs.getString("TIME_MANAGE_ATR_LV2"))).nameId, ColumnTextAlign.LEFT)
+    		));
+    		// Row 14.2
+            datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
+                    , new DataEachBox(null, ColumnTextAlign.LEFT)
+                    , new DataEachBox(/*24_28*/ I18NText.getText("KMF001_53"), ColumnTextAlign.LEFT)
+                    , new DataEachBox(null, ColumnTextAlign.LEFT)
+                    , new DataEachBox(/*25_18*/rs.getString("DIGESTIVE_UNIT_LV2") ==null?null: TimeDigestiveUnit.valueOf(Integer.parseInt(rs.getString("DIGESTIVE_UNIT_LV2"))).nameId, ColumnTextAlign.LEFT)		
+    		));
         } else {
             // Row 9
             datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
@@ -373,6 +436,20 @@ public class JpaNursingLeaveSetRepository extends JpaRepository implements Nursi
                     , new DataEachBox( /*24_24*/I18NText.getText("KMF001_241"), ColumnTextAlign.LEFT)
                     ,/*25_14*/ new DataEachBox(null, ColumnTextAlign.LEFT))
             );
+            // Row 14.1
+            datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
+                    , new DataEachBox(null, ColumnTextAlign.LEFT)
+                    , new DataEachBox(/*24_27*/ I18NText.getText("KMF001_52"), ColumnTextAlign.LEFT)
+                    , new DataEachBox(null, ColumnTextAlign.LEFT)
+                    , new DataEachBox(/*25_17*/ null, ColumnTextAlign.LEFT)
+    		));
+    		// Row 14.2
+            datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
+                    , new DataEachBox(null, ColumnTextAlign.LEFT)
+                    , new DataEachBox(/*24_28*/ I18NText.getText("KMF001_53"), ColumnTextAlign.LEFT)
+                    , new DataEachBox(null, ColumnTextAlign.LEFT)
+                    , new DataEachBox(/*25_18*/ null, ColumnTextAlign.LEFT)		
+    		));
         }
 
 

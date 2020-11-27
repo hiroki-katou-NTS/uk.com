@@ -26,6 +26,6 @@ public interface TreatmentHolidayRepository {
 	 * @param companyId
 	 * @return
 	 */
-	public Optional<TreatmentHoliday> get(String companyId);
+	public TreatmentHoliday get(String companyId);
 
 }

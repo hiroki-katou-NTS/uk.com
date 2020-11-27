@@ -289,10 +289,13 @@ public class WorkInformation {
 		// 勤務NOに対応する変更可能な時間帯を取得する
 		val timezone = this.getChangeableWorkingTimezones(require).stream()
 							.filter( e -> e.getWorkNo().v() == workNo.toAttendance().v() )
-							.findFirst().get();
+							.findFirst();
+		if ( !timezone.isPresent() ) {
+			return ContainsResult.notContains();
+		}
 
 		// 時間帯に含まれているか
-		return timezone.contains(time, checkTarget);
+		return timezone.get().contains(time, checkTarget);
 
 	}
 
@@ -387,6 +390,12 @@ public class WorkInformation {
 		 * @param workTimeCd 就業時間帯コード
 		 * @param workNo 勤務NO
 		 * @return 計算用所定時間設定
+		 *
+		 * WORNING!!
+		 * WorkTimeSettingService．getPredeterminedTimezoneメソッドは、引数に誤りがあり、
+		 * String workTimeCd(就業時間帯コード), String workTypeCd(勤務種類コード)
+		 * になっています。
+		 * このメソッドとは引数の順番が違うため、implementsして実装する際には十分気をつけてください。
 		 */
 		PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd, Integer workNo);
 

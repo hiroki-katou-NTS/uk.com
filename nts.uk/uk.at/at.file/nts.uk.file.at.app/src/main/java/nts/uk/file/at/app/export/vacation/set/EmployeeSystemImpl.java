@@ -5,6 +5,7 @@ import nts.uk.file.at.app.export.vacation.set.annualpaidleave.AcquisitionRuleExp
 import nts.uk.file.at.app.export.vacation.set.annualpaidleave.AnnPaidLeaveRepository;
 import nts.uk.file.at.app.export.vacation.set.compensatoryleave.TemHoliEmployeeRepository;
 import nts.uk.file.at.app.export.vacation.set.compensatoryleave.TempHoliComImplRepository;
+import nts.uk.file.at.app.export.vacation.set.holiday.HolidayRepository;
 import nts.uk.file.at.app.export.vacation.set.nursingleave.NursingLeaveSetRepository;
 import nts.uk.file.at.app.export.vacation.set.sixtyhours.Com60HourVacaRepository;
 import nts.uk.file.at.app.export.vacation.set.subst.ComSubstVacatRepository;
@@ -108,6 +109,9 @@ public class EmployeeSystemImpl implements MasterListData {
     @Inject
     private YearHolidayRepositoryClass yearHolidayRepositoryClass;
     
+    @Inject
+    private HolidayRepository holidayRepository;
+    
 
     @Override
     public String mainSheetName() {
@@ -186,6 +190,10 @@ public class EmployeeSystemImpl implements MasterListData {
                 columns.add(new MasterHeaderColumn(KMF001_208, TextResource.localize("KMF001_208"),
                         ColumnTextAlign.LEFT, "", true));
                 columns.add(new MasterHeaderColumn(KMF001_209, TextResource.localize("KMF001_209"),
+                        ColumnTextAlign.LEFT, "", true));
+                columns.add(new MasterHeaderColumn(KMF001_327, TextResource.localize("KMF001_327"),
+                        ColumnTextAlign.LEFT, "", true));
+                columns.add(new MasterHeaderColumn(KMF001_330, TextResource.localize("KMF001_330"),
                         ColumnTextAlign.LEFT, "", true));
                 columns.add(new MasterHeaderColumn(KMF001_210, TextResource.localize("KMF001_210"),
                         ColumnTextAlign.LEFT, "", true));
@@ -277,6 +285,18 @@ public class EmployeeSystemImpl implements MasterListData {
         }
         return columns;
     }
+    
+    public List<MasterHeaderColumn> getHeaderColumnsHoliday() {
+        List<MasterHeaderColumn> columns = new ArrayList<>();
+	            columns.add(new MasterHeaderColumn(KMF001_166, TextResource.localize("KMF001_166"),
+	                    ColumnTextAlign.LEFT, "", true));
+	            columns.add(new MasterHeaderColumn(KMF001_B01, "",
+	                    ColumnTextAlign.LEFT, "", true));
+	            columns.add(new MasterHeaderColumn(KMF001_167, TextResource.localize("KMF001_167"),
+	                    ColumnTextAlign.LEFT, "", true));
+	            
+	            return columns;
+    }
 
     @Override
     public List<MasterData> getMasterDatas(MasterListExportQuery query) {
@@ -337,25 +357,25 @@ public class EmployeeSystemImpl implements MasterListData {
                     .build();
             sheetDatas.add(sheetData3);
         }
-        //TODO:代休代休 会社 - add 2 column
-//        List<MasterData> listAllTemHoliCompany = mTempHoliComImplRepository.getAllTemHoliCompany(companyId);
-//        SheetData sheetData4 = SheetData.builder()
-//                .mainData(listAllTemHoliCompany)
-//                .mainDataColumns(getHeaderColumns(EmployeeSystem.OFFTIME_COMPANY))
-//                .sheetName(getSheetName(EmployeeSystem.OFFTIME_COMPANY))
-//                .mode(MasterListMode.NONE)
-//                .build();
-//        sheetDatas.add(sheetData4);
-//        //代休代休 雇用 - delete 4 column - done
-//        if (listAllTemHoliCompany.isEmpty() ||(listAllTemHoliCompany.get(0).getRowData().get(EmployeeSystemImpl.KMF001_206).getValue().equals(IS_MANAGE_OF_HOLIDAYS))) {
-//            SheetData sheetData5 = SheetData.builder()
-//                    .mainData(mTemHoliEmployeeRepository.getTemHoliEmployee(companyId))
-//                    .mainDataColumns(getHeaderColumns(EmployeeSystem.SUBSTITUTE_EMPLOYMENT))
-//                    .sheetName(getSheetName(EmployeeSystem.SUBSTITUTE_EMPLOYMENT))
-//                    .mode(MasterListMode.NONE)
-//                    .build();
-//            sheetDatas.add(sheetData5);
-//        }
+        //代休代休 会社 - add 2 column  - done
+        List<MasterData> listAllTemHoliCompany = mTempHoliComImplRepository.getAllTemHoliCompany(companyId);
+        SheetData sheetData4 = SheetData.builder()
+                .mainData(listAllTemHoliCompany)
+                .mainDataColumns(getHeaderColumns(EmployeeSystem.OFFTIME_COMPANY))
+                .sheetName(getSheetName(EmployeeSystem.OFFTIME_COMPANY))
+                .mode(MasterListMode.NONE)
+                .build();
+        sheetDatas.add(sheetData4);
+        //代休代休 雇用 - delete 4 column - done
+        if (listAllTemHoliCompany.isEmpty() ||(listAllTemHoliCompany.get(0).getRowData().get(EmployeeSystemImpl.KMF001_206).getValue().equals(IS_MANAGE_OF_HOLIDAYS))) {
+            SheetData sheetData5 = SheetData.builder()
+                    .mainData(mTemHoliEmployeeRepository.getTemHoliEmployee(companyId))
+                    .mainDataColumns(getHeaderColumns(EmployeeSystem.SUBSTITUTE_EMPLOYMENT))
+                    .sheetName(getSheetName(EmployeeSystem.SUBSTITUTE_EMPLOYMENT))
+                    .mode(MasterListMode.NONE)
+                    .build();
+            sheetDatas.add(sheetData5);
+        }
         //振休休日 会社 - add 2 column - done
         List<MasterData> listAllComSubstVacation = mComSubstVacatRepository.getAllComSubstVacation(companyId);
         SheetData sheetData6 = SheetData.builder()
@@ -383,15 +403,23 @@ public class EmployeeSystemImpl implements MasterListData {
                 .mode(MasterListMode.NONE)
                 .build();
         sheetDatas.add(sheetData8);
-        //TODO:看護・介護休暇 - add 4 row  
-//        SheetData sheetData9 = SheetData.builder()
-//                .mainData(mNursingLeaveSetRepository.getAllNursingLeaveSetting(companyId))
-//                .mainDataColumns(getHeaderColumns(EmployeeSystem.NURSING_CARE))
-//                .sheetName(getSheetName(EmployeeSystem.NURSING_CARE))
-//                .mode(MasterListMode.NONE)
-//                .build();
-//        sheetDatas.add(sheetData9);
-        //TODO:休日 - Tạo mới
+        //看護・介護休暇 - add 4 row - done 
+        SheetData sheetData9 = SheetData.builder()
+                .mainData(mNursingLeaveSetRepository.getAllNursingLeaveSetting(companyId))
+                .mainDataColumns(getHeaderColumns(EmployeeSystem.NURSING_CARE))
+                .sheetName(getSheetName(EmployeeSystem.NURSING_CARE))
+                .mode(MasterListMode.NONE)
+                .build();
+        sheetDatas.add(sheetData9);
+        //休日 - Tạo mới
+        SheetData sheetData10 = SheetData.builder()
+                .mainData(holidayRepository.getAllHoliday(companyId))
+                .mainDataColumns(this.getHeaderColumnsHoliday())
+                .sheetName(TextResource.localize("KMF001_335"))
+                .mode(MasterListMode.NONE)
+                .build();
+        sheetDatas.add(sheetData10);
+        
         return sheetDatas;
     }
 
