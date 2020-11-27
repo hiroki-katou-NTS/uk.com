@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.auth.pub.employee;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -23,4 +24,30 @@ public interface EmployeePublisher {
 	
 	/** RequestList526 [No.526]就業担当者(社員IDList)を取得する **/
 	List<String> getListEmpID(String companyID , GeneralDate referenceDate);
+	
+	/** [RQ.653]職場リスト、基準日から就業確定できる社員を取得する **/
+	Map<String, String> getListEmpInfo(RequireRQ653 require, String companyID , GeneralDate referenceDate, List<String> workplaceID);
+	
+	
+	public static interface RequireRQ653 {
+		
+		/**
+		 * 職場管理者を取得(List<職場ID>、基準日)
+		 * @param employeeID
+		 * @param baseDate
+		 * @return List<WorkplaceManagerDto>
+		 */
+		List<WorkplaceManagerDto> getWorkplaceManager(List<String> workPlaceIds, GeneralDate baseDate );
+
+		/**
+		 * 所属職場権限を取得(会社ID、ロールID、機能NO)
+		 * @param roleId
+		 * @param companyId
+		 * @param functionNo
+		 * @return WorkPlaceAuthority
+		 */
+		Optional<WorkPlaceAuthorityDto> getWorkAuthority(String companyId, String roleId,  Integer functionNo);
+		
+	}
+	
 }
