@@ -13,12 +13,12 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixConWorkRecordName;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixedConditionWorkRecordName;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.FixedExtraItemMon;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.SysFixedMonPerEral;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
 @Entity      
-@Table(name = "KRCMT_FIXED_ITEM_MONTHLY")
-public class KrcmtFixedExtraItemMon extends ContractUkJpaEntity implements Serializable {
+@Table(name = "KRCCT_ALST_FXITM_MON")
+public class KrcmtFixedExtraItemMon extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	

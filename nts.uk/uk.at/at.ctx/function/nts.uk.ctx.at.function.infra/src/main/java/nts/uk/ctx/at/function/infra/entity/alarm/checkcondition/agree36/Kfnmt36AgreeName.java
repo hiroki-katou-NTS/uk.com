@@ -9,13 +9,13 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KFNMT_36AGREE_NAME_ERR")
-public class Kfnmt36AgreeName extends ContractUkJpaEntity implements Serializable{
+@Table(name = "KFNCT_ALST_FXITM_36AGR")
+public class Kfnmt36AgreeName extends UkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
 	public Kfnmt36AgreeNamePK kfnmt36AgreeNamePK;
