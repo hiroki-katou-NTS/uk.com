@@ -43,6 +43,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
       var transferData = __viewContext.transferred.value;
       var code = transferData && transferData.topPageCode ? transferData.topPageCode : "";
       var fromScreen = transferData && transferData.screen ? transferData.screen : "other";
+      vm.$blockui('grayout');
       vm.$ajax("com", API.getLoginUser).then((user) => {
         vm.$ajax("com", API.getSetting).then((res) => {
           if (res.reloadInterval) {
@@ -98,7 +99,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
           }
           vm.dataToppage(null);
         });
-      });
+      }).always(() => vm.$blockui("clear"));
 
       // 会社の締めを取得する - Lấy closure company
       service.getClosure().done((data: any) => {
@@ -136,6 +137,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
       const code = transferData && transferData.topPageCode ? transferData.topPageCode : "";
       const fromScreen = transferData && transferData.screen ? transferData.screen : "other";
       let topPageSetting: any;
+      vm.$blockui('grayout');
       vm.$ajax("com", API.getSetting).then((res: any) => {
         topPageSetting = res;
         const param = {
@@ -151,7 +153,8 @@ module nts.uk.com.view.ccg008.a.screenModel {
           $(".content-top").resizable();
           vm.getToppage(data);
         });
-      });
+      })
+      .always(() => vm.$blockui("clear"));
     }
 
     onClickReload() {

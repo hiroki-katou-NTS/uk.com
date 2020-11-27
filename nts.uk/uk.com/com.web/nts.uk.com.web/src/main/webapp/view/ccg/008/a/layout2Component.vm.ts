@@ -10,7 +10,7 @@ module nts.uk.com.view.ccg008.a.Layout2ComponentViewModel {
           <iframe style="width:450px" data-bind="attr: { src: url }" />
         </span>
         <span data-bind="if: url.indexOf('.js') > -1">
-          <div data-bind="component: { name: name }"></div>
+          <div data-bind="component: { name: name }" style="padding-bottom: 10px;"></div>
         </span>
       </div>
     `
@@ -51,10 +51,10 @@ module nts.uk.com.view.ccg008.a.Layout2ComponentViewModel {
           url = "/nts.uk.at.web/view/ktg/004/a/index.xhtml";
           name = '';
           break;
-        case 3:
-          url = "/view/ktg/027/a/ktg026component.a.vm.js";
-          name = 'ktg026-component';
-          break;
+        // case 3:
+        //   url = "/view/ktg/026/a/ktg026component.a.vm.js";
+        //   name = 'ktg026-component';
+        //   break;
         case 4:
           url = "/view/ktg/027/a/ktg027.a.vm.js";
           name = 'ktg027-component';

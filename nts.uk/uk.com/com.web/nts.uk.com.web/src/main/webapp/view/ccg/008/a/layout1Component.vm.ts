@@ -17,8 +17,9 @@ module nts.uk.com.view.ccg008.a.Layout1ComponentViewModel {
   })
   export class Layout1ComponentViewModel extends ko.ViewModel {
     urlIframe1: KnockoutObservable<string> = ko.observable("");
-    lstHtml: KnockoutObservableArray<string> = ko.observableArray([]);
+    lstHtml: KnockoutObservableArray<any> = ko.observableArray([]);
     isShowUrlLayout1: KnockoutObservable<boolean> = ko.observable(false);
+
     created(param: any) {
       const vm = this;
       const data = param.item();
@@ -36,17 +37,38 @@ module nts.uk.com.view.ccg008.a.Layout1ComponentViewModel {
           const param = {
             lstFileId: lstFileId(),
           };
-          vm.$ajax("com", 'sys/portal/createflowmenu/extractListFileId', param).then((res: any) => {
-            const mappedList: any = _.map(res, (item: any) => {
-              const width = item.htmlContent.match(/(?<=width: )[0-9A-Za-z]+(?=;)/)[0];
-              const height = item.htmlContent.match(/(?<=height: )[0-9A-Za-z]+(?=;)/)[0];
-              return {html: `<iframe style="width: ${width}; height: ${height};" srcdoc='${item.htmlContent}'></iframe>`};
-            });
-            vm.lstHtml(mappedList);
-          });
+          // vm.$ajax("com", 'sys/portal/createflowmenu/extractListFileId', param).then((res: any) => {
+          //   const mappedList: any = _.map(res, (item: any) => {
+          //     const width = item.htmlContent.match(/(?<=width: )[0-9A-Za-z]+(?=;)/)[0];
+          //     const height = item.htmlContent.match(/(?<=height: )[0-9A-Za-z]+(?=;)/)[0];
+          //     return {html: `<iframe id="frameF1" style="width: ${width}; height: ${height};"></iframe>`};
+          //   });
+          //   vm.lstHtml(mappedList);
+          //   if (!_.isEmpty(res)) {
+          //     vm.renderHTML(res[0].htmlContent);
+          //   }
+          // });
         }
       }
     }
 
+    mounted() {
+    }
+
+    private renderHTML(htmlSrc: string) {
+      const vm = this;
+      const $iframe = $("#frameF1");
+      // If browser supports srcdoc for iframe
+      // then add src to srcdoc attr
+      if ("srcdoc" in $iframe) {
+        $iframe.attr("srcdoc", htmlSrc);
+      } else {
+        // Fallback to IE... (doesn't support srcdoc)
+        // Write directly into iframe body
+        const ifr = document.getElementById('frameF1');
+        const iframedoc = (ifr as any).contentDocument || (ifr as any).contentWindow.document;
+        iframedoc.body.innerHTML = htmlSrc;
+      }
+    }
   }
 }

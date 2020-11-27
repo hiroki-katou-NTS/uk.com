@@ -302,22 +302,22 @@ module nts.uk.at.view.ktg026.a.Ktg026ComponentViewModel {
         currentOrNextMonth: currentOrNextMonth
       });
 
-      // vm.$ajax('at', API.startScreen, requestBody)
-      //   .then((response: EmployeesOvertimeDisplay) => {
-      //     if (!!response) {
-      //       vm.employeesOvertime = response;
-      //       vm.excessTimes(response.agreeInfo.excessTimes);
-      //       vm.targetYear(response.displayYear.toString());
-      //       vm.employeeName(response.empInfo.businessName);
-      //       vm.displayDataTable(response);
-      //       const targetYear = cache.currentOrNextMonth === 1 ? response.yearIncludeThisMonth : response.yearIncludeNextMonth;
-      //       vm.targetYear(targetYear.toString());
-      //     }
-      //   })
-      //   .fail(err => {
-      //     vm.$dialog.alert(err);
-      //   })
-      //   .always(() => vm.$blockui('clear'));
+      vm.$ajax('at', API.startScreen, requestBody)
+        .then((response: EmployeesOvertimeDisplay) => {
+          if (!!response) {
+            vm.employeesOvertime = response;
+            vm.excessTimes(response.agreeInfo.excessTimes);
+            vm.targetYear(response.displayYear.toString());
+            vm.employeeName(response.empInfo.businessName);
+            vm.displayDataTable(response);
+            const targetYear = cache.currentOrNextMonth === 1 ? response.yearIncludeThisMonth : response.yearIncludeNextMonth;
+            vm.targetYear(targetYear.toString());
+          }
+        })
+        .fail(err => {
+          vm.$dialog.alert(err);
+        })
+        .always(() => vm.$blockui('clear'));
     }
 
     mounted() {
