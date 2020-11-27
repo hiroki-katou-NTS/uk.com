@@ -146,6 +146,9 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
             val data = dataSource.getData();
             if (data.isEmpty()) continue;
             for (int i = 0; i < data.size(); i++) {
+                val detail = data.get(i);
+                if (detail == null || detail.getOutputItemOneLines() == null || detail.getOutputItemOneLines().size() == 0)
+                    continue;
                 // Check and break page
                 if (content.isPageBreak()) {
                     val check = checkAndBreakPage(worksheet, countItem, pages);
@@ -167,7 +170,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
                     }
                 }
 
-                val detail = data.get(i);
+
                 val checkCountRow = detail.getOutputItemOneLines().size() - (MAX_EMP_IN_PAGE - countItem);
                 val code = detail.getEmployeeCode();
                 val name = detail.getEmployeeName();
@@ -207,7 +210,6 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
                 countRow++;
                 countItem++;
                 val itemOneLines = detail.getOutputItemOneLines();
-                if (itemOneLines == null || itemOneLines.size() == 0) continue;
                 for (int k = 0; k < itemOneLines.size(); k++) {
                     if (content.isPageBreak()) {
                         val check = checkAndBreakPage(worksheet, countItem, pages);

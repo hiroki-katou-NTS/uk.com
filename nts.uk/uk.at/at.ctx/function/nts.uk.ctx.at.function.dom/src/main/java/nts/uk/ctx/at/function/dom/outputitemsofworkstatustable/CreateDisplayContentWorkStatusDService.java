@@ -42,7 +42,7 @@ public class CreateDisplayContentWorkStatusDService {
                 .collect(Collectors.toList());
 
         listEmployeeStatus.parallelStream().forEach(e -> {
-
+            if(outputItems.size() == 0) return;
             val item = new DisplayContentWorkStatus();
             val eplInfo = mapSids.get(e.getEmployeeId());
             if (eplInfo != null) {

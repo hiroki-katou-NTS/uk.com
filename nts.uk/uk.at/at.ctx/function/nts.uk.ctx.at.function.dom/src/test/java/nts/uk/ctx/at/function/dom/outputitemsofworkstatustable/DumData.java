@@ -597,6 +597,17 @@ public class DumData {
                 outputItemDisplay
         );
     }
+    public static WorkStatusOutputSettings dumDomainNolistItem(OutputItemSettingCode code, OutputItemSettingName name,
+                                                      String eplId, String settingId, SettingClassificationCommon settingCommon) {
+        return new WorkStatusOutputSettings(
+                settingId,
+                code,
+                name,
+                eplId,
+                settingCommon,
+                Collections.emptyList()
+        );
+    }
     public static final List<OutputItem> outputItemDisplay = Arrays.asList(
             new OutputItem(
                     0,

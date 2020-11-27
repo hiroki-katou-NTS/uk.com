@@ -45,6 +45,7 @@ public class CreateDisplayContentWorkStatusDSTest {
     private final String empId = "employeeId";
     private final SettingClassificationCommon settingCategoryStandard = SettingClassificationCommon.STANDARD_SELECTION;
     private final WorkStatusOutputSettings domainsStandard = DumData.dumDisplay(code, name, empId, iD, settingCategoryStandard);
+    private final WorkStatusOutputSettings dumDomainNolistItem = DumData.dumDomainNolistItem(code, name, empId, iD, settingCategoryStandard);
 
     @Test
     public void test_01() {
@@ -274,6 +275,30 @@ public class CreateDisplayContentWorkStatusDSTest {
                                 expected.get(0).getEmployeeCode(),
                                 expected.get(0).getWorkPlaceCode(),
                                 expected.get(0).getWorkPlaceName()));
+    }
+    /**
+     * TEST CASE : List output : emptyList
+     */
+    @Test
+    public void test_06() {
+        val listSid = employeeInfors.stream().map(EmployeeInfor::getEmployeeId).collect(Collectors.toList());
+        val listEmployeeStatus = Arrays.asList(
+                new StatusOfEmployee("eplId01",
+                        Arrays.asList(
+                                new DatePeriod(GeneralDate.today(), GeneralDate.today().addDays(1))
+                        )));
+        new Expectations() {
+            {
+                require.getListAffComHistByListSidAndPeriod(listSid, datePeriod);
+                result = listEmployeeStatus;
+
+            }
+        };
+        NtsAssert.businessException("Msg_1816", () -> {
+            CreateDisplayContentWorkStatusDService.displayContentsOfWorkStatus(require, datePeriod, employeeInfors,
+                    dumDomainNolistItem, workPlaceInfo);
+        });
+
     }
 
 }

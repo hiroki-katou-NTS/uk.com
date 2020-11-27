@@ -112,8 +112,7 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
         // 5 Call 勤務状況表の表示内容を作成する:
         val listData = CreateDisplayContentWorkStatusDService.displayContentsOfWorkStatus(require, datePeriod,
                 employeeInfoList, workStatusOutputSetting, placeInfoList);
-
-        val wplaceSort = listData.stream().map(DisplayContentWorkStatus::getWorkPlaceCode).distinct().collect(Collectors.toCollection(TreeSet::new));
+        val wplaceSort = listData.stream().filter(Objects::nonNull).map(DisplayContentWorkStatus::getWorkPlaceCode).distinct().collect(Collectors.toCollection(TreeSet::new));
         val listRs = new ArrayList<ExportExcelDto>();
 
         wplaceSort.forEach(e -> {
