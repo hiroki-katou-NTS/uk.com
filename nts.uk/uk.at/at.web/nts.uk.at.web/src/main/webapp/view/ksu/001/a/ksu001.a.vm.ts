@@ -145,7 +145,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         visibleA36: KnockoutObservable<boolean> = ko.observable(true);
         baseDate: KnockoutObservable<string> = ko.observable('');
         sids: KnockoutObservableArray<any> = ko.observableArray([]);
-        
+        // share tooltip to ksu003 
+        tooltipShare: Array<any> = [];
+
         constructor() {
             let self = this;
 
@@ -1009,6 +1011,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             
             self.detailContentDeco            = [];
             self.detailContentDecoModeConfirm = [];
+            self.tooltipShare = data.listDateInfo;
             
             for (let i = 0; i < data.listEmpInfo.length; i++) {
                 let rowId = i+'';
@@ -1809,6 +1812,38 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         }
                     }]
             };
+            
+            // Open KSU003
+            detailColumns.forEach((col: any) => {
+                if (col.visible === false) return;
+                let item = uk.localStorage.getItem(self.KEY);
+                let userInfor: IUserInfor = JSON.parse(item.get());
+
+
+                col.headerHandler = (ui: any) => {
+                    let detailContentData: any = [];
+                    for (let i = 0; i < detailContentDs.length; i++) {
+                        detailContentData.add({ employeeId: detailContentDs[i].employeeId, datas: detailContentDs[i][ui.columnKey] });
+                    }
+                    let dayEdit = new Date();
+                    let param = {
+                        detailContentDs: detailContentData,
+                        unit: userInfor.unit,
+                        workplaceId: userInfor.workplaceId,
+                        workplaceGroupId: userInfor.workplaceGroupId,
+                        workplaceName: userInfor.workPlaceName,
+                        listEmp: self.listEmpData,
+                        daySelect: moment(ui.columnKey.slice(1)).format('YYYY/MM/DD'),
+                        startDate: self.dateTimePrev(),
+                        endDate: self.dateTimeAfter(),
+                        dayEdit: moment(dayEdit).add(3, 'd').format('YYYY/MM/DD') // đang để tạm là 3 đối ứng sau
+                    }
+                    setShared("dataFromA", param);
+                    setShared("dataTooltip", self.tooltipShare);
+                    nts.uk.ui.windows.sub.modeless("/view/ksu/003/a/index.xhtml").onClosed(() => { });
+                    return false;
+                };
+            });
 
             let detailContent = {
                 columns: detailColumns,
