@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.app.command.optitem;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,6 +14,7 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.record.app.find.optitem.OptionalItemService;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.ControlOfAttendanceItemsRepository;
 import nts.uk.ctx.at.shared.dom.scherec.event.PerformanceAtr;
@@ -60,6 +62,8 @@ public class OptionalItemSaveCommandHandler extends CommandHandler<OptionalItemS
     @Inject
     private ControlOfAttendanceItemsRepository dailyControlRepository;
 
+    @Inject
+    private OptionalItemService optItemService;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -106,6 +110,10 @@ public class OptionalItemSaveCommandHandler extends CommandHandler<OptionalItemS
 		// process data jp
 		if (this.optItemSv.canRegister(dom, formulas)) {
 
+		    if (this.optItemRepo.find(companyId, optionalItemNo).getOptionalItemAtr() != dom.getOptionalItemAtr()) {
+		        this.optItemService.updateItemControl(dom.getPerformanceAtr().value, dom.getOptionalItemNo().v(), BigDecimal.ONE);
+		    }
+		    
 			// update optional item.
 			this.optItemRepo.update(dom);
 			

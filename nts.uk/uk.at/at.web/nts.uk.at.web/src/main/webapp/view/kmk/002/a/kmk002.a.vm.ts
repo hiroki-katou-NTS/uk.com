@@ -422,6 +422,9 @@ module nts.uk.at.view.kmk002.a {
                         return;
                     }
 
+                    self.dailyUnit('1');
+                    self.monthlyUnit('1');
+
                     // Check whether has formula or calculation result range is set.
                     if (self.isFormulaSet() || self.calcResultRange.isSet()) {
                         nts.uk.ui.dialog.confirm({ messageId: 'Msg_573' }).ifYes(() => {
