@@ -30,11 +30,14 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		dataSource: DisplayInfoOverTime;
 		visibleModel: VisibleModel = new VisibleModel();
 		isCalculation: Boolean = false;
+		urlParam: string;
 		created(params: AppInitParam) {
 			// new 
 			const vm = this;
+			vm.urlParam = url.split("=")[1];
+			
 			vm.application = ko.observable(new Application(ko.toJS(vm.appType)));
-
+			
 			vm.createRestTime(vm.restTime);
 			vm.createHolidayTime(vm.holidayTime);
 			vm.createOverTime(vm.overTime);
@@ -81,7 +84,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						} as FirstParam;
 						param1.companyId = vm.$user.companyId;
 						// param1.dateOp = '2020/11/13';
-						param1.overtimeAppAtr = OvertimeAppAtr.EARLY_OVERTIME;
+						param1.overtimeAppAtr = vm.getOverTimeAtrByUrl();
 						param1.appDispInfoStartupDto = ko.toJS(vm.appDispInfoStartupOutput);
 						// param1.startTimeSPR = 100;
 						// param1.endTimeSPR = 200;
@@ -158,6 +161,17 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 
 
 		}
+		
+		getOverTimeAtrByUrl() {
+			const self = this;
+			if (self.urlParam == '0') {
+				return OvertimeAppAtr.EARLY_OVERTIME;
+			} else if (self.urlParam == '1') {
+				return OvertimeAppAtr.NORMAL_OVERTIME;
+			} else {
+				return OvertimeAppAtr.EARLY_NORMAL_OVERTIME;
+			}
+		}
 
 		createRestTime(restTime: KnockoutObservableArray<RestTime>) {
 			const self = this;
@@ -217,7 +231,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			} as FirstParam;
 			param1.companyId = self.$user.companyId;
 			param1.dateOp = ko.toJS(self.appDispInfoStartupOutput).appDispInfoWithDateOutput.baseDate;
-			param1.overtimeAppAtr = OvertimeAppAtr.EARLY_NORMAL_OVERTIME;
+			param1.overtimeAppAtr = self.getOverTimeAtrByUrl();
 			param1.appDispInfoStartupDto = ko.toJS(self.appDispInfoStartupOutput);
 			// param1.startTimeSPR = 100;
 			// param1.endTimeSPR = 200;
