@@ -42,6 +42,8 @@ export class CmmS45AComponent extends Vue {
     public appListExtractCondition: AppListExtractCondition;
     public data: ApplicationListDtoMobile = new ApplicationListDtoMobile();
 
+    public arrayAppType = [2, 3, 4, 7, 9, 15];
+
     public mounted() {
         const self = this;
         self.getData(!this.params.CMMS45_FromMenu, false);
@@ -278,7 +280,7 @@ export class CmmS45AComponent extends Vue {
                     }
 
                     let paramNew = {
-                            listAppType: [2, 3, 4, 7, 9, 15],
+                            listAppType: self.arrayAppType,
                             listOfAppTypes: res.data,
                             appListExtractCondition: self.appListExtractCondition
                     };
@@ -362,8 +364,10 @@ export class CmmS45AComponent extends Vue {
         //     }));
         // });
         _.forEach(data.appLst, (app: any) => {
-            if (self.selectedValue == '-1' || (!_.isNil(app.application.opStampRequestMode) ? (String(app.appType) + (app.application.opStampRequestMode == 0 ? Type002.stamp : Type002.record)  == self.selectedValue) : String(app.appType) == self.selectedValue)) {
-                if (app.appType == 0 || app.appType == 2 || app.appType == 3 || app.appType == 4 || app.appType == 7 || app.appType == 9 || app.appType == 15 ) {
+            if (self.selectedValue == '-1' 
+                || (!_.isNil(app.application.opStampRequestMode) ? (String(app.appType) + (app.application.opStampRequestMode == 0 ? Type002.stamp : Type002.record)  == self.selectedValue) 
+                                                                    : String(app.appType) == self.selectedValue)) {
+                if (self.arrayAppType.indexOf(app.appType) >= 0) {
                     self.lstApp.push(new AppInfo({
                         id: app.appID,
                         appDate: self.$dt.fromUTCString(app.appDate, 'YYYY/MM/DD'),
@@ -448,27 +452,57 @@ export class CmmS45AComponent extends Vue {
 
     // 抽出条件を変更する
     private filter() {
-        this.$validate();
-        if (this.$valid) {
-            // this.getData(false, true);
+        const self = this;
+        self.$validate();
+        if (self.$valid) {
+            // self.getData(false, true);
             this.getData(true, false);
         }
     }
+    // check app7 with mode 0 and 1
+    public getStampMode(mode: number) {
+        const self = this;
+        let isMode = false;
+        _.forEach(self.data.appListInfoDto.appLst, (i) => {
+            if (i.application.appType == 7) {
+                if (i.application.opStampRequestMode == mode) {
+                    isMode = true;
+                }
+            }
+        });
+
+        return isMode;
+    }
+
 
     // crrate List AppType
     private createLstAppType(opAppTypeLst: Array<ListOfAppTypes>) {
         let self = this;
         self.lstAppType = [];
-        this.lstAppType.push({ code: String(-1), appType: -1, appName: 'すべて' });
+        self.lstAppType.push({ code: String(-1), appType: -1, appName: 'すべて' });
         opAppTypeLst.forEach((appType) => {
-            if (appType.appType == 0 || appType.appType == 2 || appType.appType == 3 || appType.appType == 4  || appType.appType == 7 || appType.appType == 9 || appType.appType == 15) {
+            if (_.intersection(_.uniq(_.map(self.lstApp, (x) => x.appType)), self.arrayAppType).indexOf(appType.appType) >= 0) {
                 let item = { code: String(appType.appType), appType: appType.appType, appName: appType.appName } as any;
                 if (appType.opApplicationTypeDisplay == 3) {
                     item.code = item.code + Type002.stamp;
                 } else if (appType.opApplicationTypeDisplay == 4) {
                     item.code = item.code + Type002.record;
                 }
-                self.lstAppType.push(item);
+                if (appType.appType == 7) {
+                    if (self.getStampMode(0)) {
+                        if (appType.opApplicationTypeDisplay == 3) {
+                            self.lstAppType.push(item);
+                        }
+                    }
+                    
+                    if (self.getStampMode(1)) {
+                        if (appType.opApplicationTypeDisplay == 4) {
+                            self.lstAppType.push(item);
+                        }
+                    }
+                } else {
+                    self.lstAppType.push(item);
+                }
             }
         });
         self.lstAppType = _.uniqBy(self.lstAppType, (o: any) => {

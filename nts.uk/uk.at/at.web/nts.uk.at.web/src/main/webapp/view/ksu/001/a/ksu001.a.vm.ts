@@ -1976,6 +1976,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             
             // set height grid theo localStorage đã lưu
             self.setPositionButonDownAndHeightGrid();
+            $('#btnControlLeftRight').width($("#extable").width() + 10);
+            $("#sub-content-main").width($('#extable').width() + 30);
             
             console.log(performance.now() - start);
         }
