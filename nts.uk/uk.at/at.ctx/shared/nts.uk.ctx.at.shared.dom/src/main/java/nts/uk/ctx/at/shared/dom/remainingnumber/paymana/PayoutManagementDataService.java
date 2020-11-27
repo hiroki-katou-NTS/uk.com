@@ -126,7 +126,11 @@ public class PayoutManagementDataService {
 			throw new BusinessException("Msg_1256");
 		}
 		// 振休残数　＝　紐付け日数（D16_4）-　振休日数（D11_3）
-		remainDays = linkingDate - subDay;
+		if (linkingDate != 0) {
+			remainDays = linkingDate - subDay;
+		} else {
+			remainDays = subDay;
+		}
 		// 振休日数をチェック
 		if (remainDays < 0) {// 振休残数　＜0
 			// エラーメッセージ「Msg_2030」

@@ -388,7 +388,11 @@ public class AddSubHdManagementService {
 			throw new BusinessException("Msg_1256");
 		}
 		// 代休残数　＝　紐付け日数（I12_8）-　代休日数（I11_3）
-		remainDays = linkingDate - selectedCodeSubHoliday;
+		if (linkingDate != 0) {
+			remainDays = linkingDate - selectedCodeSubHoliday;
+		} else {
+			remainDays = selectedCodeSubHoliday;
+		}
 		// 代休日数をチェック
 		if (remainDays < 0) { // 代休残数　＜0
 			throw new BusinessException("Msg_2032");
