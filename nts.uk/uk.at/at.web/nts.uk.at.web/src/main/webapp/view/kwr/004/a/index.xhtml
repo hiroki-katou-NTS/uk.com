@@ -10,6 +10,10 @@
     <ui:composition template="../../../../master/base.xhtml">
       <ui:define name="htmlHead">
         <com:scriptfile set="IGNITE" />
+        <com:EnumScript>
+          nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon
+        </com:EnumScript>      
+
         <com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
         <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
         <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
@@ -107,10 +111,10 @@
                           optionsText: 'name',
                           editable: false,
                           enable: isEnableSelectedCode(),
-                          required: false,
+                          required: true,
                           selectFirstIfNull: true,
                           columns: [
-                            { prop: 'code', length: 4 },
+                            { prop: 'code', length: 2 },
                             { prop: 'name', length: 10 },
                           ]}"
                       ></div>
@@ -136,10 +140,10 @@
                           optionsText: 'name',
                           editable: false,
                           enable: !isEnableSelectedCode(),
-                          required: false,
+                          required: true,
                           selectFirstIfNull: true,
                           columns: [
-                            { prop: 'code', length: 4 },
+                            { prop: 'code', length: 2 },
                             { prop: 'name', length: 10 },
                           ]}"
                         ></div>
