@@ -20,6 +20,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.bs.employee.pub.jobtitle.*;
+import nts.uk.ctx.bs.employee.pub.jobtitle.affiliate.AffJobTitleHistoryItemExport;
+import nts.uk.ctx.bs.employee.pub.jobtitle.affiliate.JobTitleHistoryExport;
+import nts.uk.ctx.bs.employee.pub.jobtitle.affiliate.DateHistoryItemExport;
 import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
@@ -39,15 +43,6 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleName;
 import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceCode;
 import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceMaster;
 import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceMasterRepository;
-import nts.uk.ctx.bs.employee.pub.jobtitle.AffJobTitleBasicExport;
-import nts.uk.ctx.bs.employee.pub.jobtitle.AffJobTitleHistoryExport;
-import nts.uk.ctx.bs.employee.pub.jobtitle.EmployeeJobHistExport;
-import nts.uk.ctx.bs.employee.pub.jobtitle.JobGInforEx;
-import nts.uk.ctx.bs.employee.pub.jobtitle.JobTitleExport;
-import nts.uk.ctx.bs.employee.pub.jobtitle.JobTitleInfoExport;
-import nts.uk.ctx.bs.employee.pub.jobtitle.SequenceMasterExport;
-import nts.uk.ctx.bs.employee.pub.jobtitle.SimpleJobTitleExport;
-import nts.uk.ctx.bs.employee.pub.jobtitle.SyJobTitlePub;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -233,30 +228,6 @@ public class JobTitlePubImp implements SyJobTitlePub {
 					.sequenceCode(jobInfo.getSequenceCode() != null ? jobInfo.getSequenceCode().v() : null)
 					.startDate(jobTitleHistory.span().start()).endDate(jobTitleHistory.span().end())
 					.isManager(jobInfo.isManager()).build();
-		}).collect(Collectors.toList());
-	}
-
-	@Override
-	public List<JobTitleInfoExport> findByDatePeriod(String companyId, DatePeriod datePeriod) {
-
-		// Query
-		List<JobTitle> jobTitles = this.jobTitleRepository.findByDatePeriod(companyId, datePeriod);
-		List<JobTitleInfo> jobTitleInfos = new ArrayList<>();
-		jobTitles.forEach(x -> {
-			x.getJobTitleHistories().forEach(i -> {
-				val jobtitle = this.jobTitleInfoRepository.find(x.getCompanyId().v(),x.getJobTitleId(),i.identifier());
-				jobtitle.ifPresent(jobTitleInfos::add);
-			});
-		});
-		return jobTitleInfos.stream().map(x -> {
-			return new JobTitleInfoExport(
-				x.getCompanyId().v(),
-				x.getJobTitleId(),
-				x.isManager(),
-				x.getJobTitleId(),
-				x.getJobTitleCode().v(),
-				x.getJobTitleName().v(),
-				x.getSequenceCode().v());
 		}).collect(Collectors.toList());
 	}
 
@@ -537,4 +508,58 @@ public class JobTitlePubImp implements SyJobTitlePub {
 		}).orElse(Collections.emptyList());
 	}
 
+	@Override
+	public List<JobTitleInfoExport> findByDatePeriod(String companyId, DatePeriod datePeriod) {
+
+		// Query
+		List<JobTitle> jobTitles = this.jobTitleRepository.findByDatePeriod(companyId, datePeriod);
+		List<JobTitleInfo> jobTitleInfos = new ArrayList<>();
+		jobTitles.forEach(x -> {
+			x.getJobTitleHistories().forEach(i -> {
+				val jobtitle = this.jobTitleInfoRepository.find(x.getCompanyId().v(),x.getJobTitleId(),i.identifier());
+				jobtitle.ifPresent(jobTitleInfos::add);
+			});
+		});
+		return jobTitleInfos.stream().map(x -> {
+			return new JobTitleInfoExport(
+					x.getCompanyId().v(),
+					x.getJobTitleId(),
+					x.isManager(),
+					x.getJobTitleId(),
+					x.getJobTitleCode().v(),
+					x.getJobTitleName().v(),
+					x.getSequenceCode().v());
+		}).collect(Collectors.toList());
+	}
+
+	@Override
+	public JobTitleHistoryExport getJobTitleHist(List<String> employeeIds, DatePeriod period) {
+		List<AffJobTitleHistory> findAllJobTitleHistory = affJobTitleHisRepo.getByEmployeeListPeriod(employeeIds, period);
+
+		List<String> histIds = new ArrayList<>();
+		findAllJobTitleHistory.forEach(x -> {
+			x.getHistoryItems().stream().map(i -> histIds.add(i.identifier()));
+		});
+
+		List<AffJobTitleHistoryItem> historyItems = affJobTitleHisItemRepo.findByHitoryIds(histIds);
+
+		return new JobTitleHistoryExport(
+				findAllJobTitleHistory.stream().map(x -> {
+					return new nts.uk.ctx.bs.employee.pub.jobtitle.affiliate.AffJobTitleHistoryExport(
+							x.getCompanyId(),
+							x.getEmployeeId(),
+							x.getHistoryItems().stream().map(i -> {
+								return new DateHistoryItemExport(i.identifier(), i.span());
+							}).collect(Collectors.toList())
+					);
+				}).collect(Collectors.toList()),
+				historyItems.stream().map(x -> {
+					return new AffJobTitleHistoryItemExport(
+							x.getHistoryId(),
+							x.getEmployeeId(),
+							x.getJobTitleId(),
+							x.getNote().v());
+				}).collect(Collectors.toList())
+		);
+	}
 }

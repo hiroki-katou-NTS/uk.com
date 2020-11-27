@@ -1,14 +1,13 @@
-package nts.uk.ctx.bs.employee.pub.workplace.affiliate;
+package nts.uk.ctx.at.shared.dom.adapter.jobtitle.affiliate;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
 @Getter
 @AllArgsConstructor
-public class AffJobTitleHistoryExport {
+public class AffJobTitleHistoryImport {
 
 	/** The company id. */
 	private String companyId;
@@ -19,6 +18,6 @@ public class AffJobTitleHistoryExport {
 
 	/** The history items. */
 	// 履歴項目
-	private List<DateHistoryItemExport> historyItems;
+	private List<DateHistoryItemImport> historyItems;
 
 }

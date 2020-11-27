@@ -1,13 +1,12 @@
-package nts.uk.ctx.bs.employee.pub.workplace.affiliate;
+package nts.uk.ctx.at.shared.dom.adapter.jobtitle.affiliate;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import nts.arc.time.calendar.period.DatePeriod;
 
 @Getter
 @AllArgsConstructor
-public class DateHistoryItemExport {
+public class DateHistoryItemImport {
 
 	/** The company id. */
 	private String historyId;

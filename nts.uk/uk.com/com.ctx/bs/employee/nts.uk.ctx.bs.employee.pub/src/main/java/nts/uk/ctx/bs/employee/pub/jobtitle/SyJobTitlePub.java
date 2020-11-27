@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.bs.employee.pub.jobtitle.affiliate.JobTitleHistoryExport;
 import org.apache.commons.lang3.tuple.Pair;
 
 import nts.arc.time.GeneralDate;
@@ -142,4 +143,8 @@ public interface SyJobTitlePub {
 	 */
 	List<JobTitleInfoExport> findByDatePeriod(String companyId, DatePeriod datePeriod);
 
+	/**
+	 * 社員（List）と期間から職位履歴を取得する
+	 */
+	JobTitleHistoryExport getJobTitleHist(List<String> employeeIds, DatePeriod period);
 }

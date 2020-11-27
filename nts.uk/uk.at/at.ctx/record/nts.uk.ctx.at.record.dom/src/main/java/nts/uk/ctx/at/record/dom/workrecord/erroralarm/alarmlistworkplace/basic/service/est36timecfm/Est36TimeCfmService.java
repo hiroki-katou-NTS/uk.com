@@ -71,7 +71,7 @@ public class Est36TimeCfmService {
 
             // ドメインオブジェクト「抽出結果」を作成して返す
             ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(message),
-                    new AlarmValueDate(Integer.valueOf(period.start().toString("yyyy/MM/dd")), Optional.empty()),
+                    new AlarmValueDate(Integer.valueOf(period.start().toString("yyyyMMdd")), Optional.empty()),
                     name.v(),
                     Optional.ofNullable(TextResource.localize("KAL020_17")),
                     Optional.of(new MessageDisplay(displayMessage.v())),

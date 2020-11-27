@@ -35,15 +35,13 @@ public class WorkplaceCodeCfmService {
         // 空欄のリスト「抽出結果」を作成する。
         List<ExtractResultDto> results = new ArrayList<>();
 
-        // 期間から職位情報を取得
-        // TODO Q&A 36422
+        // 期間から職場情報を取得
+        // TODO Q&A 36430
 
         for (Map.Entry<String, List<EmployeeInfoImported>> empInfosByWp : empInfosByWpMap.entrySet()) {
             List<EmployeeInfoImported> empInfos = empInfosByWp.getValue();
             List<String> employeeIds = empInfos.stream().map(EmployeeInfoImported::getSid)
                     .collect(Collectors.toList());
-            // 期間とList<社員ID＞から職位を取得する。
-            // TODO Q&A 36423
         }
 
         // リスト「抽出結果」を返す。
