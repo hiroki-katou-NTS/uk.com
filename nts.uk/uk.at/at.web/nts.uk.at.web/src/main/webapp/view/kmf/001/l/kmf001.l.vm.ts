@@ -338,6 +338,7 @@ module nts.uk.pr.view.kmf001.l {
             //L4_4 and L5_4
             digestion: KnockoutObservable<number>;
             parent: ScreenModel;
+            enableNursingAndTimeMan: KnockoutObservable<boolean>;
             
             constructor(parent: ScreenModel) {
                 let self = this;
@@ -346,6 +347,9 @@ module nts.uk.pr.view.kmf001.l {
                 self.selectedtimeManagement= ko.observable(1);
                 self.enableNursing = ko.computed(function() {
                     return self.selectedManageNursing() == 1;
+                }, self);
+                self.enableNursingAndTimeMan = ko.computed(function() {
+                    return self.enableNursing() && self.selectedtimeManagement() == 1;
                 }, self);
                 self.monthDay = ko.observable(101);
                 self.nursingNumberLeaveDay = ko.observable(0);
