@@ -7,6 +7,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.Year;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.bs.company.dom.company.primitive.ABName;
@@ -126,6 +127,20 @@ public class Company extends AggregateRoot {
 	/** if company be discarded: true-1: be discarded, false-0: be not discarded*/
 	public boolean isAbolition() {
 		return AbolitionAtr.ABOLITION == this.isAbolition;
+	}
+	
+	// 	[1] 暦の年月を指定して、年度を取得する
+	
+	public Year getYearBySpecifying(YearMonth yearMonth) {
+		Year year = null;
+		
+		if(yearMonth.month() > this.startMonth.value ){
+			year = new Year(yearMonth.year());
+		}else {
+			year = new Year(yearMonth.previousYear().v());
+		}
+		
+		return year;
 	}
 	
 	// [2]年度の期間を取得
