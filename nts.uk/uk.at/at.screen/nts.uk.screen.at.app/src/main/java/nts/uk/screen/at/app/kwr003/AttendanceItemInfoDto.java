@@ -14,6 +14,4 @@ public class AttendanceItemInfoDto {
     private List<AttItemDto>listDaily;
     private List<AttItemDto>listMonthly;
 
-
-
 }
