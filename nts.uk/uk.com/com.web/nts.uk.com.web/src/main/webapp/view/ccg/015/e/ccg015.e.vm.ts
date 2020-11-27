@@ -97,23 +97,6 @@ module nts.uk.com.view.ccg015.e {
       const newItem: ItemModel = LayoutUtils.convertWidgetToItem(partType, lastOrder + 1);
       if (newItem) {
         vm.itemList.splice(position, 0, newItem);
-        // // Init sortable
-        // vm.$menuCreationLayout.sortable({
-        //   update: (event, ui) => {
-        //     // figure out its new position
-        //     const oldPosition = _.findIndex(vm.itemList(), (item) => item.itemType === ui.item.attr('id'));
-        //     const newPosition = _.findIndex(ui.item.parent().children(), (item) => item.id === ui.item.attr('id'));
-        //     // remove the item and add it back in the right spot
-        //     if (oldPosition >= 0 && newPosition >= 0) {
-        //       // retrieve our actual data item
-        //       const tempList = vm.itemList();
-        //       const tempItem = tempList[oldPosition];
-        //       tempList.splice(oldPosition, 1);
-        //       tempList.splice(newPosition, 0, tempItem);
-        //       vm.itemList(tempList);
-        //     }
-        //   }
-        // });
       }
     }
 
@@ -296,14 +279,14 @@ module nts.uk.com.view.ccg015.e {
   }
 
   export enum MenuPartType {
-    PART_KTG_005 = '1', // Have setting
-    PART_KTG_001 = '2',
-    PART_KTG_004 = '3', // Have setting
-    PART_KTG_026 = '4',
-    PART_KTG_027 = '5',
-    PART_KDP_001 = '6',
-    PART_KTG_031 = '7',
-    PART_CCG_005 = '8',
+    PART_KTG_005 = '1', // Iframe Have setting
+    PART_KTG_001 = '2', // Iframe
+    PART_KTG_004 = '3', // Iframe Have setting
+    PART_KTG_026 = '4', // Component
+    PART_KTG_027 = '5', // Component
+    PART_KDP_001 = '6', // Iframe
+    PART_KTG_031 = '7', // Component
+    PART_CCG_005 = '8', // Component
   }
 
   export class WidgetTypeModel {
@@ -326,6 +309,22 @@ module nts.uk.com.view.ccg015.e {
     constructor(init?: Partial<ItemModel>) {
       $.extend(this, init);
       this.isShowSetting = (init.itemType === MenuPartType.PART_KTG_004 || init.itemType === MenuPartType.PART_KTG_005);
+    }
+
+    public isComponent() {
+      return this.isKTG026() || this.isKTG027() || this.isKTG031() || this.isCCG005();
+    }
+    public isKTG026() {
+      return this.itemType === MenuPartType.PART_KTG_026;
+    }
+    public isKTG027() {
+      return this.itemType === MenuPartType.PART_KTG_027;
+    }
+    public isKTG031() {
+      return this.itemType === MenuPartType.PART_KTG_031;
+    }
+    public isCCG005() {
+      return this.itemType === MenuPartType.PART_CCG_005;
     }
   }
 }
