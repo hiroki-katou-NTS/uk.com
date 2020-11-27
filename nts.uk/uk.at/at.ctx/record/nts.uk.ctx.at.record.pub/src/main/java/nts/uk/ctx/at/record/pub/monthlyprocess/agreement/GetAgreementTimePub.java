@@ -7,10 +7,11 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.Year;
 import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.ctx.at.record.pub.monthly.agreement.export.AgreMaxAverageTimeMultiExport;
+import nts.uk.ctx.at.record.pub.monthly.agreement.export.AgreementTimeExport;
+import nts.uk.ctx.at.record.pub.monthly.agreement.export.AgreementTimeOfManagePeriodExport;
+import nts.uk.ctx.at.record.pub.monthly.agreement.export.AgreementTimeYearExport;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxAverageTimeMulti;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeYear;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.ScheRecAtr;
 
 /**
@@ -28,7 +29,7 @@ public interface GetAgreementTimePub {
 	 * @return 36協定時間一覧
 	 */
 	// RequestList333
-	AgreementTimeOfManagePeriod calcAgreementTime(String sid, YearMonth ym,
+	AgreementTimeOfManagePeriodExport calcAgreementTime(String sid, YearMonth ym,
 			List<IntegrationOfDaily> dailyRecord, GeneralDate baseDate, ScheRecAtr scheRecAtr);
 	
 	/**
@@ -40,7 +41,7 @@ public interface GetAgreementTimePub {
 	 * @return 36協定年間時間
 	 */
 	// RequestList544
-	Optional<AgreementTimeYear> getYear(String employeeId, YearMonthPeriod period, GeneralDate criteria, ScheRecAtr scheRecAtr);
+	Optional<AgreementTimeYearExport> getYear(String employeeId, YearMonthPeriod period, GeneralDate criteria, ScheRecAtr scheRecAtr);
 	
 	/**
 	 * 36協定上限複数月平均時間の取得
@@ -51,7 +52,7 @@ public interface GetAgreementTimePub {
 	 * @return 36協定上限複数月平均時間
 	 */
 	// RequestList541
-	Optional<AgreMaxAverageTimeMulti> getMaxAverageMulti(List<IntegrationOfDaily> dailyRecord, 
+	Optional<AgreMaxAverageTimeMultiExport> getMaxAverageMulti(List<IntegrationOfDaily> dailyRecord, 
 			String employeeId, YearMonth yearMonth, GeneralDate criteria, ScheRecAtr scheRecAtr);
 
 	/**

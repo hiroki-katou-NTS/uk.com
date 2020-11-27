@@ -52,6 +52,15 @@ module nts.uk.at.view.kaf000.a.viewmodel {
 				}
 			});	
 		}
+		
+		handleErrorCommon(failData: any) {
+			const vm = this;
+			if(failData.messageId == "Msg_324") {
+				vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds });
+				return;
+			}	
+			vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds });
+		}
     }
 
     const API = {

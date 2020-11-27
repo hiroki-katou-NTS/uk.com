@@ -122,9 +122,13 @@ import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.Err
 import nts.uk.ctx.at.shared.dom.workrule.ErrorStatusWorkInfo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -238,6 +242,18 @@ public class ScheduleCreatorExecutionTransaction {
 
 	@Inject
 	private BasicScheduleService basicScheduleService;
+	
+	@Inject
+	private FixedWorkSettingRepository fixedWorkSet;
+	
+	@Inject
+	private FlowWorkSettingRepository flowWorkSet;
+	
+	@Inject
+	private FlexWorkSettingRepository flexWorkSet ;
+	
+	@Inject
+	private PredetemineTimeSettingRepository predetemineTimeSet;
 
 	public void execute(ScheduleCreatorExecutionCommand command, ScheduleExecutionLog scheduleExecutionLog,
 			CommandHandlerContext<ScheduleCreatorExecutionCommand> context, String companyId, String exeId,
@@ -642,7 +658,7 @@ public class ScheduleCreatorExecutionTransaction {
 				// 勤務情報が正常な状態かをチェックする
 
 				WorkInformation.Require require = new WorkInformationImpl(workTypeRepo, workTimeSettingRepository,
-						workTimeSettingService, basicScheduleService);
+						workTimeSettingService, basicScheduleService, fixedWorkSet, flowWorkSet, flexWorkSet, predetemineTimeSet);
 				ErrorStatusWorkInfo checkErrorCondition = information.checkErrorCondition(require);
 
 				// 正常の場合
@@ -1616,6 +1632,18 @@ public class ScheduleCreatorExecutionTransaction {
 
 		@Inject
 		private BasicScheduleService basicScheduleService;
+		
+		@Inject
+		private FixedWorkSettingRepository fixedWorkSet;
+		
+		@Inject
+		private FlowWorkSettingRepository flowWorkSet;
+		
+		@Inject
+		private FlexWorkSettingRepository flexWorkSet ;
+		
+		@Inject
+		private PredetemineTimeSettingRepository predetemineTimeSet;
 
 		@Override
 		public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
@@ -1623,33 +1651,33 @@ public class ScheduleCreatorExecutionTransaction {
 		}
 
 		@Override
-		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTimeCd, String workTypeCd,
+		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd,
 				Integer workNo) {
 			return workTimeSettingService.getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
 		}
 
 		@Override
 		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
-			// TODO Auto-generated method stub
-			return null;
+			Optional<FixedWorkSetting> workSetting = fixedWorkSet.findByKey(companyId, code.v());
+			return workSetting.isPresent() ? workSetting.get() : null;
 		}
 
 		@Override
 		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
-			// TODO Auto-generated method stub
-			return null;
+			Optional<FlowWorkSetting> workSetting =  flowWorkSet.find(companyId, code.v());
+			return workSetting.isPresent() ? workSetting.get() : null;
 		}
 
 		@Override
 		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
-			// TODO Auto-generated method stub
-			return null;
+			Optional<FlexWorkSetting> workSetting = flexWorkSet.find(companyId, code.v());
+			return workSetting.isPresent() ? workSetting.get() : null;
 		}
 
 		@Override
 		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
-			// TODO Auto-generated method stub
-			return null;
+			Optional<PredetemineTimeSetting> workSetting = predetemineTimeSet.findByWorkTimeCode(companyId, wktmCd.v());
+			return workSetting.isPresent() ? workSetting.get() : null;
 		}
 
 		@Override
@@ -1659,8 +1687,7 @@ public class ScheduleCreatorExecutionTransaction {
 
 		@Override
 		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
-			// TODO Auto-generated method stub
-			return null;
+			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
 		}
 
 	}

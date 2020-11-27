@@ -70,7 +70,6 @@ module nts.uk.at.kdp003.a {
 
 		fingerStampSetting: KnockoutObservable<FingerStampSetting> = ko.observable(DEFAULT_SETTING);
 
-
 		created() {
 			const vm = this;
 
@@ -264,7 +263,7 @@ module nts.uk.at.kdp003.a {
 								if (data) {
 									vm.fingerStampSetting(data);
 								}
-								
+
 								return data;
 							});
 					}
@@ -303,7 +302,12 @@ module nts.uk.at.kdp003.a {
 						clearState();
 					}
 				})
-				.then(() => vm.$ajax('at', API.HIGHTLIGHT))
+				.then(() => ({
+					departure: false,
+					goingToWork: false,
+					goOut: false,
+					turnBack: false
+				}))
 				.then((data: share.StampToSuppress) => vm.buttonPage.stampToSuppress(data))
 				// <<ScreenQuery>>: 打刻入力(氏名選択)で社員の一覧を取得する
 				.then(() => vm.loadEmployees(storage)) as JQueryPromise<any>;
@@ -481,16 +485,24 @@ module nts.uk.at.kdp003.a {
 			const vm = this;
 			const { buttonPage, employeeData } = vm;
 			const { selectedId, employees, nameSelectArt } = ko.toJS(employeeData) as EmployeeListData;
-			const reloadSetting = () => vm.$ajax('at', API.HIGHTLIGHT)
-				.then((data: any) => {
-					const oldData = ko.unwrap(buttonPage.stampToSuppress);
+			const reloadSetting = () =>
+				$.Deferred()
+					.resolve(true)
+					.then(() => ({
+						departure: false,
+						goingToWork: false,
+						goOut: false,
+						turnBack: false
+					}))
+					.then((data: any) => {
+						const oldData = ko.unwrap(buttonPage.stampToSuppress);
 
-					if (!_.isEqual(data, oldData)) {
-						buttonPage.stampToSuppress(data);
-					} else {
-						buttonPage.stampToSuppress.valueHasMutated();
-					}
-				});
+						if (!_.isEqual(data, oldData)) {
+							buttonPage.stampToSuppress(data);
+						} else {
+							buttonPage.stampToSuppress.valueHasMutated();
+						}
+					});
 
 			// case: 社員一覧(A2)を選択していない場合
 			if (selectedId === undefined && nameSelectArt === true) {

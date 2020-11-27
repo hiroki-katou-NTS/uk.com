@@ -301,11 +301,7 @@ public class WorkType extends AggregateRoot implements Cloneable, Serializable{
 	 * @return the work type set by atr
 	 */
 	public Optional<WorkTypeSet> getWorkTypeSetByAtr(WorkAtr atr) {
-		if (!atr.equals("the atr")) {
-			return this.getWorkTypeSetList().stream().filter(item -> item.getWorkAtr() == atr).findFirst();
-		} else {
-			return Optional.empty();
-		}
+		return this.getWorkTypeSetList().stream().filter(item -> item.getWorkAtr() == atr).findFirst();
 	}
 	
 	public WorkTypeSet getWorkTypeSetAvailable() {
