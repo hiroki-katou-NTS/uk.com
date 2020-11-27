@@ -121,8 +121,8 @@ module nts.uk.at.view.kaf020.c.viewmodel {
                                 unit: optionalItem.unit,
                                 inputUnitOfTimeItem: controlOfAttendanceItem ? controlOfAttendanceItem.inputUnitOfTimeItem : null,
                                 description: optionalItem.description,
-                                timeUpper: optionalItem.calcResultRange.timeUpper ? nts.uk.time.format.byId("Clock_Short_HM", optionalItem.calcResultRange.timeUpper) : null,
-                                timeLower: optionalItem.calcResultRange.timeLower ? nts.uk.time.format.byId("Clock_Short_HM", optionalItem.calcResultRange.timeLower) : null,
+                                timeUpper: optionalItem.calcResultRange.timeUpper != null ? nts.uk.time.format.byId("Clock_Short_HM", optionalItem.calcResultRange.timeUpper) : null,
+                                timeLower: optionalItem.calcResultRange.timeLower != null ? nts.uk.time.format.byId("Clock_Short_HM", optionalItem.calcResultRange.timeLower) : null,
                                 amountLower: optionalItem.calcResultRange.amountLower,
                                 amountUpper: optionalItem.calcResultRange.amountUpper,
                                 numberLower: optionalItem.calcResultRange.numberLower,
@@ -130,7 +130,7 @@ module nts.uk.at.view.kaf020.c.viewmodel {
                                 upperCheck: optionalItem.calcResultRange.upperCheck,
                                 lowerCheck: optionalItem.calcResultRange.lowerCheck,
                                 time: ko.observable(item.time),
-                                number: ko.observable(item.times),
+                                times: ko.observable(item.times),
                                 amount: ko.observable(item.amount),
                                 detail: ''
                             });
@@ -170,9 +170,9 @@ module nts.uk.at.view.kaf020.c.viewmodel {
             dataFetch.applicationContents.forEach((item: OptionalItemApplicationContent) => {
                 optionalItems.push({
                     itemNo: item.optionalItemNo,
-                    times: item.number || null,
-                    amount: item.amount || null,
-                    time: item.time || null
+                    times: item.times ,
+                    amount: item.amount,
+                    time: item.time
                 });
             })
             let command = {

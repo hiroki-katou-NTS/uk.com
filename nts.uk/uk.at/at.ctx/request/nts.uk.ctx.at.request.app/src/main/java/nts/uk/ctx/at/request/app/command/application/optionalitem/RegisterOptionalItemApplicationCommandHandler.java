@@ -100,6 +100,8 @@ public class RegisterOptionalItemApplicationCommandHandler extends CommandHandle
                 .getOpListApprovalPhaseState().get() : null);
 
         domain.setAppID(application.getAppID());
+        List<AnyItemValue> acceptAnyItemValue = domain.getOptionalItems().stream().filter(optionalItem -> optionalItem.getAmount().isPresent() || optionalItem.getTimes().isPresent() || optionalItem.getTime().isPresent()).collect(Collectors.toList());
+        domain.setOptionalItems(acceptAnyItemValue);
         repository.save(domain);
         /**
          *  2-2.新規画面登録時承認反映情報の整理(register: reflection info setting)

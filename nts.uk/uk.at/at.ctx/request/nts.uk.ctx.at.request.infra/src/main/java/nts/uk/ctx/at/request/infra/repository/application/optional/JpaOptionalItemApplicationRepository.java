@@ -63,14 +63,21 @@ public class JpaOptionalItemApplicationRepository extends JpaRepository implemen
                 .setParameter("appId", domain.getAppID())
                 .getList().stream().collect(Collectors.toMap(x -> x.getKrqdtAppAnyvPk().anyvNo, x -> x));
         if (entityMap.size() > 0) {
+            List<KrqdtAppAnyv> removeEntity = new ArrayList<>();
             domain.getOptionalItems().forEach(item -> {
-                KrqdtAppAnyv krqdtAppAnyv = entityMap.get(Integer.sum(item.getItemNo().v(), OPTIONAL_ITEM_NO_CONVERT_CONST));
-                krqdtAppAnyv.setTimes(item.getTimes().isPresent() ? item.getTimes().get().v() : null);
-                krqdtAppAnyv.setTime(item.getTime().isPresent() ? item.getTime().get().v() : null);
-                krqdtAppAnyv.setMoneyValue(item.getAmount().isPresent() ? item.getAmount().get().v() : null);
+                if (!item.getTime().isPresent() && !item.getTimes().isPresent() && !item.getAmount().isPresent()) {
+                    removeEntity.add(entityMap.get(Integer.sum(item.getItemNo().v(), OPTIONAL_ITEM_NO_CONVERT_CONST)));
+                } else {
+                    KrqdtAppAnyv krqdtAppAnyv = entityMap.get(Integer.sum(item.getItemNo().v(), OPTIONAL_ITEM_NO_CONVERT_CONST));
+                    krqdtAppAnyv.setTimes(item.getTimes().isPresent() ? item.getTimes().get().v() : null);
+                    krqdtAppAnyv.setTime(item.getTime().isPresent() ? item.getTime().get().v() : null);
+                    krqdtAppAnyv.setMoneyValue(item.getAmount().isPresent() ? item.getAmount().get().v() : null);
+                }
             });
             this.commandProxy().updateAll(entityMap.values());
+            this.commandProxy().removeAll(removeEntity);
         }
+
     }
 
     @Override

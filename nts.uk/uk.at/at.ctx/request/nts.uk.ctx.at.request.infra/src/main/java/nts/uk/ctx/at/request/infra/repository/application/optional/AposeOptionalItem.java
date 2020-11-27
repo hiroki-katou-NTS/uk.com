@@ -33,7 +33,7 @@ public class AposeOptionalItem {
             } else if (printContent.get(i).getOptionalItemAtr() == 1 && printContent.get(i).getTimes() != null) {
                 cellH.setValue(printContent.get(i).getTimes());
             } else if (printContent.get(i).getOptionalItemAtr() == 2 && printContent.get(i).getAmount() != null) {
-                cellH.setValue(printContent.get(i).getAmount());
+                cellH.setValue(String.format("%,d", printContent.get(i).getAmount()));
             }
             Cell cellI = cells.get("I" + (9 + i));
             cellI.setValue(printContent.get(i).getUnit());
