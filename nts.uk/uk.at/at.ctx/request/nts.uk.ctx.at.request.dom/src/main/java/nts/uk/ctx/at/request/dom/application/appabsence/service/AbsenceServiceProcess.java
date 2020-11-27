@@ -6,6 +6,7 @@ import java.util.Optional;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
+import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AbsenceCheckRegisterOutput;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AppAbsenceStartInfoOutput;
@@ -298,8 +299,7 @@ public interface AbsenceServiceProcess {
 	 * @param mournerAtr 喪主区分<Optional>
 	 * @return
 	 */
-	public List<ConfirmMsgOutput> checkAppAbsenceRegister(boolean mode, String companyID, AppAbsence appAbsence, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput,
-			HolidayAppType holidayType, String workTypeCD, Integer alldayHalfDay, List<GeneralDate> holidayDateLst, Optional<Boolean> mournerAtr);
+	public AbsenceCheckOutput checkAppAbsenceRegister(boolean mode, String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput,ApplyForLeave appBeforeChange,ApplyForLeave appAfterChange);
 	
 	/**
 	 * 勤務種類・就業時間帯情報を取得する

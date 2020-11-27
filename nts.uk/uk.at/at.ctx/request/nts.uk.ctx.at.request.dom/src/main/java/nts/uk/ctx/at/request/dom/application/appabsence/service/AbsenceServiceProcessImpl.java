@@ -21,7 +21,9 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
+import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.four.AppAbsenceFourProcess;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AbsenceCheckRegisterOutput;
@@ -39,6 +41,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.CommonAlgorithmMobile;
@@ -1210,10 +1213,57 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	}
 
 	@Override
-	public List<ConfirmMsgOutput> checkAppAbsenceRegister(boolean mode, String companyID, AppAbsence appAbsence,
-			AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, HolidayAppType holidayType, String workTypeCD,
-			Integer alldayHalfDay, List<GeneralDate> holidayDateLst, Optional<Boolean> mournerAtr) {
-		List<ConfirmMsgOutput> result = new ArrayList<>();
+	public AbsenceCheckOutput checkAppAbsenceRegister(boolean mode, String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput,
+			ApplyForLeave appBeforeChange,ApplyForLeave newAbsence) {
+		AbsenceCheckOutput result = new AbsenceCheckOutput();
+		//4.社員の当月の期間を算出する
+		PeriodCurrentMonth periodCurrentMonth = otherCommonAlgorithm.employeePeriodCurrentMonthCalculate(companyID,newAbsence.getEmployeeID(),GeneralDate.today());
+		// 変更後の申請期間をチェックする
+		this.changeAbScenePeriodCheck(appBeforeChange, newAbsence, periodCurrentMonth.getStartDate());
+		// 申請期間から休日の申請日を取得する
+		List<GeneralDate> lstDates = otherCommonAlgorithm.lstDateIsHoliday(newAbsence.getApplication().getEmployeeID()
+				, new DatePeriod(newAbsence.getOpAppStartDate().get().getApplicationDate(),newAbsence.getOpAppEndDate().get().getApplicationDate())
+				, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get());
+		// 2-1.新規画面登録前の処理
+		List<ConfirmMsgOutput> lstConfirmMsg = newBeforeRegister.processBeforeRegister_New(companyID
+				, EmploymentRootAtr.APPLICATION
+				, false // KAF006: -PhuongDV domain fix pending- confirm input
+				, newAbsence.getApplication()
+				, null
+				, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpErrorFlag().get() // KAF006: -PhuongDV domain fix pending- confirm input
+				, lstDates
+				, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput());
+		// 申請の矛盾チェック
+		List<GeneralDate> dateLst = new ArrayList<GeneralDate>();
+		GeneralDate currentDate = newAbsence.getOpAppStartDate().get().getApplicationDate();
+		while(currentDate.beforeOrEquals(newAbsence.getOpAppStartDate().get().getApplicationDate())) {
+			dateLst.add(currentDate);
+			currentDate = currentDate.addDays(1);
+		}
+		// 勤務種類リスト作成
+		List<String> lstWorkType = new ArrayList<String>();
+		// KAF006: -PhuongDV domain fix pending- confirm input -> ・申請する勤務種類リスト = INPUT．「休暇申請．反映情報．勤務情報．勤務種類コード」 -> ko co trong input EAP
+		lstWorkType.add(newAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode().v());
+		commonAlgorithm.appConflictCheck(companyID
+				, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0) // KAF006: -PhuongDV domain fix pending- confirm input -> auto lấy ở đầu danh sách
+				, dateLst
+				, lstWorkType
+				, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get());
+		// 1日分の取消処理 KAF006: -PhuongDV domain fix pending-
+		// Chưa tìm thấy xử lý 
+		// 指定期間の暫定残数管理データを作成する
+		// Xử lý bên JP đang pending đến tháng 1 KAF006: -PhuongDV domain fix pending-
+		
+		// 期間内の休出代休残数を取得する
+		
+		// 期間内の振出振休残数を取得する
+		
+		// 期間中の年休残数を求める
+		
+		// 期間中の年休積休残数を取得
+		
+		// 帰ってきた全ての「確認メッセージ」と取得した「休日の申請日<List>」を返す
+		
 		// 社員の当月の期間を算出する
 //		PeriodCurrentMonth periodCurrentMonth = otherCommonAlgorithm.employeePeriodCurrentMonthCalculate(
 //				companyID, 
@@ -1246,6 +1296,30 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		return result;
 	}
 
+	/**
+	 * 変更後の申請期間をチェックする
+	 * @param absceneBefore 元の休暇申請
+	 * @param absceneNew 新の休暇申請
+	 * @param endDate 締め開始日
+	 */
+	public void changeAbScenePeriodCheck(ApplyForLeave absceneBefore, ApplyForLeave absceneNew, GeneralDate endDate) {
+		
+		GeneralDate boforeStartDate = absceneBefore.getApplication().getOpAppStartDate().get().getApplicationDate();
+		GeneralDate beforeEndDate = absceneBefore.getApplication().getOpAppEndDate().get().getApplicationDate();
+		
+		GeneralDate newStartDate = absceneNew.getApplication().getOpAppStartDate().get().getApplicationDate();
+		GeneralDate newEndDate = absceneNew.getApplication().getOpAppEndDate().get().getApplicationDate();
+		
+		//INPUT．「元の休暇申請」とINPUT．「新の休暇申請」をチェックする
+		if(boforeStartDate.equals(newStartDate)
+			&&  beforeEndDate.equals(newEndDate)) {
+			throw new BusinessException("Msg_1700");
+		}
+		//申請終了日と締め開始日をチェックする
+		if(beforeEndDate.before(endDate) || newEndDate.before(endDate)) {
+				throw new BusinessException("Msg_236");
+		}
+	}
 	@Override
 	public AppAbsenceStartInfoOutput getWorkTypeWorkTimeInfo(String companyID, AppAbsence appAbsence,
 			AppAbsenceStartInfoOutput appAbsenceStartInfoOutput) {
