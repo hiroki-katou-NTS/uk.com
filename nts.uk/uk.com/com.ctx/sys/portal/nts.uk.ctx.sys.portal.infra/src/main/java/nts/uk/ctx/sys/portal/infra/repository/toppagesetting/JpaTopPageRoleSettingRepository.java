@@ -64,7 +64,18 @@ public class JpaTopPageRoleSettingRepository extends JpaRepository implements To
 	 */
 	@Override
 	public void update(TopPageRoleSetting domain, String companyId, String contractCd) {
-		this.commandProxy().updateWithCharPrimaryKey(this.toEntity(domain, companyId, contractCd));
+		SptmtTopPageRoleSet oldData = this.queryProxy()
+				.query(SELECT_BY_ROLE_SET_CD, SptmtTopPageRoleSet.class)
+				.setParameter("companyId", companyId)
+				.setParameter("roleSetCode", domain.getRoleSetCode())
+				.getSingle().orElse(new SptmtTopPageRoleSet());
+		SptmtTopPageRoleSet newData = this.toEntity(domain, companyId, contractCd);
+		oldData.setLoginMenuCode(newData.getLoginMenuCode());
+		oldData.setTopMenuCode(newData.getTopMenuCode());
+		oldData.setSystem(newData.getSystem());
+		oldData.setMenuClassification(newData.getMenuClassification());
+		oldData.setSwitchingDate(newData.getSwitchingDate());
+		this.commandProxy().update(oldData);
 	}
 
 	/**
