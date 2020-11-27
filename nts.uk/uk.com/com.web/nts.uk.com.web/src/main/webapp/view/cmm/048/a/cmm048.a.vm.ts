@@ -565,9 +565,6 @@ module nts.uk.com.view.cmm048.a {
       const userChangeCommand = new UserChangeCommand({
         userChange: userChange
       });
-      console.log(personalCommand)
-      console.log(contactCommand)
-      console.log(userChangeCommand)
       vm.$blockui('grayout');
       $.when(
         vm.$ajax(API.updateEmployeeContact, contactCommand),
