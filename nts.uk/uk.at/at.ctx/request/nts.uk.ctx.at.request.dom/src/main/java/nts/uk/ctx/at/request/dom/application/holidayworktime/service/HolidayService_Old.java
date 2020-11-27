@@ -15,7 +15,7 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkB
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkCheckRegisterOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HolidayWorkDetailOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HolidayWorkInstruction;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.InitWorkTypeWorkTime;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.InitWorkTypeWorkTime_Old;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.WorkTimeHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.WorkTypeHolidayWork;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppDateContradictionAtr;
@@ -134,7 +134,7 @@ public interface HolidayService_Old {
 	 * @param achievementOutputLst 表示する実績内容<Optional>
 	 * @return
 	 */
-	public InitWorkTypeWorkTime initWorkTypeWorkTime(String companyID, String employeeID, Optional<GeneralDate> appDate, GeneralDate baseDate,
+	public InitWorkTypeWorkTime_Old initWorkTypeWorkTime(String companyID, String employeeID, Optional<GeneralDate> appDate, GeneralDate baseDate,
 			List<WorkType> workTypeLst, List<WorkTimeSetting> workTimeLst, List<AchievementOutput> achievementOutputLst,
 			AppEmploymentSetting appEmploymentSetting);
 	

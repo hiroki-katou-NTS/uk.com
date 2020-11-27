@@ -6,8 +6,10 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.ReasonDivergence;
 import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36Agree;
@@ -26,8 +28,13 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Stateless
-public class JpaAppHolidayWorkRepository implements AppHolidayWorkRepository{
+public class JpaAppHolidayWorkRepository extends JpaRepository implements AppHolidayWorkRepository{
 
+	@Override
+	public void add(AppHolidayWork appHolidayWork) {
+		this.commandProxy().insert(toEntity(appHolidayWork));
+		this.getEntityManager().flush();
+	}
 	
 	private KrqdtAppHolidayWork toEntity(AppHolidayWork domain) {
 		String cid = AppContexts.user().companyId();

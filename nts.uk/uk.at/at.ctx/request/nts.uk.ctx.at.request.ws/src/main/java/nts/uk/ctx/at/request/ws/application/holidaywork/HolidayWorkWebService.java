@@ -16,6 +16,7 @@ import nts.uk.ctx.at.request.app.command.application.holidaywork.CheckBeforeRegi
 import nts.uk.ctx.at.request.app.command.application.holidaywork.CreateHolidayWorkCommand;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.CreateHolidayWorkCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.RegisterCommand;
+import nts.uk.ctx.at.request.app.command.application.holidaywork.RegisterCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.UpdateHolidayWorkCommand;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.UpdateHolidayWorkCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.AppHolidayWorkFinder;
@@ -60,6 +61,9 @@ public class HolidayWorkWebService extends WebService{
 	@Inject
 	private AppHolidayWorkFinder appHolidayWorkFinder;
 	
+	@Inject
+	private RegisterCommandHandler registerCommandHandler;
+	
 	@POST
 	@Path("startNew")
 	public AppHdWorkDispInfoDto getStartNew(AppHolidayWorkParamPC param) {
@@ -80,8 +84,8 @@ public class HolidayWorkWebService extends WebService{
 	
 	@POST
 	@Path("register")
-	public void register(RegisterCommand param) {
-		
+	public ProcessResult register(RegisterCommand param) {
+		return registerCommandHandler.handle(param);
 	}
 	
 	@POST

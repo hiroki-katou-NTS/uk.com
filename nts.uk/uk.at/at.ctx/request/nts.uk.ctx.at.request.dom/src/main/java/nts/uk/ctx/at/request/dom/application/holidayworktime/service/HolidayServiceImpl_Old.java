@@ -45,7 +45,7 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkB
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkCheckRegisterOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HolidayWorkDetailOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HolidayWorkInstruction;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.InitWorkTypeWorkTime;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.InitWorkTypeWorkTime_Old;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.WorkTimeHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.WorkTypeHolidayWork;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
@@ -679,10 +679,10 @@ public class HolidayServiceImpl_Old implements HolidayService_Old {
 		return workTypeRepository.findNotDeprecatedByListCode(companyID, workTypeCDLst);
 	}
 	@Override
-	public InitWorkTypeWorkTime initWorkTypeWorkTime(String companyID, String employeeID, Optional<GeneralDate> appDate,
+	public InitWorkTypeWorkTime_Old initWorkTypeWorkTime(String companyID, String employeeID, Optional<GeneralDate> appDate,
 			GeneralDate baseDate, List<WorkType> workTypeLst, List<WorkTimeSetting> workTimeLst,
 			List<AchievementOutput> achievementOutputLst, AppEmploymentSetting appEmploymentSetting) {
-		InitWorkTypeWorkTime result = new InitWorkTypeWorkTime();
+		InitWorkTypeWorkTime_Old result = new InitWorkTypeWorkTime_Old();
 		Optional<WorkingConditionItem> personalLablorCodition = workingConditionItemRepository.getBySidAndStandardDate(employeeID,baseDate);
 		// 4_c.初期選択
 		WorkTypeHolidayWork workTypes = holidayService.getWorkTypes(companyID, employeeID, Arrays.asList(appEmploymentSetting), baseDate,

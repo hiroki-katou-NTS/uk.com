@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.app.command.application.holidaywork.RegisterCommand;
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHdWorkDispInfoDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHolidayWorkParamPC;
@@ -32,6 +33,7 @@ import nts.uk.ctx.at.request.dom.application.ReasonForReversion;
 import nts.uk.ctx.at.request.dom.application.common.service.other.PreAppContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.commonalgorithm.ICommonAlgorithmHolidayWork;
@@ -216,11 +218,11 @@ public class AppHolidayWorkFinder {
 		CheckBeforeOutput checkBeforeOutput = holidayWorkService.checkBeforeRegister(param.isRequire(), param.getCompanyId(), appHdWorkDispInfoOutput, 
 				appHolidayWork, param.isProxy());
 		
-		if(!checkBeforeOutput.getConfirmMsgOutputs().isEmpty()) {
-			return CheckBeforeOutputDto.fromDomain(checkBeforeOutput);
-		}
-		//huytodo
 		return CheckBeforeOutputDto.fromDomain(checkBeforeOutput);
+	}
+	
+	public ProcessResult register(RegisterCommand param) {
+		return null;
 	}
 	
 	public Application createApplication(ApplicationDto application) {

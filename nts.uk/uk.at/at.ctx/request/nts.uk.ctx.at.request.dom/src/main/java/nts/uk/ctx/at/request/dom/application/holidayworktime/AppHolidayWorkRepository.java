@@ -7,4 +7,5 @@ package nts.uk.ctx.at.request.dom.application.holidayworktime;
  */
 public interface AppHolidayWorkRepository {
 
+	public void add(AppHolidayWork appHolidayWork);
 }
