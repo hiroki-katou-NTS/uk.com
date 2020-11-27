@@ -184,7 +184,8 @@ public class ChangeableWorkingTimeZonePerNoTest {
 
 			// Assertion
 			assertThat( result.isContains() ).isTrue();
-			assertThat( result.getTimeSpan() ).isEqualTo( start );
+			assertThat( result.getTimeSpan() ).isPresent();
+			assertThat( result.getTimeSpan().get() ).isEqualTo( start );
 		}
 
 		// Target: 終了側
@@ -194,7 +195,8 @@ public class ChangeableWorkingTimeZonePerNoTest {
 
 			// Assertion
 			assertThat( result.isContains() ).isTrue();
-			assertThat( result.getTimeSpan() ).isEqualTo( end );
+			assertThat( result.getTimeSpan() ).isPresent();
+			assertThat( result.getTimeSpan().get() ).isEqualTo( end );
 		}
 
 	}
@@ -220,7 +222,8 @@ public class ChangeableWorkingTimeZonePerNoTest {
 
 			// Assertion
 			assertThat( result.isContains() ).isFalse();
-			assertThat( result.getTimeSpan() ).isEqualTo( start );
+			assertThat( result.getTimeSpan() ).isPresent();
+			assertThat( result.getTimeSpan().get() ).isEqualTo( start );
 		}
 
 		// Target: 終了側
@@ -230,7 +233,8 @@ public class ChangeableWorkingTimeZonePerNoTest {
 
 			// Assertion
 			assertThat( result.isContains() ).isFalse();
-			assertThat( result.getTimeSpan() ).isEqualTo( end );
+			assertThat( result.getTimeSpan() ).isPresent();
+			assertThat( result.getTimeSpan().get() ).isEqualTo( end );
 		}
 
 	}

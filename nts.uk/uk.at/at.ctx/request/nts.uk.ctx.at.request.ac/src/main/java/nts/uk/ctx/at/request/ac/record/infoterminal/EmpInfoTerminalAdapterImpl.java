@@ -22,7 +22,7 @@ public class EmpInfoTerminalAdapterImpl implements EmpInfoTerminalAdapter {
 	private EmpInfoTerminalPub pub;
 
 	@Override
-	public Optional<EmpInfoTerminal> getEmpInfoTerminal(Integer empInfoTerCode, String contractCode) {
+	public Optional<EmpInfoTerminal> getEmpInfoTerminal(String empInfoTerCode, String contractCode) {
 		return pub.getEmpInfoTerminal(empInfoTerCode, contractCode).map(x -> convertTo(x));
 	}
 

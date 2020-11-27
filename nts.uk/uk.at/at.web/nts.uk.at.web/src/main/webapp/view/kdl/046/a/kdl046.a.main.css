@@ -20,6 +20,9 @@ button.nts-switch-button {
 #single-tree-grid-tree-grid_scrollContainer{
 	height: 288px !important;
 }
+#single-tree-grid-tree-grid_displayContainer{
+	height: 288px !important;
+}
 
 @media all and (-ms-high-contrast: none), (-ms-high-contrast: active),
 @supports (-ms-accelerator:true) or (-ms-ime-align:auto) {
