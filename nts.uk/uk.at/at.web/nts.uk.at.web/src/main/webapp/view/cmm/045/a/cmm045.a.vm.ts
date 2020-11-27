@@ -1027,7 +1027,7 @@ module cmm045.a.viewmodel {
                     if(obj !== undefined && self.mode() === 0 && obj.appLstAtr === true && obj.cID === __viewContext.user.companyId && obj.sID === __viewContext.user.employeeId) {
                         contentWidth = obj.width;
                     } else {
-                        contentWidth = widthAuto - 55 - 120 - 90 - 65- 155 - 120 - 75 - 95;
+                        contentWidth = widthAuto - 55 - 120 - 90 - 65- 155 - 120 - 75 - 95 - 5;
                     }
             }).then(() => {
                 let columns = [
@@ -1304,7 +1304,7 @@ module cmm045.a.viewmodel {
                     if(obj !== undefined && self.mode() === 1 && obj.appLstAtr === false && obj.cID === __viewContext.user.companyId && obj.sID === __viewContext.user.employeeId) {
                         contentWidth = obj.width;
                     } else {
-                        contentWidth = widthAuto - 35 - 55 - 120 - 90 - 65- 157 - 120 - 75 - 95;
+                        contentWidth = widthAuto - 35 - 55 - 120 - 90 - 65- 157 - 120 - 75 - 95 - 5;
                     }
             }).then(() => {
                 let columns = [
