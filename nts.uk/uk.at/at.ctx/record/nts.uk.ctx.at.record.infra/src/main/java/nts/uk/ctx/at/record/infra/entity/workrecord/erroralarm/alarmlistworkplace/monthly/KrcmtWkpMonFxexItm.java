@@ -26,7 +26,7 @@ public class KrcmtWkpMonFxexItm extends ContractUkJpaEntity implements Serializa
     /* No */
     @Id
     @Column(name = "NO")
-    public int fixedCheckMonthlyItemName;
+    public int no;
 
     /* 月次チェック名称 */
     @Column(name = "MON_CHKNAME")
@@ -50,13 +50,13 @@ public class KrcmtWkpMonFxexItm extends ContractUkJpaEntity implements Serializa
 
     @Override
     protected Object getKey() {
-        return fixedCheckMonthlyItemName;
+        return no;
     }
 
     public static KrcmtWkpMonFxexItm fromDomain(FixedExtractionMonthlyItems domain) {
         KrcmtWkpMonFxexItm entity = new KrcmtWkpMonFxexItm();
 
-        entity.fixedCheckMonthlyItemName = domain.getFixedCheckMonthlyItemName().value;
+        entity.no = domain.getNo().value;
         entity.monthlyCheckName = domain.getMonthlyCheckName();
         entity.alarmCheckCls = domain.getAlarmCheckCls().value;
         entity.firstMessageDisp = domain.getFirstMessageDisp().v();
@@ -68,7 +68,7 @@ public class KrcmtWkpMonFxexItm extends ContractUkJpaEntity implements Serializa
 
     public FixedExtractionMonthlyItems toDomain() {
         return FixedExtractionMonthlyItems.create(
-                this.fixedCheckMonthlyItemName,
+                this.no,
                 this.alarmCheckCls,
                 this.monthlyCheckName,
                 this.firstMessageDisp,

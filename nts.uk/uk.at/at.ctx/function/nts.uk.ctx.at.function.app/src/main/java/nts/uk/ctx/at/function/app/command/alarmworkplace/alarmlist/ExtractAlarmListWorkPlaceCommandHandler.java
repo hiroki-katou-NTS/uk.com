@@ -10,14 +10,17 @@ import nts.uk.ctx.at.function.dom.alarmworkplace.AlarmPatternSettingWorkPlace;
 import nts.uk.ctx.at.function.dom.alarmworkplace.AlarmPatternSettingWorkPlaceRepository;
 import nts.uk.ctx.at.function.dom.alarmworkplace.AlarmPermissionSetting;
 import nts.uk.ctx.at.function.dom.alarmworkplace.service.aggregateprocess.AggregateProcessService;
+import nts.uk.ctx.at.function.dom.alarmworkplace.service.aggregateprocess.PeriodByAlarmCategory;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 /**
  * UKDesign.UniversalK.就業.KAL_アラームリスト.KAL011_アラームリスト(職場別).D：進捗ダイアログ.アルゴリズム.アラームリストを出力する
@@ -44,12 +47,12 @@ public class ExtractAlarmListWorkPlaceCommandHandler extends AsyncCommandHandler
         AtomicInteger counter = new AtomicInteger(0);
 
         // ログイン者IDの権限をチェック
-        if (!hasAuthorityToExecute(cid, command.getAlarmPatternCode())){
+        if (!hasAuthorityToExecute(cid, command.getAlarmPatternCode())) {
             throw new BusinessException("Msg_504");
         }
 
         // 集計処理
-        aggregateProcessService.process(cid, command.getAlarmPatternCode(), command.getWorkplaceIds());
+        aggregateProcessService.process(cid, command.getAlarmPatternCode(), command.getWorkplaceIds(), convertPeriods(command.getCategoryPeriods()));
     }
 
     /**
@@ -82,5 +85,12 @@ public class ExtractAlarmListWorkPlaceCommandHandler extends AsyncCommandHandler
         }
 
         return hasAuthority;
+    }
+
+    private List<PeriodByAlarmCategory> convertPeriods(List<CategoryPeriodCommand> categoryPeriods) {
+        List<PeriodByAlarmCategory> periods = categoryPeriods.stream()
+                .map(x -> new PeriodByAlarmCategory(x.getCategory(), x.getStart(), x.getEnd()))
+                .collect(Collectors.toList());
+        return periods;
     }
 }

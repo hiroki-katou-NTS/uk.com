@@ -36,9 +36,18 @@ public class AggregateProcessAcAdapter implements AggregateProcessAdapter {
 
     @Override
     public List<AlarmListExtractInfoWorkplace> processMasterCheckWorkplace(String cid, DatePeriod period,
-                                                                       List<String> alarmCheckWkpId,
-                                                                       List<String> workplaceIds) {
+                                                                           List<String> alarmCheckWkpId,
+                                                                           List<String> workplaceIds) {
         return convert(aggregateProcessPub.processMasterCheckWorkplace(cid, period, alarmCheckWkpId, workplaceIds));
+    }
+
+    @Override
+    public List<AlarmListExtractInfoWorkplace> processMasterCheckSchedule(String cid, DatePeriod period,
+                                                                          List<String> alarmCheckWkpId,
+                                                                          List<String> optionalIds,
+                                                                          List<String> workplaceIds) {
+        return convert(aggregateProcessPub.processMasterCheckSchedule(cid, period, alarmCheckWkpId, optionalIds, workplaceIds));
+
     }
 
     private List<AlarmListExtractInfoWorkplace> convert(List<AlarmListExtractionInfoWorkplaceExport> data) {

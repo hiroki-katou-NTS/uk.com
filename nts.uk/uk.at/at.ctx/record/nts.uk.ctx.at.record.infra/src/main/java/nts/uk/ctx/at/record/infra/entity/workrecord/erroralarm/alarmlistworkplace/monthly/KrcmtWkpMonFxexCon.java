@@ -21,7 +21,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_WKP_MON_FXEX_CON")
-public class KrcmtWkpMonFxexCon extends ContractUkJpaEntity  implements Serializable {
+public class KrcmtWkpMonFxexCon extends ContractUkJpaEntity implements Serializable {
 
     /* 職場のエラーアラームチェックID */
     @Id
@@ -30,7 +30,7 @@ public class KrcmtWkpMonFxexCon extends ContractUkJpaEntity  implements Serializ
 
     /* No */
     @Column(name = "NO")
-    public int fixedCheckMonthlyItemName;
+    public int no;
 
     /* 使用区分 */
     @Column(name = "USE_ATR")
@@ -53,7 +53,7 @@ public class KrcmtWkpMonFxexCon extends ContractUkJpaEntity  implements Serializ
         KrcmtWkpMonFxexCon entity = new KrcmtWkpMonFxexCon();
 
         entity.errorAlarmWorkplaceId = domain.getErrorAlarmWorkplaceId();
-        entity.fixedCheckMonthlyItemName = domain.getFixedCheckMonthlyItemName().value;
+        entity.no = domain.getNo().value;
         entity.useAtr = domain.isUseAtr();
         entity.messageDisp = domain.getMessageDisp().v();
         entity.cid = AppContexts.user().companyId();
@@ -64,7 +64,7 @@ public class KrcmtWkpMonFxexCon extends ContractUkJpaEntity  implements Serializ
     public FixedExtractionMonthlyCon toDomain() {
         return FixedExtractionMonthlyCon.create(
                 this.errorAlarmWorkplaceId,
-                this.fixedCheckMonthlyItemName,
+                this.no,
                 this.useAtr,
                 this.messageDisp
         );

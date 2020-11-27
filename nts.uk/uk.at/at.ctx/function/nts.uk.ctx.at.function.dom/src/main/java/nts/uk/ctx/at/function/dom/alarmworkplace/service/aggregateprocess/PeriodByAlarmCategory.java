@@ -17,22 +17,7 @@ public class PeriodByAlarmCategory {
 
     int category;
 
-    String name;
-
     GeneralDate startDate;
 
     GeneralDate endDate;
-
-    int period36Agreement;
-
-    public List<GeneralDate> getListDate() {
-        List<GeneralDate> result = new ArrayList<GeneralDate>();
-        GeneralDate date = GeneralDate.localDate(startDate.localDate());
-        while (date.beforeOrEquals(endDate)) {
-            result.add(date);
-            date = date.addDays(1);
-        }
-        return result;
-    }
-
 }

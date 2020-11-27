@@ -23,7 +23,7 @@ public class FixedExtractionMonthlyCon extends AggregateRoot {
     /**
      * No
      */
-    private FixedCheckMonthlyItemName fixedCheckMonthlyItemName;
+    private FixedCheckMonthlyItemName no;
 
     /**
      * 使用区分
@@ -38,18 +38,18 @@ public class FixedExtractionMonthlyCon extends AggregateRoot {
     /**
      * 作成する
      *
-     * @param errorAlarmWorkplaceId     職場のエラーアラームチェックID
-     * @param fixedCheckMonthlyItemName No
-     * @param useAtr                    使用区分
-     * @param messageDisp               表示するメッセージ
+     * @param errorAlarmWorkplaceId 職場のエラーアラームチェックID
+     * @param no                    No
+     * @param useAtr                使用区分
+     * @param messageDisp           表示するメッセージ
      */
     public static FixedExtractionMonthlyCon create(String errorAlarmWorkplaceId,
-                                                   int fixedCheckMonthlyItemName,
+                                                   int no,
                                                    boolean useAtr,
                                                    String messageDisp) {
 
         return new FixedExtractionMonthlyCon(errorAlarmWorkplaceId,
-                EnumAdaptor.valueOf(fixedCheckMonthlyItemName, FixedCheckMonthlyItemName.class),
+                EnumAdaptor.valueOf(no, FixedCheckMonthlyItemName.class),
                 useAtr,
                 new DisplayMessage(messageDisp));
     }

@@ -45,10 +45,10 @@ public class AggregateProcessMasterCheckDailyService {
     public List<AlarmListExtractionInfoWorkplaceDto> process(String cid, DatePeriod period, List<String> alarmCheckWkpId,
                                                              List<String> workplaceIds) {
         // 職場ID一覧から社員情報を取得する。
-        Map<String, List<EmployeeInfoImported>> empInfosByWp = employeeInfoByWorkplaceService.get(workplaceIds, period);
+        Map<String, List<EmployeeInfoImported>> empInfosByWpMap = employeeInfoByWorkplaceService.get(workplaceIds, period);
 
         // 取得したList＜社員情報＞をチェック
-        if (empInfosByWp.size() == 0) {
+        if (empInfosByWpMap.size() == 0) {
             return new ArrayList<>();
         }
         // ドメインモデル「アラームリスト（職場）日別の固定抽出条件」を取得する
@@ -60,14 +60,14 @@ public class AggregateProcessMasterCheckDailyService {
         List<FixedExtractionDayItems> fixedExtractDayItems = fixedExtractionDayItemsRepo.get(fixedCheckDayItems);
 
         // ※取得したMap＜職場ID、List＜社員情報＞＞からList＜社員ID＞を作成
-        List<String> employeeIds = empInfosByWp.entrySet().stream().flatMap(x -> x.getValue().stream()
+        List<String> employeeIds = empInfosByWpMap.entrySet().stream().flatMap(x -> x.getValue().stream()
                 .map(EmployeeInfoImported::getSid)).distinct().collect(Collectors.toList());
         // チェック前の取得するデータ
         DataBeforeCheckDto data = dailyBeforeCheckService.getData(cid, employeeIds, fixedExtractDayItems, period, workplaceIds);
 
         // チェック処理
         // 取得したList＜アラーム抽出結果（職場別）＞を返す
-        return dailyCheckService.process(cid, empInfosByWp, data.getPersonInfos(), data.getEmpLeaves(),
+        return dailyCheckService.process(cid, empInfosByWpMap, data.getPersonInfos(), data.getEmpLeaves(),
                 data.getUnregistedStampCardsByWpMap(), data.getDailyExtBudgets(),
                 period, fixedExtractDayCons, fixedExtractDayItems, data.getStampsByEmpMap());
     }

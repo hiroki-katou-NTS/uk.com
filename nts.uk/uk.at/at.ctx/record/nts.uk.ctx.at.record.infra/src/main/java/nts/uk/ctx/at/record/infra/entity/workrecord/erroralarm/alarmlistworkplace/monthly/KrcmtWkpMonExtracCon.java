@@ -36,7 +36,7 @@ public class KrcmtWkpMonExtracCon extends ContractUkJpaEntity  implements Serial
 
     /* No */
     @Column(name = "ORDER_NUMBER")
-    public int orderNumber;
+    public int no;
 
     /* 月次抽出条件名称 */
     @Column(name = "MONTH_EXTR_CON_NAME")
@@ -91,7 +91,7 @@ public class KrcmtWkpMonExtracCon extends ContractUkJpaEntity  implements Serial
         KrcmtWkpMonExtracCon entity = new KrcmtWkpMonExtracCon();
 
         entity.errorAlarmWorkplaceId = domain.getErrorAlarmWorkplaceId();
-        entity.orderNumber = domain.getOrderNumber().value;
+        entity.no = domain.getNo().value;
         entity.monExtracConName = domain.getMonExtracConName().v();
         entity.useAtr = domain.isUseAtr();
         entity.checkMonthlyItemsType = domain.getCheckMonthlyItemsType().value;
@@ -124,7 +124,7 @@ public class KrcmtWkpMonExtracCon extends ContractUkJpaEntity  implements Serial
     public ExtractionMonthlyCon toDomain(Optional<KrcstErAlCompareSingle> compareSingle, Optional<KrcstErAlCompareRange> compareRange, Optional<KrcstErAlSingleFixed> singleFixed) {
         return ExtractionMonthlyCon.create(
                 this.errorAlarmWorkplaceId,
-                this.orderNumber,
+                this.no,
                 this.checkMonthlyItemsType,
                 this.useAtr,
                 this.errorAlarmCheckID,

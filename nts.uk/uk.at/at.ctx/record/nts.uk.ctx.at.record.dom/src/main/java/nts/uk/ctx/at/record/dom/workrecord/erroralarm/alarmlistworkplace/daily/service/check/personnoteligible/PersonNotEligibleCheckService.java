@@ -58,9 +58,9 @@ public class PersonNotEligibleCheckService {
             AggrResultOfAnnualLeave aggrResult = aggrResultOpt.get();
 
             GeneralDate ymd = aggrResult.getAsOfStartNextDayOfPeriodEnd().getYmd();
-            Double endRemain = aggrResult.getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveNoMinus().getRemainingNumber().getTotalRemainingDays().v();
-            Double periodRemain = aggrResult.getAsOfStartNextDayOfPeriodEnd().getRemainingNumber().getAnnualLeaveNoMinus().getRemainingNumber().getTotalRemainingDays().v();
-            // 次回年休付与日をチェック //TODO Q&A 36682
+            Double endRemain = aggrResult.getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingDays().v();
+            Double periodRemain = aggrResult.getAsOfStartNextDayOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingDays().v();
+            // 次回年休付与日をチェック
             if (period.start().beforeOrEquals(personInfo.getRetirementDate()) &&
                     period.start().beforeOrEquals(ymd) &&
                     periodRemain == 0) {

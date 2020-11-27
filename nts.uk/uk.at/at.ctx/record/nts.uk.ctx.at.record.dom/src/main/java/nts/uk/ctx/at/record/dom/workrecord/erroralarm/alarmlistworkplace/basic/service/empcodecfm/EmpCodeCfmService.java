@@ -40,20 +40,20 @@ public class EmpCodeCfmService {
      * @param cid            会社ID
      * @param name           アラーム項目名
      * @param displayMessage 表示するメッセージ.
-     * @param empInfoMap     Map＜職場ID、List＜社員情報＞＞
+     * @param empInfosByWpMap     Map＜職場ID、List＜社員情報＞＞
      * @param period         期間
      * @return List＜抽出結果＞
      */
     public List<ExtractResultDto> confirm(String cid, BasicCheckName name, DisplayMessage displayMessage,
-                                          Map<String, List<EmployeeInfoImported>> empInfoMap, DatePeriod period) {
+                                          Map<String, List<EmployeeInfoImported>> empInfosByWpMap, DatePeriod period) {
         // 空欄のリスト「抽出結果」を作成する。
         List<ExtractResultDto> results = new ArrayList<>();
 
         // 会社IDから雇用コード一覧を取得する。
         List<EmpCdNameImport> employments = shareEmploymentAdapter.findAll(cid);
 
-        for (Map.Entry<String, List<EmployeeInfoImported>> empInfo : empInfoMap.entrySet()) {
-            List<EmployeeInfoImported> empInfos = empInfo.getValue();
+        for (Map.Entry<String, List<EmployeeInfoImported>> empInfosByWp : empInfosByWpMap.entrySet()) {
+            List<EmployeeInfoImported> empInfos = empInfosByWp.getValue();
             List<String> employeeIds = empInfos.stream().map(EmployeeInfoImported::getSid)
                     .collect(Collectors.toList());
             // 社員ID（List）と指定期間から社員の雇用履歴を取得
@@ -80,7 +80,7 @@ public class EmpCodeCfmService {
                             name.v(),
                             Optional.ofNullable(TextResource.localize("KAL020_11")),
                             Optional.of(new MessageDisplay(displayMessage.v())),
-                            empInfo.getKey()
+                            empInfosByWp.getKey()
                     );
 
                     // リスト「抽出結果」に作成した「抽出結果」を追加する。

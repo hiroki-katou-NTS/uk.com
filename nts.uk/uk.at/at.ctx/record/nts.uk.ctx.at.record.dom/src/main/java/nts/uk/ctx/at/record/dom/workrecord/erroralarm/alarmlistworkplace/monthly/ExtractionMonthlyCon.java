@@ -26,7 +26,7 @@ public class ExtractionMonthlyCon extends AggregateRoot {
     /**
      * No
      */
-    private FixedCheckMonthlyItemName orderNumber;
+    private FixedCheckMonthlyItemName no;
 
     /**
      * チェック項目
@@ -67,7 +67,7 @@ public class ExtractionMonthlyCon extends AggregateRoot {
      * 作成する
      *
      * @param errorAlarmWorkplaceId 職場のエラーアラームチェックID
-     * @param orderNumber           No
+     * @param no                    No
      * @param checkMonthlyItemsType チェック項目
      * @param useAtr                使用区分
      * @param errorAlarmCheckID     勤務実績のエラーアラームチェックID
@@ -81,7 +81,7 @@ public class ExtractionMonthlyCon extends AggregateRoot {
      * @param messageDisp           表示するメッセージ
      */
     public static ExtractionMonthlyCon create(String errorAlarmWorkplaceId,
-                                              int orderNumber,
+                                              int no,
                                               int checkMonthlyItemsType,
                                               boolean useAtr,
                                               String errorAlarmCheckID,
@@ -95,10 +95,10 @@ public class ExtractionMonthlyCon extends AggregateRoot {
                                               String messageDisp) {
 
         return new ExtractionMonthlyCon(errorAlarmWorkplaceId,
-                EnumAdaptor.valueOf(orderNumber, FixedCheckMonthlyItemName.class),
+                EnumAdaptor.valueOf(no, FixedCheckMonthlyItemName.class),
                 EnumAdaptor.valueOf(checkMonthlyItemsType, CheckMonthlyItemsType.class),
                 useAtr,
-                    errorAlarmCheckID,
+                errorAlarmCheckID,
                 checkConditions,
                 AverageValueItem.create(checkTarget, averageNumberOfDays, averageNumberOfTimes, averageTime, averageRatio),
                 new NameAlarmExtractionCondition(monExtracConName),

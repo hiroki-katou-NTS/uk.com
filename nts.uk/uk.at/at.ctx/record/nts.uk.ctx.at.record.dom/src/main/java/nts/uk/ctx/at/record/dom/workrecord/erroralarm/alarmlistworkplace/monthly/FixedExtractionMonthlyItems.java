@@ -22,7 +22,7 @@ public class FixedExtractionMonthlyItems extends AggregateRoot {
     /**
      * No
      */
-    private FixedCheckMonthlyItemName fixedCheckMonthlyItemName;
+    private FixedCheckMonthlyItemName no;
 
     /**
      * アラームチェック区分
@@ -47,19 +47,19 @@ public class FixedExtractionMonthlyItems extends AggregateRoot {
     /**
      * 作成する
      *
-     * @param fixedCheckMonthlyItemName No
-     * @param alarmCheckCls             アラームチェック区分
-     * @param monthlyCheckName          月次チェック名称
-     * @param firstMessageDisp          最初表示するメッセージ
-     * @param messageColor              メッセージの色
+     * @param no               No
+     * @param alarmCheckCls    アラームチェック区分
+     * @param monthlyCheckName 月次チェック名称
+     * @param firstMessageDisp 最初表示するメッセージ
+     * @param messageColor     メッセージの色
      */
-    public static FixedExtractionMonthlyItems create(int fixedCheckMonthlyItemName,
+    public static FixedExtractionMonthlyItems create(int no,
                                                      int alarmCheckCls,
                                                      String monthlyCheckName,
                                                      String firstMessageDisp,
                                                      String messageColor) {
 
-        return new FixedExtractionMonthlyItems(EnumAdaptor.valueOf(fixedCheckMonthlyItemName, FixedCheckMonthlyItemName.class),
+        return new FixedExtractionMonthlyItems(EnumAdaptor.valueOf(no, FixedCheckMonthlyItemName.class),
                 EnumAdaptor.valueOf(alarmCheckCls, AlarmCheckClassification.class),
                 monthlyCheckName,
                 new DisplayMessage(firstMessageDisp),

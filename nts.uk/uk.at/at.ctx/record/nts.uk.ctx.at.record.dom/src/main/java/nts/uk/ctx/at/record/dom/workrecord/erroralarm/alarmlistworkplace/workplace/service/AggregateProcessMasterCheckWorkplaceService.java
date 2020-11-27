@@ -49,7 +49,7 @@ public class AggregateProcessMasterCheckWorkplaceService {
     public List<AlarmListExtractionInfoWorkplaceDto> process(String cid, DatePeriod period, List<String> alarmCheckWkpId,
                                                              List<String> workplaceIds) {
         // 職場ID一覧から社員情報を取得する。
-        Map<String, List<EmployeeInfoImported>> empInfosByWp = employeeInfoByWorkplaceService.get(workplaceIds, period);
+        Map<String, List<EmployeeInfoImported>> empInfosByWpMap = employeeInfoByWorkplaceService.get(workplaceIds, period);
 
         // 空欄のリスト「アラーム抽出結果（職場別）」を作成する。
         List<AlarmListExtractionInfoWorkplaceDto> alarmListResults = new ArrayList<>();

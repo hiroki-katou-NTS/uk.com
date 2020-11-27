@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.dom.alarmworkplace.service.aggregateprocess;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.adapter.workplace.WorkPlaceInforExport;
 import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceAdapter;
@@ -46,7 +47,15 @@ public class AggregateProcessService {
     @Inject
     private WorkplaceAdapter workplaceAdapter;
 
-    public void process(String cid, String alarmPatternCode, List<String> workplaceIds) {
+    /**
+     * 集計処理
+     *
+     * @param cid              会社ID
+     * @param alarmPatternCode パターンコード
+     * @param workplaceIds     List<職場ID>
+     * @param periods          List<カテゴリ別期間>
+     */
+    public void process(String cid, String alarmPatternCode, List<String> workplaceIds, List<PeriodByAlarmCategory> periods) {
         // パラメータ．パターンコードをもとにドメインモデル「アラームリストパターン設定(職場別)」を取得する
         Optional<AlarmPatternSettingWorkPlace> patternOpt = alarmPatternSettingWorkPlaceRepo.getBy(cid, new AlarmPatternCode(alarmPatternCode));
         if (!patternOpt.isPresent()) {
@@ -70,24 +79,27 @@ public class AggregateProcessService {
             List<String> alarmCheckWkpId = conditionCtg.getCondition().getAlarmCheckWkpID();
             List<String> optionalIds = conditionCtg.getCondition().getListOptionalIDs();
 
-            DatePeriod period = new DatePeriod(GeneralDate.today(), GeneralDate.today());
-
             // ループ中のカテゴリをチェック
             switch (category) {
                 case MASTER_CHECK_BASIC:
                     // アルゴリズム「マスタチェック(基本)の集計処理」を実行する
-                    alExtractInfos.addAll(aggregateProcessAdapter.processMasterCheckBasic(cid, period, alarmCheckWkpId, workplaceIds));
+                    alExtractInfos.addAll(aggregateProcessAdapter.processMasterCheckBasic(cid, getDatePeriod(category, periods),
+                            alarmCheckWkpId, workplaceIds));
                     break;
                 case MASTER_CHECK_DAILY:
-                    alExtractInfos.addAll(aggregateProcessAdapter.processMasterCheckDaily(cid, period, alarmCheckWkpId, workplaceIds));
+                    alExtractInfos.addAll(aggregateProcessAdapter.processMasterCheckDaily(cid, getDatePeriod(category, periods),
+                            alarmCheckWkpId, workplaceIds));
                     // アルゴリズム「マスタチェック(日別)の集計処理」を実行する
                     break;
                 case MASTER_CHECK_WORKPLACE:
                     // アルゴリズム「マスタチェック(職場)の集計処理」を実行する
-                    alExtractInfos.addAll(aggregateProcessAdapter.processMasterCheckWorkplace(cid, period, alarmCheckWkpId, workplaceIds));
+                    alExtractInfos.addAll(aggregateProcessAdapter.processMasterCheckWorkplace(cid, getDatePeriod(category, periods),
+                            alarmCheckWkpId, workplaceIds));
                     break;
                 case SCHEDULE_DAILY:
                     // アルゴリズム「スケジュール／日次の集計処理」を実行する
+                    alExtractInfos.addAll(aggregateProcessAdapter.processMasterCheckSchedule(cid, getDatePeriod(category, periods),
+                            alarmCheckWkpId, optionalIds, workplaceIds));
                     break;
                 case MONTHLY:
                     // アルゴリズム「月次の集計処理」を実行する
@@ -103,5 +115,25 @@ public class AggregateProcessService {
             // 抽出処理停止フラグが立っているかチェックする
             // TODO
         }
+    }
+
+    private DatePeriod getDatePeriod(WorkplaceCategory category, List<PeriodByAlarmCategory> periods) {
+        Optional<PeriodByAlarmCategory> periodOpt = periods.stream()
+                .filter(x -> x.getCategory() == category.value).findFirst();
+
+        if (!periodOpt.isPresent()) return null;
+
+        PeriodByAlarmCategory period = periodOpt.get();
+        return new DatePeriod(period.startDate, period.endDate);
+    }
+
+    private YearMonth getYm(WorkplaceCategory category, List<PeriodByAlarmCategory> periods) {
+        Optional<PeriodByAlarmCategory> period = periods.stream()
+                .filter(x -> x.getCategory() == category.value).findFirst();
+
+        if (!period.isPresent()) return null;
+
+        GeneralDate start = period.get().startDate;
+        return YearMonth.of(start.year(), start.month());
     }
 }

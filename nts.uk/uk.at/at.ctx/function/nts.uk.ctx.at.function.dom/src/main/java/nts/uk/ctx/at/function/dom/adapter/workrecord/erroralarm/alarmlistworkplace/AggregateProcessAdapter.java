@@ -18,4 +18,9 @@ public interface AggregateProcessAdapter {
     List<AlarmListExtractInfoWorkplace> processMasterCheckWorkplace(String cid, DatePeriod period,
                                                                     List<String> alarmCheckWkpId,
                                                                     List<String> workplaceIds);
+
+    List<AlarmListExtractInfoWorkplace> processMasterCheckSchedule(String cid, DatePeriod period,
+                                                                   List<String> alarmCheckWkpId,
+                                                                   List<String> optionalIds,
+                                                                   List<String> workplaceIds);
 }

@@ -65,7 +65,7 @@ public class AggregateProcessMasterCheckBasicService {
     public List<AlarmListExtractionInfoWorkplaceDto> process(String cid, DatePeriod period, List<String> alarmCheckWkpId,
                                                              List<String> workplaceIds) {
         // 職場の社員の情報を取得する。
-        Map<String, List<EmployeeInfoImported>> empInfoMap = employeeInfoByWorkplaceService.get(workplaceIds, period);
+        Map<String, List<EmployeeInfoImported>> empInfosByWpMap = employeeInfoByWorkplaceService.get(workplaceIds, period);
 
         // 空欄のList＜アラームリスト抽出情報（職場）＞を作成する。
         List<AlarmListExtractionInfoWorkplaceDto> alarmListResults = new ArrayList<>();
@@ -87,22 +87,22 @@ public class AggregateProcessMasterCheckBasicService {
                 case EMPLOYMENT_CODE_CONFIRMATION:
                     // 雇用コードを確認する。
                     extractResults = empCodeCfmService.confirm(cid, basicItem.getName(), basic.getDisplayMessage(),
-                            empInfoMap, period);
+                            empInfosByWpMap, period);
                     break;
                 case CLS_CODE_CONFIRMATION:
                     // 分類コードを確認する。
                     extractResults = clsCodeCfmService.confirm(cid, basicItem.getName(), basic.getDisplayMessage(),
-                            empInfoMap, period);
+                            empInfosByWpMap, period);
                     break;
                 case POSITION_CODE_CONFIRMATION:
                     // 職位コードを確認する。
                     extractResults = positionCodeCfmService.confirm(cid, basicItem.getName(), basic.getDisplayMessage(),
-                            empInfoMap, period);
+                            empInfosByWpMap, period);
                     break;
                 case WORKPLACE_CODE_CONFIRMATION:
                     // 職場コードを確認する。
                     extractResults = workplaceCodeCfmService.confirm(cid, basicItem.getName(), basic.getDisplayMessage(),
-                            empInfoMap, period);
+                            empInfosByWpMap, period);
                     break;
                 case NO_REF_TIME_SET:
                     // 基準時間を確認する。

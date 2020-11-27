@@ -22,15 +22,15 @@ public class PositionCodeCfmService {
     /**
      * 職位コード確認
      *
-     * @param cid            会社ID
-     * @param name           アラーム項目名
-     * @param displayMessage 表示するメッセージ.
-     * @param empInfoMap     Map＜職場ID、List＜社員情報＞＞
-     * @param period         期間
+     * @param cid             会社ID
+     * @param name            アラーム項目名
+     * @param displayMessage  表示するメッセージ.
+     * @param empInfosByWpMap Map＜職場ID、List＜社員情報＞＞
+     * @param period          期間
      * @return List＜抽出結果＞
      */
     public List<ExtractResultDto> confirm(String cid, BasicCheckName name, DisplayMessage displayMessage,
-                                          Map<String, List<EmployeeInfoImported>> empInfoMap, DatePeriod period) {
+                                          Map<String, List<EmployeeInfoImported>> empInfosByWpMap, DatePeriod period) {
         // 空欄のリスト「抽出結果」を作成する。
         List<ExtractResultDto> results = new ArrayList<>();
 
