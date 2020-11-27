@@ -140,7 +140,7 @@ public class CreateAnnualWorkLedgerContentDomainServiceTest {
                         .map(OutputItemDetailAttItem::getAttendanceItemId))
                 .distinct().collect(Collectors.toCollection(ArrayList::new));
         val clDate = 1;
-        YearMonthPeriod yearMonthPeriod = GetSuitableDateByClosureDateUtility.convertPeriod(listEmployeeStatus.get(0).getListPeriod().get(0), clDate);
+        YearMonthPeriod yearMonthPeriod = convertPeriod(listEmployeeStatus.get(0).getListPeriod().get(0), clDate);
 
 
         val listValue = Arrays.asList(new AttendanceResultDto(
@@ -412,5 +412,20 @@ public class CreateAnnualWorkLedgerContentDomainServiceTest {
                         exMonthly.get(9).getLstMonthlyValue().get(0).getDate()
                 )
         );
+    }
+    public static YearMonthPeriod convertPeriod(DatePeriod datePeriod, int closureDay) {
+        YearMonth startYearMonth = YearMonth.of(datePeriod.start().year(), datePeriod.start().month());
+        YearMonth endYearMonth = YearMonth.of(datePeriod.end().year(), datePeriod.end().month());
+        // if start date greater than closure Date then get next start month
+        if (datePeriod.start().day() > closureDay) {
+            startYearMonth = startYearMonth.addMonths(1);
+        }
+
+        // if end date greater than closure Date then get next end month
+        if (datePeriod.end().day() > closureDay) {
+            endYearMonth = endYearMonth.addMonths(1);
+        }
+
+        return new YearMonthPeriod(startYearMonth, endYearMonth);
     }
 }
