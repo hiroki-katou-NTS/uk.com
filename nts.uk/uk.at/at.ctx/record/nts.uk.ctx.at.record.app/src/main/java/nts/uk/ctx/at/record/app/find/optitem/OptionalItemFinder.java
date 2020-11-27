@@ -263,7 +263,11 @@ public class OptionalItemFinder {
 		OptionalItem optionalItem = this.repository.find(AppContexts.user().companyId(), optionalItemNo);
 		optionalItem.saveToMemento(dto);
 		// Set list formula.
-		dto.setFormulas(this.getFormulas(optionalItem));
+		List<FormulaDto> formulaLst = this.getFormulas(optionalItem);
+		dto.setFormulas(formulaLst);
+//		if (formulaLst.size() > 0) {
+//		    formulaLst.get(0).getItemSelection().getAttendanceItems().size() > 0 ? formulaLst.get(0).getItemSelection().getAttendanceItems()[0]
+//		}
 		if(!langId.equals(LanguageConsts.DEFAULT_LANGUAGE_ID)) {
 			Optional<OptionalItemNameOther> nameOtherOpt = optItemNameOtherRepository.findByKey(AppContexts.user().companyId(), optionalItemNo, langId);
 			if(nameOtherOpt.isPresent()) {
