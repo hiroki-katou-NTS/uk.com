@@ -96,7 +96,7 @@ module nts.uk.at.view.kaf005.shr.work_info.viewmodel {
 						value: workInfo().workHours2.start,
 						enable: true,
 						readonly: false,
-						required: true }" />
+						required: false}" />
 					<!--A4_13 ~1-->
 					<label class="valign-center link-label-kaf005"
 						data-bind=", text: $i18n('KAF005_38')"></label>
@@ -113,7 +113,7 @@ module nts.uk.at.view.kaf005.shr.work_info.viewmodel {
 						value: workInfo().workHours2.end,
 						enable: true,
 						readonly: false,
-						required: true}" />
+						required: false}" />
 				</div>
 			</div>
 		</div>

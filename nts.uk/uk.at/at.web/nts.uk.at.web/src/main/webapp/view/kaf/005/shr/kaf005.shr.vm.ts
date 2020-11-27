@@ -203,8 +203,10 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 						<!--A5_5 休憩時間順序-->
 						<td class="header" data-bind="text: displayNo"></td>
 						<!--A5_6 開始時刻-->
-						<td><input tabindex="12" class="right-content"
+						<td data-bind="style: {'background-color': backgroundColor()}">
+						<input tabindex="12" class="right-content"
 							data-bind="
+								style: {'background-color': backgroundColor()},
 								ntsTimeEditor: {
 									name: '#[KAF005_337]', 
 									value: start, 
@@ -242,8 +244,10 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 						<!--A5_5 休憩時間順序-->
 						<td class="header" data-bind="text: displayNo"></td>
 						<!--A5_6 開始時刻-->
-						<td><input tabindex="12" class="right-content"
+						<td data-bind="style: {'background-color': backgroundColor()}">
+						<input tabindex="12" class="right-content"
 							data-bind="
+								style: {'background-color': backgroundColor()},
 								ntsTimeEditor: {
 									name: '#[KAF005_337]', 
 									value: start, 
