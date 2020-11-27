@@ -90,13 +90,12 @@
 						data-bind="component: {
 								name: 'kcp015-component',
 								params: {
-								hasParams  : hasParams,
-	                            visibleA31 : visibleA31 ,
-	                            visibleA32 : visibleA32 ,
-	                            visibleA33 : visibleA33 ,
-	                            visibleA34 : visibleA34 ,
-	                            visibleA35 : visibleA35 ,
-	                            visibleA36 : visibleA36,
+	                            visibleA31 : ko.observable(true),
+	                            visibleA32 : ko.observable(true),
+	                            visibleA33 : ko.observable(true),
+	                            visibleA34 : ko.observable(true),
+	                            visibleA35 : ko.observable(true),
+	                            visibleA36 : ko.observable(true),
 	                            sids       : sids,
 	                            baseDate   : baseDate
 								}
@@ -424,12 +423,12 @@
 							</div>
 							<div style="clear: left"></div>
 							<div>
-								<div>
+								<div id = "btnControlLeftRight">
 									<button class="toLeft inline" data-bind="click : toLeft"> <i class="iconToLeft" data-bind="ntsIcon : { no: 152, width: 15, height: 20 }"></i></button>
 									<button class="toRight inline" data-bind="click: toRight"><i class="iconToRight " data-bind="ntsIcon: { no: 153, width: 15, height: 20 }"></i></button>
 								</div>
 								<div style="clear: left"></div>
-								<div>
+								<div id = "sub-content-main">
 									<div style="float: left">
 										<button class="toDown inline" data-bind="click : toDown"><i class="iconToDown" data-bind="ntsIcon : { no: 150,width: 18, height: 20 }"></i></button>
 									</div>
