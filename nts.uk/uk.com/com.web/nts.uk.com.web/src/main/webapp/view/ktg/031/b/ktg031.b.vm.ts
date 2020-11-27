@@ -4,7 +4,8 @@ module nts.uk.com.view.ktg031.b {
 
   // URL API backend
   const API = {
-
+    findProcessExecution: "at/function/processexec/getProcExecList",
+    findAlarmSetting: "at/function/alarm/pattern/setting",
   };
 
   @bean()
@@ -12,39 +13,72 @@ module nts.uk.com.view.ktg031.b {
     columns: KnockoutObservableArray<any> = ko.observableArray([]);
     listSetting: KnockoutObservableArray<AlarmDisplaySettingDto> = ko.observableArray([]);
     currentRow: KnockoutObservable<any> = ko.observable(null);
+    mapAlarmCodeName: any = {};
 
     created(params: any) {
       const vm = this;
       vm.columns([
+        { key: 'rowNumber', hidden: true },
         { headerText: vm.$i18n('KTG031_21'), key: 'classification', width: 150 },
         { headerText: vm.$i18n('KTG031_22'), key: 'alarmProcessing', width: 280 },
         { headerText: vm.$i18n('KTG031_23'), key: 'isDisplay', width: 120 },
       ]);
-      const lastIndex = 0;
-      vm.listSetting([
-        new AlarmDisplaySettingDto({
-          rowNumber: lastIndex + 1,
-          classification: vm.$i18n('KTG031_26'),
-          alarmProcessing: vm.$i18n('KTG031_33'),
-          isDisplay: vm.$i18n('KTG031_28'),
-        }),
-        new AlarmDisplaySettingDto({
-          rowNumber: lastIndex + 2,
-          classification: vm.$i18n('KTG031_26'),
-          alarmProcessing: vm.$i18n('KTG031_34'),
-          isDisplay: vm.$i18n('KTG031_28'),
-        }),
-        new AlarmDisplaySettingDto({
-          rowNumber: lastIndex + 3,
-          classification: vm.$i18n('KTG031_27'),
-          alarmProcessing: vm.$i18n('KTG031_35'),
-          isDisplay: vm.$i18n('KTG031_32'),
-        }),
-      ]);
+      vm.getProcessExecution();
     }
 
-    mounted() {
+    private getProcessExecution() {
       const vm = this;
+      vm.$blockui('grayout');
+      vm.$ajax("at", API.findAlarmSetting)
+        .then((res: AlarmPatternSettingDto[]) => {
+          for (const alarm of res) {
+            vm.mapAlarmCodeName[alarm.alarmPatternCD] = alarm.alarmPatternName;
+          }
+          return vm.$ajax("at", API.findProcessExecution);
+        })
+        .then((res: ProcessExecutionDto[]) => {
+          const listAlarmSetting: AlarmDisplaySettingDto[] = _.map(res, (item, index) => {
+            // トップページに表示（本人） and トップページに表示（管理者）
+            let isDisplayMessage = '';
+            if (item.mailPrincipal && item.mailAdministrator) {
+              isDisplayMessage = vm.$i18n('KTG031_29');
+            } else if (item.mailPrincipal) {
+              isDisplayMessage = vm.$i18n('KTG031_30');
+            } else if (item.mailAdministrator) {
+              isDisplayMessage = vm.$i18n('KTG031_31');
+            } else {
+              isDisplayMessage = vm.$i18n('KTG031_32');
+            }
+            return new AlarmDisplaySettingDto({
+              rowNumber: index,
+              classification: vm.$i18n('KTG031_25'),
+              alarmProcessing: `${item.execItemName}（${vm.mapAlarmCodeName[item.alarmCode]}）`,
+              isDisplay: isDisplayMessage,
+            });
+          });
+          const lastIndex = listAlarmSetting.length;
+          listAlarmSetting.push(new AlarmDisplaySettingDto({
+            rowNumber: lastIndex + 1,
+            classification: vm.$i18n('KTG031_26'),
+            alarmProcessing: vm.$i18n('KTG031_33'),
+            isDisplay: vm.$i18n('KTG031_28'),
+          }));
+          listAlarmSetting.push(new AlarmDisplaySettingDto({
+            rowNumber: lastIndex + 2,
+            classification: vm.$i18n('KTG031_26'),
+            alarmProcessing: vm.$i18n('KTG031_34'),
+            isDisplay: vm.$i18n('KTG031_28'),
+          }));
+          listAlarmSetting.push(new AlarmDisplaySettingDto({
+            rowNumber: lastIndex + 3,
+            classification: vm.$i18n('KTG031_27'),
+            alarmProcessing: vm.$i18n('KTG031_35'),
+            isDisplay: vm.$i18n('KTG031_32'),
+          }));
+          console.log(listAlarmSetting);
+          vm.listSetting(listAlarmSetting);
+        })
+        .always(() => vm.$blockui('clear'));
     }
 
     public closeDialog() {
@@ -62,5 +96,48 @@ module nts.uk.com.view.ktg031.b {
     constructor(init?: Partial<AlarmDisplaySettingDto>) {
       $.extend(this, init);
     }
+  }
+
+  interface AlarmPatternSettingDto {
+    alarmPatternCD: string;
+    alarmPatternName: string;
+    alarmPerSet: any;
+    checkConList: any[];
+  }
+
+  interface ProcessExecutionDto {
+    companyId: string;
+    execItemCd: string;
+    execItemName: string;
+    perScheduleCls: boolean;
+    targetMonth: number;
+    targetDate: number;
+    creationPeriod: number;
+    creationTarget: number;
+    recreateWorkType: boolean;
+    manualCorrection: boolean;
+    createEmployee: boolean;
+    recreateTransfer: boolean;
+    dailyPerfCls: boolean;
+    dailyPerfItem: number;
+    midJoinEmployee: boolean;
+    reflectResultCls: boolean;
+    monthlyAggCls: boolean;
+    execScopeCls: number;
+    refDate: string;
+    recreateTypeChangePerson: boolean;
+    recreateTransfers: boolean;
+    appRouteUpdateAtr: boolean;
+    createNewEmp: boolean;
+    appRouteUpdateMonthly: boolean;
+    processExecType: number;
+    alarmAtr: boolean;
+    alarmCode: string;
+    mailPrincipal: boolean;
+    mailAdministrator: boolean;
+    designatedYear: number;
+    startMonthDay: number;
+    endMonthDay: number;
+    workplaceList: string[];
   }
 }
