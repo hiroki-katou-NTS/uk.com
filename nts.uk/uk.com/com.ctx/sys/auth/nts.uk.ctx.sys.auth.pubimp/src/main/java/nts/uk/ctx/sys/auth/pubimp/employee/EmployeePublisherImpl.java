@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.auth.pubimp.employee;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.stream.Collectors;
@@ -125,7 +126,13 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 	
 	@Inject
 	private WorkplaceListPub workplaceListPub;
-
+	
+	@Inject 
+	private GetEmfromWkpidAndBDate getEmfromWkpidAndBDate;
+	
+	@Inject
+	private ObtainWkpListAndWkpManager obtainWkpListAndWkpManager;
+	
 	@Override
 	public Optional<NarrowEmpByReferenceRange> findByEmpId(List<String> sID, int roleType, GeneralDate referenceDate) {
 		// imported（権限管理）「社員」を取得する Request No1
@@ -405,6 +412,27 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 		}
 
 		return listEmpID;
+	}
+
+	@Override
+	public Map<String, String> getListEmpInfo(RequireRQ653 require, String companyID, GeneralDate referenceDate, List<String> workplaceIds) {
+		
+		// 職場リスト、基準日から就業確定できるロールを持っている社員を取得する
+		Map<String, String> mapWkpIdAndSid1 = getEmfromWkpidAndBDate.getData(require, companyID, referenceDate, workplaceIds);
+		
+		// 職場リスト、基準日から就業確定できる職場管理者を取得する
+		Map<String, String> mapWkpIdAndSid2 = obtainWkpListAndWkpManager.getData(require, companyID, referenceDate, workplaceIds);
+		
+		// 取得した2つの「Map<職場ID、社員ID>」から重複するものを排除する
+		for (Map.Entry map2 : mapWkpIdAndSid2.entrySet()) {
+			String value = mapWkpIdAndSid1.get(map2.getKey());
+			if(value != null){
+				mapWkpIdAndSid1.put(map2.getKey().toString(), map2.getValue().toString());
+				
+			}
+		}
+		// 重複するものを排除した「Map<職場ID、社員ID>」を返す
+		return mapWkpIdAndSid1;
 	}
 
 }

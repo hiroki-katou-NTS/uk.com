@@ -124,7 +124,7 @@ module nts.uk.ui.at.kcp013.shared {
                 options: $component.data.dataSources,
                 columns: [
                     { prop: 'code', length: 5 },
-                    { prop: 'name', length: 1 },
+                    { prop: 'name', length: 12 },
                     { prop: 'tzStartToEnd1', length: 1 },
                     { prop: 'tzStartToEnd2', length: 1 },
                     { prop: 'workStyleClassfication', length: 1 },
@@ -274,7 +274,7 @@ module nts.uk.ui.at.kcp013.shared {
                         if ([SHOW_MODE.DEFFERED, SHOW_MODE.BOTTLE].indexOf(showMode) > -1) {
                             items.push({
                                 id: 'deferred',
-                                code: ' ',
+                                code: '',
                                 name: vm.$i18n('KCP013_6'),
                                 remark: '',
                                 tzEnd1: 0,
@@ -288,19 +288,17 @@ module nts.uk.ui.at.kcp013.shared {
                                 nameAb: vm.$i18n('KCP013_6'),
                             });
                         }
-
                         items.push(...data.map((m) => ({
                             ...m,
                             id: m.code,
                             tzStartToEnd1: `${format(SCF, m.tzStart1)}${vm.$i18n('KCP013_4')}${format(SCF, m.tzEnd1)}`,
-                            tzStartToEnd2: m.useDistintion === 1 && m.tzStart2 && m.tzEnd2 ? `${format(SCF, m.tzStart2)}${vm.$i18n('KCP013_4')}${format(SCF, m.tzEnd2)}` : ''
-                        })));
+                            tzStartToEnd2: m.useDistintion === 1 && m.tzStart2 && m.tzEnd2 ? `${format(SCF, m.tzStart2)}${vm.$i18n('KCP013_4')}${format(SCF, m.tzEnd2)}` : ''                        })));
 
                         $.Deferred()
                             .resolve()
                             .then(() => {
                                 if (ko.isObservable(vm.data.dataSources)) {
-                                    vm.data.dataSources(items);
+                                    vm.data.dataSources(_.sortBy(items, item => item.code));
                                 }
                             })
                             .then(() => {
