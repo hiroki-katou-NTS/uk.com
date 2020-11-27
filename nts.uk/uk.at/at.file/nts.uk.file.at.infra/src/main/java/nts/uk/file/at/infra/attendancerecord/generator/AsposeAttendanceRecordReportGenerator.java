@@ -744,13 +744,7 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 			approvalRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getRed());
 			approvalRange.setOutlineBorder(BorderType.LEFT_BORDER, CellBorderType.THIN, Color.getRed());
 			approvalRange.setOutlineBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getRed());
-			Cell approvalCell = approvalRange.get(0, 0);
-			Style style = new Style();
-			style.copy(approvalCell.getStyle());
-			style.setPattern(BackgroundType.SOLID);
-			style.setForegroundColor(Color.fromArgb(252, 228, 214));
-			approvalCell.setStyle(style);
-			approvalCell.setValue(APPROVAL);
+			approvalRange.get(0, 0).setValue(APPROVAL);
 		}
 		// update start page row value
 		if (mode == EXPORT_PDF) {
