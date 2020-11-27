@@ -1546,9 +1546,9 @@ module nts.uk.at.view.kmk002.a {
 
                         if (res.controlUnit) {
                             if (res.optionalItem.performanceAtr === 0) {
-                                self.optionalItem.dailyUnit = res.controlUnit.inputUnitOfTimeItem;
+                                self.optionalItem.monthlyUnit(res.controlUnit.inputUnitOfTimeItem);
                             } else {
-                                self.optionalItem.monthlyUnit = res.controlUnit.inputUnitOfTimeItem;
+                                self.optionalItem.dailyUnit(res.controlUnit.inputUnitOfTimeItem);
                             }
                         }
 
