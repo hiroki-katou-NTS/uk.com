@@ -605,12 +605,8 @@ module nts.uk.at.view.test.vm {
                 let breakTimeZoneDto = new shareModelData.BreakTimeZoneDto(self.dataSourceTime()[i].range1().breakFrameNo, self.dataSourceTime()[i].range1().startTime, self.dataSourceTime()[i].range1().endTime, 0);
                 breakTimeSheets.push(breakTimeZoneDto);
             }
-            let breakTimeOfDailyAttdDto: shareModelData.BreakTimeOfDailyAttdDto = {
-                breakType: 1,
-                breakTimeSheets: breakTimeSheets //ok
-            }
-
-            let listBreakTimeZoneDto = [breakTimeOfDailyAttdDto];
+            let breakTimeOfDailyAttdDto: Array<shareModelData.TimeSpanForCalcDto> = breakTimeSheets //ok
+            
 
             let workScheduleDto: shareModelData.IEmployeeWorkScheduleDto = {
                 startTime1: self.timeRange1Value().startTime,//ok
@@ -621,7 +617,7 @@ module nts.uk.at.view.test.vm {
                 startTime2Status: shareModelData.EditStateSetting.REFLECT_APPLICATION,
                 endTime2: self.timeRange2Value().endTime,//ok
                 endTime2Status: shareModelData.EditStateSetting.IMPRINT,
-                listBreakTimeZoneDto: listBreakTimeZoneDto,//ok
+                listBreakTimeZoneDto: breakTimeOfDailyAttdDto,//ok
                 workTypeCode: self.workType(), //ok
                 breakTimeStatus: shareModelData.EditStateSetting.HAND_CORRECTION_MYSELF,
                 workTypeStatus: shareModelData.EditStateSetting.HAND_CORRECTION_MYSELF,

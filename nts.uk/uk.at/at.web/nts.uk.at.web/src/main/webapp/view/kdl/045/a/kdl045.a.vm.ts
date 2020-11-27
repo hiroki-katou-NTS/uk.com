@@ -165,15 +165,18 @@ module nts.uk.at.view.kdl045.a {
                 self.selectedTab = ko.observable('tab-1');
 
                 self.dataSourceTime = ko.observableArray([]);
-                let breakTimeNo = self.employee().employeeInfo.workScheduleDto.listBreakTimeZoneDto[0].breakTimeSheets;
-                for (let i = 0; i < breakTimeNo.length; i++) {
+				if(self.employee().employeeInfo.workScheduleDto != null){
+					let breakTimeNo = self.employee().employeeInfo.workScheduleDto.listBreakTimeZoneDto;
+                	for (let i = 0; i < breakTimeNo.length; i++) {
                     let tempBreakTime = breakTimeNo[i];
-                    self.dataSourceTime().push({ range1: ko.observable({ startTime: tempBreakTime.startTime, endTime: tempBreakTime.endTime, breakFrameNo: tempBreakTime.breakFrameNo,
+                    self.dataSourceTime().push({ range1: ko.observable({ startTime: tempBreakTime.startTime, endTime: tempBreakTime.endTime, breakFrameNo: i + 1,
                                                                          name : self.showTimeByPeriod(tempBreakTime.startTime,tempBreakTime.endTime)
                     }) });
                 }
-                self.fixBreakTime(self.employee().employeeInfo.fixedWorkInforDto.fixBreakTime ==1 ? true:false);
-                self.workTimeForm = ko.observable(self.employee().employeeInfo.fixedWorkInforDto.workType);
+				}
+				// do có trường hợp fixedWorkInforDto = null nên đang fix tạm - TQP
+                self.fixBreakTime(self.employee().employeeInfo.fixedWorkInforDto != null ? self.employee().employeeInfo.fixedWorkInforDto.fixBreakTime ==1 ? true:false : false);
+                self.workTimeForm = self.employee().employeeInfo.fixedWorkInforDto != null ?  ko.observable(self.employee().employeeInfo.fixedWorkInforDto.workType) : ko.observable();
                 self.includingWorkType(_.includes(self.employee().scheCorrection, self.workTimeForm()));
                 //listData
                 self.timeRange = ko.observable({
@@ -189,23 +192,32 @@ module nts.uk.at.view.kdl045.a {
                 });
 
                 self.timeRange1Value = ko.observable({
-                    startTime: self.employee().employeeInfo.workScheduleDto.startTime1,
-                    endTime: self.employee().employeeInfo.workScheduleDto.endTime1
+                    startTime: self.employee().employeeInfo.workScheduleDto != null ? self.employee().employeeInfo.workScheduleDto.startTime1 : null,
+                    endTime: self.employee().employeeInfo.workScheduleDto != null ? self.employee().employeeInfo.workScheduleDto.endTime1 : null
                 });
                 self.timeRange2Value = ko.observable({ 
-                    startTime: self.employee().employeeInfo.workScheduleDto.startTime2, 
-                    endTime: self.employee().employeeInfo.workScheduleDto.endTime2 });
+                    startTime: self.employee().employeeInfo.workScheduleDto != null ? self.employee().employeeInfo.workScheduleDto.startTime2 : null, 
+                    endTime: self.employee().employeeInfo.workScheduleDto != null ? self.employee().employeeInfo.workScheduleDto.endTime2 : null});
                 self.isShowTimeRange2 = (self.employee().targetInfor == 1 ? true : false);
                 //A10_1,A10_2
-                self.timeA10_1(self.showTimeByPeriod(self.employee().employeeInfo.workScheduleDto.startTime1, self.employee().employeeInfo.workScheduleDto.endTime1));
-                self.timeA10_2(self.showTimeByPeriod(self.employee().employeeInfo.workScheduleDto.startTime2, self.employee().employeeInfo.workScheduleDto.endTime2));
+                self.timeA10_1(self.showTimeByPeriod(self.employee().employeeInfo.workScheduleDto != null ? self.employee().employeeInfo.workScheduleDto.startTime1 : null, 
+					self.employee().employeeInfo.workScheduleDto != null ? self.employee().employeeInfo.workScheduleDto.endTime1 : null));
+                self.timeA10_2(self.showTimeByPeriod(self.employee().employeeInfo.workScheduleDto != null ? self.employee().employeeInfo.workScheduleDto.startTime2 : null, 
+					self.employee().employeeInfo.workScheduleDto != null ? self.employee().employeeInfo.workScheduleDto.endTime2 : null));
                 
                 
                 //A4_4,A4_5,A4_6,A4_7
-                self.workType = ko.observable(self.employee().employeeInfo.workScheduleDto.workTypeCode);
-                self.workTypeName = ko.observable(self.employee().employeeInfo.fixedWorkInforDto.workTypeName);
-                self.workTime = ko.observable(self.employee().employeeInfo.workScheduleDto.workTimeCode);
-                self.workTimeName = ko.observable(self.employee().employeeInfo.fixedWorkInforDto.workTimeName);
+				self.workType = ko.observable();
+                self.workTypeName = ko.observable();
+                self.workTime = ko.observable();
+                self.workTimeName = ko.observable();
+
+				if(self.employee().employeeInfo.workScheduleDto != null){
+					self.workType = ko.observable(self.employee().employeeInfo.workScheduleDto.workTypeCode);
+	                self.workTypeName = ko.observable(self.employee().employeeInfo.fixedWorkInforDto.workTypeName);
+	                self.workTime = ko.observable(self.employee().employeeInfo.workScheduleDto.workTimeCode);
+	                self.workTimeName = ko.observable(self.employee().employeeInfo.fixedWorkInforDto.workTimeName);
+				}
 
                 //A1_5
                 let shortW = moment(self.employee().employeeInfo.workInfoDto.date).format("dd");
@@ -514,7 +526,7 @@ module nts.uk.at.view.kdl045.a {
                     employeeId : self.employee().employeeInfo.workInfoDto.employeeId,
                     baseDate : self.employee().employeeInfo.workInfoDto.date,
                     listTimeVacationAndType : self.employee().employeeInfo.workInfoDto.listTimeVacationAndType,
-                    workTimeCode : self.employee().employeeInfo.workScheduleDto.workTimeCode,
+                    workTimeCode : self.employee().employeeInfo.workScheduleDto != null ? self.employee().employeeInfo.workScheduleDto.workTimeCode : null,
                     targetOrgIdenInforDto: new shareModelData.TargetOrgIdenInforDto(
                         self.employee().unit,
                         self.employee().unit ==0?self.employee().targetId:null,
@@ -522,7 +534,7 @@ module nts.uk.at.view.kdl045.a {
                 }
                 service.getInformationStartup(command).done(function (result) {
                     self.informationStartup = new shareModelData.GetInformationStartupOutput(
-                        result.workTimezoneCommonSet, result.listUsageTimeAndType, result.showYourDesire == 1?true:false, result.workAvaiOfOneDayDto 
+                        result.workTimezoneCommonSet, result.listUsageTimeAndType, result.showYourDesire, result.workAvaiOfOneDayDto 
                     );
                     dfd.resolve();
                 }).fail(function (res: any) {

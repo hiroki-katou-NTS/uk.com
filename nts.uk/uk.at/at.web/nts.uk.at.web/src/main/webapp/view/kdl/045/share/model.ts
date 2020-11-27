@@ -12,15 +12,24 @@ module nts.uk.at.view {
             targetInfor: number;//対象情報 : 複数回勤務 (1 :true,0:false)
             canModified: number;//修正可能 CanModified
             scheCorrection: Array<number>;//スケジュール修正の機能制御  WorkTimeForm
+			unit: number;
+			targetId: string;
+			workplaceName: string;
             constructor(employeeInfo: EmployeeInformation,
                 targetInfor: number,
                 canModified: number,
-                scheCorrection: Array<number>) {
+                scheCorrection: Array<number>,
+				unit: number,
+				targetId: string,
+				workplaceName: string) {
                 let self = this;
                 self.employeeInfo = employeeInfo;
                 self.targetInfor = targetInfor;
                 self.canModified = canModified;
                 self.scheCorrection = scheCorrection;
+				self.unit = unit;
+				self.targetId = targetId;
+				self.workplaceName = workplaceName;
             }
         }
 
@@ -219,7 +228,7 @@ module nts.uk.at.view {
             startTime2Status: number; //開始時刻2編集状態 : EditStateSetting
             endTime2: number; //終了時刻2
             endTime2Status: number; //終了時刻2編集状態 : EditStateSetting
-            listBreakTimeZoneDto: Array<BreakTimeOfDailyAttdDto> //List<休憩時間帯>
+            listBreakTimeZoneDto: Array<TimeSpanForCalcDto> //List<休憩時間帯>
             workTypeCode: string;//勤務種類コード
             breakTimeStatus: number;//休憩時間帯編集状態 : EditStateSetting
             workTypeStatus: number;//勤務種類編集状態 : EditStateSetting
@@ -237,7 +246,7 @@ module nts.uk.at.view {
             startTime2Status: number; //開始時刻2編集状態 : EditStateSetting
             endTime2: number; //終了時刻2
             endTime2Status: number; //終了時刻2編集状態 : EditStateSetting
-            listBreakTimeZoneDto: Array<BreakTimeOfDailyAttdDto> //List<休憩時間帯> (EA : List＜休憩時間帯＞＝勤務予定．休憩時間帯) 
+            listBreakTimeZoneDto: Array<TimeSpanForCalcDto> //List<休憩時間帯> (EA : List＜休憩時間帯＞＝勤務予定．休憩時間帯) 
             workTypeCode: string;//勤務種類コード
             breakTimeStatus: number;//休憩時間帯編集状態 : EditStateSetting
             workTypeStatus: number;//勤務種類編集状態 : EditStateSetting
@@ -281,18 +290,13 @@ module nts.uk.at.view {
 	     * 時間帯
 	     */
         export class BreakTimeZoneDto {
-            breakFrameNo: number;//休憩枠NO
             startTime: number; //開始 - 勤怠打刻(実打刻付き)
             endTime: number; //終了 - 勤怠打刻(実打刻付き)
-            breakTime: number;//休憩時間: 勤怠時間 
-            constructor(breakFrameNo: number,
+            constructor(
                 startTime: number,
-                endTime: number,
-                breakTime: number) {
-                this.breakFrameNo = breakFrameNo;
+                endTime: number) {
                 this.startTime = startTime;
                 this.endTime = endTime;
-                this.breakTime = breakTime;
             }
         }
 
@@ -414,12 +418,12 @@ module nts.uk.at.view {
 
         //計算時間帯
         export class TimeSpanForCalcDto {
-            start: number;
-            end: number;
-            constructor(start: number,
-                end: number) {
-                this.start = start;
-                this.end = end;
+            startTime: number;
+            endTime: number;
+            constructor(startTime: number,
+                endTime: number) {
+                this.startTime = startTime;
+                this.endTime = endTime;
             }
         }
 
