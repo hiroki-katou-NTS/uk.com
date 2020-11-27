@@ -62,12 +62,19 @@
 						<div class="table kaf018a-div-table">
 							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_317')}</div>	
 						</div>
-						<div class="table">
-							<div id="kaf018-a-checkBoxLst" data-bind="ntsMultiCheckBox: {
-													options: selectAbleIDLst,
-													optionsValue: 'id',
-													optionsText: 'name',
-													value: selectedIds }"></div>
+						<div class="table" style="margin-top: 20px;">
+							<div class="kaf018-a-checkBox" data-bind="ntsCheckBox: { checked: applicationApprovalFlg.value,
+															enable: applicationApprovalFlg.enable, 
+															text: applicationApprovalFlg.text }"></div>
+							<div class="kaf018-a-checkBox" data-bind="ntsCheckBox: { checked: confirmAndApprovalDailyFlg.value, 
+															enable: confirmAndApprovalDailyFlg.enable, 
+															text: confirmAndApprovalDailyFlg.text }"></div>
+							<div class="kaf018-a-checkBox" data-bind="ntsCheckBox: { checked: confirmAndApprovalMonthFlg.value, 
+															enable: confirmAndApprovalMonthFlg.enable, 
+															text: confirmAndApprovalMonthFlg.text }"></div>
+							<div class="kaf018-a-checkBox" data-bind="ntsCheckBox: { checked: confirmEmploymentFlg.value, 
+															enable: confirmEmploymentFlg.enable, 
+															text: confirmEmploymentFlg.text }"></div>
 						</div>
 					</div>
 				</div>
