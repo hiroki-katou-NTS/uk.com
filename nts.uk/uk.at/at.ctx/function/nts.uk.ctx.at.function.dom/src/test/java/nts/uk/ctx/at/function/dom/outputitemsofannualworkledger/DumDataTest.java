@@ -13,6 +13,8 @@ import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemDetailA
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.*;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeBasicInfoImport;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceInfor;
+import nts.uk.ctx.at.shared.dom.workrule.closure.*;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -57,11 +59,70 @@ public class DumDataTest {
         return rs;
 
     }
+    public static Closure createClosure() {
+        return new Closure(new ClosureGetMemento() {
 
+            @Override
+            public UseClassification getUseClassification() {
+                return UseClassification.UseClass_Use;
+            }
+
+            @Override
+            public CompanyId getCompanyId() {
+                return new CompanyId("cid");
+            }
+
+            @Override
+            public CurrentMonth getClosureMonth() {
+                return new CurrentMonth(11);
+            }
+
+            @Override
+            public ClosureId getClosureId() {
+                return ClosureId.RegularEmployee;
+            }
+
+            @Override
+            public List<ClosureHistory> getClosureHistories() {
+                return Arrays.asList(new ClosureHistory(new ClosureHistoryGetMemento() {
+
+                    @Override
+                    public YearMonth getStartDate() {
+                        return YearMonth.of(1900, 1);
+                    }
+
+                    @Override
+                    public YearMonth getEndDate() {
+                        return YearMonth.of(9999, 12);
+                    }
+
+                    @Override
+                    public CompanyId getCompanyId() {
+                        return new CompanyId("cid");
+                    }
+
+                    @Override
+                    public ClosureName getClosureName() {
+                        return new ClosureName("AA");
+                    }
+
+                    @Override
+                    public ClosureId getClosureId() {
+                        return ClosureId.RegularEmployee;
+                    }
+
+                    @Override
+                    public ClosureDate getClosureDate() {
+                        return new ClosureDate(1, true);
+                    }
+                }));
+            }
+        });
+    }
     public static Map<String, ClosureDateEmployment> lstClosureDateEmployment()
 
     {
-        val closure = GetClosureDateEmploymentDomainServiceTest.createClosure();
+        val closure = createClosure();
         val rs = new HashMap<String, ClosureDateEmployment>();
 
         rs.put("eplId01", new ClosureDateEmployment("eplId01", "employeeCode1", "employeeName1", closure));
@@ -384,6 +445,7 @@ public class DumDataTest {
             )
 
     );
+
 
 
 }
