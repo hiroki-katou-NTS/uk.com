@@ -261,12 +261,12 @@ module nts.uk.com.view.cmm048.a {
       } else {
         vm.passChangeLog(vm.$i18n('CMM048_98'));
       }
-
-      vm.passPolicyLowestDigits(vm.$i18n('CMM048_13', [String(data.passwordPolicy.validityPeriod)]));
-      vm.passPolicyAlphabetDigit(vm.$i18n('CMM048_15', [String(data.passwordPolicy.lowestDigits)]));
-      vm.passPolicyNumberOfDigits(vm.$i18n('CMM048_16', [String(data.passwordPolicy.alphabetDigit)]));
-      vm.passPolicySymbolCharacters(vm.$i18n('CMM048_17', [String(data.passwordPolicy.numberOfDigits)]));
-      vm.passPolicyHistoryCount(vm.$i18n('CMM048_19', [String(data.passwordPolicy.symbolCharacters)]));
+      //validityPeriod
+      vm.passPolicyLowestDigits(vm.$i18n('CMM048_13', [String(data.passwordPolicy.lowestDigits)]));
+      vm.passPolicyAlphabetDigit(vm.$i18n('CMM048_15', [String(data.passwordPolicy.alphabetDigit)]));
+      vm.passPolicyNumberOfDigits(vm.$i18n('CMM048_16', [String(data.passwordPolicy.numberOfDigits)]));
+      vm.passPolicySymbolCharacters(vm.$i18n('CMM048_17', [String(data.passwordPolicy.symbolCharacters)]));
+      vm.passPolicyHistoryCount(vm.$i18n('CMM048_19', [String(data.passwordPolicy.historyCount)]));
       vm.passPolicyValidityPeriod(vm.$i18n('CMM048_21', [String(data.passwordPolicy.validityPeriod)]));
     }
 
