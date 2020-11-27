@@ -370,6 +370,7 @@ export class CmmS45BComponent extends Vue {
                 count++;
             });
         });
+        self.lstAppByEmp = _.orderBy(self.lstAppByEmp, ['empCD'],['asc']);
         if (count == 0) {
             self.displayB513 = 1;
         } else if (count > data.appAllNumber) {
