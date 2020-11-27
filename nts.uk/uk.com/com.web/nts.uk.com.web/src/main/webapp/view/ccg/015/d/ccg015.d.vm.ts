@@ -87,6 +87,8 @@ module nts.uk.com.view.ccg015.d {
             vm.listFlowMenu(result);
           } else if (result && vm.layoutType() === 1) {
             vm.listTopPagePart(result);
+          } else {
+            // Do nothing
           }
         });
     }

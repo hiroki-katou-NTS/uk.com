@@ -1,79 +1,66 @@
-module nts.uk.at.view.ktg031.b.viewmodel {
-    import getText = nts.uk.resource.getText;
-    export class ScreenModel {
-        listDetail: KnockoutObservableArray<TopPageAlarmDetailDto> = ko.observableArray([]);
-        columns: KnockoutObservableArray<any>;
-        currentCode: KnockoutObservable<number> = ko.observable();
-        constructor() {
-            var self = this;
-            self.columns = ko.observableArray([
-                { headerText: '', key: 'serialNo', width: 50 },
-                { headerText: getText('KTG031_10'), key: 'employeeCode', width: 100 },
-                { headerText: getText('KTG031_11'), key: 'employeeName', width: 110 },
-                { headerText: getText('KTG031_12'), key: 'processingName', width: 150 },
-                { headerText: getText('KTG031_13'), key: 'errorMessage', width: 190 },
-            ]);
-        }   
+/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
-        startPage(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
-            let ParamKtg031 = nts.uk.ui.windows.getShared("ktg031A");
-            service.getDetail(ParamKtg031).done((listOutput: Array<ITopPageAlarmDetailDto>) => {
-                console.log(listOutput);
-                self.listDetail(_.map(listOutput, acc => {
-                    return new TopPageAlarmDetailDto(acc);
-                }));
-                dfd.resolve();
-            });
-            return dfd.promise();
-        }
-        
-        closeDialog(){
-            nts.uk.ui.windows.close();
-        }
+module nts.uk.com.view.ktg031.b {
+
+  // URL API backend
+  const API = {
+
+  };
+
+  @bean()
+  export class ScreenModel extends ko.ViewModel {
+    columns: KnockoutObservableArray<any> = ko.observableArray([]);
+    listSetting: KnockoutObservableArray<AlarmDisplaySettingDto> = ko.observableArray([]);
+    currentRow: KnockoutObservable<any> = ko.observable(null);
+
+    created(params: any) {
+      const vm = this;
+      vm.columns([
+        { headerText: vm.$i18n('KTG031_21'), key: 'classification', width: 150 },
+        { headerText: vm.$i18n('KTG031_22'), key: 'alarmProcessing', width: 280 },
+        { headerText: vm.$i18n('KTG031_23'), key: 'isDisplay', width: 120 },
+      ]);
+      const lastIndex = 0;
+      vm.listSetting([
+        new AlarmDisplaySettingDto({
+          rowNumber: lastIndex + 1,
+          classification: vm.$i18n('KTG031_26'),
+          alarmProcessing: vm.$i18n('KTG031_33'),
+          isDisplay: vm.$i18n('KTG031_28'),
+        }),
+        new AlarmDisplaySettingDto({
+          rowNumber: lastIndex + 2,
+          classification: vm.$i18n('KTG031_26'),
+          alarmProcessing: vm.$i18n('KTG031_34'),
+          isDisplay: vm.$i18n('KTG031_28'),
+        }),
+        new AlarmDisplaySettingDto({
+          rowNumber: lastIndex + 3,
+          classification: vm.$i18n('KTG031_27'),
+          alarmProcessing: vm.$i18n('KTG031_35'),
+          isDisplay: vm.$i18n('KTG031_32'),
+        }),
+      ]);
     }
 
-    export interface ITopPageAlarmDetailDto {
-        /** 社員コード */
-        employeeCode: string;
-
-        /** 連番 */
-        serialNo: number;
-
-        /** 社員名 */
-        employeeName: string;
-
-        /** エラーメッセージ */
-        errorMessage: string;
-
-        /** 処理名 */
-        processingName: string;
+    mounted() {
+      const vm = this;
     }
 
-    export class TopPageAlarmDetailDto {
-        /** 社員コード */
-        employeeCode: string;
-
-        /** 連番 */
-        serialNo: number;
-
-        /** 社員名 */
-        employeeName: string;
-
-        /** エラーメッセージ */
-        errorMessage: string;
-
-        /** 処理名 */
-        processingName: string;
-        constructor(param: ITopPageAlarmDetailDto) {
-            let self = this;
-            self.employeeCode = param.employeeCode;
-            self.serialNo = param.serialNo;
-            self.employeeName = param.employeeName;
-            self.errorMessage = param.errorMessage;
-            self.processingName = param.processingName;
-        }
+    public closeDialog() {
+      const vm = this;
+      vm.$window.close();
     }
+  }
 
+  class AlarmDisplaySettingDto {
+    rowNumber: number;
+    classification: string;
+    alarmProcessing: string;
+    isDisplay: string;
+
+    constructor(init?: Partial<AlarmDisplaySettingDto>) {
+      $.extend(this, init);
+    }
+  }
 }
