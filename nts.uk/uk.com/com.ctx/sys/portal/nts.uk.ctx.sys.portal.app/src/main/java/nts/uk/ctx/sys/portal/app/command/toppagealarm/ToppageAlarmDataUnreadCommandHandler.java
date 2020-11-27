@@ -7,6 +7,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.AlarmClassification;
@@ -37,19 +38,19 @@ public class ToppageAlarmDataUnreadCommandHandler extends CommandHandler<Toppage
 		
 		Optional<ToppageAlarmData> oExistedData = this.toppageAlarmDataRepo.get(
 				command.getCompanyId(), 
-				AlarmClassification.valueOf(command.getAlarmClassification()), 
+				EnumAdaptor.valueOf(command.getAlarmClassification(), AlarmClassification.class), 
 				command.getIdentificationKey(), 
 				command.getSid(), 
-				DisplayAtr.valueOf(command.getDisplayAtr()));
+				EnumAdaptor.valueOf(command.getDisplayAtr(), DisplayAtr.class));
 		if (!oExistedData.isPresent()) {
 			return;
 		}
 		Optional<ToppageAlarmLog> oExistedLog = this.toppageAlarmLogRepo.get(
 				command.getCompanyId(), 
-				AlarmClassification.valueOf(command.getAlarmClassification()), 
+				EnumAdaptor.valueOf(command.getAlarmClassification(), AlarmClassification.class), 
 				command.getIdentificationKey(), 
 				command.getSid(), 
-				DisplayAtr.valueOf(command.getDisplayAtr()));
+				EnumAdaptor.valueOf(command.getDisplayAtr(), DisplayAtr.class));
 		if (!oExistedLog.isPresent()) {
 			return;
 		}

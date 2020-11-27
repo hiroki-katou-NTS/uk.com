@@ -2,10 +2,11 @@ package nts.uk.ctx.sys.portal.dom.toppagealarm;
 
 import java.util.Optional;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NonNull;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
 
@@ -14,38 +15,34 @@ import nts.arc.time.GeneralDateTime;
  * AR_トップページアラームデータ
  */
 @Builder
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class ToppageAlarmData extends AggregateRoot {
 
 	/**
 	 * 会社ID
 	 */
-	@NonNull
 	private String cid;
 	
 	/**
 	 * アラーム分類
 	 */
-	@NonNull
 	private AlarmClassification alarmClassification;
 	
 	/**
 	 * 識別キー
 	 */
-	@NonNull
 	private IdentificationKey identificationKey;
 	
 	/**
 	 * 表示社員ID
 	 */
-	@NonNull
 	private String displaySId;
 	
 	/**
 	 * 表示社員区分
 	 */
-	@NonNull
 	private DisplayAtr displayAtr;
 	
 	/**
@@ -56,23 +53,17 @@ public class ToppageAlarmData extends AggregateRoot {
 	/**
 	 * 発生日時
 	 */
-	@NonNull
 	private GeneralDateTime occurrenceDateTime;
 	
 	/**
 	 * 表示メッセージ
 	 */
-	@NonNull
 	private DisplayMessage displayMessage;
 
 	/**
 	 * リンクURL
 	 */
-	@NonNull
 	private Optional<LinkURL> linkUrl;
-	
-	@SuppressWarnings("unused")
-	private ToppageAlarmData() {}
 	
 	public void updateIsResolved(boolean isResolved) {
 		this.isResolved = isResolved;

@@ -7,6 +7,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.AlarmClassification;
@@ -33,10 +34,10 @@ public class ToppageAlarmDataReadCommandHandler extends CommandHandler<ToppageAl
 		
 		Optional<ToppageAlarmLog> oExistedLog = this.toppageAlarmLogRepo.get(
 				command.getCompanyId(), 
-				AlarmClassification.valueOf(command.getAlarmClassification()), 
+				EnumAdaptor.valueOf(command.getAlarmClassification(), AlarmClassification.class), 
 				command.getIdentificationKey(), 
 				command.getSid(), 
-				DisplayAtr.valueOf(command.getDisplayAtr()));
+				EnumAdaptor.valueOf(command.getDisplayAtr(), DisplayAtr.class));
 		
 		if (oExistedLog.isPresent()) {
 			ToppageAlarmLog updateLog = oExistedLog.get();
@@ -45,10 +46,10 @@ public class ToppageAlarmDataReadCommandHandler extends CommandHandler<ToppageAl
 		} else {
 			ToppageAlarmLog newLog = ToppageAlarmLog.builder()
 					.cid(command.getCompanyId())
-					.alarmClassification(AlarmClassification.valueOf(command.getAlarmClassification()))
+					.alarmClassification(EnumAdaptor.valueOf(command.getAlarmClassification(), AlarmClassification.class))
 					.identificationKey(new IdentificationKey(command.getIdentificationKey()))
 					.displaySId(command.getSid())
-					.displayAtr(DisplayAtr.valueOf(command.getDisplayAtr()))
+					.displayAtr(EnumAdaptor.valueOf(command.getDisplayAtr(), DisplayAtr.class))
 					.build();
 			newLog.updateAlreadyDatetime();
 			this.toppageAlarmLogRepo.insert(contractCd, newLog);
