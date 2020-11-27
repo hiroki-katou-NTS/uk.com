@@ -31,4 +31,6 @@ public class OptionalItemDto {
     private int optionalItemAtr;
 
     private CalcResultRangeDto calcResultRange;
+
+    private int dispOrder;
 }

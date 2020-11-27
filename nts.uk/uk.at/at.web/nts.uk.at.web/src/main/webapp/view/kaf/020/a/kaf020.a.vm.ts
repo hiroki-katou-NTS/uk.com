@@ -2,7 +2,7 @@
 module nts.uk.at.view.kaf020.a {
     const PATH_API = {
         optionalSetting: 'ctx/at/request/application/optionalitem/optionalItemAppSetting',
-    }
+    };
 
     @bean()
     export class Kaf020AViewModel extends ko.ViewModel {
