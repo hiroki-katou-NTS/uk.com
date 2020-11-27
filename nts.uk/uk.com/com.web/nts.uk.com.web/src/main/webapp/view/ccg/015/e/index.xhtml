@@ -12,6 +12,7 @@
       <com:scriptfile set="IGNITE" />
       <com:stylefile path="ccg015.e.style.css" />
       <com:scriptfile path="ccg015.e.vm.js" />
+      <com:scriptfile path="/view/ktg/031/a/ktg031.a.vm.js" />
       <script>var dialogSize = { width: 800, height: 660 };</script>
     </ui:define>
     <ui:define name="content">
@@ -78,7 +79,23 @@
                     </com:ko>
                   </div>
                   <div class="iframe-wrap">
-                    <iframe class="widget-frame" data-bind="attr:{ src: url }" />
+                    <com:ko tag="if" bind="isComponent()">
+                      <com:ko tag="if" bind="isKTG026()">
+                        <ktg026-component></ktg026-component>
+                      </com:ko>
+                      <com:ko tag="if" bind="isKTG027()">
+                        <ktg027-component></ktg027-component>
+                      </com:ko>
+                      <com:ko tag="if" bind="isKTG031()">
+                        <ktg031-component></ktg031-component>
+                      </com:ko>
+                      <com:ko tag="if" bind="isCCG005()">
+                        <ccg005-component></ccg005-component>
+                      </com:ko>
+                    </com:ko>
+                    <com:ko tag="ifnot" bind="isComponent()">
+                      <iframe class="widget-frame" data-bind="attr:{ src: url }" />
+                    </com:ko>
                   </div>
                 </div>
               </div>
