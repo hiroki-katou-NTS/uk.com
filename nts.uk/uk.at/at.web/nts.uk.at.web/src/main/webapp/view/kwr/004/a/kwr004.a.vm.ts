@@ -25,7 +25,7 @@ module nts.uk.at.view.kwr004.a {
     //panel left
     dpkYearMonth: KnockoutObservable<number> = ko.observable(202010);
     periodDate: KnockoutObservable<any> = ko.observable({ startDate: null, endDate: null });
-   
+
     //panel right
     rdgSelectedId: KnockoutObservable<number> = ko.observable(0);
     standardSelectedCode: KnockoutObservable<string> = ko.observable(null);
@@ -60,8 +60,8 @@ module nts.uk.at.view.kwr004.a {
     itemListSetting: KnockoutObservableArray<any> = ko.observableArray([]);
     hasPermission51: KnockoutObservable<boolean> = ko.observable(false);
     closureId: KnockoutObservable<number> = ko.observable(0);
-    
-    enum : Array<any> = [];
+
+    enum: Array<any> = [];
 
     constructor(params: any) {
       super();
@@ -82,7 +82,7 @@ module nts.uk.at.view.kwr004.a {
     }
 
     created(params: any) {
-      const vm = this;      
+      const vm = this;
     }
 
     mounted() {
@@ -226,10 +226,10 @@ module nts.uk.at.view.kwr004.a {
      * */
 
     showDialogScreenB() {
-      const vm = this;     
+      const vm = this;
       let attendanceItem = vm.rdgSelectedId() === vm.enum[1].value ? vm.freeSelectedCode() : vm.standardSelectedCode();
       let findInList = vm.rdgSelectedId() === vm.enum[1].value ? vm.settingListItems2() : vm.settingListItems1();
-      let attendance: any = _.find( findInList, (x) => x.code === attendanceItem);
+      let attendance: any = _.find(findInList, (x) => x.code === attendanceItem);
 
       if (_.isNil(attendance)) attendance = _.head(findInList);
 
@@ -243,14 +243,12 @@ module nts.uk.at.view.kwr004.a {
       vm.$window.storage(KWR004_B_INPUT, ko.toJS(params)).then(() => {
         vm.$window.modal('/view/kwr/004/b/index.xhtml').then(() => {
           vm.$window.storage(KWR004_B_OUTPUT).then((data: any) => {
-            vm.getSettingListItems(vm.rdgSelectedId());
-            if(!_.isNil(data)) {
-              if( vm.rdgSelectedId() === 0) vm.standardSelectedCode(data.code);
-              else vm.freeSelectedCode(data.code);
+            console.log(data);
+            if (!_.isNil(data)) {
+              vm.getSettingListItems(vm.rdgSelectedId(), data.code);
             }
+            $('#btnExportExcel').focus();
           });
-
-          $('#btnExportExcel').focus();
         });
       });
     }
@@ -313,7 +311,7 @@ module nts.uk.at.view.kwr004.a {
         .fail();
     }
 
-    getSettingListItems( type: number) {
+    getSettingListItems(type: number, selectedCode?: string) {
       const vm = this;
       let params = {
         settingClassification: type
@@ -321,18 +319,22 @@ module nts.uk.at.view.kwr004.a {
 
       let listItems: Array<ItemModel> = [];
       vm.$ajax(PATH.getSettingList, params)
-      .done((result) => {     
-        if(!_.isNil(result)) {
-          _.forEach(result, (item) => {
-            let code = _.padStart(item.code, 2, '0');
-            listItems.push( new ItemModel(code, item.name, item.settingId ));
-          });
-          if(type === 0) 
-            vm.settingListItems1(listItems);
-          else
-            vm.settingListItems2(listItems);
-        }
-      }).fail();     
+        .done((result) => {
+          if (!_.isNil(result)) {
+            _.forEach(result, (item) => {
+              let code = _.padStart(item.code, 2, '0');
+              listItems.push(new ItemModel(code, item.name, item.settingId));
+            });
+
+            if (type === 0) {
+              vm.settingListItems1(listItems);
+              vm.standardSelectedCode(selectedCode);
+            } else {
+              vm.settingListItems2(listItems);
+              vm.freeSelectedCode(selectedCode);
+            }
+          }
+        }).fail();
     }
 
     exportExcel() {
@@ -360,13 +362,13 @@ module nts.uk.at.view.kwr004.a {
       });
 
       let settingId = null, findObj = null;
-      if( vm.rdgSelectedId() === 0 ) {
+      if (vm.rdgSelectedId() === 0) {
         findObj = _.find(vm.settingListItems1(), (x) => x.code === vm.standardSelectedCode());
       } else {
         findObj = _.find(vm.settingListItems2(), (x) => x.code === vm.freeSelectedCode());
       }
 
-      if( !_.isNil(findObj)) settingId = findObj.settingId;
+      if (!_.isNil(findObj)) settingId = findObj.settingId;
 
       vm.saveWorkScheduleOutputConditions().done(() => {
         vm.$blockui('grayout');
@@ -384,8 +386,8 @@ module nts.uk.at.view.kwr004.a {
         nts.uk.request.exportFile(PATH.exportExcel, params).done((response) => {
           vm.$blockui('hide');
         }).fail((error) => {
-          vm.$dialog.error({ messageId: 'Msg_1860'}).then(() => { vm.$blockui('hide'); });
-        }).always(() => vm.$blockui('hide'));        
+          vm.$dialog.error({ messageId: 'Msg_1860' }).then(() => { vm.$blockui('hide'); });
+        }).always(() => vm.$blockui('hide'));
       });
     }
 

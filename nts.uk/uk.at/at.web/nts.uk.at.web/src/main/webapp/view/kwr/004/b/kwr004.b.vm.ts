@@ -129,9 +129,8 @@ module nts.uk.at.view.kwr004.b {
 
     mounted() {
       const vm = this;
-      //$("#multiGridList").ntsFixedTable({ 'max-width': 700 });
       if (!!navigator.userAgent.match(/Trident.*rv\:11\./))
-        $("#multiGridList").ntsFixedTable({ height: 'auto' });
+        $("#multiGridList").ntsFixedTable({ height: 372 });
       else
         $("#multiGridList").ntsFixedTable({ height: 372 });
     }
@@ -457,8 +456,9 @@ module nts.uk.at.view.kwr004.b {
     closeDialog() {
       const vm = this;
       //KWR004_B_OUTPUT
-      vm.$window.storage(KWR004_B_OUTPUT, vm.attendanceCode());
-      vm.$window.close();
+      vm.$window.storage(KWR004_B_OUTPUT, {code: vm.attendanceCode()}).then(() => {
+        vm.$window.close();
+      });      
     }
 
     /**
@@ -524,8 +524,9 @@ module nts.uk.at.view.kwr004.b {
 
             //sort by code with asc
             lisItems = _.orderBy(lisItems, 'code', 'asc');
+            vm.settingListItems([]);
             vm.settingListItems(lisItems);
-
+            
             let firstItem: any = _.head(vm.settingListItems());
             if (_.isNil(currentCode)) currentCode = firstItem.code;
             vm.currentCodeList(currentCode);
