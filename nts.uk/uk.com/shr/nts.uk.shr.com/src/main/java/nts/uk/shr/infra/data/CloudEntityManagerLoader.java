@@ -11,7 +11,7 @@ import javax.persistence.PersistenceContext;
 
 import lombok.val;
 import nts.arc.layer.infra.data.EntityManagerLoader;
-import nts.arc.scoped.session.SessionContextProvider;
+import nts.gul.reflection.ReflectionUtil;
 
 @ApplicationScoped
 public class CloudEntityManagerLoader implements EntityManagerLoader{
@@ -22,64 +22,69 @@ public class CloudEntityManagerLoader implements EntityManagerLoader{
     @PersistenceContext(unitName = "UK")
     private EntityManager entityManager;
 
-    @PersistenceContext(unitName = "UK1")
-    private EntityManager entityManager1;
+//    データソース増やす時のサンプル
+//    @PersistenceContext(unitName = "UK1")
+//    private EntityManager entityManager1;
     
     private Map<String, EntityManager> entityManagersMap;
     
     @PostConstruct
     public void init() {
-//    	//refrection使って、このクラスの@PersistenceContextアノが付いたフィールド集める。
-//    	val annoFields = ReflectionUtil.getStreamOfFieldsAnnotated(
-//    														CloudEntityManagerLoader.class,
-//    														ReflectionUtil.Condition.ALL,
-//    														PersistenceContext.class);
-//    	//集めたやつらのUnitNameを穿り出す。
-//    	annoFields.forEach(field ->{
-//    		val value = ReflectionUtil.getFieldValue(field, this);
-//			entityManagersMap.put("a", (EntityManager)value);
-//    	});
-//    	//穿り出したやつらの unitName を Key, EntityManagerをValueへ入れる.
-
-    	
-    	//借
-    	val map = new HashMap<String, EntityManager>();
-    	map.put("UK", entityManager);
-    	map.put("UK1", entityManager1);
-    	this.entityManagersMap = map;
+    	//refrection使って、このクラスの@PersistenceContextアノが付いたフィールド集める。
+    	val annoFields = ReflectionUtil.getStreamOfFieldsAnnotated(
+    														CloudEntityManagerLoader.class,
+    														ReflectionUtil.Condition.ALL,
+    														PersistenceContext.class);
+    	this.entityManagersMap = new HashMap<String, EntityManager>(); 
+    	//@PersistenceContextマップ(unitname,value)作成
+    	annoFields.forEach(field ->{
+    		field.setAccessible(true);
+    		try {
+    			val fieldValue = ReflectionUtil.getFieldValue(field, this);
+				entityManagersMap.put(field.getAnnotation(PersistenceContext.class).unitName(), 
+													  (EntityManager)fieldValue);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+    	});
     }
     
     @Override
     public EntityManager getEntityManager() {
-    	String datasourceName = SessionContextProvider.get().get("datasource");
-//    	EntityManager em = entityManagersMap.get(datasourceName);
-//    	if (em == null) {
-//    		throw new RuntimeException("データソースに一致するマネージャが見つかりませんでした。");
-//    	}
-//    	return em;
-    	switch(datasourceName) {
-    	case "UK" : return entityManager;
-    	case "UK1" : return entityManager1;
-    	default : 
+    	String datasourceName = TenantLocatorService.getConnectedDataSource();
+    	EntityManager em = entityManagersMap.get(datasourceName);
+    	if (em == null) {
     		throw new RuntimeException("データソースに一致するマネージャが見つかりませんでした。");
     	}
+    	return em;
     }
-
-	@Override
-	public String get() {
-		return SessionContextProvider.get().get("datasource");
-	}
 	
 	@Override
 	public void forAllDataSources(Consumer<EntityManager> process) {
-		entityManagersMap.values().forEach(em ->{
-			process.accept(em);
+		entityManagersMap.values().forEach(em -> {
+			runner(() -> process.accept(em));
 		});
 	}
 
 	@Override
 	public void forDefaultDatasource(Consumer<EntityManager> process) {
+//		setSessionVariable(unlimited);//ここでunlimitedを使うようにする
 		process.accept(entityManager);
+//		setSessionVariable(unlimited);//ここでunlimitedを使わないようにする(破棄)
+	}
+
+	@Override
+	public void forTenantDatasource(String tenantCode, Consumer<EntityManager> process) {
+		String datasource = TenantLocatorService.getDataSourceFor(tenantCode);
+//		setSessionVariable();
+		
+		process.accept(entityManagersMap.get(datasource));
+	}
+
+	private void runner(Runnable runnable) {
+//		setSessionVariable(unlimited);//ここでunlimitedを使うようにする
+		runnable.run();
+//		setSessionVariable(unlimited);//ここでunlimitedを使わないようにする(破棄)
 	}
 }
 
