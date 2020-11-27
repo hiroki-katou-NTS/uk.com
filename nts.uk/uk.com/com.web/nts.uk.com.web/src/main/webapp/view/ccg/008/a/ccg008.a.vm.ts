@@ -97,7 +97,6 @@ module nts.uk.com.view.ccg008.a.screenModel {
             });
           }
           vm.dataToppage(null);
-          vm.callApiTopPage(vm);
         });
       });
 
@@ -137,7 +136,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
       const code = transferData && transferData.topPageCode ? transferData.topPageCode : "";
       const fromScreen = transferData && transferData.screen ? transferData.screen : "other";
       let topPageSetting: any;
-      service.getSetting().then((res) => {
+      vm.$ajax("com", API.getSetting).then((res: any) => {
         topPageSetting = res;
         const param = {
           topPageSetting: topPageSetting,

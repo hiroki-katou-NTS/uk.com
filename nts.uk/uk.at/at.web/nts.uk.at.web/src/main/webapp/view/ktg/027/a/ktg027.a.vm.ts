@@ -240,8 +240,9 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
       </table>  
     </div>
   </div>
-  <style>${KTG_027_Style}</style>`,
+  <style>${KTG_027_Style}</style>`
   })
+
   export class Ktg027ComponentViewModel extends ko.ViewModel {
     // A1_2
     year: KnockoutObservable<number> = ko.observable(0);
