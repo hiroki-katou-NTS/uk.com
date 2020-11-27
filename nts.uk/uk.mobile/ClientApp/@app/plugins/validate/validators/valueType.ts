@@ -6,7 +6,7 @@ export const valueType = function (value: string | number | Date, type: 'Decimal
     if (value !== null && value !== undefined && value !== '') {
         switch (type) {
             case 'Decimal':
-                if (!/\d+(\.\d{1,})?/.test($value)) {
+                if (!/^[-+]?\d+(\.\d{1,})?/.test($value)) {
                     let min = `${rule.min}`,
                         max = `${rule.max}`;
 
@@ -23,7 +23,7 @@ export const valueType = function (value: string | number | Date, type: 'Decimal
                 break;
             case 'HalfInt':
             case 'Integer':
-                if (!/^\d+$/.test($value)) {
+                if (!/^[-+]?[1-9]\d*$/.test($value)) {
                     if (rule.min >= 0) {
                         return ['MsgB_39', `${rule.max}`];
                     } else {

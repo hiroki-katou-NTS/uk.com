@@ -186,7 +186,7 @@ public class RecoveryStorageService {
 			dataRecoveryResultRepository.updateEndDateTimeExecutionResult(dataRecoveryProcessId, condition);
 		}
 
-		performDataRecoveryRepository.deleteTableListByDataStorageProcessingId(dataRecoveryProcessId);
+//		performDataRecoveryRepository.deleteTableListByDataStorageProcessingId(dataRecoveryProcessId);
 
 	}
 
