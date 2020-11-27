@@ -13,6 +13,7 @@ import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
 import nts.uk.ctx.sys.gateway.app.command.login.LoginRequire;
 import nts.uk.ctx.sys.gateway.app.command.login.password.PasswordAuthenticateCommandHandler.Require;
 import nts.uk.ctx.sys.gateway.dom.login.password.AuthenticationFailuresLog;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockOutData;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.changelog.PasswordChangeLog;
@@ -58,6 +59,18 @@ public class PasswordAuthenticateCommandRequire {
 		}
 
 		@Override
+		public Optional<EmployeeDataMngInfoImport> getEmployeeDataMngInfoImportByEmployeeCode(String companyId,
+				String employeeCode) {
+			return employeeDataManageInfoAdapter.findByEmployeeCode(companyId, employeeCode);
+		}
+
+		@Override
+		public Optional<User> getUserByPersonId(String personId) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
 		public Optional<PasswordPolicy> getPasswordPolicy(String tenantCode) {
 			// TODO Auto-generated method stub
 			return null;
@@ -70,31 +83,25 @@ public class PasswordAuthenticateCommandRequire {
 		}
 
 		@Override
-		public void save(AuthenticationFailuresLog failuresLog) {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void save(LockOutData lockOutData) {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public PasswordChangeLog getPasswordChangeLog(String userId) {
+		public Optional<AccountLockPolicy> getAccountLockPolicy(String contractCode) {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
-		public Optional<EmployeeDataMngInfoImport> getEmployeeDataMngInfoImportByEmployeeCode(String companyId,
-				String employeeCode) {
-			return employeeDataManageInfoAdapter.findByEmployeeCode(companyId, employeeCode);
+		public void save(AuthenticationFailuresLog failuresLog) {
+			// TODO Auto-generated method stub
+			
 		}
 
 		@Override
-		public Optional<User> getUserByPersonId(String personId) {
+		public void save(LockOutData lockOutData) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public PasswordChangeLog getPasswordChangeLog(String userId) {
 			// TODO Auto-generated method stub
 			return null;
 		}

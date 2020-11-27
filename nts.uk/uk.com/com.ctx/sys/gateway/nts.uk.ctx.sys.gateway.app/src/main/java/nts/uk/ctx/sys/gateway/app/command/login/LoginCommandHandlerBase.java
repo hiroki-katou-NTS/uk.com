@@ -11,7 +11,6 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.task.tran.TransactionService;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.sys.gateway.app.command.login.session.BuildLoginEmployeeSession;
 import nts.uk.ctx.sys.gateway.dom.login.CheckIfCanLogin;
 import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
 import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthentication;
@@ -33,8 +32,6 @@ public abstract class LoginCommandHandlerBase<
 		Req extends LoginCommandHandlerBase.Require>
 		extends CommandHandlerWithResult<Command, Result> {
 	
-	@Inject
-	private BuildLoginEmployeeSession session;
 	
 	@Inject
 	private TransactionService transaction;
@@ -97,7 +94,7 @@ public abstract class LoginCommandHandlerBase<
 		val result = CheckIfCanLogin.check(require, authen.getIdentified());
 		
 		// セッション構築
-		session.build(require, authen.getIdentified().getEmployee(), authen.getIdentified().getUser());
+		require.authorizeLoginSession(authen.getIdentified());
 		
 		return AtomTask.none();
 	}
@@ -161,9 +158,10 @@ public abstract class LoginCommandHandlerBase<
 	protected abstract Req getRequire(Command command);
 	
 	public static interface Require extends
-		BuildLoginEmployeeSession.Require,
 		CheckIfCanLogin.Require {
 		
 		Optional<TenantAuthentication> getTenantAuthentication(String tenantCode);
+		
+		void authorizeLoginSession(IdentifiedEmployeeInfo identified);
 	}	
 }
