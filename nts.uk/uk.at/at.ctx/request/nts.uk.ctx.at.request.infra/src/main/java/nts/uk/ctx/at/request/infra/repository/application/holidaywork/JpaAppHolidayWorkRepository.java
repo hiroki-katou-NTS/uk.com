@@ -3,13 +3,13 @@ package nts.uk.ctx.at.request.infra.repository.application.holidaywork;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.ReasonDivergence;
 import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36Agree;
@@ -30,6 +30,12 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaAppHolidayWorkRepository extends JpaRepository implements AppHolidayWorkRepository{
 
+	@Override
+	public Optional<AppHolidayWork> find(String applicationId) {
+		AppContexts.user().companyId();
+		return null;
+	}
+	
 	@Override
 	public void add(AppHolidayWork appHolidayWork) {
 		this.commandProxy().insert(toEntity(appHolidayWork));

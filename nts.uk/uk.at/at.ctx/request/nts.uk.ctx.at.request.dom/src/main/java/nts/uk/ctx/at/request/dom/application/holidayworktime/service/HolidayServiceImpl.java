@@ -30,6 +30,7 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHdWo
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CalculatedFlag;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CheckBeforeOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdSelectWorkDispInfoOutput;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkDetailOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HolidayWorkCalculationResult;
 import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
@@ -254,6 +255,13 @@ public class HolidayServiceImpl implements HolidayService {
 		
 		checkBeforeOutput.getConfirmMsgOutputs().addAll(confirmMsgOutputs);
 		return checkBeforeOutput;
+	}
+
+	@Override
+	public HdWorkDetailOutput getDetail(String companyId, String applicationId,
+			AppDispInfoStartupOutput appDispInfoStartupOutput) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

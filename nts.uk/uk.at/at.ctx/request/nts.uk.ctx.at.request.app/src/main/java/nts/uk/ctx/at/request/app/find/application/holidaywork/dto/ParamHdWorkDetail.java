@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.request.app.find.application.holidaywork.dto;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,11 +13,20 @@ import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AppHolidayWorkParamPC {
+public class ParamHdWorkDetail {
 	
-	private List<String> empList;
+	/**
+	 * 会社ID
+	 */
+	private String companyId;
 	
-	private List<String> dateList;
+	/**
+	 * 申請ID
+	 */
+	private String applicationId;
 	
-	private AppDispInfoStartupDto appDispInfoStartupOutput;
+	/**
+	 * 申請表示情報
+	 */
+	private AppDispInfoStartupDto appDispInfoStartup;
 }

@@ -13,14 +13,15 @@ import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.app.command.application.holidaywork.RegisterCommand;
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHdWorkDispInfoDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHolidayWorkParamPC;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.CheckBeforeOutputDto;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HdWorkDetailOutputDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HolidayWorkCalculationResultDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamCalculationHolidayWork;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamCheckBeforeRegister;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamHdWorkDetail;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamHolidayWorkChangeDate;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamHolidayWorkChangeWork;
 import nts.uk.ctx.at.request.dom.application.AppReason;
@@ -32,7 +33,6 @@ import nts.uk.ctx.at.request.dom.application.ReasonForReversion;
 import nts.uk.ctx.at.request.dom.application.common.service.other.PreAppContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.commonalgorithm.ICommonAlgorithmHolidayWork;
@@ -41,6 +41,7 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHdWo
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CalculatedFlag;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CheckBeforeOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdSelectWorkDispInfoOutput;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkDetailOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HolidayWorkCalculationResult;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.ICommonAlgorithmOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkContent;
@@ -208,8 +209,10 @@ public class AppHolidayWorkFinder {
 		return CheckBeforeOutputDto.fromDomain(checkBeforeOutput);
 	}
 	
-	public ProcessResult register(RegisterCommand param) {
-		return null;
+	public HdWorkDetailOutputDto getDetail(ParamHdWorkDetail param) {
+		HdWorkDetailOutput hdWorkDetailOutput = holidayWorkService.getDetail(param.getCompanyId(), param.getApplicationId(), 
+				param.getAppDispInfoStartup().toDomain());
+		return HdWorkDetailOutputDto.fromDomain(hdWorkDetailOutput);
 	}
 	
 	public Application createApplication(ApplicationDto application) {

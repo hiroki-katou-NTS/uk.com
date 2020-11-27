@@ -11,6 +11,7 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHdWorkDispInfoOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CheckBeforeOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdSelectWorkDispInfoOutput;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkDetailOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HolidayWorkCalculationResult;
 import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkContent;
@@ -89,4 +90,13 @@ public interface HolidayService {
 	 */
 	public CheckBeforeOutput checkBeforeRegister(boolean require, String companyId, AppHdWorkDispInfoOutput appHdWorkDispInfoOutput,
 			AppHolidayWork appHolidayWork, boolean isProxy);
+	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF010_休日出勤時間申請.アルゴリズム.7.休出申請（詳細）起動処理.7.休出申請（詳細）起動処理
+	 * @param companyId
+	 * @param applicationId
+	 * @param appDispInfoStartupOutput
+	 * @return
+	 */
+	public HdWorkDetailOutput getDetail(String companyId, String applicationId, AppDispInfoStartupOutput appDispInfoStartupOutput);
 }

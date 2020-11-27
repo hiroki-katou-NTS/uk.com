@@ -56,7 +56,7 @@ public class AppHdWorkDispInfoCmd {
 	/**
 	 * 休日出勤申請起動時の表示情報(申請対象日関係あり)
 	 */
-	private HdWorkDispInfoWithDateCmd hdWorkDispInfoWithDate;
+	private HdWorkDispInfoWithDateCmd hdWorkDispInfoWithDateOutput;
 	
 	/**
 	 * 残業休日出勤申請の反映
@@ -76,7 +76,7 @@ public class AppHdWorkDispInfoCmd {
 	/**
 	 * 申請表示情報
 	 */
-	private AppDispInfoStartupDto appDispInfoStartup;
+	private AppDispInfoStartupDto appDispInfoStartupOutput;
 	
 	/**
 	 * 乖離理由の選択肢
@@ -95,11 +95,11 @@ public class AppHdWorkDispInfoCmd {
 				this.useInputDivergenceReason, this.useComboDivergenceReason, 
 				this.workdayoffFrameList.stream().map(workdayoffFrame -> workdayoffFrame.toDomain()).collect(Collectors.toList()), 
 				this.holidayWorkAppSet.toDomain(companyId), 
-				this.hdWorkDispInfoWithDate.toDomain(), 
+				this.hdWorkDispInfoWithDateOutput.toDomain(), 
 				this.hdWorkOvertimeReflect.toDomain(), 
 				this.overtimeFrameList.stream().map(overtimeFrame -> overtimeFrame.toDomain()).collect(Collectors.toList()), 
 				this.otWorkHoursForApplication.toDomain(), 
-				this.appDispInfoStartup.toDomain(), Optional.of(this.comboDivergenceReason.toDomain()), 
+				this.appDispInfoStartupOutput.toDomain(), Optional.of(this.comboDivergenceReason.toDomain()), 
 				Optional.of(this.calculationResult.toDomain()));
 	}
 }

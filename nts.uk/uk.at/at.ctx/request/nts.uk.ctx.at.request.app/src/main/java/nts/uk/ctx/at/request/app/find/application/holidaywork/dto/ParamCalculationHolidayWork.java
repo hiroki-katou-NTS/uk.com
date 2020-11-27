@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.app.find.application.holidaywork.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.command.application.overtime.ApplicationTimeCommand;
@@ -13,6 +14,7 @@ import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsett
  */
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class ParamCalculationHolidayWork {
 	
 	/**

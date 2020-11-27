@@ -14,10 +14,12 @@ import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHdWorkDispI
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HolidayWorkCalculationResultDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamCalculationHolidayWork;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamCheckBeforeRegister;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamHdWorkDetail;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamHolidayWorkChangeDate;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamHolidayWorkChangeWork;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHolidayWorkParamPC;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.CheckBeforeOutputDto;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HdWorkDetailOutputDto;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 
 /**
@@ -77,6 +79,11 @@ public class HolidayWorkWebService extends WebService{
 		return appHolidayWorkFinder.selectWork(param);
 	}
 	
+	@POST
+	@Path("getDetail")
+	public HdWorkDetailOutputDto getDetail(ParamHdWorkDetail param) {
+		return appHolidayWorkFinder.getDetail(param);
+	}
 	
 	
 	
