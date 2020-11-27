@@ -100,7 +100,7 @@ public class AnnualWorkLedgerExportService extends ExportService<AnnualWorkLedge
 
         val cl = closureRepository.findById(AppContexts.user().companyId(), query.getClosureId());
         val basedateNow = GeneralDate.today();
-        if(!cl.isPresent() ||cl.get().getHistoryByBaseDate(basedateNow) == null){
+        if (!cl.isPresent() || cl.get().getHistoryByBaseDate(basedateNow) == null) {
             throw new BusinessException("Còn QA");
         }
         val closureDate = cl.get().getHistoryByBaseDate(basedateNow).getClosureDate();
@@ -150,7 +150,10 @@ public class AnnualWorkLedgerExportService extends ExportService<AnnualWorkLedge
                 affComHistAdapter, itemServiceAdapter, actualMultipleMonthAdapter);
         List<AnnualWorkLedgerContent> lstContent = CreateAnnualWorkLedgerContentDomainService.getData(require2,
                 datePeriod, mapEmployeeInfo, outputSetting.get(), mapEmployeeWorkplace, mapClosureDateEmployment);
-
+        Comparator<AnnualWorkLedgerContent> compare = Comparator
+                .comparing(AnnualWorkLedgerContent::getWorkplaceCode)
+                .thenComparing(AnnualWorkLedgerContent::getEmployeeCode);
+        val lsSorted = lstContent.stream().sorted(compare).collect(Collectors.toList());
         // 7 年間勤務台帳を作成する
         AnnualWorkLedgerExportDataSource dataSource = new AnnualWorkLedgerExportDataSource(
                 query.getMode(),
@@ -159,7 +162,7 @@ public class AnnualWorkLedgerExportService extends ExportService<AnnualWorkLedge
                 yearMonthPeriod,
                 closureDate,
                 query.isZeroDisplay(),
-                lstContent
+                lsSorted
         );
         displayGenerator.generate(context.getGeneratorContext(), dataSource);
     }
