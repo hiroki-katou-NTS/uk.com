@@ -236,7 +236,7 @@ public class KTG004Finder {
 		if(!data.isEmpty()) {
 			List<ItemValue> itemValues = data.get(0).getItemValues();
 			for (ItemValue c : itemValues) {
-				if(c.getItemId() == 2036) {
+				if(c.getItemId() == 2063) {
 					result.setOverTime(c.getValue());
 				}else if(c.getItemId() == 2065) {
 					result.setFlexTime(c.getValue());
