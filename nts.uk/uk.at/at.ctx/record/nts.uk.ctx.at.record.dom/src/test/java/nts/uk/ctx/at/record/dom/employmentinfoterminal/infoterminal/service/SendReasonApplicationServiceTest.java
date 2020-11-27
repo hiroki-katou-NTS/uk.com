@@ -48,7 +48,7 @@ public class SendReasonApplicationServiceTest {
 	@Test
 	public void testSendEmpty() {
 
-		List<SendReasonApplication> actual = SendReasonApplicationService.send(require, new EmpInfoTerminalCode(1),
+		List<SendReasonApplication> actual = SendReasonApplicationService.send(require, new EmpInfoTerminalCode("1"),
 				new ContractCode("1"));
 		assertThat(actual).isEqualTo(Collections.emptyList());
 	}
@@ -57,7 +57,7 @@ public class SendReasonApplicationServiceTest {
 	public void testSendEmptyReasonApp() {
 
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = Optional
-				.of(new ReqSettingBuilder(new EmpInfoTerminalCode(1), new ContractCode("1"), new CompanyId("1"), "1",
+				.of(new ReqSettingBuilder(new EmpInfoTerminalCode("1"), new ContractCode("1"), new CompanyId("1"), "1",
 						Collections.emptyList(), Collections.emptyList(), Collections.emptyList()).overTimeHoliday(true)
 								.workTime(Collections.emptyList()).reservationReceive(false).build());
 		new Expectations() {
@@ -67,7 +67,7 @@ public class SendReasonApplicationServiceTest {
 				result = timeRecordReqSetting;
 			}
 		};
-		List<SendReasonApplication> actual = SendReasonApplicationService.send(require, new EmpInfoTerminalCode(1),
+		List<SendReasonApplication> actual = SendReasonApplicationService.send(require, new EmpInfoTerminalCode("1"),
 				new ContractCode("1"));
 		assertThat(actual).isEqualTo(Collections.emptyList());
 	}
@@ -76,7 +76,7 @@ public class SendReasonApplicationServiceTest {
 	@Test
 	public void testDone() {
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = Optional
-				.of(new ReqSettingBuilder(new EmpInfoTerminalCode(1), new ContractCode("1"), new CompanyId("1"), "1",
+				.of(new ReqSettingBuilder(new EmpInfoTerminalCode("1"), new ContractCode("1"), new CompanyId("1"), "1",
 						Collections.emptyList(), Collections.emptyList(), Collections.emptyList()).overTimeHoliday(true)
 								.workTime(Collections.emptyList()).reservationReceive(false).build());
 		new Expectations() {
@@ -106,7 +106,7 @@ public class SendReasonApplicationServiceTest {
 				);
 			}
 		};
-		List<SendReasonApplication> actual = SendReasonApplicationService.send(require, new EmpInfoTerminalCode(1),
+		List<SendReasonApplication> actual = SendReasonApplicationService.send(require, new EmpInfoTerminalCode("1"),
 				new ContractCode("1"));
 		assertThat(actual).extracting(d -> d.getAppReasonNo(), d -> d.getAppReasonName()).containsExactly(
 				Tuple.tuple("11", "A1"), Tuple.tuple("22", "A2"), Tuple.tuple("33", "A3"), Tuple.tuple("44", "A4"),

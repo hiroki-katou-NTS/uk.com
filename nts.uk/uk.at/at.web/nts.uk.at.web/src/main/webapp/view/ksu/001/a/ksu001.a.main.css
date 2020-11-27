@@ -105,11 +105,6 @@
 }
 
 #work-setting button, #person-setting button, #sort-order-setting button{
-	width: 110px;
-	margin-bottom: 10px;
-}
-
-#person-setting button{
 	width: auto;
 	margin-bottom: 10px;
 }
@@ -175,7 +170,7 @@
 }
 
 #A1_7_1 {
-	width: 440px !important;
+	width: 390px !important;
 	height: 100px;
 }
 

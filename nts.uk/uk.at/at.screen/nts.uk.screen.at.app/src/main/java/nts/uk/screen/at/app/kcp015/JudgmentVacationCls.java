@@ -43,45 +43,46 @@ public class JudgmentVacationCls {
 		
 		KCP015Dto result = new KCP015Dto();
 		
-		// step1
+		// step1   button A3_3 KALMT_ANNUAL_PAID_LEAVE
 		// call 年休の使用区分を取得する
-		boolean isManageAnnualLeave = false;
 		String companyId = AppContexts.user().companyId();
 		AnnualPaidLeaveSetting annualLeaveSet = annualPaidLeaveSettingRepo.findByCompanyId(companyId);
-		if (annualLeaveSet != null) 
-			isManageAnnualLeave = annualLeaveSet.isManaged();
-		result.clsOfAnnualHoliday = isManageAnnualLeave;
-		
-		// step2
+		if (annualLeaveSet != null){
+			result.clsOfAnnualHoliday = annualLeaveSet.isManaged();
+		}else{
+			result.clsOfAnnualHoliday = null;
+		} 
+			
+		// step2  button A3_4 KMFMT_RETENTION_YEARLY
 		Optional<RetentionYearlySetting> retentionYearlySet = retentionYearlySettingRepo.findByCompanyId(companyId);
 		if (retentionYearlySet.isPresent()) {
 			result.divisionOfAnnualHoliday = retentionYearlySet.get().getManagementCategory().value == ManageDistinct.YES.value;
 		} else {
-			result.divisionOfAnnualHoliday = false;
+			result.divisionOfAnnualHoliday = null;
 		}
 		
-		// step3
+		// step3  button A3_1 KCLMT_COMPENS_LEAVE_COM
 		CompensatoryLeaveComSetting compensatoryLeaveComSet = compensLeaveComSetRepo.find( companyId);
 		if(compensatoryLeaveComSet != null){
 			result.subLeaveUseDivision = compensatoryLeaveComSet.isManaged();
 		}else{
-			result.subLeaveUseDivision = false;
+			result.subLeaveUseDivision = null;
 		}
 		
-		// step4
+		// step4  button A3_2 KSVST_COM_SUBST_VACATION
 		Optional<ComSubstVacation> comSubstVacation = comSubstVacationRepo.findById(companyId);
 		if (comSubstVacation.isPresent()) {
 			result.dvisionOfZhenxiuUse = comSubstVacation.get().isManaged();
 		} else {
-			result.dvisionOfZhenxiuUse = false;
+			result.dvisionOfZhenxiuUse = null;
 		}
 		
-		// step5
+		// step5   button A3_5 KSHST_COM_60H_VACATION
 		Optional<Com60HourVacation> com60HourVacation = com60HourVacationRepo.findById(companyId);
 		if (com60HourVacation.isPresent()) {
 			result.overtimeUseCls60H = com60HourVacation.get().isManaged();
 		} else {
-			result.overtimeUseCls60H = false;
+			result.overtimeUseCls60H = null;
 		}
 		
 		return result;

@@ -5648,7 +5648,7 @@ module nts.uk.ui.exTable {
             let detailOffsetLeft =  parseFloat($detailHeader.style.left), //selector.offset($detailHeader).left, 
                 width = window.innerWidth - detailOffsetLeft;
             let scrollWidth = helper.getScrollWidth();
-            let $sup = table.$follower;
+            let $sup = table.$follower, oMiddleWidth = 0;
             
             if (adjustMiddle === true && $middleHeader) {
                 let $leftHorzSumHeader = $container.querySelector(`.${HEADER_PRF + LEFT_HORZ_SUM}`);
@@ -5656,6 +5656,7 @@ module nts.uk.ui.exTable {
                 let leftHorzSumWidth, horzSumLeft, middleWidth = parseFloat($middleHeader.style.width); //$middleHeader.clientWidth;
                 if ($middleHeader.style.display !== "none") {
                     width -= middleWidth;
+                    oMiddleWidth = middleWidth;
                     let newDetailLeft = detailOffsetLeft + middleWidth;
                     $detailHeader.style.left = `${newDetailLeft}px`;
                     $detailBody.style.left = `${newDetailLeft}px`;
@@ -5689,8 +5690,12 @@ module nts.uk.ui.exTable {
                     width = parseFloat($detailHeader.style.maxWidth);
                 }
                 
+                width = Math.max(width, 160);
                 if (adjustMiddle instanceof Event) {
                     $container.style.width = (parseFloat($container.style.width) + (width - parseFloat($detailBody.style.width))) + "px";
+                } else if (adjustMiddle && helper.hasScrollBar($detailBody, true)) {
+                    let $leftmostHeader = $container.querySelector(`.${HEADER_PRF + LEFTMOST}`);
+                    $container.style.width = parseFloat($leftmostHeader.style.width) + oMiddleWidth + width + parseFloat($vertSumContent.style.width) + 15 + "px";
                 }
                 
                 $detailHeader.style.width = width + "px";
@@ -5727,10 +5732,14 @@ module nts.uk.ui.exTable {
                 width = parseFloat($detailHeader.style.maxWidth) + scrollWidth;
             }
             
+            width = Math.max(width, 160 + scrollWidth);
             $detailHeader.style.width = (width - scrollWidth) + "px";
             if (adjustMiddle instanceof Event) {
                 $container.style.width = (parseFloat($container.style.width) 
                         + (width - parseFloat($detailBody.style.width))) + "px";
+            } else if (adjustMiddle && helper.hasScrollBar($detailBody, true)) {
+                let $leftmostHeader = $container.querySelector(`.${HEADER_PRF + LEFTMOST}`);
+                $container.style.width = parseFloat($leftmostHeader.style.width) + oMiddleWidth + width + 15 + "px";
             }
             
             $detailBody.style.width = width + "px";
@@ -7065,6 +7074,12 @@ module nts.uk.ui.exTable {
                 case "copyRedo":
                     redoCopy(self);
                     break;
+                case "editUndo":
+                    undoEdit(self);
+                    break;
+                case "editRedo":
+                    redoEdit(self);
+                    break;
                 case "pasteValidate":
                     setPasteValidate(self, params[0]);
                     break;
@@ -7817,6 +7832,46 @@ module nts.uk.ui.exTable {
         }
         
         /**
+         * Undo edit.
+         */
+        function undoEdit($container: JQuery) {
+            let exTable = $container.data(NAMESPACE);
+            if (!exTable || exTable.updateMode !== EDIT) return;
+            let $grid = $container.find(`.${BODY_PRF + DETAIL}`);
+            let histories = $grid.data(internal.EDIT_HISTORY);
+            if (!histories || histories.length === 0) return;
+            let item = histories.pop();
+            if (_.has(item.value, "value")) item.value = item.value.value;
+            let ds = internal.getDataSource($grid[0]);
+            let currentItem = _.cloneDeep(item);
+            currentItem.value = ((ds || {})[currentItem.rowIndex] || {})[currentItem.columnKey];
+            update.gridCell($grid[0], item.rowIndex, item.columnKey, item.innerIdx, item.value, true);
+            internal.removeChange($grid[0], item);
+            let redoStack = $grid.data(internal.EDIT_REDO_STACK);
+            if (!redoStack) {
+                $grid.data(internal.EDIT_REDO_STACK, [ currentItem ]);
+            } else {
+                redoStack.push(currentItem);
+            }
+        }
+        
+        /**
+         * Redo edit.
+         */
+        function redoEdit($container: JQuery) {
+            let exTable = $container.data(NAMESPACE);
+            if (!exTable || exTable.updateMode !== EDIT) return;
+            let $grid = $container.find(`.${BODY_PRF + DETAIL}`);
+            let redoStack = $grid.data(internal.EDIT_REDO_STACK);
+            if (!redoStack || redoStack.length === 0) return;
+            let item = redoStack.pop();
+            let ds = internal.getDataSource($grid[0]),
+                value = ((ds || {})[item.rowIndex] || {})[item.columnKey];
+            update.gridCell($grid[0], item.rowIndex, item.columnKey, item.innerIdx, item.value);
+            update.pushEditHistory($grid[0], new selection.Cell(item.rowIndex, item.columnKey, value, item.innerIdx), item.updateTarget); 
+        }
+        
+        /**
          * Paste validate.
          */
         function setPasteValidate($container: JQuery, validate: any) {
@@ -8206,6 +8261,7 @@ module nts.uk.ui.exTable {
         export let COPY_HISTORY: string = "copy-history";
         export let REDO_STACK: string = "redo-stack";
         export let EDIT_HISTORY: string = "edit-history";
+        export let EDIT_REDO_STACK: string = "edit-redo-stack";
         export let TARGET_EDIT_HISTORY: string = "target-edit-history";
         export let OTHER_EDIT_HISTORY: string = "other-edit-history";
         export let STICK_HISTORY: string = "stick-history";
