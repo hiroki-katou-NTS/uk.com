@@ -1529,7 +1529,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		// 申告エラーチェック
 		if (declareSet.checkError(declareCalcRange.isHolidayWork(), declareCalcRange.getAttdLeave())) return result;
 		// 残業休出枠設定を調整する
-		declareCalcRange.adjustOvertimeHolidayWorkFrameSet(itgOfWorkTimeForDeclare, workType);
+		declareSet.adjustOvertimeHolidayWorkFrameSet(itgOfWorkTimeForDeclare, declareCalcRange, workType);
 		// 出退勤時刻を申告処理用に調整する
 		if (itgOfDailyForDeclare.getAttendanceLeave().isPresent()){
 			declareCalcRange.adjustAttdLeaveClock(

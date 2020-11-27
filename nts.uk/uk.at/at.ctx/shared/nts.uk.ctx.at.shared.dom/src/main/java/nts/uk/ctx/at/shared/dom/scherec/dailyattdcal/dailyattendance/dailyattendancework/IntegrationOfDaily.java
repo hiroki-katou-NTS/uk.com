@@ -273,12 +273,12 @@ public class IntegrationOfDaily {
 		DeclareCalcRange calcRange = this.declareCalcRange.get();
 		DeclareSet declareSet = calcRange.getDeclareSet();
 		// 申告設定残業枠エラーチェック
-		if (declareSet.checkErrorOvertimeFrame()){
+		if (declareSet.getOvertimeFrame().checkErrorOvertimeFrame()){
 			// システムエラーとする
 			throw new BusinessException("Msg_2053");
 		}
 		// 申告設定休出枠エラーチェック
-		if (declareSet.checkErrorHolidayWorkFrame()){
+		if (declareSet.getHolidayWorkFrame().checkErrorHolidayWorkFrame()){
 			// システムエラーとする
 			throw new BusinessException("Msg_2054");
 		}

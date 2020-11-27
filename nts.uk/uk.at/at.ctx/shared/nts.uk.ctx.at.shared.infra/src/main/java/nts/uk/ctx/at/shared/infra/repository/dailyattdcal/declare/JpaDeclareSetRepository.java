@@ -50,8 +50,6 @@ public class JpaDeclareSetRepository extends JpaRepository implements DeclareSet
 		entity.overtimeMnFrame = (overtimeFrame.getOvertimeMn().isPresent() ?
 				overtimeFrame.getOvertimeMn().get().v() : null);
 		DeclareHolidayWorkFrame holidayWorkFrame = declareSet.getHolidayWorkFrame();
-		entity.hdwkUsage = holidayWorkFrame.getHolidayWorkUsage().value;
-		entity.hdwkMnUsage = holidayWorkFrame.getHolidayWorkMnUsage().value;
 		Optional<HdwkFrameEachHdAtr> hdwkFrameOpt = holidayWorkFrame.getHolidayWork();
 		if (hdwkFrameOpt.isPresent()){
 			entity.hdwkStatFrame = hdwkFrameOpt.get().getStatutory().v();
@@ -101,8 +99,6 @@ public class JpaDeclareSetRepository extends JpaRepository implements DeclareSet
 						entity.overtimeFrame,
 						entity.overtimeMnFrame),
 				DeclareHolidayWorkFrame.createFromJavaType(
-						entity.hdwkUsage,
-						entity.hdwkMnUsage,
 						HdwkFrameEachHdAtr.createFromJavaType(
 								entity.hdwkStatFrame,
 								entity.hdwkNotStatFrame,

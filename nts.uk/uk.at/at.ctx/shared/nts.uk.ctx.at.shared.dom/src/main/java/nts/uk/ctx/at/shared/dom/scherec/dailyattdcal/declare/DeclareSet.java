@@ -7,6 +7,9 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareAttdLeave;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareCalcRange;
+import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -113,6 +116,35 @@ public class DeclareSet extends AggregateRoot {
 	}
 	
 	/**
+	 * 残業休出枠設定を調整する
+	 * @param itgOfWorkTime 統合就業時間帯(ref)
+	 * @param calcRange 申告計算範囲
+	 * @param workType 勤務種類
+	 */
+	public void adjustOvertimeHolidayWorkFrameSet(
+			IntegrationOfWorkTime itgOfWorkTime,
+			DeclareCalcRange calcRange,
+			WorkType workType){
+		
+		// 「枠設定」を確認する
+		if (calcRange.getDeclareSet().getFrameSet() == DeclareFrameSet.WORKTIME_SET) return;
+		// 申告残業枠の設定
+		{
+			// 固定勤務の申告残業枠の設定
+			this.overtimeFrame.setDeclareOvertimeFrameOfFixed(itgOfWorkTime, calcRange, workType);
+			// 流動勤務の申告残業枠の設定
+			this.overtimeFrame.setDeclareOvertimeFrameOfFlow(itgOfWorkTime, calcRange);
+		}
+		// 申告休出枠の設定
+		{
+			// 固定勤務の申告休出枠の設定
+			this.holidayWorkFrame.setDeclareHolidayWorkFrameOfFixed(itgOfWorkTime, calcRange);
+			// 流動勤務の申告休出枠の設定
+			this.holidayWorkFrame.setDeclareHolidayWorkFrameOfFlow(itgOfWorkTime, calcRange);
+		}
+	}
+	
+	/**
 	 * 申告エラーチェック
 	 * @param isHolidayWork 休出かどうか
 	 * @param attdLeave 申告出退勤
@@ -121,83 +153,15 @@ public class DeclareSet extends AggregateRoot {
 	public boolean checkError(boolean isHolidayWork, DeclareAttdLeave attdLeave){
 	
 		// 申告設定残業枠エラーチェック
-		if (this.checkErrorOvertimeFrame()) return true;
+		if (this.overtimeFrame.checkErrorOvertimeFrame()) return true;
 		// 申告設定休出枠エラーチェック
-		if (this.checkErrorHolidayWorkFrame()) return true;
+		if (this.holidayWorkFrame.checkErrorHolidayWorkFrame()) return true;
 		// 申告設定深夜エラーチェック
 		if (this.checkErrorMidnightFrame()) return true;
 		// 申告時間枠エラーチェック
 		List<DeclareTimeFrameError> errors = this.checkErrorFrame(isHolidayWork, attdLeave);
 		if (errors.size() > 0) return true;
 		
-		return false;
-	}
-	
-	/**
-	 * 申告設定残業枠エラーチェック
-	 * @return true=エラーあり,false=エラーなし
-	 */
-	public boolean checkErrorOvertimeFrame(){
-		
-		// 枠設定を確認する
-		if (this.frameSet == DeclareFrameSet.OT_HDWK_SET){
-			// 残業枠を確認する
-			if (this.overtimeFrame.getEarlyOvertime().isPresent()){		// 早出残業
-				if (this.overtimeFrame.getEarlyOvertimeMn().isPresent()){	// 早出残業深夜
-				}
-				else{
-					return true;
-				}
-			}
-			else{
-				if (this.overtimeFrame.getEarlyOvertimeMn().isPresent()){	// 早出残業深夜
-					return true;
-				}
-				else{
-				}
-			}
-			if (this.overtimeFrame.getOvertime().isPresent()){			// 普通残業
-				if (this.overtimeFrame.getOvertimeMn().isPresent()){		// 普通残業深夜
-				}
-				else{
-					return true;
-				}
-			}
-			else{
-				if (this.overtimeFrame.getOvertimeMn().isPresent()){		// 普通残業深夜
-					return true;
-				}
-				else{
-				}
-			}
-		}
-		return false;
-	}
-	
-	/**
-	 * 申告設定休出枠エラーチェック
-	 * @return true=エラーあり,false=エラーなし
-	 */
-	public boolean checkErrorHolidayWorkFrame(){
-		
-		// 枠設定を確認する
-		if (this.frameSet == DeclareFrameSet.OT_HDWK_SET){
-			// 休出枠を確認する
-			if (this.holidayWorkFrame.getHolidayWork().isPresent()){	// 休出 
-				if (this.holidayWorkFrame.getHolidayWorkMn().isPresent()){	// 休出深夜
-				}
-				else{
-					return true;
-				}
-			}
-			else{
-				if (this.holidayWorkFrame.getHolidayWorkMn().isPresent()){	// 休出深夜
-					return true;
-				}
-				else{
-				}
-			}
-		}
 		return false;
 	}
 	

@@ -56,14 +56,6 @@ public class KrcmtDeclareSet extends UkJpaEntity implements Serializable{
 	@Column(name = "OVERTIME_MN_FRAME")
 	public Integer overtimeMnFrame;
 	
-	/** 休出利用区分 */
-	@Column(name = "HDWK_USAGE")
-	public int hdwkUsage;
-	
-	/** 休出深夜利用区分 */
-	@Column(name = "HDWK_MN_USAGE")
-	public int hdwkMnUsage;
-	
 	/** 休出法定内枠 */
 	@Column(name = "HDWK_STAT_FRAME")
 	public Integer hdwkStatFrame;
