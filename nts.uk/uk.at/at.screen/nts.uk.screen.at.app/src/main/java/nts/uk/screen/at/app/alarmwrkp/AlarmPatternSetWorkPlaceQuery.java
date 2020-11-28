@@ -12,4 +12,8 @@ public class AlarmPatternSetWorkPlaceQuery {
     public List<AlarmPatternSetDto> getAll(){
         return alarmPatternSetWorkPlaceRepo.getAll();
     }
+
+    public List<AlarmCheckCategoryList> getAllCtgItem(){
+        return alarmPatternSetWorkPlaceRepo.getAllCtg();
+    };
 }

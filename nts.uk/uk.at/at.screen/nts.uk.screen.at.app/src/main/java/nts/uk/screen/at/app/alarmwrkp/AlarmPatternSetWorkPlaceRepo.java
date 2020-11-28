@@ -4,4 +4,6 @@ import java.util.List;
 
 public interface AlarmPatternSetWorkPlaceRepo {
     List<AlarmPatternSetDto> getAll();
+    List<AlarmCheckCategoryList> getAllCtg();
+
 }

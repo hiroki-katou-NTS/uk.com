@@ -12,12 +12,12 @@ public class RegisterAlarmPatternSettingWorkPlaceCommand {
     /**
      * アラームリストパターンコード
      */
-    private String patternCode;
+    private String alarmPatternCD;
 
     /**
      * 名称
      */
-    private String patternName;
+    private String alarmPatternName;
 
     /**
      * 実行権限
@@ -27,6 +27,6 @@ public class RegisterAlarmPatternSettingWorkPlaceCommand {
     /**
      * カテゴリ別チェック条件
      */
-    private List<CheckConditionCommand> checkConditonList;
+    private List<CheckConditionCommand> checkConList;
 
 }

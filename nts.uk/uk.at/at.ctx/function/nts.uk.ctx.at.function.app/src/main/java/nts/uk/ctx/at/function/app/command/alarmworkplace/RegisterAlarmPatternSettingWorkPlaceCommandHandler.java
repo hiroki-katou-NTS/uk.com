@@ -37,38 +37,38 @@ public class RegisterAlarmPatternSettingWorkPlaceCommandHandler extends CommandH
 
         List<CheckCondition> checkConList = new ArrayList<>();
 
-        command.getCheckConditonList().forEach(x -> {
+        command.getCheckConList().forEach(x -> {
             if (x.getAlarmCategory() == WorkplaceCategory.MONTHLY.value) {
                 checkConList.add(new CheckCondition(
                     EnumAdaptor.valueOf(x.getAlarmCategory(), WorkplaceCategory.class),
                     x.getCheckConditionCodes().stream().map(AlarmCheckConditionCode::new).collect(Collectors.toList()),
-                    SingleMonthCommand.toDomain(x.getSingleMonthCommand())
+                    SingleMonthCommand.toDomain(x.getSingleMonth())
                 ));
             } else if (x.getAlarmCategory() == WorkplaceCategory.MASTER_CHECK_BASIC.value || x.getAlarmCategory() == WorkplaceCategory.MASTER_CHECK_WORKPLACE.value) {
                 checkConList.add(new CheckCondition(
                     EnumAdaptor.valueOf(x.getAlarmCategory(), WorkplaceCategory.class),
                     x.getCheckConditionCodes().stream().map(AlarmCheckConditionCode::new).collect(Collectors.toList()),
-                    ExtractionPeriodMonthlyCommand.toDomain(x.getExtractionMonthly())
+                    ExtractionPeriodMonthlyCommand.toDomain(x.getListExtractionMonthly())
                 ));
             } else if (x.getAlarmCategory() == WorkplaceCategory.MASTER_CHECK_DAILY.value || x.getAlarmCategory() == WorkplaceCategory.SCHEDULE_DAILY.value ||
                 x.getAlarmCategory() == WorkplaceCategory.APPLICATION_APPROVAL.value) {
                 checkConList.add(new CheckCondition(
                     EnumAdaptor.valueOf(x.getAlarmCategory(), WorkplaceCategory.class),
                     x.getCheckConditionCodes().stream().map(AlarmCheckConditionCode::new).collect(Collectors.toList()),
-                    ExtractionPeriodDailyCommand.toDomain(x.getExtractionPeriodDaily())
+                    ExtractionPeriodDailyCommand.toDomain(x.getExtractionDaily())
                 ));
             }
         });
 
         AlarmPatternSettingWorkPlace domain = new AlarmPatternSettingWorkPlace(
             checkConList,
-            command.getPatternCode(),
+            command.getAlarmPatternCD(),
             AppContexts.user().companyId(),
             new AlarmPermissionSetting(command.getAlarmPerSet().isAuthSetting(), command.getAlarmPerSet().getRoleIds()),
-            command.getPatternName()
+            command.getAlarmPatternName()
         );
 
-        Optional<AlarmPatternSettingWorkPlace> settingWorkPlace = repository.getBy(AppContexts.user().companyId(), new AlarmPatternCode(command.getPatternCode()));
+        Optional<AlarmPatternSettingWorkPlace> settingWorkPlace = repository.getBy(AppContexts.user().companyId(), new AlarmPatternCode(command.getAlarmPatternCD()));
 
         if (settingWorkPlace.isPresent()) {
             repository.update(domain);

@@ -3,6 +3,8 @@ package nts.uk.screen.at.infra.alarmwrkp;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.uk.ctx.at.function.infra.entity.alarmworkplace.checkcondition.KfnmtWkpAlstchkConcat;
+import nts.uk.screen.at.app.alarmwrkp.AlarmCheckCategoryList;
 import nts.uk.screen.at.app.alarmwrkp.AlarmPatternSetDto;
 import nts.uk.screen.at.app.alarmwrkp.AlarmPatternSetWorkPlaceRepo;
 import nts.uk.shr.com.context.AppContexts;
@@ -15,6 +17,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
@@ -23,6 +26,8 @@ public class AlarmPatternSetWorkPlaceRepoImpl extends JpaRepository implements A
     private static final String GETALL = "SELECT s.ALARM_PATTERN_CD, s.ALARM_PATTERN_NAME "
                                     + " FROM KFNMT_ALSTWKP_PTN s "
                                     + " WHERE s.CID = ?";
+
+    private static final String GET_BY_CID = "select f from KfnmtWkpAlstchkConcat f where f.pk.companyID = :cid";
 
     @Override
     public List<AlarmPatternSetDto> getAll() {
@@ -40,5 +45,17 @@ public class AlarmPatternSetWorkPlaceRepoImpl extends JpaRepository implements A
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public List<AlarmCheckCategoryList> getAllCtg() {
+        List<KfnmtWkpAlstchkConcat> entity = this.queryProxy().query(GET_BY_CID, KfnmtWkpAlstchkConcat.class)
+                .setParameter("cid", AppContexts.user().companyId())
+                .getList();
+        return entity.stream().map(i-> toDomainObject(i)).collect(Collectors.toList());
+    }
+
+    private  AlarmCheckCategoryList toDomainObject(KfnmtWkpAlstchkConcat entity){
+        return new AlarmCheckCategoryList(entity.pk.category,entity.pk.categoryItemCD,entity.alarmCdtName);
     }
 }

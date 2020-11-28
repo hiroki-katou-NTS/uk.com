@@ -11,10 +11,10 @@ public class CheckConditionCommand {
 
     private List<String> checkConditionCodes;
 
-    private ExtractionPeriodDailyCommand extractionPeriodDaily;
+    private ExtractionPeriodDailyCommand extractionDaily;
 
-    private ExtractionPeriodMonthlyCommand extractionMonthly;
+    private ExtractionPeriodMonthlyCommand listExtractionMonthly;
 
-    private SingleMonthCommand singleMonthCommand;
+    private SingleMonthCommand singleMonth;
 
 }

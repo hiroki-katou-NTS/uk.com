@@ -28,7 +28,7 @@
                     data-bind="click:clickRegister, enable: $root.errors.isEmpty">#{i18n.getText('KAL014_10')}</button>
             <!--A1_4-->
             <button id="A1_4" tabindex="4" class="danger"
-                    data-bind="click:clickDeleteButton, enable :isNewMode()?false:true">#{i18n.getText('KAL014_10')}</button>
+                    data-bind="click:clickDeleteButton, enable :!isNewMode()">#{i18n.getText('KAL014_10')}</button>
         </div>
         <div id="contents-area">
             <div class="table" style="margin-top: 8px;max-width: 100%;">
@@ -59,12 +59,12 @@
                         <div class="cell valign-center">
                             <!-- A3_2 -->
                             <input tabindex="6" id="A3_2"
-                                   data-bind="ntsTextEditor: {constraint: 'AlarmPatternCode', value: alarmPatternCD,enable: true,required: true, name: '#[KAL014_15]'}, style: { width: '27px', marginRight: '5px'}"/>
+                                   data-bind="ntsTextEditor: {constraint: 'AlarmPatternCode', value: alarmPatternCD,enable: true,required: true, name: $i18n('KAL014_15')}, style: { width: '27px', marginRight: '5px'}"/>
                         </div>
                         <div class="cell valign-center">
                             <!-- A3_3 -->
                             <input tabindex="7" id="A3_3"
-                                   data-bind="ntsTextEditor: {constraint: 'AlarmPatternName', value: alarmPatternName, required: true, name: '#[KAL014_16]'}"/>
+                                   data-bind="ntsTextEditor: {constraint: 'AlarmPatternName', value: alarmPatternName, required: true, name: $i18n('KAL014_16')}"/>
                         </div>
                     </div>
                     <!-- A4_1 -->
@@ -77,7 +77,7 @@
                                 <div class="cell valign-center item-A513-custom-style">
                                     <div class="label">#{i18n.getText('KAL014_20')}</div>
                                 </div>
-                                <div class="cell valign-center" style="width: 74px"></div>
+                                <div class="cell valign-center" style="width: 306px"></div>
                                 <!-- A5_3 A5_4-->
                                 <div class="cell valign-center item-A513-custom-style">
                                     <div class="label">#{i18n.getText('KAL014_21')}</div>
@@ -89,7 +89,7 @@
                                     showSearchBox: { showLeft : true, showRight: true},
                                     height: 300,
                                     dataSource: $vm.itemsSwap,
-                                    primaryKey: 'code',
+                                    primaryKey: 'key',
                                     columns: $vm.columns,
                                     value: allCtgCdSelected
                                 }"></div>
@@ -113,12 +113,12 @@
                                         <th class="ui-widget-header"></th>
                                     </tr>
                                     </thead>
-                                    <tbody data-bind="foreach: $vm.tableItems">
+                                    <tbody data-bind="foreach: checkConList">
                                     <tr>
                                         <!-- A6_4 -->
-                                        <td><span class="label" data-bind="text:categoryName"></span></td>
+                                                        <td><span class="label" data-bind="text:alarmCtgName"></span></td>
                                         <!-- A6_5 -->
-                                        <td><span class="label" data-bind="text:extractionPeriod"></span></td>
+                                        <td><span class="label" data-bind="text:displayText"></span></td>
                                         <!-- A6_6 -->
                                         <td>
                                             <button tabindex="11"

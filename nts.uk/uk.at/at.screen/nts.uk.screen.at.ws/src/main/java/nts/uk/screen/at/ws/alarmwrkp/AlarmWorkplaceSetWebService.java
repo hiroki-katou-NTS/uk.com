@@ -1,5 +1,6 @@
 package nts.uk.screen.at.ws.alarmwrkp;
 
+import nts.uk.screen.at.app.alarmwrkp.AlarmCheckCategoryList;
 import nts.uk.screen.at.app.alarmwrkp.AlarmPatternSetDto;
 import nts.uk.screen.at.app.alarmwrkp.AlarmPatternSetWorkPlaceQuery;
 
@@ -18,8 +19,14 @@ public class AlarmWorkplaceSetWebService {
 	
 	@POST
 	@Path("getAll")
-	public List<AlarmPatternSetDto> getAppNameInAppList() {
+	public List<AlarmPatternSetDto> getAllAlarmSet() {
 		return alarmPatternSetWorkPlaceQuery.getAll();
+	}
+
+	@POST
+	@Path("getAllCtg")
+	public List<AlarmCheckCategoryList> getAllCtgItem() {
+		return alarmPatternSetWorkPlaceQuery.getAllCtgItem();
 	}
 	
 }

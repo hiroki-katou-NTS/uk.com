@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.app.find.alarmworkplace;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.app.find.alarmworkplace.extractionrange.WkpExtractionPeriodDailyDto;
 import nts.uk.ctx.at.function.app.find.alarmworkplace.extractionrange.WkpExtractionPeriodMonthlyDto;
 import nts.uk.ctx.at.function.app.find.alarmworkplace.extractionrange.WkpSingleMonthDto;
@@ -17,6 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 public class WkpCheckConditionDto {
     private int alarmCategory;
+    private String alarmCtgName;
     private List<String> checkConditionCodes;
     private WkpExtractionPeriodDailyDto extractionDaily;
     private WkpExtractionPeriodMonthlyDto listExtractionMonthly;
@@ -24,24 +26,28 @@ public class WkpCheckConditionDto {
 
     public WkpCheckConditionDto(int alarmCategory, List<String> checkConditionCodes, WkpExtractionPeriodDailyDto extractionDaily) {
         this.alarmCategory = alarmCategory;
+        this.alarmCtgName = EnumAdaptor.valueOf(alarmCategory,WorkplaceCategory.class).name();
         this.checkConditionCodes = checkConditionCodes;
         this.extractionDaily = extractionDaily;
     }
 
     public WkpCheckConditionDto(int alarmCategory, List<String> checkConditionCodes, WkpExtractionPeriodMonthlyDto listExtractionMonthly) {
         this.alarmCategory = alarmCategory;
+        this.alarmCtgName = EnumAdaptor.valueOf(alarmCategory,WorkplaceCategory.class).name();
         this.checkConditionCodes = checkConditionCodes;
         this.listExtractionMonthly = listExtractionMonthly;
     }
 
     public WkpCheckConditionDto(int alarmCategory, List<String> checkConditionCodes, WkpSingleMonthDto singleMonth) {
         this.alarmCategory = alarmCategory;
+        this.alarmCtgName = EnumAdaptor.valueOf(alarmCategory,WorkplaceCategory.class).name();
         this.checkConditionCodes = checkConditionCodes;
         this.singleMonth = singleMonth;
     }
 
     public WkpCheckConditionDto(int alarmCategory, List<String> checkConditionCodes) {
         this.alarmCategory = alarmCategory;
+        this.alarmCtgName = EnumAdaptor.valueOf(alarmCategory,WorkplaceCategory.class).name();
         this.checkConditionCodes = checkConditionCodes;
     }
 

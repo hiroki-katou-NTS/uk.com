@@ -8,11 +8,11 @@ import java.util.Optional;
 
 public interface AlarmPatternSettingWorkPlaceRepository {
 
-    public void create(AlarmPatternSettingWorkPlace domain);
+    void create(AlarmPatternSettingWorkPlace domain);
 
-    public void update(AlarmPatternSettingWorkPlace domain);
+    void update(AlarmPatternSettingWorkPlace domain);
 
-    public void delete(String companyId, String alarmPatternCode);
+    void delete(String companyId, String alarmPatternCode);
 
 
     List<AlarmPatternSettingWorkPlace> findByCompanyId(String cid);
