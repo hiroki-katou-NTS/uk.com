@@ -258,6 +258,7 @@ module nts.uk.ui.viewmodel {
 	const $date = {
 		diff: 0,
 		tick: -1,
+		clock: -1,
 		now() {
 			return Date.now()
 		},
@@ -275,7 +276,16 @@ module nts.uk.ui.viewmodel {
 	};
 
 	// get date time now
-	getTime();
+	setInterval(() => {
+		const now = Date.now();
+		const diff = now - $date.clock;
+
+		$date.clock = now;
+
+		if (Math.abs(diff) > 5000) {
+			getTime();
+		}
+	}, 500);
 
 	BaseViewModel.prototype.$date = Object.defineProperties($date, {
 		now: {
