@@ -232,9 +232,7 @@ module nts.uk.ui.calendar {
                 background-color: #ffff00;
 			}
             .calendar .calendar-container .month:not(.title) .week .day.holiday .status,
-            .calendar .calendar-container .month:not(.title) .week .day.current .status,
-            .calendar .calendar-container .month:not(.title) .week .day.holiday .status span,
-            .calendar .calendar-container .month:not(.title) .week .day.current .status span {
+            .calendar .calendar-container .month:not(.title) .week .day.holiday .status span {
                 color: #f00;
 			}
             .calendar .calendar-container .month .week .day .data-info {
