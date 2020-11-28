@@ -17,6 +17,9 @@ module nts.uk.at.view.kwr004.b {
     createSetting: 'at/function/kwr004/create'
   };
 
+  const maxDailyRows = 2;
+  const maxMonthlyRows = 8;
+
   @bean()
   class ViewModel extends ko.ViewModel {
 
@@ -170,7 +173,7 @@ module nts.uk.at.view.kwr004.b {
 
       //order before save to database
       vm.orderSettingListItemsDetails();
-      
+
       let params = {
         id: vm.isNewMode() ? null : vm.settingId(),
         code: vm.attendanceCode(),
@@ -245,7 +248,7 @@ module nts.uk.at.view.kwr004.b {
 
       //get daily
       let twoItemList = _.dropRight(vm.settingListItemsDetails(), vm.settingListItemsDetails().length - 2);
-      console.log(twoItemList);
+
       _.forEach(twoItemList, (x, index) => {
         let dailyItem = {
           rank: index + 1, // 1 -> 2
@@ -267,7 +270,7 @@ module nts.uk.at.view.kwr004.b {
         dailyItem.selectedAttendanceItemList = outputItemDetails;
         dailyOutputItems.push(dailyItem);
       });
-      console.log(dailyOutputItems);
+
       return dailyOutputItems;
     }
 
@@ -277,7 +280,7 @@ module nts.uk.at.view.kwr004.b {
 
       //get monthly
       let eightItemList = _.drop(vm.settingListItemsDetails(), 2);
-      console.log(eightItemList);
+
       _.forEach(eightItemList, (x, index) => {
         let monthlyItem = {
           rank: index + 3,  // 3 -> 10
@@ -300,7 +303,7 @@ module nts.uk.at.view.kwr004.b {
 
         monthlyOutputItems.push(monthlyItem);
       });
-      console.log(monthlyOutputItems);
+
       return monthlyOutputItems;
     }
 
@@ -358,7 +361,7 @@ module nts.uk.at.view.kwr004.b {
           if (!_.isNil(result.monthlyOutputItems)) {
             vm.makeSettingDetailsFromData(result.monthlyOutputItems, 10);
           }
-          //vm.orderSettingListItemsDetails();
+
         })
         .fail()
         .always(() => vm.$blockui('hide'))
@@ -366,12 +369,32 @@ module nts.uk.at.view.kwr004.b {
 
     makeSettingDetailsFromData(outputItems: Array<any>, maxItems: number) {
       const vm = this;
-      let step = maxItems === 2 ? 1 : 3;
+
+      let dailyAttributes: any = [],
+        independentCalc: number = 0,
+        newItem: SettingForPrint = null;
+
+      let step = maxItems === maxDailyRows ? 1 : 3; // 2 = d
+      let selectionItem = null,
+        selectedListItems = [];
+      const dailyOrMonthly = maxItems < maxMonthlyRows;  //true: daily else monthly
 
       _.forEach(outputItems, (x, index: number) => {
-        let dailyAttributes = vm.dailyOrMonthlyAttributes(x.independentCalcClassic);
-        //maxItems < 8 -> true: daily else monthly
-        let selectionItem = vm.getAttendanceAttributes(maxItems < 8, x.independentCalcClassic, x.selectedListItems);        
+        independentCalc = (!_.isNil(x.independentCalcClassic)) ? x.independentCalcClassic : 2;
+        dailyAttributes = vm.dailyOrMonthlyAttributes(independentCalc);
+
+        selectedListItems = []; //clear
+        _.forEach(x.selectedListItems, (o) => {
+          selectedListItems.push({
+            ...o, itemId: o.attendanceItemId,
+            operator: o.operator == 2 ? '-' : '+'
+          });
+        });
+
+        //create label to display
+        selectionItem = vm.getAttendanceAttributes(dailyOrMonthly, independentCalc, selectedListItems);
+
+        //create new row
         let newItem = new SettingForPrint(
           index + step, //rank
           x.name, //b4_3_2 見出し名称
@@ -379,19 +402,20 @@ module nts.uk.at.view.kwr004.b {
           vm.createDataSelection(selectionItem), //b4_3_4 - display 選択項目
           x.printTargetFlag, //b4_3_1
           x.attribute, //b4_3_3_2 - selected code
-          x.selectedListItems, //B4_3_3_2 属性選択
+          selectedListItems, //B4_3_3_2 属性選択
           dailyAttributes, //b4_3_3_2
-          maxItems < 8 //daily or monthly
+          dailyOrMonthly //daily or monthly
         );
-        
+
         vm.addRowItem(newItem);
       });
 
       let from = vm.settingListItemsDetails().length;
       if (from < maxItems) {
         for (let i = from; i < maxItems; i++) {
-          let dailyAttributes = vm.dailyOrMonthlyAttributes(i < 2 ? 1 : 2);
-          let newItem = new SettingForPrint(i + step, null, i < 2 ? 1 : 2, null, false, 0, [], dailyAttributes, i < 2);
+          dailyAttributes = vm.dailyOrMonthlyAttributes(i < maxDailyRows ? 1 : 2);
+          newItem = new SettingForPrint(i + step, null, i < maxDailyRows ? 1 : 2, null,
+            false, 0, [], dailyAttributes, i < maxDailyRows);
           vm.addRowItem(newItem);
         }
       }
@@ -487,7 +511,7 @@ module nts.uk.at.view.kwr004.b {
         selectionItem: Array<string> = [];
 
       _.forEach(selectedTimeList, (item, index: number) => {
-        if (index === 0 && item.operator.substring(0, 1) === '+') {
+        if (index === 0 && item.operator === '+') {
           selectionItem.push(item.name);
         } else {
           selectionItem.push(item.operator + ' ' + item.name);
@@ -519,6 +543,7 @@ module nts.uk.at.view.kwr004.b {
 
       vm.$ajax(PATH.getSetting, { settingClassification: vm.itemSelection() })
         .done((result) => {
+
           if (_.isNil(result) || result.length == 0) {
             vm.addNewRow();
           } else {
@@ -536,7 +561,6 @@ module nts.uk.at.view.kwr004.b {
             let firstItem: any = _.head(vm.settingListItems());
             if (_.isNil(currentCode)) currentCode = firstItem.code;
             vm.currentCodeList(currentCode);
-
           }
         }).fail(() => { });
     }
@@ -567,7 +591,7 @@ module nts.uk.at.view.kwr004.b {
       nts.uk.ui.windows.setShared('attendanceItem', vm.shareParam, true);
       nts.uk.ui.windows.sub.modal('/view/kdl/047/a/index.xhtml').onClosed(() => {
         const attendanceItem = nts.uk.ui.windows.getShared('attendanceRecordExport');
-        //console.log(attendanceItem);
+
         if (_.isNil(attendanceItem)) return;
         if (nts.uk.ui.errors.hasError()) nts.uk.ui.errors.clearAll();
         let index = _.findIndex(vm.settingListItemsDetails(), (o: any) => { return o.id === row.id; });
@@ -629,7 +653,7 @@ module nts.uk.at.view.kwr004.b {
       nts.uk.ui.windows.setShared('attendanceItem', vm.shareParam, true);
       nts.uk.ui.windows.sub.modal('/view/kdl/048/index.xhtml').onClosed(() => {
         const attendanceItem = nts.uk.ui.windows.getShared('attendanceRecordExport');
-        console.log(attendanceItem);
+
         if (!attendanceItem) return;
         let index = _.findIndex(vm.settingListItemsDetails(), (o: any) => { return o.id === row.id; });
         if (attendanceItem.selectedTimeList.length > 0) {
@@ -752,11 +776,9 @@ module nts.uk.at.view.kwr004.b {
 
       _.forEach(selectedListItems, (x) => {
         let findAttend = _.find(attributesItems, (e) => x.attendanceItemId === e.attendanceItemId);
-        if (!_.isNil(findAttend))
-          temp.push({
-            operator: x.operator === 1 ? '+' : '-',
-            name: findAttend.attendanceItemName
-          });
+        if (!_.isNil(findAttend)) {
+          temp.push({ operator: x.operator, name: findAttend.attendanceItemName });         
+        }
       })
 
       return temp;
