@@ -49716,7 +49716,7 @@ var nts;
                         }
                     }
                 });
-                BaseViewModel.prototype.$dialog = Object.defineProperties({}, {
+                var $dialog = Object.defineProperties({}, {
                     info: {
                         value: function $info() {
                             var dfd = $.Deferred();
@@ -49752,6 +49752,33 @@ var nts;
                             $cf.ifNo(function () {
                                 dfd.resolve('no');
                             });
+                            return dfd.promise();
+                        }
+                    }
+                });
+                Object.defineProperties($dialog.confirm, {
+                    yesNo: {
+                        value: function () {
+                            var dfd = $.Deferred();
+                            var args = Array.prototype.slice.apply(arguments);
+                            var $cf = dialog.confirm.apply(null, args);
+                            $cf.ifYes(function () {
+                                dfd.resolve('yes');
+                            });
+                            $cf.ifNo(function () {
+                                dfd.resolve('no');
+                            });
+                            return dfd.promise();
+                        }
+                    },
+                    yesCancel: {
+                        value: function () {
+                            var dfd = $.Deferred();
+                            var args = Array.prototype.slice.apply(arguments);
+                            var $cf = dialog.confirm.apply(null, args);
+                            $cf.ifYes(function () {
+                                dfd.resolve('yes');
+                            });
                             $cf.ifCancel(function () {
                                 dfd.resolve('cancel');
                             });
@@ -49759,6 +49786,7 @@ var nts;
                         }
                     }
                 });
+                BaseViewModel.prototype.$dialog = $dialog;
                 BaseViewModel.prototype.$jump = $jump;
                 Object.defineProperties($jump, {
                     self: {
