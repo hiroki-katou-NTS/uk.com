@@ -281,7 +281,7 @@ module nts.uk.ui.viewmodel {
 		}
 	});
 
-	BaseViewModel.prototype.$dialog = Object.defineProperties({}, {
+	const $dialog = Object.defineProperties({}, {
 		info: {
 			value: function $info() {
 				const dfd = $.Deferred<void>();
@@ -314,7 +314,7 @@ module nts.uk.ui.viewmodel {
 		},
 		confirm: {
 			value: function $confirm() {
-				const dfd = $.Deferred<'no' | 'yes' | 'cancel'>();
+				const dfd = $.Deferred<'no' | 'yes'>();
 				const args: any[] = Array.prototype.slice.apply(arguments);
 
 				const $cf = dialog.confirm.apply(null, args);
@@ -327,6 +327,41 @@ module nts.uk.ui.viewmodel {
 					dfd.resolve('no');
 				});
 
+				return dfd.promise();
+			}
+		}
+	});
+
+	Object.defineProperties($dialog.confirm, {
+		yesNo: {
+			value: function () {
+				const dfd = $.Deferred<'no' | 'yes'>();
+				const args: any[] = Array.prototype.slice.apply(arguments);
+
+				const $cf = dialog.confirm.apply(null, args);
+
+				$cf.ifYes(() => {
+					dfd.resolve('yes');
+				});
+
+				$cf.ifNo(() => {
+					dfd.resolve('no');
+				});
+
+				return dfd.promise();
+			}
+		},
+		yesCancel: {
+			value: function () {
+				const dfd = $.Deferred<'yes' | 'cancel'>();
+				const args: any[] = Array.prototype.slice.apply(arguments);
+
+				const $cf = dialog.confirm.apply(null, args);
+
+				$cf.ifYes(() => {
+					dfd.resolve('yes');
+				});
+
 				$cf.ifCancel(() => {
 					dfd.resolve('cancel');
 				});
@@ -335,6 +370,8 @@ module nts.uk.ui.viewmodel {
 			}
 		}
 	});
+
+	BaseViewModel.prototype.$dialog = $dialog;
 
 	BaseViewModel.prototype.$jump = $jump;
 
