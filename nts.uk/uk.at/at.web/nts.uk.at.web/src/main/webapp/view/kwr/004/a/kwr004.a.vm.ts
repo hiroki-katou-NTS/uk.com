@@ -78,7 +78,6 @@ module nts.uk.at.view.kwr004.a {
       vm.CCG001_load();
       vm.KCP005_load();
       vm.initialWorkStatusInformation();
-
     }
 
     created(params: any) {
@@ -283,7 +282,9 @@ module nts.uk.at.view.kwr004.a {
         startDate: startDate,
         endDate: endDate
       });
-
+      
+      let currentYear = moment().format('YYYY');
+     
       vm.itemListSetting.push({ id: vm.enum[0].value, name: vm.$i18n('KWR004_14') });
 
       vm.$ajax(PATH.getPermission51)
@@ -295,10 +296,10 @@ module nts.uk.at.view.kwr004.a {
             }
             //システム日付の月　＜　期首月　
             if (_.toInteger(result.startMonth) > _.toInteger(moment().format('MM'))) {
-              endDate = moment(moment().format('YYYY') + '/' + result.startMonth).toDate();
+              endDate = moment(currentYear + '/' + result.startMonth + '/01' ).toDate();
               startDate = moment(endDate).subtract(1, 'year').add(1, 'month').toDate();
             } else { //システム日付の月　＞=　期首月　
-              startDate = moment(moment().format('YYYY') + '/' + result.startMonth).toDate();
+              startDate = moment(currentYear + '/' + result.startMonth + '/01').toDate();
               endDate = moment(startDate).add(1, 'year').subtract(1, 'month').toDate();
             }
 
@@ -375,8 +376,8 @@ module nts.uk.at.view.kwr004.a {
         let params = {
           mode: 2, // ExcelPdf区分: 1 - PDF, 2 - EXCEL
           lstEmpIds: lstEmployeeIds, //社員リスト
-          startMonth: vm.periodDate().startDate, //期間入力 - 開始月   
-          endMonth: vm.periodDate().endDate,//期間入力 - 終了月
+          startMonth: moment(vm.periodDate().startDate).format('YYYYMM'), //期間入力 - 開始月   
+          endMonth: moment(vm.periodDate().endDate).format('YYYYMM'),//期間入力 - 終了月
           isZeroDisplay: vm.zeroDisplayClassification(),//ゼロ表示区分選択肢
           settingId: settingId, //ゼロ表示区分選択肢
           settingClassification: vm.rdgSelectedId(), //自由設定: A5_4_2   || 定型選択 : A5_3_2

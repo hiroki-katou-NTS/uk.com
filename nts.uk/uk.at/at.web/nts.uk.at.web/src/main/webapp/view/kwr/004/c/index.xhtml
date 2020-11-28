@@ -72,7 +72,7 @@
             tabindex="3"
             data-bind="click: proceed, enable: $root.errors.isEmpty, text: $i18n('KWR004_104')"
             class="proceed large"/>
-          <button tabindex="4" data-bind="click: cancel, text: $i18n('KWR004_104')"/>
+          <button id="btnClose" tabindex="4" data-bind="click: cancel, text: $i18n('KWR004_104')"/>
         </div>
       </ui:define>
     </ui:composition>
