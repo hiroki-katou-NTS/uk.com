@@ -151,48 +151,21 @@ declare module nts {
 }
 
 module nts.uk.ui.viewmodel {
-	const prefix = 'nts.uk.storage'
-		, OPENWD = 'OPEN_WINDOWS_DATA'
+	const OPENWD = 'OPEN_WINDOWS_DATA'
 		, { ui, request, resource } = nts.uk
 		, { windows, block, dialog } = ui
 		, $storeSession = function (name: string, params?: any): JQueryPromise<any> {
 			if (arguments.length === 2) {
-				// setter method
-				if (params === undefined) {
-					return $.Deferred()
-						.resolve(true)
-						.then(() => {
-							nts.uk.localStorage.removeItem(`${prefix}.${name}`);
-						})
-						.then(() => $storeSession(name));
-				}
-
-				const $value = JSON.stringify({ $value: params })
-					, $saveValue = btoa(_.map($value, (s: string) => s.charCodeAt(0)).join('-'));
-
-				return $.Deferred()
-					.resolve(true)
-					.then(() => {
-						nts.uk.localStorage.setItem(`${prefix}.${name}`, $saveValue);
-					})
+				return nts.uk.characteristics
+					.save(name, params)
 					.then(() => $storeSession(name));
 			} else if (arguments.length === 1) {
 				// getter method
-				return $.Deferred()
-					.resolve(true)
-					.then(() => {
-						const $result = nts.uk.localStorage.getItem(`${prefix}.${name}`);
-
-						if ($result.isPresent()) {
-							const $string = atob($result.value)
-								.split('-').map((s: string) => String.fromCharCode(Number(s)))
-								.join('');
-
-							const shared = JSON.parse($string).$value;
-
-							if (shared !== undefined) {
-								return shared;
-							}
+				return nts.uk.characteristics
+					.restore(name)
+					.then((data) => {
+						if (data !== undefined) {
+							return data;
 						}
 
 						return windows.getShared(name);
@@ -204,13 +177,12 @@ module nts.uk.ui.viewmodel {
 		if (arguments.length === 1) {
 			return $storeSession(OPENWD, $data);
 		} else if (arguments.length === 0) {
-			return $.Deferred()
-				.resolve(true)
-				.then(() => $storeSession(OPENWD))
+			return $storeSession(OPENWD)
 				.then((value: any) => {
-					nts.uk.localStorage.removeItem(`${prefix}.${OPENWD}`);
-
-					return value;
+					// return value;
+					return nts.uk.characteristics
+						.remove(OPENWD)
+						.then(() => value);
 				});
 		}
 	};
@@ -258,6 +230,7 @@ module nts.uk.ui.viewmodel {
 	const $date = {
 		diff: 0,
 		tick: -1,
+		clock: -1,
 		now() {
 			return Date.now()
 		},
@@ -275,7 +248,16 @@ module nts.uk.ui.viewmodel {
 	};
 
 	// get date time now
-	getTime();
+	setInterval(() => {
+		const now = Date.now();
+		const diff = now - $date.clock;
+
+		$date.clock = now;
+
+		if (Math.abs(diff) > 5000) {
+			getTime();
+		}
+	}, 500);
 
 	BaseViewModel.prototype.$date = Object.defineProperties($date, {
 		now: {

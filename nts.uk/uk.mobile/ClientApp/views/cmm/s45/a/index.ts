@@ -169,7 +169,6 @@ export class CmmS45AComponent extends Vue {
             self.convertAppInfo(self.data.appListInfoDto);
 
 
-
         } else if (getCache && storage.local.hasItem('CMMS45_DataStorage')) {
             // 申請を絞り込む
             // self.prFilter = storage.local.getItem('CMMS45_AppListExtractCondition') as AppListExtractConditionDto;
@@ -210,7 +209,7 @@ export class CmmS45AComponent extends Vue {
                     self.dateRange = { start: self.$dt.fromUTCString(self.appListExtractCondition.periodStartDate, 'YYYY/MM/DD'), end: self.$dt.fromUTCString(self.appListExtractCondition.periodEndDate, 'YYYY/MM/DD') };
 
                     self.convertAppInfo(self.data.appListInfoDto);
-                    // self.createLstAppType(self.data.appListExtractConditionDto.opListOfAppTypes);
+                    self.createLstAppType(self.data.appListExtractConditionDto.opListOfAppTypes);
                     self.$mask('hide');
 
                 }).catch(() => {
