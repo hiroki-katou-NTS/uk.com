@@ -4,7 +4,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 
 import java.util.List;
 
-public interface AffJobTitleAdapter {
+public interface SharedAffJobTitleAdapter {
     List<JobTitleInfoImport> findByDatePeriod(String companyId, DatePeriod datePeriod);
     JobTitleHistoryImport getJobTitleHist(List<String> employeeIds, DatePeriod period);
 }

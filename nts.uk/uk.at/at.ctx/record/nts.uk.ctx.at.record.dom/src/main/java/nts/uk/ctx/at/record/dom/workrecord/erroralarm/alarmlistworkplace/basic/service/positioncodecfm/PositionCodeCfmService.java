@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.
 
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.workplace.EmployeeInfoImported;
-import nts.uk.ctx.at.shared.dom.adapter.jobtitle.affiliate.AffJobTitleAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.jobtitle.affiliate.SharedAffJobTitleAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.jobtitle.affiliate.AffJobTitleHistoryItemImport;
 import nts.uk.ctx.at.shared.dom.adapter.jobtitle.affiliate.JobTitleHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.jobtitle.affiliate.JobTitleInfoImport;
@@ -12,7 +12,6 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMess
 import nts.uk.ctx.at.shared.dom.scherec.alarm.alarmlistactractionresult.AlarmValueDate;
 import nts.uk.ctx.at.shared.dom.scherec.alarm.alarmlistactractionresult.AlarmValueMessage;
 import nts.uk.ctx.at.shared.dom.scherec.alarm.alarmlistactractionresult.MessageDisplay;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
 import javax.ejb.Stateless;
@@ -32,7 +31,7 @@ import java.util.stream.Collectors;
 public class PositionCodeCfmService {
 
     @Inject
-    private AffJobTitleAdapter affJobTitleAdapter;
+    private SharedAffJobTitleAdapter sharedAffJobTitleAdapter;
 
     /**
      * 職位コード確認
@@ -50,13 +49,13 @@ public class PositionCodeCfmService {
         List<ExtractResultDto> results = new ArrayList<>();
 
         // 期間から職位情報を取得
-        List<JobTitleInfoImport> jobTitleInfos = affJobTitleAdapter.findByDatePeriod(cid, period);
+        List<JobTitleInfoImport> jobTitleInfos = sharedAffJobTitleAdapter.findByDatePeriod(cid, period);
 
         for (Map.Entry<String, List<EmployeeInfoImported>> empInfosByWp: empInfosByWpMap.entrySet()){
 
             List<String> sids = empInfosByWp.getValue().stream().map(EmployeeInfoImported::getSid).collect(Collectors.toList());
             // 期間とList<社員ID＞から職位を取得する。
-            JobTitleHistoryImport jobTitleHistory = affJobTitleAdapter.getJobTitleHist(sids, period);
+            JobTitleHistoryImport jobTitleHistory = sharedAffJobTitleAdapter.getJobTitleHist(sids, period);
             List<AffJobTitleHistoryItemImport> historyItems = jobTitleHistory.getHistoryItems();
 
             // 取得したList＜所属職位履歴項目＞をループする。

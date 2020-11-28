@@ -8,7 +8,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
-//import nts.uk.ctx.at.record.dom.jobtitle.affiliate.AffJobTitleAdapter;
+//import nts.uk.ctx.at.record.dom.jobtitle.affiliate.SharedAffJobTitleAdapter;
 //import nts.uk.ctx.at.record.dom.jobtitle.affiliate.AffJobTitleSidImport;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -20,7 +20,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class CheckEmployeeUseApprovalMonth {
 
 //	@Inject
-//	private AffJobTitleAdapter affJobTitleAdapter;
+//	private SharedAffJobTitleAdapter affJobTitleAdapter;
 
 	@Inject
 	private ApprovalProcessingUseSettingRepository approvalProcessingUseSettingRepository;

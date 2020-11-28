@@ -2,6 +2,8 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.
 
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.stamp.StampRepository;
+import nts.uk.ctx.at.shared.dom.adapter.workplace.affiliate.AffWorkplaceHistoryItemImport;
+import nts.uk.ctx.at.shared.dom.adapter.workplace.affiliate.SharedAffWorkplaceHistoryItemAdapter;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -20,6 +22,8 @@ public class UnregistedStampCardService {
 
     @Inject
     private StampRepository stampRepository;
+    @Inject
+    private SharedAffWorkplaceHistoryItemAdapter sharedAffWorkplaceHistoryItemAdapter;
 
     /**
      * 職場IDから未登録打刻カードを取得
@@ -30,8 +34,8 @@ public class UnregistedStampCardService {
      */
     public Map<String, List<Object>> getUnregistedStampCard(List<String> workplaceIds, DatePeriod period) {
         // 期間と職場一覧から所属職場履歴項目を取得する
-        // TODO Q&A 36532
-        List<Object> affWpHistItems = new ArrayList<>();
+        List<AffWorkplaceHistoryItemImport> affWpHistItems = sharedAffWorkplaceHistoryItemAdapter
+                .getListAffWkpHistItem(period, workplaceIds);
 
         // ドメインモデル「打刻」を取得
         // TODO Q&A 36536

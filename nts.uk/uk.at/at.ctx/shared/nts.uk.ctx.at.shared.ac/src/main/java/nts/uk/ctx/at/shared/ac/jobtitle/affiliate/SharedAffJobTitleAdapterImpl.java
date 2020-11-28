@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.shared.ac.jobtitle.affiliate;
 
-import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.adapter.jobtitle.affiliate.*;
 import nts.uk.ctx.bs.employee.pub.jobtitle.SyJobTitlePub;
@@ -12,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Stateless
-public class AffJobTitleAdapterImpl implements AffJobTitleAdapter {
+public class SharedAffJobTitleAdapterImpl implements SharedAffJobTitleAdapter {
 
     @Inject
     private SyJobTitlePub syJobTitlePub;

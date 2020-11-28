@@ -19,8 +19,8 @@ public class AffWorkplaceHistoryItemPubImpl implements AffWorkplaceHistoryItemPu
     private AffWorkplaceHistoryItemRepository repo;
 
     @Override
-    public List<AffWorkplaceHistoryItemExport> getListAffWkpHistItem(DatePeriod basedate, List<String> workplaceId) {
-        List<AffWorkplaceHistoryItem> historyItems = repo.getAffWkpHistItemByListWkpIdAndDatePeriod(basedate, workplaceId);
+    public List<AffWorkplaceHistoryItemExport> getListAffWkpHistItem(DatePeriod period, List<String> workplaceId) {
+        List<AffWorkplaceHistoryItem> historyItems = repo.getAffWkpHistItemByListWkpIdAndDatePeriod(period, workplaceId);
         return historyItems.stream().map(x -> {
             return new AffWorkplaceHistoryItemExport(
                 x.getHistoryId(),
