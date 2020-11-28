@@ -49604,39 +49604,19 @@ var nts;
         (function (ui_35) {
             var viewmodel;
             (function (viewmodel) {
-                var prefix = 'nts.uk.storage', OPENWD = 'OPEN_WINDOWS_DATA', _a = nts.uk, ui = _a.ui, request = _a.request, resource = _a.resource, windows = ui.windows, block = ui.block, dialog = ui.dialog, $storeSession = function (name, params) {
+                var OPENWD = 'OPEN_WINDOWS_DATA', _a = nts.uk, ui = _a.ui, request = _a.request, resource = _a.resource, windows = ui.windows, block = ui.block, dialog = ui.dialog, $storeSession = function (name, params) {
                     if (arguments.length === 2) {
-                        // setter method
-                        if (params === undefined) {
-                            return $.Deferred()
-                                .resolve(true)
-                                .then(function () {
-                                nts.uk.localStorage.removeItem(prefix + "." + name);
-                            })
-                                .then(function () { return $storeSession(name); });
-                        }
-                        var $value = JSON.stringify({ $value: params }), $saveValue_1 = btoa(_.map($value, function (s) { return s.charCodeAt(0); }).join('-'));
-                        return $.Deferred()
-                            .resolve(true)
-                            .then(function () {
-                            nts.uk.localStorage.setItem(prefix + "." + name, $saveValue_1);
-                        })
+                        return nts.uk.characteristics
+                            .save(name, params)
                             .then(function () { return $storeSession(name); });
                     }
                     else if (arguments.length === 1) {
                         // getter method
-                        return $.Deferred()
-                            .resolve(true)
-                            .then(function () {
-                            var $result = nts.uk.localStorage.getItem(prefix + "." + name);
-                            if ($result.isPresent()) {
-                                var $string = atob($result.value)
-                                    .split('-').map(function (s) { return String.fromCharCode(Number(s)); })
-                                    .join('');
-                                var shared = JSON.parse($string).$value;
-                                if (shared !== undefined) {
-                                    return shared;
-                                }
+                        return nts.uk.characteristics
+                            .restore(name)
+                            .then(function (data) {
+                            if (data !== undefined) {
+                                return data;
                             }
                             return windows.getShared(name);
                         });
@@ -49647,12 +49627,12 @@ var nts;
                         return $storeSession(OPENWD, $data);
                     }
                     else if (arguments.length === 0) {
-                        return $.Deferred()
-                            .resolve(true)
-                            .then(function () { return $storeSession(OPENWD); })
+                        return $storeSession(OPENWD)
                             .then(function (value) {
-                            nts.uk.localStorage.removeItem(prefix + "." + OPENWD);
-                            return value;
+                            // return value;
+                            return nts.uk.characteristics
+                                .remove(OPENWD)
+                                .then(function () { return value; });
                         });
                     }
                 };
