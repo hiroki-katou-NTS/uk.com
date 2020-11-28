@@ -244,7 +244,7 @@ module nts.uk.ui.calendar {
                 background-color: #ffffff;
 			}
 			.calendar .calendar-container .month .week .day.diff-month .data-info {
-				background-color: #d9d9d9;
+				background-color: #ddddd2;
 			}
 			.calendar .event-popper {
 				top: 0px;
