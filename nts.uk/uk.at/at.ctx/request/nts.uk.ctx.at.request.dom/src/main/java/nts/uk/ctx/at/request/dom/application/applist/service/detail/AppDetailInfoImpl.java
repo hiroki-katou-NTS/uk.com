@@ -339,7 +339,8 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository {
 		// get 特別休暇申請
 		Optional<AppForSpecLeave_Old> appSpec = repoAppLeaveSpec.getAppForSpecLeaveById(companyId, appId);
 		if (appSpec.isPresent()) {
-			appAbsence.setAppForSpecLeave(appSpec.get());
+			// -PhuongDV domain fix pending-
+			//appAbsence.setAppForSpecLeave(appSpec.get());
 		}
 		String workTimeName = "";
 		if (appAbsence.getWorkTimeCode() != null) {
@@ -358,7 +359,10 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository {
 		String endTime2 = appAbsence.getEndTime2() == null ? ""
 				: appAbsence.getEndTime2().getDayDivision().description
 						+ appAbsence.getEndTime2().getInDayTimeWithFormat();
-		AppForSpecLeave_Old appForSpec = appAbsence.getAppForSpecLeave();
+		// KAF006: -PhuongDV domain fix pending-
+		//AppForSpecLeave_Old appForSpec = appAbsence.getAppForSpecLeave();
+		AppForSpecLeave_Old appForSpec = null;
+		// -PhuongDV-
 		String relaCode = appForSpec == null ? ""
 				: appForSpec.getRelationshipCD() == null ? "" : appForSpec.getRelationshipCD().v();
 		String relaName = "";

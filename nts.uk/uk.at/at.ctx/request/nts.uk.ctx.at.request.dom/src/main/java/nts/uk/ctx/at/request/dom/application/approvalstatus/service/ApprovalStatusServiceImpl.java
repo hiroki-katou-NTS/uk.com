@@ -1205,7 +1205,10 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		Optional<AppAbsence> absence = repoAbsence.getAbsenceById(app.getCompanyID(), app.getAppID());
 		if (!absence.isPresent())
 			return "";
-		AppForSpecLeave_Old appForSpec = absence.get().getAppForSpecLeave();
+		// KAF006: -PhuongDV domain fix pending-
+		//AppForSpecLeave_Old appForSpec = absence.get().getAppForSpecLeave();
+		AppForSpecLeave_Old appForSpec = null;
+		// -PhuongDV-
 		String relaCode = appForSpec == null ? ""
 				: appForSpec.getRelationshipCD() == null ? "" : appForSpec.getRelationshipCD().v();
 		// 休暇申請以外の場合
