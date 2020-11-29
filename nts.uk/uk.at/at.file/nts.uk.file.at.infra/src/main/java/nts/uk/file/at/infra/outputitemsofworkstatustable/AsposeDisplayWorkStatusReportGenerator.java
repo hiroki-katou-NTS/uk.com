@@ -29,8 +29,8 @@ import java.util.stream.Collectors;
 @Stateless
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGenerator implements DisplayWorkStatusReportGenerator {
-    private static final String TEMPLATE_FILE_ADD = "report/KWR003_12.xlsx";
-    private static final String REPORT_FILE_NAME = "帳票設計書-KWR003_勤務状況表";
+    private static final String TEMPLATE_FILE_ADD = "report/KWR003.xlsx";
+    private static final String REPORT_FILE_NAME = "勤務状況表";
     private static final String DATE_FORMAT = "yyyy/MM/dd";
     private static final String DAY_OF_WEEK_FORMAT_JP = "E";
     private static final String PDF_EXT = ".pdf";
@@ -95,7 +95,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
         int maxColumnData = getDateRange(startDate, endDate) + 4;
         int maxColumn = cells.getMaxColumn();
         int maxRow = cells.getMaxRow();
-        SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM");
+        SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM");
         String date = DATE_FORMAT.format(endDate.date());
         cells.clearContents(0, 0, maxRow, maxColumn);
         cells.merge(0, 0, 1, maxColumnData);
