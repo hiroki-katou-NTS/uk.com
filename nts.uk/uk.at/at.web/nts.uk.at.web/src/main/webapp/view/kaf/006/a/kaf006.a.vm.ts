@@ -114,7 +114,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 
 			vm.data = data;
 			vm.selectedWorkTypeCD(data.selectedWorkTypeCD);
-			vm.workTypeLst(data.workTypeLst);
+			vm.workTypeLst(_.forEach(data.workTypeLst, item => item.name = item.workTypeCode + ' ' + item.name));
 		}
 
         register() {
