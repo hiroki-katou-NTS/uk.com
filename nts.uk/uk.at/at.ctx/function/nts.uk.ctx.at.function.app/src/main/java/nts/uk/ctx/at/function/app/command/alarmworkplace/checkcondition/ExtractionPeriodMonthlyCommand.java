@@ -23,6 +23,8 @@ public class ExtractionPeriodMonthlyCommand {
 
     private Integer strPreviousAtr;
 
+    private Boolean strCurrentMonth;
+
     //End Month
 
     private int endSpecify;
@@ -30,14 +32,14 @@ public class ExtractionPeriodMonthlyCommand {
     private Integer endMonth;
 
     private Integer endPreviousAtr;
+    private Boolean endCurrentMonth;
 
     public static ExtractionPeriodMonthly toDomain(ExtractionPeriodMonthlyCommand command) {
+        StartMonth startMonth = new StartMonth(command.strSpecify, command.strPreviousAtr == null ? Optional.empty() :
+            Optional.of(new MonthNo(EnumAdaptor.valueOf(command.strPreviousAtr, PreviousClassification.class), command.strMonth, command.strCurrentMonth)));
 
-        StartMonth startMonth = new StartMonth(command.strSpecify, command.strMonth == null ? Optional.empty() :
-            Optional.of(new MonthNo(EnumAdaptor.valueOf(command.strPreviousAtr, PreviousClassification.class), command.strMonth, command.strMonth == 0)));
-
-        EndMonth endMonth = new EndMonth(command.endSpecify, command.endMonth == null ? Optional.empty() :
-            Optional.of(new MonthNo(EnumAdaptor.valueOf(command.endPreviousAtr, PreviousClassification.class), command.endMonth, command.endMonth == 0)));
+        EndMonth endMonth = new EndMonth(command.endSpecify, command.endPreviousAtr == null ? Optional.empty() :
+            Optional.of(new MonthNo(EnumAdaptor.valueOf(command.endPreviousAtr, PreviousClassification.class), command.endMonth, command.endCurrentMonth)));
 
         return new ExtractionPeriodMonthly(startMonth, endMonth);
     }

@@ -25,9 +25,9 @@ public class AlarmPatternSetWorkPlaceRepoImpl extends JpaRepository implements A
 
     private static final String GETALL = "SELECT s.ALARM_PATTERN_CD, s.ALARM_PATTERN_NAME "
                                     + " FROM KFNMT_ALSTWKP_PTN s "
-                                    + " WHERE s.CID = ?";
+                                    + " WHERE s.CID = ? ORDER BY  s.ALARM_PATTERN_CD";
 
-    private static final String GET_BY_CID = "select f from KfnmtWkpAlstchkConcat f where f.pk.companyID = :cid";
+    private static final String GET_BY_CID = "select f from KfnmtWkpAlstchkConcat f where f.pk.companyID = :cid  ORDER BY f.pk.categoryItemCD ";
 
     @Override
     public List<AlarmPatternSetDto> getAll() {

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.app.command.alarmworkplace;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.function.app.command.alarmworkplace.checkcondition.ExtractionPeriodDailyCommand;
@@ -23,10 +24,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * パターン設定を登録する
+ * パターン設定を新規する。
  */
 @Stateless
-public class RegisterAlarmPatternSettingWorkPlaceCommandHandler extends CommandHandler<RegisterAlarmPatternSettingWorkPlaceCommand> {
+public class AddAlarmPatternSettingWorkPlaceCommandHandler extends CommandHandler<RegisterAlarmPatternSettingWorkPlaceCommand> {
 
     @Inject
     private AlarmPatternSettingWorkPlaceRepository repository;
@@ -34,6 +35,12 @@ public class RegisterAlarmPatternSettingWorkPlaceCommandHandler extends CommandH
     @Override
     protected void handle(CommandHandlerContext<RegisterAlarmPatternSettingWorkPlaceCommand> context) {
         RegisterAlarmPatternSettingWorkPlaceCommand command = context.getCommand();
+
+        Optional<AlarmPatternSettingWorkPlace> settingWorkPlace = repository.getBy(AppContexts.user().companyId(), new AlarmPatternCode(command.getAlarmPatternCD()));
+
+        if (settingWorkPlace.isPresent()){
+            throw new BusinessException("Msg_3");
+        }
 
         List<CheckCondition> checkConList = command.toDomain();
 
@@ -45,6 +52,6 @@ public class RegisterAlarmPatternSettingWorkPlaceCommandHandler extends CommandH
             command.getAlarmPatternName()
         );
 
-        repository.update(domain);
+        repository.create(domain);
     }
 }

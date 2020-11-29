@@ -59,7 +59,7 @@
                         <div class="cell valign-center">
                             <!-- A3_2 -->
                             <input tabindex="6" id="A3_2"
-                                   data-bind="ntsTextEditor: {constraint: 'AlarmPatternCode', value: alarmPatternCD,enable: true,required: true, name: $i18n('KAL014_15')}, style: { width: '27px', marginRight: '5px'}"/>
+                                   data-bind="ntsTextEditor: {constraint: 'AlarmPatternCode', value: alarmPatternCD,enable: $vm.isNewMode(),required: true, name: $i18n('KAL014_15')}, style: { width: '27px', marginRight: '5px'}"/>
                         </div>
                         <div class="cell valign-center">
                             <!-- A3_3 -->
@@ -76,11 +76,13 @@
                                 <!-- A5_1 A5_2-->
                                 <div class="cell valign-center item-A513-custom-style">
                                     <div class="label">#{i18n.getText('KAL014_20')}</div>
+                                    <hr></hr>
                                 </div>
-                                <div class="cell valign-center" style="width: 306px"></div>
+                                <div class="cell valign-center" style="width: 99px"></div>
                                 <!-- A5_3 A5_4-->
                                 <div class="cell valign-center item-A513-custom-style">
                                     <div class="label">#{i18n.getText('KAL014_21')}</div>
+                                    <hr></hr>
                                 </div>
                             </div>
                             <!-- A5_6-->
@@ -116,7 +118,7 @@
                                     <tbody data-bind="foreach: checkConList">
                                     <tr>
                                         <!-- A6_4 -->
-                                                        <td><span class="label" data-bind="text:alarmCtgName"></span></td>
+                                        <td><span class="label" data-bind="text:alarmCtgName"></span></td>
                                         <!-- A6_5 -->
                                         <td><span class="label" data-bind="text:displayText"></span></td>
                                         <!-- A6_6 -->
@@ -157,12 +159,14 @@
                                 <div class="cell valign-center">
                                     <!-- A8_2 -->
                                     <input tabindex="-1" id="A8_2" style="margin-left: 40px;"
-                                           data-bind="ntsTextEditor: {value: alarmPerSet().roleIdDis}"/>
+                                           data-bind="ntsTextEditor: {value: alarmPerSet().roleIdDis, readonly : true}"/>
                                 </div>
                                 <div class="cell valign-center">
                                     <!-- A8_3 -->
                                     <button tabindex="13" style="margin-left: 15px;"
-                                            data-bind="click:$vm.clickConfiguration">#{i18n.getText('KAL014_33')}</button>
+                                            data-bind="click:$vm.clickConfiguration,
+                                            enable: alarmPerSet().authSetting()== 1">
+                                        #{i18n.getText('KAL014_33')}</button>
                                 </div>
                             </div>
                         </div>

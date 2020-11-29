@@ -1,13 +1,14 @@
 module nts.uk.at.kal014.a {
 
     import common=nts.uk.at.kal014.common;
-    import container = nts.uk.ui.windows.container;
     const PATH_API = {
         GET_ALL_SETTING: 'at/record/alarmwrkp/screen/getAll',
         GET_ALL_CTG: 'at/record/alarmwrkp/screen/getAllCtg',
         GET_SETTING_BYCODE: 'alarmworkplace/patternsetting/getPatternSetting',
         REGISTER: 'alarmworkplace/patternsetting/register',
+        ADD: 'alarmworkplace/patternsetting/add',
         DELETE: 'alarmworkplace/patternsetting/delete',
+        GET_ROLENAME: "ctx/sys/auth/role/get/rolename/by/roleids"
 
     }
 
@@ -19,7 +20,7 @@ module nts.uk.at.kal014.a {
     @bean()
     export class Kal014AViewModel extends ko.ViewModel {
 
-        backButon: string = "/view/kal/013/a/index.xhtml";
+        backButon: string = "/view/kal/012/a/index.xhtml";
         gridItems: KnockoutObservableArray<GridItem> = ko.observableArray([]);
         currentCode: KnockoutObservable<string> = ko.observable(null);
         alarmPattern: AlarmPattern = new AlarmPattern('', '');
@@ -29,15 +30,15 @@ module nts.uk.at.kal014.a {
         isNewMode: KnockoutObservable<boolean>;
         itemsSwap: KnockoutObservableArray<AlarmCheckCategoryList>;
         listAllCtgCode: Array<AlarmCheckCategoryList> = [];
-        tableItems: KnockoutObservableArray<TableItem>;
         columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
         currentCodeListSwap: KnockoutObservableArray<any>;
-        test: KnockoutObservableArray<any>;
         roundingRules: KnockoutObservableArray<any>;
         selectedRuleCode: any;
         workPalceCategory: any;
         alarmPatterSet : KnockoutObservable<AlarmPatternObject>
-            = ko.observable(new AlarmPatternObject(null,null,new WkpAlarmPermissionSettingDto(null),null,[]));
+            = ko.observable(new AlarmPatternObject(null,null,
+            new WkpAlarmPermissionSettingDto(null),null,[]));
+        listRoleID: KnockoutObservableArray<string> = ko.observableArray([]);
 
         constructor(props: any) {
             super();
@@ -68,14 +69,7 @@ module nts.uk.at.kal014.a {
             ]);
             vm.selectedTab = ko.observable('tab-1');
             vm.itemsSwap = ko.observableArray([]);
-            vm.tableItems = ko.observableArray([]);
-            var array = [];
-            //TODO change mock data with master data
-            for (var i = 0; i < 6; i++) {
-                array.push(new TableItem(i, "マスタチェック" + i, i, i, "締め開始日", i, i, i, i + 1, vm.workPalceCategory));
-            }
-            this.tableItems(array);
-
+=
             vm.columns = ko.observableArray([
                 {headerText: vm.$i18n('KAL014_22'), key: 'key', hidden: true},
                 {headerText: vm.$i18n('KAL014_22'), key: 'categoryName', width: 70},
@@ -83,7 +77,6 @@ module nts.uk.at.kal014.a {
                 {headerText: vm.$i18n('KAL014_24'), key: 'name', width: 180}
             ]);
             vm.currentCodeListSwap = ko.observableArray([]);
-            vm.test = ko.observableArray([]);
             vm.roundingRules = ko.observableArray([
                 {code: '1', name: vm.$i18n('KAL014_30')},
                 {code: '0', name: vm.$i18n('KAL014_31')}
@@ -113,18 +106,40 @@ module nts.uk.at.kal014.a {
             });
 
             vm.alarmPatterSet().allCtgCdSelected.subscribe(()=>{
-                let listCtg: Array<ItemModel> =_.uniq( _.map(vm.alarmPatterSet().allCtgCdSelected(),i=> new ItemModel(i.category,i.categoryName))),
-                    listCtgOld: Array<number> =_.uniq( _.map(vm.alarmPatterSet().checkConList(),i=>i.alarmCategory())),
+                vm.$errors("clear","#swap-list-grid2_container");
+                let listCtgdu = _.map(vm.alarmPatterSet().allCtgCdSelected(),
+                        i=> new ItemModel(i.category,i.categoryName)),
+                    listCtg: Array<ItemModel> =_.uniqWith(listCtgdu,_.isEqual ),
+                    listCtgOld: Array<number> = _.map(vm.alarmPatterSet().checkConList(),i=>i.alarmCategory()),
                     newCtg = _.filter(listCtg, item => listCtgOld.indexOf(item.code) === -1),
+                    removeOld = _.filter(listCtgOld, item => _.map(listCtg,i=>i.code).indexOf(item) === -1),
                     newCtgList: Array<WkpCheckConditionDto> = [];
 
                 newCtg.forEach((ctg: ItemModel)=>{
-                    let listSelectedCode = _.map(_.filter(vm.alarmPatterSet().allCtgCdSelected(), i =>i.category === ctg.code   ),ctgCd => ctgCd.code);
-                    var defautData : IWkpCheckConditionDto = { alarmCategory: ctg.code, alarmCtgName: ctg.name, checkConditionCodes: listSelectedCode, extractionDaily: null,listExtractionMonthly: null,singleMonth: null};
+                    let listSelectedCode = _.map(_.filter(vm.alarmPatterSet().allCtgCdSelected(),
+                            i =>i.category === ctg.code   ),ctgCd => ctgCd.code);
+                    var defautData : IWkpCheckConditionDto = { alarmCategory: ctg.code, alarmCtgName: ctg.name,
+                        checkConditionCodes: listSelectedCode, extractionDaily: null,listExtractionMonthly: null,singleMonth: null};
                     newCtgList.push(vm.createDataforCategory(defautData));
                 });
                 //  add category
-                vm.alarmPatterSet().addConditionCtg(newCtgList);
+                if (newCtgList.length > 0){
+                    vm.alarmPatterSet().addConditionCtg(newCtgList);
+                }
+
+                // Remove category
+                if (removeOld.length >0) {
+                    let newResult = _.filter(vm.alarmPatterSet().checkConList(),
+                            item => removeOld.indexOf(item.alarmCategory()) == -1);
+                    vm.alarmPatterSet().updateConditionCtg(newResult);
+                }
+            });
+
+            vm.alarmPatterSet().alarmPerSet().roleIds.subscribe((value: Array<string>) =>{
+                vm.$ajax("com",PATH_API.GET_ROLENAME,vm.alarmPatterSet().alarmPerSet().roleIds())
+                    .done(function(listRole: Array<RoleDto>) {
+                        vm.alarmPatterSet().alarmPerSet().setRoleName(_.map(listRole,i=>i.name));
+                });
             })
         }
 
@@ -180,25 +195,36 @@ module nts.uk.at.kal014.a {
             vm.$ajax(PATH_API.GET_SETTING_BYCODE,{patternCode: alarmCd})
                 .done((data: IAlarmPatternObject)=>{
                     console.log(data);
-                    let perSet: WkpAlarmPermissionSettingDto ;
-                    perSet = new WkpAlarmPermissionSettingDto(data.alarmPerSet);
-                    let checkCon: Array<WkpCheckConditionDto> = [];
+                    if (!data){
+                        vm.clickNewButton();
+                        dfd.resolve();
+                        return;
+                    }
+                    vm.isNewMode(false);
 
+                    vm.alarmPatterSet().alarmPerSet().update(data.alarmPerSet);
+
+                    let checkCon: Array<WkpCheckConditionDto> = [];
                     _.forEach(data.checkConList, (value)=>{
                         checkCon.push(vm.createDataforCategory(value));
                     });
-                    let checkConList: Array<AlarmCheckCategoryList> = _.flatMap(checkCon,(value: any )=>{
-                        let item: AlarmCheckCategoryList  = _.find(vm.itemsSwap(),i=>i.code == value.checkConditionCodes() && i.category == value.alarmCategory());
+
+                    let listSelected: Array<AlarmCheckCategoryList> = _.flatMap(data.checkConList,
+                        (value: any )=>{
+                        let item: Array<AlarmCheckCategoryList>  = _.filter(vm.listAllCtgCode,
+                                i=>value.checkConditionCodes.indexOf(i.code) != -1
+                                    && i.category == value.alarmCategory);
                         return item;
                     });
-                    vm.alarmPatterSet().update(data.alarmPatternCD,data.alarmPatternName,perSet,checkCon,checkConList);
+
+                    vm.alarmPatterSet().update(data.alarmPatternCD,data.alarmPatternName,checkCon,listSelected);
+                    dfd.resolve();
                 })
                 .fail(()=>{
-
+                    dfd.reject();
                 }).always(()=>{
                     vm.$blockui("hide");
             });
-
 
             return dfd.promise();
         }
@@ -410,7 +436,9 @@ module nts.uk.at.kal014.a {
         initScreen():JQueryPromise<any>{
             const vm = this;
             let dfd = $.Deferred();
-            vm.alarmPatterSet().update(null,null,new WkpAlarmPermissionSettingDto(null),[],[]);
+            vm.alarmPatterSet().update(null,null,[],[]);
+            vm.alarmPatterSet().alarmPerSet().update(null);
+            vm.currentCode(null);
             dfd.resolve();
 
             return dfd.promise();
@@ -429,16 +457,28 @@ module nts.uk.at.kal014.a {
          * */
         clickRegister() {
             const vm = this;
-            vm.isNewMode(false);
-            vm.$validate(".nts-input", ".ntsControl").then((valid: boolean) => {
+
+            vm.$validate(".nts-input",".nts-editor", ".ntsControl").then((valid: boolean) => {
+                if (!valid){
+                    return;
+                }
                 vm.$blockui("show")
                 let param = ko.toJS(vm.alarmPatterSet());
-                vm.$ajax(PATH_API.REGISTER,param).done(()=>{
-                    vm.$dialog.info("Msg_15").done(()=>{
-                        $("#A3_3").focus();
+                vm.$ajax(vm.isNewMode() ? PATH_API.ADD : PATH_API.REGISTER,param).done(()=>{
+                    vm.$dialog.info({ messageId: 'Msg_15' }).done(()=>{
+                        vm.isNewMode(false);
+                        vm.getAllSettingData(param.alarmPatternCD).done(()=>{
+                            $("#A3_3").focus();
+                        });
                     })
                 }).fail((res: any) => {
-                    vm.$dialog.error(res);
+                    if (res.messageId == "Msg_3"){
+                        vm.$errors('#A3_2', 'Msg_3');
+                    } else if (res.messageId == "Msg_811"){
+                        vm.$errors('#swap-list-grid2_container', 'Msg_811');
+                    } else {
+                        vm.$dialog.error(res);
+                    }
                 }).always(() => vm.$blockui("hide"));
             });
         }
@@ -471,8 +511,18 @@ module nts.uk.at.kal014.a {
          *
          * */
         clickConfiguration() {
-            alert("Configuration");
-            //TODO server business logic
+            const vm = this;
+            let param = {
+                currentCode: vm.alarmPerSet().roleIds(),
+                roleType: 3,
+                multiple: true
+            };
+            nts.uk.ui.windows.setShared("paramCdl025", param);
+            nts.uk.ui.windows.sub.modal("com", "/view/cdl/025/index.xhtml").onClosed(() => {
+                let data: Array<string> = nts.uk.ui.windows.getShared("dataCdl025");
+                if (!nts.uk.util.isNullOrUndefined(data))
+                    vm.alarmPerSet().updateRoleIds(data);
+            });
         }
     }
 
@@ -486,42 +536,6 @@ module nts.uk.at.kal014.a {
         }
     }
 
-    class TableItem {
-        categoryId: any;
-        categoryName: string;
-        extractionPeriod: string;
-        startMonth: any;
-        endMonth: any;
-        classification: any;
-        numberOfDayFromStart: any;
-        numberOfDayFromEnd: any;
-        beforeAndAfterStart: any;
-        beforeAndAfterEnd: any;
-        workPalceCategory: any;
-
-        constructor(categoryId: any,
-                    categoryName: string,
-                    startMonth: any,
-                    endMonth: any,
-                    classification: any,
-                    numberOfDayFromStart: any,
-                    numberOfDayFromEnd: any,
-                    beforeAndAfterStart: any,
-                    beforeAndAfterEnd: any,
-                    workPalceCategory: any) {
-            this.categoryId = categoryId;
-            this.categoryName = categoryName;
-            this.startMonth = startMonth;
-            this.endMonth = endMonth;
-            this.classification = classification;
-            this.numberOfDayFromStart = numberOfDayFromStart;
-            this.numberOfDayFromEnd = numberOfDayFromEnd;
-            this.beforeAndAfterStart = beforeAndAfterStart;
-            this.beforeAndAfterEnd = beforeAndAfterEnd;
-            this.workPalceCategory = workPalceCategory;
-            //this.extractionPeriod = (this.getExtractionPeriod(this));
-        }
-    }
 
     interface IAlarmPatternSet{
         /**
@@ -577,11 +591,10 @@ module nts.uk.at.kal014.a {
 
         }
 
-        update(alarmPatternCD:string,alarmPatternName: string, alarmPerSet: WkpAlarmPermissionSettingDto, checkConList: Array<WkpCheckConditionDto>,
+        update(alarmPatternCD:string,alarmPatternName: string, checkConList: Array<WkpCheckConditionDto>,
                     allCtgCdSelected: Array<AlarmCheckCategoryList>){
             this.alarmPatternCD(alarmPatternCD);
             this.alarmPatternName(alarmPatternName);
-            this.alarmPerSet(alarmPerSet);
             this.checkConList(checkConList || []);
             this.allCtgCdSelected(allCtgCdSelected || []);
 
@@ -597,16 +610,36 @@ module nts.uk.at.kal014.a {
 
             this.checkConList(fullCtg);
         }
+
+        // Remove condition
+        updateConditionCtg(newCtg: Array<WkpCheckConditionDto>){
+            this.checkConList(newCtg);
+        }
     }
 
     class WkpAlarmPermissionSettingDto {
-        authSetting: KnockoutObservable<boolean>= ko.observable(null);
+        authSetting: KnockoutObservable<number>= ko.observable(0);
         roleIds: KnockoutObservableArray<string>= ko.observableArray(null);
         roleIdDis: KnockoutObservable<string>= ko.observable(null);
         constructor(data: IWkpAlarmPermissionSettingDto){
-            this.authSetting(_.isNil(data) ? false : data.authSetting);
+            this.authSetting(_.isNil(data) ? 0 : data.authSetting);
             this.roleIds(_.isNil(data) ? [] : data.roleIds);
             this.roleIdDis(_.isNil(data) ? "" :_.join(data.roleIds, ','))
+        }
+
+        update(data: IWkpAlarmPermissionSettingDto){
+            this.authSetting(_.isNil(data) ? 0 : data.authSetting);
+            this.roleIds(_.isNil(data) ? [] : data.roleIds);
+            if (_.isNil(data)){
+                this.roleIdDis("");
+            }
+        }
+
+        updateRoleIds(data: Array<string>){
+            this.roleIds(_.isNil(data) ? [] : data);
+        }
+        setRoleName(name: Array<string>){
+            this.roleIdDis(_.isEmpty(name) ? "" :_.join(name, ','))
         }
     }
 
@@ -655,19 +688,20 @@ module nts.uk.at.kal014.a {
 
         constructor(data: IWkpExtractionPeriodDailyDto){
             this.strSpecify(_.isNil(data)? StartSpecify.MONTH :data.strSpecify);
-            this.strMonth(_.isNil(data)? null : data.strMonth);
+            this.strPreviousMonth(_.isNil(data)? PreviousClassification.AHEAD :data.strPreviousMonth);
+            this.strMonth((_.isNil(data) || data.endCurrentMonth )? 0 : data.strMonth);
             this.strCurrentMonth(_.isNil(data)? true :data.strCurrentMonth);
             this.strPreviousDay(_.isNil(data)? null :data.strPreviousDay);
-            this.strMakeToDay(_.isNil(data)? null :data.strMakeToDay);
+            this.strMakeToDay(_.isNil(data)? null: data.strDay == 0);
             this.strDay(_.isNil(data)? null :data.strDay);
 
             this.endSpecify(_.isNil(data)? EndSpecify.MONTH  :data.endSpecify);
             this.endPreviousDay(_.isNil(data)? null :data.endPreviousDay);
-            this.endMonth(_.isNil(data)? null :data.endMonth);
+            this.endMonth((_.isNil(data) || data.endCurrentMonth) ? 0 :data.endMonth);
             this.endCurrentMonth(_.isNil(data)? true :data.endCurrentMonth);
-            this.endPreviousMonth(_.isNil(data)? null :data.endPreviousMonth);
+            this.endPreviousMonth(_.isNil(data)? PreviousClassification.AHEAD :data.endPreviousMonth);
             this.endDay(_.isNil(data)? null :data.endDay);
-            this.endMakeToDay(_.isNil(data)? null :data.endMakeToDay);
+            this.endMakeToDay(_.isNil(data) ? null : data.endDay == 0);
         }
 
     }
@@ -690,28 +724,32 @@ module nts.uk.at.kal014.a {
         endPreviousAtr?: KnockoutObservable<number> = ko.observable(null);
 
         constructor(data: IWkpExtractionPeriodMonthlyDto){
-                this.strSpecify(_.isNil(data)? null : data.strSpecify);
-                this.strMonth(_.isNil(data)? null :data.strMonth);
+                // 「締め開始月を指定する」固定
+                this.strSpecify(_.isNil(data)? SpecifyStartMonth.DESIGNATE_CLOSE_START_MONTH : data.strSpecify);
+                this.strMonth(_.isNil(data)? 0 :data.strMonth);
                 this.strCurrentMonth(_.isNil(data)? true :data.strCurrentMonth);
-                this.strPreviousAtr(_.isNil(data)? null :data.strPreviousAtr);
+                // 「先」固定
+                this.strPreviousAtr(_.isNil(data)? PreviousClassification.AHEAD :data.strPreviousAtr);
                 this.yearType(_.isNil(data)? null :data.yearType);
                 this.designatedMonth(_.isNil(data)? null :data.designatedMonth);
 
-                this.endSpecify(_.isNil(data)? null :data.endSpecify);
+                // 「締め開始月を指定する」固定
+                this.endSpecify(_.isNil(data)? SpecifyEndMonth.DESIGNATE_CLOSE_START_MONTH :data.endSpecify);
                 this.extractFromStartMonth(_.isNil(data)? null :data.extractFromStartMonth);
-                this.endMonth(_.isNil(data)? null :data.endMonth);
+                this.endMonth(_.isNil(data)? 0 :data.endMonth);
                 this.endCurrentMonth(_.isNil(data)? true :data.endCurrentMonth);
-                this.endPreviousAtr(_.isNil(data)? null :data.endPreviousAtr);
+                // 「先」固定
+                this.endPreviousAtr(_.isNil(data)? PreviousClassification.AHEAD :data.endPreviousAtr);
         }
     }
     class WkpSingleMonthDto {
 
         /** 前・先区分  */
-        monthPrevious: KnockoutObservable<number>;
+        monthPrevious: KnockoutObservable<number>= ko.observable(null);
         /** 月数 */
-        monthNo: KnockoutObservable<number>;
+        monthNo: KnockoutObservable<number>= ko.observable(null);
         /** 当月とする */
-        curentMonth: KnockoutObservable<boolean>;
+        curentMonth: KnockoutObservable<boolean>= ko.observable(true);
 
         constructor(data: IWkpSingleMonthDto){
             this.monthPrevious(_.isNil(data) ? null : data.monthPrevious);
@@ -741,7 +779,7 @@ module nts.uk.at.kal014.a {
     }
 
     interface IWkpAlarmPermissionSettingDto {
-        authSetting: boolean;
+        authSetting: number;
         roleIds: Array<string>;
     }
 
@@ -831,6 +869,25 @@ module nts.uk.at.kal014.a {
         }
     }
 
+    interface RoleDto {
+            // Id
+        roleId: string;
+            // コード
+        roleCode: string;
+            // ロール種類
+        roleType: number;
+            // 参照範囲
+        employeeReferenceRange: number;
+            // ロール名称
+        name: string;
+            // 契約コード
+        contractCode: string;
+            // 担当区分
+        assignAtr: number;
+            // 会社ID
+        companyId: string;
+    }
+
     enum StartSpecify{
         // 実行日からの日数を指定する
         DAYS = 0,
@@ -843,5 +900,26 @@ module nts.uk.at.kal014.a {
         DAYS = 0,
         // 締め日を指定する
         MONTH = 1
+    }
+
+    enum SpecifyStartMonth{
+        // 締め開始月を指定する
+        DESIGNATE_CLOSE_START_MONTH = 1,
+        // 固定の月度を指定する
+        SPECIFY_FIXED_MOON_DEGREE = 2
+    }
+
+    enum SpecifyEndMonth{
+        // 締め開始月を指定する
+        DESIGNATE_CLOSE_START_MONTH = 1,
+        // 固定の月度を指定する
+        SPECIFY_FIXED_MOON_DEGREE = 2
+    }
+    enum PreviousClassification {
+
+        /*** 前 */
+        BEFORE = 0,
+        /*** 先*/
+        AHEAD= 1
     }
 }

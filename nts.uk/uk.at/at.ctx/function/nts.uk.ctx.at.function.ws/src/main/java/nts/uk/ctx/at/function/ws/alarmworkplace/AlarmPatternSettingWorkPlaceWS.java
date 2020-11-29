@@ -1,9 +1,6 @@
 package nts.uk.ctx.at.function.ws.alarmworkplace;
 
-import nts.uk.ctx.at.function.app.command.alarmworkplace.DeleteAlarmPatternSettingWorkPlaceCommand;
-import nts.uk.ctx.at.function.app.command.alarmworkplace.DeleteAlarmPatternSettingWorkPlaceCommandHandler;
-import nts.uk.ctx.at.function.app.command.alarmworkplace.RegisterAlarmPatternSettingWorkPlaceCommand;
-import nts.uk.ctx.at.function.app.command.alarmworkplace.RegisterAlarmPatternSettingWorkPlaceCommandHandler;
+import nts.uk.ctx.at.function.app.command.alarmworkplace.*;
 import nts.uk.ctx.at.function.app.find.alarmworkplace.AlarmPatternSettingWorkPlaceFinder;
 import nts.uk.ctx.at.function.app.find.alarmworkplace.RequestParam;
 import nts.uk.ctx.at.function.app.find.alarmworkplace.WkpAlarmPatternSettingDto;
@@ -27,6 +24,9 @@ public class AlarmPatternSettingWorkPlaceWS {
     private RegisterAlarmPatternSettingWorkPlaceCommandHandler register;
 
     @Inject
+    private AddAlarmPatternSettingWorkPlaceCommandHandler add;
+
+    @Inject
     private DeleteAlarmPatternSettingWorkPlaceCommandHandler delete;
 
     @POST
@@ -45,6 +45,12 @@ public class AlarmPatternSettingWorkPlaceWS {
     @Path("register")
     public void registerAlarmPatternSettingWorkPlace(RegisterAlarmPatternSettingWorkPlaceCommand command) {
         register.handle(command);
+    }
+
+    @POST
+    @Path("add")
+    public void addAlarmPatternSettingWorkPlace(RegisterAlarmPatternSettingWorkPlaceCommand command) {
+        add.handle(command);
     }
 
     @POST

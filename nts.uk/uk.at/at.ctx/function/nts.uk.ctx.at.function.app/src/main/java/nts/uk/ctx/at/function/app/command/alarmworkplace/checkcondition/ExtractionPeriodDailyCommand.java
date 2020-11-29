@@ -20,9 +20,13 @@ public class ExtractionPeriodDailyCommand {
 
     private Integer strMonth;
 
+    private Boolean strCurrentMonth;
+
     private Integer strPreviousDay;
 
     private Integer strDay;
+
+    private  Boolean strMakeToDay;
 
     //End date
 
@@ -30,9 +34,13 @@ public class ExtractionPeriodDailyCommand {
 
     private Integer endPreviousDay;
 
+    private Boolean endMakeToDay;
+
     private Integer endDay;
 
     private Integer endPreviousMonth;
+
+    private  Boolean endCurrentMonth;
 
     private Integer endMonth;
 
@@ -41,17 +49,17 @@ public class ExtractionPeriodDailyCommand {
         StartDate startDate = new StartDate(command.strSpecify);
 
         if (command.strSpecify == StartSpecify.DAYS.value) {
-            startDate.setStartDay(EnumAdaptor.valueOf(command.strPreviousDay, PreviousClassification.class), command.strDay, command.strDay == 0);
+            startDate.setStartDay(EnumAdaptor.valueOf(command.strPreviousDay, PreviousClassification.class), command.strDay, command.strMakeToDay);
         } else if (command.strSpecify == StartSpecify.MONTH.value) {
-            startDate.setStartMonth(EnumAdaptor.valueOf(command.strPreviousMonth, PreviousClassification.class), command.strMonth, command.strMonth == SpecifiedMonth.CURRENTMONTH.value);
+            startDate.setStartMonth(EnumAdaptor.valueOf(command.strPreviousMonth, PreviousClassification.class), command.strMonth, command.strCurrentMonth);
         }
 
         EndDate endDate = new EndDate(command.endSpecify);
 
         if (command.endSpecify == EndSpecify.DAYS.value) {
-            endDate.setEndDay(EnumAdaptor.valueOf(command.endPreviousDay, PreviousClassification.class), command.endDay, command.endDay == 0);
+            endDate.setEndDay(EnumAdaptor.valueOf(command.endPreviousDay, PreviousClassification.class), command.endDay, command.endMakeToDay);
         } else if (command.endSpecify == EndSpecify.MONTH.value) {
-            endDate.setEndMonth(EnumAdaptor.valueOf(command.endPreviousMonth, PreviousClassification.class), command.endMonth, command.endMonth == SpecifiedMonth.CURRENTMONTH.value);
+            endDate.setEndMonth(EnumAdaptor.valueOf(command.endPreviousMonth, PreviousClassification.class), command.endMonth, command.endCurrentMonth);
         }
 
         return new ExtractionPeriodDaily(startDate, endDate);

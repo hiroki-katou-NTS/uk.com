@@ -43,6 +43,8 @@ public class AlarmPatternSettingWorkPlace extends AggregateRoot {
 	public AlarmPatternSettingWorkPlace(List<CheckCondition> checkConList, String alarmPatternCD, String companyID,
                                         AlarmPermissionSetting alarmPerSet, String alarmPatternName) {
 		super();
+		if(checkConList.isEmpty())
+			throw new BusinessException("Msg_811");
 		this.checkConList = checkConList;
 		this.alarmPatternCD = new AlarmPatternCode(alarmPatternCD);
 		this.companyID = companyID;

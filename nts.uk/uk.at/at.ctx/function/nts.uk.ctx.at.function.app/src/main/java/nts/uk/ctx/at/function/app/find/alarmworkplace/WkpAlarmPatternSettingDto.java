@@ -39,7 +39,7 @@ public class WkpAlarmPatternSettingDto {
         return new WkpAlarmPatternSettingDto(
             domain.getAlarmPatternCD().v(),
             domain.getAlarmPatternName().v(),
-            new WkpAlarmPermissionSettingDto(domain.getAlarmPerSet().isAuthSetting(),domain.getAlarmPerSet().getRoleIds()),
+            new WkpAlarmPermissionSettingDto(domain.getAlarmPerSet().isAuthSetting() ? 1: 0,domain.getAlarmPerSet().getRoleIds()),
             conditionDtos);
     }
 }

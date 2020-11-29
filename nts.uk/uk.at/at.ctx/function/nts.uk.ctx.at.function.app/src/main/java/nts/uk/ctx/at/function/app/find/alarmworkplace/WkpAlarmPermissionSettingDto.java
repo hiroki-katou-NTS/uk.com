@@ -8,6 +8,6 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class WkpAlarmPermissionSettingDto {
-	private boolean authSetting;
+	private int authSetting;
 	private List<String> roleIds;
 }
