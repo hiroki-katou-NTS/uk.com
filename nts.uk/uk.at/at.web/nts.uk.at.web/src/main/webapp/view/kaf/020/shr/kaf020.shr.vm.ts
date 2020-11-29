@@ -119,23 +119,24 @@ module nts.uk.at.view.kaf020.shr.viewmodel {
     }
 
     export interface Content {
-        optionalItemName: string
-        optionalItemNo: number
-        optionalItemAtr: number
-        unit: string
-        inputUnitOfTimeItem: number
-        timeUpper: number
-        timeLower: number
-        numberUpper: number
-        lowerCheck: boolean
-        upperCheck: boolean
-        numberLower: number
-        amountLower: number
-        amountUpper: number
-        description: string,
-        time: KnockoutObservable<string>,
-        times: KnockoutObservable<number>,
-        amount: KnockoutObservable<number>,
-        detail: string,
+        optionalItemName: string;
+        optionalItemNo: number;
+        optionalItemAtr: number;
+        unit: string;
+        inputUnitOfTimeItem: number;
+        timeUpper: number;
+        timeLower: number;
+        numberUpper: number;
+        lowerCheck: boolean;
+        upperCheck: boolean;
+        numberLower: number;
+        amountLower: number;
+        amountUpper: number;
+        description: string;
+        time: KnockoutObservable<string>;
+        times: KnockoutObservable<number>;
+        amount: KnockoutObservable<number>;
+        detail: string;
+        dispOrder: number;
     }
 }

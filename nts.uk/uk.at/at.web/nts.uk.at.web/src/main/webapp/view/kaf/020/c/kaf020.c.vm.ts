@@ -110,7 +110,7 @@ module nts.uk.at.view.kaf020.c.viewmodel {
                     let code = applicationDto.application.code;
                     let name = applicationDto.application.name;
                     let contents: Array<OptionalItemApplicationContent> = [];
-                    _.sortBy(applicationDto.application.optionalItems, ["dispOrder"]).forEach((item: any) => {
+                    applicationDto.application.optionalItems.forEach((item: any) => {
                         let optionalItem: any = _.find(applicationDto.optionalItems, {optionalItemNo: item.itemNo - 640});
                         let controlOfAttendanceItem: any = _.find(applicationDto.controlOfAttendanceItems, {itemDailyID: item.itemNo});
                         if (optionalItem != null) {
@@ -132,12 +132,13 @@ module nts.uk.at.view.kaf020.c.viewmodel {
                                 time: ko.observable(item.time),
                                 times: ko.observable(item.times),
                                 amount: ko.observable(item.amount),
-                                detail: ''
+                                detail: '',
+                                dispOrder: optionalItem.dispOrder
                             });
                         }
                     });
                     vm.dataFetch({
-                        applicationContents: ko.observableArray(contents),
+                        applicationContents: ko.observableArray(_.sortBy(contents, ["dispOrder"])),
                         code: code,
                         name: name,
                     });
