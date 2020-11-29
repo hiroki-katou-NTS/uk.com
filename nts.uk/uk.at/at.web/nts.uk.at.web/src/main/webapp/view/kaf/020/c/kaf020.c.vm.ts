@@ -110,7 +110,7 @@ module nts.uk.at.view.kaf020.c.viewmodel {
                     let code = applicationDto.application.code;
                     let name = applicationDto.application.name;
                     let contents: Array<OptionalItemApplicationContent> = [];
-                    applicationDto.application.optionalItems.forEach((item: any) => {
+                    _.sortBy(applicationDto.application.optionalItems, ["dispOrder"]).forEach((item: any) => {
                         let optionalItem: any = _.find(applicationDto.optionalItems, {optionalItemNo: item.itemNo - 640});
                         let controlOfAttendanceItem: any = _.find(applicationDto.controlOfAttendanceItems, {itemDailyID: item.itemNo});
                         if (optionalItem != null) {
