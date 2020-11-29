@@ -7,7 +7,7 @@ module nts.uk.at.view.kwr004.a {
   const WORK_STATUS = 'WorkStatus';
   const KWR004_B_INPUT = 'KWR004_WORK_STATUS_DATA';
   const KWR004_B_OUTPUT = 'KWR004_WORK_STATUS_RETURN';
-  const KWR004_SAVE_DATA = 'WORK_SCHEDULE_STATUS_CONDITIONS';
+  const KWR004_SAVE_DATA = 'KWR004_SCHEDULE_STATUS_CONDITIONS';
 
   const PATH = {
     getPermission51: 'at/screen/kwr004/a/initScreen',
@@ -62,11 +62,18 @@ module nts.uk.at.view.kwr004.a {
     closureId: KnockoutObservable<number> = ko.observable(0);
 
     enum: Array<any> = [];
+    storageKey: KnockoutObservable<string> = ko.observable(null);
 
     constructor(params: any) {
       super();
       const vm = this;
       vm.enum = __viewContext.enums.SettingClassificationCommon;
+
+      let companyId: string = vm.$user.companyId,
+          employeeId: string = vm.$user.employeeId;
+      const storageKey: string = KWR004_SAVE_DATA + "_companyId_" + companyId + "_employeeId_" + employeeId;
+      vm.storageKey(storageKey);
+
       //get settings for Stand or Free
       vm.getSettingListItems(0); //定型選択      
       vm.getSettingListItems(1); //自由設定
@@ -78,7 +85,6 @@ module nts.uk.at.view.kwr004.a {
       vm.CCG001_load();
       vm.KCP005_load();
       vm.initialWorkStatusInformation();
-
     }
 
     created(params: any) {
@@ -242,8 +248,7 @@ module nts.uk.at.view.kwr004.a {
 
       vm.$window.storage(KWR004_B_INPUT, ko.toJS(params)).then(() => {
         vm.$window.modal('/view/kwr/004/b/index.xhtml').then(() => {
-          vm.$window.storage(KWR004_B_OUTPUT).then((data: any) => {
-            console.log(data);
+          vm.$window.storage(KWR004_B_OUTPUT).then((data: any) => {         
             if (!_.isNil(data)) {
               vm.getSettingListItems(vm.rdgSelectedId(), data.code);
             }
@@ -261,16 +266,7 @@ module nts.uk.at.view.kwr004.a {
 
       //社員ごとの出力項目設定を登録することができる
       vm.allowFreeSettingForeachEmployee();
-
-      vm.$window.storage(WORK_STATUS).then((data: any) => {
-        if (!_.isNil(data)) {
-          vm.rdgSelectedId(data.itemSelection); //項目選択
-          vm.standardSelectedCode(data.standardSelectedCode); //定型選択
-          vm.freeSelectedCode(data.freeSelectedCode); //自由設定
-          vm.zeroDisplayClassification(data.zeroDisplayClassification); //自由の選択済みコード
-          vm.pageBreakSpecification(data.pageBreakSpecification); //改ページ指定
-        }
-      });
+      vm.getWorkScheduleOutputConditions();
     }
 
     allowFreeSettingForeachEmployee() {
@@ -284,6 +280,8 @@ module nts.uk.at.view.kwr004.a {
         endDate: endDate
       });
 
+      let currentYear = moment().format('YYYY');
+
       vm.itemListSetting.push({ id: vm.enum[0].value, name: vm.$i18n('KWR004_14') });
 
       vm.$ajax(PATH.getPermission51)
@@ -295,10 +293,10 @@ module nts.uk.at.view.kwr004.a {
             }
             //システム日付の月　＜　期首月　
             if (_.toInteger(result.startMonth) > _.toInteger(moment().format('MM'))) {
-              endDate = moment(moment().format('YYYY') + '/' + result.startMonth).toDate();
+              endDate = moment(currentYear + '/' + result.startMonth + '/01').toDate();
               startDate = moment(endDate).subtract(1, 'year').add(1, 'month').toDate();
             } else { //システム日付の月　＞=　期首月　
-              startDate = moment(moment().format('YYYY') + '/' + result.startMonth).toDate();
+              startDate = moment(currentYear + '/' + result.startMonth + '/01').toDate();
               endDate = moment(startDate).add(1, 'year').subtract(1, 'month').toDate();
             }
 
@@ -375,9 +373,9 @@ module nts.uk.at.view.kwr004.a {
         let params = {
           mode: 2, // ExcelPdf区分: 1 - PDF, 2 - EXCEL
           lstEmpIds: lstEmployeeIds, //社員リスト
-          startMonth: vm.periodDate().startDate, //期間入力 - 開始月   
-          endMonth: vm.periodDate().endDate,//期間入力 - 終了月
-          isZeroDisplay: vm.zeroDisplayClassification(),//ゼロ表示区分選択肢
+          startMonth: moment(vm.periodDate().startDate).format('YYYYMM'), //期間入力 - 開始月   
+          endMonth: moment(vm.periodDate().endDate).format('YYYYMM'),//期間入力 - 終了月
+          isZeroDisplay: vm.zeroDisplayClassification() ? true : false,//ゼロ表示区分選択肢
           settingId: settingId, //ゼロ表示区分選択肢
           settingClassification: vm.rdgSelectedId(), //自由設定: A5_4_2   || 定型選択 : A5_3_2
           closureId: vm.closureId() //締め日
@@ -436,9 +434,7 @@ module nts.uk.at.view.kwr004.a {
 
     saveWorkScheduleOutputConditions(): JQueryPromise<void> {
       let vm = this,
-        dfd = $.Deferred<void>(),
-        companyId: string = vm.$user.companyId,
-        employeeId: string = vm.$user.employeeId;
+        dfd = $.Deferred<void>();
 
       let data: WorkScheduleOutputConditions = {
         itemSelection: vm.rdgSelectedId(), //項目選択
@@ -447,42 +443,29 @@ module nts.uk.at.view.kwr004.a {
         zeroDisplayClassification: vm.zeroDisplayClassification(), //自由の選択済みコード
         //pageBreakSpecification: vm.pageBreakSpecification() //改ページ指定
       };
-
-      let storageKey: string = KWR004_SAVE_DATA + "_companyId_" + companyId + "_employeeId_" + employeeId;
-      vm.$window.storage(storageKey, data).then(() => {
-        dfd.resolve();
-      });
-
+      const key = vm.storageKey();
+      vm.$window.storage(key, data);
+      dfd.resolve();
       return dfd.promise();
 
     }
 
     getWorkScheduleOutputConditions() {
-      const vm = this,
-        dfd = $.Deferred<void>(),
-        companyId: string = vm.$user.companyId,
-        employeeId: string = vm.$user.employeeId;
-
-      let storageKey: string = KWR004_SAVE_DATA + "_companyId_" + companyId + "_employeeId_" + employeeId;
-
-      vm.$window.storage(storageKey).then((data: WorkScheduleOutputConditions) => {
+      const vm = this;
+      const key = vm.storageKey();
+      vm.$window.storage(key).then((data: any) => {      
         if (!_.isNil(data)) {
-          let standardCode = _.find(vm.settingListItems(), ['code', data.standardSelectedCode]);
-          let freeCode = _.find(vm.settingListItems(), ['code', data.freeSelectedCode]);
+          let standardCode = _.find(vm.settingListItems1(), ['code', data.standardSelectedCode]);
+          let freeCode = _.find(vm.settingListItems2(), ['code', data.freeSelectedCode]);
           vm.rdgSelectedId(data.itemSelection); //項目選択
           vm.standardSelectedCode(!_.isNil(standardCode) ? data.standardSelectedCode : null); //定型選択
           vm.freeSelectedCode(!_.isNil(freeCode) ? data.freeSelectedCode : null); //自由設定
           vm.zeroDisplayClassification(data.zeroDisplayClassification); //自由の選択済みコード
-          vm.pageBreakSpecification(data.pageBreakSpecification); //改ページ指定
+          //vm.pageBreakSpecification(data.pageBreakSpecification); //改ページ指定
         }
-        dfd.resolve();
       }).always(() => {
-        dfd.resolve();
       });
-
-      return dfd.promise();
     }
-
   }
 
   //=================================================================
@@ -492,7 +475,7 @@ module nts.uk.at.view.kwr004.a {
     standardSelectedCode?: string, //定型選択
     freeSelectedCode?: string, //自由設定
     zeroDisplayClassification?: number, //自由の選択済みコード
-    pageBreakSpecification?: number //改ページ指定
+    //pageBreakSpecification?: number //改ページ指定
   }
 
   export class ItemModel {
