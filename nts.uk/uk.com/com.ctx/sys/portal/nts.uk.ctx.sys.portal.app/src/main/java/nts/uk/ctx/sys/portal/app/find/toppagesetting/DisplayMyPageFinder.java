@@ -197,19 +197,17 @@ public class DisplayMyPageFinder {
 			if (layout1.get().getLayoutType() == LayoutType.FLOW_MENU) {
 				//	アルゴリズム「フローメニューの作成リストを取得する」を実行する
 				//	Inputフローコードが指定されている場合
-				if (layout1.get().getFlowMenuCd().isPresent()) {
-					//	ドメインモデル「フローメニュー作成」を取得する
-					Optional<CreateFlowMenu> data = this.cFlowMenuRepo.findByPk(cId
-							, layout1.get().getFlowMenuCd().get().v());
+				if (layout1.get().getFlowMenuCd().isPresent()
+						&& !layout1.get().getFlowMenuCd().get().v().isEmpty()) {
+					// ドメインモデル「フローメニュー作成」を取得する
+					Optional<CreateFlowMenu> data = this.cFlowMenuRepo.findByPk(cId,
+							layout1.get().getFlowMenuCd().get().v());
 					if (data.isPresent()) {
 						listFlow.add(FlowMenuOutputCCG008.builder()
-										.flowCode(data.get().getFlowMenuCode().v())
-										.flowName(data.get().getFlowMenuName().v())
-										.fileId(data.get()
-													.getFlowMenuLayout()
-													.map(FlowMenuLayout::getFileId)
-													.orElse(""))
-										.build());
+								.flowCode(data.get().getFlowMenuCode().v())
+								.flowName(data.get().getFlowMenuName().v())
+								.fileId(data.get().getFlowMenuLayout().map(FlowMenuLayout::getFileId).orElse(""))
+								.build());
 					}
 				} else {
 					//	ドメインモデル「フローメニュー作成」を取得する

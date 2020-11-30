@@ -15,6 +15,7 @@
       <com:scriptfile path="./layout1Component.vm.js" />
       <com:scriptfile path="./layout2Component.vm.js" />
       <com:scriptfile path="/view/ktg/027/a/ktg027.a.vm.js"  of="nts.uk.at.web"/>
+      <com:scriptfile path="/view/ktg/026/a/ktg026component.a.vm.js"  of="nts.uk.at.web"/>
 		</ui:define>
 		<ui:define name="content">
 			<div id="contents-area">
@@ -49,14 +50,14 @@
               </div>
             </com:ko-if>
           </div>
-          <com:ko-if bind="isShowButtonRefresh">
+          <com:ko-if bind="isShowButtonRefresh()">
             <div id = "reload">
               <a tabindex="4" data-bind="click: onClickReload"><img
                 class="reload-img"
                 src="../image/CCG008_1.png"/></a>
             </div>
           </com:ko-if>
-          <com:ko-if bind="isShowButtonSetting">
+          <com:ko-if bind="isShowButtonSetting()">
             <div id = "setting">
               <a tabindex="4" data-bind="click: openScreenE"><img
                 class="setting-img"
