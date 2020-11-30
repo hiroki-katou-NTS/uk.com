@@ -103,11 +103,8 @@ module nts.uk.at.ksm008.c {
             });
 
             vm.numOfEmployeeLimit.subscribe(value => {
-                if (value) {
-                    $("#kcp005-component-right").ntsError("clear");
-                    vm.$errors("clear");
-                }
-            })
+                $("#kcp005-component-right").ntsError("clear");
+            });
 
         }
 
@@ -326,6 +323,8 @@ module nts.uk.at.ksm008.c {
             vm.selectedProhibitedCode(null);
             vm.targetEmployeeList([]);
             vm.selectableEmployeeList(vm.lstEmployeeSelectableBegin());
+            vm.targetSelectedCodes([]);
+            vm.selectedableCodes([]);
             $('#C7_2').focus();
         }
 
@@ -343,6 +342,8 @@ module nts.uk.at.ksm008.c {
             vm.banCode(firtBanListItem.code);
             vm.banName(firtBanListItem.name);
             vm.numOfEmployeeLimit(firtBanListItem.upperLimit);
+            vm.targetSelectedCodes([]);
+            vm.selectedableCodes([]);
 
             if (listBanEmployee) {
                 let listTarget: any = [];
@@ -386,7 +387,10 @@ module nts.uk.at.ksm008.c {
                     vm.$blockui("grayout");
                     vm.$ajax(api, data).done(() => {
                         vm.$dialog.info({messageId: "Msg_15"}).then(() => {
-                            vm.getBanWorkListByCode().then(() => vm.selectedProhibitedCode(data.code))
+                            vm.getBanWorkListByCode().then(() => {
+                                vm.selectedProhibitedCode('');
+                                vm.selectedProhibitedCode(data.code);
+                            })
                         });
                     }).fail((err) => {
                         vm.$dialog.error(err);

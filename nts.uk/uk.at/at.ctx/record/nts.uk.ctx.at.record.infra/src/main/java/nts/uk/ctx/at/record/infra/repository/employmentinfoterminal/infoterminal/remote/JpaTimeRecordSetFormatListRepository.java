@@ -37,7 +37,7 @@ public class JpaTimeRecordSetFormatListRepository extends JpaRepository implemen
 	@Override
 	public void removeTRSetFormatList(EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode) {
 		this.jdbcProxy().query(REMOVE_WITH_CODE).paramString("contractCode", contractCode.v())
-				.paramInt("trCode", empInfoTerCode.v()).execute();
+				.paramString("trCode", empInfoTerCode.v()).execute();
 	}
 
 	//[2]  タイムレコード設定フォーマットリストをインサートする

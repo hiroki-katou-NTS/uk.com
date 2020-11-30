@@ -230,16 +230,16 @@ public class LogBasicInformationFinder {
 										List<String> cps002 = logSettingEditProgramId.stream().filter(item -> item.equals("CPS002")).collect(Collectors.toList());
 										if(!cps001.isEmpty()) {
 											if(!logBasicCheck.getProcessAttr().equals("新規")) {
-												mapCheck.put(keyCheck, logBasicCheck);
+												mapCheck.replace(keyCheck, logBasicCheck);
 											}
 										}
 										if(!cps002.isEmpty()) {
 											if(logBasicCheck.getProcessAttr().equals("新規")) {
-												mapCheck.put(keyCheck, logBasicCheck);
+												mapCheck.replace(keyCheck, logBasicCheck);
 											}
 										}
 										if(cps001.isEmpty() && cps001.isEmpty()) {
-											mapCheck.put(keyCheck, logBasicCheck);
+											mapCheck.replace(keyCheck, logBasicCheck);
 										}
 									}
 								}
@@ -696,7 +696,7 @@ public class LogBasicInformationFinder {
      }
 	
 	private boolean filterLogByItemNo(String content, int itemNo, List<ConditionDto> listCondition) {
-		List<ConditionDto> conditionArray = listCondition.stream().filter(condition -> condition.getItemNo() == itemNo) //更新  論理削除  新規
+		List<ConditionDto> conditionArray = listCondition.stream().filter(condition -> condition.getItemNo() == itemNo)
 				.collect(Collectors.toList());
 		if (conditionArray.size() == 0) {
 			return true;

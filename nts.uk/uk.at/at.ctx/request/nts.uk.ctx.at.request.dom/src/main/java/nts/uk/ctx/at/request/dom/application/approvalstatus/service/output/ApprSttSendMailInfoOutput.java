@@ -16,5 +16,5 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTe
 public class ApprSttSendMailInfoOutput {
 	private ApprovalStatusMailTemp approvalStatusMailTemp;
 	
-	private List<ApprSttExecutionOutput> apprSttExecutionOutputLst;
+	private List<ApprSttWkpEmpMailOutput> wkpEmpMailLst;
 }

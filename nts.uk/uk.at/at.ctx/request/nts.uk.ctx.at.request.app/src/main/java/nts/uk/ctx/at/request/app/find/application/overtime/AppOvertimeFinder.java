@@ -44,8 +44,8 @@ import nts.uk.ctx.at.request.dom.application.overtime.service.IOvertimePreProces
 import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeFourProcess;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeSixProcess;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.AppOvertimeSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.FlexExcessUseSetAtr;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReason;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
@@ -102,7 +102,7 @@ public class AppOvertimeFinder {
 	@Inject
 	private DailyAttendanceTimeCaculation dailyAttendanceTimeCaculation;
 	@Inject
-	private AppOvertimeSettingRepository appOvertimeSettingRepository;
+	private OvertimeAppSetRepository appOvertimeSettingRepository;
 	@Inject
 	private WorkingConditionItemRepository workingConditionItemRepository;
 	
@@ -1505,22 +1505,23 @@ public class AppOvertimeFinder {
 	 * @return フレックス時間を表示する区分
 	 */
 	public boolean flexDisplayCheck(GeneralDate baseDate, String employeeID) {
-		if (appOvertimeSettingRepository.getAppOver().get().getFlexJExcessUseSetAtr().equals(FlexExcessUseSetAtr.DISPLAY)) {
-			Optional<WorkingConditionItem> personalLablorCodition = workingConditionItemRepository.getBySidAndStandardDate(employeeID, baseDate);
-			if (personalLablorCodition.isPresent()) {
-				if (personalLablorCodition.get().getLaborSystem().isFlexTimeWork()) {
-					return true;
-				} else {
-					return false;
-				}
-			} else {
-				return false;
-			}
-		} else if (appOvertimeSettingRepository.getAppOver().get().getFlexJExcessUseSetAtr().equals(FlexExcessUseSetAtr.ALWAYSDISPLAY)) {
-			return true;
-		} else {
-			return false;
-		}
+//		if (appOvertimeSettingRepository.getAppOver().get().getFlexJExcessUseSetAtr().equals(FlexExcessUseSetAtr.DISPLAY)) {
+//			Optional<WorkingConditionItem> personalLablorCodition = workingConditionItemRepository.getBySidAndStandardDate(employeeID, baseDate);
+//			if (personalLablorCodition.isPresent()) {
+//				if (personalLablorCodition.get().getLaborSystem().isFlexTimeWork()) {
+//					return true;
+//				} else {
+//					return false;
+//				}
+//			} else {
+//				return false;
+//			}
+//		} else if (appOvertimeSettingRepository.getAppOver().get().getFlexJExcessUseSetAtr().equals(FlexExcessUseSetAtr.ALWAYSDISPLAY)) {
+//			return true;
+//		} else {
+//			return false;
+//		}
+		return true;
 	}
 	
 	/**

@@ -10,13 +10,13 @@ public class EmpInfoTerminalComStatusHelper {
 
 	public static EmpInfoTerminalComStatus createEmpInfoTerminalComStatus() {
 		return new EmpInfoTerminalComStatus(new ContractCode("000000000000"),
-										new EmpInfoTerminalCode(1111),
+										new EmpInfoTerminalCode("1111"),
 										GeneralDateTime.now().addHours(60));
 	}
 	
 	public static EmpInfoTerminalComStatus createEmpInfoTerminalComStatus2() {
 		return new EmpInfoTerminalComStatus(new ContractCode("000000000000"),
-										new EmpInfoTerminalCode(1111),
+										new EmpInfoTerminalCode("1111"),
 										GeneralDateTime.now().addHours(-60));
 	}
 }

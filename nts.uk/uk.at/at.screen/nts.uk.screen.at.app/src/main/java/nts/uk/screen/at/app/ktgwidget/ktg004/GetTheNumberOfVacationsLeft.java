@@ -21,8 +21,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfS
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveManagementService;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
-import nts.uk.ctx.at.shared.pub.remainingnumber.nursingcareleavemanagement.interimdata.NursingMode;
-import nts.uk.ctx.at.shared.pub.remainingnumber.nursingcareleavemanagement.interimdata.ShNursingLeaveSettingPub;
+/*import nts.uk.ctx.at.shared.pub.remainingnumber.nursingcareleavemanagement.interimdata.NursingMode;
+import nts.uk.ctx.at.shared.pub.remainingnumber.nursingcareleavemanagement.interimdata.ShNursingLeaveSettingPub;*/
 
 @Stateless
 public class GetTheNumberOfVacationsLeft {
@@ -33,8 +33,9 @@ public class GetTheNumberOfVacationsLeft {
 	@Inject
 	private RecordDomRequireService requireService;
 	
-	@Inject
-	private ShNursingLeaveSettingPub shNursingLeaveSettingPub;
+	/*
+	 * @Inject private ShNursingLeaveSettingPub shNursingLeaveSettingPub;
+	 */
 	
 	@Inject
 	private SpecialHolidayRepository specialHolidayRepository;
@@ -93,7 +94,8 @@ public class GetTheNumberOfVacationsLeft {
 	 */
 	public Double remainingNumberOfChildNursingLeave(String cid, String employeeId, DatePeriod datePeriod) {
 		//※「期間内の子看護残を集計する」はRequestList206
-		return shNursingLeaveSettingPub.aggrChildNursingRemainPeriod(cid, employeeId, datePeriod, NursingMode.Other).getPreGrantStatement().getResidual();
+		//return shNursingLeaveSettingPub.aggrChildNursingRemainPeriod(cid, employeeId, datePeriod, NursingMode.Other).getPreGrantStatement().getResidual();
+		return new Double(0);
 	}
 	
 	/**
@@ -104,7 +106,8 @@ public class GetTheNumberOfVacationsLeft {
 	 */
 	public Double remainingNumberOfNursingLeave(String cid, String employeeId, DatePeriod datePeriod) {
 		//※「期間内の介護残を集計する」はRequestList207
-		return shNursingLeaveSettingPub.aggrNursingRemainPeriod(cid, employeeId, datePeriod.start(), datePeriod.end(), NursingMode.Other).getPreGrantStatement().getResidual();
+		//return shNursingLeaveSettingPub.aggrNursingRemainPeriod(cid, employeeId, datePeriod.start(), datePeriod.end(), NursingMode.Other).getPreGrantStatement().getResidual();
+		return new Double(0);
 	}
 	
 	/**

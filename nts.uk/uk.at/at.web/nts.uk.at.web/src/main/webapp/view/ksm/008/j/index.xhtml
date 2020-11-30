@@ -18,29 +18,31 @@
             <div class="label class-padding-btm-5"
                  data-bind="text: vm.scheduleAlarmCheckCond().codeAndName">
             </div>
-            <div class="label warning color-black"
-                 style="padding-bottom: 0;padding-top: 0; ">#{i18n.getText('KSM008_189')}</div><!-- I4_1-->
-            <div class="label warning color-black" style="padding-top: 0;white-space: pre-wrap;"
-                 data-bind="text: vm.scheduleAlarmCheckCond().descriptions"></div>
+            <div class="label warning color-black">
+                <div >#{i18n.getText('KSM008_189')}</div><!-- I4_1-->
+                <div style="padding-top: 0;white-space: pre-wrap;"
+                     data-bind="text: vm.scheduleAlarmCheckCond().descriptions"></div>
+            </div>
         </div>
         <div class="table custom_table_j1_x" >
             <!-- j1_1-->
-            <div class="cell valign-center" style="width: 10%">
+            <div class="cell valign-center">
                 <div data-bind="ntsFormLabel: {inline: true, required: true, enable: true}, style:{marginBottom: '5px'}">#{i18n.getText('KSM008_203')}</div>
             </div>
             <!-- j1_2-->
-            <div class="cell valign-center" style="width: 4%">
-                <button id="J1_2"  tabindex="1"  data-bind="inline: true, click:openModalKDL046" class="small">#{i18n.getText('KSM008_204')}</button>
+            <div class="cell valign-center">
+                <button id="J1_2"  tabindex="1"  data-bind="inline: true, click:openModalKDL046">#{i18n.getText('KSM008_204')}</button>
             </div>
             <!-- j1_3-->
-            <div class="cell valign-center" style="width: 9%">
-                <span class="label" data-bind="inline: true, text:vm.workPlace.workplaceCode"></span>
+            <div class="cell valign-center">
+                <span class="label" data-bind="inline: true, text:vm.workPlace.workplaceCode" style="margin-left: 10px;"></span>
             </div>
             <!-- j1_4-->
             <div class="cell valign-center" >
-                <span class="label" data-bind="inline: true, text:vm.workPlace.workplaceName"></span>
+                <span class="label" style="margin-left: 10px;" data-bind="inline: true, text:vm.workPlace.workplaceName"></span>
             </div>
         </div>
+        <hr></hr>
         <div class="table" style="margin-top: 8px;">
             <div class="cell valign-top">
                 <!-- j2-->
@@ -88,7 +90,7 @@
                     </div>
                     <!-- J4_3-->
                     <div class="cell valign-center">
-                        <input style="width: 180px" data-bind="ntsTextEditor: {value: vm.jScreenWorkingHour.workHour, enable: false}"/>
+                        <input style="width: 180px" data-bind="ntsTextEditor: {value: vm.jScreenWorkingHour.workHour,enable: true, readonly: true}"/>
                     </div>
                 </div>
                 <div class="table" style="margin-top: 7px">

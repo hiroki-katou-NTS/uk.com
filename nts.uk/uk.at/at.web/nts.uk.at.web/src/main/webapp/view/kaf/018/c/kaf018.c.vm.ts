@@ -4,18 +4,14 @@ module nts.uk.at.view.kaf018.c.viewmodel {
 	import DisplayWorkplace = nts.uk.at.view.kaf018.a.viewmodel.DisplayWorkplace;
 	import ApprovalStatusMailType = kaf018.share.model.ApprovalStatusMailType;
 	import ApprSttExecutionDto = nts.uk.at.view.kaf018.b.viewmodel.ApprSttExecutionDto;
+	import ClosureItem = nts.uk.at.view.kaf018.a.viewmodel.ClosureItem;
 	
 	@bean()
 	class Kaf018CViewModel extends ko.ViewModel {
 		mailType: ApprovalStatusMailType = ApprovalStatusMailType.APP_APPROVAL_UNAPPROVED;
 		name: string = '';
 		description: string = '';
-		items: KnockoutObservableArray<WkpEmpMailInfo> = ko.observableArray([
-			new WkpEmpMailInfo('1', '1', 1, '基本給1'),
-			new WkpEmpMailInfo('2', '2', 2, '基本給2'),
-			new WkpEmpMailInfo('3', '3', 3, '基本給3'),
-		]);
-		currentCodeList: KnockoutObservableArray<any> = ko.observableArray([]);
+		dataSource: Array<ApprSttWkpEmpMailOutput> = [];
 		mailSubject: KnockoutObservable<string> = ko.observable('');
 		mailContent: KnockoutObservable<string> = ko.observable('');
 		urlApprovalEmbed: KnockoutObservable<boolean> = ko.observable(false);
@@ -64,9 +60,89 @@ module nts.uk.at.view.kaf018.c.viewmodel {
 				default:
 					break;
 			}
+			$("#cGrid").css('visibility','hidden');
+			$("#cGrid").igGrid({
+				width: 860,
+				height: 255,
+				dataSource: vm.dataSource,
+				primaryKey: 'wkpID',
+				primaryKeyDataType: 'string',
+				rowVirtualization: true,
+				virtualization: true,
+				virtualizationMode: 'continuous',
+				enter: 'right',
+				autoFitWindow: false,
+				hidePrimaryKey: true,
+				avgRowHeight: 25,
+				dataRendered: () => {
+					vm.$nextTick(() => {
+						vm.$blockui('hide');
+						$("#cGrid").focus();
+					});
+				},
+				rendered: () => {
+					if($("#cGrid").css('visibility')=='hidden'){
+						vm.$nextTick(() => {
+							vm.$blockui('show');
+						});
+					} else {
+						vm.$nextTick(() => {
+							vm.$blockui('hide');
+						});
+					}
+			    },
+				columns: [
+					{ 
+						headerText: `<span class="ui-state-default ui-corner-all ui-igcheckbox-normal kaf018-c-header-checkbox">` +
+										`<span class="ui-icon ui-icon-check ui-igcheckbox-normal-on"></span>` +
+									`</span>`, 
+						key: 'wkpID', 
+						width: '24px', 
+						dataType: 'string',
+						formatter: () => {
+							return 	`<span class="ui-state-default ui-corner-all ui-igcheckbox-normal kaf018-c-column-checkbox">` +
+										`<span class="ui-icon ui-icon-check ui-igcheckbox-normal-on"></span>` +
+									`</span>`;
+						},
+					},
+					{ 
+						headerText: vm.$i18n('KAF018_350'), 
+						key: 'wkpName',
+						width: '200px', 
+						dataType: 'string',
+						
+					},
+					{ 
+						headerText: vm.$i18n('KAF018_550'), 
+						key: 'countEmp', 
+						width: '100px', 
+						columnCssClass: 'kaf018-c-column-countEmp',
+						dataType: 'number', 
+						formatter: (key: number) => key + vm.$i18n('KAF018_551')
+					},
+					{ 
+						headerText: vm.$i18n('KAF018_351') + vm.$i18n('KAF018_352'), 
+						key: 'wkpID', 
+						width: '500px', 
+						formatter: (key: string) => vm.displayEmpMail(key)
+					},
+				],
+				features: [
+					{
+						name: 'MultiColumnHeaders'
+					}
+				],
+			});
 			
 			let mailType = vm.mailType,
-				wsParam = { mailType };
+				closureId = params.closureItem.closureId,
+				processingYm = params.closureItem.processingYm,
+				startDate = params.startDate,
+				endDate = params.endDate,
+				wkpInfoLst = params.selectWorkplaceInfo,
+				employmentCDLst = params.employmentCDLst,
+				wsParam = { mailType, closureId, processingYm, startDate, endDate, wkpInfoLst, employmentCDLst };
+			vm.$blockui('show');	
 			vm.$ajax('at', API.getEmpSendMailInfo, wsParam).then((data: any) => {
 				vm.urlApprovalEmbed(data.approvalStatusMailTempDto.urlApprovalEmbed == 1 ? true: false);
 				vm.urlDayEmbed(data.approvalStatusMailTempDto.urlDayEmbed == 1 ? true: false);
@@ -74,22 +150,39 @@ module nts.uk.at.view.kaf018.c.viewmodel {
 				vm.mailSubject(data.approvalStatusMailTempDto.mailSubject);
 				vm.mailContent(data.approvalStatusMailTempDto.mailContent);
 				vm.editMode = data.approvalStatusMailTempDto.editMode;
+				vm.dataSource = data.wkpEmpMailLst;
+				$("#cGrid").igGrid("option", "dataSource", vm.dataSource);
+				$("#cGrid").css('visibility','visible');
+			}).fail((error) => {
+				vm.$dialog.error({ messageId: error.messageId, messageParams: error.parameterIds })
+				.then(() => vm.$window.close());
 			});
+		}
+		
+		displayEmpMail(value: string) {
+			const vm = this;
+			let empMailLst = _.find(vm.dataSource, o => o.wkpID == value).empMailLst;
+			if(_.isEmpty(empMailLst)) {
+				return '';	
+			}
+			return _.chain(empMailLst).map(o => o.empName + (o.empMail ? vm.$i18n('KAF018_503') : '')).join(vm.$i18n('KAF018_504')).value();
 		}
 		
 		sendMail() {
 			const vm = this;
 			let command = vm.getMailTemplateParam(),
-				wsParam = { command };
+				wkpEmpMailLst = vm.dataSource,
+				wsParam = { command, wkpEmpMailLst };
+			vm.$blockui('show');
 			vm.$ajax('at', API.sendMailToDestination, wsParam).then((data) => {
 				if(data.OK) {
-					
+					vm.$dialog.info({ messageId: "Msg_792" });	
 				} else {
-					
+					vm.$dialog.error(vm.$i18n.message("Msg_793") + "<br/>" + _.join(data.listError,', '));	
 				}
 			}).fail((res) => {
 				vm.$dialog.error({ messageId: res.messageId });
-			});
+			}).always(() => vm.$blockui('hide'));
 		}
 		
 		close() {
@@ -100,9 +193,10 @@ module nts.uk.at.view.kaf018.c.viewmodel {
 		updateMailTemplate() {
 			const vm = this;
 			let wsParam = vm.getMailTemplateParam();
+			vm.$blockui('show');
 			vm.$ajax('at', API.updateMailTemplate, [wsParam]).then(() => {
 				vm.$dialog.info({ messageId: "Msg_1760" });
-			});
+			}).always(() => vm.$blockui('hide'));
 		}
 		
 		getMailTemplateParam() {
@@ -121,20 +215,26 @@ module nts.uk.at.view.kaf018.c.viewmodel {
 	
 	export interface KAF018CParam {
 		mailType: ApprovalStatusMailType;
+		closureItem: ClosureItem;
+		startDate: string;
+		endDate: string;
 		selectWorkplaceInfo: Array<DisplayWorkplace>;
+		employmentCDLst: Array<string>;
 	}
 	
-	export class WkpEmpMailInfo {
+	interface ApprSttWkpEmpMailOutput {
 		wkpID: string;
-		wkpName: string;	
-		numberPeople: number;
-		mailInfo: string;
-		constructor(wkpID: string, wkpName: string, numberPeople: number, mailInfo: string) {
-			this.wkpID = wkpID;
-			this.wkpName = wkpName;
-			this.numberPeople = numberPeople;
-			this.mailInfo = mailInfo;
-		}
+		wkpCD: string;
+		wkpName: string;
+		hierarchyCode: string;
+		countEmp: number;
+		empMailLst: Array<ApprSttEmpMailOutput>;
+	}
+	
+	interface ApprSttEmpMailOutput {
+		empID: string;
+		empName: string;
+		empMail: string;
 	}
 
 	const API = {

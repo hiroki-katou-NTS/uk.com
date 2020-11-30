@@ -43,21 +43,27 @@ module nts.uk.at.view.kaf018.i.viewmodel {
 				switch (newValue) {
 					case 'tab-1':
 						vm.screenEditMode(vm.appApprovalUnapproved().editMode());
+						vm.$nextTick(() => $("#I3_1_1").focus());
 						break;
 					case 'tab-2':
 						vm.screenEditMode(vm.dailyUnconfirmByPrincipal().editMode());
+						vm.$nextTick(() => $("#I4_1_1").focus());
 						break;
 					case 'tab-3':
 						vm.screenEditMode(vm.dailyUnconfirmByConfirmer().editMode());
+						vm.$nextTick(() => $("#I5_1_1").focus());
 						break;
 					case 'tab-6':
 						vm.screenEditMode(vm.monthlyUnconfirmByPrincipal().editMode());
+						vm.$nextTick(() => $("#I8_1_1").focus());
 						break;
 					case 'tab-4':
 						vm.screenEditMode(vm.monthlyUnconfirmByConfirmer().editMode());
+						vm.$nextTick(() => $("#I6_1_1").focus());
 						break;
 					case 'tab-5':
 						vm.screenEditMode(vm.workConfirmation().editMode());
+						vm.$nextTick(() => $("#I7_1_1").focus());
 						break;
 				}
 			});
@@ -84,53 +90,30 @@ module nts.uk.at.view.kaf018.i.viewmodel {
 							case 2:
 								vm.dailyUnconfirmByConfirmer(temp);
 								break;
+							case 5:
+								vm.monthlyUnconfirmByPrincipal(temp);
+								break;
 							case 3:
 								vm.monthlyUnconfirmByConfirmer(temp);
 								break;
 							case 4:
 								vm.workConfirmation(temp);
 								break;
-							case 5:
-								vm.monthlyUnconfirmByPrincipal(temp);
-								break;
 						}
 					});
 				
 					vm.screenEditMode(vm.appApprovalUnapproved().editMode());
-					if (vm.dailyUnconfirmByPrincipal().editMode()) {
-						vm.checkI4(true);
-					}
-					else {
-						vm.checkI4(vm.useSetting.usePersonConfirm);
-					}
-					if (vm.dailyUnconfirmByConfirmer().editMode()) {
-						vm.checkI3(true);
-					}
-					else {
-						vm.checkI3(vm.useSetting.useBossConfirm);
-					}
-					if (vm.monthlyUnconfirmByPrincipal().editMode()) {
-						vm.checkI1(true);
-					}
-					else {
-						vm.checkI1(vm.useSetting.monthlyIdentityConfirm);
-					}
-					if (vm.monthlyUnconfirmByConfirmer().editMode()) {
-						vm.checkI2(true);
-					}
-					else {
-						vm.checkI2(vm.useSetting.monthlyConfirm);
-					}
-					if (vm.workConfirmation().editMode()) {
-						vm.checkI5(true);
-					}
-					else {
-						vm.checkI5(vm.useSetting.employmentConfirm);
-					}
+					vm.checkI4(vm.useSetting.usePersonConfirm);
+					vm.checkI3(vm.useSetting.useBossConfirm);
+					vm.checkI1(vm.useSetting.monthlyIdentityConfirm);
+					vm.checkI2(vm.useSetting.monthlyConfirm);
+					vm.checkI5(vm.useSetting.employmentConfirm);
+					
+					vm.selectedTab.valueHasMutated();
 				});
 			}).always(() => {
 				vm.$blockui("hide");
-				$("#H3_1_1").focus();
+				
 			});
 		}
 
@@ -240,14 +223,14 @@ module nts.uk.at.view.kaf018.i.viewmodel {
 							case 'tab-3':
 								mailType = 2;
 								break;
+							case 'tab-6':
+								mailType = 5;
+								break;
 							case 'tab-4':
 								mailType = 3;
 								break;
 							case 'tab-5':
 								mailType = 4;
-								break;
-							case 'tab-6':
-								mailType = 5;
 								break;
 						}
 						vm.$blockui("show");

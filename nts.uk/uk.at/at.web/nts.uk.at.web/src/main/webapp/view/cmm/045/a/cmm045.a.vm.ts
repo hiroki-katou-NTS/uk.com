@@ -688,7 +688,9 @@ module cmm045.a.viewmodel {
           	}
             self.isLimit500(appListInfo.moreThanDispLineNO);
             self.isApprove = ko.computed(() => {
-                return self.mode() == 1 && self.items().length > 0 && _.filter(self.items(), x => x.checkAtr).length > 0 && self.appListInfo.displaySet.appDateWarningDisp !== 0;
+                return self.mode() == 1 && self.items().length > 0 && _.filter(self.items(), x => {
+					return x.checkAtr && moment(x.opAppStartDate).add(-(self.appListInfo.displaySet.appDateWarningDisp), "days").isSameOrBefore(moment.utc())
+				}).length > 0 && self.appListInfo.displaySet.appDateWarningDisp !== 0;
             }, self);
             self.isActiveApprove = ko.computed(() => {
                 return self.items().length > 0 && _.filter(self.items(), x => x.checkAtr).length > 0;
@@ -1025,7 +1027,7 @@ module cmm045.a.viewmodel {
                     if(obj !== undefined && self.mode() === 0 && obj.appLstAtr === true && obj.cID === __viewContext.user.companyId && obj.sID === __viewContext.user.employeeId) {
                         contentWidth = obj.width;
                     } else {
-                        contentWidth = widthAuto - 55 - 120 - 90 - 65- 155 - 120 - 75 - 95;
+                        contentWidth = widthAuto - 55 - 120 - 90 - 65- 155 - 120 - 75 - 95 - 5;
                     }
             }).then(() => {
                 let columns = [
@@ -1302,7 +1304,7 @@ module cmm045.a.viewmodel {
                     if(obj !== undefined && self.mode() === 1 && obj.appLstAtr === false && obj.cID === __viewContext.user.companyId && obj.sID === __viewContext.user.employeeId) {
                         contentWidth = obj.width;
                     } else {
-                        contentWidth = widthAuto - 35 - 55 - 120 - 90 - 65- 157 - 120 - 75 - 95;
+                        contentWidth = widthAuto - 35 - 55 - 120 - 90 - 65- 157 - 120 - 75 - 95 - 5;
                     }
             }).then(() => {
                 let columns = [

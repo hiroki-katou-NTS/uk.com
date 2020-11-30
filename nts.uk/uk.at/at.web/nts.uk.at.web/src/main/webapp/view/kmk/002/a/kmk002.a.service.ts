@@ -39,7 +39,7 @@ module nts.uk.at.view.kmk002.a {
         /**
          * Call service to get optional item detail
          */
-        export function findOptionalItemDetail(itemNo: number, langId: string): JQueryPromise<model.OptionalItemDto> {
+        export function findOptionalItemDetail(itemNo: number, langId: string) {
             return nts.uk.request.ajax(servicePath.findOptionalItemDetail + '/' + itemNo+"/" + langId);
         }
 

@@ -33,7 +33,7 @@ public class SendWorkTimeNamePubImpl implements SendNRDataPub<List<SendWorkTimeN
 	private PredetemineTimeSettingRepository predetemineTimeSettingRepository;
 
 	@Override
-	public List<SendWorkTimeNameExport> send(Integer empInfoTerCode, String contractCode) {
+	public List<SendWorkTimeNameExport> send(String empInfoTerCode, String contractCode) {
 
 		RequireImpl impl = new RequireImpl(timeRecordReqSettingRepository, timeSettingRepository,
 				predetemineTimeSettingRepository);

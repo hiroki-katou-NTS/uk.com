@@ -53,30 +53,50 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 				},
 				{ 
 					headerText: vm.$i18n('KAF018_373'),
-					key: 'empName',
+					key: 'empID',
 					width: '300px',
 					headerCssClass: 'kaf018-d-header-empName',
-					columnCssClass: 'kaf018-d-column-empName'
+					formatter: (key: string) => vm.getDispEmpName(key)
 				}
 			);
 			let dateRangeNumber = moment(vm.endDate,'YYYY/MM/DD').diff(moment(vm.startDate,'YYYY/MM/DD'), 'days');
 			for(let i = 0; i <= dateRangeNumber; i++) {
-				vm.columns.push(
-					{ 
-						headerText: moment(moment(vm.startDate,'YYYY/MM/DD').add(i, 'd')).date(),
-						headerCssClass: vm.getHeaderCss(i),
-						group: [
-							{ 
-								headerText: moment(moment(vm.startDate,'YYYY/MM/DD').add(i, 'd')).format('ddd'),
-								key: 'dateInfoLst',
-								width: '60px',
-								headerCssClass: vm.getHeaderCss(i),
-								columnCssClass: 'kaf018-d-column-date',
-								formatter: (value: any) => vm.getStatusByDay(value, i)
-							}
-						]
-					}
-				);
+				if( i < dateRangeNumber) {
+					vm.columns.push(
+						{ 
+							headerText: moment(moment(vm.startDate,'YYYY/MM/DD').add(i, 'd')).date(),
+							headerCssClass: vm.getHeaderCss(i),
+							group: [
+								{ 
+									headerText: moment(moment(vm.startDate,'YYYY/MM/DD').add(i, 'd')).format('ddd'),
+									key: 'dateInfoLst',
+									width: '60px',
+									headerCssClass: vm.getHeaderCss(i),
+									columnCssClass: 'kaf018-d-column-date',
+									formatter: (value: any) => vm.getStatusByDay(value, i)
+								}
+							]
+						}
+					);	
+				} else {
+					vm.columns.push(
+						{ 
+							headerText: moment(moment(vm.startDate,'YYYY/MM/DD').add(i, 'd')).date(),
+							headerCssClass: vm.getHeaderCss(i),
+							group: [
+								{ 
+									headerText: moment(moment(vm.startDate,'YYYY/MM/DD').add(i, 'd')).format('ddd'),
+									key: 'dateInfoLst',
+									width: '77px',
+									headerCssClass: vm.getHeaderCss(i),
+									columnCssClass: 'kaf018-d-column-date',
+									formatter: (value: any) => vm.getStatusByDay(value, i)
+								}
+							]
+						}
+					);	
+				}
+				
 			}
 			let empID = '',
 				empCD = '',
@@ -92,6 +112,12 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 			$("#dGrid").css('visibility','hidden');
 			vm.createIggrid();
 			vm.refreshDataSource();
+		}
+		
+		getDispEmpName(value: string) {
+			const vm = this;
+			let	empInfo: EmpInfo = _.find(vm.dataSource, o => o.empID==value);
+			return '<span class="kaf018-d-column-empName">' + empInfo.empCD + '</span>' + '　　　　' + '<span class="kaf018-d-column-empName">' + empInfo.empName + '</span>';
 		}
 		
 		getHeaderCss(value: any) {
@@ -119,8 +145,8 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 		createIggrid() {
 			const vm = this;
 			$("#dGrid").igGrid({
-				height: 508,
-				width: screen.availWidth - 70,
+				height: 527,
+				width: window.innerWidth - 40,
 				dataSource: vm.dataSource,
 				primaryKey: 'empID',
 				primaryKeyDataType: 'string',
@@ -135,12 +161,13 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 			   		if($("#dGrid").css('visibility')=='hidden'){
 						vm.$nextTick(() => {
 							vm.$blockui('show');
+							$('#kaf018-d-cancel-btn').focus();
 						});
 					} else {
 						vm.$nextTick(() => {
 							vm.$blockui('hide');
 						});
-					} 	   
+					}
 			    },
 				cellClick: (evt: any, ui: any) => {
 					vm.cellGridClick(evt, ui); 
@@ -156,7 +183,7 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 		
 		cellGridClick(evt: any, ui: any) {
 			const vm = this;
-			if(ui.colKey=="empName") {
+			if(ui.colKey=="empID") {
 				let empInfoLst = vm.dataSource,
 					startDate = vm.startDate,
 					endDate = vm.endDate,

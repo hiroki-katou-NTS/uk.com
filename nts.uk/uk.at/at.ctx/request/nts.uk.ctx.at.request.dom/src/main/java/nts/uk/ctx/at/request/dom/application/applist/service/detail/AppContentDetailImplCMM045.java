@@ -48,7 +48,6 @@ import nts.uk.ctx.at.request.dom.application.stamp.AppStampOnlineRecord;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp_Old;
-import nts.uk.ctx.at.request.dom.application.stamp.DestinationTimeApp;
 import nts.uk.ctx.at.request.dom.application.stamp.DestinationTimeZoneApp;
 import nts.uk.ctx.at.request.dom.application.stamp.StampFrameNo;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
@@ -229,6 +228,8 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 				appWorkChange.getTimeZoneWithWorkNoLst().stream().filter(x -> x.getWorkNo().v()==1).findAny().map(x -> x.getTimeZone().getStartTime()).orElse(null),
 				appWorkChange.getStraightBack(),
 				appWorkChange.getTimeZoneWithWorkNoLst().stream().filter(x -> x.getWorkNo().v()==1).findAny().map(x -> x.getTimeZone().getEndTime()).orElse(null),
+				appWorkChange.getTimeZoneWithWorkNoLst().stream().filter(x -> x.getWorkNo().v()==2).findAny().map(x -> x.getTimeZone().getStartTime()).orElse(null),
+				appWorkChange.getTimeZoneWithWorkNoLst().stream().filter(x -> x.getWorkNo().v()==2).findAny().map(x -> x.getTimeZone().getEndTime()).orElse(null),
 				null,
 				null,
 				appReasonDisAtr,
@@ -280,6 +281,8 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 				goBackDirectly.getStraightDistinction(),
 				new TimeWithDayAttr(0),
 				goBackDirectly.getStraightLine(),
+				new TimeWithDayAttr(0),
+				new TimeWithDayAttr(0),
 				new TimeWithDayAttr(0),
 				new TimeWithDayAttr(0),
 				new TimeWithDayAttr(0),
@@ -854,7 +857,7 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 			// ドメインモデル「レコーダイメージ申請」を取得する
 			AppRecordImage appRecordImage = appRecordImageRepository.findByAppID(companyID, application.getAppID()).get();
 			// 申請内容＝#CMM045_293＋'　'＋レコーダイメージ申請.打刻区分
-			String result = I18NText.getText("CMM045_239") + " " + appRecordImage.getAppStampCombinationAtr().name;
+			String result = I18NText.getText("CMM045_293") + " " + appRecordImage.getAppStampCombinationAtr().name;
 			// レコーダイメージ申請.外出理由がemptyでない場合
 			if(appRecordImage.getAppStampGoOutAtr().isPresent()) {
 				// 申請内容＋＝#CMM045_230：{0}＝外出理由（Enum）
@@ -899,29 +902,19 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 					Optional.empty(),
 					opEndTimeStampApp.map(x -> x.getTimeOfDay())));
 		});
-//		for(TimeStampApp timeStampApp : appStamp.getListTimeStampApp()) {
-//			listTmp.add(new StampAppOutputTmp(
-//					0,
-//					false,
-//					timeStampApp.getDestinationTimeApp().getTimeStampAppEnum().value,
-//				 	new StampFrameNo(timeStampApp.getDestinationTimeApp().getEngraveFrameNo()),
-//					Optional.of(timeStampApp.getTimeOfDay()),
-//					timeStampApp.getAppStampGoOutAtr(),
-//					Optional.empty(),
-//					Optional.of(timeStampApp.getTimeOfDay())));
-//		}
 		// 「打刻申請.時刻の取消」よりリストを収集する
-		for(DestinationTimeApp destinationTimeApp : appStamp.getListDestinationTimeApp()) {
+		appStamp.getListDestinationTimeApp().stream().collect(Collectors.groupingBy(x -> x.getEngraveFrameNo()))
+		.entrySet().forEach(entry -> {
 			listTmp.add(new StampAppOutputTmp(
 					0,
 					true,
-					destinationTimeApp.getTimeStampAppEnum().value,
-				 	new StampFrameNo(destinationTimeApp.getEngraveFrameNo()),
-					Optional.empty(),
-					Optional.empty(),
+					entry.getValue().get(0).getTimeStampAppEnum().value,
+				 	new StampFrameNo(entry.getKey()),
+				 	Optional.empty(),
+				 	Optional.empty(),
 					Optional.empty(),
 					Optional.empty()));
-		}
+		});
 		// 「打刻申請.時間帯」よりリストを収集する
 		for(TimeStampAppOther timeStampAppOther : appStamp.getListTimeStampAppOther()) {
 			listTmp.add(new StampAppOutputTmp(
@@ -953,32 +946,32 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 		for(StampAppOutputTmp itemTmp : listTmp) {
 			if(itemTmp.getTimeItem() == 0 && itemTmp.getStampAtr() == TimeStampAppEnum.ATTEENDENCE_OR_RETIREMENT.value) {
 				// 項目名＝#KAF002_65（勤務時間）：枠NO
-				itemTmp.setOpItemName(Optional.of(I18NText.getText("KAF002_65")));
+				itemTmp.setOpItemName(Optional.of(I18NText.getText("KAF002_65", itemTmp.getStampFrameNo().v().toString())));
 			}
 			if(itemTmp.getTimeItem() == 0 && itemTmp.getStampAtr() == TimeStampAppEnum.EXTRAORDINARY.value) {
 				// 項目名＝#KAF002_66（臨時時間）：枠NO
-				itemTmp.setOpItemName(Optional.of(I18NText.getText("KAF002_66")));
+				itemTmp.setOpItemName(Optional.of(I18NText.getText("KAF002_66", itemTmp.getStampFrameNo().v().toString())));
 			}
 			if(itemTmp.getTimeItem() == 0 && itemTmp.getStampAtr() == TimeStampAppEnum.GOOUT_RETURNING.value) {
 				// 項目名＝#KAF002_67（外出時間）：枠NO
 				// 項目名＋＝#CMM045_230（）：{0}=打刻申請出力用Tmp.外出理由
 				if(itemTmp.getOpGoOutReasonAtr().isPresent()) {
-					itemTmp.setOpItemName(Optional.of(I18NText.getText("KAF002_67") + I18NText.getText("CMM045_230", itemTmp.getOpGoOutReasonAtr().get().nameId)));
+					itemTmp.setOpItemName(Optional.of(I18NText.getText("KAF002_67", itemTmp.getStampFrameNo().v().toString()) + I18NText.getText("CMM045_230", itemTmp.getOpGoOutReasonAtr().get().nameId)));
 				} else {
-					itemTmp.setOpItemName(Optional.of(I18NText.getText("KAF002_67")));
+					itemTmp.setOpItemName(Optional.of(I18NText.getText("KAF002_67", itemTmp.getStampFrameNo().v().toString())));
 				}
 			}
 			if(itemTmp.getTimeItem() == 1 && itemTmp.getStampAtr() == TimeZoneStampClassification.BREAK.value) {
 				// 項目名＝#KAF002_75（休憩時間）：枠NO
-				itemTmp.setOpItemName(Optional.of(I18NText.getText("KAF002_75")));
+				itemTmp.setOpItemName(Optional.of(I18NText.getText("KAF002_75", itemTmp.getStampFrameNo().v().toString())));
 			}
 			if(itemTmp.getTimeItem() == 1 && itemTmp.getStampAtr() == TimeZoneStampClassification.PARENT.value) {
 				// 項目名＝#KAF002_68（育児時間）：枠NO
-				itemTmp.setOpItemName(Optional.of(I18NText.getText("KAF002_68")));
+				itemTmp.setOpItemName(Optional.of(I18NText.getText("KAF002_68", itemTmp.getStampFrameNo().v().toString())));
 			}
 			if(itemTmp.getTimeItem() == 1 && itemTmp.getStampAtr() == TimeZoneStampClassification.NURSE.value) {
 				// 項目名＝#KAF002_69（介護時間）：枠NO
-				itemTmp.setOpItemName(Optional.of(I18NText.getText("KAF002_69")));
+				itemTmp.setOpItemName(Optional.of(I18NText.getText("KAF002_69", itemTmp.getStampFrameNo().v().toString())));
 			}
 		}
 		// アルゴリズム「申請内容（打刻申請）」を実行する
