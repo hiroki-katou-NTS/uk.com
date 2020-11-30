@@ -48,7 +48,9 @@ public class CreateAnnualWorkLedgerContentDomainService {
         val monthlyOutputItems = outputSetting.getMonthlyOutputItemList().stream()
                 .filter(x -> x.getDailyMonthlyClassification() == DailyMonthlyClassification.MONTHLY && x.isPrintTargetFlag())
                 .collect(Collectors.toList());
-
+        if (dailyOutputItems.isEmpty() && monthlyOutputItems.isEmpty()) {
+            throw new BusinessException("Msg_1860");
+        }
         // Loop 「社員の会社所属状況」の「対象社員」
         listEmployeeStatus.parallelStream().forEach(emp -> {
 
@@ -58,12 +60,16 @@ public class CreateAnnualWorkLedgerContentDomainService {
             if (employee == null || workplaceInfo == null) return;
 
             // 日次データ
-            val dailyData = getDailyData(require, emp, dailyOutputItems);
+            DailyData dailyData = null;
+            if (!dailyOutputItems.isEmpty()) {
+                dailyData = getDailyData(require, emp, dailyOutputItems);
+            }
             // 月次データ
             List<MonthlyData> lstMonthlyData = new ArrayList<>();
             String closureDate = null;
             String employmentCode = null;
             String employmentName = null;
+
             if (lstClosureDateEmployment.size() == 0) return;
             val closureDateEmployment = lstClosureDateEmployment.getOrDefault(emp.getEmployeeId(), null);
             if (closureDateEmployment == null) return;
@@ -71,12 +77,15 @@ public class CreateAnnualWorkLedgerContentDomainService {
             if (closure != null && closure.getClosureHistories().size() > 0) {
                 val closureHistory = closure.getClosureHistories().get(0);
                 val closureDay = closureHistory.getClosureDate().getClosureDay().v();
-                lstMonthlyData = getMonthlyData(require, emp, monthlyOutputItems, closureDay);
+                if (!monthlyOutputItems.isEmpty()) {
+                    lstMonthlyData = getMonthlyData(require, emp, monthlyOutputItems, closureDay);
+                }
                 closureDate = closureHistory.getClosureName().v();
                 employmentCode = closureDateEmployment.getEmploymentCode();
                 employmentName = closureDateEmployment.getEmploymentName();
 
             }
+
             AnnualWorkLedgerContent model = new AnnualWorkLedgerContent(
                     dailyData,
                     lstMonthlyData,
@@ -110,13 +119,13 @@ public class CreateAnnualWorkLedgerContentDomainService {
                 .flatMap(x -> x.getSelectedAttendanceItemList().stream()
                         .map(OutputItemDetailAttItem::getAttendanceItemId))
                 .distinct().collect(Collectors.toCollection(ArrayList::new));
-        List<AttendanceResultDto> listAttendancesz = new ArrayList<>();
+        List<AttendanceResultDto> listAttendance = new ArrayList<>();
         for (val date : emp.getListPeriod()) {
             val listValue = require.getValueOf(Collections.singletonList(emp.getEmployeeId()), date, listIds);
             if (listValue == null) continue;
-            listAttendancesz.addAll(listValue);
+            listAttendance.addAll(listValue);
         }
-        Map<GeneralDate, Map<Integer, AttendanceItemDtoValue>> allValue = listAttendancesz.stream()
+        Map<GeneralDate, Map<Integer, AttendanceItemDtoValue>> allValue = listAttendance.stream()
                 .collect(Collectors.toMap(AttendanceResultDto::getWorkingDate,
                         k -> k.getAttendanceItems().stream()
                                 .collect(Collectors.toMap(AttendanceItemDtoValue::getItemId, l -> l))));
@@ -126,16 +135,7 @@ public class CreateAnnualWorkLedgerContentDomainService {
             if (index > 1) {
                 break;
             }
-            if (index == 0) {
-                leftColumnName = item.getName().v();
-                leftAttribute = item.getItemDetailAttributes();
-            } else {
-                rightColumnName = item.getName().v();
-                rightAttribute = item.getItemDetailAttributes();
-            }
-            if (allValue != null) {
-
-                int finalIndex = index;
+            if (allValue == null) continue;
                 val itemValue = new ArrayList<DailyValue>();
                 allValue.forEach((key, value1) -> {
                     val listAtId = item.getSelectedAttendanceItemList();
@@ -158,13 +158,18 @@ public class CreateAnnualWorkLedgerContentDomainService {
                         }
                         itemValue.add(new DailyValue(actualValue, character.toString(), key));
                     }
-                    if (finalIndex == 0) {
-                        lstLeftValue.addAll(itemValue);
-                    } else {
-                        lstRightValue.addAll(itemValue);
-                    }
+
                 });
-            }
+                if (index == 0) {
+                    leftColumnName = item.getName().v();
+                    leftAttribute = item.getItemDetailAttributes();
+                    lstLeftValue.addAll(itemValue);
+                } else {
+                    lstRightValue.addAll(itemValue);
+                    rightColumnName = item.getName().v();
+                    rightAttribute = item.getItemDetailAttributes();
+                }
+
 
         }
 
@@ -188,15 +193,16 @@ public class CreateAnnualWorkLedgerContentDomainService {
                 .flatMap(x -> x.getSelectedAttendanceItemList().stream()
                         .map(OutputItemDetailAttItem::getAttendanceItemId))
                 .distinct().collect(Collectors.toCollection(ArrayList::new));
-        List<MonthlyRecordValueImport> listAttendancesz = new ArrayList<>();
+        List<MonthlyRecordValueImport> listAttendants = new ArrayList<>();
         for (val period : emp.getListPeriod()) {
             val yearMonthPeriod = GetSuitableDateByClosureDateUtility.convertPeriod(period, closureDay);
             val monthlyRecordValues = (require.getActualMultipleMonth(
-                    new ArrayList<>(Collections.singletonList(emp.getEmployeeId())), yearMonthPeriod, listIds)).get(emp.getEmployeeId());
+                    Collections.singletonList(emp.getEmployeeId())
+                    , yearMonthPeriod, listIds)).get(emp.getEmployeeId());
             if (monthlyRecordValues == null) continue;
-            listAttendancesz.addAll(monthlyRecordValues);
+            listAttendants.addAll(monthlyRecordValues);
         }
-        Map<YearMonth, Map<Integer, ItemValue>> allValue = listAttendancesz.stream()
+        Map<YearMonth, Map<Integer, ItemValue>> allValue = listAttendants.stream()
                 .collect(Collectors.toMap(MonthlyRecordValueImport::getYearMonth,
                         k -> k.getItemValues().stream()
                                 .collect(Collectors.toMap(ItemValue::getItemId, l -> l))));
@@ -221,16 +227,16 @@ public class CreateAnnualWorkLedgerContentDomainService {
         Double actualValue = 0d;
         for (OutputItemDetailAttItem d : selectedAttendanceItemList) {
             val subItem = itemValueMap.getOrDefault(d.getAttendanceItemId(), null);
-            if (subItem != null) {
-                val rawValue = subItem.getValue();
-                if (monthlyItem.getItemDetailAttributes() == CommonAttributesOfForms.WORK_TYPE ||
-                        monthlyItem.getItemDetailAttributes() == CommonAttributesOfForms.WORKING_HOURS) {
-                    character.append(rawValue);
-                } else {
-                    Double value = rawValue == null ? 0 : Double.parseDouble(rawValue);
-                    actualValue += value * (d.getOperator() == OperatorsCommonToForms.ADDITION ? 1 : -1);
-                }
+            if (subItem == null) continue;
+            val rawValue = subItem.getValue();
+            if (monthlyItem.getItemDetailAttributes() == CommonAttributesOfForms.WORK_TYPE ||
+                    monthlyItem.getItemDetailAttributes() == CommonAttributesOfForms.WORKING_HOURS) {
+                character.append(rawValue);
+            } else {
+                Double value = rawValue == null ? 0 : Double.parseDouble(rawValue);
+                actualValue += value * (d.getOperator() == OperatorsCommonToForms.ADDITION ? 1 : -1);
             }
+
         }
 
         return new MonthlyValue(actualValue, character.toString(), ym);
