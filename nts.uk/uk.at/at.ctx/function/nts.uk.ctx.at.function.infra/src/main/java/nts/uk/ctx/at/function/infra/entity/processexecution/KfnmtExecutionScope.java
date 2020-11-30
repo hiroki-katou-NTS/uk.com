@@ -4,6 +4,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionScope;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -53,8 +54,10 @@ public class KfnmtExecutionScope extends UkJpaEntity implements Serializable {
 		return this.kfnmtExecScopePK;
 	}
 
-	public KfnmtExecutionScope(KfnmtExecutionScopePK kfnmtExecScopePK, int execScopeCls, GeneralDate refDate,
-	                           List<KfnmtExecutionScopeItem> workplaceIdList) {
+	public KfnmtExecutionScope(KfnmtExecutionScopePK kfnmtExecScopePK,
+							   int execScopeCls,
+							   GeneralDate refDate,
+							   List<KfnmtExecutionScopeItem> workplaceIdList) {
 		super();
 		this.kfnmtExecScopePK = kfnmtExecScopePK;
 		this.execScopeCls = execScopeCls;
@@ -70,16 +73,17 @@ public class KfnmtExecutionScope extends UkJpaEntity implements Serializable {
 	 * @param domain       the domain
 	 * @return the entity kfnmt execution scope
 	 */
-	public static KfnmtExecutionScope createFromDomain(String companyId, String execItemCode, ProcessExecutionScope domain) {
-		if (domain == null) {
+	public static KfnmtExecutionScope createFromDomain(String companyId,
+													   String execItemCode,
+													   ProcessExecutionScope domain) {
+		if (StringUtils.isEmpty(companyId) || StringUtils.isEmpty(execItemCode) || domain == null) {
 			return null;
 		}
 		List<KfnmtExecutionScopeItem> workplaceIdList = domain.getWorkplaceIdList()
 															  .stream()
-															  .map(procExecScopeItem -> KfnmtExecutionScopeItem.toEntity(
-																							procExecScopeItem.getCompanyId(),
-																							procExecScopeItem.getExecItemCd(),
-																							procExecScopeItem.getWkpId()))
+															  .map(workplaceId -> new KfnmtExecutionScopeItem(companyId,
+																											  execItemCode,
+																											  workplaceId))
 															  .collect(Collectors.toList());
 		return new KfnmtExecutionScope(new KfnmtExecutionScopePK(companyId, execItemCode),
 									   domain.getExecScopeCls().value,

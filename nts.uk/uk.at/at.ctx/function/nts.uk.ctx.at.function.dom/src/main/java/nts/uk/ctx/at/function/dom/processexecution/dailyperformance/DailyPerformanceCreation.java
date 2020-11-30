@@ -51,4 +51,17 @@ public class DailyPerformanceCreation extends DomainObject {
 		this.dailyPerfCls = EnumAdaptor.valueOf(dailyPerfCls, NotUseAtr.class);
 	}
 
+	/**
+	 * Instantiates a new <code>DailyPerformanceCreation</code>.
+	 *
+	 * @param dailyPerfItem         the daily performance item
+	 * @param createNewEmpDailyPerf the create new employee daily performance
+	 * @param dailyPerfCls          the daily performance classification
+	 */
+	public DailyPerformanceCreation(int dailyPerfItem, int createNewEmpDailyPerf, boolean dailyPerfCls) {
+		this.dailyPerfItem = EnumAdaptor.valueOf(dailyPerfItem, DailyPerformanceItem.class);
+		this.createNewEmpDailyPerf = EnumAdaptor.valueOf(createNewEmpDailyPerf, NotUseAtr.class);
+		this.dailyPerfCls = dailyPerfCls ? NotUseAtr.USE : NotUseAtr.NOT_USE;
+	}
+
 }

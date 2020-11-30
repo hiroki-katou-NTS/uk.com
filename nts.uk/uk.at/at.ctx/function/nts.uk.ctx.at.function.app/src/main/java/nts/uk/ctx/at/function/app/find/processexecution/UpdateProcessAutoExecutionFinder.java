@@ -12,7 +12,6 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.SelectedProcessExecutionDto;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.UpdateProcessAutoExecutionDto;
-import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionScopeItem;
 import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionRepository;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceConfigInfoAdapter;
@@ -32,22 +31,20 @@ public class UpdateProcessAutoExecutionFinder {
 	public List<UpdateProcessAutoExecutionDto> findAll() {
 		String companyId = AppContexts.user().companyId();
 		return this.processExecRepo.getProcessExecutionByCompanyId(companyId)
-				.stream()
-				.map(UpdateProcessAutoExecutionDto::createFromDomain)
-				.collect(Collectors.toList());
+								   .stream()
+								   .map(UpdateProcessAutoExecutionDto::createFromDomain)
+								   .collect(Collectors.toList());
 	}
 	
 	public SelectedProcessExecutionDto findByCode(String execItemCd) {
-		Optional<UpdateProcessAutoExecution> optAutoExec = processExecRepo
+		Optional<UpdateProcessAutoExecution> optAutoExec = this.processExecRepo
 				.getProcessExecutionByCidAndExecCd(AppContexts.user().companyId(), execItemCd);
 		if (optAutoExec.isPresent()) {
 			UpdateProcessAutoExecution domain = optAutoExec.get();
-			List<WorkplaceInfor> workplaceInfos = workplaceConfigInfoAdapter
+			List<WorkplaceInfor> workplaceInfos = this.workplaceConfigInfoAdapter
 					.getWorkplaceInforByWkpIds(
 							AppContexts.user().companyId(),
-							domain.getExecScope().getWorkplaceIdList().stream()
-								.map(ProcessExecutionScopeItem::getWkpId)
-								.collect(Collectors.toList()), 
+							domain.getExecScope().getWorkplaceIdList(),
 							domain.getExecScope().getRefDate().orElse(GeneralDate.today()));
 			return new SelectedProcessExecutionDto(UpdateProcessAutoExecutionDto.createFromDomain(domain), workplaceInfos);
 		}

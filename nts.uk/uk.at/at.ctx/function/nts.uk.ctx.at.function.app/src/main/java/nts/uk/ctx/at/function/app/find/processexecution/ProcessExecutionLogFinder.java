@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.function.app.find.processexecution;
 
 import java.util.Arrays;
-//import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -15,11 +14,7 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.function.app.find.processexecution.dto.ExecutionItemInfomationDto;
-import nts.uk.ctx.at.function.app.find.processexecution.dto.ExecutionTaskSettingDto;
-import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionDto;
-import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionLogDto;
-import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionLogManageDto;
+import nts.uk.ctx.at.function.app.find.processexecution.dto.*;
 import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionService;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLog;
@@ -87,8 +82,8 @@ public class ProcessExecutionLogFinder {
 			throw new BusinessException("Msg_851");
 		}
 
-		Map<String, UpdateProcessAutoExecution> mapProcessExecution = listProcessExecution.stream().collect(
-				Collectors.toMap(item -> item.getExecItemCode().v(), Function.identity(), (a, b) -> a, TreeMap::new));
+		Map<String, UpdateProcessAutoExecution> mapProcessExecution = listProcessExecution.stream()
+				.collect(Collectors.toMap(item -> item.getExecItemCode().v(), Function.identity(), (a, b) -> a, TreeMap::new));
 
 		// ドメインモデル「更新処理自動実行ログ」を取得する
 		Map<String, ProcessExecutionLog> mapProcessExecutionLog = this.procExecLogRepo
@@ -113,8 +108,7 @@ public class ProcessExecutionLogFinder {
 			ExecutionTaskSetting executionTaskSetting = mapExecutionTaskSetting.get(execItemCd);
 			ExecutionItemInfomationDto dto = ExecutionItemInfomationDto.builder().execItemCd(execItemCd)
 					// 実行項目情報．更新処理自動実行 = 取得した「更新処理自動実行」
-					.updateProcessAutoExec(
-							processExecution != null ? ProcessExecutionDto.fromDomain(processExecution) : null)
+					.updateProcessAutoExec(UpdateProcessAutoExecutionDto.createFromDomain(processExecution))
 					// 実行項目情報．更新処理自動実行ログ = 取得した「更新処理自動実行ログ」
 					.updateProcessAutoExecLog(
 							processExecutionLog != null ? ProcessExecutionLogDto.fromDomain(processExecutionLog) : null)

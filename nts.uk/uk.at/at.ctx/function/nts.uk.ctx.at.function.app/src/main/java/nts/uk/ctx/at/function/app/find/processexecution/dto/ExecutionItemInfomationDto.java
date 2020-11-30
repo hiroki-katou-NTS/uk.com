@@ -33,7 +33,7 @@ public class ExecutionItemInfomationDto {
 	/**
 	 * 更新処理自動実行
 	 */
-	ProcessExecutionDto updateProcessAutoExec;
+	UpdateProcessAutoExecutionDto updateProcessAutoExec;
 	
 	/**
 	 * 更新処理自動実行ログ

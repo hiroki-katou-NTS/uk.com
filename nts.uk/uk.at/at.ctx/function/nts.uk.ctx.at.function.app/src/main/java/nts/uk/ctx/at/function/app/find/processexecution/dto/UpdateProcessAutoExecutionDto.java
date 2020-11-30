@@ -6,7 +6,6 @@ import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionScope;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionSetting;
 import nts.uk.ctx.at.function.dom.processexecution.ReExecutionCondition;
 import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The class Update process auto execution dto.<br>
@@ -56,7 +55,7 @@ public class UpdateProcessAutoExecutionDto implements UpdateProcessAutoExecution
 	/**
 	 * クラウド作成フラグ
 	 */
-	private boolean cloudCreationFlag;
+	private boolean cloudCreFlag;
 
 	/**
 	 * No args constructor.
@@ -72,11 +71,6 @@ public class UpdateProcessAutoExecutionDto implements UpdateProcessAutoExecution
 	@Override
 	public void setExecScope(ProcessExecutionScope execScope) {
 		this.execScope = ProcessExecutionScopeDto.fromDomain(execScope);
-	}
-
-	@Override
-	public void setContractCode(String contractCode) {
-		//not use
 	}
 
 	/**
@@ -99,9 +93,14 @@ public class UpdateProcessAutoExecutionDto implements UpdateProcessAutoExecution
 		this.reExecCondition = ReExecutionConditionDto.createFromDomain(reExecCondition);
 	}
 
+	/**
+	 * Sets cloud creation flag.
+	 *
+	 * @param cloudCreFlag the cloud creation flag
+	 */
 	@Override
 	public void setCloudCreFlag(boolean cloudCreFlag) {
-		this.cloudCreationFlag = cloudCreFlag;
+		this.cloudCreFlag = cloudCreFlag;
 	}
 
 	/**
@@ -115,7 +114,7 @@ public class UpdateProcessAutoExecutionDto implements UpdateProcessAutoExecution
 			return null;
 		}
 		UpdateProcessAutoExecutionDto dto = new UpdateProcessAutoExecutionDto();
-		domain.setMemento(AppContexts.user().contractCode(), dto);
+		domain.setMemento(dto);
 		return dto;
 	}
 

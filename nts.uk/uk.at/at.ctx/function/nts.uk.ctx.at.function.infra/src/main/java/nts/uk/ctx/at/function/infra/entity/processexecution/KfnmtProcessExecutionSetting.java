@@ -429,7 +429,7 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 																.map(createNewEmpApp -> createNewEmpApp.value)
 																.orElse(null);
 		entity.appRouteUpdateAtrMon = domain.getAppRouteUpdateMonthly().getAppRouteUpdateAtr().value;
-		entity.alarmAtr = domain.getAlarmExtraction().getAlarmAtr().value;
+		entity.alarmAtr = domain.getAlarmExtraction().getAlarmExtractionCls().value;
 		entity.alarmCode = domain.getAlarmExtraction().getAlarmCode()
 													  .map(AlarmPatternCode::v)
 													  .orElse(null);

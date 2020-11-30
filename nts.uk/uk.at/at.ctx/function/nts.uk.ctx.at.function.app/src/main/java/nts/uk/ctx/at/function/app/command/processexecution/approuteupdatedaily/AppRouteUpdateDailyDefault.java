@@ -131,12 +131,11 @@ public class AppRouteUpdateDailyDefault implements AppRouteUpdateDailyService {
 			List<ClosureEmployment> listClosureEmployment =  closureEmploymentRepo.findByClosureId(procExec.getCompanyId(), itemClosure.getClosureId().value);
 			List<String> listClosureEmploymentCode = listClosureEmployment.stream().map(c->c.getEmploymentCD()).collect(Collectors.toList());
 			/**対象社員を取得する*/
-			List<ProcessExecutionScopeItem> workplaceIdList = procExec.getExecScope()
-					.getWorkplaceIdList();
-			List<String> workplaceIds = new ArrayList<String>();
-			workplaceIdList.forEach(x -> {
-				workplaceIds.add(x.getWkpId());
-			});
+			List<String> workplaceIds = procExec.getExecScope().getWorkplaceIdList();
+//			List<String> workplaceIds = new ArrayList<String>();
+//			workplaceIdList.forEach(x -> {
+//				workplaceIds.add(x.getWkpId());
+//			});
 			List<String> listEmp = new ArrayList<>();
 			try {
 				listEmp = listEmpAutoExec.getListEmpAutoExec(companyId,

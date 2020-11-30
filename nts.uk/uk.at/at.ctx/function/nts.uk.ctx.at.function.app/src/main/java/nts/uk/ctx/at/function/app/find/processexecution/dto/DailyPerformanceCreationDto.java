@@ -4,9 +4,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.dom.processexecution.dailyperformance.DailyPerformanceCreation;
-import nts.uk.ctx.at.function.dom.processexecution.dailyperformance.DailyPerformanceItem;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -30,7 +28,7 @@ public class DailyPerformanceCreationDto {
 	 * The Create new employee daily performance.<br>
 	 * 新入社員は入社日から作成
 	 */
-	private boolean createNewEmpDailyPerf;
+	private int createNewEmpDailyPerf;
 
 	/**
 	 * The Daily performance classification.<br>
@@ -38,22 +36,30 @@ public class DailyPerformanceCreationDto {
 	 */
 	private boolean dailyPerfCls;
 
+	/**
+	 * Create from domain.
+	 *
+	 * @param domain the domain
+	 * @return the Daily performance creation dto
+	 */
 	public static DailyPerformanceCreationDto createFromDomain(DailyPerformanceCreation domain) {
 		if (domain == null) {
 			return null;
 		}
 		DailyPerformanceCreationDto dto = new DailyPerformanceCreationDto();
-		dto.dailyPerfCls = domain.getDailyPerfCls().equals(NotUseAtr.USE);
+		dto.dailyPerfCls = domain.getDailyPerfCls() == NotUseAtr.USE;
 		dto.dailyPerfItem = domain.getDailyPerfItem().value;
-		dto.createNewEmpDailyPerf = domain.getCreateNewEmpDailyPerf().equals(NotUseAtr.USE);
+		dto.createNewEmpDailyPerf = domain.getCreateNewEmpDailyPerf().value;
 		return dto;
 	}
 
+	/**
+	 * Converts <code>DailyPerformanceCreation</code> to domain.
+	 *
+	 * @return the domain Daily performance creation
+	 */
 	public DailyPerformanceCreation toDomain() {
-		return DailyPerformanceCreation.builder()
-				.createNewEmpDailyPerf(this.createNewEmpDailyPerf ? NotUseAtr.USE : NotUseAtr.NOT_USE)
-				.dailyPerfCls(this.dailyPerfCls ? NotUseAtr.USE : NotUseAtr.NOT_USE)
-				.dailyPerfItem(EnumAdaptor.valueOf(dailyPerfItem, DailyPerformanceItem.class))
-				.build();
+		return new DailyPerformanceCreation(this.dailyPerfItem, this.createNewEmpDailyPerf, this.dailyPerfCls);
 	}
+
 }

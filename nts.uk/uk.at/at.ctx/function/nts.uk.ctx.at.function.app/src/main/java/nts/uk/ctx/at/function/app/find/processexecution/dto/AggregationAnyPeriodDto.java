@@ -20,7 +20,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class AggregationOfArbitraryPeriodDto {
+public class AggregationAnyPeriodDto {
 
 	/**
 	 * 使用区分
@@ -38,11 +38,11 @@ public class AggregationOfArbitraryPeriodDto {
 	 * @param domain the domain
 	 * @return the Aggregation of arbitrary period dto
 	 */
-	public static AggregationOfArbitraryPeriodDto createFromDomain(AggregationAnyPeriod domain) {
+	public static AggregationAnyPeriodDto createFromDomain(AggregationAnyPeriod domain) {
 		if (domain == null) {
 			return null;
 		}
-		AggregationOfArbitraryPeriodDto dto = new AggregationOfArbitraryPeriodDto();
+		AggregationAnyPeriodDto dto = new AggregationAnyPeriodDto();
 		dto.classificationOfUse = domain.getAggAnyPeriodAttr().value;
 		dto.aggrFrameCode = domain.getAggrFrameCode().map(AggrFrameCode::v).orElse(null);
 		return dto;

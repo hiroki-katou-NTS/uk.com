@@ -1,10 +1,6 @@
 package nts.uk.ctx.at.function.dom.processexecution;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.function.dom.processexecution.dailyperformance.DailyPerformanceCreation;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.PersonalScheduleCreation;
@@ -101,6 +97,7 @@ public class ProcessExecutionSetting extends DomainObject {
 	private IndexReconstruction indexReconstruction;
 
 	/**
+	 * The Re-execution condition.<br>
 	 * 再実行条件
 	 */
 	private ReExecutionCondition reExecCondition;
@@ -125,10 +122,10 @@ public class ProcessExecutionSetting extends DomainObject {
 	public ProcessExecutionSetting(AlarmExtraction alarmExtraction,
 								   PersonalScheduleCreation perScheduleCreation,
 								   DailyPerformanceCreation dailyPerf,
-								   ReflectionApprovalResult reflectAppResult,
-								   MonthlyAggregate monthlyAggregate,
+								   boolean reflectAppResult,
+								   boolean monthlyAggregate,
 								   AppRouteUpdateDaily appRouteUpdateDaily,
-								   AppRouteUpdateMonthly appRouteUpdateMonthly,
+								   boolean appRouteUpdateMonthly,
 								   DeleteData deleteData,
 								   SaveData saveData,
 								   ExternalAcceptance externalAcceptance,
@@ -138,10 +135,10 @@ public class ProcessExecutionSetting extends DomainObject {
 		this.alarmExtraction = alarmExtraction;
 		this.perScheduleCreation = perScheduleCreation;
 		this.dailyPerf = dailyPerf;
-		this.reflectAppResult = reflectAppResult;
-		this.monthlyAggregate = monthlyAggregate;
+		this.reflectAppResult = new ReflectionApprovalResult(reflectAppResult);
+		this.monthlyAggregate = new MonthlyAggregate(monthlyAggregate);
 		this.appRouteUpdateDaily = appRouteUpdateDaily;
-		this.appRouteUpdateMonthly = appRouteUpdateMonthly;
+		this.appRouteUpdateMonthly = new AppRouteUpdateMonthly(appRouteUpdateMonthly);
 		this.deleteData = deleteData;
 		this.saveData = saveData;
 		this.externalAcceptance = externalAcceptance;

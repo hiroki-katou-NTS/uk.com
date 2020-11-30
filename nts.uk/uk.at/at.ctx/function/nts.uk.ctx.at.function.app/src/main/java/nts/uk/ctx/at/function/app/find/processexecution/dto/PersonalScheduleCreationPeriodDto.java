@@ -1,16 +1,12 @@
 package nts.uk.ctx.at.function.app.find.processexecution.dto;
 
-import java.util.Optional;
-
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.function.dom.processexecution.personalschedule.CreateScheduleYear;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.CreationPeriod;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.PersonalScheduleCreationPeriod;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetDate;
-import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetMonth;
 import nts.uk.shr.com.time.calendar.MonthDay;
 
 /**
@@ -21,7 +17,7 @@ import nts.uk.shr.com.time.calendar.MonthDay;
  */
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PersonalScheduleCreationPeriodDto {
 
 	/**
@@ -37,7 +33,7 @@ public class PersonalScheduleCreationPeriodDto {
 	/**
 	 * 対象月
 	 */
-	private Integer targetMonth;
+	private int targetMonth;
 
 	/**
 	 * 指定年
@@ -79,16 +75,19 @@ public class PersonalScheduleCreationPeriodDto {
 								.orElse(null);
 		return dto;
 	}
-	
+
+	/**
+	 * Converts <code>PersonalScheduleCreationPeriodDto</code> to domain.
+	 *
+	 * @return the domain Personal schedule creation period
+	 */
 	public PersonalScheduleCreationPeriod toDomain() {
-		return PersonalScheduleCreationPeriod.builder()
-				.creationPeriod(Optional.ofNullable(this.creationPeriod).map(CreationPeriod::new))
-				.designatedYear(Optional.ofNullable(designatedYear).map(data -> EnumAdaptor.valueOf(data, CreateScheduleYear.class)))
-				.endMonthDay(Optional.ofNullable(this.endMonthDay).map(data -> EnumAdaptor.valueOf(data, MonthDay.class)))
-				.startMonthDay(Optional.ofNullable(this.startMonthDay).map(data -> EnumAdaptor.valueOf(data, MonthDay.class)))
-				.targetDate(Optional.ofNullable(this.targetDate).map(data -> EnumAdaptor.valueOf(data, TargetDate.class)))
-				.targetMonth(EnumAdaptor.valueOf(this.targetMonth, TargetMonth.class))
-				.build();
+		return new PersonalScheduleCreationPeriod(this.creationPeriod,
+												  this.targetDate,
+												  this.targetMonth,
+												  this.designatedYear,
+												  this.startMonthDay,
+												  this.endMonthDay);
 	}
 
 	/**

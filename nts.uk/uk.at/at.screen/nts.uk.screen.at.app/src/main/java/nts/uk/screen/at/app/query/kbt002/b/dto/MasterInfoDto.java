@@ -7,6 +7,8 @@ import lombok.Data;
 import nts.uk.ctx.at.function.app.find.alarm.AlarmPatternSettingDto;
 import nts.uk.ctx.at.function.app.find.indexreconstruction.IndexReorgCateDto;
 import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.AnyAggrPeriodDto;
+import nts.uk.ctx.sys.assist.app.find.autosetting.deletion.DataDeletionPatternSettingDto;
+import nts.uk.ctx.sys.assist.app.find.autosetting.storage.DataStoragePatternSettingDto;
 import nts.uk.query.app.exi.condset.dto.StdAcceptCondSetDto;
 import nts.uk.query.app.exo.condset.dto.StdOutputCondSetDto;
 
@@ -32,10 +34,10 @@ public class MasterInfoDto {
 	private List<StdAcceptCondSetDto> stdAcceptCondSetList;
 
 	/** データ保存のパターン設定 */
-	private List<?> dataStoragePatternSetList;
+	private List<DataStoragePatternSettingDto> dataStoragePatternSetList;
 
 	/** データ削除のパターン設定 */
-	private List<?> dataDelPatternSetList;
+	private List<DataDeletionPatternSettingDto> dataDelPatternSetList;
 
 	/** インデックス再構成カテゴリ */
 	private List<IndexReorgCateDto> indexReorgCateList;

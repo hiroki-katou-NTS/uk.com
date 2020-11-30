@@ -2,16 +2,11 @@ package nts.uk.ctx.at.function.dom.processexecution;
 
 import java.util.Optional;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
-//import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 
 /**
  * Domain 更新処理自動実行<br>
@@ -21,7 +16,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @EqualsAndHashCode(callSuper = false)
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UpdateProcessAutoExecution extends AggregateRoot {
 
 	/**
@@ -82,7 +77,7 @@ public class UpdateProcessAutoExecution extends AggregateRoot {
 		// B17_1:アラーム抽出がTRUEの場合、
 		// B17_7,B17_8,B17_10,B17_11のいずれか選択されていなければならない。
 		// #Msg_1429
-		if (execSetting.getAlarmExtraction().getAlarmAtr().equals(NotUseAtr.USE)) { //B17_1
+		if (execSetting.getAlarmExtraction().getAlarmExtractionCls().equals(NotUseAtr.USE)) { //B17_1
 			if (!this.isAlarmCheckboxChecked(execSetting.getAlarmExtraction().getMailAdministrator()) && //B17_7
 					!this.isAlarmCheckboxChecked(execSetting.getAlarmExtraction().getMailPrincipal()) && //B17_8
 					!this.isAlarmCheckboxChecked(execSetting.getAlarmExtraction().getDisplayOnTopPageAdministrator()) && //B17_10
@@ -97,7 +92,7 @@ public class UpdateProcessAutoExecution extends AggregateRoot {
 					execSetting.getDailyPerf().getDailyPerfCls().equals(NotUseAtr.NOT_USE) && //B8_1
 					execSetting.getReflectAppResult().getReflectResultCls().equals(NotUseAtr.NOT_USE) && //B9_1
 					execSetting.getMonthlyAggregate().getMonthlyAggCls().equals(NotUseAtr.NOT_USE) && //B10_1
-					execSetting.getAlarmExtraction().getAlarmAtr().equals(NotUseAtr.NOT_USE) && //B11_1
+					execSetting.getAlarmExtraction().getAlarmExtractionCls().equals(NotUseAtr.NOT_USE) && //B11_1
 					execSetting.getAppRouteUpdateDaily().getAppRouteUpdateAtr().equals(NotUseAtr.NOT_USE) && //B12_1
 					execSetting.getAppRouteUpdateMonthly().getAppRouteUpdateAtr().equals(NotUseAtr.NOT_USE)) { //B12_3
 				throw new BusinessException("Msg_1230");
@@ -192,15 +187,13 @@ public class UpdateProcessAutoExecution extends AggregateRoot {
 	/**
 	 * Sets memento.
 	 *
-	 * @param contractCode the contract code
-	 * @param memento      the Memento setter
+	 * @param memento the Memento setter
 	 */
-	public void setMemento(String contractCode, MementoSetter memento) {
+	public void setMemento(MementoSetter memento) {
 		memento.setCompanyId(this.companyId);
 		memento.setExecItemCode(this.execItemCode.v());
 		memento.setExecItemName(this.execItemName.v());
 		memento.setExecScope(this.execScope);
-		memento.setContractCode(contractCode);
 		memento.setExecSetting(this.execSetting);
 		memento.setExecutionType(this.executionType.value);
 		memento.setReExecCondition(this.reExecCondition);
@@ -238,13 +231,6 @@ public class UpdateProcessAutoExecution extends AggregateRoot {
 		 * @param execScope the domain process execution scope
 		 */
 		public void setExecScope(ProcessExecutionScope execScope);
-
-		/**
-		 * Sets contract code.
-		 *
-		 * @param contractCode the contract code
-		 */
-		public void setContractCode(String contractCode);
 
 		/**
 		 * Sets execution setting.

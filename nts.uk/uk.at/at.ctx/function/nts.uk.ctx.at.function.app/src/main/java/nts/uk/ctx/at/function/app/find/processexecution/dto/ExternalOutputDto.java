@@ -45,8 +45,10 @@ public class ExternalOutputDto {
 		}
 		ExternalOutputDto dto = new ExternalOutputDto();
 		dto.externalOutputClassification = domain.getExtOutputCls().value;
-		dto.extOutputConditionCodeList = domain.getExtOutCondCodeList().stream().map(ExternalOutputConditionCode::v)
-				.collect(Collectors.toList());
+		dto.extOutputConditionCodeList = domain.getExtOutCondCodeList()
+											   .stream()
+											   .map(ExternalOutputConditionCode::v)
+											   .collect(Collectors.toList());
 		return dto;
 	}
 

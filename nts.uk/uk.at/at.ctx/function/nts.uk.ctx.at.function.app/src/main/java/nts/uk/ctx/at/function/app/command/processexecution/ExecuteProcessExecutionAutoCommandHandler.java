@@ -68,7 +68,6 @@ import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionScopeClassification;
 import nts.uk.ctx.at.function.dom.processexecution.LastExecDateTime;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecType;
-import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionScopeItem;
 import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.CurrentExecutionStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.EachProcessPeriod;
@@ -82,7 +81,6 @@ import nts.uk.ctx.at.function.dom.processexecution.listempautoexec.ListEmpAutoEx
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.CreateScheduleYear;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.CreationPeriod;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.PersonalScheduleCreationPeriod;
-import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetClassification;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetDate;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetMonth;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ExecutionTaskLogRepository;
@@ -892,7 +890,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
         boolean checkStopExec = false;
         try {
             // 個人スケジュール作成区分の判定
-			if (procExec.getExecSetting().getPerScheduleCreation().getPerScheduleCls().equals(NotUseAtr.NOT_USE)) {
+			if (procExec.getExecSetting().getPerScheduleCreation().getPerScheduleCls() == NotUseAtr.NOT_USE) {
                 this.updateStatusAndStartDateNull(procExecLog, ProcessExecutionTask.SCH_CREATION, EndStatus.NOT_IMPLEMENT);
                 this.procExecLogRepo.update(procExecLog);
                 return new OutputCreateScheduleAndDaily(true, listApprovalPeriodByEmp);
@@ -900,10 +898,9 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
             log.info("更新処理自動実行_個人スケジュール作成_START_" + context.getCommand().getExecItemCd() + "_" + GeneralDateTime.now());
 
             // 新入社員作成区分（Boolean）←属性「新入社員を作成」
-			boolean checkCreateEmployee = procExec.getExecSetting().getDailyPerf().getCreateNewEmpDailyPerf().equals(NotUseAtr.USE);
+			boolean checkCreateEmployee = procExec.getExecSetting().getPerScheduleCreation().getCreateNewEmpSched() == NotUseAtr.USE;
             // 期間の計算
-            DatePeriod calculateSchedulePeriod = this.calculateSchedulePeriod(procExec, procExecLog,
-                    checkCreateEmployee);
+            DatePeriod calculateSchedulePeriod = this.calculateSchedulePeriod(procExec, procExecLog, checkCreateEmployee);
 
             /*
              * 対象社員を取得
@@ -912,14 +909,10 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
             // sidList.add(loginContext.employeeId()); // Add login SID to test, remove when
             // implement this algorithm
 
-            List<ProcessExecutionScopeItem> workplaceIdList = procExec.getExecScope().getWorkplaceIdList();
-            List<String> workplaceIds = new ArrayList<String>();
-            workplaceIdList.forEach(x -> {
-                workplaceIds.add(x.getWkpId());
-            });
+            List<String> workplaceIdList = procExec.getExecScope().getWorkplaceIdList();
             // 更新処理自動実行の実行対象社員リストを取得する
             List<String> listEmp = listEmpAutoExec.getListEmpAutoExec(companyId, calculateSchedulePeriod,
-                    procExec.getExecScope().getExecScopeCls(), Optional.of(workplaceIds), Optional.empty());
+                    procExec.getExecScope().getExecScopeCls(), Optional.of(workplaceIdList), Optional.empty());
 
             /*
              * 作成対象の判定
@@ -1655,11 +1648,11 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
                 employmentList.forEach(x -> {
                     lstEmploymentCode.add(x.getEmploymentCD());
                 });
-                List<ProcessExecutionScopeItem> workplaceIdList = procExec.getExecScope().getWorkplaceIdList();
-                List<String> workPlaceIds = new ArrayList<String>();
-                workplaceIdList.forEach(x -> {
-                    workPlaceIds.add(x.getWkpId());
-                });
+                List<String> workplaceIdList = procExec.getExecScope().getWorkplaceIdList();
+//                List<String> workPlaceIds = new ArrayList<String>();
+//                workplaceIdList.forEach(x -> {
+//                    workPlaceIds.add(x.getWkpId());
+//                });
 
 				if (procExec.getExecutionType() == ProcessExecType.NORMAL_EXECUTION) {
                     // 実行呼び出し処理
@@ -1670,7 +1663,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
                     // 更新処理自動実行の実行対象社員リストを取得する
                     List<String> listEmp = listEmpAutoExec.getListEmpAutoExec(companyId,
                             calculateDailyPeriod.getDailyCreationPeriod(), procExec.getExecScope().getExecScopeCls(),
-                            Optional.of(workPlaceIds), Optional.of(lstEmploymentCode));
+                            Optional.of(workplaceIdList), Optional.of(lstEmploymentCode));
                     String typeExecution = "日別作成";
                     // 日別実績の作成
                     // boolean dailyPerformanceCreation = this.dailyPerformanceCreation(
@@ -1681,7 +1674,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
                     try {
 						log.info("更新処理自動実行_日別実績の作成_START_"+procExec.getExecItemCode()+"_"+GeneralDateTime.now());
                         boolean dailyPerformanceCreation = this.dailyPerformanceCreation(companyId, context, procExec,
-                                empCalAndSumExeLog, listEmp, calculateDailyPeriod.getDailyCreationPeriod(), workPlaceIds,
+                                empCalAndSumExeLog, listEmp, calculateDailyPeriod.getDailyCreationPeriod(), workplaceIdList,
                                 typeExecution, dailyCreateLog);
 
                         if (dailyPerformanceCreation) {
@@ -1712,7 +1705,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
                     // 日別実績の計算
                     try {
                         boolean dailyPerformanceCreation2 = this.dailyPerformanceCreation(companyId, context, procExec,
-                                empCalAndSumExeLog, listEmp, calculateDailyPeriod.getDailyCalcPeriod(), workPlaceIds,
+                                empCalAndSumExeLog, listEmp, calculateDailyPeriod.getDailyCalcPeriod(), workplaceIdList,
                                 typeExecution, dailyCalLog);
 						log.info("更新処理自動実行_日別実績の計算_END_" + procExec.getExecItemCode() + "_" + GeneralDateTime.now());
                         if (dailyPerformanceCreation2) {
@@ -1732,7 +1725,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
                     // 更新処理自動実行の実行対象社員リストを取得する
                     List<String> listEmp = listEmpAutoExec.getListEmpAutoExec(companyId,
                             new DatePeriod(calculateDate, GeneralDate.ymd(9999, 12, 31)),
-                            procExec.getExecScope().getExecScopeCls(), Optional.of(workPlaceIds),
+                            procExec.getExecScope().getExecScopeCls(), Optional.of(workplaceIdList),
                             Optional.of(lstEmploymentCode));
 
                     // 異動者・勤務種別変更者リスト作成処理
@@ -2375,15 +2368,14 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
                     // 取得した「締め期間」から「期間」を計算する
                     DatePeriod newDatePeriod = new DatePeriod(datePeriodClosure.start(), GeneralDate.ymd(9999, 12, 31));
 
-                    List<ProcessExecutionScopeItem> workplaceIdList = processExecution.getExecScope()
-                            .getWorkplaceIdList();
-                    List<String> workplaceIds = new ArrayList<String>();
-                    workplaceIdList.forEach(x -> {
-                        workplaceIds.add(x.getWkpId());
-                    });
+                    List<String> workplaceIdList = processExecution.getExecScope().getWorkplaceIdList();
+//                    List<String> workplaceIdList = new ArrayList<String>();
+//                    workplaceIdList.forEach(x -> {
+//                        workplaceIdList.add(x.getWkpId());
+//                    });
                     // 更新処理自動実行の実行対象社員リストを取得する
                     List<String> listEmp = listEmpAutoExec.getListEmpAutoExec(companyId, newDatePeriod,
-                            processExecution.getExecScope().getExecScopeCls(), Optional.of(workplaceIds),
+                            processExecution.getExecScope().getExecScopeCls(), Optional.of(workplaceIdList),
                             Optional.of(lstEmploymentCode));
                     List<String> leaderEmpIdList = new ArrayList<>();
                     // if (processExecution.getProcessExecType() == ProcessExecType.RE_CREATE) {
@@ -2683,16 +2675,15 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
                 DatePeriod newDatePeriod = new DatePeriod(datePeriodClosure.start(), GeneralDate.ymd(9999, 12, 31));
 
                 // <<Public>> 就業条件で社員を検索して並び替える
-                List<ProcessExecutionScopeItem> workplaceIdList = processExecution.getExecScope()
-                        .getWorkplaceIdList();
-                List<String> workplaceIds = new ArrayList<String>();
-                workplaceIdList.forEach(x -> {
-                    workplaceIds.add(x.getWkpId());
-                });
+                List<String> workplaceIdList = processExecution.getExecScope().getWorkplaceIdList();
+//                List<String> workplaceIdList = new ArrayList<String>();
+//                workplaceIdList.forEach(x -> {
+//                    workplaceIdList.add(x.getWkpId());
+//                });
 
                 // 更新処理自動実行の実行対象社員リストを取得する
                 List<String> listEmp = listEmpAutoExec.getListEmpAutoExec(companyId, newDatePeriod,
-                        processExecution.getExecScope().getExecScopeCls(), Optional.of(workplaceIds),
+                        processExecution.getExecScope().getExecScopeCls(), Optional.of(workplaceIdList),
                         Optional.of(lstEmploymentCode));
                 List<String> leaderEmpIdList = new ArrayList<>();
 				if (processExecution.getExecutionType() == ProcessExecType.RE_CREATE) {
@@ -2894,7 +2885,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
             }
             this.procExecLogRepo.update(ProcessExecutionLog);
             // アラーム抽出区分の判定
-            boolean alarmAtr = processExecution.getExecSetting().getAlarmExtraction().getAlarmAtr().equals(NotUseAtr.USE);
+            boolean alarmAtr = processExecution.getExecSetting().getAlarmExtraction().getAlarmExtractionCls().equals(NotUseAtr.USE);
             if (!alarmAtr) {
                 // ドメインモデル「更新処理自動実行ログ」を更新する
                 for (int i = 0; i < size; i++) {
@@ -2916,8 +2907,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
             if (processExecution.getExecScope().getExecScopeCls() == ExecutionScopeClassification.COMPANY) {
                 workplaceIdList = workplaceAdapter.findListWorkplaceIdByBaseDate(GeneralDate.today());
             } else {
-                workplaceIdList = processExecution.getExecScope().getWorkplaceIdList().stream().map(c -> c.getWkpId())
-                        .collect(Collectors.toList());
+                workplaceIdList = processExecution.getExecScope().getWorkplaceIdList();
             }
             // List<パターンコード>
             List<String> listPatternCode = new ArrayList<>();
@@ -3735,17 +3725,17 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
             } else {
                 // Step 更新処理自動実行の実行対象社員リストを取得する - Get the list of employees to be automatically executed in the update process
                 // 職場ID＜List＞ = ドメインモデル「更新処理自動実行」．実行範囲．職場実行範囲
-                List<String> workplaceIds = procExec.getExecScope()
-                        .getWorkplaceIdList()
-                        .stream()
-                        .map(ProcessExecutionScopeItem::getWkpId)
-                        .collect(Collectors.toList());
+//                List<String> workplaceIds = procExec.getExecScope()
+//                        .getWorkplaceIdList()
+//                        .stream()
+//                        .map(ProcessExecutionScopeItem::getWkpId)
+//                        .collect(Collectors.toList());
                 //	 更新処理自動実行の実行対象社員リストを取得する
                 List<String> listEmp = listEmpAutoExec.getListEmpAutoExec(
                         companyId,
                         anyAggrPeriod.get().getPeriod(),
                         procExec.getExecScope().getExecScopeCls(),
-                        Optional.of(workplaceIds),
+                        Optional.of(procExec.getExecScope().getWorkplaceIdList()),
                         Optional.empty());
                 // Step ドメインモデル「任意期間集計実行ログ」を新規登録する - Registering a new domain model 任意期間集計実行ログ (AggrPeriodExcution)
                 AggrPeriodExcutionImport aggrPeriodExcution = AggrPeriodExcutionImport.builder()

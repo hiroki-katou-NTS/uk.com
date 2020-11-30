@@ -40,7 +40,7 @@ public class PersonalScheduleCreationDto {
 	 * 新入社員を作成
 	 */
 	private boolean createNewEmpSched;
-	
+
 	/**
 	 * Create from domain.
 	 *
@@ -53,17 +53,18 @@ public class PersonalScheduleCreationDto {
 		}
 		PersonalScheduleCreationDto dto = new PersonalScheduleCreationDto();
 		dto.perSchedulePeriod = PersonalScheduleCreationPeriodDto.createFromDomain(domain.getPerSchedulePeriod());
-		dto.perScheduleCls = domain.getPerScheduleCls().equals(NotUseAtr.USE);
-//		dto.target = PersonalScheduleCreationTargetDto.createFromDomain(domain.getTarget());
+		dto.perScheduleCls = domain.getPerScheduleCls() == NotUseAtr.USE;
+		dto.createNewEmpSched = domain.getCreateNewEmpSched() == NotUseAtr.USE;
 		return dto;
 	}
 
+	/**
+	 * Converts <code>PersonalScheduleCreationDto</code> to domain.
+	 *
+	 * @return the domain Personal schedule creation
+	 */
 	public PersonalScheduleCreation toDomain() {
-		return PersonalScheduleCreation.builder()
-				.createNewEmpSched(createNewEmpSched ? NotUseAtr.USE : NotUseAtr.NOT_USE)
-				.perScheduleCls(perScheduleCls ? NotUseAtr.USE : NotUseAtr.NOT_USE)
-				.perSchedulePeriod(perSchedulePeriod.toDomain())
-				.build();
+		return new PersonalScheduleCreation(this.perSchedulePeriod.toDomain(), this.perScheduleCls, this.createNewEmpSched);
 	}
-	
+
 }

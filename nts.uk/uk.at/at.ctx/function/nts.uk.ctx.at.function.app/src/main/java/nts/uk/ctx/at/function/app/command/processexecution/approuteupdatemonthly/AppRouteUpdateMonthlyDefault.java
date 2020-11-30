@@ -87,7 +87,7 @@ public class AppRouteUpdateMonthlyDefault implements AppRouteUpdateMonthlyServic
 
 		/** 承認ルート更新（月次）の判定 */
 		// FALSEの場合
-		if (procExec.getExecSetting().getAppRouteUpdateMonthly().getAppRouteUpdateAtr().equals(NotUseAtr.NOT_USE)) {
+		if (procExec.getExecSetting().getAppRouteUpdateMonthly().getAppRouteUpdateAtr() == NotUseAtr.NOT_USE) {
 			for (ExecutionTaskLog executionTaskLog : procExecLog.getTaskLogList()) {
 				if (executionTaskLog.getProcExecTask() == ProcessExecutionTask.APP_ROUTE_U_MON) {
 					executionTaskLog.setStatus(EndStatus.NOT_IMPLEMENT);
@@ -120,11 +120,11 @@ public class AppRouteUpdateMonthlyDefault implements AppRouteUpdateMonthlyServic
 			List<String> listClosureEmploymentCode = listClosureEmployment.stream().map(c -> c.getEmploymentCD())
 					.collect(Collectors.toList());
 			/** 対象社員を取得する */
-			List<ProcessExecutionScopeItem> workplaceIdList = procExec.getExecScope().getWorkplaceIdList();
-			List<String> workplaceIds = new ArrayList<String>();
-			workplaceIdList.forEach(x -> {
-				workplaceIds.add(x.getWkpId());
-			});
+			List<String> workplaceIds = procExec.getExecScope().getWorkplaceIdList();
+//			List<String> workplaceIds = new ArrayList<String>();
+//			workplaceIdList.forEach(x -> {
+//				workplaceIds.add(x.getWkpId());
+//			});
 
 			List<String> listEmp = new ArrayList<>();
 			try {

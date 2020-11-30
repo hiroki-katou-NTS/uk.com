@@ -6,7 +6,6 @@ import nts.arc.layer.dom.DomainObject;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 import java.util.Optional;
-//import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 
 /**
  * The class Approval route update daily.<br>

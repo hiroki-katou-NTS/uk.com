@@ -77,11 +77,6 @@ public class UpdateProcessAutoExecutionDto implements UpdateProcessAutoExecution
 		this.execScope = ProcessExecutionScopeDto.fromDomain(execScope);
 	}
 
-	@Override
-	public void setContractCode(String contractCode) {
-		//not use
-	}
-
 	/**
 	 * Sets execution setting.
 	 *
@@ -118,7 +113,7 @@ public class UpdateProcessAutoExecutionDto implements UpdateProcessAutoExecution
 			return null;
 		}
 		UpdateProcessAutoExecutionDto dto = new UpdateProcessAutoExecutionDto();
-		domain.setMemento(AppContexts.user().contractCode(), dto);
+		domain.setMemento(dto);
 		return dto;
 	}
 

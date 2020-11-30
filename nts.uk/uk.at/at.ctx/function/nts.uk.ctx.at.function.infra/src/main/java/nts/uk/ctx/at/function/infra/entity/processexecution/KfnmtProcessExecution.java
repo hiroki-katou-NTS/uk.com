@@ -4,7 +4,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import nts.uk.ctx.at.function.dom.processexecution.*;
+import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionScope;
+import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionSetting;
+import nts.uk.ctx.at.function.dom.processexecution.ReExecutionCondition;
+import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
@@ -30,46 +33,46 @@ public class KfnmtProcessExecution extends UkJpaEntity
 	 */
 	@Version
 	@Column(name = "EXCLUS_VER")
-	public long version;
+	private long version;
 
 	/**
 	 * The contract code<br>
 	 * Column 契約コード
 	 */
 	@Column(name = "CONTRACT_CD")
-	public String contractCode;
+	private String contractCode;
 
 	/**
 	 * The primary key
 	 */
 	@EmbeddedId
-	public KfnmtProcessExecutionPK kfnmtProcExecPK;
+	private KfnmtProcessExecutionPK kfnmtProcExecPK;
 
 	/**
 	 * 名称
 	 */
 	@Column(name = "EXEC_ITEM_NAME")
-	public String execItemName;
+	private String execItemName;
 
 	@OneToOne(mappedBy = "procExec", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinTable(name = "KFNMT_EXECUTION_SCOPE")
-	public KfnmtExecutionScope execScope;
+	private KfnmtExecutionScope execScope;
 
 	@OneToOne(mappedBy = "procExec", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinTable(name = "KFNMT_PROC_EXEC_SETTING")
-	public KfnmtProcessExecutionSetting execSetting;
+	private KfnmtProcessExecutionSetting execSetting;
 
 	/**
 	 * 実行種別
 	 */
 	@Column(name = "PROCESS_EXEC_TYPE")
-	public int executionType;
+	private int executionType;
 
 	/**
 	 * クラウド作成フラグ
 	 */
 	@Column(name = "CLOUD_CRE_FLAG")
-	public int cloudCreFlag;
+	private int cloudCreFlag;
 
 	/**
 	 * Gets primary key.
@@ -88,92 +91,9 @@ public class KfnmtProcessExecution extends UkJpaEntity
 	 * @param domain       the domain require <code>not null</code>
 	 */
 	public KfnmtProcessExecution(@NonNull String contractCode, @NonNull UpdateProcessAutoExecution domain) {
-		domain.setMemento(contractCode, this);
+		domain.setMemento(this);
+		this.contractCode = contractCode;
 	}
-
-//	public static KfnmtProcessExecution toEntity(UpdateProcessAutoExecution domain) {
-//		KfnmtProcessExecutionPK kfnmtProcExecPK = new KfnmtProcessExecutionPK(domain.getCompanyId(),
-//				domain.getExecItemCode().v());
-//		List<KfnmtExecutionScopeItem> wkpList = domain.getExecScope().getWorkplaceIdList().stream()
-//				.map(x -> KfnmtExecutionScopeItem.toEntity(x.getCompanyId(), x.getExecItemCd(), x.getWkpId()))
-//				.collect(Collectors.toList());
-//		KfnmtExecutionScope execScope = new KfnmtExecutionScope(
-//				new KfnmtExecutionScopePK(domain.getCompanyId(), domain.getExecItemCode().v()),
-//				domain.getExecScope().getExecScopeCls().value, domain.getExecScope().getRefDate(), wkpList);
-//		KfnmtProcessExecutionSetting execSetting = new KfnmtProcessExecutionSetting(
-//				new KfnmtProcessExecutionSettingPK(domain.getCompanyId(), domain.getExecItemCode().v()),
-//				domain.getVersion(),
-//				AppContexts.user().contractCode(),
-//				domain.getExecSetting().getPerScheduleCreation().isPerSchedule() ? 1 : 0,
-//				domain.getExecSetting().getPerScheduleCreation().getPerSchedulePeriod().getTargetMonth().value,
-//				/*
-//				 * domain.getExecSetting().getPerSchedule().getPeriod().
-//				 * getTargetDate() == null ? null :
-//				 */domain.getExecSetting().getPerScheduleCreation().getPerSchedulePeriod().getTargetDate().v(),
-//				/*
-//				 * domain.getExecSetting().getPerSchedule().getPeriod().
-//				 * getCreationPeriod() == null ? null :
-//				 */domain.getExecSetting().getPerScheduleCreation().getPerSchedulePeriod().getCreationPeriod().v(),
-//				!domain.getExecSetting().getPerScheduleCreation().getPerSchedulePeriod().getDesignatedYear().isPresent()
-//						? null
-//						: domain.getExecSetting().getPerScheduleCreation().getPerSchedulePeriod().getDesignatedYear().get().value,
-//				!domain.getExecSetting().getPerScheduleCreation().getPerSchedulePeriod().getStartMonthDay().isPresent()
-//						? null
-//						: (domain.getExecSetting().getPerScheduleCreation().getPerSchedulePeriod().getStartMonthDay().get().getMonth() * 100
-//						+ domain.getExecSetting().getPerScheduleCreation().getPerSchedulePeriod().getStartMonthDay().get().getDay()),
-//				!domain.getExecSetting().getPerScheduleCreation().getPerSchedulePeriod().getEndMonthDay().isPresent()
-//						? null
-//						: (domain.getExecSetting().getPerScheduleCreation().getPerSchedulePeriod().getEndMonthDay().get().getMonth() * 100
-//						+ domain.getExecSetting().getPerScheduleCreation().getPerSchedulePeriod().getEndMonthDay().get().getDay()),
-//				domain.getExecSetting().getPerScheduleCreation().getTarget().getTargetSetting().isCreateEmployee() ? 1 : 0,
-//				domain.getExecSetting().getDailyPerf().isDailyPerfCls() ? 1 : 0,
-//				domain.getExecSetting().getDailyPerf().getDailyPerfItem().value,
-//				domain.getExecSetting().getDailyPerf().getTargetGroupClassification().isMidJoinEmployee() ? 1 : 0,
-//				domain.getExecSetting().isReflectResultCls() ? 1 : 0, domain.getExecSetting().isMonthlyAggCls() ? 1 : 0,
-//				domain.getExecSetting().getAppRouteUpdateDaily().getAppRouteUpdateAtr().value,
-//				domain.getExecSetting().getAppRouteUpdateDaily().getCreateNewEmpApp().isPresent()
-//						? domain.getExecSetting().getAppRouteUpdateDaily().getCreateNewEmpApp().get().value
-//						: null,
-//				domain.getExecSetting().getAppRouteUpdateMonthly().value,
-//				domain.getExecSetting().getAlarmExtraction().isAlarmAtr() ? 1 : 0,
-//				domain.getExecSetting().getAlarmExtraction().getAlarmCode().isPresent()
-//						? domain.getExecSetting().getAlarmExtraction().getAlarmCode().get().v()
-//						: null,
-//				domain.getExecSetting().getAlarmExtraction().getMailPrincipal().isPresent()
-//						? (domain.getExecSetting().getAlarmExtraction().getMailPrincipal().get() ? 1 : 0)
-//						: null,
-//				domain.getExecSetting().getAlarmExtraction().getMailAdministrator().isPresent()
-//						? (domain.getExecSetting().getAlarmExtraction().getMailAdministrator().get() ? 1 : 0)
-//						: null,
-//				domain.getExecSetting().getAlarmExtraction().getDisplayOnTopPagePrincipal().isPresent()
-//						? domain.getExecSetting().getAlarmExtraction().getDisplayOnTopPagePrincipal().get() ? 1 : 0
-//						: null,
-//				domain.getExecSetting().getAlarmExtraction().getDisplayOnTopPageAdministrator().isPresent()
-//						? domain.getExecSetting().getAlarmExtraction().getDisplayOnTopPageAdministrator().get() ? 1 : 0
-//						: null,
-//				domain.getExecSetting().getExternalOutput().getExtOutputCls().value,
-//				domain.getExecSetting().getExternalAcceptance().getExtAcceptCls().value,
-//				domain.getExecSetting().getSaveData().getSaveDataCls().value,
-//				domain.getExecSetting().getSaveData().getPatternCode().isPresent()
-//						? domain.getExecSetting().getSaveData().getPatternCode().get().v()
-//						: null,
-//				domain.getExecSetting().getDeleteData().getDataDelCls().value,
-//				domain.getExecSetting().getDeleteData().getPatternCode().isPresent()
-//						? domain.getExecSetting().getDeleteData().getPatternCode().get().v()
-//						: null,
-//				domain.getExecSetting().getAggrAnyPeriod().getAggAnyPeriodAttr().value,
-//				domain.getExecSetting().getAggrAnyPeriod().getAggrFrameCode().isPresent()
-//						? domain.getExecSetting().getAggrAnyPeriod().getAggrFrameCode().get().v()
-//						: null,
-//				domain.getExecSetting().getPerScheduleCreation().getTarget().getTargetSetting().isRecreateWorkType() ? 1 : 0,
-//				domain.getExecSetting().getPerScheduleCreation().getTarget().getTargetSetting().isRecreateTransfer() ? 1 : 0,
-//				1,//TODO QA111576
-////				this.recreLeaveSya = recreLeaveSya;
-//				domain.getExecSetting().getIndexReconstruction().getIndexReorgAttr().value,
-//				domain.getExecSetting().getIndexReconstruction().getUpdateStatistics().value,
-//				domain.getCloudCreationFlag() ? 1 : 0);
-//		return new KfnmtProcessExecution(kfnmtProcExecPK, domain.getExecItemName().v(), execScope, execSetting, domain.getExecutionType().value);
-//	}
 
 	/**
 	 * Sets company id.
@@ -220,7 +140,7 @@ public class KfnmtProcessExecution extends UkJpaEntity
 	public void setExecSetting(ProcessExecutionSetting execSetting) {
 		this.execSetting = KfnmtProcessExecutionSetting.createFromDomain(this.getCompanyId(),
 																		 this.getExecItemCode(),
-																		 this.getContractCode(),
+																		 this.contractCode,
 																		 execSetting);
 	}
 
@@ -283,14 +203,10 @@ public class KfnmtProcessExecution extends UkJpaEntity
 	 */
 	@Override
 	public ProcessExecutionScope getExecScope() {
-		List<ProcessExecutionScopeItem> workplaceIdList = this.execScope.workplaceIdList
-																		.stream()
-																		.map(exeScopeItem -> new ProcessExecutionScopeItem(
-																				exeScopeItem.kfnmtExecScopeItemPK.companyId,
-																				exeScopeItem.kfnmtExecScopeItemPK.execItemCd,
-																				exeScopeItem.kfnmtExecScopeItemPK.wkpId)
-																		)
-																		.collect(Collectors.toList());
+		List<String> workplaceIdList = this.execScope.workplaceIdList
+													 .stream()
+													 .map(KfnmtExecutionScopeItem::getWorkplaceId)
+													 .collect(Collectors.toList());
 		return new ProcessExecutionScope(this.execScope.execScopeCls, this.execScope.refDate, workplaceIdList);
 	}
 
@@ -323,6 +239,21 @@ public class KfnmtProcessExecution extends UkJpaEntity
 	@Override
 	public boolean getCloudCreFlag() {
 		return this.cloudCreFlag == 1;
+	}
+
+	/**
+	 * Clone from other entity.
+	 *
+	 * @param newEntity the new <code>KfnmtProcessExecution</code> entity require <code>not null</code>
+	 */
+	public void cloneFromOtherEntity(KfnmtProcessExecution newEntity) {
+		if (newEntity != null) {
+			this.execItemName = newEntity.execItemName;
+			this.execScope = newEntity.execScope;
+			this.execSetting = newEntity.execSetting;
+			this.executionType = newEntity.executionType;
+			this.cloudCreFlag = newEntity.cloudCreFlag;
+		}
 	}
 
 }

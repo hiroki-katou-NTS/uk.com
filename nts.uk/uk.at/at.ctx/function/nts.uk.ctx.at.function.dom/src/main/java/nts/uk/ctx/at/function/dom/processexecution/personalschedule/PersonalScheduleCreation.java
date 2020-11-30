@@ -32,11 +32,6 @@ public class PersonalScheduleCreation extends DomainObject {
 	 */
 	private NotUseAtr perScheduleCls;
 
-//	/**
-//	 * 対象社員
-//	 */
-//	private PersonalScheduleCreationTarget target;
-
 	/**
 	 * The Create new employee schedule.<br>
 	 * 新入社員を作成
@@ -46,7 +41,7 @@ public class PersonalScheduleCreation extends DomainObject {
 	/**
 	 * Instantiates a new <code>PersonalScheduleCreation</code>.
 	 *
-	 * @param perSchedulePeriod the personal schedule creation period
+	 * @param perSchedulePeriod the domain personal schedule creation period
 	 * @param perScheduleCls    the personal schedule creation classification
 	 * @param createNewEmpSched the create new employee schedule
 	 */
@@ -54,6 +49,19 @@ public class PersonalScheduleCreation extends DomainObject {
 		this.perSchedulePeriod = perSchedulePeriod;
 		this.perScheduleCls = EnumAdaptor.valueOf(perScheduleCls, NotUseAtr.class);
 		this.createNewEmpSched = EnumAdaptor.valueOf(createNewEmpSched, NotUseAtr.class);
+	}
+
+	/**
+	 * Instantiates a new <code>PersonalScheduleCreation</code>.
+	 *
+	 * @param perSchedulePeriod the domain personal schedule creation period
+	 * @param perScheduleCls    the personal schedule creation classification
+	 * @param createNewEmpSched the create new employee schedule
+	 */
+	public PersonalScheduleCreation(PersonalScheduleCreationPeriod perSchedulePeriod, boolean perScheduleCls, boolean createNewEmpSched) {
+		this.perSchedulePeriod = perSchedulePeriod;
+		this.perScheduleCls = perScheduleCls ? NotUseAtr.USE : NotUseAtr.NOT_USE;
+		this.createNewEmpSched = createNewEmpSched ? NotUseAtr.USE : NotUseAtr.NOT_USE;
 	}
 
 }

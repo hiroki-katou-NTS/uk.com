@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.dom.processexecution;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -11,8 +12,8 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  * @author nws-minhnb
  */
 @Getter
-public class AppRouteUpdateMonthly {
-	
+public class AppRouteUpdateMonthly extends DomainObject {
+
 	/**
 	 * The Approval route update attribute.<br>
 	 * 使用区分
@@ -20,11 +21,21 @@ public class AppRouteUpdateMonthly {
 	private NotUseAtr appRouteUpdateAtr;
 
 	/**
-	 * Instantiates a new App route update monthly.
+	 * Instantiates a new <code>AppRouteUpdateMonthly</code>.
 	 *
 	 * @param appRouteUpdateAtr the approval route update attribute
 	 */
 	public AppRouteUpdateMonthly(int appRouteUpdateAtr) {
 		this.appRouteUpdateAtr = EnumAdaptor.valueOf(appRouteUpdateAtr, NotUseAtr.class);
 	}
+
+	/**
+	 * Instantiates a new <code>AppRouteUpdateMonthly</code>.
+	 *
+	 * @param appRouteUpdateAtr the approval route update attribute
+	 */
+	public AppRouteUpdateMonthly(boolean appRouteUpdateAtr) {
+		this.appRouteUpdateAtr = appRouteUpdateAtr ? NotUseAtr.USE : NotUseAtr.NOT_USE;
+	}
+
 }

@@ -1,113 +1,98 @@
 package nts.uk.ctx.at.function.app.command.processexecution;
 
-import java.util.List;
-
-//import java.util.Optional;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.arc.time.GeneralDate;
+import lombok.AllArgsConstructor;
+import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionScopeDto;
+import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionSettingDto;
+import nts.uk.ctx.at.function.app.find.processexecution.dto.ReExecutionConditionDto;
+import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionScope;
+import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionSetting;
+import nts.uk.ctx.at.function.dom.processexecution.ReExecutionCondition;
+import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
 
 @Data
 @NoArgsConstructor
-public class SaveProcessExecutionCommand {
+@AllArgsConstructor
+public class SaveProcessExecutionCommand implements UpdateProcessAutoExecution.MementoGetter {
+
 	private boolean newMode;
-	
-	/* 会社ID */
+
+	/**
+	 * 会社ID
+	 */
 	private String companyId;
-	
-	/* コード */
-	private String execItemCd;
-	
-	/* 名称 */
+
+	/**
+	 * コード
+	 */
+	private String execItemCode;
+
+	/**
+	 * 名称
+	 */
 	private String execItemName;
-	
-	/* 個人スケジュール作成 */
-	private boolean perScheduleCls;
-	
-	/* 対象月 */
-	private int targetMonth;
-	
-	/* 対象日 */
-	private Integer targetDate;
-	
-	/* 作成期間 */
-	private Integer creationPeriod;
-	
-	/* 作成対象 */
-	private int creationTarget;
-	
-	/* 勤務種別変更者を再作成 */
-	private boolean recreateWorkType;
-	
-	/* 手修正を保護する */
-	private boolean manualCorrection;
-	
-	/* 新入社員を作成する */
-	private boolean createEmployee;
-	
-	/* 異動者を再作成する */
-	private boolean recreateTransfer;
-	
-	/* 日別実績の作成・計算 */
-	private boolean dailyPerfCls;
-	
-	/* 作成・計算項目 */
-	private int dailyPerfItem;
-	
-	/* 前回処理日 */
-	private GeneralDate lastProcDate;
-	
-	/* 途中入社は入社日からにする */
-	private boolean midJoinEmployee;
-	
-	/* 承認結果反映 */
-	private boolean reflectResultCls;
-	
-	/* 月別集計 */
-	private boolean monthlyAggCls;
 
-	private int execScopeCls;
+	/**
+	 * 実行範囲
+	 */
+	private ProcessExecutionScopeDto execScope;
 
-	private GeneralDate refDate;
-	
-    private List<String> workplaceList;
-    
-    /* 更新処理の日別処理対象者区分.勤務種別変更者を再作成 */
-	public boolean recreateTypeChangePerson;
-	
-	/* 更新処理の日別処理対象者区分.異動者を再作成する */
-	public boolean recreateTransfers;
-	
-	/** 承認ルート更新区分 */
-	private boolean appRouteUpdateAtr;
-	
-	/** 新入社員を作成する */
-	private Boolean createNewEmp;
-	
-	/* 承認ルート更新（月次） */
-	private boolean appRouteUpdateMonthly;
+	/**
+	 * 実行設定
+	 */
+	private ProcessExecutionSettingDto execSetting;
 
-	/* 実行種別*/
-	private int processExecType;
-	
-	private boolean alarmAtr;
-	
-	private String alarmCode;
-	
-	private Boolean mailPrincipal;
-	
-	private Boolean mailAdministrator;
-	
-	/* 指定年 */
-	private Integer designatedYear;
-	
-	/* 指定開始月日 */
-	private Integer startMonthDay;
-	
-	/* 指定終了月日*/
-	private Integer endMonthDay;
-	
-	/* クラウド作成フラグ  */
-	private Boolean cloudCreationFlag;
+	/**
+	 * 実行種別
+	 */
+	private int executionType;
+
+	/**
+	 * 再実行条件
+	 */
+	private ReExecutionConditionDto reExecCondition;
+
+	/**
+	 * クラウド作成フラグ
+	 */
+	private boolean cloudCreationFlag;
+
+	/**
+	 * Gets execution scope.
+	 *
+	 * @return the domain execution scope
+	 */
+	public ProcessExecutionScope getExecScope() {
+		return this.execScope.toDomain();
+	}
+
+	/**
+	 * Gets execution setting.
+	 *
+	 * @return the domain execution setting
+	 */
+	public ProcessExecutionSetting getExecSetting() {
+		return this.execSetting.toDomain();
+	}
+
+	/**
+	 * Gets re-execution condition.
+	 *
+	 * @return the domain re-execution condition
+	 */
+	public ReExecutionCondition getReExecCondition() {
+		return this.reExecCondition.toDomain();
+	}
+
+	/**
+	 * Gets cloud creation flag.
+	 *
+	 * @return the cloud creation flag
+	 */
+	@Override
+	public boolean getCloudCreFlag() {
+		return this.cloudCreationFlag;
+	}
 
 }

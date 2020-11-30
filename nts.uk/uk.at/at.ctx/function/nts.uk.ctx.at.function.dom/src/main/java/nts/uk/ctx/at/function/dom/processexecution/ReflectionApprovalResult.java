@@ -35,4 +35,13 @@ public class ReflectionApprovalResult extends DomainObject {
 		this.reflectResultCls = EnumAdaptor.valueOf(reflectResultCls, NotUseAtr.class);
 	}
 
+	/**
+	 * Instantiates a new <code>ReflectionApprovalResult</code>.
+	 *
+	 * @param reflectResultCls the reflection result classification
+	 */
+	public ReflectionApprovalResult(boolean reflectResultCls) {
+		this.reflectResultCls = reflectResultCls ? NotUseAtr.USE : NotUseAtr.NOT_USE;
+	}
+
 }

@@ -29,10 +29,19 @@ public class MonthlyAggregate extends DomainObject {
 	/**
 	 * Instantiates a new <code>MonthlyAggregate</code>.
 	 *
-	 * @param monthlyAggCls the monthly aggregate classification classification
+	 * @param monthlyAggCls the monthly aggregate classification
 	 */
 	public MonthlyAggregate(int monthlyAggCls) {
 		this.monthlyAggCls = EnumAdaptor.valueOf(monthlyAggCls, NotUseAtr.class);
+	}
+
+	/**
+	 * Instantiates a new <code>MonthlyAggregate</code>.
+	 *
+	 * @param monthlyAggCls the monthly aggregate classification
+	 */
+	public MonthlyAggregate(boolean monthlyAggCls) {
+		this.monthlyAggCls = monthlyAggCls ? NotUseAtr.USE : NotUseAtr.NOT_USE;
 	}
 
 }

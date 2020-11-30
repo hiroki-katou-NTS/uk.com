@@ -45,8 +45,10 @@ public class ExternalAcceptanceDto {
 		}
 		ExternalAcceptanceDto dto = new ExternalAcceptanceDto();
 		dto.externalAcceptanceClassification = domain.getExtAcceptCls().value;
-		dto.extAccepConditionCodeList = domain.getExtAcceptCondCodeList().stream()
-				.map(ExternalAcceptanceConditionCode::v).collect(Collectors.toList());
+		dto.extAccepConditionCodeList = domain.getExtAcceptCondCodeList()
+											  .stream()
+											  .map(ExternalAcceptanceConditionCode::v)
+											  .collect(Collectors.toList());
 		return dto;
 	}
 
