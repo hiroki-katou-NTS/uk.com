@@ -64,9 +64,9 @@ module nts.uk.at.view.kaf020.b {
             let itemNoList = params.settingItems.map((item: any) => item.no);
             $.when(vm.$ajax(PATH_API.getControlAttendance, {optionalItemNos: itemNoList}), vm.$ajax(PATH_API.listOptionalItem, {optionalItemNos: itemNoList})).done((controlAttendance: any, optionalItems: any) => {
                 let contents: Array<OptionalItemApplicationContent> = [];
-                itemNoList.forEach((optionalItemNo: number) => {
-                    let optionalItem: OptionalItem = _.find(optionalItems, {optionalItemNo: optionalItemNo});
-                    let controlOfAttendanceItem: any = _.find(controlAttendance, {itemDailyID: optionalItemNo + 640});
+                params.settingItems.forEach((opItem: any) => {
+                    let optionalItem: OptionalItem = _.find(optionalItems, {optionalItemNo: opItem.no});
+                    let controlOfAttendanceItem: any = _.find(controlAttendance, {itemDailyID: opItem.no + 640});
                     contents.push({
                         optionalItemName: optionalItem.optionalItemName,
                         optionalItemNo: optionalItem.optionalItemNo,
@@ -85,9 +85,10 @@ module nts.uk.at.view.kaf020.b {
                         time: ko.observable(''),
                         times: ko.observable(),
                         amount: ko.observable(),
-                        detail: ''
+                        detail: '',
+                        dispOrder: opItem.dispOrder
                     });
-                })
+                });
                 vm.dataFetch({applicationContents: ko.observableArray(contents), name: params.name});
             }).then(() => {
                 vm.focusDate();
