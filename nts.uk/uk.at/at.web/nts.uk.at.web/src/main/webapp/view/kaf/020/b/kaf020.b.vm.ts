@@ -65,8 +65,8 @@ module nts.uk.at.view.kaf020.b {
             $.when(vm.$ajax(PATH_API.getControlAttendance, {optionalItemNos: itemNoList}), vm.$ajax(PATH_API.listOptionalItem, {optionalItemNos: itemNoList})).done((controlAttendance: any, optionalItems: any) => {
                 let contents: Array<OptionalItemApplicationContent> = [];
                 params.settingItems.forEach((opItem: any) => {
-                    let optionalItem: OptionalItem = _.find(optionalItems, {optionalItemNo: opItem.optionalItemNo});
-                    let controlOfAttendanceItem: any = _.find(controlAttendance, {itemDailyID: opItem.optionalItemNo + 640});
+                    let optionalItem: OptionalItem = _.find(optionalItems, {optionalItemNo: opItem.no});
+                    let controlOfAttendanceItem: any = _.find(controlAttendance, {itemDailyID: opItem.no + 640});
                     contents.push({
                         optionalItemName: optionalItem.optionalItemName,
                         optionalItemNo: optionalItem.optionalItemNo,

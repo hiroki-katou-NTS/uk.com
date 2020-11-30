@@ -167,7 +167,7 @@ module nts.uk.at.view.kaf020.c.viewmodel {
             application.opAppStandardReasonCD = ko.toJS(vm.application().opAppStandardReasonCD);
             application.opReversionReason = ko.toJS(vm.application().opReversionReason);
             let dataFetch = ko.toJS(vm.dataFetch);
-            let optionalItems = new Array();
+            let optionalItems: Array<any> = [];
             dataFetch.applicationContents.forEach((item: OptionalItemApplicationContent) => {
                 optionalItems.push({
                     itemNo: item.optionalItemNo,
@@ -175,7 +175,7 @@ module nts.uk.at.view.kaf020.c.viewmodel {
                     amount: item.amount,
                     time: item.time
                 });
-            })
+            });
             let command = {
                 application: application,
                 appDispInfoStartup: ko.toJS(vm.appDispInfoStartupOutput()),
@@ -185,13 +185,19 @@ module nts.uk.at.view.kaf020.c.viewmodel {
                 },
             };
             vm.$blockui("show");
-            return vm.$ajax(PATH_API.update, command).done(res => {
-                    if (res) {
-                        if (res) {
-                            vm.printContent.opOptionalItemOutput = dataFetch.opOptionalItemOutput;
-                            vm.$dialog.info({messageId: "Msg_15"});
-                        }
+
+            return vm.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
+                .then((valid: boolean) => {
+                    if (valid) {
+                        return vm.$ajax(PATH_API.update, command);
                     }
+                }).done(res => {
+                    if (res) {
+                        vm.printContent.opOptionalItemOutput = dataFetch.opOptionalItemOutput;
+                        vm.$dialog.info({messageId: "Msg_15"});
+                    }
+                }).fail(err => {
+                    vm.$dialog.error(err);
                 }).always(() => {
                     vm.$errors("clear");
                     vm.$blockui("hide");
