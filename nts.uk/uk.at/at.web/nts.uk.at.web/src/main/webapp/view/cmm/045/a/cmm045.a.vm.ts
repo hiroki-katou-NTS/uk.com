@@ -186,12 +186,87 @@ module cmm045.a.viewmodel {
             }
 
             window.onresize = function(event) {
-                if($('#grid1').length){//approval
-                    $("#grid1").igGrid("option", "height", window.innerHeight - 350  + "px");
-                }
-                if($('#grid2').length){//application
-                    $("#grid2").igGrid("option", "height", window.innerHeight - 270  + "px");
-                }
+				if(self.mode()==1) {
+					$('#status-div').width(955);
+					if(window.innerWidth-90 < 965) {
+						$('#app-resize').width(920);
+						$('.nts-fixed-header-container .fixed-table').width(920);
+						$('.nts-fixed-header-wrapper').width(937);
+						$('.nts-fixed-header-container').width(920);
+						$('.nts-fixed-header-container').css('max-width', 920);
+						$('nts-fixed-header-wrapper').width(920);
+						$('.nts-fixed-body-wrapper').width(920);
+						$('.nts-fixed-body-table').width(920);
+						$('.nts-fixed-body-container').width(937);
+						$('.nts-fixed-body-container').css('max-width', 953);
+					} else {
+						$('#app-resize').width(window.innerWidth-134);
+						$('.nts-fixed-header-container .fixed-table').width(window.innerWidth-134);
+						$('.nts-fixed-header-wrapper').width(window.innerWidth-117);
+						$('.nts-fixed-header-container').width(window.innerWidth-134);
+						$('.nts-fixed-header-container').css('max-width', window.innerWidth-134);
+						$('nts-fixed-header-wrapper').width(window.innerWidth-134);
+						$('.nts-fixed-body-wrapper').width(window.innerWidth-134);
+						$('.nts-fixed-body-table').width(window.innerWidth-134);
+						$('.nts-fixed-body-container').width(window.innerWidth-117);
+						$('.nts-fixed-body-container').css('max-width', window.innerWidth-101);
+					}
+					if($('.nts-fixed-header-container').width()-850 < 70) {
+						$('.appContent').width(70);	
+					} else {
+						$('.appContent').width($('.nts-fixed-header-container').width()-850);
+					}
+					if(window.innerHeight-384 < 60) {
+						$('.nts-fixed-body-container').height(60);
+						$('.nts-fixed-body-wrapper').height(44);
+					} else {
+						$('.nts-fixed-body-container').height(window.innerHeight-384);
+						$('.nts-fixed-body-wrapper').height(window.innerHeight-400);
+					}
+	            } else {
+					$('#status-div').width(880);
+	                if(window.innerWidth-90 < 880) {
+						$('#app-resize').width(845);
+						$('.nts-fixed-header-container .fixed-table').width(845);
+						$('.nts-fixed-header-wrapper').width(862);
+						$('.nts-fixed-header-container').width(845);
+						$('.nts-fixed-header-container').css('max-width', 845);
+						$('nts-fixed-header-wrapper').width(845);
+						$('.nts-fixed-body-wrapper').width(845);
+						$('.nts-fixed-body-table').width(845);
+						$('.nts-fixed-body-container').width(862);
+						$('.nts-fixed-body-container').css('max-width', 878);
+					} else {
+						$('#app-resize').width(window.innerWidth-129);
+						$('.nts-fixed-header-container .fixed-table').width(window.innerWidth-129);
+						$('.nts-fixed-header-wrapper').width(window.innerWidth-112);
+						$('.nts-fixed-header-container').width(window.innerWidth-129);
+						$('.nts-fixed-header-container').css('max-width', window.innerWidth-129);
+						$('nts-fixed-header-wrapper').width(window.innerWidth-129);
+						$('.nts-fixed-body-wrapper').width(window.innerWidth-129);
+						$('.nts-fixed-body-table').width(window.innerWidth-129);
+						$('.nts-fixed-body-container').width(window.innerWidth-112);
+						$('.nts-fixed-body-container').css('max-width', window.innerWidth-96);
+					}
+					if($('.nts-fixed-header-container').width()-850 < 70) {
+						$('.appContent').width(70);	
+					} else {
+						$('.appContent').width($('.nts-fixed-header-container').width()-850);
+					}
+					if(window.innerHeight-384 < 60) {
+						$('.nts-fixed-body-container').height(60);
+						$('.nts-fixed-body-wrapper').height(44);
+					} else {
+						$('.nts-fixed-body-container').height(window.innerHeight-384);
+						$('.nts-fixed-body-wrapper').height(window.innerHeight-400);
+					}
+				}
+//                if($('#grid1').length){//approval
+//                    $("#grid1").igGrid("option", "height", window.innerHeight - 350  + "px");
+//                }
+//                if($('#grid2').length){//application
+//                    $("#grid2").igGrid("option", "height", window.innerHeight - 270  + "px");
+//                }
             }
 
 			self.selectedIds.subscribe(value => {
@@ -1020,7 +1095,7 @@ module cmm045.a.viewmodel {
             let widthAuto = isHidden == false ? 1175 : 1110;
             // let widthAuto = isHidden == false ? 1250 : 1185;
             // widthAuto = screen.width - 100 >= widthAuto ? widthAuto : screen.width - 100;
-            widthAuto = window.innerWidth >= 1280 ? window.innerWidth - 130 : 1100;
+            widthAuto = window.innerWidth - 90 > 880 ? window.innerWidth - 129 : 845;
 
             var contentWidth = 340;
             character.restore('TableColumnWidth0' + __viewContext.user.companyId + __viewContext.user.employeeId).then((obj) => {
@@ -1052,7 +1127,7 @@ module cmm045.a.viewmodel {
                     { headerText: getText('CMM045_57'), key: 'reflectionStatus', width: '75px', extraClassProperty: "appStatusName"},
                     { headerText: getText('CMM045_58'), key: 'opApprovalStatusInquiry', width: '95px' }
                 ];
-                let heightAuto = window.innerHeight >= 768 ? window.innerHeight - 345 : 305;
+                let heightAuto = window.innerHeight - 384 > 60 ? window.innerHeight - 384 : 60;
                 // let heightAuto = window.innerHeight - 342 >= 325 ? window.innerHeight - 342 : 325;
                 this.setupGrid({
                     withCcg001: true,
@@ -1297,7 +1372,7 @@ module cmm045.a.viewmodel {
             var self = this;
             let widthAuto = isHidden == false ? 1175 : 1110;
             // widthAuto = screen.width - 35 >= widthAuto ? widthAuto : screen.width - 35;
-            widthAuto = window.innerWidth >= 1280 ? window.innerWidth - 130 : 1100;
+            widthAuto = window.innerWidth - 90 > 965 ? window.innerWidth - 134 : 920;
 
             var contentWidth = 340;
             character.restore('TableColumnWidth1' + __viewContext.user.companyId + __viewContext.user.employeeId).then((obj) => {
@@ -1332,7 +1407,7 @@ module cmm045.a.viewmodel {
                     { headerText: getText('CMM045_57'), key: 'reflectionStatus', width: '75px', extraClassProperty: "appStatusName"},
                     { headerText: getText('CMM045_58'), key: 'opApprovalStatusInquiry', width: '95px' },
                 ]
-                let heightAuto = window.innerHeight >= 768 ? window.innerHeight - 357 : 272;
+                let heightAuto = window.innerHeight - 384 > 60 ? window.innerHeight - 384 : 60;
                 // let heightAuto = window.innerHeight - 375 > 292 ? window.innerHeight - 375 : 292;
                 this.setupGrid({
                     withCcg001: true,
