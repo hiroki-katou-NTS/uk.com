@@ -205,7 +205,7 @@ export class KafS20A2Component extends KafS00ShrComponent {
                     return item.itemNo == controlAttendance.itemDailyID;
                 });
 
-                const { calcResultRange, optionalItemAtr, optionalItemName, optionalItemNo, unit, description } = optionalItem;
+                const { calcResultRange, optionalItemAtr, optionalItemName, optionalItemNo, unit, description,dispOrder } = optionalItem;
                 const { lowerCheck, upperCheck, amountLower, amountUpper, numberLower, numberUpper, timeLower, timeUpper } = calcResultRange;
 
                 const { amount, times, time } = item;
@@ -227,10 +227,11 @@ export class KafS20A2Component extends KafS00ShrComponent {
                     optionalItemName,
                     optionalItemNo,
                     unit,
-                    description
+                    description,
+                    dispOrder
                 });
             });
-            vm.optionalItemApplication.sort((a,b) => a.optionalItemNo - b.optionalItemNo);
+            vm.optionalItemApplication.sort((a,b) => a.dispOrder - b.dispOrder);
         }
 
         vm.$auth.user.then((user: any) => {
@@ -256,9 +257,6 @@ export class KafS20A2Component extends KafS00ShrComponent {
 
                         let controlAttendances: IControlOfAttendanceItemsDto[] = res[0].data;
                         let optionalNoItems: IOptionalItemDto[] = res[1].data;
-
-                        //sort
-                        optionalNoItems.sort((a,b) => a.optionalItemNo - b.optionalItemNo);
 
                         settingNoItems.forEach((itemNo: number) => {
                             let optionalItem = optionalNoItems.find((optionalItem) => {
@@ -291,9 +289,9 @@ export class KafS20A2Component extends KafS00ShrComponent {
                                     optionalItemName,
                                     optionalItemNo,
                                     unit,
-                                    description
+                                    description,
+                                    dispOrder: null
                                 });
-                                vm.optionalItemApplication.sort((a,b) => a.optionalItemNo - b.optionalItemNo);
                             }
                         });
 
@@ -304,17 +302,6 @@ export class KafS20A2Component extends KafS00ShrComponent {
                     });
             }
         });
-    }
-
-    //Not input decimal when amount
-    public isNumber(evt) {
-        evt = (evt) ? evt : window.event;
-        const charCode = (evt.which) ? evt.which : evt.keyCode;
-        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-            evt.preventDefault();
-        } else {
-            return true;
-        }
     }
 
     public backToStep1() {

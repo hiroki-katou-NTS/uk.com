@@ -1,7 +1,7 @@
 import { Vue } from '@app/provider';
 import { component, Prop, Watch } from '@app/core/component';
 import { IAppDispInfoStartupOutput } from '../../../../../kaf/s04/a/define';
-import { OptionalItemApplication } from '../../../../../kaf/s20/a/define';
+import { IControlOfAttendanceItemsDto, IOptionalItemDto, OptionalItemApplication } from '../../../../../kaf/s20/a/define';
 
 @component({
     name: 'CmmS45ComponentsApp15Component',
@@ -13,12 +13,14 @@ import { OptionalItemApplication } from '../../../../../kaf/s20/a/define';
 export class CmmS45ShrComponentsApp15Component extends Vue {
 
     public optionalItemApplication: OptionalItemApplication[] | null = [];
-    public optionalItemSetting: ISettings = {
+    public appDetail: IAppDetail | null = null;
+    public settingItems: ISettings | null = {
+        code: '',
         name: '',
         note: '',
-        code: ''
+        optionalItems: null
     };
-
+    
     @Prop({
         default: () => ({
             appDispInfoStartupOutput: null,
@@ -27,7 +29,7 @@ export class CmmS45ShrComponentsApp15Component extends Vue {
     })
     public readonly params!: {
         appDispInfoStartupOutput: IAppDispInfoStartupOutput,
-        appDetail: any,
+        appDetail: IAppDetail,
     };
 
     @Watch('params.appDispInfoStartupOutput')
@@ -40,7 +42,6 @@ export class CmmS45ShrComponentsApp15Component extends Vue {
     public created() {
         const vm = this;
 
-        vm.params.appDetail = {};
         vm.fetchData(vm.params);
     }
 
@@ -62,24 +63,25 @@ export class CmmS45ShrComponentsApp15Component extends Vue {
                 applicationId: appID
             }).then((res: any) => {
                 vm.params.appDetail = res.data;
-                vm.optionalItemSetting = vm.params.appDetail.application;
+                let optionalItemSetting = vm.params.appDetail.application.optionalItems;
+                
                 const { params } = vm;
                 const { appDetail } = params;
+                const { controlOfAttendanceItems, optionalItems,application } = appDetail;
 
-                const { application } = appDetail;
-                const { optionalItems } = application;
-                
-                optionalItems.forEach((item) => {
-                    let optionalItem = appDetail.optionalItems.find((optionalItem) => {
+                vm.settingItems = application;
+
+                optionalItemSetting.forEach((item) => {
+                    let optionalItem = optionalItems.find((optionalItem) => {
 
                         return optionalItem.optionalItemNo == item.itemNo - 640;
                     });
-                    let controlAttendance = appDetail.controlOfAttendanceItems.find((controlAttendance) => {
+                    let controlAttendance = controlOfAttendanceItems.find((controlAttendance) => {
 
                         return item.itemNo == controlAttendance.itemDailyID;
                     });
 
-                    const { calcResultRange, optionalItemAtr, optionalItemName, optionalItemNo, unit,description } = optionalItem;
+                    const { calcResultRange, optionalItemAtr, optionalItemName, optionalItemNo, unit, description,dispOrder } = optionalItem;
                     const { lowerCheck, upperCheck, amountLower, amountUpper, numberLower, numberUpper, timeLower, timeUpper } = calcResultRange;
 
                     const { amount, times, time } = item;
@@ -91,8 +93,8 @@ export class CmmS45ShrComponentsApp15Component extends Vue {
                         amountUpper,
                         numberLower,
                         numberUpper,
-                        timeLower ,
-                        timeUpper ,
+                        timeLower,
+                        timeUpper,
                         amount,
                         number: times,
                         time,
@@ -101,11 +103,13 @@ export class CmmS45ShrComponentsApp15Component extends Vue {
                         optionalItemName,
                         optionalItemNo,
                         unit,
-                        description
+                        description,
+                        dispOrder,
                     });
                     vm.$emit('loading-complete');
                 });
-                vm.optionalItemApplication.sort((a,b) => a.optionalItemNo - b.optionalItemNo);
+                vm.optionalItemApplication.sort((a,b) => a.dispOrder - b.dispOrder );
+                console.log(vm.optionalItemApplication);
             });
         });
     }
@@ -119,4 +123,19 @@ export interface ISettings {
     code: string;
     name: string;
     note: string;
+    optionalItems: IOptionalItems[];
+    
+}
+
+export interface IAppDetail {
+    application: ISettings;
+    controlOfAttendanceItems: IControlOfAttendanceItemsDto[];
+    optionalItems: IOptionalItemDto[];
+}
+
+export interface IOptionalItems {
+    amount: number | null;
+    itemNo: number | null;
+    times: number | null;
+    time: number | null;
 }

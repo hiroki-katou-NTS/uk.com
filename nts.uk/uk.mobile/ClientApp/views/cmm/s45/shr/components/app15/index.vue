@@ -15,13 +15,13 @@
           <div class="card-header">
             <button class="btn btn-link" type="button">
               <!-- tiêu đề của collapse -->
-              <span>{{ optionalItemSetting.name }}</span>
+              <span>{{ settingItems.name }}</span>
             </button>
           </div>
           <div class="collapse">
             <div class="card-body">
               <!-- nội dung của collapse -->
-              {{ optionalItemSetting.note}}
+              {{ settingItems.note}}
             </div>
           </div>
         </div>

@@ -19,6 +19,7 @@ export interface IOptionalItemDto {
     description: string | null;
     empConditionAtr: number | null;
     formulas: any[];
+    dispOrder: number | null;
     optionalItemAtr: number | null;
     optionalItemName: string;
     optionalItemNo: number | null;
@@ -65,6 +66,7 @@ export interface OptionalItemApplication {
     number: number | null;
     amount: number | null;
     description: string | null;
+    dispOrder: number | null;
 }
 
 interface optionalItems {
