@@ -112,6 +112,7 @@ public class ProcessExecutionSettingDto {
 		dto.externalOutput = ExternalOutputDto.createFromDomain(domain.getExternalOutput());
 		dto.aggrAnyPeriod = AggregationAnyPeriodDto.createFromDomain(domain.getAggrAnyPeriod());
 		dto.indexReconstruction = IndexReconstructionDto.createFromDomain(domain.getIndexReconstruction());
+		dto.reExecCondition = ReExecutionConditionDto.createFromDomain(domain.getReExecCondition());
 		return dto;
 	}
 

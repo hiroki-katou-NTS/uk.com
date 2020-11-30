@@ -232,7 +232,7 @@ module nts.uk.at.view.kbt002.b {
         vm.$dialog.error({ messageId: "Msg_1294" });
       } else {
         // Get json object
-        const command: SaveProcessExecutionCommand = vm.toJsonObject();
+        const command: SaveUpdateProcessAutoExecutionCommand = vm.toJsonObject();
         vm.$blockui('grayout');
 
         // Insert or update process execution
@@ -511,88 +511,107 @@ module nts.uk.at.view.kbt002.b {
      * To json object.
      * @returns The save process execution command
      */
-    private toJsonObject(): SaveProcessExecutionCommand {
+    private toJsonObject(): SaveUpdateProcessAutoExecutionCommand {
       const vm = this;
       // To JsObject
-      let command: SaveProcessExecutionCommand = new SaveProcessExecutionCommand();
+      let command: SaveUpdateProcessAutoExecutionCommand = new SaveUpdateProcessAutoExecutionCommand();
       command.newMode = vm.isNewMode();
       if (vm.currentExecItem().processExecType() === 0) { //通常実行
         // vm.currentExecItem().creationTarget(0);
         command.companyId = vm.currentExecItem().companyId();
         command.execItemCode = vm.currentExecItem().execItemCode();
         command.execItemName = vm.currentExecItem().execItemName();
-        command.perScheduleCls = vm.currentExecItem().perScheduleClsNormal();
+        command.execSetting.perSchedule.perScheduleCls = vm.currentExecItem().perScheduleClsNormal();
         if (!vm.currentExecItem().perScheduleClsNormal() || vm.currentExecItem().targetMonth() === 3) {
-          command.targetDate = 1;
-          command.creationPeriod = 1;
+          command.execSetting.perSchedule.perSchedulePeriod.targetDate = 1;
+          command.execSetting.perSchedule.perSchedulePeriod.creationPeriod = 1;
         } else {
-          command.creationPeriod = vm.currentExecItem().creationPeriod();
-          command.targetDate = vm.currentExecItem().targetDate();
+          command.execSetting.perSchedule.perSchedulePeriod.creationPeriod = vm.currentExecItem().creationPeriod();
+          command.execSetting.perSchedule.perSchedulePeriod.targetDate = vm.currentExecItem().targetDate();
         }
-        command.targetMonth = vm.currentExecItem().targetMonth();
+        command.execSetting.perSchedule.perSchedulePeriod.targetMonth = vm.currentExecItem().targetMonth();
         // command.creationTarget = vm.currentExecItem().creationTarget();
-        command.recreateWorkType = false; //B15_3
-        command.manualCorrection = false; //B15_4
-        command.createEmployee = vm.currentExecItem().createEmployee();
-        command.recreateTransfer = false; //B15_2(1)
-        command.dailyPerfCls = vm.currentExecItem().dailyPerfClsNormal(); //B8_1
-        command.dailyPerfItem = vm.currentExecItem().dailyPerfItem();
-        command.midJoinEmployee = vm.currentExecItem().midJoinEmployee();
-        command.reflectResultCls = vm.currentExecItem().reflectResultCls();
-        command.monthlyAggCls = vm.currentExecItem().monthlyAggCls();
-        command.execScopeCls = vm.currentExecItem().execScopeCls();
-        command.refDate = textUtil.isNullOrEmpty(vm.currentExecItem().refDate()) ? null : new Date(vm.currentExecItem().refDate());
-        command.workplaceList = vm.currentExecItem().workplaceList();
-        command.recreateTypeChangePerson = false;
-        command.recreateTransfers = false; //B15_2(2)
-        command.appRouteUpdateAtr = vm.currentExecItem().appRouteUpdateAtrNormal()
-        command.createNewEmp = vm.currentExecItem().createNewEmp();
-        command.appRouteUpdateMonthly = vm.currentExecItem().appRouteUpdateMonthly();
-        command.processExecType = vm.currentExecItem().processExecType();
-        command.alarmCode = _.isNil(vm.currentExecItem().alarmCode()) ? null : vm.currentExecItem().alarmCode();
-        command.alarmAtr = vm.currentExecItem().alarmAtr();
-        command.mailPrincipal = vm.currentExecItem().mailPrincipal();
-        command.mailAdministrator = vm.currentExecItem().mailAdministrator();
-        command.designatedYear = vm.currentExecItem().designatedYear();
-        command.startMonthDay = vm.currentExecItem().startMonthDay();
-        command.endMonthDay = vm.currentExecItem().endMonthDay();
+        command.reExecCondition.recreatePerson = 0; //B15_3
+        command.reExecCondition.recreateTransfer = 0; //B15_2(1)
+        command.reExecCondition.recreateLeave = 0; //B15_4
+        command.execSetting.perSchedule.createNewEmpSched = vm.currentExecItem().createEmployee();
+        command.execSetting.dailyPerf.dailyPerfCls = vm.currentExecItem().dailyPerfClsNormal(); //B8_1
+        command.execSetting.dailyPerf.dailyPerfItem = vm.currentExecItem().dailyPerfItem();
+        command.execSetting.dailyPerf.createNewEmpDailyPerf = vm.currentExecItem().midJoinEmployee() ? 1 : 0;
+        command.execSetting.reflectResultCls = vm.currentExecItem().reflectResultCls();
+        command.execSetting.monthlyAggCls = vm.currentExecItem().monthlyAggCls();
+        command.execScope.execScopeCls = vm.currentExecItem().execScopeCls();
+        command.execScope.refDate = textUtil.isNullOrEmpty(vm.currentExecItem().refDate()) ? null : moment.utc(vm.currentExecItem().refDate());
+        command.execScope.wkpIdList = vm.currentExecItem().workplaceList();
+        // command.recreateTypeChangePerson = false;
+        // command.recreateTransfers = false; //B15_2(2)
+        command.execSetting.appRouteUpdateDaily.appRouteUpdateAtr = vm.currentExecItem().appRouteUpdateAtrNormal() ? 1 : 0;
+        command.execSetting.appRouteUpdateDaily.createNewEmp = vm.currentExecItem().createNewEmp() ? 1 : 0;
+        command.execSetting.appRouteUpdateMonthly = vm.currentExecItem().appRouteUpdateMonthly();
+        command.executionType = vm.currentExecItem().processExecType();
+        command.execSetting.alarmExtraction.alarmCode = _.isNil(vm.currentExecItem().alarmCode()) ? null : vm.currentExecItem().alarmCode();
+        command.execSetting.alarmExtraction.alarmExtractionCls = vm.currentExecItem().alarmAtr();
+        command.execSetting.alarmExtraction.mailPrincipal = vm.currentExecItem().mailPrincipal();
+        command.execSetting.alarmExtraction.mailAdministrator = vm.currentExecItem().mailAdministrator();
+        command.execSetting.alarmExtraction.displayOnTopPagePrincipal = vm.currentExecItem().displayPrincipal();
+        command.execSetting.alarmExtraction.displayOnTopPageAdministrator = vm.currentExecItem().displayAdministrator();
+        command.execSetting.perSchedule.perSchedulePeriod.designatedYear = vm.currentExecItem().designatedYear();
+        command.execSetting.perSchedule.perSchedulePeriod.startMonthDay = vm.currentExecItem().startMonthDay();
+        command.execSetting.perSchedule.perSchedulePeriod.endMonthDay = vm.currentExecItem().endMonthDay();
       } else { //再作成
         vm.alarmByUserList()[0] = undefined;
         // vm.currentExecItem().creationTarget(1);
         command.companyId = vm.currentExecItem().companyId();
         command.execItemCode = vm.currentExecItem().execItemCode();
         command.execItemName = vm.currentExecItem().execItemName();
-        command.perScheduleCls = vm.currentExecItem().perScheduleClsReCreate(); //B7_1
-        command.targetMonth = 0;
-        command.targetDate = 1;
-        command.creationPeriod = 1;
-        command.creationTarget = 1;
-        command.recreateWorkType = vm.currentExecItem().recreateWorkType(); //B15_3
-        command.manualCorrection = vm.currentExecItem().manualCorrection(); //B15_4
-        command.createEmployee = false;
-        command.recreateTransfer = vm.currentExecItem().recreateTransfer(); //B15_2(1)
-        command.dailyPerfCls = vm.currentExecItem().dailyPerfClsReCreate(); //B14_3
-        command.dailyPerfItem = 0;
-        command.midJoinEmployee = false;
-        command.reflectResultCls = vm.currentExecItem().dailyPerfClsReCreate();
-        command.monthlyAggCls = vm.currentExecItem().dailyPerfClsReCreate();
-        command.execScopeCls = vm.currentExecItem().execScopeCls();
-        command.refDate = textUtil.isNullOrEmpty(vm.currentExecItem().refDate()) ? null : new Date(vm.currentExecItem().refDate());
-        command.workplaceList = vm.currentExecItem().workplaceList();
+        command.execSetting.perSchedule.perScheduleCls = vm.currentExecItem().perScheduleClsReCreate(); //B7_1
+        command.execSetting.perSchedule.perSchedulePeriod.targetMonth = 0;
+        command.execSetting.perSchedule.perSchedulePeriod.targetDate = 1;
+        command.execSetting.perSchedule.perSchedulePeriod.creationPeriod = 1;
+        // command.creationTarget = 1;
+        command.reExecCondition.recreatePerson = vm.currentExecItem().recreateWorkType() ? 1 : 0; //B15_3
+        command.reExecCondition.recreateLeave = vm.currentExecItem().manualCorrection() ? 1 : 0; //B15_4
+        command.execSetting.perSchedule.createNewEmpSched = false;
+        command.reExecCondition.recreateTransfer = vm.currentExecItem().recreateTransfer() ? 1 : 0; //B15_2(1)
+        command.execSetting.dailyPerf.dailyPerfCls = vm.currentExecItem().dailyPerfClsReCreate(); //B14_3
+        command.execSetting.dailyPerf.dailyPerfItem = 0;
+        command.execSetting.dailyPerf.createNewEmpDailyPerf = 0;
+        command.execSetting.reflectResultCls = vm.currentExecItem().dailyPerfClsReCreate();
+        command.execSetting.monthlyAggCls = vm.currentExecItem().dailyPerfClsReCreate();
+        command.execScope.execScopeCls = vm.currentExecItem().execScopeCls();
+        command.execScope.refDate = textUtil.isNullOrEmpty(vm.currentExecItem().refDate()) ? null : moment.utc(vm.currentExecItem().refDate());
+        command.execScope.wkpIdList = vm.currentExecItem().workplaceList();
         // command.recreateTypeChangePerson = vm.currentExecItem().recreateTypeChangePerson(); //B14_2
-        command.recreateTransfers = vm.currentExecItem().recreateTransfer(); //B15_2(2)
-        command.appRouteUpdateAtr = vm.currentExecItem().appRouteUpdateAtrReCreate();
-        command.createNewEmp = false;
-        command.appRouteUpdateMonthly = false;
-        command.processExecType = vm.currentExecItem().processExecType();
-        command.alarmCode = _.isNil(vm.alarmByUserList()[0]) ? null : vm.alarmByUserList()[0].alarmCode;
-        command.alarmAtr = false;
-        command.mailPrincipal = false;
-        command.mailAdministrator = false;
-        command.designatedYear = 0;
-        command.startMonthDay = 101;
-        command.endMonthDay = 101;
+        // command.recreateTransfers = vm.currentExecItem().recreateTransfer(); //B15_2(2)
+        command.execSetting.appRouteUpdateDaily.appRouteUpdateAtr = vm.currentExecItem().appRouteUpdateAtrReCreate() ? 1 : 0;
+        command.execSetting.appRouteUpdateDaily.createNewEmp = 0;
+        command.execSetting.appRouteUpdateMonthly = false;
+        command.executionType = vm.currentExecItem().processExecType();
+        command.execSetting.alarmExtraction.alarmCode = _.isNil(vm.alarmByUserList()[0]) ? null : vm.alarmByUserList()[0].alarmCode;
+        command.execSetting.alarmExtraction.alarmExtractionCls = false;
+        command.execSetting.alarmExtraction.mailPrincipal = false;
+        command.execSetting.alarmExtraction.mailAdministrator = false;
+        command.execSetting.alarmExtraction.displayOnTopPagePrincipal = false;
+        command.execSetting.alarmExtraction.displayOnTopPageAdministrator = false;
+        command.execSetting.perSchedule.perSchedulePeriod.designatedYear = 0;
+        command.execSetting.perSchedule.perSchedulePeriod.startMonthDay = 101;
+        command.execSetting.perSchedule.perSchedulePeriod.endMonthDay = 101;
       }
+      command.execSetting.aggrAnyPeriod.aggAnyPeriodAttr = vm.currentExecItem().aggrPeriodCls() ? 1 : 0;
+      if (vm.currentExecItem().aggrPeriodCls()) {
+        command.execSetting.aggrAnyPeriod.aggrFrameCode = vm.currentExecItem().aggrFrameCode();
+      }
+      command.execSetting.externalOutput.extOutputCls = vm.currentExecItem().stdOutputCls() ? 1 : 0;
+      command.execSetting.externalOutput.extOutCondCodeList = vm.currentExecItem().stdOutputCls() ? _.map(vm.currentStdOutputList(), item => item.conditionSetCode) : [];
+      command.execSetting.externalAcceptance.extAcceptCls = vm.currentExecItem().stdAcceptCls() ? 1 : 0;
+      command.execSetting.externalAcceptance.extAcceptCondCodeList = vm.currentExecItem().stdAcceptCls() ? _.map(vm.currentStdAcceptList(), item => item.conditionSetCode) : [];
+      command.execSetting.saveData.saveDataCls = vm.currentExecItem().storageCls() ? 1 : 0;
+      command.execSetting.saveData.patternCode = vm.currentExecItem().storageCls() ? vm.currentExecItem().storagePattern() : null;
+      command.execSetting.deleteData.dataDelCls = vm.currentExecItem().deletionCls() ? 1 : 0;
+      command.execSetting.deleteData.patternCode = vm.currentExecItem().deletionCls() ? vm.currentExecItem().deletionPattern() : null;
+      command.execSetting.indexReconstruction.indexReorgAttr = vm.currentExecItem().indexReconCls() ? 1 : 0;
+      command.execSetting.indexReconstruction.categoryList = vm.currentExecItem().indexReconCls() ? _.map(vm.currentIndexReconList(), item => item.categoryNo) : [];
+      command.execSetting.indexReconstruction.updateStatistics = vm.currentExecItem().indexReconCls() ? vm.currentExecItem().indexReconUpdateStats() : null;
       return command;
     }
 
@@ -751,13 +770,13 @@ module nts.uk.at.view.kbt002.b {
 
       vm.monthlyAggCls(processExecution.execSetting.monthlyAggCls); // B10_1
 
-      vm.aggrPeriodCls(processExecution.execSetting.aggregationOfArbitraryPeriod.classificationOfUse === 1 ? true : false); // B9_1
-      vm.aggrFrameCode(processExecution.execSetting.aggregationOfArbitraryPeriod.aggrFrameCode || getTextResource("KBT002_193")); // B11_2
+      vm.aggrPeriodCls(processExecution.execSetting.aggrAnyPeriod.aggAnyPeriodAttr === 1 ? true : false); // B9_1
+      vm.aggrFrameCode(processExecution.execSetting.aggrAnyPeriod.aggrFrameCode || getTextResource("KBT002_193")); // B11_2
 
-      vm.appRouteUpdateAtr(processExecution.execSetting.appRouteUpdateDaily.appRouteUpdateAtr || false); 
+      vm.appRouteUpdateAtr((processExecution.execSetting.appRouteUpdateDaily.appRouteUpdateAtr === 0 ? false : true) || false); 
       vm.appRouteUpdateAtrNormal(vm.appRouteUpdateAtr() || false); // B12_1
       vm.checkCreateNewEmp((vm.appRouteUpdateAtr() === true && param.appRouteUpdateAtr() === true) ? true : false);
-      vm.createNewEmp((processExecution.execSetting.appRouteUpdateDaily.createNewEmp == 0 ? false : true) || false); // B12_2
+      vm.createNewEmp((processExecution.execSetting.appRouteUpdateDaily.createNewEmp === 0 ? false : true) || false); // B12_2
 
       vm.appRouteUpdateMonthly(processExecution.execSetting.appRouteUpdateMonthly || false); // B12_3
 
@@ -882,7 +901,7 @@ module nts.uk.at.view.kbt002.b {
   /**
    * The interface Process execution scope dto.
    */
-  export interface ProcessExecutionScopeDto {
+  export class ProcessExecutionScopeDto {
 
     /**
      * The Execution scope classification
@@ -894,7 +913,7 @@ module nts.uk.at.view.kbt002.b {
      * The Reference date
      * 基準日
      */
-    refDate: string;
+    refDate: moment.Moment;
 
     /**
      * The Workplace id list
@@ -907,25 +926,25 @@ module nts.uk.at.view.kbt002.b {
   /**
    * The interface Process execution setting dto.
    */
-  export interface ProcessExecutionSettingDto {
+  export class ProcessExecutionSettingDto {
 
     /**
      * The Alarm extraction
      * アラーム抽出
      */
-    alarmExtraction: AlarmExtractionDto;
+    alarmExtraction: AlarmExtractionDto = new AlarmExtractionDto();
 
     /**
      * The Personal schedule creation
      * 個人スケジュール作成
      */
-    perSchedule: PersonalScheduleCreationDto;
+    perSchedule: PersonalScheduleCreationDto = new PersonalScheduleCreationDto();
 
     /**
      * The Create daily performance
      * 日別実績の作成・計算
      */
-    dailyPerf: DailyPerformanceCreationDto;
+    dailyPerf: DailyPerformanceCreationDto = new DailyPerformanceCreationDto();
 
     /**
      * The Reflect approval result
@@ -943,7 +962,7 @@ module nts.uk.at.view.kbt002.b {
      * The Approval route update daily
      * 承認ルート更新（日次）
      */
-    appRouteUpdateDaily: AppRouteUpdateDailyDto;
+    appRouteUpdateDaily: AppRouteUpdateDailyDto = new AppRouteUpdateDailyDto();
 
     /**
      * The Approval route update monthly
@@ -955,50 +974,50 @@ module nts.uk.at.view.kbt002.b {
      * The Delete data
      * データの削除
      */
-    deleteData: DeleteDataDto;
+    deleteData: DeleteDataDto = new DeleteDataDto();
 
     /**
      * The Save data
      * データの保存
      */
-    saveData: SaveDataDto;
+    saveData: SaveDataDto = new SaveDataDto();
 
     /**
      * The External acceptance
      * 外部受入
      */
-    externalAcceptance: ExternalAcceptanceDto;
+    externalAcceptance: ExternalAcceptanceDto = new ExternalAcceptanceDto();
 
     /**
      * The External output
      * 外部出力
      */
-    externalOutput: ExternalOutputDto;
+    externalOutput: ExternalOutputDto = new ExternalOutputDto();
 
     /**
      * The Aggregation any period
      * 任意期間の集計
      */
-    aggrAnyPeriod: AggregationAnyPeriodDto;
+    aggrAnyPeriod: AggregationAnyPeriodDto = new AggregationAnyPeriodDto();
 
     /**
      * The Index reconstruction
      * インデックス再構成
      */
-    indexReconstruction: IndexReconstructionDto;
+    indexReconstruction: IndexReconstructionDto = new IndexReconstructionDto();
 
     /**
      * The Re-execution condition
      * 再実行条件
      */
-    reExecCondition: ReExecutionConditionDto;
+    reExecCondition: ReExecutionConditionDto = new ReExecutionConditionDto();
 
   }
 
   /**
    * The interface Alarm extraction dto.
    */
-  export interface AlarmExtractionDto {
+  export class AlarmExtractionDto {
 
     /**
      * The Alarm extraction classification
@@ -1041,13 +1060,13 @@ module nts.uk.at.view.kbt002.b {
   /**
    * The interface Personal schedule creation dto.
    */
-  export interface PersonalScheduleCreationDto {
+  export class PersonalScheduleCreationDto {
 
     /**
      * The Personal schedule creation period
      * 作成期間
      */
-    perSchedulePeriod: PersonalScheduleCreationPeriodDto;
+    perSchedulePeriod: PersonalScheduleCreationPeriodDto = new PersonalScheduleCreationPeriodDto();
 
     /**
      * The Personal schedule creation classification
@@ -1066,7 +1085,7 @@ module nts.uk.at.view.kbt002.b {
   /**
    * The interface Personal schedule creation period dto.
    */
-  export interface PersonalScheduleCreationPeriodDto {
+  export class PersonalScheduleCreationPeriodDto {
 
     /**
      * The Creation period
@@ -1109,7 +1128,7 @@ module nts.uk.at.view.kbt002.b {
   /**
    * The interface Daily performance creation dto.
    */
-  export interface DailyPerformanceCreationDto {
+  export class DailyPerformanceCreationDto {
 
     /**
      * The Daily performance item
@@ -1134,7 +1153,7 @@ module nts.uk.at.view.kbt002.b {
   /**
    * The interface Approval route update daily dto.
    */
-  export interface AppRouteUpdateDailyDto {
+  export class AppRouteUpdateDailyDto {
 
     /**
      * The Approval route update attribute
@@ -1153,7 +1172,7 @@ module nts.uk.at.view.kbt002.b {
   /**
    * The interface Delete data dto.
    */
-  export interface DeleteDataDto {
+  export class DeleteDataDto {
 
     /**
      * The Data deletion classification
@@ -1172,7 +1191,7 @@ module nts.uk.at.view.kbt002.b {
   /**
    * The interface Save data dto.
    */
-  export interface SaveDataDto {
+  export class SaveDataDto {
 
     /**
      * The Save data classification
@@ -1191,7 +1210,7 @@ module nts.uk.at.view.kbt002.b {
   /**
    * The interface External acceptance dto.
    */
-  export interface ExternalAcceptanceDto {
+  export class ExternalAcceptanceDto {
 
     /**
      * The External acceptance classification
@@ -1210,7 +1229,7 @@ module nts.uk.at.view.kbt002.b {
   /**
    * The interface External output dto.
    */
-  export interface ExternalOutputDto {
+  export class ExternalOutputDto {
 
     /**
      * The External output classification
@@ -1229,7 +1248,7 @@ module nts.uk.at.view.kbt002.b {
   /**
    * The interface Aggregation any period dto.
    */
-  export interface AggregationAnyPeriodDto {
+  export class AggregationAnyPeriodDto {
 
     /**
      * The Aggregation any period attribute
@@ -1248,7 +1267,7 @@ module nts.uk.at.view.kbt002.b {
   /**
    * The interface Index reconstruction dto.
    */
-  export interface IndexReconstructionDto {
+  export class IndexReconstructionDto {
 
     /**
      * The Update statistics
@@ -1273,7 +1292,7 @@ module nts.uk.at.view.kbt002.b {
   /**
    * The interface Re-execution condition dto.
    */
-  export interface ReExecutionConditionDto {
+  export class ReExecutionConditionDto {
 
     /**
      * The Recreate person change work type
@@ -1346,21 +1365,21 @@ module nts.uk.at.view.kbt002.b {
     execItemName: string;
 
     /** 実行範囲 */
-    execScope: ProcessExecutionScopeDto
+    execScope: ProcessExecutionScopeDto = new ProcessExecutionScopeDto();
 
     /** 実行設定 */
-    execSetting: ProcessExecutionSettingDto
+    execSetting: ProcessExecutionSettingDto = new ProcessExecutionSettingDto();
 
     /** 実行種別 */
-    executionType: number
+    executionType: number;
 
     /** 再実行条件 */
-    reExecCondition: ReExecutionConditionDto
+    reExecCondition: ReExecutionConditionDto = new ReExecutionConditionDto();
 
     /** クラウド作成フラグ */
     cloudCreationFlag: boolean;
 
-    constructor(init?: Partial<SaveProcessExecutionCommand>) {
+    constructor(init?: Partial<SaveUpdateProcessAutoExecutionCommand>) {
       $.extend(this, init);
     }
   }
@@ -1373,6 +1392,19 @@ module nts.uk.at.view.kbt002.b {
     execItemCode: string;
 
     constructor(init?: Partial<RemoveProcessExecutionCommand>) {
+      $.extend(this, init);
+    }
+  }
+
+    /**
+   * Default data for lists acquired from master data for reference
+   */
+  export class DefaultMasterData {
+    stdOutputList: any[];
+    stdAcceptList: any[];
+    indexReconList: any[];
+
+    constructor(init?: Partial<DefaultMasterData>) {
       $.extend(this, init);
     }
   }

@@ -43,7 +43,7 @@ public class ReExecutionConditionDto {
 	 */
 	public static ReExecutionConditionDto createFromDomain(ReExecutionCondition domain) {
 		if (domain == null) {
-			return null;
+			return new ReExecutionConditionDto();
 		}
 		return new ReExecutionConditionDto(domain.getRecreatePersonChangeWkt().value,
 										   domain.getRecreateTransfer().value,
