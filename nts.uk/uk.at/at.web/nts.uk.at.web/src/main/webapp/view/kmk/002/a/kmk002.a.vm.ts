@@ -1553,6 +1553,12 @@ module nts.uk.at.view.kmk002.a {
                             } else {
                                 self.optionalItem.dailyUnit(res.controlUnit.inputUnitOfTimeItem);
                             }
+                        } else {
+                            if (res.optionalItem.performanceAtr === 0) {
+                                self.optionalItem.monthlyUnit(null);
+                            } else {
+                                self.optionalItem.dailyUnit(null);
+                            }
                         }
 
                         // focus optional item name input
