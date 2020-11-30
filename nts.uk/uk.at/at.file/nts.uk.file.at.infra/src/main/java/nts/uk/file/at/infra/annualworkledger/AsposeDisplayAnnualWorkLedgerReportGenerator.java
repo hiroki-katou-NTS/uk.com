@@ -212,22 +212,22 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
                     rs = convertToTime(minute);
                 }
                 break;
-            case NUMBER_OF_TIMES:
-                if (valueDouble != 0 || isZeroDisplay) {
-                    DecimalFormat formatter1 = new DecimalFormat("#.#");
-                    rs = formatter1.format(valueDouble) + "回"; // TODO Text Resource
-                }
-                break;
             case DAYS:
                 if (valueDouble != 0 || isZeroDisplay) {
                     DecimalFormat formatter2 = new DecimalFormat("#.#");
-                    rs = formatter2.format(valueDouble) + "日";// TODO Text Resource
+                    rs = formatter2.format(valueDouble) +  TextResource.localize("KWR_1");
                 }
                 break;
             case AMOUNT_OF_MONEY:
                 if (valueDouble != 0 || isZeroDisplay) {
                     DecimalFormat formatter3 = new DecimalFormat("#,###");
-                    rs = formatter3.format((int) valueDouble) + "円"; // TODO Text Resource
+                    rs = formatter3.format((int) valueDouble) +  TextResource.localize("KWR_3");
+                }
+                break;
+            case NUMBER_OF_TIMES:
+                if (valueDouble != 0 || isZeroDisplay) {
+                    DecimalFormat formatter1 = new DecimalFormat("#.#");
+                    rs = formatter1.format(valueDouble) + TextResource.localize("KWR_2");
                 }
                 break;
         }
