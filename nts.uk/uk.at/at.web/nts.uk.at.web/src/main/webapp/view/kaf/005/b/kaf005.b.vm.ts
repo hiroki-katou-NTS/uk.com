@@ -1900,7 +1900,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 						}
 					} else {
 						// ・計算値：「残業申請の表示情報．計算結果」を確認する
-						if (!_.isNil(dataSource.calculationResultOp.applicationTimes)) {
+						if (!_.isEmpty(dataSource.calculationResultOp.applicationTimes)) {
 							let applicationTime = dataSource.calculationResultOp.applicationTimes[0].applicationTime;
 							if (!_.isEmpty(applicationTime)) {
 								let result = _.find(applicationTime, (i: OvertimeApplicationSetting) => {
