@@ -23,11 +23,13 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public class AggregationAnyPeriodDto {
 
 	/**
+	 * The Aggregation any period attribute.<br>
 	 * 使用区分
 	 **/
-	private int classificationOfUse;
+	private int aggAnyPeriodAttr;
 
 	/**
+	 * The Aggregation frame code.<br>
 	 * コード
 	 **/
 	private String aggrFrameCode;
@@ -43,14 +45,14 @@ public class AggregationAnyPeriodDto {
 			return null;
 		}
 		AggregationAnyPeriodDto dto = new AggregationAnyPeriodDto();
-		dto.classificationOfUse = domain.getAggAnyPeriodAttr().value;
+		dto.aggAnyPeriodAttr = domain.getAggAnyPeriodAttr().value;
 		dto.aggrFrameCode = domain.getAggrFrameCode().map(AggrFrameCode::v).orElse(null);
 		return dto;
 	}
 
 	public AggregationAnyPeriod toDomain() {
 		return AggregationAnyPeriod.builder()
-				.aggAnyPeriodAttr(EnumAdaptor.valueOf(this.classificationOfUse, NotUseAtr.class))
+				.aggAnyPeriodAttr(EnumAdaptor.valueOf(this.aggAnyPeriodAttr, NotUseAtr.class))
 				.aggrFrameCode(Optional.ofNullable(this.aggrFrameCode).map(AggrFrameCode::new))
 				.build();
 	}

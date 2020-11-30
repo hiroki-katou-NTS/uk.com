@@ -24,19 +24,22 @@ import java.util.stream.Collectors;
 public class IndexReconstructionDto {
 
 	/**
+	 * The Update statistics.<br>
 	 * 統計情報を更新する
 	 **/
-	private int updateStats;
+	private int updateStatistics;
 
 	/**
+	 * The Index reorganization attribute.<br>
 	 * 使用区分
 	 **/
-	private int classificationOfUse;
+	private int indexReorgAttr;
 
 	/**
+	 * The Category list.<br>
 	 * カテゴリリスト
 	 **/
-	private List<Integer> categoryNo;
+	private List<Integer> categoryList;
 
 	/**
 	 * Create from domain.
@@ -49,9 +52,9 @@ public class IndexReconstructionDto {
 			return null;
 		}
 		IndexReconstructionDto dto = new IndexReconstructionDto();
-		dto.updateStats = domain.getUpdateStatistics().value;
-		dto.classificationOfUse = domain.getIndexReorgAttr().value;
-		dto.categoryNo = domain.getCategoryList()
+		dto.updateStatistics = domain.getUpdateStatistics().value;
+		dto.indexReorgAttr = domain.getIndexReorgAttr().value;
+		dto.categoryList = domain.getCategoryList()
 							   .stream()
 							   .map(IndexReconstructionCategoryNO::v)
 							   .collect(Collectors.toList());
@@ -60,11 +63,11 @@ public class IndexReconstructionDto {
 
 	public IndexReconstruction toDomain() {
 		return IndexReconstruction.builder()
-				.categoryList(this.categoryNo.stream()
+				.categoryList(this.categoryList.stream()
 						.map(IndexReconstructionCategoryNO::new)
 						.collect(Collectors.toList()))
-				.indexReorgAttr(EnumAdaptor.valueOf(this.classificationOfUse, NotUseAtr.class))
-				.updateStatistics(EnumAdaptor.valueOf(this.updateStats, NotUseAtr.class))
+				.indexReorgAttr(EnumAdaptor.valueOf(this.indexReorgAttr, NotUseAtr.class))
+				.updateStatistics(EnumAdaptor.valueOf(this.updateStatistics, NotUseAtr.class))
 				.build();
 	}
 	

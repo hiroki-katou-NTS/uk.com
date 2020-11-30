@@ -23,13 +23,14 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public class DeleteDataDto {
 
 	/**
+	 * The Data deletion classification.<br>
 	 * データの削除区分
 	 **/
-	private int dataDeletionClassification;
+	private int dataDelCls;
 
 	/**
+	 * The Pattern code.<br>
 	 * パターンコード
-	 * 補助パターンコード
 	 **/
 	private String patternCode;
 
@@ -44,14 +45,14 @@ public class DeleteDataDto {
 			return null;
 		}
 		DeleteDataDto dto = new DeleteDataDto();
-		dto.dataDeletionClassification = domain.getDataDelCls().value;
+		dto.dataDelCls = domain.getDataDelCls().value;
 		dto.patternCode = domain.getPatternCode().map(AuxiliaryPatternCode::v).orElse(null);
 		return dto;
 	}
 
 	public DeleteData toDomain() {
 		return DeleteData.builder()
-				.dataDelCls(EnumAdaptor.valueOf(this.dataDeletionClassification, NotUseAtr.class))
+				.dataDelCls(EnumAdaptor.valueOf(this.dataDelCls, NotUseAtr.class))
 				.patternCode(Optional.ofNullable(this.patternCode).map(AuxiliaryPatternCode::new))
 				.build();
 	}
