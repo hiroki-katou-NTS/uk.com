@@ -111,7 +111,7 @@ module nts.uk.at.view.kaf020.c.viewmodel {
                     let name = applicationDto.application.name;
                     let contents: Array<OptionalItemApplicationContent> = [];
                     applicationDto.application.optionalItems.forEach((item: any) => {
-                        let optionalItem: any = _.find(applicationDto.optionalItems, {optionalItemNo: item.itemNo - 640});
+                        let optionalItem: any = _.find(applicationDto.optionalItems, {optionalItemNo: item.itemNo});
                         let controlOfAttendanceItem: any = _.find(applicationDto.controlOfAttendanceItems, {itemDailyID: item.itemNo});
                         if (optionalItem != null) {
                             contents.push({
