@@ -250,6 +250,42 @@ public interface OvertimeService {
 			Optional<Integer> endTimeSPR,
 			Boolean isProxy
 			);
+	/**
+	 * 
+	 * @param companyId
+	 * @param employeeId
+	 * @param dateOp
+	 * @param startTimeSPR
+	 * @param endTimeSPR
+	 * @param appDispInfoStartupOutput
+	 * @param overtimeAppSet
+	 * @return
+	 */
+	public DisplayInfoOverTime selectWorkInfo(
+			String companyId,
+			String employeeId,
+			Optional<GeneralDate> dateOp,
+			WorkTypeCode workTypeCode,
+			WorkTimeCode workTimeCode,
+			Optional<Integer> startTimeSPR,
+			Optional<Integer> endTimeSPR,
+			AppDispInfoStartupOutput appDispInfoStartupOutput,
+			OvertimeAppSet overtimeAppSet
+			);
+	
+	/**
+	 * Refactor5
+	 * @param companyId
+	 * @param employeeId
+	 * @param dateOp
+	 * @param overtimeAppAtr
+	 * @param appDispInfoStartupOutput
+	 * @param startTimeSPR
+	 * @param endTimeSPR
+	 * @param overtimeAppSet
+	 * @param worktypes
+	 * @return
+	 */
 	public DisplayInfoOverTime changeDate(
 			String companyId,
 			String employeeId,
@@ -261,4 +297,6 @@ public interface OvertimeService {
 			OvertimeAppSet overtimeAppSet,
 			List<WorkType> worktypes
 			);
+	
+	
 }

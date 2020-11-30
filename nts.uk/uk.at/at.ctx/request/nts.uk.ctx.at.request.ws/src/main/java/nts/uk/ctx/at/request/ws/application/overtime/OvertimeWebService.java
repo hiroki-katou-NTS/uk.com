@@ -19,6 +19,7 @@ import nts.uk.ctx.at.request.app.find.application.overtime.ParamCheckBeforeRegis
 import nts.uk.ctx.at.request.app.find.application.overtime.ParamDetail;
 import nts.uk.ctx.at.request.app.find.application.overtime.ParamOverTimeChangeDate;
 import nts.uk.ctx.at.request.app.find.application.overtime.ParamOverTimeStart;
+import nts.uk.ctx.at.request.app.find.application.overtime.ParamSelectWork;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.CheckBeforeOutputDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.DetailOutputDto;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
@@ -58,6 +59,11 @@ public class OvertimeWebService extends WebService {
 		return appOvertimeFinder.changeDate(param);
 	}
 	
+	@POST
+	@Path("selectWorkInfo")
+	public DisplayInfoOverTimeDto selectWorkInfo(ParamSelectWork param) {
+		return appOvertimeFinder.selectWorkInfo(param);
+	}
 	
 	@POST
 	@Path("calculate")

@@ -950,6 +950,92 @@ public class OvertimeServiceImpl implements OvertimeService {
 		return output;
 	}
 
+
+	@Override
+	public DisplayInfoOverTime selectWorkInfo(
+			String companyId,
+			String employeeId,
+			Optional<GeneralDate> dateOp,
+			WorkTypeCode workTypeCode,
+			WorkTimeCode workTimeCode,
+			Optional<Integer> startTimeSPR,
+			Optional<Integer> endTimeSPR,
+			AppDispInfoStartupOutput appDispInfoStartupOutput,
+			OvertimeAppSet overtimeAppSet) {
+		// 16_勤務種類・就業時間帯を選択する
+		SelectWorkOutput selectWorkOutput = this.selectWork(
+													companyId,
+													employeeId,
+													dateOp,
+													workTypeCode,
+													workTimeCode,
+													startTimeSPR,
+													endTimeSPR,
+													Optional.ofNullable(appDispInfoStartupOutput.getAppDispInfoWithDateOutput()
+																			.getOpActualContentDisplayLst()
+																			.map(x -> x.get(0))
+																			.orElse(null)),
+													overtimeAppSet);
+		
+		Integer prePost = appDispInfoStartupOutput
+				.getAppDispInfoWithDateOutput()
+				.getPrePostAtr().value;
+			WorkContent workContent = new WorkContent();
+			workContent.setWorkTypeCode(workTypeCode == null ? Optional.empty() : Optional.of(workTypeCode.v()));
+			workContent.setWorkTimeCode(workTimeCode == null ? Optional.empty() : Optional.of(workTimeCode.v()));
+			List<TimeZone> timeZones = new ArrayList<TimeZone>();
+			List<BreakTimeSheet> breakTimes = new ArrayList<BreakTimeSheet>();
+			Optional<WorkHours> workHours = Optional.ofNullable(selectWorkOutput.getWorkHours());
+			if (workHours.isPresent()) {
+				if (workHours.get().getStartTimeOp1().isPresent() || workHours.get().getEndTimeOp1().isPresent()) {
+					TimeZone timeZone = new TimeZone(
+							workHours.get().getStartTimeOp1().orElse(null),
+							workHours.get().getEndTimeOp1().orElse(null));
+					timeZones.add(timeZone);
+				}
+				if (workHours.get().getStartTimeOp2().isPresent() || workHours.get().getEndTimeOp2().isPresent()) {
+					TimeZone timeZone = new TimeZone(
+							workHours.get().getStartTimeOp2().orElse(null),
+							workHours.get().getEndTimeOp2().orElse(null));
+					timeZones.add(timeZone);
+				}
+			}
+			Optional<BreakTimeZoneSetting> breakTime = Optional.ofNullable(selectWorkOutput.getBreakTimeZoneSetting());
+			if (breakTime.isPresent()) {
+				List<DeductionTime> breakTimeZones = breakTime.get().getTimeZones();
+				breakTimes = IntStream.range(1, (int) breakTimeZones.stream().count())
+							.mapToObj(i -> new BreakTimeSheet(
+									new BreakFrameNo(i),
+									breakTimeZones.get(i).getStart(),
+									breakTimeZones.get(i).getEnd()))
+							.collect(Collectors.toList());
+			}
+			workContent.setTimeZones(timeZones);
+			workContent.setBreakTimes(breakTimes);
+			
+			// 計算を実行する
+			DisplayInfoOverTime displayInfoOverTimeTemp = this.calculate(
+					companyId,
+					employeeId,
+					dateOp,
+					EnumAdaptor.valueOf(prePost, PrePostAtr.class),
+					overtimeAppSet.getOvertimeLeaveAppCommonSet(),
+					appDispInfoStartupOutput
+						.getAppDispInfoWithDateOutput()
+						.getOpPreAppContentDisplayLst()
+						.map(x -> x.get(0).getApOptional().map(y -> y.getApplicationTime()).orElse(null))
+						.orElse(null),
+						selectWorkOutput.getApplicationTime(),
+					workContent);
+			displayInfoOverTimeTemp.setAppDispInfoStartup(appDispInfoStartupOutput);
+			InfoWithDateApplication infoWithDateApplication = new InfoWithDateApplication();
+			infoWithDateApplication.setApplicationTime(Optional.ofNullable(selectWorkOutput.getApplicationTime()));
+			infoWithDateApplication.setWorkHours(workHours);
+			infoWithDateApplication.setBreakTime(breakTime);
+			displayInfoOverTimeTemp.setInfoWithDateApplicationOp(Optional.of(infoWithDateApplication));
+		return displayInfoOverTimeTemp;
+	}
+
 	
 	
 }
