@@ -2,7 +2,7 @@
 
 module nts.uk.at.view.kmk004.p {
 
-	export interface IParam extends IResponse {
+	export interface IParam{
 		sidebarType: SIDEBAR_TYPE;
 		wkpId: string;
 		empCode: string;
@@ -39,42 +39,6 @@ module nts.uk.at.view.kmk004.p {
 		settingDto: SettingDto; //会社別変形労働集計設定
 	}
 
-	//会社別変形労働法定労働時間
-	export interface DeforLaborTimeComDto {
-		weeklyTime: WeeklyTime; //週単位
-		dailyTime: DailyTime; //日単位
-	}
-
-	//週単位
-	export interface WeeklyTime {
-		time: number; //週単位.時間
-	}
-
-	//日単位
-	export interface DailyTime {
-		time: number; //日単位.時間
-	}
-
-	//会社別変形労働集計設定
-	export interface SettingDto {
-		aggregateTimeSet: ExcessOutsideTimeSetReg; //集計時間設定
-		excessOutsideTimeSet: ExcessOutsideTimeSetReg; //時間外超過設定
-		settlementPeriod: SettlementPeriod; //清算期間
-	}
-
-	//時間外超過設定
-	export interface ExcessOutsideTimeSetReg {
-		legalOverTimeWork: boolean; //法定内残業を含める
-		legalHoliday: boolean; //法定外休出を含める
-	}
-
-	//清算期間
-	export interface SettlementPeriod {
-		startMonth: number; //開始月
-		period: number; //期間
-		repeatAtr: boolean; //繰り返し区分
-	}
-
 	enum SCREEN_MODE {
 		ADD = 1,
 		UPDATE = 2
@@ -85,26 +49,16 @@ module nts.uk.at.view.kmk004.p {
 		mode: KnockoutObservable<number> = ko.observable(SCREEN_MODE.ADD);
 		title: KnockoutObservable<string> = ko.observable('');
 		message: KnockoutObservable<string> = ko.observable('');
-		day: KnockoutObservable<number> = ko.observable(0);
-		week: KnockoutObservable<number> = ko.observable(0);
 
 		itemListP3_3: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
 		selectedP3_3: KnockoutObservable<number> = ko.observable(0);
-
 		itemListP3_5: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
-		selectedP3_5: KnockoutObservable<number> = ko.observable(1);
+		itemListP3_7: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
+		
+		visibleP6_3: KnockoutObservable<boolean> = ko.observable(false);
 		requiredP3: KnockoutObservable<boolean> = ko.observable(false);
 
-		itemListP3_7: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
-		selectedP3_7: KnockoutObservable<number> = ko.observable(1);
-
-		checkedP3_8: KnockoutObservable<boolean> = ko.observable(false);
-		checkedP4_2: KnockoutObservable<boolean> = ko.observable(false);
-		checkedP4_3: KnockoutObservable<boolean> = ko.observable(false);
-		checkedP5_2: KnockoutObservable<boolean> = ko.observable(false);
-		checkedP5_3: KnockoutObservable<boolean> = ko.observable(false);
-
-		visibleP6_3: KnockoutObservable<boolean> = ko.observable(false);
+		screenData = new TransformScreenData();
 
 		constructor(private params: IParam) {
 			super();
@@ -129,36 +83,6 @@ module nts.uk.at.view.kmk004.p {
 		mounted() {
 			const vm = this;
 			vm.loadData();
-
-		/*	switch (vm.mode()) {
-
-				case SCREEN_MODE.ADD:
-					vm.visibleP6_3(false);
-
-					if (vm.params.sidebarType == 'Com_Workplace') {
-						vm.message(vm.$i18n("KMK004_344"));
-
-					} else if (vm.params.sidebarType == 'Com_Employment') {
-						vm.message(vm.$i18n("KMK004_345"));
-
-					} else if (vm.params.sidebarType == 'Com_Person') {
-						vm.message(vm.$i18n("KMK004_346"));
-
-					} else vm.message('');
-
-					break;
-
-				case SCREEN_MODE.UPDATE:
-					vm.message('');
-					vm.visibleP6_3(true);
-
-					if (vm.params.sidebarType == 'Com_Company') {
-						vm.title('会社');
-						vm.visibleP6_3(false);
-					}
-
-					break;
-			}*/
 		}
 
 		loadData() {
@@ -235,21 +159,9 @@ module nts.uk.at.view.kmk004.p {
 		bindingData(data: IResponse): void {
 			const vm = this;
 			if (data.deforLaborTimeComDto != null && data.settingDto != null) {
-				let deforLaborTimeEmp = data.deforLaborTimeComDto;
-				let setting = data.settingDto;
-
 				vm.mode(SCREEN_MODE.UPDATE);
-				vm.day(deforLaborTimeEmp.dailyTime.time);
-				vm.week(deforLaborTimeEmp.weeklyTime.time);
-				vm.selectedP3_3(setting.settlementPeriod.period == 1 ? 0 : 1);
-				vm.selectedP3_5(setting.settlementPeriod.startMonth);
-				vm.requiredP3(setting.settlementPeriod.period == 1 ? false : true);
-				vm.selectedP3_7(setting.settlementPeriod.period);
-				vm.checkedP3_8(setting.settlementPeriod.repeatAtr);
-				vm.checkedP4_2(setting.aggregateTimeSet.legalOverTimeWork);
-				vm.checkedP4_3(setting.aggregateTimeSet.legalHoliday);
-				vm.checkedP5_2(setting.excessOutsideTimeSet.legalOverTimeWork);
-				vm.checkedP5_3(setting.excessOutsideTimeSet.legalHoliday);
+				vm.screenData.update(data);
+
 			} else {
 				vm.mode(SCREEN_MODE.ADD);
 			}
@@ -263,13 +175,7 @@ module nts.uk.at.view.kmk004.p {
 
 			if (vm.mode() == SCREEN_MODE.ADD) {
 				vm.create();
-
-			}
-
-			if (vm.mode() == SCREEN_MODE.UPDATE) {
-				vm.update();
-			}
-
+			} else vm.update();
 		}
 
 		create() {
@@ -295,9 +201,12 @@ module nts.uk.at.view.kmk004.p {
 
 		update() {
 			const vm = this;
+			//vm.toObject()
+			vm.screenData.add(vm.params);
+			
 			//職場
 			if (vm.params.sidebarType == 'Com_Company') {
-				vm.$ajax(KMK004_P_API.COM_UPDATE_BASIC_SETTING, vm.params).done(() => {
+				vm.$ajax(KMK004_P_API.COM_UPDATE_BASIC_SETTING, ko.toJS(vm.screenData)).done(() => {
 					vm.$dialog.info({ messageId: "Msg_15" });
 				}).fail((error) => {
 					vm.$dialog.error(error);
@@ -308,20 +217,35 @@ module nts.uk.at.view.kmk004.p {
 
 			//職場
 			if (vm.params.sidebarType == 'Com_Workplace') {
-
-
+				vm.$ajax(KMK004_P_API.WKP_UPDATE_BASIC_SETTING, ko.toJS(vm.screenData)).done(() => {
+					vm.$dialog.info({ messageId: "Msg_15" });
+				}).fail((error) => {
+					vm.$dialog.error(error);
+				}).always(() => {
+					vm.$blockui("clear");
+				});
 			}
 
 			//雇用
 			if (vm.params.sidebarType == 'Com_Employment') {
-
-
+				vm.$ajax(KMK004_P_API.EMP_UPDATE_BASIC_SETTING, ko.toJS(vm.screenData)).done(() => {
+					vm.$dialog.info({ messageId: "Msg_15" });
+				}).fail((error) => {
+					vm.$dialog.error(error);
+				}).always(() => {
+					vm.$blockui("clear");
+				});
 			}
 
 			//社員
 			if (vm.params.sidebarType == 'Com_Person') {
-
-
+				vm.$ajax(KMK004_P_API.SHA_UPDATE_BASIC_SETTING, ko.toJS(vm.screenData)).done(() => {
+					vm.$dialog.info({ messageId: "Msg_15" });
+				}).fail((error) => {
+					vm.$dialog.error(error);
+				}).always(() => {
+					vm.$blockui("clear");
+				});
 			}
 		}
 
@@ -333,6 +257,132 @@ module nts.uk.at.view.kmk004.p {
 		delete() {
 			const vm = this;
 		}
+	}
+	
+	class TransformScreenData {
+		deforLaborTimeComDto = new DeforLaborTimeCom();
+		settingDto = new Setting();
+		sidebarType: SIDEBAR_TYPE;
+		wkpId: string;
+		empCode: string;
+		empId: string;
+		titleName: string;
+		constructor(){}
+		update (param: IResponse) {
+			this.deforLaborTimeComDto.update(param.deforLaborTimeComDto);
+			this.settingDto.update(param.settingDto);
+		}
+		
+		add(param: IParam){
+			this.sidebarType = param.sidebarType;
+			this.wkpId = param.wkpId;
+			this.empCode = param.empCode;
+			this.empId = param.empId;
+			this.titleName = param.titleName;
+		}
+		
+	}
+	
+	//会社別変形労働法定労働時間
+	class DeforLaborTimeCom {
+		weeklyTime = new Weekly();
+		dailyTime = new Daily();
+		constructor(){}
+		update (param: DeforLaborTimeComDto) {
+			this.weeklyTime.update(param.weeklyTime);
+			this.dailyTime.update(param.dailyTime);
+		}
+	}
+	
+	//週単位
+	class Weekly {
+		time: KnockoutObservable<number> = ko.observable(0);
+		constructor(){}
+		update (param: WeeklyTime) {
+			this.time(param.time);
+		}
+	}
+	
+	//日単位
+	class Daily {
+		time: KnockoutObservable<number> = ko.observable(0);
+		constructor(){}
+		update (param: DailyTime) {
+			this.time(param.time);
+		}
+	}
+	
+	//会社別変形労働集計設定
+	class Setting {
+		aggregateTimeSet = new TimeSet(); //集計時間設定
+		excessOutsideTimeSet = new TimeSet(); //時間外超過設定
+		settlementPeriod = new Settlement(); //清算期間
+		constructor(){}
+		update(param: SettingDto) {
+			this.aggregateTimeSet.update(param.aggregateTimeSet);
+			this.excessOutsideTimeSet.update(param.excessOutsideTimeSet);
+			this.settlementPeriod.update(param.settlementPeriod);
+		}
+	}
+	
+	//清算期間
+	class Settlement {
+		startMonth = ko.observable(0);
+		period = ko.observable(0);
+		repeatAtr = ko.observable(false);
+		constructor(){}
+		update(param: SettlementPeriod) {
+			this.startMonth(param.startMonth);
+			this.period(param.period);
+			this.repeatAtr(param.repeatAtr);	
+		}
+	}
+	
+	//時間外超過設定
+	class TimeSet {
+		legalOverTimeWork: KnockoutObservable<boolean> = ko.observable(false);
+		legalHoliday: KnockoutObservable<boolean> = ko.observable(false);
+		constructor(){}
+		update (param: ExcessOutsideTimeSetReg) {
+			this.legalOverTimeWork(param.legalOverTimeWork);
+			this.legalHoliday(param.legalHoliday);		
+		}
+	}
+	
+	//会社別変形労働法定労働時間
+	export interface DeforLaborTimeComDto {
+		weeklyTime: WeeklyTime; //週単位
+		dailyTime: DailyTime; //日単位
+	}
+
+	//週単位
+	export interface WeeklyTime {
+		time: number; //週単位.時間
+	}
+
+	//日単位
+	export interface DailyTime {
+		time: number; //日単位.時間
+	}
+	
+	//会社別変形労働集計設定
+	export interface SettingDto {
+		aggregateTimeSet: ExcessOutsideTimeSetReg; //集計時間設定
+		excessOutsideTimeSet: ExcessOutsideTimeSetReg; //時間外超過設定
+		settlementPeriod: SettlementPeriod; //清算期間
+	}
+
+	//時間外超過設定
+	export interface ExcessOutsideTimeSetReg {
+		legalOverTimeWork: boolean; //法定内残業を含める
+		legalHoliday: boolean; //法定外休出を含める
+	}
+
+	//清算期間
+	export interface SettlementPeriod {
+		startMonth: number; //開始月
+		period: number; //期間
+		repeatAtr: boolean; //繰り返し区分
 	}
 
 	class ItemModel {

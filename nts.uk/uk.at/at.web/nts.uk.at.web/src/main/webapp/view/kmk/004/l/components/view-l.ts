@@ -48,8 +48,6 @@ module nts.uk.at.view.kmk004.l {
 	</div>
 	`;
 
-	
-
 	@component({
 		name: 'view-l',
 		template
@@ -62,7 +60,7 @@ module nts.uk.at.view.kmk004.l {
 		
 		created() {
 			let vm = this;
-			vm.params = {sidebarType : "Com_Company", wkpId: '', empCode :'', empId: '', titleName:''}
+			vm.params = {sidebarType : "Com_Company", wkpId: '', empCode :'', empId: '', titleName:'', deforLaborTimeComDto: null, settingDto: null}
 		}
 
 		mounted() {

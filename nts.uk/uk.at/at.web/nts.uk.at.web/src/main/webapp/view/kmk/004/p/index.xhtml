@@ -33,14 +33,14 @@
 
 				<!-- P2_3 -->
 				<input tabindex="1" id="inputP2_3" class="input_time"
-					data-bind="ntsTimeEditor: { value: day, inputFormat: 'time', mode: 'time', required: true, name: '#[KMK004_309]' }" />
+					data-bind="ntsTimeEditor: { value: screenData.deforLaborTimeComDto.dailyTime.time, inputFormat: 'time', mode: 'time', required: true, name: '#[KMK004_309]' }" />
 
 				<!-- P2_4 -->
 				<label data-bind="text: $i18n('KMK004_310')"></label>
 
 				<!-- P2_5 -->
 				<input tabindex="2" class="input_time"
-					data-bind="ntsTimeEditor: { value: week, inputFormat: 'time', mode: 'time', required: true, name: '#[KMK004_310]' }" />
+					data-bind="ntsTimeEditor: { value: screenData.deforLaborTimeComDto.weeklyTime.time, inputFormat: 'time', mode: 'time', required: true, name: '#[KMK004_310]' }" />
 				<br></br>
 				<!-- P3_1 -->
 				<div
@@ -77,7 +77,7 @@
 									options: itemListP3_5,
 									optionsValue: 'code',
 									visibleItemsCount: 12,
-									value: selectedP3_5,
+									value: screenData.settingDto.settlementPeriod.startMonth,
 									optionsText: 'name',
 									editable:  false,
 									enable: true,
@@ -91,13 +91,13 @@
 						</td>
 						<td>
 							<!-- P3_7 -->
-							<div id="combo-box" tabindex="4"
+							<div id="combo-box" tabindex="5"
 								data-bind="ntsComboBox: {
 									name: '#{i18n.getText('KMK004_316')}',
 									options: itemListP3_7,
 									optionsValue: 'code',
 									visibleItemsCount: 12,
-									value: selectedP3_7,
+									value: screenData.settingDto.settlementPeriod.period,
 									optionsText: 'name',
 									editable:  false,
 									enable: true,
@@ -107,7 +107,7 @@
 						</td>
 						<td>
 							<!-- P3_8 -->
-							<div data-bind="ntsCheckBox: { checked: checkedP3_8 } "></div> <label
+							<div tabindex="6" data-bind="ntsCheckBox: { checked: screenData.settingDto.settlementPeriod.repeatAtr } "></div> <label
 							data-bind="i18n: 'KMK004_317'"></label> <br></br>
 						</td>
 					</tr>
@@ -118,13 +118,13 @@
 					data-bind="ntsFormLabel: { required: false, text: $i18n('KMK004_318') }"></div>
 				<br></br>
 				<!-- P4_2 -->
-				<div class="child-row"
-					data-bind="ntsCheckBox: { checked: checkedP4_2 } "></div>
+				<div class="child-row" tabindex="7"
+					data-bind="ntsCheckBox: { checked: screenData.settingDto.aggregateTimeSet.legalOverTimeWork } "></div>
 				<label data-bind="i18n: 'KMK004_319'"></label> <br></br>
 
 				<!-- P4_3 -->
-				<div class="child-row"
-					data-bind="ntsCheckBox: { checked: checkedP4_3 } "></div>
+				<div class="child-row" tabindex="8"
+					data-bind="ntsCheckBox: { checked: screenData.settingDto.aggregateTimeSet.legalHoliday } "></div>
 				<label data-bind="i18n: 'KMK004_320'"></label> <br></br>
 
 				<!-- P5_1 -->
@@ -133,13 +133,13 @@
 				<br></br>
 
 				<!-- P5_2 -->
-				<div class="child-row"
-					data-bind="ntsCheckBox: { checked: checkedP5_2 } "></div>
+				<div class="child-row" tabindex="9"
+					data-bind="ntsCheckBox: { checked: screenData.settingDto.excessOutsideTimeSet.legalOverTimeWork } "></div>
 				<label data-bind="i18n: 'KMK004_322'"></label> <br></br>
 
 				<!-- P5_3 -->
-				<div class="child-row"
-					data-bind="ntsCheckBox: { checked: checkedP5_3 } "></div>
+				<div class="child-row" tabindex="10"
+					data-bind="ntsCheckBox: { checked: screenData.settingDto.excessOutsideTimeSet.legalHoliday } "></div>
 				<label data-bind="i18n: 'KMK004_323'"></label>
 
 			</div>

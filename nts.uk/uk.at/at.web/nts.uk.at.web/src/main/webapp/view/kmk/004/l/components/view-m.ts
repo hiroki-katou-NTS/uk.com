@@ -112,7 +112,7 @@ module nts.uk.at.view.kmk004.l {
 				systemType: 2
 			};
 			
-			vm.params = {sidebarType : "Com_Workplace", wkpId: '', empCode :'', empId: '', titleName:''}
+			vm.params = {sidebarType : "Com_Workplace", wkpId: '', empCode :'', empId: '', titleName:'', deforLaborTimeComDto: null, settingDto: null}
 		}
 
 		mounted() {

@@ -145,7 +145,7 @@ module nts.uk.at.view.kmk004.l {
 
 			vm.employeeList = ko.observableArray<UnitModel>([]);
 			vm.currentItemName = ko.observable('');
-			vm.params = {sidebarType : "Com_Employment", wkpId: '', empCode :'', empId: '', titleName:''}
+			vm.params = {sidebarType : "Com_Employment", wkpId: '', empCode :'', empId: '', titleName:'', deforLaborTimeComDto: null, settingDto: null}
 		}
 
 		mounted() {

@@ -12,7 +12,7 @@
 }
 
 .input_time {
-	width: 45px;
+	width: 50px;
 }
 
 #combo-box {
@@ -36,7 +36,10 @@
 }
 
 #message {
-	color: blue;
+	color: #0066CC;
 	text-align: right;
 	padding-right: 10px;
+}
+.checkbox {
+	width: 50px;
 }
