@@ -2,11 +2,23 @@
 
 module nts.uk.at.view.kwr004.b {
 
-  const NUM_ROWS = 20;
+  const NUM_ROWS = 10;
   const KWR004_B_INPUT = 'KWR004_WORK_STATUS_DATA';
   const KWR004_B_OUTPUT = 'KWR004_WORK_STATUS_RETURN';
   const KWR004_C_INPUT = 'KWR004_C_DATA';
   const KWR004_C_OUTPUT = 'KWR004_C_RETURN';
+
+  const PATH = {
+    getInitDayMonth: 'at/screen/kwr004/b/getInitDayMonth',
+    getSetting: 'at/screen/kwr004/b/getSetting',
+    getSettingDetail: 'at/screen/kwr004/b/getDetail',
+    deleteSetting: 'at/function/kwr004/delete',
+    updateSetting: 'at/function/kwr004/update',
+    createSetting: 'at/function/kwr004/create'
+  };
+
+  const maxDailyRows = 2;
+  const maxMonthlyRows = 8;
 
   @bean()
   class ViewModel extends ko.ViewModel {
@@ -14,19 +26,23 @@ module nts.uk.at.view.kwr004.b {
     settingListItems: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
     columns: KnockoutObservableArray<any>;
     currentCode: KnockoutObservable<any>;
-    currentCodeList: KnockoutObservableArray<any> = ko.observableArray([]);
-    currentSettingCodeList: KnockoutObservableArray<any>;
-    settingRules: KnockoutObservableArray<any>;
+    currentCodeList: KnockoutObservable<any> = ko.observable([]);
+    enumIndependentCalculation: KnockoutObservableArray<any>;
+    //dailyAttributes: KnockoutObservableArray<any> = ko.observableArray([]);
+    dailyAloneAttributes: KnockoutObservableArray<any>;
+    dailyCalcAttributes: KnockoutObservableArray<any>;
+    monthlyAttributes: KnockoutObservableArray<any>;
     attendance: KnockoutObservable<any> = ko.observable(null);
     attendanceCode: KnockoutObservable<string> = ko.observable(null);
     attendanceName: KnockoutObservable<string> = ko.observable(null);
+    settingId: KnockoutObservable<string> = ko.observable(null);
     settingRuleCode: KnockoutObservable<number> = ko.observable(0);
     settingListItemsDetails: KnockoutObservableArray<SettingForPrint> = ko.observableArray([]);
     model: KnockoutObservable<Model> = ko.observable(new Model());
 
     isSelectAll: KnockoutObservable<boolean> = ko.observable(false);
     isEnableAddButton: KnockoutObservable<boolean> = ko.observable(false);
-    isEnableAttendanceCode: KnockoutObservable<boolean> = ko.observable(false);
+    isEnableAttendanceCode: KnockoutObservable<boolean> = ko.observable(true);
     isEnableDeleteButton: KnockoutObservable<boolean> = ko.observable(false);
     isEnableDuplicateButton: KnockoutObservable<boolean> = ko.observable(false);
 
@@ -35,8 +51,6 @@ module nts.uk.at.view.kwr004.b {
 
     position: KnockoutObservable<number> = ko.observable(1);
     attendanceItemName: KnockoutObservable<string> = ko.observable('勤務種類');
-    //attendanceCode: KnockoutObservable<string> = ko.observable('02');
-    //attendanceName: KnockoutObservable<string> = ko.observable('出勤簿');
     columnIndex: KnockoutObservable<number> = ko.observable(1);
     isDisplayItemName: KnockoutObservable<boolean> = ko.observable(true);
     isDisplayTitle: KnockoutObservable<boolean> = ko.observable(true);
@@ -46,26 +60,29 @@ module nts.uk.at.view.kwr004.b {
     tableSelected: KnockoutObservable<any> = ko.observable(null);
 
     isNewMode: KnockoutObservable<boolean> = ko.observable(false);
+    itemSelection: KnockoutObservable<number> = ko.observable(null);
+
+    workStatusTableOutputItem: KnockoutObservable<any> = ko.observable(null);
+    diligenceProjects: KnockoutObservableArray<DiligenceProject> = ko.observableArray([]);
+    diligenceProjectsMonthly: KnockoutObservableArray<DiligenceProject> = ko.observableArray([]);
 
     constructor(params: any) {
       super();
 
       const vm = this;
 
+      //KDL047, 048
+      vm.getSettingListKDL();
+      //merge attributes, settings
+      vm.switchAndDropBox();
+      //get the left with code, settingCategory from A
       vm.getSettingList();
 
-      vm.currentCodeList.subscribe((code: any) => {
+      vm.currentCodeList.subscribe((newCode: any) => {
         nts.uk.ui.errors.clearAll();
-        vm.getSettingListForPrint(code);
+        if (_.isNil(newCode)) return;
+        vm.getSettingListItemsDetails(newCode);
       });
-
-      vm.getSettingListItemsDetails();
-      vm.currentSettingCodeList = ko.observableArray([]);
-
-      vm.settingRules = ko.observableArray([
-        { code: 0, name: vm.$i18n('KWR004_68') },
-        { code: 1, name: vm.$i18n('KWR004_69') }
-      ]);
 
       vm.settingListItemsDetails.subscribe((newList) => {
         if (!newList || newList.length <= 0) {
@@ -99,17 +116,13 @@ module nts.uk.at.view.kwr004.b {
       vm.shareParam.selectedTime = vm.tableSelected();
 
       vm.shareParam.attribute.attributeList = [
-        new AttendaceType(1, vm.$i18n('KWR002_141')),
-        new AttendaceType(2, vm.$i18n('KWR002_142')),
-        new AttendaceType(3, vm.$i18n('KWR002_143')),
-        /* new AttendaceType(4, vm.$i18n('KWR002_180')),
-        new AttendaceType(5, vm.$i18n('KWR002_181')),
-        new AttendaceType(6, vm.$i18n('KWR002_182')),
-        new AttendaceType(7, vm.$i18n('KWR002_183')) */
+        new AttendanceType(1, vm.$i18n('KWR002_141')),
+        new AttendanceType(2, vm.$i18n('KWR002_142')),
+        new AttendanceType(3, vm.$i18n('KWR002_143'))
       ]
 
-      vm.shareParam.attendanceItems = vm.getDiligenceProject();
-      vm.shareParam.diligenceProjectList = vm.getDiligenceProject();
+      vm.shareParam.attendanceItems = vm.diligenceProjects(); //KDL047
+      vm.shareParam.diligenceProjectList = vm.diligenceProjects(); //KDL048
     }
 
     created(params: any) {
@@ -118,26 +131,22 @@ module nts.uk.at.view.kwr004.b {
 
     mounted() {
       const vm = this;
-      /* if (!!navigator.userAgent.match(/Trident.*rv\:11\./))
-        $("#multiGridList").ntsFixedTable({ height: 486 });
+      if (!!navigator.userAgent.match(/Trident.*rv\:11\./))
+        $("#multiGridList").ntsFixedTable({ height: 370 });
       else
-        $("#multiGridList").ntsFixedTable({ height: 488 }); */
-
-      $("#multiGridList").ntsFixedTable({ height: 365 });
-      $('#KWR004_B33').focus();
+        $("#multiGridList").ntsFixedTable({ height: 372 });
     }
 
     addRowItem(newRow?: SettingForPrint) {
       let vm = this,
         row: SettingForPrint = newRow;
 
-      if (!newRow) {
-        let lastItem: any = _.last(vm.settingListItemsDetails());
-        let id = lastItem ? lastItem.id : 1;
-        row = new SettingForPrint(id, null, 0, null, false);
-      }
-
       row.isChecked.subscribe((value: boolean) => {
+        vm.settingListItemsDetails.valueHasMutated();
+      });
+
+      row.independentCalcClassic.subscribe((value) => {
+        row.dailyAttributes(value === 1 ? vm.dailyAloneAttributes() : vm.dailyCalcAttributes());
         vm.settingListItemsDetails.valueHasMutated();
       });
 
@@ -147,71 +156,303 @@ module nts.uk.at.view.kwr004.b {
     addNewRow() {
       const vm = this;
       //vm.addRowItem();
-      vm.creatDefaultSettingDetails();
+      vm.createDefaultSettingDetails();
 
       vm.isEnableDuplicateButton(false);
       vm.isEnableDeleteButton(false);
-
       vm.attendanceCode(null);
       vm.attendanceName(null);
       vm.isEnableAttendanceCode(true);
       vm.isNewMode(true);
+      vm.currentCodeList(null);
       $('#KWR004_B32').focus();
     }
 
     registerSetting() {
-      const vm = this; 
-      /* 
-      if (vm.isNewMode()) {
-        //コードが重複しているため、登録できません。 Msg_1753        
-        let checkExist = _.find(vm.settingListItems(), ['code', _.trim(vm.attendanceCode())]);        
-        if( !_.isNil(checkExist) ) {
-          vm.$dialog.error({messageId: 'Msg_1753'}).then(() => {
-            $('#KWR003_B42').focus();           
-          });
-          return;
-        }
-      } else {
-        //出力項目が削除されています。 ＃Msg_1903
-        let temp = vm.settingListItemsDetails();
-        temp=  _.filter(temp, (x) => x.id !== 1);
-        if( temp.length !== vm.settingListItemsDetails().length ) {
-          vm.$dialog.error({messageId: 'Msg_1903'}).then(() => {
-            $('#btnB11').focus();
-          });
-          return;
-        }
-      } */
-      //order
-      let twoItemList = _.dropRight(vm.settingListItemsDetails(), vm.settingListItemsDetails().length - 2);
-      twoItemList = vm.orderListItemsByField(twoItemList);
+      const vm = this;
 
-      let eightItemList = _.drop(vm.settingListItemsDetails(), 2);
-      eightItemList = vm.orderListItemsByField(eightItemList);
-      //register
-      let listItemsDetails = _.concat(twoItemList, eightItemList);
-      vm.createListItemAfterSorted(listItemsDetails);
+      //order before save to database
+      vm.orderSettingListItemsDetails();
 
-      let returnAttendance: AttendanceItem = {
+      let params = {
+        id: vm.isNewMode() ? null : vm.settingId(),
         code: vm.attendanceCode(),
         name: vm.attendanceName(),
-        status: vm.isNewMode() ? 1 : 0 // 0: Update, 1: Addnew, 2: Remove
+        settingCategory: vm.itemSelection(),
+        employeeI: vm.$user.employeeId,
+        dailyOutputItems: vm.getDailyOutputItems(),
+        monthlyOutputItems: vm.getMonthlyOutputItems()
       };
-      vm.attendance(returnAttendance);
 
-      //change to update status
-      vm.isNewMode(false);
+      const path_url = (vm.isNewMode()) ? PATH.createSetting : PATH.updateSetting;
+
+      vm.$blockui('show');
+      vm.$ajax(path_url, params)
+        .done((result) => {
+          vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
+            vm.getSettingItemsLeft(vm.attendanceCode());
+            vm.$blockui('hide');
+          });
+        })
+        .fail((error) => {
+          vm.showError(error.messageId);
+          vm.$blockui('hide');
+        }).always(() => vm.$blockui('hide'));
     }
 
-    deteleSetting() {
+    showError(messageId: string) {
       const vm = this;
-      //get all items that will be remove
-      let listCheckedItems: Array<any> = vm.settingListItemsDetails().filter((row) => row.isChecked() === true);
-      if (listCheckedItems.length <= 0) return;
+      switch (messageId) {
+        case 'Msg_1898':
+          vm.$dialog.error({ messageId: messageId }).then(() => {
+            vm.getSettingItemsLeft(null);
+            $('#btnB11').focus();
+          });
+          break;
 
-      //get all items that will be not remove
-      let listNotCheckedItems: Array<any> = vm.settingListItemsDetails().filter((row) => row.isChecked() === false);
-      vm.settingListItemsDetails(listNotCheckedItems);
+        case 'Msg_1859':
+          $('#KWR004_B32').ntsError('set', { messageId: messageId });
+          break;
+      }
+    }
+
+    orderSettingListItemsDetails() {
+      const vm = this;
+      //sort before get info and save
+      let templateSetting = vm.settingListItemsDetails();
+      //set reset
+      vm.settingListItemsDetails([])
+      //sort daily
+      let twoItemList: Array<SettingForPrint> = _.dropRight(templateSetting, templateSetting.length - 2);
+      twoItemList = vm.sortSettingListItemsDetails(twoItemList, 2);
+      if (!_.isNil(twoItemList)) {
+        _.forEach(twoItemList, (x) => {
+          vm.settingListItemsDetails.push(x);
+        });
+      }
+      //sort monthly
+      let eightItemList: Array<SettingForPrint> = _.drop(templateSetting, 2);
+      eightItemList = vm.sortSettingListItemsDetails(eightItemList, 8);
+      if (!_.isNil(eightItemList)) {
+        _.forEach(eightItemList, (x) => {
+          x.independentCalcClassic(2);
+          vm.settingListItemsDetails.push(x);
+        });
+      }
+    }
+
+
+    getDailyOutputItems() {
+      let dailyOutputItems = [];
+      const vm = this;
+
+      //get daily
+      let twoItemList = _.dropRight(vm.settingListItemsDetails(), vm.settingListItemsDetails().length - 2);
+
+      _.forEach(twoItemList, (x, index) => {
+        let dailyItem = {
+          rank: index + 1, // 1 -> 2
+          name: x.name(),
+          printTargetFlag: x.isChecked(),
+          independentCalcClassic: x.independentCalcClassic(),
+          dailyMonthlyClassification: 1, //（固定）日次 ＝ 1
+          itemDetailAttributes: x.itemAttribute(),
+          selectedAttendanceItemList: []
+        };
+
+        let outputItemDetails = [];
+        _.forEach(x.selectedTimeList(), (o) => {
+          outputItemDetails.push({
+            operator: (o.operator) ? (o.operator == '+' ? 1 : 2) : null,
+            attendanceItemId: o.itemId
+          });
+        });
+        dailyItem.selectedAttendanceItemList = outputItemDetails;
+        dailyOutputItems.push(dailyItem);
+      });
+
+      return dailyOutputItems;
+    }
+
+    getMonthlyOutputItems() {
+      let monthlyOutputItems = [];
+      const vm = this;
+
+      //get monthly
+      let eightItemList = _.drop(vm.settingListItemsDetails(), 2);
+
+      _.forEach(eightItemList, (x, index) => {
+        let monthlyItem = {
+          rank: index + 3,  // 3 -> 10
+          name: x.name(),
+          printTargetFlag: x.isChecked(),
+          independentCalcClassic: 2, //（固定）計算
+          dailyMonthlyClassification: 2, //（固定）月次 ＝ ２
+          itemDetailAttributes: x.itemAttribute(),
+          selectedAttendanceItemList: []
+        };
+
+        let outputItemDetails = [];
+        _.forEach(x.selectedTimeList(), (o) => {
+          outputItemDetails.push({
+            operator: (o.operator) ? (o.operator == '+' ? 1 : 2) : null,
+            attendanceItemId: o.itemId
+          });
+        });
+        monthlyItem.selectedAttendanceItemList = outputItemDetails;
+
+        monthlyOutputItems.push(monthlyItem);
+      });
+
+      return monthlyOutputItems;
+    }
+
+    sortSettingListItemsDetails(settingList: Array<SettingForPrint>, max_row: number) {
+      const vm = this,
+        tempSettings: Array<SettingForPrint> = [];
+
+      _.forEach(settingList, (item) => {
+        if (!nts.uk.util.isNullOrEmpty(item.name())) {
+          tempSettings.push(item);
+        }
+      });
+
+      let from = tempSettings.length;
+      for (let i = from; i < max_row; i++) {
+        let dailyAttributes = vm.dailyOrMonthlyAttributes(i < 2 ? 1 : 2);
+        let newItem = new SettingForPrint(i + 1, null, i < 2 ? 1 : 2, null, false, 0, [], dailyAttributes, i < 2);
+        tempSettings.push(newItem);
+      }
+
+      return tempSettings;
+    }
+
+    /**
+     * Show output details
+    */
+    getSettingListItemsDetails(newCode: string) {
+      const vm = this;
+
+      let findObj = _.find(vm.settingListItems(), (x) => x.code === newCode);
+      let settingId = null;
+
+      if (!_.isNil(findObj)) {
+        settingId = findObj.settingId;
+        vm.attendanceCode(findObj.code);
+        vm.attendanceName(findObj.name);
+        vm.settingId(settingId);
+        vm.isEnableAttendanceCode(false);
+        vm.isEnableAddButton(true);
+        vm.isEnableDuplicateButton(true);
+        vm.isEnableDeleteButton(true);
+        vm.isNewMode(false);
+        $('#KWR004_B33').focus();
+      }
+
+      vm.$blockui('show');
+      vm.settingListItemsDetails([]);
+      vm.$ajax(PATH.getSettingDetail, { settingId: settingId })
+        .done((result) => {
+          //daily
+          if (!_.isNil(result.dailyOutputItems)) {
+            vm.makeSettingDetailsFromData(result.dailyOutputItems, 2);
+          }
+
+          if (!_.isNil(result.monthlyOutputItems)) {
+            vm.makeSettingDetailsFromData(result.monthlyOutputItems, 10);
+          }
+
+        })
+        .fail()
+        .always(() => vm.$blockui('hide'))
+    }
+
+    makeSettingDetailsFromData(outputItems: Array<any>, maxItems: number) {
+      const vm = this;
+
+      let dailyAttributes: any = [],
+        independentCalc: number = 0,
+        newItem: SettingForPrint = null;
+
+      let step = maxItems === maxDailyRows ? 1 : 3; // 2 = d
+      let selectionItem = null,
+        selectedListItems = [];
+      const dailyOrMonthly = maxItems < maxMonthlyRows;  //true: daily else monthly
+
+      _.forEach(outputItems, (x, index: number) => {
+        independentCalc = (!_.isNil(x.independentCalcClassic)) ? x.independentCalcClassic : 2;
+        dailyAttributes = vm.dailyOrMonthlyAttributes(independentCalc);
+
+        selectedListItems = []; //clear
+        _.forEach(x.selectedListItems, (o) => {
+          selectedListItems.push({
+            ...o, itemId: o.attendanceItemId,
+            operator: o.operator == 2 ? '-' : '+'
+          });
+        });
+
+        //create label to display
+        selectionItem = vm.getAttendanceAttributes(dailyOrMonthly, independentCalc, selectedListItems);
+
+        //create new row
+        let newItem = new SettingForPrint(
+          index + step, //rank
+          x.name, //b4_3_2 見出し名称
+          x.independentCalcClassic, //b4_5_1 or b4_5_2
+          vm.createDataSelection(selectionItem), //b4_3_4 - display 選択項目
+          x.printTargetFlag, //b4_3_1
+          x.attribute, //b4_3_3_2 - selected code
+          selectedListItems, //B4_3_3_2 属性選択
+          dailyAttributes, //b4_3_3_2
+          dailyOrMonthly //daily or monthly
+        );
+
+        vm.addRowItem(newItem);
+      });
+
+      let from = vm.settingListItemsDetails().length;
+      if (from < maxItems) {
+        for (let i = from; i < maxItems; i++) {
+          dailyAttributes = vm.dailyOrMonthlyAttributes(i < maxDailyRows ? 1 : 2);
+          newItem = new SettingForPrint(i + step, null, i < maxDailyRows ? 1 : 2, null,
+            false, 0, [], dailyAttributes, i < maxDailyRows);
+          vm.addRowItem(newItem);
+        }
+      }
+    }
+
+    dailyOrMonthlyAttributes(type: number) {
+      const vm = this;
+      return type === 1 ? vm.dailyAloneAttributes() : vm.monthlyAttributes();
+    }
+
+    deleteSetting() {
+      const vm = this;
+
+      vm.$blockui('show');
+      const params = {
+        settingId: vm.settingId() //該当する設定ID
+      };
+
+      vm.$dialog.confirm({ messageId: 'Msg_18' }).then((answer: string) => {
+        if (answer === 'yes') {
+          vm.$ajax(PATH.deleteSetting, params)
+            .done(() => {
+              vm.$dialog.info({ messageId: 'Msg_16' }).then(() => {
+                vm.getSettingItemsLeft(null);
+                vm.$blockui('hide');
+              })
+            })
+            .always(() => {
+              vm.$blockui('hide');
+            })
+            .fail((error) => {
+
+            });
+        } else {
+          vm.$blockui('hide');
+        }
+      });
     }
 
     /**
@@ -225,26 +466,18 @@ module nts.uk.at.view.kwr004.b {
       let params = {
         code: vm.attendanceCode(), //複製元の設定ID
         name: vm.attendanceName(),
-        lastCode: !_.isNil(lastItem) ? lastItem.code : null,
-        settingListItems: vm.settingListItemsDetails() //設定区分
+        settingId: vm.settingId(),
+        settingCategory: vm.itemSelection()
       }
-      console.log(params);
+
       vm.$window.storage(KWR004_C_INPUT, params).then(() => {
         vm.$window.modal('/view/kwr/004/c/index.xhtml').then(() => {
           vm.$window.storage(KWR004_C_OUTPUT).then((data) => {
-            console.log(data);
             if (_.isNil(data)) {
               return;
             }
-
-            /* let duplicateItem = _.find(vm.settingListItems(), (x) => x.code === data.code);
-            if (!_.isNil(duplicateItem)) {
-              vm.$dialog.error({ messageId: 'Msg_1903' }).then(() => { });
-              return;
-            }
-
-            vm.settingListItems.push(data);
-            vm.currentCodeList(data.code);    */         
+            //reload screen B
+            vm.getSettingItemsLeft(data.code);
           });
         });
       });
@@ -253,33 +486,22 @@ module nts.uk.at.view.kwr004.b {
     closeDialog() {
       const vm = this;
       //KWR004_B_OUTPUT
-      vm.$window.storage(KWR004_B_OUTPUT, vm.attendance());
-      vm.$window.close();
-    }
-
-    getSettingListItemsDetails() {
-      const vm = this;
-
-      //vm.creatDefaultSettingDetails();
-      for (let i = 0; i < NUM_ROWS; i++) {
-        let setting = i < 2 ? 0 : null;
-        let newIitem = new SettingForPrint(i + 1, '予定勤務種類', setting, '予定勤務種類', false);
-        vm.addRowItem(newIitem);
-      }
-      _.orderBy(vm.settingListItemsDetails(), ['id', 'name'], ['asc', 'asc']);
+      vm.$window.storage(KWR004_B_OUTPUT, { code: vm.attendanceCode() }).then(() => {
+        vm.$window.close();
+      });
     }
 
     /**
      *
     */
-    creatDefaultSettingDetails() {
+    createDefaultSettingDetails(from: number = 0) {
       const vm = this;
       //clear
-      vm.settingListItemsDetails([])
-      for (let i = 0; i < NUM_ROWS; i++) {
-        let setting = i < 2 ? 0 : 9999;
-        let newIitem = new SettingForPrint(i + 1, null, setting, null, false);
-        vm.addRowItem(newIitem);
+      vm.settingListItemsDetails([]);
+      for (let i = from; i < NUM_ROWS; i++) {
+        let dailyAttributes = i < 2 ? vm.dailyAloneAttributes() : vm.monthlyAttributes();
+        let newItem = new SettingForPrint(i + 1, null, i < 2 ? 1 : 2, null, false, 0, [], dailyAttributes, i < 2);
+        vm.addRowItem(newItem);
       }
     }
 
@@ -289,7 +511,7 @@ module nts.uk.at.view.kwr004.b {
         selectionItem: Array<string> = [];
 
       _.forEach(selectedTimeList, (item, index: number) => {
-        if (index === 0 && item.operator.substring(0, 1) === '+') {
+        if (index === 0 && item.operator === '+') {
           selectionItem.push(item.name);
         } else {
           selectionItem.push(item.operator + ' ' + item.name);
@@ -298,156 +520,166 @@ module nts.uk.at.view.kwr004.b {
 
       if (selectionItem.length > 0) {
         dataSelection = _.join(selectionItem, ' ');
-        if (dataSelection.length > 20) {
-          dataSelection = dataSelection.substring(0, 19) + vm.$i18n('KWR003_219');
-        }
       }
 
       return dataSelection;
     }
 
-    getSettingListForPrint(code: string) {
-      const vm = this;
-      if (!_.isNil(code)) {
-        let selectedObj = _.find(vm.settingListItems(), (x: any) => x.code === code);
-        if (!_.isNil(selectedObj)) {
-          vm.attendanceCode(selectedObj.code);
-          vm.attendanceName(selectedObj.name);
-          //KDL 047, 048
-          vm.shareParam.titleLine.layoutCode = vm.attendanceCode();
-          vm.shareParam.titleLine.layoutName = vm.attendanceName();
-
-          vm.isEnableAttendanceCode(false);
-          vm.isEnableAddButton(true);
-          vm.isEnableDeleteButton(true);
-          vm.isEnableDuplicateButton(true);
-        }
-      }
-    }
-
-    getListItems() {
-      let lisItems: Array<any> = [
-        new ItemModel('001', '予定勤務種類'),
-        new ItemModel('003', '予定勤務種類'),
-        new ItemModel('004', '予定勤務種類'),
-        new ItemModel('005', '予定勤務種類'),
-        new ItemModel('002', 'Seoul Korea'),
-        new ItemModel('006', 'Paris France'),
-        new ItemModel('007', '予定勤務種類'),
-        new ItemModel('008', '予定勤務種類'),
-        new ItemModel('009', '予定勤務種類'),
-        new ItemModel('010', '予定勤務種類'),
-        new ItemModel('011', '予定勤務種類'),
-        new ItemModel('013', '予定勤務種類'),
-        new ItemModel('014', '予定勤務種類'),
-        new ItemModel('015', '予定勤務種類'),
-        new ItemModel('012', 'Seoul Korea'),
-        new ItemModel('016', 'Paris France'),
-        new ItemModel('017', '予定勤務種類'),
-        new ItemModel('018', '予定勤務種類'),
-        new ItemModel('019', '予定勤務種類'),
-        new ItemModel('020', '予定勤務種類'),
-      ];
-
-      return lisItems;
-
-    }
-
     getSettingList() {
       const vm = this;
-
-      let lisItems: Array<any> = vm.getListItems();
-
-      //sort by code with asc
-      lisItems = _.orderBy(lisItems, ['code'], ['asc']);
-      vm.settingListItems(lisItems);
-
       vm.$window.storage(KWR004_B_INPUT).then((data: any) => {
-        let code = !_.isNil(data) ? data.code : null;
-        if (vm.settingListItems().length > 0) {
-          let firstItem: any = _.head(vm.settingListItems());
-          if (!code) code = firstItem.code;
+        if (!_.isNil(data)) {
+          let code = !_.isNil(data.code) ? data.code : null;
+          vm.itemSelection(data.itemSelection);
+          vm.getSettingItemsLeft(code); //left list          
         }
-
-        vm.currentCodeList.push(code);
-        vm.getSettingListForPrint(code);
       });
+    }
+
+    getSettingItemsLeft(currentCode: string) {
+      const vm = this;
+
+      let lisItems: Array<any> = [];
+
+      vm.$ajax(PATH.getSetting, { settingClassification: vm.itemSelection() })
+        .done((result) => {
+
+          if (_.isNil(result) || result.length == 0) {
+            vm.addNewRow();
+          } else {
+            //merge to settingListItems
+            _.forEach(result, (x) => {
+              let code = _.padStart(x.code, 2, '0');
+              lisItems.push(new ItemModel(code, x.name, x.settingId));
+            });
+
+            //sort by code with asc
+            lisItems = _.orderBy(lisItems, 'code', 'asc');
+            vm.settingListItems([]);
+            vm.settingListItems(lisItems);
+
+            let firstItem: any = _.head(vm.settingListItems());
+            if (_.isNil(currentCode)) currentCode = firstItem.code;
+            vm.currentCodeList(currentCode);
+          }
+        }).fail(() => { });
     }
 
     openDialogKDL(data: SettingForPrint) {
       const vm = this;
 
-      if (data.setting() === 1 || _.isNull(data.setting()))
-        vm.openDialogKDL048(data);
-      else
+      if (data.independentCalcClassic() === 1)
         vm.openDialogKDL047(data);
+      else
+        vm.openDialogKDL048(data);
     }
 
     openDialogKDL047(row: any) {
       const vm = this;
 
       vm.shareParam.itemNameLine.name = row.name();
+      vm.shareParam.attribute.selected = row.itemAttribute(); //setting Category
+      vm.shareParam.selectedTime = row.selectedTime;
+      vm.shareParam.attendanceItems = vm.diligenceProjects(); //KDL047
+
+      vm.shareParam.attribute.attributeList = [
+        new AttendanceType(1, vm.$i18n('KWR002_141')),
+        new AttendanceType(2, vm.$i18n('KWR002_142')),
+        new AttendanceType(3, vm.$i18n('KWR002_143'))
+      ]
 
       nts.uk.ui.windows.setShared('attendanceItem', vm.shareParam, true);
       nts.uk.ui.windows.sub.modal('/view/kdl/047/a/index.xhtml').onClosed(() => {
         const attendanceItem = nts.uk.ui.windows.getShared('attendanceRecordExport');
-        if (_.isNil(attendanceItem)) {
-          return;
+
+        if (_.isNil(attendanceItem)) return;
+        if (nts.uk.ui.errors.hasError()) nts.uk.ui.errors.clearAll();
+        let index = _.findIndex(vm.settingListItemsDetails(), (o: any) => { return o.id === row.id; });
+        if (attendanceItem.attendanceItemName) {
+          vm.settingListItemsDetails()[index].name(attendanceItem.attendanceItemName);
+          $('#textName' + vm.settingListItemsDetails()[index].id).ntsError('clear');
         }
 
-        let index = _.findIndex(vm.settingListItemsDetails(), (o: any) => { return o.id === row.id; });
-        vm.settingListItemsDetails()[index].name(attendanceItem.attendanceItemName);
+        let findAttendanceName = _.find(vm.shareParam.attendanceItems, (x: any) => {
+          return parseInt(x.attendanceItemId) === parseInt(attendanceItem.attendanceId);
+        });
 
-        let findAttedenceName = _.find(vm.shareParam.attendanceItems, (x: any) => { return x.attendanceItemId === parseInt(attendanceItem.attendanceId); });
-        if (!_.isNil(findAttedenceName)) {
-          vm.settingListItemsDetails()[index].selectionItem(findAttedenceName.attendanceItemName);
-
+        //選択項目
+        if (!_.isNil(findAttendanceName)) {
           let listItem: selectedTimeList = {};
-          listItem.itemId = attendanceItem.attendanceId;
-          listItem.name = findAttedenceName.attendanceItemName;
-          vm.settingListItemsDetails()[index].selectedTimeList.push(listItem);
+          listItem.itemId = parseInt(attendanceItem.attendanceId);
+          listItem.name = findAttendanceName.attendanceItemName;
+          listItem.operator = '+'; //+
+          listItem.indicatesNumber = 0;
+
+          vm.settingListItemsDetails()[index].required(true);
+          vm.settingListItemsDetails()[index].selectedTimeList([listItem]);
+          vm.settingListItemsDetails()[index].itemAttribute(attendanceItem.attribute);
+          vm.settingListItemsDetails()[index].selectedTime = attendanceItem.attendanceId;
+          vm.settingListItemsDetails()[index].selectionItem(findAttendanceName.attendanceItemName);
+          $('#textName' + row.id).focus();
         } else {
+          vm.settingListItemsDetails()[index].name(null);
           vm.settingListItemsDetails()[index].selectionItem(null);
           vm.settingListItemsDetails()[index].selectedTimeList([]);
+          vm.settingListItemsDetails()[index].selectedTime = -1;
+          vm.settingListItemsDetails()[index].itemAttribute(-1);
+          vm.settingListItemsDetails()[index].required(false);
         }
       });
     }
 
     openDialogKDL048(row: any) {
-      let vm = this,
-        selectionItem: Array<string> = [];
+      let vm = this;
 
       vm.shareParam.attribute.attributeList = [
-        new AttendaceType(4, vm.$i18n('KWR002_180')),
-        new AttendaceType(5, vm.$i18n('KWR002_181')),
-        //new AttendaceType(6, vm.$i18n('KWR002_182')),
-        new AttendaceType(7, vm.$i18n('KWR002_183'))
+        new AttendanceType(4, vm.$i18n('KWR002_180')),
+        new AttendanceType(5, vm.$i18n('KWR002_181')),
+        new AttendanceType(7, vm.$i18n('KWR002_183'))
       ]
 
+      if (!row.type) {
+        vm.shareParam.attribute.attributeList.push(new AttendanceType(6, vm.$i18n('KWR002_182')));
+        vm.shareParam.diligenceProjectList = vm.diligenceProjectsMonthly(); //KDL048
+      } else
+        vm.shareParam.diligenceProjectList = vm.diligenceProjects(); //KDL048
+
       vm.shareParam.itemNameLine.name = row.name();
+      vm.shareParam.attribute.selected = row.itemAttribute(); //setting Category
+      if (!_.isNil(row.selectedTimeList())) {
+        vm.shareParam.selectedTimeList = row.selectedTimeList();
+      }
 
       nts.uk.ui.windows.setShared('attendanceItem', vm.shareParam, true);
       nts.uk.ui.windows.sub.modal('/view/kdl/048/index.xhtml').onClosed(() => {
         const attendanceItem = nts.uk.ui.windows.getShared('attendanceRecordExport');
-        console.log(attendanceItem);
-        if (!attendanceItem) {
-          return;
-        }
 
+        if (!attendanceItem) return;
+        let index = _.findIndex(vm.settingListItemsDetails(), (o: any) => { return o.id === row.id; });
         if (attendanceItem.selectedTimeList.length > 0) {
-          let index = _.findIndex(vm.settingListItemsDetails(), (o: any) => { return o.id === row.id; });
+          //clear error on input
+          if (nts.uk.ui.errors.hasError()) nts.uk.ui.errors.clearAll();
           let dataSelection: string = vm.createDataSelection(attendanceItem.selectedTimeList);
           if (index > -1) {
             vm.settingListItemsDetails()[index].name(attendanceItem.itemNameLine.name);
+            vm.settingListItemsDetails()[index].required(true);
             vm.settingListItemsDetails()[index].selectionItem(dataSelection);
             vm.settingListItemsDetails()[index].selectedTimeList(attendanceItem.selectedTimeList);
+            vm.settingListItemsDetails()[index].itemAttribute(attendanceItem.attribute.selected);
+            $('#textName' + row.id).focus();
           }
+        } else {
+          vm.settingListItemsDetails()[index].name(null);
+          vm.settingListItemsDetails()[index].selectionItem(null);
+          vm.settingListItemsDetails()[index].selectedTimeList([]);
+          vm.settingListItemsDetails()[index].selectedTime = -1;
+          vm.settingListItemsDetails()[index].itemAttribute(-1);
+          vm.settingListItemsDetails()[index].required(false);
         }
       });
     }
 
     checkItem(data: SettingForPrint) {
-      console.log(data);
       return true
     }
 
@@ -461,90 +693,95 @@ module nts.uk.at.view.kwr004.b {
       })
     }
 
-    getDiligenceProject() {
-      let DiligenceProjects = [
-        new DiligenceProject(1, '予定勤務種類', '', 0),
-        new DiligenceProject(28, '勤務種類', '勤務種類', 28),
-        new DiligenceProject(2, '予定就業時間帯', '予定就業時間帯', 2),
-        new DiligenceProject(3, '予定出勤時刻1', '予定出勤時刻1', 3),
-        new DiligenceProject(5, '予定出勤時刻5', '予定出勤時刻5', 5),
-        new DiligenceProject(6, '予定出勤時刻6', '予定出勤時刻6', 6),
-        new DiligenceProject(8, '予定出勤時刻8', '予定出勤時刻8', 8),
-        new DiligenceProject(9, '予定出勤時刻9', '予定出勤時刻9', 9),
-        new DiligenceProject(10, '予定出勤時刻10', '予定出勤時刻10', 10),
-        new DiligenceProject(11, '予定出勤時111', '予定出勤時刻11', 11),
-        new DiligenceProject(12, '予定出勤時刻12', '予定出勤時刻12', 12),
-        new DiligenceProject(13, '予定出勤時刻13', '予定出勤時刻13', 13),
-        new DiligenceProject(14, '予定出勤時刻14', '予定出勤時刻14', 14),
-        new DiligenceProject(15, '予定出勤時刻15', '予定出勤時刻15', 15),
-        new DiligenceProject(16, '予定出勤時刻16', '予定出勤時刻16', 16),
-        new DiligenceProject(4, '予定退勤時刻1', '予定退勤時刻1', 4),
-        new DiligenceProject(7, '予定休憩開始時刻1', '予定休憩開始時刻1', 7),
-        new DiligenceProject(8, '予定休憩終了時刻1', '予定休憩終了時刻1', 8),
-        new DiligenceProject(27, '予定時間', '予定時間', 27),
-        new DiligenceProject(216, '残業１', '残業１', 216),
-        new DiligenceProject(461, '勤務回数', '勤務回数', 461),
-        new DiligenceProject(534, '休憩回数', '休憩回数', 534),
-        new DiligenceProject(641, 'aaaaaaaaa回数', 'aaaaaaaaa回数', 641),
-        new DiligenceProject(642, 'tukijikan回数', 'tukijikan回数', 642),
-        new DiligenceProject(643, 'tukikin', 'tukikin', 643),
-        new DiligenceProject(644, '出有ｵﾝ無ｵﾌ有ｶｳﾝﾄ（日次ﾄﾘｶﾞ）ｄ', '出有ｵﾝ無ｵﾌ有ｶｳﾝﾄ（日次ﾄﾘｶﾞ）ｄ', 644),
-        new DiligenceProject(645, '出有ｵﾝ有ｵﾌ無ｶｳﾝﾄ（日次ﾄﾘｶﾞ）（bb）', '出有ｵﾝ有ｵﾌ無ｶｳﾝﾄ（日次ﾄﾘｶﾞ）（bb）', 645),
-        new DiligenceProject(680, '任意項目４０', '任意項目４０', 680),
-        new DiligenceProject(681, '任意項目４１', '任意項目４１', 681),
-        new DiligenceProject(682, '任意項目４２月別', '任意項目４２月別', 682),
-        new DiligenceProject(683, '任意項目４３', '任意項目４３', 683),
-        new DiligenceProject(267, '振替休日１', '振替休日１', 267),
-        new DiligenceProject(268, '計算休日出勤１', '計算休日出勤１', 268),
-        new DiligenceProject(269, '計算振替休日１', '計算振替休日１', 269),
-        new DiligenceProject(270, '事前休日出勤１', '事前休日出勤１', 270)
-      ];
+    getSettingListKDL() {
+      const vm = this;
 
-      return DiligenceProjects;
+      vm.$blockui('grayout');
+
+      vm.workStatusTableOutputItem = ko.observable({ listDaily: [], listMonthly: [] });
+      vm.$ajax(PATH.getInitDayMonth, { settingClassification: 1, formNumberDisplay: 7 }).done((result) => {
+        if (result && result.listDaily) {
+          _.forEach(result.listDaily, (item) => {
+            vm.diligenceProjects.push(new DiligenceProject(
+              item.attendanceItemId,
+              item.attendanceItemName,
+              item.attributes,
+              item.attendanceItemDisplayNumber
+            )
+            );
+          });
+        }
+
+        if (result && result.listMonthly) {
+          _.forEach(result.listMonthly, (item) => {
+            vm.diligenceProjectsMonthly.push(new DiligenceProject(
+              item.attendanceItemId,
+              item.attendanceItemName,
+              item.attributes,
+              item.attendanceItemDisplayNumber
+            )
+            );
+          });
+        }
+
+        vm.$blockui('hide');
+      }).always(() => vm.$blockui('hide'));
     }
 
-    /**
-     * Orders list items by field
-     * @param [listItemsDetails] 
-     * @param [field] 
-     * @param [sort_type] 
-     * @returns  
-     */
-    orderListItemsByField(listItemsDetails?: Array<any>, field: string = 'name', sort_type: string = 'desc') {
-      let newListItemsDetails: Array<any> = [];
-      _.forEach(listItemsDetails, (row, index) => {
-        let temp = {
-          id: row.id,
-          isChecked: row.isChecked(),
-          name: row.name(),
-          setting: row.setting(),
-          selectionItem: row.selectionItem(),
-          selectedTimeList: row.selectedTimeList()
-        };
+    switchAndDropBox() {
+      const vm = this;
+      //帳票共通の単独計算区分 IndependentCalcClassic
+      vm.enumIndependentCalculation = ko.observableArray([
+        { code: 1, name: vm.$i18n('KWR004_68') },
+        { code: 2, name: vm.$i18n('KWR004_69') }
+      ]);
 
-        newListItemsDetails.push(temp);
+      vm.dailyAloneAttributes = ko.observableArray([]);
+      let allowIndex = [1, 2, 3];
+      _.forEach(__viewContext.enums.DailyAttendanceAtr, (x) => {
+        if (_.includes(allowIndex, x.value)) {
+          vm.dailyAloneAttributes.push({ code: x.value, name: vm.$i18n(x.name) });
+        }
       });
 
-      newListItemsDetails = _.orderBy(newListItemsDetails, [field], [sort_type]);
+      vm.dailyCalcAttributes = ko.observableArray([]);
+      allowIndex = [4, 5, 7];
+      _.forEach(__viewContext.enums.DailyAttendanceAtr, (x) => {
+        if (_.includes(allowIndex, x.value)) {
+          vm.dailyCalcAttributes.push({ code: x.value, name: vm.$i18n(x.name) });
+        }
+      });
 
-      return newListItemsDetails;
+      vm.monthlyAttributes = ko.observableArray();
+      allowIndex = [4, 5, 6, 7];
+      _.forEach(__viewContext.enums.MonthlyAttendanceItemAtr, (x) => {
+        if (_.includes(allowIndex, x.value)) {
+          vm.monthlyAttributes.push({ code: x.value, name: vm.$i18n(x.name) });
+        }
+      });
     }
-
     /**
-     * Create list item after sorted
-     * @param [listItemsDetails] 
+     * Get attendance attributes
+     * @param type 
+     * @param icClassic 
+     * @param selectedListItems 
+     * @return Array
      */
-    createListItemAfterSorted(listItemsDetails?: Array<any>) {
-      let vm = this;
+    getAttendanceAttributes(type: boolean, icClassic: number, selectedListItems: Array<any>) {
+      const vm = this;
+      let temp = [],
+        attributesItems = vm.diligenceProjects();
+      //from 3rd - Monthly
+      if (icClassic === 2 && !type) attributesItems = vm.diligenceProjectsMonthly();
 
-      vm.settingListItemsDetails([]);
-      _.forEach(listItemsDetails, (x: any) => {
-        let newIitem: SettingForPrint = new SettingForPrint(
-          x.id, x.name, x.setting,
-          x.selectionItem, x.isChecked,
-          x.selectedTimeList);
-        vm.addRowItem(newIitem);
-      });
+      _.forEach(selectedListItems, (x) => {
+        let findAttend = _.find(attributesItems, (e) => x.attendanceItemId === e.attendanceItemId);
+        if (!_.isNil(findAttend)) {
+          temp.push({ operator: x.operator, name: findAttend.attendanceItemName });         
+        }
+      })
+
+      return temp;
     }
   }
 
@@ -558,9 +795,11 @@ module nts.uk.at.view.kwr004.b {
   export class ItemModel {
     code: string;
     name: string;
-    constructor(code?: string, name?: string) {
+    settingId?: string;
+    constructor(code?: string, name?: string, settingId?: string) {
       this.code = code;
       this.name = name;
+      this.settingId = settingId
     }
   }
 
@@ -568,27 +807,35 @@ module nts.uk.at.view.kwr004.b {
     id: number;
     isChecked: KnockoutObservable<boolean> = ko.observable(false);
     name: KnockoutObservable<string> = ko.observable(null);
-    setting: KnockoutObservable<number> = ko.observable(0);
+    required: KnockoutObservable<boolean> = ko.observable(false);
+    independentCalcClassic: KnockoutObservable<number> = ko.observable(1);
+    selectedTime: number = -1;
     selectionItem: KnockoutObservable<string> = ko.observable(null);
-    selectedCode: KnockoutObservable<number> = ko.observable(0);
+    itemAttribute: KnockoutObservable<number> = ko.observable(0);
     selectedTimeList: KnockoutObservableArray<selectedTimeList> = ko.observableArray([]);
+    dailyAttributes: KnockoutObservableArray<any> = ko.observableArray([]);
+    type: boolean = false;
 
     constructor(
       id?: number,
       name?: string,
-      setting?: number,
+      indCalcClassic?: number,
       selectionItem?: string,
       checked?: boolean,
-      selectedCode?: number,
-      selectedTimeList?: Array<any>
+      itemAttribute?: number,
+      selectedTimeList?: Array<any>,
+      dailyAttributes?: Array<any>,
+      type: boolean = false
     ) {
       this.name(name || '');
-      this.setting(setting);
+      this.independentCalcClassic(indCalcClassic);
       this.isChecked(checked || false);
       this.selectionItem(selectionItem || '');
       this.id = id;
-      this.selectedCode(selectedCode);
+      this.itemAttribute(itemAttribute);
       this.selectedTimeList(selectedTimeList || []);
+      this.dailyAttributes(dailyAttributes || []);
+      this.type = type;
     }
   }
 
@@ -664,12 +911,12 @@ module nts.uk.at.view.kwr004.b {
     // 選択区分
     selectionCategory: number = 2;
     // List<属性>
-    attributeList: AttendaceType[] = [];
+    attributeList: AttendanceType[] = [];
     // 選択済み
     selected: number = 1;
   }
 
-  export class AttendaceType {
+  export class AttendanceType {
     attendanceTypeCode: number;
     attendanceTypeName: string;
     constructor(attendanceTypeCode: number, attendanceTypeName: string) {

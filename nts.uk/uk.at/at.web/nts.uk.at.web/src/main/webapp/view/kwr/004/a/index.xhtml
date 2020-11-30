@@ -10,6 +10,10 @@
     <ui:composition template="../../../../master/base.xhtml">
       <ui:define name="htmlHead">
         <com:scriptfile set="IGNITE" />
+        <com:EnumScript>
+          nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon
+        </com:EnumScript>      
+
         <com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
         <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
         <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
@@ -100,17 +104,17 @@
                         id="KWR004_105"
                         data-bind="ntsComboBox: {
                           name: $i18n('KWR004_16'),
-                          options:  settingListItems,
+                          options:  settingListItems1,
                           optionsValue: 'code',
                           visibleItemsCount: 5,
                           value: standardSelectedCode,
                           optionsText: 'name',
                           editable: false,
                           enable: isEnableSelectedCode(),
-                          required: false,
+                          required: true,
                           selectFirstIfNull: true,
                           columns: [
-                            { prop: 'code', length: 4 },
+                            { prop: 'code', length: 2 },
                             { prop: 'name', length: 10 },
                           ]}"
                       ></div>
@@ -129,17 +133,17 @@
                           id="KWR004_106"
                           data-bind="ntsComboBox: {
                           name: $i18n('KWR004_18'),
-                          options:  settingListItems,
+                          options:  settingListItems2,
                           optionsValue: 'code',
                           visibleItemsCount: 5,
                           value: freeSelectedCode,
                           optionsText: 'name',
                           editable: false,
                           enable: !isEnableSelectedCode(),
-                          required: false,
+                          required: true,
                           selectFirstIfNull: true,
                           columns: [
-                            { prop: 'code', length: 4 },
+                            { prop: 'code', length: 2 },
                             { prop: 'name', length: 10 },
                           ]}"
                         ></div>

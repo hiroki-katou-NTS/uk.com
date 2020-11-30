@@ -4,15 +4,16 @@ package nts.uk.ctx.at.function.app.command.outputworkanualsetting;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.DailyOutputItemsAnnualWorkLedger;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItem;
 
 import java.util.List;
 
-@AllArgsConstructor
 @Getter
 @Setter
-public class CreateAnualWorkledgerSettingCommand {
+@AllArgsConstructor
+public class UpdateAnualWorkledgerSettingCommand {
+
+    //ID -> GUID
+    private final String id;
 
     //コード
     private String code;

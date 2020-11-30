@@ -26,14 +26,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
-;
-
-
 @Stateless
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGenerator implements DisplayWorkStatusReportGenerator {
     private static final String TEMPLATE_FILE_ADD = "report/KWR003.xlsx";
-    private static final String REPORT_FILE_NAME = "帳票設計書-KWR003_勤務状況表";
+    private static final String REPORT_FILE_NAME = "勤務状況表";
     private static final String DATE_FORMAT = "yyyy/MM/dd";
     private static final String DAY_OF_WEEK_FORMAT_JP = "E";
     private static final String PDF_EXT = ".pdf";
@@ -41,8 +38,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
     private static final String PRINT_AREA = "A1:AJ";
     private static final int EXPORT_EXCEL = 2;
     private static final int EXPORT_PDF = 1;
-    private static final int MAX_EMP_IN_PAGE = 10;
-
+    private static final int MAX_EMP_IN_PAGE = 30;
 
     @Override
     public void generate(FileGeneratorContext generatorContext, OutPutWorkStatusContent dataSource) {
@@ -51,6 +47,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
             Workbook workbook = reportContext.getWorkbook();
             WorksheetCollection worksheets = workbook.getWorksheets();
             Worksheet worksheet = worksheets.get(0);
+            settingPage(worksheet, dataSource);
             printContents(worksheet, dataSource);
             worksheets.setActiveSheetIndex(0);
             reportContext.processDesigner();
@@ -68,7 +65,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
         }
     }
 
-    private void settingPage(Worksheet worksheet, OutPutWorkStatusContent dataSource, int countPrint) {
+    private void settingPage(Worksheet worksheet, OutPutWorkStatusContent dataSource) {
         PageSetup pageSetup = worksheet.getPageSetup();
         pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
         pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
@@ -76,14 +73,14 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
         pageSetup.setHeader(0, "&7&\"ＭＳ フォントサイズ\"" + companyName);
         pageSetup.setHeader(1, "&12&\"ＭＳ フォントサイズ\""
                 + dataSource.getTitle());
-        pageSetup.setPrintArea(PRINT_AREA + countPrint);
+
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter
                 .ofPattern("yyyy/MM/dd  H:mm", Locale.JAPAN);
-        worksheet.getPageSetup().setHeader(2,
+        pageSetup.setHeader(2,
                 "&7&\"MS フォントサイズ\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\n" +
                         TextResource.localize("page") + " &P");
         if (dataSource.getMode() == EXPORT_EXCEL) {
-            pageSetup.setZoom(60);
+            pageSetup.setZoom(100);
         } else if (dataSource.getMode() == EXPORT_PDF) {
             pageSetup.setFitToPagesTall(0);
             pageSetup.setFitToPagesWide(0);
@@ -92,140 +89,235 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
 
     private void printContents(Worksheet worksheet, OutPutWorkStatusContent content) throws Exception {
         int countRow = 0;
-        int countPage = 1;
         Cells cells = worksheet.getCells();
         GeneralDate startDate = content.getPeriod().start();
         GeneralDate endDate = content.getPeriod().end();
         int maxColumnData = getDateRange(startDate, endDate) + 4;
-        boolean isPageFirst = true;
-        val isZeroDisplay = content.isZeroDisplay();
         int maxColumn = cells.getMaxColumn();
         int maxRow = cells.getMaxRow();
-        // clear content
-        boolean isPageBreak = content.isPageBreak();
-        SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM");
-        String date = DATE_FORMAT.format(startDate.date());
+        SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM");
+        String date = DATE_FORMAT.format(endDate.date());
         cells.clearContents(0, 0, maxRow, maxColumn);
         cells.merge(0, 0, 1, maxColumnData);
         cells.get(0, 0).setValue(TextResource.localize("KWR003_401") + date);
-        printDayOfWeekHeader(worksheet, content.getPeriod(), countRow);
 
-        countRow += 3;
-        int countItem = 0;
         if (content.getExcelDtoList().size() > 0) {
-            for (int q = 0; q < content.getExcelDtoList().size(); q++) {
+            printDayOfWeekHeader(worksheet, content.getPeriod(), countRow);
+            printData(worksheet, content);
+        }
+    }
 
-                val dataSource = content.getExcelDtoList().get(q);
-                cells.copyRow(cells, 3, countRow);
-                cells.clearContents(CellArea.createCellArea(countRow, 0, countRow, maxColumn));
-                cells.merge(countRow, 0, 1, maxColumnData);
-                cells.get(countRow, 0).getStyle().setVerticalAlignment(TextAlignmentType.LEFT);
-                cells.get(countRow, 0).setValue(TextResource.localize("KWR003_404")
-                        + dataSource.getWorkPlaceCode() + "  " +
-                        dataSource.getWorkPlaceName());
-                countRow++;
-                if (dataSource.getData().isEmpty()||dataSource.getData().size() == 0) break;
-                for (int i = 0; i < dataSource.getData().size(); i++) {
+    public void printData(Worksheet worksheet, OutPutWorkStatusContent content) throws Exception {
+        boolean isWplPrinted = false;
+        Cells cells = worksheet.getCells();
+        HorizontalPageBreakCollection pageBreaks = worksheet.getHorizontalPageBreaks();
+        int pages = 1;
+        int countRow = 3;
+        int countItem = 3;
+        GeneralDate startDate = content.getPeriod().start();
+        GeneralDate endDate = content.getPeriod().end();
+        val isZeroDisplay = content.isZeroDisplay();
+        int maxColumnData = getDateRange(startDate, endDate) + 4;
+        int maxColumn = cells.getMaxColumn();
+        val listDate = content.getPeriod().datesBetween();
+        for (int q = 0; q < content.getExcelDtoList().size(); q++) {
+            // Get data
+            val dataSource = content.getExcelDtoList().get(q);
+            // Check and break page
+            if (content.isPageBreak()) {
+                if (q != 0) {
+                    pageBreaks.add(countRow);
+                    pages++;
+                    // countRow = MAX_EMP_IN_PAGE * q;
+                    cells.copyRows(cells, 0, countRow, 3);
+                    countRow += 3;
+                    countItem = 3;
+                }
+            }
 
-                    cells.copyRow(cells, 4, countRow);
-                    cells.clearContents(CellArea.createCellArea(countRow, 0,
-                            countRow, maxColumn));
-                    cells.merge(countRow, 0, 1, maxColumnData);
-                    cells.get(countRow, 0).getStyle().setVerticalAlignment(TextAlignmentType.LEFT);
-                    cells.get(countRow, 0).setValue(TextResource.localize("KWR003_405")
-                            + dataSource.getData().get(i).getEmployeeCode() + "   " +
-                            dataSource.getData().get(i).getEmployeeName());
-                    countRow++;
-                    if ( dataSource.getData().get(i).getOutputItemOneLines() == null
-                        ||dataSource.getData().get(i).getOutputItemOneLines().size() == 0)
-                        break;
-                    for (int k = 0; k < dataSource.getData().get(i).getOutputItemOneLines().size(); k++) {
-                        if (countItem > MAX_EMP_IN_PAGE) {
-                            countRow += 1;
-                            String cellBreak = "A" + (countRow);
-                            worksheet.addPageBreaks(cellBreak);
-                            cells.copyRow(cells, 0, countRow - 1);
-                            cells.copyRow(cells, 1, countRow);
-                            cells.copyRow(cells, 2, countRow + 1);
-                            cells.clearContents(CellArea.createCellArea(countRow, 0, countRow + 1, maxColumn));
-                            printDayOfWeekHeader(worksheet, content.getPeriod(), countRow - 1);
-                            countRow += 2;
+            cells.copyRow(cells, 3, countRow);
+            cells.clearContents(CellArea.createCellArea(countRow, 0, countRow, maxColumn));
+            cells.merge(countRow, 0, 1, maxColumnData, true, true);
+            cells.get(countRow, 0).getStyle().setVerticalAlignment(TextAlignmentType.LEFT);
+            cells.get(countRow, 0).setValue("★ " + TextResource.localize("KWR003_404") + dataSource.getWorkPlaceCode() + "  " + dataSource.getWorkPlaceName());
+            isWplPrinted = true;
+            countRow++;
+            countItem++;
+            val data = dataSource.getData();
+            if (data.isEmpty()) continue;
+            for (int i = 0; i < data.size(); i++) {
+                val detail = data.get(i);
+                if (detail == null || detail.getOutputItemOneLines() == null || detail.getOutputItemOneLines().size() == 0)
+                    continue;
+                // Check and break page
+                if (content.isPageBreak()) {
+                    val check = checkAndBreakPage(worksheet, countItem, pages);
+                    if (check != null) {
+                        //countRow = check.getCount();
+                        if (check.isBreak()) {
+                            pages += 1;
+                            cells.copyRows(cells, 0, countRow, 3);
+                            countRow += 3;
+                            countItem = 3;
                             cells.copyRow(cells, 3, countRow);
+                            cells.clearContents(CellArea.createCellArea(countRow, 0, countRow, maxColumn));
+                            cells.merge(countRow, 0, 1, maxColumnData, true, true);
                             cells.get(countRow, 0).getStyle().setVerticalAlignment(TextAlignmentType.LEFT);
-                            cells.get(countRow, 0).setValue(TextResource.localize("KWR003_404")
-                                    + dataSource.getWorkPlaceCode() + "  " +
-                                    dataSource.getWorkPlaceName());
-                            countPage++;
+                            cells.get(countRow, 0).setValue("★ " + TextResource.localize("KWR003_404") + dataSource.getWorkPlaceCode() + "  " + dataSource.getWorkPlaceName());
                             countRow++;
-                            cells.copyRow(cells, 4, countRow);
-                            cells.get(countRow, 0).getStyle().setVerticalAlignment(TextAlignmentType.LEFT);
-                            cells.get(countRow, 0).setValue(TextResource.localize("KWR003_405")
-                                    + dataSource.getData().get(i).getEmployeeCode() + "  " +
-                                    dataSource.getData().get(i).getEmployeeName());
-                            countRow++;
-                            countItem = 0;
-                            isPageFirst = false;
+                            countItem++;
                         }
+                    }
+                }
+
+
+                val checkCountRow = detail.getOutputItemOneLines().size() - (MAX_EMP_IN_PAGE - countItem);
+                val code = detail.getEmployeeCode();
+                val name = detail.getEmployeeName();
+                if (checkCountRow > 0) {
+
+                    if (isWplPrinted) {
+                        //cells.deleteRow(countRow -1);
+                        cells.clearRange(countRow - 1, 0, countRow - 1, maxColumn);
+                        System.out.println("Index:" + "-----------------" + countRow);
+                        countRow--;
+
+                    }
+                    pageBreaks.add(countRow);
+                    pages++;
+                    //countRow += MAX_EMP_IN_PAGE - countItem;
+                    pages += 1;
+                    cells.copyRows(cells, 0, countRow, 3);
+                    countRow += 3;
+                    countItem = 3;
+                    cells.copyRow(cells, 3, countRow);
+                    cells.clearContents(CellArea.createCellArea(countRow, 0, countRow, maxColumn));
+                    cells.merge(countRow, 0, 1, maxColumnData, true, true);
+                    cells.get(countRow, 0).getStyle().setVerticalAlignment(TextAlignmentType.LEFT);
+                    cells.get(countRow, 0).setValue("★ " + TextResource.localize("KWR003_404") + dataSource.getWorkPlaceCode() + "  " + dataSource.getWorkPlaceName());
+                    countRow++;
+                    countItem++;
+
+                }
+
+                cells.copyRow(cells, 4, countRow);
+                cells.clearContents(CellArea.createCellArea(countRow, 0,
+                        countRow, maxColumn));
+                cells.merge(countRow, 0, 1, maxColumnData, true, true);
+                cells.get(countRow, 0).getStyle().setVerticalAlignment(TextAlignmentType.LEFT);
+                cells.get(countRow, 0).setValue("★ " + TextResource.localize("KWR003_405") + code + "   " + name);
+                isWplPrinted = false;
+                countRow++;
+                countItem++;
+                val itemOneLines = detail.getOutputItemOneLines();
+                for (int k = 0; k < itemOneLines.size(); k++) {
+                    if (content.isPageBreak()) {
+                        val check = checkAndBreakPage(worksheet, countItem, pages);
+                        if (check != null) {
+                            countRow = check.getCount();
+                            if (check.isBreak()) {
+                                pages += 1;
+                                cells.copyRows(cells, 0, countRow, 3);
+                                countRow += 3;
+                                countItem = 3;
+                                cells.copyRow(cells, 3, countRow);
+                                cells.clearContents(CellArea.createCellArea(countRow, 0, countRow, maxColumn));
+                                cells.merge(countRow, 0, 1, maxColumnData, true, true);
+                                cells.get(countRow, 0).getStyle().setVerticalAlignment(TextAlignmentType.LEFT);
+                                cells.get(countRow, 0).setValue("★ " + TextResource.localize("KWR003_404") + dataSource.getWorkPlaceCode() + "  " + dataSource.getWorkPlaceName());
+                                countRow++;
+                                countItem++;
+                                cells.copyRow(cells, 4, countRow);
+                                cells.clearContents(CellArea.createCellArea(countRow, 0, countRow, maxColumn));
+                                cells.merge(countRow, 0, 1, maxColumnData, true, true);
+                                cells.get(countRow, 0).getStyle().setVerticalAlignment(TextAlignmentType.LEFT);
+                                cells.get(countRow, 0).setValue("★ " + TextResource.localize("KWR003_405") + code + "   " + name);
+                                countRow++;
+                                countItem++;
+                            }
+                        }
+                    }
+                    val itemOneLine = itemOneLines.get(k);
+                    val listItem = itemOneLine.getOutItemValue().parallelStream().map(r ->
+                            new PrintOneLineDto(
+                                    itemOneLine.getTotalOfOneLine(),
+                                    itemOneLine.getOutPutItemName(),
+                                    r,
+                                    r.getDate()
+                            )).collect(Collectors.toList());
+                    if (listItem.size() == 0) {
                         if (k % 2 == 0) {
                             cells.copyRow(cells, 5, countRow);
                         } else {
                             cells.copyRow(cells, 6, countRow);
                         }
                         cells.clearContents(CellArea.createCellArea(countRow, 0, countRow, maxColumn));
-                        val listData = dataSource.getData().get(i).getOutputItemOneLines().get(k);
-                        val listItem = listData.getOutItemValue().parallelStream().map(r -> new PrintOneLineDto(
-                                listData.getTotalOfOneLine(),
-                                listData.getOutPutItemName(),
-                                r
-                        )).collect(Collectors.toList());
-                        for (int j = 0; j < listItem.size(); j++) {
-                            cells.get(countRow, 1).setValue(listItem.get(j).getOutPutItemName());
-                            if (isPageFirst)
-                                cells.merge(countRow, 0, 1, 3);
+                        cells.get(countRow, 1).setValue(itemOneLine.getOutPutItemName());
 
-                            if (listItem.get(j).getDailyValue() != null) {
-                                cells.get(countRow, maxColumnData).getStyle()
-                                        .setVerticalAlignment(TextAlignmentType.RIGHT);
-                                cells.get(countRow, maxColumnData)
-                                        .setValue(formatValue(listItem.get(j).getTotalOfOneLine(),
-                                                null, listItem.get(j).getDailyValue().getAttributes(), isZeroDisplay));
-                                cells.merge(countRow, maxColumnData, 1, 2);
-                                cells.get(countRow, j + 3).getStyle()
-                                        .setVerticalAlignment(TextAlignmentType.RIGHT);
-                                cells.get(countRow, j + 3)
-                                        .setValue(formatValue(listItem.get(j).getDailyValue().getActualValue(),
-                                                listItem.get(j).getDailyValue().getCharacterValue(),
-                                                listItem.get(j).getDailyValue().getAttributes(), isZeroDisplay));
-                            }
-                        }
+                        cells.merge(countRow, 0, 1, 3, true, true);
 
+                        cells.get(countRow, maxColumnData).getStyle().setVerticalAlignment(TextAlignmentType.RIGHT);
+                        cells.get(countRow, maxColumnData).setValue("");
+                        cells.merge(countRow, maxColumnData, 1, 2, true, true);
                         countRow++;
                         countItem++;
+                        continue;
                     }
-                }
-                settingPage(worksheet, content, countRow);
-                if (isPageBreak) {
-                    cells.copyRow(cells, 0, countRow);
-                    cells.clearContents(CellArea.createCellArea(countRow, 0,
-                            countRow, maxColumn));
+                    if (k % 2 == 0) {
+                        cells.copyRow(cells, 5, countRow);
+                    } else {
+                        cells.copyRow(cells, 6, countRow);
+                    }
+                    cells.clearContents(CellArea.createCellArea(countRow, 0, countRow, maxColumn));
+
+                    for (int j = 0; j < listItem.size(); j++) {
+                        val item = listItem.get(j);
+                        val column = listDate.indexOf(item.getDate()) + 3;
+                        cells.get(countRow, 1).setValue(item.getOutPutItemName());
+
+                        cells.merge(countRow, 0, 1, 3, true, true);
+
+                        cells.get(countRow, maxColumnData).getStyle()
+                                .setVerticalAlignment(TextAlignmentType.RIGHT);
+                        cells.get(countRow, maxColumnData).setValue(formatValue(item.getTotalOfOneLine(), null, item.getDailyValue().getAttributes(), isZeroDisplay));
+                        cells.merge(countRow, maxColumnData, 1, 2, true, true);
+                        cells.get(countRow, column).getStyle().setVerticalAlignment(TextAlignmentType.RIGHT);
+                        if (item.getDailyValue() == null) continue;
+                        cells.get(countRow, column).setValue(formatValue(item.getDailyValue().getActualValue(), item.getDailyValue().getCharacterValue(),
+                                item.getDailyValue().getAttributes(), isZeroDisplay));
+                    }
                     countRow++;
+                    countItem++;
                 }
             }
+
         }
+        PageSetup pageSetup = worksheet.getPageSetup();
+        pageSetup.setPrintArea(PRINT_AREA + countRow);
+    }
 
-
+    private PrintPage checkAndBreakPage(Worksheet worksheet, int countRowItem, int numberPage) {
+        HorizontalPageBreakCollection pageBreaks = worksheet.getHorizontalPageBreaks();
+        if (countRowItem > MAX_EMP_IN_PAGE) {
+            pageBreaks.add(countRowItem);
+            return new PrintPage(
+                    numberPage + 1,
+                    numberPage * MAX_EMP_IN_PAGE,
+                    true);
+        }
+        return null;
     }
 
     private void printDayOfWeekHeader(Worksheet worksheet, DatePeriod datePeriod, int countRow) {
         Cells cells = worksheet.getCells();
         GeneralDate startDate = datePeriod.start();
         GeneralDate endDate = datePeriod.end();
-        cells.merge(countRow + 1, 0, 2, 3);
+        cells.merge(countRow + 1, 0, 2, 3, true, true);
         val maxColumnData = getDateRange(startDate, endDate);
         cells.get(countRow + 1, 0).setValue(TextResource.localize("KWR003_402"));
 
         cells.get(countRow + 1, maxColumnData + 4).setValue(TextResource.localize("KWR003_403"));
-        cells.merge(countRow + 1, maxColumnData + 4, 2, 2);
+        cells.merge(countRow + 1, maxColumnData + 4, 2, 2, true, true);
         for (int i = 0; i <= maxColumnData; i++) {
             cells.setColumnWidth(3 + i, 3);
             GeneralDate loopDate = startDate.addDays(i);
@@ -253,6 +345,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
         return jp.format(date.date());
     }
 
+
     private String formatValue(double valueDouble, String valueString, CommonAttributesOfForms attributes,
                                Boolean isZeroDisplay) {
         String rs = "";
@@ -275,19 +368,19 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
             case NUMBER_OF_TIMES:
                 if (valueDouble != 0 || isZeroDisplay) {
                     DecimalFormat formatter1 = new DecimalFormat("#.#");
-                    rs = formatter1.format(valueDouble) + "回"; // TODO Text Resource
+                    rs = formatter1.format(valueDouble) + TextResource.localize("KWR_2");
                 }
                 break;
             case DAYS:
                 if (valueDouble != 0 || isZeroDisplay) {
                     DecimalFormat formatter2 = new DecimalFormat("#.#");
-                    rs = formatter2.format(valueDouble) + "日";// TODO Text Resource
+                    rs = formatter2.format(valueDouble) +  TextResource.localize("KWR_1");
                 }
                 break;
             case AMOUNT_OF_MONEY:
                 if (valueDouble != 0 || isZeroDisplay) {
                     DecimalFormat formatter3 = new DecimalFormat("#,###");
-                    rs = formatter3.format((int) valueDouble) + "円"; // TODO Text Resource
+                    rs = formatter3.format((int) valueDouble) +  TextResource.localize("KWR_3");
                 }
                 break;
         }
@@ -308,6 +401,16 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
         private double totalOfOneLine;
         private String outPutItemName;
         private DailyValue dailyValue;
+        private GeneralDate date;
+    }
+
+    @AllArgsConstructor
+    @Getter
+    @Setter
+    public static class PrintPage {
+        private int pageNumber;
+        private int count;
+        private boolean isBreak;
     }
 
 }

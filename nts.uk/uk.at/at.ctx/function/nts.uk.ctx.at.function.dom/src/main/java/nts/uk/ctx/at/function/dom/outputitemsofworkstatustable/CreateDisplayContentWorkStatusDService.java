@@ -42,9 +42,8 @@ public class CreateDisplayContentWorkStatusDService {
                 .collect(Collectors.toList());
 
         listEmployeeStatus.parallelStream().forEach(e -> {
-
+            if(outputItems.size() == 0) return;
             val item = new DisplayContentWorkStatus();
-            val itemOneLines = new ArrayList<OutputItemOneLine>();
             val eplInfo = mapSids.get(e.getEmployeeId());
             if (eplInfo != null) {
                 item.setEmployeeCode(eplInfo.getEmployeeCode());
@@ -62,28 +61,28 @@ public class CreateDisplayContentWorkStatusDService {
 
             List<AttendanceResultDto> listAttendancesz = new ArrayList<>();
             for (val date : e.getListPeriod()) {
-                listAttendancesz.addAll(require.getValueOf(Collections.singletonList(e.getEmployeeId()), date, listIds));
+                val listValue = require.getValueOf(Collections.singletonList(e.getEmployeeId()), date, listIds);
+                if (listValue == null) continue;
+                listAttendancesz.addAll(listValue);
             }
             Map<GeneralDate, Map<Integer, AttendanceItemDtoValue>> allValue = listAttendancesz.stream()
                     .collect(Collectors.toMap(AttendanceResultDto::getWorkingDate,
                             k -> k.getAttendanceItems().stream()
                                     .collect(Collectors.toMap(AttendanceItemDtoValue::getItemId, l -> l))));
-            allValue.forEach((key, value1) -> {
-                for (val j : outputItems) {
+            val itemOneLines = new ArrayList<OutputItemOneLine>();
+            for (val j : outputItems) {
+                val itemValue = new ArrayList<DailyValue>();
+                allValue.forEach((key, value1) -> {
                     val listAtId = j.getSelectedAttendanceItemList();
-                    if (listAtId.isEmpty()) {
-                        continue;
-                    }
-                    val itemValue = new ArrayList<DailyValue>();
+
                     StringBuilder character = new StringBuilder();
                     Double actualValue = 0D;
                     if (j.getItemDetailAttributes() == CommonAttributesOfForms.WORK_TYPE ||
                             j.getItemDetailAttributes() == CommonAttributesOfForms.WORKING_HOURS) {
-
                         for (val d : listAtId) {
-                            val sub = value1.get(d.getAttendanceItemId());
-                            if (sub.getValue() == null) continue;
-                            character.append((value1.get(d.getAttendanceItemId()).getValue()));
+                            val sub = value1.getOrDefault(d.getAttendanceItemId(), null);
+                            if (sub == null || sub.getValue() == null) continue;
+                            character.append(sub.getValue());
                         }
                         itemValue.add(
                                 new DailyValue(
@@ -94,10 +93,10 @@ public class CreateDisplayContentWorkStatusDService {
                                 ));
                     } else {
                         for (val d : listAtId) {
-                            val sub = value1.get(d.getAttendanceItemId());
-                            if (sub.getValue() == null) continue;
+                            val sub = value1.getOrDefault(d.getAttendanceItemId(), null);
+                            if (sub == null || sub.getValue() == null) continue;
                             actualValue = actualValue + ((d.getOperator() == OperatorsCommonToForms.ADDITION ? 1 : -1) *
-                                    Double.parseDouble(value1.get(d.getAttendanceItemId()).getValue()));
+                                    Double.parseDouble(sub.getValue()));
                         }
                         itemValue.add(new DailyValue(
                                 actualValue,
@@ -106,30 +105,32 @@ public class CreateDisplayContentWorkStatusDService {
                                 key
                         ));
                     }
-                    val total = itemValue.parallelStream().filter(q -> q.getActualValue() != null)
-                            .mapToDouble(DailyValue::getActualValue).sum();
-                    itemOneLines.add(
-                            new OutputItemOneLine(
-                                    total,
-                                    j.getName().v(),
-                                    itemValue
-                            ));
-                    item.setOutputItemOneLines(itemOneLines);
-                }
-            });
+
+
+                });
+                val total = itemValue.parallelStream().filter(q -> q.getActualValue() != null)
+                        .mapToDouble(DailyValue::getActualValue).sum();
+                itemOneLines.add(
+                        new OutputItemOneLine(
+                                total,
+                                j.getName().v(),
+                                itemValue
+                        ));
+                item.setOutputItemOneLines(itemOneLines);
+            }
             rs.add(item);
         });
+
         if (rs.isEmpty()) {
             throw new BusinessException("Msg_1816");
         }
+
         return rs;
     }
 
     public interface Require {
         //[RQ 588] 社員の指定期間中の所属期間を取得する
         List<StatusOfEmployee> getListAffComHistByListSidAndPeriod(List<String> sid, DatePeriod datePeriod);
-
-        AttendanceResultDto getValueOf(String employeeId, GeneralDate workingDate, Collection<Integer> itemIds);
 
         List<AttendanceResultDto> getValueOf(List<String> employeeIds, DatePeriod workingDatePeriod, Collection<Integer> itemIds);
     }

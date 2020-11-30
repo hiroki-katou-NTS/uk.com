@@ -259,8 +259,8 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
         val rs = this.queryProxy().query(FIND_WORK_STATUS_ITEM_BY_CODE, KfnmtRptWkRecSetting.class)
                 .setParameter("cid", cid)
                 .setParameter("displayCode", displayCode)
-                .getSingleOrNull(JpaWorkStatusOutputSettingsRepository::toDomain);
-        return rs != null;
+                .getList(JpaWorkStatusOutputSettingsRepository::toDomain);
+        return rs != null && rs.size() != 0;
     }
 
     @Override
@@ -270,8 +270,8 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
                 .setParameter("cid", cid)
                 .setParameter("employeeId", employeeId)
                 .setParameter("displayCode", displayCode)
-                .getSingleOrNull(JpaWorkStatusOutputSettingsRepository::toDomain);
-        return rs != null;
+                .getList(JpaWorkStatusOutputSettingsRepository::toDomain);
+        return rs != null && rs.size() != 0;
     }
 
     private static WorkStatusOutputSettings toDomain(KfnmtRptWkRecSetting entity) {

@@ -5,7 +5,7 @@
 }
 .kwr-004b #content-area {
   padding: 30px 37px;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 .kwr-004b .nts-searchbbox-wrapper input.ntsSearchBox {
@@ -18,7 +18,7 @@
   margin-bottom: 5px;
 }
 .kwr-004b .d-flex:first-child {
-  margin-bottom: 24px;
+  margin-bottom: 10px;
 }
 .kwr-004b .d-flex .form-label {
   margin-right: 32px;
@@ -28,7 +28,7 @@
 }
 
 .kwr-004b .pull-left .panel.ntsPanel {
-  height: 470px;
+  height: 460px;
 }
 
 .kwr-004b .nts-editor-wrapped .nts-editor {
@@ -47,7 +47,7 @@
   padding-right: 6px;
 }
 .kwr-004b .attribute-selection {
-  width: 80px;
+  width: 70px;
 }
 
 .kwr-004b td .d-flex {
@@ -58,9 +58,13 @@
   height: 37px;
 }
 .kwr-004b td .btn-B4331 {
-  margin-left: 13px;
+  margin-left: 10px;
   margin-right: 5px;
 }
 .kwr-004b td.bg-hover-none {
   background: transparent !important;
+}
+
+.kwr-004b td .switchButton-wrapper {
+  width: 95px;
 }

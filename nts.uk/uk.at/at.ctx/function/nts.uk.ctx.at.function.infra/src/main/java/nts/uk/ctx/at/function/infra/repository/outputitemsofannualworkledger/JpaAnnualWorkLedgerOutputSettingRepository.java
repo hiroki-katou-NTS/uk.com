@@ -93,7 +93,7 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
         builderString = new StringBuilder();
         builderString.append("SELECT a  ");
         builderString.append("FROM KfnmtRptYrRecItem a ");
-        builderString.append(" AND  a.pk.iD  =:settingId ");
+        builderString.append(" WHERE  a.pk.iD  =:settingId ");
         FIND_DELETE_WORK_ITEM = builderString.toString();
 
         builderString = new StringBuilder();
@@ -166,7 +166,6 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
         }
     }
 
-
     @Override
     public void update(String cid, String settingId, AnnualWorkLedgerOutputSetting outputSetting) {
         this.commandProxy().update(KfnmtRptYrRecSetting.fromDomain(cid, outputSetting));
@@ -185,7 +184,6 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
             this.commandProxy().insertAll(KfnmtRptYrRecDispCont.fromDomain(outputSetting));
         }
     }
-
 
     @Override
     public void deleteSettingDetail(String settingId) {
@@ -260,8 +258,8 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
         val rs = this.queryProxy().query(FIND_WORK_ITEM_BY_CODE, KfnmtRptYrRecSetting.class)
                 .setParameter("cid", cid)
                 .setParameter("displayCode", displayCode)
-                .getSingleOrNull(JpaAnnualWorkLedgerOutputSettingRepository::toDomain);
-        return rs != null;
+                .getList(JpaAnnualWorkLedgerOutputSettingRepository::toDomain);
+        return rs != null && rs.size() != 0;
     }
 
     @Override
@@ -271,8 +269,8 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
                 .setParameter("cid", cid)
                 .setParameter("employeeId", employeeId)
                 .setParameter("displayCode", displayCode)
-                .getSingleOrNull(JpaAnnualWorkLedgerOutputSettingRepository::toDomain);
-        return rs != null;
+                .getList(JpaAnnualWorkLedgerOutputSettingRepository::toDomain);
+        return rs != null && rs.size() != 0;
     }
 
     private static AnnualWorkLedgerOutputSetting toDomain(KfnmtRptYrRecSetting entity) {

@@ -77,19 +77,16 @@ module nts.uk.at.view.kwr003.c {
       vm.params().settingName = vm.newName();
 
       vm.$ajax(PATHS.cloneSettingClassification, vm.params())
-        .done((response) => {          
-          vm.$window.storage(KWR003_C_OUTPUT, { code: vm.newCode(), name: vm.newName() });          
-          vm.$blockui('hide');
-          vm.$window.close();
+        .done((response) => { vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
+            vm.$window.storage(KWR003_C_OUTPUT, { code: vm.newCode(), name: vm.newName() }); 
+            vm.$blockui('hide');
+            vm.$window.close();
+          });          
         })
         .fail((error) => {      
           //データが先に削除された - 1903    
           //コードの重複 - Msg_1753
-          $('#KWR003_C23').ntsError('set', { messageId: error.messageId });   
-         /*  vm.$dialog.error({ messageId: error.messageId }).then(() => {
-            $('#closeDialog').focus();
-            vm.$blockui('hide');
-          }); */
+          $('#KWR003_C23').ntsError('set', { messageId: error.messageId });            
         })
         .always(() => vm.$blockui('hide'));
     }

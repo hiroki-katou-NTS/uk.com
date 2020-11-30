@@ -37,7 +37,7 @@ public class DailyOutputItemsCommand {
     private int dailyMonthlyClassification;
 
     //  項目詳細の属性
-    private int attribute;
+    private int itemDetailAttributes;
 
     //  選択勤怠項目リスト
     private List<OutputItemDetailAttItemCommand> selectedAttendanceItemList;
@@ -48,7 +48,7 @@ public class DailyOutputItemsCommand {
             command.printTargetFlag,
             EnumAdaptor.valueOf(command.independentCalcClassic, IndependentCalcClassic.class),
             EnumAdaptor.valueOf(command.dailyMonthlyClassification, DailyMonthlyClassification.class),
-            EnumAdaptor.valueOf(command.attribute, CommonAttributesOfForms.class),
+            EnumAdaptor.valueOf(command.getItemDetailAttributes(), CommonAttributesOfForms.class),
             command.selectedAttendanceItemList.stream().map(x ->
                 new OutputItemDetailAttItem(
                     EnumAdaptor.valueOf(x.getOperator(),OperatorsCommonToForms.class),

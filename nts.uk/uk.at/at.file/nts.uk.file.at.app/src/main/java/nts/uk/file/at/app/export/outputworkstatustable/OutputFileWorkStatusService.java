@@ -2,7 +2,7 @@ package nts.uk.file.at.app.export.outputworkstatustable;
 
 import lombok.AllArgsConstructor;
 import lombok.val;
-import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
@@ -12,9 +12,10 @@ import nts.uk.ctx.at.function.app.query.outputworkstatustable.GetDetailOutputSet
 import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.AffComHistAdapter;
 import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.AttendanceItemServiceAdapter;
 import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.AttendanceResultDto;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.*;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.CreateDisplayContentWorkStatusDService;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.DisplayContentWorkStatus;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.WorkStatusOutputSettings;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.*;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.CommonAttributesOfForms;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffAtWorkplaceImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
@@ -70,8 +71,12 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
         YearMonth targetDate = new YearMonth(query.getTargetDate());
         List<String> lstEmpIds = query.getLstEmpIds();
         // TODO DANG QA
-        val cl = closureRepository.findByClosureId(AppContexts.user().companyId(), query.getClosureId());
-        val closureDate = cl.get(0).getClosureDate();
+        val cl = closureRepository.findById(AppContexts.user().companyId(), query.getClosureId());
+        val basedateNow = GeneralDate.today();
+        if(!cl.isPresent() ||cl.get().getHistoryByBaseDate(basedateNow) == null){
+            throw new BusinessException("Còn QA");
+        }
+        val closureDate = cl.get().getHistoryByBaseDate(basedateNow).getClosureDate();
         DatePeriod datePeriod = this.getFromClosureDate(targetDate, closureDate);
         // [No.600]社員ID（List）から社員コードと表示名を取得（削除社員考慮）
         List<EmployeeBasicInfoImport> lstEmployeeInfo = empEmployeeAdapter.getEmpInfoLstBySids(lstEmpIds, datePeriod, true, true);
@@ -79,8 +84,7 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
         String companyId = AppContexts.user().companyId();
         CompanyBsImport companyInfo = companyBsAdapter.getCompanyByCid(companyId);
         // 3 Call 社員ID（List）と基準日から所属職場IDを取得
-        GeneralDate lastDate = GeneralDate.ymd(targetDate.year(), targetDate.month(), targetDate.lastDateInMonth());
-        GeneralDate baseDate = lastDate;
+        GeneralDate baseDate = datePeriod.end();
         List<AffAtWorkplaceImport> lstAffAtWorkplaceImport = affWorkplaceAdapter
                 .findBySIdAndBaseDate(lstEmpIds, baseDate);
         List<EmployeeInfor> employeeInfoList = new ArrayList<EmployeeInfor>();
@@ -108,23 +112,26 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
         // 5 Call 勤務状況表の表示内容を作成する:
         val listData = CreateDisplayContentWorkStatusDService.displayContentsOfWorkStatus(require, datePeriod,
                 employeeInfoList, workStatusOutputSetting, placeInfoList);
-
+        val wplaceSort = listData.stream().filter(Objects::nonNull).map(DisplayContentWorkStatus::getWorkPlaceCode).distinct().collect(Collectors.toCollection(TreeSet::new));
         val listRs = new ArrayList<ExportExcelDto>();
-        for (int i = 0; i < listData.size(); i++) {
-            val wplCode = listData.get(i).getWorkPlaceCode();
-            val item = listData.stream().filter(e -> e.getWorkPlaceCode().equals(wplCode)).map(j -> new DisplayContentWorkStatus(
-                    j.getEmployeeCode(),
-                    j.getEmployeeName(),
-                    j.getWorkPlaceCode(),
-                    j.getWorkPlaceName(),
-                    j.getOutputItemOneLines()
-            )).collect(Collectors.toList());
+
+        wplaceSort.forEach(e -> {
+            val item = listData.stream().filter(i -> i.getWorkPlaceCode().equals(e))
+                    .sorted(Comparator.comparing(DisplayContentWorkStatus::getEmployeeCode))
+                    .map(j -> new DisplayContentWorkStatus(
+                            j.getEmployeeCode(),
+                            j.getEmployeeName(),
+                            j.getWorkPlaceCode(),
+                            j.getWorkPlaceName(),
+                            j.getOutputItemOneLines()
+                    )).collect(Collectors.toList());
+
             listRs.add(new ExportExcelDto(
-                    listData.get(i).getWorkPlaceCode(),
-                    listData.get(i).getWorkPlaceName(),
+                    item.get(0).getWorkPlaceCode(),
+                    item.get(0).getWorkPlaceName(),
                     item
             ));
-        }
+        });
         val result = new OutPutWorkStatusContent(
                 listRs,
                 datePeriod,
@@ -151,11 +158,6 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
         @Override
         public List<StatusOfEmployee> getListAffComHistByListSidAndPeriod(List<String> sid, DatePeriod datePeriod) {
             return affComHistAdapter.getListAffComHist(sid, datePeriod);
-        }
-
-        @Override
-        public AttendanceResultDto getValueOf(String employeeId, GeneralDate workingDate, Collection<Integer> itemIds) {
-            return itemServiceAdapter.getValueOf(employeeId, workingDate, itemIds);
         }
 
         @Override

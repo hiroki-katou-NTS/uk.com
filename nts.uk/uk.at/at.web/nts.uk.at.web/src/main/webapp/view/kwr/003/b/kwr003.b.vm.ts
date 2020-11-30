@@ -249,6 +249,7 @@ module nts.uk.at.view.kwr003.b {
         vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
           vm.settingAttendance();
           vm.$blockui('hide');
+          $('#KWR003_B43').focus();
         });
       })
         .fail((error) => {
@@ -258,25 +259,13 @@ module nts.uk.at.view.kwr003.b {
                 reloadParams.code = null;
                 vm.loadSettingList(reloadParams);
                 $('#btnB11').focus();
-              });
-              //reloadParams.code = null;
-              //vm.loadSettingList(reloadParams);
-              //$('#btnB11').ntsError('set', { messageId: error.messageId });
+              });             
               break;
 
-            case 'Msg_1903':
+            case 'Msg_1753':
               $('#KWR003_B42').ntsError('set', { messageId: error.messageId });
               break;
-          }
-          /*  if (error.messageId === 'Msg_1903') {
-             reloadParams.code = null;
-             vm.loadSettingList(reloadParams);
-             $('#btnB11').ntsError('set', { messageId: error.messageId });
-           }
- 
-           if (error.messageId === 'Msg_1753') {
-             $('#KWR003_B42').ntsError('set', { messageId: error.messageId });
-           } */
+          } 
 
           vm.$blockui('hide');
 
@@ -307,8 +296,6 @@ module nts.uk.at.view.kwr003.b {
 
         newListItemsDetails.push(temp);
       });
-
-      //newListItemsDetails = _.orderBy(newListItemsDetails, [field], [sort_type]);
 
       return newListItemsDetails;
     }
@@ -350,7 +337,6 @@ module nts.uk.at.view.kwr003.b {
     deteleSetting() {
       const vm = this;
 
-
       vm.$blockui('show');
       const params = {
         settingId: vm.settingId() //該当する設定ID
@@ -371,6 +357,8 @@ module nts.uk.at.view.kwr003.b {
             .fail((error) => {
 
             });
+        } else {
+          vm.$blockui('hide');
         }
       });
     }
@@ -471,7 +459,7 @@ module nts.uk.at.view.kwr003.b {
             if (x.independentCalClassic === 2) {
               _.forEach(attendanceItemList, (element: any) => {
                 let findObj = _.find(listDaily, (listItem: any) => listItem.attendanceItemId === element.attendanceItemId);
-                if (findObj) {
+                if (!_.isNil(findObj)) {
                   dataItemsWithOperation.push({
                     itemId: element.attendanceItemId,
                     indicatesNumber: element.attendanceItemId,
@@ -484,11 +472,12 @@ module nts.uk.at.view.kwr003.b {
               selectedItemText = vm.createDataSelection(dataItemsWithOperation);
             } else {
               let findObj = _.find(listDaily, (listItem: any) => listItem.attendanceItemId === attendanceItemList[0].attendanceItemId);
-              if (findObj) selectedItemText = findObj.name;
+              //if (!_.isNil(findObj)) selectedItemText = findObj.name;
+              selectedItemText = !_.isNil(findObj) ? findObj.name : '';
               dataItemsWithOperation.push({
                 itemId: attendanceItemList[0].attendanceItemId,
                 indicatesNumber: attendanceItemList[0].attendanceItemId,
-                name: findObj.name,
+                name: selectedItemText, //findObj.name
                 operator: 1
               });
             }
@@ -553,9 +542,9 @@ module nts.uk.at.view.kwr003.b {
 
       if (selectionItem.length > 0) {
         dataSelection = _.join(selectionItem, ' ');
-        if (dataSelection.length > 20) {
+        /* if (dataSelection.length > 20) {
           dataSelection = dataSelection.substring(0, 19) + vm.$i18n('KWR003_219');
-        }
+        } */
       }
 
       return dataSelection;
@@ -708,10 +697,7 @@ module nts.uk.at.view.kwr003.b {
 
           vm.settingListItemsDetails()[index].selected = attendanceItem.attribute;
           vm.settingListItemsDetails()[index].selectedTime = attendanceItem.attendanceId;
-          $('#textName' + row.id).focus();
-          /*  if (!attendanceItem.attendanceItemName) {
-             $('#textName' + row.id).ntsError('set', { messageId: "MsgB_1" });            
-           } */
+          $('#textName' + row.id).focus();        
         } else {
           vm.settingListItemsDetails()[index].name(null);
           vm.settingListItemsDetails()[index].selectionItem(null);
