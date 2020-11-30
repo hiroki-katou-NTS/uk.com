@@ -199,7 +199,11 @@ module nts.uk.at.view.kaf020.c.viewmodel {
                         vm.$dialog.info({messageId: "Msg_15"});
                     }
                 }).fail(err => {
-                    vm.$dialog.error(err);
+                    if (err && err.messageId) {
+                        if (err.messageId == "Msg_236" || err.messageId == "Msg_324" || err.messageId == "Msg_237" || err.messageId == "Msg_238") {
+                            vm.$dialog.error(err);
+                        }
+                    }
                 }).always(() => {
                     vm.$blockui("hide");
                 });
