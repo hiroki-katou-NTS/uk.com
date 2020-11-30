@@ -85,7 +85,7 @@ public class ApprovalStatusFinder {
 
 	/** The repository. */
 	@Inject
-	private ClosureRepository repository;
+	private ClosureRepository closureRepository;
 
 	@Inject
 	ClosureEmploymentRepository closureEmpRepo;
@@ -120,9 +120,9 @@ public class ApprovalStatusFinder {
 		listMail.add(this.getApprovalStatusMailTemp(cid, ApprovalStatusMailType.APP_APPROVAL_UNAPPROVED.value));
 		listMail.add(this.getApprovalStatusMailTemp(cid, ApprovalStatusMailType.DAILY_UNCONFIRM_BY_PRINCIPAL.value));
 		listMail.add(this.getApprovalStatusMailTemp(cid, ApprovalStatusMailType.DAILY_UNCONFIRM_BY_CONFIRMER.value));
+		listMail.add(this.getApprovalStatusMailTemp(cid, ApprovalStatusMailType.MONTHLY_UNCONFIRM_BY_PRINCIPAL.value));
 		listMail.add(this.getApprovalStatusMailTemp(cid, ApprovalStatusMailType.MONTHLY_UNCONFIRM_BY_CONFIRMER.value));
 		listMail.add(this.getApprovalStatusMailTemp(cid, ApprovalStatusMailType.WORK_CONFIRMATION.value));
-		listMail.add(this.getApprovalStatusMailTemp(cid, ApprovalStatusMailType.MONTHLY_UNCONFIRM_BY_PRINCIPAL.value));
 		return listMail;
 	}
 	
@@ -174,7 +174,7 @@ public class ApprovalStatusFinder {
 		GeneralDate endDate = null;
 		int processingYm = 0;
 		// ドメインモデル「就業締め日」を取得する <shared>
-		List<Closure> closureList = this.repository.findAllActive(companyId, UseClassification.UseClass_Use);
+		List<Closure> closureList = this.closureRepository.findAllActive(companyId, UseClassification.UseClass_Use);
 		int selectedClosureId = 0;
 		List<ClosuresDto> closureDto = this.getClosure(closureList);
 
@@ -184,7 +184,7 @@ public class ApprovalStatusFinder {
 		if (closure.isPresent()) {
 			val closureId = closure.get().getClosureId();
 			selectedClosureId = closureId;
-			val closureOpt = this.repository.findById(companyId, closureId);
+			val closureOpt = this.closureRepository.findById(companyId, closureId);
 			if (closureOpt.isPresent()) {
 				val closureItem = closureOpt.get();
 				// 当月の期間を算出する
@@ -221,7 +221,7 @@ public class ApprovalStatusFinder {
 		GeneralDate endDate = null;
 		int processingYmNew = 0;
 		List<ClosureEmployment> listEmployee = new ArrayList<>();
-		Optional<Closure> closure = repository.findById(companyId, closureId);
+		Optional<Closure> closure = closureRepository.findById(companyId, closureId);
 		if (!closure.isPresent()) {
 			throw new RuntimeException("Could not find closure");
 		}
@@ -594,14 +594,27 @@ public class ApprovalStatusFinder {
 		// 「新規起動」か「戻り起動」か判別
 		// xử lý trên UI
 		// ドメインモデル「就業締め日」を取得する　<shared>(Lấy domain 「就業締め日」)
-		List<Closure> closureList = this.repository.findAllActive(companyID, UseClassification.UseClass_Use);
+		List<Closure> closureList = this.closureRepository.findAllActive(companyID, UseClassification.UseClass_Use);
 		// アルゴリズム「承認状況指定締め日取得」を実行する(Thực hiện thuật toán[lấy ngày chốt chỉ định trạng thái approval])
 		ApprSttSpecDeadlineDto apprSttSpecDeadlineDto = this.getApprovalStatusSpecDeadline(selectClosureId, closureList);
 		// アルゴリズム「承認状況日別実績利用確認」を実行する(Thực hiện[confirm sử dụng 日別実績 trạng thái approval ])
-		// not yet
+		// context khác, xử lý trên UI
 		// ユーザ固有情報「承認状況照会の初期表示」をチェックする
 		// xử lý trên UI
 		return apprSttSpecDeadlineDto;
+	}
+	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.A:状況照会条件入力.ユースケース.締め区分を変更する
+	 * @param selectClosureId
+	 * @return
+	 */
+	public ApprSttSpecDeadlineSetDto changeClosure(Integer selectClosureId) {
+		String companyId = AppContexts.user().companyId();
+		// ドメインモデル「締め」を取得する(get domain[closure])
+		Closure closure = closureRepository.findClosureHistory(companyId, selectClosureId, UseClassification.UseClass_Use.value).get();
+		// アルゴリズム「承認状況指定締め期間設定」を実行する(Thực hiện thuật toán 「承認状況指定締め期間設定」)
+		return this.getApprovalStatusSpecDeadlineSet(selectClosureId, closure);
 	}
 	
 	/**
@@ -625,7 +638,7 @@ public class ApprovalStatusFinder {
 				closureList.stream().map(x -> ClosureDto.fromDomain(x)).collect(Collectors.toList()), 
 				apprSttSpecDeadlineSetDto.getStartDate(),
 				apprSttSpecDeadlineSetDto.getEndDate(),
-				apprSttSpecDeadlineSetDto.getListEmployeeCD());
+				apprSttSpecDeadlineSetDto.getListEmploymentCD());
 	}
 	
 	/**
@@ -639,15 +652,15 @@ public class ApprovalStatusFinder {
 		String companyId = AppContexts.user().companyId();
 		// アルゴリズム「当月の期間を算出する」を実行する(Thực hiện[tính thời gian this month])
 		DatePeriod datePeriodClosure = ClosureService.getClosurePeriod(
-				ClosureService.createRequireM1(repository, closureEmpRepo),
+				ClosureService.createRequireM1(closureRepository, closureEmpRepo),
 				closure.getClosureId().value, closure.getClosureMonth().getProcessingYm());
 		// ドメインモデル「雇用に紐づく就業締め」より、雇用コードと締めIDを取得する
-		List<String> listEmployeeCD = closureEmpRepo.findByClosureId(companyId, closureId)
+		List<String> listEmploymentCD = closureEmpRepo.findByClosureId(companyId, closureId)
 				.stream().map(x -> x.getEmploymentCD()).collect(Collectors.toList());
 		return new ApprSttSpecDeadlineSetDto(
 				datePeriodClosure.start().toString(),
 				datePeriodClosure.end().toString(),
-				listEmployeeCD);
+				listEmploymentCD);
 	}
 	
 	
@@ -663,7 +676,8 @@ public class ApprovalStatusFinder {
 		DatePeriod period = new DatePeriod(GeneralDate.fromString(param.getStartDate(), "yyyy/MM/dd"), GeneralDate.fromString(param.getEndDate(), "yyyy/MM/dd"));
 		InitDisplayOfApprovalStatus initDisplayOfApprovalStatus = param.getInitDisplayOfApprovalStatus();
 		List<DisplayWorkplace> displayWorkplaceLst = param.getWkpInfoLst();
-		return appSttService.getStatusExecution(closureId, processingYm, period, initDisplayOfApprovalStatus, displayWorkplaceLst)
+		List<String> employmentCDLst = param.getEmploymentCDLst();
+		return appSttService.getStatusExecution(closureId, processingYm, period, initDisplayOfApprovalStatus, displayWorkplaceLst, employmentCDLst)
 				.stream().map(x -> ApprSttExecutionDto.fromDomain(x)).collect(Collectors.toList());
 	}
 	
@@ -676,7 +690,14 @@ public class ApprovalStatusFinder {
 	
 	public ApprSttSendMailInfoDto getApprSttSendMailInfo(ApprSttSendMailInfoParam param) {
 		ApprovalStatusMailType mailType = EnumAdaptor.valueOf(param.getMailType(), ApprovalStatusMailType.class);
-		return ApprSttSendMailInfoDto.fromDomain(appSttService.getApprSttSendMailInfo(mailType, Collections.emptyList()), param.getMailType());
+		ClosureId closureId = EnumAdaptor.valueOf(param.getClosureId(), ClosureId.class);
+		YearMonth processingYm = new YearMonth(param.getProcessingYm());
+		DatePeriod period = new DatePeriod(GeneralDate.fromString(param.getStartDate(), "yyyy/MM/dd"), GeneralDate.fromString(param.getEndDate(), "yyyy/MM/dd"));
+		List<DisplayWorkplace> displayWorkplaceLst = param.getWkpInfoLst();
+		List<String> employmentCDLst = param.getEmploymentCDLst();
+		return ApprSttSendMailInfoDto.fromDomain(
+				appSttService.getApprSttSendMailInfo(mailType, closureId, processingYm, period, displayWorkplaceLst, employmentCDLst), 
+				param.getMailType());
 	}
 	
 	public SendMailResultOutput sendMailToDestination(ApprSttMailDestParam param) {
@@ -690,6 +711,6 @@ public class ApprovalStatusFinder {
 				command.getUrlMonthEmbed()==0 ? NotUseAtr.NOT_USE : NotUseAtr.USE, 
 				new Subject(command.getMailSubject()), 
 				new Content(command.getMailContent()));
-		return appSttService.sendMailToDestination(approvalStatusMailTemp, Collections.emptyList());
+		return appSttService.sendMailToDestination(approvalStatusMailTemp, param.getWkpEmpMailLst());
 	}
 }

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.approvalstatus.service.output;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
 
 /**
@@ -19,6 +20,10 @@ public class EmpPeriod {
 	
 	private String empCD;
 	
+	private GeneralDate workplaceStartDate;
+	
+	private GeneralDate workplaceEndDate;
+	
 	private GeneralDate companyInDate;
 	
 	private GeneralDate companyOutDate;
@@ -27,5 +32,9 @@ public class EmpPeriod {
 	
 	private GeneralDate employmentEndDate;
 	
+	@Setter
 	private String empMail;
+	
+	@Setter
+	private String empName;
 }

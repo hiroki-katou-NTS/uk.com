@@ -53,6 +53,14 @@ module nts.uk.at.view.ksm008.g {
         }
 
         mounted() {
+            const vm = this;
+
+            if (!vm.$user.role.isInCharge.attendance){
+                $('#panel-1').removeClass('active');
+                $('#panel-2').addClass('active');
+                $('#tabpanel-2').removeClass('disappear');
+                vm.onSelectOrg();
+            }
         }
 
         /**

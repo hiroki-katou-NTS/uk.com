@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.dom.application.applist.service.content;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -230,11 +229,11 @@ public class AppContentServiceImpl implements AppContentService {
 				// 打刻申請出力用Tmp.取消
 				if(!item.isCancel()) {
 					// 申請内容＋＝$.項目名＋'　'＋$.開始時刻＋#CMM045_100(～)＋$.終了時刻
-					result += MessageFormat.format(item.getOpItemName().orElse(""), 
-							item.getOpStartTime().map(x -> x.getFullText()).orElse("") + I18NText.getText("CMM045_100") + item.getOpEndTime().map(x -> x.getFullText()).orElse(""));
+					result += item.getOpItemName().orElse("") + " " +
+							item.getOpStartTime().map(x -> x.getFullText()).orElse("") + I18NText.getText("CMM045_100") + item.getOpEndTime().map(x -> x.getFullText()).orElse("");
 				} else {
 					// 申請内容＋＝$.項目名＋'　'＋#CMM045_292(取消)
-					result += MessageFormat.format(item.getOpItemName().orElse(""), I18NText.getText("CMM045_292"));
+					result += item.getOpItemName().orElse("") + " " + I18NText.getText("CMM045_292");
 				}
 			}
 		}
@@ -247,10 +246,9 @@ public class AppContentServiceImpl implements AppContentService {
 	}
 
 	@Override
-	public String getWorkChangeGoBackContent(ApplicationType appType, String workTypeName, String workTimeName,
-			NotUseAtr goWorkAtr1, TimeWithDayAttr workTimeStart1, NotUseAtr goBackAtr1, TimeWithDayAttr workTimeEnd1,
-			TimeWithDayAttr breakTimeStart1, TimeWithDayAttr breakTimeEnd1, DisplayAtr appReasonDisAtr,
-			AppReason appReason, Application application) {
+	public String getWorkChangeGoBackContent(ApplicationType appType, String workTypeName, String workTimeName, NotUseAtr goWorkAtr1, TimeWithDayAttr workTimeStart1, 
+			NotUseAtr goBackAtr1, TimeWithDayAttr workTimeEnd1, TimeWithDayAttr workTimeStart2, TimeWithDayAttr workTimeEnd2,
+			TimeWithDayAttr breakTimeStart1, TimeWithDayAttr breakTimeEnd1, DisplayAtr appReasonDisAtr, AppReason appReason, Application application) {
 		// 申請内容　＝　String.Empty ( Nội dung application = 　String.Empty)
 		String result = Strings.EMPTY;
 		if(appType == ApplicationType.WORK_CHANGE_APPLICATION) {
@@ -286,6 +284,10 @@ public class AppContentServiceImpl implements AppContentService {
 			}
 		}
 		if(appType == ApplicationType.WORK_CHANGE_APPLICATION) {
+			if(workTimeStart2!=null && workTimeEnd2!=null) {
+				// 申請内容　+＝　’　’＋Input．勤務時間開始2＋#CMM045_100＋Input．勤務時間終了2
+				result += " " + workTimeStart2.getInDayTimeWithFormat() + I18NText.getText("CMM045_100") + workTimeEnd2.getInDayTimeWithFormat();
+			}
 			if(!(breakTimeStart1==null || breakTimeStart1.v()==0 || breakTimeEnd1 == null || breakTimeEnd1.v()==0)) {
 				result += " " + I18NText.getText("CMM045_251") + breakTimeStart1.getInDayTimeWithFormat() + breakTimeEnd1.getInDayTimeWithFormat();
 			}

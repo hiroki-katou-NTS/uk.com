@@ -10,7 +10,11 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 		closureLst: KnockoutObservableArray<ClosureItem> = ko.observableArray([]);
 		selectedClosureId: KnockoutObservable<number> = ko.observable(0);
 		dateValue: KnockoutObservable<any> = ko.observable({});
-		selectedIds: KnockoutObservableArray<number> = ko.observableArray([1, 2, 3, 4]);
+		applicationApprovalFlg: CheckBoxValue = null;
+		confirmAndApprovalDailyFlg: CheckBoxValue = null;
+		confirmAndApprovalMonthFlg: CheckBoxValue = null;
+		confirmEmploymentFlg: CheckBoxValue = null;
+		useSet: any = null;
 		initDisplayOfApprovalStatus: InitDisplayOfApprovalStatus = {
 			// ページング行数
 			numberOfPage: 0,
@@ -28,14 +32,17 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 			confirmAndApprovalDailyFlg: false
 		};
 		fullWorkplaceInfo: Array<DisplayWorkplace> = [];
-		
+		employmentCDLst: Array<string> = [];
 		treeGrid: any;
 		multiSelectedWorkplaceId: KnockoutObservableArray<string> = ko.observableArray([]);
 		baseDate: KnockoutObservable<Date> = ko.observable(new Date());
-		alreadySettingList: KnockoutObservableArray<any> = ko.observableArray([]);
 		
-		created() {
+		created(params: KAF018BParam) {
 			const vm = this;
+			vm.applicationApprovalFlg = new CheckBoxValue(false, true, vm.$i18n('KAF018_318'));
+			vm.confirmAndApprovalDailyFlg = new CheckBoxValue(false, true, '');
+			vm.confirmAndApprovalMonthFlg = new CheckBoxValue(false, true, '');
+			vm.confirmEmploymentFlg = new CheckBoxValue(false, true, vm.$i18n('KAF018_321'));
 			vm.treeGrid = {
 				isShowAlreadySet: false,
 				isMultipleUse: false,
@@ -47,51 +54,81 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 				isShowSelectButton: true,
 				isDialog: true,
 				showIcon: true,
-				alreadySettingList: vm.alreadySettingList,
+				alreadySettingList: ko.observableArray([]),
 				maxRows: 15,
 				tabindex: 1,
 				systemType: 2
 			};
-			vm.selectedIds.subscribe(value => {
-				if(_.includes(value, 1)) {
-					vm.initDisplayOfApprovalStatus.applicationApprovalFlg = true;
-				} else {
-					vm.initDisplayOfApprovalStatus.applicationApprovalFlg = false;
-				}
-				if(_.includes(value, 2)) {
-					vm.initDisplayOfApprovalStatus.confirmAndApprovalDailyFlg = true;
-				} else {
-					vm.initDisplayOfApprovalStatus.confirmAndApprovalDailyFlg = false;
-				}
-				if(_.includes(value, 3)) {
-					vm.initDisplayOfApprovalStatus.confirmAndApprovalMonthFlg = true;
-				} else {
-					vm.initDisplayOfApprovalStatus.confirmAndApprovalMonthFlg = false;
-				}
-				if(_.includes(value, 4)) {
-					vm.initDisplayOfApprovalStatus.confirmEmploymentFlg = true;
-				} else {
-					vm.initDisplayOfApprovalStatus.confirmEmploymentFlg = false;
-				}
+			vm.dateValue.subscribe(value => {
+				vm.baseDate(new Date(value.endDate));
 			});
+			vm.applicationApprovalFlg.value.subscribe(value => vm.initDisplayOfApprovalStatus.applicationApprovalFlg = value);
+			vm.confirmAndApprovalDailyFlg.value.subscribe(value => vm.initDisplayOfApprovalStatus.confirmAndApprovalDailyFlg = value);
+			vm.confirmAndApprovalMonthFlg.value.subscribe(value => vm.initDisplayOfApprovalStatus.confirmAndApprovalMonthFlg = value);
+			vm.confirmEmploymentFlg.value.subscribe(value => vm.initDisplayOfApprovalStatus.confirmEmploymentFlg = value);
 			vm.$blockui('show');
-			character.restore('InitDisplayOfApprovalStatus').then((obj: InitDisplayOfApprovalStatus) => {
+			vm.$ajax(API.getUseSetting).then((useSetResult: any) => {
+				if(useSetResult) {
+					if(useSetResult.usePersonConfirm && useSetResult.useBossConfirm) {
+						vm.confirmAndApprovalDailyFlg.text = vm.$i18n('KAF018_552');
+					} else if(useSetResult.usePersonConfirm){
+						vm.confirmAndApprovalDailyFlg.text = vm.$i18n('KAF018_553');
+					} else {
+						vm.confirmAndApprovalDailyFlg.text = vm.$i18n('KAF018_554');
+					}
+					if(useSetResult.monthlyIdentityConfirm && useSetResult.monthlyConfirm) {
+						vm.confirmAndApprovalMonthFlg.text = vm.$i18n('KAF018_555');		
+					} else if(useSetResult.monthlyIdentityConfirm){
+						vm.confirmAndApprovalMonthFlg.text = vm.$i18n('KAF018_556');
+					} else {
+						vm.confirmAndApprovalMonthFlg.text = vm.$i18n('KAF018_557');
+					}
+					if((useSetResult.usePersonConfirm) || (useSetResult.useBossConfirm)) {
+						vm.confirmAndApprovalDailyFlg.enable(true);
+					} else {
+						vm.confirmAndApprovalDailyFlg.enable(false);
+					}
+					if((useSetResult.monthlyIdentityConfirm) || (useSetResult.monthlyConfirm)) {
+						vm.confirmAndApprovalMonthFlg.enable(true);
+					} else {
+						vm.confirmAndApprovalMonthFlg.enable(false);
+					}
+					if(useSetResult.employmentConfirm) {
+						vm.confirmEmploymentFlg.enable(true);
+					} else {
+						vm.confirmEmploymentFlg.enable(false);
+					}
+				}
+				vm.useSet = useSetResult;
+				return character.restore('InitDisplayOfApprovalStatus');
+			}).then((obj: InitDisplayOfApprovalStatus) => {
 				if(obj) {
-					let a = [];
 					if(obj.applicationApprovalFlg) {
-						a.push(1);	
+						vm.applicationApprovalFlg.value(true);
+					} else {
+						vm.applicationApprovalFlg.value(false);
 					}
 					if(obj.confirmAndApprovalDailyFlg) {
-						a.push(2);	
+						vm.confirmAndApprovalDailyFlg.value(true);
+					} else {
+						vm.confirmAndApprovalDailyFlg.value(false);
 					}
 					if(obj.confirmAndApprovalMonthFlg) {
-						a.push(3);	
+						vm.confirmAndApprovalMonthFlg.value(true);
+					} else {
+						vm.confirmAndApprovalMonthFlg.value(false);
 					}
 					if(obj.confirmEmploymentFlg) {
-						a.push(4);	
+						vm.confirmEmploymentFlg.value(true);
+					} else {
+						vm.confirmEmploymentFlg.value(false);
 					}
-					vm.selectedIds(a);
 					vm.initDisplayOfApprovalStatus = obj;
+				} else {
+					vm.applicationApprovalFlg.value(true);
+					vm.confirmAndApprovalDailyFlg.value(true);
+					vm.confirmAndApprovalMonthFlg.value(true);
+					vm.confirmEmploymentFlg.value(true);
 				}
 				return vm.$ajax(API.getAppNameInAppList);
 			}).then((appNameLst: any) => {
@@ -101,15 +138,62 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 				vm.closureLst(_.map(data.closureList, (o: any) => {
 					return new ClosureItem(o.closureHistories[0].closureId, o.closureHistories[0].closeName, o.closureMonth);
 				}));
-				vm.selectedClosureId(_.head(vm.closureLst()).closureId);
-				vm.dateValue().startDate = data.startDate;
-				vm.dateValue().endDate = data.endDate;
-				vm.dateValue.valueHasMutated();
+				vm.employmentCDLst = data.listEmploymentCD;
+				if(params) {
+					vm.multiSelectedWorkplaceId(_.map(params.selectWorkplaceInfo, o => o.id));
+					vm.selectedClosureId(params.closureItem.closureId);
+					vm.dateValue().startDate = params.startDate;
+					vm.dateValue().endDate = params.endDate;
+					vm.dateValue.valueHasMutated();
+					if(params.initDisplayOfApprovalStatus.applicationApprovalFlg) {
+						vm.applicationApprovalFlg.value(true);
+					} else {
+						vm.applicationApprovalFlg.value(false);
+					}
+					if(params.initDisplayOfApprovalStatus.confirmAndApprovalDailyFlg) {
+						vm.confirmAndApprovalDailyFlg.value(true);
+					} else {
+						vm.confirmAndApprovalDailyFlg.value(false);
+					}
+					if(params.initDisplayOfApprovalStatus.confirmAndApprovalMonthFlg) {
+						vm.confirmAndApprovalMonthFlg.value(true);
+					} else {
+						vm.confirmAndApprovalMonthFlg.value(false);
+					}
+					if(params.initDisplayOfApprovalStatus.confirmEmploymentFlg) {
+						vm.confirmEmploymentFlg.value(true);
+					} else {
+						vm.confirmEmploymentFlg.value(false);
+					}
+					vm.initDisplayOfApprovalStatus = params.initDisplayOfApprovalStatus;
+				} else {
+					vm.selectedClosureId(_.head(vm.closureLst()).closureId);
+					vm.dateValue().startDate = data.startDate;
+					vm.dateValue().endDate = data.endDate;
+					vm.dateValue.valueHasMutated();	
+				}
 				return $('#tree-grid').ntsTreeComponent(vm.treeGrid).done(() => {
 					vm.fullWorkplaceInfo = vm.flattenWkpTree(_.cloneDeep($('#tree-grid').getDataList()));
+					$('#multiple-tree-grid-tree-grid').igTreeGrid("option", "height", "392px");
+					vm.selectedClosureId.subscribe((value) => {
+						vm.$blockui('show');
+						vm.$ajax(`${API.changeClosure}/${value}`).then((changeDateData) => {
+							vm.employmentCDLst = changeDateData.listEmploymentCD;
+							vm.dateValue().startDate = changeDateData.startDate;
+							vm.dateValue().endDate = changeDateData.endDate;
+							vm.dateValue.valueHasMutated();	
+							$('#tree-grid').ntsTreeComponent(vm.treeGrid).done(() => {
+								vm.fullWorkplaceInfo = vm.flattenWkpTree(_.cloneDeep($('#tree-grid').getDataList()));
+								$('#multiple-tree-grid-tree-grid').igTreeGrid("option", "height", "392px");
+								$('#tree-grid').focusTreeGridComponent();
+								vm.$blockui('hide');
+							});
+						});
+					});
 				});
 			}).then(() => {
 				vm.$blockui('hide');
+				$('#tree-grid').focusTreeGridComponent();
 			});
 		}
 		
@@ -126,7 +210,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 			}
 			// アルゴリズム「項目選択チェック」を実行する
 			// 画面の項目選択チェックボックスを判別する
-			if(_.isEmpty(vm.selectedIds())) {
+			if(!(vm.applicationApprovalFlg.value() || vm.confirmAndApprovalDailyFlg.value() || vm.confirmAndApprovalMonthFlg.value() || vm.confirmEmploymentFlg.value())) {
 				// メッセージ（Msg_1764）を表示する(hiển thị message（Msg_1764）)
 				vm.$dialog.error({ messageId: 'Msg_1764' });
 				return;
@@ -140,7 +224,10 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 																	.filter((o: DisplayWorkplace) => _.includes(vm.multiSelectedWorkplaceId(), o.id))
 																	.sortBy('hierarchyCode').value(),
 					appNameLst: Array<any> = vm.appNameLst,
-					bParam: KAF018BParam = { closureItem, startDate, endDate, selectWorkplaceInfo, appNameLst };
+					useSet = vm.useSet,
+					initDisplayOfApprovalStatus = vm.initDisplayOfApprovalStatus,
+					employmentCDLst = vm.employmentCDLst,
+					bParam: KAF018BParam = { closureItem, startDate, endDate, selectWorkplaceInfo, appNameLst, useSet, initDisplayOfApprovalStatus, employmentCDLst };
 				vm.$jump("/view/kaf/018/b/index.xhtml", bParam);
             });
 			
@@ -212,9 +299,22 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 		level: number;
 		children: Array<DisplayWorkplace>;
 	}
+	
+	export class CheckBoxValue {
+		value: KnockoutObservable<boolean>;
+		enable: KnockoutObservable<boolean>;
+		text: string;
+		constructor(value: boolean, enable: boolean, text: string) {
+			this.value = ko.observable(value);
+			this.enable = ko.observable(enable);
+			this.text = text;
+		}
+	}
 
 	const API = {
 		getApprovalStatusActivation: "at/request/application/approvalstatus/getApprovalStatusActivation",
-		getAppNameInAppList: "at/request/application/screen/applist/getAppNameInAppList"
+		getAppNameInAppList: "at/request/application/screen/applist/getAppNameInAppList",
+		getUseSetting: "at/record/application/realitystatus/getUseSetting",
+		changeClosure: "at/request/application/approvalstatus/changeClosure"
 	}
 }

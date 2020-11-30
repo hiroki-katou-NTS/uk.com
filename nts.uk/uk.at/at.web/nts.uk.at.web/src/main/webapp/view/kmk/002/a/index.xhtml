@@ -152,7 +152,7 @@
                               </tr>
                               <tr>
                                  <td>
-                                    <div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK002_75')}</div>
+                                    <div data-bind="ntsFormLabel: {required: false, constraint: 'UnitOfOptionalItem'}">#{i18n.getText('KMK002_75')}</div>
                                  </td>
                                  <td>
                                     <input tabindex="1" id="inp-unit" data-bind="ntsTextEditor: {
@@ -272,7 +272,7 @@
                                     #{i18n.getText('KMK002_105')}</div>
                               </div>
                               <div class="cell" style="vertical-align: bottom;">
-                                 <textarea style="height: 50px;" data-bind="ntsMultilineEditor: {
+                                 <textarea id="description" style="height: 50px;" data-bind="ntsMultilineEditor: {
                                                    value: description,
                                                    constraint: 'DescritionOptionalItem',
                                                    name: '#[KMK002_106]',
@@ -371,7 +371,7 @@
                               <th class="ui-widget-header">
                                  <div tabindex="-1" data-bind="ntsCheckBox: {
                                        checked: checkedAllFormula,
-                                       enable: isUsed,
+                                       enable: isUsed &amp;&amp; usageAtr() === 1 &amp;&amp; selectedClac() === 1 &amp;&amp; calcFormulas().length > 0,
                                        text: '' }"></div>
                               </th>
                               <th class="ui-widget-header">#{i18n.getText('KMK002_33')}</th>
@@ -423,7 +423,8 @@
                                           optionsValue: 'value',
                                           optionsText: 'localizedName',
                                           value: calcAtr,
-                                          enable: $parent.usageAtr() === 1 &amp;&amp; $parent.selectedClac() === 1 &amp;&amp; orderNo() == 1 ? false : ($parent.isUsed() == true ? true : false)}">
+                                          enable: $parent.usageAtr() === 1 &amp;&amp; $parent.selectedClac() === 1
+                                       }">
                                     </div>
                                  </td>
                                  <td>

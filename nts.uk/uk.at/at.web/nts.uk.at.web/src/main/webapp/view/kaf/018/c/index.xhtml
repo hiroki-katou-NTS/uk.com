@@ -29,17 +29,7 @@
 					</div>
 				</div>
 				<div class="table" style="margin-left: 5px; margin-top: 5px;">
-					<table id="multi-list" data-bind="ntsGridList: {
-														options: items,
-														optionsValue: 'code',
-														columns: ko.observableArray([
-															{ headerText: '#{i18n.getText('KAF018_350')}', key: 'wkpName', width: 100 },
-															{ headerText: '#{i18n.getText('KAF018_351')}', key: 'numberPeople', width: 150 }, 
-															{ headerText: '#{i18n.getText('KAF018_351')}#{i18n.getText('KAF018_352')}', key: 'mailInfo', width: 570 }
-														]),
-														multiple: true,
-														value: currentCodeList,
-														rows: 10 }"></table>
+					<div id="cGrid"></div>
 				</div>
 				<div class="table" style="margin-left: 5px; margin-top: 10px;">
 					<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_353')}</div>

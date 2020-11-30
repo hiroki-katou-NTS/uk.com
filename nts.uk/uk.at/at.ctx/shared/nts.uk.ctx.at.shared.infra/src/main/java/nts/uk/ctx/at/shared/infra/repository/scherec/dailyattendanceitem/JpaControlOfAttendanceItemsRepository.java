@@ -57,23 +57,13 @@ public class JpaControlOfAttendanceItemsRepository extends JpaRepository impleme
         if (CollectionUtil.isEmpty(itemDailyIDList)) {
             return Collections.emptyList();
         }
-        try (val stmt = this.connection()
-                .prepareStatement("SELECT * FROM KSHST_ATD_ITEM_CONTROL"
-                        + " WHERE CID = ? AND ITEM_DAILY_ID in ("
-                        + NtsStatement.In.createParamsString(itemDailyIDList)
-                        + ")")) {
-            stmt.setString(1, companyID);
-            for (int i = 0; i < itemDailyIDList.size(); i++) {
-                stmt.setInt(i + 2, itemDailyIDList.get(i));
-            }
-            return new NtsResultSet(stmt.executeQuery()).getList(rec -> {
-                ControlOfAttendanceItems controlOfAttendanceItems = new ControlOfAttendanceItems(rec.getString("CID"),
-                        rec.getInt("ITEM_DAILY_ID"),
-                        new HeaderBackgroundColor(rec.getString("HEADER_BACKGROUND_COLOR")),
-                        rec.getBigDecimal("TIME_INPUT_UNIT"));
-                return controlOfAttendanceItems;
-            });
-        }
+		List<ControlOfAttendanceItems> data = this.queryProxy().query("SELECT c FROM KshmtDayAtdCtr c "
+				+ " WHERE c.kshmtDayAtdCtrPK.companyID = :companyID "
+				+ " AND c.kshmtDayAtdCtrPK.itemDailyID IN :itemDailyID", KshmtDayAtdCtr.class)
+				.setParameter("companyID", companyID)
+				.setParameter("itemDailyID", itemDailyIDList)
+				.getList(KshmtDayAtdCtr::toDomain);
+		return data;
     }
 
 }

@@ -42,11 +42,11 @@
 
 .kaf018-b-header-countUnApprApp {
 	text-align: center !important;
-	vertical-align: middle !important;
+	vertical-align: bottom !important;
 	white-space: inherit !important;
 }
 
-.kaf018-b-column-countUnApprApp {
+.kaf018-b-column-count {
 	text-align: center;
 	color: #0066CC;
 	text-decoration: underline;

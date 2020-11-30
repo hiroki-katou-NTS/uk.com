@@ -39,16 +39,16 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 			vm.endDate = params.endDate;
 			vm.empInfoLst = params.empInfoLst;
 			vm.currentEmpInfo(_.find(vm.empInfoLst, o => o.empID == params.currentEmpID));
-			$("#eGrid").css('visibility','hidden');
-			vm.createIggrid();
-			vm.refreshDataSource();
+			vm.refreshDataSource().then(() => {
+				$("#kaf018-e-cancel-btn").focus();	
+			});
 		}
 		
 		createIggrid() {
 			const vm = this;
 			$("#eGrid").igGrid({
-				height: 501,
-				width: screen.availWidth - 70,
+				height: 503,
+				width: window.innerWidth - 40,
 				dataSource: vm.dataSource,
 				primaryKey: 'appID',
 				primaryKeyDataType: 'string',
@@ -57,20 +57,11 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 				virtualizationMode: 'continuous',
 				dataRendered: () => {
 					vm.updateCellStyles();
-					vm.$nextTick(() => {
-						vm.$blockui('hide');
-					});
 				},
 				rendered: () => {
-			   		if($("#eGrid").css('visibility')=='hidden'){
-						vm.$nextTick(() => {
-							vm.$blockui('show');
-						});
-					} else {
-						vm.$nextTick(() => {
-							vm.$blockui('hide');
-						});
-					} 	   
+					vm.$nextTick(() => {
+						vm.$blockui('hide');
+					});  
 			    },
 				columns: [
 					{ headerText: "", key: 'appID', width: 1, hidden: true },
@@ -84,7 +75,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 					{ headerText: vm.$i18n('KAF018_390'), key: 'phase2', width: 250 },
 					{ headerText: vm.$i18n('KAF018_391'), key: 'phase3', width: 250 },
 					{ headerText: vm.$i18n('KAF018_392'), key: 'phase4', width: 250 },
-					{ headerText: vm.$i18n('KAF018_393'), key: 'phase5', width: 250 }
+					{ headerText: vm.$i18n('KAF018_393'), key: 'phase5', width: 267 }
 				],
 				features: [
 					{
@@ -193,10 +184,9 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 				endDate = vm.endDate,
 				wsParam = { empID, startDate, endDate };
 			vm.$blockui('show');
-			vm.$ajax(API.getApprSttStartByEmpDate, wsParam).done((data: Array<ApprSttEmpDateContentDto>) => {
+			return vm.$ajax(API.getApprSttStartByEmpDate, wsParam).done((data: Array<ApprSttEmpDateContentDto>) => {
 				vm.dataSource = _.map(data, o => new EmpDateContent(o, vm));
-				$("#eGrid").igGrid("option", "dataSource", vm.dataSource);
-				$("#eGrid").css('visibility','visible');
+				vm.createIggrid();
 			});
 		}
 	}
@@ -234,7 +224,22 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 			}
 			switch(apprSttEmpDateContentDto.application.appType) {
 				case AppType.OVER_TIME_APPLICATION:
+					break;
 	            case AppType.STAMP_APPLICATION:
+					let appStampNameInfo = _.find(vm.appNameLst, (o: any) => {
+						let condition1 = o.appType == apprSttEmpDateContentDto.application.appType;
+						let condition2 = false;
+						if(apprSttEmpDateContentDto.application.opStampRequestMode==0) {
+							condition2 = o.opApplicationTypeDisplay==3;
+						} else {
+							condition2 = o.opApplicationTypeDisplay==4;
+						}
+						return condition1 && condition2;
+					});
+					if(appStampNameInfo) {
+						this.appType = appStampNameInfo.appName;
+					}
+					break;
 				default:
 					let appNameInfo = _.find(vm.appNameLst, (o: any) => o.appType == apprSttEmpDateContentDto.application.appType);
 					if(appNameInfo) {
@@ -275,6 +280,8 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 					this.phase1 += vm.$i18n('KAF018_531', [phase1.countRemainApprover]);
 				}
 				
+			} else {
+				this.approvalStatus += " ";
 			}
 			let phase2 = _.find(apprSttEmpDateContentDto.phaseApproverSttLst, o => o.phaseOrder==2);
 			if(phase2) {
@@ -301,6 +308,8 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 				if(phase2.countRemainApprover) {
 					this.phase2 += vm.$i18n('KAF018_531', [phase2.countRemainApprover]);
 				}
+			} else {
+				this.approvalStatus += " ";
 			}
 			let phase3 = _.find(apprSttEmpDateContentDto.phaseApproverSttLst, o => o.phaseOrder==3);
 			if(phase3) {
@@ -327,6 +336,8 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 				if(phase3.countRemainApprover) {
 					this.phase3 += vm.$i18n('KAF018_531', [phase3.countRemainApprover]);
 				}
+			} else {
+				this.approvalStatus += " ";
 			}
 			let phase4 = _.find(apprSttEmpDateContentDto.phaseApproverSttLst, o => o.phaseOrder==4);
 			if(phase4) {
@@ -353,6 +364,8 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 				if(phase4.countRemainApprover) {
 					this.phase4 += vm.$i18n('KAF018_531', [phase4.countRemainApprover]);
 				}
+			} else {
+				this.approvalStatus += " ";
 			}
 			let phase5 = _.find(apprSttEmpDateContentDto.phaseApproverSttLst, o => o.phaseOrder==5);
 			if(phase5) {
@@ -379,6 +392,8 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 				if(phase5.countRemainApprover) {
 					this.phase5 += vm.$i18n('KAF018_531', [phase5.countRemainApprover]);
 				}
+			} else {
+				this.approvalStatus += " ";
 			}
 		}
 	}

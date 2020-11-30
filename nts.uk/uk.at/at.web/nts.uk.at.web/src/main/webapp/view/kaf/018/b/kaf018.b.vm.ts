@@ -6,11 +6,13 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 	import DisplayWorkplace = nts.uk.at.view.kaf018.a.viewmodel.DisplayWorkplace;
 	import ClosureItem = nts.uk.at.view.kaf018.a.viewmodel.ClosureItem;
 	import KAF018DParam = nts.uk.at.view.kaf018.d.viewmodel.KAF018DParam;
+	import KAF018FParam = nts.uk.at.view.kaf018.f.viewmodel.KAF018FParam;
 	import ApprovalStatusMailType = kaf018.share.model.ApprovalStatusMailType;
 	import KAF018CParam = nts.uk.at.view.kaf018.c.viewmodel.KAF018CParam;
 	
 	@bean()
 	class Kaf018BViewModel extends ko.ViewModel {
+		params: KAF018BParam = null;
 		appNameLst: Array<any> = [];
 		closureItem: ClosureItem;
 		startDate: string;
@@ -37,6 +39,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 		
 		created(params: KAF018BParam) {
 			const vm = this;
+			vm.params = params;
 			vm.$blockui('show');
 			vm.appNameLst = params.appNameLst;
 			vm.closureItem = params.closureItem;
@@ -52,37 +55,33 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 					empPeriodLst: [],
 					level: x.level,
 					countEmp: null,
-					countUnApprApp: null
+					countUnApprApp: null,
+					countUnConfirmDay: null,
+					countUnApprDay: null,
+					countUnConfirmMonth: null,
+					countUnApprMonth: null,
+					displayConfirm: null,
+					confirmPerson: null,
+					date: null,
 				} 
 			});
-			vm.createIggrid();
-			
+			$("#bGrid").css('visibility','hidden');
+			vm.createIggrid(params.useSet);
 		}
 		
 		loadData(initFlg: boolean) {
 			const vm = this;
 			vm.$blockui('show');
-			$.Deferred((dfd) => {
-				if(!initFlg) {
-					return dfd.resolve();
-				}
-				return character.restore('InitDisplayOfApprovalStatus').then((obj: InitDisplayOfApprovalStatus) => {
-					if(obj) {
-						vm.initDisplayOfApprovalStatus = obj;	
-					}
-					dfd.resolve();
-				});
-			}).promise()
-	      	.then(() => {
-				let closureId = vm.closureItem.closureId,
-					processingYm = vm.closureItem.processingYm,
-					startDate = vm.startDate,
-					endDate = vm.endDate,
-					wkpInfoLst = _.filter(vm.selectWorkplaceInfo, o => _.includes(vm.pageData, o.id)),
-					initDisplayOfApprovalStatus = vm.initDisplayOfApprovalStatus,
-					wsParam = { closureId, processingYm, startDate, endDate, wkpInfoLst, initDisplayOfApprovalStatus };
-				return vm.$ajax('at', API.getStatusExecution, wsParam);
-			}).then((data: Array<ApprSttExecutionDto>) => {
+			let closureId = vm.closureItem.closureId,
+				processingYm = vm.closureItem.processingYm,
+				startDate = vm.startDate,
+				endDate = vm.endDate,
+				wkpInfoLst = _.filter(vm.selectWorkplaceInfo, o => _.includes(vm.pageData, o.id)),
+				initDisplayOfApprovalStatus = vm.initDisplayOfApprovalStatus,
+				employmentCDLst = vm.params.employmentCDLst,
+				wsParam = { closureId, processingYm, startDate, endDate, wkpInfoLst, initDisplayOfApprovalStatus, employmentCDLst };
+			vm.$ajax('at', API.getStatusExecution, wsParam)
+			.then((data: Array<ApprSttExecutionDto>) => {
 				_.forEach(vm.dataSource, x => {
 					let exist = _.find(data, y => y.wkpID == x.wkpID);
 					if(exist) {
@@ -94,17 +93,15 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 					}
 				});
 				$("#bGrid").igGrid("option", "dataSource", vm.dataSource);
-			}).always(() => {
-				vm.$blockui('hide');
-				$("#fixed-table").focus();
+				$("#bGrid").css('visibility','visible');
 			});
 		}
 		
-		createIggrid() {
+		createIggrid(useSet: any) {
 			const vm = this;
 			$("#bGrid").igGrid({
-				width: screen.availWidth - 24 < 1000 ? 1000 : screen.availWidth - 24,
-				height: screen.availHeight - 260,
+				width: window.innerWidth - 24 < 1000 ? 1000 : window.innerWidth - 24,
+				height: window.innerHeight - 150,
 				dataSource: vm.dataSource,
 				primaryKey: 'wkpID',
 				primaryKeyDataType: 'string',
@@ -118,10 +115,56 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 				cellClick: (evt: any, ui: any) => {
 					vm.cellGridClick(evt, ui); 
 				},
+				dataRendered: () => {
+					vm.$nextTick(() => {
+						vm.$blockui('hide');
+					});
+				},
 				rendered: () => {
-					vm.$blockui('hide');
-					vm.getPageData();
-					vm.loadData(true);
+					if($("#bGrid").css('visibility')=='hidden'){
+						vm.$nextTick(() => {
+							vm.$blockui('show');
+							$(".ui-iggrid").focus();
+							character.restore('InitDisplayOfApprovalStatus').then((obj: InitDisplayOfApprovalStatus) => {
+								if(obj) {
+									vm.initDisplayOfApprovalStatus = obj;
+									if(!vm.initDisplayOfApprovalStatus.applicationApprovalFlg) {
+										$("#bGrid").igGrid("hideColumn", "countUnApprApp");
+									}
+									$("#bGrid").igGrid("hideColumn", "countUnConfirmDay");
+									$("#bGrid").igGrid("hideColumn", "countUnApprDay");
+									$("#bGrid").igGrid("hideColumn", "countUnConfirmMonth");
+									$("#bGrid").igGrid("hideColumn", "countUnApprMonth");
+									$("#bGrid").igGrid("hideColumn", "displayConfirm");
+									$("#bGrid").igGrid("hideColumn", "confirmPerson");
+									$("#bGrid").igGrid("hideColumn", "date");
+//									if(!useSet.usePersonConfirm || !vm.initDisplayOfApprovalStatus.confirmAndApprovalDailyFlg) {
+//										$("#bGrid").igGrid("hideColumn", "countUnConfirmDay");
+//									}
+//									if(!useSet.useBossConfirm || !vm.initDisplayOfApprovalStatus.confirmAndApprovalDailyFlg) {
+//										$("#bGrid").igGrid("hideColumn", "countUnApprDay");
+//									}
+//									if(!useSet.monthlyIdentityConfirm || !vm.initDisplayOfApprovalStatus.confirmAndApprovalMonthFlg) {
+//										$("#bGrid").igGrid("hideColumn", "countUnConfirmMonth");	
+//									}
+//									if(!useSet.monthlyConfirm || !vm.initDisplayOfApprovalStatus.confirmAndApprovalMonthFlg) {
+//										$("#bGrid").igGrid("hideColumn", "countUnApprMonth");
+//									}
+//									if(!useSet.employmentConfirm) {
+//										$("#bGrid").igGrid("hideColumn", "displayConfirm");
+//										$("#bGrid").igGrid("hideColumn", "confirmPerson");
+//										$("#bGrid").igGrid("hideColumn", "date");
+//									}
+									vm.getPageData();
+									vm.loadData(true);
+								}
+							});
+						});
+					} else {
+						vm.$nextTick(() => {
+							vm.$blockui('hide');
+						});
+					}
 			    },
 				columns: [
 					{ 
@@ -153,21 +196,80 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 						},
 					},
 					{ 
-						headerText: vm.$i18n('KAF018_333'),
+						headerText: '<p style="text-align: center">' + vm.$i18n('KAF018_333') + '</p>' + vm.createButtonHtml(0), 
+						key: 'countUnApprApp', 
+						dataType: 'number', 
+						width: '75px', 
 						headerCssClass: 'kaf018-b-header-countUnApprApp',
+						columnCssClass: 'kaf018-b-column-count',
+						formatter: (key: string) => {
+							if(!key) {
+								return "";
+							}
+							return key;
+						},
+					},
+					{ 
+						headerText: vm.$i18n('KAF018_334'),
 						group: [
 							{ 
-								headerText: vm.createButtonHtml(0), 
-								key: 'countUnApprApp', 
+								headerText: '<p style="text-align: center">' + vm.$i18n('KAF018_337') + '</p>' + vm.createButtonHtml(1), 
+								key: 'countUnConfirmDay', 
 								dataType: 'number', 
 								width: '75px', 
-								columnCssClass: 'kaf018-b-column-countUnApprApp',
-								formatter: (key: string) => {
-									if(!key) {
-										return "";
-									}
-									return key;
-								},
+								columnCssClass: 'kaf018-b-column-count'
+							},
+							{ 
+								headerText: '<p style="text-align: center">' + vm.$i18n('KAF018_338') + '</p>' + vm.createButtonHtml(2), 
+								key: 'countUnApprDay', 
+								dataType: 'number', 
+								width: '75px', 
+								columnCssClass: 'kaf018-b-column-count'
+							}
+						]
+					},
+					{ 
+						headerText: vm.$i18n('KAF018_335'),
+						group: [
+							{ 
+								headerText: '<p style="text-align: center">' + vm.$i18n('KAF018_339') + '</p>' + vm.createButtonHtml(5), 
+								key: 'countUnConfirmMonth', 
+								dataType: 'number', 
+								width: '75px', 
+								columnCssClass: 'kaf018-b-column-count'
+							},
+							{ 
+								headerText: '<p style="text-align: center">' + vm.$i18n('KAF018_340') + '</p>' + vm.createButtonHtml(3), 
+								key: 'countUnApprMonth', 
+								dataType: 'number', 
+								width: '75px', 
+								columnCssClass: 'kaf018-b-column-count'
+							}
+						]
+					},
+					{ 
+						headerText: vm.$i18n('KAF018_336'),
+						group: [
+							{ 
+								headerText: '<p style="text-align: center">' + vm.$i18n('KAF018_341') + '</p>' + vm.createButtonHtml(4), 
+								key: 'displayConfirm', 
+								dataType: 'number', 
+								width: '75px', 
+								columnCssClass: 'kaf018-b-column-count'
+							},
+							{ 
+								headerText: vm.$i18n('KAF018_342'), 
+								key: 'confirmPerson', 
+								dataType: 'number', 
+								width: '75px', 
+								columnCssClass: 'kaf018-b-column-count'
+							},
+							{ 
+								headerText: vm.$i18n('KAF018_343'), 
+								key: 'date', 
+								dataType: 'number', 
+								width: '75px', 
+								columnCssClass: 'kaf018-b-column-count'
 							}
 						]
 					}	
@@ -188,10 +290,12 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 							pageSizeDropDownTrailingLabel: ""
 						},
 						pageIndexChanged: () => {
+							$(".ui-iggrid").focus();
 							vm.getPageData();
 							vm.loadData(false);
 						},
 						pageSizeChanged: () => {
+							$(".ui-iggrid").focus();
 							vm.getPageData();
 							vm.loadData(false);
 						}
@@ -239,27 +343,71 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 					dParam: KAF018DParam = { closureItem, startDate, endDate, apprSttExeDtoLst, currentWkpID, appNameLst };
 				vm.$window.modal('/view/kaf/018/d/index.xhtml', dParam);
 			}
+			
+			if(ui.colKey=="countUnConfirmDay" || ui.colKey=="countUnApprDay" || ui.colKey=="countUnConfirmMonth" || ui.colKey=="countUnApprMonth") {
+//				let countUnConfirmDay = _.find(vm.dataSource, o => o.wkpID == ui.rowKey).countUnConfirmDay,
+//					countUnApprDay = _.find(vm.dataSource, o => o.wkpID == ui.rowKey).countUnApprDay,
+//					countUnConfirmMonth = _.find(vm.dataSource, o => o.wkpID == ui.rowKey).countUnConfirmMonth,
+//					countUnApprMonth = _.find(vm.dataSource, o => o.wkpID == ui.rowKey).countUnApprMonth;
+//				if(!countUnConfirmDay && !countUnApprDay && !countUnConfirmMonth && !countUnApprMonth) {
+//					return;	
+//				}
+				let closureItem = vm.closureItem,
+					startDate = vm.startDate,
+					endDate = vm.endDate,
+					apprSttExeDtoLst = _.filter(vm.dataSource, o => {
+						let countUnApprApp = o.countUnApprApp ? true : false;
+						return countUnApprApp && _.includes(vm.pageData, o.wkpID);
+					}),
+					currentWkpID = ui.rowKey,
+					appNameLst: Array<any> = vm.appNameLst,
+					fParam: KAF018FParam = { closureItem, startDate, endDate, apprSttExeDtoLst, currentWkpID, appNameLst };
+				vm.$window.modal('/view/kaf/018/f/index.xhtml', fParam);
+			}
 		}
 		
 		buttonMailAction(mailTypeParam: ApprovalStatusMailType) {
 			const vm = this;
-			let height = screen.availHeight;
-			if(screen.availHeight > 820) {
+			let height = window.innerHeight;
+			if(window.innerHeight > 820) {
 				height = 820
 			}
-			if(screen.availHeight < 600) {
+			if(window.innerHeight < 600) {
 				height = 600;
 			}
 			let dialogSize = { width: 900, height: height },
+				existData = _.chain(vm.dataSource).filter(o => {
+					switch(mailTypeParam) {
+						case ApprovalStatusMailType.APP_APPROVAL_UNAPPROVED:
+							let countUnApprApp = o.countUnApprApp ? true : false;
+							return countUnApprApp && _.includes(vm.pageData, o.wkpID);
+						case ApprovalStatusMailType.DAILY_UNCONFIRM_BY_PRINCIPAL:
+							return false;
+						case ApprovalStatusMailType.DAILY_UNCONFIRM_BY_CONFIRMER:
+							return false;
+						case ApprovalStatusMailType.MONTHLY_UNCONFIRM_BY_PRINCIPAL:
+							return false;
+						case ApprovalStatusMailType.MONTHLY_UNCONFIRM_BY_CONFIRMER:
+							return false;
+						case ApprovalStatusMailType.WORK_CONFIRMATION:
+							return false;
+						default:
+							return false;
+					}
+				}).map(o => o.wkpID).value(),
 				mailType = mailTypeParam,
-				selectWorkplaceInfo = vm.selectWorkplaceInfo,
-				cParam: KAF018CParam = { mailType, selectWorkplaceInfo };
+				closureItem = vm.closureItem,
+				startDate = vm.startDate,
+				endDate = vm.endDate,
+				selectWorkplaceInfo = _.filter(vm.selectWorkplaceInfo, o => _.includes(existData, o.id)),
+				employmentCDLst = vm.params.employmentCDLst,
+				cParam: KAF018CParam = { mailType, closureItem, startDate, endDate, selectWorkplaceInfo, employmentCDLst };
 			vm.$window.modal('/view/kaf/018/c/index.xhtml', cParam, dialogSize);
 		}
 		
 		goBackA() {
 			const vm = this;
-			vm.$jump('/view/kaf/018/a/index.xhtml');
+			vm.$jump('/view/kaf/018/a/index.xhtml', vm.params);
 		}
 	}
 	
@@ -269,6 +417,9 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 		endDate: string;
 		selectWorkplaceInfo: Array<DisplayWorkplace>;
 		appNameLst: Array<any>;
+		useSet: any;
+		initDisplayOfApprovalStatus: InitDisplayOfApprovalStatus;
+		employmentCDLst: Array<string>;
 	}
 
 	export interface ApprSttExecutionDto {
@@ -280,6 +431,13 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 		level: number;
 		countEmp: number;
 		countUnApprApp: number;
+		countUnConfirmDay: number;
+		countUnApprDay: number;
+		countUnConfirmMonth: number;
+		countUnApprMonth: number;
+		displayConfirm: boolean;
+		confirmPerson: string;
+		date: string;
 	}	
 
 	const API = {

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.HeaderBackgroundColor;
 
@@ -13,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.Heade
  *
  */
 @Getter
+@Setter
 public class ControlOfMonthlyItems extends AggregateRoot {
 	/**会社ID*/
 	private String companyId;

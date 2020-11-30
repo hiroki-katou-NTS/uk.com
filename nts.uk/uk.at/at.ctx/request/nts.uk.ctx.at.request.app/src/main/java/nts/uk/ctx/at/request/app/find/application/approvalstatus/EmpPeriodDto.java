@@ -18,6 +18,10 @@ public class EmpPeriodDto {
 	
 	private String empCD;
 	
+	private String workplaceStartDate;
+	
+	private String workplaceEndDate;
+	
 	private String companyInDate;
 	
 	private String companyOutDate;
@@ -31,6 +35,8 @@ public class EmpPeriodDto {
 				empPeriod.getWkpID(), 
 				empPeriod.getEmpID(), 
 				empPeriod.getEmpCD(), 
+				empPeriod.getWorkplaceStartDate().toString(),
+				empPeriod.getWorkplaceEndDate().toString(),
 				empPeriod.getCompanyInDate().toString(), 
 				empPeriod.getCompanyOutDate().toString(), 
 				empPeriod.getEmploymentStartDate() == null ? null : empPeriod.getEmploymentStartDate().toString(), 

@@ -1,3 +1,15 @@
+.kaf018-c-header-checkbox {
+	vertical-align: middle !important;
+}
+
+.kaf018-c-column-checkbox {
+	vertical-align: middle !important;
+}
+
+.kaf018-c-column-countEmp {
+	text-align: right;
+}
+
 #kaf018-c-input {
 	width: 400px;
 }

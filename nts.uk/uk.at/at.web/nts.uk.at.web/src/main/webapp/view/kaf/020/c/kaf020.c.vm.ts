@@ -199,7 +199,6 @@ module nts.uk.at.view.kaf020.c.viewmodel {
                 }).fail(err => {
                     vm.$dialog.error(err);
                 }).always(() => {
-                    vm.$errors("clear");
                     vm.$blockui("hide");
                 });
         }
