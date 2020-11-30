@@ -5,6 +5,7 @@ import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.workplacecount
 import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.workplacecounter.RegisterWorkplaceCounterCommandHandler;
 import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.wkpcounter.WorkplaceCounterCategoryDto;
 import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.wkpcounter.WorkplaceCounterFinder;
+import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.WorkplaceCounterCategory;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -32,8 +33,8 @@ public class WorkPlaceCounterWebService extends WebService {
 
 	@Path("register")
 	@POST
-	public void registerWorkplace(RegisterWorkplaceCounterCommand command) {
-		this.workplaceCounterCommandHandler.handle(command);
+	public  List<WorkplaceCounterCategory> registerWorkplace(RegisterWorkplaceCounterCommand command) {
+		return this.workplaceCounterCommandHandler.handle(command);
 	}
 
 }

@@ -5,6 +5,7 @@ import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.personalcounte
 import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.personalcounter.RegisterPersonalCounterCommandHandler;
 import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.personal.PersonalCounterCategoryDto;
 import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.personal.PersonalCounterFinder;
+import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.PersonalCounterCategory;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -32,8 +33,8 @@ public class PersonalCounterWebService extends WebService {
 
 	@Path("register")
 	@POST
-	public void registerPersonal(RegisterPersonalCounterCommand command) {
-		this.personalCounterCommandHandler.handle(command);
+	public List<PersonalCounterCategory> registerPersonal(RegisterPersonalCounterCommand command) {
+		return this.personalCounterCommandHandler.handle(command);
 	}
 
 }
