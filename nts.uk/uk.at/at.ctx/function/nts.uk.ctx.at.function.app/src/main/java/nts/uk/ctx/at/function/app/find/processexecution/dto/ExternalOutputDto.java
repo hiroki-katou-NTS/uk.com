@@ -24,14 +24,16 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public class ExternalOutputDto {
 
 	/**
+	 * The External output classification.<br>
 	 * 外部出力区分
 	 **/
-	private int externalOutputClassification;
+	private int extOutputCls;
 
 	/**
+	 * The External output condition code list.<br>
 	 * 条件一覧
 	 **/
-	private List<String> extOutputConditionCodeList;
+	private List<String> extOutCondCodeList;
 
 	/**
 	 * Create from domain.
@@ -44,8 +46,8 @@ public class ExternalOutputDto {
 			return null;
 		}
 		ExternalOutputDto dto = new ExternalOutputDto();
-		dto.externalOutputClassification = domain.getExtOutputCls().value;
-		dto.extOutputConditionCodeList = domain.getExtOutCondCodeList()
+		dto.extOutputCls = domain.getExtOutputCls().value;
+		dto.extOutCondCodeList = domain.getExtOutCondCodeList()
 											   .stream()
 											   .map(ExternalOutputConditionCode::v)
 											   .collect(Collectors.toList());
@@ -54,10 +56,10 @@ public class ExternalOutputDto {
 
 	public ExternalOutput toDomain() {
 		return ExternalOutput.builder()
-				.extOutCondCodeList(this.extOutputConditionCodeList.stream()
+				.extOutCondCodeList(this.extOutCondCodeList.stream()
 						.map(ExternalOutputConditionCode::new)
 						.collect(Collectors.toList()))
-				.extOutputCls(EnumAdaptor.valueOf(this.externalOutputClassification, NotUseAtr.class))
+				.extOutputCls(EnumAdaptor.valueOf(this.extOutputCls, NotUseAtr.class))
 				.build();
 	}
 	

@@ -880,6 +880,422 @@ module nts.uk.at.view.kbt002.b {
   }
 
   /**
+   * The interface Process execution scope dto.
+   */
+  export interface ProcessExecutionScopeDto {
+
+    /**
+     * The Execution scope classification
+     * 実行範囲区分
+     */
+    execScopeCls: number;
+
+    /**
+     * The Reference date
+     * 基準日
+     */
+    refDate: string;
+
+    /**
+     * The Workplace id list
+     * 職場実行範囲
+     */
+    wkpIdList: string[];
+
+  }
+
+  /**
+   * The interface Process execution setting dto.
+   */
+  export interface ProcessExecutionSettingDto {
+
+    /**
+     * The Alarm extraction
+     * アラーム抽出
+     */
+    alarmExtraction: AlarmExtractionDto;
+
+    /**
+     * The Personal schedule creation
+     * 個人スケジュール作成
+     */
+    perSchedule: PersonalScheduleCreationDto;
+
+    /**
+     * The Create daily performance
+     * 日別実績の作成・計算
+     */
+    dailyPerf: DailyPerformanceCreationDto;
+
+    /**
+     * The Reflect approval result
+     * 承認結果の反映
+     */
+    reflectResultCls: boolean;
+
+    /**
+     * The Monthly aggregate
+     * 月別実績の集計
+     */
+    monthlyAggCls: boolean;
+
+    /**
+     * The Approval route update daily
+     * 承認ルート更新（日次）
+     */
+    appRouteUpdateDaily: AppRouteUpdateDailyDto;
+
+    /**
+     * The Approval route update monthly
+     * 承認ルート更新（月次）
+     */
+    appRouteUpdateMonthly: boolean;
+
+    /**
+     * The Delete data
+     * データの削除
+     */
+    deleteData: DeleteDataDto;
+
+    /**
+     * The Save data
+     * データの保存
+     */
+    saveData: SaveDataDto;
+
+    /**
+     * The External acceptance
+     * 外部受入
+     */
+    externalAcceptance: ExternalAcceptanceDto;
+
+    /**
+     * The External output
+     * 外部出力
+     */
+    externalOutput: ExternalOutputDto;
+
+    /**
+     * The Aggregation any period
+     * 任意期間の集計
+     */
+    aggrAnyPeriod: AggregationAnyPeriodDto;
+
+    /**
+     * The Index reconstruction
+     * インデックス再構成
+     */
+    indexReconstruction: IndexReconstructionDto;
+
+    /**
+     * The Re-execution condition
+     * 再実行条件
+     */
+    reExecCondition: ReExecutionConditionDto;
+
+  }
+
+  /**
+   * The interface Alarm extraction dto.
+   */
+  export interface AlarmExtractionDto {
+
+    /**
+     * The Alarm extraction classification
+     * アラーム抽出区分
+     */
+    alarmExtractionCls: boolean;
+
+    /**
+     * The Alarm code
+     * コード
+     */
+    alarmCode: string;
+
+    /**
+     * The Mail principal
+     * メールを送信する(本人)
+     */
+    mailPrincipal: boolean;
+
+    /**
+     * The Mail administrator
+     * メールを送信する(管理者)
+     */
+    mailAdministrator: boolean;
+
+    /**
+     * The Display on top page administrator
+     * トップページに表示(管理者)
+     */
+    displayOnTopPageAdministrator: boolean;
+
+    /**
+     * The Display on top page principal
+     * トップページに表示(本人)
+     */
+    displayOnTopPagePrincipal: boolean;
+
+  }
+
+  /**
+   * The interface Personal schedule creation dto.
+   */
+  export interface PersonalScheduleCreationDto {
+
+    /**
+     * The Personal schedule creation period
+     * 作成期間
+     */
+    perSchedulePeriod: PersonalScheduleCreationPeriodDto;
+
+    /**
+     * The Personal schedule creation classification
+     * 個人スケジュール作成区分
+     */
+    perScheduleCls: boolean;
+
+    /**
+     * The Create new employee schedule
+     * 新入社員を作成
+     */
+    createNewEmpSched: boolean;
+
+  }
+
+  /**
+   * The interface Personal schedule creation period dto.
+   */
+  export interface PersonalScheduleCreationPeriodDto {
+
+    /**
+     * The Creation period
+     * 作成期間
+     */
+    creationPeriod: number;
+
+    /**
+     * The Target date
+     * 対象日
+     */
+    targetDate: number;
+
+    /**
+     * The Target month
+     * 対象月
+     */
+    targetMonth: number;
+
+    /**
+     * The Designated year
+     * 指定年
+     */
+    designatedYear: number;
+
+    /**
+     * The Start month day
+     * 指定開始月日
+     */
+    startMonthDay: number;
+
+    /**
+     * The End month day
+     * 指定終了月日
+     */
+    endMonthDay: number;
+
+  }
+
+  /**
+   * The interface Daily performance creation dto.
+   */
+  export interface DailyPerformanceCreationDto {
+
+    /**
+     * The Daily performance item
+     * 作成・計算項目
+     */
+    dailyPerfItem: number;
+
+    /**
+     * The Create new employee daily performance
+     * 新入社員は入社日から作成
+     */
+    createNewEmpDailyPerf: number;
+
+    /**
+     * The Daily performance classification
+     * 日別実績の作成・計算区分
+     */
+    dailyPerfCls: boolean;
+
+  }
+
+  /**
+   * The interface Approval route update daily dto.
+   */
+  export interface AppRouteUpdateDailyDto {
+
+    /**
+     * The Approval route update attribute
+     * 承認ルート更新区分
+     */
+    appRouteUpdateAtr: number;
+
+    /**
+     * The Create new employee approval
+     * 新入社員を作成する
+     */
+    createNewEmp: number;
+
+  }
+
+  /**
+   * The interface Delete data dto.
+   */
+  export interface DeleteDataDto {
+
+    /**
+     * The Data deletion classification
+     * データの削除区分
+     */
+    dataDelCls: number;
+
+    /**
+     * The Pattern code
+     * パターンコード
+     */
+    patternCode: string;
+
+  }
+
+  /**
+   * The interface Save data dto.
+   */
+  export interface SaveDataDto {
+
+    /**
+     * The Save data classification
+     * データの保存区分
+     */
+    saveDataCls: number;
+
+    /**
+     * The Pattern code
+     * パターンコード
+     */
+    patternCode: string;
+
+  }
+
+  /**
+   * The interface External acceptance dto.
+   */
+  export interface ExternalAcceptanceDto {
+
+    /**
+     * The External acceptance classification
+     * 外部受入区分
+     */
+    extAcceptCls: number;
+
+    /**
+     * The External acceptance condition code list
+     * 条件一覧
+     */
+    extAcceptCondCodeList: string[];
+
+  }
+
+  /**
+   * The interface External output dto.
+   */
+  export interface ExternalOutputDto {
+
+    /**
+     * The External output classification
+     * 外部出力区分
+     */
+    extOutputCls: number;
+
+    /**
+     * The External output condition code list
+     * 条件一覧
+     */
+    extOutCondCodeList: string[];
+
+  }
+
+  /**
+   * The interface Aggregation any period dto.
+   */
+  export interface AggregationAnyPeriodDto {
+
+    /**
+     * The Aggregation any period attribute
+     * 使用区分
+     */
+    aggAnyPeriodAttr: number;
+
+    /**
+     * The Aggregation frame code
+     * コード
+     */
+    aggrFrameCode: string;
+
+  }
+
+  /**
+   * The interface Index reconstruction dto.
+   */
+  export interface IndexReconstructionDto {
+
+    /**
+     * The Update statistics
+     * 統計情報を更新する
+     */
+    updateStatistics: number;
+
+    /**
+     * The Index reorganization attribute
+     * 使用区分
+     */
+    indexReorgAttr: number;
+
+    /**
+     * The Category list
+     * カテゴリリスト
+     */
+    categoryList: number[];
+
+  }
+
+  /**
+   * The interface Re-execution condition dto.
+   */
+  export interface ReExecutionConditionDto {
+
+    /**
+     * The Recreate person change work type
+     * 勤務種別変更者を再作成
+     */
+    recreatePerson: number;
+
+    /**
+     * The Recreate transfer
+     * 異動者を再作成する
+     */
+    recreateTransfer: number;
+
+    /**
+     * The Recreate leave
+     * 休職者・休業者を再作成
+     */
+    recreateLeave: number;
+
+  }
+
+  /**
    * The class Workplace search data.
    */
   export class WorkplaceSearchData {
@@ -915,105 +1331,34 @@ module nts.uk.at.view.kbt002.b {
   }
 
   /**
-   * The class Save process execution command.
+   * The class Save update process auto execution command.
    */
-  export class SaveProcessExecutionCommand {
+  export class SaveUpdateProcessAutoExecutionCommand {
     newMode: boolean;
 
     /** 会社ID */
     companyId: string;
 
-    /**コード */
+    /** コード */
     execItemCode: string;
 
-    /**名称 */
+    /** 名称 */
     execItemName: string;
 
-    /**個人スケジュール作成 */
-    perScheduleCls: boolean;
+    /** 実行範囲 */
+    execScope: ProcessExecutionScopeDto
 
-    /**対象月 */
-    targetMonth: number;
+    /** 実行設定 */
+    execSetting: ProcessExecutionSettingDto
 
-    /**対象日 */
-    targetDate: number;
+    /** 実行種別 */
+    executionType: number
 
-    /**作成期間 */
-    creationPeriod: number;
+    /** 再実行条件 */
+    reExecCondition: ReExecutionConditionDto
 
-    /**作成対象 */
-    creationTarget: number;
-
-    /**勤務種別変更者を再作成 */
-    recreateWorkType: boolean;
-
-    /**手修正を保護する */
-    manualCorrection: boolean;
-
-    /**新入社員を作成する */
-    createEmployee: boolean;
-
-    /**異動者を再作成する */
-    recreateTransfer: boolean;
-
-    /**日別実績の作成・計算 */
-    dailyPerfCls: boolean;
-
-    /**作成・計算項目 */
-    dailyPerfItem: number;
-
-    /**前回処理日 */
-    lastProcDate: any;
-
-    /**途中入社は入社日からにする */
-    midJoinEmployee: boolean;
-
-    /**承認結果反映 */
-    reflectResultCls: boolean;
-
-    /**月別集計 */
-    monthlyAggCls: boolean;
-
-    execScopeCls: number;
-
-    refDate: any;
-
-    workplaceList: string[];
-
-    /**更新処理の日別処理対象者区分.勤務種別変更者を再作成 */
-    recreateTypeChangePerson: boolean;
-
-    /**更新処理の日別処理対象者区分.異動者を再作成する */
-    recreateTransfers: boolean;
-
-    /** 承認ルート更新区分 */
-    appRouteUpdateAtr: boolean;
-
-    /** 新入社員を作成する */
-    createNewEmp: boolean;
-
-    /**承認ルート更新（月次） */
-    appRouteUpdateMonthly: boolean;
-
-    /**実行種別*/
-    processExecType: number;
-
-    alarmAtr: boolean;
-
-    alarmCode: string;
-
-    mailPrincipal: boolean;
-
-    mailAdministrator: boolean;
-
-    /**指定年 */
-    designatedYear: number;
-
-    /**指定開始月日 */
-    startMonthDay: number;
-
-    /**指定終了月日*/
-    endMonthDay: number;
+    /** クラウド作成フラグ */
+    cloudCreationFlag: boolean;
 
     constructor(init?: Partial<SaveProcessExecutionCommand>) {
       $.extend(this, init);

@@ -23,9 +23,10 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public class SaveDataDto {
 
 	/**
+	 * The Save data classification.<br>
 	 * データの保存区分
 	 **/
-	private int saveDataClassification;
+	private int saveDataCls;
 
 	/**
 	 * パターンコード
@@ -43,7 +44,7 @@ public class SaveDataDto {
 			return null;
 		}
 		SaveDataDto dto = new SaveDataDto();
-		dto.saveDataClassification = domain.getSaveDataCls().value;
+		dto.saveDataCls = domain.getSaveDataCls().value;
 		dto.patternCode = domain.getPatternCode().map(AuxiliaryPatternCode::v).orElse(null);
 		return dto;
 	}
@@ -51,7 +52,7 @@ public class SaveDataDto {
 	public SaveData toDomain() {
 		return SaveData.builder()
 				.patternCode(Optional.ofNullable(this.patternCode).map(AuxiliaryPatternCode::new))
-				.saveDataCls(EnumAdaptor.valueOf(this.saveDataClassification, NotUseAtr.class))
+				.saveDataCls(EnumAdaptor.valueOf(this.saveDataCls, NotUseAtr.class))
 				.build();
 	}
 	

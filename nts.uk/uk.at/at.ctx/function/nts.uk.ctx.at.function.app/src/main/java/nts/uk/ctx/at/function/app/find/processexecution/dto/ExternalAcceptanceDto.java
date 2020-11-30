@@ -24,14 +24,16 @@ import java.util.stream.Collectors;
 public class ExternalAcceptanceDto {
 
 	/**
+	 * The External acceptance classification.<br>
 	 * 外部受入区分
 	 **/
-	private int externalAcceptanceClassification;
+	private int extAcceptCls;
 
 	/**
+	 * The External acceptance condition code list.<br>
 	 * 条件一覧
 	 **/
-	private List<String> extAccepConditionCodeList;
+	private List<String> extAcceptCondCodeList;
 
 	/**
 	 * Create from domain.
@@ -44,8 +46,8 @@ public class ExternalAcceptanceDto {
 			return null;
 		}
 		ExternalAcceptanceDto dto = new ExternalAcceptanceDto();
-		dto.externalAcceptanceClassification = domain.getExtAcceptCls().value;
-		dto.extAccepConditionCodeList = domain.getExtAcceptCondCodeList()
+		dto.extAcceptCls = domain.getExtAcceptCls().value;
+		dto.extAcceptCondCodeList = domain.getExtAcceptCondCodeList()
 											  .stream()
 											  .map(ExternalAcceptanceConditionCode::v)
 											  .collect(Collectors.toList());
@@ -54,8 +56,8 @@ public class ExternalAcceptanceDto {
 
 	public ExternalAcceptance toDomain() {
 		return ExternalAcceptance.builder()
-				.extAcceptCls(EnumAdaptor.valueOf(this.externalAcceptanceClassification, NotUseAtr.class))
-				.extAcceptCondCodeList(this.extAccepConditionCodeList.stream()
+				.extAcceptCls(EnumAdaptor.valueOf(this.extAcceptCls, NotUseAtr.class))
+				.extAcceptCondCodeList(this.extAcceptCondCodeList.stream()
 						.map(ExternalAcceptanceConditionCode::new)
 						.collect(Collectors.toList()))
 				.build();

@@ -18,16 +18,19 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public class ReExecutionConditionDto {
 
 	/**
+	 * The Recreate person change work type.<br>
 	 * 勤務種別変更者を再作成
 	 */
 	private int recreatePerson;
 
 	/**
+	 * The Recreate transfer.<br>
 	 * 異動者を再作成する
 	 */
 	private int recreateTransfer;
 
 	/**
+	 * The Recreate leave.<br>
 	 * 休職者・休業者を再作成
 	 */
 	private int recreateLeave;
