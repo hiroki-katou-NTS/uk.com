@@ -774,7 +774,6 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 
                 // truowng hop khong co page nao duoc dang ky
                 if (data.listPageInfo.length == 0) {
-                    //$('#tableButton1 button').addClass('disabledShiftControl');
                     // set css table button
                     _.each($('.ntsButtonTableButton'), function(buttonTbl, index) {
                         if ($('.ntsButtonTableButton')[index].innerHTML == "+") {

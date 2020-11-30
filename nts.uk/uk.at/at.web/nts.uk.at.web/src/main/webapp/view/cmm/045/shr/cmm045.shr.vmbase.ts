@@ -217,7 +217,7 @@ module cmm045.shr {
 		        this.details = '';
 		        this.appName = '';
 		        this.appAtr = '';
-		        this.checkAtr = this.opApprovalFrameStatus == 0 ? true : false;
+		        this.checkAtr = this.reflectionStatus == 'CMM045_62' ? true : false;
 		        this.version = 0;
 		        this.checkTimecolor = 0;
 		        this.appIdSub = '';
@@ -433,10 +433,14 @@ module cmm045.shr {
 		export class columnWidth {
 			appLstAtr: boolean;
 			width: number;
+			cID: string;
+			sID: string;
 
-			constructor(appLstAtr: boolean, width: number) {
+			constructor(appLstAtr: boolean, width: number, cID: string, sID: string) {
 				this.appLstAtr = appLstAtr;
-				this.width = width
+				this.width = width;
+				this.cID = cID;
+				this.sID = sID;
 			}
 		}
     }

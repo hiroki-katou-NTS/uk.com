@@ -95,12 +95,12 @@ public class ManualSetDeletion extends AggregateRoot {
 	/**
 	 * 実行区分
 	 */
-	public StorageClassification executeClassification;
+	private StorageClassification executeClassification;
 	
 	/**
 	 * 削除パターン
 	 */
-	public PatternCode delPattern;
+	private PatternCode delPattern;
 	
 	/**
 	 * 対象カテゴリ

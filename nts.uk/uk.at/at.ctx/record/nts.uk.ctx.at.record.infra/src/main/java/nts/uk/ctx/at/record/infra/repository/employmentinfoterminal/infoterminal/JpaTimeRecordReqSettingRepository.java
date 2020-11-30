@@ -64,7 +64,7 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 			ContractCode contractCode) {
 		try (PreparedStatement statement = this.connection().prepareStatement(GET_BY_KEY)) {
 			statement.setString(1, contractCode.v());
-			statement.setInt(2, empInfoTerCode.v());
+			statement.setString(2, empInfoTerCode.v());
 			return createTimeReqSetting(statement.executeQuery());
 
 		} catch (SQLException e) {
@@ -77,7 +77,7 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 		List<TimeRecordReqSetting> listFullData = new ArrayList<>();
 		while (rs.next()) {
 			TimeRecordReqSetting req = new TimeRecordReqSetting.ReqSettingBuilder(
-					new EmpInfoTerminalCode(rs.getInt("TIMERECORDER_CD")),
+					new EmpInfoTerminalCode(rs.getString("TIMERECORDER_CD")),
 					new ContractCode(rs.getString("CONTRACT_CD")), new CompanyId(rs.getString("CID")),
 					String.valueOf(rs.getString("COMPANY_CD")),
 					rs.getString("EMPLOYEE") == null ? Collections.emptyList()

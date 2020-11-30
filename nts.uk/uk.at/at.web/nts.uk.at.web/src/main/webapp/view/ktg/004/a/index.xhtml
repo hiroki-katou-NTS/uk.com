@@ -1,0 +1,157 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/freelayout.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="ktg004.a.style.css" />
+			<com:scriptfile path="ktg004.a.vm.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents" style="display: none">
+				<div  class="parent">
+					<div class="header">
+						<div data-bind="ntsFormLabel: {text: name}"></div>
+						<com:ko-if bind="detailedWorkStatusSettings">
+							<button id= "setting" data-bind="click: setting" class="setting">
+								<i data-bind="ntsIcon: { no: 5 }"></i>
+							</button>
+						</com:ko-if>
+					</div>
+					<div id="scrollTable">
+						<table class="widget-table">
+							<tbody>
+								<com:ko-if bind="_.find(itemsSetting(), { 'item': 21 }).displayType">
+									<tr>
+										<td>
+											<span class="row-name">#{i18n.getText('KTG004_1')}</span>
+											<div class="row-data">
+												<com:ko-if bind="attendanceInfor.dailyErrors">
+													<span class="go-button">
+														<button data-bind="click: openKDW003">
+															<i data-bind="ntsIcon: { no: 145 }"></i>
+														</button>
+													</span>
+												</com:ko-if>
+												<span data-bind="text: attendanceInfor.dailyErrors() ? '#{i18n.getText('KTG004_16')}': '#{i18n.getText('KTG004_17')}'" class="data"></span>								
+											</div>
+										</td>
+									</tr>
+								</com:ko-if>
+								<com:ko-if bind="_.find(itemsSetting(), { 'item': 22 }).displayType">
+									<tr>
+										<td>
+											<span class="row-name">#{i18n.getText('KTG004_2')}</span>
+											<div class="row-data"><span data-bind="text: attendanceInfor.overTime" class="data"></span></div>
+										</td>
+									</tr>
+								</com:ko-if>
+								<com:ko-if bind="_.find(itemsSetting(), { 'item': 23 }).displayType">	
+									<tr>
+										<td>
+											<span class="row-name">#{i18n.getText('KTG004_3')}</span>
+											<div class="row-data">
+												<span data-bind="text: attendanceInfor.flexTime" class="data"></span>
+												<span data-bind="text: attendanceInfor.flexCarryOverTime" class="data"></span>
+											</div>
+										</td>
+									</tr>
+								</com:ko-if>
+								<com:ko-if bind="_.find(itemsSetting(), { 'item': 24 }).displayType">
+									<tr>
+										<td>
+											<span class="row-name">#{i18n.getText('KTG004_5')}</span>
+											<div class="row-data"><span data-bind="text: attendanceInfor.nigthTime" class="data"></span></div>
+										</td>
+									</tr>
+								</com:ko-if>
+								<com:ko-if bind="_.find(itemsSetting(), { 'item': 25 }).displayType">
+									<tr>
+										<td>
+											<span class="row-name">#{i18n.getText('KTG004_6')}</span>
+											<div class="row-data"><span data-bind="text: attendanceInfor.holidayTime" class="data"></span></div>
+										</td>
+									</tr>
+								</com:ko-if>
+								<com:ko-if bind="_.find(itemsSetting(), { 'item': 26 }).displayType">
+									<tr>
+										<td>
+											<span class="row-name">#{i18n.getText('KTG004_7')}</span>
+											<div class="row-data"><span data-bind="text: attendanceInfor.lateEarly" class="data"></span></div>
+										</td>
+									</tr>
+								</com:ko-if>
+								<com:ko-if bind="_.find(itemsSetting(), { 'item': 27 }).displayType">
+									<tr>
+										<td>
+											<span class="row-name">#{i18n.getText('KTG004_9')}</span>
+											<div class="row-data"><span data-bind="text: remainingNumberInfor.numberOfAnnualLeaveRemain" class="data"></span></div>
+										</td>
+									</tr>
+								</com:ko-if>
+								<com:ko-if bind="_.find(itemsSetting(), { 'item': 28 }).displayType">
+									<tr>
+										<td>
+											<span class="row-name">#{i18n.getText('KTG004_10')}</span>
+											<div class="row-data"><span data-bind="text: remainingNumberInfor.numberAccumulatedAnnualLeave" class="data"></span></div>
+										</td>
+									</tr>
+								</com:ko-if>
+								<com:ko-if bind="_.find(itemsSetting(), { 'item': 29 }).displayType">
+									<tr>
+										<td>
+											<span class="row-name">#{i18n.getText('KTG004_11')}</span>
+											<div class="row-data"><span data-bind="text: remainingNumberInfor.numberOfSubstituteHoliday" class="data"></span></div>
+										</td>
+									</tr>
+								</com:ko-if>
+								<com:ko-if bind="_.find(itemsSetting(), { 'item': 30 }).displayType">
+									<tr>
+										<td>
+											<span class="row-name">#{i18n.getText('KTG004_12')}</span>
+											<div class="row-data"><span data-bind="text: remainingNumberInfor.remainingHolidays" class="data"></span></div>
+										</td>
+									</tr>
+								</com:ko-if>
+								<com:ko-if bind="_.find(itemsSetting(), { 'item': 31 }).displayType">
+									<tr>
+										<td>
+											<span class="row-name">#{i18n.getText('KTG004_13')}</span>
+											<div class="row-data"><span data-bind="text: remainingNumberInfor.nursingRemainingNumberOfChildren" class="data"></span></div>
+										</td>
+									</tr>
+								</com:ko-if>
+								<com:ko-if bind="_.find(itemsSetting(), { 'item': 32 }).displayType">
+									<tr>
+										<td>
+											<span class="row-name">#{i18n.getText('KTG004_14')}</span>
+											<div class="row-data"><span data-bind="text: remainingNumberInfor.longTermCareRemainingNumber" class="data"></span></div>
+										</td>
+									</tr>
+								</com:ko-if>
+							</tbody>
+						</table>
+						<table class="widget-table">
+							<tbody data-bind="foreach: specialHolidaysRemainings()">
+								<com:ko-if bind="_.find($parent.itemsSetting(), { 'item': code}).displayType">
+									<tr>
+										<td>
+											<span data-bind="text: name" class="row-name"></span>
+											<div class="row-data"><span data-bind="text: specialResidualNumber" class="data"></span></div>
+										</td>
+									</tr>
+								</com:ko-if>
+							</tbody>
+						</table>	
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

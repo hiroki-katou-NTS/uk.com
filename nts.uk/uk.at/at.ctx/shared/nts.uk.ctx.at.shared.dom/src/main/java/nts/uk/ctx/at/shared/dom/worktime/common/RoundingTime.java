@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -33,16 +36,19 @@ public class RoundingTime {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param memento
 	 */
 	public RoundingTime(RoundingTimeGetMemento memento) {
 		super();
-		this.attendanceMinuteLaterCalculate = memento.getAttendanceMinuteLaterCalculate();
-		this.leaveWorkMinuteAgoCalculate = memento.getLeaveWorkMinuteAgoCalculate();
-		this.roundingSets = memento.getRoundingSets();
+		this.attendanceMinuteLaterCalculate = NotUseAtr.NOT_USE;//memento.getAttendanceMinuteLaterCalculate();
+		this.leaveWorkMinuteAgoCalculate = NotUseAtr.NOT_USE;//memento.getLeaveWorkMinuteAgoCalculate();
+		this.roundingSets = Arrays.asList(new RoundingSet(new InstantRounding(FontRearSection.AFTER, RoundingTimeUnit.FIFTEEN), Superiority.ATTENDANCE),
+				new RoundingSet(new InstantRounding(FontRearSection.AFTER, RoundingTimeUnit.FIFTEEN), Superiority.GO_OUT),
+				new RoundingSet(new InstantRounding(FontRearSection.AFTER, RoundingTimeUnit.FIFTEEN), Superiority.OFFICE_WORK),
+				new RoundingSet(new InstantRounding(FontRearSection.AFTER, RoundingTimeUnit.FIFTEEN), Superiority.TURN_BACK));//memento.getRoundingSets();
 	}
-	
+
 	/**
 	 * Save To memento
 	 * @param memento
@@ -52,23 +58,23 @@ public class RoundingTime {
 		memento.setLeaveWorkMinuteAgoCalculate(this.leaveWorkMinuteAgoCalculate);
 		memento.getRoundingSets(this.roundingSets);
 	}
-	
+
 	/*
 	 * 出勤を1分後から計算するかbooleanで返す
 	 */
 	public boolean isAttendance(){
-		
+
 		return this.attendanceMinuteLaterCalculate.equals(NotUseAtr.USE);
 	}
-	
+
 	/*
 	 * 退勤1分前から計算するかbooleanで返す
 	 */
 	public boolean isleaveWork(){
-		
+
 		return this.leaveWorkMinuteAgoCalculate.equals(NotUseAtr.USE);
 	}
-	
+
 
 	/*
 	 * ジャスト遅刻、早退による時刻補正
@@ -83,77 +89,69 @@ public class RoundingTime {
 		}
 		return newAttendanceLeave;
 	}
-	
-	
+
+
 	/*
 	 * 出退勤時刻を丸める
 	 */
 	public List<TimeLeavingWork> roundingttendance(List<TimeLeavingWork> timeLeavingWorks){
-	
+
 		List<TimeLeavingWork> newTimeLeavingWork = new ArrayList<>();
 		//出退勤の件数でループ
 		for(TimeLeavingWork timeLeavingWork:timeLeavingWorks) {
 			Optional<WorkStamp> newAttendanceStamp;
 			//出勤のデータがあるか
-			if(timeLeavingWork.getAttendanceStamp().isPresent() && timeLeavingWork.getAttendanceStamp().get().getActualStamp().isPresent()) {
+			if(timeLeavingWork.getAttendanceStamp().isPresent() && timeLeavingWork.getAttendanceStamp().get().getStamp().isPresent()) {
 				//丸め設定取得
 				RoundingSet roundingSetAttendance =  this.roundingSets.stream().filter(item -> item.getSection() == Superiority.ATTENDANCE).findFirst().get();
 				//丸め処理
-				newAttendanceStamp =Optional.of(roundingSetAttendance.getRoundingSet().roundStamp(timeLeavingWork.getAttendanceStamp().get().getActualStamp().get()));
+				newAttendanceStamp =Optional.of(roundingSetAttendance.getRoundingSet().roundStamp(timeLeavingWork.getAttendanceStamp().get().getStamp().get()));
 			}else {
 				newAttendanceStamp = Optional.empty();
 			}
-			
+
 			//出勤作成
-			Optional<TimeActualStamp> newAttendance = Optional.of((new TimeActualStamp(
-					timeLeavingWork.getAttendanceStamp().get().getActualStamp().isPresent()
-							?timeLeavingWork.getAttendanceStamp().get().getActualStamp()
-							:Optional.empty(),
-					newAttendanceStamp,
-					timeLeavingWork.getAttendanceStamp().get().getNumberOfReflectionStamp(),
-					timeLeavingWork.getAttendanceStamp().get().getOvertimeDeclaration().isPresent()
-						?timeLeavingWork.getAttendanceStamp().get().getOvertimeDeclaration()
-						:Optional.empty(),
-					timeLeavingWork.getAttendanceStamp().get().getTimeVacation().isPresent()
-					?timeLeavingWork.getAttendanceStamp().get().getTimeVacation()
-					:Optional.empty()
-			)));
-				
-			Optional<WorkStamp> newLeave;	
+			Optional<TimeActualStamp> newAttendance = timeLeavingWork.getAttendanceStamp().map(c -> {
+				return new TimeActualStamp(
+						c.getActualStamp(),
+						newAttendanceStamp,
+						c.getNumberOfReflectionStamp(),
+						c.getOvertimeDeclaration(),
+						c.getTimeVacation()
+				);
+			});
+
+			Optional<WorkStamp> newLeave;
 			//退勤データがあるか
-			if(timeLeavingWork.getLeaveStamp().isPresent()&& timeLeavingWork.getLeaveStamp().get().getActualStamp().isPresent()) {
+			if(timeLeavingWork.getLeaveStamp().isPresent()&& timeLeavingWork.getLeaveStamp().get().getStamp().isPresent()) {
 				//丸め設定取得
-				RoundingSet roundingSetAttendance = this.roundingSets.stream().filter(item -> item.getSection() == Superiority.OFFICE_WORK).findFirst().get();;
+				RoundingSet roundingSetAttendance = this.roundingSets.stream().filter(item -> item.getSection() == Superiority.OFFICE_WORK).findFirst().get();
 				//丸め処理
-				newLeave =Optional.of(roundingSetAttendance.getRoundingSet().roundStamp(timeLeavingWork.getLeaveStamp().get().getActualStamp().get()));
+				newLeave =Optional.of(roundingSetAttendance.getRoundingSet().roundStamp(timeLeavingWork.getLeaveStamp().get().getStamp().get()));
 			}else {
 				newLeave  = Optional.empty();
 			}
-			
-			Optional<TimeActualStamp> newLeaveStamp = Optional.of((new TimeActualStamp(
-					timeLeavingWork.getLeaveStamp().get().getActualStamp().isPresent()
-							?timeLeavingWork.getLeaveStamp().get().getActualStamp()
-							:Optional.empty(),
-					newLeave,
-					timeLeavingWork.getAttendanceStamp().get().getNumberOfReflectionStamp(),
-					timeLeavingWork.getAttendanceStamp().get().getOvertimeDeclaration().isPresent()
-						?timeLeavingWork.getAttendanceStamp().get().getOvertimeDeclaration()
-						:Optional.empty(),
-					timeLeavingWork.getAttendanceStamp().get().getTimeVacation().isPresent()
-					?timeLeavingWork.getAttendanceStamp().get().getTimeVacation()
-					:Optional.empty()
-			)));
-			
-			
+
+			Optional<TimeActualStamp> newLeaveStamp = timeLeavingWork.getLeaveStamp().map(c -> {
+				return new TimeActualStamp(
+						c.getActualStamp(),
+						newLeave,
+						c.getNumberOfReflectionStamp(),
+						c.getOvertimeDeclaration(),
+						c.getTimeVacation()
+				);
+			});
+
+
 			newTimeLeavingWork.add(new TimeLeavingWork(
-					timeLeavingWork.getWorkNo(), 
-					newAttendance, 
+					timeLeavingWork.getWorkNo(),
+					newAttendance,
 					newLeaveStamp,
 					timeLeavingWork.isCanceledLate(),
 					timeLeavingWork.isCanceledEarlyLeave(),
 					timeLeavingWork.getTimespan()));
 		}
-		
+
 		return newTimeLeavingWork;
 	}
 }

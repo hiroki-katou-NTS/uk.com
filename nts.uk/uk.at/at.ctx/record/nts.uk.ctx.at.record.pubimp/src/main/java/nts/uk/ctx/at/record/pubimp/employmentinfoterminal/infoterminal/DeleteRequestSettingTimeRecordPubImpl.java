@@ -21,7 +21,7 @@ public class DeleteRequestSettingTimeRecordPubImpl implements DeleteRequestSetti
 	private TimeRecordReqSettingRepository timeRecordReqSettingRepository;
 
 	@Override
-	public AtomTask remove(Integer empInfoTerCode, String contractCode) {
+	public AtomTask remove(String empInfoTerCode, String contractCode) {
 		RequireImpl Impl = new RequireImpl(timeRecordReqSettingRepository);
 		return DeleteRequestSettingTimeRecordService.process(Impl, new EmpInfoTerminalCode(empInfoTerCode),
 				new ContractCode(contractCode));

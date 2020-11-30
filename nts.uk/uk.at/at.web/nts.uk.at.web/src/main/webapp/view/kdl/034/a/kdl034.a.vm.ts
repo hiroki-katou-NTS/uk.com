@@ -18,7 +18,7 @@ module nts.uk.at.view.kdl034.a.viewmodel {
         constructor() {
             let self = this;
             let param = getShared("KDL034_PARAM");
-            self.appID = param.appID;
+            self.appID = [param.appID];
             self.version = param.version;
         }
         startPage(): JQueryPromise<any> {
