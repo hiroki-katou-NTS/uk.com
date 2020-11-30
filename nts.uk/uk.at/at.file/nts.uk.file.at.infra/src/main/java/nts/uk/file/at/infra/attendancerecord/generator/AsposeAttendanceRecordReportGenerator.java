@@ -472,8 +472,8 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 			
 			worksheetCollection.setActiveSheetIndex(0);
 			// Create file name
-			String fileName = data.getReportName() + "＿"
-					+ data.getExportDateTime().replaceAll(" ", "_").replaceAll(":", "").replaceAll("/", "");
+			String fileName = data.getReportName() + "_"
+					+ data.getExportDateTime().replaceAll(" ", "").replaceAll(":", "").replaceAll("/", "");
 
 			if (dataSource.getMode() == EXPORT_EXCEL) {
 				// save as excel file
