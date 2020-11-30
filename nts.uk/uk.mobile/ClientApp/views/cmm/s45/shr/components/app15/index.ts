@@ -74,7 +74,7 @@ export class CmmS45ShrComponentsApp15Component extends Vue {
                 optionalItemSetting.forEach((item) => {
                     let optionalItem = optionalItems.find((optionalItem) => {
 
-                        return optionalItem.optionalItemNo == item.itemNo - 640;
+                        return optionalItem.optionalItemNo == item.itemNo;
                     });
                     let controlAttendance = controlOfAttendanceItems.find((controlAttendance) => {
 

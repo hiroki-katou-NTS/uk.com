@@ -198,7 +198,7 @@ export class KafS20A2Component extends KafS00ShrComponent {
             optionalItems.forEach((item) => {
                 let optionalItem = appDetail.optionalItems.find((optionalItem) => {
 
-                    return optionalItem.optionalItemNo == item.itemNo - 640;
+                    return optionalItem.optionalItemNo == item.itemNo;
                 });
                 let controlAttendance = appDetail.controlOfAttendanceItems.find((controlAttendance) => {
 
