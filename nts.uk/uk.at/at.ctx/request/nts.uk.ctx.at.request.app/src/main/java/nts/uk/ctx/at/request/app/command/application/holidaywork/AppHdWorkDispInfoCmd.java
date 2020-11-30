@@ -99,7 +99,8 @@ public class AppHdWorkDispInfoCmd {
 				this.hdWorkOvertimeReflect.toDomain(), 
 				this.overtimeFrameList.stream().map(overtimeFrame -> overtimeFrame.toDomain()).collect(Collectors.toList()), 
 				this.otWorkHoursForApplication.toDomain(), 
-				this.appDispInfoStartupOutput.toDomain(), Optional.of(this.comboDivergenceReason.toDomain()), 
-				Optional.of(this.calculationResult.toDomain()));
+				this.appDispInfoStartupOutput.toDomain(), 
+				Optional.ofNullable(this.comboDivergenceReason != null ? this.comboDivergenceReason.toDomain() : null), 
+				Optional.ofNullable(this.calculationResult != null ? this.calculationResult.toDomain() : null));
 	}
 }

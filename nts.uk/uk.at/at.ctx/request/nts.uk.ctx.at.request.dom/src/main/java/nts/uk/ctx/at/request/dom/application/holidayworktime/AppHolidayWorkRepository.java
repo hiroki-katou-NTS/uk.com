@@ -9,7 +9,7 @@ import java.util.Optional;
  */
 public interface AppHolidayWorkRepository {
 	
-	public Optional<AppHolidayWork> find(String applicationId);
+	public Optional<AppHolidayWork> find(String companyId, String applicationId);
 
 	public void add(AppHolidayWork appHolidayWork);
 }

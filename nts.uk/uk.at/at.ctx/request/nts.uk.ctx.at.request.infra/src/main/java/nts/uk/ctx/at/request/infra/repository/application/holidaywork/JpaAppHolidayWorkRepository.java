@@ -29,11 +29,13 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class JpaAppHolidayWorkRepository extends JpaRepository implements AppHolidayWorkRepository{
+	
+	public static final String FIND_BY_APPID = "SELECT a FROM KrqdtAppHolidayWork as a WHERE a.krqdtAppHolidayWorkPK.cid = :companyId and a.krqdtAppHolidayWorkPK.appId = :appId";
 
 	@Override
-	public Optional<AppHolidayWork> find(String applicationId) {
-		AppContexts.user().companyId();
-		return null;
+	public Optional<AppHolidayWork> find(String companyId, String applicationId) {
+		return this.queryProxy().query(FIND_BY_APPID, KrqdtAppHolidayWork.class)
+				.setParameter("companyId", companyId).setParameter("appId", applicationId).getSingle(x -> x.toDomain());
 	}
 	
 	@Override

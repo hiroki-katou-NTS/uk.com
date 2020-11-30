@@ -23,6 +23,7 @@ import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertim
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorCheck;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.common.service.other.PreAppContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
@@ -160,8 +161,9 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 		
 		hdWorkDispInfoWithDateOutput.setInitWorkType(initWork.getInitWorkTypeCd());
 		hdWorkDispInfoWithDateOutput.setInitWorkTime(initWork.getInitWorkTimeCd());
-		hdWorkDispInfoWithDateOutput.setInitWorkTypeName(Optional.ofNullable(initWork.getInitWorkType().orElse(null).getName()));
-		hdWorkDispInfoWithDateOutput.setInitWorkTimeName(Optional.ofNullable(initWork.getInitWorkTime().orElse(null).getWorkTimeDisplayName().getWorkTimeName()));
+		hdWorkDispInfoWithDateOutput.setInitWorkTypeName(Optional.ofNullable(initWork.getInitWorkType().isPresent() ? initWork.getInitWorkType().get().getName() : null));
+		hdWorkDispInfoWithDateOutput.setInitWorkTimeName(Optional.ofNullable(initWork.getInitWorkTime().isPresent() ? 
+				initWork.getInitWorkTime().get().getWorkTimeDisplayName().getWorkTimeName() : null));
 		
 		//	初期表示する出退勤時刻を取得する
 		OverTimeContent overTimeContent = this.getOverTimeContent(initWork.getInitWorkTypeCd(), initWork.getInitWorkTimeCd(), actualContentDisplayList);
@@ -170,8 +172,10 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 		hdWorkDispInfoWithDateOutput.setWorkHours(workHours);
 		
 		//01-01_休憩時間を取得する
-		HdWorkBreakTimeSetOutput hdWorkBreakTimeSetOutput = this.getBreakTime(companyId, ApplicationType.HOLIDAY_WORK_APPLICATION, initWork.getInitWorkTypeCd().orElse(null).v(), 
-				initWork.getInitWorkTimeCd().orElse(null).v(), workHours.getStartTimeOp1(), workHours.getEndTimeOp1(), 
+		HdWorkBreakTimeSetOutput hdWorkBreakTimeSetOutput = this.getBreakTime(companyId, ApplicationType.HOLIDAY_WORK_APPLICATION, 
+				initWork.getInitWorkTypeCd().isPresent() ? initWork.getInitWorkTypeCd().get().v() : null, 
+				initWork.getInitWorkTimeCd().isPresent() ? initWork.getInitWorkTimeCd().get().v() : null, 
+						workHours.getStartTimeOp1(), workHours.getEndTimeOp1(), 
 						UseAtr.toEnum(holidayWorkSetting.getApplicationDetailSetting().getTimeCalUse().value), 
 						hdWorkOvertimeReflect.getHolidayWorkAppReflect().getAfter().getBreakLeaveApplication().getBreakReflectAtr().value==0 ? new Boolean(false) :new Boolean(true));
 		hdWorkDispInfoWithDateOutput.setBreakTimeZoneSettingList(Optional.of(new BreakTimeZoneSetting(hdWorkBreakTimeSetOutput.getDeductionTimeLst())));
@@ -222,17 +226,19 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 		this.checkWorkMessageDisp(appHolidayWork.getWorkInformation().getWorkTypeCode().v(), appHolidayWork.getWorkInformation().getWorkTimeCode().v());
 		
 		//	計算ボタン未クリックチェック
-		commonOvertimeHoliday.calculateButtonCheck(appHdWorkDispInfoOutput.getCalculationResult().orElse(null).getCalculatedFlag().value, 
+		commonOvertimeHoliday.calculateButtonCheck(appHdWorkDispInfoOutput.getCalculationResult().isPresent() ? 
+				appHdWorkDispInfoOutput.getCalculationResult().get().getCalculatedFlag().value : null, 
 				EnumAdaptor.valueOf(appHdWorkDispInfoOutput.getHolidayWorkAppSet().getApplicationDetailSetting().getTimeCalUse().value, UseAtr.class));
 		
 		//	休出時間のチェック
 		this.checkHdWorkTime(appHolidayWork.getApplicationTime());
 		
 		//	事前申請が必須か確認する
+		List<PreAppContentDisplay> preAppContentDisplayList = appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput()
+				.getOpPreAppContentDisplayLst().orElse(Collections.emptyList());
 		appHdWorkDispInfoOutput.getHolidayWorkAppSet().getApplicationDetailSetting().checkAdvanceApp(ApplicationType.HOLIDAY_WORK_APPLICATION, 
 				appHolidayWork.getApplication().getPrePostAtr(), Optional.empty(), 
-				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpPreAppContentDisplayLst()
-					.orElse(Collections.emptyList()).get(0).getAppHolidayWork());
+				!preAppContentDisplayList.isEmpty() ? preAppContentDisplayList.get(0).getAppHolidayWork() : Optional.empty());
 		
 		//	事前申請・実績超過チェック
 		List<ConfirmMsgOutput> confirmMsgOutputs = this.checkExcess(appHdWorkDispInfoOutput, appHolidayWork);
@@ -312,10 +318,14 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 	@Override
 	public List<ConfirmMsgOutput> checkExcess(AppHdWorkDispInfoOutput appHdWorkDispInfoOutput, AppHolidayWork appHolidayWork){
 		List<ConfirmMsgOutput> confirmMsgOutputs = new ArrayList<ConfirmMsgOutput>();
+		
+		List<PreAppContentDisplay> preAppContentDisplayList = appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput()
+				.getOpPreAppContentDisplayLst().orElse(Collections.emptyList());
+		Optional<AppHolidayWork> appHolidayWorkOp = !preAppContentDisplayList.isEmpty() ? preAppContentDisplayList.get(0).getAppHolidayWork() : Optional.empty();
+		
 		OverStateOutput overStateOutput = appHdWorkDispInfoOutput.getHolidayWorkAppSet().getOvertimeLeaveAppCommonSet()
 				.checkPreApplication(appHolidayWork.getApplication().getPrePostAtr(), 
-						Optional.ofNullable(appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput()
-						.getOpPreAppContentDisplayLst().orElse(Collections.emptyList()).get(0).getAppHolidayWork().orElse(null).getApplicationTime()), 
+						Optional.ofNullable(appHolidayWorkOp.isPresent() ? appHolidayWorkOp.get().getApplicationTime() : null), 
 						Optional.ofNullable(appHolidayWork.getApplicationTime()), 
 						appHdWorkDispInfoOutput.getHdWorkDispInfoWithDateOutput().getActualApplicationTime());
 		if(overStateOutput.getIsExistApp()) {
@@ -480,7 +490,8 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 					initWorkTimeCd = workingConditionItem.get().getWorkCategory().getHolidayWork().getWorkTimeCode();
 					
 					Optional<HolidayAtr> noneSettingHolidayAtr = judgmentOneDayHoliday.getHolidayAtr(companyId, 
-							workingConditionItem.get().getWorkCategory().getHolidayWork().getWorkTypeCode().orElse(null).v());
+							workingConditionItem.get().getWorkCategory().getHolidayWork().getWorkTypeCode().isPresent() ? 
+									workingConditionItem.get().getWorkCategory().getHolidayWork().getWorkTypeCode().get().v() : null);
 					if(noneSettingHolidayAtr.isPresent()) {
 						if(holidayAtr.equals(noneSettingHolidayAtr)) {
 							initWorkTypeCd = workingConditionItem.get().getWorkCategory().getHolidayWork().getWorkTypeCode();
@@ -509,8 +520,8 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 					workingConditionItem.get().getWorkCategory().getHolidayWork().getWorkTimeCode() : Optional.empty();
 		}
 		
-		Optional<WorkType> initWorkType = workTypeRepository.findByPK(companyId, initWorkTypeCd.orElse(null).v());
-		Optional<WorkTimeSetting> initWorkTime = workTimeSettingRepository.findByCode(companyId, initWorkTimeCd.orElse(null).v());
+		Optional<WorkType> initWorkType = workTypeRepository.findByPK(companyId, initWorkTypeCd.isPresent() ? initWorkTypeCd.get().v() : null);
+		Optional<WorkTimeSetting> initWorkTime = workTimeSettingRepository.findByCode(companyId, initWorkTimeCd.isPresent() ? initWorkTimeCd.get().v() : null);
 		InitWorkTypeWorkTime initWork = new InitWorkTypeWorkTime(initWorkTypeCd, initWorkTimeCd, initWorkType, initWorkTime);
 		return initWork;
 	}

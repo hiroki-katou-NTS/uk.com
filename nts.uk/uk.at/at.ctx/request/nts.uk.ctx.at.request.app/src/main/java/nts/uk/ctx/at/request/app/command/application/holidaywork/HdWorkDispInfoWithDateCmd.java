@@ -88,11 +88,13 @@ public class HdWorkDispInfoWithDateCmd {
 	public HdWorkDispInfoWithDateOutput toDomain() {
 		String companyId = AppContexts.user().companyId();
 		return new HdWorkDispInfoWithDateOutput(this.subHdManage, 
-				this.workHours.toDomain(), Optional.ofNullable(this.breakTimeZoneSettingList.toDomain()), 
+				this.workHours.toDomain(), 
+				Optional.ofNullable(this.breakTimeZoneSettingList.toDomain()), 
 				Optional.ofNullable(this.workTypeList.stream().map(workTypeCmd -> workTypeCmd.toDomain(companyId)).collect(Collectors.toList())), 
 				Optional.ofNullable(new WorkTypeCode(this.initWorkType)), Optional.ofNullable(new WorkTypeName(this.initWorkTypeName)), 
 				Optional.ofNullable(new WorkTimeCode(this.initWorkTime)), Optional.ofNullable(new WorkTimeName(this.initWorkTimeName)), 
-				this.overtimeStatus.toDomain(), Optional.ofNullable(this.actualApplicationTime.toDomain()),
+				this.overtimeStatus != null ? this.overtimeStatus.toDomain() : null, 
+				Optional.ofNullable(this.actualApplicationTime.toDomain()),
 				Optional.ofNullable(EnumAdaptor.valueOf(this.actualMonthlyAgreeTimeStatus, AgreementTimeStatusOfMonthly.class)));
 	}
 }
