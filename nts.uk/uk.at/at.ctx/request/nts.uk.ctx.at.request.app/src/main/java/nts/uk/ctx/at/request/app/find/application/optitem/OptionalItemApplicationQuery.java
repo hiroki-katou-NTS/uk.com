@@ -74,7 +74,9 @@ public class OptionalItemApplicationQuery {
         OptionalItemAppSetDto setting = optionalItemAppSetFinder.findByCode(new OptionalItemApplicationTypeCode(settingCode).v());
         List<Integer> optionalItemNos = domain.getOptionalItems().stream().map(item -> item.getItemNo().v()).collect(Collectors.toList());
         List<OptionalItemImport> optionalItems = optionalItemAdapter.findOptionalItem(cid, optionalItemNos);
-        List<ControlOfAttendanceItems> controlOfAttendanceItems = controlOfAttendanceItemsRepository.getByItemDailyList(cid, optionalItemNos);
+        List<ControlOfAttendanceItems> controlOfAttendanceItems = controlOfAttendanceItemsRepository.getByItemDailyList(cid,
+                optionalItemNos.stream().map(no -> no + OPTIONAL_ITEM_NO_CONVERT_CONST).collect(Collectors.toList())
+        );
         detail.setControlOfAttendanceItems(controlOfAttendanceItems.stream().map(ControlOfAttendanceItemsDto::fromDomain).collect(Collectors.toList()));
         detail.setApplication(OptionalItemApplicationDto.fromDomain(domain));
         detail.getApplication().setName(setting.getName());
