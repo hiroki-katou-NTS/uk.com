@@ -1,9 +1,10 @@
-package nts.uk.ctx.at.record.pub.monthly.agreement;
+package nts.uk.ctx.at.record.pub.monthly.agreement.export;
 
 import lombok.Builder;
 import lombok.Data;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfYear;
 
 @Data
 @Builder
@@ -13,16 +14,19 @@ public class AgreementTimeOfMonthlyExport {
 	@Setter
 	private int agreementTime;
 	/** 閾値 */
-	private OneMonthTimeExport threshold;
+	private OneTimeExport threshold;
 	
 	public static AgreementTimeOfMonthlyExport copy(AgreementTimeOfMonthly domain) {
 		return AgreementTimeOfMonthlyExport.builder()
 				.agreementTime(domain.getAgreementTime().valueAsMinutes())
-				.threshold(OneMonthTimeExport.builder()
-						.alarmTime(domain.getThreshold().getErAlTime().getAlarm().valueAsMinutes())
-						.errorTime(domain.getThreshold().getErAlTime().getError().valueAsMinutes())
-						.upperLimit(domain.getThreshold().getUpperLimit().valueAsMinutes())
-						.build())
+				.threshold(OneTimeExport.copy(domain.getThreshold()))
+				.build();
+	}
+	
+	public static AgreementTimeOfMonthlyExport copy(AgreementTimeOfYear domain) {
+		return AgreementTimeOfMonthlyExport.builder()
+				.agreementTime(domain.getTargetTime().valueAsMinutes())
+				.threshold(OneTimeExport.copy(domain.getThreshold()))
 				.build();
 	}
 }

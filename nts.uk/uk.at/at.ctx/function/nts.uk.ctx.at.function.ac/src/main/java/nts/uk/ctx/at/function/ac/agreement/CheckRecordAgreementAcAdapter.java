@@ -22,6 +22,7 @@ import nts.uk.ctx.at.function.dom.adapter.agreement.CheckedAgreementImport;
 import nts.uk.ctx.at.function.dom.adapter.agreement.CheckedAgreementResult;
 import nts.uk.ctx.at.function.dom.adapter.agreement.CheckedOvertimeImport;
 import nts.uk.ctx.at.function.dom.adapter.employment.EmploymentAdapter;
+import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreMaxAverageTimeMultiImport;
 import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreementTimeByPeriodAdapter;
 import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreementTimeByPeriodImport;
 import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSettingImport;
@@ -262,7 +263,7 @@ public class CheckRecordAgreementAcAdapter implements CheckRecordAgreementAdapte
 							
 						GeneralDate baseDate = GeneralDate.ymd(yearMonthPeriod.start().year(), yearMonthPeriod.start().month(), day);
 						//指定期間36協定上限複数月平均時間の取得(RQ 547 JAPAN)
-						Optional<AgreMaxAverageTimeMulti> agreMaxAverageTimeMulti =agreementTimeByPeriodAdapter.maxAverageTimeMulti(
+						Optional<AgreMaxAverageTimeMultiImport> agreMaxAverageTimeMulti =agreementTimeByPeriodAdapter.maxAverageTimeMulti(
 								companyId, 
 								empId,
 								baseDate, 

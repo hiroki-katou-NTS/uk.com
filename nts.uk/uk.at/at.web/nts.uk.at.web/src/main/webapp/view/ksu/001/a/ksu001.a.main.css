@@ -105,11 +105,6 @@
 }
 
 #work-setting button, #person-setting button, #sort-order-setting button{
-	width: 110px;
-	margin-bottom: 10px;
-}
-
-#person-setting button{
 	width: auto;
 	margin-bottom: 10px;
 }

@@ -70,8 +70,6 @@ module nts.uk.at.kdp003.a {
 
 		fingerStampSetting: KnockoutObservable<FingerStampSetting> = ko.observable(DEFAULT_SETTING);
 
-		buttonEmphasisArt!: KnockoutComputed<boolean>;
-
 		created() {
 			const vm = this;
 
@@ -88,14 +86,6 @@ module nts.uk.at.kdp003.a {
 							vm.loadEmployees(data);
 						}
 					});
-			});
-
-			vm.buttonEmphasisArt = ko.computed({
-				read: () => {
-					const fss = ko.unwrap(vm.fingerStampSetting);
-
-					return (fss.stampSetting || {}).buttonEmphasisArt;
-				}
 			});
 		}
 
@@ -312,19 +302,12 @@ module nts.uk.at.kdp003.a {
 						clearState();
 					}
 				})
-				.then(() => {
-					if (ko.unwrap(vm.buttonEmphasisArt)) {
-						return vm.$ajax('at', API.HIGHTLIGHT);
-					}
-
-					return $.Deferred()
-						.resolve({
-							departure: false,
-							goingToWork: false,
-							goOut: false,
-							turnBack: false
-						});
-				})
+				.then(() => ({
+					departure: false,
+					goingToWork: false,
+					goOut: false,
+					turnBack: false
+				}))
 				.then((data: share.StampToSuppress) => vm.buttonPage.stampToSuppress(data))
 				// <<ScreenQuery>>: 打刻入力(氏名選択)で社員の一覧を取得する
 				.then(() => vm.loadEmployees(storage)) as JQueryPromise<any>;
@@ -505,19 +488,12 @@ module nts.uk.at.kdp003.a {
 			const reloadSetting = () =>
 				$.Deferred()
 					.resolve(true)
-					.then(() => {
-						if (ko.unwrap(vm.buttonEmphasisArt)) {
-							return vm.$ajax('at', API.HIGHTLIGHT);
-						}
-
-						return $.Deferred()
-							.resolve({
-								departure: false,
-								goingToWork: false,
-								goOut: false,
-								turnBack: false
-							});
-					})
+					.then(() => ({
+						departure: false,
+						goingToWork: false,
+						goOut: false,
+						turnBack: false
+					}))
 					.then((data: any) => {
 						const oldData = ko.unwrap(buttonPage.stampToSuppress);
 

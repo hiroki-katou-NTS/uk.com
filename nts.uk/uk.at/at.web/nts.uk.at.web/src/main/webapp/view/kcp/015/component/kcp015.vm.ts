@@ -25,7 +25,6 @@ module nts.uk.ui.at.kcp015.shared {
             const name = COMPONENT_NAME;
 
             const selected = valueAccessor();
-            const hasPrams = allBindingsAccessor.get('hasPrams');
             const visibleA31 = allBindingsAccessor.get('visibleA31');
             const visibleA32 = allBindingsAccessor.get('visibleA32');
             const visibleA33 = allBindingsAccessor.get('visibleA33');
@@ -35,7 +34,7 @@ module nts.uk.ui.at.kcp015.shared {
             const sids = allBindingsAccessor.get('sids');
             const baseDate = allBindingsAccessor.get('baseDate');
 
-            const params = { hasPrams, visibleA31, visibleA32, visibleA33, visibleA34, visibleA35, visibleA36, sids, baseDate };
+            const params = { visibleA31, visibleA32, visibleA33, visibleA34, visibleA35, visibleA36, sids, baseDate };
             const component = { name, params };
 
             ko.applyBindingsToNode(element, { component }, bindingContext);
@@ -88,31 +87,9 @@ module nts.uk.ui.at.kcp015.shared {
                 $('#A1').ntsPopup("toggle");
             });
             
-            if (vm.data.hasParams() && !vm.data.visibleA31() && !vm.data.visibleA32() && !vm.data.visibleA33() &&
-                !vm.data.visibleA34() && !vm.data.visibleA35() && !vm.data.visibleA36()) {
-                vm.visibleA1(false);
-            }
+            const { visibleA31, visibleA32, visibleA33, visibleA34, visibleA35, visibleA36, sids, baseDate } = vm.data;
             
-            if (vm.data.hasParams() && !vm.data.visibleA31() && !vm.data.visibleA33() && !vm.data.visibleA35()) {
-               $('#button-bot').css("margin-top", "0px");
-            }
-            
-            if (vm.data.hasParams() && !vm.data.visibleA32() && !vm.data.visibleA34() && !vm.data.visibleA36()) {
-               $('#button-bot').css("margin-top", "0px");
-            }
-
-            const { hasPrams, visibleA31, visibleA32, visibleA33, visibleA34, visibleA35, visibleA36, sids, baseDate } = vm.data;
-
-            if (vm.data.hasParams()) {
-                vm.visibleA31Com(visibleA31());
-                vm.visibleA32Com(visibleA32());
-                vm.visibleA33Com(visibleA33());
-                vm.visibleA34Com(visibleA34());
-                vm.visibleA35Com(visibleA35());
-                vm.visibleA36Com(visibleA36());
-            } else {
-                vm.getSetting();
-            }
+            vm.getSetting();
         }
 
         created() {
@@ -125,18 +102,26 @@ module nts.uk.ui.at.kcp015.shared {
             let dfd = $.Deferred<void>();
             nts.uk.ui.block.grayout();
             nts.uk.request.ajax("at", "screen/at/kcp015/get").done((data: IData) => {
+                
+                vm.visibleA31Com(data.subLeaveUseDivision == null ? true : data.subLeaveUseDivision);
 
-                vm.visibleA31Com(data.subLeaveUseDivision);
+                vm.visibleA32Com(data.dvisionOfZhenxiuUse == null ? true : data.dvisionOfZhenxiuUse);
 
-                vm.visibleA32Com(data.dvisionOfZhenxiuUse);
+                vm.visibleA33Com(data.clsOfAnnualHoliday == null ? true : data.clsOfAnnualHoliday);
 
-                vm.visibleA33Com(data.clsOfAnnualHoliday);
+                vm.visibleA34Com(data.divisionOfAnnualHoliday == null ? true : data.divisionOfAnnualHoliday);
 
-                vm.visibleA34Com(data.divisionOfAnnualHoliday);
-
-                vm.visibleA35Com(data.overtimeUseCls60H);
+                vm.visibleA35Com(data.overtimeUseCls60H == null ? true : data.overtimeUseCls60H);
                 
                 vm.visibleA36Com(true);
+                
+                if (!vm.visibleA31Com() && !vm.visibleA33Com() && !vm.visibleA35Com()) {
+                    $('#button-bot').css("margin-top", "0px");
+                }
+
+                if (!vm.visibleA32Com() && !vm.visibleA34Com() && !vm.visibleA36Com()) {
+                    $('#button-bot').css("margin-top", "0px");
+                }
                 
                 dfd.resolve();
             }).fail(function() {
