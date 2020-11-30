@@ -21,26 +21,9 @@ public enum AlarmClassification {
 	
 	public final int order;
 
-	/** The Constant values. */
-	private final static AlarmClassification[] values = AlarmClassification.values();
-
 	private AlarmClassification(int type, int order) {
 		this.value = type;
 		this.order = order;
 	}
 	
-	public static AlarmClassification valueOf(Integer value) {
-		// Invalid object.
-		if (value == null) {
-			return null;
-		}
-		// Find value.
-		for (AlarmClassification val : AlarmClassification.values) {
-			if (val.value == value) {
-				return val;
-			}
-		}
-		// Not found.
-		return null;
-	}
 }

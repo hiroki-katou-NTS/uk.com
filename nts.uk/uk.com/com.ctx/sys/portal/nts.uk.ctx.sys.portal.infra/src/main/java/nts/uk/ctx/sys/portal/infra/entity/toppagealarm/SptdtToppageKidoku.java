@@ -14,6 +14,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.AlarmClassification;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.DisplayAtr;
@@ -55,10 +56,10 @@ public class SptdtToppageKidoku extends UkJpaEntity implements Serializable {
 	public ToppageAlarmLog toDomain() {
 		return ToppageAlarmLog.builder()
 				.cid(this.pk.cId)
-				.alarmClassification(AlarmClassification.valueOf(Integer.parseInt(this.pk.alarmCls)))
+				.alarmClassification(EnumAdaptor.valueOf(Integer.parseInt(this.pk.alarmCls), AlarmClassification.class))
 				.identificationKey(new IdentificationKey(this.pk.idenKey))
 				.displaySId(this.pk.dispSid)
-				.displayAtr(DisplayAtr.valueOf(Integer.parseInt(this.pk.dispAtr)))
+				.displayAtr(EnumAdaptor.valueOf(Integer.parseInt(this.pk.dispAtr), DisplayAtr.class))
 				.alreadyDatetime(this.alreadyDatetime)
 				.build();
 	}

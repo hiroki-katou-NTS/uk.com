@@ -15,7 +15,6 @@ import nts.uk.ctx.sys.portal.app.command.toppagealarm.ToppageAlarmDataUnreadComm
 import nts.uk.ctx.sys.portal.app.command.toppagealarm.ToppageAlarmDataUnreadCommandHandler;
 import nts.uk.ctx.sys.portal.app.find.toppagealarm.AlarmDisplayDataDto;
 import nts.uk.ctx.sys.portal.app.find.toppagealarm.ToppageAlarmDataFinder;
-import nts.uk.ctx.sys.portal.app.find.toppagealarm.ToppageAlarmSettingFinder;
 
 @Path("sys/portal/toppageAlarm")
 @Produces("application/json")
@@ -23,9 +22,6 @@ public class ToppageAlarmWs extends WebService {
 
 	@Inject
 	private ToppageAlarmDataFinder toppageAlarmDataFinder; 
-	
-	@Inject
-	private ToppageAlarmSettingFinder toppageAlarmSettingFinder;
 	
 	@Inject
 	private ToppageAlarmDataReadCommandHandler toppageAlarmDataReadCommandHandler;
@@ -42,24 +38,22 @@ public class ToppageAlarmWs extends WebService {
 		return this.toppageAlarmDataFinder.findAlarmData(Integer.parseInt(displayType));
 	}
 	
+	/**
+	 * アラームを既読にする
+	 */
 	@POST
 	@Path("changeAlarmToReaded")
 	public void changeAlarmToReaded(ToppageAlarmDataReadCommand command) {
 		this.toppageAlarmDataReadCommandHandler.handle(command);
 	}
 	
+	/**
+	 * アラームを未読にする
+	 */
 	@POST
 	@Path("changeAlarmToUnread")
 	public void changeAlarmToUnread(ToppageAlarmDataUnreadCommand command) {
 		this.toppageAlarmDataUnreadCommandHandler.handle(command);
 	}
 	
-	/**
-	 * トップページアラームの設定確認
-	 */
-	@POST
-	@Path("setting/findSetting")
-	public void findSetting() {
-
-	}
 }
