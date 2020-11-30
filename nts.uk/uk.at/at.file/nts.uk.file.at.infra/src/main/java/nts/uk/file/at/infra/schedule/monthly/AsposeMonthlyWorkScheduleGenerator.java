@@ -70,6 +70,7 @@ import nts.uk.ctx.at.schedule.dom.adapter.employment.ScEmploymentAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.SCEmployeeAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmployeeDto;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
+import nts.uk.ctx.at.shared.dom.monthlyattditem.aggregate.MonthlyAttItemCanAggregateRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
@@ -181,6 +182,10 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	
 	@Inject
 	private ClosureEmploymentRepository closureEmploymentRepo;
+	
+	/** The att item can aggregate repository. */
+	@Inject
+	private MonthlyAttItemCanAggregateRepository attItemCanAggregateRepository;
 
 	/** The Constant DATA_COLUMN_INDEX. */
 //	private static final int[] DATA_COLUMN_INDEX = {3, 9, 11, 15, 17, 39};
@@ -263,11 +268,17 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				nSize = nListOutputCode / chunkSize + 1;
 			}
 			
+			// Get all monthly attendance can be aggregate
+			List<Integer> lstAtdCanBeAggregate = this.attItemCanAggregateRepository
+					.getMonthlyAtdItemCanAggregate(AppContexts.user().companyId())
+					.stream()
+					.map(t -> t.v().intValue())
+					.collect(Collectors.toList());
 			/**
 			 * Collect data
 			 */
 			MonthlyPerformanceReportData reportData = new MonthlyPerformanceReportData();
-			collectData(reportData, query, condition, outputItemMonthlyWork, setter);
+			collectData(reportData, query, condition, outputItemMonthlyWork, setter, lstAtdCanBeAggregate);
 			
 			Worksheet sheet;
 			Integer currentRow, dateRow;
@@ -346,7 +357,8 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 						, nSize
 						, condition
 						, rowPageTracker
-						, outputItemMonthlyWork.getTextSize());
+						, outputItemMonthlyWork.getTextSize()
+						, lstAtdCanBeAggregate);
 			else {
 				MonthlyReportData dailyReportData = reportData.getMonthlyReportData();
 				currentRow = writeDetailedMonthlySchedule(currentRow
@@ -660,7 +672,12 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	 * @param outputItem the output item
 	 * @param setter the setter
 	 */
-	public void collectData(MonthlyPerformanceReportData reportData, MonthlyWorkScheduleQuery query, MonthlyWorkScheduleCondition condition, OutputItemMonthlyWorkSchedule outputItem, TaskDataSetter setter) {
+	public void collectData(MonthlyPerformanceReportData reportData
+						  , MonthlyWorkScheduleQuery query
+						  , MonthlyWorkScheduleCondition condition
+						  , OutputItemMonthlyWorkSchedule outputItem
+						  , TaskDataSetter setter
+						  , List<Integer> lstAtdCanBeAggregate) {
 		String companyId = AppContexts.user().companyId();
 		String roleId = AppContexts.user().roles().forAttendance();
 		reportData.setHeaderData(new MonthlyPerformanceHeaderData());
@@ -862,7 +879,6 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		
 		queryData.setLstBussinessType(dataProcessor.getBussinessType(companyId).getCodeNames());
 		
-		
 		if (condition.getOutputType() == MonthlyWorkScheduleCondition.EXPORT_BY_EMPLOYEE) {
 			WorkplaceReportData data = new WorkplaceReportData();
 			data.workplaceCode = "";
@@ -877,7 +893,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				collectEmployeePerformanceDataByEmployee(reportData, queryData, dto);
 			}
 			
-			calculateTotalExportByEmployee(data, lstAttendanceItemsDisplay);
+			calculateTotalExportByEmployee(data, lstAttendanceItemsDisplay, lstAtdCanBeAggregate);
 		
 		}
 		else {
@@ -899,14 +915,14 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				analyzeInfoExportByDate(lstWorkplaceTemp, x.getLstWorkplaceData(), lstAddedCode);
 			});
 			
-			collectEmployeePerformanceDataByDate(reportData, queryData);
+			collectEmployeePerformanceDataByDate(reportData, queryData, lstAtdCanBeAggregate);
 			// Calculate workplace total
 			lstReportData.forEach(dailyData -> {
-				calculateTotalExportByDate(dailyData.getLstWorkplaceData());
+				calculateTotalExportByDate(dailyData.getLstWorkplaceData(), lstAtdCanBeAggregate);
 			});
 			
 			// Calculate gross total
-			calculateGrossTotalByDate(monthlyReportData);
+			calculateGrossTotalByDate(monthlyReportData, lstAtdCanBeAggregate);
 		}
 	}
 
@@ -1074,7 +1090,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	 * @param reportData the report data
 	 * @param queryData the query data
 	 */
-	private void collectEmployeePerformanceDataByDate(MonthlyPerformanceReportData reportData, WorkScheduleMonthlyQueryData queryData) {
+	private void collectEmployeePerformanceDataByDate(MonthlyPerformanceReportData reportData
+													, WorkScheduleMonthlyQueryData queryData
+													, List<Integer> lstAtdCanBeAggregate) {
 		MonthlyWorkScheduleQuery query = queryData.getQuery();
 		YearMonth endDate = query.getEndYearMonth();
 		// Always has item because this has passed error check
@@ -1278,10 +1296,12 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	 * @param workplaceData the workplace data
 	 * @param lstAttendanceId the lst attendance id
 	 */
-	public void calculateTotalExportByEmployee(WorkplaceReportData workplaceData, List<MonthlyAttendanceItemsDisplay> lstAttendanceId) {
+	public void calculateTotalExportByEmployee(WorkplaceReportData workplaceData
+											 , List<MonthlyAttendanceItemsDisplay> lstAttendanceId
+											 , List<Integer> lstAtdCanAggregate) {
 		// Recursive
 		workplaceData.getLstChildWorkplaceReportData().values().forEach(x -> {
-			calculateTotalExportByEmployee(x, lstAttendanceId);
+			calculateTotalExportByEmployee(x, lstAttendanceId, lstAtdCanAggregate);
 			workplaceData.setHasData(workplaceData.isHasData() || x.isHasData());
 		});
 		
@@ -1295,30 +1315,32 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		final List<TotalValue> lstWorkplaceGrossTotal = lstAttendanceId.stream().map(item -> {
 			TotalValue totalVal = new TotalValue();
 			totalVal.setAttendanceId(item.getAttendanceDisplay());
-			totalVal.setValue("0");
+			totalVal.setValue(lstAtdCanAggregate.contains(item.getAttendanceDisplay()) ? "0" : "");
 			totalVal.setValueType(TotalValue.STRING);
 			return totalVal;
 		}).collect(Collectors.toList());
 		workplaceData.setGrossTotal(lstWorkplaceGrossTotal);
 		workplaceData.getLstChildWorkplaceReportData().values().forEach(child -> {
 			child.getGrossTotal().stream().forEach(val -> {
-				if (val.value() == null) return;
-				int attendanceId = val.getAttendanceId();
-				TotalValue totalVal = lstWorkplaceGrossTotal.stream().filter(attendance -> attendance.getAttendanceId() == attendanceId).findFirst().get();
-				ValueType valueTypeEnum = EnumAdaptor.valueOf(val.getValueType(), ValueType.class);
-				if (valueTypeEnum.isIntegerCountable()) {
-					int currentValue = (int) val.value();
-					totalVal.setValue(String.valueOf(Integer.parseInt(totalVal.getValue()) + currentValue));
-					totalVal.setValueType(val.getValueType());
-				}
-				if (valueTypeEnum.isDoubleCountable()) {
-					double currentValueDouble = (double) val.value();
-					totalVal.setValue(String.valueOf(Double.parseDouble(totalVal.getValue()) + currentValueDouble));
-					totalVal.setValueType(val.getValueType());
-				}
-				if (valueTypeEnum == ValueType.TEXT) {
-					totalVal.setValue(val.value());
-					totalVal.setValueType(val.getValueType());
+				if (lstAtdCanAggregate.contains(val.getAttendanceId())) {
+					if (val.value() == null) return;
+					int attendanceId = val.getAttendanceId();
+					TotalValue totalVal = lstWorkplaceGrossTotal.stream().filter(attendance -> attendance.getAttendanceId() == attendanceId).findFirst().get();
+					ValueType valueTypeEnum = EnumAdaptor.valueOf(val.getValueType(), ValueType.class);
+					if (valueTypeEnum.isIntegerCountable()) {
+						int currentValue = (int) val.value();
+						totalVal.setValue(String.valueOf(Integer.parseInt(totalVal.getValue()) + currentValue));
+						totalVal.setValueType(val.getValueType());
+					}
+					if (valueTypeEnum.isDoubleCountable()) {
+						double currentValueDouble = (double) val.value();
+						totalVal.setValue(String.valueOf(Double.parseDouble(totalVal.getValue()) + currentValueDouble));
+						totalVal.setValueType(val.getValueType());
+					}
+					if (valueTypeEnum == ValueType.TEXT) {
+						totalVal.setValue(val.value());
+						totalVal.setValueType(val.getValueType());
+					}
 				}
 			});
 		});
@@ -1331,14 +1353,18 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				lstAttendanceId.stream().forEach(attendanceId -> {
 					int attendanceDisplay = attendanceId.getAttendanceDisplay();
 					if (!employeeData.mapPersonalTotal.containsKey(attendanceDisplay)) {
-						employeeData.mapPersonalTotal.put(attendanceDisplay, new TotalValue(attendanceDisplay, "0", TotalValue.STRING));
-						TotalValue totalVal = new TotalValue();
-						totalVal.setAttendanceId(attendanceDisplay);
-						totalVal.setValue("0");
-						totalVal.setValueType(TotalValue.STRING);
-						Optional<TotalValue> optWorkplaceTotalValue = lstTotalValue.stream().filter(x -> x.getAttendanceId() == attendanceDisplay).findFirst();
-						if (!optWorkplaceTotalValue.isPresent()) {
-							lstTotalValue.add(totalVal);
+						if (lstAtdCanAggregate.contains(attendanceId.getAttendanceDisplay())) {
+							employeeData.mapPersonalTotal.put(attendanceDisplay, new TotalValue(attendanceDisplay, "0", TotalValue.STRING));
+							TotalValue totalVal = new TotalValue();
+							totalVal.setAttendanceId(attendanceDisplay);
+							totalVal.setValue("0");
+							totalVal.setValueType(TotalValue.STRING);
+							Optional<TotalValue> optWorkplaceTotalValue = lstTotalValue.stream().filter(x -> x.getAttendanceId() == attendanceDisplay).findFirst();
+							if (!optWorkplaceTotalValue.isPresent()) {
+								lstTotalValue.add(totalVal);
+							}
+						} else {
+							lstTotalValue.add(new TotalValue(attendanceId.getAttendanceDisplay(), "", TotalValue.STRING));
 						}
 					}
 				});
@@ -1346,44 +1372,48 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				// Add into total by attendanceId
 				employeeData.getLstDetailedMonthlyPerformance().stream().forEach(detail -> {
 					detail.actualValue.stream().forEach((aVal) -> {
-						int attdId = aVal.getAttendanceId();
-						int valueType = aVal.getValueType();
-						
-						// Get all total
-						ValueType valueTypeEnum = EnumAdaptor.valueOf(valueType, ValueType.class);
-						TotalValue personalTotal = employeeData.mapPersonalTotal.get(attdId);
-						TotalValue totalVal = lstTotalValue.stream().filter(attendance -> attendance.getAttendanceId() == attdId).findFirst().get();
-						TotalValue totalGrossVal = lstWorkplaceGrossTotal.stream().filter(attendance -> attendance.getAttendanceId() == attdId).findFirst().get();
-						
-						// Change value type
-						personalTotal.setValueType(valueType);
-						totalVal.setValueType(valueType);
-						totalGrossVal.setValueType(valueType);
-						
-						if (aVal.value() == null) return;
-						
-						if (valueTypeEnum.isIntegerCountable()) {
-							int currentValue = (int) aVal.value();
-							personalTotal.setValue(String.valueOf(Integer.parseInt(personalTotal.getValue()) + currentValue));
-							employeeData.mapPersonalTotal.put(attdId, personalTotal);
-							totalVal.setValue(String.valueOf(Integer.parseInt(totalVal.getValue()) + currentValue));
-							totalGrossVal.setValue(String.valueOf(Integer.parseInt(totalGrossVal.getValue()) + currentValue));
-							employeeData.mapPersonalTotal.put(attdId, personalTotal);
-						}
-						if (valueTypeEnum.isDoubleCountable()) {
-							double currentValueDouble = (double) aVal.value();
-							personalTotal.setValue(String.valueOf(Double.parseDouble(personalTotal.getValue()) + currentValueDouble));
-							employeeData.mapPersonalTotal.put(attdId, personalTotal);
-							totalVal.setValue(String.valueOf(Double.parseDouble(totalVal.getValue()) + currentValueDouble));
-							totalGrossVal.setValue(String.valueOf(Double.parseDouble(totalGrossVal.getValue()) + currentValueDouble));
-							employeeData.mapPersonalTotal.put(attdId, personalTotal);
-						}
-						if(valueTypeEnum == ValueType.TEXT) {
-							personalTotal.setValue(aVal.getValue());
-							employeeData.mapPersonalTotal.put(attdId, personalTotal);
-							totalVal.setValue(aVal.getValue());
-							totalGrossVal.setValue(aVal.getValue());
-							employeeData.mapPersonalTotal.put(attdId, personalTotal);
+						if (lstAtdCanAggregate.contains(aVal.getAttendanceId())) {
+							int attdId = aVal.getAttendanceId();
+							int valueType = aVal.getValueType();
+							
+							// Get all total
+							ValueType valueTypeEnum = EnumAdaptor.valueOf(valueType, ValueType.class);
+							TotalValue personalTotal = employeeData.mapPersonalTotal.get(attdId);
+							TotalValue totalVal = lstTotalValue.stream().filter(attendance -> attendance.getAttendanceId() == attdId).findFirst().get();
+							TotalValue totalGrossVal = lstWorkplaceGrossTotal.stream().filter(attendance -> attendance.getAttendanceId() == attdId).findFirst().get();
+							
+							// Change value type
+							personalTotal.setValueType(valueType);
+							totalVal.setValueType(valueType);
+							totalGrossVal.setValueType(valueType);
+							
+							if (aVal.value() == null) return;
+							
+							if (valueTypeEnum.isIntegerCountable()) {
+								int currentValue = (int) aVal.value();
+								personalTotal.setValue(String.valueOf(Integer.parseInt(personalTotal.getValue()) + currentValue));
+								employeeData.mapPersonalTotal.put(attdId, personalTotal);
+								totalVal.setValue(String.valueOf(Integer.parseInt(totalVal.getValue()) + currentValue));
+								totalGrossVal.setValue(String.valueOf(Integer.parseInt(totalGrossVal.getValue()) + currentValue));
+								employeeData.mapPersonalTotal.put(attdId, personalTotal);
+							}
+							if (valueTypeEnum.isDoubleCountable()) {
+								double currentValueDouble = (double) aVal.value();
+								personalTotal.setValue(String.valueOf(Double.parseDouble(personalTotal.getValue()) + currentValueDouble));
+								employeeData.mapPersonalTotal.put(attdId, personalTotal);
+								totalVal.setValue(String.valueOf(Double.parseDouble(totalVal.getValue()) + currentValueDouble));
+								totalGrossVal.setValue(String.valueOf(Double.parseDouble(totalGrossVal.getValue()) + currentValueDouble));
+								employeeData.mapPersonalTotal.put(attdId, personalTotal);
+							}
+							if(valueTypeEnum == ValueType.TEXT) {
+								personalTotal.setValue(aVal.getValue());
+								employeeData.mapPersonalTotal.put(attdId, personalTotal);
+								totalVal.setValue(aVal.getValue());
+								totalGrossVal.setValue(aVal.getValue());
+								employeeData.mapPersonalTotal.put(attdId, personalTotal);
+							}
+						} else {
+							employeeData.mapPersonalTotal.put(aVal.getAttendanceId(), new TotalValue(aVal.getAttendanceId(), "", TotalValue.STRING));
 						}
 					});
 				});
@@ -1398,29 +1428,32 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			// Sum of all workplace total and workplace hierarchy total
 			workplaceData.lstChildWorkplaceReportData.forEach((k,child) -> {
 				child.getGrossTotal().forEach(item -> {
-					if (item.value() == null) return;
-					Optional<TotalValue> optTotalVal = lstTotalVal.stream().filter(x -> x.getAttendanceId() == item.getAttendanceId()).findFirst();
-					if (optTotalVal.isPresent()) {
-						TotalValue totalVal = optTotalVal.get();
-						int valueType = item.getValueType();
-						totalVal.setValueType(valueType);
-						ValueType valueTypeEnum = EnumAdaptor.valueOf(valueType, ValueType.class);
-						if (valueTypeEnum.isIntegerCountable()) {
-							totalVal.setValue(String.valueOf((int) totalVal.value() + Integer.parseInt(item.getValue())));
-						}
-						if (valueTypeEnum.isDoubleCountable()) {
-							totalVal.setValue(String.valueOf((double) totalVal.value() + Double.parseDouble(item.getValue())));
-						}
-						if (valueTypeEnum == ValueType.TEXT) {
+					if (lstAtdCanAggregate.contains(item.getAttendanceId())) {
+						if (item.value() == null) return;
+						Optional<TotalValue> optTotalVal = lstTotalVal.stream().filter(x -> x.getAttendanceId() == item.getAttendanceId()).findFirst();
+						if (optTotalVal.isPresent()) {
+							TotalValue totalVal = optTotalVal.get();
+							int valueType = item.getValueType();
+							totalVal.setValueType(valueType);
+							ValueType valueTypeEnum = EnumAdaptor.valueOf(valueType, ValueType.class);
+							if (valueTypeEnum.isIntegerCountable()) {
+								totalVal.setValue(String.valueOf((int) totalVal.value() + Integer.parseInt(item.getValue())));
+							}
+							if (valueTypeEnum.isDoubleCountable()) {
+								totalVal.setValue(String.valueOf((double) totalVal.value() + Double.parseDouble(item.getValue())));
+							}
+							if (valueTypeEnum == ValueType.TEXT) {
+								totalVal.setValue(item.getValue());
+							}
+						} else {
+							TotalValue totalVal = new TotalValue();
+							totalVal.setAttendanceId(item.getAttendanceId());
 							totalVal.setValue(item.getValue());
+							totalVal.setValueType(item.getValueType());
+							lstTotalVal.add(totalVal);
 						}
-					}
-					else {
-						TotalValue totalVal = new TotalValue();
-						totalVal.setAttendanceId(item.getAttendanceId());
-						totalVal.setValue(item.getValue());
-						totalVal.setValueType(item.getValueType());
-						lstTotalVal.add(totalVal);
+					} else {
+						lstTotalVal.add(new TotalValue(item.getAttendanceId(), "", item.getValueType()));
 					}
 				});
 			});
@@ -1432,10 +1465,10 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	 *
 	 * @param workplaceData the workplace data
 	 */
-	public void calculateTotalExportByDate(MonthlyWorkplaceData workplaceData) {
+	public void calculateTotalExportByDate(MonthlyWorkplaceData workplaceData, List<Integer> lstAtdCanAggregate) {
 		// Recursive
 		workplaceData.getLstChildWorkplaceData().values().forEach(x -> {
-			calculateTotalExportByDate(x);
+			calculateTotalExportByDate(x, lstAtdCanAggregate);
 			workplaceData.setHasData(workplaceData.isHasData() || x.isHasData());
 		});
 		// Workplace
@@ -1456,6 +1489,83 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				List<ActualValue> lstActualValue = data.getActualValue();
 				if (lstActualValue == null) continue;
 				lstActualValue.forEach(actualValue -> {
+					if (lstAtdCanAggregate.contains(actualValue.getAttendanceId())) {
+						int valueType = actualValue.getValueType();
+						Optional<TotalValue> optTotalVal = lstTotalValue.stream().filter(x -> x.getAttendanceId() == actualValue.getAttendanceId()).findFirst();
+						TotalValue totalValue;
+						if (optTotalVal.isPresent()) {
+							if (actualValue.value() == null) return;
+							totalValue = optTotalVal.get();
+							int totalValueType = totalValue.getValueType();
+							ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValueType, ValueType.class);
+							if (valueTypeEnum.isIntegerCountable()) {
+								totalValue.setValue(String.valueOf((int) totalValue.value() + (int) actualValue.value()));
+							}
+							if (valueTypeEnum.isDoubleCountable()) {
+								totalValue.setValue(String.valueOf((double) totalValue.value() + (double) actualValue.value()));
+							}
+						} else {
+							totalValue = new TotalValue();
+							totalValue.setAttendanceId(actualValue.getAttendanceId());
+							ValueType valueTypeEnum = EnumAdaptor.valueOf(actualValue.getValueType(), ValueType.class);
+							if (valueTypeEnum.isIntegerCountable() || valueTypeEnum.isDoubleCountable()) {
+								if (actualValue.getValue() != null) {
+									totalValue.setValue(actualValue.getValue());
+								} else {
+									totalValue.setValue("0");
+								}
+							}
+							else { // This case also deals with null value
+								totalValue.setValue(actualValue.getValue());
+							}
+							totalValue.setValueType(valueType);
+							lstTotalValue.add(totalValue);
+						}
+						
+						Optional<TotalValue> optTotalWorkplaceVal = lstTotalHierarchyValue.stream().filter(x -> x.getAttendanceId() == actualValue.getAttendanceId()).findFirst();
+						TotalValue totalWorkplaceValue;
+						if (optTotalWorkplaceVal.isPresent()) {
+							totalWorkplaceValue = optTotalWorkplaceVal.get();
+							int totalValueType = totalValue.getValueType();
+							ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValueType, ValueType.class);
+							if (valueTypeEnum.isIntegerCountable()) {
+								totalWorkplaceValue.setValue(String.valueOf((int) totalWorkplaceValue.value() + (int) actualValue.value()));
+							}
+							if (valueTypeEnum.isDoubleCountable()) {
+								totalWorkplaceValue.setValue(String.valueOf((double) totalWorkplaceValue.value() + (double) actualValue.value()));
+							}
+						}
+						else {
+							totalWorkplaceValue = new TotalValue();
+							totalWorkplaceValue.setAttendanceId(actualValue.getAttendanceId());
+							ValueType valueTypeEnum = EnumAdaptor.valueOf(actualValue.getValueType(), ValueType.class);
+							if (valueTypeEnum.isIntegerCountable() || valueTypeEnum.isDoubleCountable()) {
+								if (actualValue.getValue() != null) {
+									totalWorkplaceValue.setValue(actualValue.getValue());
+								} else {
+									totalWorkplaceValue.setValue("0");
+								}
+							}
+							else { // This case also deals with null value
+								totalWorkplaceValue.setValue(actualValue.getValue());
+							}
+							totalWorkplaceValue.setValueType(valueType);
+							lstTotalHierarchyValue.add(totalWorkplaceValue);
+						}
+					} else {
+						lstTotalValue.add(new TotalValue(actualValue.getAttendanceId(), "", TotalValue.STRING));
+						lstTotalHierarchyValue.add(new TotalValue(actualValue.getAttendanceId(), "", TotalValue.STRING));
+					}
+				});
+			}
+		}
+		
+		// Workplace
+		Map<String, MonthlyWorkplaceData> lstReportData = workplaceData.getLstChildWorkplaceData();
+		lstReportData.values().forEach((value) -> {
+			List<TotalValue> lstActualValue = value.getWorkplaceTotal().getTotalWorkplaceValue();
+			lstActualValue.forEach(actualValue -> {
+				if (lstAtdCanAggregate.contains(actualValue.getAttendanceId())) {
 					int valueType = actualValue.getValueType();
 					Optional<TotalValue> optTotalVal = lstTotalValue.stream().filter(x -> x.getAttendanceId() == actualValue.getAttendanceId()).findFirst();
 					TotalValue totalValue;
@@ -1488,77 +1598,8 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 						totalValue.setValueType(valueType);
 						lstTotalValue.add(totalValue);
 					}
-					
-					Optional<TotalValue> optTotalWorkplaceVal = lstTotalHierarchyValue.stream().filter(x -> x.getAttendanceId() == actualValue.getAttendanceId()).findFirst();
-					TotalValue totalWorkplaceValue;
-					if (optTotalWorkplaceVal.isPresent()) {
-						totalWorkplaceValue = optTotalWorkplaceVal.get();
-						int totalValueType = totalValue.getValueType();
-						ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValueType, ValueType.class);
-						if (valueTypeEnum.isIntegerCountable()) {
-							totalWorkplaceValue.setValue(String.valueOf((int) totalWorkplaceValue.value() + (int) actualValue.value()));
-						}
-						if (valueTypeEnum.isDoubleCountable()) {
-							totalWorkplaceValue.setValue(String.valueOf((double) totalWorkplaceValue.value() + (double) actualValue.value()));
-						}
-					}
-					else {
-						totalWorkplaceValue = new TotalValue();
-						totalWorkplaceValue.setAttendanceId(actualValue.getAttendanceId());
-						ValueType valueTypeEnum = EnumAdaptor.valueOf(actualValue.getValueType(), ValueType.class);
-						if (valueTypeEnum.isIntegerCountable() || valueTypeEnum.isDoubleCountable()) {
-							if (actualValue.getValue() != null) {
-								totalWorkplaceValue.setValue(actualValue.getValue());
-							} else {
-								totalWorkplaceValue.setValue("0");
-							}
-						}
-						else { // This case also deals with null value
-							totalWorkplaceValue.setValue(actualValue.getValue());
-						}
-						totalWorkplaceValue.setValueType(valueType);
-						lstTotalHierarchyValue.add(totalWorkplaceValue);
-					}
-				});
-			}
-		}
-		
-		// Workplace
-		Map<String, MonthlyWorkplaceData> lstReportData = workplaceData.getLstChildWorkplaceData();
-		lstReportData.values().forEach((value) -> {
-			List<TotalValue> lstActualValue = value.getWorkplaceTotal().getTotalWorkplaceValue();
-			lstActualValue.forEach(actualValue -> {
-				int valueType = actualValue.getValueType();
-				Optional<TotalValue> optTotalVal = lstTotalValue.stream().filter(x -> x.getAttendanceId() == actualValue.getAttendanceId()).findFirst();
-				TotalValue totalValue;
-				if (optTotalVal.isPresent()) {
-					if (actualValue.value() == null) return;
-					totalValue = optTotalVal.get();
-					int totalValueType = totalValue.getValueType();
-					ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValueType, ValueType.class);
-					if (valueTypeEnum.isIntegerCountable()) {
-						totalValue.setValue(String.valueOf((int) totalValue.value() + (int) actualValue.value()));
-					}
-					if (valueTypeEnum.isDoubleCountable()) {
-						totalValue.setValue(String.valueOf((double) totalValue.value() + (double) actualValue.value()));
-					}
-				}
-				else {
-					totalValue = new TotalValue();
-					totalValue.setAttendanceId(actualValue.getAttendanceId());
-					ValueType valueTypeEnum = EnumAdaptor.valueOf(actualValue.getValueType(), ValueType.class);
-					if (valueTypeEnum.isIntegerCountable() || valueTypeEnum.isDoubleCountable()) {
-						if (actualValue.getValue() != null) {
-							totalValue.setValue(actualValue.getValue());
-						} else {
-							totalValue.setValue("0");
-						}
-					}
-					else { // This case also deals with null value
-						totalValue.setValue(actualValue.getValue());
-					}
-					totalValue.setValueType(valueType);
-					lstTotalValue.add(totalValue);
+				} else {
+					lstTotalValue.add(new TotalValue(actualValue.getAttendanceId(), "", TotalValue.STRING));
 				}
 			});
 		});
@@ -1569,7 +1610,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	 *
 	 * @param dailyReportData the daily report data
 	 */
-	public void calculateGrossTotalByDate(MonthlyReportData dailyReportData) {
+	public void calculateGrossTotalByDate(MonthlyReportData dailyReportData, List<Integer> lstAtdCanAggregate) {
 		List<WorkplaceMonthlyReportData> lstWorkplaceDailyReportData = dailyReportData.getLstMonthlyReportData();
 		List<TotalValue> lstGrossTotal = new ArrayList<>();
 		dailyReportData.setListTotalValue(lstGrossTotal);
@@ -1578,30 +1619,34 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			WorkplaceTotal workplaceTotal = workplaceDaily.getLstWorkplaceData().getWorkplaceTotal();
 			List<TotalValue> lstTotalVal = workplaceTotal.getTotalWorkplaceValue();
 			lstTotalVal.stream().forEach(totalVal -> {
-				// Literally 0-1 result in list
-				Optional<TotalValue> optGrossTotal = lstGrossTotal.stream().filter(x -> x.getAttendanceId() == totalVal.getAttendanceId()).findFirst();
-				TotalValue totalValue;
-				if (optGrossTotal.isPresent()) {
-					if (totalVal.value() == null) return;
-					totalValue = optGrossTotal.get();
-					int totalValueType = totalValue.getValueType();
-					ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValueType, ValueType.class);
-					if (valueTypeEnum.isIntegerCountable()) {
-						totalValue.setValue(String.valueOf((int) totalValue.value() + (int) totalVal.value()));
+				if (lstAtdCanAggregate.contains(totalVal.getAttendanceId())) {
+					// Literally 0-1 result in list
+					Optional<TotalValue> optGrossTotal = lstGrossTotal.stream().filter(x -> x.getAttendanceId() == totalVal.getAttendanceId()).findFirst();
+					TotalValue totalValue;
+					if (optGrossTotal.isPresent()) {
+						if (totalVal.value() == null) return;
+						totalValue = optGrossTotal.get();
+						int totalValueType = totalValue.getValueType();
+						ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValueType, ValueType.class);
+						if (valueTypeEnum.isIntegerCountable()) {
+							totalValue.setValue(String.valueOf((int) totalValue.value() + (int) totalVal.value()));
+						}
+						if (valueTypeEnum.isDoubleCountable()) {
+							totalValue.setValue(String.valueOf((double) totalValue.value() + (double) totalVal.value()));
+						}
 					}
-					if (valueTypeEnum.isDoubleCountable()) {
-						totalValue.setValue(String.valueOf((double) totalValue.value() + (double) totalVal.value()));
+					else {
+						totalValue = new TotalValue();
+						totalValue.setAttendanceId(totalVal.getAttendanceId());
+						ValueType valueTypeEnum = EnumAdaptor.valueOf(totalVal.getValueType(), ValueType.class);
+						if (valueTypeEnum.isIntegerCountable() || valueTypeEnum.isDoubleCountable() || valueTypeEnum == ValueType.TEXT) {
+							totalValue.setValue(totalVal.getValue());
+						}
+						totalValue.setValueType(totalVal.getValueType());
+						lstGrossTotal.add(totalValue);
 					}
-				}
-				else {
-					totalValue = new TotalValue();
-					totalValue.setAttendanceId(totalVal.getAttendanceId());
-					ValueType valueTypeEnum = EnumAdaptor.valueOf(totalVal.getValueType(), ValueType.class);
-					if (valueTypeEnum.isIntegerCountable() || valueTypeEnum.isDoubleCountable() || valueTypeEnum == ValueType.TEXT) {
-						totalValue.setValue(totalVal.getValue());
-					}
-					totalValue.setValueType(totalVal.getValueType());
-					lstGrossTotal.add(totalValue);
+				} else {
+					lstGrossTotal.add(new TotalValue(totalVal.getAttendanceId(), "", TotalValue.STRING));
 				}
 			});
 		});
@@ -1620,8 +1665,16 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	 * @return the int
 	 * @throws Exception the exception
 	 */
-	public int writeDetailedWorkSchedule(MonthlyWorkScheduleQuery query, int currentRow, WorksheetCollection templateSheetCollection, WorkSheetInfo sheetInfo, WorkplaceReportData workplaceReportData,
-			int dataRowCount, MonthlyWorkScheduleCondition condition, RowPageTracker rowPageTracker, TextSizeCommonEnum textSizeCommonEnum) throws Exception {
+	public int writeDetailedWorkSchedule(MonthlyWorkScheduleQuery query
+									   , int currentRow
+									   , WorksheetCollection templateSheetCollection
+									   , WorkSheetInfo sheetInfo
+									   , WorkplaceReportData workplaceReportData
+									   , int dataRowCount
+									   , MonthlyWorkScheduleCondition condition
+									   , RowPageTracker rowPageTracker
+									   , TextSizeCommonEnum textSizeCommonEnum
+									   , List<Integer> lstAtdCanBeAggregate) throws Exception {
 		Cells cells = sheetInfo.getSheet().getCells();
 		
 		WorkScheduleSettingTotalOutput totalOutput = condition.getTotalOutputSetting();
@@ -1882,26 +1935,29 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			            	Cell cell = cells.get(currentRow, DATA_COLUMN_INDEX[0] + j * 2); 
 			            	Style style = cell.getStyle();
 			            	ValueType valueTypeEnum = EnumAdaptor.valueOf(valueType, ValueType.class);
-			            	if (valueTypeEnum.isIntegerCountable()) {
-			            		if ((valueTypeEnum == ValueType.COUNT || valueTypeEnum == ValueType.AMOUNT) && value != null) {
-			            			cell.putValue(condition.getDisplayType() == DisplayTypeEnum.HIDE.value
-											&& Integer.parseInt(value) == 0 ? "" : value, true);
-			            		}
-			            		else {
-			            			if (value != null)
-										cell.setValue(getTimeAttr(value,false, condition.getDisplayType()));
-									else
-										cell.setValue(getTimeAttr("0",false, condition.getDisplayType()));
-			            		}
-								style.setHorizontalAlignment(TextAlignmentType.RIGHT);
-							}
-			            	else if (valueTypeEnum.isDoubleCountable() && value != null) {
-			            		cell.putValue(value, true);
-			            	}else if (valueTypeEnum == ValueType.TEXT && value != null) {
-			            		cell.putValue(value, false);
-			            	}
-			            	if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()){
-			            		style.setHorizontalAlignment(TextAlignmentType.RIGHT);
+
+			            	if (lstAtdCanBeAggregate.contains(totalValue.getAttendanceId())) {
+				            	if (valueTypeEnum.isIntegerCountable()) {
+				            		if ((valueTypeEnum == ValueType.COUNT || valueTypeEnum == ValueType.AMOUNT) && value != null) {
+				            			cell.putValue(condition.getDisplayType() == DisplayTypeEnum.HIDE.value
+												&& Integer.parseInt(value) == 0 ? "" : value, true);
+				            		}
+				            		else {
+				            			if (value != null)
+											cell.setValue(getTimeAttr(value,false, condition.getDisplayType()));
+										else
+											cell.setValue(getTimeAttr("0",false, condition.getDisplayType()));
+				            		}
+									style.setHorizontalAlignment(TextAlignmentType.RIGHT);
+								}
+				            	else if (valueTypeEnum.isDoubleCountable() && value != null) {
+				            		cell.putValue(value, true);
+				            	}else if (valueTypeEnum == ValueType.TEXT && value != null) {
+				            		cell.putValue(value, false);
+				            	}
+				            	if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()){
+				            		style.setHorizontalAlignment(TextAlignmentType.RIGHT);
+				            	}
 			            	}
 			            	setFontStyle(style, textSizeCommonEnum);
 			            	cell.setStyle(style);
@@ -2023,7 +2079,16 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				}
 			}
 			
-			currentRow = writeDetailedWorkSchedule(query,currentRow, templateSheetCollection, sheetInfo, entry.getValue(), dataRowCount, condition, rowPageTracker, textSizeCommonEnum);
+			currentRow = writeDetailedWorkSchedule(query
+												 , currentRow
+												 , templateSheetCollection
+												 , sheetInfo
+												 , entry.getValue()
+												 , dataRowCount
+												 , condition
+												 , rowPageTracker
+												 , textSizeCommonEnum
+												 , lstAtdCanBeAggregate);
 			
 			// Page break by workplace
 			if ((condition.getPageBreakIndicator() == MonthlyWorkScheduleCondition.PAGE_BREAK_WORKPLACE || condition.getPageBreakIndicator() == MonthlyWorkScheduleCondition.PAGE_BREAK_EMPLOYEE)
