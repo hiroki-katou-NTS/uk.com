@@ -29,7 +29,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		messageInfos: KnockoutObservableArray<any> = ko.observableArray([]);
 		dataSource: DisplayInfoOverTime;
 		visibleModel: VisibleModel = new VisibleModel();
-		isCalculation: Boolean = false;
+		isCalculation: Boolean = true;
 		urlParam: string;
 		created(params: AppInitParam) {
 			// new 
@@ -230,11 +230,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 
 			} as FirstParam;
 			param1.companyId = self.$user.companyId;
-			param1.dateOp = ko.toJS(self.appDispInfoStartupOutput).appDispInfoWithDateOutput.baseDate;
+			param1.dateOp = self.application().appDate();
 			param1.overtimeAppAtr = self.getOverTimeAtrByUrl();
 			param1.appDispInfoStartupDto = ko.toJS(self.appDispInfoStartupOutput);
-			// param1.startTimeSPR = 100;
-			// param1.endTimeSPR = 200;
 			let command = {
 				companyId: param1.companyId,
 				dateOp: param1.dateOp,
@@ -281,23 +279,34 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			}
 			appOverTime.workHoursOp = [] as Array<TimeZoneWithWorkNo>;
 			if (!_.isNil(workInfo.workHours1.start())
-				&& !_.isNil(workInfo.workHours1.end())) {
+				&& !_.isEqual(workInfo.workHours1.start() , '')
+				&& !_.isNil(workInfo.workHours1.end())
+				&& !_.isEqual(workInfo.workHours1.end() , '')
+				) {
 				let timeZone = {} as TimeZoneWithWorkNo;
 				timeZone.workNo = 1;
 				timeZone.timeZone = {} as TimeZone_New;
 				timeZone.timeZone.startTime = workInfo.workHours1.start();
 				timeZone.timeZone.endTime = workInfo.workHours1.end();
 				appOverTime.workHoursOp.push(timeZone);
+			} else {
+				_.remove(appOverTime.workHoursOp, (i) => i.workNo == 1);
 			}
+			
 
 			if (!_.isNil(workInfo.workHours2.start())
-				&& !_.isNil(workInfo.workHours2.end())) {
+				&& !_.isEqual(workInfo.workHours2.start() , '')
+				&& !_.isNil(workInfo.workHours2.end())
+				&& !_.isEqual(workInfo.workHours2.end() , '')
+				) {
 				let timeZone = {} as TimeZoneWithWorkNo;
 				timeZone.workNo = 2;
 				timeZone.timeZone = {} as TimeZone_New;
 				timeZone.timeZone.startTime = workInfo.workHours2.start();
 				timeZone.timeZone.endTime = workInfo.workHours2.end();
 				appOverTime.workHoursOp.push(timeZone);
+			} else {
+				_.remove(appOverTime.workHoursOp, (i) => i.workNo == 2);
 			}
 			// A5 ---
 			let restTime = vm.restTime() as Array<RestTime>;
@@ -536,7 +545,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			self.overTimeWork(overTimeWorks);
 		}
 		//  work-info 
-		bindWorkInfo(res: DisplayInfoOverTime) {
+		bindWorkInfo(res: DisplayInfoOverTime, mode?: ACTION) {
 			const self = this;
 			if (!ko.toJS(self.workInfo)) {
 				let workInfo = {} as WorkInfo;
@@ -604,8 +613,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				}
 
 			}
-			self.workInfo().workType(workType);
-			self.workInfo().workTime(workTime);
+			if (_.isNil(mode) || mode == ACTION.CHANGE_DATE) {
+				self.workInfo().workType(workType);				
+				self.workInfo().workTime(workTime);				
+			}
 			self.workInfo().workHours1 = workHours1;
 			self.workInfo().workHours2 = workHours2;
 
@@ -1543,6 +1554,38 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     workTime.code = childData.selectedWorkTimeCode;
 					workTime.name = childData.selectedWorkTimeName;
 					self.workInfo().workTime(workTime);
+					
+					
+					let command = {
+						companyId: self.$user.companyId,
+						employeeId: self.$user.employeeId,
+						date: self.application().appDate(),
+						workType: workType.code,
+						workTime: workTime.code,
+						appDispInfoStartupDto: self.appDispInfoStartupOutput(),
+						overtimeAppSet: self.dataSource.infoNoBaseDate.overTimeAppSet
+					};
+					self.$blockui('show')
+					self.$ajax(API.selectWorkInfo, command)
+						.done((res: DisplayInfoOverTime) => {
+							if (res) {
+								self.dataSource.infoWithDateApplicationOp = res.infoWithDateApplicationOp;
+								self.dataSource.calculationResultOp = res.calculationResultOp;
+								self.dataSource.workdayoffFrames = res.workdayoffFrames;
+								self.dataSource.appDispInfoStartup = res.appDispInfoStartup;
+								self.createVisibleModel(self.dataSource);
+						
+								self.bindOverTimeWorks(self.dataSource);
+								self.bindWorkInfo(self.dataSource, ACTION.CHANGE_WORK);
+								self.bindRestTime(self.dataSource);
+								self.bindHolidayTime(self.dataSource);
+								self.bindOverTime(self.dataSource);
+							}
+						})
+						.fail(res => {
+							
+						})
+						.always(() => self.$blockui('hide'));
                 }
             })
 
@@ -1739,14 +1782,22 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 
 			let timeZoneArray = [] as Array<TimeZone>;
 			let timeZone = {} as TimeZone;
-			if (!(_.isNil(workInfo.workHours1.start()) || _.isNil(workInfo.workHours1.end()))) {
+			if ((!_.isNil(workInfo.workHours1.start()) 
+				&& !_.isEqual(workInfo.workHours1.start() , '')
+				&& !_.isNil(workInfo.workHours1.end())
+				&& !_.isEqual(workInfo.workHours1.end() , ''))
+			) {
 				timeZone.frameNo = 1;
 				timeZone.start = workInfo.workHours1.start();
 				timeZone.end = workInfo.workHours1.end();
 				timeZoneArray.push(timeZone);
-			}
+			} 
 			timeZone = {} as TimeZone;
-			if (!(_.isNil(workInfo.workHours2.start()) || _.isNil(workInfo.workHours2.end()))) {
+			if ((!_.isNil(workInfo.workHours2.start()) 
+				&& !_.isEqual(workInfo.workHours2.start() , '')
+				&& !_.isNil(workInfo.workHours2.end())
+				&& !_.isEqual(workInfo.workHours2.end() , ''))
+			) {
 				timeZone.frameNo = 2;
 				timeZone.start = workInfo.workHours2.start();
 				timeZone.end = workInfo.workHours2.end();
@@ -1792,6 +1843,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 	const API = {
 		start: 'at/request/application/overtime/start',
 		changeDate: 'at/request/application/overtime/changeDate',
+		selectWorkInfo: 'at/request/application/overtime/selectWorkInfo',
 		checkBefore: 'at/request/application/overtime/checkBeforeRegister',
 		register: 'at/request/application/overtime/register',
 		calculate: 'at/request/application/overtime/calculate',
@@ -2242,6 +2294,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 	export interface HolidayMidNightTime {
 		attendanceTime: number;
 		legalClf: number;
+	}
+	
+	enum ACTION {
+		CHANGE_DATE,
+		CHANGE_WORK,
 	}
 
 
