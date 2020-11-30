@@ -17,7 +17,7 @@ public interface AgreementTimeByPeriodAdapter {
 	 * @return 36協定上限複数月平均時間
 	 */
 	// RequestList547
-	Optional<AgreMaxAverageTimeMulti> maxAverageTimeMulti(String companyId, String employeeId, GeneralDate criteria,
+	Optional<AgreMaxAverageTimeMultiImport> maxAverageTimeMulti(String companyId, String employeeId, GeneralDate criteria,
 			YearMonth yearMonth);
 
 }

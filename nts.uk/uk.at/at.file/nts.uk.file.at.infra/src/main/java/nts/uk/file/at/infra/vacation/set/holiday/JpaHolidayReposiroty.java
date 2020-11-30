@@ -103,9 +103,9 @@ public class JpaHolidayReposiroty implements HolidayRepository {
 		String a27_7 = CommonTempHolidays.checkOcurrType(treatmentHoliday.getAddNonstatutoryHolidays().value);
 
 		// Row 1
-		datas.add(buildARow(new DataEachBox(I18NText.getText("KMF001_166"), ColumnTextAlign.LEFT),
-				new DataEachBox(null, ColumnTextAlign.LEFT),
-				new DataEachBox(I18NText.getText("KMF001_167"),ColumnTextAlign.LEFT)));
+//		datas.add(buildARow(new DataEachBox(I18NText.getText("KMF001_166"), ColumnTextAlign.LEFT),
+//				new DataEachBox(null, ColumnTextAlign.LEFT),
+//				new DataEachBox(I18NText.getText("KMF001_167"),ColumnTextAlign.LEFT)));
 		// Row 2
 		datas.add(buildARow(new DataEachBox(I18NText.getText("KMF001_277"), ColumnTextAlign.LEFT),
 				new DataEachBox(null, ColumnTextAlign.LEFT),
@@ -160,7 +160,7 @@ public class JpaHolidayReposiroty implements HolidayRepository {
 	private MasterData buildARow(DataEachBox value1, DataEachBox value2, DataEachBox value3) {
         Map<String, MasterCellData> data = new HashMap<>();
 
-        data.put(EmployeeSystemImpl.KMF001_166, MasterCellData.builder()
+        data.put(EmployeeSystemImpl.KMF001_166, MasterCellData.builder() 
                 .columnId(EmployeeSystemImpl.KMF001_166)
                 .value(value1.getValue())
                 .style(MasterCellStyle.build().horizontalAlign(value1.getPositon()))

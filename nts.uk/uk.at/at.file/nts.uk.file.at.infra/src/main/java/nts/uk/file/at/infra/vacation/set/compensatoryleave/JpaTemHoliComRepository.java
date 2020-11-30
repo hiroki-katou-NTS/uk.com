@@ -137,7 +137,7 @@ public class JpaTemHoliComRepository extends JpaRepository implements TempHoliCo
         /*A15_17*/
         String expDateMngMethod = CommonTempHolidays.getTextEnumManageDistinct(Integer.valueOf(rs.getString("EXP_DATE_MNG_METHOD")));
         /*A15_18*/
-        String linkMngAtr = CommonTempHolidays.getTextEnumTermManagement(Integer.valueOf(rs.getString("LINK_MNG_ATR ")));
+        String linkMngAtr = CommonTempHolidays.getTextEnumTermManagement(Integer.valueOf(rs.getString("LINK_MNG_ATR")));
         datas.add(buildARow(
                 new DataEachBox(isManagementOfHolidays,ColumnTextAlign.LEFT)
                 ,new DataEachBox(subExpDateColumn,ColumnTextAlign.RIGHT)
