@@ -5,7 +5,7 @@ module nts.uk.com.view.ccg008.a.Layout1ComponentViewModel {
     name: 'layout1-component',
     template: 
     `
-        <div class="panel panel-frame">
+        <div>
           <com:ko-if bind="$component.isShowUrlLayout1()">
             <iframe class="iframe_fix" id="preview-iframe1" data-bind="attr:{src: $component.urlIframe1}"></iframe>
           </com:ko-if>

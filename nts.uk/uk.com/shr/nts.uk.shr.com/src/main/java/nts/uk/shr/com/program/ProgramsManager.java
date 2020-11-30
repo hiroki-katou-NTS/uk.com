@@ -79,6 +79,12 @@ public class ProgramsManager {
      */
     public static final Program CCG008D = new Program(WebAppId.COM, ProgramIdConsts.CCG008D, "",
             "/view/ccg/008/d/index.xhtml");
+    
+    /**
+     * CCG008E
+     */
+    public static final Program CCG008E = new Program(WebAppId.COM, ProgramIdConsts.CCG008E, "CCG008_26",
+            "/view/ccg/008/e/index.xhtml");
     /**
      * CCG013A
      */

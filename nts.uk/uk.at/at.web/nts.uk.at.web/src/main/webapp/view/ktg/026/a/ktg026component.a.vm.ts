@@ -84,7 +84,7 @@ module nts.uk.at.view.ktg026.a.Ktg026ComponentViewModel {
   }
   .left65 {
     float: left;
-    width: 65%;
+    width: 70%;
   }
   .pl-20 {
     padding-left: 20px;
