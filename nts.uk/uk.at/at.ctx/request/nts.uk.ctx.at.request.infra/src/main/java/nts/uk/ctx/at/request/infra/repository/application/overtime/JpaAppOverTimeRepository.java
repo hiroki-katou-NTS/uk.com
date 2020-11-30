@@ -275,8 +275,9 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 		updateAppOverTime.get().breakTimeStart10 = krqdtAppOverTime.breakTimeStart10;
 		updateAppOverTime.get().breakTimeEnd10 = krqdtAppOverTime.breakTimeEnd10;
 		
-		updateAppOverTime.get().overtimeInputs = krqdtAppOverTime.overtimeInputs;
-		updateAppOverTime.get().appOvertimeDetail = krqdtAppOverTime.appOvertimeDetail;
+		// updateAppOverTime.get().overtimeInputs = krqdtAppOverTime.overtimeInputs;
+		
+		// updateAppOverTime.get().appOvertimeDetail = krqdtAppOverTime.appOvertimeDetail;
 		
 		this.commandProxy().update(updateAppOverTime.get());
 		this.getEntityManager().flush();

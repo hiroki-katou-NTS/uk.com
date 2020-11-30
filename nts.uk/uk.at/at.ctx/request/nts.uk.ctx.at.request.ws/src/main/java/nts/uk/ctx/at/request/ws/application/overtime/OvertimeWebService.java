@@ -92,7 +92,7 @@ public class OvertimeWebService extends WebService {
 	@POST
 	@Path("checkBeforeUpdate")
 	public CheckBeforeOutputDto checkBeforeUpdate(ParamCheckBeforeRegister param) {
-		return appOvertimeFinder.checkBeforeRegister(param);
+		return appOvertimeFinder.checkBeforeUpdate(param);
 	}
 	
 	@POST

@@ -4,6 +4,7 @@ import java.util.List;
 
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 
@@ -30,6 +31,7 @@ public interface OverTimeRegisterService {
 	 */
 	public ProcessResult update(
 			String companyId,
-			AppOverTime appOverTime
+			AppOverTime appOverTime,
+			AppDispInfoStartupOutput appDispInfoStartupOutput
 			);
 }
