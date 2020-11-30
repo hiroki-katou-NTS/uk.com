@@ -4,12 +4,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
@@ -21,6 +23,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.HolidayMidNightTime;
@@ -34,7 +37,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DiverdenceReasonCode;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 休日出勤申請
@@ -47,7 +50,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrqdtAppHolidayWork extends UkJpaEntity implements Serializable{
+public class KrqdtAppHolidayWork extends ContractUkJpaEntity implements Serializable{
 
 	private static final long serialVersionUID = 1L;
     @EmbeddedId
@@ -164,6 +167,10 @@ public class KrqdtAppHolidayWork extends UkJpaEntity implements Serializable{
 	
 	@Column(name = "BREAK_TIME_END10")
 	public Integer breakTimeEnd10;
+	
+	@OneToMany(targetEntity = KrqdtHolidayWorkInput.class, mappedBy = "appHolidayWork", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinTable(name = "KRQDT_APP_HD_WORK_INPUT")
+	public List<KrqdtHolidayWorkInput> holidayWorkInputs;
 	
 	@OneToOne(targetEntity = KrqdtAppOvertimeDetail.class, mappedBy = "appHolidayWork", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinTable(name = "KRQDT_APP_OVERTIME_DETAIL")
@@ -334,7 +341,11 @@ public class KrqdtAppHolidayWork extends UkJpaEntity implements Serializable{
 		if (appOvertimeDetail != null) {
 			appHolidayWork.setAppOvertimeDetail(Optional.of(appOvertimeDetail.toDomain()));
 		}
-		//huytodo Input
+		if (!CollectionUtil.isEmpty(holidayWorkInputs)) {
+			appHolidayWork.getApplicationTime().setApplicationTime(holidayWorkInputs.stream()
+																			  .map(x -> x.toDomain())
+																			  .collect(Collectors.toList()));
+		}
 		
     	return appHolidayWork;
     }

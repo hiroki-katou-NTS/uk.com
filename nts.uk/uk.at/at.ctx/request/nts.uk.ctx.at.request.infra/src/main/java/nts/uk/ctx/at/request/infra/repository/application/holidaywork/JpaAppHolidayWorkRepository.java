@@ -4,22 +4,28 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeApplicationSetting;
 import nts.uk.ctx.at.request.dom.application.overtime.ReasonDivergence;
 import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36Agree;
 import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeUpperLimit;
 import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtAppHolidayWork;
 import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtAppHolidayWorkPK;
+import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtHolidayWorkInput;
+import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtHolidayWorkInputPK;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOverTimeDetM;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeDetail;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeDetailPk;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -111,6 +117,24 @@ public class JpaAppHolidayWorkRepository extends JpaRepository implements AppHol
 		
 		entity.overtimeNight = domain.getApplicationTime().getOverTimeShiftNight().map(x -> x.getOverTimeMidNight().v()).orElse(null);
 		entity.totalNight = domain.getApplicationTime().getOverTimeShiftNight().map(x -> x.getMidNightOutSide().v()).orElse(null);
+		if (domain.getApplicationTime().getOverTimeShiftNight().isPresent()) {
+			if (!CollectionUtil.isEmpty(domain.getApplicationTime().getOverTimeShiftNight().get().getMidNightHolidayTimes())) {
+				domain.getApplicationTime()
+							.getOverTimeShiftNight()
+							.get()
+							.getMidNightHolidayTimes()
+							.stream()
+							.forEach(i -> {
+								if (i.getLegalClf() == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork) {
+									entity.legalHdNight = i.getAttendanceTime().v();
+								} else if (i.getLegalClf() == StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork) {
+									entity.nonLegalHdNight = i.getAttendanceTime().v();
+								} else if (i.getLegalClf() == StaturoryAtrOfHolidayWork.PublicHolidayWork) {
+									entity.nonLegalPublicHdNight = i.getAttendanceTime().v();
+								}
+							});
+			}
+		}
 		
 		entity.backHomeAtr = domain.getBackHomeAtr().value;
 		entity.goWorkAtr = domain.getGoWorkAtr().value;
@@ -161,6 +185,22 @@ public class JpaAppHolidayWorkRepository extends JpaRepository implements AppHol
 			}
 		});
 		
+		entity.holidayWorkInputs = new ArrayList<KrqdtHolidayWorkInput>();
+		List<OvertimeApplicationSetting> overtimeApplicationSettings = domain.getApplicationTime().getApplicationTime();
+		if (!CollectionUtil.isEmpty(overtimeApplicationSettings)) {
+			entity.holidayWorkInputs = overtimeApplicationSettings
+				.stream()
+				.map(x -> new KrqdtHolidayWorkInput(
+										new KrqdtHolidayWorkInputPK(
+												AppContexts.user().companyId(),
+												domain.getAppID(),
+												x.getAttendanceType().value,
+												x.getFrameNo().v()),
+										x.getApplicationTime().v(),
+										null))
+				.collect(Collectors.toList());				
+		}
+		
 		AppOvertimeDetail appOvertimeDetail = domain.getAppOvertimeDetail().orElse(null);
 		if (appOvertimeDetail != null) {
 			Time36Agree time36Agree = appOvertimeDetail.getTime36Agree();
@@ -190,9 +230,7 @@ public class JpaAppHolidayWorkRepository extends JpaRepository implements AppHol
 					);
 			entity.appOvertimeDetail = krqdtAppOvertimeDetail;
 		}
-		
-		//huytodo legal...
-		
+
 		return entity;
 	}
 }

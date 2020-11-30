@@ -22,7 +22,7 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkClock;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.primitivevalue.HolidayAppPrimitiveTime;
 import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtAppHolidayWork_Old;
 import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtAppHolidayWorkPK;
-import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtHolidayWorkInput;
+import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtHolidayWorkInput_Old;
 import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtHolidayWorkInputPK;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeDetail_Old;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -67,11 +67,11 @@ public class JpaAppHolidayWorkRepository_Old extends JpaRepository implements Ap
 		this.commandProxy().insert(toEntity(domain));
 	}
 	private KrqdtAppHolidayWork_Old toEntity(AppHolidayWork_Old domain) {
-		List<KrqdtHolidayWorkInput> overtimeInputs = domain.getHolidayWorkInputs().stream()
+		List<KrqdtHolidayWorkInput_Old> overtimeInputs = domain.getHolidayWorkInputs().stream()
 				.map(item -> {
 					KrqdtHolidayWorkInputPK pk =  new KrqdtHolidayWorkInputPK(item.getCompanyID(), item.getAppID(),
 							item.getAttendanceType().value, item.getFrameNo());
-					return new KrqdtHolidayWorkInput(pk, item.getStartTime() == null ? null : item.getStartTime().v(), item.getEndTime() ==  null? null : item.getEndTime().v(),
+					return new KrqdtHolidayWorkInput_Old(pk, item.getStartTime() == null ? null : item.getStartTime().v(), item.getEndTime() ==  null? null : item.getEndTime().v(),
 							item.getApplicationTime() == null ? null : item.getApplicationTime().v());
 				})
 				.collect(Collectors.toList());

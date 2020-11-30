@@ -118,9 +118,9 @@ public class KrqdtAppHolidayWork_Old extends UkJpaEntity implements Serializable
     @Column(name = "HOLIDAY_SHIFT_NIGHT")
     private Integer holidayShiftNight;
     
-    @OneToMany(targetEntity=KrqdtHolidayWorkInput.class, mappedBy="appHolidayWork", cascade = CascadeType.ALL)
+    @OneToMany(targetEntity=KrqdtHolidayWorkInput_Old.class, mappedBy="appHolidayWork", cascade = CascadeType.ALL)
     @JoinTable(name = "KRQDT_HOLIDAY_WORK_INPUT")
-	public List<KrqdtHolidayWorkInput> holidayWorkInputs;
+	public List<KrqdtHolidayWorkInput_Old> holidayWorkInputs;
 
 	@OneToOne(targetEntity = KrqdtAppOvertimeDetail_Old.class, mappedBy = "appHolidayWork", cascade = CascadeType.ALL)
 	@JoinTable(name = "KRQDT_APP_OVERTIME_DETAIL")
@@ -155,7 +155,7 @@ public class KrqdtAppHolidayWork_Old extends UkJpaEntity implements Serializable
 				x.fromDomainValue(holidayWorkInputInput);
 				return Optional.ofNullable(null);
 			}).orElseGet(()->{
-				KrqdtHolidayWorkInput krqdtOvertimeInput = new KrqdtHolidayWorkInput(
+				KrqdtHolidayWorkInput_Old krqdtOvertimeInput = new KrqdtHolidayWorkInput_Old(
 						new KrqdtHolidayWorkInputPK(
 								appHolidayWork.getCompanyID(),
 								appHolidayWork.getAppID(),
