@@ -59,14 +59,14 @@ module ccg018.a.viewmodel {
                         var viewmodelA1 = new ccg018.a1.viewmodel.ScreenModel(self.baseModel);
                         $(resultArea).load(viewmodelA1.screenTemplateUrl(), function() {
                             // viewmodelA1.searchByDate().done(function() {
-                                ko.applyBindings(viewmodelA1, resultArea.children().get(0));
-                                ko.applyBindings(viewmodelA1, resultArea.children().get(1));
-                                if (viewmodelA1.categorySet() == 0) {
-                                    $("#width-tbody").addClass("width-tbody");
-                                } else {
-                                    $("#width-tbody").removeClass("width-tbody");
-                                }
-                                $('#A2-2').focus();
+                                // ko.applyBindings(viewmodelA1, resultArea.children().get(0));
+                                // ko.applyBindings(viewmodelA1, resultArea.children().get(1));
+                                // if (viewmodelA1.categorySet() == 0) {
+                                //     $("#width-tbody").addClass("width-tbody");
+                                // } else {
+                                //     $("#width-tbody").removeClass("width-tbody");
+                                // }
+                                // $('#A2-2').focus();
                             });
                         // });
                     });
