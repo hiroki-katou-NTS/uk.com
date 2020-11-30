@@ -38,6 +38,7 @@ import org.apache.logging.log4j.util.Strings;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -77,21 +78,17 @@ public class BusinessTripFinder {
         BusinessTripInfoOutputDto businessTripInfoOutputDto = this.businessScreenInit_New(cid, paramStart.getApplicantList(), dateList, appDispInfoStartupOutput);
         // 申請対象日リスト全ての日付に対し「表示する実績内容」が存在する
         // Check xem có ngày nào không có content không, nếu có add Error msg 1695 + date
-        this.checkDateWithContent(businessTripInfoOutputDto.getBusinessTripActualContent());
-        result.setResult(true);
+        Optional<BusinessTripActualContentDto> itemNotHaveConent = businessTripInfoOutputDto.getBusinessTripActualContent()
+                .stream()
+                .filter(i -> i.getOpAchievementDetail() == null).findFirst();
+        if (itemNotHaveConent.isPresent()) {
+            result.setConfirmMsgOutputs(Arrays.asList(new ConfirmMsgOutput("Msg_1695", Arrays.asList(itemNotHaveConent.get().getDate().toString()))));
+            result.setResult(false);
+        } else {
+            result.setResult(true);
+        }
         result.setBusinessTripInfoOutputDto(businessTripInfoOutputDto);
         return result;
-    }
-
-    private void checkDateWithContent(List<BusinessTripActualContentDto> contents) {
-        if (!contents.isEmpty()) {
-            Optional<BusinessTripActualContentDto> itemNotHaveConent = contents
-                    .stream()
-                    .filter(i -> i.getOpAchievementDetail() == null).findFirst();
-            if (!itemNotHaveConent.isPresent()) {
-                throw new BusinessException("Msg_1695", itemNotHaveConent.get().getDate().toString());
-            }
-        }
     }
 
     /**
@@ -229,6 +226,10 @@ public class BusinessTripFinder {
         DatePeriod dates = new DatePeriod(appStartDate, appEndDate);
         List<GeneralDate> inputDates = dates.datesBetween();
 
+        if ((ChronoUnit.DAYS.between(appStartDate.localDate(), appEndDate.localDate()) + 1)  > 31){
+            throw new BusinessException("Msg_277");
+        }
+
         // 申請対象日リスト全ての日付に対し「表示する実績内容」が存在する
         // エラーメッセージとして「#Msg_1695」を返す({0}＝年月日)
         Optional<List<ActualContentDisplay>> opActualContentDisplayLst = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst();
@@ -271,15 +272,17 @@ public class BusinessTripFinder {
      */
     public BusinessTripInfoOutputDto changeWorkTypeCode(ChangeWorkCodeParam changeWorkCodeParam) {
         String cid = AppContexts.user().companyId();
-        // コードが未入力
-        if (Strings.isBlank(changeWorkCodeParam.getTypeCode())) {
-            throw new BusinessException("Msg_1329");
-        }
 
         BusinessTripInfoOutput businessTripInfoOutput = changeWorkCodeParam.getBusinessTripInfoOutputDto().toDomain();
         GeneralDate inputDate = GeneralDate.fromString(changeWorkCodeParam.getDate(), "yyyy/MM/dd");
         String inputCode = changeWorkCodeParam.getTypeCode();
         List<WorkType> workTypesBeforeChange = new ArrayList<>();
+
+        // コードが未入力
+        if (Strings.isBlank(changeWorkCodeParam.getTypeCode())) {
+            throw new BusinessException("Msg_1329", inputDate.toString());
+        }
+
         Optional<BusinessTripWorkTypes> currentDateWorkType = businessTripInfoOutput.getWorkTypeBeforeChange().get().stream().filter(i -> i.getDate().equals(inputDate)).findFirst();
 
         if (currentDateWorkType.isPresent()) {
@@ -303,7 +306,7 @@ public class BusinessTripFinder {
             }
         } else {
             // #Msg_457(利用できる勤怠項目がありません。)を表示する
-            throw new BusinessException("Msg_457");
+            throw new BusinessException("Msg_457", inputDate.toString());
         }
         return BusinessTripInfoOutputDto.convertToDto(businessTripInfoOutput);
     }
@@ -351,7 +354,7 @@ public class BusinessTripFinder {
             if (existWorkTimeSet.isPresent()) {
                 result.setName(existWorkTimeSet.get().getWorkTimeDisplayName().getWorkTimeName().v());
             } else {
-                throw new BusinessException("Msg_1685");
+                throw new BusinessException("Msg_1685", inputDate.toString());
             }
         }
         return result;

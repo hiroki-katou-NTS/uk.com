@@ -142,6 +142,15 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 			+ " AND ((c.worktypeAtr = 0 AND c.oneDayAtr IN :hdType)"
 			+ " OR (c.worktypeAtr = 1 AND c.morningAtr IN :hdType AND c.afternoonAtr IN :hdType))"
 			+ " ORDER BY o.dispOrder ASC";
+	// laitv - ksu001
+	private static final String SELECT_ALL_WORKTYPE_WITHORDER_NOTABOLISH = 
+			  " SELECT c FROM KshmtWorkType c "
+			+ " LEFT JOIN KshmtWorkTypeOrder o "
+			+ " ON c.kshmtWorkTypePK.companyId = o.kshmtWorkTypeDispOrderPk.companyId AND c.kshmtWorkTypePK.workTypeCode = o.kshmtWorkTypeDispOrderPk.workTypeCode "
+			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId AND c.deprecateAtr = 0 "
+			+ " ORDER BY CASE WHEN o.dispOrder IS NULL THEN 1 ELSE 0 END, o.dispOrder ASC ";
+	
+	
 	// findWorkType(java.lang.String, java.lang.Integer, java.util.List,
 	// java.util.List)
 	private static final String FIND_WORKTYPE_ALLDAY_AND_HALFDAY;
@@ -950,7 +959,7 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	
 	@Override
 	public List<WorkType> getAllWorkTypeNotAbolished(String companyId) {
-		return this.queryProxy().query(SELECT_ALL_WORKTYPE_BY_CID, KshmtWorkType.class).setParameter("companyId", companyId)
+		return this.queryProxy().query(SELECT_ALL_WORKTYPE_WITHORDER_NOTABOLISH, KshmtWorkType.class).setParameter("companyId", companyId)
 				.getList(c -> toDomain(c));
 	}
 }

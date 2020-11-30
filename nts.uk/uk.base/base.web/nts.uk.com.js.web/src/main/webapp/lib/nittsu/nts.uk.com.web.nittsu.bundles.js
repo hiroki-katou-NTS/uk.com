@@ -1,10 +1,7 @@
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -16,13 +13,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
 };
 var nts;
 (function (nts) {
@@ -37,14 +27,14 @@ var nts;
                     get: function () {
                         return !this.landscapse;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "landscapse", {
                     get: function () {
                         return window.innerWidth > window.innerHeight;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "mobile", {
@@ -57,7 +47,7 @@ var nts;
                         })(navigator.userAgent || navigator.vendor || window.opera);
                         return check;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "tablet", {
@@ -70,7 +60,7 @@ var nts;
                         })(navigator.userAgent || navigator.vendor || window.opera);
                         return check;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "mp", {
@@ -80,7 +70,7 @@ var nts;
                     get: function () {
                         return this.mobile && this.portrait;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "ml", {
@@ -90,28 +80,28 @@ var nts;
                     get: function () {
                         return this.mobile && this.landscapse;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "ios", {
                     get: function () {
                         return /iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "width", {
                     get: function () {
                         return window.innerWidth;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "height", {
                     get: function () {
                         return window.innerHeight;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "version", {
@@ -134,7 +124,7 @@ var nts;
                         }
                         return M.join(' ');
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "private", {
@@ -203,7 +193,7 @@ var nts;
                         not();
                         return d.promise();
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 return browser;
@@ -270,14 +260,24 @@ var nts;
                         }
                     };
                 }
+                Felica.prototype.status = function () {
+                    var f = this;
+                    return f.socket.OPEN;
+                };
+                Felica.prototype.close = function () {
+                    var f = this;
+                    if (f.status()) {
+                        f.socket.close();
+                    }
+                };
                 return Felica;
             }());
             // export only create method for Felica class
             function felica(cb, once) {
                 if (once === void 0) { once = true; }
                 // if reconnect, close old connect
-                if (instance && instance.socket.OPEN) {
-                    instance.socket.close();
+                if (instance && instance.status()) {
+                    instance.close();
                 }
                 // register callback function
                 callback = cb;
@@ -288,6 +288,27 @@ var nts;
         })(devices = uk.devices || (uk.devices = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/**
+ *
+ */
+(function () {
+    if (typeof window.CustomEvent === "function") {
+        return false;
+    }
+    var dp = {
+        bubbles: false,
+        cancelable: false,
+        detail: undefined
+    };
+    function CustomEvent(event, params) {
+        params = params || dp;
+        var evt = document.createEvent('CustomEvent');
+        evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+        return evt;
+    }
+    CustomEvent.prototype = window.Event.prototype;
+    _.extend(window, { CustomEvent: CustomEvent });
+})();
 var nts;
 (function (nts) {
     var uk;
@@ -642,7 +663,7 @@ var nts;
                         case 'Time':
                         case 'Clock':
                         case 'Duration': // ValidatorScriptではない。DynamicConstraintで使う？
-                        case 'TimePoint': // ValidatorScriptではない。DynamicConstraintで使う？
+                        case 'TimePoint':// ValidatorScriptではない。DynamicConstraintで使う？
                             constraintText += (constraintText.length > 0) ? "/" : "";
                             constraintText += constraint.min + "～" + constraint.max;
                             break;
@@ -2767,7 +2788,6 @@ var nts;
                     milliseconds = (uk.util.isNullOrUndefined(milliseconds)) ? currentDate.getUTCMilliseconds() : milliseconds;
                     return new Date(Date.UTC(year, month, date, hours, minutes, seconds, milliseconds));
                 }
-                // Return input time in UTC
                 else {
                     month = (uk.util.isNullOrUndefined(month)) ? 0 : month;
                     date = (uk.util.isNullOrUndefined(date)) ? 1 : date;
@@ -6722,11 +6742,9 @@ var nts;
                         if (uk.util.isNullOrUndefined(data)) {
                             transferData = data;
                         }
-                        // Data or KO data
                         else if (!_.isFunction(data) || ko.isObservable(data)) {
                             transferData = JSON.parse(JSON.stringify(ko.unwrap(data))); // Complete remove reference by object
                         }
-                        // Callback function
                         else {
                             transferData = data;
                         }
@@ -7862,7 +7880,8 @@ var nts;
                         self.$container.tabIndex = -1;
                         $.data(self.$container, NAMESPACE, self);
                         var pTable = $.data(self.$container, NAMESPACE);
-                        pTable.owner = { headers: [], bodies: [], find: function (name, where) {
+                        pTable.owner = { headers: [], bodies: [],
+                            find: function (name, where) {
                                 var o = this;
                                 var elm = o[where].filter(function (e, i) { return e.classList.contains(name); });
                                 if (!elm || elm.length === 0)
@@ -8441,7 +8460,7 @@ var nts;
                         }
                         Painter.prototype.styleInnerCell = function (idx, innerCount) {
                             var self = this;
-                            var divStyle = "", borderStyle = "solid 1px transparent", dashedBorder = "dashed 1px #AAB7B8", incellHeight = (parseInt(self.options.rowHeight) - 2) / self.multilineCountInCell, incellCountInRow = Math.ceil(innerCount / self.multilineCountInCell);
+                            var divStyle = "", borderStyle = "solid 1px transparent", dashedBorder = "dashed 1px #ABB7B8", incellHeight = (parseInt(self.options.rowHeight) - 2) / self.multilineCountInCell, incellCountInRow = Math.ceil(innerCount / self.multilineCountInCell);
                             //                divStyle += `; border-top: ${borderStyle}; border-right: ${borderStyle}`;
                             if (idx < incellCountInRow * (self.multilineCountInCell - 1)) {
                                 divStyle += "; border-bottom: " + dashedBorder;
@@ -9034,9 +9053,9 @@ var nts;
                             left: left,
                             width: width,
                             height: height,
-                            borderTop: "solid 1px #AAB7B8",
-                            borderRight: "solid 1px #AAB7B8",
-                            borderLeft: "solid 1px #AAB7B8"
+                            borderTop: "solid 1px #ABB7B8",
+                            borderRight: "solid 1px #ABB7B8",
+                            borderLeft: "solid 1px #ABB7B8"
                         };
                         if (maxWidth) {
                             style.maxWidth = maxWidth;
@@ -9058,7 +9077,7 @@ var nts;
                         }
                         else if (options.containerClass === BODY_PRF + LEFTMOST) {
                             style = wrapperStyles(top, left, options.width, options.height);
-                            style.borderBottom = "solid 1px #AAB7B8";
+                            style.borderBottom = "solid 1px #ABB7B8";
                         }
                         else {
                             style = wrapperStyles(top, left, options.width, options.height);
@@ -9855,7 +9874,7 @@ var nts;
                                         else
                                             helper.addClass($childCells, makeup.class);
                                     }
-                                    else if (makeup.textColor) { // Don't set textColor
+                                    else if (makeup.textColor) {
                                         $cell.style.color = makeup.textColor;
                                     }
                                     else {
@@ -10138,7 +10157,7 @@ var nts;
                         var $grid = $exTable.querySelector("." + BODY_PRF + DETAIL);
                         var $body = !land ? $grid : helper.getTable($exTable, land);
                         var exTable = $.data($exTable, NAMESPACE);
-                        if (!forced && ( /*errors.occurred($exTable) ||*/selector.is($cell, "." + style.DET_CLS)
+                        if (!forced && (selector.is($cell, "." + style.DET_CLS)
                             || (land === BODY_PRF + DETAIL && exTable.detailContent.banEmptyInput
                                 && exTable.detailContent.banEmptyInput.some(function (m) { return m === exTable.viewMode; })
                                 && $cell.textContent === "")
@@ -10168,7 +10187,7 @@ var nts;
                             }
                             $editor.style.width = "calc(100% - 1px)";
                             $editor.style.backgroundColor = "#FFF";
-                            $editor.style.border = "1px solid #AAB7B8";
+                            $editor.style.border = "1px solid #ABB7B8";
                             $editor.appendChild($input);
                             if (selector.is($cell, "div")) {
                                 $editor.style.height = "calc(100% - 2px)";
@@ -10269,7 +10288,7 @@ var nts;
                                     $grid_1 = $exTable.querySelector("." + land);
                                 }
                                 var editor_1 = $.data($exTable, update.EDITOR);
-                                if ( /*errors.occurred($exTable) ||*/!editor_1)
+                                if (!editor_1)
                                     return;
                                 var visibleColumns = helper.getVisibleColumnsOn(!editor_1.land ? helper.getMainTable($exTable) : helper.getTable($exTable, editor_1.land));
                                 var columnDf_2;
@@ -10851,7 +10870,7 @@ var nts;
                             sm = sticker.styleMaker;
                         }
                         var touched = render.gridRow($grid, rowIdx, origData, sm);
-                        if (changedCells.length > 0) {
+                        if (changedCells.length > 0 && !_.isNil(touched)) {
                             changedCells.forEach(function (c) { return c.setTarget(touched.updateTarget); });
                             pushHistory($grid, changedCells, txId);
                             events.trigger($exTable, events.ROW_UPDATED, events.createRowUi(rowIdx, origData));
@@ -10866,8 +10885,7 @@ var nts;
                         var exTable = $.data($exTable, NAMESPACE);
                         var gen = $.data($grid, internal.TANGI) || $.data($grid, internal.CANON);
                         var pk = helper.getPrimaryKey($grid), pkVal = gen.dataSource[rowIdx][pk];
-                        if (!gen || helper.isDetCell($grid, rowIdx, columnKey)
-                        /*|| helper.isXCell($grid, pkVal, columnKey, style.HIDDEN_CLS, style.SEAL_CLS)*/ )
+                        if (!gen || helper.isDetCell($grid, rowIdx, columnKey))
                             return;
                         var cData = gen.dataSource[rowIdx][columnKey];
                         var opt = gen.options, fieldArr = opt.view(opt.viewMode), sticker = $.data($grid, internal.STICKER);
@@ -10934,8 +10952,7 @@ var nts;
                         _.assignInWith(gen.dataSource[rowIdx], clonedData, function (objVal, srcVal, key, obj, src) {
                             if ((!exTable.stickOverWrite
                                 && !helper.isEmpty(helper.viewData(opt.view, opt.viewMode, objVal)))
-                                || helper.isDetCell($grid, rowIdx, key)
-                            /*|| helper.isXCell($grid, gen.dataSource[rowIdx][pk], key, style.HIDDEN_CLS, style.SEAL_CLS)*/ ) {
+                                || helper.isDetCell($grid, rowIdx, key)) {
                                 src[key] = objVal;
                                 delete origData[key];
                                 return objVal;
@@ -11358,8 +11375,7 @@ var nts;
                                 var cell = selectedCells[0];
                                 var ds = internal.getDataSource(self.$grid);
                                 var pk = helper.getPrimaryKey(self.$grid);
-                                if ( /*helper.isDetCell(self.$grid, cell.rowIndex, cell.columnKey)
-                                    ||*/helper.isXCell(self.$grid, ds[cell.rowIndex][pk], cell.columnKey, style.HIDDEN_CLS /*, style.SEAL_CLS*/))
+                                if (helper.isXCell(self.$grid, ds[cell.rowIndex][pk], cell.columnKey, style.HIDDEN_CLS /*, style.SEAL_CLS*/))
                                     return;
                                 this.mode = Mode.SINGLE;
                                 copiedData += _.isObject(selectedCells[0].value) ? JSON.stringify(selectedCells[0].value) : selectedCells[0].value;
@@ -11405,8 +11421,7 @@ var nts;
                                 }
                                 var ds = internal.getDataSource(self.$grid);
                                 var pk = helper.getPrimaryKey(self.$grid);
-                                if ( /*helper.isDetCell(self.$grid, rowIndex, cell.columnKey)
-                                    ||*/helper.isXCell(self.$grid, ds[rowIndex][pk], cell.columnKey, style.HIDDEN_CLS /*, style.SEAL_CLS*/)) {
+                                if (helper.isXCell(self.$grid, ds[rowIndex][pk], cell.columnKey, style.HIDDEN_CLS /*, style.SEAL_CLS*/)) {
                                     structure[rowIndex][columnIndex] = undefined;
                                 }
                                 else
@@ -13233,13 +13248,14 @@ var nts;
                         var detailOffsetLeft = parseFloat($detailHeader.style.left), //selector.offset($detailHeader).left, 
                         width = window.innerWidth - detailOffsetLeft;
                         var scrollWidth = helper.getScrollWidth();
-                        var $sup = table.$follower;
+                        var $sup = table.$follower, oMiddleWidth = 0;
                         if (adjustMiddle === true && $middleHeader) {
                             var $leftHorzSumHeader = $container.querySelector("." + (HEADER_PRF + LEFT_HORZ_SUM));
                             var $leftHorzSumBody = $container.querySelector("." + (BODY_PRF + LEFT_HORZ_SUM));
                             var leftHorzSumWidth = void 0, horzSumLeft = void 0, middleWidth = parseFloat($middleHeader.style.width); //$middleHeader.clientWidth;
                             if ($middleHeader.style.display !== "none") {
                                 width -= middleWidth;
+                                oMiddleWidth = middleWidth;
                                 var newDetailLeft = detailOffsetLeft + middleWidth;
                                 $detailHeader.style.left = newDetailLeft + "px";
                                 $detailBody.style.left = newDetailLeft + "px";
@@ -13271,8 +13287,13 @@ var nts;
                                 && width >= parseFloat($detailHeader.style.maxWidth)) {
                                 width = parseFloat($detailHeader.style.maxWidth);
                             }
+                            width = Math.max(width, 160);
                             if (adjustMiddle instanceof Event) {
                                 $container.style.width = (parseFloat($container.style.width) + (width - parseFloat($detailBody.style.width))) + "px";
+                            }
+                            else if (adjustMiddle && helper.hasScrollBar($detailBody, true)) {
+                                var $leftmostHeader = $container.querySelector("." + (HEADER_PRF + LEFTMOST));
+                                $container.style.width = parseFloat($leftmostHeader.style.width) + oMiddleWidth + width + parseFloat($vertSumContent.style.width) + 15 + "px";
                             }
                             $detailHeader.style.width = width + "px";
                             $detailBody.style.width = width + "px";
@@ -13301,10 +13322,15 @@ var nts;
                             && width >= parseFloat($detailHeader.style.maxWidth) + scrollWidth) {
                             width = parseFloat($detailHeader.style.maxWidth) + scrollWidth;
                         }
+                        width = Math.max(width, 160 + scrollWidth);
                         $detailHeader.style.width = (width - scrollWidth) + "px";
                         if (adjustMiddle instanceof Event) {
                             $container.style.width = (parseFloat($container.style.width)
                                 + (width - parseFloat($detailBody.style.width))) + "px";
+                        }
+                        else if (adjustMiddle && helper.hasScrollBar($detailBody, true)) {
+                            var $leftmostHeader = $container.querySelector("." + (HEADER_PRF + LEFTMOST));
+                            $container.style.width = parseFloat($leftmostHeader.style.width) + oMiddleWidth + width + 15 + "px";
                         }
                         $detailBody.style.width = width + "px";
                         if (storage.area.getPartWidths($container).isPresent()) {
@@ -14641,6 +14667,12 @@ var nts;
                             case "copyRedo":
                                 redoCopy(self);
                                 break;
+                            case "editUndo":
+                                undoEdit(self);
+                                break;
+                            case "editRedo":
+                                redoEdit(self);
+                                break;
                             case "pasteValidate":
                                 setPasteValidate(self, params[0]);
                                 break;
@@ -15377,6 +15409,49 @@ var nts;
                         printer.redo();
                     }
                     /**
+                     * Undo edit.
+                     */
+                    function undoEdit($container) {
+                        var exTable = $container.data(NAMESPACE);
+                        if (!exTable || exTable.updateMode !== EDIT)
+                            return;
+                        var $grid = $container.find("." + (BODY_PRF + DETAIL));
+                        var histories = $grid.data(internal.EDIT_HISTORY);
+                        if (!histories || histories.length === 0)
+                            return;
+                        var item = histories.pop();
+                        if (_.has(item.value, "value"))
+                            item.value = item.value.value;
+                        var ds = internal.getDataSource($grid[0]);
+                        var currentItem = _.cloneDeep(item);
+                        currentItem.value = ((ds || {})[currentItem.rowIndex] || {})[currentItem.columnKey];
+                        update.gridCell($grid[0], item.rowIndex, item.columnKey, item.innerIdx, item.value, true);
+                        internal.removeChange($grid[0], item);
+                        var redoStack = $grid.data(internal.EDIT_REDO_STACK);
+                        if (!redoStack) {
+                            $grid.data(internal.EDIT_REDO_STACK, [currentItem]);
+                        }
+                        else {
+                            redoStack.push(currentItem);
+                        }
+                    }
+                    /**
+                     * Redo edit.
+                     */
+                    function redoEdit($container) {
+                        var exTable = $container.data(NAMESPACE);
+                        if (!exTable || exTable.updateMode !== EDIT)
+                            return;
+                        var $grid = $container.find("." + (BODY_PRF + DETAIL));
+                        var redoStack = $grid.data(internal.EDIT_REDO_STACK);
+                        if (!redoStack || redoStack.length === 0)
+                            return;
+                        var item = redoStack.pop();
+                        var ds = internal.getDataSource($grid[0]), value = ((ds || {})[item.rowIndex] || {})[item.columnKey];
+                        update.gridCell($grid[0], item.rowIndex, item.columnKey, item.innerIdx, item.value);
+                        update.pushEditHistory($grid[0], new selection.Cell(item.rowIndex, item.columnKey, value, item.innerIdx), item.updateTarget);
+                    }
+                    /**
                      * Paste validate.
                      */
                     function setPasteValidate($container, validate) {
@@ -15767,6 +15842,7 @@ var nts;
                     internal.COPY_HISTORY = "copy-history";
                     internal.REDO_STACK = "redo-stack";
                     internal.EDIT_HISTORY = "edit-history";
+                    internal.EDIT_REDO_STACK = "edit-redo-stack";
                     internal.TARGET_EDIT_HISTORY = "target-edit-history";
                     internal.OTHER_EDIT_HISTORY = "other-edit-history";
                     internal.STICK_HISTORY = "stick-history";
@@ -17822,7 +17898,6 @@ var nts;
                                 $element.attr('tabindex', 0);
                             }
                             $element
-                                // delegate event for change template (on old filter box)
                                 .on(SHOWVALUE, function (evt) {
                                 var data = $element.data(DATA), cws = data[CWIDTH], ks = _.keys(cws);
                                 var option = _.find(data[DATA], function (t) { return t[optionsValue] == data[VALUE]; }), _template = template;
@@ -17853,7 +17928,6 @@ var nts;
                                     }
                                 }
                             })
-                                // define event changed for save default data
                                 .on(CHANGED, function (evt, key, value) {
                                 if (value === void 0) { value = undefined; }
                                 var data = $element.data(DATA) || {};
@@ -17862,7 +17936,6 @@ var nts;
                                     $element.data(DATA, data);
                                 }
                             })
-                                // define event validate for check require
                                 .on(VALIDATE, function (evt, ui) {
                                 var data = $element.data(DATA), value = data[VALUE];
                                 if ((ui ? data[CHANGED] : true) && data[ENABLE] && data[REQUIRED] && (_.isEmpty(String(value).trim()) || _.isNil(value))) {
@@ -17882,7 +17955,6 @@ var nts;
                                     }
                                 }
                             })
-                                // delegate open or close event on enter key
                                 .on(KEYDOWN, function (evt, ui) {
                                 if ($element.data(IGCOMB)) {
                                     if ([13].indexOf(evt.which || evt.keyCode) > -1) {
@@ -18181,7 +18253,6 @@ var nts;
                             var sto = setTimeout(function () {
                                 if ($element.data("igCombo")) {
                                     $element
-                                        // enable or disable 
                                         .igCombo(OPTION, "disabled", !enable);
                                     clearTimeout(sto);
                                 }
@@ -18194,7 +18265,6 @@ var nts;
                                     $element.igCombo(OPTION, "dataSource", options);
                                 }
                                 $element
-                                    // set new value
                                     .igCombo("value", value);
                                 if (!enable) {
                                     $element.removeAttr(TAB_INDEX);
@@ -18211,7 +18281,7 @@ var nts;
                                     if (width != MINWIDTH) {
                                         $element.igCombo("option", "width", width);
                                     }
-                                    else { // auto width
+                                    else {
                                         $element
                                             .igCombo("option", "width", (_.sum(_.map(cws, function (c) { return c; })) * WoC + 60) + 'px');
                                     }
@@ -19569,7 +19639,6 @@ var nts;
                                 var $container = $dialog.closest("[role='dialog']");
                                 $container
                                     .show()
-                                    // hide "x" button
                                     .find(".ui-dialog-titlebar-close").hide();
                                 //$dialog.dialog("open");
                                 var $dialogs = window.top.$('body>[role="dialog"]').toArray();
@@ -20095,9 +20164,11 @@ var nts;
                         $input.attr('autocomplete', 'off');
                         $input.on('keydown', function (evt) {
                             var target = evt.target, start = target.selectionStart, end = target.selectionEnd;
-                            $input.data(_kc, evt);
-                            $input.data(_rg, { start: start, end: end });
-                            $input.data(_val, target.value);
+                            if (!$input.data(_kc)) {
+                                $input.data(_kc, evt);
+                                $input.data(_rg, { start: start, end: end });
+                                $input.data(_val, target.value);
+                            }
                         });
                         $input.on('paste', function (evt) {
                             var rd = ko.toJS(data), constraint = rd.constraint, str = evt.originalEvent.clipboardData.getData('text');
@@ -20105,7 +20176,7 @@ var nts;
                             setTimeout(function () {
                                 if (str.match(/^(-?)(\d+\.\d+|\d+)$/)) {
                                     if (constraint) {
-                                        var numb = Number(str), primitive = window['__viewContext'].primitiveValueConstraints[constraint];
+                                        var numb = Number(str), primitive = __viewContext.primitiveValueConstraints[constraint];
                                         if (primitive) {
                                             var min = primitive.min, max = primitive.max, dlen = primitive.mantissaMaxLength || 0;
                                             if (numb >= min && numb <= max) {
@@ -20193,10 +20264,7 @@ var nts;
                                     ival = '0.';
                                 }
                                 if (dval) {
-                                    if (ival.match(/^(-?)(\d+\.\d+|\d+)$/)) {
-                                        ival = ival;
-                                    }
-                                    else if (ival.match(/^\-+$/)) {
+                                    if (ival.match(/^\-+$/)) {
                                         ival = '-';
                                     }
                                     else if (ival.match(/^\.+$/)) {
@@ -20205,19 +20273,13 @@ var nts;
                                     else if (ival.match(/^\-+(0*)\.+$/)) {
                                         ival = '-0.';
                                     }
-                                    else {
-                                        ival = ival;
-                                    }
-                                }
-                                else if (ival.match(/(-?)(\d*)(\.*)(\d*)/)) {
-                                    ival = ival;
                                 }
                                 if (constraint) {
-                                    var primitive = window['__viewContext'].primitiveValueConstraints[constraint];
-                                    if (primitive) { // if primitive is avaiable
+                                    var primitive = __viewContext.primitiveValueConstraints[constraint];
+                                    if (primitive) {
                                         var min = primitive.min, max = primitive.max, maxL = primitive.maxLength, dlen = primitive.mantissaMaxLength || 0;
                                         switch (primitive.valueType) {
-                                            case 'String': // check length
+                                            case 'String':// check length
                                                 if (maxL && ival.length > maxL) {
                                                     ival = dval;
                                                 }
@@ -20267,7 +20329,7 @@ var nts;
                                                         ival = dval;
                                                         $input.val(dval);
                                                     }
-                                                    else { // delete event
+                                                    else {
                                                         if (ival.match(/^0\d+$/)) {
                                                             ival = ival.replace(/^0+/, '0');
                                                             ival = Number(ival).toString();
@@ -20309,7 +20371,7 @@ var nts;
                                                         ival = dval;
                                                         $input.val(dval);
                                                     }
-                                                    else { // delete event
+                                                    else {
                                                         if (ival.match(/^0\d+$/)) {
                                                             ival = ival.replace(/^0+/, '0');
                                                             ival = Number(ival).toString();
@@ -20341,7 +20403,7 @@ var nts;
                                                         ival = dval;
                                                         $input.val(dval);
                                                     }
-                                                    else { // delete event
+                                                    else {
                                                         if (ival.match(/^0\d+$/)) {
                                                             ival = ival.replace(/^0+/, '0');
                                                             ival = Number(ival).toString();
@@ -20361,12 +20423,14 @@ var nts;
                                     }
                                 }
                                 else {
-                                    // check length & decimal length
-                                    var dlen = rd.option.decimallength;
-                                    if (dlen) {
-                                        var match = ival.match(/\.\d+$/);
-                                        if (match && match[0].length > dlen + 1) {
-                                            ival = dval;
+                                    if (rd.option) {
+                                        // check length & decimal length
+                                        var dlen = rd.option.decimallength;
+                                        if (dlen) {
+                                            var match = ival.match(/\.\d+$/);
+                                            if (match && match[0].length > dlen + 1) {
+                                                ival = dval;
+                                            }
                                         }
                                     }
                                     if (ival.match(/^0\d+$/)) {
@@ -20403,6 +20467,9 @@ var nts;
                                     }
                                 }, 0);
                             }
+                            $input.data(_kc, null);
+                            $input.data(_rg, null);
+                            $input.data(_val, null);
                         });
                         $input.on('blur', function (evt) {
                             var value = $input.val();
@@ -20763,89 +20830,103 @@ var nts;
                  */
                 var NtsFormLabelBindingHandler = /** @class */ (function () {
                     function NtsFormLabelBindingHandler() {
-                    }
-                    /**
-                     * Init.
-                     */
-                    NtsFormLabelBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        element.classList.add('form-label');
-                    };
-                    /**
-                     * Update
-                     */
-                    NtsFormLabelBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var accessor = valueAccessor(), label = element.querySelector('label'), constraint = element.querySelector('i'), isInline = ko.unwrap(accessor.inline) === true, isEnable = ko.unwrap(accessor.enable) !== false, isRequired = ko.unwrap(accessor.required) === true, text = !_.isNil(accessor.text) ? ko.unwrap(accessor.text) : (!!label ? label.innerHTML : element.innerHTML), cssClass = !_.isNil(accessor.cssClass) ? ko.unwrap(accessor.cssClass) : '', primitive = !_.isNil(accessor.constraint) ? ko.unwrap(accessor.constraint) : '';
-                        // clear old html
-                        element.innerHTML = '';
-                        // show enable or disabled style
-                        if (!isEnable) {
-                            element.classList.add('disabled');
-                        }
-                        else {
-                            element.classList.remove('disabled');
-                        }
-                        // show inline mode or broken mode
-                        if (!!isRequired) {
-                            element.classList.add('required');
-                        }
-                        else {
-                            element.classList.remove('required');
-                        }
-                        if (!!isInline) {
-                            element.classList.add('inline');
-                            element.classList.remove('broken');
-                            // fix height (inline mode)
-                            element.style.height = '37px';
-                            element.style.lineHeight = '37px';
-                        }
-                        else {
-                            element.classList.remove('inline');
-                        }
-                        // init new label element
-                        if (!label) {
-                            label = document.createElement('label');
-                        }
-                        // init new constraint element
-                        if (!constraint) {
-                            constraint = document.createElement('i');
-                        }
-                        // append label tag to control
-                        element
-                            .appendChild(label);
-                        label.innerHTML = text;
-                        // add css class to label
-                        if (!!cssClass) {
-                            label.classList.add(cssClass);
-                        }
-                        // show primitive constraint if exist
-                        if (!!primitive) {
-                            if (!isInline) {
-                                element.classList.add('broken');
-                            }
-                            // append constraint
-                            element.appendChild(constraint);
-                            if (_.isArray(primitive)) {
-                                var miss = _.map(primitive, function (p) { return __viewContext.primitiveValueConstraints[p]; });
-                                if (miss.indexOf(false) > -1) {
-                                    constraint.innerHTML = 'UNKNOW_PRIMITIVE';
-                                }
-                                else {
-                                    constraint.innerHTML = uk.util.getConstraintMes(primitive);
-                                }
+                        /**
+                         * Update
+                         */
+                        this.update = function (element, valueAccessor, _allBindingsAccessor, _viewModel, _bindingContext) {
+                            var accessor = valueAccessor();
+                            var label = element.querySelector('label');
+                            var constraint = element.querySelector('i');
+                            var isInline = ko.unwrap(accessor.inline) === true;
+                            var isEnable = ko.unwrap(accessor.enable) !== false;
+                            var isRequired = ko.unwrap(accessor.required) === true;
+                            var text = !_.isNil(accessor.text) ? ko.unwrap(accessor.text) : (!!label ? label.innerHTML : element.innerHTML);
+                            var cssClass = !_.isNil(accessor.cssClass) ? ko.unwrap(accessor.cssClass) : '';
+                            var primitive = !_.isNil(accessor.constraint) ? ko.unwrap(accessor.constraint) : '';
+                            var primitiveValueConstraints = __viewContext.primitiveValueConstraints;
+                            // clear old html
+                            element.innerHTML = '';
+                            // show enable or disabled style
+                            if (!isEnable) {
+                                element.classList.add('disabled');
                             }
                             else {
-                                if (!__viewContext.primitiveValueConstraints[primitive]) {
-                                    constraint.innerHTML = 'UNKNOW_PRIMITIVE';
+                                element.classList.remove('disabled');
+                            }
+                            // show inline mode or broken mode
+                            if (!!isRequired) {
+                                element.classList.add('required');
+                            }
+                            else {
+                                element.classList.remove('required');
+                            }
+                            if (!!isInline) {
+                                element.classList.add('inline');
+                                element.classList.remove('broken');
+                                // fix height (inline mode)
+                                element.style.height = '37px';
+                                element.style.lineHeight = '37px';
+                            }
+                            else {
+                                element.classList.remove('inline');
+                                // fix height (not inline mode)
+                                element.style.height = null;
+                                element.style.lineHeight = null;
+                            }
+                            // init new label element
+                            if (!label) {
+                                label = document.createElement('label');
+                            }
+                            // init new constraint element
+                            if (!constraint) {
+                                constraint = document.createElement('i');
+                            }
+                            // append label tag to control
+                            element
+                                .appendChild(label);
+                            label.innerHTML = text;
+                            // add css class to label
+                            if (!!cssClass) {
+                                label.classList.add(cssClass);
+                            }
+                            // show primitive constraint if exist
+                            if (!!primitive) {
+                                if (!isInline) {
+                                    element.classList.add('broken');
+                                }
+                                // append constraint
+                                element.appendChild(constraint);
+                                if (_.isArray(primitive)) {
+                                    var miss = _.map(primitive, function (p) { return primitiveValueConstraints[p]; });
+                                    if (miss.indexOf(undefined) > -1) {
+                                        constraint.innerHTML = 'UNKNOW_PRIMITIVE';
+                                    }
+                                    else {
+                                        constraint.innerHTML = uk.util.getConstraintMes(primitive);
+                                    }
                                 }
                                 else {
-                                    constraint.innerHTML = uk.util.getConstraintMes(primitive);
+                                    if (!primitiveValueConstraints[primitive]) {
+                                        constraint.innerHTML = 'UNKNOW_PRIMITIVE';
+                                    }
+                                    else {
+                                        constraint.innerHTML = uk.util.getConstraintMes(primitive);
+                                    }
                                 }
                             }
-                        }
+                        };
+                    }
+                    NtsFormLabelBindingHandler.prototype.init = function (element) {
+                        element.classList.add('form-label');
                     };
+                    NtsFormLabelBindingHandler = __decorate([
+                        handler({
+                            bindingName: 'ntsFormLabel'
+                        })
+                    ], NtsFormLabelBindingHandler);
                     return NtsFormLabelBindingHandler;
                 }());
-                ko.bindingHandlers['ntsFormLabel'] = new NtsFormLabelBindingHandler();
+                koExtentions.NtsFormLabelBindingHandler = NtsFormLabelBindingHandler;
             })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -20894,7 +20975,7 @@ var nts;
                             ROW_HEIGHT = 24;
                             // Internet Explorer 6-11
                             var _document = document;
-                            var isIE = /*@cc_on!@*/ false || !!_document.documentMode;
+                            var isIE = false || !!_document.documentMode;
                             // Edge 20+
                             var _window = window;
                             var isEdge = !isIE && !!_window.StyleMedia;
@@ -21334,7 +21415,7 @@ var nts;
                         get: function () {
                             return this.model;
                         },
-                        enumerable: false,
+                        enumerable: true,
                         configurable: true
                     });
                     SwapHandler.prototype.handle = function (value) {
@@ -22790,7 +22871,7 @@ var nts;
                         get: function () {
                             return this.model;
                         },
-                        enumerable: false,
+                        enumerable: true,
                         configurable: true
                     });
                     SwapHandler.prototype.handle = function (parts, value) {
@@ -23911,7 +23992,8 @@ var nts;
                             $treegrid.addClass("row-limited");
                         }
                         if (isFilter) {
-                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100, dataFiltered: function (evt, ui) {
+                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100,
+                                dataFiltered: function (evt, ui) {
                                     var disabled = $treegrid.data("rowDisabled");
                                     if (!_.isEmpty(disabled)) {
                                         $treegrid.ntsTreeView("disableRows", disabled);
@@ -28083,7 +28165,7 @@ var nts;
                             if (_.has(_mDesc.fixedColIdxes, "rowNumber")) {
                                 no = _mDesc.fixedColIdxes.rowNumber;
                                 var tRow = _mDesc.fixedRows[idx][no];
-                                for (var i = /*idx + 2*/ 0; i < _mDesc.fixedRows.length; i++) {
+                                for (var i = 0; i < _mDesc.fixedRows.length; i++) {
                                     noc = _mDesc.fixedRows[i];
                                     if (noc && (noc = noc[no]) && parseInt(noc.innerHTML) > parseInt(tRow.innerHTML)) {
                                         noc.innerHTML = parseInt(noc.innerHTML) + 1;
@@ -28116,7 +28198,7 @@ var nts;
                             if (_.has(_mDesc.colIdxes, "rowNumber")) {
                                 no = _mDesc.colIdxes.rowNumber;
                                 var tRow = _mDesc.rows[idx][no];
-                                for (var i = /*idx + 2*/ 0; i < _mDesc.rows.length; i++) {
+                                for (var i = 0; i < _mDesc.rows.length; i++) {
                                     noc = _mDesc.rows[i];
                                     if (noc && (noc = noc[no]) && parseInt(noc.innerHTML) > parseInt(tRow.innerHTML)) {
                                         noc.innerHTML = parseInt(noc.innerHTML) + 1;
@@ -30273,7 +30355,7 @@ var nts;
                                 var check = $cell.querySelector("input[type='checkbox']");
                                 if (!check)
                                     return;
-                                if (val) { //&& check.getAttribute("checked") !== "checked") {
+                                if (val) {
                                     check.setAttribute("checked", "checked");
                                     check.checked = true;
                                     var evt = document.createEvent("HTMLEvents");
@@ -30282,7 +30364,7 @@ var nts;
                                     evt.checked = val;
                                     check.dispatchEvent(evt);
                                 }
-                                else if (!val) { // && check.getAttribute("checked") === "checked") {
+                                else if (!val) {
                                     check.removeAttribute("checked");
                                     check.checked = false;
                                     var evt = document.createEvent("HTMLEvents");
@@ -33265,7 +33347,7 @@ var nts;
                                         data = data.toLocaleDateString("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit" });
                                     }
                                     var tDate = moment.utc($editor.value, ctrl.format, true);
-                                    if ( /*data !== tDate && !d.classList.contains(khl.ERROR_CLS) &&*/_.isFunction(ctrl.inputProcess)) {
+                                    if (_.isFunction(ctrl.inputProcess)) {
                                         ctrl.inputProcess(tDate.isValid() ? tDate.format(ctrl.format[0]) : $editor.value, _dataSource[coord.rowIdx]);
                                     }
                                     su.endEdit(_$grid[0]);
@@ -33992,7 +34074,8 @@ var nts;
                                 var txt = td.querySelector(".mgrid-refer-text");
                                 if (!txt)
                                     return;
-                                var args = { value: $.data(td, v.DATA), rowId: data.rowId, rowValue: data.rowObj, itemList: data.controlDef.pattern[data.controlDef.list[data.rowId]], relatedItemList: function (nama) {
+                                var args = { value: $.data(td, v.DATA), rowId: data.rowId, rowValue: data.rowObj, itemList: data.controlDef.pattern[data.controlDef.list[data.rowId]],
+                                    relatedItemList: function (nama) {
                                         var ctrl = _mafollicle[SheetDef][_currentSheet].controlMap && _mafollicle[SheetDef][_currentSheet].controlMap[nama];
                                         if (ctrl && ctrl.pattern && ctrl.list) {
                                             return ctrl.pattern[ctrl.list[data.rowId]];
@@ -37739,8 +37822,7 @@ var nts;
                         var currentColumns = $grid.igGrid("option", "columns");
                         currentColumns.push({
                             dataType: "bool", columnCssClass: "delete-column", headerText: "test", key: param.deleteField,
-                            width: 60,
-                            formatter: function createButton(deleteField, row) {
+                            width: 60, formatter: function createButton(deleteField, row) {
                                 var primaryKey = $grid.igGrid("option", "primaryKey");
                                 var result = $('<button tabindex="-1" class="small delete-button">Delete</button>');
                                 result.attr("data-value", row[primaryKey]);
@@ -37919,7 +38001,7 @@ var nts;
                             ROW_HEIGHT = 24;
                             // Internet Explorer 6-11
                             var _document = document;
-                            var isIE = /*@cc_on!@*/ false || !!_document.documentMode;
+                            var isIE = false || !!_document.documentMode;
                             // Edge 20+
                             var _window = window;
                             var isEdge = !isIE && !!_window.StyleMedia;
@@ -43922,7 +44004,7 @@ var nts;
                             if (!loader) {
                                 $grid.data(internal.LOADER, new Loader(demandLoadFt.allKeysPath, demandLoadFt.pageRecordsPath));
                             }
-                            else if (loader.keys) { // Switch sheet
+                            else if (loader.keys) {
                                 pageSize = setting.pageSize;
                                 return false;
                             }
@@ -44745,7 +44827,7 @@ var nts;
                             $(window).on("mousedown.popup", function (e) {
                                 if (!$(e.target).is(control) // Target isn't Popup
                                     && control.has(e.target).length === 0 // Target isn't Popup's children
-                                    && !$(e.target).is(setting.trigger)) { // Target isn't Trigger element
+                                    && !$(e.target).is(setting.trigger)) {
                                     hide(control);
                                 }
                             });
@@ -45388,7 +45470,8 @@ var nts;
                             $treegrid.addClass("row-limited");
                         }
                         if (isFilter) {
-                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100, dataFiltered: function (evt, ui) {
+                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100,
+                                dataFiltered: function (evt, ui) {
                                     var disabled = $treegrid.data("rowDisabled");
                                     if (!_.isEmpty(disabled)) {
                                         $treegrid.ntsTreeView("disableRows", disabled);
@@ -45783,8 +45866,7 @@ var nts;
                                             if ($tree.data("igTreeGrid") !== null) {
                                                 $tree.data("igTreeGridUpdating").deleteRow(rowId);
                                             }
-                                        },
-                                        initValue: value,
+                                        }, initValue: value,
                                         rowObj: rowObj,
                                         showHeaderCheckbox: col.showHeaderCheckbox,
                                         enable: isRowEnable,
@@ -46680,10 +46762,13 @@ var nts;
                 var SafeClickBindingHandler = /** @class */ (function () {
                     function SafeClickBindingHandler() {
                         this.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                            var lastPreventTime = new Date().getTime(), originalFunction = valueAccessor(), newValueAccesssor = function () {
+                            var lastPreventTime = new Date().getTime();
+                            var originalFunction = valueAccessor();
+                            var newValueAccesssor = function () {
                                 return function () {
-                                    var currentPreventTime = new Date().getTime(), time = currentPreventTime - lastPreventTime, timeClick = ko.toJS(allBindingsAccessor().timeClick), _timeClick = _.isNumber(timeClick) ? timeClick : 500;
-                                    if (time > _timeClick) {
+                                    var time = Date.now() - lastPreventTime;
+                                    var timeClick = ko.toJS(allBindingsAccessor.get('timeClick'));
+                                    if (time > (_.isNumber(timeClick) ? timeClick : 500)) {
                                         //pass through the arguments
                                         originalFunction.apply(viewModel, arguments);
                                     }
@@ -46694,9 +46779,14 @@ var nts;
                             originalClick.init(element, newValueAccesssor, allBindingsAccessor, viewModel, bindingContext);
                         };
                     }
+                    SafeClickBindingHandler = __decorate([
+                        handler({
+                            bindingName: 'click'
+                        })
+                    ], SafeClickBindingHandler);
                     return SafeClickBindingHandler;
                 }());
-                ko.bindingHandlers['click'] = new SafeClickBindingHandler();
+                koExtentions.SafeClickBindingHandler = SafeClickBindingHandler;
             })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -48159,6 +48249,17 @@ var nts;
                             //self.$root.data("img-status", self.buildImgStatus("img loading", 2, false));
                             self.changeStatus(ImageStatus.lOADING);
                             var target = self.helper.getUrl(query);
+                            var uri = self.helper.data.url;
+                            // support base64 url
+                            if (uri.match(/^(data:image\/)/)) {
+                                var fileName = nts.uk.util.randomId();
+                                var fileType = uri.substring(uri.indexOf('/') + 1, uri.indexOf(';base64'));
+                                self.backupData(null, fileName + "." + fileType, fileType, 3 * (uri.length / 4));
+                                self.$imagePreview.attr("src", uri);
+                                self.$imagePreview.closest(".image-holder").removeClass(".image-upload-icon");
+                                self.$imagePreview.closest(".image-container").removeClass(".container-no-upload-background");
+                                return;
+                            }
                             var xhr = self.getXRequest();
                             if (xhr === null) {
                                 self.destroyImg(query);
@@ -48372,17 +48473,21 @@ var nts;
                  */
                 var NtsLetBindingHandler = /** @class */ (function () {
                     function NtsLetBindingHandler() {
-                        this.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        this.init = function (element, valueAccessor, _allBindingsAccessor, _viewModel, bindingContext) {
                             // Make a modified binding context, with extra properties, and apply it to descendant elements
                             ko.applyBindingsToDescendants(bindingContext.extend(valueAccessor), element);
                             return { controlsDescendantBindings: true };
                         };
-                        this.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) { };
                     }
+                    NtsLetBindingHandler = __decorate([
+                        handler({
+                            virtual: true,
+                            bindingName: 'let'
+                        })
+                    ], NtsLetBindingHandler);
                     return NtsLetBindingHandler;
                 }());
-                ko.virtualElements.allowedBindings.let = true;
-                ko.bindingHandlers['let'] = new NtsLetBindingHandler();
+                koExtentions.NtsLetBindingHandler = NtsLetBindingHandler;
             })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -48821,7 +48926,6 @@ var NtsSortableBindingHandler = /** @class */ (function () {
                             if (sourceParent) {
                                 $(sourceParent === targetParent ? this : ui.sender || this).sortable("cancel");
                             }
-                            //for a draggable item just remove the element
                             else {
                                 $(el).remove();
                             }
@@ -48849,7 +48953,7 @@ var NtsSortableBindingHandler = /** @class */ (function () {
                                 //rendering is handled by manipulating the observableArray; ignore dropped element
                                 self.dataSet(el, self.ITEMKEY, null);
                             }
-                            else { //employ the strategy of moving items
+                            else {
                                 if (targetIndex >= 0) {
                                     if (sourceParent) {
                                         if (sourceParent !== targetParent) {
@@ -49378,6 +49482,7 @@ function bean(dialogOption) {
         __viewContext.ready(function () {
             nts.uk.ui.viewmodel.$storage().then(function ($params) {
                 var $viewModel = new ctor($params), $created = $viewModel['created'];
+                _.extend($viewModel, { $el: undefined });
                 // hook to created function
                 if ($created && _.isFunction($created)) {
                     $created.apply($viewModel, [$params]);
@@ -49385,7 +49490,17 @@ function bean(dialogOption) {
                 // hook to mounted function
                 $viewModel.$nextTick(function () {
                     var $mounted = $viewModel['mounted'];
+                    var kvm = nts.uk.ui._viewModel.kiban;
                     _.extend($viewModel, { $el: document.querySelector('#master-wrapper') });
+                    if (kvm) {
+                        ko.computed({
+                            read: function () {
+                                $viewModel.$validate.valid(!kvm.errorDialogViewModel.errors().length);
+                            },
+                            owner: $viewModel,
+                            disposeWhenNodeIsRemoved: $viewModel.$el
+                        });
+                    }
                     if ($mounted && _.isFunction($mounted)) {
                         $mounted.apply($viewModel, []);
                     }
@@ -49408,6 +49523,7 @@ function component(options) {
                     viewModel: {
                         createViewModel: function ($params, $el) {
                             var $viewModel = new ctor($params), $created = $viewModel['created'];
+                            _.extend($viewModel, { $el: undefined });
                             // hook to created function
                             if ($created && _.isFunction($created)) {
                                 $created.apply($viewModel, [$params]);
@@ -49415,11 +49531,22 @@ function component(options) {
                             // hook to mounted function
                             $viewModel.$nextTick(function () {
                                 var $mounted = $viewModel['mounted'];
+                                var kvm = nts.uk.ui._viewModel.kiban;
                                 _.extend($viewModel, { $el: $el.element });
+                                if (kvm) {
+                                    ko.computed({
+                                        read: function () {
+                                            $viewModel.$validate.valid(!kvm.errorDialogViewModel.errors().length);
+                                        },
+                                        owner: $viewModel,
+                                        disposeWhenNodeIsRemoved: $el.element
+                                    });
+                                }
                                 if ($mounted && _.isFunction($mounted)) {
                                     $mounted.apply($viewModel, []);
                                 }
                             });
+                            // run if component mode
                             Object.defineProperty($viewModel, 'dispose', {
                                 value: function dispose() {
                                     if (typeof $viewModel.destroyed === 'function') {
@@ -49437,13 +49564,13 @@ function component(options) {
 }
 function handler(params) {
     return function (constructor) {
-        var _a;
         ko.bindingHandlers[params.bindingName] = new constructor();
         ko.virtualElements.allowedBindings[params.bindingName] = !!params.virtual;
         // block rewrite binding
         if (params.validatable) {
             ko.utils.extend(ko.expressionRewriting.bindingRewriteValidators, (_a = {}, _a[params.bindingName] = false, _a));
         }
+        var _a;
     };
 }
 var nts;
@@ -49458,14 +49585,16 @@ var nts;
                     if (arguments.length === 2) {
                         // setter method
                         if (params === undefined) {
-                            return $.Deferred().resolve()
+                            return $.Deferred()
+                                .resolve(true)
                                 .then(function () {
                                 nts.uk.localStorage.removeItem(prefix + "." + name);
                             })
                                 .then(function () { return $storeSession(name); });
                         }
                         var $value = JSON.stringify({ $value: params }), $saveValue_1 = btoa(_.map($value, function (s) { return s.charCodeAt(0); }).join('-'));
-                        return $.Deferred().resolve()
+                        return $.Deferred()
+                            .resolve(true)
                             .then(function () {
                             nts.uk.localStorage.setItem(prefix + "." + name, $saveValue_1);
                         })
@@ -49473,7 +49602,8 @@ var nts;
                     }
                     else if (arguments.length === 1) {
                         // getter method
-                        return $.Deferred().resolve()
+                        return $.Deferred()
+                            .resolve(true)
                             .then(function () {
                             var $result = nts.uk.localStorage.getItem(prefix + "." + name);
                             if ($result.isPresent()) {
@@ -49494,7 +49624,8 @@ var nts;
                         return $storeSession(OPENWD, $data);
                     }
                     else if (arguments.length === 0) {
-                        return $.Deferred().resolve()
+                        return $.Deferred()
+                            .resolve(true)
                             .then(function () { return $storeSession(OPENWD); })
                             .then(function (value) {
                             nts.uk.localStorage.removeItem(prefix + "." + OPENWD);
@@ -49621,7 +49752,7 @@ var nts;
                 Object.defineProperties($jump, {
                     self: {
                         value: function $to() {
-                            $jump.apply(null, __spreadArrays(Array.prototype.slice.apply(arguments, [])));
+                            $jump.apply(null, Array.prototype.slice.apply(arguments, []).slice());
                         }
                     },
                     blank: {
@@ -49658,47 +49789,53 @@ var nts;
                     }
                 });
                 BaseViewModel.prototype.$window = Object.defineProperties({}, {
+                    mode: {
+                        get: function () {
+                            return window === window.top ? 'view' : 'modal';
+                        }
+                    },
                     size: {
                         value: $size
                     },
                     close: {
                         value: function $close(result) {
                             if (window.top !== window) {
-                                $.Deferred().resolve()
+                                $.Deferred()
+                                    .resolve(true)
                                     .then(function () { return viewmodel.$storage(result); })
                                     .then(function () { return windows.close(); });
                             }
                         }
                     },
                     modal: {
-                        value: function $modal(webapp, path, params) {
+                        value: function $modal(webapp, path, params, options) {
                             var jdf = $.Deferred();
                             var nowapp = ['at', 'pr', 'hr', 'com'].indexOf(webapp) === -1;
                             if (nowapp) {
                                 viewmodel.$storage(path)
                                     .then(function () {
-                                    windows.sub.modal(webapp)
+                                    windows.sub.modal(webapp, params)
                                         .onClosed(function () {
                                         var localShared = windows.container.localShared;
                                         _.each(localShared, function (value, key) {
                                             $shared.push(key);
                                             windows.setShared(key, value);
                                         });
-                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || localShared); });
+                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || (_.keys(localShared).length ? localShared : undefined)); });
                                     });
                                 });
                             }
                             else {
                                 viewmodel.$storage(params)
                                     .then(function () {
-                                    windows.sub.modal(webapp, path)
+                                    windows.sub.modal(webapp, path, options)
                                         .onClosed(function () {
                                         var localShared = windows.container.localShared;
                                         _.each(localShared, function (value, key) {
                                             $shared.push(key);
                                             windows.setShared(key, value);
                                         });
-                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || localShared); });
+                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || (_.keys(localShared).length ? localShared : undefined)); });
                                     });
                                 });
                             }
@@ -49706,34 +49843,34 @@ var nts;
                         }
                     },
                     modeless: {
-                        value: function $modeless(webapp, path, params) {
+                        value: function $modeless(webapp, path, params, options) {
                             var jdf = $.Deferred();
                             var nowapp = ['at', 'pr', 'hr', 'com'].indexOf(webapp) === -1;
                             if (nowapp) {
                                 viewmodel.$storage(path)
                                     .then(function () {
-                                    windows.sub.modeless(webapp)
+                                    windows.sub.modeless(webapp, params)
                                         .onClosed(function () {
                                         var localShared = windows.container.localShared;
                                         _.each(localShared, function (value, key) {
                                             $shared.push(key);
                                             windows.setShared(key, value);
                                         });
-                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || localShared); });
+                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || (_.keys(localShared).length ? localShared : undefined)); });
                                     });
                                 });
                             }
                             else {
                                 viewmodel.$storage(params)
                                     .then(function () {
-                                    windows.sub.modeless(webapp, path)
+                                    windows.sub.modeless(webapp, path, options)
                                         .onClosed(function () {
                                         var localShared = windows.container.localShared;
                                         _.each(localShared, function (value, key) {
                                             $shared.push(key);
                                             windows.setShared(key, value);
                                         });
-                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || localShared); });
+                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || (_.keys(localShared).length ? localShared : undefined)); });
                                     });
                                 });
                             }
@@ -49777,10 +49914,10 @@ var nts;
                                 });
                             }
                             else {
-                                return $.Deferred().resolve()
+                                return $.Deferred()
+                                    .resolve(true)
                                     .then(function () {
                                     return $storeSession(name, params)
-                                        // for old page
                                         .then(function () { return windows.setShared(name, params); });
                                 })
                                     .then(function () { return $storeSession(name); });
@@ -49809,17 +49946,21 @@ var nts;
                     });
                 };
                 BaseViewModel.prototype.$errors = function $errors() {
+                    var kvm = nts.uk.ui._viewModel.kiban;
                     var args = Array.prototype.slice.apply(arguments);
                     if (args.length == 1) {
                         // if action is clear, call validate clear action
                         if (args[0] === 'clear') {
-                            return $.Deferred().resolve()
+                            return $.Deferred()
+                                .resolve(true)
                                 .then(function () { return $('.nts-input').ntsError('clear'); })
+                                .then(function () { return kvm.errorDialogViewModel.errors([]); })
                                 .then(function () { return !$('.nts-input').ntsError('hasError'); });
                         }
                         else {
                             var errors_3 = args[0];
-                            return $.Deferred().resolve()
+                            return $.Deferred()
+                                .resolve(true)
                                 .then(function () {
                                 _.each(errors_3, function (value, key) { return $(key).ntsError('set', value); });
                             })
@@ -49831,25 +49972,29 @@ var nts;
                         if (name_1 === 'clear') {
                             if (_.isString(messageId_1)) {
                                 var $selector_1 = messageId_1;
-                                return $.Deferred().resolve()
+                                return $.Deferred()
+                                    .resolve(true)
                                     .then(function () { return $($selector_1).ntsError('clear'); })
                                     .then(function () { return !$($selector_1).ntsError('hasError'); });
                             }
                             else if (_.isArray(messageId_1)) {
                                 var $selectors_1 = messageId_1.join(', ');
-                                return $.Deferred().resolve()
+                                return $.Deferred()
+                                    .resolve(true)
                                     .then(function () { return $($selectors_1).ntsError('clear'); })
                                     .then(function () { return !$($selectors_1).ntsError('hasError'); });
                             }
                         }
                         else {
                             if (_.isString(messageId_1)) {
-                                return $.Deferred().resolve()
+                                return $.Deferred()
+                                    .resolve(true)
                                     .then(function () { return $(name_1).ntsError('set', { messageId: messageId_1 }); })
                                     .then(function () { return !$(name_1).ntsError('hasError'); });
                             }
                             else {
-                                return $.Deferred().resolve()
+                                return $.Deferred()
+                                    .resolve(true)
                                     .then(function () { return $(name_1).ntsError('set', messageId_1); })
                                     .then(function () { return !$(name_1).ntsError('hasError'); });
                             }
@@ -49858,13 +50003,14 @@ var nts;
                     else if (args.length > 2) {
                         if (args[0] === 'clear') {
                             var $selectors_2 = args.join(', ').replace(/^clear ,/, '');
-                            return $.Deferred().resolve()
+                            return $.Deferred()
+                                .resolve(true)
                                 .then(function () { return $($selectors_2).ntsError('clear'); })
                                 .then(function () { return !$($selectors_2).ntsError('hasError'); });
                         }
                     }
-                    return $.Deferred().resolve()
-                        /** Nếu có lỗi thì trả về false, không thì true */
+                    return $.Deferred()
+                        .resolve(true)
                         .then(function () { return !$('.nts-input').ntsError('hasError'); });
                     ;
                 };
@@ -49872,10 +50018,9 @@ var nts;
                 var $validate = function $validate(act) {
                     var args = Array.prototype.slice.apply(arguments);
                     if (args.length === 0) {
-                        return $.Deferred().resolve()
-                            /** Gọi xử lý validate của kiban */
+                        return $.Deferred()
+                            .resolve(true)
                             .then(function () { return $('.nts-input').trigger("validate"); })
-                            /** Nếu có lỗi thì trả về false, không thì true */
                             .then(function () { return !$('.nts-input').ntsError('hasError'); });
                     }
                     else if (args.length === 1) {
@@ -49886,34 +50031,40 @@ var nts;
                         else if (_.isArray(act)) {
                             selectors_1 = act.join(', ');
                         }
-                        return $.Deferred().resolve()
-                            /** Gọi xử lý validate của kiban */
+                        return $.Deferred()
+                            .resolve(true)
                             .then(function () { return $(selectors_1).trigger("validate"); })
-                            /** Nếu có lỗi thì trả về false, không thì true */
                             .then(function () { return !$(selectors_1).ntsError('hasError'); });
                     }
                     else {
                         var selectors_2 = args.join(', ');
-                        return $.Deferred().resolve()
-                            /** Gọi xử lý validate của kiban */
+                        return $.Deferred()
+                            .resolve(true)
                             .then(function () { return $(selectors_2).trigger("validate"); })
-                            /** Nếu có lỗi thì trả về false, không thì true */
                             .then(function () { return !$(selectors_2).ntsError('hasError'); });
                     }
                 };
-                Object.defineProperty($validate, "constraint", {
-                    value: function $constraint(name, value) {
-                        if (arguments.length === 0) {
-                            return $.Deferred().resolve()
-                                .then(function () { return __viewContext.primitiveValueConstraints; });
-                        }
-                        else if (arguments.length === 1) {
-                            return $.Deferred().resolve()
-                                .then(function () { return _.get(__viewContext.primitiveValueConstraints, name); });
-                        }
-                        else {
-                            return $.Deferred().resolve()
-                                .then(function () { return ui.validation.writeConstraint(name, value); });
+                Object.defineProperties($validate, {
+                    valid: {
+                        value: ko.observable(true)
+                    },
+                    constraint: {
+                        value: function $constraint(name, value) {
+                            if (arguments.length === 0) {
+                                return $.Deferred()
+                                    .resolve(true)
+                                    .then(function () { return __viewContext.primitiveValueConstraints; });
+                            }
+                            else if (arguments.length === 1) {
+                                return $.Deferred()
+                                    .resolve(true)
+                                    .then(function () { return _.get(__viewContext.primitiveValueConstraints, name); });
+                            }
+                            else {
+                                return $.Deferred()
+                                    .resolve(true)
+                                    .then(function () { return ui.validation.writeConstraint(name, value); });
+                            }
                         }
                     }
                 });

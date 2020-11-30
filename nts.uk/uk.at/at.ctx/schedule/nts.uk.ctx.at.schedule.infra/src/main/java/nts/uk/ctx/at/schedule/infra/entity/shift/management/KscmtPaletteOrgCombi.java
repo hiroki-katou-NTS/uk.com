@@ -17,8 +17,8 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftCombinationName;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletCombinations;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftCombinationName;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteCombinations;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -58,18 +58,18 @@ public class KscmtPaletteOrgCombi extends ContractUkJpaEntity{
 		return pk;
 	}
 	
-	public ShiftPalletCombinations toDomain(){
-		return new ShiftPalletCombinations(pk.position, new ShiftCombinationName(positionName), orgCombiDtls.stream().map(x -> x.toDomain()).collect(Collectors.toList()));
+	public ShiftPaletteCombinations toDomain(){
+		return new ShiftPaletteCombinations(pk.position, new ShiftCombinationName(positionName), orgCombiDtls.stream().map(x -> x.toDomain()).collect(Collectors.toList()));
 	}
 	
-	public static KscmtPaletteOrgCombi fromDomain(ShiftPalletCombinations shiftPalletCombinations, KscmtPaletteOrgPk pk) {
+	public static KscmtPaletteOrgCombi fromDomain(ShiftPaletteCombinations shiftPalletCombinations, KscmtPaletteOrgPk pk) {
 		// TODO Auto-generated method stub
 		KscmtPaletteOrgCombiPk orgCombiPk = new KscmtPaletteOrgCombiPk(AppContexts.user().companyId(), pk.targetUnit, pk.targetId, pk.page, shiftPalletCombinations.getPositionNumber());
 		return new KscmtPaletteOrgCombi(orgCombiPk, 
 				shiftPalletCombinations.getCombinationName().v(), null, 
 				shiftPalletCombinations.getCombinations().stream().map(x-> KscmtPaletteOrgCombiDtl.fromDomain(x,orgCombiPk)).collect(Collectors.toList()));
 	}
-	public static KscmtPaletteOrgCombi fromOneDomain(ShiftPalletCombinations shiftPalletCombinations,
+	public static KscmtPaletteOrgCombi fromOneDomain(ShiftPaletteCombinations shiftPalletCombinations,
 			KscmtPaletteOrgPk pk) {
 		KscmtPaletteOrgCombiPk cmpCombiPk = new KscmtPaletteOrgCombiPk(AppContexts.user().companyId(), pk.targetUnit, pk.targetId, pk.page,
 				shiftPalletCombinations.getPositionNumber());
@@ -77,7 +77,7 @@ public class KscmtPaletteOrgCombi extends ContractUkJpaEntity{
 				null);
 	}
 
-	public void toEntity(ShiftPalletCombinations shiftPalletCombinations) {
+	public void toEntity(ShiftPaletteCombinations shiftPalletCombinations) {
 		this.positionName = shiftPalletCombinations.getCombinationName().v();
 		orgCombiDtls.stream().forEach(x -> {
 			if(shiftPalletCombinations.getCombinations().stream()

@@ -3,12 +3,8 @@
  */
 package nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal;
 
-import static nts.arc.time.GeneralDate.today;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Map;
 import java.util.Optional;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -25,35 +21,12 @@ import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal.EmpInfoTerminalBuilder;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.receive.ReservationReceptionData;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.receive.StampReceptionData;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.receive.StampReceptionData.StampDataBuilder;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.service.ConvertTimeRecordReservationService;
-import nts.uk.ctx.at.record.dom.reservation.Helper;
-import nts.uk.ctx.at.record.dom.reservation.Helper.ClosingTime;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationCount;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReserveService;
-import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
-import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.AuthcMethod;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampTypeDisplay;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeCalArt;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ReservationArt;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.OvertimeDeclaration;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -82,8 +55,9 @@ public class EmpInfoTerminalTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		empInfoTerminal = new EmpInfoTerminalBuilder(new IPAddress("192.168.1.1"), new MacAddress("AABBCCDD"),
-				new EmpInfoTerminalCode(1), new EmpInfoTerSerialNo("1"), new EmpInfoTerminalName(""),
+		empInfoTerminal = new EmpInfoTerminalBuilder(Optional.of(new FullIpAddress(
+				new PartialIpAddress(192), new PartialIpAddress(168), new PartialIpAddress(1), new PartialIpAddress(1))), new MacAddress("AABBCCDD"),
+				new EmpInfoTerminalCode("1"), Optional.of(new EmpInfoTerSerialNo("1")), new EmpInfoTerminalName(""),
 				new ContractCode("1"))
 						.createStampInfo(new CreateStampInfo(new OutPlaceConvert(NotUseAtr.NOT_USE, Optional.empty()),
 								new ConvertEmbossCategory(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE), Optional.empty()))
@@ -95,23 +69,23 @@ public class EmpInfoTerminalTest {
 
 		StampRecord recordExpect = new StampRecord(new ContractCode(""), new StampNumber("1"),
 				GeneralDateTime.ymdhms(2020, 03, 03, 01, 01, 01), new StampTypeDisplay(""),
-				Optional.of(new EmpInfoTerminalCode(1)));
+				Optional.of(new EmpInfoTerminalCode("1")));
 
 		ReservationReceptionData receptionData = new ReservationReceptionData("1", "A", "200303", "010101", "2");
 
 		Pair<StampRecord, AtomTask> resultActual = empInfoTerminal.createReservRecord(require, receptionData);
 
-		BentoMenu menu = new BentoMenu("historyId", Arrays.asList(Helper.Menu.Item.bentoReserveFrame(1, true, true)),
-				ClosingTime.UNLIMITED);
-		ReservationRegisterInfo dummyRegInfo = Helper.Reservation.RegInfo.DUMMY;
-		ReservationDate todayReserve = Helper.Reservation.Date.of(today());
-		Map<Integer, BentoReservationCount> details = Collections.singletonMap(1, Helper.count(1));
+//		BentoMenu menu = new BentoMenu("historyId", Arrays.asList(Helper.Menu.Item.bentoReserveFrame(1, true, true)),
+//				ClosingTime.UNLIMITED);
+//		ReservationRegisterInfo dummyRegInfo = Helper.Reservation.RegInfo.DUMMY;
+//		ReservationDate todayReserve = Helper.Reservation.Date.of(today());
+//		Map<Integer, BentoReservationCount> details = Collections.singletonMap(1, Helper.count(1));
 		new Expectations() {
 			{
-				require.getBentoMenu((ReservationDate) any, Optional.empty());
-				result = menu;
+//				require.getBentoMenu((ReservationDate) any, Optional.empty());
+//				result = menu;
 
-				require.reserve((BentoReservation) any);
+//				require.reserve((BentoReservation) any);
 
 			}
 		};
@@ -228,8 +202,9 @@ public class EmpInfoTerminalTest {
 	@Test
 	public void getters() {
 
-		EmpInfoTerminal target = new EmpInfoTerminalBuilder(new IPAddress("192.168.1.1"), new MacAddress("AABBCCDD"),
-				new EmpInfoTerminalCode(1), new EmpInfoTerSerialNo("1"), new EmpInfoTerminalName(""),
+		EmpInfoTerminal target = new EmpInfoTerminalBuilder(Optional.of(new FullIpAddress(
+				new PartialIpAddress(192), new PartialIpAddress(168), new PartialIpAddress(1), new PartialIpAddress(1))), new MacAddress("AABBCCDD"),
+				new EmpInfoTerminalCode("1"), Optional.of(new EmpInfoTerSerialNo("1")), new EmpInfoTerminalName(""),
 				new ContractCode("1")).createStampInfo(null).modelEmpInfoTer(ModelEmpInfoTer.NRL_1)
 						.intervalTime((new MonitorIntervalTime(1))).build();
 		NtsAssert.invokeGetters(target);

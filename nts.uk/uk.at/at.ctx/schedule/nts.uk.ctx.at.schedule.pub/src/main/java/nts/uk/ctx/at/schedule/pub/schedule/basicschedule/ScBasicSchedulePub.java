@@ -64,6 +64,12 @@ public interface ScBasicSchedulePub {
 	 */
 	public GeneralDate acquireMaxDateBasicSchedule(List<String> sIds);
 	
-	
-	
+	/**
+	 * 
+	 * 勤務予定の確定状態を取得する
+	 * @param employeeID
+	 * @param date
+	 * @return
+	 */
+	public List<BasicScheduleConfirmExport> findConfirmById(List<String> employeeID, DatePeriod date);
 }

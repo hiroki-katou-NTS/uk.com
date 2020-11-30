@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import lombok.Value;
 import nts.arc.layer.dom.objecttype.DomainValue;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**

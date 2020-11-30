@@ -57,6 +57,7 @@ public class SyncServerUploadProcessingCommandHandler extends AsyncCommandHandle
 	private EmployeeRestoration employeeRestoration;
 
 	private static final String STATUS = "status";
+	private static final String DATA_STORAGE_PROCESS_ID = "dataStorageProcessId";
 	
 
 	@SuppressWarnings("unchecked")
@@ -140,6 +141,9 @@ public class SyncServerUploadProcessingCommandHandler extends AsyncCommandHandle
 		serverPrepareMng = employeeRestoration.restoreTargerEmployee(serverPrepareMng, performDataRecovery, tableList);
 		setter.updateData(STATUS, convertToStatus(serverPrepareMng));
 		serverPrepareMngRepository.update(serverPrepareMng);
+		if (!tableList.isEmpty()) {
+			setter.setData(DATA_STORAGE_PROCESS_ID, tableList.get(0).getDataStorageProcessingId());
+		}
 	}
 
 	private String convertToStatus(ServerPrepareMng serverPrepareMng) {

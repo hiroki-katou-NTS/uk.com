@@ -82,7 +82,7 @@ public class AgreementOperationSetting extends AggregateRoot {
 	/** 集計期間を取得 */
 	private DatePeriod updatePeriod(DatePeriod period) {
 		/** 末締めの期間を計算 */
-		val endYMEnd = GeneralDate.ymd(period.end().year(), period.end().month() + 1, 1).addDays(-1);
+		val endYMEnd = GeneralDate.ymd(period.end().year(), period.end().month(), 1).addMonths(1).addDays(-1);
 		
 		/** ○属性「締め日」を取得 */
 		if (this.closureDate.getLastDayOfMonth()){
@@ -115,11 +115,23 @@ public class AgreementOperationSetting extends AggregateRoot {
 			return new DatePeriod(GeneralDate.ymd(yearMonth.year(), yearMonth.month(), 1), 
 								  yearMonth.lastGeneralDate());
 		} 
-			
-		YearMonth previousYM = yearMonth.addMonths(-1);
-		int closureDay = this.closureDate.getClosureDay().v() + 1;
-		return new DatePeriod(GeneralDate.ymd(previousYM.year(), previousYM.month(), closureDay + 1), 
-				  		 	  GeneralDate.ymd(yearMonth.year(), yearMonth.month(), closureDay));
+		
+		return new DatePeriod(getClosureNextDate(yearMonth.addMonths(-1)), 
+								getClosureDate(yearMonth));
+	}
+	
+	private GeneralDate getClosureDate(YearMonth ym) {
+		val closureDay = this.closureDate.getClosureDay().v();
+		val lastDate = ym.lastGeneralDate();
+		return closureDay > lastDate.day() ? lastDate 
+				: GeneralDate.ymd(ym.year(), ym.month(), closureDay);
+	}
+	
+	private GeneralDate getClosureNextDate(YearMonth ym) {
+		val closureDay = this.closureDate.getClosureDay().v();
+		val lastDate = ym.lastGeneralDate();
+		return closureDay == lastDate.day() ? lastDate.addDays(1) 
+				: GeneralDate.ymd(ym.year(), ym.month(), closureDay + 1);
 	}
 	
 	/**
@@ -165,7 +177,6 @@ public class AgreementOperationSetting extends AggregateRoot {
 	/**
 	 * 年度から36協定の年月期間を取得
 	 * @param year 年度
-	 * @param getAgreementPeriodFromYear 年度から集計期間を取得
 	 * @return 年月期間
 	 */
 	public YearMonthPeriod getYearMonthPeriod(Year year){
@@ -179,7 +190,6 @@ public class AgreementOperationSetting extends AggregateRoot {
 	}
 	
 	/** 年度から集計期間を取得
-	 * @param Year year
 	 * */
 	public DatePeriod getPeriodFromYear(Year year) {
 	
@@ -193,7 +203,7 @@ public class AgreementOperationSetting extends AggregateRoot {
 			return new DatePeriod(start, start.addMonths(11));
 		}
 		
-		val start = GeneralDate.ymd(year.v(), month, this.closureDate.getClosureDay().v());
+		val start = getClosureDate(YearMonth.of(year.v(), month));
 		return new DatePeriod(start, start.addMonths(11));
 	}
 	
@@ -230,7 +240,6 @@ public class AgreementOperationSetting extends AggregateRoot {
 	
 	 /**
 	 * 日から36協定の集計年月を取得
-	 * @param 基準日
 	 * @return 年月
 	 */
 	public YearMonth getAgreementYMBytargetDay(GeneralDate targetTime) {

@@ -80,7 +80,17 @@ export class KafS00ShrComponent extends Vue {
         });
     }
 
-    public createApplicationInsert(appTypeParam): ApplicationInsert {
+    public handleErrorCommon(failData: any) {
+        const vm = this;
+        if (failData.messageId == 'Msg_324') {
+            vm.$modal.error({ messageId: failData.messageId, messageParams: failData.parameterIds });
+
+            return;
+        }	
+        vm.$modal.error({ messageId: failData.messageId, messageParams: failData.parameterIds });
+    }
+
+    public createApplicationInsert(appTypeParam): Application {
         return {
             prePostAtr: null,
             employeeIDLst: [],
@@ -94,10 +104,78 @@ export class KafS00ShrComponent extends Vue {
         };
     }
 
-    public createApplicationUpdate(): ApplicationUpdate {
+    public createApplicationUpdate(appDetailScreenInfo): Application {
         return {
+            prePostAtr: null,
+            employeeIDLst: [],
+            appType: appDetailScreenInfo.appType,
+            appDate: null,
             opAppReason: null,
-            opAppStandardReasonCD: null
+            opAppStandardReasonCD: null,
+            opAppStartDate: null,
+            opAppEndDate: null,
+            opStampRequestMode: null
+        };
+    }
+
+    public updateKaf000_A_Params(user: any) {
+        const vm = this;
+        let appDispInfoWithDateOutput = vm.appDispInfoStartupOutput.appDispInfoWithDateOutput,
+            appDispInfoNoDateOutput = vm.appDispInfoStartupOutput.appDispInfoNoDateOutput,
+            appDetailScreenInfo = vm.appDispInfoStartupOutput.appDetailScreenInfo;
+        vm.kaf000_A_Params = {
+            companyID: user.companyId,
+            employeeID: user.employeeId,
+            employmentCD: appDispInfoWithDateOutput.empHistImport.employmentCode,
+            applicationUseSetting: appDispInfoWithDateOutput.approvalFunctionSet.appUseSetLst[0],
+            receptionRestrictionSetting: appDispInfoNoDateOutput.applicationSetting.receptionRestrictionSetting[0],
+            // opOvertimeAppAtr: null
+        };
+    }
+
+    public updateKaf000_B_Params(modeNew: boolean) {
+        const vm = this;
+        let appDispInfoWithDateOutput = vm.appDispInfoStartupOutput.appDispInfoWithDateOutput,
+            appDispInfoNoDateOutput = vm.appDispInfoStartupOutput.appDispInfoNoDateOutput,
+            appDetailScreenInfo = vm.appDispInfoStartupOutput.appDetailScreenInfo;
+        vm.kaf000_B_Params = {
+            mode: modeNew ? 0 : 1,
+            appDisplaySetting: appDispInfoNoDateOutput.applicationSetting.appDisplaySetting,
+            newModeContent: null,
+            detailModeContent: null,
+            appDispInfoStartupOutput: vm.appDispInfoStartupOutput
+        };
+        if (modeNew) {
+            vm.kaf000_B_Params.newModeContent = {													
+                appTypeSetting: appDispInfoNoDateOutput.applicationSetting.appTypeSetting,
+                useMultiDaySwitch: true,
+                initSelectMultiDay: false
+            };
+        }
+        if (!modeNew) {
+            vm.kaf000_B_Params.detailModeContent = {
+                prePostAtr: appDetailScreenInfo.application.prePostAtr,
+                startDate: appDetailScreenInfo.application.opAppStartDate,
+                endDate: appDetailScreenInfo.application.opAppEndDate,
+                employeeName: _.isEmpty(appDispInfoNoDateOutput.employeeInfoLst) 
+                                ? 'empty' 
+                                : appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName
+            };
+        }
+    }
+
+    public updateKaf000_C_Params(modeNew: boolean) {
+        const vm = this;
+        let appDispInfoWithDateOutput = vm.appDispInfoStartupOutput.appDispInfoWithDateOutput,
+            appDispInfoNoDateOutput = vm.appDispInfoStartupOutput.appDispInfoNoDateOutput,
+            appDetailScreenInfo = vm.appDispInfoStartupOutput.appDetailScreenInfo;
+        vm.kaf000_C_Params = {
+            displayFixedReason: appDispInfoNoDateOutput.displayStandardReason,
+            displayAppReason: appDispInfoNoDateOutput.displayAppReason,
+            reasonTypeItemLst: appDispInfoNoDateOutput.reasonTypeItemLst,
+            appLimitSetting: appDispInfoNoDateOutput.applicationSetting.appLimitSetting,
+            opAppStandardReasonCD: modeNew ? null : appDetailScreenInfo.application.opAppStandardReasonCD,
+            opAppReason: modeNew ? null : appDetailScreenInfo.application.opAppReason
         };
     }
 
@@ -131,7 +209,7 @@ export enum AppTypeName {
     OPTIONAL_ITEM_APPLICATION = '任意項目申請'
 }
 
-export interface ApplicationInsert {
+export interface Application {
     prePostAtr: number;
     employeeIDLst: Array<String>;
     appType: number;
@@ -143,9 +221,9 @@ export interface ApplicationInsert {
     opStampRequestMode?: number;   
 }
 
-export interface ApplicationUpdate {
-    opAppReason: string;
-    opAppStandardReasonCD: string;
+export interface InitParam {
+    appDispInfoStartupOutput: any;
+    appDetail: any;
 }
 
 const API = {

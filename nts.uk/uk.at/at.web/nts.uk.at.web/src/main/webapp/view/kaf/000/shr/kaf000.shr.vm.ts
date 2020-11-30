@@ -116,6 +116,13 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
 		
 		opBusinessTripInfoOutput: any;
 	}
+	
+	export interface AppInitParam {
+		appType: number,
+        employeeIds : Array<string>;
+        baseDate: string;
+		isAgentMode?: boolean;
+	}
     
     export module model {
         // loại người đăng nhập
@@ -151,7 +158,7 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
             WORK_CHANGE_APPLICATION = 2, // 勤務変更申請
             BUSINESS_TRIP_APPLICATION = 3, // 出張申請
             GO_RETURN_DIRECTLY_APPLICATION = 4, // 直行直帰申請
-            LEAVE_TIME_APPLICATION = 6, // 休出時間申請
+            HOLIDAY_WORK_APPLICATION = 6, // 休出時間申請
             STAMP_APPLICATION = 7, // 打刻申請
             ANNUAL_HOLIDAY_APPLICATION = 8, // 時間休暇申請
             EARLY_LEAVE_CANCEL_APPLICATION = 9, // 遅刻早退取消申請

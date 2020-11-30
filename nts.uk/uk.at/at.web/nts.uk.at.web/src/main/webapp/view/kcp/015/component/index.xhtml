@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	  xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component" 
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+    <ui:composition template="../../../../master/dialog.xhtml">
+        <ui:define name="htmlHead">
+            <script type='text/javascript'>
+                var dialogSize = {
+                    width: 600,
+                    height: 330
+                };
+            </script>
+            <com:scriptfile set="IGNITE" />
+
+            <com:scriptfile path="kcp015.vm.js" />
+            <com:stylefile  path="kcp015.main.css" />
+            <com:scriptfile path="test.vm.js" />
+            <com:scriptfile path="test.start.js" />
+        </ui:define>
+        <ui:define name="content">
+            <div id="functions-area">
+            	<button data-bind="click: close" style="float: right; margin-right: 20px;">Close Dialog</button>
+            </div>
+            <div id="contents-area" class="kcp-013-test cf">
+                <div class="component-panel cf">
+                    <div class="right-panel">
+						<div data-bind="component: {
+								name: 'kcp015-component',
+								params: {
+	                            visibleA31 : visibleA31 ,
+	                            visibleA32 : visibleA32 ,
+	                            visibleA33 : visibleA33 ,
+	                            visibleA34 : visibleA34 ,
+	                            visibleA35 : visibleA35 ,
+	                            visibleA36 : visibleA36,
+	                            sids       : sids,
+	                            baseDate   : baseDate
+								}
+							}">
+						</div>
+					</div>
+                </div>
+            </div>
+        </ui:define>
+    </ui:composition>
+</body>
+
+</html>

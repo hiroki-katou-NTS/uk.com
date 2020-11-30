@@ -7,9 +7,11 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionClassification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSettingDetail;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
@@ -34,7 +36,7 @@ public class OutingTimeOfDailyAttd {
 	/**
 	 * 取得条件区分を基に外出時間の不要項目の削除
 	 * (区分 = 控除なら　外出理由 = 私用or組合のみのリストへ)
-	 * @param 取得条件区分 
+	 * @param 取得条件区分
 	 * @return 不要な項目を削除した時間帯
 	 */
 	public List<TimeSheetOfDeductionItem> removeUnuseItemBaseOnAtr(DeductionAtr dedAtr ,WorkTimeMethodSet workTimeMethodSet,Optional<FlowWorkRestTimezone> fluRestTime,Optional<FlowWorkRestSettingDetail> flowDetail) {
@@ -58,17 +60,17 @@ public class OutingTimeOfDailyAttd {
 					returnList = convertFromgoOutTimeToBreakTime(flowDetail.get().getFlowFixedRestSetting(),returnList);
 			}
 		}
-			
+
 		return returnList;
 	}
-	
+
 	/**
 	 * 外出時間帯から休憩時間帯への変換
 	 * @return 控除項目の時間帯
 	 */
 	public List<TimeSheetOfDeductionItem> convertFromgoOutTimeToBreakTime(FlowFixedRestSet fluidprefixBreakTimeSet,List<TimeSheetOfDeductionItem> deductionList){
 		List<TimeSheetOfDeductionItem> returnList = new ArrayList<>();
-		
+
 		for(TimeSheetOfDeductionItem deductionItem : deductionList) {
 			//休憩へ変換する
 			if((fluidprefixBreakTimeSet.isUsePrivateGoOutRest() && deductionItem.getGoOutReason().get().isPrivate())
@@ -89,10 +91,10 @@ public class OutingTimeOfDailyAttd {
 				returnList.add(deductionItem);
 			}
 		}
-		
+
 		return returnList;
 	}
-	
+
 	/**
 	 * 外出時間帯を全て控除項目の時間帯に変換する(パラメータ固定)
 	 * @return
@@ -102,5 +104,19 @@ public class OutingTimeOfDailyAttd {
 									.filter(ts -> ts.isCalcState())
 									.map(tc -> tc.toTimeSheetOfDeductionItem())
 									.collect(Collectors.toList());
+	}
+
+	/**
+	 * 外出理由を指定して時間帯を取得する
+	 * @param reasonForGoOut 外出理由
+	 * @return
+	 */
+	public List<TimeSpanForCalc> getTimeZoneByGoOutReason(GoingOutReason reasonForGoOut) {
+
+		return this.outingTimeSheets.stream()
+				.filter( c -> c.getReasonForGoOut() == reasonForGoOut)
+				.filter(c -> c.getTimeZone().isPresent() )
+				.map(c -> c.getTimeZone().get() )
+				.collect( Collectors.toList() );
 	}
 }

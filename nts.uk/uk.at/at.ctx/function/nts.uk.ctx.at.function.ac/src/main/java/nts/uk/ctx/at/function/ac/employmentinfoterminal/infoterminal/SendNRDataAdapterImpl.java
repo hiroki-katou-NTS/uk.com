@@ -61,7 +61,7 @@ public class SendNRDataAdapterImpl implements SendNRDataAdapter {
 	private SendSystemTimePub sendSystemTimePub;
 
 	@Override
-	public Optional<SendOvertimeNameImport> sendOvertime(Integer empInfoTerCode, String contractCode) {
+	public Optional<SendOvertimeNameImport> sendOvertime(String empInfoTerCode, String contractCode) {
 
 		return sendOvertimeNamePub.send(empInfoTerCode, contractCode).map(x -> {
 			List<SendOvertimeDetailImport> overtimes = x.getOvertimes().stream()
@@ -77,7 +77,7 @@ public class SendNRDataAdapterImpl implements SendNRDataAdapter {
 	}
 
 	@Override
-	public List<SendPerInfoNameImport> sendPerInfo(Integer empInfoTerCode, String contractCode) {
+	public List<SendPerInfoNameImport> sendPerInfo(String empInfoTerCode, String contractCode) {
 		return sendPerInfoNamePub
 				.send(empInfoTerCode, contractCode).stream().map(x -> new SendPerInfoNameImport(x.getIdNumber(),
 						x.getPerName(), x.getDepartmentCode(), x.getCompanyCode(), x.getReservation(), x.getPerCode()))
@@ -85,21 +85,21 @@ public class SendNRDataAdapterImpl implements SendNRDataAdapter {
 	}
 
 	@Override
-	public List<SendReasonApplicationImport> sendReasonApp(Integer empInfoTerCode, String contractCode) {
+	public List<SendReasonApplicationImport> sendReasonApp(String empInfoTerCode, String contractCode) {
 		return sendReasonApplicationPub.send(empInfoTerCode, contractCode).stream().map(x -> {
 			return new SendReasonApplicationImport(x.getAppReasonNo(), x.getAppReasonName());
 		}).collect(Collectors.toList());
 	}
 
 	@Override
-	public List<SendReservationMenuImport> sendReservMenu(Integer empInfoTerCode, String contractCode) {
+	public List<SendReservationMenuImport> sendReservMenu(String empInfoTerCode, String contractCode) {
 		return sendReservationMenuPub.send(empInfoTerCode, contractCode).stream()
 				.map(x -> new SendReservationMenuImport(x.getBentoMenu(), x.getUnit(), x.getFrameNumber()))
 				.collect(Collectors.toList());
 	}
 
 	@Override
-	public Optional<SendTimeRecordSettingImport> sendTimeRecordSetting(Integer empInfoTerCode, String contractCode) {
+	public Optional<SendTimeRecordSettingImport> sendTimeRecordSetting(String empInfoTerCode, String contractCode) {
 		return sendTimeRecordSettingPub.send(empInfoTerCode, contractCode).map(setting -> {
 			return new SendTimeRecordSettingImport(new SettingImportBuilder(setting.isRequest1(), setting.isRequest2(),
 					setting.isRequest3(), setting.isRequest4(), setting.isRequest6()).createReq7(setting.isRequest7())
@@ -109,14 +109,14 @@ public class SendNRDataAdapterImpl implements SendNRDataAdapter {
 	}
 
 	@Override
-	public List<SendWorkTimeNameImport> sendWorkTime(Integer empInfoTerCode, String contractCode) {
+	public List<SendWorkTimeNameImport> sendWorkTime(String empInfoTerCode, String contractCode) {
 		return sendWorkTimeNamePub.send(empInfoTerCode, contractCode).stream().map(x -> {
 			return new SendWorkTimeNameImport(x.getWorkTimeNumber(), x.getWorkTimeName(), x.getTime());
 		}).collect(Collectors.toList());
 	}
 
 	@Override
-	public List<SendWorkTypeNameImport> sendWorkType(Integer empInfoTerCode, String contractCode) {
+	public List<SendWorkTypeNameImport> sendWorkType(String empInfoTerCode, String contractCode) {
 		return sendWorkTypeNamePub.send(empInfoTerCode, contractCode).stream()
 				.map(x -> new SendWorkTypeNameImport(x.getWorkTypeNumber(), x.getDaiClassifiNum(), x.getWorkName()))
 				.collect(Collectors.toList());

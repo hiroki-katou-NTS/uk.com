@@ -63,7 +63,7 @@
 	top: 143px;
 	left: 120px;
 	position: fixed;
-	width: 100px;
+	width: 120px;
 	height: 24px;
 	z-index: 999999;
 }
@@ -174,23 +174,27 @@
 	text-align: right;
 }
 
-.view-kmp .view-e-content {
-	width: 700px;
+.view-kmp .view-e {
+	min-width: 1244px;
+}
+
+.view-kmp .view-e .view-e-content {
+	width: 682px;
 	margin-top: 10px;
 }
 
-.view-kmp .view-e-content .ntsRadioBox {
+.view-kmp .view-e .view-e-content .ntsRadioBox {
 	margin-top: 25px;
 	margin-bottom: 10px;
 }
 
-.view-kmp .view-e-content .view-e-bg-button {
-	width: 700px;
+.view-kmp .view-e .view-e-content .view-e-bg-button {
+	width: 682px;
 	text-align: right;
     margin-top: 25px;
 }
 
-.view-kmp .view-e-content .view-e-bg-button .view-e-button {
+.view-kmp .view-e .view-e-content .view-e-bg-button .view-e-button {
 	text-align: center;
 	width: 100px;
 }

@@ -211,6 +211,9 @@ public class OutsideOTSetting extends AggregateRoot implements Serializable{
 		
 		/** ○法定内休出の勤怠項目IDを全て取得 */
 		breakdownItems.addAll(getLegalHolidayWorkItems(require, cid));
+		if(breakdownItems.isEmpty()) {
+			return breakdown;
+		}
 		
 		/** 取得した件数分ループ */
 		val converter = require.createMonthlyConverter();
