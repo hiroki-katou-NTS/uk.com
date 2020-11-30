@@ -286,7 +286,7 @@ module ccg013.a.viewmodel {
             self.setupMenuBar();
             self.setupTitleMenu();
             self.setupTreeMenu();
-            self.setupContextMenu();
+            // self.setupContextMenu();
         }
 
         /** Setup MenuBar */
@@ -363,35 +363,25 @@ module ccg013.a.viewmodel {
         }
 
         /** Setup ContextMenu */
-        private setupContextMenu(): void {
-            var self = this;
-            new contextMenu(".context-menu-bar", [
-                new menu("edit", nts.uk.resource.getText('CCG013_122'), (ui) => {
-                    let li = $(ui).parent('li');
-                    self.openIdialog(li.attr('id'));
-                }),
-                new menu("delete", nts.uk.resource.getText('CCG013_123'), (ui) => {
-                    let element = $(ui).parent();
-                    self.removeMenuBar(element.attr("id"));
-                })
-            ]);
-            new contextMenu(".context-menu-title", [
-                new menu("edit", nts.uk.resource.getText('CCG013_124'), (ui) => {
-                    let div = $(ui).parent('div');
-                    self.openJdialog(div.attr('id'));
-                }),
-                new menu("delete", nts.uk.resource.getText('CCG013_125'), (ui) => {
-                    let element = $(ui).parent();
-                    let id = element.attr('id');
-                    self.removeTitleBar(id);
-                })
-            ]);
-            new contextMenu(".context-menu-tree", [
-                new menu("delete", nts.uk.resource.getText('CCG013_126'), (ui) => {
-                    self.removeTreeMenu($(ui));
-                })
-            ]);
-        }
+        // private setupContextMenu(): void {
+        //     var self = this;
+        //     new contextMenu(".context-menu-title", [
+        //         new menu("edit", nts.uk.resource.getText('CCG013_124'), (ui) => {
+        //             let div = $(ui).parent('div');
+        //             self.openJdialog(div.attr('id'));
+        //         }),
+        //         new menu("delete", nts.uk.resource.getText('CCG013_125'), (ui) => {
+        //             let element = $(ui).parent();
+        //             let id = element.attr('id');
+        //             self.removeTitleBar(id);
+        //         })
+        //     ]);
+        //     new contextMenu(".context-menu-tree", [
+        //         new menu("delete", nts.uk.resource.getText('CCG013_126'), (ui) => {
+        //             self.removeTreeMenu($(ui));
+        //         })
+        //     ]);
+        // }
 
         /** Rebind Knockout Menubar */
         private rebindMenuBar(): void {
@@ -513,7 +503,7 @@ module ccg013.a.viewmodel {
             });
         }
 
-        openDdialog(titleMenu: TitleMenu): void {
+        openZdialog(titleMenu: TitleMenu): void {
             let self = this;
             let mang = [];
             for(let i = 0; i < titleMenu.treeMenu().length; i++){
@@ -535,8 +525,9 @@ module ccg013.a.viewmodel {
                 treeMenus: mang
             };
             setShared("titleBar", titleBar);
-            modal("/view/ccg/013/d/index.xhtml").onClosed(function() {
-                let data = getShared("CCG013D_MENUS");
+            setShared("titleMenuId", titleMenu.titleMenuId);
+            modal("/view/ccg/013/z/index.xhtml").onClosed(function() {
+                let data = getShared("CCG013C_MENUS");
                 if (data !== undefined) {
                     titleMenu.treeMenu.removeAll();
                     if (data && data.length > 0) {
@@ -554,8 +545,68 @@ module ccg013.a.viewmodel {
                     }
                     self.setupTreeMenu();
                 }
+                let textColor = getShared("CCG013C_TEXT_COLOR");
+                if(textColor) {
+                    titleMenu.textColor(textColor);
+                }
+                let backgroundColor = getShared("CCG013C_BACKGROUND_COLOR");
+                if(backgroundColor) {
+                    titleMenu.backgroundColor(backgroundColor);
+                }
+                let titleMenuName = getShared("CCG013C_TITLE_MENU_NAME");
+                if(titleMenuName) {
+                    titleMenu.titleMenuName(titleMenuName);
+                }
+                let titleMenuId = getShared("CCG013C_MENUS_ID");
+                if(titleMenuId) {
+                    self.removeTitleBar(titleMenuId);
+                }
             });
         }
+
+        // openDdialog(titleMenu: TitleMenu): void {
+        //     let self = this;
+        //     let mang = [];
+        //     for(let i = 0; i < titleMenu.treeMenu().length; i++){
+        //         let treeMenus = {
+        //             classification: titleMenu.treeMenu()[i].classification(),
+        //             code: titleMenu.treeMenu()[i].code(),
+        //             displayOrder: titleMenu.treeMenu()[i].displayOrder(),
+        //             name: titleMenu.treeMenu()[i].name(),
+        //             system: titleMenu.treeMenu()[i].system(),
+        //             titleMenuId: titleMenu.treeMenu()[i].titleMenuId(),
+        //             treeMenuId: titleMenu.treeMenu()[i].treeMenuId()
+        //         }
+        //         mang.push(treeMenus);
+        //     }
+        //     let titleBar = {
+        //         name: titleMenu.titleMenuName(),
+        //         backgroundColor: titleMenu.backgroundColor(),
+        //         textColor: titleMenu.textColor(),
+        //         treeMenus: mang
+        //     };
+        //     setShared("titleBar", titleBar);
+        //     modal("/view/ccg/013/d/index.xhtml").onClosed(function() {
+        //         let data = getShared("CCG013D_MENUS");
+        //         if (data !== undefined) {
+        //             titleMenu.treeMenu.removeAll();
+        //             if (data && data.length > 0) {
+        //                 _.forEach(data, x => {
+        //                     var treeMenuId = randomId();
+        //                     titleMenu.treeMenu.push(new TreeMenu({
+        //                         titleMenuId: titleMenu.titleMenuId(),
+        //                         code: x.code,
+        //                         name: x.name,
+        //                         displayOrder: x.order,
+        //                         classification: x.menu_cls,
+        //                         system: x.system
+        //                     }));
+        //                 });
+        //             }
+        //             self.setupTreeMenu();
+        //         }
+        //     });
+        // }
 
         optionEDialog(): void {
             var self = this;
@@ -577,59 +628,65 @@ module ccg013.a.viewmodel {
             modal("/view/ccg/013/k/index.xhtml");
         }
 
-        openIdialog(id): any {
-            var self = this;
-            var datas: Array<any> = ko.toJS(self.currentWebMenu().menuBars);
-            var menu = _.find(datas, x => x.menuBarId == id);
-            setShared("CCG013I_MENU_BAR1", menu);
-            modal("/view/ccg/013/i/index.xhtml").onClosed(function() {
-                let data = getShared("CCG013I_MENU_BAR");
-                if (data) {
-                    let menuBars: Array<MenuBar> = self.currentWebMenu().menuBars();
-                    _.forEach(menuBars, function(item: MenuBar) {
-                        if (item.menuBarId() == id) {
-                            item.menuBarName(data.menuBarName);
-                            item.backgroundColor(data.backgroundColor);
-                            item.textColor(data.textColor);
-                        }
-                    });
-                    $("#menubar-tabs li#" + id + " a").trigger('click');
-                }
-            });
-        }
+        // openIdialog(id: any): any {
+        //     var self = this;
+        //     var datas: Array<any> = ko.toJS(self.currentWebMenu().menuBars);
+        //     var menu = _.find(datas, x => x.menuBarId == id);
+        //     console.log(datas[0].menuBarId);
+        //     setShared("CCG013I_MENU_BAR1", menu);
+        //     modal("/view/ccg/013/i/index.xhtml").onClosed(function() {
+        //         let data = getShared("CCG013I_MENU_BAR");
+        //         if (data) {
+        //             let menuBars: Array<MenuBar> = self.currentWebMenu().menuBars();
+        //             _.forEach(menuBars, function(item: MenuBar) {
+        //                 if (item.menuBarId() == id) {
+        //                     item.menuBarName(data.menuBarName);
+        //                     item.backgroundColor(data.backgroundColor);
+        //                     item.textColor(data.textColor);
+        //                 }
+        //             });
+        //             $("#menubar-tabs li#" + id + " a").trigger('click');
+        //         }
 
-        openJdialog(id): any {
-            var self = this;
-            var activeid = self.currentMenuBar().menuBarId();   
-            var datas: Array<any> = ko.toJS(self.currentWebMenu().menuBars());
-            var menu = _.find(datas, x => x.menuBarId == activeid);
-            var dataTitleMenu: Array<any> = menu.titleMenu;
-            var titleMenu = _.find(dataTitleMenu, y => y.titleMenuId == id);
-            setShared("CCG013A_ToChild_TitleBar", titleMenu);    
-            modal("/view/ccg/013/j/index.xhtml").onClosed(function() {
-                let data = getShared("CCG013J_ToMain_TitleBar");
-                if (data) {
-                    let menuBars: Array<MenuBar> = self.currentWebMenu().menuBars(),
+        //         let menuBarId = getShared("CCG013I_MENU_BAR_ID");
+        //         if (menuBarId) {
+        //             self.removeMenuBar(menuBarId);
+        //         }
+        //     });
+        // }
+
+        // openJdialog(id): any {
+        //     var self = this;
+        //     var activeid = self.currentMenuBar().menuBarId();   
+        //     var datas: Array<any> = ko.toJS(self.currentWebMenu().menuBars());
+        //     var menu = _.find(datas, x => x.menuBarId == activeid);
+        //     var dataTitleMenu: Array<any> = menu.titleMenu;
+        //     var titleMenu = _.find(dataTitleMenu, y => y.titleMenuId == id);
+        //     setShared("CCG013A_ToChild_TitleBar", titleMenu);    
+        //     modal("/view/ccg/013/j/index.xhtml").onClosed(function() {
+        //         let data = getShared("CCG013J_ToMain_TitleBar");
+        //         if (data) {
+        //             let menuBars: Array<MenuBar> = self.currentWebMenu().menuBars(),
                     
-                        menuBar = _.forEach(menuBars, function (x) { 
-                            return (menuBars[0].titleMenu().length > 0 && x.titleMenu()[0].titleMenuId() == id); 
-                        });
-                    _.forEach(menuBar, function(menuBarItem: any) {
-                        _.forEach(menuBarItem.titleMenu(), function(item: TitleMenu) {
-                        if (item.titleMenuId() == id) {
-                            item.titleMenuName(data.nameTitleBar);
-                            item.backgroundColor(data.backgroundColor);
-                            item.imageFile(data.imageId);
-                            item.textColor(data.letterColor);
-                            item.imageName(data.imageName);
-                            item.imageSize(data.imageSize);
-                        }
-                    });
-                    }
-                 );   
-                }
-            });
-        }
+        //                 menuBar = _.forEach(menuBars, function (x) { 
+        //                     return (menuBars[0].titleMenu().length > 0 && x.titleMenu()[0].titleMenuId() == id); 
+        //                 });
+        //             _.forEach(menuBar, function(menuBarItem: any) {
+        //                 _.forEach(menuBarItem.titleMenu(), function(item: TitleMenu) {
+        //                 if (item.titleMenuId() == id) {
+        //                     item.titleMenuName(data.nameTitleBar);
+        //                     item.backgroundColor(data.backgroundColor);
+        //                     item.imageFile(data.imageId);
+        //                     item.textColor(data.letterColor);
+        //                     item.imageName(data.imageName);
+        //                     item.imageSize(data.imageSize);
+        //                 }
+        //             });
+        //             }
+        //          );   
+        //         }
+        //     });
+        // }
         
         /**
          * Export excel
