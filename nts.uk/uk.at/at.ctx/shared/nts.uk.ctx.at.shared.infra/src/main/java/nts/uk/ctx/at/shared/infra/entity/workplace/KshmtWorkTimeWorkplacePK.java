@@ -21,6 +21,4 @@ public class KshmtWorkTimeWorkplacePK {
 	@Column(name="WKP_ID")
 	public String workplaceID;
 
-	@Column(name="WORKTIME_CD")
-	public String workTimeID;
 }
