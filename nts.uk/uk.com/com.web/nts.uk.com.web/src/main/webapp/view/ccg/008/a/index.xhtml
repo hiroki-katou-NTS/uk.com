@@ -16,12 +16,13 @@
       <com:scriptfile path="./layout2Component.vm.js" />
       <com:scriptfile path="/view/ktg/027/a/ktg027.a.vm.js"  of="nts.uk.at.web"/>
       <com:scriptfile path="/view/ktg/026/a/ktg026component.a.vm.js"  of="nts.uk.at.web"/>
+      <com:scriptfile path="/view/ktg/031/a/ktg031.a.vm.js" />
 		</ui:define>
 		<ui:define name="content">
 			<div id="contents-area">
 				<div id="ver4">
 					<div style="width: 390px; height:30px; float: right; margin-left: -265px;">
-            <com:ko-if bind="isShowSwitch()"> 
+            <com:ko-if bind="isShowSwitch()">
 							<div id="closure" tabindex="2"
                 data-bind="ntsComboBox: {
                   name: '#[CCG008_16]',
@@ -39,7 +40,7 @@
                   ]}">
                 </div>
             </com:ko-if>
-            <com:ko-if bind="isShowSwitch()"> 
+            <com:ko-if bind="isShowSwitch()">
               <div tabindex="3" style="position: relative; vertical-align: top;" data-bind="ntsSwitchButton: {
                 name: '#[CCG008_13]',
                 options: dateSwitch,
@@ -113,11 +114,11 @@
                   </div> -->
                   <layout2-component params= "item:paramWidgetLayout2()"></layout2-component>
                 </div>
-                
+
               </com:ko-if>
             </div>
           </div>
-        </div>	
+        </div>
 			</div>
 		</ui:define>
 	</ui:composition>

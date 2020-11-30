@@ -279,14 +279,14 @@ module nts.uk.com.view.ccg015.e {
   }
 
   export enum MenuPartType {
-    PART_KTG_005 = '1', // Iframe Have setting
-    PART_KTG_001 = '2', // Iframe
-    PART_KTG_004 = '3', // Iframe Have setting
-    PART_KTG_026 = '4', // Component
-    PART_KTG_027 = '5', // Component
-    PART_KDP_001 = '6', // Iframe
-    PART_KTG_031 = '7', // Component
-    PART_CCG_005 = '8', // Component
+    PART_KTG_005 = '0', // Iframe Have setting
+    PART_KTG_001 = '1', // Iframe
+    PART_KTG_004 = '2', // Iframe Have setting
+    PART_KTG_026 = '3', // Component
+    PART_KTG_027 = '4', // Component
+    PART_KDP_001 = '5', // Iframe
+    PART_KTG_031 = '6', // Component
+    PART_CCG_005 = '7', // Component
   }
 
   export class WidgetTypeModel {
