@@ -101,7 +101,7 @@ public class LoginRequire {
 		public void authorizeLoginSession(IdentifiedEmployeeInfo identified) {
 			loginAuthorizeAdapter.authorize(
 					loginUserContextManager.roleIdSetter(),
-					identified.getUser().getUserID());
+					identified.getUserId());
 		}
 		
 	}

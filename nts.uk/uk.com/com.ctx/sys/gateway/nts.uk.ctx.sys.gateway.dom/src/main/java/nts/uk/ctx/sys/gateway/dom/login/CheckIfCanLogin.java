@@ -15,9 +15,9 @@ public class CheckIfCanLogin {
 
 	public static Result check(Require require, IdentifiedEmployeeInfo identified) {
 
-		String tenantCode = identified.getUser().getContractCode().v();
-		String companyId = identified.getEmployee().getCompanyId();
-		String userId = identified.getUser().getUserID();
+		String tenantCode = identified.getTenantCode();
+		String companyId = identified.getCompanyId();
+		String userId = identified.getUserId();
 		
 		// 会社の廃止
 		val company = require.getCompanyInforImport(companyId);

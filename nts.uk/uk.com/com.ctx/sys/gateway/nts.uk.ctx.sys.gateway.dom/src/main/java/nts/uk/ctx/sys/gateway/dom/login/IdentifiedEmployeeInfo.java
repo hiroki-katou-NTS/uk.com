@@ -15,4 +15,20 @@ public class IdentifiedEmployeeInfo {
 	
 	/* ユーザ */
 	User user;
+	
+	public String getTenantCode() {
+		return user.getContractCode().v();
+	}
+	
+	public String getUserId() {
+		return user.getUserID();
+	}
+	
+	public String getCompanyId() {
+		return employee.getCompanyId();
+	}
+	
+	public String getEmployeeId() {
+		return employee.getEmployeeId();
+	}
 }
