@@ -30,6 +30,7 @@ import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.infra.repository.application.businesstrip.AposeBusinessTrip;
 import nts.uk.ctx.at.request.infra.repository.application.gobackdirectly.AsposeGoReturnDirectly;
 import nts.uk.ctx.at.request.infra.repository.application.lateleaveearly.AsposeLateLeaveEarly;
+import nts.uk.ctx.at.request.infra.repository.application.overtime.AsposeAppOverTime;
 import nts.uk.ctx.at.request.infra.repository.application.stamp.AsposeAppStamp;
 import nts.uk.ctx.at.request.infra.repository.application.workchange.AsposeWorkChange;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
@@ -58,6 +59,9 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 	
 	@Inject
 	private AsposeGoReturnDirectly asposeGoReturnDirectly;
+	
+	@Inject
+	private AsposeAppOverTime asposeAppOverTime;
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, PrintContentOfApp printContentOfApp, ApplicationType appType) {
@@ -130,6 +134,11 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 
 		switch (appType) {
 		case OVER_TIME_APPLICATION:
+			asposeAppOverTime.printAppOverTimeContent(worksheet, printContentOfApp);
+			reasonLabel = worksheet.getCells().get("B27");
+			remarkLabel = worksheet.getCells().get("B30");
+			reasonContent = worksheet.getCells().get("D27");
+			printBottomKAF000(reasonLabel, remarkLabel, reasonContent, printContentOfApp);
 			break;
 		case ABSENCE_APPLICATION:
 			break;
@@ -189,7 +198,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 	private String getFileTemplate(ApplicationType appType) {
 		switch (appType) {
 		case OVER_TIME_APPLICATION:
-			return "";
+			return "application/KAF005_template.xlsx";
 		case ABSENCE_APPLICATION:
 			return "";
 		case WORK_CHANGE_APPLICATION:

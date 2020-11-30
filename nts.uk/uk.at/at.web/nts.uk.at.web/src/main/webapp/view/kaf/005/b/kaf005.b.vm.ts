@@ -171,7 +171,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
             return vm.$ajax(API.initAppDetail, command)
             .done(res => {
                 if (res) {
-                    vm.printContentOfEachAppDto().opPrintContentOfWorkChange = res;
+                    vm.printContentOfEachAppDto().opDetailOutput = res;
 					vm.appOverTime = res.appOverTime;
 					vm.dataSource = res.displayInfoOverTime;
 					vm.visibleModel = vm.createVisibleModel(vm.dataSource);
