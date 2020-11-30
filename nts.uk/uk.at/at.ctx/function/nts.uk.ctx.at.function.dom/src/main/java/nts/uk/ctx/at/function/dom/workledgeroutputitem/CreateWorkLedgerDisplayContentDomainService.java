@@ -34,9 +34,11 @@ public class CreateWorkLedgerDisplayContentDomainService {
     /**
      * 勤務台帳の表示内容を作成する
      *
-     * @param require     Require
-     * @param datePeriod  期間
-     * @param empInfoList List<社員情報>
+     * @param require                 Require
+     * @param datePeriod              期間
+     * @param employeeInfoList        List<社員情報>
+     * @param workLedgerOutputSetting 勤務台帳の出力設定
+     * @param workPlaceInfo           List<WorkPlaceInfo>
      * @return List<勤務台帳の帳票表示内容>
      */
     public static List<WorkLedgerDisplayContent> createWorkLedgerDisplayContent(
@@ -56,7 +58,7 @@ public class CreateWorkLedgerDisplayContentDomainService {
         val mapWrps = workPlaceInfo.parallelStream().collect(Collectors.toMap(WorkPlaceInfo::getWorkPlaceId, e -> e));
         val baseDate = datePeriod.end();
         // ② = call() 基準日で社員の雇用と締め日を取得する
-        val closureDateEmploymentList = GetClosureDateEmploymentDomainService.getByDate(require, baseDate, listSid);
+        val closureDateEmploymentList = GetClosureDateEmploymentDomainService.get(require, baseDate, listSid);
 
         val closureDayMap = closureDateEmploymentList.stream().collect(Collectors.toMap(ClosureDateEmployment::getEmployeeId, e -> e));
         val monthlyOutputItems = workLedgerOutputSetting.getOutputItemList().stream()
@@ -64,6 +66,7 @@ public class CreateWorkLedgerDisplayContentDomainService {
                 .collect(Collectors.toList());
         List<WorkLedgerDisplayContent> rs = new ArrayList<>();
         listEmployeeStatus.parallelStream().forEach(e -> {
+            if (monthlyOutputItems.size() == 0) return;
             val item = new WorkLedgerDisplayContent();
             val eplInfo = mapSids.get(e.getEmployeeId());
             if (eplInfo != null) {
@@ -83,7 +86,7 @@ public class CreateWorkLedgerDisplayContentDomainService {
             val closureDay = closureDayMap.get(e.getEmployeeId()).getClosure().getClosureHistories()
                     .get(0).getClosureDate().getClosureDay().v();
             for (val date : e.getListPeriod()) {
-                val yearMonthPeriod = GetSuitableDateByClosureDateUtility.getByClosureDate(date, closureDay);
+                val yearMonthPeriod = GetSuitableDateByClosureDateUtility.convertPeriod(date, closureDay);
                 listAttendancesz.addAll(require.getActualMultipleMonth(Collections.singletonList(e.getEmployeeId()),
                         yearMonthPeriod, listAttIds).get(e.getEmployeeId()));
             }
