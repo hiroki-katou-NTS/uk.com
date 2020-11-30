@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.declare.DeclareOvertimeFram
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.declare.DeclareSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.declare.DeclareSetRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.declare.HdwkFrameEachHdAtr;
-import nts.uk.ctx.at.shared.infra.entity.dailyattdcal.declare.KrcmtDeclareSet;
+import nts.uk.ctx.at.shared.infra.entity.dailyattdcal.declare.KsrmtDeclareSet;
 
 /**
  * リポジトリ実装：申告設定
@@ -21,15 +21,15 @@ public class JpaDeclareSetRepository extends JpaRepository implements DeclareSet
 
 	@Override
 	public Optional<DeclareSet> find(String companyId) {
-		return this.queryProxy().find(companyId, KrcmtDeclareSet.class)
+		return this.queryProxy().find(companyId, KsrmtDeclareSet.class)
 				.map(c -> convertToDomain(c));
 	}
 	
 	@Override
 	public void addOrUpdate(DeclareSet declareSet) {
-		Optional<KrcmtDeclareSet> entityOpt =
-				this.queryProxy().find(declareSet.getCompanyId(), KrcmtDeclareSet.class);
-		KrcmtDeclareSet entity = new KrcmtDeclareSet();
+		Optional<KsrmtDeclareSet> entityOpt =
+				this.queryProxy().find(declareSet.getCompanyId(), KsrmtDeclareSet.class);
+		KsrmtDeclareSet entity = new KsrmtDeclareSet();
 		if (entityOpt.isPresent()){
 			entity = entityOpt.get();
 		}
@@ -86,7 +86,7 @@ public class JpaDeclareSetRepository extends JpaRepository implements DeclareSet
 	 * @param entity エンティティ：申告設定
 	 * @return ドメイン：申告設定
 	 */
-	private DeclareSet convertToDomain(KrcmtDeclareSet entity){
+	private DeclareSet convertToDomain(KsrmtDeclareSet entity){
 		
 		return DeclareSet.createFromJavaType(
 				entity.companyId,
