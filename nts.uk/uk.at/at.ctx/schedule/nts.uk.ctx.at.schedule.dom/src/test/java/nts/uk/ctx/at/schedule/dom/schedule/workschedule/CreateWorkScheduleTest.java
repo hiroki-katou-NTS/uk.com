@@ -46,7 +46,11 @@ public class CreateWorkScheduleTest {
 		new Expectations() {{
 			
 			workInformation.containsOnChangeableWorkingTime(require, clockArea, workNo, time);
-			result = new ContainsResult( true, new TimeSpanForCalc(new TimeWithDayAttr(1), new TimeWithDayAttr(2)));
+			result = new ContainsResult( true, 
+					Optional.of(new TimeSpanForCalc(
+							new TimeWithDayAttr(1), 
+							new TimeWithDayAttr(2))
+							));
 		}};
 		
 		Optional<ErrorInfoOfWorkSchedule> result = NtsAssert.Invoke.staticMethod(CreateWorkSchedule.class, "getErrorInfo", 
@@ -76,7 +80,11 @@ public class CreateWorkScheduleTest {
 		new Expectations() {{
 			
 			workInformation.containsOnChangeableWorkingTime(require, clockArea, workNo, time);
-			result = new ContainsResult( false, new TimeSpanForCalc(new TimeWithDayAttr(1), new TimeWithDayAttr(2)));
+			result = new ContainsResult( false, 
+					Optional.of(new TimeSpanForCalc(
+							new TimeWithDayAttr(1), 
+							new TimeWithDayAttr(2))
+							));
 			
 			builder.build().buildMessage();
 			result = "msg";
@@ -118,15 +126,27 @@ public class CreateWorkScheduleTest {
 			
 			// 勤怠項目34
 			workInformation.containsOnChangeableWorkingTime(require, ClockAreaAtr.END, new WorkNo(1), (TimeWithDayAttr) any);
-			result = new ContainsResult( true, new TimeSpanForCalc(new TimeWithDayAttr(1), new TimeWithDayAttr(2)));
+			result = new ContainsResult( true, 
+					Optional.of(new TimeSpanForCalc(
+							new TimeWithDayAttr(1), 
+							new TimeWithDayAttr(2))
+							));
 			
 			// 勤怠項目41
 			workInformation.containsOnChangeableWorkingTime(require, ClockAreaAtr.START, new WorkNo(2), (TimeWithDayAttr) any);
-			result = new ContainsResult( false, new TimeSpanForCalc(new TimeWithDayAttr(1), new TimeWithDayAttr(2)));
+			result = new ContainsResult( false, 
+					Optional.of(new TimeSpanForCalc(
+							new TimeWithDayAttr(1), 
+							new TimeWithDayAttr(2))
+							));
 			
 			// 勤怠項目44
 			workInformation.containsOnChangeableWorkingTime(require, ClockAreaAtr.END, new WorkNo(2), (TimeWithDayAttr) any);
-			result = new ContainsResult( false, new TimeSpanForCalc(new TimeWithDayAttr(1), new TimeWithDayAttr(2)));
+			result = new ContainsResult( false, 
+					Optional.of(new TimeSpanForCalc(
+							new TimeWithDayAttr(1), 
+							new TimeWithDayAttr(2))
+							));
 			
 			builder.build().buildMessage();
 			result = "msg";
@@ -262,15 +282,27 @@ public class CreateWorkScheduleTest {
 			
 			// 勤怠項目34
 			workInformation.containsOnChangeableWorkingTime(require, ClockAreaAtr.END, new WorkNo(1), (TimeWithDayAttr) any);
-			result = new ContainsResult( true, new TimeSpanForCalc(new TimeWithDayAttr(1), new TimeWithDayAttr(2)));
+			result = new ContainsResult( true, 
+					Optional.of(new TimeSpanForCalc(
+							new TimeWithDayAttr(1), 
+							new TimeWithDayAttr(2))
+							));
 			
 			// 勤怠項目41
 			workInformation.containsOnChangeableWorkingTime(require, ClockAreaAtr.START, new WorkNo(2), (TimeWithDayAttr) any);
-			result = new ContainsResult( false, new TimeSpanForCalc(new TimeWithDayAttr(1), new TimeWithDayAttr(2)));
+			result = new ContainsResult( false, 
+					Optional.of(new TimeSpanForCalc(
+							new TimeWithDayAttr(1), 
+							new TimeWithDayAttr(2))
+							));
 			
 			// 勤怠項目44
 			workInformation.containsOnChangeableWorkingTime(require, ClockAreaAtr.END, new WorkNo(2), (TimeWithDayAttr) any);
-			result = new ContainsResult( false, new TimeSpanForCalc(new TimeWithDayAttr(1), new TimeWithDayAttr(2)));
+			result = new ContainsResult( false, 
+					Optional.of(new TimeSpanForCalc(
+							new TimeWithDayAttr(1), 
+							new TimeWithDayAttr(2))
+							));
 			
 			builder.build().buildMessage();
 			result = "msg";
@@ -333,15 +365,27 @@ public class CreateWorkScheduleTest {
 			
 			// 勤怠項目34
 			workInformation.containsOnChangeableWorkingTime(require, ClockAreaAtr.END, new WorkNo(1), (TimeWithDayAttr) any);
-			result = new ContainsResult( true, new TimeSpanForCalc(new TimeWithDayAttr(1), new TimeWithDayAttr(2)));
+			result = new ContainsResult( true, 
+					Optional.of(new TimeSpanForCalc(
+							new TimeWithDayAttr(1), 
+							new TimeWithDayAttr(2))
+							));
 			
 			// 勤怠項目41
 			workInformation.containsOnChangeableWorkingTime(require, ClockAreaAtr.START, new WorkNo(2), (TimeWithDayAttr) any);
-			result = new ContainsResult( false, new TimeSpanForCalc(new TimeWithDayAttr(1), new TimeWithDayAttr(2)));
+			result = new ContainsResult( false, 
+					Optional.of(new TimeSpanForCalc(
+							new TimeWithDayAttr(1), 
+							new TimeWithDayAttr(2))
+							));
 			
 			// 勤怠項目44
 			workInformation.containsOnChangeableWorkingTime(require, ClockAreaAtr.END, new WorkNo(2), (TimeWithDayAttr) any);
-			result = new ContainsResult( false, new TimeSpanForCalc(new TimeWithDayAttr(1), new TimeWithDayAttr(2)));
+			result = new ContainsResult( false, 
+					Optional.of(new TimeSpanForCalc(
+							new TimeWithDayAttr(1), 
+							new TimeWithDayAttr(2))
+							));
 			
 			builder.build().buildMessage();
 			result = "msg";
@@ -405,15 +449,27 @@ public class CreateWorkScheduleTest {
 			
 			// 勤怠項目34
 			workInformation.containsOnChangeableWorkingTime(require, ClockAreaAtr.END, new WorkNo(1), (TimeWithDayAttr) any);
-			result = new ContainsResult( true, new TimeSpanForCalc(new TimeWithDayAttr(1), new TimeWithDayAttr(2)));
+			result = new ContainsResult( true, 
+					Optional.of(new TimeSpanForCalc(
+							new TimeWithDayAttr(1), 
+							new TimeWithDayAttr(2))
+							));
 			
 			// 勤怠項目41
 			workInformation.containsOnChangeableWorkingTime(require, ClockAreaAtr.START, new WorkNo(2), (TimeWithDayAttr) any);
-			result = new ContainsResult( false, new TimeSpanForCalc(new TimeWithDayAttr(1), new TimeWithDayAttr(2)));
+			result = new ContainsResult( false, 
+					Optional.of(new TimeSpanForCalc(
+							new TimeWithDayAttr(1), 
+							new TimeWithDayAttr(2))
+							));
 			
 			// 勤怠項目44
 			workInformation.containsOnChangeableWorkingTime(require, ClockAreaAtr.END, new WorkNo(2), (TimeWithDayAttr) any);
-			result = new ContainsResult( false, new TimeSpanForCalc(new TimeWithDayAttr(1), new TimeWithDayAttr(2)));
+			result = new ContainsResult( false, 
+					Optional.of(new TimeSpanForCalc(
+							new TimeWithDayAttr(1), 
+							new TimeWithDayAttr(2))
+							));
 			
 			builder.build().buildMessage();
 			result = "msg";
@@ -474,7 +530,11 @@ public class CreateWorkScheduleTest {
 			
 			// 勤怠項目34
 			workInformation.containsOnChangeableWorkingTime(require, ClockAreaAtr.END, new WorkNo(1), (TimeWithDayAttr) any);
-			result = new ContainsResult( true, new TimeSpanForCalc(new TimeWithDayAttr(1), new TimeWithDayAttr(2)));
+			result = new ContainsResult( true, 
+					Optional.of(new TimeSpanForCalc(
+							new TimeWithDayAttr(1), 
+							new TimeWithDayAttr(2))
+							));
 			
 			workSchedule.changeAttendanceTimeByHandCorrection(require, (Map<Integer, T>) any);
 			}};
@@ -516,7 +576,11 @@ public class CreateWorkScheduleTest {
 			
 			// 勤怠項目34
 			workInformation.containsOnChangeableWorkingTime(require, ClockAreaAtr.END, new WorkNo(1), (TimeWithDayAttr) any);
-			result = new ContainsResult( true, new TimeSpanForCalc(new TimeWithDayAttr(1), new TimeWithDayAttr(2)));
+			result = new ContainsResult( true, 
+					Optional.of(new TimeSpanForCalc(
+							new TimeWithDayAttr(1), 
+							new TimeWithDayAttr(2))
+							));
 			
 			workSchedule.changeAttendanceTimeByHandCorrection(require, (Map<Integer, T>) any);
 			

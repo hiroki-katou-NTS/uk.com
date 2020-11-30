@@ -188,8 +188,8 @@ public class CreateWorkSchedule {
 		}
 		
 		String errorMessage = I18NText.main("Msg_1781").addIds(
-				stateOfTime.getTimeSpan().getStart().getInDayTimeWithFormat(), 
-				stateOfTime.getTimeSpan().getEnd().getInDayTimeWithFormat())
+				stateOfTime.getTimeSpan().get().getStart().getInDayTimeWithFormat(), 
+				stateOfTime.getTimeSpan().get().getEnd().getInDayTimeWithFormat())
 			.build().buildMessage();
 		
 		return Optional.of(
