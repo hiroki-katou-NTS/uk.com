@@ -1,34 +1,31 @@
 package nts.uk.ctx.at.function.dom.alarm.extractionrange.month.singlemonth;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRangeBase;
-import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.MonthNo;
+import lombok.Getter;
+import lombok.Setter;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification;
 
 /**
  * 単月
- *
  * @author phongtq
+ *
  */
-@EqualsAndHashCode(callSuper = true)
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class SingleMonth extends ExtractionRangeBase {
+@Getter
+@Setter
+public class SingleMonth {
 
-	/** 月数指定 */
-	private MonthNo monthNo;
+	/** 前・先区分  */
+	private PreviousClassification monthPrevious;
 
-	/**
-	 * Checks constraint month no.<br>
-	 * 月数＜＝6でなければならない
-	 *
-	 * @return {@code true} if 0 < the number of months <= 6, otherwise {@code false}
-	 */
-	public boolean checkConstraintMonthNo() {
-		return this.monthNo != null && this.monthNo.getMonthNo() > 0 && this.monthNo.getMonthNo() <= 6;
+	/** 月数 */
+	private int monthNo;
+
+	/** 当月とする */
+	private boolean curentMonth;
+
+	public SingleMonth(PreviousClassification monthPrevious, int monthNo, boolean curentMonth) {
+		super();
+		this.monthPrevious = monthPrevious;
+		this.monthNo = monthNo;
+		this.curentMonth = curentMonth;
 	}
-
 }

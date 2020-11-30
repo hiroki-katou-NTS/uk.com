@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.function.app.find.processexecution.dto;
 
-import java.util.Optional;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,9 +20,10 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public class AlarmExtractionDto {
 
 	/**
+	 * The Alarm extraction classification.<br>
 	 * アラーム抽出区分
 	 */
-	private boolean alarmAtr;
+	private boolean alarmExtractionCls;
 
 	/**
 	 * コード
@@ -62,7 +61,7 @@ public class AlarmExtractionDto {
 			return null;
 		}
 		AlarmExtractionDto dto = new AlarmExtractionDto();
-		dto.alarmAtr = domain.getAlarmAtr().equals(NotUseAtr.USE);
+		dto.alarmExtractionCls = domain.getAlarmExtractionCls() == NotUseAtr.USE;
 		dto.alarmCode = domain.getAlarmCode().map(AlarmPatternCode::v).orElse(null);
 		dto.mailPrincipal = domain.getMailPrincipal().orElse(null);
 		dto.mailAdministrator = domain.getMailAdministrator().orElse(null);
@@ -71,14 +70,18 @@ public class AlarmExtractionDto {
 		return dto;
 	}
 
+	/**
+	 * Converts <code>AlarmExtractionDto</code> to domain.
+	 *
+	 * @return the domain Alarm extraction
+	 */
 	public AlarmExtraction toDomain() {
-		return AlarmExtraction.builder()
-				.alarmAtr(this.alarmAtr ? NotUseAtr.USE : NotUseAtr.NOT_USE)
-				.alarmCode(Optional.ofNullable(this.alarmCode).map(AlarmPatternCode::new))
-				.displayOnTopPageAdministrator(Optional.ofNullable(this.displayOnTopPageAdministrator))
-				.displayOnTopPagePrincipal(Optional.ofNullable(this.displayOnTopPagePrincipal))
-				.mailAdministrator(Optional.ofNullable(this.mailAdministrator))
-				.mailPrincipal(Optional.ofNullable(this.mailPrincipal))
-				.build();
+		return new AlarmExtraction(this.alarmExtractionCls,
+								   this.alarmCode,
+								   this.mailPrincipal,
+								   this.mailAdministrator,
+								   this.displayOnTopPageAdministrator,
+								   this.displayOnTopPagePrincipal);
 	}
+
 }

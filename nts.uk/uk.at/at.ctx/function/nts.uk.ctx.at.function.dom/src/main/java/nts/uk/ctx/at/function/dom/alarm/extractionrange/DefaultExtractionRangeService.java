@@ -276,14 +276,14 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 		//ドメインモデル「チェック条件」．抽出期間から開始日の指定方法をチェックする
 		if (extraction.getStartDate().getStartSpecify() == StartSpecify.DAYS) {
 			Calendar calendar = Calendar.getInstance();
-			if (extraction.getStartDate().getStartDays().get().getDayPrevious() == PreviousClassification.BEFORE)
-				calendar.add(Calendar.DAY_OF_YEAR, -extraction.getStartDate().getStartDays().get().getDay().v());
+			if (extraction.getStartDate().getStrDays().get().getDayPrevious() == PreviousClassification.BEFORE)
+				calendar.add(Calendar.DAY_OF_YEAR, -extraction.getStartDate().getStrDays().get().getDay().v());
 			else
-				calendar.add(Calendar.DAY_OF_YEAR, extraction.getStartDate().getStartDays().get().getDay().v());
+				calendar.add(Calendar.DAY_OF_YEAR, extraction.getStartDate().getStrDays().get().getDay().v());
 				startDate = calendar.getTime();
 
 		} else {
-			DatePeriod datePeriod = ClosureService.getClosurePeriod(require, closureId, startMonthly.addMonths((-1)*extraction.getStartDate().getStartMonth().get().getMonth()));
+			DatePeriod datePeriod = ClosureService.getClosurePeriod(require, closureId, startMonthly.addMonths((-1)*extraction.getStartDate().getStrMonth().get().getMonth()));
 			startDate = datePeriod.start().date();
 		}
 

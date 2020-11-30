@@ -24,26 +24,26 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "KFNMT_ALARM_PER_SET")
 public class KfnmtAlarmPerSet extends UkJpaEntity implements Serializable{
-	
+
 	private static final long serialVersionUID = 1L;
-	
+
 	@EmbeddedId
 	public KfnmtAlarmPerSetPK pk;
-	
+
 	@Column(name = "AUTH_SET")
 	public int authSetting;
-	
+
 	@OneToOne
 	@JoinColumns({
 		@JoinColumn(name="CID", referencedColumnName="CID", insertable = false, updatable = false),
 		@JoinColumn(name="ALARM_PATTERN_CD", referencedColumnName="ALARM_PATTERN_CD", insertable = false, updatable = false)
 	})
 	public KfnmtAlarmPatternSet alarmPatternSet;
-	
+
 	@OneToMany(mappedBy="alarmPerSet", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinTable(name = "KFNMT_ALARM_PER_SET_ITEM")
 	public List<KfnmtAlarmPerSetItem> alarmPerSetItems;
-	
+
 	@Override
 	protected Object getKey() {
 		return this.pk;
@@ -55,13 +55,13 @@ public class KfnmtAlarmPerSet extends UkJpaEntity implements Serializable{
 		this.authSetting = authSetting;
 		this.alarmPerSetItems = alarmPerSetItems;
 	}
-	
+
 	public AlarmPermissionSetting toDomain() {
-		return new AlarmPermissionSetting(authSetting==1,
+		return new AlarmPermissionSetting(this.pk.alarmPatternCD, this.pk.companyID, authSetting==1,
 				this.alarmPerSetItems.stream().map(c -> c.pk.roleID).collect(Collectors.toList()));
 	}
-	
-	public static KfnmtAlarmPerSet createFromDomain(AlarmPermissionSetting domain, String companyId, String alarmPatternCode) {
+
+	public static KfnmtAlarmPerSet toEntity(AlarmPermissionSetting domain, String companyId, String alarmPatternCode) {
 		List<KfnmtAlarmPerSetItem> alarmPerSetItems = domain.getRoleIds().stream()
 				.map(r -> new KfnmtAlarmPerSetItem(
 						new KfnmtAlarmPerSetItemPK(companyId, alarmPatternCode, r)))

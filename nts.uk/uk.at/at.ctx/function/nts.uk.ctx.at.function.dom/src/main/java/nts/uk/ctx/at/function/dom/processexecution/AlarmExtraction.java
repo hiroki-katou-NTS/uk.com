@@ -24,50 +24,56 @@ import java.util.Optional;
 public class AlarmExtraction extends DomainObject {
 
 	/**
+	 * The Alarm extraction classification.<br>
 	 * アラーム抽出区分
 	 */
-	private NotUseAtr alarmAtr;
+	private NotUseAtr alarmExtractionCls;
 
 	/**
+	 * The Alarm code.<br>
 	 * コード
 	 */
 	private Optional<AlarmPatternCode> alarmCode;
 
 	/**
+	 * The Mail principal.<br>
 	 * メールを送信する(本人)
 	 */
 	private Optional<Boolean> mailPrincipal;
 
 	/**
+	 * The Mail administrator.<br>
 	 * メールを送信する(管理者)
 	 */
 	private Optional<Boolean> mailAdministrator;
 
 	/**
-	 * トップページに表示(本人)
+	 * The Display on top page administrator.<br>
+	 * トップページに表示(管理者)
 	 **/
 	private Optional<Boolean> displayOnTopPageAdministrator;
 
 	/**
-	 * トップページに表示(管理者)
+	 * The Display on top page principal.<br>
+	 * トップページに表示(本人)
 	 **/
 	private Optional<Boolean> displayOnTopPagePrincipal;
 
 	/**
 	 * Instantiates a new Alarm extraction.
 	 *
-	 * @param alarmAtr                      the alarm atr
+	 * @param alarmExtractionCls            the alarm extraction classification
 	 * @param alarmCode                     the alarm code
 	 * @param mailPrincipal                 the mail principal
 	 * @param mailAdministrator             the mail administrator
 	 * @param displayOnTopPageAdministrator the display on top page administrator
 	 * @param displayOnTopPagePrincipal     the display on top page principal
 	 */
-	public AlarmExtraction(NotUseAtr alarmAtr, AlarmPatternCode alarmCode, Boolean mailPrincipal,
-						   Boolean mailAdministrator, Boolean displayOnTopPageAdministrator, Boolean displayOnTopPagePrincipal) {
+	public AlarmExtraction(boolean alarmExtractionCls, String alarmCode, Boolean mailPrincipal, Boolean mailAdministrator,
+						   Boolean displayOnTopPageAdministrator, Boolean displayOnTopPagePrincipal) {
 		super();
-		this.alarmAtr = alarmAtr;
-		this.alarmCode = Optional.ofNullable(alarmCode);
+		this.alarmExtractionCls = alarmExtractionCls ? NotUseAtr.USE : NotUseAtr.NOT_USE;
+		this.alarmCode = Optional.ofNullable(alarmCode).map(AlarmPatternCode::new);
 		this.mailPrincipal = Optional.ofNullable(mailPrincipal);
 		this.mailAdministrator = Optional.ofNullable(mailAdministrator);
 		this.displayOnTopPageAdministrator = Optional.ofNullable(displayOnTopPageAdministrator);
@@ -77,17 +83,17 @@ public class AlarmExtraction extends DomainObject {
 	/**
 	 * Instantiates a new Alarm extraction.
 	 *
-	 * @param alarmAtr                      the alarm atr
+	 * @param alarmExtractionCls            the alarm extraction classification
 	 * @param alarmCode                     the alarm code
 	 * @param mailPrincipal                 the mail principal
 	 * @param mailAdministrator             the mail administrator
 	 * @param displayOnTopPageAdministrator the display on top page administrator
 	 * @param displayOnTopPagePrincipal     the display on top page principal
 	 */
-	public AlarmExtraction(int alarmAtr, String alarmCode, Integer mailPrincipal, Integer mailAdministrator,
+	public AlarmExtraction(int alarmExtractionCls, String alarmCode, Integer mailPrincipal, Integer mailAdministrator,
 						   Integer displayOnTopPageAdministrator, Integer displayOnTopPagePrincipal) {
 		super();
-		this.alarmAtr = EnumAdaptor.valueOf(alarmAtr, NotUseAtr.class);
+		this.alarmExtractionCls = EnumAdaptor.valueOf(alarmExtractionCls, NotUseAtr.class);
 		this.alarmCode = Optional.ofNullable(alarmCode).map(AlarmPatternCode::new);
 		this.mailPrincipal = this.convertIntToOptBoolean(mailPrincipal);
 		this.mailAdministrator = this.convertIntToOptBoolean(mailAdministrator);

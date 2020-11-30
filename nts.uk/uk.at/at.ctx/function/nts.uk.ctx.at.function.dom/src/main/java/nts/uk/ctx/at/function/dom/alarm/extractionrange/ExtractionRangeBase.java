@@ -4,12 +4,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
 
 @Getter
 @Setter
 @NoArgsConstructor
+//抽出する範囲
 public abstract class ExtractionRangeBase extends DomainObject {
 
 	/** Id */
@@ -23,13 +23,4 @@ public abstract class ExtractionRangeBase extends DomainObject {
 		this.extractionId = extractionId;
 		this.extractionRange = EnumAdaptor.valueOf(extractionRangeValue, ExtractionRange.class);
 	}
-
-	/**
-	 * Checks constraint.
-	 *
-	 * @throws BusinessException the Business exception
-	 */
-	protected void checkConstraint() throws BusinessException {
-	}
-
 }

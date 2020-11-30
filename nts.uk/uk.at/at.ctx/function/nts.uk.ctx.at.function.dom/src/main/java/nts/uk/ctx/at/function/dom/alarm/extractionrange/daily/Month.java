@@ -12,20 +12,23 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification;
 @Setter
 public class Month {
 
-	/** 前・先区分 */
+	/**Specify number of days*/
+	/**日数指定*/
 	private PreviousClassification monthPrevious;
 
-	/** 月数 */
+	/** Month*/
+	// 月数: 締め日指定月数
 	private int month;
 
-	/** 当日とする */
-	private boolean currentMonth;
+	/** CURRENT_MONTH*/
+	// 当日とする
+	private boolean curentMonth;
 
-	public Month(PreviousClassification monthPrevious, int month, boolean currentMonth) {
+	public Month(PreviousClassification monthPrevious, int month, boolean curentMonth) {
 		super();
 		this.monthPrevious = monthPrevious;
 		this.month = month;
-		this.currentMonth = currentMonth;
+		this.curentMonth = curentMonth;
 	}
 
 }

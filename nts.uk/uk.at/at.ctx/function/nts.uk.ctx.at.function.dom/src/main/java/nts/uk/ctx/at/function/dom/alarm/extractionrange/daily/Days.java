@@ -12,19 +12,21 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification;
 @Setter
 public class Days {
 
-	/** 前・先区分 */
+	//Previous / previous classification
+	/**前・先区分*/
 	private PreviousClassification dayPrevious;
 
-	/** 日 */
+	/** Day*/
+	// 日
 	private Day day;
 
-	/** 当日とする */
-	private boolean today;
+	/** Make it the day*/
+	// 当日とする
+	private boolean makeToDay;
 
-	public Days(PreviousClassification dayPrevious, int day, boolean today) {
+	public Days(PreviousClassification dayPrevious, int day, boolean makeToDay) {
 		this.dayPrevious = dayPrevious;
 		this.day = new Day(day);
-		this.today = today;
+		this.makeToDay = makeToDay;
 	}
-
 }

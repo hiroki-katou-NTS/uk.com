@@ -1,10 +1,26 @@
 package nts.uk.ctx.at.function.infra.entity.alarm.checkcondition;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRangeBase;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.ExtractionPeriodDaily;
@@ -20,27 +36,21 @@ import nts.uk.ctx.at.function.infra.entity.alarm.extractionrange.periodunit.Kfnm
 import nts.uk.ctx.at.function.infra.entity.alarm.extractionrange.yearly.KfnmtExtractRangeYear;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
-import javax.persistence.*;
-import java.io.Serializable;
-import java.util.*;
-import java.util.stream.Collectors;
-
-@Data
+@NoArgsConstructor
 @Entity
 @Table(name = "KFNMT_CHECK_CONDITION")
-@EqualsAndHashCode(callSuper = true)
 public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	private KfnmtCheckConditionPK pk;
+	public KfnmtCheckConditionPK pk;
 
 	@Column(name = "EXTRACTION_ID")
-	private String extractionId;
+	public String extractionId;
 
 	@Column(name = "EXTRACTION_RANGE")
-	private int extractionRange;
+	public int extractionRange;
 
 	@ManyToOne
 	@JoinColumns(
@@ -141,17 +151,6 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 		this.checkConItems = checkConItems;
 	}
 
-	/**
-	 * No args constructor.
-	 */
-	protected KfnmtCheckCondition() {
-	}
-
-	/**
-	 * Gets primary key of entity.
-	 *
-	 * @return the primary key
-	 */
 	@Override
 	protected Object getKey() {
 		return this.pk;
@@ -162,26 +161,23 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 		List<ExtractionRangeBase> extractPeriodList = new ArrayList<>();
 		if (this.pk.alarmCategory == AlarmCategory.DAILY.value
 				|| this.pk.alarmCategory == AlarmCategory.MAN_HOUR_CHECK.value) {
-			extractPeriodList.add(this.extractionPeriodDaily.toDomain());
+			extractPeriodList.add(extractionPeriodDaily.toDomain());
 
 		} else if (this.pk.alarmCategory == AlarmCategory.MONTHLY.value) {
-			this.listExtractPerMonth.forEach(e -> {
-				if (e.pk.unit == 3) {
-					extractPeriodList.add(e.toDomain(this.extractionId, this.extractionRange));
-				}
+			listExtractPerMonth.forEach(e -> {
+				if (e.pk.unit == 3)
+					extractPeriodList.add(e.toDomain(extractionId, extractionRange));
 			});
 
 		} else if (this.pk.alarmCategory == AlarmCategory.MULTIPLE_MONTH.value) {
-			this.listExtractPerMonth.forEach(e -> {
-				if (e.pk.unit == 3) {
-					extractPeriodList.add(e.toDomain(this.extractionId, this.extractionRange));
-				}
-			});
+			listExtractPerMonth.forEach(e -> {
+				if (e.pk.unit == 3)
 
+					extractPeriodList.add(e.toDomain(extractionId, extractionRange));
+			});
 		} else if (this.pk.alarmCategory == AlarmCategory.SCHEDULE_4WEEK.value) {
-			if (this.extractionPerUnit != null) {
-				extractPeriodList.add(this.extractionPerUnit.toDomain());
-			}
+			if(extractionPerUnit != null)
+				extractPeriodList.add(extractionPerUnit.toDomain());
 
 		} else if (this.pk.alarmCategory == AlarmCategory.AGREEMENT.value) {
 			if (extractionPeriodDaily != null)
@@ -198,63 +194,55 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 				extractPeriodList.add(alstPtnDeftmbsmon.toDomain());
 		}
 
-		List<AlarmCheckConditionCode> checkConList = this.checkConItems
-				.stream()
-				.map(c -> new AlarmCheckConditionCode(c.pk.checkConditionCD))
+		List<String> checkConList = this.checkConItems.stream().map(c -> c.pk.checkConditionCD)
 				.collect(Collectors.toList());
-		return new CheckCondition(EnumAdaptor.valueOf(this.pk.alarmCategory, AlarmCategory.class),
-				checkConList,
-				extractPeriodList,
-				Optional.empty());
+		CheckCondition domain = new CheckCondition(EnumAdaptor.valueOf(this.pk.alarmCategory, AlarmCategory.class),
+				checkConList, extractPeriodList);
+		return domain;
 	}
 
-	public static KfnmtCheckCondition createFromDomain(CheckCondition domain, String companyId, String alarmPatternCode) {
-		KfnmtCheckConditionPK kfnmtCheckConditionPK = new KfnmtCheckConditionPK(companyId, alarmPatternCode, domain.getAlarmCategory().value);
+	public static KfnmtCheckCondition toEntity(CheckCondition domain, String companyId, String alarmPatternCode) {
+
 		if (domain.isDaily() || domain.isManHourCheck()) {
+
 			ExtractionRangeBase extractBase = domain.getExtractPeriodList().get(0);
 			ExtractionPeriodDaily extractionPeriodDaily = (ExtractionPeriodDaily) extractBase;
-			List<KfnmtCheckConItem> kfnmtCheckConItemList = domain.getCheckConditionList()
-																  .stream()
-																  .map(checkConCD -> new KfnmtCheckConItem(buildCheckConItemPK(domain,
-																															   checkConCD,
-																															   companyId,
-																															   alarmPatternCode)))
-																  .collect(Collectors.toList());
-			return new KfnmtCheckCondition(kfnmtCheckConditionPK,
-										   extractBase.getExtractionId(),
-										   extractBase.getExtractionRange().value,
-										   kfnmtCheckConItemList,
-										   KfnmtExtractionPeriodDaily.createFromDomain(extractionPeriodDaily));
+			KfnmtCheckCondition entity = new KfnmtCheckCondition(
+					new KfnmtCheckConditionPK(companyId, alarmPatternCode, domain.getAlarmCategory().value),
+					extractBase.getExtractionId(), extractBase.getExtractionRange().value,
+					domain.getCheckConditionList().stream().map(
+							x -> new KfnmtCheckConItem(buildCheckConItemPK(domain, x, companyId, alarmPatternCode)))
+							.collect(Collectors.toList()),
+					KfnmtExtractionPeriodDaily.toEntity(extractionPeriodDaily));
+			return entity;
+
 		} else if (domain.isMonthly() || domain.isMultipleMonth()) {
 			ExtractionRangeBase extractBase = domain.getExtractPeriodList().get(0);
 			ExtractionPeriodMonth extractionPeriodMonth = (ExtractionPeriodMonth) extractBase;
-			List<KfnmtCheckConItem> kfnmtCheckConItemList = domain.getCheckConditionList()
-																  .stream()
-																  .map(checkConditionCD -> new KfnmtCheckConItem(
-																									buildCheckConItemPK(domain,
-																														checkConditionCD,
-																														companyId,
-																														alarmPatternCode)))
-																  .collect(Collectors.toList());
-			return new KfnmtCheckCondition(kfnmtCheckConditionPK,
-										   extractBase.getExtractionId(),
-										   extractBase.getExtractionRange().value,
-										   kfnmtCheckConItemList,
-										   Collections.singletonList(KfnmtExtractPeriodMonth.toEntity(companyId,
-																									  alarmPatternCode,
-																									  domain.getAlarmCategory().value,
-																									  extractionPeriodMonth)));
+
+			KfnmtCheckCondition entity = new KfnmtCheckCondition(
+					new KfnmtCheckConditionPK(companyId, alarmPatternCode, domain.getAlarmCategory().value),
+					extractBase.getExtractionId(), extractBase.getExtractionRange().value,
+					domain.getCheckConditionList().stream().map(
+							x -> new KfnmtCheckConItem(buildCheckConItemPK(domain, x, companyId, alarmPatternCode)))
+							.collect(Collectors.toList()),
+					Arrays.asList(KfnmtExtractPeriodMonth.toEntity(companyId, alarmPatternCode,
+							domain.getAlarmCategory().value, extractionPeriodMonth)));
+			return entity;
 		} else if (domain.is4W4D()) {
+
 			ExtractionRangeBase extractBase = domain.getExtractPeriodList().get(0);
+
 			ExtractionPeriodUnit extractionPerUnit = (ExtractionPeriodUnit) extractBase;
-			return new KfnmtCheckCondition(kfnmtCheckConditionPK,
-										   extractBase.getExtractionId(),
-										   extractBase.getExtractionRange().value,
-					domain.getCheckConditionList()
-						  .stream().map(
-										x -> new KfnmtCheckConItem(buildCheckConItemPK(domain, x, companyId, alarmPatternCode)))
-						  .collect(Collectors.toList()),
+			KfnmtCheckCondition entity = new KfnmtCheckCondition(
+					new KfnmtCheckConditionPK(companyId, alarmPatternCode, domain.getAlarmCategory().value),
+					extractBase.getExtractionId(), extractBase.getExtractionRange().value,
+					domain.getCheckConditionList().stream().map(
+							x -> new KfnmtCheckConItem(buildCheckConItemPK(domain, x, companyId, alarmPatternCode)))
+							.collect(Collectors.toList()),
 					KfnmtExtractionPerUnit.toEntity(extractionPerUnit));
+			return entity;
+
 		} else if (domain.isAgrrement()) {
 			List<ExtractionPeriodMonth> listMonth = new ArrayList<ExtractionPeriodMonth>();
 			ExtractionPeriodDaily extractionPeriodDaily = null;
@@ -284,22 +272,26 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 				extractionRange = 0;
 			}
 			return new KfnmtCheckCondition(
-					kfnmtCheckConditionPK,
+					new KfnmtCheckConditionPK(companyId, alarmPatternCode, domain.getAlarmCategory().value),
 					extractYear.getExtractionId(), extractionRange,
-					domain.getCheckConditionList().stream().map(x -> new KfnmtCheckConItem(buildCheckConItemPK(domain, x, companyId, alarmPatternCode))).collect(Collectors.toList()),
-					KfnmtExtractionPeriodDaily.createFromDomain(extractionPeriodDaily),
-					listMonth.stream().map(e -> KfnmtExtractPeriodMonth.toEntity(companyId, alarmPatternCode,
-							domain.getAlarmCategory().value, e)).collect(Collectors.toList()),
+					domain.getCheckConditionList().stream().map( x -> new KfnmtCheckConItem(buildCheckConItemPK(domain, x, companyId, alarmPatternCode))).collect(Collectors.toList()),
+					KfnmtExtractionPeriodDaily.toEntity(extractionPeriodDaily),
+					listMonth.stream().map( e-> KfnmtExtractPeriodMonth.toEntity(companyId, alarmPatternCode,
+							domain.getAlarmCategory().value, e) ).collect(Collectors.toList()),
 					KfnmtExtractRangeYear.toEntity(extractYear),
 					// Convert to Entity of 複数月平均基準月
 					KfnmtAlstPtnDeftmbsmon.toEntity(extractAverMonth));
 
+		} else {
+
+			return new KfnmtCheckCondition(
+					new KfnmtCheckConditionPK(companyId, alarmPatternCode, domain.getAlarmCategory().value), "", 0,
+					domain.getCheckConditionList().stream().map(
+							x -> new KfnmtCheckConItem(buildCheckConItemPK(domain, x, companyId, alarmPatternCode)))
+							.collect(Collectors.toList()));
 		}
-		return new KfnmtCheckCondition(
-				kfnmtCheckConditionPK, "", 0,
-				domain.getCheckConditionList().stream().map(
-						x -> new KfnmtCheckConItem(buildCheckConItemPK(domain, x, companyId, alarmPatternCode)))
-						.collect(Collectors.toList()));
+
+
 	}
 
 	public void fromEntity(KfnmtCheckCondition entity) {
@@ -307,7 +299,7 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 		if (entity.pk.alarmCategory == AlarmCategory.DAILY.value || entity.pk.alarmCategory == AlarmCategory.MAN_HOUR_CHECK.value) {
 
 			if (this.extractionPeriodDaily != null)
-				this.extractionPeriodDaily.cloneFromOtherEntity(entity.extractionPeriodDaily);
+				this.extractionPeriodDaily.fromEntity(entity.extractionPeriodDaily);
 
 		} else if (entity.pk.alarmCategory == AlarmCategory.MONTHLY.value ||
 				entity.pk.alarmCategory == AlarmCategory.MULTIPLE_MONTH.value) {
@@ -324,7 +316,7 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 		} else if (entity.pk.alarmCategory == AlarmCategory.AGREEMENT.value) {
 
 			if (this.extractionPeriodDaily != null)
-				this.extractionPeriodDaily.cloneFromOtherEntity(entity.extractionPeriodDaily);
+				this.extractionPeriodDaily.fromEntity(entity.extractionPeriodDaily);
 
 			this.listExtractPerMonth = new ArrayList<KfnmtExtractPeriodMonth>();
 			entity.listExtractPerMonth.forEach(item -> {

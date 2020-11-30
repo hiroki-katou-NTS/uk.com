@@ -61,8 +61,8 @@ public class ErrorAlarmListExtractCommandHandler extends AsyncCommandHandler<Err
 
 	@Inject
 	private ExtractAlarmListService extractAlarmListService;
-	
-	@Inject 
+
+	@Inject
 	private AlarmListExtractResultRepo extractResultRepo;
 
 	// private static final List<Integer> CHECK_CATEGORY =
@@ -101,26 +101,24 @@ public class ErrorAlarmListExtractCommandHandler extends AsyncCommandHandler<Err
 		List<CheckCondition> checkConList = alarmPatternSetting.get().getCheckConList().stream()
 				.filter(e -> listCategory.contains(e.getAlarmCategory().value)).collect(Collectors.toList());
 		//カテゴリ別アラームチェック条件
-		List<AlarmCheckConditionByCategory> alarmCate = erAlByCateRepo.findByCategoryAndCode(
-				comId,
-				listCategory,
-				checkConList.stream().map(CheckCondition::getCheckConditionList).flatMap(List::stream).collect(Collectors.toList())
-		);
-		int max = listEmpId.size() * alarmCate.size();
+		List<AlarmCheckConditionByCategory> eralCate = erAlByCateRepo.findByCategoryAndCode(comId, listCategory,
+				checkConList.stream().map(c -> c.getCheckConditionList()).flatMap(List::stream)
+						.collect(Collectors.toList()));
+		int max = listEmpId.size() * eralCate.size();
 		//
 		ExtractedAlarmDto dto = this.extractAlarmListService.extractAlarmV2(listEmpId,
-					command.getListPeriodByCategory(),
-					alarmCate,
-					checkConList,
-					finished -> {
-						counter.set(counter.get() + finished);
-						int completed = calcCompletedEmp(listEmpId, counter, max, finished).intValue();
-						dataSetter.updateData("empCount", completed >= max ? max - 1 : completed);
-					}, 
-					() -> {
-						return shouldStop(context, asyncContext);
-					}
-				);
+				command.getListPeriodByCategory(),
+				eralCate,
+				checkConList,
+				finished -> {
+					counter.set(counter.get() + finished);
+					int completed = calcCompletedEmp(listEmpId, counter, max, finished).intValue();
+					dataSetter.updateData("empCount", completed >= max ? max - 1 : completed);
+				},
+				() -> {
+					return shouldStop(context, asyncContext);
+				}
+		);
 		dataSetter.updateData("extracting", dto.isExtracting());
 		dataSetter.setData("dataWriting", true);
 //		try {
@@ -131,18 +129,18 @@ public class ErrorAlarmListExtractCommandHandler extends AsyncCommandHandler<Err
 			List<ExtractEmployeeInfo> empData = getEmpData(command.getStatusProcessId(), dto).values()
 					.stream().flatMap(List::stream).collect(Collectors.toList());
 			List<ExtractEmployeeErAlData> empEralData = dto.getExtractedAlarmData().stream().map(c -> {
-				return new ExtractEmployeeErAlData(command.getStatusProcessId(), c.getEmployeeID(), c.getGuid(), 
-													c.getAlarmValueDate(), c.getCategory(), c.getCategoryName(), 
-													c.getAlarmItem(), c.getAlarmValueMessage(), c.getComment(), c.getCheckedValue());
+				return new ExtractEmployeeErAlData(command.getStatusProcessId(), c.getEmployeeID(), c.getGuid(),
+						c.getAlarmValueDate(), c.getCategory(), c.getCategoryName(),
+						c.getAlarmItem(), c.getAlarmValueMessage(), c.getComment(), c.getCheckedValue());
 			}).collect(Collectors.toList());
-			
-			extractResultRepo.insert(Arrays.asList(new AlarmListExtractResult(AppContexts.user().employeeId(), 
-																		comId, ExtractExecuteType.MANUAL, command.getStatusProcessId(),
-																		empData, empEralData)));
+
+			extractResultRepo.insert(Arrays.asList(new AlarmListExtractResult(AppContexts.user().employeeId(),
+					comId, ExtractExecuteType.MANUAL, command.getStatusProcessId(),
+					empData, empEralData)));
 			dataSetter.setData("nullData", false);
 			dataSetter.setData("eralRecord", empEralData.size());
 			/*for (int i = 0; i < empData.size(); i++) {
-				*//** Convert to json string *//*
+			 *//** Convert to json string *//*
 				dataSetter.setData("empDataNo" + i, mapper.writeValueAsString(empData.get(i)));
 			}
 			for (int i = 0; i < dto.getExtractedAlarmData().size(); i++) {
@@ -174,13 +172,13 @@ public class ErrorAlarmListExtractCommandHandler extends AsyncCommandHandler<Err
 						}).flatMap(List::stream).filter(d -> d != null).distinct().collect(Collectors.toList());
 						GeneralDate start = ds.stream().min((c1, c2) -> c1.compareTo(c2)).orElse(null);
 						GeneralDate end = ds.stream().max((c1, c2) -> c1.compareTo(c2)).orElse(null);
-						
+
 						return new ExtractEmployeeInfo(executeId, first.getEmployeeID(), first.getWorkplaceID(), first.getEmployeeCode(),
 								first.getEmployeeName(), first.getWorkplaceName(), first.getHierarchyCd(), start, end);
 					}).collect(Collectors.toList());
 				})));
 	}
-	
+
 	private DatePeriod convertToPeriod(String date) {
 		if (date == null || date.isEmpty()) {
 			return null;
@@ -189,7 +187,7 @@ public class ErrorAlarmListExtractCommandHandler extends AsyncCommandHandler<Err
 		if(parts.length == 2){
 			return new DatePeriod(convertToDate(parts[0]), convertToDate(parts[1]));
 		}
-		
+
 		return null;
 	}
 
@@ -203,9 +201,9 @@ public class ErrorAlarmListExtractCommandHandler extends AsyncCommandHandler<Err
 			String[] parts = parts1[0].split("/");
 			if (parts.length == 2) {
 				return GeneralDate.localDate(LocalDate.parse(parts1[0].trim(), new DateTimeFormatterBuilder()
-															                    .appendPattern(ErAlConstant.YM_FORMAT)
-															                    .parseDefaulting(ChronoField.DAY_OF_MONTH, 1)
-															                    .toFormatter()));
+						.appendPattern(ErAlConstant.YM_FORMAT)
+						.parseDefaulting(ChronoField.DAY_OF_MONTH, 1)
+						.toFormatter()));
 			} else if (parts.length == 3) {
 				return GeneralDate.fromString(parts1[0].trim(), ErAlConstant.DATE_FORMAT);
 			}
@@ -214,9 +212,9 @@ public class ErrorAlarmListExtractCommandHandler extends AsyncCommandHandler<Err
 		String[] parts = date.split("/");
 		if (parts.length == 2) {
 			return GeneralDate.localDate(LocalDate.parse(date.trim(), new DateTimeFormatterBuilder()
-														                    .appendPattern(ErAlConstant.YM_FORMAT)
-														                    .parseDefaulting(ChronoField.DAY_OF_MONTH, 1)
-														                    .toFormatter()));
+					.appendPattern(ErAlConstant.YM_FORMAT)
+					.parseDefaulting(ChronoField.DAY_OF_MONTH, 1)
+					.toFormatter()));
 		} else if (parts.length == 3) {
 			return GeneralDate.fromString(date.trim(), ErAlConstant.DATE_FORMAT);
 		}
@@ -224,13 +222,13 @@ public class ErrorAlarmListExtractCommandHandler extends AsyncCommandHandler<Err
 	}
 
 	private Double calcCompletedEmp(List<EmployeeSearchDto> listEmpId, AtomicInteger counter, int max,
-			Integer finished) {
+	                                Integer finished) {
 		double completedPercent = Double.valueOf(counter.get()) / max;
 		return Math.floor(completedPercent * listEmpId.size());
 	}
 
 	private Boolean shouldStop(CommandHandlerContext<ErrorAlarmListCommand> context,
-			AsyncCommandHandlerContext<ErrorAlarmListCommand> asyncContext) {
+	                           AsyncCommandHandlerContext<ErrorAlarmListCommand> asyncContext) {
 		Optional<AlarmListExtraProcessStatus> alarmListExtraProcessStatus = this.repo
 				.getAlListExtaProcessByID(context.getCommand().getStatusProcessId());
 		if (alarmListExtraProcessStatus.isPresent()
