@@ -176,12 +176,12 @@ module ccg018.a1.viewmodel {
           });
         }
 
-        checkCategorySet(): void {
-            if (self.categorySet() == null) {
-                self.categorySet(1);
-            }
-         * Update/insert data in TOPPAGE_ROLE_SET
-         */
+        // checkCategorySet(): void {
+        //     if (self.categorySet() == null) {
+        //         self.categorySet(1);
+        //     }
+        // }
+
         save(): void {
             const vm = this;
             if (vm.lisTopPageRoleSet().length === 0) {
