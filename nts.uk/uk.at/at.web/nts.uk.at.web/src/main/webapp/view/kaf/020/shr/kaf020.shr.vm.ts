@@ -33,17 +33,17 @@ module nts.uk.at.view.kaf020.shr.viewmodel {
                         <!--time-->
                         <div data-bind="if: optionalItemAtr == 0">
                             <input class="input" tabindex="0"
-                                   data-bind="ntsTimeEditor: {name: '#[KAF020_22]', constraint: 'AnyItemTime', value: time, inputFormat: 'time', mode: 'time'}"/>
+                                   data-bind="ntsTimeEditor: {name: '#[KAF020_22]', constraint: 'AnyItemTime', value: time, inputFormat: 'time', mode: 'time', enable: $parent.enableEdit() }"/>
                         </div>
                         <!--number-->
                         <div data-bind="if: optionalItemAtr == 1">
                             <input class="input" tabindex="0"
-                                   data-bind="ntsNumberEditor: {name: '#[KAF020_22]', value: times, constraint: 'AnyItemTimes', option: {grouplength: 3, decimallength: 2}}"/>
+                                   data-bind="ntsNumberEditor: {name: '#[KAF020_22]', value: times, constraint: 'AnyItemTimes', option: {grouplength: 3, decimallength: 2}, enable: $parent.enableEdit() }"/>
                         </div>
                         <!--amount-->
                         <div data-bind="if: optionalItemAtr == 2">
                             <input class="input" tabindex="0"
-                                   data-bind="ntsNumberEditor: {name: '#[KAF020_22]', value: amount, constraint: 'AnyItemAmount', option: {grouplength: 3}}"/>
+                                   data-bind="ntsNumberEditor: {name: '#[KAF020_22]', value: amount, constraint: 'AnyItemAmount', option: {grouplength: 3}, enable: $parent.enableEdit() }"/>
                         </div>
                     </td>
                     <td style="vertical-align: top">
@@ -105,6 +105,7 @@ module nts.uk.at.view.kaf020.shr.viewmodel {
         dataFetch: KnockoutObservable<any> = ko.observable(null);
         applicationContents: KnockoutObservableArray<Content>;
         name: KnockoutObservable<string> = ko.observable();
+        enableEdit: KnockoutObservable<boolean> = ko.observable(true);
 
         created(params: any) {
             const vm = this;
@@ -113,7 +114,11 @@ module nts.uk.at.view.kaf020.shr.viewmodel {
             vm.dataFetch.subscribe(value => {
                 vm.applicationContents(value.applicationContents());
                 vm.name(value.name);
-            })
+
+                if (value.appDispInfoStartupOutput() && value.appDispInfoStartupOutput().appDetailScreenInfo) {
+                    value.appDispInfoStartupOutput().appDetailScreenInfo.outputMode == 1 ? vm.enableEdit(true) : vm.enableEdit(false);
+                }
+            });
             $('#fixed-table').ntsFixedTable({width: 740});
         }
     }

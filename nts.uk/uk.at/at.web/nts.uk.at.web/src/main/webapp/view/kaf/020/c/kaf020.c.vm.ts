@@ -69,7 +69,8 @@ module nts.uk.at.view.kaf020.c.viewmodel {
         dataFetch: KnockoutObservable<DetailSreenInfo> = ko.observable({
             applicationContents: ko.observableArray([]),
             code: ko.observable(''),
-            name: ko.observable('')
+            name: ko.observable(''),
+            appDispInfoStartupOutput: ko.observable(null)
         });
         isSendMail: KnockoutObservable<Boolean>;
         application: KnockoutObservable<Application>;
@@ -141,6 +142,7 @@ module nts.uk.at.view.kaf020.c.viewmodel {
                         applicationContents: ko.observableArray(_.sortBy(contents, ["dispOrder"])),
                         code: code,
                         name: name,
+                        appDispInfoStartupOutput: ko.observable(vm.appDispInfoStartupOutput())
                     });
                     vm.printContent.opOptionalItemOutput = ko.toJS({
                         code: vm.dataFetch().code,
@@ -209,6 +211,7 @@ module nts.uk.at.view.kaf020.c.viewmodel {
         applicationContents: KnockoutObservableArray<OptionalItemApplicationContent>,
         code: KnockoutObservable<string>,
         name: KnockoutObservable<string>,
+        appDispInfoStartupOutput: KnockoutObservable<any>
     }
 
     const PATH_API = {
