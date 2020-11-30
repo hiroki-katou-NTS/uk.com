@@ -18,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.ControlOf
 import nts.uk.ctx.at.shared.dom.scherec.optitem.CalcResultRange;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
+import nts.uk.ctx.at.shared.dom.scherec.service.DailyItemList;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
@@ -35,7 +36,7 @@ import java.util.stream.Collectors;
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class OptionalItemApplicationQuery {
 
-    private static final Integer OPTIONAL_ITEM_NO_CONVERT_CONST = 640;
+//    private static final Integer OPTIONAL_ITEM_NO_CONVERT_CONST = 640;
 
     @Inject
     private ControlOfAttendanceItemsRepository controlOfAttendanceItemsRepository;
@@ -60,7 +61,7 @@ public class OptionalItemApplicationQuery {
      */
     public List<ControlOfAttendanceItemsDto> findControlOfAttendance(List<Integer> optionalItemNos) {
         String cid = AppContexts.user().companyId();
-        List<Integer> daiLyList = optionalItemNos.stream().map(no -> no + OPTIONAL_ITEM_NO_CONVERT_CONST).collect(Collectors.toList());
+        List<Integer> daiLyList = optionalItemNos.stream().map(no -> DailyItemList.getOption(no).map(i -> i.itemId).orElse(0)).collect(Collectors.toList());
         List<ControlOfAttendanceItems> controlOfAttendanceItems = controlOfAttendanceItemsRepository.getByItemDailyList(cid, daiLyList);
         return controlOfAttendanceItems.stream().map(item -> ControlOfAttendanceItemsDto.fromDomain(item)).collect(Collectors.toList());
     }
@@ -75,7 +76,7 @@ public class OptionalItemApplicationQuery {
         List<Integer> optionalItemNos = domain.getOptionalItems().stream().map(item -> item.getItemNo().v()).collect(Collectors.toList());
         List<OptionalItemImport> optionalItems = optionalItemAdapter.findOptionalItem(cid, optionalItemNos);
         List<ControlOfAttendanceItems> controlOfAttendanceItems = controlOfAttendanceItemsRepository.getByItemDailyList(cid,
-                optionalItemNos.stream().map(no -> no + OPTIONAL_ITEM_NO_CONVERT_CONST).collect(Collectors.toList())
+                optionalItemNos.stream().map(no -> DailyItemList.getOption(no).map(i -> i.itemId).orElse(0)).collect(Collectors.toList())
         );
         detail.setControlOfAttendanceItems(controlOfAttendanceItems.stream().map(ControlOfAttendanceItemsDto::fromDomain).collect(Collectors.toList()));
         detail.setApplication(OptionalItemApplicationDto.fromDomain(domain));
@@ -106,12 +107,12 @@ public class OptionalItemApplicationQuery {
         boolean register = false;
         List<Integer> optionalItemNos = optionalItems.stream().map(anyItemNo -> anyItemNo.getItemNo()).collect(Collectors.toList());
         Map<Integer, OptionalItem> optionalItemMap = optionalItemRepository.findByListNos(cid, optionalItemNos).stream().collect(Collectors.toMap(optionalItem -> optionalItem.getOptionalItemNo().v(), item -> item));
-        List<Integer> daiLyList = optionalItemNos.stream().map(no -> no + OPTIONAL_ITEM_NO_CONVERT_CONST).collect(Collectors.toList());
+        List<Integer> daiLyList = optionalItemNos.stream().map(no -> DailyItemList.getOption(no).map(i -> i.itemId).orElse(0)).collect(Collectors.toList());
         Map<Integer, ControlOfAttendanceItems> controlOfAttendanceItemsMap = controlOfAttendanceItemsRepository.getByItemDailyList(cid, daiLyList).stream().collect(Collectors.toMap(item -> item.getItemDailyID(), item -> item));
         for (Iterator<AnyItemValueDto> iterator = optionalItems.iterator(); iterator.hasNext(); ) {
             AnyItemValueDto inputOptionalItem = iterator.next();
             /* Kiểm tra giá trị nằm trong giới hạn, vượt ra ngoài khoảng giới hạn thì thông báo lỗi Msg_1692 */
-            ControlOfAttendanceItems controlOfAttendanceItems = controlOfAttendanceItemsMap.get(inputOptionalItem.getItemNo() + OPTIONAL_ITEM_NO_CONVERT_CONST);
+            ControlOfAttendanceItems controlOfAttendanceItems = controlOfAttendanceItemsMap.get(DailyItemList.getOption(inputOptionalItem.getItemNo()).map(i -> i.itemId).orElse(0));
             Optional<BigDecimal> unit = controlOfAttendanceItems != null ? controlOfAttendanceItems.getInputUnitOfTimeItem() : Optional.empty();
             /* kiểm tra bội của đơn vị, không phải là bội thì thông báo lỗi Msg_1693*/
             OptionalItem optionalItem = optionalItemMap.get(inputOptionalItem.getItemNo());
@@ -131,7 +132,8 @@ public class OptionalItemApplicationQuery {
                     throw new BusinessException("Msg_1692", "KAF020_22");
                 }
                 if (unit.isPresent() && (amount % unit.get().intValue() != 0)) {
-                    throw new BusinessException("Msg_1693");
+                    String itemName = optionalItemMap.get(inputOptionalItem.getItemNo()) != null ? optionalItemMap.get(inputOptionalItem.getItemNo()).getOptionalItemName().v() : "";
+                    throw new BusinessException("Msg_1693", itemName);
                 }
                 register = true;
             }
@@ -150,7 +152,8 @@ public class OptionalItemApplicationQuery {
                     throw new BusinessException("Msg_1692", "KAF020_22");
                 }
                 if (unit.isPresent() && (times.doubleValue() % unit.get().doubleValue() != 0)) {
-                    throw new BusinessException("Msg_1693");
+                    String itemName = optionalItemMap.get(inputOptionalItem.getItemNo()) != null ? optionalItemMap.get(inputOptionalItem.getItemNo()).getOptionalItemName().v() : "";
+                    throw new BusinessException("Msg_1693", itemName);
                 }
                 register = true;
             }
@@ -169,7 +172,8 @@ public class OptionalItemApplicationQuery {
                     throw new BusinessException("Msg_1692", "KAF020_22");
                 }
                 if (unit.isPresent() && (time % unit.get().intValue() != 0)) {
-                    throw new BusinessException("Msg_1693", "KAF020_22");
+                    String itemName = optionalItemMap.get(inputOptionalItem.getItemNo()) != null ? optionalItemMap.get(inputOptionalItem.getItemNo()).getOptionalItemName().v() : "";
+                    throw new BusinessException("Msg_1693", itemName);
                 }
                 register = true;
             }
