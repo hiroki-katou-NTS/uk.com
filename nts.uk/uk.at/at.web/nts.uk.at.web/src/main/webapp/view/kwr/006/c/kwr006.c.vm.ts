@@ -170,12 +170,10 @@ module nts.uk.at.view.kwr006.c {
             */
             openScreenD() {
                 var self = this;
-                nts.uk.ui.windows.setShared('KWR006_D', self.outputItemPossibleLst(), true);
-                let itemType: number = nts.uk.ui.windows.getShared('itemSelection');
-                nts.uk.ui.windows.setShared('itemSelectionCopy', itemType);
                 if (!_.isEmpty(self.selectedCodeC2_3())) {
                     self.storeCurrentCodeBeforeCopy(self.selectedCodeC2_3());
                 }
+                nts.uk.ui.windows.setShared('fontSize', self.C9_2_value());
                 nts.uk.ui.windows.sub.modal('/view/kwr/006/d/index.xhtml').onClosed(function (): any {
                     nts.uk.ui.errors.clearAll();
                     const KWR006DOutput = nts.uk.ui.windows.getShared('KWR006_D');

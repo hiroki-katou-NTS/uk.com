@@ -19,26 +19,31 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaOutputItemMonthlyWorkScheduleRepository extends JpaRepository
 		implements OutputItemMonthlyWorkScheduleRepository {
 
+	/** The Constant FIND_BY_SELECTION_CID. */
 	private static final String FIND_BY_SELECTION_CID = "SELECT c FROM KfnmtRptWkMonOut c"
 			+ " WHERE c.companyID = :companyID "
 			+ " AND c.itemType = :itemType";
 
+	/** The Constant FIND_BY_SELECTION_CID_SID. */
 	private static final String FIND_BY_SELECTION_CID_SID = "SELECT c FROM KfnmtRptWkMonOut c"
 			+ " WHERE c.companyID = :companyID"
 			+ " AND c.employeeID = :employeeID"
 			+ " AND c.itemType = :itemType";
 
+	/** The Constant FIND_BY_SELECTION_CID_CODE. */
 	private static final String FIND_BY_SELECTION_CID_CODE = "SELECT c FROM KfnmtRptWkMonOut c"
 			+ " WHERE c.companyID = :companyID"
 			+ " AND c.itemType = :itemType"
 			+ " AND c.itemCode = :itemCode";
 
+	/** The Constant FIND_BY_SELECTION_CID_CODE_SID. */
 	private static final String FIND_BY_SELECTION_CID_CODE_SID = "SELECT c FROM KfnmtRptWkMonOut c"
 			+ " WHERE c.companyID = :companyID"
 			+ " AND c.itemCode = :itemCode"
 			+ " AND c.employeeID = :employeeID"
 			+ " AND c.itemType = :itemType";
 	
+	/** The Constant FIND_BY_LAYOUTID. */
 	private static final String FIND_BY_LAYOUTID = "SELECT c FROM KfnmtRptWkMonOuttd c"
 			+ " WHERE c.pk.layoutID = :layoutID";
 
