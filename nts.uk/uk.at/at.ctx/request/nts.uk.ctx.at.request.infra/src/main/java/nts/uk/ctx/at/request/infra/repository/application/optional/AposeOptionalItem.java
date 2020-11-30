@@ -51,9 +51,14 @@ public class AposeOptionalItem {
     }
 
     private String timeToString(int value) {
-        if (value % 60 < 10) {
-            return String.valueOf(value / 60) + ":0" + String.valueOf(value % 60);
+        boolean lowerThanZero = false;
+        if (value < 0) {
+            lowerThanZero = true;
+            value = Math.abs(value);
         }
-        return String.valueOf(value / 60) + ":" + String.valueOf(value % 60);
+        if (value % 60 < 10) {
+            return (lowerThanZero ? "-" : "") + String.valueOf(value / 60) + ":0" + String.valueOf(value % 60);
+        }
+        return (lowerThanZero ? "-" : "") + String.valueOf(value / 60) + ":" + String.valueOf(value % 60);
     }
 }
