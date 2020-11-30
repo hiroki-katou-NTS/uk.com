@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.CheckBeforeOutputDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.DetailOutputDto;
@@ -103,6 +104,32 @@ public class AppOvertimeFinder {
 						.map(x -> x.toDomain(param.companyId))
 						.collect(Collectors.toList())
 				);
+		return DisplayInfoOverTimeDto.fromDomainChangeDate(output);
+	}
+	
+	public DisplayInfoOverTimeDto selectWorkInfo(ParamSelectWork param) {
+		DisplayInfoOverTime output;
+		Optional<GeneralDate> dateOp = Optional.empty();
+		
+		if (StringUtils.isNotBlank(param.date)) {
+			dateOp = Optional.of(GeneralDate.fromString(param.date, PATTERN_DATE));	
+		}
+		
+		Optional<Integer> startTimeSPR = Optional.ofNullable(param.startSPR);
+		
+		Optional<Integer> endTimeSPR = Optional.ofNullable(param.endSPR);
+		
+		output = overtimeService.selectWorkInfo(
+				param.companyId,
+				param.employeeId,
+				dateOp,
+				new WorkTypeCode(param.workType),
+				new WorkTimeCode(param.workTime),
+				startTimeSPR,
+				endTimeSPR,
+				param.appDispInfoStartupDto.toDomain(),
+				param.overtimeAppSet.toDomain(param.companyId));
+		
 		return DisplayInfoOverTimeDto.fromDomainChangeDate(output);
 	}
 	

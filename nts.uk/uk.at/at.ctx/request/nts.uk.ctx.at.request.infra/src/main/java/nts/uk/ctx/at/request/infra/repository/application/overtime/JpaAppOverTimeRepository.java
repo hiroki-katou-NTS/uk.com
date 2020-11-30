@@ -276,8 +276,28 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 		updateAppOverTime.get().breakTimeStart10 = krqdtAppOverTime.breakTimeStart10;
 		updateAppOverTime.get().breakTimeEnd10 = krqdtAppOverTime.breakTimeEnd10;
 		
-		updateAppOverTime.get().overtimeInputs = krqdtAppOverTime.overtimeInputs;
-		updateAppOverTime.get().appOvertimeDetail = krqdtAppOverTime.appOvertimeDetail;
+		List<KrqdtOvertimeInput> overtimeInputs = new ArrayList<KrqdtOvertimeInput>();
+		
+		krqdtAppOverTime.overtimeInputs.stream().forEach(x -> {
+			Optional<KrqdtOvertimeInput> result = updateAppOverTime.get().overtimeInputs.stream().filter(
+					a -> a.krqdtOvertimeInputPK.getAttendanceType() == x.krqdtOvertimeInputPK.getAttendanceType()
+							&& a.krqdtOvertimeInputPK.getAppId() == x.krqdtOvertimeInputPK.getAppId()
+							&& a.krqdtOvertimeInputPK.getCid() == x.krqdtOvertimeInputPK.getCid()
+							&& a.krqdtOvertimeInputPK.getFrameNo() == x.krqdtOvertimeInputPK.getFrameNo()
+					).findFirst();
+			KrqdtOvertimeInput krqdtOvertimeInput;
+			if (result.isPresent()) {
+				result.get().applicationTime = x.applicationTime;
+				krqdtOvertimeInput = result.get();
+			} else {
+				krqdtOvertimeInput = x;
+				krqdtOvertimeInput.contractCd = AppContexts.user().contractCode();
+			}
+			overtimeInputs.add(krqdtOvertimeInput);
+		});
+		updateAppOverTime.get().overtimeInputs = overtimeInputs;
+		
+		// updateAppOverTime.get().appOvertimeDetail = krqdtAppOverTime.appOvertimeDetail;
 		
 		this.commandProxy().update(updateAppOverTime.get());
 		this.getEntityManager().flush();
@@ -674,6 +694,11 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 		agreeUpperLimitAverage.setUpperLimitTime(new AgreementOneMonthTime(regLimitTimeMulti));
 		
 		return appOverTime;
+	}
+	@Override
+	public void remove(String companyID, String appID) {
+		this.commandProxy().remove(KrqdtAppOverTime.class, new KrqdtAppOvertimePK(companyID, appID));
+		
 	}
 
 }

@@ -13,6 +13,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.D
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTimeRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
@@ -62,7 +63,11 @@ public class OverTimeRegisterServiceImpl implements OverTimeRegisterService {
 	}
 
 	@Override
-	public ProcessResult update(String companyId, AppOverTime appOverTime) {
+	public ProcessResult update(
+			String companyId,
+			AppOverTime appOverTime,
+			AppDispInfoStartupOutput appDispInfoStartupOutput
+			) {
 		Application application = (Application) appOverTime;
 		// ドメインモデル「残業申請」を更新する
 		appUpdateRepository.update(application);
@@ -74,7 +79,7 @@ public class OverTimeRegisterServiceImpl implements OverTimeRegisterService {
 		return detailAfterUpdate.processAfterDetailScreenRegistration(
 				companyId,
 				application.getAppID(),
-				null); //#112628
+				appDispInfoStartupOutput); //#112628
 	}
 	
 

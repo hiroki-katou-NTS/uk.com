@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
@@ -649,14 +650,20 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 
 	@Override
 	public Boolean checkOverTime(List<OvertimeApplicationSetting> applicationTime) {
+		Integer timeTotal = 0;
 		// INPUT「申請時間詳細」<List>をチェックする
-		applicationTime.forEach(item -> {
-			if (item.getAttendanceType() == AttendanceType_Update.NORMALOVERTIME) {
-				if (item.getApplicationTime().v() <= 0) {
-					throw new BusinessException("Msg_1654");
-				}
-			}
-		});
+		if (!CollectionUtil.isEmpty(applicationTime)) {
+			timeTotal = applicationTime.stream()
+							.filter(x -> x.getAttendanceType() == AttendanceType_Update.NORMALOVERTIME)
+							.mapToInt(x -> x.getApplicationTime().v())
+							.sum();
+		} else {
+			throw new BusinessException("Msg_1654");			
+		}
+		
+		if (timeTotal <= 0) {
+			throw new BusinessException("Msg_1654");	
+		}
 		
 		return false;
 	}

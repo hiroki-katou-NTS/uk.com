@@ -27,7 +27,8 @@ public class UpdateCommandHandler extends CommandHandlerWithResult<UpdateCommand
 		
 		return overTimeRegisterService.update(
 				param.companyId,
-				appOverTime);
+				appOverTime,
+				param.appDispInfoStartupDto.toDomain());
 	}
 
 }
