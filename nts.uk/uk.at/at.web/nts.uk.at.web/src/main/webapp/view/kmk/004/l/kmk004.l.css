@@ -74,7 +74,7 @@
 
 #title {
 	font-size: 20px;
-	padding: 1px;
+	padding-top: 4px;
 }
 
 #workplace-list {
@@ -95,4 +95,8 @@
 #view-o-listbox {
 	position: relative;
     bottom: 20px;
+}
+
+div.form-label {
+	padding: 8px 10px 0 8px;
 }
