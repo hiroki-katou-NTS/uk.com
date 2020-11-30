@@ -1,7 +1,4 @@
-.btnRight {
-  float: right;
-  margin-right: 15px;
-}
+
 .kml002-e .ntsMoveDataArea {
   padding-left: 10px;
   padding-right: 10px;
@@ -9,9 +6,6 @@
 
 .kml002-e .text-title {
   margin-bottom: 10px;
-}
-
-.kml002-e .table-header {
 }
 
 .kml002-e .table-header .row-item {
@@ -39,4 +33,9 @@
 }
 #master-content div#contents-area.kml002-e  {
   padding-left: 16px;
+}
+
+.kml002-e .ui-iggrid table td:first-child, 
+.kml002-e .ui-iggrid table th:first-child {
+  text-align: center;
 }

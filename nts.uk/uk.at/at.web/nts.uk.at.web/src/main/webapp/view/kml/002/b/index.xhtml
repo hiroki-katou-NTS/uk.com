@@ -33,22 +33,8 @@
             class="normal"
             data-bind="text: $i18n('KML002_116'), click: openDialogKDL024"
           />
-          <div class="pull-right link-button menu">
-            <span tabindex="4" data-bind="text: $i18n('KML002_10')"></span>
-            <div class="sub-menu-links">
-              <a
-                class="goout link-button"
-                data-bind="ntsLinkButton: { jump: '/view/kml/001/a/index.xhtml' }, text: $i18n('KML002_11')"
-              ></a>
-              <a
-                class="goout link-button"
-                data-bind="ntsLinkButton: { jump: '/view/kmk/009/a/index.xhtml' }, text: $i18n('KML002_12')"
-              ></a>
-              <a
-                class="goout link-button"
-                data-bind="ntsLinkButton: { jump: '/view/ksu/006/a/index.xhtml' }, text: $i18n('KML002_117')"
-              ></a>
-            </div>
+          <div class="pull-right">
+            <div tabindex="4" data-bind="ntsFunctionPanel: {width: 200, headerText: $i18n('KML002_10'), dataSource: functionItems}"></div>          
           </div>
         </div>
         <div id="contents-area" class="kml-002-b">
@@ -103,7 +89,8 @@
                     ></div>
                   </td>
                   <td class="text-center">
-                    <button id="B323"
+                    <button
+                      id="B323"
                       tabindex="6"
                       data-bind="text: $i18n('KML002_22'), click: openDialogScreenD, enable: laborCostTime() === 1"
                     />
@@ -146,7 +133,8 @@
                     ></div>
                   </td>
                   <td class="text-center">
-                    <button id="B343"
+                    <button
+                      id="B343"
                       tabindex="9"
                       data-bind="text: $i18n('KML002_22'), click: openDialogScreenG, enable: countingNumberTimes() === 1"
                     />
@@ -189,7 +177,8 @@
                     ></div>
                   </td>
                   <td class="text-center">
-                    <button id="B363"
+                    <button
+                      id="B363"
                       tabindex="12"
                       data-bind="text: $i18n('KML002_22'), click: openDialogScreenE, enable: timeZoneNumberPeople() === 1"
                     />

@@ -28,27 +28,8 @@
             class="proceed"
             data-bind="text: $i18n('KML002_9'), click: registerSchedulePersonalInfor"
           />
-          <div class="pull-right link-button menu" tabindex="3">
-            <span data-bind="text: $i18n('KML002_10')"></span>
-            <div class="sub-menu-links">
-              <a
-                class="goout link-button"
-                data-bind="ntsLinkButton: { jump: '/view/kml/001/a/index.xhtml' }, text: $i18n('KML002_11')"
-              ></a>
-              <a
-                class="goout link-button"
-                data-bind="ntsLinkButton: { jump: '/view/kmf/002/a/index.xhtml' }, text: $i18n('KML002_45')"
-              ></a>
-              <a
-                class="goout link-button"
-                data-bind="ntsLinkButton: { jump: '/view/ksm/001/a/index.xhtml' }, text: $i18n('KML002_46')"
-              ></a>
-              <a
-                class="goout link-button"
-                href="#"
-                data-bind="text: $i18n('KML002_118')"
-              ></a>
-            </div>
+          <div class="pull-right" >
+            <div tabindex="3" data-bind="ntsFunctionPanel: {width: 200, headerText: $i18n('KML002_10'), dataSource: functionItems}"></div> 
           </div>
         </div>
         <div id="contents-area" class="kml-002-c">

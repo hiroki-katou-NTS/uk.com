@@ -26,6 +26,8 @@ module nts.uk.at.view.kml002.c {
     count3Details: KnockoutObservableArray<any> = ko.observableArray([]);//回数集計	3	
 
     switchOptions: KnockoutObservableArray<any> = ko.observableArray([]);
+    functionItems: KnockoutObservableArray<any> = ko.observableArray([]);
+
     constructor(params: any) {
       super();
       const vm = this;
@@ -34,7 +36,7 @@ module nts.uk.at.view.kml002.c {
         { code: Usage.Use, name: vm.$i18n('KML002_20') },
         { code: Usage.NotUse, name: vm.$i18n('KML002_21') }
       ]);
-
+      vm.createLinkButtonOnRight();
       vm.personalCounterGetById();
     }
 
@@ -200,6 +202,21 @@ module nts.uk.at.view.kml002.c {
       if (vm.count3() === Usage.Use) wpCategory.push(9); //回数集計3
 
       return wpCategory;
+    }
+
+    createLinkButtonOnRight() {
+      const vm = this;
+      let links = [
+        { icon: "images/go-out.png", link: '/view/kml/001/a/index.xhtml', text: vm.$i18n('KML002_11') },
+        { icon: "images/go-out.png", link: '/view/kmf/002/a/index.xhtml', text: vm.$i18n('KML002_45') },
+        { icon: "images/go-out.png", link: '/view/ksm/001/a/index.xhtml', text: vm.$i18n('KML002_46') },
+        //{ icon: "images/go-out.png", link: '#', text: vm.$i18n('KML002_118') },
+      ];
+      _.forEach(links, (item) => {
+        vm.functionItems.push({...item, action: function() {             
+          vm.$jump(item.link);
+        }});
+      });     
     }
   }
 

@@ -27,7 +27,8 @@ module nts.uk.at.view.kml002.b {
     numberOfPositions: KnockoutObservable<number> = ko.observable(Usage.Use);
 
     switchOptions: KnockoutObservableArray<any> = ko.observableArray([]);
-
+    functionItems: KnockoutObservableArray<any> = ko.observableArray([]);
+    
     constructor(params: any) {
       super();
       const vm = this;
@@ -36,6 +37,8 @@ module nts.uk.at.view.kml002.b {
         { code: Usage.Use, name: vm.$i18n('KML002_20') },
         { code: Usage.NotUse, name: vm.$i18n('KML002_21') }
       ]);
+
+      vm.createLinkButtonOnRight();
 
       vm.workplaceCounterGetById();
     }
@@ -237,6 +240,20 @@ module nts.uk.at.view.kml002.b {
       if (vm.numberOfPositions() === Usage.Use) wpCategory.push(7);
 
       return wpCategory;
+    }
+
+    createLinkButtonOnRight() {
+      const vm = this;
+      let links = [
+        { icon: "images/go-out.png", link: '/view/kml/001/a/index.xhtml', text: vm.$i18n('KML002_11') },
+        { icon: "images/go-out.png", link: '/view/kmk/009/a/index.xhtml', text: vm.$i18n('KML002_12') },
+        { icon: "images/go-out.png", link: '/view/ksu/006/a/index.xhtml', text: vm.$i18n('KML002_117') },
+      ];
+      _.forEach(links, (item) => {
+        vm.functionItems.push({...item, action: function() {             
+          vm.$jump(item.link);
+        }});
+      });     
     }
   }
 

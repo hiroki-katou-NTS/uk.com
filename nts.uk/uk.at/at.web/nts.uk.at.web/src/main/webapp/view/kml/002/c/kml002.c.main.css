@@ -3,37 +3,23 @@
 .functions-area {
   overflow: inherit !important;
 }
-.functions-area .link-button.menu {
-  margin-right: 15px;
+.functions-area .ntsFunctionPanel {
+  margin-right: 10px;
   position: relative;
-  width: 188px;
-  text-align: right;
 }
 
-.functions-area .menu .sub-menu-links {
-  position: absolute;
-  top: 100%;
-  width: 188px;
-  right: 0;
-  display: none;
-  z-index: 9999;
+.functions-area .ntsFunctionPanel .function-icon {
+  display: flex;
+  align-items: center;
+}
+.functions-area .ntsFunctionPanel .function-header,
+.functions-area .ntsFunctionPanel .function-item-container {
+  padding-left: 10px;
+  display: flex;
+  width: 190px !important;
+  align-items: center;
 }
 
-.functions-area .menu:hover .sub-menu-links {
-  display: block;
-}
-
-.functions-area .sub-menu-links .ntsControl {
-  display: block;
-}
-.functions-area .sub-menu-links .link-button {
-  width: 100%;  
-  background-color:#FEC6C6;
-  margin-bottom: 1px;  
-}
-.functions-area .sub-menu-links .link-button:hover {
-  color: #000 !important;
-}
 .kml-002-c .content-table {
   border-top: solid 1px #B1B1B1;
   margin-top: 10px;
