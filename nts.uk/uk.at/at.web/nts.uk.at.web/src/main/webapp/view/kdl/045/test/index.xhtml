@@ -284,6 +284,11 @@
 										                            " />
 											</td>
 										</tr>
+										<tr>
+											<td>
+												<div  data-bind="ntsCheckBox: { checked: isNursingAndtimeChildNull , text: '(false:not null,true: null)' }"></div>
+											</td>
+										</tr>
 									</table>
 								</td>
 							</tr>
@@ -301,7 +306,7 @@
 									<table class= "table-test1">
 										<tr>
 											<td></td>
-											<td>申請時間帯</td>
+											<td colspan="2">申請時間帯</td>
 										</tr>
 										<tr>
 											<td>出勤前</td>
@@ -317,6 +322,9 @@
 									                            value: atWork1Range
 									                                }
 									                            " />
+											</td>
+											<td>
+												<div  data-bind="ntsCheckBox: { checked: atWork1RangeNull , text: '(false:not null,true: null)' }"></div>
 											</td>
 										</tr>
 										<tr>
@@ -334,6 +342,9 @@
 									                                }
 									                            " />
 											</td>
+											<td>
+												<div  data-bind="ntsCheckBox: { checked: offWork1RangeNull , text: '(false:not null,true: null)' }"></div>
+											</td>
 										</tr>
 										<tr>
 											<td>出勤前２</td>
@@ -350,6 +361,9 @@
 									                                }
 									                            " />
 											</td>
+											<td>
+												<div  data-bind="ntsCheckBox: { checked: atWork2RangeNull , text: '(false:not null,true: null)' }"></div>
+											</td>
 										</tr>
 										<tr>
 											<td>退勤後２</td>
@@ -365,6 +379,9 @@
 									                            value: offWork2Range
 									                                }
 									                            " />
+											</td>
+											<td>
+												<div  data-bind="ntsCheckBox: { checked: offWork2RangeNull , text: '(false:not null,true: null)' }"></div>
 											</td>
 										</tr>
 										<tr>
@@ -391,6 +408,9 @@
 									                                }
 									                            " />
 											</td>
+											<td>
+												<div  data-bind="ntsCheckBox: { checked: privateTimeRangeNull , text: '(false:not null,true: null)' }"></div>
+											</td>
 										</tr>
 										<tr>
 											<td>組合外出</td>
@@ -415,6 +435,9 @@
 									                            value: unionTimeRange2
 									                                }
 									                            " />              
+											</td>
+											<td>
+												<div  data-bind="ntsCheckBox: { checked: unionTimeRangeNull , text: '(false:not null,true: null)' }"></div>
 											</td>
 										</tr>
 									</table>
