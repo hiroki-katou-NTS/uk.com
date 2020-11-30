@@ -1,8 +1,9 @@
-package nts.uk.ctx.at.shared.app.command.statutory.worktime.monthlyworkinghours;
+package nts.uk.ctx.at.shared.app.command.statutory.worktime.monthlyworkinghours.monthlyworktimesetcom;
 
 import lombok.AllArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.shared.app.command.statutory.worktime.monthlyworkinghours.MonthlyWorkTimeSetCommand;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetCom;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
 import nts.uk.shr.com.context.AppContexts;
