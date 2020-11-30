@@ -1,5 +1,6 @@
 package nts.uk.screen.at.app.ksu003.start.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Value;
 
 /**
@@ -8,9 +9,10 @@ import lombok.Value;
  *
  */
 @Value
+@AllArgsConstructor
 public class TimeOfDayDto {
 	//日区分   : DayDivision
-	private int dayDivision;
+	public int dayDivision;
 	//時刻
-	private int time;
+	public int time;
 }

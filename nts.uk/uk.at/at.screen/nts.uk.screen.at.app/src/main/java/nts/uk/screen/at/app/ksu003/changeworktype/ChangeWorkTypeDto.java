@@ -5,7 +5,7 @@ import lombok.Value;
 @Value
 public class ChangeWorkTypeDto {
 
-	private boolean holiday;
+	private Boolean holiday;
 	
 	private String workTypeName;
 }
