@@ -36,7 +36,8 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             self.allPart = ko.observableArray([]);
             self.listStandardMenu = ko.observableArray([]);
             self.columns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("CCG013_26"), prop: 'code', key: 'code', width: '60px' },
+                { headerText: nts.uk.resource.getText("CCG013_26"), prop: 'code', key: 'code', width: '60px', hidden: true },
+                { headerText: nts.uk.resource.getText("CCG013_26"), prop: 'index', key: 'index', width: '60px' },
                 { headerText: nts.uk.resource.getText("CCG013_27"), prop: 'displayName', key: 'displayName', width: '200px' },
                 { headerText: '', prop: 'uniqueCode', key: 'uniqueCode', width: '0px', display: 'none' }
             ]);
@@ -64,9 +65,16 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             /** Get EditMenuBar*/
             service.getEditMenuBar().done(function(editMenuBar: service.EditMenuBarDto) {
                 self.itemRadioAtcClass(editMenuBar.listSelectedAtr);
-                self.listSystemSelect(editMenuBar.listSystem);
-                _.forEach(editMenuBar.listStandardMenu, (item) => {
+                const item1: any[] = [];
+                item1.push(new EnumConstant(5, nts.uk.resource.getText("CCG013_137"), nts.uk.resource.getText("CCG013_137")));
+                _.forEach(editMenuBar.listSystem, x => {
+                    item1.push(x);
+                })
+
+                self.listSystemSelect(item1);
+                _.forEach(editMenuBar.listStandardMenu, (item, index) => {
                     self.allPart.push(new MenuBarDto(
+                        index,
                         item.afterLoginDisplay,
                         item.classification,
                         item.code,
@@ -81,7 +89,7 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
                         item.webMenuSetting
                     ));
                 });
-                self.selectedCodeSystemSelect(0);
+                self.selectedCodeSystemSelect(5);
                 self.selectedRadioAtcClass(editMenuBar.listSelectedAtr[0].value);
                 dfd.resolve();
             }).fail(function(error) {
@@ -125,7 +133,7 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
                         letterColor: self.letterColor(),
                         backgroundColor: self.backgroundColor(),
                         selectedRadioAtcClass: self.selectedRadioAtcClass(),
-                        system: self.selectedCodeSystemSelect(),
+                        system: _.find(self.listStandardMenu(), { uniqueCode: self.selectedStandardMenuKey() }).system,
                         menuCls: menuCls,
                     });
                     windows.setShared("CCG013B_MenuBar", menuBar);
@@ -142,7 +150,7 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
                     letterColor: self.letterColor(),
                     backgroundColor: self.backgroundColor(),
                     selectedRadioAtcClass: self.selectedRadioAtcClass(),
-                    system: self.selectedCodeSystemSelect(),
+                    system: 0,
                     menuCls: menuCls,
                 });
                 windows.setShared("CCG013B_MenuBar", menuBar);
@@ -160,14 +168,28 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
                 self.selectedStandardMenuKey(null);
         }
 
-        private changeSystem(value): void {
+        private changeSystem(value: number): void {
             var self = this;
-            var standardMenus: any = _.chain(self.allPart())
-                .filter((item: any) => {
-                    if (item.system == 0 && item.classification == 8) return true;
-                    if (item.system == value) return true;
-                }).sortBy(['classification', 'code']).value();
-            self.listStandardMenu(standardMenus);
+            if (value === 5) {
+                var list001 = _.chain(self.allPart())
+                    .uniqBy("displayName")
+                    .forEach((item, index) => {
+                        item.index = index + 1;
+                    })
+                    .value();
+                self.listStandardMenu(list001);
+            } else {
+                var standardMenus: any = _.chain(self.allPart())
+                    .filter((item: any) => {
+                        if (item.system == 0 && item.classification == 8) return true;
+                        if (item.system == value) return true;
+                    }).sortBy(['classification', 'code'])
+                    .forEach((item, index) => {
+                        item.index = index + 1;
+                    })
+                    .value();
+                self.listStandardMenu(standardMenus);
+            }
         }
     }
 
@@ -204,6 +226,7 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
     }
 
     class MenuBarDto {
+        index: number;
         afterLoginDisplay: number;
         classification: number;
         code: string;
@@ -218,7 +241,8 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
         webMenuSetting: number;
         uniqueCode: string;
 
-        constructor(afterLoginDisplay: number, classification: number, code: string, companyId: string, displayName: string, displayOrder: number, logSettingDisplay: number, menuAtr: number, system: number, targetItems: string, url: string, webMenuSetting: number) {
+        constructor(index: number, afterLoginDisplay: number, classification: number, code: string, companyId: string, displayName: string, displayOrder: number, logSettingDisplay: number, menuAtr: number, system: number, targetItems: string, url: string, webMenuSetting: number) {
+            this.index = index;
             this.afterLoginDisplay = afterLoginDisplay;
             this.classification = classification;
             this.code = code;
@@ -231,7 +255,18 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             this.targetItems = targetItems;
             this.url = url;
             this.webMenuSetting = webMenuSetting;
-            this.uniqueCode = nts.uk.text.format("{0}{1}{2}", code, system, classification);;
+            this.uniqueCode = nts.uk.util.randomId();
+        }
+    }
+
+    export class EnumConstant {
+        value: number;
+        fieldName: string;
+        localizedName: string;
+        constructor(value: number, fieldName: string, localizedName: string) {
+            this.value = value;
+            this.fieldName = fieldName;
+            this.localizedName = localizedName;
         }
     }
 }

@@ -5,92 +5,119 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/base.xhtml">
+	<ui:composition template="/master/base.xhtml">
 		<ui:define name="htmlHead">
-			<com:ValidatorScript>
-				nts.uk.ctx.sys.portal.dom.toppage.TopPageCode
-				nts.uk.ctx.sys.portal.dom.toppage.TopPageName
-  			</com:ValidatorScript>
+      <com:stylefile path="../../common/common.css" />
 			<com:stylefile path="ccg008.a.style.css" />
-			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="ccg008.a.start.js" />
-			<com:scriptfile path="ccg008.a.service.js" />
-			<com:scriptfile path="ccg008.a.vm.js" />
-			<com:stylefile path="../../common/common.css" />
+      <com:scriptfile set="IGNITE" />
+			<com:scriptfile path="./ccg008.a.service.js" />
+      <com:scriptfile path="./ccg008.a.vm.js" />
+      <com:scriptfile path="./layout1Component.vm.js" />
+      <com:scriptfile path="./layout2Component.vm.js" />
+      <com:scriptfile path="/view/ktg/027/a/ktg027.a.vm.js"  of="nts.uk.at.web"/>
+      <com:scriptfile path="/view/ktg/026/a/ktg026component.a.vm.js"  of="nts.uk.at.web"/>
 		</ui:define>
-
 		<ui:define name="content">
 			<div id="contents-area">
-				<div id = "ver4">
-					<div style="width: 390px; height:30px; float: right; margin-left: -200px;">
-						<div data-bind="if: switchVisible">
-							
+				<div id="ver4">
+					<div style="width: 390px; height:30px; float: right; margin-left: -265px;">
+            <com:ko-if bind="isShowSwitch()"> 
 							<div id="closure" tabindex="2"
-									data-bind="ntsComboBox: {
-										name: '#[CCG008_16]',
-										options: lstClosure,
-										optionsValue: 'closureId',
-										visibleItemsCount: 5,
-										value: closureSelected,
-										optionsText: 'closureName',
-										editable: false,
-										required: true,
-										selectFirstIfNull: true,
-										columns: [
-											{ prop: 'closureId', length: 4 },
-											{ prop: 'closureName', length: 8 },
-										]}"></div>
-						
-						
-							<div tabindex="3" style="position: relative; vertical-align: top;" data-bind="ntsSwitchButton: {
-																			name: '#[CCG008_13]',
-																			options: dateSwitch,
-																			optionsValue: 'code',
-																			optionsText: 'name',
-																			value: selectedSwitch
-																		}"></div>
-						</div>
-					</div>
-					<div id = "setting" data-bind="if: displayButton">
-						<a tabindex="4" data-bind="click: openDialogB"><img
-							class="setting-img"
-							src="data:image/png;base64,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" /></a>
-					</div>
+                data-bind="ntsComboBox: {
+                  name: '#[CCG008_16]',
+                  options: lstClosure,
+                  optionsValue: 'closureId',
+                  visibleItemsCount: 5,
+                  value: closureSelected,
+                  optionsText: 'closureName',
+                  editable: false,
+                  required: true,
+                  selectFirstIfNull: true,
+                  columns: [
+                    { prop: 'closureId', length: 4 },
+                    { prop: 'closureName', length: 8 },
+                  ]}">
+                </div>
+            </com:ko-if>
+            <com:ko-if bind="isShowSwitch()"> 
+              <div tabindex="3" style="position: relative; vertical-align: top;" data-bind="ntsSwitchButton: {
+                name: '#[CCG008_13]',
+                options: dateSwitch,
+                optionsValue: 'code',
+                optionsText: 'name',
+                value: selectedSwitch,
+              }">
+              </div>
+            </com:ko-if>
+          </div>
+          <com:ko-if bind="isShowButtonRefresh()">
+            <div id = "reload">
+              <a tabindex="4" data-bind="click: onClickReload"><img
+                class="reload-img"
+                src="../image/CCG008_1.png"/></a>
+            </div>
+          </com:ko-if>
+          <com:ko-if bind="isShowButtonSetting()">
+            <div id = "setting">
+              <a tabindex="4" data-bind="click: openScreenE"><img
+                class="setting-img"
+                src="data:image/png;base64,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" /></a>
+            </div>
+          </com:ko-if>
 				</div>
-				<div tabindex="1" id="tab-panel"
-					data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab }">
-					
-					<div class="tab-content-1">
 						<!-- トップページ (top page) -->
-						<div class="placement-wraper">
-							<div class="widget-container"
-								data-bind="foreach: placementsTopPage">
-								<div class="widget-panel preview"
-									data-bind="attr: {id: 'toppage_' + placementID + '_' + $index()}">
-									<div class="panel-header">
-										<span class="title" data-bind="text: name"></span>
-									</div>
-									<div class="panel-content placeholder" data-bind="html: html" />
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="tab-content-2">
-						<!-- マイページ(my page) -->
-						<div class="placement-wraper">
-							<div class="widget-container"
-								data-bind="foreach: placementsMyPage">
-								<div class="widget-panel preview" data-bind="attr: {id: 'mypage_' + placementID + '_' + $index()}">
-									<div class="panel-header">
-										<span class="title limited-label" data-bind="text: name"></span>
-									</div>
-									<div class="panel-content placeholder" data-bind="html: html">
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
+				<div class="content">
+          <div class="content-top">
+            <div class="contents_layout" id="resizable">
+              <com:ko-if bind="layoutDisplayType() === 2 || layoutDisplayType() === 3">
+                <div class="contents_2" id="F2">
+                  <!-- <div class="panel panel-frame widget_contents" data-bind="foreach: lstWidgetLayout2">
+                    <div class="panel-content placeholder" data-bind="html: html"></div>
+                  </div> -->
+                  <layout2-component params= "item:paramWidgetLayout2()"></layout2-component>
+                </div>
+              </com:ko-if>
+              <com:ko-if bind="visible()">
+                <div class="contents_1" id="F1">
+                  <!-- <div class="panel panel-frame">
+                    <com:ko-if bind="isShowUrlLayout1()">
+                      <iframe class="iframe_fix" id="preview-iframe1" data-bind="attr:{src: urlIframe1}"></iframe>
+                    </com:ko-if>
+                    <div data-bind="foreach: lstHtml">
+                      <div data-bind="html: html" id="F1-frame" ></div>
+                    </div>
+                  </div> -->
+                  <layout1-component params= "item: paramIframe1()"></layout1-component>
+                </div>
+              </com:ko-if>
+              <com:ko-if bind="layoutDisplayType() === 1">
+                <div class="contents_2" id="F4">
+                  <!-- <div class="panel panel-frame widget_contents" data-bind="foreach: lstWidgetLayout2">
+                    <div class="panel-content placeholder" data-bind="html: html"></div>
+                    <com:ko-if bind="url.indexOf('.xhtml') > -1">
+                      <iframe style="width:450px" data-bind="attr: { src: url }" />
+                    </com:ko-if>
+                    <com:ko-if bind="url.indexOf('.js') > -1">
+                        <div data-bind="component: { name: name }"></div>
+                    </com:ko-if>
+                  </div> -->
+                  <layout2-component params= "item:paramWidgetLayout2()"></layout2-component>
+                </div>
+              </com:ko-if>
+              <com:ko-if bind="layoutDisplayType() === 3">
+                <div class="contents_3" id="F3">
+                  <!-- <div class="widget_contents panel panel-frame">
+                    <div class="panel panel-frame widget_contents" data-bind="foreach: lstWidgetLayout3">
+                      <div class="panel-content placeholder" data-bind="html: html"></div>
+                    </div>
+                  </div> -->
+                  <layout2-component params= "item:paramWidgetLayout2()"></layout2-component>
+                </div>
+                
+              </com:ko-if>
+            </div>
+          </div>
+        </div>	
 			</div>
 		</ui:define>
 	</ui:composition>

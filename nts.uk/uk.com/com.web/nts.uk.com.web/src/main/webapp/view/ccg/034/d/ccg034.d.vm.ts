@@ -35,7 +35,9 @@ module nts.uk.com.view.ccg034.d {
     $listPart: JQuery[] = [];
     partClientId: number = 0;
     mapPartData: any = {};
-    layoutSizeText: KnockoutObservable<string> = ko.observable('');
+    maxHeight: KnockoutObservable<number> = ko.observable(0);
+    maxWidth: KnockoutObservable<number> = ko.observable(0);
+    layoutSizeText: KnockoutObservable<string>;
     flowMenuCode: KnockoutObservable<string> = ko.observable(null);
     flowMenuFileId: KnockoutObservable<string> = ko.observable(null);
     flowMenuData: KnockoutObservable<FlowMenuLayoutDto> = ko.observable(null);
@@ -56,12 +58,12 @@ module nts.uk.com.view.ccg034.d {
         vm.flowMenuData(flowMenuData);
         vm.menuName(`${vm.flowMenuCode()} ${vm.flowMenuData().flowMenuName}`);
       }
+      // Init text resource
+      vm.layoutSizeText = ko.computed(() => vm.$i18n('CCG034_50', [vm.maxWidth().toString(), vm.maxHeight().toString()]));
     }
 
     mounted() {
       const vm = this;
-      // Init text resource
-      vm.layoutSizeText(vm.$i18n('CCG034_50', [CREATION_LAYOUT_WIDTH.toString(), CREATION_LAYOUT_HEIGHT.toString()]));
       // Store creation layout as class variable for easier access
       vm.$menuCreationLayout = $(`#${MENU_CREATION_LAYOUT_ID}`);
       vm.$menuCreationLayoutContainer = $('.menu-creation-layout-container');
@@ -130,6 +132,10 @@ module nts.uk.com.view.ccg034.d {
         vm.loadPartDomToLayout(vm.flowMenuData());
         vm.$blockui('clear');
       }
+      // Re-calculate resolution
+      vm.calculateResolution();
+      // Focus
+      $("#D6").focus();
     }
 
     /**
@@ -176,6 +182,8 @@ module nts.uk.com.view.ccg034.d {
       }
       // Append new part to layout
       vm.$menuCreationLayout.append($partDOMs);
+      // Re-calculate resolution
+      vm.calculateResolution();
     }
 
     /**
@@ -312,6 +320,8 @@ module nts.uk.com.view.ccg034.d {
           }
         }
       });
+      // Re-calculate resolution
+      vm.calculateResolution();
       return $newPart;
     }
 
@@ -472,6 +482,8 @@ module nts.uk.com.view.ccg034.d {
         // Update part data to map, Update part DOM, Check and remove overlap part (both DOM element and data by calling JQuery.remove())
         vm.mapPartData[partClientId] = resizedPartData;
         LayoutUtils.renderPartDOM(item.element, resizedPartData);
+        // Re-calculate resolution
+        vm.calculateResolution();
       }
     }
 
@@ -509,6 +521,8 @@ module nts.uk.com.view.ccg034.d {
         // Update part data to map, Update part DOM, Check and remove overlap part (both DOM element and data by calling JQuery.remove())
         vm.mapPartData[partClientId] = movedPartData;
         LayoutUtils.renderPartDOM(item.helper, movedPartData);
+        // Re-calculate resolution
+        vm.calculateResolution();
       }
     }
 
@@ -664,6 +678,8 @@ module nts.uk.com.view.ccg034.d {
       // Set part data to map
       vm.mapPartData[vm.partClientId] = newPartData;
       vm.partClientId++;
+      // Re-calculate resolution
+      vm.calculateResolution();
       return newPartData;
     }
 
@@ -811,7 +827,7 @@ module nts.uk.com.view.ccg034.d {
         uploadedFileName: null,
         uploadedFileSize: null,
         isFixed: dto.isFixed,
-        ratio: 1, // TODO
+        ratio: dto.ratio,
       });
       // Set part data to map
       vm.mapPartData[vm.partClientId] = newPartData;
@@ -981,6 +997,8 @@ module nts.uk.com.view.ccg034.d {
         default:
           break;
       }
+      // Re-calculate resolution
+      vm.calculateResolution();
     }
 
     /**
@@ -1052,6 +1070,8 @@ module nts.uk.com.view.ccg034.d {
       delete vm.mapPartData[partClientId];
       vm.$listPart = _.filter(vm.$listPart, ($item) => Number($item.attr(KEY_DATA_ITEM_CLIENT_ID)) !== partClientId);
       $part.remove();
+      // Re-calculate resolution
+      vm.calculateResolution();
     }
 
     /**
@@ -1183,8 +1203,9 @@ module nts.uk.com.view.ccg034.d {
               width: data.width,
               height: data.height,
               fileId: data.fileId,
-              fileName: data.isFixed === 0 ? data.fileName : data.uploadedFileName,
+              fileName: data.fileName,
               isFixed: data.isFixed,
+              ratio: nts.uk.ntsNumber.getDecimal(Number(data.ratio), 2)
             }))
             .value();
           const listArrowSettingDto: ArrowSettingDto[] = _.chain(listPartData)
@@ -1225,8 +1246,9 @@ module nts.uk.com.view.ccg034.d {
      * create HTML Layout
      */
     private createHTMLLayout($layout: JQuery): string {
+      const vm = this;
       let htmlContent = `<!DOCTYPE html>`;
-      htmlContent += `<html xmlns="http://www.w3.org/1999/xhtml">`;
+      htmlContent += `<html xmlns="http://www.w3.org/1999/xhtml"`;
       htmlContent += ` xmlns:ui="http://java.sun.com/jsf/facelets"`;
       htmlContent += ` xmlns:com="http://xmlns.jcp.org/jsf/component"`;
       htmlContent += ` xmlns:com="http://xmlns.jcp.org/jsf/html"`;
@@ -1234,10 +1256,33 @@ module nts.uk.com.view.ccg034.d {
       htmlContent += `<link rel="stylesheet" type="text/css" href="/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/base.css">`;
       htmlContent += `</head>`;
       htmlContent += `<body>`;
+      htmlContent += `<div class="content-container" style="width: ${vm.maxWidth()}px; height: ${vm.maxHeight()}px;">`;
       htmlContent += $layout.html();
+      htmlContent += `</div>`;
       htmlContent += `</body>`;
       htmlContent += `</html>`;
       return htmlContent;
+    }
+
+    /**
+     * Calculate layout resolution
+     */
+    private calculateResolution() {
+      const vm = this;
+      let topHeight = 0;
+      let topWidth = 0;
+
+      for (const partClientId in vm.mapPartData) {
+        const part: PartDataModel = vm.mapPartData[partClientId];
+        if (part.height + part.positionTop > topHeight) {
+          topHeight = part.height + part.positionTop;
+        }
+        if (part.width + part.positionLeft > topWidth) {
+          topWidth = part.width + part.positionLeft;
+        }
+      }
+      vm.maxHeight(topHeight);
+      vm.maxWidth(topWidth);
     }
 
   }
@@ -1693,7 +1738,7 @@ module nts.uk.com.view.ccg034.d {
               'height': `${partDataMenuModel.height}px`,
               'display': 'flex',
               'align-items': LayoutUtils.getVerticalClass(partDataMenuModel.alignVertical),
-              'justify-content': LayoutUtils.getHorizontalClass(partDataMenuModel.alignVertical),
+              'justify-content': LayoutUtils.getHorizontalClass(partDataMenuModel.alignHorizontal),
               'overflow': 'hidden',
               'text-overflow': 'ellipsis',
               'word-break': 'break-word',
@@ -1718,7 +1763,7 @@ module nts.uk.com.view.ccg034.d {
               'height': `${partDataLabelModel.height}px`,
               'display': 'flex',
               'align-items': LayoutUtils.getVerticalClass(partDataLabelModel.alignVertical),
-              'justify-content': LayoutUtils.getHorizontalClass(partDataLabelModel.alignVertical),
+              'justify-content': LayoutUtils.getHorizontalClass(partDataLabelModel.alignHorizontal),
               'overflow': 'hidden',
               'text-overflow': 'ellipsis',
               'word-break': 'break-word',
@@ -1746,7 +1791,7 @@ module nts.uk.com.view.ccg034.d {
               'height': `${partDataLinkModel.height}px`,
               'display': 'flex',
               'align-items': LayoutUtils.getVerticalClass(partDataLinkModel.alignVertical),
-              'justify-content': LayoutUtils.getHorizontalClass(partDataLinkModel.alignVertical),
+              'justify-content': LayoutUtils.getHorizontalClass(partDataLinkModel.alignHorizontal),
               'overflow': 'hidden',
               'text-overflow': 'ellipsis',
               'word-break': 'break-word',
@@ -1774,7 +1819,7 @@ module nts.uk.com.view.ccg034.d {
               'height': `${partDataAttachmentModel.height}px`,
               'display': 'flex',
               'align-items': LayoutUtils.getVerticalClass(partDataAttachmentModel.alignVertical),
-              'justify-content': LayoutUtils.getHorizontalClass(partDataAttachmentModel.alignVertical),
+              'justify-content': LayoutUtils.getHorizontalClass(partDataAttachmentModel.alignHorizontal),
               'overflow': 'hidden',
               'text-overflow': 'ellipsis',
               'word-break': 'break-word',
@@ -1891,11 +1936,11 @@ module nts.uk.com.view.ccg034.d {
     alignHorizontal: number = HorizontalAlign.MIDDLE;
     alignVertical: number = VerticalAlign.CENTER;
     menuCode: string = null;
-    menuName: string = "";
-    menuClassification: number = 0;
-    systemType: number = 0;
-    fontSize: number = 11;
-    isBold: boolean = true;
+    menuName = "";
+    menuClassification = 0;
+    systemType = 0;
+    fontSize = 11;
+    isBold = true;
     menuUrl: string = null;
 
     constructor(init?: Partial<PartDataMenuModel>) {
@@ -1908,11 +1953,11 @@ module nts.uk.com.view.ccg034.d {
     // Default data
     alignHorizontal: number = HorizontalAlign.LEFT;
     alignVertical: number = VerticalAlign.CENTER;
-    labelContent: string = '';
-    fontSize: number = 11;
-    isBold: boolean = true;
-    textColor: string = '#000000';
-    backgroundColor: string = '#ffffff';
+    labelContent = '';
+    fontSize = 11;
+    isBold = true;
+    textColor = '#000000';
+    backgroundColor = '#ffffff';
 
     constructor(init?: Partial<PartDataLabelModel>) {
       super(init);
@@ -1925,9 +1970,9 @@ module nts.uk.com.view.ccg034.d {
     alignHorizontal: number = HorizontalAlign.LEFT;
     alignVertical: number = VerticalAlign.CENTER;
     url: string = null;
-    linkContent: string = '';
-    fontSize: number = 11;
-    isBold: boolean = true;
+    linkContent = '';
+    fontSize = 11;
+    isBold = true;
 
     constructor(init?: Partial<PartDataLinkModel>) {
       super(init);
@@ -1940,11 +1985,11 @@ module nts.uk.com.view.ccg034.d {
     alignHorizontal: number = HorizontalAlign.LEFT;
     alignVertical: number = VerticalAlign.CENTER;
     fileId: string = null;
-    fileSize: number = 0;
+    fileSize = 0;
     fileName: string = null;
-    linkContent: string = '';
+    linkContent = '';
     fileLink: string = null;
-    fontSize: number = 11;
+    fontSize = 11;
     isBold: boolean = true;
 
     constructor(init?: Partial<PartDataAttachmentModel>) {
@@ -1958,9 +2003,9 @@ module nts.uk.com.view.ccg034.d {
     fileId: string = null;
     fileName: string = null;
     uploadedFileName: string = null;
-    uploadedFileSize: number = 0;
-    isFixed: number = 0;
-    ratio: number = 1;
+    uploadedFileSize = 0;
+    isFixed = 0;
+    ratio = 1;
 
     constructor(init?: Partial<PartDataImageModel>) {
       super(init);
@@ -1971,7 +2016,7 @@ module nts.uk.com.view.ccg034.d {
   export class PartDataArrowModel extends PartDataModel {
     // Default data
     fileName: string = null;
-    fileSrc: string = null
+    fileSrc: string = null;
 
     constructor(init?: Partial<PartDataArrowModel>) {
       super(init);
@@ -2088,6 +2133,7 @@ module nts.uk.com.view.ccg034.d {
     fileId: string;
     fileName: string;
     isFixed: number;
+    ratio: number;
 
     constructor(init?: Partial<ImageSettingDto>) {
       $.extend(this, init);

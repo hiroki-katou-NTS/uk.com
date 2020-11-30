@@ -10,6 +10,8 @@ import nts.uk.ctx.bs.person.infra.entity.person.anniversary.BpsdtPsAnniversaryIn
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
+
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -34,7 +36,8 @@ public class JpaAnniversaryRepository extends JpaRepository implements Anniversa
     //select by date period
     private static final String SELECT_BY_DATE_PERIOD = "SELECT a FROM BpsdtPsAnniversaryInfo a"
             + " WHERE a.bpsdtPsAnniversaryInfoPK.personalId = :personalId"
-            + " AND a.bpsdtPsAnniversaryInfoPK.anniversary IN :datePeriod";
+            + " AND :start <= a.bpsdtPsAnniversaryInfoPK.anniversary"
+            + " AND a.bpsdtPsAnniversaryInfoPK.anniversary <= :end";
 
     //select by person ID and anniversary
     private static final String SELECT_BY_PERSONAL_ID_AND_ANNIVERSARY = "SELECT a FROM BpsdtPsAnniversaryInfo a"
@@ -122,7 +125,7 @@ public class JpaAnniversaryRepository extends JpaRepository implements Anniversa
     }
 
     @Override
-    public Optional<AnniversaryNotice> getByPersonalIdAndAnniversary(String personalId, GeneralDate anniversary) {
+    public Optional<AnniversaryNotice> getByPersonalIdAndAnniversary(String personalId, String anniversary) {
         return this.queryProxy()
                 .query(SELECT_BY_PERSONAL_ID_AND_ANNIVERSARY, BpsdtPsAnniversaryInfo.class)
                 .setParameter("personalId", personalId)
@@ -132,10 +135,12 @@ public class JpaAnniversaryRepository extends JpaRepository implements Anniversa
 
     @Override
     public List<AnniversaryNotice> getByPersonalId(String personalId) {
-        return this.queryProxy()
+    	List<AnniversaryNotice> list = this.queryProxy()
                 .query(SELECT_BY_PERSONAL_ID, BpsdtPsAnniversaryInfo.class)
                 .setParameter("personalId", personalId)
                 .getList(AnniversaryNotice::createFromMemento);
+        list.sort(Comparator.comparing(AnniversaryNotice::getAnniversary));
+        return list;
     }
 
     @Override
@@ -149,7 +154,7 @@ public class JpaAnniversaryRepository extends JpaRepository implements Anniversa
 
         @SuppressWarnings("unchecked")
         List<Object[]> resultList = getEntityManager().createNativeQuery(query).getResultList();
-        return resultList.stream()
+        List<AnniversaryNotice> list = resultList.stream()
                 .map(item -> {
                     //fill entity
                     BpsdtPsAnniversaryInfo entity = new BpsdtPsAnniversaryInfo();
@@ -159,22 +164,27 @@ public class JpaAnniversaryRepository extends JpaRepository implements Anniversa
                     entity.setAnniversaryTitle(item[12].toString());
                     entity.setNotificationMessage(item[13].toString());
                     entity.setNoticeDay(Integer.parseInt(item[14].toString()));
-
+                    entity.setSeenDate(GeneralDate.fromString(item[15].toString(), "yyyy-MM-dd hh:mm:ss.S"));
                     //create domain
                     AnniversaryNotice domain = new AnniversaryNotice();
                     domain.getMemento(entity);
                     return domain;
                 })
                 .collect(Collectors.toList());
+        list.sort(Comparator.comparing(AnniversaryNotice::getAnniversary));
+        return list;
     }
 
     @Override
     public List<AnniversaryNotice> getByDatePeriod(DatePeriod datePeriod) {
         String loginPersonalId = AppContexts.user().personId();
-        return this.queryProxy()
+        List<AnniversaryNotice> list = this.queryProxy()
                 .query(SELECT_BY_DATE_PERIOD, BpsdtPsAnniversaryInfo.class)
                 .setParameter("personalId", loginPersonalId)
-                .setParameter("datePeriod", datePeriod)
+                .setParameter("start", datePeriod.start().month() + "" + datePeriod.start().day())
+                .setParameter("end", datePeriod.end().month() + "" + datePeriod.end().day())
                 .getList(AnniversaryNotice::createFromMemento);
+        list.sort(Comparator.comparing(AnniversaryNotice::getAnniversary));
+        return list;
     }
 }

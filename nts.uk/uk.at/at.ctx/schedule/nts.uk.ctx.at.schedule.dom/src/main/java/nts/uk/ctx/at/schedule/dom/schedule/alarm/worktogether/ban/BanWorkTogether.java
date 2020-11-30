@@ -32,7 +32,7 @@ public class BanWorkTogether implements DomainAggregate{
 	private List<String> empBanWorkTogetherLst;
 	
 	/** 許容する人数 */
-	private MaxOfNumberEmployeeTogether upperLimit;
+	private Integer upperLimit;
 	
 	/**
 	 * 終日を指定して作成する
@@ -47,7 +47,7 @@ public class BanWorkTogether implements DomainAggregate{
 			BanWorkTogetherCode code,
 			BanWorkTogetherName name,
 			List<String> empBanWorkTogetherLst,
-			MaxOfNumberEmployeeTogether upperLimit) {
+			Integer upperLimit) {
 		
 		return create(targetOrg, code, 
 				name, ApplicableTimeZoneCls.ALLDAY,
@@ -68,7 +68,7 @@ public class BanWorkTogether implements DomainAggregate{
 			BanWorkTogetherCode code,
 			BanWorkTogetherName name,
 			List<String> empBanWorkTogetherLst,
-			MaxOfNumberEmployeeTogether upperLimit) {
+			Integer upperLimit) {
 		
 		return  create(targetOrg, code, 
 				name, ApplicableTimeZoneCls.NIGHTSHIFT,
@@ -80,13 +80,13 @@ public class BanWorkTogether implements DomainAggregate{
 			BanWorkTogetherName name,
 			ApplicableTimeZoneCls timeZoneCls,
 			List<String> empBanWorkTogetherLst,
-			MaxOfNumberEmployeeTogether upperLimit) {
+			Integer upperLimit) {
 		
 		if(empBanWorkTogetherLst.size() < 2) {
 			throw new BusinessException("Msg_1875");
 		}
 		
-		if(empBanWorkTogetherLst.size() <= upperLimit.v()) {
+		if(empBanWorkTogetherLst.size() <= upperLimit) {
 			throw new BusinessException("Msg_1787");
 		}
 		

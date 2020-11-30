@@ -59,11 +59,17 @@
   vertical-align: text-top;
 }
 
+.label-main {
+  font-weight: bold;
+  font-size: 20px;
+  margin-left: 33px;
+}
+
 .tab-profile td,
 .pw,
 .tab-language td,
 .tab-notification td {
-  padding-top: 10px;
+  padding-top: 14px;
   padding-bottom: 10px;
 }
 
@@ -112,6 +118,7 @@
   padding-top: 10px;
 }
 
+
 #A4_1_no_avatar {
   background-color: #eeeeee;
   font-size: 30px;
@@ -119,7 +126,21 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 2px solid rgb(51 54 136);
+  border: 2px solid;
+  border-color: #333688;
+}
+
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+  #A4_1_no_avatar {
+    background-color: #eeeeee;
+    font-size: 30px;
+    color: blue;
+    border: 2px solid;
+    border-color: #333688;
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+  }
 }
 /* Avatar handle end */
 

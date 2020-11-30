@@ -177,13 +177,9 @@ module ccg018.a1.viewmodel {
         }
 
         checkCategorySet(): void {
-            let self = this;
             if (self.categorySet() == null) {
                 self.categorySet(1);
             }
-        }
-
-        /**
          * Update/insert data in TOPPAGE_ROLE_SET
          */
         save(): void {
@@ -197,7 +193,9 @@ module ccg018.a1.viewmodel {
             ccg018.a1.service.update(command)
                 .done(() => {
                     blockUI.clear();
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" })
+                    .then(() => $('.table1').focus());
+                    
                 }).fail((error) => {
                     nts.uk.ui.dialog.alertError(error.message);
                 }).always(() => blockUI.clear());

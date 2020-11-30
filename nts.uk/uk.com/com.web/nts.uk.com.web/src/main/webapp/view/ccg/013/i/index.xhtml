@@ -38,7 +38,7 @@
 						</tr>
 						<tr>
 							<td width="10"></td>
-							<td><div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG013_87')}</div></td>
+							<td><div data-bind="ntsFormLabel: { constraint: 'MenuBarName', required: true }">#{i18n.getText('CCG013_87')}</div></td>
 							<td><input id="menu-bar-name"
 								data-bind="ntsTextEditor: {name:'#[CCG013_87]', value: nameMenuBar, constraint: 'MenuBarName', required: true, option: textOption}, hasfocus: true" /></td>
 						</tr>

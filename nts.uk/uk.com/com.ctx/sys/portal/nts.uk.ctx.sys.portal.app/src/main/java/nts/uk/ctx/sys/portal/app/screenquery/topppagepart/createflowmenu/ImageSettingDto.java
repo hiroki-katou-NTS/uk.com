@@ -46,6 +46,11 @@ public class ImageSettingDto {
 	private int isFixed;
 	
 	/**
+	 * 比率
+	 */
+	private double ratio;
+	
+	/**
 	 * width
 	 */
 	private int width;

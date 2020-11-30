@@ -3,6 +3,7 @@ package nts.uk.ctx.sys.portal.ac.notice;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -17,12 +18,12 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.bs.employee.pub.employee.EmployeeInfoExport;
+import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.ctx.bs.person.pub.anniversary.AnniversaryNoticeExport;
 import nts.uk.ctx.bs.person.pub.anniversary.AnniversaryNoticePub;
-import nts.uk.ctx.bs.employee.pub.employee.EmployeeInfoExport;
-import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.sys.auth.pub.role.RoleExport;
 import nts.uk.ctx.sys.auth.pub.role.RoleExportRepo;
 import nts.uk.ctx.sys.portal.dom.notice.adapter.AnniversaryNoticeImport;
@@ -77,7 +78,7 @@ public class MessageNoticeAdapterImpl implements MessageNoticeAdapter {
 	@Override
 	public Map<AnniversaryNoticeImport, Boolean> setFlag(DatePeriod datePeriod) {
 		Map<AnniversaryNoticeExport, Boolean> dataExport = anniversaryNoticePub.setFlag(datePeriod);
-		Map<AnniversaryNoticeImport, Boolean> result = new HashMap<AnniversaryNoticeImport, Boolean>();
+		Map<AnniversaryNoticeImport, Boolean> result = new LinkedHashMap<AnniversaryNoticeImport, Boolean>();
 		if (dataExport.isEmpty()) {
 			return result;
 		}
@@ -94,13 +95,14 @@ public class MessageNoticeAdapterImpl implements MessageNoticeAdapter {
 	 * @return
 	 */
 	public AnniversaryNoticeImport tranferData(AnniversaryNoticeExport exportData) {
-		return AnniversaryNoticeImport.builder()
-				.personalId(exportData.getPersonalId())
-				.noticeDay(exportData.getNoticeDay())
-				.seenDate(exportData.getSeenDate())
-				.anniversary(exportData.getAnniversary())
+		return AnniversaryNoticeImport.builder().personalId(exportData.getPersonalId())
+				.noticeDay(exportData.getNoticeDay()).seenDate(exportData.getSeenDate())
+				.anniversary(String.join("", String.valueOf(exportData.getAnniversary().getMonthValue()),
+						String.valueOf(exportData.getAnniversary().getDayOfMonth())))
 				.anniversaryTitle(exportData.getAnniversaryTitle())
 				.notificationMessage(exportData.getNotificationMessage())
+				.displayDate(String.join("-", String.valueOf(exportData.getAnniversary().getMonthValue()),
+						String.valueOf(exportData.getAnniversary().getDayOfMonth())))
 				.build();
 	}
 
@@ -151,5 +153,11 @@ public class MessageNoticeAdapterImpl implements MessageNoticeAdapter {
 				.workplaceCode(wkp.getWorkplaceCode())
 				.workplaceName(wkp.getWorkplaceName())
 				.build());
+	}
+
+	@Override
+	public boolean isTodayHaveNewAnniversary() {
+		//新記念日があるか
+		return this.anniversaryNoticePub.isTodayHaveNewAnniversary();
 	}
 }

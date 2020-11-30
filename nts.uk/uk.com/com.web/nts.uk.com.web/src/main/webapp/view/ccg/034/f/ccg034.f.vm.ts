@@ -7,7 +7,7 @@ module nts.uk.com.view.ccg034.f {
   // URL API backend
   const API = {
     getMenuList: "sys/portal/standardmenu/findByMenuAndWebMenu"
-  }
+  };
 
   @bean()
   export class ScreenModel extends ko.ViewModel {
@@ -36,7 +36,7 @@ module nts.uk.com.view.ccg034.f {
       { headerText: '', key: 'id', hidden: true },
       { headerText: getText('CCG034_72'), key: 'code', width: 60 },
       { headerText: getText('CCG034_73'), key: 'name', width: 300 }
-    ]
+    ];
     menuUrl: KnockoutObservable<string> = ko.observable(null);
     // Common text attribute
     fontSize: KnockoutObservable<number> = ko.observable(11);
@@ -75,13 +75,13 @@ module nts.uk.com.view.ccg034.f {
       vm.selectedMenuCode.subscribe(value => {
         const item = _.find(vm.menuList(), { id: value });
         if (item) {
-          vm.displayMenuName(item.code + " " + item.name);
+          vm.displayMenuName(`${item.code} ${item.name}`);
           vm.menuName(item.name);
           vm.menuCode(item.code);
           vm.menuClassification(item.menuClassification);
           vm.menuUrl(item.url);
           //Revalidate
-          vm.$validate("#F6_2")
+          vm.$validate("#F6_2");
         }
       });
 
@@ -93,6 +93,7 @@ module nts.uk.com.view.ccg034.f {
         }
       });
       vm.findMenuData();
+      $("#F6_2").focus();
     }
 
     private findMenuData() {

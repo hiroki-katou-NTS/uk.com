@@ -177,7 +177,9 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                 self.employeeId(info.selectedEmployee.employeeId);
                 self.employeeCode(info.selectedEmployee.employeeCode);
                 self.employeeName(info.selectedEmployee.employeeName);
-                self.closureId(info.closure.closureId);
+                if (info.closure && info.closure.closureId) {
+                    self.closureId(info.closure.closureId);
+                }
             }
             block.clear();
         }
@@ -203,6 +205,19 @@ module nts.uk.at.view.kdm001.i.viewmodel {
             if (!errors.hasError()) {
                 block.invisible();
 
+                let linkingDates: any[] = [];
+                if (self.checkedHoliday()) {
+                    if (self.checkedSubHoliday() && _.isEmpty(self.listLinkingDate())) {
+                        linkingDates = [moment.utc(self.dateHoliday()).format('YYYY-MM-DD')];
+                    } else {
+                        linkingDates = self.listLinkingDate();
+                    }
+                } else {
+                    if (self.checkedSplit() && !_.isEmpty(self.listLinkingDate())) {
+                        linkingDates = self.listLinkingDate();
+                    }
+                }
+
                 let data = {
                     employeeId: self.employeeId(),
                     checkedHoliday: self.checkedHoliday(),
@@ -217,9 +232,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     selectedCodeOptionSubHoliday: self.selectedCodeOptionSubHoliday(),
                     dayRemaining: Math.abs(parseFloat(self.dayRemaining())),
                     closureId: self.closureId(),
-                    lstLinkingDate: !_.isEmpty(self.listLinkingDate())
-                        ? self.listLinkingDate()
-                        : self.checkedSubHoliday() ? [moment.utc(self.dateHoliday()).format('YYYY-MM-DD')] : []
+                    lstLinkingDate: linkingDates
                 };
                 if (!self.checkedSubHoliday()) {
                     data.selectedCodeSubHoliday = 0;
@@ -284,6 +297,11 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                         setShared('KDM001_I_SUCCESS', {isSuccess: true})
                         nts.uk.ui.windows.close();
                     });
+                })
+                .fail(err => {
+                    if (err && err.messageId === 'Msg_2017' || err.messageId === 'Msg_2018') {
+                        dialog.info(err);
+                    }
                 });
                 block.clear();
             }

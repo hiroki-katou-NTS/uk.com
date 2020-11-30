@@ -57,4 +57,22 @@ public interface FlowMenuRepository {
 	 */
 	void remove(String companyID, String toppagePartID);
 	
+	/**
+	 * 
+	 * @param companyID
+	 * @param topPagePartID
+	 * @param topPagePartType
+	 * @return
+	 */
+	public Optional<FlowMenu> findByCodeAndType(String companyID, String topPagePartID, Integer topPagePartType);
+	
+	/**
+	 * 
+	 * @param companyID
+	 * @param topPagePartType
+	 * @return
+	 */
+	public List<FlowMenu> findByType(String companyID, Integer topPagePartType);
+	
+	
 }

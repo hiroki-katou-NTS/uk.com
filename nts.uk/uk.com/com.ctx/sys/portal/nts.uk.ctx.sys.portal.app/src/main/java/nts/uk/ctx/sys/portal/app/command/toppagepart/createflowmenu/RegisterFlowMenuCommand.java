@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.portal.app.command.toppagepart.createflowmenu;
 
+import java.util.Collections;
 import java.util.List;
 
 import lombok.Data;
@@ -38,36 +39,36 @@ public class RegisterFlowMenuCommand implements CreateFlowMenu.MementoGetter {
 	@Override
 	public List<MenuSetting> getMenuSettings() {
 		// NOT USED
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
 	public List<ArrowSetting> getArrowSettings() {
 		// NOT USED
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
 	public List<FileAttachmentSetting> getFileAttachmentSettings() {
 		// NOT USED
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
 	public List<ImageSetting> getImageSettings() {
 		// NOT USED
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
 	public List<LabelSetting> getLabelSettings() {
 		// NOT USED
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
 	public List<LinkSetting> getLinkSettings() {
 		// NOT USED
-		return null;
+		return Collections.emptyList();
 	}
 }

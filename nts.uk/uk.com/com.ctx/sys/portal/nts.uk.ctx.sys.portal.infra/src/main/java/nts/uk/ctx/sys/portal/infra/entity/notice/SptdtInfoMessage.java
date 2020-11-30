@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.portal.infra.entity.notice;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,17 +27,19 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * Entity お知らせメッセージ
+ * 
  * @author DungDV
  *
  */
 @Data
 @Entity
 @Table(name = "SPTDT_INFO_MESSAGE")
-@EqualsAndHashCode(callSuper = true)
-public class SptdtInfoMessage extends UkJpaEntity implements MessageNotice.MementoGetter, MessageNotice.MementoSetter, Serializable {
-	
+@EqualsAndHashCode(callSuper = true, exclude = { "sptdtInfoMessageTgts", "sptdtInfoMessageReads" })
+public class SptdtInfoMessage extends UkJpaEntity
+		implements MessageNotice.MementoGetter, MessageNotice.MementoSetter, Serializable {
+
 	private static final long serialVersionUID = 1L;
-	
+
 	/** 作成者ID + 入力日 */
 	@EmbeddedId
 	private SptdtInfoMessagePK pk;
@@ -45,51 +48,43 @@ public class SptdtInfoMessage extends UkJpaEntity implements MessageNotice.Memen
 	@Version
 	@Column(name = "EXCLUS_VER")
 	private long version;
-	
+
 	/** 契約コード */
 	@Column(name = "CONTRACT_CD")
 	private String contractCd;
-	
+
 	/** 会社ID */
 	@Column(name = "CID")
 	private String companyId;
-	
+
 	/** 開始日 */
 	@Column(name = "START_DATE")
 	private GeneralDate startDate;
-	
+
 	/** 終了日 */
 	@Column(name = "END_DATE")
 	private GeneralDate endDate;
-	
+
 	/** 変更日 */
 	@Column(name = "UPDATE_DATE")
 	private GeneralDateTime updateDate;
-	
+
 	/** メッセージの内容 */
 	@Column(name = "MESSAGE_CONTENT")
 	private String message;
-	
-	/** 宛先区分  ０：全社員, １：職場選択 , ２：社員選択 */
+
+	/** 宛先区分 ０：全社員, １：職場選択 , ２：社員選択 */
 	@Column(name = "DESTINATION_ATR")
 	private Integer destination;
-	
-	@OneToMany(targetEntity = SptdtInfoMessageTgt.class
-			, cascade = CascadeType.ALL
-			, mappedBy = "sptdtInfoMessage"
-			, orphanRemoval = true
-			, fetch = FetchType.LAZY)
+
+	@OneToMany(targetEntity = SptdtInfoMessageTgt.class, cascade = CascadeType.ALL, mappedBy = "sptdtInfoMessage", orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinTable(name = "SPTDT_INFO_MESSAGE_TGT")
 	public List<SptdtInfoMessageTgt> sptdtInfoMessageTgts;
-	
-	@OneToMany(targetEntity = SptdtInfoMessageRead.class
-			, cascade = CascadeType.ALL
-			, mappedBy = "sptdtInfoMessage"
-			, orphanRemoval = true
-			, fetch = FetchType.LAZY)
+
+	@OneToMany(targetEntity = SptdtInfoMessageRead.class, cascade = CascadeType.ALL, mappedBy = "sptdtInfoMessage", orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinTable(name = "SPTDT_INFO_MESSAGE_READ")
 	public List<SptdtInfoMessageRead> sptdtInfoMessageReads;
-	
+
 	@Override
 	protected Object getKey() {
 		return this.pk;
@@ -124,16 +119,17 @@ public class SptdtInfoMessage extends UkJpaEntity implements MessageNotice.Memen
 
 	@Override
 	public void setEmployeeIdSeen(List<String> employeeIdSeen) {
+		sptdtInfoMessageReads = new ArrayList<SptdtInfoMessageRead>();
 		if (employeeIdSeen == null) {
 			return;
 		}
 		for (String readId : employeeIdSeen) {
 			SptdtInfoMessageRead domainObj = new SptdtInfoMessageRead();
-			SptdtInfoMessageReadPK pk = new SptdtInfoMessageReadPK();
-			pk.setSid(this.pk.getSid());
-			pk.setInputDate(this.pk.getInputDate());
-			pk.setReadSid(readId);
-			domainObj.setPk(pk);
+			SptdtInfoMessageReadPK sptdtInfoMessageReadPK = new SptdtInfoMessageReadPK();
+			sptdtInfoMessageReadPK.setSid(this.pk.getSid());
+			sptdtInfoMessageReadPK.setInputDate(this.pk.getInputDate());
+			sptdtInfoMessageReadPK.setReadSid(readId);
+			domainObj.setPk(sptdtInfoMessageReadPK);
 			sptdtInfoMessageReads.add(domainObj);
 		}
 	}
@@ -165,9 +161,7 @@ public class SptdtInfoMessage extends UkJpaEntity implements MessageNotice.Memen
 
 	@Override
 	public List<String> getEmployeeIdSeen() {
-		return this.sptdtInfoMessageReads.stream()
-						.map(x -> x.getPk().getReadSid())
-						.collect(Collectors.toList());
+		return this.sptdtInfoMessageReads.stream().map(x -> x.getPk().getReadSid()).collect(Collectors.toList());
 	}
 
 	@Override
@@ -179,25 +173,19 @@ public class SptdtInfoMessage extends UkJpaEntity implements MessageNotice.Memen
 	public void setTargetInformation(TargetInformation target) {
 		this.destination = target.getDestination().value;
 		if (target.getDestination() == DestinationClassification.EMPLOYEE) {
-			sptdtInfoMessageTgts = target.getTargetSIDs()
-					.stream()
-					.map(tgtInfoId -> {
-						SptdtInfoMessageTgt tgt = new SptdtInfoMessageTgt();
-						tgt.toEntity(pk.getSid(), pk.getInputDate(), tgtInfoId);
-						return tgt;
-					})
-					.collect(Collectors.toList());
+			sptdtInfoMessageTgts = target.getTargetSIDs().stream().map(tgtInfoId -> {
+				SptdtInfoMessageTgt tgt = new SptdtInfoMessageTgt();
+				tgt.toEntity(pk.getSid(), pk.getInputDate(), tgtInfoId);
+				return tgt;
+			}).collect(Collectors.toList());
 		}
-		
+
 		if (target.getDestination() == DestinationClassification.WORKPLACE) {
-			sptdtInfoMessageTgts = target.getTargetWpids()
-					.stream()
-					.map(tgtInfoId -> {
-						SptdtInfoMessageTgt tgt = new SptdtInfoMessageTgt();
-						tgt.toEntity(pk.getSid(), pk.getInputDate(), tgtInfoId);
-						return tgt;
-					})
-					.collect(Collectors.toList());
+			sptdtInfoMessageTgts = target.getTargetWpids().stream().map(tgtInfoId -> {
+				SptdtInfoMessageTgt tgt = new SptdtInfoMessageTgt();
+				tgt.toEntity(pk.getSid(), pk.getInputDate(), tgtInfoId);
+				return tgt;
+			}).collect(Collectors.toList());
 		}
 	}
 
@@ -206,14 +194,14 @@ public class SptdtInfoMessage extends UkJpaEntity implements MessageNotice.Memen
 		TargetInformation target = new TargetInformation();
 		target.setDestination(DestinationClassification.valueOf(destination));
 		if (destination == DestinationClassification.WORKPLACE.value) {
-			target.setTargetWpids(sptdtInfoMessageTgts.stream()
-					.map(x -> x.getPk().getTgtInfoId()).collect(Collectors.toList()));
+			target.setTargetWpids(
+					sptdtInfoMessageTgts.stream().map(x -> x.getPk().getTgtInfoId()).collect(Collectors.toList()));
 		}
 		if (destination == DestinationClassification.EMPLOYEE.value) {
-			target.setTargetSIDs(sptdtInfoMessageTgts.stream()
-					.map(x -> x.getPk().getTgtInfoId()).collect(Collectors.toList()));
+			target.setTargetSIDs(
+					sptdtInfoMessageTgts.stream().map(x -> x.getPk().getTgtInfoId()).collect(Collectors.toList()));
 		}
 		return target;
 	}
-	
+
 }

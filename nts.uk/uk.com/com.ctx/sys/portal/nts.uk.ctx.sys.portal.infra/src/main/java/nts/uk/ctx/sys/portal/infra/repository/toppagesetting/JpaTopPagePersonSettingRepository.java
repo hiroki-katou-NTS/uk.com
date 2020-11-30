@@ -60,7 +60,18 @@ public class JpaTopPagePersonSettingRepository extends JpaRepository implements 
 	 */
 	@Override
 	public void update(String contractCd, String companyId, TopPagePersonSetting domain) {
-		this.commandProxy().updateWithCharPrimaryKey(this.toEntity(contractCd, companyId, domain));
+		SptmtTopPagePerson oldData = this.queryProxy()
+				.query(SELECT_BY_SID, SptmtTopPagePerson.class)
+				.setParameter("companyId", companyId)
+				.setParameter("employeeId", domain.getEmployeeId())
+				.getSingle().orElse(new SptmtTopPagePerson());
+		SptmtTopPagePerson newData = this.toEntity(contractCd, companyId, domain);
+		oldData.setLoginMenuCode(newData.getLoginMenuCode());
+		oldData.setTopMenuCode(newData.getTopMenuCode());
+		oldData.setSystem(newData.getSystem());
+		oldData.setMenuClassification(newData.getMenuClassification());
+		oldData.setSwitchingDate(newData.getSwitchingDate());
+		this.commandProxy().update(oldData);
 	}
 
 	/**
@@ -116,7 +127,9 @@ public class JpaTopPagePersonSettingRepository extends JpaRepository implements 
 	@Override
 	public void updateAll(String contractCd, String companyId, List<TopPagePersonSetting> domains) {
 		this.commandProxy()
-			.updateAll(domains.stream().map(x -> toEntity(contractCd, companyId, x)).collect(Collectors.toList()));
+			.updateAllWithCharPrimaryKey(domains.stream()
+					.map(x -> toEntity(contractCd, companyId, x))
+					.collect(Collectors.toList()));
 	}
 
 }

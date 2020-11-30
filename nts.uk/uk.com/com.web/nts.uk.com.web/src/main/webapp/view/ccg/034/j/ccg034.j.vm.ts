@@ -40,6 +40,7 @@ module nts.uk.com.view.ccg034.j {
         $(`#${POPUP_ARROW_ID}`)
           .append($('<div>').append($listImage));
       }
+      $("#J1").focus();
     }
 
     public chooseArrow(event: JQueryEventObject) {

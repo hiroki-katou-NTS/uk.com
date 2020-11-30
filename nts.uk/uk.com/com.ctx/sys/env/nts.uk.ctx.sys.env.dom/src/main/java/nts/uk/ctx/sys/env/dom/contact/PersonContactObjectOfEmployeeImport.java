@@ -35,4 +35,14 @@ public class PersonContactObjectOfEmployeeImport {
 	private String contactName2;
 
 	private String phoneNumber2;
+
+	/**
+	 * メールアドレスが在席照会に表示するか
+	 */
+	private Boolean isMailAddressDisplay;
+
+	/**
+	 * 携帯メールアドレスが在席照会に表示するか
+	 */
+	private Boolean isMobileEmailAddressDisplay;
 }

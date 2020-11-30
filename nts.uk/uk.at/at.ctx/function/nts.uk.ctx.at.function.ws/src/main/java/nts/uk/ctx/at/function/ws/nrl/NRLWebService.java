@@ -27,8 +27,10 @@ public class NRLWebService extends RequestDispatcher {
 
 	@POST
 	@Path("sinseiCollect.aspx")
-	public void requestApplications() {
-
+	@RequestData({ Command.ALL_PETITIONS })
+	public Frame requestApplications(InputStream is) {
+		NRLResponse response = ignite(is);
+		return response.getEntity(Frame.class);
 	}
 
 	@POST

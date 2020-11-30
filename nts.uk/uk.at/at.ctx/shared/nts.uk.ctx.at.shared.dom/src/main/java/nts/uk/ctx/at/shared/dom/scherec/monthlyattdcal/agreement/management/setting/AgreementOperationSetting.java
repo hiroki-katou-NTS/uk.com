@@ -10,7 +10,6 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AggregatePeriod;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.AgreementStartingMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.StartingMonthType;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
@@ -26,7 +25,7 @@ public class AgreementOperationSetting extends AggregateRoot {
 	private String companyId;
 
 	/** ３６協定起算月 **/
-	private AgreementStartingMonth startingMonth;
+	private StartingMonthType startingMonth;
 
 	/** 締め日 **/
 	private ClosureDate closureDate;
@@ -37,7 +36,7 @@ public class AgreementOperationSetting extends AggregateRoot {
 	/** 年間の特別条項申請を使用する **/
 	private boolean yearSpecicalConditionApplicationUse;
 
-	public AgreementOperationSetting(String companyId, AgreementStartingMonth startingMonth,
+	public AgreementOperationSetting(String companyId, StartingMonthType startingMonth,
 			ClosureDate closureDate, boolean specicalConditionApplicationUse,
 			boolean yearSpecicalConditionApplicationUse) {
 		super();
@@ -83,7 +82,7 @@ public class AgreementOperationSetting extends AggregateRoot {
 	/** 集計期間を取得 */
 	private DatePeriod updatePeriod(DatePeriod period) {
 		/** 末締めの期間を計算 */
-		val endYMEnd = GeneralDate.ymd(period.end().year(), period.end().month() + 1, 1).addDays(-1);
+		val endYMEnd = GeneralDate.ymd(period.end().year(), period.end().month(), 1).addMonths(1).addDays(-1);
 		
 		/** ○属性「締め日」を取得 */
 		if (this.closureDate.getLastDayOfMonth()){
@@ -118,7 +117,14 @@ public class AgreementOperationSetting extends AggregateRoot {
 		} 
 		
 		return new DatePeriod(getClosureNextDate(yearMonth.addMonths(-1)), 
-				  		 	  GeneralDate.ymd(yearMonth.year(), yearMonth.month(), this.closureDate.getClosureDay().v()));
+								getClosureDate(yearMonth));
+	}
+	
+	private GeneralDate getClosureDate(YearMonth ym) {
+		val closureDay = this.closureDate.getClosureDay().v();
+		val lastDate = ym.lastGeneralDate();
+		return closureDay > lastDate.day() ? lastDate 
+				: GeneralDate.ymd(ym.year(), ym.month(), closureDay);
 	}
 	
 	private GeneralDate getClosureNextDate(YearMonth ym) {
@@ -197,7 +203,7 @@ public class AgreementOperationSetting extends AggregateRoot {
 			return new DatePeriod(start, start.addMonths(11));
 		}
 		
-		val start = GeneralDate.ymd(year.v(), month, this.closureDate.getClosureDay().v());
+		val start = getClosureDate(YearMonth.of(year.v(), month));
 		return new DatePeriod(start, start.addMonths(11));
 	}
 	

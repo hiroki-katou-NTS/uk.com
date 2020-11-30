@@ -6,7 +6,11 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.AllArgsConstructor;
+import nts.uk.ctx.sys.portal.dom.adapter.generalsearch.LoginRoleResponsibleAdapter;
+import nts.uk.ctx.sys.portal.dom.adapter.generalsearch.LoginRulerImport;
 import nts.uk.ctx.sys.portal.dom.generalsearch.GeneralSearchRepository;
+import nts.uk.ctx.sys.portal.dom.generalsearch.service.GeneralSearchHistoryService;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -18,6 +22,12 @@ public class GeneralSearchHistoryScreenQuery {
 	/** The repo. */
 	@Inject
 	private GeneralSearchRepository repo;
+	
+	@Inject
+	private GeneralSearchHistoryService service;
+	
+	@Inject
+	LoginRoleResponsibleAdapter adapter;
 	
 	/**
 	 * Gets the.
@@ -75,4 +85,33 @@ public class GeneralSearchHistoryScreenQuery {
 						.build())
 				.collect(Collectors.toList());
 	}
+	
+	/**
+	 * Can search.
+	 * マニュアル検索できる
+	 * @return true, if successful
+	 */
+	public boolean canSearch() {
+		String forCompanyAdmin = AppContexts.user().roles().forCompanyAdmin();
+		String forSystemAdmin = AppContexts.user().roles().forSystemAdmin();
+		GeneralSearchHistoryServiceRequireIpml require = new GeneralSearchHistoryServiceRequireIpml(adapter);
+		return this.service.checkRoleSearchManual(require, forCompanyAdmin, forSystemAdmin);
+	}
+	
+	@AllArgsConstructor
+    private static class GeneralSearchHistoryServiceRequireIpml implements GeneralSearchHistoryService.Require {
+    	
+    	@Inject
+    	LoginRoleResponsibleAdapter adapter;
+
+		/**
+		 * Gets the login responsible.
+		 * [1] ログイン者のルール担当
+		 * @return the login responsible
+		 */
+		@Override
+		public LoginRulerImport getLoginResponsible() {
+			return this.adapter.getLoginResponsible();
+		}
+    }
 }

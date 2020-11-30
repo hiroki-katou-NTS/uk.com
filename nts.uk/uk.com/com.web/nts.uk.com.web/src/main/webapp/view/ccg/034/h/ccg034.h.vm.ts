@@ -58,12 +58,12 @@ module nts.uk.com.view.ccg034.h {
           vm.fileSize(Math.round(Number(res.originalSize) / 1024));
         });
       }
+      $("#H1_2").focus();
     }
 
 
     public uploadFinished(data: any) {
       const vm = this;
-      console.log(data);
       vm.fileId(data.id);
       vm.fileSize(Math.round(Number(data.originalSize) / 1024));
       if (!vm.fileName()) {
@@ -99,10 +99,12 @@ module nts.uk.com.view.ccg034.h {
                 vm.partData.fileName = vm.uploadedFileName();
                 vm.partData.fileSize = vm.fileSize();
                 vm.partData.fileLink = (nts.uk.request as any).liveView(vm.fileId());
-    
+
                 // Return data
                 vm.$window.close(vm.partData);
-              } else vm.$dialog.error({ messageId: 'Msg_70', messageParams: [ String(MAX_FILE_SIZE_B / (1024 * 1024)) ] });
+              } else {
+                vm.$dialog.error({ messageId: 'Msg_70', messageParams: [ String(MAX_FILE_SIZE_B / (1024 * 1024)) ] });
+              }
             }
           });
         }

@@ -4,7 +4,6 @@ module nts.uk.com.view.cmm048.e {
   @bean()
   export class ViewModel extends ko.ViewModel {
     fileId: KnockoutObservable<string> = ko.observable('');
-
     created(params: string) {
       const vm = this;
       vm.fileId(params);
@@ -14,13 +13,28 @@ module nts.uk.com.view.cmm048.e {
       const vm = this;
       $("#upload").ready(() => {
         $(".comfirm-checkbox").remove();
+        $(".edit-action-container").hide();
         $(`<button data-bind="click: openDialogE2"> ${vm.$i18n('CMM048_107')} </button>`)
           .attr('class', 'upload-webcam')
           .insertAfter(".upload-btn");
         ko.applyBindings(vm, $(".upload-webcam")[0]);
       });
       if (vm.fileId()) {
+        $(".edit-action-container").show();
         $("#upload").ntsImageEditor("selectByFileId", vm.fileId());
+      }
+      $("#upload").bind("imgloaded", () => {
+        $(".edit-action-container").show();
+      });
+      try {
+        $("#upload").ntsImageEditor("selectByFileId", {
+          actionOnClose: () => {
+            $(".checkbox-holder").hide();
+            $('.upload-btn').focus();
+          }
+        });
+      } catch (Error) {
+        $('.upload-btn').focus();
       }
     }
 
@@ -29,6 +43,8 @@ module nts.uk.com.view.cmm048.e {
       //TODO
       vm.$window.modal("/view/cmm/048/f/index.xhtml").then((uri: string) => {
         if (uri) {
+          $(".edit-action-container").show();
+
           $("#upload").ntsImageEditor("showByUrl", { url: uri });
         }
       });
@@ -56,7 +72,6 @@ module nts.uk.com.view.cmm048.e {
           $("#upload").ntsImageEditor("upload", { stereoType: "image" }).then((data: any) => {
             vm.fileId(data.id);
             vm.closeDialog();
-            //vm.empFileMn().fileId = data.id;
           }).fail((error: any) => {
             vm.$blockui('clear')
             vm.$dialog.error(error);

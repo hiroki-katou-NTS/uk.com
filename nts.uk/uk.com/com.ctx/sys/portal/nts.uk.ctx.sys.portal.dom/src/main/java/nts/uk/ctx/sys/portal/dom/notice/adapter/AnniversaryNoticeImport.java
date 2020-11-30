@@ -1,7 +1,5 @@
 package nts.uk.ctx.sys.portal.dom.notice.adapter;
 
-import java.time.MonthDay;
-
 import lombok.Builder;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
@@ -28,7 +26,7 @@ public class AnniversaryNoticeImport {
     /**
      * 記念日
      */
-    private MonthDay anniversary;
+    private String anniversary;
 
     /**
      * 記念日のタイトル
@@ -39,4 +37,6 @@ public class AnniversaryNoticeImport {
      * 記念日の内容
      */
     private String notificationMessage;
+    
+    private String displayDate;
 }

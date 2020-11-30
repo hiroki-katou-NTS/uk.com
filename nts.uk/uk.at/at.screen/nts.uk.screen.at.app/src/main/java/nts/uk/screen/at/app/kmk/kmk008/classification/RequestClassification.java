@@ -6,6 +6,6 @@ import lombok.Getter;
 public class RequestClassification {
 
     private int laborSystemAtr;
-    private String employmentCode;
+    private String classificationCode;
 
 }

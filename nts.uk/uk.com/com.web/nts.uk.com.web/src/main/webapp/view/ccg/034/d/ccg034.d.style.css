@@ -42,6 +42,8 @@
   box-sizing: content-box;
   overflow: auto;
   border: solid 2px #607d8b;
+  min-width: 800px;
+  min-height: 600px;
 }
 
 #menu-creation-layout {
@@ -52,6 +54,7 @@
   background-attachment: local;
   background-size: 40px 40px;
   background-image: linear-gradient(90deg, #b0bec5 1px, transparent 1px), linear-gradient(0deg, #b0bec5 1px, transparent 1px);
+  
 }
 
 #menu-creation-layout .menu-creation-item {
