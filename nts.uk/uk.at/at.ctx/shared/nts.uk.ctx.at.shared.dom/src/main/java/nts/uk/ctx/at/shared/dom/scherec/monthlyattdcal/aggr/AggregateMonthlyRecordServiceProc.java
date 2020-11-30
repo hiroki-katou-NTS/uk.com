@@ -29,7 +29,6 @@ import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.days.MonthlyDays;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.JobTitleId;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecMngInPeriodParamInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
@@ -63,6 +62,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.RemainDaysO
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveManagementService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveRemainNoMinus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.JobTitleId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeOfDailyAttendance;
@@ -848,36 +848,44 @@ public class AggregateMonthlyRecordServiceProc {
 				empCondition = Optional.of(this.companySets.getEmpConditionMap().get(optionalItemNo));
 			}
 			val bsEmploymentHistOpt = this.employeeSets.getEmployment(period.end());
-			if (optionalItem.checkTermsOfUse(empCondition, bsEmploymentHistOpt)) {
+			switch(optionalItem.checkTermsOfUseMonth(empCondition, bsEmploymentHistOpt)){
+			case USE:
 				// 利用する
-
-				// 初期化
-				AnyItemAggrResult result = AnyItemAggrResult.of(optionalItemNo, optionalItem);
-
-				// 「実績区分」を判断
-				if (optionalItem.getPerformanceAtr() == PerformanceAtr.DAILY_PERFORMANCE || isWeek) {
-
-					// 日別実績 縦計処理
-					result = AnyItemAggrResult.calcFromDailys(optionalItemNo, optionalItem, anyItemTotals);
-				} else if (this.aggregateResult.getAttendanceTime().isPresent()) {
-					val attendanceTime = this.aggregateResult.getAttendanceTime().get();
-
-					// 月別実績 計算処理
-					result = AnyItemAggrResult.calcFromMonthly(require, optionalItemNo, optionalItem, attendanceTime, anyItems,
-							this.companySets);
+				{
+					// 初期化
+					AnyItemAggrResult result = AnyItemAggrResult.of(optionalItemNo, optionalItem);
+	
+					// 「実績区分」を判断
+					if (optionalItem.getPerformanceAtr() == PerformanceAtr.DAILY_PERFORMANCE || isWeek) {
+	
+						// 日別実績 縦計処理
+						result = AnyItemAggrResult.calcFromDailys(optionalItemNo, optionalItem, anyItemTotals);
+					} else if (this.aggregateResult.getAttendanceTime().isPresent()) {
+						val attendanceTime = this.aggregateResult.getAttendanceTime().get();
+	
+						// 月別実績 計算処理
+						result = AnyItemAggrResult.calcFromMonthly(require, optionalItemNo, optionalItem, attendanceTime, anyItems,
+								this.companySets);
+					}
+					results.put(optionalItemNo, result);
+					anyItems.add(
+							AnyItemOfMonthly.of(this.employeeId, this.yearMonth, this.closureId, this.closureDate, result));
+					break;
 				}
-				results.put(optionalItemNo, result);
-				anyItems.add(
-						AnyItemOfMonthly.of(this.employeeId, this.yearMonth, this.closureId, this.closureDate, result));
-			} else {
+			case DAILY_VTOTAL:
+				// 日別縦計する
+				{
+					// 日別実績 縦計処理
+					AnyItemAggrResult result = AnyItemAggrResult.calcFromDailys(optionalItemNo, optionalItem,
+							anyItemTotals);
+					results.put(optionalItemNo, result);
+					anyItems.add(
+							AnyItemOfMonthly.of(this.employeeId, this.yearMonth, this.closureId, this.closureDate, result));
+					break;
+				}
+			case NOT_USE:
 				// 利用しない
-
-				// 日別実績 縦計処理
-				AnyItemAggrResult result = AnyItemAggrResult.calcFromDailys(optionalItemNo, optionalItem,
-						anyItemTotals);
-				results.put(optionalItemNo, result);
-				anyItems.add(
-						AnyItemOfMonthly.of(this.employeeId, this.yearMonth, this.closureId, this.closureDate, result));
+				break;
 			}
 		}
 

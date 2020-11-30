@@ -73,7 +73,8 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
         model: Model;
         dataFetch: KnockoutObservable<ModelDto> = ko.observable(null);
         mode: string = 'edit';
-		approvalReason: KnockoutObservable<string>;
+        approvalReason: KnockoutObservable<string>;
+        printContentOfEachAppDto: KnockoutObservable<PrintContentOfEachAppDto>;
         applicationTest: any = {
             employeeID: this.$user.employeeId,
             appDate: moment(new Date()).format('YYYY/MM/DD'),
@@ -102,6 +103,7 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
             }
         ) {
             const vm = this;
+            vm.printContentOfEachAppDto = ko.observable(params.printContentOfEachAppDto);
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
             vm.application = params.application;
 			vm.appType = params.appType;
@@ -144,6 +146,7 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
                         lstWorkType: ko.observable(res.lstWorkType),
                         goBackApplication: ko.observable(res.goBackApplication)
                     });
+                    vm.printContentOfEachAppDto().opInforGoBackCommonDirectOutput = ko.toJS(vm.dataFetch);
                 }
             }).fail(err => {
                 vm.handleError(err);
@@ -169,16 +172,32 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
             vm.applicationTest.opAppReason = application.opAppReason;
             vm.applicationTest.opAppStandardReasonCD = application.opAppStandardReasonCD;
             vm.applicationTest.opReversionReason = application.opReversionReason;
+			if (vm.model) {
+                let isCondition1 = vm.model.checkbox3() == true && !vm.model.workTypeCode() && (vm.dataFetch().goBackReflect().reflectApplication === 3 || vm.dataFetch().goBackReflect().reflectApplication === 2);
+				let isCondition2 = vm.model.checkbox3() == null && !vm.model.workTypeCode() && vm.dataFetch().goBackReflect().reflectApplication === 1;
+                if (isCondition1 || isCondition2) {
+                   // $('#workSelect').focus();
+					let el = document.getElementById('workSelect');
+	                if (el) {
+	                    el.focus();                                                    
+	                }
+                    return;
+                } 
+			}
             let model = ko.toJS( vm.model );
             let goBackApp = new GoBackApplication(
                 model.checkbox1 ? 1 : 0,
                 model.checkbox2 ? 1 : 0,
             );
-            // is change can be null
-            if (!_.isNull(model.checkbox3)) {
+			// is change can be null
+            if (!_.isNull(model.checkbox3) || vm.dataFetch().goBackReflect().reflectApplication == 2 || vm.dataFetch().goBackReflect().reflectApplication == 3) {
                 goBackApp.isChangedWork = model.checkbox3 ? 1 : 0;
 
             }
+            
+			if	(!(vm.dataFetch().goBackReflect().reflectApplication == 2 || vm.dataFetch().goBackReflect().reflectApplication == 3)) {
+				goBackApp.isChangedWork = null;
+			}
             if (vm.mode && vm.model.checkbox3() || vm.dataFetch().goBackReflect().reflectApplication == 1) {
                 let dw = new DataWork( model.workTypeCode );
                 if ( model.workTimeCode ) {
@@ -187,6 +206,7 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
                 goBackApp.dataWork = dw;
 
             }
+			
             vm.$blockui("show");
 
             return vm.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
@@ -221,7 +241,7 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
                 }).done(result => {
                     if (result != undefined) {
                         vm.$dialog.info( { messageId: "Msg_15" } ).then(() => {
-                            location.reload();
+                            vm.reload();
                         });
                     }
                 }).fail(err => {
@@ -276,7 +296,7 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
             }
             vm.$dialog.error(param).then(res => {
                 if (err.messageId == 'Msg_197') {
-                    location.reload();
+                    vm.reload();
                 }
             });
         }

@@ -83,19 +83,6 @@ import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkTypeHistoryI
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkplaceHistItemImport;
 import nts.uk.ctx.at.shared.dom.adapter.specificdatesetting.RecSpecificDateSettingImport;
 import nts.uk.ctx.at.shared.dom.affiliationinformation.WorkTypeOfDailyPerformance;
-import nts.uk.ctx.at.shared.dom.bonuspay.primitives.WorkingTimesheetCode;
-import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPSettingRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPUnitUseSettingRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.repository.CPBonusPaySettingRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.repository.PSBonusPaySettingRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.repository.WPBonusPaySettingRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.repository.WTBonusPaySettingRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.BPUnitUseSetting;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.CompanyBonusPaySetting;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.PersonalBonusPaySetting;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkingTimesheetBonusPaySetting;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkplaceBonusPaySetting;
 import nts.uk.ctx.at.shared.dom.calculationattribute.enums.DivergenceTimeAttr;
 import nts.uk.ctx.at.shared.dom.calculationsetting.AutoStampForFutureDayClass;
 import nts.uk.ctx.at.shared.dom.calculationsetting.StampReflectionManagement;
@@ -110,16 +97,29 @@ import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.MasterList;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.PeriodInMasterList;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.repository.RecreateFlag;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalcOfLeaveEarlySetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.BaseAutoCalSetting;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalFlexOvertimeSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalOvertimeSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalRestTimeSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalcOfLeaveEarlySetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.BaseAutoCalSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.deviationtime.AutoCalcSetOfDivergenceTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.WorkingTimesheetCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPUnitUseSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.CPBonusPaySettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.PSBonusPaySettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.WPBonusPaySettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.WTBonusPaySettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BPUnitUseSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BonusPaySetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.CompanyBonusPaySetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.PersonalBonusPaySetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.WorkingTimesheetBonusPaySetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.WorkplaceBonusPaySetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
@@ -1328,10 +1328,12 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			newMasterLists = masterLists.stream().filter(item -> item.getDatePeriod().contains(day)).findFirst();
 		}
 
-		Optional<RecSpecificDateSettingImport> specificDateSettingImport = newMasterLists.get()
-				.getSpecificDateSettingImport().stream().filter(c -> c.getDate().equals(day)).findFirst();
+		Optional<RecSpecificDateSettingImport> specificDateSettingImport = Optional.empty();
+		if (newMasterLists.isPresent()){
+			specificDateSettingImport = newMasterLists.get().getSpecificDateSettingImport().stream().filter(c -> c.getDate().equals(day)).findFirst();
+		}
 		RecSpecificDateSettingImport data = new RecSpecificDateSettingImport();
-		if (newMasterLists.isPresent() && specificDateSettingImport.isPresent()) {
+		if (specificDateSettingImport.isPresent()) {
 			data = specificDateSettingImport.get();
 		} else {
 			data = this.recSpecificDateSettingAdapter.specificDateSettingService(companyId,
@@ -1721,9 +1723,9 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						WorkTimezoneStampSet stampSet = workTimezoneCommonSet.get().getStampSet();
 
 						// 出勤
-						RoundingSet atendanceRoundingSet = stampSet.getRoundingSets().stream()
+						RoundingSet atendanceRoundingSet = stampSet.getRoundingTime().getRoundingSets().stream()
 								.filter(item -> item.getSection() == Superiority.ATTENDANCE).findFirst().isPresent()
-										? stampSet.getRoundingSets().stream()
+										? stampSet.getRoundingTime().getRoundingSets().stream()
 												.filter(item -> item.getSection() == Superiority.ATTENDANCE).findFirst()
 												.get()
 										: null;
@@ -1735,9 +1737,9 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 										.intValue())
 								: sheet.getAttendance().v();
 						// 退勤
-						RoundingSet leavingRoundingSet = stampSet.getRoundingSets().stream()
+						RoundingSet leavingRoundingSet = stampSet.getRoundingTime().getRoundingSets().stream()
 								.filter(item -> item.getSection() == Superiority.OFFICE_WORK).findFirst().isPresent()
-										? stampSet.getRoundingSets().stream()
+										? stampSet.getRoundingTime().getRoundingSets().stream()
 												.filter(item -> item.getSection() == Superiority.OFFICE_WORK)
 												.findFirst().get()
 										: null;
@@ -1803,10 +1805,10 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 										WorkTimezoneStampSet stampSet = workTimezoneCommonSet.get().getStampSet();
 
 										// 出勤
-										RoundingSet atendanceRoundingSet = stampSet.getRoundingSets().stream()
+										RoundingSet atendanceRoundingSet = stampSet.getRoundingTime().getRoundingSets().stream()
 												.filter(item -> item.getSection() == Superiority.ATTENDANCE).findFirst()
 												.isPresent()
-														? stampSet.getRoundingSets().stream()
+														? stampSet.getRoundingTime().getRoundingSets().stream()
 																.filter(item -> item.getSection() == Superiority.ATTENDANCE)
 																.findFirst().get()
 														: null;
@@ -1821,9 +1823,9 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 										actualStamp.setAfterRoundingTime(new TimeWithDayAttr(attendanceTimeAfterRouding));
 
 										// 退勤
-										RoundingSet leavingRoundingSet = stampSet.getRoundingSets().stream()
+										RoundingSet leavingRoundingSet = stampSet.getRoundingTime().getRoundingSets().stream()
 												.filter(item -> item.getSection() == Superiority.OFFICE_WORK).findFirst()
-												.isPresent() ? stampSet.getRoundingSets().stream()
+												.isPresent() ? stampSet.getRoundingTime().getRoundingSets().stream()
 														.filter(item -> item.getSection() == Superiority.OFFICE_WORK)
 														.findFirst().get() : null;
 
@@ -1866,13 +1868,13 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				if (item.getAttendanceStamp() != null) {
 					WorkStamp actualStamp = null;
 					if (item.getAttendanceStamp().getActualStamp() != null) {
-						actualStamp = new WorkStamp(item.getAttendanceStamp().getActualStamp().getAfterRoundingTime(),
+						actualStamp = new WorkStamp(
 								item.getAttendanceStamp().getActualStamp().getTimeWithDay(),
 								item.getAttendanceStamp().getActualStamp().getLocationCode(),
 								item.getAttendanceStamp().getActualStamp().getStampSourceInfo());
 					}
 
-					WorkStamp stamp = new WorkStamp(item.getAttendanceStamp().getStamp().getAfterRoundingTime(),
+					WorkStamp stamp = new WorkStamp(
 							item.getAttendanceStamp().getStamp().getTimeWithDay(),
 							item.getAttendanceStamp().getStamp().getLocationCode(),
 							item.getAttendanceStamp().getStamp().getStampSourceInfo());
@@ -1886,13 +1888,12 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					WorkStamp leaveActualStampTemp = null;
 					if (item.getLeaveStamp().getActualStamp() != null) {
 						leaveActualStampTemp = new WorkStamp(
-								item.getLeaveStamp().getActualStamp().getAfterRoundingTime(),
 								item.getLeaveStamp().getActualStamp().getTimeWithDay(),
 								item.getLeaveStamp().getActualStamp().getLocationCode(),
 								item.getLeaveStamp().getActualStamp().getStampSourceInfo());
 					}
 
-					WorkStamp leaveStampTemp = new WorkStamp(item.getLeaveStamp().getStamp().getAfterRoundingTime(),
+					WorkStamp leaveStampTemp = new WorkStamp(
 							item.getLeaveStamp().getStamp().getTimeWithDay(),
 							item.getLeaveStamp().getStamp().getLocationCode(),
 							item.getLeaveStamp().getStamp().getStampSourceInfo());
@@ -2020,7 +2021,6 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 	private TimeActualStamp attendanceStampInfor(TimeLeavingWork timeLeavingWork) {
 		WorkStamp stamp = new WorkStamp(
-				timeLeavingWork.getAttendanceStamp().get().getStamp().get().getAfterRoundingTime(),
 				timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get(),
 				timeLeavingWork.getAttendanceStamp().get().getStamp().get().getLocationCode().isPresent()
 						? timeLeavingWork.getAttendanceStamp().get().getStamp().get().getLocationCode()
@@ -2033,7 +2033,6 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 	
 	private TimeActualStamp leaveStampInfor(TimeLeavingWork timeLeavingWork) {
 		WorkStamp stamp = new WorkStamp(
-				timeLeavingWork.getLeaveStamp().get().getStamp().get().getAfterRoundingTime(),
 				timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get(),
 				timeLeavingWork.getLeaveStamp().get().getStamp().get().getLocationCode().isPresent()
 						? timeLeavingWork.getLeaveStamp().get().getStamp().get().getLocationCode()
@@ -2082,7 +2081,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 			// 加給利用単位．個人使用区分
 			if (bPUnitUseSetting.isPresent() && bPUnitUseSetting.get()
-					.getWorkingTimesheetUseAtr() == nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr.USE) {
+					.getWorkingTimesheetUseAtr() == nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.enums.UseAtr.USE) {
 				if (workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTimeCode() != null) {
 					// ドメインモデル「就業時間帯加給設定」を取得
 					Optional<WorkingTimesheetBonusPaySetting> workingTimesheetBonusPaySetting = this.wTBonusPaySettingRepository

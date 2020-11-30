@@ -1672,7 +1672,7 @@ public class DailyPerformanceCorrectionProcessor {
 					if (attOpt.isPresent()) {
 						Optional<WorkStamp> workStampOpt = attOpt.get().getStamp();
 						if (workStampOpt.isPresent() && stampSourceAt) {
-									workStampOpt.get().setPropertyWorkStamp(workStampOpt.get().getAfterRoundingTime(),
+									workStampOpt.get().setPropertyWorkStamp(
 											workStampOpt.get().getTimeDay().getTimeWithDay().isPresent()
 													? workStampOpt.get().getTimeDay().getTimeWithDay().get()
 													: null,
@@ -1686,7 +1686,7 @@ public class DailyPerformanceCorrectionProcessor {
 					Optional<TimeActualStamp> leavOpt = x.getLeaveStamp();
 					if (leavOpt.isPresent() && stampSourceLeav) {
 						Optional<WorkStamp> workStampOpt = leavOpt.get().getStamp();
-								workStampOpt.get().setPropertyWorkStamp(workStampOpt.get().getAfterRoundingTime(),
+								workStampOpt.get().setPropertyWorkStamp(
 										workStampOpt.get().getTimeDay().getTimeWithDay().isPresent()
 												? workStampOpt.get().getTimeDay().getTimeWithDay().get()
 												: null,

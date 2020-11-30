@@ -12,19 +12,23 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.HolidayWorkFrameTimeSheetForCalc;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.HolidayWorkTimeSheet;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.TimeLimitUpperLimitSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.BonusPayAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.BonusPayTime;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.AttendanceItemDictionaryForCalc;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.enums.BonusPayAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.AttendanceItemDictionaryForCalc;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.HolidayWorkFrameTimeSheetForCalc;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.HolidayWorkTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.OutsideWorkTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareCalcRange;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareTimezoneResult;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.declare.DeclareFrameSet;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
@@ -73,6 +77,7 @@ public class HolidayWorkTimeOfDaily {
 	 * @param integrationOfDaily 日別実績(Work)
 	 * @param beforeApplicationTime 事前深夜時間
 	 * @param holidayLateNightAutoCalSetting 自動計算設定（休出深夜時間）
+	 * @param declareResult 申告時間帯作成結果
 	 * @return 日別実績の休出時間
 	 */
 	public static HolidayWorkTimeOfDaily calculationTime(
@@ -83,7 +88,8 @@ public class HolidayWorkTimeOfDaily {
 			Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
 			IntegrationOfDaily integrationOfDaily,
 			AttendanceTime beforeApplicationTime,
-			AutoCalSetting holidayLateNightAutoCalSetting) {
+			AutoCalSetting holidayLateNightAutoCalSetting,
+			DeclareTimezoneResult declareResult) {
 		
 		//休出枠時間帯の作成
 		val holidayWorkFrameTimeSheet = holidayWorkTimeSheet.changeHolidayWorkTimeFrameTimeSheet();
@@ -93,10 +99,16 @@ public class HolidayWorkTimeOfDaily {
 				workType,
 				eachWorkTimeSet,
 				eachCompanyTimeSet,
-				integrationOfDaily);
+				integrationOfDaily,
+				declareResult,
+				true);
 		
 		//休日出勤深夜時間の計算
-		val holidayMidnightWork = Finally.of(calcMidNightTimeIncludeHolidayWorkTime(holidayWorkTimeSheet,beforeApplicationTime,holidayLateNightAutoCalSetting));
+		val holidayMidnightWork = Finally.of(calcMidNightTimeIncludeHolidayWorkTime(
+				holidayWorkTimeSheet,
+				beforeApplicationTime,
+				holidayLateNightAutoCalSetting,
+				declareResult));
 		//使用時間
 		val holidayTimeSpentTime = new AttendanceTime(0);
 		return new HolidayWorkTimeOfDaily(holidayWorkFrameTimeSheet, holidayWorkFrameTime, holidayMidnightWork, holidayTimeSpentTime);
@@ -133,12 +145,14 @@ public class HolidayWorkTimeOfDaily {
 	 * @param holidayWorkTimeSheet 休日出勤時間帯
 	 * @param beforeApplicationTime 事前深夜時間
 	 * @param holidayLateNightAutoCalSetting 自動計算設定
+	 * @param declareResult 申告時間帯作成結果
 	 * @return 休出深夜
 	 */
 	public static HolidayMidnightWork calcMidNightTimeIncludeHolidayWorkTime(
 			HolidayWorkTimeSheet holidayWorkTimeSheet,
 			AttendanceTime beforeApplicationTime,
-			AutoCalSetting holidayLateNightAutoCalSetting) {
+			AutoCalSetting holidayLateNightAutoCalSetting,
+			DeclareTimezoneResult declareResult) {
 		
 		EachStatutoryHolidayWorkTime eachTime = new EachStatutoryHolidayWorkTime();
 		for(HolidayWorkFrameTimeSheetForCalc  frameTime : holidayWorkTimeSheet.getWorkHolidayTime()) {
@@ -161,7 +175,88 @@ public class HolidayWorkTimeOfDaily {
 				}
 			}
 		}
+		if (declareResult.getCalcRangeOfOneDay().isPresent()){
+			// 申告休出深夜時間の計算
+			HolidayWorkTimeOfDaily.calcDeclareHolidayWorkMidnightTime(
+					holidayWorkList, holidayLateNightAutoCalSetting, declareResult);
+		}
 		return new HolidayMidnightWork(holidayWorkList);
+	}
+	
+	/**
+	 * 申告休出深夜時間の計算
+	 * @param recordList 休出深夜時間
+	 * @param holidayLateNightAutoCalSetting 自動計算設定
+	 * @param declareResult 申告時間帯作成結果
+	 * @return 申告休出深夜時間
+	 */
+	private static void calcDeclareHolidayWorkMidnightTime(
+			List<HolidayWorkMidNightTime> recordList,
+			AutoCalSetting holidayLateNightAutoCalSetting,
+			DeclareTimezoneResult declareResult) {
+
+		if (!declareResult.getCalcRangeOfOneDay().isPresent()) return;
+		CalculationRangeOfOneDay declareCalcRange = declareResult.getCalcRangeOfOneDay().get();
+		if (!declareResult.getDeclareCalcRange().isPresent()) return;
+		DeclareCalcRange calcRange = declareResult.getDeclareCalcRange().get();
+		
+		EachStatutoryHolidayWorkTime eachTime = new EachStatutoryHolidayWorkTime();
+		// 枠設定を確認する
+		if (calcRange.getDeclareSet().getFrameSet() == DeclareFrameSet.WORKTIME_SET){
+			// 休日出勤深夜時間の計算（事前申請制御前）
+			OutsideWorkTimeSheet declareOutsideWork = declareCalcRange.getOutsideWorkTimeSheet().get();
+			if (declareOutsideWork.getHolidayWorkTimeSheet().isPresent()){
+				HolidayWorkTimeSheet declareSheet = declareOutsideWork.getHolidayWorkTimeSheet().get();
+				for(HolidayWorkFrameTimeSheetForCalc frameTime : declareSheet.getWorkHolidayTime()) {
+					if(frameTime.getMidNightTimeSheet().isPresent()) {
+						eachTime.addTime(frameTime.getStatutoryAtr().get(), holidayLateNightAutoCalSetting.getCalAtr().isCalculateEmbossing()?frameTime.getMidNightTimeSheet().get().calcTotalTime():new AttendanceTime(0));
+						// 編集状態．休出深夜に処理中の法定区分を追加する
+						calcRange.getEditState().getHolidayWorkMn().add(frameTime.getStatutoryAtr().get());
+					}
+				}
+			}
+		}
+		else{
+			// 申告休出深夜時間の取得
+			{
+				// 勤務種類の取得
+				if (calcRange.getWorkTypeOpt().isPresent()){
+					// 休出かどうかの判断
+					if (calcRange.getWorkTypeOpt().get().isHolidayWork()){
+						// 申告休出深夜時間　←　事前計算していた深夜時間
+						AttendanceTime declareTime = calcRange.getCalcTime().getHolidayWorkMn();
+						// 休出深夜時間を追加する
+						OutsideWorkTimeSheet declareOutsideWork = declareCalcRange.getOutsideWorkTimeSheet().get();
+						if (declareOutsideWork.getHolidayWorkTimeSheet().isPresent()){
+							HolidayWorkTimeSheet declareSheet = declareOutsideWork.getHolidayWorkTimeSheet().get();
+							if (declareSheet.getWorkHolidayTime().size() > 0){
+								eachTime.addTime(
+										declareSheet.getWorkHolidayTime().get(0).getStatutoryAtr().get(), declareTime);
+								// 編集状態．休出深夜に処理中の法定区分を追加する
+								calcRange.getEditState().getHolidayWorkMn().add(
+										declareSheet.getWorkHolidayTime().get(0).getStatutoryAtr().get());
+							}
+						}
+					}
+				}
+			}
+		}
+		// 申告休出深夜の反映
+		{
+			for (HolidayWorkMidNightTime record : recordList){
+				switch(record.getStatutoryAtr()){
+				case WithinPrescribedHolidayWork:
+					record.getTime().replaceTimeWithCalc(eachTime.getStatutory());
+					break;
+				case ExcessOfStatutoryHolidayWork:
+					record.getTime().replaceTimeWithCalc(eachTime.getExcess());
+					break;
+				case PublicHolidayWork:
+					record.getTime().replaceTimeWithCalc(eachTime.getPublicholiday());
+					break;
+				}
+			}
+		}
 	}
 	
 	/**

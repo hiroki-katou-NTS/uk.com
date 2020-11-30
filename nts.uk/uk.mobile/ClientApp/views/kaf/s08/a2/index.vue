@@ -13,7 +13,7 @@
       <label class="uk-text-dark-gray">{{'KAFS08_20' | i18n}}</label>
       <!-- A7_2 -->
       <div class="pl-5">
-        <label>{{application.prePostAtr == 0 ? '事前' : '事後'}}</label>
+        <label>{{application.prePostAtr == 0 ? 'KAFS00_10' : 'KAFS00_11' | i18n}}</label>
       </div>
       <!-- A7_3 -->
       <label class="uk-text-dark-gray">{{'KAFS08_23' | i18n}}</label>

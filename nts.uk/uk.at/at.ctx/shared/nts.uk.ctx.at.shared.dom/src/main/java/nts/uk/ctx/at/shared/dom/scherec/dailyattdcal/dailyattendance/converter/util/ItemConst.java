@@ -307,4 +307,6 @@ public interface ItemConst extends Cloneable {
 	public final String STRAIGHT_GO_BACK = "直行直帰";
 	public final String TOPPAGE = "トップページ";
 	public final String TRANSFER_HOLIDAY = "振休";
+	public final String CHILD_CARE = "子の看護";
+	public final String CARE = "介護";
 }

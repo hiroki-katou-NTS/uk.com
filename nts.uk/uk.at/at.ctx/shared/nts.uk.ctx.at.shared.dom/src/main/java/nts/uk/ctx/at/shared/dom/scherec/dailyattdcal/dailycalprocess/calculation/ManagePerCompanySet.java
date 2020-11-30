@@ -7,15 +7,16 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus.MasterShareContainer;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.BPUnitUseSetting;
-import nts.uk.ctx.at.shared.dom.ot.zerotime.ZeroTime;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.PersonnelCostSettingImport;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BPUnitUseSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calculationsettings.totalrestrainttime.CalculateOfTotalConstraintTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.defor.DeformLaborOT;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.flex.FlexSet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.declare.DeclareSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.midnighttimezone.MidNightTimeSheet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.PersonnelCostSettingImport;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.zerotime.ZeroTime;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpCondition;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.Formula;
@@ -85,6 +86,8 @@ public class ManagePerCompanySet {
 	/** 変形労働の法定内残業計算 */
 	DeformLaborOT deformLaborOT;
 	
+	/** 申告設定 */
+	Optional<DeclareSet> declareSet;
 	
 	public ManagePerCompanySet(
 			Optional<HolidayAddtionSet> holidayAdditionPerCompany,
@@ -102,7 +105,8 @@ public class ManagePerCompanySet {
 			Optional<UsageUnitSetting> usageSetting,
 			MidNightTimeSheet midNightTimeSheet,
 			FlexSet flexSet,
-			DeformLaborOT deformLaborOT) {
+			DeformLaborOT deformLaborOT,
+			Optional<DeclareSet> declareSet) {
 		super();
 		this.holidayAdditionPerCompany = holidayAdditionPerCompany;
 		this.calculateOfTotalCons = calculateOfTotalCons;
@@ -121,5 +125,6 @@ public class ManagePerCompanySet {
 		this.midNightTimeSheet = midNightTimeSheet;
 		this.flexSet = flexSet;
 		this.deformLaborOT = deformLaborOT;
+		this.declareSet = declareSet;
 	}
 }

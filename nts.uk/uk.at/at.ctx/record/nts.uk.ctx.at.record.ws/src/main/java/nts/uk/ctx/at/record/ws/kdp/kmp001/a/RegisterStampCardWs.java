@@ -18,6 +18,8 @@ import nts.uk.ctx.at.record.app.command.kmp.kmp001.c.RegisterStampCardViewCComma
 import nts.uk.ctx.at.record.app.command.kmp.kmp001.c.RegisterStampCardViewCCommandHandler;
 import nts.uk.ctx.at.record.app.command.kmp.kmp001.d.EdittingStampCardCommand;
 import nts.uk.ctx.at.record.app.command.kmp.kmp001.d.EdittingStampCardCommandHandler;
+import nts.uk.ctx.at.record.app.command.kmp.kmp001.g.RegisterStampedCardNumberCommandHandler;
+import nts.uk.ctx.at.record.app.command.kmp.kmp001.g.RegisterStampedCardNumberInput;
 
 /**
  * 
@@ -43,6 +45,9 @@ public class RegisterStampCardWs extends WebService {
 	
 	@Inject
 	private EdittingStampCardCommandHandler handlerEditting; 
+	
+	@Inject
+	private RegisterStampedCardNumberCommandHandler handlerRegister;
 	
 	/**新規モード時にIDカードNOの登録を行う */
 	@POST
@@ -87,5 +92,11 @@ public class RegisterStampCardWs extends WebService {
 	@Path("view-d/editting")
 	public void edttingStampCard(EdittingStampCardCommand command) {
 		this.handlerEditting.handle(command);
+	}
+	
+	@POST
+	@Path("view-g/registerCardGenarate")
+	public void register(RegisterStampedCardNumberInput command) {
+		this.handlerRegister.add(command);
 	}
 }

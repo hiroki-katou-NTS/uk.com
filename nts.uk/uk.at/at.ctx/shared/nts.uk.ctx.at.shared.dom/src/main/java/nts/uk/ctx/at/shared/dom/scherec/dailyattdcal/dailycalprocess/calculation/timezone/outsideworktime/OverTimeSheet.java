@@ -11,14 +11,13 @@ import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.ManagePerPersonDailySet;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.UseTimeAtr;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.other.ActualWorkTimeSheetAtr;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.other.BonusPayAutoCalcSet;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.ActualWorkTimeSheetAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalOvertimeSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.BonusPayAutoCalcSet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.TimeLimitUpperLimitSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.BonusPayAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.ConditionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
@@ -26,13 +25,18 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.Time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.BonusPayTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.OutsideWorkTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSheetOfDeductionItemList;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.UseTimeAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareCalcRange;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareTimezoneResult;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeSheet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.PredetermineTimeSetForCalc;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.enums.BonusPayAtr;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
@@ -90,6 +94,8 @@ public class OverTimeSheet {
 	 * @param eachCompanyTimeSet 会社別代休時間設定
 	 * @param integrationOfDaily 日別実績(Work)
 	 * @param statutoryFrameNoList 法定内残業枠(List)
+	 * @param declareResult 申告時間帯作成結果
+	 * @param upperControl 事前申請上限制御
 	 * @return 残業枠時間(List)
 	 */
 	public List<OverTimeFrameTime> collectOverTimeWorkTime(
@@ -98,7 +104,9 @@ public class OverTimeSheet {
 			Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
 			Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
 			IntegrationOfDaily integrationOfDaily,
-			List<OverTimeFrameNo> statutoryFrameNoList) {
+			List<OverTimeFrameNo> statutoryFrameNoList,
+			DeclareTimezoneResult declareResult,
+			boolean upperControl) {
 		
 		Map<Integer,OverTimeFrameTime> overTimeFrameList = new HashMap<Integer, OverTimeFrameTime>();
 		List<OverTimeFrameNo> numberOrder = new ArrayList<>();
@@ -149,10 +157,40 @@ public class OverTimeSheet {
 			}
 			calcOverTimeWorkTimeList = reOrderList;
 		}
-		//事前申請を上限とする制御
-		val afterCalcUpperTimeList = afterUpperControl(calcOverTimeWorkTimeList,autoCalcSet,statutoryFrameNoList);
+		List<OverTimeFrameTime> afterCalcUpperTimeList = calcOverTimeWorkTimeList;
+		if (upperControl){
+			//事前申請を上限とする制御
+			afterCalcUpperTimeList = afterUpperControl(calcOverTimeWorkTimeList,autoCalcSet,statutoryFrameNoList);
+		}
 		//振替処理
-		val aftertransTimeList = transProcess(workType, afterCalcUpperTimeList, eachWorkTimeSet, eachCompanyTimeSet);
+		List<OverTimeFrameTime> aftertransTimeList = transProcess(workType, afterCalcUpperTimeList, eachWorkTimeSet, eachCompanyTimeSet);
+		if (declareResult.getCalcRangeOfOneDay().isPresent()){
+			//ループ処理
+			CalculationRangeOfOneDay declareCalcRange = declareResult.getCalcRangeOfOneDay().get();
+			OutsideWorkTimeSheet declareOutsideWork = declareCalcRange.getOutsideWorkTimeSheet().get();
+			if (declareOutsideWork.getOverTimeWorkSheet().isPresent()){
+				OverTimeSheet declareSheet = declareOutsideWork.getOverTimeWorkSheet().get();
+				List<OverTimeFrameTime> declareFrameTimeList = declareSheet.collectOverTimeWorkTime(
+						autoCalcSet,
+						workType,
+						eachWorkTimeSet,
+						eachCompanyTimeSet,
+						integrationOfDaily,
+						statutoryFrameNoList,
+						new DeclareTimezoneResult(),
+						false);
+				//申告残業反映後リストの取得
+				OverTimeSheet.getListAfterReflectDeclare(aftertransTimeList, declareFrameTimeList, declareResult);
+			}
+		}
+		//大塚モードの確認
+		if (true){
+			//マイナスの乖離時間を0にする
+			for (val aftertransTime : aftertransTimeList){
+				aftertransTime.getOverTimeWork().divergenceMinusValueToZero();
+				aftertransTime.getTransferTime().divergenceMinusValueToZero();
+			}
+		}
 		return aftertransTimeList;
 	}
 	
@@ -859,5 +897,61 @@ public class OverTimeSheet {
 			return Optional.empty();
 		
 		return Optional.of(new TimeSpanForDailyCalc(start, end.get()));
+	}
+	
+	/**
+	 * 申告残業反映後リストの取得
+	 * @param recordList 残業枠時間（実績用）
+	 * @param declareList 残業枠時間（申告用）
+	 * @param declareResult 申告時間帯作成結果
+	 */
+	private static void getListAfterReflectDeclare(
+			List<OverTimeFrameTime> recordList,
+			List<OverTimeFrameTime> declareList,
+			DeclareTimezoneResult declareResult){
+
+		// 申告Listから反映時間=0:00のデータを削除する
+		declareList.removeIf(c ->
+		(c.getOverTimeWork().getCalcTime().valueAsMinutes() + c.getTransferTime().getCalcTime().valueAsMinutes() == 0));
+		// 残業枠時間を確認する
+		for (OverTimeFrameTime record : recordList){
+			// 処理中の残業枠NOが申告用Listに存在するか確認
+			Optional<OverTimeFrameTime> declare = declareList.stream()
+					.filter(c -> c.getOverWorkFrameNo().v() == record.getOverWorkFrameNo().v()).findFirst();
+			if (declare.isPresent()){
+				// 処理中の残業枠時間に申告用の計算時間を反映
+				record.getOverTimeWork().replaceTimeWithCalc(declare.get().getOverTimeWork().getCalcTime());
+				record.getTransferTime().replaceTimeWithCalc(declare.get().getTransferTime().getCalcTime());
+				// 編集状態．残業に処理中の残業枠NOを追加する
+				if (declareResult.getDeclareCalcRange().isPresent()){
+					DeclareCalcRange calcRange = declareResult.getDeclareCalcRange().get();
+					calcRange.getEditState().getOvertime().add(record.getOverWorkFrameNo());
+				}
+			}
+		}
+		// 申告用Listを確認する
+		for (OverTimeFrameTime declare : declareList){
+			// 処理中の残業枠NOが申告用Listに存在するか確認
+			Optional<OverTimeFrameTime> record = recordList.stream()
+					.filter(c -> c.getOverWorkFrameNo().v() == declare.getOverWorkFrameNo().v()).findFirst();
+			if (!record.isPresent()){
+				// 処理中の残業枠時間を反映後Listに追加
+				recordList.add(new OverTimeFrameTime(
+						declare.getOverWorkFrameNo(),
+						TimeDivergenceWithCalculation.createTimeWithCalculation(
+								declare.getOverTimeWork().getCalcTime(),
+								new AttendanceTime(0)),
+						TimeDivergenceWithCalculation.createTimeWithCalculation(
+								declare.getTransferTime().getCalcTime(),
+								new AttendanceTime(0)),
+						new AttendanceTime(0),
+						new AttendanceTime(0)));
+				// 編集状態．残業に処理中の残業枠NOを追加する
+				if (declareResult.getDeclareCalcRange().isPresent()){
+					DeclareCalcRange calcRange = declareResult.getDeclareCalcRange().get();
+					calcRange.getEditState().getOvertime().add(declare.getOverWorkFrameNo());
+				}
+			}
+		}
 	}
 }

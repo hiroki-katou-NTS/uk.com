@@ -25,6 +25,6 @@ public interface OutputPeriodSettingRepository {
 	 * Update OutputPeriodSetting
 	 * @param domain
 	 */
-    void update(OutputPeriodSetting domain);
+    void update(String cid, String conditionSetCd, OutputPeriodSetting domain);
 
 }

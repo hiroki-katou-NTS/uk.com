@@ -47,6 +47,13 @@ public interface OptionalItemGetMemento {
 	OptionalItemUsageAtr getOptionalItemUsageAtr();
 
 	/**
+	 * Gets the calculation atr.
+	 *
+	 * @return the calclation atr
+	 */
+	CalcUsageAtr getCalcAtr();
+
+	/**
 	 * Gets the emp condition atr.
 	 *
 	 * @return the emp condition atr

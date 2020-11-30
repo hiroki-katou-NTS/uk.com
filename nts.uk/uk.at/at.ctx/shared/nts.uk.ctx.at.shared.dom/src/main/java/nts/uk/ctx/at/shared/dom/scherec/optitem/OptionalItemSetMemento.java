@@ -47,6 +47,13 @@ public interface OptionalItemSetMemento {
 	void setOptionalItemUsageAtr(OptionalItemUsageAtr optionalItemUsageAtr);
 
 	/**
+	 * Sets the calculation atr.
+	 *
+	 * @param calcAtr the new calculation atr
+	 */
+	void setCalcAtr(CalcUsageAtr calcAtr);
+
+	/**
 	 * Sets the emp condition atr.
 	 *
 	 * @param empConditionAtr the new emp condition atr

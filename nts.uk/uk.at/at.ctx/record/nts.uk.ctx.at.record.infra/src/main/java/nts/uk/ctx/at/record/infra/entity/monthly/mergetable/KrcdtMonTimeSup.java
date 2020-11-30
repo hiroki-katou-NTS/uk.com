@@ -455,6 +455,15 @@ public class KrcdtMonTimeSup extends UkJpaEntity implements Serializable {
 		return ouen;
 	}
 	
+	public void reset() {
+		ouenOtherTotalTime = 0;
+		ouenOtherTotalAmount = 0;
+		for (int i = 1; i <= 99; i++) {
+			
+			setOuen(OuenWorkAggregateFrameDetail.create(i, OuenWorkAggregateDetail.empty()));
+		}
+	}
+	
 	private void setOuenFrame(OuenTimeOfMonthly ouen, int frame) {
 		int time = ReflectionUtil.getFieldValue(
 							FieldReflection.getField(getClass(), "ouenFrame" + frame + "TotalTime"), 

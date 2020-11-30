@@ -27,7 +27,7 @@ import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.JobTitleId;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.JobTitleId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
@@ -89,7 +89,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	public static final JpaEntityMapper<KrcdtMonMerge> MAPPER = new JpaEntityMapper<>(KrcdtMonMerge.class);
 
 	@EmbeddedId
-	public KrcdtMonMergePk krcdtMonMergePk;
+	public KrcdtMonMergePk id;
 	
 	@Version
 	@Column(name = "EXCLUS_VER")
@@ -1196,16 +1196,16 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	
 	@Override
 	protected Object getKey() {
-		return this.krcdtMonMergePk;
+		return this.id;
 	}
 	
 	public 	MonthMergeKey toDomainKey() {
 		MonthMergeKey key = new MonthMergeKey();
-		key.setEmployeeId(this.krcdtMonMergePk.getEmployeeId());
-		key.setYearMonth(new YearMonth(this.krcdtMonMergePk.getYearMonth()));
-		key.setClosureId(EnumAdaptor.valueOf(this.krcdtMonMergePk.getClosureId(), ClosureId.class));
-		key.setClosureDate(new ClosureDate(this.krcdtMonMergePk.getClosureDay(),
-			(this.krcdtMonMergePk.getIsLastDay() == 1)));
+		key.setEmployeeId(this.id.getEmployeeId());
+		key.setYearMonth(new YearMonth(this.id.getYearMonth()));
+		key.setClosureId(EnumAdaptor.valueOf(this.id.getClosureId(), ClosureId.class));
+		key.setClosureDate(new ClosureDate(this.id.getClosureDay(),
+			(this.id.getIsLastDay() == 1)));
 		return key;
 	}
 
@@ -2666,10 +2666,10 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		TotalCountByPeriod totalCount = toDomainTotalCountByPeriod(this.getTotalCounts());
 		
 		AttendanceTimeOfMonthly domain = AttendanceTimeOfMonthly.of(
-				this.krcdtMonMergePk.getEmployeeId(),
-				new YearMonth(this.krcdtMonMergePk.getYearMonth()),
-				ClosureId.valueOf(this.krcdtMonMergePk.getClosureId()),
-				new ClosureDate(this.krcdtMonMergePk.getClosureDay(), (this.krcdtMonMergePk.getIsLastDay() != 0)),
+				this.id.getEmployeeId(),
+				new YearMonth(this.id.getYearMonth()),
+				ClosureId.valueOf(this.id.getClosureId()),
+				new ClosureDate(this.id.getClosureDay(), (this.id.getIsLastDay() != 0)),
 				new DatePeriod(this.startYmd, this.endYmd),
 				monthlyCalculation,
 				excessOutsideWork,
@@ -2964,10 +2964,10 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	public AffiliationInfoOfMonthly toDomainAffiliationInfoOfMonthly(){
 		
 		AffiliationInfoOfMonthly domain = AffiliationInfoOfMonthly.of(
-				this.krcdtMonMergePk.getEmployeeId(),
-				new YearMonth(this.krcdtMonMergePk.getYearMonth()),
-				EnumAdaptor.valueOf(this.krcdtMonMergePk.getClosureId(), ClosureId.class),
-				new ClosureDate(this.krcdtMonMergePk.getClosureDay(), (this.krcdtMonMergePk.getIsLastDay() == 1)),
+				this.id.getEmployeeId(),
+				new YearMonth(this.id.getYearMonth()),
+				EnumAdaptor.valueOf(this.id.getClosureId(), ClosureId.class),
+				new ClosureDate(this.id.getClosureDay(), (this.id.getIsLastDay() == 1)),
 				AggregateAffiliationInfo.of(
 						new EmploymentCode(this.firstEmploymentCd),
 						new WorkplaceId(this.firstWorkplaceId),

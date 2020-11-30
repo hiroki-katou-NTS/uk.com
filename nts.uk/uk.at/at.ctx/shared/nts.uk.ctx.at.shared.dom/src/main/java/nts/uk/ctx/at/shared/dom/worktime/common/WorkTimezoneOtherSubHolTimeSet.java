@@ -89,4 +89,22 @@ public class WorkTimezoneOtherSubHolTimeSet extends WorkTimeDomainObject impleme
 		return cloned;
 	}
 
+	/**
+	 * デフォルト設定のインスタンスを生成する
+	 * @param workTimeCode 就業時間帯コード
+	 * @param originAtr 発生元区分
+	 * @return 就業時間帯別代休時間設定
+	 */
+	public static WorkTimezoneOtherSubHolTimeSet generateDefault(
+			WorkTimeCode workTimeCode, CompensatoryOccurrenceDivision originAtr){
+		WorkTimezoneOtherSubHolTimeSet domain = new WorkTimezoneOtherSubHolTimeSet();
+		domain.workTimeCode = workTimeCode;
+		domain.subHolTimeSet = new SubHolTransferSet(
+				new OneDayTime(0),
+				false,
+				new DesignatedTime(new OneDayTime(0), new OneDayTime(0)),
+				SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL);
+		domain.originAtr = originAtr;
+		return domain;
+	}
 }

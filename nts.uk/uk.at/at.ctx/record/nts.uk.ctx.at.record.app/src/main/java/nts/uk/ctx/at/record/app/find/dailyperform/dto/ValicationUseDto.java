@@ -2,18 +2,20 @@ package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
 import java.util.Optional;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate.PropType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.TimevacationUseTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHdFrameNo;
 
 /**
  * 日別実績の時間休暇使用時間
@@ -42,7 +44,20 @@ public class ValicationUseDto implements ItemConst, AttendanceItemDataGate {
 	@AttendanceItemLayout(layout = LAYOUT_D, jpPropertyName = COMPENSATORY)
 	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer timeCompensatoryLeaveUseTime;
+
+	/*特別休暇枠NO*/
+	public Integer specialHdFrameNo;
 	
+	/**子の看護休暇使用時間*/
+	@AttendanceItemLayout(layout = LAYOUT_E, jpPropertyName = CHILD_CARE)
+	@AttendanceItemValue(type = ValueType.TIME)
+	public Integer childCareUseTime;
+	
+	/**介護休暇使用時間*/
+	@AttendanceItemLayout(layout = LAYOUT_F, jpPropertyName = CARE)
+	@AttendanceItemValue(type = ValueType.TIME)
+	public Integer careUseTime;	
+
 	@Override
 	public Optional<ItemValue> valueOf(String path) {
 		switch (path) {
@@ -54,6 +69,10 @@ public class ValicationUseDto implements ItemConst, AttendanceItemDataGate {
 			return Optional.of(ItemValue.builder().value(timeSpecialHolidayUseTime).valueType(ValueType.TIME));
 		case COMPENSATORY:
 			return Optional.of(ItemValue.builder().value(timeCompensatoryLeaveUseTime).valueType(ValueType.TIME));
+		case CHILD_CARE:
+			return Optional.of(ItemValue.builder().value(childCareUseTime).valueType(ValueType.TIME));
+		case CARE:
+			return Optional.of(ItemValue.builder().value(careUseTime).valueType(ValueType.TIME));
 		default:
 			return Optional.empty();
 		}
@@ -66,6 +85,8 @@ public class ValicationUseDto implements ItemConst, AttendanceItemDataGate {
 		case EXCESS:
 		case SPECIAL:
 		case COMPENSATORY:
+		case CHILD_CARE:
+		case CARE:
 			return PropType.VALUE;
 		default:
 			return PropType.OBJECT;
@@ -87,27 +108,49 @@ public class ValicationUseDto implements ItemConst, AttendanceItemDataGate {
 		case COMPENSATORY:
 			this.timeCompensatoryLeaveUseTime = value.valueOrDefault(null);
 			break;
+		case CHILD_CARE:
+			this.childCareUseTime = value.valueOrDefault(null);
+			break;
+		case CARE:
+			this.careUseTime = value.valueOrDefault(null);
+			break;
 		default:
 			break;
 		}
 	}
 	
+
 	public TimevacationUseTimeOfDaily toDomain(){
 		return new TimevacationUseTimeOfDaily(
 						timeAnnualLeaveUseTime == null ? AttendanceTime.ZERO : new AttendanceTime(timeAnnualLeaveUseTime), 
 						timeCompensatoryLeaveUseTime == null ? AttendanceTime.ZERO : new AttendanceTime(timeCompensatoryLeaveUseTime), 
 						excessHolidayUseTime == null ? AttendanceTime.ZERO : new AttendanceTime(excessHolidayUseTime), 
-						timeSpecialHolidayUseTime == null ? AttendanceTime.ZERO : new AttendanceTime(timeSpecialHolidayUseTime));
+						timeSpecialHolidayUseTime == null ? AttendanceTime.ZERO : new AttendanceTime(timeSpecialHolidayUseTime),
+						Optional.ofNullable(this.specialHdFrameNo == null ? null : new SpecialHdFrameNo(this.specialHdFrameNo)),
+						childCareUseTime == null ? AttendanceTime.ZERO : new AttendanceTime(childCareUseTime),
+						careUseTime == null ? AttendanceTime.ZERO : new AttendanceTime(careUseTime));
 	}
 	
 	public static TimevacationUseTimeOfDaily createEmpty(){
-		return new TimevacationUseTimeOfDaily(AttendanceTime.ZERO, AttendanceTime.ZERO, 
-											AttendanceTime.ZERO, AttendanceTime.ZERO);
+		return new TimevacationUseTimeOfDaily(
+				AttendanceTime.ZERO,
+				AttendanceTime.ZERO, 
+				AttendanceTime.ZERO, 
+				AttendanceTime.ZERO,
+				Optional.empty(),
+				AttendanceTime.ZERO,
+				AttendanceTime.ZERO);
 	}
 	
 	@Override
 	public ValicationUseDto clone(){
-		return new ValicationUseDto(timeAnnualLeaveUseTime, excessHolidayUseTime, 
-									timeSpecialHolidayUseTime, timeCompensatoryLeaveUseTime);
+		return new ValicationUseDto(
+				timeAnnualLeaveUseTime,
+				excessHolidayUseTime, 
+				timeSpecialHolidayUseTime, 
+				timeCompensatoryLeaveUseTime,
+				specialHdFrameNo,
+				childCareUseTime,
+				careUseTime);
 	}
 }

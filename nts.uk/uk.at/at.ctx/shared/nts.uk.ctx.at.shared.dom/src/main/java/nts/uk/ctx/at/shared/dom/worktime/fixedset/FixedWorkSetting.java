@@ -16,8 +16,12 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
+import nts.uk.ctx.at.shared.dom.workrule.BreakTimeZone;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
+import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZone;
+import nts.uk.ctx.at.shared.dom.worktime.WorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
@@ -28,7 +32,6 @@ import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
-import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeAggregateRoot;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
@@ -41,7 +44,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 @Getter
 @NoArgsConstructor
 // 固定勤務設定
-public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable{
+public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable, WorkSetting {
 
 	/** The company id. */
 	// 会社ID
@@ -57,6 +60,7 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 
 	/** The common setting. */
 	// 共通設定
+	@Setter
 	private WorkTimezoneCommonSet commonSetting;
 
 	/** The use half day shift. */
@@ -123,7 +127,7 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -137,7 +141,7 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -172,22 +176,22 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 	 * @param oldDomain
 	 *            the old domain
 	 */
-	public void correctData(ScreenMode screenMode, WorkTimeDivision workTimeType, FixedWorkSetting oldDomain) {		
+	public void correctData(ScreenMode screenMode, WorkTimeDivision workTimeType, FixedWorkSetting oldDomain) {
 		// Dialog J: list stamp timezone
 		Map<Entry<WorkNo, GoLeavingWorkAtr>, StampReflectTimezone> mapStampReflectTimezone = oldDomain.getLstStampReflectTimezone().stream()
 				.collect(Collectors.toMap(
-						item -> new ImmutablePair<WorkNo, GoLeavingWorkAtr>(item.getWorkNo(), item.getClassification()), 
+						item -> new ImmutablePair<WorkNo, GoLeavingWorkAtr>(item.getWorkNo(), item.getClassification()),
 						Function.identity()));
 		this.lstStampReflectTimezone.forEach(item -> item.correctData(screenMode, mapStampReflectTimezone.get(
 				new ImmutablePair<WorkNo, GoLeavingWorkAtr>(item.getWorkNo(), item.getClassification()))));
-		
+
 		// Tab 8 -> 16
 		this.commonSetting.correctData(screenMode, oldDomain.getCommonSetting());
-		
+
 		// Tab 17
 		if (this.calculationSetting.isPresent()) {
 			this.calculationSetting.get().correctData(screenMode, oldDomain.getCalculationSetting());
-		}		
+		}
 	}
 
 	/**
@@ -199,17 +203,17 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 	public void correctDefaultData(ScreenMode screenMode) {
 		// Tab 2 + 3 + 5: restore 平日勤務時間帯
 		this.lstHalfDayWorkTimezone.forEach(item -> item.correctDefaultData(screenMode));
-		
+
 		// Dialog J: list stamp timezone
 		this.lstStampReflectTimezone.forEach(item -> item.correctDefaultData(screenMode));
 
 		// Tab 8 -> 16
 		this.commonSetting.correctDefaultData(screenMode);
-		
+
 		// Tab 17
 		if (this.calculationSetting.isPresent()) {
 			this.calculationSetting.get().correctDefaultData(screenMode);
-		}	
+		}
 	}
 
 	/**
@@ -254,7 +258,8 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 		}
 		return cloned;
 	}
-	
+
+
 	/**
 	 * 勤務種類から就業時間帯Noと法定内残業枠Noを取得する
 	 * @param workType 勤務種類
@@ -265,7 +270,7 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 				//就業時間帯の残業枠はOTFrameNoになっている為、OverTimeFrameNoへ変換する必要がある。
 				.collect(Collectors.toMap(k->k.getWorkTimezoneNo(), v->new OverTimeFrameNo(v.getLegalOTframeNo().v())));
 	}
-	
+
 	/**
 	 * 勤務種類から法定内残業枠Noを取得する
 	 * @param workType 勤務種類
@@ -277,7 +282,7 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 				.map(oTframeNo -> new OverTimeFrameNo(oTframeNo.v())) //就業時間帯の残業枠はOTFrameNoになっている為、OverTimeFrameNoへ変換する必要がある。
 				.collect(Collectors.toList());
 	}
-	
+
 	/**
 	 * 勤務種類から就業時間の時間帯設定を取得する
 	 * @param workType 勤務種類
@@ -288,7 +293,7 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 					?this.getFixHalfDayWorkTimezone(workType.getAttendanceHolidayAttr()).get().getWorkTimezone().getLstWorkingTimezone()
 					:Collections.emptyList();
 	}
-	
+
 	/**
 	 * 勤務種類から残業時間の時間帯設定を取得する
 	 * @param workType 勤務種類
@@ -299,14 +304,14 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 					?this.getFixHalfDayWorkTimezone(workType.getAttendanceHolidayAttr()).get().getWorkTimezone().getLstOTTimezone()
 					:Collections.emptyList();
 	}
-	
+
 	/**
 	 * 出勤休日区分から固定勤務の平日出勤用勤務時間帯を取得する
-	 * 
+	 *
 	 * @param attendanceHolidayAttr 出勤休日区分
 	 * @return 固定勤務の平日出勤用勤務時間帯(List)
 	 */
-	private Optional<FixHalfDayWorkTimezone> getFixHalfDayWorkTimezone(AttendanceHolidayAttr attendanceHolidayAttr) {
+	public Optional<FixHalfDayWorkTimezone> getFixHalfDayWorkTimezone(AttendanceHolidayAttr attendanceHolidayAttr) {
 		switch(attendanceHolidayAttr) {
 		case FULL_TIME:	return this.getFixHalfDayWorkTimezone(AmPmAtr.ONE_DAY);
 		case MORNING:		return this.getFixHalfDayWorkTimezone(AmPmAtr.AM);
@@ -315,14 +320,42 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 		default:			throw new RuntimeException("unknown AttendanceHolidayAttr");
 		}
 	}
-	
+
 	/**
 	 * 午前午後区分から固定勤務の平日出勤用勤務時間帯を取得する
-	 * 
+	 *
 	 * @param amPmAtr 午前午後区分
 	 * @return 固定勤務の平日出勤用勤務時間帯(List)
 	 */
 	private Optional<FixHalfDayWorkTimezone> getFixHalfDayWorkTimezone(AmPmAtr amPmAtr){
 		return this.lstHalfDayWorkTimezone.stream().filter(timeZone -> timeZone.getDayAtr().equals(amPmAtr)).findFirst();
+	}
+
+
+	/**
+	 * 変更可能な勤務時間帯を取得する
+	 * @param require Require
+	 * @return 変更可能な時間帯
+	 */
+	@Override
+	public ChangeableWorkingTimeZone getChangeableWorkingTimeZone(WorkSetting.Require require) {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
+
+	/**
+	 * 休憩時間帯を取得する
+	 * @param isWorkingOnDayOff 休出か
+	 * @param amPmAtr 午前午後区分
+	 * @return 休憩時間
+	 */
+	@Override
+	public BreakTimeZone getBreakTimeZone(boolean isWorkingOnDayOff, AmPmAtr amPmAtr) {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
+
+
+	public static interface Require {
 	}
 }

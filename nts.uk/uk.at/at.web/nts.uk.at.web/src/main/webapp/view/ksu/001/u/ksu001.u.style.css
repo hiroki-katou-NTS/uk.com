@@ -49,7 +49,6 @@
 #line {
 	margin: 3px 5%;	
 	border:none;
-	display: block;
-	height: 0.1px;
+	height: 1px;
 	background:#9A9A9A
 }
