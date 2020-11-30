@@ -15,6 +15,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.dom.export.wkpmanager.WorkPlaceSelectionExportData;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.WorkplaceManager;
@@ -38,6 +39,9 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 	private static final String FIND_BY_WKP_DATE_MANAGER = "SELECT wm FROM SacmtWorkplaceManager wm"
 			+ " WHERE wm.workplaceId = :workplaceId" + " AND wm.startDate <= :baseDate AND wm.endDate >= :baseDate"
 			+ " AND wm.kacmtWorkplaceManagerPK.workplaceManagerId IN :wkpManagerLst";
+
+	private static final String FIND_BY_PERIOD_AND_WKPS = "SELECT wm FROM SacmtWorkplaceManager wm "
+			+ " WHERE wm.workplaceId IN :lstWkpId " + " AND wm.startDate <= :endDate AND wm.endDate >= :startDate ";
 
 	private static final String WORKPLACE_SELECT_ALL = "SELECT wm.workplaceCode , wm.workplaceName , edm.employeeCode , ps.businessName , wi.startDate, wi.endDate ,wi.kacmtWorkplaceManagerPK.workplaceManagerId "
 			+ "FROM BsymtWorkplaceInfor wm "
@@ -193,6 +197,18 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 				return toReportDataTable(rec, workPlaceFunction);
 			});
 		}
+	}
+
+	@Override
+	public List<WorkplaceManager> findByPeriodAndWkpIds(List<String> wkpId, DatePeriod datePeriod) {
+		List<WorkplaceManager> resultList = new ArrayList<>();
+		CollectionUtil.split(wkpId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(FIND_BY_PERIOD_AND_WKPS, SacmtWorkplaceManager.class)
+				.setParameter("startDate", datePeriod.start())
+				.setParameter("endDate", datePeriod.end())
+				.setParameter("lstWkpId", subList).getList(c -> c.toDomain()));
+		});
+		return resultList;
 	}
 
 	private WorkPlaceSelectionExportData toReportDataTable(NtsResultRecord rec,

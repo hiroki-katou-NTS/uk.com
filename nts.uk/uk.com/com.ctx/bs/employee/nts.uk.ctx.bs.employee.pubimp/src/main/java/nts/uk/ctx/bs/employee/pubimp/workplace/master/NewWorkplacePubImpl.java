@@ -18,6 +18,9 @@ import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
 import nts.uk.ctx.bs.employee.pub.workplace.*;
+import nts.uk.ctx.bs.employee.pub.workplace.config.WorkPlaceConfigExport;
+import nts.uk.ctx.bs.employee.pub.workplace.config.WorkPlaceConfigPub;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplaceInformationExport;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.util.Strings;
 
@@ -74,6 +77,9 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 	
 	@Inject
 	private EmployeeDataMngInfoRepository empDataMngRepo;
+
+	@Inject
+	private WorkPlaceConfigPub workPlaceConfigPub;
 
 	@Override
 	public List<WorkplaceInforExport> getWorkplaceInforByWkpIds(String companyId, List<String> listWorkplaceId,
@@ -851,5 +857,32 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 				.workLocationCd(affWrkPlcItem.get().getWorkLocationCode().isPresent()?
 						affWrkPlcItem.get().getWorkLocationCode().get().v() : null )
 				.build());
+	}
+
+	@Override
+	public List<WorkplaceInformationExport> getCidAndPeriod(String companyId, DatePeriod datePeriod) {
+
+		//[No.647]期間に対応する職場構成を取得する
+		List<WorkPlaceConfigExport> workPlaceConfigLst = workPlaceConfigPub.findByCompanyIdAndPeriod(companyId, datePeriod);
+		List<String> wkpIds = new ArrayList<>();
+		workPlaceConfigLst.forEach(x -> {
+			x.getWkpConfigHistory().forEach(i -> wkpIds.add(i.getHistoryId()));
+		});
+		List<WorkplaceInformation> workplaceInforLst = workplaceInformationRepository.findByHistoryIds(AppContexts.user().companyId(), wkpIds);
+
+		return workplaceInforLst.stream()
+			.map(i -> new WorkplaceInformationExport(
+					i.getCompanyId(),
+					i.isDeleteFlag(),
+					i.getWorkplaceHistoryId(),
+					i.getWorkplaceId(),
+					i.getWorkplaceCode().v(),
+					i.getWorkplaceName().v(),
+					i.getWorkplaceGeneric().v(),
+					i.getWorkplaceDisplayName().v(),
+					i.getHierarchyCode().v(),
+					i.getWorkplaceExternalCode().isPresent() ? Optional.of(i.getWorkplaceExternalCode().get().v()) : Optional.empty()
+				)
+			).collect(Collectors.toList());
 	}
 }
