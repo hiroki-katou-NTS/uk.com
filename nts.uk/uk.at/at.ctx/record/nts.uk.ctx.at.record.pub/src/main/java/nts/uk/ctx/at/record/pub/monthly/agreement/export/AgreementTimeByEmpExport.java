@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.pub.monthly.agreement;
+package nts.uk.ctx.at.record.pub.monthly.agreement.export;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,14 +27,7 @@ public class AgreementTimeByEmpExport {
         AgreementTimeByEmpExport time = new AgreementTimeByEmpExport();
         time.employeeId = domain.getEmployeeId();
         time.periodAtr = domain.getPeriodAtr();
-        time.agreementTime = AgreementTimeOfManagePeriodExport.builder()
-        		.sid(domain.getAgreementTime().getSid())
-        		.ym(domain.getAgreementTime().getYm())
-        		.agreementTime(AgreementTimeOfMonthlyExport.copy(domain.getAgreementTime().getAgreementTime()))
-        		.legalMaxTime(AgreementTimeOfMonthlyExport.copy(domain.getAgreementTime().getLegalMaxTime()))
-        		.status(domain.getAgreementTime().getStatus().value)
-        		.breakdown(AgreementTimeBreakdownExport.copy(domain.getAgreementTime().getBreakdown()))
-        		.build();
+        time.agreementTime = AgreementTimeOfManagePeriodExport.copy(domain.getAgreementTime());
         return time;
     }
 }

@@ -12,7 +12,7 @@ import nts.arc.system.ServerSystemProperties;
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class StorageFreeSpaceFinder {
 	
-	private static double GB_SIZE = 1024 * 1024 * 1024;
+	private static final long GB_SIZE = 1024 * 1024 * 1024;
 
 	public double getFreeSpace() {
 		File file = new File(ServerSystemProperties.fileStoragePath());

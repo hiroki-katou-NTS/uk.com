@@ -50,5 +50,9 @@ public interface ExtBudgetDailyRepository {
 	 * @param extBudgetDaily
 	 */
 	public void delete(TargetOrgIdenInfor targetOrg,ExtBudgetActItemCode itemCode, GeneralDate ymd);
-
+	
+	/**
+	 * [6] 期間の日次の外部予算実績をすべて取得する
+	 */
+	public List<ExtBudgetDaily> getAllExtBudgetDailyByPeriod (TargetOrgIdenInfor targetOrg , DatePeriod datePeriod );
 }

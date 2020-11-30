@@ -26,8 +26,8 @@ public class GetFingerStampSetting {
 	@Inject
 	private StampResultDisplayRepository stampResulRepo;
 
-	@Inject
-	private StampSetPerRepository stampSetPerRepo;
+	// @Inject
+	// private StampSetPerRepository stampSetPerRepo;
 
 	public GetFingerStampSettingDto getFingerStampSetting() {
 		String companyId = AppContexts.user().companyId();
@@ -48,10 +48,10 @@ public class GetFingerStampSetting {
 				result.setStampSetting(new StampSetCommunalDto(setComu));
 				
 				// fix shit code
-				stampSetPerRepo.getStampSetting(companyId)
-					.ifPresent(c -> {
-						result.getStampSetting().setButtonEmphasisArt(c.isButtonEmphasisArt());
-					});
+				// stampSetPerRepo.getStampSetting(companyId)
+				//	.ifPresent(c -> {
+				//		result.getStampSetting().setButtonEmphasisArt(c.isButtonEmphasisArt());
+				//	});
 			});
 		
 		// 2:get 会社ID
