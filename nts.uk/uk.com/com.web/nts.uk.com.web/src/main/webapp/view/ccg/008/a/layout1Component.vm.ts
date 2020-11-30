@@ -37,17 +37,17 @@ module nts.uk.com.view.ccg008.a.Layout1ComponentViewModel {
           const param = {
             lstFileId: lstFileId(),
           };
-          // vm.$ajax("com", 'sys/portal/createflowmenu/extractListFileId', param).then((res: any) => {
-          //   const mappedList: any = _.map(res, (item: any) => {
-          //     const width = item.htmlContent.match(/(?<=width: )[0-9A-Za-z]+(?=;)/)[0];
-          //     const height = item.htmlContent.match(/(?<=height: )[0-9A-Za-z]+(?=;)/)[0];
-          //     return {html: `<iframe id="frameF1" style="width: ${width}; height: ${height};"></iframe>`};
-          //   });
-          //   vm.lstHtml(mappedList);
-          //   if (!_.isEmpty(res)) {
-          //     vm.renderHTML(res[0].htmlContent);
-          //   }
-          // });
+          vm.$ajax("com", 'sys/portal/createflowmenu/extractListFileId', param).then((res: any) => {
+            const mappedList: any = _.map(res, (item: any) => {
+              const width = item.htmlContent.match(/(?<=width: )[0-9A-Za-z]+(?=;)/)[0];
+              const height = item.htmlContent.match(/(?<=height: )[0-9A-Za-z]+(?=;)/)[0];
+              return {html: `<iframe id="frameF1" style="width: ${width}; height: ${height};"></iframe>`};
+            });
+            vm.lstHtml(mappedList);
+            if (!_.isEmpty(res)) {
+              vm.renderHTML(res[0].htmlContent);
+            }
+          });
         }
       }
     }

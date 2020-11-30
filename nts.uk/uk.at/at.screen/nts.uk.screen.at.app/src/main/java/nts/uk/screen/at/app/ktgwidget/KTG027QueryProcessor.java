@@ -1,7 +1,6 @@
 package nts.uk.screen.at.app.ktgwidget;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -431,7 +430,7 @@ public class KTG027QueryProcessor {
 					AgreementTimeOfManagePeriod AgreementTimeDetail = GetAgreementTime.get(require, empCode, targetDate, new ArrayList<>(), targetDate.lastGeneralDate(), ScheRecAtr.SCHEDULE);
 					listAgreementTimeDetail.add(AgreementTimeDetail);
 				} else {
-					listAgreementTimeDetail = GetAgreementTimeOfMngPeriod.get(require, Arrays.asList(empCode), 
+					listAgreementTimeDetail = GetAgreementTimeOfMngPeriod.get(require, lstEmployeeId, 
 							new YearMonthPeriod(datePeriod.get().start().yearMonth(), datePeriod.get().end().yearMonth()));
 				}
 			}
