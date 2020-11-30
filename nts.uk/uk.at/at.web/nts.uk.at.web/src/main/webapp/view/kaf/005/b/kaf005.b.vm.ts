@@ -1079,8 +1079,10 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				} else if (item.type == AttendanceType.MIDDLE_BREAK_TIME) {
 					if (self.isStart) {
 						let findResult = _.find(midNightHolidayTimes, (i: HolidayMidNightTime) => i.legalClf == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork);
-						if (findResult.attendanceTime > 0) {
-							backgroundColor = BACKGROUND_COLOR.bgC1;
+						if (!_.isNil(findResult)) {
+							if (findResult.attendanceTime > 0) {
+								backgroundColor = BACKGROUND_COLOR.bgC1;
+							}							
 						}
 					} else {
 						// 計算結果．申請時間．就業時間外深夜時間．休出深夜時間．時間 > 0
@@ -1134,8 +1136,10 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				} else if (item.type == AttendanceType.MIDDLE_EXORBITANT_HOLIDAY) {
 					if (self.isStart) {
 						let findResult = _.find(midNightHolidayTimes, (i: HolidayMidNightTime) => i.legalClf == StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork);
-						if (findResult.attendanceTime > 0) {
-							backgroundColor = BACKGROUND_COLOR.bgC1;
+						if (!_.isNil(findResult)) {
+							if (findResult.attendanceTime > 0) {
+								backgroundColor = BACKGROUND_COLOR.bgC1;
+							}							
 						}
 					} else {
 						// 計算結果．申請時間．就業時間外深夜時間．休出深夜時間．時間 > 0
@@ -1187,8 +1191,10 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				} else if (item.type == AttendanceType.MIDDLE_HOLIDAY_HOLIDAY) {
 					if (self.isStart) {
 						let findResult = _.find(midNightHolidayTimes, (i: HolidayMidNightTime) => i.legalClf == StaturoryAtrOfHolidayWork.PublicHolidayWork);
-						if (findResult.attendanceTime > 0) {
-							backgroundColor = BACKGROUND_COLOR.bgC1;
+						if (!_.isNil(findResult)) {
+							if (findResult.attendanceTime > 0) {
+								backgroundColor = BACKGROUND_COLOR.bgC1;
+							}							
 						}
 					} else {
 						// 計算結果．申請時間．就業時間外深夜時間．休出深夜時間．時間 > 0
