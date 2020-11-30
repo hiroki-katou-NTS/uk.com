@@ -19,12 +19,15 @@ public class PersonalCounterCategoryDto {
 
     private int value;
     private boolean use;
+    private Boolean setting;
 
-    public static List<PersonalCounterCategoryDto> setData(List<EnumConstant> listEnum, Optional<PersonalCounter> PersonalCounter){
+    public static List<PersonalCounterCategoryDto> setData(List<EnumConstant> listEnum, Optional<PersonalCounter> PersonalCounter,
+                                                           boolean timesNumber1,boolean timesNumber2,boolean timesNumber3) {
         return listEnum.stream().map(x -> {
             return new PersonalCounterCategoryDto(
                 x.getValue(),
-                PersonalCounter.isPresent() && PersonalCounter.get().isUsed(PersonalCounterCategory.of(x.getValue()))
+                PersonalCounter.isPresent() && PersonalCounter.get().isUsed(PersonalCounterCategory.of(x.getValue())),
+                x.getValue() == 7 ? timesNumber1 : x.getValue() == 8 ? timesNumber2 : x.getValue() == 9 ? timesNumber3 : null
             );
         }).sorted(Comparator.comparing(PersonalCounterCategoryDto::getValue)).collect(Collectors.toList());
     }
