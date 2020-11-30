@@ -195,7 +195,7 @@ module nts.uk.ui.calendar {
                 text-align: center;
             }
             .calendar .calendar-container .month .week .day .status span {
-                color: gray;
+                color: #404040;
                 font-size: 9px;
 				font-weight: 600;
 				display: block;
