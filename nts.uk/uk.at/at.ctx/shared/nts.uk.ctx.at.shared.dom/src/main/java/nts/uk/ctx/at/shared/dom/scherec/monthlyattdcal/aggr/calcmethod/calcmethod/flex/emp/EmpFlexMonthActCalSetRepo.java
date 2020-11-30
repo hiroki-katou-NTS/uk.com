@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.emp;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -15,6 +16,13 @@ public interface EmpFlexMonthActCalSetRepo {
 	 * @return the optional
 	 */
 	Optional<EmpFlexMonthActCalSet> find(String cid, String empCode);
+	
+	/**
+	 *  Find by Cid
+	 * @param cid : 会社ID
+	 * @return
+	 */
+	List<EmpFlexMonthActCalSet> findEmpFlexMonthByCid(String cid);
 
 	/**
 	 * Adds the.

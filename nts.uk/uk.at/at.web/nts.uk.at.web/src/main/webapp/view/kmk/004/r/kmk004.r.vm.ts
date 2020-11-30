@@ -9,7 +9,7 @@ module nts.uk.at.kmk004.r {
 	@bean()
 	export class ViewModel extends ko.ViewModel {
 		param: IParam = {
-			screenMode: 'EMPLOYMENT',
+			screenMode: 'Com_Employment',
 			data: [],
 			selectedCode: null,
 			alreadySettingList: []
@@ -19,14 +19,13 @@ module nts.uk.at.kmk004.r {
 
 		getTitleText() {
 			let vm = this;
-			if (vm.param.screenMode === 'WORK_PLACE') {
+			if (vm.param.screenMode === 'Com_Workplace') {
 				return vm.$i18n.text('KMK004_347');
 			}
-			if (vm.param.screenMode === 'EMPLOYMENT') {
+			if (vm.param.screenMode === 'Com_Employment') {
 				return vm.$i18n.text('KMK004_348');
-
 			}
-			if (vm.param.screenMode === 'EMPLOYEE') {
+			if (vm.param.screenMode === 'Com_Person') {
 				return vm.$i18n.text('KMK004_349');
 			}
 
@@ -51,15 +50,15 @@ module nts.uk.at.kmk004.r {
 				vm.screenData(new ScreenData(param));
 			}
 
-			if (vm.param.screenMode === 'WORK_PLACE') {
+			if (vm.param.screenMode === 'Com_Workplace') {
 				vm.initWorkPlace();
 			}
 
-			if (vm.param.screenMode === 'EMPLOYMENT') {
+			if (vm.param.screenMode === 'Com_Employment') {
 				vm.initEmployment();
 			}
 
-			if (vm.param.screenMode === 'EMPLOYEE') {
+			if (vm.param.screenMode === 'Com_Person') {
 				vm.initEmployee();
 			}
 		}
@@ -83,7 +82,7 @@ module nts.uk.at.kmk004.r {
 					startMode: StartMode.WORKPLACE,
 					selectedId: vm.screenData().selectedCode,
 					baseDate: ko.observable(new Date()),
-					selectType: SelectionType.SELECT_FIRST_ITEM,
+					selectType: SelectionType.SELECT_BY_SELECTED_CODE,
 					isShowSelectButton: true,
 					isDialog: true,
 					alreadySettingList: vm.screenData().alreadySettingList,
@@ -154,7 +153,7 @@ module nts.uk.at.kmk004.r {
 	}
 
 	interface IParam {
-		screenMode: 'WORK_PLACE' | 'EMPLOYMENT' | 'EMPLOYEE';
+		screenMode: 'Com_Company' | 'Com_Workplace' | 'Com_Employment' | 'Com_Person';
 		data: Array<any>;//EMPLOYEE = UnitModel
 		selectedCode: string;
 		alreadySettingList: Array<any>;

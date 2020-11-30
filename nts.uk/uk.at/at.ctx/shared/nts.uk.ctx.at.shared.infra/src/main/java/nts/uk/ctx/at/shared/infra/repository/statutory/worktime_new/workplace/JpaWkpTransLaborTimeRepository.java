@@ -4,7 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.statutory.worktime_new.workplace;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -24,6 +26,9 @@ import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.Ksh
 @Stateless
 public class JpaWkpTransLaborTimeRepository extends JpaRepository
 		implements DeforLaborTimeWkpRepo {
+	
+	private static final String SELECT_BY_CID = "SELECT c FROM KshstWkpTransLabTime c"
+			+ " WHERE c.kshstWkpTransLabTimePK.cid = :cid";
 
 	/*
 	 * (non-Javadoc)
@@ -106,5 +111,15 @@ public class JpaWkpTransLaborTimeRepository extends JpaRepository
 				entity.getKshstWkpTransLabTimePK().getCid(),
 				new WeeklyUnit(new WeeklyTime(entity.getWeeklyTime())), 
 				new DailyUnit(new TimeOfDay(entity.getDailyTime())));
+	}
+
+	@Override
+	public List<DeforLaborTimeWkp> findDeforLaborTimeWkpByCid(String cid) {
+		List<KshstWkpTransLabTime> entitys = this.queryProxy().query(SELECT_BY_CID, KshstWkpTransLabTime.class)
+				.setParameter("cid", cid).getList();
+		
+		return entitys.stream().map(m -> {
+			return toDomain(m);
+		}).collect(Collectors.toList());
 	}
 }

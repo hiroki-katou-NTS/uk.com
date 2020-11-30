@@ -6,7 +6,10 @@ const template = `
 								<div
 									data-bind="component: {
 								name: 'sidebar-button',
-								params: {isShowCopyButton: true , header:header }
+								params: {
+											screenData:screenData ,
+											screenMode:screenMode
+										}
 							}"></div>
 					</div>
 					<div style="padding: 10px; display: flex;">
@@ -22,7 +25,7 @@ const template = `
 								name: 'basic-settings-company',
 								params: {
 											screenData:screenData,
-											screenMode:header
+											screenMode:screenMode
 										}
 								}">
 						</div>
@@ -30,7 +33,7 @@ const template = `
 								name: 'monthly-working-hours',
 								params: {
 											screenData:screenData,
-											isShowCheckbox:false
+											screenMode:screenMode
 										}
 								}">
 						</div>
@@ -52,9 +55,7 @@ class ScreenIComponent extends ko.ViewModel {
 
 	screenData: KnockoutObservable<FlexScreenData> = ko.observable(new FlexScreenData());
 
-	header = '';
-
-	selectedCode: KnockoutObservable<string> = ko.observable();
+	screenMode = '';
 
 	employmentName: KnockoutObservable<string> = ko.observable('');
 
@@ -63,7 +64,7 @@ class ScreenIComponent extends ko.ViewModel {
 	created(params: any) {
 		let vm = this;
 
-		vm.header = params.header;
+		vm.screenMode = params.screenMode;
 		vm.initEmploymentList();
 		/*	vm.$blockui('invisible')
 				.then(() => vm.$ajax(API_URL.START_PAGE))
@@ -93,7 +94,7 @@ class ScreenIComponent extends ko.ViewModel {
 				isMultiSelect: false,
 				listType: ListType.EMPLOYMENT,
 				selectType: SelectType.SELECT_FIRST_ITEM,
-				selectedCode: vm.selectedCode,
+				selectedCode: vm.screenData().selected,
 				isDialog: true,
 				isShowNoSelectRow: false,
 				alreadySettingList: vm.alreadySettingList,
@@ -102,7 +103,7 @@ class ScreenIComponent extends ko.ViewModel {
 		vm.$blockui('grayout');
 		$('#empt-list-setting').ntsListComponent(listComponentOption).done(() => {
 
-			vm.selectedCode.subscribe((value) => {
+			vm.screenData().selected.subscribe((value) => {
 				let datas: Array<EmploymentUnitModel> = $('#empt-list-setting').getDataList(),
 
 					selectedItem: EmploymentUnitModel = _.find(datas, ['code', value]);
@@ -110,7 +111,7 @@ class ScreenIComponent extends ko.ViewModel {
 				vm.employmentName(selectedItem ? selectedItem.name : '');
 			});
 			vm.$blockui("hide");
-			vm.selectedCode.valueHasMutated();
+			vm.screenData().selected.valueHasMutated();
 		});
 	}
 

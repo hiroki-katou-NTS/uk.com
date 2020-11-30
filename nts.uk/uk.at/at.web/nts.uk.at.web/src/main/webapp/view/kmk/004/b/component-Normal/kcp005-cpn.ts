@@ -22,6 +22,7 @@ module nts.uk.at.view.kmk004.b {
         public employees: KnockoutObservableArray<IEmployee> = ko.observableArray([]);
         public employeeList: KnockoutObservableArray<IEmployee> = ko.observableArray([]);
         public alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel> = ko.observableArray([]);
+        public workPlaces: KnockoutObservableArray<IWorkTime> = ko.observableArray([]);
 
         created(params: ParamsKcp005) {
             const vm = this;
@@ -43,18 +44,9 @@ module nts.uk.at.view.kmk004.b {
                     disableSelection: false
                 });
 
-            // vm.employees
-            //     .subscribe(() => {
-            //         const employee = ko.unwrap(vm.employees)
-            //             .map((m: IEmployee) => ({
-            //                 code: m.employeeCode,
-            //                 name: m.employeeName,
-            //                 workplaceName: m.affiliationName
-            //             }));
-
-            //         vm.employeeList(employee as IEmployeeKcp005[]);
-            //         debugger;
-            //     });
+            vm.selectedCode.subscribe(() => {
+                console.log(ko.unwrap(vm.selectedCode));
+            })
         }
     }
 
@@ -75,5 +67,16 @@ module nts.uk.at.view.kmk004.b {
     interface UnitAlreadySettingModel {
         code: string;
         isAlreadySetting: boolean;
+    }
+
+    interface IworkPlace{
+        id: string;
+        code: string;
+        name: string;
+        nodeText?: string;
+        level: number;
+        heirarchyCode: string;
+        isAlreadySetting?: boolean;
+        children: Array<IworkPlace>;
     }
 }

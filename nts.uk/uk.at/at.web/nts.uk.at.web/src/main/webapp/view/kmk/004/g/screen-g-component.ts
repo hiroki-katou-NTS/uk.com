@@ -6,7 +6,10 @@ const template = `
 								<div
 									data-bind="component: {
 								name: 'sidebar-button',
-								params: {isShowCopyButton: false , header:header }
+								params: {
+											screenData:screenData ,
+											screenMode:screenMode 
+										}
 							}"></div>
 					</div>
 					<div style="padding: 10px;display: inline-block;">
@@ -16,7 +19,7 @@ const template = `
 							name: 'basic-settings-company',
 							params: {
 											screenData:screenData,
-											screenMode:header
+											screenMode:screenMode
 									}
 							}">
 						</div>
@@ -24,7 +27,7 @@ const template = `
 							name: 'monthly-working-hours',
 							params: {
 										screenData:screenData,
-										isShowCheckbox:false
+										screenMode:screenMode
 									}
 							}">
 						</div>
@@ -45,12 +48,12 @@ class ScreenGComponent extends ko.ViewModel {
 
 	screenData: KnockoutObservable<FlexScreenData> = ko.observable(new FlexScreenData());
 
-	header = '';
+	screenMode = '';
 
 	created(params: any) {
 		let vm = this;
 
-		vm.header = params.header;
+		vm.screenMode = params.screenMode;
 		/*	vm.$blockui('invisible')
 				.then(() => vm.$ajax(API_URL.START_PAGE))
 				.then((data: IScreenData) => {

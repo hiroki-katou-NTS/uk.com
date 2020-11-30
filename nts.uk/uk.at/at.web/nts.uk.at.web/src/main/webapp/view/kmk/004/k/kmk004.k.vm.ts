@@ -84,7 +84,7 @@ module nts.uk.at.kmk004.k {
 		monthCountingMethod: KnockoutObservable<number> = ko.observable(1);
 		includeOvertimeHours: KnockoutObservable<boolean> = ko.observable(false);
 		includeNonStatutoryLeave: KnockoutObservable<boolean> = ko.observable(false);
-		UseRegularWorkingHours: KnockoutObservable<number> = ko.observable(1);
+		useRegularWorkingHours: KnockoutObservable<number> = ko.observable(1);
 		legalFlextime: KnockoutObservable<boolean> = ko.observable(false);
 		constructor(param?: any) {
 			if (param) {

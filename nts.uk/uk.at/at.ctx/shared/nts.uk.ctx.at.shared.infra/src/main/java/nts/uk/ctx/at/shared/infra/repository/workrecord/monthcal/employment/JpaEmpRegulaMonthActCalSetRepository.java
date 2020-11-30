@@ -4,7 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.workrecord.monthcal.employment;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -21,6 +23,9 @@ import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.employment.KrcstEmp
 @Stateless
 public class JpaEmpRegulaMonthActCalSetRepository extends JpaRepository implements EmpRegulaMonthActCalSetRepo {
 
+	private static final String SELECT_BY_CID = "SELECT c FROM KrcstEmpRegMCalSet c"
+			+ " WHERE c.krcstEmpRegMCalSetPK.cid = :cid";
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -102,5 +107,16 @@ public class JpaEmpRegulaMonthActCalSetRepository extends JpaRepository implemen
 				e.getKrcstEmpRegMCalSetPK().getCid(), 
 				e.getAggregateTimeSet(), 
 				e.getExcessOutsideTimeSet());
+	}
+
+	@Override
+	public List<EmpRegulaMonthActCalSet> findByCid(String cid) {
+		
+		List<KrcstEmpRegMCalSet> entities = this.queryProxy()
+				.query(SELECT_BY_CID , KrcstEmpRegMCalSet.class).setParameter("cid", cid).getList();
+		
+		return entities.stream().map(m -> {
+			return toDomain(m);
+		}).collect(Collectors.toList());
 	}
 }

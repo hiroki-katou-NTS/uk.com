@@ -4,7 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.workrecord.monthcal.employee;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -20,6 +22,9 @@ import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.employee.KrcstShaRe
 @Stateless
 public class JpaShaRegulaMonthActCalSetRepository extends JpaRepository implements ShaRegulaMonthActCalSetRepo {
 
+	private static final String SELECT_BY_CID = "SELECT c FROM KrcstShaRegMCalSet c"
+			+ " WHERE c.krcstShaRegMCalSetPK.cid = :cid";
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -100,6 +105,15 @@ public class JpaShaRegulaMonthActCalSetRepository extends JpaRepository implemen
 				e.getKrcstShaRegMCalSetPK().getCid(), 
 				e.getAggregateTimeSet(), 
 				e.getExcessOutsideTimeSet());
+	}
+
+	@Override
+	public List<ShaRegulaMonthActCalSet> findRegulaMonthActCalSetByCid(String cid) {
+		List<KrcstShaRegMCalSet> entitys = this.queryProxy().query(SELECT_BY_CID, KrcstShaRegMCalSet.class)
+				.setParameter("cid", cid).getList();
+		return entitys.stream().map(m -> {
+			return toDomain(m);
+		}).collect(Collectors.toList());
 	}
 
 }

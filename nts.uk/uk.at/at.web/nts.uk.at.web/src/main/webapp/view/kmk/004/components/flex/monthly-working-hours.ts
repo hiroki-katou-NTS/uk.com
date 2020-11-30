@@ -35,9 +35,9 @@ const template = `
 				
 								<thead>
 										<tr style="background-color:#92D050">
-											<th data-bind="css: { hidden: !isShowCheckbox }"></th>
+											<th data-bind="visible: screenMode == 'Com_Person'"></th>
 											<th style="text-align:center;" data-bind="i18n: 'KMK004_263'"></th>
-											<th style="text-align:center;" data-bind="i18n: 'KMK004_264'"></th>
+											<th data-bind="visible: screenData().setting().useRegularWorkingHours() == 1,i18n: 'KMK004_264'" style="text-align:center;"></th>
 											<th style="text-align:center;" data-bind="i18n: 'KMK004_265'"></th>
 											<th style="text-align:center;" data-bind="i18n: 'KMK004_266'"></th>
 											
@@ -46,9 +46,9 @@ const template = `
 								
 								<tbody data-bind="foreach:screenData().monthlyWorkTimeSetComs">
 											<tr>
-												<td  data-bind="css: { hidden: !$parent.isShowCheckbox }"><div data-bind="ntsCheckBox: { checked:$data.laborTime().checkbox }"></div></td>
+												<td  data-bind="visible: $parent.screenMode == 'Com_Person' "><div data-bind="ntsCheckBox: { checked:$data.laborTime().checkbox }"></div></td>
 												<td class="bg-green" style="text-align:center;" ><span data-bind="text: $data.month + '月度'"></span></td>
-												<td ><input  data-bind="
+												<td data-bind="visible: $parent.screenData().setting().useRegularWorkingHours() == 1"><input  data-bind="
 												ntsTimeEditor: {
 														name:'#[KMK004_264]',
 														value: $data.laborTime().withinLaborTime,
@@ -79,9 +79,9 @@ const template = `
 											</tr>
 								</tbody>
 								
-								<tr data-bind="css: { hidden: isShowCheckbox }" >
+								<tr data-bind="visible: screenMode != 'Com_Person' " >
 									<td class="bg-green" style="text-align:center;" data-bind="i18n: 'KMK004_267'" ></td>
-									<td style="text-align:center;" data-bind="text:calTotalTime('withinLaborTime')" ></td>
+									<td data-bind="visible: screenData().setting().useRegularWorkingHours() == 1,text:calTotalTime('withinLaborTime')" style="text-align:center;"></td>
 									<td style="text-align:center;" data-bind="text:calTotalTime('legalLaborTime')" ></td>
 									<td style="text-align:center;" data-bind="text:calTotalTime('weekAvgTime')" ></td>
 								</tr>
@@ -104,18 +104,17 @@ const COMPONENT_NAME = 'monthly-working-hours';
 })
 class MonthlyWorkingHours extends ko.ViewModel {
 
-	isShowCheckbox: boolean;
-
 	screenData: KnockoutObservable<FlexScreenData>;
+
+	screenMode: string = 'Com_Workplace';
 
 	popUpShow = false;
 
 	created(param: IParam) {
 		let vm = this;
 		vm.screenData = param.screenData;
-		vm.isShowCheckbox = param.isShowCheckbox;
-
-
+		vm.screenMode = param.screenMode;
+		console.log(vm.screenData().setting().useRegularWorkingHours());
 	}
 
 	mounted() {
@@ -136,7 +135,7 @@ class MonthlyWorkingHours extends ko.ViewModel {
 	}
 
 	openQDialog() {
-		let vm = this;
+		const vm = this;
 		vm.$window.modal('/view/kmk/004/q/index.xhtml', { years: _.map(vm.screenData().yearList(), (yearItem: YearItem) => { return yearItem.year; }) }).then((result) => {
 			if (result) {
 				let yearList = vm.screenData().yearList();
@@ -144,7 +143,7 @@ class MonthlyWorkingHours extends ko.ViewModel {
 				vm.screenData().yearList(_.orderBy(yearList, ['year'], ['desc']));
 				vm.screenData().updateMode(false);
 				vm.screenData().selectedYear(vm.screenData().yearList()[0].year);
-				
+
 			}
 		});
 	}

@@ -6,7 +6,10 @@ const template = `
 								<div
 									data-bind="component: {
 								name: 'sidebar-button',
-								params: {isShowCopyButton: true , header:header }
+								params: {
+											screenData:screenData ,
+											screenMode:screenMode
+										}
 							}"></div>
 					</div>
 					<div style="padding: 10px; display: flex;">
@@ -22,7 +25,7 @@ const template = `
 								name: 'basic-settings-company',
 								params: {
 											screenData:screenData,
-											screenMode:header
+											screenMode:screenMode
 										}
 								}">
 						</div>
@@ -30,7 +33,7 @@ const template = `
 								name: 'monthly-working-hours',
 								params: {
 											screenData:screenData,
-											isShowCheckbox:false
+											screenMode:screenMode
 										}
 								}">
 						</div>
@@ -52,18 +55,16 @@ class ScreenHComponent extends ko.ViewModel {
 
 	screenData: KnockoutObservable<FlexScreenData> = ko.observable(new FlexScreenData());
 
-	wpSelectedId: KnockoutObservable<any> = ko.observable();
-
 	alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel> = ko.observableArray([]);
 
-	header = '';
+	screenMode = '';
 
 	workPlaceName: KnockoutObservable<string> = ko.observable('');
 
 	created(params: any) {
 		const vm = this;
 
-		vm.header = params.header;
+		vm.screenMode = params.screenMode;
 		/*	vm.$blockui('invisible')
 				.then(() => vm.$ajax(API_URL.START_PAGE))
 				.then((data: IScreenData) => {
@@ -91,7 +92,7 @@ class ScreenHComponent extends ko.ViewModel {
 			isMultipleUse: false,
 			isMultiSelect: false,
 			startMode: StartMode.WORKPLACE,
-			selectedId: vm.wpSelectedId,
+			selectedId: vm.screenData().selected,
 			baseDate: ko.observable(new Date()),
 			selectType: SelectionType.SELECT_FIRST_ITEM,
 			isShowSelectButton: true,
@@ -105,7 +106,7 @@ class ScreenHComponent extends ko.ViewModel {
 		vm.$blockui('invisible');
 		$('#work-place-list').ntsTreeComponent(workPlaceGrid).done(() => {
 
-			vm.wpSelectedId.subscribe((value) => {
+			vm.screenData().selected.subscribe((value) => {
 				let datas: Array<UnitModel> = $('#work-place-list').getDataList()
 
 					, flat: any = function(wk: UnitModel) {
@@ -118,7 +119,7 @@ class ScreenHComponent extends ko.ViewModel {
 				vm.workPlaceName(selectedItem ? selectedItem.name : '');
 			});
 			vm.$blockui("hide");
-			vm.wpSelectedId.valueHasMutated();
+			vm.screenData().selected.valueHasMutated();
 		});
 
 	}
