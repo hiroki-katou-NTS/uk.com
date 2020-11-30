@@ -33,6 +33,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManaRepo
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementDataDto;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
@@ -536,5 +537,21 @@ public class ExtraHolidayManagementService {
 		}
 		//代休発生数合計－代休使用数合計を返す
 		return unUseDays - unOffSet;
+	}
+	
+	/**
+	 * Get LeaveManaData By Id And UnUseDay
+	 * @param sid
+	 * @return List<LeavesManaData>
+	 */
+	public List<LeaveManagementDataDto> getLeaveManaDataByIdAndUnUse(String cid, String sid, GeneralDate expiredDate, double unUse) {
+		List<LeaveManagementData> listData = leaveManaDataRepository.getListByIdAndUnUse(cid, sid, expiredDate, unUse);
+		return listData.stream().map(
+				domain -> LeaveManagementDataDto.builder()
+					.id(domain.getID())
+					.dayoffDate(domain.getComDayOffDate().getDayoffDate().orElse(null))
+					.unUsedDays(domain.getUnUsedDays().v())
+					.build())
+				.collect(Collectors.toList());
 	}
 }

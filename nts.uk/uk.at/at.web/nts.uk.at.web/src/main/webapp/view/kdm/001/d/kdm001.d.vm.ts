@@ -34,19 +34,53 @@ module nts.uk.at.view.kdm001.d.viewmodel {
         enableSplit: KnockoutObservable<boolean>              = ko.observable(true);
         unit: KnockoutObservable<string> = ko.observable(getText('KDM001_27'));
         baseDate: KnockoutObservable<string> = ko.observable('');
-        linkingDates: KnockoutObservableArray<any> = ko.observableArray([]);
         isDisableOpenKDL035: KnockoutObservable<boolean> = ko.observable(true);
-        checkLinkingDates: KnockoutObservable<boolean> = ko.observable(false);
+        payoutManagementDatas: PayoutManagementData[] = [];
 
         // Update ver 48
         residualNumber: KnockoutObservable<number> = ko.observable(0);
         kdl035Shared: KnockoutObservableArray<HolidayWorkSubHolidayLinkingMng> = ko.observableArray([]);
         displayLinkingDate: KnockoutComputed<any[]> = ko.computed(() => {
-            return this.pickUp()
-                ? !_.isEmpty(this.dayOff())
+            let displayLinkingDate: any[] = [];
+            if (!this.pause()) {
+                return displayLinkingDate;
+            }
+            if (this.pickUp()) {
+                displayLinkingDate = !_.isEmpty(this.dayOff())
                     ? [{outbreakDay: moment.utc(this.dayOff()).format('YYYY/MM/DD'), dateOfUse: 0}]
-                    : [{outbreakDay: '', dateOfUse: 0}]
-                : this.kdl035Shared();
+                    : [];
+            } else if (!_.isEmpty(this.kdl035Shared())) {
+                displayLinkingDate = this.kdl035Shared();
+            } else {
+                if (this.subDays() === 0.5) {
+                    let item: PayoutManagementData = _.find(this.payoutManagementDatas, item => item.unUsedDays === 0.5);
+                    if (_.isNil(item)) {
+                        item = _.find(this.payoutManagementDatas, item => item.unUsedDays === 1);
+                        if (!_.isNil(item)) {
+                            displayLinkingDate = [{outbreakDay: moment.utc(item.dayoffDate).format('YYYY/MM/DD'), dateOfUse: 1.0}];
+                        }
+                    } else {
+                        displayLinkingDate = [{outbreakDay: moment.utc(item.dayoffDate).format('YYYY/MM/DD'), dateOfUse: 0.5}];
+                    }
+                }
+
+                if (this.subDays() === 1.0) {
+                    const item: PayoutManagementData = _.find(this.payoutManagementDatas, item => item.unUsedDays === 1);
+                    if (!_.isNil(item)) {
+                        return [{outbreakDay: moment.utc(item.dayoffDate).format('YYYY/MM/DD'), dateOfUse: 1.0}];
+                    }
+                    displayLinkingDate = [];
+                    _.forEach(this.payoutManagementDatas, item => {
+                        if (displayLinkingDate.length <= 2 && item.unUsedDays === 0.5) {
+                            displayLinkingDate.push({
+                                outbreakDay: moment.utc(item.dayoffDate).format('YYYY/MM/DD'),
+                                dateOfUse: item.unUsedDays
+                            });
+                        }
+                    });
+                }
+            }
+            return displayLinkingDate;
         });
 
         linkingDate: KnockoutComputed<number> = ko.computed(() => {
@@ -143,18 +177,25 @@ module nts.uk.at.view.kdm001.d.viewmodel {
 
         initScreen(): void {
             block.invisible();
-            let self = this,
+            let vm = this,
                 info = getShared("KDM001_D_PARAMS");
             if (info) {
-                self.workCode(info.selectedEmployee.workplaceCode);
-                self.workplaceName(info.selectedEmployee.workplaceName);
-                self.employeeCode(info.selectedEmployee.employeeCode);
-                self.employeeId(info.selectedEmployee.employeeId);
-                self.employeeName(info.selectedEmployee.employeeName);
-                self.closureId(info.closureId);
-                self.residualNumber(info.residualNumber);
+                vm.workCode(info.selectedEmployee.workplaceCode);
+                vm.workplaceName(info.selectedEmployee.workplaceName);
+                vm.employeeCode(info.selectedEmployee.employeeCode);
+                vm.employeeId(info.selectedEmployee.employeeId);
+                vm.employeeName(info.selectedEmployee.employeeName);
+                vm.closureId(info.closureId);
+                vm.residualNumber(info.residualNumber);
             }
-            
+
+            service.getByIdAndUnUse(vm.employeeId())
+            .then(response => {
+                if (response) {
+                    vm.payoutManagementDatas = response;
+                }
+            });
+
             block.clear();
         }
         
@@ -168,19 +209,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
         
         public submitForm() {
             let self = this;
-            let linkingDates = [];
-            if (self.pickUp()) {
-                if (self.pause() && _.isEmpty(self.linkingDates())) {
-                    linkingDates = [moment.utc(self.dayOff()).format('YYYY-MM-DD')];
-                } else {
-                    linkingDates = self.linkingDates();
-                }
-            } else {
-                if (self.checkedSplit() && !_.isEmpty(self.linkingDates())) {
-                    linkingDates = self.linkingDates();
-                }
-            }
-
+            const linkingDates = _.map(self.displayLinkingDate(), item => moment.utc(item.outbreakDay).format('YYYY-MM-DD'));
             let data = {
                 employeeId: self.employeeId(),
                 pickUp: self.pickUp(),
@@ -302,11 +331,6 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                 // get List<振休振出紐付け管理> from KDL035
                 const kdl035Shared = getShared('KDL035_RESULT');
                 vm.kdl035Shared(kdl035Shared);
-                const linkingDates = _.map(kdl035Shared, (item: any) => item.outbreakDay);
-                if (linkingDates.length > 0) {
-                    vm.linkingDates(linkingDates);
-                    vm.checkLinkingDates(true);
-                }
             });
         }
     }
@@ -317,5 +341,14 @@ module nts.uk.at.view.kdm001.d.viewmodel {
         dateOfUse: string;
         dayNumberUsed: number;
         targetSelectionAtr: number;
+    }
+
+    interface PayoutManagementData {
+	    payoutId: string;
+	    sID: string;
+	    dayoffDate: any;
+	    occurredDays: number;
+	    unUsedDays: number;
+	    stateAtr: number;
     }
 }

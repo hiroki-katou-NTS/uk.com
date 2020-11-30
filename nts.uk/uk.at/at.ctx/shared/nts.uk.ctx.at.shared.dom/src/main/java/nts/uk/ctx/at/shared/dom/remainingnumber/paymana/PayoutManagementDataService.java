@@ -249,13 +249,13 @@ public class PayoutManagementDataService {
 	
 	private List<String> checkOffHolidate(GeneralDate restDate,GeneralDate workDate,GeneralDate splitDate, Optional<GeneralDate> closureDate, int closureId,Boolean split, Boolean pickUp) {
 		List<String> errors = new ArrayList<String>();
-		if(checkDateClosing(restDate, closureDate, closureId)) {
+		if (checkDateClosing(restDate, closureDate, closureId)) {
 			errors.add("Msg_1436");
 		}
-		if(pickUp && restDate.equals(workDate)) {
+		if (pickUp && restDate.equals(workDate)) {
 			errors.add("Msg_729_SubMana");
 		}
-		if(split) {
+		if (split) {
 			if(restDate.equals(splitDate)) {
 				errors.add("Msg_1437");
 			}
@@ -423,8 +423,7 @@ public class PayoutManagementDataService {
 				// 未使用日数を計算 Tính toán số ngày chưa sử dụng
 				if ((x.getOccurredDays().v() - substitutionOfHDManagementData.getRequiredDays().v()) > 0) {
 					unUseDay = x.getOccurredDays().v() - substitutionOfHDManagementData.getRequiredDays().v();
-				}
-				if ((x.getOccurredDays().v() - substitutionOfHDManagementData.getRequiredDays().v()) <= 0 || unUseDay > 0) {
+				} else if ((x.getOccurredDays().v() - substitutionOfHDManagementData.getRequiredDays().v()) <= 0 || unUseDay > 0) {
 					unUseDay = 0;
 				}
 

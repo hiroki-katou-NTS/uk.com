@@ -42,9 +42,9 @@ public class JpaPayoutSubofHDManaRepository extends JpaRepository implements Pay
 
 	private static final String DELETE_BY_SID = "DELETE FROM KrcmtPayoutSubOfHDMana ps"
 			+ " WHERE (ps.krcmtPayoutSubOfHDManaPK.sid = :sid1 OR ps.krcmtPayoutSubOfHDManaPK.sid = :sid2)"
-			+ " AND ps.krcmtPayoutSubOfHDManaPK.digestDate IN :digestDates"
-			+ " AND ps.krcmtPayoutSubOfHDManaPK.occDate IN :occDates";
-	
+			+ " (AND ps.krcmtPayoutSubOfHDManaPK.digestDate IN :digestDates"
+			+ " OR ps.krcmtPayoutSubOfHDManaPK.occDate IN :occDates)";
+
 	@Override
 	public void add(PayoutSubofHDManagement domain) {
 		this.commandProxy().insert(toEntity(domain));

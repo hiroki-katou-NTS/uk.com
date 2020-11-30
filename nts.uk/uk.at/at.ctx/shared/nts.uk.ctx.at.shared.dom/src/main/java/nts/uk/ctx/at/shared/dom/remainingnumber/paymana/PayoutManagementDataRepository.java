@@ -113,4 +113,6 @@ public interface PayoutManagementDataRepository {
 	void delete(List<PayoutManagementData> payoutManagementDatas);
 	
 	List<PayoutManagementData> getByListId(List<String> payoutIds);
+	
+	List<PayoutManagementData> getByIdAndUnUse(String cid, String sid, GeneralDate expiredDate, double unUse);
 }

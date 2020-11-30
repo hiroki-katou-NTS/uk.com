@@ -139,4 +139,14 @@ public interface LeaveManaDataRepository {
 	 * @return
 	 */
 	List<LeaveManagementData> getListByLeaveId(List<String> leaveIDs);
+	
+	/**
+	 * Get data by Id and unUseday
+	 * @param cid The company Id
+	 * @param sid The employee Id
+	 * @param expiredDate the expired date
+	 * @param unUse the unUse day
+	 * @return List<LeaveManagementData>
+	 */
+	List<LeaveManagementData> getListByIdAndUnUse(String cid, String sid, GeneralDate expiredDate, double unUse);
 }

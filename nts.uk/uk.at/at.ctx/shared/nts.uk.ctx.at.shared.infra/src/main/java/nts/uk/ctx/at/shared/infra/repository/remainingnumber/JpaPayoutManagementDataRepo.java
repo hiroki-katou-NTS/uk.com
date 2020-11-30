@@ -448,5 +448,21 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 		return this.queryProxy().query(QUERY_BY_LIST_ID, KrcmtPayoutManaData.class).setParameter("payoutIds", payoutIds)
 				.getList(x -> toDomain(x));
 	}
+	
+	@Override
+	public List<PayoutManagementData> getByIdAndUnUse(String cid, String sid, GeneralDate expiredDate, double unUse) {
+		String QUERY = "SELECT s FROM KrcmtPayoutManaData s"
+				+ " WHERE s.sID = :sid"
+				+ " AND s.cID = :cid"
+				+ " AND s.expiredDate >= :expiredDate"
+				+ " AND s.unUsedDays >= :unUse"
+				+ " ORDER BY s.dayOff ASC";
+		return this.queryProxy().query(QUERY, KrcmtPayoutManaData.class)
+				.setParameter("sid", sid)
+				.setParameter("cid", cid)
+				.setParameter("expiredDate", expiredDate)
+				.setParameter("unUse", unUse)
+				.getList(x -> toDomain(x));
+	}
 
 }
