@@ -2,6 +2,7 @@ package nts.uk.screen.com.ws.ccg008;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import nts.arc.time.GeneralDate;
 
 @Data
 @AllArgsConstructor
@@ -15,4 +16,11 @@ public class Ccg008Dto {
 	/** 表示年月 */
 	private int currentOrNextMonth;
 
+	/**
+	 * ビルトインユーザ用のダミーデータ
+	 * @return
+	 */
+	public static Ccg008Dto forBuiltInUser() {
+		return new Ccg008Dto(1, GeneralDate.today().yearMonth().v());
+	}
 }

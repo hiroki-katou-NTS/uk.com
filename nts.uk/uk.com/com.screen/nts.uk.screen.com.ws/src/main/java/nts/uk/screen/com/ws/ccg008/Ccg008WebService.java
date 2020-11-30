@@ -1,5 +1,6 @@
 package nts.uk.screen.com.ws.ccg008;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -18,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.ctx.sys.shared.dom.user.builtin.BuiltInUser;
 import nts.uk.shr.com.context.AppContexts;
 
 
@@ -40,6 +42,11 @@ public class Ccg008WebService {
 	@POST
 	@Path("get-cache")
 	public Ccg008Dto cache() {
+		
+		if (BuiltInUser.USER_ID.equals(AppContexts.user().userId())) {
+			return Ccg008Dto.forBuiltInUser();
+		}
+		
 		String employeeID = AppContexts.user().employeeId();
 		GeneralDate systemDate = GeneralDate.today();
 		Closure closure = ClosureService.getClosureDataByEmployee(
@@ -53,6 +60,11 @@ public class Ccg008WebService {
 	@POST
 	@Path("get-closure")
 	public List<ClosureResultModel> closure() {
+		
+		if (BuiltInUser.USER_ID.equals(AppContexts.user().userId())) {
+			return Collections.emptyList();
+		}
+		
 		List<ClosureResultModel> rq140 = workClosureQueryProcessor.findClosureByReferenceDate(GeneralDate.today());
 		return rq140;
 	}

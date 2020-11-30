@@ -18,6 +18,7 @@ import nts.uk.ctx.sys.portal.dom.toppagesetting.PortalJobTitleImport;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageJobSet;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageJobSetRepository;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageSelfSetRepository;
+import nts.uk.ctx.sys.shared.dom.user.builtin.BuiltInUser;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -47,6 +48,11 @@ public class DisplayMyPageFinder {
 	 * @return
 	 */
 	public LayoutAllDto findLayoutTopPage(String fromScreen, String topPageCode) {
+		
+		if (BuiltInUser.USER_ID.equals(AppContexts.user().userId())) {
+			return LayoutAllDto.forBuiltInUser();
+		}
+		
 		// companyId
 		String companyId = AppContexts.user().companyId();
 		if (topPageCode != null && topPageCode != "") {// co top page code

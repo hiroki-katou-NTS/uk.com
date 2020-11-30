@@ -26,6 +26,9 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 	@Inject
 	private PasswordAuthenticateCommandRequire requireProvider;
 	
+	@Inject
+	private LoginBuiltInUser loginBuiltInUser;
+	
 	@Override
 	protected Require getRequire(PasswordAuthenticateCommand command) {
 		return requireProvider.createRequire(command.getContractCode());
@@ -53,11 +56,35 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 		String employeeCode = command.getEmployeeCode();
 		String password = command.getPassword();
 		
+		// ビルトインユーザ
+		if (require.getBuiltInUser(tenantCode, companyId).authenticate(employeeCode, password)) {
+			return Authentication.asBuiltInUser();
+		}
+		
 		// パスワード認証
 		val authenticationResult = AuthenticateEmployeePassword.authenticate(
 				require, tenantCode, companyId, employeeCode, password);
 		
 		return Authentication.of(authenticationResult);
+	}
+	
+	/**
+	 * ビルトインユーザのための処理を組み込むためにoverride
+	 */
+	@Override
+	protected AtomTask authorize(Require require, Authentication authen) {
+		
+		if (authen.isBuiltInUser()) {
+			loginBuiltInUser.login(
+					require,
+					authen.getIdentified().getTenantCode(),
+					authen.getIdentified().getCompanyId());
+			
+			return AtomTask.none();
+		}
+
+		// 通常はsuper側に任せる
+		return super.authorize(require, authen);
 	}
 
 	/**
@@ -78,16 +105,21 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 
 	@Value
 	static class Authentication implements LoginCommandHandlerBase.AuthenticationResult {
-			
+		
+		private boolean isBuiltInUser;
 		private AuthenticateEmployeePasswordResult authenResult;
 		
 		public static Authentication of(AuthenticateEmployeePasswordResult authenResult) {
-			return new Authentication(authenResult);
+			return new Authentication(false, authenResult);
+		}
+		
+		public static Authentication asBuiltInUser() {
+			return new Authentication(true, null);
 		}
 
 		@Override
 		public boolean isSuccess() {
-			return authenResult.isSuccess();
+			return isBuiltInUser || authenResult.isSuccess();
 		}
 
 		@Override
@@ -97,13 +129,18 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 
 		@Override
 		public Optional<AtomTask> getAtomTask() {
+			if (isBuiltInUser) {
+				return Optional.empty();
+			}
+			
 			return Optional.of(authenResult.getAtomTask());
 		}
 	}
 	
 	public static interface Require extends
 			AuthenticateEmployeePassword.Require,
-			LoginCommandHandlerBase.Require {
+			LoginCommandHandlerBase.Require,
+			LoginBuiltInUser.RequireLogin {
 		
 		String createCompanyId(String tenantCode, String companyCode);
 	}

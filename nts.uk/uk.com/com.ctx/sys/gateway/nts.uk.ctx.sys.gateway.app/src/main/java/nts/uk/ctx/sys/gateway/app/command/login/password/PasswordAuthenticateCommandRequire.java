@@ -21,6 +21,7 @@ import nts.uk.ctx.sys.shared.dom.company.CompanyInformationAdapter;
 import nts.uk.ctx.sys.shared.dom.employee.EmployeeDataManageInfoAdapter;
 import nts.uk.ctx.sys.shared.dom.employee.EmployeeDataMngInfoImport;
 import nts.uk.ctx.sys.shared.dom.user.User;
+import nts.uk.ctx.sys.shared.dom.user.builtin.BuiltInUser;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -62,6 +63,11 @@ public class PasswordAuthenticateCommandRequire {
 		public Optional<EmployeeDataMngInfoImport> getEmployeeDataMngInfoImportByEmployeeCode(String companyId,
 				String employeeCode) {
 			return employeeDataManageInfoAdapter.findByEmployeeCode(companyId, employeeCode);
+		}
+
+		@Override
+		public BuiltInUser getBuiltInUser(String tenantCode, String companyId) {
+			return new BuiltInUser();
 		}
 
 		@Override
