@@ -27,6 +27,9 @@ module nts.uk.at.view.kbt002.j {
         { headerText: vm.$i18n("KBT002_7"), key: 'aggrFrameCode', width: 50, formatter: _.escape },
         { headerText: vm.$i18n("KBT002_8"), key: 'optionalAggrName', width: 185, formatter: _.escape }
       ];
+      if (params.aggrFrameCode) {
+        vm.selectedAggrFrameCd(params.aggrFrameCode);
+      }
     }
 
     mounted() {
@@ -120,7 +123,7 @@ module nts.uk.at.view.kbt002.j {
         .always(() => vm.$blockui('clear'));
     }
 
-    private processFindAll() {
+    private processFindAll(): JQueryPromise<any> {
       const vm = this;
       return vm.$ajax(API.findAll)
         .then((res: AggrPeriodDto[]) => {
@@ -186,8 +189,12 @@ module nts.uk.at.view.kbt002.j {
     */
     public closeDialog() {
       const vm = this;
+      const param = {
+        aggrFrameCode: vm.aggrFrameCode(),
+        aggrPeriodList: vm.aggrPeriodList()
+      };
       // 画面を閉じる
-      vm.$window.close();
+      vm.$window.close(param);
     }
   }
 

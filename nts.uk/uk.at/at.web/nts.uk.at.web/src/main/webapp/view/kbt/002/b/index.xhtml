@@ -129,10 +129,11 @@
                       optionsValue: 'code',
                       optionsText: 'name',
                       required: true,
-                      enable: true
+                      disable: $parent.isNewMode()
                     }">
                   </div>
                   <button id="B5_5" tabindex="12" class="add ml-25" data-bind="click: function() { $parent.openDialogC() }, disable: $parent.isNewMode()">#{i18n.getText('KBT002_51')}</button>
+                  <label id="B5_6" class="color-danger" data-bind="text: $parent.executionTaskWarning"></label>
                 </td>
               </tr>
               <tr>
@@ -325,7 +326,7 @@
                           <td class="w26">
                             <!-- B11_1 -->
                             <div id="B11_1" tabindex="29" class="mb-10"
-                              data-bind="ntsCheckBox: { checked: alarmAtr, enable: processExecType() === 0 }">
+                              data-bind="ntsCheckBox: { checked: aggrPeriodCls, enable: processExecType() === 0 }">
                               #{i18n.getText('KBT002_285')}
                             </div>
                           </td>
@@ -335,16 +336,17 @@
                               <div id="B11_2" tabindex="30" class="middle ml-5"
                                 data-bind="ntsComboBox: {
                                   name: '#[KBT002_21]',
+                                  visibleItemsCount: 5,
                                   width: '420px',
-                                  options: $parent.alarmByUserList,
-                                  optionsValue: 'alarmCode',
-                                  value: alarmCode,
-                                  optionsText: 'alarmName',
+                                  options: $parent.aggrPeriodList,
+                                  optionsValue: 'code',
+                                  value: aggrFrameCode,
+                                  optionsText: 'name',
                                   editable: false,
-                                  enable: alarmAtr() &amp;&amp; processExecType() === 0,
+                                  enable: aggrPeriodCls() &amp;&amp; processExecType() === 0,
                                   columns: [
-                                    { prop: 'alarmCode', length: 4 },
-                                    { prop: 'alarmName', length: 20 }
+                                    { prop: 'code', length: 4 },
+                                    { prop: 'name', length: 20 }
                                   ]
                                 }">
                               </div>
@@ -532,12 +534,12 @@
                           <td>
                             <!-- B17_10 -->
                             <div id="B17_10" tabindex="45" class="w100 mb-10 pt-7"
-                              data-bind="ntsCheckBox: { checked: recreateWorkType, enable: processExecType() === 1 }">
+                              data-bind="ntsCheckBox: { checked: displayAdministrator, enable: processExecType() === 1 }">
                               #{i18n.getText('KBT002_312')}
                             </div>
                             <!-- B17_11 -->
                             <div id="B17_11" tabindex="46" class="mb-10"
-                              data-bind="ntsCheckBox: { checked: recreateTransfer, enable: processExecType() === 1 }">
+                              data-bind="ntsCheckBox: { checked: displayPrincipal, enable: processExecType() === 1 }">
                               #{i18n.getText('KBT002_313')}
                             </div>
                           </td>
@@ -548,7 +550,7 @@
                     <div class="tab-content-3 fix-width-tab">
                       <!-- B19_1 -->
                       <div id="B19_1" tabindex="47"
-                        data-bind="ntsCheckBox: { checked: alarmAtr, enable: processExecType() === 0 }">
+                        data-bind="ntsCheckBox: { checked: stdOutputCls, enable: processExecType() === 0 }">
                         #{i18n.getText('KBT002_221')}
                       </div>
                       <hr />
@@ -562,13 +564,13 @@
                       <div id="swap-list-1" class="ml-35 fix-move-button"
                         data-bind="ntsSwapList: {
                           height: 280,
-                          dataSource: $parent.itemsSwap,
+                          dataSource: $parent.stdOutputList,
                           disableMoveButton: false,
-                          primaryKey: 'code',
+                          primaryKey: 'conditionSetCode',
                           columns: $parent.columns,
-                          value: $parent.currentCodeListSwap,
+                          value: $parent.currentStdOutputList,
                           searchMode: 'filter',
-                          searchCriterion: ['code'],
+                          searchCriterion: ['conditionSetCode'],
                           draggable: true,
                           multipleDrag: { left: true, right: false },
                           innerDrag: { left: false, right: true },
@@ -577,7 +579,7 @@
                       </div>
                       <!-- B20_1 -->
                       <div id="B20_1" tabindex="49"
-                        data-bind="ntsCheckBox: { checked: alarmAtr, enable: processExecType() === 0 }">
+                        data-bind="ntsCheckBox: { checked: stdAcceptCls, enable: processExecType() === 0 }">
                         #{i18n.getText('KBT002_223')}
                       </div>
                       <hr />
@@ -591,13 +593,13 @@
                       <div id="swap-list-2" class="ml-35 fix-move-button"
                         data-bind="ntsSwapList: {
                           height: 280,
-                          dataSource: $parent.itemsSwap,
+                          dataSource: $parent.stdAcceptList,
                           disableMoveButton: false,
-                          primaryKey: 'code',
+                          primaryKey: 'conditionSetCode',
                           columns: $parent.columns,
-                          value: $parent.currentCodeListSwap,
+                          value: $parent.currentStdAcceptList,
                           searchMode: 'filter',
-                          searchCriterion: ['code'],
+                          searchCriterion: ['conditionSetCode'],
                           draggable: true,
                           multipleDrag: { left: true, right: false },
                           innerDrag: { left: false, right: true },
@@ -608,7 +610,7 @@
                     <!-- B6_5 tab 4 -->
                     <div class="tab-content-4 fix-width-tab">
                       <!-- B21_1 -->
-                      <div id="B21_1" tabindex="51" data-bind="ntsCheckBox: { checked: false, enable: true }">
+                      <div id="B21_1" tabindex="51" data-bind="ntsCheckBox: { checked: storageCls, enable: true }">
                         #{i18n.getText('KBT002_45')}
                       </div>
                       <hr />
@@ -620,22 +622,23 @@
                           data-bind="ntsComboBox: {
                             name: '#[KBT002_296]',
                             width: '400px',
-                            options: $parent.alarmByUserList,
-                            optionsValue: 'alarmCode',
+                            options: $parent.storagePatternList,
+                            optionsValue: 'code',
                             visibleItemsCount: 5,
-                            value: alarmCode,
-                            optionsText: 'alarmName',
+                            value: $parent.storagePattern,
+                            optionsText: 'name',
                             editable: false,
                             enable: true,
                             columns: [
-                              { prop: 'alarmName', length: 10 }
+                              { prop: 'code', length: 4 },
+                              { prop: 'name', length: 20 },
                             ]
                           }">
                         </div>
                       </div>
 
                       <!-- B22_1 -->
-                      <div id="B22_1" tabindex="53" data-bind="ntsCheckBox: { checked: false, enable: true }">#{i18n.getText('KBT002_48')}</div>
+                      <div id="B22_1" tabindex="53" data-bind="ntsCheckBox: { checked: deletionCls, enable: true }">#{i18n.getText('KBT002_48')}</div>
                       <hr />
                       <div class="row-inline w100 mb-10">
                         <!-- B22_3 -->
@@ -645,22 +648,23 @@
                           data-bind="ntsComboBox: {
                             name: '#[KBT002_297]',
                             width: '400px',
-                            options: $parent.alarmByUserList,
-                            optionsValue: 'alarmCode',
+                            options: $parent.deletionPatternList,
+                            optionsValue: 'code',
                             visibleItemsCount: 5,
-                            value: alarmCode,
-                            optionsText: 'alarmName',
+                            value: $parent.deletionPattern,
+                            optionsText: 'name',
                             editable: false,
                             enable: true,
                             columns: [
-                              { prop: 'alarmName', length: 10 }
+                              { prop: 'code', length: 4 },
+                              { prop: 'name', length: 20 },
                             ]
                           }">
                         </div>
                       </div>
 
                       <!-- B23_1 -->
-                      <div id="B23_1" tabindex="55" data-bind="ntsCheckBox: { checked: false, enable: true }">#{i18n.getText('KBT002_298')}</div>
+                      <div id="B23_1" tabindex="55" data-bind="ntsCheckBox: { checked: indexReconCls, enable: true }">#{i18n.getText('KBT002_298')}</div>
                       <hr />
                       <div class="row-inline mb-10">
                         <!-- B24_1 -->
@@ -672,13 +676,13 @@
                       <div id="swap-list-3" class="ml-35 fix-move-button"
                         data-bind="ntsSwapList: {
                           height: 280,
-                          dataSource: $parent.itemsSwap,
+                          dataSource: $parent.indexReconList,
                           disableMoveButton: false,
-                          primaryKey: 'code',
-                          columns: $parent.columns,
-                          value: $parent.currentCodeListSwap,
+                          primaryKey: 'categoryNo',
+                          columns: $parent.indexReconColumns,
+                          value: $parent.currentIndexReconList,
                           searchMode: 'filter',
-                          searchCriterion: ['code'],
+                          searchCriterion: ['categoryNo'],
                           draggable: true,
                           multipleDrag: { left: true, right: false },
                           innerDrag: { left: false, right: true },
@@ -686,7 +690,7 @@
                         }">
                       </div>
                       <!-- B26_1 -->
-                      <div id="B26_1" tabindex="57" class="ml-29" data-bind="ntsCheckBox: { checked: false, enable: true }">#{i18n.getText('KBT002_325')}</div>
+                      <div id="B26_1" tabindex="57" class="ml-29" data-bind="ntsCheckBox: { checked: indexReconUpdateStats, enable: true }">#{i18n.getText('KBT002_325')}</div>
                     </div>
                     <div class="help-btn-container" data-bind="visible : $parent.selectedTab() === 'tab-1'">
                       <button

@@ -25,7 +25,7 @@ module nts.uk.at.view.kbt002.b {
     execItemList: KnockoutObservableArray<any> = ko.observableArray([]);
     workplaceList: KnockoutObservableArray<any> = ko.observableArray([]);
     selectedExecCode: KnockoutObservable<string> = ko.observable('');
-    currentExecItem: KnockoutObservable<ExecutionItem> = ko.observable(new ExecutionItem(null));
+    currentExecItem: KnockoutObservable<ExecutionItem> = ko.observable(new ExecutionItem({}));
 
     // Display text
     workplaceListText: KnockoutObservable<string> = ko.observable('');
@@ -38,6 +38,9 @@ module nts.uk.at.view.kbt002.b {
     repeatContentItemList: KnockoutObservableArray<EnumConstantDto> = ko.observableArray([]);
     monthDayList: KnockoutObservableArray<EnumConstantDto> = ko.observableArray([]);
     designatedYearList: KnockoutObservableArray<EnumConstantDto> = ko.observableArray([]);
+    
+    // List aggregate period
+    aggrPeriodList: KnockoutObservableArray<any> = ko.observableArray([]);
 
     // List get alarm by user
     alarmByUserList: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -48,6 +51,7 @@ module nts.uk.at.view.kbt002.b {
       { code: TaskEnableSettingClassificationCode.DISABLED, name: getTextResource('KBT002_124') },
     ]);
     selectedTaskEnableSetting: KnockoutObservable<any> = ko.observable(null);
+    executionTaskWarning: KnockoutObservable<string> = ko.observable('');
 
     tabs: KnockoutObservableArray<any> = ko.observableArray([
       { id: TabPanelId.TAB_1, title: getTextResource('KBT002_279'), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
@@ -57,13 +61,25 @@ module nts.uk.at.view.kbt002.b {
     ]);
     selectedTab: KnockoutObservable<string> = ko.observable('');
 
-    itemsSwap: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
     columns: KnockoutObservableArray<any> = ko.observableArray([
-      { headerText: getTextResource('KBT002_7'), key: 'code', width: 55 },
-      { headerText: getTextResource('KBT002_8'), key: 'name', width: 150 }
+      { headerText: getTextResource('KBT002_7'), key: 'conditionSetCode', width: 55 },
+      { headerText: getTextResource('KBT002_8'), key: 'conditionSetName', width: 150 }
     ]);
-    currentCodeListSwap: KnockoutObservableArray<any> = ko.observableArray([]);
-    test: KnockoutObservableArray<any> = ko.observableArray([]);
+    stdOutputList: KnockoutObservableArray<any> = ko.observableArray([]);
+    currentStdOutputList: KnockoutObservableArray<any> = ko.observableArray([]);
+    stdAcceptList: KnockoutObservableArray<any> = ko.observableArray([]);
+    currentStdAcceptList: KnockoutObservableArray<any> = ko.observableArray([]);
+    indexReconList: KnockoutObservableArray<any> = ko.observableArray([]);
+    currentIndexReconList: KnockoutObservableArray<any> = ko.observableArray([]);
+    indexReconColumns: KnockoutObservableArray<any> = ko.observableArray([
+      { headerText: getTextResource('KBT002_7'), key: 'categoryNo', width: 55 },
+      { headerText: getTextResource('KBT002_8'), key: 'categoryName', width: 150 }
+    ]);
+    
+    storagePatternList: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
+    storagePattern: KnockoutObservable<string> = ko.observable('');
+    deletionPatternList: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
+    deletionPattern: KnockoutObservable<string> = ko.observable('');
 
     created() {
       const vm = this;
@@ -71,14 +87,19 @@ module nts.uk.at.view.kbt002.b {
       vm.selectedTab(TabPanelId.TAB_1);
       vm.$ajax(API.getMasterInfo)
         .then((response: any) => {
-          console.log(response)
+          console.log(response);
+          vm.aggrPeriodList(_.map(response.aggrPeriodList, (item: any) => new ItemModel({ code: item.aggrFrameCode, name: item.optionalAggrName })));
+          vm.stdAcceptList(response.stdAcceptCondSetList);
+          vm.stdOutputList(response.stdOutputCondSetList);
+          vm.storagePatternList(_.map(response.dataStoragePatternSetList, (item: any) => new ItemModel({ code: item.patternCode, name: item.patternName })));
+          vm.deletionPatternList(_.map(response.dataDelPatternSetList, (item: any) => new ItemModel({ code: item.patternCode, name: item.patternName })));
         })
         .fail(err => { errors.clearAll(); });
 
       vm.selectedExecCode.subscribe(execItemCode => {
         errors.clearAll();
         // Init process execution
-        vm.currentExecItem(new ExecutionItem(null));
+        vm.currentExecItem(new ExecutionItem({}));
         vm.workplaceListText('');
         vm.targetDateText('');
         if (textUtil.isNullOrEmpty(execItemCode)) {
@@ -89,15 +110,18 @@ module nts.uk.at.view.kbt002.b {
           vm.$ajax(textUtil.format(API.selectProcExec, execItemCode))
             .then(res => {
               console.log(res);
-              vm.currentExecItem().createData(res.processExecution);
+              vm.selectedTaskEnableSetting((res.taskSetting && res.taskSetting.enabledSetting) ? TaskEnableSettingClassificationCode.ENABLED : TaskEnableSettingClassificationCode.DISABLED); // B5_2
+              vm.currentExecItem().createData(res);
               vm.currentExecItem().workplaceList(res.workplaceInfos);
-              vm.buildWorkplaceStr(vm.currentExecItem().workplaceList());
+              vm.buildWorkplaceStr(vm.currentExecItem().workplaceList()); // B4_6, 7, 9, 10
+              vm.buildExecutionTaskWarningStr(); // B5_6
               if (vm.currentExecItem().perScheduleCls()) {
-                vm.targetDateText('targetDateText');
+                // vm.targetDateText('targetDateText');
+                vm.targetDateText(vm.buildTargetDateStr(vm.currentExecItem()));
               }
               vm.isNewMode(false);
             })
-            .done(() => vm.$blockui("clear"));
+            .always(() => vm.$blockui("clear"));
 
           // const data = _.filter(vm.execItemList(), (item) => { return item.execItemCode === execItemCode; });
           // if (data[0]) {
@@ -123,6 +147,8 @@ module nts.uk.at.view.kbt002.b {
       $.when(vm.getEnumDataList(), vm.getAlarmByUser())
         .then((response) => console.log(vm.targetMonthList()))
         .always(() => vm.$blockui('clear'));
+
+      vm.currentExecItem().aggrFrameCode.subscribe(data => console.log(data));
     }
 
     /**
@@ -452,6 +478,12 @@ module nts.uk.at.view.kbt002.b {
       return targetDateStr;
     }
 
+    private buildExecutionTaskWarningStr() {
+      const vm = this;
+      // TODO
+      vm.executionTaskWarning("TODO");
+    }
+
     /**
      * Validate.
      * @returns true if there is no error, otherwise false
@@ -485,7 +517,7 @@ module nts.uk.at.view.kbt002.b {
       let command: SaveProcessExecutionCommand = new SaveProcessExecutionCommand();
       command.newMode = vm.isNewMode();
       if (vm.currentExecItem().processExecType() === 0) { //通常実行
-        vm.currentExecItem().creationTarget(0);
+        // vm.currentExecItem().creationTarget(0);
         command.companyId = vm.currentExecItem().companyId();
         command.execItemCode = vm.currentExecItem().execItemCode();
         command.execItemName = vm.currentExecItem().execItemName();
@@ -498,7 +530,7 @@ module nts.uk.at.view.kbt002.b {
           command.targetDate = vm.currentExecItem().targetDate();
         }
         command.targetMonth = vm.currentExecItem().targetMonth();
-        command.creationTarget = vm.currentExecItem().creationTarget();
+        // command.creationTarget = vm.currentExecItem().creationTarget();
         command.recreateWorkType = false; //B15_3
         command.manualCorrection = false; //B15_4
         command.createEmployee = vm.currentExecItem().createEmployee();
@@ -526,7 +558,7 @@ module nts.uk.at.view.kbt002.b {
         command.endMonthDay = vm.currentExecItem().endMonthDay();
       } else { //再作成
         vm.alarmByUserList()[0] = undefined;
-        vm.currentExecItem().creationTarget(1);
+        // vm.currentExecItem().creationTarget(1);
         command.companyId = vm.currentExecItem().companyId();
         command.execItemCode = vm.currentExecItem().execItemCode();
         command.execItemName = vm.currentExecItem().execItemName();
@@ -547,7 +579,7 @@ module nts.uk.at.view.kbt002.b {
         command.execScopeCls = vm.currentExecItem().execScopeCls();
         command.refDate = textUtil.isNullOrEmpty(vm.currentExecItem().refDate()) ? null : new Date(vm.currentExecItem().refDate());
         command.workplaceList = vm.currentExecItem().workplaceList();
-        command.recreateTypeChangePerson = vm.currentExecItem().recreateTypeChangePerson(); //B14_2
+        // command.recreateTypeChangePerson = vm.currentExecItem().recreateTypeChangePerson(); //B14_2
         command.recreateTransfers = vm.currentExecItem().recreateTransfer(); //B15_2(2)
         command.appRouteUpdateAtr = vm.currentExecItem().appRouteUpdateAtrReCreate();
         command.createNewEmp = false;
@@ -610,58 +642,13 @@ module nts.uk.at.view.kbt002.b {
     public openScreenJ() {
       const vm = this;
       vm.$blockui('grayout');
-      vm.$window.modal('/view/kbt/002/j/index.xhtml')
-        .then(() => {
+      vm.$window.modal('/view/kbt/002/j/index.xhtml', { aggrFrameCode: vm.currentExecItem().aggrFrameCode() })
+        .then((res: any) => {
           vm.$blockui('clear');
+          vm.aggrPeriodList(_.map(res.aggrPeriodList, (item: any) => new ItemModel({ code: item.aggrFrameCode, name: item.optionalAggrName })));
+          vm.currentExecItem().alarmCode(res.aggrFrameCode);
         });
     }
-  }
-
-  /** The interface IExecution item */
-  export interface IExecutionItem {
-    companyId: string;
-    execItemCode: string;
-    execItemName: string;
-    perScheduleCls: boolean;
-    perScheduleClsNormal: boolean;
-    perScheduleClsReCreate: boolean;
-    targetMonth: number;
-    targetDate: number;
-    creationPeriod: number;
-    creationTarget: number;
-    recreateWorkType: boolean;
-    manualCorrection: boolean;
-    createEmployee: boolean;
-    recreateTransfer: boolean;
-    dailyPerfCls: boolean;
-    dailyPerfItem: number;
-    //lastProcDate: string;
-    midJoinEmployee: boolean;
-    reflectResultCls: boolean;
-    monthlyAggCls: boolean;
-    execScopeCls: number;
-    refDate: string;
-    workplaceList: Array<string>;
-    recreateTypeChangePerson: boolean;
-    recreateTransfers: boolean;
-    appRouteUpdateAtr: boolean;
-    createNewEmp: boolean;
-    appRouteUpdateMonthly: boolean;
-    processExecType: number;
-    appRouteUpdateAtrNormal: boolean;
-    appRouteUpdateAtrReCreate: boolean;
-    //daily perf cls
-    dailyPerfClsNormal: boolean;
-    dailyPerfClsReCreate: boolean;
-    //alarm code
-    alarmCode: string;
-    alarmAtr: boolean;
-    mailPrincipal: boolean;
-    mailAdministrator: boolean;
-    //ver29
-    designatedYear: number;
-    startMonthDay: number;
-    endMonthDay: number;
   }
 
   /**
@@ -677,7 +664,7 @@ module nts.uk.at.view.kbt002.b {
     targetMonth: KnockoutObservable<number> = ko.observable(null);
     targetDate: KnockoutObservable<number> = ko.observable(null);
     creationPeriod: KnockoutObservable<number> = ko.observable(null);
-    creationTarget: KnockoutObservable<number> = ko.observable(null);
+    // creationTarget: KnockoutObservable<number> = ko.observable(null);
     recreateWorkType: KnockoutObservable<boolean> = ko.observable(false);
     manualCorrection: KnockoutObservable<boolean> = ko.observable(false);
     createEmployee: KnockoutObservable<boolean> = ko.observable(false);
@@ -690,8 +677,8 @@ module nts.uk.at.view.kbt002.b {
     execScopeCls: KnockoutObservable<number> = ko.observable(null);
     refDate: KnockoutObservable<string> = ko.observable('');
     workplaceList: KnockoutObservableArray<any> = ko.observableArray([]);
-    recreateTypeChangePerson: KnockoutObservable<boolean> = ko.observable(false);
-    recreateTransfers: KnockoutObservable<boolean> = ko.observable(false);
+    // recreateTypeChangePerson: KnockoutObservable<boolean> = ko.observable(false);
+    // recreateTransfers: KnockoutObservable<boolean> = ko.observable(false);
     appRouteUpdateAtr: KnockoutObservable<boolean> = ko.observable(false);
     createNewEmp: KnockoutObservable<boolean> = ko.observable(false);
     appRouteUpdateMonthly: KnockoutObservable<boolean> = ko.observable(false);
@@ -712,251 +699,102 @@ module nts.uk.at.view.kbt002.b {
     disableYearMonthDate: KnockoutObservable<boolean> = ko.observable(false);
     enableMonthDay: KnockoutObservable<boolean> = ko.observable(false);
 
-    constructor(param: IExecutionItem) {
-      const self = this;
-      if (param && param !== null) {
-        self.companyId(param.companyId);
-        self.execItemCode(param.execItemCode || '');
-        self.execItemName(param.execItemName || '');
-        self.perScheduleCls(param.perScheduleCls || false);
-        self.perScheduleClsNormal(param.perScheduleCls || false);
-        self.perScheduleClsReCreate(param.perScheduleCls || false);
-        self.targetMonth(param.targetMonth);
-        self.targetDate(param.targetDate);
-        self.creationPeriod(param.creationPeriod);
-        self.creationTarget(param.creationTarget);
-        self.recreateWorkType(param.recreateWorkType || false);
-        self.manualCorrection(param.manualCorrection || false);
-        self.createEmployee(param.createEmployee || false);
-        self.recreateTransfer(param.recreateTransfer || false);
-        self.dailyPerfCls(param.dailyPerfCls || false);
-        self.dailyPerfItem(param.dailyPerfItem);
-        self.midJoinEmployee(param.midJoinEmployee || false);
-        self.reflectResultCls(param.reflectResultCls || false);
-        self.monthlyAggCls(param.monthlyAggCls || false);
-        self.execScopeCls(param.execScopeCls);
-        self.refDate(param.refDate || moment().format("YYYY/MM/DD"));
-        self.workplaceList(param.workplaceList || []);
-        self.recreateTypeChangePerson(param.recreateTypeChangePerson || false);
-        self.recreateTransfers(param.recreateTransfers || false);
-        self.appRouteUpdateAtr(param.appRouteUpdateAtr || false);
-        self.createNewEmp(param.createNewEmp || false);
-        self.appRouteUpdateMonthly(param.appRouteUpdateMonthly || false);
-        self.checkCreateNewEmp((param.appRouteUpdateAtr === true && param.appRouteUpdateAtr === true) ? true : false);
-        self.processExecType(param.processExecType);
-        self.appRouteUpdateAtrNormal(param.appRouteUpdateAtr || false);
-        self.appRouteUpdateAtrReCreate(param.appRouteUpdateAtr || false);
-        self.dailyPerfClsNormal(param.dailyPerfCls || false);
-        self.dailyPerfClsReCreate(param.dailyPerfCls || false);
-        self.alarmCode(param.alarmCode || '');
-        self.alarmAtr(param.alarmAtr || false);
-        self.mailPrincipal(param.mailPrincipal || false);
-        self.mailAdministrator(param.mailAdministrator || false);
-        self.designatedYear(param.designatedYear);
-        self.startMonthDay(param.startMonthDay === null ? 101 : param.startMonthDay);
-        self.endMonthDay(param.endMonthDay === null ? 101 : param.endMonthDay);
-        if (self.targetMonth() === 3) {
-          self.disableYearMonthDate(true);
-        } else {
-          self.disableYearMonthDate(false);
-        }
-        if (self.processExecType() === 0) {
-          self.creationTarget(0);
-          self.appRouteUpdateAtrNormal(self.appRouteUpdateAtr());
-          self.appRouteUpdateAtrReCreate(false);
+    // Ver34
+    aggrFrameCode: KnockoutObservable<string> = ko.observable('');
+    aggrPeriodCls: KnockoutObservable<boolean> = ko.observable(false);
+    stdOutputCls: KnockoutObservable<boolean> = ko.observable(false);
+    stdAcceptCls: KnockoutObservable<boolean> = ko.observable(false);
+    displayAdministrator: KnockoutObservable<boolean> = ko.observable(false);
+    displayPrincipal: KnockoutObservable<boolean> = ko.observable(false);
+    storageCls: KnockoutObservable<boolean> = ko.observable(false);
+    storagePattern: KnockoutObservable<string> = ko.observable('');
+    deletionCls: KnockoutObservable<boolean> = ko.observable(false);
+    deletionPattern: KnockoutObservable<string> = ko.observable('');
+    indexReconCls: KnockoutObservable<boolean> = ko.observable(false);
+    indexReconUpdateStats: KnockoutObservable<number> = ko.observable(null);
 
-          self.dailyPerfClsNormal(self.dailyPerfCls());
-          self.dailyPerfClsReCreate(false);
-
-          self.perScheduleClsNormal(self.perScheduleCls());
-          self.perScheduleClsReCreate(false);
-
-          if (self.perScheduleClsNormal()) {
-            self.enableMonthDay(true);
-          }
-        } else {
-          self.creationTarget(1);
-          self.appRouteUpdateAtrNormal(false);
-          self.appRouteUpdateAtrReCreate(self.appRouteUpdateAtr());
-
-          self.dailyPerfClsNormal(false);
-          self.dailyPerfClsReCreate(self.dailyPerfCls());
-
-          self.perScheduleClsNormal(false);
-          self.perScheduleClsReCreate(self.perScheduleCls());
-
-          if (self.perScheduleClsNormal()) {
-            self.enableMonthDay(false);
-          }
-        }
-      } else {
-        self.companyId('');
-        self.execItemCode('');
-        self.execItemName('');
-        self.perScheduleCls(false);
-        self.targetMonth(0);
-        self.targetDate(null);
-        self.creationPeriod(null);
-        self.creationTarget(0);
-        self.recreateWorkType(false);
-        self.manualCorrection(false);
-        self.createEmployee(false);
-        self.recreateTransfer(false);
-        self.dailyPerfCls(false);
-        self.dailyPerfItem(0);
-        self.midJoinEmployee(false);
-        self.reflectResultCls(false);
-        self.monthlyAggCls(false);
-        self.execScopeCls(0);
-        self.refDate(moment().format("YYYY/MM/DD"));
-        self.workplaceList([]);
-        self.recreateTypeChangePerson(false);
-        self.recreateTransfers(false);
-        self.appRouteUpdateAtr(false);
-        self.createNewEmp(false);
-        self.appRouteUpdateMonthly(false);
-        self.checkCreateNewEmp(false);
-        self.processExecType(0);
-        self.appRouteUpdateAtrNormal(false);
-        self.appRouteUpdateAtrReCreate(false);
-        self.dailyPerfClsNormal(false);
-        self.dailyPerfClsReCreate(false);
-        self.alarmCode('');
-        self.alarmAtr(false);
-        self.perScheduleClsNormal(false);
-        self.perScheduleClsReCreate(false);
-        self.mailPrincipal(false);
-        self.mailAdministrator(false);
-        self.processExecType(0);
-        self.designatedYear(0);
-        self.startMonthDay(101);
-        self.endMonthDay(101);
-      }
-      /**
-       * vm.targetMonth(): 
-       * 0: システム日付の月
-       * 1: システム日付の翌月
-       * 2: システム日付の翌々月
-       * 3: 開始月を指定する
-       */
-      self.targetMonth.subscribe(x => {
-        errors.clearAll();
-        if (x !== 3) {
-          self.designatedYear(0);
-          self.startMonthDay(101);
-          self.endMonthDay(101);
-          self.disableYearMonthDate(false);
-        } else {
-          self.disableYearMonthDate(true);
-        }
-      });
-
-      self.perScheduleClsNormal.subscribe(x => {
-        if (x === true && self.perScheduleClsNormal() === true) {
-          self.enableMonthDay(true);
-        } else {
-          self.enableMonthDay(false);
-        }
-      });
-
-      self.appRouteUpdateAtr.subscribe(x => {
-        if (x === true && self.perScheduleCls() === true) {
-          self.checkCreateNewEmp(true);
-        } else {
-          self.checkCreateNewEmp(false);
-        }
-      });
-
-      self.perScheduleCls.subscribe(x => {
-        if (x === true && self.appRouteUpdateAtr() === true) {
-          self.checkCreateNewEmp(true);
-        } else {
-          self.checkCreateNewEmp(false);
-        }
-      });
-
-      self.processExecType.subscribe(x => {
-        if (x === 0) {
-          self.creationTarget(0);
-          self.appRouteUpdateAtrNormal(self.appRouteUpdateAtr());
-          self.appRouteUpdateAtrReCreate(false);
-
-          self.dailyPerfClsNormal(self.dailyPerfCls());
-          self.dailyPerfClsReCreate(false);
-          if (self.perScheduleClsNormal()) {
-            self.enableMonthDay(true);
-          }
-        } else {
-          self.creationTarget(1);
-          self.appRouteUpdateAtrNormal(false);
-          self.appRouteUpdateAtrReCreate(self.appRouteUpdateAtr());
-
-          self.dailyPerfClsNormal(false);
-          self.dailyPerfClsReCreate(self.dailyPerfCls());
-
-          if (self.perScheduleClsNormal()) {
-            self.enableMonthDay(false);
-          }
-        }
-      });
-
-      // self.targetDate.subscribe(x => {
-      //   const data = this;
-      //   (__viewContext as any).viewModel.targetDateText((__viewContext as any).viewModel.buildTargetDateStr(data) || '');
-      // });
-      // self.creationPeriod.subscribe(x => {
-      //   const data = this;
-      //   (__viewContext as any).viewModel.targetDateText((__viewContext as any).viewModel.buildTargetDateStr(data) || '');
-      // });
-      // self.targetMonth.subscribe(x => {
-      //   const data = this;
-      //   (__viewContext as any).viewModel.targetDateText((__viewContext as any).viewModel.buildTargetDateStr(data) || '');
-      // });
+    constructor(init?: Partial<ExecutionItem>) {
+      $.extend(this, init);
     }
 
-    createData(param: IExecutionItem) {
+    createData(param: any) {
       const vm = this;
+      const taskSetting = param.taskSetting;
+      const processExecution = param.processExecution;
+      const workplaceInfos = param.workplaceInfos;
 
-      vm.companyId(param.companyId);
-      vm.execItemCode(param.execItemCode || '');
-      vm.execItemName(param.execItemName || '');
-      vm.perScheduleCls(param.perScheduleCls || false);
-      vm.perScheduleClsNormal(param.perScheduleCls || false);
-      vm.perScheduleClsReCreate(param.perScheduleCls || false);
-      vm.targetMonth(param.targetMonth);
-      vm.targetDate(param.targetDate);
-      vm.creationPeriod(param.creationPeriod);
-      vm.creationTarget(param.creationTarget);
-      vm.recreateWorkType(param.recreateWorkType || false);
-      vm.manualCorrection(param.manualCorrection || false);
-      vm.createEmployee(param.createEmployee || false);
-      vm.recreateTransfer(param.recreateTransfer || false);
-      vm.dailyPerfCls(param.dailyPerfCls || false);
-      vm.dailyPerfItem(param.dailyPerfItem);
-      vm.midJoinEmployee(param.midJoinEmployee || false);
-      vm.reflectResultCls(param.reflectResultCls || false);
-      vm.monthlyAggCls(param.monthlyAggCls || false);
-      vm.execScopeCls(param.execScopeCls);
-      vm.refDate(param.refDate || moment().format("YYYY/MM/DD"));
-      vm.workplaceList(param.workplaceList || []);
-      vm.recreateTypeChangePerson(param.recreateTypeChangePerson || false);
-      vm.recreateTransfers(param.recreateTransfers || false);
-      vm.appRouteUpdateAtr(param.appRouteUpdateAtr || false);
-      vm.createNewEmp(param.createNewEmp || false);
-      vm.appRouteUpdateMonthly(param.appRouteUpdateMonthly || false);
-      vm.checkCreateNewEmp((param.appRouteUpdateAtr === true && param.appRouteUpdateAtr === true) ? true : false);
-      vm.processExecType(param.processExecType);
-      vm.appRouteUpdateAtrNormal(param.appRouteUpdateAtr || false);
-      vm.appRouteUpdateAtrReCreate(param.appRouteUpdateAtr || false);
-      vm.dailyPerfClsNormal(param.dailyPerfCls || false);
-      vm.dailyPerfClsReCreate(param.dailyPerfCls || false);
-      vm.alarmCode(param.alarmCode || '');
-      vm.alarmAtr(param.alarmAtr || false);
-      vm.mailPrincipal(param.mailPrincipal || false);
-      vm.mailAdministrator(param.mailAdministrator || false);
-      vm.designatedYear(param.designatedYear);
-      vm.startMonthDay(param.startMonthDay === null ? 101 : param.startMonthDay);
-      vm.endMonthDay(param.endMonthDay === null ? 101 : param.endMonthDay);
+      vm.companyId(processExecution.companyId);
+      vm.execItemCode(processExecution.execItemCode || ''); // B3_3
+      vm.execItemName(processExecution.execItemName || ''); // B3_3
+      
+      vm.execScopeCls(processExecution.execScope.execScopeCls); // B4_2
+      vm.refDate(processExecution.execScope.refDate || moment().format("YYYY/MM/DD")); // B4_12
+
+      vm.processExecType(processExecution.executionType); // B16_1
+
+      vm.perScheduleCls(processExecution.execSetting.perSchedule.perScheduleCls || false); 
+      vm.perScheduleClsNormal(processExecution.execSetting.perSchedule.perScheduleCls || false); // B7_1
+      vm.targetMonth(processExecution.execSetting.perSchedule.perSchedulePeriod.targetMonth); // B7_4
+      vm.targetDate(processExecution.execSetting.perSchedule.perSchedulePeriod.targetDate); // B7_7
+      vm.creationPeriod(processExecution.execSetting.perSchedule.perSchedulePeriod.creationPeriod);  // B7_9
+      vm.designatedYear(processExecution.execSetting.perSchedule.perSchedulePeriod.designatedYear); // B7_12
+      vm.startMonthDay(processExecution.execSetting.perSchedule.perSchedulePeriod.startMonthDay === null ? 101 : processExecution.execSetting.perSchedule.perSchedulePeriod.startMonthDay); // B7_14
+      vm.endMonthDay(processExecution.execSetting.perSchedule.perSchedulePeriod.endMonthDay === null ? 101 : processExecution.execSetting.perSchedule.perSchedulePeriod.endMonthDay); // B7_16
+      vm.createEmployee(processExecution.execSetting.perSchedule.createNewEmpSched || false); // B7_22
+
+      vm.dailyPerfCls(processExecution.execSetting.dailyPerf.dailyPerfCls || false);
+      vm.dailyPerfClsNormal(vm.dailyPerfCls() || false); // B8_1
+      vm.dailyPerfItem(processExecution.execSetting.dailyPerf.dailyPerfItem); // B8_3
+      vm.midJoinEmployee(processExecution.execSetting.dailyPerf.createNewEmpDailyPerf || false); // B8_5
+
+      vm.reflectResultCls(processExecution.execSetting.reflectResultCls || false); // B9_1
+
+      vm.monthlyAggCls(processExecution.execSetting.monthlyAggCls); // B10_1
+
+      vm.aggrPeriodCls(processExecution.execSetting.aggregationOfArbitraryPeriod.classificationOfUse === 1 ? true : false); // B9_1
+      vm.aggrFrameCode(processExecution.execSetting.aggregationOfArbitraryPeriod.aggrFrameCode || getTextResource("KBT002_193")); // B11_2
+
+      vm.appRouteUpdateAtr(processExecution.execSetting.appRouteUpdateDaily.appRouteUpdateAtr || false); 
+      vm.appRouteUpdateAtrNormal(vm.appRouteUpdateAtr() || false); // B12_1
+      vm.checkCreateNewEmp((vm.appRouteUpdateAtr() === true && param.appRouteUpdateAtr() === true) ? true : false);
+      vm.createNewEmp((processExecution.execSetting.appRouteUpdateDaily.createNewEmp == 0 ? false : true) || false); // B12_2
+
+      vm.appRouteUpdateMonthly(processExecution.execSetting.appRouteUpdateMonthly || false); // B12_3
+
+      // vm.creationTarget(param.creationTarget);
+      if (vm.processExecType() === 1) {
+        vm.perScheduleClsReCreate(processExecution.execSetting.perSchedule.perScheduleCls || false); // B14_2
+        vm.dailyPerfClsReCreate(vm.dailyPerfCls() || false); // B14_3
+        vm.appRouteUpdateAtrReCreate(vm.appRouteUpdateAtr() || false); // B14_4
+        vm.recreateWorkType(processExecution.reExecCondition.recreatePerson || false); // B15_2
+        vm.recreateTransfer(processExecution.reExecCondition.recreateTransfer || false); // B15_3
+        vm.manualCorrection(processExecution.reExecCondition.recreateLeave || false); // B15_4
+      }
+      
+      vm.alarmAtr(processExecution.execSetting.alarmExtraction.alarmAtr || false); // B17_1
+      vm.alarmCode(processExecution.execSetting.alarmExtraction.alarmCode || ''); // B17_4
+      vm.mailAdministrator(processExecution.execSetting.alarmExtraction.mailAdministrator || false); // B17_7
+      vm.mailPrincipal(processExecution.execSetting.alarmExtraction.mailPrincipal || false); // B17_8
+      vm.displayAdministrator(processExecution.execSetting.alarmExtraction.displayOnTopPageAdministrator || false); // B17_10
+      vm.displayPrincipal(processExecution.execSetting.alarmExtraction.displayOnTopPagePrincipal || false); // B17_11
+
+      vm.stdOutputCls(processExecution.execSetting.externalOutput.externalOutputClassification === 1 ? true : false); // B19_1
+      
+      vm.stdAcceptCls(processExecution.execSetting.externalAcceptance.externalAcceptanceClassification === 1 ? true : false); // B20_1
+
+      vm.storageCls(processExecution.execSetting.saveData.saveDataClassification === 1 ? true : false); // B21_1
+      vm.storagePattern(processExecution.execSetting.saveData.patternCode); // B21_4
+
+      vm.deletionCls(processExecution.execSetting.deleteData.dataDeletionClassification === 1 ? true : false); // B22_1
+      vm.deletionPattern(processExecution.execSetting.deleteData.patternCode); // B22_4
+
+      vm.indexReconCls(processExecution.execSetting.indexReconstruction.classificationOfUse); // B23_1
+      vm.indexReconUpdateStats(processExecution.execSetting.indexReconstruction.updateStats); // B26_1
+      
+      vm.workplaceList(workplaceInfos || []);
+      // vm.recreateTypeChangePerson(param.recreateTypeChangePerson || false);
+      // vm.recreateTransfers(param.recreateTransfers || false);
+      
       if (vm.targetMonth() === 3) {
         vm.disableYearMonthDate(true);
       } else {
@@ -964,7 +802,7 @@ module nts.uk.at.view.kbt002.b {
       }
 
       if (vm.processExecType() === 0) {
-        vm.creationTarget(0);
+        // vm.creationTarget(0);
         vm.appRouteUpdateAtrNormal(vm.appRouteUpdateAtr());
         vm.appRouteUpdateAtrReCreate(false);
 
@@ -978,7 +816,7 @@ module nts.uk.at.view.kbt002.b {
           vm.enableMonthDay(true);
         }
       } else {
-        vm.creationTarget(1);
+        // vm.creationTarget(1);
         vm.appRouteUpdateAtrNormal(false);
         vm.appRouteUpdateAtrReCreate(vm.appRouteUpdateAtr());
 

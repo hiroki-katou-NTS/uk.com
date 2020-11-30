@@ -17,6 +17,9 @@ import nts.uk.ctx.at.function.dom.processexecution.tasksetting.ExecutionTaskSett
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.task.schedule.UkJobScheduler;
 
+/**
+ * UKDesign.UniversalK.就業.KBT_更新処理自動実行.KBT002_更新処理自動実行.B:実行設定.アルゴリズム.削除処理.削除処理
+ */
 @Stateless
 public class RemoveProcessExecutionCommandHandler extends CommandHandler<RemoveProcessExecutionCommand> {
 

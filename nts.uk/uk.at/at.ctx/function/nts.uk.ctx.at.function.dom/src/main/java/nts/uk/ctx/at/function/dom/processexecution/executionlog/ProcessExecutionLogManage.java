@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.dom.processexecution.executionlog;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
@@ -12,6 +13,7 @@ import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
  * 更新処理自動実行管理
  */
 @Getter
+@Builder
 @AllArgsConstructor
 public class ProcessExecutionLogManage extends AggregateRoot {
 	/* コード */

@@ -82,7 +82,7 @@ public class ProcessExecutionSettingDto {
 	 * インデックス再構成
 	 **/
 	private IndexReconstructionDto indexReconstruction;
-	
+
 	/**
 	 * 再実行条件
 	 */
@@ -121,19 +121,11 @@ public class ProcessExecutionSettingDto {
 	 * @return the domain Process execution setting
 	 */
 	public ProcessExecutionSetting toDomain() {
-		return new ProcessExecutionSetting(this.alarmExtraction.toDomain(),
-										   this.perSchedule.toDomain(),
-										   this.dailyPerf.toDomain(),
-										   this.reflectResultCls,
-										   this.monthlyAggCls,
-										   this.appRouteUpdateDaily.toDomain(),
-										   this.appRouteUpdateMonthly,
-										   this.deleteData.toDomain(),
-										   this.saveData.toDomain(),
-										   this.externalAcceptance.toDomain(),
-										   this.externalOutput.toDomain(),
-										   this.aggrAnyPeriod.toDomain(),
-										   this.indexReconstruction.toDomain());
+		return new ProcessExecutionSetting(this.alarmExtraction.toDomain(), this.perSchedule.toDomain(),
+				this.dailyPerf.toDomain(), this.reflectResultCls, this.monthlyAggCls,
+				this.appRouteUpdateDaily.toDomain(), this.appRouteUpdateMonthly, this.deleteData.toDomain(),
+				this.saveData.toDomain(), this.externalAcceptance.toDomain(), this.externalOutput.toDomain(),
+				this.aggrAnyPeriod.toDomain(), this.indexReconstruction.toDomain());
 	}
 
 }

@@ -10,9 +10,12 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.function.dom.processexecution.LastExecDateTime;
 import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.CurrentExecutionStatus;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.EndStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogManage;
+import nts.uk.ctx.at.function.dom.processexecution.repository.LastExecDateTimeRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogManageRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -29,6 +32,9 @@ public class SaveUpdateProcessAutoExecutionCommandHandler extends CommandHandler
 
 	@Inject
 	private ProcessExecutionLogManageRepository processExecutionLogManageRepository;
+	
+	@Inject
+	private LastExecDateTimeRepository lastExecDateTimeRepository;
 
 	@Override
 	protected void handle(CommandHandlerContext<SaveUpdateProcessAutoExecutionCommand> context) {
@@ -56,10 +62,18 @@ public class SaveUpdateProcessAutoExecutionCommandHandler extends CommandHandler
 	}
 
 	private void processRegister(UpdateProcessAutoExecution domain) {
+		String cid = AppContexts.user().companyId();
 		// ドメインモデル「更新処理自動実行」に新規登録する
-		// ドメインモデル「更新処理自動実行管理」に新規登録する
-		// ドメインモデル「更新処理前回実行日時」に新規登録する
 		this.processExecutionRepository.insert(domain);
+		// ドメインモデル「更新処理自動実行管理」に新規登録する
+		this.processExecutionLogManageRepository.insert(ProcessExecutionLogManage.builder()
+				.companyId(cid)
+				.currentStatus(Optional.of(CurrentExecutionStatus.INVALID))
+				.execItemCd(domain.getExecItemCode())
+				.overallStatus(Optional.of(EndStatus.NOT_IMPLEMENT))
+				.build());
+		// ドメインモデル「更新処理前回実行日時」に新規登録する
+		this.lastExecDateTimeRepository.insert(new LastExecDateTime(cid, domain.getExecItemCode(), null));
 	}
 
 	private void processUpdate(UpdateProcessAutoExecution domain) {
