@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.sys.gateway.dom.accessrestrictions.AccessRestrictions;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * @author thanhpv
@@ -23,7 +24,10 @@ public class AccessRestrictionsCommand {
 	public List<AllowedIPAddressCommand> allowedIPaddress;
 
 	public AccessRestrictions toDomain() {
-		return new AccessRestrictions(this.accessLimitUseAtr, this.contractCode, this.allowedIPaddress.stream().map(c->c.toDomain()).collect(Collectors.toList()));
+		return new AccessRestrictions(
+				this.contractCode, 
+				NotUseAtr.valueOf(this.accessLimitUseAtr), 
+				this.allowedIPaddress.stream().map(c->c.toDomain()).collect(Collectors.toList()));
 	}
 	
 }

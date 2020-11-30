@@ -1,14 +1,17 @@
 package nts.uk.shr.infra.data;
 
-import javax.ejb.Stateless;
+import java.util.function.Consumer;
+
+import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import nts.arc.layer.infra.data.EntityManagerLoader;
+import nts.arc.scoped.session.SessionContextProvider;
 
 /**
  * DefaultEntityManagerLoader
  */
-@Stateless
+@ApplicationScoped
 public class DefaultEntityManagerLoader implements EntityManagerLoader {
 
     @PersistenceContext(unitName = "UK")
@@ -18,4 +21,19 @@ public class DefaultEntityManagerLoader implements EntityManagerLoader {
     public EntityManager getEntityManager() {
         return this.entityManager;
     }
+
+	@Override
+	public void forAllDataSources(Consumer<EntityManager> process) {
+		process.accept(entityManager);
+	}
+
+	@Override
+	public void forDefaultDatasource(Consumer<EntityManager> process) {
+		process.accept(entityManager);
+	}
+
+	@Override
+	public void forTenantDatasource(String tenantCode, Consumer<EntityManager> process) {
+		process.accept(entityManager);
+	}
 }

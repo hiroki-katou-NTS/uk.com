@@ -363,12 +363,12 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 
 	@Override
 	public List<Company> getAllCompanyByContractCdandAboAtr(String contractCd, int isAbolition) {
-
-		return this.queryProxy().query(GET_ALL_COMPANY_BY_CONTRACTCD_AND_ABOLITIATR, BcmmtCompanyInfor.class)
-				.setParameter("contractCd", contractCd)
-				.setParameter("isAbolition", isAbolition)
-				.getList(c -> toDomainCom(c));
-		
+		return this.forTenantDatasource(contractCd, em ->{
+			return this.queryProxy(em).query(GET_ALL_COMPANY_BY_CONTRACTCD_AND_ABOLITIATR, BcmmtCompanyInfor.class)
+					.setParameter("contractCd", contractCd)
+					.setParameter("isAbolition", isAbolition)
+					.getList(c -> toDomainCom(c));	
+		});
 	}
 
 	@Override

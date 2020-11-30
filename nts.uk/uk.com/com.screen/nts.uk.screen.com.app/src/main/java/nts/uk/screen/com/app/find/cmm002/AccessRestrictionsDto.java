@@ -19,16 +19,16 @@ public class AccessRestrictionsDto {
 	public Integer accessLimitUseAtr;
 	
 	/** 契約コード  */
-	public String contractCode;
+	public String tenantCode;
 	
 	/** 許可IPアドレス  */
-	public List<AllowedIPAddressDto> allowedIPaddress;
+	public List<AllowedIPAddressDto> whiteList;
 
 	public AccessRestrictionsDto(AccessRestrictions domain) {
 		super();
 		this.accessLimitUseAtr = domain.getAccessLimitUseAtr().value;
-		this.contractCode = domain.getContractCode().v();
-		this.allowedIPaddress = domain.getAllowedIPaddress().stream().map(c->new AllowedIPAddressDto(c)).collect(Collectors.toList());
+		this.tenantCode = domain.getTenantCode().v();
+		this.whiteList = domain.getWhiteList().stream().map(c->new AllowedIPAddressDto(c)).collect(Collectors.toList());
 	}
 	
 }

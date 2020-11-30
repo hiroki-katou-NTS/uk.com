@@ -14,6 +14,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.gateway.dom.login.CheckIfCanLogin;
 import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
 import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthentication;
+import nts.uk.shr.infra.data.TenantLocatorService;
 
 /**
  * TenantLocatorを想定したログイン処理の基底クラス
@@ -42,6 +43,7 @@ public abstract class LoginCommandHandlerBase<
 		Command command = context.getCommand();
 		
 		/* テナントロケーター処理 */
+		TenantLocatorService.connect(command.getTenantCode());
 		
 		Req require = getRequire(command);
 
@@ -58,6 +60,7 @@ public abstract class LoginCommandHandlerBase<
 		if(!passwordVerify || !available) {
 			// テナント認証失敗
 			/* テナントロケーターのdisconnect処理 */
+			TenantLocatorService.disconnect();
 			return tenantAuthencationFailed();
 		}
 		

@@ -180,6 +180,14 @@ subprojects {
         compile group: 'nts.jobdistributor', name: 'nts.jobdistributor.worker', version: version
 		
 		compile group: 'com.shr', name: 'nts.uk.shr.com', version: version
+		
+		// OneLogin Java SAML Toolkit
+		compile group: 'com.onelogin', name: 'java-saml', version: '2.5.0'
+		compile group: 'com.onelogin', name: 'java-saml-core', version: '2.5.0'
+		
+		// SAMLに使用
+		compile group: 'commons-codec', name: 'commons-codec', version: '1.15'
+        compile group: 'xmlsec', name: 'xmlsec', version: '2.1.4'
 	}
 }
 

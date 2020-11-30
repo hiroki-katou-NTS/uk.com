@@ -4,8 +4,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 
@@ -20,9 +18,6 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @Stateless
 @Transactional(value = TxType.REQUIRES_NEW)
 public class JpaDataRecoveryMngRepository extends JpaRepository implements DataRecoveryMngRepository {
-	
-	@PersistenceContext
-	private EntityManager em;
 	
 	@Override
 	public Optional<DataRecoveryMng> getDataRecoveryMngById(String dataRecoveryProcessId) {
@@ -56,7 +51,7 @@ public class JpaDataRecoveryMngRepository extends JpaRepository implements DataR
 			x.operatingCondition = operatingCondition.value;
 			this.commandProxy().update(x);
 		});
-		em.flush();
+		getEntityManager().flush();
 	}
 
 	@Override
@@ -67,7 +62,7 @@ public class JpaDataRecoveryMngRepository extends JpaRepository implements DataR
 			x.categoryCnt = totalCategoryCnt;
 			this.commandProxy().update(x);
 		});
-		em.flush();
+		getEntityManager().flush();
 	}
 
 	@Override
@@ -114,7 +109,7 @@ public class JpaDataRecoveryMngRepository extends JpaRepository implements DataR
 			x.suspendedState = use.value;
 			this.commandProxy().update(x);
 		});
-		em.flush();
+		getEntityManager().flush();
 		
 	}
 }

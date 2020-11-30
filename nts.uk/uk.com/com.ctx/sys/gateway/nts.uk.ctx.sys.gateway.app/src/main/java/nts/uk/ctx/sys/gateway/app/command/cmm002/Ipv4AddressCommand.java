@@ -10,22 +10,22 @@ import nts.uk.ctx.sys.gateway.dom.accessrestrictions.IPAddressSetting;
  */
 @NoArgsConstructor
 @Setter
-public class IPAddressSettingCommand {
+public class Ipv4AddressCommand {
 
-	/** IPアドレス1 */
-	public Integer ip1;
+	/** ネットワーク部1 */
+	private short net1;
 
-	/** IPアドレス2 */
-	public Integer ip2;
+	/** ネットワーク部2 */
+	private short net2;
 
-	/** IPアドレス3 */
-	public Integer ip3;
+	/** ホスト部1 */
+	private short host1;
 
-	/** IPアドレス4 */
-	public Integer ip4;
+	/** ホスト部2 */
+	private short host2;
 
 	public IPAddressSetting toDomain() {
-		return new IPAddressSetting(this.ip1, this.ip2, this.ip3, this.ip4);
+		return new IPAddressSetting(this.net1, this.net2, this.host1, this.host2);
 	}
 	
 }

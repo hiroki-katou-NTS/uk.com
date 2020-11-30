@@ -9,14 +9,13 @@ import java.util.Map;
 import java.util.Objects;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountRounding;
 import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountUnit;
@@ -37,9 +36,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 
 @Stateless
-public class CalFormulasItemImpl implements CalFormulasItemRepository {
-	@PersistenceContext
-	private EntityManager entityManager;
+public class CalFormulasItemImpl extends JpaRepository implements CalFormulasItemRepository {
 
 	private static String LANG_JA ="ja";
 	private static final String GET_EXPORT_EXCEL_ONE;
@@ -360,10 +357,10 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 		List<MasterData> datas = new ArrayList<>();
 		Query query = null;
 		if(langId.equals(LANG_JA)) {
-		   query = entityManager.createNativeQuery(GET_EXPORT_EXCEL_ONE.toString()).setParameter("companyId",
+		   query = getEntityManager().createNativeQuery(GET_EXPORT_EXCEL_ONE.toString()).setParameter("companyId",
 				companyId);
 		}else {
-			query = entityManager.createNativeQuery(CalFormulasItemLang.GET_EXPORT_EXCEL_LANG.toString()).setParameter("companyId",
+			query = getEntityManager().createNativeQuery(CalFormulasItemLang.GET_EXPORT_EXCEL_LANG.toString()).setParameter("companyId",
 						companyId).setParameter("langId", langId);
 		}
 		@SuppressWarnings("unchecked")

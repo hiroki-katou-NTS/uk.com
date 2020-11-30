@@ -24,32 +24,36 @@ public class JpaI18NResourcesRepository extends JpaRepository implements I18NRes
 		String query = "SELECT e FROM CisctI18NResource e"
 				+ " WHERE e.pk.languageId = :languageId";
 		
-		val items = this.queryProxy().query(query, CisctI18NResource.class)
-				.setParameter("languageId", languageId)
-				.getList(e -> e.toDomain());
+		val items = this.forDefaultDataSource(em -> {
+			return this.queryProxy(em).query(query, CisctI18NResource.class)
+					.setParameter("languageId", languageId)
+					.getList(e -> e.toDomain());
+		});
 		
 		val container = new I18NResourceContainer<T>(GeneralDateTime.now());
 		container.addAll((List<T>) items);
-		
 		return container;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
+	//forall
 	public <T extends I18NResourceItem> CustomizedI18NResourceContainers<T> loadResourcesEachCompanies(
 			String languageId) {
 
 		String query = "SELECT e FROM CismtI18NResourceCus e"
 				+ " WHERE e.pk.languageId = :languageId";
+
+		val items = this.forAllDataSources(em ->{
+			return this.queryProxy(em).query(query, CismtI18NResourceCus.class)
+					.setParameter("languageId", languageId)
+					.getList();
+		});
 		
 		val containers = new CustomizedI18NResourceContainers<T>();
-		
-		this.queryProxy().query(query, CismtI18NResourceCus.class)
-				.setParameter("languageId", languageId)
-				.getList().forEach(e -> {
-					containers.add(e.pk.companyId, (T)e.toDomain());
-				});
-		
+		items.forEach(e ->{
+			containers.add(e.pk.companyId, (T)e.toDomain());
+		});
 		return containers;
 	}
 	

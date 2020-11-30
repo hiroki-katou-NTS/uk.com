@@ -1,8 +1,10 @@
 package nts.uk.ctx.sys.gateway.infra.repository.tenantlogin;
 
 import java.util.Optional;
+import java.util.function.Function;
 
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
@@ -46,9 +48,11 @@ public class JpaTenantAuthenticationRepository extends JpaRepository implements 
 	public Optional<TenantAuthentication> find(String tenantCode) {
 		String query = BASIC_SELECT 
 				+ "where TENANT_CD = @tenantCode ";
-		return new NtsStatement(query, this.jdbcProxy())
-				.paramString("tenantCode", tenantCode)
-				.getSingle(rec -> SgwmtTenantAuthenticate.MAPPER.toEntity(rec).toDomain());
+		return this.forTenantDatasource(tenantCode, (em ->{
+			return this.jdbcProxy(em) .query(query)
+					.paramString("tenantCode", tenantCode)
+					.getSingle(rec -> SgwmtTenantAuthenticate.MAPPER.toEntity(rec).toDomain());			
+		}));
 	}
 
 	@Override
@@ -57,10 +61,14 @@ public class JpaTenantAuthenticationRepository extends JpaRepository implements 
 				+ "where TENANT_CD = @tenantCode "
 				+ "and START_DATE <= @startDate "
 				+ "and END_DATE >= @endDate ";
-		return new NtsStatement(query, this.jdbcProxy())
+		
+		return this.forTenantDatasource(tenantCode, (em -> {
+			return this.jdbcProxy(em).query(query)
 				.paramString("tenantCode", tenantCode)
 				.paramDate("startDate", Date)
 				.paramDate("endDate", Date)
 				.getSingle(rec -> SgwmtTenantAuthenticate.MAPPER.toEntity(rec).toDomain());
+		}));
 	}
+
 }

@@ -29,7 +29,7 @@ public class AccessRestrictionsCommandHandler {
 			 * 1: create()
 			 * 2: persist()
 			 */
-			repo.insert(new AccessRestrictions(NotUseAtr.NOT_USE, new ContractCode(contractCode), new ArrayList<>()));
+			repo.insert(new AccessRestrictions(new ContractCode(contractCode), NotUseAtr.NOT_USE, new ArrayList<>()));
 		}
 	}
 	
@@ -43,7 +43,7 @@ public class AccessRestrictionsCommandHandler {
 		if (domain.isPresent()) {
 			domain.get().addIPAddress(command.allowedIPAddressNew.toDomain());
 			/* 2:persist() */
-			repo.update(new AccessRestrictions(command.accessLimitUseAtr, contractCode, domain.get().getAllowedIPaddress()));
+			repo.update(new AccessRestrictions(contractCode, NotUseAtr.valueOf(command.accessLimitUseAtr), domain.get().getWhiteList()));
 		}
 	}
 	
@@ -59,7 +59,7 @@ public class AccessRestrictionsCommandHandler {
 			/* 3:許可IPアドレスを更新する(許可IPアドレス_NEW) */
 			domain.get().updateIPAddress(command.allowedIPAddressOld.toDomain(), command.allowedIPAddressNew.toDomain());
 			/* 4:persist() */
-			repo.update(new AccessRestrictions(command.accessLimitUseAtr, contractCode, domain.get().getAllowedIPaddress()));
+			repo.update(new AccessRestrictions(contractCode, NotUseAtr.valueOf(command.accessLimitUseAtr), domain.get().getWhiteList()));
 		}
 	}
 	
