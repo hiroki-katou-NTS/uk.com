@@ -70,12 +70,12 @@ module nts.uk.at.view.kdl045.a {
             privateTimeA9: any = [];
             unionTimeA9: any = [];
 
-            atWork1showA9: KnockoutObservable<boolean> = ko.observable(true);
-            atWork2showA9: KnockoutObservable<boolean> = ko.observable(true);
-            offWork1showA9: KnockoutObservable<boolean> = ko.observable(true);
-            offWork2showA9: KnockoutObservable<boolean> = ko.observable(true);
-            privateTimeshowA9: KnockoutObservable<boolean> = ko.observable(true);
-            unionTimeshowA9: KnockoutObservable<boolean> = ko.observable(true);
+            atWork1showA9: KnockoutObservable<boolean> = ko.observable(false);
+            atWork2showA9: KnockoutObservable<boolean> = ko.observable(false);
+            offWork1showA9: KnockoutObservable<boolean> = ko.observable(false);
+            offWork2showA9: KnockoutObservable<boolean> = ko.observable(false);
+            privateTimeshowA9: KnockoutObservable<boolean> = ko.observable(false);
+            unionTimeshowA9: KnockoutObservable<boolean> = ko.observable(false);
 
             atWork1showA9_6: boolean = false;
             atWork2showA9_6: boolean = false;
@@ -133,8 +133,8 @@ module nts.uk.at.view.kdl045.a {
             isDisableA13_2: KnockoutObservable<boolean> = ko.observable(true);
             isDisableA13_3: KnockoutObservable<boolean> = ko.observable(true);
             isDisableA5_1920: KnockoutObservable<boolean> = ko.observable(true);
-            isDisableA8_6_5_1 : boolean = true;
-            isDisableA8_6_6_1 : boolean = true;
+            isDisableA8_6_5_1 : boolean = false;
+            isDisableA8_6_6_1 : boolean = false;
             
             //disable A5_19 ~ A5_25
             fixBreakTime : KnockoutObservable<boolean> = ko.observable(true);
@@ -318,8 +318,8 @@ module nts.uk.at.view.kdl045.a {
                             listPrivateTime.push(tempData);
                         }
                         self.listPrivateTime = listPrivateTime;
-                        if(self.listPrivateTime.length <2){
-                            self.isDisableA8_6_5_1 = false;    
+                        if(self.listPrivateTime.length >1){
+                            self.isDisableA8_6_5_1 = true;    
                         }
                         self.privateTime = listTimeVacationAndType[i].timeVacation.timeZone.length == 0?"": self.showTimeByPeriod(listTimeVacationAndType[i].timeVacation.timeZone[0].startTime.time, listTimeVacationAndType[i].timeVacation.timeZone[0].endTime.time);
                         self.privateTimeA9 = listTimeVacationAndType[i].timeVacation.usageTime;
@@ -338,8 +338,8 @@ module nts.uk.at.view.kdl045.a {
                             listUnionTime.push(tempData);
                         }
                         self.listUnionTime = listUnionTime;
-                        if(self.listUnionTime.length <2){
-                            self.isDisableA8_6_6_1 = false;    
+                        if(self.listUnionTime.length >1){
+                            self.isDisableA8_6_6_1 = true;    
                         }
                         self.unionTime = listTimeVacationAndType[i].timeVacation.timeZone.length == 0?"": self.showTimeByPeriod(listTimeVacationAndType[i].timeVacation.timeZone[0].startTime.time, listTimeVacationAndType[i].timeVacation.timeZone[0].endTime.time);
                         self.unionTimeA9 = listTimeVacationAndType[i].timeVacation.usageTime;
@@ -656,8 +656,6 @@ module nts.uk.at.view.kdl045.a {
                     self.isEnableA5_5(false);
                     self.isEnableA5_9(false);
                     self.isEnableAllControl(false);
-                    self.isEnableA5_2(false);
-                    self.isEnableA5_3(false);
                 }
                 
             }
@@ -668,43 +666,43 @@ module nts.uk.at.view.kdl045.a {
                 for (let i = 0; i < self.informationStartup.listUsageTimeAndType.length; i++) {
                     if (self.informationStartup.listUsageTimeAndType[i].typeVacation == shareModelData.TimeVacationType.ATWORK) {
                         self.atWork1A87(self.showTimeByMinuteHaveValue0(self.informationStartup.listUsageTimeAndType[i].totalTime));
-                        if (self.informationStartup.listUsageTimeAndType[i].totalTime == 0) {
-                            self.atWork1showA9(false);
+                        if (self.informationStartup.listUsageTimeAndType[i].totalTime != 0) {
+                            self.atWork1showA9(true);
                         }
                         continue;
                     }
                     if (self.informationStartup.listUsageTimeAndType[i].typeVacation == shareModelData.TimeVacationType.ATWORK2) {
                         self.atWork2A87(self.showTimeByMinuteHaveValue0(self.informationStartup.listUsageTimeAndType[i].totalTime));
-                        if (self.informationStartup.listUsageTimeAndType[i].totalTime == 0) {
-                            self.atWork2showA9(false);
+                        if (self.informationStartup.listUsageTimeAndType[i].totalTime != 0) {
+                            self.atWork2showA9(true);
                         }
                         continue;
                     }
                     if (self.informationStartup.listUsageTimeAndType[i].typeVacation == shareModelData.TimeVacationType.OFFWORK) {
                         self.offWork1A87(self.showTimeByMinuteHaveValue0(self.informationStartup.listUsageTimeAndType[i].totalTime));
-                        if (self.informationStartup.listUsageTimeAndType[i].totalTime == 0) {
-                            self.offWork1showA9(false);
+                        if (self.informationStartup.listUsageTimeAndType[i].totalTime != 0) {
+                            self.offWork1showA9(true);
                         }
                         continue;
                     }
                     if (self.informationStartup.listUsageTimeAndType[i].typeVacation == shareModelData.TimeVacationType.OFFWORK2) {
                         self.offWork2A87(self.showTimeByMinuteHaveValue0(self.informationStartup.listUsageTimeAndType[i].totalTime));
-                        if (self.informationStartup.listUsageTimeAndType[i].totalTime == 0) {
-                            self.offWork2showA9(false);
+                        if (self.informationStartup.listUsageTimeAndType[i].totalTime != 0) {
+                            self.offWork2showA9(true);
                         }
                         continue;
                     }
                     if (self.informationStartup.listUsageTimeAndType[i].typeVacation == shareModelData.TimeVacationType.PRIVATE) {
                         self.privateTimeA87(self.showTimeByMinuteHaveValue0(self.informationStartup.listUsageTimeAndType[i].totalTime));
-                        if (self.informationStartup.listUsageTimeAndType[i].totalTime == 0) {
-                            self.privateTimeshowA9(false);
+                        if (self.informationStartup.listUsageTimeAndType[i].totalTime != 0) {
+                            self.privateTimeshowA9(true);
                         }
                         continue;
                     }
                     if (self.informationStartup.listUsageTimeAndType[i].typeVacation == shareModelData.TimeVacationType.UNION) {
                         self.unionTimeA87(self.showTimeByMinuteHaveValue0(self.informationStartup.listUsageTimeAndType[i].totalTime));
-                        if (self.informationStartup.listUsageTimeAndType[i].totalTime == 0) {
-                            self.unionTimeshowA9(false);
+                        if (self.informationStartup.listUsageTimeAndType[i].totalTime != 0) {
+                            self.unionTimeshowA9(true);
                         }
                         continue;
                     }

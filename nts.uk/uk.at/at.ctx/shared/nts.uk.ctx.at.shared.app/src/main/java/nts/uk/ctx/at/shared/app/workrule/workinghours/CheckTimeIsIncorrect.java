@@ -78,34 +78,59 @@ public class CheckTimeIsIncorrect {
 		WorkInformation.Require require = new WorkInformationImpl(workTypeRepo, workTimeSettingRepository,
 				workTimeSettingService, basicScheduleService,fixedWorkSettingRepository,flowWorkSettingRepository,flexWorkSettingRepository,predetemineTimeSettingRepository);
 		
-		//2: 変更可能な勤務時間帯のチェック(Require, 対象時刻区分, 勤務NO, 時刻(日区分付き))
-		ContainsResult containsResult1 =  wi.containsOnChangeableWorkingTime(require, ClockAreaAtr.START, new WorkNo(1), new TimeWithDayAttr(workTime1.getStartTime().getTime()));
-		//3: 開始1の状態.含まれているか == false
-		if(!containsResult1.isContains()) {
-			throw new BusinessException("Msg_1772",TextResource.localize("KSU001_54"),containsResult1.getTimeSpan().get().getStart().v().toString(),containsResult1.getTimeSpan().get().getEnd().v().toString());
-		}
-		//4:変更可能な勤務時間帯のチェック(Require, 対象時刻区分, 勤務NO, 時刻(日区分付き))
-		ContainsResult containsResult2 =  wi.containsOnChangeableWorkingTime(require, ClockAreaAtr.END, new WorkNo(1), new TimeWithDayAttr(workTime1.getEndTime().getTime()));
-		//5:終了1の状態.含まれているか == false
-		if(!containsResult2.isContains()) {
-			throw new BusinessException("Msg_1772",TextResource.localize("KSU001_55"),containsResult2.getTimeSpan().get().getStart().v().toString(),containsResult2.getTimeSpan().get().getEnd().v().toString());
-		}
+		try {
+			//2: 変更可能な勤務時間帯のチェック(Require, 対象時刻区分, 勤務NO, 時刻(日区分付き))
+			ContainsResult containsResult1 =  wi.containsOnChangeableWorkingTime(require, ClockAreaAtr.START, new WorkNo(1), new TimeWithDayAttr(workTime1.getStartTime().getTime()));	
 		
-		//6:
-		if(workTime2 != null) {
-			//6.1
-			ContainsResult containsResult3 =  wi.containsOnChangeableWorkingTime(require, ClockAreaAtr.START, new WorkNo(2), new TimeWithDayAttr(workTime2.getStartTime().getTime()));
+			//3: 開始1の状態.含まれているか == false
+			if(!containsResult1.isContains()) {
+				if(containsResult1.getTimeSpan().isPresent()) {
+					throw new BusinessException("Msg_1772",TextResource.localize("KSU001_54"), convertToTime(containsResult1.getTimeSpan().get().getStart().v()),convertToTime(containsResult1.getTimeSpan().get().getEnd().v()));
+				}
+				throw new BusinessException("Msg_439");
+			}
+			//4:変更可能な勤務時間帯のチェック(Require, 対象時刻区分, 勤務NO, 時刻(日区分付き))
+			ContainsResult containsResult2 =  wi.containsOnChangeableWorkingTime(require, ClockAreaAtr.END, new WorkNo(1), new TimeWithDayAttr(workTime1.getEndTime().getTime()));
+			//5:終了1の状態.含まれているか == false
 			if(!containsResult2.isContains()) {
-				throw new BusinessException("Msg_1772",TextResource.localize("KSU001_56"),containsResult3.getTimeSpan().get().getStart().v().toString(),containsResult3.getTimeSpan().get().getEnd().v().toString());
+				if(containsResult2.getTimeSpan().isPresent()) {
+					throw new BusinessException("Msg_1772",TextResource.localize("KSU001_55"), convertToTime(containsResult2.getTimeSpan().get().getStart().v()),convertToTime(containsResult2.getTimeSpan().get().getEnd().v()));
+				}
+				throw new BusinessException("Msg_439");
 			}
 			
-			//6.2
-			ContainsResult containsResult4 =  wi.containsOnChangeableWorkingTime(require, ClockAreaAtr.END, new WorkNo(2), new TimeWithDayAttr(workTime2.getEndTime().getTime()));
-			if(!containsResult4.isContains()) {
-				throw new BusinessException("Msg_1772",TextResource.localize("KSU001_57"),containsResult4.getTimeSpan().get().getStart().v().toString(),containsResult4.getTimeSpan().get().getEnd().v().toString());
+			//6:
+			if(workTime2 != null) {
+				//6.1
+				ContainsResult containsResult3 =  wi.containsOnChangeableWorkingTime(require, ClockAreaAtr.START, new WorkNo(2), new TimeWithDayAttr(workTime2.getStartTime().getTime()));
+				if(!containsResult3.isContains()) {
+					if(containsResult3.getTimeSpan().isPresent()) {
+						throw new BusinessException("Msg_1772",TextResource.localize("KSU001_56"), convertToTime(containsResult3.getTimeSpan().get().getStart().v()),convertToTime(containsResult3.getTimeSpan().get().getEnd().v()));
+					}
+					throw new BusinessException("Msg_439");
+				}
+				
+				//6.2
+				ContainsResult containsResult4 =  wi.containsOnChangeableWorkingTime(require, ClockAreaAtr.END, new WorkNo(2), new TimeWithDayAttr(workTime2.getEndTime().getTime()));
+				if(!containsResult4.isContains()) {
+					if(containsResult4.getTimeSpan().isPresent()) {
+						throw new BusinessException("Msg_1772",TextResource.localize("KSU001_57"), convertToTime(containsResult4.getTimeSpan().get().getStart().v()),convertToTime(containsResult4.getTimeSpan().get().getEnd().v()));
+					}
+					throw new BusinessException("Msg_439");
+				}
 			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 		return false;
+	}
+	
+	private String convertToTime (Integer value) {
+		if(value== null) {
+			return "";
+		}
+		String result = value/60 +":"+(value%60 >=10?value%60:("0"+value%60));
+		return result;
 	}
 	
 	@AllArgsConstructor
