@@ -7,6 +7,8 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
+import nts.uk.ctx.at.request.dom.application.appabsence.apptimedigest.TimeDigestApplication;
+import nts.uk.ctx.at.request.dom.application.appabsence.service.output.SpecAbsenceDispInfo;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
@@ -22,6 +24,7 @@ import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.OTAppBeforeAccepRestric;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.PrePostInitAtr;
 import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApprovalFunctionSet;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
@@ -199,4 +202,19 @@ public interface CommonAlgorithm {
 	 */
 	public void inconsistencyCheckHoliday(String companyID, EmployeeInfoImport employeeInfo, GeneralDate date,
 			WorkType workTypeApp, WorkType workTypeActual);
+	
+	/**
+	 * 11.時間消化登録時のエラーチェック
+	 * @param specAbsenceDispInfo 時間消化申請
+	 * @param superHolidayUnit 60H超休消化単位
+	 * @param substituteHoliday 時間代休消化単位
+	 * @param annualLeaveUnit 時間年休消化単位
+	 * @param childNursingUnit 時間子の看護の消化単位
+	 * @param nursingUnit 時間介護の消化単位 
+	 * @param pendingUnit 時間特別休暇の消化単位
+	 */
+	public void vacationDigestionUnitCheck(TimeDigestApplication timeDigestApplication
+			, TimeDigestiveUnit superHolidayUnit, TimeDigestiveUnit substituteHoliday
+			, TimeDigestiveUnit annualLeaveUnit, TimeDigestiveUnit childNursingUnit
+			, TimeDigestiveUnit nursingUnit, TimeDigestiveUnit pendingUnit);
 }

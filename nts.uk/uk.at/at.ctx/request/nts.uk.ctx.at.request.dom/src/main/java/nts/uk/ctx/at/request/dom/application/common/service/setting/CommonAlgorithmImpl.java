@@ -21,6 +21,8 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
+import nts.uk.ctx.at.request.dom.application.appabsence.apptimedigest.TimeDigestApplication;
+import nts.uk.ctx.at.request.dom.application.appabsence.service.output.SpecAbsenceDispInfo;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
@@ -63,6 +65,8 @@ import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmpl
 import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApprovalFunctionSet;
 import nts.uk.ctx.at.request.dom.setting.workplace.requestbycompany.RequestByCompanyRepository;
 import nts.uk.ctx.at.request.dom.setting.workplace.requestbyworkplace.RequestByWorkplaceRepository;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
@@ -728,6 +732,26 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		}
 		// メッセージを表示する(Msg_1648)を表示する
 		throw new BusinessException("Msg_1648", date.toString(), msgParam);
+	}
+	
+	@Override
+	public void vacationDigestionUnitCheck(TimeDigestApplication timeDigestApplication
+			, TimeDigestiveUnit superHolidayUnit, TimeDigestiveUnit substituteHoliday
+			, TimeDigestiveUnit annualLeaveUnit, TimeDigestiveUnit childNursingUnit
+			, TimeDigestiveUnit nursingUnit, TimeDigestiveUnit pendingUnit) {
+		// to do // KAF006: -PhuongDV domain fix pending
+		//時間代休 = 0 AND 60H超休 = 0 AND 時間年休 = 0 AND 子の看護時間 = 0 AND 介護時間 = 0 AND 時間特別休暇 = 0
+		if (timeDigestApplication.getChildTime().minute() == 0
+				&& timeDigestApplication.getNursingTime().minute() == 0
+				&& timeDigestApplication.getOvertime60H().minute() == 0
+				&& timeDigestApplication.getTimeAnualLeave().minute() == 0
+				&& timeDigestApplication.getTimeOff().minute() == 0
+				&& timeDigestApplication.getTimeSpecialVacation().minute() == 0) {
+			throw new BusinessException("Msg_511");
+		}
+		
+		// -PhuongDV- --Continue
+		return;
 	}
 	
 	private WorkingConditionService.RequireM1 createRequireM1() {
