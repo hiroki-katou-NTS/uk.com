@@ -76,7 +76,7 @@ module nts.uk.at.view.kdw002.a {
                         if (self.isDaily) {
                             service.getControlOfDailyItem(attendanceItem.attendanceItemId).done(cAttendanceItem => {
                                 if (!nts.uk.util.isNullOrUndefined(cAttendanceItem)) {
-                                    self.txtItemId(cAttendanceItem.itemDailyID);
+                                    // self.txtItemId(cAttendanceItem.itemDailyID);
                                     self.headerColorValue(cAttendanceItem.headerBgColorOfDailyPer);
                                     self.timeInputCurrentCode(cAttendanceItem.inputUnitOfTimeItem);
                                     self.roundingUnitValue(cAttendanceItem.inputUnitOfTimeItem);
@@ -88,7 +88,7 @@ module nts.uk.at.view.kdw002.a {
                         } else {
                             service.getControlOfMonthlyItem(attendanceItem.attendanceItemId).done(cAttendanceItem => {
                                 if (!nts.uk.util.isNullOrUndefined(cAttendanceItem)) {
-                                    self.txtItemId(cAttendanceItem.itemMonthlyId);
+                                    // self.txtItemId(cAttendanceItem.itemMonthlyId);
                                     self.headerColorValue(cAttendanceItem.headerBgColorOfMonthlyPer);
                                     self.timeInputCurrentCode(cAttendanceItem.inputUnitOfTimeItem);
                                     self.roundingUnitValue(cAttendanceItem.inputUnitOfTimeItem);
