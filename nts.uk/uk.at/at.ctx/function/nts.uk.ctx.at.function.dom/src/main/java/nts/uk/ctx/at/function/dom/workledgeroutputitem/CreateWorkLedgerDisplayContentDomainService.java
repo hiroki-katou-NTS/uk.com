@@ -50,7 +50,7 @@ public class CreateWorkLedgerDisplayContentDomainService {
             List<WorkPlaceInfo> workPlaceInfo) {
 
         val listSid = employeeInfoList.parallelStream().map(EmployeeInfor::getEmployeeId).collect(Collectors.toList());
-        // ① = call() 社員の指定期間中の所属期間を取得する
+        // ① = call() [RQ 588]  社員の指定期間中の所属期間を取得する
         val listEmployeeStatus = require.getAffiliateEmpListDuringPeriod(datePeriod, listSid);
         val cid = AppContexts.user().companyId();
         val mapSids = employeeInfoList.parallelStream().collect(Collectors.toMap(EmployeeInfor::getEmployeeId, e -> e));
@@ -59,16 +59,18 @@ public class CreateWorkLedgerDisplayContentDomainService {
         val baseDate = datePeriod.end();
         // ② = call() 基準日で社員の雇用と締め日を取得する
         val closureDateEmploymentList = GetClosureDateEmploymentDomainService.get(require, baseDate, listSid);
+        // ③ 取得する(会社ID)
+        val attIds = require.getAggregableMonthlyAttId(cid);
         val closureDayMap = closureDateEmploymentList.stream().collect(Collectors.toMap(ClosureDateEmployment::getEmployeeId, e -> e));
         val monthlyOutputItems = workLedgerOutputItem.getOutputItemList();
+
         if (monthlyOutputItems.isEmpty()) {
             throw new BusinessException("Msg_1926");
         }
         val listAttIds = monthlyOutputItems.parallelStream().map(AttendanceItemToPrint::getAttendanceId)
                 .distinct().collect(Collectors.toCollection(ArrayList::new));
-
+        // ④ Call 会社の月次項目を取得する
         val attName = require.getMonthlyItems(cid, null, listAttIds, null).stream()
-
                 .collect(Collectors.toMap(AttItemName::getAttendanceItemId, q -> q));
         List<WorkLedgerDisplayContent> rs = new ArrayList<>();
         if (attName.isEmpty()) {
@@ -91,8 +93,9 @@ public class CreateWorkLedgerDisplayContentDomainService {
             val closureDay = closureDayMap.get(e.getEmployeeId()).getClosure().getClosureHistories()
                     .get(0).getClosureDate().getClosureDay().v();
             for (val date : e.getListPeriod()) {
+                //5    ⑤ Cal 月別実績取得の為に年月日から適切な年月に変換する
                 val yearMonthPeriod = GetSuitableDateByClosureDateUtility.convertPeriod(date, closureDay);
-
+                //5.1  ⑥ Call [No.495]勤怠項目IDを指定して月別実績の値を取得（複数レコードは合算）
                 listAttendances.addAll(require.getActualMultipleMonth(Collections.singletonList(e.getEmployeeId()),
                         yearMonthPeriod, listAttIds).get(e.getEmployeeId()));
 
@@ -142,9 +145,7 @@ public class CreateWorkLedgerDisplayContentDomainService {
     }
 
     public interface Require extends GetClosureDateEmploymentDomainService.Require {
-        /**
-         * 社員の指定期間中の所属期間を取得する
-         */
+        // [RQ 588]  社員の指定期間中の所属期間を取得する
         List<StatusOfEmployee> getAffiliateEmpListDuringPeriod(DatePeriod datePeriod, List<String> empIdList);
 
         List<AttItemName> getMonthlyItems(String cid, Optional<String> authorityId, List<Integer> attendanceItemIds,
@@ -153,6 +154,9 @@ public class CreateWorkLedgerDisplayContentDomainService {
         // [No.495]勤怠項目IDを指定して月別実績の値を取得（複数レコードは合算）
         Map<String, List<MonthlyRecordValueImport>> getActualMultipleMonth(
                 List<String> employeeIds, YearMonthPeriod period, List<Integer> itemIds);
+
+        //
+        int getAggregableMonthlyAttId(String cid);
     }
 
     private static CommonAttributesOfForms convertMonthlyToAttForms(Integer typeOfAttendanceItem) {

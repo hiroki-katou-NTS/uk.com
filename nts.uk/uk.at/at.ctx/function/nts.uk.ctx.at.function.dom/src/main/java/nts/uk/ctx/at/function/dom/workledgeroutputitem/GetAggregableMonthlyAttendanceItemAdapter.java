@@ -6,6 +6,7 @@ package nts.uk.ctx.at.function.dom.workledgeroutputitem;
  * @author khai.dh
  */
 public interface GetAggregableMonthlyAttendanceItemAdapter {
-	int get(String cid);
-	// TODO ...
+	// 集計可能勤怠項目 ID
+	int  getAggregableMonthlyAttId(String cid);
+	// TODO ...QA
 }
