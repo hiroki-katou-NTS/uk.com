@@ -5,7 +5,7 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.uk.ctx.sys.gateway.dom.accessrestrictions.AccessRestrictionsRepository;
-import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
+import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.loginuser.SessionLowLayer;
 import nts.uk.shr.com.net.Ipv4Address;

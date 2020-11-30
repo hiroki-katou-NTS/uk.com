@@ -9,7 +9,7 @@ import mockit.Expectations;
 import mockit.Mocked;
 import nts.uk.ctx.sys.gateway.dom.accessrestrictions.AccessRestrictions;
 import nts.uk.ctx.sys.gateway.dom.accessrestrictions.AccessRestrictionsRepository;
-import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
+import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
