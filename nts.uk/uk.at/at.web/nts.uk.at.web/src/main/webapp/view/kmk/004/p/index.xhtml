@@ -107,8 +107,9 @@
 						</td>
 						<td>
 							<!-- P3_8 -->
-							<div tabindex="6" data-bind="ntsCheckBox: { checked: screenData.settingDto.settlementPeriod.repeatAtr } "></div> <label
-							data-bind="i18n: 'KMK004_317'"></label> <br></br>
+							<div tabindex="6" data-bind="ntsCheckBox: { checked: screenData.settingDto.settlementPeriod.repeatAtr } ">
+							#{i18n.getText('KMK004_317')}
+							</div>
 						</td>
 					</tr>
 				</table>
@@ -118,30 +119,36 @@
 					data-bind="ntsFormLabel: { required: false, text: $i18n('KMK004_318') }"></div>
 				<br></br>
 				<!-- P4_2 -->
-				<div class="child-row" tabindex="7"
-					data-bind="ntsCheckBox: { checked: screenData.settingDto.aggregateTimeSet.legalOverTimeWork } "></div>
-				<label data-bind="i18n: 'KMK004_319'"></label> <br></br>
-
+				<div class="child-row">
+					<div tabindex="7"
+					data-bind="ntsCheckBox: { checked: screenData.settingDto.aggregateTimeSet.legalOverTimeWork } ">
+					#{i18n.getText('KMK004_319')}</div>
+				</div>
+				
 				<!-- P4_3 -->
-				<div class="child-row" tabindex="8"
-					data-bind="ntsCheckBox: { checked: screenData.settingDto.aggregateTimeSet.legalHoliday } "></div>
-				<label data-bind="i18n: 'KMK004_320'"></label> <br></br>
-
+				<div class="child-row"> 
+					<div tabindex="8"
+					data-bind="ntsCheckBox: { checked: screenData.settingDto.aggregateTimeSet.legalHoliday } ">
+					#{i18n.getText('KMK004_320')}</div>
+				</div>
+				
 				<!-- P5_1 -->
 				<div
 					data-bind="ntsFormLabel: { required: false, text: $i18n('KMK004_321') }"></div>
 				<br></br>
 
 				<!-- P5_2 -->
-				<div class="child-row" tabindex="9"
-					data-bind="ntsCheckBox: { checked: screenData.settingDto.excessOutsideTimeSet.legalOverTimeWork } "></div>
-				<label data-bind="i18n: 'KMK004_322'"></label> <br></br>
+				<div class="child-row"> 
+					<div tabindex="9" data-bind="ntsCheckBox: { checked: screenData.settingDto.excessOutsideTimeSet.legalOverTimeWork } ">
+					#{i18n.getText('KMK004_322')}</div>
+				</div>
 
 				<!-- P5_3 -->
-				<div class="child-row" tabindex="10"
-					data-bind="ntsCheckBox: { checked: screenData.settingDto.excessOutsideTimeSet.legalHoliday } "></div>
-				<label data-bind="i18n: 'KMK004_323'"></label>
-
+				<div class="child-row">
+					<div tabindex="10"
+					data-bind="ntsCheckBox: { checked: screenData.settingDto.excessOutsideTimeSet.legalHoliday } ">
+					#{i18n.getText('KMK004_323')}</div>
+				</div> 
 			</div>
 
 			<div id="functions-area-bottom">

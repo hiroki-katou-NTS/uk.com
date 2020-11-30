@@ -2,7 +2,7 @@
 
 module nts.uk.at.view.kmk004.p {
 
-	export interface IParam{
+	export interface IParam extends IResponse{
 		sidebarType: SIDEBAR_TYPE;
 		wkpId: string;
 		empCode: string;
@@ -76,7 +76,7 @@ module nts.uk.at.view.kmk004.p {
 			}
 			vm.itemListP3_5(tg);
 			vm.itemListP3_7(tg1);
-			vm.title(vm.params.titleName);
+			vm.title(params.titleName);
 
 		}
 

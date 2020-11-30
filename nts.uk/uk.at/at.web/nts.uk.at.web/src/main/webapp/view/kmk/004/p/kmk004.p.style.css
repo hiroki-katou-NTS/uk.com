@@ -7,12 +7,9 @@
 	padding-left: 15px;
 }
 
-.child-row {
-	padding: 5px 0 5px 30px;
-}
-
 .input_time {
 	width: 50px;
+	text-align: center !important;
 }
 
 #combo-box {
@@ -40,6 +37,7 @@
 	text-align: right;
 	padding-right: 10px;
 }
-.checkbox {
-	width: 50px;
+.child-row {
+	width: 200px;
+    margin-left: 30px;
 }
