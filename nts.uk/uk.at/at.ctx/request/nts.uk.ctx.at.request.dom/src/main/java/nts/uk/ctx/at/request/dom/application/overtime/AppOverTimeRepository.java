@@ -10,4 +10,6 @@ public interface AppOverTimeRepository {
 	
 	public void update(AppOverTime appOverTime);
 	
+	public void remove(String companyID, String appID);
+	
 }

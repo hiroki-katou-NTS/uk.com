@@ -694,5 +694,10 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 		
 		return appOverTime;
 	}
+	@Override
+	public void remove(String companyID, String appID) {
+		this.commandProxy().remove(KrqdtAppOverTime.class, new KrqdtAppOvertimePK(companyID, appID));
+		
+	}
 
 }
