@@ -200,7 +200,6 @@ public class DisplayMyPageFinder {
 				//	アルゴリズム「フローメニューの作成リストを取得する」を実行する
 				//	Inputフローコードが指定されている場合
 				if (layout1.get().getFlowMenuCd().isPresent() && !StringUtils.isEmpty(layout1.get().getFlowMenuCd().get().v())) {
-						&& !layout1.get().getFlowMenuCd().get().v().isEmpty()) {
 					// ドメインモデル「フローメニュー作成」を取得する
 					Optional<CreateFlowMenu> data = this.cFlowMenuRepo.findByPk(cId,
 							layout1.get().getFlowMenuCd().get().v());
