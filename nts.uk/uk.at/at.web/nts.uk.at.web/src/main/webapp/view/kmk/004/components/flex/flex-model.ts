@@ -72,24 +72,7 @@ module nts.uk.at.kmk004.components.flex {
 		getFlexPredWorkTime: KnockoutObservable<IGetFlexPredWorkTime> = ko.observable({ reference: 0 });
 		yearList: KnockoutObservableArray<YearItem> = ko.observableArray([new YearItem(2020), new YearItem(2019)]);
 		selectedYear: KnockoutObservable<number> = ko.observable(2020);
-		monthlyWorkTimeSetComs: KnockoutObservableArray<MonthlyWorkTimeSetCom> = ko.observableArray([
-			new MonthlyWorkTimeSetCom({
-				month: 1,
-				laborTime: {
-					withinLaborTime: 1,
-					legalLaborTime: 2,
-					weekAvgTime: 3
-				}
-			}),
-			new MonthlyWorkTimeSetCom({
-				month: 2,
-				laborTime: {
-					withinLaborTime: 2,
-					legalLaborTime: 3,
-					weekAvgTime: 4
-				}
-			})
-		]);
+		monthlyWorkTimeSetComs: KnockoutObservableArray<MonthlyWorkTimeSetCom> = ko.observableArray();
 
 		updateMode: KnockoutObservable<boolean> = ko.observable(true);
 		setting: KnockoutObservable<ScreenMonthlySetting> = ko.observable(new ScreenMonthlySetting());
@@ -103,6 +86,21 @@ module nts.uk.at.kmk004.components.flex {
 				this.monthlyWorkTimeSetComs(_.map(param.monthlyWorkTimeSetComs, (item) => { return new MonthlyWorkTimeSetCom(item); }));
 				this.comFlexMonthActCalSet(param.comFlexMonthActCalSet);
 				this.getFlexPredWorkTime(param.getFlexPredWorkTime);
+			} else {
+				let monthlyWorkTimeSetComs: Array<MonthlyWorkTimeSetCom> = [];
+				for (let i = 1; i <= 12; i++) {
+					monthlyWorkTimeSetComs.push(
+						new MonthlyWorkTimeSetCom({
+							month: i,
+							laborTime: {
+								withinLaborTime: Math.floor(Math.random() * 20000),
+								legalLaborTime: Math.floor(Math.random() * 20000),
+								weekAvgTime: Math.floor(Math.random() * 20000)
+							}
+						})
+					);
+				}
+				vm.monthlyWorkTimeSetComs(monthlyWorkTimeSetComs);
 			}
 
 			vm.selectedYear.subscribe((value) => {

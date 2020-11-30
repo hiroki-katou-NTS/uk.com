@@ -10,34 +10,42 @@ const template = `
 											screenData:screenData ,
 											screenMode:screenMode
 										}
-							}"></div>
+							}">
 					</div>
+					
 					<div id="com-ccg001"></div>
-					<div style="padding: 10px 10px 10px 50px; display: flex;">
+					<div style="margin: 20px 0px 0px 75px; display:flex">
+					
 						<div style="display:inline-block"> 
-							<div id="employee-list"></div>
+								<div id="employee-list"></div>
 						</div>
-						<div style="display:inline-block">
-							<label id="flex-title" data-bind="i18n:'KMK004_268'"></label>
-							<hr/>
-							<label id="selected-employee" data-bind="i18n:employeeName"></label>
-							<div style="margin-top: 20px;" data-bind="component: {
-								name: 'basic-settings-company',
-								params: {
-											screenData:screenData,
-											screenMode:screenMode
-										}
-								}">
+					
+						<div id="right-layout">
+						
+							<div style="padding-bottom: 20px;display:inline-block;">
+								<label id="flex-title" data-bind="i18n:'KMK004_268'"></label>
+								<hr/>
+								<label id="selected-employee" data-bind="i18n:employeeName"></label>
+								<div style="margin-top: 20px;" data-bind="component: {
+									name: 'basic-settings-company',
+									params: {
+												screenData:screenData,
+												screenMode:screenMode
+											}
+									}">
+							</div>
+							
+							<div data-bind="component: {
+									name: 'monthly-working-hours',
+									params: {
+												screenData:screenData,
+												screenMode:screenMode
+											}
+									}">
+							</div>
+							
 						</div>
-						<div data-bind="component: {
-								name: 'monthly-working-hours',
-								params: {
-											screenData:screenData,
-											screenMode:screenMode
-										}
-								}">
-						</div>
-						</div>
+						
 					</div>
 	`;
 const COMPONENT_NAME = 'screen-j-component';
@@ -83,7 +91,7 @@ class ScreenJComponent extends ko.ViewModel {
 	mounted() {
 		const vm = this;
 		vm.initEmployeeList();
-
+		$("#com-ccg001").focus();
 	}
 
 	initCCG001() {
@@ -136,6 +144,7 @@ class ScreenJComponent extends ko.ViewModel {
 					vm.employeeList(listEmployee);
 					if (listEmployee.length) {
 						vm.screenData().selected(listEmployee[0].code);
+						$("#year-list").focus();
 					}
 				}
 			};
@@ -166,7 +175,7 @@ class ScreenJComponent extends ko.ViewModel {
 			employeeInputList: vm.employeeList,
 			selectType: SelectType.SELECT_BY_SELECTED_CODE,
 			selectedCode: vm.screenData().selected,
-			isDialog: true,
+			isDialog: false,
 			isShowNoSelectRow: false,
 			alreadySettingList: vm.alreadySettingList,
 			isShowWorkPlaceName: false,

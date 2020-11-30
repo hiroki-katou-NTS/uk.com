@@ -12,12 +12,12 @@ const template = `
 										}
 							}"></div>
 					</div>
-					<div style="padding: 10px; display: flex;">
+					<div style="padding: 20px; display: flex;">
 					
 						<div style="display:inline-block"> 
 							<div id="work-place-list"></div>
 						</div>
-						<div style="display:inline-block">
+						<div id="right-layout" >
 							<label id="flex-title" data-bind="i18n:'KMK004_268'"></label>
 							<hr/>
 							<label id="selected-work-place" data-bind="i18n:workPlaceName"></label>
@@ -96,7 +96,7 @@ class ScreenHComponent extends ko.ViewModel {
 			baseDate: ko.observable(new Date()),
 			selectType: SelectionType.SELECT_FIRST_ITEM,
 			isShowSelectButton: true,
-			isDialog: true,
+			isDialog: false,
 			alreadySettingList: vm.alreadySettingList,
 			maxRows: 10,
 			tabindex: 1,
@@ -125,8 +125,7 @@ class ScreenHComponent extends ko.ViewModel {
 	}
 
 	mounted() {
-		const vm = this;
-
+		$("#year-list").focus();
 	}
 
 }

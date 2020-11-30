@@ -12,12 +12,13 @@ const template = `
 										}
 							}"></div>
 					</div>
-					<div style="padding: 10px; display: flex;">
+					<div style="padding: 20px; display: flex;">
 					
 						<div style="display:inline-block"> 
 							<div id="empt-list-setting"></div>
 						</div>
-						<div style="display:inline-block">
+						<div id="right-layout"> 
+						<div  style="display:inline-block">
 							<label id="flex-title" data-bind="i18n:'KMK004_268'"></label>
 							<hr/>
 							<label id="selected-work-place" data-bind="i18n:employmentName"></label>
@@ -95,7 +96,7 @@ class ScreenIComponent extends ko.ViewModel {
 				listType: ListType.EMPLOYMENT,
 				selectType: SelectType.SELECT_FIRST_ITEM,
 				selectedCode: vm.screenData().selected,
-				isDialog: true,
+				isDialog: false,
 				isShowNoSelectRow: false,
 				alreadySettingList: vm.alreadySettingList,
 				maxRows: 12
@@ -113,6 +114,10 @@ class ScreenIComponent extends ko.ViewModel {
 			vm.$blockui("hide");
 			vm.screenData().selected.valueHasMutated();
 		});
+	}
+	
+	mounted() {
+		$("#year-list").focus();
 	}
 
 }

@@ -12,7 +12,7 @@ const template = `
 										}
 							}"></div>
 					</div>
-					<div style="padding: 10px;display: inline-block;">
+					<div id="right-layout" style="margin: 20px;">
 						<label id="flex-title" data-bind="i18n:'KMK004_268'"></label>
 						<hr/>
 						<div data-bind="component: {
@@ -61,6 +61,10 @@ class ScreenGComponent extends ko.ViewModel {
 				})
 				.then(() => vm.$blockui('clear'));*/
 
+	}
+
+	mounted() {
+		$("#year-list").focus();
 	}
 
 }

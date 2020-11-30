@@ -8,7 +8,7 @@ const template = `
 	<div class="div_line" 
 		style="
 		border-radius: 10px;
-	    border: solid thin black;
+	    border: 1px solid #CCC;
 	    padding: 15px 0px 15px 15px;">
 		<table class="basic-settings">
 			<tr class="bg-green">
