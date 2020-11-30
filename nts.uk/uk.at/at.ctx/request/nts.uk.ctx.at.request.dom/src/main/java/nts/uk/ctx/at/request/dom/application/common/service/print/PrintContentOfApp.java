@@ -129,7 +129,7 @@ public class PrintContentOfApp {
 	private Optional<InforGoBackCommonDirectOutput> opInforGoBackCommonDirectOutput;
 
 	
-	private Optional<DetailOutput> opDisplayInfoOverTime;
+	private Optional<DetailOutput> opDetailOutput;
 	
 	/**
 	 * 任意項目申請の印刷内容
@@ -141,6 +141,6 @@ public class PrintContentOfApp {
 		this.opArrivedLateLeaveEarlyInfo = Optional.empty();
 		this.opAppStampOutput = Optional.empty();
 		this.opBusinessTripPrintContent = Optional.empty();
-		this.opDisplayInfoOverTime = Optional.empty();
+		this.opDetailOutput = Optional.empty();
 	}
 }
