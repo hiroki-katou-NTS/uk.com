@@ -12,4 +12,6 @@ public interface AppHolidayWorkRepository {
 	public Optional<AppHolidayWork> find(String companyId, String applicationId);
 
 	public void add(AppHolidayWork appHolidayWork);
+
+	public void update(AppHolidayWork appHolidayWork);
 }

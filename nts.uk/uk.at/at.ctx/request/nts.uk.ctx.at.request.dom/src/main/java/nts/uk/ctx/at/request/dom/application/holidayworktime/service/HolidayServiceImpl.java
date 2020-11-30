@@ -18,6 +18,7 @@ import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorCheck;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.User;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
@@ -92,6 +93,9 @@ public class HolidayServiceImpl implements HolidayService {
 	
 	@Inject
 	private NewBeforeRegister processBeforeRegister;
+	
+	@Inject
+	private DetailBeforeUpdate detailBeforeProcessRegisterService;
 	
 	@Inject
 	private AppHolidayWorkRepository appHolidayWorkRepository;
@@ -280,7 +284,7 @@ public class HolidayServiceImpl implements HolidayService {
 				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput());
 		
 		//3.個別エラーチェック
-		checkBeforeOutput = commonHolidayWorkAlgorithm.individualErrorCheck(require, companyId, appHdWorkDispInfoOutput, appHolidayWork, 0);
+		checkBeforeOutput = commonHolidayWorkAlgorithm.individualErrorCheck(require, companyId, appHdWorkDispInfoOutput, appHolidayWork, 0);	//mode new = 0
 		
 		checkBeforeOutput.getConfirmMsgOutputs().addAll(confirmMsgOutputs);
 		return checkBeforeOutput;
@@ -379,6 +383,28 @@ public class HolidayServiceImpl implements HolidayService {
 		//	事前申請・実績の時間超過をチェックする		huytodo
 		
 		return hdWorkDetailOutput;
+	}
+
+	@Override
+	public CheckBeforeOutput checkBeforeUpdate(boolean require, String companyId,
+			AppHdWorkDispInfoOutput appHdWorkDispInfoOutput, AppHolidayWork appHolidayWork, boolean isProxy) {
+		CheckBeforeOutput checkBeforeOutput = new CheckBeforeOutput();
+		
+		//	4-1.詳細画面登録前の処理
+		detailBeforeProcessRegisterService.processBeforeDetailScreenRegistration(companyId, appHolidayWork.getApplication().getEmployeeID(), 
+				appHolidayWork.getAppDate().getApplicationDate(), 
+				EmploymentRootAtr.APPLICATION.value, 
+				appHolidayWork.getAppID(), 
+				appHolidayWork.getApplication().getPrePostAtr(), 
+				appHolidayWork.getApplication().getVersion(), 
+				appHolidayWork.getWorkInformation().getWorkTypeCode().v(), 
+				appHolidayWork.getWorkInformation().getWorkTimeCode().v(), 
+				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput());
+		
+		//3.個別エラーチェック
+		checkBeforeOutput = commonHolidayWorkAlgorithm.individualErrorCheck(require, companyId, appHdWorkDispInfoOutput, appHolidayWork, 1);	//mode update = 1
+
+		return checkBeforeOutput;
 	}
 
 }

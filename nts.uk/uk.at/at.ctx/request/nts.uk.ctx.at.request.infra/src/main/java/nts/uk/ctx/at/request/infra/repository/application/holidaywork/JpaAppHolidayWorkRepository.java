@@ -43,6 +43,57 @@ public class JpaAppHolidayWorkRepository extends JpaRepository implements AppHol
 		this.commandProxy().insert(toEntity(appHolidayWork));
 		this.getEntityManager().flush();
 	}
+
+	@Override
+	public void update(AppHolidayWork appHolidayWork) {
+		KrqdtAppHolidayWork entity = toEntity(appHolidayWork);
+		Optional<KrqdtAppHolidayWork> updateEntityOp = this.queryProxy().find(entity.getKrqdtAppHolidayWorkPK(), KrqdtAppHolidayWork.class);
+		if(!updateEntityOp.isPresent()) return;
+		KrqdtAppHolidayWork updateEntity = updateEntityOp.get();
+		updateEntity.workTypeCode = entity.workTypeCode;
+		updateEntity.workTimeCode = entity.workTimeCode;
+		updateEntity.workTimeStart1 = entity.workTimeStart1;
+		updateEntity.workTimeEnd1 = entity.workTimeEnd1;
+		updateEntity.goWorkAtr = entity.goWorkAtr;
+		updateEntity.backHomeAtr = entity.backHomeAtr;
+		updateEntity.workTimeStart2 = entity.workTimeStart2;
+		updateEntity.workTimeEnd2 = entity.workTimeEnd2;
+		
+		updateEntity.divergenceTimeNo = entity.divergenceTimeNo;
+		updateEntity.divergenceCode = entity.divergenceCode;
+		updateEntity.divergenceReason = entity.divergenceReason;
+		updateEntity.overtimeNight = entity.overtimeNight;
+		updateEntity.totalNight = entity.totalNight;
+		updateEntity.legalHdNight = entity.legalHdNight;
+		updateEntity.nonLegalHdNight = entity.nonLegalHdNight;
+		updateEntity.nonLegalPublicHdNight = entity.nonLegalPublicHdNight;
+		
+		updateEntity.breakTimeStart1 = entity.breakTimeStart1;
+		updateEntity.breakTimeEnd1 = entity.breakTimeEnd1;
+		updateEntity.breakTimeStart2 = entity.breakTimeStart2;
+		updateEntity.breakTimeEnd2 = entity.breakTimeEnd2;
+		updateEntity.breakTimeStart3 = entity.breakTimeStart3;
+		updateEntity.breakTimeEnd3 = entity.breakTimeEnd3;
+		updateEntity.breakTimeStart4 = entity.breakTimeStart4;
+		updateEntity.breakTimeEnd4 = entity.breakTimeEnd4;
+		updateEntity.breakTimeStart5 = entity.breakTimeStart5;
+		updateEntity.breakTimeEnd5 = entity.breakTimeEnd5;
+		updateEntity.breakTimeStart6 = entity.breakTimeStart6;
+		updateEntity.breakTimeEnd6 = entity.breakTimeEnd6;
+		updateEntity.breakTimeStart7 = entity.breakTimeStart7;
+		updateEntity.breakTimeEnd7 = entity.breakTimeEnd7;
+		updateEntity.breakTimeStart8 = entity.breakTimeStart8;
+		updateEntity.breakTimeEnd8 = entity.breakTimeEnd8;
+		updateEntity.breakTimeStart9 = entity.breakTimeStart9;
+		updateEntity.breakTimeEnd9 = entity.breakTimeEnd9;
+		updateEntity.breakTimeStart10 = entity.breakTimeStart10;
+		updateEntity.breakTimeEnd10 = entity.breakTimeEnd10;
+		
+		this.commandProxy().update(updateEntity);
+		this.getEntityManager().flush();
+		
+		
+	}
 	
 	private KrqdtAppHolidayWork toEntity(AppHolidayWork domain) {
 		String cid = AppContexts.user().companyId();

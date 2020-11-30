@@ -8,7 +8,9 @@ import javax.ws.rs.Produces;
 import lombok.Value;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.RegisterCommand;
+import nts.uk.ctx.at.request.app.command.application.holidaywork.UpdateCommand;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.HolidayWorkRegisterCommandHandler;
+import nts.uk.ctx.at.request.app.command.application.holidaywork.HolidayWorkUpdateCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.AppHolidayWorkFinder;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHdWorkDispInfoDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HolidayWorkCalculationResultDto;
@@ -36,6 +38,9 @@ public class HolidayWorkWebService extends WebService{
 	
 	@Inject
 	private HolidayWorkRegisterCommandHandler registerCommandHandler;
+	
+	@Inject
+	private HolidayWorkUpdateCommandHandler updateCommandHandler;
 	
 	@POST
 	@Path("startNew")
@@ -83,6 +88,18 @@ public class HolidayWorkWebService extends WebService{
 	@Path("getDetail")
 	public HdWorkDetailOutputDto getDetail(ParamHdWorkDetail param) {
 		return appHolidayWorkFinder.getDetail(param);
+	}
+	
+	@POST
+	@Path("checkBeforeRegister")
+	public CheckBeforeOutputDto checkBeforeUpdate(ParamCheckBeforeRegister param) {
+		return appHolidayWorkFinder.checkBeforeUpdate(param);
+	}
+	
+	@POST
+	@Path("register")
+	public ProcessResult update(UpdateCommand param) {
+		return updateCommandHandler.handle(param);
 	}
 	
 	

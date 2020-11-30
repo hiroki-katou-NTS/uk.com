@@ -99,4 +99,16 @@ public interface HolidayService {
 	 * @return
 	 */
 	public HdWorkDetailOutput getDetail(String companyId, String applicationId, AppDispInfoStartupOutput appDispInfoStartupOutput);
+
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF010_休日出勤時間申請.アルゴリズム.8.休出申請（詳細）登録前のチェック.8.休出申請（詳細）登録前のチェック
+	 * @param require
+	 * @param companyId
+	 * @param appHdWorkDispInfoOutput
+	 * @param appHolidayWork
+	 * @param proxy
+	 * @return
+	 */
+	public CheckBeforeOutput checkBeforeUpdate(boolean require, String companyId,
+			AppHdWorkDispInfoOutput appHdWorkDispInfoOutput, AppHolidayWork appHolidayWork, boolean isProxy);
 }

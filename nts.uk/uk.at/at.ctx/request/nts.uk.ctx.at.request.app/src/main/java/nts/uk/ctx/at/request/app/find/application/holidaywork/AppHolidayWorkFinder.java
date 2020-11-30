@@ -128,9 +128,14 @@ public class AppHolidayWorkFinder {
 	}
 
 	public HolidayWorkCalculationResultDto calculate(ParamCalculationHolidayWork param) {
+		Optional<GeneralDate> dateOp = Optional.empty();
+		if (StringUtils.isNotBlank(param.getDate())) {
+			dateOp = Optional.of(GeneralDate.fromString(param.getDate(), PATTERN_DATE));	
+		}
+		
 		HolidayWorkCalculationResult calculationResult = holidayWorkService.calculate(param.getCompanyId(),
 				param.getEmployeeId(),
-				Optional.ofNullable(GeneralDate.fromString(param.getDate(), PATTERN_DATE)),
+				dateOp,
 				EnumAdaptor.valueOf(param.getPrePostAtr(), PrePostInitAtr.class),
 				param.getOvertimeLeaveAppCommonSet().toDomain(),
 				param.getPreApplicationTime().toDomain(),
@@ -236,5 +241,16 @@ public class AppHolidayWorkFinder {
 				application.getOpAppEndDate() == null ? Optional.empty() : Optional.of(new ApplicationDate(GeneralDate.fromString(application.getOpAppEndDate(), PATTERN_DATE))),
 				application.getOpAppReason() == null ? Optional.empty() : Optional.of(new AppReason(application.getOpAppReason())),
 				application.getOpAppStandardReasonCD() == null ? Optional.empty() : Optional.of(new AppStandardReasonCode(application.getOpAppStandardReasonCD())));
+	}
+
+	public CheckBeforeOutputDto checkBeforeUpdate(ParamCheckBeforeRegister param) {
+		AppHdWorkDispInfoOutput appHdWorkDispInfoOutput = param.getAppHdWorkDispInfo().toDomain();
+		Application application = this.createApplication(param.getAppHolidayWork().getApplication());
+		AppHolidayWork appHolidayWork = param.getAppHolidayWork().toDomain();
+		appHolidayWork.setApplication(application);
+		
+		CheckBeforeOutput checkBeforeOutput = 
+				holidayWorkService.checkBeforeUpdate(param.isRequire(), param.getCompanyId(), appHdWorkDispInfoOutput, appHolidayWork, param.isProxy());
+		return CheckBeforeOutputDto.fromDomain(checkBeforeOutput);
 	}
 }

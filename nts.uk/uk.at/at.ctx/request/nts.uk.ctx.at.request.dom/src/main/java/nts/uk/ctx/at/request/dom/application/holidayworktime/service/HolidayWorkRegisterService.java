@@ -28,4 +28,12 @@ public interface HolidayWorkRegisterService {
 			AppHdWorkDispInfoOutput appHdWorkDispInfoOutput,
 			List<ApprovalPhaseStateImport_New> lstApproval
 			);
+
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF010_休日出勤時間申請.アルゴリズム.8.休出申請（詳細）登録処理.8.休出申請（詳細）登録処理
+	 * @param companyId
+	 * @param appHolidayWork
+	 * @return
+	 */
+	public ProcessResult update(String companyId, AppHolidayWork appHolidayWork);
 }
