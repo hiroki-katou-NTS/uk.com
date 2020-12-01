@@ -21,6 +21,7 @@ import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HdWorkDetailOu
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HolidayWorkCalculationResultDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamCalculationHolidayWork;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamCheckBeforeRegister;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamDeleteHdChange;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamHdWorkDetail;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamHolidayWorkChangeDate;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamHolidayWorkChangeWork;
@@ -158,7 +159,7 @@ public class AppHolidayWorkFinder {
 		return AppHdWorkDispInfoDto.fromDomain(appHdWorkDispInfoOutput);
 	}
 	
-	public AppHdWorkDispInfoDto changeWorkTime(ParamHolidayWorkChangeWork param) {
+	public AppHdWorkDispInfoDto changeWorkHours(ParamHolidayWorkChangeWork param) {
 		AppHdWorkDispInfoOutput appHdWorkDispInfoOutput = param.getAppHdWorkDispInfoDto().toDomain();
 		
 		List<ActualContentDisplay> opActualContentDisplayLst = appHdWorkDispInfoOutput.getAppDispInfoStartupOutput()
@@ -252,5 +253,9 @@ public class AppHolidayWorkFinder {
 		CheckBeforeOutput checkBeforeOutput = 
 				holidayWorkService.checkBeforeUpdate(param.isRequire(), param.getCompanyId(), appHdWorkDispInfoOutput, appHolidayWork, param.isProxy());
 		return CheckBeforeOutputDto.fromDomain(checkBeforeOutput);
+	}
+
+	public void deleteHdChange(ParamDeleteHdChange param) {
+		holidayWorkService.deleteHdChange(param.getApplicationId());
 	}
 }

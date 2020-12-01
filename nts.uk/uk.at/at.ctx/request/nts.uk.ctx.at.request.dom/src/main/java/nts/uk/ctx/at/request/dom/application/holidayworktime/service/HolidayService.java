@@ -111,4 +111,10 @@ public interface HolidayService {
 	 */
 	public CheckBeforeOutput checkBeforeUpdate(boolean require, String companyId,
 			AppHdWorkDispInfoOutput appHdWorkDispInfoOutput, AppHolidayWork appHolidayWork, boolean isProxy);
+
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF010_休日出勤時間申請.アルゴリズム.11.休出申請（振休変更）削除.11.休出申請（振休変更）削除
+	 * @param applicationId
+	 */
+	public void deleteHdChange(String applicationId);
 }

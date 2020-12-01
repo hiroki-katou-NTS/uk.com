@@ -29,6 +29,8 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.AgreeOv
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.brkoffsupchangemng.BrkOffSupChangeMng;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.brkoffsupchangemng.BrkOffSupChangeMngRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.commonalgorithm.ICommonAlgorithmHolidayWork;
@@ -111,6 +113,9 @@ public class HolidayServiceImpl implements HolidayService {
 	
 	@Inject
 	private OvertimeService overtimeService;
+	
+	@Inject
+	private BrkOffSupChangeMngRepository brkOffSupChangeMngRepository;
 
 	@Override
 	public AppHdWorkDispInfoOutput startA(String companyId, Optional<List<String>> empList,
@@ -405,6 +410,14 @@ public class HolidayServiceImpl implements HolidayService {
 		checkBeforeOutput = commonHolidayWorkAlgorithm.individualErrorCheck(require, companyId, appHdWorkDispInfoOutput, appHolidayWork, 1);	//mode update = 1
 
 		return checkBeforeOutput;
+	}
+
+	@Override
+	public void deleteHdChange(String applicationId) {
+		Optional<BrkOffSupChangeMng> brkOffSupChangeMngOp = brkOffSupChangeMngRepository.findHolidayAppID(applicationId);
+		if(brkOffSupChangeMngOp.isPresent()) {
+			// huytodo get Domain 振休振出申請, change reflect and delete 振休申請休出変更管理
+		}
 	}
 
 }

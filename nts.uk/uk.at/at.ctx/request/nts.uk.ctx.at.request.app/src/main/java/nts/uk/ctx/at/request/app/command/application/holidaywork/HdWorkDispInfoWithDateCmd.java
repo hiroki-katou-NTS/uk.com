@@ -83,18 +83,23 @@ public class HdWorkDispInfoWithDateCmd {
 	/**
 	 * 月別実績の36協定時間状態
 	 */
-	private int actualMonthlyAgreeTimeStatus;
+	private Integer actualMonthlyAgreeTimeStatus;
 	
 	public HdWorkDispInfoWithDateOutput toDomain() {
 		String companyId = AppContexts.user().companyId();
 		return new HdWorkDispInfoWithDateOutput(this.subHdManage, 
 				this.workHours.toDomain(), 
-				Optional.ofNullable(this.breakTimeZoneSettingList.toDomain()), 
-				Optional.ofNullable(this.workTypeList.stream().map(workTypeCmd -> workTypeCmd.toDomain(companyId)).collect(Collectors.toList())), 
-				Optional.ofNullable(new WorkTypeCode(this.initWorkType)), Optional.ofNullable(new WorkTypeName(this.initWorkTypeName)), 
-				Optional.ofNullable(new WorkTimeCode(this.initWorkTime)), Optional.ofNullable(new WorkTimeName(this.initWorkTimeName)), 
-				this.overtimeStatus != null ? this.overtimeStatus.toDomain() : null, 
-				Optional.ofNullable(this.actualApplicationTime.toDomain()),
-				Optional.ofNullable(EnumAdaptor.valueOf(this.actualMonthlyAgreeTimeStatus, AgreementTimeStatusOfMonthly.class)));
+				Optional.ofNullable(this.breakTimeZoneSettingList != null ? this.breakTimeZoneSettingList.toDomain() : null), 
+				Optional.ofNullable(this.workTypeList != null ? 
+						this.workTypeList.stream().map(workTypeCmd -> workTypeCmd.toDomain(companyId)).collect(Collectors.toList()) : null), 
+				Optional.ofNullable(this.initWorkType != null ? new WorkTypeCode(this.initWorkType) : null), 
+				Optional.ofNullable(this.initWorkTypeName != null ? new WorkTypeName(this.initWorkTypeName) : null), 
+				Optional.ofNullable(this.initWorkTime != null ? new WorkTimeCode(this.initWorkTime) : null), 
+				Optional.ofNullable(this.initWorkTimeName != null ? new WorkTimeName(this.initWorkTimeName) : null), 
+				Optional.ofNullable(this.overtimeStatus != null ? this.overtimeStatus.toDomain() : null), 
+				Optional.ofNullable(this.actualApplicationTime != null ? this.actualApplicationTime.toDomain() : null),
+				Optional.ofNullable(this.actualMonthlyAgreeTimeStatus != null ? 
+						EnumAdaptor.valueOf(this.actualMonthlyAgreeTimeStatus, AgreementTimeStatusOfMonthly.class) : null)
+				);
 	}
 }

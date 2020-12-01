@@ -71,7 +71,7 @@ public class HdWorkDispInfoWithDateOutput {
 	/**
 	 * 勤怠時間の超過状態
 	 */
-	private OvertimeStatus overtimeStatus;
+	private Optional<OvertimeStatus> overtimeStatus = Optional.empty();
 	
 	/**
 	 * 実績の申請時間

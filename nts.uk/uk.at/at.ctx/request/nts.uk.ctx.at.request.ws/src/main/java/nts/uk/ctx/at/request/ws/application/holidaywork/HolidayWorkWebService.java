@@ -16,6 +16,7 @@ import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHdWorkDispI
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HolidayWorkCalculationResultDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamCalculationHolidayWork;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamCheckBeforeRegister;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamDeleteHdChange;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamHdWorkDetail;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamHolidayWorkChangeDate;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamHolidayWorkChangeWork;
@@ -73,9 +74,9 @@ public class HolidayWorkWebService extends WebService{
 	}
 	
 	@POST
-	@Path("changeWorkTime")
-	public AppHdWorkDispInfoDto changeWorkTime(ParamHolidayWorkChangeWork param) {
-		return appHolidayWorkFinder.changeWorkTime(param);
+	@Path("changeWorkHours")
+	public AppHdWorkDispInfoDto changeWorkHours(ParamHolidayWorkChangeWork param) {
+		return appHolidayWorkFinder.changeWorkHours(param);
 	}
 	
 	@POST
@@ -100,6 +101,12 @@ public class HolidayWorkWebService extends WebService{
 	@Path("register")
 	public ProcessResult update(UpdateCommand param) {
 		return updateCommandHandler.handle(param);
+	}
+	
+	@POST
+	@Path("deleteHdChange")
+	public void deleteHdChange(ParamDeleteHdChange param) {
+		appHolidayWorkFinder.deleteHdChange(param);
 	}
 	
 	

@@ -90,7 +90,7 @@ public class HdWorkDispInfoWithDateDto {
 				domain.getInitWorkTypeName().isPresent() ? domain.getInitWorkTypeName().get().v() : "", 
 				domain.getInitWorkTime().isPresent() ? domain.getInitWorkTime().get().v() : "", 
 				domain.getInitWorkTimeName().isPresent() ? domain.getInitWorkTimeName().get().v() : "", 
-				OvertimeStatusDto.fromDomain(domain.getOvertimeStatus()), 
+				domain.getOvertimeStatus().isPresent() ? OvertimeStatusDto.fromDomain(domain.getOvertimeStatus().get()) : null, 
 				ApplicationTimeDto.fromDomain(domain.getActualApplicationTime().orElse(null)), 
 				domain.getActualMonthlyAgreeTimeStatus().isPresent() ? domain.getActualMonthlyAgreeTimeStatus().get().value : null);
 	}
