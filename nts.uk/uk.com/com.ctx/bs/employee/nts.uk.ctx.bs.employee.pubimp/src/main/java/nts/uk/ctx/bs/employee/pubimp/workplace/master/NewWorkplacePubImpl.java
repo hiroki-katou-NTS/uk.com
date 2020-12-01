@@ -876,7 +876,7 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 	}
 
 	@Override
-	public List<WorkplaceInformationExport> getCidAndPeriod(String companyId, DatePeriod datePeriod) {
+	public List<WorkplaceInformationExport> getByCidAndPeriod(String companyId, DatePeriod datePeriod) {
 
 		//[No.647]期間に対応する職場構成を取得する
 		List<WorkPlaceConfigExport> workPlaceConfigLst = workPlaceConfigPub.findByCompanyIdAndPeriod(companyId, datePeriod);

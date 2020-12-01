@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.service.beforecheck;
 
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.service.GetStampCardQuery;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.FixedCheckDayItems;
@@ -11,6 +10,8 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepo
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.PersonEmpBasicInfoImport;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.service.beforecheck.unregistedstamp.UnregistedStampCardService;
+import nts.uk.ctx.at.shared.dom.adapter.temporaryabsence.SharedTempAbsenceAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.temporaryabsence.TempAbsenceHistoryImport;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -32,6 +33,8 @@ public class DailyBeforeCheckService {
     private GetStampCardQuery getStampCardQuery;
     @Inject
     private StampDakokuRepository stampDakokuRepo;
+    @Inject
+    private SharedTempAbsenceAdapter sharedTempAbsenceAdapter;
 
     /**
      * チェック前の取得するデータ
@@ -65,8 +68,8 @@ public class DailyBeforeCheckService {
 
         if (fixedExtractDayItems.stream().anyMatch(x -> FixedCheckDayItems.LEAVE.equals(x.getFixedCheckDayItems()))) {
             // 社員（List）と期間から休職休業を取得する
-            // TODO Q&A 36518
-            data.setEmpLeaves(new ArrayList<>());
+            List<TempAbsenceHistoryImport> tempAbsences = sharedTempAbsenceAdapter.getTempAbsenceHistories(cid, period, employeeIds);
+            data.setTempAbsences(tempAbsences);
         }
 
         if (fixedExtractDayItems.stream().anyMatch(x -> FixedCheckDayItems.CARD_UNREGISTERD_STAMP.equals(x.getFixedCheckDayItems()))) {

@@ -1,17 +1,15 @@
-package nts.uk.ctx.bs.employee.pub.temporaryabsence;
+package nts.uk.ctx.at.shared.dom.adapter.temporaryabsence;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import nts.arc.time.GeneralDate;
 
 @Getter
 @AllArgsConstructor
-public class DateHistoryItemExport {
+public class DateHistoryItemImport {
 
     public String historyId;
     public GeneralDate startDate;
     public GeneralDate endDate;
-    private TempAbsenceHisItemExport historyItem;
+    TempAbsenceHisItemImport historyItem;
 }

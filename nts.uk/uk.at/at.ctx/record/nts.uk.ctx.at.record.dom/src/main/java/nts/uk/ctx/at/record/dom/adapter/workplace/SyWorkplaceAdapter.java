@@ -27,4 +27,12 @@ public interface SyWorkplaceAdapter {
 	 * [No.597]職場の所属社員を取得する
 	 */
 	List<EmployeeInfoImported> getLstEmpByWorkplaceIdsAndPeriod(List<String> workplaceIds, DatePeriod period);
+
+	/**
+	 * 期間から職場情報を取得
+	 * @param companyId
+	 * @param datePeriod
+	 * @return
+	 */
+	List<WorkplaceInformationImport> getByCidAndPeriod(String companyId, DatePeriod datePeriod);
 }

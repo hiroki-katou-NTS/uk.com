@@ -170,6 +170,6 @@ public interface WorkplacePub {
 	 * @param datePeriod
 	 * @return
 	 */
-	List<WorkplaceInformationExport> getCidAndPeriod(String companyId, DatePeriod datePeriod);
+	List<WorkplaceInformationExport> getByCidAndPeriod(String companyId, DatePeriod datePeriod);
 
 }
