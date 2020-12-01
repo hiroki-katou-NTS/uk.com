@@ -10,6 +10,7 @@ module nts.uk.ui.components.fullcalendar {
     const C_COMP_NAME = 'fc-copy';
     const E_COMP_NAME = 'fc-editor';
     const COMPONENT_NAME = 'fullcalendar';
+    const POWNER_CLASS = 'popup-owner';
     const DEFAULT_STYLES = `
         body.fc-unselectable li.fc-event-dragging{
             list-style: none;
@@ -729,6 +730,13 @@ module nts.uk.ui.components.fullcalendar {
             dataEvent.ctrl.valueHasMutated();
             dataEvent.shift.valueHasMutated();
 
+            popupPosition.copyDay
+                .subscribe(c => {
+                    if (!c) {
+                        $(`.${POWNER_CLASS}`).removeClass();
+                    }
+                });
+
             if (version.match(/IE/)) {
                 $el.addClass('ie');
             }
@@ -896,9 +904,10 @@ module nts.uk.ui.components.fullcalendar {
                             const bound = tg.getBoundingClientRect();
                             const { top, left } = bound;
 
+                            tg.classList.add(POWNER_CLASS);
+
                             popupPosition.copyDay({ top, left: left - 253 });
                         }
-
 
                         if (ko.unwrap(editable) === true) {
                             event.coppyDay.apply(viewModel, [(new Date(), new Date())]);
@@ -1410,7 +1419,7 @@ module nts.uk.ui.components.fullcalendar {
 
             vm.registerEvent('mousewheel', () => {
                 this.popupPosition.event(null);
-                this.popupPosition.copyDay(null);                
+                this.popupPosition.copyDay(null);
             });
         }
 
@@ -1603,7 +1612,15 @@ module nts.uk.ui.components.fullcalendar {
                 });
 
                 vm.event = (evt: JQueryEventObject) => {
+                    const tg = evt.target as HTMLElement;
 
+                    if (tg) {
+                        if (tg.classList.contains(POWNER_CLASS) || $(tg).closest(`.${POWNER_CLASS}`).length || $(tg).closest('.fx-popup-copyday').length) {
+                            return true;
+                        }
+
+                        position(null);
+                    }
                 };
 
                 $(document).on('click', vm.event);
