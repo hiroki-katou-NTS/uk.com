@@ -134,11 +134,12 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 
 		switch (appType) {
 		case OVER_TIME_APPLICATION:
-			asposeAppOverTime.printAppOverTimeContent(worksheet, printContentOfApp);
-			reasonLabel = worksheet.getCells().get("B27");
-			remarkLabel = worksheet.getCells().get("B30");
-			reasonContent = worksheet.getCells().get("D27");
+			int countDelete = asposeAppOverTime.printAppOverTimeContent(worksheet, printContentOfApp);
+			reasonLabel = worksheet.getCells().get("B26");
+			remarkLabel = worksheet.getCells().get("B29");
+			reasonContent = worksheet.getCells().get("D26");
 			printBottomKAF000(reasonLabel, remarkLabel, reasonContent, printContentOfApp);
+			
 			break;
 		case ABSENCE_APPLICATION:
 			break;
