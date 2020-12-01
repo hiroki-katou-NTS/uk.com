@@ -18,10 +18,13 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.logging.log4j.util.Strings;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
+import nts.arc.error.ErrorMessage;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -126,6 +129,7 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.mail.MailSender;
+import nts.uk.shr.com.mail.SendMailFailedException;
 import nts.uk.shr.com.url.RegisterEmbededURL;
 import nts.uk.shr.com.url.UrlParamAtr;
 import nts.uk.shr.com.url.UrlTaskIncre;
@@ -502,9 +506,13 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 				// アルゴリズム「メールを送信する」を実行する
 				mailsender.sendFromAdmin(mailTransmission.getMailAddr(),
 						new MailContents(mailTransmission.getSubject(), mailTransmission.getText() + embeddedURL));
+			} catch (SendMailFailedException mailException) {
+				if(Strings.isNotBlank(mailException.getMessageId())) {
+					throw new BusinessException(mailException.getMessageId());
+				}
+				throw new BusinessException(new RawErrorMessage(mailException.getMessage()));
 			} catch (Exception e) {
-				// 送信エラー社員(リスト)と社員名、エラー内容を追加する
-				listError.add(mailTransmission.getSName());
+				throw new BusinessException(new RawErrorMessage(e.getMessage()));
 			}
 		}
 		SendMailResultOutput result = new SendMailResultOutput();
