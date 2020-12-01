@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.portal.app.find.standardmenu.StandardMenuDto;
 import nts.uk.ctx.sys.portal.app.find.toppage.TopPageDto;
@@ -197,19 +199,16 @@ public class DisplayMyPageFinder {
 			if (layout1.get().getLayoutType() == LayoutType.FLOW_MENU) {
 				//	アルゴリズム「フローメニューの作成リストを取得する」を実行する
 				//	Inputフローコードが指定されている場合
-				if (layout1.get().getFlowMenuCd().isPresent()) {
-					//	ドメインモデル「フローメニュー作成」を取得する
-					Optional<CreateFlowMenu> data = this.cFlowMenuRepo.findByPk(cId
-							, layout1.get().getFlowMenuCd().get().v());
+				if (layout1.get().getFlowMenuCd().isPresent() && !StringUtils.isEmpty(layout1.get().getFlowMenuCd().get().v())) {
+					// ドメインモデル「フローメニュー作成」を取得する
+					Optional<CreateFlowMenu> data = this.cFlowMenuRepo.findByPk(cId,
+							layout1.get().getFlowMenuCd().get().v());
 					if (data.isPresent()) {
 						listFlow.add(FlowMenuOutputCCG008.builder()
-										.flowCode(data.get().getFlowMenuCode().v())
-										.flowName(data.get().getFlowMenuName().v())
-										.fileId(data.get()
-													.getFlowMenuLayout()
-													.map(FlowMenuLayout::getFileId)
-													.orElse(""))
-										.build());
+								.flowCode(data.get().getFlowMenuCode().v())
+								.flowName(data.get().getFlowMenuName().v())
+								.fileId(data.get().getFlowMenuLayout().map(FlowMenuLayout::getFileId).orElse(""))
+								.build());
 					}
 				} else {
 					//	ドメインモデル「フローメニュー作成」を取得する

@@ -33,11 +33,10 @@ module nts.uk.com.view.ccg015.d {
       const vm = this;
       vm.params = params;
       vm.topPageCode(params.topPageModel.topPageCode);
-
       vm.itemList([
-        new ItemModel(0, 'フローメニュー'),
-        new ItemModel(1, 'フローメニュー（アップロード）'),
-        new ItemModel(2, '外部URL')
+        new ItemModel(LayoutType.FLOW_MENU, vm.$i18n('Enum_LayoutType_FLOW_MENU')),
+        new ItemModel(LayoutType.FLOW_MENU_UPLOAD, vm.$i18n('Enum_LayoutType_FLOW_MENU_UPLOAD')),
+        new ItemModel(LayoutType.EXTERNAL_URL, vm.$i18n('Enum_LayoutType_EXTERNAL_URL')),
       ]);
       vm.columnsFlowMenu([
         { headerText: vm.$i18n('CCG015_68'), width: "50px", key: 'flowCode' },
@@ -48,20 +47,21 @@ module nts.uk.com.view.ccg015.d {
         { headerText: vm.$i18n('CCG015_69'), width: "260px", key: 'flowName' },
       ]);
       vm.layoutType.subscribe(value => {
+        vm.$errors('clear');
         vm.$blockui('grayout');
-        vm.changeLayout()
+        vm.changeLayout(value)
           .then(() => {
-            if (value === 0) {
+            if (value === LayoutType.FLOW_MENU) {
               vm.contentFlowMenu(true);
               vm.contentTopPagePart(false);
               vm.contentUrl(false);
-            } else if (value === 1) {
+            } else if (value === LayoutType.FLOW_MENU_UPLOAD) {
               vm.contentFlowMenu(false);
               vm.contentTopPagePart(true);
               vm.contentUrl(false);
             } else {
               vm.contentFlowMenu(false);
-              vm.contentFlowMenu(false);
+              vm.contentTopPagePart(false);
               vm.contentUrl(true);
             }
           })
@@ -74,19 +74,20 @@ module nts.uk.com.view.ccg015.d {
       vm.checkDataLayout(vm.params);
     }
 
-
-    private changeLayout(): JQueryPromise<any> {
+    private changeLayout(layoutType: number): JQueryPromise<any> {
       const vm = this;
       const data = {
         topPageCd: vm.topPageCode(),
-        layoutType: vm.layoutType()
+        layoutType: layoutType,
       };
       return vm.$ajax('/toppage/changeFlowMenu', data)
         .then((result: any) => {
-          if (result && vm.layoutType() === 0) {
+          if (result && layoutType === LayoutType.FLOW_MENU) {
             vm.listFlowMenu(result);
-          } else if (result && vm.layoutType() === 1) {
+          } else if (result && layoutType === LayoutType.FLOW_MENU_UPLOAD) {
             vm.listTopPagePart(result);
+          } else {
+            // Do nothing
           }
         });
     }
@@ -94,7 +95,7 @@ module nts.uk.com.view.ccg015.d {
     private checkDataLayout(params: any) {
       const vm = this;
       if (params && params.frame === 1) {
-        vm.layoutNo(0);
+        vm.layoutNo(LayoutType.FLOW_MENU);
       }
       const layoutRquest = {
         topPageCode: vm.topPageCode(),
@@ -135,10 +136,24 @@ module nts.uk.com.view.ccg015.d {
         .always(() => vm.$blockui("clear"));
     }
 
+    checkSaveLayout() {
+      const vm = this;
+      if (vm.layoutType() === LayoutType.EXTERNAL_URL) {
+        vm.$errors('clear');
+        vm.$validate()
+          .then((valid: boolean) => {
+            if (valid) {
+              vm.saveLayout();
+            }
+          });
+      } else {
+        vm.saveLayout();
+      }
+    }
+
     saveLayout() {
       const vm = this;
-      vm.$blockui("show");
-      let data: any = {
+      const data: any = {
         widgetSettings: null,
         topPageCode: vm.topPageCode(),
         layoutNo: vm.layoutNo(),
@@ -148,13 +163,14 @@ module nts.uk.com.view.ccg015.d {
         flowMenuUpCd: vm.toppageSelectedCode(),
         url: vm.urlIframe3()
       };
-      vm.$ajax('/toppage/saveLayoutFlowMenu', data).done(function () {
-        vm.$dialog.info({ messageId: "Msg_15" })
-      }).then((result: any) => {
-        vm.isNewMode(false);
-      }).always(() => {
-        vm.$blockui("hide");
-      });
+      vm.$blockui("grayout");
+      vm.$ajax('/toppage/saveLayoutFlowMenu', data)
+        .then(() => {
+          vm.isNewMode(false);
+          vm.$blockui('clear');
+          vm.$dialog.info({ messageId: "Msg_15" });
+        })
+        .always(() => vm.$blockui('clear'));
     }
 
     // URLの内容表示するを
@@ -189,5 +205,11 @@ module nts.uk.com.view.ccg015.d {
     fileId: string;
     flowCode: string;
     flowName: string;
+  }
+
+  export enum LayoutType {
+    FLOW_MENU = 0,
+    FLOW_MENU_UPLOAD = 1,
+    EXTERNAL_URL = 2,
   }
 }

@@ -16,7 +16,7 @@ module ccg018.a.service {
     export function findByCId(): JQueryPromise<any> {
         return nts.uk.request.ajax("com", paths.findByCId);
     }
-    
+
     export function findBySystemMenuCls(): JQueryPromise<any> {
         return nts.uk.request.ajax("com", paths.findBySystemMenuCls);
     }

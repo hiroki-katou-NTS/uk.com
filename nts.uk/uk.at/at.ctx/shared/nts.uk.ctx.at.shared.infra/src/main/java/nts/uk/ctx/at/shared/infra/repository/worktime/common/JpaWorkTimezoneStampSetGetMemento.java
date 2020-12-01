@@ -6,9 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.FontRearSection;
 import nts.uk.ctx.at.shared.dom.worktime.common.InstantRounding;
 import nts.uk.ctx.at.shared.dom.worktime.common.MultiStampTimePiorityAtr;
@@ -18,7 +16,6 @@ import nts.uk.ctx.at.shared.dom.worktime.common.RoundingTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.RoundingTimeUnit;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampPiorityAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.Superiority;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSetGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComStmp;
 import nts.uk.shr.com.enumcommon.NotUseAtr;

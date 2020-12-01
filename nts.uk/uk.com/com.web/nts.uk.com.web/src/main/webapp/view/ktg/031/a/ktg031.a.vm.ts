@@ -1,213 +1,299 @@
-module nts.uk.at.view.ktg031.a.viewmodel {
-    import setShared = nts.uk.ui.windows.setShared;
-    import block = nts.uk.ui.block;
-    export class ScreenModel {
-        roundingRules: KnockoutObservableArray<any>;
-        selectedRuleCode: any;
-        listToppage: KnockoutObservableArray<TopPageAlarmDto>;
-        period: KnockoutObservable<number> = ko.observable(3);
-        constructor() {
-            var self = this;
-            self.roundingRules = ko.observableArray([
-                { code: '1', name: nts.uk.resource.getText("KTG031_1") },
-                { code: '0', name: nts.uk.resource.getText("KTG031_2") }
-            ]);
-            self.selectedRuleCode = ko.observable(0);
-            self.listToppage = ko.observableArray([]);
-            // subscribe switch button (rogerFlag)            
-            self.selectedRuleCode.subscribe((value) => {
-                let temp = self.period();
-                if (value == 0) {
-                    service.getToppage(self.selectedRuleCode(), temp).done((listData) => {
-                        let listOrder = _.orderBy(listData, ["finishDateTime"], ['desc']);     
-                        self.listToppage(_.map(listOrder, acc => {
-                            let afterConvert = self.convertTime(acc.finishDateTime);
-                            acc.finishDateTime = afterConvert;
-                            return new TopPageAlarmDto(acc);
-                        }));
-                        self.period(temp);
-                    }).fail(function(error) {
-                        alertError(error);
-                    }).always(() => {  
-                        block.clear();
-                    });
-                } else {
-                    service.getAllToppage(temp).done((data) => {
-                        let listOrder = _.orderBy(data, ["finishDateTime"], ['desc']);
-                        self.listToppage(_.map(listOrder, acc => {
-                            let afterConvert = self.convertTime(acc.finishDateTime);
-                            acc.finishDateTime = afterConvert;
-                            let a = new TopPageAlarmDto(acc);
-                            if (acc.rogerFlag == 1) {
-                                a.hidden(false);
-                            }
-                            return a;
-                        }));
-                        self.period(temp);
-                    }).fail(function(error) {
-                        alertError(error);
-                    }).always(() => {
-                        block.clear();
-                    });
-                }
-            });
-            // subscribe month
-            self.period.subscribe((obj) => {
-                let temp = self.period();
-                self.listToppage([]);
-                if (self.selectedRuleCode() == 0) {
-                    service.getToppage(self.selectedRuleCode(), temp).done((listData) => {
-                        let listOrder = _.orderBy(listData, ["finishDateTime"], ['desc']); 
-                        self.listToppage(_.map(listOrder, acc => {
-                            let afterConvert = self.convertTime(acc.finishDateTime);
-                            acc.finishDateTime = afterConvert;
-                            return new TopPageAlarmDto(acc);
-                        }));
-                    });
-                }else{
-                    service.getAllToppage(temp).done((data) => {
-                        let listOrder = _.orderBy(data, ["finishDateTime"], ['desc']);
-                        self.listToppage(_.map(listOrder, acc => {
-                            let afterConvert = self.convertTime(acc.finishDateTime);
-                            acc.finishDateTime = afterConvert;
-                            let a = new TopPageAlarmDto(acc);
-                            if (acc.rogerFlag == 1) {
-                                a.hidden(false);
-                            }
-                            return a;
-                        }));
-                        self.period(temp);
-                    }).fail(function(error) {
-                        alertError(error);
-                    }).always(() => {
-                        block.clear();
-                    });
-                }
-            });
-        }
+/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
-        startPage(): JQueryPromise<any> {
-            let self = this;
-            block.grayout();
-            var dfd = $.Deferred();
-            // get toppage with roger = 0
-            service.getToppage(self.selectedRuleCode(), self.period()).done((listData: Array<ITopPageAlarmDto>) => {
-                let listOrder = _.orderBy(listData, ["finishDateTime"], ['desc']);
-                self.listToppage(_.map(listOrder, acc => {
-                    let afterConvert = self.convertTime(acc.finishDateTime);
-                    acc.finishDateTime = afterConvert;
-                    return new TopPageAlarmDto(acc);
-                }));
-                
-                dfd.resolve();
-            }).fail(function(error) {
-                alertError(error);
-                dfd.reject();
-            }).always(() => {
-                block.clear();
-            });
-            return dfd.promise();
-        }
+module nts.uk.com.view.ktg031.a {
 
-        //convert time follow the format
-        convertTime(time: string): string {
-            let self = this;
-            // get and format time at the moment
-            let now = moment(new Date()).utcOffset(0).format('YYYY-MM-DD');
-            // format time in DB
-            let data = moment(time).utcOffset(0).format('YYYY-MM-DD');
-            if (now == data) {
-                return moment(time).utcOffset(0).format('HH:mm'); 
-            } else {
-                return moment(time).utcOffset(0).format('MM/DD HH:mm');
-            }
-        }
+  const API = {
+    findAlarmData: "sys/portal/toppageAlarm/findAlarmData",
+    changeToRead: 'sys/portal/toppageAlarm/changeAlarmToReaded',
+    changeToUnread: 'sys/portal/toppageAlarm/changeAlarmToUnread',
+  }
 
-        // click open dialog 詳細ボタン
-        openDialog(index: number) {
-            let self = this;
-            let data = {
-                executionLogId: self.listToppage()[index].executionLogId,
-                processingName: self.listToppage()[index].processingName
-            }
-            parent.nts.uk.ui.windows.setShared('ktg031A', data);
-            parent.nts.uk.ui.windows.sub.modal("/view/ktg/031/b/index.xhtml");
+  @component({
+    name: 'ktg031-component',
+    template: `
+      <div id="ktg031-container">
+        <div class="header-line"></div>
+        <div class="body">
+          <div class="body-top-row">
+            <div data-bind="ntsComboBox: {
+              name: '#[KTG031_10]',
+              width: 150,
+              value: $component.selectedAlarmType,
+              options: $component.listAlarmType,
+              optionsValue: 'code',
+              optionsText: 'name',
+              visibleItemsCount: 5,
+              required: true,
+              selectFirstIfNull: true,
+              columns: [
+                { prop: 'name', length: 10 },
+              ]}"></div>
+            <div class="body-top-label">
+              <span class="label" data-bind="text: $component.$i18n('KTG031_11')"></span>
+              <div data-bind="if: $component.isEmployee">
+                <i class="img-icon" data-bind="ntsIcon: {no: 5, width: 30, height: 30}, click: $component.openDialogSetting"></i>
+              </div>
+            </div>
+          </div>
+          <div class="table-container">
+            <table id="ktg031-grid">
+              <tbody data-bind="foreach: $component.listAlarm">
+                <tr>
+                  <td class="column-date">
+                    <span data-bind="text: dateMonth"></span>
+                    <span data-bind="text: $component.$i18n('KTG031_13')"></span>
+                  </td>
+                  <td>
+                    <span class="limited-label" data-bind="text: displayMessage"></span>
+                  </td>
+                  <td class="column-action">
+                    <div data-bind="ntsCheckBox: { checked: isReaded }"></div>
+                  </td>
+                  <td class="column-action">
+                    <i class="img-icon" data-bind="ntsIcon: {no: 178, width: 20, height: 20}, click: function() { $component.openUrl(linkUrl); }"></i>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <style type="text/css" rel="stylesheet">
+        #ktg031-container {
+          width: 100%;
+          height: 290px;
+          display: flex;
+          flex-direction: column;
         }
-        // click update 了解ボタン
-        updateRoger(index: number) {
-            let self = this;
-            block.grayout;
-            let cmd = {
-                executionLogId: self.listToppage()[index].executionLogId,
-                rogerFlag: 1
-            }
-            if (self.selectedRuleCode() == 0) {
-                service.update(cmd).done(function() {
-                    self.startPage();
-                }).always(() => {
-                    block.clear();
-                });
-            } else {
-                self.listToppage()[index].hidden(false);
-                service.update(cmd).done(function() {
-                }).always(() => {
-                    block.clear();
-                });
-            }
+        #ktg031-container .header-line {
+          width: 100%;
+          height: 5px;
+          background-color: #689f38;
         }
+        #ktg031-container .body {
+          padding: 5px;
+          box-sizing: border-box;
+          width: 100%;
+          height: calc(100% - 5px);
+          display: flex;
+          flex-direction: column;
+        }
+        #ktg031-container .body .body-top-row {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+        }
+        #ktg031-container .body .body-top-row .body-top-label {
+          width: 100%;
+          padding-left: 10px;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: space-between;
+        }
+        #ktg031-container .body .body-top-row .body-top-label .label {
+          font-size: 1.2rem;
+        }
+        #ktg031-container .body .body-top-row .body-top-label .img-icon:hover {
+          cursor: pointer;
+        }
+        #ktg031-container .body .table-container {
+          width: 100%;
+          height: 100%;
+          margin-top: 5px;
+          overflow-y: auto;
+        }
+        #ktg031-container .body .table-container #ktg031-grid {
+          width: 100%;
+          table-layout: fixed;
+        }
+        #ktg031-container .body .table-container #ktg031-grid tr.even {
+          background: #F2F2F2;
+        }
+        #ktg031-container .body .table-container #ktg031-grid td {
+          padding: 3px;
+          box-sizing: border-box;
+        }
+        #ktg031-container .body .table-container #ktg031-grid .column-date {
+          width: 80px;
+        }
+        #ktg031-container .body .table-container #ktg031-grid .column-action {
+          width: 50px;
+          text-align: center;
+        }
+        #ktg031-container .body .table-container #ktg031-grid .img-icon:hover {
+          cursor: pointer;
+        }
+      </style>
+    `
+  })
+  export class Ktg031ComponentViewModel extends ko.ViewModel {
+    isEmployee: KnockoutObservable<boolean> = ko.observable(false);
+    selectedAlarmType: KnockoutObservable<number> = ko.observable(null);
+    listAlarmType: KnockoutObservableArray<{ code: number, name: string }> = ko.observableArray([]);
+    listAlarm: KnockoutObservableArray<AlarmDisplayDataDto> = ko.observableArray();
+    $grid: JQuery;
 
-        changeTime(period: number) {
-            let self = this;
-            console.log(period);
-            self.period(period);
-        }
+    created(params: any) {
+      const vm = this;
+      vm.listAlarmType([
+        { code: 0, name: vm.$i18n('Enum_ToppageAlarmDisplay_UNREAD') },
+        { code: 1, name: vm.$i18n('Enum_ToppageAlarmDisplay_ALL') },
+      ]);
+      vm.selectedAlarmType.subscribe(value => vm.loadAlarmData(value));
+      vm.selectedAlarmType(0);
+      vm.isEmployee(__viewContext.user.isEmployee);
     }
 
-    export interface ITopPageAlarmDto {
-        /** 実行ログID */
-        executionLogId: string;
-        /** 実行完了日時 */
-        finishDateTime: string;
-        /** 実行内容 AlarmCategory */
-        executionContent: number;
-        /** エラーの有無 */
-        existenceError: boolean;
-        /** 了解フラグ */
-        rogerFlag: boolean;
-        /** 処理名 */
-        processingName: string;
-        /** 処理結果 */
-        processingResult: string;
+    loadAlarmData(displayType: number) {
+      const vm = this;
+      vm.$blockui('grayout');
+      vm.$ajax(`${API.findAlarmData}/${displayType}`)
+        .then((res: any[]) => vm.setListAlarm(res))
+        .always(() => vm.$blockui('clear'));
     }
 
-    export class TopPageAlarmDto {
-        /** 実行ログID */
-        executionLogId: string;
-        /** 実行完了日時 */
-        finishDateTime: string;
-        /** 実行内容 AlarmCategory */
-        executionContent: number;
-        /** エラーの有無 */
-        existenceError: KnockoutObservable<boolean>;
-        /** 了解フラグ */
-        rogerFlag: boolean;
-        /** 処理名 */
-        processingName: string;
-        /** 処理結果 */
-        processingResult: string;
-        /** hide button */
-        hidden: KnockoutObservable<boolean>;
-        constructor(param: ITopPageAlarmDto) {
-            let self = this;
-            self.executionLogId = param.executionLogId;
-            self.finishDateTime = param.finishDateTime;
-            self.executionContent = param.executionContent;
-            self.existenceError = ko.observable(param.existenceError);
-            self.rogerFlag = param.rogerFlag;
-            self.processingName = param.processingName;
-            self.processingResult = param.processingResult;
-            self.hidden = ko.observable(true);
+    changeToRead(companyId: string, sid: string, displayAtr: number, alarmClassification: number, identificationKey: string) {
+      const vm = this;
+      const command = new ToppageAlarmDataReadCommand({
+        companyId: companyId,
+        sid: sid,
+        displayAtr: displayAtr,
+        alarmClassification: alarmClassification,
+        identificationKey: identificationKey,
+      });
+      vm.$blockui('grayout');
+      vm.$ajax(API.changeToRead, command)
+        .then((res) => vm.$ajax(`${API.findAlarmData}/${vm.selectedAlarmType()}`))
+        .then((res: any[]) => vm.setListAlarm(res))
+        .always(() => vm.$blockui('clear'));
+    }
+
+    setListAlarm(res: any[]) {
+      const vm = this;
+      vm.listAlarm(_.map(res, (item) => new AlarmDisplayDataDto(vm, item)));
+      // Render row backgournd color
+      vm.$nextTick(() => {
+        vm.$grid = $('#ktg031-grid');
+        $("#ktg031-grid tr:nth-child(even)").addClass("even");
+        $("#ktg031-grid tr:nth-child(odd)").addClass("odd");
+      });
+    }
+
+    changeToUnread(companyId: string, sid: string, displayAtr: number, alarmClassification: number, identificationKey: string) {
+      const vm = this;
+      const command = new ToppageAlarmDataUnreadCommand({
+        companyId: companyId,
+        sid: sid,
+        displayAtr: displayAtr,
+        alarmClassification: alarmClassification,
+        identificationKey: identificationKey,
+      });
+      vm.$blockui('grayout');
+      vm.$ajax(API.changeToUnread, command)
+        .then((res) => {
+          console.log(res);
+        })
+        .always(() => vm.$blockui('clear'));
+    }
+
+    openDialogSetting() {
+      const vm = this;
+      vm.$window.modal('/view/ktg/031/b/index.xhtml');
+    }
+
+    openUrl(url: string) {
+      const vm = this;
+      if (url) {
+        const origin: string = window.location.origin;
+        if (url.indexOf(origin) !== -1) {
+          // UK system pages
+          const comPath = 'nts.uk.com.web';
+          const comPagePath = vm.getUKSystemPath(url, comPath);
+          if (comPagePath) {
+            vm.$jump.self("com", comPagePath);
+            return;
+          }
+
+          const atPath = 'nts.uk.at.web';
+          const atPagePath = vm.getUKSystemPath(url, atPath);
+          if (atPagePath) {
+            vm.$jump.self("at", atPagePath);
+            return;
+          }
+        } else {
+          // Other system pages
+          window.open(url);
         }
+      }
     }
 
+    private getUKSystemPath(url: string, path: string): string {
+      const pathIndex = url.lastIndexOf(path);
+      if (pathIndex !== -1) {
+        return url.substring(pathIndex + path.length, url.length);
+      }
+      return null;
+    }
+
+  }
+
+  class AlarmDisplayDataDto {
+    alarmClassification: number;
+    occurrenceDateTime: string;
+    displayMessage: string;
+    companyId: string;
+    sid: string;
+    displayAtr: number;
+    identificationKey: string;
+    linkUrl: string;
+    alreadyDatetime: string;
+    // Client info
+    dateMonth: string;
+    isReaded: KnockoutObservable<boolean>;
+
+    constructor(vm: Ktg031ComponentViewModel, init?: Partial<AlarmDisplayDataDto>) {
+      $.extend(this, init);
+      const model = this;
+      const occurrenceDateTime = moment.utc(model.occurrenceDateTime);
+      model.dateMonth = occurrenceDateTime.format('MM/DD');
+      let isReaded = false;
+      if (model.alreadyDatetime) {
+        const alreadyDatetime = moment.utc(model.alreadyDatetime);
+        isReaded = occurrenceDateTime.isBefore(alreadyDatetime);
+      }
+      model.isReaded = ko.observable(isReaded);
+      model.isReaded.subscribe((value) => {
+        if (value) {
+          vm.changeToRead(model.companyId, model.sid, model.displayAtr, model.alarmClassification, model.identificationKey);
+        } else {
+          vm.changeToUnread(model.companyId, model.sid, model.displayAtr, model.alarmClassification, model.identificationKey);
+        }
+      });
+    }
+  }
+
+  class ToppageAlarmDataReadCommand {
+    companyId: string;
+    sid: string;
+    displayAtr: number;
+    alarmClassification: number;
+    identificationKey: string;
+
+    constructor(init?: Partial<ToppageAlarmDataReadCommand>) {
+      $.extend(this, init);
+    }
+  }
+
+  class ToppageAlarmDataUnreadCommand {
+    companyId: string;
+    sid: string;
+    displayAtr: number;
+    alarmClassification: number;
+    identificationKey: string;
+
+    constructor(init?: Partial<ToppageAlarmDataUnreadCommand>) {
+      $.extend(this, init);
+    }
+  }
 }

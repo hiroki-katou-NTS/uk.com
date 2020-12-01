@@ -56,11 +56,12 @@ public class JpaLayoutNewRepository extends JpaRepository implements LayoutNewRe
 	
 	@Override
 	public void update(LayoutNew domain) {
-		Optional<SptmtLayout> entity = findByCidAndCode(domain.getCid(), domain.getTopPageCode().toString(), domain.getLayoutNo().v());
-		if (entity.isPresent()) {
-			domain.setMemento(entity.get());
+		Optional<SptmtLayout> oEntity = findByCidAndCode(domain.getCid(), domain.getTopPageCode().toString(), domain.getLayoutNo().v());
+		if (oEntity.isPresent()) {
+			SptmtLayout entity = oEntity.get();
+			domain.setMemento(entity);
 			// Update 
-			this.commandProxy().update(entity.get());
+			this.commandProxy().update(entity);
 		}
 	}
 	

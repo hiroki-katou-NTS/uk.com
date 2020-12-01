@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.person.pubimp.anniversary;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +31,7 @@ public class AnniversaryNoticePubImpl implements AnniversaryNoticePub {
     	AnniversaryDomainService.Require require = new RequireImpl(anniversaryRepository);
     	
         Map<AnniversaryNotice, Boolean> anniversaries = anniversaryDomainService.setFlag(require, datePeriod);
-        Map<AnniversaryNoticeExport, Boolean> result = new HashMap<AnniversaryNoticeExport, Boolean>();
+        Map<AnniversaryNoticeExport, Boolean> result = new LinkedHashMap<>();
         if (anniversaries.isEmpty()) {
             return result;
         }

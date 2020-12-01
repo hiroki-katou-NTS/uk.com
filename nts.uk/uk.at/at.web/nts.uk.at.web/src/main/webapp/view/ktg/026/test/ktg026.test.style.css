@@ -1,35 +1,5 @@
 #contents-area {
-  padding-top: 5px;
-  padding-left: 5px;
-  width: 445x;
-  height: 450px;
-}
-.addSign {
-	background: url("../image/addSign.png");
-	margin: -8px 10px;
-	border-radius: 5px;
-	height: 125px;
-	text-align: center;
-  padding-bottom: 5px;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-.sub {
-	margin: 10px;
-	border-radius: 5px;
-	height: 28px;
-	text-align: center;
-	word-wrap: break-word;
-}
-.row-inline{
-  display: inline-flex;
-}
-.custom-panel {
-  width: 115px;
-  height: 115px;
-  margin: 5px;
-  text-align: center;
-  word-wrap: break-word;
+  border: 1px groove;
 }
 .grid {
   display: grid;
@@ -46,7 +16,6 @@
   border-left: 5px solid #48b5cb;
   border-top: 1px groove;
   border-bottom: 1px groove;
-  border-right: 1px groove;
 }
 .mt-10 {
   margin-top: 10px;
@@ -55,7 +24,6 @@
   padding: 10px;
 }
 .pl-0 {
-  width: 400px;
   padding-left: 0px;
 }
 .non-statutory-color {
@@ -71,14 +39,14 @@
   background-color: #e05f4e;
 }
 .pr-20 {
-  padding-right: 10px;
+  padding-right: 20px;
 }
 .pb-0 {
   padding-bottom: 0px;
 }
 .scroll {
   overflow-y: auto;
-  max-height: 270px;
+  max-height: 225px;
   margin-bottom: 20px;
 }
 .scroll thead th {
@@ -99,15 +67,12 @@
 .flex {
   display: flex;
 }
-.left40 {
+.left65 {
   float: left;
-  width: 40%;
+  width: 65%;
 }
 .pl-20 {
-  padding-left: 10px;
-}
-.position-relative {
-  position: relative !important;
+  padding-left: 20px;
 }
 .dashed45 {
   width: 90px;
@@ -127,26 +92,22 @@ tr td .label {
 }
 .w-200 {
   width: 200px;
-  z-index: 100000000;
 }
 .inline-flex {
   display:inline-flex;
-}
-.text-right {
-  text-align: right;
 }
 .border-bot {
   border-bottom: 1px groove;
 }
 .fixed45 {
-  padding-left: 93px;
+  padding-left: 90px;
   position: absolute;
 }
 .fixed80 {
-  padding-left: 163px;
+  padding-left: 160px;
 }
 .data-text {
-  padding: 5px 0px 5px 0px;
+  padding: 3px 20px 3px 0px;
 }
 .mw-200 {
   max-width: 200px;
@@ -154,10 +115,36 @@ tr td .label {
 .gray-bg {
   background-color: #e0e0e0;
 }
-a:link, a:visited {
-  color: inherit;
+table thead tr th {
+  z-index: 1;
 }
-
-a:hover, a:active {
- color:forestgreen;
+.bold {
+  font-weight: bold;
+}
+.relative {
+  position: relative;
+}
+.text-right {
+  text-align: right;
+}
+.content-left {
+  float: left;
+  width: 30%;
+  border-right: 1px solid groove;
+}
+.panel-content {
+  width: 500px;
+  height: 500px;
+}
+.content-right {
+  position: relative;
+  display: inline-block;
+}
+.c-widget-panel {
+  width: 525px;
+  height: 500px;
+  border: 1px solid #B1B1B1;
+  box-shadow: 0 5px 0 #2FCC71 inset;
+  padding: 10px;
+  box-sizing: border-box;
 }
