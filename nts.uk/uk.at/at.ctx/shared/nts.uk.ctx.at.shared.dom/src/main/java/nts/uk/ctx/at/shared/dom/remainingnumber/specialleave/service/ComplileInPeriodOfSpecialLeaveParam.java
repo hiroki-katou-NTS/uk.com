@@ -10,6 +10,10 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
 import nts.arc.time.calendar.period.DatePeriod;
+
+/**
+ *
+ */
 @AllArgsConstructor
 @Setter
 @Getter
@@ -23,7 +27,7 @@ public class ComplileInPeriodOfSpecialLeaveParam {
 	 */
 	private DatePeriod complileDate;
 	/**
-	 * ・モード（月次か、その他か） TRUE: 月次, FALSE: その他  
+	 * ・モード（月次か、その他か） TRUE: 月次, FALSE: その他
 	 * 月次モード：当月以降は日次のみ見るが、申請とスケは見ない
 	 * その他モード：当月以降は申請日次スケを見る
 	 */
@@ -44,8 +48,8 @@ public class ComplileInPeriodOfSpecialLeaveParam {
 	 * 特別休暇暫定データ
 	 */
 	List<InterimSpecialHolidayMng> interimSpecialData;
-	/**
-	 * 前回の特別休暇の集計結果情報
-	 */
-	Optional<InPeriodOfSpecialLeaveResultInfor> optBeforeResult;
+//	/**
+//	 * 前回の特別休暇の集計結果情報
+//	 */
+//	Optional<InPeriodOfSpecialLeaveResultInfor> optBeforeResult;
 }

@@ -114,17 +114,17 @@ public class SpecialLeaveManagementService {
 	 * @return
 	 */
 	public static InPeriodOfSpecialLeaveResultInfor complileInPeriodOfSpecialLeave(
-			RequireM5 require, 
-			CacheCarrier cacheCarrier, 
+			RequireM5 require,
+			CacheCarrier cacheCarrier,
 			ComplileInPeriodOfSpecialLeaveParam param) {
-		
+
 		// 特別休暇の集計結果情報
 		InPeriodOfSpecialLeaveResultInfor outputData = new InPeriodOfSpecialLeaveResultInfor();
-		
+
 		// 特別休暇コードから設定を取得（会社設定）
 		Optional<SpecialHoliday> specialHolidayOpt
 			= require.specialHoliday(param.getCid(), param.getSpecialLeaveCode());
-		
+
 		// ドメインモデル「特別休暇基本情報」を取得する
 		Optional<SpecialLeaveBasicInfo> optBasicInfor = require.specialLeaveBasicInfo(param.getSid(), param.getSpecialLeaveCode(), UseAtr.USE);
 		SpecialLeaveGrantSetting specialLeaveGrantSetting;
@@ -133,32 +133,32 @@ public class SpecialLeaveManagementService {
 //			RemainDaysOfSpecialHoliday remainDays = new RemainDaysOfSpecialHoliday(new SpecialHolidayRemainInfor(0, 0, 0), 0, Optional.empty(), new ArrayList<>());
 //			InPeriodOfSpecialLeave specialLeaveInfor = new InPeriodOfSpecialLeave(new ArrayList<>(), remainDays, new ArrayList<>(), new ArrayList<>());
 //			return new InPeriodOfSpecialLeaveResultInfor(specialLeaveInfor, Finally.empty(), Finally.of(param.getComplileDate().end().addDays(1)));
-		
+
 			// ドメインモデル「特別休暇付与設定」を取得する
 			specialLeaveGrantSetting = optBasicInfor.get().getGrantSetting();
 		}
-		
+
 		// 社員
 		EmployeeImport employee
 			= require.employeeInfo(cacheCarrier, param.getSid());
-		
+
 		// 「休暇の集計期間から入社前、退職後を除く」を実行する
 		DatePeriod aggrPeriod = ConfirmLeavePeriod.sumPeriod(param.getComplileDate(), employee);
 				if (aggrPeriod == null) return outputData;
-		
+
 		// パラメータ月次モード・その他モード
 		InterimRemainMngMode interimRemainMngMode;
-		if ( param.isMode() ){ 
+		if ( param.isMode() ){
 			interimRemainMngMode = InterimRemainMngMode.MONTHLY;
 		} else {
 			interimRemainMngMode = InterimRemainMngMode.OTHER;
 		}
-		
+
 		// 集計開始日時点の特休情報を作成
 		SpecialLeaveInfo specialLeaveInfo = createInfoAsOfPeriodStart(
-						require, 
-						cacheCarrier, 
-						param.getCid(), 
+						require,
+						cacheCarrier,
+						param.getCid(),
 						param.getSid(),
 						param.getComplileDate(),
 						interimRemainMngMode,
@@ -172,49 +172,49 @@ public class SpecialLeaveManagementService {
 //			= new CalcNextSpecialLeaveGrantDate();
 		List<NextSpecialLeaveGrant> nextSpecialLeaveGrantList
 			= CalcNextSpecialLeaveGrantDate.algorithm(
-				require, 
-				cacheCarrier, 
-				param.getCid(), 
-				param.getSid(), 
-				param.getSpecialLeaveCode(), 
+				require,
+				cacheCarrier,
+				param.getCid(),
+				param.getSid(),
+				param.getSpecialLeaveCode(),
 				Optional.of(param.getComplileDate()));
-		
+
 		// 特別休暇集計期間を作成
 		List<SpecialLeaveAggregatePeriodWork> aggregateWork
 			= createAggregatePeriod(
 					require,
 					cacheCarrier,
-					param.getCid(), 
+					param.getCid(),
 					param.getSid(),
-					param.getSpecialLeaveCode(), 
-					nextSpecialLeaveGrantList, 
+					param.getSpecialLeaveCode(),
+					nextSpecialLeaveGrantList,
 					aggrPeriod);
-		
+
 		// アルゴリズム「特別休暇暫定管理データを取得する」を実行する
 		SpecialHolidayInterimMngData specialHolidayInterimMngData
 			= specialHolidayData(require, param);
-		
+
 		// 特別休暇集計期間でループ
 		for (val aggregatePeriodWork : aggregateWork){
 
 			// 特休の消滅・付与・消化
 			outputData = specialLeaveInfo.lapsedGrantDigest(
 					require, // ooooo
-					param.getCid(), 
+					param.getCid(),
 					param.getSid(),
 					aggregatePeriodWork,
-					specialHolidayInterimMngData, 
+					specialHolidayInterimMngData,
 					param.getSpecialLeaveCode(),
 					outputData);
 		}
-		
+
 		// マイナス分の年休付与残数を1レコードにまとめる --------------------------------
-		
+
 		// ダミーとして作成した「年休付与残数(List)」を取得
-		
+
 		// 【渡すパラメータ】 特別休暇情報　←　特別休暇の集計結果．特別休暇情報（期間終了日時点）
 		SpecialLeaveInfo specialLeaveInfoEnd = outputData.getAsOfPeriodEnd();
-		
+
 		// ダミーとして作成した「特別休暇付与残数(List)」を取得
 		List<SpecialLeaveGrantRemaining> remainingList
 			= specialLeaveInfoEnd.getGrantRemainingNumberList();
@@ -230,7 +230,7 @@ public class SpecialLeaveManagementService {
 			leaveRemainingNumberTotal.add(c.getDetails().getRemainingNumber());
 			leaveUsedNumberTotal.add(c.getDetails().getUsedNumber());
 		});
-		
+
 		// 合計した「特別休暇使用数」「特別休暇残数」から特別休暇付与残数を作成
 		LeaveGrantRemaining leaveGrantRemainingTotal = new LeaveGrantRemaining();
 		LeaveNumberInfo leaveNumberInfo = new LeaveNumberInfo();
@@ -241,18 +241,18 @@ public class SpecialLeaveManagementService {
 		leaveGrantRemainingTotal.setDetails(leaveNumberInfo);
 		// 年休不足ダミーフラグ　←　false
 		leaveGrantRemainingTotal.setDummyAtr(false);
-		
+
 		// 特別休暇情報．付与残数データに作成した特別休暇付与残数を追加
 		SpecialLeaveGrantRemaining specialLeaveGrantRemaining
 			= new SpecialLeaveGrantRemaining(leaveGrantRemainingTotal);
-		
+
 		specialLeaveInfoEnd.getGrantRemainingNumberList().add(specialLeaveGrantRemaining);
-		
+
 		// 特別休暇不足分として作成した特別休暇付与データを削除する -------------------------
-		
+
 		// パラメータ「特別休暇の集計結果．特別休暇情報(期間終了日時点)」に対して処理
 		// →　specialLeaveInfoEnd
-		
+
 		// 特別休暇情報(期間終了日時点)の不足分特別休暇残数データを削除
 		// 「特別休暇付与残数．特別休暇不足ダミーフラグ」=trueの特別休暇付与残数をListから削除
 		// 付与残数データから特別休暇不足分の特別休暇付与残数を削除
@@ -261,7 +261,7 @@ public class SpecialLeaveManagementService {
 			// 付与残数データから特別休暇不足分の特別休暇付与残数を削除
 			specialLeaveInfoTmp.deleteDummy();
 		}
-		
+
 		// 特別休暇情報(期間終了日の翌日開始時点)の不足分付与残数データを削除
 		// パラメータ「特別休暇の集計結果．特別休暇情報(期間終了日の翌日開始時点)」に対して処理
 		{
@@ -269,12 +269,12 @@ public class SpecialLeaveManagementService {
 			// 付与残数データから特別休暇不足分の特別休暇付与残数を削除
 			specialLeaveInfoTmp.deleteDummy();
 		}
-		
+
 		// 特別休暇の集計結果．特別休暇情報(付与時点)を取得
 		{
 			if ( outputData.getAsOfGrant().isPresent() ){
 				List<SpecialLeaveInfo> specialLeaveInfoTmpList = outputData.getAsOfGrant().get();
-				
+
 				// 取得した特別休暇情報(付与時点)でループ
 				specialLeaveInfoTmpList.forEach(info->{
 					// 付与残数データから特別休暇不足分の特別休暇付与残数を削除
@@ -282,12 +282,12 @@ public class SpecialLeaveManagementService {
 				});
 			}
 		}
-		
+
 		// 特別休暇の集計結果．特別休暇情報(消滅時点)を取得
 		{
 			if ( outputData.getLapsed().isPresent() ){
 				List<SpecialLeaveInfo> specialLeaveInfoTmpList = outputData.getLapsed().get();
-				
+
 				// 取得した特別休暇情報(付与時点)でループ
 				specialLeaveInfoTmpList.forEach(info->{
 					// 付与残数データから特別休暇不足分の特別休暇付与残数を削除
@@ -295,10 +295,10 @@ public class SpecialLeaveManagementService {
 				});
 			}
 		}
-		
+
 		return outputData;
 	}
-	
+
 	/**
 	 * 集計開始日時点の特別休暇情報を作成
 	 * @param require
@@ -314,9 +314,9 @@ public class SpecialLeaveManagementService {
 	 * @return 特休情報
 	 */
 	private static SpecialLeaveInfo createInfoAsOfPeriodStart(
-			RequireM5 require, 
-			CacheCarrier cacheCarrier, 
-			String companyId, 
+			RequireM5 require,
+			CacheCarrier cacheCarrier,
+			String companyId,
 			String employeeId,
 			DatePeriod aggrPeriod,
 			InterimRemainMngMode mode,
@@ -324,15 +324,15 @@ public class SpecialLeaveManagementService {
 			Optional<List<SpecialHolidayInterimMngData>> forOverWriteListOpt,
 			Optional<InPeriodOfSpecialLeaveResultInfor> inPeriodOfSpecialLeaveResultInfor,
 			int specialLeaveCode){
-			
+
 		SpecialLeaveInfo emptyInfo = new SpecialLeaveInfo();
 		emptyInfo.setYmd(aggrPeriod.start());
-		
+
 		// 集計開始日時点の前回の特休の集計結果が存在するかチェック
 		// 「前回の特休情報」を確認　（前回の特休の集計結果．特休情報（期間終了日の翌日開始時点））
-		SpecialLeaveInfo prevSpecialLeaveInfo 
+		SpecialLeaveInfo prevSpecialLeaveInfo
 			= inPeriodOfSpecialLeaveResultInfor.map(c -> c.getAsOfStartNextDayOfPeriodEnd()).orElse(null);
-		
+
 		// 「開始日」と「特休情報．年月日」を比較
 		boolean isSameInfo = false;
 		if (prevSpecialLeaveInfo != null){
@@ -349,14 +349,14 @@ public class SpecialLeaveManagementService {
 					aggrPeriod.start(),
 					prevSpecialLeaveInfo.getGrantRemainingList());
 		}
-		
+
 		boolean isAfterClosureStart = false;
-		
+
 		// 休暇残数を計算する締め開始日を取得する
 		Optional<GeneralDate> closureStartOpt = Optional.empty();
 		{
 			// 最新の締め終了日翌日を取得する
-			Optional<ClosureStatusManagement> sttMng 
+			Optional<ClosureStatusManagement> sttMng
 				= require.latestClosureStatusManagement(employeeId);
 			if (sttMng.isPresent()){
 				// 締め開始日
@@ -372,7 +372,7 @@ public class SpecialLeaveManagementService {
 						require, cacheCarrier, employeeId);
 			}
 		}
-		
+
 		List<InterimRemain> interimRemainList
 			= new ArrayList<InterimRemain>();
 		if ( forOverWriteListOpt.isPresent() ){
@@ -380,7 +380,7 @@ public class SpecialLeaveManagementService {
 				interimRemainList.add((InterimRemain)c);
 			});
 		}
-		
+
 		// 社員の特別休暇情報を取得
 		if ( closureStartOpt.isPresent() ){
 			List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingDataList
@@ -396,21 +396,21 @@ public class SpecialLeaveManagementService {
 						inPeriodOfSpecialLeaveResultInfor,
 						specialLeaveCode,
 						closureStartOpt.get());
-		
+
 		// 特別休暇付与残数データをもとに特別休暇情報を作成
-			SpecialLeaveInfo specialLeaveInfo 
+			SpecialLeaveInfo specialLeaveInfo
 				= createInfoFromRemainingData(
 					companyId,
 					employeeId,
 					closureStartOpt.get(), // ooooo
 					specialLeaveGrantRemainingDataList);
-			
+
 			return specialLeaveInfo;
 		}
-		
-		return null; // ooooo		
+
+		return null; // ooooo
 	}
-	
+
 	/**
 	 * 社員の特別休暇情報を取得
 	 * @param require
@@ -428,8 +428,8 @@ public class SpecialLeaveManagementService {
 	 */
 	private static List<SpecialLeaveGrantRemainingData> getEmpSpecialLeaveInfo(
 			RequireM5 require,
-			CacheCarrier cacheCarrier, 
-			String companyId, 
+			CacheCarrier cacheCarrier,
+			String companyId,
 			String employeeId,
 			DatePeriod aggrPeriod,
 			InterimRemainMngMode mode,
@@ -438,14 +438,14 @@ public class SpecialLeaveManagementService {
 			Optional<InPeriodOfSpecialLeaveResultInfor> inPeriodOfSpecialLeaveResultInfor,
 			int specialLeaveCode,
 			GeneralDate closureStart){
-		
+
 		List<SpecialLeaveGrantRemainingData> lstSpeData = new ArrayList();
-		
+
 		// 取得した締め開始日とパラメータ「集計開始日」を比較
-		
+
 		// 締め開始日>=パラメータ「集計開始日」
 		if ( closureStart.afterOrEquals(aggrPeriod.start()) ){
-			
+
 			// ドメインモデル「特別休暇付与残数データ」を取得
 			// 【条件】
 			// 社員ID=パラメータ「社員ID」
@@ -456,67 +456,67 @@ public class SpecialLeaveManagementService {
 
 			lstSpeData = require.specialLeaveGrantRemainingData(employeeId, specialLeaveCode,
 						aggrPeriod, aggrPeriod.start(), LeaveExpirationStatus.AVAILABLE);
-			
+
 			return lstSpeData;
-			
-		} 
+
+		}
 		// 締め開始日<パラメータ「集計開始日」
 		else if ( closureStart.before(aggrPeriod.start()) ){
-			
+
 			// 開始日までの特別休暇残数を計算
-			
+
 			// パラメータ作成
-			ComplileInPeriodOfSpecialLeaveParam paramStart 
+			ComplileInPeriodOfSpecialLeaveParam paramStart
 				= new ComplileInPeriodOfSpecialLeaveParam();
 
 			// 会社ID←パラメータ「会社ID」
 			paramStart.setCid(companyId);
-			
+
 			// 社員ID←パラメータ「社員ID」
 			paramStart.setSid(employeeId);
-			
+
 			// 集計開始日←取得した「締め開始日」
 			// 集計終了日←パラメータ「集計開始日」の前日
 			paramStart.setComplileDate(new DatePeriod(closureStart, closureStart.addDays(-1)));
-			
+
 			// 実績のみ参照区分←パラメータ「実績のみ参照区分」
 			paramStart.setMode(mode.equals(InterimRemainMngMode.MONTHLY));
-			
+
 			// 基準日←パラメータ「集計開始日」の前日
 			paramStart.setBaseDate(closureStart.addDays(-1));
-			
+
 			// 上書きフラグ←パラメータ「上書きフラグ」
 			boolean overwriteFlg = false;
 			if ( isOverWriteOpt.isPresent() ){
 				overwriteFlg = isOverWriteOpt.get();
 			}
 			paramStart.setOverwriteFlg(overwriteFlg);
-			
+
 			// List<上書き用の暫定管理データ>←パラメータ「List<上書き用の暫定管理データ>」
 			if ( forOverWriteListOpt.isPresent() ){
 				paramStart.setRemainData(forOverWriteListOpt.get());
 			}
-			
+
 			// 前回の特別休暇の集計結果←NULL
 			paramStart.setOptBeforeResult(Optional.empty());
-			
+
 			// 特別休暇コード
 			paramStart.setSpecialLeaveCode(specialLeaveCode);
-			
+
 			// 特別休暇情報(期間終了日の翌日開始時点)の付与残数データから特別休暇付与残数データを作成
 			InPeriodOfSpecialLeaveResultInfor inPeriodOfSpecialLeaveResultInforStart
 				= complileInPeriodOfSpecialLeave(
 					require, cacheCarrier, paramStart);
-			
+
 			lstSpeData = inPeriodOfSpecialLeaveResultInforStart
 					.getAsOfStartNextDayOfPeriodEnd()
 					.getGrantRemainingList();
-			
+
 			return lstSpeData;
 		}
 		return lstSpeData;
 	}
-	
+
 	/**
 	 * 特休集計期間を作成
 	 * @param require
@@ -528,47 +528,47 @@ public class SpecialLeaveManagementService {
 	 * @return 特休集計期間WORKリスト
 	 */
 	private static List<SpecialLeaveAggregatePeriodWork> createAggregatePeriod(
-			RequireM5 require, 
-			CacheCarrier cacheCarrier, 
-			String companyId, 
+			RequireM5 require,
+			CacheCarrier cacheCarrier,
+			String companyId,
 			String employeeId,
 			int specialLeaveCode,
-			List<NextSpecialLeaveGrant> nextSpecialLeaveGrantList, 
+			List<NextSpecialLeaveGrant> nextSpecialLeaveGrantList,
 			DatePeriod aggrPeriod){
-		
+
 		List<SpecialLeaveAggregatePeriodWork> aggregatePeriodWorks = new ArrayList<>();
-		
+
 		// 期間終了日翌日
 		GeneralDate nextDayOfPeriodEnd = aggrPeriod.end();
 		if (nextDayOfPeriodEnd.before(GeneralDate.max())){
 			nextDayOfPeriodEnd = nextDayOfPeriodEnd.addDays(1);
 		}
-		
+
 		// 消滅日で期間を区切る
-		
+
 		// ドメインモデル「特別休暇付与残数データ」を取得
-		List<SpecialLeaveGrantRemainingData> lstSpeData 
+		List<SpecialLeaveGrantRemainingData> lstSpeData
 			= require.specialLeaveGrantRemainingData(
 				employeeId, specialLeaveCode,
 				aggrPeriod, aggrPeriod.start(), LeaveExpirationStatus.AVAILABLE);
-		
+
 		// Comparator作成　期限日、付与日
 		Comparator<SpecialLeaveGrantRemainingData> comparator =
 		  Comparator.comparing(SpecialLeaveGrantRemainingData::getDeadline).thenComparing(SpecialLeaveGrantRemainingData::getGrantDate);
-		
+
 		// ソート処理 　期限日、付与日
-		List<SpecialLeaveGrantRemainingData> sortedLstSpeData 
+		List<SpecialLeaveGrantRemainingData> sortedLstSpeData
 			= lstSpeData.stream().sorted(comparator).collect(Collectors.toList());
-		
+
 		// 処理単位分割日リスト
-		Map<GeneralDate, SpecialLeaveDividedDayEachProcess> dividedDayMap 
+		Map<GeneralDate, SpecialLeaveDividedDayEachProcess> dividedDayMap
 			= new HashMap<GeneralDate, SpecialLeaveDividedDayEachProcess>();
-		
+
 		for( SpecialLeaveGrantRemainingData c : sortedLstSpeData ){
-			
+
 			// 期限日
 			val deadline = c.getDeadline();
-			
+
 			// 期限日>=開始日 && 期限日<=終了日 が処理対象
 			if (!aggrPeriod.contains(deadline)) continue;
 
@@ -576,13 +576,13 @@ public class SpecialLeaveManagementService {
 			SpecialLeaveLapsedWork specialLeaveLapsedWork = new SpecialLeaveLapsedWork();
 			// 消滅情報WORK.期間の開始日に消滅するかどうか←true
 			specialLeaveLapsedWork.setLapsedAtr(true);
-			
+
 			// 年月日←期限日の翌日
 			GeneralDate nextDayOfDeadLine = deadline;
 			if (deadline.before(GeneralDate.max())){
 				nextDayOfDeadLine = deadline.addDays(1);
 			}
-			
+
 			// ※既に同じ年月日がある場合は、追加せずに消滅情報WORKのみセット
 			if ( dividedDayMap.containsKey(nextDayOfDeadLine)){
 				SpecialLeaveDividedDayEachProcess specialLeaveDividedDayEachProcess
@@ -597,11 +597,11 @@ public class SpecialLeaveManagementService {
 				// リストへ追加
 				dividedDayMap.put(nextDayOfDeadLine, specialLeaveDividedDayEachProcess);
 			}
-			
+
 		};
 
 		// 付与日で期間を区切る ----------------------------
-		
+
 		// パラメータ「List<次回年休付与>」を取得
 		// 【条件】
 		// 付与年月日>=パラメータ「開始日」の翌日
@@ -611,35 +611,35 @@ public class SpecialLeaveManagementService {
 			nextDayStartTmp = nextDayStartTmp.addDays(1);
 		}
 		final GeneralDate nextDayStart = nextDayStartTmp;
-		
+
 		GeneralDate nextDayEndTmp = aggrPeriod.end();
 		if (nextDayEndTmp.before(GeneralDate.max())){
 			nextDayEndTmp = nextDayEndTmp.addDays(1);
 		}
 		final GeneralDate nextDayEnd = nextDayEndTmp;
-		
+
 		List<NextSpecialLeaveGrant> nextSpecialLeaveGrantList_period
 			= nextSpecialLeaveGrantList.stream()
 				.filter(c -> c.getGrantDate().afterOrEquals(nextDayStart))
 				.filter(c -> c.getGrantDate().beforeOrEquals(nextDayEnd))
 				.collect(Collectors.toList());
-		
+
 		// 付与情報WORKを作成
 		//int grantNumber = 1; // 期間中、何回目の付与かをカウント
 		nextSpecialLeaveGrantList_period
 			.forEach(c -> {
 				SpecialLeaveGrantWork specialLeaveGrantWork
 					= new SpecialLeaveGrantWork();
-				
+
 				// 付与情報WORK.付与回数←集計期間内での付与回数
 				//specialLeaveGrantWork.setGrantNumber(grantNumber);
-				//grantNumber++; 
-				
+				//grantNumber++;
+
 				// 付与情報WORK.期間の開始日に付与があるかどうか←true
 				specialLeaveGrantWork.setGrantAtr(true);
 				// 付与情報WORK.特休付与←次回特別休暇付与
 				specialLeaveGrantWork.setSpecialLeaveGrant(Optional.of(c));
-				
+
 				// 年月日←次回特別休暇付与．付与年月日
 				if ( dividedDayMap.containsKey(c.getGrantDate())){ // すでに追加されているとき
 					SpecialLeaveDividedDayEachProcess specialLeaveDividedDayEachProcess
@@ -648,15 +648,15 @@ public class SpecialLeaveManagementService {
 
 				} else {
 					SpecialLeaveDividedDayEachProcess specialLeaveDividedDayEachProcess
-						= new SpecialLeaveDividedDayEachProcess(c.getGrantDate()); 
+						= new SpecialLeaveDividedDayEachProcess(c.getGrantDate());
 					specialLeaveDividedDayEachProcess.setNextSpecialLeaveGrant(Optional.of(c));
 					dividedDayMap.put(c.getGrantDate(), specialLeaveDividedDayEachProcess);
 				}
 			});
-		
+
 //		// 終了日の翌日で期間を区切る  ----------------------------
 //		GeneralDate nextEndDate = aggrPeriod.end().addDays(1);
-		
+
 		// 終了日の処理単位分割日を取得
 		val specialLeaveGrantList1 = new ArrayList<SpecialLeaveDividedDayEachProcess>();
 		// 【条件】
@@ -666,23 +666,23 @@ public class SpecialLeaveManagementService {
 				specialLeaveGrantList1.add(val);
 			}
 		});
-		
+
 		// 終了日の期間かどうか　←true
 		if (specialLeaveGrantList1.isEmpty()){ // 件数=０
-			ArrayList<SpecialLeaveDividedDayEachProcess> list 
+			ArrayList<SpecialLeaveDividedDayEachProcess> list
 				= new ArrayList<SpecialLeaveDividedDayEachProcess>();
 			dividedDayMap.forEach((key, val)->{
 				// 【条件】 年月日！＝パラメータ「終了日」の翌日
 				if ( !val.getYmd().equals(nextDayOfPeriodEnd) ){
-					list.add(val);					
+					list.add(val);
 				}
 			});
-			
+
 			// リストの中で年月日が一番大きい処理単位分割日の終了日の期間かどうか = true
 			list.sort((a,b)->b.getYmd().compareTo(a.getYmd())); // 降順
 			list.get(0).setDayBeforePeriodEnd(true);
 		}
-		
+
 		// 終了日翌日の処理単位分割日を取得
 		// 【条件】
 		// 年月日=パラメータ「終了日」の翌日
@@ -692,15 +692,15 @@ public class SpecialLeaveManagementService {
 				specialLeaveGrantList2.add(val);
 			}
 		});
-		
+
 		// 終了日の翌日の期間かどうか←true
 		specialLeaveGrantList1.forEach(c->{
 			c.setNextDayAfterPeriodEnd(true);
 		});
-		
-		
+
+
 		// 終了日翌日の期間がない場合作成  ----------------------------
-		
+
 		// ○終了日翌日の処理単位分割日を取得
 		// 【条件】
 		// 終了日の翌日の期間かどうか=true
@@ -710,7 +710,7 @@ public class SpecialLeaveManagementService {
 				specialLeaveGrantList3.add(val);
 			}
 		});
-		
+
 		// 条件　件数＝０
 		// 処理単位分割日に終了日翌日を追加
 		// 処理単位分割日.年月日 = 終了日の翌日
@@ -721,9 +721,9 @@ public class SpecialLeaveManagementService {
 			specialLeaveDividedDayEachProcess.setNextDayAfterPeriodEnd(true);
 			dividedDayMap.put(nextDayEnd, specialLeaveDividedDayEachProcess);
 		}
-		
+
 		// 付与前と付与後の期間を区別する   ----------------------------
-		
+
 		// List<処理単位分割日>をソート
 		// 【ソート】
 		// 年月日　昇順
@@ -732,7 +732,7 @@ public class SpecialLeaveManagementService {
 			specialLeaveGrantList4.add(val);
 		});
 		specialLeaveGrantList4.sort((a,b)->a.getYmd().compareTo(b.getYmd()));
-		
+
 		// 付与前か付与後か = 付与前
 		boolean afterGrant = false;
 		for(SpecialLeaveDividedDayEachProcess c: specialLeaveGrantList4){
@@ -741,34 +741,34 @@ public class SpecialLeaveManagementService {
 			}
 			c.setAfterGrant(afterGrant);
 		}
-		
+
 		// 特別休暇集計WORK作成 ----------------------------
-		
+
 		// 「処理単位分割日」をソート
 		List<SpecialLeaveDividedDayEachProcess> dividedDayList = new ArrayList<>();
 		dividedDayList.addAll(dividedDayMap.values());
 		dividedDayList.sort((a, b) -> a.getYmd().compareTo(b.getYmd()));
-		
+
 		// ループ1つ前の情報を保持
 		Optional<SpecialLeaveDividedDayEachProcess> specialLeaveDividedDayEachProcess_pre = Optional.empty();
-		
+
 		// 処理単位分割日でループ
 		boolean isFirst = true;
 		GeneralDate preYmd = null;
-		
+
 		for( SpecialLeaveDividedDayEachProcess c : dividedDayList ){
-			
+
 			if ( isFirst ){
 				isFirst = false;
 				specialLeaveDividedDayEachProcess_pre = Optional.of(c);
 				preYmd = c.getYmd();
 				continue;
 			}
-			
+
 			// 特別休暇集計期間WORKを作成し、Listに追加
 			SpecialLeaveLapsedWork specialLeaveLapsedWork
 				= new SpecialLeaveLapsedWork();
-			
+
 			// 期間．開始日←「処理単位分割日．年月日」
 			// 期間．終了日←次の「処理単位分割日．年月日」の前日
 			// 　　　　※次の処理単位分割日がない場合、パラメータ「終了日」の翌日
@@ -779,45 +779,45 @@ public class SpecialLeaveManagementService {
 			SpecialLeaveAggregatePeriodWork specialLeaveAggregatePeriodWork
 				= SpecialLeaveAggregatePeriodWork.of(
 					new DatePeriod(preYmd, c.getYmd().addDays(-1)),
-					specialLeaveDividedDayEachProcess_pre.get().isDayBeforePeriodEnd(), 
+					specialLeaveDividedDayEachProcess_pre.get().isDayBeforePeriodEnd(),
 					specialLeaveDividedDayEachProcess_pre.get().isNextDayAfterPeriodEnd(),
-					specialLeaveDividedDayEachProcess_pre.get().isAfterGrant(), 
+					specialLeaveDividedDayEachProcess_pre.get().isAfterGrant(),
 					specialLeaveDividedDayEachProcess_pre.get().getLapsedWork(),
 					specialLeaveDividedDayEachProcess_pre.get().getGrantWork());
-			
+
 			aggregatePeriodWorks.add(specialLeaveAggregatePeriodWork);
-			
+
 			specialLeaveDividedDayEachProcess_pre = Optional.of(c);
 		}
-		
+
 		// 次の処理単位分割日がない場合、パラメータ「終了日」の翌日
-		
+
 		// 「特別休暇集計期間WORK」を作成
 		SpecialLeaveLapsedWork specialLeaveLapsedWork
 			= new SpecialLeaveLapsedWork();
 		specialLeaveLapsedWork.setLapsedAtr(false);
-		
+
 		// 期間．開始日←最後の「処理単位分割日．年月日」
 		// 期間．終了日←パラメータ「終了日」の翌日
 		SpecialLeaveAggregatePeriodWork specialLeaveAggregatePeriodWork
 		= SpecialLeaveAggregatePeriodWork.of(
 			new DatePeriod(preYmd, nextDayOfPeriodEnd),
-			specialLeaveDividedDayEachProcess_pre.get().isDayBeforePeriodEnd(), 
+			specialLeaveDividedDayEachProcess_pre.get().isDayBeforePeriodEnd(),
 			specialLeaveDividedDayEachProcess_pre.get().isNextDayAfterPeriodEnd(),
-			specialLeaveDividedDayEachProcess_pre.get().isAfterGrant(), 
+			specialLeaveDividedDayEachProcess_pre.get().isAfterGrant(),
 			specialLeaveDividedDayEachProcess_pre.get().getLapsedWork(),
 			specialLeaveDividedDayEachProcess_pre.get().getGrantWork());
-		
+
 		aggregatePeriodWorks.add(specialLeaveAggregatePeriodWork);
-		
+
 		return aggregatePeriodWorks;
 	}
-	
-	
+
+
 	/**
 	 * 特休付与残数データから特休情報を作成
 	 * @param cId 会社ID
-	 * @param employeeId 社員ID 
+	 * @param employeeId 社員ID
 	 * @param ymd 年月日
 	 * @param grantRemainingDataList 付与残数データリスト
 	 * @return
@@ -828,16 +828,16 @@ public class SpecialLeaveManagementService {
 			GeneralDate ymd,
 			List<SpecialLeaveGrantRemainingData> grantRemainingDataList
 			){
-		
+
 		SpecialLeaveInfo specialLeaveInfo = new SpecialLeaveInfo();
-		
+
 		// 特別休暇情報．年月日←パラメータ「年月日」
 //		returnInfo.setYmd(aggrPeriod.start());
 		specialLeaveInfo.setYmd(ymd);
-		
+
 		// 残数．特別休暇(マイナスあり)をクリア。（Listの要素数を０にする）
 		specialLeaveInfo.getRemainingNumber().getSpecialLeaveWithMinus().clear();
-		
+
 		// 特休情報．特休付与情報　←　パラメータ「付与残数データ」
 		List<SpecialLeaveGrantRemainingData> targetDatas = new ArrayList<>();
 		for (val grantRemainingData : grantRemainingDataList){
@@ -847,7 +847,7 @@ public class SpecialLeaveManagementService {
 		}
 		targetDatas.sort((a, b) -> a.getGrantDate().compareTo(b.getGrantDate()));
 		specialLeaveInfo.setGrantRemainingList(targetDatas);
-		
+
 //		// 特休情報．上限データ　←　パラメータ「上限データ」
 //		if (!maxDataOpt.isPresent()) {
 //			Integer intNull = null;
@@ -858,21 +858,21 @@ public class SpecialLeaveManagementService {
 //		else {
 //			returnInfo.setMaxData(maxDataOpt.get());
 //		}
-		
-		// 特休情報残数を更新 
+
+		// 特休情報残数を更新
 		specialLeaveInfo.updateRemainingNumber(false);
-		
+
 		// 特休情報を返す
 		return specialLeaveInfo;
 	}
-	
+
 //	/**
 //	 * RequestList273 期間内の特別休暇残を集計する
 //	 * @return
 //	 */
-//	public static InPeriodOfSpecialLeaveResultInfor complileInPeriodOfSpecialLeave(RequireM5 require, 
+//	public static InPeriodOfSpecialLeaveResultInfor complileInPeriodOfSpecialLeave(RequireM5 require,
 //			CacheCarrier cacheCarrier, ComplileInPeriodOfSpecialLeaveParam param) {
-//		
+//
 //		InPeriodOfSpecialLeaveResultInfor outputData = new InPeriodOfSpecialLeaveResultInfor();
 //		//ドメインモデル「特別休暇基本情報」を取得する
 //		Optional<SpecialLeaveBasicInfo> optBasicInfor = require.specialLeaveBasicInfo(param.getSid(), param.getSpecialLeaveCode(), UseAtr.USE);
@@ -883,13 +883,13 @@ public class SpecialLeaveManagementService {
 //			return new InPeriodOfSpecialLeaveResultInfor(specialLeaveInfor, Finally.empty(), Finally.of(param.getComplileDate().end().addDays(1)));
 //		}
 //		//管理データを取得する
-//		ManagaData grantRemainData = getMngData(require, cacheCarrier, 
+//		ManagaData grantRemainData = getMngData(require, cacheCarrier,
 //				param.getCid(),
 //				param.getSid(),
 //				param.getSpecialLeaveCode(),
 //				param.getComplileDate(),
-//				param.getOptBeforeResult());		
-//		
+//				param.getOptBeforeResult());
+//
 //		SpecialHolidayDataParam speDataParam = new SpecialHolidayDataParam(param.getCid(),
 //				param.getSid(),
 //				param.getComplileDate(),
@@ -900,7 +900,7 @@ public class SpecialLeaveManagementService {
 //				param.getInterimSpecialData());
 //		//特別休暇暫定データを取得する
 //		SpecialHolidayInterimMngData specialHolidayInterimDataMng = specialHolidayData(require, speDataParam);
-//		
+//
 //		SpecialLeaveGrantRemainingDataTotal speRemainData = new SpecialLeaveGrantRemainingDataTotal(grantRemainData.getRemainDatas(),
 //				grantRemainData.lstGrantDataMemory,
 //				grantRemainData.lstGrantDatabase);
@@ -908,7 +908,7 @@ public class SpecialLeaveManagementService {
 //		RemainDaysOfSpecialHoliday useInfor = getUseDays(param.getCid(),
 //				param.getSid(),
 //				param.getComplileDate(),
-//				speRemainData, 
+//				speRemainData,
 //				specialHolidayInterimDataMng.getLstSpecialInterimMng(),
 //				specialHolidayInterimDataMng.getLstInterimMng());
 //		InPeriodOfSpecialLeave getOffsetDay = getInforCurrentProcess(require, param, grantRemainData, specialHolidayInterimDataMng, speRemainData,
@@ -929,10 +929,10 @@ public class SpecialLeaveManagementService {
 //		outputData.setNextDate(Finally.of(param.getComplileDate().end().addDays(1)));
 //		return outputData;
 //	}
-	
+
 //	/** 管理データを取得する
 //	 * @param cid
-//	 * @param sid 
+//	 * @param sid
 //	 * @param specialLeaveCode ・特別休暇コード
 //	 * @param complileDate ・集計開始日 ・集計終了日
 //	 * @return 特別休暇付与残数データ
@@ -973,12 +973,12 @@ public class SpecialLeaveManagementService {
 //									detailBefore.getGrantTimes().isPresent() ? Optional.of(new TimeOfGrant(detailBefore.getGrantTimes().get())) : Optional.empty()));
 //							details.setRemainingNumber(new SpecialLeaveRemainingNumber(new DayNumberOfRemain(detailBefore.getRemainDays()),
 //									detailBefore.getRemainTimes().isPresent() ? Optional.of(new TimeOfRemain(detailBefore.getRemainTimes().get())) : Optional.empty()));
-//							
+//
 //							details.setUsedNumber(new SpecialLeaveUsedNumber(new DayNumberOfUse(detailBefore.getUseDays()),
 //									detailBefore.getUseTimes().isPresent() ? Optional.of(new TimeOfUse(detailBefore.getUseTimes().get())) : Optional.empty(),
 //									Optional.empty(),
 //									Optional.of(limitData)));
-//							remainDataBefore.setSpecialId(x.getSpecialID());							
+//							remainDataBefore.setSpecialId(x.getSpecialID());
 //							remainDataBefore.setEmployeeId(x.getSid());
 //							remainDataBefore.setSpecialLeaveCode(new SpecialVacationCD(x.getCode()));
 //							remainDataBefore.setGrantDate(x.getGrantDate());
@@ -996,7 +996,7 @@ public class SpecialLeaveManagementService {
 //				lstDataBase.addAll(lstSpeData);
 //			}
 //		}
-//		
+//
 //		List<SpecialLeaveGrantRemainingData> lstDataSpeDataBase = lstDataBase.stream().map(c -> {
 //			SpecialLeaveGrantNumber a = new SpecialLeaveGrantNumber(c.getDetails().getGrantNumber().getDayNumberOfGrant(), c.getDetails().getGrantNumber().getTimeOfGrant());
 //			SpecialLeaveUsedNumber b = new SpecialLeaveUsedNumber(c.getDetails().getUsedNumber().getDayNumberOfUse(), c.getDetails().getUsedNumber().getTimeOfUse(),
@@ -1040,9 +1040,9 @@ public class SpecialLeaveManagementService {
 //				details.setUsedNumber(useNumber);
 //				SpecialLeaveRemainingNumber remainingNumber = new SpecialLeaveRemainingNumber(new DayNumberOfRemain((double) memoryInfor.getGrantDaysInfor().getGrantDays()), Optional.empty());
 //				details.setRemainingNumber(remainingNumber);
-//				SpecialLeaveGrantRemainingData grantMemoryData = new SpecialLeaveGrantRemainingData(mngId, 
+//				SpecialLeaveGrantRemainingData grantMemoryData = new SpecialLeaveGrantRemainingData(mngId,
 //						cid,
-//						sid, 
+//						sid,
 //						new SpecialVacationCD(specialLeaveCode),
 //						memoryInfor.getGrantDaysInfor().getYmd(),
 //						memoryInfor.getDeadlineDate().isPresent() ? memoryInfor.getDeadlineDate().get() : GeneralDate.max(),
@@ -1056,7 +1056,7 @@ public class SpecialLeaveManagementService {
 //			//ドメインモデル「期限情報」．期限指定方法をチェックする
 //			if(specialHoliday.getGrantPeriodic().getTimeSpecifyMethod() == TimeLimitSpecification.AVAILABLE_UNTIL_NEXT_GRANT_DATE
 //					&& !lstDataSpeDataMemory.isEmpty()
-//					&& !lstDataBase.isEmpty()) {				
+//					&& !lstDataBase.isEmpty()) {
 //				List<SpecialLeaveGrantRemainingData> lstTmp = new ArrayList<>(lstDataSpeDataBase);
 //				for (SpecialLeaveGrantRemainingData x : lstTmp) {
 //					//付与済の「特別休暇付与残数データ」．期限日= (先頭の付与予定の「特別休暇付与残数データ」．付与日).AddDays(-1)
@@ -1064,11 +1064,11 @@ public class SpecialLeaveManagementService {
 //						lstDataSpeDataBase.remove(x);
 //						GeneralDate kigenBi = lstDataSpeDataMemory.get(0).getGrantDate().addDays(-1);
 //						x.setDeadlineDate(kigenBi);
-//						lstDataSpeDataBase.add(x);	
+//						lstDataSpeDataBase.add(x);
 //					}
-//					
+//
 //				}
-//				
+//
 //			}
 //		}
 //		//「特別休暇付与残数データ」(output)をソートする
@@ -1089,7 +1089,7 @@ public class SpecialLeaveManagementService {
 //		ManagaData outputData = new ManagaData(lstDataSpeDataBase, getSpecialHolidayOfEmp.getUpLimiDays(), lstGrantDataMemory, lstGrantDatabase);
 //		return outputData;
 //	}
-	
+
 	/**
 	 * 特別休暇暫定データを取得する
 	 * @param require
@@ -1098,25 +1098,25 @@ public class SpecialLeaveManagementService {
 	 */
 	private static SpecialHolidayInterimMngData specialHolidayData(
 		RequireM2 require, ComplileInPeriodOfSpecialLeaveParam param) {
-		
+
 		List<InterimSpecialHolidayMng> lstOutput = new ArrayList<>();
 		//List<InterimRemain> lstInterimMng = new ArrayList<>();
-		
+
 		// パラメータ「実績のみ参照区分」をチェック
 		if(param.isMode()) { // 月次モード
 			// 月次モードの場合、あらかじめ残数処理の外側で集計期間全部の
 			// 暫定Dを作っておくので、ここでは作らない
 		} else {
 			// ドメインモデル「特別休暇暫定データ」を取得する
-			List<InterimRemain> lstInterimMngTmp 
+			List<InterimRemain> lstInterimMngTmp
 				= require.interimRemains(
 					param.getSid(),
-					param.getComplileDate(), 
+					param.getComplileDate(),
 					RemainType.SPECIAL);
-			
+
 			lstInterimMngTmp.stream().forEach(a -> {
-				
-				List<InterimSpecialHolidayMng> lstSpecialData 
+
+				List<InterimSpecialHolidayMng> lstSpecialData
 					= require.interimSpecialHolidayMng(a.getRemainManaID())
 						.stream().filter(x -> x.getSpecialHolidayCode() == param.getSpecialLeaveCode())
 						.collect(Collectors.toList());
@@ -1130,13 +1130,13 @@ public class SpecialLeaveManagementService {
 		}
 		//List<InterimRemain> lstInterimMngTmpCreate = new ArrayList<>(lstInterimMng);
 		List<InterimSpecialHolidayMng> speHolidayMngTempCreate = new ArrayList<>(lstOutput);
-		
+
 		//INPUT．上書きフラグをチェックする
 		if(param.isOverwriteFlg()) {
-			
+
 			// パラメータの「暫定管理データ」をループ
 			for (InterimRemain interimRemain : param.getRemainData()) {
-				
+
 				// パラメータの「暫定管理データ」と比較して、
 				// 以下の項目が全て同じ「特別休暇暫定管理データ」がある場合、重複したものは上書きする
 				// ・社員ID
@@ -1150,7 +1150,7 @@ public class SpecialLeaveManagementService {
 						.filter(x -> x.getRemainType().equals(interimRemain.getRemainType()))
 						.filter(x -> x.getRemainAtr().equals(interimRemain.getRemainAtr()))
 						.collect(Collectors.toList());
-				
+
 				if ( !speMngReplace.isEmpty() ){ //重複したものは上書きする
 					speMngReplace.forEach(a->{
 						a.setParentValue(interimRemain);
@@ -1161,12 +1161,12 @@ public class SpecialLeaveManagementService {
 					interimSpecialHolidayMng.setParentValue(interimRemain);
 					lstOutput.add(interimSpecialHolidayMng);
 				}
-				
+
 			}
 		}
 		return new SpecialHolidayInterimMngData(lstOutput);
 	}
-	
+
 //	/**
 //	 * 特休の使用数を求める
 //	 * @param cid 会社ID
@@ -1177,7 +1177,7 @@ public class SpecialLeaveManagementService {
 //	 * @return
 //	 */
 //	private static RemainDaysOfSpecialHoliday getUseDays(String cid, String sid, DatePeriod complileDate,
-//			SpecialLeaveGrantRemainingDataTotal speRemainData, List<InterimSpecialHolidayMng> interimSpeDatas, 
+//			SpecialLeaveGrantRemainingDataTotal speRemainData, List<InterimSpecialHolidayMng> interimSpeDatas,
 //			List<InterimRemain> lstInterimMng) {
 //		//使用数付与前=0, 使用数付与後=0(初期化)
 //		double useDaysBefore = 0;
@@ -1207,7 +1207,7 @@ public class SpecialLeaveManagementService {
 //			//「特別休暇の残数」．付与後明細．使用数 = 使用数付与後
 //			grantDetailAfter.setUseDays(useDaysAfter);
 //		}
-//		return new RemainDaysOfSpecialHoliday(grantDetailBefore, 0, 
+//		return new RemainDaysOfSpecialHoliday(grantDetailBefore, 0,
 //				grantDetailAfter.getUseDays() == 0 ? Optional.empty() : Optional.of(grantDetailAfter), new ArrayList<>());
 //	}
 
@@ -1223,7 +1223,7 @@ public class SpecialLeaveManagementService {
 //	 * @param accumulationMaxDays ・蓄積上限日数
 //	 * @return
 //	 */
-//	private static InPeriodOfSpecialLeave getOffsetDay1004(RequireM1 require, String cid, String sid, 
+//	private static InPeriodOfSpecialLeave getOffsetDay1004(RequireM1 require, String cid, String sid,
 //			DatePeriod dateData, GeneralDate baseDate, int specialCode, SpecialLeaveGrantRemainingDataTotal lstGrantData,
 //			SpecialHolidayInterimMngData interimDataMng, double accumulationMaxDays,
 //			RemainDaysOfSpecialHoliday useInfor, boolean isMode) {
@@ -1231,17 +1231,17 @@ public class SpecialLeaveManagementService {
 //		double undigested = 0;
 //		DataMngOfDeleteExpired expiredData = null;
 //		SubtractUseDaysFromMngDataOut subtractUseDays = null;
-//		
+//
 //		//取得した特別休暇付与残数データ一覧に付与予定のデータがあるかチェックする
 //		if(lstGrantData.getLstGrantDataMemory().isEmpty()) {
 //			//使用数を管理データから引く speLeaveResult dung o dau
 //			subtractUseDays = subtractUseDaysFromMngData1004(lstGrantData.getLstGrantDataTotal(), interimDataMng, useInfor);
 //			//期限切れの管理データを期限切れに変更する
 //			expiredData = unDigestedDay(subtractUseDays.getLstSpeRemainData(), baseDate, isMode);
-//			
+//
 //		} else {
 //			//付与前用の集計終了日= (先頭の付与予定の「特別休暇付与残数データ」．付与日).AddDays(-1)
-//			GeneralDate endDate = lstGrantData.getLstGrantDataMemory().get(0).getGrantDate().addDays(-1);			
+//			GeneralDate endDate = lstGrantData.getLstGrantDataMemory().get(0).getGrantDate().addDays(-1);
 //			//・INPUT．特別休暇暫定データ一覧（対象日 <= 付与前用の集計終了日）
 //			List<InterimRemain> lstInterimMng = interimDataMng.getLstInterimMng().stream()
 //					.filter(x -> x.getYmd().beforeOrEquals(endDate))
@@ -1258,7 +1258,7 @@ public class SpecialLeaveManagementService {
 //			subtractUseDays = subtractUseDaysFromMngData1004(lstGrantData.getLstGrantDataTotal(), interimBefore, useInfor);
 //			//期限切れの管理データを期限切れに変更する //付与前用の集計終了日、INPUT．基準日の古い日付
 //			expiredData = unDigestedDay(subtractUseDays.getLstSpeRemainData(), endDate.after(baseDate) ? baseDate : endDate, isMode);
-//			
+//
 //		}
 //		//未消化数+=未消化数
 //		undigested += expiredData.getUnDigestedDay();
@@ -1327,8 +1327,8 @@ public class SpecialLeaveManagementService {
 //				LimitTimeAndDays limitInfor = new LimitTimeAndDays(limitDays.get(x.getGrantDate()), Optional.empty());
 //				inforSevice.setLimitDays(Optional.of(limitInfor));
 //			} else {
-//				inforSevice.setLimitDays(Optional.empty());	
-//			}			
+//				inforSevice.setLimitDays(Optional.empty());
+//			}
 //			inforSevice.setGrantTimes(grantNumberData != null && grantNumberData.getTimeOfGrant().isPresent()
 //					&& grantNumberData.getTimeOfGrant().get() != null
 //					? Optional.of(grantNumberData.getTimeOfGrant().get().v()) : Optional.empty());
@@ -1337,7 +1337,7 @@ public class SpecialLeaveManagementService {
 //		}
 //		return new InPeriodOfSpecialLeave(lstSpeLeaGrant, useInfor, subtractUseDays.getSpeLeaveResult().getUseOutPeriod(), new ArrayList<>());
 //	}
-	
+
 //	/**
 //	 * 使用数を管理データから引く
 //	 * @param lstGrantData 特別休暇付与残数データ一覧
@@ -1362,7 +1362,7 @@ public class SpecialLeaveManagementService {
 //				c.getExpirationStatus(),
 //				c.getRegisterType(),
 //				new SpecialLeaveNumberInfo(a, b, d));
-//		}).collect(Collectors.toList());		
+//		}).collect(Collectors.toList());
 //		for (InterimSpecialHolidayMng speInterimLoop : interimDataMng.getLstSpecialInterimMng()) {
 //			InterimRemain interimMng = interimDataMng.getLstInterimMng().stream()
 //					.filter(x -> x.getRemainManaID().equals(speInterimLoop.getSpecialHolidayId()))
@@ -1379,7 +1379,7 @@ public class SpecialLeaveManagementService {
 //					.collect(Collectors.toList());
 //			if(tmpGrantRemainingData.isEmpty()) {
 //				//ループ中の「特別休暇暫定データ」を「特別休暇期間外の使用」に追加する
-//				UseDaysOfPeriodSpeHoliday useDaysOutPeriod = new UseDaysOfPeriodSpeHoliday(interimMng.getYmd(), 
+//				UseDaysOfPeriodSpeHoliday useDaysOutPeriod = new UseDaysOfPeriodSpeHoliday(interimMng.getYmd(),
 //						speInterimLoop.getUseDays().isPresent() ? Optional.of(speInterimLoop.getUseDays().get().v()) : Optional.empty(),
 //						speInterimLoop.getUseTimes() != null && speInterimLoop.getUseTimes().isPresent() ? Optional.of(speInterimLoop.getUseTimes().get().v()) : Optional.empty());
 //				lstUseDaysOutOfPeriod.add(useDaysOutPeriod);
@@ -1388,7 +1388,7 @@ public class SpecialLeaveManagementService {
 //			double speInterimUsedays = speInterimLoop.getUseDays().isPresent() ? speInterimLoop.getUseDays().get().v() : 0;
 //			//特別休暇付与残数データの有無チェックをする
 //			if(lstOuput.isEmpty()) {
-//				//「特別休暇の残数」．付与前明細．残数 -= 特別休暇暫定データ．特休使用				
+//				//「特別休暇の残数」．付与前明細．残数 -= 特別休暇暫定データ．特休使用
 //				output.getRemainDays().getGrantDetailBefore().setRemainDays(output.getRemainDays().getGrantDetailBefore().getRemainDays() - speInterimUsedays);
 //			} else {
 //				List<SpecialLeaveGrantRemainingData> specialLeaverDataTmp = new ArrayList<>(tmpGrantRemainingData);
@@ -1399,7 +1399,7 @@ public class SpecialLeaveManagementService {
 //					if(grantData.getDetails().getRemainingNumber().getDayNumberOfRemain().v() == 0
 //							&& count < specialLeaverDataTmp.size()) {
 //						continue;
-//					}					
+//					}
 //					lstOuput.remove(grantData);
 //					//特別休暇暫定データ．特休使用をDBから取得した付与日の古い特別休暇付与残数データから引く
 //					DayNumberOfRemain remainDaysInfor = grantData.getDetails().getRemainingNumber().getDayNumberOfRemain();
@@ -1414,7 +1414,7 @@ public class SpecialLeaveManagementService {
 //					//「特別休暇付与残数データ」．使用数 += 特別休暇暫定データ．特休使用
 //					double userDay = grantData.getDetails().getUsedNumber().getDayNumberOfUse().v();
 //					grantData.getDetails().getUsedNumber().setDayNumberOfUse(new DayNumberOfUse(userDay + speInterimUsedays));
-//					lstOuput.add(grantData);	
+//					lstOuput.add(grantData);
 //					if(remainDays <=0) {
 //						break;
 //					}
@@ -1428,10 +1428,10 @@ public class SpecialLeaveManagementService {
 //	 * 繰越上限日数まで調整する
 //	 * @param lstGrantData 特別休暇付与残数データ一覧
 //	 * @param accumulationMaxDays  蓄積上限日数
-//	 * @param grantDetailBefore 付与前の残数 
+//	 * @param grantDetailBefore 付与前の残数
 //	 * @return
 //	 */
-//	private static DataMngOfDeleteExpired adjustCarryForward1005(RequireM1 require, 
+//	private static DataMngOfDeleteExpired adjustCarryForward1005(RequireM1 require,
 //			List<SpecialLeaveGrantRemainingData> lstGrantData, double accumulationMaxDays) {
 //		List<SpecialLeaveGrantRemainingData> lstGrantDataMemory = new ArrayList<>();//付与予定
 //		List<SpecialLeaveGrantRemainingData> lstGrantDatabase = new ArrayList<>();//付与済
@@ -1441,7 +1441,7 @@ public class SpecialLeaveManagementService {
 //				//DB上取得した「特別休暇付与残数データ」は付与済
 //				lstGrantDatabase.add(grantData);
 //			} else {
-//				//メモリ上の「特別休暇付与残数データ」は付与予定	
+//				//メモリ上の「特別休暇付与残数データ」は付与予定
 //				lstGrantDataMemory.add(grantData);
 //			}
 //		}
@@ -1450,9 +1450,9 @@ public class SpecialLeaveManagementService {
 //		//INPUT．蓄積上限日数をチェックする
 //		if(accumulationMaxDays <= 0) {
 //			return new DataMngOfDeleteExpired(unDisgesteDays, lstGrantData, limitDays);
-//		}		
-//		//INPUT．特別休暇付与残数データ一覧に付与予定のデータがあるかチェックする		
-//		if(!lstGrantDataMemory.isEmpty()) {			
+//		}
+//		//INPUT．特別休暇付与残数データ一覧に付与予定のデータがあるかチェックする
+//		if(!lstGrantDataMemory.isEmpty()) {
 //			double overCarryDays = 0;
 //			double dayNumberOfGrant = 0;
 //			for (SpecialLeaveGrantRemainingData grantDataMemory : lstGrantDataMemory) {
@@ -1460,8 +1460,8 @@ public class SpecialLeaveManagementService {
 //			}
 //			//付与前の残数=付与済の「特別休暇付与残数データ」．「明細」．残数の合計
 //			double remaintDays = 0;
-//			for (SpecialLeaveGrantRemainingData grantDatabase : lstGrantDatabase) {				
-//				remaintDays += grantDatabase.getDetails().getRemainingNumber().getDayNumberOfRemain().v();				
+//			for (SpecialLeaveGrantRemainingData grantDatabase : lstGrantDatabase) {
+//				remaintDays += grantDatabase.getDetails().getRemainingNumber().getDayNumberOfRemain().v();
 //			}
 //			remaintDays = remaintDays < 0 ? 0 : remaintDays;
 //			//繰越超えた値 = 付与予定の「特別休暇付与残数データ」．「明細」．付与 + 付与前の残数 -INPUT．蓄積上限日数
@@ -1482,16 +1482,16 @@ public class SpecialLeaveManagementService {
 //					double remainLeaverDays = speLeaverData.getDetails().getRemainingNumber().getDayNumberOfRemain().v();
 //					//古い日付順から、付与済の「特別休暇付与残数データ」．「明細」．残数から繰越超えた値を引く
 //					grantDaysOld -= remainLeaverDays;
-//					lstGrantDatabase.remove(speLeaverData);	
+//					lstGrantDatabase.remove(speLeaverData);
 //					if(grantDaysOld > 0 && count < lstGrantDatabaseTmp.size()) {
-//						speLeaverData.getDetails().getRemainingNumber().setDayNumberOfRemain(new DayNumberOfRemain((double) 0.0));	
+//						speLeaverData.getDetails().getRemainingNumber().setDayNumberOfRemain(new DayNumberOfRemain((double) 0.0));
 //					} else {
-//						speLeaverData.getDetails().getRemainingNumber().setDayNumberOfRemain(new DayNumberOfRemain((double) -grantDaysOld));	
+//						speLeaverData.getDetails().getRemainingNumber().setDayNumberOfRemain(new DayNumberOfRemain((double) -grantDaysOld));
 //					}
 //					//未消化数=繰越超えた値
-//					unDisgesteDays = overCarryDays;										
+//					unDisgesteDays = overCarryDays;
 //					//特別休暇の利用情報．上限超過消滅日数 += 繰越超えた値
-//					limitDays.put(speLeaverData.getGrantDate(), overCarryDays);					
+//					limitDays.put(speLeaverData.getGrantDate(), overCarryDays);
 //					//特別休暇の利用情報 set 上限超過消滅日数．日数
 //					lstGrantDatabase.add(speLeaverData);
 //				}
@@ -1505,7 +1505,7 @@ public class SpecialLeaveManagementService {
 //				.collect(Collectors.toList());
 //		return new DataMngOfDeleteExpired(unDisgesteDays, lstOuput, limitDays);
 //	}
-	
+
 //	/**
 //	 * 付与前の残数情報をまとめる
 //	 * @param lstSpeLeaveGrantDetails
@@ -1538,11 +1538,11 @@ public class SpecialLeaveManagementService {
 //	private static RemainDaysOfSpecialHoliday remainDaysBefore(String cid, String sid, DatePeriod shukeiDate,
 //			SpecialLeaveGrantRemainingDataTotal lstGrantData, SpecialHolidayInterimMngData interimDataMng,
 //			RemainDaysOfSpecialHoliday useInfor, GeneralDate baseDate, boolean isMode) {
-//		
+//
 //		//使用数を管理データから引く
 //		SubtractUseDaysFromMngDataOut subtractUseDays = subtractUseDaysFromMngData1004(lstGrantData.getLstGrantDatabase(), interimDataMng, useInfor);
 //		//期限切れの管理データを期限切れに変更する //NPUT．集計終了日、INPUT．基準日の古い日付
-//		DataMngOfDeleteExpired expiredData = unDigestedDay(subtractUseDays.getLstSpeRemainData(), 
+//		DataMngOfDeleteExpired expiredData = unDigestedDay(subtractUseDays.getLstSpeRemainData(),
 //				shukeiDate.end().after(baseDate) ? baseDate : shukeiDate.end(), isMode);
 //		//付与数 = 0, 残数 = 0（初期化）
 //		double remainDays = 0;
@@ -1570,7 +1570,7 @@ public class SpecialLeaveManagementService {
 //	 * @param grantDetailBefore
 //	 * @return
 //	 */
-//	private static InPeriodOfSpecialLeave grantDetailAfter(SpecialHolidayRemainInfor grantDetailAfter, 
+//	private static InPeriodOfSpecialLeave grantDetailAfter(SpecialHolidayRemainInfor grantDetailAfter,
 //			InPeriodOfSpecialLeave getOffsetDay) {
 //		//付与後明細．残数と付与数=0（初期化）
 //		double grantDays = 0;
@@ -1617,7 +1617,7 @@ public class SpecialLeaveManagementService {
 //		if(grantRemainData.lstGrantDataMemory.isEmpty()) {
 //			//管理データと暫定データの相殺
 //			getOffsetDay = getOffsetDay1004(require, param.getCid(), param.getSid(), param.getComplileDate(), param.getBaseDate(),
-//					param.getSpecialLeaveCode(), speRemainData, specialHolidayInterimDataMng, 
+//					param.getSpecialLeaveCode(), speRemainData, specialHolidayInterimDataMng,
 //					grantRemainData.limitDays.isPresent() ? grantRemainData.limitDays.get() : 0, useInfor, param.isMode());
 //			//付与前の残数情報をまとめる
 //			SpecialHolidayRemainInfor grantDetailBefore = grantDetailBefore(getOffsetDay.getLstSpeLeaveGrantDetails(), getOffsetDay.getRemainDays().getGrantDetailBefore());
@@ -1640,25 +1640,25 @@ public class SpecialLeaveManagementService {
 //			SpecialHolidayInterimMngData interimBefore = new SpecialHolidayInterimMngData(lstSpecialInterimMng, lstInterimMng);
 //			//(付与前)管理データと暫定データの相殺
 //			useInfor = remainDaysBefore(param.getCid(), param.getSid(), shuukeiDate, speRemainData, interimBefore, useInfor, param.getBaseDate(), param.isMode());
-//			
+//
 //			//管理データと暫定データの相殺
 //			getOffsetDay = getOffsetDay1004(require, param.getCid(), param.getSid(), param.getComplileDate(), param.getBaseDate(),
-//					param.getSpecialLeaveCode(), speRemainData, specialHolidayInterimDataMng, 
-//					grantRemainData.limitDays.isPresent() ? grantRemainData.limitDays.get() : 0, useInfor, param.isMode());			
+//					param.getSpecialLeaveCode(), speRemainData, specialHolidayInterimDataMng,
+//					grantRemainData.limitDays.isPresent() ? grantRemainData.limitDays.get() : 0, useInfor, param.isMode());
 //			SpecialHolidayRemainInfor grantDetailAfter = getOffsetDay.getRemainDays().getGrantDetailAfter().isPresent() ? getOffsetDay.getRemainDays().getGrantDetailAfter().get() :
 //				new SpecialHolidayRemainInfor(0, 0, 0);
 //			//付与後の残数情報をまとめる
 //			getOffsetDay = grantDetailAfter(grantDetailAfter, getOffsetDay);
-//			getOffsetDay.getUseOutPeriod().addAll(useInfor.getUseDaysOutPeriod());			
+//			getOffsetDay.getUseOutPeriod().addAll(useInfor.getUseDaysOutPeriod());
 //		}
 //		return getOffsetDay;
 //	}
-	
+
 //	private static InPeriodOfSpecialLeave getInforNextProcess(RequireM4 require, CacheCarrier cacheCarrier, ComplileInPeriodOfSpecialLeaveParam param,
 //			ManagaData grantRemainData, InPeriodOfSpecialLeave getOffsetDay, InPeriodOfSpecialLeave speTmp) {
 //		DataMngOfDeleteExpired expiredData = new DataMngOfDeleteExpired(0.0, new ArrayList<>(), new HashMap<>());
 //		//集計終了日の翌日開始時点の未消化数をもとめる
-//		if(!getOffsetDay.getLstSpeLeaveGrantDetails().isEmpty()) {			
+//		if(!getOffsetDay.getLstSpeLeaveGrantDetails().isEmpty()) {
 //			List<SpecialLeaveGrantDetails> lstSpeLeaveGrantDetails = speTmp.getLstSpeLeaveGrantDetails();
 //			List<SpecialLeaveGrantRemainingData> lstRemainTmp = lstSpeLeaveGrantDetails.stream().map(speLeaveGrantDetails -> {
 //				return new SpecialLeaveGrantRemainingData(speLeaveGrantDetails.getSpecialID(),
@@ -1669,13 +1669,13 @@ public class SpecialLeaveManagementService {
 //						speLeaveGrantDetails.getDeadlineDate(),
 //						speLeaveGrantDetails.getExpirationStatus(),
 //						GrantRemainRegisterType.MONTH_CLOSE,
-//						new SpecialLeaveNumberInfo(new SpecialLeaveGrantNumber(new DayNumberOfGrant(speLeaveGrantDetails.getDetails().getGrantDays()), Optional.empty()), 
+//						new SpecialLeaveNumberInfo(new SpecialLeaveGrantNumber(new DayNumberOfGrant(speLeaveGrantDetails.getDetails().getGrantDays()), Optional.empty()),
 //								new SpecialLeaveUsedNumber(new DayNumberOfUse(speLeaveGrantDetails.getDetails().getUseDays()), Optional.empty(), Optional.empty(), Optional.empty()),
 //								new SpecialLeaveRemainingNumber(new DayNumberOfRemain(speLeaveGrantDetails.getDetails().getRemainDays()), Optional.empty())));
 //			}).collect(Collectors.toList());
 //			//期限切れの管理データを期限切れに変更する
 //			expiredData = unDigestedDay(lstRemainTmp, param.getComplileDate().end().addDays(1), param.isMode());
-//		}	
+//		}
 //		//「特別休暇の残数」．未消化数 += 未消化数(output)
 //		speTmp.getRemainDays().setUnDisgesteDays(speTmp.getRemainDays().getUnDisgesteDays() + expiredData.getUnDigestedDay());
 //		//集計終了日の翌日開始時点の残数情報をまとめる
@@ -1691,7 +1691,7 @@ public class SpecialLeaveManagementService {
 //				grantRemainData.limitDays.isPresent() ? grantRemainData.limitDays.get() : 0);
 //		return speTmp;
 //	}
-	
+
 //	private static InPeriodOfSpecialLeave toInPeriodOfSpecialLeave(InPeriodOfSpecialLeave getOffsetDay) {
 //		List<SpecialLeaveGrantDetails> lstSpeLeaveGrantDetailsAfter = getOffsetDay.getLstSpeLeaveGrantDetails().stream().map(x -> {
 //			SpecialLeaveNumberInfoService detailsAfer = new SpecialLeaveNumberInfoService(x.getDetails().getRemainDays(),
@@ -1708,7 +1708,7 @@ public class SpecialLeaveManagementService {
 //					x.getSid(),
 //					x.getGrantDate(),
 //					detailsAfer,
-//					x.getSpecialID()); 
+//					x.getSpecialID());
 //		}).collect(Collectors.toList());
 //		RemainDaysOfSpecialHoliday remainDaysBefore = getOffsetDay.getRemainDays();
 //		Optional<SpecialHolidayRemainInfor> optgrantDetailAfterOfBefore = Optional.empty();
@@ -1735,14 +1735,14 @@ public class SpecialLeaveManagementService {
 //					z.getUseDays(),
 //					z.getUseTimes());
 //		}).collect(Collectors.toList());
-//		InPeriodOfSpecialLeave speTmp = new InPeriodOfSpecialLeave(lstSpeLeaveGrantDetailsAfter, 
+//		InPeriodOfSpecialLeave speTmp = new InPeriodOfSpecialLeave(lstSpeLeaveGrantDetailsAfter,
 //				remainDaysAfter,
 //				useOutPeriodAfter,
 //				getOffsetDay.getLstError());
 //		return speTmp;
 //	}
-	
-	private static List<SpecialLeaveError> lstError(InPeriodOfSpecialLeave output){
+
+	private static List<SpecialLeaveError> lstError(InPeriodOfSpecialLeaveResultInfor output){
 		List<SpecialLeaveError> lstError = new ArrayList<>();
 		//「特別休暇期間外の使用」をチェックする
 		if(!output.getUseOutPeriod().isEmpty()) {
@@ -1758,21 +1758,21 @@ public class SpecialLeaveManagementService {
 				lstError.add(SpecialLeaveError.AFTERGRANT);
 			}
 		});
-		
+
 		return lstError;
 	}
-	
+
 //	private static InPeriodOfSpecialLeave speRemainNextInfor(RequireM4 require, CacheCarrier cacheCarrier,String cid, String sid, int speCode, GeneralDate baseDate,
 //			List<SpecialLeaveGrantRemainingData> lstSpeData, InPeriodOfSpecialLeave speTmp, double limitDays) {
 //		//[No.373]社員の特別休暇情報を取得する
-//		InforSpecialLeaveOfEmployee getSpecialHolidayOfEmp = InforSpecialLeaveOfEmployeeSevice.getInforSpecialLeaveOfEmployee(require, cacheCarrier, 
+//		InforSpecialLeaveOfEmployee getSpecialHolidayOfEmp = InforSpecialLeaveOfEmployeeSevice.getInforSpecialLeaveOfEmployee(require, cacheCarrier,
 //				cid,
 //				sid,
 //				speCode,
 //				new DatePeriod(baseDate, baseDate), null);
 //		if(getSpecialHolidayOfEmp.getStatus() != InforStatus.GRANTED) {
 //			return speTmp;
-//		}		
+//		}
 //		List<SpecialHolidayInfor> lstInfor = getSpecialHolidayOfEmp.getSpeHolidayInfor();
 //		if(lstInfor.isEmpty()) {
 //			return speTmp;
@@ -1815,14 +1815,14 @@ public class SpecialLeaveManagementService {
 //		speTmp.getLstSpeLeaveGrantDetails().add(detailAdd);
 //		return speTmp;
 //	}
-	
+
 //	/**
 //	 * 付与日が同じ管理データを排除する
 //	 * @param lstDatabase
 //	 * @param lstMemoryData
 //	 * @return
 //	 */
-//	private static List<SpecialLeaveGrantRemainingData> adjustGrantData(List<SpecialLeaveGrantRemainingData> lstDatabase, 
+//	private static List<SpecialLeaveGrantRemainingData> adjustGrantData(List<SpecialLeaveGrantRemainingData> lstDatabase,
 //			List<SpecialLeaveGrantRemainingData> lstMemoryData){
 //		//INPUT．「特別休暇付与残数データ」(old)をOUTPUT．「特別休暇付与残数データ」に追加する
 //		List<SpecialLeaveGrantRemainingData> lstOutputData = new ArrayList<>(lstDatabase);
@@ -1837,7 +1837,7 @@ public class SpecialLeaveManagementService {
 //				lstOutputData.add(memoryData);
 //			}
 //		}
-//		
+//
 //		return lstOutputData;
 //	}
 
@@ -1847,7 +1847,7 @@ public class SpecialLeaveManagementService {
 	 * @param dateData
 	 * @return
 	 */
-	private static double useDayFormGrant(List<InterimSpecialHolidayMng> lstInterimData, 
+	private static double useDayFormGrant(List<InterimSpecialHolidayMng> lstInterimData,
 			List<InterimRemain> lstInterimMng, DatePeriod dateData) {
 		double outputData = 0;
 		for (InterimSpecialHolidayMng interimMng : lstInterimData) {
@@ -1866,14 +1866,14 @@ public class SpecialLeaveManagementService {
 		}
 		return outputData;
 	}
-	
+
 //	/**
 //	 * 期限切れの管理データを期限切れに変更する
 //	 * @param lstGrantData
 //	 * @param baseDate
 //	 * @return
 //	 */
-//	private static DataMngOfDeleteExpired unDigestedDay(List<SpecialLeaveGrantRemainingData> lstGrantData, 
+//	private static DataMngOfDeleteExpired unDigestedDay(List<SpecialLeaveGrantRemainingData> lstGrantData,
 //			GeneralDate baseDate, boolean isMode) {
 //		double unDisgesteDays = 0;
 //		List<SpecialLeaveGrantRemainingData> lstTmp = new ArrayList<>(lstGrantData);
@@ -1899,77 +1899,77 @@ public class SpecialLeaveManagementService {
 //		//return new DataMngOfDeleteExpired(unDisgesteDays, lstTmp);
 //		return new DataMngOfDeleteExpired(unDisgesteDays, lstTmp, null);
 //	}
-	
+
 	public static interface RequireM1 {
 
 		Optional<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String specialId);
-		
+
 	}
-	
-	public static interface RequireM2 { 
+
+	public static interface RequireM2 {
 
 		List<InterimRemain> interimRemains(String employeeId, DatePeriod dateData, RemainType remainType);
 
 		List<InterimSpecialHolidayMng> interimSpecialHolidayMng(String mngId);
 	}
-	
+
 	public static interface RequireM3 extends LeaveRemainingNumber.RequireM3, InforSpecialLeaveOfEmployeeSevice.RequireM4 {
 
 		/** 特別休暇付与残数データ */
-		List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String sid, int specialLeaveCode, 
+		List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String sid, int specialLeaveCode,
 				LeaveExpirationStatus expirationStatus,GeneralDate grantDate, GeneralDate deadlineDate);
 
 		/** 特別休暇付与残数データ */
-		List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String sid, int speCode, 
+		List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String sid, int speCode,
 				DatePeriod datePriod, GeneralDate startDate, LeaveExpirationStatus expirationStatus);
 	}
-	
+
 	public static interface RequireM4 extends InforSpecialLeaveOfEmployeeSevice.RequireM4, RequireM1 {
-		
+
 	}
-	
+
 	public static interface RequireM5 extends RequireM2, RequireM3, RequireM4, LeaveRemainingNumber.RequireM3 {
 
 		/** 特別休暇基本情報 */
 		Optional<SpecialLeaveBasicInfo> specialLeaveBasicInfo(String sid, int spLeaveCD, UseAtr use);
-		
+
 		/** 所属会社履歴 */
 		List<AffCompanyHistImport> listAffCompanyHistImport(List listAppId, DatePeriod period);
-		
+
 		/** 締め状態管理 */
 		Optional<ClosureStatusManagement> latestClosureStatusManagement(String employeeId);
 	}
 
 	public static RequireM5 createRequireM5(
 			SpecialLeaveGrantRepository specialLeaveGrantRepo,
-			ShareEmploymentAdapter shareEmploymentAdapter, 
+			ShareEmploymentAdapter shareEmploymentAdapter,
 			EmpEmployeeAdapter empEmployeeAdapter,
-			GrantDateTblRepository grantDateTblRepo, 
+			GrantDateTblRepository grantDateTblRepo,
 			AnnLeaEmpBasicInfoRepository annLeaEmpBasicInfoRepo,
-			SpecialHolidayRepository specialHolidayRepo, 
+			SpecialHolidayRepository specialHolidayRepo,
 			InterimSpecialHolidayMngRepository interimSpecialHolidayMngRepo,
-			InterimRemainRepository interimRemainRepo, 
+			InterimRemainRepository interimRemainRepo,
 			SpecialLeaveBasicInfoRepository specialLeaveBasicInfoRepo,
 			SyCompanyRecordAdapter syCompanyRecordAdapter,
 			ClosureStatusManagementRepository closureStatusManagementRepo) {
-		
+
 		return new RequireM5Impl(
-				specialLeaveGrantRepo, 
-				shareEmploymentAdapter, 
-				empEmployeeAdapter, 
-				grantDateTblRepo, 
-				annLeaEmpBasicInfoRepo, 
-				specialHolidayRepo, 
-				interimSpecialHolidayMngRepo, 
-				interimRemainRepo, 
-				specialLeaveBasicInfoRepo, 
+				specialLeaveGrantRepo,
+				shareEmploymentAdapter,
+				empEmployeeAdapter,
+				grantDateTblRepo,
+				annLeaEmpBasicInfoRepo,
+				specialHolidayRepo,
+				interimSpecialHolidayMngRepo,
+				interimRemainRepo,
+				specialLeaveBasicInfoRepo,
 				syCompanyRecordAdapter,
 				closureStatusManagementRepo);
 	}
-	
+
 	@AllArgsConstructor
 	public static class RequireM5Impl implements RequireM5 {
-		
+
 		protected SpecialLeaveGrantRepository specialLeaveGrantRepo;
 		protected ShareEmploymentAdapter shareEmploymentAdapter;
 		protected EmpEmployeeAdapter empEmployeeAdapter;
@@ -1981,97 +1981,97 @@ public class SpecialLeaveManagementService {
 		protected SpecialLeaveBasicInfoRepository specialLeaveBasicInfoRepo;
 		protected SyCompanyRecordAdapter syCompanyRecordAdapter;
 		protected ClosureStatusManagementRepository closureStatusManagementRepo;
-		
+
 		/** 特別休暇付与残数データ */
 		@Override
 		public Optional<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String specialId) {
 			return specialLeaveGrantRepo.getBySpecialId(specialId);
 		}
-		
+
 		@Override
 		public Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyId,
 				String employeeId, GeneralDate baseDate) {
 			return shareEmploymentAdapter.findEmploymentHistoryRequire(cacheCarrier, companyId, employeeId, baseDate);
 		}
-		
+
 		@Override
 		public EmployeeRecordImport employeeFullInfo(CacheCarrier cacheCarrier, String empId) {
 			return empEmployeeAdapter.findByAllInforEmpId(cacheCarrier, empId);
 		}
-		
+
 		@Override
 		public EmployeeImport employeeInfo(CacheCarrier cacheCarrier, String empId) {
 			return empEmployeeAdapter.findByEmpIdRequire(cacheCarrier, empId);
 		}
-		
+
 		@Override
 		public List<SClsHistImport> employeeClassificationHistoires(CacheCarrier cacheCarrier, String companyId,
 				List<String> employeeIds, DatePeriod datePeriod) {
 			return empEmployeeAdapter.lstClassByEmployeeId(cacheCarrier, companyId, employeeIds, datePeriod);
 		}
-		
+
 		/** 特別休暇付与テーブル */
 		@Override
 		public Optional<GrantDateTbl> grantDateTbl(String companyId, int specialHolidayCode) {
 			return grantDateTblRepo.findByCodeAndIsSpecified(companyId, specialHolidayCode);
 		}
-		
+
 		/** 経過年数に対する付与日数 */
 		@Override
 		public List<ElapseYear> elapseYear(String companyId, int specialHolidayCode, String grantDateCode) {
 			return grantDateTblRepo.findElapseByGrantDateCd(companyId, specialHolidayCode, grantDateCode);
 		}
-		
+
 		/** 年休社員基本情報 */
 		@Override
 		public Optional<AnnualLeaveEmpBasicInfo> employeeAnnualLeaveBasicInfo(String employeeId) {
 			return annLeaEmpBasicInfoRepo.get(employeeId);
 		}
-		
+
 		@Override
 		public List<AffCompanyHistSharedImport> employeeAffiliatedCompanyHistories(CacheCarrier cacheCarrier,
 				List<String> sids, DatePeriod datePeriod) {
 			return empEmployeeAdapter.getAffCompanyHistByEmployee(cacheCarrier, sids, datePeriod);
 		}
-		
+
 		/** 特別休暇 */
 		@Override
 		public Optional<SpecialHoliday> specialHoliday(String companyID, int specialHolidayCD) {
 			return specialHolidayRepo.findByCode(companyID, specialHolidayCD);
 		}
-		
+
 		/** 特別休暇付与残数データ */
 		@Override
 		public List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String sid, int speCode,
 				DatePeriod datePriod, GeneralDate startDate, LeaveExpirationStatus expirationStatus) {
 			return specialLeaveGrantRepo.getByNextDate(sid, speCode, datePriod, startDate, expirationStatus);
 		}
-		
+
 		/** 特別休暇付与残数データ */
 		@Override
 		public List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String sid, int specialLeaveCode,
 				LeaveExpirationStatus expirationStatus, GeneralDate grantDate, GeneralDate deadlineDate) {
 			return specialLeaveGrantRepo.getByPeriodStatus(sid, specialLeaveCode, expirationStatus, grantDate, deadlineDate);
 		}
-		
+
 		/** 特別休暇暫定データ */
 		@Override
 		public List<InterimSpecialHolidayMng> interimSpecialHolidayMng(String mngId) {
 			return interimSpecialHolidayMngRepo.findById(mngId);
 		}
-		
+
 		/** 暫定残数管理データ */
 		@Override
 		public List<InterimRemain> interimRemains(String employeeId, DatePeriod dateData, RemainType remainType) {
 			return interimRemainRepo.getRemainBySidPriod(employeeId, dateData, remainType);
 		}
-		
+
 		/** 特別休暇基本情報 */
 		@Override
 		public Optional<SpecialLeaveBasicInfo> specialLeaveBasicInfo(String sid, int spLeaveCD, UseAtr use) {
 			return specialLeaveBasicInfoRepo.getBySidLeaveCdUser(sid, spLeaveCD, use);
 		}
-		
+
 		/** 所属会社履歴 */
 		@Override
 		public List<AffCompanyHistImport> listAffCompanyHistImport(
@@ -2091,6 +2091,6 @@ public class SpecialLeaveManagementService {
 			// TODO Auto-generated method stub
 			return null;
 		}
-		
+
 	}
 }

@@ -63,17 +63,17 @@ public class MonthlyAggregationEmployeeService {
 	 * @return 終了状態
 	 */
 	@SuppressWarnings("rawtypes")
-	public static AggregationResult aggregate(RequireM1 require, CacheCarrier cacheCarrier, 
+	public static AggregationResult aggregate(RequireM1 require, CacheCarrier cacheCarrier,
 			AsyncCommandHandlerContext asyncContext, String companyId, String employeeId,
 			GeneralDate criteriaDate, String empCalAndSumExecLogID, ExecutionType executionType) {
 
 		ProcessState status = ProcessState.SUCCESS;
 		val dataSetter = asyncContext.getDataSetter();
-		
+
 		// 月別集計で必要な会社別設定を取得する
 		val companySets = MonAggrCompanySettings.loadSettings(require, companyId);
 		if (companySets.getErrorInfos().size() > 0){
-			
+
 			// エラー処理
 			List<MonthlyAggregationErrorInfo> errorInfoList = new ArrayList<>();
 			for (val errorInfo : companySets.getErrorInfos().entrySet()){
@@ -83,13 +83,13 @@ public class MonthlyAggregationEmployeeService {
 			return AggregationResult.build(status).newAtomTask(
 					errorProc(require, dataSetter, employeeId, empCalAndSumExecLogID, criteriaDate, errorInfoList));
 		}
-		
+
 		val aggrStatus = aggregate(require, cacheCarrier, asyncContext, companyId, employeeId, criteriaDate,
 				empCalAndSumExecLogID, executionType, companySets);
-		
+
 		return aggrStatus;
 	}
-	
+
 	/**
 	 * 社員の月別実績を集計する
 	 * @param asyncContext 同期コマンドコンテキスト
@@ -102,14 +102,14 @@ public class MonthlyAggregationEmployeeService {
 	 * @return 終了状態
 	 */
 	@SuppressWarnings("rawtypes")
-	public static AggregationResult aggregate(RequireM1 require, CacheCarrier cacheCarrier, 
+	public static AggregationResult aggregate(RequireM1 require, CacheCarrier cacheCarrier,
 			AsyncCommandHandlerContext asyncContext, String companyId, String employeeId,
 			GeneralDate criteriaDate, String empCalAndSumExecLogID, ExecutionType executionType,
 			MonAggrCompanySettings companySets) {
-		
+
 		MonthlyAggrEmpServiceValue status = new MonthlyAggrEmpServiceValue();
 		val dataSetter = asyncContext.getDataSetter();
-		
+
 		// 前回集計結果を初期化する
 		AggrResultOfAnnAndRsvLeave prevAggrResult = new AggrResultOfAnnAndRsvLeave();
 		Optional<AbsRecRemainMngOfInPeriod> prevAbsRecResultOpt = Optional.empty();
@@ -117,16 +117,16 @@ public class MonthlyAggregationEmployeeService {
 		Map<Integer, InPeriodOfSpecialLeaveResultInfor> prevSpecialLeaveResultMap = new HashMap<>();
 
 		ConcurrentStopwatches.start("11000:集計期間の判断：");
-		
+
 		// 集計期間の判断　（実締め毎集計期間だけをすべて取り出す）
 		List<AggrPeriodEachActualClosure> aggrPeriods = new ArrayList<>();
 		val closurePeriods = GetClosurePeriod.get(require, companyId, employeeId, criteriaDate,
 				Optional.empty(), Optional.empty(), Optional.empty());
 		for (val closurePeriod : closurePeriods) aggrPeriods.addAll(closurePeriod.getAggrPeriods());
-		
+
 		// 残数処理を行う期間を計算　（Redmine#107271、EA#3434）
 		DatePeriod remainPeriod = calcPeriodForRemainingProc(companySets, aggrPeriods);
-		
+
 		// 全体の期間を求める
 		DatePeriod allPeriod = new DatePeriod(GeneralDate.today(), GeneralDate.today());
 		if (aggrPeriods.size() > 0){
@@ -139,16 +139,16 @@ public class MonthlyAggregationEmployeeService {
 				if (endYmd.before(aggrPeriod.getPeriod().end())) endYmd = aggrPeriod.getPeriod().end();
 				allPeriod = new DatePeriod(startYmd, endYmd);
 			}
-			
+
 			// 前月の36協定の集計があり得るため、1か月前まで読み込む　（Redmine#107701）
 			allPeriod = new DatePeriod(allPeriod.start().addMonths(-1), allPeriod.end());
 		}
-		
+
 		// 月別集計で必要な社員別設定を取得
 		val employeeSets = MonAggrEmployeeSettings.loadSettings(require, cacheCarrier,
 				companyId, employeeId, allPeriod);
 		if (employeeSets.getErrorInfos().size() > 0){
-			
+
 			// エラー処理
 			List<MonthlyAggregationErrorInfo> errorInfoList = new ArrayList<>();
 			for (val errorInfo : employeeSets.getErrorInfos().entrySet()){
@@ -157,25 +157,25 @@ public class MonthlyAggregationEmployeeService {
 			return AggregationResult.build(status)
 					.newAtomTask(errorProc(require, dataSetter, employeeId, empCalAndSumExecLogID, criteriaDate, errorInfoList));
 		}
-		
+
 		ConcurrentStopwatches.stop("11000:集計期間の判断：");
-		
+
 		List<AtomTask> atomTasks = new ArrayList<>();
-		
+
 		for (val aggrPeriod : aggrPeriods){
 			val yearMonth = aggrPeriod.getYearMonth();
 			val closureId = aggrPeriod.getClosureId();
 			val closureDate = aggrPeriod.getClosureDate();
 			val datePeriod = aggrPeriod.getPeriod();
-			
+
 			//ConcurrentStopwatches.start("12000:集計期間ごと：" + aggrPeriod.getYearMonth().toString());
-			
+
 			// 中断依頼が出されているかチェックする
 //			if (asyncContext.hasBeenRequestedToCancel()) {
 //				status.setState(ProcessState.INTERRUPTION);
 //				return status;
 //			}
-			
+
 			// 「就業計算と集計実行ログ」を取得し、実行状況を確認する
 			val exeLogOpt = require.calAndSumExeLog(empCalAndSumExecLogID);
 			if (!exeLogOpt.isPresent()){
@@ -189,28 +189,28 @@ public class MonthlyAggregationEmployeeService {
 					return AggregationResult.build(status);
 				}
 			}
-			
+
 			// 処理する期間が締められているかチェックする
 			if (employeeSets.checkClosedMonth(datePeriod.end())){
 				continue;
 			}
-			
+
 			// アルゴリズム「実績ロックされているか判定する」を実行する
 			if (getDetermineActualLocked(require, companySets, datePeriod.end(), closureId.value) == LockStatus.LOCK){
 				continue;
 			}
-			
+
 			// 再実行の場合
 			if (executionType == ExecutionType.RERUN){
-				
+
 				// 編集状態を削除
 				atomTasks.add(AtomTask.of(() -> require.removeMonthEditState(employeeId, yearMonth, closureId, closureDate)));
 			}
-			
+
 			// 残数処理を行う必要があるかどうか判断　（Redmine#107271、EA#3434）
 			Boolean isRemainProc = false;
 			if (remainPeriod.contains(datePeriod.start())) isRemainProc = true;
-			
+
 			AggregateMonthlyRecordValue value = new AggregateMonthlyRecordValue();
 			try {
 				// 月別実績を集計する　（アルゴリズム）
@@ -224,13 +224,13 @@ public class MonthlyAggregationEmployeeService {
 				if (!isOptimisticLock) {
 					throw ex;
 				}
-				atomTasks.add(MonthlyAggregationErrorService.errorProcForOptimisticLock(require, 
+				atomTasks.add(MonthlyAggregationErrorService.errorProcForOptimisticLock(require,
 						dataSetter, employeeId, empCalAndSumExecLogID, datePeriod.end()));
 				aggrPeriod.setHappendOptimistLockError(true);
 				status.getOutAggrPeriod().add(aggrPeriod);
 				return AggregationResult.build(status, atomTasks);
 			}
-			
+
 			// 状態を確認する
 			if (value.getErrorInfos().size() > 0) {
 
@@ -238,23 +238,23 @@ public class MonthlyAggregationEmployeeService {
 				List<MonthlyAggregationErrorInfo> errorInfoList = new ArrayList<>();
 				errorInfoList.addAll(value.getErrorInfos().values());
 				atomTasks.add(errorProc(require, dataSetter, employeeId, empCalAndSumExecLogID, datePeriod.end(), errorInfoList));
-				
+
 				// 中断するエラーがある時、中断処理をする
 				if (value.isInterruption()){
 					//asyncContext.finishedAsCancelled();
 					status.setState(ProcessState.INTERRUPTION);
 					return AggregationResult.build(status, atomTasks);
 				}
-				
+
 				break;
 			}
-			
+
 			// 前回集計結果の退避
 			prevAggrResult = value.getAggrResultOfAnnAndRsvLeave();
 			prevAbsRecResultOpt = value.getAbsRecRemainMngOfInPeriodOpt();
 			prevBreakDayOffresultOpt = value.getBreakDayOffRemainMngOfInPeriodOpt();
 			prevSpecialLeaveResultMap = value.getInPeriodOfSpecialLeaveResultInforMap();
-			
+
 			try {
 				// 月別実績(WORK)を登録する
 				atomTasks.add(mergeMonth(require, Arrays.asList(value.getIntegration()), datePeriod.end()));
@@ -272,35 +272,35 @@ public class MonthlyAggregationEmployeeService {
 			finally {
 				status.getOutAggrPeriod().add(aggrPeriod);
 			}
-			
+
 			//ConcurrentStopwatches.stop("12000:集計期間ごと：" + aggrPeriod.getYearMonth().toString());
 		}
 		return AggregationResult.build(status, atomTasks);
 	}
-	
+
 	/**
 	 * 実績ロックされているか判定する　（月別用）
 	 * @param baseDate 基準日
 	 * @param closureId 締めID
 	 * @return 実績のロック状態　（ロックorアンロック）
 	 */
-	public static LockStatus getDetermineActualLocked(RequireM4 require, 
-			MonAggrCompanySettings comSettings, 
+	public static LockStatus getDetermineActualLocked(RequireM4 require,
+			MonAggrCompanySettings comSettings,
 			GeneralDate baseDate, Integer closureId){
 		// 実績ロック
 		val actualLock = require.actualLock(AppContexts.user().companyId(), closureId);
-		
+
 		LockStatus currentLockStatus = LockStatus.UNLOCK;
-		
+
 		// 「実績ロック」を取得する
 		if (!actualLock.isPresent()) return currentLockStatus;
-		
+
 		// 月のロック状態を判定する
 		currentLockStatus = actualLock.get().getMonthlyLockState();
-		
+
 		// ロック状態をチェックする
 		if (currentLockStatus == LockStatus.UNLOCK) return LockStatus.UNLOCK;
-		
+
 		// 基準日が当月に含まれているかチェックする
 		if (!comSettings.getCurrentMonthPeriodMap().containsKey(closureId)) return LockStatus.UNLOCK;
 		DatePeriod currentPeriod = comSettings.getCurrentMonthPeriodMap().get(closureId);
@@ -312,12 +312,12 @@ public class MonthlyAggregationEmployeeService {
 		//基準日が締め期間に含まれていない
 		return LockStatus.UNLOCK;
 	}
-	
+
 	private static AtomTask mergeMonth(RequireM3 require, List<IntegrationOfMonthly> domains, GeneralDate targetDate) {
-		
+
 		return AtomTask.of(() -> require.merge(domains, targetDate) );
 	}
-	
+
 	/**
 	 * 残数処理を行う期間を計算
 	 * @param companySets 月別集計で必要な会社別設定
@@ -327,21 +327,21 @@ public class MonthlyAggregationEmployeeService {
 	private static DatePeriod calcPeriodForRemainingProc(
 			MonAggrCompanySettings companySets,
 			List<AggrPeriodEachActualClosure> aggrPeriods){
-		
+
 		DatePeriod result = new DatePeriod(GeneralDate.min(), GeneralDate.min());
-		
+
 		// 集計期間を取得
 		aggrPeriods.sort((a, b) -> a.getPeriod().start().compareTo(b.getPeriod().start()));
 		for (AggrPeriodEachActualClosure aggrPeriod : aggrPeriods) {
-			
+
 			// 処理年月と締め期間を取得する　（会社別設定内に既に算出してある期間を使う）
 			int closureId = aggrPeriod.getClosureId().value;
 			if (companySets.getCurrentMonthPeriodMap().containsKey(closureId)) {
-				
+
 				// 処理中の期間が当月かどうか判断
 				DatePeriod currentPeriod = companySets.getCurrentMonthPeriodMap().get(closureId);
 				if (periodCompareEx(currentPeriod, aggrPeriod.getPeriod()) == true) {
-					
+
 					// 残数処理を行う期間を更新
 					if (result.start() == GeneralDate.min()) {
 						// 1回目は、開始日・終了日をセット
@@ -354,11 +354,11 @@ public class MonthlyAggregationEmployeeService {
 				}
 			}
 		}
-		
+
 		// 残数処理を行う期間を返す
 		return result;
 	}
-	
+
 	/**
 	 * エラー処理
 	 * @param dataSetter データセッター
@@ -373,10 +373,10 @@ public class MonthlyAggregationEmployeeService {
 			String empCalAndSumExecLogID,
 			GeneralDate outYmd,
 			List<MonthlyAggregationErrorInfo> errorInfoList){
-		
+
 		// 「エラーあり」に更新
 		dataSetter.updateData("monthlyAggregateHasError", ErrorPresent.HAS_ERROR.nameId);
-		
+
 		// エラー出力
 		errorInfoList.sort((a, b) -> a.getResourceId().compareTo(b.getResourceId()));
 		return AtomTask.of(() -> {
@@ -391,7 +391,7 @@ public class MonthlyAggregationEmployeeService {
 			}
 		});
 	}
-	
+
 	/**
 	 * 期間重複があるか
 	 * @param period1 期間1
@@ -399,7 +399,7 @@ public class MonthlyAggregationEmployeeService {
 	 * @return true：重複あり、false：重複なし
 	 */
 	private static boolean periodCompareEx(DatePeriod period1, DatePeriod period2){
-		
+
 		if (period1.start().after(period2.end())) return false;
 		if (period1.end().before(period2.start())) return false;
 		return true;
@@ -407,55 +407,55 @@ public class MonthlyAggregationEmployeeService {
 
 	@Getter
 	public static class AggregationResult {
-		
+
 		MonthlyAggrEmpServiceValue status;
-		
+
 		List<AtomTask> atomTasks;
-		
+
 		private AggregationResult (MonthlyAggrEmpServiceValue status, List<AtomTask> atomTasks) {
 			this.atomTasks = atomTasks;
 			this.status = status;
 		}
-		
+
 		static AggregationResult build(MonthlyAggrEmpServiceValue status) {
 			return new AggregationResult(status, new ArrayList<>());
 		}
-		
+
 		static AggregationResult build(ProcessState status) {
 			MonthlyAggrEmpServiceValue value = new MonthlyAggrEmpServiceValue();
 			value.setState(status);
 			return new AggregationResult(value, new ArrayList<>());
 		}
-		
+
 		static AggregationResult build(MonthlyAggrEmpServiceValue status, List<AtomTask> atomTasks) {
 			return new AggregationResult(status, atomTasks);
 		}
-		
+
 		public AggregationResult newAtomTask(AtomTask task) {
 			this.atomTasks.add(task);
 			return this;
 		}
 	}
-	
+
 	public static interface RequireM4 {
 		Optional<ActualLock> actualLock(String comId, int closureId);
-		
+
 	}
-	
+
 	public static interface RequireM2 extends MonthlyAggregationErrorService.RequireM1 {}
-	
+
 	public static interface RequireM1 extends MonAggrEmployeeSettings.RequireM2,
 		GetClosurePeriod.RequireM1, AggregateMonthlyRecordService.RequireM2,
-		RequireM2, RequireM3, RequireM4, MonAggrCompanySettings.RequireM6 { 
-		
+		RequireM2, RequireM3, RequireM4, MonAggrCompanySettings.RequireM6 {
+
 		Optional<EmpCalAndSumExeLog> calAndSumExeLog (String empCalAndSumExecLogID);
-		
+
 		void removeMonthEditState(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate);
-		
+
 	}
-	
+
 	public static interface RequireM3 {
-		
+
 		void merge(List<IntegrationOfMonthly> domains, GeneralDate targetDate);
 	}
 

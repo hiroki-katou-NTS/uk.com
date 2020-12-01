@@ -39,10 +39,10 @@ public class RsvLeaRemNumEachMonth extends AggregateRoot {
 	private Optional<ReserveLeaveGrant> reserveLeaveGrant;
 	/** 付与区分 */
 	private boolean grantAtr;
-	
+
 	/** 未消化数 */
 	private ReserveLeaveUndigestedNumber undigestedNumber;
-	
+
 	/**
 	 * コンストラクタ
 	 * @param employeeId 社員ID
@@ -55,21 +55,22 @@ public class RsvLeaRemNumEachMonth extends AggregateRoot {
 			YearMonth yearMonth,
 			ClosureId closureId,
 			ClosureDate closureDate){
-		
+
 		super();
 		this.employeeId = employeeId;
 		this.yearMonth = yearMonth;
 		this.closureId = closureId;
 		this.closureDate = closureDate;
-		
+
 		this.closurePeriod = new DatePeriod(GeneralDate.today(), GeneralDate.today());
 		this.closureStatus = ClosureStatus.UNTREATED;
 		this.reserveLeave = new ReserveLeave();
 		this.realReserveLeave = new ReserveLeave();
 		this.reserveLeaveGrant = Optional.empty();
 		this.grantAtr = false;
+		undigestedNumber = new ReserveLeaveUndigestedNumber();
 	}
-	
+
 	/**
 	 * ファクトリー
 	 * @param employeeId 社員ID
@@ -94,8 +95,9 @@ public class RsvLeaRemNumEachMonth extends AggregateRoot {
 			ReserveLeave reserveLeave,
 			ReserveLeave realReserveLeave,
 			Optional<ReserveLeaveGrant> reserveLeaveGrant,
-			boolean grantAtr){
-		
+			boolean grantAtr,
+			ReserveLeaveUndigestedNumber undigestedNumber){
+
 		RsvLeaRemNumEachMonth domain = new RsvLeaRemNumEachMonth(
 				employeeId, yearMonth, closureId, closureDate);
 		domain.closurePeriod = closurePeriod;
@@ -104,6 +106,7 @@ public class RsvLeaRemNumEachMonth extends AggregateRoot {
 		domain.realReserveLeave = realReserveLeave;
 		domain.reserveLeaveGrant = reserveLeaveGrant;
 		domain.grantAtr = grantAtr;
+		domain.undigestedNumber = undigestedNumber;
 		return domain;
 	}
 }

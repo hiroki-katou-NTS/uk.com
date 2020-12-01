@@ -10,10 +10,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.AggrResultOfAnnAndRsvLeave;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngOfInPeriod;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfSpecialLeaveResultInfor;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthly;
@@ -66,18 +62,18 @@ public class AggregateMonthlyRecordValue {
 	private Optional<MonCareHdRemain> monCareHdRemain;
 	/** 子の看護休暇月別残数データ */
 	private Optional<MonChildHdRemain> monChildHdRemain;
-	
-	/** 年休積立年休の集計結果 */
-	@Setter
-	private AggrResultOfAnnAndRsvLeave aggrResultOfAnnAndRsvLeave;
-	/** 振休振出の集計結果 */
-	@Setter
-	private Optional<AbsRecRemainMngOfInPeriod> absRecRemainMngOfInPeriodOpt;
-	/** 代休の集計結果 */
-	@Setter
-	private Optional<BreakDayOffRemainMngOfInPeriod> breakDayOffRemainMngOfInPeriodOpt;
-	/** 特別休暇の集計結果 */
-	private Map<Integer, InPeriodOfSpecialLeaveResultInfor> inPeriodOfSpecialLeaveResultInforMap;
+
+//	/** 年休積立年休の集計結果 */
+//	@Setter
+//	private AggrResultOfAnnAndRsvLeave aggrResultOfAnnAndRsvLeave;
+//	/** 振休振出の集計結果 */
+//	@Setter
+//	private Optional<AbsRecRemainMngOfInPeriod> absRecRemainMngOfInPeriodOpt;
+//	/** 代休の集計結果 */
+//	@Setter
+//	private Optional<BreakDayOffRemainMngOfInPeriod> breakDayOffRemainMngOfInPeriodOpt;
+//	/** 特別休暇の集計結果 */
+//	private Map<Integer, InPeriodOfSpecialLeaveResultInfor> inPeriodOfSpecialLeaveResultInforMap;
 	/** エラー情報 */
 	private Map<String, MonthlyAggregationErrorInfo> errorInfos;
 	/** 社員の月別実績エラー一覧 */
@@ -85,12 +81,12 @@ public class AggregateMonthlyRecordValue {
 	/** 中断フラグ */
 	@Setter
 	private boolean interruption;
-	
+
 	/*
 	 * コンストラクタ
 	 */
 	public AggregateMonthlyRecordValue(){
-		
+
 		this.attendanceTime = Optional.empty();
 		this.attendanceTimeWeeks = new ArrayList<>();
 		this.affiliationInfo = Optional.empty();
@@ -103,16 +99,16 @@ public class AggregateMonthlyRecordValue {
 		this.specialLeaveRemainList = new ArrayList<>();
 		this.monCareHdRemain = Optional.empty();
 		this.monChildHdRemain = Optional.empty();
-		
-		this.aggrResultOfAnnAndRsvLeave = new AggrResultOfAnnAndRsvLeave();
-		this.absRecRemainMngOfInPeriodOpt = Optional.empty();
-		this.breakDayOffRemainMngOfInPeriodOpt = Optional.empty();
-		this.inPeriodOfSpecialLeaveResultInforMap = new HashMap<>();
+
+//		this.aggrResultOfAnnAndRsvLeave = new AggrResultOfAnnAndRsvLeave();
+//		this.absRecRemainMngOfInPeriodOpt = Optional.empty();
+//		this.breakDayOffRemainMngOfInPeriodOpt = Optional.empty();
+//		this.inPeriodOfSpecialLeaveResultInforMap = new HashMap<>();
 		this.errorInfos = new HashMap<>();
 		this.perErrors = new ArrayList<>();
 		this.interruption = false;
 	}
-	
+
 	/**
 	 * エラー情報を追加する
 	 * @param resourceId リソースID
@@ -121,7 +117,7 @@ public class AggregateMonthlyRecordValue {
 	public void addErrorInfos(String resourceId, ErrMessageContent message){
 		this.errorInfos.putIfAbsent(resourceId, new MonthlyAggregationErrorInfo(resourceId, message));
 	}
-	
+
 	/**
 	 * エラー情報に指定のリソースIDがあるかどうか
 	 * @param resourceId リソースID
@@ -130,7 +126,7 @@ public class AggregateMonthlyRecordValue {
 	public boolean existErrorResource(String resourceId){
 		return this.errorInfos.containsKey(resourceId);
 	}
-	
+
 	/**
 	 * 最大の週Noを確認する
 	 * @return 最大の週No
@@ -143,7 +139,7 @@ public class AggregateMonthlyRecordValue {
 		}
 		return maxNo;
 	}
-	
+
 	/**
 	 * 月別実績の任意項目を取得
 	 * @param employeeId 社員ID
@@ -155,7 +151,7 @@ public class AggregateMonthlyRecordValue {
 	 */
 	public Optional<AnyItemOfMonthly> getAnyItem(String employeeId, YearMonth yearMonth,
 			ClosureId closureId, ClosureDate closureDate, int anyItemId){
-		
+
 		for (val anyItem : this.anyItemList){
 			if (anyItem.getEmployeeId() == employeeId &&
 				anyItem.getYearMonth().equals(yearMonth) &&
@@ -163,19 +159,19 @@ public class AggregateMonthlyRecordValue {
 				anyItem.getClosureDate().getClosureDay().equals(closureDate.getClosureDay()) &&
 				anyItem.getClosureDate().getLastDayOfMonth() == closureDate.getLastDayOfMonth() &&
 				anyItem.getAnyItemId() == anyItemId){
-				
+
 				return Optional.of(anyItem);
 			}
 		}
 		return Optional.empty();
 	}
-	
+
 	/**
 	 * 月別実績の任意項目の追加または更新
 	 * @param putAnyItem 月別実績の任意項目
 	 */
 	public void putAnyItemOrUpdate(AnyItemOfMonthly putAnyItem){
-		
+
 		val itrAnyItem = this.anyItemList.iterator();
 		while (itrAnyItem.hasNext()){
 			val anyItem = itrAnyItem.next();
@@ -192,13 +188,13 @@ public class AggregateMonthlyRecordValue {
 		}
 		this.anyItemList.add(putAnyItem);
 	}
-	
+
 	/**
 	 * 月別実績の任意項目の合算
 	 * @param sumAnyItem 月別実績の任意項目
 	 */
 	public void sumAnyItem(AnyItemOfMonthly sumAnyItem){
-		
+
 		val itrAnyItem = this.anyItemList.iterator();
 		while (itrAnyItem.hasNext()){
 			val anyItem = itrAnyItem.next();
@@ -215,13 +211,13 @@ public class AggregateMonthlyRecordValue {
 		}
 		this.anyItemList.add(sumAnyItem);
 	}
-	
+
 	/**
 	 * 月別実績(Work)の取得
 	 * @return 月別実績(Work)
 	 */
 	public IntegrationOfMonthly getIntegration(){
-		
+
 		IntegrationOfMonthly result = new IntegrationOfMonthly();
 		result.setAttendanceTime(this.attendanceTime);
 		result.setAffiliationInfo(this.affiliationInfo);

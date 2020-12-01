@@ -49,7 +49,7 @@ public class GetRsvLeaNumAfterCurrentMonImpl implements GetRsvLeaNumAfterCurrent
 	private ClosureStatusManagementRepository clsSttMngRepo;
 	@Inject
 	private RecordDomRequireService requireService;
-	
+
 	/** 当月以降の積立年休使用数・残数を取得する */
 	@Override
 	public List<RsvLeaUsedCurrentMonExport> algorithm(String employeeId, YearMonthPeriod period) {
@@ -58,7 +58,7 @@ public class GetRsvLeaNumAfterCurrentMonImpl implements GetRsvLeaNumAfterCurrent
 		// 社員に対応する処理締めを取得する
 		val closure = ClosureService.getClosureDataByEmployee(require, cacheCarrier, employeeId, GeneralDate.today());
 		if (closure == null) return new ArrayList<>();
-		
+
 		// 指定した年月の期間をすべて取得する
 		val endYMPeriods = closure.getPeriodByYearMonth(period.end());
 		List<ClosurePeriod> aggrTmp = Collections.synchronizedList(new ArrayList<>());
@@ -111,18 +111,18 @@ public class GetRsvLeaNumAfterCurrentMonImpl implements GetRsvLeaNumAfterCurrent
 					prevReserveLeave.optional());
 			prevAnnualLeave.set(aggrResult.getAnnualLeave().isPresent() ? aggrResult.getAnnualLeave().get() : null);
 			prevReserveLeave.set(aggrResult.getReserveLeave().isPresent() ? aggrResult.getReserveLeave().get() : null);
-			
+
 			// 結果をListに追加
 			val aggrResultOfReserveOpt = aggrResult.getReserveLeave();
 			if (aggrResultOfReserveOpt.isPresent()){
 				val aggrResultOfReserve = aggrResultOfReserveOpt.get();
 				val withMinus =
 						aggrResultOfReserve.getAsOfPeriodEnd().getRemainingNumber().getReserveLeaveWithMinus();
-				
+
 				tmp.add(new RsvLeaUsedCurrentMonExport(
 						key,
 						withMinus.getUsedNumber().getUsedDays(),
-						withMinus.getRemainingNumberInfo().getTotalRemaining().getTotalRemainingDays()));
+						withMinus.getRemainingNumberInfo().getRemainingNumber().getTotalRemainingDays()));
 			}
 		});
 		List<RsvLeaUsedCurrentMonExport> results = new ArrayList<>();
@@ -133,17 +133,17 @@ public class GetRsvLeaNumAfterCurrentMonImpl implements GetRsvLeaNumAfterCurrent
 
 	//RequestList364 - ver2
 	@Override
-	public List<RsvLeaUsedCurrentMonExport> getRemainRsvAnnAfCurMonV2(String employeeId, 
-			YearMonthPeriod period, MonAggrCompanySettings companySets, 
+	public List<RsvLeaUsedCurrentMonExport> getRemainRsvAnnAfCurMonV2(String employeeId,
+			YearMonthPeriod period, MonAggrCompanySettings companySets,
 			MonAggrEmployeeSettings employeeSets) {
-		
+
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
-		
+
 		// 社員に対応する処理締めを取得する
 		val closure = ClosureService.getClosureDataByEmployee(require, cacheCarrier, employeeId, GeneralDate.today());
 		if (closure == null) return new ArrayList<>();
-		
+
 		// 指定した年月の期間をすべて取得する
 		List<DatePeriod> endYMPeriods = closure.getPeriodByYearMonth(period.end());
 		List<ClosurePeriod> aggrPeriods = new ArrayList<>();
@@ -187,21 +187,21 @@ public class GetRsvLeaNumAfterCurrentMonImpl implements GetRsvLeaNumAfterCurrent
 					companySets == null ?  Optional.empty() : Optional.of(companySets),
 					employeeSets == null ? Optional.empty() : Optional.of(employeeSets),
 					Optional.empty(),sttMng, closureStartOpt);
-			
+
 			prevAnnLea.set(aggrResult.getAnnualLeave().isPresent() ? aggrResult.getAnnualLeave().get() : null);
 			prevRsvLeave.set(aggrResult.getReserveLeave().isPresent() ? aggrResult.getReserveLeave().get() : null);
-			
+
 			// 結果をListに追加
 			val aggrResultOfReserveOpt = aggrResult.getReserveLeave();
 			if (aggrResultOfReserveOpt.isPresent()){
 				val aggrResultOfReserve = aggrResultOfReserveOpt.get();
 				val withMinus =
 						aggrResultOfReserve.getAsOfPeriodEnd().getRemainingNumber().getReserveLeaveWithMinus();
-				
+
 				results.add(new RsvLeaUsedCurrentMonExport(
 						key,
 						withMinus.getUsedNumber().getUsedDays(),
-						withMinus.getRemainingNumberInfo().getTotalRemaining().getTotalRemainingDays()));
+						withMinus.getRemainingNumberInfo().getRemainingNumber().getTotalRemainingDays()));
 			}
 		}
 		// 年月毎積立年休の集計結果を返す

@@ -36,6 +36,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremain
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.grantnumber.SpecialLeaveUndigestNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialHolidayInterimMngData;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
+import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.GrantDeadline;
 
 /**
  * 特別休暇情報
@@ -382,7 +383,14 @@ public class SpecialLeaveInfo implements Cloneable {
 		if ( specialHolidayOpt.isPresent() ){
 
 			// 繰越上限日数
-			int limitCarryoverDays = specialHolidayOpt.get().getGrantPeriodic().getLimitCarryoverDays().v();
+			int limitCarryoverDays = 0;
+			Optional<GrantDeadline> grantPeriodic = specialHolidayOpt.get().getGrantRegular().getGrantPeriodic();
+			if ( grantPeriodic.isPresent() ) {
+				if ( grantPeriodic.get().getLimitAccumulationDays().isPresent()) {
+					limitCarryoverDays = grantPeriodic.get().getLimitAccumulationDays().get().getLimitAccumulationDays().get().v();
+				}
+			}
+
 			if ( limitCarryoverDays > 0 ){
 
 				// 合計
@@ -619,6 +627,7 @@ public class SpecialLeaveInfo implements Cloneable {
 							targetRemainingDatas,
 							remNumShiftListWork,
 							leaveUsedNumber,
+							companyId,
 							employeeId,
 							aggregatePeriodWork.getPeriod().start(),
 							isForcibly);
@@ -672,7 +681,7 @@ public class SpecialLeaveInfo implements Cloneable {
 	 */
 	public void deleteDummy(){
 		// 「特別休暇付与残数．特別休暇不足ダミーフラグ」=trueの特別休暇付与残数をListから削除
-		List<SpecialLeaveGrantRemaining> noDummyList
+		List<SpecialLeaveGrantRemainingData> noDummyList
 			= this.getGrantRemainingNumberList().stream()
 				.filter(c->!c.isDummyAtr())
 				.collect(Collectors.toList());
