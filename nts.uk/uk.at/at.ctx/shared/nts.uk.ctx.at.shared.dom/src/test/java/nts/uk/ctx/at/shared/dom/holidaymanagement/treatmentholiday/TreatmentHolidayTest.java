@@ -10,6 +10,7 @@ import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.DayOfWeek;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.common.days.FourWeekDays;
 import nts.uk.ctx.at.shared.dom.common.days.WeeklyDays;
@@ -39,7 +40,7 @@ public class TreatmentHolidayTest {
 		WeeklyHolidayAcqMana weeklyHolidayAcqMana = new WeeklyHolidayAcqMana(new WeeklyDays(1.0));
 		TreatmentHoliday treatmentHoliday = new TreatmentHoliday("companyId", NotUseAtr.NOT_USE, weeklyHolidayAcqMana);
 		
-		WeekRuleManagement weekRuleManagement = WeekRuleManagement.of("companyId", WeekStart.Monday);
+		WeekRuleManagement weekRuleManagement = WeekRuleManagement.of("companyId", DayOfWeek.MONDAY,true);
 		new Expectations() {{
 			require.find();
 			result = weekRuleManagement;
