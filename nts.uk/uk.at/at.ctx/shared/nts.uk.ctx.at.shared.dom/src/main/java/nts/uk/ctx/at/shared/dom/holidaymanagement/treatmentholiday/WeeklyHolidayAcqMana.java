@@ -49,9 +49,9 @@ public class WeeklyHolidayAcqMana implements HolidayAcquisitionManagement, Domai
 			nts.uk.ctx.at.shared.dom.holidaymanagement.treatmentholiday.HolidayAcquisitionManagement.Require require,
 			GeneralDate ymd) {
 		// $仮設定 = require.開始曜日を取得する
-		WeekRuleManagement weekRuleManagement = require.find(); // chờ team a Lẩu đối ứng, đang lấy tạm thứ 2 truyền vào
-		// $開始日 = 基準日.日を足す(1).直前の日(年月日の検索#($仮設定.開始曜日)
-		ymd = ymd.addDays(1).previous(DateSeek.dayOfWeek(DayOfWeek.MONDAY));
+		WeekRuleManagement weekRuleManagement = require.find(); 
+		// $開始日 = 基準日.日を足す(1).直前の日(年月日の検索#($週の管理.週開始)
+		ymd = ymd.addDays(1).previous(DateSeek.dayOfWeek(weekRuleManagement.getDayOfWeek()));
 		// $期間 = 期間#期間($開始日,$開始日#日を足す(6))
 		DatePeriod period = new DatePeriod(ymd, ymd.addDays(6));
 		// return 休日取得の管理期間#($期間,@1週間の休日日数)

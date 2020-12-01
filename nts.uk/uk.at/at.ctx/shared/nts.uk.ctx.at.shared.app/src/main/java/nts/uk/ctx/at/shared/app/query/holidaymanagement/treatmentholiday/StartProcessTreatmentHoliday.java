@@ -10,6 +10,8 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.treatmentholiday.HolidayCheckU
 import nts.uk.ctx.at.shared.dom.holidaymanagement.treatmentholiday.StartDateClassification;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.treatmentholiday.TreatmentHoliday;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.treatmentholiday.TreatmentHolidayRepository;
+import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekRuleManagement;
+import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekRuleManagementRepo;
 
 @Stateless
 public class StartProcessTreatmentHoliday {
@@ -17,7 +19,8 @@ public class StartProcessTreatmentHoliday {
 	@Inject
 	private TreatmentHolidayRepository treatmentHolidayRepo;
 	
-	
+	@Inject
+	private WeekRuleManagementRepo weekRuleManagementRepo;
 	
 	/**
 	 * 起動処理
@@ -40,8 +43,18 @@ public class StartProcessTreatmentHoliday {
 			startDateClassification= fourWeekHolidayAcqMana.getStartDateType();
 		}
 		holidaySettingInfo.setStartDateClassification(Optional.ofNullable(startDateClassification));
-		//TODO:ドメイン「週の管理」取得する
-		//TODO:メニューの表示名を取得する
+		//ドメイン「週の管理」取得する
+		Optional<WeekRuleManagement> optWeekRuleManagement = weekRuleManagementRepo.find(companyId);
+		if(optWeekRuleManagement.isPresent()) {
+			holidaySettingInfo.setWeekStart(Optional.of(optWeekRuleManagement.get().getWeekStart()));
+		}else {
+			holidaySettingInfo.setWeekStart(Optional.empty());
+		}
+		
+		//メニューの表示名を取得する
+		// Khác context nên k gọi được, dùng web service để lấy 
+		// WS : "sys/portal/standardmenu/findPgName/{0}/{1}/{2}"
+		//nếu k có thì gán KMF001_337
 		
 		return holidaySettingInfo;		
 	}
