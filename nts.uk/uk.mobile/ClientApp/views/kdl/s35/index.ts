@@ -1,4 +1,4 @@
-import { _,Vue } from '@app/provider';
+import { _, Vue } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 import { vmOf } from 'vue/types/umd';
 
@@ -15,18 +15,16 @@ export class KdlS35Component extends Vue {
     @Prop({ default: () => ({}) })
     public params!: any;
     public title: string = 'KdlS35';
-    public checkbox: number = 1;
-    public date: Date = new Date();
-    public startDay: string = null;
-    public endDay: string = null;
+    public startDate: string = null;
+    public endDate: string = null;
     public daysUnit: number = 0;
-    public targetSelectionAtr: TargetSelectionAtr = null;
+    public targetSelectionAtr: TargetSelectionAtr = 0;
     public actualContentDisplayList: any[] = null;
     public managementData: SubWorkSubHolidayLinkingMng[] = null;
     public employeeId: string = '';
     public substituteHolidayList: string[] = [];
-    public substituteWorkInfoList: SubWorkSubHolidayLinkingMng[];
-    public displayedRequiredNumberOfDays: string = '3';
+    public substituteWorkInfoList: ISubstituteWorkInfo[] = [];
+    public displayedPeriod: string = '';
 
     public created() {
         const self = this;
@@ -44,12 +42,32 @@ export class KdlS35Component extends Vue {
         }
 
         self.employeeId = params.employeeId || self.employeeId;
-        //self.startDay = params.period.startDay || self.startDay;
-        //self.endDay = params.period.endDay || self.endDay;
+        self.startDate = params.period.startDate || self.startDate;
+        self.endDate = params.period.endDate || self.endDate;
         self.daysUnit = params.daysUnit || self.daysUnit;
-        self.targetSelectionAtr = params.daysUnit || self.daysUnit;
+        self.targetSelectionAtr = params.targetSelectionAtr || self.targetSelectionAtr;
         self.actualContentDisplayList = params.actualContentDisplayList || self.actualContentDisplayList;
         self.managementData = params.managementData || self.managementData;
+    }
+
+    get displayedRequiredNumberOfDays() {
+        const self = this;
+
+        return self.requiredNumberOfDays;
+    }
+
+    get requiredNumberOfDays() {
+        const self = this;
+
+        const required = self.substituteHolidayList.length * self.daysUnit;
+        let selected = 0;
+        self.substituteWorkInfoList.forEach((info) => {
+            if (info.checked) {
+                selected += info.remainingNumber;
+            }
+        }); 
+
+        return required - selected < 0 ? 0 : required - selected;
     }
 
     public back() {
@@ -61,21 +79,23 @@ export class KdlS35Component extends Vue {
     private startPage() {
         const self = this;
 
-
-        self.$http.post('at',servicesPath.init, {
+        self.$http.post('at', servicesPath.init, {
             employeeId: self.employeeId,
-            startDay: new Date(self.startDay).toISOString,
-            endDay: new Date(self.endDay).toISOString,
+            startDate: new Date(self.startDate),
+            endDate: new Date(self.endDate),
             daysUnit: self.daysUnit,
             targetSelectionAtr: self.targetSelectionAtr,
             actualContentDisplayList: self.actualContentDisplayList,
             managementData: self.managementData,
-        }).then((result: { data: ParamsData}) => {
+        }).then((result: { data: ParamsData }) => {
             self.$mask('hide');
 
+            self.startDate = self.$dt(new Date(self.startDate), 'YYYY/MM/DD');
+            self.endDate = self.$dt(new Date(self.endDate), 'YYYY/MM/DD');
             self.daysUnit = result.data.daysUnit;
             self.targetSelectionAtr = result.data.targetSelectionAtr;
             self.substituteHolidayList = result.data.substituteHolidayList;
+            self.substituteWorkInfoList = result.data.substituteWorkInfoList;
 
             const managementDataTmp = self.managementData.map((management) => management.outbreakDay);
             console.log(result.data);
@@ -84,14 +104,14 @@ export class KdlS35Component extends Vue {
         });
     }
 
-    
+
 
     private showError(res: any) {
         let self = this;
 
         self.$mask('hide');
-        if (!_.isEqual(res.message,'can not found message id')) {
-            self.$modal.error({messageId: res.messageId,messageParams: res.parameterIds});
+        if (!_.isEqual(res.message, 'can not found message id')) {
+            self.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
         } else {
             self.$modal.error(res.message);
         }
@@ -131,8 +151,8 @@ interface IParam {
 }
 
 interface DatePeriod {
-    startDay: string | null;
-    endDay: string | null;
+    startDate: string;
+    endDate: string;
 }
 
 enum TargetSelectionAtr {
@@ -185,6 +205,7 @@ interface ISubstituteWorkInfo {
     expiringThisMonth: boolean;
     remainingNumber: number;
     substituteWorkDate: string;
+    checked: boolean;
 }
 
 enum DataType {

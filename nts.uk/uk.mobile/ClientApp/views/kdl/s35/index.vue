@@ -21,7 +21,8 @@
           <nts-label>{{ "KDLS35_3" | i18n }}</nts-label>
         </div>
         <!-- A2_2 -->
-        <label class="col-6 pt-2">{{ 'KDLS35_14' | i18n(['tham so 1', 'tham so 2']) }}</label>
+        <label v-if="startDate === endDate" class="col-6 pt-2">{{ startDate | i18n}}</label>
+        <label v-else class="col-6 pt-2">{{ 'KDLS35_14' | i18n([startDate , endDate]) }}</label>
       </div>
       <!-- A3_1 -->
       <div class="row pt-1">
@@ -60,27 +61,27 @@
             <th scope="col">{{ "KDLS35_11" | i18n }}</th>
           </tr>
         </thead>
-        <tbody class="text-center">
-          <tr>
-            <td class="text-justify">
+        <tbody v-for="(item,index) in substituteWorkInfoList" v-bind:key="index">
+          <tr class="text-center">
+            <td>
               <!-- A5_6 -->
-              <nts-checkbox v-bind:value="1" v-model="checkbox"> </nts-checkbox>
+              <nts-checkbox v-bind:value="item.checked" v-model="item.remainingNumber"> </nts-checkbox>
             </td>
             <!-- A5_7 -->
             <td>
               <fa-font icon="fas fa-exclamation-triangle" />
             </td>
             <!-- A5_8 -->
-            <td class="text-center">
-              {{ date | date("YY/MM/DD(ddd)") }}
+            <td>
+              {{ item.substituteWorkDate | date("YY/MM/DD(ddd)")}}
             </td>
             <!-- A5_9 -->
             <td>
-              <span>0.5$</span>
+              <span>{{'KDLS35_5' | i18n(item.remainingNumber)}}</span>
             </td>
             <!-- A5_10 -->
             <td>
-              <span>{{ date | date("YY/MM/DD(ddd)") }}</span>
+              <span>{{ item.expirationDate | date("YY/MM/DD(ddd)")}}</span>
             </td>
           </tr>
         </tbody>
