@@ -79,7 +79,8 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 				wkpInfoLst = _.filter(vm.selectWorkplaceInfo, o => _.includes(vm.pageData, o.id)),
 				initDisplayOfApprovalStatus = vm.initDisplayOfApprovalStatus,
 				employmentCDLst = vm.params.employmentCDLst,
-				wsParam = { closureId, processingYm, startDate, endDate, wkpInfoLst, initDisplayOfApprovalStatus, employmentCDLst };
+				apprSttComfirmSet = vm.params.useSet,
+				wsParam = { closureId, processingYm, startDate, endDate, wkpInfoLst, initDisplayOfApprovalStatus, employmentCDLst, apprSttComfirmSet };
 			vm.$ajax('at', API.getStatusExecution, wsParam)
 			.then((data: Array<ApprSttExecutionDto>) => {
 				_.forEach(vm.dataSource, x => {
@@ -90,6 +91,13 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 						x.empPeriodLst = exist.empPeriodLst;
 						x.countEmp = exist.countEmp;
 						x.countUnApprApp = exist.countUnApprApp;
+						x.countUnConfirmDay = exist.countUnConfirmDay;
+						x.countUnApprDay = exist.countUnApprDay;
+						x.countUnConfirmMonth = exist.countUnConfirmMonth;
+						x.countUnApprMonth = exist.countUnApprMonth;
+						x.displayConfirm = exist.displayConfirm;
+						x.confirmPerson = exist.confirmPerson;
+						x.date = exist.date;
 					}
 				});
 				$("#bGrid").igGrid("option", "dataSource", vm.dataSource);
@@ -190,7 +198,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 						width: '50px', 
 						headerCssClass: 'kaf018-b-header-countEmp',
 						columnCssClass: 'kaf018-b-column-countEmp',
-						formatter: (key: string) => {
+						formatter: (key: number) => {
 							if(!key) {
 								return "";
 							}
@@ -204,7 +212,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 						width: '75px', 
 						headerCssClass: 'kaf018-b-header-countUnApprApp',
 						columnCssClass: 'kaf018-b-column-count',
-						formatter: (key: string) => {
+						formatter: (key: number) => {
 							if(!key) {
 								return "";
 							}
@@ -219,14 +227,26 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 								key: 'countUnConfirmDay', 
 								dataType: 'number', 
 								width: '75px', 
-								columnCssClass: 'kaf018-b-column-count'
+								columnCssClass: 'kaf018-b-column-count',
+								formatter: (key: number) => {
+									if(!key) {
+										return "";
+									}
+									return key;
+								},
 							},
 							{ 
 								headerText: '<p style="text-align: center">' + vm.$i18n('KAF018_338') + '</p>' + vm.createButtonHtml(2), 
 								key: 'countUnApprDay', 
 								dataType: 'number', 
 								width: '75px', 
-								columnCssClass: 'kaf018-b-column-count'
+								columnCssClass: 'kaf018-b-column-count',
+								formatter: (key: number) => {
+									if(!key) {
+										return "";
+									}
+									return key;
+								},
 							}
 						]
 					},
@@ -238,14 +258,26 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 								key: 'countUnConfirmMonth', 
 								dataType: 'number', 
 								width: '75px', 
-								columnCssClass: 'kaf018-b-column-count'
+								columnCssClass: 'kaf018-b-column-count',
+								formatter: (key: number) => {
+									if(!key) {
+										return "";
+									}
+									return key;
+								},
 							},
 							{ 
 								headerText: '<p style="text-align: center">' + vm.$i18n('KAF018_340') + '</p>' + vm.createButtonHtml(3), 
 								key: 'countUnApprMonth', 
 								dataType: 'number', 
 								width: '75px', 
-								columnCssClass: 'kaf018-b-column-count'
+								columnCssClass: 'kaf018-b-column-count',
+								formatter: (key: number) => {
+									if(!key) {
+										return "";
+									}
+									return key;
+								},
 							}
 						]
 					},
@@ -255,23 +287,46 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 							{ 
 								headerText: '<p style="text-align: center">' + vm.$i18n('KAF018_341') + '</p>' + vm.createButtonHtml(4), 
 								key: 'displayConfirm', 
-								dataType: 'number', 
+								dataType: 'boolean', 
 								width: '75px', 
-								columnCssClass: 'kaf018-b-column-count'
+								columnCssClass: 'kaf018-b-column-count',
+								formatter: (key: boolean, object: any) => {
+									if(!object.countEmp) {
+										return "";
+									}
+									if(key) {
+										return vm.$i18n('KAF018_345');	
+									}
+									return vm.$i18n('KAF018_344');	
+								},
 							},
 							{ 
-								headerText: vm.$i18n('KAF018_342'), 
-								key: 'confirmPerson', 
-								dataType: 'number', 
+								headerText: '<p style="text-align: center">' + vm.$i18n('KAF018_342') + '</p>', 
+								key: 'string', 
+								dataType: 'string', 
 								width: '75px', 
-								columnCssClass: 'kaf018-b-column-count'
+								headerCssClass: 'kaf018-b-header-emp-confirm',
+								columnCssClass: 'kaf018-b-column-count',
+								formatter: (key: string) => {
+									if(!key) {
+										return "";
+									}
+									return key;
+								},
 							},
 							{ 
-								headerText: vm.$i18n('KAF018_343'), 
+								headerText: '<p style="text-align: center">' + vm.$i18n('KAF018_343') + '</p>', 
 								key: 'date', 
-								dataType: 'number', 
+								dataType: 'date', 
 								width: '75px', 
-								columnCssClass: 'kaf018-b-column-count'
+								headerCssClass: 'kaf018-b-header-emp-confirm',
+								columnCssClass: 'kaf018-b-column-count',
+								formatter: (key: any) => {
+									if(!key) {
+										return "";
+									}
+									return key;
+								},
 							}
 						]
 					}	

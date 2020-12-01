@@ -37,6 +37,7 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.AggregateApp
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprovalStatusService;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.InitDisplayOfApprovalStatus;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApplicationsListOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttComfirmSet;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmp;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalStatusEmployeeOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppDetail;
@@ -677,7 +678,8 @@ public class ApprovalStatusFinder {
 		InitDisplayOfApprovalStatus initDisplayOfApprovalStatus = param.getInitDisplayOfApprovalStatus();
 		List<DisplayWorkplace> displayWorkplaceLst = param.getWkpInfoLst();
 		List<String> employmentCDLst = param.getEmploymentCDLst();
-		return appSttService.getStatusExecution(closureId, processingYm, period, initDisplayOfApprovalStatus, displayWorkplaceLst, employmentCDLst)
+		ApprSttComfirmSet apprSttComfirmSet = param.getApprSttComfirmSet();
+		return appSttService.getStatusExecution(closureId, processingYm, period, initDisplayOfApprovalStatus, displayWorkplaceLst, employmentCDLst, apprSttComfirmSet)
 				.stream().map(x -> ApprSttExecutionDto.fromDomain(x)).collect(Collectors.toList());
 	}
 	
