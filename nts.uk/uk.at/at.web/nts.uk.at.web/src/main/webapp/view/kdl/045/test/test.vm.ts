@@ -90,6 +90,9 @@ module nts.uk.at.view.test.vm {
         offWork2RangeNull: KnockoutObservable<boolean> = ko.observable(false);
         privateTimeRangeNull: KnockoutObservable<boolean> = ko.observable(false);
         unionTimeRangeNull: KnockoutObservable<boolean> = ko.observable(false);
+        
+        privateTimeRange2Null: KnockoutObservable<boolean> = ko.observable(false);
+        unionTimeRange2Null: KnockoutObservable<boolean> = ko.observable(false);
 
         timeAbbyakLeave: KnockoutObservable<number> = ko.observable(10);
         timeOff: KnockoutObservable<number> = ko.observable(10);
@@ -578,10 +581,12 @@ module nts.uk.at.view.test.vm {
                     startTime: new shareModelData.TimeOfDayDto(shareModelData.DayDivision.THIS_DAY, self.privateTimeRange1().startTime),
                     endTime: new shareModelData.TimeOfDayDto(shareModelData.DayDivision.THIS_DAY, self.privateTimeRange1().endTime)
                 });
-                dataTimeZonePrivateTime.push({
-                    startTime: new shareModelData.TimeOfDayDto(shareModelData.DayDivision.THIS_DAY, self.privateTimeRange2().startTime),
-                    endTime: new shareModelData.TimeOfDayDto(shareModelData.DayDivision.THIS_DAY, self.privateTimeRange2().endTime)
-                });
+                if(!self.privateTimeRange2Null()){
+                    dataTimeZonePrivateTime.push({
+                        startTime: new shareModelData.TimeOfDayDto(shareModelData.DayDivision.THIS_DAY, self.privateTimeRange2().startTime),
+                        endTime: new shareModelData.TimeOfDayDto(shareModelData.DayDivision.THIS_DAY, self.privateTimeRange2().endTime)
+                    });
+                }
     
                 listTimeVacationAndType.push(new shareModelData.TimeVacationAndType(4, new shareModelData.TimeVacationDto(dataTimeZonePrivateTime, dataUsageTime)));
             }
@@ -592,11 +597,12 @@ module nts.uk.at.view.test.vm {
                     startTime: new shareModelData.TimeOfDayDto(shareModelData.DayDivision.THIS_DAY, self.unionTimeRange1().startTime),
                     endTime: new shareModelData.TimeOfDayDto(shareModelData.DayDivision.THIS_DAY, self.unionTimeRange1().endTime)
                 });
-                dataTimeZoneUnionTime.push({
-                    startTime: new shareModelData.TimeOfDayDto(shareModelData.DayDivision.THIS_DAY, self.unionTimeRange2().startTime),
-                    endTime: new shareModelData.TimeOfDayDto(shareModelData.DayDivision.THIS_DAY, self.unionTimeRange2().endTime)
-                });
-    
+                if(!self.unionTimeRange2Null()){
+                    dataTimeZoneUnionTime.push({
+                        startTime: new shareModelData.TimeOfDayDto(shareModelData.DayDivision.THIS_DAY, self.unionTimeRange2().startTime),
+                        endTime: new shareModelData.TimeOfDayDto(shareModelData.DayDivision.THIS_DAY, self.unionTimeRange2().endTime)
+                    });
+                }
                 listTimeVacationAndType.push(new shareModelData.TimeVacationAndType(5, new shareModelData.TimeVacationDto(dataTimeZoneUnionTime, dataUsageTime)));
             }
 
@@ -620,7 +626,7 @@ module nts.uk.at.view.test.vm {
 
             let breakTimeSheets = [];
             for (let i = 0; i < self.dataSourceTime().length; i++) {
-                let breakTimeZoneDto = new shareModelData.BreakTimeZoneDto(self.dataSourceTime()[i].range1().breakFrameNo, self.dataSourceTime()[i].range1().startTime, self.dataSourceTime()[i].range1().endTime, 0);
+                let breakTimeZoneDto = new shareModelData.BreakTimeZoneDto(self.dataSourceTime()[i].range1().startTime, self.dataSourceTime()[i].range1().endTime, 0);
                 breakTimeSheets.push(breakTimeZoneDto);
             }
             let breakTimeOfDailyAttdDto: Array<shareModelData.TimeSpanForCalcDto> = breakTimeSheets //ok

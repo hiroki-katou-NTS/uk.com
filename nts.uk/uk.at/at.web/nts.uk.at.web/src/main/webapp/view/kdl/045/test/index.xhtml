@@ -409,7 +409,8 @@
 									                            " />
 											</td>
 											<td>
-												<div  data-bind="ntsCheckBox: { checked: privateTimeRangeNull , text: '(false:not null,true: null)' }"></div>
+												<div  data-bind="ntsCheckBox: { checked: privateTimeRangeNull , text: '(false:私用外出1 not null,true:私用外出1 and 私用外出2 is null)' }"></div><br />
+												<div  data-bind="ntsCheckBox: { checked: privateTimeRange2Null , text: '(false:私用外出2 not null,true:私用外出2 is null)' }"></div>
 											</td>
 										</tr>
 										<tr>
@@ -437,7 +438,8 @@
 									                            " />              
 											</td>
 											<td>
-												<div  data-bind="ntsCheckBox: { checked: unionTimeRangeNull , text: '(false:not null,true: null)' }"></div>
+												<div  data-bind="ntsCheckBox: { checked: unionTimeRangeNull , text: '(false:組合外出1 not null,true:組合外出1 and 組合外出2 is null)' }"></div><br />
+												<div  data-bind="ntsCheckBox: { checked: unionTimeRange2Null , text: '(false:組合外出2 not null,true:組合外出2 is null)' }"></div>
 											</td>
 										</tr>
 									</table>

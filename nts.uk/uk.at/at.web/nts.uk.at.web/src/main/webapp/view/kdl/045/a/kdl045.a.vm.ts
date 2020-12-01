@@ -119,7 +119,7 @@ module nts.uk.at.view.kdl045.a {
             isEnableA5_9: KnockoutObservable<boolean> = ko.observable(true);
 
             //disable
-            isDisableA1_7: KnockoutObservable<boolean> = ko.observable(true);
+            isDisableA1_7: KnockoutObservable<boolean> = ko.observable(false);
             isDisableA1_8: KnockoutObservable<boolean> = ko.observable(false);
             isTextDisableA1_8: KnockoutObservable<boolean> = ko.observable(false);
             isDisableA4_3: KnockoutObservable<boolean> = ko.observable(true);
@@ -724,11 +724,11 @@ module nts.uk.at.view.kdl045.a {
                     self.dayShiftTime(0);
                     self.nightShiftTime(0);
                 }
-
+                self.isDisableA1_7(self.informationStartup.showYourDesire==1?true:false);
+                self.assignmentMethodName(getText('KDL045_66'));
                 if(self.informationStartup.workAvaiOfOneDayDto !=null){
                     //A1_7
                     let assignmentMethod = self.informationStartup.workAvaiOfOneDayDto.workAvaiByHolidayDto.assignmentMethod;
-                    self.isDisableA1_7(self.informationStartup.showYourDesire);
                     if (assignmentMethod == shareModelData.AssignmentMethod.HOLIDAY) {
                         self.assignmentMethodName(getText('KDL045_46'));
                         //nts.uk.resource.getText('Enum_AssignmentMethod_TIME_ZONE')
@@ -745,9 +745,7 @@ module nts.uk.at.view.kdl045.a {
                         for (let i = 0; i < timeZoneList.length; i++) {
                             self.listDetail.push(getText('KDL045_49') + self.showTimeByPeriod(timeZoneList[i].start, timeZoneList[i].end));
                         }
-                    } else {
-                        self.assignmentMethodName(getText('KDL045_66'));
-                    }
+                    } 
                     self.listDetail();
                     if (self.listDetail().length < 1) {
                         self.isDisableA1_8(false);

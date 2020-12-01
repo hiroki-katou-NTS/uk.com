@@ -6,6 +6,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
+import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
@@ -120,7 +121,13 @@ public class CheckTimeIsIncorrect {
 				}
 			}
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			if(e instanceof BusinessException) {
+				val error =  (BusinessException) e;
+				if(error.getMessageId().equals("Msg_1772") || error.getMessageId().equals("Msg_439")) {
+					throw error;
+				}
+			}
+			throw new RuntimeException("Error 時刻が不正かチェックする");
 		}
 		return false;
 	}
