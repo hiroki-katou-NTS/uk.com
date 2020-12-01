@@ -150,7 +150,6 @@ module nts.uk.com.view.ccg008.a.screenModel {
           if (data.displayTopPage) {
           vm.layoutDisplayType(data.displayTopPage.layoutDisplayType);
           }
-          $(".content-top").resizable();
           vm.getToppage(data);
         });
       })
@@ -211,7 +210,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
               vm.isShowClosure(true);
             }
           });
-          vm.paramWidgetLayout3(layout2);
+          vm.paramWidgetLayout3(layout3);
         }
       }
     }

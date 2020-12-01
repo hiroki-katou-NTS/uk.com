@@ -5,7 +5,7 @@ module nts.uk.com.view.ccg008.a.Layout1ComponentViewModel {
     name: 'layout1-component',
     template: 
     `
-        <div class="panel panel-frame">
+        <div>
           <com:ko-if bind="$component.isShowUrlLayout1()">
             <iframe class="iframe_fix" id="preview-iframe1" data-bind="attr:{src: $component.urlIframe1}"></iframe>
           </com:ko-if>
@@ -39,9 +39,7 @@ module nts.uk.com.view.ccg008.a.Layout1ComponentViewModel {
           };
           vm.$ajax("com", 'sys/portal/createflowmenu/extractListFileId', param).then((res: any) => {
             const mappedList: any = _.map(res, (item: any) => {
-              const width = item.htmlContent.match(/(?<=width: )[0-9A-Za-z]+(?=;)/)[0];
-              const height = item.htmlContent.match(/(?<=height: )[0-9A-Za-z]+(?=;)/)[0];
-              return {html: `<iframe id="frameF1" style="width: ${width}; height: ${height};"></iframe>`};
+              return {html: `<iframe id="frameF1" ></iframe>`};
             });
             vm.lstHtml(mappedList);
             if (!_.isEmpty(res)) {
@@ -50,9 +48,6 @@ module nts.uk.com.view.ccg008.a.Layout1ComponentViewModel {
           });
         }
       }
-    }
-
-    mounted() {
     }
 
     private renderHTML(htmlSrc: string) {
@@ -68,6 +63,10 @@ module nts.uk.com.view.ccg008.a.Layout1ComponentViewModel {
         const ifr = document.getElementById('frameF1');
         const iframedoc = (ifr as any).contentDocument || (ifr as any).contentWindow.document;
         iframedoc.body.innerHTML = htmlSrc;
+        const width = iframedoc.activeElement.scrollWidth;
+        const height = iframedoc.activeElement.scrollHeight;
+        (ifr as any).width = `${width.toString()}px`;
+        (ifr as any).height = `${height.toString()}px`;
       }
     }
   }

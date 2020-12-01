@@ -5,6 +5,8 @@ public class ProgramIdConsts {
 	public static final String Ccg001d = "Ccg001d";
 
 	public static final String CCG008A = "CCG008A";
+	
+	public static final String CCG008E = "CCG008E";
 
 	public static final String CCG008B = "CCG008B";
 
@@ -1453,4 +1455,5 @@ public class ProgramIdConsts {
 	public static final String CMM024C = "CMM024C";
 	public static final String CMM024D = "CMM024D";
 	public static final String CMM024F = "CMM024F";
+	public static final String KTG026A = "KTG026A";
 }

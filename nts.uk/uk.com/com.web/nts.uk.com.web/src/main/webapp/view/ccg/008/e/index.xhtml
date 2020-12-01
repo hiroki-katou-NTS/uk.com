@@ -8,7 +8,7 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<script>var dialogSize = { width: 400, height: 330 };</script>
+			<script>var dialogSize = { width: 400, height: 300 };</script>
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<com:ValidatorScript>
 				nts.uk.ctx.at.function.dom.attendancerecord.item.ItemName
@@ -31,7 +31,7 @@
             name: 'Sample List',
             options: itemListCb,
             optionsValue: 'code',
-            visibleItemsCount: 7,
+            visibleItemsCount: 5,
             value: selectedCode,
             editable: isEditable,
             enable: isEnable,

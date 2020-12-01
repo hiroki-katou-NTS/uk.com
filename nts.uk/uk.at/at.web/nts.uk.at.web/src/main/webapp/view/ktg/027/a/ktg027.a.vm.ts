@@ -391,7 +391,7 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
       vm.$window.storage("KTG026_PARAM", {
         paramKTG026,
       });
-      vm.$window.modal("/view/ktg/026/a/superior.xhtml");
+      vm.$window.modal('at', '/view/ktg/026/a/superior.xhtml');
     }
 
     // event open screen KDW003

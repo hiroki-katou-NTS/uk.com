@@ -79,6 +79,12 @@ public class ProgramsManager {
      */
     public static final Program CCG008D = new Program(WebAppId.COM, ProgramIdConsts.CCG008D, "",
             "/view/ccg/008/d/index.xhtml");
+    
+    /**
+     * CCG008E
+     */
+    public static final Program CCG008E = new Program(WebAppId.COM, ProgramIdConsts.CCG008E, "CCG008_26",
+            "/view/ccg/008/e/index.xhtml");
     /**
      * CCG013A
      */
@@ -3410,6 +3416,14 @@ public class ProgramsManager {
             ProgramIdConsts.CCG003C,
             "CCG003_3",
             "/view/ccg/003/c/index.xhtml");
+    
+    /**
+     * KTG026
+     */
+    public static final Program KTG026A = new Program(WebAppId.AT, 
+            ProgramIdConsts.KTG026A,
+            "KTG026_1",
+            "/view/ktg/026/a/superior.xhtml");
 
     /**
      * All programs map.
