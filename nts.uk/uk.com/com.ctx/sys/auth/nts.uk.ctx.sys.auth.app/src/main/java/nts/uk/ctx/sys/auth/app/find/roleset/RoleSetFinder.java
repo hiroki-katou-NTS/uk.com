@@ -4,8 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.sys.auth.app.find.roleset;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -55,24 +57,25 @@ public class RoleSetFinder {
      */
     public List<RoleSetDto> findAll() {
     	List<RoleSet> lstRoleSet = this.roleSetRepository.findByCompanyId(AppContexts.user().companyId());
-    	List<String> listRoleSetCD = lstRoleSet.stream().map(item->item.getRoleSetCd().v()).collect(Collectors.toList());
-    	List<RoleSetLinkWebMenuImport> roleSetLinkWebMenu = roleSetLinkWebMenuAdapter.findAllWebMenuByListRoleSetCd(listRoleSetCD);
-    	return lstRoleSet.stream().map(item -> RoleSetDto.build(item, buildWebMenuDto(item.getRoleSetCd().v(), roleSetLinkWebMenu)))
+    	List<String> listRoleSetCD = lstRoleSet.stream()
+    			.map(item -> item.getRoleSetCd().v())
+    			.collect(Collectors.toList());
+    	Map<String, List<RoleSetLinkWebMenuImport>> mapRoleSetLinkWebMenu = roleSetLinkWebMenuAdapter.findAllWebMenuByListRoleSetCd(listRoleSetCD).stream()
+    			.collect(Collectors.groupingBy(RoleSetLinkWebMenuImport::getRoleSetCd));
+    	return lstRoleSet.stream()
+    			.map(item -> {
+    				List<RoleSetLinkWebMenuImport> listImport = mapRoleSetLinkWebMenu.get(item.getRoleSetCd().v());
+    				if (listImport == null) { 
+    					return RoleSetDto.build(item, Collections.emptyList());
+    				}
+    				return RoleSetDto.build(item, listImport.stream()
+    						.map(imported -> new WebMenuImportDto(imported.getWebMenuCd(), ""))
+    						.collect(Collectors.toList()));
+    			})
     			.sorted(Comparator.comparing(RoleSetDto::getRoleSetCd))
     			.collect(Collectors.toList());
     }
 
-    /**
-     * Filter WebMenuImportDto from list RoleSetLinkWebMenuImport by roleSetCd
-     * @param roleSetCd
-     * @param roleSetLinkWebMenu
-     * @return
-     */
-    private List<WebMenuImportDto> buildWebMenuDto(String roleSetCd, List<RoleSetLinkWebMenuImport> roleSetLinkWebMenu) {
-
-    	return roleSetLinkWebMenu.stream().filter(rs->rs.getRoleSetCd().equals(roleSetCd))
-                .map(item-> new WebMenuImportDto(item.getWebMenuCd(), "")).collect(Collectors.toList());
-    }
     /**
      * Build list of WebMenuDTO from RoleSetCd
      * @param roleSetCd

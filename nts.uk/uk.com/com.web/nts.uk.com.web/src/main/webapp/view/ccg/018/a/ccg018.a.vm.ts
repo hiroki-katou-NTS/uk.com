@@ -1,159 +1,131 @@
+/// <reference path='../../../../lib/nittsu/viewcontext.d.ts' />
+
 module ccg018.a.viewmodel {
-    export class ScreenModel {
+
+    @bean()
+    export class ScreenModel extends ko.ViewModel {
         title: KnockoutObservable<string> = ko.observable('');
-        tabs: KnockoutObservableArray<TabModel> = ko.observableArray([
-            new TabModel({ id: 'a1', name: nts.uk.resource.getText('CCG018_45'), active: true, display: true, templateUrl: "jobtitle-template" }),
-            new TabModel({ id: 'b', name: nts.uk.resource.getText('CCG018_2'), display: true, templateUrl: "person-template" }),
-        ]);
-        currentTab: KnockoutObservable<TabModel>;
+        tabs: KnockoutObservableArray<TabModel> = ko.observableArray([]);
+        currentTab: KnockoutObservable<TabModel> = ko.observable(null);
         baseModel: base.result.BaseResultModel;
 
-        constructor() {
-            let self = this;
-            self.currentTab = ko.observable(self.tabs()[0]);
-            self.baseModel = new base.result.BaseResultModel();
-            self.tabs().map((t) => {
-                    // set title for tab
+        created(params: any) {
+            const vm = this;
+            vm.baseModel = new base.result.BaseResultModel();
+            vm.tabs([
+                new TabModel({ id: 'a1', name: vm.$i18n('CCG018_45'), active: true, display: true, templateUrl: "jobtitle-template" }),
+                new TabModel({ id: 'b', name: vm.$i18n('CCG018_2'), display: true, templateUrl: "person-template" }),
+            ]);
+        }
 
-                    if (t.active() == true) {
-                        self.title(t.name);
-                        self.changeTab(t);
-                    }
-                });
-        };
-
-        /**
-         * start page
-         */
-        start(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
-            $.when(self.findBySystemMenuCls(), self.findDataForAfterLoginDis()).done(function() {
-                dfd.resolve();
-            }).fail(function(err) {
-                dfd.reject();
-            });
-
-            return dfd.promise();
+        mounted() {
+            const vm = this;
+            // show active tab panel
+            vm.$blockui('grayout');
+            $.when(vm.findBySystemMenuCls(), vm.findDataForAfterLoginDis())
+                .then(() => {
+                    vm.changeTab(vm.tabs()[0]);
+                    $('.navigator li a.active').trigger('click');
+                })
+                .always(() => vm.$blockui('clear'));
         }
 
         changeTab(tab: TabModel): any {
-            let self = this,
-                oldtab: TabModel = _.find(self.tabs(), t => t.active());
+            const vm = this;
             tab.active(true);
-            self.currentTab(tab);
-            self.title(tab.name());
-            self.tabs().map(t => (t.id() != tab.id()) && t.active(false));
+            vm.currentTab(tab);
+            vm.title(tab.name());
+            vm.tabs().map(t => (t.id() != tab.id()) && t.active(false));
 
             // Clean binding area.
-            var resultArea = $(".screen-content");
+            const resultArea = $(".screen-content");
             resultArea.html("");
-            //TODO: cai nay co ve hok can anh a,
-            //ko.cleanNode(resultArea.get(0));
-
             // call start function on view at here
             switch (tab.id()) {
                 case 'a1':
-                    self.findByCId().done(function(){
-                        var viewmodelA1 = new ccg018.a1.viewmodel.ScreenModel(self.baseModel);
-                        $(resultArea).load(viewmodelA1.screenTemplateUrl(), function() {
-                            // viewmodelA1.searchByDate().done(function() {
-                                // ko.applyBindings(viewmodelA1, resultArea.children().get(0));
-                                // ko.applyBindings(viewmodelA1, resultArea.children().get(1));
-                                // if (viewmodelA1.categorySet() == 0) {
-                                //     $("#width-tbody").addClass("width-tbody");
-                                // } else {
-                                //     $("#width-tbody").removeClass("width-tbody");
-                                // }
-                                // $('#A2-2').focus();
-                            });
-                        // });
-                    });
+                    const viewmodelA1 = new ccg018.a1.viewmodel.ScreenModel(vm.baseModel);
+                    $(resultArea).load(viewmodelA1.screenTemplateUrl(), () => viewmodelA1.start());
                     break;
                 case 'b':
-                    self.findByCId().done(function(){
-                        var viewmodelB = new ccg018.b.viewmodel.ScreenModel(self.baseModel);
-                        $(resultArea).load(viewmodelB.screenTemplateUrl(), function() {
+                    vm.findByCId().then(() => {
+                        const viewmodelB = new ccg018.b.viewmodel.ScreenModel(vm.baseModel);
+                        $(resultArea).load(viewmodelB.screenTemplateUrl(), () => {
                             // viewmodelB.start().done(function() {
-                                ko.applyBindings(viewmodelB, resultArea.children().get(0));
-                                ko.applyBindings(viewmodelB, resultArea.children().get(1));
-                                _.defer(() => {
-                                    viewmodelB.bindGrid();
-                                    viewmodelB.initCCG001();
-                                });
-
-                            // });
+                            ko.applyBindings(viewmodelB, resultArea.children().get(0));
+                            ko.applyBindings(viewmodelB, resultArea.children().get(1));
+                            _.defer(() => {
+                                viewmodelB.bindGrid();
+                                viewmodelB.initCCG001();
+                            });
                         });
                     });
                     break;
             }
-            //TODO: cai nay co ve hok can anh a,
-            //$('.screen-' + tab.id().toLowerCase()).trigger('click');
         }
 
         /**
-         * find data in table STANDARD_MENU with companyId and 
+         * find data in table STANDARD_MENU with companyId and
          * afterLoginDisplay = 1 (display)  or System = 0(common) and MenuClassification = 8(top page)
          */
         findDataForAfterLoginDis(): JQueryPromise<any> {
-            let self = this;
-            let dfd = $.Deferred();
-            self.baseModel.comboItemsAfterLogin = [];
-            nts.uk.ui.block.grayout();
+            const vm = this;
+            const dfd = $.Deferred();
+            vm.baseModel.comboItemsAfterLogin = [];
             service.findDataForAfterLoginDis()
-                .done(function(data) {
-                    self.baseModel.comboItemsAfterLogin.push(new ComboBox({
+                .then((data) => {
+                    const newComboBox = [];
+                    newComboBox.push(new ComboBox({
                         code: '',
                         name: '未設定',
                         system: 0,
                         menuCls: 0
                     }));
-                    _.forEach(data, function(x) {
-                        self.baseModel.comboItemsAfterLogin.push(new ComboBox({
+                    _.forEach(data, (x) => {
+                        newComboBox.push(new ComboBox({
                             code: x.code,
                             name: x.displayName,
                             system: x.system,
                             menuCls: x.classification
                         }));
                     });
+                    vm.baseModel.comboItemsAfterLogin = newComboBox;
                     dfd.resolve();
-                }).fail(function() {
-                    dfd.reject();
-                }).always(() => nts.uk.ui.block.clear());
+                })
+                .fail(() => dfd.reject());
             return dfd.promise();
         }
 
         /**
          * Find data in table STANDARD_MENU base on CompanyId and System = 0(common) and MenuClassification = 8(top page)
-         * Return array comboItemsAsTopPage 
+         * Return array comboItemsAsTopPage
          */
         findBySystemMenuCls(): JQueryPromise<any> {
-            let self = this;
-            let dfd = $.Deferred();
-            self.baseModel.comboItemsAsTopPage = [];
+            const vm = this;
+            const dfd = $.Deferred();
+            vm.baseModel.comboItemsAsTopPage = [];
             service.findBySystemMenuCls()
-                .done(function(data) {
+                .then((data) => {
                     if (data.length >= 0) {
-                        self.baseModel.comboItemsAsTopPage.push(new ComboBox({
+                        const newComboBox = [];
+                        newComboBox.push(new ComboBox({
                             code: '',
                             name: '未設定',
                             system: 0,
                             menuCls: 0
                         }));
-
-                        _.forEach(data, function(x) {
-                            self.baseModel.comboItemsAsTopPage.push(new ComboBox({
+                        _.forEach(data, (x) => {
+                            newComboBox.push(new ComboBox({
                                 code: x.code,
                                 name: x.displayName,
                                 system: x.system,
                                 menuCls: x.classification
                             }));
                         });
+                        vm.baseModel.comboItemsAsTopPage = newComboBox;
                     }
                     dfd.resolve();
-                }).fail(function() {
-                    dfd.reject();
-                });
+                })
+                .fail(() => dfd.reject());
             return dfd.promise();
         }
 
@@ -161,20 +133,17 @@ module ccg018.a.viewmodel {
          * get categorySet in DB TOPPAGE_SET base on companyId
          */
         findByCId(): JQueryPromise<any> {
-            let self = this;
-            let dfd = $.Deferred();
+            const vm = this;
+            const dfd = $.Deferred();
             service.findByCId()
-                .done(function(data) {
+                .then((data) => {
                     if (!(!!data)) {
-                        self.baseModel.categorySet = null;
+                        vm.baseModel.categorySet = null;
                     } else {
-                        //self.categorySet(data.ctgSet);
-                        self.baseModel.categorySet = data.ctgSet;
+                        vm.baseModel.categorySet = data.ctgSet;
                     }
                     dfd.resolve();
-                }).fail(function() {
-                    dfd.reject();
-                });
+                }).fail(() => dfd.reject());
             return dfd.promise();
         }
     }

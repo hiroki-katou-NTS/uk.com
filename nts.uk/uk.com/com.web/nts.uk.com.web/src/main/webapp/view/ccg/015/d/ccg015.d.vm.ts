@@ -74,7 +74,6 @@ module nts.uk.com.view.ccg015.d {
       vm.checkDataLayout(vm.params);
     }
 
-
     private changeLayout(): JQueryPromise<any> {
       const vm = this;
       const data = {

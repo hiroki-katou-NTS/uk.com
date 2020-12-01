@@ -150,7 +150,7 @@ supports (-ms-ime-align:auto ) { .table1 tbody {
 	width: 195px;
 	max-width: 195px;
 }
-/* 
+/*
 #A2-4 > table > tbody tr td:nth-child(1){
 	width: 100px;
 }
@@ -177,17 +177,12 @@ supports (-ms-ime-align:auto ) { .table1 tbody {
 /* .width-tbody {
 	width: 638px;
 } */
-html {
-	overflow: hidden;
-}
-
-.combo-box.combo-box-switch-date.ui-igcombo-wrapper.ntsControl {
-	width: 90px;
-}
-td {
-	padding-left: 5px;
-	padding-right: 5px;
-}
 .isFocus {
 	background-color: red;
+}
+#grid2 .ui-igcombo-wrapper {
+	width: 100%;
+	min-width: 100% !important;
+	padding-top: 0 !important;
+	padding-left: 0 !important;
 }
