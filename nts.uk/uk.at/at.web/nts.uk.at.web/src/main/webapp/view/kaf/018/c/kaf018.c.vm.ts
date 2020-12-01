@@ -175,7 +175,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
 				wsParam = { command, wkpEmpMailLst };
 			vm.$blockui('show');
 			vm.$ajax('at', API.sendMailToDestination, wsParam).then((data) => {
-				if(data.OK) {
+				if(data.ok) {
 					vm.$dialog.info({ messageId: "Msg_792" });	
 				} else {
 					vm.$dialog.error(vm.$i18n.message("Msg_793") + "<br/>" + _.join(data.listError,', '));	
