@@ -3,7 +3,8 @@ module ccg018.a1.service {
         update: "sys/portal/toppagesetting/roleset/save",
         findDataOfJobTitle: "bs/employee/jobtitle/findAll",
         findAllRoleSet: "ctx/sys/auth/roleset/findallroleset",
-        findAllTopPageRoleSet: "sys/portal/toppagesetting/roleset/findAll"
+        findAllTopPageRoleSet: "sys/portal/toppagesetting/roleset/findAll",
+        findByCId: "sys/portal/toppagesetting/findByCId",
     }
 
     export function update(command: any): JQueryPromise<any> {
@@ -20,5 +21,9 @@ module ccg018.a1.service {
 
     export function findAllTopPageRoleSet(): JQueryPromise<any> {
         return nts.uk.request.ajax("com", paths.findAllTopPageRoleSet);
+    }
+
+    export function findByCId(): JQueryPromise<any> {
+        return nts.uk.request.ajax("com", paths.findByCId);
     }
 }

@@ -14,7 +14,7 @@
 
 	<div id="contents-area">
 		<div id="A2-4">
-			<table class="table1" tabindex="-1">
+			<!-- <table class="table1" tabindex="-1">
 				<thead>
 					<tr>
 						<th id="A2_H1" class="tbl-th">#{i18n.getText('CCG018_8')}</th>
@@ -33,7 +33,9 @@
 						<td id="A2_D2" class="tbl-td" data-bind="text: name"></td>
 						<td id="A2_D3" class="tbl-td" data-bind="visible: $parent.isVisible">
 							<div tabindex="3" class="combo-box"
-								data-bind="ntsComboBox: {
+								data-bind="
+								class: {isFocus: $index === 0},
+								ntsComboBox: {
 									options: $parent.comboItemsAsTopPage,
 									optionsValue: 'code',
 									value: topMenuCode,
@@ -78,7 +80,8 @@
 						</td>
 					</tr>
 				</tbody>
-			</table>
+			</table> -->
+			<table id="grid2"></table>
 		</div>
 	</div>
 
