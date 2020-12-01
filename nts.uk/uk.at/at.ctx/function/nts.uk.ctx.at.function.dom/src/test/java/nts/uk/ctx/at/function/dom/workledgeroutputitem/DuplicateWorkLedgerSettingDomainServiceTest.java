@@ -6,6 +6,7 @@ import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.function.dom.commonform.AttendanceItemToPrint;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
@@ -13,6 +14,7 @@ import nts.uk.shr.com.context.AppContexts;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 /**
@@ -88,7 +90,6 @@ public class DuplicateWorkLedgerSettingDomainServiceTest {
 					name,
 					SettingClassificationCommon.STANDARD_SELECTION));
 		}};
-
 		new Expectations(WorkLedgerOutputItem.class) {{
 			WorkLedgerOutputItem.checkDuplicateStandardSelection(require, code);
 			result = true;

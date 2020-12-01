@@ -70,8 +70,6 @@ public class UpdateWorkLedgerSettingDomainServiceTest {
 	public void testUpdateSetting_02(){
 		OutputItemSettingCode code = new OutputItemSettingCode("OutputItemSettingCode02");
 		OutputItemSettingName name = new OutputItemSettingName("OutputItemSettingName02");
-		val attendanceIdList = Arrays.asList(21 , 22);
-		val rankingList = Arrays.asList(23 , 24);
 
 		new Expectations() {{
 			require.getOutputSettingDetail("uid02");
@@ -81,7 +79,10 @@ public class UpdateWorkLedgerSettingDomainServiceTest {
 					name,
 					SettingClassificationCommon.STANDARD_SELECTION));
 		}};
-
+		new Expectations(AppContexts.class) {{
+			AppContexts.user().employeeId();
+			result = "employeeId03";
+		}};
 		val actual = UpdateWorkLedgerSettingDomainService.updateSetting(
 				require,
 				"uid02",
@@ -108,14 +109,19 @@ public class UpdateWorkLedgerSettingDomainServiceTest {
 	public void testUpdateSetting_03(){
 		OutputItemSettingCode code = new OutputItemSettingCode("OutputItemSettingCode03");
 		OutputItemSettingName name = new OutputItemSettingName("OutputItemSettingName03");
-		val attendanceIdList = Arrays.asList(31 , 32);
-		val rankingList = Arrays.asList(33 , 34);
 
 		new Expectations(AppContexts.class) {{
 			AppContexts.user().employeeId();
 			result = "employeeId03";
 		}};
-
+		new Expectations() {{
+			require.getOutputSettingDetail("uid03");
+			result = Optional.of(WorkLedgerOutputItem.create(
+					"uid02",
+					code,
+					name,
+					SettingClassificationCommon.STANDARD_SELECTION));
+		}};
 		val actual = UpdateWorkLedgerSettingDomainService.updateSetting(
 				require,
 				"uid03",
