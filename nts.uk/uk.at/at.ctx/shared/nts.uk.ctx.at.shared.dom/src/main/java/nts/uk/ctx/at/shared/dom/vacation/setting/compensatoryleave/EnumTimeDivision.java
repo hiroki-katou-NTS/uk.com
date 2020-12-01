@@ -10,7 +10,7 @@ public enum EnumTimeDivision {
 	FIXED_TIME(1 , "ENUM_FIXED_TIME");
 	
 	/** The value. */
-	public final Integer value;
+	public final int value;
 	
 	/** The name id. */
 	public final String nameId;

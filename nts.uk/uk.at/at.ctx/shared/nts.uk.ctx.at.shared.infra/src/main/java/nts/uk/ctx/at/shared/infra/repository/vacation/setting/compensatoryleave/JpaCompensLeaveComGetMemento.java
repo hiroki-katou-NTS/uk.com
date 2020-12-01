@@ -63,9 +63,10 @@ public class JpaCompensLeaveComGetMemento implements CompensatoryLeaveComGetMeme
      */
     @Override
     public CompensatoryAcquisitionUse getCompensatoryAcquisitionUse() {
-    	JpaCompensAcquisitionUseGetMemento memento = new JpaCompensAcquisitionUseGetMemento(this.entity.getKclmtAcquisitionCom());
-    	CompensatoryAcquisitionUse data = new CompensatoryAcquisitionUse(memento);
-        return data;
+//    	JpaCompensAcquisitionUseGetMemento memento = new JpaCompensAcquisitionUseGetMemento(this.entity.getKclmtAcquisitionCom());
+//    	CompensatoryAcquisitionUse data = new CompensatoryAcquisitionUse(memento);
+//        return data;
+        return null;        
     }
 
     /*
@@ -76,8 +77,9 @@ public class JpaCompensLeaveComGetMemento implements CompensatoryLeaveComGetMeme
      */
     @Override
     public CompensatoryDigestiveTimeUnit getCompensatoryDigestiveTimeUnit() {
-        return new CompensatoryDigestiveTimeUnit(
-                new JpaCompensDigestiveTimeUnitGetMemento(this.entity.getKctmtDigestTimeCom()));
+//        return new CompensatoryDigestiveTimeUnit(
+//                new JpaCompensDigestiveTimeUnitGetMemento(this.entity.getKctmtDigestTimeCom()));
+    	return null;
     }
 
     /*
@@ -89,9 +91,9 @@ public class JpaCompensLeaveComGetMemento implements CompensatoryLeaveComGetMeme
     @Override
     public List<CompensatoryOccurrenceSetting> getCompensatoryOccurrenceSetting() {
         List<CompensatoryOccurrenceSetting> listSetting = new ArrayList<>();
-        for (KocmtOccurrenceSet entity : this.entity.getListOccurrence()) {
-            listSetting.add(new CompensatoryOccurrenceSetting(new JpaCompensOccurrenceSettingGetMemento(entity)));
-        }
+//        for (KocmtOccurrenceSet entity : this.entity.getListOccurrence()) {
+//            listSetting.add(new CompensatoryOccurrenceSetting(new JpaCompensOccurrenceSettingGetMemento(entity)));
+//        }
         return listSetting;
     }
 

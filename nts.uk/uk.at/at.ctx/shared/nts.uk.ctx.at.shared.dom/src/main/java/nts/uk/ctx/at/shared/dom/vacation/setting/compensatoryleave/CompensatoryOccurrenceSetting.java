@@ -46,4 +46,12 @@ public class CompensatoryOccurrenceSetting extends DomainObject {
 		memento.setOccurrenceType(this.occurrenceType);
 		memento.setTransferSetting(this.transferSetting);
 	}
+
+	public CompensatoryOccurrenceSetting(CompensatoryOccurrenceDivision occurrenceType,
+			SubHolTransferSet transferSetting) {
+		super();
+		this.occurrenceType = occurrenceType;
+		this.transferSetting = transferSetting;
+	}
+	
 }

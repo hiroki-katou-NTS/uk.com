@@ -4,11 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.worktime.common.OneDayTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSetAtr;
 
 /**
  * 代休管理設定
@@ -30,18 +34,41 @@ public class CompensatoryLeaveComSetting extends AggregateRoot {
 	/** The normal vacation setting. */
 	private CompensatoryAcquisitionUse compensatoryAcquisitionUse;
 
+	// 発生設定
+	private SubstituteHolidaySetting substituteHolidaySetting;
+		
 	// 時間代休の消化単位
 	/** The compensatory digestive time unit. */
 	private CompensatoryDigestiveTimeUnit compensatoryDigestiveTimeUnit;
-
-	// 発生設定
-	/** The occurrence vacation setting. */
-	private List<CompensatoryOccurrenceSetting> compensatoryOccurrenceSetting;
-    // 代休発生設定 ---
-	private SubstituteHolidaySetting substituteHolidaySetting;
+   
 	// 紐付け管理区分
 	private ManageDistinct linkingManagementATR;
 	
+	
+	public List<CompensatoryOccurrenceSetting> getCompensatoryOccurrenceSetting(){
+		List<CompensatoryOccurrenceSetting> result = new ArrayList<>();
+		CompensatoryOccurrenceSetting holidayWorkTime = new CompensatoryOccurrenceSetting(
+				CompensatoryOccurrenceDivision.WorkDayOffTime,
+				new SubHolTransferSet(
+						new OneDayTime(this.substituteHolidaySetting.getHolidayWorkHourRequired().getTimeSetting().getCertainPeriodofTime().getCertainPeriodofTime().v()), 
+						this.substituteHolidaySetting.getHolidayWorkHourRequired().isUseAtr(), 
+						this.substituteHolidaySetting.getHolidayWorkHourRequired().getTimeSetting().getDesignatedTime(),
+						SubHolTransferSetAtr.valueOf(this.substituteHolidaySetting.getHolidayWorkHourRequired().getTimeSetting().getEnumTimeDivision().value)
+						)
+				);
+		result.add(holidayWorkTime);
+		CompensatoryOccurrenceSetting overTime = new CompensatoryOccurrenceSetting(
+				CompensatoryOccurrenceDivision.FromOverTime,
+				new SubHolTransferSet(
+						new OneDayTime(this.substituteHolidaySetting.getOvertimeHourRequired().getTimeSetting().getCertainPeriodofTime().getCertainPeriodofTime().v()), 
+						this.substituteHolidaySetting.getOvertimeHourRequired().isUseAtr(), 
+						this.substituteHolidaySetting.getOvertimeHourRequired().getTimeSetting().getDesignatedTime(),
+						SubHolTransferSetAtr.valueOf(this.substituteHolidaySetting.getOvertimeHourRequired().getTimeSetting().getEnumTimeDivision().value)
+						)
+				);
+		result.add(overTime);
+		return result;
+	}
 	
 	/**
 	 * Checks if is managed.
@@ -63,7 +90,7 @@ public class CompensatoryLeaveComSetting extends AggregateRoot {
 		this.isManaged = memento.getIsManaged();
 		this.compensatoryAcquisitionUse = memento.getCompensatoryAcquisitionUse();
 		this.compensatoryDigestiveTimeUnit = memento.getCompensatoryDigestiveTimeUnit();
-		this.compensatoryOccurrenceSetting = memento.getCompensatoryOccurrenceSetting();
+//		this.compensatoryOccurrenceSetting = memento.getCompensatoryOccurrenceSetting();
 		this.substituteHolidaySetting = memento.getSubstituteHolidaySetting();
 		this.linkingManagementATR = memento.getLinkingManagementATR();
 	}
@@ -79,8 +106,21 @@ public class CompensatoryLeaveComSetting extends AggregateRoot {
 		memento.setIsManaged(this.isManaged);
 		memento.setCompensatoryAcquisitionUse(this.compensatoryAcquisitionUse);
 		memento.setCompensatoryDigestiveTimeUnit(this.compensatoryDigestiveTimeUnit);
-		memento.setCompensatoryOccurrenceSetting(this.compensatoryOccurrenceSetting);
+//		memento.setCompensatoryOccurrenceSetting(this.compensatoryOccurrenceSetting);
 		memento.setSubstituteHolidaySetting(this.substituteHolidaySetting);
 		memento.setLinkingManagementATR(this.linkingManagementATR);
 	}
+
+	public CompensatoryLeaveComSetting(String companyId, ManageDistinct isManaged,
+			CompensatoryAcquisitionUse compensatoryAcquisitionUse, SubstituteHolidaySetting substituteHolidaySetting,
+			CompensatoryDigestiveTimeUnit compensatoryDigestiveTimeUnit, ManageDistinct linkingManagementATR) {
+		super();
+		this.companyId = companyId;
+		this.isManaged = isManaged;
+		this.compensatoryAcquisitionUse = compensatoryAcquisitionUse;
+		this.substituteHolidaySetting = substituteHolidaySetting;
+		this.compensatoryDigestiveTimeUnit = compensatoryDigestiveTimeUnit;
+		this.linkingManagementATR = linkingManagementATR;
+	}
+	
 }

@@ -5,23 +5,32 @@
 package nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave;
 
 import java.io.Serializable;
-import java.util.List;
 
-//import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.common.TimeOfDay;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CertainPeriodOfTime;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryAcquisitionUse;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryDigestiveTimeUnit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.DeadlCheckMonth;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EnumTimeDivision;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.HolidayWorkHourRequired;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.OvertimeHourRequired;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.SubstituteHolidaySetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TermManagement;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.DesignatedTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.OneDayTime;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -30,39 +39,164 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Getter
 @Entity
-@Table(name = "KCLMT_COMPENS_LEAVE_COM")
+@Table(name = "KSHMT_HDCOM_CMP")
 public class KclmtCompensLeaveCom extends UkJpaEntity implements Serializable {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
 
-    /** The cid. */
+    /** 会社ID */
     @Id
     @Column(name = "CID")
-    private String cid;
+    public String cid;
 
-    /** The manage atr. */
+    /** 管理区分 */
     @Column(name = "MANAGE_ATR")
-    private Integer manageAtr;
+    public int manageAtr;
     
-    /** The manage atr. */
-    @Column(name = "DEADL_CHECK_MONTH")
-    private Integer deadlCheckMonth;
+    /** 紐付け管理区分 */
+    @Column(name = "LINK_MNG_ATR")
+    public int linkMngAtr;
     
-    /** The Kclmt acquisition com. */
-    @OneToOne(optional = true, cascade = CascadeType.ALL, fetch=FetchType.LAZY)
-    @PrimaryKeyJoinColumn
-    public KclmtAcquisitionCom KclmtAcquisitionCom;
+    /** 代休管理設定.取得と使用方法.休暇使用期限 */
+    @Column(name = "EXPIRATION_USE_SET")
+    public int expirationUseSet;
     
-    /** The Kctmt digest time com. */
-    @OneToOne(optional = true, cascade = CascadeType.ALL, fetch=FetchType.LAZY)
-    @PrimaryKeyJoinColumn
-    private KctmtDigestTimeCom KctmtDigestTimeCom;
+    /** 代休管理設定.取得と使用方法.先取り許可 */
+    @Column(name = "PREPAID_GET_ALLOW")
+    public int prepaidGetAllow;
     
-    /** The list occurrence. */
-    @JoinColumns(@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true))
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch=FetchType.LAZY)
-    private List<KocmtOccurrenceSet> listOccurrence;
+    /** 代休管理設定.取得と使用方法.期限日の管理方法 */
+    @Column(name = "EXP_DATE_MNG_METHOD")
+    public int expDateMngMethod;
+    
+    /** 代休管理設定.取得と使用方法.代休期限チェック月数 */
+    @Column(name = "EXP_CHECK_MONTH_NUMBER")
+    public int expCheckMonthNumber;
+    
+    /** 代休管理設定.時間代休の消化単位.管理区分 */
+    @Column(name = "TIME_MANAGE_ATR")
+    public int timeManageAtr;
+    
+    /** 代休管理設定.時間代休の消化単位.消化単位 */
+    @Column(name = "DIGESTION_UNIT")
+    public int digestionUnit;
+    
+    /** 代休管理設定.発生設定.代休発生に必要な残業時間.使用区分 */ 
+    @Column(name = "OCCURR_OT_USE_ATR")
+    public int occurrOtUseAtr;
+    
+    /** 代休管理設定.発生設定.代休発生に必要な残業時間.時間設定.時間区分 */
+    @Column(name = "OCCURR_OT_TIME_ATR")
+    public int deadlCheckMonth;
+    
+    /** 代休管理設定.発生設定.代休発生に必要な残業時間.時間設定.指定時間.一日の時間 */
+    @Column(name = "DES_OT_ONEDAY_TIME")
+    public int desOtOneDayTime;
+    
+    /** 代休管理設定.発生設定.代休発生に必要な残業時間.時間設定.指定時間.半日の時間 */
+    @Column(name = "DES_OT_HALFDAY_TIME")
+    public int desOtHalfDayTime;
+    
+    /** 代休管理設定.発生設定.代休発生に必要な残業時間.時間設定.一定時間.一定時間 */
+    @Column(name = "CERTAIN_OT_TIME")
+    public int certainOtTime;
+    
+    /** 代休管理設定.発生設定.代休発生に必要な休日出勤時間.使用区分 */
+    @Column(name = "OCCURR_HD_WORK_USE_ATR")
+    public int occurrHDWorkUseAtr;
+    
+    /** 代休管理設定.発生設定.代休発生に必要な休日出勤時間.時間設定.時間区分 */
+    @Column(name = "OCCURR_HD_WORK_TIME_ATR")
+    public int occurrHDWorkTimeAtr;
+    
+    /** 代休管理設定.発生設定.代休発生に必要な休日出勤時間.時間設定.指定時間.一日の時間 */
+    @Column(name = "DES_HD_WORK_ONEDAY_TIME")
+    public int desHDWorkOneDayTime;
+    
+    /** 代休管理設定.発生設定.代休発生に必要な休日出勤時間.時間設定.指定時間.半日の時間 */
+    @Column(name = "DES_HD_WORK_HALFDAY_TIME")
+    public int desHDWorkHalfDayTime;
+    
+    /** 代休管理設定.発生設定.代休発生に必要な休日出勤時間.時間設定.一定時間.一定時間 */
+    @Column(name = "CERTAIN_HD_WORK_TIME")
+    public int cerTainHDWorkTime;
+    
+    public static KclmtCompensLeaveCom toEntity(CompensatoryLeaveComSetting domain) {
+    	return new KclmtCompensLeaveCom(
+    			domain.getCompanyId(),
+    			domain.getIsManaged().value,
+    			domain.getLinkingManagementATR().value, 
+    			domain.getCompensatoryAcquisitionUse().getExpirationTime().value, 
+    			domain.getCompensatoryAcquisitionUse().getPreemptionPermit().value,
+    			domain.getCompensatoryAcquisitionUse().getTermManagement().value,
+    			domain.getCompensatoryAcquisitionUse().getDeadlCheckMonth().value,
+    			domain.getCompensatoryDigestiveTimeUnit().getIsManageByTime().value,
+    			domain.getCompensatoryDigestiveTimeUnit().getDigestiveUnit().value ,
+    			domain.getSubstituteHolidaySetting().getOvertimeHourRequired().isUseAtr()?1:0,
+				domain.getSubstituteHolidaySetting().getOvertimeHourRequired().getTimeSetting().getEnumTimeDivision().value,
+				domain.getSubstituteHolidaySetting().getOvertimeHourRequired().getTimeSetting().getDesignatedTime().getOneDayTime().v().intValue(), 
+				domain.getSubstituteHolidaySetting().getOvertimeHourRequired().getTimeSetting().getDesignatedTime().getHalfDayTime().v().intValue(),
+				domain.getSubstituteHolidaySetting().getOvertimeHourRequired().getTimeSetting().getCertainPeriodofTime().getCertainPeriodofTime().v().intValue(),
+				domain.getSubstituteHolidaySetting().getHolidayWorkHourRequired().isUseAtr()?1:0,
+				domain.getSubstituteHolidaySetting().getHolidayWorkHourRequired().getTimeSetting().getEnumTimeDivision().value,
+				domain.getSubstituteHolidaySetting().getHolidayWorkHourRequired().getTimeSetting().getDesignatedTime().getOneDayTime().v().intValue(),
+				domain.getSubstituteHolidaySetting().getHolidayWorkHourRequired().getTimeSetting().getDesignatedTime().getHalfDayTime().v().intValue(),
+				domain.getSubstituteHolidaySetting().getHolidayWorkHourRequired().getTimeSetting().getCertainPeriodofTime().getCertainPeriodofTime().v().intValue());
+	}
+    
+    public CompensatoryLeaveComSetting toDomain() {
+    	// 取得と使用方法
+    	CompensatoryAcquisitionUse compensatoryAcquisitionUse = new CompensatoryAcquisitionUse(
+    			ExpirationTime.valueOf(this.expirationUseSet), 
+    			ApplyPermission.valueOf(this.prepaidGetAllow), 
+    			DeadlCheckMonth.valueOf(this.expCheckMonthNumber),
+    			TermManagement.valueOf(this.expDateMngMethod));
+    	
+    	
+    	
+    	HolidayWorkHourRequired holidayWorkHourRequired = new HolidayWorkHourRequired(
+    			this.occurrHDWorkUseAtr==1?true:false, 
+				new TimeSetting(
+						new CertainPeriodOfTime(new TimeOfDay(this.cerTainHDWorkTime)),
+						new DesignatedTime(new OneDayTime(this.desHDWorkOneDayTime), new OneDayTime(this.desHDWorkHalfDayTime)),
+						EnumTimeDivision.valueOf(this.occurrHDWorkTimeAtr)));
+    	OvertimeHourRequired overtimeHourRequired = new OvertimeHourRequired(
+				this.occurrOtUseAtr==1?true:false, 
+				new TimeSetting(
+						new CertainPeriodOfTime(new TimeOfDay(this.certainOtTime)),
+						new DesignatedTime(new OneDayTime(this.desOtOneDayTime), new OneDayTime(this.desOtHalfDayTime)),
+						EnumTimeDivision.valueOf(this.deadlCheckMonth)));
+    	//発生設定
+    	SubstituteHolidaySetting substituteHolidaySetting = new SubstituteHolidaySetting(holidayWorkHourRequired, overtimeHourRequired);
+    	
+    	// 時間代休の消化単位
+    	CompensatoryDigestiveTimeUnit compensatoryDigestiveTimeUnit = new CompensatoryDigestiveTimeUnit(
+    			ManageDistinct.valueOf(this.timeManageAtr), 
+    			TimeDigestiveUnit.valueOf(this.digestionUnit));
+    	return new CompensatoryLeaveComSetting(
+    			this.cid, 
+    			ManageDistinct.valueOf(this.manageAtr), 
+    			compensatoryAcquisitionUse,
+    			substituteHolidaySetting, 
+    			compensatoryDigestiveTimeUnit, 
+    			ManageDistinct.valueOf(this.linkMngAtr));
+    }
+//    
+//    /** The Kclmt acquisition com. */
+//    @OneToOne(optional = true, cascade = CascadeType.ALL, fetch=FetchType.LAZY)
+//    @PrimaryKeyJoinColumn
+//    public KclmtAcquisitionCom KclmtAcquisitionCom;
+//    
+//    /** The Kctmt digest time com. */
+//    @OneToOne(optional = true, cascade = CascadeType.ALL, fetch=FetchType.LAZY)
+//    @PrimaryKeyJoinColumn
+//    private KctmtDigestTimeCom KctmtDigestTimeCom;
+//    
+//    /** The list occurrence. */
+//    @JoinColumns(@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true))
+//    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch=FetchType.LAZY)
+//    private List<KocmtOccurrenceSet> listOccurrence;
 
     /**
      * Instantiates a new kclmt compens leave com.
@@ -133,5 +267,32 @@ public class KclmtCompensLeaveCom extends UkJpaEntity implements Serializable {
     protected Object getKey() {
         return this.cid;
     }
+
+	public KclmtCompensLeaveCom(String cid, int manageAtr, int linkMngAtr, int expirationUseSet, int prepaidGetAllow,
+			int expDateMngMethod, int expCheckMonthNumber, int timeManageAtr, int digestionUnit, int occurrOtUseAtr,
+			int deadlCheckMonth, int desOtOneDayTime, int desOtHalfDayTime, int certainOtTime, int occurrHDWorkUseAtr,
+			int occurrHDWorkTimeAtr, int desHDWorkOneDayTime, int desHDWorkHalfDayTime, int cerTainHDWorkTime) {
+		super();
+		this.cid = cid;
+		this.manageAtr = manageAtr;
+		this.linkMngAtr = linkMngAtr;
+		this.expirationUseSet = expirationUseSet;
+		this.prepaidGetAllow = prepaidGetAllow;
+		this.expDateMngMethod = expDateMngMethod;
+		this.expCheckMonthNumber = expCheckMonthNumber;
+		this.timeManageAtr = timeManageAtr;
+		this.digestionUnit = digestionUnit;
+		this.occurrOtUseAtr = occurrOtUseAtr;
+		this.deadlCheckMonth = deadlCheckMonth;
+		this.desOtOneDayTime = desOtOneDayTime;
+		this.desOtHalfDayTime = desOtHalfDayTime;
+		this.certainOtTime = certainOtTime;
+		this.occurrHDWorkUseAtr = occurrHDWorkUseAtr;
+		this.occurrHDWorkTimeAtr = occurrHDWorkTimeAtr;
+		this.desHDWorkOneDayTime = desHDWorkOneDayTime;
+		this.desHDWorkHalfDayTime = desHDWorkHalfDayTime;
+		this.cerTainHDWorkTime = cerTainHDWorkTime;
+	}
+    
 
 }

@@ -183,4 +183,13 @@ public class SubHolTransferSet extends WorkTimeDomainObject implements Cloneable
 		}
 		return cloned;
 	}
+
+	public SubHolTransferSet(OneDayTime certainTime, boolean useDivision, DesignatedTime designatedTime,
+			SubHolTransferSetAtr subHolTransferSetAtr) {
+		super();
+		this.certainTime = certainTime;
+		this.useDivision = useDivision;
+		this.designatedTime = designatedTime;
+		this.subHolTransferSetAtr = subHolTransferSetAtr;
+	}
 }

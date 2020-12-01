@@ -50,4 +50,14 @@ public class CompensatoryAcquisitionUse extends DomainObject {
 		memento.setPreemptionPermit(this.preemptionPermit);
 		memento.setDeadlCheckMonth(this.deadlCheckMonth);
 	}
+
+	public CompensatoryAcquisitionUse(ExpirationTime expirationTime, ApplyPermission preemptionPermit,
+			DeadlCheckMonth deadlCheckMonth,
+			nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TermManagement termManagement) {
+		super();
+		this.expirationTime = expirationTime;
+		this.preemptionPermit = preemptionPermit;
+		this.deadlCheckMonth = deadlCheckMonth;
+		TermManagement = termManagement;
+	}
 }

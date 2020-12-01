@@ -11,18 +11,13 @@ public enum TermManagement {
 	MANAGE_BASED_ON_THE_DATE(1, "MANAGE_BASED_ON_THE_DATE");
 
 	/** The value. */
-	public final Integer value;
+	public final int value;
 
 	/** The name id. */
 	public final String nameId;
 
 	/** The Constant values. */
 	private final static TermManagement[] values = TermManagement.values();
-
-	private TermManagement(int value, String nameId) {
-		this.value = value;
-		this.nameId = nameId;
-	}
 
 	public static TermManagement valueOf(Integer value) {
 		// Invalid object.

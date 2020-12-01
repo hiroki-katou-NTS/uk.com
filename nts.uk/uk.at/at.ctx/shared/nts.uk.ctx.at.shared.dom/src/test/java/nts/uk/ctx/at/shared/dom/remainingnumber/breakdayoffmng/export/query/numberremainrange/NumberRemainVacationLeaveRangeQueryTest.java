@@ -50,6 +50,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryL
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.DeadlCheckMonth;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TermManagement;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureGetMemento;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
@@ -386,6 +387,11 @@ public class NumberRemainVacationLeaveRangeQueryTest {
 					@Override
 					public DeadlCheckMonth getDeadlCheckMonth() {
 						return DeadlCheckMonth.THREE_MONTH;
+					}
+
+					@Override
+					public TermManagement termManagement() {
+						return TermManagement.MANAGE_BASED_ON_THE_DATE;
 					}
 				});
 			}

@@ -28,8 +28,7 @@ public class CompensatoryLeaveFinder {
 		if (findItem == null) {
 			return null;
 		}
-		CompensatoryLeaveComSettingDto dto = new CompensatoryLeaveComSettingDto();
-		findItem.saveToMemento(dto);
+		CompensatoryLeaveComSettingDto dto = CompensatoryLeaveComSettingDto.toDto(findItem);
 		return dto;
 	}
 }
