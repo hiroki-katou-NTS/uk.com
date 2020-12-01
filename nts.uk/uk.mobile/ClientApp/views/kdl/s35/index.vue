@@ -21,7 +21,7 @@
           <nts-label>{{ "KDLS35_3" | i18n }}</nts-label>
         </div>
         <!-- A2_2 -->
-        <label class="col-6 pt-2">2020/06/01 ~ 2020/06/03</label>
+        <label class="col-6 pt-2">{{ 'KDLS35_14' | i18n(['tham so 1', 'tham so 2']) }}</label>
       </div>
       <!-- A3_1 -->
       <div class="row pt-1">
@@ -29,7 +29,7 @@
           <nts-label>{{ "KDLS35_4" | i18n }}</nts-label>
         </div>
         <!-- A3_2 -->
-        <label class="col-6 pt-2">{{ "KDLS35_5" | i18n }}</label>
+        <label class="col-6 pt-2">{{ "KDLS35_5" | i18n(displayedRequiredNumberOfDays) }}</label>
       </div>
       <div class="row pt-1">
         <div class="col-6">
