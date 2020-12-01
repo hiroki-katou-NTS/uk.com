@@ -19,7 +19,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 			// ページング行数
 			numberOfPage: 0,
 			// ユーザーID
-			userID: '',
+			userID: __viewContext.user.employeeId,
 			// 会社ID
 			companyID: __viewContext.user.companyId,
 			// 月別実績の本人確認・上長承認の状況を表示する
@@ -135,43 +135,58 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 				vm.appNameLst = appNameLst;
 				return vm.$ajax(API.getApprovalStatusActivation);
 			}).then((data: any) => {
-				vm.closureLst(_.map(data.closureList, (o: any) => {
-					return new ClosureItem(o.closureHistories[0].closureId, o.closureHistories[0].closeName, o.closureMonth);
-				}));
-				vm.employmentCDLst = data.listEmploymentCD;
-				if(params) {
-					vm.multiSelectedWorkplaceId(_.map(params.selectWorkplaceInfo, o => o.id));
-					vm.selectedClosureId(params.closureItem.closureId);
-					vm.dateValue().startDate = params.startDate;
-					vm.dateValue().endDate = params.endDate;
-					vm.dateValue.valueHasMutated();
-					if(params.initDisplayOfApprovalStatus.applicationApprovalFlg) {
-						vm.applicationApprovalFlg.value(true);
+				return $.Deferred((dfd) => {
+					vm.closureLst(_.map(data.closureList, (o: any) => {
+						return new ClosureItem(o.closureHistories[0].closureId, o.closureHistories[0].closeName, o.closureMonth);
+					}));
+					vm.employmentCDLst = data.listEmploymentCD;
+					if(params) {
+						vm.multiSelectedWorkplaceId(_.map(params.selectWorkplaceInfo, o => o.id));
+						vm.selectedClosureId(params.closureItem.closureId);
+						vm.dateValue().startDate = params.startDate;
+						vm.dateValue().endDate = params.endDate;
+						vm.dateValue.valueHasMutated();
+						if(params.initDisplayOfApprovalStatus.applicationApprovalFlg) {
+							vm.applicationApprovalFlg.value(true);
+						} else {
+							vm.applicationApprovalFlg.value(false);
+						}
+						if(params.initDisplayOfApprovalStatus.confirmAndApprovalDailyFlg) {
+							vm.confirmAndApprovalDailyFlg.value(true);
+						} else {
+							vm.confirmAndApprovalDailyFlg.value(false);
+						}
+						if(params.initDisplayOfApprovalStatus.confirmAndApprovalMonthFlg) {
+							vm.confirmAndApprovalMonthFlg.value(true);
+						} else {
+							vm.confirmAndApprovalMonthFlg.value(false);
+						}
+						if(params.initDisplayOfApprovalStatus.confirmEmploymentFlg) {
+							vm.confirmEmploymentFlg.value(true);
+						} else {
+							vm.confirmEmploymentFlg.value(false);
+						}
+						vm.initDisplayOfApprovalStatus = params.initDisplayOfApprovalStatus;
+						dfd.resolve();
 					} else {
-						vm.applicationApprovalFlg.value(false);
-					}
-					if(params.initDisplayOfApprovalStatus.confirmAndApprovalDailyFlg) {
-						vm.confirmAndApprovalDailyFlg.value(true);
-					} else {
-						vm.confirmAndApprovalDailyFlg.value(false);
-					}
-					if(params.initDisplayOfApprovalStatus.confirmAndApprovalMonthFlg) {
-						vm.confirmAndApprovalMonthFlg.value(true);
-					} else {
-						vm.confirmAndApprovalMonthFlg.value(false);
-					}
-					if(params.initDisplayOfApprovalStatus.confirmEmploymentFlg) {
-						vm.confirmEmploymentFlg.value(true);
-					} else {
-						vm.confirmEmploymentFlg.value(false);
-					}
-					vm.initDisplayOfApprovalStatus = params.initDisplayOfApprovalStatus;
-				} else {
-					vm.selectedClosureId(_.head(vm.closureLst()).closureId);
-					vm.dateValue().startDate = data.startDate;
-					vm.dateValue().endDate = data.endDate;
-					vm.dateValue.valueHasMutated();	
-				}
+						return character.restore(__viewContext.user.employeeId + __viewContext.user.companyId).then((restoreData: any) => {
+							if(restoreData)	{
+								vm.selectedClosureId(restoreData.employmentInfo.selectedClosureId);	
+							} else {
+								vm.selectedClosureId(_.head(vm.closureLst()).closureId);	
+							}
+							vm.dateValue().startDate = data.startDate;
+							vm.dateValue().endDate = data.endDate;
+							vm.dateValue.valueHasMutated();
+							dfd.resolve();
+						})
+					}	
+				});
+			}).then(() => {
+				vm.initDisplayOfApprovalStatus.companyID = __viewContext.user.companyId;
+				vm.initDisplayOfApprovalStatus.userID = __viewContext.user.employeeId;
+				return character.save('InitDisplayOfApprovalStatus', vm.initDisplayOfApprovalStatus);
+			}).then(() => {
 				return $('#tree-grid').ntsTreeComponent(vm.treeGrid).done(() => {
 					vm.fullWorkplaceInfo = vm.flattenWkpTree(_.cloneDeep($('#tree-grid').getDataList()));
 					$('#multiple-tree-grid-tree-grid').igTreeGrid("option", "height", "392px");
@@ -216,20 +231,18 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 				return;
 			}
 			// Ｂ画面(承認・確認状況の照会)を実行する
-			character.save('InitDisplayOfApprovalStatus', vm.initDisplayOfApprovalStatus).then(() => {
-            	let closureItem = _.find(vm.closureLst(), o => o.closureId == vm.selectedClosureId()),
-					startDate = vm.dateValue().startDate,
-					endDate = vm.dateValue().endDate,
-					selectWorkplaceInfo: Array<DisplayWorkplace> = _.chain(vm.fullWorkplaceInfo)
-																	.filter((o: DisplayWorkplace) => _.includes(vm.multiSelectedWorkplaceId(), o.id))
-																	.sortBy('hierarchyCode').value(),
-					appNameLst: Array<any> = vm.appNameLst,
-					useSet = vm.useSet,
-					initDisplayOfApprovalStatus = vm.initDisplayOfApprovalStatus,
-					employmentCDLst = vm.employmentCDLst,
-					bParam: KAF018BParam = { closureItem, startDate, endDate, selectWorkplaceInfo, appNameLst, useSet, initDisplayOfApprovalStatus, employmentCDLst };
-				vm.$jump("/view/kaf/018/b/index.xhtml", bParam);
-            });
+        	let closureItem = _.find(vm.closureLst(), o => o.closureId == vm.selectedClosureId()),
+				startDate = vm.dateValue().startDate,
+				endDate = vm.dateValue().endDate,
+				selectWorkplaceInfo: Array<DisplayWorkplace> = _.chain(vm.fullWorkplaceInfo)
+																.filter((o: DisplayWorkplace) => _.includes(vm.multiSelectedWorkplaceId(), o.id))
+																.sortBy('hierarchyCode').value(),
+				appNameLst: Array<any> = vm.appNameLst,
+				useSet = vm.useSet,
+				initDisplayOfApprovalStatus = vm.initDisplayOfApprovalStatus,
+				employmentCDLst = vm.employmentCDLst,
+				bParam: KAF018BParam = { closureItem, startDate, endDate, selectWorkplaceInfo, appNameLst, useSet, initDisplayOfApprovalStatus, employmentCDLst };
+			vm.$jump("/view/kaf/018/b/index.xhtml", bParam);
 			
 		}
 
