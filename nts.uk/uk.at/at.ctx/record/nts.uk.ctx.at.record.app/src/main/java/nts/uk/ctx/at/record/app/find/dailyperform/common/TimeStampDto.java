@@ -41,8 +41,6 @@ public class TimeStampDto implements ItemConst, AttendanceItemDataGate {
 		switch (path) {
 		case CLOCK:
 			return Optional.of(ItemValue.builder().value(timesOfDay).valueType(ValueType.TIME_WITH_DAY));
-		case ROUNDING:
-			return Optional.of(ItemValue.builder().value(afterRoundingTimesOfDay).valueType(ValueType.TIME_WITH_DAY));
 		case PLACE:
 			return Optional.of(ItemValue.builder().value(placeCode).valueType(ValueType.CODE));
 		default:
@@ -56,9 +54,6 @@ public class TimeStampDto implements ItemConst, AttendanceItemDataGate {
 		case CLOCK:
 			this.timesOfDay = value.valueOrDefault(null);
 			break;
-		case ROUNDING:
-			this.afterRoundingTimesOfDay = value.valueOrDefault(null);
-			break;
 		case PLACE:
 			this.placeCode = value.valueOrDefault(null);
 			break;
@@ -71,7 +66,6 @@ public class TimeStampDto implements ItemConst, AttendanceItemDataGate {
 	public PropType typeOf(String path) {
 		switch (path) {
 		case CLOCK:
-		case ROUNDING:
 		case PLACE:
 			return PropType.VALUE;
 		default:

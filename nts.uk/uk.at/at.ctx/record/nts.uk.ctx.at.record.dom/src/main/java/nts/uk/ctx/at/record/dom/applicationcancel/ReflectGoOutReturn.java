@@ -34,8 +34,7 @@ public class ReflectGoOutReturn {
 
 		converter = require.createDailyConverter();
 		Optional<OutingTimeOfDailyAttd> outingTimeCopyFromBefore = converter
-				.withOutingTime(dailyRecordApp.getEmployeeId(), dailyRecordApp.getYmd(),
-						outingTimeBefore.orElseGet(null))
+				.withOutingTime(outingTimeBefore.orElseGet(null))
 				.toDomain().getOutingTime();
 
 		
