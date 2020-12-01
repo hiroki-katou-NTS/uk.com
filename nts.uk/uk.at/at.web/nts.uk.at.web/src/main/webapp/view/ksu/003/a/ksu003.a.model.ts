@@ -508,12 +508,12 @@ module nts.uk.at.view.ksu003.a.model {
 	 */
 	export class ChangeableWorkTime {
 		workNo: number;//勤務NO
-		changeableStartTime: TimeZoneDto;//開始時刻の変更可能な時間帯
-		changeableEndTime: TimeZoneDto;//終了時刻の変更可能な時間帯
-		constructor(changeableStartTime: TimeZoneDto,
-			changeableEndTime: TimeZoneDto) {
-			this.changeableStartTime = changeableStartTime;
-			this.changeableEndTime = changeableEndTime;
+		startTime: number;//開始時刻の変更可能な時間帯
+		endTime: number;//終了時刻の変更可能な時間帯
+		constructor(startTime: number,
+			endTime: number) {
+			this.startTime = startTime;
+			this.endTime = endTime;
 		}
 	}
 

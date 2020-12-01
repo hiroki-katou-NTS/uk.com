@@ -169,8 +169,9 @@ module nts.uk.at.view.kdl045.a {
 				if(self.employee().employeeInfo.workScheduleDto != null){
 					let breakTimeNo = self.employee().employeeInfo.workScheduleDto.listBreakTimeZoneDto.sort((x,y) => {return x.startTime - y.startTime});
 					for (let i = 0; i < breakTimeNo.length; i++) {
-						let tempBreakTime = breakTimeNo[i];
-						self.dataSourceTime().push({ range1: ko.observable({ startTime: tempBreakTime.startTime, endTime: tempBreakTime.endTime, breakFrameNo: i + 1,
+						let tempBreakTime : any = breakTimeNo[i];
+						self.dataSourceTime().push({ range1: ko.observable({ startTime: !_.isNil(tempBreakTime.startTime) ? tempBreakTime.startTime : tempBreakTime.start, 
+																	endTime: !_.isNil(tempBreakTime.endTime) ? tempBreakTime.endTime : tempBreakTime.end, breakFrameNo: i + 1,
 																			 name : self.showTimeByPeriod(tempBreakTime.startTime,tempBreakTime.endTime)
 						}) });
 					}
