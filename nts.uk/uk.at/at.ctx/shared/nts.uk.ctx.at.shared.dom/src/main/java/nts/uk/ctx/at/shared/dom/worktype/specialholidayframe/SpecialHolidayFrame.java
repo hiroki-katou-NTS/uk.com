@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeName;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 特別休暇枠
@@ -37,6 +38,12 @@ public class SpecialHolidayFrame {
 	private DeprecateClassification deprecateSpecialHd;
 	
 	/**
+	 * するしない区分
+	 */
+	private NotUseAtr timeMngAtr;
+	
+	
+	/**
 	 * 
 	 * @param companyId
 	 * @param specialHdFrameNo
@@ -44,12 +51,13 @@ public class SpecialHolidayFrame {
 	 * @param deprecateSpecialHd
 	 */
 	public SpecialHolidayFrame(String companyId, int specialHdFrameNo, WorkTypeName specialHdFrameName,
-			DeprecateClassification deprecateSpecialHd) {
+			DeprecateClassification deprecateSpecialHd ,NotUseAtr timeMngAtr) {
 		super();
 		this.companyId = companyId;
 		this.SpecialHdFrameNo = specialHdFrameNo;
 		SpecialHdFrameName = specialHdFrameName;
 		this.deprecateSpecialHd = deprecateSpecialHd;
+		this.timeMngAtr = timeMngAtr;
 	}
 	
 	/**
@@ -61,11 +69,13 @@ public class SpecialHolidayFrame {
 	 * @return
 	 */
 	public static SpecialHolidayFrame createSimpleFromJavaType(String companyId, int specialHdFrameNo, String specialHdFrameName,
-			int deprecateSpecialHd) {
+			int deprecateSpecialHd , int timeMngAtr) {
 		return new SpecialHolidayFrame(companyId, 
 				specialHdFrameNo,
 				new WorkTypeName(specialHdFrameName), 
-				EnumAdaptor.valueOf(deprecateSpecialHd, DeprecateClassification.class));
+				EnumAdaptor.valueOf(deprecateSpecialHd, DeprecateClassification.class),
+				EnumAdaptor.valueOf(timeMngAtr, NotUseAtr.class)
+				);
 	}
 
 	/**
@@ -78,7 +88,9 @@ public class SpecialHolidayFrame {
 	 * @return the special holiday frame
 	 */
 	public static SpecialHolidayFrame createFromJavaType(String companyId, int specialHdFrameNo, String specialHdFrameName,
-			int deprecateSpecialHd) {
-		return new SpecialHolidayFrame(companyId, specialHdFrameNo, new WorkTypeName(specialHdFrameName), EnumAdaptor.valueOf(deprecateSpecialHd, DeprecateClassification.class));
+			int deprecateSpecialHd , int timeMngAtr) {
+		return new SpecialHolidayFrame(companyId,
+				specialHdFrameNo, new WorkTypeName(specialHdFrameName), EnumAdaptor.valueOf(deprecateSpecialHd, DeprecateClassification.class),
+				EnumAdaptor.valueOf(timeMngAtr, NotUseAtr.class));
 	}
 }

@@ -4,23 +4,25 @@ module nts.uk.at.view.kmf001.m {
          *  Service paths
          */
         var servicePath: any = {
-            startUp: '',
+            startUp: "at/share/holidaymanagement/startUp",
             
-            save: '',
+            save: "at/share/holidaymanagement/save"
         };
         
         export function startUp(): JQueryPromise<any> {
-           // return nts.uk.request.ajax(servicePath.startUp);
-            let dfd = $.Deferred<any>();
-            dfd.resolve();
-            return dfd.promise();
+            return nts.uk.request.ajax(servicePath.startUp);
+           // let dfd = $.Deferred<any>();
+          // dfd.resolve();
+         //  return dfd.promise();
         }
 
         export function save(command: any): JQueryPromise<any> {
-            //return nts.uk.request.ajax(servicePath.save, command);
-            let dfd = $.Deferred<any>();
-            dfd.resolve();
-            return dfd.promise();
+            return nts.uk.request.ajax(servicePath.save, command);
+           
+            
+            // let dfd = $.Deferred<any>();
+           // dfd.resolve();
+           // return dfd.promise();
         }
     }
 }

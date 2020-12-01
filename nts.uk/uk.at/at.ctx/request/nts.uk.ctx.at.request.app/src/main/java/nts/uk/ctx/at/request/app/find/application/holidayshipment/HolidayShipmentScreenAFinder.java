@@ -832,14 +832,17 @@ public class HolidayShipmentScreenAFinder {
 			if (empSubOpt.isPresent()) {
 
 				EmpSubstVacation empSub = empSubOpt.get();
-				boolean isNotManage = empSub.getSetting().getIsManage().equals(ManageDistinct.NO);
+				//boolean isNotManage = empSub.getSetting().getIsManage().equals(ManageDistinct.NO);
+				boolean isNotManage = true;
 				if (isNotManage) {
 					throw new BusinessException("Msg_323");
 				}
 			} else {
 				Optional<ComSubstVacation> comSubOpt = comSubrepo.findById(companyID);
+				/*boolean isNoComSubOrNotManage = comSubOpt.isPresent()
+						&& comSubOpt.get().getSetting().getIsManage().equals(ManageDistinct.NO);*/
 				boolean isNoComSubOrNotManage = comSubOpt.isPresent()
-						&& comSubOpt.get().getSetting().getIsManage().equals(ManageDistinct.NO);
+						&& comSubOpt.get().getManageDistinct().equals(ManageDistinct.NO);
 				if (isNoComSubOrNotManage) {
 					throw new BusinessException("Msg_323");
 				}

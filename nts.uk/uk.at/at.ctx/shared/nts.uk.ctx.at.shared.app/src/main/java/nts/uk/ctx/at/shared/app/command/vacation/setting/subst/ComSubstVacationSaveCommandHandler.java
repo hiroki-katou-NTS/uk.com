@@ -57,12 +57,12 @@ public class ComSubstVacationSaveCommandHandler
 		// Check is managed, keep old values when is not managed
 		if (optComSubstVacation.isPresent()) {
 			SubstVacationSetting setting = optComSubstVacation.get().getSetting();
-			if (command.getIsManage() == ManageDistinct.NO.value) {
+			if (command.getManageDistinct() == ManageDistinct.NO.value) {
 				command.setExpirationDate(setting.getExpirationDate().value);
 				command.setAllowPrepaidLeave(setting.getAllowPrepaidLeave().value);
 			}
 		} else {
-			if (command.getIsManage() == ManageDistinct.NO.value) {
+			if (command.getManageDistinct() == ManageDistinct.NO.value) {
 				command.setAllowPrepaidLeave(ApplyPermission.ALLOW.value);
 				command.setExpirationDate(ExpirationTime.THIS_MONTH.value);
 			}
@@ -81,11 +81,12 @@ public class ComSubstVacationSaveCommandHandler
 		}
 		
 		//get isManageByTime from DB
-		int isManageDB = optComSubstVacation.isPresent() ? optComSubstVacation.get().getSetting().getIsManage().value : -1;
+		//int isManageDB = optComSubstVacation.isPresent() ? optComSubstVacation.get().getSetting().getIsManage().value : -1;
+		int isManageDB = optComSubstVacation.isPresent() ? optComSubstVacation.get().getSetting().getManageDeadline().value: -1;
 		//check managementCategory change
-		boolean isManage = command.getIsManage() != isManageDB;
+		boolean isManage = command.getManageDeadline()!= isManageDB;
 		if (isManage) {
-			boolean manage = command.getIsManage() == ManageDistinct.YES.value;
+			boolean manage = command.getManageDeadline() == ManageDistinct.YES.value;
 			val substVacationSettingEvent = new SubstVacationSettingDomainEvent(manage);
 			substVacationSettingEvent.toBePublished();
 		}

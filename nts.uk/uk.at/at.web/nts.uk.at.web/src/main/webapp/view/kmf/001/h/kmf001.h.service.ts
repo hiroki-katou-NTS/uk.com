@@ -13,7 +13,9 @@ module nts.uk.pr.view.kmf001.h {
             vacationExpirationEnum: "ctx/at/shared/vacation/setting/substvacation/enum/vacationexpiration",
             applyPermissionEnum: "ctx/at/shared/vacation/setting/substvacation/enum/applypermission",
             manageDistinctEnum: "ctx/at/shared/vacation/setting/substvacation/enum/managedistinct",
-            
+            getH32: "ctx/at/shared/vacation/setting/substvacation/enum/managedeadline",
+            getH34: "ctx/at/shared/vacation/setting/substvacation/enum/linkingManagementATR",
+
         };
 
         /**
@@ -57,7 +59,7 @@ module nts.uk.pr.view.kmf001.h {
             public saveEmpSetting(setting: model.EmpSubstVacationDto): JQueryPromise<void> {
                 return nts.uk.request.ajax(paths.saveEmpSetting, setting);
             }
-            
+
             /**
              * Delete contract type's setting
              */
@@ -86,6 +88,14 @@ module nts.uk.pr.view.kmf001.h {
                 return nts.uk.request.ajax(paths.manageDistinctEnum);
             }
 
+            public getH32(): JQueryPromise<Array<model.Enum>> {
+                return nts.uk.request.ajax(paths.getH32);
+            }
+
+            public getH34(): JQueryPromise<Array<model.Enum>> {
+                return nts.uk.request.ajax(paths.getH34);
+            }
+
         }
 
         /**
@@ -102,11 +112,15 @@ module nts.uk.pr.view.kmf001.h {
                 isManage: number;
                 expirationDate: number;
                 allowPrepaidLeave: number;
+                manageDeadline: number;
+                linkingManagementATR: number;
 
-                constructor(isManage: number, expirationDate: number, allowPrepaidLeave: number) {
+                constructor(isManage: number, expirationDate: number, allowPrepaidLeave: number, manageDeadline: number, linkingManagementATR: number) {
                     this.isManage = isManage;
                     this.expirationDate = expirationDate;
                     this.allowPrepaidLeave = allowPrepaidLeave;
+                    this.manageDeadline = manageDeadline;
+                    this.linkingManagementATR = linkingManagementATR;
                 }
             }
 

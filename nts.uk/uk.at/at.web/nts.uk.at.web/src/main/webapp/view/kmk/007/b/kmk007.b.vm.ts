@@ -7,7 +7,9 @@ module nts.uk.at.view.kmk007.b.viewmodel {
         items: KnockoutObservableArray<ItemModel>;
         columns: KnockoutObservable<any>;
         selectedCode: KnockoutObservable<any>;
-
+        enableB41: KnockoutObservable<boolean> = ko.observable(false);
+        timeMngAtr : any;
+        itemListB41 : KnockoutObservableArray<any>;
         constructor() {
             var self = this;
             
@@ -19,6 +21,12 @@ module nts.uk.at.view.kmk007.b.viewmodel {
             ]);
             
             self.frameEliminationSelectedCode = ko.observable(0);
+            
+            self.timeMngAtr =  ko.observable(0);
+             self.itemListB41 = ko.observableArray([
+                { code: '1', frameValue: nts.uk.resource.getText("KMF004_167") },
+                { code: '0', frameValue: nts.uk.resource.getText("KMF004_168") }
+            ]);
             
             self.frameId = ko.observable(nts.uk.ui.windows.getShared("KMK007_ITEM_ID"));
             
@@ -39,6 +47,7 @@ module nts.uk.at.view.kmk007.b.viewmodel {
                     service.findHolidayFrameByCode(Number(value)).done(function(data) {
                         self.frameName(data.specialHdFrameName);
                         self.frameEliminationSelectedCode(data.deprecateSpecialHd);
+                        self.timeMngAtr(data.timeMngAtr);
                     }).fail(function(res) {
                               
                     });
@@ -82,10 +91,11 @@ module nts.uk.at.view.kmk007.b.viewmodel {
             self.items([]);
             
             if(self.frameId() == Cls_Of_Duty.SpecialHolidayFrame){
+                self.enableB41(true);
                 service.getAllSpecialHolidayFrame().done(function(data) {
                     let sortData1 = _.sortBy(data, [function(o) { return o.specialHdFrameNo; }]);
                     _.forEach(sortData1, function(item) {
-                        self.items.push(new ItemModel(item.specialHdFrameNo, item.specialHdFrameName, item.deprecateSpecialHd));
+                        self.items.push(new ItemModel(item.specialHdFrameNo, item.specialHdFrameName, item.deprecateSpecialHd , item.timeMngAtr));
                     });
                     
                     dfd.resolve(data);
@@ -96,7 +106,7 @@ module nts.uk.at.view.kmk007.b.viewmodel {
                 service.getAllAbsenceFrame().done(function(data) {
                     let sortData2 = _.sortBy(data, [function(o) { return o.absenceFrameNo; }]);
                     _.forEach(sortData2, function(item) {
-                        self.items.push(new ItemModel(item.absenceFrameNo, item.absenceFrameName, item.deprecateAbsence));
+                        self.items.push(new ItemModel(item.absenceFrameNo, item.absenceFrameName, item.deprecateAbsence , item.timeMngAtr));
                     });
                     
                     dfd.resolve(data);
@@ -119,7 +129,7 @@ module nts.uk.at.view.kmk007.b.viewmodel {
                 return;
             }
             if(self.frameId() == Cls_Of_Duty.SpecialHolidayFrame){
-                var holidayFrame = new HolidayFrameDto(self.selectedCode(), self.frameName(), self.frameEliminationSelectedCode());
+                var holidayFrame = new HolidayFrameDto(self.selectedCode(), self.frameName(), self.frameEliminationSelectedCode(), self.timeMngAtr());
                 
                 service.updateSpecialHolidayFrame(holidayFrame).done(function(data) {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
@@ -156,7 +166,8 @@ module nts.uk.at.view.kmk007.b.viewmodel {
         name: string;
         abolition: number;
         icon: string;
-        constructor(frameNo: number, name: string, abolition: number) {
+        timeMngAtr: number;
+        constructor(frameNo: number, name: string, abolition: number ,timeMngAtr: number) {
             this.frameNo = frameNo;
             this.name = name;
             this.abolition = abolition;
@@ -165,6 +176,7 @@ module nts.uk.at.view.kmk007.b.viewmodel {
             } else {
                 this.icon = '<i class="icon icon-dot"></i>';
             }
+            this.timeMngAtr = timeMngAtr;
         }
     }
     
@@ -177,10 +189,12 @@ module nts.uk.at.view.kmk007.b.viewmodel {
         specialHdFrameNo: number;
         specialHdFrameName: string;
         deprecateSpecialHd: number;
-        constructor(specialHdFrameNo: number, specialHdFrameName: string, deprecateSpecialHd: number) {
+        timeMngAtr :number;
+        constructor(specialHdFrameNo: number, specialHdFrameName: string, deprecateSpecialHd: number , timeMngAtr: number) {
             this.specialHdFrameNo = specialHdFrameNo;
             this.specialHdFrameName = specialHdFrameName;
             this.deprecateSpecialHd = deprecateSpecialHd;
+            this.timeMngAtr = timeMngAtr;
         }
     }
     

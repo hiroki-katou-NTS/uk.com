@@ -9,13 +9,16 @@ import java.util.Optional;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NumberDayNursing;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingGetMemento;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.TimeCareNursingSet;
 import nts.uk.shr.com.time.calendar.MonthDay;
 
 /**
@@ -33,7 +36,7 @@ public class NursingLeaveSettingDto {
     private Integer nursingCategory;
 
     /** The start month day. */
-    private MonthDay startMonthDay;
+    private Integer startMonthDay;
 
     /** The nursing number leave day. */
     private Integer nursingNumberLeaveDay;
@@ -46,6 +49,10 @@ public class NursingLeaveSettingDto {
 
     /** The absence work. */
     private Integer absenceWork;
+    
+    private Integer timeDigestiveUnit;
+    
+    private Integer manageDistinct;
 
     /**
      * To domain.
@@ -119,8 +126,8 @@ public class NursingLeaveSettingDto {
          * NursingVacationSettingGetMemento#getStartMonthDay()
          */
         @Override
-        public MonthDay getStartMonthDay() {
-            return this.setting.startMonthDay;
+        public Integer getStartMonthDay() {
+            return this.setting.getStartMonthDay();
         }
 
         /*
@@ -155,6 +162,13 @@ public class NursingLeaveSettingDto {
 		@Override
 		public Optional<Integer> getAbsenceFrameNo() {
 			return Optional.of(this.setting.absenceWork);
+		}
+
+		@Override
+		public TimeCareNursingSet getTimeCareNursingSet() {
+			return new TimeCareNursingSet(
+					EnumAdaptor.valueOf(this.setting.timeDigestiveUnit, TimeDigestiveUnit.class),
+					EnumAdaptor.valueOf(this.setting.manageDistinct, ManageDistinct.class ));
 		}
 
     }

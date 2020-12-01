@@ -160,11 +160,11 @@ public class FurikyuMngDataExtractionService {
 				ComSubstVacation comSubstVaca = ecSubstVaca.getComSubstVacation().orElse(null);
 				Optional<EmpSubstVacation> empSubstVacation = ecSubstVaca.getEmpSubstVacation();
 				if (empSubstVacation.isPresent()) {
-					emplManage.setIsManage(empSubstVacation.get().getSetting().getIsManage());
+				//	emplManage.setIsManage(empSubstVacation.get().getSetting().getIsManage());
 					emplManage.setEmploymentCode(empSubstVacation.get().getEmpContractTypeCode());
 				}
 				// Step 取得した「振休管理設定」．管理区分をチェック
-				if (comSubstVaca != null && comSubstVaca.getSetting().getIsManage() == ManageDistinct.YES) {
+				/*if (comSubstVaca != null && comSubstVaca.getSetting().getIsManage() == ManageDistinct.YES) {
 					// Step 管理区分 ＝ 管理する
 					emplManage.setIsManage(ManageDistinct.YES);
 
@@ -173,9 +173,8 @@ public class FurikyuMngDataExtractionService {
 						emplManage.setEmploymentCode(empHist.getEmploymentCode());
 						return emplManage;
 					}
-					
 					emplManage.setIsManage(ManageDistinct.NO);
-				}
+				}*/
 			}
 		}
 		// Step 管理区分、雇用コードを返す
@@ -248,7 +247,7 @@ public class FurikyuMngDataExtractionService {
 		if (empCD != null) {
 			if(empSubstVacationRepository.findById(cid, empCD).isPresent()) {
 				empSubstVacation = empSubstVacationRepository.findById(cid, empCD).get();
-				expirationDate = empSubstVacation.getSetting().getExpirationDate().value;
+			//	expirationDate = empSubstVacation.getSetting().getExpirationDate().value;
 			} else if (comSubstVacationRepository.findById(cid).isPresent()){
 				comSubstVacation = comSubstVacationRepository.findById(cid).get();
 				expirationDate = comSubstVacation.getSetting().getExpirationDate().value;

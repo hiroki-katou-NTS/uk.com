@@ -109,22 +109,23 @@
 													<td><div tabindex="60" id="h3_2"
 															data-bind="ntsRadioBoxGroup: {
 														name: '#[KMF001_327]',
-														options: $parent.itemListH32,
-														optionsValue: 'id',
-														optionsText: 'name',
-														value: $parent.selectedId,
+														options: $parent.h32,
+														optionsValue: 'value',
+														optionsText: 'localizedName',
+														value: manageDeadline,
 														enable:true }"></div></td>
 												</tr>
 												<tr>
-													<td >#{i18n.getText('KMF001_327')}</td>
-													<td><div tabindex="60" id="h3_3"
-															data-bind="ntsRadioBoxGroup: {
-														name: '#[KMF001_327]',
-														options: $parent.itemListH32,
-														optionsValue: 'id',
-														optionsText: 'name',
-														value: $parent.selectedId,
-														enable:true }"></div></td>
+													<td >#{i18n.getText('KMF001_337')}</td>
+													<td><div tabindex="6" id = "h3-4"
+															data-bind="ntsSwitchButton: {
+															name: '#[KMF001_337]',
+															options: $parent.h34,
+															optionsValue: 'value',
+															optionsText: 'localizedName',
+															enable: true,
+															value: linkingManagementATR}">
+														</div></td>
 												</tr>
 											</table>
 										</td>

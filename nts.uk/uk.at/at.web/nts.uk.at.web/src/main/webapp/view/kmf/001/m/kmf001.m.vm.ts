@@ -103,7 +103,11 @@ module nts.uk.at.view.kmf001.m {
             holidayValue: KnockoutObservable<number> = ko.observable( 0 );
             holidayOption = new nts.uk.ui.option.NumberEditorOption( {
                 unitID: "DAYS",
-                textalign: "right"
+                textalign: "right",
+                grouplength: 2,
+                decimallength: 1,
+                placeholder: '',
+                width: ''
             } );
             //M6_4
             nonStatutory: KnockoutObservable<boolean> = ko.observable( true );
@@ -111,7 +115,11 @@ module nts.uk.at.view.kmf001.m {
             addHolidayValue: KnockoutObservable<number> = ko.observable( 0 );
             addHolidayOption = new nts.uk.ui.option.NumberEditorOption( {
                 unitID: "DAYS",
-                textalign: "right"
+                textalign: "right",
+                grouplength: 2,
+                decimallength: 1,
+                placeholder: '',
+                width: ''
             } );
             //M8_2
             startingDay: KnockoutObservable<string> = ko.observable( '' );

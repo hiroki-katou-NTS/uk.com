@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -13,6 +14,7 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KclstEmpSubstVacation.
@@ -21,7 +23,7 @@ import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 @Setter
 @Entity
 @Table(name = "KSHMT_HDSUB_EMP")
-public class KsvstEmpSubstVacation extends KsvstSubstVacationSetting implements Serializable {
+public class KsvstEmpSubstVacation extends ContractUkJpaEntity  implements Serializable {
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -29,6 +31,9 @@ public class KsvstEmpSubstVacation extends KsvstSubstVacationSetting implements 
 	/** The kclst emp compens leave PK. */
 	@EmbeddedId
 	protected KsvstEmpSubstVacationPK kclstEmpSubstVacationPK;
+	
+	@Column(name = "MANAGE_ATR")
+	private Integer manageAtr;
 
 	public static final JpaEntityMapper<KsvstEmpSubstVacation> MAPPER =
 			new JpaEntityMapper<>(KsvstEmpSubstVacation.class);

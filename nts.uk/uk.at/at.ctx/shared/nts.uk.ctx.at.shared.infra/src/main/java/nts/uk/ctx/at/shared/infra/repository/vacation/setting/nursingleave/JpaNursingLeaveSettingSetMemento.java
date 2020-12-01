@@ -13,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingSetMemento;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.TimeCareNursingSet;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingLeaveSet;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingLeaveSetPK;
 //import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingWorkType;
@@ -82,9 +83,9 @@ public class JpaNursingLeaveSettingSetMemento implements NursingLeaveSettingSetM
      * NursingVacationSettingSetMemento#setStartMonthDay(java.lang.Integer)
      */
     @Override
-    public void setStartMonthDay(MonthDay startMonthDay) {
-    	int monthday = startMonthDay.getMonth() * 100 + startMonthDay.getDay();
-    	this.entityNursing.setStartMonthDay(monthday);
+    public void setStartMonthDay(Integer startMonthDay) {
+//    	int monthday = startMonthDay.getMonth() * 100 + startMonthDay.getDay();
+//    	this.entityNursing.setStartMonthDay(monthday);
     }
 
     /*
@@ -115,6 +116,14 @@ public class JpaNursingLeaveSettingSetMemento implements NursingLeaveSettingSetM
 		else
 			this.entityNursing.setAbsenceFrameNo(null);
 	}
+
+	@Override
+	public void setTimeCareNursingSet(TimeCareNursingSet timeCareNursingSet) {
+		this.entityNursing.setDigestiveUnit(timeCareNursingSet.getTimeDigestiveUnit().value);
+		this.entityNursing.setTimeManageAtr(timeCareNursingSet.getManageDistinct().value);
+		
+	}
+
 
     /*
      * (non-Javadoc)

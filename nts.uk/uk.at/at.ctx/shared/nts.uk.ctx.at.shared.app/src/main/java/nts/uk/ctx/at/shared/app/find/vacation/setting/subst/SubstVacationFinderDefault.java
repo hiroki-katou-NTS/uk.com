@@ -49,10 +49,7 @@ public class SubstVacationFinderDefault implements SubstVacationFinder {
 			return null;
 		}
 
-		SubstVacationSettingDto dto = new SubstVacationSettingDto();
-
-		optComSubVacation.get().getSetting().saveToMemento(dto);
-
+		SubstVacationSettingDto dto = SubstVacationSettingDto.fromDomain(optComSubVacation.get());
 		return dto;
 	}
 

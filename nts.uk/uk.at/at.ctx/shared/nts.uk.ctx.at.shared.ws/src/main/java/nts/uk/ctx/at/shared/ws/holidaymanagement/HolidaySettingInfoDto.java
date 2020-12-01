@@ -1,14 +1,15 @@
-package nts.uk.ctx.at.shared.app.command.holidaymanagement;
-
+package nts.uk.ctx.at.shared.ws.holidaymanagement;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 
-@AllArgsConstructor
 @Data
-public class SettingPublicHolidayAddCommand {
-		
+@AllArgsConstructor
+@NoArgsConstructor
+public class HolidaySettingInfoDto {
+	
 	public Double addHolidayValue;
 	public Double holidayValue;
 	public Integer monthDay;

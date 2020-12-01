@@ -115,6 +115,7 @@ public class JpaCompensLeaveEmSetRepository extends JpaRepository implements Com
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.
      * CompensLeaveEmSetRepository#findAll(java.lang.String)
      */
+    private static final String GET_ALL = "SELECT a FROM KclmtCompensLeaveCom a WHERE a.cid = :companyId";
     @Override
     public List<CompensatoryLeaveEmSetting> findAll(String companyId) {
         EntityManager em = this.getEntityManager();
@@ -135,6 +136,8 @@ public class JpaCompensLeaveEmSetRepository extends JpaRepository implements Com
         return em.createQuery(query).getResultList().stream()
                 .map(entity -> new CompensatoryLeaveEmSetting(new JpaCompensLeaveEmSettingGetMemento(entity)))
                 .collect(Collectors.toList());
+        
+        
     }
     
     /**

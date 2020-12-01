@@ -552,7 +552,7 @@ public class SaveHolidayShipmentCommandHandler
 			Optional<EmpSubstVacation> empSubOpt = empSubrepo.findById(companyID, emptCD);
 			if (empSubOpt.isPresent()) {
 				EmpSubstVacation empSub = empSubOpt.get();
-				expDate = getDateByExpirationTime(empSub.getSetting().getExpirationDate(), sID);
+				//expDate = getDateByExpirationTime(empSub.getSetting().getExpirationDate(), sID);
 
 			} else {
 				Optional<ComSubstVacation> comSubOpt = comSubrepo.findById(companyID);
@@ -841,7 +841,8 @@ public class SaveHolidayShipmentCommandHandler
 		SubstVacationSetting setting = null;
 		Optional<EmpSubstVacation> empSubOpt = empSubrepo.findById(companyID, employmentCd);
 		if (empSubOpt.isPresent()) {
-			setting = empSubOpt.get().getSetting();
+			//setting = empSubOpt.get().getSetting();
+			
 		} else {
 			Optional<ComSubstVacation> comSubOpt = comSubrepo.findById(companyID);
 			if (comSubOpt.isPresent()) {

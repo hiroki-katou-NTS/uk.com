@@ -52,7 +52,7 @@ public class EmpSubstVacationSaveCommandHandler extends CommandHandler<EmpSubstV
 				command.getContractTypeCode());
 
 		// Check is managed, keep old values when is not managed
-		if (optEmpSubstVacation.isPresent()) {
+		/*if (optEmpSubstVacation.isPresent()) {
 			EmpSubstVacation empSubstVacationDb = optEmpSubstVacation.get();
 			if (command.getIsManage() == ManageDistinct.NO.value) {
 				command.setExpirationDate(empSubstVacationDb.getSetting().getExpirationDate().value);
@@ -63,7 +63,7 @@ public class EmpSubstVacationSaveCommandHandler extends CommandHandler<EmpSubstV
 				command.setAllowPrepaidLeave(ApplyPermission.ALLOW.value);
 				command.setExpirationDate(ExpirationTime.THIS_MONTH.value);
 			}
-		}
+		}*/
 
 		// Convert data
 		EmpSubstVacation empSubstVacation = command.toDomain(companyId);

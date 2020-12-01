@@ -78,18 +78,12 @@ public class EmpSubstVacationSaveCommand extends SubstVacationSaveBaseCommand {
 			return this.dto.contractTypeCode;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.subst.
-		 * ComSubstVacationGetMemento#getSetting()
-		 */
 		@Override
-		public SubstVacationSetting getSetting() {
-			return new SubstVacationSetting(ManageDistinct.valueOf(this.dto.getIsManage()),
-					ExpirationTime.valueOf(this.dto.getExpirationDate()),
-					ApplyPermission.valueOf(this.dto.getAllowPrepaidLeave()));
+		public ManageDistinct getManageDistinct() {
+			
+			return ManageDistinct.valueOf(dto.getManageDistinct());
 		}
+
 
 	}
 

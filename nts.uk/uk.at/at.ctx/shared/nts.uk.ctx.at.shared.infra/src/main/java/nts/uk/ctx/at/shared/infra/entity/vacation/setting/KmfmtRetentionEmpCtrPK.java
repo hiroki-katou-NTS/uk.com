@@ -30,7 +30,7 @@ public class KmfmtRetentionEmpCtrPK implements Serializable {
 
 	/** The emp ctr cd. */
 	@NotNull
-	@Column(name = "EMP_CTR_CD")
+	@Column(name = "EMPCD")
 	private String empCtrCd;
 
 	/**

@@ -27,6 +27,7 @@ import nts.uk.ctx.at.shared.app.find.vacation.setting.subst.dto.SubstVacationSet
 import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ManageDeadline;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -165,4 +166,16 @@ public class SubstVacationWebService extends WebService {
 	public List<EnumConstant> getManageDistinctEnum() {
 		return EnumAdaptor.convertToValueNameList(ManageDistinct.class);
 	}
+	@POST
+	@Path("enum/managedeadline")
+	public List<EnumConstant> getManagedeadlineEnum() {
+		return EnumAdaptor.convertToValueNameList(ManageDeadline.class);
+	}
+	@POST
+	@Path("enum/linkingManagementATR")
+	public List<EnumConstant> getLinkManageATREnum() {
+		return EnumAdaptor.convertToValueNameList(ManageDistinct.class);
+	}
+	
+	
 }

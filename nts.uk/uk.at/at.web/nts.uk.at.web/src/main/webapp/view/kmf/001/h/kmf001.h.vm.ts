@@ -24,10 +24,18 @@ module nts.uk.pr.view.kmf001.h {
             vacationExpirationEnums: KnockoutObservableArray<Enum>;
             applyPermissionEnums: KnockoutObservableArray<Enum>;
             manageDistinctEnums: KnockoutObservableArray<Enum>;
+            
+            //
+            h32 : KnockoutObservableArray<Enum>;
+            h34 : KnockoutObservableArray<Enum>;
 
             // Temp
             employmentList: KnockoutObservableArray<ItemModel>;
             selectedContractTypeCode: KnockoutObservable<string>;
+            
+            
+            //h34
+            linkingManagementATR  : KnockoutObservable<string>;
 
             // Model
             settingModel: KnockoutObservable<SubstVacationSettingModel>;
@@ -57,6 +65,8 @@ module nts.uk.pr.view.kmf001.h {
                 self.vacationExpirationEnums = ko.observableArray([]);
                 self.applyPermissionEnums = ko.observableArray([]);
                 self.manageDistinctEnums = ko.observableArray([]);
+                self.h32 =  ko.observableArray([]);
+                self.h34 =  ko.observableArray([]);
 
                 self.settingModel = ko.observable(null);
                 self.empSettingModel = ko.observable(null);
@@ -64,7 +74,10 @@ module nts.uk.pr.view.kmf001.h {
                     new SubstVacationSettingModel({
                         isManage: 1,
                         expirationDate: 0,
-                        allowPrepaidLeave: 1
+                        allowPrepaidLeave: 1,
+                        manageDeadline: 0,
+                        linkingManagementATR : 0
+                        
                     }));
                 self.empSettingModel = ko.observable(
                     new EmpSubstVacationModel({
@@ -119,7 +132,7 @@ module nts.uk.pr.view.kmf001.h {
                 }
 
                 // Load enums
-                $.when(self.loadVacationExpirationEnums(), self.loadApplyPermissionEnums(), self.loadManageDistinctEnums(), self.loadEmploymentList()).done(function() {
+                $.when(self.loadVacationExpirationEnums(), self.loadApplyPermissionEnums(), self.loadManageDistinctEnums(), self.loadEmploymentList() ,self.h32f() , self.h34f()).done(function() {
                     self.loadComSettingDetails();
                     self.selectedItem(self.employmentList()[0].code);
                     self.selectedName(self.employmentList()[0].name);
@@ -211,6 +224,30 @@ module nts.uk.pr.view.kmf001.h {
                 });
                 return dfd.promise();
             }
+            
+              private h32f(): JQueryPromise<Array<Enum>> {
+                let self = this;
+                let dfd = $.Deferred();
+                this.service.getH32().done(function(res: Array<Enum>) {
+                    self.h32(res);
+                    dfd.resolve();
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alertError(res.message);
+                });
+                return dfd.promise();
+            }
+            
+             private h34f(): JQueryPromise<Array<Enum>> {
+                let self = this;
+                let dfd = $.Deferred();
+                this.service.getH34().done(function(res: Array<Enum>) {
+                    self.h34(res);
+                    dfd.resolve();
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alertError(res.message);
+                });
+                return dfd.promise();
+            }
 
             private loadManageDistinctEnums(): JQueryPromise<Array<Enum>> {
                 let self = this;
@@ -231,9 +268,13 @@ module nts.uk.pr.view.kmf001.h {
                 nts.uk.ui.block.grayout();
                 this.service.findComSetting().done(function(res: SubstVacationSettingDto) {
                     if (res) {
-                        self.settingModel().isManage(res.isManage);
+                        self.settingModel().isManage(res.manageDistinct);
                         self.settingModel().expirationDate(res.expirationDate);
                         self.settingModel().allowPrepaidLeave(res.allowPrepaidLeave);
+                        self.settingModel().manageDeadline(res.manageDeadline);
+                        self.settingModel().linkingManagementATR(res.linkingManagementATR);
+                        
+                        
                     } else {
                         self.settingModel().isManage(self.manageDistinctEnums()[0].value);
                         self.settingModel().expirationDate(self.vacationExpirationEnums()[0].value);
@@ -258,7 +299,7 @@ module nts.uk.pr.view.kmf001.h {
                 this.service.findEmpSetting(contractTypeCode).done(function(res: EmpSubstVacationDto) {
                     if (res) {
                         self.empSettingModel().contractTypeCode(res.contractTypeCode);
-                        self.empSettingModel().isManage(res.isManage);
+                        self.empSettingModel().isManage(res.manageDistinct);
                         self.empSettingModel().expirationDate(res.expirationDate);
                         self.empSettingModel().allowPrepaidLeave(res.allowPrepaidLeave);
                     } else {
@@ -369,15 +410,19 @@ module nts.uk.pr.view.kmf001.h {
             isManage: KnockoutObservable<number>;
             expirationDate: KnockoutObservable<number>;
             allowPrepaidLeave: KnockoutObservable<number>;
+            manageDeadline:  KnockoutObservable<number>;
+            linkingManagementATR : KnockoutObservable<number>; 
 
             constructor(dto: SubstVacationSettingDto) {
                 this.isManage = ko.observable(dto.isManage);
                 this.expirationDate = ko.observable(dto.expirationDate);
                 this.allowPrepaidLeave = ko.observable(dto.allowPrepaidLeave);
+                this.manageDeadline = ko.observable(dto.manageDeadline);
+                this.linkingManagementATR = ko.observable(dto.linkingManagementATR);
             }
 
             public toSubstVacationSettingDto(): SubstVacationSettingDto {
-                return new SubstVacationSettingDto(this.isManage(), this.expirationDate(), this.allowPrepaidLeave());
+                return new SubstVacationSettingDto(this.isManage(), this.expirationDate(), this.allowPrepaidLeave() , this.manageDeadline() , this.linkingManagementATR() );
             }
         }
 

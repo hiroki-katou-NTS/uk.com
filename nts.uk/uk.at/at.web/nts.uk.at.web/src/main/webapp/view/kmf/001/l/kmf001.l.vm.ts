@@ -38,7 +38,13 @@ module nts.uk.pr.view.kmf001.l {
                 
                 self.nursingLeaveSpecialHolidayList = ko.observableArray([]);
                 self.nursingLeaveWorkAbsenceList = ko.observableArray([]);
-                self.digestionList = ko.observableArray([]);
+                self.digestionList =  ko.observableArray([
+                        new ItemModel('0', '1分'),
+                        new ItemModel('1', '15分'),
+                        new ItemModel('2', '30分'),
+                        new ItemModel('3', '1時間'),
+                        new ItemModel('4', '2時間')
+                    ]);
                 
                 self.nursingSetting().selectedManageNursing.subscribe(function(v) {
                     if(v == 0){
@@ -295,7 +301,7 @@ module nts.uk.pr.view.kmf001.l {
                 
                 object.manageType = ob().selectedManageNursing();
                 //L4_2 and L5_2
-                object.timeManagementType = ob().selectedtimeManagement();
+                object.manageDistinct = ob().selectedtimeManagement();
                 object.nursingCategory = nursingCategory;
                 object.startMonthDay = ob().monthDay();
                 object.nursingNumberLeaveDay = ob().nursingNumberLeaveDay();
@@ -303,7 +309,7 @@ module nts.uk.pr.view.kmf001.l {
                 object.specialHolidayFrame = ob().nursingLeaveSpecialHoliday();
                 object.absenceWork = ob().nursingLeaveWorkAbsence();
                 //L4_4 and L5_4
-                object.digestion = ob().digestion();
+                object.timeDigestiveUnit = ob().timeDigestiveUnit();
                 
                 return object;
             }
@@ -318,7 +324,7 @@ module nts.uk.pr.view.kmf001.l {
                 ob().nursingLeaveSpecialHoliday(object.specialHolidayFrame);
                 ob().nursingLeaveWorkAbsence(object.absenceWorkDay);
                 //L4_4 and L5_4
-                ob().digestion(0);
+                ob().timeDigestiveUnit(0);
             }
             
         }
@@ -336,7 +342,7 @@ module nts.uk.pr.view.kmf001.l {
             nursingLeaveSpecialHoliday: KnockoutObservable<number>;
             nursingLeaveWorkAbsence: KnockoutObservable<number>;
             //L4_4 and L5_4
-            digestion: KnockoutObservable<number>;
+            timeDigestiveUnit: KnockoutObservable<number>;
             parent: ScreenModel;
             enableNursingAndTimeMan: KnockoutObservable<boolean>;
             
@@ -356,7 +362,7 @@ module nts.uk.pr.view.kmf001.l {
                 self.nursingNumberPerson = ko.observable(0);
                 self.nursingLeaveSpecialHoliday = ko.observable(0);
                 self.nursingLeaveWorkAbsence = ko.observable(0);
-                self.digestion = ko.observable(0);
+                self.timeDigestiveUnit = ko.observable(0);
             }
         }
         

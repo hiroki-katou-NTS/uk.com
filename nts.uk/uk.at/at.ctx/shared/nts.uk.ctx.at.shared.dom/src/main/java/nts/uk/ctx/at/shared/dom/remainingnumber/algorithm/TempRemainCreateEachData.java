@@ -319,7 +319,7 @@ TempRemainCreateEachData {
 		SubstVacationSetting subSetting = null;
 		if(employmentHolidaySetting != null
 				&& employmentHolidaySetting.getAbsSetting().isPresent()) {
-			subSetting = employmentHolidaySetting.getAbsSetting().get().getSetting();
+		//	subSetting = employmentHolidaySetting.getAbsSetting().get().getSetting();
 			
 		} else {
 			ComSubstVacation companyHolidaySetting = inforData.getCompanyHolidaySetting().getAbsSetting().get();

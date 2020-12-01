@@ -4,9 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.subst;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.SubstVacationSetting;
+import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst.KsvstComSubstVacation;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst.KsvstSubstVacationSetting;
 
@@ -48,19 +50,19 @@ public class JpaComSubstVacationGetMemento implements ComSubstVacationGetMemento
 	@Override
 	public SubstVacationSetting getSetting() {
 		return new SubstVacationSetting(
-				new JpaSubstVacationSettingGetMemento<KsvstSubstVacationSetting>(this.typeValue));
+				new JpaSubstVacationSettingGetMemento<KsvstComSubstVacation>(this.typeValue));
 	}
 
 	@Override
 	public ManageDistinct getManageDistinct() {
-		// TODO Auto-generated method stub
-		return null;
+
+		return EnumAdaptor.valueOf(this.typeValue.getManageAtr().intValue(), ManageDistinct.class);
 	}
 
 	@Override
 	public ManageDistinct getLinkingManagementATR() {
-		// TODO Auto-generated method stub
-		return null;
+
+		return EnumAdaptor.valueOf(this.typeValue.getLinkMngAtr().intValue(), ManageDistinct.class);
 	}
 
 }

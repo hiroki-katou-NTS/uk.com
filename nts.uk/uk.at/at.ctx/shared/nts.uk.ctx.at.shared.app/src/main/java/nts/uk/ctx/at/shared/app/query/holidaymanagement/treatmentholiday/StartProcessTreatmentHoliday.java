@@ -17,6 +17,8 @@ public class StartProcessTreatmentHoliday {
 	@Inject
 	private TreatmentHolidayRepository treatmentHolidayRepo;
 	
+	
+	
 	/**
 	 * 起動処理
 	 * UKDesign.UniversalK.就業.KDW_日別実績.KMF_休暇マスタ.KMF001_休暇の設定.M：休日の設定.アルゴリズム.起動処理.起動処理
@@ -40,6 +42,7 @@ public class StartProcessTreatmentHoliday {
 		holidaySettingInfo.setStartDateClassification(Optional.ofNullable(startDateClassification));
 		//TODO:ドメイン「週の管理」取得する
 		//TODO:メニューの表示名を取得する
+		
 		return holidaySettingInfo;		
 	}
 }

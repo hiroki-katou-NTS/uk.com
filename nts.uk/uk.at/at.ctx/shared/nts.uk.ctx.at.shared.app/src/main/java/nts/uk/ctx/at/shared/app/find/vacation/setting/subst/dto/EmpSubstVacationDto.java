@@ -4,35 +4,30 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.vacation.setting.subst.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.SubstVacationSetting;
 
 /**
  * The Class EmpSubstVacationDto.
  */
-@Getter
-@Setter
-public class EmpSubstVacationDto extends SubstVacationSettingDto
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class EmpSubstVacationDto
 		implements EmpSubstVacationSetMemento {
 
 	/** The contract type code. */
 	private String contractTypeCode;
+	
+	private Integer manageDistinct;
 
-	/**
-	 * Instantiates a new emp subst vacation dto.
-	 */
-	public EmpSubstVacationDto() {
-		super();
-	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.subst.
-	 * EmpSubstVacationSetMemento#setCompanyId(java.lang.String)
-	 */
 	@Override
 	public void setCompanyId(String companyId) {
 		// Do nothing.
@@ -49,18 +44,8 @@ public class EmpSubstVacationDto extends SubstVacationSettingDto
 		this.contractTypeCode = contractTypeCode;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.subst.
-	 * EmpSubstVacationSetMemento#setSetting(nts.uk.ctx.at.shared.dom.vacation.
-	 * setting.subst.SubstVacationSetting)
-	 */
 	@Override
-	public void setSetting(SubstVacationSetting setting) {
-		this.setIsManage(setting.getIsManage());
-		this.setAllowPrepaidLeave(setting.getAllowPrepaidLeave());
-		this.setExpirationDate(setting.getExpirationDate());
+	public void setManageDistinct(ManageDistinct manageDistinct) {
+		this.manageDistinct = manageDistinct.value;
 	}
-
 }

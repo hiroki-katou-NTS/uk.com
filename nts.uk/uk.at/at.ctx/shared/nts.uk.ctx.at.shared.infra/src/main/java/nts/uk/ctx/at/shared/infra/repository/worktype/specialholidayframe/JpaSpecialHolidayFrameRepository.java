@@ -34,7 +34,8 @@ public class JpaSpecialHolidayFrameRepository extends JpaRepository implements S
 		SpecialHolidayFrame domain = SpecialHolidayFrame.createSimpleFromJavaType(entity.kshmtSpecialHolidayFramePK.companyId,
 				entity.kshmtSpecialHolidayFramePK.specialHdFrameNo,
 				entity.name,
-				entity.abolishAtr);
+				entity.abolishAtr,
+				entity.timeMngAtr);
 		return domain;
 	}		
 
@@ -74,7 +75,8 @@ public class JpaSpecialHolidayFrameRepository extends JpaRepository implements S
 		return SpecialHolidayFrame.createFromJavaType(x.kshmtSpecialHolidayFramePK.companyId, 
 				x.kshmtSpecialHolidayFramePK.specialHdFrameNo,
 				x.name,
-				x.abolishAtr);
+				x.abolishAtr,
+				x.timeMngAtr);
 	}
 
 	/**
@@ -87,7 +89,8 @@ public class JpaSpecialHolidayFrameRepository extends JpaRepository implements S
 		return new KshmtSpecialHolidayFrame(
 				new KshmtSpecialHolidayFramePK(specialHolidayFrame.getCompanyId(), specialHolidayFrame.getSpecialHdFrameNo()),
 				specialHolidayFrame.getSpecialHdFrameName().v(),
-				specialHolidayFrame.getDeprecateSpecialHd().value);
+				specialHolidayFrame.getDeprecateSpecialHd().value,
+				specialHolidayFrame.getTimeMngAtr().value);
 	}
 
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)

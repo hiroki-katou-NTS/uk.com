@@ -11,6 +11,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationGetMemento;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ManageDeadline;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.SubstVacationSetting;
 
 /**
@@ -72,21 +73,21 @@ public class ComSubstVacationSaveCommand extends SubstVacationSaveBaseCommand {
 		 */
 		@Override
 		public SubstVacationSetting getSetting() {
-			return new SubstVacationSetting(ManageDistinct.valueOf(this.dto.getIsManage()),
+			return new SubstVacationSetting(ManageDeadline.valueOf(this.dto.getManageDeadline()),
 					ExpirationTime.valueOf(this.dto.getExpirationDate()),
 					ApplyPermission.valueOf(this.dto.getAllowPrepaidLeave()));
+			
+			
 		}
 
 		@Override
 		public ManageDistinct getManageDistinct() {
-			// TODO Auto-generated method stub
-			return null;
+			return ManageDistinct.valueOf(this.dto.getManageDistinct());
 		}
 
 		@Override
 		public ManageDistinct getLinkingManagementATR() {
-			// TODO Auto-generated method stub
-			return null;
+			return ManageDistinct.valueOf(this.dto.getLinkingManagementATR());
 		}
 	}
 

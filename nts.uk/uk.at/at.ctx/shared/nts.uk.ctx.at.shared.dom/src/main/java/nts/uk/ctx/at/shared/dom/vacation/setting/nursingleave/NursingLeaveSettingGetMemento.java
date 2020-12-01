@@ -40,7 +40,7 @@ public interface NursingLeaveSettingGetMemento {
      *
      * @return the start month day
      */
-    MonthDay getStartMonthDay();
+    Integer getStartMonthDay();
 
 	/**
      * Gets the max person setting.
@@ -62,4 +62,8 @@ public interface NursingLeaveSettingGetMemento {
      * @return the work absence
      */
 	Optional<Integer> getAbsenceFrameNo();
+	
+	TimeCareNursingSet getTimeCareNursingSet();
+	
+	
 }

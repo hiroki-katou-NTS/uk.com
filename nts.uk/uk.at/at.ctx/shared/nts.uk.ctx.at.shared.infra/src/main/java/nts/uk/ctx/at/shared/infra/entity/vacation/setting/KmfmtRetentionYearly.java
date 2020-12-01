@@ -15,6 +15,7 @@ import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -24,7 +25,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "KSHMT_HDSTK_CMP")
-public class KmfmtRetentionYearly extends UkJpaEntity  implements Serializable {
+public class KmfmtRetentionYearly extends ContractUkJpaEntity  implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -34,27 +35,26 @@ public class KmfmtRetentionYearly extends UkJpaEntity  implements Serializable {
     @Column(name = "CID")
     private String cid;
     
+    /** The management ctr atr. */
+	@Basic(optional = false)
+	@NotNull
+	@Column(name = "MANAGEMENT_YEARLY_ATR")
+	private int managementYearlyAtr;
+	
+    /** The leave as work days. */
+    @NotNull
+    @Column(name="LEAVE_AS_WORK_DAYS")
+    private int leaveAsWorkDays;
+    
     /** The year amount. */
     @NotNull
     @Column(name = "NUMBER_OF_YEAR")
-    private short yearAmount;
+    private int yearAmount;
     
     /** The max days retention. */
     @NotNull
     @Column(name = "MAX_NUMBER_OF_DAYS")
-    private short maxDaysRetention;
-    
-    /** The leave as work days. */
-    @NotNull
-    @Column(name="LEAVE_AS_WORK_DAYS")
-    private short leaveAsWorkDays;
-    
-	/** The management ctr atr. */
-	@Basic(optional = false)
-	@NotNull
-	@Column(name = "MANAGEMENT_YEARLY_ATR")
-	private short managementYearlyAtr;
-    
+    private int maxDaysRetention;
     /* (non-Javadoc)
      * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()
      */

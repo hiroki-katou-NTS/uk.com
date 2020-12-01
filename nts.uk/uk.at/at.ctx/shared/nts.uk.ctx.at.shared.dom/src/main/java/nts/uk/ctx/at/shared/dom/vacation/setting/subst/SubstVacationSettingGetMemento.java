@@ -18,7 +18,7 @@ public interface SubstVacationSettingGetMemento {
 	 *
 	 * @return the checks if is manage
 	 */
-	ManageDistinct getIsManage();
+	ManageDeadline manageDeadline();
 
 	/**
 	 * Gets the expiration date.
@@ -33,5 +33,8 @@ public interface SubstVacationSettingGetMemento {
 	 * @return the allow prepaid leave
 	 */
 	ApplyPermission getAllowPrepaidLeave();
+	
+	ManageDistinct getManageDistinct();
 
+	ManageDistinct getLinkingManagementATR();
 }

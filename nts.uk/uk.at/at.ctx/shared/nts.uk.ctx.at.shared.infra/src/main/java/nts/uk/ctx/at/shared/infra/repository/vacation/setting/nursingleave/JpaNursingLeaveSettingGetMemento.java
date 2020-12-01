@@ -8,10 +8,13 @@ package nts.uk.ctx.at.shared.infra.repository.vacation.setting.nursingleave;
 import java.util.Optional;
 //import java.util.stream.Collectors;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingGetMemento;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.TimeCareNursingSet;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingLeaveSet;
 import nts.uk.shr.com.time.calendar.MonthDay;
 
@@ -73,12 +76,12 @@ public class JpaNursingLeaveSettingGetMemento implements NursingLeaveSettingGetM
      * NursingVacationSettingGetMemento#getStartMonthDay()
      */
     @Override
-    public MonthDay getStartMonthDay() {
-       //return this.entityNursing.getStartMonthDay();
+    public Integer getStartMonthDay() {
+       return this.entityNursing.getStartMonthDay();
 
-    	int month = this.entityNursing.getStartMonthDay() / 100;
-    	int day = this.entityNursing.getStartMonthDay() % 100;
-    	return new MonthDay(month, day);
+//    	int month = this.entityNursing.getStartMonthDay() / 100;
+//    	int day = this.entityNursing.getStartMonthDay() % 100;
+//    	return new MonthDay(month, day);
     }
 
     /*
@@ -100,6 +103,15 @@ public class JpaNursingLeaveSettingGetMemento implements NursingLeaveSettingGetM
 	@Override
 	public Optional<Integer> getAbsenceFrameNo() {
 		return Optional.ofNullable(this.entityNursing.getAbsenceFrameNo());
+	}
+
+	@Override
+	public TimeCareNursingSet getTimeCareNursingSet() {
+		return new TimeCareNursingSet(
+				EnumAdaptor.valueOf(this.entityNursing.getDigestiveUnit(), TimeDigestiveUnit.class),
+				EnumAdaptor.valueOf(this.entityNursing.getTimeManageAtr(), ManageDistinct.class ));
+		
+		
 	}
 
     /*

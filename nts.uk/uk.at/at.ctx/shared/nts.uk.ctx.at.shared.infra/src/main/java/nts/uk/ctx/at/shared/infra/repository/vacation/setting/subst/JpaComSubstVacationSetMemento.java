@@ -49,18 +49,18 @@ public class JpaComSubstVacationSetMemento implements ComSubstVacationSetMemento
 	@Override
 	public void setSetting(SubstVacationSetting setting) {
 		setting.saveToMemento(
-				new JpaSubstVacationSettingSetMemento<KsvstSubstVacationSetting>(this.typeValue));
+				new JpaSubstVacationSettingSetMemento<KsvstComSubstVacation>(this.typeValue));
 	}
 
 	@Override
 	public void setManageDistinct(ManageDistinct manageDistinct) {
-		// TODO Auto-generated method stub
+		this.typeValue.setManageAtr(manageDistinct.value);
 		
 	}
 
 	@Override
 	public void setLinkingManagementATR(ManageDistinct linkingManagementATR) {
-		// TODO Auto-generated method stub
+		this.typeValue.setLinkMngAtr(linkingManagementATR.value);
 		
 	}
 

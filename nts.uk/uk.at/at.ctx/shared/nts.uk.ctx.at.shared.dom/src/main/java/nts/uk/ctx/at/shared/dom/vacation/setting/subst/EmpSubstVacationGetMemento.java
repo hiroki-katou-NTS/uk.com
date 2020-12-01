@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.subst;
 
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+
 /**
  * The Interface EmpSubstVacationGetMemento.
  */
@@ -28,6 +30,6 @@ public interface EmpSubstVacationGetMemento {
 	 *
 	 * @return the setting
 	 */
-	SubstVacationSetting getSetting();
+	ManageDistinct getManageDistinct();
 
 }

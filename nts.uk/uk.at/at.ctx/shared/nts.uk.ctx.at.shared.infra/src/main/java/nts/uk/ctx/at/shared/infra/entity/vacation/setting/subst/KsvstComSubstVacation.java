@@ -13,6 +13,7 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KsvstComSubstVacation.
@@ -21,7 +22,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "KSHMT_HDSUB_CMP")
-public class KsvstComSubstVacation extends KsvstSubstVacationSetting implements Serializable {
+public class KsvstComSubstVacation extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -30,7 +31,22 @@ public class KsvstComSubstVacation extends KsvstSubstVacationSetting implements 
 	@Id
 	@Column(name = "CID")
 	private String cid;
-
+    
+	
+	@Column(name = "MANAGE_ATR")
+	private Integer manageAtr;
+	
+	@Column(name = "LINK_MNG_ATR")
+	private Integer linkMngAtr;
+	
+	@Column(name = "EXPIRATION_DATE_SET")
+	private Integer expitationDateSet;
+	
+	@Column(name = "ALLOW_PREPAID_LEAVE")
+	private Integer allowPrepaidLeave;
+	
+	@Column(name = "EXP_DATE_MNG_METHOD")
+	private Integer expDateMngMethod;
 	/**
 	 * Instantiates a new ksvst com subst vacation.
 	 */

@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.subst;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 
 /**
  * The Class EmpSubstVacation.
@@ -21,11 +22,8 @@ public class EmpSubstVacation extends DomainObject {
 	/** The emp contract type code. */
 	// 雇用区分コード
 	private String empContractTypeCode;
-
-	/** The setting. */
-	// 振休取得・使用方法
-	private SubstVacationSetting setting;
-
+	
+	private ManageDistinct manageDistinct;
 	/**
 	 * Instantiates a new emp subst vacation.
 	 *
@@ -37,11 +35,11 @@ public class EmpSubstVacation extends DomainObject {
 	 *            the setting
 	 */
 	public EmpSubstVacation(String companyId, String empContractTypeCode,
-			SubstVacationSetting setting) {
+			ManageDistinct manageDistinct) {
 		super();
 		this.companyId = companyId;
 		this.empContractTypeCode = empContractTypeCode;
-		this.setting = setting;
+		this.manageDistinct = manageDistinct;
 	}
 
 	// =================== Memento State Support Method ===================
@@ -54,7 +52,7 @@ public class EmpSubstVacation extends DomainObject {
 	public EmpSubstVacation(EmpSubstVacationGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.empContractTypeCode = memento.getEmpContractTypeCode();
-		this.setting = memento.getSetting();
+		this.manageDistinct = memento.getManageDistinct();
 	}
 
 	/**
@@ -66,7 +64,7 @@ public class EmpSubstVacation extends DomainObject {
 	public void saveToMemento(EmpSubstVacationSetMemento memento) {
 		memento.setCompanyId(this.companyId);
 		memento.setEmpContractTypeCode(this.empContractTypeCode);
-		memento.setSetting(this.setting);
+		memento.setManageDistinct(this.manageDistinct);
 	}
 
 }

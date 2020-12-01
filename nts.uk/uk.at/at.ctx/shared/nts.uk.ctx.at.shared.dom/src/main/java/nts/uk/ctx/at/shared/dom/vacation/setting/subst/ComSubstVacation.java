@@ -34,7 +34,7 @@ public class ComSubstVacation extends DomainObject {
 	 * @return true, if is managed
 	 */
 	public boolean isManaged() {
-		return this.setting.getIsManage().equals(ManageDistinct.YES);
+		return this.manageDistinct.equals(ManageDistinct.YES);
 	}
 
 	/**
