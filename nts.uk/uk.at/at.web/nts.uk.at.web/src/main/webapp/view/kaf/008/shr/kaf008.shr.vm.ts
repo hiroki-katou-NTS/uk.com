@@ -185,9 +185,15 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                                 content.opAchievementDetail.opLeaveTime
                             );
                             eachContent.wkTypeCd.subscribe(code => {
+                                if (code && code.length < 3) {
+                                    return
+                                }
                                 vm.changeWorkTypeCode(tripOutput, content, code, index);
                             });
                             eachContent.wkTimeCd.subscribe(code => {
+                                if (code && code.length < 3) {
+                                    return
+                                }
                                 vm.changeWorkTimeCode(tripOutput, content, code, index);
                             });
                             eachContent.start.subscribe(startValue => {
@@ -242,9 +248,15 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                         );
 
                         contentTrip.wkTypeCd.subscribe(code => {
+                            if (code && code.length < 3) {
+                                return
+                            }
                             vm.changeTypeCodeScreenB(tripOutput, data, code, index);
                         });
                         contentTrip.wkTimeCd.subscribe(code => {
+                            if (code && code.length < 3) {
+                                return
+                            }
                             vm.changeWorkTimeCodeScreenB(tripOutput, data, code, index);
                         });
                         contentTrip.start.subscribe(startValue => {
@@ -282,11 +294,9 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
             vm.clearWorkTypeErrorByDate(currentContent.date);
             vm.$blockui("show");
             vm.$validate([
-                //'#kaf008-share #A10_D2',
+                '#kaf008-share #A10_D2'
             ]).then((valid: boolean) => {
-                if (valid) {
-                    return vm.$ajax(API.changeWorkTypeCode, command);
-                }
+                return vm.$ajax(API.changeWorkTypeCode, command);
             }).done(res => {
                 if (res) {
                     let workTypeAfterChange = res.infoAfterChange;
@@ -298,8 +308,6 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                     currentRow.opWorkTypeName = workNameChanged;
                     vm.items()[index].wkTypeCd(workCodeChanged);
                     vm.items()[index].wkTypeName(workNameChanged);
-
-                    // vm.dataFetch.valueHasMutated();
                     vm.focusWorkTimeByDate(currentContent.date);
 
                 }
@@ -337,11 +345,9 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
             vm.clearWorkTimeErrorByDate(date);
             vm.$blockui("show");
             vm.$validate([
-                // '#kaf008-share #A10_D4'
+                '#kaf008-share #A10_D4'
             ]).then((valid: boolean) => {
-                if (valid) {
-                    return vm.$ajax(API.changWorkTimeCode, command);
-                }
+                return vm.$ajax(API.changWorkTimeCode, command);
             }).done(res => {
                 if (res && res.name) {
                     currentRow.workTimeCD = timeCode;
@@ -386,11 +392,9 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
             vm.clearWorkTypeErrorByDate(command.date);
             vm.$blockui("show");
             vm.$validate([
-                // '#kaf008-share #A10_D2'
+                '#kaf008-share #A10_D2'
             ]).then((valid: boolean) => {
-                if (valid) {
-                    return vm.$ajax(API.changeWorkTypeCode, command);
-                }
+                return vm.$ajax(API.changeWorkTypeCode, command);
             }).done(res => {
                 if (res) {
                     let workTypeAfterChange = res.infoAfterChange;
@@ -405,8 +409,6 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
 
                 }
             }).fail(err => {
-                let param;
-
                 currentRow.wkTypeCd = "";
                 currentRow.wkTypeName = "なし";
                 vm.items()[index].wkTypeCd(command.typeCode);
@@ -436,11 +438,9 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
             vm.clearWorkTimeErrorByDate(command.date);
             vm.$blockui("show");
             vm.$validate([
-                // '#kaf008-share #A10_D4'
+                '#kaf008-share #A10_D4'
             ]).then((valid: boolean) => {
-                if (valid) {
-                    return vm.$ajax(API.changWorkTimeCode, command);
-                }
+                return vm.$ajax(API.changWorkTimeCode, command);
             }).done(res => {
 
                 if (res && res.name) {
@@ -460,8 +460,6 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                 }
 
             }).fail(err => {
-                let param;
-
                 contentChanged.wkTimeCd = "";
                 contentChanged.wkTimeName = "なし";
                 vm.items()[index].wkTimeCd(codeChanged);
@@ -524,12 +522,14 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                     showNone: !dispFlag
                 }, true);
 
-                vm.$errors("clear");
-
                 nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(function (): any {
                     //view all code of selected item
                     let rs = nts.uk.ui.windows.getShared('childData');
                     if (rs) {
+                        vm.$errors("clear");
+                        vm.clearWorkTypeErrorByDate(selectedDate);
+                        vm.clearWorkTimeErrorByDate(selectedDate);
+
                         let currentRow;
                         if (vm.mode == Mode.New) {
                             currentRow = vm.dataFetch().businessTripOutput.businessTripActualContent[selectedIndex].opAchievementDetail;
@@ -569,11 +569,13 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
 
         handleError(err: any) {
             const vm = this;
-            let param;
 
             switch (err.messageId) {
-                case "Msg_457":
                 case "Msg_1329": {
+                    // Remove Msg_1329 Update EA3892
+                    break;
+                }
+                case "Msg_457": {
                     let id = '#' + err.parameterIds[0].replace(/\//g, "") + '-wkCode';
                     vm.$errors({
                         [id]: err
