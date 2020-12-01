@@ -30,7 +30,7 @@ module nts.uk.at.view.ksu001.a {
             if (__viewContext.viewModel.viewAC.listPageWkpIsEmpty == true) {
                 $('.ntsButtonTableButton').addClass('nowithContent');
             }
-
+            
             let item = uk.localStorage.getItem('USER_INFOR');
             let userInfor = JSON.parse(item.get());
             if (userInfor.updateMode == 'copyPaste') {
@@ -38,11 +38,13 @@ module nts.uk.at.view.ksu001.a {
                     __viewContext.viewModel.viewA.setCoppyStyler();
                 }, 800);
             }
-
+            
+            __viewContext.viewModel.viewA.setWidthButtonnInPopupA1_12();
+            
             $(window).resize(function() {
-                __viewContext.viewModel.viewA.setHeightScreen();
                 __viewContext.viewModel.viewA.setPositionButonDownAndHeightGrid();
                 __viewContext.viewModel.viewA.setPositionButonToRight();
+                __viewContext.viewModel.viewA.setHeightScreen();
             });
 
             nts.uk.ui.block.clear();

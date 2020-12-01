@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryLog;
@@ -22,6 +23,7 @@ import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecovery;
 import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecoveryRepository;
 import nts.uk.ctx.sys.assist.dom.datarestoration.RecoveryMethod;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
 
 @Stateless
 public class PerformDataRecoveryCommandHandler extends AsyncCommandHandler<PerformDataRecoveryCommand> {
@@ -70,6 +72,9 @@ public class PerformDataRecoveryCommandHandler extends AsyncCommandHandler<Perfo
 		String pcName                 = AppContexts.requestedWebApi().getRequestPcName();
 		String account                = AppContexts.windowsAccount().getUserName();
 		List<DataRecoveryLog> listDataRecoveryLogs = new ArrayList<DataRecoveryLog>();
+		listDataRecoveryLogs.add(
+				new DataRecoveryLog(
+						dataRecoveryProcessId, "", "", null, 0, TextResource.localize("CMF003_643"), ""));
 
 		DataRecoveryResult dataRecoveryResult = new DataRecoveryResult(dataRecoveryProcessId, dataStorageProcessingId, cid, saveSetCode,
 				practitioner, executionResult, listDataRecoveryLogs, startDateTime, endDateTime, saveForm, saveName, ipAddress,pcName,account);

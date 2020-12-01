@@ -28,7 +28,7 @@ public class LogDataResultWebService extends WebService {
 	@POST
 	@Path("getLogDataResults")
 	public List<LogDataResultDto> getLogDataResults(LogDataParams logDataParams) {
-		return logDataResultFinder.getLogDataResult(logDataParams);
+		return logDataResultFinder.getLogDataResult(logDataParams, 1000);
 	}
 	
 	@POST

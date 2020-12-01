@@ -25,6 +25,6 @@ public class KrcmtTrRequestPK implements Serializable {
 	 * 就業情報端末コード
 	 */
 	@Column(name = "TIMERECORDER_CD")
-	public int timeRecordCode;
+	public String timeRecordCode;
 
 }

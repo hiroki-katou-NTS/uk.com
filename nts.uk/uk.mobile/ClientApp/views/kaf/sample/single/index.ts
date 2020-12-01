@@ -84,11 +84,8 @@ export class KafSampleSingleComponent extends KafS00ShrComponent {
                 vm.application.appDate = vm.$dt.date(objectDate.startDate, 'YYYY/MM/DD');
                 vm.application.opAppStartDate = vm.$dt.date(objectDate.startDate, 'YYYY/MM/DD');
                 vm.application.opAppEndDate = vm.$dt.date(objectDate.endDate, 'YYYY/MM/DD');
-                
+                // console.log('changeDateCustom');
             }
-            let dates = [];
-            dates.push(vm.$dt(objectDate.startDate, 'YYYY/MM/DD'));
-            vm.changeDate(dates);
         }
     }
     
@@ -105,10 +102,6 @@ export class KafSampleSingleComponent extends KafS00ShrComponent {
     public kaf000CChangeAppReason(opAppReason) {
         const vm = this;
         vm.application.opAppReason = opAppReason;
-    }
-
-    public changeDate(dates: Array<any>) {
-
     }
 
     public customValidate(viewModel: any) {

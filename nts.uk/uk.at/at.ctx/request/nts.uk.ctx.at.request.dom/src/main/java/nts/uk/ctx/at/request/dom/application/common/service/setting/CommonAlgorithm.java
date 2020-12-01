@@ -167,8 +167,13 @@ public interface CommonAlgorithm {
 	 * @param achievementDetail 実績詳細
 	 * @return
 	 */
-	public InitWkTypeWkTimeOutput initWorkTypeWorkTime(String employeeID, GeneralDate date,
-			List<WorkType> workTypeLst, List<WorkTimeSetting> workTimeLst, AchievementDetail achievementDetail);
+	public InitWkTypeWkTimeOutput initWorkTypeWorkTime(
+			String employeeID,
+			GeneralDate date,
+			GeneralDate inputDate,
+			List<WorkType> workTypeLst,
+			List<WorkTimeSetting> workTimeLst,
+			AchievementDetail achievementDetail);
 	
 	/**
 	 * refactor 4
