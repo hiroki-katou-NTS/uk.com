@@ -1,5 +1,14 @@
 package nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision;
 
+import static org.assertj.core.api.Assertions.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.Test;
+
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
@@ -8,15 +17,6 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onem
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthErrorAlarmTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.AgreementOneYearTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.OneYearErrorAlarmTime;
-import org.junit.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 
 
 public class SpecialProvisionsOfAgreementTest {
@@ -97,7 +97,7 @@ public class SpecialProvisionsOfAgreementTest {
 		SpecialProvisionsOfAgreement target = SpecialProvisionsOfAgreement.create("enteredPersonSID","applicantsSID",applicationTime,
 				new ReasonsForAgreement("reasonsForAgreement"),new ArrayList<>(),listConfirmSID,new ScreenDisplayInfo());
 
-		ConfirmationStatusDetails confirmationStatusDetails = new ConfirmationStatusDetails("confirmerSID",ConfirmationStatus.RECOGNITION,
+		ConfirmationStatusDetails confirmationStatusDetails = new ConfirmationStatusDetails("confirmerSID",ConfirmationStatus.CONFIRMED,
 				Optional.of(GeneralDate.ymd(2020,10,19)));
 
 		target.confirmApplication(confirmationStatusDetails.getConfirmerSID(),confirmationStatusDetails.getConfirmationStatus());
@@ -107,7 +107,7 @@ public class SpecialProvisionsOfAgreementTest {
 						d -> d.getConfirmDate(),
 						d -> d.getConfirmationStatus())
 				.containsExactly(
-						tuple(Optional.of(GeneralDate.today()),ConfirmationStatus.RECOGNITION)
+						tuple(Optional.of(GeneralDate.today()),ConfirmationStatus.CONFIRMED)
 				);
 
 	}
