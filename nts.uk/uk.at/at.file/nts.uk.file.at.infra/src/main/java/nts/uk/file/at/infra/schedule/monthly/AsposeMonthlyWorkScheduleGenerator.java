@@ -1354,18 +1354,14 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				lstAttendanceId.stream().forEach(attendanceId -> {
 					int attendanceDisplay = attendanceId.getAttendanceDisplay();
 					if (!employeeData.mapPersonalTotal.containsKey(attendanceDisplay)) {
-						if (lstAtdCanAggregate.contains(attendanceId.getAttendanceDisplay())) {
-							employeeData.mapPersonalTotal.put(attendanceDisplay, new TotalValue(attendanceDisplay, "0", TotalValue.STRING));
-							TotalValue totalVal = new TotalValue();
-							totalVal.setAttendanceId(attendanceDisplay);
-							totalVal.setValue("0");
-							totalVal.setValueType(TotalValue.STRING);
-							Optional<TotalValue> optWorkplaceTotalValue = lstTotalValue.stream().filter(x -> x.getAttendanceId() == attendanceDisplay).findFirst();
-							if (!optWorkplaceTotalValue.isPresent()) {
-								lstTotalValue.add(totalVal);
-							}
-						} else {
-							lstTotalValue.add(new TotalValue(attendanceId.getAttendanceDisplay(), "", TotalValue.STRING));
+						employeeData.mapPersonalTotal.put(attendanceDisplay, new TotalValue(attendanceDisplay, "0", TotalValue.STRING));
+						TotalValue totalVal = new TotalValue();
+						totalVal.setAttendanceId(attendanceDisplay);
+						totalVal.setValue(lstAtdCanAggregate.contains(attendanceId.getAttendanceDisplay()) ? "0" : "");
+						totalVal.setValueType(TotalValue.STRING);
+						Optional<TotalValue> optWorkplaceTotalValue = lstTotalValue.stream().filter(x -> x.getAttendanceId() == attendanceDisplay).findFirst();
+						if (!optWorkplaceTotalValue.isPresent()) {
+							lstTotalValue.add(totalVal);
 						}
 					}
 				});
