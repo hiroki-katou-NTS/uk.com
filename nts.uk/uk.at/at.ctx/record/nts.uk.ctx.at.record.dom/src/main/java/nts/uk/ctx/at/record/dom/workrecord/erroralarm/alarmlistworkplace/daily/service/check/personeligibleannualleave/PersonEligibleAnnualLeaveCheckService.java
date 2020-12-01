@@ -56,9 +56,9 @@ public class PersonEligibleAnnualLeaveCheckService {
                     String message = TextResource.localize("KAL020_105", personInfo.getEmployeeCode(), personInfo.getBusinessName());
                     // 抽出結果を作成
                     ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(message),
-                            new AlarmValueDate(Integer.valueOf(jobEntryDate.toString("yyyyMMdd")), Optional.empty()),
+                            new AlarmValueDate(Integer.valueOf(retirementDate.toString("yyyyMMdd")), Optional.empty()),
                             null,
-                            Optional.ofNullable(TextResource.localize("KAL020_114", jobEntryDate.toString("yyyy/MM/dd"))),
+                            Optional.ofNullable(TextResource.localize("KAL020_114", retirementDate.toString("yyyy/MM/dd"))),
                             Optional.empty(),
                             null
                     );
