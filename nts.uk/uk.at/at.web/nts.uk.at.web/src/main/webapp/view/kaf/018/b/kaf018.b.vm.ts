@@ -283,7 +283,12 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 						defaultDropDownWidth: 80,
 						pageCountLimit : 1,
 						pageSize: 100,
-						pageSizeList: [100, 200, 500, 1000, 3000],
+						pageSizeList: [
+							vm.$i18n('KAF018_327'), 
+							vm.$i18n('KAF018_328'), 
+							vm.$i18n('KAF018_329'), 
+							vm.$i18n('KAF018_330')
+						],
 						locale: {
 							pagerRecordsLabelTooltip: "Current records",
 							pageSizeDropDownLabel: vm.$i18n('KAF018_325'),
