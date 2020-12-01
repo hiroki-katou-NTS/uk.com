@@ -6,15 +6,15 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.function.dom.adapter.stampcard.StampCardAdapter;
+import nts.uk.ctx.at.function.dom.adapter.stampcard.StampCardAdapterM;
 import nts.uk.ctx.at.function.dom.adapter.stampcard.StampCardImport;
-import nts.uk.ctx.at.record.pub.stampcard.StampCardPub;
+import nts.uk.ctx.at.record.pub.stampcard.StampCardPubM;
 
 @Stateless
-public class StampCardAdapterImpl implements StampCardAdapter {
+public class StampCardAdapterMImpl implements StampCardAdapterM {
 	
 	@Inject
-	private StampCardPub stampCardPub; 
+	private StampCardPubM stampCardPub; 
 
 	@Override
 	public List<StampCardImport> findByEmployees(String contractCode, List<String> empIds) {

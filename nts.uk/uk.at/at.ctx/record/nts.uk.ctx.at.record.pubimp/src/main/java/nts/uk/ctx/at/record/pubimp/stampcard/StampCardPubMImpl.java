@@ -8,10 +8,10 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.pub.stampcard.StampCardExport;
-import nts.uk.ctx.at.record.pub.stampcard.StampCardPub;
+import nts.uk.ctx.at.record.pub.stampcard.StampCardPubM;
 
 @Stateless
-public class StampCardPubImpl implements StampCardPub {
+public class StampCardPubMImpl implements StampCardPubM {
 
 	@Inject
 	private StampCardRepository stampCardRepo;

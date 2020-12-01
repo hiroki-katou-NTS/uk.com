@@ -21,7 +21,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.adapter.AffWorkplaceHistoryItemImport;
 import nts.uk.ctx.at.function.dom.adapter.WorkplaceHistoryItemImport;
 import nts.uk.ctx.at.function.dom.adapter.WorkplaceWorkRecordAdapter;
-import nts.uk.ctx.at.function.dom.adapter.stampcard.StampCardAdapter;
+import nts.uk.ctx.at.function.dom.adapter.stampcard.StampCardAdapterM;
 import nts.uk.ctx.at.function.dom.adapter.stampcard.StampCardImport;
 import nts.uk.ctx.at.function.dom.adapter.worklocation.WorkLocationAdapter;
 import nts.uk.ctx.at.function.dom.adapter.worklocation.WorkLocationImport;
@@ -59,7 +59,7 @@ public class MasterCheckAggregationProcessService {
 	private ErAlWorkRecordCheckAdapter erAlWorkRecordCheckAdapter;
 	
 	@Inject
-	private StampCardAdapter stampCardAdapter;
+	private StampCardAdapterM stampCardAdapter;
 	
 	@Inject
 	private WorkplaceWorkRecordAdapter workplaceWorkRecordAdapter;
