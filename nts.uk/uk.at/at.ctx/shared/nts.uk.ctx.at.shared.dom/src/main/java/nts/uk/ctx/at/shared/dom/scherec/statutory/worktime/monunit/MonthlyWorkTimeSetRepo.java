@@ -78,4 +78,8 @@ public interface MonthlyWorkTimeSetRepo {
 	public void removeEmployment(String cid, String empCD, int year);
 	
 	public void removeWorkplace(String cid, String wkpId, int year);
+
+	public void removeEmployment(String companyId, String employmentCode, int laborAttr, int ym);
+	
+	
 }
