@@ -1612,7 +1612,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			minuteInt *= -1;
 			Integer hourInt = minuteInt / 60;
 			minuteInt = minuteInt % 60;
-			return "前日 " + String.format(FORMAT, hourInt, minuteInt);
+//			return "前日 " + String.format(FORMAT, hourInt, minuteInt);
+			return String.format(FORMAT, hourInt, minuteInt);
 		} else {
 			String tempTime = "";
 			Integer hourInt = minuteInt / 60;
@@ -1620,14 +1621,14 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			if(zeroDisplayType == ZeroDisplayType.DISPLAY && minuteInt == 0 && hourInt == 0) {
 				return "0:00";
 			}
-			if(hourInt > 24 && hourInt < 48) {
-				hourInt = hourInt - 24;
-				tempTime = "翌日 ";
-			} else if (hourInt > 48) {
-				tempTime = "翌々日 ";
-			} else {
-				tempTime = "当日 ";
-			}
+//			if(hourInt > 24 && hourInt < 48) {
+//				hourInt = hourInt - 24;
+//				tempTime = "翌日 ";
+//			} else if (hourInt > 48) {
+//				tempTime = "翌々日 ";
+//			} else {
+//				tempTime = "当日 ";
+//			}
 			return tempTime + String.format(FORMAT, hourInt, minuteInt);
 		}
 	}
