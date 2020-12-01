@@ -7,9 +7,7 @@ import java.util.Optional;
 import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnLeaRemNumWithinPeriodProc.RequireM3;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveInfo;
@@ -181,9 +179,8 @@ public class GetAnnAndRsvRemNumWithinPeriod {
 			}
 		}
 
-		// 期間中の年休残数を取得
-		Boolean isNoCheckStartDate = false;
-		if (noCheckStartDate.isPresent()) isNoCheckStartDate = noCheckStartDate.get();
+		if (noCheckStartDate.isPresent())
+			noCheckStartDate.get();
 
 		// Require の不整合によるエラー
 		Optional<AggrResultOfAnnualLeave> aggrResultOfAnnualOpt
@@ -192,8 +189,6 @@ public class GetAnnAndRsvRemNumWithinPeriod {
 				mode, criteriaDate, isCalcAttendanceRate, isOverWrite,
 				tempAnnDataforOverWriteList, prevAnnualLeave,
 				Optional.empty(), Optional.empty());
-
-
 
 
 		// 「年休積立年休の集計結果．年休」　←　受け取った「年休の集計結果」
@@ -291,9 +286,8 @@ public class GetAnnAndRsvRemNumWithinPeriod {
 				}
 			}
 
-			// 期間中の年休残数を取得
-			Boolean isNoCheckStartDate = false;
-			if (noCheckStartDate.isPresent()) isNoCheckStartDate = noCheckStartDate.get();
+			if (noCheckStartDate.isPresent())
+				noCheckStartDate.get();
 
 			Optional<AggrResultOfAnnualLeave> aggrResultOfAnnualOpt
 				= GetAnnLeaRemNumWithinPeriodProc.algorithm(

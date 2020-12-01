@@ -17,7 +17,7 @@ import nts.uk.shr.com.context.AppContexts;
  * @author shuichi_ishida
  */
 public class RemainSpecialHoidayCalculation {
-	
+
 	/**
 	 * 特別休暇残数計算
 	 * @param period 実締め毎集計期間
@@ -27,24 +27,23 @@ public class RemainSpecialHoidayCalculation {
 	 * @param interimSpecialData 特別休暇暫定データリスト
 	 * @return 特別休暇の集計結果
 	 */
-	public static InPeriodOfSpecialLeaveResultInfor calculateRemainSpecial(RequireM1 require, CacheCarrier cacheCarrier, 
+	public static InPeriodOfSpecialLeaveResultInfor calculateRemainSpecial(RequireM1 require, CacheCarrier cacheCarrier,
 			AggrPeriodEachActualClosure period, String empId, int specialLeaveCode,
 			List<InterimRemain> interimMng, List<InterimSpecialHolidayMng> interimSpecialData) {
-		
+
 		String companyId = AppContexts.user().companyId();
-		
+
 		// 「期間内の特別休暇残を集計する」を実行する
 		ComplileInPeriodOfSpecialLeaveParam param = new ComplileInPeriodOfSpecialLeaveParam(
 				companyId, empId, period.getPeriod(),
 				true, period.getPeriod().end(), specialLeaveCode, true,
-				true, interimMng, interimSpecialData,
-				Optional.empty()); //ソースがエラーを発生しないようにとりあえずEmptyを追加した、修正依頼があったら修正してください
+				true, interimMng, interimSpecialData);
 		return SpecialLeaveManagementService.complileInPeriodOfSpecialLeave(
 				require, cacheCarrier, param)
 					.getAggSpecialLeaveResult();
 	}
-	
+
 	public static interface RequireM1 extends SpecialLeaveManagementService.RequireM5 {
-		
+
 	}
 }

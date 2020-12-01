@@ -138,8 +138,8 @@ public class ReserveLeaveInfo implements Cloneable {
 	/**
 	 * 積立年休付与残数を更新
 	 */
-	public void updateRemainingNumber(){
-		this.remainingNumber.updateRemainingNumber(this.grantRemainingList, this.afterGrantAtr);
+	public void updateRemainingNumber(boolean afterGrantAtr){
+		this.remainingNumber.updateRemainingNumber(this.grantRemainingList, afterGrantAtr);
 	}
 
 	/**
@@ -276,7 +276,7 @@ public class ReserveLeaveInfo implements Cloneable {
 		}
 
 		// 積立年休情報残数を更新
-		this.updateRemainingNumber();
+		this.updateRemainingNumber(aggrPeriodWork.isGrantAtr());
 
 		// 積立年休情報を「積立年休の集計結果．積立年休情報（消滅）」に追加
 		if (!aggrResult.getLapsed().isPresent()) aggrResult.setLapsed(Optional.of(new ArrayList<>()));
@@ -344,7 +344,7 @@ public class ReserveLeaveInfo implements Cloneable {
 				new ReserveLeaveGrantDayNumber(infoDays + grantDays)));
 
 		// 積立年休情報残数を更新
-		this.updateRemainingNumber();
+		this.updateRemainingNumber(aggrPeriodWork.isGrantAtr());
 
 		// 上限を超過した積立年休を消滅させる
 		this.lapsedExcessReserveLeave(aggrPeriodWork);
@@ -406,7 +406,7 @@ public class ReserveLeaveInfo implements Cloneable {
 			}
 
 			// 積立年休情報残数を更新
-			this.updateRemainingNumber();
+			this.updateRemainingNumber(aggrPeriodWork.isGrantAtr());
 		}
 	}
 
@@ -499,7 +499,7 @@ public class ReserveLeaveInfo implements Cloneable {
 						useDaysWork);
 
 				// 積立年休情報残数を更新
-				this.updateRemainingNumber();
+				this.updateRemainingNumber(aggrPeriodWork.isGrantAtr());
 			}
 		}
 
@@ -508,7 +508,7 @@ public class ReserveLeaveInfo implements Cloneable {
 			// 残数がマイナスかチェック
 			val withMinus = this.remainingNumber.getReserveLeaveWithMinus();
 			if (withMinus.getRemainingNumberInfo().getRemainingNumber().getTotalRemainingDays().v() < 0.0){
-				if (this.afterGrantAtr){
+				if (aggrPeriodWork.isGrantAtr()){
 
 					// 「積立年休不足エラー（付与後）」を追加
 					aggrResult.addError(ReserveLeaveError.SHORTAGE_RSVLEA_AFTER_GRANT);

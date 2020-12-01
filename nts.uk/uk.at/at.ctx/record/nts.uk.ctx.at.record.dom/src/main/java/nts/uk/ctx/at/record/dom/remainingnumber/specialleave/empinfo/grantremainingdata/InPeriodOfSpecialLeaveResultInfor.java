@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import nts.arc.enums.EnumAdaptor;
+
 /**
  * 特休の集計結果
  * @author masaaki_jinno
@@ -17,7 +19,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class InPeriodOfSpecialLeaveResultInfor {
-	
+
 	/** 特休情報（期間終了日時点） */
 	private SpecialLeaveInfo asOfPeriodEnd;
 	/** 特休情報（期間終了日の翌日開始時点） */
@@ -28,7 +30,7 @@ public class InPeriodOfSpecialLeaveResultInfor {
 	private Optional<List<SpecialLeaveInfo>> lapsed;
 	/** 特休エラー情報 */
 	private List<SpecialLeaveError> specialLeaveErrors;
-	
+
 	/**
 	 * コンストラクタ
 	 */
@@ -39,7 +41,7 @@ public class InPeriodOfSpecialLeaveResultInfor {
 		this.lapsed = Optional.empty();
 		this.specialLeaveErrors = new ArrayList<>();
 	}
-	
+
 	/**
 	 * ファクトリー
 	 * @param asOfPeriodEnd 特休情報（期間終了日時点）
@@ -55,7 +57,7 @@ public class InPeriodOfSpecialLeaveResultInfor {
 			Optional<List<SpecialLeaveInfo>> asOfGrant,
 			Optional<List<SpecialLeaveInfo>> lapsed,
 			List<SpecialLeaveError> specialLeaveErrors){
-		
+
 		InPeriodOfSpecialLeaveResultInfor domain = new InPeriodOfSpecialLeaveResultInfor();
 		domain.asOfPeriodEnd = asOfPeriodEnd;
 		domain.asOfStartNextDayOfPeriodEnd = asOfStartNextDayOfPeriodEnd;
@@ -64,14 +66,23 @@ public class InPeriodOfSpecialLeaveResultInfor {
 		domain.specialLeaveErrors = specialLeaveErrors;
 		return domain;
 	}
-	
+
 	/**
 	 * 特休エラー情報の追加
 	 * @param error 特休エラー情報
 	 */
 	public void addError(SpecialLeaveError error){
-		
+
 		if (this.specialLeaveErrors.contains(error)) return;
 		this.specialLeaveErrors.add(error);
+	}
+
+	public List<nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveError> getErrorlistSharedClass(){
+		List<nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveError> result = new ArrayList<>();
+
+		specialLeaveErrors.stream().forEach(c->
+			result.add(EnumAdaptor.valueOf(c.value, nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveError.class)));
+
+		return result;
 	}
 }

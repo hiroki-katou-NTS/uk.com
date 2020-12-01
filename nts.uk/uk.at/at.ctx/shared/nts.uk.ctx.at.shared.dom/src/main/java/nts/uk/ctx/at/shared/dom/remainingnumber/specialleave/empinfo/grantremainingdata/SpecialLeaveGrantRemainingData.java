@@ -121,4 +121,5 @@ public class SpecialLeaveGrantRemainingData extends LeaveGrantRemaining {
 		}
 		return cloned;
 	}
+
 }

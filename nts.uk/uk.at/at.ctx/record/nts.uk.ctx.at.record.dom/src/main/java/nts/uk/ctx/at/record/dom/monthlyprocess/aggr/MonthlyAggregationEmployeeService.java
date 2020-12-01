@@ -216,7 +216,7 @@ public class MonthlyAggregationEmployeeService {
 				// 月別実績を集計する　（アルゴリズム）
 				value = AggregateMonthlyRecordService.aggregate(require, cacheCarrier, companyId, employeeId,
 						yearMonth, closureId, closureDate, datePeriod,
-						prevAggrResult, prevAbsRecResultOpt, prevBreakDayOffresultOpt, prevSpecialLeaveResultMap,
+						prevAbsRecResultOpt, prevBreakDayOffresultOpt,
 						companySets, employeeSets, Optional.empty(), Optional.empty(), isRemainProc);
 			}
 			catch (Exception ex) {
@@ -249,11 +249,11 @@ public class MonthlyAggregationEmployeeService {
 				break;
 			}
 
-			// 前回集計結果の退避
-			prevAggrResult = value.getAggrResultOfAnnAndRsvLeave();
-			prevAbsRecResultOpt = value.getAbsRecRemainMngOfInPeriodOpt();
-			prevBreakDayOffresultOpt = value.getBreakDayOffRemainMngOfInPeriodOpt();
-			prevSpecialLeaveResultMap = value.getInPeriodOfSpecialLeaveResultInforMap();
+//			// 前回集計結果の退避
+//			prevAggrResult = value.getAggrResultOfAnnAndRsvLeave();
+//			prevAbsRecResultOpt = value.getAbsRecRemainMngOfInPeriodOpt();
+//			prevBreakDayOffresultOpt = value.getBreakDayOffRemainMngOfInPeriodOpt();
+//			prevSpecialLeaveResultMap = value.getInPeriodOfSpecialLeaveResultInforMap();
 
 			try {
 				// 月別実績(WORK)を登録する

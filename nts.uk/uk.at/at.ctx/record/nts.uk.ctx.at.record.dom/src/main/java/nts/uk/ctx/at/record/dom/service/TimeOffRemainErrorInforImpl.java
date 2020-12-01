@@ -44,8 +44,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpReserveL
 import nts.uk.ctx.at.shared.dom.remainingnumber.service.RemainNumberCreateInformation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.ComplileInPeriodOfSpecialLeaveParam;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfSpecialLeave;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfSpecialLeaveResultInfor;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveError;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.InPeriodOfSpecialLeaveResultInfor;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.SpecialLeaveManagementService;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.export.pererror.CreatePerErrorsFromLeaveErrors;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.EmployeeMonthlyPerError;
@@ -60,17 +60,17 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 	private InterimRemainDataMngCheckRegister checkRegisterService;
 	@Inject
 	private SpecialHolidayRepository holidayRepo;
-	@Inject 
+	@Inject
 	private RecordDomRequireService requireService;
 	@Override
 	public List<EmployeeMonthlyPerError> getErrorInfor(TimeOffRemainErrorInputParam param) {
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
-		
+
 		//残数作成元情報を作成する
 		List<RecordRemainCreateInfor> recordInfor = RemainNumberCreateInformation.createRemainInfor(
 				param.getSid(),
-				param.getLstAttendanceTimeData().stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getTime())), 
+				param.getLstAttendanceTimeData().stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getTime())),
 				param.getLstWorkInfor().stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getWorkInformation())));
 		//指定期間の暫定残数管理データを作成する（差分のみ）
 		InterimRemainCreateDataInputPara createInterimDataParam = new InterimRemainCreateDataInputPara(param.getCid(),
@@ -86,7 +86,7 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 		//月別実績(Work)から年休フレックス補填分の暫定年休管理データを作成する
 		if(param.getOptMonthlyData().isPresent()) {
 			optDaily =  CreateInterimAnnualMngData.ofCompensFlex(param.getOptMonthlyData().get(), param.getObjDate().end());
-			
+
 		}
 		InterimEachData eachData = checkRegisterService.interimInfor(interimRemainData);
 		List<InterimRemain> interimMngAbsRec = eachData.getInterimMngAbsRec();
@@ -127,14 +127,14 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 		lstOuput.addAll(lstDayoff);
 		return lstOuput;
 	}
-	
+
 	@Override
-	public List<EmployeeMonthlyPerError> annualData(TimeOffRemainErrorInputParam param, 
+	public List<EmployeeMonthlyPerError> annualData(TimeOffRemainErrorInputParam param,
 			List<InterimRemain> annualMng, List<TmpAnnualHolidayMng> annualHolidayData,
 			List<InterimRemain> resereMng,List<TmpResereLeaveMng> resereLeaveData) {
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
-		
+
 		List<TmpAnnualLeaveMngWork> mngWork = new ArrayList<>();
 		mngWork = annualHolidayData.stream()
 				.map(o -> {
@@ -158,7 +158,7 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 				false,
 				false,
 				Optional.of(true),
-				Optional.of(mngWork), 
+				Optional.of(mngWork),
 				Optional.of(lstReserve),
 				Optional.empty(),
 				Optional.empty(),
@@ -184,7 +184,7 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 					chkAnnaualAndResere.getReserveLeave().get().getReserveLeaveErrors());
 			outPutData.addAll(reserveLeave);
 		}
-		
+
 		return outPutData;
 	}
 
@@ -193,12 +193,13 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 			List<InterimRemain> interimSpecial, List<InterimSpecialHolidayMng> specialHolidayData) {
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
-		
+
 		//○ドメインモデル「特別休暇」を取得する
 		List<SpecialHoliday> lstSpecial = holidayRepo.findByCompanyId(param.getCid());
 		List<EmployeeMonthlyPerError> lstOutput = new ArrayList<>();
 		lstSpecial.stream().forEach(x -> {
-			ComplileInPeriodOfSpecialLeaveParam speParam = new ComplileInPeriodOfSpecialLeaveParam(param.getCid(),
+			ComplileInPeriodOfSpecialLeaveParam speParam
+				= new ComplileInPeriodOfSpecialLeaveParam(param.getCid(),
 					param.getSid(),
 					param.getAggDate(),
 					false,
@@ -207,19 +208,20 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 					false,
 					true,
 					interimSpecial,
-					specialHolidayData,
-					Optional.empty());
+					specialHolidayData);
 			//マイナスなしを含めた期間内の特別休暇残を集計する
 			InPeriodOfSpecialLeaveResultInfor speLeaveInfor = SpecialLeaveManagementService
 					.complileInPeriodOfSpecialLeave(require, cacheCarrier, speParam);
-			InPeriodOfSpecialLeave speLeave = speLeaveInfor.getAggSpecialLeaveResult();
+
 			//特別休暇エラーから月別実績エラー一覧を作成する
-			List<EmployeeMonthlyPerError> lstSpeError = CreatePerErrorsFromLeaveErrors.fromSpecialLeave(param.getSid(),
-					YearMonth.of(999912),
-					ClosureId.RegularEmployee,
-					new ClosureDate(1, false),
-					x.getSpecialHolidayCode().v(),
-					speLeave.getLstError());
+			List<EmployeeMonthlyPerError> lstSpeError
+				= CreatePerErrorsFromLeaveErrors.fromSpecialLeave(
+						param.getSid(),
+						YearMonth.of(999912),
+						ClosureId.RegularEmployee,
+						new ClosureDate(1, false),
+						x.getSpecialHolidayCode().v(),
+						speLeaveInfor.getErrorlistSharedClass());
 			lstOutput.addAll(lstSpeError);
 		});
 		return lstOutput;
@@ -230,7 +232,7 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 			List<InterimRemain> interimMngAbsRec, List<InterimAbsMng> useAbsMng, List<InterimRecMng> useRecMng) {
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
-		
+
 		// 期間内の振出振休残数を取得する
 		AbsRecMngInPeriodParamInput checkParam = new AbsRecMngInPeriodParamInput(param.getCid(),
 				param.getSid(),
@@ -259,7 +261,7 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 			List<InterimDayOffMng> dayOffMng) {
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
-		
+
 		//期間内の休出代休残数を取得する
 		BreakDayOffRemainMngParam remainParam = new BreakDayOffRemainMngParam(param.getCid(),
 				param.getSid(),

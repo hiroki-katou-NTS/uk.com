@@ -462,7 +462,9 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 
 		// 「特別休暇」を取得する
 		List<SpecialHoliday> specialHolidays = require.specialHoliday(this.companyId);
+
 		for (SpecialHoliday specialHoliday : specialHolidays) {
+//			InterimSpecialHolidayMng specialHoliday;
 			Integer specialLeaveCode = specialHoliday.getSpecialHolidayCode().v();
 
 			// 前回集計結果を確認する

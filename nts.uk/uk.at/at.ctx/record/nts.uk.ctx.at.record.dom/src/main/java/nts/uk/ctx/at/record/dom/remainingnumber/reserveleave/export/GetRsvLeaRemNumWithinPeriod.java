@@ -612,7 +612,8 @@ public class GetRsvLeaRemNumWithinPeriod {
 		Optional<ClosureStatusManagement> latestClosureStatusManagement(String employeeId);
 	}
 
-	public static interface RequireM4 extends RequireM3, RequireM2, RequireM1, ReserveLeaveInfo.RequireM1 {
+	public static interface RequireM4 extends RequireM3, RequireM2, RequireM1, ReserveLeaveInfo.RequireM1,
+		nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnLeaRemNumWithinPeriodProc.RequireM3 {
 
 		AnnualPaidLeaveSetting annualPaidLeaveSetting (String companyId);
 

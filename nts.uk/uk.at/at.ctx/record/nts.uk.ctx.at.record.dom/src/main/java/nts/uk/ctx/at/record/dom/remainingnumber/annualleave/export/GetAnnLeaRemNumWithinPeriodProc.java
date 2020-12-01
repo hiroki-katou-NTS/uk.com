@@ -178,7 +178,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 	 * @param forOverWriteListOpt 上書き用の暫定年休管理データ
 	 * @param prevAnnualLeaveOpt 前回の年休の集計結果
 	 * @param aggrPastMonthModeOpt 過去月集計モード
-	 * @param yearMonthOpt 年月※過去月集計モード = true の場合は必須
+	 * @param yearMonthOpt 年月※過去月集計モード  = true の場合は必須
 	 * @return 年休の集計結果
 	 */
 	public static Optional<AggrResultOfAnnualLeave> algorithm(
