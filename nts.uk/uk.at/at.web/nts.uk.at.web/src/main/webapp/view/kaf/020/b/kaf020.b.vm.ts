@@ -18,7 +18,9 @@ module nts.uk.at.view.kaf020.b {
         isAgentMode: KnockoutObservable<boolean> = ko.observable(false);
         code: string;
         dataFetch: KnockoutObservable<DetailSreenInfo> = ko.observable({
-            applicationContents: ko.observableArray([])
+            applicationContents: ko.observableArray([]),
+            name: "",
+            appDispInfoStartupOutput: ko.observable(null)
         });
         allOptional: any = [];
 
@@ -89,7 +91,7 @@ module nts.uk.at.view.kaf020.b {
                         dispOrder: opItem.dispOrder
                     });
                 });
-                vm.dataFetch({applicationContents: ko.observableArray(contents), name: params.name});
+                vm.dataFetch({applicationContents: ko.observableArray(contents), name: params.name, appDispInfoStartupOutput: ko.observable(vm.appDispInfoStartupOutput())});
             }).then(() => {
                 vm.focusDate();
             }).always(() => {
@@ -203,6 +205,7 @@ module nts.uk.at.view.kaf020.b {
 
     interface DetailSreenInfo {
         applicationContents: KnockoutObservableArray<OptionalItemApplicationContent>,
-        name: string
+        name: string,
+        appDispInfoStartupOutput: KnockoutObservable<any>
     }
 }
