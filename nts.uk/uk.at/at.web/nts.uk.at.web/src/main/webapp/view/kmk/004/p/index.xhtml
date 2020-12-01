@@ -119,15 +119,15 @@
 					data-bind="ntsFormLabel: { required: false, text: $i18n('KMK004_318') }"></div>
 				<br></br>
 				<!-- P4_2 -->
-				<div class="child-row">
-					<div tabindex="7"
+				<div class="child-row"> 
+					<div tabindex="7" class ="checkbox"
 					data-bind="ntsCheckBox: { checked: screenData.settingDto.aggregateTimeSet.legalOverTimeWork } ">
 					#{i18n.getText('KMK004_319')}</div>
 				</div>
 				
 				<!-- P4_3 -->
 				<div class="child-row"> 
-					<div tabindex="8"
+					<div tabindex="8" class ="checkbox"
 					data-bind="ntsCheckBox: { checked: screenData.settingDto.aggregateTimeSet.legalHoliday } ">
 					#{i18n.getText('KMK004_320')}</div>
 				</div>
@@ -139,13 +139,14 @@
 
 				<!-- P5_2 -->
 				<div class="child-row"> 
-					<div tabindex="9" data-bind="ntsCheckBox: { checked: screenData.settingDto.excessOutsideTimeSet.legalOverTimeWork } ">
+					<div tabindex="9" class ="checkbox"
+					data-bind="ntsCheckBox: { checked: screenData.settingDto.excessOutsideTimeSet.legalOverTimeWork } ">
 					#{i18n.getText('KMK004_322')}</div>
 				</div>
 
 				<!-- P5_3 -->
 				<div class="child-row">
-					<div tabindex="10"
+					<div tabindex="10" class ="checkbox"
 					data-bind="ntsCheckBox: { checked: screenData.settingDto.excessOutsideTimeSet.legalHoliday } ">
 					#{i18n.getText('KMK004_323')}</div>
 				</div> 

@@ -143,7 +143,7 @@ module nts.uk.at.view.kmk004 {
 							optionsText: 'name',
 							value: selectedIds,
 							enable: enable}"></div></td>
-					<td>計</td>
+					<td id="viewO_cal">計</td>
 					<td></td>
 				</tr>
 			</table>
@@ -152,7 +152,6 @@ module nts.uk.at.view.kmk004 {
 			.view-o-times-table td:nth-child(2)  {
 				background: #E0F59E;
 				border: 1px solid #AAAAAA;
-				padding: 0 3px 0 3px;
 			}
 			
 			.view-o-times-table td:nth-child(3)  {
@@ -166,7 +165,7 @@ module nts.uk.at.view.kmk004 {
 			}
 			
 			.view-o-times-table th {
-				padding: 3px;
+				padding: 4px;
 				background: #97D155;
 			}
 			
@@ -188,8 +187,8 @@ module nts.uk.at.view.kmk004 {
 			
 			.col-3 {
 				width: 65px;
+				height: 12px;
 			}
-			
 
         </style>
         <style type="text/css" rel="stylesheet" data-bind="html: $component.style"></style>

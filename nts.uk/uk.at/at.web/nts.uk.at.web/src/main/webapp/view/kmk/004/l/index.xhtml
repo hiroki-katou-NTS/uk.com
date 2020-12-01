@@ -12,23 +12,25 @@
 				
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
-			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
-			<com:stylefile path="kmk004.l.css" />
+			
 			<com:scriptfile path="./kmk004.l.vm.js" />
             <com:scriptfile path="../components/tab-panel.js" />
 			<com:scriptfile path="../components/transform/view-l-basic-setting.js" />
 			<com:scriptfile path="../components/transform/view-l-listbox.js" />
+			<com:scriptfile path="../components/transform/monthly-working-hours.js" />
 			<com:scriptfile path="../components/transform/view-l-times-table.js" />
 			<com:scriptfile path="../components/transform/view-o-times-table.js" />
+			<com:scriptfile path="../components/transform/box-year.js" />
 			<com:scriptfile path="./components/view-l.js" />
 			<com:scriptfile path="./components/view-m.js" />
 			<com:scriptfile path="./components/view-n.js" />
 			<com:scriptfile path="./components/view-o.js" />
-
+			<com:ko-if bind="selected() === 'Com_Person'">
+				<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+				<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+				<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+			</com:ko-if>
+			<com:stylefile path="kmk004.l.css" />
 		</ui:define>
 
 		<ui:define name="content">
