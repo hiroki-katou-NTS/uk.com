@@ -360,15 +360,18 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			// Type = 加給時間
 			if (_.isNil(vm.dataSource.calculationResultOp)) {
 				let calculationResult = vm.dataSource.calculationResultOp;
-				if (calculationResult.flag == 0 && calculationResult.overTimeZoneFlag == 0) {
-					if (!_.isEmpty(calculationResult.applicationTimes)) {
-						let applicationTime_ = calculationResult.applicationTimes[0];
-						if (!_.isEmpty(applicationTime_.applicationTime)) {
-							_.forEach(applicationTime_.applicationTime, (item: OvertimeApplicationSetting) => {
-								applicationTime.applicationTime.push(item);
-							});
+				if (!_.isNil(calculationResult)) {
+					if (calculationResult.flag == 0 && calculationResult.overTimeZoneFlag == 0) {
+						if (!_.isEmpty(calculationResult.applicationTimes)) {
+							let applicationTime_ = calculationResult.applicationTimes[0];
+							if (!_.isEmpty(applicationTime_.applicationTime)) {
+								_.forEach(applicationTime_.applicationTime, (item: OvertimeApplicationSetting) => {
+									applicationTime.applicationTime.push(item);
+								});
+							}
 						}
 					}
+					
 				}
 			}
 			

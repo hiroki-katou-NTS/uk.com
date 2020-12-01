@@ -30,6 +30,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.InitW
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType_Update;
+import nts.uk.ctx.at.request.dom.application.overtime.CalculationResult;
 import nts.uk.ctx.at.request.dom.application.overtime.ExcessState;
 import nts.uk.ctx.at.request.dom.application.overtime.HolidayMidNightTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OverStateOutput;
@@ -870,7 +871,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		CheckBeforeOutput output = new CheckBeforeOutput();
 		// 未計算チェックする
 		commonOvertimeholiday.calculateButtonCheck(
-				displayInfoOverTime.getCalculationResultOp().map(x -> x.getFlag()).orElse(null),
+				displayInfoOverTime.getCalculationResultOp().map(CalculationResult::getFlag).orElse(0),
 				EnumAdaptor.valueOf(displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet().getApplicationDetailSetting().getTimeCalUse().value, UseAtr.class));
 		// 勤務種類、就業時間帯のマスタ未登録チェックする
 		otherCommonAlgorithm.checkWorkingInfo(
