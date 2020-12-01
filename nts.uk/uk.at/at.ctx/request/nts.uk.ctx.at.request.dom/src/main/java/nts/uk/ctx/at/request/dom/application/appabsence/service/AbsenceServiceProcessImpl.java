@@ -63,6 +63,8 @@ import nts.uk.ctx.at.request.dom.vacation.history.service.PlanVacationRuleExport
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecMngInPeriodParamInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.EarchInterimRemainCheck;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainCheckInputParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngCheckRegister;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
@@ -287,8 +289,8 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
     			, lstDates
     			, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput()));
     	// 休暇申請登録時チェック処理
-    	
     	// 「確認メッセージリスト」を全てと取得した「休日の申請日<List>」を返す
+    	result.getConfirmMsgLst().addAll(this.checkAbsenceWhenRegister(true, companyID, appAbsence, appAbsenceStartInfoOutput, lstDates));
     	return result;
     }
 	/**
@@ -955,8 +957,8 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	}
 
 	@Override
-	public void checkRemainVacation(String companyID, AppAbsence appAbsence,
-			GeneralDate closureStartDate, HdAppSet hdAppSet, HolidayAppType holidayType) {
+	public void checkRemainVacation(String companyID, ApplyForLeave appAbsence,
+			GeneralDate closureStartDate, HolidayAppType holidayType) {
 		/**	・代休チェック区分 - HolidayType: 1*/
 		boolean chkSubHoliday = false;
 		/**	・振休チェック区分  - HolidayType: 7*/
@@ -972,10 +974,10 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		/**	・超休チェック区分*/
 		boolean chkSuperBreak = true;
 		
-		chkSubHoliday = hdAppSet.getRegisShortLostHd().value == 1 && holidayType == HolidayAppType.SUBSTITUTE_HOLIDAY ? true : false;//休暇申請設定．代休残数不足登録できる
+		//chkSubHoliday = hdAppSet.getRegisShortLostHd().value == 1 && holidayType == HolidayAppType.SUBSTITUTE_HOLIDAY ? true : false;//休暇申請設定．代休残数不足登録できる
 		// chkPause = hdAppSet.getRegisInsuff().value == 1 && holidayType == HolidayAppType.REST_TIME ? true : false;//休暇申請設定．振休残数不足登録できる
-		chkAnnual = hdAppSet.getRegisNumYear().value == 1 && holidayType == HolidayAppType.ANNUAL_PAID_LEAVE ? true : false;//休暇申請設定．年休残数不足登録できる
-		chkFundingAnnual = hdAppSet.getRegisShortReser().value == 1 && holidayType == HolidayAppType.YEARLY_RESERVE ? true : false;//休暇申請設定．積立年休残数不足登録できる
+		//chkAnnual = hdAppSet.getRegisNumYear().value == 1 && holidayType == HolidayAppType.ANNUAL_PAID_LEAVE ? true : false;//休暇申請設定．年休残数不足登録できる
+		//chkFundingAnnual = hdAppSet.getRegisShortReser().value == 1 && holidayType == HolidayAppType.YEARLY_RESERVE ? true : false;//休暇申請設定．積立年休残数不足登録できる
 		
 //		Optional<GeneralDate> startDate = appAbsence.getApplication().getStartDate();
 //		Optional<GeneralDate> endDate = appAbsence.getApplication().getEndDate();
@@ -1000,26 +1002,26 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 //				endDate, 
 //				lstDateIsHoliday));
 //		
-//		InterimRemainCheckInputParam inputParam = new InterimRemainCheckInputParam(
-//				companyID, 
-//				appAbsence.getApplication().getEmployeeID(), 
-//				new DatePeriod(closureStartDate, closureStartDate.addYears(1).addDays(-1)), 
-//				false, 
-//				startDate.orElse(null), 
-//				new DatePeriod(startDate.orElse(null), endDate.orElse(null)),
-//				true, 
-//				new ArrayList<>(), 
-//				new ArrayList<>(), 
-//				appData, 
-//				chkSubHoliday, 
-//				chkPause, 
-//				chkAnnual, 
-//				chkFundingAnnual,
-//				chkSpecial, 
-//				chkPublicHoliday, 
-//				chkSuperBreak); 
+		/*InterimRemainCheckInputParam inputParam = new InterimRemainCheckInputParam(
+				companyID, 
+				appAbsence.getEmployeeID(),
+				closureStartDate, 
+				false, 
+				startDate.orElse(null), 
+				new DatePeriod(startDate.orElse(null), endDate.orElse(null)),
+				true, 
+				new ArrayList<>(), 
+ 			    new ArrayList<>(), 
+				appData, 
+				chkSubHoliday, 
+				chkPause, 
+				chkAnnual, 
+				chkFundingAnnual,
+				chkSpecial, 
+				chkPublicHoliday, 
+				chkSuperBreak); */
 		// 登録時の残数チェック
-		// EarchInterimRemainCheck checkResult = interimRemainCheckReg.checkRegister(inputParam);
+		//EarchInterimRemainCheck checkResult = interimRemainCheckReg.checkRegister(inputParam); -> -PhuongDV- Ben JP lam du kien cuoi thang 12 xong
 		//EA.2577
 		//代休不足区分 or 振休不足区分 or 年休不足区分 or 積休不足区分 or 特休不足区分 = true（残数不足）
 //		if(checkResult.isChkSubHoliday() || checkResult.isChkPause() || checkResult.isChkAnnual() 
@@ -1097,7 +1099,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 			AppAbsenceStartInfoOutput appAbsenceStartInfoOutput) {
 		List<ConfirmMsgOutput> result = new ArrayList<>();
 		// 休暇の優先順をチェックする
-		// todo // KAF006: -PhuongDV domain fix pending- Bên KMF001 team C đang làm phần này, dự định xong cuối tháng 12
+		// todo // KAF006: -PhuongDV domain fix pending- Bên KMF001 team C đang làm phần này, liên lạc vs Hiếu
 		
 		//計画年休上限チェック
 		this.checkLimitAbsencePlan(companyID, employeeID, workTypeCD, startDate, endDate, lstDateIsHoliday);

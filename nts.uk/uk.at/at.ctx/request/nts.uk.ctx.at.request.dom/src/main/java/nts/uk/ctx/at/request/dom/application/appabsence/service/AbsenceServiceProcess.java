@@ -194,11 +194,9 @@ public interface AbsenceServiceProcess {
 	 * @param companyID 会社ID
 	 * @param appAbsence 申請
 	 * @param closureStartDate 締め開始日
-	 * @param hdAppSet 休暇申請設定
 	 * @param holidayType 休暇種類 
 	 */
-	public void checkRemainVacation(String companyID, AppAbsence appAbsence, GeneralDate closureStartDate,
-			HdAppSet hdAppSet, HolidayAppType holidayType);
+	public void checkRemainVacation(String companyID, ApplyForLeave appAbsence, GeneralDate closureStartDate, HolidayAppType holidayType);
 	
 	/**
 	 * 休暇種類共通エラーチェック
@@ -294,11 +292,11 @@ public interface AbsenceServiceProcess {
 	
 	/**
 	 * 休暇申請登録時チェック処理
-	 * @param mode
-	 * @param companyID
-	 * @param appAbscene
-	 * @param appAbsenceStartInfoOutput
-	 * @param lstHolidayDate
+	 * @param mode 画面モード
+	 * @param companyID　会社ID
+	 * @param appAbscene　休暇申請
+	 * @param appAbsenceStartInfoOutput　休暇申請起動時の表示情報
+	 * @param lstHolidayDate　休日リスト
 	 * @return
 	 */
 	public List<ConfirmMsgOutput> checkAbsenceWhenRegister(boolean mode, String companyID, ApplyForLeave appAbscene, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, List<GeneralDate> lstHolidayDate);
