@@ -1,0 +1,129 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			
+			<com:scriptfile set="IGNITE" />
+			
+			<com:ValidatorScript>
+				nts.uk.ctx.at.request.dom.application.AppReason
+			</com:ValidatorScript>
+			<com:EnumScript>
+				nts.uk.ctx.at.request.dom.application.holidayshipment.ApplicationCombination
+			</com:EnumScript>
+			
+			<com:scriptfile path="/view/kaf/000/shr/kaf000.shr.vm.js" />
+			<com:scriptfile path="/view/kaf/000/a/kaf000.a.vm.js" />
+			
+			<com:stylefile path="/view/kaf/000/a/component1/kaf000.a.component1.css" />
+			<com:stylefile path="/view/kaf/000/a/component2/kaf000.a.component2.css" />
+			<com:stylefile path="/view/kaf/000/a/component3/kaf000.a.component3.css" />
+			<com:stylefile path="/view/kaf/000/a/component5/kaf000.a.component5.css" />
+			<com:stylefile path="/view/kaf/000/a/component6/kaf000.a.component6.css" />
+			
+			<com:scriptfile path="/view/kaf/000/a/component1/kaf000.a.component1.js" />
+			<com:scriptfile path="/view/kaf/000/a/component2/kaf000.a.component2.js" />
+			<com:scriptfile path="/view/kaf/000/a/component3/kaf000.a.component3.js" />
+			<com:scriptfile path="/view/kaf/000/a/component5/kaf000.a.component5.js" />
+			<com:scriptfile path="/view/kaf/000/a/component6/kaf000.a.component6.js" />
+			<com:scriptfile path="/view/kaf/000/a/component7/kaf000.a.component7.js" />
+			<com:scriptfile path="/view/kaf/000/a/component8/kaf000.a.component8.js" />
+			
+			<com:stylefile path="kaf011.a.css" />
+			
+			<com:stylefile path="../shr/kaf011.shr.css" />
+			
+			<com:scriptfile path="kaf011.a.vm.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+				<button class="proceed" data-bind="click: register, enable: $root.errors.isEmpty" tabindex="1">#{i18n.getText('KAF011_3')}</button>
+				<button class="" data-bind="click: register" tabindex="1">#{i18n.getText('KAF011_7')}</button>
+				<div data-bind="component: { name: 'kaf000-a-component7', 
+											params: {
+												appType: appType,
+												checkBoxValue: isSendMail,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }" style="display: inline-block;"></div>
+			</div>
+			
+			<div id="contents-area">
+				<div data-bind="component: { name: 'kaf000-a-component1', 
+											params: {
+												appType: appType,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
+				<div class="remainInfor">
+					<div class="remainLable">#{i18n.getText('KAF011_64')}</div>
+					<div class="remainNumber">
+						<table class="table">
+							<tr>
+								<th class="bg-green" >振休残数</th>
+							</tr>
+							<tr>
+								<td data-bind="">0日</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+				
+				<div class="table">
+					<div class="cell" style="width: 825px;" data-bind="component: { name: 'kaf000-a-component2',
+																					params: {
+																						appType: appType,
+																						application: application,
+																						appDispInfoStartupOutput: appDispInfoStartupOutput,
+																						isAgentMode: isAgentMode
+												                                          } }"></div>
+                  	<div class="cell" style="position: absolute;" data-bind="component: { name: 'kaf000-a-component8',
+																						params: {
+																							appType: appType,
+																							application: application,
+																							appDispInfoStartupOutput: appDispInfoStartupOutput
+																						} }"></div>
+				</div>
+				<div data-bind="component: { name: 'kaf000-a-component3', 
+											params: {
+												appType: appType,
+												application: application,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
+											
+				<div style="margin-top: 10px;">
+					<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_18')}</div>
+					<div class="cf" data-bind="ntsSwitchButton: {
+															name:  $i18n('KAF011_18'),
+															options: __viewContext.enums.ApplicationCombination,
+															optionsValue: 'value',
+															optionsText: 'name',
+															value: selectedRuleCode,
+															required: required,
+															enable: enable }"></div>
+				</div>
+				
+				<ui:include src="../shr/index.xhtml" />
+				
+				
+				<div data-bind="component: { name: 'kaf000-a-component5', 
+											params: {
+												appType: appType,
+												application: application,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
+				<div data-bind="component: { name: 'kaf000-a-component6', 
+											params: {
+												appType: appType,
+												application: application,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
+				
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

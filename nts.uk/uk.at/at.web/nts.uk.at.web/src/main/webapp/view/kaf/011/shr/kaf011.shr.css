@@ -1,0 +1,14 @@
+button.nts-switch-button{width:92px}
+.remainInfor .remainLable{display:inline-block;vertical-align:top;color:red;min-width:115px}
+.remainInfor .remainNumber{display:inline-block}
+.table td, .table th{border:1px solid #000;text-align:center;height:25px;padding:0 10px}
+.application{margin-top:15px;max-width:800px}
+.application .name{margin-left:10px}
+.application .ruleLine{border-bottom:1px solid #999;margin:10px 0}
+.row{min-height:47px}
+.application .row div{vertical-align:top}
+.row>div:nth-child(1){min-width:115px}
+.application .row.tableRelase table{margin:10px 0}
+.application .inputTime{width:70px}
+.holidaySetting{margin-left:40px}
+.holiday .comment{margin-bottom: 15px;}

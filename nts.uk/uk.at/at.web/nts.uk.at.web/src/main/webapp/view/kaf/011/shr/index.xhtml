@@ -1,0 +1,177 @@
+			<div>
+				<div class="application holiday">
+					<div class="name">#{i18n.getText('KAF011_1')}</div>
+					<div class="ruleLine"></div>
+					<div class="row">
+						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF011_22')}</div>
+						<div data-bind="ntsDatePicker: {name: $i18n('KAF011_22'), value: date, required: true }"></div>
+					</div>
+					<div class="row">
+						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF011_28')}</div>
+						<div data-bind="ntsComboBox: {
+	                                        name: $i18n('KAF000_28'),
+	                                        options: workType,
+	                                        optionsValue: 'code',
+	                                        optionsText: 'name',
+	                                        value: workTypeSelected,
+	                                        columns: [{ prop: 'name', length: 20 }],
+	                                        required: required }">
+	                    </div>					
+					</div>
+					<div class="row">
+						<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_30')}</div>
+						<div class="ntsControl">
+							<button class="" data-bind="click: register" tabindex="1">#{i18n.getText('KAF011_5')}</button>
+							<span data-bind="text: workTime"></span>
+						</div>
+					</div>
+					<div class="row">
+						<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_31')}</div>
+						<div class="ntsControl">
+							<input class="inputTime" data-bind="ntsTimeWithDayEditor: { 
+                                                    constraint:'TimeWithDayAttr',
+                                                    value: startTime1,
+                                                    readonly: false,
+                                                    required: required,
+                                                    name: $i18n('KAF011_32'),
+                                                    enable: enable }" />
+                             #{i18n.getText('KAF011_37')}
+                             <input class="inputTime" data-bind="ntsTimeWithDayEditor: { 
+                                                    constraint:'TimeWithDayAttr',
+                                                    value: endTime1,
+                                                    readonly: false,
+                                                    required: required,
+                                                    name: $i18n('KAF011_33'),
+                                                    enable: enable }" />
+						</div>
+					</div>
+					<div class="row tableRelase">
+						<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_46')}</div>
+						<div class="ntsControl">
+							<div>
+								<button class="" data-bind="">#{i18n.getText('KAF011_5')}</button>
+								#{i18n.getText('KAF011_48')}
+							</div>
+							<div>
+								<table class="table">
+									<thead>
+										<tr>
+											<th class="bg-green" >#{i18n.getText('KAF011_51')}</th>
+											<th class="bg-green" >#{i18n.getText('KAF011_57')}</th>
+										</tr>
+									</thead>
+        							<tbody data-bind="foreach: related">
+										<tr>
+											<td data-bind="text: date"></td>
+											<td data-bind="text: number"></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<div class="comment" data-bind="text: comment"></div>
+				</div>
+				<div class="application work">
+					<div class="name">#{i18n.getText('KAF011_2')}</div>
+					<div class="ruleLine"></div>
+					<div class="row">
+						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF011_22')}</div>
+						<div data-bind="ntsDatePicker: {name: $i18n('KAF011_22'), value: date, required: true }"></div>
+					</div>
+					<div class="row">
+						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF011_28')}</div>
+						<div data-bind="ntsComboBox: {
+	                                        name: $i18n('KAF000_28'),
+	                                        options: workType,
+	                                        optionsValue: 'code',
+	                                        optionsText: 'name',
+	                                        value: workTypeSelected,
+	                                        columns: [{ prop: 'name', length: 20 }],
+	                                        required: required }">
+	                    </div>					
+					</div>
+					<div class="holidaySetting">
+						<div data-bind="ntsCheckBox: { checked: enable }">#{i18n.getText('KAF011_29')}</div>
+						<div class="ruleLine"></div>
+						<div class="row">
+							<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_30')}</div>
+							<div class="ntsControl">
+								<button class="" data-bind="click: register" tabindex="1">#{i18n.getText('KAF011_5')}</button>
+								<span data-bind="text: workTime"></span>
+							</div>
+						</div>
+						<div class="row">
+							<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_31')}</div>
+							<div class="ntsControl">
+								<input class="inputTime" data-bind="ntsTimeWithDayEditor: { 
+	                                                    constraint:'TimeWithDayAttr',
+	                                                    value: startTime1,
+	                                                    readonly: false,
+	                                                    required: required,
+	                                                    name: $i18n('KAF011_32'),
+	                                                    enable: enable }" />
+	                             #{i18n.getText('KAF011_37')}
+	                             <input class="inputTime" data-bind="ntsTimeWithDayEditor: { 
+	                                                    constraint:'TimeWithDayAttr',
+	                                                    value: endTime1,
+	                                                    readonly: false,
+	                                                    required: required,
+	                                                    name: $i18n('KAF011_33'),
+	                                                    enable: enable }" />
+							</div>
+						</div>
+						<div class="row tableRelase">
+							<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_46')}</div>
+							<div class="ntsControl">
+								<div>
+									<button class="" data-bind="">#{i18n.getText('KAF011_5')}</button>
+									#{i18n.getText('KAF011_48')}
+								</div>
+								<div>
+									<table class="table">
+										<thead>
+											<tr>
+												<th class="bg-green" >#{i18n.getText('KAF011_51')}</th>
+												<th class="bg-green" >#{i18n.getText('KAF011_57')}</th>
+											</tr>
+										</thead>
+	        							<tbody data-bind="foreach: related">
+											<tr>
+												<td data-bind="text: date"></td>
+												<td data-bind="text: number"></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+						<div class="row tableRelase">
+							<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_44')}</div>
+							<div class="ntsControl">
+								<div>
+									<button class="" data-bind="">#{i18n.getText('KAF011_5')}</button>
+									#{i18n.getText('KAF011_47')}
+								</div>
+								<div>
+									<table class="table">
+										<thead>
+											<tr>
+												<th class="bg-green" >#{i18n.getText('KAF011_49')}</th>
+												<th class="bg-green" >#{i18n.getText('KAF011_57')}</th>
+											</tr>
+										</thead>
+	        							<tbody data-bind="foreach: related">
+											<tr>
+												<td data-bind="text: date"></td>
+												<td data-bind="text: number"></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="comment" data-bind="text: comment"></div>
+				</div>
+			</div>
