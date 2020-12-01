@@ -27,6 +27,7 @@ module nts.uk.at.view.kml002.c {
 
     switchOptions: KnockoutObservableArray<any> = ko.observableArray([]);
     functionItems: KnockoutObservableArray<any> = ko.observableArray([]);
+    numberCounterSetting: KnockoutObservableArray<boolean> = ko.observableArray([]);
 
     constructor(params: any) {
       super();
@@ -36,6 +37,8 @@ module nts.uk.at.view.kml002.c {
         { code: Usage.Use, name: vm.$i18n('KML002_20') },
         { code: Usage.NotUse, name: vm.$i18n('KML002_21') }
       ]);
+
+      vm.numberCounterSetting([false, false, false]);
       vm.createLinkButtonOnRight();
       vm.personalCounterGetById();
     }
@@ -55,9 +58,13 @@ module nts.uk.at.view.kml002.c {
       const vm = this;
       if (count > 3 || count <= 0) count = 1;
 
-      vm.$window.storage('KWL002_SCREEN_G_INPUT', { countingType: count }).then(() => {
+      vm.$window.storage('KML002_SCREEN_G_INPUT', { countingType: count }).then(() => {
         vm.$window.modal('/view/kml/002/g/index.xhtml').then(() => {
-          vm.getNumberCounterDetails(count);
+          vm.$window.storage('KML002_SCREEN_G_OUTPUT').then((data) => {           
+            if (!_.isNil(data) && !!data.setting) {
+              vm.numberCounterSetting()[count - 1] = data.setting;//true || false || null cls
+            }
+          });
         });
       });
     }
@@ -73,16 +80,16 @@ module nts.uk.at.view.kml002.c {
       ・「時間帯人数」の利用区分＝＝利用するが「時間帯人数」の詳細設定はまだ設定られない。
       */
       let errorParams = []; const maxMsg = 3;
-
-      if (vm.count1() === Usage.Use && vm.count1Details().length === 0) {
+      let settingList = vm.numberCounterSetting();
+      if (vm.count1() === Usage.Use && !settingList[0]) {
         errorParams.push(vm.$i18n('KML002_119') + vm.$i18n('KML002_69'));
       }
 
-      if (vm.count2() === Usage.Use && vm.count2Details().length === 0) {
+      if (vm.count2() === Usage.Use && !settingList[1]) {
         errorParams.push(vm.$i18n('KML002_119') + vm.$i18n('KML002_72'));
       }
 
-      if (vm.count3() === Usage.Use && vm.count3Details().length === 0) {
+      if (vm.count3() === Usage.Use && !settingList[2]) {
         errorParams.push(vm.$i18n('KML002_119') + vm.$i18n('KML002_75'));
       }
 
@@ -104,7 +111,6 @@ module nts.uk.at.view.kml002.c {
       vm.$ajax(PATH.personalCounterRegister, params).done(() => {
         vm.$dialog.info({ messageId: Msg_id, messageParams: showMsg }).then(() => {
           vm.$blockui('hide');
-          $('#B322').focus();
         });
       })
         .fail()
@@ -122,41 +128,8 @@ module nts.uk.at.view.kml002.c {
         vm.$blockui('hide');
       })
         .fail()
-        .always(() => vm.$blockui('hide'));
-
-      vm.getNumberCounterDetails(1);
-      vm.getNumberCounterDetails(2);
-      vm.getNumberCounterDetails(3);
-    }
-
-    /**
-     * Gets number counter details
-     */
-    getNumberCounterDetails(type: number) {
-      const vm = this;
-      vm.$ajax(PATH.getNumberCounterDetails, { countType: type }).done((data) => {
-        if (!_.isNil(data)) {
-          vm.updateTotalNumberOfTimes(type, data);
-        }
-      }).fail().always();
-    }
-
-    updateTotalNumberOfTimes(count: number, data) {
-      const vm = this;
-      let selectedData = data.numberOfTimeTotalDtos;
-
-      switch (count) {
-        case 1: //回数集計１
-          vm.count1Details(selectedData);
-          break;
-        case 2: //回数集計 2
-          vm.count2Details(selectedData);
-          break;
-        case 3: //回数集計 3
-          vm.count3Details(selectedData);
-          break;
-      }
-    }
+        .always(() => vm.$blockui('hide'));    
+    }    
 
     fillDataToGrid(data: any) {
       const vm = this;
@@ -178,10 +151,13 @@ module nts.uk.at.view.kml002.c {
         vm.attendanceHolidayDays(data[6].use ? Usage.Use : Usage.NotUse);
         //回数集計１
         vm.count1(data[7].use ? Usage.Use : Usage.NotUse);
+        vm.numberCounterSetting()[0] = data[7].setting;
         //回数集計2
         vm.count2(data[8].use ? Usage.Use : Usage.NotUse);
+        vm.numberCounterSetting()[1] = data[8].setting;
         //回数集計3
         vm.count3(data[9].use ? Usage.Use : Usage.NotUse);
+        vm.numberCounterSetting()[2] = data[9].setting;
       }
     }
 
@@ -213,10 +189,12 @@ module nts.uk.at.view.kml002.c {
         //{ icon: "images/go-out.png", link: '#', text: vm.$i18n('KML002_118') },
       ];
       _.forEach(links, (item) => {
-        vm.functionItems.push({...item, action: function() {             
-          vm.$jump(item.link);
-        }});
-      });     
+        vm.functionItems.push({
+          ...item, action: function () {
+            vm.$jump(item.link);
+          }
+        });
+      });
     }
   }
 

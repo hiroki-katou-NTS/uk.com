@@ -28,7 +28,11 @@ module nts.uk.at.view.kml002.b {
 
     switchOptions: KnockoutObservableArray<any> = ko.observableArray([]);
     functionItems: KnockoutObservableArray<any> = ko.observableArray([]);
-    
+    //not setting yet
+    laborCostTimeSetting: KnockoutObservable<boolean> = ko.observable(false);
+    numberCounterSetting: KnockoutObservable<boolean> = ko.observable(false);
+    workplaceTimeZoneSetting: KnockoutObservable<boolean> = ko.observable(false);
+
     constructor(params: any) {
       super();
       const vm = this;
@@ -62,18 +66,22 @@ module nts.uk.at.view.kml002.b {
 
     openDialogScreenD() {
       const vm = this;
-      vm.$window.modal('/view/kml/002/d/index.xhtml').then(() => {       
-        vm.getLaborCostTimeDetails();
-        $('#B323').focus();
+      vm.$window.modal('/view/kml/002/d/index.xhtml').then(() => {
+        vm.$window.storage('LABOR_COST_TIME_SETTING').then((data) => {         
+          if (!_.isNil(data) && !!data.setting)
+            vm.laborCostTimeSetting(data.setting); //true || false || null     
+        });
       });
     }
 
     openDialogScreenG() {
       const vm = this;
-      vm.$window.storage('KWL002_SCREEN_G_INPUT', { countingType: 0 }).then(() => {
+      vm.$window.storage('KML002_SCREEN_G_INPUT', { countingType: 0 }).then(() => {
         vm.$window.modal('/view/kml/002/g/index.xhtml').then(() => {
-          vm.getNumberCounterDetails();
-          $('#B343').focus();
+          vm.$window.storage('KML002_SCREEN_G_OUTPUT').then((data) => {           
+            if (!_.isNil(data) && !!data.setting)
+              vm.numberCounterSetting(data.setting); //true || false || null            
+          });
         });
       });
     }
@@ -81,17 +89,15 @@ module nts.uk.at.view.kml002.b {
     openDialogScreenE() {
       const vm = this;
       vm.$window.modal('/view/kml/002/e/index.xhtml').then(() => {
-        vm.getWorkplaceTimeZoneById();
-        $('#B363').focus();
+        vm.$window.storage('KML002_SCREEN_E_OUTPUT').then((data) => {           
+          if (!_.isNil(data) && !!data.setting)
+            vm.workplaceTimeZoneSetting(data.setting); //true || false || null            
+        });
       });
     }
 
-    //スケジュール職場計情報を登録する時
     registerScheduleRosterInfor() {
       const vm = this;
-
-      //スケジュール職場計情報を登録する時
-
       /* 
       ・「人件費・時間」の利用区分＝＝利用するが「人件費・時間」の詳細設定はまだ設定られない。
       ・「回数集計」の利用区分＝＝利用するが「回数集計」の詳細設定はまだ設定られない。
@@ -100,19 +106,18 @@ module nts.uk.at.view.kml002.b {
       const maxMsg = 3;
       let errorParams = [];
 
-      if (vm.laborCostTime() === Usage.Use && _.isNil(vm.laborCostTimeDetails())) {
+      if (vm.laborCostTime() === Usage.Use && !vm.laborCostTimeSetting()) {
         errorParams.push(vm.$i18n('KML002_119') + vm.$i18n('KML002_18'));
       }
 
-      if (vm.countingNumberTimes() === Usage.Use && _.isNil(vm.countingNumberTimesDetails())) {
+      if (vm.countingNumberTimes() === Usage.Use && !vm.numberCounterSetting()) {
         errorParams.push(vm.$i18n('KML002_119') + vm.$i18n('KML002_27'));
       }
 
-      if (vm.timeZoneNumberPeople() === Usage.Use && _.isNil(vm.timeZoneNumberPeopleDetails())) {
+      if (vm.timeZoneNumberPeople() === Usage.Use && !vm.workplaceTimeZoneSetting()) {
         errorParams.push(vm.$i18n('KML002_119') + vm.$i18n('KML002_33'));
       }
-
-      //errorParams = _.sortBy(errorParams).reverse();
+     
       let showMsg = [],
         Msg_id: string = errorParams.length > 0 ? 'Msg_1850' : 'Msg_15';
       if (errorParams.length > 0) {
@@ -131,7 +136,6 @@ module nts.uk.at.view.kml002.b {
       vm.$ajax(PATH.workplaceCounterRegister, params).done((data) => {
         vm.$dialog.info({ messageId: Msg_id, messageParams: showMsg }).then(() => {
           vm.$blockui('hide');
-          $('#B322').focus();
         });
       })
         .fail()
@@ -151,48 +155,6 @@ module nts.uk.at.view.kml002.b {
       })
         .fail(() => vm.$blockui('hide'))
         .always(() => vm.$blockui('hide'));
-
-      vm.getLaborCostTimeDetails();
-      vm.getWorkplaceTimeZoneById();
-      vm.getNumberCounterDetails();
-    }
-
-    /**
-     * Gets labor cost time details
-     */
-    getLaborCostTimeDetails() {
-      const vm = this;
-      vm.$ajax(PATH.getLaborCostTimeDetails).done((data) => {
-        if (!_.isNil(data) && data.length > 0) {
-          vm.laborCostTimeDetails(data);
-        } else
-          vm.laborCostTimeDetails(null);
-      });
-    }
-    /**
-     * Gets workplace time zone by id
-     */
-    getWorkplaceTimeZoneById() {
-      const vm = this;
-      vm.$ajax(PATH.getTimeZonDetails).done((data) => {
-        if (!_.isNil(data) && data.length > 0) {
-          vm.timeZoneNumberPeopleDetails(data);
-        } else
-          vm.timeZoneNumberPeopleDetails(null);
-      }).fail().always();
-    }
-
-    /**
-     * Gets number counter details
-     */
-    getNumberCounterDetails() {
-      const vm = this;
-      vm.$ajax(PATH.getNumberCounterDetails, { countType: 0 }).done((data) => {
-        if (!_.isNil(data) && data.numberOfTimeTotalDtos.length > 0) {
-          vm.countingNumberTimesDetails(data.numberOfTimeTotalDtos);
-        } else
-          vm.countingNumberTimesDetails(null)
-      }).fail().always();
     }
 
     fillDataToGrid(data: any) {
@@ -201,14 +163,17 @@ module nts.uk.at.view.kml002.b {
       if (!_.isNil(data) && data.length > 0) {
         //人件費・時間
         vm.laborCostTime(data[0].use ? Usage.Use : Usage.NotUse);
+        vm.laborCostTimeSetting(data[0].setting);
         //外部予算実績
         vm.externalBudgetResults(data[1].use ? Usage.Use : Usage.NotUse);
         //回数集計
         vm.countingNumberTimes(data[2].use ? Usage.Use : Usage.NotUse);
+        vm.numberCounterSetting(data[2].setting);
         //就業時間帯別の利用人数
         vm.numberPassengersWorkingHours(data[3].use ? Usage.Use : Usage.NotUse);
         //時間帯人数
         vm.timeZoneNumberPeople(data[4].use ? Usage.Use : Usage.NotUse);
+        vm.workplaceTimeZoneSetting(data[4].setting);
         //雇用人数
         vm.numberOfEmployees(data[5].use ? Usage.Use : Usage.NotUse);
         //分類人数        
@@ -250,10 +215,12 @@ module nts.uk.at.view.kml002.b {
         { icon: "images/go-out.png", link: '/view/ksu/006/a/index.xhtml', text: vm.$i18n('KML002_117') },
       ];
       _.forEach(links, (item) => {
-        vm.functionItems.push({...item, action: function() {             
-          vm.$jump(item.link);
-        }});
-      });     
+        vm.functionItems.push({
+          ...item, action: function () {
+            vm.$jump(item.link);
+          }
+        });
+      });
     }
   }
 

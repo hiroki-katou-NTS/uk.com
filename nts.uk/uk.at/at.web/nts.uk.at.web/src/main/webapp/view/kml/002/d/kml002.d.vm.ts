@@ -23,7 +23,8 @@ module nts.uk.at.view.kml002.d {
     d51LaborCosts: KnockoutObservable<number> = ko.observable(UsageClassification.Use);
 
     switchOptions: KnockoutObservableArray<any> = ko.observableArray([]);
-    laborCostTimeDetails: KnockoutObservableArray<any> = ko.observableArray([]);
+    //laborCostTimeDetails: KnockoutObservableArray<any> = ko.observableArray([]);
+    isSettingLaborCostTime: KnockoutObservable<any> = ko.observable(null);
 
     constructor(params: any) {
       super();
@@ -51,7 +52,9 @@ module nts.uk.at.view.kml002.d {
 
     closeDialog() {
       const vm = this;
-      vm.$window.close();
+      vm.$window.storage('LABOR_COST_TIME_SETTING', {setting: vm.isSettingLaborCostTime()}).then(() => {
+        vm.$window.close();
+      });
     }
 
     proceed() {
@@ -108,28 +111,30 @@ module nts.uk.at.view.kml002.d {
       vm.$blockui('show');
 
       vm.$ajax(PATH.wkpLaborCostAndTimeGetById).done((data) => {
-        if (!_.isNil(data)) {
+        if (!_.isNil(data) && data.length > 0 ) {
+          
+          vm.isSettingLaborCostTime(true);
           //sort asc
-          let laborCostTimeBugget: any = _.orderBy(data, 'laborCostAndTimeType', 'asc');
+          let laborCostTimeBudget: any = _.orderBy(data, 'laborCostAndTimeType', 'asc');
 
           //合計
-          if (!_.isNil(laborCostTimeBugget[0])) {
-            let total = laborCostTimeBugget[0].laborCostAndTimeDtos;
+          if (!_.isNil(laborCostTimeBudget[0])) {
+            let total = laborCostTimeBudget[0].laborCostAndTimeDtos;
             if (!_.isNil(total.useClassification)) vm.d31totalUsage(total.useClassification);
             if (!_.isNil(total.time)) vm.d31TimeReference(total.time);
             if (!_.isNil(total.laborCost)) vm.d31LaborCosts(total.laborCost);
             if (!_.isNil(total.budget)) vm.d31Budget(total.budget);
           }
           //就業時間
-          if (!_.isNil(laborCostTimeBugget[1])) {
-            let wkhours = laborCostTimeBugget[1].laborCostAndTimeDtos;
+          if (!_.isNil(laborCostTimeBudget[1])) {
+            let wkhours = laborCostTimeBudget[1].laborCostAndTimeDtos;
             if (!_.isNil(wkhours.useClassification)) vm.d41WorkingHours(wkhours.useClassification);
             if (!_.isNil(wkhours.time)) vm.d41TimeReference(wkhours.time);
             if (!_.isNil(wkhours.laborCost)) vm.d41LaborCosts(wkhours.laborCost);
           }
           //時間外時間
-          if (!_.isNil(laborCostTimeBugget[2])) {
-            let overtime = laborCostTimeBugget[2].laborCostAndTimeDtos;
+          if (!_.isNil(laborCostTimeBudget[2])) {
+            let overtime = laborCostTimeBudget[2].laborCostAndTimeDtos;
             if (!_.isNil(overtime.useClassification)) vm.d51Overtime(overtime.useClassification);
             if (!_.isNil(overtime.time)) vm.d51TimeReference(overtime.time);
             if (!_.isNil(overtime.laborCost)) vm.d51LaborCosts(overtime.laborCost);
@@ -173,12 +178,10 @@ module nts.uk.at.view.kml002.d {
         },
       ];
 
-      vm.$ajax(PATH.wkpLaborCostAndTimeRegister, { laborCostAndTimes: params }).done((data) => {
-        vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
-          vm.$blockui('hide');          
-          /* vm.$window.storage('LABOR_COST_TIME_DETAILS', params).then(() => {
-            vm.$window.close();
-          }); */
+      vm.$ajax(PATH.wkpLaborCostAndTimeRegister, { laborCostAndTimes: params }).done(() => {
+        vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {      
+          vm.isSettingLaborCostTime(true);
+          vm.$blockui('hide');                   
         });
       })
         .fail((error) => { })

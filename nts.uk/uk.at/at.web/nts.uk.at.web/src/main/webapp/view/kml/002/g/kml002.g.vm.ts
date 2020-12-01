@@ -14,10 +14,11 @@ module nts.uk.at.view.kml002.g {
 
     columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
     gridHeight: KnockoutObservable<number> = ko.observable(285);
-    countingType: KnockoutObservable<number> = ko.observable(0);   
+    countingType: KnockoutObservable<number> = ko.observable(0);
 
     limitedItems: KnockoutObservable<string> = ko.observable(null);
     limitedNumber: KnockoutObservable<number> = ko.observable(9999);
+    isNumberCounterSetting: KnockoutObservable<any> = ko.observable(null);
 
     constructor(params: any) {
       super();
@@ -27,16 +28,16 @@ module nts.uk.at.view.kml002.g {
         { headerText: vm.$i18n('KML002_112'), key: 'name', width: 100, formatter: _.escape },
       ]);
 
-      vm.$window.storage('KWL002_SCREEN_G_INPUT').then((data) => {
-        if(!_.isNil(data)) {
+      vm.$window.storage('KML002_SCREEN_G_INPUT').then((data) => {
+        if (!_.isNil(data)) {
           vm.countingType(data.countingType);
-          if( data.countingType > 0 ) {
-            vm.limitedItems(vm.$i18n('KML002_114'));          
+          if (data.countingType > 0) {
+            vm.limitedItems(vm.$i18n('KML002_114'));
             vm.limitedNumber(10);
           }
-          vm.getTimeNumberCounter();      
+          vm.getTimeNumberCounter();
         }
-      });      
+      });
     }
 
     created(params: any) {
@@ -45,23 +46,22 @@ module nts.uk.at.view.kml002.g {
 
       const userAgent = window.navigator.userAgent;
       let msie = userAgent.match(/Trident.*rv\:11\./);
-      if(!_.isNil(msie) && msie.index > -1) vm.gridHeight(290);
+      if (!_.isNil(msie) && msie.index > -1) vm.gridHeight(290);
     }
 
     mounted() {
-      const vm = this;            
+      const vm = this;
       $("#swapList-grid1").igGrid("container").focus();
-      //$('#swapList-gridArea1').attr('tabindex', '3').focus();
     }
 
     closeDialog() {
       const vm = this;
-      vm.$window.storage('KWL002_SCREEN_G_OUTPUT', null).then(() => {
+      vm.$window.storage('KML002_SCREEN_G_OUTPUT', { setting: vm.isNumberCounterSetting() }).then(() => {
         vm.$window.close();
       });
     }
 
-    createSelectableItems( listItems: any) {
+    createSelectableItems(listItems: any) {
       const vm = this;
       var array = [];
       _.forEach(listItems, (x) => {
@@ -76,7 +76,7 @@ module nts.uk.at.view.kml002.g {
       //G4_1「選択可能な項目」で項目はなにもない場合。
       if (vm.selectableItems().length <= 0 && vm.currentCodeListSwap().length <= 0) {
         vm.$dialog.error({ messageId: 'Msg_37' }).then(() => {
-          vm.$window.close();
+          vm.closeDialog();
         })
         return;
       }
@@ -97,42 +97,40 @@ module nts.uk.at.view.kml002.g {
       });
 
       let params = {
-        "type" : vm.countingType(),
-	      "selectedNoList": selectedNoList
+        "type": vm.countingType(),
+        "selectedNoList": selectedNoList
       };
 
       vm.$blockui('show');
       vm.$ajax(PATH.timeNumberCounterRegister, params).done(() => {
-        vm.$window.storage('KWL002_SCREEN_G_OUTPUT', vm.currentCodeListSwap()).then(() => {
-          vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
-            vm.$blockui('hide');
-            //vm.$window.close();
-          });
+        vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
+          vm.isNumberCounterSetting(true);
+          vm.$blockui('hide');
         });
-      }).fail().always(() => vm.$blockui('hide'));      
-    }    
+      }).fail().always(() => vm.$blockui('hide'));
+    }
 
     getTimeNumberCounter() {
-      const vm = this;      
+      const vm = this;
       vm.$blockui('show');
-      vm.$ajax( PATH.timeNumberCounterGetInfo, { countType :  vm.countingType() }).done((data) => { 
-        if(!_.isNil(data)) {          
-          if(data.countNumberOfTimeDtos.length > 0) {
-            vm.createSelectableItems(data.countNumberOfTimeDtos);            
+      vm.$ajax(PATH.timeNumberCounterGetInfo, { countType: vm.countingType() }).done((data) => {
+        if (!_.isNil(data)) {
+          if (data.countNumberOfTimeDtos.length > 0) {
+            vm.createSelectableItems(data.countNumberOfTimeDtos);
+            
+            if (data.numberOfTimeTotalDtos.length > 0) {
+              vm.currentCodeListSwap(data.numberOfTimeTotalDtos);
+              vm.isNumberCounterSetting(true);
+            }
           } else {
             vm.$dialog.error({ messageId: 'Msg_37' }).then(() => {
-              vm.$blockui('hide');
-              vm.$window.close();
+              vm.closeDialog();
             });
           }
-
-          if(data.numberOfTimeTotalDtos.length > 0) {
-            vm.currentCodeListSwap(data.numberOfTimeTotalDtos);            
-          }
-        }        
+        }
       })
-      .fail()
-      .always(() => vm.$blockui('hide'));
+        .fail()
+        .always(() => vm.$blockui('hide'));
     }
   }
 
