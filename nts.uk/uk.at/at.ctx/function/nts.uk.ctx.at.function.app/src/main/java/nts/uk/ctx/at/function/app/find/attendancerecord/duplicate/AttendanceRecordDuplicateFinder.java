@@ -147,7 +147,7 @@ public class AttendanceRecordDuplicateFinder {
 			if (freeSetting.isPresent() && !freeSetting.get().getAttendanceRecordExportSettings().isEmpty()) {
 				freeSetting.get().getAttendanceRecordExportSettings().get(0).setCode(new ExportSettingCode(param.getDuplicateCode()));
 				freeSetting.get().getAttendanceRecordExportSettings().get(0).setName(new ExportSettingName(param.getDuplicateName()));
-				freeSetting.get().getAttendanceRecordExportSettings().get(0).setLayoutId(UUID.randomUUID().toString());
+				freeSetting.get().getAttendanceRecordExportSettings().get(0).setLayoutId(duplicateId);
 				
 				freeSettingRepo.save(freeSetting.get());
 				attdRecRepo.duplicateAttendanceRecord(layoutId, duplicateId);
