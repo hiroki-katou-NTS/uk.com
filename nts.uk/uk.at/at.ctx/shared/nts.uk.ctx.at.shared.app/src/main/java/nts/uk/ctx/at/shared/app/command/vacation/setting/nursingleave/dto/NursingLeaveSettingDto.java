@@ -4,14 +4,17 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.vacation.setting.nursingleave.dto;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildCareNurseUpperLimit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSettingGetMemento;
-import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NumberDayNursing;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NumberOfCaregivers;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingGetMemento;
@@ -31,7 +34,7 @@ public class NursingLeaveSettingDto {
     private Integer nursingCategory;
 
     /** The start month day. */
-    private MonthDay startMonthDay;
+    private Integer startMonthDay;
 
     /** The nursing number leave day. */
     private Integer nursingNumberLeaveDay;
@@ -118,7 +121,10 @@ public class NursingLeaveSettingDto {
          */
         @Override
         public MonthDay getStartMonthDay() {
-            return this.setting.startMonthDay;
+            //return this.setting.startMonthDay;
+        	int month = this.setting.startMonthDay / 100;
+        	int day = this.setting.startMonthDay % 100;
+        	return new MonthDay(month, day);
         }
 
         /*
@@ -128,9 +134,17 @@ public class NursingLeaveSettingDto {
          * NursingVacationSettingGetMemento#getMaxPersonSetting()
          */
         @Override
-        public MaxPersonSetting getMaxPersonSetting() {
-            return new MaxPersonSetting(new JpaMaxPersonSettingGetMemento(this.setting.nursingNumberLeaveDay,
-                    this.setting.nursingNumberPerson));
+//        public MaxPersonSetting getMaxPersonSetting() {
+//            return new MaxPersonSetting(new JpaMaxPersonSettingGetMemento(this.setting.nursingNumberLeaveDay,
+//                    this.setting.nursingNumberPerson));
+//        }
+        public List<MaxPersonSetting> getMaxPersonSetting() {
+        	List<MaxPersonSetting> maxPersonSetting = new ArrayList<>();
+
+        	maxPersonSetting.add(MaxPersonSetting.of(new ChildCareNurseUpperLimit(this.setting.nursingNumberLeaveDay), new NumberOfCaregivers(1)));
+        	maxPersonSetting.add(MaxPersonSetting.of(new ChildCareNurseUpperLimit(this.setting.nursingNumberLeaveDay), new NumberOfCaregivers(2)));
+
+            return maxPersonSetting;
         }
 
 		/*
@@ -186,8 +200,8 @@ public class NursingLeaveSettingDto {
          * MaxPersonSettingGetMemento#getNursingNumberLeaveDay()
          */
         @Override
-        public NumberDayNursing getNursingNumberLeaveDay() {
-            return this.nursingNumberLeaveDay != null ? new NumberDayNursing(this.nursingNumberLeaveDay) : null;
+        public ChildCareNurseUpperLimit getNursingNumberLeaveDay() {
+            return this.nursingNumberLeaveDay != null ? new ChildCareNurseUpperLimit(this.nursingNumberLeaveDay) : null;
         }
 
         /*
@@ -197,8 +211,8 @@ public class NursingLeaveSettingDto {
          * MaxPersonSettingGetMemento#getNursingNumberPerson()
          */
         @Override
-        public NumberDayNursing getNursingNumberPerson() {
-            return this.nursingNumberPerson != null ? new NumberDayNursing(this.nursingNumberPerson) : null;
+        public NumberOfCaregivers getNursingNumberPerson() {
+            return this.nursingNumberPerson != null ? new NumberOfCaregivers(this.nursingNumberPerson) : null;
         }
     }
 }
