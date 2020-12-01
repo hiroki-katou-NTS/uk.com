@@ -10,7 +10,8 @@ module nts.uk.ui.components.fullcalendar {
     const C_COMP_NAME = 'fc-copy';
     const E_COMP_NAME = 'fc-editor';
     const COMPONENT_NAME = 'fullcalendar';
-    const POWNER_CLASS = 'popup-owner';
+    const POWNER_CLASS_CPY = 'popup-owner-copy';
+    const POWNER_CLASS_EVT = 'popup-owner-event';
     const DEFAULT_STYLES = `
         body.fc-unselectable li.fc-event-dragging{
             list-style: none;
@@ -730,10 +731,17 @@ module nts.uk.ui.components.fullcalendar {
             dataEvent.ctrl.valueHasMutated();
             dataEvent.shift.valueHasMutated();
 
+            popupPosition.event
+                .subscribe(e => {
+                    if (!e) {
+                        $(`.${POWNER_CLASS_EVT}`).removeClass(POWNER_CLASS_EVT);
+                    }
+                });
+
             popupPosition.copyDay
                 .subscribe(c => {
                     if (!c) {
-                        $(`.${POWNER_CLASS}`).removeClass();
+                        $(`.${POWNER_CLASS_CPY}`).removeClass(POWNER_CLASS_CPY);
                     }
                 });
 
@@ -904,7 +912,7 @@ module nts.uk.ui.components.fullcalendar {
                             const bound = tg.getBoundingClientRect();
                             const { top, left } = bound;
 
-                            tg.classList.add(POWNER_CLASS);
+                            tg.classList.add(POWNER_CLASS_CPY);
 
                             popupPosition.copyDay({ top, left: left - 253 });
                         }
@@ -940,7 +948,9 @@ module nts.uk.ui.components.fullcalendar {
                 })) as any;
             const mutatedEvents = () => {
                 if (ko.isObservable(events)) {
-                    events(getEvents().filter(f => f.display !== 'background'));
+                    const evts = getEvents().filter(f => f.display !== 'background');
+
+                    events(evts.filter(f => !_.isEmpty(f.extendedProps)));
                 }
             };
 
@@ -951,7 +961,7 @@ module nts.uk.ui.components.fullcalendar {
                     const unwraped = ko.unwrap<FullCalendar.EventApi[]>(dragItems);
 
                     if (id) {
-                        const exist = _.find(unwraped, (e: FullCalendar.EventApi) => e.id === id);
+                        const exist = _.find(unwraped, (e: FullCalendar.EventApi) => e.extendedProps.id === id);
 
                         if (exist) {
                             const { title, backgroundColor, extendedProps } = exist;
@@ -1002,7 +1012,14 @@ module nts.uk.ui.components.fullcalendar {
                     const { start, end } = event;
 
                     if (!ko.unwrap(dataEvent.shift)) {
-                        selectedEvents([{ start, end }]);
+                        const [first] = selectedEvents();
+                        if (!first) {
+                            selectedEvents([{ start, end }]);
+                        } else {
+                            if (!moment(start).isSame(first.start) && !moment(end).isSame(first.end)) {
+                                selectedEvents([{ start, end }]);
+                            }
+                        }
                     } else {
                         const unwraped = ko.unwrap<SELECTEDEVENT[]>(selectedEvents);
 
@@ -1098,7 +1115,7 @@ module nts.uk.ui.components.fullcalendar {
                         .resolve(true)
                         .then(() => {
                             calendar.unselect();
-                            calendar.addEvent(arg);
+                            calendar.addEvent({ start, end });
                         })
                         .then(() => {
                             // update data sources
@@ -1106,9 +1123,13 @@ module nts.uk.ui.components.fullcalendar {
                             selectedEvents([{ start, end }]);
                         });
                 },
+                eventRemove: (args: FullCalendar.EventRemoveArg) => {
+                    mutatedEvents();
+                    selectedEvents([]);
+                },
                 eventReceive: (info: FullCalendar.EventReceiveLeaveArg) => {
-                    const { id, title, start, backgroundColor } = info.event;
-                    const event: any = { id, title, start, end: moment(start).add(1, 'hour').toDate(), backgroundColor };
+                    const { title, start, backgroundColor, extendedProps } = info.event;
+                    const event: any = { title, start, end: moment(start).add(1, 'hour').toDate(), backgroundColor, extendedProps };
 
                     events.push(event);
                 },
@@ -1153,6 +1174,27 @@ module nts.uk.ui.components.fullcalendar {
                     }
 
                     event.datesSet.apply(viewModel, [start, end]);
+                },
+                eventDidMount: (args) => {
+                    const { el, event } = args;
+                    const selected = ko.unwrap<SELECTEDEVENT[]>(selectedEvents);
+
+                    if (selected.length === 1 && !ko.unwrap(dataEvent.shift)) {
+                        const { end, start } = selected[0];
+
+                        if (moment(start).isSame(event.start) && moment(end).isSame(event.end)) {
+                            $.Deferred()
+                                .resolve(true)
+                                .then(() => el.classList.add(POWNER_CLASS_EVT))
+                                .then(() => {
+                                    const bound = el.getBoundingClientRect();
+                                    const { top, left } = bound;
+
+                                    dataEvent.event(event);
+                                    popupPosition.event({ top, left });
+                                });
+                        }
+                    }
                 },
                 viewDidMount: (opts) => {
                     updateActive();
@@ -1321,7 +1363,7 @@ module nts.uk.ui.components.fullcalendar {
                 .removeAttr('data-bind');
 
             // test item
-            _.extend(window, { dragger, calendar, params, computedEvents, selectedEvents });
+            _.extend(window, { dragger, calendar, params, computedEvents, selectedEvents, popupPosition });
         }
 
         public destroyed() {
@@ -1410,15 +1452,19 @@ module nts.uk.ui.components.fullcalendar {
                 if (evt.keyCode === 18 || evt.altKey) {
                     dataEvent.alt(false);
                 }
+
+                if (evt.keyCode === 46) {
+
+                }
             });
 
             vm.registerEvent('resize', () => {
-                this.popupPosition.event(null);
+                // this.popupPosition.event(null);
                 this.popupPosition.copyDay(null);
             });
 
             vm.registerEvent('mousewheel', () => {
-                this.popupPosition.event(null);
+                // this.popupPosition.event(null);
                 this.popupPosition.copyDay(null);
             });
         }
@@ -1438,50 +1484,40 @@ module nts.uk.ui.components.fullcalendar {
     }
 
     export module components {
+
+        type EVENT_PARAMS = {
+            data: KnockoutObservable<null | FullCalendar.EventApi>;
+            position: KnockoutObservable<null | { top: number; left: number; }>;
+        };
+
         @handler({
             bindingName: E_COMP_NAME,
             validatable: true,
             virtual: false
         })
         export class FullCalendarEditorBindingHandler implements KnockoutBindingHandler {
-            init(element: HTMLElement): { controlsDescendantBindings: boolean; } {
+            init(element: HTMLElement, valueAccessor: () => FullCalendar.EventApi, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
+                const name = E_COMP_NAME;
+                const data = valueAccessor();
+                const position = allBindingsAccessor.get('position');
+                const component = { name, params: { data, position } };
+
                 element.removeAttribute('data-bind');
+                element.classList.add('fc-popup-editor');
+                element.classList.add('fc-popup-event');
+
+                ko.applyBindingsToNode(element, { component }, bindingContext);
 
                 return { controlsDescendantBindings: true };
-            }
-            update(element: HTMLElement, valueAccessor: () => KnockoutObservable<null | FullCalendar.EventApi>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
-                const name = E_COMP_NAME;
-                const params = valueAccessor();
-                const event = ko.unwrap(params);
-                const component = { name, params };
-
-                ko.cleanNode(element);
-                element.innerHTML = '';
-
-                if (event) {
-                    ko.applyBindingsToNode(element, { component }, bindingContext);
-                } else {
-                    $.Deferred()
-                        .resolve(true)
-                        .then(() => {
-                            element
-                                .classList
-                                .remove('show');
-                        })
-                        .then(() => {
-                            element.style.top = null;
-                            element.style.left = null;
-                        });
-                }
             }
         }
 
         @component({
             name: E_COMP_NAME,
             template: `<div class="toolbar">
-                <svg width="20" height="20" viewBox="0 0 24 24" focusable="false" title="Email">
+                <!--<svg width="20" height="20" viewBox="0 0 24 24" focusable="false" title="Email">
                     <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-.8 2L12 10.8 4.8 6h14.4zM4 18V7.87l8 5.33 8-5.33V18H4z"></path>
-                </svg>
+                </svg>-->
                 <svg width="20" height="20" viewBox="0 0 24 24" focusable="false" title="Edit" data-bind="click: edit, timeClick: -1">
                     <path d="M20.41 4.94l-1.35-1.35c-.78-.78-2.05-.78-2.83 0L3 16.82V21h4.18L20.41 7.77c.79-.78.79-2.05 0-2.83zm-14 14.12L5 19v-1.36l9.82-9.82 1.41 1.41-9.82 9.83z"></path>
                 </svg>
@@ -1497,94 +1533,10 @@ module nts.uk.ui.components.fullcalendar {
             </div>`
         })
         export class FullCalendarEditorComponent extends ko.ViewModel {
-            constructor(private data: KnockoutObservable<null | FullCalendar.EventApi>) {
-                super();
-            }
-
-            mounted() {
-                const vm = this;
-                const data = ko.unwrap(vm.data);
-
-                $(vm.$el).find('[data-bind]').removeAttr('data-bind');
-            }
-
-            edit() {
-                const vm = this;
-
-                vm.data(null);
-            }
-
-            remove() {
-                const vm = this;
-                const data = ko.unwrap(vm.data);
-
-                if (data) {
-                    data.remove();
-                }
-
-                vm.data(null);
-            }
-
-            close() {
-                const vm = this;
-                const data = ko.unwrap(vm.data);
-
-                if (data) {
-                    const { id, groupId, title } = data;
-
-                    if (!id && !groupId && !title) {
-                        data.remove();
-                    }
-                }
-
-                vm.data(null);
-            }
-        }
-
-        @handler({
-            bindingName: C_COMP_NAME,
-            validatable: false,
-            virtual: false
-        })
-        export class FullCalendarCopyBindingHandler implements KnockoutBindingHandler {
-            init(element: HTMLElement, valueAccessor: () => FullCalendar.EventApi, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
-                const name = C_COMP_NAME;
-                const data = valueAccessor();
-                const position = allBindingsAccessor.get('position');
-                const component = { name, params: { data, position } };
-
-                element.removeAttribute('data-bind');
-                element.classList.add('fc-popup-editor');
-                element.classList.add('fx-popup-copyday');
-
-                ko.applyBindingsToNode(element, { component }, bindingContext);
-
-                return { controlsDescendantBindings: true };
-            }
-        }
-
-        type COPY_PARAMS = {
-            data: KnockoutObservable<null | { from: Date; to: Date; }>;
-            position: KnockoutObservable<null | { top: number; left: number; }>;
-        };
-
-        @component({
-            name: C_COMP_NAME,
-            template: `<div data-bind="text: ko.toJSON($component.params, null, 4)">
-            </div>
-            <div>
-                <hr />
-                <button class="small" data-bind="i18n: 'Copy'"></button>
-                <button class="small" data-bind="i18n: 'Close', click: $component.close"></button>
-            </div>
-            `
-        })
-        export class FullCalendarCopyDayComponent extends ko.ViewModel {
             event!: (evt: JQueryEventObject) => void;
 
-            constructor(private params: COPY_PARAMS) {
+            constructor(private params: EVENT_PARAMS) {
                 super();
-
             }
 
             mounted() {
@@ -1614,12 +1566,130 @@ module nts.uk.ui.components.fullcalendar {
                 vm.event = (evt: JQueryEventObject) => {
                     const tg = evt.target as HTMLElement;
 
-                    if (tg) {
-                        if (tg.classList.contains(POWNER_CLASS) || $(tg).closest(`.${POWNER_CLASS}`).length || $(tg).closest('.fx-popup-copyday').length) {
-                            return true;
+                    if (tg && !!ko.unwrap(position)) {
+                        if (!tg.classList.contains(POWNER_CLASS_EVT) && !$(tg).closest(`.${POWNER_CLASS_EVT}`).length && !$(tg).closest('.fc-popup-event').length) {
+                            position(null);
                         }
+                    }
+                };
 
+                $(document).on('click', vm.event);
+            }
+
+            destroyed() {
+                const vm = this;
+
+                $(document).off('click', vm.event);
+            }
+
+            edit() {
+                const vm = this;
+
+                // vm.data(null);
+            }
+
+            remove() {
+                const vm = this;
+                const { params } = vm;
+                const { data, position } = params;
+
+                $.Deferred()
+                    .resolve(true)
+                    .then(() => {
                         position(null);
+                        data().remove();
+                    })
+                    .then(() => data(null));
+            }
+
+            close() {
+                const vm = this;
+                const { params } = vm;
+                const { data, position } = params;
+
+                $.Deferred()
+                    .resolve(true)
+                    .then(() => position(null))
+                    .then(() => data(null));
+            }
+        }
+
+        @handler({
+            bindingName: C_COMP_NAME,
+            validatable: false,
+            virtual: false
+        })
+        export class FullCalendarCopyBindingHandler implements KnockoutBindingHandler {
+            init(element: HTMLElement, valueAccessor: () => FullCalendar.EventApi, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
+                const name = C_COMP_NAME;
+                const data = valueAccessor();
+                const position = allBindingsAccessor.get('position');
+                const component = { name, params: { data, position } };
+
+                element.removeAttribute('data-bind');
+                element.classList.add('fc-popup-editor');
+                element.classList.add('fc-popup-copyday');
+
+                ko.applyBindingsToNode(element, { component }, bindingContext);
+
+                return { controlsDescendantBindings: true };
+            }
+        }
+
+        type COPY_PARAMS = {
+            data: KnockoutObservable<null | { from: Date; to: Date; }>;
+            position: KnockoutObservable<null | { top: number; left: number; }>;
+        };
+
+        @component({
+            name: C_COMP_NAME,
+            template: `<div data-bind="text: ko.toJSON($component.params, null, 4)">
+            </div>
+            <div>
+                <hr />
+                <button class="small" data-bind="i18n: 'Copy'"></button>
+                <button class="small" data-bind="i18n: 'Close', click: $component.close"></button>
+            </div>
+            `
+        })
+        export class FullCalendarCopyDayComponent extends ko.ViewModel {
+            event!: (evt: JQueryEventObject) => void;
+
+            constructor(private params: COPY_PARAMS) {
+                super();
+            }
+
+            mounted() {
+                const vm = this;
+                const { $el, params } = vm;
+                const { data, position } = params;
+
+                ko.computed({
+                    read: () => {
+                        const pst = ko.unwrap(position);
+
+                        if (!pst) {
+                            $el.removeAttribute('style');
+                            $el.classList.remove('show');
+                        } else {
+                            const { top, left } = pst;
+
+                            $el.classList.add('show');
+
+                            $el.style.top = `${top}px`;
+                            $el.style.left = `${left}px`;
+                        }
+                    },
+                    disposeWhenNodeIsRemoved: $el
+                });
+
+                vm.event = (evt: JQueryEventObject) => {
+                    const tg = evt.target as HTMLElement;
+
+                    if (tg && !!ko.unwrap(position)) {
+                        if (!tg.classList.contains(POWNER_CLASS_CPY) && !$(tg).closest(`.${POWNER_CLASS_CPY}`).length && !$(tg).closest('.fc-popup-copyday').length) {
+                            position(null);
+                        }
                     }
                 };
 
