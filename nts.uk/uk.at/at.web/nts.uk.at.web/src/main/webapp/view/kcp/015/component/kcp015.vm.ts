@@ -47,17 +47,17 @@ module nts.uk.ui.at.kcp015.shared {
     @component({
         name: COMPONENT_NAME,
         template: `<!-- ko let: {text: nts.uk.resource.getText } -->
-             <button id="showPopup" data-bind="text: text('KCP015_1'), visible: visibleA1 "></button>
+             <button tabindex="12" id="showPopup" data-bind="text: text('KCP015_1'), visible: visibleA1 "></button>
              <div id="A1" class="popup-area popup-panel btn10">
                 <div id="button-top">
-                    <button class="small compensation" data-bind="text: text('Com_CompensationHoliday'), click: openKDL005, visible: visibleA31Com "></button>
-                    <button class="small paid"         data-bind="text: text('Com_PaidHoliday'),         click: openKDL020, visible: visibleA33Com "></button>
-                    <button class="small exsess"       data-bind="text: text('Com_ExsessHoliday'),       click: openKDL017, visible: visibleA35Com "></button>
+                    <button tabindex="1" class="small compensation" data-bind="text: text('Com_CompensationHoliday'), click: openKDL005, visible: visibleA31Com "></button>
+                    <button tabindex="3" class="small paid"         data-bind="text: text('Com_PaidHoliday'),         click: openKDL020, visible: visibleA33Com "></button>
+                    <button tabindex="5" class="small exsess"       data-bind="text: text('Com_ExsessHoliday'),       click: openKDL017, visible: visibleA35Com "></button>
                 </div>
                 <div id="button-bot">
-                    <button class="small substitute" data-bind="text: text('Com_SubstituteHoliday'), click: openKDL009, visible: visibleA32Com "></button>
-                    <button class="small fundedPaid" data-bind="text: text('Com_FundedPaidHoliday'), click: openKDL029, visible: visibleA34Com "></button>
-                    <button class="small supportsetting" data-bind="text: text('KCP015_2'),          click: openKDL039, visible: visibleA36Com "></button>
+                    <button tabindex="2" class="small substitute"     data-bind="text: text('Com_SubstituteHoliday'), click: openKDL009, visible: visibleA32Com "></button>
+                    <button tabindex="4" class="small fundedPaid"     data-bind="text: text('Com_FundedPaidHoliday'), click: openKDL029, visible: visibleA34Com "></button>
+                    <button tabindex="6" class="small supportsetting" data-bind="text: text('KCP015_2'),          click: openKDL039, visible: visibleA36Com "></button>
                 </div>
              </div><!-- /ko -->`
     })
@@ -135,6 +135,8 @@ module nts.uk.ui.at.kcp015.shared {
                 vm.visibleA34Com(data.divisionOfAnnualHoliday);
 
                 vm.visibleA35Com(data.overtimeUseCls60H);
+                
+                vm.visibleA36Com(true);
                 
                 dfd.resolve();
             }).fail(function() {

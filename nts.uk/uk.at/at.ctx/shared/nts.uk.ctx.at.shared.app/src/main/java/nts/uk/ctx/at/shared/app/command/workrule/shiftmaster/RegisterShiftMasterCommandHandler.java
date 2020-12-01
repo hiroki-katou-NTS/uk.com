@@ -13,12 +13,16 @@ import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.MakeShiftMasterService;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterRepository;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.UpdateShiftMasterService;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
@@ -41,27 +45,27 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 
 	@Inject
 	private WorkTypeRepository workTypeRepo;
-	
+
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepository;
-	
+
 	@Inject
 	private WorkTimeSettingService workTimeSettingService;
-	
-	
+
+
 
 	@Override
 	protected void handle(CommandHandlerContext<RegisterShiftMasterCommand> context) {
 		String companyId = AppContexts.user().companyId();
 		RegisterShiftMasterCommand cmd = context.getCommand();
-		
+
 		Optional<ShiftMaster> existed = shiftMasterRepo.getByShiftMaterCd(companyId,
 				new ShiftMasterCode(cmd.getShiftMasterCode()).v());
 		if (cmd.getNewMode() && existed.isPresent()) {
 			throw new BusinessException("Msg_3");
 		}
 
-		WorkInformation.Require workRequired = new WorkInfoRequireImpl(basicScheduleService, workTypeRepo,workTimeSettingRepository,workTimeSettingService, basicScheduleService);
+		WorkInformation.Require workRequired = new WorkInfoRequireImpl(basicScheduleService, workTypeRepo,workTimeSettingRepository,workTimeSettingService);
 		ShiftMaster dom = cmd.toDomain();
 		dom.checkError(workRequired);
 
@@ -76,32 +80,29 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 			persist = UpdateShiftMasterService.updateShiftMater(workRequired, updateRequired, cmd.getShiftMasterCode(),
 					dom.getDisplayInfor(), new WorkInformation(cmd.getWorkTypeCd(), cmd.getWorkTimeSetCd()));
 		}
-		
+
 		transaction.execute(() -> {
 			persist.run();
 		});
-		
+
 	}
 
 	@AllArgsConstructor
 	private static class WorkInfoRequireImpl implements WorkInformation.Require {
-		
+
 		private final String companyId = AppContexts.user().companyId();
-		
+
 		@Inject
 		private BasicScheduleService service;
-		
+
 		@Inject
 		private WorkTypeRepository workTypeRepo;
-		
+
 		@Inject
 		private WorkTimeSettingRepository workTimeSettingRepository;
-		
+
 		@Inject
 		private WorkTimeSettingService workTimeSettingService;
-		
-		@Inject
-		private BasicScheduleService basicScheduleService;
 
 		@Override
 		public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
@@ -109,24 +110,42 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 		}
 
 		@Override
-		public Optional<WorkType> findByPK(String workTypeCd) {
+		public Optional<WorkType> getWorkType(String workTypeCd) {
 			return workTypeRepo.findByPK(companyId, workTypeCd);
 		}
 
 		@Override
-		public Optional<WorkTimeSetting> findByCode(String workTimeCode) {
+		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
 			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
 		}
 
 		@Override
-		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTimeCd,
-				String workTypeCd, Integer workNo) {
+		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd, Integer workNo) {
 			return workTimeSettingService .getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
 		}
 
 		@Override
-		public WorkStyle checkWorkDay(String workTypeCode) {
-			return basicScheduleService.checkWorkDay(workTypeCode);
+		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
 		}
 	}
 
@@ -146,7 +165,7 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 			return shiftMasterRepo.checkExistsByCd(companyId, shiftMaterCode);
 		}
 
-		
+
 		@Override
 		public void insert(ShiftMaster shiftMater, String workTypeCd, String workTimeCd) {
 			shiftMasterRepo.insert(shiftMater);
@@ -158,7 +177,7 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 	private static class UpdateShiftMasterRequireImpl implements UpdateShiftMasterService.Require {
 
 		private final String companyId = AppContexts.user().companyId();
-		
+
 		@Inject
 		private ShiftMasterRepository shiftMasterRepo;
 

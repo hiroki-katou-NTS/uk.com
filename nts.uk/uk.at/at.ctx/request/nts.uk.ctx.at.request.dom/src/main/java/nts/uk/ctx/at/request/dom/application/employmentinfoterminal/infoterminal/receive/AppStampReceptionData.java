@@ -3,7 +3,7 @@ package nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infotermina
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import nts.arc.layer.dom.objecttype.DomainValue;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStampCombinationAtr;
+import nts.uk.ctx.at.request.dom.application.stamp.EngraveAtr;
 
 /**
  * @author ThanhNX
@@ -54,27 +54,27 @@ public class AppStampReceptionData extends ApplicationReceptionData implements D
 		this.reason = builder.reason;
 	}
 
-	public AppStampCombinationAtr convertCombi() {
+	public EngraveAtr convertCombi() {
 		LeaveCategory leaveCate = LeaveCategory.valueStringOf(stampType);
 		switch (leaveCate) {
 
 		case WORK:
-			return AppStampCombinationAtr.ATTENDANCE;
+			return EngraveAtr.ATTENDANCE;
 
 		case LEAVE:
-			return AppStampCombinationAtr.OFFICE_WORK;
+			return EngraveAtr.OFFICE_WORK;
 
 		case GO_OUT:
-			return AppStampCombinationAtr.GO_OUT;
+			return EngraveAtr.GO_OUT;
 
 		case RETURN:
-			return AppStampCombinationAtr.RETURN;
+			return EngraveAtr.RETURN;
 
-		case WORK_TEMPORARY:
-			return AppStampCombinationAtr.EXTRAORDINARY_ATTENDANCE;
-
-		case RETIRED_TEMPORARY:
-			return AppStampCombinationAtr.EXTRAORDINARY_OFFICE_WORK;
+//		case WORK_TEMPORARY:
+//			return AppStampCombinationAtr.EXTRAORDINARY_ATTENDANCE;
+//
+//		case RETIRED_TEMPORARY:
+//			return AppStampCombinationAtr.EXTRAORDINARY_OFFICE_WORK;
 
 		default:
 			return null;

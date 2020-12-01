@@ -12,22 +12,22 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.adapter.AffCompanyHistImport;
 import nts.uk.ctx.at.function.dom.adapter.AffWorkplaceHistoryImport;
 import nts.uk.ctx.at.function.dom.adapter.EmployeeHistWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.WorkplaceWorkRecordAdapter;
-import nts.uk.ctx.at.function.dom.adapter.dailyperformanceformat.businesstype.BusinessTypeEmpOfHistAdapter;
-import nts.uk.ctx.at.function.dom.adapter.dailyperformanceformat.businesstype.BusinessTypeOfEmpHistImport;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecution;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetClassification;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetSetting;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeHistory;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.repository.BusinessTypeEmpOfHistoryRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 異動者・勤務種別変更者リスト作成処理（スケジュール用） ( old :対象社員を絞り込み)
@@ -44,7 +44,7 @@ public class ChangePersionListForSche {
 	private WorkplaceWorkRecordAdapter workplaceWorkRecordAdapter;
 	
 	@Inject
-	private BusinessTypeEmpOfHistAdapter businessTypeEmpOfHistAdapter;
+	private BusinessTypeEmpOfHistoryRepository businessTypeEmpOfHistRepo;
 	
 	@Inject
 	private EmployeeHistWorkRecordAdapter employeeHistWorkRecordAdapter;
@@ -92,8 +92,8 @@ public class ChangePersionListForSche {
 			if (setting.isRecreateWorkType()) {
 				employeeIdList.forEach(x -> {
 					// ドメインモデル「社員の勤務種別の履歴」を取得する
-					Optional<BusinessTypeOfEmpHistImport> optional = this.businessTypeEmpOfHistAdapter
-							.findByEmployeeDesc(AppContexts.user().companyId(), x);
+					Optional<BusinessTypeOfEmployeeHistory> optional = this.businessTypeEmpOfHistRepo
+							.findByEmployee(AppContexts.user().companyId(), x);
 					if (optional.isPresent()) {
 						for (DateHistoryItem history : optional.get().getHistory()) {
 							// 「全締めの期間.開始日年月日」以降に「社員の勤務種別の履歴.履歴.期間.開始日」が存在する

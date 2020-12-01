@@ -69,10 +69,17 @@ module nts.uk.at.view.ksu001.s.sa {
                             sortType = 4;
                             break;
                     }
+                    let index = 0;
+                    for (let i = 0; i < self.selectedEmployeeSwap().length; ++i) {
+                        if (self.selectedEmployeeSwap()[i].code === value.code) {
+                            index = i;
+                            break;
+                        }
+                    }
                     paramToB.push({
                         sortOrder: 0,
                         sortType: sortType,
-                        priority: self.selectedEmployeeSwap().findIndex(x => x.code === value.code) + 1
+                        priority: index + 1
                     });
                 });
 
@@ -140,8 +147,8 @@ module nts.uk.at.view.ksu001.s.sa {
 
                     console.log("done: " + data);
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                        
-                         nts.uk.ui.windows.setShared('ksu001s-result', "Update");
+
+                        nts.uk.ui.windows.setShared('ksu001s-result', "Update");
                         nts.uk.ui.windows.close();
                     });
                 }).fail(function(error) {
@@ -160,26 +167,14 @@ module nts.uk.at.view.ksu001.s.sa {
                 let self = this;
                 let dfd = $.Deferred();
                 service.getData().done(function(data: any) {
-                    if (data.lstReal.length == 0) {
-                        //                         self.selectedEmployeeSwap.push([]);
-                    } else {
-                        _.forEach(data.lstOrderList, function(item) {
-                            // Remove from left source
-                            let removeItem = self.listEmployeeSwap.remove(function(leftItem) {
-                                return leftItem.name == item.sortName;
-                            })[0];
-
-                            // Add to right source
-                            self.selectedEmployeeSwap.push(removeItem);
-                        });
-                    }
-                    dfd.resolve();
-                }).fail(function(error) {
-                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
-                    dfd.reject();
-                }).always(() => {
-                    nts.uk.ui.block.clear();
-                });
+                    _.forEach(data.lstOrderList, function(item) {
+                        // Remove from left source
+                        let removeItem = self.listEmployeeSwap.remove(function(leftItem) {
+                            return leftItem.name == item.sortName;
+                        })[0];
+                        // Add to right source
+                        self.selectedEmployeeSwap.push(removeItem);
+                    });                    dfd.resolve();                }).fail(function(error) {                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });                    dfd.reject();                }).always(() => {                    nts.uk.ui.block.clear();                });
                 dfd = $.Deferred();
                 return dfd.promise();
             }

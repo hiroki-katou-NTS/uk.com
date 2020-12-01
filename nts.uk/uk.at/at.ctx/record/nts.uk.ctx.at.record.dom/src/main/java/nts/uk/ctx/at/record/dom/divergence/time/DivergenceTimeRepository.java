@@ -83,5 +83,14 @@ public interface DivergenceTimeRepository {
 	 * @return the div time list by no
 	 */
 	List<DivergenceTimeRoot> getUsedDivTimeListByNoV3(String companyId, List<Integer> divTimeNo);
+	
+	/**
+	 * 対応するドメインモデル「乖離時間」を取得する Nhận domain model 「乖離時間」 tương ứng
+	 *
+	 * @param comapanyId 会社ID
+	 * @param useDistination 使用区分
+	 * @return List＜乖離時間＞
+	 */
+	List<DivergenceTimeRoot> findByCompanyAndUseDistination(String comapanyId, int useDistination);
 
 }

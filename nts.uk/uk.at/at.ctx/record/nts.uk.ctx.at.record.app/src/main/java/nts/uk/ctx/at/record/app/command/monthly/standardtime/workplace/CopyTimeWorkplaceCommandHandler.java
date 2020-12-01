@@ -1,16 +1,16 @@
 package nts.uk.ctx.at.record.app.command.monthly.standardtime.workplace;
 
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfWorkPlace;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.Workplace36AgreedHoursRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.Optional;
 
 @Stateless
 public class CopyTimeWorkplaceCommandHandler extends CommandHandler<CopyTimeWorkplaceCommand> {
@@ -20,24 +20,25 @@ public class CopyTimeWorkplaceCommandHandler extends CommandHandler<CopyTimeWork
 
     @Override
     protected void handle(CommandHandlerContext<CopyTimeWorkplaceCommand> context) {
-
         CopyTimeWorkplaceCommand command = context.getCommand();
+		val laborSystemAtr = EnumAdaptor.valueOf(command.getLaborSystemAtr(), LaborSystemtAtr.class);
 
         //1: get(会社ID,雇用コード) : ３６協定基本設定
-        Optional<AgreementTimeOfWorkPlace> timeOfWorkPlace =  repo.getByWorkplaceId(command.getWorkplaceIdSource(),EnumAdaptor.valueOf(command.getLaborSystemAtr(),LaborSystemtAtr.class));
-        if(timeOfWorkPlace.isPresent()){
-            BasicAgreementSetting basicAgreementSetting = timeOfWorkPlace.get().getSetting();
+        val source =  repo.getByWorkplaceId(command.getWorkplaceIdSource(), laborSystemAtr);
 
-            Optional<AgreementTimeOfWorkPlace> timeOfWorkPlaceCoppy =  repo.getByWorkplaceId(command.getWorkplaceIdTarget(),EnumAdaptor.valueOf(command.getLaborSystemAtr(),LaborSystemtAtr.class));
+		if(!source.isPresent()) return;
+		if (CollectionUtil.isEmpty(command.getWorkplaceIdTarget())) return;
 
-            //2: delete(会社ID,雇用コード)
-            timeOfWorkPlaceCoppy.ifPresent(x -> repo.delete(x));
+		for (val targetCd : command.getWorkplaceIdTarget()) {
+			if (targetCd.equals(command.getWorkplaceIdSource())) continue;
 
-            //3: insert(会社ID,雇用コード,３６協定労働制,３６協定基本設定)
-            AgreementTimeOfWorkPlace agreementTimeOfEmployment = new AgreementTimeOfWorkPlace(command.getWorkplaceIdTarget(),
-                    EnumAdaptor.valueOf(command.getLaborSystemAtr(), LaborSystemtAtr.class),basicAgreementSetting);
-            repo.insert(agreementTimeOfEmployment);
-        }
+			//2: delete(会社ID,雇用コード)
+			val existTarget = repo.getByWorkplaceId(targetCd, laborSystemAtr);
+			existTarget.ifPresent(x -> repo.delete(x));
 
+			//3: insert(会社ID,雇用コード,３６協定労働制,３６協定基本設定)
+			val newTarget = new AgreementTimeOfWorkPlace(targetCd, laborSystemAtr, source.get().getSetting());
+			repo.insert(newTarget);
+		}
     }
 }

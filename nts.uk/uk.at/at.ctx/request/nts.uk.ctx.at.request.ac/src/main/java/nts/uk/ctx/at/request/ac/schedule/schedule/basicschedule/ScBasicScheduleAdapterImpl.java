@@ -11,11 +11,13 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.BasicScheduleConfirmImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport_Old;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ShortWorkingTimeSheetImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.WorkScheduleTimeZoneImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.BasicScheduleConfirmImport.ConfirmedAtrImport;
 import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScBasicScheduleExport;
 import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScBasicSchedulePub;
 import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScWorkScheduleExport_New;
@@ -81,6 +83,14 @@ public class ScBasicScheduleAdapterImpl implements ScBasicScheduleAdapter {
 						x.getEndTime(), 
 						x.getDeductionTime(), 
 						x.getShortTime())).collect(Collectors.toList()));
+	}
+
+	@Override
+	public List<BasicScheduleConfirmImport> findConfirmById(List<String> employeeID, DatePeriod date) {
+		return scBasicSchedulePub
+				.findConfirmById(employeeID, date).stream().map(x -> new BasicScheduleConfirmImport(x.getEmployeeId(),
+						x.getDate(), ConfirmedAtrImport.valueOf(x.getConfirmedAtr().value)))
+				.collect(Collectors.toList());
 	}
 
 }

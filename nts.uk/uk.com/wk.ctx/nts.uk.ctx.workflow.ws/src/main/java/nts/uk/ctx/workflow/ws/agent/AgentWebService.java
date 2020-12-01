@@ -95,7 +95,7 @@ public class AgentWebService extends WebService {
 
 	@POST
 	@Path("report/generate")
-	public ExportServiceResult generate(List<LinkedHashMap<String, String>> query) {
+	public ExportServiceResult generate(List<Map<String, String>> query) {
 		return this.exportService.start(query);
 	}
 }

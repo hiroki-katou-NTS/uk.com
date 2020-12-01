@@ -1,6 +1,8 @@
 package nts.uk.ctx.sys.assist.app.find.logdataresult;
 
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,7 +25,6 @@ import nts.uk.ctx.sys.assist.app.find.resultofsaving.ResultOfSavingFinder;
 import nts.uk.ctx.sys.assist.dom.reference.record.EmpBasicInfoAdapter;
 import nts.uk.ctx.sys.assist.dom.reference.record.EmpBasicInfoImport;
 
-
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class LogDataResultFinder {
@@ -39,14 +40,14 @@ public class LogDataResultFinder {
 
 	@Inject
 	private EmpBasicInfoAdapter personEmpBasicInfoAdapter;
-
-	public List<LogDataResultDto> getLogDataResult(LogDataParams logDataParams) {
+	
+ 	public List<LogDataResultDto> getLogDataResult(LogDataParams logDataParams, int... limited) {
 		int recordType = logDataParams.getRecordType();
-
+		List<LogDataResultDto> logDataResults = new ArrayList<>();
 		if (recordType == 9) {
 			// step データ保存の保存結果を取得
 			List<ResultOfSavingDto> resultOfSavings = resultOfSavingFinder.getResultOfSaving(logDataParams);
-			List<LogDataResultDto> logDataResults = resultOfSavings.stream()
+			logDataResults = resultOfSavings.stream()
 					// step F：各種記録の絞り込み処理
 					.map(resultOfSaving -> {
 						// step 社員ID(List)から個人社員基本情報を取得
@@ -90,14 +91,13 @@ public class LogDataResultFinder {
 								targetNumberPeople, setCode, isDeletedFilesFlg, logResults);
 					})
 					.filter(logDataResult -> filterLogResultOfSaving(logDataResult, logDataParams.getListCondition()))
+					.sorted(Comparator.comparing(LogDataResultDto::getStartDateTime).reversed())
 					// step 「データ保存・復旧・削除の操作ログ」を作る
 					.collect(Collectors.toList());
-			// step 作った「データ保存・復旧・削除の操作ログ」を返す
-			return logDataResults;
 		} else if (recordType == 10) {
 			// step データ復旧の結果を取得
 			List<ResultOfRestorationDto> resultOfRestorations = resultOfRestorationFinder.getResultOfRestoration(logDataParams);
-			List<LogDataResultDto> logDataResults = resultOfRestorations.stream()
+			logDataResults = resultOfRestorations.stream()
 					// step F：各種記録の絞り込み処理
 					.map(resultOfRestoration -> {
 						// step 社員ID(List)から個人社員基本情報を取得
@@ -141,14 +141,13 @@ public class LogDataResultFinder {
 								targetNumberPeople, setCode, isDeletedFilesFlg, logResults);
 					})
 					.filter(logDataResult -> filterLogResultOfRestoration(logDataResult, logDataParams.getListCondition()))
+					.sorted(Comparator.comparing(LogDataResultDto::getStartDateTime).reversed())
 					// step 「データ保存・復旧・削除の操作ログ」を作る
 					.collect(Collectors.toList());
-			// step 作った「データ保存・復旧・削除の操作ログ」を返す
-			return logDataResults;
 		} else if (recordType == 11) {
 			// step データ削除の保存結果を取得
 			List<ResultOfDeletionDto> resultOfDeletions = resultOfDeletionFinder.getResultOfDeletion(logDataParams);
-			List<LogDataResultDto> logDataResults = resultOfDeletions.parallelStream()
+			logDataResults = resultOfDeletions.parallelStream()
 					// step F：各種記録の絞り込み処理
 					.map(resultOfDeletion -> {
 						// step 社員ID(List)から個人社員基本情報を取得
@@ -193,12 +192,15 @@ public class LogDataResultFinder {
 								targetNumberPeople, setCode, isDeletedFilesFlg, logResults);
 					})
 					.filter(logDataResult -> filterLogResultOfDeletion(logDataResult, logDataParams.getListCondition()))
+					.sorted(Comparator.comparing(LogDataResultDto::getStartDateTime).reversed())
 					// step 「データ保存・復旧・削除の操作ログ」を作る
 					.collect(Collectors.toList());
-			// step 作った「データ保存・復旧・削除の操作ログ」を返す
-			return logDataResults;
 		}
-		return null;
+		// step 作った「データ保存・復旧・削除の操作ログ」を返す
+		if(limited.length > 0 && logDataResults.size() > limited[0]) {
+			return logDataResults.subList(0, limited[0]);
+		}
+		return logDataResults;
 	}
 
 	private boolean filterLogResultOfSaving(LogDataResultDto logDataResult, List<ConditionDto> listCondition) {
@@ -248,19 +250,21 @@ public class LogDataResultFinder {
 		if (!this.filterLogByItemNo(String.valueOf(logDataResult.getEndDateTime()), 15, listCondition)) {
 			return false;
 		}
-		for (LogResultDto logResultDto : logDataResult.getLogResult()) {
+		if(!logDataResult.getLogResult().isEmpty()) {
+			for (LogResultDto logResultDto : logDataResult.getLogResult()) {
 
-			if (!this.filterLogByItemNo(logResultDto.getProcessingContent(), 16, listCondition)) {
-				return false;
-			}
-			if (!this.filterLogByItemNo(logResultDto.getErrorContent(), 17, listCondition)) {
-				return false;
-			}
-			if (!this.filterLogByItemNo(String.valueOf(logResultDto.getErrorDate()), 18, listCondition)) {
-				return false;
-			}
-			if (!this.filterLogByItemNo(logResultDto.getErrorEmployeeId(), 19, listCondition)) {
-				return false;
+				if (!this.filterLogByItemNo(logResultDto.getProcessingContent(), 16, listCondition)) {
+					return false;
+				}
+				if (!this.filterLogByItemNo(logResultDto.getErrorContent(), 17, listCondition)) {
+					return false;
+				}
+				if (!this.filterLogByItemNo(String.valueOf(logResultDto.getErrorDate()), 18, listCondition)) {
+					return false;
+				}
+				if (!this.filterLogByItemNo(logResultDto.getErrorEmployeeId(), 19, listCondition)) {
+					return false;
+				}
 			}
 		}
 		return true;
@@ -298,22 +302,24 @@ public class LogDataResultFinder {
 		if (!this.filterLogByItemNo(logDataResult.getSetCode(), 10, listCondition)) {
 			return false;
 		}
-		for (LogResultDto logResultDto : logDataResult.getLogResult()) {
+		if(!logDataResult.getLogResult().isEmpty()) {
+			for (LogResultDto logResultDto : logDataResult.getLogResult()) {
 
-			if (!this.filterLogByItemNo(logResultDto.getProcessingContent(), 11, listCondition)) {
-				return false;
-			}
-			if (!this.filterLogByItemNo(logResultDto.getErrorContent(), 12, listCondition)) {
-				return false;
-			}
-			if (!this.filterLogByItemNo(logResultDto.getContentSql(), 13, listCondition)) {
-				return false;
-			}
-			if (!this.filterLogByItemNo(String.valueOf(logResultDto.getErrorDate()), 14, listCondition)) {
-				return false;
-			}
-			if (!this.filterLogByItemNo(logResultDto.getErrorEmployeeId(), 15, listCondition)) {
-				return false;
+				if (!this.filterLogByItemNo(logResultDto.getProcessingContent(), 11, listCondition)) {
+					return false;
+				}
+				if (!this.filterLogByItemNo(logResultDto.getErrorContent(), 12, listCondition)) {
+					return false;
+				}
+				if (!this.filterLogByItemNo(logResultDto.getContentSql(), 13, listCondition)) {
+					return false;
+				}
+				if (!this.filterLogByItemNo(String.valueOf(logResultDto.getErrorDate()), 14, listCondition)) {
+					return false;
+				}
+				if (!this.filterLogByItemNo(logResultDto.getErrorEmployeeId(), 15, listCondition)) {
+					return false;
+				}
 			}
 		}
 		return true;
@@ -363,19 +369,21 @@ public class LogDataResultFinder {
 		if (!this.filterLogByItemNo(logDataResult.getSetCode(), 14, listCondition)) {
 			return false;
 		}
-		for (LogResultDto logResultDto : logDataResult.getLogResult()) {
+		if(!logDataResult.getLogResult().isEmpty()) {
+			for (LogResultDto logResultDto : logDataResult.getLogResult()) {
 
-			if (!this.filterLogByItemNo(logResultDto.getProcessingContent(), 15, listCondition)) {
-				return false;
-			}
-			if (!this.filterLogByItemNo(logResultDto.getErrorContent(), 16, listCondition)) {
-				return false;
-			}
-			if (!this.filterLogByItemNo(String.valueOf(logResultDto.getErrorDate()), 17, listCondition)) {
-				return false;
-			}
-			if (!this.filterLogByItemNo(logResultDto.getErrorEmployeeId(), 18, listCondition)) {
-				return false;
+				if (!this.filterLogByItemNo(logResultDto.getProcessingContent(), 15, listCondition)) {
+					return false;
+				}
+				if (!this.filterLogByItemNo(logResultDto.getErrorContent(), 16, listCondition)) {
+					return false;
+				}
+				if (!this.filterLogByItemNo(String.valueOf(logResultDto.getErrorDate()), 17, listCondition)) {
+					return false;
+				}
+				if (!this.filterLogByItemNo(logResultDto.getErrorEmployeeId(), 18, listCondition)) {
+					return false;
+				}
 			}
 		}
 		return true;
@@ -390,21 +398,21 @@ public class LogDataResultFinder {
 		if (content == null || content.equals("")) {
 			return false;
 		}
+		List<Boolean> rs = new ArrayList<>();
 		for (ConditionDto condition : conditionArray) {
 			// EQUAL
-			if (condition.getSymbol() == 0) {
-				return (content == condition.getCondition());
-
-				// DIFFERENT
+			 if (condition.getSymbol() == 0) {
+					rs.add(content.contains(condition.getCondition()));
+			// INCLUDE
 			} else if (condition.getSymbol() == 1) {
-				return (content != condition.getCondition());
-
-				// INCLUDE
+				rs.add(content.equals(condition.getCondition()));
+			// DIFFERENT
 			} else if (condition.getSymbol() == 2) {
-				return content.equals(condition.getCondition());
+				rs.add(!content.equals(condition.getCondition()));
+			} else {
+				rs.add(false);
 			}
 		}
-		return false;
+		return rs.stream().anyMatch(item -> item);
 	}
-
 }

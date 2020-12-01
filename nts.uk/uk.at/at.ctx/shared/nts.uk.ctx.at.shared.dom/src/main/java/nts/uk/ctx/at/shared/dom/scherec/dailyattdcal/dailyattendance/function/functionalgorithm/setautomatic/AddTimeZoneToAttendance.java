@@ -43,13 +43,13 @@ public class AddTimeZoneToAttendance {
 
 		// 出退勤 ← 自動打刻セット詳細
 		TimeLeavingWork work = new TimeLeavingWork(new WorkNo(timezoneUse.getWorkNo()),
-				new TimeActualStamp(null, new WorkStamp(new TimeWithDayAttr(goingTime),
-						new WorkTimeInformation(new ReasonTimeChange(autoStampClasssifi.getAttendanceStamp(), null),
+				new TimeActualStamp(null, new WorkStamp(
+						new WorkTimeInformation(new ReasonTimeChange(autoStampClasssifi.getAttendanceStamp(), Optional.empty()),
 								new TimeWithDayAttr(goingTime)),
 						Optional.empty()), 0),
 				new TimeActualStamp(null,
-						new WorkStamp(new TimeWithDayAttr(leavTime),
-								new WorkTimeInformation(new ReasonTimeChange(autoStampClasssifi.getLeaveStamp(), null),
+						new WorkStamp(
+								new WorkTimeInformation(new ReasonTimeChange(autoStampClasssifi.getLeaveStamp(), Optional.empty()),
 										new TimeWithDayAttr(leavTime)),
 								Optional.empty()),
 						0));
