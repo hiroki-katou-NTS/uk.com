@@ -94,6 +94,9 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 				});
 				$("#bGrid").igGrid("option", "dataSource", vm.dataSource);
 				$("#bGrid").css('visibility','visible');
+				if(initFlg) {
+					$(".ui-iggrid").focus();	
+				}
 			});
 		}
 		
@@ -124,7 +127,6 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 					if($("#bGrid").css('visibility')=='hidden'){
 						vm.$nextTick(() => {
 							vm.$blockui('show');
-							$(".ui-iggrid").focus();
 							character.restore('InitDisplayOfApprovalStatus').then((obj: InitDisplayOfApprovalStatus) => {
 								if(obj) {
 									vm.initDisplayOfApprovalStatus = obj;
