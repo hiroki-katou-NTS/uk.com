@@ -8,7 +8,7 @@ module nts.uk.com.view.ccg008.a.Layout2ComponentViewModel {
           <iframe style="width:450px" data-bind="attr: { src: url }" />
         </span>
         <span data-bind="if: url.indexOf('.js') > -1">
-          <div data-bind="component: { name: name }" style="margin-bottom: 10px;"></div>
+          <div data-bind="component: { name: name }" style="margin-bottom: 10px; resize: vertical; overflow: auto;"></div>
         </span>
       </div>
     `,

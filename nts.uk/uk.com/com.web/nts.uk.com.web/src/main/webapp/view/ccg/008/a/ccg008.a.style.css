@@ -83,21 +83,20 @@
 }
 .contents_layout {
   display: inline-flex;
-  overflow-y: auto;
   width: 100%;
   height: 100%;
 }
 
 .contents_2 {
   height: 100%;
-  padding: 5px 5px 5px 5px;
+  padding: 5px 5px 0px 0px;
   min-width: 458px;
   overflow-y: auto;
 }
 
 .contents_3 {
   height: 100%;
-  padding: 5px 5px 5px 5px;
+  padding: 5px 5px 0px 0px;
   min-width: 458px;
   overflow-y: auto;
 }
@@ -107,8 +106,10 @@
 }
 
 .contents_1 {
-  padding: 5px 5px 5px 5px;
+  padding: 5px 5px 0px 5px;
+  overflow-y: auto;
   width: 100%;
+  height: 100%;
 }
 
 .iframe_fix {
