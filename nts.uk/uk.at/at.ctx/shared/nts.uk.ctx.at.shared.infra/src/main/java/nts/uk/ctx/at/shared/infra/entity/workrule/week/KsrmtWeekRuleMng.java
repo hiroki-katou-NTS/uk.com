@@ -32,6 +32,10 @@ public class KsrmtWeekRuleMng extends UkJpaEntity implements Serializable {
 	@Column(name = "START_OF_WEEK")
 	public int startOfWeek;
 	
+	/** 週割増時間を締め開始日から計算する */
+	@Column(name = "IS_CLOSING_START_DATE")
+	public int closingStartDate;
+	
 	/**
 	 * キー取得
 	 */
@@ -42,11 +46,22 @@ public class KsrmtWeekRuleMng extends UkJpaEntity implements Serializable {
 	
 	public WeekRuleManagement toDomain(){
 
-		return WeekRuleManagement.of(this.cid, this.startOfWeek);
+		return WeekRuleManagement.of(this.cid, this.startOfWeek, closingStartDate == 1);
 	}
 	
 	public void from(WeekRuleManagement domain){
 		
 		this.startOfWeek = domain.getWeekStart().value;
+		this.closingStartDate = domain.isCalcWeekPremFromClosureStart() ? 1 : 0;
+	}
+	
+	public static KsrmtWeekRuleMng map(WeekRuleManagement domain){
+		
+		KsrmtWeekRuleMng entity = new KsrmtWeekRuleMng();
+		
+		entity.cid = domain.getCid();
+		entity.from(domain);
+		
+		return entity;
 	}
 }
