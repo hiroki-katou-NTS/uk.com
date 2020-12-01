@@ -1,9 +1,10 @@
-package nts.uk.ctx.at.shared.app.command.statutory.worktime.monthlyworkinghours;
+package nts.uk.ctx.at.shared.app.command.statutory.worktime.monthlyworkinghours.monthlyworktimesetcom;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
@@ -18,7 +19,7 @@ import nts.uk.shr.com.context.AppContexts;
  *
  *         UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared(勤務予定、勤務実績).法定労働時間.法定労働時間（New）.月単位の法定労働時間.APP.会社別月単位労働時間を登録・更新する.会社別月単位労働時間を登録・更新する
  */
-
+@Stateless
 public class SaveMonthlyWorkTimeSetComCommandHandler extends CommandHandler<SaveMonthlyWorkTimeSetComCommand> {
 
 	@Inject

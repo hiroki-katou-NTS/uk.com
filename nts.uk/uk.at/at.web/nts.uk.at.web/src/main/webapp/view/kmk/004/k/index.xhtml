@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="/master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 450, height: 700 };</script>
+			<script>var dialogSize = { width: 450, height: 710 };</script>
 			<com:EnumScript>
 				nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.CarryforwardSetInShortageFlex
 			</com:EnumScript>
@@ -19,15 +19,15 @@
 
 		<ui:define name="content">
 			<div id="contents-area">
-				<div class="div_line">
+				<div class="div_line" style="margin-top: 0px">
 					<!-- K1_1 -->
 					<label style="font-size: 1.5rem;" data-bind="i18n:screenMode"></label>
 					<!-- K1_2 -->
 					<hr />
 					<!-- K1_3 -->
-					<label style="float: right;" data-bind="text:getMessage()"></label>
+					<label class="color-attendance" style="float: right;" data-bind="text:getMessage()"></label>
 				</div>
-				<div class="div_line">
+				<div style="margin-top: 0px" class="div_line">
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_270')}</div>
 				</div>
 				<div class="div_line">
@@ -108,7 +108,7 @@
 					<!-- K4_1-->
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_279')}</div>
 					<!-- K4_2-->
-					<div style="margin-left:25px;"
+					<div id="month-counting" style="margin:10px 0px 0px 25px;"
 						data-bind="ntsRadioBoxGroup: {
 								options: [{id:1, name:'#{i18n.getText('KMK004_280')}'},
 								{id:2, name:'#{i18n.getText('KMK004_281')}'}],
@@ -159,8 +159,8 @@
 				</div>
 				<div class="div_line">
 					<!--K7_3-->
-					<label data-bind="visible:screenMode !== 'Com_Company'"
-						style="margin-left: 149px;">#{i18n.getText('KMK004_290')}</label>
+					<label class="color-attendance"  data-bind="visible:screenMode == 'Com_Company'"
+						style="float:right;">#{i18n.getText('KMK004_290')}</label>
 				</div>
 
 			</div>

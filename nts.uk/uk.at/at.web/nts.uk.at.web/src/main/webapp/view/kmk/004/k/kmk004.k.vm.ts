@@ -27,7 +27,7 @@ module nts.uk.at.kmk004.k {
 			}
 			if (vm.screenMode !== 'Com_Company') {
 				let windowSize = nts.uk.ui.windows.getSelf();
-				windowSize.$dialog.dialog("option", "height", 695);
+				windowSize.$dialog.dialog("option", "height", 670);
 			}
 		}
 

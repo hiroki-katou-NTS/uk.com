@@ -1,4 +1,9 @@
 @import url("base.css");
-.ml-20{
+
+.ml-20 {
 	margin-left: 20px;
+}
+
+#month-counting .ntsRadioBox:nth-child(2) {
+	margin-top: 5px;
 }

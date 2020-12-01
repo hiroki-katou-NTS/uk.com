@@ -36,7 +36,7 @@ const template = `
 								<thead>
 										<tr style="background-color:#92D050">
 											<th data-bind="visible: screenMode == 'Com_Person'"></th>
-											<th style="text-align:center;" data-bind="i18n: 'KMK004_263'"></th>
+											<th style="text-align:center;padding: 5px;" data-bind="i18n: 'KMK004_263'"></th>
 											<th data-bind="visible: screenData().setting().useRegularWorkingHours() == 1,i18n: 'KMK004_264'" style="text-align:center;"></th>
 											<th style="text-align:center;" data-bind="i18n: 'KMK004_265'"></th>
 											<th style="text-align:center;" data-bind="i18n: 'KMK004_266'"></th>
@@ -80,7 +80,7 @@ const template = `
 								</tbody>
 								
 								<tr data-bind="visible: screenMode != 'Com_Person' " >
-									<td class="bg-green" style="text-align:center;" data-bind="i18n: 'KMK004_267'" ></td>
+									<td style="padding: 5px;text-align:center" class="bg-green" style="text-align:center;" data-bind="i18n: 'KMK004_267'" ></td>
 									<td data-bind="visible: screenData().setting().useRegularWorkingHours() == 1,text:calTotalTime('withinLaborTime')" style="text-align:center;"></td>
 									<td style="text-align:center;" data-bind="text:calTotalTime('legalLaborTime')" ></td>
 									<td style="text-align:center;" data-bind="text:calTotalTime('weekAvgTime')" ></td>

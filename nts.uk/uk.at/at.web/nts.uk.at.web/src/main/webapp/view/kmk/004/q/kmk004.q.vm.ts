@@ -11,6 +11,7 @@ module nts.uk.at.kmk004.q {
 	export class ViewModel extends ko.ViewModel {
 
 		year: KnockoutObservable<string> = ko.observable();
+		startYear:string;
 
 		register() {
 			let vm = this;
@@ -27,7 +28,9 @@ module nts.uk.at.kmk004.q {
 
 		created(params?: IParams) {
 			let vm = this;
+			
 			vm.year((params && params.years.length) ? String(_.max(params.years) + 1) : moment().format("YYYY"));
+			vm.startYear = vm.year();
 		}
 
 		mounted() {
