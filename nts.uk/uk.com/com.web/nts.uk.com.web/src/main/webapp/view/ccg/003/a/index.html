@@ -6,11 +6,9 @@
       <div id="A1"><span data-bind="text: systemDate"></span>
       </div>
       <div class="fw-right">
-        <div>
-          <com:ko-if bind="roleFlag">
-            <!-- A2 メッセージ入力 -->
-            <a id="A2" class="mr-5" href="#" data-bind="click: openScreenB, text: $component.$i18n('CCG003_4')"></a>
-          </com:ko-if>
+        <div data-bind="if: roleFlag">
+          <!-- A2 メッセージ入力 -->
+          <a id="A2" class="mr-5" href="#" data-bind="click: openScreenB, text: $component.$i18n('CCG003_4')"></a>
         </div>
         <div>
           <!-- A3 ☓アイコン -->

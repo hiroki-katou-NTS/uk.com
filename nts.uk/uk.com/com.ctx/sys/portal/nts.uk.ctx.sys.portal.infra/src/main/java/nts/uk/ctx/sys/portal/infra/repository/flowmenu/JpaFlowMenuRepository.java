@@ -114,7 +114,7 @@ public class JpaFlowMenuRepository extends JpaRepository implements FlowMenuRepo
 	
 	@Override
 	public List<FlowMenu> findByType(String companyID, Integer topPagePartType) {
-		return this.queryProxy().query(SELECT_BY_COMPANY, Object[].class)
+		return this.queryProxy().query(SELECT_BY_TYPE, Object[].class)
 				.setParameter("companyID", companyID)
 				.setParameter("topPagePartType", topPagePartType)
 				.getList(c -> joinObjectToDomain(c));

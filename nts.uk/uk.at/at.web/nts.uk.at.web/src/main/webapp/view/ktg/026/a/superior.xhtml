@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<script>var dialogSize = { width: 450 , height: 405 };</script>
+			<com:stylefile path="ktg026.a.style.css" />
+			<com:scriptfile path="ktg026.a.vm.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div class="contents-area h-350">
+				<div class="title-border">
+					<!-- A1_1 時間外労働・休日労働状況 -->
+					<label id="A1_1" class="big-text">#{i18n.getText('KTG026_5')}</label>
+					<!-- A1_7 閉じる -->
+					<button id="A1_7" class="right" tabindex="2" data-bind="click: onCloseWindow">#{i18n.getText('KTG026_8')}</button>
+				</div>
+
+				<table class="flex">
+					<tbody class="flex100">
+						<tr class="flex100">
+							<td class="p-10 left65">
+								<!-- A1_6 js-employeeName -->
+								<label id="A1_6" class="grid mt-10 bold" data-bind="text: employeeName"></label>
+								<!-- A1_5 js-exceededNumber -->
+								<label id="A1_5" class="grid mt-10" data-bind="text: exceededNumber"></label>
+							</td>
+							<td class="block p-10" style="width: 60%">
+								<div class="right">
+									<!-- A1_3 ■時間外労働時間 -->
+									<label id="A1_3" class="grid non-statutory-color">#{i18n.getText('KTG026_2')}</label>
+									<!-- A1_4 ■休日労働時間 -->
+									<label id="A1_4" class="grid time-outside-color">#{i18n.getText('KTG026_3')}</label>
+								</div>
+							</td>
+						</tr>
+				</tbody>
+				</table>
+				<table class="block pl-10 scroll relative mh-195">
+					<thead>
+						<tr>
+							<!-- A2_1 年月-->
+							<th id="A2_1">#{i18n.getText('KTG026_7')}</th>
+							<!-- A2_2 時間外時間 -->
+							<th id="A2_2">#{i18n.getText('KTG026_4')}</th>
+							<th class="w-200">
+								<!-- A2_3 45:00 -->
+								<span id="A2_3" class="fixed45">45:00</span>
+								<!-- A2_4 80:00 -->
+								<span id="A2_4" class="fixed80">80:00</span>
+							</th>
+						</tr>
+					</thead>
+					<tbody data-bind="foreach: dataTable">
+						<tr class="mw-200">
+							<!-- A3_1 js-yearMonth -->
+							<td id="A3_1" class="border-bot data-text" data-bind="text: yearMonth"></td>
+							<!-- A3_2 js-agreementTime -->
+							<td id="A3_2" class="border-bot text-center" data-bind="text: agreementTimeDisplay, class: cssClass"></td>
+							<td class="pl-20 inline-flex">
+								<span class="dashed45"></span>
+								<span class="dashed80"></span>
+								<!-- A3_3 js-nonStatutoryTime -->
+								<com:ko-if bind="agreementTime > 0">
+									<span id="A3_3" class="label non-statutory-bg-color" data-bind="style: {width: nonStatutoryTime}"></span>
+								</com:ko-if>
+								<!-- A3_4 js-legalTime -->
+								<com:ko-if bind="subAgreement > 0">
+									<span id="A3_4" class="label time-outside-bg-color" data-bind="style: {width: legalTime}"></span>
+								</com:ko-if>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

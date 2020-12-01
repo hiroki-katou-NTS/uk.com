@@ -26,7 +26,7 @@ module nts.uk.com.view.ccg015.b {
     button1Text: KnockoutObservable<string> = ko.observable('');
     button2Text: KnockoutObservable<string> = ko.observable('');
 
-    breakNewMode: boolean = false;
+    breakNewMode = false;
     itemList: KnockoutObservableArray<ItemModel> = ko.observableArray([
       new ItemModel(0, ''),
       new ItemModel(1, ''),
@@ -50,11 +50,7 @@ module nts.uk.com.view.ccg015.b {
           vm.isVisiableButton1(true);
           vm.isVisiableButton2(false);
           vm.isVisiableButton3(false);
-        } else if (value === LayoutType.LAYOUT_TYPE_1) {
-          vm.isVisiableButton1(true);
-          vm.isVisiableButton2(true);
-          vm.isVisiableButton3(false);
-        } else if (value === LayoutType.LAYOUT_TYPE_2) {
+        } else if (value === LayoutType.LAYOUT_TYPE_1 || value === LayoutType.LAYOUT_TYPE_2) {
           vm.isVisiableButton1(true);
           vm.isVisiableButton2(true);
           vm.isVisiableButton3(false);
@@ -167,7 +163,7 @@ module nts.uk.com.view.ccg015.b {
                 })
                 .fail((err) => {
                   vm.$blockui("clear");
-                  vm.$dialog.alert({ messageId: err.messageId, messageParams: err.parameterIds })
+                  vm.$dialog.alert({ messageId: err.messageId, messageParams: err.parameterIds });
                 });
             } else {
               vm.$blockui('grayout');
@@ -179,7 +175,7 @@ module nts.uk.com.view.ccg015.b {
                 })
                 .fail((err) => {
                   vm.$blockui("clear");
-                  vm.$dialog.alert({ messageId: err.messageId, messageParams: err.parameterIds })
+                  vm.$dialog.alert({ messageId: err.messageId, messageParams: err.parameterIds });
                 });
             }
           }

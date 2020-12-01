@@ -20,7 +20,7 @@
     <ui:define name="content">
       <div class="ccg015-d-content divHeader" id="functions-area">
         <div>
-          <button class="proceed btnStyle" data-bind="click: saveLayout">#{i18n.getText('CCG015_64')}</button>
+          <button class="proceed btnStyle" data-bind="click: checkSaveLayout">#{i18n.getText('CCG015_64')}</button>
           <button class="ml-20" data-bind="click: close">#{i18n.getText('CCG015_65')}</button>
         </div>
       </div>
@@ -29,13 +29,13 @@
           <table class="table_fix">
             <tr>
               <td class="contents_left">
-                <!-- D2_1 -->
-                <div id="D2_1" data-bind="ntsFormLabel: {required: true}">
-                  <label>#{i18n.getText('CCG015_66')}<br /></label>
-                </div>
-                <!-- D2_2 -->
-                <div class="ml-40" id="D2_2" data-bind="ntsComboBox: {
-                    name: 'Sample List',
+                <div class="input-row">
+                  <!-- D2_1 -->
+                  <div id="D2_1" data-bind="ntsFormLabel: {required: true}">
+                    <span class="label">#{i18n.getText('CCG015_66')}</span>
+                  </div>
+                  <!-- D2_2 -->
+                  <div class="ml-40" id="D2_2" data-bind="ntsComboBox: {
                     options: itemList,
                     optionsValue: 'code',
                     visibleItemsCount: 5,
@@ -44,6 +44,7 @@
                     editable: false,
                     enable: true,
                     required: isRequired }">
+                  </div>
                 </div>
               </td>
             </tr>
@@ -92,17 +93,18 @@
                     <div class="width_left_content">
                       <!-- D5_1 -->
                       <div id="D5_1" class="w-100" data-bind="ntsFormLabel: {required: true}">
-                        <label>#{i18n.getText('CCG015_66')}<br /></label>
+                        <span class="label">#{i18n.getText('CCG015_71')}</span>
                       </div>
                       <div class="w-380 mt-10">
                         <!-- D5_2 -->
                         <textarea id="D5_2" class="fix_width_text_area" data-bind="ntsMultilineEditor: {
                           value: url,
-                          constraint: 'URL'}" />
-                        </div>
+                          required: true,
+                          constraint: 'URL'}"></textarea>
+                      </div>
                       <div class="mt-5 fix_button_url">
                         <!-- D5_3 -->
-                        <button id="D5_3" class="smail" data-bind="click: showUrl">#{i18n.getText('CCG015_88')}</button>
+                        <button id="D5_3" class="small" data-bind="click: showUrl">#{i18n.getText('CCG015_88')}</button>
                       </div>
                     </div>
                   </com:ko-if>
@@ -112,10 +114,10 @@
                 <div class="contents_right panel panel-frame">
                   <!-- D7 -->
                   <com:ko-if bind="contentFlowMenu()">
-                    <div data-bind="html: html" id="F1-frame" ></div>
+                    <div data-bind="html: html" id="F1-frame"></div>
                   </com:ko-if>
                   <com:ko-if bind="contentTopPagePart()">
-                    <div data-bind="html: html2" id="F1-frame" ></div>
+                    <div data-bind="html: html2" id="F1-frame"></div>
                   </com:ko-if>
                   <com:ko-if bind="contentUrl()">
                     <iframe class="iframe_fix" id="preview-iframe" data-bind="attr:{src: urlIframe3}"></iframe>
@@ -129,4 +131,5 @@
     </ui:define>
   </ui:composition>
 </body>
+
 </html>
