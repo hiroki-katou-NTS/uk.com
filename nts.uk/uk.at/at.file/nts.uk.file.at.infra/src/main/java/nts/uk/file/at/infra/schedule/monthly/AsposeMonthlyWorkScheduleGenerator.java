@@ -231,6 +231,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 						, query.getCode()
 						, AppContexts.user().employeeId());
 		if (!optOutputItemMonthlyWork.isPresent()) {
+			// エラーメッセージ(#Msg_1141#)を表示する (Display error msg)
 			throw new BusinessException(new RawErrorMessage("Msg_1141"));
 		}
 		OutputItemMonthlyWorkSchedule outputItemMonthlyWork = optOutputItemMonthlyWork.get();
@@ -268,7 +269,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				nSize = nListOutputCode / chunkSize + 1;
 			}
 			
-			// Get all monthly attendance can be aggregate
+			// ドメインモデル「月別勤務表の出力項目」をすべて取得する
 			List<Integer> lstAtdCanBeAggregate = this.attItemCanAggregateRepository
 					.getMonthlyAtdItemCanAggregate(AppContexts.user().companyId())
 					.stream()
@@ -1392,7 +1393,6 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 							if (valueTypeEnum.isIntegerCountable()) {
 								int currentValue = (int) aVal.value();
 								personalTotal.setValue(String.valueOf(Integer.parseInt(personalTotal.getValue()) + currentValue));
-								employeeData.mapPersonalTotal.put(attdId, personalTotal);
 								totalVal.setValue(String.valueOf(Integer.parseInt(totalVal.getValue()) + currentValue));
 								totalGrossVal.setValue(String.valueOf(Integer.parseInt(totalGrossVal.getValue()) + currentValue));
 								employeeData.mapPersonalTotal.put(attdId, personalTotal);
@@ -1400,14 +1400,12 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 							if (valueTypeEnum.isDoubleCountable()) {
 								double currentValueDouble = (double) aVal.value();
 								personalTotal.setValue(String.valueOf(Double.parseDouble(personalTotal.getValue()) + currentValueDouble));
-								employeeData.mapPersonalTotal.put(attdId, personalTotal);
 								totalVal.setValue(String.valueOf(Double.parseDouble(totalVal.getValue()) + currentValueDouble));
 								totalGrossVal.setValue(String.valueOf(Double.parseDouble(totalGrossVal.getValue()) + currentValueDouble));
 								employeeData.mapPersonalTotal.put(attdId, personalTotal);
 							}
 							if(valueTypeEnum == ValueType.TEXT) {
 								personalTotal.setValue(aVal.getValue());
-								employeeData.mapPersonalTotal.put(attdId, personalTotal);
 								totalVal.setValue(aVal.getValue());
 								totalGrossVal.setValue(aVal.getValue());
 								employeeData.mapPersonalTotal.put(attdId, personalTotal);
@@ -1580,8 +1578,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 						if (valueTypeEnum.isDoubleCountable()) {
 							totalValue.setValue(String.valueOf((double) totalValue.value() + (double) actualValue.value()));
 						}
-					}
-					else {
+					} else {
 						totalValue = new TotalValue();
 						totalValue.setAttendanceId(actualValue.getAttendanceId());
 						ValueType valueTypeEnum = EnumAdaptor.valueOf(actualValue.getValueType(), ValueType.class);
@@ -2956,10 +2953,10 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 						: MonthlyReportConstant.SMALL_SIZE_HEADER_COMPANY_DATE; ; 
 		// Company name
 		PageSetup pageSetup = sheet.getPageSetup();
-		pageSetup.setHeader(0, "&\"" + companyDateFontSize + "\"&\"MS ゴシック\" " + reportData.getHeaderData().companyName);
+		pageSetup.setHeader(0, "&" + companyDateFontSize + "&\"MS ゴシック\" " + reportData.getHeaderData().companyName);
 		
 		// Output item name
-		pageSetup.setHeader(1, "&\"" + settingNameFontSize + "\"&\"MS ゴシック\"" + outputItem.getItemName().v());
+		pageSetup.setHeader(1, "&" + settingNameFontSize + "&\"MS ゴシック\"" + outputItem.getItemName().v());
 		
 		// Set header date
 		DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm", Locale.JAPAN);

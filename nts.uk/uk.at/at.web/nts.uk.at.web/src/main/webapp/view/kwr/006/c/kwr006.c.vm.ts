@@ -268,14 +268,14 @@ module nts.uk.at.view.kwr006.c {
                     command.lstDisplayedAttendance.push({ sortBy: index, itemToDisplay: self.mapCodeIdAtd[value.code] });
                 });
                 
-                 if (self.isEnableRemarkInputContents() == true) {
-                     command.remarkInputNo = self.currentRemarkInputContent();
+                 if (self.isEnableRemarkInputContents()) {
+                    command.remarkInputNo = self.currentRemarkInputContent();
                  } else {
-                     let outputItemMonthlyWorkSchedule: any = _.find(self.allMainDom(), function (o: any) {
-                         return self.selectedCodeC2_3() == o.itemCode;
-                     });
-                     command.remarkInputNo = _.isEmpty(outputItemMonthlyWorkSchedule) ? DEFAULT_DATA_FIRST : outputItemMonthlyWorkSchedule.remarkInputContent;
-                     self.currentRemarkInputContent(command.remarkInputNo);
+                    let outputItemMonthlyWorkSchedule: any = _.find(self.allMainDom(), function (o: any) {
+                        return self.selectedCodeC2_3() == o.itemCode;
+                    });
+                    command.remarkInputNo = _.isEmpty(outputItemMonthlyWorkSchedule) ? DEFAULT_DATA_FIRST : outputItemMonthlyWorkSchedule.remarkInputNo;
+                    self.currentRemarkInputContent(command.remarkInputNo);
                  }
                 command.newMode = (_.isUndefined(self.selectedCodeC2_3()) || _.isNull(self.selectedCodeC2_3()) || _.isEmpty(self.selectedCodeC2_3())) ? true : false;
                 service.save(command).done(function () {

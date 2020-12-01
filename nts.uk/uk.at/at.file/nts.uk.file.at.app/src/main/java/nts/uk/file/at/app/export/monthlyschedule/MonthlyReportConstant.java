@@ -33,7 +33,7 @@ public class MonthlyReportConstant {
 	public static final String BIG_SIZE_HEADER_SETTING = "14";
 	public static final String SMALL_SIZE_HEADER_SETTING = "11";
 	public static final String BIG_SIZE_HEADER_COMPANY_DATE = "7";
-	public static final String SMALL_SIZE_HEADER_COMPANY_DATE = "5";
+	public static final String SMALL_SIZE_HEADER_COMPANY_DATE = "6";
 	
 	/** The Constant DATA_PREFIX. */
 	public static final String DATA_PREFIX = "DATA_";

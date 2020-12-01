@@ -499,9 +499,15 @@ module nts.uk.at.view.kwr006.a {
                 return dfd.promise();
             }
 
+            /**
+             * 印刷前チェック処理 (Xử lý check trước khi in)
+             */
             private hasSelectedEmployees(): boolean {
                 let self = this;
+                // 出力対象の社員をチェック (Check employee đối tượng ouput)
+                // 選択されている社員=0
                 if (_.isEmpty(self.multiSelectedCode())) {
+                    // エラーメッセージ（ID：Msg_884）を表示する  (Hien thi error msg )
                     nts.uk.ui.dialog.alertError({ messageId: 'Msg_884' });
                     return false;
                 }
