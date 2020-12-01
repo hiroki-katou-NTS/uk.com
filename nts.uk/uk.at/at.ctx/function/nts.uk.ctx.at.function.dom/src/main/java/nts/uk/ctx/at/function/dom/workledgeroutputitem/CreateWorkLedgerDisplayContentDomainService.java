@@ -64,7 +64,7 @@ public class CreateWorkLedgerDisplayContentDomainService {
         val closureDayMap = closureDateEmploymentList.stream().collect(Collectors.toMap(ClosureDateEmployment::getEmployeeId, e -> e));
         val monthlyOutputItems = workLedgerOutputItem.getOutputItemList();
 
-        if (monthlyOutputItems.isEmpty()) {
+        if (monthlyOutputItems == null ||monthlyOutputItems.isEmpty()) {
             throw new BusinessException("Msg_1926");
         }
         val listAttIds = monthlyOutputItems.parallelStream().map(AttendanceItemToPrint::getAttendanceId)

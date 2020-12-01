@@ -13,8 +13,11 @@ import java.util.List;
 @Getter
 @Setter
 public class WorkLedgerOutputItemFileQuery {
-    //「２」対象年月
-    private GeneralDate targetDate;
+    // A2_3 期間入力 - 開始月
+    private int startMonth;
+
+    // A2_3 期間入力 - 終了月
+    private int endMonth;
     //「３」List<抽出社員>
     private List<String> lstEmpIds;
     // 「４」定型自由区分
@@ -30,7 +33,6 @@ public class WorkLedgerOutputItemFileQuery {
     private boolean pageBreak;
 
     // 締め日
-    private ClosureDateDto closureDate;
+    private int closureId;
 
-    private String title;
 }
