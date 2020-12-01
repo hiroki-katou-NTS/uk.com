@@ -150,7 +150,6 @@ module nts.uk.com.view.ccg008.a.screenModel {
           if (data.displayTopPage) {
           vm.layoutDisplayType(data.displayTopPage.layoutDisplayType);
           }
-          $(".content-top").resizable();
           vm.getToppage(data);
         });
       })

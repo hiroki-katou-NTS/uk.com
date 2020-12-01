@@ -3416,6 +3416,14 @@ public class ProgramsManager {
             ProgramIdConsts.CCG003C,
             "CCG003_3",
             "/view/ccg/003/c/index.xhtml");
+    
+    /**
+     * KTG026
+     */
+    public static final Program KTG026A = new Program(WebAppId.AT, 
+            ProgramIdConsts.KTG026A,
+            "KTG026_1",
+            "/view/ktg/026/a/superior.xhtml");
 
     /**
      * All programs map.
