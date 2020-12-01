@@ -120,3 +120,7 @@ div.form-label {
 #nts-component-tree{
 	padding: 20px !important;
 }
+
+.ntsControl .nts-input {
+	text-align: center !important;
+}
