@@ -18,8 +18,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_DECLARE_SET")
-public class KrcmtDeclareSet extends UkJpaEntity implements Serializable{
+@Table(name = "KSRMT_DECLARE_SET")
+public class KsrmtDeclareSet extends UkJpaEntity implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
