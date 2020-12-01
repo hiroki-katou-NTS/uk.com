@@ -307,6 +307,22 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 					.setParameter("end", year * 100 + 12)
 					.getList().forEach(c -> commandProxy().remove(cid));
 	}
+	
+	@Override
+	public void removeEmployee(String cid, String sid, int laborAttr, int year) {
+		this.queryProxy().query("SELECT x FROM KshmtLegalTimeMSya x "
+				+ "WHERE x.pk.cid = :cid  "
+				+ "AND x.pk.ym >= :start "
+				+ "AND x.pk.ym <= :end "
+				+ "AND x.pk.sid = :sid "
+				+ "AND c.pk.type = :laborAttr", KshmtLegalTimeMSya.class)
+					.setParameter("cid", cid)
+					.setParameter("sid", sid)
+					.setParameter("start", year * 100 + 01)
+					.setParameter("end", year * 100 + 12)
+					.setParameter("laborAttr", laborAttr)
+					.getList().forEach(c -> commandProxy().remove(cid));
+	}
 
 	@Override
 	public void removeEmployment(String cid, String empCD, int year) {

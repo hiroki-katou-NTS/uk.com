@@ -83,5 +83,5 @@ public interface MonthlyWorkTimeSetRepo {
 
 	public void removeCompany(String companyId, int laborAttr, int ym);
 	
-	
+	public void removeEmployee(String cid, String sid, int laborAttr, int year);
 }
