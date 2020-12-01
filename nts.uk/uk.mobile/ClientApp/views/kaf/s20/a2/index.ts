@@ -202,7 +202,7 @@ export class KafS20A2Component extends KafS00ShrComponent {
                 });
                 let controlAttendance = appDetail.controlOfAttendanceItems.find((controlAttendance) => {
 
-                    return item.itemNo == controlAttendance.itemDailyID;
+                    return item.itemNo == controlAttendance.itemDailyID - 640;
                 });
 
                 const { calcResultRange, optionalItemAtr, optionalItemName, optionalItemNo, unit, description,dispOrder } = optionalItem;

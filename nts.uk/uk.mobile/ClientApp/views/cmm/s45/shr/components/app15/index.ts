@@ -78,7 +78,7 @@ export class CmmS45ShrComponentsApp15Component extends Vue {
                     });
                     let controlAttendance = controlOfAttendanceItems.find((controlAttendance) => {
 
-                        return item.itemNo == controlAttendance.itemDailyID;
+                        return item.itemNo == controlAttendance.itemDailyID - 640;
                     });
 
                     const { calcResultRange, optionalItemAtr, optionalItemName, optionalItemNo, unit, description,dispOrder } = optionalItem;
