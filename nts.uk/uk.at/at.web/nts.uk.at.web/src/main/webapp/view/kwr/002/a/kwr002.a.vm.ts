@@ -434,7 +434,7 @@ module nts.uk.com.view.kwr002.a {
                             , self.selectedCodeA8_8()
                             , companyId
                             , userId
-                            , 0
+                            , self.selectedDataZeroDisplayType()
                             , self.filterLayoutId(self.selectedCodeA8_8(),ItemSelectionType.FREE_SETTING)
                             , self.filterLayoutId(self.selectedCode(),ItemSelectionType.STANDARD_SETTING));
                         nts.uk.ui.block.grayout();
@@ -478,7 +478,7 @@ module nts.uk.com.view.kwr002.a {
                             , self.selectedCodeA8_8()
                             , companyId
                             , userId
-                            , 0
+                            , self.selectedDataZeroDisplayType()
                             , self.filterLayoutId(self.selectedCodeA8_8(),ItemSelectionType.FREE_SETTING)
                             , self.filterLayoutId(self.selectedCode(),ItemSelectionType.STANDARD_SETTING));
 

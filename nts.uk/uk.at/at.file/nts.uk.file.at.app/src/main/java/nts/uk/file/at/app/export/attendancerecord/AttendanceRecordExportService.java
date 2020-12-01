@@ -88,7 +88,6 @@ import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportEmp
 import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportWeeklyData;
 import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportWeeklySumaryData;
 import nts.uk.file.at.app.export.schedule.FileService;
-import nts.uk.query.model.employee.EmployeeInformationRepository;
 import nts.uk.query.pub.employee.EmployeeInformationExport;
 import nts.uk.query.pub.employee.EmployeeInformationPub;
 import nts.uk.query.pub.employee.EmployeeInformationQueryDto;
@@ -190,6 +189,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		List<AttendanceRecordReportEmployeeData> attendanceRecRepEmpDataList = new ArrayList<AttendanceRecordReportEmployeeData>();
 		
 		//	get domain model by item selection
+		// パラメータ．項目選択種類をチェックする
 		Optional<AttendanceRecordExportSetting> optionalAttendanceRecExpSet = this.attendanceRecExpSetRepo.findByCode(condition.getSelectionType(), 
 				companyId, Optional.of(employeeId), request.getLayout());
 		//	取得できなかった
@@ -210,7 +210,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			columnDailyData = 13;
 			columnMonthlyData = 16;
 		}
-		
+		ZeroDisplayType zeroDisplayType = ZeroDisplayType.valueOf(request.getCondition().getZeroDisplayType());
 		BundledBusinessException exceptions = BundledBusinessException.newInstance();
 		TaskDataSetter setter = context.getDataSetter();
 		// Get layout info
@@ -342,6 +342,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		});
 		
 		YearMonthPeriod periodMonthly = new YearMonthPeriod(request.getStartDate().yearMonth(), request.getEndDate().yearMonth());
+		// 対応する「月別実績」をすべて取得する
 		List<MonthlyAttendanceItemValueResult> monthlyValues;
 		// 帳票用の基準日取得
 		int closureId = request.getClosureId() == 0 ? 1 : request.getClosureId();
@@ -351,7 +352,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			throw new BusinessException("Uchida bảo là lỗi hệ thống _ ThànhPV");
 		}
 		Map<String, DatePeriod> employeePeriod = service.getAffiliationDatePeriod(empIDs, periodMonthly, baseDate.get());
-
+		
+		
 		//	「日別実績」を取得する
 		List<AttendanceItemValueResult> dailyValues;
 		{
@@ -379,6 +381,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		Map<String, Closure> closureAll = closureEmploymentService.findClosureByEmployee(sIds, request.getEndDate());
 		
 		//	月の承認済を取得する
+		// xử lý approval tháng cho những bản chấm công đạt đủ giờ làm việc
 		// #111688
 		List<MonthlyApprovalStatusAttendanceRecord> listMonthlyApproval = new ArrayList<MonthlyApprovalStatusAttendanceRecord>();
 		Optional<ApprovalProcess> approvalProcOp = approvalRepo.getApprovalProcessById(companyId);
@@ -622,7 +625,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 								if (!addValueCalUpper.getAttendanceItems().isEmpty()
 										|| !subValueCalUpper.getAttendanceItems().isEmpty()) {
 									result = this.getSumCalculateAttendanceItem(addValueCalUpper.getAttendanceItems(),
-											subValueCalUpper.getAttendanceItems());
+											subValueCalUpper.getAttendanceItems(), zeroDisplayType);
 								}
 								upperDailyRespond.add(new AttendanceRecordResponse(employee.getEmployeeId(),
 										employee.getEmployeeName(), closureDateTemp, "", result , ATTRIBUTE_OUTFRAME));
@@ -724,7 +727,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 								if (!addValueCalUpper.getAttendanceItems().isEmpty()
 										|| !subValueCalUpper.getAttendanceItems().isEmpty()) {
 									result = this.getSumCalculateAttendanceItem(addValueCalUpper.getAttendanceItems(),
-											subValueCalUpper.getAttendanceItems());
+											subValueCalUpper.getAttendanceItems(), zeroDisplayType);
 								}
 								lowerDailyRespond.add(new AttendanceRecordResponse(employee.getEmployeeId(),
 										employee.getEmployeeName(), closureDateTemp, "", result, ATTRIBUTE_OUTFRAME));
@@ -777,7 +780,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 								weeklyData.setDailyDatas(dailyDataList);
 								// Set total result in week
 								AttendanceRecordReportWeeklySumaryData summaryWeeklyData = new AttendanceRecordReportWeeklySumaryData();
-								summaryWeeklyData = this.getSumWeeklyValue(dailyDataList, optionalAttendanceRecExpSet.get().getExportFontSize().value);
+								summaryWeeklyData = this.getSumWeeklyValue(dailyDataList, optionalAttendanceRecExpSet.get().getExportFontSize().value, zeroDisplayType);
 
 								weeklyData.setWeeklySumaryData(summaryWeeklyData);
 
@@ -797,7 +800,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 							AttendanceRecordReportWeeklyData weeklyData = new AttendanceRecordReportWeeklyData();
 							weeklyData.setDailyDatas(dailyDataList);
 							AttendanceRecordReportWeeklySumaryData summaryWeeklyData = new AttendanceRecordReportWeeklySumaryData();
-							summaryWeeklyData = this.getSumWeeklyValue(dailyDataList, optionalAttendanceRecExpSet.get().getExportFontSize().value);
+							summaryWeeklyData = this.getSumWeeklyValue(dailyDataList, optionalAttendanceRecExpSet.get().getExportFontSize().value, zeroDisplayType);
 
 							weeklyData.setWeeklySumaryData(summaryWeeklyData);
 
@@ -876,7 +879,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 							if (!monthlyUpperAddResult.getAttendanceItems().isEmpty()
 									|| !monthlyUpperSubResult.getAttendanceItems().isEmpty()) {
 								result = this.getSumCalculateAttendanceItem(monthlyUpperAddResult.getAttendanceItems(),
-										monthlyUpperSubResult.getAttendanceItems());
+										monthlyUpperSubResult.getAttendanceItems(), zeroDisplayType);
 							}
 							upperResult.add(result);
 
@@ -931,7 +934,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 							if (!monthlyLowerAddResult.getAttendanceItems().isEmpty()
 									|| !monthlyLowerSubResult.getAttendanceItems().isEmpty()) {
 								result = this.getSumCalculateAttendanceItem(monthlyLowerAddResult.getAttendanceItems(),
-										monthlyLowerSubResult.getAttendanceItems());
+										monthlyLowerSubResult.getAttendanceItems(), zeroDisplayType);
 							}
 							lowerResult.add(result);
 
@@ -1279,7 +1282,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 	 *            the sub value cal upper
 	 * @return the sum calculate attendance item
 	 */
-	String getSumCalculateAttendanceItem(List<ItemValue> addValueCalUpper, List<ItemValue> subValueCalUpper) {
+	String getSumCalculateAttendanceItem(List<ItemValue> addValueCalUpper, List<ItemValue> subValueCalUpper, ZeroDisplayType zeroDisplayType) {
 
 		Double sum = new Double(0);
 		if (!addValueCalUpper.isEmpty()
@@ -1318,7 +1321,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			case 2:
 
 				sumInt = sum.intValue();
-				return this.convertMinutesToHours(sumInt.toString());
+				return this.convertMinutesToHours(sumInt.toString(), zeroDisplayType);
 			case 7:
 			case 8:
 				sumInt = sum.intValue();
@@ -1343,7 +1346,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 	 *            the list
 	 * @return the sum weekly value
 	 */
-	public AttendanceRecordReportWeeklySumaryData getSumWeeklyValue(List<AttendanceRecordReportDailyData> list, int fontSize) {
+	public AttendanceRecordReportWeeklySumaryData getSumWeeklyValue(List<AttendanceRecordReportDailyData> list, int fontSize, ZeroDisplayType zeroDisplayType) {
 		AttendanceRecordReportWeeklySumaryData result = new AttendanceRecordReportWeeklySumaryData();
 
 		String upperValue7th = "";
@@ -1363,35 +1366,35 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 		for (AttendanceRecordReportDailyData item : list) {
 			if (item.getColumnDatas().get(6) != null) {
-				upperValue7th = this.add(upperValue7th, item.getColumnDatas().get(6).getUper());
-				lowerValue7th = this.add(lowerValue7th, item.getColumnDatas().get(6).getLower());
+				upperValue7th = this.add(upperValue7th, item.getColumnDatas().get(6).getUper(), zeroDisplayType);
+				lowerValue7th = this.add(lowerValue7th, item.getColumnDatas().get(6).getLower(), zeroDisplayType);
 			}
 			if (item.getColumnDatas().get(7) != null) {
-				upperValue8th = this.add(upperValue8th, item.getColumnDatas().get(7).getUper());
-				lowerValue8th = this.add(lowerValue8th, item.getColumnDatas().get(7).getLower());
+				upperValue8th = this.add(upperValue8th, item.getColumnDatas().get(7).getUper(), zeroDisplayType);
+				lowerValue8th = this.add(lowerValue8th, item.getColumnDatas().get(7).getLower(), zeroDisplayType);
 			}
 			if (item.getColumnDatas().get(8) != null) {
-				upperValue9th = this.add(upperValue9th, item.getColumnDatas().get(8).getUper());
-				lowerValue9th = this.add(lowerValue9th, item.getColumnDatas().get(8).getLower());
+				upperValue9th = this.add(upperValue9th, item.getColumnDatas().get(8).getUper(), zeroDisplayType);
+				lowerValue9th = this.add(lowerValue9th, item.getColumnDatas().get(8).getLower(), zeroDisplayType);
 			}
 			if (fontSize == ExportFontSize.CHAR_SIZE_MEDIUM.value || fontSize == ExportFontSize.CHARS_SIZE_SMALL.value) { 
 				if (item.getColumnDatas().get(9) != null) {
-					upperValue9th = this.add(upperValue10th, item.getColumnDatas().get(9).getUper());
-					lowerValue9th = this.add(lowerValue10th, item.getColumnDatas().get(9).getLower());
+					upperValue10th = this.add(upperValue10th, item.getColumnDatas().get(9).getUper(), zeroDisplayType);
+					lowerValue10th = this.add(lowerValue10th, item.getColumnDatas().get(9).getLower(), zeroDisplayType);
 				}
 				if (item.getColumnDatas().get(10) != null) {
-					upperValue9th = this.add(upperValue11th, item.getColumnDatas().get(10).getUper());
-					lowerValue9th = this.add(lowerValue11th, item.getColumnDatas().get(10).getLower());
+					upperValue11th = this.add(upperValue11th, item.getColumnDatas().get(10).getUper(), zeroDisplayType);
+					lowerValue11th = this.add(lowerValue11th, item.getColumnDatas().get(10).getLower(), zeroDisplayType);
 				}
 			}
 			if (fontSize == ExportFontSize.CHARS_SIZE_SMALL.value) { 
 				if (item.getColumnDatas().get(11) != null) {
-					upperValue9th = this.add(upperValue12th, item.getColumnDatas().get(11).getUper());
-					lowerValue9th = this.add(lowerValue12th, item.getColumnDatas().get(11).getLower());
+					upperValue12th = this.add(upperValue12th, item.getColumnDatas().get(11).getUper(), zeroDisplayType);
+					lowerValue12th = this.add(lowerValue12th, item.getColumnDatas().get(11).getLower(), zeroDisplayType);
 				}
 				if (item.getColumnDatas().get(12) != null) {
-					upperValue9th = this.add(upperValue13th, item.getColumnDatas().get(12).getUper());
-					lowerValue9th = this.add(lowerValue13th, item.getColumnDatas().get(12).getLower());
+					upperValue13th = this.add(upperValue13th, item.getColumnDatas().get(12).getUper(), zeroDisplayType);
+					lowerValue13th = this.add(lowerValue13th, item.getColumnDatas().get(12).getLower(), zeroDisplayType);
 				}
 			}
 
@@ -1440,7 +1443,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 	 *            the b
 	 * @return the string
 	 */
-	public String add(String a, String b) {
+	public String add(String a, String b, ZeroDisplayType zeroDisplayType) {
 		if (a.equals(""))
 			return b;
 		if (b.equals(""))
@@ -1472,7 +1475,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 			Integer totalMinute = (hourA * 60 + minuteA) + (hourB * 60 + minuteB);
 
-			return this.convertMinutesToHours(totalMinute.toString());
+			return this.convertMinutesToHours(totalMinute.toString(), zeroDisplayType);
 		} else {
 			indexA = a.indexOf("回");
 			indexB = b.indexOf("回");
@@ -1520,6 +1523,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			List<AttendanceType> attendanceTypeList, NameUseAtr nameUseAtr, ZeroDisplayType zeroDisplayType) {
 		final String value = item.getValue();
 		if (item.getValueType() == null || item.getValue() == null)
+//			return zeroDisplayType == ZeroDisplayType.DISPLAY ? "0.0": "";
 			return "";
 		switch (item.getValueType()) {
 
@@ -1529,7 +1533,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 			if (Integer.parseInt(item.getValue()) == 0 || item.getValue().isEmpty())
 				return zeroDisplayType == ZeroDisplayType.DISPLAY ? item.getValue() : "";
-			return this.convertMinutesToHours(value.toString());
+			return this.convertMinutesToHours(value.toString(), zeroDisplayType);
 		case COUNT:
 		case COUNT_WITH_DECIMAL:
 			if (Integer.parseInt(item.getValue()) == 0 || item.getValue().isEmpty())
@@ -1598,7 +1602,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 	 *            the minutes
 	 * @return the string
 	 */
-	private String convertMinutesToHours(String minutes) {
+	private String convertMinutesToHours(String minutes, ZeroDisplayType zeroDisplayType) {
 		if (minutes.equals("0") || minutes.equals("")) {
 			return "0:00";
 		}
@@ -1608,12 +1612,23 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			minuteInt *= -1;
 			Integer hourInt = minuteInt / 60;
 			minuteInt = minuteInt % 60;
-			return "-" + String.format(FORMAT, hourInt, minuteInt);
+			return "前日 " + String.format(FORMAT, hourInt, minuteInt);
 		} else {
+			String tempTime = "";
 			Integer hourInt = minuteInt / 60;
 			minuteInt = minuteInt % 60;
-
-			return String.format(FORMAT, hourInt, minuteInt);
+			if(zeroDisplayType == ZeroDisplayType.DISPLAY && minuteInt == 0 && hourInt == 0) {
+				return "0:00";
+			}
+			if(hourInt > 24 && hourInt < 48) {
+				hourInt = hourInt - 24;
+				tempTime = "翌日 ";
+			} else if (hourInt > 48) {
+				tempTime = "翌々日 ";
+			} else {
+				tempTime = "当日 ";
+			}
+			return tempTime + String.format(FORMAT, hourInt, minuteInt);
 		}
 	}
 	
