@@ -282,6 +282,19 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 				.setParameter("empCD", empCD)
 				.getList(c -> MonthlyWorkTimeSetEmp.of(cid, new EmploymentCode(empCD), laborAttr, new YearMonth(c.pk.ym), c.domain()));
 	}
+	
+	@Override
+	public void removeCompany(String cid, int laborAttr, int year) {
+		this.queryProxy().query("SELECT x FROM KshmtLegalTimeMCom x "
+				+ "WHERE x.pk.cid = :cid  AND x.pk.ym >= :start "
+				+ "AND x.pk.ym <= :end "
+				+ "AND c.pk.type = :laborAttr", KshmtLegalTimeMCom.class)
+					.setParameter("cid", cid)
+					.setParameter("start", year * 100 + 01)
+					.setParameter("end", year * 100 + 12)
+					.setParameter("laborAttr", laborAttr)
+					.getList().forEach(c -> commandProxy().remove(cid));
+	}
 
 	@Override
 	public void removeEmployee(String cid, String sid, int year) {
@@ -308,16 +321,19 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 	}
 	
 	@Override
-	public void removeEmployment(String companyId, String employmentCode, int laborAttr, int ym) {
+	public void removeEmployment(String cid, String empCD, int laborAttr, int year) {
 		this.queryProxy().query("SELECT x FROM KshmtLegalTimeMEmp x "
-				+ "WHERE x.pk.cid = :cid  AND x.pk.ym >= :start "
-				+ "AND x.pk.ym <= :end AND c.pk.empCD = :empCD AND c.pk.type= :laborAttr", KshmtLegalTimeMEmp.class)
-					.setParameter("cid", companyId)
-					.setParameter("empCD", employmentCode)
+				+ "WHERE x.pk.cid = :cid  "
+				+ "AND x.pk.ym >= :start "
+				+ "AND x.pk.ym <= :end "
+				+ "AND c.pk.empCD = :empCD "
+				+ "AND c.pk.type = :laborAttr", KshmtLegalTimeMEmp.class)
+					.setParameter("cid", cid)
+					.setParameter("empCD", empCD)
+					.setParameter("start", year * 100 + 01)
+					.setParameter("end", year * 100 + 12)
 					.setParameter("laborAttr", laborAttr)
-					.setParameter("start", ym * 100 + 01)
-					.setParameter("end", ym * 100 + 12)
-					.getList().forEach(c -> commandProxy().remove(companyId));
+					.getList().forEach(c -> commandProxy().remove(cid));
 	}
 
 	@Override

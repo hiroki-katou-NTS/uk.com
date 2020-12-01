@@ -24,7 +24,7 @@ public class DeleteMonthlyWorkTimeSetEmpCommandHandler extends CommandHandler<De
 	protected void handle(CommandHandlerContext<DeleteMonthlyWorkTimeSetEmpCommand> context) {
 		
 		DeleteMonthlyWorkTimeSetEmpCommand cmd = context.getCommand();
-		// 1. delete ログイン会社ID,雇用コード,勤務区分,年月期間
+		// 1. delete (ログイン会社ID,雇用コード,勤務区分,年月期間)
 		this.monthlyWorkTimeSetRepo.removeEmployment(AppContexts.user().companyId(), cmd.getEmploymentCode(),
 				cmd.getLaborAttr(), cmd.getYm());
 	}
