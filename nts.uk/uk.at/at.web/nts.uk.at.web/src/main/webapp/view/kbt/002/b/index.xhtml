@@ -26,9 +26,9 @@
         <button id="B1_3" tabindex="3" class="proceed" data-bind="click: saveProcExec">#{i18n.getText('KBT002_3')}</button>
         <!-- B1_5 削除 -->
         <button id="B1_5" tabindex="4" class="danger" data-bind="click: delProcExec">#{i18n.getText('KBT002_4')}</button>
-        <button id="B1_5" tabindex="4" class="danger" data-bind="click: openDialogC">openDialogC</button>
+        <!-- <button id="B1_5" tabindex="4" class="danger" data-bind="click: openDialogC">openDialogC</button>
         <button id="B1_5" tabindex="4" class="danger" data-bind="click: openDialogK">OpenDialogK</button>
-        <button id="B1_5" tabindex="4" class="danger" data-bind="click: openDialogL">OpenDialogL</button>
+        <button id="B1_5" tabindex="4" class="danger" data-bind="click: openDialogL">OpenDialogL</button> -->
       </div>
       <div id="contents-area">
         <div class="container">
@@ -133,7 +133,7 @@
                     }">
                   </div>
                   <button id="B5_5" tabindex="12" class="add ml-25" data-bind="click: function() { $parent.openDialogC() }, disable: $parent.isNewMode()">#{i18n.getText('KBT002_51')}</button>
-                  <label id="B5_6" class="color-danger" data-bind="text: $parent.executionTaskWarning"></label>
+                  <label id="B5_6" class="limited-label color-holiday" data-bind="text: $parent.executionTaskWarning"></label>
                 </td>
               </tr>
               <tr>
@@ -625,7 +625,7 @@
                             options: $parent.storagePatternList,
                             optionsValue: 'code',
                             visibleItemsCount: 5,
-                            value: $parent.storagePattern,
+                            value: storagePattern,
                             optionsText: 'name',
                             editable: false,
                             enable: true,
@@ -651,7 +651,7 @@
                             options: $parent.deletionPatternList,
                             optionsValue: 'code',
                             visibleItemsCount: 5,
-                            value: $parent.deletionPattern,
+                            value: deletionPattern,
                             optionsText: 'name',
                             editable: false,
                             enable: true,

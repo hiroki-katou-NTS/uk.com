@@ -23,28 +23,36 @@ public class ProcessExecutionLogManage extends AggregateRoot {
 	private String companyId;
 	
 	/* 全体のエラー詳細  -> 強制終了の原因 */
-	private Optional<OverallErrorDetail> overallError;
+	@Builder.Default
+	private Optional<OverallErrorDetail> overallError = Optional.empty();
 	
 	/* 全体の終了状態 */
-	private Optional<EndStatus> overallStatus;
+	@Builder.Default
+	private Optional<EndStatus> overallStatus = Optional.empty();
 	
 	/* 前回実行日時 */
-	private Optional<GeneralDateTime> lastExecDateTime;
+	@Builder.Default
+	private Optional<GeneralDateTime> lastExecDateTime = Optional.empty();
 	
 	/* 現在の実行状態 */
-	private Optional<CurrentExecutionStatus> currentStatus;
+	@Builder.Default
+	private Optional<CurrentExecutionStatus> currentStatus = Optional.empty();
 	
 	/* 前回実行日時（即時実行含めない） */
-	private Optional<GeneralDateTime> lastExecDateTimeEx;
+	@Builder.Default
+	private Optional<GeneralDateTime> lastExecDateTimeEx = Optional.empty();
 	
 	/* 前回終了日時*/
-	private Optional<GeneralDateTime> lastEndExecDateTime;
+	@Builder.Default
+	private Optional<GeneralDateTime> lastEndExecDateTime = Optional.empty();
 	
 	/* 全体のシステムエラー状態*/
-	private Optional<Boolean> errorSystem;
+	@Builder.Default
+	private Optional<Boolean> errorSystem = Optional.empty();
 	
 	/* 全体の業務エラー状態*/
-	private Optional<Boolean> errorBusiness;
+	@Builder.Default
+	private Optional<Boolean> errorBusiness = Optional.empty();
 
 	public ProcessExecutionLogManage(ExecutionCode execItemCd, String companyId, EndStatus overallStatus, CurrentExecutionStatus currentStatus) {
 		super();

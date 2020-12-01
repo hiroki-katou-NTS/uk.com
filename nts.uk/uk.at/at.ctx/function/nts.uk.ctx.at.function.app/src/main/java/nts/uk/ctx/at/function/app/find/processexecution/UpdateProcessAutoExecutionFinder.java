@@ -13,7 +13,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ExecutionTaskSettingDto;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.SelectedProcessExecutionDto;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.UpdateProcessAutoExecutionDto;
-import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionScopeItem;
 import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ExecutionTaskSettingRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionRepository;

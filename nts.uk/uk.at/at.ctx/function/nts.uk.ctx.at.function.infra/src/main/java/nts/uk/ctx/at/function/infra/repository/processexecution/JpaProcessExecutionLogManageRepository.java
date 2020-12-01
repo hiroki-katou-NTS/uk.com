@@ -108,14 +108,14 @@ implements ProcessExecutionLogManageRepository{
 
 	@Override
 	public void insert(ProcessExecutionLogManage domain) {
-		//this.commandProxy().insert(KfnmtProcessExecutionLogManage.toEntity(domain));
-			this.getEntityManager().persist(KfnmtProcessExecutionLogManage.toEntity(domain));
+		this.commandProxy().insert(KfnmtProcessExecutionLogManage.toEntity(domain));
+//			this.getEntityManager().persist(KfnmtProcessExecutionLogManage.toEntity(domain));
 		//this.getEntityManager().lock(this.getEntityManager(), LockModeType.NONE);
 			//KfnmtProcessExecutionLogManagePK kfnmtProcExecPK = new KfnmtProcessExecutionLogManagePK(domain.getCompanyId(), domain.getExecItemCd().v());
 			//KfnmtProcessExecutionLogManage find = this.getEntityManager().find(KfnmtProcessExecutionLogManage.class, kfnmtProcExecPK);
 		//	LockModeType lockMode = this.getEntityManager().getLockMode(find);
 	//	this.getEntityManager().lock(find, LockModeType.PESSIMISTIC_WRITE);
-			this.getEntityManager().flush();
+//			this.getEntityManager().flush();
 	}
 
 	@Override

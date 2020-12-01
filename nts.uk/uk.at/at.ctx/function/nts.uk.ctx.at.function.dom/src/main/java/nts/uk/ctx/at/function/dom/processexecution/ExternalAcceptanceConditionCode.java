@@ -10,7 +10,7 @@ import nts.uk.shr.com.primitive.ZeroPaddedCode;
  * @author ngatt-nws
  *
  */
-@StringMaxLength(5)
+@StringMaxLength(3)
 @StringCharType(CharType.NUMERIC)
 @ZeroPaddedCode
 public class ExternalAcceptanceConditionCode extends CodePrimitiveValue<ExternalAcceptanceConditionCode> {

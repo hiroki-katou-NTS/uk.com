@@ -32,5 +32,5 @@ public class KfnctExecutionIndexCategoryPk implements Serializable {
 	 * 	カテゴリNO
 	 */
 	@Column(name = "CATEGORY_NO")
-	public BigDecimal categoryNo;
+	public int categoryNo;
 }

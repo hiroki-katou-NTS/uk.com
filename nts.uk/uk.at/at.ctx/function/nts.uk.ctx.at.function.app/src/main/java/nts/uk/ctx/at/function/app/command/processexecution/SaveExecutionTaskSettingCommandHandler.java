@@ -79,7 +79,7 @@ public class SaveExecutionTaskSettingCommandHandler
 				.map(x -> EnumAdaptor.valueOf(x, RepeatMonthDaysSelect.class)).collect(Collectors.toList());
 		// ドメインモデル「更新処理自動実行管理」を取得し、現在の実行状態を判断する
 		Optional<ProcessExecutionLogManage> optLogManage = processExecutionLogManageRepository
-				.getLogByCIdAndExecCd(AppContexts.user().companyId(), command.getExecItemCd());
+				.getLogByCIdAndExecCd(companyId, command.getExecItemCd());
 		if (!optLogManage.isPresent()) {
 			return null;
 		}

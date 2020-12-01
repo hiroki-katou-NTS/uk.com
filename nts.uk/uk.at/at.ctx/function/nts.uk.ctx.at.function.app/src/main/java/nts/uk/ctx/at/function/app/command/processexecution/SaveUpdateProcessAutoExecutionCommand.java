@@ -53,6 +53,11 @@ public class SaveUpdateProcessAutoExecutionCommand implements UpdateProcessAutoE
 	 * クラウド作成フラグ
 	 */
 	private boolean cloudCreationFlag;
+	
+	/**
+	 * タスク有効設定
+	 */
+	private boolean enableSetting;
 
 	@Override
 	public ProcessExecutionScope getExecScope() {

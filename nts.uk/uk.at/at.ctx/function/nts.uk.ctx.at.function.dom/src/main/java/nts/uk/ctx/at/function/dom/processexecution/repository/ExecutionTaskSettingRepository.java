@@ -19,5 +19,7 @@ public interface ExecutionTaskSettingRepository {
 	
 	// remove
 	public void remove(String companyId, String execItemCd);
-		
+	
+	// update enabledSetting
+	public void update(String companyId, String execItemCd, boolean enabledSetting);
 }

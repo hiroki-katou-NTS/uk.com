@@ -112,4 +112,14 @@ public class JpaExecutionTaskSettingRepository extends JpaRepository
 		}
 	}
 
+	@Override
+	public void update(String companyId, String execItemCd, boolean enabledSetting) {
+		Optional<KfnmtExecutionTaskSetting> optEntity = this.queryProxy()
+				.find(new KfnmtExecutionTaskSettingPK(companyId, execItemCd), KfnmtExecutionTaskSetting.class);
+		optEntity.ifPresent(entity -> {
+			entity.enabledSetting = enabledSetting ? 1 : 0;
+			this.commandProxy().update(entity);
+		});
+	}
+
 }

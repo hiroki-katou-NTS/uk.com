@@ -77,7 +77,7 @@ public class RepeatMonthSelect extends DomainObject {
 		if (values == null) {
 			values = this.generateValuesMap();
 		}
-		return values.values().isEmpty();
+		return !values.values().isEmpty();
 	}
 	
 	public List<Integer> getMonthsAfterEqualsStartMonth(Integer startMonth) {
@@ -108,5 +108,19 @@ public class RepeatMonthSelect extends DomainObject {
 		return values.entrySet().stream()
 				.filter(Entry::getValue)
 				.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+	}
+	
+	public String getTrueMonthString() {
+		if (values == null) {
+			values = generateValuesMap();
+		}
+		StringBuilder res = new StringBuilder();
+		for (int i = 0; i < values.size(); i++) {
+			res.append(values.keySet().toArray(new Integer[0])[i] + "月");
+			if (i != values.size() - 1) {
+				res.append(", ");
+			}
+		}
+		return res.toString();
 	}
 }

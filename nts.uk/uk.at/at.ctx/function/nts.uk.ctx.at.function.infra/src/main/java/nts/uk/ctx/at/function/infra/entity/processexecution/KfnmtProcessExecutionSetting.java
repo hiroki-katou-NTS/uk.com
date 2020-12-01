@@ -1,16 +1,19 @@
 package nts.uk.ctx.at.function.infra.entity.processexecution;
 
 import java.io.Serializable;
-import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -55,12 +58,12 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 	 */
 	public static final long serialVersionUID = 1L;
 
-	/**
-	 * Column 排他バージョン
-	 */
-	@Version
-	@Column(name = "EXCLUS_VER")
-	public long version;
+//	/**
+//	 * Column 排他バージョン
+//	 */
+//	@Version
+//	@Column(name = "EXCLUS_VER")
+//	public long version;
 
 	/**
 	 * The primary key
@@ -326,6 +329,15 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 	@JoinColumns({@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
 				  @JoinColumn(name = "EXEC_ITEM_CD", referencedColumnName = "EXEC_ITEM_CD", insertable = false, updatable = false)})
 	public KfnmtProcessExecution procExec;
+	
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "execSetting", orphanRemoval = true)
+	public List<KfnctExecutionExternalAccept> externalAcceptList;
+	
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "execSetting", orphanRemoval = true)
+	public List<KfnctExecutionExternalOutput> externalOutputList;
+	
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "execSetting", orphanRemoval = true)
+	public List<KfnctExecutionIndexCategory> indexCategoryList;
 
 	/**
 	 * Gets the key.
@@ -466,6 +478,28 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 		}
 		entity.indexReorgArt = domain.getIndexReconstruction().getIndexReorgAttr().value;
 		entity.updStatisticsArt = domain.getIndexReconstruction().getUpdateStatistics().value;
+				
+		entity.externalAcceptList = domain.getExternalAcceptance().getExtAcceptCondCodeList().stream()
+				.map(data -> KfnctExecutionExternalAccept.builder()
+						.contractCode(contractCode)
+						.pk(new KfnctExecutionExternalAcceptPk(entity.kfnmtProcExecSetPK.companyId, execItemCode, data.v()))
+						.execSetting(entity)
+						.build())
+				.collect(Collectors.toList());
+		entity.externalOutputList = domain.getExternalOutput().getExtOutCondCodeList().stream()
+				.map(data -> KfnctExecutionExternalOutput.builder()
+						.contractCode(contractCode)
+						.pk(new KfnctExecutionExternalOutputPk(entity.kfnmtProcExecSetPK.companyId, execItemCode, data.v()))
+						.execSetting(entity)
+						.build())
+				.collect(Collectors.toList());
+		entity.indexCategoryList = domain.getIndexReconstruction().getCategoryList().stream()
+				.map(data -> KfnctExecutionIndexCategory.builder()
+						.contractCode(contractCode)
+						.pk(new KfnctExecutionIndexCategoryPk(entity.kfnmtProcExecSetPK.companyId, execItemCode, data.v()))
+						.execSetting(entity)
+						.build())
+				.collect(Collectors.toList());
 		return entity;
 	}
 
@@ -510,13 +544,20 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 		// Sets save data
 		domain.setSaveData(new SaveData(this.dataStorageArt, this.dataStorageCode));
 		// Sets external acceptance
-		domain.setExternalAcceptance(new ExternalAcceptance(this.extAcceptanceArt, Collections.emptyList()));
+		domain.setExternalAcceptance(new ExternalAcceptance(
+				this.extAcceptanceArt, 
+				this.externalAcceptList.stream().map(data -> data.pk.extAcceptCd).collect(Collectors.toList())));
 		// Sets external output
-		domain.setExternalOutput(new ExternalOutput(this.extOutputArt, Collections.emptyList()));
+		domain.setExternalOutput(new ExternalOutput(
+				this.extOutputArt, 
+				this.externalOutputList.stream().map(data -> data.pk.extOutputCd).collect(Collectors.toList())));
 		// Sets aggregation any period
 		domain.setAggrAnyPeriod(new AggregationAnyPeriod(this.aggAnyPeriodArt, this.aggAnyPeriodCode));
 		// Sets index reconstruction
-		domain.setIndexReconstruction(new IndexReconstruction(this.updStatisticsArt, this.indexReorgArt, Collections.emptyList()));
+		domain.setIndexReconstruction(new IndexReconstruction(
+				this.updStatisticsArt, 
+				this.indexReorgArt, 
+				this.indexCategoryList.stream().map(data -> data.pk.categoryNo).collect(Collectors.toList())));
 		// Sets re-execution condition
 		domain.setReExecCondition(new ReExecutionCondition(this.recreateChangeBus, this.recreateTransfer, this.recreateLeaveSya));
 		return domain;

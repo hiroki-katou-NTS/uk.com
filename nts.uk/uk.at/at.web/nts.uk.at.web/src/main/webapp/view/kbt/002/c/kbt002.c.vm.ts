@@ -36,7 +36,6 @@ module nts.uk.at.view.kbt002.c {
 
     created(params: any) {
       const vm = this;
-      let dfd = $.Deferred<void>();
       const today = moment();
       vm.currentDate = today.format("YYYY/MM/DD");
       vm.currentTime = today.hour() * 60 + today.minute();
@@ -70,9 +69,8 @@ module nts.uk.at.view.kbt002.c {
         { code: 0, name: vm.$i18n('KBT002_71') },
         { code: 1, name: vm.$i18n('KBT002_72') }
       ]);
-
       if (params) {
-        vm.execItemCd(params.execItemCd);
+        vm.execItemCd(params.execItemCode);
         vm.execItemName(params.execItemName);
         vm.cloudCreationFlag(params.cloudCreationFlag);
         vm.getExecSetting();

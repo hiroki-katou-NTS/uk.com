@@ -121,10 +121,23 @@ public class ExecutionTaskSettingDto {
 
 	private List<Integer> repeatMonthDateList;
 
+	private String trueDayString;
+	
+	private String trueMonthlyMonthString;
+	
+	private String trueMonthlyDayString;
+
 	public static ExecutionTaskSettingDto fromDomain(ExecutionTaskSetting domain) {
 		List<Integer> repeatMonthDateList = domain.getDetailSetting().getMonthly()
 				.map(data -> data.getDays().stream().map(x -> x.value).collect(Collectors.toList()))
 				.orElse(Collections.emptyList());
+		StringBuilder trueMonthlyDayString = new StringBuilder();
+		for (int i = 0; i < repeatMonthDateList.size(); i++) {
+			trueMonthlyDayString.append(repeatMonthDateList.get(i) + "日");
+			if (i == repeatMonthDateList.size() - 1) {
+				trueMonthlyDayString.append(", ");
+			}
+		}
 		return new ExecutionTaskSettingDto(domain.getCompanyId(), domain.getExecItemCd().v(), domain.isEnabledSetting(),
 				domain.getOneDayRepInr().getDetail().map(o -> o.value).orElse(null),
 				domain.getOneDayRepInr().getOneDayRepCls().value, domain.getNextExecDateTime().orElse(null),
@@ -170,6 +183,9 @@ public class ExecutionTaskSettingDto {
 						.map(RepeatMonthSelect::isTrue).orElse(null),
 				domain.getDetailSetting().getMonthly().map(data -> data.getMonth().getDecember())
 						.map(RepeatMonthSelect::isTrue).orElse(null),
-				repeatMonthDateList);
+				repeatMonthDateList, domain.getDetailSetting().getWeekly()
+						.map(data -> data.getWeekdaySetting().getTrueDayString()).orElse(null),
+				domain.getDetailSetting().getMonthly().map(data -> data.getMonth().getTrueMonthString()).orElse(null),
+				trueMonthlyDayString.toString());
 	}
 }

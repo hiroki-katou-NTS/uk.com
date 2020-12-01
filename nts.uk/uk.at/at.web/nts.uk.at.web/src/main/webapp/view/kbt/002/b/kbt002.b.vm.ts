@@ -80,6 +80,9 @@ module nts.uk.at.view.kbt002.b {
     storagePattern: KnockoutObservable<string> = ko.observable('');
     deletionPatternList: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
     deletionPattern: KnockoutObservable<string> = ko.observable('');
+    defaultMasterData: DefaultMasterData = null;
+    taskSetting: KnockoutObservable<any> = ko.observable(null);
+    cloudCreationFlag: KnockoutObservable<boolean> = ko.observable(false);
 
     created() {
       const vm = this;
@@ -87,12 +90,18 @@ module nts.uk.at.view.kbt002.b {
       vm.selectedTab(TabPanelId.TAB_1);
       vm.$ajax(API.getMasterInfo)
         .then((response: any) => {
-          console.log(response);
           vm.aggrPeriodList(_.map(response.aggrPeriodList, (item: any) => new ItemModel({ code: item.aggrFrameCode, name: item.optionalAggrName })));
           vm.stdAcceptList(response.stdAcceptCondSetList);
           vm.stdOutputList(response.stdOutputCondSetList);
+          vm.indexReconList(response.indexReorgCateList);
           vm.storagePatternList(_.map(response.dataStoragePatternSetList, (item: any) => new ItemModel({ code: item.patternCode, name: item.patternName })));
           vm.deletionPatternList(_.map(response.dataDelPatternSetList, (item: any) => new ItemModel({ code: item.patternCode, name: item.patternName })));
+
+          vm.defaultMasterData = new DefaultMasterData({
+            stdOutputList: _.cloneDeep(vm.stdOutputList()),
+            stdAcceptList: _.cloneDeep(vm.stdAcceptList()),
+            indexReconList: _.cloneDeep(vm.indexReconList())
+          });
         })
         .fail(err => { errors.clearAll(); });
 
@@ -109,12 +118,14 @@ module nts.uk.at.view.kbt002.b {
           vm.$blockui("grayout");
           vm.$ajax(textUtil.format(API.selectProcExec, execItemCode))
             .then(res => {
-              console.log(res);
               vm.selectedTaskEnableSetting((res.taskSetting && res.taskSetting.enabledSetting) ? TaskEnableSettingClassificationCode.ENABLED : TaskEnableSettingClassificationCode.DISABLED); // B5_2
               vm.currentExecItem().createData(res);
+              vm.taskSetting(res.taskSetting);
+              vm.cloudCreationFlag(res.processExecution.cloudCreFlag);
+              vm.updateList();
               vm.currentExecItem().workplaceList(res.workplaceInfos);
               vm.buildWorkplaceStr(vm.currentExecItem().workplaceList()); // B4_6, 7, 9, 10
-              vm.buildExecutionTaskWarningStr(); // B5_6
+              vm.executionTaskWarning(vm.buildExecutionTaskWarningStr()); // B5_6
               if (vm.currentExecItem().perScheduleCls()) {
                 // vm.targetDateText('targetDateText');
                 vm.targetDateText(vm.buildTargetDateStr(vm.currentExecItem()));
@@ -147,8 +158,6 @@ module nts.uk.at.view.kbt002.b {
       $.when(vm.getEnumDataList(), vm.getAlarmByUser())
         .then((response) => console.log(vm.targetMonthList()))
         .always(() => vm.$blockui('clear'));
-
-      vm.currentExecItem().aggrFrameCode.subscribe(data => console.log(data));
     }
 
     /**
@@ -234,7 +243,6 @@ module nts.uk.at.view.kbt002.b {
         // Get json object
         const command: SaveUpdateProcessAutoExecutionCommand = vm.toJsonObject();
         vm.$blockui('grayout');
-
         // Insert or update process execution
         vm.$ajax(API.saveProcExec, command)
           .then((response) => {
@@ -263,14 +271,14 @@ module nts.uk.at.view.kbt002.b {
     public delProcExec() {
       const vm = this;
       const currentItem = vm.currentExecItem();
-      let oldIndex = _.findIndex(vm.execItemList(), (x) => { x.execItemCode === currentItem.execItemCode() });
+      let oldIndex = _.findIndex(vm.execItemList(), { execItemCode: currentItem.execItemCode() });
       const lastIndex = vm.execItemList().length - 1;
 
       vm.$dialog.confirm({ messageId: "Msg_18" })
         .then((result: 'no' | 'yes' | 'cancel') => {
           if (result === 'yes') {
             let command: RemoveProcessExecutionCommand = new RemoveProcessExecutionCommand();
-            command.execItemCode = currentItem.execItemCode();
+            command.execItemCd = currentItem.execItemCode();
 
             vm.$blockui('grayout');
             // Get process exection list
@@ -311,8 +319,7 @@ module nts.uk.at.view.kbt002.b {
       const data: any = {
         execItemCode: vm.currentExecItem().execItemCode(),
         execItemName: vm.currentExecItem().execItemName(),
-        //TODO
-        cloudCreationFlag: false
+        cloudCreationFlag: vm.cloudCreationFlag()
       };
       vm.$window.modal('/view/kbt/002/c/index.xhtml', data)
         .then(() => {
@@ -478,10 +485,53 @@ module nts.uk.at.view.kbt002.b {
       return targetDateStr;
     }
 
-    private buildExecutionTaskWarningStr() {
+    private buildExecutionTaskWarningStr(): string {
       const vm = this;
-      // TODO
-      vm.executionTaskWarning("TODO");
+      if (vm.isNewMode()) {
+        return vm.$i18n("KBT002_305");
+      }
+      if (!vm.taskSetting()) {
+        return vm.$i18n("KBT002_278");
+      }
+      const startDate = vm.taskSetting().startDate;
+      const startTime = `${Math.floor(vm.taskSetting().startTime / 60)}:${nts.uk.text.padLeft(String(vm.taskSetting().startTime % 60), '0', 2)}`;
+      if (vm.taskSetting().repeatContent === 0) {
+        return vm.$i18n("KBT002_304", [startDate, startTime]);
+      }
+      const params: string[] = [];
+      params[0] = startDate;
+      params[1] = startTime;
+      switch(vm.taskSetting().repeatContent) {
+        case 1: 
+          params[2] = vm.$i18n("KBT002_253");
+          break;
+        case 2:
+          params[2] = vm.$i18n("KBT002_310", [vm.taskSetting().trueDayString]);
+          break;
+        case 3:
+          params[2] = vm.$i18n("KBT002_311", [vm.taskSetting().trueMonthlyMonthString, vm.taskSetting().trueMonthlyDayString]);
+          break;
+      }
+      params[3] = vm.taskSetting().oneDayRepClassification === 0 
+                  ? ""
+                  : vm.$i18n("KBT002_307", [vm.taskSetting().oneDayRepInterval]);
+      params[4] = vm.taskSetting().endTimeCls === 0 
+                  ? ""
+                  : vm.$i18n("KBT002_309", [`${Math.floor(vm.taskSetting().endTime / 60)}:${vm.taskSetting().endTime % 60}`]);
+      params[5] = vm.taskSetting().endDateCls === 0 
+                  ? ""
+                  : vm.$i18n("KBT002_308", [vm.taskSetting().endDate]);
+      return vm.$i18n("KBT002_306", params);
+    }
+
+    private updateList() {
+      const vm = this;
+      vm.currentStdOutputList(_.filter(vm.defaultMasterData.stdOutputList, item => _.includes(vm.currentExecItem().stdOutputList(), item.conditionSetCode)));
+      vm.stdOutputList(_.filter(vm.defaultMasterData.stdOutputList, item => !_.includes(vm.currentExecItem().stdOutputList(), item.conditionSetCode)));
+      vm.currentStdAcceptList(_.filter(vm.defaultMasterData.stdAcceptList, item => _.includes(vm.currentExecItem().stdAcceptList(), item.conditionSetCode)));
+      vm.stdAcceptList(_.filter(vm.defaultMasterData.stdAcceptList, item => !_.includes(vm.currentExecItem().stdAcceptList(), item.conditionSetCode)));
+      vm.currentIndexReconList(_.filter(vm.defaultMasterData.indexReconList, item => _.includes(vm.currentExecItem().indexReconList(), item.categoryNo)));
+      vm.indexReconList(_.filter(vm.defaultMasterData.indexReconList, item => !_.includes(vm.currentExecItem().indexReconList(), item.categoryNo)));
     }
 
     /**
@@ -542,7 +592,7 @@ module nts.uk.at.view.kbt002.b {
         command.execSetting.monthlyAggCls = vm.currentExecItem().monthlyAggCls();
         command.execScope.execScopeCls = vm.currentExecItem().execScopeCls();
         command.execScope.refDate = textUtil.isNullOrEmpty(vm.currentExecItem().refDate()) ? null : moment.utc(vm.currentExecItem().refDate());
-        command.execScope.wkpIdList = vm.currentExecItem().workplaceList();
+        command.execScope.wkpIdList = _.map(vm.currentExecItem().workplaceList(), item => item.workplaceId);
         // command.recreateTypeChangePerson = false;
         // command.recreateTransfers = false; //B15_2(2)
         command.execSetting.appRouteUpdateDaily.appRouteUpdateAtr = vm.currentExecItem().appRouteUpdateAtrNormal() ? 1 : 0;
@@ -580,7 +630,7 @@ module nts.uk.at.view.kbt002.b {
         command.execSetting.monthlyAggCls = vm.currentExecItem().dailyPerfClsReCreate();
         command.execScope.execScopeCls = vm.currentExecItem().execScopeCls();
         command.execScope.refDate = textUtil.isNullOrEmpty(vm.currentExecItem().refDate()) ? null : moment.utc(vm.currentExecItem().refDate());
-        command.execScope.wkpIdList = vm.currentExecItem().workplaceList();
+        command.execScope.wkpIdList = _.map(vm.currentExecItem().workplaceList(), item => item.workplaceId);
         // command.recreateTypeChangePerson = vm.currentExecItem().recreateTypeChangePerson(); //B14_2
         // command.recreateTransfers = vm.currentExecItem().recreateTransfer(); //B15_2(2)
         command.execSetting.appRouteUpdateDaily.appRouteUpdateAtr = vm.currentExecItem().appRouteUpdateAtrReCreate() ? 1 : 0;
@@ -601,6 +651,7 @@ module nts.uk.at.view.kbt002.b {
       if (vm.currentExecItem().aggrPeriodCls()) {
         command.execSetting.aggrAnyPeriod.aggrFrameCode = vm.currentExecItem().aggrFrameCode();
       }
+      command.cloudCreationFlag = vm.cloudCreationFlag();
       command.execSetting.externalOutput.extOutputCls = vm.currentExecItem().stdOutputCls() ? 1 : 0;
       command.execSetting.externalOutput.extOutCondCodeList = vm.currentExecItem().stdOutputCls() ? _.map(vm.currentStdOutputList(), item => item.conditionSetCode) : [];
       command.execSetting.externalAcceptance.extAcceptCls = vm.currentExecItem().stdAcceptCls() ? 1 : 0;
@@ -612,6 +663,8 @@ module nts.uk.at.view.kbt002.b {
       command.execSetting.indexReconstruction.indexReorgAttr = vm.currentExecItem().indexReconCls() ? 1 : 0;
       command.execSetting.indexReconstruction.categoryList = vm.currentExecItem().indexReconCls() ? _.map(vm.currentIndexReconList(), item => item.categoryNo) : [];
       command.execSetting.indexReconstruction.updateStatistics = vm.currentExecItem().indexReconCls() ? vm.currentExecItem().indexReconUpdateStats() : null;
+
+      command.enableSetting = vm.selectedTaskEnableSetting();
       return command;
     }
 
@@ -665,7 +718,7 @@ module nts.uk.at.view.kbt002.b {
         .then((res: any) => {
           vm.$blockui('clear');
           vm.aggrPeriodList(_.map(res.aggrPeriodList, (item: any) => new ItemModel({ code: item.aggrFrameCode, name: item.optionalAggrName })));
-          vm.currentExecItem().alarmCode(res.aggrFrameCode);
+          vm.currentExecItem().aggrFrameCode(res.aggrFrameCode);
         });
     }
   }
@@ -722,7 +775,9 @@ module nts.uk.at.view.kbt002.b {
     aggrFrameCode: KnockoutObservable<string> = ko.observable('');
     aggrPeriodCls: KnockoutObservable<boolean> = ko.observable(false);
     stdOutputCls: KnockoutObservable<boolean> = ko.observable(false);
+    stdOutputList: KnockoutObservableArray<string> = ko.observableArray([]);
     stdAcceptCls: KnockoutObservable<boolean> = ko.observable(false);
+    stdAcceptList: KnockoutObservableArray<string> = ko.observableArray([]);
     displayAdministrator: KnockoutObservable<boolean> = ko.observable(false);
     displayPrincipal: KnockoutObservable<boolean> = ko.observable(false);
     storageCls: KnockoutObservable<boolean> = ko.observable(false);
@@ -730,6 +785,7 @@ module nts.uk.at.view.kbt002.b {
     deletionCls: KnockoutObservable<boolean> = ko.observable(false);
     deletionPattern: KnockoutObservable<string> = ko.observable('');
     indexReconCls: KnockoutObservable<boolean> = ko.observable(false);
+    indexReconList: KnockoutObservableArray<number> = ko.observableArray([]);
     indexReconUpdateStats: KnockoutObservable<number> = ko.observable(null);
 
     constructor(init?: Partial<ExecutionItem>) {
@@ -775,7 +831,7 @@ module nts.uk.at.view.kbt002.b {
 
       vm.appRouteUpdateAtr((processExecution.execSetting.appRouteUpdateDaily.appRouteUpdateAtr === 0 ? false : true) || false); 
       vm.appRouteUpdateAtrNormal(vm.appRouteUpdateAtr() || false); // B12_1
-      vm.checkCreateNewEmp((vm.appRouteUpdateAtr() === true && param.appRouteUpdateAtr() === true) ? true : false);
+      vm.checkCreateNewEmp((vm.appRouteUpdateAtr() === true && vm.appRouteUpdateAtr() === true) ? true : false);
       vm.createNewEmp((processExecution.execSetting.appRouteUpdateDaily.createNewEmp === 0 ? false : true) || false); // B12_2
 
       vm.appRouteUpdateMonthly(processExecution.execSetting.appRouteUpdateMonthly || false); // B12_3
@@ -790,25 +846,28 @@ module nts.uk.at.view.kbt002.b {
         vm.manualCorrection(processExecution.reExecCondition.recreateLeave || false); // B15_4
       }
       
-      vm.alarmAtr(processExecution.execSetting.alarmExtraction.alarmAtr || false); // B17_1
+      vm.alarmAtr(processExecution.execSetting.alarmExtraction.alarmExtractionCls || false); // B17_1
       vm.alarmCode(processExecution.execSetting.alarmExtraction.alarmCode || ''); // B17_4
       vm.mailAdministrator(processExecution.execSetting.alarmExtraction.mailAdministrator || false); // B17_7
       vm.mailPrincipal(processExecution.execSetting.alarmExtraction.mailPrincipal || false); // B17_8
       vm.displayAdministrator(processExecution.execSetting.alarmExtraction.displayOnTopPageAdministrator || false); // B17_10
       vm.displayPrincipal(processExecution.execSetting.alarmExtraction.displayOnTopPagePrincipal || false); // B17_11
 
-      vm.stdOutputCls(processExecution.execSetting.externalOutput.externalOutputClassification === 1 ? true : false); // B19_1
+      vm.stdOutputCls(processExecution.execSetting.externalOutput.extOutputCls === 1 ? true : false); // B19_1
+      vm.stdOutputList(processExecution.execSetting.externalOutput.extOutCondCodeList); // B19_14
       
-      vm.stdAcceptCls(processExecution.execSetting.externalAcceptance.externalAcceptanceClassification === 1 ? true : false); // B20_1
+      vm.stdAcceptCls(processExecution.execSetting.externalAcceptance.extAcceptCls === 1 ? true : false); // B20_1
+      vm.stdAcceptList(processExecution.execSetting.externalAcceptance.extAcceptCondCodeList); // B20_14
 
-      vm.storageCls(processExecution.execSetting.saveData.saveDataClassification === 1 ? true : false); // B21_1
+      vm.storageCls(processExecution.execSetting.saveData.saveDataCls === 1 ? true : false); // B21_1
       vm.storagePattern(processExecution.execSetting.saveData.patternCode); // B21_4
 
-      vm.deletionCls(processExecution.execSetting.deleteData.dataDeletionClassification === 1 ? true : false); // B22_1
+      vm.deletionCls(processExecution.execSetting.deleteData.dataDelCls === 1 ? true : false); // B22_1
       vm.deletionPattern(processExecution.execSetting.deleteData.patternCode); // B22_4
 
-      vm.indexReconCls(processExecution.execSetting.indexReconstruction.classificationOfUse); // B23_1
-      vm.indexReconUpdateStats(processExecution.execSetting.indexReconstruction.updateStats); // B26_1
+      vm.indexReconCls(processExecution.execSetting.indexReconstruction.indexReorgAttr); // B23_1
+      vm.indexReconList(processExecution.execSetting.indexReconstruction.categoryList); // B25_3
+      vm.indexReconUpdateStats(processExecution.execSetting.indexReconstruction.updateStatistics); // B26_1
       
       vm.workplaceList(workplaceInfos || []);
       // vm.recreateTypeChangePerson(param.recreateTypeChangePerson || false);
@@ -1379,6 +1438,9 @@ module nts.uk.at.view.kbt002.b {
     /** クラウド作成フラグ */
     cloudCreationFlag: boolean;
 
+    /** タスク有効設定 */
+    enableSetting: boolean;
+
     constructor(init?: Partial<SaveUpdateProcessAutoExecutionCommand>) {
       $.extend(this, init);
     }
@@ -1389,7 +1451,7 @@ module nts.uk.at.view.kbt002.b {
    */
   export class RemoveProcessExecutionCommand {
     /** The exec item code */
-    execItemCode: string;
+    execItemCd: string;
 
     constructor(init?: Partial<RemoveProcessExecutionCommand>) {
       $.extend(this, init);
@@ -1408,5 +1470,4 @@ module nts.uk.at.view.kbt002.b {
       $.extend(this, init);
     }
   }
-
 }

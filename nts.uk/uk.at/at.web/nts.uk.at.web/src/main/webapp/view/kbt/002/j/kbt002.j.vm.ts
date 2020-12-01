@@ -28,13 +28,13 @@ module nts.uk.at.view.kbt002.j {
         { headerText: vm.$i18n("KBT002_8"), key: 'optionalAggrName', width: 185, formatter: _.escape }
       ];
       if (params.aggrFrameCode) {
-        vm.selectedAggrFrameCd(params.aggrFrameCode);
+        vm.aggrFrameCode(params.aggrFrameCode);
       }
     }
 
     mounted() {
       const vm = this;
-      vm.findAll();
+      vm.findAll(vm.aggrFrameCode());
       vm.selectedAggrFrameCd.subscribe(selectedCode => {
         // set update mode
         const selectedItem: AggrPeriodDto = _.find(vm.aggrPeriodList(), { aggrFrameCode: selectedCode });

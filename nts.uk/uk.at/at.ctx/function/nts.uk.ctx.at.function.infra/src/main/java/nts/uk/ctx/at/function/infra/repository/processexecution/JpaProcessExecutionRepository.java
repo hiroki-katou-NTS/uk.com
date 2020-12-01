@@ -83,13 +83,14 @@ public class JpaProcessExecutionRepository extends JpaRepository implements Proc
 	 */
 	@Override
 	public void update(UpdateProcessAutoExecution domain) {
-		KfnmtProcessExecution newEntity = new KfnmtProcessExecution(AppContexts.user().contractCode(), domain);
-		Optional<KfnmtProcessExecution> currentEntity = this.queryProxy().find(newEntity.getKfnmtProcExecPK(), KfnmtProcessExecution.class);
-		if (currentEntity.isPresent()) {
-			KfnmtProcessExecution entity = currentEntity.get();
-			entity.cloneFromOtherEntity(newEntity);
-			this.commandProxy().update(entity);
-		}
+//		KfnmtProcessExecution newEntity = new KfnmtProcessExecution(AppContexts.user().contractCode(), domain);
+		KfnmtProcessExecution currentEntity = this.queryProxy().find(
+				new KfnmtProcessExecutionPK(AppContexts.user().companyId(), domain.getExecItemCode().v()), 
+				KfnmtProcessExecution.class).get();
+//			KfnmtProcessExecution entity = currentEntity.get();
+//			entity.cloneFromOtherEntity(newEntity);
+			domain.setMemento(currentEntity);
+			this.commandProxy().update(currentEntity);
 	}
 
 	/**
