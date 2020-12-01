@@ -116,6 +116,7 @@ public class CreateWorkLedgerDisplayContentDomainService {
                             attribute == CommonAttributesOfForms.WORKING_HOURS;
                     if (valueSub != null) {
                         monthlyValues.add(new MonthlyValue(
+                                valueSub.itemId(),
                                 !isCharacter ? valueSub.doubleOrDefault() : null,
                                 key,
                                 isCharacter ? valueSub.stringOrDefault() : null
@@ -123,7 +124,7 @@ public class CreateWorkLedgerDisplayContentDomainService {
                     }
 
                 });
-                double total = monthlyValues.stream().filter(x -> x.getActualValue() != null)
+                double total = monthlyValues.stream().filter(x -> x.getActualValue() != null && checkAttId(attIds, x.getAttId()))
                         .mapToDouble(MonthlyValue::getActualValue).sum();
                 iemOneLine.add(
                         new MonthlyOutputLine(
@@ -156,7 +157,7 @@ public class CreateWorkLedgerDisplayContentDomainService {
                 List<String> employeeIds, YearMonthPeriod period, List<Integer> itemIds);
 
         //
-        int getAggregableMonthlyAttId(String cid);
+        List<Integer> getAggregableMonthlyAttId(String cid);
     }
 
     private static CommonAttributesOfForms convertMonthlyToAttForms(Integer typeOfAttendanceItem) {
@@ -170,6 +171,10 @@ public class CreateWorkLedgerDisplayContentDomainService {
             return CommonAttributesOfForms.DAYS;
         } else
             return null;
+    }
+
+    private static boolean checkAttId(List<Integer> attIds, int attId) {
+        return attIds.stream().anyMatch(e -> e == attId);
     }
 
 }

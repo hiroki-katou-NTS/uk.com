@@ -12,6 +12,7 @@ import nts.arc.time.YearMonth;
 @Setter
 @AllArgsConstructor
 public class MonthlyValue {
+    private int attId;
 
     // 実績値
     private Double actualValue;
