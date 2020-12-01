@@ -22,7 +22,7 @@ public class WorkplaceCounterCategoryDto {
     private Boolean setting;
 
     public static List<WorkplaceCounterCategoryDto> setData(List<EnumConstant> listEnum, Optional<WorkplaceCounter> workplaceCounter,
-                                                            boolean settingCostAndTime,boolean settingTimesNumber,boolean settingTimeZone) {
+                                                            Boolean settingCostAndTime,Boolean settingTimesNumber,Boolean settingTimeZone) {
         return listEnum.stream().map(x -> new WorkplaceCounterCategoryDto(
             x.getValue(),
             workplaceCounter.isPresent() && workplaceCounter.get().isUsed(WorkplaceCounterCategory.of(x.getValue())),

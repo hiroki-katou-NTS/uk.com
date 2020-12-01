@@ -22,7 +22,7 @@ public class PersonalCounterCategoryDto {
     private Boolean setting;
 
     public static List<PersonalCounterCategoryDto> setData(List<EnumConstant> listEnum, Optional<PersonalCounter> PersonalCounter,
-                                                           boolean timesNumber1,boolean timesNumber2,boolean timesNumber3) {
+                                                           Boolean timesNumber1,Boolean timesNumber2,Boolean timesNumber3) {
         return listEnum.stream().map(x -> {
             return new PersonalCounterCategoryDto(
                 x.getValue(),
