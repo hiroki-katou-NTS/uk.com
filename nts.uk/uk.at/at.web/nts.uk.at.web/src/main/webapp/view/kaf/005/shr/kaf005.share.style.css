@@ -30,7 +30,7 @@
 }
 /*Set Width*/
 input.nts-editor.nts-input.reset-element {
-	text-align: center;
+	text-align: left !important;
 	width: 85px;
 }
 
