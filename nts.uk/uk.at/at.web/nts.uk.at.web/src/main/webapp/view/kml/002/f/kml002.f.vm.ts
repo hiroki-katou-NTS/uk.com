@@ -31,12 +31,12 @@ module nts.uk.at.view.kml002.f {
       //「開始時刻」＞＝「終了時刻」の場合。  
       if (vm.startTime() >= vm.endTime()) {
         vm.$dialog.error({ messageId: 'Msg_307' }).then(() => {
-          $('#startTime').focus();
+          //$('#startTime').focus();
         });
         return;
       } else if ( vm.endTime() - vm.startTime() < 60) {
         vm.$dialog.error({ messageId: "Msg_1819" }).then(() => {
-          $('#endTime').focus(); 
+          //$('#endTime').focus(); 
         }); 
         return;
       } else {
@@ -57,7 +57,7 @@ module nts.uk.at.view.kml002.f {
           return;
         } else if( total > 24) { //23
           vm.$dialog.error({ messageId: "Msg_1819" }).then(() => {
-            $('#endTime').focus(); //.ntsError('set', { messageId: "Msg_1819" })
+           //$('#endTime').focus(); //.ntsError('set', { messageId: "Msg_1819" })
           });          
           return;
         } else {

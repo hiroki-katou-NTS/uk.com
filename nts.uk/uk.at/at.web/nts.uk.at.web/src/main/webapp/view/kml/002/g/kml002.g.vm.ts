@@ -88,7 +88,7 @@ module nts.uk.at.view.kml002.g {
         //「選択された対象項目」で回数集計項目は10項目以上に選択られた。 > 10
         //「選択された対象項目」でなにもない。 = 0
         vm.$dialog.error({ messageId: msgId }).then(() => {
-          $('#swapList-gridArea2').attr('tabindex', '-1').focus();
+          //$('#swapList-gridArea2').attr('tabindex', '-1').focus();
         })
         return;
       }
