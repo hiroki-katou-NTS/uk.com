@@ -456,6 +456,31 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 				.getList(c -> MonthlyWorkTimeSetEmp.of(cid, new EmploymentCode(empCode), laborAttr, new YearMonth(c.pk.ym), c.domain()));
 	}
 	
+	@Override
+	public List<MonthlyWorkTimeSetSha> findEmployeeByPeriod(String cid, String sid, LaborWorkTypeAttr laborAttr, YearMonthPeriod yearMonthPeriod) {
+		
+		String startMonth = yearMonthPeriod.start().month() < 9 
+				? "0" + String.valueOf(yearMonthPeriod.start().month()) 
+				: String.valueOf(yearMonthPeriod.start().month());
+		
+		String start = String.valueOf(yearMonthPeriod.start().year()) + startMonth;
+		
+		String endMonth = yearMonthPeriod.end().month() < 9 
+				? "0" + String.valueOf(yearMonthPeriod.end().month()) 
+				: String.valueOf(yearMonthPeriod.end().month());
+		
+		String end = String.valueOf(yearMonthPeriod.end().year()) + endMonth;
+		
+		
+		return this.queryProxy().query(SELECT_YEAR_SYA, KshmtLegalTimeMWkp.class)
+				.setParameter("cid", cid)
+				.setParameter("type", laborAttr.value)
+				.setParameter("start", Integer.parseInt(start))
+				.setParameter("end", Integer.parseInt(end))
+				.setParameter("sid", sid)
+				.getList(c -> MonthlyWorkTimeSetSha.of(cid, sid, laborAttr, new YearMonth(c.pk.ym), c.domain()));
+	}
+	
 
 	@Override
 	public List<MonthlyWorkTimeSetEmp> findEmploymentbyCid(String cid, LaborWorkTypeAttr laborAttr) {
