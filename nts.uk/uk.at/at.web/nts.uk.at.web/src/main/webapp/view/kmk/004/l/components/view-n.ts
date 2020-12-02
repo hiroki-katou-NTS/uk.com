@@ -43,20 +43,22 @@ module nts.uk.at.view.kmk004.l {
 					</div>
 					<div class="content">
 						<button id = "btn_year" data-bind="i18n: 'KMK004_233'"></button>
-						<table id = "btm_area">
-							<tr>
-								<td>
-									<div data-bind="component: {
-										name: 'view-l-listbox'
-									}"></div>
-								</td>
-								<td>
-									<div data-bind="component: {
-										name: 'view-l-times-table'
-									}"></div>
-								</td>
-							</tr>
-						</table>
+							<div class="div_row"> 
+								<div class= "box-year" data-bind="component: {
+									name: 'box-year',
+									params:{ 
+										selectedYear: selectedYear,
+										change: changeYear
+									}
+								}"></div>
+								
+								<div class= "view-l-times-table" data-bind="component: {
+									name: 'view-l-times-table',
+									params:{ 
+								
+									}
+								}"></div>
+							</div>
 					</div>
 				</div>
 			</td>
@@ -104,6 +106,11 @@ module nts.uk.at.view.kmk004.l {
 		closureSelectionType: KnockoutObservable<number>;
 		selectClosureTypeList: KnockoutObservableArray<any>;
 		currentItemName: KnockoutObservable<string>;
+		
+		public selectedYear: KnockoutObservable<number | null> = ko.observable(null);
+		public changeYear: KnockoutObservable<boolean> = ko.observable(true);
+		public checkEmployee: KnockoutObservable<boolean> = ko.observable(false);
+		public existYear: KnockoutObservable<boolean> = ko.observable(false);
 
 		constructor(private params: IParam){
 			super();
@@ -146,6 +153,12 @@ module nts.uk.at.view.kmk004.l {
 			vm.employeeList = ko.observableArray<UnitModel>([]);
 			vm.currentItemName = ko.observable('');
 			vm.params = {sidebarType : "Com_Employment", wkpId: '', empCode :'', empId: '', titleName:'', deforLaborTimeComDto: null, settingDto: null}
+			vm.selectedYear
+			.subscribe(() => {
+				if(vm.selectedYear != null) {
+					vm.existYear(true);
+				}
+			});
 		}
 
 		mounted() {

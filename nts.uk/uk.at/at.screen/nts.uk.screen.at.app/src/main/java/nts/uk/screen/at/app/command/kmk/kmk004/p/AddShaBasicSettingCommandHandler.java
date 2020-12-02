@@ -42,7 +42,7 @@ public class AddShaBasicSettingCommandHandler extends CommandHandler<ShaBasicSet
 		ShaBasicSettingCommand command = context.getCommand();
 
 		// 職場別変形労働法定労働時間
-		deforLaborTimeShaRepo.add(DeforLaborTimeSha.of(command.getEmpId(), cId,
+		deforLaborTimeShaRepo.add(DeforLaborTimeSha.of(cId, command.getEmpId(),
 				new WeeklyUnit(new WeeklyTime(command.getDeforLaborTimeComDto().getWeeklyTime().getTime())),
 				new DailyUnit(new TimeOfDay(command.getDeforLaborTimeComDto().getDailyTime().getTime()))));
 

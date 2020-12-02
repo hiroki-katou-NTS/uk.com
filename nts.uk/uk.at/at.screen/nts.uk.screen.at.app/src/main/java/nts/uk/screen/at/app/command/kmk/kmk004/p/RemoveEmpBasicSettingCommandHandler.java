@@ -32,10 +32,10 @@ public class RemoveEmpBasicSettingCommandHandler extends CommandHandler<EmpBasic
 		EmpBasicSettingCommand command = context.getCommand();
 
 		// 職場別変形労働法定労働時間
-		deforLaborTimeEmpRepo.delete(cId, command.getEmploymentCode());
+		deforLaborTimeEmpRepo.delete(cId, command.getEmpCode());
 
 		// 職場別変形労働集計設定
-		empDeforLaborMonthActCalSetRepo.remove(cId, command.getEmploymentCode());
+		empDeforLaborMonthActCalSetRepo.remove(cId, command.getEmpCode());
 
 	}
 }

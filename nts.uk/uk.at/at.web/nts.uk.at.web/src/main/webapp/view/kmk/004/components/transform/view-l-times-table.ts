@@ -73,10 +73,11 @@ module nts.uk.at.view.kmk004 {
 			
 			.times-table td {
 				text-align: center;
+				padding: 3px 0 3px 0;
 			}
 			
 			.times-table th {
-				padding: 3px;
+				padding: 6px;
 				background: #97D155;
 			}
 			
@@ -84,8 +85,9 @@ module nts.uk.at.view.kmk004 {
                 padding: 15px;
                 border: 1px solid #AAAAAA;
                 border-radius: 15px;
-				margin: 15px;
+				margin-left: 30px;
             }
+
 
             .times-table table {
                 border-collapse: collapse;
@@ -99,10 +101,11 @@ module nts.uk.at.view.kmk004 {
 			.times-table td:nth-child(3)  {
 				padding: 3px;
 				display: block;
-    			width: 110px;
+    			width: 100px;
 			}
 			.col-3 {
-				width: 45px;
+				width: 55px;
+				height: 12px;
 			}
         </style>
         <style type="text/css" rel="stylesheet" data-bind="html: $component.style"></style>
