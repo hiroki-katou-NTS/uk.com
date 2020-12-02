@@ -30,8 +30,9 @@ public class JpaExternalBudgetRepository extends JpaRepository implements Extern
 	private static ExternalBudget toDomain(KscstExternalBudget entity) {
 		ExternalBudget domain = ExternalBudget.createFromJavaType(entity.kscstExternalBudgetPk.companyId,
 				entity.kscstExternalBudgetPk.externalBudgetCd, 
-				entity.externalBudgetName, 
-				entity.budgetAtr);
+				entity.externalBudgetName,
+				entity.budgetAtr,
+				entity.unitAtr);
 		return domain;
 	}
 
@@ -42,7 +43,7 @@ public class JpaExternalBudgetRepository extends JpaRepository implements Extern
 		entity.kscstExternalBudgetPk.externalBudgetCd = domain.getExternalBudgetCd().v();
 		entity.externalBudgetName = domain.getExternalBudgetName().v();
 		entity.budgetAtr = domain.getBudgetAtr().value;
-//		entity.unitAtr = domain.getUnitAtr().value;
+		entity.unitAtr = domain.getUnitAtr().value;
 		return entity;
 	}
 
@@ -65,7 +66,7 @@ public class JpaExternalBudgetRepository extends JpaRepository implements Extern
 						externalBudgetResult.getExternalBudgetCd().v()), KscstExternalBudget.class)
 				.get();
 		entity.setExternalBudgetName(externalBudgetResult.getExternalBudgetName().v());
-//		entity.setUnitAtr(externalBudgetResult.getUnitAtr().value);
+		entity.setUnitAtr(externalBudgetResult.getUnitAtr().value);
 		entity.setBudgetAtr(externalBudgetResult.getBudgetAtr().value);
 		this.commandProxy().update(entity);
 	}

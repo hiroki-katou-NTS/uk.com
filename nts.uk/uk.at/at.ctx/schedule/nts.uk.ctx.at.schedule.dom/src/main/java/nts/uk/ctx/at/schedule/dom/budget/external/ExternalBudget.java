@@ -49,6 +49,13 @@ public class ExternalBudget extends AggregateRoot {
 	 *            externalBudgetCd
 	 * @return ExternalBudget
 	 */
+	public static ExternalBudget createFromJavaType(String companyId, String externalBudgetCd,
+													String externalBudgetName, int budgetAtr, int unitAtr) {
+		return new ExternalBudget(companyId, new ExternalBudgetCd(externalBudgetCd),
+			new ExternalBudgetName(externalBudgetName), EnumAdaptor.valueOf(budgetAtr, BudgetAtr.class),
+			EnumAdaptor.valueOf(unitAtr, UnitAtr.class));
+	}
+
 	//TODO Task: #34236, Q&A: #34363
 	public static ExternalBudget createFromJavaType(String companyId, String externalBudgetCd,
 			String externalBudgetName, int budgetAtr) {
