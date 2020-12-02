@@ -5,50 +5,63 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
-import mockit.Mock;
-import mockit.MockUp;
 import mockit.Mocked;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.GetUsingShiftTableRuleOfEmployeeService;
-import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.GetUsingShiftTableRuleOfEmployeeService.Require;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.ShiftTableRule;
-import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.WorkAvailabilityRuleDateSetting;
+import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.WorkAvailabilityRule;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+@SuppressWarnings("static-access")
 @RunWith(JMockit.class)
 public class RegisterWorkAvailabilityTest {
-	
 	@Injectable
 	RegisterWorkAvailability.Require require;
+	
+	@Mocked 
+	private ShiftTableRule shiftRule;
+	
+	@Mocked 
+	private WorkAvailabilityRule setting;
+	
+	@Mocked
+	private GetUsingShiftTableRuleOfEmployeeService service;
+	
+	private GeneralDate today;
+	
+	@Before
+	public void generDate(){
+		today = GeneralDate.today();
+	}
 	
 	/**
 	 * input : シフト表のルール = empty
 	 * excepted: Msg_2049
 	 */
+	
 	@Test
 	public void testCheckError_throw_Msg_2049() {
 
-		val baseDate = GeneralDate.today();
-
 		List<WorkAvailabilityOfOneDay> workOneDays = Helper.createWorkAvaiOfOneDays();
-
-		new MockUp<GetUsingShiftTableRuleOfEmployeeService>() {
-			@Mock
-			public Optional<ShiftTableRule> get(Require require, String sid, GeneralDate date ){
-				 return Optional.empty();
+		
+		new Expectations() {
+			{
+				service.get(require, (String) any, (GeneralDate) any);
 			}
 		};
 
 		NtsAssert.businessException("Msg_2049",
-				() -> RegisterWorkAvailability.register(require, workOneDays, baseDate));
+				() -> RegisterWorkAvailability.register(require, workOneDays, today));
 	}
 
 	/**
@@ -56,26 +69,21 @@ public class RegisterWorkAvailabilityTest {
 	 * excepted: Msg_2052
 	 */
 	@Test
-	public void testCheckError_throw_Msg_2052(@Mocked ShiftTableRule shiftRule) {
+	public void testCheckError_throw_Msg_2052() {
 
-		val baseDate = GeneralDate.today();
+		val today = GeneralDate.today();
 		List<WorkAvailabilityOfOneDay> workOneDays = Helper.createWorkAvaiOfOneDays();
 		
-		new MockUp<GetUsingShiftTableRuleOfEmployeeService>() {
-			@Mock
-			public Optional<ShiftTableRule> get(Require require, String sid, GeneralDate date ){
-				 return Optional.of(shiftRule);
-			}
-		};
-
 		new Expectations() {{
-				shiftRule.getUseWorkAvailabilityAtr();
-				result = NotUseAtr.NOT_USE;
-			}
-		};
+			service.get(require, (String) any, today);
+			result = Optional.of(shiftRule);
+			
+			shiftRule.getUseWorkAvailabilityAtr();
+			result = NotUseAtr.NOT_USE;
+		}};
 
 		NtsAssert.businessException("Msg_2052",
-				() -> RegisterWorkAvailability.register(require, workOneDays, baseDate));
+				() -> RegisterWorkAvailability.register(require, workOneDays, today));
 	}
 	
 	/**
@@ -83,22 +91,17 @@ public class RegisterWorkAvailabilityTest {
 	 * excepted: Msg_2050
 	 */
 	@Test
-	public void testCheckError_throw_Msg_2050(@Mocked ShiftTableRule shiftMock, @Mocked WorkAvailabilityRuleDateSetting setting) {
+	public void testCheckError_throw_Msg_2050() {
 
-		val baseDate = GeneralDate.today();
-
+		val today = GeneralDate.today();
 		List<WorkAvailabilityOfOneDay> workOneDays = Helper.createWorkAvaiOfOneDays();
 		
-		new MockUp<GetUsingShiftTableRuleOfEmployeeService>() {
-			@Mock
-			public Optional<ShiftTableRule> get(Require require, String sid, GeneralDate date ){
-				 return Optional.of(shiftMock);
-			}
-		};
-
 		new Expectations() {
-			{					
-				shiftMock.getShiftTableSetting();
+			{			
+				service.get(require, (String) any, today);
+				result = Optional.of(shiftRule);
+				
+				shiftRule.getShiftTableSetting();
 				result = Optional.of(setting);
 				
 				setting.isOverDeadline(workOneDays.get(0).getWorkAvailabilityDate());
@@ -107,7 +110,7 @@ public class RegisterWorkAvailabilityTest {
 		};
 
 		NtsAssert.businessException("Msg_2050",
-				() -> RegisterWorkAvailability.register(require, workOneDays, baseDate));
+				() -> RegisterWorkAvailability.register(require, workOneDays, today));
 	}
 	
 	/**
@@ -115,55 +118,45 @@ public class RegisterWorkAvailabilityTest {
 	 * excepted: Msg_2051
 	 */
 	@Test
-	public void testCheckError_throw_Msg_2051(@Mocked ShiftTableRule shiftMock, @Mocked WorkAvailabilityRuleDateSetting setting) {
-
-		val baseDate = GeneralDate.today();
-
+	public void testCheckError_throw_Msg_2051() {
 		List<WorkAvailabilityOfOneDay> workOneDays = Helper.createWorkAvaiHolidays();
 		
-		
-		new MockUp<GetUsingShiftTableRuleOfEmployeeService>() {
-			@Mock
-			public Optional<ShiftTableRule> get(Require require, String sid, GeneralDate date ){
-				 return Optional.of(shiftMock);
-			}
-		};
-		
 		new Expectations() {{
+			service.get(require, (String) any, today);
+			result = Optional.of(shiftRule);
 				
-				shiftMock.getShiftTableSetting();
-				result = Optional.of(setting);
-			
-				setting.isOverHolidayMaxDays(workOneDays);
-				result = true;
+		    shiftRule.getShiftTableSetting();
+			result = Optional.of(setting);
+		
+			setting.isOverHolidayMaxDays(workOneDays);
+			result = true;
 				
-			}
-		};
+		}};
 
 		NtsAssert.businessException("Msg_2051",
-				() -> RegisterWorkAvailability.register(require, workOneDays, baseDate));
+				() -> RegisterWorkAvailability.register(require, workOneDays, today));
 	}
 	
 	
 	@Test
-	public void testRegister_success_1(@Mocked ShiftTableRule shiftMock, @Mocked WorkAvailabilityRuleDateSetting setting) {
+	public void testRegister_success_1() {
 		
-		List<WorkAvailabilityOfOneDay> workOneDays = Helper.createWorkAvaiOfOneDays();
-		
-		new MockUp<GetUsingShiftTableRuleOfEmployeeService>() {
-			@Mock
-			public Optional<ShiftTableRule> get(Require require, String sid, GeneralDate date ){
-				 return Optional.of(shiftMock);
-			}
-		};
+		val workOneDays = Helper.createWorkAvaiOfOneDays();
+		val datePeriod = new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 1, 31));
 		
 		new Expectations() {
 			{				
-				shiftMock.getShiftTableSetting();
+				service.get(require, (String) any, (GeneralDate) any);
+				result = Optional.of(shiftRule);
+				
+				shiftRule.getShiftTableSetting();
 				result = Optional.of(setting);
 				
 				setting.isOverHolidayMaxDays(workOneDays);
 				result = false;
+				
+				setting.getPeriodWhichIncludeAvailabilityDate((GeneralDate) any);
+				result = datePeriod;
 			}
 		};
 		
@@ -172,8 +165,8 @@ public class RegisterWorkAvailabilityTest {
 						require,
 						workOneDays,
 						GeneralDate.today()), 
-				any -> require.deleteAll(workOneDays),
-				any -> require.insertAll(workOneDays));
+				any -> require.deleteAllWorkAvailabilityOfOneDay(workOneDays.get(0).getEmployeeId(), datePeriod),
+				any -> require.insertAllWorkAvailabilityOfOneDay(workOneDays));
 	}
 	
 
