@@ -156,6 +156,13 @@ module nts.uk.ui.components.fullcalendar {
         .fc-container .fc-day-today {
             background-color: #fffadf;
         }
+        .fc-container .fc-event-title h4 {
+            margin: 0;
+            padding: 0;
+        }
+        .fc-container .fc-event-description {
+            font-size: 11px;
+        }
         .fc-container .fc-event-note.no-data {
             background-color: #f3f3f3;
         }
@@ -734,6 +741,7 @@ module nts.uk.ui.components.fullcalendar {
             popupPosition.event
                 .subscribe(e => {
                     if (!e) {
+                        selectedEvents([]);
                         $(`.${POWNER_CLASS_EVT}`).removeClass(POWNER_CLASS_EVT);
                     }
                 });
@@ -1011,13 +1019,19 @@ module nts.uk.ui.components.fullcalendar {
                     const { event } = args;
                     const { start, end } = event;
 
+                    popupPosition.event(null);
+
                     if (!ko.unwrap(dataEvent.shift)) {
-                        const [first] = selectedEvents();
-                        if (!first) {
+                        const sevents = ko.unwrap<SELECTEDEVENT[]>(selectedEvents);
+                        const [first] = sevents;
+
+                        if (!first || sevents.length !== 1) {
                             selectedEvents([{ start, end }]);
                         } else {
                             if (!moment(start).isSame(first.start) && !moment(end).isSame(first.end)) {
                                 selectedEvents([{ start, end }]);
+                            } else if (!ko.unwrap(popupPosition.event)) {
+                                selectedEvents.valueHasMutated();
                             }
                         }
                     } else {
@@ -1049,6 +1063,8 @@ module nts.uk.ui.components.fullcalendar {
                             selectedEvents.valueHasMutated();
                         }
                     }
+
+                    popupPosition.event(null);
                 },
                 eventDrop: (args: FullCalendar.EventDropArg) => {
                     // update data sources
@@ -1064,12 +1080,16 @@ module nts.uk.ui.components.fullcalendar {
                     } else {
                         selectedEvents([]);
                     }
+
+                    popupPosition.event(null);
                 },
                 eventResize: () => {
                     // update data sources
                     mutatedEvents();
 
                     selectedEvents([]);
+
+                    popupPosition.event(null);
                 },
                 eventContent: (args: FullCalendar.EventContentArg) => {
                     const { type } = args.view;
@@ -1078,10 +1098,11 @@ module nts.uk.ui.components.fullcalendar {
                     const hour = (value: Date) => moment(value).format('H');
                     const format = (value: Date) => moment(value).format('HH:mm');
 
+                    // <div class="fc-event-time">${format(start)} - ${format(end || moment(start).add(1, 'hour').toDate())}</div>
+
                     if (['timeGridDay', 'timeGridWeek'].indexOf(type) !== -1) {
                         return {
-                            html: `<div class="fc-event-time">${format(start)} - ${format(end || moment(start).add(1, 'hour').toDate())}</div>
-                            <div class="fc-event-title-container">
+                            html: `<div class="fc-event-title-container">
                                 <div class="fc-event-title fc-sticky"><h4>${title}</h4></div>
                                 ${_.isString(descriptions) ? descriptions.split('\n').map((m: string) => `<div class="fc-event-description fc-sticky">${m}</div>`).join('') : ''}
                             </div>`
@@ -1092,9 +1113,10 @@ module nts.uk.ui.components.fullcalendar {
                         const hours = hour(start);
                         const minutes = format(start);
 
+                        // <div class="fc-event-time">${minutes.match(/\:00$/) ? `${hours}時` : minutes}</div>
+
                         return {
                             html: `<div class="fc-daygrid-event-dot"></div>
-                            <div class="fc-event-time">${minutes.match(/\:00$/) ? `${hours}時` : minutes}</div>
                             <div class="fc-event-title"><h4>${title}</h4></div>`
                         };
                     }
@@ -1113,6 +1135,7 @@ module nts.uk.ui.components.fullcalendar {
 
                     $.Deferred()
                         .resolve(true)
+                        .then(() => popupPosition.event(null))
                         .then(() => {
                             calendar.unselect();
                             calendar.addEvent({ start, end });
@@ -1126,12 +1149,17 @@ module nts.uk.ui.components.fullcalendar {
                 eventRemove: (args: FullCalendar.EventRemoveArg) => {
                     mutatedEvents();
                     selectedEvents([]);
+
+                    popupPosition.event(null);
                 },
                 eventReceive: (info: FullCalendar.EventReceiveLeaveArg) => {
                     const { title, start, backgroundColor, extendedProps } = info.event;
                     const event: any = { title, start, end: moment(start).add(1, 'hour').toDate(), backgroundColor, extendedProps };
 
                     events.push(event);
+                    selectedEvents([]);
+
+                    popupPosition.event(null);
                 },
                 selectAllow: (evt) => evt.start.getDate() === evt.end.getDate(),
                 slotLabelContent: (opts: FullCalendar.SlotLabelContentArg) => {
@@ -1167,6 +1195,8 @@ module nts.uk.ui.components.fullcalendar {
                     selectedEvents([]);
                     datesSet({ start, end });
 
+                    popupPosition.event(null);
+
                     if (current.isBetween(start, end, 'date', '[)')) {
                         $btn.attr('disabled', 'disabled');
                     } else {
@@ -1191,13 +1221,20 @@ module nts.uk.ui.components.fullcalendar {
                                     const { top, left } = bound;
 
                                     dataEvent.event(event);
-                                    popupPosition.event({ top, left });
+
+                                    if (!top || !left) {
+                                        popupPosition.event(null);
+                                    } else {
+                                        popupPosition.event({ top, left });
+                                    }
                                 });
                         }
                     }
                 },
                 viewDidMount: (opts) => {
                     updateActive();
+
+                    popupPosition.event(null);
 
                     if (['timeGridDay', 'timeGridWeek'].indexOf(opts.view.type) === -1) {
                         return false;
@@ -1400,7 +1437,7 @@ module nts.uk.ui.components.fullcalendar {
 
         private initalEvents() {
             const vm = this;
-            const { $el, params, dataEvent } = vm;
+            const { $el, params, dataEvent, popupPosition } = vm;
 
             $($el).on('mousewheel', (evt) => {
                 if (ko.unwrap(dataEvent.shift) === true || ko.unwrap(dataEvent.popup) === true) {
@@ -1424,7 +1461,14 @@ module nts.uk.ui.components.fullcalendar {
             });
 
             vm.registerEvent('mouseup', () => dataEvent.mouse(false));
-            vm.registerEvent('mousedown', () => dataEvent.mouse(true));
+            vm.registerEvent('mousedown', (evt) => {
+                dataEvent.mouse(true);
+
+                if (!$(evt.target).closest('.fc-scrollgrid-section').length) {
+                    popupPosition.event(null);
+                    popupPosition.copyDay(null);
+                }
+            });
 
             vm.registerEvent('keydown', (evt: JQueryEventObject) => {
                 if (evt.keyCode === 16 || evt.shiftKey) {
