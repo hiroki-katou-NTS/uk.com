@@ -19,7 +19,7 @@ public class SaveLogDataRecoverServices {
 
 	public void saveErrorLogDataRecover(String recoveryProcessId, String target, String errorContent,
 			GeneralDate targetDate, String processingContent, String contentSql) {
-		GeneralDate logTime = GeneralDate.today();
+		GeneralDate logTime = targetDate;
 		int logSequenceNumber = repoDataRecoveryLog.getMaxSeqId(recoveryProcessId) + 1;
 		String errorContent_ = "";
 		if (errorContent.length() > 1995) {
