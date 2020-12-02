@@ -2,6 +2,7 @@ package nts.uk.screen.at.app.command.kmk.kmk004;
 
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.uk.ctx.at.shared.dom.common.MonthlyEstimateTime;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyLaborTime;
@@ -12,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyLaborT
  *
  */
 @Value
+@AllArgsConstructor
 public class MonthlyLaborTimeCommand {
 	/** 法定労働時間 */
 	private int legalLaborTime;
