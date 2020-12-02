@@ -1,6 +1,6 @@
 module cmm044.c.service {
     const paths: any = {
-        sendMail: "workflow/agent/sendMail",
+        sendMail: "com/screen/cmm044/sendMail",
     };
 
     export function sendMail(data: any) {

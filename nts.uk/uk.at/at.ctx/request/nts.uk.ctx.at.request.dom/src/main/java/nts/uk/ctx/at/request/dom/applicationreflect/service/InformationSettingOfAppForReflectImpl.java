@@ -9,8 +9,8 @@ import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.AppReflectProcessRecord;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.ApprovalProcessingUseSettingAc;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.IdentityProcessUseSetAc;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.AppOvertimeSetting;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.AppOvertimeSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSet;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.UnitTime;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSetRepository;
@@ -31,7 +31,7 @@ public class InformationSettingOfAppForReflectImpl implements InformationSetting
 	@Inject
 	private GoBackDirectlyCommonSettingRepository chokochoki;
 	@Inject
-	private AppOvertimeSettingRepository overtimeSetting;
+	private OvertimeAppSetRepository overtimeSetting;
 	@Inject
 	private RequestSettingRepository requestSetting;
 	@Inject
@@ -59,12 +59,13 @@ public class InformationSettingOfAppForReflectImpl implements InformationSetting
 		boolean zangyouScheReflect = true;
 		//残業申請設定．残業事前反映設定．残業時間
 		boolean zangyouWorktime = true;
-		Optional<AppOvertimeSetting> optOvertimeSetting = overtimeSetting.getByCid(cid);
+		Optional<OvertimeAppSet> optOvertimeSetting = overtimeSetting.findSettingByCompanyId(cid);
 		if(optOvertimeSetting.isPresent()) {
-			AppOvertimeSetting overSetting = optOvertimeSetting.get();
-			zangyouRecordReflect = overSetting.getPostTypeSiftReflectFlg() == UseAtr.USE ? true : false;
-			zangyouScheReflect = overSetting.getPreTypeSiftReflectFlg() == UseAtr.USE ? true : false;
-			zangyouWorktime = overSetting.getPreOvertimeReflectFlg() == UseAtr.USE ? true : false;
+			//TODO: domain changed! đối ứng xóa domain cũ 20/11/2020
+//			OvertimeAppSet overSetting = optOvertimeSetting.get();
+//			zangyouRecordReflect = overSetting.getPostTypeSiftReflectFlg() == UseAtr.USE ? true : false;
+//			zangyouScheReflect = overSetting.getPreTypeSiftReflectFlg() == UseAtr.USE ? true : false;
+//			zangyouWorktime = overSetting.getPreOvertimeReflectFlg() == UseAtr.USE ? true : false;
 		}
 		
 		Optional<AppReflectionSetting> optRequestSetting = requestSetting.getAppReflectionSetting(cid);

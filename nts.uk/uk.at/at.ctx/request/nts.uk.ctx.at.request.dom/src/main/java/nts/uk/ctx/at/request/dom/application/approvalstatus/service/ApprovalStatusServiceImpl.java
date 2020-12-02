@@ -15,6 +15,8 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -94,8 +96,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppComp
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode_Old;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
@@ -158,7 +158,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	private AppAbsenceRepository repoAbsence;
 
 	@Inject
-	private HdAppSetRepository repoHdAppSet;
+	private HolidayApplicationSettingRepository repoHdAppSet;
 
 	@Inject
 	private AtEmploymentAdapter atEmploymentAdapter;
@@ -900,7 +900,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		// アルゴリズム「承認状況申請内容追加」を実行する
 		List<ApprovalSttAppDetail> listApprovalAppDetail = this.getApprovalSttAppDetail(listAppContentsSorted,endDateMax);
 		// ドメインモデル「休暇申請設定」を取得する
-		Optional<HdAppSet> lstHdAppSet = repoHdAppSet.getAll();
+		Optional<HolidayApplicationSetting> lstHdAppSet = repoHdAppSet.findSettingByCompanyId(companyId);
 
 		boolean displayPrePostFlg = this.isDisplayPrePostFlg(companyId);
 		return new ApplicationsListOutput(listApprovalAppDetail, lstHdAppSet, listSync, displayPrePostFlg);

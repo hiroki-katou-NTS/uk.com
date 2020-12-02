@@ -17,7 +17,6 @@ import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDetailDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDispInfoDto;
-import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDispInfoDto_Old;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.WorkChangeCheckRegisterDto;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
@@ -35,15 +34,10 @@ import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDisp
 import nts.uk.ctx.at.request.dom.application.workchange.output.WorkChangeCheckRegOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.workchange.AppWorkChangeSet;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
-import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSet_Old;
-import nts.uk.ctx.at.request.dom.setting.request.application.workchange.IAppWorkChangeSetRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class AppWorkChangeFinder {
-
-    @Inject
-    private IAppWorkChangeSetRepository appWRep;
 
     @Inject
     private AppWorkChangeSetRepository appWorkChangeSetRepo;
@@ -53,15 +47,6 @@ public class AppWorkChangeFinder {
 
     @Inject
     private AppWorkChangeService appWorkChangeService;
-
-    public AppWorkChangeSetDto_Old findByCom() {
-        String companyId = AppContexts.user().companyId();
-        Optional<AppWorkChangeSet_Old> app = appWRep.findWorkChangeSetByID(companyId);
-        if (app.isPresent()) {
-            return AppWorkChangeSetDto_Old.fromDomain(app.get());
-        }
-        return null;
-    }
 
     public AppWorkChangeSetDto findByCompany() {
         String companyId = AppContexts.user().companyId();
@@ -94,7 +79,7 @@ public class AppWorkChangeFinder {
         return AppWorkChangeDispInfoDto.fromDomain(appWorkChangeDispInfo);
     }
 
-    public AppWorkChangeDispInfoDto_Old changeWorkSelection(AppWorkChangeParamPC param) {
+    public AppWorkChangeDispInfoDto changeWorkSelection(AppWorkChangeParamPC param) {
         // error EA refactor 4
         /*
          * AppWorkChangeDispInfoCmd cmd = param.appWorkChangeDispInfoCmd;

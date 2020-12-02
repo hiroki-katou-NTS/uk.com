@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.app.command.application.holidayshipment;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -10,18 +9,17 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenAFinder;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
@@ -30,11 +28,9 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Process
 import nts.uk.ctx.at.request.dom.application.holidayshipment.ApplicationCombination;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.AppRemainCreateInfor;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.EarchInterimRemainCheck;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainCheckInputParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngCheckRegister;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.shr.com.context.AppContexts;
@@ -57,7 +53,7 @@ public class SaveChangeAbsDateCommandHandler
 	@Inject
 	private OtherCommonAlgorithm ortherAl;
 	@Inject
-	private HdAppSetRepository repoHdAppSet;
+	private HolidayApplicationSettingRepository repoHdAppSet;
 	@Inject
 	private InterimRemainDataMngCheckRegister checkRegister;
 	@Inject
@@ -84,7 +80,7 @@ public class SaveChangeAbsDateCommandHandler
 		// AchievementOutput achievement = afinder.getAchievement(companyID, sID, oldApp.getAppDate());
 		
 		//ドメインモデル「休暇申請設定」を取得する
-		Optional<HdAppSet> hdAppSetOpt =  repoHdAppSet.getAll();
+		Optional<HolidayApplicationSetting> hdAppSetOpt =  repoHdAppSet.findSettingByCompanyId(companyID);
 		
 		boolean chkSubHoliday = false;
 		boolean chkPause = false;
@@ -95,11 +91,14 @@ public class SaveChangeAbsDateCommandHandler
 		boolean chkSuperBreak = true;
 		String appName = "";
 		if (hdAppSetOpt.isPresent()) {
-			HdAppSet hdSet = hdAppSetOpt.get();
-			chkPause = hdSet.getRegisInsuff().value == 1 ? true : false;// 休暇申請設定．振休残数不足登録できる
-			if (hdSet.getFurikyuName() != null) {
-				appName = hdSet.getFurikyuName().v();
-			}
+			HolidayApplicationSetting hdSet = hdAppSetOpt.get();
+//			chkPause = hdSet.getRegisInsuff().value == 1 ? true : false;// 休暇申請設定．振休残数不足登録できる
+//			appName = hdSet.getHolidayApplicationTypeDisplayName()
+//					.stream()
+//					.filter(i -> i.getHolidayApplicationType() == HolidayAppType.REST_TIME)
+//					.findFirst()
+//					.map(i -> i.getDisplayName().v())
+//					.orElse("");
 		}
 		
 //		InterimRemainCheckInputParam inputParam = new InterimRemainCheckInputParam(companyID, sID,
