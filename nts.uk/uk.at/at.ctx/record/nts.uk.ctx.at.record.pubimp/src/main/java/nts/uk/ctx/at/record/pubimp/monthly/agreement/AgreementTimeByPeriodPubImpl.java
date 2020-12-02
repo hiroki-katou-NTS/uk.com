@@ -17,8 +17,8 @@ import nts.uk.ctx.at.record.dom.monthly.agreement.export.AgeementTimeCommonSetti
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.pub.monthly.agreement.AggregateAgreementTimePub;
 import nts.uk.ctx.at.record.pub.monthly.agreement.AgreementTimeByPeriodPub;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxAverageTimeMulti;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeYear;
+import nts.uk.ctx.at.record.pub.monthly.agreement.export.AgreMaxAverageTimeMultiExport;
+import nts.uk.ctx.at.record.pub.monthly.agreement.export.AgreementTimeYearExport;
 
 /**
  * 指定期間36協定時間の取得
@@ -35,14 +35,14 @@ public class AgreementTimeByPeriodPubImpl implements AgreementTimeByPeriodPub {
 	
 	/** 指定期間36協定上限複数月平均時間の取得 */
 	@Override
-	public Optional<AgreMaxAverageTimeMulti> maxAverageTimeMulti(String employeeId, GeneralDate criteria, YearMonth yearMonth) {
+	public Optional<AgreMaxAverageTimeMultiExport> maxAverageTimeMulti(String employeeId, GeneralDate criteria, YearMonth yearMonth) {
 		
 		return Optional.ofNullable(aggregateAgreementTimePub.aggregate(employeeId, criteria, yearMonth, new HashMap<>()));
 	}
 	
 	/** 指定年36協定年間時間の取得 */
 	@Override
-	public Optional<AgreementTimeYear> timeYear(String employeeId, GeneralDate criteria, Year year) {
+	public Optional<AgreementTimeYearExport> timeYear(String employeeId, GeneralDate criteria, Year year) {
 
 		return Optional.ofNullable(aggregateAgreementTimePub.aggregate(employeeId, criteria, year, new HashMap<>()));
 	}

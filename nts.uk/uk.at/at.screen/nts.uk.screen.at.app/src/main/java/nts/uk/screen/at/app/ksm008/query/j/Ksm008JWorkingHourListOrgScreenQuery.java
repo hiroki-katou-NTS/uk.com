@@ -42,11 +42,11 @@ public class Ksm008JWorkingHourListOrgScreenQuery {
                 targetOrgIdenInfor,
                 new ConsecutiveWorkTimeCode(requestParam.getCode()));
         /*就業時間帯コードリスト */
-        if(!maxDaysOfContinuousWorkTimeCompany.isPresent()){
+        if (!maxDaysOfContinuousWorkTimeCompany.isPresent()) {
             return new MaxDaysOfContinuousWorkTimeListOrgDto();
         }
         List<String> workHourCodeList = new ArrayList<>();
-        if (maxDaysOfContinuousWorkTimeCompany.isPresent() && !maxDaysOfContinuousWorkTimeCompany.get().getMaxDaysContiWorktime().getWorkTimeCodes().isEmpty()) {
+        if (!maxDaysOfContinuousWorkTimeCompany.get().getMaxDaysContiWorktime().getWorkTimeCodes().isEmpty()) {
             workHourCodeList = maxDaysOfContinuousWorkTimeCompany
                     .get()
                     .getMaxDaysContiWorktime()

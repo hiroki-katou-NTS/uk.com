@@ -1,9 +1,10 @@
 package nts.uk.screen.at.app.ksm008.query.k;
 
+import nts.uk.ctx.at.schedulealarm.app.query.alarmcheck.AlarmCheckConditionsQuery;
+import nts.uk.ctx.at.schedulealarm.app.query.alarmcheck.AlarmCheckConditionsQueryDto;
 import nts.uk.ctx.at.schedulealarm.dom.alarmcheck.AlarmCheckConditionSchedule;
 import nts.uk.ctx.at.schedulealarm.dom.alarmcheck.AlarmCheckConditionScheduleCode;
 import nts.uk.ctx.at.schedulealarm.dom.alarmcheck.AlarmCheckConditionScheduleRepository;
-import nts.uk.ctx.at.schedulealarm.dom.alarmcheck.SubCondition;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
@@ -21,6 +22,9 @@ public class Ksm008KStartupInfoScreenQuery {
     @Inject
     private AlarmCheckConditionScheduleRepository alarmCheckConditionScheduleRepo;
 
+    @Inject
+    private AlarmCheckConditionsQuery alarmCheckConditionsQuery;
+
     /**
      * 初期起動の情報を取得する
      *
@@ -30,20 +34,11 @@ public class Ksm008KStartupInfoScreenQuery {
      * @author rafiqul.islam
      */
     public Ksm008KStartInfoDto getStartupInfoCom(String codeStr, List<MaxDayOfWorkTimeCompanyDto> workTimeList) {
-        AlarmCheckConditionScheduleCode code = new AlarmCheckConditionScheduleCode(codeStr);
-        AlarmCheckConditionSchedule alarmCheckConditionSchedule = getComInfo(code);
-        String conditionName = "";
-        StringBuilder explanation = new StringBuilder();
-        if (alarmCheckConditionSchedule != null) {
-            conditionName = alarmCheckConditionSchedule.getConditionName();
-            for (SubCondition subCondition : alarmCheckConditionSchedule.getSubConditions()) {
-                explanation.append(subCondition.getExplanation());
-            }
-        }
+        AlarmCheckConditionsQueryDto alarmCheckConditionsQueryDto = alarmCheckConditionsQuery.getCodeNameDescription(codeStr);
         return new Ksm008KStartInfoDto(
-                code.v(),
-                conditionName,
-                explanation.toString(),
+                codeStr,
+                alarmCheckConditionsQueryDto.getConditionName(),
+                alarmCheckConditionsQueryDto.getExplanationList().stream().map(e -> e.toString()).reduce("\n", String::concat),
                 workTimeList
         );
     }

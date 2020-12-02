@@ -37,10 +37,16 @@
 						|
 						<div
 							data-bind="ntsCheckBox: { checked: showDeferred, text: 'ShowDeferred' }"></div>
-						| <input data-bind="ntsTextEditor: {value: initiallySelected}" />Initially
-						Selected Code
 						| <input data-bind="ntsNumberEditor: {value: widthValue, option: option}" />
 						Width(px)
+						<br/><div style="margin: 4px !important" data-bind="ntsRadioBoxGroup: {
+															options: [{code:2, name: 'Select First Item'}, {code:1, name:'Select Code'}],
+															optionsValue: 'code',
+															optionsText: 'name',
+															value: selectedValue,
+															enable: true}"></div>	
+						 <input data-bind="ntsTextEditor: {value: initiallySelected, enable: enableSelectCode}" />Initially	Selected Code
+						
 					</div>
 					<div id="tree-grid"
 						style="width: 460px; margin-left: 50px; margin-top: 20px;">

@@ -50,6 +50,12 @@ public class JpaExtBudgetDailyRepository extends JpaRepository implements ExtBud
 											   + " WHERE k.pk.targetID = :targetID " 
 											   + " AND k.pk.itemCd = :itemCd "
 											   + " AND k.pk.ymd = :ymd ";
+			private static final String GetDailyByPeriod = "SELECT c FROM KscdtExtBudgetDailyNew c WHERE c.pk.targetUnit = :targetUnit "
+															+ " AND c.pk.targetID = :targetID "
+										                    + " AND c.pk.ymd >= :startDate"
+															+ " AND c.pk.ymd <= :endDate"
+										                    + " ORDER BY c.pk.ymd ASC ";
+			
 			
 	@Override
 	public List<ExtBudgetDaily> getDailyExtBudgetResults(TargetOrgIdenInfor targetOrg, ExtBudgetActItemCode itemCode,
@@ -75,6 +81,18 @@ public class JpaExtBudgetDailyRepository extends JpaRepository implements ExtBud
 				.setParameter("endDate", datePeriod.end())
 				.getList(c -> toDomain(c));
 		
+	}
+	
+	@Override
+	public List<ExtBudgetDaily> getAllExtBudgetDailyByPeriod(TargetOrgIdenInfor targetOrg, DatePeriod datePeriod) {
+		
+		return this.queryProxy().query(GetDailyByPeriod,  KscdtExtBudgetDailyNew.class)
+				.setParameter("targetUnit", targetOrg.getUnit().value)
+				.setParameter("targetID", targetOrg.getTargetId())
+				.setParameter("startDate", datePeriod.start())
+				.setParameter("endDate", datePeriod.end())
+				.getList(c -> toDomain(c));
+				
 	}
 
 	@Override

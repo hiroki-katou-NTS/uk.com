@@ -3,7 +3,6 @@
 module nts.uk.at.kaf021.a {
     import textFormat = nts.uk.text.format;
     import parseTime = nts.uk.time.parseTime;
-    import formatYearMonth = nts.uk.time.formatYearMonth;
     import common = nts.uk.at.kaf021.common;
 
     const API = {
@@ -148,7 +147,7 @@ module nts.uk.at.kaf021.a {
                     return;
                 }
 
-                let date = new Date(formatYearMonth(vm.processingMonth));
+                let date = common.getProcessingDate(vm.processingMonth);
                 let currentMonth = date.getMonth() + 1;
                 date.setMonth(currentMonth);
                 let nextMonth = date.getMonth() + 1;
@@ -213,7 +212,7 @@ module nts.uk.at.kaf021.a {
             let results: Array<EmployeeAgreementTime> = [];
             _.each(data, (item: IEmployeeAgreementTime) => {
                 let result = new EmployeeAgreementTime(item)
-                result.statusStr = result.isApplying ? vm.$i18n("KAF021_73") : vm.$i18n("KAF021_72");
+                result.statusStr = result.isApplying ? vm.$i18n("KAF021_73") : "";
                 results.push(result);
             })
             return results
@@ -368,7 +367,7 @@ module nts.uk.at.kaf021.a {
 
         getHeaderStyles(): Array<any> {
             const vm = this;
-            let date = new Date(formatYearMonth(vm.processingMonth));
+            let date = common.getProcessingDate(vm.processingMonth);
             let currentMonth = vm.getMonthKey(date.getMonth() + 1);
             return [
                 { key: "checked", colors: ['padding-5'] },
@@ -858,7 +857,7 @@ module nts.uk.at.kaf021.a {
 
             this.monthAverage2 = data.monthAverage2?.time;
             this.monthAverage2Str = parseTime(this.monthAverage2, true).format();
-            this.monthAverage3Status = data.monthAverage3?.status;
+            this.monthAverage2Status = data.monthAverage2?.status;
 
             this.monthAverage3 = data.monthAverage3?.time;
             this.monthAverage3Str = parseTime(this.monthAverage3, true).format();

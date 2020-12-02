@@ -43,4 +43,8 @@ public class DisplayReasonDto {
                 domain.getAppType().value,
                 domain.getOpHolidayAppType().map(i -> i.value).orElse(null));
     }
+
+    public DisplayReason toDomain() {
+        return DisplayReason.createHolidayAppDisplayReason(companyID, displayFixedReason, displayAppReason, holidayAppType);
+    }
 }
