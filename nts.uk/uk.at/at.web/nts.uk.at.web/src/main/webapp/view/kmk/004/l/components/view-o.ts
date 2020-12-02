@@ -37,7 +37,7 @@ module nts.uk.at.view.kmk004.l {
 							<button data-bind="i18n: 'KMK004_338', click: openViewP"></button>
 						</div>
 						<div class="header_content">
-							<div data-bind="visible: false, component: {
+							<div data-bind="visible: true, component: {
 								name: 'view-l-basic-setting',
 								params:{ 
 								}
