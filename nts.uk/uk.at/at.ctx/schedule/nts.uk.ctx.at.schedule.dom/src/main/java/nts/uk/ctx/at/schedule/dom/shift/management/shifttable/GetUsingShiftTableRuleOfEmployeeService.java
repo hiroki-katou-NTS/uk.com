@@ -12,6 +12,13 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.GetTar
  */
 public class GetUsingShiftTableRuleOfEmployeeService {
 	
+	/**
+	 * 取得する
+	 * @param require
+	 * @param sid 社員ID
+	 * @param date 基準日
+	 * @return Optional<ShiftTableRule> 
+	 */
     public static Optional<ShiftTableRule> get(Require require, String sid, GeneralDate date ) {
     	
     	val targetOrg = GetTargetIdentifiInforService.get(require, date, sid);

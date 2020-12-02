@@ -6,6 +6,7 @@ import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.GetUsingShiftTableRuleOfEmployeeService;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -18,7 +19,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public class RegisterWorkAvailability {
 	
 	/**
-	 * [1] 提出する
+	 * 提出する
 	 * @param require
 	 * @param workOneDay 一日分の勤務希望
 	 * @param baseDate 基準日	
@@ -36,17 +37,21 @@ public class RegisterWorkAvailability {
 			throw new BusinessException("Msg_2052");
 		}
 
-		if (shiftRule.getShiftTableSetting().get().isOverDeadline(workOneDay.getWorkAvailabilityDate())) {
+		// 勤務希望運用区分 == する場合は、必ず「シフト表の設定」emptyではないため。
+		val shiftTableRule = shiftRule.getShiftTableSetting().get();
+		if (shiftTableRule.isOverDeadline(workOneDay.getWorkAvailabilityDate())) {
 			throw new BusinessException("Msg_2050");
 		}
 
-		if (shiftRule.getShiftTableSetting().get().isOverHolidayMaxDays(workOneDays)) {
+		if (shiftTableRule.isOverHolidayMaxDays(workOneDays)) {
 			throw new BusinessException("Msg_2051");
 		}
 		
+		val periods = shiftTableRule.getPeriodWhichIncludeAvailabilityDate(workOneDay.getWorkAvailabilityDate());
+		
 		return AtomTask.of(() -> {
-			require.deleteAll(workOneDays);
-			require.insertAll(workOneDays);
+			require.deleteAllWorkAvailabilityOfOneDay(workOneDay.getEmployeeId(), periods);
+			require.insertAllWorkAvailabilityOfOneDay(workOneDays);
 		});
 		
 	}
@@ -55,15 +60,16 @@ public class RegisterWorkAvailability {
 		
 		/**
 		 * [R-1] 一日分の勤務希望を追加する
-		 * @param workOneDay
+		 * @param workOneDay　一日分の勤務希望リスト
 		 */
-		void insertAll(List<WorkAvailabilityOfOneDay> workOneDays);
+		void insertAllWorkAvailabilityOfOneDay(List<WorkAvailabilityOfOneDay> workOneDays);
 		
 		/**
 		 * [R-2] 一日分の勤務希望を削除する
-		 * @param workOneDay
+		 * @param sid 社員ID
+		 * @param datePeriod 期間
 		 */
-		void deleteAll(List<WorkAvailabilityOfOneDay> workOneDays);
+		void deleteAllWorkAvailabilityOfOneDay(String sid, DatePeriod datePeriod);
 		
 	}
 }
