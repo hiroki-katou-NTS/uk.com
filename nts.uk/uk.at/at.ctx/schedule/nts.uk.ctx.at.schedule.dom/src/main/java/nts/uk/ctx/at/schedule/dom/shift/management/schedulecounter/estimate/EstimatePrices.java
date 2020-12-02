@@ -18,7 +18,7 @@ public class EstimatePrices implements DomainValue{
 	private List<EstimateAmountByCondition> estimatePrices;
 	
 	public static EstimatePrices create (List<EstimateAmountByCondition> estimateAmount) {
-		if(estimateAmount.isEmpty()) {
+		if(estimateAmount.size() > 5) {
 			throw new BusinessException("Msg_1869");
 		}
 		
@@ -36,9 +36,13 @@ public class EstimatePrices implements DomainValue{
 		for(int i = 0; i < esAmountSorted.size() - 1; i++) {
 			 val estimatePrice =   estimateAmount.get(i);
 			 val estimatePriceNext =   estimateAmount.get(i + 1);
+			 if(estimatePrice.getEstimateAmountNo().v() >= estimatePriceNext.getEstimateAmountNo().v()) {
+					throw new BusinessException("Msg_1871");
+			 }
+			 
 			 if(estimatePrice.getEstimatePrice().v() >= estimatePriceNext.getEstimatePrice().v()) {
 					throw new BusinessException("Msg_147");
-			 }
+			 } 
 		}
 		
 		return new EstimatePrices(esAmountSorted);
