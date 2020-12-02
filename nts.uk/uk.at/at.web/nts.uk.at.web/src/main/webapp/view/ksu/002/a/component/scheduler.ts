@@ -611,7 +611,7 @@ module nts.uk.ui.at.ksu002.a {
                         attr: {
                             tabindex: $tabindex
                         },
-                        ntsTimeEditor: {
+                        ntsTimeWithDayEditor: {
                             name: $component.$i18n('KSU002_28'),
                             constraint: 'TimeWithDayAttr',
                             mode: 'time',
@@ -619,7 +619,10 @@ module nts.uk.ui.at.ksu002.a {
                             value: $component.model.begin,
                             readonly: false,
                             enable: $component.enable,
-                            required: $component.model.required
+                            required: $component.model.required,
+                            option: {
+                                timeWithDay: false
+                            }
                         },
                         event: {
                             blur: function() { $component.hideInput.apply($component, ['begin']) },
@@ -636,7 +639,7 @@ module nts.uk.ui.at.ksu002.a {
                         attr: {
                             tabindex: $tabindex
                         },
-                        ntsTimeEditor: {
+                        ntsTimeWithDayEditor: {
                             name: $component.$i18n('KSU002_29'),
                             constraint: 'TimeWithDayAttr',
                             mode: 'time',
@@ -644,7 +647,10 @@ module nts.uk.ui.at.ksu002.a {
                             value: $component.model.finish,
                             readonly: false,
                             enable: $component.enable,
-                            required: $component.model.required
+                            required: $component.model.required,
+                            option: {
+                                timeWithDay: false
+                            }
                         },
                         event: {
                             blur: function() { $component.hideInput.apply($component, ['finish']) },
@@ -792,7 +798,7 @@ module nts.uk.ui.at.ksu002.a {
                     const f = ko.unwrap(model.finish);
 
                     if (ko.unwrap(enable)) {
-                        if (_.isNumber(b) && _.isNumber(f) && b > f) {
+                        if (_.isNumber(b) && _.isNumber(f) && b >= f) {
                             if (!$begin.ntsError('hasError')) {
                                 $begin.ntsError('set', { messageId: MSG_1811 });
                             }
