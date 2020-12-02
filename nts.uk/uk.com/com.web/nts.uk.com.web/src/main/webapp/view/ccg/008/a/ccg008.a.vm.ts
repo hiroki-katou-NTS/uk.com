@@ -105,7 +105,9 @@ module nts.uk.com.view.ccg008.a.screenModel {
       service.getClosure().done((data: any) => {
         vm.lstClosure(data);
       });
-
+      $('#content-top').resizable({
+        grid: [10000, 1]
+    });
       _.extend(window, { vm: self });
     }
 

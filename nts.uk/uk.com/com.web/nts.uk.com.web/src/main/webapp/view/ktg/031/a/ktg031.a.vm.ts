@@ -61,10 +61,11 @@ module nts.uk.com.view.ktg031.a {
       <style type="text/css" rel="stylesheet">
         #ktg031-container {
           width: 100%;
-          height: 290px;
+          height: 100%;
           display: flex;
           flex-direction: column;
         }
+
         #ktg031-container .header-line {
           width: 100%;
           height: 5px;
@@ -99,7 +100,7 @@ module nts.uk.com.view.ktg031.a {
         }
         #ktg031-container .body .table-container {
           width: 100%;
-          height: 100%;
+          height: 235px;
           margin-top: 5px;
           overflow-y: auto;
         }

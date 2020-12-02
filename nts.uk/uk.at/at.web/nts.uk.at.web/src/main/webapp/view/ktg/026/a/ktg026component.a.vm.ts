@@ -9,15 +9,17 @@ module nts.uk.at.view.ktg026.a.Ktg026ComponentViewModel {
   };
 
   const STYLE = `
-  #ktg027-contents-area {
+  #ktg026-contents-area {
     padding-top: 5px;
     padding-left: 5px;
-    width: 440px;
+    width: 445x;
+    height: 100%;
     border: 1px groove;
+    overflow: auto;
   }
 
   .ktg027-grid {
-    display: grid;
+    display: flex;
   }
   .ktg027-block {
     display: block;
@@ -81,6 +83,7 @@ module nts.uk.at.view.ktg026.a.Ktg026ComponentViewModel {
   }
   .flex {
     display: flex;
+    height: 100px;
   }
   .left65 {
     float: left;
@@ -152,7 +155,7 @@ module nts.uk.at.view.ktg026.a.Ktg026ComponentViewModel {
     height: 350px;
   }
   .mh-200 {
-    max-height: 200px;
+    height: 400px;
   }
   
   /* 限度アラーム時間超過 */
@@ -188,7 +191,7 @@ module nts.uk.at.view.ktg026.a.Ktg026ComponentViewModel {
 
   @component({
     name: 'ktg026-component',
-    template: `<div id="contents-area">
+    template: `<div id="ktg026-contents-area">
     <div class="title-border">
       <!-- A1_1 時間外労働・休日労働状況 -->
       <label id="A1_1" class="big-text" data-bind="i18n: 'KTG026_5'"></label>
@@ -209,7 +212,7 @@ module nts.uk.at.view.ktg026.a.Ktg026ComponentViewModel {
             <!-- A1_5 js-exceededNumber -->
             <label id="A1_5" class="ktg027-grid ktg027-mt-10" data-bind="text: exceededNumber"></label>
           </td>
-          <td class="ktg027-block p-10" style="width: 60%">
+          <td class="ktg027-block p-10" style="width: 50%">
             <div class="right">
               <!-- A1_3 ■時間外労働時間 -->
               <label id="A1_3" class="ktg027-grid non-statutory-color" data-bind="i18n: 'KTG026_2'"></label>
