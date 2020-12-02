@@ -188,7 +188,9 @@ public class HolidayServiceImpl implements HolidayService {
 				workContent.getTimeZones(), workContent.getBreakTimes());
 		//	事前申請・実績の時間超過をチェックする
 		OverStateOutput overStateOutput = overtimeLeaveAppCommonSet.checkPreApplication(EnumAdaptor.valueOf(prePostAtr.value, PrePostAtr.class), 
-				Optional.of(preApplicationTime), applicationTimes.isEmpty() ? Optional.empty() : Optional.of(applicationTimes.get(0)), Optional.of(actualApplicationTime));
+				Optional.ofNullable(preApplicationTime), 
+				applicationTimes.isEmpty() ? Optional.empty() : Optional.ofNullable(applicationTimes.get(0)), 
+				Optional.ofNullable(actualApplicationTime));
 		
 		
 		return new HolidayWorkCalculationResult(overStateOutput, !applicationTimes.isEmpty() ? applicationTimes.get(0) : null, CalculatedFlag.CALCULATED);

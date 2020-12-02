@@ -1,14 +1,18 @@
 package nts.uk.ctx.at.request.dom.application.holidayworktime.service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
@@ -16,6 +20,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Process
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHdWorkDispInfoOutput;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 
 /**
@@ -61,6 +66,22 @@ public class HolidayWorkRegisterServiceImpl implements HolidayWorkRegisterServic
 				application.getAppID(), 
 				appTypeSetting,
 				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().isMailServerSet());
+	}
+	
+	@Override
+	public List<ProcessResult> registerMulti(String companyId, List<String> empList,
+			AppHdWorkDispInfoOutput appHdWorkDispInfoOutput, AppHolidayWork appHolidayWork,
+			Map<String, ApprovalRootContentImport_New> approvalRootContentMap,
+			Map<String, AppOvertimeDetail> appOvertimeDetailMap) {
+		List<ProcessResult> processResultList = new ArrayList<ProcessResult>();
+		
+//		empList.forEach(empId -> {
+//			AppHolidayWork empAppHolidayWork = appHolidayWork;
+//			empAppHolidayWork.getApplication().setEmployeeID(empId);
+//			empAppHolidayWork.getApplication().setAppID(IdentifierUtil.randomUniqueId());
+//			empAppHolidayWork
+//		});
+		return processResultList;
 	}
 	
 	@Override

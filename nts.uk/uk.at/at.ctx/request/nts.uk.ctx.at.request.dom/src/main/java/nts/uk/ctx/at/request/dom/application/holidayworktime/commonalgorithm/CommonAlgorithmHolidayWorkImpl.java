@@ -20,6 +20,8 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.employee.EmploymentAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.EmploymentHistoryImported;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorCheck;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
@@ -143,6 +145,9 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 	
 	@Inject
 	private Time36UpperLimitCheck time36UpperLimitCheck;
+	
+	@Inject
+	private EmploymentAdapter employmentAdapter;
 
 	@Override
 	public HolidayWorkAppSet getHolidayWorkSetting(String companyId) {
@@ -295,13 +300,13 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1537", 
 	        				Arrays.asList(error.realTime, error.limitTime)));
 	        		break;
-	        	case AVERAGE_MONTH:
-	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1538", 
-	        				Arrays.asList(error.yearMonthStart, error.yearMonthEnd, error.realTime, error.limitTime)));
-	        		break;
 	        	case MAX_YEAR:
 	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_2056", 
 	        				Arrays.asList(error.realTime, error.limitTime)));
+	        		break;
+	        	case AVERAGE_MONTH:
+	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1538", 
+	        				Arrays.asList(error.yearMonthStart, error.yearMonthEnd, error.realTime, error.limitTime)));
 	        		break;
 	        		default: break;
         	}
@@ -394,10 +399,40 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 	        	throw new BusinessException("Msg_1409");
 	        }
 	        
+	        //	社員IDと基準日から社員の雇用コードを取得
+	        Optional<EmploymentHistoryImported> empHist = employmentAdapter.getEmpHistBySid(companyId, empId, 
+	        		empAppHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getBaseDate());
 	        
+	        //18.３６時間の上限チェック(新規登録)_NEW   huytodo wait update common method 18.３６時間の上限チェック(新規登録)
+	        Time36UpperLimitCheckResult time36UpperLimitCheckResult = time36UpperLimitCheck.checkRegister(companyId, appHolidayWork.getApplication().getEmployeeID(), 
+	        		appHolidayWork.getApplication().getAppDate().getApplicationDate(),
+	        		ApplicationType.HOLIDAY_WORK_APPLICATION, Collections.emptyList());
+	        if(!time36UpperLimitCheckResult.getErrorFlg().isEmpty()){
+	        	time36UpperLimitCheckResult.getErrorFlg().forEach(error -> {
+	            	switch(error.errorFlg) {
+	    	        	case MONTH:
+	    	        		throw new BusinessException("Msg_1535", error.realTime, error.limitTime);
+	    	        	case YEAR:
+	    	        		throw new BusinessException("Msg_1536", error.realTime, error.limitTime);
+	    	        	case MAX_MONTH:
+	    	        		throw new BusinessException("Msg_1537", error.realTime, error.limitTime);
+	    	        	case MAX_YEAR:
+	    	        		throw new BusinessException("Msg_2056", error.realTime, error.limitTime);
+	    	        	case AVERAGE_MONTH:
+	    	        		throw new BusinessException("Msg_1538", error.yearMonthStart, error.yearMonthEnd, error.realTime, error.limitTime);
+	    	        		default: break;
+	            	}
+	            });
+	        }
+	        
+	    	//	申請の矛盾チェック
+	    	commonAlgorithm.appConflictCheck(companyId, employeeInfo.orElse(null), 
+	    			Arrays.asList(empAppHolidayWork.getApplication().getAppDate().getApplicationDate()), 
+	    			Arrays.asList(empAppHolidayWork.getWorkInformation().getWorkTypeCode().v()), 
+	    			empAppHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().orElse(Collections.emptyList()));
 	        
 		});
-		return null;
+		return checkBeforeOutputMulti;
 	}
 	
 	@Override

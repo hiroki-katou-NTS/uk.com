@@ -3,7 +3,7 @@ package nts.uk.ctx.at.request.app.command.application.holidaywork;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.request.app.command.application.common.ApplicationUpdateCmd;
+import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 
 /**
  * Refactor5
@@ -23,7 +23,7 @@ public class UpdateCommand {
 	/**
 	 * 休日出勤申請
 	 */
-	private AppHolidayWorkCmd appHolidayWork;
+	private AppHolidayWorkUpdateCmd appHolidayWork;
 	
-	private ApplicationUpdateCmd applicationUpdateCmd;
+	public AppDispInfoStartupDto appDispInfoStartupDto;
 }

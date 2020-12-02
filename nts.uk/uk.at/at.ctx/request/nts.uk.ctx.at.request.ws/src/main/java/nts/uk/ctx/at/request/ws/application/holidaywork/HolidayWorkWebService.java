@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.ws.application.holidaywork;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -8,8 +10,10 @@ import javax.ws.rs.Produces;
 import lombok.Value;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.RegisterCommand;
+import nts.uk.ctx.at.request.app.command.application.holidaywork.RegisterMultiCommand;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.UpdateCommand;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.HolidayWorkRegisterCommandHandler;
+import nts.uk.ctx.at.request.app.command.application.holidaywork.HolidayWorkRegisterMultiCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.HolidayWorkUpdateCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.AppHolidayWorkFinder;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHdWorkDispInfoDto;
@@ -43,6 +47,9 @@ public class HolidayWorkWebService extends WebService{
 	private HolidayWorkRegisterCommandHandler registerCommandHandler;
 	
 	@Inject
+	private HolidayWorkRegisterMultiCommandHandler registerMultiCommandHandler;
+	
+	@Inject
 	private HolidayWorkUpdateCommandHandler updateCommandHandler;
 	
 	@POST
@@ -70,15 +77,15 @@ public class HolidayWorkWebService extends WebService{
 	}
 	
 	@POST
-	@Path("registerMulti")
-	public void registerMulti(String param) {
-		// huytodo
-	}
-	
-	@POST
 	@Path("register")
 	public ProcessResult register(RegisterCommand param) {
 		return registerCommandHandler.handle(param);
+	}
+
+	@POST
+	@Path("registerMulti")
+	public List<ProcessResult> registerMulti(RegisterMultiCommand param) {
+		return registerMultiCommandHandler.handle(param);
 	}
 	
 	@POST

@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.request.app.command.application.common.ApplicationUpdateCmd;
 import nts.uk.ctx.at.request.app.command.application.overtime.AppOvertimeDetailCommand;
 import nts.uk.ctx.at.request.app.command.application.overtime.ApplicationTimeCommand;
 import nts.uk.ctx.at.request.app.command.application.overtime.TimeZoneWithWorkNoCommand;
@@ -23,8 +24,8 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @NoArgsConstructor
 @Data
-public class AppHolidayWorkCmd {
-
+public class AppHolidayWorkUpdateCmd {
+	
 	/**
 	 * 勤務情報
 	 */
@@ -60,9 +61,9 @@ public class AppHolidayWorkCmd {
 	 */
 	private AppOvertimeDetailCommand appOvertimeDetail;
 	
-	public ApplicationDto application;
+	public ApplicationUpdateCmd application;
 	
-	public AppHolidayWorkCmd(WorkInformationCommand workInformation, ApplicationTimeCommand applicationTime, boolean backHomeAtr, boolean goWorkAtr, 
+	public AppHolidayWorkUpdateCmd(WorkInformationCommand workInformation, ApplicationTimeCommand applicationTime, boolean backHomeAtr, boolean goWorkAtr, 
 			List<TimeZoneWithWorkNoCommand> breakTime, List<TimeZoneWithWorkNoCommand> workingTime, AppOvertimeDetailCommand appOvertimeDetail) {
 		this.workInformation = workInformation;
 		this.applicationTime = applicationTime;
@@ -73,8 +74,8 @@ public class AppHolidayWorkCmd {
 		this.appOvertimeDetail = appOvertimeDetail;
 	}
 	
-	public Application toDomainApplication() {
-		return application.toDomain();
+	public Application toDomainApplication(ApplicationDto applicationDto) {
+		return application.toDomain(applicationDto);
 	}
 	
 	public AppHolidayWork toDomain() {
@@ -84,6 +85,6 @@ public class AppHolidayWorkCmd {
 						Optional.ofNullable(this.breakTimeList.stream().map(breakTime -> breakTime.toDomain()).collect(Collectors.toList())) : Optional.empty(), 
 				this.workingTimeList != null ? 
 						Optional.ofNullable(this.workingTimeList.stream().map(workingTime -> workingTime.toDomain()).collect(Collectors.toList())) : Optional.empty(), 
-				this.appOvertimeDetail != null ? Optional.of(this.appOvertimeDetail.toDomain(AppContexts.user().companyId(), application.getAppID())) : Optional.empty());
+				this.appOvertimeDetail != null ? Optional.of(this.appOvertimeDetail.toDomain(AppContexts.user().companyId(), "")) : Optional.empty());
 	}
 }
