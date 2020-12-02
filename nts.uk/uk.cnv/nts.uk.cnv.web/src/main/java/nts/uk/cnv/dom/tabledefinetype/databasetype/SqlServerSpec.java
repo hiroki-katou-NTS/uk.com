@@ -35,7 +35,7 @@ public class SqlServerSpec implements DatabaseSpec{
 		case DATETIMEMS:
 			return "DATETIME2(3)";
 		case GUID:
-			return "CHAR(32)";
+			return "CHAR(36)";
 		default:
 			break;
 		}

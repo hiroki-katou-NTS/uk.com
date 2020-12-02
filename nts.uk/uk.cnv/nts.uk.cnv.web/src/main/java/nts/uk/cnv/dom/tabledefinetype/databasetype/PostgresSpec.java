@@ -36,7 +36,7 @@ public class PostgresSpec implements DatabaseSpec{
 		case DATETIMEMS:
 			return "TIMESTAMP(3)";
 		case GUID:
-			return "CHAR(32)";
+			return "CHAR(36)";
 		default:
 			break;
 		}
