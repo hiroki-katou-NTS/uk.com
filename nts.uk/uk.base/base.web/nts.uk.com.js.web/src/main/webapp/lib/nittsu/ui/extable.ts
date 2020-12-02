@@ -1677,7 +1677,12 @@ module nts.uk.ui.exTable {
                     $.data($cell, "hide", value);
                     $cell.innerHTML = "";
                 } else {
-                    $cell.textContent = value;
+                    let $controlIn;
+                    if (($controlIn = $cell.querySelector("a")) || ($controlIn = $cell.querySelector("button"))) {
+                        $controlIn.innerText = value;
+                    } else {
+                        $cell.textContent = value;
+                    }
                 }
                 
                 let cellObj = new selection.Cell(rowIdx, columnKey, valueObj, -1);
