@@ -4,10 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.shared.app.command.statutory.worktime.monthlyworkinghours.MonthlyWorkTimeSetCommand;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetEmp;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
+import nts.uk.screen.at.app.command.kmk.kmk004.MonthlyWorkTimeSetCommand;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
