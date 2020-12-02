@@ -19,17 +19,22 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorCheck;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.PreAppContentDisplay;
+import nts.uk.ctx.at.request.dom.application.common.service.other.Time36UpperLimitCheck;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.Time36UpperLimitCheckResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHdWorkDispInfoOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CheckBeforeOutput;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CheckBeforeOutputMulti;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkBreakTimeSetOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.InitWorkTypeWorkTime;
@@ -132,6 +137,12 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 	
 	@Inject
 	private CommonAlgorithm commonAlgorithm;
+	
+	@Inject
+	private CollectAchievement collectAchievement;
+	
+	@Inject
+	private Time36UpperLimitCheck time36UpperLimitCheck;
 
 	@Override
 	public HolidayWorkAppSet getHolidayWorkSetting(String companyId) {
@@ -227,7 +238,7 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 		
 		//	計算ボタン未クリックチェック
 		commonOvertimeHoliday.calculateButtonCheck(appHdWorkDispInfoOutput.getCalculationResult().isPresent() ? 
-				appHdWorkDispInfoOutput.getCalculationResult().get().getCalculatedFlag().value : null, 
+				appHdWorkDispInfoOutput.getCalculationResult().get().getCalculatedFlag().value : 0, 
 				EnumAdaptor.valueOf(appHdWorkDispInfoOutput.getHolidayWorkAppSet().getApplicationDetailSetting().getTimeCalUse().value, UseAtr.class));
 		
 		//	休出時間のチェック
@@ -266,22 +277,127 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
         
         AppOvertimeDetail appOvertimeDetail = new AppOvertimeDetail();
         
-        if(mode == 0) {
-        	//	３６協定時間上限チェック（月間）
-//        	commonOvertimeHoliday.registerHdWorkCheck36TimeLimit(companyId, employeeId, appDate, holidayWorkInputs);  pending
-        	//	申請の矛盾チェック
-        	commonAlgorithm.appConflictCheck(companyId, appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0), 
-        			Arrays.asList(appHolidayWork.getApplication().getAppDate().getApplicationDate()), 
-        			Arrays.asList(appHolidayWork.getWorkInformation().getWorkTypeCode().v()), 
-        			appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().orElse(Collections.emptyList()));
-        } else {
-        	//	３６上限チェック(詳細)
-//        	commonOvertimeHoliday.updateHdWorkCheck36TimeLimit(companyId, appId, enteredPersonId, employeeId, appDate, holidayWorkInputs);   pending
-        }
+        //18.３６時間の上限チェック(新規登録)_NEW   huytodo wait update common method 18.３６時間の上限チェック(新規登録)
+        Time36UpperLimitCheckResult time36UpperLimitCheckResult = time36UpperLimitCheck.checkRegister(companyId, appHolidayWork.getApplication().getEmployeeID(), 
+        		appHolidayWork.getApplication().getAppDate().getApplicationDate(),
+        		ApplicationType.HOLIDAY_WORK_APPLICATION, Collections.emptyList());
+        time36UpperLimitCheckResult.getErrorFlg().forEach(error -> {
+        	switch(error.errorFlg) {
+	        	case MONTH:
+	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1535", 
+	        				Arrays.asList(error.realTime, error.limitTime)));
+	        		break;
+	        	case YEAR:
+	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1536", 
+	        				Arrays.asList(error.realTime, error.limitTime)));
+	        		break;
+	        	case MAX_MONTH:
+	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1537", 
+	        				Arrays.asList(error.realTime, error.limitTime)));
+	        		break;
+	        	case AVERAGE_MONTH:
+	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1538", 
+	        				Arrays.asList(error.yearMonthStart, error.yearMonthEnd, error.realTime, error.limitTime)));
+	        		break;
+	        	case MAX_YEAR:
+	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_2056", 
+	        				Arrays.asList(error.realTime, error.limitTime)));
+	        		break;
+	        		default: break;
+        	}
+        });
+        
+    	//	申請の矛盾チェック
+    	commonAlgorithm.appConflictCheck(companyId, appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0), 
+    			Arrays.asList(appHolidayWork.getApplication().getAppDate().getApplicationDate()), 
+    			Arrays.asList(appHolidayWork.getWorkInformation().getWorkTypeCode().v()), 
+    			appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().orElse(Collections.emptyList()));
         
         checkBeforeOutput.setConfirmMsgOutputs(confirmMsgOutputs);
         checkBeforeOutput.setAppOvertimeDetail(appOvertimeDetail);
 		return checkBeforeOutput;
+	}
+
+	@Override
+	public CheckBeforeOutputMulti individualErrorCheckMulti(boolean require, String companyId, List<String> empList,
+			AppHdWorkDispInfoOutput appHdWorkDispInfoOutput, AppHolidayWork appHolidayWork) {
+		CheckBeforeOutputMulti checkBeforeOutputMulti = new CheckBeforeOutputMulti();
+		
+		//12.マスタ勤務種類、就業時間帯データをチェック
+		CheckWorkingInfoResult checkWorkingInfoResult = otherCommonAlgorithm.checkWorkingInfo(companyId,
+				appHolidayWork.getWorkInformation().getWorkTypeCode().v(), 
+				appHolidayWork.getWorkInformation().getWorkTimeCode().v());
+		
+		//03-06_計算ボタンチェック
+		commonOvertimeHoliday.calculateButtonCheck(appHdWorkDispInfoOutput.getCalculationResult().isPresent() ? 
+				appHdWorkDispInfoOutput.getCalculationResult().get().getCalculatedFlag().value : 0, 
+				EnumAdaptor.valueOf(appHdWorkDispInfoOutput.getHolidayWorkAppSet().getApplicationDetailSetting().getTimeCalUse().value, UseAtr.class));
+
+		//	休出時間のチェック
+		this.checkHdWorkTime(appHolidayWork.getApplicationTime());
+		
+		//INPUT．申請者リストをループする
+		empList.forEach(empId -> {
+			AppHolidayWork empAppHolidayWork = appHolidayWork;
+			AppHdWorkDispInfoOutput empAppHdWorkDispInfoOutput = appHdWorkDispInfoOutput;
+			empAppHolidayWork.getApplication().setEmployeeID(empId);
+			Optional<EmployeeInfoImport> employeeInfo = appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().stream()
+			.filter(empInfo -> empInfo.getSid().equals(empId)).findFirst();
+			
+			//	事前内容の取得
+			List<PreAppContentDisplay> preAppContentDisplayLst = collectAchievement.getPreAppContents(companyId, empId, 
+					Arrays.asList(empAppHolidayWork.getApplication().getAppDate().getApplicationDate()), empAppHolidayWork.getApplication().getAppType());
+			//	実績内容の取得
+			List<ActualContentDisplay> actualContentDisplayLst = collectAchievement.getAchievementContents(companyId, empId, 
+					Arrays.asList(empAppHolidayWork.getApplication().getAppDate().getApplicationDate()), empAppHolidayWork.getApplication().getAppType());
+			
+			//07-02_実績取得・状態チェック
+			ApplicationTime applicationTime = preActualColorCheck.checkStatus(companyId, empId, empAppHolidayWork.getApplication().getAppDate().getApplicationDate(), 
+					ApplicationType.HOLIDAY_WORK_APPLICATION, 
+					empAppHolidayWork.getWorkInformation().getWorkTypeCode(), 
+					empAppHolidayWork.getWorkInformation().getWorkTimeCode(), 
+					empAppHdWorkDispInfoOutput.getHolidayWorkAppSet().getOvertimeLeaveAppCommonSet().getOverrideSet(), 
+					Optional.of(empAppHdWorkDispInfoOutput.getHolidayWorkAppSet().getCalcStampMiss()), 
+					empAppHdWorkDispInfoOutput.getHdWorkDispInfoWithDateOutput().getBreakTimeZoneSettingList().isPresent() ? 
+							empAppHdWorkDispInfoOutput.getHdWorkDispInfoWithDateOutput().getBreakTimeZoneSettingList().get().getTimeZones() : Collections.emptyList(), 
+					Optional.ofNullable(!actualContentDisplayLst.isEmpty() ? actualContentDisplayLst.get(0) : null));
+			
+			//	ループする社員の休日出勤申請起動時の表示情報 = INPUT．休日出勤申請起動時の表示情報
+			empAppHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().setOpPreAppContentDisplayLst(Optional.of(preAppContentDisplayLst));
+			empAppHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().setOpActualContentDisplayLst(Optional.of(actualContentDisplayLst));
+			empAppHdWorkDispInfoOutput.getHdWorkDispInfoWithDateOutput().setActualApplicationTime(Optional.of(applicationTime));
+
+			//	事前申請・実績超過チェック
+			List<ConfirmMsgOutput> confirmMsgOutputs = this.checkExcess(empAppHdWorkDispInfoOutput, empAppHolidayWork);
+			if(employeeInfo.isPresent()) {
+				checkBeforeOutputMulti.getConfirmMsgOutputMap().put(employeeInfo.get().getBussinessName(), confirmMsgOutputs);
+			}
+			
+			//	申請時の乖離時間をチェックする
+			overtimeService.checkDivergenceTime(require, ApplicationType.HOLIDAY_WORK_APPLICATION, 
+					Optional.empty(), Optional.of(empAppHolidayWork), empAppHdWorkDispInfoOutput.getHolidayWorkAppSet().getOvertimeLeaveAppCommonSet());
+			
+			//	社員に対応する締め期間を取得する
+			val requireM3 = requireService.createRequire();
+	        val cacheCarrier = new CacheCarrier();
+	        DatePeriod closingPeriod = ClosureService.findClosurePeriod(requireM3, cacheCarrier, empAppHolidayWork.getApplication().getEmployeeID(), 
+	        		empAppHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getBaseDate());
+	        
+	    	//	登録時の残数チェック
+	        InterimRemainCheckInputParam checkRegisterParam = new InterimRemainCheckInputParam(companyId, empId, 
+	        		new DatePeriod(closingPeriod.start(), closingPeriod.end().addYears(1).addDays(-1)), false, empAppHolidayWork.getApplication().getAppDate().getApplicationDate(), 
+	        		new DatePeriod(empAppHolidayWork.getApplication().getAppDate().getApplicationDate(), empAppHolidayWork.getApplication().getAppDate().getApplicationDate()), 
+	        		true, Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
+	        		true, false, false, false, false, false, false);
+	        EarchInterimRemainCheck earchInterimRemainCheck = checkRegister.checkRegister(checkRegisterParam);
+	        if(earchInterimRemainCheck.isChkSubHoliday()) {
+	        	throw new BusinessException("Msg_1409");
+	        }
+	        
+	        
+	        
+		});
+		return null;
 	}
 	
 	@Override
@@ -340,10 +456,13 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 		}
 		switch(overStateOutput.getAchivementStatus()) {
 			case EXCESS_ERROR:
-				throw new BusinessException("Msg_1746", "employeeName", appHolidayWork.getApplication().getAppDate().getApplicationDate().toString());//huytodo employeeName
+				throw new BusinessException("Msg_1746", 
+						appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getBussinessName(), 
+						appHolidayWork.getApplication().getAppDate().getApplicationDate().toString());
 			case EXCESS_ALARM:
 				confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1745", 
-						Arrays.asList("employeeName", appHolidayWork.getApplication().getAppDate().getApplicationDate().toString())));//huytodo employeeName
+						Arrays.asList(appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getBussinessName(), 
+								appHolidayWork.getApplication().getAppDate().getApplicationDate().toString())));
 				break;
 			case NO_EXCESS:
 				OutDateApplication outDateApplication = overStateOutput.getAchivementExcess();
@@ -376,20 +495,18 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 		
 		appHdWorkDispInfoOutput.getOvertimeFrameList().stream()
 		.filter(overtimeFrame -> overtimeFrameNoList.contains(overtimeFrame.getOvertimeWorkFrNo().v().intValue()))
-		.map(overtimeFrame -> {
+		.forEach(overtimeFrame -> {
 			messageContentList.add(overtimeFrame.getOvertimeWorkFrName().v());
-			return overtimeFrame;
 		});
 		appHdWorkDispInfoOutput.getWorkdayoffFrameList().stream()
 		.filter(workdayoffFrame -> workdayoffFrameNoList.contains(workdayoffFrame.getWorkdayoffFrNo().v().intValue()))
-		.map(workdayoffFrame -> {
+		.forEach(workdayoffFrame -> {
 			messageContentList.add(workdayoffFrame.getWorkdayoffFrName().v());
-			return workdayoffFrame;
 		});
 		
 		outDateApplication.getExcessStateMidnight().stream()
 		.filter(excessStateMidnight -> excessStateMidnight.getExcessState().equals(excessState))
-		.map(excessStateMidnight -> {
+		.forEach(excessStateMidnight -> {
 			switch(excessStateMidnight.getLegalCfl()) {
 				case WithinPrescribedHolidayWork:
 					messageContentList.add(TextResource.localize("KAF005_341"));
@@ -402,7 +519,6 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 					break;
 					default: break;
 			}
-			return excessStateMidnight;
 		});
 		
 		if(outDateApplication.getFlex().equals(excessState)) {
@@ -432,7 +548,7 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 	@Override
 	public List<WorkType> getWorkTypeList(String companyId, AppEmploymentSet employmentSet){
 		List<WorkType> workTypeList = new ArrayList<WorkType>();
-		if(employmentSet.getTargetWorkTypeByAppLst() != null && !employmentSet.getTargetWorkTypeByAppLst().isEmpty()) {
+		if(employmentSet != null && employmentSet.getTargetWorkTypeByAppLst() != null && !employmentSet.getTargetWorkTypeByAppLst().isEmpty()) {
 			List<String> workTypeCodeList = employmentSet.getTargetWorkTypeByAppLst().stream()
 				.filter(workTypeByApp -> workTypeByApp.getAppType().equals(ApplicationType.HOLIDAY_WORK_APPLICATION))
 				.map(workTypeByApp -> workTypeByApp.getWorkTypeLst())

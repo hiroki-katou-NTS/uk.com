@@ -17,10 +17,12 @@ import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHdWorkDispInfoDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHolidayWorkParamPC;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.CheckBeforeOutputDto;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.CheckBeforeOutputMultiDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HdWorkDetailOutputDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HolidayWorkCalculationResultDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamCalculationHolidayWork;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamCheckBeforeRegister;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamCheckBeforeRegisterMulti;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamDeleteHdChange;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamHdWorkDetail;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamHolidayWorkChangeDate;
@@ -41,6 +43,7 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayServ
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHdWorkDispInfoOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CalculatedFlag;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CheckBeforeOutput;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CheckBeforeOutputMulti;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdSelectWorkDispInfoOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkDetailOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HolidayWorkCalculationResult;
@@ -220,6 +223,18 @@ public class AppHolidayWorkFinder {
 				appHolidayWork, param.isProxy());
 		
 		return CheckBeforeOutputDto.fromDomain(checkBeforeOutput);
+	}
+	
+	public CheckBeforeOutputMultiDto checkBeforeRegisterMulti(ParamCheckBeforeRegisterMulti param) {
+		AppHdWorkDispInfoOutput appHdWorkDispInfoOutput = param.getAppHdWorkDispInfo().toDomain();
+		Application application = this.createApplication(param.getAppHolidayWork().getApplication());
+		AppHolidayWork appHolidayWork = param.getAppHolidayWork().toDomain();
+		appHolidayWork.setApplication(application);
+		
+		CheckBeforeOutputMulti checkBeforeOutputMulti = holidayWorkService.checkBeforeRegisterMulti(param.isRequire(), param.getCompanyId(), 
+				param.getEmpList(), appHdWorkDispInfoOutput, appHolidayWork);
+		
+		return CheckBeforeOutputMultiDto.fromDomain(checkBeforeOutputMulti);
 	}
 	
 	public HdWorkDetailOutputDto getDetail(ParamHdWorkDetail param) {

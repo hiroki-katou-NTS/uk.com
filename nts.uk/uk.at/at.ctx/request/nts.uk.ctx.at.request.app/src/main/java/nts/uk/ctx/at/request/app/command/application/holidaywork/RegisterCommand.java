@@ -5,6 +5,8 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.request.app.command.application.common.ApplicationInsertCmd;
+import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.applicationsetting.apptypeset.AppTypeSettingCommand;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApprovalPhaseStateForAppDto;
 
 /**
@@ -27,6 +29,11 @@ public class RegisterCommand {
 	private AppHolidayWorkCmd appHolidayWork;
 	
 	/**
+	 * 申請種類別設定
+	 */
+	private AppTypeSettingCommand appTypeSetting;
+	
+	/**
 	 * 休日出勤申請起動時の表示情報
 	 */
 	private AppHdWorkDispInfoCmd appHdWorkDispInfo;
@@ -35,4 +42,6 @@ public class RegisterCommand {
 	 * 承認ルートインスタンス
 	 */
 	public List<ApprovalPhaseStateForAppDto> approvalPhaseState;
+	
+	private ApplicationInsertCmd applicationInsert;
 }

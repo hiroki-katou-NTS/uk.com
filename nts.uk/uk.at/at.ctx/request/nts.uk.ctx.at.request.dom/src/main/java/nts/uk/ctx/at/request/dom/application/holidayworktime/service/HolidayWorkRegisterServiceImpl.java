@@ -16,6 +16,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Process
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHdWorkDispInfoOutput;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 
 /**
  * Refactor5
@@ -44,7 +45,7 @@ public class HolidayWorkRegisterServiceImpl implements HolidayWorkRegisterServic
 	private DetailAfterUpdate detailAfterUpdate;
 	
 	@Override
-	public ProcessResult register(String companyId, AppHolidayWork appHolidayWork,
+	public ProcessResult register(String companyId, AppHolidayWork appHolidayWork, AppTypeSetting appTypeSetting, 
 			AppHdWorkDispInfoOutput appHdWorkDispInfoOutput, List<ApprovalPhaseStateImport_New> lstApproval) {
 		Application application = appHolidayWork.getApplication();
 		
@@ -58,7 +59,7 @@ public class HolidayWorkRegisterServiceImpl implements HolidayWorkRegisterServic
 		//	2-3.新規画面登録後の処理
 		return newAfterRegister.processAfterRegister(
 				application.getAppID(), 
-				null,	//huytodo
+				appTypeSetting,
 				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().isMailServerSet());
 	}
 	

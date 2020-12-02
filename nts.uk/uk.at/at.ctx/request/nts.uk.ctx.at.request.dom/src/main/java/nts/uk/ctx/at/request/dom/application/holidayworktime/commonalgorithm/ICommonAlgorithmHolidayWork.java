@@ -11,6 +11,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualC
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHdWorkDispInfoOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CheckBeforeOutput;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CheckBeforeOutputMulti;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkBreakTimeSetOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.InitWorkTypeWorkTime;
@@ -94,6 +95,18 @@ public interface ICommonAlgorithmHolidayWork {
 			AppHolidayWork appHolidayWork, Integer mode);
 	
 	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF010_休日出勤時間申請.アルゴリズム.3.個別エラーチェック(複数人).3.個別エラーチェック(複数人)
+	 * @param require
+	 * @param companyId
+	 * @param empList
+	 * @param appHdWorkDispInfoOutput
+	 * @param appHolidayWork
+	 * @return
+	 */
+	public CheckBeforeOutputMulti individualErrorCheckMulti(boolean require, String companyId, List<String> empList,
+			AppHdWorkDispInfoOutput appHdWorkDispInfoOutput, AppHolidayWork appHolidayWork);
+	
+	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.16.その他(other).12.マスタ勤務種類、就業時間帯データをチェック.メッセージを表示.勤務種類、就業時間帯チェックのメッセージを表示
 	 * @param workTypeCode
 	 * @param workTimeCode
@@ -140,5 +153,4 @@ public interface ICommonAlgorithmHolidayWork {
 	
 	public OverTimeContent getOverTimeContent(Optional<WorkTypeCode> workTypeCode, Optional<WorkTimeCode> workTimeCode, 
 			List<ActualContentDisplay> actualContentDisplayList);
-
 }
