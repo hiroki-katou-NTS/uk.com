@@ -11,6 +11,13 @@ import nts.arc.task.tran.AtomTask;
  */
 public class RegisterCompanyEstimatePriceService {
 
+	/**
+	 * 登録する
+	 * @param require
+	 * @param detai 目安金額詳細
+	 * @param heAmount 目安金額の扱い
+	 * @return
+	 */
 	public static AtomTask regiter(Require require, EstimatePriceDetail detail, HandingOfEstimateAmount heAmount) {
 		Optional<CompanyEstimateAmount> ceAmountOpt = require.getCompanyEstimateAmount();
 		Optional<HandingOfEstimateAmount> heAmountExist = require.getHandingOfEstimateAmount();
@@ -18,15 +25,15 @@ public class RegisterCompanyEstimatePriceService {
 		return AtomTask.of(() -> {
 			if(ceAmountOpt.isPresent()) {
 				ceAmountOpt.get().update(detail);
-				require.update(ceAmountOpt.get());
+				require.updateCompanyEstimateAmount(ceAmountOpt.get());
 			}else {
-				require.insert(new CompanyEstimateAmount(detail));
+				require.insertCompanyEstimateAmount(new CompanyEstimateAmount(detail));
 			}
 			
 			if(heAmountExist.isPresent()) {
-				require.update(heAmount);
+				require.updateHandingOfEstimateAmount(heAmount);
 			}else {
-				require.insert(heAmount);
+				require.insertHandingOfEstimateAmount(heAmount);
 			}
 			
 		});
@@ -37,18 +44,18 @@ public class RegisterCompanyEstimatePriceService {
 		Optional<CompanyEstimateAmount> getCompanyEstimateAmount();
 		
 		/** [R-2] 会社の目安金額を新規する */
-		void insert(CompanyEstimateAmount detail);
+		void insertCompanyEstimateAmount(CompanyEstimateAmount ceAmount);
 		
 		/**	[R-3] 会社の目安金額を変更する*/
-		void update(CompanyEstimateAmount ceAmount);
+		void updateCompanyEstimateAmount(CompanyEstimateAmount ceAmount);
 		
 		/**　[R-4]  目安金額の扱いを取得する*/
 		Optional<HandingOfEstimateAmount> getHandingOfEstimateAmount();
 	
 		/** [R-5] 目安金額の扱いを新規する */
-		void insert(HandingOfEstimateAmount heAmount);
+		void insertHandingOfEstimateAmount(HandingOfEstimateAmount heAmount);
 		
 		/** [R-6] 目安金額の扱いを変更する*/
-		void update(HandingOfEstimateAmount heAmount);
+		void updateHandingOfEstimateAmount(HandingOfEstimateAmount heAmount);
 	}
 }
