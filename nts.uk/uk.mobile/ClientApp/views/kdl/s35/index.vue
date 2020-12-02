@@ -21,8 +21,12 @@
           <nts-label>{{ "KDLS35_3" | i18n }}</nts-label>
         </div>
         <!-- A2_2 -->
-        <label v-if="startDate === endDate" class="col-6 pt-2">{{ startDate | i18n}}</label>
-        <label v-else class="col-6 pt-2">{{ 'KDLS35_14' | i18n([startDate , endDate]) }}</label>
+        <label v-if="startDate === endDate" class="col-6 pt-2">{{
+          startDate | i18n
+        }}</label>
+        <label v-else class="col-6 pt-2">{{
+          "KDLS35_14" | i18n([startDate, endDate])
+        }}</label>
       </div>
       <!-- A3_1 -->
       <div class="row pt-1">
@@ -30,7 +34,9 @@
           <nts-label>{{ "KDLS35_4" | i18n }}</nts-label>
         </div>
         <!-- A3_2 -->
-        <label class="col-6 pt-2">{{ "KDLS35_5" | i18n(displayedRequiredNumberOfDays) }}</label>
+        <label class="col-6 pt-2">{{
+          "KDLS35_5" | i18n(requiredNumberOfDays)
+        }}</label>
       </div>
       <div class="row pt-1">
         <div class="col-6">
@@ -61,27 +67,42 @@
             <th scope="col">{{ "KDLS35_11" | i18n }}</th>
           </tr>
         </thead>
-        <tbody v-for="(item,index) in substituteWorkInfoList" v-bind:key="index">
+        <tbody
+          v-for="(item, index) in substituteWorkInfoList"
+          v-bind:key="index"
+        >
           <tr class="text-center">
             <td>
               <!-- A5_6 -->
-              <nts-checkbox v-bind:value="item.checked" v-model="item.remainingNumber"> </nts-checkbox>
+              <nts-checkbox v-bind:value="true" v-model="item.checked">
+              </nts-checkbox>
             </td>
             <!-- A5_7 -->
             <td>
-              <fa-font icon="fas fa-exclamation-triangle" />
+              <fa-font 
+              v-if="item.dataType == 1" 
+              icon="fas fa-calendar-check" 
+              />
+              <fa-font
+                v-if="item.expiringThisMonth == true"
+                icon="fas fa-exclamation-triangle"
+              />
+              <fa-font
+                v-if="item.dataType == 1 && item.expiringThisMonth == true"
+                icon="fas fa-exclamation-triangle"
+              />
             </td>
             <!-- A5_8 -->
             <td>
-              {{ item.substituteWorkDate | date("YY/MM/DD(ddd)")}}
+              {{ item.substituteWorkDate | date("YY/MM/DD(ddd)") }}
             </td>
             <!-- A5_9 -->
             <td>
-              <span>{{'KDLS35_5' | i18n(item.remainingNumber)}}</span>
+              <span>{{ "KDLS35_5" | i18n(item.remainingNumber) }}</span>
             </td>
             <!-- A5_10 -->
             <td>
-              <span>{{ item.expirationDate | date("YY/MM/DD(ddd)")}}</span>
+              <span>{{ item.expirationDate | date("YY/MM/DD(ddd)") }}</span>
             </td>
           </tr>
         </tbody>

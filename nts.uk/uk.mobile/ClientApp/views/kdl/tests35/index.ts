@@ -62,7 +62,6 @@ export class KdlTests35Component extends Vue {
             managementData: []
         };
 
-        console.log(params);
         self.$modal('kdls35', params);
     }
 }
