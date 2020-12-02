@@ -343,7 +343,7 @@ TempRemainCreateEachData {
 		ExpirationTime expriTime = ExpirationTime.UNLIMITED;
 		if(employmentHolidaySetting != null 
 				&& employmentHolidaySetting.getDayOffSetting() != null) {
-			expriTime = employmentHolidaySetting.getDayOffSetting().getCompensatoryAcquisitionUse().getExpirationTime();
+		/*	expriTime = employmentHolidaySetting.getDayOffSetting().getCompensatoryAcquisitionUse().getExpirationTime();*/
 		} else {
 			expriTime = inforData.getCompanyHolidaySetting().getDayOffSetting().getCompensatoryAcquisitionUse().getExpirationTime();
 		}

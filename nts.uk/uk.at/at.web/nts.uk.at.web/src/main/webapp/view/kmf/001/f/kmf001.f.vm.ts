@@ -498,34 +498,36 @@ module nts.uk.pr.view.kmf001.f {
                 self.compenTimeManage(data.compensatoryDigestiveTimeUnit.isManageByTime);
                 self.timeUnitCode(data.compensatoryDigestiveTimeUnit.digestiveUnit);
 
-                if (data.compensatoryOccurrenceSetting[1].occurrenceType == OccurrenceDivision.OverTime) {
-                    self.loadOverTime(data.compensatoryOccurrenceSetting[1].transferSetting);
-                    self.loadWorkTime(data.compensatoryOccurrenceSetting[0].transferSetting);
-                }
-                else {
-                    self.loadOverTime(data.compensatoryOccurrenceSetting[0].transferSetting);
-                    self.loadWorkTime(data.compensatoryOccurrenceSetting[1].transferSetting);
-                }
+//                if (data.compensatoryOccurrenceSetting[1].occurrenceType == OccurrenceDivision.OverTime) {
+//                    self.loadOverTime(data.compensatoryOccurrenceSetting[1].transferSetting);
+//                    self.loadWorkTime(data.compensatoryOccurrenceSetting[0].transferSetting);
+//                }
+//                else {
+//                    self.loadOverTime(data.compensatoryOccurrenceSetting[0].transferSetting);
+//                    self.loadWorkTime(data.compensatoryOccurrenceSetting[1].transferSetting);
+//                }
+                self.loadOverTime(data.substituteHolidaySetting.overtimeHourRequired)
+                self.loadWorkTime(data.substituteHolidaySetting.holidayWorkHourRequired);
             }
 
             //load data for over time
             private loadOverTime(data: any) {
                 let self = this;
-                self.checkOverTime(data.useDivision);
-                self.selectedOfOverTime(data.transferDivision);
-                self.overOneDay(data.oneDayTime);
-                self.overHalfDay(data.halfDayTime);
-                self.overAll(data.certainTime);
+                self.checkOverTime(data.useAtr);
+                self.selectedOfOverTime(data.timeSetting.enumTimeDivision);
+                self.overOneDay(data.timeSetting.designatedTime.oneDayTimeValue);
+                self.overHalfDay(data.timeSetting.designatedTime.halfDayTimeValue);
+                self.overAll(data.timeSetting.certainPeriodofTime);
             }
 
             //load data for work time
             private loadWorkTime(data: any) {
                 let self = this;
-                self.checkWorkTime(data.useDivision);
-                self.selectedOfWorkTime(data.transferDivision);
-                self.workOneDay(data.oneDayTime);
-                self.workHalfDay(data.halfDayTime);
-                self.workAll(data.certainTime);
+                self.checkWorkTime(data.useAtr);
+                self.selectedOfWorkTime(data.timeSetting.enumTimeDivision);
+                self.workOneDay(data.timeSetting.designatedTime.oneDayTimeValue);
+                self.workHalfDay(data.timeSetting.designatedTime.halfDayTimeValue);
+                self.workAll(data.timeSetting.certainPeriodofTime);
             }
 
             //save company
@@ -679,28 +681,52 @@ module nts.uk.pr.view.kmf001.f {
                         isManageByTime: self.isManageCompen() ? self.compenTimeManage() : data.compensatoryDigestiveTimeUnit.isManageByTime,
                         digestiveUnit: self.isManageTime() ? self.timeUnitCode() : data.compensatoryDigestiveTimeUnit.digestiveUnit
                     },
-                    compensatoryOccurrenceSetting: [
-                        {
-                            occurrenceType: OccurrenceDivision.OverTime,
-                            transferSetting: {
-                                certainTime: self.enableOverAll() ? self.overAll() : overTime.certainTime,
-                                useDivision: self.isManageCompen() ? self.checkOverTime() : overTime.useDivision,
-                                oneDayTime: self.enableDesignOver() ? self.overOneDay() : overTime.oneDayTime,
-                                halfDayTime: self.enableDesignOver() ? self.overHalfDay() : overTime.halfDayTime,
-                                transferDivision: self.enableOverArea() ? self.selectedOfOverTime() : overTime.transferDivision,
+//                    compensatoryOccurrenceSetting: [
+//                        {
+//                            occurrenceType: OccurrenceDivision.OverTime,
+//                            transferSetting: {
+//                                certainTime: self.enableOverAll() ? self.overAll() : overTime.certainTime,
+//                                useDivision: self.isManageCompen() ? self.checkOverTime() : overTime.useDivision,
+//                                oneDayTime: self.enableDesignOver() ? self.overOneDay() : overTime.oneDayTime,
+//                                halfDayTime: self.enableDesignOver() ? self.overHalfDay() : overTime.halfDayTime,
+//                                transferDivision: self.enableOverArea() ? self.selectedOfOverTime() : overTime.transferDivision,
+//                            }
+//                        },
+//                        {
+//                            occurrenceType: OccurrenceDivision.DayOffTime,
+//                            transferSetting: {
+//                                certainTime: self.enableWorkAll() ? self.workAll() : workTime.certainTime,
+//                                useDivision: self.isManageCompen() ? self.checkWorkTime() : workTime.useDivision,
+//                                oneDayTime: self.enableDesignWork() ? self.workOneDay() : workTime.oneDayTime,
+//                                halfDayTime: self.enableDesignWork() ? self.workHalfDay() : workTime.halfDayTime,
+//                                transferDivision: self.enableWorkArea() ? self.selectedOfWorkTime() : workTime.transferDivision,
+//                            }
+//                        }
+//                    ],
+                    substituteHolidaySetting: {
+                        overtimeHourRequired: {
+                            UseAtr: self.isManageCompen() ? self.checkOverTime() : overTime.useDivision,
+                            timeSetting: {
+                                certainPeriodofTime: self.enableOverAll() ? self.overAll() : overTime.certainTime,
+                                designatedTime: {
+                                    oneDayTime: self.enableDesignOver() ? self.overOneDay() : overTime.oneDayTime,
+                                    halfDayTime: self.enableDesignOver() ? self.overHalfDay() : overTime.halfDayTime
+                                },
+                                enumTimeDivision: self.enableOverArea() ? self.selectedOfOverTime() : overTime.transferDivision
                             }
                         },
-                        {
-                            occurrenceType: OccurrenceDivision.DayOffTime,
-                            transferSetting: {
-                                certainTime: self.enableWorkAll() ? self.workAll() : workTime.certainTime,
-                                useDivision: self.isManageCompen() ? self.checkWorkTime() : workTime.useDivision,
-                                oneDayTime: self.enableDesignWork() ? self.workOneDay() : workTime.oneDayTime,
-                                halfDayTime: self.enableDesignWork() ? self.workHalfDay() : workTime.halfDayTime,
-                                transferDivision: self.enableWorkArea() ? self.selectedOfWorkTime() : workTime.transferDivision,
+                        holidayWorkHourRequired: {
+                            UseAtr:  self.isManageCompen() ? self.checkWorkTime() : workTime.useDivision,
+                            timeSetting: {
+                                certainPeriodofTime: self.enableWorkAll() ? self.workAll() : workTime.certainTime,
+                                designatedTime: {
+                                    oneDayTime: self.enableDesignWork() ? self.workOneDay() : workTime.oneDayTime,
+                                    halfDayTime: self.enableDesignWork() ? self.workHalfDay() : workTime.halfDayTime
+                                },
+                                enumTimeDivision: self.enableWorkArea() ? self.selectedOfWorkTime() : workTime.transferDivision
                             }
                         }
-                    ]
+                    }
                 };
             }
 

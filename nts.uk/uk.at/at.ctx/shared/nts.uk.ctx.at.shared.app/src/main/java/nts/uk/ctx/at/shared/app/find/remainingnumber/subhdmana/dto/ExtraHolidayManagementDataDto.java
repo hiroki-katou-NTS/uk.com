@@ -85,7 +85,7 @@ public class ExtraHolidayManagementDataDto {
 		}
 		if (!Objects.isNull(extraHolidayManagementOutput.getCompensatoryLeaveEmSetting())){
 			if (extraHolidayManagementOutput.getCompensatoryLeaveEmSetting().getIsManaged() == ManageDistinct.YES){
-				empSettingExpiredDate = extraHolidayManagementOutput.getCompensatoryLeaveEmSetting().getCompensatoryAcquisitionUse().getExpirationTime().description;
+				//empSettingExpiredDate = extraHolidayManagementOutput.getCompensatoryLeaveEmSetting().getCompensatoryAcquisitionUse().getExpirationTime().description;
 			} else if (!Objects.isNull(extraHolidayManagementOutput.getCompensatoryLeaveComSetting())){
 					if (extraHolidayManagementOutput.getCompensatoryLeaveComSetting().isManaged())
 						companySettingExpiredDate = extraHolidayManagementOutput.getCompensatoryLeaveComSetting().getCompensatoryAcquisitionUse().getExpirationTime().description;

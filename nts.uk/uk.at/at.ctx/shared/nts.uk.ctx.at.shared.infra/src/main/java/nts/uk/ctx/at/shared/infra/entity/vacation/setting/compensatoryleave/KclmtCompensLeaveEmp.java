@@ -19,7 +19,12 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -28,8 +33,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Getter
 @Entity
-@Table(name = "KCLMT_COMPENS_LEAVE_EMP")
-public class KclmtCompensLeaveEmp extends UkJpaEntity implements Serializable {
+@Table(name = "KSHMT_HDCOM_EMP")
+public class KclmtCompensLeaveEmp extends ContractUkJpaEntity implements Serializable {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -41,24 +46,9 @@ public class KclmtCompensLeaveEmp extends UkJpaEntity implements Serializable {
     /** The manage atr. */
     @Basic(optional = false)
     @Column(name = "MANAGE_ATR")
-    private Integer manageAtr;
+    private int manageAtr;
     
-    /** The manage atr. */
-    @Basic(optional = false)
-    @Column(name = "DEADL_CHECK_MONTH")
-    private Integer deadlCheckMonth;
-    
-    /** The kclmt acquisition emp. */
-    @JoinColumns({@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-            @JoinColumn(name = "EMPCD", referencedColumnName = "EMPCD", insertable = false, updatable = false)})
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch=FetchType.LAZY)
-    private KclmtAcquisitionEmp kclmtAcquisitionEmp;
-    
-    /** The kctmt digest time emp. */
-    @JoinColumns({@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-        @JoinColumn(name = "EMPCD", referencedColumnName = "EMPCD", insertable = false, updatable = false)})
-    @OneToOne(cascade = CascadeType.ALL, fetch=FetchType.LAZY)
-    private KctmtDigestTimeEmp kctmtDigestTimeEmp;
+ 
     
     public static final JpaEntityMapper<KclmtCompensLeaveEmp> MAPPER =
     		new JpaEntityMapper<>(KclmtCompensLeaveEmp.class);
@@ -104,5 +94,23 @@ public class KclmtCompensLeaveEmp extends UkJpaEntity implements Serializable {
     @Override
     protected Object getKey() {
         return this.kclmtCompensLeaveEmpPK;
+    }
+
+	public KclmtCompensLeaveEmp(KclmtCompensLeaveEmpPK kclmtCompensLeaveEmpPK, int manageAtr) {
+		super();
+		this.kclmtCompensLeaveEmpPK = kclmtCompensLeaveEmpPK;
+		this.manageAtr = manageAtr;
+	}
+    
+    public static KclmtCompensLeaveEmp toEntity(CompensatoryLeaveEmSetting domain){
+    	return new KclmtCompensLeaveEmp(new KclmtCompensLeaveEmpPK(domain.getCompanyId(), domain.getEmploymentCode().v()),
+    			domain.getIsManaged().value);
+    }
+    
+    public CompensatoryLeaveEmSetting toDomain(){
+    	return new CompensatoryLeaveEmSetting(
+    			kclmtCompensLeaveEmpPK.getCid(),
+    			new EmploymentCode(kclmtCompensLeaveEmpPK.getEmpcd()) ,
+    			EnumAdaptor.valueOf(this.getManageAtr(), ManageDistinct.class));
     }
 }

@@ -34,6 +34,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TermManagemen
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.DesignatedTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.OneDayTime;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class SaveCompensatoryLeaveCommand.
@@ -67,7 +68,7 @@ public class SaveCompensatoryLeaveCommand {
 	public CompensatoryLeaveComSetting toDomain() {
     	
     	return new CompensatoryLeaveComSetting(
-    			this.companyId, 
+    			AppContexts.user().companyId(), 
     			ManageDistinct.valueOf(this.isManaged), 
     			compensatoryAcquisitionUse.toDomainNew(),
     			substituteHolidaySetting.toDomain(), 

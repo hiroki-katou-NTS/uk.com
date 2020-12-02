@@ -31,6 +31,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TermManagemen
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.DesignatedTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.OneDayTime;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -40,7 +41,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Getter
 @Entity
 @Table(name = "KSHMT_HDCOM_CMP")
-public class KclmtCompensLeaveCom extends UkJpaEntity implements Serializable {
+public class KclmtCompensLeaveCom extends ContractUkJpaEntity implements Serializable {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;

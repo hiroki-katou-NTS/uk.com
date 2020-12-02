@@ -20,10 +20,10 @@ import nts.uk.ctx.at.shared.dom.worktime.common.OneDayTime;
 public class DesignatedTimeDto implements DesignatedTimeGetMemento  {
 
 	/** The one day time. */
-	private Integer oneDayTime;
+	private int oneDayTime;
 
 	/** The half day time. */
-	private Integer halfDayTime;
+	private int halfDayTime;
 
 	/**
 	 * Gets the one day time.
@@ -34,6 +34,10 @@ public class DesignatedTimeDto implements DesignatedTimeGetMemento  {
 	public OneDayTime getOneDayTime() {
 		return new OneDayTime(this.oneDayTime);
 	}
+	
+	public int getOneDayTimeValue() {
+		return this.oneDayTime;
+	}
 
 	/**
 	 * Gets the half day time.
@@ -43,6 +47,10 @@ public class DesignatedTimeDto implements DesignatedTimeGetMemento  {
 	@Override
 	public OneDayTime getHalfDayTime() {
 		return new OneDayTime(this.halfDayTime);
+	}
+	
+	public int getHalfDayTimeValue() {
+		return this.halfDayTime;
 	}
 	
 	public DesignatedTime toDomain() {

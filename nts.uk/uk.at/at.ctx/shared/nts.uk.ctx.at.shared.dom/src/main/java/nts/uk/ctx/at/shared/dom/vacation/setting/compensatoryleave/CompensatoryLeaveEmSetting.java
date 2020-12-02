@@ -27,13 +27,7 @@ public class CompensatoryLeaveEmSetting extends AggregateRoot {
 	/** The is managed. */
 	private ManageDistinct isManaged;
 	
-	// 設定
-	/** The compensatory acquisition use. */
-	private CompensatoryAcquisitionUse compensatoryAcquisitionUse;
 	
-	// 時間代休の消化単位
-	/** The compensatory digestive time unit. */
-	private CompensatoryDigestiveTimeUnit compensatoryDigestiveTimeUnit;
 
 	/**
 	 * Instantiates a new compensatory leave em setting.
@@ -45,8 +39,6 @@ public class CompensatoryLeaveEmSetting extends AggregateRoot {
 		this.companyId = memento.getCompanyId();
 		this.employmentCode = memento.getEmploymentCode();
 		this.isManaged = memento.getIsManaged();
-		this.compensatoryAcquisitionUse = memento.getCompensatoryAcquisitionUse();
-		this.compensatoryDigestiveTimeUnit = memento.getCompensatoryDigestiveTimeUnit();
 	}
 
 	/**
@@ -59,7 +51,12 @@ public class CompensatoryLeaveEmSetting extends AggregateRoot {
 		memento.setCompanyId(this.companyId);
 		memento.setEmploymentCode(this.employmentCode);
 		memento.setIsManaged(this.isManaged);
-		memento.setCompensatoryAcquisitionUse(this.compensatoryAcquisitionUse);
-		memento.setCompensatoryDigestiveTimeUnit(this.compensatoryDigestiveTimeUnit);
+	}
+
+	public CompensatoryLeaveEmSetting(String companyId, EmploymentCode employmentCode, ManageDistinct isManaged) {
+		super();
+		this.companyId = companyId;
+		this.employmentCode = employmentCode;
+		this.isManaged = isManaged;
 	}
 }
