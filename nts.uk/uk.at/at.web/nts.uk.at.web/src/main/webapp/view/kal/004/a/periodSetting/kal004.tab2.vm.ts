@@ -130,7 +130,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                         self.extractionPeriodUnit(categoryId, modelCheck.extractionPeriodUnit.extractionId, data.decisionEnum);
                     }
                 });
-            } else if (categoryId == 5 || categoryId == 13) {
+            } else if (categoryId == 5 || categoryId == 13 || categoryId == 8) {
                 let paramDaily = modelCheck.extractionPeriodDaily;
                 let extractionDailyDto = {
                     extractionId: paramDaily.extractionId,
@@ -308,7 +308,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
             if (nts.uk.util.isNullOrUndefined(checkCondition.extractionPeriodDaily) && checkCondition.alarmCategory == 2) {
                 this.extractionPeriod = _.find(self.SegmentationOfCycle, ['value', checkCondition.extractionPeriodUnit.segmentationOfCycle]).name;
 
-            } else if (checkCondition.alarmCategory == 5 || checkCondition.alarmCategory == 13) {
+            } else if (checkCondition.alarmCategory == 5 || checkCondition.alarmCategory == 13 || checkCondition.alarmCategory == 8) {
                 this.setDailyText(checkCondition);
 
             } else if (checkCondition.alarmCategory == 7 || checkCondition.alarmCategory == 9) {

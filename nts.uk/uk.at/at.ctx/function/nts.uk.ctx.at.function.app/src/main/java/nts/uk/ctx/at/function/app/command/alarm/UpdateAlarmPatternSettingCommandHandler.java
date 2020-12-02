@@ -88,7 +88,8 @@ public class UpdateAlarmPatternSettingCommandHandler extends CommandHandler<AddA
 		String companyId = AppContexts.user().companyId();
 		List<ExtractionRangeBase> extractionList = new ArrayList<>();
 		if (command.getAlarmCategory() == AlarmCategory.DAILY.value
-				|| command.getAlarmCategory() == AlarmCategory.MAN_HOUR_CHECK.value) {
+				|| command.getAlarmCategory() == AlarmCategory.MAN_HOUR_CHECK.value
+				|| command.getAlarmCategory() == AlarmCategory.APPLICATION_APPROVAL.value) {
 
 			extractionList.add(command.getExtractionPeriodDaily().toDomain());
 

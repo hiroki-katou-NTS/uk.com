@@ -198,7 +198,7 @@ module nts.uk.at.view.kal004.share.model {
             this.checkConditionCodes = checkConditionCodes;
             
             
-            if (alarmCategory ==5  || alarmCategory == 13) {
+            if (alarmCategory ==5  || alarmCategory == 13 || alarmCategory == 8) {
                 if(nts.uk.util.isNullOrUndefined(extractionPeriodDaily)){
                     this.setDefaultDaily();
                 } else {
