@@ -28,23 +28,29 @@ public class CalcResultRangeDto implements CalcResultRangeGetMemento {
 	private boolean lowerCheck;
 
 	// ===================== Optional ======================= //
-	/** The number upper. */
-	private Double numberUpper;
-
-	/** The number lower. */
-	private Double numberLower;
-
-	/** The time upper. */
-	private Integer timeUpper;
-
-	/** The time lower. */
-	private Integer timeLower;
-
-	/** The amount upper. */
-	private Integer amountUpper;
-
-	/** The amount lower. */
-	private Integer amountLower;
+//	/** The number upper. */
+//	private Double numberUpper;
+//
+//	/** The number lower. */
+//	private Double numberLower;
+//
+//	/** The time upper. */
+//	private Integer timeUpper;
+//
+//	/** The time lower. */
+//	private Integer timeLower;
+//
+//	/** The amount upper. */
+//	private Integer amountUpper;
+//
+//	/** The amount lower. */
+//	private Integer amountLower;
+	
+	private NumberRangeDto numberRange;
+	
+	private TimeRangeDto timeRange;
+	
+	private AmountRangeDto amountRange;
 
 	/*
 	 * (non-Javadoc)
@@ -79,7 +85,7 @@ public class CalcResultRangeDto implements CalcResultRangeGetMemento {
 	 */
 	@Override
 	public Optional<NumberRange> getNumberRange() {
-		return Optional.of(new NumberRange(this.numberUpper, this.numberLower));
+		return Optional.of(this.numberRange.toDomain());
 	}
 
 	/*
@@ -91,7 +97,7 @@ public class CalcResultRangeDto implements CalcResultRangeGetMemento {
 	 */
 	@Override
 	public Optional<TimeRange> getTimeRange() {
-		return Optional.of(new TimeRange(this.timeUpper, this.timeLower));
+		return Optional.of(this.timeRange.toDomain());
 	}
 
 	/*
@@ -103,7 +109,7 @@ public class CalcResultRangeDto implements CalcResultRangeGetMemento {
 	 */
 	@Override
 	public Optional<AmountRange> getAmountRange() {
-		return Optional.of(new AmountRange(this.amountUpper, this.amountLower));
+		return Optional.of(this.amountRange.todomain());
 	}
 
 }

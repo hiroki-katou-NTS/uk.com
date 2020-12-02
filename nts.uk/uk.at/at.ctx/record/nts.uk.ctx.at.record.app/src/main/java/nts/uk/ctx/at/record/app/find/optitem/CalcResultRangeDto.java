@@ -8,6 +8,9 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.record.app.command.optitem.AmountRangeDto;
+import nts.uk.ctx.at.record.app.command.optitem.NumberRangeDto;
+import nts.uk.ctx.at.record.app.command.optitem.TimeRangeDto;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.AmountRange;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.CalcRangeCheck;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.CalcResultRangeSetMemento;
@@ -28,23 +31,29 @@ public class CalcResultRangeDto implements CalcResultRangeSetMemento {
 	private boolean lowerCheck;
 
 	// ===================== Optional ======================= //
-	/** The number upper. */
-	private Double numberUpper;
+//	/** The number upper. */
+//	private Double numberUpper;
+//
+//	/** The number lower. */
+//	private Double numberLower;
+//
+//	/** The time upper. */
+//	private Integer timeUpper;
+//
+//	/** The time lower. */
+//	private Integer timeLower;
+//
+//	/** The amount upper. */
+//	private Integer amountUpper;
+//
+//	/** The amount lower. */
+//	private Integer amountLower;
 
-	/** The number lower. */
-	private Double numberLower;
-
-	/** The time upper. */
-	private Integer timeUpper;
-
-	/** The time lower. */
-	private Integer timeLower;
-
-	/** The amount upper. */
-	private Integer amountUpper;
-
-	/** The amount lower. */
-	private Integer amountLower;
+	private NumberRangeDto numberRange;
+    
+    private TimeRangeDto timeRange;
+    
+    private AmountRangeDto amountRange;
 
 	/*
 	 * (non-Javadoc)
