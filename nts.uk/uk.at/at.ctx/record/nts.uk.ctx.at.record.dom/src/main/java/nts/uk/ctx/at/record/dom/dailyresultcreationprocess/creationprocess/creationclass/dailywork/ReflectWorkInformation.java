@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import nts.arc.time.GeneralDate;
+
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.imprint.changeworktohalfdayleave.ChangeWorkToHalfdayLeave;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.reflectcalcategory.ReflectCalCategory;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.reflectworkinfor.reflectworktimestamp.ReflectWorkTimeStamp;
@@ -15,7 +15,9 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.reflectwor
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 勤務情報を反映する (new_2020)
@@ -40,27 +42,39 @@ public class ReflectWorkInformation {
 	/**
 	 * 勤務情報を反映する
 	 */
-	public List<ErrorMessageInfo> reflect(boolean isReflectStampGoingToWork,boolean isReflectStampLeavingWork,String companyId,
-			String employeeId, GeneralDate ymd, Stamp stamp, IntegrationOfDaily integrationOfDaily) {
+	public List<ErrorMessageInfo> reflect(boolean isReflectStampGoingToWork, boolean isReflectStampLeavingWork,
+			Stamp stamp, IntegrationOfDaily integrationOfDaily, ChangeDailyAttendance changeDailyAtt) {
+		
 		List<ErrorMessageInfo> listErrorMessageInfo = new ArrayList<>();
 		if (isReflectStampGoingToWork) {
 			// スケジュール管理しない場合勤務情報を更新
-			updateIfNotManaged.update(companyId, employeeId, ymd, integrationOfDaily);
+			boolean updated = updateIfNotManaged.update(AppContexts.user().companyId(), integrationOfDaily.getEmployeeId(), 
+														integrationOfDaily.getYmd(), integrationOfDaily);
+			if (updated) {
+				changeDailyAtt.setFixBreakCorrect(true);
+				changeDailyAtt.setWorkInfo(true);
+			}
 		}
+		
 		if (isReflectStampGoingToWork || isReflectStampLeavingWork) {
 			// 半休により勤務変更する
-			listErrorMessageInfo
-					.addAll(changeWorkToHalfdayLeave.changeWork(stamp, integrationOfDaily, new ArrayList<>()));
+			listErrorMessageInfo.addAll(changeWorkToHalfdayLeave.changeWork(stamp, integrationOfDaily, new ArrayList<>(), changeDailyAtt));
 		}
+		
 		if (stamp.getRefActualResults().getWorkTimeCode().isPresent()) {
 			// 打刻の就業時間帯を反映
 			reflectWorkTimeStamp.reflectStamp(stamp.getRefActualResults().getWorkTimeCode().get(), integrationOfDaily);
+			changeDailyAtt.setFixBreakCorrect(true);
+			changeDailyAtt.setWorkInfo(true);
 		}
 		// 計算区分に反映する
 		List<EditStateOfDailyAttd> reflects = reflectCalCategory.reflect(stamp.getType().getChangeCalArt(), integrationOfDaily.getCalAttr(),
 				integrationOfDaily.getEditState());
-		reflects.addAll(integrationOfDaily.getEditState());
-		integrationOfDaily.setEditState(reflects);
+		
+		changeDailyAtt.setCalcCategory(true);
+		
+		integrationOfDaily.getEditState().addAll(reflects);
+		
 		return listErrorMessageInfo;
 	}
 

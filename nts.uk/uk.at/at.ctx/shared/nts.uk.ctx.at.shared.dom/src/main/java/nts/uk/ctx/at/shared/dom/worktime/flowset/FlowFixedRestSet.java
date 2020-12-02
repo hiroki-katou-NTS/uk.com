@@ -21,10 +21,6 @@ public class FlowFixedRestSet extends WorkTimeDomainObject implements Cloneable{
 	// 計算方法
 	private FlowFixedRestCalcMethod calculateMethod;
 
-	/** The calculate from schedule. */
-	// 予定から休憩を計算
-	private ScheduleBreakCalculation calculateFromSchedule;
-
 	/** The calculate from stamp. */
 	// 打刻から休憩を計算
 	private StampBreakCalculation calculateFromStamp;
@@ -41,11 +37,10 @@ public class FlowFixedRestSet extends WorkTimeDomainObject implements Cloneable{
 	 * @param calculateMethod
 	 *            the calculate method
 	 */
-	public FlowFixedRestSet(boolean isReferRestTime, boolean usePrivateGoOutRest, boolean useAssoGoOutRest,
+	public FlowFixedRestSet(boolean usePrivateGoOutRest, boolean useAssoGoOutRest,
 			FlowFixedRestCalcMethod calculateMethod) {
 		super();
 		this.calculateMethod = calculateMethod;
-		this.calculateFromSchedule = new ScheduleBreakCalculation(isReferRestTime);
 		this.calculateFromStamp = new StampBreakCalculation(usePrivateGoOutRest, useAssoGoOutRest);
 	}
 
@@ -57,7 +52,6 @@ public class FlowFixedRestSet extends WorkTimeDomainObject implements Cloneable{
 	 */
 	public FlowFixedRestSet(FlowFixedRestSetGetMemento memento) {
 		this.calculateMethod = memento.getCalculateMethod();
-		this.calculateFromSchedule = memento.getCalculateFromSchedule();
 		this.calculateFromStamp = memento.getCalculateFromStamp();
 	}
 
@@ -69,18 +63,7 @@ public class FlowFixedRestSet extends WorkTimeDomainObject implements Cloneable{
 	 */
 	public void saveToMemento(FlowFixedRestSetSetMemento memento) {
 		memento.setCalculateMethod(this.calculateMethod);
-		memento.setCalculateFromSchedule(this.calculateFromSchedule);
 		memento.setCalculateFromStamp(this.calculateFromStamp);
-	}
-
-	/**
-	 * Change calc method to schedule.
-	 */
-	/*
-	 * : 流動固定休憩の計算方法を「予定を参照する」に変更
-	 */
-	public void changeCalcMethodToSchedule() {
-		this.calculateMethod = FlowFixedRestCalcMethod.REFER_SCHEDULE;
 	}
 
 	/**
@@ -101,27 +84,11 @@ public class FlowFixedRestSet extends WorkTimeDomainObject implements Cloneable{
 		return this.getCalculateFromStamp().isUseAssoGoOutRest();
 	}
 
-	/**
-	 * Checks if is refer rest time.
-	 *
-	 * @return true, if is refer rest time
-	 */
-	public boolean isReferRestTime() {
-		return this.getCalculateFromSchedule().isReferRestTime();
-	}
-
 	public void correctData(ScreenMode screenMode, FlowFixedRestSet flowFixedRestSetting,boolean fixRestTime) {
 		if (ScreenMode.DETAIL.equals(screenMode) && fixRestTime) {
 			switch (this.calculateMethod) {
 			case REFER_MASTER:
-				this.calculateFromSchedule = flowFixedRestSetting.getCalculateFromSchedule();
 				this.calculateFromStamp = flowFixedRestSetting.getCalculateFromStamp();
-				break;
-			case REFER_SCHEDULE:
-				this.calculateFromStamp = flowFixedRestSetting.getCalculateFromStamp();
-				break;
-			case STAMP_WHITOUT_REFER:
-				this.calculateFromSchedule = flowFixedRestSetting.getCalculateFromSchedule();
 				break;
 			default:
 				break;
@@ -133,14 +100,7 @@ public class FlowFixedRestSet extends WorkTimeDomainObject implements Cloneable{
 		if (ScreenMode.DETAIL.equals(screenMode) && fixRestTime) {
 			switch (this.calculateMethod) {
 			case REFER_MASTER:
-				this.calculateFromSchedule.setDefaultValue();
 				this.calculateFromStamp.setDefaultValue();
-				break;
-			case REFER_SCHEDULE:
-				this.calculateFromStamp.setDefaultValue();
-				break;
-			case STAMP_WHITOUT_REFER:
-				this.calculateFromSchedule.setDefaultValue();
 				break;
 			default:
 				break;
@@ -153,7 +113,6 @@ public class FlowFixedRestSet extends WorkTimeDomainObject implements Cloneable{
 		FlowFixedRestSet cloned = new FlowFixedRestSet();
 		try {
 			cloned.calculateMethod = FlowFixedRestCalcMethod.valueOf(this.calculateMethod.value);
-			cloned.calculateFromSchedule = this.calculateFromSchedule.clone();
 			cloned.calculateFromStamp = this.calculateFromStamp.clone();
 		}
 		catch (Exception e){

@@ -1,9 +1,7 @@
-package nts.uk.ctx.at.record.dom.divergence.time;
+package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe;
 
 import java.util.List;
 import java.util.Optional;
-
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
 
 /**
  * The Interface DivergenceTimeRepository.

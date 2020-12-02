@@ -18,6 +18,7 @@ import nts.uk.ctx.at.record.dom.workrecord.goout.OutManage;
 import nts.uk.ctx.at.record.dom.workrecord.goout.OutManageRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
@@ -77,8 +78,13 @@ public class ReflectGoingOutAndReturn {
 		//反映済み時間帯枠（Temporary）を日別実績の外出時間帯の時間帯に上書きする
 		List<OutingTimeSheet> outingTimeSheets = new ArrayList<>();
 		for(TimeFrame tf :listTimeFrame) {
+			if (!tf.getStart().isPresent() && !tf.getEnd().isPresent()) {
+				continue;
+			}
 			OutingTimeSheet timeSheet = new OutingTimeSheet(new OutingFrameNo(tf.getFrameNo()),
-					tf.getStart(), null, null, tf.getGoOutReason().isPresent() ? tf.getGoOutReason().get()  : null, tf.getEnd());
+															tf.getStart(), new AttendanceTime(0), new AttendanceTime(0), 
+															tf.getGoOutReason().get(), 
+															tf.getEnd());
 			outingTimeSheets.add(timeSheet);
 		}
 		integrationOfDaily.setOutingTime(Optional.ofNullable(new OutingTimeOfDailyAttd(outingTimeSheets)));		

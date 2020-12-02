@@ -8,7 +8,9 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
+import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.BreakClassification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionClassification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
@@ -98,7 +100,7 @@ public class OutingTimeOfDailyAttd {
 																							  deductionItem.getDeductionTimeSheet(),
 																							  deductionItem.getWorkingBreakAtr(),
 																							  deductionItem.getGoOutReason(),
-																							  deductionItem.getBreakAtr(),
+																							  Finally.of(BreakClassification.BREAK_STAMP),
 																							  deductionItem.getShortTimeSheetAtr(),
 																							  DeductionClassification.BREAK,
 																							  deductionItem.getChildCareAtr()));

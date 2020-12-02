@@ -25,6 +25,7 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck.CalculationErrorChe
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck.DailyRecordCreateErrorAlermService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ootsuka.OotsukaProcessService;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
@@ -35,6 +36,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.dailyprocess.calc.CalculateOption;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.DeductLeaveEarly;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.CommonCompanySettingForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.PersonnelCostSettingImport;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalFlexOvertimeSetting;
@@ -162,7 +164,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 
 	@Inject
 	private StoredProcdureProcess storedProcdureProcess;
-
+	
 	/**
 	 * 勤務情報を取得して計算
 	 * 
@@ -397,8 +399,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				if (timeSheetAtr.isSchedule()) {
 					integrationOfWorkTime.get().getFlexWorkSetting().get().getOffdayWorkTime().getRestTimezone().restoreFixRestTime(true);
 					integrationOfWorkTime.get().getFlexWorkSetting().get().getRestSetting().getCommonRestSetting().changeCalcMethodToRecordUntilLeaveWork();
-					integrationOfWorkTime.get().getFlexWorkSetting().get().getRestSetting().getFlowRestSetting().getFlowFixedRestSetting()
-							.changeCalcMethodToSchedule();
+//					integrationOfWorkTime.get().getFlexWorkSetting().get().getRestSetting().getFlowRestSetting().getFlowFixedRestSetting()
+//							.changeCalcMethodToSchedule();
 
 				}
 	
@@ -602,7 +604,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				calculateOfTotalConstraintTime, scheduleReGetClass, recordReGetClass,
 				recordReGetClass.getPersonDailySetting().getPersonInfo(),
 				getPredByPersonInfo(recordReGetClass.getPersonDailySetting().getPersonInfo().getWorkCategory().getWeekdayTime().getWorkTimeCode(),
-						recordReGetClass.getCompanyCommonSetting().getShareContainer()),
+						recordReGetClass.getCompanyCommonSetting().getShareContainer(), workType.get()),
 				recordReGetClass.getLeaveLateSet().isPresent() ? recordReGetClass.getLeaveLateSet().get()
 						: new DeductLeaveEarly(1, 1),
 				scheduleReGetClass.getLeaveLateSet().isPresent() ? scheduleReGetClass.getLeaveLateSet().get()
@@ -991,7 +993,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	}
 
 	private Optional<PredetermineTimeSetForCalc> getPredByPersonInfo(Optional<WorkTimeCode> workTimeCode,
-			MasterShareContainer<String> shareContainer) {
+			MasterShareContainer<String> shareContainer, WorkType workType) {
 		if (!workTimeCode.isPresent())
 			return Optional.empty();
 		// val predSetting =
@@ -1001,7 +1003,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				workTimeCode.get().toString());
 		if (!predSetting.isPresent())
 			return Optional.empty();
-		return Optional.of(PredetermineTimeSetForCalc.convertFromAggregatePremiumTime(predSetting.get()));
+		return Optional.of(PredetermineTimeSetForCalc.convertFromAggregatePremiumTime(predSetting.get(), workType));
 
 	}
 

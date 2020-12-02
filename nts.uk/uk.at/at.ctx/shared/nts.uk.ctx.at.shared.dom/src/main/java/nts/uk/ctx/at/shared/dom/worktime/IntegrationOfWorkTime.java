@@ -1,13 +1,18 @@
 package nts.uk.ctx.at.shared.dom.worktime;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.val;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
@@ -16,6 +21,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.FixedRestCalculateMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestClockManageAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
@@ -27,6 +33,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * 統合就業時間帯
@@ -353,5 +360,57 @@ public class IntegrationOfWorkTime {
 			case TIMEDIFFERENCE:	throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/
 			default:				throw new RuntimeException("Non-conformity No Work");
 		}
+	}
+	
+	/** 就業時間帯から休憩時間帯を取得する */
+	public List<TimeSpanForCalc> getBreakTimeZone(WorkType workType) {
+		WorkSetting workSet;
+		switch(this.workTimeSetting.getWorkTimeDivision().getWorkTimeForm()) {
+			case FIXED:				workSet = this.fixedWorkSetting.get(); break;
+			case FLEX:				workSet = this.flexWorkSetting.get(); break;
+			case FLOW:				workSet = this.flowWorkSetting.get(); break;
+			case TIMEDIFFERENCE:	throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/
+			default:				throw new RuntimeException("Non-conformity No Work");
+		}
+		
+		switch (workType.getDailyWork().chechAttendanceDay()) {
+		case FULL_TIME:
+			return workSet.getBreakTimeZone(false, AmPmAtr.ONE_DAY).getBreakTimes();
+		case HALF_TIME_AM:
+			return workSet.getBreakTimeZone(false, AmPmAtr.AM).getBreakTimes();
+		case HALF_TIME_PM:
+			return workSet.getBreakTimeZone(false, AmPmAtr.PM).getBreakTimes();
+		case HOLIDAY_WORK:
+			return workSet.getBreakTimeZone(true, AmPmAtr.ONE_DAY).getBreakTimes();
+		default:
+			return new ArrayList<>();
+		}
+	}
+	
+	/** 時間帯の中で一番早い時刻を取得 */
+	public TimeWithDayAttr getFirstStartTimeOfFlex(WorkType workType) {
+		List<TimeZone> timeZones = new ArrayList<>();
+
+		/** ○時間帯を全てリストへ格納 */
+		val emTimeZone = this.flexWorkSetting.get().getEmTimeZoneSet(workType);
+		timeZones.addAll(emTimeZone.stream().map(c -> c.getTimezone()).collect(Collectors.toList()));
+		
+		/** ○勤務種類から平日か休日かを判断 */
+		switch (workType.getDailyWork().chechAttendanceDay()) {
+			case HOLIDAY_WORK:
+				break;
+			default:
+				/** ○就業時間帯と残業時間帯の時間帯を１つのリストへ格納 */
+				val otTimeZone = this.flexWorkSetting.get().getOverTimeOfTimeZoneSet(workType);
+				timeZones.addAll(otTimeZone.stream().map(c -> c.getTimezone()).collect(Collectors.toList()));
+				break;
+		}
+		
+		/** ○時間帯．開始時刻でソート */
+		timeZones.sort((c1, c2) -> c1.getStart().compareTo(c2.getStart()));
+		
+		/** ○一番最初の時間帯を取得 */
+		/** ○取得した時間帯の開始時刻を返す */
+		return timeZones.get(0).getStart();
 	}
 }

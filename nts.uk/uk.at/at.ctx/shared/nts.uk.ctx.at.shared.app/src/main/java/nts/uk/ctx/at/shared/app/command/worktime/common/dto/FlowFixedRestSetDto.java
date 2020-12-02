@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSetGetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.ScheduleBreakCalculation;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.StampBreakCalculation;
 
 /**
@@ -36,18 +35,6 @@ public class FlowFixedRestSetDto implements FlowFixedRestSetGetMemento {
 	@Override
 	public FlowFixedRestCalcMethod getCalculateMethod() {
 		return FlowFixedRestCalcMethod.valueOf(this.calculateMethod);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSetGetMemento#
-	 * getCalculateFromSchedule()
-	 */
-	@Override
-	public ScheduleBreakCalculation getCalculateFromSchedule() {
-		return new ScheduleBreakCalculation(this.calculateFromSchedule);
 	}
 
 	/*

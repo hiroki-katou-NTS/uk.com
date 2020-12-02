@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.val;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
@@ -25,6 +27,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavet
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.BreakClassification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionClassification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.ShortTimeSheetAtr;
@@ -32,7 +35,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.WorkingBreakTimeAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.LateTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.LeaveEarlyTimeSheet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestTimeOfficeWorkCalcMethod;
@@ -193,8 +195,7 @@ public class DeductionTimeSheet {
 			TimeLeavingOfDailyAttd attendanceLeaveWork, Optional<TimeSheetOfDeductionItem> betweenWorkTimeSheets) {
 		
 		/** 休憩時間帯取得 */
-		val sheetList = integrationOfDaily.getBreakTime().map(c -> c.changeAllTimeSheetToDeductionItem())
-															.orElseGet(() -> new ArrayList<>());
+		val sheetList = getBreakTimeDeductionForCalc(integrationOfDaily);
 		
 		/** 勤務間休憩時間帯を取得 */
 		betweenWorkTimeSheets.ifPresent(bwt -> sheetList.add(bwt));
@@ -226,7 +227,58 @@ public class DeductionTimeSheet {
 										integrationOfWorkTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeMethodSet(),
 										integrationOfWorkTime.getRestClockManageAtr(),
 										integrationOfWorkTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeDailyAtr());
+	}
+
+	private static List<TimeSheetOfDeductionItem> getBreakTimeDeductionForCalc(IntegrationOfDaily integrationOfDaily) {
+		return integrationOfDaily.getBreakTime().map(c -> c.changeAllTimeSheetToDeductionItem())
+														.orElseGet(() -> new ArrayList<>());
+	}
+
+	/** 休憩時間帯の取得 */
+	private static List<TimeSheetOfDeductionItem> getBreakTimeDeductionForCorrect(WorkType workType, 
+			IntegrationOfWorkTime integrationOfWorkTime) {
+		
+		if (integrationOfWorkTime.getWorkTimeSetting().getWorkTimeDivision().isfluidorFlex()) {
+			
+			return getBreakSetForFlow(workType, integrationOfWorkTime);
+		}
+		
+		/** ○就業時間帯から参照した休憩時間帯を取得 */
+		return integrationOfWorkTime.getBreakTimeZone(workType).stream().map(convertBreakTimeSheetToDeduction())
+																		.collect(Collectors.toList());
 	} 
+	
+	/** 流動勤務の休憩設定 */
+	private static List<TimeSheetOfDeductionItem> getBreakSetForFlow(WorkType workType, 
+			IntegrationOfWorkTime integrationOfWorkTime) {
+		/** ○就業時間帯から休憩設定を取得 */
+		val restTimeZone = integrationOfWorkTime.getFlowWorkRestTimezone(workType).get();
+		val restSetDetail = integrationOfWorkTime.getFlowWorkRestSettingDetail().get();
+		
+		if (!restTimeZone.isFixRestTime() || restSetDetail.getFlowFixedRestSetting().getCalculateMethod().isStampWithoutReference()) {
+
+			/** 休憩時間帯を固定にする＝falseの場合 */
+			/** 計算方法=参照せずに打刻する　の場合 */
+			return new ArrayList<>();
+		}
+		
+		/** 就業時間帯から休憩時間帯を取得する */
+		return integrationOfWorkTime.getBreakTimeZone(workType).stream().map(convertBreakTimeSheetToDeduction())
+																		.collect(Collectors.toList());
+	}
+	
+	private static Function<? super TimeSpanForCalc, ? extends TimeSheetOfDeductionItem> convertBreakTimeSheetToDeduction() {
+		return c -> TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(new TimeSpanForDailyCalc(c.getStart(), c.getEnd()),
+																					new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
+																					Collections.emptyList(),
+																					Collections.emptyList(),
+																					WorkingBreakTimeAtr.NOTWORKING,
+																					Finally.empty(),
+																					Finally.of(BreakClassification.BREAK),
+																					Optional.empty(),
+																					DeductionClassification.BREAK,
+																					Optional.empty());
+	}
 	
 	/**
 	 * 控除時間に該当する項目を集め控除時間帯を作成する
@@ -250,8 +302,7 @@ public class DeductionTimeSheet {
 		
 		List<TimeSheetOfDeductionItem> sheetList = new ArrayList<TimeSheetOfDeductionItem>();
 		/* 休憩時間帯取得 */
-		sheetList.addAll(integrationOfDaily.getBreakTime().map(c -> c.changeAllTimeSheetToDeductionItem())
-				.orElseGet(() -> new ArrayList<>()));
+		sheetList.addAll(getBreakTimeDeductionForCorrect(todayWorkType, integrationOfWorkTime));
 		
 		/* 外出時間帯取得 */
 		if(integrationOfDaily.getOutingTime().isPresent()) {
@@ -556,7 +607,7 @@ public class DeductionTimeSheet {
 										.orElseGet(() -> new ArrayList<>());
 		
 		/** △休憩計算開始時刻を取得 */
-		val startBreakTime = getStartBreakTime(lateTimeSheet, workTime, oneDayOfRange);
+		val startBreakTime = getStartBreakTime(lateTimeSheet, workTime, oneDayOfRange, workType);
 		
 		val fluidCalc = new DeductionTotalTimeForFluidCalc(startBreakTime);
 		val timeLeave = dailyRecord.getAttendanceLeave().flatMap(c -> {
@@ -585,7 +636,7 @@ public class DeductionTimeSheet {
 
 	/** △休憩計算開始時刻を取得 */
 	private static TimeWithDayAttr getStartBreakTime(List<LateTimeSheet> lateTimeSheet, 
-			IntegrationOfWorkTime workTime, TimeSpanForDailyCalc oneDayOfRange) {
+			IntegrationOfWorkTime workTime, TimeSpanForDailyCalc oneDayOfRange, WorkType workType) {
 		
 		/** 遅刻が存在するか確認 */
 		if(lateTimeSheet.isEmpty()) {
@@ -596,10 +647,12 @@ public class DeductionTimeSheet {
 				return oneDayOfRange.getStart();
 			} else if(workTime.getWorkTimeSetting().getWorkTimeDivision().isFlex()) { /** フレックス勤務用　の場合 */
 				
-				/** ○就業時間帯の計算開始時刻を取得 
-				 * TODO: 保科さん待ち
-				 * */
-//				val startTime = workTime.getwo
+				/** ○就業時間帯の計算開始時刻を取得 */
+				val startTime = workTime.getFirstStartTimeOfFlex(workType);
+				
+				/** ○出勤時刻と計算開始時刻から休憩計算開始時刻を判断 */
+				return oneDayOfRange.getStart().compareTo(startTime) >= 0 
+							? oneDayOfRange.getStart() : startTime;
 			} else {
 				
 				/** フレックス勤務、流動勤務ではない場合はthrow Exception*/

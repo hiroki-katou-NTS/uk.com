@@ -16,11 +16,13 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.OutputAcqu
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ReflectStampDomainService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.createdailyresults.CreateDailyResults;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.OutputCreateDailyOneDay;
+import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.PeriodInMasterList;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ICorrectionAttendanceRule;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
 
 /**
@@ -43,6 +45,7 @@ public class CreateDailyOneDay {
 	
 	@Inject
 	private IntegrationOfDailyGetter integrationGetter;
+	
 	/**
 	 * 
 	 * @param companyId 会社ID
@@ -68,6 +71,7 @@ public class CreateDailyOneDay {
  		IntegrationOfDaily integrationOfDaily = integrationOfDailys.isEmpty() ? createNull(employeeId, ymd) : integrationOfDailys.get(0);
         //「勤務種類」と「実行タイプ」をチェックする
         //日別実績が既に存在しない場合OR「作成する」の場合	
+ 		ChangeDailyAttendance changeDailyAtt;
         if(integrationOfDailys.isEmpty() || executionType == ExecutionTypeDaily.CREATE) {
         	
         	//日別実績を作成する 
@@ -79,12 +83,17 @@ public class CreateDailyOneDay {
         	if(!listErrorMessageInfo.isEmpty()) {
         		return new OutputCreateDailyOneDay( listErrorMessageInfo,null,new ArrayList<>());
         	}
-        } 
+        	
+        	changeDailyAtt = new ChangeDailyAttendance(true, true, true, true, false);
+        } else { 
+        	
+        	changeDailyAtt = new ChangeDailyAttendance(false, false, false, false, false);
+        }
         
         //打刻を取得して反映する 
 		OutputAcquireReflectEmbossingNew outputAcquireReflectEmbossingNew = reflectStampDomainServiceImpl
 				.acquireReflectEmbossingNew(companyId, employeeId, ymd, executionType, flag,
-						integrationOfDaily);
+						integrationOfDaily, changeDailyAtt);
 		integrationOfDaily = outputAcquireReflectEmbossingNew.getIntegrationOfDaily();
         listErrorMessageInfo.addAll(outputAcquireReflectEmbossingNew.getListErrorMessageInfo());
         if(!listErrorMessageInfo.isEmpty()) {
@@ -92,8 +101,8 @@ public class CreateDailyOneDay {
         	return new OutputCreateDailyOneDay( listErrorMessageInfo,null,new ArrayList<>());
         }
         //勤怠ルールの補正処理
-		integrationOfDaily = iCorrectionAttendanceRule.process(integrationOfDaily,
-				new ChangeDailyAttendance(true, true, true, true));
+		integrationOfDaily = iCorrectionAttendanceRule.process(integrationOfDaily, outputAcquireReflectEmbossingNew.getChangeDailyAtt());
+		
 		integrationOfDaily.setYmd(ymd);
 		integrationOfDaily.setEmployeeId(employeeId);
 		return new OutputCreateDailyOneDay( listErrorMessageInfo,integrationOfDaily,outputAcquireReflectEmbossingNew.getListStamp());

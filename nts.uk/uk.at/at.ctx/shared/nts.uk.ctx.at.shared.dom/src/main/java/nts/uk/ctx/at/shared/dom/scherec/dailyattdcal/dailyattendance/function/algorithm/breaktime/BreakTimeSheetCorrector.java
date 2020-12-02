@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
@@ -20,7 +19,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 public class BreakTimeSheetCorrector {
 
-	public static void correct(RequireM1 require, IntegrationOfDaily dailyRecord, boolean workInfoChanged) {
+	public static void correct(RequireM1 require, IntegrationOfDaily dailyRecord, boolean fixedBreakCorrect) {
 		
 		/** 勤務情報が固定休憩かの確認 */
 		val isFixedBreak = isFixedBreakTime(require, dailyRecord);
@@ -29,7 +28,7 @@ public class BreakTimeSheetCorrector {
 		}
 		
 		/** [変更状態.勤務情報]をチェック */
-		if (isFixedBreak == BreakTimeFixState.FIXED && !workInfoChanged) {
+		if (isFixedBreak == BreakTimeFixState.FIXED && !fixedBreakCorrect) {
 			
 			return;
 		}
@@ -55,6 +54,11 @@ public class BreakTimeSheetCorrector {
 		converter.setData(dailyRecord);
 		val edittedItems = dailyRecord.getEditState().stream().map(c -> c.getAttendanceItemId()).collect(Collectors.toList());
 		if(edittedItems.isEmpty()) {
+			if (breakTime.isEmpty()) { 
+				dailyRecord.setBreakTime(Optional.empty());
+				return;
+			}
+			dailyRecord.setBreakTime(Optional.of(new BreakTimeOfDailyAttd(breakTime)));
 			return;
 		}
 		val oldValues = converter.convert(edittedItems);

@@ -65,8 +65,8 @@ public class TimeLeavingOfDailyAttdTest {
 		val timeLeavingDaily = new TimeLeavingOfDailyAttd(Arrays.asList(timeLeavingWork), new WorkTimes(4));
 		
 		val actual = timeLeavingDaily.getTimeOfTimeLeavingAtt();
-		assertThat(actual).containsOnly(new TimeSpanForCalc(  timeLeavingWork.getAttendanceStampTimeWithDay().get()
-				                                            , timeLeavingWork.getleaveStampTimeWithDay().get()));
+		assertThat(actual).containsOnly(new TimeSpanForCalc(  timeLeavingWork.getAttendanceTime().get()
+				                                            , timeLeavingWork.getLeaveTime().get()));
 	}
 	
 	/**

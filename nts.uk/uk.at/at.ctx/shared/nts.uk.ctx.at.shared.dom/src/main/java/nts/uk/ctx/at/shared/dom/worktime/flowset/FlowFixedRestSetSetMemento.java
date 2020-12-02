@@ -17,13 +17,6 @@ public interface FlowFixedRestSetSetMemento {
 	void setCalculateMethod(FlowFixedRestCalcMethod val);
 
 	/**
-	 * Sets the calculate from schedule.
-	 *
-	 * @param val the new calculate from schedule
-	 */
-	void setCalculateFromSchedule(ScheduleBreakCalculation val);
-
-	/**
 	 * Sets the calculate from stamp.
 	 *
 	 * @param val the new calculate from stamp

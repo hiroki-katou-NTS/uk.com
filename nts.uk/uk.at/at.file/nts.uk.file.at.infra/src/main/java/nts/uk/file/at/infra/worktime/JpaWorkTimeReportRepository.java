@@ -2260,16 +2260,16 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		// R2_120 休憩時間帯.固定休憩設定（休憩時間の固定する）.実績での休憩計算方法
 		sqlFlowNoOtherLang.append(" 	CASE WHEN WORKTIME_DISP_MODE.DISP_MODE != ?detailMode OR FLOW_RT_SET2.FIX_REST_TIME = ?isFalse THEN NULL ");
 		sqlFlowNoOtherLang.append(" 		 WHEN TEMP.ROW_ID = 1 AND FLOW_REST_SET.FIXED_REST_CALC_METHOD = ?restCalcMethodReferMaster THEN ?restCalcMethodReferMasterText");
-		sqlFlowNoOtherLang.append(" 		 WHEN TEMP.ROW_ID = 1 AND FLOW_REST_SET.FIXED_REST_CALC_METHOD = ?restCalcMethodReferSchedule THEN ?restCalcMethodReferScheduleText");
+//		sqlFlowNoOtherLang.append(" 		 WHEN TEMP.ROW_ID = 1 AND FLOW_REST_SET.FIXED_REST_CALC_METHOD = ?restCalcMethodReferSchedule THEN ?restCalcMethodReferScheduleText");
 		sqlFlowNoOtherLang.append(" 		 WHEN TEMP.ROW_ID = 1 AND FLOW_REST_SET.FIXED_REST_CALC_METHOD = ?restCalcMethodWithoutRefer THEN ?restCalcMethodWithoutReferText");
 		sqlFlowNoOtherLang.append(" 		 ELSE NULL");
 		sqlFlowNoOtherLang.append(" 	END,");
 		// R2_121 休憩時間帯.固定休憩設定（休憩時間の固定する）.予定と実績の勤務が一致しな場合はマスタを参照する
-		sqlFlowNoOtherLang.append(" 	IIF(TEMP.ROW_ID = 1 AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode AND FLOW_RT_SET2.FIX_REST_TIME = ?isTrue AND FLOW_REST_SET.FIXED_REST_CALC_METHOD = ?restCalcMethodReferSchedule, ");
-		sqlFlowNoOtherLang.append(" 		IIF(FLOW_REST_SET.IS_CALC_FROM_SCHEDULE = ?isTrue, ?isCalcFromSchedule, ?isNotCalcFromSchedule), NULL),");
+//		sqlFlowNoOtherLang.append(" 	IIF(TEMP.ROW_ID = 1 AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode AND FLOW_RT_SET2.FIX_REST_TIME = ?isTrue AND FLOW_REST_SET.FIXED_REST_CALC_METHOD = ?restCalcMethodReferSchedule, ");
+//		sqlFlowNoOtherLang.append(" 		IIF(FLOW_REST_SET.IS_CALC_FROM_SCHEDULE = ?isTrue, ?isCalcFromSchedule, ?isNotCalcFromSchedule), NULL),");
 		// R2_122 休憩時間帯.固定休憩設定（休憩時間の固定する）.休憩時刻が無い場合はマスタから休憩時刻を参照する
-		sqlFlowNoOtherLang.append(" 	IIF(TEMP.ROW_ID = 1 AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode AND FLOW_RT_SET2.FIX_REST_TIME = ?isTrue AND FLOW_REST_SET.FIXED_REST_CALC_METHOD = ?restCalcMethodReferSchedule, ");
-		sqlFlowNoOtherLang.append(" 		IIF(FLOW_REST_SET.IS_REFER_REST_TIME = ?isTrue, ?isReferRestTime, ?isNotReferRestTime), NULL),");
+//		sqlFlowNoOtherLang.append(" 	IIF(TEMP.ROW_ID = 1 AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode AND FLOW_RT_SET2.FIX_REST_TIME = ?isTrue AND FLOW_REST_SET.FIXED_REST_CALC_METHOD = ?restCalcMethodReferSchedule, ");
+//		sqlFlowNoOtherLang.append(" 		IIF(FLOW_REST_SET.IS_REFER_REST_TIME = ?isTrue, ?isReferRestTime, ?isNotReferRestTime), NULL),");
 		// R2_123 休憩時間帯.固定休憩設定（休憩時間の固定する）.私用外出を休憩として扱う
 		sqlFlowNoOtherLang.append(" 	IIF(TEMP.ROW_ID = 1 AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode AND FLOW_RT_SET2.FIX_REST_TIME = ?isTrue AND FLOW_REST_SET.FIXED_REST_CALC_METHOD = ?restCalcMethodWithoutRefer, ");
 		sqlFlowNoOtherLang.append(" 		IIF(FLOW_REST_SET.USER_PRIVATE_GO_OUT_REST = ?isTrue, ?userPrivateGoOutRest, ?notUserPrivateGoOutRest), NULL),");
@@ -3647,16 +3647,16 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		// R3_160 休憩時間帯.固定休憩設定（休憩時間の固定する）
 		sqlFlexNoOtherLang.append(" 	CASE WHEN WORKTIME_DISP_MODE.DISP_MODE != ?detailMode OR FLEX_HA_RT_SET1.FIX_REST_TIME = ?isFalse THEN NULL ");
 		sqlFlexNoOtherLang.append(" 		 WHEN TEMP.ROW_ID = 1 AND FLEX_REST_SET.FIXED_REST_CALC_METHOD = ?restCalcMethodReferMaster THEN ?restCalcMethodReferMasterText");
-		sqlFlexNoOtherLang.append(" 		 WHEN TEMP.ROW_ID = 1 AND FLEX_REST_SET.FIXED_REST_CALC_METHOD = ?restCalcMethodReferSchedule THEN ?restCalcMethodReferScheduleText");
+//		sqlFlexNoOtherLang.append(" 		 WHEN TEMP.ROW_ID = 1 AND FLEX_REST_SET.FIXED_REST_CALC_METHOD = ?restCalcMethodReferSchedule THEN ?restCalcMethodReferScheduleText");
 		sqlFlexNoOtherLang.append(" 		 WHEN TEMP.ROW_ID = 1 AND FLEX_REST_SET.FIXED_REST_CALC_METHOD = ?restCalcMethodWithoutRefer THEN ?restCalcMethodWithoutReferText");
 		sqlFlexNoOtherLang.append(" 		 ELSE NULL");
 		sqlFlexNoOtherLang.append(" 	END,");
 		// R3_161 休憩時間帯.固定休憩設定（休憩時間の固定する）.予定と実績の勤務が一致しな場合はマスタを参照する
-		sqlFlexNoOtherLang.append(" 	IIF(TEMP.ROW_ID = 1 AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode AND FLEX_HA_RT_SET1.FIX_REST_TIME = ?isTrue AND FLEX_REST_SET.FIXED_REST_CALC_METHOD = ?restCalcMethodReferSchedule, ");
-		sqlFlexNoOtherLang.append(" 		IIF(FLEX_REST_SET.IS_CALC_FROM_SCHEDULE = ?isTrue, ?isCalcFromSchedule, ?isNotCalcFromSchedule), NULL),");
+//		sqlFlexNoOtherLang.append(" 	IIF(TEMP.ROW_ID = 1 AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode AND FLEX_HA_RT_SET1.FIX_REST_TIME = ?isTrue AND FLEX_REST_SET.FIXED_REST_CALC_METHOD = ?restCalcMethodReferSchedule, ");
+//		sqlFlexNoOtherLang.append(" 		IIF(FLEX_REST_SET.IS_CALC_FROM_SCHEDULE = ?isTrue, ?isCalcFromSchedule, ?isNotCalcFromSchedule), NULL),");
 		// R3_162 休憩時間帯.固定休憩設定（休憩時間の固定する）.休憩時刻が無い場合はマスタから休憩時刻を参照する
-		sqlFlexNoOtherLang.append(" 	IIF(TEMP.ROW_ID = 1 AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode AND FLEX_HA_RT_SET1.FIX_REST_TIME = ?isTrue AND FLEX_REST_SET.FIXED_REST_CALC_METHOD = ?restCalcMethodReferSchedule, ");
-		sqlFlexNoOtherLang.append(" 		IIF(FLEX_REST_SET.IS_REFER_REST_TIME = ?isTrue, ?isReferRestTime, ?isNotReferRestTime), NULL),");
+//		sqlFlexNoOtherLang.append(" 	IIF(TEMP.ROW_ID = 1 AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode AND FLEX_HA_RT_SET1.FIX_REST_TIME = ?isTrue AND FLEX_REST_SET.FIXED_REST_CALC_METHOD = ?restCalcMethodReferSchedule, ");
+//		sqlFlexNoOtherLang.append(" 		IIF(FLEX_REST_SET.IS_REFER_REST_TIME = ?isTrue, ?isReferRestTime, ?isNotReferRestTime), NULL),");
 		// R3_163 休憩時間帯.固定休憩設定（休憩時間の固定する）.私用外出を休憩として扱う
 		sqlFlexNoOtherLang.append(" 	IIF(TEMP.ROW_ID = 1 AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode AND FLEX_HA_RT_SET1.FIX_REST_TIME = ?isTrue AND FLEX_REST_SET.FIXED_REST_CALC_METHOD = ?restCalcMethodWithoutRefer, ");
 		sqlFlexNoOtherLang.append(" 		IIF(FLEX_REST_SET.USER_PRIVATE_GO_OUT_REST = ?isTrue, ?userPrivateGoOutRest, ?notUserPrivateGoOutRest), NULL),");
@@ -4703,10 +4703,10 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 				.setParameter("roundingUpText", TextResource.localize("Enum_Rounding_Up"))	
 				.setParameter("roundingDownOverText", TextResource.localize("Enum_Rounding_Down_Over"))	
 				.setParameter("restCalcMethodReferMaster", FlowFixedRestCalcMethod.REFER_MASTER.value)
-				.setParameter("restCalcMethodReferSchedule", FlowFixedRestCalcMethod.REFER_SCHEDULE.value)
+//				.setParameter("restCalcMethodReferSchedule", "-")//FlowFixedRestCalcMethod.REFER_SCHEDULE.value)
 				.setParameter("restCalcMethodWithoutRefer", FlowFixedRestCalcMethod.STAMP_WHITOUT_REFER.value)
 				.setParameter("restCalcMethodReferMasterText", TextResource.localize("KMK003_241"))
-				.setParameter("restCalcMethodReferScheduleText", TextResource.localize("KMK003_242"))
+//				.setParameter("restCalcMethodReferScheduleText", TextResource.localize("KMK003_242"))
 				.setParameter("restCalcMethodWithoutReferText", TextResource.localize("KMK003_243"))
 				.setParameter("isCalcFromSchedule", "○")
 				.setParameter("isNotCalcFromSchedule", "-")
@@ -4842,10 +4842,10 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 				.setParameter("useCoretimeText", TextResource.localize("KMK003_158"))
 				.setParameter("notUseCoretimeText", TextResource.localize("KMK003_159"))
 				.setParameter("restCalcMethodReferMaster", FlowFixedRestCalcMethod.REFER_MASTER.value)
-				.setParameter("restCalcMethodReferSchedule", FlowFixedRestCalcMethod.REFER_SCHEDULE.value)
+//				.setParameter("restCalcMethodReferSchedule", "-")//FlowFixedRestCalcMethod.REFER_SCHEDULE.value)
 				.setParameter("restCalcMethodWithoutRefer", FlowFixedRestCalcMethod.STAMP_WHITOUT_REFER.value)
 				.setParameter("restCalcMethodReferMasterText", TextResource.localize("KMK003_241"))
-				.setParameter("restCalcMethodReferScheduleText", TextResource.localize("KMK003_242"))
+//				.setParameter("restCalcMethodReferScheduleText", TextResource.localize("KMK003_242"))
 				.setParameter("restCalcMethodWithoutReferText", TextResource.localize("KMK003_243"))
 				.setParameter("isCalcFromSchedule", "○")
 				.setParameter("isNotCalcFromSchedule", "-")

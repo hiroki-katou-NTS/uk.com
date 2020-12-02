@@ -545,7 +545,7 @@ public class WorkScheduleTest {
 					ConfirmedATR.UNSETTLED,
 					workInfo,
 					affInfo, 
-					Collections.emptyList(),
+					Optional.empty(),
 					Collections.emptyList(),
 					optTimeLeaving, // parameter
 					optAttendanceTime, // parameter

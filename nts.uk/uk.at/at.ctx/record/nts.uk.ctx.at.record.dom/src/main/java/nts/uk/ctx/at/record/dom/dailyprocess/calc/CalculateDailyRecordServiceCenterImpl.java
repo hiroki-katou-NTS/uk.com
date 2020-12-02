@@ -36,6 +36,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.dailyprocess.calc.CalculateOption;
 import nts.uk.ctx.at.shared.dom.dailyprocess.calc.FactoryManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.CommonCompanySettingForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.service.AttendanceItemService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemIdContainer;

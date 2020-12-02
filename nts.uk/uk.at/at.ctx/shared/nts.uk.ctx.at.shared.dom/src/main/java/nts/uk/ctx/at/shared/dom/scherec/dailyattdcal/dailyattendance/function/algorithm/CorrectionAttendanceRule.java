@@ -12,7 +12,7 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.dailyprocess.calc.FactoryManagePerPersonDailySet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordConverter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.CommonCompanySettingForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
@@ -21,10 +21,13 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.al
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.aftercorrectwork.CorrectionAfterChangeWorkInfo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.breaktime.BreakTimeSheetCorrector;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.breaktime.CreateOneDayRangeCalc;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
+import nts.uk.ctx.at.shared.dom.worktime.common.JustCorrectionAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
@@ -117,7 +120,7 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 		}
 		
 		/** 休憩時間帯の補正 */
-		BreakTimeSheetCorrector.correct(createBreakRequire(optionalItems), afterDomain, changeAtt.workInfo);
+		BreakTimeSheetCorrector.correct(createBreakRequire(optionalItems), afterDomain, changeAtt.fixBreakCorrect);
 
 		// 手修正を基に戻す
 		DailyRecordToAttendanceItemConverter afterConverter = attendanceItemConvertFactory.createDailyConverter().setData(afterDomain)
@@ -146,9 +149,9 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 			@Override
 			public CalculationRangeOfOneDay createOneDayRange(Optional<PredetemineTimeSetting> predetemineTimeSet,
 					IntegrationOfDaily integrationOfDaily, Optional<WorkTimezoneCommonSet> commonSet, WorkType workType,
-					Optional<WorkTimeCode> workTimeCode) {
+					JustCorrectionAtr justCorrectionAtr, Optional<WorkTimeCode> workTimeCode) {
 				
-				return createOneDayRangeCalc.createOneDayRange(predetemineTimeSet, integrationOfDaily, commonSet, workType, workTimeCode);
+				return createOneDayRangeCalc.createOneDayRange(predetemineTimeSet, integrationOfDaily, commonSet, workType, justCorrectionAtr, workTimeCode);
 			}
 			
 			@Override

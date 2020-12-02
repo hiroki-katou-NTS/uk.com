@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.dailyprocess.calc;
+package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal;
 
 import nts.uk.ctx.at.shared.dom.dailyprocess.calc.CalculateOption;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;

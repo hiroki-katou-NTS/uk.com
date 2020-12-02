@@ -16,7 +16,6 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.CommonCompanySettingForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ProvisionalCalculationService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.requestlist.PrevisionalForImp;
 import nts.uk.ctx.at.record.pub.dailyprocess.scheduletime.ScheduleTimePub;
@@ -27,6 +26,7 @@ import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.dailyprocess.calc.CalculateOption;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.CommonCompanySettingForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;

@@ -45,7 +45,7 @@ public class UpdateIfNotManaged {
 	 * @param employeeId
 	 * @param ymd
 	 */
-	public void update(String cid, String employeeId, GeneralDate ymd, IntegrationOfDaily integrationOfDaily) {
+	public boolean update(String cid, String employeeId, GeneralDate ymd, IntegrationOfDaily integrationOfDaily) {
 		// ドメインモデル「労働条件項目」を取得する
 		Optional<WorkingConditionItem> optWorkingConditionItem = this.workingConditionItemRepository
 				.getBySidAndStandardDate(employeeId, ymd);
@@ -70,12 +70,13 @@ public class UpdateIfNotManaged {
 						integrationOfDaily.getWorkInformation().getRecordInfo().setWorkTypeCode(optData.get().getWorkTypeCode());
 						integrationOfDaily.getWorkInformation().getRecordInfo().setWorkTimeCode(optData.get().getWorkTimeCode());
 						
-//						integrationOfDaily.getWorkInformation().getScheduleInfo().setWorkTypeCode(optData.get().getWorkTypeCode());
-//						integrationOfDaily.getWorkInformation().getScheduleInfo().setWorkTimeCode(optData.get().getWorkTimeCode());
+						return true;
 					}
 				}
 			}
 		}
+		
+		return false;
 	}
 
 }

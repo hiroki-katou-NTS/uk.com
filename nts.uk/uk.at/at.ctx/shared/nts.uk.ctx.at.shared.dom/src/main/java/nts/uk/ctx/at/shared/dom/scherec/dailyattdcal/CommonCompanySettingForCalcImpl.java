@@ -1,22 +1,18 @@
-package nts.uk.ctx.at.record.dom.dailyprocess.calc;
+package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.shared.dom.dailyprocess.calc.CalculateOption;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPUnitUseSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.defor.DeformLaborOTRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.flex.FlexSetRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.midnighttimezone.MidNightTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.zerotime.ZeroTimeRepository;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
@@ -49,9 +45,6 @@ public class CommonCompanySettingForCalcImpl implements CommonCompanySettingForC
 	//乖離
 	@Inject 
 	private DivergenceTimeRepository divergenceTimeRepository;
-	//エラーアラーム設定
-	@Inject
-	private ErrorAlarmWorkRecordRepository errorAlarmWorkRecordRepository;
 	//加給設定の利用単位
 	@Inject
 	private BPUnitUseSettingRepository bPUnitUseSettingRepository; 

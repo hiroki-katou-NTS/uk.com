@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.app.command.dailyperform.breaktime;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.val;
 import nts.uk.ctx.at.record.app.find.dailyperform.resttime.dto.BreakTimeDailyDto;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
@@ -16,13 +17,14 @@ public class BreakTimeOfDailyPerformanceCommand extends DailyWorkCommonCommand {
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
 		if(item != null && item.isHaveData()){
-			updateData(((BreakTimeDailyDto) item).toDomain(getEmployeeId(), getWorkDate()));
+			val breakTime = ((BreakTimeDailyDto) item).toDomain(getEmployeeId(), getWorkDate());
+			updateData(new BreakTimeOfDailyPerformance(getEmployeeId(), getWorkDate(), breakTime));
 		}
 	}
 	
 	@Override
 	public void updateData(Object data) {
-		if(data != null) {
+		if(data == null) {
 			return;
 //			BreakTimeOfDailyAttd d = (BreakTimeOfDailyAttd) data;
 //			this.data.removeIf(br -> br.getTimeZone().getBreakType() == d.getBreakType());

@@ -220,8 +220,9 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 
 		@Override
 		public List<ErrorMessageInfo> reflectStamp(Stamp stamp, StampReflectRangeOutput stampReflectRangeOutput,
-				IntegrationOfDaily integrationOfDaily) {
-			return temporarilyReflectStampDailyAttd.reflectStamp(stamp, stampReflectRangeOutput, integrationOfDaily);
+				IntegrationOfDaily integrationOfDaily, ChangeDailyAttendance changeDailyAtt) {
+			return temporarilyReflectStampDailyAttd.reflectStamp(stamp, stampReflectRangeOutput,
+					integrationOfDaily, changeDailyAtt);
 		}
 
 		@Override

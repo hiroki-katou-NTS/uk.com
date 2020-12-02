@@ -34,6 +34,7 @@ public class SnapshotFinder extends FinderFacade{
 		return (List<T>) employeeId.stream().map(c -> this.repo.find(c, baseDate))
 			.flatMap(List::stream)
 			.map(c -> SnapshotDto.from(c.getSid(), c.getYmd(), c.getSnapshot().toDomain()))
+			.filter(d -> d.isHaveData())
 			.collect(Collectors.toList());
 	}
 
@@ -41,7 +42,9 @@ public class SnapshotFinder extends FinderFacade{
 	@SuppressWarnings("unchecked")
 	public <T extends ConvertibleAttendanceItem> List<T> find(Map<String, List<GeneralDate>> param) {
 		return (List<T>) param.keySet().stream()
-						.map(c -> param.get(c).stream().map(d -> find(c, d)).collect(Collectors.toList()))
+						.map(c -> param.get(c).stream().map(d -> find(c, d))
+													.filter(d -> d.isHaveData())
+													.collect(Collectors.toList()))
 						.flatMap(List::stream)
 						.collect(Collectors.toList());
 	}

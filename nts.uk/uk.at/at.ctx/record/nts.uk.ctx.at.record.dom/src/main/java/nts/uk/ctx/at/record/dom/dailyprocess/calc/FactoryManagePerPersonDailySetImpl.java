@@ -36,6 +36,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
 
 
@@ -75,9 +76,10 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 			IntegrationOfDaily daily, WorkingConditionItem nowWorkingItem,
 			MasterShareContainer<String> shareContainer) {
 		try {
+			val require = requireService.createRequire();
 			/*法定労働時間*/
 			DailyUnit dailyUnit = DailyStatutoryLaborTime.getDailyUnit(
-					requireService.createRequire(),
+					require,
 					new CacheCarrier(),
 					companyId,
 					daily.getAffiliationInfor().getEmploymentCode().toString(),
@@ -101,10 +103,14 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 			if(bpCode.isPresent() && bpCode.get() != null ) {
 				bonusPaySetting = this.bPSettingRepository.getBonusPaySetting(companyId, bpCode.get());
 			}
+			
+			/**　勤務種類 */
+			val workType = require.workType(companyId, nowWorkingItem.getWorkCategory().getWeekdayTime().getWorkTypeCode().get().v())
+					.orElseThrow(() -> new RuntimeException("No WorkType"));
 		
 			/*平日時*/
 			PredetermineTimeSetForCalc predetermineTimeSetByPersonWeekDay = this.getPredByPersonInfo(
-					nowWorkingItem.getWorkCategory().getWeekdayTime().getWorkTimeCode().get(), shareContainer);
+					nowWorkingItem.getWorkCategory().getWeekdayTime().getWorkTimeCode().get(), shareContainer, workType);
 			
 			return Optional.of(new ManagePerPersonDailySet(nowWorkingItem, dailyUnit,
 								addSetting, bonusPaySetting, predetermineTimeSetByPersonWeekDay));
@@ -156,13 +162,13 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 	 * @return
 	 */
 	private PredetermineTimeSetForCalc getPredByPersonInfo(WorkTimeCode workTimeCode,
-			MasterShareContainer<String> shareContainer) {
+			MasterShareContainer<String> shareContainer, WorkType workType) {
 
 		val predSetting = getPredetermineTimeSetFromShareContainer(shareContainer, AppContexts.user().companyId(),
 				workTimeCode.toString());
 		if (!predSetting.isPresent())
 			throw new RuntimeException("predetermineedSetting is null");
-		return PredetermineTimeSetForCalc.convertFromAggregatePremiumTime(predSetting.get());
+		return PredetermineTimeSetForCalc.convertFromAggregatePremiumTime(predSetting.get(), workType);
 
 	}
 	

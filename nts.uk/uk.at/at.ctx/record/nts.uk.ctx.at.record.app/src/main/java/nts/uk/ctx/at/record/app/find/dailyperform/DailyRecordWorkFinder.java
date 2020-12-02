@@ -254,30 +254,20 @@ public class DailyRecordWorkFinder extends FinderFacade {
 		long startTime = System.currentTimeMillis();
 		Map<String, Map<GeneralDate, WorkInformationOfDailyDto>> workInfos = toMap(workInfoFinder.find(param));
 		Map<String, Map<GeneralDate, CalcAttrOfDailyPerformanceDto>> calcAttrs = toMap(calcAttrFinder.find(param));
-		Map<String, Map<GeneralDate, AffiliationInforOfDailyPerforDto>> affiliInfo = toMap(
-				affiliInfoFinder.find(param));
-		Map<String, Map<GeneralDate, SnapshotDto>> snapshots = toMap(
-				snapshotFinder.find(param));
-		Map<String, Map<GeneralDate, List<EmployeeDailyPerErrorDto>>> errors = toMapList(
-				errorFinder.find(param));
+		Map<String, Map<GeneralDate, AffiliationInforOfDailyPerforDto>> affiliInfo = toMap(affiliInfoFinder.find(param));
+		Map<String, Map<GeneralDate, SnapshotDto>> snapshots = toMap(snapshotFinder.find(param));
+		Map<String, Map<GeneralDate, List<EmployeeDailyPerErrorDto>>> errors = toMapList(errorFinder.find(param));
 		Map<String, Map<GeneralDate, OutingTimeOfDailyPerformanceDto>> outings = toMap(outingTimeFinder.find(param));
 		Map<String, Map<GeneralDate, BreakTimeDailyDto>> breaks = toMap(breakItemFinder.find(param));
-		Map<String, Map<GeneralDate, AttendanceTimeDailyPerformDto>> attendTime = toMap(
-				attendanceTimeFinder.find(param));
-		Map<String, Map<GeneralDate, AttendanceTimeByWorkOfDailyDto>> attendTimeByWork = toMap(
-				attendanceTimeByWorkFinder.find(param));
+		Map<String, Map<GeneralDate, AttendanceTimeDailyPerformDto>> attendTime = toMap(attendanceTimeFinder.find(param));
+		Map<String, Map<GeneralDate, AttendanceTimeByWorkOfDailyDto>> attendTimeByWork = toMap(attendanceTimeByWorkFinder.find(param));
 		Map<String, Map<GeneralDate, TimeLeavingOfDailyPerformanceDto>> leaving = toMap(timeLeavingFinder.find(param));
 		Map<String, Map<GeneralDate, ShortTimeOfDailyDto>> shortWork = toMap(shortWorkFinder.find(param));
-		Map<String, Map<GeneralDate, SpecificDateAttrOfDailyPerforDto>> specificDateAttr = toMap(
-				specificDateAttrFinder.find(param));
-		Map<String, Map<GeneralDate, AttendanceLeavingGateOfDailyDto>> attendLeavingGate = toMap(
-				attendanceLeavingGateFinder.find(param));
-		Map<String, Map<GeneralDate, OptionalItemOfDailyPerformDto>> optionalItems = toMap(
-				optionalItemFinder.find(param));
-		Map<String, Map<GeneralDate, List<EditStateOfDailyPerformanceDto>>> editStates = toMapList(
-				editStateFinder.find(param));
-		Map<String, Map<GeneralDate, TemporaryTimeOfDailyPerformanceDto>> temporaryTime = toMap(
-				temporaryTimeFinder.find(param));
+		Map<String, Map<GeneralDate, SpecificDateAttrOfDailyPerforDto>> specificDateAttr = toMap(specificDateAttrFinder.find(param));
+		Map<String, Map<GeneralDate, AttendanceLeavingGateOfDailyDto>> attendLeavingGate = toMap(attendanceLeavingGateFinder.find(param));
+		Map<String, Map<GeneralDate, OptionalItemOfDailyPerformDto>> optionalItems = toMap(optionalItemFinder.find(param));
+		Map<String, Map<GeneralDate, List<EditStateOfDailyPerformanceDto>>> editStates = toMapList(editStateFinder.find(param));
+		Map<String, Map<GeneralDate, TemporaryTimeOfDailyPerformanceDto>> temporaryTime = toMap(temporaryTimeFinder.find(param));
 		Map<String, Map<GeneralDate, PCLogOnInforOfDailyPerformDto>> pcLogInfo = toMap(pcLogOnInfoFinder.find(param));
 		Map<String, Map<GeneralDate, List<RemarksOfDailyDto>>> remarks = toMapList(remarkFinder.find(param));
 		System.out.print("thoi gian lay data DB: " +(System.currentTimeMillis() - startTime));

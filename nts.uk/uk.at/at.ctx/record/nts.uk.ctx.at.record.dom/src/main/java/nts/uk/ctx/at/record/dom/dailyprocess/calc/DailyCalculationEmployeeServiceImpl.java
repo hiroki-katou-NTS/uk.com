@@ -48,6 +48,7 @@ import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagementRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.CommonCompanySettingForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;

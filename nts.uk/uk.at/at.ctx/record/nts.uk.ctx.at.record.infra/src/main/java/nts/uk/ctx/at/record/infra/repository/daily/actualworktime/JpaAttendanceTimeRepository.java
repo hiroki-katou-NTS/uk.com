@@ -390,8 +390,8 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 					List<KrcdtDayLeaveEarlyTime> krcdtDayLeaveEarlyTime = e.getValue().stream().filter(c -> c[1] != null).map(c -> (KrcdtDayLeaveEarlyTime) c[1]).distinct().collect(Collectors.toList());
 					KrcdtDayPremiumTime krcdtDayPremiumTime = e.getValue().stream().filter(c -> c[2] != null).map(c -> (KrcdtDayPremiumTime) c[2]).distinct().findFirst().orElse(null);
 					List<KrcdtDayLateTime> krcdtDayLateTime = e.getValue().stream().filter(c -> c[3] != null).map(c -> (KrcdtDayLateTime) c[3]).distinct().collect(Collectors.toList());
-					List<KrcdtDayShorttime> KrcdtDayShorttime =  e.getValue().stream().filter(c -> c[4] != null).map(c -> (KrcdtDayShorttime) c[5]).distinct().collect(Collectors.toList());
-					List<KrcdtDayOutingTime> krcdtDayOutingTime =  e.getValue().stream().filter(c -> c[5] != null).map(c -> (KrcdtDayOutingTime) c[6]).distinct().collect(Collectors.toList());
+					List<KrcdtDayShorttime> KrcdtDayShorttime =  e.getValue().stream().filter(c -> c[4] != null).map(c -> (KrcdtDayShorttime) c[4]).distinct().collect(Collectors.toList());
+					List<KrcdtDayOutingTime> krcdtDayOutingTime =  e.getValue().stream().filter(c -> c[5] != null).map(c -> (KrcdtDayOutingTime) c[5]).distinct().collect(Collectors.toList());
 					return KrcdtDayTime.toDomain(krcdtDayTime, krcdtDayPremiumTime, krcdtDayLeaveEarlyTime, krcdtDayLateTime, KrcdtDayShorttime, krcdtDayOutingTime);
 				})
 				.collect(Collectors.toList());		

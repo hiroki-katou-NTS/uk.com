@@ -433,7 +433,7 @@ public class FlexWorkSettingHelper {
 
 		@Override
 		public FlowFixedRestSet getFlowFixedRestSetting() {
-			return new FlowFixedRestSet(true, true, true, FlowFixedRestCalcMethod.REFER_MASTER);
+			return new FlowFixedRestSet(true, true, FlowFixedRestCalcMethod.REFER_MASTER);
 		}
 
 		@Override
