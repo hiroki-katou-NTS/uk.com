@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.app.workrule.workinghours;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -73,72 +75,52 @@ public class CheckTimeIsIncorrect {
 	 * @param workTime1 , 勤務時間帯1: 時間帯(実装コードなし/使用不可)
 	 * @param workTime2 勤務時間帯2: 時間帯(実装コードなし/使用不可)
 	 */
-	public boolean check(String workType,String workTime,TimeZoneDto workTime1,TimeZoneDto workTime2) {
+	public List<ContainsResultDto> check(String workType,String workTime,TimeZoneDto workTime1,TimeZoneDto workTime2) {
 		//1:Create()
 		WorkInformation wi = new WorkInformation(workType, workTime);
 		WorkInformation.Require require = new WorkInformationImpl(workTypeRepo, workTimeSettingRepository,
 				workTimeSettingService, basicScheduleService,fixedWorkSettingRepository,flowWorkSettingRepository,flexWorkSettingRepository,predetemineTimeSettingRepository);
 		
+		List<ContainsResultDto> listContainsResult = new ArrayList<>();
 		try {
 			//2: 変更可能な勤務時間帯のチェック(Require, 対象時刻区分, 勤務NO, 時刻(日区分付き))
 			ContainsResult containsResult1 =  wi.containsOnChangeableWorkingTime(require, ClockAreaAtr.START, new WorkNo(1), new TimeWithDayAttr(workTime1.getStartTime().getTime()));	
-		
-			//3: 開始1の状態.含まれているか == false
-			if(!containsResult1.isContains()) {
-				if(containsResult1.getTimeSpan().isPresent()) {
-					throw new BusinessException("Msg_1772",TextResource.localize("KSU001_54"), convertToTime(containsResult1.getTimeSpan().get().getStart().v()),convertToTime(containsResult1.getTimeSpan().get().getEnd().v()));
-				}
-				throw new BusinessException("Msg_439");
-			}
-			//4:変更可能な勤務時間帯のチェック(Require, 対象時刻区分, 勤務NO, 時刻(日区分付き))
-			ContainsResult containsResult2 =  wi.containsOnChangeableWorkingTime(require, ClockAreaAtr.END, new WorkNo(1), new TimeWithDayAttr(workTime1.getEndTime().getTime()));
-			//5:終了1の状態.含まれているか == false
-			if(!containsResult2.isContains()) {
-				if(containsResult2.getTimeSpan().isPresent()) {
-					throw new BusinessException("Msg_1772",TextResource.localize("KSU001_55"), convertToTime(containsResult2.getTimeSpan().get().getStart().v()),convertToTime(containsResult2.getTimeSpan().get().getEnd().v()));
-				}
-				throw new BusinessException("Msg_439");
-			}
+			listContainsResult.add(convertToContainsResult(containsResult1));
 			
-			//6:
+			//3:変更可能な勤務時間帯のチェック(Require, 対象時刻区分, 勤務NO, 時刻(日区分付き))
+			ContainsResult containsResult2 =  wi.containsOnChangeableWorkingTime(require, ClockAreaAtr.END, new WorkNo(1), new TimeWithDayAttr(workTime1.getEndTime().getTime()));
+			listContainsResult.add(convertToContainsResult(containsResult2));
+			
+			//4:
 			if(workTime2 != null) {
-				//6.1
+				//4.1
 				ContainsResult containsResult3 =  wi.containsOnChangeableWorkingTime(require, ClockAreaAtr.START, new WorkNo(2), new TimeWithDayAttr(workTime2.getStartTime().getTime()));
-				if(!containsResult3.isContains()) {
-					if(containsResult3.getTimeSpan().isPresent()) {
-						throw new BusinessException("Msg_1772",TextResource.localize("KSU001_56"), convertToTime(containsResult3.getTimeSpan().get().getStart().v()),convertToTime(containsResult3.getTimeSpan().get().getEnd().v()));
-					}
-					throw new BusinessException("Msg_439");
-				}
+				listContainsResult.add(convertToContainsResult(containsResult3));
 				
-				//6.2
+				//4.2
 				ContainsResult containsResult4 =  wi.containsOnChangeableWorkingTime(require, ClockAreaAtr.END, new WorkNo(2), new TimeWithDayAttr(workTime2.getEndTime().getTime()));
-				if(!containsResult4.isContains()) {
-					if(containsResult4.getTimeSpan().isPresent()) {
-						throw new BusinessException("Msg_1772",TextResource.localize("KSU001_57"), convertToTime(containsResult4.getTimeSpan().get().getStart().v()),convertToTime(containsResult4.getTimeSpan().get().getEnd().v()));
-					}
-					throw new BusinessException("Msg_439");
-				}
+				listContainsResult.add(convertToContainsResult(containsResult4));
 			}
 		} catch (Exception e) {
-			if(e instanceof BusinessException) {
-				val error =  (BusinessException) e;
-				if(error.getMessageId().equals("Msg_1772") || error.getMessageId().equals("Msg_439")) {
-					throw error;
-				}
-			}
 			throw new RuntimeException("Error 時刻が不正かチェックする");
 		}
-		return false;
+		return listContainsResult;
 	}
 	
-	private String convertToTime (Integer value) {
-		if(value== null) {
-			return "";
-		}
-		String result = value/60 +":"+(value%60 >=10?value%60:("0"+value%60));
-		return result;
+	private ContainsResultDto convertToContainsResult(ContainsResult containsResult) {
+		return new ContainsResultDto(containsResult.isContains(), 
+				containsResult.getTimeSpan().isPresent()? 
+						new TimeSpanForCalcSharedDto(containsResult.getTimeSpan().get().startValue(), containsResult.getTimeSpan().get().endValue()):null
+				);
 	}
+	
+//	private String convertToTime (Integer value) {
+//		if(value== null) {
+//			return "";
+//		}
+//		String result = value/60 +":"+(value%60 >=10?value%60:("0"+value%60));
+//		return result;
+//	}
 	
 	@AllArgsConstructor
 	public static class WorkInformationImpl implements WorkInformation.Require {
