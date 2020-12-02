@@ -16,8 +16,9 @@ public class ReasonDivergenceDto {
 	
 	public static ReasonDivergenceDto fromDomain(ReasonDivergence reasonDivergence) {
 		return new ReasonDivergenceDto(
-				reasonDivergence.getReasonCode().v(),
-				reasonDivergence.getReasonCode().v(),
+				// can be null
+				reasonDivergence.getReason() == null ? null : reasonDivergence.getReason().v(),
+				reasonDivergence.getReasonCode() == null ? null : reasonDivergence.getReasonCode().v(),
 				reasonDivergence.getDiviationTime().intValue());
 	}
 }

@@ -117,13 +117,13 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 			.forEach(item -> {
 				if (item.getDiviationTime() == 1) {
 					krqdtAppOverTime.divergenceNo1 = item.getDiviationTime();
-					krqdtAppOverTime.divergenceCD1 = item.getReasonCode().v();
-					krqdtAppOverTime.divergenceReason1 = item.getReason().v();		
+					krqdtAppOverTime.divergenceCD1 = item.getReasonCode() == null ? null : item.getReasonCode().v();
+					krqdtAppOverTime.divergenceReason1 = item.getReason() == null ? null :item.getReason().v();		
 				} 
 				if (item.getDiviationTime() == 2) {
 					krqdtAppOverTime.divergenceNo2 = item.getDiviationTime();
-					krqdtAppOverTime.divergenceCD2 = item.getReasonCode().v();
-					krqdtAppOverTime.divergenceReason2 = item.getReason().v();
+					krqdtAppOverTime.divergenceCD2 = item.getReasonCode() == null ? null : item.getReasonCode().v();
+					krqdtAppOverTime.divergenceReason2 = item.getReason() == null ? null : item.getReason().v();
 				}
 			});
 		

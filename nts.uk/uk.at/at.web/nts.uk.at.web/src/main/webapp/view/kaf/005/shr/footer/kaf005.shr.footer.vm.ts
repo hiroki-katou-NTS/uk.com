@@ -23,7 +23,7 @@ module nts.uk.at.view.kaf005.shr.footer.viewmodel {
 		</div>
 		<div class="cell valign-center">
 			<input style="width: 390px" data-bind="ntsTextEditor: {
-														value: ko.observable(''),
+														value: messageInfos()[0].valueInput,
 														option: {
 															textalign: 'left'
 															}
@@ -54,7 +54,7 @@ module nts.uk.at.view.kaf005.shr.footer.viewmodel {
 		</div>
 		<div class="cell valign-center">
 			<input style="width: 390px" data-bind="ntsTextEditor: {
-														value: ko.observable(''),
+														value: messageInfos()[1].valueInput,
 														option: {
 															textalign: 'left'
 															}

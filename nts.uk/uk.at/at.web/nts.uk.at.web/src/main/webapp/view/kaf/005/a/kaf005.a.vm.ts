@@ -460,6 +460,16 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				item.diviationTime = 1;
 				applicationTime.reasonDissociation.push(item);
 			}
+			
+			if (vm.visibleModel.c12_1() || vm.visibleModel.c12_2()) {
+				//vm.messageInfos
+				
+				let item = {} as ReasonDivergence;
+				item.reasonCode = vm.messageInfos()[1].selectedCode();
+				item.reason = vm.messageInfos()[1].valueInput();
+				item.diviationTime = 2;
+				applicationTime.reasonDissociation.push(item);
+			}
 
 
 
@@ -656,7 +666,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				messageInfo.listDrop = ko.observableArray(itemList);
 				messageInfo.titleInput = ko.observable('');
 				messageInfo.valueInput = ko.observable('');
-				messageInfo.selectedCode = ko.observable(null);
+				messageInfo.selectedCode = ko.observable('');
 				messageArray.push(messageInfo);
 				messageArray.push(messageInfo);
 
