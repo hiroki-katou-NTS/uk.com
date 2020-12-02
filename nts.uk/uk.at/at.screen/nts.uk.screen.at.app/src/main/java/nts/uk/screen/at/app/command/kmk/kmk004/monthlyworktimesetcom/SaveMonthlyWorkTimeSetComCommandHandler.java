@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.app.command.statutory.worktime.monthlyworkinghours.monthlyworktimesetcom;
+package nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetcom;
 
 import java.util.List;
 import java.util.Optional;
