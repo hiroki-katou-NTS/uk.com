@@ -10,6 +10,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.workplace.EmployeeInfoImported;
+import nts.uk.ctx.at.record.dom.adapter.workplace.WorkplaceInformationImport;
 import org.apache.commons.lang3.tuple.Pair;
 
 import nts.arc.time.GeneralDate;
@@ -18,7 +19,7 @@ import nts.uk.ctx.at.record.dom.adapter.workplace.SyWorkplaceAdapter;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 
 /**
- * 
+ *
  * @author sonnh1
  *
  */
@@ -27,7 +28,7 @@ public class SyWorkplaceAdapterImp implements SyWorkplaceAdapter {
 
 //	@Inject
 //	private SyWorkplacePub syWorkplacePub;
-	
+
 	@Inject
 	private WorkplacePub workplacePub;
 
@@ -57,6 +58,23 @@ public class SyWorkplaceAdapterImp implements SyWorkplaceAdapter {
 	public List<EmployeeInfoImported> getLstEmpByWorkplaceIdsAndPeriod(List<String> workplaceIds, DatePeriod period) {
 		return workplacePub.getLstEmpByWorkplaceIdsAndPeriod(workplaceIds, period).stream()
 				.map(x -> new EmployeeInfoImported(x.getSid(), x.getEmployeeCode(), x.getEmployeeName()))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<WorkplaceInformationImport> getByCidAndPeriod(String companyId, DatePeriod datePeriod) {
+		return workplacePub.getByCidAndPeriod(companyId, datePeriod).stream().map(x ->
+				new WorkplaceInformationImport(
+						x.getCompanyId(),
+						x.isDeleteFlag(),
+						x.getWorkplaceHistoryId(),
+						x.getWorkplaceId(),
+						x.getWorkplaceCode(),
+						x.getWorkplaceName(),
+						x.getWorkplaceGeneric(),
+						x.getWorkplaceDisplayName(),
+						x.getHierarchyCode(),
+						x.getWorkplaceExternalCode()))
 				.collect(Collectors.toList());
 	}
 

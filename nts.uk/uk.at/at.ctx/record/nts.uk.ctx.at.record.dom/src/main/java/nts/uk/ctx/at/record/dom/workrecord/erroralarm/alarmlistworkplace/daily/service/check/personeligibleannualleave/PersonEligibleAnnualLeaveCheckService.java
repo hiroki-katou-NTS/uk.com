@@ -49,16 +49,18 @@ public class PersonEligibleAnnualLeaveCheckService {
 
             // 次回年休付与日をチェック
             for (NextAnnualLeaveGrant next : nextAnnualLeaveGrants){
-                if (next.getGrantDate().beforeOrEquals(retirementDate) &&
-                        period.start().beforeOrEquals(next.getGrantDate()) &&
-                        next.getGrantDate().beforeOrEquals(period.end())){
+                GeneralDate grantDate =  next.getGrantDate();
+                if (grantDate.beforeOrEquals(retirementDate) &&
+                        period.start().beforeOrEquals(grantDate) &&
+                        grantDate.beforeOrEquals(period.end())){
 
-                    String message = TextResource.localize("KAL020_105", personInfo.getEmployeeCode(), personInfo.getBusinessName());
+                    String message = TextResource.localize("KAL020_105", personInfo.getEmployeeCode() + "　" + personInfo.getBusinessName(),
+                            grantDate.toString("yyyy/MM/dd"));
                     // 抽出結果を作成
                     ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(message),
-                            new AlarmValueDate(Integer.valueOf(retirementDate.toString("yyyyMMdd")), Optional.empty()),
+                            new AlarmValueDate(Integer.valueOf(period.start().toString("yyyyMMdd")), Optional.empty()),
                             null,
-                            Optional.ofNullable(TextResource.localize("KAL020_114", retirementDate.toString("yyyy/MM/dd"))),
+                            Optional.ofNullable(TextResource.localize("KAL020_120", grantDate.toString("yyyy/MM/dd"))),
                             Optional.empty(),
                             null
                     );
