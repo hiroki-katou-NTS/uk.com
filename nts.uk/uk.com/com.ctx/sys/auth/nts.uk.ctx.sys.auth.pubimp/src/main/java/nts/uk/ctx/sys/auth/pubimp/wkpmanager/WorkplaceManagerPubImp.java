@@ -1,0 +1,34 @@
+package nts.uk.ctx.sys.auth.pubimp.wkpmanager;
+
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.sys.auth.dom.wkpmanager.WorkplaceManager;
+import nts.uk.ctx.sys.auth.dom.wkpmanager.WorkplaceManagerRepository;
+import nts.uk.ctx.sys.auth.pub.wkpmanager.WorkplaceManagerPub;
+import nts.uk.ctx.sys.auth.pub.workplace.WorkplaceManagerExport;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * The Class WorkplaceManagerPubImp.
+ */
+@Stateless
+public class WorkplaceManagerPubImp implements WorkplaceManagerPub {
+
+    @Inject
+    private WorkplaceManagerRepository repository;
+
+    @Override
+    public List<WorkplaceManagerExport> findByPeriodAndWkpIds(List<String> wkpId, DatePeriod datePeriod) {
+        List<WorkplaceManager> workplaceManagers = repository.findByPeriodAndWkpIds(wkpId, datePeriod);
+
+        return workplaceManagers.stream().map(x -> new WorkplaceManagerExport(
+            x.getWorkplaceManagerId(),
+            x.getEmployeeId(),
+            x.getWorkplaceId(),
+            x.getHistoryPeriod()
+        )).collect(Collectors.toList());
+    }
+}
