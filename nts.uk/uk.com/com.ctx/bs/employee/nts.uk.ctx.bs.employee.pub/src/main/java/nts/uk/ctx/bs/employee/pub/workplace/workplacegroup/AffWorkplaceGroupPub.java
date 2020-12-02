@@ -10,6 +10,6 @@ public interface AffWorkplaceGroupPub {
 	/**
 	 * Find by cid and WkpIds.
 	 */
-	List<AffWorkplaceGroupExport> getByListWkpIds(String cid, List<String> WkpIds);
+	List<AffWorkplaceGroupExport> getByListWkpIds(String cid, List<String> wkpIds);
 
 }

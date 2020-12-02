@@ -20,9 +20,9 @@ public class AffWorkplaceGroupPubIpml implements AffWorkplaceGroupPub {
     private AffWorkplaceGroupRespository repo;
 
     @Override
-    public List<AffWorkplaceGroupExport> getByListWkpIds(String cid, List<String> WkpIds) {
+    public List<AffWorkplaceGroupExport> getByListWkpIds(String cid, List<String> wkpIds) {
 
-        List<AffWorkplaceGroup> data = repo.getByListWKPID(cid, WkpIds);
+        List<AffWorkplaceGroup> data = repo.getByListWKPID(cid, wkpIds);
 
         return data.stream().map(x -> new AffWorkplaceGroupExport(x.getWKPGRPID(), x.getWKPID())).collect(Collectors.toList());
     }

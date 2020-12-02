@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.pub.workschedule.budgetcontrol.budgetperformance;
+package nts.uk.ctx.at.record.dom.adapter.workschedule.budgetcontrol.budgetperformance;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,7 +7,7 @@ import java.util.Optional;
 
 @Getter
 @AllArgsConstructor
-public class TargetOrgIdenInforExport {
+public class TargetOrgIdenInforImport {
 
     /**
      * 単位

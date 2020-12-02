@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.service.beforecheck;
 
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.adapter.workschedule.budgetcontrol.budgetperformance.ExBudgetDailyAdapter;
+import nts.uk.ctx.at.record.dom.adapter.workschedule.budgetcontrol.budgetperformance.ExBudgetDailyImport;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.service.GetStampCardQuery;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.FixedCheckDayItems;
@@ -12,10 +14,13 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.PersonEmpBasicInfoImport;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.service.beforecheck.unregistedstamp.UnregistedStampCardService;
 import nts.uk.ctx.at.shared.dom.adapter.temporaryabsence.SharedTempAbsenceAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.temporaryabsence.TempAbsenceImport;
+import nts.uk.ctx.at.shared.dom.adapter.workplace.group.AffWorkplaceGroupImport;
+import nts.uk.ctx.at.shared.dom.adapter.workplace.group.SharedAffWorkplaceGroupAdapter;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務実績.勤務実績.勤務実績のエラーアラーム設定.アラームリスト（職場）.マスタチェック（日別）.アルゴリズム.マスタチェック(日別)の集計処理.チェック前の取得するデータ
@@ -35,6 +40,10 @@ public class DailyBeforeCheckService {
     private StampDakokuRepository stampDakokuRepo;
     @Inject
     private SharedTempAbsenceAdapter sharedTempAbsenceAdapter;
+    @Inject
+    private SharedAffWorkplaceGroupAdapter sharedAffWorkplaceGroupAdapter;
+    @Inject
+    private ExBudgetDailyAdapter exBudgetDailyAdapter;
 
     /**
      * チェック前の取得するデータ
@@ -81,9 +90,16 @@ public class DailyBeforeCheckService {
         if (fixedExtractDayItems.stream().anyMatch(x -> FixedCheckDayItems.PLAN_NOT_REGISTERED_PEOPLE.equals(x.getFixedCheckDayItems()) ||
                 FixedCheckDayItems.PLAN_NOT_REGISTERED_TIME.equals(x.getFixedCheckDayItems()) ||
                 FixedCheckDayItems.PLAN_NOT_REGISTERED_AMOUNT.equals(x.getFixedCheckDayItems()))) {
-            // ドメインモデル「日次の外部予算実績」を取得
-            // TODO Q&A 36545
-            data.setDailyExtBudgets(new ArrayList<>());
+            // ドメインモデル「職場グループ所属情報」を取得する
+            List<AffWorkplaceGroupImport> wpGroups = sharedAffWorkplaceGroupAdapter.getByListWkpIds(cid, workplaceIds);
+            List<String> wpGroupIds = wpGroups.stream().map(AffWorkplaceGroupImport::getWKPGRPID).distinct().collect(Collectors.toList());
+            List<ExBudgetDailyImport> exBudgetDailies = new ArrayList<>();
+            for (String wpGroupId : wpGroupIds){
+                // ドメインモデル「日次の外部予算実績」を取得
+                exBudgetDailies.addAll(exBudgetDailyAdapter.getAllExtBudgetDailyByPeriod(1, null, wpGroupId, period));
+            }
+
+            data.setExBudgetDailies(exBudgetDailies);
         }
 
         if (fixedExtractDayItems.stream().anyMatch(x -> FixedCheckDayItems.STAMPING_BEFORE_JOINING.equals(x.getFixedCheckDayItems()) ||

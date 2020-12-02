@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.
 
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.workplace.EmployeeInfoImported;
+import nts.uk.ctx.at.record.dom.adapter.workschedule.budgetcontrol.budgetperformance.ExBudgetDailyImport;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.FixedExtractionDayCon;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.FixedExtractionDayItems;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.service.check.leave.LeaveCheckService;
@@ -58,7 +59,7 @@ public class DailyCheckService {
      * @param personInfos                 List＜個人社員基本情報＞
      * @param tempAbsence                 List<休職休業履歴，休職休業履歴項目の名称>
      * @param unregistedStampCardsByWpMap Map＜職場ID、List＜打刻日、未登録打刻カード＞＞
-     * @param dailyExtBudgets             List＜日次の外部予算実績＞
+     * @param exBudgetDailies             List＜日次の外部予算実績＞
      * @param period                      期間
      * @param fixedExtractDayCons         List＜アラームリスト（職場）日別の固定抽出条件＞
      * @param fixedCheckDayItems          List＜アラームリスト（職場）日別の固定抽出項目＞
@@ -70,7 +71,7 @@ public class DailyCheckService {
                                                              List<PersonEmpBasicInfoImport> personInfos,
                                                              TempAbsenceImport tempAbsence,
                                                              Map<String, List<Object>> unregistedStampCardsByWpMap,
-                                                             List<Object> dailyExtBudgets,
+                                                             List<ExBudgetDailyImport> exBudgetDailies,
                                                              DatePeriod period,
                                                              List<FixedExtractionDayCon> fixedExtractDayCons,
                                                              List<FixedExtractionDayItems> fixedCheckDayItems,
@@ -108,15 +109,15 @@ public class DailyCheckService {
                         break;
                     case PLAN_NOT_REGISTERED_PEOPLE:
                         // 6.計画データ未登録をチェック
-                        results = planUnregisterCheckService.check(period, dailyExtBudgets, 0);
+                        results = planUnregisterCheckService.check(period, exBudgetDailies, 0);
                         break;
                     case PLAN_NOT_REGISTERED_TIME:
                         // 6.計画データ未登録をチェック
-                        results = planUnregisterCheckService.check(period, dailyExtBudgets, 1);
+                        results = planUnregisterCheckService.check(period, exBudgetDailies, 1);
                         break;
                     case PLAN_NOT_REGISTERED_AMOUNT:
                         // 6.計画データ未登録をチェック
-                        results = planUnregisterCheckService.check(period, dailyExtBudgets, 2);
+                        results = planUnregisterCheckService.check(period, exBudgetDailies, 2);
                         break;
                     case CARD_UNREGISTERD_STAMP:
                         for (Map.Entry<String, List<Object>> unregistedStampCardsByWp : unregistedStampCardsByWpMap.entrySet()) {

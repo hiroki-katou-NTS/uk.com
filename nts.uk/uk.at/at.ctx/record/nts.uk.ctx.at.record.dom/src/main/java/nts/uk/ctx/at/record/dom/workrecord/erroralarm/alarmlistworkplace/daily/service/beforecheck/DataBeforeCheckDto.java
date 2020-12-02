@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.at.record.dom.adapter.workschedule.budgetcontrol.budgetperformance.ExBudgetDailyImport;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.shared.dom.adapter.employee.PersonEmpBasicInfoImport;
 import nts.uk.ctx.at.shared.dom.adapter.temporaryabsence.TempAbsenceHistoryImport;
@@ -38,7 +39,7 @@ public class DataBeforeCheckDto {
     /**
      * List＜日次の外部予算実績＞
      */
-    private List<Object> dailyExtBudgets;
+    private List<ExBudgetDailyImport> exBudgetDailies ;
 
     /**
      * Map＜社員ID、List＜打刻＞＞
