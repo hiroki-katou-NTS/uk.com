@@ -1,8 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.overtime.service;
 
-import java.util.List;
 
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
@@ -20,7 +18,7 @@ public interface OverTimeRegisterService {
 	public ProcessResult register(
 			String companyId,
 			AppOverTime appOverTime,
-			List<ApprovalPhaseStateImport_New> lstApproval,
+			AppDispInfoStartupOutput appDispInfoStartupOutput,
 			Boolean mailServerSet,
 			AppTypeSetting appTypeSetting);
 	/**

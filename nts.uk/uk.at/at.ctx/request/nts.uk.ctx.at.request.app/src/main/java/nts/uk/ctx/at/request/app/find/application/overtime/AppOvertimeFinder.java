@@ -157,8 +157,11 @@ public class AppOvertimeFinder {
 	public CheckBeforeOutputDto checkBeforeRegister(ParamCheckBeforeRegister param) {
 		CheckBeforeOutput output = null;
 		DisplayInfoOverTime displayInfoOverTime = param.displayInfoOverTime.toDomain();
-		Application application = this.createApplication(param.appOverTime.application);
+		Application application = param.appOverTime.application.toDomain();
 		AppOverTime appOverTime = param.appOverTime.toDomain();
+		if (appOverTime.getDetailOverTimeOp().isPresent()) {
+			appOverTime.getDetailOverTimeOp().get().setAppId(application.getAppID());
+		}
 		appOverTime.setApplication(application);
 		output = overtimeService.checkErrorRegister(
 				param.require,

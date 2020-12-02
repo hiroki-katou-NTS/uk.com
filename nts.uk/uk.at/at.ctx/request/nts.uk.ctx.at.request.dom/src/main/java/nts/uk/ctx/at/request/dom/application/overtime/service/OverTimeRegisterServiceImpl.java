@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.overtime.service;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -43,12 +44,14 @@ public class OverTimeRegisterServiceImpl implements OverTimeRegisterService {
 	public ProcessResult register(
 			String companyId,
 			AppOverTime appOverTime,
-			List<ApprovalPhaseStateImport_New> lstApproval,
+			// change listApproval -> common setting
+			AppDispInfoStartupOutput appDispInfoStartupOutput,
 			Boolean mailServerSet,
 			AppTypeSetting appTypeSetting) {
 		Application application = appOverTime.getApplication();
 		// 登録処理を実行
-		appRepository.insertApp(application, lstApproval);
+		appRepository.insertApp(application,
+				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpListApprovalPhaseState().orElse(Collections.emptyList()));
 		registerService.newScreenRegisterAtApproveInfoReflect(application.getEmployeeID(), application);
 		appOverTimeRepository.add(appOverTime);
 		

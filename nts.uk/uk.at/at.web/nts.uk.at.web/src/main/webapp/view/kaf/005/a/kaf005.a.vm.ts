@@ -516,9 +516,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						} else {
 							commandRegister.appOverTime = applicationTemp;
 						}
-						if (!_.isNil(appDispInfoStartupOutput.appDispInfoWithDateOutput.opListApprovalPhaseState)) {
-							commandRegister.approvalPhaseState = appDispInfoStartupOutput.appDispInfoWithDateOutput.opListApprovalPhaseState;
-						}
+						commandRegister.appDispInfoStartupDto = appDispInfoStartupOutput;
 						// 残業申請の表示情報．申請表示情報．申請設定（基準日関係なし）．メールサーバ設定済区分
 						commandRegister.isMail = appDispInfoStartupOutput.appDispInfoNoDateOutput.mailServerSet;
 						// 残業申請の表示情報．申請表示情報．申請設定（基準日関係なし）．申請設定．申請種類別設定
@@ -2654,13 +2652,26 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 	export interface RegisterCommand {
 		companyId: string;
 		appOverTime: AppOverTime;
-		approvalPhaseState: Array<any>;
+		appDispInfoStartupDto: any;
 		isMail: Boolean;
 		appTypeSetting: any;
 	}
 	export interface HolidayMidNightTime {
 		attendanceTime: number;
 		legalClf: number;
+	}
+	
+	export interface ApplicationInsertCmd {
+		prePostAtr: number;
+		employeeIDLst: Array<string>;
+		appType: number;
+		appDate: string;
+		opAppReason: string;
+		opAppStandardReasonCD: string;
+		opAppStartDate: string;
+		opAppEndDate: string;
+		opStampRequestMode: string;
+		
 	}
 	
 	enum ACTION {
