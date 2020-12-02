@@ -32,10 +32,6 @@ public class KrcmtStampCard extends ContractUkJpaEntity implements Serializable 
 	@Column(name = "REGISTER_DATE")
     public GeneralDate registerDate;
     
-	@Column(name = "CONTRACT_CODE")
-    public String contractCd;
-	
-
 	@Override
 	protected Object getKey() {
 		return cardId;
