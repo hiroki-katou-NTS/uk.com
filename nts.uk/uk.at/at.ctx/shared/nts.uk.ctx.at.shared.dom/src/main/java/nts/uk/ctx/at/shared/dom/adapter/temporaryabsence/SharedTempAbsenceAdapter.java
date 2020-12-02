@@ -13,5 +13,5 @@ public interface SharedTempAbsenceAdapter {
      * @param employeeIds List<社員ID>
      * @return List<休職休業履歴, 休職休業履歴項目>
      */
-    List<TempAbsenceHistoryImport> getTempAbsenceHistories(String cid, DatePeriod period, List<String> employeeIds);
+    TempAbsenceImport getTempAbsence(String cid, DatePeriod period, List<String> employeeIds);
 }

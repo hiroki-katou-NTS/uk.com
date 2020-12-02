@@ -17,7 +17,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.extract
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.extractresult.ExtractResultDto;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.shared.dom.adapter.employee.PersonEmpBasicInfoImport;
-import nts.uk.ctx.at.shared.dom.adapter.temporaryabsence.TempAbsenceHistoryImport;
+import nts.uk.ctx.at.shared.dom.adapter.temporaryabsence.TempAbsenceImport;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -56,7 +56,7 @@ public class DailyCheckService {
      * @param cid                         会社ID
      * @param empInfosByWpMap             Map＜職場ID、List＜社員情報＞＞
      * @param personInfos                 List＜個人社員基本情報＞
-     * @param tempAbsences                List<休職休業履歴，休職休業履歴項目の名称>
+     * @param tempAbsence                 List<休職休業履歴，休職休業履歴項目の名称>
      * @param unregistedStampCardsByWpMap Map＜職場ID、List＜打刻日、未登録打刻カード＞＞
      * @param dailyExtBudgets             List＜日次の外部予算実績＞
      * @param period                      期間
@@ -68,7 +68,7 @@ public class DailyCheckService {
     public List<AlarmListExtractionInfoWorkplaceDto> process(String cid,
                                                              Map<String, List<EmployeeInfoImported>> empInfosByWpMap,
                                                              List<PersonEmpBasicInfoImport> personInfos,
-                                                             List<TempAbsenceHistoryImport> tempAbsences,
+                                                             TempAbsenceImport tempAbsence,
                                                              Map<String, List<Object>> unregistedStampCardsByWpMap,
                                                              List<Object> dailyExtBudgets,
                                                              DatePeriod period,
@@ -92,7 +92,7 @@ public class DailyCheckService {
                         break;
                     case LEAVE:
                         // 2.休職・休業者をチェック
-                        results = leaveCheckService.check(tempAbsences, period, empInfosByWp.getValue());
+                        results = leaveCheckService.check(tempAbsence, period, empInfosByWp.getValue());
                         break;
                     case RETIREE:
                         // 3.退職者をチェック

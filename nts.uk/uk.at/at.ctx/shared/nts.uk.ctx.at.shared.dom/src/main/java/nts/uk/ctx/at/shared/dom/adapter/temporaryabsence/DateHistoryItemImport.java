@@ -4,12 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 
+/**
+ * 汎用履歴項目 Import
+ */
 @Getter
 @AllArgsConstructor
 public class DateHistoryItemImport {
 
-    public String historyId;
-    public GeneralDate startDate;
-    public GeneralDate endDate;
-    TempAbsenceHisItemImport historyItem;
+    private String historyId;
+    private GeneralDate startDate;
+    private GeneralDate endDate;
 }

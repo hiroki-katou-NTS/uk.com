@@ -11,7 +11,7 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.PersonEmpBasicInfoImport;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.service.beforecheck.unregistedstamp.UnregistedStampCardService;
 import nts.uk.ctx.at.shared.dom.adapter.temporaryabsence.SharedTempAbsenceAdapter;
-import nts.uk.ctx.at.shared.dom.adapter.temporaryabsence.TempAbsenceHistoryImport;
+import nts.uk.ctx.at.shared.dom.adapter.temporaryabsence.TempAbsenceImport;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -68,8 +68,8 @@ public class DailyBeforeCheckService {
 
         if (fixedExtractDayItems.stream().anyMatch(x -> FixedCheckDayItems.LEAVE.equals(x.getFixedCheckDayItems()))) {
             // 社員（List）と期間から休職休業を取得する
-            List<TempAbsenceHistoryImport> tempAbsences = sharedTempAbsenceAdapter.getTempAbsenceHistories(cid, period, employeeIds);
-            data.setTempAbsences(tempAbsences);
+            TempAbsenceImport tempAbsence = sharedTempAbsenceAdapter.getTempAbsence(cid, period, employeeIds);
+            data.setTempAbsence(tempAbsence);
         }
 
         if (fixedExtractDayItems.stream().anyMatch(x -> FixedCheckDayItems.CARD_UNREGISTERD_STAMP.equals(x.getFixedCheckDayItems()))) {

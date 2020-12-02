@@ -10,8 +10,7 @@ import nts.arc.time.GeneralDate;
 @AllArgsConstructor
 public class DateHistoryItemExport {
 
-    public String historyId;
-    public GeneralDate startDate;
-    public GeneralDate endDate;
-    private TempAbsenceHisItemExport historyItem;
+    private String historyId;
+    private GeneralDate startDate;
+    private GeneralDate endDate;
 }

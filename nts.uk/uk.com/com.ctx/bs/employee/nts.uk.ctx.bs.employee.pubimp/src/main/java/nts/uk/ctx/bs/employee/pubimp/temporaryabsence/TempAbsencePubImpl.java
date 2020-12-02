@@ -29,17 +29,17 @@ public class TempAbsencePubImpl implements TempAbsencePub {
     private TempAbsenceRepositoryFrame tempAbsenceRepositoryFrame;
 
     @Override
-    public List<TempAbsenceHistoryExport> getTempAbsenceHistories(String cid, DatePeriod period, List<String> employeeIds) {
+    public TempAbsenceExport getTempAbsence(String cid, DatePeriod period, List<String> employeeIds) {
 
         Map<TempAbsenceFrameNo, String> tempAbsenceFrames = tempAbsenceRepositoryFrame.findByCid(cid)
                 .stream().collect(Collectors.toMap(TempAbsenceFrame::getTempAbsenceFrNo, x -> x.getTempAbsenceFrName().v()));
         List<TempAbsenceHistory> tempAbsMap = tempAbsHistRepo.getByListSid(employeeIds, period);
 
         List<String> historyIds = new ArrayList<>();
-        tempAbsMap.forEach(x -> x.getDateHistoryItems().stream().forEach(c -> historyIds.add(c.identifier())));
+        tempAbsMap.forEach(x -> x.getDateHistoryItems().forEach(c -> historyIds.add(c.identifier())));
 
         List<TempAbsenceHisItem> mapTempAbsItemMap = tempAbsItemRepo.getItemByHitoryIdList(historyIds);
-        Map<String, TempAbsenceHisItemExport> leaveHistItemMap = mapTempAbsItemMap.stream().map(x ->
+        List<TempAbsenceHisItemExport> leaveHistItems = mapTempAbsItemMap.stream().map(x ->
                 new TempAbsenceHisItemExport(
                         x.getTempAbsenceFrNo().v().intValue(),
                         tempAbsenceFrames.getOrDefault(x.getTempAbsenceFrNo(), ""),
@@ -48,7 +48,7 @@ public class TempAbsencePubImpl implements TempAbsencePub {
                         x.getRemarks().v(),
                         x.getSoInsPayCategory(),
                         x.getFamilyMemberId()
-                )).collect(Collectors.toMap(TempAbsenceHisItemExport::getHistoryId, x -> x));
+                )).collect(Collectors.toList());
 
         List<TempAbsenceHistoryExport> leaveHists = tempAbsMap.stream().map(x ->
                 new TempAbsenceHistoryExport(
@@ -58,11 +58,10 @@ public class TempAbsencePubImpl implements TempAbsencePub {
                                 new DateHistoryItemExport(
                                         i.identifier(),
                                         i.start(),
-                                        i.end(),
-                                        leaveHistItemMap.getOrDefault(i.identifier(), null)))
+                                        i.end()))
                                 .collect(Collectors.toList())
                 )).collect(Collectors.toList());
 
-        return leaveHists;
+        return new TempAbsenceExport(leaveHists, leaveHistItems);
     }
 }
