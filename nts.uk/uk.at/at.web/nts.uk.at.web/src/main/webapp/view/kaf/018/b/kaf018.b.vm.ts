@@ -141,30 +141,23 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 									if(!vm.initDisplayOfApprovalStatus.applicationApprovalFlg) {
 										$("#bGrid").igGrid("hideColumn", "countUnApprApp");
 									}
-									$("#bGrid").igGrid("hideColumn", "countUnConfirmDay");
-									$("#bGrid").igGrid("hideColumn", "countUnApprDay");
-									$("#bGrid").igGrid("hideColumn", "countUnConfirmMonth");
-									$("#bGrid").igGrid("hideColumn", "countUnApprMonth");
-									$("#bGrid").igGrid("hideColumn", "displayConfirm");
-									$("#bGrid").igGrid("hideColumn", "confirmPerson");
-									$("#bGrid").igGrid("hideColumn", "date");
-//									if(!useSet.usePersonConfirm || !vm.initDisplayOfApprovalStatus.confirmAndApprovalDailyFlg) {
-//										$("#bGrid").igGrid("hideColumn", "countUnConfirmDay");
-//									}
-//									if(!useSet.useBossConfirm || !vm.initDisplayOfApprovalStatus.confirmAndApprovalDailyFlg) {
-//										$("#bGrid").igGrid("hideColumn", "countUnApprDay");
-//									}
-//									if(!useSet.monthlyIdentityConfirm || !vm.initDisplayOfApprovalStatus.confirmAndApprovalMonthFlg) {
-//										$("#bGrid").igGrid("hideColumn", "countUnConfirmMonth");	
-//									}
-//									if(!useSet.monthlyConfirm || !vm.initDisplayOfApprovalStatus.confirmAndApprovalMonthFlg) {
-//										$("#bGrid").igGrid("hideColumn", "countUnApprMonth");
-//									}
-//									if(!useSet.employmentConfirm) {
-//										$("#bGrid").igGrid("hideColumn", "displayConfirm");
-//										$("#bGrid").igGrid("hideColumn", "confirmPerson");
-//										$("#bGrid").igGrid("hideColumn", "date");
-//									}
+									if(!useSet.usePersonConfirm || !vm.initDisplayOfApprovalStatus.confirmAndApprovalDailyFlg) {
+										$("#bGrid").igGrid("hideColumn", "countUnConfirmDay");
+									}
+									if(!useSet.useBossConfirm || !vm.initDisplayOfApprovalStatus.confirmAndApprovalDailyFlg) {
+										$("#bGrid").igGrid("hideColumn", "countUnApprDay");
+									}
+									if(!useSet.monthlyIdentityConfirm || !vm.initDisplayOfApprovalStatus.confirmAndApprovalMonthFlg) {
+										$("#bGrid").igGrid("hideColumn", "countUnConfirmMonth");	
+									}
+									if(!useSet.monthlyConfirm || !vm.initDisplayOfApprovalStatus.confirmAndApprovalMonthFlg) {
+										$("#bGrid").igGrid("hideColumn", "countUnApprMonth");
+									}
+									if(!useSet.employmentConfirm || !vm.initDisplayOfApprovalStatus.confirmEmploymentFlg) {
+										$("#bGrid").igGrid("hideColumn", "displayConfirm");
+										$("#bGrid").igGrid("hideColumn", "confirmPerson");
+										$("#bGrid").igGrid("hideColumn", "date");
+									}
 									vm.getPageData();
 									vm.loadData(true);
 								}
@@ -302,7 +295,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 							},
 							{ 
 								headerText: '<p style="text-align: center">' + vm.$i18n('KAF018_342') + '</p>', 
-								key: 'string', 
+								key: 'confirmPerson', 
 								dataType: 'string', 
 								width: '75px', 
 								headerCssClass: 'kaf018-b-header-emp-confirm',
@@ -407,13 +400,6 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 			}
 			
 			if(ui.colKey=="countUnConfirmDay" || ui.colKey=="countUnApprDay" || ui.colKey=="countUnConfirmMonth" || ui.colKey=="countUnApprMonth") {
-//				let countUnConfirmDay = _.find(vm.dataSource, o => o.wkpID == ui.rowKey).countUnConfirmDay,
-//					countUnApprDay = _.find(vm.dataSource, o => o.wkpID == ui.rowKey).countUnApprDay,
-//					countUnConfirmMonth = _.find(vm.dataSource, o => o.wkpID == ui.rowKey).countUnConfirmMonth,
-//					countUnApprMonth = _.find(vm.dataSource, o => o.wkpID == ui.rowKey).countUnApprMonth;
-//				if(!countUnConfirmDay && !countUnApprDay && !countUnConfirmMonth && !countUnApprMonth) {
-//					return;	
-//				}
 				let closureItem = vm.closureItem,
 					startDate = vm.startDate,
 					endDate = vm.endDate,
@@ -444,15 +430,19 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 							let countUnApprApp = o.countUnApprApp ? true : false;
 							return countUnApprApp && _.includes(vm.pageData, o.wkpID);
 						case ApprovalStatusMailType.DAILY_UNCONFIRM_BY_PRINCIPAL:
-							return false;
+							let countUnConfirmDay = o.countUnConfirmDay ? true : false;
+							return countUnConfirmDay && _.includes(vm.pageData, o.wkpID);
 						case ApprovalStatusMailType.DAILY_UNCONFIRM_BY_CONFIRMER:
-							return false;
+							let countUnApprDay = o.countUnApprDay ? true : false;
+							return countUnApprDay && _.includes(vm.pageData, o.wkpID);
 						case ApprovalStatusMailType.MONTHLY_UNCONFIRM_BY_PRINCIPAL:
-							return false;
+							let countUnConfirmMonth = o.countUnConfirmMonth ? true : false;
+							return countUnConfirmMonth && _.includes(vm.pageData, o.wkpID);
 						case ApprovalStatusMailType.MONTHLY_UNCONFIRM_BY_CONFIRMER:
-							return false;
+							let countUnApprMonth = o.countUnApprMonth ? true : false;
+							return countUnApprMonth && _.includes(vm.pageData, o.wkpID);
 						case ApprovalStatusMailType.WORK_CONFIRMATION:
-							return false;
+							return o.displayConfirm && _.includes(vm.pageData, o.wkpID);
 						default:
 							return false;
 					}
