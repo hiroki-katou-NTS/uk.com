@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.app.command.statutory.worktime.monthlyworkinghours.monthlyworktimesetemp;
+package nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetemp;
 
 import lombok.Value;
 

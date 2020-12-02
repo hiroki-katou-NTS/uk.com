@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.app.command.statutory.worktime.monthlyworkinghours.monthlyworktimesetsha;
+package nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetsha;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

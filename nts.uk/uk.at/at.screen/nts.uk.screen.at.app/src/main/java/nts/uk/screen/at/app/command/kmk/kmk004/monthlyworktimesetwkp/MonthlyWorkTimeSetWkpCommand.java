@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.app.command.statutory.worktime.monthlyworkinghours.monthlyworktimesetwkp;
+package nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetwkp;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.YearMonth;
