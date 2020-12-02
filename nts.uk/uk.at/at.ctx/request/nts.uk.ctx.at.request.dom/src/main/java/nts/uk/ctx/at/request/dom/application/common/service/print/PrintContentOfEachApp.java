@@ -8,6 +8,8 @@ import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripPrintContent;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforGoBackCommonDirectOutput;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.ArrivedLateLeaveEarlyInfoOutput;
+import nts.uk.ctx.at.request.dom.application.overtime.service.DetailOutput;
+import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayInfoOverTime;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampOutput;
 
 /**
@@ -53,11 +55,15 @@ public class PrintContentOfEachApp {
 	 */
 	private Optional<BusinessTripPrintContent> opBusinessTrip;
 	
+	
+	private Optional<DetailOutput> opDetailOutput;
+	
 	public PrintContentOfEachApp() {
 		this.opPrintContentOfWorkChange = Optional.empty();
 		this.opAppStampOutput = Optional.empty();
 		this.opArrivedLateLeaveEarlyInfo = Optional.empty();
 		this.opInforGoBackCommonDirectOutput = Optional.empty();
 		this.opBusinessTrip = Optional.empty();
+		this.opDetailOutput = Optional.empty();
 	}
 }

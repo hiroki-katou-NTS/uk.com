@@ -94,6 +94,7 @@ public class CommonAppPrintImpl implements CommonAppPrint {
 		printContentOfApp.setOpArrivedLateLeaveEarlyInfo(opPrintContentOfEachApp.map(x -> x.getOpArrivedLateLeaveEarlyInfo()).orElse(Optional.empty()));
 		printContentOfApp.setOpInforGoBackCommonDirectOutput(opPrintContentOfEachApp.map(x -> x.getOpInforGoBackCommonDirectOutput()).orElse(Optional.empty()));
 		printContentOfApp.setOpBusinessTripPrintContent(opPrintContentOfEachApp.map(x -> x.getOpBusinessTrip()).orElse(Optional.empty()));
+		printContentOfApp.setOpDetailOutput(opPrintContentOfEachApp.map(PrintContentOfEachApp::getOpDetailOutput).orElse(Optional.empty()));
 		// INPUT．申請表示情報．申請表示情報(基準日関係なし)．社員情報リストの一つ目を取得する
 		printContentOfApp.setEmployeeInfoLst(appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst());
 		// 社員と基準日から所属職場履歴項目を取得する

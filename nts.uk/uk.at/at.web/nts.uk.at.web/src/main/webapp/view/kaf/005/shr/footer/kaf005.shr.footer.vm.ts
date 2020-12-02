@@ -11,7 +11,7 @@ module nts.uk.at.view.kaf005.shr.footer.viewmodel {
 					optionsValue: 'code',
 					value: messageInfos()[0].selectedCode,
 					optionsText: 'name',
-					required: true
+					required: false
 					}">
 			</div>
 		</div>
@@ -42,7 +42,7 @@ module nts.uk.at.view.kaf005.shr.footer.viewmodel {
 					optionsValue: 'code',
 					value: messageInfos()[1].selectedCode,
 					optionsText: 'name',
-					required: true
+					required: false
 					}">
 			</div>
 		</div>
@@ -64,7 +64,6 @@ module nts.uk.at.view.kaf005.shr.footer.viewmodel {
 	
 	
 </div>
-
 
 	`
 	@component({

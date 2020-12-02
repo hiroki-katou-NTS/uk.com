@@ -171,7 +171,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
             return vm.$ajax(API.initAppDetail, command)
             .done(res => {
                 if (res) {
-                    vm.printContentOfEachAppDto().opPrintContentOfWorkChange = res;
+                    vm.printContentOfEachAppDto().opDetailOutput = res;
 					vm.appOverTime = res.appOverTime;
 					vm.dataSource = res.displayInfoOverTime;
 					vm.visibleModel = vm.createVisibleModel(vm.dataSource);
@@ -311,42 +311,45 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			let workInfoOp = {} as WorkInformation;
 			// work type and time
 			// A4 ---
-			if (!_.isNil(workInfo.workType())) {
-				workInfoOp.workType = workInfo.workType().code;
-				workInfoOp.workTime = workInfo.workTime().code;
-				appOverTime.workInfoOp = workInfoOp;
-			}
-			appOverTime.workHoursOp = [] as Array<TimeZoneWithWorkNo>;
-			if (!_.isNil(workInfo.workHours1.start())
-				&& !_.isEqual(workInfo.workHours1.start() , '')
-				&& !_.isNil(workInfo.workHours1.end())
-				&& !_.isEqual(workInfo.workHours1.end() , '')
-				) {
-				let timeZone = {} as TimeZoneWithWorkNo;
-				timeZone.workNo = 1;
-				timeZone.timeZone = {} as TimeZone_New;
-				timeZone.timeZone.startTime = workInfo.workHours1.start();
-				timeZone.timeZone.endTime = workInfo.workHours1.end();
-				appOverTime.workHoursOp.push(timeZone);
-			} else {
-				_.remove(appOverTime.workHoursOp, (i) => i.workNo == 1);
+			if (vm.visibleModel.c7()) {
+				if (!_.isNil(workInfo.workType())) {
+					workInfoOp.workType = workInfo.workType().code;
+					workInfoOp.workTime = workInfo.workTime().code;
+					appOverTime.workInfoOp = workInfoOp;
+				}
+				appOverTime.workHoursOp = [] as Array<TimeZoneWithWorkNo>;
+				if (!_.isNil(workInfo.workHours1.start())
+					&& !_.isEqual(workInfo.workHours1.start() , '')
+					&& !_.isNil(workInfo.workHours1.end())
+					&& !_.isEqual(workInfo.workHours1.end() , '')
+					) {
+					let timeZone = {} as TimeZoneWithWorkNo;
+					timeZone.workNo = 1;
+					timeZone.timeZone = {} as TimeZone_New;
+					timeZone.timeZone.startTime = workInfo.workHours1.start();
+					timeZone.timeZone.endTime = workInfo.workHours1.end();
+					appOverTime.workHoursOp.push(timeZone);
+				} else {
+					_.remove(appOverTime.workHoursOp, (i) => i.workNo == 1);
+				}
+				
+	
+				if (!_.isNil(workInfo.workHours2.start())
+					&& !_.isEqual(workInfo.workHours2.start() , '')
+					&& !_.isNil(workInfo.workHours2.end())
+					&& !_.isEqual(workInfo.workHours2.end() , '')
+					) {
+					let timeZone = {} as TimeZoneWithWorkNo;
+					timeZone.workNo = 2;
+					timeZone.timeZone = {} as TimeZone_New;
+					timeZone.timeZone.startTime = workInfo.workHours2.start();
+					timeZone.timeZone.endTime = workInfo.workHours2.end();
+					appOverTime.workHoursOp.push(timeZone);
+				} else {
+					_.remove(appOverTime.workHoursOp, (i) => i.workNo == 2);
+				}
 			}
 			
-
-			if (!_.isNil(workInfo.workHours2.start())
-				&& !_.isEqual(workInfo.workHours2.start() , '')
-				&& !_.isNil(workInfo.workHours2.end())
-				&& !_.isEqual(workInfo.workHours2.end() , '')
-				) {
-				let timeZone = {} as TimeZoneWithWorkNo;
-				timeZone.workNo = 2;
-				timeZone.timeZone = {} as TimeZone_New;
-				timeZone.timeZone.startTime = workInfo.workHours2.start();
-				timeZone.timeZone.endTime = workInfo.workHours2.end();
-				appOverTime.workHoursOp.push(timeZone);
-			} else {
-				_.remove(appOverTime.workHoursOp, (i) => i.workNo == 2);
-			}
 			// A5 ---
 			let restTime = vm.restTime() as Array<RestTime>;
 			appOverTime.breakTimeOp = [] as Array<TimeZoneWithWorkNo>;

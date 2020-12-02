@@ -115,6 +115,11 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
 		opInforGoBackCommonDirectOutput: any;
 		
 		opBusinessTripInfoOutput: any;
+		
+		/*
+			残業申請
+		 */
+		opDetailOutput: any;
 	}
 	
 	export interface AppInitParam {

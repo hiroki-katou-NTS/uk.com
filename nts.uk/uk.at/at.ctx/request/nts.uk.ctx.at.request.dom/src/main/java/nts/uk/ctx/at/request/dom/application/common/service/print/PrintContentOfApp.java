@@ -9,12 +9,11 @@ import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
-import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripInfo;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripPrintContent;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforGoBackCommonDirectOutput;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.ArrivedLateLeaveEarlyInfoOutput;
+import nts.uk.ctx.at.request.dom.application.overtime.service.DetailOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampOutput;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppReasonStandard;
 
@@ -130,6 +129,8 @@ public class PrintContentOfApp {
 	private Optional<InforGoBackCommonDirectOutput> opInforGoBackCommonDirectOutput;
 
 	
+	private Optional<DetailOutput> opDetailOutput;
+	
 	/**
 	 * 任意項目申請の印刷内容
 	 */
@@ -140,5 +141,6 @@ public class PrintContentOfApp {
 		this.opArrivedLateLeaveEarlyInfo = Optional.empty();
 		this.opAppStampOutput = Optional.empty();
 		this.opBusinessTripPrintContent = Optional.empty();
+		this.opDetailOutput = Optional.empty();
 	}
 }

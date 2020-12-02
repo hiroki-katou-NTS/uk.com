@@ -1,11 +1,10 @@
 package nts.uk.ctx.at.request.app.command.application.overtime;
 
-import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.applicationsetting.apptypeset.AppTypeSettingCommand;
-import nts.uk.ctx.at.request.app.find.application.common.dto.ApprovalPhaseStateForAppDto;
+import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,9 +12,9 @@ public class RegisterCommand {
 	
 	public String companyId;
 	
-	public AppOverTimeCommand appOverTime;
+	public AppOverTimeInsertCommand appOverTime;
 	
-	public List<ApprovalPhaseStateForAppDto> approvalPhaseState;
+	public AppDispInfoStartupDto appDispInfoStartupDto;
 	
 	public Boolean isMail;
 

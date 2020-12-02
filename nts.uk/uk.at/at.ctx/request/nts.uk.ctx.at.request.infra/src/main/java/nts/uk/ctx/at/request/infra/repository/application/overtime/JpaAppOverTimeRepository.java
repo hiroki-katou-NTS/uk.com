@@ -254,6 +254,10 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 		updateAppOverTime.get().overTimeNight = krqdtAppOverTime.overTimeNight;
 		updateAppOverTime.get().totalNight = krqdtAppOverTime.totalNight;
 		
+		updateAppOverTime.get().legalHdNight = krqdtAppOverTime.legalHdNight;
+		updateAppOverTime.get().nonLegalHdNight = krqdtAppOverTime.nonLegalHdNight;
+		updateAppOverTime.get().nonLegalPublicHdNight = krqdtAppOverTime.nonLegalPublicHdNight;
+		
 		
 		updateAppOverTime.get().breakTimeStart1 = krqdtAppOverTime.breakTimeStart1;
 		updateAppOverTime.get().breakTimeEnd1 = krqdtAppOverTime.breakTimeEnd1;

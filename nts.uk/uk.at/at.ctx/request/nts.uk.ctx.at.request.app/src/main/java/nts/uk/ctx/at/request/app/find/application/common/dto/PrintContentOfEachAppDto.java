@@ -2,6 +2,8 @@ package nts.uk.ctx.at.request.app.find.application.common.dto;
 
 import java.util.Optional;
 
+import nts.uk.ctx.at.request.app.command.application.overtime.DetailOutputCommand;
+import nts.uk.ctx.at.request.app.command.application.overtime.DisplayInfoOverTimeCommand;
 import nts.uk.ctx.at.request.app.command.application.workchange.AppWorkChangeOutputCmd;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.BusinessTripDto;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.InforGoBackCommonDirectDto;
@@ -48,6 +50,9 @@ public class PrintContentOfEachAppDto {
 
 	public BusinessTripDto opBusinessTripInfoOutput;
 	
+	
+	public DetailOutputCommand  opDetailOutput;
+	
 	public PrintContentOfEachApp toDomain() {
 		PrintContentOfEachApp printContentOfEachApp = new PrintContentOfEachApp();
 		if(opPrintContentOfWorkChange != null) {
@@ -69,6 +74,11 @@ public class PrintContentOfEachAppDto {
 		if(opBusinessTripInfoOutput != null) {
 			printContentOfEachApp.setOpBusinessTrip(Optional.of(opBusinessTripInfoOutput.toPrintContentOutput()));
 		}
+		if (opDetailOutput != null) {
+			printContentOfEachApp.setOpDetailOutput(Optional.of(opDetailOutput.toDomain()));
+			
+		}
+		
 		return printContentOfEachApp;
 	}
 	
