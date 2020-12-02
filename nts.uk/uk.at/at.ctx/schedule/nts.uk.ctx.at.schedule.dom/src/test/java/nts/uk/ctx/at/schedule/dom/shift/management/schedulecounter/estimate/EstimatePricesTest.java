@@ -115,7 +115,5 @@ public class EstimatePricesTest {
 					, EstimateAmountByCondition.create(new EstimateAmountNo(3), 110000)
 					));
 		}
-		
-		
 	}
 }
