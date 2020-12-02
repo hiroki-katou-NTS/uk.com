@@ -433,12 +433,12 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		else
 			headerData.companyName = "";
 		if (condition.getOutputType() == MonthlyWorkScheduleCondition.EXPORT_BY_EMPLOYEE) {
-			headerData.fixedHeaderData.add(WorkScheOutputConstants.YEARMONTH);
+			headerData.fixedHeaderData.add(TextResource.localize(WorkScheOutputConstants.YEARMONTH));
 		} else {
 			headerData.fixedHeaderData.add(WorkScheOutputConstants.PERSONAL_NAME);
 		}
-		headerData.fixedHeaderData.add(WorkScheOutputConstants.CLOSURE_DATE);
-		headerData.fixedHeaderData.add(WorkScheOutputConstants.REMARK);
+		headerData.fixedHeaderData.add(TextResource.localize(WorkScheOutputConstants.CLOSURE_DATE));
+		headerData.fixedHeaderData.add(TextResource.localize(WorkScheOutputConstants.REMARK));
 	}
 	
 	/**
@@ -2377,7 +2377,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		Cells cells = sheetInfo.getSheet().getCells();
 		if (!findDetailedData(rootWorkplace))
 			return currentRow;
-		String workplaceTitle = WorkScheOutputConstants.WORKPLACE + "　" + rootWorkplace.getWorkplaceCode()
+		String workplaceTitle = TextResource.localize(WorkScheOutputConstants.WORKPLACE) + "　" + rootWorkplace.getWorkplaceCode()
 				+ "　" + rootWorkplace.getWorkplaceName();
 		/*Range workplaceRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_DATE_ROW);
 		Range workplaceRange = cells.createRange(currentRow, 0, 1, remarkColumn);
@@ -3126,7 +3126,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
             rowPageTracker.useOneRowAndCheckResetRemainingRow(sheetInfo.getSheet(), currentRow);
             // A3_1
             Cell workplaceTagCell = cells.get(currentRow, 0);
-            workplaceTagCell.setValue(WorkScheOutputConstants.WORKPLACE + "　"
+            workplaceTagCell.setValue(TextResource.localize(WorkScheOutputConstants.WORKPLACE) + "　"
                     + workplaceReportData.getWorkplaceCode() + " " + workplaceReportData.getWorkplaceName());
             currentRow++;
         }
@@ -3143,13 +3143,13 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
             rowPageTracker.useOneRowAndCheckResetRemainingRow(sheetInfo.getSheet(), currentRow);
             // A4_1
             Cell employeeTagCell = cells.get(currentRow, 0);
-            employeeTagCell.setValue(WorkScheOutputConstants.EMPLOYEE
+            employeeTagCell.setValue(TextResource.localize(WorkScheOutputConstants.EMPLOYEE)
             		+ "　" + employeeReportData.employeeCode																 // A4_2
                     + "　" + employeeReportData.employeeName																 // A4_3
-                    + "　" + WorkScheOutputConstants.EMPLOYMENT															 // A4_4
-                    + "　" + (employeeReportData.employmentName == null ? "" : (employeeReportData.employmentName + "　")) // A4_5_1
-                    + "　" + (employeeReportData.employeeCode == null ? "" : (employeeReportData.employeeCode + "　"))     // A4_5_2
-                    + WorkScheOutputConstants.POSITION																	 // A4_6	
+                    + "　" + TextResource.localize(WorkScheOutputConstants.EMPLOYMENT)									 // A4_4
+                    + "　" + (employeeReportData.employmentCode == null ? "" : (employeeReportData.employmentCode + "　")) // A4_5_1
+                    + "　" + (employeeReportData.employmentName == null ? "" : (employeeReportData.employmentName + "　")) // A4_5_2
+                    + TextResource.localize(WorkScheOutputConstants.POSITION)											 // A4_6	
                     + "　" + employeeReportData.jobTitleCode																 // A4_7_1
                     + "　" + employeeReportData.position);																 // A4_7_2
             currentRow++;
