@@ -1850,8 +1850,8 @@ module nts.uk.ui.components.fullcalendar {
         const DATE_PICKER_TEMP = `<div class="datepicker-container">
             <div class="datepicker-panel" data-view="years picker">
             <ul>
-                <li data-view="month prev">&lsaquo;</li>
                 <li data-view="month current"></li>
+                <li data-view="month prev">&lsaquo;</li>
                 <li data-view="month next">&rsaquo;</li>
             </ul>
             <ul data-view="week"></ul>
@@ -1859,8 +1859,8 @@ module nts.uk.ui.components.fullcalendar {
             </div>
             <div class="datepicker-panel" data-view="months picker">
             <ul>
-                <li data-view="month prev">&lsaquo;</li>
                 <li data-view="month current"></li>
+                <li data-view="month prev">&lsaquo;</li>
                 <li data-view="month next">&rsaquo;</li>
             </ul>
             <ul data-view="week"></ul>
@@ -1868,8 +1868,8 @@ module nts.uk.ui.components.fullcalendar {
             </div>
             <div class="datepicker-panel" data-view="days picker">
             <ul>
-                <li data-view="month prev">&lsaquo;</li>
                 <li data-view="month current"></li>
+                <li data-view="month prev">&lsaquo;</li>
                 <li data-view="month next">&rsaquo;</li>
             </ul>
             <ul data-view="week"></ul>
