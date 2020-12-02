@@ -1,5 +1,6 @@
 package nts.uk.screen.at.app.ksm008.query.k;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDayOfWorkTimeCode;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDayOfWorkTimeCompany;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDayOfWorkTimeCompanyRepo;
@@ -11,10 +12,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -51,12 +49,13 @@ public class WorkingHourListCompanyScreenQuery {
                     .collect(Collectors.toList());
         }
         //就業時間帯情報を取得する
-        List<WorkTimeSetting> workTimeSettingList = workTimeRepo
-                .getListWorkTimeSetByListCode(AppContexts.user().companyId(), workHourCodeList);
+        Map<String, String> getCodeNameByListWorkTimeCd = workTimeRepo
+                .getCodeNameByListWorkTimeCd(AppContexts.user().companyId(), workHourCodeList);
                 // working hours list
-        List<WorkingHoursDTO> workhourList = workTimeSettingList
+        List<WorkingHoursDTO> workhourList = getCodeNameByListWorkTimeCd
+                .entrySet()
                 .stream()
-                .map(item -> new WorkingHoursDTO(item.getWorktimeCode().v(), item.getWorkTimeDisplayName().getWorkTimeName().v()))
+                .map(item -> new WorkingHoursDTO(item.getKey(), item.getValue()))
                 .collect(Collectors.toList());
         MaxDaysOfWorkTimeComListDto dto = new MaxDaysOfWorkTimeComListDto(
                 maxDayOfWorkTimeCompany.get().getCode().v(),

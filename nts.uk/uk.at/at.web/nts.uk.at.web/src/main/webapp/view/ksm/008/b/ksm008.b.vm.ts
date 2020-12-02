@@ -182,12 +182,13 @@ module nts.uk.at.ksm008.b {
                    let lstEmployee = _.map(res, function (item: any) {
                        return {id: item.employeeID, code: item.employeeCode, name: item.businessName, workplaceName: ''};
                    });
-                   vm.multiSelectedCode([]);
                    vm.simultanceList(_.orderBy(lstEmployee, ['code'],['asc']));
+                   vm.multiSelectedCode([]);
                    vm.enableDeleteBtn(true);
                    vm.screenMode = MODE.EDIT_MODE;
                } else {
                    vm.simultanceList([]);
+                   vm.multiSelectedCode([]);
                    vm.enableDeleteBtn(false);
                    vm.screenMode = MODE.NEW_MODE;
                };
