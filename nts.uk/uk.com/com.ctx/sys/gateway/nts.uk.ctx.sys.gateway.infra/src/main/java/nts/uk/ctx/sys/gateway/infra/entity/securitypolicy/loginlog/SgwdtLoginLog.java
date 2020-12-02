@@ -42,10 +42,6 @@ public class SgwdtLoginLog extends ContractUkJpaEntity implements Serializable {
 	@Column(name="USER_ID")
 	private String userId;
 
-	/** The contract cd. */
-	@Column(name="CONTRACT_CD")
-	private String contractCd;
-
 	/** The program id. */
 	@Column(name="PROGRAM_ID")
 	private String programId;
