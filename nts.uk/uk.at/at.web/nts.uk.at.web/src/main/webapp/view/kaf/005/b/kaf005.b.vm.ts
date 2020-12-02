@@ -484,7 +484,27 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			
 
 			applicationTime.reasonDissociation = [] as Array<ReasonDivergence>;
-
+			
+			// message info
+			if (vm.visibleModel.c11_1() || vm.visibleModel.c11_2()) {
+				//vm.messageInfos
+				
+				let item = {} as ReasonDivergence;
+				item.reasonCode = vm.messageInfos()[0].selectedCode();
+				item.reason = vm.messageInfos()[0].valueInput();
+				item.diviationTime = 1;
+				applicationTime.reasonDissociation.push(item);
+			}
+			
+			if (vm.visibleModel.c12_1() || vm.visibleModel.c12_2()) {
+				//vm.messageInfos
+				
+				let item = {} as ReasonDivergence;
+				item.reasonCode = vm.messageInfos()[1].selectedCode();
+				item.reason = vm.messageInfos()[1].valueInput();
+				item.diviationTime = 2;
+				applicationTime.reasonDissociation.push(item);
+			}
 
 
 			// common application
@@ -642,32 +662,86 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			if (self.visibleModel.c11_1()) {
 				let itemList = [] as Array<ItemModel>;
 				let findResut = _.find(res.infoNoBaseDate.divergenceReasonInputMethod, { divergenceTimeNo: 1 });
+				// first dropdown
+				{
+					let i = {} as ItemModel;
+					i.code = null;
+					i.name = self.$i18n('KAF005_340');
+					itemList.push(i);
+				}	
 				_.forEach(findResut.reasons, (item: DivergenceReasonSelect) => {
 					let i = {} as ItemModel;
 					i.code = item.divergenceReasonCode;
-					i.name = self.$i18n('KAF005_340') + item.divergenceReasonCode + ' ' + item.reason;
+					i.name = item.divergenceReasonCode + ' ' + item.reason;
 					itemList.push(i);
 					
 				});
 				messageInfo1.listDrop(itemList);
+				
+				let reasonDissociation = self.appOverTime.applicationTime.reasonDissociation;
+				let selectedCode = '';
+				let result = _.find(reasonDissociation, (item: ReasonDivergence) => item.diviationTime == 1);
+				if (_!.isNil(result)) {
+					let resultItemModel = _.find(itemList, (item: ItemModel) => item.code == result.reasonCode);
+					if (!_.isNil(resultItemModel)) {
+						selectedCode = resultItemModel.code;
+						messageInfo1.selectedCode(selectedCode);
+					}
+				}
+				
 			} else {
-				messageInfo1.selectedCode(null);
+				messageInfo1.selectedCode('');
+			}
+			
+			if (self.visibleModel.c11_2()) {
+				let reasonDissociation = self.appOverTime.applicationTime.reasonDissociation;
+				let result = _.find(reasonDissociation, (item: ReasonDivergence) => item.diviationTime == 1);
+				if (!_.isNil(result)) {
+					messageInfo1.valueInput(result.reason);
+				}
 			}
 			
 			if (self.visibleModel.c12_1()) {
 				let itemList = [] as Array<ItemModel>;
 				let findResut = _.find(res.infoNoBaseDate.divergenceReasonInputMethod, { divergenceTimeNo: 2 });
+				// first dropdown
+				{
+					let i = {} as ItemModel;
+					i.code = null;
+					i.name = self.$i18n('KAF005_340');
+					itemList.push(i);
+				}	
 				_.forEach(findResut.reasons, (item: DivergenceReasonSelect) => {
 					let i = {} as ItemModel;
 					i.code = item.divergenceReasonCode;
-					i.name = self.$i18n('KAF005_340') + item.divergenceReasonCode + ' ' + item.reason;
+					i.name = item.divergenceReasonCode + ' ' + item.reason;
 					itemList.push(i);
 					
 				});
 				messageInfo2.listDrop(itemList);
+				
+				let reasonDissociation = self.appOverTime.applicationTime.reasonDissociation;
+				let selectedCode = '';
+				let result = _.find(reasonDissociation, (item: ReasonDivergence) => item.diviationTime == 2);
+				if (_!.isNil(result)) {
+					let resultItemModel = _.find(itemList, (item: ItemModel) => item.code == result.reasonCode);
+					if (!_.isNil(resultItemModel)) {
+						selectedCode = resultItemModel.code;
+						messageInfo2.selectedCode(selectedCode);
+					}
+				}
 			} else {
-				messageInfo2.selectedCode(null);
+				messageInfo2.selectedCode('');
 			}
+			
+			if (self.visibleModel.c12_2()) {
+				let reasonDissociation = self.appOverTime.applicationTime.reasonDissociation;
+				let result = _.find(reasonDissociation, (item: ReasonDivergence) => item.diviationTime == 2);
+				if (!_.isNil(result)) {
+					messageInfo2.valueInput(result.reason);
+				}
+			}
+			
 
 		}
 		
@@ -2080,7 +2154,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			// 残業申請の表示情報．基準日に関係しない情報．利用する乖離理由．乖離理由を選択肢から選ぶ = true
 			let c11_1 = true;
 			let findResut = _.find(res.infoNoBaseDate.divergenceReasonInputMethod, { divergenceTimeNo: 1 });
-			let c11_1_1 = _.isNil(findResut) ? false : !_.isEmpty(findResut.reasons);
+			let c11_1_1 = !_.isNil(findResut);
 			let c11_1_2 = c11_1_1 ? findResut.divergenceReasonSelected : false;
 			c11_1 = c11_1_1 && c11_1_2;
 			visibleModel.c11_1(c11_1);
@@ -2088,7 +2162,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			// 「残業申請の表示情報．基準日に関係しない情報．利用する乖離理由．NO = 1」 <> empty　AND
 			// 残業申請の表示情報．基準日に関係しない情報．利用する乖離理由．乖離理由を入力する = true
 			let c11_2 = true;
-			let c11_2_1 = _.isNil(findResut) ? false : !_.isEmpty(findResut.reasons);
+			let c11_2_1 = !_.isNil(findResut);
 			let c11_2_2 = c11_2_1 ? findResut.divergenceReasonInputed : false;
 			c11_2 = c11_2_1 && c11_2_2;
 			visibleModel.c11_2(c11_2);
@@ -2509,7 +2583,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		flexOverTime: number; // フレックス超過時間
 		overTimeShiftNight: OverTimeShiftNight; // 就業時間外深夜時間
 		anyItem: Array<AnyItemValue>; // 任意項目
-		reasonDissociation: Array<any>; // 乖離理由
+		reasonDissociation: Array<ReasonDivergence>; // 乖離理由
 	}
 	export interface OvertimeApplicationSetting {
 		frameNo: number;
@@ -2529,7 +2603,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 	}
 	export interface ReasonDivergence {
 
-		reason: DivergenceReason;
+		reason: string;
 		reasonCode: string;
 		diviationTime: number;
 	}

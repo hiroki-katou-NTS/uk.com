@@ -725,7 +725,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				});
 				messageInfo1.listDrop(itemList);
 			} else {
-				messageInfo1.selectedCode(null);
+				messageInfo1.selectedCode('');
 			}
 			
 			if (self.visibleModel.c12_1()) {
@@ -748,7 +748,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				});
 				messageInfo2.listDrop(itemList);
 			} else {
-				messageInfo2.selectedCode(null);
+				messageInfo2.selectedCode('');
 			}
 
 		}
