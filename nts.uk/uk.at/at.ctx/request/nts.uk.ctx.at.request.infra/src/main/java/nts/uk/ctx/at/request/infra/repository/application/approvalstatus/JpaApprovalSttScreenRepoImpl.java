@@ -16,7 +16,6 @@ import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprovalSttScreenRepository;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.EmpPeriod;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.WkpEmpMail;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
 /**
@@ -602,37 +601,408 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 	}
 
 	@Override
-	public List<WkpEmpMail> getMailCountUnConfirmDay(GeneralDate startDate, GeneralDate endDate,
-			List<String> wkpIDLst, List<String> employmentCDLst) {
-		// TODO Auto-generated method stub
-		return null;
+	public Map<String, String> getMailCountUnConfirmDay(GeneralDate startDate, GeneralDate endDate, List<String> wkpIDLst, List<String> employmentCDLst) {
+		if(CollectionUtil.isEmpty(wkpIDLst)) {
+			return Collections.emptyMap();
+		}
+		Map<String, String> result = new HashMap<>();
+		String sql = 
+				"SELECT DISTINCT SKBSYITERM.WORKPLACE_ID,SKBSYITERM.SID " +
+				"FROM        ( " +
+				"                    SELECT SKBSYINIO.WORKPLACE_ID,SKBSYINIO.SID,KYO.EMP_CD,SKBSYINIO.WORK_ST,SKBSYINIO.WORK_ED,SKBSYINIO.COMP_ST,SKBSYINIO.COMP_ED,KYO.START_DATE as KYO_ST,KYO.END_DATE as KYO_ED " +
+				"                    FROM ( " +
+				"                                        SELECT SKBSYIN.WORKPLACE_ID,SKBSYIN.SID,SKBSYIN.START_DATE as WORK_ST,SKBSYIN.END_DATE as WORK_ED,SKR.START_DATE as COMP_ST,SKR.END_DATE as COMP_ED " +
+				"                                        FROM ( " +
+				"                                                        SELECT SSRK.WORKPLACE_ID,SSRK.SID,SSR.START_DATE,SSR.END_DATE " +
+				"                                                        FROM         BSYMT_AFF_WORKPLACE_HIST SSR " +
+				"                                                        INNER JOIN   BSYMT_AFF_WPL_HIST_ITEM SSRK " +
+				"                                                        ON           SSR.HIST_ID = SSRK.HIST_ID " +
+				"                                                        WHERE        @startDate <= SSR.END_DATE " +
+				"                                                        AND          SSR.START_DATE <= @endDate " +
+				"　                                              　　　　　　AND          SSRK.WORKPLACE_ID IN @wkpIDLst " +
+				"                                                    ) SKBSYIN " +
+				"                                        INNER JOIN       BSYMT_AFF_COM_HIST SKR " +
+				"                                        ON               SKBSYIN.SID = SKR.SID " +
+				"                                        INNER JOIN       BSYMT_EMP_DTA_MNG_INFO SDKJ " +
+				"                                        ON               SDKJ.SID = SKR.SID " +
+				"                                        WHERE            @startDate <= SKR.END_DATE " +
+				"                                        AND              SKR.START_DATE <= @endDate " +
+				"                                        AND SDKJ.DEL_STATUS_ATR = '0' " +
+				"                            ) SKBSYINIO " +
+				"                    LEFT JOIN  ( " +
+				"                                        SELECT KRK.SID,KRK.EMP_CD,KR.START_DATE,KR.END_DATE " +
+				"                                        FROM BSYMT_EMPLOYMENT_HIST KR " +
+				"                                        INNER JOIN BSYMT_EMPLOYMENT_HIS_ITEM KRK " +
+				"                                        ON KR.HIST_ID = KRK.HIST_ID " +
+				"                                        WHERE KRK.EMP_CD IN @employmentCDLst " +
+				"                                        AND @startDate <= KR.END_DATE " +
+				"                                        AND KR.START_DATE <= @endDate " +
+				"                                        ) KYO " +
+				"                    ON SKBSYINIO.SID = KYO.SID " +
+				"                    )  SKBSYITERM " +
+				"INNER JOIN   ( " +
+				"                        SELECT             SGJSKNJT.EMPLOYEE_ID as SYAIN_ID,SGJSKNJT.RECORD_DATE as TG_DAY,'0' as NON_APP " +
+				"                        FROM               WWFDT_APP_ROOT_CONFIRM SGJSKNJT " +
+				"                        LEFT JOIN          KRCDT_CONFIRMATION_DAY DAYKN " +
+				"                        ON       (         SGJSKNJT.CID = DAYKN.CID " +
+				"                                AND        SGJSKNJT.EMPLOYEE_ID = DAYKN.SID " +
+				"                                AND        SGJSKNJT.RECORD_DATE = DAYKN.PROCESSING_YMD   ) " +
+				"                        WHERE              @startDate <= SGJSKNJT.RECORD_DATE " +
+				"                        AND                SGJSKNJT.RECORD_DATE <= @endDate " +
+				"                        AND                SGJSKNJT.ROOT_TYPE = '1' " +
+				"                        AND                DAYKN.INDENTIFICATION_YMD IS NULL " +
+				"                        ) HNKN " +
+				"ON              SKBSYITERM.SID  = HNKN.SYAIN_ID " +
+				"WHERE           SKBSYITERM.WORK_ST <= HNKN.TG_DAY " +
+				"AND             SKBSYITERM.COMP_ST <= HNKN.TG_DAY " +
+				"AND             SKBSYITERM.KYO_ST <= HNKN.TG_DAY " +
+				"AND             HNKN.TG_DAY <= SKBSYITERM.WORK_ED " +
+				"AND             HNKN.TG_DAY <= SKBSYITERM.COMP_ED " +
+				"AND             HNKN.TG_DAY <= SKBSYITERM.KYO_ED;";
+		new NtsStatement(sql, this.jdbcProxy())
+				.paramDate("startDate", startDate)
+				.paramDate("endDate", endDate)
+				.paramString("wkpIDLst", wkpIDLst)
+				.paramString("employmentCDLst", employmentCDLst)
+				.getList(rec -> {
+					result.put(rec.getString("WORKPLACE_ID"), rec.getString("SID"));
+					return null;
+		});
+		return result;
 	}
 
 	@Override
-	public List<WkpEmpMail> getMailCountUnApprDay(GeneralDate startDate, GeneralDate endDate, List<String> wkpIDLst,
-			List<String> employmentCDLst) {
-		// TODO Auto-generated method stub
-		return null;
+	public Map<String, String> getMailCountUnApprDay(GeneralDate startDate, GeneralDate endDate, List<String> wkpIDLst, List<String> employmentCDLst) {
+		if(CollectionUtil.isEmpty(wkpIDLst)) {
+			return Collections.emptyMap();
+		}
+		Map<String, String> result = new HashMap<>();
+		String sql = 
+				"SELECT DISTINCT SKBSYITERM.WORKPLACE_ID,SKBSYITERM.SID " +
+				"FROM  ( " +
+				"                    SELECT SKBSYINIO.WORKPLACE_ID,SKBSYINIO.SID,KYO.EMP_CD,SKBSYINIO.WORK_ST,SKBSYINIO.WORK_ED,SKBSYINIO.COMP_ST,SKBSYINIO.COMP_ED,KYO.START_DATE as KYO_ST,KYO.END_DATE as KYO_ED " +
+				"                    FROM ( " +
+				"                                SELECT SKBSYIN.WORKPLACE_ID,SKBSYIN.SID,SKBSYIN.START_DATE as WORK_ST,SKBSYIN.END_DATE as WORK_ED,SKR.START_DATE as COMP_ST,SKR.END_DATE as COMP_ED " +
+				"                                FROM ( " +
+				"                                            SELECT SSRK.WORKPLACE_ID,SSRK.SID,SSR.START_DATE,SSR.END_DATE " +
+				"                                            FROM         BSYMT_AFF_WORKPLACE_HIST SSR " +
+				"                                            INNER JOIN   BSYMT_AFF_WPL_HIST_ITEM SSRK " +
+				"                                            ON           SSR.HIST_ID = SSRK.HIST_ID " +
+				"                                            WHERE        @startDate <= SSR.END_DATE " +
+				"                                            AND          SSR.START_DATE <= @endDate " +
+				"                       　          　　　　　　AND          SSRK.WORKPLACE_ID IN @wkpIDLst          " +
+				"                                        ) SKBSYIN " +
+				"                                INNER JOIN       BSYMT_AFF_COM_HIST SKR " +
+				"                                ON               SKBSYIN.SID = SKR.SID " +
+				"                                INNER JOIN       BSYMT_EMP_DTA_MNG_INFO SDKJ " +
+				"                                ON               SDKJ.SID = SKR.SID " +
+				"                                WHERE            @startDate <= SKR.END_DATE " +
+				"                                AND              SKR.START_DATE <= @endDate " +
+				"                                AND SDKJ.DEL_STATUS_ATR = '0' " +
+				"                        ) SKBSYINIO " +
+				"                    LEFT JOIN  ( " +
+				"                            SELECT KRK.SID,KRK.EMP_CD,KR.START_DATE,KR.END_DATE " +
+				"                            FROM BSYMT_EMPLOYMENT_HIST KR " +
+				"                            INNER JOIN BSYMT_EMPLOYMENT_HIS_ITEM KRK " +
+				"                            ON KR.HIST_ID = KRK.HIST_ID " +
+				"                            WHERE KRK.EMP_CD IN @employmentCDLst " +
+				"                            AND @startDate <= KR.END_DATE " +
+				"                            AND KR.START_DATE <= @endDate " +
+				"                    ) KYO " +
+				"                    ON SKBSYINIO.SID = KYO.SID " +
+				"            )  SKBSYITERM " +
+				"INNER JOIN  ( " +
+				"                        SELECT   MIDFOD.EMPLOYEE_ID,SGJFOD.RECORD_DATE,'0' as NONAPP      " + 
+				"                        FROM   ( " +
+				"                                        SELECT     SNRMID.EMPLOYEE_ID,MIN(SNFMID.PHASE_ORDER) as FINF,SNRMID.START_DATE,SNRMID.END_DATE " +
+				"                                        FROM       WWFDT_APP_ROOT_INSTANCE SNRMID " +
+				"                                        INNER JOIN WWFDT_APP_PHASE_INSTANCE SNFMID " +
+				"                                        ON         SNRMID.ROOT_ID = SNFMID.ROOT_ID " +
+				"                                        WHERE      @startDate <= SNRMID.END_DATE " +
+				"                                        AND SNRMID.START_DATE <= @endDate " +
+				"            AND SNRMID.ROOT_TYPE = '1' " +
+				"            GROUP BY SNRMID.EMPLOYEE_ID,SNRMID.START_DATE,SNRMID.END_DATE " +
+				"        ) MIDFOD " +
+				"INNER JOIN ( SELECT SGJKNJT.EMPLOYEE_ID,SGJKNJT.RECORD_DATE,SYNZMF.PHASE_ORDER,SYNZMF.APP_PHASE_ATR " +
+				"FROM WWFDT_APP_ROOT_CONFIRM SGJKNJT " +
+				"INNER JOIN WWFDT_APP_PHASE_CONFIRM SYNZMF " +
+				"ON SGJKNJT.ROOT_ID = SYNZMF.ROOT_ID " +
+				"WHERE SGJKNJT.ROOT_TYPE = '1' " +
+				"AND @startDate <= SGJKNJT.RECORD_DATE " +
+				"AND SGJKNJT.RECORD_DATE <= @endDate " +
+				"        ) SGJFOD " +
+				"ON MIDFOD.EMPLOYEE_ID = SGJFOD.EMPLOYEE_ID " +
+				"WHERE MIDFOD.FINF  = SGJFOD.PHASE_ORDER " +
+				"AND MIDFOD.START_DATE <= SGJFOD.RECORD_DATE " +
+				"AND SGJFOD.RECORD_DATE <= MIDFOD.END_DATE " +
+				"AND SGJFOD.APP_PHASE_ATR  IN ('0','3') " +
+				"UNION ALL " +
+				"SELECT SGJKN.EMPLOYEE_ID,SGJKN.RECORD_DATE,ISNULL(SYNZMF.APP_PHASE_ATR,'0') as NONAPP " +
+				"FROM          ( SELECT MIDFOD.EMPLOYEE_ID,SGJT.RECORD_DATE,SGJT.ROOT_ID,MIDFOD.FINF " +
+				"FROM      ( " +
+				"        SELECT SNRMID.EMPLOYEE_ID,MIN(SNFMID.PHASE_ORDER) as FINF,SNRMID.START_DATE,SNRMID.END_DATE " +
+				"        FROM WWFDT_APP_ROOT_INSTANCE SNRMID " +
+				"        INNER JOIN WWFDT_APP_PHASE_INSTANCE SNFMID " +
+				"        ON SNRMID.ROOT_ID = SNFMID.ROOT_ID " +
+				"        WHERE @startDate <= SNRMID.END_DATE " +
+				"        AND SNRMID.START_DATE <= @endDate " +
+				"        AND SNRMID.ROOT_TYPE = '1' " +
+				"        GROUP BY SNRMID.EMPLOYEE_ID,SNRMID.START_DATE,SNRMID.END_DATE " +
+				"        ) MIDFOD " +
+				"INNER JOIN ( SELECT SGJKNJT.ROOT_ID,SGJKNJT.EMPLOYEE_ID,SGJKNJT.RECORD_DATE " +
+				"                                                                            FROM WWFDT_APP_ROOT_CONFIRM SGJKNJT " +
+				"                                                                            WHERE @startDate <= SGJKNJT.RECORD_DATE " +
+				"                                                                            AND SGJKNJT.RECORD_DATE <= @endDate " +
+				"                                                                            AND SGJKNJT.ROOT_TYPE = '1'      ) SGJT " +
+				"ON MIDFOD.EMPLOYEE_ID = SGJT.EMPLOYEE_ID " +
+				"WHERE MIDFOD.START_DATE <= SGJT.RECORD_DATE " +
+				"AND SGJT.RECORD_DATE <= MIDFOD.END_DATE     ) SGJKN " +
+				"LEFT JOIN WWFDT_APP_PHASE_CONFIRM SYNZMF " +
+				"ON      ( SGJKN.ROOT_ID = SYNZMF.ROOT_ID " +
+				"AND SGJKN.FINF = SYNZMF.PHASE_ORDER      ) " +
+				"WHERE SYNZMF.APP_PHASE_ATR IS NULL       " +
+				"        ) JCHOSN " +
+				"ON SKBSYITERM.SID = JCHOSN.EMPLOYEE_ID " +
+				"WHERE SKBSYITERM.WORK_ST <= JCHOSN.RECORD_DATE " +
+				"AND SKBSYITERM.COMP_ST <= JCHOSN.RECORD_DATE " +
+				"AND SKBSYITERM.KYO_ST <= JCHOSN.RECORD_DATE " +
+				"AND JCHOSN.RECORD_DATE <= SKBSYITERM.WORK_ED " +
+				"AND JCHOSN.RECORD_DATE <= SKBSYITERM.COMP_ED " +
+				"AND JCHOSN.RECORD_DATE <= SKBSYITERM.KYO_ED; ";
+		new NtsStatement(sql, this.jdbcProxy())
+				.paramDate("endDate", endDate)
+				.paramString("wkpIDLst", wkpIDLst)
+				.paramString("employmentCDLst", employmentCDLst)
+				.getList(rec -> {
+					result.put(rec.getString("WORKPLACE_ID"), rec.getString("SID"));
+					return null;
+		});
+		return result;
 	}
 
 	@Override
-	public List<WkpEmpMail> getMailCountUnConfirmMonth(GeneralDate startDate, GeneralDate endDate,
-			List<String> wkpIDLst, List<String> employmentCDLst) {
-		// TODO Auto-generated method stub
-		return null;
+	public Map<String, String> getMailCountUnConfirmMonth(GeneralDate endDate, List<String> wkpIDLst, List<String> employmentCDLst) {
+		if(CollectionUtil.isEmpty(wkpIDLst)) {
+			return Collections.emptyMap();
+		}
+		Map<String, String> result = new HashMap<>();
+		String sql = 
+				"SELECT DISTINCT SKBSYITERM_MON.WORKPLACE_ID,SKBSYITERM_MON.SID " +
+				"FROM   ( " +
+				"                    SELECT SKBSYINIO.WORKPLACE_ID,SKBSYINIO.SID,KYO.EMP_CD " +
+				"                    FROM ( " +
+				"                                    SELECT SKBSYIN.WORKPLACE_ID,SKBSYIN.SID " +
+				"                                    FROM ( " +
+				"                                                SELECT       SSRK.WORKPLACE_ID,SSRK.SID,SSR.START_DATE,SSR.END_DATE " +
+				"                                                FROM         BSYMT_AFF_WORKPLACE_HIST SSR " +
+				"                                                INNER JOIN   BSYMT_AFF_WPL_HIST_ITEM SSRK " +
+				"                                                ON           SSR.HIST_ID = SSRK.HIST_ID " +
+				"                                                WHERE        @endDate <= SSR.END_DATE " +
+				"                                                AND          SSR.START_DATE <= @endDate " +
+				"                                                AND          SSRK.WORKPLACE_ID IN  @wkpIDLst " +
+				"                                            )  SKBSYIN " +
+				"                                    INNER JOIN       BSYMT_AFF_COM_HIST SKR " +
+				"                                    ON               SKBSYIN.SID = SKR.SID " +
+				"                                    INNER JOIN       BSYMT_EMP_DTA_MNG_INFO SDKJ " +
+				"                                    ON               SDKJ.SID = SKR.SID " +
+				"                                    WHERE            @endDate <= SKR.END_DATE " +
+				"                                    AND              SKR.START_DATE <= @endDate " +
+				"                                    AND              SDKJ.DEL_STATUS_ATR = '0' " +
+				"                            ) SKBSYINIO " +
+				"                    LEFT JOIN  ( " +
+				"                                            SELECT         KRK.SID,KRK.EMP_CD " +
+				"                                            FROM           BSYMT_EMPLOYMENT_HIST KR " +
+				"                                            INNER JOIN     BSYMT_EMPLOYMENT_HIS_ITEM KRK " +
+				"                                            ON             KR.HIST_ID = KRK.HIST_ID " +
+				"                                            WHERE          KRK.EMP_CD IN  @employmentCDLst " +
+				"                                            AND            @endDate <= KR.END_DATE " +
+				"                                            AND            KR.START_DATE <= @endDate " +
+				"                                        ) KYO " +
+				"                    ON     SKBSYINIO.SID = KYO.SID " +
+				"                ) SKBSYITERM_MON " +
+				"INNER JOIN  ( " +
+				"                                SELECT SGJSKNJT.EMPLOYEE_ID,SGJSKNJT.RECORD_DATE,'0' as NONAPP " +
+				"                                FROM               WWFDT_APP_ROOT_CONFIRM SGJSKNJT " +
+				"                                LEFT JOIN        KRCDT_CONFIRMATION_MONTH MONKN " +
+				"ON       (   SGJSKNJT.CID = MONKN.CID " +
+				"            AND  SGJSKNJT.EMPLOYEE_ID = MONKN.SID " +
+				"            AND  SGJSKNJT.CLOSURE_ID  = MONKN.CLOSURE_ID " +
+				"            AND  SGJSKNJT.YEARMONTH   = MONKN.PROCESS_YM   ) " +
+				"WHERE @endDate = SGJSKNJT.RECORD_DATE " +
+				"AND SGJSKNJT.ROOT_TYPE = '2' " +
+				"AND MONKN.IDENTIFY_DATE IS NULL " +
+				") HONKN_MON " +
+				"ON SKBSYITERM_MON.SID  = HONKN_MON.EMPLOYEE_ID;";
+		new NtsStatement(sql, this.jdbcProxy())
+				.paramDate("endDate", endDate)
+				.paramString("wkpIDLst", wkpIDLst)
+				.paramString("employmentCDLst", employmentCDLst)
+				.getList(rec -> {
+					result.put(rec.getString("WORKPLACE_ID"), rec.getString("SID"));
+					return null;
+		});
+		return result;
 	}
 
 	@Override
-	public List<WkpEmpMail> getMailCountUnApprMonth(GeneralDate startDate, GeneralDate endDate,
-			List<String> wkpIDLst, List<String> employmentCDLst) {
-		// TODO Auto-generated method stub
-		return null;
+	public Map<String, String> getMailCountUnApprMonth(GeneralDate endDate, YearMonth yearMonth, List<String> wkpIDLst, List<String> employmentCDLst) {
+		if(CollectionUtil.isEmpty(wkpIDLst)) {
+			return Collections.emptyMap();
+		}
+		Map<String, String> result = new HashMap<>();
+		String sql = 
+				"SELECT DISTINCT SKBSYITERM_MON.WORKPLACE_ID,SKBSYITERM_MON.SID " +
+				"FROM                ( " +
+				"                        SELECT SKBSYINIO.WORKPLACE_ID,SKBSYINIO.SID,KYO.EMP_CD " +
+				"                        FROM ( " +
+				"                                SELECT SKBSYIN.WORKPLACE_ID,SKBSYIN.SID " +
+				"                                FROM ( " +
+				"                                        SELECT       SSRK.WORKPLACE_ID,SSRK.SID,SSR.START_DATE,SSR.END_DATE " +
+				"                                        FROM         BSYMT_AFF_WORKPLACE_HIST SSR " +
+				"                                        INNER JOIN   BSYMT_AFF_WPL_HIST_ITEM SSRK " +
+				"                                        ON           SSR.HIST_ID = SSRK.HIST_ID " +
+				"                                        WHERE        @endDate <= SSR.END_DATE " +
+				"                                        AND          SSR.START_DATE <= @endDate " +
+				"                                        AND          SSRK.WORKPLACE_ID IN  @wkpIDLst " +
+				"                                        ) SKBSYIN " +
+				"                                INNER JOIN       BSYMT_AFF_COM_HIST SKR " +
+				"                                ON               SKBSYIN.SID = SKR.SID " +
+				"                                INNER JOIN       BSYMT_EMP_DTA_MNG_INFO SDKJ " +
+				"                                ON               SDKJ.SID = SKR.SID " +
+				"                                WHERE            @endDate <= SKR.END_DATE " +
+				"                                AND              SKR.START_DATE <= @endDate " +
+				"                                AND              SDKJ.DEL_STATUS_ATR = '0' " +
+				"                        ) SKBSYINIO " +
+				"                        LEFT JOIN  ( " +
+				"                                SELECT         KRK.SID,KRK.EMP_CD " +
+				"                                FROM           BSYMT_EMPLOYMENT_HIST KR " +
+				"                                INNER JOIN     BSYMT_EMPLOYMENT_HIS_ITEM KRK " +
+				"                                ON             KR.HIST_ID = KRK.HIST_ID " +
+				"                                WHERE          KRK.EMP_CD IN  @employmentCDLst " +
+				"                                AND            @endDate <= KR.END_DATE " +
+				"                                AND            KR.START_DATE <= @endDate " +
+				"                        ) KYO " +
+				"                        ON             SKBSYINIO.SID = KYO.SID " +
+				"                ) SKBSYITERM_MON " +
+				"INNER JOIN      ( " +
+				"                    SELECT                MIDFOD.EMPLOYEE_ID,SGJFOD.RECORD_DATE,'0' as NONAPP " +
+				"                    FROM       ( " +
+				"                                                    SELECT SNRMID.EMPLOYEE_ID,MIN(SNFMID.PHASE_ORDER) as FINF " +
+				"                                                    FROM WWFDT_APP_ROOT_INSTANCE SNRMID " +
+				"                                                    INNER JOIN WWFDT_APP_PHASE_INSTANCE SNFMID " +
+				"                                                    ON             SNRMID.ROOT_ID = SNFMID.ROOT_ID " +
+				"                                                    WHERE          @endDate <= SNRMID.END_DATE " +
+				"                                                    AND SNRMID.START_DATE <= @endDate " +
+				"                                                    GROUP BY SNRMID.EMPLOYEE_ID " +
+				"                                            ) MIDFOD " +
+				"                    INNER JOIN (    " +
+				"                                                    SELECT SGJKNJT.EMPLOYEE_ID,SGJKNJT.RECORD_DATE,SYNZMF.PHASE_ORDER,SYNZMF.APP_PHASE_ATR " +
+				"                                                    FROM WWFDT_APP_ROOT_CONFIRM SGJKNJT " +
+				"                                                    INNER JOIN WWFDT_APP_PHASE_CONFIRM SYNZMF " +
+				"                                                    ON SGJKNJT.ROOT_ID = SYNZMF.ROOT_ID " +
+				"                                                    WHERE SGJKNJT.ROOT_TYPE = '2' " +
+				"                                                    AND            @yearMonth = SGJKNJT.YEARMONTH " +
+				"                                            ) SGJFOD " +
+				"                    ON      MIDFOD.EMPLOYEE_ID = SGJFOD.EMPLOYEE_ID " +
+				"                    WHERE   MIDFOD.FINF  = SGJFOD.PHASE_ORDER " +
+				"                    AND        SGJFOD.APP_PHASE_ATR IN ('0','3') " +
+				"                    UNION ALL " +
+				"                    SELECT      SGJKN.EMPLOYEE_ID,SGJKN.RECORD_DATE,ISNULL(SYNZMF.APP_PHASE_ATR,'0') as NONAPP " +
+				"                    FROM        ( " +
+				"                                                    SELECT  MIDFOD.EMPLOYEE_ID,SGJT.RECORD_DATE,SGJT.ROOT_ID,MIDFOD.FINF " +
+				"                                                    FROM        (   SELECT     SNRMID.EMPLOYEE_ID,MIN(SNFMID.PHASE_ORDER) as FINF " +
+				"                                                                                    FROM       WWFDT_APP_ROOT_INSTANCE SNRMID " +
+				"                                                                                    INNER JOIN WWFDT_APP_PHASE_INSTANCE SNFMID " +
+				"                                                                                    ON         SNRMID.ROOT_ID = SNFMID.ROOT_ID " +
+				"                                                                                    WHERE      @endDate <= SNRMID.END_DATE " +
+				"                                                                                    AND        SNRMID.START_DATE <= @endDate " +
+				"                                                                                    AND        SNRMID.ROOT_TYPE = '2' " +
+				"                                                                                    GROUP BY   SNRMID.EMPLOYEE_ID " +
+				"                                                                            ) MIDFOD " +
+				"                                                    INNER JOIN  (     SELECT     SGJKNJT.ROOT_ID,SGJKNJT.EMPLOYEE_ID,SGJKNJT.RECORD_DATE " +
+				"                                                                                FROM       WWFDT_APP_ROOT_CONFIRM SGJKNJT " +
+				"                                                                                WHERE      SGJKNJT.ROOT_TYPE = '2' " +
+				"                                                                                AND        @yearMonth = SGJKNJT.YEARMONTH " +
+				"                                                                            ) SGJT " +
+				"                                                    ON      MIDFOD.EMPLOYEE_ID = SGJT.EMPLOYEE_ID " +
+				"                                        ) SGJKN " +
+				"                    LEFT JOIN   WWFDT_APP_PHASE_CONFIRM SYNZMF " +
+				"                    ON              SGJKN.ROOT_ID = SYNZMF.ROOT_ID " +
+				"                    WHERE       SYNZMF.APP_PHASE_ATR  IS NULL " +
+				"                ) JCHOSN_M " +
+				"ON              SKBSYITERM_MON.SID  = JCHOSN_M.EMPLOYEE_ID;";
+		new NtsStatement(sql, this.jdbcProxy())
+				.paramDate("endDate", endDate)
+				.paramInt("yearMonth", yearMonth.v())
+				.paramString("wkpIDLst", wkpIDLst)
+				.paramString("employmentCDLst", employmentCDLst)
+				.getList(rec -> {
+					result.put(rec.getString("WORKPLACE_ID"), rec.getString("SID"));
+					return null;
+		});
+		return result;
 	}
 
 	@Override
-	public List<WkpEmpMail> getMailCountWorkConfirm(GeneralDate startDate, GeneralDate endDate,
-			List<String> wkpIDLst, List<String> employmentCDLst) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<String> getMailCountWorkConfirm(GeneralDate startDate, GeneralDate endDate, ClosureId closureId, YearMonth yearMonth, 
+			String companyID, List<String> wkpIDLst, List<String> employmentCDLst) {
+		if(CollectionUtil.isEmpty(wkpIDLst)) {
+			return Collections.emptyList();
+		}
+		String sql = 
+				"SELECT    DISTINCT  SKBSYITERM.WORKPLACE_ID " +
+				"FROM       ( " +
+				"                   SELECT SKBSYINIO.WORKPLACE_ID,SKBSYINIO.SID,KYO.EMP_CD,SKBSYINIO.WORK_ST,SKBSYINIO.WORK_ED,SKBSYINIO.COMP_ST,SKBSYINIO.COMP_ED,KYO.START_DATE as KYO_ST,KYO.END_DATE as KYO_ED " +
+				"                   FROM ( " +
+				"                                   SELECT SKBSYIN.WORKPLACE_ID,SKBSYIN.SID,SKBSYIN.START_DATE as WORK_ST,SKBSYIN.END_DATE as WORK_ED,SKR.START_DATE as COMP_ST,SKR.END_DATE as COMP_ED " +
+				"                                   FROM ( " +
+				"                                                  SELECT SSRK.WORKPLACE_ID,SSRK.SID,SSR.START_DATE,SSR.END_DATE " +
+				"                                                  FROM         BSYMT_AFF_WORKPLACE_HIST SSR " +
+				"                                                  INNER JOIN   BSYMT_AFF_WPL_HIST_ITEM SSRK " +
+				"                                                  ON           SSR.HIST_ID = SSRK.HIST_ID " +
+				"                                                  WHERE        @startDate <= SSR.END_DATE " +
+				"                                                  AND          SSR.START_DATE <= @endDate " +
+				"　                                  　　　　　　AND          SSRK.WORKPLACE_ID IN @wkpIDLst        " +
+				"                                                ) SKBSYIN " +
+				"                                   INNER JOIN       BSYMT_AFF_COM_HIST SKR " +
+				"                                   ON               SKBSYIN.SID = SKR.SID " +
+				"                                   INNER JOIN       BSYMT_EMP_DTA_MNG_INFO SDKJ " +
+				"                                   ON               SDKJ.SID = SKR.SID " +
+				"                                   WHERE            @startDate <= SKR.END_DATE " +
+				"                                   AND              SKR.START_DATE <= @endDate " +
+				"                                   AND SDKJ.DEL_STATUS_ATR = '0' " +
+				"                             ) SKBSYINIO " +
+				"                   LEFT JOIN  ( " +
+				"                                         SELECT KRK.SID,KRK.EMP_CD,KR.START_DATE,KR.END_DATE " +
+				"                                         FROM BSYMT_EMPLOYMENT_HIST KR " +
+				"                                         INNER JOIN BSYMT_EMPLOYMENT_HIS_ITEM KRK " +
+				"                                         ON KR.HIST_ID = KRK.HIST_ID " +
+				"                                         WHERE KRK.EMP_CD IN @employmentCDLst " +
+				"                                         AND @startDate <= KR.END_DATE " +
+				"                                         AND KR.START_DATE <= @endDate " +
+				"                                      ) KYO " +
+				"                   ON SKBSYINIO.SID = KYO.SID " +
+				"                ) SKBSYITERM " +
+				"LEFT JOIN  ( " +
+				"		SELECT    KWF.WKPID " +
+				"		FROM      KRCST_WORK_FIXED KWF " +
+				"		WHERE KWF.CLOSURE_ID = @closureId " +
+				"		AND   KWF.PROCESS_YM = @yearMonth " +
+				"		AND   KWF.CID        = @companyID " +
+				"		AND   KWF.CONFIRM_CLS = '1' " +
+				"		) SGK " +
+				"ON         SGK.WKPID = SKBSYITERM.WORKPLACE_ID " +
+				"WHERE    SGK.WKPID IS NULL;";
+		return new NtsStatement(sql, this.jdbcProxy())
+				.paramDate("startDate", startDate)
+				.paramDate("endDate", endDate)
+				.paramString("wkpIDLst", wkpIDLst)
+				.paramString("employmentCDLst", employmentCDLst)
+				.paramInt("closureId", closureId.value)
+				.paramInt("yearMonth", yearMonth.v())
+				.paramString("companyID", companyID)
+				.getList(rec -> {
+					return rec.getString("WORKPLACE_ID");
+		});
 	}
 }

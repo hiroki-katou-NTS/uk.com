@@ -13,6 +13,7 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTe
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailType;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApplicationsListOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttComfirmSet;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttConfirmEmp;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttContentPrepareOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmp;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmpDate;
@@ -286,9 +287,74 @@ public interface ApprovalStatusService {
 	public List<EmpPeriod> getMailCountUnApprApp(DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst, List<String> employmentCDLst);
 	
 	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.C:メール送信ダイアログ.アルゴリズム.C:メール送信_対象再取得_日別本人.C:メール送信_対象再取得_日別本人
+	 * @param period
+	 * @param displayWorkplaceLst
+	 * @param employmentCDLst
+	 * @return
+	 */
+	public Map<String, String> getMailCountUnConfirmDay(DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst, List<String> employmentCDLst);
+	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.C:メール送信ダイアログ.アルゴリズム.C:メール送信_対象再取得_日別上長.C:メール送信_対象再取得_日別上長
+	 * @param period
+	 * @param displayWorkplaceLst
+	 * @param employmentCDLst
+	 * @return
+	 */
+	public Map<String, String> getMailCountUnApprDay(DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst, List<String> employmentCDLst);
+	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.C:メール送信ダイアログ.アルゴリズム.C:メール送信_対象再取得_月別本人.C:メール送信_対象再取得_月別本人
+	 * @param period
+	 * @param displayWorkplaceLst
+	 * @param employmentCDLst
+	 * @return
+	 */
+	public Map<String, String> getMailCountUnConfirmMonth(DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst, List<String> employmentCDLst);
+	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.C:メール送信ダイアログ.アルゴリズム.C:メール送信_対象再取得_月別上長.C:メール送信_対象再取得_月別上長
+	 * @param period
+	 * @param displayWorkplaceLst
+	 * @param employmentCDLst
+	 * @return
+	 */
+	public Map<String, String> getMailCountUnApprMonth(DatePeriod period, YearMonth processingYm, List<DisplayWorkplace> displayWorkplaceLst, List<String> employmentCDLst);
+	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.C:メール送信ダイアログ.アルゴリズム.C:メール送信_対象再取得_就業確定.C:メール送信_対象再取得_就業確定
+	 * @param period
+	 * @param closureId
+	 * @param yearMonth
+	 * @param companyID
+	 * @param wkpIDLst
+	 * @param employmentCDLst
+	 * @return
+	 */
+	public Map<String, String> getMailCountWorkConfirm(DatePeriod period, ClosureId closureId, YearMonth yearMonth, 
+			String companyID, List<String> wkpIDLst, List<String> employmentCDLst);
+	
+	/**
 	 * C:メール送信承認者を取得
 	 */
 	public List<ApprSttWkpEmpMailOutput> getAppApproverToSendMail(List<ApprSttExecutionOutput> apprSttExecutionOutputLst, DatePeriod paramPeriod);
+	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.C:メール送信ダイアログ.アルゴリズム.C:メール送信_日別上長の情報を取得.C:メール送信_日別上長の情報を取得
+	 * @param apprSttExecutionOutputLst
+	 * @param paramPeriod
+	 * @return
+	 */
+	public List<ApprSttWkpEmpMailOutput> getDayApproverToSendMail(List<ApprSttExecutionOutput> apprSttExecutionOutputLst, DatePeriod paramPeriod);
+	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.C:メール送信ダイアログ.アルゴリズム.C:メール送信_月別上長の情報を取得.C:メール送信_月別上長の情報を取得
+	 * @param apprSttExecutionOutputLst
+	 * @param paramPeriod
+	 * @return
+	 */
+	public List<ApprSttWkpEmpMailOutput> getMonthApproverToSendMail(List<ApprSttExecutionOutput> apprSttExecutionOutputLst, DatePeriod paramPeriod);
 	
 	/**
 	 * C:メール送信_本人の情報を取得
@@ -323,4 +389,6 @@ public interface ApprovalStatusService {
 	 * @return
 	 */
 	public List<String> getApprSttUnapprovedAppPerson(List<String> approverIDLst, GeneralDate appDate);
+	
+	public List<ApprSttConfirmEmp> getConfirmSttByEmpLst(String wkpID, DatePeriod paramPeriod, List<EmpPeriod> empPeriodLst);
 }

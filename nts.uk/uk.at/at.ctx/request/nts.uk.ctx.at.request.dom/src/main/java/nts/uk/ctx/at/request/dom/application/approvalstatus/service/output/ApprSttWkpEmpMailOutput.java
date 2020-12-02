@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * refactor 5
@@ -21,7 +22,9 @@ public class ApprSttWkpEmpMailOutput {
 	
 	private String hierarchyCode;
 	
+	@Setter
 	private int countEmp;
 	
+	@Setter
 	private List<ApprSttEmpMailOutput> empMailLst;
 }

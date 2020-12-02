@@ -8,7 +8,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.EmpPeriod;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.WkpEmpMail;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
 public interface ApprovalSttScreenRepository {
@@ -29,13 +28,14 @@ public interface ApprovalSttScreenRepository {
 	
 	public List<EmpPeriod> getMailCountUnApprApp(GeneralDate startDate, GeneralDate endDate, List<String> wkpIDLst, List<String> employmentCDLst);
 	
-	public List<WkpEmpMail> getMailCountUnConfirmDay(GeneralDate startDate, GeneralDate endDate, List<String> wkpIDLst, List<String> employmentCDLst);
+	public Map<String, String> getMailCountUnConfirmDay(GeneralDate startDate, GeneralDate endDate, List<String> wkpIDLst, List<String> employmentCDLst);
 	
-	public List<WkpEmpMail> getMailCountUnApprDay(GeneralDate startDate, GeneralDate endDate, List<String> wkpIDLst, List<String> employmentCDLst);
+	public Map<String, String> getMailCountUnApprDay(GeneralDate startDate, GeneralDate endDate, List<String> wkpIDLst, List<String> employmentCDLst);
 	
-	public List<WkpEmpMail> getMailCountUnConfirmMonth(GeneralDate startDate, GeneralDate endDate, List<String> wkpIDLst, List<String> employmentCDLst);
+	public Map<String, String> getMailCountUnConfirmMonth(GeneralDate endDate, List<String> wkpIDLst, List<String> employmentCDLst);
 	
-	public List<WkpEmpMail> getMailCountUnApprMonth(GeneralDate startDate, GeneralDate endDate, List<String> wkpIDLst, List<String> employmentCDLst);
+	public Map<String, String> getMailCountUnApprMonth(GeneralDate endDate, YearMonth yearMonth, List<String> wkpIDLst, List<String> employmentCDLst);
 	
-	public List<WkpEmpMail> getMailCountWorkConfirm(GeneralDate startDate, GeneralDate endDate, List<String> wkpIDLst, List<String> employmentCDLst);
+	public List<String> getMailCountWorkConfirm(GeneralDate startDate, GeneralDate endDate, ClosureId closureId, YearMonth yearMonth, 
+			String companyID, List<String> wkpIDLst, List<String> employmentCDLst);
 }
