@@ -18,10 +18,12 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 		hdAppSet: KnockoutObservableArray<any> = ko.observableArray([]);
 		selectedType: KnockoutObservable<any> = ko.observable();
 		workTypeLst: KnockoutObservableArray<any> = ko.observableArray([]);
-		selectedWorkTypeCD: KnockoutObservable<string> = ko.observable();
+		selectedWorkTypeCD: KnockoutObservable<string> = ko.observable(null);
 		selectedWorkType: KnockoutObservable<WorkType> = ko.observable(new WorkType({workTypeCode: '', name: ''}));
 		dateSpecHdRelationLst: KnockoutObservableArray<any> = ko.observableArray([]);
 		selectedDateSpec: KnockoutObservable<any> = ko.observable();
+		maxNumberOfDay: KnockoutObservable<any> = ko.observable();
+		specAbsenceDispInfo: KnockoutObservable<any> = ko.observable();
 
 
         created(params: AppInitParam) {
@@ -115,6 +117,20 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 			vm.data = data;
 			vm.selectedWorkTypeCD(data.selectedWorkTypeCD);
 			vm.workTypeLst(_.forEach(data.workTypeLst, item => item.name = item.workTypeCode + ' ' + item.name));
+			vm.appDispInfoStartupOutput(data.appDispInfoStartupOutput);
+			vm.specAbsenceDispInfo(data.specAbsenceDispInfo);
+
+			if (vm.specAbsenceDispInfo()) {
+				vm.dateSpecHdRelationLst(vm.specAbsenceDispInfo().dateSpecHdRelationLst);
+				
+				if (vm.dateSpecHdRelationLst() && vm.dateSpecHdRelationLst().length > 0) {
+					vm.selectedDateSpec(vm.dateSpecHdRelationLst()[0].relationCD);
+				}
+
+				vm.maxNumberOfDay(vm.$i18n("KAF006_44").concat("\n"));
+			}
+
+
 		}
 
         register() {
@@ -127,7 +143,21 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 
         openHolidays() {
 
-        }
+		}
+		
+		public isDispMourn() {
+			const vm = this;
+
+			ko.computed(() => {
+				if (vm.specAbsenceDispInfo()) {
+					if (vm.specAbsenceDispInfo().specHdForEventFlag && vm.specAbsenceDispInfo().specHdEvent.maxNumberDay === 2 && vm.specAbsenceDispInfo().specHdEvent.makeInvitation === 1) {
+						return true;
+					}
+				}
+
+				return false;
+			}, vm);
+		}
     }
 
     const API = {

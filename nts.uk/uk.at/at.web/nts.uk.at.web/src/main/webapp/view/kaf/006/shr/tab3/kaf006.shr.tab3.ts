@@ -13,7 +13,7 @@ module nts.uk.at.view.kaf006.shr.tab3.viewmodel {
                         name: $i18n('KAF006_16'),
                         options: workTypeLst,
                         optionsValue: 'workTypeCode',
-                        optionsText: 'workTypeCode' + ' ' + 'name',
+                        optionsText: 'name',
                         value: selectedWorkTypeCD,
                         required: true
                     }"></div>
@@ -108,7 +108,8 @@ module nts.uk.at.view.kaf006.shr.tab3.viewmodel {
                         </div>
                         <div class="cell valign-center" data-bind="ntsCheckBox: {
                             checked: true,
-                            text: $i18n('KAF006_34')
+                            text: $i18n('KAF006_34'),
+                            enable: $parent.isDispMourn()
                         }"></div>
                     </div>
                     <div class="table" style="margin-top: 5px;">
@@ -153,6 +154,8 @@ module nts.uk.at.view.kaf006.shr.tab3.viewmodel {
             if (params) {
                 vm.workTypeLst = params.workTypeLst;
                 vm.selectedWorkTypeCD = params.selectedWorkTypeCD;
+                vm.dateSpecHdRelationLst = params.dateSpecHdRelationLst;
+                vm.selectedDateSpec = params.selectedDateSpec;
             }
         }
 

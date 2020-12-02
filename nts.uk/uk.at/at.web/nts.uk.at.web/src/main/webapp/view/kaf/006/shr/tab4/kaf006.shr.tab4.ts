@@ -13,7 +13,7 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
                         name: $i18n('KAF006_16'),
                         options: workTypeLst,
                         optionsValue: 'workTypeCode',
-                        optionsText: 'workTypeCode' + ' ' + 'name',
+                        optionsText: 'name',
                         value: selectedWorkTypeCD,
                         required: true
                     }"></div>
