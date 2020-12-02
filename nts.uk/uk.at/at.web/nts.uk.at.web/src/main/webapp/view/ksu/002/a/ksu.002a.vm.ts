@@ -167,7 +167,7 @@ module nts.uk.ui.at.ksu002.a {
 											workTimeCode,
 											startTime,
 											endTime
-										} = arch === NO ? $raw : achievements;
+										} = arch === NO ? $raw : (achievements || $raw);
 
 										// hack i18n
 										_.extend(names, { [workTypeName]: workTypeName });
