@@ -11,49 +11,57 @@ import { KdlS35Component } from '../s35/';
         'kdls35': KdlS35Component
     },
     resource: require('./resources.json'),
-    validations: {},
+    validations: {
+        dateValue: {
+            required: true,
+            dateRange: true,
+        }
+    },
     constraints: []
 })
 export class KdlTests35Component extends Vue {
     public title: string = 'KdlTests35';
     public employeeId: string;
     public dateValue: { start: Date | null, end: Date | null } = { start: null, end: null };
-    public daysUnit: number;
-    public targetSelectionAtr: number;
-
+    public daysUnit: number = 0.5;
+    public targetSelectionAtr: number = 0;
     public beforeCreate() {
-        const self = this;
+        const vm = this;
 
-        self.$auth.user.then((user: any) => {
-            self.employeeId = user.employeeId;
+        vm.$auth.user.then((user: any) => {
+            vm.employeeId = user.employeeId;
         });
-        self.daysUnit = 0.5;
-        self.targetSelectionAtr = 0;
     }
 
     public created() {
-        const self = this;
+        const vm = this;
 
     }
 
     public openKDLS35() {
-        const self = this;
+        const vm = this;
+
+        if (vm.dateValue.start == null || vm.dateValue.end == null ) {
+            vm.$validate();
+
+            return ;
+        }
 
         const params: any = {
             // 社員ID
-            employeeId: self.employeeId,
+            employeeId: vm.employeeId,
 
             // 申請期間
             period: {
-                startDate: self.dateValue.start,
-                endDate: self.dateValue.end,
+                startDate: vm.dateValue.start,
+                endDate: vm.dateValue.end,
             },
 
             // 日数単位（1.0 / 0.5）
-            daysUnit: self.daysUnit,
+            daysUnit: vm.daysUnit,
 
             // 対象選択区分（自動 / 申請 / 手動
-            targetSelectionAtr: self.targetSelectionAtr,
+            targetSelectionAtr: vm.targetSelectionAtr,
 
             // List<表示する実績内容>
             actualContentDisplayList: [],
@@ -62,6 +70,6 @@ export class KdlTests35Component extends Vue {
             managementData: []
         };
 
-        self.$modal('kdls35', params);
+        vm.$modal('kdls35', params);
     }
 }

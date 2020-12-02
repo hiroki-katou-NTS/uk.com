@@ -112,8 +112,6 @@ export class KdlS35Component extends Vue {
             vm.substituteHolidayList = substituteHolidayList;
             vm.substituteWorkInfoList = substituteWorkInfoList
                 .map((m, index) => ({ ...m, checked: false }));
-
-            const managementDataTmp = vm.managementData.map((management) => management.outbreakDay);
         }).catch((error: any) => {
             vm.showError(error);
         });

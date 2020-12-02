@@ -19,10 +19,10 @@ export class KdlS36Component extends Vue {
     public daysUnit: number = 0;
     public targetSelectionAtr: TargetSelectionAtr = 0;
     public actualContentDisplayList: any[] = null;
-    public managementData: SubWorkSubHolidayLinkingMng[] = null;
+    public managementData: HolidayWorkSubHolidayLinkingMng[] = null;
     public employeeId: string = '';
     public substituteHolidayList: string[] = [];
-    public substituteWorkInfoList: ISubstituteWorkInfo[] = [];
+    public holidayWorkInfoList: ISubstituteWorkInfo[] = [];
     public displayedPeriod: string = '';
 
     public created() {
@@ -58,16 +58,16 @@ export class KdlS36Component extends Vue {
     get requiredNumberOfDays() {
         const vm = this;
 
-        const { substituteWorkInfoList } = vm;
+        const { holidayWorkInfoList } = vm;
         const required = vm.substituteHolidayList.length * vm.daysUnit;
         let selected = 0;
 
-        substituteWorkInfoList.forEach((m) => {
+        holidayWorkInfoList.forEach((m) => {
             if (m.checked) {
                 selected += m.remainingNumber;
                 if (required - selected < 0) {
                     vm.$modal
-                        .warn({ messageId: 'Msg_1761' })
+                        .warn({ messageId: 'Msg_1758' })
                         .then(() => {
                             m.checked = false;
                         });
@@ -93,8 +93,8 @@ export class KdlS36Component extends Vue {
 
         vm.$http.post('at', servicesPath.init, {
             employeeId: vm.employeeId,
-            startDate: new Date(vm.startDate),
-            endDate: new Date(vm.endDate),
+            startDate: new Date(vm.startDate).toISOString(),
+            endDate: new Date(vm.endDate).toISOString(),
             daysUnit: vm.daysUnit,
             targetSelectionAtr: vm.targetSelectionAtr,
             actualContentDisplayList: vm.actualContentDisplayList,
@@ -105,12 +105,12 @@ export class KdlS36Component extends Vue {
             vm.startDate = vm.$dt(new Date(vm.startDate), 'YYYY/MM/DD');
             vm.endDate = vm.$dt(new Date(vm.endDate), 'YYYY/MM/DD');
             const { data } = result;
-            const { daysUnit, targetSelectionAtr, substituteHolidayList, substituteWorkInfoList } = data;
+            const { daysUnit, targetSelectionAtr, substituteHolidayList, holidayWorkInfoList } = data;
 
             vm.daysUnit = daysUnit;
             vm.targetSelectionAtr = targetSelectionAtr;
             vm.substituteHolidayList = substituteHolidayList;
-            vm.substituteWorkInfoList = substituteWorkInfoList
+            vm.holidayWorkInfoList = holidayWorkInfoList
                 .map((m, index) => ({ ...m, checked: false }));
 
             const managementDataTmp = vm.managementData.map((management) => management.outbreakDay);
@@ -142,7 +142,7 @@ export class KdlS36Component extends Vue {
         const vm = this;
 
         if (vm.requiredNumberOfDays > 0) {
-            vm.$modal.warn({ messageId: 'Msg_1762' });
+            vm.$modal.warn({ messageId: 'Msg_1759' });
 
             return;
         }
@@ -153,11 +153,11 @@ export class KdlS36Component extends Vue {
             substituteHolidayList: vm.substituteHolidayList
             .map((m) => new Date(m).toISOString()),
             targetSelectionAtr: vm.targetSelectionAtr,
-            substituteWorkInfoList: vm.substituteWorkInfoList
+            holidayWorkInfoList: vm.holidayWorkInfoList
             .filter((item) => item.checked)
             .map((m) => ({...m}))
         };
-        data.substituteWorkInfoList.forEach((f) => {
+        data.holidayWorkInfoList.forEach((f) => {
             f.expirationDate = new Date(f.expirationDate).toISOString();
             f.substituteWorkDate = new Date(f.substituteWorkDate).toISOString();
         });
@@ -165,7 +165,7 @@ export class KdlS36Component extends Vue {
         vm.$mask('show');
         vm.$http
         .post('at',servicesPath.associate,data)
-        .then((msgData: SubWorkSubHolidayLinkingMng[]) => {
+        .then((msgData: HolidayWorkSubHolidayLinkingMng[]) => {
             vm.$mask('hide');
             vm.back();
 
@@ -193,7 +193,7 @@ interface IParam {
     actualContentDisplayList: any[];
 
     //List<振休振出紐付け管理>
-    managementData: SubWorkSubHolidayLinkingMng[];
+    managementData: HolidayWorkSubHolidayLinkingMng[];
 }
 
 interface DatePeriod {
@@ -212,7 +212,7 @@ enum TargetSelectionAtr {
     MANUAL = 2,
 }
 
-interface SubWorkSubHolidayLinkingMng {
+interface HolidayWorkSubHolidayLinkingMng {
     // 社員ID
     employeeId: string;
 
@@ -242,7 +242,7 @@ interface ParamsData {
     targetSelectionAtr: TargetSelectionAtr;
 
     // List<振出データ>
-    substituteWorkInfoList: Array<ISubstituteWorkInfo>;
+    holidayWorkInfoList: Array<ISubstituteWorkInfo>;
 }
 
 interface ISubstituteWorkInfo {
@@ -260,6 +260,6 @@ enum DataType {
 }
 
 const servicesPath = {
-    init: 'screen/at/kdl035/init',
-    associate: 'screen/at/kdl035/associate',
+    init: 'screen/at/kdl036/init',
+    associate: 'screen/at/kdl036/associate',
 };
