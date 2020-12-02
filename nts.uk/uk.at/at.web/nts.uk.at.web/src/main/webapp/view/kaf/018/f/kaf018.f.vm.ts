@@ -3,11 +3,10 @@
 module nts.uk.at.view.kaf018.f.viewmodel {
 	import ApprSttExecutionDto = nts.uk.at.view.kaf018.b.viewmodel.ApprSttExecutionDto;
 	import ClosureItem = nts.uk.at.view.kaf018.a.viewmodel.ClosureItem;
-	import KAF018EParam = nts.uk.at.view.kaf018.e.viewmodel.KAF018EParam;
+	import KAF018GParam = nts.uk.at.view.kaf018.g.viewmodel.KAF018GParam;
 	
 	@bean()
 	class Kaf018FViewModel extends ko.ViewModel {
-		appNameLst: Array<any> = [];
 		closureItem: ClosureItem;
 		startDate: string;
 		endDate: string;
@@ -34,9 +33,18 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 				return false;
 			}
 		});
+		legendWithTemplateOptions: any = {};
 		
 		created(params: KAF018FParam) {
 			const vm = this;
+			vm.legendWithTemplateOptions = {
+				items: [
+	                { colorCode: '#ff0000', labelText: vm.$i18n("KAF018_403") },
+	                { colorCode: '#00AA00', labelText: vm.$i18n("KAF018_404") },
+	                { colorCode: '#0000FF', labelText: vm.$i18n("KAF018_405") }
+	            ],
+	            template : '<div style="color: #{colorCode}; "> #{labelText} </div>'	
+			}
 			vm.$blockui('show');
 			vm.closureItem = params.closureItem;
 			vm.startDate = params.startDate;
@@ -56,9 +64,8 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 					key: 'empName',
 					width: window.innerWidth - 1100 < 300 ? 300 : window.innerWidth - 1100,
 					headerCssClass: 'kaf018-f-header-empName',
-					columnCssClass: 'kaf018-f-column-empName',
 					formatter: (key: string, object: EmpConfirmInfo) =>  {
-						return object.empCD + object.empName;
+						return vm.getDispEmpName(object.empID);
 					}
 				},
 				{
@@ -149,6 +156,12 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 			vm.refreshDataSource();
 		}
 		
+		getDispEmpName(value: string) {
+			const vm = this;
+			let	empInfo: EmpConfirmInfo = _.find(vm.dataSource, o => o.empID==value);
+			return '<span class="kaf018-f-column-empName">' + empInfo.empCD + '</span>' + '　　　　' + '<span class="kaf018-f-column-empName">' + empInfo.empName + '</span>';
+		}
+		
 		getHeaderCss(value: any) {
 			const vm = this;
 			let dayOfWeek: number = parseInt(moment(moment(vm.startDate,'YYYY/MM/DD').add(value, 'd')).format('e'));
@@ -226,14 +239,13 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 		
 		cellGridClick(evt: any, ui: any) {
 			const vm = this;
-			if(ui.colKey=="empID") {
+			if(ui.colKey=="empName") {
 				let empInfoLst = vm.dataSource,
 					startDate = vm.startDate,
 					endDate = vm.endDate,
 					currentEmpID = ui.rowKey,
-					appNameLst: Array<any> = vm.appNameLst,
-					eParam: KAF018EParam = { empInfoLst, startDate, endDate, currentEmpID, appNameLst };
-				vm.$window.modal('/view/kaf/018/e/index.xhtml', eParam);
+					gParam: KAF018GParam = { empInfoLst, startDate, endDate, currentEmpID };
+				vm.$window.modal('/view/kaf/018/g/index.xhtml', gParam);
 			}
 		}
 		
@@ -288,10 +300,10 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 		empID: string;
 		empCD: string;
 		empName: string;
-		sttUnConfirmDay: number;
-		sttUnApprDay: number;
-		sttUnConfirmMonth: number;
-		sttUnApprMonth: number;
+		sttUnConfirmDay: string;
+		sttUnApprDay: string;
+		sttUnConfirmMonth: string;
+		sttUnApprMonth: string;
 		dateInfoLst: Array<DateInfo>;
 	}
 	
@@ -301,6 +313,6 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 	}
 
 	const API = {
-		getApprSttStartByEmp: "at/request/application/approvalstatus/getApprSttStartByEmp",
+		getApprSttStartByEmp: "at/screen/application/approvalstatus/getApprSttStartByEmp",
 	}
 }

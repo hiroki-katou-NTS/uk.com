@@ -408,8 +408,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 						return countUnApprApp && _.includes(vm.pageData, o.wkpID);
 					}),
 					currentWkpID = ui.rowKey,
-					appNameLst: Array<any> = vm.appNameLst,
-					fParam: KAF018FParam = { closureItem, startDate, endDate, apprSttExeDtoLst, currentWkpID, appNameLst };
+					fParam: KAF018FParam = { closureItem, startDate, endDate, apprSttExeDtoLst, currentWkpID };
 				vm.$window.modal('/view/kaf/018/f/index.xhtml', fParam);
 			}
 		}
@@ -427,22 +426,17 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 				existData = _.chain(vm.dataSource).filter(o => {
 					switch(mailTypeParam) {
 						case ApprovalStatusMailType.APP_APPROVAL_UNAPPROVED:
-							let countUnApprApp = o.countUnApprApp ? true : false;
-							return countUnApprApp && _.includes(vm.pageData, o.wkpID);
+							return o.countUnApprApp;
 						case ApprovalStatusMailType.DAILY_UNCONFIRM_BY_PRINCIPAL:
-							let countUnConfirmDay = o.countUnConfirmDay ? true : false;
-							return countUnConfirmDay && _.includes(vm.pageData, o.wkpID);
+							return o.countUnConfirmDay;
 						case ApprovalStatusMailType.DAILY_UNCONFIRM_BY_CONFIRMER:
-							let countUnApprDay = o.countUnApprDay ? true : false;
-							return countUnApprDay && _.includes(vm.pageData, o.wkpID);
+							return o.countUnApprDay;
 						case ApprovalStatusMailType.MONTHLY_UNCONFIRM_BY_PRINCIPAL:
-							let countUnConfirmMonth = o.countUnConfirmMonth ? true : false;
-							return countUnConfirmMonth && _.includes(vm.pageData, o.wkpID);
+							return o.countUnConfirmMonth;
 						case ApprovalStatusMailType.MONTHLY_UNCONFIRM_BY_CONFIRMER:
-							let countUnApprMonth = o.countUnApprMonth ? true : false;
-							return countUnApprMonth && _.includes(vm.pageData, o.wkpID);
+							return o.countUnApprMonth;
 						case ApprovalStatusMailType.WORK_CONFIRMATION:
-							return o.displayConfirm && _.includes(vm.pageData, o.wkpID);
+							return o.displayConfirm;
 						default:
 							return false;
 					}
@@ -493,7 +487,6 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 	}	
 
 	const API = {
-		getStatusExecution: "at/request/application/approvalstatus/getStatusExecution",
-		deleteTmpTable: "at/request/application/approvalstatus/deleteTmpTable"
+		getStatusExecution: "at/screen/application/approvalstatus/getStatusExecution"
 	}
 }
