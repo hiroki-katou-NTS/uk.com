@@ -15,6 +15,9 @@
         </script>
         <com:stylefile path="kml002.f.main.css" />
         <com:scriptfile path="kml002.f.vm.js" />
+        <com:ValidatorScript>
+          nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.timezonepeople.WorkplaceCounterStartTime
+        </com:ValidatorScript>
       </ui:define>
 
       <ui:define name="content">
@@ -37,7 +40,7 @@
                 value: startTime,
                 required: true,                
                 name: $i18n('KML002_100'),
-                constraint:'TimeWithDayAttr'
+                constraint:'WorkplaceCounterStartTime'
               }"
               />
             </div>
@@ -54,7 +57,7 @@
                 value: endTime,              
                 required: true,                          
                 name: $i18n('KML002_105'),
-                constraint:'TimeWithDayAttr'
+                constraint:'WorkplaceCounterStartTime'
               }"
               />
             </div>
@@ -63,7 +66,7 @@
         <div id="functions-area-bottom">
           <button
             tabindex="3"
-            class="large proceed"
+            class="x-large proceed"
             data-bind="click: proceed, text: $i18n('KML002_91'), enable: $root.errors.isEmpty"
           ></button>
           <button

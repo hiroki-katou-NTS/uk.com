@@ -46,7 +46,9 @@ module nts.uk.at.view.kml002.g {
 
       const userAgent = window.navigator.userAgent;
       let msie = userAgent.match(/Trident.*rv\:11\./);
-      if (!_.isNil(msie) && msie.index > -1) vm.gridHeight(290);
+      if (!_.isNil(msie) && msie.index > -1) {
+        vm.gridHeight(290);
+      }
     }
 
     mounted() {
@@ -105,6 +107,7 @@ module nts.uk.at.view.kml002.g {
       vm.$ajax(PATH.timeNumberCounterRegister, params).done(() => {
         vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
           vm.isNumberCounterSetting(true);
+          vm.getTimeNumberCounter();
           vm.$blockui('hide');
         });
       }).fail().always(() => vm.$blockui('hide'));

@@ -11,13 +11,14 @@
       <ui:define name="htmlHead">
         <com:scriptfile set="IGNITE" />
         <script>
-          var dialogSize = { width: 320, height: 500 };
+          var dialogSize = { width: 320, height: 480 };
         </script>
         <com:stylefile path="kml002.e.main.css" />
         <com:scriptfile path="kml002.e.vm.js" />
         <com:ValidatorScript>
-          nts.uk.ctx.at.record.dom.daily.WorkTimes
+          nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.timezonepeople.WorkplaceCounterStartTime
         </com:ValidatorScript>
+        
       </ui:define>
 
       <ui:define name="content">
@@ -91,7 +92,7 @@
                           attr: { id: 'starttime-' + id },
                           ntsTimeWithDayEditor: { 
                           name: $vm.$i18n('KML002_100'), 
-                          constraint:'TimeWithDayAttr', 
+                          constraint:'WorkplaceCounterStartTime', 
                           value: time,
                           required: true 
                         }"

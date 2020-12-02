@@ -21,8 +21,6 @@ module nts.uk.at.view.kml002.e {
       super();
       const vm = this;
 
-      //vm.createListOfStartTimes();
-
       vm.selectedAll.subscribe((newValue) => {
         if (newValue === null) return;
         _.forEach(vm.listOfStartTimes(), (row) => {
@@ -220,6 +218,7 @@ module nts.uk.at.view.kml002.e {
     getWorkplaceTimeZoneById() {
       const vm = this;
       vm.$blockui('show');
+      vm.listOfStartTimes([]);
       vm.$ajax(PATH.wkpTimeZonebyId).done((data) => {
         if (!_.isNil(data) && data.length > 0) {
           vm.createListOfStartTimes(data);
@@ -246,7 +245,8 @@ module nts.uk.at.view.kml002.e {
 
       vm.$ajax(PATH.wkpTimeZoneRegister, { 'timeZone': params }).done(() => {            
         vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
-          vm.isTimeZoneSetting(true);
+          //vm.isTimeZoneSetting(true);
+          vm.getWorkplaceTimeZoneById();          
           vm.$blockui('hide');         
         });
       }).fail().always(() => vm.$blockui('hide'));
