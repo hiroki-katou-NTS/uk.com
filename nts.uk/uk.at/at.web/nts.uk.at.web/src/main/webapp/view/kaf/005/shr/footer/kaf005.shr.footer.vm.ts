@@ -22,7 +22,7 @@ module nts.uk.at.view.kaf005.shr.footer.viewmodel {
 			<div class="cell valign-center" data-bind="ntsFormLabel: {}, text: $i18n('KAF005_92', [messageInfos()[0].titleInput()])"></div>
 		</div>
 		<div class="cell valign-center">
-			<input style="width: 390px" data-bind="ntsTextEditor: {
+			<input style="width: 445px" data-bind="ntsTextEditor: {
 														value: messageInfos()[0].valueInput,
 														option: {
 															textalign: 'left'
@@ -53,7 +53,7 @@ module nts.uk.at.view.kaf005.shr.footer.viewmodel {
 			<div class="cell valign-center" data-bind="ntsFormLabel: {}, text: $i18n('KAF005_92', [messageInfos()[0].titleInput()])"></div>
 		</div>
 		<div class="cell valign-center">
-			<input style="width: 390px" data-bind="ntsTextEditor: {
+			<input style="width: 445px" data-bind="ntsTextEditor: {
 														value: messageInfos()[1].valueInput,
 														option: {
 															textalign: 'left'
