@@ -82,7 +82,6 @@ module nts.uk.ui.at.ksu002.a {
     }
 
     const COMPONENT_NAME = 'scheduler';
-    const CL_VALUE = Number(!!b.version.match(/IE/));
 
     @handler({
         bindingName: COMPONENT_NAME,
@@ -665,8 +664,8 @@ module nts.uk.ui.at.ksu002.a {
                 };
 
             click: WorkTimeRange<number> = {
-                begin: ko.observable(CL_VALUE),
-                finish: ko.observable(CL_VALUE)
+                begin: ko.observable(0),
+                finish: ko.observable(0)
             };
 
             text: {
@@ -823,7 +822,7 @@ module nts.uk.ui.at.ksu002.a {
                             if (readonly) {
                                 $begin.attr(RO, RO);
                             } else {
-                                $begin.removeAttr(RO);
+                                $begin.removeAttr(RO).select();
                             }
                         }
                     },
@@ -839,7 +838,7 @@ module nts.uk.ui.at.ksu002.a {
                             if (readonly) {
                                 $finish.attr(RO, RO);
                             } else {
-                                $finish.removeAttr(RO);
+                                $finish.removeAttr(RO).select();
                             }
                         }
                     },
@@ -872,9 +871,9 @@ module nts.uk.ui.at.ksu002.a {
                 const vm = this;
 
                 if (input === 'begin') {
-                    vm.click.begin(CL_VALUE);
+                    vm.click.begin(0);
                 } else if (input === 'finish') {
-                    vm.click.finish(CL_VALUE);
+                    vm.click.finish(0);
                 }
             }
 
