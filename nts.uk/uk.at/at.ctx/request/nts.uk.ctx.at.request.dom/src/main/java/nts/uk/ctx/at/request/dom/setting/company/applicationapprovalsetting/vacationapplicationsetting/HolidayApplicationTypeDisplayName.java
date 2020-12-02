@@ -5,9 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
-import nts.arc.primitive.StringPrimitiveValue;
-import nts.arc.primitive.constraint.StringMaxLength;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.HolidayAppType;
+import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 
 /**
  * refactor 4 refactor4

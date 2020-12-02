@@ -30,7 +30,7 @@ module nts.uk.at.view.kaf022.m.viewmodel {
         colAtrs: Array<any> = [
             { width: 130 },
             { width: 140 },
-            { width: jQuery(window).width() - 940 }
+            { width: 426 }
         ];
         tableId: string = "fixed-table-wkp";
         alreadySettingData: Array<any>;
