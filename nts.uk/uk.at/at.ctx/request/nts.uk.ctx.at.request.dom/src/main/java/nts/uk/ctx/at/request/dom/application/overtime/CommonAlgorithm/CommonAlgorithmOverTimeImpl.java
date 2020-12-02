@@ -12,6 +12,8 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
+import nts.arc.i18n.I18NResources;
+import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -32,7 +34,10 @@ import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType_Update;
 import nts.uk.ctx.at.request.dom.application.overtime.CalculationResult;
 import nts.uk.ctx.at.request.dom.application.overtime.ExcessState;
+import nts.uk.ctx.at.request.dom.application.overtime.ExcessStateDetail;
+import nts.uk.ctx.at.request.dom.application.overtime.FrameNo;
 import nts.uk.ctx.at.request.dom.application.overtime.HolidayMidNightTime;
+import nts.uk.ctx.at.request.dom.application.overtime.OutDateApplication;
 import nts.uk.ctx.at.request.dom.application.overtime.OverStateOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
@@ -709,30 +714,36 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 			} else { // false
 				// 取得した「事前申請・実績の超過状態．事前超過」をチェックする
 				if (overStateOutput.getAdvanceExcess().isAdvanceExcess()) {
-					output.add(new ConfirmMsgOutput("Msg_424", Collections.emptyList()));
+					// handle msg
+					output.add(new ConfirmMsgOutput("Msg_424", getContentMsg(displayInfoOverTime, overStateOutput.getAdvanceExcess())));
 				}
 				
 				
 			}
+			List<String> contentMsgs = new ArrayList<String>();
+			contentMsgs.add(appOverTime.getEmployeeID());
+			contentMsgs.add(appOverTime.getApplication().getAppDate().getApplicationDate().toString("yyyy/mm/dd"));
 			// 取得した「事前申請・実績の超過状態．実績状態」をチェックする
 			if (overStateOutput.getAchivementStatus() == ExcessState.EXCESS_ERROR) {
+				
 				// エラーメッセージ（Msg_1746）を表示する
-				throw new BusinessException("1746"); // note handle content's message late
+				throw new BusinessException("1746", contentMsgs.toArray(new String[contentMsgs.size()])); // note handle content's message late
 			} else if (overStateOutput.getAchivementStatus() == ExcessState.EXCESS_ALARM) {
 				// メッセージ（Msg_1745）をOUTPUT「確認メッセージリスト」に追加する
-				output.add(new ConfirmMsgOutput("Msg_1745", Collections.emptyList()));
+				output.add(new ConfirmMsgOutput("Msg_1745", contentMsgs));
 				// OUTPUT「確認メッセージリスト」を返す
 				
 			} else {
 				// 取得した「事前申請・実績の超過状態．実績超過」をチェックする
 				if (overStateOutput.getAchivementExcess().isAdvanceExcessError()) {
+					List<String> contens1748 = getContentMsg(displayInfoOverTime, overStateOutput.getAchivementExcess());			
 					// エラーメッセージ（Msg_1748）を表示する
-					throw new BusinessException("1748"); // note handle content's message late
+					throw new BusinessException("1748", contens1748.toArray(new String[contentMsgs.size()])); // note handle content's message late
 				} else {
 					// 取得した「事前申請・実績の超過状態．実績超過」をチェックする
 					if (overStateOutput.getAchivementExcess().isAdvanceExcess()) {
 						// メッセージ（Msg_1747）をOUTPUT「確認メッセージリスト」に追加する
-						output.add(new ConfirmMsgOutput("Msg_1745", Collections.emptyList()));
+						output.add(new ConfirmMsgOutput("Msg_1747", getContentMsg(displayInfoOverTime, overStateOutput.getAchivementExcess())));
 						
 					}
 					// OUTPUT「確認メッセージリスト」を返す
@@ -744,7 +755,67 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		return output;
 	}
 
-
+	public List<String> getContentMsg(DisplayInfoOverTime displayInfoOverTime, OutDateApplication outDateApplication) {
+		List<String> contentMsgs = new ArrayList<String>();
+		// ・申請時間の超過状態．申請時間．type = 残業時間　に超過アラームがある
+		List<Integer> lstFrameOverTime = outDateApplication.getExcessStateDetail()
+					 .stream()
+					 .filter(x -> x.getType() == AttendanceType_Update.NORMALOVERTIME
+							 && x.getExcessState() == ExcessState.EXCESS_ALARM)
+					 .map(y -> y.getFrame().v())
+					 .collect(Collectors.toList());
+		
+		// get name list of over times
+		List<String> lstNameOverTime = displayInfoOverTime.getInfoBaseDateOutput()
+							.getQuotaOutput()
+							.getOverTimeQuotaList()
+							.stream()
+							.filter(x -> lstFrameOverTime.contains(x.getOvertimeWorkFrNo().v().intValue()))
+							.map(y -> y.getOvertimeWorkFrName().v())
+							.collect(Collectors.toList());
+		contentMsgs.addAll(lstNameOverTime);
+		
+		// ・申請時間の超過状態．申請時間．type = 休出時間　に超過アラームがある
+		List<Integer> lstFrameHoliday = outDateApplication.getExcessStateDetail()
+				 .stream()
+				 .filter(x -> x.getType() == AttendanceType_Update.BREAKTIME
+						 && x.getExcessState() == ExcessState.EXCESS_ALARM)
+				 .map(y -> y.getFrame().v())
+				 .collect(Collectors.toList());
+		
+		List<String> lstNameHoliday = displayInfoOverTime
+				.getWorkdayoffFrames()
+				.stream()
+				.filter(x -> lstFrameHoliday.contains(x.getWorkdayoffFrNo().v().intValue()))
+				.map(y -> y.getWorkdayoffFrName().v())
+				.collect(Collectors.toList());
+		
+		contentMsgs.addAll(lstNameHoliday);
+		
+		// 申請時間の超過状態．休出深夜時間．法定区分 = 法定内休出　に超過アラームがある
+		// 「#KAF005_341」を{1}に追加する
+		outDateApplication.getExcessStateMidnight()
+					 .stream()
+					 .forEach(x -> {
+						 if (x.getExcessState() == ExcessState.EXCESS_ALARM) {
+							 if (x.getLegalCfl() == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork) {
+								 contentMsgs.add(I18NText.getText("#KAF005_341"));
+							 } else if (x.getLegalCfl() == StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork) {
+								 contentMsgs.add(I18NText.getText("#KAF005_342"));
+							 } else if (x.getLegalCfl() == StaturoryAtrOfHolidayWork.PublicHolidayWork) {
+								 contentMsgs.add(I18NText.getText("#KAF005_343"));
+							 }										 
+						 }
+					 });
+		if (outDateApplication.getFlex() == ExcessState.EXCESS_ALARM) {
+			contentMsgs.add(I18NText.getText("#KAF005_63"));
+		}
+		
+		if (outDateApplication.getOverTimeLate() == ExcessState.EXCESS_ALARM) {
+			contentMsgs.add(I18NText.getText("#KAF005_65"));
+		}
+		return contentMsgs;
+	}
 	@Override
 	public AppOverTime check36Limit(String companyId, AppOverTime appOverTime, Boolean isProxy, Integer mode) {
 		// #112509
