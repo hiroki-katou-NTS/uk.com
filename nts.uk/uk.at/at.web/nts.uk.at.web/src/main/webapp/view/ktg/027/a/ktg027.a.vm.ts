@@ -247,14 +247,10 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
   export class Ktg027ComponentViewModel extends ko.ViewModel {
     // A1_2
     year: KnockoutObservable<number> = ko.observable(0);
-    currentOrNextMonth: KnockoutObservable<number> = ko.observable(0);
-    listEmp: KnockoutObservableArray<
-      PersonEmpBasicInfoImport
-    > = ko.observableArray([]);
+    currentOrNextMonth: KnockoutObservable<number> = ko.observable(1);
+    listEmp: KnockoutObservableArray<PersonEmpBasicInfoImport> = ko.observableArray([]);
     // list data for chart
-    listShowData: KnockoutObservableArray<
-      AgreementTimeDetail
-    > = ko.observableArray([]);
+    listShowData: KnockoutObservableArray<AgreementTimeDetail> = ko.observableArray([]);
     // selected employee
     selectedEmp: any;
     closureId: KnockoutObservable<number> = ko.observable(0);
@@ -263,7 +259,9 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
       const vm = this;
       vm.$blockui("grayout");
       //get currentOrNextMonth in cache
-      vm.currentOrNextMonth(getShared('cache').currentOrNextMonth);
+      if(getShared('cache').currentOrNextMonth){
+        vm.currentOrNextMonth(getShared('cache').currentOrNextMonth);
+      }
       //call API init
       vm.$ajax("at", API.getDataInit + vm.currentOrNextMonth())
         .then((response) => {
