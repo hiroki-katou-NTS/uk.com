@@ -10,7 +10,7 @@ public class UpdateCommand {
 	
 	public String companyId;
 	
-	public AppOverTimeCommand appOverTime;
+	public AppOverTimeUpdateCommand appOverTime;
 	
 	public AppDispInfoStartupDto appDispInfoStartupDto;
 }

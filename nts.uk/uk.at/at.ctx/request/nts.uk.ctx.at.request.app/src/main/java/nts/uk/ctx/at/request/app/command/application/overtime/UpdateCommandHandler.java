@@ -21,8 +21,11 @@ public class UpdateCommandHandler extends CommandHandlerWithResult<UpdateCommand
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<UpdateCommand> context) {
 		UpdateCommand param = context.getCommand();
-		Application application = param.appOverTime.application.toDomain();
+		Application application = param.appOverTime.application.toDomain(param.appDispInfoStartupDto.getAppDetailScreenInfo().getApplication());
 		AppOverTime appOverTime = param.appOverTime.toDomain();
+		if (appOverTime.getDetailOverTimeOp().isPresent()) {
+			appOverTime.getDetailOverTimeOp().get().setAppId(application.getAppID());
+		}
 		appOverTime.setApplication(application);
 		
 		return overTimeRegisterService.update(
