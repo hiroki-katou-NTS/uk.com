@@ -1,11 +1,11 @@
 <div class="container cf" data-bind="with: $parent">
-	<div class="cf valign-top control-group" data-bind="if: true">
+	<div class="cf valign-top control-group" data-bind="visible: restTimeTableVisible() && restTimeTableVisible2()">
 		<!--A5_1 休憩時間ラベル-->
 		<div class="cm-column" style="display: inline-block; width: 100px">
 			<div class="lblTitle pull-left"
 				data-bind="text: $i18n('KAF010_40'), ntsFormLabel: {}"></div>
 		</div>
-		<div class="table-time">
+		<div class="table-time1">
 			<table id="fixed-table">
 				<colgroup>
 					<col width="109px" />
@@ -34,7 +34,7 @@
 									name: '#[KAF010_337]', 
 									value: start, 
 									constraint:'TimeWithDayAttr', 
-									enable: false,
+									enable: true,
 									option: {width: '85px', timeWithDay: true}}" /></td>
 						<!--A5_7 終了時刻-->
 						<td><input tabindex="12" class="right-content"
@@ -43,7 +43,7 @@
 									name: '#[KAF010_338]', 
 									value: end, 
 									constraint:'TimeWithDayAttr', 
-									enable: false,
+									enable: true,
 									option: {width: '85px', timeWithDay: true}}" /></td>
 					</tr>
 				</tbody>
@@ -52,8 +52,8 @@
 	</div>
 
 	<!-- calculate button A5_8-->
-	<div style="margin-bottom: 20px">
-		<button style="width: 100px; margin-left: 200px" data-bind="text: $i18n('KAF010_43')" class="caret-bottom caret-inline" ></button>
+	<div style="margin-bottom: 20px" data-bind="visible: restTimeTableVisible2()">
+		<button style="width: 100px; margin-left: 200px" data-bind="text: $i18n('KAF010_43'), click: calculate" class="caret-bottom caret-inline" ></button>
 	</div>
 
 	<!-- holiday time -->
@@ -64,13 +64,13 @@
 				data-bind="text: $i18n('KAF010_50'), ntsFormLabel: {required: true}"></div>
 		</div>
 		
-		<div class="table-time">
+		<div class="table-time2">
 			<table id="fixed-table-holiday">
 				<colgroup>
 					<col width="109px" />
 					<col width="115px" />
-					<col width="115px" />
-					<col width="115px" />
+					<col width="115px" data-bind="visible: application().prePostAtr() == 1" />
+					<col width="115px" data-bind="visible: application().prePostAtr() == 1" />
 				</colgroup>
 				<thead>
 					<tr>
@@ -80,29 +80,30 @@
 							data-bind="text: $i18n('KAF010_51')"></th>
 						<!--A6_4-->
 						<th class="ui-widget-header" rowspan="2"
-							data-bind="text: $i18n('KAF010_52')"></th>
+							data-bind="text: $i18n('KAF010_52'), visible: application().prePostAtr() == 1"></th>
 						<!--A6_6-->
 						<th class="ui-widget-header" rowspan="2"
-							data-bind="text: $i18n('KAF010_54')"></th>
+							data-bind="text: $i18n('KAF010_54'), visible: application().prePostAtr() == 1"></th>
 					</tr>
 				</thead>
 				<tbody data-bind="foreach: holidayTime">
 					<tr>
 						<!--A6_7-->
-						<td class="header" data-bind="text: String(frameNo)"></td>
+						<td class="header" data-bind="text: frameName()"></td>
 						<!--A6_8 -->
 						<td><input tabindex="12" class="right-content"
 							data-bind="
 								ntsTimeWithDayEditor: {
 									name: '#[KAF005_337]', 
+									value: start,
 									constraint:'TimeWithDayAttr',
 									inputFormat: 'time',
-									enable: false,
+									enable: true,
 									option: {width: '85px', timeWithDay: true}}" /></td>
 						<!--A6_9 -->
-						<td class="right-content"></td>
+						<td class="right-content" data-bind="visible: $parent.application().prePostAtr() == 1"></td>
 						<!--A6_11 -->
-						<td class="right-content" data-bind="text: $parent.getFormatTime(ko.toJS(actualTime))"></td>
+						<td class="right-content" data-bind="text: $parent.getFormatTime(ko.toJS(actualTime)), visible: $parent.application().prePostAtr() == 1"></td>
 					</tr>
 				</tbody>
 			</table>
@@ -110,19 +111,19 @@
 	</div>
 
 	<!-- over time hours -->
-	<div class="cf valign-top control-group" data-bind="if: true">
+	<div class="cf valign-top control-group" data-bind="visible: overTimeTableVisible()">
 		<!--A7_1 残業時間ラベル-->
 		<div class="cm-column" style="display: inline-block; width: 100px">
 			<div class="lblTitle pull-left"
 				data-bind="text: $i18n('KAF005_50'), ntsFormLabel: {}"></div>
 		</div>
-		<div class="table-time">
+		<div class="table-time3">
 			<table id="fixed-overtime-hour-table">
 				<colgroup>
 					<col width="109px" />
 					<col width="115px" />
-					<col width="115px" />
-					<col width="115px" />
+					<col width="115px" data-bind="visible: application().prePostAtr() == 1"/>
+					<col width="115px" data-bind="visible: application().prePostAtr() == 1"/>
 				</colgroup>
 				<thead>
 					<tr>
@@ -130,31 +131,31 @@
 						<!--A7_3 申請時間ラベル-->
 						<th class="ui-widget-header" rowspan="2" data-bind="text: $i18n('KAF005_51')"></th>
 						<!--A7_4 事前申請ラベル-->
-						<th class="ui-widget-header" rowspan="2" data-bind="text: $i18n('KAF005_52')"></th>
+						<th class="ui-widget-header" rowspan="2" data-bind="text: $i18n('KAF005_52'), visible: application().prePostAtr() == 1"></th>
 						<!--A7_6 実績時間ラベル-->
-						<th class="ui-widget-header" rowspan="2" data-bind="text: $i18n('KAF005_54')"></th>
+						<th class="ui-widget-header" rowspan="2" data-bind="text: $i18n('KAF005_54'), visible: application().prePostAtr() == 1"></th>
 					</tr>
 				</thead>
-				<tbody">
+				<tbody data-bind="foreach: overTime">
 					<tr>
 						<!--A7_7-->
-						<td class="header"
+						<td class="header" data-bind="text: frameName()"
 							></td>
 						<!--A7_8 残業申請時間入力-->
 						<td>
 							<input tabindex="12" class="right-content overtimeHoursCheck"
 							data-bind=" 
 								ntsTimeEditor: { 
-									
+									value: applicationTime, 
 									option: {width: '85px', timeWithDay: true},
 									inputFormat: 'time',
 									constraint:'OvertimeAppPrimitiveTime',
 									enable: true }" />
 						</td>
 						<!--A7_9 残業事前申請時間-->
-						<td class="right-content"></td>
+						<td class="right-content" data-bind="visible: $parent.application().prePostAtr() == 1"></td>
 						<!--A7_11 実績時間-->
-						<td class="right-content"></td>
+						<td class="right-content" data-bind="text: $parent.getFormatTime(ko.toJS(actualTime)), visible: $parent.application().prePostAtr() == 1"></td>
 					</tr>
 				</tbody>
 			</table>

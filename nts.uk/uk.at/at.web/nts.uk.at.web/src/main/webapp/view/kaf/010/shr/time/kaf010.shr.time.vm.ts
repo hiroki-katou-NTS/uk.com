@@ -1,13 +1,16 @@
 module nts.uk.at.view.kaf010.shr.time.viewmodel {
+
+	import Application = nts.uk.at.view.kaf000.shr.viewmodel.Application;
+
 	const template = `
 	<div class="container cf" data-bind="with: $parent">
-	<div class="cf valign-top control-group" data-bind="if: true">
+	<div class="cf valign-top control-group" data-bind="visible: restTimeTableVisible() && restTimeTableVisible2()">
 		<!--A5_1 休憩時間ラベル-->
 		<div class="cm-column" style="display: inline-block; width: 100px">
 			<div class="lblTitle pull-left"
 				data-bind="text: $i18n('KAF010_40'), ntsFormLabel: {}"></div>
 		</div>
-		<div class="table-time">
+		<div class="table-time1">
 			<table id="fixed-table">
 				<colgroup>
 					<col width="109px" />
@@ -36,7 +39,7 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 									name: '#[KAF010_337]', 
 									value: start, 
 									constraint:'TimeWithDayAttr', 
-									enable: false,
+									enable: true,
 									option: {width: '85px', timeWithDay: true}}" /></td>
 						<!--A5_7 終了時刻-->
 						<td><input tabindex="12" class="right-content"
@@ -45,7 +48,7 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 									name: '#[KAF010_338]', 
 									value: end, 
 									constraint:'TimeWithDayAttr', 
-									enable: false,
+									enable: true,
 									option: {width: '85px', timeWithDay: true}}" /></td>
 					</tr>
 				</tbody>
@@ -54,8 +57,8 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 	</div>
 
 	<!-- calculate button A5_8-->
-	<div style="margin-bottom: 20px">
-		<button style="width: 100px; margin-left: 200px" data-bind="text: $i18n('KAF010_43')" class="caret-bottom caret-inline" ></button>
+	<div style="margin-bottom: 20px" data-bind="visible: restTimeTableVisible2()">
+		<button style="width: 100px; margin-left: 200px" data-bind="text: $i18n('KAF010_43'), click: calculate" class="caret-bottom caret-inline" ></button>
 	</div>
 
 	<!-- holiday time -->
@@ -66,13 +69,13 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 				data-bind="text: $i18n('KAF010_50'), ntsFormLabel: {required: true}"></div>
 		</div>
 		
-		<div class="table-time">
+		<div class="table-time2">
 			<table id="fixed-table-holiday">
 				<colgroup>
 					<col width="109px" />
 					<col width="115px" />
-					<col width="115px" />
-					<col width="115px" />
+					<col width="115px" data-bind="visible: application().prePostAtr() == 1" />
+					<col width="115px" data-bind="visible: application().prePostAtr() == 1" />
 				</colgroup>
 				<thead>
 					<tr>
@@ -82,29 +85,30 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 							data-bind="text: $i18n('KAF010_51')"></th>
 						<!--A6_4-->
 						<th class="ui-widget-header" rowspan="2"
-							data-bind="text: $i18n('KAF010_52')"></th>
+							data-bind="text: $i18n('KAF010_52'), visible: application().prePostAtr() == 1"></th>
 						<!--A6_6-->
 						<th class="ui-widget-header" rowspan="2"
-							data-bind="text: $i18n('KAF010_54')"></th>
+							data-bind="text: $i18n('KAF010_54'), visible: application().prePostAtr() == 1"></th>
 					</tr>
 				</thead>
 				<tbody data-bind="foreach: holidayTime">
 					<tr>
 						<!--A6_7-->
-						<td class="header" data-bind="text: String(frameNo)"></td>
+						<td class="header" data-bind="text: frameName()"></td>
 						<!--A6_8 -->
 						<td><input tabindex="12" class="right-content"
 							data-bind="
 								ntsTimeWithDayEditor: {
 									name: '#[KAF005_337]', 
+									value: start,
 									constraint:'TimeWithDayAttr',
 									inputFormat: 'time',
-									enable: false,
+									enable: true,
 									option: {width: '85px', timeWithDay: true}}" /></td>
 						<!--A6_9 -->
-						<td class="right-content"></td>
+						<td class="right-content" data-bind="visible: $parent.application().prePostAtr() == 1"></td>
 						<!--A6_11 -->
-						<td class="right-content" data-bind="text: $parent.getFormatTime(ko.toJS(actualTime))"></td>
+						<td class="right-content" data-bind="text: $parent.getFormatTime(ko.toJS(actualTime)), visible: $parent.application().prePostAtr() == 1"></td>
 					</tr>
 				</tbody>
 			</table>
@@ -112,19 +116,19 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 	</div>
 
 	<!-- over time hours -->
-	<div class="cf valign-top control-group" data-bind="if: true">
+	<div class="cf valign-top control-group" data-bind="visible: overTimeTableVisible()">
 		<!--A7_1 残業時間ラベル-->
 		<div class="cm-column" style="display: inline-block; width: 100px">
 			<div class="lblTitle pull-left"
 				data-bind="text: $i18n('KAF005_50'), ntsFormLabel: {}"></div>
 		</div>
-		<div class="table-time">
+		<div class="table-time3">
 			<table id="fixed-overtime-hour-table">
 				<colgroup>
 					<col width="109px" />
 					<col width="115px" />
-					<col width="115px" />
-					<col width="115px" />
+					<col width="115px" data-bind="visible: application().prePostAtr() == 1"/>
+					<col width="115px" data-bind="visible: application().prePostAtr() == 1"/>
 				</colgroup>
 				<thead>
 					<tr>
@@ -132,31 +136,31 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 						<!--A7_3 申請時間ラベル-->
 						<th class="ui-widget-header" rowspan="2" data-bind="text: $i18n('KAF005_51')"></th>
 						<!--A7_4 事前申請ラベル-->
-						<th class="ui-widget-header" rowspan="2" data-bind="text: $i18n('KAF005_52')"></th>
+						<th class="ui-widget-header" rowspan="2" data-bind="text: $i18n('KAF005_52'), visible: application().prePostAtr() == 1"></th>
 						<!--A7_6 実績時間ラベル-->
-						<th class="ui-widget-header" rowspan="2" data-bind="text: $i18n('KAF005_54')"></th>
+						<th class="ui-widget-header" rowspan="2" data-bind="text: $i18n('KAF005_54'), visible: application().prePostAtr() == 1"></th>
 					</tr>
 				</thead>
-				<tbody">
+				<tbody data-bind="foreach: overTime">
 					<tr>
 						<!--A7_7-->
-						<td class="header"
+						<td class="header" data-bind="text: frameName()"
 							></td>
 						<!--A7_8 残業申請時間入力-->
 						<td>
 							<input tabindex="12" class="right-content overtimeHoursCheck"
 							data-bind=" 
 								ntsTimeEditor: { 
-									
+									value: applicationTime, 
 									option: {width: '85px', timeWithDay: true},
 									inputFormat: 'time',
 									constraint:'OvertimeAppPrimitiveTime',
 									enable: true }" />
 						</td>
 						<!--A7_9 残業事前申請時間-->
-						<td class="right-content"></td>
+						<td class="right-content" data-bind="visible: $parent.application().prePostAtr() == 1"></td>
 						<!--A7_11 実績時間-->
-						<td class="right-content"></td>
+						<td class="right-content" data-bind="text: $parent.getFormatTime(ko.toJS(actualTime)), visible: $parent.application().prePostAtr() == 1"></td>
 					</tr>
 				</tbody>
 			</table>
@@ -169,14 +173,21 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
         name: 'kaf010-share-time',
         template: template
     })
-
     class KAF010ShrTimeModel extends ko.ViewModel {
-        
+		
+		application: KnockoutObservable<Application>;
+		holidayTime: KnockoutObservableArray<HolidayTime>;
+		overTime: KnockoutObservableArray<OverTime>;
+		
         created(params: any) {
-            const self = this;
+			const self = this;
+			self.application = params.application;
+			self.holidayTime = params.holidayTime;
+			self.overTime = params.overTime;
         }
 
         mounted() {
+			const self = this;
             $("#fixed-table").ntsFixedTable({ height: 120 });
 			$("#fixed-overtime-hour-table").ntsFixedTable({ height: 216 });
 			$("#fixed-table-holiday").ntsFixedTable({ height: 120 });
@@ -185,10 +196,12 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
     }
 
     export interface OverTime {
-		frameNo: string;
+		frameNo: KnockoutObservable<number>;
+		frameName: KnockoutObservable<string>;
 		applicationTime?: KnockoutObservable<number>;
 		preTime?: KnockoutObservable<number>;
 		actualTime?: KnockoutObservable<number>;
+		// type: KnockoutObservable<string>;
 	}
 	export interface RestTime {
 		frameNo: string;
@@ -197,48 +210,11 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 	}
 	
 	export interface HolidayTime {
-		frameNo: string;
+		frameNo: KnockoutObservable<number>;
+		frameName: KnockoutObservable<string>;
 		start?: KnockoutObservable<number>;
 		preApp?: KnockoutObservable<number>;
 		actualTime?: KnockoutObservable<number>;
+		
 	}
-	
-	// export class OverTimeInput {
-    //         companyID: KnockoutObservable<string>;
-    //         appID: KnockoutObservable<string>;
-    //         attendanceID: KnockoutObservable<number>;
-    //         attendanceName: KnockoutObservable<string>;
-    //         frameNo: KnockoutObservable<number>;
-    //         timeItemTypeAtr: KnockoutObservable<number>;
-    //         frameName: KnockoutObservable<string>;
-    //         startTime: KnockoutObservable<number>;
-    //         endTime: KnockoutObservable<number>;
-    //         applicationTime: KnockoutObservable<number>;
-    //         nameID: KnockoutObservable<string>;
-            
-    //         constructor(
-    //             companyID: string,
-    //             appID: string,
-    //             attendanceID: number,
-    //             attendanceName: string,
-    //             frameNo: number,
-    //             timeItemTypeAtr: number,
-    //             frameName: string,
-    //             startTime: number,
-    //             endTime: number,
-    //             applicationTime: number,
-    //             nameID: string) {
-    //             this.companyID = ko.observable(companyID);
-    //             this.appID = ko.observable(appID);
-    //             this.attendanceID = ko.observable(attendanceID);
-    //             this.attendanceName = ko.observable(attendanceName);
-    //             this.frameNo = ko.observable(frameNo);
-    //             this.timeItemTypeAtr = ko.observable(timeItemTypeAtr);
-    //             this.frameName = ko.observable(frameName);
-    //             this.startTime = ko.observable(startTime);
-    //             this.endTime = ko.observable(endTime);
-    //             this.applicationTime = ko.observable(applicationTime);
-    //             this.nameID = ko.observable(nameID);
-    //         }
-    //     }
 }

@@ -137,10 +137,11 @@ div.form-label.broken {
 .combo-box{
 	margin-left: 15px;
 }
-.table-time{
+.table-time1, .table-time2, .table-time3{
 	display: inline-block;
 	margin-left: 15px;
 }
+
 .fix-margin-left{
 	margin-left:13px;
 }

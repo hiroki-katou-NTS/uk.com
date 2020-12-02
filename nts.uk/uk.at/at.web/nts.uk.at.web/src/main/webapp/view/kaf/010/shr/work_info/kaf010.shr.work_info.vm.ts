@@ -15,7 +15,7 @@ module nts.uk.at.view.kaf010.shr.work_info.viewmodel {
 			<div class="cell valign-top" data-bind="if: true" style="width: 25px;">
 				<!--A4_7 選択ボタン-->
 				<button tabindex="7" style="margin-left: 18px" class="workSelect"
-				data-bind="enable: true, text: $i18n('KAF010_36')"></button>
+				data-bind="enable: true, click : openDialogKdl003, text: $i18n('KAF010_36')"></button>
 			</div>
 			<div class="cell valign-center">
 				<div class="valign-center control-group">
@@ -69,13 +69,13 @@ module nts.uk.at.view.kaf010.shr.work_info.viewmodel {
 				</div>
 			</div>
 			<div class="table" style="margin-top: 87px">
-				<div style="width: 113px" class="cell valign-top cm-column2">
+				<div style="width: 113px" class="cell valign-top cm-column2" data-bind="visible: managementMultipleWorkCyclescheck()">
 					<!--A4_8 勤務時間ラベル-->
 					<div class="lblTitle" data-bind="text: $i18n('KAF010_339'), ntsFormLabel: {required: false}"
 						style="margin-right: 6px"></div>
 				</div>
 				<div class="cell valign-center">
-					<div>
+					<div data-bind="visible: managementMultipleWorkCyclescheck()">
 						<!-- A4_12 -->
 						<input tabindex="10" class="row-cell-margin inputTime-kaf005 right-content" id="inpStartTime2"
 							data-bind="ntsTimeWithDayEditor: { 
@@ -87,7 +87,7 @@ module nts.uk.at.view.kaf010.shr.work_info.viewmodel {
 								required: false }" />
 						<label class="valign-center link-label-kaf005" data-bind=", text: $i18n('KAF010_39')"></label>
 					</div>
-					<div style="margin-top: 11px; margin-left: 5px" data-bind="ntsCheckBox: { checked: false, text: $i18n('KAF010_3')}"></div>
+					<div style="margin-top: 11px; margin-left: 5px" data-bind="ntsCheckBox: { checked: false, text: $i18n('KAF010_3')}, visible: workTimeCheckBoxVisible()"></div>
 				</div>
 				<div class="cell valign-center">
 					<div class="row-cell-margin">
@@ -99,7 +99,7 @@ module nts.uk.at.view.kaf010.shr.work_info.viewmodel {
 							readonly: false,
 							required: false}" />
 					</div>
-					<div style="margin-top: 11px; margin-left: 5px" data-bind="ntsCheckBox: { checked: false, text: $i18n('KAF010_4')}"></div>
+					<div style="margin-top: 11px; margin-left: 5px" data-bind="ntsCheckBox: { checked: false, text: $i18n('KAF010_4')}, visible: workTimeCheckBoxVisible()"></div>
 				</div>
 			</div>
 		</div>
@@ -113,7 +113,7 @@ module nts.uk.at.view.kaf010.shr.work_info.viewmodel {
     class KAF010ShrWorkInfoModel extends ko.ViewModel {
 
         created(params: any) {
-            const vm = this;
+			const vm = this;
         }
     }
 
@@ -134,6 +134,8 @@ module nts.uk.at.view.kaf010.shr.work_info.viewmodel {
 		workHours1: WorkHours;
 
 		workHours2: WorkHours;
+
+		
 	}
 
 

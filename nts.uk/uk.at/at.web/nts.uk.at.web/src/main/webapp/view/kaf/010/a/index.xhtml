@@ -31,7 +31,8 @@
 			<com:scriptfile path="/view/kaf/000/a/kaf000.a.vm.js" />
 			<com:scriptfile path="/view/kaf/010/shr/header/kaf010.shr.header.vm.js" />
 			<com:scriptfile path="/view/kaf/010/shr/work_info/kaf010.shr.work_info.vm.js" />
-            <com:scriptfile path="/view/kaf/010/shr/time/kaf010.shr.time.vm.js" />
+			<com:scriptfile path="/view/kaf/010/shr/time/kaf010.shr.time.vm.js" />
+			<com:scriptfile path="/view/kaf/010/shr/footer/kaf010.shr.footer.vm.js" />
 			<!-- <com:scriptfile path="/view/kaf/010/shr/kaf010.shr.vm.js" /> -->
 			<!-- <com:scriptfile path="/view/kaf/010/shr/header/kaf010.shr.header.vm.js" /> -->
 			<!-- <com:scriptfile path="/view/kaf/010/shr/footer/kaf010.shr.footer.vm.js" /> -->
@@ -42,7 +43,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<button class="proceed" data-bind="click: register, enable: $root.errors.isEmpty" tabindex="1">#{i18n.getText('KAF010_10')}</button>
-				<button>#{i18n.getText('KAF010_340')}</button>
+				<button data-bind="click: testzz, visible: referenceButton()">#{i18n.getText('KAF010_340')}</button>
 				<div data-bind="component: { name: 'kaf000-a-component7',
 											params: {
 												appType: appType,
@@ -93,18 +94,19 @@
 											params: {
 												workInfo: workInfo
 											}}"></div>
-				<div data-bind="component: { name: 'kaf010-share-time',
+				<div data-bind="component: { name: 'kaf010-share-time', 
 											params: {
-												
-											}
-							
-										}"></div>
-				<div data-bind="component: { name: 'kaf000-a-component5',
+												application: application,
+												holidayTime: holidayTime,
+												overTime: overTime
+											}}"></div>
+				<div id="component5" data-bind="component: { name: 'kaf000-a-component5',
 											params: {
 												appType: appType,
 												application: application,
 												appDispInfoStartupOutput: appDispInfoStartupOutput
 											} }"></div>
+				<div data-bind="component: { name: 'kaf010-share-footer' }"></div>
 				
 				<div data-bind="component: { name: 'kaf000-a-component6',
 											params: {
