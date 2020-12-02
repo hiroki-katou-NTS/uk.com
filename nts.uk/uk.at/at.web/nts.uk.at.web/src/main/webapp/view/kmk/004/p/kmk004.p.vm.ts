@@ -78,7 +78,7 @@ module nts.uk.at.view.kmk004.p {
 			vm.title(params.titleName);
 
 		}
-		
+
 		mounted() {
 			const vm = this;
 			vm.loadData();
@@ -94,8 +94,8 @@ module nts.uk.at.view.kmk004.p {
 				vm.$ajax(KMK004_P_API.COM_GET_BASIC_SETTING).done((data: IResponse) => {
 					vm.bindingData(data);
 					vm.checkDisplay();
-					
-					if (vm.screenData.settingDto.settlementPeriod.period() === 1){
+
+					if (vm.screenData.settingDto.settlementPeriod.period() === 1) {
 						vm.selectedP3_3(0);
 					} else {
 						vm.selectedP3_3(1);
@@ -108,8 +108,8 @@ module nts.uk.at.view.kmk004.p {
 				vm.$ajax(KMK004_P_API.WKP_GET_BASIC_SETTING + "/" + ko.toJS(vm.params.wkpId)).done((data: IResponse) => {
 					vm.bindingData(data);
 					vm.checkDisplay();
-					
-					if (vm.screenData.settingDto.settlementPeriod.period() === 1){
+
+					if (vm.screenData.settingDto.settlementPeriod.period() === 1) {
 						vm.selectedP3_3(0);
 					} else {
 						vm.selectedP3_3(1);
@@ -122,8 +122,8 @@ module nts.uk.at.view.kmk004.p {
 				vm.$ajax(KMK004_P_API.EMP_GET_BASIC_SETTING + "/" + ko.toJS(vm.params.empCode)).done((data: IResponse) => {
 					vm.bindingData(data);
 					vm.checkDisplay();
-					
-					if (vm.screenData.settingDto.settlementPeriod.period() === 1){
+
+					if (vm.screenData.settingDto.settlementPeriod.period() === 1) {
 						vm.selectedP3_3(0);
 					} else {
 						vm.selectedP3_3(1);
@@ -136,8 +136,8 @@ module nts.uk.at.view.kmk004.p {
 				vm.$ajax(KMK004_P_API.SHA_GET_BASIC_SETTING + "/" + ko.toJS(vm.params.empId)).done((data: IResponse) => {
 					vm.bindingData(data);
 					vm.checkDisplay();
-					
-					if (vm.screenData.settingDto.settlementPeriod.period() === 1){
+
+					if (vm.screenData.settingDto.settlementPeriod.period() === 1) {
 						vm.selectedP3_3(0);
 					} else {
 						vm.selectedP3_3(1);
@@ -207,42 +207,64 @@ module nts.uk.at.view.kmk004.p {
 
 			//職場
 			if (vm.params.sidebarType == 'Com_Workplace') {
-				vm.$ajax(KMK004_P_API.WKP_CREATE_BASIC_SETTING, ko.toJS(vm.screenData)).done(() => {
-					vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-						vm.close();
-					})
 
-				}).fail((error) => {
-					vm.$dialog.error(error);
-				}).always(() => {
-					vm.$blockui("clear");
+				vm.$validate('.nts-editor').then((valid: boolean) => {
+					if (!valid) {
+						return;
+					}
+
+					vm.$ajax(KMK004_P_API.WKP_CREATE_BASIC_SETTING, ko.toJS(vm.screenData)).done(() => {
+						vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
+							vm.close();
+						})
+
+					}).fail((error) => {
+						vm.$dialog.error(error);
+					}).always(() => {
+						vm.$blockui("clear");
+					});
 				});
+
 			}
 
 			//雇用
 			if (vm.params.sidebarType == 'Com_Employment') {
-				vm.$ajax(KMK004_P_API.EMP_CREATE_BASIC_SETTING, ko.toJS(vm.screenData)).done(() => {
-					vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-						vm.close();
-					})
-				}).fail((error) => {
-					vm.$dialog.error(error);
-				}).always(() => {
-					vm.$blockui("clear");
+
+				vm.$validate('.nts-editor').then((valid: boolean) => {
+					if (!valid) {
+						return;
+					}
+					vm.$ajax(KMK004_P_API.EMP_CREATE_BASIC_SETTING, ko.toJS(vm.screenData)).done(() => {
+						vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
+							vm.close();
+						})
+					}).fail((error) => {
+						vm.$dialog.error(error);
+					}).always(() => {
+						vm.$blockui("clear");
+					});
+
 				});
+
 			}
 
 			//社員
 			if (vm.params.sidebarType == 'Com_Person') {
-				vm.$ajax(KMK004_P_API.SHA_CREATE_BASIC_SETTING, ko.toJS(vm.screenData)).done(() => {
-					vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-						vm.close();
-					})
-				}).fail((error) => {
-					vm.$dialog.error(error);
-				}).always(() => {
-					vm.$blockui("clear");
+				vm.$validate('.nts-editor').then((valid: boolean) => {
+					if (!valid) {
+						return;
+					}
+					vm.$ajax(KMK004_P_API.SHA_CREATE_BASIC_SETTING, ko.toJS(vm.screenData)).done(() => {
+						vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
+							vm.close();
+						})
+					}).fail((error) => {
+						vm.$dialog.error(error);
+					}).always(() => {
+						vm.$blockui("clear");
+					});
 				});
+
 			}
 		}
 
@@ -252,53 +274,80 @@ module nts.uk.at.view.kmk004.p {
 
 			//職場
 			if (vm.params.sidebarType == 'Com_Company') {
-				vm.$ajax(KMK004_P_API.COM_UPDATE_BASIC_SETTING, ko.toJS(vm.screenData)).done(() => {
-					vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-						vm.close();
-					})
-				}).fail((error) => {
-					vm.$dialog.error(error);
-				}).always(() => {
-					vm.$blockui("clear");
+				vm.$validate('.nts-editor').then((valid: boolean) => {
+					if (!valid) {
+						return;
+					}
+					vm.$ajax(KMK004_P_API.COM_UPDATE_BASIC_SETTING, ko.toJS(vm.screenData)).done(() => {
+						vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
+							vm.close();
+						})
+					}).fail((error) => {
+						vm.$dialog.error(error);
+					}).always(() => {
+						vm.$blockui("clear");
+					});
+
 				});
 			}
 
 			//職場
 			if (vm.params.sidebarType == 'Com_Workplace') {
-				vm.$ajax(KMK004_P_API.WKP_UPDATE_BASIC_SETTING, ko.toJS(vm.screenData)).done(() => {
-					vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-						vm.close();
-					})
-				}).fail((error) => {
-					vm.$dialog.error(error);
-				}).always(() => {
-					vm.$blockui("clear");
+
+				vm.$validate('.nts-editor').then((valid: boolean) => {
+					if (!valid) {
+						return;
+					}
+					vm.$ajax(KMK004_P_API.WKP_UPDATE_BASIC_SETTING, ko.toJS(vm.screenData)).done(() => {
+						vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
+							vm.close();
+						})
+					}).fail((error) => {
+						vm.$dialog.error(error);
+					}).always(() => {
+						vm.$blockui("clear");
+					});
+
 				});
+
 			}
 
 			//雇用
 			if (vm.params.sidebarType == 'Com_Employment') {
-				vm.$ajax(KMK004_P_API.EMP_UPDATE_BASIC_SETTING, ko.toJS(vm.screenData)).done(() => {
-					vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-						vm.close();
-					})
-				}).fail((error) => {
-					vm.$dialog.error(error);
-				}).always(() => {
-					vm.$blockui("clear");
+
+				vm.$validate('.nts-editor').then((valid: boolean) => {
+					if (!valid) {
+						return;
+					}
+					vm.$ajax(KMK004_P_API.EMP_UPDATE_BASIC_SETTING, ko.toJS(vm.screenData)).done(() => {
+						vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
+							vm.close();
+						})
+					}).fail((error) => {
+						vm.$dialog.error(error);
+					}).always(() => {
+						vm.$blockui("clear");
+					});
 				});
 			}
 
 			//社員
 			if (vm.params.sidebarType == 'Com_Person') {
-				vm.$ajax(KMK004_P_API.SHA_UPDATE_BASIC_SETTING, ko.toJS(vm.screenData)).done(() => {
-					vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-						vm.close();
-					})
-				}).fail((error) => {
-					vm.$dialog.error(error);
-				}).always(() => {
-					vm.$blockui("clear");
+
+				vm.$validate('.nts-editor').then((valid: boolean) => {
+					if (!valid) {
+						return;
+					}
+
+					vm.$ajax(KMK004_P_API.SHA_UPDATE_BASIC_SETTING, ko.toJS(vm.screenData)).done(() => {
+						vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
+							vm.close();
+						})
+					}).fail((error) => {
+						vm.$dialog.error(error);
+					}).always(() => {
+						vm.$blockui("clear");
+					});
 				});
 			}
 		}
