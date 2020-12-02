@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.ws.workledgeroutputitem;
 
 
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.function.app.command.workledgeroutputitem.*;
@@ -10,6 +11,8 @@ import nts.uk.ctx.at.function.app.query.workledgeroutputitem.GetOutputSettingOfW
 import nts.uk.ctx.at.function.app.query.workledgeroutputitem.GetSettingDetailWorkLedger;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
 import nts.uk.ctx.at.function.dom.workledgeroutputitem.WorkLedgerOutputItem;
+import nts.uk.ctx.at.function.ws.outputworkstatustable.dto.SettingIdParams;
+import nts.uk.ctx.at.function.ws.outputworkstatustable.dto.SettingParams;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -45,8 +48,8 @@ public class WorkLedgerOutputItemWebService extends WebService {
 
     @POST
     @Path("005/a/listworkledger")
-    public List<WorkStatusOutputDto> getListWorkStatus(int setting) {
-        return ofWorkLedgerQuery.getListWorkStatus(EnumAdaptor.valueOf(setting, SettingClassificationCommon.class));
+    public List<WorkStatusOutputDto> getListWorkStatus(SettingParams params) {
+        return ofWorkLedgerQuery.getListWorkStatus(EnumAdaptor.valueOf(params.getSetting(), SettingClassificationCommon.class));
     }
 
     @Path("005/a/beginningmonth")
@@ -56,8 +59,19 @@ public class WorkLedgerOutputItemWebService extends WebService {
 
     @POST
     @Path("005/b/detailworkledger")
-    public WorkLedgerOutputItem getDetail(String settingId) {
-        return getSettingDetailWorkLedger.getDetail(settingId);
+    public WorkLedgerOutputItemDto getDetail(SettingIdParams params) {
+        val domain = getSettingDetailWorkLedger.getDetail(params.getSettingId());
+        if (domain != null) {
+            return new WorkLedgerOutputItemDto(
+                    domain.getId(),
+                    domain.getCode().v(),
+                    domain.getOutputItemList(),
+                    domain.getName().v(),
+                    domain.getStandardFreeClassification(),
+                    domain.getEmployeeId()
+            );
+        }
+        return null;
     }
 
     @POST

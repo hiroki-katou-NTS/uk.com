@@ -4,6 +4,7 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.function.dom.commonform.AttendanceItemToPrint;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
@@ -14,7 +15,6 @@ import nts.uk.ctx.at.function.infra.entity.outputitemofworkledger.KfnmtRptRecDis
 import nts.uk.ctx.at.function.infra.entity.outputitemofworkledger.KfnmtRptRecSetting;
 
 import javax.ejb.Stateless;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -123,9 +123,15 @@ public class JpaWorkLedgerOutputItemRepo extends JpaRepository implements WorkLe
 
     @Override
     public WorkLedgerOutputItem getWorkStatusOutputSettings(String cid, String settingId) {
+
+        val outputItem = this.queryProxy().query(FIND_WORK_LEDGER_CONST, KfnmtRptRecDispCont.class)
+                .setParameter("cid", cid)
+                .setParameter("settingId", settingId)
+                .getList(JpaWorkLedgerOutputItemRepo::toDomain);
+
         val result = this.queryProxy().query(FIND_WORK_LEDGER_SETTING, KfnmtRptRecSetting.class)
                 .setParameter("cid", cid)
-                .setParameter("settingId", settingId).getSingle(JpaWorkLedgerOutputItemRepo::toDomain);
+                .setParameter("settingId", settingId).getSingle(e -> JpaWorkLedgerOutputItemRepo.toDomain(e, outputItem));
         return result.orElse(null);
 
     }
@@ -228,6 +234,26 @@ public class JpaWorkLedgerOutputItemRepo extends JpaRepository implements WorkLe
                 new OutputItemSettingName(entity.name),
                 EnumAdaptor.valueOf(entity.settingType, SettingClassificationCommon.class),
                 entity.employeeId
+        );
+    }
+
+    private static WorkLedgerOutputItem toDomain(KfnmtRptRecSetting entity, List<AttendanceItemToPrint> outputItemList) {
+
+        return new WorkLedgerOutputItem(
+                entity.iD,
+                new OutputItemSettingCode(Integer.toString(entity.displayCode)),
+                outputItemList,
+                new OutputItemSettingName(entity.name),
+                EnumAdaptor.valueOf(entity.settingType, SettingClassificationCommon.class),
+                entity.employeeId
+        );
+    }
+
+    private static AttendanceItemToPrint toDomain(KfnmtRptRecDispCont entity) {
+
+        return new AttendanceItemToPrint(
+                entity.pk.attendanceItemId,
+                entity.printPosition
         );
     }
 }
