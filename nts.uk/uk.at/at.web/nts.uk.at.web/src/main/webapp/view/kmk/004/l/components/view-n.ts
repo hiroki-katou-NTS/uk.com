@@ -33,7 +33,7 @@ module nts.uk.at.view.kmk004.l {
 							<button data-bind="i18n: 'KMK004_338', click: openViewP"></button>
 						</div>
 						<div class="header_content">
-							<div data-bind="visible: true, component: {
+							<div data-bind="visible: displayL4_4, component: {
 								name: 'view-l-basic-setting',
 								params:{ 
 								}
@@ -91,6 +91,7 @@ module nts.uk.at.view.kmk004.l {
 	})
 
 	export class ViewNComponent extends ko.ViewModel {
+		displayL4_4: KnockoutObservable<boolean> = ko.observable(true);
 		listComponentOption: any;
 		selectedCode: KnockoutObservable<string>;
 		multiSelectedCode: KnockoutObservableArray<string>;

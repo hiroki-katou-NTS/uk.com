@@ -63,16 +63,20 @@
 
 #view-m-left-side {
     padding-left: 30px;
+    vertical-align: baseline;
+    padding-top: 35px;
 }
 
 #view-n-left-side {
     padding-left: 30px;
-    position: relative;
-    bottom: 145px;
+    vertical-align: baseline;
+    padding-top: 35px;
 }
 
 #view-o-left-side {
     padding-left: 85px;
+    vertical-align: baseline;
+    padding-top: 35px;
 }
 
 #title {
@@ -81,18 +85,15 @@
 }
 
 #workplace-list {
-	position: relative;
-    bottom: 130px;
+	
 }
 
 #com-kcp005 {
-	position: relative;
-    bottom: 190px;
+	
 }
 
 #view-o-listbox {
-	position: relative;	
-    bottom: 20px;
+	
 }
 
 div.form-label {
