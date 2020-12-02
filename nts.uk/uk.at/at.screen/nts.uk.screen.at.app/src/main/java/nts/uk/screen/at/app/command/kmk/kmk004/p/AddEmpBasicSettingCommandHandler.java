@@ -43,7 +43,7 @@ public class AddEmpBasicSettingCommandHandler extends CommandHandler<EmpBasicSet
 		EmpBasicSettingCommand command = context.getCommand();
 
 		// 職場別変形労働法定労働時間
-		deforLaborTimeEmpRepo.add(DeforLaborTimeEmp.of(cId, new EmploymentCode(command.getEmploymentCode()),
+		deforLaborTimeEmpRepo.add(DeforLaborTimeEmp.of(cId, new EmploymentCode(command.getEmpCode()),
 				new WeeklyUnit(new WeeklyTime(command.getDeforLaborTimeComDto().getWeeklyTime().getTime())),
 				new DailyUnit(new TimeOfDay(command.getDeforLaborTimeComDto().getDailyTime().getTime()))));
 
@@ -74,7 +74,7 @@ public class AddEmpBasicSettingCommandHandler extends CommandHandler<EmpBasicSet
 
 		DeforLaborCalSetting deforLaborCalSetting = new DeforLaborCalSetting(false);
 
-		return EmpDeforLaborMonthActCalSet.of(new EmploymentCode(command.getEmploymentCode()), cId, aggregateTimeSet, excessOutsideTimeSet,
+		return EmpDeforLaborMonthActCalSet.of(new EmploymentCode(command.getEmpCode()), cId, aggregateTimeSet, excessOutsideTimeSet,
 				deforLaborCalSetting, settlementPeriod);
 	}
 }

@@ -170,10 +170,7 @@ module nts.uk.at.view.kmk004 {
 			}
 			
 			.view-o-times-table {
-                padding: 15px;
-                border: 1px solid #AAAAAA;
-                border-radius: 15px;
-				margin: 15px;
+				margin-left: 15px;
             }
 
             .view-o-times-table table {

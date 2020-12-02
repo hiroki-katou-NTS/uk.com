@@ -11,5 +11,5 @@ import nts.uk.screen.at.app.query.kmk004.p.DeforLaborDto;
 @Getter
 public class EmpBasicSettingCommand extends DeforLaborDto {
 	
-	private String employmentCode;
+	private String empCode;
 }

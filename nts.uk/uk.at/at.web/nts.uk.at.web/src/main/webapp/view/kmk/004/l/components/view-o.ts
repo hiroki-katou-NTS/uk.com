@@ -56,8 +56,8 @@ module nts.uk.at.view.kmk004.l {
 									}
 								}"></div>
 								
-								<div class= "view-l-times-table" data-bind="component: {
-									name: 'view-l-times-table',
+								<div class= "view-o-times-table" data-bind="component: {
+									name: 'view-o-times-table',
 									params:{ 
 								
 									}

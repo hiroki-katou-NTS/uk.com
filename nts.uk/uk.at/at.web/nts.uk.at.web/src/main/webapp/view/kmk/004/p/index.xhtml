@@ -80,7 +80,7 @@
 									value: screenData.settingDto.settlementPeriod.startMonth,
 									optionsText: 'name',
 									editable:  false,
-									enable: true,
+									enable: selectedP3_3() == 1,
 									required: requiredP3,
 									columns: [{ prop: 'name', length: 5 }]}">
 							</div>
@@ -94,20 +94,21 @@
 							<div id="combo-box" tabindex="5"
 								data-bind="ntsComboBox: {
 									name: '#{i18n.getText('KMK004_316')}',
+									dropDownAttachedToBody:true,
 									options: itemListP3_7,
 									optionsValue: 'code',
 									visibleItemsCount: 12,
 									value: screenData.settingDto.settlementPeriod.period,
 									optionsText: 'name',
 									editable:  false,
-									enable: true,
+									enable: selectedP3_3() == 1,
 									required: requiredP3,
 									columns: [{ prop: 'name', length: 5 }]}">
 							</div>
 						</td>
 						<td>
 							<!-- P3_8 -->
-							<div tabindex="6" data-bind="ntsCheckBox: { checked: screenData.settingDto.settlementPeriod.repeatAtr } ">
+							<div tabindex="6" data-bind="ntsCheckBox: { checked: screenData.settingDto.settlementPeriod.repeatAtr, enable: selectedP3_3() == 1 } ">
 							#{i18n.getText('KMK004_317')}
 							</div>
 						</td>
@@ -162,7 +163,7 @@
 				<button tabindex="12" data-bind="click: close, i18n: 'KMK004_235'"></button>
 
 				<!-- P6_3 -->
-				<button tabindex="13" class="danger" data-bind="i18n: 'KMK004_227', visible: visibleP6_3 "></button>
+				<button tabindex="13" class="danger" data-bind="click: removeData, i18n: 'KMK004_227', visible: visibleP6_3 "></button>
 			</div>
 		</ui:define>
 	</ui:composition>
