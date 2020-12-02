@@ -231,19 +231,20 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 				return;
 			}
 			// Ｂ画面(承認・確認状況の照会)を実行する
-        	let closureItem = _.find(vm.closureLst(), o => o.closureId == vm.selectedClosureId()),
-				startDate = vm.dateValue().startDate,
-				endDate = vm.dateValue().endDate,
-				selectWorkplaceInfo: Array<DisplayWorkplace> = _.chain(vm.fullWorkplaceInfo)
-																.filter((o: DisplayWorkplace) => _.includes(vm.multiSelectedWorkplaceId(), o.id))
-																.sortBy('hierarchyCode').value(),
-				appNameLst: Array<any> = vm.appNameLst,
-				useSet = vm.useSet,
-				initDisplayOfApprovalStatus = vm.initDisplayOfApprovalStatus,
-				employmentCDLst = vm.employmentCDLst,
-				bParam: KAF018BParam = { closureItem, startDate, endDate, selectWorkplaceInfo, appNameLst, useSet, initDisplayOfApprovalStatus, employmentCDLst };
-			vm.$jump("/view/kaf/018/b/index.xhtml", bParam);
-			
+			character.save('InitDisplayOfApprovalStatus', vm.initDisplayOfApprovalStatus).then(() => {
+				let closureItem = _.find(vm.closureLst(), o => o.closureId == vm.selectedClosureId()),
+					startDate = vm.dateValue().startDate,
+					endDate = vm.dateValue().endDate,
+					selectWorkplaceInfo: Array<DisplayWorkplace> = _.chain(vm.fullWorkplaceInfo)
+																	.filter((o: DisplayWorkplace) => _.includes(vm.multiSelectedWorkplaceId(), o.id))
+																	.sortBy('hierarchyCode').value(),
+					appNameLst: Array<any> = vm.appNameLst,
+					useSet = vm.useSet,
+					initDisplayOfApprovalStatus = vm.initDisplayOfApprovalStatus,
+					employmentCDLst = vm.employmentCDLst,
+					bParam: KAF018BParam = { closureItem, startDate, endDate, selectWorkplaceInfo, appNameLst, useSet, initDisplayOfApprovalStatus, employmentCDLst };
+				vm.$jump("/view/kaf/018/b/index.xhtml", bParam);	
+			});
 		}
 
 		emailSetting() {
