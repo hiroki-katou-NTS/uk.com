@@ -9,4 +9,6 @@ public class WorkTypeNameDto {
 
     private String name;
 
+    private String msg;
+
 }

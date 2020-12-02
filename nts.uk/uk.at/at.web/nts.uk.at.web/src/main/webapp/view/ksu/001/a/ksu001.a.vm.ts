@@ -137,14 +137,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         pathToUp = '';
         
         // param kcp015
-        visibleA31: KnockoutObservable<boolean> = ko.observable(true);
-        visibleA32: KnockoutObservable<boolean> = ko.observable(true);
-        visibleA33: KnockoutObservable<boolean> = ko.observable(true);
-        visibleA34: KnockoutObservable<boolean> = ko.observable(true);
-        visibleA35: KnockoutObservable<boolean> = ko.observable(true);
-        visibleA36: KnockoutObservable<boolean> = ko.observable(true);
         baseDate: KnockoutObservable<string> = ko.observable('');
         sids: KnockoutObservableArray<any> = ko.observableArray([]);
+        
+        A1_7_3_line1: KnockoutObservable<string> = ko.observable('');
+        A1_7_3_line2: KnockoutObservable<string> = ko.observable('');
+        
         // share tooltip to ksu003 
         tooltipShare: Array<any> = [];
 
@@ -517,6 +515,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.checkEnableCombWTime();
                 self.setHeightScreen();
                 self.setPositionButonToRightToLeft();
+                self.setTextResourceA173();
                 self.flag = false;
                 dfd.resolve();
             }).fail(function(error) {
@@ -1976,6 +1975,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             
             // set height grid theo localStorage đã lưu
             self.setPositionButonDownAndHeightGrid();
+            $('#btnControlLeftRight').width($("#extable").width() + 10);
+            $("#sub-content-main").width($('#extable').width() + 30);
             
             console.log(performance.now() - start);
         }
@@ -2348,6 +2349,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let marginleftOfbtnToRight = $("#extable").width() - 160 - self.widthMid - 32 - 32 - 30;
                 $(".toRight").css('margin-left', marginleftOfbtnToRight + 'px');
             }
+            $('#btnControlLeftRight').width($("#extable").width() + 10);
+            $("#sub-content-main").width($('#extable').width() + 30);
             self.indexBtnToLeft = self.indexBtnToLeft + 1;
         }
 
@@ -3374,9 +3377,19 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             });
             return dfd.promise();
         }
-        
+
         compareArrByRowIndexAndColumnKey(a: any, b: any): any {
             return a.rowIndex == b.rowIndex && a.comlumnKey == b.comlumnKey;
+        }
+
+        setTextResourceA173() {
+            let self = this;
+            let tr = getText('KSU001_14', ['#Com_Person']);
+            let indexSp = _.indexOf(tr, '※');
+            let line1 = tr.substring(0, indexSp - 1);
+            let line2 = tr.substring(indexSp - 1, tr.length);
+            self.A1_7_3_line1(line1);
+            self.A1_7_3_line2(line2);
         }
     }
 
