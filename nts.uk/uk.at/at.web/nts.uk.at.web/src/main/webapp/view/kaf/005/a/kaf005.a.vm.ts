@@ -273,42 +273,45 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			let workInfoOp = {} as WorkInformation;
 			// work type and time
 			// A4 ---
-			if (!_.isNil(workInfo.workType())) {
-				workInfoOp.workType = workInfo.workType().code;
-				workInfoOp.workTime = workInfo.workTime().code;
-				appOverTime.workInfoOp = workInfoOp;
-			}
-			appOverTime.workHoursOp = [] as Array<TimeZoneWithWorkNo>;
-			if (!_.isNil(workInfo.workHours1.start())
-				&& !_.isEqual(workInfo.workHours1.start() , '')
-				&& !_.isNil(workInfo.workHours1.end())
-				&& !_.isEqual(workInfo.workHours1.end() , '')
-				) {
-				let timeZone = {} as TimeZoneWithWorkNo;
-				timeZone.workNo = 1;
-				timeZone.timeZone = {} as TimeZone_New;
-				timeZone.timeZone.startTime = workInfo.workHours1.start();
-				timeZone.timeZone.endTime = workInfo.workHours1.end();
-				appOverTime.workHoursOp.push(timeZone);
-			} else {
-				_.remove(appOverTime.workHoursOp, (i) => i.workNo == 1);
+			if (vm.visibleModel.c7()) {
+				if (!_.isNil(workInfo.workType())) {
+					workInfoOp.workType = workInfo.workType().code;
+					workInfoOp.workTime = workInfo.workTime().code;
+					appOverTime.workInfoOp = workInfoOp;
+				}
+				appOverTime.workHoursOp = [] as Array<TimeZoneWithWorkNo>;
+				if (!_.isNil(workInfo.workHours1.start())
+					&& !_.isEqual(workInfo.workHours1.start() , '')
+					&& !_.isNil(workInfo.workHours1.end())
+					&& !_.isEqual(workInfo.workHours1.end() , '')
+					) {
+					let timeZone = {} as TimeZoneWithWorkNo;
+					timeZone.workNo = 1;
+					timeZone.timeZone = {} as TimeZone_New;
+					timeZone.timeZone.startTime = workInfo.workHours1.start();
+					timeZone.timeZone.endTime = workInfo.workHours1.end();
+					appOverTime.workHoursOp.push(timeZone);
+				} else {
+					_.remove(appOverTime.workHoursOp, (i) => i.workNo == 1);
+				}
+				
+	
+				if (!_.isNil(workInfo.workHours2.start())
+					&& !_.isEqual(workInfo.workHours2.start() , '')
+					&& !_.isNil(workInfo.workHours2.end())
+					&& !_.isEqual(workInfo.workHours2.end() , '')
+					) {
+					let timeZone = {} as TimeZoneWithWorkNo;
+					timeZone.workNo = 2;
+					timeZone.timeZone = {} as TimeZone_New;
+					timeZone.timeZone.startTime = workInfo.workHours2.start();
+					timeZone.timeZone.endTime = workInfo.workHours2.end();
+					appOverTime.workHoursOp.push(timeZone);
+				} else {
+					_.remove(appOverTime.workHoursOp, (i) => i.workNo == 2);
+				}
 			}
 			
-
-			if (!_.isNil(workInfo.workHours2.start())
-				&& !_.isEqual(workInfo.workHours2.start() , '')
-				&& !_.isNil(workInfo.workHours2.end())
-				&& !_.isEqual(workInfo.workHours2.end() , '')
-				) {
-				let timeZone = {} as TimeZoneWithWorkNo;
-				timeZone.workNo = 2;
-				timeZone.timeZone = {} as TimeZone_New;
-				timeZone.timeZone.startTime = workInfo.workHours2.start();
-				timeZone.timeZone.endTime = workInfo.workHours2.end();
-				appOverTime.workHoursOp.push(timeZone);
-			} else {
-				_.remove(appOverTime.workHoursOp, (i) => i.workNo == 2);
-			}
 			// A5 ---
 			let restTime = vm.restTime() as Array<RestTime>;
 			appOverTime.breakTimeOp = [] as Array<TimeZoneWithWorkNo>;
@@ -446,6 +449,17 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			
 
 			applicationTime.reasonDissociation = [] as Array<ReasonDivergence>;
+
+			// message info
+			if (vm.visibleModel.c11_1() || vm.visibleModel.c11_2()) {
+				//vm.messageInfos
+				
+				let item = {} as ReasonDivergence;
+				item.reasonCode = vm.messageInfos()[0].selectedCode();
+				item.reason = vm.messageInfos()[0].valueInput();
+				item.diviationTime = 1;
+				applicationTime.reasonDissociation.push(item);
+			}
 
 
 
@@ -643,8 +657,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				messageInfo.titleDrop = ko.observable('');
 				messageInfo.listDrop = ko.observableArray(itemList);
 				messageInfo.titleInput = ko.observable('');
-				messageInfo.valueInput = ko.observable(null);
-				messageInfo.selectedCode = ko.observable('1');
+				messageInfo.valueInput = ko.observable('');
+				messageInfo.selectedCode = ko.observable(null);
 				messageArray.push(messageInfo);
 				messageArray.push(messageInfo);
 
@@ -673,10 +687,31 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			if (self.visibleModel.c11_1()) {
 				let itemList = [] as Array<ItemModel>;
 				let findResut = _.find(res.infoNoBaseDate.divergenceReasonInputMethod, { divergenceTimeNo: 1 });
+				// first dropdown
+				{
+					let i = {} as ItemModel;
+					i.code = null;
+					i.name = self.$i18n('KAF005_340');
+					itemList.push(i);
+				}	
+				// dummy data 
+				{
+					findResut.reasons = [];
+					findResut.reasons.push({
+						divergenceReasonCode: '1',
+						reason: 'aaaaa',
+						reasonRequired: 1
+					});
+					findResut.reasons.push({
+						divergenceReasonCode: '2',
+						reason: 'bbbb',
+						reasonRequired: 1
+					});
+				}	
 				_.forEach(findResut.reasons, (item: DivergenceReasonSelect) => {
 					let i = {} as ItemModel;
 					i.code = item.divergenceReasonCode;
-					i.name = self.$i18n('KAF005_340') + item.divergenceReasonCode + ' ' + item.reason;
+					i.name = item.divergenceReasonCode + ' ' + item.reason;
 					itemList.push(i);
 					
 				});
@@ -688,10 +723,18 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			if (self.visibleModel.c12_1()) {
 				let itemList = [] as Array<ItemModel>;
 				let findResut = _.find(res.infoNoBaseDate.divergenceReasonInputMethod, { divergenceTimeNo: 2 });
+				// first dropdown
+				{
+					let i = {} as ItemModel;
+					i.code = null;
+					i.name = self.$i18n('KAF005_340');
+					itemList.push(i);
+				}	
+					
 				_.forEach(findResut.reasons, (item: DivergenceReasonSelect) => {
 					let i = {} as ItemModel;
 					i.code = item.divergenceReasonCode;
-					i.name = self.$i18n('KAF005_340') + item.divergenceReasonCode + ' ' + item.reason;
+					i.name = item.divergenceReasonCode + ' ' + item.reason;
 					itemList.push(i);
 					
 				});
@@ -1934,7 +1977,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			// 残業申請の表示情報．基準日に関係しない情報．利用する乖離理由．乖離理由を選択肢から選ぶ = true
 			let c11_1 = true;
 			let findResut = _.find(res.infoNoBaseDate.divergenceReasonInputMethod, { divergenceTimeNo: 1 });
-			let c11_1_1 = _.isNil(findResut) ? false : !_.isEmpty(findResut.reasons);
+			let c11_1_1 = !_.isNil(findResut);
+			//  ? false : !_.isEmpty(findResut.reasons);
 			let c11_1_2 = c11_1_1 ? findResut.divergenceReasonSelected : false;
 			c11_1 = c11_1_1 && c11_1_2;
 			visibleModel.c11_1(c11_1);
@@ -1942,7 +1986,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			// 「残業申請の表示情報．基準日に関係しない情報．利用する乖離理由．NO = 1」 <> empty　AND
 			// 残業申請の表示情報．基準日に関係しない情報．利用する乖離理由．乖離理由を入力する = true
 			let c11_2 = true;
-			let c11_2_1 = _.isNil(findResut) ? false : !_.isEmpty(findResut.reasons);
+			let c11_2_1 = !_.isNil(findResut);
 			let c11_2_2 = c11_2_1 ? findResut.divergenceReasonInputed : false;
 			c11_2 = c11_2_1 && c11_2_2;
 			visibleModel.c11_2(c11_2);
@@ -1951,7 +1995,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			// 残業申請の表示情報．基準日に関係しない情報．利用する乖離理由．乖離理由を選択肢から選ぶ = true
 			let c12_1 = true;
 			findResut = _.find(res.infoNoBaseDate.divergenceReasonInputMethod, { divergenceTimeNo: 2 });
-			let c12_1_1 = _.isNil(findResut) ? false : !_.isEmpty(findResut.reasons);
+			let c12_1_1 = !_.isNil(findResut);
 			let c12_1_2 = c12_1_1 ? findResut.divergenceReasonSelected : false;
 			c12_1 = c12_1_1 && c12_1_2;
 			visibleModel.c12_1(c12_1);
@@ -1960,7 +2004,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			// 残業申請の表示情報．基準日に関係しない情報．利用する乖離理由．乖離理由を入力する = true
 			let c12_2 = true;
 			findResut = _.find(res.infoNoBaseDate.divergenceReasonInputMethod, { divergenceTimeNo: 2 });
-			let c12_2_1 = _.isNil(findResut) ? false : !_.isEmpty(findResut.reasons);
+			let c12_2_1 = !_.isNil(findResut);
 			let c12_2_2 = c12_2_1 ? findResut.divergenceReasonInputed : false;
 			c12_2 = c12_2_2 && c12_2_2;
 			visibleModel.c12_2(c12_2);
@@ -2373,6 +2417,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 	export interface DivergenceReasonSelect {
 		divergenceReasonCode: string;
 		reason: string;
+		reasonRequired: number;
 	}
 	export interface DivergenceTimeRoot {
 		divergenceTimeNo: number;
@@ -2511,7 +2556,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		diviationTime: number;
 	}
 	export interface DivergenceReason {
-
+		
 	}
 	export interface WorkContent {
 		workTypeCode: string;
