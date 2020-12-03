@@ -5,7 +5,7 @@ import java.util.Optional;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.EmploymentHistoryImported;
 
-public interface EmploymentAdapter {
+public interface EmploymentAdapterRQ {
 
 	Optional<EmploymentHistoryImported> getEmpHistBySid(String companyId, String employeeId, GeneralDate baseDate);
 	

@@ -6,12 +6,12 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.common.adapter.employee.EmploymentAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.employee.EmploymentAdapterRQ;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.EmploymentHistoryImported;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 
 @Stateless
-public class EmploymentAdapterImpl implements EmploymentAdapter{
+public class EmploymentAdapterRQImpl implements EmploymentAdapterRQ{
 
 	@Inject
 	private SyEmploymentPub empPub;

@@ -20,7 +20,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.employee.EmploymentAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.employee.EmploymentAdapterRQ;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.EmploymentHistoryImported;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorCheck;
@@ -147,7 +147,7 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 	private Time36UpperLimitCheck time36UpperLimitCheck;
 	
 	@Inject
-	private EmploymentAdapter employmentAdapter;
+	private EmploymentAdapterRQ employmentAdapter;
 
 	@Override
 	public HolidayWorkAppSet getHolidayWorkSetting(String companyId) {
