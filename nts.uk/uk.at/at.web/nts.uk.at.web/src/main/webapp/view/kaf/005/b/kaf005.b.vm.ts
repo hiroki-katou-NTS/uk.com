@@ -2276,7 +2276,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			// 残業申請の表示情報．基準日に関係しない情報．利用する乖離理由．乖離理由を選択肢から選ぶ = true
 			let c12_1 = true;
 			findResut = _.find(res.infoNoBaseDate.divergenceReasonInputMethod, { divergenceTimeNo: 2 });
-			let c12_1_1 = _.isNil(findResut) ? false : !_.isEmpty(findResut.reasons);
+			let c12_1_1 = !_.isNil(findResut);
 			let c12_1_2 = c12_1_1 ? findResut.divergenceReasonSelected : false;
 			c12_1 = c12_1_1 && c12_1_2;
 			visibleModel.c12_1(c12_1);
@@ -2285,7 +2285,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			// 残業申請の表示情報．基準日に関係しない情報．利用する乖離理由．乖離理由を入力する = true
 			let c12_2 = true;
 			findResut = _.find(res.infoNoBaseDate.divergenceReasonInputMethod, { divergenceTimeNo: 2 });
-			let c12_2_1 = _.isNil(findResut) ? false : !_.isEmpty(findResut.reasons);
+			let c12_2_1 = !_.isNil(findResut);
 			let c12_2_2 = c12_2_1 ? findResut.divergenceReasonInputed : false;
 			c12_2 = c12_2_2 && c12_2_2;
 			visibleModel.c12_2(c12_2);
