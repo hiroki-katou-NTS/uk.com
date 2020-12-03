@@ -161,6 +161,9 @@ public class SptdtInfoMessage extends UkJpaEntity
 
 	@Override
 	public List<String> getEmployeeIdSeen() {
+		if (this.sptdtInfoMessageReads == null || this.sptdtInfoMessageReads.isEmpty()) {
+			return new ArrayList<>();
+		}
 		return this.sptdtInfoMessageReads.stream().map(x -> x.getPk().getReadSid()).collect(Collectors.toList());
 	}
 
@@ -193,6 +196,9 @@ public class SptdtInfoMessage extends UkJpaEntity
 	public TargetInformation getTargetInformation() {
 		TargetInformation target = new TargetInformation();
 		target.setDestination(DestinationClassification.valueOf(destination));
+		if (sptdtInfoMessageTgts == null || sptdtInfoMessageTgts.isEmpty()) {
+			return target;
+		}
 		if (destination == DestinationClassification.WORKPLACE.value) {
 			target.setTargetWpids(
 					sptdtInfoMessageTgts.stream().map(x -> x.getPk().getTgtInfoId()).collect(Collectors.toList()));

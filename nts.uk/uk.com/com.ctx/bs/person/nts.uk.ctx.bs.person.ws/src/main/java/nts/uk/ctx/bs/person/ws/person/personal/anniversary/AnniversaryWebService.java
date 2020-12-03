@@ -11,7 +11,7 @@ import nts.arc.layer.ws.WebService;
 
 @Path("ctx/bs/person/personal/anniversary")
 @Produces("application/json")
-public class AnniversaryWebService extends WebService{
+public class AnniversaryWebService extends WebService {
 	
 	@Inject
 	private BrowsePersonalAnniversarieCommandHandler commandHandler;
