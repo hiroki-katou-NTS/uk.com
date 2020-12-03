@@ -14,11 +14,11 @@ public class RegisterCompanyEstimatePriceService {
 	/**
 	 * 登録する
 	 * @param require
-	 * @param detai 目安金額詳細
+	 * @param detail 目安金額詳細
 	 * @param heAmount 目安金額の扱い
 	 * @return
 	 */
-	public static AtomTask regiter(Require require, EstimatePriceDetail detail, HandingOfEstimateAmount heAmount) {
+	public static AtomTask regiter(Require require, EstimateAmountDetail detail, HandingOfEstimateAmount heAmount) {
 		Optional<CompanyEstimateAmount> ceAmountOpt = require.getCompanyEstimateAmount();
 		Optional<HandingOfEstimateAmount> heAmountExist = require.getHandingOfEstimateAmount();
 		

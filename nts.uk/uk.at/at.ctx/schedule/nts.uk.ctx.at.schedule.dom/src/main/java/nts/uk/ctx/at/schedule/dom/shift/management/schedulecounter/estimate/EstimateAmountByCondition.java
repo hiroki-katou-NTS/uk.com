@@ -14,7 +14,7 @@ public class EstimateAmountByCondition implements DomainObject{
 	private final EstimateAmountNo estimateAmountNo;
 	
 	/** 目安金額 */
-	private EstimatePrice  estimatePrice;
+	private EstimateAmount  estimateAmount;
 
 /**
  * [C-1] 作る
@@ -28,7 +28,7 @@ public static EstimateAmountByCondition create(EstimateAmountNo estimateAmountNo
 		throw new BusinessException("Msg_1869");
 	}
 	
-	return new EstimateAmountByCondition(estimateAmountNo, new EstimatePrice(estimatePrice));
+	return new EstimateAmountByCondition(estimateAmountNo, new EstimateAmount(estimatePrice));
 }
 
 }

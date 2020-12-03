@@ -17,6 +17,6 @@ public class EmploymentEstimateAmount implements  DomainAggregate{
 	private final  EmploymentCode employmentCode;
 	
 	/**　目安金額詳細　*/
-	private EstimatePriceDetail detail;
+	private EstimateAmountDetail detail;
 
 }

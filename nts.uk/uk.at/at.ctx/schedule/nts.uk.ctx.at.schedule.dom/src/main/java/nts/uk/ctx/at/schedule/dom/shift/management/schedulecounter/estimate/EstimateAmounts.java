@@ -13,11 +13,11 @@ import nts.arc.layer.dom.objecttype.DomainValue;
  *
  */
 @Value
-public class EstimatePrices implements DomainValue{
+public class EstimateAmounts implements DomainValue{
 	/**　目安金額リスト　*/
 	private List<EstimateAmountByCondition> estimatePrices;
 	
-	public static EstimatePrices create (List<EstimateAmountByCondition> estimateAmount) {
+	public static EstimateAmounts create (List<EstimateAmountByCondition> estimateAmount) {
 		if(estimateAmount.size() > 5) {
 			throw new BusinessException("Msg_1869");
 		}
@@ -29,7 +29,7 @@ public class EstimatePrices implements DomainValue{
 		}
 		
 		List<EstimateAmountByCondition> esAmountSorted = estimateAmount.stream()
-				.filter(c -> c.getEstimatePrice().v() != 0)
+				.filter(c -> c.getEstimateAmount().v() != 0)
 				.sorted(Comparator.comparing(EstimateAmountByCondition::getEstimateAmountNo))
 				.collect(Collectors.toList());
 		
@@ -40,12 +40,12 @@ public class EstimatePrices implements DomainValue{
 					throw new BusinessException("Msg_1871");
 			 }
 			 
-			 if(estimatePrice.getEstimatePrice().v() >= estimatePriceNext.getEstimatePrice().v()) {
+			 if(estimatePrice.getEstimateAmount().v() >= estimatePriceNext.getEstimateAmount().v()) {
 					throw new BusinessException("Msg_147");
 			 } 
 		}
 		
-		return new EstimatePrices(esAmountSorted);
+		return new EstimateAmounts(esAmountSorted);
 	}
 
 }

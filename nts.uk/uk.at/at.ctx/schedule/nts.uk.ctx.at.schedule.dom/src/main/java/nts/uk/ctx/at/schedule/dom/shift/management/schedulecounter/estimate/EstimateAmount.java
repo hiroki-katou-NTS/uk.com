@@ -8,7 +8,7 @@ import nts.arc.primitive.constraint.IntegerRange;
  *
  */
 @IntegerRange(min = 0, max = 99999999)
-public class EstimatePrice extends IntegerPrimitiveValue<EstimatePrice> {
+public class EstimateAmount extends IntegerPrimitiveValue<EstimateAmount> {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -18,7 +18,7 @@ public class EstimatePrice extends IntegerPrimitiveValue<EstimatePrice> {
 	 *
 	 * @param rawValue the raw value
 	 */
-	public EstimatePrice(Integer rawValue) {
+	public EstimateAmount(Integer rawValue) {
 		super(rawValue);
 	}
 
