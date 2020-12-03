@@ -1,17 +1,17 @@
 .view-f {
-    padding: 15px;
+    padding: 8px;
     height: 450px;
 }
 
 .view-f .title {
-    font-size: 25px;
+    font-size: 21px;
 }
 
 .view-f .node {
     text-align: right;
     color: #0D86D1;
     margin-top: 10px;
-    margin-bottom: 10px;
+    margin-bottom: -10px;
 }
 
 .view-f .lable-input {

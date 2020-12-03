@@ -1,16 +1,12 @@
 #sidebar-area ~ div {
 	float: left;
-	height: calc(100vh - 90px);
+	height: 100vh - 90px;
 }
 
-.sidebar-content-header .title {
-    font-size: 32px;
-}
 
 /*ViewC*/
 .view-c-kmk004 {
-	padding: 10px;
-	width: calc(100vw - 158px);
+	padding: 24px;
 	float: left;
 }
 
@@ -37,15 +33,15 @@
 }
 
 .view-c-kmk004 .right-content .setting {
-	margin-top: 30px;
+	margin-top: 15px;
 }
 
 .view-c-kmk004 .right-content .content-data {
-	margin-top: 20px;
+	margin-top: 15px;
 }
 
 .view-c-kmk004 .right-content .label1 {
-	margin-top: 20px;
+	margin-top: 15px;
 }
 
 .view-c-kmk004 .right-content .year {
@@ -53,19 +49,19 @@
 }
 
 .view-c-kmk004 .right-content .year .box-year {
-	margin-top: 20px;
+	margin-top: 10px;
 }
 
 .view-c-kmk004 .right-content .time-work {
-	margin-left: 190px;
+	margin-left: 177px;
 	width: 190px;
+	margin-top: 10px;
 }
 
 
 /* View D */
 .view-d-kmk004 {
-	padding: 10px;
-	width: calc(100vw - 158px);
+	padding: 24px;
 	float: left;
 }
 
@@ -86,15 +82,15 @@
 }
 
 .view-d-kmk004 .right-content .setting {
-	margin-top: 30px;
+	margin-top: 15px;
 }
 
 .view-d-kmk004 .right-content .content-data {
-	margin-top: 20px;
+	margin-top: 15px;
 }
 
 .view-d-kmk004 .right-content .label1 {
-	margin-top: 20px;
+	margin-top: 15px;
 }
 
 .view-d-kmk004 .right-content .year {
@@ -102,11 +98,12 @@
 }
 
 .view-d-kmk004 .right-content .year .box-year {
-	margin-top: 20px;
+	margin-top: 10px;
 }
 
 .view-d-kmk004 .right-content .time-work {
-	margin-left: 190px;
+	margin-left: 177px;
+	margin-top: 10px;
 }
 
 .view-d-kmk004 .right-content .name {
@@ -115,9 +112,8 @@
 
 /* View E */
 .view-e-kmk004 {
-	padding: 10px;
-	width: calc(100vw - 158px);
 	float: left;
+	margin-top: 22px;
 }
 
 .view-e-kmk004 .left-content {
@@ -131,13 +127,13 @@
 }
 
 .view-e-kmk004 .left-content .cpn-kcp005 {
-	margin-left: 85px;
+	margin-left: 62px;
 }
 
 .view-e-kmk004 .right-content {
 	width: 415px;
 	float: left;
-	margin-left: 50px;
+	margin-left: 34px;
 }
 
 .view-e-kmk004 .right-content p {
@@ -145,15 +141,15 @@
 }
 
 .view-e-kmk004 .right-content .setting {
-	margin-top: 30px;
+	margin-top: 15px;
 }
 
 .view-e-kmk004 .right-content .content-data {
-	margin-top: 20px;
+	margin-top: 15px;
 }
 
 .view-e-kmk004 .right-content .label1 {
-	margin-top: 20px;
+	margin-top: 15px;
 }
 
 .view-e-kmk004 .right-content .year {
@@ -161,11 +157,16 @@
 }
 
 .view-e-kmk004 .right-content .year .box-year {
-	margin-top: 20px;
+	margin-top: 10px;
 }
 
 .view-e-kmk004 .right-content .time-work {
-	margin-left: 190px;
+	margin-left: 177px;
+	margin-top: 10px;
+}
+
+.view-e-kmk004 .name {
+	margin-bottom: 15px;
 }
 
 /* ListTimeWork */
@@ -230,7 +231,8 @@
 /* View B */
 
 .view-b {
-	padding: 10px;
+	margin-left: 45px;
+	margin-top: 24px;
 }
 
 /* .view-b .child {
@@ -239,6 +241,10 @@
 
 .view-b .header-b {
 	width: 435px;
+}
+
+.view-b .header-b .title {
+	font-size: 20px;
 }
 
 .view-b .header-b ~ div {
@@ -269,7 +275,7 @@
 }
 
 .view-b .content .data {
-	margin-top: 20px;
+	margin-top: 10px;
 	float: left;
 	display: flex;
 }
@@ -281,7 +287,7 @@
 
 .view-b .content .data .time-work {
 	display: inline-block;
-	margin-left: 100px;
+	margin-left: 27px;
 }
 
 /*Box Year*/

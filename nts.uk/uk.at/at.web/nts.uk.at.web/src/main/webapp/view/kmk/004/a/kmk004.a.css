@@ -6,7 +6,7 @@
 
 .view-kwk .left_content {
     float: left;
-    width: 300px;
+    width: 250px;
 }
 
 .view-kwk .left_content .panel .panel-gray-bg {
@@ -42,7 +42,7 @@
 
 .view-kwk .right_content {
     float: left;
-    width: 300px;
+    width: 250px;
     margin-left: 93px;
     margin-top: -40px;
 }
@@ -67,12 +67,12 @@
 }
 
 .button-panel{
-    width: 250px;
+    width: 205px;
 }
 
 .caret-inline:after {
     border-width: 15px;
-    color: #97D155;
+    color: #2FCC71;
 }
 
 .sidebar-content-header {

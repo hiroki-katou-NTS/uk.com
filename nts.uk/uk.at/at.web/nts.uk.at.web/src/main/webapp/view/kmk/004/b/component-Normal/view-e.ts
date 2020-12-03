@@ -13,7 +13,9 @@ module nts.uk.at.view.kmk004.b {
 	</div>
 	<div class="view-e-kmk004">
 		<div class="left-content">
-			<div clss="cpn-ccg001" data-bind="component: {
+			<div class="cpn-ccg001"
+			style="margin-left: -12px;"
+			data-bind="component: {
 				name: 'ccg001',
 				params:{
 					employees: employees
@@ -29,9 +31,9 @@ module nts.uk.at.view.kmk004.b {
 		</div>
 		<div class="right-content">
 			<div>
-				<p data-bind="i18n: 'KMK004_228'"></p>
+				<p class="title" data-bind="i18n: 'KMK004_228'"></p>
 				<hr></hr>
-				<div data-bind="i18n: 'Chung dep trai'"></div>
+				<div class="name" data-bind="i18n: 'Chung dep trai'"></div>
 				<div>
 					<div data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_229'"></div>
 					<!-- ko if: modeCheckSetting -->
@@ -51,10 +53,10 @@ module nts.uk.at.view.kmk004.b {
 				<!-- /ko -->
 				<div class="label1" data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_232'"></div>
 				<div class="content-data">
+					<div>
+						<button tabindex="6" data-bind="i18n: 'KMK004_233'"></button>
+					</div>
 					<div class="year">
-						<div>
-							<button tabindex="6" data-bind="i18n: 'KMK004_233'"></button>
-						</div>
 						<div class= "box-year" data-bind="component: {
 							name: 'box-year',
 							params:{

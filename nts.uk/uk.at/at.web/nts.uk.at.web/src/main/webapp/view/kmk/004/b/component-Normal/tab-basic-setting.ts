@@ -73,7 +73,7 @@ module nts.uk.at.view.kmk004.b {
             }
             
             .table-view th {
-                background: #97D155;
+                background: #E0F59E;
             }
 
             .table-view .label-row, th {
