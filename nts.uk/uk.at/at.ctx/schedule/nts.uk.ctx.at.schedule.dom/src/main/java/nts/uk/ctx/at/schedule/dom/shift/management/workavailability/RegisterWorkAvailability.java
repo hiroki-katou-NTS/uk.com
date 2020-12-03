@@ -5,7 +5,6 @@ import java.util.List;
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.GetUsingShiftTableRuleOfEmployeeService;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -22,12 +21,12 @@ public class RegisterWorkAvailability {
 	 * 提出する
 	 * @param require
 	 * @param workOneDay 一日分の勤務希望
-	 * @param baseDate 基準日	
+	 * @param datePeriod 期間
 	 * @return
 	 */
-	public static AtomTask register(Require require, List<WorkAvailabilityOfOneDay> workOneDays, GeneralDate baseDate) {
+	public static AtomTask register(Require require, List<WorkAvailabilityOfOneDay> workOneDays, DatePeriod datePeriod) {
 		val workOneDay = workOneDays.get(0);
-		val shiftRuleOpt = GetUsingShiftTableRuleOfEmployeeService.get(require, workOneDay.getEmployeeId(), baseDate);
+		val shiftRuleOpt = GetUsingShiftTableRuleOfEmployeeService.get(require, workOneDay.getEmployeeId(), datePeriod.end());
 		if (!shiftRuleOpt.isPresent()) {
 			throw new BusinessException("Msg_2049");
 		}
@@ -47,10 +46,8 @@ public class RegisterWorkAvailability {
 			throw new BusinessException("Msg_2051");
 		}
 		
-		val periods = shiftTableRule.getPeriodWhichIncludeAvailabilityDate(workOneDay.getWorkAvailabilityDate());
-		
 		return AtomTask.of(() -> {
-			require.deleteAllWorkAvailabilityOfOneDay(workOneDay.getEmployeeId(), periods);
+			require.deleteAllWorkAvailabilityOfOneDay(workOneDay.getEmployeeId(), datePeriod);
 			require.insertAllWorkAvailabilityOfOneDay(workOneDays);
 		});
 		

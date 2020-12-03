@@ -37,18 +37,17 @@ public class RegisterWorkAvailabilityTest {
 	@Mocked
 	private GetUsingShiftTableRuleOfEmployeeService service;
 	
-	private GeneralDate today;
+	private DatePeriod datePeriod;
 	
 	@Before
-	public void generDate(){
-		today = GeneralDate.today();
+	public void createDatePeriod(){
+		this.datePeriod = new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 1, 31));
 	}
 	
 	/**
 	 * input : シフト表のルール = empty
 	 * excepted: Msg_2049
 	 */
-	
 	@Test
 	public void testCheckError_throw_Msg_2049() {
 
@@ -61,7 +60,7 @@ public class RegisterWorkAvailabilityTest {
 		};
 
 		NtsAssert.businessException("Msg_2049",
-				() -> RegisterWorkAvailability.register(require, workOneDays, today));
+				() -> RegisterWorkAvailability.register(require, workOneDays, this.datePeriod));
 	}
 
 	/**
@@ -70,12 +69,11 @@ public class RegisterWorkAvailabilityTest {
 	 */
 	@Test
 	public void testCheckError_throw_Msg_2052() {
-
-		val today = GeneralDate.today();
+		
 		List<WorkAvailabilityOfOneDay> workOneDays = Helper.createWorkAvaiOfOneDays();
 		
 		new Expectations() {{
-			service.get(require, (String) any, today);
+			service.get(require, (String) any, (GeneralDate) any);
 			result = Optional.of(shiftRule);
 			
 			shiftRule.getUseWorkAvailabilityAtr();
@@ -83,7 +81,7 @@ public class RegisterWorkAvailabilityTest {
 		}};
 
 		NtsAssert.businessException("Msg_2052",
-				() -> RegisterWorkAvailability.register(require, workOneDays, today));
+				() -> RegisterWorkAvailability.register(require, workOneDays, this.datePeriod));
 	}
 	
 	/**
@@ -92,13 +90,12 @@ public class RegisterWorkAvailabilityTest {
 	 */
 	@Test
 	public void testCheckError_throw_Msg_2050() {
-
-		val today = GeneralDate.today();
+		
 		List<WorkAvailabilityOfOneDay> workOneDays = Helper.createWorkAvaiOfOneDays();
 		
 		new Expectations() {
 			{			
-				service.get(require, (String) any, today);
+				service.get(require, (String) any, (GeneralDate) any);
 				result = Optional.of(shiftRule);
 				
 				shiftRule.getShiftTableSetting();
@@ -110,7 +107,7 @@ public class RegisterWorkAvailabilityTest {
 		};
 
 		NtsAssert.businessException("Msg_2050",
-				() -> RegisterWorkAvailability.register(require, workOneDays, today));
+				() -> RegisterWorkAvailability.register(require, workOneDays, this.datePeriod));
 	}
 	
 	/**
@@ -122,7 +119,7 @@ public class RegisterWorkAvailabilityTest {
 		List<WorkAvailabilityOfOneDay> workOneDays = Helper.createWorkAvaiHolidays();
 		
 		new Expectations() {{
-			service.get(require, (String) any, today);
+			service.get(require, (String) any, (GeneralDate) any);
 			result = Optional.of(shiftRule);
 				
 		    shiftRule.getShiftTableSetting();
@@ -134,7 +131,7 @@ public class RegisterWorkAvailabilityTest {
 		}};
 
 		NtsAssert.businessException("Msg_2051",
-				() -> RegisterWorkAvailability.register(require, workOneDays, today));
+				() -> RegisterWorkAvailability.register(require, workOneDays, this.datePeriod));
 	}
 	
 	
@@ -142,7 +139,6 @@ public class RegisterWorkAvailabilityTest {
 	public void testRegister_success_1() {
 		
 		val workOneDays = Helper.createWorkAvaiOfOneDays();
-		val datePeriod = new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 1, 31));
 		
 		new Expectations() {
 			{				
@@ -155,8 +151,6 @@ public class RegisterWorkAvailabilityTest {
 				setting.isOverHolidayMaxDays(workOneDays);
 				result = false;
 				
-				setting.getPeriodWhichIncludeAvailabilityDate((GeneralDate) any);
-				result = datePeriod;
 			}
 		};
 		
@@ -164,8 +158,8 @@ public class RegisterWorkAvailabilityTest {
 				() -> RegisterWorkAvailability.register(
 						require,
 						workOneDays,
-						GeneralDate.today()), 
-				any -> require.deleteAllWorkAvailabilityOfOneDay(workOneDays.get(0).getEmployeeId(), datePeriod),
+						this.datePeriod), 
+				any -> require.deleteAllWorkAvailabilityOfOneDay(workOneDays.get(0).getEmployeeId(), this.datePeriod),
 				any -> require.insertAllWorkAvailabilityOfOneDay(workOneDays));
 	}
 	
