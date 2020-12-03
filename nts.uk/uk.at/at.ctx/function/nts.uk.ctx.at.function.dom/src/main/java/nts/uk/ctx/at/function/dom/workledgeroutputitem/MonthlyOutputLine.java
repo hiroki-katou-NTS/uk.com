@@ -16,7 +16,7 @@ import java.util.List;
 public class MonthlyOutputLine {
 
 	// 勤怠項目の値
-    private List<MonthlyValue> attendanceItemValueList;
+    private List<MonthlyValue> valueList;
 
 	// 勤怠項目名称
 	private String attendanceItemName;

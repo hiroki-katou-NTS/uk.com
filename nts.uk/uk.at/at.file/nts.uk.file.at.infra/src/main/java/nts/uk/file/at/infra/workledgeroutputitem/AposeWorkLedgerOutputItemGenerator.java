@@ -62,7 +62,7 @@ public class AposeWorkLedgerOutputItemGenerator extends AsposeCellsReportGenerat
         String companyName = dataSource.getCompanyName();
         pageSetup.setHeader(0, "&7&\"ＭＳ フォントサイズ\"" + companyName);
         pageSetup.setHeader(1, "&12&\"ＭＳ フォントサイズ\""
-                + dataSource.getOutputSetting().getName());
+                + dataSource.getTitle());
 
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter
                 .ofPattern("yyyy/MM/dd  H:mm", Locale.JAPAN);
@@ -74,75 +74,41 @@ public class AposeWorkLedgerOutputItemGenerator extends AsposeCellsReportGenerat
 
     private void printContents(Worksheet worksheet, WorkLedgerExportDataSource dataSource) throws Exception {
         HorizontalPageBreakCollection pageBreaks = worksheet.getHorizontalPageBreaks();
-        Cells cells = worksheet.getCells();
         List<WorkLedgerDisplayContent> listContent = dataSource.getListContent();
+        int count = 0;
+        Cells cells = worksheet.getCells();
         for (int i = 0; i < listContent.size(); i++) {
-            WorkLedgerDisplayContent empInfo = listContent.get(i);
-            int firstRow = (i + 1) * NUMBER_ROW_OF_PAGE;
-            cells.copyRows(cells, 0, firstRow, NUMBER_ROW_OF_PAGE);
-
-            this.printEmployeeInfor(worksheet, firstRow, dataSource, empInfo);
-            this.printData(worksheet, firstRow, dataSource, empInfo);
-            pageBreaks.add(firstRow);
-        }
-    }
-    /**
-     * Print employee information
-     */
-    private void printEmployeeInfor(Worksheet worksheet, int firstRow, WorkLedgerExportDataSource dataSource, WorkLedgerDisplayContent empInfo) {
-        Cells cells = worksheet.getCells();
-        // B1_1 B1_2 B1_3
-        cells.get(firstRow, 0).setValue(TextResource.localize("KWR004_201") + "　" + empInfo.getWorkplaceCode() + "　" + empInfo.getWorkplaceName());
-        // B2_1 B2_2 B2_3
-        cells.get(firstRow + 1, 0).setValue(TextResource.localize("KWR004_202") + "　" + empInfo.getEmployeeCode() + "　" + empInfo.getEmployeeName());
-        // B3_1 B3_2 B3_3
-        cells.get(firstRow + 2, 0).setValue(TextResource.localize("KWR004_203") + "　" + empInfo.getEmployeeCode() + "　" + empInfo.getEmployeeName());
-        // B4_1 B4_2
-        // cells.get(firstRow + 2, 5).setValue(TextResource.localize("KWR004_204") + "　" + empInfo.getClosureDate());
-        // B5_1 B5_2
-        cells.get(firstRow, 10).setValue(TextResource.localize("KWR004_205") +
-                TextResource.localize("KWR004_208", this.toYearMonthString(dataSource.getYearMonthPeriod().start()),
-                        this.toYearMonthString(dataSource.getYearMonthPeriod().end())));
-    }
-    /**
-     * Print data
-     */
-    private void printData(Worksheet worksheet, int firstRow, WorkLedgerExportDataSource dataSource, WorkLedgerDisplayContent empInfo) {
-        Cells cells = worksheet.getCells();
-        // C1_1
-        cells.get(firstRow + 3, 0).setValue(TextResource.localize("KWR004_206"));
-
-        val closureDay = dataSource.getClosureDate().getLastDayOfMonth() ? 0 : dataSource.getClosureDate().getClosureDay().v();
-        val yearMonths = dataSource.getYearMonthPeriod().yearMonthsBetween();
-        for (int mi = 0; mi < yearMonths.size(); mi++) {
-            val yearMonth = yearMonths.get(mi);
-            String yearMonthString = (mi == 0 || yearMonth.month() == 1) ?
-                    TextResource.localize("KWR004_209", String.valueOf(yearMonth.year()), String.valueOf(yearMonth.month())) :
-                    TextResource.localize("KWR004_210", String.valueOf(yearMonth.month()));
-            // C2_1
-            cells.get(firstRow + 4, 2 + mi * 2).setValue(yearMonthString);
-            // 日次項目では固定３１行であり
-            // Monthly Data
-            val lstMonthlyData = empInfo.getMonthlyDataList();
-            // E1_1
-            cells.get(firstRow + 37, 0).setValue(TextResource.localize("KWR004_207"));
-            // E2_1
-            cells.get(firstRow + 38, 2 + mi * 2).setValue(yearMonthString);
-
-            for (int i = 0; i < lstMonthlyData.size(); i++) {
-                val dataRow = lstMonthlyData.get(i);
-                val rowIndex = firstRow + 39 + i;
-                // F1_1
-                cells.get(rowIndex, 0).setValue(dataRow.getAttendanceItemName());
-                val monthlyData = dataRow.getAttendanceItemValueList().stream().filter(x -> x.getDate().compareTo(yearMonth) == 0).findFirst();
-                if (monthlyData.isPresent() && dataRow.getAttribute() != null) {
-                    // F2_1
-                    cells.get(rowIndex, 2 + mi * 2)
-                            .setValue(this.formatValue(monthlyData.get().getActualValue(), monthlyData.get().getCharacterValue(), dataRow.getAttribute(), dataSource.isZeroDisplay()));
-                }
+            val content = listContent.get(i);
+            if (i >= 1) {
+                pageBreaks.add(count);
+                cells.copyRow(cells, 0, count);
+                cells.copyRow(cells, 1, count + 1);
             }
+            cells.get(count, 0).setValue(TextResource.localize("KWR005_301") + "　" + content.getWorkplaceCode() + "　" + content.getWorkplaceName());
+            cells.get(count + 1, 0).setValue(TextResource.localize("KWR005_302") + "　" + content.getEmployeeCode() + "　" + content.getEmployeeName());
+            count += 2;
+            val yearMonths = dataSource.getYearMonthPeriod().yearMonthsBetween();
+            for (int mi = 0; mi < yearMonths.size(); mi++) {
+                val yearMonth = yearMonths.get(mi);
+                String yearMonthString = (mi == 0 || yearMonth.month() == 1) ?
+                        TextResource.localize("KWR005_309", String.valueOf(yearMonth.year()), String.valueOf(yearMonth.month())) :
+                        TextResource.localize("KWR005_310", String.valueOf(yearMonth.month()));
+                cells.get(count + 3, 2 + mi).setValue(yearMonthString);
+            }
+            cells.get(count + 3, 15).setValue(TextResource.localize("KWR005_304"));
+            count++;
+            val data = content.getMonthlyDataList();
+            for (int j = 0; j < data.size(); j++) {
+                val oneLine = data.get(j);
+                if (j % 2 == 0) {
+                    cells.copyRow(cells, 3, 3 + count);
+                } else {
+                    cells.copyRow(cells, 4, 4 + count);
+                }
 
+            }
         }
+
     }
 
     /**

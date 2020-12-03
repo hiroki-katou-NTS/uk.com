@@ -2,6 +2,7 @@ package nts.uk.screen.at.ws.kwr005;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.screen.at.app.kwr003.AttendanceItemInfoDto;
+import nts.uk.screen.at.app.kwr003.AttendanceItemInfoPrams;
 import nts.uk.screen.at.app.kwr005.GetTimeItemInformationScreenQuery;
 
 import javax.inject.Inject;
@@ -17,7 +18,7 @@ public class GetTimeItemInformationWebService extends WebService {
 
     @POST
     @Path("getinfor")
-    public AttendanceItemInfoDto getAttendanceItemInfo(int formNumberDisplay) {
-        return query.geInfo(formNumberDisplay);
+    public AttendanceItemInfoDto getAttendanceItemInfo(AttendanceItemInfoPrams prams) {
+        return query.geInfo(prams.getFormNumberDisplay());
     }
 }

@@ -13,7 +13,7 @@ import java.util.List;
 @Getter
 public class WorkLedgerExportDataSource {
     private String companyName;
-    private WorkLedgerOutputItem outputSetting;
+    private String title;
     private YearMonthPeriod yearMonthPeriod;
     private ClosureDate closureDate;
     private boolean isZeroDisplay;

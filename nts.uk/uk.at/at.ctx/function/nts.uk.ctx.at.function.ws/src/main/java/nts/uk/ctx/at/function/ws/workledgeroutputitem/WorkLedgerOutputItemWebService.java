@@ -53,6 +53,7 @@ public class WorkLedgerOutputItemWebService extends WebService {
     }
 
     @Path("005/a/beginningmonth")
+    @POST
     public Integer getBeginMonthOfCompany() {
         return getBeginMonthOfCompanyQuery.getBeginMonthOfCompany();
     }
