@@ -312,7 +312,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					self.dataSource.appDispInfoStartup = res.appDispInfoStartup;
 
 					self.bindOverTimeWorks(self.dataSource);
-					self.bindWorkInfo(self.dataSource);
+					self.bindWorkInfo(self.dataSource, ACTION.CHANGE_DATE);
 					self.bindRestTime(self.dataSource);
 					self.bindHolidayTime(self.dataSource, 1);
 					self.bindOverTime(self.dataSource, 1);
