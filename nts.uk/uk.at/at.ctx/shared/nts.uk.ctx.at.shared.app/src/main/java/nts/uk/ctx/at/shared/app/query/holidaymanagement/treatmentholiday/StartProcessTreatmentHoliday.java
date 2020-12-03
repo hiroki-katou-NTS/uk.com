@@ -31,15 +31,18 @@ public class StartProcessTreatmentHoliday {
 	public HolidaySettingInfo startProcess(String companyId) {
 		HolidaySettingInfo holidaySettingInfo = new HolidaySettingInfo();
 		//ドメイン「休日の扱い」を取得する
-		TreatmentHoliday treatmentHoliday = treatmentHolidayRepo.get(companyId);
+		Optional<TreatmentHoliday> treatmentHoliday = treatmentHolidayRepo.get(companyId);
+		if(!treatmentHoliday.isPresent()) {
+			return new HolidaySettingInfo(Optional.empty(), Optional.empty(), null, Optional.empty(), Optional.empty());
+		}
 		holidaySettingInfo.setTreatmentHoliday(treatmentHoliday);
 		//管理期間の単位を取得する
-		HolidayCheckUnit holidayCheckUnit = treatmentHoliday.getHolidayManagement().getUnitManagementPeriod();
-		holidaySettingInfo.setHolidayCheckUnit(holidayCheckUnit);
+		HolidayCheckUnit holidayCheckUnit = treatmentHoliday.get().getHolidayManagement().getUnitManagementPeriod();
+		holidaySettingInfo.setHolidayCheckUnit(Optional.of(holidayCheckUnit));
 		//取得した「休日チェック単位」をチェックする
 		StartDateClassification startDateClassification = null;
 		if(holidayCheckUnit == HolidayCheckUnit.FOUR_WEEK) {
-			FourWeekHolidayAcqMana fourWeekHolidayAcqMana =  (FourWeekHolidayAcqMana)treatmentHoliday.getHolidayManagement();
+			FourWeekHolidayAcqMana fourWeekHolidayAcqMana =  (FourWeekHolidayAcqMana)treatmentHoliday.get().getHolidayManagement();
 			startDateClassification= fourWeekHolidayAcqMana.getStartDateType();
 		}
 		holidaySettingInfo.setStartDateClassification(Optional.ofNullable(startDateClassification));

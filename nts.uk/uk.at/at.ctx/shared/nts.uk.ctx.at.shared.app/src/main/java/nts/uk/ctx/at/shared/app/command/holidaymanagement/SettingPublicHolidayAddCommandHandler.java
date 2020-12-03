@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.app.command.holidaymanagement;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -23,14 +25,13 @@ public class SettingPublicHolidayAddCommandHandler extends CommandHandler<Settin
 		TreatmentHoliday holiday = new TreatmentHoliday(companyID, 
 				NotUseAtr.valueOf(command.nonStatutory),
 				null);
-//		Optional<TreatmentHoliday> opt = repo.get(companyID);
-//		
-//		if(opt.isPresent()){
+		Optional<TreatmentHoliday> opt = repo.get(companyID);
+		if(opt.isPresent()){
 			repo.update(holiday);
-//		}
-//		else{
-//			repo.insert(holiday);
-//		}
+		}
+		else{
+			repo.insert(holiday);
+		}
 	}
 
 }

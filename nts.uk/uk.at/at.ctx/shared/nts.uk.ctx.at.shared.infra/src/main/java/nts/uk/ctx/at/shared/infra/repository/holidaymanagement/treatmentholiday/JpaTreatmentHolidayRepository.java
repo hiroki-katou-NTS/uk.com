@@ -43,10 +43,10 @@ public class JpaTreatmentHolidayRepository extends JpaRepository implements Trea
 	}
 
 	@Override
-	public TreatmentHoliday get(String companyId) {
-		TreatmentHoliday treatmentHoliday = this.queryProxy().query(SELECT_BY_KEY, KshmtTreatmentHoliday.class)
+	public Optional<TreatmentHoliday> get(String companyId) {
+		Optional<TreatmentHoliday> treatmentHoliday = this.queryProxy().query(SELECT_BY_KEY, KshmtTreatmentHoliday.class)
 				.setParameter("companyId", companyId)
-				.getSingle(c -> c.toDomain()).get();
+				.getSingle(c -> c.toDomain());
 		return treatmentHoliday;
 	}
 

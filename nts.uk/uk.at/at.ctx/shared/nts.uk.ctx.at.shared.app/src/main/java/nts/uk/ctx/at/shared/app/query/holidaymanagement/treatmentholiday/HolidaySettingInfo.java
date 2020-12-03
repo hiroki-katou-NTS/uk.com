@@ -23,12 +23,12 @@ public class HolidaySettingInfo {
 	/**
 	 * 休日の扱い
 	 */
-	private TreatmentHoliday treatmentHoliday;
+	private Optional<TreatmentHoliday> treatmentHoliday;
 	
 	/**
 	 * 休日チェック単位
 	 */
-	private HolidayCheckUnit holidayCheckUnit;
+	private Optional<HolidayCheckUnit> holidayCheckUnit;
 	
 	
 	/**
@@ -46,7 +46,7 @@ public class HolidaySettingInfo {
 	 */
 	private Optional<StartDateClassification> startDateClassification;
 
-	public HolidaySettingInfo(TreatmentHoliday treatmentHoliday, HolidayCheckUnit holidayCheckUnit,
+	public HolidaySettingInfo(Optional<TreatmentHoliday> treatmentHoliday, Optional<HolidayCheckUnit> holidayCheckUnit,
 			String calSettingScreenName, Optional<WeekStart> weekStart,
 			Optional<StartDateClassification> startDateClassification) {
 		super();

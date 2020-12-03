@@ -1,21 +1,15 @@
 package nts.uk.file.at.infra.vacation.set.holiday;
 
-import static nts.uk.file.at.infra.vacation.set.CommonTempHolidays.getTextEnumManageDistinct;
-import static nts.uk.file.at.infra.vacation.set.CommonTempHolidays.getTextEnumSixtyHourExtra;
-import static nts.uk.file.at.infra.vacation.set.CommonTempHolidays.getTextEnumTimeDigestiveUnit;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.i18n.I18NText;
-import nts.arc.layer.infra.data.jdbc.NtsResultSet;
-import nts.uk.ctx.at.shared.app.query.holidaymanagement.treatmentholiday.HolidaySettingInfo;
-import nts.uk.ctx.at.shared.app.query.holidaymanagement.treatmentholiday.StartProcessTreatmentHoliday;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.treatmentholiday.FourWeekHolidayAcqMana;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.treatmentholiday.HolidayAcqManageByMD;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.treatmentholiday.HolidayAcqManageByYMD;
@@ -42,8 +36,11 @@ public class JpaHolidayReposiroty implements HolidayRepository {
 	@Override
 	public List<MasterData> getAllHoliday(String cid) {
 		List<MasterData> datas = new ArrayList<>();
-		TreatmentHoliday treatmentHoliday = treatmentHolidayRepository.get(cid);
-		datas = this.buildMasterListData(treatmentHoliday);
+		Optional<TreatmentHoliday> treatmentHoliday = treatmentHolidayRepository.get(cid);
+		if(!treatmentHoliday.isPresent()) {
+			return new ArrayList<>();
+		}
+		datas = this.buildMasterListData(treatmentHoliday.get());
 		return datas;
 	}
 	
