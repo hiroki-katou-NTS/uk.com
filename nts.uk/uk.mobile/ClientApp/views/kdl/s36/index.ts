@@ -111,7 +111,24 @@ export class KdlS36Component extends Vue {
             vm.targetSelectionAtr = targetSelectionAtr;
             vm.substituteHolidayList = substituteHolidayList;
             vm.holidayWorkInfoList = holidayWorkInfoList
-                .map((m, index) => ({ ...m, checked: false }));
+                .map((m, index) => ({
+                    ...m,
+                    checked: false,
+                    get icon() {
+                        const { dataType, expiringThisMonth } = m;
+
+                        if (expiringThisMonth === true) {
+                            return 'fas fa-exclamation-triangle';
+                        }
+
+                        if (dataType === 1) {
+                            return 'fas fa-calendar-check';
+                        }
+
+                        return '';
+                    },
+                    enable: new Date(vm.startDate).getTime() <= new Date(m.expirationDate).getTime()
+                }));
 
             const managementDataTmp = vm.managementData.map((management) => management.outbreakDay);
         }).catch((error: any) => {
@@ -151,11 +168,11 @@ export class KdlS36Component extends Vue {
             daysUnit: vm.daysUnit,
             employeeId: vm.employeeId,
             substituteHolidayList: vm.substituteHolidayList
-            .map((m) => new Date(m).toISOString()),
+                .map((m) => new Date(m).toISOString()),
             targetSelectionAtr: vm.targetSelectionAtr,
             holidayWorkInfoList: vm.holidayWorkInfoList
-            .filter((item) => item.checked)
-            .map((m) => ({...m}))
+                .filter((item) => item.checked)
+                .map((m) => ({ ...m }))
         };
         data.holidayWorkInfoList.forEach((f) => {
             f.expirationDate = new Date(f.expirationDate).toISOString();
@@ -164,15 +181,15 @@ export class KdlS36Component extends Vue {
 
         vm.$mask('show');
         vm.$http
-        .post('at',servicesPath.associate,data)
-        .then((msgData: HolidayWorkSubHolidayLinkingMng[]) => {
-            vm.$mask('hide');
-            vm.back();
+            .post('at', servicesPath.associate, data)
+            .then((msgData: HolidayWorkSubHolidayLinkingMng[]) => {
+                vm.$mask('hide');
+                vm.back();
 
-        })
-        .catch((error: any) => {
-            vm.showError(error);
-        });
+            })
+            .catch((error: any) => {
+                vm.showError(error);
+            });
     }
 }
 

@@ -111,7 +111,22 @@ export class KdlS35Component extends Vue {
             vm.targetSelectionAtr = targetSelectionAtr;
             vm.substituteHolidayList = substituteHolidayList;
             vm.substituteWorkInfoList = substituteWorkInfoList
-                .map((m, index) => ({ ...m, checked: false }));
+                .map((m, index) => ({ ...m, checked: false,
+                    get icon() {
+                        const { dataType, expiringThisMonth } = m;
+
+                        if (expiringThisMonth === true) {
+                            return 'fas fa-exclamation-triangle';
+                        }
+
+                        if (dataType === 1) {
+                            return 'fas fa-calendar-check';
+                        }
+
+                        return '';
+                    },
+                    enable: new Date(vm.startDate).getTime() <= new Date(m.expirationDate).getTime()
+                }));
         }).catch((error: any) => {
             vm.showError(error);
         });

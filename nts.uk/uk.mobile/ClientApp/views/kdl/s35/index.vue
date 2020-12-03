@@ -72,16 +72,15 @@
           <tr class="text-center">
             <td>
               <!-- A5_6 -->
-              <nts-checkbox v-bind:value="true" v-model="item.checked">
+              <nts-checkbox v-bind:value="true" v-model="item.checked" v-bind:disabled="!item.enable">
               </nts-checkbox>
             </td>
             <!-- A5_7 -->
             <td v-on:click="() => (item.checked = !item.checked)">
-              <fa-font v-if="item.dataType == 1" icon="fas fa-calendar-check" />
-              <fa-font
-                v-if="item.expiringThisMonth == true"
-                icon="fas fa-exclamation-triangle"
-              />
+               <template v-if="item.icon">
+                <fa-font :icon="item.icon" />
+              </template>
+              <template v-else />
             </td>
             <!-- A5_8 -->
             <td
