@@ -77,7 +77,7 @@ public class JpaPasswordPolicyRepository extends JpaRepository implements Passwo
 				sgwstPasswordPolicy.alphabetDigit);
 		
 		return PasswordPolicy.createFromJavaType(
-				sgwstPasswordPolicy.contractCode,
+				sgwstPasswordPolicy.contractCd,
 				sgwstPasswordPolicy.notificationPasswordChange,
 				sgwstPasswordPolicy.loginCheck,
 				sgwstPasswordPolicy.initialPasswordChange,
