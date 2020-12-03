@@ -68,7 +68,7 @@
           </tr>
         </thead>
         <tbody
-          v-for="(item, index) in substituteWorkInfoList"
+          v-for="(item, index) in holidayWorkInfoList"
           v-bind:key="index"
         >
           <tr class="text-center">
