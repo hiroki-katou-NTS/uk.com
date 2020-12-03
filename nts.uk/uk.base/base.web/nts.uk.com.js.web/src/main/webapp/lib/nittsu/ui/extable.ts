@@ -6131,7 +6131,7 @@ module nts.uk.ui.exTable {
                     _.forEach(wrappers, function($depend: HTMLElement, i: number) {
                         if (i === index || !$depend) return;
                         let mainSyncing = $.data($main, SCROLL_SYNCING);
-                        if (!mainSyncing) {
+                        if (!mainSyncing && $depend.scrollLeft !== $main.scrollLeft) {
                             $.data($depend, SCROLL_SYNCING, true);
                             $depend.scrollLeft = $main.scrollLeft;
                         }
@@ -6150,7 +6150,7 @@ module nts.uk.ui.exTable {
                         _.forEach(wrappers, function($depend: HTMLElement, i: number) {
                             if (i === index) return;
                             let mainSyncing = $.data($main, VERT_SCROLL_SYNCING);
-                            if (!mainSyncing) {
+                            if (!mainSyncing && $depend.scrollTop !== $main.scrollTop) {
                                 $.data($depend, VERT_SCROLL_SYNCING, true);
                                 $depend.scrollTop = $main.scrollTop;
                             }
