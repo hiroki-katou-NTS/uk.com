@@ -21,12 +21,10 @@
           <nts-label>{{ "KDLS35_3" | i18n }}</nts-label>
         </div>
         <!-- A2_2 -->
-        <label v-if="startDate === endDate" class="col-7 pt-2">{{
-          startDate | i18n
-        }}</label>
-        <label v-else class="col-7 pt-2">{{
-          "KDLS35_14" | i18n([startDate, endDate])
-        }}</label>
+        <div class="col-7 pt-2">
+          <label v-if="startDate === endDate" >{{startDate | i18n}}</label>
+          <label v-else >{{"KDLS35_14" | i18n([startDate, endDate])}}</label>
+        </div>
       </div>
       <!-- A3_1 -->
       <div class="row pt-1">
@@ -53,7 +51,7 @@
         </div>
       </div>
       <!-- A5_1 -->
-      <table class="table table-responsive">
+      <table class="table table-responsive w-auto">
         <thead class="text-center">
           <tr>
             <th scope="col"></th>
@@ -78,30 +76,32 @@
               </nts-checkbox>
             </td>
             <!-- A5_7 -->
-            <td v-on:click="() => item.checked = !item.checked">
-              <fa-font 
-              v-if="item.dataType == 1" 
-              icon="fas fa-calendar-check" 
-              />
+            <td v-on:click="() => (item.checked = !item.checked)">
+              <fa-font v-if="item.dataType == 1" icon="fas fa-calendar-check" />
               <fa-font
                 v-if="item.expiringThisMonth == true"
                 icon="fas fa-exclamation-triangle"
               />
-              <fa-font
-                v-if="item.dataType == 1 && item.expiringThisMonth == true"
-                icon="fas fa-exclamation-triangle"
-              />
             </td>
             <!-- A5_8 -->
-            <td class="substituteWorkDate" v-on:click="() => item.checked = !item.checked">
+            <td
+              class="substituteWorkDate"
+              v-on:click="() => (item.checked = !item.checked)"
+            >
               {{ item.substituteWorkDate | date("YY/MM/DD(ddd)") }}
             </td>
             <!-- A5_9 -->
-            <td class="remainingNumber" v-on:click="() => item.checked = !item.checked">
+            <td
+              class="remainingNumber"
+              v-on:click="() => (item.checked = !item.checked)"
+            >
               <span>{{ "KDLS35_5" | i18n(item.remainingNumber) }}</span>
             </td>
             <!-- A5_10 -->
-            <td class="expirationDate" v-on:click="() => item.checked = !item.checked">
+            <td
+              class="expirationDate"
+              v-on:click="() => (item.checked = !item.checked)"
+            >
               <span>{{ item.expirationDate | date("YY/MM/DD(ddd)") }}</span>
             </td>
           </tr>

@@ -21,12 +21,10 @@
           <nts-label>{{ "KDLS36_3" | i18n }}</nts-label>
         </div>
         <!-- A2_2 -->
-        <label v-if="startDate === endDate" class="col-7 pt-2">{{
-          startDate | i18n
-        }}</label>
-        <label v-else class="col-7 pt-2">{{
-          "KDLS36_14" | i18n([startDate, endDate])
-        }}</label>
+         <div class="col-7 pt-2">
+          <label v-if="startDate === endDate" >{{startDate | i18n}}</label>
+          <label v-else >{{"KDLS35_14" | i18n([startDate, endDate])}}</label>
+        </div>
       </div>
       <!-- A3_1 -->
       <div class="row pt-1">
@@ -53,7 +51,7 @@
         </div>
       </div>
       <!-- A5_1 -->
-      <table class="table table-responsive">
+      <table class="table table-responsive w-auto">
         <thead class="text-center">
           <tr>
             <th scope="col"></th>
@@ -85,9 +83,6 @@
               <fa-font
                 v-else-if="item.expiringThisMonth == true"
                 icon="fas fa-exclamation-triangle"
-              />
-              <fa-font
-                v-else icon="fas fa-exclamation-triangle"
               />
             </td>
             <!-- A5_8 -->
