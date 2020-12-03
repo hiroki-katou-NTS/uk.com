@@ -11,6 +11,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
@@ -53,6 +54,7 @@ import nts.uk.shr.com.context.AppContexts;
  * Path: UKDesign.UniversalK.就業.KSU_スケジュール.KSU001_個人スケジュール修正(職場別).個人別と共通の処理.勤務実績で勤務予定（シフト）dtoを作成する
  *
  */
+@Stateless
 public class CreateWorkScheduleShiftBase {
 	
 	@Inject
