@@ -57,6 +57,9 @@ public class SaveLayoutWidgetCommandHandler extends CommandHandler< SaveLayoutCo
 			this.layoutNewRepository.insertListWidget(layout, listNewWidget);
 			this.layoutNewRepository.updateListWidget(layout, listUpdateWidget);
 			this.layoutNewRepository.deleteListWidget(layout, listDeleteWidget);
+		} else {
+			this.layoutNewRepository.insertAndFlush(layout);
+			
 		}
 	}
 

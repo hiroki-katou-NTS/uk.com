@@ -12,42 +12,35 @@
       <com:scriptfile set="IGNITE" />
       <com:stylefile path="ccg015.f.style.css" />
       <com:scriptfile path="ccg015.f.vm.js" />
+      <com:scriptfile path="/view/ccg/008/a/layout1Component.vm.js" />
+      <com:scriptfile path="/view/ccg/008/a/layout2Component.vm.js" />
+      <com:scriptfile path="/view/ktg/027/a/ktg027.a.vm.js"  of="nts.uk.at.web"/>
+      <com:scriptfile path="/view/ktg/026/a/ktg026component.a.vm.js"  of="nts.uk.at.web"/>
+      <com:scriptfile path="/view/ktg/031/a/ktg031.a.vm.js" />
       <script>var dialogSize = { width: 1500, height: 700 };</script>
     </ui:define>
     <ui:define name="content">
       <div class="contents_layout" id="resizable">
-        <com:ko-if bind="isVisiableContentF2()">
-          <div class="contents_2" id="F2">
-            <div class="panel panel-frame widget_contents h_100">
-              <span>F2</span>
-              <!-- <div class="panel panel-frame widget_contents" data-bind="foreach: lstWidgetLayout2">
-                    <div class="panel-content placeholder" data-bind="html: html"></div>
-                  </div> -->
+          <com:ko-if bind="layoutDisplayType() === 2 || layoutDisplayType() === 3">
+            <div class="contents_2" id="F2">
+              <layout2-component params= "item:paramWidgetLayout2()"></layout2-component>
             </div>
-          </div>
-        </com:ko-if>
-        <div class="contents_1" id="F1">
-          <div class="panel panel-frame h_100">
-            <com:ko-if bind="isShowUrlLayout1()">
-              <iframe class="iframe_fix" id="preview-iframe1" data-bind="attr:{src: urlIframe1}"></iframe>
-            </com:ko-if>
-            <com:ko-if bind="!isShowUrlLayout1()">
-              <div data-bind="foreach: lstHtml">
-                <div data-bind="html: html" id="F1-frame"></div>
-              </div>
-            </com:ko-if>
-          </div>
-        </div>
-        <com:ko-if bind="isVisiableContentF3()">
-          <div class="contents_3" id="F3">
-            <div class="widget_contents panel panel-frame h_100">
-              <span>F3</span>
-              <!-- <div class="panel panel-frame widget_contents" data-bind="foreach: lstWidgetLayout2">
-                      <div class="panel-content placeholder" data-bind="html: html"></div>
-                    </div> -->
+          </com:ko-if>
+          <com:ko-if bind="visible()">
+            <div class="contents_1" id="F1">
+              <layout1-component params= "item: paramIframe1()"></layout1-component>
             </div>
-          </div>
-        </com:ko-if>
+          </com:ko-if>
+          <com:ko-if bind="layoutDisplayType() === 1">
+            <div class="contents_2" id="F4">
+              <layout2-component params= "item:paramWidgetLayout2()"></layout2-component>
+            </div>
+          </com:ko-if>
+          <com:ko-if bind="layoutDisplayType() === 3">
+            <div class="contents_3" id="F3">
+              <layout2-component params= "item:paramWidgetLayout3()"></layout2-component>
+            </div>
+          </com:ko-if>
       </div>
       <div id="functions-area-bottom">
         <!-- btn close dialog -->
