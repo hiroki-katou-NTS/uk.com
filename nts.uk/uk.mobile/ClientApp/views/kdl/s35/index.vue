@@ -93,15 +93,15 @@
               />
             </td>
             <!-- A5_8 -->
-            <td v-on:click="() => item.checked = !item.checked">
+            <td class="substituteWorkDate" v-on:click="() => item.checked = !item.checked">
               {{ item.substituteWorkDate | date("YY/MM/DD(ddd)") }}
             </td>
             <!-- A5_9 -->
-            <td v-on:click="() => item.checked = !item.checked">
+            <td class="remainingNumber" v-on:click="() => item.checked = !item.checked">
               <span>{{ "KDLS35_5" | i18n(item.remainingNumber) }}</span>
             </td>
             <!-- A5_10 -->
-            <td v-on:click="() => item.checked = !item.checked">
+            <td class="expirationDate" v-on:click="() => item.checked = !item.checked">
               <span>{{ item.expirationDate | date("YY/MM/DD(ddd)") }}</span>
             </td>
           </tr>
