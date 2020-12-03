@@ -28,7 +28,7 @@ public class EstimatePricesTest {
 	@Test
 	public void create_estimatePrices_Msg_1869() {
 		NtsAssert.businessException("Msg_1869", () -> {
-			EstimatePrices.create(Arrays.asList(
+			EstimateAmounts.create(Arrays.asList(
 					  EstimateAmountByCondition.create(new EstimateAmountNo(1), 90000)
 				    , EstimateAmountByCondition.create(new EstimateAmountNo(2), 100000)
 				    , EstimateAmountByCondition.create(new EstimateAmountNo(3), 110000)
@@ -49,7 +49,7 @@ public class EstimatePricesTest {
 	@Test
 	public void create_estimatePrices_Msg_1870() {
 		NtsAssert.businessException("Msg_1870", () -> {
-			EstimatePrices.create(Arrays.asList(
+			EstimateAmounts.create(Arrays.asList(
 					  EstimateAmountByCondition.create(new EstimateAmountNo(1), 90000)
 				    , EstimateAmountByCondition.create(new EstimateAmountNo(3), 110000)
 				    , EstimateAmountByCondition.create(new EstimateAmountNo(3), 110000)
@@ -66,7 +66,7 @@ public class EstimatePricesTest {
 	@Test
 	public void create_estimatePrices_Msg_1871() {
 		NtsAssert.businessException("Msg_1871", () -> {
-			EstimatePrices.create(Arrays.asList(
+			EstimateAmounts.create(Arrays.asList(
 					  EstimateAmountByCondition.create(new EstimateAmountNo(1), 90000)
 				    , EstimateAmountByCondition.create(new EstimateAmountNo(3), 100000)
 				    , EstimateAmountByCondition.create(new EstimateAmountNo(2), 110000)
@@ -82,7 +82,7 @@ public class EstimatePricesTest {
 	@Test
 	public void create_estimatePrices_Msg_147() {
 		NtsAssert.businessException("Msg_147", () -> {
-			EstimatePrices.create(Arrays.asList(
+			EstimateAmounts.create(Arrays.asList(
 					  EstimateAmountByCondition.create(new EstimateAmountNo(1), 90000)
 				    , EstimateAmountByCondition.create(new EstimateAmountNo(2), 120000)
 				    , EstimateAmountByCondition.create(new EstimateAmountNo(3), 110000)
@@ -93,14 +93,14 @@ public class EstimatePricesTest {
 	/*** 作成する  */
 	@Test
 	public void create_estimatePrices_success() {
-		val estimatePrise = EstimatePrices.create(Arrays.asList(
+		val estimatePrise = EstimateAmounts.create(Arrays.asList(
 				  EstimateAmountByCondition.create(new EstimateAmountNo(1), 90000)
 				, EstimateAmountByCondition.create(new EstimateAmountNo(2), 100000)
 				, EstimateAmountByCondition.create(new EstimateAmountNo(3), 110000)
 				));
 		
 		assertThat(estimatePrise.getEstimatePrices())
-						.extracting(d->d.getEstimateAmountNo().v(), d->d.getEstimatePrice().v())
+						.extracting(d->d.getEstimateAmountNo().v(), d->d.getEstimateAmount().v())
 						.containsExactly( tuple(1, 90000)
 										, tuple(2, 100000)
 										, tuple(3, 110000));
@@ -108,8 +108,8 @@ public class EstimatePricesTest {
 	
 	public static class Helper{
 		
-		public static EstimatePrices createEstimatePrices() {
-			return EstimatePrices.create(Arrays.asList(
+		public static EstimateAmounts createEstimatePrices() {
+			return EstimateAmounts.create(Arrays.asList(
 					  EstimateAmountByCondition.create(new EstimateAmountNo(1), 90000)
 					, EstimateAmountByCondition.create(new EstimateAmountNo(2), 100000)
 					, EstimateAmountByCondition.create(new EstimateAmountNo(3), 110000)

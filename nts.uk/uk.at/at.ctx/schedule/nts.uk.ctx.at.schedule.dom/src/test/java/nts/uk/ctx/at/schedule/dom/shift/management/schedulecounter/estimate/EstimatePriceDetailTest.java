@@ -21,19 +21,19 @@ public class EstimatePriceDetailTest {
 	
 	@Test
 	public void create_estimatePrices_success() {
-		val yearEstimatePrice = EstimatePrices.create(Arrays.asList(
+		val yearEstimatePrice = EstimateAmounts.create(Arrays.asList(
 				  EstimateAmountByCondition.create(new EstimateAmountNo(1), 90000)
 				, EstimateAmountByCondition.create(new EstimateAmountNo(2), 100000)
 				, EstimateAmountByCondition.create(new EstimateAmountNo(3), 110000)
 				));
 		
-		val monthEstimatePrice = EstimatePrices.create(Arrays.asList(
+		val monthEstimatePrice = EstimateAmounts.create(Arrays.asList(
 				  EstimateAmountByCondition.create(new EstimateAmountNo(1), 1000)
 				, EstimateAmountByCondition.create(new EstimateAmountNo(2), 2000)
 				, EstimateAmountByCondition.create(new EstimateAmountNo(3), 3000)
 				));
 		
-		val estimatePriceDetail = new EstimatePriceDetail(yearEstimatePrice, monthEstimatePrice);
+		val estimatePriceDetail = new EstimateAmountDetail(yearEstimatePrice, monthEstimatePrice);
 		
 		assertThat(estimatePriceDetail.getYearEstimatePrice()).isEqualTo(yearEstimatePrice);
 		assertThat(estimatePriceDetail.getMonthEstimatePrice()).isEqualTo(monthEstimatePrice);
@@ -41,23 +41,25 @@ public class EstimatePriceDetailTest {
 	}
 	
 	public static class Helper{
-		
-		public static EstimatePriceDetail createEstimatePriceDetail() {
+		/**　目安金額詳細を作成する*/
+		public static EstimateAmountDetail createEstimatePriceDetail() {
 			val yearEstimatePrice = createYearEstimatePrices();
 			val monthEstimatePrice = createMonthEstimatePrices();
-			return new EstimatePriceDetail(yearEstimatePrice, monthEstimatePrice);
+			return new EstimateAmountDetail(yearEstimatePrice, monthEstimatePrice);
 		}
 		
-		public static EstimatePrices createYearEstimatePrices() {
-			return EstimatePrices.create(Arrays.asList(
+		/**　年間目安金額を作成する*/
+		public static EstimateAmounts createYearEstimatePrices() {
+			return EstimateAmounts.create(Arrays.asList(
 					  EstimateAmountByCondition.create(new EstimateAmountNo(1), 90000)
 					, EstimateAmountByCondition.create(new EstimateAmountNo(2), 100000)
 					, EstimateAmountByCondition.create(new EstimateAmountNo(3), 110000)
 					));
 		}
 		
-		public static EstimatePrices createMonthEstimatePrices() {
-			return EstimatePrices.create(Arrays.asList(
+		/**　月度目安金額を作成する*/
+		public static EstimateAmounts createMonthEstimatePrices() {
+			return EstimateAmounts.create(Arrays.asList(
 					  EstimateAmountByCondition.create(new EstimateAmountNo(1), 1000)
 					, EstimateAmountByCondition.create(new EstimateAmountNo(2), 2000)
 					, EstimateAmountByCondition.create(new EstimateAmountNo(3), 3000)
