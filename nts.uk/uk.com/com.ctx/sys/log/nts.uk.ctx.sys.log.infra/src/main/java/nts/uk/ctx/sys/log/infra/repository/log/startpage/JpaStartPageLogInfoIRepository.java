@@ -227,7 +227,8 @@ public class JpaStartPageLogInfoIRepository extends JpaRepository
 					+ " AND START_DT >= ?"
 					+ " AND START_DT <= ?"
 					//CLI003: fix bug #109039
-					+ " AND SID IN ("+  NtsStatement.In.createParamsString(subList) + ")";
+					+ " AND SID IN ("+  NtsStatement.In.createParamsString(subList) + ")"
+					+ " ORDER BY START_DT DESC";
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				stmt.setString(1, companyId);
 				stmt.setTimestamp(2,  java.sql.Timestamp.valueOf(start.localDateTime()));
@@ -271,7 +272,8 @@ public class JpaStartPageLogInfoIRepository extends JpaRepository
 		String sql = "SELECT TOP 1000 * FROM SRCDT_START_PAGE_LOG_INFO  WHERE "
 				+ " CID = ?"
 				+ " AND START_DT >= ?"
-				+ " AND START_DT <= ?";
+				+ " AND START_DT <= ?"
+				+ " ORDER BY START_DT DESC";
 		try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 			stmt.setString(1, companyId);
 			stmt.setTimestamp(2,  java.sql.Timestamp.valueOf(start.localDateTime()));

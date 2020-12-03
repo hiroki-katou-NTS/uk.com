@@ -31,7 +31,7 @@ public class BanHolidayTogether implements DomainAggregate{
 	private Optional<ReferenceCalendar> workDayReference;
 	
 	/** 最低限出勤すべき人数 */
-	private MinNumberEmployeeTogether minOfWorkingEmpTogether;
+	private Integer minOfWorkingEmpTogether;
 	
 	/** 同日の休日取得を禁止する社員 */
 	private List<String> empsCanNotSameHolidays;
@@ -52,14 +52,14 @@ public class BanHolidayTogether implements DomainAggregate{
 			BanHolidayTogetherCode banHolidayCode,
 			BanHolidayTogetherName banHolidayName,
 			Optional<ReferenceCalendar> workDayReference,
-			MinNumberEmployeeTogether minNumberOfEmployeeToWork,
+			Integer minNumberOfEmployeeToWork,
 			List<String> empsCanNotSameHolidays) {
 		
 		if(empsCanNotSameHolidays.size() < 2) {
 			throw new BusinessException("Msg_1885");
 		}
 		
-		if(empsCanNotSameHolidays.size() < minNumberOfEmployeeToWork.v()) {
+		if(empsCanNotSameHolidays.size() < minNumberOfEmployeeToWork) {
 			throw new BusinessException("Msg_1886");
 		}
 		

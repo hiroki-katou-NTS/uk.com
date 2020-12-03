@@ -6,6 +6,7 @@ package nts.uk.ctx.at.schedule.pubimp.schedule.basicschedule;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -14,12 +15,17 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.WorkScheduleTimeZone;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
+import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.BasicScheduleConfirmExport;
+import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.BasicScheduleConfirmExport.ConfirmedAtrExport;
 import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScBasicScheduleExport;
 import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScBasicSchedulePub;
 import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScWorkBreakTimeExport;
@@ -30,7 +36,6 @@ import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ShortWorkingTimeSheetEx
 import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.WorkScheduleTimeZoneExport;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class ScBasicSchedulePubImpl.
@@ -119,6 +124,25 @@ public class ScBasicSchedulePubImpl implements ScBasicSchedulePub {
 		return Optional.of(convertToWorkSchedule(workSchedule.get()));
 	}
 	
+	@Override
+	public List<BasicScheduleConfirmExport> findConfirmById(List<String> employeeID, DatePeriod date) {
+
+		List<BasicSchedule> lstBasicSchedule = this.repository.findSomePropertyWithJDBC(employeeID, date).stream()
+				.collect(Collectors.toList());
+		Map<Pair<String, GeneralDate>, BasicSchedule> mapData = lstBasicSchedule.stream()
+				.collect(Collectors.toMap(x -> Pair.of(x.getEmployeeId(), x.getDate()), x -> x));
+		List<BasicScheduleConfirmExport> result = new ArrayList<>();
+		employeeID.stream().forEach(x -> {
+			date.datesBetween().forEach(dateB -> {
+				BasicSchedule data = mapData.get(Pair.of(x, dateB));
+				result.add(data == null ? new BasicScheduleConfirmExport(x, dateB, ConfirmedAtrExport.UNSETTLED)
+						: new BasicScheduleConfirmExport(x, dateB,
+								ConfirmedAtrExport.valueOf(data.getConfirmedAtr().value)));
+			});
+		});
+		return result;
+	}
+	
 	private ScWorkScheduleExport convertToWorkSchedule(WorkSchedule ws) {
 		List<ShortWorkingTimeSheetExport> listShortWorkingTimeSheetExport = new ArrayList<>();
 		if (ws.getOptSortTimeWork().isPresent()) {
@@ -157,7 +181,7 @@ public class ScBasicSchedulePubImpl implements ScBasicSchedulePub {
 							a.getChildCareAttr().value,
 							a.getStartTime().v(),
 							a.getEndTime().v(),
-							a.getDeductionTime().v(),
+							a.getDeductionTime() == null ? 0 : a.getDeductionTime().v(),
 							a.getShortTime().v());
 				}).collect(Collectors.toList());
 				record.setListShortWorkingTimeSheetExport(listExport);							

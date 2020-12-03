@@ -16,11 +16,11 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeReferenceRange;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
 import nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.dto.AffiliationInforOfDailyPerforDto;
-import nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.dto.BusinessTypeOfDailyPerforDto;
 import nts.uk.ctx.at.record.app.service.workrecord.erroralarm.recordcheck.result.ContinuousHolidayCheckResult;
 import nts.uk.ctx.at.record.dom.adapter.query.employee.EmployeeSearchInfoDto;
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQuery;
@@ -41,11 +41,10 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.otkcustomize.repo.Continuo
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
+import nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class ErAlWorkRecordCheckService {
@@ -278,11 +277,11 @@ public class ErAlWorkRecordCheckService {
 		return finalCheck(workingDate, checkCondition, record, employeeIds);
 	}
 	
-	private boolean canCheck(BusinessTypeOfDailyPerforDto budinessType, AffiliationInforOfDailyPerforDto affiliation, 
-			AlCheckTargetCondition checkCondition){
+	private boolean canCheck(AffiliationInforOfDailyPerforDto affiliation, AlCheckTargetCondition checkCondition){
 		if(isTrue(checkCondition.getFilterByBusinessType())){
-			if(!budinessType.isHaveData() || !checkCondition.getLstBusinessTypeCode()
-					.contains(new BusinessTypeCode(budinessType.getBusinessTypeCode()))){
+			if(!affiliation.isHaveData() || !checkCondition.getLstBusinessTypeCode()
+					.contains(affiliation.getBusinessTypeCode() == null ? null 
+							: new BusinessTypeCode(affiliation.getBusinessTypeCode()))){
 				return false;
 			}
 		}
@@ -321,8 +320,7 @@ public class ErAlWorkRecordCheckService {
 			if(checkCondition.getCheckTargetCondtion() == null){
 				return null;
 			}
-			if(!canCheck(c.getBusinessType().orElse(new BusinessTypeOfDailyPerforDto()), c.getAffiliationInfo(), 
-					checkCondition.getCheckTargetCondtion())){
+			if(!canCheck(c.getAffiliationInfo(), checkCondition.getCheckTargetCondtion())){
 				return null;
 			}
 			ResultCheckWith result = checkErrorAlarmConditionAndResult(c, checkCondition);
@@ -483,8 +481,7 @@ public class ErAlWorkRecordCheckService {
 		if(condition.getCheckTargetCondtion() == null){
 			return false;
 		}
-		if(!canCheck(record.getBusinessType().orElse(new BusinessTypeOfDailyPerforDto()), record.getAffiliationInfo(), 
-				condition.getCheckTargetCondtion())){
+		if(!canCheck(record.getAffiliationInfo(), condition.getCheckTargetCondtion())){
 			return false;
 		}
 		WorkInfoOfDailyPerformance workInfo = new WorkInfoOfDailyPerformance(record.employeeId(), record.getDate(), record.getWorkInfo().toDomain(record.employeeId(), record.getDate()));
@@ -509,8 +506,7 @@ public class ErAlWorkRecordCheckService {
 		if(condition.getCheckTargetCondtion() == null){
 			return new ResultCheckWith(false,null);
 		}
-		if(!canCheck(record.getBusinessType().orElse(new BusinessTypeOfDailyPerforDto()), record.getAffiliationInfo(), 
-				condition.getCheckTargetCondtion())){
+		if(!canCheck(record.getAffiliationInfo(), condition.getCheckTargetCondtion())){
 			return new ResultCheckWith(false,null);
 		}
 		WorkInfoOfDailyPerformance workInfo =new WorkInfoOfDailyPerformance(record.employeeId(), record.getDate(), record.getWorkInfo().toDomain(record.employeeId(), record.getDate()));

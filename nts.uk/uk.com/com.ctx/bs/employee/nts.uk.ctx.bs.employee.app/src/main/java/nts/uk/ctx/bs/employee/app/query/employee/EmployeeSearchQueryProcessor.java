@@ -588,9 +588,9 @@ public class EmployeeSearchQueryProcessor {
 								.getHistoryItems().get(0).identifier())
 						.get().getWorkplaceId();
 				WorkplaceInfo workplace = mapWorkplace.get(wplId);
-				data.setWorkplaceId(workplace.getWorkplaceId());
-				data.setWorkplaceCode(workplace.getWorkplaceCode().v());
-				data.setWorkplaceName(workplace.getWorkplaceName().v());
+				data.setWorkplaceId(workplace != null ? workplace.getWorkplaceId() : "");
+				data.setWorkplaceCode(workplace != null ? workplace.getWorkplaceCode().v() : "");
+				data.setWorkplaceName(workplace != null ? workplace.getWorkplaceName().v() : "");
 			}
 
 			// check exist job title history
@@ -600,9 +600,9 @@ public class EmployeeSearchQueryProcessor {
 								.getHistoryItems().get(0).identifier())
 						.get().getJobTitleId();
 				JobTitleInfo jobTitleInfo = mapJobTitle.get(jobTitleId);
-				data.setJobTitleId(jobTitleInfo.getJobTitleId());
-				data.setJobTitleCode(jobTitleInfo.getJobTitleCode().v());
-				data.setJobTitleName(jobTitleInfo.getJobTitleName().v());
+				data.setJobTitleId(jobTitleInfo != null ? jobTitleInfo.getJobTitleId() : "");
+				data.setJobTitleCode(jobTitleInfo != null ? jobTitleInfo.getJobTitleCode().v() : "");
+				data.setJobTitleName(jobTitleInfo != null ? jobTitleInfo.getJobTitleName().v() : "");
 			}
 			dataRes.add(data);
 		}

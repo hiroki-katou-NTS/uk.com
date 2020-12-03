@@ -32,8 +32,8 @@ module nts.uk.at.view.kdl035.a.viewmodel {
                 self.endDate(params.period.endDate);
                 self.daysUnit = params.daysUnit;
                 self.targetSelectionAtr = params.targetSelectionAtr;
-                self.actualContentDisplayList = params.actualContentDisplayList;
-                self.managementData = params.managementData;
+                self.actualContentDisplayList = params.actualContentDisplayList || [];
+                self.managementData = params.managementData || [];
             }
 
             self.requiredNumberOfDays = ko.computed(() => {
@@ -68,20 +68,28 @@ module nts.uk.at.view.kdl035.a.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             block.invisible();
-            service.initScreen({
+            const initParams = {
                 employeeId: self.employeeId,
                 startDate: new Date(self.startDate()).toISOString(),
                 endDate: new Date(self.endDate()).toISOString(),
                 daysUnit: self.daysUnit,
                 targetSelectionAtr: self.targetSelectionAtr,
-                actualContentDisplayList: self.actualContentDisplayList,
-                managementData: self.managementData
-            }).done(function(result: ParamsData) {
+                actualContentDisplayList: _.cloneDeep(self.actualContentDisplayList),
+                managementData: _.cloneDeep(self.managementData)
+            };
+            initParams.actualContentDisplayList.forEach(c => {
+                c.date = new Date(c.date).toISOString();
+            });
+            initParams.managementData.forEach(d => {
+                d.outbreakDay = new Date(d.outbreakDay).toISOString();
+                d.dateOfUse = new Date(d.dateOfUse).toISOString();
+            });
+            service.initScreen(initParams).done(function(result: ParamsData) {
                 self.daysUnit = result.daysUnit;
                 self.targetSelectionAtr = result.targetSelectionAtr;
                 self.substituteHolidayList(result.substituteHolidayList);
                 const tmp = self.managementData.map(d => d.outbreakDay);
-                self.substituteWorkInfoList(result.substituteWorkInfoList.map(info => new SubstituteWorkInfo(tmp.indexOf(info.substituteWorkDate) >= 0, info, self.requiredNumberOfDays)));
+                self.substituteWorkInfoList(result.substituteWorkInfoList.map(info => new SubstituteWorkInfo(tmp.indexOf(info.substituteWorkDate) >= 0, info, self.requiredNumberOfDays, self.startDate())));
                 dfd.resolve();
             }).fail(function(error: any) {
                 dialog.alert(error);
@@ -95,6 +103,10 @@ module nts.uk.at.view.kdl035.a.viewmodel {
             const self = this;
             if (self.requiredNumberOfDays() > 0) {
                 dialog.alert({messageId: "Msg_1762"});
+                return;
+            }
+            if (!self.checkNumberOfDays()) {
+                dialog.alert({messageId: "Msg_1761"});
                 return;
             }
             const data: ParamsData = {
@@ -121,6 +133,18 @@ module nts.uk.at.view.kdl035.a.viewmodel {
 
         closeDialog() {
             nts.uk.ui.windows.close();
+        }
+
+        checkNumberOfDays(): boolean {
+            const self = this;
+            const required = self.substituteHolidayList().length * self.daysUnit;
+            let total = 0;
+            const selected: Array<SubstituteWorkInfo> = _.orderBy(self.substituteWorkInfoList().filter(i => i.checked()), ["remainingNumber"], ['desc']);
+            for (let i = 0; i < selected.length; i++) {
+                if (total >= required) return false;
+                total += selected[i].remainingNumber;
+            }
+            return true;
         }
 
     }
@@ -190,6 +214,7 @@ module nts.uk.at.view.kdl035.a.viewmodel {
 
     class SubstituteWorkInfo {
         checked: KnockoutObservable<boolean>;
+        enabled: KnockoutObservable<boolean>;
         substituteDate: string;
         displayedSubstituteDate: string;
         remainingNumber: number;
@@ -199,7 +224,8 @@ module nts.uk.at.view.kdl035.a.viewmodel {
         dataType: DataType;
         expiringThisMonth: boolean;
 
-        constructor(checked: boolean, params: ISubstituteWorkInfo, requiredNumberOfDays: KnockoutObservable<number>) {
+        constructor(checked: boolean, params: ISubstituteWorkInfo, requiredNumberOfDays: KnockoutObservable<number>, startDate: string) {
+            this.enabled = ko.observable(new Date(params.expirationDate).getTime() > new Date(startDate).getTime());
             this.checked = ko.observable(checked);
             this.substituteDate = params.substituteWorkDate;
             this.displayedSubstituteDate = (params.expiringThisMonth ? "［" : "")

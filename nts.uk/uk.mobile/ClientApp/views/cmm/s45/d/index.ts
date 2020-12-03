@@ -81,12 +81,12 @@ export class CmmS45DComponent extends Vue {
         Object.defineProperty(self.appState, 'getName', {
             get() {
                 switch (this.appStatus) {
-                    case 0: return 'CMMS45_7'; // 反映状態 = 未反映
-                    case 1: return 'CMMS45_8'; // 反映状態 = 反映待ち
-                    case 2: return 'CMMS45_9'; // 反映状態 = 反映済
-                    case 3: return 'CMMS45_10'; // 反映状態 = 取消済
-                    case 4: return 'CMMS45_36'; // 反映状態 = 差し戻し
-                    case 5: return 'CMMS45_11'; // 反映状態 = 否認
+                    case ReflectedState.NOTREFLECTED: return 'CMMS45_7'; // 反映状態 = 未反映
+                    case ReflectedState.WAITREFLECTION: return 'CMMS45_8'; // 反映状態 = 反映待ち
+                    case ReflectedState.REFLECTED: return 'CMMS45_9'; // 反映状態 = 反映済
+                    case ReflectedState.CANCELED: return 'CMMS45_10'; // 反映状態 = 取消済
+                    case ReflectedState.REMAND: return 'CMMS45_36'; // 反映状態 = 差し戻し
+                    case ReflectedState.DENIAL: return 'CMMS45_11'; // 反映状態 = 否認
                     default: break;
                 }
             }
@@ -95,12 +95,12 @@ export class CmmS45DComponent extends Vue {
         Object.defineProperty(self.appState, 'getClass', {
             get() {
                 switch (this.appStatus) {
-                    case 0: return 'apply-unapproved'; // 反映状態 = 未反映
-                    case 1: return 'apply-approved'; // 反映状態 = 反映待ち
-                    case 2: return 'apply-reflected'; // 反映状態 = 反映済
-                    case 3: return 'apply-cancel'; // 反映状態 = 取消済
-                    case 4: return 'apply-return'; // 反映状態 = 差し戻し
-                    case 5: return 'apply-denial'; // 反映状態 = 否認
+                    case ReflectedState.NOTREFLECTED: return 'apply-unapproved'; // 反映状態 = 未反映
+                    case ReflectedState.WAITREFLECTION: return 'apply-approved'; // 反映状態 = 反映待ち
+                    case ReflectedState.REFLECTED: return 'apply-reflected'; // 反映状態 = 反映済
+                    case ReflectedState.CANCELED: return 'apply-cancel'; // 反映状態 = 取消済
+                    case ReflectedState.REMAND: return 'apply-return'; // 反映状態 = 差し戻し
+                    case ReflectedState.DENIAL: return 'apply-denial'; // 反映状態 = 否認
                     default: break;
                 }
             }
@@ -109,12 +109,12 @@ export class CmmS45DComponent extends Vue {
         Object.defineProperty(self.appState, 'getNote', {
             get() {
                 switch (this.appStatus) {
-                    case 0: return 'CMMS45_39'; // 反映状態 = 未反映
-                    case 1: return 'CMMS45_37'; // 反映状態 = 反映待ち
-                    case 2: return 'CMMS45_38'; // 反映状態 = 反映済
-                    case 3: return 'CMMS45_42'; // 反映状態 = 取消済
-                    case 4: return 'CMMS45_40'; // 反映状態 = 差し戻し
-                    case 5: return 'CMMS45_41'; // 反映状態 = 否認
+                    case ReflectedState.NOTREFLECTED: return 'CMMS45_39'; // 反映状態 = 未反映
+                    case ReflectedState.WAITREFLECTION: return 'CMMS45_37'; // 反映状態 = 反映待ち
+                    case ReflectedState.REFLECTED: return 'CMMS45_38'; // 反映状態 = 反映済
+                    case ReflectedState.CANCELED: return 'CMMS45_42'; // 反映状態 = 取消済
+                    case ReflectedState.REMAND: return 'CMMS45_40'; // 反映状態 = 差し戻し
+                    case ReflectedState.DENIAL: return 'CMMS45_41'; // 反映状態 = 否認
                     default: break;
                 }
             }
@@ -181,10 +181,10 @@ export class CmmS45DComponent extends Vue {
                             continue;
                         }
                         find = true;
-                        if (approver.approvalAtrValue == 2) {
+                        if (approver.approvalAtrValue == ApprovalBehaviorAtr.DENIAL) {
                             self.commentColor = 'uk-bg-dark-salmon';
                         }
-                        if (approver.approvalAtrValue == 1) {
+                        if (approver.approvalAtrValue == ApprovalBehaviorAtr.APPROVED) {
                             self.commentColor = 'uk-bg-alice-blue';
                         }
                         break;
@@ -215,20 +215,20 @@ export class CmmS45DComponent extends Vue {
     // lấy phase chỉ định 
     private getSelectedPhase(): number {
         let self = this;
-        let denyPhase: Phase = _.find(self.phaseLst, (phase: Phase) => phase.approvalAtrValue == 2);
+        let denyPhase: Phase = _.find(self.phaseLst, (phase: Phase) => phase.approvalAtrValue == ApprovalBehaviorAtr.DENIAL);
         if (denyPhase) {
             return denyPhase.phaseOrder - 1;
         }
-        let returnPhase: Phase = _.find(self.phaseLst, (phase: Phase) => phase.approvalAtrValue == 3);
+        let returnPhase: Phase = _.find(self.phaseLst, (phase: Phase) => phase.approvalAtrValue == ApprovalBehaviorAtr.REMAND);
         if (returnPhase) {
             return returnPhase.phaseOrder - 1;
         }
         let unapprovePhaseLst: Array<Phase> = _.filter(self.phaseLst, 
-            (phase: Phase) => phase.approvalAtrValue == 0 || phase.approvalAtrValue == 4);
+            (phase: Phase) => phase.approvalAtrValue == ApprovalBehaviorAtr.UNAPPROVED || phase.approvalAtrValue == ApprovalBehaviorAtr.ORIGINAL_REMAND);
         if (unapprovePhaseLst.length > 0) {
             return _.sortBy(unapprovePhaseLst, 'phaseOrder').reverse()[0].phaseOrder - 1;
         }
-        let approvePhaseLst: Array<Phase> = _.filter(self.phaseLst, (phase: Phase) => phase.approvalAtrValue == 1);
+        let approvePhaseLst: Array<Phase> = _.filter(self.phaseLst, (phase: Phase) => phase.approvalAtrValue == ApprovalBehaviorAtr.APPROVED);
         if (approvePhaseLst.length > 0) {
             return _.sortBy(approvePhaseLst, 'phaseOrder')[0].phaseOrder - 1;
         }
@@ -465,15 +465,14 @@ export class CmmS45DComponent extends Vue {
     public canChangeStatus(): boolean {
         let self = this;
         switch (self.appState.reflectStatus) {
-            case 0: return true; // 反映状態 = 未反映
-            case 1: return true; // 反映状態 = 反映待ち
-            case 2: return false; // 反映状態 = 反映済
-            case 3: return false; // 反映状態 = 取消待ち
-            case 4: return false; // 反映状態 = 取消済
-            case 5: return true; // 反映状態 = 差し戻し
-            case 6: return true; // 反映状態 = 否認
+            case ReflectedState.NOTREFLECTED: return true; // 反映状態 = 未反映
+            case ReflectedState.WAITREFLECTION: return true; // 反映状態 = 反映待ち
+            case ReflectedState.REFLECTED: return false; // 反映状態 = 反映済
+            case ReflectedState.CANCELED: return false; // 反映状態 = 取消済
+            case ReflectedState.REMAND: return true; // 反映状態 = 差し戻し
+            case ReflectedState.DENIAL: return true; // 反映状態 = 否認
             case 99: return false; //
-            default: break;  
+            default: break;
         }
     }
 
@@ -481,9 +480,9 @@ export class CmmS45DComponent extends Vue {
     public isModify(): boolean {
         let self = this;
         switch (self.appState.approvalATR) {
-            case 0: return false; // ログイン者の承認区分 = 未承認
-            case 1: return true; // ログイン者の承認区分 = 承認済
-            case 2: return true; // ログイン者の承認区分 = 否認
+            case ApprovalBehaviorAtr.UNAPPROVED: return false; // ログイン者の承認区分 = 未承認
+            case ApprovalBehaviorAtr.APPROVED: return true; // ログイン者の承認区分 = 承認済
+            case ApprovalBehaviorAtr.DENIAL: return true; // ログイン者の承認区分 = 否認
             default: break;  
         }
     }
@@ -680,8 +679,8 @@ export class CmmS45DComponent extends Vue {
         if (opComboReason) {
             return opComboReason.reasonForFixedForm;
         }
-        if (_.isNull(vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD)) {
-            return '' + ' ' + vm.$i18n('CMMS45_87');
+        if (_.isEmpty(vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD)) {
+            return '';
         }
 
         return vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD + ' ' + vm.$i18n('CMMS45_87');
@@ -695,6 +694,23 @@ export class CmmS45DComponent extends Vue {
 
         return _.escape(vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason).replace(/\n/g, '<br/>');
     }
+}
+
+export enum ReflectedState {
+    NOTREFLECTED = 0, // 未反映
+    WAITREFLECTION = 1, // 反映待ち
+    REFLECTED = 2, // 反映済
+    CANCELED = 3, // 取消済
+    REMAND = 4, // 差し戻し
+    DENIAL = 5 // 否認
+}
+
+export enum ApprovalBehaviorAtr {
+    UNAPPROVED = 0, // 未承認
+    APPROVED = 1, // 承認済
+    DENIAL = 2, // 否認
+    REMAND = 3, // 差し戻し
+    ORIGINAL_REMAND = 4 // 本人差し戻し
 }
 
 const API = {
