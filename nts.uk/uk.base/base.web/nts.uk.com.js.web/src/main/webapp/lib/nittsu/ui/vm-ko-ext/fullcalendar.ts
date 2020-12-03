@@ -573,6 +573,7 @@ module nts.uk.ui.components.fullcalendar {
 
             const weekends: KnockoutObservable<boolean> = ko.observable(true);
             const datesSet: KnockoutObservable<DATES_SET | null> = ko.observable(null);
+            const newEvent: KnockoutObservable<null | SELECTEDEVENT> = ko.observable(null);
             const selectedEvents: KnockoutObservableArray<SELECTEDEVENT> = ko.observableArray([]);
 
             const timesSet: KnockoutComputed<number[]> = ko.computed({
@@ -665,6 +666,7 @@ module nts.uk.ui.components.fullcalendar {
                 read: () => {
                     const cptEvents: any[] = [];
                     const rawEvents = ko.unwrap<any>(events);
+                    const nEvent = ko.unwrap(newEvent);
                     const sltedEvents = ko.unwrap<SELECTEDEVENT[]>(selectedEvents);
                     const isSelected = (m: FullCalendar.EventApi) => {
                         return !!_.find(sltedEvents, (e: any) => {
@@ -672,6 +674,16 @@ module nts.uk.ui.components.fullcalendar {
                                 && formatDate(e.end) === formatDate(m.end);
                         });
                     };
+
+                    if (nEvent) {
+                        cptEvents.push({
+                            ...nEvent,
+                            allDay: false,
+                            borderColor: 'transparent',
+                            durationEditable: false,
+                            id: randomId()
+                        });
+                    }
 
                     rawEvents
                         .forEach((e: any) => {
@@ -737,6 +749,42 @@ module nts.uk.ui.components.fullcalendar {
             dataEvent.alt.valueHasMutated();
             dataEvent.ctrl.valueHasMutated();
             dataEvent.shift.valueHasMutated();
+
+            dataEvent.event
+                .subscribe((evt) => {
+                    if (evt) {
+                        const {
+                            id,
+                            title,
+                            start,
+                            end,
+                            backgroundColor,
+                            textColor,
+                            extendedProps
+                        } = evt;
+
+                        if (!!extendedProps.edited) {
+                            const gevents = calendar.getEvents();
+                            const exist = _.find(gevents, (f: FullCalendar.EventApi) => f.id === id);
+                            const props = _.omit(extendedProps, 'edited');
+
+                            if (exist) {
+                                exist.setEnd(end);
+                                exist.setStart(start);
+
+                                exist.setProp('title', title);
+                                exist.setProp('textColor', textColor);
+                                exist.setProp('backgroundColor', backgroundColor);
+
+                                _.each(props, (v: string, k: string) => exist.setExtendedProp(k, v));
+                            }
+
+                            mutatedEvents();
+
+                            newEvent(null);
+                        }
+                    }
+                });
 
             popupPosition.event
                 .subscribe(e => {
@@ -956,9 +1004,11 @@ module nts.uk.ui.components.fullcalendar {
                 })) as any;
             const mutatedEvents = () => {
                 if (ko.isObservable(events)) {
-                    const evts = getEvents().filter(f => f.display !== 'background');
+                    const gevents = getEvents()
+                        .filter(f => f.display !== 'background')
+                        .filter(f => !_.isEmpty(f.extendedProps));
 
-                    events(evts.filter(f => !_.isEmpty(f.extendedProps)));
+                    events(gevents);
                 }
             };
 
@@ -1012,13 +1062,17 @@ module nts.uk.ui.components.fullcalendar {
                 slotEventOverlap: false,
                 eventOverlap: false,
                 selectOverlap: false,
-                dateClick: () => selectedEvents([]),
+                dateClick: () => {
+                    newEvent(null);
+                    selectedEvents([]);
+                },
                 dropAccept: () => !!ko.unwrap(editable),
                 dayHeaderContent: (opts: FullCalendar.DayHeaderContentArg) => moment(opts.date).format('DD(ddd)'),
                 eventClick: (args: FullCalendar.EventClickArg) => {
                     const { event } = args;
                     const { start, end } = event;
 
+                    newEvent(null);
                     popupPosition.event(null);
 
                     if (!ko.unwrap(dataEvent.shift)) {
@@ -1064,6 +1118,7 @@ module nts.uk.ui.components.fullcalendar {
                         }
                     }
 
+                    newEvent(null);
                     popupPosition.event(null);
                 },
                 eventDrop: (args: FullCalendar.EventDropArg) => {
@@ -1081,12 +1136,14 @@ module nts.uk.ui.components.fullcalendar {
                         selectedEvents([]);
                     }
 
+                    newEvent(null);
                     popupPosition.event(null);
                 },
                 eventResize: () => {
                     // update data sources
                     mutatedEvents();
 
+                    newEvent(null);
                     selectedEvents([]);
 
                     popupPosition.event(null);
@@ -1095,8 +1152,8 @@ module nts.uk.ui.components.fullcalendar {
                     const { type } = args.view;
                     const { start, end, title, extendedProps } = args.event;
                     const { descriptions } = extendedProps;
-                    const hour = (value: Date) => moment(value).format('H');
-                    const format = (value: Date) => moment(value).format('HH:mm');
+                    // const hour = (value: Date) => moment(value).format('H');
+                    // const format = (value: Date) => moment(value).format('HH:mm');
 
                     // <div class="fc-event-time">${format(start)} - ${format(end || moment(start).add(1, 'hour').toDate())}</div>
 
@@ -1110,8 +1167,8 @@ module nts.uk.ui.components.fullcalendar {
                     }
 
                     if (type === 'dayGridMonth') {
-                        const hours = hour(start);
-                        const minutes = format(start);
+                        // const hours = hour(start);
+                        // const minutes = format(start);
 
                         // <div class="fc-event-time">${minutes.match(/\:00$/) ? `${hours}時` : minutes}</div>
 
@@ -1133,20 +1190,14 @@ module nts.uk.ui.components.fullcalendar {
                 select: (arg: FullCalendar.DateSelectArg) => {
                     const { start, end } = arg;
 
-                    $.Deferred()
-                        .resolve(true)
-                        .then(() => popupPosition.event(null))
-                        .then(() => {
-                            calendar.unselect();
-                            calendar.addEvent({ start, end });
-                        })
-                        .then(() => {
-                            // update data sources
-                            mutatedEvents();
-                            selectedEvents([{ start, end }]);
-                        });
+                    calendar.unselect();
+
+                    selectedEvents([]);
+                    newEvent({ start, end });
+                    popupPosition.event(null);
                 },
                 eventRemove: (args: FullCalendar.EventRemoveArg) => {
+                    newEvent(null);
                     mutatedEvents();
                     selectedEvents([]);
 
@@ -1157,6 +1208,8 @@ module nts.uk.ui.components.fullcalendar {
                     const event: any = { title, start, end: moment(start).add(1, 'hour').toDate(), backgroundColor, extendedProps };
 
                     events.push(event);
+
+                    newEvent(null);
                     selectedEvents([]);
 
                     popupPosition.event(null);
@@ -1207,10 +1260,33 @@ module nts.uk.ui.components.fullcalendar {
                 },
                 eventDidMount: (args) => {
                     const { el, event } = args;
+                    const nEvent = ko.unwrap(newEvent);
                     const selected = ko.unwrap<SELECTEDEVENT[]>(selectedEvents);
 
                     if (selected.length === 1 && !ko.unwrap(dataEvent.shift)) {
                         const { end, start } = selected[0];
+
+                        if (moment(start).isSame(event.start) && moment(end).isSame(event.end)) {
+                            $.Deferred()
+                                .resolve(true)
+                                .then(() => el.classList.add(POWNER_CLASS_EVT))
+                                .then(() => {
+                                    const bound = el.getBoundingClientRect();
+                                    const { top, left } = bound;
+
+                                    dataEvent.event(event);
+
+                                    if (!top || !left) {
+                                        popupPosition.event(null);
+                                    } else if (!_.isEmpty(event.extendedProps)) {
+                                        popupPosition.event({ top, left });
+                                    } else {
+                                        popupPosition.event(null);
+                                    }
+                                });
+                        }
+                    } else if (nEvent) {
+                        const { end, start } = nEvent;
 
                         if (moment(start).isSame(event.start) && moment(end).isSame(event.end)) {
                             $.Deferred()
@@ -1465,8 +1541,8 @@ module nts.uk.ui.components.fullcalendar {
                 dataEvent.mouse(true);
 
                 if (!$(evt.target).closest('.fc-scrollgrid-section').length) {
-                    popupPosition.event(null);
-                    popupPosition.copyDay(null);
+                    // popupPosition.event(null);
+                    // popupPosition.copyDay(null);
                 }
             });
 
@@ -1628,8 +1704,27 @@ module nts.uk.ui.components.fullcalendar {
 
             edit() {
                 const vm = this;
+                const { params } = vm;
+                const { data, position } = params;
 
-                // vm.data(null);
+                const event = ko.unwrap(data);
+                const { id, start, end, backgroundColor, textColor, extendedProps } = event;
+
+                data({
+                    id,
+                    start,
+                    end,
+                    backgroundColor,
+                    textColor,
+                    title: 'Edited',
+                    extendedProps: {
+                        edited: true,
+                        id: extendedProps.id || 'xxx-xxxxx',
+                        descriptions: 'ZDescriptions'
+                    }
+                } as any);
+
+                position(null);
             }
 
             remove() {
@@ -1640,10 +1735,12 @@ module nts.uk.ui.components.fullcalendar {
                 $.Deferred()
                     .resolve(true)
                     .then(() => {
-                        position(null);
-                        data().remove();
+                        const event = ko.unwrap(data);
+
+                        event.remove();
                     })
-                    .then(() => data(null));
+                    .then(() => data(null))
+                    .then(() => position(null));
             }
 
             close() {
@@ -1653,8 +1750,15 @@ module nts.uk.ui.components.fullcalendar {
 
                 $.Deferred()
                     .resolve(true)
-                    .then(() => position(null))
-                    .then(() => data(null));
+                    .then(() => {
+                        const event = ko.unwrap(data);
+
+                        if (_.isEmpty(event.extendedProps)) {
+                            event.remove();
+                        }
+                    })
+                    .then(() => data(null))
+                    .then(() => position(null));
             }
         }
 
