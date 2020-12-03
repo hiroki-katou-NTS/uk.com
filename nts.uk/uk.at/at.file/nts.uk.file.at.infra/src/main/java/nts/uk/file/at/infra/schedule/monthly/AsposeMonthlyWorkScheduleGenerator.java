@@ -1339,7 +1339,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 						totalVal.setValueType(val.getValueType());
 					}
 					if (valueTypeEnum == ValueType.TEXT) {
-						totalVal.setValue(val.value());
+						totalVal.setValue("");
 						totalVal.setValueType(val.getValueType());
 					}
 				}
@@ -1400,12 +1400,6 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 								totalGrossVal.setValue(String.valueOf(Double.parseDouble(totalGrossVal.getValue()) + currentValueDouble));
 								employeeData.mapPersonalTotal.put(attdId, personalTotal);
 							}
-							if(valueTypeEnum == ValueType.TEXT) {
-								personalTotal.setValue(aVal.getValue());
-								totalVal.setValue(aVal.getValue());
-								totalGrossVal.setValue(aVal.getValue());
-								employeeData.mapPersonalTotal.put(attdId, personalTotal);
-							}
 						} else {
 							employeeData.mapPersonalTotal.put(aVal.getAttendanceId(), new TotalValue(aVal.getAttendanceId(), "", TotalValue.STRING));
 						}
@@ -1435,9 +1429,6 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 							}
 							if (valueTypeEnum.isDoubleCountable()) {
 								totalVal.setValue(String.valueOf((double) totalVal.value() + Double.parseDouble(item.getValue())));
-							}
-							if (valueTypeEnum == ValueType.TEXT) {
-								totalVal.setValue(item.getValue());
 							}
 						} else {
 							TotalValue totalVal = new TotalValue();
@@ -1508,8 +1499,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 								} else {
 									totalValue.setValue("0");
 								}
-							}
-							else { // This case also deals with null value
+							} else { // This case also deals with null value
 								totalValue.setValue(actualValue.getValue());
 							}
 							totalValue.setValueType(valueType);
@@ -1539,8 +1529,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 								} else {
 									totalWorkplaceValue.setValue("0");
 								}
-							}
-							else { // This case also deals with null value
+							} else { // This case also deals with null value
 								totalWorkplaceValue.setValue(actualValue.getValue());
 							}
 							totalWorkplaceValue.setValueType(valueType);
@@ -1584,8 +1573,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 							} else {
 								totalValue.setValue("0");
 							}
-						}
-						else { // This case also deals with null value
+						} else { // This case also deals with null value
 							totalValue.setValue(actualValue.getValue());
 						}
 						totalValue.setValueType(valueType);
@@ -1627,12 +1615,11 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 						if (valueTypeEnum.isDoubleCountable()) {
 							totalValue.setValue(String.valueOf((double) totalValue.value() + (double) totalVal.value()));
 						}
-					}
-					else {
+					} else {
 						totalValue = new TotalValue();
 						totalValue.setAttendanceId(totalVal.getAttendanceId());
 						ValueType valueTypeEnum = EnumAdaptor.valueOf(totalVal.getValueType(), ValueType.class);
-						if (valueTypeEnum.isIntegerCountable() || valueTypeEnum.isDoubleCountable() || valueTypeEnum == ValueType.TEXT) {
+						if (valueTypeEnum.isIntegerCountable() || valueTypeEnum.isDoubleCountable()) {
 							totalValue.setValue(totalVal.getValue());
 						}
 						totalValue.setValueType(totalVal.getValueType());
@@ -1945,8 +1932,6 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 								}
 				            	else if (valueTypeEnum.isDoubleCountable() && value != null) {
 				            		cell.putValue(value, true);
-				            	}else if (valueTypeEnum == ValueType.TEXT && value != null) {
-				            		cell.putValue(value, false);
 				            	}
 				            	if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()){
 				            		style.setHorizontalAlignment(TextAlignmentType.RIGHT);
@@ -2031,9 +2016,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	            	else if (valueTypeEnum.isDoubleCountable() && value != null) {
 	            		cell.putValue(value, true);
 	            	}
-	            	else if (valueTypeEnum == ValueType.TEXT && value != null) {
-	            		cell.putValue(value, false);
-	            	}
+//	            	else if (valueTypeEnum == ValueType.TEXT && value != null) {
+//	            		cell.putValue(value, false);
+//	            	}
 	            	if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()) {
 						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 					}
@@ -2196,9 +2181,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				            	else if (valueTypeEnum.isDoubleCountable() && value != null) {
 				            		cell.putValue(value, true);
 				            	}
-				            	else if (valueTypeEnum == ValueType.TEXT && value != null) {
-				            		cell.putValue(value, false);
-				            	}
+//				            	else if (valueTypeEnum == ValueType.TEXT && value != null) {
+//				            		cell.putValue(value, false);
+//				            	}
 				            	if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()) {
 									style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 								}
@@ -2778,9 +2763,6 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	            	else if (valueTypeEnum.isDoubleCountable() && value != null) {
 	            		cell.putValue(value, true);
 	            	}
-	            	else if (valueTypeEnum == ValueType.TEXT && value != null) {
-	            		cell.putValue(value, false);
-	            	}
 					if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()) {
 						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 					}
@@ -2856,8 +2838,6 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 					}
 	            	else if (valueTypeEnum.isDoubleCountable() && value != null) {
 	            		cell.putValue(value, true);
-	            	}else if (valueTypeEnum == ValueType.TEXT) {
-	            		cell.putValue(value, false);
 	            	}
 		        	
 		        	if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()) {
