@@ -33,10 +33,9 @@ module nts.uk.at.view.kmk004.l {
 							<button data-bind="i18n: 'KMK004_338', click: openViewP"></button>
 						</div>
 						<div class="header_content">
-							<div data-bind="visible: displayL4_4, component: {
+							<div data-bind="component: {
 								name: 'view-l-basic-setting',
-								params:{ 
-								}
+								params: params
 							}"></div>
 						</div>
 						<div data-bind="ntsFormLabel: {}, i18n: 'KMK004_232'"></div>
@@ -83,7 +82,6 @@ module nts.uk.at.view.kmk004.l {
 	})
 
 	export class ViewMComponent extends ko.ViewModel {
-		displayL4_4: KnockoutObservable<boolean> = ko.observable(true);
 		selectedId: KnockoutObservable<any> = ko.observable();
 		baseDate: KnockoutObservable<Date>;
 		alreadySettingList: KnockoutObservableArray<tree.UnitAlreadySettingModel>;
@@ -93,6 +91,7 @@ module nts.uk.at.view.kmk004.l {
 		public changeYear: KnockoutObservable<boolean> = ko.observable(true);
 		public checkEmployee: KnockoutObservable<boolean> = ko.observable(false);
 		public existYear: KnockoutObservable<boolean> = ko.observable(false);
+		param :  KnockoutObservable<IParam> = ko.observable();
 		
 		constructor(private params: IParam){
 			super();
@@ -118,7 +117,7 @@ module nts.uk.at.view.kmk004.l {
 				tabindex: 1,
 				systemType: 2
 			};
-			
+			//vm.param({sidebarType : "Com_Workplace", wkpId: '', empCode :'', empId: '', titleName:'', deforLaborTimeComDto: null, settingDto: null});
 			vm.params = {sidebarType : "Com_Workplace", wkpId: '', empCode :'', empId: '', titleName:'', deforLaborTimeComDto: null, settingDto: null}
 			vm.selectedYear
 			.subscribe(() => {
@@ -136,6 +135,7 @@ module nts.uk.at.view.kmk004.l {
 					let selectedItem: UnitModel = _.find(workplaces, ['id', data]);
 					vm.selectedItemText(selectedItem ? selectedItem.name : '');
 					vm.params.wkpId = data;
+					
 					vm.params.titleName = vm.selectedItemText();
 				});
 				vm.selectedId.valueHasMutated();

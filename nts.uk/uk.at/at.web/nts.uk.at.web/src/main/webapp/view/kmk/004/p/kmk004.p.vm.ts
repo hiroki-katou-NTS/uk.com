@@ -38,7 +38,7 @@ module nts.uk.at.view.kmk004.p {
 		settingDto: SettingDto; //会社別変形労働集計設定
 	}
 
-	enum SCREEN_MODE {
+	export enum SCREEN_MODE {
 		ADD = 1,
 		UPDATE = 2
 	}
@@ -61,26 +61,28 @@ module nts.uk.at.view.kmk004.p {
 
 		constructor(private params: IParam) {
 			super();
-			var vm = this;
-
-			vm.itemListP3_3 = ko.observableArray<ItemModel>([
-				new ItemModel('0', vm.$i18n("KMK004_313")), //単月
-				new ItemModel('1', vm.$i18n("KMK004_314")) //複数月
-			]);
-
-			let tg = [], tg1 = [];
-			for (let i = 1; i <= 12; i++) {
-				tg.push(new ItemModel(i.toString(), i.toString() + '月'));
-				tg1.push(new ItemModel(i.toString(), i.toString() + 'ヶ月'));
+			if(params){			
+				var vm = this;
+	
+				vm.itemListP3_3 = ko.observableArray<ItemModel>([
+					new ItemModel('0', vm.$i18n("KMK004_313")), //単月
+					new ItemModel('1', vm.$i18n("KMK004_314")) //複数月
+				]);
+	
+				let tg = [], tg1 = [];
+				for (let i = 1; i <= 12; i++) {
+					tg.push(new ItemModel(i.toString(), i.toString() + '月'));
+					tg1.push(new ItemModel(i.toString(), i.toString() + 'ヶ月'));
+				}
+				vm.itemListP3_5(tg);
+				vm.itemListP3_7(tg1);
+				vm.title(params.titleName);
 			}
-			vm.itemListP3_5(tg);
-			vm.itemListP3_7(tg1);
-			vm.title(params.titleName);
-
 		}
 
 		mounted() {
 			const vm = this;
+			if(vm.params)
 			vm.loadData();
 		}
 
@@ -129,6 +131,7 @@ module nts.uk.at.view.kmk004.p {
 						vm.selectedP3_3(1);
 					}
 				}).always(() => vm.$blockui("clear"));
+			
 			}
 
 			//社員
@@ -460,7 +463,7 @@ module nts.uk.at.view.kmk004.p {
 	}
 
 	//会社別変形労働法定労働時間
-	class DeforLaborTimeCom {
+	export class DeforLaborTimeCom {
 		weeklyTime = new Weekly();
 		dailyTime = new Daily();
 		constructor() { }
@@ -471,7 +474,7 @@ module nts.uk.at.view.kmk004.p {
 	}
 
 	//週単位
-	class Weekly {
+	export class Weekly {
 		time: KnockoutObservable<number> = ko.observable(0);
 		constructor() { }
 		update(param: WeeklyTime) {
@@ -480,7 +483,7 @@ module nts.uk.at.view.kmk004.p {
 	}
 
 	//日単位
-	class Daily {
+	export class Daily {
 		time: KnockoutObservable<number> = ko.observable(0);
 		constructor() { }
 		update(param: DailyTime) {
@@ -489,7 +492,7 @@ module nts.uk.at.view.kmk004.p {
 	}
 
 	//会社別変形労働集計設定
-	class Setting {
+	export class Setting {
 		aggregateTimeSet = new TimeSet(); //集計時間設定
 		excessOutsideTimeSet = new TimeSet(); //時間外超過設定
 		settlementPeriod = new Settlement(); //清算期間
@@ -502,7 +505,7 @@ module nts.uk.at.view.kmk004.p {
 	}
 
 	//清算期間
-	class Settlement {
+	export class Settlement {
 		startMonth = ko.observable(0);
 		period = ko.observable(0);
 		repeatAtr = ko.observable(false);
@@ -515,7 +518,7 @@ module nts.uk.at.view.kmk004.p {
 	}
 
 	//時間外超過設定
-	class TimeSet {
+	export class TimeSet {
 		legalOverTimeWork: KnockoutObservable<boolean> = ko.observable(false);
 		legalHoliday: KnockoutObservable<boolean> = ko.observable(false);
 		constructor() { }

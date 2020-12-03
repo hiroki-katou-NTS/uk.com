@@ -3,16 +3,12 @@
 	width: calc(100vw - 140px);
 }
 
-.sidebar-content-header .title {
-    font-size: 32px;
-}
-
 .view-l {
 	margin-left: 20px;
 }
 
 .view-l .header-l {
-    width: 710px;
+    width: 740px;
 }
 
 .view-l .header-l ~ div {
@@ -44,7 +40,7 @@
 
 .view-l .content1 {
     text-align: center;
-    width: 125px;
+    width: 135px;
 }
 
 .view-l .content ~ div {

@@ -1,16 +1,14 @@
 /// <reference path="../../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.view.kmk004 {
-    
-	//import TransformScreenData = nts.uk.at.view.kmk004.p.TransformScreenData;
-	
-	
-    interface Params {
-        model: SettingParam;
-    }
+	import IResponse = nts.uk.at.view.kmk004.p.IResponse;
+	import TransformScreenData = nts.uk.at.view.kmk004.p.TransformScreenData;
+	import KMK004_P_API = nts.uk.at.view.kmk004.p.KMK004_P_API;
+	import SCREEN_MODE = nts.uk.at.view.kmk004.p.SCREEN_MODE;
+	import IParam = nts.uk.at.view.kmk004.p.IParam;
 
-    const template = `
-        <div class="table-view">
+	const template = `
+        <div class="table-view" data-bind="visible: visibleL4 ">
             <table>
                 <tbody>
                     <tr>
@@ -31,20 +29,20 @@ module nts.uk.at.view.kmk004 {
                         </th>
                     </tr>
                     <tr>
-                        <td>
-                            <div class="content1" data-bind="text: settingParam.daily"></div>
+                       <td>
+                            <div class="content1" data-bind="text: screenData.deforLaborTimeComDto.dailyTime.time"></div>
                         </td>
                         <td>
-                            <div class="content1" data-bind="text: settingParam.weekly"></div>
+                            <div class="content1" data-bind="text: screenData.deforLaborTimeComDto.weeklyTime.time"></div>
                         </td>
 						<td>
-                            <div class="content1" data-bind="text: settingParam.period"></div>
+                            <div class="content1" data-bind="text: screenData.settingDto.settlementPeriod.period"></div>
                         </td>
 						<td>
-                            <div class="content1" data-bind="text: settingParam.startMonth"></div>
+                            <div class="content1" data-bind="text: screenData.settingDto.settlementPeriod.startMonth"></div>
                         </td>
 						<td>
-                            <div class="content1" data-bind="i18n: settingParam.iteration"></div>
+                            <div class="content1" data-bind="i18n: screenData.settingDto.settlementPeriod.repeatAtr() == true ? 'KMK004_296' : 'KMK004_297' "></div>
                         </td>
                     </tr>
                     <tr>
@@ -58,16 +56,16 @@ module nts.uk.at.view.kmk004 {
 					
                     <tr>
                         <td>
-                            <div class="content1" data-bind="i18n: model.surcharge1"></div>
+                            <div class="content1" data-bind="i18n:(screenData.settingDto.aggregateTimeSet.legalOverTimeWork() == true ? 'KMK004_299' : 'KMK004_300') "></div>
                         </td>
                         <td>
-                            <div class="content1" data-bind="i18n: model.surcharge2"></div>
+                            <div class="content1" data-bind="i18n: screenData.settingDto.aggregateTimeSet.legalHoliday() == true ? 'KMK004_301' : 'KMK004_302' "></div>
                         </td>
                         <td>
-                            <div class="content1" data-bind="i18n: model.surchargeOvertime1"></div>
+                            <div class="content1" data-bind="i18n: screenData.settingDto.excessOutsideTimeSet.legalOverTimeWork() == true ? 'KMK004_299' : 'KMK004_300' "></div>
                         </td>
                         <td colspan="2">
-                            <div class="content1" data-bind="i18n: model.surchargeOvertime2"></div>
+                            <div class="content1" data-bind="i18n: screenData.settingDto.excessOutsideTimeSet.legalHoliday() == true ? 'KMK004_301' : 'KMK004_302' "></div>
                         </td>
                     </tr> 
                 </tbody>
@@ -98,128 +96,82 @@ module nts.uk.at.view.kmk004 {
 
             .table-view tr, .table-view td {
                 border: solid grey 1px;
-                padding: 3px;
               }
             
         </style>
         <style type="text/css" rel="stylesheet" data-bind="html: $component.style"></style>
     `;
 
-    @component({
-        name: 'view-l-basic-setting',
-        template
-    })
+	@component({
+		name: 'view-l-basic-setting',
+		template
+	})
 
-    class BasicSetting extends ko.ViewModel {
-        public model = new DataModel();
-        public settingParam = new SettingParam();
-        public params!: Params;
+	class BasicSetting extends ko.ViewModel {
+		mode: KnockoutObservable<number> = ko.observable(SCREEN_MODE.ADD);
+		visibleL4: KnockoutObservable<boolean> = ko.observable(false);
 
-		//screenData = new TransformScreenData();
+		screenData = new TransformScreenData();
 
-        created(params: Params) {
-            const vm = this;
+		constructor(private params: IParam) {
+			super();
+			const vm = this;
+			vm.params = {sidebarType : "Com_Company", wkpId: '', empCode :'', empId: '', titleName:'', deforLaborTimeComDto: null, settingDto: null}
+			
+		}
 
-            vm.params = params;
-            /*vm.settingParam = params.model;*/
-        }
+		mounted() {
+			const vm = this;
+			vm.loadData();
+		}
 
-        mounted() {
-            const vm = this;
+		loadData() {
+			const vm = this;
+			vm.$blockui("grayout");
 
-            if (!ko.unwrap(vm.settingParam.deforWorkLegalOverTimeWork)) {
-                vm.model.surcharge1('KMK004_217');
-            }
-            if (!ko.unwrap(vm.settingParam.deforWorkLegalHoliday)) {
-                vm.model.surcharge2('KMK004_219');
-            }
-          
-            if (!ko.unwrap(vm.settingParam.outsidedeforWorkLegalOverTimeWork)) {
-                vm.model.surchargeOvertime1('KMK004_217');
-            }
-            if (!ko.unwrap(vm.settingParam.outsidedeforWorkLegalHoliday)) {
-                vm.model.surchargeOvertime2('KMK004_219');
-            }
+			//会社
+			if (vm.params.sidebarType == 'Com_Company') {
+				vm.$ajax(KMK004_P_API.COM_GET_BASIC_SETTING, ).done((data: IResponse) => {
+					vm.bindingData(data);
 
-        }
-    }
+				}).always(() => vm.$blockui("clear"));
+			}
+	
+			//職場
+			if (vm.params.sidebarType == 'Com_Workplace') {
+				vm.$ajax(KMK004_P_API.WKP_GET_BASIC_SETTING + "/" + ko.toJS(vm.params.wkpId)).done((data: IResponse) => {
+					vm.bindingData(data);
+				}).always(() => vm.$blockui("clear"));
 
-    interface IDataModel {
-        surcharge1: string;
-        surcharge2: string;
-        surchargeOvertime1: string;
-        surchargeOvertime2: string;
-    }
+			}
 
-    class DataModel {
-        surcharge1: KnockoutObservable<string> = ko.observable('KMK004_216'); //217
-        surcharge2: KnockoutObservable<string> = ko.observable('KMK004_218'); //219
-        surchargeOvertime1: KnockoutObservable<string> = ko.observable('KMK004_216'); //217
-        surchargeOvertime2: KnockoutObservable<string> = ko.observable('KMK004_218'); //219
+			//雇用
+			if (vm.params.sidebarType == 'Com_Employment') {
+				vm.$ajax(KMK004_P_API.EMP_GET_BASIC_SETTING + "/" + ko.toJS(vm.params.empCode)).done((data: IResponse) => {
+					vm.bindingData(data);
+				}).always(() => vm.$blockui("clear"));
 
-        public create(params?: IDataModel) {
-            const self = this;
+			}
 
-            if (params) {
-                self.update(params);
-            }
-        }
+			//社員
+			if (vm.params.sidebarType == 'Com_Person') {
+				vm.$ajax(KMK004_P_API.SHA_GET_BASIC_SETTING + "/" + ko.toJS(vm.params.empId)).done((data: IResponse) => {
+					vm.bindingData(data);
+				}).always(() => vm.$blockui("clear"));
+			}
 
-        public update(params?: IDataModel) {
-            const self = this;
+		}
 
-            if (params) {
-                self.surcharge1(params.surcharge1);
-                self.surcharge2(params.surcharge2);
-                self.surchargeOvertime1(params.surchargeOvertime1);
-                self.surchargeOvertime2(params.surchargeOvertime2);
-            }
-        }
-    }
+		bindingData(data: IResponse) {
+			const vm = this;
+			if (data.deforLaborTimeComDto != null && data.settingDto != null) {
+				vm.visibleL4(true);
+				vm.mode(SCREEN_MODE.UPDATE);
+				vm.screenData.update(data);
+			} else {
+				vm.visibleL4(false);
+			}
+		}
+	}
 
-    export interface ISetting{
-		daily: string;
-        weekly: string;
-        period: string;
-        startMonth: string;
-        iteration: string;
-       	deforWorkSurchargeWeekMonth: boolean;
-        deforWorkLegalOverTimeWork: boolean;
-        deforWorkLegalHoliday: boolean;
-        outsideSurchargeWeekMonth: boolean
-        outsidedeforWorkLegalOverTimeWork: boolean;
-        outsidedeforWorkLegalHoliday: boolean;
-    }
-
-    export class SettingParam {
-        daily: KnockoutObservable<string> = ko.observable('8:00');
-        weekly: KnockoutObservable<string> = ko.observable('40:00');
-        deforWorkSurchargeWeekMonth: KnockoutObservable<boolean> = ko.observable(true);
-        deforWorkLegalOverTimeWork: KnockoutObservable<boolean> = ko.observable(true);
-        deforWorkLegalHoliday: KnockoutObservable<boolean> = ko.observable(true);
-        outsideSurchargeWeekMonth: KnockoutObservable<boolean> = ko.observable(true);
-        outsidedeforWorkLegalOverTimeWork: KnockoutObservable<boolean> = ko.observable(true);
-        outsidedeforWorkLegalHoliday: KnockoutObservable<boolean> = ko.observable(true);
- 		period: KnockoutObservable<string> = ko.observable('2ヶ月');
- 		startMonth: KnockoutObservable<string> = ko.observable('4月');
- 		iteration: KnockoutObservable<string> = ko.observable('KMK004_296');
-
-        public create(params?: ISetting) {
-            const self = this;
-
-            if (params) {
-                self.daily(params.daily);
-                self.weekly(params.weekly);
-                self.deforWorkSurchargeWeekMonth(params.deforWorkSurchargeWeekMonth);
-                self.deforWorkLegalOverTimeWork(params.deforWorkLegalOverTimeWork);
-                self.deforWorkLegalHoliday(params.deforWorkLegalHoliday);
-                self.outsideSurchargeWeekMonth(params.outsideSurchargeWeekMonth);
-                self.outsidedeforWorkLegalOverTimeWork(params.outsidedeforWorkLegalOverTimeWork);
-                self.outsidedeforWorkLegalHoliday(params.outsidedeforWorkLegalHoliday);
-				self.period(params.startMonth);
-                self.startMonth(params.weekly);
-				self.iteration(params.iteration);
-            }
-        }
-    }
 }
