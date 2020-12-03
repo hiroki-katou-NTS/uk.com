@@ -106,7 +106,7 @@ module nts.uk.at.view.kdl036.a.viewmodel {
                 return;
             }
             if (!self.checkNumberOfDays()) {
-                dialog.alert({messageId: "Msg_1761"});
+                dialog.alert({messageId: "Msg_1758"});
                 return;
             }
             const data: ParamsData = {

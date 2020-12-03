@@ -22,6 +22,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveC
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
 import nts.uk.screen.at.app.dailyperformance.correction.closure.FindClosureDateService;
+import nts.uk.screen.at.app.kdl035.SubstituteWorkData;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
@@ -228,6 +229,14 @@ public class HolidayWorkSubHolidayAssociationFinder {
      * @return
      */
     public List<LeaveComDayOffManaDto> determineAssociationTarget(Kdl036OutputData inputData) {
+        double required = inputData.getDaysUnit() * inputData.getSubstituteHolidayList().size();
+        inputData.getHolidayWorkInfoList().sort(Comparator.comparingDouble(HolidayWorkData::getRemainingNumber).reversed());
+        double total = 0;
+        for (int i = 0; i < inputData.getHolidayWorkInfoList().size(); i++) {
+            if (total >= required) throw new BusinessException("Msg_1758");
+            total += inputData.getHolidayWorkInfoList().get(i).getRemainingNumber();
+        }
+
         String companyId = AppContexts.user().companyId();
 
         // 会社別の代休管理設定を取得する

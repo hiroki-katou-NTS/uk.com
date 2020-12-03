@@ -227,6 +227,14 @@ public class SubHolidaySubWorkAssociationFinder {
      * @return
      */
     public List<PayoutSubofHDManagementDto> determineAssociationTarget(Kdl035OutputData inputData) {
+        double required = inputData.getDaysUnit() * inputData.getSubstituteHolidayList().size();
+        inputData.getSubstituteWorkInfoList().sort(Comparator.comparingDouble(SubstituteWorkData::getRemainingNumber).reversed());
+        double total = 0;
+        for (int i = 0; i < inputData.getSubstituteWorkInfoList().size(); i++) {
+            if (total >= required) throw new BusinessException("Msg_1761");
+            total += inputData.getSubstituteWorkInfoList().get(i).getRemainingNumber();
+        }
+
         String companyId = AppContexts.user().companyId();
 
         // 会社別の振休管理設定を取得する
