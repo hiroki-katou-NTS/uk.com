@@ -14,7 +14,7 @@ const template = `
 					</div>
 					<div style="padding: 20px; display: flex;">
 					
-						<div style="display:inline-block"> 
+						<div style="display:inline-block; padding:20px;"> 
 							<div id="work-place-list"></div>
 						</div>
 						<div id="right-layout" >

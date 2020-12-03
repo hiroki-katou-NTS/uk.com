@@ -15,13 +15,18 @@
 }
 
 .basic-settings, #expand-list {
-	border: 1px solid #CCC;
+	border: solid grey 1px;
 	border-collapse: collapse;
 }
 
-.basic-settings th, td, #expand-list th, td {
-	border: 1px solid #CCC;
-	padding: 0pc 3px;
+.basic-settings th, td {
+	border: solid grey 1px;
+	padding: 3px;
+}
+
+#expand-list th, td {
+	border: solid grey 1px;
+	padding: 3px 10px;
 }
 
 #sidebar-area ~ div {
@@ -39,7 +44,7 @@
 }
 
 #flex-title {
-	font-size: 1.4rem;
+	font-size: 20px;
 }
 
 #selected-employee {
@@ -59,3 +64,4 @@
 .ntsCheckBox {
 	padding: 0px !important;
 }
+

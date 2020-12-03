@@ -55,7 +55,7 @@ const template = `
 														enable: $data.laborTime().checkbox,
 														inputFormat: 'time', 
 														mode: 'time',
-														option: {textalign: 'center',width: '60px'}
+														option: {textalign: 'center',width: '80px'}
 														}"
 												/></td>
 												<td ><input  data-bind="
@@ -64,7 +64,7 @@ const template = `
 														enable: $data.laborTime().checkbox,
 														inputFormat: 'time', 
 														mode: 'time',
-														option: {textalign: 'center',width: '60px'}
+														option: {textalign: 'center',width: '80px'}
 														}"
 												/></td>
 												<td ><input  data-bind="
@@ -73,7 +73,7 @@ const template = `
 														enable: $data.laborTime().checkbox,
 														inputFormat: 'time', 
 														mode: 'time',
-														option: {textalign: 'center',width: '60px'}
+														option: {textalign: 'center',width: '80px'}
 														}"
 												/></td>
 											</tr>
