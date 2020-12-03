@@ -15,7 +15,7 @@ import nts.arc.testing.assertion.NtsAssert;
 @RunWith(JMockit.class)
 public class RegisterCompanyEstimatePriceServiceTest {
 	@Injectable
-	private RegisterCompanyEstimatePriceService.Require require;
+	private RegisterCompanyEstimateAmountService.Require require;
 	
 	@Mocked 
 	private EstimateAmountDetail detail;
@@ -42,7 +42,7 @@ public class RegisterCompanyEstimatePriceServiceTest {
 		
 		NtsAssert.atomTask(
 				
-				() -> RegisterCompanyEstimatePriceService.regiter(require, detail, heAmount),
+				() -> RegisterCompanyEstimateAmountService.regiter(require, detail, heAmount),
 				
 				any -> require.insertCompanyEstimateAmount(ceAmount),
 				
@@ -71,7 +71,7 @@ public class RegisterCompanyEstimatePriceServiceTest {
 		
 		NtsAssert.atomTask(
 				
-				() -> RegisterCompanyEstimatePriceService.regiter(require, detail, heAmount),
+				() -> RegisterCompanyEstimateAmountService.regiter(require, detail, heAmount),
 				
 				any -> require.updateCompanyEstimateAmount(ceAmountExist),
 				
@@ -99,7 +99,7 @@ public class RegisterCompanyEstimatePriceServiceTest {
 		
 		NtsAssert.atomTask(
 				
-				() -> RegisterCompanyEstimatePriceService.regiter(require, detail, heAmount),
+				() -> RegisterCompanyEstimateAmountService.regiter(require, detail, heAmount),
 				
 				any -> require.insertCompanyEstimateAmount(ceAmount),
 				

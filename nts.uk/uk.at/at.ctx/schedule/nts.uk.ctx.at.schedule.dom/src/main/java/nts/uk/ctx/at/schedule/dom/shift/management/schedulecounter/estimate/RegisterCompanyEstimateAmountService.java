@@ -9,7 +9,7 @@ import nts.arc.task.tran.AtomTask;
  * @author lan_lt
  *
  */
-public class RegisterCompanyEstimatePriceService {
+public class RegisterCompanyEstimateAmountService {
 
 	/**
 	 * 登録する
