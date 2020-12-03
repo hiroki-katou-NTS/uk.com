@@ -1309,6 +1309,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 				return "";
 
 			Integer sumInt;
+			Double sumDouble;
 			List<ItemValue> list = new ArrayList<>();
 			if (!addValueCalUpper.isEmpty()) {
 				list.addAll(addValueCalUpper);
@@ -1324,8 +1325,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 				return this.convertMinutesToHours(sumInt.toString(), zeroDisplayType);
 			case 7:
 			case 8:
-				sumInt = sum.intValue();
-				return sumInt.toString() + " 回";
+				sumDouble = sum.doubleValue();
+				return sumDouble.toString() + "回";
 			case 13:
 				sumInt = sum.intValue();
 				DecimalFormat format = new DecimalFormat("###,###,###");
@@ -1481,22 +1482,24 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			indexB = b.indexOf("回");
 
 			if (indexA >= 0 && indexB >= 0) {
-				Integer countA = Integer.parseInt(a.substring(0, indexA - 1));
-				Integer countB = Integer.parseInt(b.substring(0, indexB - 1));
-
-				Integer totalCount = countA + countB;
-
-				return totalCount + " 回";
+				Double countA = a.substring(0, indexA - 1).isEmpty() ? Double.parseDouble(a.substring(0, indexA)) : Double.parseDouble(a.substring(0, indexA - 1));
+				Double countB = b.substring(0, indexB - 1).isEmpty() ? Double.parseDouble(a.substring(0, indexB)) : Double.parseDouble(b.substring(0, indexB - 1));
+			
+				Double totalCount = countA + countB;
+				DecimalFormat format = new DecimalFormat("###.##");
+				return format.format(totalCount.doubleValue()) + "回";
 			} else {
 				String stringAmountA = a.replaceAll(",", "");
 				String stringAmountB = b.replaceAll(",", "");
 
-				Integer amountA = Integer.parseInt(stringAmountA.toString());
-				Integer amountB = Integer.parseInt(stringAmountB.toString());
-
-				Integer totalAmount = amountA + amountB;
+//				Integer amountA = Integer.parseInt(stringAmountA.toString());
+//				Integer amountB = Integer.parseInt(stringAmountB.toString());
+				Double amountA = Double.parseDouble(stringAmountA.toString());
+				Double amountB = Double.parseDouble(stringAmountB.toString());
+				
+				Double totalAmount = amountA + amountB;
 				DecimalFormat format = new DecimalFormat("###,###,###");
-				return format.format(totalAmount);
+				return format.format(totalAmount) + "日";
 
 			}
 
@@ -1538,12 +1541,12 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		case COUNT_WITH_DECIMAL:
 			if (Integer.parseInt(item.getValue()) == 0 || item.getValue().isEmpty())
 				return zeroDisplayType == ZeroDisplayType.DISPLAY ? item.getValue() : "";
-			return value.toString() + " 回";
+			return value.toString() + "回";
 		case AMOUNT:
 			if (Integer.parseInt(item.getValue()) == 0 || item.getValue().isEmpty())
 				return zeroDisplayType == ZeroDisplayType.DISPLAY ? item.getValue() : "";
 			DecimalFormat format = new DecimalFormat("###,###,###");
-			return format.format(Integer.parseInt(value));
+			return format.format(Integer.parseInt(value)) + "日";
 
 		case CODE:
 
