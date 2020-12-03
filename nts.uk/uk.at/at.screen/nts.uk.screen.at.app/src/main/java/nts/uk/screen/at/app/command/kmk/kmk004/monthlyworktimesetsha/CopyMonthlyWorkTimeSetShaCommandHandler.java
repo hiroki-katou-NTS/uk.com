@@ -55,7 +55,7 @@ public class CopyMonthlyWorkTimeSetShaCommandHandler extends CommandHandler<Copy
 						EnumAdaptor.valueOf(cmd.getLaborAttr(), LaborWorkTypeAttr.class), yearMonths)
 				.stream().map(sha -> fromDomainToCommand(sha)).collect(Collectors.toList());
 
-		// 3 .社員別月単位労働時間（List
+		// 3 .社員別月単位労働時間（List)
 
 		cmd.getCopyDestinationSids().forEach(empId -> {
 			// ※複写元の社員IDで取得した社員別月単位労働時間の 社員IDに複写先社員IDをセットする
