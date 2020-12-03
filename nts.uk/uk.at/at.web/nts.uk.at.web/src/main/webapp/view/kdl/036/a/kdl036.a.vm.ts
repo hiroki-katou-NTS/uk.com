@@ -17,8 +17,7 @@ module nts.uk.at.view.kdl036.a.viewmodel {
 
         substituteHolidayList: KnockoutObservableArray<string> = ko.observableArray([]);
         substituteWorkInfoList: KnockoutObservableArray<HolidayWorkInfo> = ko.observableArray([]);
-        requiredNumberOfDays: KnockoutObservable<number>; // min = 0
-        // requiredNumberOfDays_2: KnockoutObservable<number>;// actual computing
+        requiredNumberOfDays: KnockoutObservable<number>;
 
         displayedPeriod: KnockoutObservable<string>;
         displayedRequiredNumberOfDays: KnockoutObservable<string>;
@@ -45,14 +44,6 @@ module nts.uk.at.view.kdl036.a.viewmodel {
                 });
                 return required - selected < 0 ? 0 : required - selected;
             }, self);
-            // self.requiredNumberOfDays_2 = ko.computed(() => {
-            //     const required = self.substituteHolidayList().length * self.daysUnit;
-            //     let selected = 0;
-            //     self.substituteWorkInfoList().forEach(info => {
-            //         if (info.checked()) selected += info.remainingNumber
-            //     });
-            //     return required - selected;
-            // }, self);
             self.displayedPeriod = ko.computed(() => {
                 if (self.startDate() == self.endDate())
                     return self.startDate();
@@ -99,9 +90,6 @@ module nts.uk.at.view.kdl036.a.viewmodel {
                 self.substituteHolidayList(result.substituteHolidayList);
                 const tmp = self.managementData.map(d => d.outbreakDay);
                 self.substituteWorkInfoList(result.holidayWorkInfoList.map(info => new HolidayWorkInfo(tmp.indexOf(info.holidayWorkDate) >= 0, info, self.requiredNumberOfDays, self.startDate())));
-                // if (self.requiredNumberOfDays_2() < 0) {
-                //     dialog.alert({messageId: "Msg_1761"});
-                // }
                 dfd.resolve();
             }).fail(function(error: any) {
                 dialog.alert(error);
@@ -117,10 +105,10 @@ module nts.uk.at.view.kdl036.a.viewmodel {
                 dialog.alert({messageId: "Msg_1759"});
                 return;
             }
-            // if (self.requiredNumberOfDays_2() < 0) {
-            //     dialog.alert({messageId: "Msg_1761"});
-            //     return;
-            // }
+            if (!self.checkNumberOfDays()) {
+                dialog.alert({messageId: "Msg_1761"});
+                return;
+            }
             const data: ParamsData = {
                 employeeId: self.employeeId,
                 daysUnit: self.daysUnit,
@@ -145,6 +133,18 @@ module nts.uk.at.view.kdl036.a.viewmodel {
 
         closeDialog() {
             nts.uk.ui.windows.close();
+        }
+
+        checkNumberOfDays(): boolean {
+            const self = this;
+            const required = self.substituteHolidayList().length * self.daysUnit;
+            let total = 0;
+            const selected: Array<HolidayWorkInfo> = _.orderBy(self.substituteWorkInfoList().filter(i => i.checked()), ["remainingNumber"], ['desc']);
+            for (let i = 0; i < selected.length; i++) {
+                if (total >= required) return false;
+                total += selected[i].remainingNumber;
+            }
+            return true;
         }
 
     }
