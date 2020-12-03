@@ -1327,7 +1327,11 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			case 8:
 				sumDouble = sum.doubleValue();
 				return sumDouble.toString() + "回";
+			case 12:
+				sumDouble = sum.doubleValue();
+				return sumDouble.toString() + "日";
 			case 13:
+			case 16:
 				sumInt = sum.intValue();
 				DecimalFormat format = new DecimalFormat("###,###,###");
 				return format.format(sum.intValue());
