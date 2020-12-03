@@ -35,7 +35,9 @@ public class RemainSpecialHoidayCalculation {
 
 		// 「期間内の特別休暇残を集計する」を実行する
 		ComplileInPeriodOfSpecialLeaveParam param = new ComplileInPeriodOfSpecialLeaveParam(
-				companyId, empId, period.getPeriod(),
+				companyId,
+				empId,
+				period.getPeriod(),
 				true, period.getPeriod().end(), specialLeaveCode, true,
 				true, interimMng, interimSpecialData);
 		return SpecialLeaveManagementService.complileInPeriodOfSpecialLeave(

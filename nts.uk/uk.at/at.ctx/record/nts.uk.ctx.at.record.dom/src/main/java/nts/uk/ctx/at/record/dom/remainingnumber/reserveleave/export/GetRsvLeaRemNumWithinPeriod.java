@@ -305,7 +305,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 		returnInfo.setGrantRemainingList(targetDatas);
 
 		// 積立年休情報残数を更新
-		returnInfo.updateRemainingNumber();
+		returnInfo.updateRemainingNumber(false);
 
 		// 積立年休情報を返す
 		return returnInfo;

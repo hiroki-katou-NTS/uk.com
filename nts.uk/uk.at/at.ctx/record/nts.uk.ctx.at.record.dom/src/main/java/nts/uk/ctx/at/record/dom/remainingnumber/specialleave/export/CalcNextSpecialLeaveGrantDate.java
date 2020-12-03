@@ -608,6 +608,10 @@ public class CalcNextSpecialLeaveGrantDate {
 		}
 
 		// 付与日から期限日内に入社日があるかチェック
+		//期限に何を渡すかを確認すること
+		//UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared.残数管理.特別休暇管理.アルゴリズム.Query.[No.373]社員の特別休暇情報を取得する.付与日数情報を取得する.期間の付与日一覧を求める.期間の付与日一覧を求める
+		GeneralDate expireDate = grantDateOpt.get();
+
 		// 求めた「付与日」をパラメータ「付与基準日」にセットする
 		GeneralDate grantDateNew = getPeriodSpecialLeaveGrantInfo(
 				require,
@@ -615,7 +619,7 @@ public class CalcNextSpecialLeaveGrantDate {
 				companyId,
 				employeeId,
 				grantDateOpt.get(),
-				expireDate) {
+				expireDate);
 
 		// 定期の付与日一覧を求める
 		GrantDaysInforByDatesInfo grantDaysInforByDatesInfo
@@ -627,7 +631,7 @@ public class CalcNextSpecialLeaveGrantDate {
 					spLeaveCD,
 					CALL_FROM.PERIOD,
 					period,
-					Optional.ofNullable(grantDateOpt.get()));
+					Optional.ofNullable(grantDateNew));
 
 		// 期限日を求める
 		List<NextSpecialLeaveGrant> nextSpecialLeaveGrantListNew
@@ -635,7 +639,9 @@ public class CalcNextSpecialLeaveGrantDate {
 					require, cacheCarrier, companyId, employeeId,
 					spLeaveCD, grantDaysInforByDatesInfo.getLstGrantDaysInfor(),
 					grantDaysInforByDatesInfo.getGrantDate());
-		}
+
+
+		return nextSpecialLeaveGrantListNew;
 	}
 
 	/**

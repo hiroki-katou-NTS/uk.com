@@ -22,19 +22,19 @@ public class SpecialLeaveRemainingDetail implements Cloneable {
 	private DayNumberOfRemain days;
 	/** 時間 */
 	private Optional<TimeOfRemain> time;
-	
+
 	/**
 	 * コンストラクタ
 	 * @param grantDate 付与日
 	 */
 	public SpecialLeaveRemainingDetail(GeneralDate grantDate){
-		
+
 		this.grantDate = grantDate;
 
 		this.days = new DayNumberOfRemain(0.0);
 		this.time = Optional.empty();
 	}
-	
+
 	/**
 	 * ファクトリー
 	 * @param grantDate 付与日
@@ -46,13 +46,13 @@ public class SpecialLeaveRemainingDetail implements Cloneable {
 			GeneralDate grantDate,
 			DayNumberOfRemain days,
 			Optional<TimeOfRemain> time){
-		
+
 		SpecialLeaveRemainingDetail domain = new SpecialLeaveRemainingDetail(grantDate);
 		domain.days = days;
 		domain.time = time;
 		return domain;
 	}
-	
+
 	@Override
 	protected SpecialLeaveRemainingDetail clone() {
 		SpecialLeaveRemainingDetail cloned = new SpecialLeaveRemainingDetail(this.grantDate);
@@ -67,5 +67,9 @@ public class SpecialLeaveRemainingDetail implements Cloneable {
 			throw new RuntimeException("SpecialLeaveRemainingDetail clone error.");
 		}
 		return cloned;
+	}
+
+	public boolean isMinus() {
+		return this.getDays().lessThan(0.0) || (this.getTime().isPresent()?this.getTime().get().lessThan(0):false);
 	}
 }

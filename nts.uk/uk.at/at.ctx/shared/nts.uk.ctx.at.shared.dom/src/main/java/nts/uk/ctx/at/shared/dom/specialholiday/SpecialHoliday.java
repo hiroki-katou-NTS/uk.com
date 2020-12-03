@@ -105,18 +105,26 @@ public class SpecialHoliday extends AggregateRoot {
 				new Memo(memo));
 	}
 
-//	public static SpecialHoliday createFromJavaType(String companyId, int specialHolidayCode, String specialHolidayName, GrantRegular grantRegular,
-//			GrantPeriodic grantPeriodic, SpecialLeaveRestriction specialLeaveRestriction,int autoGrant, String memo) {
-//		return new SpecialHoliday(companyId,
-//				new SpecialHolidayCode(specialHolidayCode),
-//				new SpecialHolidayName(specialHolidayName),
-//				grantRegular,
+	public static SpecialHoliday createFromJavaType(
+			String companyId,
+			int specialHolidayCode,
+			String specialHolidayName,
+			GrantRegular grantRegular,
+//			GrantDeadline grantPeriodic,
+			SpecialLeaveRestriction specialLeaveRestriction,
+			TargetItem targetItem,
+			int autoGrant,
+			String memo) {
+		return new SpecialHoliday(companyId,
+				new SpecialHolidayCode(specialHolidayCode),
+				new SpecialHolidayName(specialHolidayName),
+				grantRegular,
 //				grantPeriodic,
-//				specialLeaveRestriction,
-//				new TargetItem(),
-//				EnumAdaptor.valueOf(autoGrant, NotUseAtr.class),
-//				new Memo(memo));
-//	}
+				specialLeaveRestriction,
+				targetItem,
+				EnumAdaptor.valueOf(autoGrant, NotUseAtr.class),
+				new Memo(memo));
+	}
 
 	public TargetItem getTargetItem() {
 		return targetItem != null ? targetItem : new TargetItem(Collections.emptyList(), Collections.emptyList());

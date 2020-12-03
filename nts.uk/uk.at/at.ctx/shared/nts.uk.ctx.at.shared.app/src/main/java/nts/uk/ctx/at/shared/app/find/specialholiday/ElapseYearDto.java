@@ -7,25 +7,25 @@ import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.ElapseYear;
 public class ElapseYearDto {
 	/** 特別休暇コード */
 	private int specialHolidayCode;
-	
+
 	/** 付与テーブルコード */
 	private String grantDateCode;
-	
+
 	private int elapseNo;
-	
+
 	/** 付与テーブルコード */
 	private int grantedDays;
-	
+
 	/** 付与テーブルコード */
 	private int months;
-	
+
 	/** 付与テーブルコード */
 	private int years;
-	
-	public static ElapseYearDto fromDomain(ElapseYear elapseYear) {
+
+	public static ElapseYearDto fromDomain(ElapseYear elapseYear, int grantCnt) {
 		return new ElapseYearDto(
 				elapseYear.getSpecialHolidayCode(),
-				elapseYear.getGrantDateCode(),
+				elapseYear.get
 				elapseYear.getElapseNo(),
 				elapseYear.getGrantedDays().v(),
 				elapseYear.getMonths().v(),

@@ -130,8 +130,9 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 						InterimRemainMngMode.OTHER,
 						designatedPeriod.end(),
 						false,
-						false,
+//						false,
 						Optional.of(false),
+						Optional.empty(),
 						Optional.empty(),
 						Optional.empty(),
 						Optional.empty());

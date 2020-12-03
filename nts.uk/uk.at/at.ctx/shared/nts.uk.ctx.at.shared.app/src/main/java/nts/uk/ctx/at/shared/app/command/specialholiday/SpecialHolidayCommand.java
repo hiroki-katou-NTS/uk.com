@@ -27,31 +27,31 @@ public class SpecialHolidayCommand {
 
 	/** 特別休暇名称 */
 	private String specialHolidayName;
-	
+
 	/** 付与情報 */
 	private GrantRegularCommand regularCommand;
-	
+
 	/** 期限情報 */
 	private GrantPeriodicCommand periodicCommand;
-	
+
 	/** 特別休暇利用条件 */
 	private SpecialLeaveRestrictionCommand leaveResCommand;
 
 	/** 対象項目 */
 	private TargetItemCommand targetItemCommand;
-	
+
 	/**自動付与区分 */
 	private int autoGrant;
-	
+
 	/** メモ */
 	private String memo;
 
 	public SpecialHoliday toDomain(String companyId) {
-		return  SpecialHoliday.createFromJavaType(companyId, 
-				this.specialHolidayCode, 
-				this.specialHolidayName, 
+		return  SpecialHoliday.createFromJavaType(companyId,
+				this.specialHolidayCode,
+				this.specialHolidayName,
 				this.toDomainGrantRegular(companyId),
-				this.toDomainGrantPeriodic(companyId),
+				//this.toDomainGrantPeriodic(companyId),
 				this.toDomainSpecLeaveRest(companyId),
 				this.toDomainTargetItem(companyId),
 				this.autoGrant,
@@ -62,7 +62,7 @@ public class SpecialHolidayCommand {
 		if(this.targetItemCommand == null) {
 			return null;
 		}
-		
+
 		return TargetItem.createFromJavaType(this.targetItemCommand.getAbsenceFrameNo(), this.targetItemCommand.getFrameNo());
 	}
 
@@ -70,7 +70,7 @@ public class SpecialHolidayCommand {
 		if(this.leaveResCommand == null) {
 			return null;
 		}
-		
+
 		return SpecialLeaveRestriction.createFromJavaType(companyId, this.specialHolidayCode,
 				this.leaveResCommand.getRestrictionCls(),
 				this.leaveResCommand.getAgeLimit(),
@@ -87,7 +87,7 @@ public class SpecialHolidayCommand {
 		if(this.leaveResCommand.getAgeRange().getAgeHigherLimit() == null || this.leaveResCommand.getAgeRange().getAgeLowerLimit() == null) {
 			return null;
 		}
-		
+
 		return AgeRange.createFromJavaType(this.leaveResCommand.getAgeRange().getAgeLowerLimit(), this.leaveResCommand.getAgeRange().getAgeHigherLimit());
 	}
 
@@ -95,9 +95,9 @@ public class SpecialHolidayCommand {
 		if(this.leaveResCommand.getAgeStandard() == null) {
 			return null;
 		}
-		
+
 		MonthDay ageBaseDate = new MonthDay(this.leaveResCommand.getAgeStandard().getAgeBaseDate() / 100, this.leaveResCommand.getAgeStandard().getAgeBaseDate() % 100);
-		
+
 		return AgeStandard.createFromJavaType(this.leaveResCommand.getAgeStandard().getAgeCriteriaCls(), ageBaseDate);
 	}
 
@@ -105,31 +105,34 @@ public class SpecialHolidayCommand {
 		if(this.periodicCommand == null) {
 			return null;
 		}
-		
-		
-		return GrantDeadline.createFromJavaType(companyId, this.specialHolidayCode,
+
+		return GrantDeadline.createFromJavaType(
+				companyId,
+				this.specialHolidayCode,
 				this.periodicCommand.getTimeSpecifyMethod(),
-				new AvailabilityPeriod(this.periodicCommand.getAvailabilityPeriod().getStartDateValue(), this.periodicCommand.getAvailabilityPeriod().getEndDateValue()),
-				this.toDomainSpecialVacationDeadline(),
+				//new AvailabilityPeriod(this.periodicCommand.getAvailabilityPeriod().getStartDateValue(), this.periodicCommand.getAvailabilityPeriod().getEndDateValue()),
+				//this.toDomainSpecialVacationDeadline(),
+				this.periodicCommand.getExpirationDate().getYears(),
+				this.periodicCommand.getExpirationDate().getMonths(),
 				this.periodicCommand.getLimitCarryoverDays());
 	}
 
-	private SpecialVacationDeadline toDomainSpecialVacationDeadline() {
-		if(this.periodicCommand.getExpirationDate() == null) {
-			return null;
-		}
-		
-		return SpecialVacationDeadline.createFromJavaType(this.periodicCommand.getExpirationDate().getMonths(), this.periodicCommand.getExpirationDate().getYears());
-	}
+//	private SpecialVacationDeadline toDomainSpecialVacationDeadline() {
+//		if(this.periodicCommand.getExpirationDate() == null) {
+//			return null;
+//		}
+//
+//		return SpecialVacationDeadline.createFromJavaType(this.periodicCommand.getExpirationDate().getMonths(), this.periodicCommand.getExpirationDate().getYears());
+//	}
 
 	private GrantRegular toDomainGrantRegular(String companyId) {
 		if(this.regularCommand == null) {
 			return null;
 		}
-		
-		return GrantRegular.createFromJavaType(companyId, this.specialHolidayCode, 
-				regularCommand.getTypeTime(), 
-				regularCommand.getGrantDate(), 
+
+		return GrantRegular.createFromJavaType(companyId, this.specialHolidayCode,
+				regularCommand.getTypeTime(),
+				regularCommand.getGrantDate(),
 				regularCommand.isAllowDisappear(),
 				this.toDomainGrantTime());
 	}
@@ -138,7 +141,7 @@ public class SpecialHolidayCommand {
 		if(this.regularCommand.getGrantTime() == null) {
 			return null;
 		}
-		
+
 		return GrantTime.createFromJavaType(this.toDomainFixGrantDate(), null);
 	}
 
@@ -146,8 +149,8 @@ public class SpecialHolidayCommand {
 		if(this.regularCommand.getGrantTime().getFixGrantDate() == null) {
 			return null;
 		}
-		
-		return FixGrantDate.createFromJavaType(this.regularCommand.getGrantTime().getFixGrantDate().getInterval(), 
+
+		return FixGrantDate.createFromJavaType(this.regularCommand.getGrantTime().getFixGrantDate().getInterval(),
 				this.regularCommand.getGrantTime().getFixGrantDate().getGrantDays());
 	}
 }

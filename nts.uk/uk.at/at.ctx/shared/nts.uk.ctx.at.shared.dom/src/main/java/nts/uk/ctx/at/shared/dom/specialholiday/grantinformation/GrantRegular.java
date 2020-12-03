@@ -56,4 +56,23 @@ public class GrantRegular extends DomainObject {
 		super.validate();
 	}
 
+
+	public Optional<Integer> getLimitAccumulationDays() {
+		if(this.typeTime==TypeTime.REFER_GRANT_DATE_TBL) {
+			if(!this.getGrantPeriodic().isPresent())return Optional.empty();
+			if(!this.getGrantPeriodic().get().getLimitAccumulationDays().isPresent())return Optional.empty();
+			if(!this.getGrantPeriodic().get().getLimitAccumulationDays().get().getLimitAccumulationDays().isPresent())return Optional.empty();
+
+			return Optional.of(this.getGrantPeriodic().get().getLimitAccumulationDays().get().getLimitAccumulationDays().get().v());
+		}
+		if(this.typeTime==TypeTime.GRANT_SPECIFY_DATE) {
+			if(!this.getFixGrantDate().isPresent())return Optional.empty();
+			if(!this.getFixGrantDate().get().getGrantPeriodic().getLimitAccumulationDays().isPresent())return Optional.empty();
+			if(!this.getFixGrantDate().get().getGrantPeriodic().getLimitAccumulationDays().get().getLimitAccumulationDays().isPresent())return Optional.empty();
+
+			return Optional.of(this.getFixGrantDate().get().getGrantPeriodic().getLimitAccumulationDays().get().getLimitAccumulationDays().get().v());
+		}
+		return Optional.empty();
+	}
+
 }

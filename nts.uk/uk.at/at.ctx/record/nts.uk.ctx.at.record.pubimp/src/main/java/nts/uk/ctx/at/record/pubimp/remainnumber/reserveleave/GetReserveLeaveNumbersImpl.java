@@ -102,7 +102,7 @@ public class GetReserveLeaveNumbersImpl implements GetReserveLeaveNumbers {
 				startMonthRemain,
 				grantDays,
 				asOfPeriodEnd.getRemainingNumber().getReserveLeaveWithMinus().getUsedNumber().getUsedDays(),
-				asOfPeriodEnd.getRemainingNumber().getReserveLeaveWithMinus().getRemainingNumberInfo().getTotalRemaining().getTotalRemainingDays(),
+				asOfPeriodEnd.getRemainingNumber().getReserveLeaveWithMinus().getRemainingNumberInfo().getRemainingNumber().getTotalRemainingDays(),
 				asOfPeriodEnd.getRemainingNumber().getＲeserveLeaveUndigestedNumber().getUndigestedDays());
 
 		// 当月積立年休を返す
@@ -168,7 +168,7 @@ public class GetReserveLeaveNumbersImpl implements GetReserveLeaveNumbers {
 		// 当月積立年休を返す
 		return new ReserveLeaveNowExport(startMonthRemain, grantDays,
 				asOfPeriodEnd.getRemainingNumber().getReserveLeaveWithMinus().getUsedNumber().getUsedDays(),
-				asOfPeriodEnd.getRemainingNumber().getReserveLeaveWithMinus().getRemainingNumberInfo().getTotalRemaining().getTotalRemainingDays(),
+				asOfPeriodEnd.getRemainingNumber().getReserveLeaveWithMinus().getRemainingNumberInfo().getRemainingNumber().getTotalRemainingDays(),
 				asOfPeriodEnd.getRemainingNumber().getＲeserveLeaveUndigestedNumber().getUndigestedDays());
 	}
 }
