@@ -11,8 +11,8 @@ module nts.uk.com.view.cmm024.c {
 
 		registrationHistory: KnockoutObservableArray<any> = ko.observableArray([]);
 		registrationHistoryType: KnockoutObservable<number> = ko.observable(0);
-		newStartDate: KnockoutObservable<Date> = ko.observable(null);
-
+		newStartDate: KnockoutObservable<string> = ko.observable(null);
+		beginStartDate: KnockoutObservable<string> = ko.observable(null);
 		//set & get Share
 		scheduleHistorySelected: KnockoutObservable<ScheduleHistoryDto> = ko.observable(null);
 
@@ -21,10 +21,18 @@ module nts.uk.com.view.cmm024.c {
 			super();
 
 			let vm = this;
-
+		
 			vm.registrationHistory.push({ id: HistoryRes.HISTORY_TRANSFER, name: vm.$i18n('CMM024_26') });
 			vm.registrationHistory.push({ id: HistoryRes.HISTORY_NEW, name: vm.$i18n('CMM024_27') });
+
+			let dataSource = nts.uk.ui.windows.getShared('scheduleHistorySelected');
 		
+			if( !_.isNil(dataSource)) {
+				vm.beginStartDate(moment(dataSource.startDate).add(1, 'days').format("YYYY/MM/DD"));
+				vm.scheduleHistorySelected(dataSource);		
+			} else {
+				vm.beginStartDate(moment().format("YYYY/MM/DD"));
+			}
 		}
 
 		created(params: any) {
@@ -35,11 +43,7 @@ module nts.uk.com.view.cmm024.c {
 		mounted() {
 			// raise event when view initial success full
 			let vm = this;
-
-			vm.$window.storage("scheduleHistorySelected").then((data) => {
-				vm.scheduleHistorySelected(data);
-			});
-
+			
 			$('.ntsDatepicker').focus();
 		}
 		/**
@@ -50,12 +54,12 @@ module nts.uk.com.view.cmm024.c {
 				isAfter: boolean = true,
 				currentDateHistory = vm.scheduleHistorySelected();
 
-			let newStartDate: Date = vm.newStartDate(), //開始年月日テキストボックス -> A2_6, B2_6
+			let newStartDate: string = vm.newStartDate(), //開始年月日テキストボックス -> A2_6, B2_6
 				newEndDate: Date = moment(common.END_DATE).toDate(),
 				cStartDate: Date = moment(common.END_DATE).toDate();
 
 			if (!nts.uk.util.isNullOrEmpty(currentDateHistory)) {
-				cStartDate = moment(currentDateHistory.startDate).toDate()
+				cStartDate = moment(currentDateHistory.startDate).toDate();
 				isAfter = moment(newStartDate).format('YYYYMMDD') > moment(cStartDate).format('YYYYMMDD');
 			}
 
