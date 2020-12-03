@@ -135,10 +135,10 @@ public class AppHolidayWorkFinder {
 				param.getEmployeeId(),
 				dateOp,
 				EnumAdaptor.valueOf(param.getPrePostAtr(), PrePostInitAtr.class),
-				param.getOvertimeLeaveAppCommonSet().toDomain(),
-				param.getPreApplicationTime().toDomain(),
-				param.getActualApplicationTime().toDomain(),
-				param.getWorkContent().toDomain());
+				param.getOvertimeLeaveAppCommonSet() != null ? param.getOvertimeLeaveAppCommonSet().toDomain() : null,
+				param.getPreApplicationTime() != null ? param.getPreApplicationTime().toDomain() : null,
+				param.getActualApplicationTime() != null ? param.getActualApplicationTime().toDomain() : null,
+				param.getWorkContent() != null ? param.getWorkContent().toDomain() : null);
 
 		return HolidayWorkCalculationResultDto.fromDomain(calculationResult);
 	}
