@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthl
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.record.dom.adapter.workplace.EmployeeInfoImported;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureResultDto;
 
 import java.util.List;
@@ -20,4 +21,9 @@ public class MonthlyCheckDataDto {
      * List＜締め＞
      */
     private List<ClosureResultDto> closures;
+
+    /**
+     * List＜月別実績の勤怠時間＞
+     */
+    private List<AttendanceTimeOfMonthly> attendanceTimeOfMonthlies;
 }

@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.budgetcontrol.budgetperformance.ExBudgetDailyAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.budgetcontrol.budgetperformance.ExBudgetDailyImport;
+import nts.uk.ctx.at.record.dom.adapter.workschedule.budgetcontrol.budgetperformance.TargetOrgIdenInforImport;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.service.GetStampCardQuery;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.FixedCheckDayItems;
@@ -93,12 +94,11 @@ public class DailyBeforeCheckService {
             // ドメインモデル「職場グループ所属情報」を取得する
             List<AffWorkplaceGroupImport> wpGroups = sharedAffWorkplaceGroupAdapter.getByListWkpIds(cid, workplaceIds);
             List<String> wpGroupIds = wpGroups.stream().map(AffWorkplaceGroupImport::getWKPGRPID).distinct().collect(Collectors.toList());
-            List<ExBudgetDailyImport> exBudgetDailies = new ArrayList<>();
-            for (String wpGroupId : wpGroupIds){
-                // ドメインモデル「日次の外部予算実績」を取得
-                exBudgetDailies.addAll(exBudgetDailyAdapter.getAllExtBudgetDailyByPeriod(1, null, wpGroupId, period));
-            }
-
+            List<TargetOrgIdenInforImport> targetOrgs = wpGroupIds.stream().map(x ->
+                    new TargetOrgIdenInforImport(1, Optional.empty(), Optional.of(x)))
+                    .collect(Collectors.toList());
+            // ドメインモデル「日次の外部予算実績」を取得
+            List<ExBudgetDailyImport> exBudgetDailies = exBudgetDailyAdapter.getByLstTargetOrgAndPeriod(targetOrgs, period);
             data.setExBudgetDailies(exBudgetDailies);
         }
 

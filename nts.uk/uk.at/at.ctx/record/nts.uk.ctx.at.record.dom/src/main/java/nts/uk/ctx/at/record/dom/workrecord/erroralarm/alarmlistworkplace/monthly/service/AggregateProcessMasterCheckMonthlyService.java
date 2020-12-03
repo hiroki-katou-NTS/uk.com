@@ -37,13 +37,13 @@ public class AggregateProcessMasterCheckMonthlyService {
      * 月次の集計処理
      *
      * @param cid                 会社ID
-     * @param period              年月
+     * @param ym                  年月
      * @param fixedExtractCondIds List＜固定抽出条件ID＞
      * @param extractCondIds      List＜任意抽出条件ID＞
      * @param workplaceIds        List<職場ID＞
      * @return List＜アラームリスト抽出情報（職場）＞
      */
-    public List<AlarmListExtractionInfoWorkplaceDto> process(String cid, DatePeriod period, List<String> fixedExtractCondIds,
+    public List<AlarmListExtractionInfoWorkplaceDto> process(String cid, YearMonth ym, List<String> fixedExtractCondIds,
                                                              List<String> extractCondIds, List<String> workplaceIds) {
         // ドメインモデル「アラームリスト（職場）月次の固定抽出条件」を取得
         List<FixedExtractionMonthlyCon> fixExtractMonthlyCons = fixedExtractionMonthlyConRepo.getBy(fixedExtractCondIds, true);
@@ -52,16 +52,12 @@ public class AggregateProcessMasterCheckMonthlyService {
         List<ExtractionMonthlyCon> extractMonthlyCons = extractionMonthlyConRepo.getBy(extractCondIds, true);
 
         // 月次の集計する前のデータを準備
-        MonthlyCheckDataDto data = beforeMonthlyAggregateService.prepareData(workplaceIds, period, fixExtractMonthlyCons, extractMonthlyCons);
-
-        // チェック条件をチェック
-        // TODO Q&A 36924
+        MonthlyCheckDataDto data = beforeMonthlyAggregateService.prepareData(workplaceIds, ym);
 
         List<AlarmListExtractionInfoWorkplaceDto> alarmListResults = new ArrayList<>();
 
         // 固定抽出条件をチェック
-        alarmListResults.addAll(fixedExtractCondCheckService.check(cid, data.getEmpInfosByWpMap(), fixExtractMonthlyCons,
-                YearMonth.of(period.start().year(), period.start().month()), data.getClosures()));
+        alarmListResults.addAll(fixedExtractCondCheckService.check(cid, data.getEmpInfosByWpMap(), fixExtractMonthlyCons, ym, data.getClosures()));
 
         // 任意抽出条件をチェック
 

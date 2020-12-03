@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface ExBudgetDailyAdapter {
 
-    public List<ExBudgetDailyImport> getAllExtBudgetDailyByPeriod(int unit, String workplaceId, String workplaceGroupId, DatePeriod datePeriod);
+    List<ExBudgetDailyImport> getByLstTargetOrgAndPeriod(List<TargetOrgIdenInforImport> targetOrgs, DatePeriod datePeriod);
 
 }
