@@ -159,16 +159,19 @@ module ccg013.a.viewmodel {
             } else {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                     service.deleteWebMenu(webMenuCode).done(function () {
-                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_16'));
-                        self.getWebMenu().done(() => {
-                            if (self.listWebMenu().length == 0) {
-                                self.cleanForm();
-                            } else if (self.index() == self.listWebMenu().length) {
-                                self.currentWebMenuCode(self.listWebMenu()[self.index() - 1].webMenuCode);
-                            } else {
-                                self.currentWebMenuCode(self.listWebMenu()[self.index()].webMenuCode);
-                            }
-                        });
+                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_16')).then(() => {
+                            self.getWebMenu().done(() => {
+                                if (self.listWebMenu().length == 0) {
+                                    self.cleanForm();
+                                } else if (self.index() == self.listWebMenu().length) {
+                                    self.currentWebMenuCode(self.listWebMenu()[self.index() - 1].webMenuCode);
+                                    $('#webMenuName').focus();
+                                } else {
+                                    self.currentWebMenuCode(self.listWebMenu()[self.index()].webMenuCode);
+                                    $('#webMenuName').focus();
+                                }
+                            });
+                        });               
                     }).fail(function (error) {
                         self.isCreated(false);
                         self.isDefaultMenu(true);
@@ -482,7 +485,7 @@ module ccg013.a.viewmodel {
             if (titleMenu.titleMenuId) {
                 for (let i = 0; i < titleMenu.treeMenu().length; i++) {
                     let treeMenus = {
-                        classification: titleMenu.treeMenu()[i].classification(),
+                        classification: titleMenu.treeMenu()[i].classification() ? titleMenu.treeMenu()[i].classification() : 0,
                         code: titleMenu.treeMenu()[i].code(),
                         displayOrder: titleMenu.treeMenu()[i].displayOrder(),
                         name: titleMenu.treeMenu()[i].name(),
@@ -568,7 +571,7 @@ module ccg013.a.viewmodel {
             });
         }
 
-        optionEDialog(): void {
+        openEDialog(): void {
             var self = this;
             var data = ko.toJS(self.currentWebMenu());
             setShared("CCG013E_COPY", data);
@@ -577,6 +580,7 @@ module ccg013.a.viewmodel {
                 self.getWebMenu().done(() => {
                     if (newWebMenuCode != undefined) {
                         self.currentWebMenuCode(newWebMenuCode);
+                        self.currentWebMenuCode.valueHasMutated();
                         //   self.currentWebMenuCode.valueHasMutated();
                     }
                 });

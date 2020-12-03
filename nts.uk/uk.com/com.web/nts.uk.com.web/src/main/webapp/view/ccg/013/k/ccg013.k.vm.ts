@@ -164,6 +164,7 @@ module nts.uk.com.view.ccg013.k.viewmodel {
                             if ($("#search").find('input.ntsSearchBox').val()) {
                                 $("button.search-btn").trigger("click");
                             }
+                            self.closeDialog();
                         });                       
 //                        _.remove(self.listStandardMenu(), function(item){                              
 //                            return item.system == parseInt(self.selectedCode());                         

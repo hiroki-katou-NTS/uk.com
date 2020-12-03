@@ -37,6 +37,8 @@ module nts.uk.com.view.ccg013.c.viewmodel {
 
         titleMenuId: KnockoutObservable<string>;
 
+        getData: boolean;
+
         constructor() {
             var self = this;
             self.nameTitleBar = ko.observable("");
@@ -67,19 +69,21 @@ module nts.uk.com.view.ccg013.c.viewmodel {
 
             self.titleMenuId = ko.observable();
 
+            self.getData = false;
+
             self.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText("CCG013_49"), prop: 'index', key: 'index', width: 55, formatter: _.escape },
-                { headerText: nts.uk.resource.getText("CCG013_49"), prop: 'code', key: 'code', width: 55, formatter: _.escape, hidden: true },
+                { headerText: nts.uk.resource.getText("CCG013_49"), prop: 'code', key: 'code', width: 0, formatter: _.escape, hidden: true },
                 { headerText: nts.uk.resource.getText("CCG013_50"), prop: 'name', key: 'name', width: 167, formatter: _.escape },
-                { headerText: 'pk', prop: 'primaryKey', key: 'primaryKey', width: 1, hidden: true }
+                { headerText: 'pk', prop: 'primaryKey', key: 'primaryKey', width: 0, hidden: true }
             ]);
 
             self.newColumns = ko.observableArray([
                 { headerText: nts.uk.resource.getText("CCG013_51"), prop: 'index', width: 55, formatter: _.escape },
-                { headerText: nts.uk.resource.getText("CCG013_51"), prop: 'code', width: 55, formatter: _.escape, hidden: true },
+                { headerText: nts.uk.resource.getText("CCG013_51"), prop: 'code', width: 0, formatter: _.escape, hidden: true },
                 { headerText: nts.uk.resource.getText("CCG013_52"), prop: 'targetItem', width: 160, formatter: _.escape },
                 { headerText: nts.uk.resource.getText("CCG013_53"), prop: 'name', width: 160, formatter: _.escape },
-                { headerText: 'pk', prop: 'primaryKey', key: 'primaryKey', width: 1, hidden: true }
+                { headerText: 'pk', prop: 'primaryKey', key: 'primaryKey', width: 0, hidden: true }
             ]);
 
             self.disableSwap = ko.observable(false);
@@ -109,6 +113,9 @@ module nts.uk.com.view.ccg013.c.viewmodel {
                 self.letterColor(titleBar.textColor);
                 self.backgroundColor(titleBar.backgroundColor);
                 self.nameTitleBar(titleBar.name);
+                if (!titleBar.name) {
+                    self.getData = true;
+                }
             }
 
             var titleMenuId = nts.uk.ui.windows.getShared("titleMenuId");
@@ -134,10 +141,35 @@ module nts.uk.com.view.ccg013.c.viewmodel {
                 }
                 self.disableSwapButton();
                 dfd.resolve();
-                $("#combo-box").focus();
+                $("#C1_3").focus();
             }).fail(function () {
                 dfd.reject();
             });
+
+            $('.left-contents')
+                .on('click', '.search-btn', () => {
+                    const $grid = $('#multi-list1');
+
+                    // Lay danh sach cac item duoc bind vao grid
+                    const items = $grid.igGrid('option', 'dataSource');
+
+                    // neu co item
+                    if (items && items.length) {
+                        // lay ra item dau tien
+                        const [first] = items;
+
+                        // neu ton tai item dau tien
+                        if (first) {
+                            // lay ra khoa chinh
+                            const { primaryKey } = first;
+
+                            if (primaryKey) {
+                                // gan khoa chinh vao danh sach selected
+                                self.currentCodeList([primaryKey]);
+                            }
+                        }
+                    }
+                });
 
             return dfd.promise();
         }
@@ -207,11 +239,14 @@ module nts.uk.com.view.ccg013.c.viewmodel {
             var index = 0;
             _.forEach(self.allItems(), function (item: ItemModel, idx) {
                 if (self.selectedSystemCode() === 5) {
-                    var id = nts.uk.util.randomId();
-                    list001.push(new ItemModel(idx + 1, id, item.code, item.targetItem, item.name, index, item.menu_cls, item.system));
-                    index++;
+                    if (item.menu_cls != Menu_Cls.TopPage) {
+                        var id = nts.uk.util.randomId();
+                        list001.push(new ItemModel(idx + 1, id, item.code, item.targetItem, item.name, index, item.menu_cls, item.system));
+                        index++;
+                    }
                 } else {
-                    if ((item.system == self.selectedSystemCode() && item.menu_cls != Menu_Cls.TopPage) || (item.system == 0 && item.menu_cls == Menu_Cls.TopPage)) {
+                    // (item.system == 0 && item.menu_cls == Menu_Cls.TopPage)
+                    if (item.system == self.selectedSystemCode() && item.menu_cls != Menu_Cls.TopPage) {
                         var id = nts.uk.util.randomId();
                         list001.push(new ItemModel(idx + 1, id, item.code, item.targetItem, item.name, index, item.menu_cls, item.system));
                         index++;
@@ -280,11 +315,11 @@ module nts.uk.com.view.ccg013.c.viewmodel {
             let index = 1;
 
             $(".nts-input").ntsError("validate");
-            setTimeout(function() {
+            setTimeout(function () {
                 if (!$(".nts-input").ntsError("hasError")) {
-                  return;
+                    return;
                 }
-              }, 300);
+            }, 300);
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
@@ -299,7 +334,7 @@ module nts.uk.com.view.ccg013.c.viewmodel {
                 nts.uk.ui.windows.setShared("CCG013C_TITLE_MENU_NAME", self.nameTitleBar());
             } else {
                 let titleBar = new TitleBar(self.nameTitleBar(), self.letterColor(),
-                                    self.backgroundColor(), self.newItems());
+                    self.backgroundColor(), self.newItems());
                 nts.uk.ui.windows.setShared("CCG013C_TitleBar", titleBar);
             }
             nts.uk.ui.windows.setShared("CCG013C_MENUS", self.newItems());
