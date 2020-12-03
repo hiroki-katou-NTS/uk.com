@@ -26,7 +26,7 @@ public class HolidayWorkUpdateCommandHandler extends CommandHandlerWithResult<Up
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<UpdateCommand> context) {
 		UpdateCommand param = context.getCommand();
-		Application application = param.getAppHolidayWork().getApplication().toDomain(param.appDispInfoStartupDto.getAppDetailScreenInfo().getApplication());
+		Application application = param.getAppHolidayWork().getApplication().toDomain(param.getAppDispInfoStartupDto().getAppDetailScreenInfo().getApplication());
 		AppHolidayWork appHolidayWork = param.getAppHolidayWork().toDomain();
 		if (appHolidayWork.getAppOvertimeDetail().isPresent()) {
 			appHolidayWork.getAppOvertimeDetail().get().setAppId(application.getAppID());

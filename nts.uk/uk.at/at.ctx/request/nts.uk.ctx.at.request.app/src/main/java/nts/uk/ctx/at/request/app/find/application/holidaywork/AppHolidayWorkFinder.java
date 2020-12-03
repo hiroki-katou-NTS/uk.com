@@ -13,7 +13,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHdWorkDispInfoDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHolidayWorkParamPC;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.CheckBeforeOutputDto;
@@ -23,16 +22,13 @@ import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HolidayWorkCal
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamCalculationHolidayWork;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamCheckBeforeRegister;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamCheckBeforeRegisterMulti;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamCheckBeforeUpdate;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamDeleteHdChange;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamHdWorkDetail;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamHolidayWorkChangeDate;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamHolidayWorkChangeWork;
-import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.ReasonForReversion;
 import nts.uk.ctx.at.request.dom.application.common.service.other.PreAppContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
@@ -49,9 +45,7 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkD
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HolidayWorkCalculationResult;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.ICommonAlgorithmOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkContent;
-import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.PrePostInitAtr;
-import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.request.dom.workrecord.dailyrecordprocess.dailycreationwork.BreakTimeZoneSetting;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -216,8 +210,11 @@ public class AppHolidayWorkFinder {
 
 	public CheckBeforeOutputDto checkBeforeRegister(ParamCheckBeforeRegister param) {
 		AppHdWorkDispInfoOutput appHdWorkDispInfoOutput = param.getAppHdWorkDispInfo().toDomain();
-		Application application = this.createApplication(param.getAppHolidayWork().getApplication());
+		Application application = param.getAppHolidayWork().getApplication().toDomain();
 		AppHolidayWork appHolidayWork = param.getAppHolidayWork().toDomain();
+		if (appHolidayWork.getAppOvertimeDetail().isPresent()) {
+			appHolidayWork.getAppOvertimeDetail().get().setAppId(application.getAppID());
+		}
 		appHolidayWork.setApplication(application);
 		CheckBeforeOutput checkBeforeOutput = holidayWorkService.checkBeforeRegister(param.isRequire(), param.getCompanyId(), appHdWorkDispInfoOutput, 
 				appHolidayWork, param.isProxy());
@@ -227,8 +224,11 @@ public class AppHolidayWorkFinder {
 	
 	public CheckBeforeOutputMultiDto checkBeforeRegisterMulti(ParamCheckBeforeRegisterMulti param) {
 		AppHdWorkDispInfoOutput appHdWorkDispInfoOutput = param.getAppHdWorkDispInfo().toDomain();
-		Application application = this.createApplication(param.getAppHolidayWork().getApplication());
+		Application application = param.getAppHolidayWork().getApplication().toDomain();
 		AppHolidayWork appHolidayWork = param.getAppHolidayWork().toDomain();
+		if (appHolidayWork.getAppOvertimeDetail().isPresent()) {
+			appHolidayWork.getAppOvertimeDetail().get().setAppId(application.getAppID());
+		}
 		appHolidayWork.setApplication(application);
 		
 		CheckBeforeOutputMulti checkBeforeOutputMulti = holidayWorkService.checkBeforeRegisterMulti(param.isRequire(), param.getCompanyId(), 
@@ -243,26 +243,29 @@ public class AppHolidayWorkFinder {
 		return HdWorkDetailOutputDto.fromDomain(hdWorkDetailOutput);
 	}
 	
-	public Application createApplication(ApplicationDto application) {
-		
-		return Application.createFromNew(
-				EnumAdaptor.valueOf(application.getPrePostAtr(), PrePostAtr.class),
-				application.getEmployeeID(),
-				ApplicationType.OVER_TIME_APPLICATION,
-				new ApplicationDate(GeneralDate.fromString(application.getAppDate(), PATTERN_DATE)),
-				application.getEnteredPerson(),
-				application.getOpStampRequestMode() == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(application.getOpStampRequestMode(), StampRequestMode.class)),
-				application.getOpReversionReason() == null ? Optional.empty() : Optional.of(new ReasonForReversion(application.getOpReversionReason())),
-				application.getOpAppStartDate() == null ? Optional.empty() : Optional.of(new ApplicationDate(GeneralDate.fromString(application.getOpAppStartDate(), PATTERN_DATE))),
-				application.getOpAppEndDate() == null ? Optional.empty() : Optional.of(new ApplicationDate(GeneralDate.fromString(application.getOpAppEndDate(), PATTERN_DATE))),
-				application.getOpAppReason() == null ? Optional.empty() : Optional.of(new AppReason(application.getOpAppReason())),
-				application.getOpAppStandardReasonCD() == null ? Optional.empty() : Optional.of(new AppStandardReasonCode(application.getOpAppStandardReasonCD())));
-	}
+//	public Application createApplication(ApplicationDto application) {
+//		
+//		return Application.createFromNew(
+//				EnumAdaptor.valueOf(application.getPrePostAtr(), PrePostAtr.class),
+//				application.getEmployeeID(),
+//				ApplicationType.OVER_TIME_APPLICATION,
+//				new ApplicationDate(GeneralDate.fromString(application.getAppDate(), PATTERN_DATE)),
+//				application.getEnteredPerson(),
+//				application.getOpStampRequestMode() == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(application.getOpStampRequestMode(), StampRequestMode.class)),
+//				application.getOpReversionReason() == null ? Optional.empty() : Optional.of(new ReasonForReversion(application.getOpReversionReason())),
+//				application.getOpAppStartDate() == null ? Optional.empty() : Optional.of(new ApplicationDate(GeneralDate.fromString(application.getOpAppStartDate(), PATTERN_DATE))),
+//				application.getOpAppEndDate() == null ? Optional.empty() : Optional.of(new ApplicationDate(GeneralDate.fromString(application.getOpAppEndDate(), PATTERN_DATE))),
+//				application.getOpAppReason() == null ? Optional.empty() : Optional.of(new AppReason(application.getOpAppReason())),
+//				application.getOpAppStandardReasonCD() == null ? Optional.empty() : Optional.of(new AppStandardReasonCode(application.getOpAppStandardReasonCD())));
+//	}
 
-	public CheckBeforeOutputDto checkBeforeUpdate(ParamCheckBeforeRegister param) {
+	public CheckBeforeOutputDto checkBeforeUpdate(ParamCheckBeforeUpdate param) {
 		AppHdWorkDispInfoOutput appHdWorkDispInfoOutput = param.getAppHdWorkDispInfo().toDomain();
-		Application application = this.createApplication(param.getAppHolidayWork().getApplication());
+		Application application = param.getAppHolidayWork().getApplication().toDomain(param.getAppHdWorkDispInfo().getAppDispInfoStartupOutput().getAppDetailScreenInfo().getApplication());
 		AppHolidayWork appHolidayWork = param.getAppHolidayWork().toDomain();
+		if (appHolidayWork.getAppOvertimeDetail().isPresent()) {
+			appHolidayWork.getAppOvertimeDetail().get().setAppId(application.getAppID());
+		}
 		appHolidayWork.setApplication(application);
 		
 		CheckBeforeOutput checkBeforeOutput = 

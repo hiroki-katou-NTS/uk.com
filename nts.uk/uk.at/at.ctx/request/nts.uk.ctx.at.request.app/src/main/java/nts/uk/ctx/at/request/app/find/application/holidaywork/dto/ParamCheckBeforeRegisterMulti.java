@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.AppHdWorkDispInfoCmd;
-import nts.uk.ctx.at.request.app.command.application.holidaywork.AppHolidayWorkCmd;
+import nts.uk.ctx.at.request.app.command.application.holidaywork.AppHolidayWorkInsertCmd;
 
 /**
  * Refactor5
@@ -26,5 +26,5 @@ public class ParamCheckBeforeRegisterMulti {
 	
 	private AppHdWorkDispInfoCmd appHdWorkDispInfo;
 	
-	private AppHolidayWorkCmd appHolidayWork;
+	private AppHolidayWorkInsertCmd appHolidayWork;
 }

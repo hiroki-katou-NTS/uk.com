@@ -21,6 +21,7 @@ import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HolidayWorkCal
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamCalculationHolidayWork;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamCheckBeforeRegister;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamCheckBeforeRegisterMulti;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamCheckBeforeUpdate;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamDeleteHdChange;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamHdWorkDetail;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamHolidayWorkChangeDate;
@@ -114,7 +115,7 @@ public class HolidayWorkWebService extends WebService{
 	
 	@POST
 	@Path("checkBeforeRegister")
-	public CheckBeforeOutputDto checkBeforeUpdate(ParamCheckBeforeRegister param) {
+	public CheckBeforeOutputDto checkBeforeUpdate(ParamCheckBeforeUpdate param) {
 		return appHolidayWorkFinder.checkBeforeUpdate(param);
 	}
 	

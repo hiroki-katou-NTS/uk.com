@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.AppHdWorkDispInfoCmd;
-import nts.uk.ctx.at.request.app.command.application.holidaywork.AppHolidayWorkInsertCmd;
+import nts.uk.ctx.at.request.app.command.application.holidaywork.AppHolidayWorkUpdateCmd;
 
 /**
  * Refactor5
@@ -14,15 +14,15 @@ import nts.uk.ctx.at.request.app.command.application.holidaywork.AppHolidayWorkI
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class ParamCheckBeforeRegister {
-	
+public class ParamCheckBeforeUpdate {
+
 	private boolean require;
 	
 	private String companyId;
 	
 	private AppHdWorkDispInfoCmd appHdWorkDispInfo;
 	
-	private AppHolidayWorkInsertCmd appHolidayWork;
+	private AppHolidayWorkUpdateCmd appHolidayWork;
 	
 	private boolean isProxy;
 }
