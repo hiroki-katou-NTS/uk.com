@@ -34,7 +34,7 @@ module nts.uk.at.view.kaf005.shr.footer.viewmodel {
 	
 	<div class="table" style="margin-bottom: 5px;" data-bind="if: visibleModel.c12_1()">
 		<div style="width: 120px" class="cell col-1">
-			<div class="cell valign-center" data-bind="ntsFormLabel: {}, text: $i18n('KAF005_90', [messageInfos()[0].titleDrop()])"></div>
+			<div class="cell valign-center" data-bind="ntsFormLabel: {}, text: $i18n('KAF005_90', [messageInfos()[1].titleDrop()])"></div>
 		</div>
 		<div class="cell valign-center">
 			<div id="combo-box" data-bind="ntsComboBox: {
@@ -50,7 +50,7 @@ module nts.uk.at.view.kaf005.shr.footer.viewmodel {
 	
 	<div class="table" style="margin-bottom: 5px;" data-bind="if: visibleModel.c12_1()">
 		<div style="width: 120px" class="cell col-1">
-			<div class="cell valign-center" data-bind="ntsFormLabel: {}, text: $i18n('KAF005_92', [messageInfos()[0].titleInput()])"></div>
+			<div class="cell valign-center" data-bind="ntsFormLabel: {}, text: $i18n('KAF005_92', [messageInfos()[1].titleInput()])"></div>
 		</div>
 		<div class="cell valign-center">
 			<input style="width: 445px" data-bind="ntsTextEditor: {

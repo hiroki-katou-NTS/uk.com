@@ -645,14 +645,20 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					new ItemModel('3', '')
 				];
 				let messageArray = [] as Array<MessageInfo>;
-				let messageInfo = {} as MessageInfo;
-				messageInfo.titleDrop = ko.observable('');
-				messageInfo.listDrop = ko.observableArray(itemList);
-				messageInfo.titleInput = ko.observable('');
-				messageInfo.valueInput = ko.observable(null);
-				messageInfo.selectedCode = ko.observable('1');
-				messageArray.push(messageInfo);
-				messageArray.push(messageInfo);
+				let messageInfo1 = {} as MessageInfo;
+				messageInfo1.titleDrop = ko.observable('');
+				messageInfo1.listDrop = ko.observableArray(itemList);
+				messageInfo1.titleInput = ko.observable('');
+				messageInfo1.valueInput = ko.observable('');
+				messageInfo1.selectedCode = ko.observable('');
+				let messageInfo2 = {} as MessageInfo;
+				messageInfo2.titleDrop = ko.observable('');
+				messageInfo2.listDrop = ko.observableArray(itemList);
+				messageInfo2.titleInput = ko.observable('');
+				messageInfo2.valueInput = ko.observable('');
+				messageInfo2.selectedCode = ko.observable('');
+				messageArray.push(messageInfo1);
+				messageArray.push(messageInfo2);
 
 				self.messageInfos(messageArray);
 				return;
