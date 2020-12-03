@@ -722,7 +722,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 			}
 			List<String> contentMsgs = new ArrayList<String>();
 			contentMsgs.add(appOverTime.getEmployeeID());
-			contentMsgs.add(appOverTime.getApplication().getAppDate().getApplicationDate().toString("yyyy/mm/dd"));
+			contentMsgs.add(appOverTime.getApplication().getAppDate().getApplicationDate().toString());
 			// 取得した「事前申請・実績の超過状態．実績状態」をチェックする
 			if (overStateOutput.getAchivementStatus() == ExcessState.EXCESS_ERROR) {
 				

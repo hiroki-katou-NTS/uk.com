@@ -32,12 +32,17 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		isCalculation: Boolean = true;
 		appOverTime: AppOverTime;
 		urlParam: string;
+		mode: KnockoutObservable<number> = ko.observable(MODE.NORMAL);
+		employeeIDLst: Array<string>;
+		
+		
 		created(params: AppInitParam) {
 			// new 
 			const vm = this;
 			vm.urlParam = $(location).attr('search').split("=")[1];
 			
 			vm.application = ko.observable(new Application(ko.toJS(vm.appType)));
+			vm.setMode(params);
 			
 			vm.createRestTime(vm.restTime);
 			vm.createHolidayTime(vm.holidayTime);
@@ -126,8 +131,26 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					$('#kaf000-a-component4-singleDate').focus();
 				});
 		}
-
-
+		
+		setMode(params: any) {
+			const self = this;
+			if (_.isNil(params)) {
+				self.mode(MODE.NORMAL);
+			} else {
+				if (params.isAgentMode) {
+					if (!_.isEmpty(params.employeeIds)) {
+						self.employeeIDLst = params.employeeIds;
+						if (params.employeeIds.length == 1) {
+							self.mode(MODE.SINGLE_AGENT);
+						} else {
+							self.mode(MODE.MULTiPLE_AGENT);
+						}
+					}
+				}
+			}
+		}
+		
+		
 		handleErrorCustom(failData: any): any {
 			const vm = this;
 			if (failData.messageId == "Msg_26") {
@@ -485,6 +508,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			appOverTime.application.employeeID = vm.$user.employeeId;
 			appOverTime.application.inputDate = moment(new Date()).format('YYYY/MM/DD HH:mm:ss');
 			appOverTime.application.enteredPerson = vm.$user.employeeId;
+			appOverTime.application.employeeIDLst = vm.employeeIDLst;
 
 
 
@@ -1987,7 +2011,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			let c2 = !_.isEmpty(res.infoBaseDateOutput.quotaOutput.overTimeQuotaList);
 			visibleModel.c2(c2);
 			// 
-			let c6 = true;
+			let c6 = self.mode() != MODE.MULTiPLE_AGENT;
 			visibleModel.c6(c6);
 
 			// 「残業申請の表示情報．基準日に関係しない情報．残業申請設定．申請詳細設定．時刻計算利用区分」= する
@@ -2665,6 +2689,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		opAppEndDate?: string;
 		opAppReason?: string;
 		opAppStandardReasonCD?: number;
+		employeeIDLst: Array<string>;
 	}
 	export interface ReflectionStatus {
 
@@ -2712,6 +2737,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 	enum ACTION {
 		CHANGE_DATE,
 		CHANGE_WORK,
+	}
+	enum MODE {
+		NORMAL,
+		SINGLE_AGENT,
+		MULTiPLE_AGENT
 	}
 
 

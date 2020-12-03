@@ -1,7 +1,7 @@
 module nts.uk.at.view.kaf005.shr.header.viewmodel {
 	const template = `
 <div data-bind="with: $parent">
-	<div data-bind="if: true">
+	<div data-bind="if: visibleModel.c6()">
 		<div class="cf valign-center control-group"
 			data-bind="style: {padding: '10px 10px 10px 12px'}"
 			style="margin-left: -2px; background: #f8efd4; width: 780px;">

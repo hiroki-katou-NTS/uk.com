@@ -998,7 +998,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			self.restTime(_.clone(restTimeArray));
 		}
 		
-		bindHolidayTime(res: DisplayInfoOverTime, mode?: number) {
+		bindHolidayTime(res: DisplayInfoOverTime, mode?: number) { // mode = 0 bind from appOverTime, =1  bind from displayOver 
 			const self = this;
 			let holidayTimeArray = [] as Array<HolidayTime>;
 			let workdayoffFrames = res.workdayoffFrames as Array<WorkdayoffFrame>;
