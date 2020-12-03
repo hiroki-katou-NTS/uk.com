@@ -59,7 +59,6 @@ import nts.uk.ctx.at.function.dom.monthlyworkschedule.ItemSelectionEnum;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyAttendanceItemsDisplay;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkSchedule;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkScheduleRepository;
-import nts.uk.ctx.at.function.dom.monthlyworkschedule.PrintSettingRemarksColumn;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.TextSizeCommonEnum;
 import nts.uk.ctx.at.record.app.service.attendanceitem.value.AttendanceItemValueService;
 import nts.uk.ctx.at.record.app.service.attendanceitem.value.AttendanceItemValueService.MonthlyAttendanceItemValueResult;
@@ -777,7 +776,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		List<Integer> listAttendanceId = outputItem.getLstDisplayedAttendance().stream().map(item -> {
 			return item.getAttendanceDisplay();
 		}).collect(Collectors.toList());
-		if (outputItem.getPrintSettingRemarksColumn() == PrintSettingRemarksColumn.PRINT_REMARK) {
+		if (outputItem.isRemarkPrinted()) {
 			listAttendanceId.add(outputItem.getRemarkInputNo().value + 1283);
 		}
 		
@@ -1014,7 +1013,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			
 			// Remark content, it's full detail remark but will be processed on printing
 			detailedDate.errorDetail = "";
-			if (outSche.getPrintSettingRemarksColumn() == PrintSettingRemarksColumn.PRINT_REMARK) {
+			if (outSche.isRemarkPrinted()) {
 				Optional<ItemValue> optRemarkRecord = x.getItemValues().stream().filter(att -> att.getItemId() == outSche.getRemarkInputNo().value + 1283).findFirst();
 				optRemarkRecord.ifPresent(remark -> {
 					detailedDate.errorDetail += (remark.value() == null? "" : remark.value());
@@ -1147,7 +1146,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 						
 						// Remark content, it's full detail remark but will be processed on printing
 						personalPerformanceDate.detailedErrorData = "";
-						if (outSche.getPrintSettingRemarksColumn() == PrintSettingRemarksColumn.PRINT_REMARK) {
+						if (outSche.isRemarkPrinted()) {
 							Optional<ItemValue> optRemarkRecord = x.getItemValues().stream().filter(att -> att.getItemId() == outSche.getRemarkInputNo().value + 1283).findFirst();
 							optRemarkRecord.ifPresent(remark -> {
 								personalPerformanceDate.detailedErrorData += (remark.value() == null? "" : remark.value());
@@ -1892,7 +1891,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 					
 					// A6_1
 					Cell personalTotalCellTag = cells.get(currentRow, 0);
-					personalTotalCellTag.setValue(WorkScheOutputConstants.PERSONAL_TOTAL);
+					personalTotalCellTag.setValue(TextResource.localize(WorkScheOutputConstants.PERSONAL_TOTAL));
 					
 					// A6_2
 					Map<Integer, TotalValue> mapPersonalTotal = employeeReportData.getMapPersonalTotal();

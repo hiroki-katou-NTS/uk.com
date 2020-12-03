@@ -37,10 +37,6 @@ public class OutputItemMonthlyWorkSchedule extends AggregateRoot {
 	// 表示する勤怠項目
 	private List<MonthlyAttendanceItemsDisplay> lstDisplayedAttendance;
 
-	/** The is print. */
-	// 備考欄の印字設定
-	private PrintSettingRemarksColumn printSettingRemarksColumn;
-	
 	/** The remark input no. */
 	// 備考入力No
 	private RemarkInputContent remarkInputNo;
