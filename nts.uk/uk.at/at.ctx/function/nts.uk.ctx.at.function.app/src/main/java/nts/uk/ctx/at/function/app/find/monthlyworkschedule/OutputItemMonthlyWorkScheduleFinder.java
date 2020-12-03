@@ -25,6 +25,7 @@ import nts.uk.ctx.at.function.app.command.monthlyworkschedule.OutputItemMonthlyW
 import nts.uk.ctx.at.function.app.find.annualworkschedule.PeriodDto;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
 import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameService;
+import nts.uk.ctx.at.function.dom.dailyattendanceitem.FormCanUsedForTime;
 import nts.uk.ctx.at.function.dom.holidaysremaining.PermissionOfEmploymentForm;
 import nts.uk.ctx.at.function.dom.holidaysremaining.repository.PermissionOfEmploymentFormRepository;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.DisplayTimeItem;
@@ -172,7 +173,9 @@ public class OutputItemMonthlyWorkScheduleFinder {
 		String companyID = AppContexts.user().companyId();
 		Map<String, Object> mapDtoReturn = new HashMap<>();
 		// ドメインモデル「画面で使用可能な月次勤怠項目」を取得する
-		List<Integer> attdIds = this.getMonthlyAttendanceItemsAvaiable(companyID, 3, TypeOfItem.Monthly);
+		List<Integer> attdIds = this.getMonthlyAttendanceItemsAvaiable(companyID
+																	 , FormCanUsedForTime.MONTHLY_WORK_SCHEDULE.value
+																	 , TypeOfItem.Monthly);
 
 		//アルゴリズム「会社の月次を取得する」を実行する (Execute the algorithm "Get company's monthly")
 		List<MonthlyAttendanceItemDto> lstDailyAtdItemDto = this.companyMonthlyItemService
@@ -181,6 +184,7 @@ public class OutputItemMonthlyWorkScheduleFinder {
 					dtoClientReturn.setCode(dto.getAttendanceItemDisplayNumber());
 					dtoClientReturn.setId(dto.getAttendanceItemId());
 					dtoClientReturn.setName(dto.getAttendanceItemName());
+					dtoClientReturn.setAttendanceItemAtt(dto.getTypeOfAttendanceItem());
 					return dtoClientReturn;
 				}).collect(Collectors.toList());
 
