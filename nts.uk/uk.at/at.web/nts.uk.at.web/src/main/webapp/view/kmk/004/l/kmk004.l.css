@@ -20,7 +20,7 @@
 }
 
 .view-l .header-l hr {
-    margin-top: 4px;
+    margin-top: 3px;
     
 }
 
@@ -31,6 +31,10 @@
 .view-l .header-l .header_content {
     margin-top: 15px;
     margin-bottom: 15px;
+}
+
+.view-l .header-l div.form-label{
+    padding: 8px 10px 0 8px;
 }
 
 .view-l .content {
@@ -58,7 +62,7 @@
 }
 
 #right-side {
-	padding-left: 40px;
+	padding-left: 10px;
 }
 
 #view-m-left-side {
@@ -80,24 +84,8 @@
 }
 
 #title {
-	font-size: 20px;
+	font-size: 25px;
 	padding-top: 4px;
-}
-
-#workplace-list {
-	
-}
-
-#com-kcp005 {
-	
-}
-
-#view-o-listbox {
-	
-}
-
-div.form-label {
-	padding: 8px 10px 0 8px;
 }
 
 .note {
@@ -124,4 +112,13 @@ div.form-label {
 
 .ntsControl .nts-input {
 	text-align: center !important;
+}
+
+.selected-item {
+	height: 18px;
+    display: block;
+}
+
+#right-side div.form-label {
+	padding: 8px 10px 0 8px;
 }

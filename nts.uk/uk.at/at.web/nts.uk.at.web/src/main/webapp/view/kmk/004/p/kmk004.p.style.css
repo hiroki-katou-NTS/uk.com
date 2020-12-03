@@ -4,7 +4,7 @@
 }
 
 #contents-area {
-	padding-left: 15px;
+	padding: 0 15px 0 15px;
 }
 
 .input_time {
@@ -35,7 +35,8 @@
 #message {
 	color: #0066CC;
 	text-align: right;
-	padding-right: 10px;
+	height: 18px;
+    display: block;
 }
 .child-row {
 	width: 200px;

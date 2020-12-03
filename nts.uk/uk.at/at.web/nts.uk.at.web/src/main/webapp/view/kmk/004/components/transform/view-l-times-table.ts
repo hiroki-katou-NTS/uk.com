@@ -68,7 +68,7 @@ module nts.uk.at.view.kmk004 {
         <style type="text/css" rel="stylesheet">
 			.times-table td:nth-child(1)  {
 				background: #E0F59E;
-				border: 1px solid #AAAAAA;
+				border: solid grey 1px;
 			}
 			
 			.times-table td {
@@ -83,7 +83,7 @@ module nts.uk.at.view.kmk004 {
 			
 			.times-table {
                 padding: 15px;
-                border: 1px solid #AAAAAA;
+                border: solid grey 1px;
                 border-radius: 15px;
 				margin-left: 30px;
             }
@@ -94,7 +94,7 @@ module nts.uk.at.view.kmk004 {
             }
 
 			.times-table tr, .times-table th {
-                border: 1px solid #AAAAAA;
+                border: solid grey 1px;
 				text-align: center;
             }
 

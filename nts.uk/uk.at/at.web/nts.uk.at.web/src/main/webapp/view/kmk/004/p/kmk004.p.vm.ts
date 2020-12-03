@@ -435,7 +435,7 @@ module nts.uk.at.view.kmk004.p {
 		}
 	}
 
-	class TransformScreenData {
+	export class TransformScreenData {
 		deforLaborTimeComDto = new DeforLaborTimeCom();
 		settingDto = new Setting();
 		sidebarType: SIDEBAR_TYPE;

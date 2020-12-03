@@ -151,7 +151,7 @@ module nts.uk.at.view.kmk004 {
         <style type="text/css" rel="stylesheet">
 			.view-o-times-table td:nth-child(2)  {
 				background: #E0F59E;
-				border: 1px solid #AAAAAA;
+				border: solid grey 1px;
 			}
 			
 			.view-o-times-table td:nth-child(3)  {
@@ -178,7 +178,7 @@ module nts.uk.at.view.kmk004 {
             }
 
 			.view-o-times-table tr, .view-o-times-table th {
-                border: 1px solid #AAAAAA;
+                border: solid grey 1px;
 				text-align: center;
             }
 			

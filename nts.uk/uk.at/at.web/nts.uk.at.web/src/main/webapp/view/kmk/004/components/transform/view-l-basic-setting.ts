@@ -2,9 +2,12 @@
 
 module nts.uk.at.view.kmk004 {
     
-    /*interface Params {
+	//import TransformScreenData = nts.uk.at.view.kmk004.p.TransformScreenData;
+	
+	
+    interface Params {
         model: SettingParam;
-    }*/
+    }
 
     const template = `
         <div class="table-view">
@@ -73,7 +76,7 @@ module nts.uk.at.view.kmk004 {
         <style type="text/css" rel="stylesheet">
             .table-view {
                 padding: 15px;
-                border: 1px solid #AAAAAA;
+                border: 2px solid #B1B1B1;
                 border-radius: 15px;
 				width: fit-content;
 				margin: 15px;
@@ -85,20 +88,18 @@ module nts.uk.at.view.kmk004 {
             
             .table-view th {
                 background: #E0F59E;
+ 				border: solid grey 1px;
+				padding-left: 2px;
             }
 
             .table-view tr {
-                border: 1px solid #AAAAAA;
+                border: solid grey 1px;
             }
 
             .table-view tr, .table-view td {
-                border: 1px solid #AAAAAA;
+                border: solid grey 1px;
                 padding: 3px;
               }
-
-			.table-view th {
-                border: 1px solid #AAAAAA;
-            }
             
         </style>
         <style type="text/css" rel="stylesheet" data-bind="html: $component.style"></style>
@@ -113,6 +114,8 @@ module nts.uk.at.view.kmk004 {
         public model = new DataModel();
         public settingParam = new SettingParam();
         public params!: Params;
+
+		//screenData = new TransformScreenData();
 
         created(params: Params) {
             const vm = this;
