@@ -85,25 +85,41 @@
             </div>
         </div>
     </div>
+
     <div class="table">
         <div class="cell col-1">
-            <div class="valign-center cell" data-bind="ntsFormLabel:{ required: true }, text: $i18n('KAF006_88')"></div>
+            <div class="valign-center cell" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_88')"></div>
         </div>
         <button style="width: 60px; margin-right: 5px;" class="cell" data-bind="text: $i18n('KAF006_50')"></button>
         <div class="cell" data-bind="text: $i18n('KAF006_89')"></div>
-        <div>
+    </div>
+    <div class="table">
+        <div class="cell col-1"></div>
+        <div class="cell">
             <table>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
+                <thead>
+                    <tr>
+                        <th class="table-border py-10" data-bind="text: $i18n('KAF006_53')"></th>
+                        <th class="table-border py-10" data-bind="text: $i18n('KAF006_87')"></th>
+                        <th class="table-border py-10" data-bind="text: $i18n('KAF006_55')"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
             </table>
         </div>
+    </div>
+
+    <div class="table">
+        <div class="cell col-1">
+            <div class="valign-center cell" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_48')"></div>
+        </div>
+        <button style="width: 60px; margin-right: 5px;" class="cell" data-bind="text: $i18n('KAF006_50')"></button>
+        <div class="cell" data-bind="text: $i18n('KAF006_81')"></div>
     </div>
 </div>

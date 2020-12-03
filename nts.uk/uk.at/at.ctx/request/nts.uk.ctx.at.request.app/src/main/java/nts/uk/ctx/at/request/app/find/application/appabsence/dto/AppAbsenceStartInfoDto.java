@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
@@ -20,6 +21,7 @@ import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.LeaveComDayOf
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class AppAbsenceStartInfoDto {

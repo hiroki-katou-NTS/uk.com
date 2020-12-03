@@ -74,7 +74,7 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
                         <div class="cell col-1" data-bind="text: $i18n('KAF006_31')"></div>
                         <div class="cell" data-bind="text: total" style="width: 85px; text-align: center;"></div>
                         <div class="cell" data-bind="text: $i18n('KAF006_32')"></div>
-                        <div class="cell" data-bind="text: total"></div>
+                        <div class="cell" data-bind="text: $parent.timeRequired"></div>
                     </div>
                 </div>
             </div>

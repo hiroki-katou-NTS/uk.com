@@ -92,10 +92,60 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
             </div>
             <div class="table">
                 <div class="cell col-1">
-                    <div class="valign-center cell" data-bind="ntsFormLabel:{ required: true }, text: $i18n('KAF006_88')"></div>
+                    <div class="valign-center cell" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_88')"></div>
                 </div>
-                <button style="width: 60px; margin-right: 5px;" class="cell" data-bind="text: $i18n('KAF006_50')"></button>
+                <button style="width: 60px; margin-right: 5px;" class="cell" data-bind="text: $i18n('KAF006_50'), click: $parent.openKDL036"></button>
                 <div class="cell" data-bind="text: $i18n('KAF006_89')"></div>
+            </div>
+            <div class="table" style="margin: 10px 0;">
+                <div class="cell col-1"></div>
+                <div class="cell">
+                    <table>
+                        <thead>
+                            <tr class="text-center bg-green">
+                                <th style="width: 100px;" class="py-10" data-bind="text: $i18n('KAF006_53')"></th>
+                                <th style="width: 100px;" class="py-10" data-bind="text: $i18n('KAF006_87')"></th>
+                                <th style="width: 100px;" class="py-10" data-bind="text: $i18n('KAF006_55')"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="py-10">0</td>
+                                <td class="py-10">0</td>
+                                <td class="py-10">0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="table">
+                <div class="cell col-1">
+                    <div class="valign-center cell" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_48')"></div>
+                </div>
+                <button style="width: 60px; margin-right: 5px;" class="cell" data-bind="text: $i18n('KAF006_50'), click: $parent.openKDL035"></button>
+                <div class="cell" data-bind="text: $i18n('KAF006_81')"></div>
+            </div>
+            <div class="table" style="margin: 10px 0;">
+                <div class="cell col-1"></div>
+                <div class="cell">
+                    <table>
+                        <thead>
+                            <tr class="bg-green">
+                                <th style="width: 100px;" class="py-10" data-bind="text: $i18n('KAF006_52')"></th>
+                                <th style="width: 100px;" class="py-10" data-bind="text: $i18n('KAF006_46')"></th>
+                                <th style="width: 100px;" class="py-10" data-bind="text: $i18n('KAF006_55')"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="py-10">0</td>
+                                <td class="py-10">0</td>
+                                <td class="py-10">0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
         `

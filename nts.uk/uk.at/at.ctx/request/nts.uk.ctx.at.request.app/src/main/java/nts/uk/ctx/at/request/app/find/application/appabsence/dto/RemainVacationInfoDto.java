@@ -43,8 +43,8 @@ public class RemainVacationInfoDto {
     // 代休残時間
     private Integer subVacaHourRemain;
 
-    // 代休残時間
-    private Integer subHdHourRemain;
+    // 積休残数
+    private Integer remainingHours;
 
     // 60H超休残時間
     private Integer over60HHourRemain;
@@ -76,7 +76,7 @@ public class RemainVacationInfoDto {
                 remainVacationInfo.getSubVacaRemain().isPresent() ? remainVacationInfo.getSubVacaRemain().get() : null,
                 remainVacationInfo.getSubVacaHourRemain().isPresent() ? remainVacationInfo.getSubVacaHourRemain().get()
                         : null,
-                remainVacationInfo.getSubHdHourRemain().isPresent() ? remainVacationInfo.getSubHdHourRemain().get()
+                remainVacationInfo.getRemainingHours().isPresent() ? remainVacationInfo.getRemainingHours().get()
                         : null,
                 remainVacationInfo.getOver60HHourRemain().isPresent() ? remainVacationInfo.getOver60HHourRemain().get()
                         : null,
@@ -97,7 +97,7 @@ public class RemainVacationInfoDto {
                 nursingCareLeaveManagement.toDomain(), Optional.ofNullable(yearRemain),
                 Optional.ofNullable(yearHourRemain), Optional.ofNullable(subHdRemain),
                 Optional.ofNullable(subVacaRemain), Optional.ofNullable(subVacaHourRemain),
-                Optional.ofNullable(subHdHourRemain), Optional.ofNullable(over60HHourRemain),
+                Optional.ofNullable(remainingHours), Optional.ofNullable(over60HHourRemain),
                 Optional.ofNullable(childNursingRemain), Optional.ofNullable(childNursingHourRemain),
                 Optional.ofNullable(nursingRemain), Optional.ofNullable(nirsingHourRemain));
     }

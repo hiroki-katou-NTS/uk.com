@@ -3,7 +3,7 @@ module nts.uk.at.view.kaf006.shr.tab3.viewmodel {
     @component({
         name: 'kaf006-shr-tab3',
         template: `
-        <div id="kaf006tab1">
+        <div id="kaf006tab3">
             <div class="table">
                 <div class="cell col-1">
                     <div class="cell valign-center required" data-bind="ntsFormLabel:{ required: true }, text: $i18n('KAF006_16')"></div>
@@ -107,9 +107,9 @@ module nts.uk.at.view.kaf006.shr.tab3.viewmodel {
                             }"></div>
                         </div>
                         <div class="cell valign-center" data-bind="ntsCheckBox: {
-                            checked: true,
+                            checked: $parent.isCheckMourn,
                             text: $i18n('KAF006_34'),
-                            enable: $parent.isDispMourn()
+                            enable: $parent.isDispMourn
                         }"></div>
                     </div>
                     <div class="table" style="margin-top: 5px;">
@@ -129,7 +129,7 @@ module nts.uk.at.view.kaf006.shr.tab3.viewmodel {
                     </div>
                 </div>
                 <div class="cell vertical-align">
-                    <div style="margin-left: 10px;" class="panel panel-frame">休暇申請起動時の表示情報．特別休暇表示情報．上限日数</div>
+                    <div style="margin-left: 10px; white-space: pre-wrap;" class="panel panel-frame" data-bind="text: $parent.maxNumberOfDay"></div>
                 </div>
             </div>
         </div>
