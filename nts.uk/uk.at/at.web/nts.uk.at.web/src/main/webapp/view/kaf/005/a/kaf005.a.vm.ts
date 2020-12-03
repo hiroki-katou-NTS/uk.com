@@ -829,8 +829,18 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 							}
 						})
 
+					} else {
+						_.forEach(self.restTime(), (item: RestTime) => {
+							item.start(null);
+							item.end(null);
+						});
 					}
 
+				} else {
+					_.forEach(self.restTime(), (item: RestTime) => {
+						item.start(null);
+						item.end(null);
+					});
 				}
 			} else {
 				_.forEach(self.restTime(), (item: RestTime) => {

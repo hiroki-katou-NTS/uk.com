@@ -177,7 +177,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					vm.visibleModel = vm.createVisibleModel(vm.dataSource);
 					vm.bindOverTimeWorks(vm.dataSource);
 					vm.bindWorkInfo(vm.dataSource);
-					vm.bindRestTime(vm.dataSource);
+					vm.bindRestTime(vm.dataSource, 0);
 					vm.bindHolidayTime(vm.dataSource, 0);
 					vm.bindOverTime(vm.dataSource, 0);
 					vm.bindMessageInfo(vm.dataSource);
@@ -863,7 +863,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 						
 								self.bindOverTimeWorks(self.dataSource);
 								self.bindWorkInfo(self.dataSource, ACTION.CHANGE_WORK);
-								self.bindRestTime(self.dataSource);
+								self.bindRestTime(self.dataSource, 1);
 								self.bindHolidayTime(self.dataSource, 1);
 								self.bindOverTime(self.dataSource, 1);
 							}
@@ -980,25 +980,61 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				.always(() => self.$blockui("hide"));
 		}
 		
-		bindRestTime(res: DisplayInfoOverTime) {
+		bindRestTime(res: DisplayInfoOverTime, mode: number) {
 			const self = this;
 			let restTimeArray = self.restTime() as Array<RestTime>;
-			let breakTimes = self.appOverTime.breakTimeOp;
-			if (_.isEmpty(breakTimes)) {
-				_.forEach(restTimeArray, (i: RestTime) => {
-					i.start(null);
-					i.end(null);
-				});
-				
-				return;
-			}
-			_.forEach(breakTimes, (i: TimeZoneWithWorkNo) => {
-				if (i.workNo <= 10) {
-					let restItem = restTimeArray[i.workNo - 1] as RestTime;
-					restItem.start(i.timeZone.startTime);
-					restItem.end(i.timeZone.endTime);
+			if (mode == 0) {
+				let breakTimes = self.appOverTime.breakTimeOp;
+				if (_.isEmpty(breakTimes)) {
+					_.forEach(restTimeArray, (i: RestTime) => {
+						i.start(null);
+						i.end(null);
+					});
+					
+					return;
 				}
-			})
+				_.forEach(breakTimes, (i: TimeZoneWithWorkNo) => {
+					if (i.workNo <= 10) {
+						let restItem = restTimeArray[i.workNo - 1] as RestTime;
+						restItem.start(i.timeZone.startTime);
+						restItem.end(i.timeZone.endTime);
+					}
+				})
+				
+			} else if (mode == 1) {
+				let infoWithDateApplication = res.infoWithDateApplicationOp as InfoWithDateApplication;
+				if (!_.isNil(infoWithDateApplication)) {
+				let breakTime = infoWithDateApplication.breakTime;
+				if (!_.isNil(breakTime)) {
+					if (!_.isEmpty(breakTime.timeZones)) {
+						_.forEach(breakTime.timeZones, (item: TimeZone, index) => {
+							if (Number(index) < 10) {
+								let restItem = restTimeArray[index] as RestTime;
+								restItem.start(item.start);
+								restItem.end(item.end);
+							}
+						})
+
+					} else {
+						_.forEach(self.restTime(), (item: RestTime) => {
+							item.start(null);
+							item.end(null);
+						});
+					}
+
+				} else {
+					_.forEach(self.restTime(), (item: RestTime) => {
+						item.start(null);
+						item.end(null);
+					});
+				}
+				} else {
+					_.forEach(self.restTime(), (item: RestTime) => {
+						item.start(null);
+						item.end(null);
+					});
+				}
+			}
 			
 			
 			self.restTime(_.clone(restTimeArray));
