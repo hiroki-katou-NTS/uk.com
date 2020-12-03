@@ -11,6 +11,8 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
+import nts.uk.ctx.pereg.infra.repository.mastercopy.helper.IdContainer;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,6 +21,8 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 public class PpemtItemDateRange extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
+	public static final JpaEntityMapper<PpemtItemDateRange> MAPPER = new JpaEntityMapper<>(PpemtItemDateRange.class);
 
 	@EmbeddedId
 	public PpemtPerInfoCtgPK ppemtPerInfoCtgPK;
@@ -38,5 +42,16 @@ public class PpemtItemDateRange extends ContractUkJpaEntity implements Serializa
 	@Override
 	protected Object getKey() {
 		return ppemtPerInfoCtgPK;
+	}
+	
+	public PpemtItemDateRange copy(IdContainer idContainer) {
+		
+		String copiedCategoryId = idContainer.getCategoryIds().getFor(ppemtCtgPK.perInfoCtgId);
+		
+		return new PpemtItemDateRange(
+				new PpemtCtgPK(copiedCategoryId),
+				idContainer.getItemIds().getFor(startDateItemId),
+				idContainer.getItemIds().getFor(endDateItemId),
+				idContainer.getItemIds().getFor(dateRangeItemId));
 	}
 }

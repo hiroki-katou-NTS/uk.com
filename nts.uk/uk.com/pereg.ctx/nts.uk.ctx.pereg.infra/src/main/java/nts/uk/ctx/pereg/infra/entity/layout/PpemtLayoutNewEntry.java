@@ -11,6 +11,8 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
+import nts.uk.ctx.pereg.infra.repository.mastercopy.helper.IdContainer;
 
 @Entity
 @NoArgsConstructor
@@ -19,6 +21,9 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 public class PpemtLayoutNewEntry extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
+	public static final JpaEntityMapper<PpemtLayoutNewEntry> MAPPER = new JpaEntityMapper<>(PpemtLayoutNewEntry.class);
+	
 	@EmbeddedId
 	public PpemtNewLayoutPk ppemtNewLayoutPk;
 
@@ -37,5 +42,22 @@ public class PpemtLayoutNewEntry extends ContractUkJpaEntity implements Serializ
 	@Override
 	protected Object getKey() {
 		return this.ppemtNewLayoutPk;
+	}
+	
+	/**
+	 * 初期値コピー
+	 * @param targetCompanyId
+	 * @param layoutIds
+	 * @return
+	 */
+	public PpemtLayoutNewEntry copy(String targetCompanyId, IdContainer.IdGenerator layoutIds) {
+		
+		String copiedLayoutId = layoutIds.generateFor(ppemtLayoutNewEntryPk.layoutId);
+		
+		return new PpemtLayoutNewEntry(
+				new PpemtLayoutNewEntryPk(copiedLayoutId),
+				targetCompanyId,
+				layoutCode,
+				layoutName);
 	}
 }

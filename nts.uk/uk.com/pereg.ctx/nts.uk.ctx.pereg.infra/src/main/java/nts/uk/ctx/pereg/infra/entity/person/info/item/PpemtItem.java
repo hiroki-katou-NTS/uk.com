@@ -11,6 +11,8 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
+import nts.uk.ctx.pereg.infra.repository.mastercopy.helper.IdContainer;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,6 +21,8 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 public class PpemtItem extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
+	public static final JpaEntityMapper<PpemtItem> MAPPER = new JpaEntityMapper<>(PpemtItem.class);
 
 	@EmbeddedId
 	public PpemtPerInfoItemPK ppemtPerInfoItemPK;
@@ -51,4 +55,23 @@ public class PpemtItem extends ContractUkJpaEntity implements Serializable {
 		return ppemtPerInfoItemPK;
 	}
 
+	/**
+	 * 初期値コピー
+	 * @param idContainer
+	 * @return
+	 */
+	public PpemtItem copy(IdContainer.IdsMap categoryIds, IdContainer.IdGenerator itemIds) {
+		
+		String copiedItemId = itemIds.generateFor(ppemtItemPK.perInfoItemDefId);
+		String copiedCategoryId = categoryIds.getFor(perInfoCtgId);
+		
+		return new PpemtItem(
+				new PpemtItemPK(copiedItemId),
+				copiedCategoryId,
+				itemCd,
+				itemName,
+				abolitionAtr,
+				requiredAtr,
+				initValue);
+	}
 }

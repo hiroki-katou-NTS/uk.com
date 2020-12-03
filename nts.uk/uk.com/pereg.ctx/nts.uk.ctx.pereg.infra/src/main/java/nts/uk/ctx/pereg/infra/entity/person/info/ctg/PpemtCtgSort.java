@@ -11,6 +11,9 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import lombok.val;
+import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
+import nts.uk.ctx.pereg.infra.repository.mastercopy.helper.IdContainer;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,6 +22,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 public class PpemtCtgSort extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
+	public static final JpaEntityMapper<PpemtCtgSort> MAPPER = new JpaEntityMapper<>(PpemtCtgSort.class);
 
 	@EmbeddedId
 	public PpemtPerInfoCtgPK ppemtPerInfoCtgPK;
@@ -36,4 +40,9 @@ public class PpemtCtgSort extends ContractUkJpaEntity implements Serializable {
 		return ppemtPerInfoCtgPK;
 	}
 
+	public PpemtCtgSort copy(String targetCompanyId, IdContainer.IdsMap idsMap) {
+		
+		val pk = new PpemtCtgPK(idsMap.getFor(ppemtCtgPK.perInfoCtgId));
+		return new PpemtCtgSort(pk, targetCompanyId, disporder);
+	}
 }

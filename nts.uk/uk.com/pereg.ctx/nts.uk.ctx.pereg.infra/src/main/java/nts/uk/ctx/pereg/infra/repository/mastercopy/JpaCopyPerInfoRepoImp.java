@@ -2,14 +2,14 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pereg.infra.repository.mastercopy.handler;
-
-import java.util.Map;
+package nts.uk.ctx.pereg.infra.repository.mastercopy;
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pereg.dom.mastercopy.CopyPerInfoRepository;
+import nts.uk.ctx.pereg.infra.repository.mastercopy.helper.CopyContext;
 
 /**
  * The Class JpaCopyPerInfoRepoImp.
@@ -26,9 +26,16 @@ public class JpaCopyPerInfoRepoImp extends JpaRepository implements CopyPerInfoR
 	 */
 	@Override
 	public void personalInfoDefCopy(String companyId, int copyMethod) {
-		Map<String, String> transIdMap = (new PersonalInfoDefCopyHandler(this, copyMethod, companyId)).doCopy();
-		new PerInfoSelectionItemCopyHandler(this, copyMethod, companyId).doCopy();
-		new PpemtNewLayoutDataCopyHandler(copyMethod, companyId, getEntityManager()).doCopy();
-		new PpemtPInfoItemGroupDataCopyHandler(copyMethod, companyId, getEntityManager(), transIdMap).doCopy();
+		
+		val copyContext = new CopyContext(
+				jdbcProxy(),
+				commandProxy(),
+				queryProxy(),
+				CopyMethodOnConflict.valueOf(copyMethod));
+		
+		val categoryIds = CopyCategory.execute(copyContext);
+		val idContainer = CopyItem.execute(copyContext, categoryIds);
+		CopyLayout.execute(copyContext, idContainer);
+		CopyGroupItem.execute(copyContext, idContainer);
 	}
 }

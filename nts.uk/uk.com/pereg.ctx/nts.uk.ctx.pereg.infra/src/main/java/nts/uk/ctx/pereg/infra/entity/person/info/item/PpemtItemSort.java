@@ -12,6 +12,8 @@ import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
+import nts.uk.ctx.pereg.infra.repository.mastercopy.helper.IdContainer;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,6 +22,8 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 public class PpemtItemSort extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
+	public static final JpaEntityMapper<PpemtItemSort> MAPPER = new JpaEntityMapper<>(PpemtItemSort.class);
 
 	@EmbeddedId
 	public PpemtPerInfoItemPK ppemtPerInfoItemPK;
@@ -42,5 +46,22 @@ public class PpemtItemSort extends ContractUkJpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {
 		return ppemtPerInfoItemPK;
+	}
+	
+	/**
+	 * 初期値コピー
+	 * @param idContainer
+	 * @return
+	 */
+	public PpemtItemSort copy(IdContainer idContainer) {
+
+		String copiedItemId = idContainer.getItemIds().getFor(ppemtItemPK.perInfoItemDefId);
+		String copiedCategoryId = idContainer.getCategoryIds().getFor(perInfoCtgId);
+		
+		return new PpemtItemSort(
+				new PpemtItemPK(copiedItemId),
+				copiedCategoryId,
+				disporder,
+				displayOrder);
 	}
 }
