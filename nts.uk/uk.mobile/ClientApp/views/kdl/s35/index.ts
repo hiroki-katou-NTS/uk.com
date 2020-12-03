@@ -1,5 +1,5 @@
 import { _, Vue } from '@app/provider';
-import { component, Prop } from '@app/core/component';
+import { component, Prop, Watch } from '@app/core/component';
 
 @component({
     name: 'kdls35',
@@ -111,7 +111,8 @@ export class KdlS35Component extends Vue {
             vm.targetSelectionAtr = targetSelectionAtr;
             vm.substituteHolidayList = substituteHolidayList;
             vm.substituteWorkInfoList = substituteWorkInfoList
-                .map((m, index) => ({ ...m, checked: false,
+                .map((m, index) => ({
+                    ...m, checked: false,
                     get icon() {
                         const { dataType, expiringThisMonth } = m;
 
@@ -160,15 +161,21 @@ export class KdlS35Component extends Vue {
             return;
         }
 
+        if (!vm.checkNumberOfDays()) {
+            vm.$modal.warn({ messageId: 'Msg_1761' });
+
+            return;
+        }
+
         const data: ParamsData = {
             daysUnit: vm.daysUnit,
             employeeId: vm.employeeId,
             substituteHolidayList: vm.substituteHolidayList
-            .map((m) => new Date(m).toISOString()),
+                .map((m) => new Date(m).toISOString()),
             targetSelectionAtr: vm.targetSelectionAtr,
             substituteWorkInfoList: vm.substituteWorkInfoList
-            .filter((item) => item.checked)
-            .map((m) => ({...m}))
+                .filter((item) => item.checked)
+                .map((m) => ({ ...m }))
         };
         data.substituteWorkInfoList.forEach((f) => {
             f.expirationDate = new Date(f.expirationDate).toISOString();
@@ -177,15 +184,35 @@ export class KdlS35Component extends Vue {
 
         vm.$mask('show');
         vm.$http
-        .post('at',servicesPath.associate,data)
-        .then((msgData: SubWorkSubHolidayLinkingMng[]) => {
-            vm.$mask('hide');
-            vm.back();
+            .post('at', servicesPath.associate, data)
+            .then((msgData: SubWorkSubHolidayLinkingMng[]) => {
+                vm.$mask('hide');
+                vm.back();
 
-        })
-        .catch((error: any) => {
-            vm.showError(error);
-        });
+            })
+            .catch((error: any) => {
+                vm.showError(error);
+            });
+    }
+
+    private checkNumberOfDays(): boolean {
+        const vm = this;
+
+        const required = vm.substituteHolidayList.length * vm.daysUnit;
+        let total = 0;
+        const selected: ISubstituteWorkInfo[] =
+            _.orderBy(vm.substituteWorkInfoList
+                .filter((f) => f.checked), ['remainingNumber'], ['desc']);
+
+        for (let i = 0; i < selected.length; i++) {
+            if (total >= required) {
+
+                return false;
+            }
+            total += selected[i].remainingNumber;
+        }
+
+        return true;
     }
 }
 

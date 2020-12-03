@@ -51,7 +51,7 @@
         </div>
       </div>
       <!-- A5_1 -->
-      <table class="table table-responsive w-auto">
+      <table class="table table-responsive w-auto" v-focus>
         <thead class="text-center">
           <tr>
             <th scope="col"></th>
@@ -72,7 +72,7 @@
           <tr class="text-center">
             <td>
               <!-- A5_6 -->
-              <nts-checkbox v-bind:value="true" v-model="item.checked" v-bind:disabled="!item.enable">
+              <nts-checkbox v-bind:value="true" v-model="item.checked" v-bind:disabled="!item.enable" v-focus>
               </nts-checkbox>
             </td>
             <!-- A5_7 -->
