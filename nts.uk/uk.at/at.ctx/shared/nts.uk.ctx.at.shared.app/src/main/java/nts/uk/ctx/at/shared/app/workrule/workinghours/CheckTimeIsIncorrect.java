@@ -85,21 +85,21 @@ public class CheckTimeIsIncorrect {
 		try {
 			//2: 変更可能な勤務時間帯のチェック(Require, 対象時刻区分, 勤務NO, 時刻(日区分付き))
 			ContainsResult containsResult1 =  wi.containsOnChangeableWorkingTime(require, ClockAreaAtr.START, new WorkNo(1), new TimeWithDayAttr(workTime1.getStartTime().getTime()));	
-			listContainsResult.add(convertToContainsResult(containsResult1));
+			listContainsResult.add(convertToContainsResult(containsResult1,TextResource.localize("KSU001_54"),convertToTime(workTime1.getStartTime().getTime()),true));
 			
 			//3:変更可能な勤務時間帯のチェック(Require, 対象時刻区分, 勤務NO, 時刻(日区分付き))
 			ContainsResult containsResult2 =  wi.containsOnChangeableWorkingTime(require, ClockAreaAtr.END, new WorkNo(1), new TimeWithDayAttr(workTime1.getEndTime().getTime()));
-			listContainsResult.add(convertToContainsResult(containsResult2));
+			listContainsResult.add(convertToContainsResult(containsResult2,TextResource.localize("KSU001_55"),convertToTime(workTime1.getEndTime().getTime()),true));
 			
 			//4:
 			if(workTime2 != null) {
 				//4.1
 				ContainsResult containsResult3 =  wi.containsOnChangeableWorkingTime(require, ClockAreaAtr.START, new WorkNo(2), new TimeWithDayAttr(workTime2.getStartTime().getTime()));
-				listContainsResult.add(convertToContainsResult(containsResult3));
+				listContainsResult.add(convertToContainsResult(containsResult3,TextResource.localize("KSU001_56"),convertToTime(workTime2.getStartTime().getTime()),false));
 				
 				//4.2
 				ContainsResult containsResult4 =  wi.containsOnChangeableWorkingTime(require, ClockAreaAtr.END, new WorkNo(2), new TimeWithDayAttr(workTime2.getEndTime().getTime()));
-				listContainsResult.add(convertToContainsResult(containsResult4));
+				listContainsResult.add(convertToContainsResult(containsResult4,TextResource.localize("KSU001_57"),convertToTime(workTime2.getEndTime().getTime()),false));
 			}
 		} catch (Exception e) {
 			throw new RuntimeException("Error 時刻が不正かチェックする");
@@ -107,20 +107,21 @@ public class CheckTimeIsIncorrect {
 		return listContainsResult;
 	}
 	
-	private ContainsResultDto convertToContainsResult(ContainsResult containsResult) {
+	private ContainsResultDto convertToContainsResult(ContainsResult containsResult,String nameError,String timeInput,boolean isWorkNo1) {
 		return new ContainsResultDto(containsResult.isContains(), 
 				containsResult.getTimeSpan().isPresent()? 
-						new TimeSpanForCalcSharedDto(containsResult.getTimeSpan().get().startValue(), containsResult.getTimeSpan().get().endValue()):null
+						new TimeSpanForCalcSharedDto(containsResult.getTimeSpan().get().startValue(), containsResult.getTimeSpan().get().endValue()):null,
+						nameError,timeInput,isWorkNo1
 				);
 	}
 	
-//	private String convertToTime (Integer value) {
-//		if(value== null) {
-//			return "";
-//		}
-//		String result = value/60 +":"+(value%60 >=10?value%60:("0"+value%60));
-//		return result;
-//	}
+	private String convertToTime (Integer value) {
+		if(value== null) {
+			return "";
+		}
+		String result = value/60 +":"+(value%60 >=10?value%60:("0"+value%60));
+		return result;
+	}
 	
 	@AllArgsConstructor
 	public static class WorkInformationImpl implements WorkInformation.Require {

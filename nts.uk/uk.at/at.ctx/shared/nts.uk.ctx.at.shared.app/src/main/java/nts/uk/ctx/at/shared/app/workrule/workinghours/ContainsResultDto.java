@@ -14,4 +14,10 @@ public class ContainsResultDto {
 	private boolean check;
 	
 	private TimeSpanForCalcSharedDto timeSpan;
+	
+	private String nameError;
+	
+	private String timeInput;
+	
+	private boolean isWorkNo1;
 }
