@@ -110,5 +110,27 @@ public class ExtractAlarmListService {
 		return new ExtractedAlarmDto(sortedAlarmExtraValue, false, false);		
 
 	}
+	/**
+	 * アラームリストを出力する
+	 * @param cid 会社ID
+	 * @param pattentCd　パターンコード
+	 * @param pattentName　パターン名称
+	 * @param lstCategoryPeriod　List<カテゴリ別期間>
+	 * @param lstSid　List<従業員>
+	 * @param runCode　自動実行コード　（Default：　”Z”）
+	 * @return
+	 */
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public ExtractedAlarmDto extractResultAlarm(String cid, String pattentCd, String pattentName,
+			List<PeriodByAlarmCategory> lstCategoryPeriod,List<String> lstSid, String runCode,
+			Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
+		ExtractedAlarmDto result = new ExtractedAlarmDto();
+		if (lstSid.isEmpty()) {
+			// エラーメッセージ(#Msg_834)を表示する
+			throw new BusinessException("Msg_834");	
+		}
+		return result;
+		
+	}
 
 }

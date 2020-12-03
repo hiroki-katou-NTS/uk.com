@@ -95,7 +95,7 @@ public class ErrorAlarmListExtractCommandHandler extends AsyncCommandHandler<Err
 
 		dataSetter.setData("empCount", counter.get());
 		//カテゴリ一覧
-		List<Integer> listCategory = command.getListPeriodByCategory().stream().map(x -> x.getCategory())
+		List<Integer> listCategory = command.getListPeriodByCategory().stream().map(x -> x.getCategory().value)
 				.collect(Collectors.toList());
 		//チェック条件
 		List<CheckCondition> checkConList = alarmPatternSetting.get().getCheckConList().stream()

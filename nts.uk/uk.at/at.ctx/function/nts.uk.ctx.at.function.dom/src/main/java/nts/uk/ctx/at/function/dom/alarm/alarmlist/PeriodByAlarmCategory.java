@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 /**
  *カテゴリ別期間 
  *
@@ -16,7 +17,7 @@ import nts.arc.time.GeneralDate;
 @AllArgsConstructor
 public class PeriodByAlarmCategory {
 	
-	int category;
+	AlarmCategory category;
 	
 	String name;
 	
