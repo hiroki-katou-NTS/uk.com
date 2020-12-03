@@ -18,7 +18,7 @@ module nts.uk.at.view.kdl036.a.viewmodel {
         substituteHolidayList: KnockoutObservableArray<string> = ko.observableArray([]);
         substituteWorkInfoList: KnockoutObservableArray<HolidayWorkInfo> = ko.observableArray([]);
         requiredNumberOfDays: KnockoutObservable<number>; // min = 0
-        requiredNumberOfDays_2: KnockoutObservable<number>;// actual computing
+        // requiredNumberOfDays_2: KnockoutObservable<number>;// actual computing
 
         displayedPeriod: KnockoutObservable<string>;
         displayedRequiredNumberOfDays: KnockoutObservable<string>;
@@ -45,14 +45,14 @@ module nts.uk.at.view.kdl036.a.viewmodel {
                 });
                 return required - selected < 0 ? 0 : required - selected;
             }, self);
-            self.requiredNumberOfDays_2 = ko.computed(() => {
-                const required = self.substituteHolidayList().length * self.daysUnit;
-                let selected = 0;
-                self.substituteWorkInfoList().forEach(info => {
-                    if (info.checked()) selected += info.remainingNumber
-                });
-                return required - selected;
-            }, self);
+            // self.requiredNumberOfDays_2 = ko.computed(() => {
+            //     const required = self.substituteHolidayList().length * self.daysUnit;
+            //     let selected = 0;
+            //     self.substituteWorkInfoList().forEach(info => {
+            //         if (info.checked()) selected += info.remainingNumber
+            //     });
+            //     return required - selected;
+            // }, self);
             self.displayedPeriod = ko.computed(() => {
                 if (self.startDate() == self.endDate())
                     return self.startDate();
@@ -98,10 +98,10 @@ module nts.uk.at.view.kdl036.a.viewmodel {
                 self.targetSelectionAtr = result.targetSelectionAtr;
                 self.substituteHolidayList(result.substituteHolidayList);
                 const tmp = self.managementData.map(d => d.outbreakDay);
-                self.substituteWorkInfoList(result.holidayWorkInfoList.map(info => new HolidayWorkInfo(tmp.indexOf(info.holidayWorkDate) >= 0, info, self.requiredNumberOfDays)));
-                if (self.requiredNumberOfDays_2() < 0) {
-                    dialog.alert({messageId: "Msg_1761"});
-                }
+                self.substituteWorkInfoList(result.holidayWorkInfoList.map(info => new HolidayWorkInfo(tmp.indexOf(info.holidayWorkDate) >= 0, info, self.requiredNumberOfDays, self.startDate())));
+                // if (self.requiredNumberOfDays_2() < 0) {
+                //     dialog.alert({messageId: "Msg_1761"});
+                // }
                 dfd.resolve();
             }).fail(function(error: any) {
                 dialog.alert(error);
@@ -117,10 +117,10 @@ module nts.uk.at.view.kdl036.a.viewmodel {
                 dialog.alert({messageId: "Msg_1759"});
                 return;
             }
-            if (self.requiredNumberOfDays_2() < 0) {
-                dialog.alert({messageId: "Msg_1761"});
-                return;
-            }
+            // if (self.requiredNumberOfDays_2() < 0) {
+            //     dialog.alert({messageId: "Msg_1761"});
+            //     return;
+            // }
             const data: ParamsData = {
                 employeeId: self.employeeId,
                 daysUnit: self.daysUnit,
@@ -214,6 +214,7 @@ module nts.uk.at.view.kdl036.a.viewmodel {
 
     class HolidayWorkInfo {
         checked: KnockoutObservable<boolean>;
+        enabled: KnockoutObservable<boolean>;
         holidayWorkDate: string;
         displayedHolidayWorkDate: string;
         remainingNumber: number;
@@ -223,7 +224,8 @@ module nts.uk.at.view.kdl036.a.viewmodel {
         dataType: DataType;
         expiringThisMonth: boolean;
 
-        constructor(checked: boolean, params: IHolidayWorkInfo, requiredNumberOfDays: KnockoutObservable<number>) {
+        constructor(checked: boolean, params: IHolidayWorkInfo, requiredNumberOfDays: KnockoutObservable<number>, startDate: string) {
+            this.enabled = ko.observable(new Date(params.expirationDate).getTime() > new Date(startDate).getTime());
             this.checked = ko.observable(checked);
             this.holidayWorkDate = params.holidayWorkDate;
             this.displayedHolidayWorkDate = (params.expiringThisMonth ? "［" : "")

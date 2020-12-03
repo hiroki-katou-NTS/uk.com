@@ -17,8 +17,8 @@
 
 		<ui:define name="content">
 			<div id="functions-area-bottom">
-				<button class="x-large proceed" data-bind="click: confirmLinking">#{i18n.getText('KDL035_10')}</button>
-				<button data-bind="click: closeDialog">#{i18n.getText('KDL035_11')}</button>
+				<button tabindex="2" class="x-large proceed" data-bind="click: confirmLinking">#{i18n.getText('KDL035_10')}</button>
+				<button tabindex="3" data-bind="click: closeDialog">#{i18n.getText('KDL035_11')}</button>
 			</div>
 			<div id="contents-area" style="margin: 0 10px">
 				<div class="control-group valign-center">
@@ -31,7 +31,7 @@
 				<div class="control-group valign-center">
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL035_3')}</div>
 					<div class="label" style="display: inline;" data-bind="text: displayedRequiredNumberOfDays"/>
-					<button id="legendBtn" class="pull-right" style="margin-right: 17px" data-bind="ntsLegendButton: legendOptions"/>
+					<button id="legendBtn" tabindex="1" class="pull-right" style="margin-right: 17px" data-bind="ntsLegendButton: legendOptions"/>
 				</div>
                 <table id="fixed-table">
                     <colgroup>
@@ -50,7 +50,7 @@
                     </thead>
                     <tbody data-bind="foreach: substituteWorkInfoList">
                         <tr>
-                            <td><div data-bind="ntsCheckBox: { checked: checked }"/></td>
+                            <td><div data-bind="ntsCheckBox: { checked: checked, enable: enabled }"/></td>
                             <td><div class="label" data-bind="text: displayedSubstituteDate"/></td>
                             <td><div class="label" data-bind="text: displayedRemainingNumber"/></td>
                             <td><div class="label" data-bind="text: displayedExpiredDate"/></td>
