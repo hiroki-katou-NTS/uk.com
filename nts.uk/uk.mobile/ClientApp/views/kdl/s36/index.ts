@@ -159,7 +159,7 @@ export class KdlS36Component extends Vue {
         };
         data.holidayWorkInfoList.forEach((f) => {
             f.expirationDate = new Date(f.expirationDate).toISOString();
-            f.substituteWorkDate = new Date(f.substituteWorkDate).toISOString();
+            f.holidayWorkDate = new Date(f.holidayWorkDate).toISOString();
         });
 
         vm.$mask('show');
@@ -250,7 +250,7 @@ interface ISubstituteWorkInfo {
     expirationDate: string;
     expiringThisMonth: boolean;
     remainingNumber: number;
-    substituteWorkDate: string;
+    holidayWorkDate: string;
     checked: boolean;
 }
 
