@@ -539,7 +539,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		}
 		
 		//  work-info 
-		bindWorkInfo(res: DisplayInfoOverTime) {
+		bindWorkInfo(res: DisplayInfoOverTime, mode?: ACTION) {
 			const self = this;
 			if (!ko.toJS(self.workInfo)) {
 				let workInfo = {} as WorkInfo;
@@ -611,8 +611,10 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				});
 
 			}
-			self.workInfo().workType(workType);
-			self.workInfo().workTime(workTime);
+			if (_.isNil(mode) || mode == ACTION.CHANGE_DATE) {
+				self.workInfo().workType(workType);				
+				self.workInfo().workTime(workTime);				
+			}
 			self.workInfo().workHours1 = workHours1;
 			self.workInfo().workHours2 = workHours2;
 
@@ -818,6 +820,37 @@ module nts.uk.at.view.kafsample.b.viewmodel {
                     workTime.code = childData.selectedWorkTimeCode;
 					workTime.name = childData.selectedWorkTimeName;
 					self.workInfo().workTime(workTime);
+					
+					let command = {
+						companyId: self.$user.companyId,
+						employeeId: self.$user.employeeId,
+						date: self.application().appDate(),
+						workType: workType.code,
+						workTime: workTime.code,
+						appDispInfoStartupDto: self.appDispInfoStartupOutput(),
+						overtimeAppSet: self.dataSource.infoNoBaseDate.overTimeAppSet
+					};
+					self.$blockui('show')
+					self.$ajax(API.selectWorkInfo, command)
+						.done((res: DisplayInfoOverTime) => {
+							if (res) {
+								self.dataSource.infoWithDateApplicationOp = res.infoWithDateApplicationOp;
+								self.dataSource.calculationResultOp = res.calculationResultOp;
+								self.dataSource.workdayoffFrames = res.workdayoffFrames;
+								self.dataSource.appDispInfoStartup = res.appDispInfoStartup;
+								self.createVisibleModel(self.dataSource);
+						
+								self.bindOverTimeWorks(self.dataSource);
+								self.bindWorkInfo(self.dataSource, ACTION.CHANGE_WORK);
+								self.bindRestTime(self.dataSource);
+								self.bindHolidayTime(self.dataSource, 1);
+								self.bindOverTime(self.dataSource, 1);
+							}
+						})
+						.fail(res => {
+							
+						})
+						.always(() => self.$blockui('hide'));
                 }
             })
 
@@ -2133,6 +2166,45 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		}
 		
 		
+		getBreakTimes() {
+			const self = this;
+			self.$blockui("show");
+			let command = {} as ParamBreakTime;
+			command.companyId = self.$user.companyId;
+			command.workTypeCode = self.workInfo().workType().code;
+			command.workTimeCode = self.workInfo().workTime().code;
+			command.startTime = self.workInfo().workHours1.start();
+			command.endTime = self.workInfo().workHours1.end();
+			command.actualContentDisplayDtos = self.dataSource.appDispInfoStartup.appDispInfoWithDateOutput.opActualContentDisplayLstl;
+			self.$ajax(API.breakTimes, command)
+				.done((res: BreakTimeZoneSetting) => {
+					if (res) {
+						if (!_.isEmpty(res.timeZones)) {
+							_.forEach(self.restTime(), (item: RestTime) => {
+								let data = res.timeZones.shift();
+								if (!_.isNil(data)) {
+									item.start(data.start);
+									item.end(data.end);
+								} else {
+									item.start(null);
+									item.end(null);
+								}
+							});
+						} else {
+							_.forEach(self.restTime(), (item: RestTime) => {
+								item.start(null);
+								item.end(null);
+							});
+						}
+					}
+				})
+				.fail((res: any) => {
+					
+				})
+				.always(() => self.$blockui('hide'));
+		}
+		
+		
 		
 		
 		
@@ -2261,7 +2333,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		calculate: 'at/request/application/overtime/calculate',
 		update: 'at/request/application/overtime/update',
 		checkBefore: 'at/request/application/overtime/checkBeforeUpdate',
-		sendMailAfterUpdateSample: ""
+		breakTimes: 'at/request/application/overtime/breakTimes'
     }
 
 	const BACKGROUND_COLOR = {
@@ -2713,6 +2785,10 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 	export interface HolidayMidNightTime {
 		attendanceTime: number;
 		legalClf: number;
+	}
+	enum ACTION {
+		CHANGE_DATE,
+		CHANGE_WORK,
 	}
 
 }

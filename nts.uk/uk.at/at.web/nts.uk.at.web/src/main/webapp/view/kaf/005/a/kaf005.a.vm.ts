@@ -643,6 +643,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				}
 
 			}
+			// not change in select work type 
 			if (_.isNil(mode) || mode == ACTION.CHANGE_DATE) {
 				self.workInfo().workType(workType);				
 				self.workInfo().workTime(workTime);				
