@@ -132,6 +132,43 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				});
 		}
 		
+		// detect screen go this page
+		createCommandStart() {
+			const self = this;
+			// Menuから起動する場合
+			/*
+			let param1 = {
+
+			} as FirstParam;
+			param1.companyId = self.$user.companyId;
+			// param1.dateOp = '2020/11/13';
+			param1.overtimeAppAtr = self.getOverTimeAtrByUrl();
+			param1.appDispInfoStartupDto = ko.toJS(self.appDispInfoStartupOutput);
+			// param1.startTimeSPR = 100;
+			// param1.endTimeSPR = 200;
+			param1.isProxy = true;
+			
+			*/
+			
+			let command = {
+				companyId: self.$user.companyId,
+				// dateOp: null,
+				overtimeAppAtr: self.getOverTimeAtrByUrl(),
+				appDispInfoStartupDto: ko.toJS(self.appDispInfoStartupOutput),
+				// startTimeSPR: null,
+				// endTimeSPR: null,
+				isProxy: false,
+			};
+			
+			
+			// KDW003から起動する場合
+			
+			
+			
+			
+			
+		}
+		
 		setMode(params: any) {
 			const self = this;
 			if (_.isNil(params)) {
