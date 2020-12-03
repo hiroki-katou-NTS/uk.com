@@ -186,7 +186,13 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					}
                 }
             }).fail(err => {
-	
+				// xử lý lỗi nghiệp vụ riêng
+				vm.handleErrorCustom(err).then((result: any) => {
+					if (result) {
+						// xử lý lỗi nghiệp vụ chung
+						vm.handleErrorCommon(err);
+					}
+				});
             }).always(() => vm.$blockui('hide'));
         }
 
@@ -272,6 +278,15 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			});
 			return dfd.promise();
         }
+
+		handleErrorCommon(failData: any) {
+			const vm = this;
+			if(failData.messageId == "Msg_324") {
+				vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds });
+				return;
+			}	
+			vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds });
+		}
 
 		handleErrorCustom(failData: any): any {
 			const vm = this;
@@ -848,7 +863,13 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 							}
 						})
 						.fail(res => {
-							
+							// xử lý lỗi nghiệp vụ riêng
+							self.handleErrorCustom(res).then((result: any) => {
+								if (result) {
+									// xử lý lỗi nghiệp vụ chung
+									self.handleErrorCommon(res);
+								}
+							});
 						})
 						.always(() => self.$blockui('hide'));
                 }
@@ -942,7 +963,13 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					}
 				})
 				.fail((res: any) => {
-
+					// xử lý lỗi nghiệp vụ riêng
+					self.handleErrorCustom(res).then((result: any) => {
+						if (result) {
+							// xử lý lỗi nghiệp vụ chung
+							self.handleErrorCommon(res);
+						}
+					});
 				})
 				.always(() => self.$blockui("hide"));
 		}
@@ -2199,7 +2226,13 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					}
 				})
 				.fail((res: any) => {
-					
+					// xử lý lỗi nghiệp vụ riêng
+					self.handleErrorCustom(res).then((result: any) => {
+						if (result) {
+							// xử lý lỗi nghiệp vụ chung
+							self.handleErrorCommon(res);
+						}
+					});
 				})
 				.always(() => self.$blockui('hide'));
 		}

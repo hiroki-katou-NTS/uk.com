@@ -259,7 +259,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 
 				})
 				.fail((res: any) => {
-
+					// xử lý lỗi nghiệp vụ riêng
+					self.handleErrorCustom(res).then((result: any) => {
+						if (result) {
+							// xử lý lỗi nghiệp vụ chung
+							self.handleErrorCommon(res);
+						}
+					});
 				})
 				.always(() => self.$blockui('hide'));
 		}
@@ -1957,7 +1963,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 							}
 						})
 						.fail(res => {
-							
+							// xử lý lỗi nghiệp vụ riêng
+							self.handleErrorCustom(res).then((result: any) => {
+								if (result) {
+									// xử lý lỗi nghiệp vụ chung
+									self.handleErrorCommon(res);
+								}
+							});
 						})
 						.always(() => self.$blockui('hide'));
                 }
@@ -2117,7 +2129,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					}
 				})
 				.fail((res: any) => {
-					
+					// xử lý lỗi nghiệp vụ riêng
+					self.handleErrorCustom(res).then((result: any) => {
+						if (result) {
+							// xử lý lỗi nghiệp vụ chung
+							self.handleErrorCommon(res);
+						}
+					});
 				})
 				.always(() => self.$blockui('hide'));
 		}
@@ -2207,7 +2225,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					}
 				})
 				.fail((res: any) => {
-
+					// xử lý lỗi nghiệp vụ riêng
+					self.handleErrorCustom(res).then((result: any) => {
+						if (result) {
+							// xử lý lỗi nghiệp vụ chung
+							self.handleErrorCommon(res);
+						}
+					});
 				})
 				.always(() => self.$blockui("hide"));
 
