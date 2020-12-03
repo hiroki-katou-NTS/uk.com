@@ -4,7 +4,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
@@ -15,6 +17,13 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayWorkRegisterService;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 
+/**
+ * Refactor5
+ * @author huylq
+ *
+ */
+@Stateless
+@Transactional
 public class HolidayWorkRegisterMultiCommandHandler extends CommandHandlerWithResult<RegisterMultiCommand, List<ProcessResult>>{
 
 	@Inject
