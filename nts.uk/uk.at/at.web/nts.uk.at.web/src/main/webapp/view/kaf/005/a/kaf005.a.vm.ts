@@ -776,20 +776,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					i.name = self.$i18n('KAF005_340');
 					itemList.push(i);
 				}	
-				// dummy data 
-				{
-					findResut.reasons = [];
-					findResut.reasons.push({
-						divergenceReasonCode: '1',
-						reason: 'aaaaa',
-						reasonRequired: 1
-					});
-					findResut.reasons.push({
-						divergenceReasonCode: '2',
-						reason: 'bbbb',
-						reasonRequired: 1
-					});
-				}	
 				_.forEach(findResut.reasons, (item: DivergenceReasonSelect) => {
 					let i = {} as ItemModel;
 					i.code = item.divergenceReasonCode;
