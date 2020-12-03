@@ -9,8 +9,8 @@ import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetUnitPric
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.timeunit.ExtBudgetTime;
 import nts.uk.ctx.at.schedule.dom.workschedule.budgetcontrol.budgetperformance.ExtBudgetDaily;
 import nts.uk.ctx.at.schedule.dom.workschedule.budgetcontrol.budgetperformance.ExtBudgetDailyRepository;
-import nts.uk.ctx.at.schedule.pub.workschedule.budgetcontrol.budgetperformance.ExBudgetDailyExport;
-import nts.uk.ctx.at.schedule.pub.workschedule.budgetcontrol.budgetperformance.ExBudgetDailyPub;
+import nts.uk.ctx.at.schedule.pub.workschedule.budgetcontrol.budgetperformance.ExtBudgetDailyExport;
+import nts.uk.ctx.at.schedule.pub.workschedule.budgetcontrol.budgetperformance.ExtBudgetDailyPub;
 import nts.uk.ctx.at.schedule.pub.workschedule.budgetcontrol.budgetperformance.TargetOrgIdenInforExport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
@@ -18,33 +18,56 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Stateless
-public class ExBudgetDailyPubmpl implements ExBudgetDailyPub {
+public class ExBudgetDailyPubmpl implements ExtBudgetDailyPub {
 
     @Inject
     private ExtBudgetDailyRepository repository;
 
     @Override
-    public List<ExBudgetDailyExport> getAllExtBudgetDailyByPeriod(int unit, String workplaceId, String workplaceGroupId, DatePeriod datePeriod) {
+    public List<ExtBudgetDailyExport> getAllExtBudgetDailyByPeriod(TargetOrgIdenInforExport targetOrg, DatePeriod datePeriod) {
 
         List<ExtBudgetDaily> data = repository.getAllExtBudgetDailyByPeriod(
-            new TargetOrgIdenInfor(EnumAdaptor.valueOf(unit, TargetOrganizationUnit.class),
-                workplaceId == null ? Optional.empty() : Optional.of(workplaceId),
-                workplaceGroupId == null ? Optional.empty() : Optional.of(workplaceGroupId)
-                ),datePeriod);
+            new TargetOrgIdenInfor(EnumAdaptor.valueOf(targetOrg.getUnit(), TargetOrganizationUnit.class),
+                targetOrg.getWorkplaceId(),
+                targetOrg.getWorkplaceGroupId()
+            ), datePeriod
+        );
 
-        return data.stream().map(x -> new ExBudgetDailyExport(
-            new TargetOrgIdenInforExport(x.getTargetOrg().getUnit().value,x.getTargetOrg().getWorkplaceId(),x.getTargetOrg().getWorkplaceGroupId()),
-            x.getItemCode().v(),
-            x.getYmd(),
-            x.getActualValue() instanceof ExtBudgetMoney ? ((ExtBudgetMoney) x.getActualValue()).v() :
-            x.getActualValue() instanceof ExtBudgetNumberPerson ? ((ExtBudgetNumberPerson) x.getActualValue()).v() :
-            x.getActualValue() instanceof ExtBudgetNumericalVal ? ((ExtBudgetNumericalVal) x.getActualValue()).v() :
-            x.getActualValue() instanceof ExtBudgetTime ? ((ExtBudgetTime) x.getActualValue()).v() :
-            x.getActualValue() instanceof ExtBudgetUnitPrice ? ((ExtBudgetUnitPrice) x.getActualValue()).v() : 0
+        return data.stream().map(this::convertdata).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ExtBudgetDailyExport> getByLstTargetOrgAndPeriod(List<TargetOrgIdenInforExport> lstTargetOrg, DatePeriod datePeriod) {
+
+        List<TargetOrgIdenInfor> v = lstTargetOrg.stream().map(x -> new TargetOrgIdenInfor(
+            EnumAdaptor.valueOf(x.getUnit(), TargetOrganizationUnit.class),
+            x.getWorkplaceId(),
+            x.getWorkplaceGroupId()
         )).collect(Collectors.toList());
+        List<ExtBudgetDaily> extBudget = repository.getAllExtBudgetDailyByPeriod(
+            lstTargetOrg.stream().map(x -> new TargetOrgIdenInfor(
+                EnumAdaptor.valueOf(x.getUnit(), TargetOrganizationUnit.class),
+                x.getWorkplaceId(),
+                x.getWorkplaceGroupId()
+            )).collect(Collectors.toList()),
+            datePeriod
+        );
+        return extBudget.stream().map(this::convertdata).collect(Collectors.toList());
+    }
+
+    private ExtBudgetDailyExport convertdata(ExtBudgetDaily domain){
+        return new ExtBudgetDailyExport(
+            new TargetOrgIdenInforExport(domain.getTargetOrg().getUnit().value,domain.getTargetOrg().getWorkplaceId(),domain.getTargetOrg().getWorkplaceGroupId()),
+            domain.getItemCode().v(),
+            domain.getYmd(),
+            domain.getActualValue() instanceof ExtBudgetMoney ? ((ExtBudgetMoney) domain.getActualValue()).v() :
+            domain.getActualValue() instanceof ExtBudgetNumberPerson ? ((ExtBudgetNumberPerson) domain.getActualValue()).v() :
+            domain.getActualValue() instanceof ExtBudgetNumericalVal ? ((ExtBudgetNumericalVal) domain.getActualValue()).v() :
+            domain.getActualValue() instanceof ExtBudgetTime ? ((ExtBudgetTime) domain.getActualValue()).v() :
+            domain.getActualValue() instanceof ExtBudgetUnitPrice ? ((ExtBudgetUnitPrice) domain.getActualValue()).v() : 0
+        );
     }
 }

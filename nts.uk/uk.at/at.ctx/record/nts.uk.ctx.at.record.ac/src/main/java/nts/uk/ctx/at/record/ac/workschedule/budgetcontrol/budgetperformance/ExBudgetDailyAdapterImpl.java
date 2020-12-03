@@ -4,7 +4,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.budgetcontrol.budgetperformance.ExBudgetDailyAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.budgetcontrol.budgetperformance.ExBudgetDailyImport;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.budgetcontrol.budgetperformance.TargetOrgIdenInforImport;
-import nts.uk.ctx.at.schedule.pub.workschedule.budgetcontrol.budgetperformance.ExBudgetDailyPub;
+import nts.uk.ctx.at.schedule.pub.workschedule.budgetcontrol.budgetperformance.ExtBudgetDailyPub;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class ExBudgetDailyAdapterImpl implements ExBudgetDailyAdapter {
 
     @Inject
-    private ExBudgetDailyPub exBudgetDailyPub;
+    private ExtBudgetDailyPub exBudgetDailyPub;
 
     @Override
     public List<ExBudgetDailyImport> getAllExtBudgetDailyByPeriod(int unit, String workplaceId, String workplaceGroupId, DatePeriod datePeriod) {

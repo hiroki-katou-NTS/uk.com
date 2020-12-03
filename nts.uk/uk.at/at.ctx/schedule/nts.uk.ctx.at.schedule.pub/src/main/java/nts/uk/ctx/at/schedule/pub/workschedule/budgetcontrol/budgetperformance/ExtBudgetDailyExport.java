@@ -6,7 +6,7 @@ import nts.arc.time.GeneralDate;
 
 @Getter
 @AllArgsConstructor
-public class ExBudgetDailyExport {
+public class ExtBudgetDailyExport {
 
 	/**対象組織識別情報 **/
 	private TargetOrgIdenInforExport targetOrg;
