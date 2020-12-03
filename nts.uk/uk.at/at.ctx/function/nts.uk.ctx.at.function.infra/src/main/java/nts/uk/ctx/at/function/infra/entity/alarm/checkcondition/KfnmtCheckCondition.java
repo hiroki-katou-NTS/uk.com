@@ -160,7 +160,8 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 
 		List<ExtractionRangeBase> extractPeriodList = new ArrayList<>();
 		if (this.pk.alarmCategory == AlarmCategory.DAILY.value
-				|| this.pk.alarmCategory == AlarmCategory.MAN_HOUR_CHECK.value) {
+				|| this.pk.alarmCategory == AlarmCategory.MAN_HOUR_CHECK.value
+				|| this.pk.alarmCategory == AlarmCategory.APPLICATION_APPROVAL.value) {
 			extractPeriodList.add(extractionPeriodDaily.toDomain());
 
 		} else if (this.pk.alarmCategory == AlarmCategory.MONTHLY.value) {
@@ -203,7 +204,7 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 	
 	public static KfnmtCheckCondition toEntity(CheckCondition domain, String companyId, String alarmPatternCode) {
 		
-		if (domain.isDaily() || domain.isManHourCheck()) {	
+		if (domain.isDaily() || domain.isManHourCheck() || domain.isApplication()) {	
 			
 			ExtractionRangeBase extractBase = domain.getExtractPeriodList().get(0);
 			ExtractionPeriodDaily extractionPeriodDaily = (ExtractionPeriodDaily) extractBase;
@@ -296,7 +297,9 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 	
 	public void fromEntity(KfnmtCheckCondition entity) {
 
-		if (entity.pk.alarmCategory == AlarmCategory.DAILY.value || entity.pk.alarmCategory == AlarmCategory.MAN_HOUR_CHECK.value) {
+		if (entity.pk.alarmCategory == AlarmCategory.DAILY.value 
+				|| entity.pk.alarmCategory == AlarmCategory.MAN_HOUR_CHECK.value
+				|| entity.pk.alarmCategory == AlarmCategory.APPLICATION_APPROVAL.value) {
 			
 			if(this.extractionPeriodDaily != null)
 			this.extractionPeriodDaily.fromEntity(entity.extractionPeriodDaily);

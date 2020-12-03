@@ -167,11 +167,11 @@ module nts.uk.at.view.kal004.a.model {
                         }else{
                             listMonthly = categoryInputed.listExtractionMonthly == [] ? [] : _.map(categoryInputed.listExtractionMonthly, (item)=>{ return new share.ExtractionPeriodMonthlyCommand(item)});
                         }
-                        let yearly = categoryInputed.extractionYear ==null ? null : new share.ExtractionRangeYearCommand(categoryInputed.extractionYear);
-                        let averMonth = categoryInputed.extractionAverMonth ==null ? null : new share.ExtractionAverageMonthCommand(categoryInputed.extractionAverMonth);
+                        let yearly = categoryInputed.extractionYear == null ? null : new share.ExtractionRangeYearCommand(categoryInputed.extractionYear);
+                        let averMonth = categoryInputed.extractionAverMonth == null ? null : new share.ExtractionAverageMonthCommand(categoryInputed.extractionAverMonth);
                         shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, daily, unit, listMonthly, yearly, averMonth));
                     } else {
-                        shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, null, null, [], null));
+                        shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, null, null, [], null, null));
                     }
 
                 });
