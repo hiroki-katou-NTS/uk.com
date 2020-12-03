@@ -1482,18 +1482,15 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			indexB = b.indexOf("回");
 
 			if (indexA >= 0 && indexB >= 0) {
-				Double countA = a.substring(0, indexA - 1).isEmpty() ? Double.parseDouble(a.substring(0, indexA)) : Double.parseDouble(a.substring(0, indexA - 1));
-				Double countB = b.substring(0, indexB - 1).isEmpty() ? Double.parseDouble(a.substring(0, indexB)) : Double.parseDouble(b.substring(0, indexB - 1));
+				Double countA = a.substring(0, indexA - 1).isEmpty() ? Double.parseDouble(a.substring(0, indexA - 1)) : Double.parseDouble(a.substring(0, indexA));
+				Double countB = b.substring(0, indexB - 1).isEmpty() ? Double.parseDouble(b.substring(0, indexB - 1)) : Double.parseDouble(b.substring(0, indexB));
 			
 				Double totalCount = countA + countB;
-				DecimalFormat format = new DecimalFormat("###.##");
-				return format.format(totalCount.doubleValue()) + "回";
+				return String.format("%.1f",totalCount.doubleValue()) + "回";
 			} else {
 				String stringAmountA = a.replaceAll(",", "");
 				String stringAmountB = b.replaceAll(",", "");
 
-//				Integer amountA = Integer.parseInt(stringAmountA.toString());
-//				Integer amountB = Integer.parseInt(stringAmountB.toString());
 				Double amountA = Double.parseDouble(stringAmountA.toString());
 				Double amountB = Double.parseDouble(stringAmountB.toString());
 				
@@ -1541,12 +1538,13 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		case COUNT_WITH_DECIMAL:
 			if (Integer.parseInt(item.getValue()) == 0 || item.getValue().isEmpty())
 				return zeroDisplayType == ZeroDisplayType.DISPLAY ? item.getValue() : "";
-			return value.toString() + "回";
+			DecimalFormat formatTime = new DecimalFormat("###.##");
+			return formatTime.format(Double.parseDouble(value.toString())) + "回";
 		case AMOUNT:
 			if (Integer.parseInt(item.getValue()) == 0 || item.getValue().isEmpty())
 				return zeroDisplayType == ZeroDisplayType.DISPLAY ? item.getValue() : "";
 			DecimalFormat format = new DecimalFormat("###,###,###");
-			return format.format(Integer.parseInt(value)) + "日";
+			return format.format(Double.parseDouble(value)) + "日";
 
 		case CODE:
 

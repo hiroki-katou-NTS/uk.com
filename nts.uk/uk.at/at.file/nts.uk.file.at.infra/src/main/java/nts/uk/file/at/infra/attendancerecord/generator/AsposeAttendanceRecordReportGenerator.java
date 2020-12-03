@@ -734,7 +734,7 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 		
 		// fill data column 
 		for (AttendanceRecordReportWeeklyData weeklyData : weeklyDatas) {
-			generateWeeklyData(worksheet, weeklyData, dataRow, dailyWTmpl, dailyBTmpl, weeklyRangeTmpl, fontSize);
+			this.generateWeeklyData(worksheet, weeklyData, dataRow, dailyWTmpl, dailyBTmpl, weeklyRangeTmpl, fontSize);
 		}
 
 		// generate display a confirmation mark in month
