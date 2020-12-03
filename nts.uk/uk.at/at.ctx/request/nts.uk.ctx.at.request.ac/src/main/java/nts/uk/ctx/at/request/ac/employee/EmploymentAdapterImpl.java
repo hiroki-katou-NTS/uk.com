@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.ac.employee;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
@@ -9,6 +10,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.employee.EmploymentA
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.EmploymentHistoryImported;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 
+@Stateless
 public class EmploymentAdapterImpl implements EmploymentAdapter{
 
 	@Inject

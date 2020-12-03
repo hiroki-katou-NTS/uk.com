@@ -39,13 +39,15 @@ public interface HolidayWorkRegisterService {
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF010_休日出勤時間申請.アルゴリズム.2.休出申請（新規）登録処理(複数人).2.休出申請（新規）登録処理(複数人)
 	 * @param companyId
 	 * @param empList
+	 * @param appTypeSetting
 	 * @param appHdWorkDispInfoOutput
 	 * @param appHolidayWork
 	 * @param approvalRootContentMap
 	 * @param appOvertimeDetailMap
 	 * @return
 	 */
-	public List<ProcessResult> registerMulti(String companyId, List<String> empList, AppHdWorkDispInfoOutput appHdWorkDispInfoOutput,
+	public List<ProcessResult> registerMulti(String companyId, List<String> empList, AppTypeSetting appTypeSetting, 
+			AppHdWorkDispInfoOutput appHdWorkDispInfoOutput,
 			AppHolidayWork appHolidayWork, Map<String, ApprovalRootContentImport_New> approvalRootContentMap,
 			Map<String, AppOvertimeDetail> appOvertimeDetailMap);
 

@@ -35,7 +35,7 @@ public class HolidayWorkRegisterMultiCommandHandler extends CommandHandlerWithRe
 			appOvertimeDetailMap.put(entry.getKey(), entry.getValue().toDomain(param.getCompanyId(), ""));
 		}
 		
-		return holidayWorkRegisterService.registerMulti(param.getCompanyId(), param.getEmpList(), 
+		return holidayWorkRegisterService.registerMulti(param.getCompanyId(), param.getEmpList(), param.getAppTypeSetting().toDomain(), 
 				param.getAppHdWorkDispInfo().toDomain(), appHolidayWork, param.getApprovalRootContentMap(), appOvertimeDetailMap);
 	}
 

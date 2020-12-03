@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.command.application.overtime.AppOvertimeDetailCommand;
+import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.applicationsetting.apptypeset.AppTypeSettingCommand;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 
 /**
@@ -48,4 +49,9 @@ public class RegisterMultiCommand {
 	 * List＜社員ID, 時間外時間の詳細＞
 	 */
 	private Map<String, AppOvertimeDetailCommand> appOvertimeDetailMap;
+	
+	/**
+	 * 申請種類別設定
+	 */
+	private AppTypeSettingCommand appTypeSetting;
 }

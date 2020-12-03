@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.application.holidayworktime.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -69,18 +70,40 @@ public class HolidayWorkRegisterServiceImpl implements HolidayWorkRegisterServic
 	}
 	
 	@Override
-	public List<ProcessResult> registerMulti(String companyId, List<String> empList,
+	public List<ProcessResult> registerMulti(String companyId, List<String> empList, AppTypeSetting appTypeSetting,
 			AppHdWorkDispInfoOutput appHdWorkDispInfoOutput, AppHolidayWork appHolidayWork,
 			Map<String, ApprovalRootContentImport_New> approvalRootContentMap,
 			Map<String, AppOvertimeDetail> appOvertimeDetailMap) {
-		List<ProcessResult> processResultList = new ArrayList<ProcessResult>();
+		List<String> applicationIdList = new ArrayList<String>();
+		//	INPUT．申請者リストをループする
+		empList.forEach(empId -> {
+			//	ループする社員の休日出勤申請＝INPUT．休日出勤申請
+			AppHolidayWork empAppHolidayWork = appHolidayWork;
+			empAppHolidayWork.getApplication().setEmployeeID(empId);
+			String appId = IdentifierUtil.randomUniqueId();
+			empAppHolidayWork.getApplication().setAppID(appId);
+			List<ApprovalPhaseStateImport_New> listApprovalPhaseState = approvalRootContentMap.get(empId).getApprovalRootState().getListApprovalPhaseState();
+			empAppHolidayWork.setAppOvertimeDetail(Optional.ofNullable(appOvertimeDetailMap.get(empId)));
+			//	List＜申請ID＞．Add(新しいGUID)
+			applicationIdList.add(appId);
+			
+			//	2-2.新規画面登録時承認反映情報の整理
+			applicationApprovalService.insertApp(empAppHolidayWork.getApplication(), listApprovalPhaseState);
+			registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(appHolidayWork.getApplication().getEmployeeID(), empAppHolidayWork.getApplication());
+			appHolidayWorkRepository.add(empAppHolidayWork);
+			
+			//	暫定データの登録 (pending)
+		});
 		
-//		empList.forEach(empId -> {
-//			AppHolidayWork empAppHolidayWork = appHolidayWork;
-//			empAppHolidayWork.getApplication().setEmployeeID(empId);
-//			empAppHolidayWork.getApplication().setAppID(IdentifierUtil.randomUniqueId());
-//			empAppHolidayWork
-//		});
+		//	List＜申請ID＞をループする
+		List<ProcessResult> processResultList = new ArrayList<ProcessResult>();
+		applicationIdList.forEach(applicationId -> {
+			//2-3.新規画面登録後の処理
+			ProcessResult processResult = newAfterRegister.processAfterRegister(applicationId, 
+					appTypeSetting, 
+					appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().isMailServerSet());
+			processResultList.add(processResult);
+		});
 		return processResultList;
 	}
 	
