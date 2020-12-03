@@ -7,6 +7,7 @@ import nts.uk.ctx.at.record.dom.workrecord.manageactualsituation.approval.monthl
 import nts.uk.ctx.at.record.dom.workrecord.managectualsituation.ApprovalStatus;
 import nts.uk.ctx.at.shared.dom.scherec.alarm.alarmlistactractionresult.AlarmValueDate;
 import nts.uk.ctx.at.shared.dom.scherec.alarm.alarmlistactractionresult.AlarmValueMessage;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureResultDto;
 import nts.uk.shr.com.i18n.TextResource;
 
 import javax.ejb.Stateless;
@@ -34,25 +35,25 @@ public class MonthlyUndecidedCheckService {
      * @return
      */
     public List<ExtractResultDto> check(String cid, Map<String, List<EmployeeInfoImported>> empInfosByWpMap,
-                                        List<Object> closures, YearMonth ym) {
+                                        List<ClosureResultDto> closures, YearMonth ym) {
         List<ExtractResultDto> results = new ArrayList<>();
         // Input．Map＜職場ID、List＜社員情報＞＞をループする
         for (Map.Entry<String, List<EmployeeInfoImported>> empInfosByWp : empInfosByWpMap.entrySet()) {
-            for (Object closure : closures) {
+            for (ClosureResultDto closure : closures) {
                 List<EmployeeInfoImported> empInfos = empInfosByWp.getValue();
                 for (EmployeeInfoImported empInfo : empInfos) {
                     // 対象月の月の承認が済んでいるかチェックする
                     ApprovalStatus status = monthlyApprovalProcess.monthlyApprovalCheck(cid, empInfo.getSid(), ym.v(),
-                            null, null, Optional.empty(), Collections.emptyList());//TODO
+                            closure.getClosureId(), null, Optional.empty(), Collections.emptyList());//TODO Q&A 37402
 
                     // 承認が済んでいるをチェック
                     if (ApprovalStatus.APPROVAL.equals(status)) continue;
 
                     // 抽出結果を作成
-                    ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(TextResource.localize("KAL020_400", "closure name")),//TODO
+                    ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(TextResource.localize("KAL020_400", closure.getClosureName())),
                             new AlarmValueDate(ym.v(), Optional.empty()),
                             null,
-                            Optional.ofNullable(TextResource.localize("KAL020_400", "closure name")),//TODO
+                            Optional.ofNullable(TextResource.localize("KAL020_400", closure.getClosureName())),
                             Optional.empty(),
                             empInfosByWp.getKey());
                     results.add(result);

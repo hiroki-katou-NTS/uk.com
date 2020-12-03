@@ -1,10 +1,13 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.service.beforemonthlyaggregate;
 
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.workplace.EmployeeInfoImported;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.ExtractionMonthlyCon;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.FixedExtractionMonthlyCon;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.service.EmployeeInfoByWorkplaceService;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureResultDto;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.WorkClosureService;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -22,6 +25,8 @@ public class BeforeMonthlyAggregateService {
 
     @Inject
     private EmployeeInfoByWorkplaceService employeeInfoByWorkplaceService;
+    @Inject
+    private WorkClosureService workClosureService;
 
     /**
      * 月次の集計する前のデータを準備
@@ -45,8 +50,8 @@ public class BeforeMonthlyAggregateService {
         }
 
         // 会社の締めを取得する
-        // TODO Q&A 36924
+        List<ClosureResultDto> closures = workClosureService.findClosureByReferenceDate(GeneralDate.today());
 
-        return new MonthlyCheckDataDto(empInfosByWpMap, new ArrayList<>());
+        return new MonthlyCheckDataDto(empInfosByWpMap, closures);
     }
 }

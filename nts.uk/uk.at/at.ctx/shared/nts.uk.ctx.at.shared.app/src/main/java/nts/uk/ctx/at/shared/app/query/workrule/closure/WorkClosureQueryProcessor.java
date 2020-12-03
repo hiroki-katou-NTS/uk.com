@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.app.query.workrule.closure;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -21,6 +22,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.WorkClosureService;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -32,6 +34,10 @@ public class WorkClosureQueryProcessor {
 	/** The closure repo. */
 	@Inject
 	private ClosureRepository closureRepo;
+
+	/** The closure service. */
+	@Inject
+	private WorkClosureService workClosureService;
 	
 	/** The closure emp repo. */
 	@Inject
@@ -46,22 +52,11 @@ public class WorkClosureQueryProcessor {
 	// request 140: 会社の締めを取得する
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<ClosureResultModel> findClosureByReferenceDate(GeneralDate refDate) {
-		// find all active closure
-		List<Closure> closures = this.closureRepo.findAllActive(AppContexts.user().companyId(),
-				UseClassification.UseClass_Use);
-
-		// get result list
-		List<ClosureResultModel> resultList = new ArrayList<>();
-		closures.forEach(clo -> {
-			ClosureHistory history = clo.getHistoryByBaseDate(refDate);
-			ClosureResultModel res = ClosureResultModel.builder()
-					.closureId(history.getClosureId().value)
-					.closureName(history.getClosureName().v())
-					.build();
-			resultList.add(res);
-		});
-
-		return resultList;
+		return workClosureService.findClosureByReferenceDate(refDate).stream().map(x ->
+				new ClosureResultModel(
+						x.getClosureId(),
+						x.getClosureName()))
+				.collect(Collectors.toList());
 	}
 
 	/**

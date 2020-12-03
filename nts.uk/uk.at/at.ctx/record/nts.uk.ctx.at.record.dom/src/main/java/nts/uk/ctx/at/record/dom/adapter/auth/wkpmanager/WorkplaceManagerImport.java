@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.auth.pub.wkpmanager;
+package nts.uk.ctx.at.record.dom.adapter.auth.wkpmanager;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -6,7 +6,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 
 @AllArgsConstructor
 @Getter
-public class WorkplaceManagerExport {
+public class WorkplaceManagerImport {
     /**
      * 職場管理者ID
      */
