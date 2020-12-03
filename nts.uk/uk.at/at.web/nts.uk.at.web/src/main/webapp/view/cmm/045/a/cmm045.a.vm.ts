@@ -185,7 +185,7 @@ module cmm045.a.viewmodel {
              }
             }
 
-            window.onresize = function(event) {
+            window.onresize = function(event: any) {
 				if(self.mode()==1) {
 					$('#status-div').width(955);
 					if(window.innerWidth-90 < 965) {
@@ -194,7 +194,6 @@ module cmm045.a.viewmodel {
 						$('.nts-fixed-header-wrapper').width(937);
 						$('.nts-fixed-header-container').width(920);
 						$('.nts-fixed-header-container').css('max-width', 920);
-						$('nts-fixed-header-wrapper').width(920);
 						$('.nts-fixed-body-wrapper').width(920);
 						$('.nts-fixed-body-table').width(920);
 						$('.nts-fixed-body-container').width(937);
@@ -205,23 +204,28 @@ module cmm045.a.viewmodel {
 						$('.nts-fixed-header-wrapper').width(window.innerWidth-117);
 						$('.nts-fixed-header-container').width(window.innerWidth-134);
 						$('.nts-fixed-header-container').css('max-width', window.innerWidth-134);
-						$('nts-fixed-header-wrapper').width(window.innerWidth-134);
 						$('.nts-fixed-body-wrapper').width(window.innerWidth-134);
 						$('.nts-fixed-body-table').width(window.innerWidth-134);
 						$('.nts-fixed-body-container').width(window.innerWidth-117);
 						$('.nts-fixed-body-container').css('max-width', window.innerWidth-101);
 					}
-					if($('.nts-fixed-header-container').width()-850 < 70) {
-						$('.appContent').width(70);	
-					} else {
-						$('.appContent').width($('.nts-fixed-header-container').width()-850);
-					}
-					if(window.innerHeight-384 < 60) {
+					character.restore('TableColumnWidth1' + __viewContext.user.companyId + __viewContext.user.employeeId).then((obj: any) => {
+	                    if(obj !== undefined) {
+							$('col.appContent').width(obj.width);
+	                    } else {
+	                        if($('.nts-fixed-header-container').width()-812 < 70) {
+								$('col.appContent').width(70);	
+							} else {
+								$('col.appContent').width($('.nts-fixed-header-container').width()-812);
+							}
+	                    }
+	                });
+					if(window.innerHeight-374 < 60) {
 						$('.nts-fixed-body-container').height(60);
 						$('.nts-fixed-body-wrapper').height(44);
 					} else {
-						$('.nts-fixed-body-container').height(window.innerHeight-384);
-						$('.nts-fixed-body-wrapper').height(window.innerHeight-400);
+						$('.nts-fixed-body-container').height(window.innerHeight-374);
+						$('.nts-fixed-body-wrapper').height(window.innerHeight-390);
 					}
 	            } else {
 					$('#status-div').width(880);
@@ -231,7 +235,6 @@ module cmm045.a.viewmodel {
 						$('.nts-fixed-header-wrapper').width(862);
 						$('.nts-fixed-header-container').width(845);
 						$('.nts-fixed-header-container').css('max-width', 845);
-						$('nts-fixed-header-wrapper').width(845);
 						$('.nts-fixed-body-wrapper').width(845);
 						$('.nts-fixed-body-table').width(845);
 						$('.nts-fixed-body-container').width(862);
@@ -242,31 +245,36 @@ module cmm045.a.viewmodel {
 						$('.nts-fixed-header-wrapper').width(window.innerWidth-112);
 						$('.nts-fixed-header-container').width(window.innerWidth-129);
 						$('.nts-fixed-header-container').css('max-width', window.innerWidth-129);
-						$('nts-fixed-header-wrapper').width(window.innerWidth-129);
 						$('.nts-fixed-body-wrapper').width(window.innerWidth-129);
 						$('.nts-fixed-body-table').width(window.innerWidth-129);
 						$('.nts-fixed-body-container').width(window.innerWidth-112);
 						$('.nts-fixed-body-container').css('max-width', window.innerWidth-96);
 					}
-					if($('.nts-fixed-header-container').width()-850 < 70) {
-						$('.appContent').width(70);	
-					} else {
-						$('.appContent').width($('.nts-fixed-header-container').width()-850);
-					}
-					if(window.innerHeight-384 < 60) {
+					character.restore('TableColumnWidth0' + __viewContext.user.companyId + __viewContext.user.employeeId).then((obj: any) => {
+	                    if(obj !== undefined) {
+							$('col.appContent').width(obj.width);
+	                    } else {
+	                        if($('.nts-fixed-header-container').width()-775 < 70) {
+								$('col.appContent').width(70);	
+							} else {
+								$('col.appContent').width($('.nts-fixed-header-container').width()-775);
+							}
+	                    }
+	                });
+					if(window.innerHeight-340 < 60) {
 						$('.nts-fixed-body-container').height(60);
 						$('.nts-fixed-body-wrapper').height(44);
 					} else {
-						$('.nts-fixed-body-container').height(window.innerHeight-384);
-						$('.nts-fixed-body-wrapper').height(window.innerHeight-400);
+						$('.nts-fixed-body-container').height(window.innerHeight-340);
+						$('.nts-fixed-body-wrapper').height(window.innerHeight-356);
 					}
 				}
-//                if($('#grid1').length){//approval
-//                    $("#grid1").igGrid("option", "height", window.innerHeight - 350  + "px");
-//                }
-//                if($('#grid2').length){//application
-//                    $("#grid2").igGrid("option", "height", window.innerHeight - 270  + "px");
-//                }
+				let headerSize = $('.nts-fixed-header-wrapper .ui-widget-header').length,
+					leftValue = 0;
+				for(let i = 0; i < headerSize; i++) {
+					leftValue += $('.nts-fixed-header-wrapper .ui-widget-header')[i].offsetWidth;
+					$('.resize-handle')[i].style.left = leftValue + 'px';		
+				}
             }
 
 			self.selectedIds.subscribe(value => {
@@ -856,7 +864,7 @@ module cmm045.a.viewmodel {
                     $("<col/>")
                         .attr("width", column.width)
                         .appendTo($colgroup)
-                        .addClass(column.key === 'appContent' ? 'appContent' : '');
+                        .addClass(column.key);
 
                     let $th = $("<th/>")
                         .addClass("ui-widget-header");
@@ -1127,7 +1135,7 @@ module cmm045.a.viewmodel {
                     { headerText: getText('CMM045_57'), key: 'reflectionStatus', width: '75px', extraClassProperty: "appStatusName"},
                     { headerText: getText('CMM045_58'), key: 'opApprovalStatusInquiry', width: '95px' }
                 ];
-                let heightAuto = window.innerHeight - 384 > 60 ? window.innerHeight - 384 : 60;
+                let heightAuto = window.innerHeight - 340 > 60 ? window.innerHeight - 340 : 60;
                 // let heightAuto = window.innerHeight - 342 >= 325 ? window.innerHeight - 342 : 325;
                 this.setupGrid({
                     withCcg001: true,
@@ -1407,7 +1415,7 @@ module cmm045.a.viewmodel {
                     { headerText: getText('CMM045_57'), key: 'reflectionStatus', width: '75px', extraClassProperty: "appStatusName"},
                     { headerText: getText('CMM045_58'), key: 'opApprovalStatusInquiry', width: '95px' },
                 ]
-                let heightAuto = window.innerHeight - 384 > 60 ? window.innerHeight - 384 : 60;
+                let heightAuto = window.innerHeight - 364 > 60 ? window.innerHeight - 364 : 60;
                 // let heightAuto = window.innerHeight - 375 > 292 ? window.innerHeight - 375 : 292;
                 this.setupGrid({
                     withCcg001: true,
