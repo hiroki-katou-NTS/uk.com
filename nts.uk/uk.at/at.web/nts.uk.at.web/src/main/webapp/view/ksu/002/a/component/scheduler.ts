@@ -295,7 +295,7 @@ module nts.uk.ui.at.ksu002.a {
                 .scheduler .calendar .calendar-container .month .week .day.same-month.achievement .data-info .work-type .join,
                 .scheduler .calendar .calendar-container .month .week .day.same-month.achievement .data-info .work-type .leave,
                 .scheduler .calendar .calendar-container .month .week .day.same-month.achievement .data-info .work-time input {
-                    color: #00cc00;
+                    color: #008000;
                 }
                 .scheduler .calendar+.calendar {
                     width: 201px;
