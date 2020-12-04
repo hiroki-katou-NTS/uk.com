@@ -12,7 +12,10 @@ const template = `
 											} -->
 						<!-- /ko -->
 					</div>
-					<div style="padding: 10px; display: flex;">
+					<div style="padding: 10px;
+								display: flex;
+								height: calc(100vh - 163px);
+    							overflow: hidden scroll;">
 					
 						<div style="display:inline-block; padding: 30px 18px 30px 30px;"> 
 							<div id="work-place-list"></div>
