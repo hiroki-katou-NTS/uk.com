@@ -29,37 +29,33 @@
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 
-			<com:ko-if bind="selected() === 'Com_Person'">
-				<com:scriptfile path="./component-Normal/ccg001-cpn.js" />
-				<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
-				<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
-				<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
-			</com:ko-if>
-
+			<com:scriptfile path="./component-Normal/ccg001-cpn.js" />
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
 		</ui:define>
 
 		<ui:define name="content">
-			<div data-bind="let: { selected: ko.observable('Com_Company') }">
-				<div id="sidebar-area" style="height: calc(100vh - 90px); float: left" data-bind="component: {
+			<div class="kmk-004a" data-bind="let: { selected: ko.observable('Com_Company') }">
+				<div id="sidebar-area" data-bind="component: {
 						name: 'ko-panel',
-						params:{ 
-							model: selected
-						}
+						params:{ model: selected }
 					}">
 				</div>
-				<div data-bind="if: selected() === 'Com_Company'">
-					<div data-bind="component: { name: 'view-b', params: {} }"></div>
+				<div class="cf content-area">
+					<div data-bind="if: selected() === 'Com_Company'">
+						<div data-bind="component: { name: 'view-b', params: {} }"></div>
+					</div>
+					<div data-bind="if: selected() === 'Com_Workplace'">
+						<div data-bind="component: { name: 'view-c', params: {} }"></div>
+					</div>
+					<div data-bind="if: selected() === 'Com_Person'">
+						<div data-bind="component: { name: 'view-e', params: {} }"></div>
+					</div>
+					<div data-bind="if: selected() === 'Com_Employment'">
+						<div data-bind="component: { name: 'view-d', params: {} }"></div>
+					</div>
 				</div>
-				<div data-bind="if: selected() === 'Com_Workplace'">
-					<div data-bind="component: { name: 'view-c', params: {} }"></div>
-				</div>
-				<div data-bind="if: selected() === 'Com_Person'">
-					<div data-bind="component: { name: 'view-e', params: {} }"></div>
-				</div>
-				<div data-bind="if: selected() === 'Com_Employment'">
-					<div data-bind="component: { name: 'view-d', params: {} }"></div>
-				</div>
-				<div class="cf"></div>
 			</div>
 		</ui:define>
 

@@ -3,18 +3,21 @@
 
 const template = `
 					<div class="sidebar-content-header">
-								<div
-									data-bind="component: {
-								name: 'sidebar-button',
-								params: {
-											screenData:screenData ,
-											screenMode:screenMode
-										}
-							}"></div>
+						<!-- ko component: {
+											    name: "sidebar-button",
+											    params: {
+														screenData:screenData ,
+														screenMode:screenMode 
+												}
+											} -->
+						<!-- /ko -->
 					</div>
-					<div style="padding: 20px; display: flex;">
+					<div style="padding: 10px; 
+								display: flex;
+								height: calc(100vh - 163px);
+    							overflow: hidden scroll;">
 					
-						<div style="display:inline-block;padding:20px;"> 
+						<div style="display:inline-block;padding:30px;"> 
 							<div id="empt-list-setting"></div>
 						</div>
 						<div id="right-layout"> 

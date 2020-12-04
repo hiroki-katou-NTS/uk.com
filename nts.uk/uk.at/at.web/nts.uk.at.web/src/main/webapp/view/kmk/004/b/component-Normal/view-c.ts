@@ -66,6 +66,7 @@ module nts.uk.at.view.kmk004.b {
 					</div>
 				</div>
 			</div>
+			<div class = "cf"></div>
 		<div>
 	`;
 

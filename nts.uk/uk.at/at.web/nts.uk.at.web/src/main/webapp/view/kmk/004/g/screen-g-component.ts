@@ -4,33 +4,36 @@
 const template = `
 					<div class="sidebar-content-header">
 					<!-- ko component: {
-    name: "sidebar-button",
-    params: {
-											screenData:screenData ,
-											screenMode:screenMode 
-										}
-} -->
-<!-- /ko -->
+										    name: "sidebar-button",
+										    params: {
+													screenData:screenData ,
+													screenMode:screenMode 
+											}
+										} -->
+					<!-- /ko -->
 								
 					</div>
-					<div id="right-layout" style="margin: 10px 20px;">
-						<label id="flex-title" data-bind="i18n:'KMK004_268'"></label>
-						<hr/>
-						<div data-bind="component: {
-							name: 'basic-settings-company',
-							params: {
+					<div style="height: calc(100vh - 143px);
+								overflow: hidden scroll;">
+						<div id="right-layout" style="margin: 10px 20px;">
+							<label id="flex-title" data-bind="i18n:'KMK004_268'"></label>
+							<hr/>
+							<div data-bind="component: {
+								name: 'basic-settings-company',
+								params: {
+												screenData:screenData,
+												screenMode:screenMode
+										}
+								}">
+							</div>
+							<div data-bind="component: {
+								name: 'monthly-working-hours',
+								params: {
 											screenData:screenData,
 											screenMode:screenMode
-									}
-							}">
-						</div>
-						<div data-bind="component: {
-							name: 'monthly-working-hours',
-							params: {
-										screenData:screenData,
-										screenMode:screenMode
-									}
-							}">
+										}
+								}">
+							</div>
 						</div>
 					</div>
 	`;
