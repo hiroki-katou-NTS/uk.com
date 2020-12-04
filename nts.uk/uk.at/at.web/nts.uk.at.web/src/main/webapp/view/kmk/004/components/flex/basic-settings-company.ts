@@ -1,7 +1,7 @@
 /// <reference path="../../../../../lib/nittsu/viewcontext.d.ts" />
 
 const template = `
-	<div   style="margin-top: 15px;"  >
+	<div   style="margin-top: 10px;"  >
 		<div data-bind="ntsFormLabel: {inline:true} , i18n: 'KMK004_229'"></div>
 		<button data-bind="click: openKDialog , i18n: 'KMK004_231'" ></button>
 	</div>
