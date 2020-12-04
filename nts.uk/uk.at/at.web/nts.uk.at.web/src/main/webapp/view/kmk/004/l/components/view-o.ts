@@ -15,11 +15,9 @@ module nts.uk.at.view.kmk004.l {
 	</div>
 	
 	<div class="view-o">
+	<div id="com-ccg001"></div>
 	<table>
 		<tr>
-			<td>
-				<div id="com-ccg001"></div>
-			</td>
 			<td id="view-o-left-side">
 				<div id="com-kcp005"></div>
 			</td>
