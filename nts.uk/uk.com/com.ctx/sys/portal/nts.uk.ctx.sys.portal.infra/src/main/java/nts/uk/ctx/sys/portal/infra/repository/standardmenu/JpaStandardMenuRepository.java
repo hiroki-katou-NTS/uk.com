@@ -24,6 +24,7 @@ import nts.uk.shr.com.menu.ShareStandardMenuAdapter;
 @Stateless
 public class JpaStandardMenuRepository extends JpaRepository implements StandardMenuRepository, ShareStandardMenuAdapter {
 	private static final String SEL = "SELECT s FROM CcgstStandardMenu s ";
+	private static final String GET_ALL_STANDARD_MENU1 = "SELECT s FROM CcgstStandardMenu s WHERE s.ccgmtStandardMenuPK.companyId = :companyId";
 	private static final String GET_ALL_STANDARD_MENU = "SELECT s FROM CcgstStandardMenu s WHERE s.ccgmtStandardMenuPK.companyId = :companyId and s.queryString NOT LIKE CONCAT('%',:toppagecode,'%')";
 	private static final String GET_ALL_STANDARD_MENU_BY_SYSTEM = "SELECT s FROM CcgstStandardMenu s WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
 			+ "AND s.ccgmtStandardMenuPK.system = :system AND s.menuAtr = 1";
@@ -153,6 +154,12 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 	public List<StandardMenu> findAll(String companyId) {
 		return this.queryProxy().query(GET_ALL_STANDARD_MENU, CcgstStandardMenu.class)
 				.setParameter("companyId", companyId).setParameter("toppagecode", "toppagecode").getList(t -> toDomain(t));
+	}
+	
+	@Override
+	public List<StandardMenu> findAll1(String companyId) {
+		return this.queryProxy().query(GET_ALL_STANDARD_MENU1, CcgstStandardMenu.class)
+				.setParameter("companyId", companyId).getList(t -> toDomain(t));
 	}
 
 	@Override

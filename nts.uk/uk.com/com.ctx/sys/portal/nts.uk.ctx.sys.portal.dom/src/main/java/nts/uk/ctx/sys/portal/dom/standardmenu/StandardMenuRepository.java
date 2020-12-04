@@ -17,6 +17,13 @@ public interface StandardMenuRepository {
 	 * @return the list
 	 */
 	List<StandardMenu> findAll(String companyId);
+	
+	/**
+	 * 
+	 * @param companyId
+	 * @return
+	 */
+	List<StandardMenu> findAll1(String companyId);
 
 	/**
 	 * added by sonnh1

@@ -204,7 +204,6 @@ module nts.uk.com.view.ccg013.c.viewmodel {
                         list001.push(new ItemModel(idx + 1, id, item.code, item.targetItems, item.displayName, index, item.classification, item.system));
                     }
                 });
-
                 self.items(list001);
                 dfd.resolve(data);
             }).fail(function (res) {
@@ -245,8 +244,7 @@ module nts.uk.com.view.ccg013.c.viewmodel {
                         index++;
                     }
                 } else {
-                    // (item.system == 0 && item.menu_cls == Menu_Cls.TopPage)
-                    if (item.system == self.selectedSystemCode() && item.menu_cls != Menu_Cls.TopPage) {
+                    if ((item.system == self.selectedSystemCode() && item.menu_cls != Menu_Cls.TopPage) || (item.system == 0 && item.menu_cls == Menu_Cls.TopPage)) {
                         var id = nts.uk.util.randomId();
                         list001.push(new ItemModel(idx + 1, id, item.code, item.targetItem, item.name, index, item.menu_cls, item.system));
                         index++;

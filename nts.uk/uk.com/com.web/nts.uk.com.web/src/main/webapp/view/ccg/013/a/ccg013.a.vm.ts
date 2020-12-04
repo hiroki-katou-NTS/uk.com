@@ -57,8 +57,6 @@ module ccg013.a.viewmodel {
                         self.isCreated(true);
                         self.checkDisabled(true);
                         nts.uk.ui.errors.clearAll();
-
-
                     } else {
                         self.isCreated(false);
                         self.checkDisabled(false);
@@ -757,6 +755,7 @@ module ccg013.a.viewmodel {
             // this.titleMenuCode = ko.observable(param.titleMenuCode);
             this.displayOrder = ko.observable(param.displayOrder);
             this.treeMenu = ko.observableArray(_.orderBy(param.treeMenu, 'displayOrder', 'asc').map((x, index) => {
+                console.log(param.treeMenu);
                 if (!x.name) {
                     const name = _.find(param.menuNames, c => c.code === x.code && c.system === x.system && c.classification === x.classification);
                     x.name = name && name.displayName;
