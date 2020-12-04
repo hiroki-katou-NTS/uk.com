@@ -67,9 +67,8 @@ public class ExternalBudgetFinder {
      */
     public List<ExternalBudgetDto> findAll() {
         String companyId = AppContexts.user().companyId();
-        List<ExternalBudgetDto> lstBudget = this.externalBudgetRepo.findAll(companyId).stream()
-                .map(item -> ExternalBudgetDto.fromDomain(item)).collect(Collectors.toList());
-        return lstBudget;
+        return this.externalBudgetRepo.findAll(companyId).stream()
+                .map(ExternalBudgetDto::fromDomain).collect(Collectors.toList());
     }
 
     /**
@@ -79,12 +78,13 @@ public class ExternalBudgetFinder {
      * author: Hoang Yen
      */
     public List<ExternalBudgetDto> findByAtr(ParamExternalBudget param){
-		String companyId = AppContexts.user().companyId();
-		return this.externalBudgetRepo.findByAtr(companyId, param.getBudgetAtr(), param.getUnitAtr())
-				.stream()
-				.map(x -> {
-					return new ExternalBudgetDto(x.getExternalBudgetCd().toString(), x.getExternalBudgetName().toString(), param.getBudgetAtr(), param.getUnitAtr());
-				}).collect(Collectors.toList());
+//		String companyId = AppContexts.user().companyId();
+//		return this.externalBudgetRepo.findByAtr(companyId, param.getBudgetAtr(), param.getUnitAtr())
+//				.stream()
+//				.map(x -> {
+//					return new ExternalBudgetDto(x.getExternalBudgetCd().toString(), x.getExternalBudgetName().toString(), param.getBudgetAtr(), param.getUnitAtr());
+//				}).collect(Collectors.toList());
+        return null;
     }
     
     

@@ -53,6 +53,14 @@ module nts.uk.at.view.ksm008.g {
         }
 
         mounted() {
+            const vm = this;
+
+            if (!vm.$user.role.isInCharge.attendance){
+                $('#panel-1').removeClass('active');
+                $('#panel-2').addClass('active');
+                $('#tabpanel-2').removeClass('disappear');
+                vm.onSelectOrg();
+            }
         }
 
         /**
@@ -86,13 +94,14 @@ module nts.uk.at.view.ksm008.g {
                         if (data.maxConsDays != null) {
                             vm.deleteEnable(true);
                         }
+
+                        $(".cons-day").focus();
                     }
                 })
                 .fail(res => {
                     vm.$dialog.error(res);
                 })
                 .always(() => {
-                    $(".cons-day").focus();
                     vm.$blockui("clear");
                 });
         }
@@ -123,13 +132,14 @@ module nts.uk.at.view.ksm008.g {
                         if (data.maxConsDays != null) {
                             vm.deleteEnable(true);
                         }
+
+                        $(".cons-day").focus();
                     }
                 })
                 .fail(res => {
                     vm.$dialog.error(res);
                 })
                 .always(() => {
-                    $(".cons-day").focus();
                     vm.$blockui("clear");
                 });
         }
@@ -157,13 +167,13 @@ module nts.uk.at.view.ksm008.g {
                     .done(() => {
                         vm.$dialog.info({messageId: "Msg_15"}).then(() => {
                             vm.deleteEnable(true);
+                            $(".cons-day").focus();
                         })
                     })
                     .fail(res => {
                         vm.$dialog.error(res);
                     })
                     .always(() => {
-                        $(".cons-day").focus();
                         vm.$blockui("clear");
                     });
             }
@@ -183,13 +193,13 @@ module nts.uk.at.view.ksm008.g {
                     .done(() => {
                         vm.$dialog.info({messageId: "Msg_15"}).then(() => {
                             vm.deleteEnable(true);
+                            $(".cons-day").focus();
                         })
                     })
                     .fail(res => {
                         vm.$dialog.error(res);
                     })
                     .always(() => {
-                        $(".cons-day").focus();
                         vm.$blockui("clear");
                     });
             }
@@ -210,13 +220,13 @@ module nts.uk.at.view.ksm008.g {
                                 vm.$dialog.info({messageId: "Msg_16"}).then(() => {
                                     vm.maxConsDaysCom(null);
                                     vm.deleteEnable(false);
+                                    $(".cons-day").focus();
                                 })
                             })
                             .fail(res => {
                                 vm.$dialog.error(res);
                             })
                             .always(() => {
-                                $(".cons-day").focus();
                                 vm.$blockui("clear");
                             });
                     }
@@ -231,18 +241,16 @@ module nts.uk.at.view.ksm008.g {
                                 vm.$dialog.info({messageId: "Msg_16"}).then(() => {
                                     vm.maxConsDaysOrg(null);
                                     vm.deleteEnable(false);
+                                    $(".cons-day").focus();
                                 })
                             })
                             .fail(res => {
                                 vm.$dialog.error(res);
                             })
                             .always(() => {
-                                $(".cons-day").focus();
                                 vm.$blockui("clear");
                             });
                     }
-                } else {
-                    $(".cons-day").focus();
                 }
             });
         }
@@ -288,12 +296,12 @@ module nts.uk.at.view.ksm008.g {
                     .done(data => {
                         vm.maxConsDaysOrg(data);
                         vm.deleteEnable(data != null);
+                        $(".cons-day").focus();
                     })
                     .fail(res => {
                         vm.$dialog.error(res);
                     })
                     .always(() => {
-                        $(".cons-day").focus();
                         vm.$blockui("clear");
                     });
             });

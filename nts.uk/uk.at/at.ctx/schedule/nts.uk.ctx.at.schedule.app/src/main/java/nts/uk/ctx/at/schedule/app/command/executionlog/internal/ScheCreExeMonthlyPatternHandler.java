@@ -64,102 +64,103 @@ public class ScheCreExeMonthlyPatternHandler {
 	 * @param mapEmploymentStatus
 	 * @param listWorkingConItem
 	 */
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void createScheduleWithMonthlyPattern(
-			ScheduleCreatorExecutionCommand command,
-			GeneralDate dateInPeriod,
-			WorkCondItemDto workingConditionItem,
-			CreateScheduleMasterCache masterCache,
-			List<BasicSchedule> listBasicSchedule,
-			DateRegistedEmpSche dateRegistedEmpSche,
-			EmploymentInfoImported employmentInfo) {
-		
-		// ドメインモデル「月間勤務就業設定」を取得する
-		Optional<WorkMonthlySetting> workMonthlySetOpt = this.workMonthlySettingRepo.findById(command.getCompanyId(),
-				workingConditionItem.getMonthlyPattern().get().v(), dateInPeriod);
+	// fix bug 111066 - do không thấy sử dụng nữa nên comment lại
+//	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+//	public void createScheduleWithMonthlyPattern(
+//			ScheduleCreatorExecutionCommand command,
+//			GeneralDate dateInPeriod,
+//			WorkCondItemDto workingConditionItem,
+//			CreateScheduleMasterCache masterCache,
+//			List<BasicSchedule> listBasicSchedule,
+//			DateRegistedEmpSche dateRegistedEmpSche,
+//			EmploymentInfoImported employmentInfo) {
+//		
+//		// ドメインモデル「月間勤務就業設定」を取得する
+//		Optional<WorkMonthlySetting> workMonthlySetOpt = this.workMonthlySettingRepo.findById(command.getCompanyId(),
+//				workingConditionItem.getMonthlyPattern().get().v(), dateInPeriod);
+//
+//		// パラメータ．月間パターンをチェックする, 対象日の「月間勤務就業設定」があるかチェックする
+//		
+//		if (!checkMonthlyPattern(command, dateInPeriod, workingConditionItem, workMonthlySetOpt)) {
+//			return;
+//		}
+//
+//		// ドメインモデル「勤務予定基本情報」を取得する
+//		// fix for response
+//		Optional<BasicSchedule> basicScheOpt = listBasicSchedule.stream()
+//				.filter(x -> (x.getEmployeeId().equals(workingConditionItem.getEmployeeId())
+//						&& x.getDate().compareTo(dateInPeriod) == 0))
+//				.findFirst();
+//		if (basicScheOpt.isPresent()) {
+//			BasicSchedule basicSche = basicScheOpt.get();
+//			// 入力パラメータ「実施区分」を判断(kiểm tra parameter 「実施区分」)
+//			if (ImplementAtr.CREATE_NEW_ONLY == command.getContent().getImplementAtr()) {
+//				// 通常作成
+//				return;
+//			}
+//			// 入力パラメータ「再作成区分」を判断(kiểm tra parameter 「再作成区分」)
+//			if (command.getContent().getReCreateContent().getReCreateAtr() == ReCreateAtr.ONLY_UNCONFIRM) {
+//				// 未確定データのみ
+//				// 取得したドメインモデル「勤務予定基本情報」の「予定確定区分」を判断(kiểm tra trường 「予定確定区分」
+//				// của domain 「勤務予定基本情報」 lấy được)
+//				ConfirmedAtr confirmedAtr = basicSche.getConfirmedAtr();
+//				if (confirmedAtr == ConfirmedAtr.CONFIRMED) {
+//					// 確定済み
+//					return;
+//				}
+//			}
+//
+//			// アルゴリズム「スケジュール作成判定処理」を実行する
+//			if (!this.scheduleCreationDeterminationProcess(command, dateInPeriod, basicSche, employmentInfo, workingConditionItem,
+//					masterCache)) {
+//				return;
+//			}
+//			// 登録前削除区分をTrue（削除する）とする(chuyển 登録前削除区分 = true)
+//			// checked2018
+////			command.setIsDeleteBeforInsert(true);
+//		} else {
+//			// EA修正履歴 No1840
+//			// 入力パラメータ「実施区分」を判断
+//			ScheMasterInfo scheMasterInfo = new ScheMasterInfo(null);
+//			BasicSchedule basicSche = new BasicSchedule(null, scheMasterInfo);
+//			if (ImplementAtr.CREATE_WORK_SCHEDULE == command.getContent().getImplementAtr()
+//					&& !this.scheduleCreationDeterminationProcess(command, dateInPeriod, basicSche, employmentInfo,
+//							workingConditionItem, masterCache)) {
+//				return;
+//			}
+//			// need set false if not wrong
+//			// 「勤務予定基本情報」 データなし
+//			// checked2018
+////			command.setIsDeleteBeforInsert(false);
+//		}
 
-		// パラメータ．月間パターンをチェックする, 対象日の「月間勤務就業設定」があるかチェックする
-		
-		if (!checkMonthlyPattern(command, dateInPeriod, workingConditionItem, workMonthlySetOpt)) {
-			return;
-		}
-
-		// ドメインモデル「勤務予定基本情報」を取得する
-		// fix for response
-		Optional<BasicSchedule> basicScheOpt = listBasicSchedule.stream()
-				.filter(x -> (x.getEmployeeId().equals(workingConditionItem.getEmployeeId())
-						&& x.getDate().compareTo(dateInPeriod) == 0))
-				.findFirst();
-		if (basicScheOpt.isPresent()) {
-			BasicSchedule basicSche = basicScheOpt.get();
-			// 入力パラメータ「実施区分」を判断(kiểm tra parameter 「実施区分」)
-			if (ImplementAtr.CREATE_NEW_ONLY == command.getContent().getImplementAtr()) {
-				// 通常作成
-				return;
-			}
-			// 入力パラメータ「再作成区分」を判断(kiểm tra parameter 「再作成区分」)
-			if (command.getContent().getReCreateContent().getReCreateAtr() == ReCreateAtr.ONLY_UNCONFIRM) {
-				// 未確定データのみ
-				// 取得したドメインモデル「勤務予定基本情報」の「予定確定区分」を判断(kiểm tra trường 「予定確定区分」
-				// của domain 「勤務予定基本情報」 lấy được)
-				ConfirmedAtr confirmedAtr = basicSche.getConfirmedAtr();
-				if (confirmedAtr == ConfirmedAtr.CONFIRMED) {
-					// 確定済み
-					return;
-				}
-			}
-
-			// アルゴリズム「スケジュール作成判定処理」を実行する
-			if (!this.scheduleCreationDeterminationProcess(command, dateInPeriod, basicSche, employmentInfo, workingConditionItem,
-					masterCache)) {
-				return;
-			}
-			// 登録前削除区分をTrue（削除する）とする(chuyển 登録前削除区分 = true)
-			// checked2018
-//			command.setIsDeleteBeforInsert(true);
-		} else {
-			// EA修正履歴 No1840
-			// 入力パラメータ「実施区分」を判断
-			ScheMasterInfo scheMasterInfo = new ScheMasterInfo(null);
-			BasicSchedule basicSche = new BasicSchedule(null, scheMasterInfo);
-			if (ImplementAtr.CREATE_WORK_SCHEDULE == command.getContent().getImplementAtr()
-					&& !this.scheduleCreationDeterminationProcess(command, dateInPeriod, basicSche, employmentInfo,
-							workingConditionItem, masterCache)) {
-				return;
-			}
-			// need set false if not wrong
-			// 「勤務予定基本情報」 データなし
-			// checked2018
-//			command.setIsDeleteBeforInsert(false);
-		}
-
-		// 月間勤務就業設定
-		WorkMonthlySetting workMonthlySet = workMonthlySetOpt.get();
-
-		// 在職状態に対応する「勤務種類コード」を取得する
-		WorkTypeGetterCommand commandWorktypeGetter = this.getWorkTypeGetter(command, dateInPeriod, workingConditionItem);
-		Optional<WorktypeDto> workTypeOpt = this.getWorkTypeByEmploymentStatus(workMonthlySet, commandWorktypeGetter,
-				masterCache);
-		if (workTypeOpt.isPresent()) {// 取得エラーなし
-			// 在職状態に対応する「就業時間帯コード」を取得する
-			Pair<Boolean, Optional<String>> pair = this.getWorkingTimeZoneCode(workMonthlySet, commandWorktypeGetter, masterCache);
-			// neu pair.getKey() == false nghia la khong tim duoc worktimeCode, da ghi errorLog, dung xu ly hien tai, chuyen sang ngay ke tiep
-			if(pair.getKey()){
-				// 取得エラーなし
-				// 休憩予定時間帯を取得する
-				// 勤務予定マスタ情報を取得する
-				// 勤務予定時間帯を取得する
-				// アルゴリズム「社員の短時間勤務を取得」を実行し、短時間勤務を取得する // request list #72
-				// 取得した情報をもとに「勤務予定基本情報」を作成する (create basic schedule)
-				// 予定確定区分を取得し、「勤務予定基本情報. 確定区分」に設定する
-				scheCreExeBasicScheduleHandler.updateAllDataToCommandSave(command, dateInPeriod,
-						workingConditionItem.getEmployeeId(), workTypeOpt.get(),
-						pair.getValue().isPresent() ? pair.getValue().get() : null, masterCache, listBasicSchedule,
-						dateRegistedEmpSche);
-			}
-		}
-
-	}
+//		// 月間勤務就業設定
+//		WorkMonthlySetting workMonthlySet = workMonthlySetOpt.get();
+//
+//		// 在職状態に対応する「勤務種類コード」を取得する
+//		WorkTypeGetterCommand commandWorktypeGetter = this.getWorkTypeGetter(command, dateInPeriod, workingConditionItem);
+//		Optional<WorktypeDto> workTypeOpt = this.getWorkTypeByEmploymentStatus(workMonthlySet, commandWorktypeGetter,
+//				masterCache);
+//		if (workTypeOpt.isPresent()) {// 取得エラーなし
+//			// 在職状態に対応する「就業時間帯コード」を取得する
+//			Pair<Boolean, Optional<String>> pair = this.getWorkingTimeZoneCode(workMonthlySet, commandWorktypeGetter, masterCache);
+//			// neu pair.getKey() == false nghia la khong tim duoc worktimeCode, da ghi errorLog, dung xu ly hien tai, chuyen sang ngay ke tiep
+//			if(pair.getKey()){
+//				// 取得エラーなし
+//				// 休憩予定時間帯を取得する
+//				// 勤務予定マスタ情報を取得する
+//				// 勤務予定時間帯を取得する
+//				// アルゴリズム「社員の短時間勤務を取得」を実行し、短時間勤務を取得する // request list #72
+//				// 取得した情報をもとに「勤務予定基本情報」を作成する (create basic schedule)
+//				// 予定確定区分を取得し、「勤務予定基本情報. 確定区分」に設定する
+//				scheCreExeBasicScheduleHandler.updateAllDataToCommandSave(command, dateInPeriod,
+//						workingConditionItem.getEmployeeId(), workTypeOpt.get(),
+//						pair.getValue().isPresent() ? pair.getValue().get() : null, masterCache, listBasicSchedule,
+//						dateRegistedEmpSche);
+//			}
+//		}
+//
+//	}
 
 	/**
 	 * Get work type getter
@@ -286,67 +287,67 @@ public class ScheCreExeMonthlyPatternHandler {
 	/**
 	 * アルゴリズム「スケジュール作成判定処理」を実行する
 	 */
-	public boolean scheduleCreationDeterminationProcess(
-			ScheduleCreatorExecutionCommand command,
-			GeneralDate dateInPeriod,
-			BasicSchedule basicSche,
-			EmploymentInfoImported employmentInfo,
-			WorkCondItemDto workingConditionItem,
-			CreateScheduleMasterCache masterCache) {
-		// 再作成対象区分を判定する
-		if (command.getContent().getReCreateContent().getRebuildTargetAtr() == RebuildTargetAtr.ALL) {
-			return true;
-		}
-		// 異動者を再作成するか判定する
-		boolean valueIsCreate = this.isCreate(workingConditionItem.getEmployeeId(), dateInPeriod,
-				command.getContent().getReCreateContent().getRebuildTargetDetailsAtr().getRecreateConverter(),
-				basicSche.getWorkScheduleMaster().getWorkplaceId(), masterCache.getEmpGeneralInfo());
-		if (valueIsCreate)
-			return true;
-
-		// 休職休業者を再作成するか判定する
-		boolean valueIsReEmpOnLeaveOfAbsence = this.isReEmpOnLeaveOfAbsence(
-				command.getContent().getReCreateContent().getRebuildTargetDetailsAtr().getRecreateEmployeeOffWork(),
-				employmentInfo.getEmploymentState());
-		if (valueIsReEmpOnLeaveOfAbsence) {
-			return true;
-		}
-
-		// 直行直帰者を再作成するか判定する
-		boolean valueIsReDirectBounceBackEmp = this.isReDirectBounceBackEmp(
-				command.getContent().getReCreateContent().getRebuildTargetDetailsAtr().getRecreateDirectBouncer(),
-				workingConditionItem.getAutoStampSetAtr());
-		if (valueIsReDirectBounceBackEmp) {
-			return true;
-		}
-
-		// 短時間勤務者を再作成するか判定する
-		boolean valueIsReShortTime = masterCache.getShortWorkTimeDtos().isReShortTime(workingConditionItem.getEmployeeId(), dateInPeriod,
-				command.getContent().getReCreateContent().getRebuildTargetDetailsAtr().getRecreateShortTermEmployee());
-		if (valueIsReShortTime) {
-			return true;
-		}
-
-		// 勤務種別変更者再作成を判定する
-		boolean valueIsReWorkerTypeChangePerson = masterCache.isReWorkerTypeChangePerson(
-				workingConditionItem.getEmployeeId(),
-				dateInPeriod,
-				command.getContent().getReCreateContent().getRebuildTargetDetailsAtr().getRecreateWorkTypeChange(),
-				basicSche.getWorkScheduleMaster().getBusinessTypeCd());
-		if (valueIsReWorkerTypeChangePerson) {
-			return true;
-		}
-
-		// 手修正保護判定をする
-		boolean valueIsProtectHandCorrect = this.isProtectHandCorrect(workingConditionItem.getEmployeeId(),
-				dateInPeriod,
-				command.getContent().getReCreateContent().getRebuildTargetDetailsAtr().getProtectHandCorrection());
-		if (valueIsProtectHandCorrect) {
-			return true;
-		}
-
-		return false;
-	}
+//	public boolean scheduleCreationDeterminationProcess(
+//			ScheduleCreatorExecutionCommand command,
+//			GeneralDate dateInPeriod,
+//			BasicSchedule basicSche,
+//			EmploymentInfoImported employmentInfo,
+//			WorkCondItemDto workingConditionItem,
+//			CreateScheduleMasterCache masterCache) {
+//		// 再作成対象区分を判定する
+//		if (command.getContent().getReCreateContent().getRebuildTargetAtr() == RebuildTargetAtr.ALL) {
+//			return true;
+//		}
+//		// 異動者を再作成するか判定する
+//		boolean valueIsCreate = this.isCreate(workingConditionItem.getEmployeeId(), dateInPeriod,
+//				command.getContent().getReCreateContent().getRebuildTargetDetailsAtr().getRecreateConverter(),
+//				basicSche.getWorkScheduleMaster().getWorkplaceId(), masterCache.getEmpGeneralInfo());
+//		if (valueIsCreate)
+//			return true;
+//
+//		// 休職休業者を再作成するか判定する
+//		boolean valueIsReEmpOnLeaveOfAbsence = this.isReEmpOnLeaveOfAbsence(
+//				command.getContent().getReCreateContent().getRebuildTargetDetailsAtr().getRecreateEmployeeOffWork(),
+//				employmentInfo.getEmploymentState());
+//		if (valueIsReEmpOnLeaveOfAbsence) {
+//			return true;
+//		}
+//
+//		// 直行直帰者を再作成するか判定する
+//		boolean valueIsReDirectBounceBackEmp = this.isReDirectBounceBackEmp(
+//				command.getContent().getReCreateContent().getRebuildTargetDetailsAtr().getRecreateDirectBouncer(),
+//				workingConditionItem.getAutoStampSetAtr());
+//		if (valueIsReDirectBounceBackEmp) {
+//			return true;
+//		}
+//
+//		// 短時間勤務者を再作成するか判定する
+//		boolean valueIsReShortTime = masterCache.getShortWorkTimeDtos().isReShortTime(workingConditionItem.getEmployeeId(), dateInPeriod,
+//				command.getContent().getReCreateContent().getRebuildTargetDetailsAtr().getRecreateShortTermEmployee());
+//		if (valueIsReShortTime) {
+//			return true;
+//		}
+//
+//		// 勤務種別変更者再作成を判定する
+//		boolean valueIsReWorkerTypeChangePerson = masterCache.isReWorkerTypeChangePerson(
+//				workingConditionItem.getEmployeeId(),
+//				dateInPeriod,
+//				command.getContent().getReCreateContent().getRebuildTargetDetailsAtr().getRecreateWorkTypeChange(),
+//				basicSche.getWorkScheduleMaster().getBusinessTypeCd());
+//		if (valueIsReWorkerTypeChangePerson) {
+//			return true;
+//		}
+//
+//		// 手修正保護判定をする
+//		boolean valueIsProtectHandCorrect = this.isProtectHandCorrect(workingConditionItem.getEmployeeId(),
+//				dateInPeriod,
+//				command.getContent().getReCreateContent().getRebuildTargetDetailsAtr().getProtectHandCorrection());
+//		if (valueIsProtectHandCorrect) {
+//			return true;
+//		}
+//
+//		return false;
+//	}
 
 	/**
 	 * 異動者再作成を判定する

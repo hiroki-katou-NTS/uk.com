@@ -364,13 +364,17 @@ module nts.uk.at.ksm008.f {
                         if (!_.isEmpty(data.empsCanNotSameHolidays)) {
                             let empsCanNotSameHolidays = new Array<string>();
                             _.each(data.empsCanNotSameHolidays, (dataId: string) => {
-                                empsCanNotSameHolidays.push(_.find(vm.selectableEmployeeList(), i => {
+                                let personInfo = _.find(vm.selectableEmployeeList(), i => {
                                     return i.id == dataId
-                                }).code)
+                                });
+                                if (!_.isEmpty(personInfo)) {
+                                    empsCanNotSameHolidays.push(personInfo.code)
+                                }
                             });
                             vm.selectedableCodes(empsCanNotSameHolidays);
 
                             vm.moveItemToRight();
+                            vm.selectedTargetCode([]);
                         }
 
                         if (data.checkDayReference) {
@@ -405,13 +409,12 @@ module nts.uk.at.ksm008.f {
                         vm.updateEnable = true;
                         vm.deleteEnable(true);
                         vm.modifyEnable(false);
+
+                        $("#input-workTypeName").focus();
                     }
                 })
                 .fail(res => {
                     vm.$dialog.error(res);
-                })
-                .always(() => {
-                    $("#input-workTypeName").focus();
                 });
         }
 
@@ -517,6 +520,7 @@ module nts.uk.at.ksm008.f {
                     vm.$dialog.info({messageId: "Msg_15"}).then(() => {
                         vm.getAllBanHolidayTogether().done(() => {
                             vm.selectedCode(vm.selectedCodeDisplay());
+                            $("#input-workTypeName").focus();
                         });
                     });
                 })
@@ -524,7 +528,6 @@ module nts.uk.at.ksm008.f {
                     vm.$dialog.error(res);
                 })
                 .always(() => {
-                    $("#input-workTypeName").focus();
                     vm.$blockui("clear");
                 });
         }
@@ -553,6 +556,7 @@ module nts.uk.at.ksm008.f {
                     vm.$dialog.info({messageId: "Msg_15"}).then(() => {
                         vm.getAllBanHolidayTogether().done(() => {
                             vm.getDetail(vm.selectedCode());
+                            $("#input-workTypeName").focus();
                         })
                     });
                 })
@@ -560,7 +564,6 @@ module nts.uk.at.ksm008.f {
                     vm.$dialog.error(res);
                 })
                 .always(() => {
-                    $("#input-workTypeName").focus();
                     vm.$blockui("clear");
                 });
         }
@@ -581,17 +584,15 @@ module nts.uk.at.ksm008.f {
                         .done(() => {
                             vm.$dialog.info({messageId: "Msg_16"}).then(() => {
                                 vm.getAllBanHolidayTogether(true);
+                                $("#input-workTypeName").focus();
                             })
                         })
                         .fail(res => {
                             vm.$dialog.error(res);
                         })
                         .always(() => {
-                            $("#input-workTypeName").focus();
                             vm.$blockui("clear");
                         });
-                } else {
-                    $("#input-workTypeName").focus();
                 }
             });
         }
@@ -645,15 +646,13 @@ module nts.uk.at.ksm008.f {
                     workplaceGroupId: vm.workplaceGroupId
                 })
                 .done(data => {
-                    if (!_.isEmpty(data)) {
-                        data = _.orderBy(data, ['employeeCode'], ['asc']);
+                    data = _.orderBy(data, ['employeeCode'], ['asc']);
 
-                        vm.selectableEmployeeList(data.map((item: any) => {
-                            return new PersonInfo(item.employeeID, item.employeeCode, item.businessName);
-                        }));
+                    vm.selectableEmployeeList(data.map((item: any) => {
+                        return new PersonInfo(item.employeeID, item.employeeCode, item.businessName);
+                    }));
 
-                        vm.originalSelectableEmployeeList = vm.selectableEmployeeList();
-                    }
+                    vm.originalSelectableEmployeeList = vm.selectableEmployeeList();
 
                     dfd.resolve();
                 })

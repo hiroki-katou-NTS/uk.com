@@ -54,7 +54,7 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
             self.isRedColor = false;
             self.listWorkType = ko.observableArray([]);
             
-            self.width    = ko.observable(500);
+            self.width    = ko.observable(800);
             self.tabIndex = ko.observable('');
             self.disabled = ko.observable(false);
             self.selected = ko.observable(workTimeCodeSave != '' ? workTimeCode : '');
@@ -143,7 +143,9 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                         workTimeCode: null,
                         workTimeName: null,
                         startTime   : '',
-                        endTime     : ''
+                        endTime     : '',
+                        achievements: false,
+                        workHolidayCls: objWorkType[0].workStyle
                     });
                     self.isRedColor = true;
                 } else if (objWorkType[0].workTimeSetting != 2 && self.dataCell.objWorkTime.code == '') {
@@ -155,7 +157,9 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                         workTimeCode: null,
                         workTimeName: null,
                         startTime   : '',
-                        endTime     : ''
+                        endTime     : '',
+                        achievements: false,
+                        workHolidayCls: objWorkType[0].workStyle
                     });
                     self.isRedColor = true;
                 } else if (objWorkType[0].workTimeSetting != 2 && self.dataCell.objWorkTime.code == ' ') {
@@ -167,7 +171,9 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                         workTimeCode: null,
                         workTimeName: null,
                         startTime   : '',
-                        endTime     : ''
+                        endTime     : '',
+                        achievements: false,
+                        workHolidayCls: objWorkType[0].workStyle
                     });
                     self.isRedColor = true;
                 } else {
@@ -182,7 +188,9 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                         workTimeCode: (objWorkTime != null)    ? (objWorkTime.code) : null,
                         workTimeName: (objWorkTime != null     && objWorkTime.code != '') ? (objWorkTime.nameAb) : null,
                         startTime   : (objWorkTime != null > 0 && objWorkTime.code != '') ? (startTime) : '',
-                        endTime     : (objWorkTime != null > 0 && objWorkTime.code != '') ? (endTime) : ''
+                        endTime     : (objWorkTime != null > 0 && objWorkTime.code != '') ? (endTime) : '',
+                        achievements: false,
+                        workHolidayCls: objWorkType[0].workStyle
                     });
                     self.isRedColor = false;
                 }
@@ -197,7 +205,9 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                         workTimeCode: null,
                         workTimeName: null,
                         startTime   : '',
-                        endTime     : ''
+                        endTime     : '',
+                        achievements: false,
+                        workHolidayCls: objWorkType[0].workStyle
                     });
                     self.isRedColor = true;
                 } else if (objWorkType[0].workTimeSetting != 2 && self.dataCell.objWorkTime.code == '') {
@@ -209,7 +219,9 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                         workTimeCode: null,
                         workTimeName: null,
                         startTime   : '',
-                        endTime     : ''
+                        endTime     : '',
+                        achievements: false,
+                        workHolidayCls: objWorkType[0].workStyle
                     });
                     self.isRedColor = true;
                 } else if (objWorkType[0].workTimeSetting != 2 && self.dataCell.objWorkTime.code == ' ') {
@@ -221,7 +233,9 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                         workTimeCode: null,
                         workTimeName: null,
                         startTime   : '',
-                        endTime     : ''
+                        endTime     : '',
+                        achievements: false,
+                        workHolidayCls: objWorkType[0].workStyle
                     });
                     self.isRedColor = true;
                 } else {
@@ -230,7 +244,9 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                         workTypeCode: objWorkType[0].workTypeCode,
                         workTypeName: objWorkType[0].name,
                         workTimeCode: (objWorkTime != null) ? (objWorkTime.code) : null,
-                        workTimeName: (objWorkTime != null &&  objWorkTime.code != '') ? (objWorkTime.nameAb) : null
+                        workTimeName: (objWorkTime != null &&  objWorkTime.code != '') ? (objWorkTime.nameAb) : null,
+                        achievements: false,
+                        workHolidayCls: objWorkType[0].workStyle
                     });
                     self.isRedColor = false;
                 }

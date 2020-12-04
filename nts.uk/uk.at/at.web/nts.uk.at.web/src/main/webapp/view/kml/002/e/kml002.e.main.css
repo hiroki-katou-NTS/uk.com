@@ -1,0 +1,42 @@
+.btnRight {
+  float: right;
+  margin-right: 15px;
+}
+.kml002-e .ntsMoveDataArea {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.kml002-e .text-title {
+  margin-bottom: 10px;
+}
+
+.kml002-e .table-header {
+}
+
+.kml002-e .table-header .row-item {
+  width: 100%;
+  margin-bottom: 5px;
+}
+
+.kml002-e .table-header .row-item .form-label {
+  line-height: 37px;
+}
+
+.kml002-e .ntsSwapList {
+  float: left;
+  margin-right: 20px;
+}
+.kml002-e .swapList-footer {
+  margin-top: 10px;
+}
+.kml002-e .swapList-footer .bg-daily-error {
+  background-color: #fec6c6 !important;
+}
+
+.ntsControl .error-input {
+  border-color: #ff6666;
+}
+#master-content div#contents-area.kml002-e  {
+  padding-left: 16px;
+}
