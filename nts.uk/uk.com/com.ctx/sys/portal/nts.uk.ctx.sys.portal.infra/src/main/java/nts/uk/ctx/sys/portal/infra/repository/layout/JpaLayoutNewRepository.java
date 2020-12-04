@@ -53,6 +53,16 @@ public class JpaLayoutNewRepository extends JpaRepository implements LayoutNewRe
 		// insert
 		this.commandProxy().insert(entity);
 	}
+
+	@Override
+	public void insertAndFlush(LayoutNew domain) {
+		SptmtLayout entity = JpaLayoutNewRepository.toEntity(domain);
+		entity.setCid(AppContexts.user().companyId());
+		entity.setContractCd(AppContexts.user().contractCode());
+		// insert
+		this.commandProxy().insert(entity);
+		this.getEntityManager().flush();
+	}
 	
 	@Override
 	public void update(LayoutNew domain) {

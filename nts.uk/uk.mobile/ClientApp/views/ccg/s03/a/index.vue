@@ -24,7 +24,7 @@
     <!-- A5_0 記念日アコーディオン -->
     <div>
       <!-- A5 記念日アコーディオン -->
-      <div v-for="(item, index) in anniversaries" :key="index">
+      <div v-for="(item, index) in anniversaries" :key="'A' + index">
         <div class="accordion">
           <div ref="classAnniversary" class="card">
             <div class="card-header uk-bg-schedule-focus" @click="onClickAnniversary(index)">
@@ -50,7 +50,7 @@
         </div>
       </div>
       <!-- A6 メッセージアコーディオン -->
-      <div v-for="(item, index) in msgNotices" :key="index">
+      <div v-for="(item, index) in msgNotices" :key="'M' + index">
         <div class="accordion">
           <div ref="classMsgNotice" class="card">
             <div class="card-header uk-bg-schedule-focus" @click="onClickMessageNotice(item.message.creatorID, item.message.inputDate, index)">

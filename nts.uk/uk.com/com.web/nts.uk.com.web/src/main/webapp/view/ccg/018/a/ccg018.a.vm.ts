@@ -44,7 +44,11 @@ module ccg018.a.viewmodel {
             switch (tab.id()) {
                 case 'a1':
                     const viewmodelA1 = new ccg018.a1.viewmodel.ScreenModel(vm.baseModel);
-                    $(resultArea).load(viewmodelA1.screenTemplateUrl(), () => viewmodelA1.start());
+                    $(resultArea).load(viewmodelA1.screenTemplateUrl(), () => {
+                        ko.applyBindings(viewmodelA1, resultArea.children().get(0));
+                        ko.applyBindings(viewmodelA1, resultArea.children().get(1));
+                        viewmodelA1.start();
+                    });
                     break;
                 case 'b':
                     vm.findByCId().then(() => {

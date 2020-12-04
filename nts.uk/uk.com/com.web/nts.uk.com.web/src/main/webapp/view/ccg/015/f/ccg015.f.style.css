@@ -4,15 +4,19 @@
 }
 
 .contents_2 {
-  width: 490px;
-  height: 92%;
-  padding: 5px 5px 5px 5px;
+  height: 100%;
+  padding: 5px 5px 0px 0px;
+  min-width: 458px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .contents_3 {
-  width: 490px;
-  height: 92%;
-  padding: 5px 5px 5px 5px;
+  height: 100%;
+  padding: 5px 5px 0px 0px;
+  min-width: 458px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .widget_contents {

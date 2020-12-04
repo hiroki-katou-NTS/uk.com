@@ -72,10 +72,10 @@ module nts.uk.com.view.ccg008.a.Layout2ComponentViewModel {
           url = "/view/ktg/031/a/ktg031.a.vm.js";
           name = "ktg031-component";
           break;
-        // case 7:
-        //   url = "/view/ccg/005/a/index.xhtml";
-        //   name = '';
-        //   break;
+        case 7:
+          url = "/view/ccg/005/a/index.xhtml";
+          name = '';
+          break;
       }
       return { url: url, name: name };
     }
