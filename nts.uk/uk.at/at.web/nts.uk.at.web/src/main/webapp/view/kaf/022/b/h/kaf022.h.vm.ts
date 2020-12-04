@@ -3,8 +3,8 @@ module nts.uk.at.view.kaf022.h.viewmodel {
 
     export class ScreenModelH {
         itemListB8: KnockoutObservableArray<ItemModel> = ko.observableArray([
-            {code: 1, name: getText('KAF022_100')},
-            {code: 0, name: getText('KAF022_101')}
+            {code: 1, name: getText('KAF022_75')},
+            {code: 0, name: getText('KAF022_82')}
         ]);
         itemListB242: KnockoutObservableArray<ItemModel> = ko.observableArray([
             {code: 1, name: getText('KAF022_75')},

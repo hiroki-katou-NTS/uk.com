@@ -14,9 +14,17 @@ module test.viewmodel {
         initiallySelected: KnockoutObservable<string> = ko.observable( '' );
         disabled: KnockoutObservable<boolean>;
         widthValue: KnockoutObservable<number> = ko.observable( null );
+		selectedValue : KnockoutObservable<number> = ko.observable( 1 );
+		enableSelectCode: KnockoutObservable<boolean> = ko.observable( true );
         option: any;
         constructor() {
             let self = this;
+			self.enableSelectCode = ko.computed(function() {
+                if(self.selectedValue() == 2){
+                    self.initiallySelected('');
+                }
+			    return self.selectedValue() == 1;
+			});
             self.fillter = ko.observable( false );
             self.disabled = ko.observable( false );
             self.input = [];
@@ -73,6 +81,11 @@ module test.viewmodel {
             }
             if ( self.showNone() && self.showDeferred() ) {
                 showMode = 3;
+            }
+
+            if(self.selectedValue()== 1 && (self.initiallySelected() == '' || self.initiallySelected() == undefined)){
+                alert('Please choose initialy selected code');
+                return;
             }
             data.showMode = showMode;
 

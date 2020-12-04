@@ -1,0 +1,256 @@
+/* A1_4 */
+#contents-area {
+	height: auto !important;
+}
+
+#extable-ksu003 {
+	width: auto !important;
+}
+
+.close {
+	float: right;
+	margin-right: 20px !important;
+}
+
+/* A2_1 */
+#period-setting {
+	background-color: #edfac2 !important;
+	border: 1px solid #cccccc !important;
+	width: 310px;
+	height: 25px;
+	margin-left: 37px;
+}
+.ui-igcombo-list{
+	max-height: 130px !important;
+}
+
+#targetDate, #prev-button, #next-button, #functon-area-row2-left,
+	#operation-unit {
+	float: left;
+}
+
+.event-button{
+	width: 325px;
+}
+
+#functon-area-row2-center {
+	width: 450px !important;;
+	margin-top: 25px;
+	float: left;
+}
+
+#functon-area-row2 {
+	min-width: 1185px;
+}
+
+#org-name {
+	margin-left: 50px !important;
+	text-align: center;
+}
+
+#display-format {
+	margin-top: 19px;
+}
+
+#label-display {
+	margin-left: 50px !important;
+}
+
+/* Note color A12 */
+.square {
+	width: 20px;
+	height: 20px;
+	display: inline-block;
+	vertical-align: text-top;
+}
+
+.popup-div {
+	width: 152px;
+	display: inline-block;
+	margin-bottom: 10px
+}
+
+#note {
+	margin-top: 20px;
+}
+
+#note-color {
+	margin-right: 35px !important;
+	float: right;
+}
+
+#combo-box {
+	margin-left: 10px;
+	width: 75px;
+}
+
+#operation-unit {
+	margin-top: 5px;
+	margin-left: 10px;
+}
+
+#functon-area-row3-left {
+	margin-left: 37px;
+}
+
+#check-time, #check-name {
+	margin-left: 40px;
+}
+
+#hr-row2 {
+	margin-left: 20px;
+	margin-top: 18px;
+}
+
+.toLeft {
+	width: 27px;
+	height: 15px;
+	margin-left: 577px;
+	float: left;
+	margin-top: -10px;
+}
+
+#left-button, #left-button2 {
+	margin-left: -6px;
+	margin-top: -5px;
+}
+
+.xcell {
+	text-align: center;
+}
+
+.icon-leftmost {
+	background-image:
+		url(/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/7.png);
+	height: 20px;
+	width: 20px;
+	left: 2px !important;
+	margin-top: -3px !important
+}
+
+.tooltip-styling:before {
+	width: 0 !important;
+	height: 0 !important;
+	position: absolute !important;
+	content: " " !important;
+	border-top: solid transparent 15px !important;
+	border-bottom: solid transparent 6px !important;
+	border-right-style: solid !important;
+	border-right-width: 28px !important;
+	border-right-color: #edfac2 !important;
+	top: 20px !important;
+	left: -28px !important;
+}
+
+.tooltip-styling {
+	background-color: #edfac2 !important;
+	box-shadow: 2px 2px 2px #95A5A6;
+	top: 143px !important; left : 382.984px !important; 
+	border-radius : 20px !important;
+	border: solid 1px #cccccc !important;
+	display: inline-block !important;
+	padding-left: 4px !important;
+	padding-top: 4px !important;
+	left: 375.984px  !important;
+	border-radius: 20px !important;
+}
+
+#extable-ksu003 td, #extable-ksu003 td>* {
+	font-size: 10.5px;
+}
+#extable-ksu003 > div.ex-body-leftmost > table > tbody > tr > td.xseal > button{
+	pointer-events:none;
+	cursor: not-allowed;
+    background-color: #DDDDD2 !important;
+}
+
+#extable-ksu003 > div.ex-body-leftmost > table > tbody > tr > td.xcell > a.x-link:hover {
+	text-decoration: none !important;
+	color:black !important;
+}
+
+#extable-ksu003 > div.ex-body-leftmost > table > tbody > tr > td.xcell > a.x-link {
+	text-align: left;
+}
+.xheader *, .ex-body-detail *, .ex-body-vert-sum *, .ex-body-horz-sum *
+	{
+	text-align: center;
+}
+
+.x-link:hover {
+	cursor: initial !important;
+}
+
+ .x-link {
+	margin-top : 2px;
+	white-space: nowrap;
+} 
+#note-sort {
+	margin-left: 1050px;
+	margin-top: -2px !important;
+}
+
+html {
+	overflow: hidden;
+}
+
+#down-button, #down-button2 {
+	margin-left: -6px;
+}
+
+.toDown {
+	width: 15px;
+	height: 27px;
+	margin-left: -7px;
+	float: left;
+}
+
+#A5_1 {
+	width: 470px;
+	border: solid 6px #fff !important;
+	border-radius: 3.5px !important;
+	box-shadow: 1px 1px 5px 2px #888 !important;
+	padding: 12px;
+	background-color: #F8EFD4 !important;
+	display: none;
+	z-index: 1010 !important;
+}
+
+#sort-label-note {
+	float: left;
+	margin-top: 20px;
+}
+
+.x-button {
+	width: 36px !important;
+	height: 22px !important;
+}
+
+#sort-label-note{
+	width: 215px !important;
+}
+
+#A3_4 {
+	height: 65px;
+	width: 200px !important;
+	border: solid 6px #fff !important;
+	border-radius: 3.5px !important;
+	box-shadow: 1px 1px 5px 2px #888 !important;
+	padding: 12px;
+	background-color: #F8EFD4 !important;
+	display: none;
+	z-index: 1001 !important;
+	width: 230px;
+}
+/** A3_4 */
+#combo-box-sort {
+	float: left;
+	margin-top: -26px;
+	margin-left: 58px;
+	width: 117px;
+}
+
+#org-name {
+	animation: blinkingText 4.2s infinite;
+}
+

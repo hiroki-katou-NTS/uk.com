@@ -293,7 +293,14 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         }
 
         btnRemand() {
-
+			const vm = this;
+			let appID = vm.application().appID(),
+				version = vm.appDispInfoStartupOutput().appDetailScreenInfo.application.version,
+				command = { appID, version };
+			vm.$window.storage('KDL034_PARAM', command);
+			vm.$window.modal('/view/kdl/034/a/index.xhtml').then(() => {
+				vm.loadData();
+			});
         }
 
         updateData() {
