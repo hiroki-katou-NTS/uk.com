@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.pub.standardtime;
 
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exceptsetting.AgreementMonthSettingOutputExport;
 
 public interface AgreementMonthSettingPub {
 	/**

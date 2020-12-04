@@ -1,10 +1,11 @@
-package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exceptsetting;
+package nts.uk.ctx.at.record.pub.standardtime;
 
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exceptsetting.AgreementMonthSetting;
 
 @AllArgsConstructor
 @NoArgsConstructor
