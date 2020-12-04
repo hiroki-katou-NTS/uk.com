@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.dom.scheduletable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Value;
@@ -85,8 +86,9 @@ public class OutputItem implements DomainValue {
 		
 		// inv-3  詳細リストにある勤怠項目が重複しないこと。
 		List<ScheduleTableAttendanceItem> attendanceItemList = details.stream()
-				.filter( row -> row.getAttendanceItem().isPresent())
-				.map( row -> row.getAttendanceItem().get())
+				.map( row -> row.getAttendanceItem())
+				.filter( Optional::isPresent )
+				.map( Optional::get )
 				.collect(Collectors.toList());
 		
 		if ( attendanceItemList.isEmpty() ) {

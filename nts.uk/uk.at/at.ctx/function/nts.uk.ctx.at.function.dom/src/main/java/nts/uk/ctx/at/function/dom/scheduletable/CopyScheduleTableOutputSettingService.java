@@ -25,11 +25,11 @@ public class CopyScheduleTableOutputSettingService {
 			OutputSettingName newName
 			) {
 		
-		ScheduleTableOutputSetting newDomain = copySource.clone(newCode, newName);
-		
 		if ( require.isScheduleTableOutputSettingRegistered(newCode)) {
 			throw new BusinessException("Msg_212");
 		}
+		
+		ScheduleTableOutputSetting newDomain = copySource.clone(newCode, newName);
 		
 		return AtomTask.of( () -> require.insertScheduleTableOutputSetting(newDomain));
 		

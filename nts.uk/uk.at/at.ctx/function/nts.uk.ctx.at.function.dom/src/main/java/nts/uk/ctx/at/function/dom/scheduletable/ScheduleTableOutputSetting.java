@@ -80,10 +80,6 @@ public class ScheduleTableOutputSetting implements DomainAggregate{
 			OutputSettingCode newCode,
 			OutputSettingName newName) {
 		
-		if ( this.code.v().equals(newCode.v())) throw new BusinessException("Msg_355");
-		if ( this.name.v().equals(newName.v())) throw new BusinessException("Msg_705");
-			
-		
 		return new ScheduleTableOutputSetting(
 				newCode, 
 				newName, 

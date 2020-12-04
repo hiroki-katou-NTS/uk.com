@@ -15,7 +15,7 @@ public enum ScheduleTablePersonalInfoItem {
 	EMPLOYMENT(1),
 	
 	/** 職位 */
-	POSITION(2),
+	JOBTITLE(2),
 	
 	/** 分類 */
 	CLASSIFICATION(3),

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.dom.scheduletable;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ScheduleTableOutputSettingRepository {
 	
@@ -32,7 +33,7 @@ public interface ScheduleTableOutputSettingRepository {
 	 * @param code
 	 * @return
 	 */
-	ScheduleTableOutputSetting get(String companyId, OutputSettingCode code);
+	Optional<ScheduleTableOutputSetting> get(String companyId, OutputSettingCode code);
 	
 	/**
 	 * get*
