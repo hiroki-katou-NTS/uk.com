@@ -15,15 +15,20 @@
 }
 
 .view-c-kmk004 .left-content {
-	width: 515px;
+	width: 470px;
 	padding: 12px;
 	float: left;
+	margin-top: 20px;
 }
 
 .view-c-kmk004 .right-content {
 	width: 436px;
 	float: left;
 	margin-left: 38px;
+}
+
+.view-c-kmk004 .left-content #nts-component-tree{
+	padding: 20px !important;
 }
 
 .view-c-kmk004 .right-content p {
@@ -60,7 +65,6 @@
 	width: 190px;
 	margin-top: 10px;
 }
-
 
 /* View D */
 .view-d-kmk004 {
@@ -191,7 +195,9 @@
     max-width: 100px;
 	text-align: center;
 	background: #E0F59E;
+
 }
+
 .list-time .label-row1 {
 	border: solid 1px gray;
 	padding-top: 3px;
@@ -230,10 +236,8 @@
 .list-time .lable-input {
 	width: 60px;
 	text-align: center;
-	height: 13px;
-
-	border: 1px solid #999999;
-    padding: 5px 10px;
+    border: 1px solid #999999;
+    padding: 5px 20px;
     font-family: "DroidSansMono", "Meiryo";
     border-radius: 3px;
     overflow: visible;
