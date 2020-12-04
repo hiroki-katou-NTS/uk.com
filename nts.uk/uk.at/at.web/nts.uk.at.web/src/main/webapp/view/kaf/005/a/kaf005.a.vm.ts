@@ -630,13 +630,42 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			{
 				let item = new OvertimeWork();
 				let currentMonth = res.infoNoBaseDate.agreeOverTimeOutput.currentMonth;
+				// A2_14
 				item.yearMonth = ko.observable(currentMonth);
+				// A2_15 // A2_16
+				if (res.infoNoBaseDate.agreeOverTimeOutput.isCurrentMonth) {
+					let timeLimit = res.infoNoBaseDate.agreeOverTimeOutput.currentTimeMonth.legalMaxTime.threshold.erAlTime.error;
+					let timeActual = res.infoNoBaseDate.agreeOverTimeOutput.currentTimeMonth.legalMaxTime.agreementTime;
+					item.limitTime = ko.observable(timeLimit);
+					item.actualTime = ko.observable(timeActual);				
+				} else {
+					let timeLimit = res.infoNoBaseDate.agreeOverTimeOutput.currentTimeMonth.agreementTime.threshold.erAlTime.error;
+					let timeActual = res.infoNoBaseDate.agreeOverTimeOutput.currentTimeMonth.agreementTime.agreementTime;
+					item.limitTime = ko.observable(timeLimit);
+					item.actualTime = ko.observable(timeActual);
+				}
+				
+				
+				
 				overTimeWorks.push(item);
 			}
 			{
 				let item = new OvertimeWork();
 				let nextMonth = res.infoNoBaseDate.agreeOverTimeOutput.nextMonth;
 				item.yearMonth = ko.observable(nextMonth);
+				
+				// A2_20 // A2_21
+				if (res.infoNoBaseDate.agreeOverTimeOutput.isNextMonth) {
+					let timeLimit = res.infoNoBaseDate.agreeOverTimeOutput.nextTimeMonth.legalMaxTime.threshold.erAlTime.error;
+					let timeActual = res.infoNoBaseDate.agreeOverTimeOutput.nextTimeMonth.legalMaxTime.agreementTime;
+					item.limitTime = ko.observable(timeLimit);
+					item.actualTime = ko.observable(timeActual);				
+				} else {
+					let timeLimit = res.infoNoBaseDate.agreeOverTimeOutput.nextTimeMonth.agreementTime.threshold.erAlTime.error;
+					let timeActual = res.infoNoBaseDate.agreeOverTimeOutput.nextTimeMonth.agreementTime.agreementTime;
+					item.limitTime = ko.observable(timeLimit);
+					item.actualTime = ko.observable(timeActual);
+				}
 				overTimeWorks.push(item);
 			}
 			self.overTimeWork(overTimeWorks);
@@ -2536,11 +2565,22 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		applicationDetailSetting: any;
 	}
 	export interface AgreeOverTimeOutput {
-		detailCurrentMonth: AgreementTimeImport;
-		detailNextMonth: AgreementTimeImport;
-		currentMonth: string;
+		isCurrentMonth: boolean;
+		currentTimeMonth: any;
+		currentMonth: string
+		isNextMonth: boolean;
+		nextTimeMonth: any;
 		nextMonth: string;
 	}
+	export interface AgreementTimeOfManagePeriod {
+		agreementTime: any;
+		sid: string;
+		status: number;
+		agreementTimeBreakDown: any;
+		yearMonth: string;
+		legalMaxTime: any;
+	}
+	
 	export interface AgreementTimeImport {
 		employeeId: string;
 		confirmed?: AgreeTimeOfMonthExport;
