@@ -7,6 +7,7 @@ module nts.uk.at.view.kdl045.a {
     import alertError = nts.uk.ui.dialog.alertError;
     import shareModelData = nts.uk.at.view.kdl045.share.model;
     import commonKmk003 = nts.uk.at.view.kmk003.a.service.model.common;
+	import formatById = nts.uk.time.format.byId;
 
     export module viewmodel {
         export class ScreenModel {
@@ -571,7 +572,7 @@ module nts.uk.at.view.kdl045.a {
                                 if(result[i].timeSpan.startTime == result[i].timeSpan.endTime){
                                     $(itemSelect).ntsError('set',{ messageId: 'Msg_2058', messageParams: [result[i].nameError,result[i].timeInput] });
                                 }else{
-                                    $(itemSelect).ntsError('set',{ messageId: 'Msg_1772', messageParams: [result[i].nameError,result[i].timeSpan.startTime,result[i].timeSpan.endTime] });    
+                                    $(itemSelect).ntsError('set',{ messageId: 'Msg_1772', messageParams: [result[i].nameError,formatById("Clock_Short_HM", result[i].timeSpan.startTime),formatById("Clock_Short_HM", result[i].timeSpan.endTime)] });    
                                 }
                             }
                         }    
