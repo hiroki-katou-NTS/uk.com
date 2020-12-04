@@ -14,7 +14,10 @@ const template = `
 					</div>
 					
 					<div id="com-ccg001"></div>
-					<div style="margin: 10px 0px 0px 75px; display:flex">
+					<div style="margin: 10px 0px 0px 75px; 
+								display:flex;
+								height: calc(100vh - 153px);
+    							overflow: hidden scroll;">
 					
 						<div style="display:inline-block"> 
 								<div id="employee-list"></div>

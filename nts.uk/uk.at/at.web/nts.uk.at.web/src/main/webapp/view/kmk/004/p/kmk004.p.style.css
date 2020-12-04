@@ -1,10 +1,10 @@
 #title {
 	font-size: 20px;
-	padding-top: 5px;
+	padding-top: 10px;
 }
 
 #contents-area {
-	padding: 0 15px 0 15px;
+	padding: 0 20px 0 20px;
 }
 
 .input_time {
@@ -33,9 +33,9 @@
 }
 
 #message {
-	color: #0066CC;
+	color: #0000ff;
 	text-align: right;
-	height: 18px;
+	height: 20px;
     display: block;
 }
 .child-row {

@@ -1,13 +1,17 @@
-#sidebar-area ~ div {
+.kmk-004a #sidebar-area {
 	float: left;
-	height: 100vh - 90px;
+	height: calc(100vh - 142px);
 }
 
+.kmk-004a .content-area {
+	margin-left: 120px;
+}
 
 /*ViewC*/
 .view-c-kmk004 {
-	padding: 24px;
-	float: left;
+	padding: 10px 20px;
+	height: calc(100vh - 161px);
+    overflow: hidden scroll;
 }
 
 .view-c-kmk004 .left-content {
@@ -61,8 +65,9 @@
 
 /* View D */
 .view-d-kmk004 {
-	padding: 24px;
-	float: left;
+	padding: 10px 20px;
+	height: calc(100vh - 161px);
+    overflow: hidden scroll;
 }
 
 .view-d-kmk004 .left-content {
@@ -112,8 +117,9 @@
 
 /* View E */
 .view-e-kmk004 {
-	float: left;
-	margin-top: 22px;
+	padding: 10px 20px;
+	height: calc(100vh - 161px);
+    overflow: hidden scroll;
 }
 
 .view-e-kmk004 .left-content {
@@ -171,68 +177,85 @@
 
 /* ListTimeWork */
 .list-time .label-column1 {
-	padding: 3px;
-	border-left: solid 1px #AAAAAA;
-	border-right: solid 1px #AAAAAA;
-	border-bottom: solid 1px #AAAAAA;
+	border-left: solid 1px gray;
+	border-right: solid 1px gray;
+	border-bottom: solid 1px gray;
+	padding-top: 3px;
+    padding-bottom: 3px;
+    padding-right: 10px;
+    padding-left: 10px;
+    min-width: 60px;
+    max-width: 100px;
 	text-align: center;
-	width: 50px;
 	background: #E0F59E;
-	max-width: 50px;
-	height: 24px;
 }
 .list-time .label-row1 {
-	border: solid 1px #AAAAAA;
-	padding: 3px;
+	border: solid 1px gray;
+	padding-top: 3px;
+    padding-bottom: 3px;
+    padding-right: 10px;
+    padding-left: 10px;
+    min-width: 60px;
+	max-width: 100px;
 	text-align: center;
 	background: #97D155;
-	max-width: 50px;
-	height: 24px;
 }
 .list-time .label-column2 {
-	padding: 3px;
-	border-right: solid 1px #AAAAAA;
-	border-bottom: solid 1px #AAAAAA;
+	border-right: solid 1px gray;
+	border-bottom: solid 1px gray;
 	text-align: center;
-	width: 125px;
-	max-width: 125px;
-	height: 24px;
+	padding-top: 3px;
+    padding-bottom: 3px;
+    padding-right: 10px;
+    padding-left: 10px;
+    min-width: 60px;
+    max-width: 100px;
 }
 .list-time .label-row2 {
-	border-top: solid 1px #AAAAAA;
-	border-right: solid 1px #AAAAAA;
-	border-bottom: solid 1px #AAAAAA;
-	padding: 3px;
+	border-top: solid 1px gray;
+	border-right: solid 1px gray;
+	border-bottom: solid 1px gray;
+	padding-top: 3px;
+    padding-bottom: 3px;
+    padding-right: 10px;
+    padding-left: 10px;
+    min-width: 60px;
+	max-width: 100px;
 	text-align: center;
 	background: #97D155;
-	max-width: 125px;
-	height: 24px;
 }
 .list-time .lable-input {
 	width: 60px;
 	text-align: center;
 	height: 13px;
+
+	border: 1px solid #999999;
+    padding: 5px 10px;
+    font-family: "DroidSansMono", "Meiryo";
+    border-radius: 3px;
+    overflow: visible;
 }
 
 .list-time .check-row1 {
-	border-top: solid 1px #AAAAAA;
-	border-left: solid 1px #AAAAAA;
-	border-bottom: solid 1px #AAAAAA;
+	border-top: solid 1px gray;
+	border-left: solid 1px gray;
+	border-bottom: solid 1px gray;
 	background: #97D155;
 }
 
 .list-time .check-column1 {
 	padding: 3px;
-	border-left: solid 1px #AAAAAA;
-	border-bottom: solid 1px #AAAAAA;
+	border-left: solid 1px gray;
+	border-bottom: solid 1px gray;
 	text-align: center;
 }
 
 /* View B */
 
 .view-b {
-	margin-left: 45px;
-	margin-top: 24px;
+	padding: 10px 20px;
+	height: calc(100vh - 161px);
+    overflow: hidden scroll;
 }
 
 /* .view-b .child {

@@ -18,7 +18,7 @@ module nts.uk.at.view.kmk004.l {
                 rows: 5,
                 columns: [
                     { key: 'statusValue', length: 1 },
-                    { key: 'value', length: 2 }
+                    { key: 'value', length: 4 }
                 ]}"></div>
         </div>
         <div class="note" data-bind="i18n: 'KMK004_212'"></div>

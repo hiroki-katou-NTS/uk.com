@@ -9,60 +9,64 @@ module nts.uk.at.view.kmk004.l {
 		<div class="title" data-bind="i18n: 'Com_Workplace'"></div>
 		<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmk/004/a/index.xhtml' },i18n: 'KMK004_224'"></a>
 		<button class="proceed" data-bind="i18n: 'KMK004_225'"></button>
+		<button data-bind="visible: true, i18n: 'KMK004_226'"></button>
 		<button class="danger" data-bind="i18n: 'KMK004_227'"></button>
 	</div>
 	
+	<div>
 	<div class="view-m">
-	<table>
-		<tr>
-			<td id="view-m-left-side">
-				<div id="workplace-list"></div>
-			</td>
-			
-			<td id="right-side">
-				<div class="view-l">
-					<div class="header-l">
-						<div id="title", data-bind="i18n: 'KMK004_307'"></div>
-						<hr></hr>
-						<div class ="selected-item">
-							<label data-bind= "text: selectedItemText"></label>
-						</div>
-						
-						<div class="header_title">
-							<div data-bind="ntsFormLabel: {}, i18n: 'KMK004_229'"></div>
-							<button data-bind="i18n: 'KMK004_338', click: openViewP"></button>
-						</div>
-						<div class="header_content">
-							<div data-bind="component: {
-								name: 'view-l-basic-setting',
-								params: params
-							}"></div>
-						</div>
-						<div data-bind="ntsFormLabel: {}, i18n: 'KMK004_232'"></div>
-					</div>
-					<div class="content">
-						<button id = "btn_year" data-bind="i18n: 'KMK004_233'"></button>
-							<div class="div_row"> 
-								<div class= "box-year" data-bind="component: {
-									name: 'box-year',
-									params:{ 
-										selectedYear: selectedYear,
-										change: changeYear
-									}
-								}"></div>
-								
-								<div class= "view-l-times-table" data-bind="component: {
-									name: 'view-l-times-table',
-									params:{ 
-								
-									}
+		<table>
+			<tr>
+				<td id="view-m-left-side">
+					<div id="workplace-list"></div>
+				</td>
+				
+				<td id="right-side">
+					<div class="view-l">
+						<div class="header-l">
+							<div id="title", data-bind="i18n: 'KMK004_307'"></div>
+							<hr></hr>
+							<div class ="selected-item">
+								<label data-bind= "text: selectedItemText"></label>
+							</div>
+							
+							<div class="header_title">
+								<div data-bind="ntsFormLabel: {}, i18n: 'KMK004_229'"></div>
+								<button data-bind="i18n: 'KMK004_338', click: openViewP"></button>
+							</div>
+							<div class="header_content">
+								<div data-bind="component: {
+									name: 'view-l-basic-setting',
+									params: params
 								}"></div>
 							</div>
+							<div data-bind="ntsFormLabel: {}, i18n: 'KMK004_232'"></div>
+						</div>
+						<div class="content">
+							<button id = "btn_year" data-bind="i18n: 'KMK004_233'"></button>
+								<div class="div_row"> 
+									<div class= "box-year" data-bind="component: {
+										name: 'box-year',
+										params:{ 
+											selectedYear: selectedYear,
+											change: changeYear
+										}
+									}"></div>
+									
+									<div class= "view-l-times-table" data-bind="component: {
+										name: 'view-l-times-table',
+										params:{ 
+									
+										}
+									}"></div>
+								</div>
+						</div>
 					</div>
-				</div>
-			</td>
-		</tr>
-	</table>
+				</td>
+			</tr>
+		</table>
+		</div>
+	</div>
 	`;
 
 	interface UnitModel {
