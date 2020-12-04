@@ -56,7 +56,7 @@ public class AppOvertimeFinder {
 	
 	@Inject
 	private ICommonAlgorithmOverTime commonAlgorithmOverTime;
-	private EmployeeRequestAdapter employeeAdapter;
+//	private EmployeeRequestAdapter employeeAdapter;
 	
 	@Inject
 	private WorkTimeSettingRepository workTimeRepository;
@@ -73,35 +73,35 @@ public class AppOvertimeFinder {
 	@Inject
 	private OvertimeWorkFrameRepository overtimeFrameRepository;
 	
-	@Inject
-	private IOvertimePreProcess iOvertimePreProcess;
-	
-	@Inject
-	private OvertimeRepository overtimeRepository;
+//	@Inject
+//	private IOvertimePreProcess iOvertimePreProcess;
+//	
+//	@Inject
+//	private OvertimeRepository overtimeRepository;
 	@Inject
 	private OvertimeSixProcess overtimeSixProcess;
-	@Inject
-	private OvertimeFourProcess overtimeFourProcess;
-	@Inject
-	private OtherCommonAlgorithm otherCommonAlgorithm;
-	@Inject
-	private DailyAttendanceTimeCaculation dailyAttendanceTimeCaculation;
+//	@Inject
+//	private OvertimeFourProcess overtimeFourProcess;
+//	@Inject
+//	private OtherCommonAlgorithm otherCommonAlgorithm;
+//	@Inject
+//	private DailyAttendanceTimeCaculation dailyAttendanceTimeCaculation;
 	@Inject
 	private OvertimeAppSetRepository appOvertimeSettingRepository;
 	@Inject
 	private WorkingConditionItemRepository workingConditionItemRepository;
 	
-	@Inject
-	private AtEmployeeAdapter atEmployeeAdapter;
+//	@Inject
+//	private AtEmployeeAdapter atEmployeeAdapter;
 	
-	@Inject
-	private CommonOvertimeHoliday commonOvertimeHoliday;
+//	@Inject
+//	private CommonOvertimeHoliday commonOvertimeHoliday;
 
 	@Inject
 	private PredetemineTimeSettingRepository predetemineTimeRepo;
 	
-	@Inject
-	private PreActualColorCheck preActualColorCheck;
+//	@Inject
+//	private PreActualColorCheck preActualColorCheck;
 	
 	/**
 	 * Refactor5
@@ -262,6 +262,7 @@ public class AppOvertimeFinder {
 					(param.actualContentDisplayDtos.get(0).getOpAchievementDetail() == null ?
 							Optional.empty() : Optional.ofNullable(param.actualContentDisplayDtos.get(0).getOpAchievementDetail().toDomain()))
 				));
+	}	
 	/**
 	 * フレックス時間を表示するかチェック
 	 * 

@@ -12,6 +12,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.over
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @NoArgsConstructor
