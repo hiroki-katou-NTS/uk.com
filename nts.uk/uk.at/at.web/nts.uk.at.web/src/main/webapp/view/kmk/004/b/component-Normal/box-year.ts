@@ -51,10 +51,10 @@ module nts.uk.at.view.kmk004.b {
 
         reloadData(selectedIndex: number = 0) {
             const vm = this;
-            const faceData: IYear[] = [{status: true, statusValue : '＊', value: 2017},
-            {status: false, statusValue : '', value: 2016}
-            ,{status: true, statusValue : '', value: 2018}
-            ,{status: true, statusValue : '', value: 2020}];
+            const faceData: IYear[] = [{status: true, statusValue : '＊', value: 2017+'年度'},
+            {status: false, statusValue : '', value: 2016 +'年度'}
+            ,{status: true, statusValue : '', value: 2018+'年度'}
+            ,{status: true, statusValue : '', value: 2020+'年度'}];
             // const faceData: IYear[] = [];
 
             if (faceData.length > 0) {

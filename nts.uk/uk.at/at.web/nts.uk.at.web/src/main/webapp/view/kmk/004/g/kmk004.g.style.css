@@ -3,6 +3,7 @@
 #year-list {
 	/* display: inline-block; */
 	/* width: 140px; */
+	
 }
 
 #monthly-list {
@@ -10,7 +11,7 @@
 	margin-left: 20px;
 }
 
-#show-explan, #monthly-list{
+#show-explan, #monthly-list {
 	float: left;
 }
 
@@ -19,9 +20,14 @@
 	border-collapse: collapse;
 }
 
+.basic-settings:not(:first-child) {
+	margin-top: -1px;
+	padding-top: -1px;
+}
+
 .basic-settings th, .basic-settings td {
 	border: solid grey 1px;
-	padding: 3px;
+	padding: 3px 10px;
 	text-align: center;
 }
 

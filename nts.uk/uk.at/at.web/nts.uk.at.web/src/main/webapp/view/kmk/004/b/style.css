@@ -272,7 +272,7 @@
 } */
 
 .view-b .header-b {
-	width: 430px;
+	width: 468px;
 }
 
 .view-b .header-b .title {
@@ -281,7 +281,7 @@
 
 .view-b .header-b ~ div {
 	font-size: 10px;
-	margin-left: 15px;
+	margin-left: 10px;
 }
 
 .view-b .header-b .header_title {
@@ -295,7 +295,7 @@
 
 .view-b .content {
 	text-align: left;
-	margin-top: 15px;
+	margin-top: 10px;
 }
 
 .view-b .content ~ div {
