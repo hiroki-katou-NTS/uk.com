@@ -165,11 +165,7 @@ public class AffiliationInforOfDailyAttd implements DomainObject  {
 			throw new BusinessException("Msg_430");
 		}
 		
-		if ( ! workingCondition.get().getTimeApply().isPresent() ) {
-			return Optional.empty();
-		}
-		
-		return Optional.of(workingCondition.get().getTimeApply().get());
+		return workingCondition.get().getTimeApply();
 	}
 	
 	public static interface Require {

@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Optional;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import mockit.Expectations;
@@ -18,7 +17,6 @@ import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobTitleHisImport;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisImport;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
-import static mockit.Deencapsulation.invoke;
 
 public class AffiliationInforOfDailyAttdTest {
 	
@@ -35,8 +33,7 @@ public class AffiliationInforOfDailyAttdTest {
 			
 		}};
 		
-		NtsAssert.businessException("Msg_430", () -> 
-			invoke(AffiliationInforOfDailyAttd.class, "getBonusPaySettingCode", require, "empId", GeneralDate.today())); 
+		NtsAssert.businessException("Msg_430", () -> AffiliationInforOfDailyAttd.create(require, "empId", GeneralDate.today())); 
 		
 		
 	}
@@ -117,10 +114,7 @@ public class AffiliationInforOfDailyAttdTest {
 		}};
 		
 		
-		AffiliationInforOfDailyAttd result = NtsAssert.Invoke.staticMethod(
-				AffiliationInforOfDailyAttd.class, 
-				"create", 
-				require, "empId", GeneralDate.today());
+		AffiliationInforOfDailyAttd result = AffiliationInforOfDailyAttd.create(require, "empId", GeneralDate.today()); 
 		
 		assertThat( result.getEmploymentCode().v() ).isEqualTo( "employmentCode" );
 		assertThat( result.getJobTitleID() ).isEqualTo( "jobTitleId" );
