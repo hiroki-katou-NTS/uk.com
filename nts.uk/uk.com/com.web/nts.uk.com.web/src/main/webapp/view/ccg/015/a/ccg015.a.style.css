@@ -1,16 +1,16 @@
 /* css panel */
 .panel-left {
   height: 380px;
-  width: 220px;
+  width: 235px;
   margin-top: 45px;
   margin-left: 30px;
 }
 
 .panel-right {
   height: 380px;
-  width: 220px;
+  width: 235px;
   margin-top: 45px;
-  margin-left: 100px;
+  margin-left: 80px;
 }
 
 .div-panel {
@@ -42,6 +42,7 @@
 
 .mt-15 {
   margin-top: 15px;
+  
 }
 
 .mt-30 {
@@ -70,4 +71,13 @@
 .fix-btn {
   height: 50px;
   white-space: normal !important;
+}
+.font24 {
+  font-size: 24px;
+}
+#A1_1 {
+  font-size: 1.5rem;
+}
+#A2_1 {
+  font-size: 1.5rem;
 }
