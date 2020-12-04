@@ -40,6 +40,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlg
 import nts.uk.ctx.at.request.dom.application.common.service.other.Time36UpperLimitCheck;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AgreeOverTimeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppTimeItem;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.OverTimeWorkHoursOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.Time36ErrorOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.Time36UpperLimitCheckResult;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
@@ -241,15 +242,15 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 	}
 
 	@Override
-	public Optional<AgreeOverTimeOutput> getAgreementTime(String companyID, String employeeID,
+	public Optional<OverTimeWorkHoursOutput> getAgreementTime(String companyID, String employeeID,
 			ApplicationType appType) {
-		Optional<AgreeOverTimeOutput> opAgreeOverTimeOutput = Optional.empty();
+		Optional<OverTimeWorkHoursOutput> opAgreeOverTimeOutput = Optional.empty();
 		// 時間外表示区分チェック(check 時間外表示区分)
 		Optional<OvertimeRestAppCommonSetting> otRestAppCommonSet = overtimeRestAppCommonSetRepository
 				.getOvertimeRestAppCommonSetting(companyID, appType.value);
 		if (otRestAppCommonSet.isPresent() && (otRestAppCommonSet.get().getExtratimeDisplayAtr() == UseAtr.USE)) {
 			// ３６時間の表示
-			opAgreeOverTimeOutput = Optional.of(agreementTimeService.getAgreementTime(companyID, employeeID));
+			opAgreeOverTimeOutput = Optional.of(agreementTimeService.getOverTimeWorkHoursOutput(companyID, employeeID));
 		}
 		return opAgreeOverTimeOutput;
 	}

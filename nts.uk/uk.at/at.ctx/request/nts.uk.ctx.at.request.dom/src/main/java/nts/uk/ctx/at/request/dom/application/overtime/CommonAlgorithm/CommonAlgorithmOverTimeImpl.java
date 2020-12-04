@@ -9,10 +9,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
-import nts.arc.i18n.I18NResources;
 import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -24,7 +22,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.Con
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.AgreeOverTimeOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.OverTimeWorkHoursOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.TimePlaceOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
@@ -34,15 +32,12 @@ import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType_Update;
 import nts.uk.ctx.at.request.dom.application.overtime.CalculationResult;
 import nts.uk.ctx.at.request.dom.application.overtime.ExcessState;
-import nts.uk.ctx.at.request.dom.application.overtime.ExcessStateDetail;
-import nts.uk.ctx.at.request.dom.application.overtime.FrameNo;
 import nts.uk.ctx.at.request.dom.application.overtime.HolidayMidNightTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OutDateApplication;
 import nts.uk.ctx.at.request.dom.application.overtime.OverStateOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeApplicationSetting;
-import nts.uk.ctx.at.request.dom.application.overtime.primitivevalue.OvertimeAppPrimitiveTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayInfoOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OverTimeContent;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
@@ -398,7 +393,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		// 乖離理由の表示区分を取得する
 		ReasonDissociationOutput reasonDissociationOutput = this.getInfoNoBaseDate(companyId, ApplicationType.OVER_TIME_APPLICATION, Optional.ofNullable(overtimeAppAtr), overtimeLeaveAppCommonSet);
 		// 01-02_時間外労働を取得
-		Optional<AgreeOverTimeOutput> agreeOverTimeOutputOp = commonOvertimeholiday.getAgreementTime(companyId, employeeId, ApplicationType.OVER_TIME_APPLICATION);
+		Optional<OverTimeWorkHoursOutput> agreeOverTimeOutputOp = commonOvertimeholiday.getAgreementTime(companyId, employeeId, ApplicationType.OVER_TIME_APPLICATION);
 		
 		// ドメインモデル「残業休日出勤申請の反映」を取得する
 		Optional<AppReflectOtHdWork> overTimeReflectOp = appReflectOtHdWorkRepository.findByCompanyId(companyId);

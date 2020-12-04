@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AgreeOverTimeDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSetDto;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.InfoNoBaseDate;
 
@@ -20,7 +19,7 @@ public class InfoNoBaseDateDto {
 	public OvertimeAppSetDto overTimeAppSet;
 	
 	// 申請用時間外労働時間パラメータ
-	public AgreeOverTimeDto agreeOverTimeOutput;
+	public OverTimeWorkHoursDto agreeOverTimeOutput;
 	
 	// 利用する乖離理由(DivergenceReasonInputMethod at record , so create new class #112406)
 	public List<DivergenceReasonInputMethodDto> divergenceReasonInputMethod;
@@ -32,7 +31,7 @@ public class InfoNoBaseDateDto {
 		return new InfoNoBaseDateDto(
 				AppReflectOtHdWorkDto.fromDomain(infoNoBaseDate.getOverTimeReflect()),
 				OvertimeAppSetDto.fromDomain(infoNoBaseDate.getOverTimeAppSet()),
-				AgreeOverTimeDto.fromDomain(infoNoBaseDate.getAgreeOverTimeOutput()),
+				OverTimeWorkHoursDto.fromDomain(infoNoBaseDate.getAgreeOverTimeOutput()),
 				infoNoBaseDate.getDivergenceReasonInputMethod()
 					.stream()
 					.map(x -> DivergenceReasonInputMethodDto.fromDomain(x))
