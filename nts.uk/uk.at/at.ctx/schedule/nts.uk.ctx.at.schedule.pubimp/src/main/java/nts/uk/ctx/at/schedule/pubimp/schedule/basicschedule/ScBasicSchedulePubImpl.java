@@ -19,6 +19,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.WorkScheduleTimeZone;
@@ -36,6 +37,7 @@ import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ShortWorkingTimeSheetEx
 import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.WorkScheduleTimeZoneExport;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * The Class ScBasicSchedulePubImpl.
@@ -168,11 +170,38 @@ public class ScBasicSchedulePubImpl implements ScBasicSchedulePub {
 	}
 
 	@Override
-	public ScWorkScheduleExport_New findByIdNewV2(String employeeId, GeneralDate baseDate) {
-		ScWorkScheduleExport_New record = new ScWorkScheduleExport_New();
+	public Optional<ScWorkScheduleExport_New> findByIdNewV2(String employeeId, GeneralDate baseDate) {
+		ScWorkScheduleExport_New result = new ScWorkScheduleExport_New();
 //		get 勤務予定
 		Optional<WorkSchedule> workSchedule =  workScheduleRepository.get(employeeId, baseDate);
 		workSchedule.ifPresent(x -> {
+			result.setEmployeeId(x.getEmployeeID());
+			result.setDate(x.getYmd());
+			result.setWorkTypeCode(x.getWorkInfo().getRecordInfo().getWorkTypeCode().v());
+			result.setWorkTimeCode(Optional.ofNullable(x.getWorkInfo().getRecordInfo().getWorkTimeCodeNotNull().map(y -> y.v()).orElse(null)));
+			x.getOptTimeLeaving().ifPresent(a -> {
+				
+				if (!CollectionUtil.isEmpty(a.getTimeLeavingWorks())) {
+					a.getTimeLeavingWorks()
+						.stream()
+						.forEach(b -> {
+							Optional<TimeWithDayAttr> start = b.getAttendanceStamp().map(g -> g.getStamp().map(h -> h.getTimeDay().getTimeWithDay()).orElse(Optional.empty())).orElse(Optional.empty());
+							
+							Optional<TimeWithDayAttr> end = b.getLeaveStamp().map(g -> g.getStamp().map(h -> h.getTimeDay().getTimeWithDay()).orElse(Optional.empty())).orElse(Optional.empty());
+							if (b.getWorkNo().v() == 1) {
+								result.setScheduleStartClock1(start);
+								result.setScheduleEndClock1(end);
+							} else if (b.getWorkNo().v() == 2) {
+								result.setScheduleStartClock2(start);
+								result.setScheduleEndClock2(end);
+							}
+						});
+				}
+			});
+			
+			
+			
+			result.setChildTime(0);
 			x.getOptSortTimeWork().ifPresent(y -> {
 				List<ShortWorkingTimeSheet> shortWorkingTimeSheet = y.getShortWorkingTimeSheets();
 				List<ShortWorkingTimeSheetExport> listExport = shortWorkingTimeSheet.stream().map(a ->{
@@ -182,37 +211,15 @@ public class ScBasicSchedulePubImpl implements ScBasicSchedulePub {
 							a.getStartTime().v(),
 							a.getEndTime().v(),
 							a.getDeductionTime() == null ? 0 : a.getDeductionTime().v(),
-							a.getShortTime().v());
+							a.getShortTime() == null ? 0 : a.getShortTime().v());
 				}).collect(Collectors.toList());
-				record.setListShortWorkingTimeSheetExport(listExport);							
-			});
+				result.setListShortWorkingTimeSheetExport(listExport);							
+			});		
 		});
 		
-//		get 勤務予定基本情報
-		Optional<BasicSchedule> basicSchedule = repository.find(employeeId, baseDate);
-		basicSchedule.ifPresent(x -> {
-			record.setEmployeeId(x.getEmployeeId());
-			record.setDate(x.getDate());
-			record.setWorkTypeCode(x.getWorkTypeCode());
-			record.setWorkTimeCode(Optional.ofNullable(x.getWorkTimeCode()));
-//			勤務予定基本情報.勤務予定時間帯
-			List<WorkScheduleTimeZone> workScheduleTimeZones = x.getWorkScheduleTimeZones();
-			Optional<WorkScheduleTimeZone> with1 = workScheduleTimeZones.stream().filter(item -> item.getScheduleCnt() == 1).findFirst();
-			Optional<WorkScheduleTimeZone> with2 = workScheduleTimeZones.stream().filter(item -> item.getScheduleCnt() == 2).findFirst();
-			with1.ifPresent(a -> {
-				record.setScheduleStartClock1(a.getScheduleStartClock());
-				record.setScheduleEndClock1(a.getScheduleEndClock());
-			});
-			with2.ifPresent(a -> {
-				record.setScheduleStartClock2(Optional.of(a.getScheduleStartClock()));
-				record.setScheduleEndClock2(Optional.of(a.getScheduleEndClock()));
-			});
-			x.getWorkScheduleTime().ifPresent(a -> {
-				record.setChildTime(a.getChildTime().v());
-			});
-			
-		});
-		return record;
+
+		
+		return workSchedule.isPresent() ? Optional.of(result) : Optional.empty();
 	}
 
 }

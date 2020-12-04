@@ -225,9 +225,15 @@ public class CollectAchievementImpl implements CollectAchievement {
 			//管理する
 			//Imported(申請承認)「勤務予定」を取得する(lấy thông tin imported(申請承認)「勤務予定」)
 			ScBasicScheduleImport scBasicScheduleImport = scBasicScheduleAdapter.findByIDRefactor(applicantID, appDate);
-			if(Strings.isBlank(scBasicScheduleImport.getWorkTypeCode()) && Strings.isBlank(scBasicScheduleImport.getWorkTimeCode().orElse(null))){
+			if (scBasicScheduleImport == null) {
 				//取得件数＝0件 ( số data lấy được  = 0)
 				return new ActualContentDisplay(appDate, Optional.empty());
+			} else {
+				
+				if((Strings.isBlank(scBasicScheduleImport.getWorkTypeCode()) && Strings.isBlank(scBasicScheduleImport.getWorkTimeCode().orElse(null)))){
+					//取得件数＝0件 ( số data lấy được  = 0)
+					return new ActualContentDisplay(appDate, Optional.empty());
+				}				
 			}
 			// 実績スケ区分＝スケジュール (Phân loại thực tế= Schedule)
 			trackRecordAtr = TrackRecordAtr.SCHEDULE;
@@ -236,11 +242,10 @@ public class CollectAchievementImpl implements CollectAchievement {
 			//・実績詳細．3就業時間帯コード＝OUTPUT．勤務予定．勤務種類コード
 			workTimeCD = scBasicScheduleImport.getWorkTimeCode().orElse(null);
 			//・実績詳細．5出勤時刻＝OUTPUT．勤務予定．開始時刻1
-			// check null to remove exception
-			opWorkTime = scBasicScheduleImport.getScheduleStartClock1() == null ? Optional.empty() : Optional.of(scBasicScheduleImport.getScheduleStartClock1().v());
+			opWorkTime = scBasicScheduleImport.getScheduleStartClock1().flatMap(x -> Optional.of(x.v()));
 			//・実績詳細．6退勤時刻＝OUTPUT．勤務予定．終了時刻1
 			// check null to remove exception
-			opLeaveTime = scBasicScheduleImport.getScheduleEndClock1() == null ? Optional.empty() : Optional.of(scBasicScheduleImport.getScheduleEndClock1().v());
+			opLeaveTime = scBasicScheduleImport.getScheduleEndClock1().flatMap(x -> Optional.of(x.v()));
 			//・実績詳細．9出勤時刻2＝OUTPUT．勤務予定．開始時刻2
 			opWorkTime2 = scBasicScheduleImport.getScheduleStartClock2().map(x -> x.v());
 			//・実績詳細．10退勤時刻2＝OUTPUT．勤務予定．終了時刻2
@@ -264,25 +269,21 @@ public class CollectAchievementImpl implements CollectAchievement {
 			workTimeCD = recordWorkInfoImport.getWorkTimeCode() == null ? null
 					: recordWorkInfoImport.getWorkTimeCode().v();
 			//・実績詳細．5出勤時刻＝OUTPUT．勤務実績．出勤時刻1
-			opWorkTime = recordWorkInfoImport.getStartTime1() == null ? Optional.empty() 
-					: recordWorkInfoImport.getStartTime1().map(x -> x.getTimeWithDay().map(y -> y.v())).orElse(Optional.empty());
+			opWorkTime = recordWorkInfoImport.getStartTime1().flatMap(x -> x.getTimeWithDay()).flatMap(y -> Optional.of(y.v()));
 			//・実績詳細．6退勤時刻＝OUTPUT．勤務実績．退勤時刻1
-			opLeaveTime = recordWorkInfoImport.getEndTime1() == null ? Optional.empty()
-					: recordWorkInfoImport.getEndTime1().map(x -> x.getTimeWithDay().map(y -> y.v())).orElse(Optional.empty());
+			opLeaveTime = recordWorkInfoImport.getEndTime1().flatMap(x -> x.getTimeWithDay()).flatMap(y -> Optional.of(y.v()));
 			//・実績詳細．9出勤時刻2＝OUTPUT．勤務実績．出勤時刻2
-			opWorkTime2 = recordWorkInfoImport.getStartTime2() == null ? Optional.empty()
-					: recordWorkInfoImport.getStartTime2().map(x -> x.getTimeWithDay().map(y -> y.v())).orElse(Optional.empty());
+			opWorkTime2 = recordWorkInfoImport.getStartTime2().flatMap(x -> x.getTimeWithDay()).flatMap(y -> Optional.of(y.v()));
 			//・実績詳細．10退勤時刻2＝OUTPUT．勤務実績．退勤時刻2
-			opDepartureTime2 = recordWorkInfoImport.getEndTime2() == null ? Optional.empty()
-					: recordWorkInfoImport.getEndTime2().map(x -> x.getTimeWithDay().map(y -> y.v())).orElse(Optional.empty());
+			opDepartureTime2 = recordWorkInfoImport.getEndTime2().flatMap(x -> x.getTimeWithDay()).flatMap(y -> Optional.of(y.v()));
 			//・実績詳細．遅刻早退実績．予定出勤時刻1＝OUTPUT．勤務実績．予定出勤時刻1
 			//・実績詳細．遅刻早退実績．予定退勤時刻1＝OUTPUT．勤務実績．予定退勤時刻1
 			//・実績詳細．遅刻早退実績．予定出勤時刻2＝OUTPUT．勤務実績．予定出勤時刻2
 			//・実績詳細．遅刻早退実績．予定退勤時刻2＝OUTPUT．勤務実績．予定退勤時刻2
 			achievementEarly = new AchievementEarly(
-					recordWorkInfoImport.getScheduledAttendence1(),
+					recordWorkInfoImport.getScheduledAttendence1() == null ? Optional.empty() : Optional.of(recordWorkInfoImport.getScheduledAttendence1()),
 					recordWorkInfoImport.getScheduledAttendence2(),
-					recordWorkInfoImport.getScheduledDeparture1(),
+					recordWorkInfoImport.getScheduledDeparture1() == null ? Optional.empty() : Optional.of(recordWorkInfoImport.getScheduledDeparture1()),
 					recordWorkInfoImport.getScheduledDeparture2());
 			//・実績詳細．勤怠時間内容．早退時間＝OUTPUT．勤務実績．早退時間
 			//・実績詳細．勤怠時間内容．遅刻時間＝OUTPUT．勤務実績．遅刻時間

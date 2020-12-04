@@ -263,7 +263,7 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 		if (opAchievementDetail.get().getOpWorkTime().isPresent()) {
 			// 出勤１のデータの状態のチェック
 			LateOrEarlyInfo attend1 = this.checkDataStatus(
-					Optional.ofNullable(opAchievementDetail.get().getAchievementEarly().getScheAttendanceTime1()),
+					Optional.ofNullable(opAchievementDetail.get().getAchievementEarly().getScheAttendanceTime1().orElse(null)),
 					Optional.of(opAchievementDetail.get().getOpWorkTime().get()), listAppSet.getCancelAtr(),
 					new LateOrEarlyInfo(false, 1, false, true, LateOrEarlyAtr.LATE));
 
@@ -274,7 +274,7 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 		if (opAchievementDetail.get().getOpLeaveTime().isPresent()) {
 			// 退勤１データの状態のチェック
 			LateOrEarlyInfo leave1 = this.checkDataStatus(
-					Optional.ofNullable(opAchievementDetail.get().getAchievementEarly().getScheDepartureTime1()),
+					Optional.ofNullable(opAchievementDetail.get().getAchievementEarly().getScheDepartureTime1().orElse(null)),
 					Optional.of(opAchievementDetail.get().getOpLeaveTime().get()), listAppSet.getCancelAtr(),
 					new LateOrEarlyInfo(false, 1, false, true, LateOrEarlyAtr.EARLY));
 
