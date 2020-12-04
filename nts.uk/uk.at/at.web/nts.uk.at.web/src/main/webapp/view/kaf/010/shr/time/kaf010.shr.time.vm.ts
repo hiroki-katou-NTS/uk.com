@@ -39,7 +39,7 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 									name: '#[KAF010_337]', 
 									value: start, 
 									constraint:'TimeWithDayAttr', 
-									enable: true,
+									enable: false,
 									option: {width: '85px', timeWithDay: true}}" /></td>
 						<!--A5_7 終了時刻-->
 						<td><input tabindex="12" class="right-content"
@@ -48,7 +48,7 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 									name: '#[KAF010_338]', 
 									value: end, 
 									constraint:'TimeWithDayAttr', 
-									enable: true,
+									enable: false,
 									option: {width: '85px', timeWithDay: true}}" /></td>
 					</tr>
 				</tbody>
@@ -201,7 +201,7 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 		applicationTime?: KnockoutObservable<number>;
 		preTime?: KnockoutObservable<number>;
 		actualTime?: KnockoutObservable<number>;
-		// type: KnockoutObservable<string>;
+		type?: KnockoutObservable<number>;
 	}
 	export interface RestTime {
 		frameNo: string;
@@ -215,6 +215,7 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 		start?: KnockoutObservable<number>;
 		preApp?: KnockoutObservable<number>;
 		actualTime?: KnockoutObservable<number>;
-		
+		type?: KnockoutObservable<number>;
+		legalClf?: KnockoutObservable<number>;
 	}
 }

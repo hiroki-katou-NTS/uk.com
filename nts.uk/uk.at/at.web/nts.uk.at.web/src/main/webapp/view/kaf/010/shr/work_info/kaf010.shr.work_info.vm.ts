@@ -90,7 +90,7 @@ module nts.uk.at.view.kaf010.shr.work_info.viewmodel {
 					<div style="margin-top: 11px; margin-left: 5px" data-bind="ntsCheckBox: { checked: false, text: $i18n('KAF010_3')}, visible: workTimeCheckBoxVisible()"></div>
 				</div>
 				<div class="cell valign-center">
-					<div class="row-cell-margin">
+					<div class="row-cell-margin" data-bind="visible: managementMultipleWorkCyclescheck()">
 						<!-- A4_14 -->
 						<input tabindex="11" id="inpEndTime2" class="right-content inputTime-kaf005" data-bind="ntsTimeWithDayEditor: {name: '#[KAF010_336]',
 							constraint:'TimeWithDayAttr',
