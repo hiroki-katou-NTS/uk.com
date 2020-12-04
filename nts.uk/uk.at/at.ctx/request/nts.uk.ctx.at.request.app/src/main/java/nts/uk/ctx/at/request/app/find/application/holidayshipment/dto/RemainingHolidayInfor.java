@@ -36,6 +36,9 @@ public class RemainingHolidayInfor {
 	 * 繰越日数
 	 */
 	private double carryForwardDays;
+	/**
+	 * 一番近い期限日
+	 */
 	@Setter
 	private String closestDueDate;
 

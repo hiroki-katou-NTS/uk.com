@@ -20,9 +20,9 @@ public class DisplayInformationApplication {
 	//勤務種類リスト
 	private List<WorkTypeDto> workTypeList;
 	//初期選択勤務種類
-	private String selectionWorkType;
+	private String workTypeCode;
 	//初期選択就業時間帯
-	private String selectionWorkTime;
+	private String workTimeCode;
 	//開始時刻
 	private Integer startTime;
 	//終了時刻

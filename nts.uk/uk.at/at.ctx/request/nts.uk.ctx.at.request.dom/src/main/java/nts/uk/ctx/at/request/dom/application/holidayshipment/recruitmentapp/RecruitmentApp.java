@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.SubTargetDigestion;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
@@ -20,7 +21,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RecruitmentApp extends AggregateRoot {
+public class RecruitmentApp extends Application {
 	/**
 	 * 申請ID
 	 */

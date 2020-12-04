@@ -68,11 +68,14 @@ import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.
 import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecDetailPara;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
@@ -91,6 +94,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -157,6 +161,9 @@ public class HolidayShipmentScreenAFinder {
 	
 	@Inject
 	private RemainNumberTempRequireService remainNumberTempRequireService;
+	
+	@Inject
+	private CompensLeaveComSetRepository compensLeaveComSetRepo;
 	
 	private static final ApplicationType APP_TYPE = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 
@@ -343,7 +350,8 @@ public class HolidayShipmentScreenAFinder {
 			//1.振出申請（新規）起動処理(申請対象日関係あり)/1.xử lý khởi động đơn xin làm bù(new)(có liên quan ApplicationTargetdate)
 			DisplayInformationApplication applicationForHoliday = this.applicationForHoliday(
 					companyId,
-					displayInforWhenStarting.getAppDispInfoStartup().toDomain().getAppDispInfoWithDateOutput().getEmpHistImport().getEmploymentCode()
+					displayInforWhenStarting.getAppDispInfoStartup().toDomain().getAppDispInfoWithDateOutput().getEmpHistImport().getEmploymentCode(),
+					Optional.empty()
 					);
 			//「振休振出申請起動時の表示情報」．振休申請起動時の表示情報=上記取得した「振休申請起動時の表示情報」
 			displayInforWhenStarting.setApplicationForHoliday(applicationForHoliday);
@@ -818,27 +826,22 @@ public class HolidayShipmentScreenAFinder {
 		return result;
 	}
 
+	
+	/**
+	 * @name 振休管理チェック
+	 * @param employeeID
+	 * @param baseDate
+	 * @param companyID
+	 */
 	private void startupErrorCheck(String employeeID, GeneralDate baseDate, String companyID) {
-		// // アルゴリズム「1-4.新規画面起動時の承認ルート取得パターン」を実行する
-		// ApprovalRootPattern approvalRootPattern =
-		// collectApprovalRootPatternService.getApprovalRootPatternService(
-		// companyID, employeeID, EmploymentRootAtr.APPLICATION, appType,
-		// appCommonSettingOutput.generalDate, "",
-		// true);
-		// // アルゴリズム「1-5.新規画面起動時のエラーチェック」を実行する
-		// startupErrorCheckService.startupErrorCheck(appCommonSettingOutput.generalDate,
-		// appType.value,
-		// approvalRootPattern.getApprovalRootContentImport());
-		// アルゴリズム「振休管理チェック」を実行する
-		// Imported(就業.shared.組織管理.社員情報.所属雇用履歴)「所属雇用履歴」を取得する
+		// Imported(就業.shared.組織管理.社員情報.所属雇用履歴)「所属雇用履歴」を取得する - Lấy lịch sử employee
 		Optional<EmploymentHistoryImported> empImpOpt = wkPlaceAdapter.getEmpHistBySid(companyID, employeeID, baseDate);
 		if (empImpOpt.isPresent()) {
-			// アルゴリズム「振休管理設定の取得」を実行する
 			EmploymentHistoryImported empImp = empImpOpt.get();
 			String emptCD = empImp.getEmploymentCode();
+			// アルゴリズム「振休管理設定の取得」を実行する -  lấy setting của loại đơn
 			Optional<EmpSubstVacation> empSubOpt = empSubrepo.findById(companyID, emptCD);
 			if (empSubOpt.isPresent()) {
-
 				EmpSubstVacation empSub = empSubOpt.get();
 				boolean isNotManage = empSub.getSetting().getIsManage().equals(ManageDistinct.NO);
 				if (isNotManage) {
@@ -851,10 +854,8 @@ public class HolidayShipmentScreenAFinder {
 				if (isNoComSubOrNotManage) {
 					throw new BusinessException("Msg_323");
 				}
-
 			}
 		}
-
 	}
 
 	public void setAppTypeSet(HolidayShipmentDto result, int appType, String companyID) {
@@ -875,16 +876,15 @@ public class HolidayShipmentScreenAFinder {
 	// 1.振休振出申請（新規）起動処理
 	public DisplayInforWhenStarting startPageARefactor(String companyId, List<String> lstEmployee, List<GeneralDate> dateLst) {
 		DisplayInforWhenStarting result = new DisplayInforWhenStarting();
-		// error EA refactor 4
+		
 		// 起動時の申請表示情報を取得する (Lấy thông tin hiển thị Application khi  khởi động)
-		// error EA refactor 4
 		AppDispInfoStartupOutput appDispInfoStartupOutput = commonAlgorithm.getAppDispInfoStart(companyId, ApplicationType.COMPLEMENT_LEAVE_APPLICATION, lstEmployee, dateLst, true, Optional.empty(), Optional.empty());
 		result.setAppDispInfoStartup(AppDispInfoStartupDto.fromDomain(appDispInfoStartupOutput));
 		
 		//振休管理チェック (Check quản lý nghỉ bù)
 		this.startupErrorCheck(lstEmployee.get(0), appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getBaseDate(), companyId);
 		
-		// 振休振出申請設定の取得
+		// 振休振出申請設定の取得(get setting đơn xin nghỉ bù làm bù)
 		WithDrawalReqSet withDrawalReqSet = this.getWithDrawalReqSet(companyId);
 		result.setDrawalReqSet(WithDrawalReqSetDto.fromDomain(withDrawalReqSet));
 		
@@ -899,13 +899,46 @@ public class HolidayShipmentScreenAFinder {
 		result.setApplicationForWorkingDay(applicationForWorkingDay);
 		
 		//1.振休申請（新規）起動処理(申請対象日関係あり)(Xử lý khời động Application nghỉ bù (New )(có liên quan application ngày đối tượng )
-		DisplayInformationApplication applicationForHoliday = this.applicationForHoliday(companyId, appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getEmpHistImport().getEmploymentCode());
+		// chờ QA: 113043
+		DisplayInformationApplication applicationForHoliday = this.applicationForHoliday(companyId, 
+																						appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getEmpHistImport().getEmploymentCode(), 
+																						appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().isPresent() ? 
+																								appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get().isEmpty() ? 
+																										Optional.empty() : 
+																											appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get().get(0).getOpAchievementDetail().isPresent() ?
+																													Optional.of(appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get().get(0).getOpAchievementDetail().get().getWorkTypeCD())
+																													: Optional.empty()
+																								: Optional.empty());
 		result.setApplicationForHoliday(applicationForHoliday);
 		
 		//[No.506]振休残数を取得する ([No.506]Lấy số ngày nghỉ bù còn lại)
 		AbsRecRemainMngOfInPeriod absRecMngRemain = AbsenceReruitmentMngInPeriodQuery.getAbsRecMngRemain(remainNumberTempRequireService.createRequire(), new CacheCarrier(), lstEmployee.get(0), GeneralDate.today());
 		
-		result.setRemainingHolidayInfor(new RemainingHolidayInfor(absRecMngRemain));
+		RemainingHolidayInfor remainingHolidayInfor = new RemainingHolidayInfor(absRecMngRemain);
+		
+		//一番近い期限日を取得する - get ngày kì hạn gần nhất
+		Optional<GeneralDate> closestDueDate = this.getClosestDeadline(absRecMngRemain.getLstAbsRecMng());
+		if(closestDueDate.isPresent()) {
+			remainingHolidayInfor.setClosestDueDate(closestDueDate.get().toString());
+		}
+		
+		result.setRemainingHolidayInfor(remainingHolidayInfor);
+		
+		//振休の紐付け管理区分を取得する get phân loại quản lý liên kết của nghỉ bù
+		Optional<ComSubstVacation> comSubstVacation = comSubrepo.findById(companyId);
+		if(comSubstVacation.isPresent()) {
+			result.setHolidayManage(comSubstVacation.get().getSetting().getIsManage().value);
+		}else {
+			result.setHolidayManage(ManageDistinct.NO.value);
+		}
+		
+		//代休の紐付け管理区分を取得する get phân loại quản lý liên kết của nghỉ thay thế
+		CompensatoryLeaveComSetting compensatoryLeaveComSetting = compensLeaveComSetRepo.find(companyId);
+		if(compensatoryLeaveComSetting == null) {
+			result.setSubstituteManagement(ManageDistinct.NO.value);
+		}else {
+			result.setSubstituteManagement(compensatoryLeaveComSetting.getIsManaged().value);
+		}
 		
 		return result;
 	}
@@ -918,15 +951,16 @@ public class HolidayShipmentScreenAFinder {
 		//社員の労働条件を取得する(Lấy điều kiện lao động của employee)
 		Optional<WorkingConditionItem> workingConditionItem = WorkingConditionService.findWorkConditionByEmployee(this.createImp(), employeeId, baseDate);
 		
+		//取得した労働条件項目．区分別勤務．平日時．就業時間帯コードは、INPUT．就業時間帯の設定の一覧に存在するかチェックする(Check xem 'Item điều kiện lao đông.Work by classification. Weekday time.WorktimeCode đã lấy' có tồn tại ở trong INPUT.WorktimeSettingList hay không?)
 		if(workingConditionItem.isPresent()) {
-			result.setSelectionWorkTime(workingConditionItem.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().map(x -> x.v()).orElse(null));
+			result.setWorkTimeCode(workingConditionItem.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().map(x -> x.v()).orElse(null));
 		}else {
-			result.setSelectionWorkTime("");
+			result.setWorkTimeCode("");
 			//12.マスタ勤務種類、就業時間帯データをチェック
-	        CheckWorkingInfoResult checkResult = otherCommonAlgorithm.checkWorkingInfo(companyId, null, result.getSelectionWorkTime());
+	        CheckWorkingInfoResult checkResult = otherCommonAlgorithm.checkWorkingInfo(companyId, null, result.getWorkTimeCode());
 	        //「職場別就業時間帯」を取得した先頭値を表示
 	        if(checkResult.isWkTimeError() && !workTimeLst.isEmpty()){
-	        	result.setSelectionWorkTime(workTimeLst.get(0).getWorktimeCode().v());
+	        	result.setWorkTimeCode(workTimeLst.get(0).getWorktimeCode().v());
 	        }
 		}
 		
@@ -938,10 +972,10 @@ public class HolidayShipmentScreenAFinder {
 		
 		if(!workTypeForWorkingDay.isEmpty()) {
 			//振出申請起動時の表示情報．初期選択勤務種類=取得した振出用勤務種類(List)の先頭の勤務種類 /(DisplayInfo khi khởi động đơn xin làm bù. InitialSelectionWorkType= worktype đầu tiên của worktype làm bù(list) đã lấy)
-			result.setSelectionWorkType(workTypeForWorkingDay.get(0).getWorkTypeCode().v());
+			result.setWorkTypeCode(workTypeForWorkingDay.get(0).getWorkTypeCode().v());
 		}
 		//勤務時間初期値の取得(lấy giá trị khởi tạo worktime)
-		PrescribedTimezoneSetting prescribedTimezoneSetting = appAbsenceFinder.initWorktimeCode(companyId, result.getSelectionWorkType(), result.getSelectionWorkTime());
+		PrescribedTimezoneSetting prescribedTimezoneSetting = appAbsenceFinder.initWorktimeCode(companyId, result.getWorkTypeCode(), result.getWorkTimeCode());
 		if(prescribedTimezoneSetting != null) {
 			for (TimezoneUse time : prescribedTimezoneSetting.getLstTimezone()) {
 				if(time.getWorkNo() == 1) {
@@ -1018,14 +1052,55 @@ public class HolidayShipmentScreenAFinder {
 	}
 
 	//1.振休申請（新規）起動処理(申請対象日関係あり)
-	public DisplayInformationApplication applicationForHoliday(String companyId, String employmentCode) {
+	public DisplayInformationApplication applicationForHoliday(String companyId, String employmentCode, Optional<String> workTypeCD) {
 		DisplayInformationApplication result = new DisplayInformationApplication();
 		//振休用勤務種類の取得(Lấy worktype nghỉ bù)
 		List<WorkType> workTypeForHoliday = this.getWorkTypeForHoliday(companyId, employmentCode, null);
 		
 		result.setWorkTypeList(workTypeForHoliday.stream().map(c->WorkTypeDto.fromDomain(c)).collect(Collectors.toList()));
 		
+		//振出日の休日区分により振休の勤務種類を取得する(Acquisition of the work type of the holiday based on the holiday classification of the withdrawal date)
+		result.setWorkTypeCode(this.getWorkTypeOfTheHoliday(companyId, workTypeCD, workTypeForHoliday).orElse(null));
+		
 		return result;
+	}
+	
+	/**
+	 * name 1.振休申請（新規）起動処理(申請対象日関係あり)
+	 * @param companyId
+	 * @param workTypeCD
+	 * @param workTypeForHoliday
+	 * @return
+	 */
+	public Optional<String> getWorkTypeOfTheHoliday(String companyId, Optional<String> workTypeCD, List<WorkType> workTypeForHoliday) {
+		//INPUT．振出日の勤務種類をチェックする(INPUT. Check the type of work on the day of withdrawal)
+		if(workTypeCD.isPresent()) {
+			//ドメインモデル「勤務種類」を取得する(Get domain model "work type")
+			Optional<WorkType> wkTypeOpt = wkTypeRepo.findByPK(companyId, workTypeCD.get());
+			if(wkTypeOpt.isPresent()) {
+				//INPUT．振休用勤務種類を先頭から最後へループする(INPUT. Loop from the start type to the end)
+				for (WorkType workType : workTypeForHoliday.stream().filter(c->c.getDailyWork().getWorkTypeUnit() == WorkTypeUnit.OneDay).collect(Collectors.toList())) {
+					if(!workType.getWorkTypeSetList().isEmpty() 
+						&& !wkTypeOpt.get().getWorkTypeSetList().isEmpty() 
+						&& workType.getWorkTypeSetList().get(0).getHolidayAtr() == wkTypeOpt.get().getWorkTypeSetList().get(0).getHolidayAtr()) {
+						return Optional.of(workType.getWorkTypeSetList().get(0).getWorkTypeCd().toString());
+					}
+				}
+			}
+		}
+		return Optional.empty();
+	}
+	
+	//一番近い期限日を取得する
+	public Optional<GeneralDate> getClosestDeadline(List<AbsRecDetailPara> lstAbsRecMng) {
+		GeneralDate result = GeneralDate.max();
+		for (AbsRecDetailPara absRecDetailPara : lstAbsRecMng) {
+			if(absRecDetailPara.getUnUseOfRec().isPresent() 
+					&& absRecDetailPara.getUnUseOfRec().get().getExpirationDate().before(result)) {
+				result = absRecDetailPara.getUnUseOfRec().get().getExpirationDate();
+			}
+		}
+		return result.after(GeneralDate.today().addMonths(3)) ? Optional.empty() : Optional.of(result);
 	}
 	
 	//振出用勤務種類の取得
