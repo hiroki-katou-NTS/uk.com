@@ -24,12 +24,12 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.BsymtAffiWorkplaceHistItem;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class JpaAffWorkplaceHistoryItemRepository extends JpaRepository implements AffWorkplaceHistoryItemRepository {
@@ -71,8 +71,7 @@ public class JpaAffWorkplaceHistoryItemRepository extends JpaRepository implemen
 	 * @return
 	 */
 	private AffWorkplaceHistoryItem toDomain(BsymtAffiWorkplaceHistItem entity) {
-		return AffWorkplaceHistoryItem.createFromJavaTypeNew(entity.getHisId(), entity.getSid(), entity.getWorkPlaceId(),
-				entity.getNormalWkpId(),entity.getWorkLocationCode());
+		return AffWorkplaceHistoryItem.createFromJavaType(entity.getHisId(), entity.getSid(), entity.getWorkPlaceId(),entity.getNormalWkpId());
 	}
 
 	/**

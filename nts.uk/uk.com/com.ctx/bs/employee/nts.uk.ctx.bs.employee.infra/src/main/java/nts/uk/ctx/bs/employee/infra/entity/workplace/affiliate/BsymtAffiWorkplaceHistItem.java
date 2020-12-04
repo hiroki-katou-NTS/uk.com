@@ -12,7 +12,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
@@ -24,8 +23,8 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@AllArgsConstructor
-@Table(name = "BSYMT_AFF_WPL_HIST_ITEM")
+//@AllArgsConstructor
+@Table(name = "BSYMT_AFF_WKP_HIST_ITEM")
 public class BsymtAffiWorkplaceHistItem extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -50,10 +49,10 @@ public class BsymtAffiWorkplaceHistItem extends ContractUkJpaEntity implements S
 	@Basic(optional = false)
 	@Column(name = "NORMAL_WORKPLACE_ID")
 	private String normalWkpId;
-
-	@Basic(optional = false)
-	@Column(name = "WORK_LOCATION_CD")
-	private String workLocationCode;
+//
+//	@Basic(optional = false)
+//	@Column(name = "WORK_LOCATION_CD")
+//	private String workLocationCode;
 	
 	/**
 	 * Instantiates a new cempt employment.
