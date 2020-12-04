@@ -122,6 +122,7 @@ module nts.uk.com.view.ccg034.a {
           if (res) {
             vm.getFlowMenuList().then(() => {
               vm.selectedFlowMenuId(res.flowMenuCode);
+              vm.selectedFlowMenuId.valueHasMutated();
             });
           } else {
             vm.isNewMode.valueHasMutated();

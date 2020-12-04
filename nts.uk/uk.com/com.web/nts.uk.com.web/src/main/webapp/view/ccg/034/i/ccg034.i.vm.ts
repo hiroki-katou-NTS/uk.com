@@ -5,7 +5,7 @@ module nts.uk.com.view.ccg034.i {
   import getText = nts.uk.resource.getText;
 
   const MAXIMUM_IMAGE_COUNT = 4;
-  const MAX_FILE_SIZE_B = 10 * 1024 * 1024;
+  const MAX_FILE_SIZE_MB = 1;
 
   @bean()
   export class ScreenModel extends ko.ViewModel {
@@ -63,7 +63,7 @@ module nts.uk.com.view.ccg034.i {
       const vm = this;
       // Generate image list
       for (let index = 0; index < 40; index++) {
-        vm.imageList.push({ code: index, name: `../resources/i/CCG034I_${nts.uk.text.padLeft(String(index + 1), '0', 3)}.png` });
+        vm.imageList.push({ code: index, name: `../../share/resources/ccg034/i/CCG034I_${nts.uk.text.padLeft(String(index + 1), '0', 3)}.png` });
       }
       // Adding images inside popup
       for (let imageRow = 0; imageRow < vm.imageList.length; imageRow += MAXIMUM_IMAGE_COUNT) {
@@ -114,7 +114,7 @@ module nts.uk.com.view.ccg034.i {
       const vm = this;
       vm.$validate().then((valid: boolean) => {
         if (valid) {
-          if (vm.fileSize() <= MAX_FILE_SIZE_B) {
+          if (vm.fileSize() / 1024 <= MAX_FILE_SIZE_MB) {
             // Update part data
             const image = new Image();
             if (vm.imageType() === 0) {
@@ -132,7 +132,7 @@ module nts.uk.com.view.ccg034.i {
             // Return data
             vm.$window.close(vm.partData);
           } else {
-            vm.$dialog.error({ messageId: 'Msg_70', messageParams: [String(MAX_FILE_SIZE_B / (1024 * 1024))] });
+            vm.$dialog.error({ messageId: 'Msg_70', messageParams: [String(MAX_FILE_SIZE_MB)] });
           }
         }
       });

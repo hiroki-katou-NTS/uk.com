@@ -67,14 +67,15 @@
             asLink: true,
             immediateUpload: true,
             uploadFinished: uploadFinished,
-            stereoType: 'avatarfile'
+            stereoType: 'avatarfile',
+            maxSize: 1
           }" tabindex="2"></div>
           <!-- I2_2_2 アップロード画像 -->
           <div id="I2_2_2" data-bind="visible: imageType() === 1"></div>
         </div>
         <div class="div-line flex valign-center size-zone">
           <!-- I2_3 最大ファイルサイズ -->
-          <label id="I2_3">${i18n.getText('CCG034_106')}</label>
+          <label id="I2_3">${i18n.getText('CCG034_126')}</label>
           <!-- I2_2_3 ファイルサイズ -->
           <label id="I2_2_3" data-bind="text: displayFileSize, visible: imageType() === 1"></label>
         </div>
