@@ -28,10 +28,6 @@
     margin-bottom: 15px;
 }
 
-.view-l .header-l div.form-label{
-    padding: 8px 10px 0 8px;
-}
-
 .view-l .content {
     text-align: left;
     margin-left: 10px;
@@ -106,8 +102,4 @@
 .selected-item {
 	height: 18px;
     display: block;
-}
-
-#right-side div.form-label {
-	padding: 8px 10px 0 8px;
 }
