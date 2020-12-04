@@ -3,24 +3,24 @@
 
 const template = `
 					<div class="sidebar-content-header">
-								<div
-									data-bind="component: {
-								name: 'sidebar-button',
-								params: {
-											screenData:screenData ,
-											screenMode:screenMode
-										}
-							}">
+						<!-- ko component: {
+											    name: "sidebar-button",
+											    params: {
+														screenData:screenData ,
+														screenMode:screenMode 
+												}
+											} -->
+						<!-- /ko -->
 					</div>
 					
 					<div id="com-ccg001"></div>
-					<div style="margin: 20px 0px 0px 75px; display:flex">
+					<div style="margin: 10px 0px 0px 75px; display:flex">
 					
 						<div style="display:inline-block"> 
 								<div id="employee-list"></div>
 						</div>
 					
-						<div id="right-layout">
+						<div id="right-layout" style="padding-left:17px;">
 						
 							<div style="padding-bottom: 20px;display:inline-block;">
 								<label id="flex-title" data-bind="i18n:'KMK004_268'"></label>

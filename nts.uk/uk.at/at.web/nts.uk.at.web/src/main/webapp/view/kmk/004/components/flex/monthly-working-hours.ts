@@ -10,11 +10,11 @@ const template = `
 	</div>
 	
 	<div style="padding-left:10px;"> 
-		<div class="div_line">
+		<div class="div_line" style="padding-left:4px;">
 			<button data-bind="click: openQDialog , i18n: 'KMK004_233'" ></button>
 		</div>
 	
-		<div class="div_line" >
+		<div class="div_line" style="padding-left:4px;" >
 		
 			<div id="year-list" data-bind="ntsListBox: {
 				options: screenData().yearList,

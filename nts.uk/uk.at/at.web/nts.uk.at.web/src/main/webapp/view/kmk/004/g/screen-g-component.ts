@@ -4,13 +4,13 @@
 const template = `
 					<div class="sidebar-content-header">
 					<!-- ko component: {
-    name: "sidebar-button",
-    params: {
-											screenData:screenData ,
-											screenMode:screenMode 
-										}
-} -->
-<!-- /ko -->
+										    name: "sidebar-button",
+										    params: {
+													screenData:screenData ,
+													screenMode:screenMode 
+											}
+										} -->
+					<!-- /ko -->
 								
 					</div>
 					<div id="right-layout" style="margin: 10px 20px;">
