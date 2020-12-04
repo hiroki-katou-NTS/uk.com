@@ -135,6 +135,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
         dataFetch: KnockoutObservable<any> = ko.observable(null);
         mode: number = Mode.New;
         enableInput: KnockoutObservable<boolean> = ko.observable(true);
+        isCodeChangedFromKDL: KnockoutObservable<boolean> = ko.observable(false);
 
         created(params: any) {
             const vm = this;
@@ -185,16 +186,15 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                                 content.opAchievementDetail.opLeaveTime
                             );
                             eachContent.wkTypeCd.subscribe(code => {
-                                if (code && code.length < 3) {
-                                    return
+                                if (vm.checkValueChanged(code)) {
+                                    vm.changeWorkTypeCode(tripOutput, content, code, index);
                                 }
-                                vm.changeWorkTypeCode(tripOutput, content, code, index);
+
                             });
                             eachContent.wkTimeCd.subscribe(code => {
-                                if (code && code.length < 3) {
-                                    return
+                                if (vm.checkValueChanged(code)) {
+                                    vm.changeWorkTimeCode(tripOutput, content, code, index);
                                 }
-                                vm.changeWorkTimeCode(tripOutput, content, code, index);
                             });
                             eachContent.start.subscribe(startValue => {
                                 content.opAchievementDetail.opWorkTime = startValue;
@@ -248,16 +248,14 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                         );
 
                         contentTrip.wkTypeCd.subscribe(code => {
-                            if (code && code.length < 3) {
-                                return
+                            if (vm.checkValueChanged(code)) {
+                                vm.changeTypeCodeScreenB(tripOutput, data, code, index);
                             }
-                            vm.changeTypeCodeScreenB(tripOutput, data, code, index);
                         });
                         contentTrip.wkTimeCd.subscribe(code => {
-                            if (code && code.length < 3) {
-                                return
+                            if (vm.checkValueChanged(code)) {
+                                vm.changeWorkTimeCodeScreenB(tripOutput, data, code, index);
                             }
-                            vm.changeWorkTimeCodeScreenB(tripOutput, data, code, index);
                         });
                         contentTrip.start.subscribe(startValue => {
                             data.startWorkTime = startValue;
@@ -529,6 +527,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                         vm.$errors("clear");
                         vm.clearWorkTypeErrorByDate(selectedDate);
                         vm.clearWorkTimeErrorByDate(selectedDate);
+                        vm.isCodeChangedFromKDL(true);
 
                         let currentRow;
                         if (vm.mode == Mode.New) {
@@ -558,9 +557,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                         vm.items()[selectedIndex].end(rs.first.end);
                     }
 
-                    setTimeout(() => {
-                        return $('#' + data.id).focus();
-                    }, 50);
+                    vm.$nextTick(() => $('#' + data.id).focus());
 
                 });
             });
@@ -626,6 +623,18 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
 
         focusWorkTimeByDate(date: any) {
             $('#' + date.replace(/\//g, "") + '-tmCode').focus();
+        }
+
+        checkValueChanged(code: any) {
+            const vm = this;
+            if (vm.isCodeChangedFromKDL()) {
+                vm.isCodeChangedFromKDL(false);
+                return false;
+            }
+            if (code && code.length < 3) {
+                return false;
+            }
+            return true;
         }
 
     }
