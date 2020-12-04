@@ -15,6 +15,8 @@ module nts.uk.at.kmk004.k {
 
 		screenMode: 'Com_Company' | 'Com_Workplace' | 'Com_Employment' | 'Com_Person' = 'Com_Workplace';
 
+		title: string = '';
+
 		startMonthLst = ko.observableArray([]);
 
 		carryforwardSetInShortageFlex = ko.observableArray(__viewContext.enums.CarryforwardSetInShortageFlex);
@@ -24,6 +26,7 @@ module nts.uk.at.kmk004.k {
 			vm.initMonthLst();
 			if (param) {
 				vm.screenMode = param.screenMode;
+				vm.title = param.title;
 			}
 			if (vm.screenMode !== 'Com_Company') {
 				let windowSize = nts.uk.ui.windows.getSelf();

@@ -2,7 +2,7 @@
 
 const template = `
 	<div   style="margin-top: 15px;"  >
-		<div data-bind="ntsFormLabel: {} , i18n: 'KMK004_229'"></div>
+		<div data-bind="ntsFormLabel: {inline:true} , i18n: 'KMK004_229'"></div>
 		<button data-bind="click: openKDialog , i18n: 'KMK004_231'" ></button>
 	</div>
 	<div class="div_line" 
@@ -69,8 +69,14 @@ class BasicSettingsCompany extends ko.ViewModel {
 	}
 
 	openKDialog() {
+
 		let vm = this;
-		vm.$window.modal('/view/kmk/004/k/index.xhtml', { screenMode: vm.screenMode });
+
+		if (vm.screenMode == 'Com_Company') {
+			vm.screenData().selectedName(vm.screenMode);
+		}
+
+		vm.$window.modal('/view/kmk/004/k/index.xhtml', { screenMode: vm.screenMode, title: vm.screenData().selectedName() });
 	}
 
 	getSettlePeriodText() {
