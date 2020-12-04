@@ -12,20 +12,20 @@ public class WorkTimeSettingDto {
 
     /** The worktime code. */
     // コード
-    private String worktimeCode;
+    private String workTimeCode;
 
     private String workTimeName;
 
-    /** The abolish atr. */
-    // 廃止区分
-    private int abolishAtr;
+    /** The note. */
+    // 備考
+    private String note;
 
 
     public static WorkTimeSettingDto setData(WorkTimeSetting data) {
         return new WorkTimeSettingDto(
             data.getWorktimeCode().v(),
             data.getWorkTimeDisplayName().getWorkTimeName().v(),
-            data.getAbolishAtr().value
+            data.getNote().v()
         );
     }
 }

@@ -17,7 +17,7 @@ public class WorkTimeWorkplaceProcessor {
     @Inject
     private WorkTimeWorkplaveSevice workTimeWorkplaveSevice;
 
-    public List<WorkTimeWorkplaceDto> findAgreeTimeOfCompany() {
+    public List<WorkTimeWorkplaceDto> findWorkTimeWorkplace() {
 
         List<WorkTimeWorkplace> workTimeWorkplaces = workTimeWorkplaveSevice.getByCid();
         return workTimeWorkplaces.stream().map(WorkTimeWorkplaceDto::setData).collect(Collectors.toList());
