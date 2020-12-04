@@ -203,7 +203,7 @@ public class HolidayWorkSubHolidayAssociationFinder {
 
         // ドメインモデル「休出管理データ」を取得する
         List<LeaveManagementData> payoutData = holidayWorkMngRepo.getBySidAndDatOff(employeeId, outBreakDays)
-                .stream().filter(i -> i.getSubHDAtr() != DigestionAtr.EXPIRED && !i.getComDayOffDate().isUnknownDate() && i.getUnUsedTimes().v() <= 0)
+                .stream().filter(i -> i.getSubHDAtr() != DigestionAtr.EXPIRED && !i.getComDayOffDate().isUnknownDate())
                 .collect(Collectors.toList());
 
         if (!payoutData.isEmpty()) {
