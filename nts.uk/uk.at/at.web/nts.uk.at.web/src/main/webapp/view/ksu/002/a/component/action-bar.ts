@@ -386,7 +386,7 @@ module nts.uk.ui.at.ksu002.a {
 						}
 
 						if (stg.wtimec) {
-							vm.workTimeData.selected(stg.wtypec);
+							vm.workTimeData.selected(stg.wtimec);
 						}
 					}
 				});
