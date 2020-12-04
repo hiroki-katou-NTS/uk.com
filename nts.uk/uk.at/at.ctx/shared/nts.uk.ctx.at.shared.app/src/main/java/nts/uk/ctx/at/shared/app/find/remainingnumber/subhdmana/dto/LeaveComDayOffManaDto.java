@@ -2,6 +2,8 @@ package nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
 
 /**
  * @author hiep.ld
@@ -10,23 +12,22 @@ import lombok.Data;
 @AllArgsConstructor
 @Data
 public class LeaveComDayOffManaDto {
-	private String leaveID;
+	// 社員ID
+	private String sid;
 
-	// 代休ID
-	private String comDayOffID;
+	// 逐次休暇の紐付け情報 . 発生日
+	private GeneralDate outbreakDay;
 
-	// 使用日数
-	private String usedDays;
+	// 逐次休暇の紐付け情報 . 使用日
+	private GeneralDate dateOfUse;
 
-	// 使用時間数
-	private int usedHours;
+	// 逐次休暇の紐付け情報 . 使用日数
+	private double dayNumberUsed;
 
-	// 対象選択区分
+	// 逐次休暇の紐付け情報 . 対象選択区分
 	private int targetSelectionAtr;
 
-//	public static LeaveComDayOffManaDto convertToDto(LeaveComDayOffManagement leaveData) {
-//		return new LeaveComDayOffManaDto(leaveData.getLeaveID(), leaveData.getComDayOffID(),
-//				leaveData.getAssocialInfo().getDayNumberUsed().v().toString(), leaveData.getUsedHours().v().intValue(),
-//				leaveData.getAssocialInfo().getTargetSelectionAtr().value);
-//	}
+	public LeaveComDayOffManagement toDomain() {
+		return new LeaveComDayOffManagement(sid, outbreakDay, dateOfUse, dayNumberUsed, targetSelectionAtr);
+	}
 }
