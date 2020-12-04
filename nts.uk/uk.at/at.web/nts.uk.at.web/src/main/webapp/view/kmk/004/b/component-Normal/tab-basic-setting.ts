@@ -2,11 +2,11 @@
 
 module nts.uk.at.view.kmk004.b {
 
-    const API = {
-        DISPLAY_BASICSETTING: 'screen/at/kmk004/getDisplayBasicSetting',
-    }
+	const API = {
+		DISPLAY_BASICSETTING: 'screen/at/kmk004/getDisplayBasicSetting',
+	}
 
-    const template = `
+	const template = `
         <div class="table-view">
             <table>
                 <tbody>
@@ -85,165 +85,166 @@ module nts.uk.at.view.kmk004.b {
                 border: 1px solid gray;
               }
 
-            .table-view .content-tab {
-                padding: 3px;
-                text-align: center;
-            }
+			.table-view td, .table-view th{
+				 padding: 3px 10px;
+				text-align: center;
+			}
+
         </style>
         <style type="text/css" rel="stylesheet" data-bind="html: $component.style"></style>
     `;
 
-    @component({
-        name: 'basic-setting',
-        template
-    })
+	@component({
+		name: 'basic-setting',
+		template
+	})
 
-    class Setting extends ko.ViewModel {
-        public model = new DataModel();
-        public tabSetting = new TabSetting();
-        public modeCheckChangeSetting: KnockoutObservable<string>;
+	class Setting extends ko.ViewModel {
+		public model = new DataModel();
+		public tabSetting = new TabSetting();
+		public modeCheckChangeSetting: KnockoutObservable<string>;
 
-        created(params: any) {
-            const vm = this;
+		created(params: any) {
+			const vm = this;
 
-            vm.reloadData();
+			vm.reloadData();
 
-            vm.modeCheckChangeSetting = params.modeCheckChangeSetting;
-            vm.modeCheckChangeSetting
-                .subscribe(() => {
-                    vm.reloadData();
-                });
-        }
+			vm.modeCheckChangeSetting = params.modeCheckChangeSetting;
+			vm.modeCheckChangeSetting
+				.subscribe(() => {
+					vm.reloadData();
+				});
+		}
 
-        mounted() {
-            const vm = this;
+		mounted() {
+			const vm = this;
 
-            if (!ko.unwrap(vm.tabSetting.deforWorkSurchargeWeekMonth)) {
-                vm.model.surcharge1('KMK004_245');
-            }
-            if (!ko.unwrap(vm.tabSetting.deforWorkLegalOverTimeWork)) {
-                vm.model.surcharge2('KMK004_217');
-            }
-            if (!ko.unwrap(vm.tabSetting.deforWorkLegalHoliday)) {
-                vm.model.surcharge3('KMK004_219');
-            }
-            if (!ko.unwrap(vm.tabSetting.outsideSurchargeWeekMonth)) {
-                vm.model.surchargeOvertime1('KMK004_251');
-            }
-            if (!ko.unwrap(vm.tabSetting.outsidedeforWorkLegalOverTimeWork)) {
-                vm.model.surchargeOvertime2('KMK004_217');
-            }
-            if (!ko.unwrap(vm.tabSetting.outsidedeforWorkLegalHoliday)) {
-                vm.model.surchargeOvertime3('KMK004_219');
-            }
+			if (!ko.unwrap(vm.tabSetting.deforWorkSurchargeWeekMonth)) {
+				vm.model.surcharge1('KMK004_245');
+			}
+			if (!ko.unwrap(vm.tabSetting.deforWorkLegalOverTimeWork)) {
+				vm.model.surcharge2('KMK004_217');
+			}
+			if (!ko.unwrap(vm.tabSetting.deforWorkLegalHoliday)) {
+				vm.model.surcharge3('KMK004_219');
+			}
+			if (!ko.unwrap(vm.tabSetting.outsideSurchargeWeekMonth)) {
+				vm.model.surchargeOvertime1('KMK004_251');
+			}
+			if (!ko.unwrap(vm.tabSetting.outsidedeforWorkLegalOverTimeWork)) {
+				vm.model.surchargeOvertime2('KMK004_217');
+			}
+			if (!ko.unwrap(vm.tabSetting.outsidedeforWorkLegalHoliday)) {
+				vm.model.surchargeOvertime3('KMK004_219');
+			}
 
-        }
+		}
 
-        reloadData() {
-            const vm = this;
+		reloadData() {
+			const vm = this;
 
-            vm.$blockui('invisible')
-                .then(() => vm.$ajax(API.DISPLAY_BASICSETTING))
-                .then((data: ITabSetting) => {
-                    vm.tabSetting.create(data)
-                })
-                .then(() => vm.$blockui('clear'));
-        }
-    }
+			vm.$blockui('invisible')
+				.then(() => vm.$ajax(API.DISPLAY_BASICSETTING))
+				.then((data: ITabSetting) => {
+					vm.tabSetting.create(data)
+				})
+				.then(() => vm.$blockui('clear'));
+		}
+	}
 
-    interface IDataModel {
-        surcharge1: string;
-        surcharge2: string;
-        surcharge3: string;
-        surchargeOvertime1: string;
-        surchargeOvertime2: string;
-        surchargeOvertime3: string;
-    }
+	interface IDataModel {
+		surcharge1: string;
+		surcharge2: string;
+		surcharge3: string;
+		surchargeOvertime1: string;
+		surchargeOvertime2: string;
+		surchargeOvertime3: string;
+	}
 
-    class DataModel {
-        surcharge1: KnockoutObservable<string> = ko.observable('KMK004_244'); //245
-        surcharge2: KnockoutObservable<string> = ko.observable('KMK004_216'); //217
-        surcharge3: KnockoutObservable<string> = ko.observable('KMK004_218'); //219
-        surchargeOvertime1: KnockoutObservable<string> = ko.observable('KMK004_250'); //251
-        surchargeOvertime2: KnockoutObservable<string> = ko.observable('KMK004_216'); //217
-        surchargeOvertime3: KnockoutObservable<string> = ko.observable('KMK004_218'); //219
+	class DataModel {
+		surcharge1: KnockoutObservable<string> = ko.observable('KMK004_244'); //245
+		surcharge2: KnockoutObservable<string> = ko.observable('KMK004_216'); //217
+		surcharge3: KnockoutObservable<string> = ko.observable('KMK004_218'); //219
+		surchargeOvertime1: KnockoutObservable<string> = ko.observable('KMK004_250'); //251
+		surchargeOvertime2: KnockoutObservable<string> = ko.observable('KMK004_216'); //217
+		surchargeOvertime3: KnockoutObservable<string> = ko.observable('KMK004_218'); //219
 
-        public create(params?: IDataModel) {
-            const self = this;
+		public create(params?: IDataModel) {
+			const self = this;
 
-            if (params) {
-                self.update(params);
-            }
-        }
+			if (params) {
+				self.update(params);
+			}
+		}
 
-        public update(params?: IDataModel) {
-            const self = this;
+		public update(params?: IDataModel) {
+			const self = this;
 
-            if (params) {
-                self.surcharge1(params.surcharge1);
-                self.surcharge2(params.surcharge2);
-                self.surcharge3(params.surcharge3);
-                self.surchargeOvertime1(params.surchargeOvertime1);
-                self.surchargeOvertime2(params.surchargeOvertime2);
-                self.surchargeOvertime3(params.surchargeOvertime3);
-            }
-        }
-    }
+			if (params) {
+				self.surcharge1(params.surcharge1);
+				self.surcharge2(params.surcharge2);
+				self.surcharge3(params.surcharge3);
+				self.surchargeOvertime1(params.surchargeOvertime1);
+				self.surchargeOvertime2(params.surchargeOvertime2);
+				self.surchargeOvertime3(params.surchargeOvertime3);
+			}
+		}
+	}
 
-    interface ITabSetting {
-        daily: number;
-        weekly: number;
-        deforWorkSurchargeWeekMonth: boolean;
-        deforWorkLegalOverTimeWork: boolean;
-        deforWorkLegalHoliday: boolean;
-        outsideSurchargeWeekMonth: boolean
-        outsidedeforWorkLegalOverTimeWork: boolean;
-        outsidedeforWorkLegalHoliday: boolean;
-    }
+	interface ITabSetting {
+		daily: number;
+		weekly: number;
+		deforWorkSurchargeWeekMonth: boolean;
+		deforWorkLegalOverTimeWork: boolean;
+		deforWorkLegalHoliday: boolean;
+		outsideSurchargeWeekMonth: boolean
+		outsidedeforWorkLegalOverTimeWork: boolean;
+		outsidedeforWorkLegalHoliday: boolean;
+	}
 
-    class TabSetting {
-        daily: KnockoutObservable<string> = ko.observable('');
-        weekly: KnockoutObservable<string> = ko.observable('');
-        deforWorkSurchargeWeekMonth: KnockoutObservable<boolean> = ko.observable(true);
-        deforWorkLegalOverTimeWork: KnockoutObservable<boolean> = ko.observable(true);;
-        deforWorkLegalHoliday: KnockoutObservable<boolean> = ko.observable(true);;
-        outsideSurchargeWeekMonth: KnockoutObservable<boolean> = ko.observable(true);
-        outsidedeforWorkLegalOverTimeWork: KnockoutObservable<boolean> = ko.observable(true);;
-        outsidedeforWorkLegalHoliday: KnockoutObservable<boolean> = ko.observable(true);;
+	class TabSetting {
+		daily: KnockoutObservable<string> = ko.observable('');
+		weekly: KnockoutObservable<string> = ko.observable('');
+		deforWorkSurchargeWeekMonth: KnockoutObservable<boolean> = ko.observable(true);
+		deforWorkLegalOverTimeWork: KnockoutObservable<boolean> = ko.observable(true);;
+		deforWorkLegalHoliday: KnockoutObservable<boolean> = ko.observable(true);;
+		outsideSurchargeWeekMonth: KnockoutObservable<boolean> = ko.observable(true);
+		outsidedeforWorkLegalOverTimeWork: KnockoutObservable<boolean> = ko.observable(true);;
+		outsidedeforWorkLegalHoliday: KnockoutObservable<boolean> = ko.observable(true);;
 
-        public create(params?: ITabSetting) {
-            const self = this;
+		public create(params?: ITabSetting) {
+			const self = this;
 
-            if (params) {
-                var firstDaily = '';
-                var lastDaily = params.daily % 60 + '';
+			if (params) {
+				var firstDaily = '';
+				var lastDaily = params.daily % 60 + '';
 
-                if (params.daily / 60 > 1) {
-                    firstDaily = Math.floor(params.daily / 60) + '';
-                }
+				if (params.daily / 60 > 1) {
+					firstDaily = Math.floor(params.daily / 60) + '';
+				}
 
-                if (lastDaily.length < 2) {
-                    lastDaily = '0' + lastDaily;
-                }
-                var firstWeekly = '';
+				if (lastDaily.length < 2) {
+					lastDaily = '0' + lastDaily;
+				}
+				var firstWeekly = '';
 
-                if (params.weekly / 60 > 1) {
-                    firstWeekly = Math.floor(params.weekly / 60) + '';
-                }
+				if (params.weekly / 60 > 1) {
+					firstWeekly = Math.floor(params.weekly / 60) + '';
+				}
 
-                var lastWeekly = params.weekly % 60 + '';
-                if (lastWeekly.length < 2) {
-                    lastWeekly = '0' + lastWeekly;
-                }
-                self.daily(firstDaily + ':' + lastDaily);
-                self.weekly(firstWeekly + ':' + lastWeekly);
-                self.deforWorkSurchargeWeekMonth(params.deforWorkSurchargeWeekMonth);
-                self.deforWorkLegalOverTimeWork(params.deforWorkLegalOverTimeWork);
-                self.deforWorkLegalHoliday(params.deforWorkLegalHoliday);
-                self.outsideSurchargeWeekMonth(params.outsideSurchargeWeekMonth);
-                self.outsidedeforWorkLegalOverTimeWork(params.outsidedeforWorkLegalOverTimeWork);
-                self.outsidedeforWorkLegalHoliday(params.outsidedeforWorkLegalHoliday);
-            }
-        }
-    }
+				var lastWeekly = params.weekly % 60 + '';
+				if (lastWeekly.length < 2) {
+					lastWeekly = '0' + lastWeekly;
+				}
+				self.daily(firstDaily + ':' + lastDaily);
+				self.weekly(firstWeekly + ':' + lastWeekly);
+				self.deforWorkSurchargeWeekMonth(params.deforWorkSurchargeWeekMonth);
+				self.deforWorkLegalOverTimeWork(params.deforWorkLegalOverTimeWork);
+				self.deforWorkLegalHoliday(params.deforWorkLegalHoliday);
+				self.outsideSurchargeWeekMonth(params.outsideSurchargeWeekMonth);
+				self.outsidedeforWorkLegalOverTimeWork(params.outsidedeforWorkLegalOverTimeWork);
+				self.outsidedeforWorkLegalHoliday(params.outsidedeforWorkLegalHoliday);
+			}
+		}
+	}
 }

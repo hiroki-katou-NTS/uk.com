@@ -70,7 +70,7 @@ module nts.uk.at.kmk004.components.flex {
 		);
 		//フレックス勤務所定労働時間取得
 		getFlexPredWorkTime: KnockoutObservable<IGetFlexPredWorkTime> = ko.observable({ reference: 0 });
-		yearList: KnockoutObservableArray<YearItem> = ko.observableArray([new YearItem(2020), new YearItem(2019)]);
+		yearList: KnockoutObservableArray<YearItem> = ko.observableArray([new YearItem(2020, true), new YearItem(2019)]);
 		selectedYear: KnockoutObservable<number> = ko.observable(2020);
 		monthlyWorkTimeSetComs: KnockoutObservableArray<MonthlyWorkTimeSetCom> = ko.observableArray();
 
@@ -160,7 +160,7 @@ module nts.uk.at.kmk004.components.flex {
 		constructor(year: number, isNew?: boolean) {
 			this.year = year;
 			this.yearName = year.toString() + '年度';
-			this.isNewText = isNew ? '*' : '';
+			this.isNewText = isNew ? '＊' : '';
 			this.isNew = isNew ? isNew : false;
 		}
 	}

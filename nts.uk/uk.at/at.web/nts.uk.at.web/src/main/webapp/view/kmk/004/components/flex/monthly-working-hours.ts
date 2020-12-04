@@ -8,11 +8,11 @@ const template = `
 	<div data-bind="ntsFormLabel: {inline:true} , i18n: 'KMK004_232'"></div>
 	
 	<div style="padding-left:10px;"> 
-		<div class="div_line" style="padding-left:4px;">
+		<div class="div_line">
 			<button data-bind="click: openQDialog , i18n: 'KMK004_233'" ></button>
 		</div>
 	
-		<div class="div_line" style="padding-left:4px;" >
+		<div class="div_line" >
 		<div style="float:left">
 			<div id="year-list" data-bind="ntsListBox: {
 				options: screenData().yearList,
@@ -22,7 +22,7 @@ const template = `
 				value: screenData().selectedYear,
 				rows:5,
 				columns:[
-				{ key: 'isNotSave', length: 1 },
+				{ key: 'isNewText', length: 1 },
 				{ key: 'yearName', length: 4 }
 				]
 				}"></div>
