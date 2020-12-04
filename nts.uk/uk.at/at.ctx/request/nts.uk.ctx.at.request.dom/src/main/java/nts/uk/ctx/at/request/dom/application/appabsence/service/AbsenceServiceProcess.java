@@ -13,7 +13,7 @@ import nts.uk.ctx.at.request.dom.application.appabsence.service.output.SpecAbsen
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.AppliedDate;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 
 public interface AbsenceServiceProcess {
@@ -57,8 +57,8 @@ public interface AbsenceServiceProcess {
 	 * @param subHdRemain 代休残数
 	 * @return
 	 */
-	public List<ConfirmMsgOutput> checkDigestPriorityHd(boolean mode, HdAppSet hdAppSet, AppEmploymentSetting employmentSet, boolean subVacaManage,
-			boolean subHdManage, Double subVacaRemain, Double subHdRemain);
+	public List<ConfirmMsgOutput> checkDigestPriorityHd(boolean mode, HolidayApplicationSetting hdAppSet, AppEmploymentSetting employmentSet, boolean subVacaManage,
+														boolean subHdManage, Double subVacaRemain, Double subHdRemain);
 	/**
 	 * @author hoatt
 	 * 振休代休優先チェック
@@ -185,7 +185,7 @@ public interface AbsenceServiceProcess {
 	 * @return
 	 */
 	public List<ConfirmMsgOutput> inconsistencyCheck(String companyID, String employeeID, GeneralDate startDate, GeneralDate endDate, 
-			Integer alldayHalfDay, HdAppSet hdAppSet, boolean mode);
+			Integer alldayHalfDay, HolidayApplicationSetting hdAppSet, boolean mode);
 	
 	/**
 	 * 休暇残数チェック
@@ -196,7 +196,7 @@ public interface AbsenceServiceProcess {
 	 * @param holidayType 休暇種類 
 	 */
 	public void checkRemainVacation(String companyID, AppAbsence appAbsence, GeneralDate closureStartDate,
-			HdAppSet hdAppSet, HolidayAppType holidayType);
+									HolidayApplicationSetting hdAppSet, HolidayAppType holidayType);
 	
 	/**
 	 * 休暇種類共通エラーチェック
@@ -208,7 +208,7 @@ public interface AbsenceServiceProcess {
 	 * @param alldayHalfDay 終日半日休暇区分
 	 */
 	public List<ConfirmMsgOutput> holidayCommonCheck(String companyID, AppAbsence appAbsence, GeneralDate closureStartDate,
-			HdAppSet hdAppSet, HolidayAppType holidayType, Integer alldayHalfDay, boolean mode);
+													 HolidayApplicationSetting hdAppSet, HolidayAppType holidayType, Integer alldayHalfDay, boolean mode);
 	
 	/**
 	 * 年休のチェック処理

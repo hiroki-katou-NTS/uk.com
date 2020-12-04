@@ -600,9 +600,9 @@ public class EmployeeSearchQueryProcessor {
 								.getHistoryItems().get(0).identifier())
 						.get().getJobTitleId();
 				JobTitleInfo jobTitleInfo = mapJobTitle.get(jobTitleId);
-				data.setJobTitleId(jobTitleInfo.getJobTitleId());
-				data.setJobTitleCode(jobTitleInfo.getJobTitleCode().v());
-				data.setJobTitleName(jobTitleInfo.getJobTitleName().v());
+				data.setJobTitleId(jobTitleInfo != null ? jobTitleInfo.getJobTitleId() : "");
+				data.setJobTitleCode(jobTitleInfo != null ? jobTitleInfo.getJobTitleCode().v() : "");
+				data.setJobTitleName(jobTitleInfo != null ? jobTitleInfo.getJobTitleName().v() : "");
 			}
 			dataRes.add(data);
 		}

@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.app.command.kmp.kmp001;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -35,9 +34,9 @@ public class RegisterStampCardCommandHandler {
 	public void saveStampCardViewA(CardNumberNewCommand command) {
 		String contractCode = AppContexts.user().contractCode();
 		
-		List<StampCard> stampCards = stampCardRepo.getListStampCardByCardNumber(command.getCardNumber());
+		Optional<StampCard> stampCards = stampCardRepo.getByCardNoAndContractCode(command.getCardNumber(), contractCode);
 		
-		if (!stampCards.isEmpty()) {
+		if (stampCards.isPresent()) {
 			throw new BusinessException("Msg_1659");
 		} else {
 			StampCard card = new StampCard(contractCode, command.getCardNumber(), command.getEmployeeId());

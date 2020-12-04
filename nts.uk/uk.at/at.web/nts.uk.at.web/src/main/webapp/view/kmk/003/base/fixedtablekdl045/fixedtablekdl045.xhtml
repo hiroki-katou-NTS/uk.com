@@ -11,12 +11,19 @@
 		.table-fixed-kmk003 tbody tr{
 			height: 33px;
 		}
+		.nts-fixed-body-container{
+			overflow-x: hidden !important;
+			height: 163px;
+		}
+		.nts-fixed-body-wrapper{
+			height: 163px !important;
+		}
 	</style>
 
-	<div class="ui-iggrid kmk003-table-component" data-bind="attr: {tabindex: tabindex}">
-		<div class="fixed-table-button" data-bind="style: {width: width + 'px', 'margin-bottom': '10px'}" >
+	<div id="kkkk" class="ui-iggrid kmk003-table-component" data-bind="attr: {tabindex: tabindex}">
+		<div class="fixed-table-button" data-bind="style: {width: width + 'px', 'margin-bottom': '3px'}" >
 		<com:ko tag="if" bind="isShowButton">
-			<button data-bind="click: addRowItem, enable: isEnaleAddButton, attr: {tabindex: tabindex}">#{i18n.getText('KDL045_27')}</button>
+			<button id="btn-add" data-bind="click: addRowItem, enable: isEnaleAddButton, attr: {tabindex: tabindex}">#{i18n.getText('KDL045_27')}</button>
 			<button class="danger" data-bind="click: removeItem, enable: isEnaleRemoveButton, attr: {tabindex: tabindex}">#{i18n.getText('KDL045_28')}</button>
 		</com:ko>
 		<com:ko tag="if" bind="helpImageUrl">
@@ -29,14 +36,14 @@
 		<!-- BEGIN CONTENT AREA -->
 		<div>
 			<!-- BEGIN BINDING HEADER -->
-			<table id="fixed-table-custom"
+			<table style="overflow-x: hidden;" id="fixed-table-custom"
 				class="table-fixed-kmk003">
 				<colgroup>
 					<com:ko tag="if" bind="isVisibleSelectAll &amp;&amp; isMultipleSelect">
 						<col width="36"></col>
 					</com:ko>
 					<com:ko-foreach bind="columns">
-						<col data-bind="attr: {width: width}"></col>
+						<col data-bind="attr: {width: width+25}"></col>
 					</com:ko-foreach>
 				</colgroup>
 				<thead>
