@@ -65,13 +65,6 @@ export class KdlS35Component extends Vue {
         substituteWorkInfoList.forEach((m) => {
             if (m.checked) {
                 selected += m.remainingNumber;
-                if (required - selected < 0) {
-                    vm.$modal
-                        .warn({ messageId: 'Msg_1761' })
-                        .then(() => {
-                            m.checked = false;
-                        });
-                }
             }
         });
 
@@ -126,7 +119,7 @@ export class KdlS35Component extends Vue {
 
                         return '';
                     },
-                    enable: new Date(vm.startDate).getTime() <= new Date(m.expirationDate).getTime()
+                    enable: new Date(m.expirationDate).getTime() > new Date(vm.startDate).getTime()
                 }));
         }).catch((error: any) => {
             vm.showError(error);

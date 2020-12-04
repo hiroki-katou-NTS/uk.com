@@ -9,7 +9,7 @@
         </h4>
       </div>
       <!-- A1_2 -->
-      <div class="uk-bg-headline py-3">
+      <div class="uk-bg-headline py-3 pl-3">
         <!-- A1_3 -->
         <span>{{ "KDLS35_2" | i18n }}</span>
       </div>
