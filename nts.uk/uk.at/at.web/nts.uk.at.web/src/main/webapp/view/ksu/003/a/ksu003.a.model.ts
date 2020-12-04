@@ -518,10 +518,10 @@ module nts.uk.at.view.ksu003.a.model {
 	}
 
 	export class GetInfoInitStartKsu003Dto {
-		byDateDto: DisplaySettingByDateDto; //スケジュール修正日付別の表示設定
-		displayInforOrganization: DisplayInfoOrganizationDto; // 組織の表示情報
-		manageMultiDto: WorkManageMultiDto; // 複数回勤務管理
-		functionControlDto: ScheFunctionControlDto; // スケジュール修正の機能制御 
+		byDateDto: DisplaySettingByDateDto = new DisplaySettingByDateDto(0,0,0); //スケジュール修正日付別の表示設定
+		displayInforOrganization: DisplayInfoOrganizationDto = new DisplayInfoOrganizationDto("", "", "", "", ""); // 組織の表示情報
+		manageMultiDto: WorkManageMultiDto = new WorkManageMultiDto("", 0); // 複数回勤務管理
+		functionControlDto: ScheFunctionControlDto = new ScheFunctionControlDto([], 0); // スケジュール修正の機能制御 
 		constructor(byDateDto: DisplaySettingByDateDto,
 			displayInforOrganization: DisplayInfoOrganizationDto,
 			manageMultiDto: WorkManageMultiDto,
@@ -534,7 +534,7 @@ module nts.uk.at.view.ksu003.a.model {
 	}
 	// スケジュール修正日付別の表示設定
 	export class DisplaySettingByDateDto {
-		dispRange: number; /** 表示範囲 */
+		dispRange: number ; /** 表示範囲 */
 		dispStart: number; /** 開始時刻 */
 		initDispStart: number;  /** スケジュール修正日付別の表示設定 */
 		constructor(dispRange: number,
