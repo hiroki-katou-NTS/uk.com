@@ -106,8 +106,9 @@ public class GetFixedWorkInformation {
 			inforDto = new FixedWorkInforDto(null, null, null, new ArrayList<>(), null, null,
 					type.get().getAbbreviationName().v(), null, null, null, null);
 			inforDtos.add(inforDto);
+		} else {
+			lstNo = workInformation.getChangeableWorkingTimezones(impl);
 		}
-		lstNo = workInformation.getChangeableWorkingTimezones(impl);
 
 		// 5 List<勤務NOごとの変更可能な勤務時間帯>isPresentList
 		if (!lstNo.isEmpty()) {

@@ -2488,7 +2488,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			}
 
 			if (window.innerHeight > 700) {
-				$("#hr-row2").css({ "width": 1230 + 'px' });
+				$("#hr-row2").css({ "width": 1278 + 'px' });
 			} else {
 				if (self.indexBtnToLeft() % 2 == 0) {
 					$(".ex-header-detail").css({ "width": 615 + 'px' });
