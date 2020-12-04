@@ -21,7 +21,7 @@ module nts.uk.at.view.kmk004.l {
                     { key: 'value', length: 4 }
                 ]}"></div>
         </div>
-        <div class="note" data-bind="i18n: 'KMK004_212'"></div>
+        <div class="note color-attendance" data-bind="i18n: 'KMK004_212'"></div>
     `;
 
     @component({
