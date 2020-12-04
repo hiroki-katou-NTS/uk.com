@@ -57,7 +57,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                 });
             }
             self.listCheckCondition(listCheckConditionDto);
-            let checkListView = _.filter(listConverToview, (value) => {return value.categoryId != 11});
+            let checkListView = _.filter(listConverToview, (value) => {return value.categoryId != 11 && value.categoryId != 14});
             self.ListView(_.orderBy(checkListView, 'categoryId', 'asc'));
         }
         private openDialog(modelCheck: ModelCheckConditonCode): void {

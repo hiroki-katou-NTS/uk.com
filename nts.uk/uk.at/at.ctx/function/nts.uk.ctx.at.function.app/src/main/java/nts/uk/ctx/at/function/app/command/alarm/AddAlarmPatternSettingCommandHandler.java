@@ -59,6 +59,7 @@ public class AddAlarmPatternSettingCommandHandler extends CommandHandler<AddAlar
 			
 			// check domain logic
 			if (domain.selectedCheckCodition()) {
+
 				// アラームリストのパターンを新規登録する (Add pattern of alarm list )
 				repo.create(domain);
 			}

@@ -162,7 +162,7 @@ module nts.uk.at.view.kal004.a.model {
                         let daily = categoryInputed.extractionDaily == null ? null : new share.ExtractionPeriodDailyCommand(categoryInputed.extractionDaily);
                         let unit = categoryInputed.extractionUnit == null ? null : new share.PeriodUnitCommand(categoryInputed.extractionUnit);
                         let listMonthly = [];
-                        if(categoryInputed.alarmCategory == 11){
+                        if(categoryInputed.alarmCategory == 11 || categoryInputed.alarmCategory == 14){
                             listMonthly== null;
                         }else{
                             listMonthly = categoryInputed.listExtractionMonthly == [] ? [] : _.map(categoryInputed.listExtractionMonthly, (item)=>{ return new share.ExtractionPeriodMonthlyCommand(item)});

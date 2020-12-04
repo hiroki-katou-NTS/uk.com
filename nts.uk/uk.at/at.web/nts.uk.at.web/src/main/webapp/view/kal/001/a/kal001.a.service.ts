@@ -91,7 +91,7 @@ module nts.uk.at.view.kal001.a.service {
                     this.category = p.category;
                     this.name = p.categoryName;     
                                         
-                    if(p.category==2|| p.category==5){
+                    if(p.category==2|| p.category==5 || p.category == 8){
                         this.startDate =nts.uk.time.parseMoment(p.dateValue().startDate).momentObject.toISOString() ;
                         this.endDate = nts.uk.time.parseMoment(p.dateValue().endDate).momentObject.toISOString() ;
                         
