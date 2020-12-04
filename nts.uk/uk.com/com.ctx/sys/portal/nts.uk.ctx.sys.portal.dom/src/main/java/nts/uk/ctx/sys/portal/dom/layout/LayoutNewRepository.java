@@ -58,4 +58,6 @@ public interface LayoutNewRepository {
 	void updateListWidget(LayoutNew layout, List<WidgetSetting> listWidget);
 	
 	void deleteListWidget(LayoutNew layout, List<WidgetSetting> listWidget);
+	
+	void insertAndFlush(LayoutNew domain);
 }

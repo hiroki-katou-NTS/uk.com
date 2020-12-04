@@ -31,7 +31,7 @@ public class StandardMenuFinder {
 	 */
 	public List<StandardMenuDto> findAll() {
 		String companyID = AppContexts.user().companyId();
-		return this.standardMenuRepository.findAll(companyID).stream().map(item -> StandardMenuDto.fromDomain(item))
+		return this.standardMenuRepository.findAll1(companyID).stream().map(item -> StandardMenuDto.fromDomain(item))
 				.collect(Collectors.toList());
 	}
 

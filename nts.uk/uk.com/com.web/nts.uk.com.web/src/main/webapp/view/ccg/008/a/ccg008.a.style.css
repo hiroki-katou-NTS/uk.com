@@ -92,6 +92,7 @@
   padding: 5px 5px 0px 0px;
   min-width: 458px;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .contents_3 {
@@ -99,6 +100,7 @@
   padding: 5px 5px 0px 0px;
   min-width: 458px;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .widget_contents {

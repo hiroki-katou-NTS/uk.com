@@ -12,7 +12,7 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
     padding-top: 5px;
     padding-left: 5px;
     width: 445x;
-    height: 450px;
+    height: 100%;
     border: 1px solid #B1B1B1;
   }
   .addSign {
@@ -43,7 +43,7 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
     word-wrap: break-word;
   }
   .grid {
-    display: grid;
+    display: flex;
   }
   .block {
     display: block;
@@ -109,6 +109,7 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
   }
   .flex {
     display: flex;
+    height: 60px;
   }
   .left40 {
     float: left;
@@ -191,7 +192,7 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
               showJumpButtons: true
             }"></div>
           </td>
-          <td class="block p-10" style="width: 60%">
+          <td class="block p-10" style="width: 50%">
             <div class="right">
               <!-- A1_3 -->
               <label class="grid non-statutory-color" data-bind="i18n: 'KTG027_2'"></label>
@@ -202,7 +203,7 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
         </tr>
     </tbody>
     </table>
-    <div style="height: 270px;">
+    <div id="table" style="height: 290px;">
       <!-- A3 -->
       <table class="block pl-10 scroll">
         <thead>
@@ -246,14 +247,10 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
   export class Ktg027ComponentViewModel extends ko.ViewModel {
     // A1_2
     year: KnockoutObservable<number> = ko.observable(0);
-    currentOrNextMonth: KnockoutObservable<number> = ko.observable(0);
-    listEmp: KnockoutObservableArray<
-      PersonEmpBasicInfoImport
-    > = ko.observableArray([]);
+    currentOrNextMonth: KnockoutObservable<number> = ko.observable(1);
+    listEmp: KnockoutObservableArray<PersonEmpBasicInfoImport> = ko.observableArray([]);
     // list data for chart
-    listShowData: KnockoutObservableArray<
-      AgreementTimeDetail
-    > = ko.observableArray([]);
+    listShowData: KnockoutObservableArray<AgreementTimeDetail> = ko.observableArray([]);
     // selected employee
     selectedEmp: any;
     closureId: KnockoutObservable<number> = ko.observable(0);
@@ -262,7 +259,9 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
       const vm = this;
       vm.$blockui("grayout");
       //get currentOrNextMonth in cache
-      vm.currentOrNextMonth(getShared('cache').currentOrNextMonth);
+      if(getShared('cache')){
+        vm.currentOrNextMonth(getShared('cache').currentOrNextMonth);
+      }
       //call API init
       vm.$ajax("at", API.getDataInit + vm.currentOrNextMonth())
         .then((response) => {
@@ -408,7 +407,7 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
       setShared("KDW003_PARAM", {
         paramKDW003,
       });
-      vm.$jump("/view/kdw/003/a/index.xhtml");
+      vm.$jump('at',"/view/kdw/003/a/index.xhtml");
     }
   }
 

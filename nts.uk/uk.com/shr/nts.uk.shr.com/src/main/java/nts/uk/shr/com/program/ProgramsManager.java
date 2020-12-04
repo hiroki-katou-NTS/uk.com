@@ -138,19 +138,34 @@ public class ProgramsManager {
     /**
      * CCG015A
      */
-    public static final Program CCG015A = new Program(WebAppId.COM, ProgramIdConsts.CCG015A, "CCG015_1",
+    public static final Program CCG015A = new Program(WebAppId.COM, ProgramIdConsts.CCG015A, "CCG015_45",
             "/view/ccg/015/a/index.xhtml");
 
     /**
      * CCG015B
      */
-    public static final Program CCG015B = new Program(WebAppId.COM, ProgramIdConsts.CCG015B, "CCG015_2",
+    public static final Program CCG015B = new Program(WebAppId.COM, ProgramIdConsts.CCG015B, "CCG015_1",
             "/view/ccg/015/b/index.xhtml");
     /**
      * CCG015C
      */
     public static final Program CCG015C = new Program(WebAppId.COM, ProgramIdConsts.CCG015C, "CCG015_3",
             "/view/ccg/015/c/index.xhtml");
+    /**
+     * CCG015D
+     */
+    public static final Program CCG015D = new Program(WebAppId.COM, ProgramIdConsts.CCG015D, "CCG015_24",
+            "/view/ccg/015/d/index.xhtml");
+    /**
+     * CCG015E
+     */
+    public static final Program CCG015E = new Program(WebAppId.COM, ProgramIdConsts.CCG015E, "CCG015_25",
+            "/view/ccg/015/e/index.xhtml");
+    /**
+     * CCG015F
+     */
+    public static final Program CCG015F = new Program(WebAppId.COM, ProgramIdConsts.CCG015F, "CCG015_63",
+            "/view/ccg/015/f/index.xhtml");
     /**
      * CCG014A
      */

@@ -8,7 +8,9 @@ module nts.uk.com.view.ccg008.a.Layout2ComponentViewModel {
           <iframe style="width:450px" data-bind="attr: { src: url }" />
         </span>
         <span data-bind="if: url.indexOf('.js') > -1">
-          <div data-bind="component: { name: name }" style="margin-bottom: 10px; resize: vertical; overflow: auto;"></div>
+          <div data-bind="attr:{ id: 'WG' + $index() }">
+            <div data-bind="component: { name: name }" style="margin-bottom: 10px; height:100%;" ></div>
+          </div>
         </span>
       </div>
     `,
@@ -35,6 +37,7 @@ module nts.uk.com.view.ccg008.a.Layout2ComponentViewModel {
         dataLayout = _.orderBy(dataLayout, ["order"], ["asc"]);
         vm.lstWidgetLayout(dataLayout);
       }
+      
     }
 
     getUrlAndName(type: any) {
@@ -69,17 +72,45 @@ module nts.uk.com.view.ccg008.a.Layout2ComponentViewModel {
           url = "/view/ktg/031/a/ktg031.a.vm.js";
           name = "ktg031-component";
           break;
-        // case 7:
-        //   url = "/view/ccg/005/a/index.xhtml";
-        //   name = '';
-        //   break;
+        case 7:
+          url = "/view/ccg/005/a/index.xhtml";
+          name = '';
+          break;
       }
       return { url: url, name: name };
     }
 
     mounted() {
       const vm = this;
+      if ($('#WG0')) {
+        $('#WG0').resizable({
+          grid: [10000, 1]
+        });
+      }
+      if ($('#WG1')) {
+        $('#WG1').resizable({
+          grid: [10000, 1]
+        });
+      }
+      if($('#WG2')) {
+        $('#WG2').resizable({
+          grid: [10000, 1]
+        });
+      }
 
+      if($('#WG3')) {
+        $('#WG3').resizable({
+          grid: [10000, 1]
+        });
+      }
+
+      if($('#WG4')) {
+        $('#WG4').resizable({
+          grid: [10000, 1]
+        });
+      }
+      
+      
       vm.$el.querySelectorAll("iframe").forEach((frame) => {
         const targetNode = frame.contentDocument;
 
@@ -92,12 +123,12 @@ module nts.uk.com.view.ccg008.a.Layout2ComponentViewModel {
             frame.style.width = width.toString();
             frame.style.height = height.toString();
           };
-
           const observer = new MutationObserver(callback);
-
           observer.observe(targetNode, config);
         }
       });
+
+      
     }
   }
 

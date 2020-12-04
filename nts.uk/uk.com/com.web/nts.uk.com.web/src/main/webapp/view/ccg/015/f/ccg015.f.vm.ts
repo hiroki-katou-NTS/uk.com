@@ -4,43 +4,29 @@ module nts.uk.com.view.ccg015.f {
 
   @bean()
   export class ScreenModel extends ko.ViewModel {
-    isVisiableContentF2: KnockoutObservable<boolean> = ko.observable(true);
-    isVisiableContentF3: KnockoutObservable<boolean> = ko.observable(true);
     topPageCd: KnockoutObservable<string> = ko.observable(null);
-    lstWidgetLayout2: KnockoutObservableArray<any> = ko.observableArray([]);
-    lstWidgetLayout3: KnockoutObservableArray<any> = ko.observableArray([]);
-    isShowUrlLayout1: KnockoutObservable<boolean> = ko.observable(false);
-    urlIframe1: KnockoutObservable<string> = ko.observable('');
-    lstHtml: KnockoutObservableArray<string> = ko.observableArray([]);
-    $contentF1: JQuery;
-    $contentF2: JQuery;
+    paramWidgetLayout2: KnockoutObservableArray<WidgetSettingDto> = ko.observableArray([]);
+    paramWidgetLayout3: KnockoutObservableArray<WidgetSettingDto> = ko.observableArray([]);
+    paramIframe1: KnockoutObservable<DisplayInTopPageDto> = ko.observable();
+    layoutDisplayType: KnockoutObservable<number> = ko.observable(null);
+    visible: KnockoutObservable<boolean> = ko.observable(false);
+    visibleLayout2: KnockoutObservable<boolean> = ko.observable(false);
+    visibleLayout3: KnockoutObservable<boolean> = ko.observable(false);
+
 
     created(params: any) {
       const vm = this;
       if (params.topPageModel) {
         vm.topPageCd(params.topPageModel.topPageCode);
       }
-      vm.$contentF1 = $('#F1');
-      vm.$contentF2 = $('#F2');
-
-      if (params.selectedId === LayoutType.LAYOUT_TYPE_1) {
-        vm.isVisiableContentF2(false);
-        vm.isVisiableContentF3(false);
-      } else if (params.selectedId === LayoutType.LAYOUT_TYPE_2) {
-        vm.isVisiableContentF3(false);
-        const tcontentF1 = vm.$contentF1.clone();
-        const tcontentF2 = vm.$contentF2.clone();
-        if (!vm.$contentF2.is(':empty')) {
-          vm.$contentF1.replaceWith(tcontentF2);
-          vm.$contentF2.replaceWith(tcontentF1);
-        }
-      } else if (params.selectedId === LayoutType.LAYOUT_TYPE_3) {
-        vm.isVisiableContentF3(false);
-      }
 
       vm.$blockui('grayout');
       vm.$ajax(`/toppage/getDisplayTopPage/${vm.topPageCd()}`)
-        .then((result: any) => vm.getToppage(result))
+        .then((result: any) =>{
+          vm.layoutDisplayType(params.selectedId);
+          vm.getToppage(result);
+        })
+        
         .always(() => vm.$blockui('clear'));
     }
 
@@ -59,83 +45,20 @@ module nts.uk.com.view.ccg015.f {
 
     private getLayout1(data: DisplayInTopPageDto) {
       const vm = this;
-      if (data.urlLayout1) {
-        vm.isShowUrlLayout1(true);
-        vm.urlIframe1(data.urlLayout1);
-      } else {
-        const lstFileId: any[] = [];
-        _.each(data.layout1, (item: any) => lstFileId.push(item.fileId));
-        const param = {
-          lstFileId: lstFileId
-        };
-
-        vm.$blockui('grayout');
-        vm.$ajax('sys/portal/createflowmenu/extractListFileId', param)
-          .then((res: any) => {
-            const mappedList: any = _.map(res, (item: any) => {
-              const width = item.htmlContent.match(/(?<=width: )[0-9A-Za-z]+(?=;)/)[0];
-              const height = item.htmlContent.match(/(?<=height: )[0-9A-Za-z]+(?=;)/)[0];
-              return { html: `<iframe style="width: ${width}; height: ${height};" srcdoc='${item.htmlContent}'></iframe>` };
-            });
-            vm.lstHtml(mappedList);
-          })
-          .always(() => vm.$blockui('clear'));
-      }
+      vm.paramIframe1(data);
+      vm.visible(true)
     }
 
     private getLayout2(data: DisplayInTopPageDto) {
       const vm = this;
-      const origin: string = window.location.origin;
-      const dataLayout2: any[] = _.chain(data.layout2)
-        .map((item: WidgetSettingDto) => {
-          let itemLayout: any;
-          itemLayout.url = origin + vm.getUrl(item.widgetType);
-          itemLayout.html = `<iframe src=  ${itemLayout.url}/>`;
-          itemLayout.order = item.order;
-          return itemLayout;
-        })
-        .orderBy(["order"], ["asc"])
-        .value();
-      vm.lstWidgetLayout2(dataLayout2);
+      vm.paramWidgetLayout2(data.layout2);
+      vm.visibleLayout2(true);
     }
 
     private getLayout3(data: DisplayInTopPageDto) {
       const vm = this;
-      const origin: string = window.location.origin;
-      const dataLayout3: any[] = _.chain(data.layout3)
-        .map((item: WidgetSettingDto) => {
-          let itemLayout: any;
-          itemLayout.url = origin + vm.getUrl(item.widgetType)
-          itemLayout.html = `<iframe src=  ${itemLayout.url}/>`;
-          itemLayout.order = item.order;
-          return itemLayout;
-        })
-        .orderBy(["order"], ["asc"])
-        .value();
-      vm.lstWidgetLayout3(dataLayout3);
-    }
-
-    private getUrl(type: any) {
-      switch (type) {
-        case 0:
-          return '/nts.uk.at.web/view/ktg/005/a/index.xhtml';
-        case 1:
-          return '/nts.uk.at.web/view/ktg/001/a/index.xhtml';
-        case 2:
-          return '/nts.uk.at.web/view/ktg/004/a/index.xhtml';
-        case 3:
-          return '/nts.uk.at.web/view/ktg/026/a/index.xhtml';
-        case 4:
-          return '/nts.uk.at.web/view/ktg/027/a/index.xhtml';
-        case 5:
-          return '/nts.uk.at.web/view/kdp/001/a/index.xhtml';
-        case 6:
-          return '/nts.uk.at.web/view/ktg/031/a/index.xhtml';
-        case 7:
-          return '/view/ccg/005/a/index.xhtml';
-        default:
-          return null;
-      }
+      vm.paramWidgetLayout3(data.layout3);
+      vm.visibleLayout3(true);
     }
 
     close() {
