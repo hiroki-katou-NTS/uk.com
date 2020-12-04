@@ -61,10 +61,21 @@ export class KdlS36Component extends Vue {
         const { holidayWorkInfoList } = vm;
         const required = vm.substituteHolidayList.length * vm.daysUnit;
         let selected = 0;
+        let countIfLessThanZero = 0;
 
         holidayWorkInfoList.forEach((m) => {
             if (m.checked) {
                 selected += m.remainingNumber;
+                if (required - selected < 0) {
+                    countIfLessThanZero++;
+                    if (countIfLessThanZero > 1) {
+                        vm.$modal
+                        .warn({ messageId: 'Msg_1875' })
+                        .then(() => {
+                            m.checked = false;
+                        });
+                    }
+                }
             }
         });
 
@@ -75,10 +86,10 @@ export class KdlS36Component extends Vue {
         //     .reduce((p, c) => p + c, required);
     }
 
-    public back() {
+    public back(msgData: any) {
         const vm = this;
 
-        vm.$close();
+        vm.$close(msgData);
     }
 
     private startPage() {
@@ -177,7 +188,7 @@ export class KdlS36Component extends Vue {
             .post('at', servicesPath.associate, data)
             .then((msgData: HolidayWorkSubHolidayLinkingMng[]) => {
                 vm.$mask('hide');
-                vm.back();
+                vm.back(msgData);
 
             })
             .catch((error: any) => {
