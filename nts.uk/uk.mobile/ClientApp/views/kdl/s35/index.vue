@@ -21,7 +21,7 @@
           <nts-label>{{ "KDLS35_3" | i18n }}</nts-label>
         </div>
         <!-- A2_2 -->
-        <div class="col-7 pt-2">
+        <div class="col-7 pt-2 " id="A2_2">
           <label v-if="startDate === endDate" >{{startDate | i18n}}</label>
           <label v-else >{{"KDLS35_14" | i18n([startDate, endDate])}}</label>
         </div>
@@ -32,7 +32,7 @@
           <nts-label>{{ "KDLS35_4" | i18n }}</nts-label>
         </div>
         <!-- A3_2 -->
-        <label class="col-7 pt-2">{{
+        <label class="col-7 pt-2" id="A3_2">{{
           "KDLS35_5" | i18n(requiredNumberOfDays)
         }}</label>
       </div>
@@ -43,7 +43,7 @@
           <!-- A4_2 -->
           <label>{{ "KDLS35_6" | i18n }}</label>
         </div>
-        <div class="col-7">
+        <div class="col-7" id="A4_2">
           <!-- A4_3 -->
           <fa-font icon="fas fa-calendar-check" />
           <!-- A4_4 -->
@@ -54,15 +54,15 @@
       <table class="table table-responsive w-auto" v-focus>
         <thead class="text-center">
           <tr>
-            <th scope="col"></th>
+            <th scope="col" id="A5_1"></th>
             <!-- A5_2 -->
-            <th scope="col">{{ "KDLS35_8" | i18n }}</th>
+            <th scope="col" id="A5_2">{{ "KDLS35_8" | i18n }}</th>
             <!-- A5_3 -->
-            <th scope="col">{{ "KDLS35_9" | i18n }}</th>
+            <th scope="col" id="A5_3">{{ "KDLS35_9" | i18n }}</th>
             <!-- A5_4 -->
-            <th scope="col">{{ "KDLS35_10" | i18n }}</th>
+            <th scope="col" id="A5_4">{{ "KDLS35_10" | i18n }}</th>
             <!-- A5_5 -->
-            <th scope="col">{{ "KDLS35_11" | i18n }}</th>
+            <th scope="col" id="A5_5">{{ "KDLS35_11" | i18n }}</th>
           </tr>
         </thead>
         <tbody
