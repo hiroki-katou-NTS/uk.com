@@ -365,8 +365,10 @@ module nts.uk.ui.at.ksu002.a {
 			});
 		}
 
-		created() {
+		mounted() {
 			const vm = this;
+
+			$(vm.$el).find('[data-bind]').removeAttr('data-bind');
 
 			vm.$ajax('at', API.WTYPE)
 				.then((response: WorkTypeResponse[]) => {
@@ -390,12 +392,6 @@ module nts.uk.ui.at.ksu002.a {
 						}
 					}
 				});
-		}
-
-		mounted() {
-			const vm = this;
-
-			$(vm.$el).find('[data-bind]').removeAttr('data-bind');
 		}
 	}
 
