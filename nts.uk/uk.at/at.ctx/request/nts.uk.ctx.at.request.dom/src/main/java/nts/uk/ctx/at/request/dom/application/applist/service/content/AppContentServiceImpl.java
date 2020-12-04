@@ -481,7 +481,9 @@ public class AppContentServiceImpl implements AppContentService {
 		// 承認状況照会　＝　String.Empty (tham khảo tình trạng approval)
 		String result = Strings.EMPTY;
 		for(ApprovalPhaseStateImport_New phase : approvalPhaseLst) {
-			if(phase.getApprovalAtr() == ApprovalBehaviorAtrImport_New.UNAPPROVED || phase.getApprovalAtr() == ApprovalBehaviorAtrImport_New.REMAND) {
+			if(phase.getApprovalAtr() == ApprovalBehaviorAtrImport_New.UNAPPROVED || 
+					phase.getApprovalAtr() == ApprovalBehaviorAtrImport_New.REMAND ||
+					phase.getApprovalAtr() == ApprovalBehaviorAtrImport_New.ORIGINAL_REMAND) {
 				// 承認状況照会　+＝　”－”  // (tham khảo tình trạng approval)
 				result += "－";
 			}
