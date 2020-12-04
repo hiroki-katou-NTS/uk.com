@@ -8560,11 +8560,13 @@ var nts;
                                     td.tabIndex = -1;
                                 }
                             }
+                            var paddingLeft;
                             if (self.options.isHeader) {
                                 if (!uk.util.isNullOrUndefined(column.icon) && column.icon.for === "header") {
                                     var icon = document.createElement("span");
                                     icon.className = render.COL_ICON_CLS + " " + column.icon.class;
                                     tdStyle += "; padding-left: " + column.icon.width + ";";
+                                    paddingLeft = true;
                                     td.appendChild(icon);
                                     if (column.icon.popup && typeof column.icon.popup === "function") {
                                         icon.style.cursor = "pointer";
@@ -8587,6 +8589,7 @@ var nts;
                                     var icon = document.createElement("span");
                                     icon.className = render.COL_ICON_CLS + " " + column.icon.class;
                                     tdStyle += "; padding-left: " + column.icon.width + ";";
+                                    paddingLeft = true;
                                     td.appendChild(icon);
                                 }
                                 else if (!column.control) {
@@ -8599,6 +8602,8 @@ var nts;
                             //                spread.bindSticker(td, rowIdx , key, self.options);
                             // Separate det mode from other update mode
                             style.detCell(self.$container, td, rowIdx, key, self.options.determination, self.$exTable);
+                            if (!paddingLeft)
+                                tdStyle += "; padding: 0px 2px;";
                             td.style.cssText += tdStyle;
                             if (self.options.overflowTooltipOn)
                                 widget.textOverflow(td);
@@ -9313,7 +9318,13 @@ var nts;
                                 $cell.innerHTML = "";
                             }
                             else {
-                                $cell.textContent = value;
+                                var $controlIn = void 0;
+                                if (($controlIn = $cell.querySelector("a")) || ($controlIn = $cell.querySelector("button"))) {
+                                    $controlIn.innerText = value;
+                                }
+                                else {
+                                    $cell.textContent = value;
+                                }
                             }
                             var cellObj = new selection.Cell(rowIdx, columnKey, valueObj, -1);
                             touched = trace(origDs, $cell, cellObj, fields, x.manipulatorId, x.manipulatorKey);
@@ -10494,6 +10505,7 @@ var nts;
                             removeEditHistory($body, removedCell);
                             var exTable_2 = $.data($exTable, NAMESPACE);
                             events.popChange(exTable_2, ui.rowIndex, removedCell);
+                            events.trigger($exTable, events.CELL_RETAINED, _.cloneDeep(ui));
                         }
                         setText($cell, ui.innerIdx, ui.value);
                     }
@@ -10612,7 +10624,8 @@ var nts;
                         }
                         var currentVal = rowData[ui.columnKey], origVal = gen._origDs[ui.rowIndex][ui.columnKey];
                         if (innerIdx === -1) {
-                            if (origVal !== ui.value) {
+                            if (origVal !== ui.value && !_.isNil(origVal) && origVal !== ""
+                                && !_.isNil(ui.value) && ui.value !== "") {
                                 oldVal = _.cloneDeep(currentVal);
                                 if (exTable[f].primaryKey === ui.columnKey) {
                                     if (exTable.leftmostContent) {
@@ -10713,7 +10726,14 @@ var nts;
                         else {
                             gen.dataSource[rowIdx][columnKey] = value;
                             if (!helper.isEqual(origDs[rowIdx][columnKey], value)) {
-                                events.trigger($table, events.CELL_UPDATED, new selection.Cell(rowIdx, columnKey, value, -1));
+                                var detail = new selection.Cell(rowIdx, columnKey, value, -1);
+                                if (selector.is($grid, "." + (BODY_PRF + LEFTMOST))) {
+                                    detail.land = BODY_PRF + LEFTMOST;
+                                }
+                                else if (selector.is($grid, "." + (BODY_PRF + MIDDLE))) {
+                                    detail.land = BODY_PRF + MIDDLE;
+                                }
+                                events.trigger($table, events.CELL_UPDATED, detail);
                             }
                         }
                         render.gridCell($grid, rowIdx, columnKey, innerIdx, value, isRestore);
@@ -13768,7 +13788,7 @@ var nts;
                                     if (i === index || !$depend)
                                         return;
                                     var mainSyncing = $.data($main, scroll.SCROLL_SYNCING);
-                                    if (!mainSyncing) {
+                                    if (!mainSyncing && $depend.scrollLeft !== $main.scrollLeft) {
                                         $.data($depend, scroll.SCROLL_SYNCING, true);
                                         $depend.scrollLeft = $main.scrollLeft;
                                     }
@@ -13788,7 +13808,7 @@ var nts;
                                     if (i === index)
                                         return;
                                     var mainSyncing = $.data($main, scroll.VERT_SCROLL_SYNCING);
-                                    if (!mainSyncing) {
+                                    if (!mainSyncing && $depend.scrollTop !== $main.scrollTop) {
                                         $.data($depend, scroll.VERT_SCROLL_SYNCING, true);
                                         $depend.scrollTop = $main.scrollTop;
                                     }
@@ -13827,6 +13847,8 @@ var nts;
                     controls.CHECKBOX_COL_WIDTH = 40;
                     controls.LABEL = "Label";
                     controls.LABEL_CLS = "x-label";
+                    controls.BUTTON = "button";
+                    controls.BUTTON_CLS = "x-button";
                     /**
                      * Check.
                      */
@@ -13841,6 +13863,15 @@ var nts;
                                     });
                                     a.innerText = data;
                                     td.appendChild(a);
+                                    break;
+                                case controls.BUTTON:
+                                    var btn = document.createElement("button");
+                                    btn.classList.add(controls.BUTTON_CLS);
+                                    btn.addXEventListener(events.CLICK_EVT, function (evt) {
+                                        action();
+                                    });
+                                    btn.innerText = data;
+                                    td.appendChild(btn);
                                     break;
                             }
                         }
@@ -14030,6 +14061,7 @@ var nts;
                     events.STOP_EDIT = "extablestopedit";
                     events.CELL_UPDATED = "extablecellupdated";
                     events.ROW_UPDATED = "extablerowupdated";
+                    events.CELL_RETAINED = "extablecellretained";
                     events.POPUP_SHOWN = "xpopupshown";
                     events.POPUP_INPUT_END = "xpopupinputend";
                     events.ROUND_RETREAT = "extablecellretreat";
@@ -14181,6 +14213,7 @@ var nts;
                             modifies[rowIdx].push(cell);
                         }
                     }
+                    events.pushChange = pushChange;
                     function popChange(exTable, rowIdx, cell) {
                         var modifies = exTable.modifications;
                         if (!modifies || _.keys(modifies).length === 0)
@@ -15703,6 +15736,9 @@ var nts;
                     function setCellValue($container, name, rowId, columnKey, value) {
                         switch (name) {
                             case LEFT_TBL:
+                                setValue($container, BODY_PRF + LEFTMOST, rowId, columnKey, value);
+                                break;
+                            case MIDDLE:
                                 setValue($container, BODY_PRF + MIDDLE, rowId, columnKey, value);
                                 break;
                             case HORZ_SUM:
@@ -15740,10 +15776,12 @@ var nts;
                         var ds = helper.getDataSource($grid[0]);
                         if (rowIdx === -1 || !ds || ds.length === 0)
                             return;
-                        if (selector === BODY_PRF + MIDDLE) {
+                        if (selector === BODY_PRF + LEFTMOST || selector === BODY_PRF + MIDDLE) {
                             if (ds[rowIdx][columnKey] !== value) {
+                                var bVal = ds[rowIdx][columnKey];
                                 update.gridCell($grid[0], rowIdx, columnKey, -1, value);
-                                update.pushEditHistory($grid[0], new selection.Cell(rowIdx, columnKey, value, -1));
+                                update.pushEditHistory($grid[0], new selection.Cell(rowIdx, columnKey, bVal, -1));
+                                //                    events.pushChange($container.data(NAMESPACE), rowIdx, new selection.Cell(rowIdx, columnKey, value, -1));
                             }
                         }
                         else {
@@ -16276,7 +16314,7 @@ var nts;
                      * Get data source.
                      */
                     function getDataSource($grid) {
-                        return ($.data($grid, internal.TANGI) || $.data($grid, internal.CANON)).dataSource;
+                        return ($.data($grid, internal.TANGI) || $.data($grid, internal.CANON) || {}).dataSource;
                     }
                     helper.getDataSource = getDataSource;
                     /**
@@ -36343,6 +36381,7 @@ var nts;
                         this.definedType = {};
                         this.gcChart = {};
                         this.lineLock = {};
+                        this.dragInsert = false;
                         if (_.isNil(chartArea)) {
                             chart_1.warning.push(new Warn("chartArea is undefined."));
                         }
@@ -36379,8 +36418,15 @@ var nts;
                             var parent = self.gcChart[options.lineNo][options.parent];
                             if (parent) {
                                 parent.children.push(chart);
-                                if (parent.start > chart.start || parent.end < chart.end)
+                                if (chart.end <= parent.start || chart.start >= parent.end)
                                     show = false;
+                                else if (parent.start > chart.start) {
+                                    chart.html.style.left = chart.origin[0] + parent.start * chart.unitToPx + "px";
+                                    chart.html.style.width = (chart.end - parent.start) * chart.unitToPx - 1 + "px";
+                                }
+                                else if (parent.end < chart.end) {
+                                    chart.html.style.width = (parent.end - chart.start) * chart.unitToPx - 1 + "px";
+                                }
                             }
                         }
                         if (chart.title) {
@@ -36549,10 +36595,16 @@ var nts;
                             document.removeEventListener("mouseup", docUp);
                             var e = document.createEvent('CustomEvent');
                             if (self.slideTrigger.holdPos === HOLD_POS.BODY) {
-                                e.initCustomEvent("gcDrag", true, true, [chart.start, chart.end]);
+                                if (_.isFunction(chart.dropFinished)) {
+                                    chart.dropFinished(chart.start, chart.end);
+                                }
+                                e.initCustomEvent("gcdrop", true, true, [chart.start, chart.end]);
                             }
                             else {
-                                e.initCustomEvent("gcResize", true, true, [chart.start, chart.end, self.slideTrigger.holdPos === HOLD_POS.START]);
+                                if (_.isFunction(chart.resizeFinished)) {
+                                    chart.resizeFinished(chart.start, chart.end, self.slideTrigger.holdPos === HOLD_POS.START);
+                                }
+                                e.initCustomEvent("gcresize", true, true, [chart.start, chart.end, self.slideTrigger.holdPos === HOLD_POS.START]);
                             }
                             self.slideTrigger = {};
                             chart.html.dispatchEvent(e);
@@ -36603,6 +36655,10 @@ var nts;
                             document.addEventListener("mouseup", docUp);
                         });
                         chart.html.addEventListener("mousemove", function () {
+                            if (self.dragInsert) {
+                                chart.html.style.cursor = "";
+                                return;
+                            }
                             var holdPos = self.getHoldPos(chart);
                             if (holdPos === HOLD_POS.START) {
                                 if (chart.fixed !== CHART_FIXED.START && chart.fixed !== CHART_FIXED.BOTH) {
@@ -36673,6 +36729,9 @@ var nts;
                     Ruler.prototype.setSnatchInterval = function (interval) {
                         this.snatchInterval = interval;
                     };
+                    Ruler.prototype.setDragInsert = function (insert) {
+                        this.dragInsert = insert;
+                    };
                     Ruler.prototype.replaceAt = function (lineNo, charts, id) {
                         if (_.isNil(lineNo) || _.isNil(charts) || charts.length === 0)
                             return;
@@ -36700,6 +36759,159 @@ var nts;
                         });
                         self.gcChart[lineNo] = {};
                         charts.forEach(function (c) { return _.has(c, "type") ? self.addChartWithType(c.type, c.options) : self.addChart(c.options); });
+                    };
+                    Ruler.prototype.move = function (lineNo, id, start) {
+                        var self = this;
+                        if (_.isNil(lineNo) || _.isNil(id) || _.isNil(start))
+                            return;
+                        var chart = (self.gcChart[lineNo] || {})[id];
+                        if (_.isNil(chart))
+                            return;
+                        self.slideTrigger = {
+                            length: parseFloat(chart.html.style.width),
+                            start: chart.start,
+                            end: chart.end,
+                            children: _.map(chart.children, function (c) { return ({ id: c.id, start: c.start, end: c.end, length: parseFloat(c.html.style.width), left: parseFloat(c.html.style.left) }); })
+                        };
+                        var pDec = { left: start * chart.unitToPx, start: start, end: chart.end + start - chart.start };
+                        if (chart.limitStartMin > pDec.start || chart.limitStartMax < pDec.start
+                            || chart.limitEndMin > pDec.end || chart.limitEndMax < pDec.end)
+                            return;
+                        var parentChart = (self.gcChart[lineNo] || {})[chart.parent], step = start - chart.start;
+                        if (parentChart && ((step > 0 && pDec.end > parentChart.end) || (step < 0 && pDec.start < parentChart.start)))
+                            return;
+                        _.forEach(chart.children, function (child) {
+                            var childSlide;
+                            if (child.followParent) {
+                                childSlide = _.find(self.slideTrigger.children, function (c) { return c.id === child.id; });
+                                if (!childSlide)
+                                    return;
+                                child.reposition({ start: childSlide.start + step, end: childSlide.end + step, left: childSlide.left + step * child.unitToPx });
+                            }
+                            else if (diff > 0 && child.start < pDec.start) {
+                                childSlide = _.find(self.slideTrigger.children, function (c) { return c.id === child.id; });
+                                if (!childSlide)
+                                    return;
+                                child.reposition({ width: childSlide.length + (childSlide.start - pDec.start) * child.unitToPx, left: pDec.start * child.unitToPx, start: pDec.start });
+                            }
+                            else if (diff < 0 && child.end > pDec.end) {
+                                childSlide = _.find(self.slideTrigger.children, function (c) { return c.id === child.id; });
+                                if (!childSlide)
+                                    return;
+                                child.reposition({ width: childSlide.length + (pDec.end - childSlide.end) * child.unitToPx, end: pDec.end });
+                            }
+                        });
+                        chart.reposition(pDec);
+                        self.slideTrigger = {};
+                    };
+                    Ruler.prototype.extend = function (lineNo, id, start, end) {
+                        var self = this;
+                        if (_.isNil(lineNo) || _.isNil(id) || (_.isNil(start) && _.isNil(end)))
+                            return;
+                        var chart = (self.gcChart[lineNo] || {})[id];
+                        if (_.isNil(chart))
+                            return;
+                        var parentChart;
+                        if (!_.isNil(chart.parent)) {
+                            parentChart = (self.gcChart[lineNo] || {})[chart.parent];
+                        }
+                        if (!_.isNil(start)) {
+                            self.slideTrigger = {
+                                length: parseFloat(chart.html.style.width),
+                                start: chart.start,
+                                end: chart.end,
+                                children: _.map(chart.children, function (c) { return ({ id: c.id, start: c.start, end: c.end, length: parseFloat(c.html.style.width), left: parseFloat(c.html.style.left) }); })
+                            };
+                            if (start % self._getSnatchInterval(chart) !== 0 || start === chart.start)
+                                return;
+                            var pDec_4 = { width: self.slideTrigger.length + (self.slideTrigger.start - start) * chart.unitToPx, left: start * chart.unitToPx, start: start };
+                            if (chart.limitStartMin > pDec_4.start || chart.limitStartMax < pDec_4.start)
+                                return;
+                            if (pDec_4.start + self._getSnatchInterval(chart) > chart.end
+                                || (parentChart && !self.slideTrigger.overlap && pDec_4.start < parentChart.start))
+                                return;
+                            self.slideTrigger.ltr = start > chart.start;
+                            _.forEach(chart.children, function (child) {
+                                var childSlide = _.find(self.slideTrigger.children, function (c) { return c.id === child.id; });
+                                if (!childSlide)
+                                    return;
+                                if (child.pin) {
+                                    if (child.rollup) {
+                                        if (start >= child.start && start < child.end) {
+                                            var newWidth = (Math.min(childSlide.end, chart.end) - childSlide.start) * child.unitToPx - 1 + (childSlide.start - pDec_4.start) * child.unitToPx;
+                                            child.reposition({ width: newWidth, left: pDec_4.start * child.unitToPx });
+                                            if (!self.chartArea.contains(child.html)) {
+                                                self.chartArea.appendChild(child.html);
+                                            }
+                                        }
+                                        else if (start < child.start) {
+                                            if (!self.chartArea.contains(child.html) && child.end > chart.end)
+                                                return;
+                                            var maxWidth = (Math.min(child.end, chart.end) - child.start) * child.unitToPx - 1, currentWidth = parseFloat(child.html.style.width);
+                                            if (currentWidth !== maxWidth) {
+                                                child.reposition({ width: maxWidth, left: parseFloat(child.html.style.left) - parseFloat(maxWidth - currentWidth) });
+                                            }
+                                            if (!self.chartArea.contains(child.html)) {
+                                                self.chartArea.appendChild(child.html);
+                                            }
+                                        }
+                                        else {
+                                            child.reposition({ width: 0 });
+                                        }
+                                    }
+                                }
+                            });
+                            chart.reposition(pDec_4);
+                        }
+                        if (!_.isNil(end)) {
+                            self.slideTrigger = {
+                                length: parseFloat(chart.html.style.width),
+                                start: chart.start,
+                                end: chart.end,
+                                children: _.map(chart.children, function (c) { return ({ id: c.id, start: c.start, end: c.end, length: parseFloat(c.html.style.width), left: parseFloat(c.html.style.left) }); })
+                            };
+                            if (end % self._getSnatchInterval(chart) !== 0 || end === chart.end)
+                                return;
+                            var pDec_5 = { width: self.slideTrigger.length + (end - self.slideTrigger.end) * chart.unitToPx, end: end };
+                            if (chart.limitEndMax < pDec_5.end || chart.limitEndMin > pDec_5.end)
+                                return;
+                            if (chart.start + self._getSnatchInterval(chart) > pDec_5.end
+                                || (parentChart && !self.slideTrigger.overlap && pDec_5.end > parentChart.end))
+                                return;
+                            self.slideTrigger.ltr = end > chart.end;
+                            _.forEach(chart.children, function (child) {
+                                var childSlide = _.find(self.slideTrigger.children, function (c) { return c.id === child.id; });
+                                if (!childSlide)
+                                    return;
+                                if (child.pin) {
+                                    if (child.rollup) {
+                                        if (end > child.start && end <= child.end) {
+                                            var newWidth = (childSlide.end - Math.max(childSlide.start, chart.start)) * child.unitToPx - 1 + (pDec_5.end - childSlide.end) * child.unitToPx;
+                                            child.reposition({ width: newWidth });
+                                            if (!self.chartArea.contains(child.html)) {
+                                                self.chartArea.appendChild(child.html);
+                                            }
+                                        }
+                                        else if (end > child.end) {
+                                            if (child.start < chart.start)
+                                                return;
+                                            var maxWidth = (child.end - Math.max(child.start, chart.start)) * child.unitToPx - 1, currentWidth = parseFloat(child.html.style.width);
+                                            if (currentWidth !== maxWidth) {
+                                                child.reposition({ width: maxWidth });
+                                            }
+                                            if (!self.chartArea.contains(child.html)) {
+                                                self.chartArea.appendChild(child.html);
+                                            }
+                                        }
+                                        else {
+                                            child.reposition({ width: 0 });
+                                        }
+                                    }
+                                }
+                            });
+                            chart.reposition(pDec_5);
+                        }
+                        self.slideTrigger = {};
                     };
                     Ruler.prototype._getSnatchInterval = function (chart) {
                         var self = this;
@@ -36734,6 +36946,8 @@ var nts;
                         this.pin = options.pin;
                         this.rollup = options.rollup;
                         this.roundEdge = options.roundEdge;
+                        this.resizeFinished = options.resizeFinished;
+                        this.dropFinished = options.dropFinished;
                     }
                     return DefinedType;
                 }());

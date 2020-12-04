@@ -102,7 +102,7 @@ public class CheckTimeIsIncorrect {
 				listContainsResult.add(convertToContainsResult(containsResult4,TextResource.localize("KSU001_57"),convertToTime(workTime2.getEndTime().getTime()),false));
 			}
 		} catch (Exception e) {
-			throw new RuntimeException("Error 時刻が不正かチェックする");
+			//throw new RuntimeException("Error 時刻が不正かチェックする");
 		}
 		return listContainsResult;
 	}
