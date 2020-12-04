@@ -1320,9 +1320,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 			case 1:
 			case 2:
-
 				sumInt = sum.intValue();
-				return this.convertMinutesToHours(sumInt.toString(), zeroDisplayType);
+				return this.convertMinutesToHours(sumInt.toString(), zeroDisplayType, false);
 			case 7:
 			case 8:
 				sumDouble = sum.doubleValue();
@@ -1480,7 +1479,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 			Integer totalMinute = (hourA * 60 + minuteA) + (hourB * 60 + minuteB);
 
-			return this.convertMinutesToHours(totalMinute.toString(), zeroDisplayType);
+			return this.convertMinutesToHours(totalMinute.toString(), zeroDisplayType, true);
 		} else {
 			indexA = a.indexOf("回");
 			indexB = b.indexOf("回");
@@ -1500,7 +1499,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 				
 				Double totalAmount = amountA + amountB;
 				DecimalFormat format = new DecimalFormat("###,###,###");
-				return format.format(totalAmount) + "日";
+				return format.format(totalAmount);
 
 			}
 
@@ -1534,10 +1533,9 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		case TIME:
 		case CLOCK:
 		case TIME_WITH_DAY:
-
 			if (Integer.parseInt(item.getValue()) == 0 || item.getValue().isEmpty())
 				return zeroDisplayType == ZeroDisplayType.DISPLAY ? item.getValue() : "";
-			return this.convertMinutesToHours(value.toString(), zeroDisplayType);
+			return this.convertMinutesToHours(value.toString(), zeroDisplayType, true);
 		case COUNT:
 		case COUNT_WITH_DECIMAL:
 			if (Integer.parseInt(item.getValue()) == 0 || item.getValue().isEmpty())
@@ -1549,9 +1547,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 				return zeroDisplayType == ZeroDisplayType.DISPLAY ? item.getValue() : "";
 			DecimalFormat format = new DecimalFormat("###,###,###");
 			return format.format(Double.parseDouble(value)) + "日";
-
 		case CODE:
-
 			if (!attendanceTypeList.isEmpty()) {
 				AttendanceType attendance = attendanceTypeList.stream()
 						.filter(e -> e.getAttendanceItemId() == item.getItemId()).collect(Collectors.toList()).get(0);
@@ -1607,9 +1603,9 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 	 *            the minutes
 	 * @return the string
 	 */
-	private String convertMinutesToHours(String minutes, ZeroDisplayType zeroDisplayType) {
+	private String convertMinutesToHours(String minutes, ZeroDisplayType displayType, boolean isDaily) {
 		if (minutes.equals("0") || minutes.equals("")) {
-			return "0:00";
+			return displayType == ZeroDisplayType.DISPLAY ? "0:00" : "";
 		}
 		String FORMAT = "%d:%02d";
 		Integer minuteInt = Integer.parseInt(minutes);
@@ -1617,24 +1613,21 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			minuteInt *= -1;
 			Integer hourInt = minuteInt / 60;
 			minuteInt = minuteInt % 60;
-//			return "前日 " + String.format(FORMAT, hourInt, minuteInt);
-			return String.format(FORMAT, hourInt, minuteInt);
+			return isDaily ? ("前日 " + String.format(FORMAT, hourInt, minuteInt)) : String.format(FORMAT, hourInt, minuteInt);
 		} else {
 			String tempTime = "";
 			Integer hourInt = minuteInt / 60;
 			minuteInt = minuteInt % 60;
-			if(zeroDisplayType == ZeroDisplayType.DISPLAY && minuteInt == 0 && hourInt == 0) {
-				return "0:00";
+
+			if (hourInt > 24 && hourInt < 48) {
+				hourInt = hourInt - 24;
+				tempTime = "翌日 ";
+			} else if (hourInt > 48) {
+				tempTime = "翌々日 ";
+			} else {
+				tempTime = "当日 ";
 			}
-//			if(hourInt > 24 && hourInt < 48) {
-//				hourInt = hourInt - 24;
-//				tempTime = "翌日 ";
-//			} else if (hourInt > 48) {
-//				tempTime = "翌々日 ";
-//			} else {
-//				tempTime = "当日 ";
-//			}
-			return tempTime + String.format(FORMAT, hourInt, minuteInt);
+			return isDaily ? tempTime + String.format(FORMAT, hourInt, minuteInt) : String.format(FORMAT, hourInt, minuteInt);
 		}
 	}
 	

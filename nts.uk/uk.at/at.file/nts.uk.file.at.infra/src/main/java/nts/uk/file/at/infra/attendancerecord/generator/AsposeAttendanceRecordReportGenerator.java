@@ -13,7 +13,6 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
-import com.aspose.cells.BackgroundType;
 import com.aspose.cells.BorderType;
 import com.aspose.cells.Cell;
 import com.aspose.cells.CellBorderType;
