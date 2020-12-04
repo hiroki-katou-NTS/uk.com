@@ -3,18 +3,16 @@
 	height: calc(100vh - 142px);
 }
 
-.kmk-004ls .content-area {
-	margin-left: 120px;
+.kmk-004l .content-area {
+	margin-left: 121px;
 }
 
 .view-l {
-    margin-left: 20px;
-    height: calc(100vh - 143px);
-    overflow: hidden scroll;
+    margin: 10px 20px;
 }
 
 .view-l .header-l {
-    width: 740px;
+    width: 630px;
 }
 
 .view-l .header-l ~ div {
@@ -22,7 +20,7 @@
 }
 
 .view-l .header-l .header_title {
-    margin-top: 15px;
+    margin-top: 10px;
 }
 
 .view-l .header-l .header_content {
@@ -36,16 +34,11 @@
 
 .view-l .content {
     text-align: left;
-    margin-left: 18px;
+    margin-left: 10px;
 }
 
 .view-l .content1 {
     text-align: center;
-    width: 135px;
-}
-
-.view-l .content2 {
-    padding-left: 2px;
 }
 
 .view-l .content ~ div {
@@ -54,8 +47,7 @@
 }
 
 .view-l #btn_year {
-	margin-top: 15px;
-	margin-bottom: 15px;
+	margin: 10px 0 10px 0
 }
 
 .view-l #btm_area {
@@ -63,30 +55,26 @@
 }
 
 #right-side {
-	padding-left: 10px;
+	padding-left: 30px;
 }
 
 #view-m-left-side {
-    padding-left: 30px;
     vertical-align: baseline;
-    padding-top: 35px;
+    padding: 40px 0 0 40px;
 }
 
 #view-n-left-side {
-    padding-left: 30px;
     vertical-align: baseline;
-    padding-top: 35px;
+    padding: 40px 0 0 40px;
 }
 
 #view-o-left-side {
-    padding-left: 85px;
     vertical-align: baseline;
-    padding-top: 35px;
+    padding: 40px 0 0 40px;
 }
 
 #title {
-	font-size: 1.4rem;
-	padding-top: 4px;
+	font-size: 20px;
 }
 
 .note {
