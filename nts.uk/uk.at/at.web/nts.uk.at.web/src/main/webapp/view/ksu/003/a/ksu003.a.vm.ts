@@ -300,8 +300,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					}
 				}
 			});
-
-
 		}
 
 		/**
@@ -1743,6 +1741,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 			return dfd.promise();
 		}
+		
+/*		checkTimeOfChart(time : any, timeRangeLimit : any){
+			
+		}*/
 
 		/** ADD-CHART-ZONE */
 		addAllChart(datafilter: Array<ITimeGantChart>, i: number, lstBreakTime: any, midData: any, screen: string, lstBrkNew?: any) {
@@ -2179,9 +2181,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			self.allGcShow = fixedGc;
 
 			if (window.outerWidth <= 1280) {
-				$("#note-sort").css("margin-left", "1022px");
+				$("#note-sort").css("margin-left", "1030px");
 			} else {
-				$("#note-sort").css("margin-left", "1050px");
+				$("#note-sort").css("margin-left", "1100px");
 			}
 		}
 
@@ -2421,9 +2423,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				if (navigator.userAgent.indexOf("Chrome") == -1) {
 					$(".toLeft").css("margin-left", 100 + 'px');
 				}
+				if (window.innerHeight < 700) {
 				$(".ex-header-detail").css({ "width": 1009 + 'px' });
 				$(".ex-body-detail").css({ "width": 1026 + 'px' });
-
+				}
 			} else {
 				if (self.showA9) {
 					$("#extable-ksu003").exTable("showMiddle");
@@ -2433,9 +2436,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				if (navigator.userAgent.indexOf("Chrome") == -1) {
 					$(".toLeft").css("margin-left", 562 + 'px');
 				}
-
+				if (window.innerHeight < 700) {
 				$(".ex-header-detail").css({ "width": 615 + 'px' });
 				$(".ex-body-detail").css({ "width": 632 + 'px' });
+				}
 				/*$(".ex-body-detail").css({ 'overflow-x': 'scroll hidden' + '!important' });
 				$(".ex-body-detail").css({ 'overflow': 'none' + '!important' });
 				$(".ex-body-detail").css({ 'overflow-y': 'auto' + '!important' });*/
