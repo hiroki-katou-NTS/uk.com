@@ -1,12 +1,12 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.service;
 
 import nts.arc.time.YearMonth;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.extractresult.AlarmListExtractionInfoWorkplaceDto;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.ExtractionMonthlyCon;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.ExtractionMonthlyConRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.FixedExtractionMonthlyCon;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.FixedExtractionMonthlyConRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.service.arbitraryextractcond.ArbitaryExtractCondCheckService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.service.beforemonthlyaggregate.BeforeMonthlyAggregateService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.service.beforemonthlyaggregate.MonthlyCheckDataDto;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.service.fixedextractcond.FixedExtractCondCheckService;
@@ -32,6 +32,8 @@ public class AggregateProcessMasterCheckMonthlyService {
     private BeforeMonthlyAggregateService beforeMonthlyAggregateService;
     @Inject
     private FixedExtractCondCheckService fixedExtractCondCheckService;
+    @Inject
+    private ArbitaryExtractCondCheckService arbitaryExtractCondCheckService;
 
     /**
      * 月次の集計処理
@@ -60,6 +62,7 @@ public class AggregateProcessMasterCheckMonthlyService {
         alarmListResults.addAll(fixedExtractCondCheckService.check(cid, data.getEmpInfosByWpMap(), fixExtractMonthlyCons, ym, data.getClosures()));
 
         // 任意抽出条件をチェック
+        alarmListResults.addAll(arbitaryExtractCondCheckService.check(cid, data.getEmpInfosByWpMap(), extractMonthlyCons, ym, data.getAttendanceTimeOfMonthlies()));
 
         // リスト「アラーム抽出結果（職場別）」を返す。
         return alarmListResults;

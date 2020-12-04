@@ -11,6 +11,7 @@ import nts.uk.ctx.at.shared.dom.scherec.alarm.alarmlistactractionresult.AlarmVal
 import nts.uk.ctx.at.shared.dom.scherec.alarm.alarmlistactractionresult.AlarmValueMessage;
 import nts.uk.shr.com.i18n.TextResource;
 
+import javax.ejb.Stateless;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
  *
  * @author Le Huu Dat
  */
+@Stateless
 public class LeaveCheckService {
 
     /**

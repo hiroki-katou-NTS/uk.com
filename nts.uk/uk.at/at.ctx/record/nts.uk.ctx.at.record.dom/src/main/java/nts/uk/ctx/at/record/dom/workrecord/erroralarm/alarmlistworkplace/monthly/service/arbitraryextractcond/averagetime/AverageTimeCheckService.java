@@ -5,20 +5,18 @@ import nts.uk.ctx.at.record.dom.adapter.workplace.EmployeeInfoImported;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.extractresult.ExtractResultDto;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.ExtractionMonthlyCon;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.enums.AverageTime;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.service.arbitraryextractcond.comparison.ComparisonProcessingService;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.MonthlyCalculation;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.VerticalTotalOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.WorkTimeOfMonthlyVT;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.midnighttime.IllegalMidnightTime;
-import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureResultDto;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務実績.勤務実績.勤務実績のエラーアラーム設定.アラームリスト（職場）.月次のアラームチェック.アルゴリズム.月次の集計処理.任意抽出条件をチェック."1.平均時間をチェック"
@@ -27,6 +25,9 @@ import java.util.stream.Collectors;
  */
 @Stateless
 public class AverageTimeCheckService {
+
+    @Inject
+    private ComparisonProcessingService comparisonProcessingService;
 
     /**
      * 1.平均時間をチェック
@@ -43,7 +44,7 @@ public class AverageTimeCheckService {
                                   List<EmployeeInfoImported> empInfos,
                                   YearMonth ym) {
         // 合計値　＝　０
-        Integer total = 0;
+        Double total = 0.0;
 
         // Input．アラームリスト（職場）月次の抽出条件．平均値をチェック
         Optional<AverageTime> averageTime = condition.getAverageValueItem().getAverageTime();
@@ -107,9 +108,11 @@ public class AverageTimeCheckService {
         }
 
         // 平均時間　＝　合計値/List<社員情報＞.size
-        BigDecimal bd = new BigDecimal(Double.toString(total));
+        Double avg = total/empInfos.size();
+        BigDecimal bd = new BigDecimal(Double.toString(avg));
         bd = bd.setScale(1, RoundingMode.HALF_UP);
-
-        return null;
+        // 比較処理
+        // 取得した抽出結果を返す
+        return comparisonProcessingService.compare(workplaceId, condition, bd.doubleValue(), averageTime.get(), ym);
     }
 }

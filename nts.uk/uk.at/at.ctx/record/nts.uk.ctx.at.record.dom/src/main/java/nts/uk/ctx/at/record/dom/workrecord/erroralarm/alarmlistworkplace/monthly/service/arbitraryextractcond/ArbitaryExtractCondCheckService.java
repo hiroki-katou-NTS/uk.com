@@ -1,18 +1,15 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.service.arbitraryextractcond;
 
 import nts.arc.time.YearMonth;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.adapter.workplace.EmployeeInfoImported;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.extractresult.AlarmListExtractionInfoWorkplaceDto;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.extractresult.ExtractResultDto;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.ExtractionMonthlyCon;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.FixedExtractionMonthlyCon;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.FixedExtractionMonthlyItems;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.FixedExtractionMonthlyItemsRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.enums.FixedCheckMonthlyItemName;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.service.arbitraryextractcond.averagenumday.AverageNumDayCheckService;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.service.arbitraryextractcond.averagenumtime.AverageNumTimeCheckService;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.service.arbitraryextractcond.averagetime.AverageTimeCheckService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.service.fixedextractcond.monthlyundecided.MonthlyUndecidedCheckService;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureResultDto;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -30,9 +27,11 @@ import java.util.stream.Collectors;
 public class ArbitaryExtractCondCheckService {
 
     @Inject
-    private FixedExtractionMonthlyItemsRepository fxedExtractionMonthlyItemsRepo;
+    private AverageTimeCheckService averageTimeCheckService;
     @Inject
-    private MonthlyUndecidedCheckService monthlyUndecidedCheckService;
+    private AverageNumDayCheckService averageNumDayCheckService;
+    @Inject
+    private AverageNumTimeCheckService averageNumTimeCheckService;
 
     /**
      * 任意抽出条件をチェック
@@ -56,19 +55,24 @@ public class ArbitaryExtractCondCheckService {
             for (Map.Entry<String, List<EmployeeInfoImported>> empInfosByWp : empInfosByWpMap.entrySet()) {
                 List<AttendanceTimeOfMonthly> times = attendanceTimeOfMonthlies.stream().filter(x -> empInfosByWp.getValue().stream()
                         .anyMatch(c -> c.getSid().equals(x.getEmployeeId()))).collect(Collectors.toList());
-
+                ExtractResultDto result = null;
                 switch (cond.getCheckMonthlyItemsType()) {
                     case AVERAGE_TIME:
+                        result = averageTimeCheckService.check(empInfosByWp.getKey(), cond, times, empInfosByWp.getValue(), ym);
                         break;
                     case AVERAGE_NUMBER_DAY:
+                        result = averageNumDayCheckService.check(cid, empInfosByWp.getKey(), cond, times, empInfosByWp.getValue(), ym);
                         break;
                     case AVERAGE_NUMBER_TIME:
+                        result = averageNumTimeCheckService.check(empInfosByWp.getKey(), cond, times, empInfosByWp.getValue(), ym);
                         break;
                     case AVERAGE_RATIO:
                         break;
                     default:
                         break;
                 }
+
+                if (result != null) extractResults.add(result);
             }
 
             // アラームリスト抽出情報（職場）を作成
