@@ -78,7 +78,7 @@ public class ExtractAlarmForEmployeeService {
 	public List<ValueExtractAlarm> process(String comId, List<CheckCondition> checkConList, List<PeriodByAlarmCategory> listPeriodByCategory, List<EmployeeSearchDto> employees){
 		
 		List<ValueExtractAlarm> result = new ArrayList<>();
-		List<Integer> listCategory = listPeriodByCategory.stream().map( x->x.getCategory()).collect(Collectors.toList());
+		List<Integer> listCategory = listPeriodByCategory.stream().map( x->x.getCategory().value).collect(Collectors.toList());
 		checkConList.removeIf( e->!listCategory.contains(e.getAlarmCategory().value));
 		List<String> employeeIds = employees.stream().map(c -> c.getId()).collect(Collectors.toList());
 		List<WorkplaceImport>  optWorkplaceImports = workplaceAdapter.getWorlkplaceHistoryByIDs(employeeIds);
@@ -99,7 +99,7 @@ public class ExtractAlarmForEmployeeService {
 		// 次のチェック条件コードで集計する(loop list by category)
 		for (CheckCondition checkCondition : checkConList) {
 			// get Period by category
-			List<PeriodByAlarmCategory> periodAlarms = listPeriodByCategory.stream().filter(c -> c.getCategory() == checkCondition.getAlarmCategory().value).collect(Collectors.toList());			
+			List<PeriodByAlarmCategory> periodAlarms = listPeriodByCategory.stream().filter(c -> c.getCategory() == checkCondition.getAlarmCategory()).collect(Collectors.toList());			
 			List<DatePeriod> datePeriods = periodAlarms.stream().map(e -> 
 				new DatePeriod(e.getStartDate(), e.getEndDate())).collect(Collectors.toList());
 				List<WorkplaceImport>  optWorkplaceImport = optWorkplaceImports.stream().filter(e -> employeeIds.contains(e.getEmployeeId())
@@ -288,7 +288,7 @@ public class ExtractAlarmForEmployeeService {
 		//複数月のカテゴリ別アラームチェック条件
 		List<AlarmCheckConditionByCategory> multiMonthErAl = getAlarmCheckConditionCate(eralCate, AlarmCategory.MULTIPLE_MONTH, checkConList);
 		if(!multiMonthErAl.isEmpty()){
-			PeriodByAlarmCategory multiMonthCate = listPeriodByCategory.stream().filter(c -> c.getCategory() == AlarmCategory.MULTIPLE_MONTH.value).findFirst().get();
+			PeriodByAlarmCategory multiMonthCate = listPeriodByCategory.stream().filter(c -> c.getCategory() == AlarmCategory.MULTIPLE_MONTH).findFirst().get();
 			
 			fillWorkPlaceForCategory(employees, employeeIds, optWorkplaceImports, multiMonthCate);
 			
@@ -322,7 +322,7 @@ public class ExtractAlarmForEmployeeService {
 		if(!monthlyErAl.isEmpty()){
 			PeriodByAlarmCategory monthlyCate = listPeriodByCategory
 					.stream()
-					.filter(c -> c.getCategory() == AlarmCategory.MONTHLY.value)
+					.filter(c -> c.getCategory() == AlarmCategory.MONTHLY)
 					.findFirst()
 					.get();
 			
@@ -356,7 +356,7 @@ public class ExtractAlarmForEmployeeService {
 		//36協定の カテゴリ別アラームチェック条件
 		List<AlarmCheckConditionByCategory> agreementErAl = getAlarmCheckConditionCate(eralCate, AlarmCategory.AGREEMENT, checkConList);
 		if(!agreementErAl.isEmpty()){
-			PeriodByAlarmCategory agreementCate = listPeriodByCategory.stream().filter(c -> c.getCategory() == AlarmCategory.AGREEMENT.value).findFirst().get();
+			PeriodByAlarmCategory agreementCate = listPeriodByCategory.stream().filter(c -> c.getCategory() == AlarmCategory.AGREEMENT).findFirst().get();
 			
 			fillWorkPlaceForCategory(employees, employeeIds, optWorkplaceImports, agreementCate);
 			//３６協定運用設定
@@ -391,7 +391,7 @@ public class ExtractAlarmForEmployeeService {
 		if(!w4d4ErAl.isEmpty()){
 			//スケジュール4週の抽出条件期間
 			PeriodByAlarmCategory w4d4Cate = listPeriodByCategory.stream()
-					.filter(c -> c.getCategory() == AlarmCategory.SCHEDULE_4WEEK.value).findFirst().get();
+					.filter(c -> c.getCategory() == AlarmCategory.SCHEDULE_4WEEK).findFirst().get();
 			
 			fillWorkPlaceForCategory(employees, employeeIds, optWorkplaceImports, w4d4Cate);
 			
@@ -421,7 +421,7 @@ public class ExtractAlarmForEmployeeService {
 		List<AlarmCheckConditionByCategory> dailyErAl = getAlarmCheckConditionCate(eralCate, AlarmCategory.DAILY, checkConList);
 		if(!dailyErAl.isEmpty()){
 			//日次の期間
-			PeriodByAlarmCategory dailyCate = listPeriodByCategory.stream().filter(c -> c.getCategory() == AlarmCategory.DAILY.value).findFirst().get();
+			PeriodByAlarmCategory dailyCate = listPeriodByCategory.stream().filter(c -> c.getCategory() == AlarmCategory.DAILY).findFirst().get();
 			//社員と職場をマッピングする
 			fillWorkPlaceForCategory(employees, employeeIds, optWorkplaceImports, dailyCate);
 			/** need internal response */
@@ -452,7 +452,7 @@ public class ExtractAlarmForEmployeeService {
 		
 		List<AlarmCheckConditionByCategory> checkCondition = getAlarmCheckConditionCate(eralCate, AlarmCategory.APPLICATION_APPROVAL, checkConList);
 		if (checkCondition.isEmpty()) return new ArrayList<>();
-		PeriodByAlarmCategory period = listPeriodByCategory.stream().filter(c -> c.getCategory() == AlarmCategory.APPLICATION_APPROVAL.value).findFirst().get();
+		PeriodByAlarmCategory period = listPeriodByCategory.stream().filter(c -> c.getCategory() == AlarmCategory.APPLICATION_APPROVAL).findFirst().get();
 		fillWorkPlaceForCategory(employees, employeeIds, optWorkplaceImports, period);
 		return appApprovalAggregationProcessService.aggregate(comId, checkCondition,
 				new DatePeriod(period.getStartDate(), period.getEndDate()), employees, counter, shouldStop);
@@ -478,7 +478,7 @@ public class ExtractAlarmForEmployeeService {
 		
 		List<AlarmCheckConditionByCategory> checkCondition = getAlarmCheckConditionCate(eralCate, AlarmCategory.MASTER_CHECK, checkConList);
 		if (checkCondition.isEmpty()) return new ArrayList<>();
-		PeriodByAlarmCategory period = listPeriodByCategory.stream().filter(c -> c.getCategory() == AlarmCategory.MASTER_CHECK.value).findFirst().get();
+		PeriodByAlarmCategory period = listPeriodByCategory.stream().filter(c -> c.getCategory() == AlarmCategory.MASTER_CHECK).findFirst().get();
 		fillWorkPlaceForCategory(employees, employeeIds, optWorkplaceImports, period);
 		return masterCheckAggregationProcessService.aggregate(comId, checkCondition,
 				new DatePeriod(period.getStartDate(), period.getEndDate()), employees, counter, shouldStop);
