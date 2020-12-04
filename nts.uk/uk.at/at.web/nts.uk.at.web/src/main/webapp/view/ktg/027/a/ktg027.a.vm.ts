@@ -259,7 +259,7 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
       const vm = this;
       vm.$blockui("grayout");
       //get currentOrNextMonth in cache
-      if(getShared('cache').currentOrNextMonth){
+      if(getShared('cache')){
         vm.currentOrNextMonth(getShared('cache').currentOrNextMonth);
       }
       //call API init
@@ -407,7 +407,7 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
       setShared("KDW003_PARAM", {
         paramKDW003,
       });
-      vm.$jump("/view/kdw/003/a/index.xhtml");
+      vm.$jump('at',"/view/kdw/003/a/index.xhtml");
     }
   }
 

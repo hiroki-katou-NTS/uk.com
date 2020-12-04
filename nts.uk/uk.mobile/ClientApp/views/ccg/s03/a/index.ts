@@ -23,7 +23,31 @@ export class Ccgs03AComponent extends Vue {
     updateAnnivesaryNotice: 'ctx/bs/person/personal/anniversary/updateAnnivesaryNotice'
   };
 
-  public iconNew = 'data:image/gif;base64,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';
+  public iconNew = 'data:image/gif;base64,R0lGODlh0gBKAHAAACH5BAEAAAoALAAAAADSAEoAgwAAAOwcJewbI+wcJO4cI+wcI+8ZI'
+    + 'ewdJOscJewdIwAAAAAAAAAAAAAAAAAAAAAAAAT/UMlJq70462y62WAojmRpnmiqWl1iuMkqz3Rt32gLux/u/8CbpxNk7V6uonLJ5MBexO'
+    + 'ULIUBYX82sNthCIpkJlzVRjW3PaFl46mUarNQqNk2vj8RUxHOZgPsRdoGCF31+bUVTCFMCSYOOgniGZlyRApaTj5locIxUa0qFf1GapFp'
+    + 'ilqhflG96VYClsE1/fo1AYVaoirG7iHh4bz1AHbOYvMY1rHm0tT59nYrMx9IrSK5jwMVCp3DT3WoGlnDJ0dqc5N7oIomz17bJl4hDHuln'
+    + 'ieudc81+jMFCOmEAP9E7Ie8OGXG4wp2TMeyUAB//oDzZk2OesS4LLbgIxw5avxrO/wzhwOhljclRJJAIjCWR4oZ1cA7GRElj2B8bOrwo0'
+    + 'vNGDAwTJ1eSIik0A4wrfRRYO4QzFBSQEpV17PN0REuJ/j6qOHot24VF3BS8WJoxR6RXM/5xZBeprEadP5G5VGHzDbwQ9sJMWKvH61Zzfk'
+    + '20UBSuE4Wd4txSYANY7twUSAxpxXB2EisxVdPisTRZ8Jo/DzVaG2P1FicBnT2XTK3us5/Wkg4ngyY3NjWubDCszQzi8zrWJI4yJXg2Hwg'
+    + 'oY7LJbKd5dmB1yPc5GQd88ezLzZUZ98zujm0KHLGm/Z6Cq6cNoTx6B634OEw9dDdC01X68uTlcW/LfI53WxwNMIyW0v9ZnDHkmhjxgYYW'
+    + 'XolNxtElNJ2wEYRb3ePWWFXwMyAuzrSnQXTK8PfSfFcEF4Y1RrFCYYIJicgBiJagV0lo9cWRygqm7UOjZ4Vgdwc4cgQ2C2+CzaehWeQRs'
+    + 'kiPJaQ3U4WIrVMeMOKUMFZMHxZXnRMJ7WjlWQtS5lAVql1DGmQ5XnHml8RYGQ6RFoiiFwrmuYjBb26Zd+SGyuxZJkx+GiQKUM6h59x2Vq'
+    + 'kJH3FnGeoamRLOViCjhpxm52I++SgoUtVJwoOEhQTa2jsZHSESCuYwp9po5mxZAVjnWXmlFSEUN2dKV971pUwxUqbTa2iiUsalmDo5xo1'
+    + 'NSuolg2/a6ST/nOjFESuhu91p0qnl8RVhrVTqYiNtuDpF7ATVhMUtLYhmqeKy/e13nxcBIBYmcWVoWpqTYuHnqgS/0krtirXKuW++HA48'
+    + 'wYRIvWVSIR6il4uqP6JSS3gNKxAJtC+Fomt/1F26GSM8CkjBwgbEy4oNy6E2brm98rvcvjYB26SRFSvg6bZGtPqvegeXFACTNkjsicEI0'
+    + 'ycBGRkW5cQtovbXpWdkueiTxNzR4vITAQRgF7u3CYvagPuJFke6Su7UspVRjiuBtoptvbE6JH4R1M/m3oB0Yh4DKeqDt2Y5KKhWSzjapw'
+    + 'C+w7XfUvn8s13zyjW4qyyzu5kq6gb+JTg8myA0/zT8aVyzxe/xdEsySuzWHhThUYbuceLSOduiBEkr+osOqc2KfdrJTMng7eYRWKY8fdi'
+    + 'tv0U2qEKlhOdcMFAad9T4D3dzmrHeZYVItstJ/rgMlDHlh+m6ZRLjihZXHtT3Vxofzq+ipb6OZmJqcJL5yH/Ynt4iINe0r9fJox+3jAXz'
+    + 'S16MdjnLxcca3ssX7sInP/XJykO5KkPhECKidQXPCO94HuuyhwKK9c80PTGYxYakNuEpjTKm68yS1gSgUCUQe54o4dFCyEK6iOKCYlnH+'
+    + 'Tg2C8dQrjeP8xXSJjW9OCQwciI8WIg+x6WZWCZHOEOc9Jqzhv0FaX7YK8yl9lHFkUABKYauOwhnZOgrMyXBNxAbVf2oiKDSuKJer4LRvj'
+    + '5GuZj9xyxrIWMGcJGcqMAPKAL7BlVKdAe2vep+4yLGHFSS/zDXzUSDwTIbT6RCvAEdii4ggl0hJ4nDctVNjTvZgUNqyCd71YCSrGokmzw'
+    + 'BrkhBsYQPkx7qgpREOQ2Sg6BU0w9e98hPai8XTMyJ7oLDS1H2kF6V6sj7VveDxCgKSydgD8buVBJVSggpRtzJkpK4tlQG0iy402PG3li/'
+    + 'NzgyITzZkkp42TU+xtJGNmxFL30ZHPnh0Ad8QYgmS8AOL0zGAxPBZQny2RFuTuBb8hoa97rCBTOBxoGVk+cReKCSiYCpJg71xclwxMvTb'
+    + 'OV+9/SBvJ5BzxGcZj4SWc1RRnM9QGaQj608His5RMiKyDM5RThRlyZ5wKmUpBKgEYLzShqpPnGFA0cInWYNNheiFTBVUbAioUjlZE0aSP'
+    + 'Mb9RMn3PiywyIpJJWPG2ZTJEVKGjhkBs/SqklZqVQSnMab+iRgM2fatKFUJgtbgySdEIg7sQpjiHc0hucMCgvU2FOuTOBbN8A3kGMgLR1'
+    + '6baxkJ0vZyvogAgA7';
+
   private urlRegex = /(((https?:\/\/)|(www\.))[^\s]+)/g;
 
   public dateValue: { start?: Date; end?: Date } = {
@@ -57,7 +81,7 @@ export class Ccgs03AComponent extends Vue {
           this.msgNotices = msgNotices;
           this.role = employeeNotification.role;
           this.roleFlag = !!this.role && employeeNotification.role.employeeReferenceRange !== 3;
-          this.systemDate = moment.utc(employeeNotification.systemDate).locale('ja').format('YYYY/M/D(dddd)');
+          this.systemDate = moment.utc(employeeNotification.systemDate).locale('ja').format('YYYY/M/D(dd)');
           this.$mask('hide');
         }
       })
@@ -89,6 +113,8 @@ export class Ccgs03AComponent extends Vue {
 
   public onClickFilter(): void {
     this.$mask('show');
+    this.msgNotices = [];
+    this.anniversaries = [];
     const startDate = moment.utc(this.dateValue.start, 'YYYY/MM/DD');
     const endDate = moment.utc(this.dateValue.end, 'YYYY/MM/DD');
     const baseDate = moment.utc(new Date(), 'YYYY/MM/DD');
@@ -121,8 +147,6 @@ export class Ccgs03AComponent extends Vue {
       return;
     }
 
-    this.msgNotices = [];
-    this.anniversaries = [];
     const param: DatePeriod = new DatePeriod(
       moment.utc(this.dateValue.start).toISOString(),
       moment.utc(this.dateValue.end).toISOString()
@@ -146,10 +170,7 @@ export class Ccgs03AComponent extends Vue {
           this.$mask('hide');
         }
       })
-      .catch((error: any) => {
-        this.$modal.error(error);
-        this.$mask('hide');
-      });
+      .catch((error: any) => this.$modal.error(error).then(() => this.$mask('hide')));
   }
 
   /**
@@ -166,9 +187,10 @@ export class Ccgs03AComponent extends Vue {
 
       return;
     }
+    const anniversary = vm.anniversaries[index].anniversaryNotice.displayDate;
     const command = {
       personalId: vm.anniversaries[index].anniversaryNotice.personalId,
-      anniversary: vm.anniversaries[index].anniversaryNotice.anniversary,
+      anniversary: moment.utc(anniversary, 'MM-DD').format('MMDD'),
       referDate: moment.utc(vm.dateValue.end).toISOString(),
     };
     vm.$http.post(vm.API.updateAnnivesaryNotice, command)
@@ -232,7 +254,8 @@ interface AnniversaryNotice {
   personalId: string;
   noticeDay: number;
   seenDate: string;
-  anniversary: string;
+  anniversaryMonth: number;
+  anniversaryDay: number;
   anniversaryTitle: string;
   notificationMessage: string;
   displayDate: string;

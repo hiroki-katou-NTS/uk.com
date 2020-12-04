@@ -181,8 +181,8 @@ public class JpaAnniversaryRepository extends JpaRepository implements Anniversa
         List<AnniversaryNotice> list = this.queryProxy()
                 .query(SELECT_BY_DATE_PERIOD, BpsdtPsAnniversaryInfo.class)
                 .setParameter("personalId", loginPersonalId)
-                .setParameter("start", datePeriod.start().month() + "" + datePeriod.start().day())
-                .setParameter("end", datePeriod.end().month() + "" + datePeriod.end().day())
+                .setParameter("start", datePeriod.start().toString("MMdd"))
+                .setParameter("end", datePeriod.end().toString("MMdd"))
                 .getList(AnniversaryNotice::createFromMemento);
         list.sort(Comparator.comparing(AnniversaryNotice::getAnniversary));
         return list;
