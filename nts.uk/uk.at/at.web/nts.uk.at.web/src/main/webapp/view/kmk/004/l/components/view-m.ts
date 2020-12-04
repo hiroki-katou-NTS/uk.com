@@ -22,7 +22,7 @@ module nts.uk.at.view.kmk004.l {
 				</td>
 				
 				<td id="right-side">
-					<div class="view-l">
+					<div class="view-l-common">
 						<div class="header-l">
 							<div id="title", data-bind="i18n: 'KMK004_307'"></div>
 							<hr></hr>

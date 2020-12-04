@@ -8,7 +8,17 @@
 }
 
 .view-l {
+    padding: 10px 20px;
+    height: calc(100vh - 163px);
+    overflow: hidden scroll;
+}
+
+.view-l-common{
     margin: 10px 20px;
+}
+
+.view-l-common .header-l {
+    width: 606px;
 }
 
 .view-l .header-l {
@@ -19,11 +29,24 @@
     font-size: 20px;
 }
 
+.view-l-common .header-l ~ div {
+    font-size: 20px;
+}
+
 .view-l .header-l .header_title {
     margin-top: 10px;
 }
 
+.view-l-common .header-l .header_title {
+    margin-top: 10px;
+}
+
 .view-l .header-l .header_content {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.view-l-common .header-l .header_content {
     margin-top: 15px;
     margin-bottom: 15px;
 }
@@ -33,7 +56,16 @@
     margin-left: 10px;
 }
 
+.view-l-common .content {
+    text-align: left;
+    margin-left: 10px;
+}
+
 .view-l .content1 {
+    text-align: center;
+}
+
+.view-l-common .content1 {
     text-align: center;
 }
 
@@ -42,11 +74,24 @@
     float: left;
 }
 
+.view-l-common .content ~ div {
+    margin-top: 15px;
+    float: left;
+}
+
 .view-l #btn_year {
 	margin: 10px 0 10px 0
 }
 
+.view-l-common #btn_year {
+	margin: 10px 0 10px 0
+}
+
 .view-l #btm_area {
+    margin-top: -14px;
+}
+
+.view-l-common #btm_area {
     margin-top: -14px;
 }
 
@@ -101,3 +146,18 @@
     display: block;
 }
 
+.view-m {
+    height: calc(100vh - 143px);
+    overflow: hidden scroll;
+    padding: -10px;
+}
+
+.view-n {
+    height: calc(100vh - 143px);
+    overflow: hidden scroll;
+}
+
+.view-o {
+    height: calc(100vh - 143px);
+    overflow: hidden scroll;
+}
