@@ -289,8 +289,8 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
     			, lstDates
     			, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput()));
     	// 休暇申請登録時チェック処理
-    	// 「確認メッセージリスト」を全てと取得した「休日の申請日<List>」を返す
     	result.getConfirmMsgLst().addAll(this.checkAbsenceWhenRegister(true, companyID, appAbsence, appAbsenceStartInfoOutput, lstDates));
+    	// 「確認メッセージリスト」を全てと取得した「休日の申請日<List>」を返す
     	return result;
     }
 	/**

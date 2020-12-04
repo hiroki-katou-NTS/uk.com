@@ -27,6 +27,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 		specAbsenceDispInfo: KnockoutObservable<any> = ko.observable();
 		isDispMourn: any = ko.observable(false);
 		isCheckMourn: any = ko.observable(true);
+		requiredVacationTime: KnockoutObservable<number> = ko.observable(1200);
 		timeRequired: KnockoutObservable<string> = ko.observable();
 
 		yearRemain: KnockoutObservable<number> = ko.observable();
@@ -100,6 +101,8 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 					return;
 				}
 			});
+
+			vm.timeRequired(nts.uk.time.format.byId("Clock_Short_HM", vm.requiredVacationTime()));
 			
 			// check selected item
             vm.selectedType.subscribe(() => {
@@ -187,7 +190,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 			}
 
 			if (data.requiredVacationTime) {
-				vm.timeRequired(nts.uk.time.format.byId("Clock_Short_HM", data.requiredVacationTime));
+				vm.requiredVacationTime(data.requiredVacationTime);
 			}
 
 			if (data.remainVacationInfo) {

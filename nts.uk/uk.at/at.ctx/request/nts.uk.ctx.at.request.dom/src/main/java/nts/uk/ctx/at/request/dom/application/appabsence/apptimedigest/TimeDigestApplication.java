@@ -5,6 +5,11 @@ import java.util.Optional;
 import lombok.Data;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
+/**
+ * @author anhnm
+ * 時間消化申請
+ *
+ */
 @Data
 public class TimeDigestApplication {
 
