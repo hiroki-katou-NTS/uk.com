@@ -1092,6 +1092,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			indexEmp = _.findIndex(self.dataScreen003A().employeeInfo, x => { return x.empId === empId });
 			service.getEmpWorkFixedWorkInfo(targetOrgDto)
 				.done((data: model.DisplayWorkInfoByDateDto) => {
+					if (data.fixedWorkInforDto.workType == null) return;
 					self.dataScreen003A().employeeInfo[indexEmp].fixedWorkInforDto = data.fixedWorkInforDto;
 					self.dataScreen003A().employeeInfo[indexEmp].workScheduleDto = data.workScheduleDto;
 
@@ -1371,7 +1372,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		initExtableChart(timeGantChart: Array<ITimeGantChart>, leftDs: any, midData: any, disableDs: any): void {
 
 			let self = this;
-			let displayRange = self.dataInitStartKsu003Dto().byDateDto.dispRange == 0 ? 24 : 48, totalBreakTime = "0:00";
+			let displayRange = self.timeRange == 0 ? 24 : 48, totalBreakTime = "0:00";
 
 			let middleContentDeco: any = [], leftContentDeco: any = [], detailContentDeco: any = [];
 
