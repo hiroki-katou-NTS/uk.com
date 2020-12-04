@@ -57,6 +57,7 @@ module nts.uk.at.view.ksu003.a {
 			$("#note-color").css({ "margin-right": 57 + 'px !important' });
 		} else {
 			$("#note-sort").css({ "margin-left": 1043 + 'px ' });
+			$("hr-row2").css({"width" : 1237 + 'px'});
 		}
 	});
 }

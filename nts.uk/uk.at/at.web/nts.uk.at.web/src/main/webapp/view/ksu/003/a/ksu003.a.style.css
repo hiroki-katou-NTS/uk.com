@@ -100,6 +100,7 @@
 #hr-row2 {
 	margin-left: 20px;
 	margin-top: 18px;
+	width: 1207px;
 }
 
 .toLeft {
@@ -145,7 +146,7 @@
 .tooltip-styling {
 	background-color: #edfac2 !important;
 	box-shadow: 2px 2px 2px #95A5A6;
-	top: 143px !important; left : 382.984px !important; 
+	top: 47px !important; left : 382.984px !important; 
 	border-radius : 20px !important;
 	border: solid 1px #cccccc !important;
 	display: inline-block !important;
