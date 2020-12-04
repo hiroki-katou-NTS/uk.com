@@ -9,6 +9,7 @@ module nts.uk.at.view.kmk004.l {
 		<div class="title" data-bind="i18n: 'Com_Employment'"></div>
 		<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmk/004/a/index.xhtml' },i18n: 'KMK004_224'"></a>
 		<button class="proceed" data-bind="i18n: 'KMK004_225'"></button>
+		<button data-bind="visible: true, i18n: 'KMK004_226'"></button>
 		<button class="danger" data-bind="i18n: 'KMK004_227'"></button>
 	</div>
 	

@@ -56,16 +56,16 @@ module nts.uk.at.view.kmk004 {
 					
                     <tr>
                         <td>
-                            <div class="content2" data-bind="i18n:(screenData.settingDto.aggregateTimeSet.legalOverTimeWork() == true ? 'KMK004_299' : 'KMK004_300') "></div>
+                            <div class="content1" data-bind="i18n:(screenData.settingDto.aggregateTimeSet.legalOverTimeWork() == true ? 'KMK004_299' : 'KMK004_300') "></div>
                         </td>
                         <td>
-                            <div class="content2" data-bind="i18n: screenData.settingDto.aggregateTimeSet.legalHoliday() == true ? 'KMK004_301' : 'KMK004_302' "></div>
+                            <div class="content1" data-bind="i18n: screenData.settingDto.aggregateTimeSet.legalHoliday() == true ? 'KMK004_301' : 'KMK004_302' "></div>
                         </td>
                         <td>
-                            <div class="content2" data-bind="i18n: screenData.settingDto.excessOutsideTimeSet.legalOverTimeWork() == true ? 'KMK004_299' : 'KMK004_300' "></div>
+                            <div class="content1" data-bind="i18n: screenData.settingDto.excessOutsideTimeSet.legalOverTimeWork() == true ? 'KMK004_299' : 'KMK004_300' "></div>
                         </td>
                         <td colspan="2">
-                            <div class="content2" data-bind="i18n: screenData.settingDto.excessOutsideTimeSet.legalHoliday() == true ? 'KMK004_301' : 'KMK004_302' "></div>
+                            <div class="content1" data-bind="i18n: screenData.settingDto.excessOutsideTimeSet.legalHoliday() == true ? 'KMK004_301' : 'KMK004_302' "></div>
                         </td>
                     </tr> 
                 </tbody>
@@ -77,21 +77,19 @@ module nts.uk.at.view.kmk004 {
                 border: 2px solid #B1B1B1;
                 border-radius: 15px;
 				width: fit-content;
-				margin: 15px;
+				margin: 15px 0px 15px 15px;
             }
 
-            .table-view table {
-                border-collapse: collapse;
-            }
-            
             .table-view th {
                 background: #E0F59E;
  				border: solid grey 1px;
-				padding-left: 2px;
+				padding: 3px 10px;
+				text-align: center;
             }
 
             .table-view tr, .table-view td {
                 border: solid grey 1px;
+				padding: 3px 10px;
               }
             
         </style>
