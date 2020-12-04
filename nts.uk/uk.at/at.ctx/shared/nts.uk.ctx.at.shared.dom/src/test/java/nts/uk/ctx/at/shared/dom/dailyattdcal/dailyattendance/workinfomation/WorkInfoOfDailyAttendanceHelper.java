@@ -27,6 +27,6 @@ public class WorkInfoOfDailyAttendanceHelper {
 	}
 	
 	public static WorkInfoAndTimeZone createWorkInfoAndTimeZone(List<TimeZone> listTimeZone) {
-		return new WorkInfoAndTimeZone(new WorkType(), new WorkTimeSetting(), listTimeZone);
+		return WorkInfoAndTimeZone.create(new WorkType(), new WorkTimeSetting(), listTimeZone);
 	}
 }
