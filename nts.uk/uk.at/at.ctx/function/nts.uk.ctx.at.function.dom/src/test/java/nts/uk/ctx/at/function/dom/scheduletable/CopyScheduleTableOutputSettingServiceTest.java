@@ -4,30 +4,12 @@ import org.junit.Test;
 
 import mockit.Expectations;
 import mockit.Injectable;
-import nts.arc.error.BusinessException;
 import nts.arc.testing.assertion.NtsAssert;
 
 public class CopyScheduleTableOutputSettingServiceTest {
 	
 	@Injectable
 	CopyScheduleTableOutputSettingService.Require require;
-	
-	@Test
-	public void test_exception_copySource_clone() {
-		
-		ScheduleTableOutputSetting copySource = ScheduleTableOutputSettingHelper.createWithCodeName("code1", "name1");
-		
-		 new Expectations(copySource) {{
-			 
-			 copySource.clone( (OutputSettingCode) any, (OutputSettingName) any);
-			 result = new BusinessException("msg");
-		 }};
-		
-		NtsAssert.businessException("msg", () ->  
-			CopyScheduleTableOutputSettingService.copy(require, copySource, 
-					new OutputSettingCode("code1"), new OutputSettingName("name2"))
-		); 
-	}
 	
 	@Test
 	public void test_exception_object_exists() {

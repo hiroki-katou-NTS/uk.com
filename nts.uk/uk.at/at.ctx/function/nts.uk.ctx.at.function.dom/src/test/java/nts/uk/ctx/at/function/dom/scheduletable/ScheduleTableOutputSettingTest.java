@@ -60,26 +60,6 @@ public class ScheduleTableOutputSettingTest {
 		);
 	}
 	
-	@Test
-	public void testClone_exception_same_code() {
-		
-		ScheduleTableOutputSetting target = ScheduleTableOutputSettingHelper.createWithCodeName("code1", "name1");
-		
-		NtsAssert.businessException("Msg_355", () -> 
-			target.clone(new OutputSettingCode("code1"), new OutputSettingName("name2"))
-		);
-	}
-	
-	@Test
-	public void testClone_exception_same_name() {
-		
-		ScheduleTableOutputSetting target = ScheduleTableOutputSettingHelper.createWithCodeName("code1", "name1");
-		
-		NtsAssert.businessException("Msg_705", () -> 
-			target.clone(new OutputSettingCode("code2"), new OutputSettingName("name1"))
-		);
-	}
-	
 	public void testClone_ok() {
 
 		OutputItem outputItem = OutputItem.create( NotUseAtr.USE, NotUseAtr.USE, NotUseAtr.USE, 
