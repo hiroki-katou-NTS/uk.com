@@ -10,7 +10,7 @@
 /*ViewC*/
 .view-c-kmk004 {
 	padding: 10px 20px;
-	height: calc(100vh - 161px);
+	height: calc(100vh - 163px);
     overflow: hidden scroll;
 }
 
@@ -21,19 +21,17 @@
 }
 
 .view-c-kmk004 .right-content {
-	width: 415px;
+	width: 436px;
 	float: left;
-	margin-left: 50px;
+	margin-left: 38px;
 }
 
 .view-c-kmk004 .right-content p {
 	font-size: 20px;
 }
 
-.sidebar-content-header {
-	margin-top: -10px;
-	margin-left: -5px;
-	width: calc(100vw - 138px);
+.view-c-kmk004 .right-content .name {
+	margin-bottom: 10px;
 }
 
 .view-c-kmk004 .right-content .setting {
@@ -41,11 +39,12 @@
 }
 
 .view-c-kmk004 .right-content .content-data {
-	margin-top: 15px;
+	margin-top: 10px;
+	margin-left: 15px;
 }
 
 .view-c-kmk004 .right-content .label1 {
-	margin-top: 15px;
+	margin-top: 10px;
 }
 
 .view-c-kmk004 .right-content .year {
@@ -66,7 +65,7 @@
 /* View D */
 .view-d-kmk004 {
 	padding: 10px 20px;
-	height: calc(100vh - 161px);
+	height: calc(100vh - 163px);
     overflow: hidden scroll;
 }
 
@@ -74,12 +73,13 @@
 	width: 330px;
 	padding: 12px;
 	float: left;
+	margin-top: 20px;
 }
 
 .view-d-kmk004 .right-content {
-	width: 415px;
+	width: 436px;
 	float: left;
-	margin-left: 50px;
+	margin-left: 38px;
 }
 
 .view-d-kmk004 .right-content p {
@@ -91,11 +91,12 @@
 }
 
 .view-d-kmk004 .right-content .content-data {
-	margin-top: 15px;
+	margin-top: 10px;
+	margin-left: 15px;
 }
 
 .view-d-kmk004 .right-content .label1 {
-	margin-top: 15px;
+	margin-top: 10px;
 }
 
 .view-d-kmk004 .right-content .year {
@@ -118,7 +119,7 @@
 /* View E */
 .view-e-kmk004 {
 	padding: 10px 20px;
-	height: calc(100vh - 161px);
+	height: calc(100vh - 163px);
     overflow: hidden scroll;
 }
 
@@ -126,6 +127,7 @@
 	width: 645px;
 	padding: 12px;
 	float: left;
+	margin-top: 20px;
 }
 
 .view-e-kmk004 .left-content .cpn-ccg001 {
@@ -133,13 +135,13 @@
 }
 
 .view-e-kmk004 .left-content .cpn-kcp005 {
-	margin-left: 62px;
+	margin-left: 43px;
 }
 
 .view-e-kmk004 .right-content {
-	width: 415px;
+	width: 436px;
 	float: left;
-	margin-left: 34px;
+	margin-left: 38px;
 }
 
 .view-e-kmk004 .right-content p {
@@ -151,11 +153,12 @@
 }
 
 .view-e-kmk004 .right-content .content-data {
-	margin-top: 15px;
+	margin-top: 10px;
+	margin-left: 15px;
 }
 
 .view-e-kmk004 .right-content .label1 {
-	margin-top: 15px;
+	margin-top: 10px;
 }
 
 .view-e-kmk004 .right-content .year {
@@ -254,7 +257,7 @@
 
 .view-b {
 	padding: 10px 20px;
-	height: calc(100vh - 161px);
+	height: calc(100vh - 163px);
     overflow: hidden scroll;
 }
 
@@ -271,11 +274,8 @@
 }
 
 .view-b .header-b ~ div {
-	font-size: 20px;
-}
-
-.view-b .header-b hr {
-	margin-top: 4px;
+	font-size: 10px;
+	margin-left: 15px;
 }
 
 .view-b .header-b .header_title {

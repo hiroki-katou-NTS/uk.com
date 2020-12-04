@@ -2,14 +2,12 @@
 
 module nts.uk.at.view.kmk004.b {
 	const template = `
-		<div id="functions-area">
-			<div class="sidebar-content-header">
-				<div class="title" data-bind="i18n: 'Com_Workplace'"></div>
-				<a tabindex="1" class="goback" data-bind="ntsLinkButton: { jump: '/view/kmk/004/a/index.xhtml' },i18n: 'KMK004_224'"></a>
-				<button tabindex="2" class="proceed" data-bind="i18n: 'KMK004_225', enable: existYear, click: add"></button>
-				<button tabindex="3" data-bind="i18n: 'KMK004_226', enable: existYear, click: copy"></button>
-				<button tabindex="4" class="danger" data-bind="i18n: 'KMK004_227', enable: existYear, click: remote"></button>
-			</div>
+		<div class="sidebar-content-header">
+			<div class="title" data-bind="i18n: 'Com_Workplace'"></div>
+			<a tabindex="1" class="goback" data-bind="ntsLinkButton: { jump: '/view/kmk/004/a/index.xhtml' },i18n: 'KMK004_224'"></a>
+			<button tabindex="2" class="proceed" data-bind="i18n: 'KMK004_225', enable: existYear, click: add"></button>
+			<button tabindex="3" data-bind="i18n: 'KMK004_226', enable: existYear, click: copy"></button>
+			<button tabindex="4" class="danger" data-bind="i18n: 'KMK004_227', enable: existYear, click: remote"></button>
 		</div>
 		<div class="view-c-kmk004">
 			<div class="left-content">
@@ -23,7 +21,7 @@ module nts.uk.at.view.kmk004.b {
 				<div>
 					<p class="title" data-bind="i18n: 'KMK004_228'"></p>
 					<hr></hr>
-					<div data-bind="i18n: ''"></div>
+					<div class="name" data-bind="i18n: 'Chung dep trai'"></div>
 					<div>
 						<div data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_229'"></div>
 						<!-- ko if: modeCheckSetting -->

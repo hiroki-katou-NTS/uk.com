@@ -2,14 +2,12 @@
 
 module nts.uk.at.view.kmk004.b {
 	const template = `
-	<div id="functions-area">
-		<div class="sidebar-content-header">
-			<div class="title" data-bind="i18n: 'Com_Employment'"></div>
-			<a tabindex="1" class="goback" data-bind="ntsLinkButton: { jump: '/view/kmk/004/a/index.xhtml' },i18n: 'KMK004_224'"></a>
-			<button tabindex="2" class="proceed" data-bind="i18n: 'KMK004_225', click: add, enable: existYear"></button>
-			<button tabindex="3" data-bind="i18n: 'KMK004_226', click: copy, enable: existYear"></button>
-			<button tabindex="4" class="danger" data-bind="i18n: 'KMK004_227', click: remote, enable: existYear"></button>
-		</div>
+	<div class="sidebar-content-header">
+		<div class="title" data-bind="i18n: 'Com_Employment'"></div>
+		<a tabindex="1" class="goback" data-bind="ntsLinkButton: { jump: '/view/kmk/004/a/index.xhtml' },i18n: 'KMK004_224'"></a>
+		<button tabindex="2" class="proceed" data-bind="i18n: 'KMK004_225', click: add, enable: existYear"></button>
+		<button tabindex="3" data-bind="i18n: 'KMK004_226', click: copy, enable: existYear"></button>
+		<button tabindex="4" class="danger" data-bind="i18n: 'KMK004_227', click: remote, enable: existYear"></button>
 	</div>
 	<div class="view-d-kmk004">
 		<div class="left-content">

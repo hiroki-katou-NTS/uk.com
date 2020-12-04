@@ -64,8 +64,9 @@ module nts.uk.at.view.kmk004.b {
         <style type="text/css" rel="stylesheet">
             .table-view{
                 padding: 20px;
-                border: 1px solid #AAAAAA;
+                border: 2px solid #B1B1B1;
                 border-radius: 15px;
+                margin-left: 15px;
             }
 
             .table-view table {
@@ -77,15 +78,15 @@ module nts.uk.at.view.kmk004.b {
             }
 
             .table-view .label-row, th {
-                border: 1px solid #AAAAAA;
+                border: 1px solid gray;
             }
 
             .table-view .label-row .label-column {
-                border: 1px solid #AAAAAA;
-                padding: 3px;
+                border: 1px solid gray;
               }
 
             .table-view .content-tab {
+                padding: 3px;
                 text-align: center;
             }
         </style>
