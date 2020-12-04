@@ -34,7 +34,6 @@ public class TimeActualStampTest {
 		assertThat(target.getActualStamp()).isEmpty();
 		
 		assertThat(target.getStamp().get()).isEqualTo(workStamp);
-		assertThat(target.getStamp().get().getTimeDay().getTimeWithDay().get()).isEqualTo(time);
 		
 		assertThat(target.getNumberOfReflectionStamp()).isEqualTo(1);
 		assertThat(target.getOvertimeDeclaration()).isEmpty();
