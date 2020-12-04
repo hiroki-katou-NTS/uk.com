@@ -108,7 +108,7 @@ const DIRTY = 'dirty',
                     });
 
                     // define obser for validations
-                    let errors = {};
+                    const errors = {};
 
                     paths(validations)
                         .forEach((path: string) => {
@@ -253,6 +253,12 @@ const DIRTY = 'dirty',
                                             models = $.get(errors, path2),
                                             rule = $.get(Vue.toJS(self.validations), path, {}),
                                             msgkey = $.keys(models)[0];
+
+                                        if (models === undefined) {
+                                            $.set(errors, path2, {});
+
+                                            models = $.get(errors, path2);
+                                        }
 
                                         if (rule.validate !== false) {
                                             // re validate
@@ -578,7 +584,7 @@ const DIRTY = 'dirty',
                 }
             };
 
-            vue.prototype.$updateValidator = function (pathOrRule: string | IRule, rule?: Array<Date | number | string> | Date | number | boolean | IRule | {
+            vue.prototype.$updateValidator = function (pathOrRule?: string | IRule, rule?: Array<Date | number | string> | Date | number | boolean | IRule | {
                 test: RegExp | Function;
                 message: string;
             } | {
@@ -588,12 +594,16 @@ const DIRTY = 'dirty',
                 let self: Vue = this,
                     validations = Vue.toJS(self.validations);
 
-                if (!$.isString(pathOrRule) && $.isObject(pathOrRule)) {
-                    vue.set(self, 'validations', updateValidator.apply(validations, [pathOrRule]));
-                } else if ($.isString(pathOrRule) && $.isObject(rule)) {
-                    $.update(validations, pathOrRule, rule);
-
+                if (arguments.length === 0) {
                     vue.set(self, 'validations', validations);
+                } else {
+                    if (!$.isString(pathOrRule) && $.isObject(pathOrRule)) {
+                        vue.set(self, 'validations', updateValidator.apply(validations, [pathOrRule]));
+                    } else if ($.isString(pathOrRule) && $.isObject(rule)) {
+                        $.update(validations, pathOrRule, rule);
+
+                        vue.set(self, 'validations', validations);
+                    }
                 }
             };
         }

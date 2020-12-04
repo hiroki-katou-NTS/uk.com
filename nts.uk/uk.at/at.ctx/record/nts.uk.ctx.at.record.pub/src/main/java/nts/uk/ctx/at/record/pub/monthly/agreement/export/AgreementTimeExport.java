@@ -1,10 +1,8 @@
-package nts.uk.ctx.at.record.pub.monthlyprocess.agreement;
+package nts.uk.ctx.at.record.pub.monthly.agreement.export;
 
 import java.util.Optional;
 
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxAverageTimeMulti;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeYear;
 
 /**
  * 36協定時間Output
@@ -14,16 +12,16 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeYe
 public class AgreementTimeExport {
 
 	/** 36協定年間時間 */
-	private Optional<AgreementTimeYear> agreementTimeYear;
+	private Optional<AgreementTimeYearExport> agreementTimeYear;
 	/** 36協定上限複数月平均時間 */
-	private Optional<AgreMaxAverageTimeMulti> agreMaxAverageTimeMulti;
+	private Optional<AgreMaxAverageTimeMultiExport> agreMaxAverageTimeMulti;
 	
 	public AgreementTimeExport(){
 		this.agreementTimeYear = Optional.empty();
 		this.agreMaxAverageTimeMulti = Optional.empty();
 	}
 
-	public AgreementTimeExport(AgreementTimeYear agreementTimeYear, AgreMaxAverageTimeMulti agreMaxAverageTimeMulti) {
+	public AgreementTimeExport(AgreementTimeYearExport agreementTimeYear, AgreMaxAverageTimeMultiExport agreMaxAverageTimeMulti) {
 		this.agreementTimeYear = Optional.ofNullable(agreementTimeYear);
 		this.agreMaxAverageTimeMulti = Optional.ofNullable(agreMaxAverageTimeMulti);
 	}
