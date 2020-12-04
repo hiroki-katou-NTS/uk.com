@@ -6,7 +6,6 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 
 /**
