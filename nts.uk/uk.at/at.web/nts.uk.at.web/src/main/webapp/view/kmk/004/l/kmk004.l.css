@@ -81,6 +81,7 @@
 
 .box-year {
 	display: inline-block;
+	padding-right: 30px;
 }
 
 .view-l-times-table {
@@ -99,3 +100,4 @@
 	height: 18px;
     display: block;
 }
+
