@@ -28,6 +28,13 @@
         <div class="pt-20">
           <table class="table_fix">
             <tr>
+              <td></td>
+              <td>
+                 <!-- D6 -->
+                 <span id="D6" class="text_bold">#{i18n.getText('CCG015_70')}</span>
+              </td>
+            </tr>
+            <tr>
               <td class="contents_left">
                 <div class="input-row">
                   <!-- D2_1 -->
@@ -47,12 +54,13 @@
                   </div>
                 </div>
               </td>
+              <td>
+              </td>
             </tr>
             <tr>
               <td></td>
               <td>
-                <!-- D6 -->
-                <span id="D6" class="text_bold">#{i18n.getText('CCG015_70')}</span>
+                
               </td>
             </tr>
             <tr class="fix_height"></tr>
@@ -62,8 +70,6 @@
                   <com:ko-if bind="contentFlowMenu()">
                     <!-- D4 -->
                     <div data-bind="ntsPanel:{width: '327px', height: '390px', direction: 'right', showIcon: true}">
-                      <div style="width: 320px" data-bind="ntsSearchBox: {searchMode: 'highlight', targetKey: 'code', comId: 'multi-list2',
-                        items: listFlowMenu, selectedKey: flowMenuSelectedCode, fields: ['flowName', 'flowCode'], mode: 'listbox'}" />
                       <table id="multi-list2" data-bind="ntsGridList: {
                           options: listFlowMenu,
                           optionsValue: 'flowCode',
@@ -77,8 +83,6 @@
                   <com:ko-if bind="contentTopPagePart()">
                     <!-- D4 -->
                     <div data-bind="ntsPanel:{width: '327px', height: '390px', direction: 'right', showIcon: true}">
-                      <div style="width: 320px" data-bind="ntsSearchBox: {searchMode: 'highlight', targetKey: 'code', comId: 'multi-list2',
-                        items: listTopPagePart, selectedKey: toppageSelectedCode, fields: ['name', 'flowCode'], mode: 'listbox'}" />
                       <table id="multi-list2" data-bind="ntsGridList: {
                           options: listTopPagePart,
                           optionsValue: 'flowCode',

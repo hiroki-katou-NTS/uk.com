@@ -112,7 +112,8 @@
 }
 
 .contents_right {
-  height: 415px;
+  height: 445px;
+  margin-top: -35px;
 }
 
 .fix_height {
@@ -127,4 +128,8 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+}
+
+#D6 {
+  margin-top:  -50px;
 }
