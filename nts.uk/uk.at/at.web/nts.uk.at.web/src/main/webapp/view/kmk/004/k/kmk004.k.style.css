@@ -7,3 +7,6 @@
 #month-counting .ntsRadioBox:nth-child(2) {
 	margin-top: 5px;
 }
+#contents-area {
+	padding: 20px !important;
+}

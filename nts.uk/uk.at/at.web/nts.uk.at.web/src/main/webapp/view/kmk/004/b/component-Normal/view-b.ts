@@ -12,7 +12,7 @@ module nts.uk.at.view.kmk004.b {
 	</div>
 	<div class="view-b">
 		<div class="header-b">
-			<div data-bind="i18n: 'KMK004_228'"></div>
+			<div class="title" data-bind="i18n: 'KMK004_228'"></div>
 			<hr></hr>
 			<div class="header_title">
 				<div data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_229'"></div>

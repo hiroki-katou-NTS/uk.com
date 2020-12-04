@@ -1,15 +1,18 @@
 /// <reference path="../../../../../lib/nittsu/viewcontext.d.ts" />
 
 const template = `
-	<div>
+	<div   style="margin-top: 15px;"  >
 		<div data-bind="ntsFormLabel: {} , i18n: 'KMK004_229'"></div>
 		<button data-bind="click: openKDialog , i18n: 'KMK004_231'" ></button>
 	</div>
 	<div class="div_line" 
 		style="
-		border-radius: 10px;
-	    border: 1px solid #CCC;
-	    padding: 15px 0px 15px 15px;">
+		width: auto;
+		border-radius: 7px;
+	    border: 2px solid #B1B1B1;
+	    padding: 15px;
+		margin:15px 0px 15px 15px;
+		">
 		<table class="basic-settings">
 			<tr class="bg-green">
 				<th data-bind="i18n: 'KMK004_254'"></th>
@@ -24,7 +27,7 @@ const template = `
 				<td data-bind="text:getCarryforwardSetText()"></td>
 			</tr>
 		</table>
-		<table style="width: 620px;" class="basic-settings">
+		<table style="width: 650px;" class="basic-settings">
 			<tr class="bg-green">
 				<th data-bind="i18n: 'KMK004_258'"></th>
 				<th data-bind="i18n: 'KMK004_262' , visible: screenMode== 'Com_Company' "></th>
@@ -34,7 +37,7 @@ const template = `
 				<td data-bind="text:getReferenceText(), visible: screenMode== 'Com_Company'"></td>
 			</tr>
 		</table>
-		<table style="width: 620px;" class="basic-settings">
+		<table style="width: 650px;" class="basic-settings">
 			<tr class="bg-green">
 				<th colspan='2' data-bind="i18n: 'KMK004_259'"></th>
 				<th data-bind="i18n: 'KMK004_261'"></th>

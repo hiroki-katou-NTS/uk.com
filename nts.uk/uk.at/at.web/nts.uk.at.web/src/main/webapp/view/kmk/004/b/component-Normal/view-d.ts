@@ -23,7 +23,7 @@ module nts.uk.at.view.kmk004.b {
 		</div>
 		<div class="right-content">
 			<div>
-				<p data-bind="i18n: 'KMK004_228'"></p>
+				<p class="title" data-bind="i18n: 'KMK004_228'"></p>
 				<hr></hr>
 				<div class="name" data-bind="i18n: emloyment.name"></div>
 				<div>
@@ -45,10 +45,10 @@ module nts.uk.at.view.kmk004.b {
 				<!-- /ko -->
 				<div class="label1" data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_232'"></div>
 				<div class="content-data">
+					<div>
+						<button tabindex="6" data-bind="i18n: 'KMK004_233'"></button>
+					</div>
 					<div class="year">
-						<div>
-							<button tabindex="6" data-bind="i18n: 'KMK004_233'"></button>
-						</div>
 						<div class= "box-year" data-bind="component: {
 							name: 'box-year',
 							params:{

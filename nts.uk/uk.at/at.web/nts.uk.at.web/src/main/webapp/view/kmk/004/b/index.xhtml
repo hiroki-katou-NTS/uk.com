@@ -9,7 +9,7 @@
 			<com:scriptfile set="IGNITE" />
 
 			<com:ValidatorScript>
-				 nts.uk.ctx.at.request.dom.application.lateorleaveearly.TimeDay
+				nts.uk.ctx.at.request.dom.application.lateorleaveearly.TimeDay
 			</com:ValidatorScript>
 
 			<com:stylefile path="./style.css" />
@@ -26,14 +26,15 @@
 			<com:scriptfile path="./component-Normal/kcp004-cpn.js" />
 			<com:scriptfile path="./component-Normal/kcp005-cpn.js" />
 			<com:scriptfile path="./component-Normal/kcp001-cpn.js" />
-			<com:scriptfile path="./component-Normal/ccg001-cpn.js" />
-			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
-			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
-			<com:scriptfile path="/view/ccg/share/ccg.service.js"
-			of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
-			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 
+			<com:ko-if bind="selected() === 'Com_Person'">
+				<com:scriptfile path="./component-Normal/ccg001-cpn.js" />
+				<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+				<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+				<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+			</com:ko-if>
 
 		</ui:define>
 

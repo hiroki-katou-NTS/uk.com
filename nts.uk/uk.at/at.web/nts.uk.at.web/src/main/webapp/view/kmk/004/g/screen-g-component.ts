@@ -3,16 +3,17 @@
 
 const template = `
 					<div class="sidebar-content-header">
-								<div
-									data-bind="component: {
-								name: 'sidebar-button',
-								params: {
+					<!-- ko component: {
+    name: "sidebar-button",
+    params: {
 											screenData:screenData ,
 											screenMode:screenMode 
 										}
-							}"></div>
+} -->
+<!-- /ko -->
+								
 					</div>
-					<div id="right-layout" style="margin: 20px;">
+					<div id="right-layout" style="margin: 10px 20px;">
 						<label id="flex-title" data-bind="i18n:'KMK004_268'"></label>
 						<hr/>
 						<div data-bind="component: {
