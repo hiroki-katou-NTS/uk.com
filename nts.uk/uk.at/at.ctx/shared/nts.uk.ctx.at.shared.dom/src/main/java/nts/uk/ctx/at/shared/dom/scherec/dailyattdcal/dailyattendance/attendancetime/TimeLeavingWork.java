@@ -94,7 +94,7 @@ public class TimeLeavingWork extends DomainObject{
 
 	/**
 	 * 出勤時刻と退勤時刻から計算用時間帯クラス作成
-	 * @return　計算用時間帯クラス
+	 * @return 計算用時間帯クラス
 	 */
 	private TimeSpanForCalc craeteTimeSpan() {
 		//Optional<TimeActualStamp> val = attendanceStamp.orElse(Optional.of(new TimeActualStamp()));
@@ -138,9 +138,9 @@ public class TimeLeavingWork extends DomainObject{
 	
 	/**
 	 * ジャスト遅刻・早退の設定を見て時刻を調整する
-	 * @param isJustTimeLateAttendance　ジャスト遅刻とする
-	 * @param isJustEarlyLeave　ジャスト早退とする
-	 * @return　調整後の処理
+	 * @param isJustTimeLateAttendance ジャスト遅刻とする
+	 * @param isJustEarlyLeave ジャスト早退とする
+	 * @return 調整後の処理
 	 */
 	public TimeLeavingWork correctJustTime(boolean isJustTimeLateAttendance,boolean isJustEarlyLeave) {
 		TimeActualStamp newAttendance = attendanceStamp.isPresent()?attendanceStamp.get():null;
@@ -185,7 +185,7 @@ public class TimeLeavingWork extends DomainObject{
 	
 	/**
 	 * 打刻順序不正であるかチェックする
-	 * @return　順序不正である
+	 * @return 順序不正である
 	 */
 	public boolean isReverseOrder() {
 		if(this.getTimespan().getStart().greaterThan(this.getTimespan().getEnd())) {

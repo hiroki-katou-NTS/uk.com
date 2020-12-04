@@ -48,11 +48,11 @@ public class AffiliationInforOfDailyAttd implements DomainObject  {
 
 	/**
 	 * @param employmentCode 雇用コード
-	 * @param jobTitleID　職位ID
-	 * @param wplID　職場ID
-	 * @param clsCode　分類コード
-	 * @param businessTypeCode　勤務種別コード
-	 * @param bonusPaySettingCode　加給コード
+	 * @param jobTitleID 職位ID
+	 * @param wplID 職場ID
+	 * @param clsCode 分類コード
+	 * @param businessTypeCode 勤務種別コード
+	 * @param bonusPaySettingCode 加給コード
 	 */
 	public AffiliationInforOfDailyAttd(
 			EmploymentCode employmentCode, 
@@ -92,7 +92,7 @@ public class AffiliationInforOfDailyAttd implements DomainObject  {
 	 * 	[S-1] 雇用コードを取得する
 	 * @param require
 	 * @param employeeId 社員ID
-	 * @param standardDate　基準日
+	 * @param standardDate 基準日
 	 * @return
 	 */
 	private static EmploymentCode getEmploymentCode(Require require, String employeeId, GeneralDate standardDate) {
@@ -173,7 +173,7 @@ public class AffiliationInforOfDailyAttd implements DomainObject  {
 		/**
 		 * [R-1] 所属雇用履歴を取得する (社員ID, 年月日) : Single
 		 * @param employeeId 社員ID
-		 * @param standardDate　基準日
+		 * @param standardDate 基準日
 		 * @return
 		 */
 		SharedSyEmploymentImport getAffEmploymentHistory(String employeeId, GeneralDate standardDate);
@@ -181,15 +181,15 @@ public class AffiliationInforOfDailyAttd implements DomainObject  {
 		/**
 		 * [R-2] 所属職位履歴を取得する (社員ID, 年月日) : Single
 		 * @param employeeId 社員ID
-		 * @param standardDate　基準日
+		 * @param standardDate 基準日
 		 * @return
 		 */
 		SharedAffJobTitleHisImport getAffJobTitleHistory(String employeeId, GeneralDate standardDate);
 		
 		/**
 		 * [R-3] 所属職場履歴を取得する (社員ID, 年月日) : Single
-		 * @param employeeId　社員ID
-		 * @param standardDate　基準日
+		 * @param employeeId 社員ID
+		 * @param standardDate 基準日
 		 * @return
 		 */
 		SharedAffWorkPlaceHisImport getAffWorkplaceHistory(String employeeId, GeneralDate standardDate);
@@ -197,7 +197,7 @@ public class AffiliationInforOfDailyAttd implements DomainObject  {
 		/**
 		 * [R-4] 所属分類履歴を取得する (社員ID, 年月日) : Single
 		 * @param employeeId 社員ID
-		 * @param standardDate　基準日
+		 * @param standardDate 基準日
 		 * @return
 		 */
 		SClsHistImport getClassificationHistory(String employeeId, GeneralDate standardDate);
@@ -206,7 +206,7 @@ public class AffiliationInforOfDailyAttd implements DomainObject  {
 		/**
 		 * [R-5] 勤務種別履歴を取得する
 		 * @param employeeId 社員ID
-		 * @param standardDate　基準日
+		 * @param standardDate 基準日
 		 * @return
 		 */
 		// TODO
@@ -215,7 +215,7 @@ public class AffiliationInforOfDailyAttd implements DomainObject  {
 		/**
 		 * [R-6] 労働条件履歴を取得する
 		 * @param employeeId 社員ID
-		 * @param standardDate　基準日
+		 * @param standardDate 基準日
 		 * @return
 		 */
 		Optional<WorkingConditionItem> getWorkingConditionHistory(String employeeId, GeneralDate standardDate);

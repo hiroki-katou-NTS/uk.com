@@ -29,8 +29,8 @@ public class ErrorInfoOfWorkSchedule {
 	/**
 	 * 事前条件のエラー
 	 * @param employeeId 社員ID
-	 * @param date　年月日
-	 * @param errorMessage　エラーメッセージ
+	 * @param date 年月日
+	 * @param errorMessage エラーメッセージ
 	 * @return
 	 */
 	public static ErrorInfoOfWorkSchedule preConditionError(
@@ -42,9 +42,9 @@ public class ErrorInfoOfWorkSchedule {
 	/**
 	 * 勤怠項目のエラー
 	 * @param employeeId 社員ID
-	 * @param date　年月日
+	 * @param date 年月日
 	 * @param attendanceItemId 項目ID
-	 * @param errorMessage　エラーメッセージ
+	 * @param errorMessage エラーメッセージ
 	 * @return
 	 */
 	public static ErrorInfoOfWorkSchedule attendanceItemError(

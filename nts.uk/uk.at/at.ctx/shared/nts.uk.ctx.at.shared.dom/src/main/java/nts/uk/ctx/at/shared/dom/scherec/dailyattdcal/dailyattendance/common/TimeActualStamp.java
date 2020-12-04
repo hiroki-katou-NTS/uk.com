@@ -40,8 +40,8 @@ public class TimeActualStamp {
 	
 	/**
 	 * 打刻時間を指定時間分経過させた勤怠打刻を返す
-	 * @param moveTime　指定時間
-	 * @return　勤怠打刻
+	 * @param moveTime 指定時間
+	 * @return 勤怠打刻
 	 */
 	public TimeActualStamp moveAheadStampTime(int moveTime) {
 		WorkStamp actualWorkStamp = new WorkStamp(
@@ -72,7 +72,7 @@ public class TimeActualStamp {
 	/**
 	 * 打刻時間を指定時間分戻した勤怠打刻を返す
 	 * @param moveTime 指定時間
-	 * @return　勤怠打刻
+	 * @return 勤怠打刻
 	 */
 	public TimeActualStamp moveBackStampTime(int moveTime) {
 		WorkStamp actualWorkStamp = new WorkStamp(

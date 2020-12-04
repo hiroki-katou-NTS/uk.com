@@ -26,10 +26,10 @@ public class CreateWorkSchedule {
 	/**
 	 * 作る
 	 * @param require
-	 * @param employeeId　社員ID
-	 * @param date　年月日
-	 * @param workInformation　勤務情報
-	 * @param updateInfoMap　変更する情報Map
+	 * @param employeeId 社員ID
+	 * @param date 年月日
+	 * @param workInformation 勤務情報
+	 * @param updateInfoMap 変更する情報Map
 	 * @return
 	 */
 	public static <T> ResultOfRegisteringWorkSchedule create(
@@ -98,9 +98,9 @@ public class CreateWorkSchedule {
 	 * 時間帯のチェック
 	 * @param require
 	 * @param employeeId 社員ID
-	 * @param date　年月日
-	 * @param workInformation　勤務情報
-	 * @param updateInfoMap　変更する情報Map
+	 * @param date 年月日
+	 * @param workInformation 勤務情報
+	 * @param updateInfoMap 変更する情報Map
 	 * @return
 	 */
 	private static <T> List<ErrorInfoOfWorkSchedule> checkTimeSpan(
@@ -164,10 +164,10 @@ public class CreateWorkSchedule {
 	 * 勤務予定のエラー情報を取る
 	 * @param require
 	 * @param employeeId 社員ID
-	 * @param date　年月日
-	 * @param workInformation　勤務情報
-	 * @param attendanceItemId　勤怠項目ID
-	 * @param time　T
+	 * @param date 年月日
+	 * @param workInformation 勤務情報
+	 * @param attendanceItemId 勤怠項目ID
+	 * @param time T
 	 * @return
 	 */
 	private static <T> Optional<ErrorInfoOfWorkSchedule> getErrorInfo(
@@ -201,7 +201,7 @@ public class CreateWorkSchedule {
 		/**
 		 * 勤務予定を取得する
 		 * @param employeeId 社員ID
-		 * @param date　年月日
+		 * @param date 年月日
 		 * @return
 		 */
 		Optional<WorkSchedule> getWorkSchedule(String employeeId, GeneralDate date);
@@ -227,7 +227,7 @@ public class CreateWorkSchedule {
 		/**
 		 * 暫定データを登録する
 		 * @param employeeId 社員ID
-		 * @param date　年月日
+		 * @param date 年月日
 		 */
 		void registerTemporaryData(String employeeId, GeneralDate date);
 	}

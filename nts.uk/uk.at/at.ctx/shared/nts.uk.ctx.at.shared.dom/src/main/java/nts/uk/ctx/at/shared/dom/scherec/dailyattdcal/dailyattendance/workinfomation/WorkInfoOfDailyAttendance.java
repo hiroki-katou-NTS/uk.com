@@ -123,7 +123,7 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 	 * 指定された勤務回数の予定時間帯を取得する
 	 * 
 	 * @param workNo
-	 * @return　予定時間帯
+	 * @return 予定時間帯
 	 */
 	public Optional<ScheduleTimeSheet> getScheduleTimeSheet(WorkNo workNo) {
 		return this.scheduleTimeSheets.stream()

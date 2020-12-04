@@ -82,7 +82,7 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 
 	/**
 	 * 出退勤時刻と渡された範囲時間の重複していない部分の取得
-	 * @param timeSpan　範囲時間
+	 * @param timeSpan 範囲時間
 	 * @return 重複していない時間
 	 */
 	public List<TimeSpanForCalc> getNotDuplicateSpan(TimeSpanForCalc timeSpan) {
@@ -97,7 +97,7 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 	
 	/**
 	 * 出退勤時刻と渡された範囲時間の重複していない部分の取得
-	 * @param timeSpan　範囲時間
+	 * @param timeSpan 範囲時間
 	 * @return 重複していない時間
 	 */
 	public List<TimeSpanForDailyCalc> getNotDuplicateSpan(TimeSpanForDailyCalc timeSpan) {
@@ -109,7 +109,7 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 	/**
 	 * 指定した勤怠Noのデータを取得する
 	 * @param workNo 勤怠No
-	 * @return　出退勤クラス
+	 * @return 出退勤クラス
 	 */
 	public Optional<TimeLeavingWork> getAttendanceLeavingWork(WorkNo workNo) {
 		return this.timeLeavingWorks.stream().filter(ts -> ts.getWorkNo().v().intValue() == workNo.v().intValue()).findFirst();
@@ -117,7 +117,7 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 	
 	/**
 	 * 打刻漏れであるか判定する
-	 * @return　打刻漏れである
+	 * @return 打刻漏れである
 	 */
 	public boolean isLeakageStamp(){
 		for(TimeLeavingWork timeLeavingWork:this.timeLeavingWorks) {
@@ -129,7 +129,7 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 	}
 	
 	/**
-	 * 退勤を返す　　　（勤務回数が2回目の場合は2回目の退勤を返す）
+	 * 退勤を返す   （勤務回数が2回目の場合は2回目の退勤を返す）
 	 * @return
 	 */
 	public Optional<TimeActualStamp> getLeavingWork() {
@@ -140,7 +140,7 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 	/**
 	 * ジャスト遅刻、ジャスト早退の計算区分を見て時刻調整
 	 * @param isJustTimeLateAttendance ジャスト遅刻を計算するか 
-	 * @param isJustEarlyLeave　ジャスト早退を計算するか
+	 * @param isJustEarlyLeave ジャスト早退を計算するか
 	 * @return 調整後の日別実績の出退勤クラス
 	 */
 	public TimeLeavingOfDailyAttd calcJustTime(boolean isJustTimeLateAttendance, boolean isJustEarlyLeave,
@@ -155,7 +155,7 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 		return new TimeLeavingOfDailyAttd(newAttendanceLeave, this.workTimes);
 	}
 	
-	/** <<Event>> 実績の出退勤が変更されたイベントを発行する　*/
+	/** <<Event>> 実績の出退勤が変更されたイベントを発行する */
 	public void timeLeavesChanged(String employeeId,GeneralDate ymd) {
 		TimeLeaveChangeEvent.builder().employeeId(employeeId).targetDate(ymd).timeLeave(this.timeLeavingWorks).build().toBePublished();
 	}
@@ -211,7 +211,7 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 	
 	/**
 	 * 勤怠打刻(実打刻付き)から、時間休暇時間帯をチェックして、時間休暇時間帯がある場合、計算時間帯を返す。
-	 * @param timeActualStamp　勤怠打刻
+	 * @param timeActualStamp 勤怠打刻
 	 * @return
 	 */
 	private TimeSpanForCalc createTimeSpanForCalc(Optional<TimeActualStamp> stamp) {

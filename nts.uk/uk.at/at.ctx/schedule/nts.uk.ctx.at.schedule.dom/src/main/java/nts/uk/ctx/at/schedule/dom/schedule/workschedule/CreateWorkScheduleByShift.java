@@ -19,8 +19,8 @@ public class CreateWorkScheduleByShift {
 	 * 作る
 	 * @param require
 	 * @param employeeId 社員ID
-	 * @param date　年月日
-	 * @param shiftMasterCode　シフトマスタコード
+	 * @param date 年月日
+	 * @param shiftMasterCode シフトマスタコード
 	 * @return
 	 */
 	public static ResultOfRegisteringWorkSchedule create(Require require, String employeeId, GeneralDate date, ShiftMasterCode shiftMasterCode) {

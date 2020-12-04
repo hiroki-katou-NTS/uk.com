@@ -108,7 +108,7 @@ public class WorkSchedule implements DomainAggregate {
 	 * 作る
 	 * @param require
 	 * @param employeeId 社員ID
-	 * @param date　年月日
+	 * @param date 年月日
 	 * @param workinformation 勤務情報
 	 * @return
 	 */
@@ -150,7 +150,7 @@ public class WorkSchedule implements DomainAggregate {
 	 * 勤務情報を指定して手修正で作る
 	 * @param require
 	 * @param employeeId 社員ID
-	 * @param date　年月日
+	 * @param date 年月日
 	 * @param workInformation 勤務情報
 	 * @return
 	 */
@@ -168,7 +168,7 @@ public class WorkSchedule implements DomainAggregate {
 		List<EditStateOfDailyAttd> editStateOfDailyAttdList = new ArrayList<>( Arrays.asList(editStateOfDailyAttd) );
 		
 		if ( workInformation.getWorkTimeCodeNotNull().isPresent() ) {
-			// 勤怠項目ID　= 就業時間帯(2)
+			// 勤怠項目ID = 就業時間帯(2)
 			editStateOfDailyAttdList.add( EditStateOfDailyAttd.createByHandCorrection(require, 2, employeeId) );
 		}
 		
@@ -353,7 +353,7 @@ public class WorkSchedule implements DomainAggregate {
 	}
 	
 	/**
-	 * ［時間休暇を取得する］　の　［日別勤怠の遅刻時間を取得］
+	 * ［時間休暇を取得する］の［日別勤怠の遅刻時間を取得］
 	 * @return
 	 */
 	private Map<TimezoneToUseHourlyHoliday, TimeVacation> getLateTimes() {
@@ -389,7 +389,7 @@ public class WorkSchedule implements DomainAggregate {
 	}
 	
 	/**
-	 * ［時間休暇を取得する］　の　［日別勤怠の早退時間を取得］
+	 * ［時間休暇を取得する］の［日別勤怠の早退時間を取得］
 	 * @return
 	 */
 	private Map<TimezoneToUseHourlyHoliday, TimeVacation> getEarlyTimes() {
@@ -425,7 +425,7 @@ public class WorkSchedule implements DomainAggregate {
 	}
 	
 	/**
-	 * ［時間休暇を取得する］　の　［【日別勤怠の外出時間を取得］
+	 * ［時間休暇を取得する］の［【日別勤怠の外出時間を取得］
 	 * @return
 	 */
 	private Map<TimezoneToUseHourlyHoliday, TimeVacation> getOutingTimes() {
