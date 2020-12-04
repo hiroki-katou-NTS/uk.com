@@ -50,6 +50,7 @@ import nts.uk.ctx.at.shared.dom.relationship.Relationship;
 import nts.uk.ctx.at.shared.dom.relationship.repository.RelationshipRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPTimeItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.timeitem.BonusPayTimeItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -392,19 +393,15 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository {
 		if (type == 0) {// xin nghi
 			AbsenceLeaveApp abs = absRepo.findByAppId(appId).get();
 			return new AppCompltLeaveFull(abs.getAppID(), type,
-					this.findWorkTypeName(lstWkType, abs.getWorkTypeCD().v()), // 勤務就業名称を作成
-																				// -
-																				// WorkType
-					abs.getWorkTime1() == null ? null : this.convertTime(abs.getWorkTime1().getStartTime().v()),
-					abs.getWorkTime1() == null ? null : this.convertTime(abs.getWorkTime1().getEndTime().v()));
+					this.findWorkTypeName(lstWkType, abs.getWorkInformation().getWorkTypeCode().v()), // 勤務就業名称を作成
+					abs.getWorkTime(new WorkNo(1)).map(c -> this.convertTime(c.getTimeZone().getStartTime().v())).orElse(null),
+					abs.getWorkTime(new WorkNo(1)).map(c -> this.convertTime(c.getTimeZone().getEndTime().v())).orElse(null));
 		}
 		// di lam
 		RecruitmentApp rec = recRepo.findByAppId(appId).get();
-		return new AppCompltLeaveFull(rec.getAppID(), type, this.findWorkTypeName(lstWkType, rec.getWorkTypeCD().v()), // 勤務就業名称を作成
-																														// -
-																														// WorkType
-				this.convertTime(rec.getWorkTime1().getStartTime().v()),
-				this.convertTime(rec.getWorkTime1().getEndTime().v()));
+		return new AppCompltLeaveFull(rec.getAppID(), type, this.findWorkTypeName(lstWkType, rec.getWorkInformation().getWorkTypeCode().v()), // 勤務就業名称を作成
+				this.convertTime(rec.getWorkTime(new WorkNo(1)).get().getTimeZone().getStartTime().v()),
+				this.convertTime(rec.getWorkTime(new WorkNo(1)).get().getTimeZone().getEndTime().v()));
 	}
 
 	/**

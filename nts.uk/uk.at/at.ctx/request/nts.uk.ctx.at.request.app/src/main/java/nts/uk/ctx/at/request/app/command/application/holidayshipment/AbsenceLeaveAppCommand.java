@@ -1,36 +1,48 @@
 package nts.uk.ctx.at.request.app.command.application.holidayshipment;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.app.command.application.common.ApplicationInsertCmd;
+import nts.uk.ctx.at.request.app.find.application.gobackdirectly.WorkInformationDto;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.TypeApplicationHolidays;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
+import nts.uk.ctx.at.shared.app.find.common.TimeZoneWithWorkNoDto;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
+/**
+ * @author thanhpv
+ *
+ */
 @Getter
-@Setter
+@AllArgsConstructor
 public class AbsenceLeaveAppCommand {
-	private String appDate;
-	private String wkTypeCD;
-	private int changeWorkHoursType;
-	private WkTimeCommand wkTime1;
-	//private WkTimeCommand wkTime2;
-	private String appID;
-	private String wkTimeCD;
-	private List<SubDigestionCmd> SubDigestions;
-	private List<SubTargetDigestionCmd> subTargetDigestions;
-
-	public GeneralDate getAppDate() {
-		return !StringUtils.isEmpty(appDate) ? GeneralDate.fromString(appDate, "yyyy/MM/dd") : null;
+	
+	public ApplicationInsertCmd application;
+	
+	public List<TimeZoneWithWorkNoDto> workingHours;
+	
+	public WorkInformationDto workInformation;
+	
+	public Integer workChangeUse;
+	
+	public String changeSourceHoliday;
+	
+	public AbsenceLeaveApp toDomain() {
+		return new AbsenceLeaveApp(
+				this.workingHours.stream().map(c-> c.toDomain()).collect(Collectors.toList()), 
+				workInformation.toDomain(), 
+				NotUseAtr.valueOf(this.workChangeUse), 
+				StringUtils.isEmpty(this.changeSourceHoliday) ? Optional.empty() : Optional.of(GeneralDate.fromString(this.changeSourceHoliday, "yyyy/MM/dd")), 
+				TypeApplicationHolidays.Abs, 
+				application.toDomain());
 	}
 
-	public List<SubDigestionCmd> getSubDigestions() {
-		return this.SubDigestions == null ? Collections.emptyList() : this.SubDigestions;
-	}
 
-	public List<SubTargetDigestionCmd> getSubTargetDigestions() {
-		return this.subTargetDigestions == null ? Collections.emptyList() : this.subTargetDigestions;
-	}
 }

@@ -53,6 +53,7 @@ import nts.uk.ctx.at.request.dom.setting.request.application.businesstrip.AppTri
 import nts.uk.ctx.at.request.dom.setting.request.application.businesstrip.AppTripRequestSetRepository;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
@@ -547,17 +548,17 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                 Optional<RecruitmentApp> recAppOpt = recRepo.findByID(appId);
                 if (recAppOpt.isPresent()) {
                     // 振出申請
-                    wkTypeCd = Optional.of(recAppOpt.get().getWorkTypeCD().v()).orElse(null);
-                    wkTimeCd = Optional.of(recAppOpt.get().getWorkTimeCD().v()).orElse(null);
-                    opWorkTime = recAppOpt.isPresent() ? Optional.of(recAppOpt.get().getWorkTime1().getStartTime().v()) : Optional.empty();
-                    opLeaveTime = recAppOpt.isPresent() ? Optional.of(recAppOpt.get().getWorkTime1().getEndTime().v()) : Optional.empty();
+                    wkTypeCd = Optional.of(recAppOpt.get().getWorkInformation().getWorkTypeCode().v()).orElse(null);
+                    wkTimeCd = Optional.of(recAppOpt.get().getWorkInformation().getWorkTimeCode().v()).orElse(null);
+                    opWorkTime = Optional.of(recAppOpt.get().getWorkTime(new WorkNo(1)).get().getTimeZone().getStartTime().v());
+                    opLeaveTime = Optional.of(recAppOpt.get().getWorkTime(new WorkNo(1)).get().getTimeZone().getEndTime().v());
                 } else {
                     // 振休申請
                     Optional<AbsenceLeaveApp> absAppOpt = absRepo.findByID(appId);
-                    wkTypeCd = Optional.of(absAppOpt.get().getWorkTypeCD().v()).orElse(null);
-                    wkTimeCd = Optional.of(absAppOpt.get().getWorkTimeCD()).orElse(null);
-                    opWorkTime = absAppOpt.isPresent() ? Optional.of(absAppOpt.get().getWorkTime1().getStartTime().v()) : Optional.empty();
-                    opLeaveTime = absAppOpt.isPresent() ? Optional.of(absAppOpt.get().getWorkTime1().getEndTime().v()) : Optional.empty();
+                    wkTypeCd = Optional.of(absAppOpt.get().getWorkInformation().getWorkTimeCode().v()).orElse(null);
+                    wkTimeCd = absAppOpt.get().getWorkInformation().getWorkTimeCodeNotNull().isPresent() ? absAppOpt.get().getWorkInformation().getWorkTimeCodeNotNull().get().v() : null;
+                    opWorkTime = absAppOpt.get().getWorkTime(new WorkNo(1)).map(c -> c.getTimeZone().getStartTime().v());
+                    opLeaveTime = absAppOpt.get().getWorkTime(new WorkNo(1)).map(c -> c.getTimeZone().getEndTime().v());
                 }
                 break;
         }

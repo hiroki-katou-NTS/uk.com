@@ -1,65 +1,46 @@
 package nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp;
 
 import java.util.List;
+import java.util.Optional;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.ApplicationForHolidays;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.TypeApplicationHolidays;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
- * 振休申請
- * 
- * @author sonnlb
+ * @name 振休申請
+ * @author ThanhPV
  */
 @Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-public class AbsenceLeaveApp extends AggregateRoot {
-	/**
-	 * 申請ID
-	 */
-	private String appID;
-	/**
-	 * 勤務種類
-	 */
-	private WorkTypeCode workTypeCD;
-	/**
-	 * 就業時間帯変更
-	 */
-	private NotUseAtr changeWorkHoursType;
-	/**
-	 * 就業時間帯
-	 */
-	private String workTimeCD;
-	/**
-	 * 勤務時間1
-	 */
-	private AbsenceLeaveWorkingHour WorkTime1;
-	/**
-	 * 勤務時間2
-	 */
-	private AbsenceLeaveWorkingHour WorkTime2;
-	/**
-	 * 消化対象代休管理
-	 */
-	private List<SubTargetDigestion> subTargetDigestions;
-	/**
-	 * 消化対象振休管理
-	 */
-	private List<SubDigestion> subDigestions;
+public class AbsenceLeaveApp extends ApplicationForHolidays {
+	
+	/** 勤務時間帯 */
+	private List<TimeZoneWithWorkNo> workingHours;
+	
+	/** 勤務情報 */
+	private WorkInformation workInformation;
 
-	public Integer getStime1(){
-		if(this.WorkTime1 == null){
-			return null;
-		}
-		if(this.WorkTime1.getStartTime() == null){
-			return null;
-		}
-		return this.WorkTime1.getStartTime().v();
+	/** するしない区分 */
+    private NotUseAtr workChangeUse;
+    
+    /** 変更元の振休日 */
+    private Optional<GeneralDate> changeSourceHoliday;
+
+	public AbsenceLeaveApp(List<TimeZoneWithWorkNo> workingHours, WorkInformation workInformation, NotUseAtr workChangeUse, Optional<GeneralDate> changeSourceHoliday, TypeApplicationHolidays typeApplicationHolidays, Application application) {
+		super(typeApplicationHolidays, application);
+		this.workingHours = workingHours;
+		this.workInformation = workInformation;
+		this.workChangeUse = workChangeUse;
+		this.changeSourceHoliday = changeSourceHoliday;
+	}
+    
+	public Optional<TimeZoneWithWorkNo> getWorkTime(WorkNo workNo) {
+		return this.workingHours.stream().filter(c->c.getWorkNo().v() == workNo.v()).findFirst();
 	}
 }

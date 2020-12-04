@@ -148,18 +148,13 @@ public class SaveHolidayShipmentCommandHandler
 		SaveHolidayShipmentCommand command = context.getCommand();
 		String sID = command.getAppCmd().getEmployeeID() != null ? command.getAppCmd().getEmployeeID()
 				: AppContexts.user().employeeId();// Sua ho
-		GeneralDate absDate = command.getAbsCmd().getAppDate();
-		GeneralDate recDate = command.getRecCmd().getAppDate();
 		int comType = command.getComType();
-		command.getRecCmd().setAppID(IdentifierUtil.randomUniqueId());
-		command.getAbsCmd().setAppID(IdentifierUtil.randomUniqueId());
 		// アルゴリズム「振休振出申請の新規登録」を実行する
-		return createNewForHolidayBreakge(command, companyID, sID, recDate, absDate, comType);
+		return createNewForHolidayBreakge(command, companyID, sID, comType);
 
 	}
 
-	private ProcessResult createNewForHolidayBreakge(SaveHolidayShipmentCommand command, String companyID, String sID,
-			GeneralDate recDate, GeneralDate absDate, int comType) {
+	private ProcessResult createNewForHolidayBreakge(SaveHolidayShipmentCommand command, String companyID, String sID, int comType) {
 		// アルゴリズム「事前条件チェック」を実行する
 		String appReason = preconditionCheck(command, companyID, ApplicationType.COMPLEMENT_LEAVE_APPLICATION, comType);
 //		// アルゴリズム「登録前エラーチェック（新規）」を実行する
@@ -433,16 +428,7 @@ public class SaveHolidayShipmentCommandHandler
 	}
 
 	public AbsenceLeaveApp createNewAbsDomainFromCmd( AbsenceLeaveAppCommand absCmd) {
-		WkTimeCommand wkTime1Cmd = absCmd.getWkTime1();
-		//WkTimeCommand wkTime2Cmd = absCmd.getWkTime2();
-		AbsenceLeaveWorkingHour workTime1 = new AbsenceLeaveWorkingHour(new WorkTime(wkTime1Cmd.getStartTime()),
-				new WorkTime(wkTime1Cmd.getEndTime()));
-//		AbsenceLeaveWorkingHour workTime2 = new AbsenceLeaveWorkingHour(new WorkTime(wkTime2Cmd.getStartTime()),
-//				new WorkTime(wkTime2Cmd.getEndTime()));
-		AbsenceLeaveApp absApp = new AbsenceLeaveApp(absCmd.getAppID(), new WorkTypeCode(absCmd.getWkTypeCD()),
-				EnumAdaptor.valueOf(absCmd.getChangeWorkHoursType(), NotUseAtr.class), absCmd.getWkTimeCD(), workTime1,
-				null, Collections.emptyList(), Collections.emptyList());
-		return absApp;
+		return absCmd.toDomain();
 	}
 
 	private Application createNewRecApp(SaveHolidayShipmentCommand command, String companyID, String sID,

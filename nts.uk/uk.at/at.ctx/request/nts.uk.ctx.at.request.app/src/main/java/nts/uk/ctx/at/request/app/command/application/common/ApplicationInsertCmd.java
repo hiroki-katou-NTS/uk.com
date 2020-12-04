@@ -27,6 +27,7 @@ import nts.uk.shr.com.context.AppContexts;
 @AllArgsConstructor
 @Getter
 public class ApplicationInsertCmd {
+	
 	private int prePostAtr;
 	
 	private List<String> employeeIDLst;
