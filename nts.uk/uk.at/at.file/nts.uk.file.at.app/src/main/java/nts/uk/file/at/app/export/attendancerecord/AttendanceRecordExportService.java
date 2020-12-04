@@ -1320,6 +1320,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 			case 1:
 			case 2:
+			case 15:
 				sumInt = sum.intValue();
 				return this.convertMinutesToHours(sumInt.toString(), zeroDisplayType, false);
 			case 7:
@@ -1564,11 +1565,17 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 				return zeroDisplayType == ZeroDisplayType.DISPLAY ? item.getValue() : "";
 			DecimalFormat formatTime = new DecimalFormat("###.##");
 			return formatTime.format(Double.parseDouble(value.toString())) + "回";
+		case AMOUNT_NUM:
 		case AMOUNT:
 			if (Integer.parseInt(item.getValue()) == 0 || item.getValue().isEmpty())
 				return zeroDisplayType == ZeroDisplayType.DISPLAY ? item.getValue() : "";
 			DecimalFormat format = new DecimalFormat("###,###,###");
-			return format.format(Double.parseDouble(value)) + "日";
+			return format.format(Double.parseDouble(value));
+		case DAYS:
+			if (Integer.parseInt(item.getValue()) == 0 || item.getValue().isEmpty())
+				return zeroDisplayType == ZeroDisplayType.DISPLAY ? item.getValue() : "";
+			DecimalFormat formatDay = new DecimalFormat("###.##");
+			return formatDay.format(Double.parseDouble(value.toString())) + "日";
 		case CODE:
 			if (!attendanceTypeList.isEmpty()) {
 				AttendanceType attendance = attendanceTypeList.stream()
