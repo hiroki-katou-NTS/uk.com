@@ -15,11 +15,6 @@
     font-size: 20px;
 }
 
-.view-l .header-l hr {
-    margin-top: 3px;
-    
-}
-
 .view-l .header-l .header_title {
     margin-top: 15px;
 }
@@ -41,6 +36,10 @@
 .view-l .content1 {
     text-align: center;
     width: 135px;
+}
+
+.view-l .content2 {
+    padding-left: 2px;
 }
 
 .view-l .content ~ div {
@@ -80,7 +79,7 @@
 }
 
 #title {
-	font-size: 25px;
+	font-size: 1.4rem;
 	padding-top: 4px;
 }
 

@@ -117,7 +117,6 @@ module nts.uk.at.view.kmk004.l {
 				tabindex: 1,
 				systemType: 2
 			};
-			//vm.param({sidebarType : "Com_Workplace", wkpId: '', empCode :'', empId: '', titleName:'', deforLaborTimeComDto: null, settingDto: null});
 			vm.params = {sidebarType : "Com_Workplace", wkpId: '', empCode :'', empId: '', titleName:'', deforLaborTimeComDto: null, settingDto: null}
 			vm.selectedYear
 			.subscribe(() => {

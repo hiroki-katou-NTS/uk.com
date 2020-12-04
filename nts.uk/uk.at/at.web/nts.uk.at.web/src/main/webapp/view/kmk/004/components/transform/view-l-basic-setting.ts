@@ -30,16 +30,16 @@ module nts.uk.at.view.kmk004 {
                     </tr>
                     <tr>
                        <td>
-                            <div class="content1" data-bind="text: screenData.deforLaborTimeComDto.dailyTime.time"></div>
+                            <div class="content1" data-bind="text: screenData.deforLaborTimeComDto.dailyTime.time()/60 + ':00'"></div>
                         </td>
                         <td>
-                            <div class="content1" data-bind="text: screenData.deforLaborTimeComDto.weeklyTime.time"></div>
+                            <div class="content1" data-bind="text: screenData.deforLaborTimeComDto.weeklyTime.time()/60 + ':00'"></div>
                         </td>
 						<td>
-                            <div class="content1" data-bind="text: screenData.settingDto.settlementPeriod.period"></div>
+                            <div class="content1" data-bind="text: screenData.settingDto.settlementPeriod.period() + 'ヵ月'"></div>
                         </td>
 						<td>
-                            <div class="content1" data-bind="text: screenData.settingDto.settlementPeriod.startMonth"></div>
+                            <div class="content1" data-bind="text: screenData.settingDto.settlementPeriod.startMonth() + '月'"></div>
                         </td>
 						<td>
                             <div class="content1" data-bind="i18n: screenData.settingDto.settlementPeriod.repeatAtr() == true ? 'KMK004_296' : 'KMK004_297' "></div>
@@ -56,16 +56,16 @@ module nts.uk.at.view.kmk004 {
 					
                     <tr>
                         <td>
-                            <div class="content1" data-bind="i18n:(screenData.settingDto.aggregateTimeSet.legalOverTimeWork() == true ? 'KMK004_299' : 'KMK004_300') "></div>
+                            <div class="content2" data-bind="i18n:(screenData.settingDto.aggregateTimeSet.legalOverTimeWork() == true ? 'KMK004_299' : 'KMK004_300') "></div>
                         </td>
                         <td>
-                            <div class="content1" data-bind="i18n: screenData.settingDto.aggregateTimeSet.legalHoliday() == true ? 'KMK004_301' : 'KMK004_302' "></div>
+                            <div class="content2" data-bind="i18n: screenData.settingDto.aggregateTimeSet.legalHoliday() == true ? 'KMK004_301' : 'KMK004_302' "></div>
                         </td>
                         <td>
-                            <div class="content1" data-bind="i18n: screenData.settingDto.excessOutsideTimeSet.legalOverTimeWork() == true ? 'KMK004_299' : 'KMK004_300' "></div>
+                            <div class="content2" data-bind="i18n: screenData.settingDto.excessOutsideTimeSet.legalOverTimeWork() == true ? 'KMK004_299' : 'KMK004_300' "></div>
                         </td>
                         <td colspan="2">
-                            <div class="content1" data-bind="i18n: screenData.settingDto.excessOutsideTimeSet.legalHoliday() == true ? 'KMK004_301' : 'KMK004_302' "></div>
+                            <div class="content2" data-bind="i18n: screenData.settingDto.excessOutsideTimeSet.legalHoliday() == true ? 'KMK004_301' : 'KMK004_302' "></div>
                         </td>
                     </tr> 
                 </tbody>
@@ -88,10 +88,6 @@ module nts.uk.at.view.kmk004 {
                 background: #E0F59E;
  				border: solid grey 1px;
 				padding-left: 2px;
-            }
-
-            .table-view tr {
-                border: solid grey 1px;
             }
 
             .table-view tr, .table-view td {
@@ -172,6 +168,8 @@ module nts.uk.at.view.kmk004 {
 				vm.visibleL4(false);
 			}
 		}
+		
+		
 	}
 
 }
