@@ -5,6 +5,8 @@ module nts.uk.ui.calendar {
 
 	export type CLICK_CELL = 'event' | 'holiday' | 'info';
 
+	const BD_SK = 'KSU_002.START_DATE';
+
 	export interface DayData<T = DataInfo> {
 		date: Date;
 		inRange: boolean;
@@ -650,7 +652,8 @@ module nts.uk.ui.calendar {
 
 		created() {
 			const vm = this;
-			const { data } = vm;
+			const { data, baseDate } = vm;
+			const { options, start } = baseDate;
 
 			const startDate = moment().startOf('week');
 			const listDates = _.range(0, 7)
@@ -660,7 +663,14 @@ module nts.uk.ui.calendar {
 					title: d.format('dddd')
 				}));
 
-			vm.baseDate.options(listDates);
+			vm.$window
+				.storage(BD_SK)
+				.then((v) => {
+					options(listDates);
+
+					return v;
+				})
+				.then(v => vm.baseDate.start(v));
 
 			ko.computed({
 				read: () => {
@@ -674,6 +684,11 @@ module nts.uk.ui.calendar {
 				},
 				owner: vm
 			});
+
+			vm.baseDate.start
+				.subscribe(c => {
+					vm.$window.storage(BD_SK, c);
+				});
 
 			vm.baseDate.model
 				.subscribe((date: string) => {
