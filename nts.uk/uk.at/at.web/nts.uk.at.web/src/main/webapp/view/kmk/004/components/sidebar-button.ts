@@ -45,16 +45,11 @@ class SidebarButton extends ko.ViewModel {
 			datas = $('#employee-list').getDataList();
 		}
 
-		vm.screenMode == 'Com_Employment';
-
-		let alreadySettingList = _.chain(datas).filter(['isAlreadySetting', true]).map((item: any) => { return vm.screenMode == 'Com_Employment' ? item.code : item.id; }).value();
-
-
 		vm.$window.modal('/view/kmk/004/r/index.xhtml', {
 			screenMode: vm.screenMode,
 			data: datas,
 			selectedCode: vm.screenData().selected(),
-			alreadySettingList: alreadySettingList
+			alreadySettingList: vm.screenData().alreadySettingList()
 		}).then(() => {
 
 		});

@@ -20,7 +20,7 @@ const template = `
 						<div id="right-layout" >
 							<label id="flex-title" data-bind="i18n:'KMK004_268'"></label>
 							<hr/>
-							<label id="selected-work-place" data-bind="i18n:workPlaceName"></label>
+							<label id="selected-work-place" data-bind="i18n: screenData().selectedName"></label>
 							<div style="margin-top: 20px;" data-bind="component: {
 								name: 'basic-settings-company',
 								params: {
@@ -55,11 +55,7 @@ class ScreenHComponent extends ko.ViewModel {
 
 	screenData: KnockoutObservable<FlexScreenData> = ko.observable(new FlexScreenData());
 
-	alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel> = ko.observableArray([]);
-
 	screenMode = '';
-
-	workPlaceName: KnockoutObservable<string> = ko.observable('');
 
 	created(params: any) {
 		const vm = this;
@@ -88,7 +84,7 @@ class ScreenHComponent extends ko.ViewModel {
 			}
 
 		let workPlaceGrid = {
-			isShowAlreadySet: false,
+			isShowAlreadySet: true,
 			isMultipleUse: false,
 			isMultiSelect: false,
 			startMode: StartMode.WORKPLACE,
@@ -97,7 +93,7 @@ class ScreenHComponent extends ko.ViewModel {
 			selectType: SelectionType.SELECT_FIRST_ITEM,
 			isShowSelectButton: true,
 			isDialog: false,
-			alreadySettingList: vm.alreadySettingList,
+			alreadySettingList: vm.screenData().alreadySettingList,
 			maxRows: 10,
 			tabindex: 1,
 			systemType: 2
@@ -115,8 +111,7 @@ class ScreenHComponent extends ko.ViewModel {
 					flatMapItems = _.flatMapDeep(datas, flat),
 
 					selectedItem: UnitModel = _.find(flatMapItems, ['id', value]);
-
-				vm.workPlaceName(selectedItem ? selectedItem.name : '');
+				vm.screenData().selectedName(selectedItem ? selectedItem.name : '');
 			});
 			vm.$blockui("hide");
 			vm.screenData().selected.valueHasMutated();

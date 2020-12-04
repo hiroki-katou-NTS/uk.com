@@ -35,10 +35,6 @@
 	width: calc(100vw - 140px);
 }
 
-#right-layout div.form-label {
-	padding: 8px 10px 0 8px;
-}
-
 #right-layout {
 	display: inline-block;
 	margin-left: 30px;

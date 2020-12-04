@@ -5,9 +5,7 @@ import YearItem = nts.uk.at.kmk004.components.flex.YearItem;
 const template = `
 	
 	
-	<div class="div_line">
-		<div data-bind="ntsFormLabel: {} , i18n: 'KMK004_232'"></div>
-	</div>
+	<div data-bind="ntsFormLabel: {inline:true} , i18n: 'KMK004_232'"></div>
 	
 	<div style="padding-left:10px;"> 
 		<div class="div_line" style="padding-left:4px;">
@@ -88,12 +86,13 @@ const template = `
 									
 				</table>		
 			</div>
-			<div style="margin-left: 10px;    display: inline-block;" ><a id="show-explan" class="hyperlink" data-bind="i18n: 'KMK004_269'"></a> </div>
+			<div style="margin-left: 10px;    display: inline-block;" >
+			
+			<a class="show-popup1 hyperlink" data-bind="i18n: 'KMK004_269'"></a> </div>
 		</div>
 	</div>
-	<div id="explan-popup">
-		<h2>Popup 1!</h2>
-		<p>Any content go here</p>
+	<div class="popup-area1">
+		<img id="G8_2" src="../img/IMG_KMK004_1.png" alt=""/>
 	</div>
 	`;
 const COMPONENT_NAME = 'monthly-working-hours';
@@ -114,24 +113,24 @@ class MonthlyWorkingHours extends ko.ViewModel {
 		let vm = this;
 		vm.screenData = param.screenData;
 		vm.screenMode = param.screenMode;
-		console.log(vm.screenData().setting().useRegularWorkingHours());
-	}
 
-	mounted() {
-		$("#explan-popup").ntsPopup({
-			trigger: "#show-explan",
+		$(".popup-area1").ntsPopup({
 			position: {
 				my: "left top",
 				at: "left bottom",
-				of: "#show-explan"
+				of: ".show-popup1"
 			},
 			showOnStart: false,
 			dismissible: false
 		});
 
-		$('#show-explan').click(function() {
-			$(this).siblings('#explan-popup').ntsPopup('toggle');
+		$('.show-popup1').click(function() {
+			$(".popup-area1").ntsPopup("toggle");
 		});
+	}
+
+	mounted() {
+
 	}
 
 	openQDialog() {

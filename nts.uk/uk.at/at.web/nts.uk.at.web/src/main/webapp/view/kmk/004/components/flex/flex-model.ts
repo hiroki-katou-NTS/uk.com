@@ -78,6 +78,9 @@ module nts.uk.at.kmk004.components.flex {
 		setting: KnockoutObservable<ScreenMonthlySetting> = ko.observable(new ScreenMonthlySetting());
 
 		selected: KnockoutObservable<any> = ko.observable();
+		selectedName: KnockoutObservable<string> = ko.observable();
+
+		alreadySettingList: KnockoutObservableArray<any> = ko.observableArray([]);
 
 		constructor(param?: IScreenData) {
 			const vm = this;

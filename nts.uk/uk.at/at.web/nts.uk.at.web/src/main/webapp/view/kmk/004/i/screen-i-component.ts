@@ -21,7 +21,7 @@ const template = `
 						<div  style="display:inline-block">
 							<label id="flex-title" data-bind="i18n:'KMK004_268'"></label>
 							<hr/>
-							<label id="selected-work-place" data-bind="i18n:employmentName"></label>
+							<label id="selected-work-place" data-bind="i18n:screenData().selectedName"></label>
 							<div style="margin-top: 20px;" data-bind="component: {
 								name: 'basic-settings-company',
 								params: {
@@ -57,8 +57,6 @@ class ScreenIComponent extends ko.ViewModel {
 	screenData: KnockoutObservable<FlexScreenData> = ko.observable(new FlexScreenData());
 
 	screenMode = '';
-
-	employmentName: KnockoutObservable<string> = ko.observable('');
 
 	alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel> = ko.observableArray([]);
 
@@ -98,7 +96,7 @@ class ScreenIComponent extends ko.ViewModel {
 				selectedCode: vm.screenData().selected,
 				isDialog: false,
 				isShowNoSelectRow: false,
-				alreadySettingList: vm.alreadySettingList,
+				alreadySettingList: vm.screenData().alreadySettingList,
 				maxRows: 12
 			};
 		vm.$blockui('grayout');
@@ -108,8 +106,7 @@ class ScreenIComponent extends ko.ViewModel {
 				let datas: Array<EmploymentUnitModel> = $('#empt-list-setting').getDataList(),
 
 					selectedItem: EmploymentUnitModel = _.find(datas, ['code', value]);
-
-				vm.employmentName(selectedItem ? selectedItem.name : '');
+				vm.screenData().selectedName(selectedItem ? selectedItem.name : '');
 			});
 			vm.$blockui("hide");
 			vm.screenData().selected.valueHasMutated();

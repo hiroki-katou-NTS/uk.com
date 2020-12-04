@@ -25,7 +25,7 @@ const template = `
 							<div style="padding-bottom: 20px;display:inline-block;">
 								<label id="flex-title" data-bind="i18n:'KMK004_268'"></label>
 								<hr/>
-								<label id="selected-employee" data-bind="i18n:employeeName"></label>
+								<label id="selected-employee" data-bind="i18n:screenData().selectedName"></label>
 								<div style="margin-top: 20px;" data-bind="component: {
 									name: 'basic-settings-company',
 									params: {
@@ -64,8 +64,6 @@ class ScreenJComponent extends ko.ViewModel {
 	screenData: KnockoutObservable<FlexScreenData> = ko.observable(new FlexScreenData());
 
 	screenMode = '';
-
-	employeeName: KnockoutObservable<string> = ko.observable('');
 
 	employeeList: KnockoutObservableArray<EmployeeModel> = ko.observableArray([]);
 
@@ -177,7 +175,7 @@ class ScreenJComponent extends ko.ViewModel {
 			selectedCode: vm.screenData().selected,
 			isDialog: false,
 			isShowNoSelectRow: false,
-			alreadySettingList: vm.alreadySettingList,
+			alreadySettingList: vm.screenData().alreadySettingList,
 			isShowWorkPlaceName: false,
 			isShowSelectAllButton: false,
 			disableSelection: false
@@ -188,7 +186,7 @@ class ScreenJComponent extends ko.ViewModel {
 
 				selectedItem: EmployeeModel = _.find(datas, ['code', value]);
 
-			vm.employeeName(selectedItem ? selectedItem.name : '');
+			vm.screenData().selectedName(selectedItem ? selectedItem.name : '')
 		});
 		vm.$blockui("hide");
 		vm.screenData().selected.valueHasMutated();
