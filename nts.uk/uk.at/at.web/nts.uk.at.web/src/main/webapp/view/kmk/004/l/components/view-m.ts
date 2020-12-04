@@ -53,12 +53,14 @@ module nts.uk.at.view.kmk004.l {
 										}
 									}"></div>
 									
-									<div class= "view-l-times-table" data-bind="component: {
-										name: 'view-l-times-table',
-										params:{ 
-									
-										}
-									}"></div>
+									<div class= "time-work" data-bind="component: {
+									name: 'time-work',
+									params:{
+										selectedYear: selectedYear,
+										change: changeYear,
+										checkEmployee: checkEmployee
+									}
+								}"></div>
 								</div>
 						</div>
 					</div>
