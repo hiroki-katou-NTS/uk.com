@@ -468,7 +468,6 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 			
 			// delete template sheet
 			worksheetCollection.removeAt(0);
-			
 			worksheetCollection.setActiveSheetIndex(0);
 			// Create file name
 			String fileName = data.getReportName() + "_"
