@@ -1,7 +1,7 @@
 @import url("base.css");
 
 #year-list {
-	display: inline-block;
+	/* display: inline-block; */
 	/* width: 140px; */
 }
 
@@ -10,7 +10,7 @@
 	margin-left: 20px;
 }
 
-#show-explan, #monthly-list, #year-list {
+#show-explan, #monthly-list{
 	float: left;
 }
 
@@ -19,15 +19,17 @@
 	border-collapse: collapse;
 }
 
-.basic-settings th, td {
+.basic-settings th, .basic-settings td {
 	border: solid grey 1px;
 	padding: 3px;
 	text-align: center;
 }
 
-#expand-list th, td {
+#expand-list th, #expand-list td {
 	border: solid grey 1px;
 	padding: 3px 10px;
+	min-width: 60px;
+	max-width: 100px;
 }
 
 #sidebar-area ~ div {
@@ -49,11 +51,6 @@
 	display: block;
 }
 
-#year-list_grid col:first-child {
-	/* width: 40px !important; */
-	
-}
-
 #work-place-list #nts-component-tree {
 	padding: 20px !important;
 }
@@ -61,6 +58,7 @@
 .ntsCheckBox {
 	padding: 0px !important;
 }
-#employee-list{
+
+#employee-list {
 	padding-top: 30px;
 }

@@ -15,7 +15,7 @@
 }
 
 .view-c-kmk004 .left-content {
-	width: 470px;
+	width: 475px;
 	padding: 12px;
 	float: left;
 	margin-left: 8px;
@@ -23,7 +23,7 @@
 }
 
 .view-c-kmk004 .right-content {
-	width: 436px;
+	width: 420px;
 	float: left;
 	margin-left: 38px;
 }
@@ -83,7 +83,7 @@
 }
 
 .view-d-kmk004 .right-content {
-	width: 436px;
+	width: 420px;
 	float: left;
 	margin-left: 38px;
 }
@@ -145,7 +145,7 @@
 }
 
 .view-e-kmk004 .right-content {
-	width: 436px;
+	width: 420px;
 	float: left;
 	margin-left: 38px;
 }
@@ -272,7 +272,7 @@
 } */
 
 .view-b .header-b {
-	width: 435px;
+	width: 420px;
 }
 
 .view-b .header-b .title {
@@ -326,5 +326,5 @@
 }
 
 .node {
-	color: #4472C4;
+	color: #0000ff;
 }

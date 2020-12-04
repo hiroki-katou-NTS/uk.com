@@ -63,7 +63,7 @@ module nts.uk.at.view.kmk004.b {
         </div>
         <style type="text/css" rel="stylesheet">
             .table-view{
-                padding: 20px;
+                padding: 15px;
                 border: 2px solid #B1B1B1;
                 border-radius: 15px;
                 margin-left: 15px;

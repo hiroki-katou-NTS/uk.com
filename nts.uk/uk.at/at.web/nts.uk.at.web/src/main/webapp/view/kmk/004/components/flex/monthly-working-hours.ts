@@ -13,7 +13,7 @@ const template = `
 		</div>
 	
 		<div class="div_line" style="padding-left:4px;" >
-		
+		<div style="float:left">
 			<div id="year-list" data-bind="ntsListBox: {
 				options: screenData().yearList,
 				optionsValue: 'year',
@@ -26,7 +26,8 @@ const template = `
 				{ key: 'yearName', length: 4 }
 				]
 				}"></div>
-			
+			<div> <label class="color-attendance" data-bind="i18n:'KMK004_212' "> </label></div>
+		</div>
 			<div id="monthly-list">
 			
 				<table id="expand-list">
@@ -34,7 +35,7 @@ const template = `
 								<thead>
 										<tr style="background-color:#92D050">
 											<th data-bind="visible: screenMode == 'Com_Person'"></th>
-											<th style="text-align:center;padding: 5px;" data-bind="i18n: 'KMK004_263'"></th>
+											<th style="text-align:center;" data-bind="i18n: 'KMK004_263'"></th>
 											<th data-bind="visible: screenData().setting().useRegularWorkingHours() == 1,i18n: 'KMK004_264'" style="text-align:center;"></th>
 											<th style="text-align:center;" data-bind="i18n: 'KMK004_265'"></th>
 											<th style="text-align:center;" data-bind="i18n: 'KMK004_266'"></th>

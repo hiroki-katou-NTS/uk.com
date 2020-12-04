@@ -1,5 +1,5 @@
 .view-f {
-    padding: 20px;
+    padding: 10px;
     height: 442px;
 }
 
@@ -9,7 +9,7 @@
 
 .view-f .node {
     text-align: right;
-    color: #0D86D1;
+    color: #0000ff;
     margin-top: 10px;
     margin-bottom: -10px;
 }
