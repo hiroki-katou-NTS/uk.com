@@ -12,13 +12,12 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
-public class ApprSttSpecDeadlineSetDto {
+public class ApprSttEmpParam {
+	private String wkpID;
 	
-	// 期間.開始日　＝　締め期間開始年月日
-	// 期間.終了日　＝　締め期間終了年月日
 	private String startDate;
+	
 	private String endDate;
 	
-	// 雇用コード（リスト）
-	private List<String> listEmploymentCD;
+	private List<EmpPeriodParam> empPeriodLst;
 }

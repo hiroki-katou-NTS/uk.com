@@ -1,7 +1,10 @@
 package nts.uk.ctx.at.request.dom.application.approvalstatus.service.output;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * refactor 5
@@ -10,13 +13,18 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
-public class DisplayWorkplace {
+public class ApprSttWkpEmpMailOutput {
+	private String wkpID;
 	
-	private String code;
+	private String wkpCD;
 	
-	private String id;
-	
-	private String name;
+	private String wkpName;
 	
 	private String hierarchyCode;
+	
+	@Setter
+	private int countEmp;
+	
+	@Setter
+	private List<ApprSttEmpMailOutput> empMailLst;
 }

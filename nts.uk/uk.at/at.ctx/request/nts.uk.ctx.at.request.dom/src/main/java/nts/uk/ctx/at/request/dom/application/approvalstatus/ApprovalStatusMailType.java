@@ -19,6 +19,10 @@ public enum ApprovalStatusMailType {
 	 */
 	DAILY_UNCONFIRM_BY_CONFIRMER(2),
 	/**
+	 * 月別未確認（本人）
+	 */
+	MONTHLY_UNCONFIRM_BY_PRINCIPAL(5),
+	/**
 	 * 月別未確認（確認者）
 	 */
 	MONTHLY_UNCONFIRM_BY_CONFIRMER(3),
