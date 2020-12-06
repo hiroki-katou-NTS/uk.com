@@ -72,8 +72,9 @@
           <tr class="text-center">
             <td>
               <!-- A5_6 -->
-              <nts-checkbox v-bind:value="true" v-model="item.checked" v-bind:disabled="!item.enable" v-focus>
-              </nts-checkbox>
+              <nts-checkbox v-if="item.enable && index == 0" v-bind:value="true" v-model="item.checked" v-focus/>
+              <nts-checkbox v-else-if="item.enable" v-bind:value="true" v-model="item.checked"/>
+              <nts-checkbox v-else class="checkboxtest" v-bind:value="true" v-model="item.checked" v-bind:disabled="true"/>
             </td>
             <!-- A5_7 -->
             <td v-on:click="() => (item.checked = !item.checked)">

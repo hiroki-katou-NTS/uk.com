@@ -25,6 +25,7 @@ export class KdlTests36Component extends Vue {
     public dateValue: { start: Date | null, end: Date | null } = { start: null, end: null };
     public daysUnit: number = 0.5;
     public targetSelectionAtr: number = 0;
+    public managementData: any[] = [];
     public beforeCreate() {
         const vm = this;
 
@@ -67,9 +68,13 @@ export class KdlTests36Component extends Vue {
             actualContentDisplayList: [],
 
             // List<振出振休紐付け管理>
-            managementData: []
+            managementData: vm.managementData,
         };
 
-        vm.$modal('kdls36', params);
+        vm.$modal('kdls36', params).then((f: any) => {
+            if (f) {
+                vm.managementData = f.mngDisp;
+            }
+        });
     }
 }

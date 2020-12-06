@@ -1,5 +1,6 @@
 import { _, Vue } from '@app/provider';
-import { component, Prop } from '@app/core/component';
+import { component, Prop, Watch } from '@app/core/component';
+import { vmOf } from 'vue/types/umd';
 
 @component({
     name: 'kdls36',
@@ -19,11 +20,10 @@ export class KdlS36Component extends Vue {
     public daysUnit: number = 0;
     public targetSelectionAtr: TargetSelectionAtr = 0;
     public actualContentDisplayList: any[] = null;
-    public managementData: HolidayWorkSubHolidayLinkingMng[] = null;
+    public managementData: HolidayWorkSubHolidayLinkingMng[] = [];
     public employeeId: string = '';
     public substituteHolidayList: string[] = [];
     public holidayWorkInfoList: ISubstituteWorkInfo[] = [];
-    public displayedPeriod: string = '';
 
     public created() {
         const vm = this;
@@ -61,21 +61,10 @@ export class KdlS36Component extends Vue {
         const { holidayWorkInfoList } = vm;
         const required = vm.substituteHolidayList.length * vm.daysUnit;
         let selected = 0;
-        let countIfLessThanZero = 0;
 
         holidayWorkInfoList.forEach((m) => {
             if (m.checked) {
                 selected += m.remainingNumber;
-                if (required - selected < 0) {
-                    countIfLessThanZero++;
-                    if (countIfLessThanZero > 1) {
-                        vm.$modal
-                        .warn({ messageId: 'Msg_1875' })
-                        .then(() => {
-                            m.checked = false;
-                        });
-                    }
-                }
             }
         });
 
@@ -86,24 +75,35 @@ export class KdlS36Component extends Vue {
         //     .reduce((p, c) => p + c, required);
     }
 
-    public back(msgData: any) {
+    public back() {
         const vm = this;
 
-        vm.$close(msgData);
+        vm.$close();
     }
 
     private startPage() {
         const vm = this;
 
-        vm.$http.post('at', servicesPath.init, {
+        const initParams = {
             employeeId: vm.employeeId,
             startDate: new Date(vm.startDate).toISOString(),
             endDate: new Date(vm.endDate).toISOString(),
             daysUnit: vm.daysUnit,
             targetSelectionAtr: vm.targetSelectionAtr,
             actualContentDisplayList: vm.actualContentDisplayList,
-            managementData: vm.managementData,
-        }).then((result: { data: ParamsData }) => {
+            managementData: _.cloneDeep(vm.managementData),
+        };
+
+        initParams.actualContentDisplayList.forEach((i) => {
+            i.date = new Date(i.date).toISOString();
+        });
+
+        initParams.managementData.forEach((e) => {
+            e.outbreakDay = new Date(e.outbreakDay).toISOString();
+            e.dateOfUse = new Date(e.dateOfUse).toISOString();
+        });
+
+        vm.$http.post('at', servicesPath.init,initParams).then((result: { data: ParamsData }) => {
             vm.$mask('hide');
 
             vm.startDate = vm.$dt(new Date(vm.startDate), 'YYYY/MM/DD');
@@ -117,7 +117,8 @@ export class KdlS36Component extends Vue {
             vm.holidayWorkInfoList = holidayWorkInfoList
                 .map((m, index) => ({
                     ...m,
-                    checked: false,
+                    checked: !!_.find(vm.managementData, (i) => i.outbreakDay == m.holidayWorkDate),
+                    enable: new Date(m.expirationDate).getTime() > new Date(vm.startDate).getTime(),
                     get icon() {
                         const { dataType, expiringThisMonth } = m;
 
@@ -131,16 +132,20 @@ export class KdlS36Component extends Vue {
 
                         return '';
                     },
-                    enable: new Date(m.expirationDate).getTime() > new Date(vm.startDate).getTime()
+                    handleChange(event) {
+                        console.log(event);
+                    }
                 }));
-
-            const managementDataTmp = vm.managementData.map((management) => management.outbreakDay);
+                  
+            //const managementDataTmp = vm.managementData.map((management) => management.outbreakDay);
         }).catch((error: any) => {
             vm.showError(error);
         });
     }
 
-
+    public handleChange(arg) {
+        console.log(arg);
+    }
 
     private showError(res: any) {
         const vm = this;
@@ -154,9 +159,7 @@ export class KdlS36Component extends Vue {
     }
 
     public mounted() {
-        const self = this;
-
-
+        const vm = this;
     }
 
     public decide() {
@@ -186,14 +189,23 @@ export class KdlS36Component extends Vue {
         vm.$mask('show');
         vm.$http
             .post('at', servicesPath.associate, data)
-            .then((msgData: HolidayWorkSubHolidayLinkingMng[]) => {
+            .then((result: {data: HolidayWorkSubHolidayLinkingMng[]}) => {
                 vm.$mask('hide');
-                vm.back(msgData);
+                vm.setData(result.data);
+                vm.$close({
+                    mngDisp: vm.managementData
+                });
 
             })
             .catch((error: any) => {
                 vm.showError(error);
             });
+    }
+
+    private setData(data: HolidayWorkSubHolidayLinkingMng[]) {
+        const vm = this;
+
+        vm.managementData.push(...data);
     }
 }
 
