@@ -15,17 +15,11 @@ import nts.uk.ctx.at.function.dom.adapter.actualmultiplemonth.ActualMultipleMont
 import nts.uk.ctx.at.function.dom.adapter.actualmultiplemonth.MonthlyRecordValueImport;
 import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.AffComHistAdapter;
 import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.AttendanceItemServiceAdapter;
-import nts.uk.ctx.at.function.dom.commonform.AttendanceItemToPrint;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.EmployeeInfor;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.StatusOfEmployee;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.WorkPlaceInfo;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
-import nts.uk.ctx.at.function.dom.workledgeroutputitem.CreateWorkLedgerDisplayContentDomainService;
-import nts.uk.ctx.at.function.dom.workledgeroutputitem.WorkLedgerDisplayContent;
-import nts.uk.ctx.at.function.dom.workledgeroutputitem.WorkLedgerExportDataSource;
-import nts.uk.ctx.at.function.dom.workledgeroutputitem.WorkLedgerOutputItem;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.CommonAttributesOfForms;
+import nts.uk.ctx.at.function.dom.workledgeroutputitem.*;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffAtWorkplaceImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
@@ -44,6 +38,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsImport;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -76,9 +71,6 @@ public class WorkLedgerOutputItemService extends ExportService<WorkLedgerOutputI
     private AttendanceItemServiceAdapter itemServiceAdapter;
 
     @Inject
-    private WorkLedgerOutputItemGenerator workLedgerGenerator;
-
-    @Inject
     private CompanyMonthlyItemService monthlyItemService;
 
     @Inject
@@ -93,7 +85,7 @@ public class WorkLedgerOutputItemService extends ExportService<WorkLedgerOutputI
     private ClosureEmploymentRepository closureEmploymentRepository;
 
     @Inject
-    private WorkLedgerOutputItemGenerator workLedgerOutputItemGenerator;
+    private WorkLedgerOutputItemGenerator workLedgerGenerator;
 
 
     @Override
@@ -143,7 +135,6 @@ public class WorkLedgerOutputItemService extends ExportService<WorkLedgerOutputI
         WorkLedgerOutputItem workLedgerDetail = detailWorkLedger.getDetail(query.getSettingId());
 
 
-
         RequireImpl require = new RequireImpl(monthlyItemService, actualMultipleMonthAdapter, shareEmploymentAdapter, closureRepository, closureEmploymentRepository, affComHistAdapter);
         List<WorkLedgerDisplayContent> listData = CreateWorkLedgerDisplayContentDomainService.createWorkLedgerDisplayContent(require, datePeriod, employeeInfoList, workLedgerDetail, placeInfoList);
         Comparator<WorkLedgerDisplayContent> compare = Comparator
@@ -151,15 +142,15 @@ public class WorkLedgerOutputItemService extends ExportService<WorkLedgerOutputI
                 .thenComparing(WorkLedgerDisplayContent::getEmployeeCode);
         val lsSorted = listData.stream().sorted(compare).collect(Collectors.toList());
 
-        WorkLedgerExportDataSource rs = new WorkLedgerExportDataSource(
+        WorkLedgerExportDataSource result = new WorkLedgerExportDataSource(
                 companyInfo.getCompanyName(),
-                workLedgerDetail,
+                workLedgerDetail.getName().v(),
                 yearMonthPeriod,
                 closureDate,
                 query.isZeroDisplay(),
                 lsSorted
         );
-        workLedgerOutputItemGenerator.generate(context.getGeneratorContext(), rs);
+        workLedgerGenerator.generate(context.getGeneratorContext(), result);
 
     }
 

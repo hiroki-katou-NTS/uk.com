@@ -174,7 +174,8 @@ public class CreateWorkLedgerDisplayContentDomainService {
     }
 
     private static boolean checkAttId(List<Integer> attIds, int attId) {
-        return attIds.stream().anyMatch(e -> e == attId);
+        //return attIds.stream().anyMatch(e -> e == attId); TODO QA
+        return true;
     }
 
 }

@@ -4,6 +4,7 @@ import com.aspose.cells.*;
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.CommonAttributesOfForms;
 import nts.uk.ctx.at.function.dom.workledgeroutputitem.WorkLedgerDisplayContent;
 import nts.uk.ctx.at.function.dom.workledgeroutputitem.WorkLedgerExportDataSource;
@@ -13,25 +14,22 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 
-
 @Stateless
-public class AposeWorkLedgerOutputItemGenerator extends AsposeCellsReportGenerator implements WorkLedgerOutputItemGenerator {
-
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator implements WorkLedgerOutputItemGenerator {
     private static final String TEMPLATE_FILE_ADD = "report/KWR005.xlsx";
-    private static final String REPORT_FILE_NAME = "KWR005_勤務状況表";
-    private static final String DATE_FORMAT = "yyyy/MM/dd";
-    private static final String DAY_OF_WEEK_FORMAT_JP = "E";
+    private static final String REPORT_FILE_NAME = "KWR005_勤務状況表";;
     private static final String EXCEL_EXT = ".xlsx";
-    private static final String PRINT_AREA = "A1:AJ";
-    private static final int MAX_EMP_IN_PAGE = 10;
-    private static final int NUMBER_ROW_OF_PAGE = 48;
-    private static final int MAX_DAY_IN_MONTH = 31;
+    private static final String PRINT_AREA = "A1:O";
+    private static final int NUMBER_ROW_OF_PAGE = 50;
 
     @Override
     public void generate(FileGeneratorContext generatorContext, WorkLedgerExportDataSource dataSource) {
@@ -43,13 +41,13 @@ public class AposeWorkLedgerOutputItemGenerator extends AsposeCellsReportGenerat
             if (!dataSource.getListContent().isEmpty()) {
                 settingPage(worksheet, dataSource);
                 printContents(worksheet, dataSource);
-                removeTemplate(worksheet);
+//                removeTemplate(worksheet);
             }
             worksheets.setActiveSheetIndex(0);
             reportContext.processDesigner();
-            // save as excel file
-            reportContext.saveAsExcel(this.createNewFile(generatorContext, REPORT_FILE_NAME + EXCEL_EXT));
+            String fileName = REPORT_FILE_NAME;
 
+            reportContext.saveAsExcel(this.createNewFile(generatorContext, fileName + EXCEL_EXT));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -76,39 +74,90 @@ public class AposeWorkLedgerOutputItemGenerator extends AsposeCellsReportGenerat
         HorizontalPageBreakCollection pageBreaks = worksheet.getHorizontalPageBreaks();
         List<WorkLedgerDisplayContent> listContent = dataSource.getListContent();
         int count = 0;
+        int itemOnePage = 0;
+        int page = 0;
         Cells cells = worksheet.getCells();
         for (int i = 0; i < listContent.size(); i++) {
+            val yearMonths = dataSource.getYearMonthPeriod().yearMonthsBetween();
             val content = listContent.get(i);
+            page++;
             if (i >= 1) {
+                page++;
+                itemOnePage = 0;
                 pageBreaks.add(count);
                 cells.copyRow(cells, 0, count);
                 cells.copyRow(cells, 1, count + 1);
+                cells.copyRow(cells, 2, count + 2);
+                cells.clearContents(count,0,count+3,15);
             }
+//            cells.merge(count, 0, 1, 15, true, true);
+//            cells.merge(count+1, 0, 1, 15, true, true);
+            cells.get(count, 6).setValue(TextResource.localize("KWR004_205") +
+                    TextResource.localize("KWR004_208", this.toYearMonthString(dataSource.getYearMonthPeriod().start()),
+                            this.toYearMonthString(dataSource.getYearMonthPeriod().end())));
             cells.get(count, 0).setValue(TextResource.localize("KWR005_301") + "　" + content.getWorkplaceCode() + "　" + content.getWorkplaceName());
             cells.get(count + 1, 0).setValue(TextResource.localize("KWR005_302") + "　" + content.getEmployeeCode() + "　" + content.getEmployeeName());
             count += 2;
-            val yearMonths = dataSource.getYearMonthPeriod().yearMonthsBetween();
-            for (int mi = 0; mi < yearMonths.size(); mi++) {
-                val yearMonth = yearMonths.get(mi);
-                String yearMonthString = (mi == 0 || yearMonth.month() == 1) ?
-                        TextResource.localize("KWR005_309", String.valueOf(yearMonth.year()), String.valueOf(yearMonth.month())) :
-                        TextResource.localize("KWR005_310", String.valueOf(yearMonth.month()));
-                cells.get(count + 3, 2 + mi).setValue(yearMonthString);
-            }
-            cells.get(count + 3, 15).setValue(TextResource.localize("KWR005_304"));
+            // print date
+            printDate(worksheet, count, yearMonths);
             count++;
             val data = content.getMonthlyDataList();
             for (int j = 0; j < data.size(); j++) {
                 val oneLine = data.get(j);
-                if (j % 2 == 0) {
-                    cells.copyRow(cells, 3, 3 + count);
-                } else {
-                    cells.copyRow(cells, 4, 4 + count);
-                }
+                if (itemOnePage >= NUMBER_ROW_OF_PAGE) {
+                    itemOnePage = 0;
+                    pageBreaks.add(count);
+                    cells.copyRow(cells, 0, count);
+                    cells.copyRow(cells, 1, count + 1);
+                    cells.copyRow(cells, 2, count + 2);
+                    cells.clearContents(count,0,count+3,15);
+                    cells.get(count, 6).setValue(TextResource.localize("KWR004_205") +
+                            TextResource.localize("KWR004_208", this.toYearMonthString(dataSource.getYearMonthPeriod().start()),
+                                    this.toYearMonthString(dataSource.getYearMonthPeriod().end())));
+                    cells.get(count, 0).setValue(TextResource.localize("KWR005_301") + "　" + content.getWorkplaceCode() + "　" + content.getWorkplaceName());
+                    cells.get(count + 1, 0).setValue(TextResource.localize("KWR005_302") + "　" + content.getEmployeeCode() + "　" + content.getEmployeeName());
+                    count += 2;
+                    printDate(worksheet, count, yearMonths);
+                    count++;
 
+                }
+                if (j % 2 == 0) {
+                    cells.copyRow(cells, 3, count);
+                } else {
+                    cells.copyRow(cells, 4, count);
+                }
+                cells.clearContents(count,0,count,15);
+                cells.merge(count, 0, 1, 2, true, true);
+                cells.get(count, 0).setValue(oneLine.getAttendanceItemName());
+                cells.get(count, 14).setValue(oneLine.getTotal());
+                cells.setColumnWidth(count, 10);
+                for (int k = 0; k < oneLine.getValueList().size(); k++) {
+                    val item = oneLine.getValueList().get(k);
+                    val column = yearMonths.indexOf(item.getDate()) + 2;
+                    cells.get(count, column).setValue(formatValue(item.getActualValue(), item.getCharacterValue(),
+                            oneLine.getAttribute(), dataSource.isZeroDisplay()));
+                }
+                itemOnePage++;
+                count++;
             }
         }
+        PageSetup pageSetup = worksheet.getPageSetup();
+        pageSetup.setPrintArea(PRINT_AREA + count);
 
+    }
+
+    private void printDate(Worksheet worksheet, int rowCount, List<YearMonth> yearMonths) {
+        Cells cells = worksheet.getCells();
+        ;
+        for (int mi = 0; mi < yearMonths.size(); mi++) {
+            cells.setColumnWidth(mi + 2, 10);
+            val yearMonth = yearMonths.get(mi);
+            String yearMonthString = (yearMonth.month() == 1) ?
+                    TextResource.localize("KWR004_209", String.valueOf(yearMonth.year()), String.valueOf(yearMonth.month())) :
+                    TextResource.localize("KWR004_210", String.valueOf(yearMonth.month()));
+            cells.get(rowCount, 2 + mi).setValue(yearMonthString);
+        }
+        cells.get(rowCount, 14).setValue(TextResource.localize("KWR005_304"));
     }
 
     /**
