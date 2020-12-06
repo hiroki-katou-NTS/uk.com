@@ -4,7 +4,6 @@ import com.aspose.cells.*;
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.YearMonth;
-import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.CommonAttributesOfForms;
 import nts.uk.ctx.at.function.dom.workledgeroutputitem.WorkLedgerDisplayContent;
 import nts.uk.ctx.at.function.dom.workledgeroutputitem.WorkLedgerExportDataSource;
@@ -75,32 +74,26 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
         List<WorkLedgerDisplayContent> listContent = dataSource.getListContent();
         int count = 0;
         int itemOnePage = 0;
-        int page = 0;
         Cells cells = worksheet.getCells();
         for (int i = 0; i < listContent.size(); i++) {
             val yearMonths = dataSource.getYearMonthPeriod().yearMonthsBetween();
             val content = listContent.get(i);
-            page++;
             if (i >= 1) {
-                page++;
                 itemOnePage = 0;
                 pageBreaks.add(count);
                 cells.copyRow(cells, 0, count);
                 cells.copyRow(cells, 1, count + 1);
                 cells.copyRow(cells, 2, count + 2);
-                cells.clearContents(count,0,count+3,15);
+                cells.clearContents(count,0,cells.getMaxRow(),15);
             }
-//            cells.merge(count, 0, 1, 15, true, true);
-//            cells.merge(count+1, 0, 1, 15, true, true);
+            cells.get(count, 0).setValue(TextResource.localize("KWR005_301") + "　" + content.getWorkplaceCode() + "　" + content.getWorkplaceName());
             cells.get(count, 6).setValue(TextResource.localize("KWR004_205") +
                     TextResource.localize("KWR004_208", this.toYearMonthString(dataSource.getYearMonthPeriod().start()),
                             this.toYearMonthString(dataSource.getYearMonthPeriod().end())));
-            cells.get(count, 0).setValue(TextResource.localize("KWR005_301") + "　" + content.getWorkplaceCode() + "　" + content.getWorkplaceName());
             cells.get(count + 1, 0).setValue(TextResource.localize("KWR005_302") + "　" + content.getEmployeeCode() + "　" + content.getEmployeeName());
-            count += 2;
             // print date
-            printDate(worksheet, count, yearMonths);
-            count++;
+            printDate(worksheet, count +2, yearMonths);
+            count +=3;
             val data = content.getMonthlyDataList();
             for (int j = 0; j < data.size(); j++) {
                 val oneLine = data.get(j);
@@ -116,9 +109,8 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
                                     this.toYearMonthString(dataSource.getYearMonthPeriod().end())));
                     cells.get(count, 0).setValue(TextResource.localize("KWR005_301") + "　" + content.getWorkplaceCode() + "　" + content.getWorkplaceName());
                     cells.get(count + 1, 0).setValue(TextResource.localize("KWR005_302") + "　" + content.getEmployeeCode() + "　" + content.getEmployeeName());
-                    count += 2;
-                    printDate(worksheet, count, yearMonths);
-                    count++;
+                    printDate(worksheet, count +2, yearMonths);
+                    count +=3;
 
                 }
                 if (j % 2 == 0) {
@@ -126,11 +118,16 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
                 } else {
                     cells.copyRow(cells, 4, count);
                 }
-                cells.clearContents(count,0,count,15);
+                cells.clearContents(count,0,cells.getMaxRow(),15);
                 cells.merge(count, 0, 1, 2, true, true);
+                cells.get(count, 0 ).getStyle()
+                        .setVerticalAlignment(TextAlignmentType.LEFT);
                 cells.get(count, 0).setValue(oneLine.getAttendanceItemName());
+                cells.get(count, 14).getStyle()
+                        .setVerticalAlignment(TextAlignmentType.RIGHT);
                 cells.get(count, 14).setValue(oneLine.getTotal());
-                cells.setColumnWidth(count, 10);
+                cells.setColumnWidth(0, 5);
+                cells.setColumnWidth(1, 5);
                 for (int k = 0; k < oneLine.getValueList().size(); k++) {
                     val item = oneLine.getValueList().get(k);
                     val column = yearMonths.indexOf(item.getDate()) + 2;
@@ -148,13 +145,13 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
 
     private void printDate(Worksheet worksheet, int rowCount, List<YearMonth> yearMonths) {
         Cells cells = worksheet.getCells();
-        ;
         for (int mi = 0; mi < yearMonths.size(); mi++) {
-            cells.setColumnWidth(mi + 2, 10);
+            cells.setColumnWidth(mi + 2, 7);
             val yearMonth = yearMonths.get(mi);
             String yearMonthString = (yearMonth.month() == 1) ?
                     TextResource.localize("KWR004_209", String.valueOf(yearMonth.year()), String.valueOf(yearMonth.month())) :
                     TextResource.localize("KWR004_210", String.valueOf(yearMonth.month()));
+            cells.merge(rowCount, 0, 1, 2, true, true);
             cells.get(rowCount, 2 + mi).setValue(yearMonthString);
         }
         cells.get(rowCount, 14).setValue(TextResource.localize("KWR005_304"));
