@@ -77,7 +77,7 @@
               <nts-checkbox v-else class="checkboxtest" v-bind:value="true" v-model="item.checked" v-bind:disabled="true"/>
             </td>
             <!-- A5_7 -->
-            <td v-on:click="() => (item.checked = !item.checked)">
+            <td v-on:click="() => (item.enable ? item.checked = !item.checked : null)">
                <template v-if="item.icon">
                 <fa-font :icon="item.icon" />
               </template>
@@ -86,21 +86,21 @@
             <!-- A5_8 -->
             <td
               class="substituteWorkDate"
-              v-on:click="() => (item.checked = !item.checked)"
+              v-on:click="() => (item.enable ? item.checked = !item.checked : null)"
             >
               {{ item.substituteWorkDate | date("YY/MM/DD(ddd)") }}
             </td>
             <!-- A5_9 -->
             <td
               class="remainingNumber"
-              v-on:click="() => (item.checked = !item.checked)"
+              v-on:click="() => (item.enable ? item.checked = !item.checked : null)"
             >
               <span>{{ "KDLS35_5" | i18n(item.remainingNumber) }}</span>
             </td>
             <!-- A5_10 -->
             <td
               class="expirationDate"
-              v-on:click="() => (item.checked = !item.checked)"
+              v-on:click="() => (item.enable ? item.checked = !item.checked : null)"
             >
               <span>{{ item.expirationDate | date("YY/MM/DD(ddd)") }}</span>
             </td>
