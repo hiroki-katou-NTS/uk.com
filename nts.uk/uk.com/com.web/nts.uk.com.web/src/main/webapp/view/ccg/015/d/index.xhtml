@@ -69,11 +69,11 @@
                 <div>
                   <com:ko-if bind="contentFlowMenu()">
                     <!-- D4 -->
-                    <div data-bind="ntsPanel:{width: '327px', height: '390px', direction: 'right', showIcon: true}">
+                    <div data-bind="ntsPanel:{width: '327px', height: '390px', direction: 'right', showIcon: false}">
                       <table id="multi-list2" data-bind="ntsGridList: {
                           options: listFlowMenu,
                           optionsValue: 'flowCode',
-                          rows: 10,
+                          rows: 15,
                           columns: columnsFlowMenu,
                           multiple: false,
                           value: flowMenuSelectedCode
@@ -82,11 +82,11 @@
                   </com:ko-if>
                   <com:ko-if bind="contentTopPagePart()">
                     <!-- D4 -->
-                    <div data-bind="ntsPanel:{width: '327px', height: '390px', direction: 'right', showIcon: true}">
+                    <div data-bind="ntsPanel:{width: '327px', height: '390px', direction: 'right', showIcon: false}">
                       <table id="multi-list2" data-bind="ntsGridList: {
                           options: listTopPagePart,
                           optionsValue: 'flowCode',
-                          rows: 10,
+                          rows: 15,
                           columns: columnsTopPagePart,
                           multiple: false,
                           value: toppageSelectedCode
@@ -118,10 +118,14 @@
                 <div class="contents_right panel panel-frame">
                   <!-- D7 -->
                   <com:ko-if bind="contentFlowMenu()">
-                    <div data-bind="html: html" id="F1-frame"></div>
+                    <div >
+                      <iframe id="frameF1" ></iframe>
+                    </div>
                   </com:ko-if>
                   <com:ko-if bind="contentTopPagePart()">
-                    <div data-bind="html: html2" id="F1-frame"></div>
+                    <div>
+                      <iframe id="frameF2" ></iframe>
+                    </div>
                   </com:ko-if>
                   <com:ko-if bind="contentUrl()">
                     <iframe class="iframe_fix" id="preview-iframe" data-bind="attr:{src: urlIframe3}"></iframe>

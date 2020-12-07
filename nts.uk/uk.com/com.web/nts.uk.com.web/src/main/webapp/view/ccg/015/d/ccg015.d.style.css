@@ -113,6 +113,8 @@
 
 .contents_right {
   height: 445px;
+  width: 600px;
+  overflow: auto;
   margin-top: -35px;
 }
 
