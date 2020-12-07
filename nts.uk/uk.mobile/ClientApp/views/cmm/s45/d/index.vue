@@ -69,7 +69,7 @@
                             <td>
                               <template v-if="frame.listApprover[0].approvalAtrValue==1 || frame.listApprover[0].approvalAtrValue==2">
                                 <span class="text-break" v-if="frame.listApprover[0].agentID">
-                                  <span>{{ frame.listApprover[0].representerName }}</span>
+                                  <span>{{ frame.listApprover[0].agentName }}</span>
                                 </span>
                                 <span class="text-break" v-else>
                                   <span>{{ frame.listApprover[0].approverName }}</span>
@@ -80,7 +80,7 @@
                               <template v-else>
                                 <span class="text-break">
                                   <span>{{ frame.listApprover[0].approverName }}</span>
-                                  <span v-if="frame.listApprover[0].representerName">({{ approver.representerName }})</span>
+                                  <span v-if="frame.listApprover[0].representerName">({{ frame.listApprover[0].representerName }})</span>
                                 </span>
                               </template>    
                             </td>
@@ -100,7 +100,7 @@
                             </td>
                             <td>
                               <template v-if="approver.approvalAtrValue==1 || approver.approvalAtrValue==2">
-                                <span class="text-break" v-if="approver.agentID"><span>{{ approver.representerName }}</span></span>
+                                <span class="text-break" v-if="approver.agentID"><span>{{ approver.agentName }}</span></span>
                                 <span class="text-break" v-else><span>{{ approver.approverName }}</span></span>
                                 <br/>
                                 <p class="text-break child-font-size mb-0 pl-2" style="word-break: break-word">{{ approver.approvalReason }}</p>
