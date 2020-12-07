@@ -101,14 +101,6 @@ public class AsposeAgentReportGenerator extends AsposeCellsReportGenerator imple
 
         createTableBody(sheet, dataSource.getData());
 
-        addPageBreaks(sheet, dataSource.getData());
-
-//        try {
-//            sheet.autoFitColumns();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-
         reportContext.saveAsExcel(this.createNewFile(generatorContext, getReportName(dataSource.getFileName())));
     }
 
@@ -155,79 +147,81 @@ public class AsposeAgentReportGenerator extends AsposeCellsReportGenerator imple
         sheet.getCells().setRowHeight(HEADER_ROW, 21);
     }
 
-    private void createTableBody (Worksheet sheet, List<LinkedHashMap<String, String>> data) {
-        for (int row = 0; row < data.size(); row++){
-            for (int col = 0; col < COLUMN_SIZE; col++) {
-                String value;
-                switch (col) {
-                    case 0:
-                        value = data.get(row).get("employeeCode");
-                        break;
-                    case 1:
-                        value = data.get(row).get("employeeName");
-                        break;
-                    case 2:
-                        value = data.get(row).get("workPlaceCode");
-                        break;
-                    case 3:
-                        value = data.get(row).get("workPlaceName");
-                        break;
-                    case 4:
-                        value = data.get(row).get("position");
-                        break;
-                    case 5:
-                        value = data.get(row).get("startDate");
-                        break;
-                    case 6:
-                        value = data.get(row).get("endDate");
-                        break;
-                    case 7:
-                        value = data.get(row).get("agentCode");
-                        break;
-                    case 8:
-                        value = data.get(row).get("agentName");
-                        break;
-                    case 9:
-                        value = data.get(row).get("agentWorkPlaceCode");
-                        break;
-                    case 10:
-                        value = data.get(row).get("agentWorkPlaceName");
-                        break;
-                    case 11:
-                        value = data.get(row).get("agentPosition");
-                        break;
-                    default:
-                        value = "";
-                        break;
+    private void createTableBody (Worksheet sheet, List<Map<String, String>> data) {
+        LinkedHashMap<String, List<Map<String, String>>> convertedData = new LinkedHashMap<>();
+        String currEmp = null;
+        for(Map<String, String> row : data) {
+            if (!StringUtils.isEmpty(row.get("employeeCode"))) {
+                currEmp = row.get("employeeCode");
+                List<Map<String, String>> block = new ArrayList<>();
+                block.add(row);
+                convertedData.put(currEmp, block);
+            } else {
+                convertedData.get(currEmp).add(row);
+            }
+        }
+        int rowCount = 0;
+        double maxPageHeight = 24 * 22.5;
+        double height = 0.0;
+        for (List<Map<String, String>> block : convertedData.values()) {
+            for (int row = 0; row < block.size(); row++){
+                for (int col = 0; col < COLUMN_SIZE; col++) {
+                    String value;
+                    switch (col) {
+                        case 0:
+                            value = height == 0.0 ? block.get(0).get("employeeCode") : block.get(row).get("employeeCode");
+                            break;
+                        case 1:
+                            value = height == 0.0 ? block.get(0).get("employeeName") : block.get(row).get("employeeName");
+                            break;
+                        case 2:
+                            value = height == 0.0 ? block.get(0).get("workPlaceCode") : block.get(row).get("workPlaceCode");
+                            break;
+                        case 3:
+                            value = height == 0.0 ? block.get(0).get("workPlaceName") : block.get(row).get("workPlaceName");
+                            break;
+                        case 4:
+                            value = height == 0.0 ? block.get(0).get("position") : block.get(row).get("position");
+                            break;
+                        case 5:
+                            value = block.get(row).get("startDate");
+                            break;
+                        case 6:
+                            value = block.get(row).get("endDate");
+                            break;
+                        case 7:
+                            value = block.get(row).get("agentCode");
+                            break;
+                        case 8:
+                            value = block.get(row).get("agentName");
+                            break;
+                        case 9:
+                            value = block.get(row).get("agentWorkPlaceCode");
+                            break;
+                        case 10:
+                            value = block.get(row).get("agentWorkPlaceName");
+                            break;
+                        case 11:
+                            value = block.get(row).get("agentPosition");
+                            break;
+                        default:
+                            value = "";
+                            break;
+                    }
+                    Cell dataCell = sheet.getCells().get(DATA_START_ROW + rowCount, START_COLUMN + col);
+                    dataCell.setValue(value);
+                    dataCell.setStyle(CELL_STYLE);
                 }
-                Cell dataCell = sheet.getCells().get(DATA_START_ROW + row, START_COLUMN + col);
-                dataCell.setValue(value);
-                dataCell.setStyle(CELL_STYLE);
+                sheet.getCells().setRowHeight(DATA_START_ROW + rowCount, 22.5);
+                if (height + sheet.getCells().getRowHeight(DATA_START_ROW + rowCount) > maxPageHeight) {
+                    sheet.getHorizontalPageBreaks().add(DATA_START_ROW + rowCount + 1);
+                    height = 0.0;
+                } else {
+                    height += sheet.getCells().getRowHeight(DATA_START_ROW + rowCount);
+                }
+                rowCount++;
             }
         }
-    }
 
-    private void addPageBreaks(Worksheet sheet, List<LinkedHashMap<String, String>> data) {
-        final int maxRowPerPage = 38;
-        List<Integer> blocks = new ArrayList<>();
-        int block = 1;
-        for (int row = 0; row < data.size(); row++){
-            if (StringUtils.isEmpty(data.get(row).get("employeeCode"))) {
-                block++; if (row == data.size() - 1) blocks.add(block);
-            } else {
-                if (row != 0) blocks.add(block);
-                block = 1;
-            }
-        }
-        int rowOnPage = 1;
-        for (Integer bl : blocks) {
-            if (rowOnPage + bl > maxRowPerPage) {
-                sheet.getHorizontalPageBreaks().add(rowOnPage);
-                rowOnPage = 1;
-            } else {
-                rowOnPage += bl;
-            }
-        }
-        System.out.println(sheet.getHorizontalPageBreaks().toString());
     }
 }

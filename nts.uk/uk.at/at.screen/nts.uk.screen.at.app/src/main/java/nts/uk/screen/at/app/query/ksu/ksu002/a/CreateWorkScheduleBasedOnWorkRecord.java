@@ -96,7 +96,7 @@ public class CreateWorkScheduleBasedOnWorkRecord {
 					if (daily.getAttendanceLeave().get().getTimeLeavingWorks() != null) {
 						if (daily.getAttendanceLeave().get().getTimeLeavingWorks().stream().findFirst().isPresent()) {
 							if (daily.getAttendanceLeave().get().getTimeLeavingWorks().stream().findFirst().get().getAttendanceStamp().isPresent()){
-								if (daily.getAttendanceLeave().get().getTimeLeavingWorks().stream().findFirst().get().getAttendanceStamp().get().getActualStamp().isPresent()) {
+//								if (daily.getAttendanceLeave().get().getTimeLeavingWorks().stream().findFirst().get().getAttendanceStamp().get().getActualStamp().isPresent()) {
 									String workTypeCode = value.get().getWorkInformation().getRecordInfo().getWorkTypeCode().v();
 									Optional<WorkTypeInfor> workTypeInfor = lstWorkTypeInfor.stream().
 											filter(m -> m.getWorkTypeCode().equals(workTypeCode)).findFirst();
@@ -173,7 +173,7 @@ public class CreateWorkScheduleBasedOnWorkRecord {
 								}
 							}
 						}
-					}
+//					}
 				}
 			}
 		});
