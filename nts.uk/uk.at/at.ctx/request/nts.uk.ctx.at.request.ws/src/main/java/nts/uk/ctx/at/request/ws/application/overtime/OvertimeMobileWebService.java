@@ -19,9 +19,11 @@ import nts.uk.ctx.at.request.app.find.application.overtime.ParamCalculateMobile;
 import nts.uk.ctx.at.request.app.find.application.overtime.ParamCalculation;
 import nts.uk.ctx.at.request.app.find.application.overtime.ParamChangeDateMobile;
 import nts.uk.ctx.at.request.app.find.application.overtime.ParamCheckBeforeRegister;
+import nts.uk.ctx.at.request.app.find.application.overtime.ParamDetail;
 import nts.uk.ctx.at.request.app.find.application.overtime.ParamSelectWorkMobile;
 import nts.uk.ctx.at.request.app.find.application.overtime.ParamStartMobile;
 import nts.uk.ctx.at.request.app.find.application.overtime.SelectWorkOutputDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.DetailOutputDto;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 
@@ -76,5 +78,13 @@ public class OvertimeMobileWebService extends WebService {
 	public DisplayInfoOverTimeDto calculate(ParamCalculateMobile param) {
 		return appOvertimeFinder.calculateMobile(param);
 	}
+	
+	@POST
+	@Path("getDetail")
+	public DetailOutputDto getDetail(ParamDetail param) {
+		return appOvertimeFinder.getDetail(param);
+	}
+	
+	
 	
 }
