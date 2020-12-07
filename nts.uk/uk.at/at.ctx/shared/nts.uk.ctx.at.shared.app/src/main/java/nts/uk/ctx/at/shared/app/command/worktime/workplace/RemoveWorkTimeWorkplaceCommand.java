@@ -10,6 +10,6 @@ public class RemoveWorkTimeWorkplaceCommand {
 	/**
 	 * 職場ID
 	 */
-	private String workplaceID;
+	private String workplaceId;
 
 }

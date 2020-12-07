@@ -26,7 +26,7 @@ public class RegisterWorkTimeWorkplaceCommandHandler extends CommandHandler<Regi
 
         WorkTimeWorkplace workTimeWorkplace = new WorkTimeWorkplace(
             AppContexts.user().companyId(),
-            command.getWorkplaceID(),
+            command.getWorkplaceId(),
             command.getWorkTimeCodes().stream().map(WorkTimeCode::new).collect(Collectors.toList())
         );
 

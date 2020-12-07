@@ -15,7 +15,7 @@ public class RegisterWorkTimeWorkplaceCommand {
 	/**
 	 * 職場ID
 	 */
-	private String workplaceID;
+	private String workplaceId;
 
 	/**
 	 * 利用就業時間帯

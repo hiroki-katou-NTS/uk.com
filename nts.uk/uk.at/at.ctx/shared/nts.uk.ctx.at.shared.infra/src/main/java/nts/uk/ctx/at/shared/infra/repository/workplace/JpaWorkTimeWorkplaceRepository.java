@@ -1,23 +1,25 @@
 package nts.uk.ctx.at.shared.infra.repository.workplace;
 
-import java.util.List;
-import java.util.Optional;
-//import java.util.Optional;
-
-import javax.ejb.Stateless;
-
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.worktime.workplace.WorkTimeWorkplace;
 import nts.uk.ctx.at.shared.dom.worktime.workplace.WorkTimeWorkplaceRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.infra.entity.workplace.KshmtWorkTimeWorkplace;
+import nts.uk.ctx.at.shared.infra.entity.workplace.KshmtWorkTimeWorkplacePK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWorkTimeSet;
-//import nts.uk.ctx.at.shared.infra.entity.workplace.KshmtWorkTimeWorkplacePK;
 import nts.uk.ctx.at.shared.infra.repository.worktime.worktimeset.JpaWorkTimeSettingGetMemento;
+
+import javax.ejb.Stateless;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Stateless
 public class JpaWorkTimeWorkplaceRepository extends JpaRepository implements WorkTimeWorkplaceRepository {
 
+
+    //TODO QA thiếu design table
     private static final String SELECT_WORKTIME_WORKPLACE_BYID = "SELECT a FROM KshmtWorkTimeSet a JOIN KshmtWorkTimeWorkplace b "
         + " ON a.kshmtWorkTimeSetPK.cid = b.kshmtWorkTimeWorkplacePK.companyID "
         + " AND a.kshmtWorkTimeSetPK.worktimeCd = b.kshmtWorkTimeWorkplacePK.workTimeID "
@@ -32,12 +34,12 @@ public class JpaWorkTimeWorkplaceRepository extends JpaRepository implements Wor
     static {
         StringBuilder builderString = new StringBuilder();
         builderString.append(" SELECT a FROM KshmtWorkTimeWorkplace a  ");
-        builderString.append(" WHERE a.pk.companyID = 'companyID' ");
+        builderString.append(" WHERE a.kshmtWorkTimeWorkplacePK.companyID = :companyId ");
         SELECT = builderString.toString();
 
         builderString = new StringBuilder();
         builderString.append(SELECT);
-        builderString.append(" AND a.pk.workplaceID = 'workplaceID' ");
+        builderString.append(" AND a.kshmtWorkTimeWorkplacePK.workplaceID = :workplaceId ");
         FIND_BY_CID_AND_WKPID = builderString.toString();
     }
 
@@ -58,32 +60,36 @@ public class JpaWorkTimeWorkplaceRepository extends JpaRepository implements Wor
 
     @Override
     public void update(WorkTimeWorkplace domain) {
-        //TODO not update all. need remove trước
         this.commandProxy().updateAll(KshmtWorkTimeWorkplace.toEntity(domain));
     }
 
     @Override
     public void remove(WorkTimeWorkplace domain) {
-        this.commandProxy().removeAll(KshmtWorkTimeWorkplace.toEntity(domain));
+
+        List<KshmtWorkTimeWorkplacePK> pks = KshmtWorkTimeWorkplace.toEntity(domain).stream().map(x ->
+            new KshmtWorkTimeWorkplacePK(x.kshmtWorkTimeWorkplacePK.companyID,
+                x.kshmtWorkTimeWorkplacePK.workplaceID,
+                x.kshmtWorkTimeWorkplacePK.workTimeID)).collect(Collectors.toList());
+        this.commandProxy().removeAll(KshmtWorkTimeWorkplace.class,pks);
+        this.getEntityManager().flush();
     }
 
     @Override
     public List<WorkTimeWorkplace> getByCId(String companyID) {
         List<KshmtWorkTimeWorkplace> listEntity = this.queryProxy().query(SELECT, KshmtWorkTimeWorkplace.class)
-            .setParameter("companyId", companyID)
-            .getList();
+            .setParameter("companyId", companyID).getList();
 
-//        return KshmtWorkTimeWorkplace.toDomain(listEntity);
+        Map<String,List<KshmtWorkTimeWorkplace>> listMap = listEntity.stream().collect(Collectors.groupingBy(x -> x.kshmtWorkTimeWorkplacePK.workplaceID,Collectors.toList()));
 
-        //TODO QA thiếu design table
-        return null;
+        return listMap.entrySet().stream().map(x -> KshmtWorkTimeWorkplace.toDomain(x.getValue())).collect(Collectors.toList());
+
     }
 
     @Override
     public Optional<WorkTimeWorkplace> getByCIdAndWkpId(String companyID, String workplaceID) {
-        List<KshmtWorkTimeWorkplace> listEntity = this.queryProxy().query(SELECT, KshmtWorkTimeWorkplace.class)
+        List<KshmtWorkTimeWorkplace> listEntity = this.queryProxy().query(FIND_BY_CID_AND_WKPID, KshmtWorkTimeWorkplace.class)
             .setParameter("companyId", companyID)
-            .setParameter("workplaceID", workplaceID)
+            .setParameter("workplaceId", workplaceID)
             .getList();
 
         WorkTimeWorkplace domain = KshmtWorkTimeWorkplace.toDomain(listEntity);

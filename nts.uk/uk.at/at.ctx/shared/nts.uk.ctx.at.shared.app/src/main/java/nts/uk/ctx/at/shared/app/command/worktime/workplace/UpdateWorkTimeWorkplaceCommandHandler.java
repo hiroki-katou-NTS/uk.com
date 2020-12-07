@@ -26,7 +26,7 @@ public class UpdateWorkTimeWorkplaceCommandHandler extends CommandHandler<Regist
         RegisterWorkTimeWorkplaceCommand command = context.getCommand();
 
         String cid = AppContexts.user().companyId();
-        Optional<WorkTimeWorkplace> oldWorkTimeWorkplace = repository.getByCIdAndWkpId(cid, command.getWorkplaceID());
+        Optional<WorkTimeWorkplace> oldWorkTimeWorkplace = repository.getByCIdAndWkpId(cid, command.getWorkplaceId());
 
         // 1 : delete(ログイン会社ID,職場割り当て就業時間帯. 職場ID)
         oldWorkTimeWorkplace.ifPresent(workTimeWorkplace -> repository.remove(workTimeWorkplace));
@@ -34,7 +34,7 @@ public class UpdateWorkTimeWorkplaceCommandHandler extends CommandHandler<Regist
         // 2 : create()
         WorkTimeWorkplace workTimeWorkplace = new WorkTimeWorkplace(
             AppContexts.user().companyId(),
-            command.getWorkplaceID(),
+            command.getWorkplaceId(),
             command.getWorkTimeCodes().stream().map(WorkTimeCode::new).collect(Collectors.toList())
         );
 
