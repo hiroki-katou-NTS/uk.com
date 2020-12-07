@@ -44,8 +44,13 @@
 						businessHours: $vm.businessHours,
 						attendanceTimes: $vm.attendanceTimes,
 						event: {
-							coppyDay: $vm.coppyDay,
+							copyDay: $vm.copyDay,
 							datesSet: $vm.datesSet
+						},
+						components: {
+							detail: 'fc-event-detail',
+							editor: 'fc-event-editor',
+							copyDay: 'fc-event-copy-day'
 						}
 					"></div>
 				</div>

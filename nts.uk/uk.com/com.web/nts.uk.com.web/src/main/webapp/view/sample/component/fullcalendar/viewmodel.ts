@@ -24,25 +24,9 @@ module nts.uk.ui.com.sample.fullcalendar {
             end: moment().subtract(2, 'day').set('hour', 10).set('minute', 30).toDate(),//"2020-11-25T10:30:00.000Z",
             backgroundColor: "#ff5050",
             extendedProps: {
-                id: ''
+                id: '2222333'
             }
-        }/*,
-        {
-            "start": "2020-11-25T01:30:00.000Z",
-            "end": "2020-11-25T05:00:00.000Z",
-            "title": "UK就業・詳細設計",
-            "backgroundColor": "#ffc000",
-            "textColor": "",
-            "extendedProps": {}
-        },
-        {
-            "start": "2020-11-24T06:00:00.000Z",
-            "end": "2020-11-24T10:30:00.000Z",
-            "title": "UK就業機能強化・テスト設計",
-            "backgroundColor": "#ff5050",
-            "textColor": "",
-            "extendedProps": {}
-        }*/, {
+        }, {
             title: 'Conference',
             start: moment().set('hour', 8).set('minute', 30).toDate(),
             end: moment().set('hour', 9).set('minute', 30).toDate(),
@@ -179,7 +163,7 @@ module nts.uk.ui.com.sample.fullcalendar {
             vm.show(!vm.show());
         }
 
-        coppyDay(from: Date, to: Date) {
+        copyDay(from: Date, to: Date) {
             console.log(from, to);
         }
 
@@ -191,6 +175,38 @@ module nts.uk.ui.com.sample.fullcalendar {
             const vm = this;
 
             _.extend(window, { vm });
+        }
+    }
+
+    export module components {
+        @component({
+            name: 'fc-event-detail',
+            template: `<pre data-bind="text: ko.toJSON($component.data, null, 4)"></pre>`
+        })
+        export class FullCalendarEventDetail extends ko.ViewModel {
+            constructor(private data: any) {
+                super();
+            }
+        }
+
+        @component({
+            name: 'fc-event-editor',
+            template: `<pre data-bind="text: ko.toJSON($component.data, null, 4)"></pre>`
+        })
+        export class FullCalendarEventEditor extends ko.ViewModel {
+            constructor(private data: any) {
+                super();
+            }
+        }
+
+        @component({
+            name: 'fc-event-copy-day',
+            template: `<pre data-bind="text: ko.toJSON($component.data, null, 4)"></pre>`
+        })
+        export class FullCalendarEventCopyDay extends ko.ViewModel {
+            constructor(private data: any) {
+                super();
+            }
         }
     }
 }
