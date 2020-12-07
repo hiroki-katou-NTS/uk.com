@@ -30,10 +30,10 @@ module nts.uk.at.view.kmk004 {
                     </tr>
                     <tr>
                        <td>
-                            <div class="content1" data-bind="text: screenData.deforLaborTimeComDto.dailyTime.time()/60 + ':00'"></div>
+                            <div class="content1" data-bind="text: toHHMM(screenData.deforLaborTimeComDto.dailyTime.time())"></div>
                         </td>
                         <td>
-                            <div class="content1" data-bind="text: screenData.deforLaborTimeComDto.weeklyTime.time()/60 + ':00'"></div>
+                            <div class="content1" data-bind="text: toHHMM(screenData.deforLaborTimeComDto.weeklyTime.time())"></div>
                         </td>
 						<td>
                             <div class="content1" data-bind="text: screenData.settingDto.settlementPeriod.period() + 'ヵ月'"></div>
@@ -110,7 +110,7 @@ module nts.uk.at.view.kmk004 {
 		constructor(private params: IParam) {
 			super();
 			const vm = this;
-			vm.params = {sidebarType : "Com_Company", wkpId: '', empCode :'', empId: '', titleName:'', deforLaborTimeComDto: null, settingDto: null}
+			vm.params = {sidebarType : 'Com_Company', wkpId: '', empCode :'', empId: '', titleName:'', deforLaborTimeComDto: null, settingDto: null}
 			
 		}
 
@@ -167,6 +167,17 @@ module nts.uk.at.view.kmk004 {
 			}
 		}
 		
+		toHHMM(min_num: number) {
+		    var hours   = Math.floor(min_num / 60);
+		    var minutes = Math.floor(min_num - (hours * 60));
+			var hoursStr = String(hours);
+			var minutesStr =String(minutes);
+			
+		    if (hours   < 10) {hoursStr   = "0" + hours;}
+		    if (minutes < 10) {minutesStr = "0" + minutes;}
+		    
+		    return hoursStr +':' + minutesStr;
+		}
 		
 	}
 
