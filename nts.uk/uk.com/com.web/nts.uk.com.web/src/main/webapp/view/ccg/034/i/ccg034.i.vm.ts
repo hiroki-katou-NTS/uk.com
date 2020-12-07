@@ -124,7 +124,7 @@ module nts.uk.com.view.ccg034.i {
               vm.partData.fileId = vm.fileId();
               vm.partData.uploadedFileName = vm.uploadedFileName();
               vm.partData.uploadedFileSize = vm.fileSize();
-              image.src = (nts.uk.request as any).liveView(vm.fileId());
+              image.src = vm.fileId() ? (nts.uk.request as any).liveView(vm.fileId()) : '';
             } else {
               vm.$dialog.error({ messageId: 'Msg_70', messageParams: [String(MAX_FILE_SIZE_MB)] });
             }
