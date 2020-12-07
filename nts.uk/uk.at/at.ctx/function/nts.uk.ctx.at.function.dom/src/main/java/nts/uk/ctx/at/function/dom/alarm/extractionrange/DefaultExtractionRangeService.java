@@ -306,6 +306,8 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 		return new CheckConditionPeriod(startDate, endDate);
 		
 	}
+	
+	//http://192.168.50.4:3000/issues/112749
 	//周期単位の期間を算出する
 	public CheckConditionTimeDto get4WeekTime(CheckCondition c, int closureId, YearMonth yearMonth, String companyId) {
 		LocalDate sDate = null;
