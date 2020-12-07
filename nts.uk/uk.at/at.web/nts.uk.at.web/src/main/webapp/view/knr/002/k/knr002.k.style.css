@@ -1,0 +1,21 @@
+.div_line {
+	margin-top: 2px;
+	float: left;
+	clear: both;
+	width: 100%;
+}
+.ilb {
+	display: inline-block;
+}
+
+#contents-area {
+	padding: 20px 0px 0px 20px;
+}
+
+.contentDialog {
+	margin-left: 20px;
+}
+
+.testcss {
+	color: red;	
+}

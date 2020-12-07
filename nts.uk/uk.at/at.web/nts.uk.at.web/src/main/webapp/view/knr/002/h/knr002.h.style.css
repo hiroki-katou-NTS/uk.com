@@ -1,0 +1,26 @@
+.form-group {
+	margin-bottom: 5px;
+}
+
+#contents-area .drag-panel {
+	display:inline-block;
+	vertical-align: top;
+	border: 2px solid #ccc;
+	border-radius: 10px;
+	width: 570px;
+	padding: 25px;
+	box-sizing: border-box;
+	min-width: 570px;
+}
+table tr td {
+    white-space: nowrap;
+}
+.div_line {
+	margin-top: 5px;
+	float: left;
+	clear: both;
+	width: 100%;
+}
+body {
+	-ms-overflow-x: hidden;
+}

@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 1050,
+					height : 768
+				};
+			</script>
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:stylefile path="knr002.h.style.css" />
+			<com:scriptfile path="knr002.h.service.js" />
+			<com:scriptfile path="knr002.h.vm.js" />
+			<com:scriptfile path="knr002.h.start.js" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js"
+				of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+		</ui:define>
+		<ui:define name="content">
+			<div class="div_line">
+				<div id="H2_1" style="margin-left: 83px;"
+					data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KNR002_180')}</div>
+				<div id="H2_2" style="margin-left: 399px;"
+					data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KNR002_181')}</div>
+			</div>
+			<div id="contents-area" class="fixed-flex-layout">
+				<!--The component container-->
+				<div id="ccgcomponent"></div>
+				<!-- The Returned Data from CCG001 -->
+
+				<div id="swap-list" style="margin-left: 75px;" tabindex="1"
+					data-bind="ntsSwapList: {
+							showSearchBox: { showLeft : true, showRight: true},
+							height: 375,
+							placeHolder: '項目名を検索・・・',
+							dataSource: listEmployee,
+							disableMoveButton: false,
+							primaryKey: 'employeeCode',
+							columns: columns,
+							value: currentCodeList,
+							searchMode: 'filter',
+							searchCriterion: ['employeeCode', 'employeeName', 'affiliationName'],
+							draggable: true,
+							multipleDrag: { left: true, right: false },
+							innerDrag: { left: false, right: true },
+							outerDrag: { left: true, right: true } 
+						}">
+				</div>
+
+			</div>
+			<div id="functions-area-bottom">
+				<button class="proceed" id="H6_1" tabindex="4"
+					data-bind="">#{i18n.getText('KNR002_185')}</button>
+				<button id="H6_2" tabindex="5"
+					data-bind="click: cancel_Dialog">#{i18n.getText('KNR002_186')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

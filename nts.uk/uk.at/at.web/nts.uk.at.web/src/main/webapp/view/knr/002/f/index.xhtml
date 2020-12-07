@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 700,
+					height : 500
+				};
+			</script>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="knr002.f.service.js" />
+			<com:scriptfile path="knr002.f.vm.js" />
+			<com:scriptfile path="knr002.f.start.js" />
+			<com:stylefile path="knr002.f.style.css" />
+		</ui:define>
+
+		<ui:define name="content">
+			<!-- Remote Settings copy dialog -->
+
+			<div class="contentDialog">
+				<div class="div_line">
+					<div id="F1_1" class="label" style="width: 500px;">#{i18n.getText('KNR002_231')}</div>
+					<div id="F1_2" class="label" style="width: 500px;">#{i18n.getText('KNR002_232')}</div>
+				</div>
+
+				<div class="div_line">
+					<div id="F2_1" class="ilb"
+						data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KNR002_233')}</div>
+					<span id="F2_2" class="label ilb" style="width: 60px;">#{i18n.getText('KNR002_234')}</span>
+					<span id="F2_3" class="ilb" style="width: 60px;"
+						data-bind="text: empInfoTerCode"></span> <span id="F2_4"
+						class="ilb" style="width: 140px;" data-bind="text: empInfoTerName"></span>
+					<span id="F2_5" class="ilb" style="width: 60px;"
+						data-bind="text: modelEmpInfoTer"></span> <span id="F2_4"
+						class="ilb" style="width: 200px;" data-bind="text: lastSuccessDate"></span>
+				</div>
+				<div class="div_line">
+					<div id="F3_1" class="ilb" style="margin-top: 20px;"
+						data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KNR002_235')}</div>
+					<div id="F3_2" class="label" style="width: 400px;">#{i18n.getText('KNR002_236')}</div>
+					<div id="F3_3" class="label"
+						style="width: 400px; margin-left: 70px;">#{i18n.getText('KNR002_237')}</div>
+				</div>
+				<div id="tablerange" class="div_line" style="margin-top: 20px;">
+					<table id="F4"></table>
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<button class="proceed" id="F6_1" tabindex="1"
+					data-bind="">#{i18n.getText('KNR002_242')}</button>
+				<button id="F6_2" tabindex="2"
+					data-bind="click: cancel_Dialog">#{i18n.getText('KNR002_243')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

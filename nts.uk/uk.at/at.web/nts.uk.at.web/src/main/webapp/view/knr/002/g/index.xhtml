@@ -1,0 +1,242 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 1050,
+					height : 768
+				};
+			</script>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="knr002.g.service.js" />
+			<com:scriptfile path="knr002.g.vm.js" />
+			<com:scriptfile path="knr002.g.start.js" />
+			<com:stylefile path="knr002.g.style.css" />
+		</ui:define>
+
+		<ui:define name="content">
+
+			<div class="fixed-flex-layout" id="contents-area">
+				<!-- column 1 -->
+				<div class="column-1">
+					<div id="G1_1" class="label">#{i18n.getText('KNR002_145')}</div>
+
+					<div id="G1_2" class="panel panel-frame div_line"
+						style="height: 90px; width: 275px;">
+						<div class="div_line">
+							<div id="G1_3" class="label itemLabel ilb" style="">#{i18n.getText('KNR002_146')}</div>
+							<div id="G2_1" class="label ilb" style="width: 15px;">#{i18n.getText('KNR002_150')}</div>
+							<div id="G3_1" class="ilb" data-bind="text: empInfoTerCode"></div>
+						</div>
+						<div class="div_line">
+							<div id="G1_4" class="label itemLabel ilb" style="">#{i18n.getText('KNR002_147')}</div>
+							<div id="G2_2" class="label ilb" style="width: 15px;">#{i18n.getText('KNR002_150')}</div>
+							<div id="G3_2" class="ilb" data-bind="text: empInfoTerCode"></div>
+						</div>
+						<div class="div_line">
+							<div id="G1_5" class="label itemLabel ilb" style="">#{i18n.getText('KNR002_148')}</div>
+							<div id="G2_3" class="label ilb" style="width: 15px;">#{i18n.getText('KNR002_150')}</div>
+							<div id="G3_3" class="ilb" data-bind="text: empInfoTerCode"></div>
+						</div>
+						<div class="div_line">
+							<div id="G1_6" class="label itemLabel ilb" style="">#{i18n.getText('KNR002_149')}</div>
+							<div id="G2_4" class="label ilb" style="width: 15px;">#{i18n.getText('KNR002_150')}</div>
+							<div id="G3_4" class="ilb" data-bind="text: empInfoTerCode"></div>
+						</div>
+					</div>
+
+					<div id="G4_1" class="label div_line">#{i18n.getText('KNR002_151')}</div>
+					<div class="div_line">
+						<table id="G4_2" style="border: 1px solid black;">
+							<colgroup>
+								<col width="45" />
+								<col width="145" />
+								<col width="105" />
+							</colgroup>
+							<thead>
+								<tr>
+									<th id="G4_3" colspan="3" style="text-align: center;"
+										class="header">#{i18n.getText('KNR002_152')}</th>
+								</tr>
+							</thead>
+							<tr>
+								<td><span id="G5_1" class="checkbox" tabindex="1"
+									data-bind="ntsCheckBox: { 
+														checked: true,
+														enable: true,
+														text: '' 
+													}"></span></td>
+								<td><span id="G6_1" class="label">#{i18n.getText('KNR002_153')}</span></td>
+								<td><button id="G7_1" class="small" tabindex="7"
+										data-bind="">#{i18n.getText('KNR002_159')}</button></td>
+							</tr>
+							<tr>
+								<td><span id="G5_2" class="checkbox" tabindex="2"
+									data-bind="ntsCheckBox: { 
+														checked: true,
+														enable: true,
+														text: '' 
+													}"></span></td>
+								<td><span id="G6_1" class="label">#{i18n.getText('KNR002_154')}</span></td>
+								<td><button id="G7_2" class="small" tabindex="8"
+										data-bind="">#{i18n.getText('KNR002_160')}</button></td>
+							</tr>
+							<tr>
+								<td><span id="G5_3" class="checkbox" tabindex="3"
+									data-bind="ntsCheckBox: { 
+														checked: true,
+														enable: true,
+														text: '' 
+													}"></span></td>
+								<td><span id="G6_1" class="label">#{i18n.getText('KNR002_155')}</span></td>
+								<td><button id="G7_3" class="small" tabindex="9"
+										data-bind="">#{i18n.getText('KNR002_161')}</button></td>
+							</tr>
+							<tr>
+								<td><span id="G5_4" class="checkbox" tabindex="4"
+									data-bind="ntsCheckBox: { 
+														checked: true,
+														enable: true,
+														text: '' 
+													}"></span></td>
+								<td><span id="G6_1" class="label">#{i18n.getText('KNR002_156')}</span></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td><span id="G5_5" class="checkbox" tabindex="5"
+									data-bind="ntsCheckBox: { 
+														checked: true,
+														enable: true,
+														text: '' 
+													}"></span></td>
+								<td><span id="G6_1" class="label">#{i18n.getText('KNR002_157')}</span></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td><span id="G5_6" class="checkbox" tabindex="6"
+									data-bind="ntsCheckBox: { 
+														checked: true,
+														enable: true,
+														text: '' 
+													}"></span></td>
+								<td><span id="G6_1" class="label">#{i18n.getText('KNR002_158')}</span></td>
+								<td><button id="G7_4" class="small" tabindex="7" tabindex="10"
+										data-bind="">#{i18n.getText('KNR002_162')}</button></td>
+							</tr>
+						</table>
+					</div>
+					<div id="G8_1" class="label div_line">#{i18n.getText('KNR002_163')}</div>
+
+					<div class="div_line">
+						<table id="G8_2" style="border: 1px solid black;">
+							<colgroup>
+								<col width="45" />
+								<col width="255" />
+							</colgroup>
+							<thead>
+								<tr>
+									<th id="G8_3" colspan="2" style="text-align: center;"
+										class="header">#{i18n.getText('KNR002_164')}</th>
+								</tr>
+							</thead>
+							<tr>
+								<td><span id="G8_4" class="checkbox" tabindex="11"
+									data-bind="ntsCheckBox: { 
+														checked: true,
+														enable: true,
+														text: '' 
+													}"></span></td>
+								<td><span id="G8_5" class="label">#{i18n.getText('KNR002_165')}</span></td>
+							</tr>
+						</table>
+					</div>
+				</div>
+
+				<div class="column-2">
+					<div id="G9_1" class="label div_line">#{i18n.getText('KNR002_166')}</div>
+					<div class="div_line">
+						<table id="G9_2" style="border: 1px solid black;">
+							<colgroup>
+								<col width="45" />
+								<col width="255" />
+							</colgroup>
+							<thead>
+								<tr>
+									<th id="G9_3" colspan="2" style="text-align: center;"
+										class="restart">#{i18n.getText('KNR002_167')}</th>
+								</tr>
+							</thead>
+							<tr>
+								<td><span id="G9_4" class="checkbox" tabindex="12"
+									data-bind="ntsCheckBox: { 
+														checked: true,
+														enable: true,
+														text: '' 
+													}"></span></td>
+								<td><span id="G9_5" class="label">#{i18n.getText('KNR002_168')}</span></td>
+							</tr>
+						</table>
+					</div>
+
+					<div id="G10_1" class="label div_line">#{i18n.getText('KNR002_169')}</div>
+					<div id="G10_2" class="label div_line">#{i18n.getText('KNR002_170')}</div>
+					<div class="div_line">
+						<table id="G10_3" style="border: 1px solid black;">
+							<colgroup>
+								<col width="45" />
+								<col width="255" />
+							</colgroup>
+							<thead>
+								<tr>
+									<th id="G10_4" colspan="2" style="text-align: center;"
+										class="header">#{i18n.getText('KNR002_171')}</th>
+								</tr>
+							</thead>
+							<tr>
+								<td><span id="G10_5" class="checkbox" tabindex="13"
+									data-bind="ntsCheckBox: { 
+														checked: true,
+														enable: true,
+														text: '' 
+													}"></span></td>
+								<td><span id="G10_8" class="label">#{i18n.getText('KNR002_172')}</span></td>
+							</tr>
+							<tr>
+								<td><span id="G10_6" class="checkbox" tabindex="14"
+									data-bind="ntsCheckBox: { 
+														checked: true,
+														enable: true,
+														text: '' 
+													}"></span></td>
+								<td><span id="G10_9" class="label">#{i18n.getText('KNR002_173')}</span></td>
+							</tr>
+							<tr>
+								<td><span id="G10_7" class="checkbox" tabindex="15"
+									data-bind="ntsCheckBox: { 
+														checked: true,
+														enable: true,
+														text: '' 
+													}"></span></td>
+								<td><span id="G10_10" class="label">#{i18n.getText('KNR002_174')}</span></td>
+							</tr>
+						</table>
+					</div>
+				</div>
+
+			</div>
+			<div id="functions-area-bottom">
+				<button class="proceed" id="G11_1" tabindex="16"
+					data-bind="">#{i18n.getText('KNR002_175')}</button>
+				<button id="G11_2" tabindex="17"
+					data-bind="click: cancel_Dialog">#{i18n.getText('KNR002_176')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
