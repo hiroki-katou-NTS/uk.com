@@ -35,6 +35,7 @@ import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardRe
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeSixProcess;
+import nts.uk.ctx.at.request.dom.application.overtime.service.SelectWorkOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.FlexExcessUseSetAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
@@ -338,5 +339,24 @@ public class AppOvertimeFinder {
 				date,
 				param.displayInfoOverTime.toDomain());
 		return DisplayInfoOverTimeDto.fromDomain(output);
+	}
+	
+	public SelectWorkOutputDto selectWorkInfoMobile(ParamSelectWorkMobile param) {
+		Optional<GeneralDate> dateOp = Optional.empty();
+		if (StringUtils.isNotBlank(param.dateOp)) {
+			dateOp = Optional.of(GeneralDate.fromString(param.dateOp, PATTERN_DATE));	
+		}
+		SelectWorkOutput output = overtimeService.selectWork(
+				param.companyId,
+				param.employeeId,
+				dateOp,
+				new WorkTypeCode(param.workTypeCode),
+				new WorkTimeCode(param.workTimeCode),
+				Optional.ofNullable(param.startTimeSPR),
+				Optional.ofNullable(param.endTimeSPR),
+				param.actualContentDisplay == null ? Optional.empty() :	Optional.of(param.actualContentDisplay.toDomain()),
+				param.overtimeAppSet.toDomain(param.companyId));
+		
+		return SelectWorkOutputDto.fromDomain(output);
 	}
 }

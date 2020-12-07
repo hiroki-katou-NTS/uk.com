@@ -134,10 +134,12 @@ public interface OvertimeService {
 			Optional<Integer> endTimeSPR,
 			Boolean isProxy
 			);
+	
 	/**
 	 * Refactor5 16_勤務種類・就業時間帯を選択する
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF005_残業申請.A：残業申請（新規登録）.アルゴリズム.16_勤務種類・就業時間帯を選択する
 	 * @param companyId
+	 * @param employeeId
 	 * @param dateOp
 	 * @param workTypeCode
 	 * @param workTimeCode
@@ -145,7 +147,7 @@ public interface OvertimeService {
 	 * @param endTimeSPR
 	 * @param actualContentDisplay
 	 * @param overtimeAppSet
-	 * @return 
+	 * @return
 	 */
 	public SelectWorkOutput selectWork(
 			String companyId,
@@ -250,7 +252,7 @@ public interface OvertimeService {
 			Boolean isProxy
 			);
 	/**
-	 * 
+	 * Refactor5 UKDesign.UniversalK.就業.KAF_申請.KAF005_残業申請.A：残業申請（新規登録）.ユースケース
 	 * @param companyId
 	 * @param employeeId
 	 * @param dateOp
