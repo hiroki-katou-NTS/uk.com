@@ -363,4 +363,19 @@ public interface OvertimeService {
 			Boolean mode,
 			DisplayInfoOverTime displayInfoOverTime,
 			AppOverTime appOverTime);
+
+	/**
+	 * Refactor5 勤務情報の申請内容をチェックする
+	 * UKDesign.UniversalK.就業.KAF_申請.KAFS05_残業申請(スマホ).A：残業申請(新規).アルゴリズム.勤務情報の申請内容をチェックする
+	 * @param companyId
+	 * @param displayInfoOverTime
+	 * @param appOverTime
+	 * @param mode
+	 */
+	public void checkContentApp(
+			String companyId,
+			DisplayInfoOverTime displayInfoOverTime,
+			AppOverTime appOverTime,
+			Boolean mode
+			);
 }

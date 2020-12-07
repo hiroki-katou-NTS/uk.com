@@ -1173,6 +1173,45 @@ public class OvertimeServiceImpl implements OvertimeService {
 				BooleanUtils.toInteger(mode));
 	}
 
+	@Override
+	public void checkContentApp(String companyId, DisplayInfoOverTime displayInfoOverTime, AppOverTime appOverTime,
+			Boolean mode) {
+		if (mode) { // 新規モード　の場合
+			// 2-1.新規画面登録前の処理
+			List<ConfirmMsgOutput> confirmMsgOutputs = processBeforeRegister.processBeforeRegister_New(
+					companyId,
+					EmploymentRootAtr.APPLICATION, // QA 112515 done
+					displayInfoOverTime.getIsProxy(),
+					appOverTime.getApplication(),
+					appOverTime.getOverTimeClf(),
+					displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpErrorFlag().orElse(null),
+					Collections.emptyList(), 
+					displayInfoOverTime.getAppDispInfoStartup());
+			
+		} else { // 詳細・照会モード　の場合
+			// 4-1.詳細画面登録前の処理
+			detailBeforeUpdate.processBeforeDetailScreenRegistration(
+					companyId,
+					appOverTime.getEmployeeID(),
+					appOverTime.getAppDate().getApplicationDate(),
+					EmploymentRootAtr.APPLICATION.value,
+					appOverTime.getAppID(),
+					appOverTime.getPrePostAtr(),
+					appOverTime.getVersion(),
+					appOverTime.getWorkInfoOp().map(x -> x.getWorkTypeCode().v()).orElse(null),
+					appOverTime.getWorkInfoOp().map(x -> x.getWorkTimeCode().v()).orElse(null),
+					displayInfoOverTime.getAppDispInfoStartup());
+			
+		}
+		// 申請時間に移動する前の個別チェック処理
+		this.checkBeforeMovetoAppTime(
+				companyId,
+				mode,
+				displayInfoOverTime,
+				appOverTime);
+		
+	}
+
 	
 	
 }
