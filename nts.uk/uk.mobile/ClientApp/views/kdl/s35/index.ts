@@ -19,7 +19,7 @@ export class KdlS35Component extends Vue {
     public daysUnit: number = 0;
     public targetSelectionAtr: TargetSelectionAtr = 0;
     public actualContentDisplayList: any[] = null;
-    public managementData: SubWorkSubHolidayLinkingMng[] = null;
+    public managementData: SubWorkSubHolidayLinkingMng[] = [];
     public employeeId: string = '';
     public substituteHolidayList: string[] = [];
     public substituteWorkInfoList: ISubstituteWorkInfo[] = [];
@@ -84,15 +84,28 @@ export class KdlS35Component extends Vue {
     private startPage() {
         const vm = this;
 
-        vm.$http.post('at', servicesPath.init, {
+        const initParams = {
             employeeId: vm.employeeId,
             startDate: new Date(vm.startDate),
             endDate: new Date(vm.endDate),
             daysUnit: vm.daysUnit,
             targetSelectionAtr: vm.targetSelectionAtr,
             actualContentDisplayList: vm.actualContentDisplayList,
-            managementData: vm.managementData,
-        }).then((result: { data: ParamsData }) => {
+            managementData: _.cloneDeep(vm.managementData),
+        };
+
+        initParams.actualContentDisplayList.forEach((i) => {
+            i.date = new Date(i.date).toISOString();
+        });
+
+        initParams.managementData.forEach((e) => {
+            e.outbreakDay = new Date(e.outbreakDay).toISOString();
+            e.dateOfUse = new Date(e.dateOfUse).toISOString();
+        });
+
+        vm.$http
+        .post('at', servicesPath.init,initParams)
+        .then((result: { data: ParamsData }) => {
             vm.$mask('hide');
 
             vm.startDate = vm.$dt(new Date(vm.startDate), 'YYYY/MM/DD');
@@ -105,7 +118,9 @@ export class KdlS35Component extends Vue {
             vm.substituteHolidayList = substituteHolidayList;
             vm.substituteWorkInfoList = substituteWorkInfoList
                 .map((m, index) => ({
-                    ...m, checked: false,
+                    ...m, 
+                    checked: !!_.find(vm.managementData, (i) => i.outbreakDay == m.substituteWorkDate),
+                    enable: new Date(m.expirationDate).getTime() > new Date(vm.startDate).getTime(),
                     get icon() {
                         const { dataType, expiringThisMonth } = m;
 
@@ -119,7 +134,7 @@ export class KdlS35Component extends Vue {
 
                         return '';
                     },
-                    enable: new Date(m.expirationDate).getTime() > new Date(vm.startDate).getTime()
+                    
                 }));
         }).catch((error: any) => {
             vm.showError(error);
@@ -178,14 +193,20 @@ export class KdlS35Component extends Vue {
         vm.$mask('show');
         vm.$http
             .post('at', servicesPath.associate, data)
-            .then((msgData: SubWorkSubHolidayLinkingMng[]) => {
+            .then((result: {data: SubWorkSubHolidayLinkingMng[]}) => {
                 vm.$mask('hide');
-                vm.back();
-
+                vm.setData(result.data);
+                vm.$close({mngDisp: vm.managementData});
             })
             .catch((error: any) => {
                 vm.showError(error);
             });
+    }
+
+    private setData(data: SubWorkSubHolidayLinkingMng[]) {
+        const vm = this;
+
+        vm.managementData.push(...data);
     }
 
     private checkNumberOfDays(): boolean {
