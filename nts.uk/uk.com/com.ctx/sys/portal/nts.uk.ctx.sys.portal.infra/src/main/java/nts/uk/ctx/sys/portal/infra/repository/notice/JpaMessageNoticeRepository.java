@@ -115,7 +115,7 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 		oldEntity.setCompanyId(AppContexts.user().companyId());
 		oldEntity.setStartDate(entity.getStartDate());
 		oldEntity.setEndDate(entity.getEndDate());
-		oldEntity.setUpdateDate(entity.getUpdateDate());
+		oldEntity.setUpdateDate(GeneralDateTime.now());
 		oldEntity.setMessage(entity.getMessage());
 		oldEntity.setDestination(entity.getDestination());
 		// Update entity
