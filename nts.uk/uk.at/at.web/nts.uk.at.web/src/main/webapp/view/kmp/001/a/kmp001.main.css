@@ -11,6 +11,10 @@
 	border: 0 !important;
 }
 
+.view-kmp {
+	width: 1200px;
+}
+
 .view-kmp .float-left {
 	float: left;
 }
