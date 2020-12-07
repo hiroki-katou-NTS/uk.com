@@ -37,7 +37,7 @@ public class Kmk017AWebservice {
     }
 
     @POST
-    @Path("workTimeWorkpalce")
+    @Path("workTimeWorkplace")
     public List<WorkTimeWorkplaceDto> getWorkTimeWorkplace() {
         return this.workTimeWorkplaceProcessor.findWorkTimeWorkplace();
     }
