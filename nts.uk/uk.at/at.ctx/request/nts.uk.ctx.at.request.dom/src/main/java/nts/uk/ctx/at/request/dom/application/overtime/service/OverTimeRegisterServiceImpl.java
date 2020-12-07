@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.overtime.service;
 
 import java.util.Collections;
-import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -9,7 +8,6 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
@@ -83,6 +81,31 @@ public class OverTimeRegisterServiceImpl implements OverTimeRegisterService {
 				companyId,
 				application.getAppID(),
 				appDispInfoStartupOutput); //#112628
+	}
+
+	@Override
+	public ProcessResult insertMobile(
+			String companyId,
+			Boolean mode,
+			AppOverTime appOverTime,
+			Boolean isMailServer,
+			AppDispInfoStartupOutput appDispInfoStartupOutput) {
+		// INPUT．「画面モード」をチェックする
+		
+		if (mode) {
+			this.register(
+					companyId,
+					appOverTime,
+					appDispInfoStartupOutput,
+					isMailServer,
+					appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings().get(0));
+		} else {
+			this.update(
+					companyId,
+					appOverTime,
+					appDispInfoStartupOutput);
+		}
+		return null;
 	}
 	
 

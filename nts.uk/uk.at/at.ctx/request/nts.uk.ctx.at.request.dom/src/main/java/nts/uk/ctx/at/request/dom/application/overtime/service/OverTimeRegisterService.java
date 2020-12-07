@@ -32,4 +32,21 @@ public interface OverTimeRegisterService {
 			AppOverTime appOverTime,
 			AppDispInfoStartupOutput appDispInfoStartupOutput
 			);
+	/**
+	 * Refactor5 残業申請を登録する
+	 * UKDesign.UniversalK.就業.KAF_申請.KAFS05_残業申請(スマホ).A：残業申請(新規).アルゴリズム.残業申請を登録する
+	 * @param companyId
+	 * @param mode
+	 * @param appOverTime
+	 * @param isMailServer
+	 * @param appDispInfoStartupOutput
+	 * @return
+	 */
+	public ProcessResult insertMobile(
+			String companyId,
+			Boolean mode,
+			AppOverTime appOverTime,
+			Boolean isMailServer,
+			AppDispInfoStartupOutput appDispInfoStartupOutput
+			);
 }

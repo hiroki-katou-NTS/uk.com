@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.app.find.application.overtime;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -22,6 +23,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReasonForReversion;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
@@ -358,5 +360,13 @@ public class AppOvertimeFinder {
 				param.overtimeAppSet.toDomain(param.companyId));
 		
 		return SelectWorkOutputDto.fromDomain(output);
+	}
+	
+	public List<ConfirmMsgOutput> checkBeforeInsert(ParamCheckBeforeRegister param) {
+		return overtimeService.checkBeforeInsert(
+				param.require,
+				param.companyId,
+				param.appOverTime.toDomain(),
+				param.displayInfoOverTime.toDomain());
 	}
 }
