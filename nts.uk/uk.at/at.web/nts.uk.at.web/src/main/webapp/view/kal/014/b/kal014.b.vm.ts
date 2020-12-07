@@ -1,7 +1,6 @@
 module nts.uk.at.kal014.b {
 
     import common=nts.uk.at.kal014.common;
-    const PATH_API = {}
 
     @bean()
     export class Kal014BViewModel extends ko.ViewModel {
@@ -12,31 +11,36 @@ module nts.uk.at.kal014.b {
         endComboMonth: KnockoutObservableArray<any>;
         workPalceCategory: any;
 
-        constructor(props: any) {
+        constructor(params: any) {
             super();
             const vm = this;
+            let strMonth = 0, endMonth = 0;
             vm.workPalceCategory = common.WORKPLACE_CATAGORY;
-            let modalData = nts.uk.ui.windows.getShared("KAL014BModalData");
-            console.log(modalData);
-            vm.modalDTO.categoryId(modalData.categoryId);
-            vm.modalDTO.categoryName(modalData.categoryName);
-            vm.modalDTO.startMonth(modalData.startMonth);
-            vm.modalDTO.endMonth(modalData.endMonth);
+
+            if (params.alarmCategory === vm.workPalceCategory.MASTER_CHECK_BASIC
+                || params.alarmCategory === vm.workPalceCategory.MASTER_CHECK_WORKPLACE){
+                strMonth = params.listExtractionMonthly.strMonth;
+                endMonth = params.listExtractionMonthly.endMonth;
+            } else {
+                strMonth = params.singleMonth.monthNo;
+            }
+            vm.modalDTO.categoryId(params.alarmCategory);
+            vm.modalDTO.categoryName(params.alarmCtgName);
+            vm.modalDTO.startMonth(strMonth);
+            vm.modalDTO.endMonth(endMonth);
             vm.isStartDateEnable = ko.observable(vm.checkStartDateISEnable());
             vm.isEndDateEnable = ko.observable(vm.checkEndDateISEnable());
             vm.strComboMonth = ko.observableArray(__viewContext.enums.SpecifiedMonth);
             vm.endComboMonth = ko.observableArray(__viewContext.enums.SpecifiedMonth);
         }
 
-        created() {
+        created(params: any) {
             const vm = this;
-            _.extend(window, {vm});
         }
 
-        mounted() {
-
+        mounted(){
+            $('#B3_1').focus();
         }
-
         /**
          * This function is responsible to check start month disable enable check
          *
@@ -74,26 +78,17 @@ module nts.uk.at.kal014.b {
          *
          * @return type void         *
          * */
-        decide(): any {
-            var vm = this;
-            if (vm.modalDTO.startMonth() === 0) {
-                $(".strComboMonth").focus();
-                return;
-            }
-            if (vm.modalDTO.endMonth() === 0) {
-                $(".endComboMonth").focus();
-                return;
-            } else if (vm.checkPeriod()) {
-                let shareData = {
-                    categoryId: vm.modalDTO.categoryId(),
-                    categoryName: vm.modalDTO.categoryName(),
-                    extractionPeriod: vm.modalDTO.extractionPeriod(),
-                    startMonth: vm.modalDTO.startMonth(),
+        decide(): void{
+           const vm = this;
+           if (vm.checkPeriod()) {
+                let shareData: Result  = {
+                    alarmCategory: vm.modalDTO.categoryId(),
+                    strMonth: vm.modalDTO.startMonth(),
                     endMonth: vm.modalDTO.endMonth()
                 }
-                vm.$window.storage("KAL014BModalData", shareData).done(() => {
-                    console.log("shareData:", nts.uk.ui.windows.getShared("KAL014BModalData"));
-                    vm.cancel_Dialog();
+
+                vm.$window.close({
+                    shareData
                 });
             }
         }
@@ -105,7 +100,9 @@ module nts.uk.at.kal014.b {
          * */
         checkPeriod(): boolean {
             var vm = this;
-            if ((vm.modalDTO.categoryId() === vm.workPalceCategory.MASTER_CHECK_BASIC || vm.modalDTO.categoryId() === vm.workPalceCategory.MASTER_CHECK_WORKPLACE) && vm.modalDTO.startMonth() > vm.modalDTO.endMonth()) {
+            if ((vm.modalDTO.categoryId() === vm.workPalceCategory.MASTER_CHECK_BASIC
+                    || vm.modalDTO.categoryId() === vm.workPalceCategory.MASTER_CHECK_WORKPLACE)
+                && vm.modalDTO.startMonth() < vm.modalDTO.endMonth()) {
                 vm.$dialog.error({messageId: "Msg_812"}).then(() => {
                     return false;
                 });
@@ -118,19 +115,24 @@ module nts.uk.at.kal014.b {
             }
         }
     }
+    interface Result {
+        alarmCategory: number;
+        strMonth: number;
+        endMonth: number;
+    }
 
     class ModalDto {
         categoryId: KnockoutObservable<any>;
         categoryName: KnockoutObservable<string>;
         extractionPeriod: KnockoutObservable<string>;
-        startMonth: KnockoutObservable<any>;
-        endMonth: KnockoutObservable<any>;
+        startMonth: KnockoutObservable<number>;
+        endMonth: KnockoutObservable<number>;
 
         constructor() {
             this.categoryId = ko.observable('');
             this.categoryName = ko.observable('');
-            this.startMonth = ko.observable('');
-            this.endMonth = ko.observable('');
+            this.startMonth = ko.observable(0);
+            this.endMonth = ko.observable(0);
             this.extractionPeriod = ko.observable('');
         }
     }

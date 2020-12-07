@@ -11,7 +11,7 @@
             nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.Day
         </com:ValidatorScript>
         <com:scriptfile set="IGNITE"/>
-        <script>var dialogSize = {width: 750, height: 550};</script>
+        <script>var dialogSize = {width: 500, height: 400};</script>
         <com:EnumScript>
             nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.SpecifiedMonth
         </com:EnumScript>
@@ -25,6 +25,7 @@
                 <!-- B1_1 -->
                 <span class="label" data-bind="text: modalDTO.categoryName"></span>
             </div>
+            <hr></hr>
             <div class="cf">
                 <div class="valign-center control-group start" style="padding-left: 30px;">
                     <div class="table" style="width: 100%">
@@ -78,12 +79,12 @@
                     </div>
                 </div>
             </div>
-            <div id="functions-area-bottom">
-                <!-- B4_2 -->
-                <button tabindex="3" data-bind="click:decide">#{i18n.getText('KAL014_39')}</button>
-                <!-- B4_3 -->
-                <button tabindex="4" data-bind="click:cancel_Dialog">#{i18n.getText('KAL014_40')}</button>
-            </div>
+        </div>
+        <div id="functions-area-bottom">
+            <!-- B4_2 -->
+            <button tabindex="3" class="proceed large" data-bind="click:decide">#{i18n.getText('KAL014_39')}</button>
+            <!-- B4_3 -->
+            <button tabindex="4" data-bind="click:cancel_Dialog">#{i18n.getText('KAL014_40')}</button>
         </div>
     </ui:define>
 </ui:composition>

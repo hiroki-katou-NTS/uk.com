@@ -24,7 +24,7 @@ public class AlarmCheckCategoryList {
 
     public AlarmCheckCategoryList(int category, String code, String name) {
         this.category = category;
-        this.categoryName = EnumAdaptor.valueOf(category, WorkplaceCategory.class).name();
+        this.categoryName = EnumAdaptor.convertToValueName(EnumAdaptor.valueOf(category, WorkplaceCategory.class)).getLocalizedName();
         this.code = code;
         this.name = name;
     }

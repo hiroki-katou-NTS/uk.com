@@ -40,7 +40,7 @@
                                 dataSource: gridItems,
                                 primaryKey: 'code',
                                 columns: [ { headerText: '#{i18n.getText('KAL014_12')}', key: 'code', width: 80, formatter: _.escape },
-                                           { headerText: '#{i18n.getText('KAL014_13')}', key: 'name', width: 200, formatter: _.escape }
+                                           { headerText: '#{i18n.getText('KAL014_13')}', key: 'name', width: 180, formatter: _.escape }
                                           ],
                                 deleteOptions : {visible : false},
                                 multiple: false,
@@ -78,7 +78,7 @@
                                     <div class="label">#{i18n.getText('KAL014_20')}</div>
                                     <hr></hr>
                                 </div>
-                                <div class="cell valign-center" style="width: 99px"></div>
+                                <div class="cell valign-center" style="width: 97px"></div>
                                 <!-- A5_3 A5_4-->
                                 <div class="cell valign-center item-A513-custom-style">
                                     <div class="label">#{i18n.getText('KAL014_21')}</div>
@@ -86,10 +86,10 @@
                                 </div>
                             </div>
                             <!-- A5_6-->
-                            <div class="table" style="padding-top: 15px">
+                            <div class="table" style="padding-top: 8px">
                                 <div tabindex="9" id="swap-list" data-bind="ntsSwapList: {
                                     showSearchBox: { showLeft : true, showRight: true},
-                                    height: 300,
+                                    height: 260,
                                     dataSource: $vm.itemsSwap,
                                     primaryKey: 'key',
                                     columns: $vm.columns,
@@ -104,7 +104,7 @@
                                 <table id="fixed-table">
                                     <colgroup>
                                         <col width="240px"/>
-                                        <col width="500px"/>
+                                        <col width="487px"/>
                                         <col width="90px"/>
                                     </colgroup>
                                     <thead>
@@ -123,7 +123,7 @@
                                         <td><span class="label" data-bind="text:displayText"></span></td>
                                         <!-- A6_6 -->
                                         <td>
-                                            <button tabindex="11"
+                                            <button class = "A6_6_button_style" tabindex="11"
                                                     data-bind="click: function() {vm.clickTableItem($data)}">#{i18n.getText('KAL014_28')}</button>
                                         </td>
                                     </tr>
@@ -132,11 +132,12 @@
                             </div>
                         </div>
                         <!-- A4_4 -->
-                        <div class="tab-content-3">
+                        <div class="tab-content-3" style="width: 819.81px; height: 302px">
                             <div class="table">
                                 <div class="cell valign-center">
                                     <!-- A7_1 -->
-                                    <div data-bind="ntsFormLabel: {inline: true, required: true, enable: true}">#{i18n.getText('KAL014_29')}</div>
+                                    <div data-bind="ntsFormLabel: {inline: true, required: true, enable: true}">
+                                        #{i18n.getText('KAL014_29')}</div>
                                 </div>
                                 <div class="cell valign-center">
                                     <!-- A7_2 -->

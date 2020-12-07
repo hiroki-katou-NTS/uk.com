@@ -26,28 +26,28 @@ public class WkpCheckConditionDto {
 
     public WkpCheckConditionDto(int alarmCategory, List<String> checkConditionCodes, WkpExtractionPeriodDailyDto extractionDaily) {
         this.alarmCategory = alarmCategory;
-        this.alarmCtgName = EnumAdaptor.valueOf(alarmCategory,WorkplaceCategory.class).name();
+        this.alarmCtgName = EnumAdaptor.convertToValueName(EnumAdaptor.valueOf(alarmCategory,WorkplaceCategory.class)).getLocalizedName();
         this.checkConditionCodes = checkConditionCodes;
         this.extractionDaily = extractionDaily;
     }
 
     public WkpCheckConditionDto(int alarmCategory, List<String> checkConditionCodes, WkpExtractionPeriodMonthlyDto listExtractionMonthly) {
         this.alarmCategory = alarmCategory;
-        this.alarmCtgName = EnumAdaptor.valueOf(alarmCategory,WorkplaceCategory.class).name();
+        this.alarmCtgName = EnumAdaptor.convertToValueName(EnumAdaptor.valueOf(alarmCategory,WorkplaceCategory.class)).getLocalizedName();
         this.checkConditionCodes = checkConditionCodes;
         this.listExtractionMonthly = listExtractionMonthly;
     }
 
     public WkpCheckConditionDto(int alarmCategory, List<String> checkConditionCodes, WkpSingleMonthDto singleMonth) {
         this.alarmCategory = alarmCategory;
-        this.alarmCtgName = EnumAdaptor.valueOf(alarmCategory,WorkplaceCategory.class).name();
+        this.alarmCtgName = EnumAdaptor.convertToValueName(EnumAdaptor.valueOf(alarmCategory,WorkplaceCategory.class)).getLocalizedName();
         this.checkConditionCodes = checkConditionCodes;
         this.singleMonth = singleMonth;
     }
 
     public WkpCheckConditionDto(int alarmCategory, List<String> checkConditionCodes) {
         this.alarmCategory = alarmCategory;
-        this.alarmCtgName = EnumAdaptor.valueOf(alarmCategory,WorkplaceCategory.class).name();
+        this.alarmCtgName = EnumAdaptor.convertToValueName(EnumAdaptor.valueOf(alarmCategory,WorkplaceCategory.class)).getLocalizedName();
         this.checkConditionCodes = checkConditionCodes;
     }
 

@@ -69,12 +69,12 @@ module nts.uk.at.kal014.a {
             ]);
             vm.selectedTab = ko.observable('tab-1');
             vm.itemsSwap = ko.observableArray([]);
-=
             vm.columns = ko.observableArray([
                 {headerText: vm.$i18n('KAL014_22'), key: 'key', hidden: true},
-                {headerText: vm.$i18n('KAL014_22'), key: 'categoryName', width: 70},
-                {headerText: vm.$i18n('KAL014_23'), key: 'code', width: 70},
-                {headerText: vm.$i18n('KAL014_24'), key: 'name', width: 180}
+                {headerText: vm.$i18n('KAL014_22'), key: 'categoryName',
+                    template: "<span class='${cssClass}'>${categoryName}</span>", width: 130},
+                {headerText: vm.$i18n('KAL014_23'), key: 'code', width: 50},
+                {headerText: vm.$i18n('KAL014_24'), key: 'name', width: 150}
             ]);
             vm.currentCodeListSwap = ko.observableArray([]);
             vm.roundingRules = ko.observableArray([
@@ -84,7 +84,8 @@ module nts.uk.at.kal014.a {
             vm.selectedRuleCode = ko.observable(null);
             vm.isNewMode = ko.observable(true);
             vm.selectedExecutePermission = ko.observable("");
-            $("#fixed-table").ntsFixedTable({height: 320, width: 830});
+            $("#fixed-table").ntsFixedTable({height: 301, width: 817});
+
             vm.getAllSettingData(null).done(()=>{
                 vm.itemsSwap( _.cloneDeep(vm.listAllCtgCode));
             })
@@ -135,16 +136,18 @@ module nts.uk.at.kal014.a {
                 }
             });
 
+            vm.alarmPatterSet().alarmPerSet().authSetting.subscribe((value: number)=>{
+                if (value == 0){
+                    vm.alarmPatterSet().alarmPerSet().updateRoleIds([]);
+                }
+            })
+
             vm.alarmPatterSet().alarmPerSet().roleIds.subscribe((value: Array<string>) =>{
                 vm.$ajax("com",PATH_API.GET_ROLENAME,vm.alarmPatterSet().alarmPerSet().roleIds())
                     .done(function(listRole: Array<RoleDto>) {
                         vm.alarmPatterSet().alarmPerSet().setRoleName(_.map(listRole,i=>i.name));
                 });
             })
-        }
-
-        remove() {
-            this.itemsSwap.shift();
         }
 
         getAllSettingData(selectedCd?: string): JQueryPromise<any>{
@@ -261,12 +264,16 @@ module nts.uk.at.kal014.a {
                 vm.getExtractionPeriod(data.alarmCategory,data.checkConditionCodes,
                     extracDai,listExtracMon,extracSingMon));
         }
-        /**
-         * This function is responsible for getting extraction Period
-         *
-         * @param TableItem
-         * @return string
-         * */
+
+        /***
+         * getExtractionPeriod
+         * @param {number} alarmCategory
+         * @param {Array<string>} checkConditionCodes
+         * @param {nts.uk.at.kal014.a.WkpExtractionPeriodDailyDto} extractionDaily
+         * @param {nts.uk.at.kal014.a.WkpExtractionPeriodMonthlyDto} listExtractionMonthly
+         * @param {nts.uk.at.kal014.a.WkpSingleMonthDto} singleMonth
+         * @returns {string}
+         */
         getExtractionPeriod(alarmCategory: number, checkConditionCodes: Array<string>,
                             extractionDaily: WkpExtractionPeriodDailyDto,listExtractionMonthly: WkpExtractionPeriodMonthlyDto,
                             singleMonth: WkpSingleMonthDto): string {
@@ -338,41 +345,46 @@ module nts.uk.at.kal014.a {
         }
 
         buildExtracDay(data: WkpExtractionPeriodDailyDto): string {
+            const vm = this;
             let start = "";
             if (data.strSpecify() == StartSpecify.MONTH) {
                 if (data.strCurrentMonth()) {
-                    start = "当月の締め開始日";
+                    // 当月の締め開始日
+                    start = "当月の" + vm.$i18n('KAL014_48');
                 } else {
                     start = data.strMonth() + "ヶ月"
-                        + (data.strPreviousMonth() == 0? "前" : "先") + "の締め開始日";
+                        + (data.strPreviousMonth() == 0? "前" : "先") + "の"+ vm.$i18n('KAL014_48');
                 }
             } else{
                 if(data.strMakeToDay()){
-                    start = "当日から当日 ";
+                    // 当日から当日
+                    start = vm.$i18n('KAL014_44')+"当日 ";
                 } else {
-                    start = "当日から"
-                        + data.strDay() + (data.strPreviousDay() == 0? "前" : "先");
+                    start = vm.$i18n('KAL014_44')
+                        + data.strDay()+  vm.$i18n('KAL014_46') + (data.strPreviousDay() == 0? "前" : "先");
                 }
             }
 
             let end = "";
             if (data.endSpecify() == EndSpecify.MONTH) {
                 if (data.endCurrentMonth()) {
-                    end = "当月の締め終了日";
+                    // 当月の締め終了日
+                    end = "当月の" + vm.$i18n('KAL014_53');
                 } else {
                     end = data.endMonth() + "ヶ月"
-                        + (data.endPreviousMonth() == 0? "前" : "先") + "の締め終了日";
+                        + (data.endPreviousMonth() == 0? "前" : "先") + "の" +vm.$i18n('KAL014_53');
                 }
             } else{
                 if(data.endMakeToDay()){
-                    end = "当日から当日 ";
+                    // 当日から当日
+                    end = vm.$i18n('KAL014_44') + "当日 ";
                 } else {
-                    end = " 当日から"
-                        + + (data.endDay() == 0? "前" : "先");
+                    end = vm.$i18n('KAL014_44')
+                        + data.endDay() +  vm.$i18n('KAL014_46') + (data.endPreviousMonth() == 0? "前" : "先");
                 }
             }
 
-            return start + " ～ " + end;
+            return start + vm.$i18n('KAL014_42') + end;
         }
         /**
          * This function is responsible to click per item action and take decision which screen will open
@@ -380,11 +392,11 @@ module nts.uk.at.kal014.a {
          * @return type void
          *
          * */
-        clickTableItem(item: any) {
+        clickTableItem(item: WkpCheckConditionDto) {
             const vm = this;
-            if (item.categoryId === vm.workPalceCategory.MASTER_CHECK_BASIC
-                || item.categoryId === vm.workPalceCategory.MASTER_CHECK_WORKPLACE
-                || item.categoryId === vm.workPalceCategory.MONTHLY) {
+            if (item.alarmCategory() === vm.workPalceCategory.MASTER_CHECK_BASIC
+                || item.alarmCategory()=== vm.workPalceCategory.MASTER_CHECK_WORKPLACE
+                || item.alarmCategory() === vm.workPalceCategory.MONTHLY) {
                 vm.openScreen(item, SCREEN.B);
             } else {
                 vm.openScreen(item, SCREEN.C);
@@ -401,14 +413,34 @@ module nts.uk.at.kal014.a {
         openScreen(item: any, type: any) {
             const vm = this;
             let modalPath = type === SCREEN.B ? '/view/kal/014/b/index.xhtml' : '/view/kal/014/c/index.xhtml';
-            let modalDataKey = type === SCREEN.B ? 'KAL014BModalData' : 'KAL014CModalData';
-            vm.$window.storage(modalDataKey, item).done(() => {
-                vm.$window.modal(modalPath)
-                    .then((result: any) => {
-                        console.log(nts.uk.ui.windows.getShared(modalDataKey));
-                        //TODO write businees login with return data and make sure server side logic
-                    });
-            });
+
+            vm.$window.modal(modalPath, ko.toJS(item))
+                .then((result: any) => {
+                    console.log(result);
+                    let element = _.find(vm.alarmPatterSet().checkConList(), ((item)=>{
+                        return item.alarmCategory() == result.shareData.alarmCategory;
+                    }));
+
+                    switch (result.shareData.alarmCategory) {
+                        // マスタチェック(基本)
+                        // マスタチェック(職場)
+                        case vm.workPalceCategory.MASTER_CHECK_BASIC:
+                        case vm.workPalceCategory.MASTER_CHECK_WORKPLACE:
+                            element.listExtractionMonthly().updateStartEnd(result.shareData.strMonth, result.shareData.endMonth);
+                            element.updateDisplayTxt(vm.buildExtracMon(element.listExtractionMonthly()));
+                            break;
+                        case vm.workPalceCategory.MASTER_CHECK_DAILY:
+                        case vm.workPalceCategory.SCHEDULE_DAILY:
+                        case vm.workPalceCategory.APPLICATION_APPROVAL:
+                            element.extractionDaily();
+                            break
+                        // 月次
+                        case vm.workPalceCategory.MONTHLY:
+                            element.singleMonth().updateStrMonth(result.shareData.strMonth);
+                            element.updateDisplayTxt(vm.getMonthValue(element.singleMonth()));
+                            break
+                    }
+                });
         }
 
         /**
@@ -497,7 +529,17 @@ module nts.uk.at.kal014.a {
                 }
             }).done(() => {
                 vm.$dialog.info({ messageId: "Msg_16" }).then(() => {
-                    vm.getAllSettingData(null);
+                    // Find new selected item
+                    let index = _.findIndex(vm.gridItems(), item => item.code == vm.currentCode()),
+                        newCurrentCode: string = null;
+                    if ( vm.gridItems().length < 1){
+                        newCurrentCode = null;
+                    }else if (index == (vm.gridItems().length -1 )){
+                        newCurrentCode = vm.gridItems()[index -1 ].code;
+                    }  else {
+                        newCurrentCode = vm.gridItems()[index + 1].code;
+                    }
+                    vm.getAllSettingData(newCurrentCode);
                 });
             }).fail((res: any) => {
                 vm.$dialog.error(res);
@@ -510,8 +552,8 @@ module nts.uk.at.kal014.a {
          * @return type void
          *
          * */
-        clickConfiguration() {
-            const vm = this;
+        clickConfiguration(vm: any) {
+            //const vm = this;
             let param = {
                 currentCode: vm.alarmPerSet().roleIds(),
                 roleType: 3,
@@ -611,10 +653,11 @@ module nts.uk.at.kal014.a {
             this.checkConList(fullCtg);
         }
 
-        // Remove condition
+        // Update condition
         updateConditionCtg(newCtg: Array<WkpCheckConditionDto>){
             this.checkConList(newCtg);
         }
+
     }
 
     class WkpAlarmPermissionSettingDto {
@@ -664,6 +707,9 @@ module nts.uk.at.kal014.a {
             this.displayText(displayText)
         }
 
+        updateDisplayTxt(display: string){
+            this.displayText(display);
+        }
 
     }
     class WkpExtractionPeriodDailyDto {
@@ -688,7 +734,7 @@ module nts.uk.at.kal014.a {
 
         constructor(data: IWkpExtractionPeriodDailyDto){
             this.strSpecify(_.isNil(data)? StartSpecify.MONTH :data.strSpecify);
-            this.strPreviousMonth(_.isNil(data)? PreviousClassification.AHEAD :data.strPreviousMonth);
+            this.strPreviousMonth(_.isNil(data)? PreviousClassification.BEFORE :data.strPreviousMonth);
             this.strMonth((_.isNil(data) || data.endCurrentMonth )? 0 : data.strMonth);
             this.strCurrentMonth(_.isNil(data)? true :data.strCurrentMonth);
             this.strPreviousDay(_.isNil(data)? null :data.strPreviousDay);
@@ -699,11 +745,14 @@ module nts.uk.at.kal014.a {
             this.endPreviousDay(_.isNil(data)? null :data.endPreviousDay);
             this.endMonth((_.isNil(data) || data.endCurrentMonth) ? 0 :data.endMonth);
             this.endCurrentMonth(_.isNil(data)? true :data.endCurrentMonth);
-            this.endPreviousMonth(_.isNil(data)? PreviousClassification.AHEAD :data.endPreviousMonth);
+            this.endPreviousMonth(_.isNil(data)? PreviousClassification.BEFORE :data.endPreviousMonth);
             this.endDay(_.isNil(data)? null :data.endDay);
             this.endMakeToDay(_.isNil(data) ? null : data.endDay == 0);
         }
 
+        updateExtractionPeriodDaily(){
+
+        }
     }
 
      class WkpExtractionPeriodMonthlyDto {
@@ -728,8 +777,8 @@ module nts.uk.at.kal014.a {
                 this.strSpecify(_.isNil(data)? SpecifyStartMonth.DESIGNATE_CLOSE_START_MONTH : data.strSpecify);
                 this.strMonth(_.isNil(data)? 0 :data.strMonth);
                 this.strCurrentMonth(_.isNil(data)? true :data.strCurrentMonth);
-                // 「先」固定
-                this.strPreviousAtr(_.isNil(data)? PreviousClassification.AHEAD :data.strPreviousAtr);
+                // 「前」固定
+                this.strPreviousAtr(_.isNil(data)? PreviousClassification.BEFORE :data.strPreviousAtr);
                 this.yearType(_.isNil(data)? null :data.yearType);
                 this.designatedMonth(_.isNil(data)? null :data.designatedMonth);
 
@@ -738,8 +787,15 @@ module nts.uk.at.kal014.a {
                 this.extractFromStartMonth(_.isNil(data)? null :data.extractFromStartMonth);
                 this.endMonth(_.isNil(data)? 0 :data.endMonth);
                 this.endCurrentMonth(_.isNil(data)? true :data.endCurrentMonth);
-                // 「先」固定
-                this.endPreviousAtr(_.isNil(data)? PreviousClassification.AHEAD :data.endPreviousAtr);
+                // 「前」固定
+                this.endPreviousAtr(_.isNil(data)? PreviousClassification.BEFORE :data.endPreviousAtr);
+        }
+
+        updateStartEnd(strMonth: number, endMonth: number){
+            this.strMonth(strMonth);
+            this.strCurrentMonth(strMonth == 0);
+            this.endMonth(endMonth);
+            this.endCurrentMonth(endMonth == 0);
         }
     }
     class WkpSingleMonthDto {
@@ -752,9 +808,14 @@ module nts.uk.at.kal014.a {
         curentMonth: KnockoutObservable<boolean>= ko.observable(true);
 
         constructor(data: IWkpSingleMonthDto){
-            this.monthPrevious(_.isNil(data) ? null : data.monthPrevious);
-            this.monthNo(_.isNil(data) ? null : data.monthNo);
+            this.monthPrevious(_.isNil(data) ? PreviousClassification.BEFORE : data.monthPrevious);
+            this.monthNo(_.isNil(data) ? 0 : data.monthNo);
             this.curentMonth(_.isNil(data) ? true : data.curentMonth);
+        }
+
+        updateStrMonth(strMonth: number){
+            this.monthNo(strMonth);
+            this.curentMonth(strMonth == 0);
         }
     }
 

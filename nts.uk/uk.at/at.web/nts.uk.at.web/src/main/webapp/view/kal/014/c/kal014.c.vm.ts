@@ -1,9 +1,6 @@
 module nts.uk.at.kal014.c {
 
     import common=nts.uk.at.kal014.common;
-    const PATH_API = {
-        //TODO make API path
-    }
 
     @bean()
     export class Kal014CViewModel extends ko.ViewModel {
@@ -13,22 +10,20 @@ module nts.uk.at.kal014.c {
         classifications: KnockoutObservableArray<any>;
         strComboDay: KnockoutObservableArray<any>;
         endComboDay: KnockoutObservableArray<any>;
-        strSelected: KnockoutObservable<number>;
-        endSelected: KnockoutObservable<number>;
+        strSelected: KnockoutObservable<number> = ko.observable(0);
+        endSelected: KnockoutObservable<number> = ko.observable(0);
         workPalceCategory: any;
         CLASSIFICATION: any;
         dateSpecify: KnockoutObservableArray<any>;
         monthSpecify: KnockoutObservableArray<any>;
         isScheduleDaily:KnockoutObservable<boolean>;
 
-        constructor(props: any) {
+        constructor(params: any) {
             super();
             const vm = this;
             vm.workPalceCategory = common.WORKPLACE_CATAGORY;
             vm.CLASSIFICATION = common.CLASSIFICATION;
-            let modalData = nts.uk.ui.windows.getShared("KAL014CModalData");
-            console.log(modalData);
-            vm.initModalData(modalData);
+            vm.initModalData(params);
             vm.strComboMonth = ko.observableArray(__viewContext.enums.SpecifiedMonth);
             vm.endComboMonth = ko.observableArray(__viewContext.enums.SpecifiedMonth);
             vm.strComboDay = ko.observableArray(__viewContext.enums.PreviousClassification);
@@ -55,6 +50,7 @@ module nts.uk.at.kal014.c {
             (vm.modalDTO.categoryId.subscribe((id)=>{
                 vm.isScheduleDaily=ko.observable(vm.checkIsScheduleDaily());
             }));
+
         }
 
         /**
@@ -74,15 +70,17 @@ module nts.uk.at.kal014.c {
          **/
         initModalData(modalData: any) {
             const vm = this;
-            vm.modalDTO.categoryId(modalData.categoryId);
-            vm.modalDTO.categoryName(modalData.categoryName);
-            vm.modalDTO.startMonth(modalData.startMonth);
-            vm.modalDTO.endMonth(modalData.endMonth);
-            vm.modalDTO.classification(modalData.classification);
-            vm.modalDTO.numberOfDayFromStart(modalData.numberOfDayFromStart);
-            vm.modalDTO.numberOfDayFromEnd(modalData.numberOfDayFromEnd);
-            vm.modalDTO.beforeAndAfterStart(modalData.beforeAndAfterStart);
-            vm.modalDTO.beforeAndAfterEnd(modalData.beforeAndAfterEnd);
+            vm.strSelected(modalData.extractionDaily.strSpecify)
+            vm.endSelected(modalData.extractionDaily.endSpecify)
+            vm.modalDTO.categoryId(modalData.alarmCategory);
+            vm.modalDTO.categoryName(modalData.alarmCtgName);
+            vm.modalDTO.startMonth(modalData.extractionDaily.strMonth);
+            vm.modalDTO.endMonth(modalData.extractionDaily.endMonth);
+            //vm.modalDTO.classification(modalData.extractionDaily.classification);
+            vm.modalDTO.numberOfDayFromStart(modalData.extractionDaily.strDay);
+            vm.modalDTO.numberOfDayFromEnd(modalData.extractionDaily.endDay);
+            vm.modalDTO.beforeAndAfterStart(modalData.extractionDaily.strPreviousDay);
+            vm.modalDTO.beforeAndAfterEnd(modalData.extractionDaily.endPreviousDay);
         }
 
         /**
@@ -101,29 +99,23 @@ module nts.uk.at.kal014.c {
          * */
         decide(): any {
             var vm = this;
-            if (vm.modalDTO.startMonth() === 0) {
-                $(".strComboMonth").focus();
-                return;
-            }
-            if (vm.modalDTO.endMonth() === 0) {
-                $(".endComboMonth").focus();
-                return;
-            } else if (vm.checkPeriod()) {
+            if (vm.checkPeriod()) {
                 let shareData = {
-                    categoryId: vm.modalDTO.categoryId(),
-                    categoryName: vm.modalDTO.categoryName(),
-                    extractionPeriod: vm.modalDTO.extractionPeriod(),
-                    startMonth: vm.modalDTO.startMonth(),
+                    alarmCategory: vm.modalDTO.categoryId(),
+                    alarmCategoryName: vm.modalDTO.categoryName(),
+                    //Start date
+                    strSpecify: vm.strSelected(),
+                    strMonth: vm.modalDTO.startMonth(),
+                    strDay: vm.modalDTO.numberOfDayFromStart(),
+                    strPreviousDay: vm.modalDTO.beforeAndAfterStart(),
+                    //End date
+                    endSpecify: vm.endSelected(),
                     endMonth: vm.modalDTO.endMonth(),
-                    classification: vm.modalDTO.classification(),
-                    numberOfDayFromStart: vm.modalDTO.numberOfDayFromStart(),
-                    numberOfDayFromEnd: vm.modalDTO.numberOfDayFromEnd(),
-                    beforeAndAfterStart: vm.modalDTO.beforeAndAfterStart(),
-                    beforeAndAfterEnd: vm.modalDTO.beforeAndAfterEnd(),
+                    endDay: vm.modalDTO.numberOfDayFromEnd(),
+                    endPreviousDay:  vm.modalDTO.beforeAndAfterEnd(),
                 }
-                vm.$window.storage("KAL014CModalData", shareData).done(() => {
-                    console.log("shareData:", nts.uk.ui.windows.getShared("KAL014CModalData"));
-                    vm.cancel_Dialog();
+                vm.$window.close({
+                    shareData
                 });
             }
         }
