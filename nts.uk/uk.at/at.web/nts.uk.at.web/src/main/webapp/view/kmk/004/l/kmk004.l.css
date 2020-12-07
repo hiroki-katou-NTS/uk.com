@@ -18,11 +18,11 @@
 }
 
 .view-l-common .header-l {
-    width: 606px;
+    width: 630px;
 }
 
 .view-l .header-l {
-    width: 606px;
+    width: 630px;
 }
 
 .view-l .header-l ~ div {
@@ -126,7 +126,7 @@
 
 .box-year {
 	display: inline-block;
-	padding-right: 30px;
+	padding-right: 27px;
 }
 
 .view-l-times-table {
