@@ -29,6 +29,9 @@ module nts.uk.ui.components.fullcalendar {
             margin-right: 10px;
             box-sizing: border-box;
         }
+        .fc-container .fc-sidebar .fc-datepicker .datepicker-container.datepicker-inline {
+            position: static !important;
+        }
         .fc-container .fc-sidebar .fc-events,
         .fc-container .fc-sidebar .fc-employees,
         .fc-container .fc-sidebar .fc-component {
@@ -194,6 +197,9 @@ module nts.uk.ui.components.fullcalendar {
             padding: 10px;
             opacity: 1;
         }
+        .fc-container .fc-popup-editor>div {
+            display: inline-block;
+        }
         .fc-container .fc-popup-editor .toolbar {
             text-align: right;
         }
@@ -205,6 +211,9 @@ module nts.uk.ui.components.fullcalendar {
         }
         .fc-container .fc-popup-editor .toolbar svg:not(:last-child) {
             margin-right: 10px;
+        }
+        .fc-container .fc-popup-editor.fc-popup-copyday {
+
         }
         .fc-container .fc-one-day-button.active,
         .fc-container .fc-five-day-button.active,
@@ -272,8 +281,8 @@ module nts.uk.ui.components.fullcalendar {
     };
 
     type POPUP_POSITION = {
-        event: KnockoutObservable<null | { top: number; left: number; }>;
-        copyDay: KnockoutObservable<null | { top: number; left: number; }>;
+        event: KnockoutObservable<null | DOMRect>;
+        copyDay: KnockoutObservable<null | DOMRect>;
     }
 
     type D_EVENT = {
@@ -347,8 +356,7 @@ module nts.uk.ui.components.fullcalendar {
             datesSet: (start: Date, end: Date) => void;
         };
         components: {
-            detail: string;
-            editor: string;
+            event: string;
             copyDay: string;
         }
     };
@@ -436,8 +444,8 @@ module nts.uk.ui.components.fullcalendar {
             <div class="fc-component"></div>
         </div>
         <div class="fc-calendar"></div>
-        <div data-bind="fc-editor: $component.dataEvent.event, position: $component.popupPosition.event"></div>
-        <div data-bind="fc-copy: $component.dataEvent.copyDay, position: $component.popupPosition.copyDay"></div>
+        <div data-bind="fc-editor: $component.dataEvent.event, name: $component.params.components.event, position: $component.popupPosition.event"></div>
+        <div data-bind="fc-copy: $component.dataEvent.copyDay, name: $component.params.components.copyDay, position: $component.popupPosition.copyDay"></div>
         <style>${DEFAULT_STYLES}</style>
         <style></style>`
     })
@@ -474,8 +482,7 @@ module nts.uk.ui.components.fullcalendar {
                         datesSet: (__: Date, ___: Date) => { }
                     },
                     components: {
-                        detail: '',
-                        editor: '',
+                        event: '',
                         copyDay: ''
                     }
                 };
@@ -558,20 +565,13 @@ module nts.uk.ui.components.fullcalendar {
 
             if (components === undefined) {
                 this.params.components = {
-                    detail: '',
-                    editor: '',
+                    event: '',
                     copyDay: ''
                 };
             }
 
-            const { editor, detail } = this.params.components;
-
-            if (editor === undefined) {
-                this.params.components.editor = '';
-            }
-
-            if (detail === undefined) {
-                this.params.components.detail = '';
+            if (this.params.components.event === undefined) {
+                this.params.components.event = '';
             }
 
             if (this.params.components.copyDay === undefined) {
@@ -819,6 +819,13 @@ module nts.uk.ui.components.fullcalendar {
                     }
                 });
 
+            dataEvent.copyDay
+                .subscribe((data) => {
+                    if (data && ko.unwrap(editable) === true) {
+                        event.copyDay.apply(viewModel, [data.from, data.to]);
+                    }
+                });
+
             popupPosition.event
                 .subscribe(e => {
                     if (!e) {
@@ -998,16 +1005,9 @@ module nts.uk.ui.components.fullcalendar {
                         const tg: HTMLElement = evt.target as any;
 
                         if (tg) {
-                            const bound = tg.getBoundingClientRect();
-                            const { top, left } = bound;
-
                             tg.classList.add(POWNER_CLASS_CPY);
 
-                            popupPosition.copyDay({ top, left: left - 253 });
-                        }
-
-                        if (ko.unwrap(editable) === true) {
-                            event.copyDay.apply(viewModel, [(new Date(), new Date())]);
+                            popupPosition.copyDay(tg.getBoundingClientRect());
                         }
                     }
                 }
@@ -1312,7 +1312,7 @@ module nts.uk.ui.components.fullcalendar {
                                     if (!top || !left) {
                                         popupPosition.event(null);
                                     } else if (!_.isEmpty(event.extendedProps)) {
-                                        popupPosition.event({ top, left });
+                                        popupPosition.event(bound);
                                     } else {
                                         popupPosition.event(null);
                                     }
@@ -1334,7 +1334,7 @@ module nts.uk.ui.components.fullcalendar {
                                     if (!top || !left) {
                                         popupPosition.event(null);
                                     } else {
-                                        popupPosition.event({ top, left });
+                                        popupPosition.event(bound);
                                     }
                                 });
                         }
@@ -1639,8 +1639,9 @@ module nts.uk.ui.components.fullcalendar {
     export module components {
 
         type EVENT_PARAMS = {
+            name: string;
             data: KnockoutObservable<null | FullCalendar.EventApi>;
-            position: KnockoutObservable<null | { top: number; left: number; }>;
+            position: KnockoutObservable<null | DOMRect>;
         };
 
         @handler({
@@ -1652,8 +1653,9 @@ module nts.uk.ui.components.fullcalendar {
             init(element: HTMLElement, valueAccessor: () => FullCalendar.EventApi, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
                 const name = E_COMP_NAME;
                 const data = valueAccessor();
+                const cName = allBindingsAccessor.get('name');
                 const position = allBindingsAccessor.get('position');
-                const component = { name, params: { data, position } };
+                const component = { name, params: { data, position, name: cName } };
 
                 element.removeAttribute('data-bind');
                 element.classList.add('fc-popup-editor');
@@ -1667,23 +1669,7 @@ module nts.uk.ui.components.fullcalendar {
 
         @component({
             name: E_COMP_NAME,
-            template: `<div class="toolbar">
-                <!--<svg width="20" height="20" viewBox="0 0 24 24" focusable="false" title="Email">
-                    <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-.8 2L12 10.8 4.8 6h14.4zM4 18V7.87l8 5.33 8-5.33V18H4z"></path>
-                </svg>-->
-                <svg width="20" height="20" viewBox="0 0 24 24" focusable="false" title="Edit" data-bind="click: edit, timeClick: -1">
-                    <path d="M20.41 4.94l-1.35-1.35c-.78-.78-2.05-.78-2.83 0L3 16.82V21h4.18L20.41 7.77c.79-.78.79-2.05 0-2.83zm-14 14.12L5 19v-1.36l9.82-9.82 1.41 1.41-9.82 9.83z"></path>
-                </svg>
-                <svg width="20" height="20" viewBox="0 0 24 24" focusable="false" title="Remove" data-bind="click: remove, timeClick: -1">
-                    <path d="M15 4V3H9v1H4v2h1v13c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V6h1V4h-5zm2 15H7V6h10v13z"></path>
-                    <path d="M9 8h2v9H9zm4 0h2v9h-2z"></path>
-                </svg>
-                <svg width="20" height="20" viewBox="0 0 24 24" focusable="false" title="Close" data-bind="click: $component.close, timeClick: -1">
-                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"></path>
-                </svg>
-            </div>
-            <div>
-            </div>`
+            template: `DETAIL_EVENT`
         })
         export class FullCalendarEditorComponent extends ko.ViewModel {
             event!: (evt: JQueryEventObject) => void;
@@ -1695,7 +1681,15 @@ module nts.uk.ui.components.fullcalendar {
             mounted() {
                 const vm = this;
                 const { $el, params } = vm;
-                const { data, position } = params;
+                const { name, data, position } = params;
+
+                if (name) {
+                    $el.innerHTML = '';
+                    const close = () => vm.close();
+                    const remove = () => vm.remove();
+
+                    ko.applyBindingsToNode($el, { component: { name, params: { remove, close, data } } });
+                }
 
                 ko.computed({
                     read: () => {
@@ -1705,12 +1699,24 @@ module nts.uk.ui.components.fullcalendar {
                             $el.removeAttribute('style');
                             $el.classList.remove('show');
                         } else {
-                            $el.classList.add('show');
-
                             const { top, left } = pst;
 
+                            const first = $el.querySelector('div');
+
+                            $el.classList.add('show');
+
                             $el.style.top = `${top || 0}px`;
-                            $el.style.left = `${left || 0}px`;
+
+                            if (!first) {
+                                $el.style.left = `${left || 0}px`;
+                            } else {
+                                const { width, height } = first.getBoundingClientRect();
+
+                                $el.style.left = `${left || 0}px`;
+
+                                $el.style.width = `${width + 20}px`;
+                                $el.style.height = `${height + 20}px`;
+                            }
                         }
                     },
                     disposeWhenNodeIsRemoved: $el
@@ -1804,8 +1810,9 @@ module nts.uk.ui.components.fullcalendar {
             init(element: HTMLElement, valueAccessor: () => FullCalendar.EventApi, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
                 const name = C_COMP_NAME;
                 const data = valueAccessor();
+                const cName = allBindingsAccessor.get('name');
                 const position = allBindingsAccessor.get('position');
-                const component = { name, params: { data, position } };
+                const component = { name, params: { data, position, name: cName } };
 
                 element.removeAttribute('data-bind');
                 element.classList.add('fc-popup-editor');
@@ -1818,20 +1825,14 @@ module nts.uk.ui.components.fullcalendar {
         }
 
         type COPY_PARAMS = {
+            name: string;
             data: KnockoutObservable<null | { from: Date; to: Date; }>;
-            position: KnockoutObservable<null | { top: number; left: number; }>;
+            position: KnockoutObservable<null | DOMRect>;
         };
 
         @component({
             name: C_COMP_NAME,
-            template: `<div data-bind="text: ko.toJSON($component.params, null, 4)">
-            </div>
-            <div>
-                <hr />
-                <button class="small" data-bind="i18n: 'Copy'"></button>
-                <button class="small" data-bind="i18n: 'Close', click: $component.close"></button>
-            </div>
-            `
+            template: `COPY_DAY`
         })
         export class FullCalendarCopyDayComponent extends ko.ViewModel {
             event!: (evt: JQueryEventObject) => void;
@@ -1843,7 +1844,14 @@ module nts.uk.ui.components.fullcalendar {
             mounted() {
                 const vm = this;
                 const { $el, params } = vm;
-                const { data, position } = params;
+                const { name, data, position } = params;
+
+                if (name) {
+                    $el.innerHTML = '';
+                    const close = () => vm.close();
+
+                    ko.applyBindingsToNode($el, { component: { name, params: { close, data } } });
+                }
 
                 ko.computed({
                     read: () => {
@@ -1854,17 +1862,30 @@ module nts.uk.ui.components.fullcalendar {
                             $el.classList.remove('show');
                         } else {
                             const { top, left } = pst;
+                            const first = $el.querySelector('div');
 
                             $el.classList.add('show');
 
                             $el.style.top = `${top}px`;
-                            $el.style.left = `${left}px`;
+
+                            if (first) {
+                                const { width, height } = first.getBoundingClientRect();
+
+                                $el.style.left = `${left - width - 23}px`;
+
+                                $el.style.width = `${width + 20}px`;
+                                $el.style.height = `${height + 20}px`;
+                            } else {
+                                $el.style.left = `${left}px`;
+                            }
                         }
                     },
                     disposeWhenNodeIsRemoved: $el
                 });
 
                 vm.event = (evt: JQueryEventObject) => {
+                    evt.preventDefault();
+
                     const tg = evt.target as HTMLElement;
 
                     if (tg && !!ko.unwrap(position)) {
@@ -2027,6 +2048,13 @@ module nts.uk.ui.components.fullcalendar {
                 });
 
                 $el.removeAttribute('data-bind');
+
+                $('.datepicker-container')
+                    .on('mousedown', "li", (evt) => {
+                        evt.preventDefault();
+                        evt.stopPropagation();
+                        evt.stopImmediatePropagation();
+                    });
             }
         }
 
