@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.request.app.command.application.holidayshipment;
 
 
-/*import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;*/
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -150,11 +150,11 @@ public class SaveHolidayShipmentCommandHandler
 				: AppContexts.user().employeeId();// Sua ho
 		int comType = command.getComType();
 		// アルゴリズム「振休振出申請の新規登録」を実行する
-		return createNewForHolidayBreakge(command, companyID, sID, comType);
+		return null; /*createNewForHolidayBreakge(command, companyID, sID, comType);*/
 
 	}
 
-	private ProcessResult createNewForHolidayBreakge(SaveHolidayShipmentCommand command, String companyID, String sID, int comType) {
+	/*	private ProcessResult createNewForHolidayBreakge(SaveHolidayShipmentCommand command, String companyID, String sID, int comType) {
 		// アルゴリズム「事前条件チェック」を実行する
 		String appReason = preconditionCheck(command, companyID, ApplicationType.COMPLEMENT_LEAVE_APPLICATION, comType);
 //		// アルゴリズム「登録前エラーチェック（新規）」を実行する
@@ -201,7 +201,7 @@ public class SaveHolidayShipmentCommandHandler
 //			Application_New commonApp = IfacApp.buildApplication(command.getRecCmd().getAppID(), recDate,
 //					command.getAppCmd().getPrePostAtr(), null, appReason, appType, recDate, recDate, sID);
 			// error EA refactor 4
-			/*List<ConfirmMsgDto> listConfirmMsg =  processBeforeRegister.processBeforeRegister_New(
+			List<ConfirmMsgDto> listConfirmMsg =  processBeforeRegister.processBeforeRegister_New(
 					companyID, 
 					EmploymentRootAtr.APPLICATION, 
 					false, 
@@ -209,13 +209,13 @@ public class SaveHolidayShipmentCommandHandler
 					null, 
 					command.getDisplayInforWhenStarting().getAppDispInfoStartup().toDomain().getAppDispInfoWithDateOutput().getErrorFlag(), 
 					new ArrayList<>()).stream().map(c-> new ConfirmMsgDto(c.getMsgID(), c.getParamLst())).collect(Collectors.toList());
-			result.addAll(listConfirmMsg);*/
+			result.addAll(listConfirmMsg);
 		}
 		if (isSaveAbs(comType)) {
 //			Application_New commonApp = IfacApp.buildApplication(command.getAbsCmd().getAppID(), absDate,
 //					command.getAppCmd().getPrePostAtr(), null, appReason, appType, absDate, absDate, sID);
 			// error EA refactor 4
-			/*List<ConfirmMsgDto> listConfirmMsg =  processBeforeRegister.processBeforeRegister_New(
+			List<ConfirmMsgDto> listConfirmMsg =  processBeforeRegister.processBeforeRegister_New(
 					companyID, 
 					EmploymentRootAtr.APPLICATION, 
 					false, 
@@ -223,7 +223,7 @@ public class SaveHolidayShipmentCommandHandler
 					null, 
 					command.getDisplayInforWhenStarting().getAppDispInfoStartup().toDomain().getAppDispInfoWithDateOutput().getErrorFlag(), 
 					new ArrayList<>()).stream().map(c-> new ConfirmMsgDto(c.getMsgID(), c.getParamLst())).collect(Collectors.toList());
-			result.addAll(listConfirmMsg);*/
+			result.addAll(listConfirmMsg);
 		}
 		
 		return result;
@@ -305,7 +305,7 @@ public class SaveHolidayShipmentCommandHandler
 		//暫定データの登録
 		this.registerDateChange.registerDateChange(companyID, sID, Arrays.asList(absDate));
 		// アルゴリズム「新規画面登録後の処理」を実行する
-		/*return this.newAfterReg.processAfterRegister(absCommonApp);*/
+		return this.newAfterReg.processAfterRegister(absCommonApp);
 		return null;
 	}
 
@@ -331,7 +331,7 @@ public class SaveHolidayShipmentCommandHandler
 		//暫定データの登録
 		this.registerDateChange.registerDateChange(companyID, sID, Arrays.asList(recDate));
 		// アルゴリズム「新規画面登録後の処理」を実行する
-		/*return this.newAfterReg.processAfterRegister(recCommonApp);*/
+		return this.newAfterReg.processAfterRegister(recCommonApp);
 		return null;
 	}
 
@@ -381,17 +381,17 @@ public class SaveHolidayShipmentCommandHandler
 		
 		// error EA refactor 4
 		// アルゴリズム「新規画面登録後の処理」を実行する
-		/*newAfterReg.processAfterRegister(recCommonApp);*/
+		newAfterReg.processAfterRegister(recCommonApp);
 
 //		Application_New absCommonApp = createNewAbsApp(command, companyID, sID, absDate, appReason);
 		
 		// error EA refactor 4
 		// アルゴリズム「新規画面登録後の処理」を実行する
-		/*ProcessResult result = newAfterReg.processAfterRegister(absCommonApp);*/
+		ProcessResult result = newAfterReg.processAfterRegister(absCommonApp);
 		// ドメイン「振休振出同時申請管理」を1件登録する
 		createNewComLeaveSilMng(recAppCmd.getAppID(), absAppCmd.getAppID());
 
-		/*return result;*/
+		return result;
 		return null;
 	}
 
@@ -423,7 +423,7 @@ public class SaveHolidayShipmentCommandHandler
 //		/*registerAppReplection.newScreenRegisterAtApproveInfoReflect(sID, commonApp);*/
 //
 //		return commonApp;
-		return null;
+	/*		return null;
 
 	}
 
@@ -454,7 +454,7 @@ public class SaveHolidayShipmentCommandHandler
 //		/*registerAppReplection.newScreenRegisterAtApproveInfoReflect(sID, commonApp);*/
 //
 //		return commonApp;
-		return null;
+	/*		return null;
 	}
 
 	private RecruitmentApp createNewRecDomainFromCmd(RecruitmentAppCommand appCmd) {
@@ -464,15 +464,15 @@ public class SaveHolidayShipmentCommandHandler
 				EnumAdaptor.valueOf(wkTime1Cmd.getStartType(), NotUseAtr.class), new WorkTime(wkTime1Cmd.getEndTime()),
 				EnumAdaptor.valueOf(wkTime1Cmd.getEndType(), NotUseAtr.class));
 		
-		RecruitmentWorkingHour recHour2 = null;/* new RecruitmentWorkingHour(new WorkTime(wkTime2Cmd.getStartTime()),
+		RecruitmentWorkingHour recHour2 = null; new RecruitmentWorkingHour(new WorkTime(wkTime2Cmd.getStartTime()),
 				EnumAdaptor.valueOf(wkTime2Cmd.getStartType(), NotUseAtr.class),
 				new WorkTime(wkTime2Cmd.getEndTime()),
-				EnumAdaptor.valueOf(wkTime2Cmd.getEndType(), NotUseAtr.class));*/
-		RecruitmentApp recApp = new RecruitmentApp(appCmd.getAppID(), new WorkTypeCode(appCmd.getWkTypeCD()),
-				new WorkTimeCode(appCmd.getWkTimeCD()),
-				recHour1,
-				recHour2,
-				Collections.emptyList());
+				EnumAdaptor.valueOf(wkTime2Cmd.getEndType(), NotUseAtr.class));
+//		RecruitmentApp recApp = new RecruitmentApp(appCmd.getAppID(), new WorkTypeCode(appCmd.getWkTypeCD()),
+//				new WorkTimeCode(appCmd.getWkTimeCD()),
+//				recHour1,
+//				recHour2,
+//				Collections.emptyList());
 
 		return recApp;
 	}
@@ -716,7 +716,7 @@ public class SaveHolidayShipmentCommandHandler
 		return result;
 	}
 
-	/**
+	*//**
 	 * 振出勤務種類矛盾チェック &&振休勤務種類矛盾チェック
 	 * 
 	 * @param companyID
@@ -725,7 +725,7 @@ public class SaveHolidayShipmentCommandHandler
 	 * @param checkMode
 	 * @param isNotSelectYes
 	 * @param ischeckRec
-	 */
+	 *//*
 	private List<ConfirmMsgDto> workTypeContradictionCheck(String companyID, String sid, GeneralDate appDate, ContractCheck checkMode,
 			boolean isNotSelectYes, boolean ischeckRec) {
 		List<ConfirmMsgDto> result = new ArrayList<>();
@@ -1090,5 +1090,5 @@ public class SaveHolidayShipmentCommandHandler
 		return appTypeSetting.getDisplayFixedReason() == DisplayAtr.DISPLAY;
 
 	}
-
+*/
 }

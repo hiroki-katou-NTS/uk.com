@@ -128,7 +128,7 @@ public class HolidayShipmentWebService extends WebService {
 	@POST
 	@Path("processBeforeRegister_New")
 	public List<ConfirmMsgDto> processBeforeRegister_New(SaveHolidayShipmentCommand command) {
-		return saveHandler.processBeforeRegister_New(command);
+		return null;/* saveHandler.handle(command); */
 	}
 	
 	@POST

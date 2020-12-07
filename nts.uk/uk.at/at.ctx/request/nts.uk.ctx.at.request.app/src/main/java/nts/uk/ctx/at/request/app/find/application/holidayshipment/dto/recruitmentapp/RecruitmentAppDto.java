@@ -30,13 +30,14 @@ public class RecruitmentAppDto extends HolidayShipmentAppDto {
 	private RecruitmentWorkingHourDto wkTime2;
 
 	public static RecruitmentAppDto fromDomain(RecruitmentApp domain, GeneralDate appDate) {
-		RecruitmentWorkingHourDto workTime1 = RecruitmentWorkingHourDto.createFromDomain(domain.getWorkTime1());
+//		RecruitmentWorkingHourDto workTime1 = RecruitmentWorkingHourDto.createFromDomain(domain.getWorkTime1());
+//
+//		RecruitmentWorkingHourDto workTime2 = RecruitmentWorkingHourDto.createFromDomain(domain.getWorkTime2());
+//
+//		return nynew RecruitmentAppDto(domain.getAppID(), domain.getWorkTypeCD().v(), domain.getWorkTimeCD().v(), workTime1,
+//				workTime2, domain.getSubTargetDigestions(), appDate);
 
-		RecruitmentWorkingHourDto workTime2 = RecruitmentWorkingHourDto.createFromDomain(domain.getWorkTime2());
-
-		return new RecruitmentAppDto(domain.getAppID(), domain.getWorkTypeCD().v(), domain.getWorkTimeCD().v(), workTime1,
-				workTime2, domain.getSubTargetDigestions(), appDate);
-
+		return null;
 	}
 	
 	

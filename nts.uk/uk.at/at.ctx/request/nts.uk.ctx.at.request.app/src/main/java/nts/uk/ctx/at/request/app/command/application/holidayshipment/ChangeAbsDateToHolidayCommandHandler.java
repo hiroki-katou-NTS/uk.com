@@ -45,16 +45,16 @@ public class ChangeAbsDateToHolidayCommandHandler
 	private List<ChangeInfo> getChangeInfo(AbsenceLeaveAppCommand absCmd) {
 		List<ChangeInfo> changeInfos = new ArrayList<ChangeInfo>();
 		// INPUT.消化対象振休管理の件数分ループ
-		absCmd.getSubDigestions().forEach(x -> {
-			RecInfo recInfo = null;
-			if (x.getPayoutMngDataID() != null) {
-				// Imported(就業.申請承認.休暇残数.振出振休)「振出情報」を取得する chưa làm domain
-			} else {
-				// Imported(就業.申請承認.休暇残数.振出振休)「振出情報」を取得する chưa làm domain
-			}
-
-			changeInfos.add(new ChangeInfo(x.getOccurrenceDate(), x.getDaysUsedNo(), recInfo));
-		});
+//		absCmd.getSubDigestions().forEach(x -> {
+//			RecInfo recInfo = null;
+//			if (x.getPayoutMngDataID() != null) {
+//				// Imported(就業.申請承認.休暇残数.振出振休)「振出情報」を取得する chưa làm domain
+//			} else {
+//				// Imported(就業.申請承認.休暇残数.振出振休)「振出情報」を取得する chưa làm domain
+//			}
+//
+//			changeInfos.add(new ChangeInfo(x.getOccurrenceDate(), x.getDaysUsedNo(), recInfo));
+//		});
 		return changeInfos;
 	}
 

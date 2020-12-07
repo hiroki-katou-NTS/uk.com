@@ -41,18 +41,18 @@ public class AbsenceLeaveAppDto extends HolidayShipmentAppDto {
 
 	public static AbsenceLeaveAppDto fromDomain(AbsenceLeaveApp domain, GeneralDate appDate) {
 
-		WorkingHoursDto WorkTime1 = WorkingHoursDto.createFromDomain(domain.getWorkTime1());
+//		WorkingHoursDto WorkTime1 = WorkingHoursDto.createFromDomain(domain.getWorkTime1());
+//
+//		WorkingHoursDto WorkTime2 = WorkingHoursDto.createFromDomain(domain.getWorkTime2());
+//
+//		List<SubDigestionDto> subDigestions = domain.getSubDigestions().stream()
+//				.map(x -> SubDigestionDto.createFromDomain(x)).collect(Collectors.toList());
+//
+//		AbsenceLeaveAppDto result = new AbsenceLeaveAppDto(domain.getAppID(), domain.getWorkTypeCD().v(),
+//				domain.getChangeWorkHoursType().value, domain.getWorkTimeCD(), WorkTime1, WorkTime2,
+//				domain.getSubTargetDigestions(), subDigestions, appDate);
 
-		WorkingHoursDto WorkTime2 = WorkingHoursDto.createFromDomain(domain.getWorkTime2());
-
-		List<SubDigestionDto> subDigestions = domain.getSubDigestions().stream()
-				.map(x -> SubDigestionDto.createFromDomain(x)).collect(Collectors.toList());
-
-		AbsenceLeaveAppDto result = new AbsenceLeaveAppDto(domain.getAppID(), domain.getWorkTypeCD().v(),
-				domain.getChangeWorkHoursType().value, domain.getWorkTimeCD(), WorkTime1, WorkTime2,
-				domain.getSubTargetDigestions(), subDigestions, appDate);
-
-		return result;
+		return null;
 	}
 
 	public AbsenceLeaveAppDto(String appID, String workTypeCD, int changeWorkHoursType, String workTimeCD,
