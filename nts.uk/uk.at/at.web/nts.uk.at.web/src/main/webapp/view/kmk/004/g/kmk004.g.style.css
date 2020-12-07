@@ -31,8 +31,17 @@
 	text-align: center;
 }
 
-#expand-list th, #expand-list td {
+#expand-list th, #expand-list tr> td {
 	border: solid grey 1px;
+	
+	
+}
+
+#expand-list th:first-child, #expand-list tr>td:first-child {
+	padding: 3px;
+}
+
+#expand-list th:not(:first-child), #expand-list tr> td:not(:first-child) {
 	padding: 3px 10px;
 	min-width: 60px;
 	max-width: 100px;
@@ -61,10 +70,7 @@
 	padding: 20px !important;
 }
 
-.ntsCheckBox {
-	padding: 0px !important;
-}
 
 #employee-list {
-	padding-top: 30px;
+	padding: 30px 20px 0px 0px ;
 }

@@ -39,7 +39,7 @@ module nts.uk.at.view.kmk004.b {
                     isDialog: false,
                     isShowNoSelectRow: false,
                     alreadySettingList: vm.alreadySettingList,
-                    isShowWorkPlaceName: true,
+                    isShowWorkPlaceName: false,
                     isShowSelectAllButton: false,
                     disableSelection: false
                 });

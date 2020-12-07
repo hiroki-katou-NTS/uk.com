@@ -23,13 +23,13 @@ const template = `
 								<div id="employee-list"></div>
 						</div>
 					
-						<div id="right-layout" style="padding-left:17px;">
+						<div id="right-layout" >
 						
 							<div style="padding-bottom: 20px;display:inline-block;">
 								<label id="flex-title" data-bind="i18n:'KMK004_268'"></label>
 								<hr/>
 								<label id="selected-employee" data-bind="i18n:screenData().selectedName"></label>
-								<div style="margin-top: 20px;" data-bind="component: {
+								<div style="margin-top: 15px;" data-bind="component: {
 									name: 'basic-settings-company',
 									params: {
 												screenData:screenData,

@@ -15,15 +15,14 @@
 }
 
 .view-c-kmk004 .left-content {
-	width: 478px;
-	padding: 12px;
+	padding: 10px;
 	float: left;
-	margin-left: 8px;
+	margin-left: 10px;
 	margin-top: 20px;
 }
 
 .view-c-kmk004 .right-content {
-	width: 430px;
+	width: 468px;
 	float: left;
 	margin-left: 38px;
 }
@@ -46,11 +45,11 @@
 
 .view-c-kmk004 .right-content .content-data {
 	margin-top: 10px;
-	margin-left: 15px;
+	margin-left: 10px;
 }
 
 .view-c-kmk004 .right-content .label1 {
-	margin-top: 10px;
+	margin-top: 15px;
 }
 
 .view-c-kmk004 .right-content .year {
@@ -76,16 +75,16 @@
 
 .view-d-kmk004 .left-content {
 	width: 330px;
-	padding: 12px;
-	float: left;
-	margin-left: 8px;
-	margin-top: 20px;
+    padding: 12px 22px 12px 12px;
+    float: left;
+    margin-left: 8px;
+    margin-top: 18px;
 }
 
 .view-d-kmk004 .right-content {
-	width: 430px;
+	width: 468px;
 	float: left;
-	margin-left: 38px;
+	margin-left: 30px;
 }
 
 .view-d-kmk004 .right-content p {
@@ -98,11 +97,11 @@
 
 .view-d-kmk004 .right-content .content-data {
 	margin-top: 10px;
-	margin-left: 15px;
+	margin-left: 10px;
 }
 
 .view-d-kmk004 .right-content .label1 {
-	margin-top: 10px;
+	margin-top: 15px;
 }
 
 .view-d-kmk004 .right-content .year {
@@ -130,8 +129,8 @@
 }
 
 .view-e-kmk004 .left-content {
-	width: 645px;
-	padding: 12px;
+	width: 483px;
+	padding: 10px 12px 12px 12px;
 	float: left;
 	margin-top: 20px;
 }
@@ -145,9 +144,9 @@
 }
 
 .view-e-kmk004 .right-content {
-	width: 430px;
+	width: 468px;
 	float: left;
-	margin-left: 38px;
+	margin-left: 30px;
 }
 
 .view-e-kmk004 .right-content p {
@@ -160,11 +159,11 @@
 
 .view-e-kmk004 .right-content .content-data {
 	margin-top: 10px;
-	margin-left: 15px;
+	margin-left: 10px;
 }
 
 .view-e-kmk004 .right-content .label1 {
-	margin-top: 10px;
+	margin-top: 15px;
 }
 
 .view-e-kmk004 .right-content .year {

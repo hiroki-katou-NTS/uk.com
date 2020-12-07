@@ -17,7 +17,7 @@ const template = `
 								height: calc(100vh - 163px);
     							overflow: hidden scroll;">
 					
-						<div style="display:inline-block;padding:30px;"> 
+						<div style="display:inline-block;padding:30px 20px 30px 30px;"> 
 							<div id="empt-list-setting"></div>
 						</div>
 						<div id="right-layout"> 
@@ -25,7 +25,7 @@ const template = `
 							<label id="flex-title" data-bind="i18n:'KMK004_268'"></label>
 							<hr/>
 							<label id="selected-work-place" data-bind="i18n:screenData().selectedName"></label>
-							<div style="margin-top: 20px;" data-bind="component: {
+							<div style="margin-top: 15px;" data-bind="component: {
 								name: 'basic-settings-company',
 								params: {
 											screenData:screenData,
@@ -97,6 +97,7 @@ class ScreenIComponent extends ko.ViewModel {
 				listType: ListType.EMPLOYMENT,
 				selectType: SelectType.SELECT_FIRST_ITEM,
 				selectedCode: vm.screenData().selected,
+				isDisplayClosureSelection:true,
 				isDialog: false,
 				isShowNoSelectRow: false,
 				alreadySettingList: vm.screenData().alreadySettingList,

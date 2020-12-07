@@ -24,7 +24,7 @@ const template = `
 							<label id="flex-title" data-bind="i18n:'KMK004_268'"></label>
 							<hr/>
 							<label id="selected-work-place" data-bind="i18n: screenData().selectedName"></label>
-							<div style="margin-top: 20px;" data-bind="component: {
+							<div style="margin-top: 10px;" data-bind="component: {
 								name: 'basic-settings-company',
 								params: {
 											screenData:screenData,
@@ -97,7 +97,7 @@ class ScreenHComponent extends ko.ViewModel {
 			isShowSelectButton: true,
 			isDialog: false,
 			alreadySettingList: vm.screenData().alreadySettingList,
-			maxRows: 10,
+			maxRows: 12,
 			tabindex: 1,
 			systemType: 2
 		};
