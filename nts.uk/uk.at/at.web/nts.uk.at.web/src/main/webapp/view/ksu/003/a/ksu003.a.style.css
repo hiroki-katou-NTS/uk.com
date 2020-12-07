@@ -179,7 +179,7 @@
 }
 
 .x-link:hover {
-	cursor: initial !important;
+	cursor: pointer !important;
 }
 
  .x-link {
@@ -240,7 +240,7 @@ html {
 	padding: 12px;
 	background-color: #F8EFD4 !important;
 	display: none;
-	z-index: 1001 !important;
+	z-index: 2000 !important;
 	width: 230px;
 }
 /** A3_4 */

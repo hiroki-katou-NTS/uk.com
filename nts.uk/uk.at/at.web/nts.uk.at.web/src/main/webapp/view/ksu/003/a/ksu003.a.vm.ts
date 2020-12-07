@@ -21,21 +21,21 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 		KEY: string = 'USER_KSU003_INFOR';
 		employeeIdLogin: string = __viewContext.user.employeeId; /** Employee login */
-		
+
 		targetDate: KnockoutObservable<string> = ko.observable('2020/05/02'); /*A2_1_3*/
 		targetDateDay: KnockoutObservable<string> = ko.observable('');
-		
+
 		organizationName: KnockoutObservable<string> = ko.observable(''); /*A2_2*/
 		selectedDisplayPeriod: KnockoutObservable<number> = ko.observable(1); /*A2_5*/
-		
+
 		itemList: KnockoutObservableArray<ItemModel>; /*A3_2*/
 		selectOperationUnit: KnockoutObservable<string> = ko.observable('0');
-		
+
 		sortList: KnockoutObservableArray<ItemModel>; /*A3_4*/
 		checked: KnockoutObservable<string> = ko.observable();
-		
+
 		checkedName: KnockoutObservable<boolean> = ko.observable(true); /*A3_3 */
-		
+
 		showA9: boolean;
 		checkNext: KnockoutObservable<boolean> = ko.observable(true);
 		checkPrv: KnockoutObservable<boolean> = ko.observable(true);
@@ -62,7 +62,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		localStore: KnockoutObservable<ILocalStore> = ko.observable();
 		lstEmpId: Array<IEmpidName> = [];
 		timeRange: number = 0;
-		
+
 		timeBrkText: KnockoutObservable<string> = ko.observable();
 		timeBrkMinu: KnockoutObservable<number> = ko.observable();
 
@@ -78,7 +78,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		checkClearTime: boolean = true;
 		checkUpdateMidChart: boolean = true;
 		checkUpdateTime: any = []
-		
+
 		constructor() {
 			let self = this;
 			// get data from sc A
@@ -395,26 +395,28 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 		setDataToMidExtable(empId: string, schedule: model.EmployeeWorkScheduleDto, fixed: model.FixedWorkInforDto, totalTime: any, totalBrkTime: any) {
 			let workTypeName = "", workTimeName = "";
-
+			if(schedule == null){
+				workTimeName = getText('KSU003_55');
+			}
 			if (fixed != null) {
-				if (fixed.workTypeName != null) {
+				if (fixed.workTypeName != null && fixed.workTypeName != "") {
 					workTypeName = fixed.workTypeName;
 				}
-				if (fixed.workTimeName != null) {
+				if (fixed.workTimeName != null && fixed.workTimeName != "") {
 					workTimeName = fixed.workTimeName;
 				}
 			}
-			if (schedule.workTimeCode == null) {
+			if (schedule.workTimeCode == null || schedule.workTimeCode == "") {
 				workTypeName = getText('KSU003_55');
-			} else if (schedule.workTypeCode != null && fixed != null
-				&& fixed.workTypeName == null) {
+			} else if (schedule.workTypeCode != null && schedule.workTypeCode != "" && fixed != null
+				&& (fixed.workTypeName == null || fixed.workTypeName == "")) {
 				workTypeName = schedule.workTypeCode + getText('KSU003_54')
 			}
 			// set work time name
-			if (schedule.workTimeCode == null) {
+			if ((schedule.workTimeCode == null || schedule.workTimeCode == "")) {
 				workTimeName = getText('KSU003_55');
 			} else {
-				if (fixed != null && fixed.workTimeName == null) {
+				if (fixed != null && (fixed.workTimeName == null || fixed.workTimeName == "")) {
 					workTimeName = schedule.workTimeCode + getText('KSU003_54');
 				}
 			}
@@ -500,15 +502,17 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					gcFlowTime = [], gcFlexTime = [], gcCoreTime = [], gcHolidayTime = [],
 					gcShortTime = [], typeOfTime = "";
 				let color = self.setColorEmployee(schedule.workInfoDto.isNeedWorkSchedule, schedule.workInfoDto.isCheering);
-				if (color === '#ddddd2') {
+				let colorA6 = self.setColorWorkingInfo(schedule.empId, schedule.workInfoDto.isConfirmed, schedule.workScheduleDto != null ? schedule.workScheduleDto : null, schedule.workInfoDto.isNeedWorkSchedule);
+				if (schedule.workInfoDto.isConfirmed == 0 && schedule.workInfoDto.isNeedWorkSchedule == 0) {
 					disableDs.push({
 						empId: schedule.empId,
-						color: color
+						color: "#ddddd2",
 					});
 				}
 				leftDs.push({
 					empId: schedule.empId,
-					color: color
+					color: color,
+					colorA6 : colorA6
 				});
 
 				let startTime1 = "", startTime2 = "", endTime1 = "", endTime2 = "";
@@ -521,28 +525,30 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				let totalTime: any = "", totalBreakTime: any = 0, totalBreakTime1: any = 0, totalBreakTime2: any = 0;
 				let workTypeName = "", workTimeName = "";
 				if (schedule.fixedWorkInforDto != null) {
-					if (schedule.fixedWorkInforDto.workTypeName != null) {
+					if (schedule.fixedWorkInforDto.workTypeName != null && schedule.fixedWorkInforDto.workTypeName != "") {
 						workTypeName = schedule.fixedWorkInforDto.workTypeName;
 					}
-					if (schedule.fixedWorkInforDto.workTimeName != null) {
+					if (schedule.fixedWorkInforDto.workTimeName != null && schedule.fixedWorkInforDto.workTimeName != "") {
 						workTimeName = schedule.fixedWorkInforDto.workTimeName;
 					}
 				}
+				if (schedule.workScheduleDto == null && schedule.fixedWorkInforDto == null) {
+					workTimeName = getText('KSU003_55');
+				}
 				if (schedule.workScheduleDto != null && schedule.fixedWorkInforDto != null) {
 					totalTime = self.calcTotalTime(schedule.workScheduleDto);
-					self.setColorWorkingInfo(schedule.empId, schedule.workInfoDto.isConfirmed, schedule.workScheduleDto);
 					// Bind *worktypecode - *worktimecode
-					if (schedule.workScheduleDto.workTimeCode == null) {
+					if (schedule.workScheduleDto.workTimeCode == null || schedule.workScheduleDto.workTimeCode == "") {
 						workTypeName = getText('KSU003_55');
-					} else if (schedule.workScheduleDto.workTypeCode != null && schedule.fixedWorkInforDto != null
-						&& schedule.fixedWorkInforDto.workTypeName == null) {
+					} else if (schedule.workScheduleDto.workTypeCode != null && schedule.workScheduleDto.workTypeCode != "" && schedule.fixedWorkInforDto != null
+						&& (schedule.fixedWorkInforDto.workTypeName == null || schedule.fixedWorkInforDto.workTypeName == "")) {
 						workTypeName = schedule.workScheduleDto.workTypeCode + getText('KSU003_54')
 					}
 					// set work time name
-					if (schedule.workScheduleDto.workTimeCode == null) {
+					if (schedule.workScheduleDto.workTimeCode == null || schedule.workScheduleDto.workTimeCode == "" ) {
 						workTimeName = getText('KSU003_55');
 					} else {
-						if (schedule.fixedWorkInforDto != null && schedule.fixedWorkInforDto.workTimeName == null) {
+						if (schedule.fixedWorkInforDto != null && (schedule.fixedWorkInforDto.workTimeName == "" || schedule.fixedWorkInforDto.workTimeName == null)) {
 							workTimeName = schedule.workScheduleDto.workTimeCode + getText('KSU003_54');
 						}
 					}
@@ -767,7 +773,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				} else {
 					middleDs.push({
 						empId: schedule.empId, cert: getText('KSU003_22'), worktypeCode: "",
-						worktype: "", worktimeCode: "", worktime: "",
+						worktype: workTypeName, worktimeCode: "", worktime: workTimeName,
 						startTime1: "", endTime1: "",
 						startTime2: "", endTime2: "",
 						totalTime: "", breaktime: "", color: ""
@@ -1417,9 +1423,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				disableDSFilter = _.filter(disableDs, (x: any) => { return x.empId === self.lstEmpId[i].empId }); // list không dùng schedule
 
 				leftmostDs.push({ empId: self.lstEmpId[i].empId, empName: eName, cert: getText('KSU003_22') });
-
 				leftContentDeco.push(new CellColor("empName", leftDSFilter[0].empId, leftDSFilter[0].color)); // set màu cho emp name
 				leftContentDeco.push(new CellColor("cert", leftDSFilter[0].empId, leftDSFilter[0].color));
+				
 				if (disableDSFilter.length > 0) {
 					leftContentDeco.push(new CellColor("empName", disableDSFilter[0].empId, "xseal", leftDSFilter[0].color)); // set màu cho emp name khi bị dis
 					leftContentDeco.push(new CellColor("cert", disableDSFilter[0].empId, "xseal", leftDSFilter[0].color));
@@ -1437,9 +1443,23 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					for (let z = self.dataInitStartKsu003Dto().byDateDto.dispStart; z <= (displayRange + self.dataInitStartKsu003Dto().byDateDto.dispStart); z++) {
 						detailContentDeco.push(new CellColor(z.toString(), disableDSFilter[0].empId, disableDSFilter[0].color));
 					}
+				} else {
+					if (dataMid.color != "" && dataMid.color !== null) {
+					let dataColor_A6 = _.filter(dataMid.color, (x: any) => { return x.empId === self.lstEmpId[i].empId });
+
+					middleContentDeco.push(new CellColor("worktypeCode", self.lstEmpId[i].empId, dataColor_A6[0].workTypeColor));
+					middleContentDeco.push(new CellColor("worktypeName", self.lstEmpId[i].empId, dataColor_A6[0].workTypeColor));
+					middleContentDeco.push(new CellColor("worktimeCode", self.lstEmpId[i].empId, dataColor_A6[0].workTimeColor));
+					middleContentDeco.push(new CellColor("worktimeName", self.lstEmpId[i].empId, dataColor_A6[0].workTimeColor));
+					middleContentDeco.push(new CellColor("startTime1", self.lstEmpId[i].empId, dataColor_A6[0].startTime1Color));
+					middleContentDeco.push(new CellColor("endTime1", self.lstEmpId[i].empId, dataColor_A6[0].endTime1Color));
+					middleContentDeco.push(new CellColor("startTime2", self.lstEmpId[i].empId, dataColor_A6[0].startTime2Color));
+					middleContentDeco.push(new CellColor("endTime2", self.lstEmpId[i].empId, dataColor_A6[0].endTime2Color));
+					middleContentDeco.push(new CellColor("breaktime", self.lstEmpId[i].empId, dataColor_A6[0].breakTimeColor));
 				}
-				
-				
+				}
+
+
 				// set ẩn hiện A6, A7, A8
 				if (self.dataScreen003A().employeeInfo[i].workInfoDto.isNeedWorkSchedule != 0) { // ※2
 					if (self.dataScreen003A().canModified == 0) { // パラメータ．修正可能==０：参照 // ※4
@@ -1467,22 +1487,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						}
 					}
 				}
-
-				if (dataMid.color != "" && dataMid.color !== null) {
-					let dataColor_A6 = _.filter(dataMid.color, (x: any) => { return x.empId === self.lstEmpId[i].empId });
-
-					middleContentDeco.push(new CellColor("worktypeCode", self.lstEmpId[i], dataColor_A6[0].workTypeColor));
-					middleContentDeco.push(new CellColor("worktypeName", self.lstEmpId[i], dataColor_A6[0].workTypeColor));
-					middleContentDeco.push(new CellColor("worktimeCode", self.lstEmpId[i], dataColor_A6[0].workTimeColor));
-					middleContentDeco.push(new CellColor("worktimeName", self.lstEmpId[i], dataColor_A6[0].workTimeColor));
-					middleContentDeco.push(new CellColor("startTime1", self.lstEmpId[i], dataColor_A6[0].startTime1Color));
-					middleContentDeco.push(new CellColor("endTime1", self.lstEmpId[i], dataColor_A6[0].endTime1Color));
-					middleContentDeco.push(new CellColor("startTime2", self.lstEmpId[i], dataColor_A6[0].startTime2Color));
-					middleContentDeco.push(new CellColor("endTime2", self.lstEmpId[i], dataColor_A6[0].endTime2Color));
-					middleContentDeco.push(new CellColor("breaktime", self.lstEmpId[i], dataColor_A6[0].breakTimeColor));
-				}
-
-
 				if (self.dataScreen003A().employeeInfo[i].fixedWorkInforDto != null && self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.fixBreakTime === 0) { // ※8
 					middleContentDeco.push(new CellColor("breaktime", disableDSFilter[0].empId, "xseal", 0));
 				}
@@ -2322,6 +2326,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				case SupportAtr.TIMEZONE_RESPONDENT:
 					return '#ffccff';
 			}
+			return "";
 		}
 		checkColorA6(workInfo: any) {
 			let workTypeColor = "";
@@ -2335,16 +2340,18 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			return workTypeColor;
 		}
 		/** A6_color① - chua xong o phan login va xin bang don */
-		setColorWorkingInfo(empId: string, isConfirmed: number, workScheduleDto: any) {
+		setColorWorkingInfo(empId: string, isConfirmed: number, workScheduleDto: any, isNeedWorkSchedule : any) {
 			let self = this, workTypeColor = "", workTimeColor = "", startTime1Color = "", endTime1Color = "",
-				startTime2Color = "", endTime2Color = "", breakTimeColor = "";
+				startTime2Color = "", endTime2Color = "", breakTimeColor = "", workingInfoColor = "";
 
-			if (isConfirmed == 0) {
-				self.workingInfoColor('#ddddd2');
-			} else {
-				self.workingInfoColor('#eccefb');
+			if (isConfirmed == 0 && isNeedWorkSchedule == 0) {
+				workingInfoColor = '#ddddd2';
+			}  
+			if (isConfirmed == 1){
+				workingInfoColor = '#eccefb';
 			}
-			// work type
+			if(workScheduleDto != null){
+				// work type
 			if (workScheduleDto.workTypeStatus != null) {
 				workTypeColor = self.checkColorA6(workScheduleDto.workTypeStatus);
 			}
@@ -2372,16 +2379,17 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			if (workScheduleDto.breakTimeStatus != null) {
 				breakTimeColor = self.checkColorA6(workScheduleDto.endTime2Status);
 			}
+			}
 
-			self.dataColorA6.push({
-				empId: empId,
+			return ({
 				workTypeColor: workTypeColor,
 				workTimeColor: workTimeColor,
 				startTime1Color: startTime1Color,
 				endTime1Color: endTime1Color,
 				startTime2Color: startTime2Color,
 				endTime2Color: endTime2Color,
-				breakTimeColor: breakTimeColor
+				breakTimeColor: breakTimeColor,
+				workingInfoColor : workingInfoColor
 
 			});
 		}
@@ -2514,14 +2522,18 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			if (window.innerHeight > 700) {
 				$("#hr-row2").css({ "width": 1278 + 'px' });
 			} else {
-				if (self.indexBtnToLeft() % 2 == 0) {
-					$(".ex-header-detail").css({ "width": 615 + 'px' });
-					$(".ex-body-detail").css({ "width": 632 + 'px' });
-				} else {
-					$(".ex-header-detail").css({ "width": 1009 + 'px' });
-					$(".ex-body-detail").css({ "width": 1026 + 'px' });
+				if (window.innerWidth < 1320) {
+					if (self.indexBtnToLeft() % 2 == 0) {
+						$(".ex-header-detail").css({ "width": 615 + 'px' });
+						$(".ex-body-detail").css({ "width": 632 + 'px' });
+					} else {
+						$(".ex-header-detail").css({ "width": 1009 + 'px' });
+						$(".ex-body-detail").css({ "width": 1026 + 'px' });
+					}
 				}
-
+				if (window.innerWidth == 1320) {
+					$("#hr-row2").css({ "width": 1277 + 'px' });
+				}
 			}
 		}
 
