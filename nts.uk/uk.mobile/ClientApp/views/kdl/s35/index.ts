@@ -215,8 +215,8 @@ export class KdlS35Component extends Vue {
             .post('at', servicesPath.associate, data)
             .then((result: { data: SubWorkSubHolidayLinkingMng[] }) => {
                 vm.$mask('hide');
-                vm.setData(result.data);
-                vm.$close({ mngDisp: vm.managementData });
+                // vm.setData(result.data);
+                vm.$close({ mngDisp: result.data });
             })
             .catch((error: any) => {
                 vm.showError(error);
@@ -225,7 +225,6 @@ export class KdlS35Component extends Vue {
 
     private setData(data: SubWorkSubHolidayLinkingMng[]) {
         const vm = this;
-
         vm.managementData.push(...data);
     }
 
