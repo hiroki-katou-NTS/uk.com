@@ -51,7 +51,7 @@ public class CheckResultMonthlyPubImpl implements CheckResultMonthlyPub {
 	
 	@Override
 	public boolean checkPublicHoliday(String companyId, String employeeCd, String employeeId, String workplaceId,
-			boolean isManageComPublicHd, YearMonth yearMonth, SpecHolidayCheckConPubEx specHolidayCheckCon) {
+			int isManageComPublicHd, YearMonth yearMonth, SpecHolidayCheckConPubEx specHolidayCheckCon) {
 		boolean check = checkingPublicHoliday.checkPublicHoliday(
 				companyId, 
 				employeeCd, 

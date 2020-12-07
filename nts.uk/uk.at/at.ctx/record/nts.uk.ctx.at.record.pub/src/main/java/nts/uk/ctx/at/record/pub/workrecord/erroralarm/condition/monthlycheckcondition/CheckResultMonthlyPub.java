@@ -22,7 +22,7 @@ public interface CheckResultMonthlyPub {
 	 * @param specHolidayCheckCon
 	 * @return
 	 */
-	boolean checkPublicHoliday(String companyId, String employeeCd , String employeeId,String workplaceId ,boolean isManageComPublicHd, YearMonth yearMonth,SpecHolidayCheckConPubEx specHolidayCheckCon );
+	boolean checkPublicHoliday(String companyId, String employeeCd , String employeeId,String workplaceId ,int isManageComPublicHd, YearMonth yearMonth,SpecHolidayCheckConPubEx specHolidayCheckCon );
 	
 	/**
 	 * 36協定チェック条件をチェックする 

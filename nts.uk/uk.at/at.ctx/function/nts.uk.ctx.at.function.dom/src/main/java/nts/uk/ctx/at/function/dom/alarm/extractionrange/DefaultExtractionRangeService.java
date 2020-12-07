@@ -306,6 +306,8 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 		return new CheckConditionPeriod(startDate, endDate);
 		
 	}
+	
+	//http://192.168.50.4:3000/issues/112749
 	//周期単位の期間を算出する
 	public CheckConditionTimeDto get4WeekTime(CheckCondition c, int closureId, YearMonth yearMonth, String companyId) {
 		LocalDate sDate = null;
@@ -317,93 +319,93 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 		boolean isYMD;
 		
 		// Get from PublicHolidaySetting domain
-		Optional<PublicHolidaySetting> publicHolidaySettingOpt = publicHolidaySettingRepo.findByCID(companyId);
-		if (!publicHolidaySettingOpt.isPresent())
-			return new CheckConditionTimeDto(c.getAlarmCategory().value,
-					EnumAdaptor.convertToValueName(c.getAlarmCategory()).getLocalizedName(), null, null, null, null);
+//		Optional<PublicHolidaySetting> publicHolidaySettingOpt = publicHolidaySettingRepo.findByCID(companyId);
+//		if (!publicHolidaySettingOpt.isPresent())
+//			return new CheckConditionTimeDto(c.getAlarmCategory().value,
+//					EnumAdaptor.convertToValueName(c.getAlarmCategory()).getLocalizedName(), null, null, null, null);
 		
-		if(publicHolidaySettingOpt.get().getPublicHdManagementClassification()==PublicHolidayManagementClassification._1_MONTH) {
-			PublicHolidayGrantDate publicHolidayGrantDate = (PublicHolidayGrantDate)publicHolidaySettingOpt.get().getPublicHdManagementStartDate();
-			
-			if(publicHolidayGrantDate.getPeriod()==PublicHolidayPeriod.FIRST_DAY_TO_LAST_DAY) {
-				String processingMonth = yearMonth.toString();				
-				sDate = LocalDate.of(Integer.valueOf(processingMonth.substring(0, 4)).intValue(), Integer.valueOf(processingMonth.substring(4, 6)).intValue(), 1);
-				eDate = sDate.plusMonths(1);
-				eDate = eDate.minusDays(1);
-				
-			}else {
-				DatePeriod datePeriod = ClosureService.getClosurePeriod(
-															ClosureService.createRequireM1(closureRepo, closureEmploymentRepo),
-															closureId, yearMonth);
-				sDate = datePeriod.start().localDate();
-				eDate = datePeriod.end().localDate();								
-			}
-			
-		}else {
-			PublicHoliday publicHoliday = (PublicHoliday) publicHolidaySettingOpt.get().getPublicHdManagementStartDate();
-			if (publicHoliday.getDetermineStartDate() == DayOfPublicHoliday.DESIGNATE_BY_YEAR_MONTH_DAY) {
-				countingDate= publicHoliday.getDate().localDate();
-				isYMD = true;
-			}else {			
-				String dayMonth= publicHoliday.getDayMonth().toString();
-				if(dayMonth.length()<4) dayMonth ="0" +dayMonth;
-				countingDate = LocalDate.of(LocalDate.now().getYear(), Integer.valueOf(dayMonth.substring(0, 2)).intValue(),
-						Integer.valueOf(dayMonth.substring(2, 4)).intValue());
-				isYMD= false;
-			}
-			LocalDate currentDate = LocalDate.now();
-			if (isYMD) {
-				long totalDays = ChronoUnit.DAYS.between(countingDate, currentDate);
-				long index = totalDays / 28;
-	
-				switch (periodUnit.getSegmentationOfCycle()) {
-				case ThePreviousCycle:
-					index--;
-				case Period:
-					break;
-				case TheNextCycle:
-					index++;
-				default:
-					break;
-				}
-				if (index == -1)
-					throw new RuntimeException("1周期目の期間がシステム日付を含む期間となりますが周期の区分 は 実行日を含む周期の前周期！");
-	
-				sDate = countingDate.plusDays(index * 28);
-				eDate = sDate.plusDays(27);
-	
-			} else {
-				long totalDays = ChronoUnit.DAYS.between(countingDate, currentDate);
-				long index = totalDays / 28;
-	
-				switch (periodUnit.getSegmentationOfCycle()) {
-				case ThePreviousCycle:
-					index--;
-				case Period:
-					break;
-				case TheNextCycle:
-					index++;
-				default:
-					break;
-				}
-	
-				if (index == -1) {
-					countingDate.minusYears(1);
-					index = 13;
-					sDate = countingDate.plusDays(index * 28);
-					eDate = LocalDate.of(countingDate.getYear(), 12, 31);
-				} else if (index == 14) {
-					countingDate.plusYears(1);
-					index = 0;
-					sDate = countingDate.plusDays(index * 28);
-					eDate = sDate.plusDays(27);
-				} else {
-					sDate = countingDate.plusDays(index * 28);
-					eDate = sDate.plusDays(27);
-				}
-	
-			}
-		}
+//		if(publicHolidaySettingOpt.get().getPublicHdManagementClassification()==PublicHolidayManagementClassification._1_MONTH) {
+//			PublicHolidayGrantDate publicHolidayGrantDate = (PublicHolidayGrantDate)publicHolidaySettingOpt.get().getPublicHdManagementStartDate();
+//			
+//			if(publicHolidayGrantDate.getPeriod()==PublicHolidayPeriod.FIRST_DAY_TO_LAST_DAY) {
+//				String processingMonth = yearMonth.toString();				
+//				sDate = LocalDate.of(Integer.valueOf(processingMonth.substring(0, 4)).intValue(), Integer.valueOf(processingMonth.substring(4, 6)).intValue(), 1);
+//				eDate = sDate.plusMonths(1);
+//				eDate = eDate.minusDays(1);
+//				
+//			}else {
+//				DatePeriod datePeriod = ClosureService.getClosurePeriod(
+//															ClosureService.createRequireM1(closureRepo, closureEmploymentRepo),
+//															closureId, yearMonth);
+//				sDate = datePeriod.start().localDate();
+//				eDate = datePeriod.end().localDate();								
+//			}
+//			
+//		}else {
+//			PublicHoliday publicHoliday = (PublicHoliday) publicHolidaySettingOpt.get().getPublicHdManagementStartDate();
+//			if (publicHoliday.getDetermineStartDate() == DayOfPublicHoliday.DESIGNATE_BY_YEAR_MONTH_DAY) {
+//				countingDate= publicHoliday.getDate().localDate();
+//				isYMD = true;
+//			}else {			
+//				String dayMonth= publicHoliday.getDayMonth().toString();
+//				if(dayMonth.length()<4) dayMonth ="0" +dayMonth;
+//				countingDate = LocalDate.of(LocalDate.now().getYear(), Integer.valueOf(dayMonth.substring(0, 2)).intValue(),
+//						Integer.valueOf(dayMonth.substring(2, 4)).intValue());
+//				isYMD= false;
+//			}
+//			LocalDate currentDate = LocalDate.now();
+//			if (isYMD) {
+//				long totalDays = ChronoUnit.DAYS.between(countingDate, currentDate);
+//				long index = totalDays / 28;
+//	
+//				switch (periodUnit.getSegmentationOfCycle()) {
+//				case ThePreviousCycle:
+//					index--;
+//				case Period:
+//					break;
+//				case TheNextCycle:
+//					index++;
+//				default:
+//					break;
+//				}
+//				if (index == -1)
+//					throw new RuntimeException("1周期目の期間がシステム日付を含む期間となりますが周期の区分 は 実行日を含む周期の前周期！");
+//	
+//				sDate = countingDate.plusDays(index * 28);
+//				eDate = sDate.plusDays(27);
+//	
+//			} else {
+//				long totalDays = ChronoUnit.DAYS.between(countingDate, currentDate);
+//				long index = totalDays / 28;
+//	
+//				switch (periodUnit.getSegmentationOfCycle()) {
+//				case ThePreviousCycle:
+//					index--;
+//				case Period:
+//					break;
+//				case TheNextCycle:
+//					index++;
+//				default:
+//					break;
+//				}
+//	
+//				if (index == -1) {
+//					countingDate.minusYears(1);
+//					index = 13;
+//					sDate = countingDate.plusDays(index * 28);
+//					eDate = LocalDate.of(countingDate.getYear(), 12, 31);
+//				} else if (index == 14) {
+//					countingDate.plusYears(1);
+//					index = 0;
+//					sDate = countingDate.plusDays(index * 28);
+//					eDate = sDate.plusDays(27);
+//				} else {
+//					sDate = countingDate.plusDays(index * 28);
+//					eDate = sDate.plusDays(27);
+//				}
+//	
+//			}
+//		}
 		return new CheckConditionTimeDto(c.getAlarmCategory().value,
 				EnumAdaptor.convertToValueName(c.getAlarmCategory()).getLocalizedName(),
 				sDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd")),
