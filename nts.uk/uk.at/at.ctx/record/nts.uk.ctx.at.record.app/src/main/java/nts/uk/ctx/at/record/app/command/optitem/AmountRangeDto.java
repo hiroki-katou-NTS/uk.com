@@ -23,4 +23,10 @@ public class AmountRangeDto {
                 Optional.ofNullable(dailyamountRange.toDomain()), 
                 Optional.ofNullable(monthlyAmountRange.toDomain()));
     }
+    
+    public static AmountRangeDto fromDomain(AmountRange domain) {
+        return new AmountRangeDto(
+                domain.getDailyAmountRange().isPresent() ? DailyAmountRangeDto.fromDomain(domain.getDailyAmountRange().get()) : new DailyAmountRangeDto(), 
+                domain.getMonthlyAmountRange().isPresent() ? MonthlyAmountRangeDto.fromDomain(domain.getMonthlyAmountRange().get()) : new MonthlyAmountRangeDto());
+    }
 }

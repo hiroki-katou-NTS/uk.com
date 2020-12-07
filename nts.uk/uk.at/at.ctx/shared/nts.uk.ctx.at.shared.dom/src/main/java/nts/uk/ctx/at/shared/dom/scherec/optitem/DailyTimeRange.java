@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.scherec.optitem;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTime;
 
 /**

@@ -88,13 +88,14 @@ public class CalcResultRangeDto implements CalcResultRangeSetMemento {
 	 */
 	@Override
 	public void setNumberRange(Optional<NumberRange> range) {
-		if (range.isPresent() && range.get().getLowerLimit().isPresent()) {
-			this.numberLower = range.get().getLowerLimit().get().v();
-
-		}
-		if (range.isPresent() && range.get().getUpperLimit().isPresent()) {
-			this.numberUpper = range.get().getUpperLimit().get().v();
-		}
+//		if (range.isPresent() && range.get().getLowerLimit().isPresent()) {
+//			this.numberLower = range.get().getLowerLimit().get().v();
+//
+//		}
+//		if (range.isPresent() && range.get().getUpperLimit().isPresent()) {
+//			this.numberUpper = range.get().getUpperLimit().get().v();
+//		}
+	    this.numberRange = range.isPresent() ? NumberRangeDto.fromDomain(range.get()) : null;
 	}
 
 	/*
@@ -106,13 +107,14 @@ public class CalcResultRangeDto implements CalcResultRangeSetMemento {
 	 */
 	@Override
 	public void setTimeRange(Optional<TimeRange> range) {
-		if (range.isPresent() && range.get().getLowerLimit().isPresent()) {
-			this.timeLower = range.get().getLowerLimit().get().v().intValue();
-
-		}
-		if (range.isPresent() && range.get().getUpperLimit().isPresent()) {
-			this.timeUpper = range.get().getUpperLimit().get().v().intValue();
-		}
+//		if (range.isPresent() && range.get().getLowerLimit().isPresent()) {
+//			this.timeLower = range.get().getLowerLimit().get().v().intValue();
+//
+//		}
+//		if (range.isPresent() && range.get().getUpperLimit().isPresent()) {
+//			this.timeUpper = range.get().getUpperLimit().get().v().intValue();
+//		}
+	    this.timeRange = range.isPresent() ? TimeRangeDto.fromDomain(range.get()) : null;
 	}
 
 	/*
@@ -124,13 +126,14 @@ public class CalcResultRangeDto implements CalcResultRangeSetMemento {
 	 */
 	@Override
 	public void setAmountRange(Optional<AmountRange> range) {
-		if (range.isPresent() && range.get().getLowerLimit().isPresent()) {
-			this.amountLower = range.get().getLowerLimit().get().v().intValue();
-
-		}
-		if (range.isPresent() && range.get().getUpperLimit().isPresent()) {
-			this.amountUpper = range.get().getUpperLimit().get().v().intValue();
-		}
+//		if (range.isPresent() && range.get().getLowerLimit().isPresent()) {
+//			this.amountLower = range.get().getLowerLimit().get().v().intValue();
+//
+//		}
+//		if (range.isPresent() && range.get().getUpperLimit().isPresent()) {
+//			this.amountUpper = range.get().getUpperLimit().get().v().intValue();
+//		}
+	    this.amountRange = range.isPresent() ? AmountRangeDto.fromDomain(range.get()) : null;
 	}
 
 }
