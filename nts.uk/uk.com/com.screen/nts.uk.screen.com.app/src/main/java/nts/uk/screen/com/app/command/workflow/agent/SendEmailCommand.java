@@ -1,4 +1,4 @@
-package nts.uk.ctx.workflow.app.command.agent;
+package nts.uk.screen.com.app.command.workflow.agent;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
