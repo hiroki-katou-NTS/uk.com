@@ -419,7 +419,6 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 
 				// Generate employee report page
 				for (AttendanceRecordReportEmployeeData employeeData : reportEmployeeDatas) {
-					
 					if (dataSource.getMode() == EXPORT_PDF) {
 						sheetName = employeeCd + "-" + employeeData.getReportYearMonth();
 						worksheetCollection.get(worksheetCollection.addCopy(0)).setName(sheetName);

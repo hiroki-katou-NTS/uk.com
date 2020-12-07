@@ -60,7 +60,6 @@ module nts.uk.com.view.kwr002.a {
             ]);
             selectedDataZeroDisplayType: KnockoutObservable<number> = ko.observable(0);
 
-            selectedDataDisplayItemType: KnockoutObservable<number> = ko.observable(0);
             itemListTypePageBrake: KnockoutObservableArray<ItemModel>;
 
             enableA8_3: KnockoutObservable<boolean> = ko.observable(false);
@@ -264,6 +263,7 @@ module nts.uk.com.view.kwr002.a {
                         vm.enableA8_3(!wrapper.isFreeSetting);
                         vm.enableA8_8(wrapper.isFreeSetting);
 
+                        vm.selectedDataZeroDisplayType(dataCharacteristic.zeroDisplayType);
                         dfd.resolve();
                     });
                 });
@@ -434,7 +434,7 @@ module nts.uk.com.view.kwr002.a {
                             , self.selectedCodeA8_8()
                             , companyId
                             , userId
-                            , 0
+                            , self.selectedDataZeroDisplayType()
                             , self.filterLayoutId(self.selectedCodeA8_8(),ItemSelectionType.FREE_SETTING)
                             , self.filterLayoutId(self.selectedCode(),ItemSelectionType.STANDARD_SETTING));
                         nts.uk.ui.block.grayout();
@@ -478,7 +478,7 @@ module nts.uk.com.view.kwr002.a {
                             , self.selectedCodeA8_8()
                             , companyId
                             , userId
-                            , 0
+                            , self.selectedDataZeroDisplayType()
                             , self.filterLayoutId(self.selectedCodeA8_8(),ItemSelectionType.FREE_SETTING)
                             , self.filterLayoutId(self.selectedCode(),ItemSelectionType.STANDARD_SETTING));
 
@@ -497,6 +497,7 @@ module nts.uk.com.view.kwr002.a {
                             self.closureId(),
                             self.selectedCodeA8_5(),
                             attendanceRecordOutputConditionsDto));
+                        service.saveCharacteristic(companyId, userId, attendanceRecordOutputConditionsDto);
                         service.exportService(self.exportDto()).done((response: any) => {
                             if (response.taskDatas.length > 0) {
                                 nts.uk.ui.dialog.error({ messageId: "Msg_1269", messageParams: [response.taskDatas[0].valueAsString] });
@@ -652,6 +653,7 @@ module nts.uk.com.view.kwr002.a {
                 let companyId: string = __viewContext.user.companyId;
                 let userId: string = __viewContext.user.employeeId;
                 let attendanceRecordOutputConditionsDto;
+                let zeroDisplayType: any = self.selectedDataZeroDisplayType();
                 service.restoreCharacteristic(companyId, userId).done((data: any) => {
                     if (_.isUndefined(data)) {
                         attendanceRecordOutputConditionsDto = new AttendanceRecordOutputConditionsDto(
@@ -660,7 +662,7 @@ module nts.uk.com.view.kwr002.a {
                             , ''
                             , companyId
                             , userId
-                            , data.zeroDisplayType
+                            , zeroDisplayType
                             , ''
                             , '');
                     } else {
@@ -670,12 +672,12 @@ module nts.uk.com.view.kwr002.a {
                             , self.selectedCodeA8_8()
                             , companyId
                             , userId
-                            , data.zeroDisplayType
+                            , zeroDisplayType
                             , self.filterLayoutId(self.selectedCode(),ItemSelectionType.STANDARD_SETTING)
                             , self.filterLayoutId(self.selectedCodeA8_8(),ItemSelectionType.FREE_SETTING)
                         );
                     }
-                    self.selectedDataZeroDisplayType = data.zeroDisplayType;
+                    // self.selectedDataZeroDisplayType = ko.observable(data.zeroDisplayType);
                     service.saveCharacteristic(companyId, userId, attendanceRecordOutputConditionsDto);
                     dfd.resolve(data);
                 });
