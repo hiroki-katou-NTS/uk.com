@@ -10,6 +10,7 @@ import java.util.stream.IntStream;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.enums.EnumAdaptor;
@@ -1142,6 +1143,34 @@ public class OvertimeServiceImpl implements OvertimeService {
 		
 		// 取得した「確認メッセージリスト」と「残業申請」を返す
 		return outputs;
+	}
+
+	@Override
+	public void checkBeforeMovetoAppTime(
+			String companyId,
+			Boolean mode,
+			DisplayInfoOverTime displayInfoOverTime,
+			AppOverTime appOverTime) {
+		// 勤務種類、就業時間帯チェックのメッセージを表示
+		otherCommonAlgorithm.checkWorkingInfo(
+				companyId,
+				appOverTime.getWorkInfoOp().map(x -> x.getWorkTypeCode().v()).orElse(null),
+				appOverTime.getWorkInfoOp().map(x -> x.getWorkTimeCode().v()).orElse(null));
+		// 事前申請が必須か確認する
+		displayInfoOverTime.getInfoNoBaseDate()
+					       .getOverTimeAppSet()
+					       .getApplicationDetailSetting()
+					       .checkAdvanceApp(
+					    		   ApplicationType.OVER_TIME_APPLICATION,
+					    		   appOverTime.getPrePostAtr(),
+					    		   Optional.of(appOverTime),
+					    		   Optional.empty());
+		// 申請日の矛盾チェック
+		commonAlgorithmOverTime.commonAlgorithmAB(
+				companyId,
+				displayInfoOverTime,
+				appOverTime,
+				BooleanUtils.toInteger(mode));
 	}
 
 	

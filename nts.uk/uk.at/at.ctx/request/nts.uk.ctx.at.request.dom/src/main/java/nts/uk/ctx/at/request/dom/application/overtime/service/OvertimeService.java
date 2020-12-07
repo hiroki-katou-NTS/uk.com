@@ -350,4 +350,17 @@ public interface OvertimeService {
 			AppOverTime appOverTime,
 			DisplayInfoOverTime displayInfoOverTime
 			);
+	/**
+	 * Refactor5 申請時間に移動する前の個別チェック処理
+	 * UKDesign.UniversalK.就業.KAF_申請.KAFS05_残業申請(スマホ).A：残業申請(新規).アルゴリズム.申請時間に移動する前の個別チェック処理
+	 * @param companyId
+	 * @param mode
+	 * @param displayInfoOverTime
+	 * @param appOverTime
+	 */
+	public void checkBeforeMovetoAppTime(
+			String companyId,
+			Boolean mode,
+			DisplayInfoOverTime displayInfoOverTime,
+			AppOverTime appOverTime);
 }
