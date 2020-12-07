@@ -108,9 +108,15 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 		if (kfnmtRptWkAtdOutatd != null) {
 			this.commandProxy().remove(kfnmtRptWkAtdOutatd);
 			this.getEntityManager().flush();
+			if (singleAttendanceRecord.getTimeItemId() == null) {
+				return;
+			}
 			this.commandProxy().insert(this.toEntityAttndRecItem(layoutId, columnIndex, position, exportArt,
 					singleAttendanceRecord));
 		} else {
+			if (singleAttendanceRecord.getTimeItemId() == null) {
+				return;
+			}
 			UID uid = new UID();
 			kfnmtRptWkAtdOutatd = new KfnmtRptWkAtdOutatd(uid.toString()
 					, AppContexts.user().contractCode()
