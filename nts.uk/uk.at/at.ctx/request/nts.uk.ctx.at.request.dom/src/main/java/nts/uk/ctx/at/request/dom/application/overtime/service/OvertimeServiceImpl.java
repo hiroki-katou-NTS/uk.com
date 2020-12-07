@@ -34,6 +34,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchieve
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithmImpl;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
@@ -117,7 +118,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 	private NewBeforeRegister processBeforeRegister;
 	
 	@Inject
-	private CommonAlgorithmImpl commonAlgorithmImpl;
+	private CommonAlgorithm commonAlgorithmImpl;
 	
 	
 	@Override
