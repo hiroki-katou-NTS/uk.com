@@ -14,8 +14,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.time.GeneralDateTime;
 import nts.gul.text.StringUtil;
-import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.context.LoginUserContext;
 
 public class JDBCUtil {
 
@@ -101,9 +101,14 @@ public class JDBCUtil {
 	
 	public static Stream<FieldWithValue> getDefaultInsertField(){
 		GeneralDateTime now = GeneralDateTime.now();
-		
-		return defaultField((user, programId) -> Stream.concat(getDefaultInsertField(now, user, programId), 
-							getDefaultUpdateField(now, user, programId)));
+
+		return defaultField((user, programId) -> 
+						Stream.concat(
+							Stream.concat(
+								getDefaultInsertField(now, user, programId), 
+								getDefaultUpdateField(now, user, programId)),
+							getDefaultField(user))
+				);
 	}
 	
 	public static Stream<FieldWithValue> getDefaultUpdateField(){
@@ -199,7 +204,11 @@ public class JDBCUtil {
 						new FieldWithValue("UPD_SCD", " = ", user.employeeCode()),
 						new FieldWithValue("UPD_PG", " = ", programId));
 	} 
-
+	
+	private static Stream<FieldWithValue> getDefaultField(LoginUserContext user) {
+		return Stream.of(new FieldWithValue("CONTRACT_CD", " = ", user.contractCode()));
+	}
+	
 	private static String[] split(String keyword, String query) {
 		return Pattern.compile(keyword, Pattern.CASE_INSENSITIVE).split(query);
 	}
