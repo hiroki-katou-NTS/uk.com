@@ -59,7 +59,7 @@ public class CorrectWorkSchedule {
 		integrationOfDaily = this.calcWorkScheduleInfo(integrationOfDaily, employeeId, targetDate).get(0);
 		
 		WorkSchedule workSchedules = new WorkSchedule(integrationOfDaily.getEmployeeId(),
-				integrationOfDaily.getYmd(), ConfirmedATR.UNSETTLED, integrationOfDaily.getWorkInformation(),
+				integrationOfDaily.getYmd(), workSchedule.getConfirmedATR(), integrationOfDaily.getWorkInformation(),
 				integrationOfDaily.getAffiliationInfor(), integrationOfDaily.getBreakTime(),
 				integrationOfDaily.getEditState(), integrationOfDaily.getAttendanceLeave(),
 				integrationOfDaily.getAttendanceTimeOfDailyPerformance(), integrationOfDaily.getShortTime());
