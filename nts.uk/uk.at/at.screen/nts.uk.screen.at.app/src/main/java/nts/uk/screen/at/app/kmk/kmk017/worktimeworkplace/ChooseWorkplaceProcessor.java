@@ -10,6 +10,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,7 +38,7 @@ public class ChooseWorkplaceProcessor {
 
         //2: [Not 職場割り当て就業時間帯.Empty] : <call> 職場割り当て就業時間帯.利用就業時間帯
         if (!workTimeWorkplace.isPresent())
-            return null;
+            return new ArrayList<>();
 
         List<String> lstCode = workTimeWorkplace.get().getWorkTimeCodes().stream().map(x -> x.v()).collect(Collectors.toList());
 

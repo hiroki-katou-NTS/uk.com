@@ -2,7 +2,6 @@ package nts.uk.screen.at.app.kmk.kmk017.worktimeworkplace;
 
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
-import nts.uk.screen.at.app.kmk.kmk008.company.RequestCompany;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
