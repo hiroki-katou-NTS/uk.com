@@ -211,9 +211,9 @@ export class KdlS36Component extends Vue {
             .post('at', servicesPath.associate, data)
             .then((result: {data: HolidayWorkSubHolidayLinkingMng[]}) => {
                 vm.$mask('hide');
-                vm.setData(result.data);
+                //vm.setData(result.data);
                 vm.$close({
-                    mngDisp: vm.managementData
+                    mngDisp: result.data
                 });
 
             })
