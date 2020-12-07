@@ -40,9 +40,9 @@ public class JpaEmpInfoTerminalRepository extends JpaRepository implements EmpIn
 
 	private final static String FIND_ALL_CONTRACTCODE = "SELECT a FROM KrcmtTimeRecorder a WHERE a.pk.contractCode = :contractCode ORDER BY a.pk.timeRecordCode ASC";
 	
-	private final static String FIND_NOT_INCLUDE_CODE = "SELECT a FROM KrcmtTimeRecorder a WHERE a.pk.contractCode = :contractCode AND a.pk.timeRecordCode = :code ORDER BY a.pk.timeRecordCode ASC"; 
+	private final static String FIND_NOT_INCLUDE_CODE = "SELECT a FROM KrcmtTimeRecorder a WHERE a.pk.contractCode = :contractCode AND a.pk.timeRecordCode != :code ORDER BY a.pk.timeRecordCode ASC"; 
 	
-	private final static String FIND_CONTRACTCODE_TYPE = "SELECT a FROM KrcmtTimeRecorder a WHERE a.pk.contractCode != :contractCode AND a.type = :type ORDER BY a.pk.timeRecordCode ASC";
+	private final static String FIND_CONTRACTCODE_TYPE = "SELECT a FROM KrcmtTimeRecorder a WHERE a.pk.contractCode = :contractCode AND a.type = :type ORDER BY a.pk.timeRecordCode ASC";
 	
 	
 	@Override
