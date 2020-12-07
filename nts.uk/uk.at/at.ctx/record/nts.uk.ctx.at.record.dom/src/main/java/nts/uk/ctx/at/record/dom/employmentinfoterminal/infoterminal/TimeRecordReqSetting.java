@@ -13,7 +13,8 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 /**
  * @author ThanhNX
  *
- *         タイムレコードのﾘｸｴｽﾄ設定
+ *         タイムレコードのﾘｸｴｽﾄ設定 (table)
+ *         就業情報端末のリクエスト一覧
  */
 public class TimeRecordReqSetting implements DomainAggregate {
 
@@ -159,6 +160,15 @@ public class TimeRecordReqSetting implements DomainAggregate {
 		this.timeSetting = builder.timeSetting;
 		this.remoteSetting = builder.remoteSetting;
 		this.reboot = builder.reboot;
+	}
+	
+	// 	[1] 端末のリクエスト状態の判断
+	public boolean determiningReqStatusTerminal() {
+		if (this.remoteSetting == true || this.stampReceive == true || this.applicationReceive == true || this.overTimeHoliday == true || this.applicationReason == true
+			|| this.timeSetting == true || this.reboot == true || this.sendEmployeeId == true || this.sendWorkType == true || this.sendWorkTime == true || this.sendBentoMenu == true) {
+			return true;
+		}
+		return false;
 	}
 
 	public static class ReqSettingBuilder {
@@ -348,6 +358,8 @@ public class TimeRecordReqSetting implements DomainAggregate {
 		public TimeRecordReqSetting build() {
 			return new TimeRecordReqSetting(this);
 		}
+		
+		
 	}
 
 }

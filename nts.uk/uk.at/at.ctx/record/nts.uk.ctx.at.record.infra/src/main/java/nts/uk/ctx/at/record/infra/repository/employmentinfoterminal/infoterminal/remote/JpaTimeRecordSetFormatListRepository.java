@@ -87,4 +87,10 @@ public class JpaTimeRecordSetFormatListRepository extends JpaRepository implemen
 				new EmpInfoTerminalName(lstEntity.get(0).empInfoTerName), new NRRomVersion(lstEntity.get(0).romVersion),
 				ModelEmpInfoTer.valueOf(lstEntity.get(0).modelEmpInfoTer), lstTRSetFormats);
 	}
+
+	@Override
+	public List<TimeRecordSetFormatList> get(ContractCode contractCode, List<EmpInfoTerminalCode> listEmpInfoTerCode) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
