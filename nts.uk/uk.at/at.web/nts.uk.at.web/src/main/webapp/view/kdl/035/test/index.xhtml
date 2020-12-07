@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/base.xhtml">
+			<ui:define name="htmlHead">
+				<com:ValidatorScript>
+					nts.uk.ctx.at.shared.dom.common.EmployeeId
+				</com:ValidatorScript>
+				<com:scriptfile set="IGNITE" />
+				<com:scriptfile path="kdl035.test.vm.js" />
+                <com:scriptfile path="kdl035.test.start.js" />
+			</ui:define>
+	
+			<ui:define name="content">
+				<div id="functions-area">
+					<button data-bind="click: openKdl035, enable: $root.errors.isEmpty">Open KDL035</button>
+				</div>
+				<div id="contents-area">
+					<div class="control-group valign-center">
+						<div data-bind="ntsFormLabel: { required: true }">社員ID (EmployeeId)</div>
+						<input data-bind="ntsTextEditor: {
+								value: employeeId,
+								required: true,
+								constraint: 'EmployeeId',
+								enable: true}"/>
+					</div>
+					<div class="control-group valign-center">
+						<div data-bind="ntsFormLabel: { required: true }">申請期間 (Date Period)</div>
+						<div id="daterangepicker"
+							 style="display: inline-block"
+							 tabindex="1"
+							 data-bind="ntsDateRangePicker: {
+						 		required: true,
+						 		enable: true,
+						 		showNextPrevious: false,
+						 		value: dateValue,
+						 		maxRange: 'oneMonth'}"/>
+					</div>
+					<div class="control-group valign-center">
+                        <div data-bind="ntsFormLabel: { required: true }">日数単位 (Day Unit)</div>
+                        <div data-bind="ntsSwitchButton: {
+                                options: [{code: 0.5, name: '0.5'}, {code: 1.0, name: '1.0'}],
+                                optionsValue: 'code',
+                                optionsText: 'name',
+                                value: daysUnit,
+                                required: true,
+                                enable: true }"/>
+					</div>
+					<div class="control-group valign-center">
+						<div data-bind="ntsFormLabel: { required: true }">対象選択区分 (TargetSelectionAtr)</div>
+						<div data-bind="ntsSwitchButton: {
+                                options: [{code: 0, name: '自動'}, {code: 1, name: '申請'}, {code: 2, name: '手動'}],
+                                optionsValue: 'code',
+                                optionsText: 'name',
+                                value: targetSelectionAtr,
+                                required: true,
+                                enable: true }"/>
+					</div>
+					<div class="control-group valign-center">
+						<div data-bind="ntsFormLabel: { required: true }">List 表示する実績内容</div>
+					</div>
+					<div class="control-group valign-center">
+						<div data-bind="ntsFormLabel: { required: true }">List 振出振休紐付け管理</div>
+						<div class="label" data-bind="text: selected"/>
+					</div>
+				</div>
+			</ui:define>
+		</ui:composition>
+	</body>
+</html>

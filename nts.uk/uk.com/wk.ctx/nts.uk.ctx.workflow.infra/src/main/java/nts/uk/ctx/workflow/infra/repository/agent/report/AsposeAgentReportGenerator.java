@@ -161,7 +161,7 @@ public class AsposeAgentReportGenerator extends AsposeCellsReportGenerator imple
             }
         }
         int rowCount = 0;
-        double maxPageHeight = 38 * 12.75;
+        double maxPageHeight = 24 * 22.5;
         double height = 0.0;
         for (List<Map<String, String>> block : convertedData.values()) {
             for (int row = 0; row < block.size(); row++){
@@ -212,8 +212,9 @@ public class AsposeAgentReportGenerator extends AsposeCellsReportGenerator imple
                     dataCell.setValue(value);
                     dataCell.setStyle(CELL_STYLE);
                 }
+                sheet.getCells().setRowHeight(DATA_START_ROW + rowCount, 22.5);
                 if (height + sheet.getCells().getRowHeight(DATA_START_ROW + rowCount) > maxPageHeight) {
-                    sheet.getHorizontalPageBreaks().add(DATA_START_ROW + rowCount);
+                    sheet.getHorizontalPageBreaks().add(DATA_START_ROW + rowCount + 1);
                     height = 0.0;
                 } else {
                     height += sheet.getCells().getRowHeight(DATA_START_ROW + rowCount);

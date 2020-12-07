@@ -22,6 +22,7 @@ import nts.uk.shr.com.context.AppContexts;
 /**
  * @author laitv 
  * ScreenQuery 利用可能な勤務種類リストを取得する
+ * Path : UKDesign.UniversalK.就業.KSU_スケジュール.KSU001_個人スケジュール修正(職場別).個人別と共通の処理.利用可能な勤務種類リストを取得する
  */
 @Stateless
 public class GetListWorkTypeAvailable {
