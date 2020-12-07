@@ -28,6 +28,7 @@ module nts.uk.com.view.ccg008.a.Layout1ComponentViewModel {
         if (data.urlLayout1) {
           vm.isShowUrlLayout1(true);
           vm.urlIframe1(data.urlLayout1);
+          
         } else {
           const lstFileId = ko.observableArray([]);
           _.each(layout1, (item: any) => {
@@ -48,6 +49,13 @@ module nts.uk.com.view.ccg008.a.Layout1ComponentViewModel {
           });
         }
       }
+    }
+
+    mounted() {
+      const ifr = document.getElementById('preview-iframe1');
+      const ifrParent = $('.contents_layout');
+      const height = ifrParent.innerHeight();
+      (ifr as any).height = `${height.toString()}px`;
     }
 
     private renderHTML(htmlSrc: string) {
