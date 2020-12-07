@@ -27,7 +27,7 @@ const template = `
 				<td data-bind="text:getCarryforwardSetText()"></td>
 			</tr>
 		</table>
-		<table style="width: 725px;" class="basic-settings">
+		<table style="width: 760px;" class="basic-settings">
 			<tr class="bg-green">
 				<th data-bind="i18n: 'KMK004_258'"></th>
 				<th data-bind="i18n: 'KMK004_262' , visible: screenMode== 'Com_Company' "></th>
@@ -37,7 +37,7 @@ const template = `
 				<td data-bind="text:getReferenceText(), visible: screenMode== 'Com_Company'"></td>
 			</tr>
 		</table>
-		<table style="width: 725px;" class="basic-settings">
+		<table style="width: 760px;" class="basic-settings">
 			<tr class="bg-green">
 				<th colspan='2' data-bind="i18n: 'KMK004_259'"></th>
 				<th data-bind="i18n: 'KMK004_261'"></th>
