@@ -24,7 +24,7 @@ public class RemoveWorkTimeWorkplaceCommandHandler extends CommandHandler<Remove
         RemoveWorkTimeWorkplaceCommand command = context.getCommand();
 
         String cid = AppContexts.user().companyId();
-        Optional<WorkTimeWorkplace> workTimeWorkplace = repository.getByCIdAndWkpId(cid, command.getWorkplaceID());
+        Optional<WorkTimeWorkplace> workTimeWorkplace = repository.getByCIdAndWkpId(cid, command.getWorkplaceId());
 
         workTimeWorkplace.ifPresent(x -> repository.remove(x));
     }
