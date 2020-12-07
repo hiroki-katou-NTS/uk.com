@@ -126,7 +126,7 @@
           <div class="col-12 uk-bg-light-coral">
             <div class="row ml-0 mr-0 pt-1 pb-1">{{ 'CMMS45_58' | i18n }}</div>
             <hr class="mt-0 mb-0"/>
-            <div class="row ml-2 mr-2 pt-1 pb-1 text-break">{{ reversionReason || 'CMMS45_15' | i18n }}</div>
+            <div class="row ml-2 mr-2 pt-1 pb-1" style="word-break: break-word">{{ reversionReason || 'CMMS45_15' | i18n }}</div>
           </div>
         </div>
       </div> 
