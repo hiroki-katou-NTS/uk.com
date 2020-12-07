@@ -24,7 +24,7 @@
 .view-c-kmk004 .right-content {
 	width: 468px;
 	float: left;
-	margin-left: 38px;
+	margin-left: 40px;
 }
 
 .view-c-kmk004 .left-content #nts-component-tree{
@@ -118,7 +118,7 @@
 }
 
 .view-d-kmk004 .right-content .name {
-	margin-bottom: 15px;
+	margin-bottom: 10px;
 }
 
 /* View E */
@@ -129,7 +129,7 @@
 }
 
 .view-e-kmk004 .left-content {
-	width: 483px;
+	width: 633px;
 	padding: 10px 12px 12px 12px;
 	float: left;
 	margin-top: 20px;
@@ -180,7 +180,7 @@
 }
 
 .view-e-kmk004 .name {
-	margin-bottom: 15px;
+	margin-bottom: 10px;
 }
 
 /* ListTimeWork */
