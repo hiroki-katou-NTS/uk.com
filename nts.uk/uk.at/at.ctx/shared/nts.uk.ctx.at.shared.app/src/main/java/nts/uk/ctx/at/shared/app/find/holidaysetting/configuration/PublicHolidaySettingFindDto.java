@@ -26,7 +26,7 @@ public class PublicHolidaySettingFindDto implements PublicHolidaySettingSetMemen
 	private Integer publicHdManagementClassification;
 	
 	/** The is weekly hd check. */
-	private Integer isWeeklyHdCheck;
+//	private Integer isWeeklyHdCheck;
 	
 	/** The period. */
 	private Integer period;
@@ -35,10 +35,10 @@ public class PublicHolidaySettingFindDto implements PublicHolidaySettingSetMemen
 	private String fullDate;
 	
 	/** The day month. */
-	private Integer dayMonth;
+//	private Integer dayMonth;
 	
 	/** The determine start D. */
-	private Integer determineStartD;
+//	private Integer determineStartD;
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidaySettingSetMemento#setCompanyID(java.lang.String)
@@ -75,9 +75,9 @@ public class PublicHolidaySettingFindDto implements PublicHolidaySettingSetMemen
 	@Override
 	public void setIsWeeklyHdCheck(boolean isWeeklyHdCheck) {
 		if(isWeeklyHdCheck){
-			this.isWeeklyHdCheck = TRUE_VALUE;
+//			this.isWeeklyHdCheck = TRUE_VALUE;
 		} else {
-			this.isWeeklyHdCheck = FALSE_VALUE;
+//			this.isWeeklyHdCheck = FALSE_VALUE;
 		}
 	}
 
@@ -86,9 +86,9 @@ public class PublicHolidaySettingFindDto implements PublicHolidaySettingSetMemen
 		// TODO Auto-generated method stub
 		if (this.publicHdManagementClassification == 1) {
 			PublicHoliday publicHoliday = (PublicHoliday) publicHolidayManagementStartDate;
-			this.dayMonth = publicHoliday.getDayMonth();
-			this.fullDate = publicHoliday.getDate().toString();
-			this.determineStartD = publicHoliday.getDetermineStartDate().value;
+//			this.dayMonth = publicHoliday.getDayMonth();
+//			this.fullDate = publicHoliday.getDate().toString();
+//			this.determineStartD = publicHoliday.getDetermineStartDate().value;
 		} else {
 			PublicHolidayGrantDate holidayGrantDate = (PublicHolidayGrantDate) publicHolidayManagementStartDate;
 			this.period = holidayGrantDate.getPeriod().value;
@@ -101,15 +101,15 @@ public class PublicHolidaySettingFindDto implements PublicHolidaySettingSetMemen
 		if (type == 1) { 
 			PublicHoliday publicHoliday = (PublicHoliday) publicHolidayManagementStartDate;
 			if (publicHoliday.getDayMonth() != null) {
-				this.dayMonth = publicHoliday.getDayMonth();
+//				this.dayMonth = publicHoliday.getDayMonth();
 			}
 			if (publicHoliday.getDate() != null) {
 				this.fullDate = publicHoliday.getDate().toString();
 			} 
 			if (publicHoliday.getDetermineStartDate() != null) {
-				this.determineStartD = publicHoliday.getDetermineStartDate().value;
+//				this.determineStartD = publicHoliday.getDetermineStartDate().value;
 			} else {
-				this.determineStartD = 0; // 0 is value Year - month - day
+//				this.determineStartD = 0; // 0 is value Year - month - day
 			}
 			
 		} else {

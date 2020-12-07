@@ -9,7 +9,7 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 500,
+					width : 320,
 					height : 400
 				};
 			</script>
@@ -23,7 +23,8 @@
 			<div tabindex="-1" id="contents-area" class="scrE" >
 				<div class="title-content">
 					<!-- F1_1 -->
-					<pre tabindex="-1">#{i18n.getText('KMF002_28')}</pre>
+					<pre tabindex="-1">#{i18n.getText('KMF002_28')}</pre>					
+					<pre style="margin-top: 10px;">#{i18n.getText('KMF002_81')}</pre>
 				</div>
 				<div style="display: flex; flex-direction: row" class="option-select-content">
 					<div id="manage_unit">
@@ -52,14 +53,7 @@
 															enable: true, 
 															text: '#{i18n.getText('Com_Person')}' }"></div>
 						</div>
-					</div>
-					<div>
-						<img style="height: 130px" src="KMF002_1.png"></img>
-					</div>
-					<div>
-						<!-- F3_2 -->
-						<pre>#{i18n.getText('KMF002_32')}</pre>
-					</div>
+					</div>					
 				</div>
 			</div>
 			<div id="functions-area-bottom">
