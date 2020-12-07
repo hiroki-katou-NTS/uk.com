@@ -24,6 +24,7 @@ module nts.uk.at.view.kaf005.shr.footer.viewmodel {
 		<div class="cell valign-center">
 			<input style="width: 445px" data-bind="ntsTextEditor: {
 														value: messageInfos()[0].valueInput,
+														constraint: 'DivergenceReason',
 														option: {
 															textalign: 'left'
 															}
@@ -55,6 +56,7 @@ module nts.uk.at.view.kaf005.shr.footer.viewmodel {
 		<div class="cell valign-center">
 			<input style="width: 445px" data-bind="ntsTextEditor: {
 														value: messageInfos()[1].valueInput,
+														constraint: 'DivergenceReason',
 														option: {
 															textalign: 'left'
 															}
@@ -64,6 +66,7 @@ module nts.uk.at.view.kaf005.shr.footer.viewmodel {
 	
 	
 </div>
+
 
 	`
 	@component({
