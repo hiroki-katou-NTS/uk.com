@@ -9,6 +9,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
  * 就業時間帯の割り付けを更新する
  */
 @Stateless
+@Transactional
 public class UpdateWorkTimeWorkplaceCommandHandler extends CommandHandler<RegisterWorkTimeWorkplaceCommand> {
     @Inject
     private WorkTimeWorkplaceRepository repository;

@@ -71,7 +71,6 @@ public class JpaWorkTimeWorkplaceRepository extends JpaRepository implements Wor
                 x.kshmtWorkTimeWorkplacePK.workplaceID,
                 x.kshmtWorkTimeWorkplacePK.workTimeID)).collect(Collectors.toList());
         this.commandProxy().removeAll(KshmtWorkTimeWorkplace.class,pks);
-        this.getEntityManager().flush();
     }
 
     @Override
