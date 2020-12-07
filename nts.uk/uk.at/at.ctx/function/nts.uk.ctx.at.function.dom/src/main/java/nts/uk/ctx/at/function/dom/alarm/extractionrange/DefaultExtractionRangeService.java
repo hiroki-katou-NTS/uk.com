@@ -408,8 +408,8 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 //		}
 		return new CheckConditionTimeDto(c.getAlarmCategory().value,
 				EnumAdaptor.convertToValueName(c.getAlarmCategory()).getLocalizedName(),
-				sDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd")),
-				eDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd")), null, null);
+				null,
+				null, null, null);
 	}
 
 }
