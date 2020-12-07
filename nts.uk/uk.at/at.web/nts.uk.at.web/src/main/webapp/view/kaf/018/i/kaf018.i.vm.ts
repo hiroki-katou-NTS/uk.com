@@ -9,53 +9,61 @@ module nts.uk.at.view.kaf018.i.viewmodel {
 		selectedTab: KnockoutObservable<string>;
 
 		useSetting: shareModel.UseSetting;
+		
+		checkI4: KnockoutObservable<boolean> = ko.observable(false);
+		checkI3: KnockoutObservable<boolean> = ko.observable(false);
+		checkI1: KnockoutObservable<boolean> = ko.observable(false);
+		checkI2: KnockoutObservable<boolean> = ko.observable(false);
+		checkI5: KnockoutObservable<boolean> = ko.observable(false);
 
-		checkH3: KnockoutObservable<boolean> = ko.observable(false);
-		checkH2: KnockoutObservable<boolean> = ko.observable(false);
-		checkH1: KnockoutObservable<boolean> = ko.observable(false);
-
-		appApprovalUnapproved: shareModel.MailTemp = null;
-		dailyUnconfirmByPrincipal: shareModel.MailTemp = null;
-		dailyUnconfirmByConfirmer: shareModel.MailTemp = null;
-		monthlyUnconfirmByPrincipal: shareModel.MailTemp = null;
-		monthlyUnconfirmByConfirmer: shareModel.MailTemp = null;
-		workConfirmation: shareModel.MailTemp = null;
+		appApprovalUnapproved: KnockoutObservable<shareModel.MailTemp> = ko.observable(null);
+		dailyUnconfirmByPrincipal: KnockoutObservable<shareModel.MailTemp> = ko.observable(null);
+		dailyUnconfirmByConfirmer: KnockoutObservable<shareModel.MailTemp> = ko.observable(null);
+		monthlyUnconfirmByPrincipal: KnockoutObservable<shareModel.MailTemp> = ko.observable(null);
+		monthlyUnconfirmByConfirmer: KnockoutObservable<shareModel.MailTemp> = ko.observable(null);
+		workConfirmation: KnockoutObservable<shareModel.MailTemp> = ko.observable(null);
 		
 		screenEditMode: KnockoutObservable<boolean> = ko.observable(false);
 
 		created() {
 			const vm = this;
 			vm.tabs = ko.observableArray([
-				{ id: 'tab-1', title: vm.$i18n("KAF018_77"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
-				{ id: 'tab-2', title: vm.$i18n("KAF018_78"), content: '.tab-content-2', enable: vm.checkH3, visible: vm.checkH3 },
-				{ id: 'tab-3', title: vm.$i18n("KAF018_79"), content: '.tab-content-3', enable: vm.checkH2, visible: vm.checkH2 },
-				{ id: 'tab-6', title: vm.$i18n("KAF018_456"), content: '.tab-content-6', enable: vm.checkH3, visible: vm.checkH3 },
-				{ id: 'tab-4', title: vm.$i18n("KAF018_80"), content: '.tab-content-4', enable: vm.checkH1, visible: vm.checkH1 },
-				{ id: 'tab-5', title: vm.$i18n("KAF018_81"), content: '.tab-content-5', enable: ko.observable(true), visible: ko.observable(true) }
+				{ id: 'tab-1', title: vm.$i18n("KAF018_453"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
+				{ id: 'tab-2', title: vm.$i18n("KAF018_454"), content: '.tab-content-2', enable: vm.checkI4, visible: vm.checkI4 },
+				{ id: 'tab-3', title: vm.$i18n("KAF018_455"), content: '.tab-content-3', enable: vm.checkI3, visible: vm.checkI3 },
+				{ id: 'tab-6', title: vm.$i18n("KAF018_456"), content: '.tab-content-6', enable: vm.checkI1, visible: vm.checkI1 },
+				{ id: 'tab-4', title: vm.$i18n("KAF018_457"), content: '.tab-content-4', enable: vm.checkI2, visible: vm.checkI2 },
+				{ id: 'tab-5', title: vm.$i18n("KAF018_458"), content: '.tab-content-5', enable: vm.checkI5, visible: vm.checkI5 }
 			]);
 			vm.selectedTab = ko.observable('tab-1');
 			
 			vm.selectedTab.subscribe((newValue) => {
-				let mailType = 0;
 				nts.uk.ui.errors.clearAll();
+				vm.hasError();
 				switch (newValue) {
 					case 'tab-1':
-						vm.screenEditMode(vm.appApprovalUnapproved.editMode());
+						vm.screenEditMode(vm.appApprovalUnapproved().editMode());
+						vm.$nextTick(() => $("#I3_1_1").focus());
 						break;
 					case 'tab-2':
-						vm.screenEditMode(vm.dailyUnconfirmByPrincipal.editMode());
+						vm.screenEditMode(vm.dailyUnconfirmByPrincipal().editMode());
+						vm.$nextTick(() => $("#I4_1_1").focus());
 						break;
 					case 'tab-3':
-						vm.screenEditMode(vm.dailyUnconfirmByConfirmer.editMode());
+						vm.screenEditMode(vm.dailyUnconfirmByConfirmer().editMode());
+						vm.$nextTick(() => $("#I5_1_1").focus());
 						break;
 					case 'tab-6':
-						vm.screenEditMode(vm.monthlyUnconfirmByPrincipal.editMode());
+						vm.screenEditMode(vm.monthlyUnconfirmByPrincipal().editMode());
+						vm.$nextTick(() => $("#I8_1_1").focus());
 						break;
 					case 'tab-4':
-						vm.screenEditMode(vm.monthlyUnconfirmByConfirmer.editMode());
+						vm.screenEditMode(vm.monthlyUnconfirmByConfirmer().editMode());
+						vm.$nextTick(() => $("#I6_1_1").focus());
 						break;
 					case 'tab-5':
-						vm.screenEditMode(vm.workConfirmation.editMode());
+						vm.screenEditMode(vm.workConfirmation().editMode());
+						vm.$nextTick(() => $("#I7_1_1").focus());
 						break;
 				}
 			});
@@ -74,53 +82,45 @@ module nts.uk.at.view.kaf018.i.viewmodel {
 							mail.editMode);
 						switch (mail.mailType) {
 							case 0:
-								vm.appApprovalUnapproved = temp;
+								vm.appApprovalUnapproved(temp);
 								break;
 							case 1:
-								vm.dailyUnconfirmByPrincipal = temp;
+								vm.dailyUnconfirmByPrincipal(temp);
 								break;
 							case 2:
-								vm.dailyUnconfirmByConfirmer = temp;
+								vm.dailyUnconfirmByConfirmer(temp);
+								break;
+							case 5:
+								vm.monthlyUnconfirmByPrincipal(temp);
 								break;
 							case 3:
-								vm.monthlyUnconfirmByConfirmer = temp;
+								vm.monthlyUnconfirmByConfirmer(temp);
 								break;
 							case 4:
-								vm.workConfirmation = temp;
+								vm.workConfirmation(temp);
 								break;
 						}
 					});
 				
-					vm.screenEditMode(vm.appApprovalUnapproved.editMode());
-					if (vm.dailyUnconfirmByPrincipal.editMode()) {
-						vm.checkH3(true);
-					}
-					else {
-						vm.checkH3(vm.useSetting.usePersonConfirm);
-					}
-					if (vm.dailyUnconfirmByConfirmer.editMode()) {
-						vm.checkH2(true);
-					}
-					else {
-						vm.checkH2(vm.useSetting.useBossConfirm);
-					}
-					if (vm.monthlyUnconfirmByConfirmer.editMode()) {
-						vm.checkH1(true);
-					}
-					else {
-						vm.checkH1(vm.useSetting.monthlyConfirm);
-					}
+					vm.screenEditMode(vm.appApprovalUnapproved().editMode());
+					vm.checkI4(vm.useSetting.usePersonConfirm);
+					vm.checkI3(vm.useSetting.useBossConfirm);
+					vm.checkI1(vm.useSetting.monthlyIdentityConfirm);
+					vm.checkI2(vm.useSetting.monthlyConfirm);
+					vm.checkI5(vm.useSetting.employmentConfirm);
+					
+					vm.selectedTab.valueHasMutated();
 				});
 			}).always(() => {
 				vm.$blockui("hide");
-				$("#H3_1_1").focus();
+				
 			});
 		}
 
 		/**
 		 * メール本文を登録する
 		 */
-		private registerApprovalStatusMail(): void {
+		registerApprovalStatusMail(): void {
 			const vm = this;
 
 			//validate
@@ -129,52 +129,63 @@ module nts.uk.at.view.kaf018.i.viewmodel {
 			}
 
 			vm.$blockui("show");
-			let listMail = [
-				vm.getMailTempJS(vm.appApprovalUnapproved),
-				vm.getMailTempJS(vm.workConfirmation)
-			];
-			if (vm.checkH3()) {
-				listMail.push(vm.getMailTempJS(vm.dailyUnconfirmByPrincipal));
+			let listMail = [vm.getMailTempJS(vm.appApprovalUnapproved())];
+			if (vm.checkI4()) {
+				listMail.push(vm.getMailTempJS(vm.dailyUnconfirmByPrincipal()));
 			}
-			if (vm.checkH2()) {
-				listMail.push(vm.getMailTempJS(vm.dailyUnconfirmByConfirmer));
+			if (vm.checkI3()) {
+				listMail.push(vm.getMailTempJS(vm.dailyUnconfirmByConfirmer()));
 			}
-			if (vm.checkH1()) {
-				listMail.push(vm.getMailTempJS(vm.monthlyUnconfirmByConfirmer));
+			if (vm.checkI1()) {
+				listMail.push(vm.getMailTempJS(vm.monthlyUnconfirmByPrincipal()));
+			}
+			if (vm.checkI2()) {
+				listMail.push(vm.getMailTempJS(vm.monthlyUnconfirmByConfirmer()));
+			}
+			if (vm.checkI5()) {
+				listMail.push(vm.getMailTempJS(vm.workConfirmation()));
 			}
 			
 			//アルゴリズム「承認状況メール本文登録」を実行する
-			vm.$ajax('at', API.registerMail, listMail).done(function() {
+			vm.$ajax('at', API.registerMail, listMail).then(function() {
 				//画面モード　＝　更新
 				vm.screenEditMode(true);
-				vm.appApprovalUnapproved.editMode(true);
-				vm.workConfirmation.editMode(true);
-				if (vm.checkH3()) {
-					vm.dailyUnconfirmByPrincipal.editMode(true);
+				vm.appApprovalUnapproved().editMode(true);
+				if(vm.checkI4()) {
+					vm.dailyUnconfirmByPrincipal().editMode(true);
 				}
-				if (vm.checkH2()) {
-					vm.dailyUnconfirmByConfirmer.editMode(true);
+				if(vm.checkI3()) {
+					vm.dailyUnconfirmByConfirmer().editMode(true);
 				}
-				if (vm.checkH1()) {
-					vm.monthlyUnconfirmByConfirmer.editMode(true);
+				if(vm.checkI1()) {
+					vm.monthlyUnconfirmByPrincipal().editMode(true);
 				}
-				vm.$dialog.info({ messageId: "Msg_15" });
-				vm.$blockui("hide");
+				if(vm.checkI2()) {
+					vm.monthlyUnconfirmByConfirmer().editMode(true);
+				}
+				if(vm.checkI5()) {
+					vm.workConfirmation().editMode(true);
+				}
+				return vm.$dialog.info({ messageId: "Msg_15" });
+			}).then(() => {
+				vm.$blockui("hide");		
 			});
 		}
 
 		private hasError(): boolean {
 			const vm = this;
-			$('#H3_1_1').ntsError('check');
-			$('#H3_2_1').ntsError('check');
-			$('#H4_1_1').ntsError('check');
-			$('#H4_2_1').ntsError('check');
-			$('#H5_1_1').ntsError('check');
-			$('#H5_2_1').ntsError('check');
-			$('#H6_1_1').ntsError('check');
-			$('#H6_2_1').ntsError('check');
-			$('#H7_1_1').ntsError('check');
-			$('#H7_2_1').ntsError('check');
+			$('#I3_1_1').ntsError('check');
+			$('#I3_2_1').ntsError('check');
+			$('#I4_1_1').ntsError('check');
+			$('#I4_2_1').ntsError('check');
+			$('#I5_1_1').ntsError('check');
+			$('#I5_2_1').ntsError('check');
+			$('#I6_1_1').ntsError('check');
+			$('#I6_2_1').ntsError('check');
+			$('#I7_1_1').ntsError('check');
+			$('#I7_2_1').ntsError('check');
+			$('#I8_1_1').ntsError('check');
+			$('#I8_2_1').ntsError('check');
 
 			return nts.uk.ui.errors.hasError();
 		}
@@ -211,6 +222,9 @@ module nts.uk.at.view.kaf018.i.viewmodel {
 								break;
 							case 'tab-3':
 								mailType = 2;
+								break;
+							case 'tab-6':
+								mailType = 5;
 								break;
 							case 'tab-4':
 								mailType = 3;

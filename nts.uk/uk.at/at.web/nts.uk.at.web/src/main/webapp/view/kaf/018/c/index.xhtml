@@ -13,6 +13,10 @@
 					height : 600
 				};
 			</script>
+			<com:ValidatorScript>
+				nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailholidayinstruction.Content
+				nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailholidayinstruction.Subject
+			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="/view/kaf/018/c/kaf018.c.css" />
 			<com:scriptfile path="/view/kaf/018/shr/model.js" />
@@ -21,28 +25,15 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<div class="table" style="margin-left: 5px">
-					<div class="cell valign-center">
-						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_10')}</div>
+					<div class="cell valign-center" style="width: 130px;">
+						<div class="cell valign-center" data-bind="ntsFormLabel: {required: true}, text: name"></div>
 					</div>
 					<div class="cell valign-center">
-						<div class="limited-label label" style="width: 110px;"  data-bind="text: closureName"></div>
-					</div>
-					<div class="cell valign-center">
-						<div class="limited-label label" style="width: 300px;" data-bind="text: getTargetDate()"></div>
+						<div class="cell valign-center limited-label label" style="width: 300px;" data-bind="text: description"></div>
 					</div>
 				</div>
 				<div class="table" style="margin-left: 5px; margin-top: 5px;">
-					<table id="multi-list" data-bind="ntsGridList: {
-														options: items,
-														optionsValue: 'code',
-														columns: ko.observableArray([
-															{ headerText: '#{i18n.getText('KAF018_350')}', key: 'code', width: 100 },
-															{ headerText: '#{i18n.getText('KAF018_351')}', key: 'name', width: 150 }, 
-															{ headerText: '#{i18n.getText('KAF018_351')}#{i18n.getText('KAF018_352')}', key: 'description', width: 570 }
-														]),
-														multiple: true,
-														value: currentCodeList,
-														rows: 10 }"></table>
+					<div id="cGrid"></div>
 				</div>
 				<div class="table" style="margin-left: 5px; margin-top: 10px;">
 					<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_353')}</div>
@@ -50,7 +41,8 @@
 				<div class="table" style="margin-left: 5px; margin-top: 5px;">
 					<input id="kaf018-c-input" data-bind="ntsTextEditor: { 
 										name: '#{i18n.getText('KAF018_354')}',
-										value: textEditor }" />
+										value: mailSubject,
+										constraint: 'Subject' }" />
 				</div>
 				<div class="table" style="margin-left: 5px; margin-top: 10px;">
 					<div class="cell">
@@ -61,28 +53,29 @@
 				<div class="table" style="margin-left: 5px; margin-top: 5px;">
 					<textarea id="kaf018-c-textarea" data-bind="ntsMultilineEditor: { 
 										name: '#{i18n.getText('KAF018_357')}',
-										value: textArea }" />
+										value: mailContent,
+										constraint: 'Content' }" />
 				</div>
 				<div class="table" style="margin-left: 5px; margin-top: 10px;">
-					<div data-bind="ntsMultiCheckBox: {
-										options: ko.observableArray([
-											{ id: 1, name: '#{i18n.getText('KAF018_362')}'},
-											{ id: 2, name: '#{i18n.getText('KAF018_363')}'},
-											{ id: 3, name: '#{i18n.getText('KAF018_364')}'}
-								        ]),
-										optionsValue: 'id',
-										optionsText: 'name',
-										value: selectedIds }"></div>
+					<div data-bind="if: displayUrlApprovalEmbed">
+						<div data-bind="ntsCheckBox: { checked: urlApprovalEmbed }">#{i18n.getText('KAF018_362')}</div>
+					</div>
+					<div data-bind="if: displayUrlDayEmbed">
+						<div data-bind="ntsCheckBox: { checked: urlDayEmbed }">#{i18n.getText('KAF018_363')}</div>
+					</div>
+					<div data-bind="if: displayUrlMonthEmbed">
+						<div data-bind="ntsCheckBox: { checked: urlMonthEmbed }">#{i18n.getText('KAF018_364')}</div>
+					</div>
 				</div>
 				<div class="table" style="margin-left: 5px; margin-top: 10px;">
 					<div class="cell" style="width: 60px">
-						<button>#{i18n.getText('KAF018_358')}</button>
+						<button data-bind="click: updateMailTemplate, enable: $root.errors.isEmpty">#{i18n.getText('KAF018_358')}</button>
 					</div>
 					<div class="cell" style="padding-left: 10px">#{i18n.getText('KAF018_359')}</div>
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button class="x-large proceed" data-bind="click: sendMail">#{i18n.getText('KAF018_360')}</button>
+				<button class="x-large proceed" data-bind="click: sendMail, enable: $root.errors.isEmpty">#{i18n.getText('KAF018_360')}</button>
 				<button data-bind="click: close">#{i18n.getText('KAF018_361')}</button>
 			</div>
 		</ui:define>
