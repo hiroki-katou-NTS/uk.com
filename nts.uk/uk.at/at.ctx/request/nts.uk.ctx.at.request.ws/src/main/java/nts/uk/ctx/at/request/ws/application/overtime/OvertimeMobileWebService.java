@@ -12,9 +12,11 @@ import nts.uk.ctx.at.request.app.find.application.overtime.DisplayInfoOverTimeDt
 import nts.uk.ctx.at.request.app.find.application.overtime.DisplayInfoOverTimeMobileDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.ParamBreakTime;
 import nts.uk.ctx.at.request.app.find.application.overtime.ParamChangeDateMobile;
+import nts.uk.ctx.at.request.app.find.application.overtime.ParamCheckBeforeRegister;
 import nts.uk.ctx.at.request.app.find.application.overtime.ParamSelectWorkMobile;
 import nts.uk.ctx.at.request.app.find.application.overtime.ParamStartMobile;
 import nts.uk.ctx.at.request.app.find.application.overtime.SelectWorkOutputDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.CheckBeforeOutputDto;
 
 @Path("at/request/application/overtime/mobile")
 @Produces("application/json")
@@ -45,6 +47,12 @@ public class OvertimeMobileWebService extends WebService {
 	@Path("selectWorkInfo")
 	public SelectWorkOutputDto selectWorkInfo(ParamSelectWorkMobile param) {
 		return appOvertimeFinder.selectWorkInfoMobile(param);
+	}
+	
+	@POST
+	@Path("checkBeforeInsert")
+	public CheckBeforeOutputDto checkBeforeInsert(ParamCheckBeforeRegister param) {
+		return appOvertimeFinder.checkBeforeRegister(param);
 	}
 	
 }

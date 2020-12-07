@@ -7,6 +7,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
@@ -332,6 +333,21 @@ public interface OvertimeService {
 	public DisplayInfoOverTime changeDateMobile(
 			String companyId,
 			GeneralDate date,
+			DisplayInfoOverTime displayInfoOverTime
+			);
+	/**
+	 * Refactor5 UKDesign.UniversalK.就業.KAF_申請.KAFS05_残業申請(スマホ).A：残業申請(新規).アルゴリズム.申請時間の申請内容をチェックする
+	 * 申請時間の申請内容をチェックする
+	 * @param require
+	 * @param companyId
+	 * @param appOverTime
+	 * @param displayInfoOverTime
+	 * @return
+	 */
+	public List<ConfirmMsgOutput> checkBeforeInsert(
+			Boolean require,
+			String companyId,
+			AppOverTime appOverTime,
 			DisplayInfoOverTime displayInfoOverTime
 			);
 }

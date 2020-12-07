@@ -118,6 +118,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 	@Inject
 	private CommonAlgorithmImpl commonAlgorithmImpl;
 	
+	@Inject
+	private OvertimeService overTimeService;
+	
 	@Override
 	public int checkOvertimeAtr(String url) {
 		if(url == null){
@@ -1114,6 +1117,31 @@ public class OvertimeServiceImpl implements OvertimeService {
 		}
 		
 		return displayInfoOverTime;
+	}
+
+	@Override
+	public List<ConfirmMsgOutput> checkBeforeInsert(
+			Boolean require,
+			String companyId,
+			AppOverTime appOverTime,
+			DisplayInfoOverTime displayInfoOverTime) {
+		List<ConfirmMsgOutput> outputs = new ArrayList<ConfirmMsgOutput>();
+		// 申請する残業時間をチェックする
+		commonAlgorithmOverTime.checkOverTime(appOverTime.getApplicationTime().getApplicationTime());
+		// 事前申請・実績超過チェック
+		List<ConfirmMsgOutput> checkExcessList = commonAlgorithmOverTime.checkExcess(appOverTime, displayInfoOverTime);
+		outputs.addAll(checkExcessList);
+		// 登録時の乖離時間チェックを行う
+		overTimeService.checkDivergenceTime(
+				require,
+				ApplicationType.OVER_TIME_APPLICATION,
+				Optional.of(appOverTime),
+				Optional.empty(),
+				displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet().getOvertimeLeaveAppCommonSet());
+		// ３６上限チェック
+		
+		// 取得した「確認メッセージリスト」と「残業申請」を返す
+		return outputs;
 	}
 
 	
