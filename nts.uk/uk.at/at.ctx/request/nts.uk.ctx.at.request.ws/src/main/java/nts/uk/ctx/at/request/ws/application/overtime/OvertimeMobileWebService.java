@@ -15,6 +15,8 @@ import nts.uk.ctx.at.request.app.find.application.overtime.BreakTimeZoneSettingD
 import nts.uk.ctx.at.request.app.find.application.overtime.DisplayInfoOverTimeDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.DisplayInfoOverTimeMobileDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.ParamBreakTime;
+import nts.uk.ctx.at.request.app.find.application.overtime.ParamCalculateMobile;
+import nts.uk.ctx.at.request.app.find.application.overtime.ParamCalculation;
 import nts.uk.ctx.at.request.app.find.application.overtime.ParamChangeDateMobile;
 import nts.uk.ctx.at.request.app.find.application.overtime.ParamCheckBeforeRegister;
 import nts.uk.ctx.at.request.app.find.application.overtime.ParamSelectWorkMobile;
@@ -68,4 +70,11 @@ public class OvertimeMobileWebService extends WebService {
 	public ProcessResult insert(InsertCommand command) {
 		return insertMobileCommandHandler.handle(command);
 	}
+	
+	@POST
+	@Path("calculate")
+	public DisplayInfoOverTimeDto calculate(ParamCalculateMobile param) {
+		return appOvertimeFinder.calculateMobile(param);
+	}
+	
 }

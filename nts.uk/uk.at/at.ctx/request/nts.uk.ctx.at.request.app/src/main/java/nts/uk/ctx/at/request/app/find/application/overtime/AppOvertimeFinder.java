@@ -369,4 +369,37 @@ public class AppOvertimeFinder {
 				param.appOverTime.toDomain(),
 				param.displayInfoOverTime.toDomain());
 	}
+	
+	public DisplayInfoOverTimeDto calculateMobile(ParamCalculateMobile param) {
+		String companyId = param.companyId;
+		Optional<GeneralDate> dateOp = Optional.empty();
+		if (StringUtils.isNotBlank(param.dateOp)) {
+			dateOp = Optional.of(GeneralDate.fromString(param.dateOp, PATTERN_DATE));	
+		}
+		Application application;
+		AppOverTime appOverTime;
+		if (param.mode) {
+			application = param.appOverTimeInsert.application.toDomain();
+			appOverTime = param.appOverTimeInsert.toDomain();
+		} else {
+			application = param.appOverTimeUpdate.application.toDomain(param.displayInfoOverTime.appDispInfoStartup.getAppDetailScreenInfo().getApplication());
+			appOverTime = param.appOverTimeUpdate.toDomain();
+		}
+		
+		if (appOverTime.getDetailOverTimeOp().isPresent()) {
+			appOverTime.getDetailOverTimeOp().get().setAppId(application.getAppID());
+		}
+		appOverTime.setApplication(application);
+		
+		DisplayInfoOverTime output = overtimeService.calculateMobile(
+				companyId,
+				param.displayInfoOverTime.toDomain(),
+				appOverTime,
+				param.mode,
+				param.employeeId,
+				dateOp);
+		
+		
+		return DisplayInfoOverTimeDto.fromDomainCalculation(output);
+	}
 }
