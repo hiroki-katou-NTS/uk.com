@@ -62,6 +62,8 @@ import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ApprovalProcessRepos
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.shared.app.service.workrule.closure.ClosureEmploymentService;
+import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobTitleHisImport;
+import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobtitleHisAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.affiliation.AffiliationInfoOfMonthlyRepository;
@@ -91,6 +93,7 @@ import nts.uk.file.at.app.export.schedule.FileService;
 import nts.uk.query.pub.employee.EmployeeInformationExport;
 import nts.uk.query.pub.employee.EmployeeInformationPub;
 import nts.uk.query.pub.employee.EmployeeInformationQueryDto;
+import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyResult;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
@@ -173,6 +176,9 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 	
 	@Inject
 	private AffiliationInfoOfMonthlyRepository affiliationInfoOfMonthlyRepository;
+	
+	@Inject
+	private SharedAffJobtitleHisAdapter affJobTitleAdapter;
 
 	@Override
 	protected void handle(ExportServiceContext<AttendanceRecordRequest> context) {
@@ -385,9 +391,10 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		// #111688
 		List<MonthlyApprovalStatusAttendanceRecord> listMonthlyApproval = new ArrayList<MonthlyApprovalStatusAttendanceRecord>();
 		Optional<ApprovalProcess> approvalProcOp = approvalRepo.getApprovalProcessById(companyId);
+		List<SharedAffJobTitleHisImport> listShareAff = affJobTitleAdapter.findAffJobTitleHisByListSid(sIds, request.getEndDate());
 		monthlyValues.stream().forEach(i -> {
 			ApprovalStatus approvalMonth = monthlyApprovalProcess.monthlyApprovalCheck(companyId, i.getEmployeeId(),
-					i.getYearMonth().v(), i.getClosureId(), baseDate.get(), approvalProcOp, null);
+					i.getYearMonth().v(), i.getClosureId(), request.getEndDate(), approvalProcOp, listShareAff);
 			if (approvalMonth.equals(ApprovalStatus.APPROVAL)) {
 				MonthlyApprovalStatusAttendanceRecord monthlyApproval = new MonthlyApprovalStatusAttendanceRecord();
 				monthlyApproval.setYm(i.getYearMonth());
@@ -464,6 +471,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 						// #111678
 						Optional<AffiliationInfoOfMonthly> oAffiliationInfoOfMonthly = this.affiliationInfoOfMonthlyRepository
 								.find(employee.getEmployeeId(), yearMonth, ClosureId.valueOf(closureId), closureDate);
+						List<StatusOfEmployee> statusEmps = this.symCompany.GetListAffComHistByListSidAndPeriod(empIDs, monthPeriod);
 						if (oAffiliationInfoOfMonthly.isPresent()) {
 							MonthlyResultCheck monthResultCheck = this.checkEmployeeCodeInMonth(
 									employee.getEmployeeId(), monthPeriod,
@@ -485,7 +493,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 							}
 //							//	月別実績１ヶ月分の期間(YMD)と所属会社履歴の重複期間(YMD)を取得する
 							//	社員の指定期間中の所属期間を取得する RequestList 588
-							List<StatusOfEmployee> statusEmps = this.symCompany.GetListAffComHistByListSidAndPeriod(empIDs, monthPeriod);
+//							List<StatusOfEmployee> statusEmps = this.symCompany.GetListAffComHistByListSidAndPeriod(empIDs, monthPeriod);
 							//
 //							// (UK2)出勤簿を出力する
 							if (statusEmps.isEmpty()) {
@@ -990,7 +998,11 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 									.getMonthlyConfirmedDisplay() == MonthlyConfirmedDisplay.DISPLAY) {
 								//	表示  - if display 
 								//	月の承認済状況を編集する - Edit the approved status of the month
-								attendanceRecRepEmpData.setApprovalStatus(true);
+								listMonthlyApproval.forEach(i -> {
+									if(i.getEmployeeId() == employeeId && i.isApprovedFlag()) {
+										attendanceRecRepEmpData.setApprovalStatus(true);
+									}
+								});
 							} else {
 								attendanceRecRepEmpData.setApprovalStatus(false); 
 							}
