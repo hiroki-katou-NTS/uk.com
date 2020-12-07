@@ -7,6 +7,10 @@ import lombok.Value;
 @Value
 public class UseSetingOutput {
 	/**
+	 * 月別本人確認を利用する
+	 */
+	private boolean monthlyIdentityConfirm;
+	/**
 	 * 月別確認を利用する
 	 */
 	private boolean monthlyConfirm;
@@ -18,4 +22,8 @@ public class UseSetingOutput {
 	 * 本人確認を利用する
 	 */
 	private boolean usePersonConfirm;
+	/**
+	 * 就業確定を利用する
+	 */
+	private boolean employmentConfirm;
 }
