@@ -44,9 +44,17 @@
 
 .iframe_fix {
   width: 100%;
-  height: 100%;
 }
 
 #F1-frame {
   position: absolute;
+}
+.contents_layout::after {
+  content: "";
+  display: block;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
