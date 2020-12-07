@@ -112,7 +112,6 @@ module nts.uk.com.view.ccg034.i {
      */
     public updatePartDataAndCloseDialog() {
       const vm = this;
-      vm.$errors("#I2_1_1", "Msg_01");
       vm.$validate().then((valid: boolean) => {
         if (valid) {
           // Update part data
