@@ -32,7 +32,7 @@ public class SingleAttendanceRecordAddCommand {
 	private int position;
 
 	/** The time time id. */
-	private int timeItemId;
+	private Integer timeItemId;
 
 	/** The attribute. */
 	private int attribute;

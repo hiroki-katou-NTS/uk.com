@@ -141,7 +141,7 @@ module nts.uk.at.view.kdl047.a.screenModel {
               columnIndex: vm.objectDisplay.columnIndex,
               position: vm.objectDisplay.position,
               exportAtr: vm.objectDisplay.exportAtr,
-              attendanceId: vm.currentCode() === -1 ? null : vm.currentCode(),
+              attendanceId: _.toNumber(vm.currentCode()) === -1 ? null : vm.currentCode(),
               attribute: vm.selectedCode()
             });
 
@@ -157,7 +157,7 @@ module nts.uk.at.view.kdl047.a.screenModel {
               columnIndex: vm.objectDisplay.columnIndex,
               position: vm.objectDisplay.position,
               exportAtr: vm.objectDisplay.exportAtr,
-              attendanceId: vm.currentCode() === -1 ? null : vm.currentCode(),
+              attendanceId: _.toNumber(vm.currentCode()) === -1 ? null : vm.currentCode(),
               attribute: vm.selectedCode()
             });
 
