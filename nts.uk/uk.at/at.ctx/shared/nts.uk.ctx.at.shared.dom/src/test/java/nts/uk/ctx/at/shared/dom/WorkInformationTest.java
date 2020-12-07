@@ -1053,7 +1053,7 @@ public class WorkInformationTest {
 		WorkInformation target = new WorkInformation(new WorkTypeCode("k01"), new WorkTimeCode("s01"));
 		WorkInformation otherObject = new WorkInformation(new WorkTypeCode("k02"), new WorkTimeCode("s01"));
 		
-		assertThat( target.equals(otherObject) ).isFalse();
+		assertThat( target.isSame(otherObject) ).isFalse();
 	}
 	
 	@Test
@@ -1062,7 +1062,7 @@ public class WorkInformationTest {
 		WorkInformation target = new WorkInformation(new WorkTypeCode("k01"), null );
 		WorkInformation otherObject = new WorkInformation(new WorkTypeCode("k01"), null );
 		
-		assertThat( target.equals(otherObject) ).isTrue();
+		assertThat( target.isSame(otherObject) ).isTrue();
 	}
 	
 	@Test
@@ -1071,7 +1071,7 @@ public class WorkInformationTest {
 		WorkInformation target = new WorkInformation(new WorkTypeCode("k01"), new WorkTimeCode("s01") );
 		WorkInformation otherObject = new WorkInformation(new WorkTypeCode("k01"), null );
 		
-		assertThat( target.equals(otherObject) ).isFalse();
+		assertThat( target.isSame(otherObject) ).isFalse();
 	}
 	
 	@Test
@@ -1080,7 +1080,7 @@ public class WorkInformationTest {
 		WorkInformation target = new WorkInformation(new WorkTypeCode("k01"), null );
 		WorkInformation otherObject = new WorkInformation(new WorkTypeCode("k01"), new WorkTimeCode("s01") );
 		
-		assertThat( target.equals(otherObject) ).isFalse();
+		assertThat( target.isSame(otherObject) ).isFalse();
 	}
 	
 	@Test
@@ -1089,7 +1089,7 @@ public class WorkInformationTest {
 		WorkInformation target = new WorkInformation(new WorkTypeCode("k01"), new WorkTimeCode("s01") );
 		WorkInformation otherObject = new WorkInformation(new WorkTypeCode("k01"), new WorkTimeCode("s01") );
 		
-		assertThat( target.equals(otherObject) ).isTrue();
+		assertThat( target.isSame(otherObject) ).isTrue();
 	}
 
 

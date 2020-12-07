@@ -25,10 +25,10 @@ public class ErrorInfoOfWorkScheduleTest {
 	public void testAttendanceItemError() {
 		
 		ErrorInfoOfWorkSchedule result = 
-				ErrorInfoOfWorkSchedule.attendanceItemError("empId", GeneralDate.ymd(2020, 11, 1), 1, "msg");
+				ErrorInfoOfWorkSchedule.attendanceItemError("empId", GeneralDate.ymd(2020, 12, 31), 1, "msg");
 		
 		assertThat(result.getEmployeeId()).isEqualTo("empId");
-		assertThat( result.getDate() ).isEqualToComparingFieldByField( GeneralDate.ymd(2020, 11, 1));
+		assertThat( result.getDate() ).isEqualToComparingFieldByField( GeneralDate.ymd(2020, 12, 31));
 		assertThat( result.getAttendanceItemId().get()).isEqualTo( 1 );
 		assertThat( result.getErrorMessage()).isEqualTo("msg");
 		

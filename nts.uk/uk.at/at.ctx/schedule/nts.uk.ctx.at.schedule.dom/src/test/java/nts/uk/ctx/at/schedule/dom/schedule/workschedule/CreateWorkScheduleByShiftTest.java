@@ -37,7 +37,7 @@ public class CreateWorkScheduleByShiftTest {
 		
 		assertThat( result.getAtomTask() ).isEmpty();
 		assertThat( result.isHasError() ).isTrue();
-		assertThat( result.getErrorInfomation() )
+		assertThat( result.getErrorInformation() )
 			.extracting( 
 					e -> e.getEmployeeId(),
 					e -> e.getDate(),

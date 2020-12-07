@@ -21,7 +21,7 @@ public class ResultOfRegisteringWorkSchedule {
 	private boolean hasError;
 	
 	/** エラー情報 */
-	private List<ErrorInfoOfWorkSchedule> errorInfomation;
+	private List<ErrorInfoOfWorkSchedule> errorInformation;
 	
 	/** AtomTask */
 	private Optional<AtomTask> atomTask;

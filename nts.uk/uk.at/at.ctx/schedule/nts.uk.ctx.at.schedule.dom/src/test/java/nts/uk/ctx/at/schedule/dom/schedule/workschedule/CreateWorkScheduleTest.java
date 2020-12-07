@@ -20,6 +20,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.i18n.I18NText.Builder;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.CreateWorkSchedule.WorkTimeZone;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule.Require;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
@@ -36,16 +37,30 @@ public class CreateWorkScheduleTest {
 	CreateWorkSchedule.Require require;
 	
 	@Test
-	public void testGetErrorInfo_empty(
+	public void testGetErrorInfo_empty_case1(
 			@Injectable WorkInformation workInformation
 			) {
-		ClockAreaAtr clockArea = ClockAreaAtr.START;
-		WorkNo workNo = new WorkNo(1);
-		TimeWithDayAttr time = new TimeWithDayAttr(60);
 		
+		Optional<ErrorInfoOfWorkSchedule> result = NtsAssert.Invoke.staticMethod(CreateWorkSchedule.class, "getErrorInfo", 
+				require, 
+				"empId", 
+				GeneralDate.ymd(2020, 11, 1), 
+				workInformation, 
+				WorkTimeZone.START_TIME_1,
+				new HashMap<>() // empty map
+				);
+		
+		assertThat( result ).isEmpty();
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public <T> void testGetErrorInfo_empty_case2(
+			@Injectable WorkInformation workInformation
+			) {
+
 		new Expectations() {{
-			
-			workInformation.containsOnChangeableWorkingTime(require, clockArea, workNo, time);
+			workInformation.containsOnChangeableWorkingTime(require, ( ClockAreaAtr) any, (WorkNo) any, (TimeWithDayAttr) any);
 			result = new ContainsResult( true, 
 					Optional.of(new TimeSpanForCalc(
 							new TimeWithDayAttr(1), 
@@ -53,33 +68,30 @@ public class CreateWorkScheduleTest {
 							));
 		}};
 		
+		Map<Integer, T> updateInfoMap = new HashMap<>();
+		updateInfoMap.put(31, (T) new TimeWithDayAttr(31));
 		Optional<ErrorInfoOfWorkSchedule> result = NtsAssert.Invoke.staticMethod(CreateWorkSchedule.class, "getErrorInfo", 
 				require, 
 				"empId", 
 				GeneralDate.ymd(2020, 11, 1), 
 				workInformation, 
-				31, 
-				clockArea, 
-				workNo,
-				time
+				WorkTimeZone.START_TIME_1,
+				updateInfoMap
 				);
 		
 		assertThat( result ).isEmpty();
 		
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
-	public void testGetErrorInfo_successfully(
+	public <T> void testGetErrorInfo_successfully(
 			@Injectable WorkInformation workInformation,
 			@Mocked Builder builder
 			) {
-		ClockAreaAtr clockArea = ClockAreaAtr.START;
-		WorkNo workNo = new WorkNo(1);
-		TimeWithDayAttr time = new TimeWithDayAttr(60);
-		
 		new Expectations() {{
 			
-			workInformation.containsOnChangeableWorkingTime(require, clockArea, workNo, time);
+			workInformation.containsOnChangeableWorkingTime(require, ( ClockAreaAtr) any, (WorkNo) any, (TimeWithDayAttr) any);
 			result = new ContainsResult( false, 
 					Optional.of(new TimeSpanForCalc(
 							new TimeWithDayAttr(1), 
@@ -90,15 +102,15 @@ public class CreateWorkScheduleTest {
 			result = "msg";
 		}};
 		
+		Map<Integer, T> updateInfoMap = new HashMap<>();
+		updateInfoMap.put(31, (T) new TimeWithDayAttr(31));
 		Optional<ErrorInfoOfWorkSchedule> result = NtsAssert.Invoke.staticMethod(CreateWorkSchedule.class, "getErrorInfo", 
 				require, 
 				"empId", 
 				GeneralDate.ymd(2020, 11, 1), 
 				workInformation, 
-				31, 
-				clockArea, 
-				workNo,
-				time
+				WorkTimeZone.START_TIME_1,
+				updateInfoMap
 				);
 		
 		assertThat( result.get().getEmployeeId() ).isEqualTo( "empId" );
@@ -196,7 +208,7 @@ public class CreateWorkScheduleTest {
 				new HashMap<>());
 		
 		assertThat( result.getAtomTask() ).isEmpty();
-		assertThat( result.getErrorInfomation())
+		assertThat( result.getErrorInformation())
 			.extracting( 
 					e -> e.getEmployeeId(),
 					e -> e.getDate(),
@@ -322,7 +334,7 @@ public class CreateWorkScheduleTest {
 				updateInfoMap);
 		
 		assertThat( result.getAtomTask() ).isEmpty();
-		assertThat( result.getErrorInfomation())
+		assertThat( result.getErrorInformation())
 			.extracting( 
 					e -> e.getEmployeeId(),
 					e -> e.getDate(),
@@ -405,7 +417,7 @@ public class CreateWorkScheduleTest {
 				updateInfoMap);
 		
 		assertThat( result.getAtomTask() ).isEmpty();
-		assertThat( result.getErrorInfomation())
+		assertThat( result.getErrorInformation())
 			.extracting( 
 					e -> e.getEmployeeId(),
 					e -> e.getDate(),
@@ -489,7 +501,7 @@ public class CreateWorkScheduleTest {
 				updateInfoMap);
 		
 		assertThat( result.getAtomTask() ).isEmpty();
-		assertThat( result.getErrorInfomation())
+		assertThat( result.getErrorInformation())
 			.extracting( 
 					e -> e.getEmployeeId(),
 					e -> e.getDate(),
@@ -550,7 +562,7 @@ public class CreateWorkScheduleTest {
 				workInformation, 
 				updateInfoMap);
 		
-		assertThat( result.getErrorInfomation() ).isEmpty();
+		assertThat( result.getErrorInformation() ).isEmpty();
 		NtsAssert.atomTask( () -> result.getAtomTask().get() , 
 				any -> require.insertWorkSchedule(  any.get() ),
 				any -> require.registerTemporaryData("emp", GeneralDate.ymd(2020, 11, 1))
@@ -600,7 +612,7 @@ public class CreateWorkScheduleTest {
 				workInformation, 
 				updateInfoMap);
 		
-		assertThat( result.getErrorInfomation() ).isEmpty();
+		assertThat( result.getErrorInformation() ).isEmpty();
 		NtsAssert.atomTask( () -> result.getAtomTask().get() , 
 				any -> require.updateWorkSchedule( any.get() ),
 				any -> require.registerTemporaryData("emp", GeneralDate.ymd(2020, 11, 1))

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import lombok.val;
+import lombok.RequiredArgsConstructor;
 import nts.arc.error.BusinessException;
 import nts.arc.i18n.I18NText;
 import nts.arc.task.tran.AtomTask;
@@ -111,52 +111,24 @@ public class CreateWorkSchedule {
 			Map<Integer, T> updateInfoMap
 			) {
 		
-		List<ErrorInfoOfWorkSchedule> errorInfoList = new ArrayList<>();
-		
 		// 開始時刻１
-		val startTime1  = updateInfoMap.get(31);
-		if ( startTime1 != null ) {
-			Optional<ErrorInfoOfWorkSchedule> errorOfStartTime1 = 
-					CreateWorkSchedule.getErrorInfo(require, employeeId, date, workInformation, 31, ClockAreaAtr.START, new WorkNo(1), startTime1);
-			
-			if ( errorOfStartTime1.isPresent()) {
-				errorInfoList.add(errorOfStartTime1.get());
-			}
-		}
-		
+		Optional<ErrorInfoOfWorkSchedule> errorOfStartTime1 = 
+				CreateWorkSchedule.getErrorInfo(require, employeeId, date, workInformation, WorkTimeZone.START_TIME_1, updateInfoMap);
 		// 終了時刻１
-		val endTime1  = updateInfoMap.get(34);
-		if ( endTime1 != null ) {
-			Optional<ErrorInfoOfWorkSchedule> errorOfEndTime1 = 
-					CreateWorkSchedule.getErrorInfo(require, employeeId, date, workInformation, 34, ClockAreaAtr.END, new WorkNo(1), endTime1);
-			
-			if ( errorOfEndTime1.isPresent()) {
-				errorInfoList.add(errorOfEndTime1.get());
-			}
-		}
-		
+		Optional<ErrorInfoOfWorkSchedule> errorOfEndTime1 = 
+				CreateWorkSchedule.getErrorInfo(require, employeeId, date, workInformation, WorkTimeZone.END_TIME_1, updateInfoMap);
 		// 開始時刻２
-		val startTime2  = updateInfoMap.get(41);
-		if ( startTime2 != null ) {
-			Optional<ErrorInfoOfWorkSchedule> errorOfStartTime2 = 
-					CreateWorkSchedule.getErrorInfo(require, employeeId, date, workInformation, 41, ClockAreaAtr.START, new WorkNo(2), startTime2);
-			
-			if ( errorOfStartTime2.isPresent()) {
-				errorInfoList.add(errorOfStartTime2.get());
-			}
-		}
-		
+		Optional<ErrorInfoOfWorkSchedule> errorOfStartTime2 = 
+				CreateWorkSchedule.getErrorInfo(require, employeeId, date, workInformation, WorkTimeZone.START_TIME_2, updateInfoMap);
 		// 終了時刻２
-		val endTime2  = updateInfoMap.get(44);
-		if ( endTime2 != null ) {
-			Optional<ErrorInfoOfWorkSchedule> errorOfEndTime2 = 
-					CreateWorkSchedule.getErrorInfo(require, employeeId, date, workInformation, 44, ClockAreaAtr.END, new WorkNo(2), endTime2);
-			
-			if ( errorOfEndTime2.isPresent()) {
-				errorInfoList.add(errorOfEndTime2.get());
-			}
-		}
+		Optional<ErrorInfoOfWorkSchedule> errorOfEndTime2 = 
+				CreateWorkSchedule.getErrorInfo(require, employeeId, date, workInformation, WorkTimeZone.END_TIME_2, updateInfoMap);
 		
+		List<ErrorInfoOfWorkSchedule> errorInfoList = new ArrayList<>();
+		errorOfStartTime1.ifPresent(errorInfoList::add);
+		errorOfEndTime1.ifPresent(errorInfoList::add);
+		errorOfStartTime2.ifPresent(errorInfoList::add);
+		errorOfEndTime2.ifPresent(errorInfoList::add);
 		return errorInfoList;
 	}
 	
@@ -166,23 +138,26 @@ public class CreateWorkSchedule {
 	 * @param employeeId 社員ID
 	 * @param date 年月日
 	 * @param workInformation 勤務情報
-	 * @param attendanceItemId 勤怠項目ID
-	 * @param time T
+	 * @param workTimeZone 勤務時間帯
+	 * @param updateInfoMap 変更する情報Map
 	 * @return
 	 */
 	private static <T> Optional<ErrorInfoOfWorkSchedule> getErrorInfo(
-			Require require, 
+			Require require,
 			String employeeId, 
 			GeneralDate date, 
 			WorkInformation workInformation, 
-			int attendanceItemId, 
-			ClockAreaAtr clockArea,
-			WorkNo workNo,
-			T time) {
+			WorkTimeZone workTimeZone,
+			Map<Integer, T> updateInfoMap
+			) {
+		
+		T time  = updateInfoMap.get( workTimeZone.attendanceItemId );
+		if ( time == null ) {
+			return Optional.empty();
+		}
 		
 		ContainsResult stateOfTime = 
-				workInformation.containsOnChangeableWorkingTime(require, clockArea, workNo, (TimeWithDayAttr) time);
-		
+				workInformation.containsOnChangeableWorkingTime(require, workTimeZone.clockArea , workTimeZone.workNo, (TimeWithDayAttr) time);
 		if ( stateOfTime.isContains() ) {
 			return Optional.empty();
 		}
@@ -193,7 +168,7 @@ public class CreateWorkSchedule {
 			.build().buildMessage();
 		
 		return Optional.of(
-				ErrorInfoOfWorkSchedule.attendanceItemError(employeeId, date, attendanceItemId, errorMessage));
+				ErrorInfoOfWorkSchedule.attendanceItemError(employeeId, date, workTimeZone.attendanceItemId, errorMessage));
 	}
 	
 	public static interface Require extends WorkSchedule.Require{
@@ -207,7 +182,7 @@ public class CreateWorkSchedule {
 		Optional<WorkSchedule> getWorkSchedule(String employeeId, GeneralDate date);
 		
 		/**
-		 * 務予定を補正する
+		 * 勤務予定を補正する
 		 * @param workSchedule 勤務予定
 		 */
 		WorkSchedule correctWorkSchedule(WorkSchedule workSchedule);
@@ -230,6 +205,29 @@ public class CreateWorkSchedule {
 		 * @param date 年月日
 		 */
 		void registerTemporaryData(String employeeId, GeneralDate date);
+	}
+	
+	@RequiredArgsConstructor
+	static enum WorkTimeZone {
+		
+		// 開始時刻１
+		START_TIME_1( 31, ClockAreaAtr.START, new WorkNo(1)),
+
+		// 終了時刻１
+		END_TIME_1( 34, ClockAreaAtr.END, new WorkNo(1) ),
+		
+		// 開始時刻２ 
+		START_TIME_2 ( 41, ClockAreaAtr.START, new WorkNo(2) ),
+		
+		// 終了時刻２
+		END_TIME_2( 44, ClockAreaAtr.END, new WorkNo(2) );
+		
+		public final int attendanceItemId;
+		
+		public final ClockAreaAtr clockArea;
+		
+		public final WorkNo workNo;
+
 	}
 
 }

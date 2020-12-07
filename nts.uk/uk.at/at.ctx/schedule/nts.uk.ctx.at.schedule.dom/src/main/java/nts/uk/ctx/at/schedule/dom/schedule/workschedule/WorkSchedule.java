@@ -25,10 +25,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancet
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
@@ -36,6 +34,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomat
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * 勤務予定 root
@@ -212,7 +211,9 @@ public class WorkSchedule implements DomainAggregate {
 				this.optTimeLeaving.get()
 					.getAttendanceLeavingWork( 1 ).get()
 					.getAttendanceStamp().get()
-					.setStamp( Optional.of( (WorkStamp) value) );
+					.getStamp().get()
+					.getTimeDay()
+					.setTimeWithDay( Optional.of( (TimeWithDayAttr) value) );
 				break;
 
 			case 34:
@@ -220,14 +221,18 @@ public class WorkSchedule implements DomainAggregate {
 				this.optTimeLeaving.get()
 					.getAttendanceLeavingWork( 1 ).get()
 					.getLeaveStamp().get()
-					.setStamp( Optional.of( (WorkStamp) value) );
+					.getStamp().get()
+					.getTimeDay()
+					.setTimeWithDay( Optional.of( (TimeWithDayAttr) value) );
 				break;
 			case 41:
 				// 出勤時刻2(41)
 				this.optTimeLeaving.get()
 					.getAttendanceLeavingWork( 2 ).get()
 					.getAttendanceStamp().get()
-					.setStamp( Optional.of( (WorkStamp) value) );
+					.getStamp().get()
+					.getTimeDay()
+					.setTimeWithDay( Optional.of( (TimeWithDayAttr) value) );
 				break;
 
 			case 44:
@@ -235,7 +240,9 @@ public class WorkSchedule implements DomainAggregate {
 				this.optTimeLeaving.get()
 					.getAttendanceLeavingWork( 2 ).get()
 					.getLeaveStamp().get()
-					.setStamp( Optional.of( (WorkStamp) value) );
+					.getStamp().get()
+					.getTimeDay()
+					.setTimeWithDay( Optional.of( (TimeWithDayAttr) value) );
 				break;
 			default:
 				break;
@@ -257,26 +264,29 @@ public class WorkSchedule implements DomainAggregate {
 				return (T) this.optTimeLeaving.get()
 						.getAttendanceLeavingWork(1).get()
 						.getAttendanceStamp().get()
-						.getStamp().get();
-				
+						.getStamp().get()
+						.getTimeDay().getTimeWithDay().get();
 			case 34:
 				// 退勤時刻1(34)
 				return (T) this.optTimeLeaving.get()
 						.getAttendanceLeavingWork(1).get()
 						.getLeaveStamp().get()
-						.getStamp().get();
+						.getStamp().get()
+						.getTimeDay().getTimeWithDay().get();
 			case 41:
 				// 出勤時刻2(41)
 				return (T) this.optTimeLeaving.get()
 						.getAttendanceLeavingWork(2).get()
 						.getAttendanceStamp().get()
-						.getStamp().get();
+						.getStamp().get()
+						.getTimeDay().getTimeWithDay().get();
 			case 44:
 				// 退勤時刻2(44)
 				return (T) this.optTimeLeaving.get()
 						.getAttendanceLeavingWork(2).get()
 						.getLeaveStamp().get()
-						.getStamp().get();
+						.getStamp().get()
+						.getTimeDay().getTimeWithDay().get();
 			default:
 				return null;
 		}
@@ -325,8 +335,7 @@ public class WorkSchedule implements DomainAggregate {
 	 * 手修正を解除する
 	 */
 	public void removeHandCorrections() {
-		this.lstEditState.removeIf( editState -> editState.getEditStateSetting() == EditStateSetting.HAND_CORRECTION_MYSELF );
-		this.lstEditState.removeIf( editState -> editState.getEditStateSetting() == EditStateSetting.HAND_CORRECTION_OTHER );
+		this.lstEditState.removeIf( editState -> editState.isHandCorrect() );
 	}
 
 	/**
