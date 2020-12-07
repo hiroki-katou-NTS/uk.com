@@ -43,14 +43,20 @@ public class AttendanceRecordExportFinder {
 				dto.setColumnIndex(item.getColumnIndex());
 				dto.setExportAtr(item.getExportAtr().value);
 				dto.setUserAtr(item.getUseAtr());
-				if (item.getUpperPosition().isPresent())
+				if (item.getUpperPosition().isPresent()) {
 					dto.setUpperPosition(item.getUpperPosition().get().getNameDisplay());
-				else
+					dto.setUpperShow(true);
+				} else {
 					dto.setUpperPosition("");
-				if (item.getLowerPosition().isPresent())
+					dto.setUpperShow(false);
+				}
+				if (item.getLowerPosition().isPresent()) {
 					dto.setLowwerPosition(item.getLowerPosition().get().getNameDisplay());
-				else
+					dto.setLowerShow(true);
+				} else {
 					dto.setLowwerPosition("");
+					dto.setLowerShow(false);
+				}
 
 				dtoList.add(dto);
 
@@ -82,14 +88,20 @@ public class AttendanceRecordExportFinder {
 				dto.setColumnIndex(item.getColumnIndex());
 				dto.setExportAtr(item.getExportAtr().value);
 				dto.setUserAtr(item.getUseAtr());
-				if (item.getUpperPosition().isPresent())
+				if (item.getUpperPosition().isPresent()) {
 					dto.setUpperPosition(item.getUpperPosition().get().getNameDisplay());
-				else
+					dto.setUpperShow(true);
+				} else {
 					dto.setUpperPosition("");
-				if (item.getLowerPosition().isPresent())
+					dto.setUpperShow(false);
+				}
+				if (item.getLowerPosition().isPresent()) {
 					dto.setLowwerPosition(item.getLowerPosition().get().getNameDisplay());
-				else
+					dto.setLowerShow(true);
+				} else {
 					dto.setLowwerPosition("");
+					dto.setLowerShow(false);
+				}
 
 				dtoList.add(dto);
 

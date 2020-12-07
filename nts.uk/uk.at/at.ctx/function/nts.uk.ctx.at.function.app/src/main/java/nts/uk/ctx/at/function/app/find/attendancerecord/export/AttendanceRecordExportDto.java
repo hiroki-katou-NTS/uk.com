@@ -24,6 +24,12 @@ public class AttendanceRecordExportDto {
 	/** The lowwer position. */
 	String lowwerPosition;
 
+	/** The lowwer show. */
+	Boolean upperShow;
+
+	/** The lowwer show. */
+	Boolean lowerShow;
+
 	public AttendanceRecordExportDto() {
 		super();
 	}

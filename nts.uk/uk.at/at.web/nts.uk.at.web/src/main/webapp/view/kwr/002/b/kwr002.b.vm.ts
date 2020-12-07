@@ -204,7 +204,7 @@ module nts.uk.com.view.kwr002.b {
                 },
 
                 isListValid: function(list) {
-                    return _.find(list, (item: any) => !(_.isEmpty(item.upperPosition) && _.isEmpty(item.lowwerPosition)));
+                    return _.find(list, (item: any) => item.upperShow || item.lowwerShow);
                 }
             };
 

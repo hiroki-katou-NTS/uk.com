@@ -71,9 +71,7 @@ module nts.uk.at.view.kdl048.screenModel {
       vm.initParam = getShared("attendanceItem");
       vm.objectDisplay = vm.initParam;
       //Setting data
-      vm.diligenceData(
-        _.orderBy(vm.initParam.diligenceProjectList, ["id"], ["asc"])
-      );
+      vm.diligenceData(vm.initParam.diligenceProjectList);
       vm.titleLine(vm.initParam.titleLine);
       vm.attributeObject(vm.initParam.attribute);
       vm.itemNameLine(vm.initParam.itemNameLine);
@@ -147,14 +145,14 @@ module nts.uk.at.view.kdl048.screenModel {
       });
       const tableDatas = _.orderBy(
         vm.tableDataA6.filter((data) => data.attendanceAtr === vm.filterCode()),
-        ['code'],
+        ['indicatesNumber'],
         ['asc']
       );
       if (tableDatas.length === 0) {
         vm.diligenceData([]);
       } else {
         vm.diligenceData(tableDatas);
-        vm.diligenceData(_.orderBy(vm.diligenceData(), ["id"], ["asc"]));
+        vm.diligenceData(_.orderBy(vm.diligenceData(), ["indicatesNumber"], ["asc"]));
         vm.currentCodeList.push(vm.diligenceData()[0].id);
       }
     }
