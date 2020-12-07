@@ -23,7 +23,7 @@
             #{i18n.getText('CCG003_20')}</div>
           <!-- C1_2	メッセージ -->
           <textarea id="C1_2" tabindex="1"
-            data-bind="ntsMultilineEditor: { name:'#[CCG003_20]', value: messageText, constraint: 'NotificationMessage', required: true }" />
+            data-bind="ntsTextEditor: { name:'#[CCG003_20]', value: messageText, constraint: 'NotificationMessage', required: true }" />
         </div>
         <div class="flex mt-10">
           <div class="left w-p-15">
@@ -91,7 +91,7 @@
         </div>
         <div class="flex mt-15 ml-p-15">
           <!-- C4	更新日表示 -->
-          <label id="C4" class="ml-13" data-bind="updateDate"></label>
+          <label id="C4" class="ml-13" data-bind="text: updateDate"></label>
         </div>
       </div>
 

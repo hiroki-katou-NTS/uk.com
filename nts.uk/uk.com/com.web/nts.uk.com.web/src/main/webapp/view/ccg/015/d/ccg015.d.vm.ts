@@ -26,8 +26,6 @@ module nts.uk.com.view.ccg015.d {
     flowMenuCd: KnockoutObservable<string> = ko.observable('');
     flowMenuUpCd: KnockoutObservable<string> = ko.observable('');
     url: KnockoutObservable<string> = ko.observable('');
-    html: KnockoutObservable<string> = ko.observable('');
-    html2: KnockoutObservable<string> = ko.observable('');
 
     created(params: any) {
       const vm = this;
@@ -112,9 +110,9 @@ module nts.uk.com.view.ccg015.d {
               vm.flowMenuSelectedCode(vm.listFlowMenu()[flowMenuChoose].flowCode);
               const fileIdChoose: string = vm.listFlowMenu()[flowMenuChoose].fileId;
               vm.$ajax('sys/portal/createflowmenu/extract/' + fileIdChoose).then((item: any) => {
-                const width = item.htmlContent.match(/(?<=width: )[0-9A-Za-z]+(?=;)/)[0];
-                const height = item.htmlContent.match(/(?<=height: )[0-9A-Za-z]+(?=;)/)[0];
-                return { html: `<iframe style="width: ${width}; height: ${height};" srcdoc='${item.htmlContent}'></iframe>` };
+                if (!_.isEmpty(item)) {
+                  vm.renderHTML(item.htmlContent, 'frame1');
+                }
               });
             }
             if (result.flowMenuUpCd) {
@@ -122,9 +120,9 @@ module nts.uk.com.view.ccg015.d {
               vm.toppageSelectedCode(vm.listTopPagePart()[topPagePartChoose].flowCode);
               const fileIdChoose: string = vm.listFlowMenu()[topPagePartChoose].fileId;
               vm.$ajax('sys/portal/createflowmenu/extract/' + fileIdChoose).then((item: any) => {
-                const width = item.htmlContent.match(/(?<=width: )[0-9A-Za-z]+(?=;)/)[0];
-                const height = item.htmlContent.match(/(?<=height: )[0-9A-Za-z]+(?=;)/)[0];
-                return { html2: `<iframe style="width: ${width}; height: ${height};" srcdoc='${item.htmlContent}'></iframe>` };
+                if (!_.isEmpty(item)) {
+                  vm.renderHTML(item.htmlContent, 'frame2');
+                }
               });
             }
             vm.url(result.url);
@@ -134,6 +132,31 @@ module nts.uk.com.view.ccg015.d {
           }
         })
         .always(() => vm.$blockui("clear"));
+    }
+
+    private renderHTML(htmlSrc: string, frame: any) {
+      const vm = this;
+      let $iframe: any;
+      if(frame === 'frame1') {
+       $iframe = $("#frameF1");
+      } else {
+        $iframe = $("#frameF2");
+      } 
+      // If browser supports srcdoc for iframe
+      // then add src to srcdoc attr
+      if ("srcdoc" in $iframe) {
+        $iframe.attr("srcdoc", htmlSrc);
+      } else {
+        // Fallback to IE... (doesn't support srcdoc)
+        // Write directly into iframe body
+        const ifr = document.getElementById('frameF1');
+        const iframedoc = (ifr as any).contentDocument || (ifr as any).contentWindow.document;
+        iframedoc.body.innerHTML = htmlSrc;
+        const width = iframedoc.activeElement.scrollWidth;
+        const height = iframedoc.activeElement.scrollHeight;
+        (ifr as any).width = `${width.toString()}px`;
+        (ifr as any).height = `${height.toString()}px`;
+      }
     }
 
     checkSaveLayout() {

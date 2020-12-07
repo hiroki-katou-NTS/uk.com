@@ -47,7 +47,7 @@ module nts.uk.com.view.ccg003.a {
             vm.msgNotices(msgNotices);
             vm.role(response.role);
             vm.roleFlag(response.role.employeeReferenceRange !== 3);
-            vm.systemDate(moment.utc(response.systemDate).locale('ja').format('YYYY/M/D(dddd)'));
+            vm.systemDate(moment.utc(response.systemDate).locale('ja').format('YYYY/M/D(dd)'));
           }
         })
         .fail(error => vm.$dialog.error(error))
@@ -55,14 +55,12 @@ module nts.uk.com.view.ccg003.a {
     }
 
     mounted() {
+      const vm = this;
       const elementId ='#notice-msg';
-      const elementPosition = $(elementId).position();
-      const elementWidth = $(elementId).outerWidth();
-      const marginRight = elementPosition.left + elementWidth;
       $('#A0').ntsPopup({
         trigger: elementId,
         position: {
-          my: `right top`,
+          my: 'right top',
           at: 'right bottom',
           of: $('#user')
         },
@@ -72,6 +70,21 @@ module nts.uk.com.view.ccg003.a {
 
       $(elementId).click(() => {
         $('#A0').ntsPopup('show');
+      });
+      $('#top-title').dblclick(e => e.preventDefault());
+      $('#top-title').click(() => {
+        const maxHeight = $('.auto-overflow').css('max-height');
+        if (maxHeight === '320px') {
+          $('.auto-overflow').css('max-height', '385px');
+        } else {
+          $('.auto-overflow').css('max-height', '320px');
+        }
+
+        if (!_.isEmpty(vm.anniversaries()) || !_.isEmpty(vm.msgNotices())) {
+          $('#A4').css('border-bottom', 'unset');
+        } else {
+          $('#A4').css('border-bottom', '1px groove');
+        }
       });
     }
 
@@ -189,7 +202,7 @@ module nts.uk.com.view.ccg003.a {
      */
     openScreenB(): void {
       const vm = this;
-      vm.$window.modal('/view/ccg/003/b/index.xhtml', vm.role().employeeReferenceRange)
+      vm.$window.modal('/view/ccg/003/b/index.xhtml', vm.role())
         .then(() => vm.onClickFilter());
     }
 
