@@ -925,7 +925,8 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 		}
 		// 「打刻申請出力用Tmp」を並べて項目名をセットする
 		listTmp.sort(Comparator.comparing((StampAppOutputTmp x) -> {
-			return String.valueOf(x.getTimeItem()) + String.valueOf(x.getStampAtr()) + String.valueOf(x.getStampFrameNo().v());
+			String frameNoStr = String.format("%02d", x.getStampFrameNo().v());
+			return String.valueOf(x.getTimeItem()) + String.valueOf(x.getStampAtr()) + frameNoStr;
 		}));
 		for(StampAppOutputTmp itemTmp : listTmp) {
 			if(itemTmp.getTimeItem() == 0 && itemTmp.getStampAtr() == TimeStampAppEnum.ATTEENDENCE_OR_RETIREMENT.value) {
