@@ -1,19 +1,12 @@
 package nts.uk.ctx.at.shared.app.find.holidaysetting.configuration;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.ForwardSettingOfPublicHoliday;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.ForwardSettingOfPublicHolidayRepository;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.FourWeekFourHolidayNumberSetting;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.FourWeekFourHolidayNumberSettingRepository;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidaySetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidaySettingRepository;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.WeekHolidaySetting;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.WeekHolidaySettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -50,8 +43,6 @@ public class HolidaySettingConfigFinder {
 		Optional<PublicHolidaySetting> optPubHdSetting = this.pubHdSetRepo.get(companyId);
 		if(optPubHdSetting.isPresent()){
 			PublicHolidaySetting pubHdSetDomain = optPubHdSetting.get();
-//			pubHdSetDomain.saveToMemento(pubHdSetDto, 0);
-			
 
 		} else {
 			pubHdSetDto = null;
@@ -69,7 +60,6 @@ public class HolidaySettingConfigFinder {
 		Optional<PublicHolidaySetting> optPubHDSet = this.pubHdSetRepo.get(companyId);
 		if (optPubHDSet.isPresent()) {
 			PublicHolidaySetting pubHDSet = optPubHDSet.get();
-//			pubHDSet.saveToMemento(pubHdSetDto);
 		} else {
 			pubHdSetDto = null;
 		}

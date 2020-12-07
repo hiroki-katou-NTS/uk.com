@@ -4,19 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+/**
+ * 
+ * @author quytb
+ *
+ */
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PublicHolidaySettingDto {
-
-	/** The Constant TRUE_VALUE. */
-	private final static int TRUE_VALUE = 1;
-	
-	/** The Constant FALSE_VALUE. */
-	private final static int FALSE_VALUE = 0;
-	
+public class PublicHolidaySettingDto {	
 	/** 公休を管理する */	
 	private Integer managePublicHoliday;	
 	

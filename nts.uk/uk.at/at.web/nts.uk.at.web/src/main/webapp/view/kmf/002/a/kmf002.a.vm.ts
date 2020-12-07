@@ -21,16 +21,16 @@ module nts.uk.at.view.kmf002.a {
             screenE: KnockoutObservable<any>;
             
             /* main define variable code */
-            managePublicHoliday: KnockoutObservable<number> = ko.observable(0);;
-            publicHdCarryOverDeadline: KnockoutObservable<number> = ko.observable(0);;
-            carryOverNumberOfPublicHdIsNegative: KnockoutObservable<number> = ko.observable(0);;
-            publicHolidayPeriod: KnockoutObservable<number> = ko.observable(0);;
+            managePublicHoliday: KnockoutObservable<number> = ko.observable(null);
+            publicHdCarryOverDeadline: KnockoutObservable<number> = ko.observable(null);
+            carryOverNumberOfPublicHdIsNegative: KnockoutObservable<number> = ko.observable(0);
+            publicHolidayPeriod: KnockoutObservable<number> = ko.observable(null);
 
             companyManageClassification: KnockoutObservableArray<any> = ko.observableArray([]);
             lstManagementPeriod: KnockoutObservableArray<any> = ko.observableArray([]);         
             dayOfPublicHoliday: KnockoutObservableArray<any> = ko.observableArray([]);
             
-            enableFullDate: KnockoutObservable<boolean> = ko.observable(true); 
+            // enableFullDate: KnockoutObservable<boolean> = ko.observable(true); 
             lstCarryOverDeadline: KnockoutObservableArray<any> = ko.observableArray([]);
             
             lstStartDayOfWeek: KnockoutObservableArray<any> = ko.observableArray([]); 
@@ -38,7 +38,7 @@ module nts.uk.at.view.kmf002.a {
             isDisableSetUnitBtn: KnockoutObservable<boolean> = ko.observable(false);
             enablePubHDPeriod: KnockoutObservable<boolean> = ko.observable(true);            
             enableCarryOverDeadline: KnockoutObservable<boolean> = ko.observable(true);
-            enablecarryOverNumberOfPublicHdIsNegative: KnockoutObservable<boolean> = ko.observable(true);
+            enableCarryOverNumberOfPublicHdIsNegative: KnockoutObservable<boolean> = ko.observable(true);
 
             
             isManageEmployeePublicHd: KnockoutObservable<number>;
@@ -64,18 +64,6 @@ module nts.uk.at.view.kmf002.a {
                     self.conditionSideBar5();
                 });
 
-                // self.publicHolidayPeriod.subscribe(function(newValue) {
-                //     // setting for button Setting Unit
-                //     if (newValue == 0 && self.managePublicHoliday() == ManagePubHD.MANAGE) {
-                //         self.isDisableSetUnitBtn(true);
-                //     } else {
-                //         self.isDisableSetUnitBtn(false);
-                //     }                    
-                //     // self.conditionSideBar1();
-                //     self.conditionSideBar2();
-                //     self.conditionSideBar3();
-                //     self.conditionSideBar4();
-                // });  
                 self.carryOverNumberOfPublicHdIsNegative.subscribe(function(newValue) {
                     if (newValue == 1) {
                         self.carryOverNumberOfPublicHdIsNegative(BoolValue.TRUE);        
@@ -106,7 +94,7 @@ module nts.uk.at.view.kmf002.a {
                     nts.uk.ui.errors.clearAll()
                     blockUI.grayout();
                     self.screenB(new viewModelTabB.ScreenModel());
-                    $.when(self.screenB().start_age()).done(function() {
+                    $.when(self.screenB().start_page()).done(function() {
                         dfd.resolve(self);
                         blockUI.clear();
                         $( "#scrB .datePickerYear" ).focus();
@@ -271,35 +259,30 @@ module nts.uk.at.view.kmf002.a {
             private getAllData(): JQueryPromise<any> {
                 let self = this;
                 var dfd = $.Deferred();
-                $.when(service.findAll()).done(function(data: any) {
-
+                $.when(service.findAll()).done(function(data: any) {  
                     if (!_.isUndefined(data) && !_.isNull(data) && !_.isEmpty(data)) {
                         self.managePublicHoliday(data.managePublicHoliday);
                         
                         self.carryOverNumberOfPublicHdIsNegative(data.carryOverNumberOfPublicHdIsNegative);
                         self.publicHolidayPeriod(data.publicHolidayPeriod);
-                        self.publicHdCarryOverDeadline(data.publicHdCarryOverDeadline);
+                        self.publicHdCarryOverDeadline(data.publicHdCarryOverDeadline);                       
+                    } else {
+                        self.managePublicHoliday(ManagePubHD.MANAGE);
+                        self.enableCarryOverDeadline(true);    
+                        self.enableCarryOverNumberOfPublicHdIsNegative(true);
+                        self.enablePubHDPeriod(true);       
+                        self.isDisableSetUnitBtn(false) ;
+                        
                     }
-                   
+
                     // notify variable observable
-                    self.managePublicHoliday.valueHasMutated();
-                    self.publicHolidayPeriod.valueHasMutated();
-                    self.carryOverNumberOfPublicHdIsNegative.valueHasMutated();                    
-                    
+                    // self.managePublicHoliday.valueHasMutated();
+                    // self.publicHolidayPeriod.valueHasMutated();
+                    // self.carryOverNumberOfPublicHdIsNegative.valueHasMutated();  
                     dfd.resolve();   
                 });
                 return dfd.promise();
             }
-            
-            // private conditionSideBar1(): void {
-            //     let self = this;
-            //     if (self.publicHolidayPeriod() == PublicHDPeriod.ONE_MONTH) {
-            //         $("#sidebar").ntsSideBar("show", SideBarTabIndex.SECOND);        
-            //     } else {
-            //         $("#sidebar").ntsSideBar("hide", SideBarTabIndex.SECOND);    
-            //     }
-            // }
-            
             private conditionSideBar2(): void {
                 let self = this;
                 if (self.isManageWkpPublicHd() == BoolValue.TRUE ) {
@@ -349,14 +332,14 @@ module nts.uk.at.view.kmf002.a {
                 let self = this;
                 if (self.managePublicHoliday() == ManagePubHD.MANAGE) {
                     self.enableCarryOverDeadline(true);    
-                    self.enablecarryOverNumberOfPublicHdIsNegative(true);
+                    self.enableCarryOverNumberOfPublicHdIsNegative(true);
                     self.enablePubHDPeriod(true);       
                     self.isDisableSetUnitBtn(false)             
                 } else {
                     self.enableCarryOverDeadline(false);    
-                    self.enablecarryOverNumberOfPublicHdIsNegative(false);
+                    self.enableCarryOverNumberOfPublicHdIsNegative(false);
                     self.enablePubHDPeriod(false);     
-                    self.isDisableSetUnitBtn(true);
+                    self.isDisableSetUnitBtn(true);                   
                 }    
             }            
             

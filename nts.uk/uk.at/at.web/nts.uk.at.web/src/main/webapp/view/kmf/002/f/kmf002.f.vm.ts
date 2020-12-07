@@ -35,6 +35,7 @@ module nts.uk.at.view.kmf002.f {
                         } else {
                             self.enableTypeSelectUnitRadioBox(true);
                         }   
+                        $( "#selectUnitCheck" ).focus();
                 });
                 
                 self.selectEmployee.subscribe(function(newValue) {
@@ -91,6 +92,7 @@ module nts.uk.at.view.kmf002.f {
                 }
                 
                 dfd.resolve();
+                
                 return dfd.promise();
             }
             

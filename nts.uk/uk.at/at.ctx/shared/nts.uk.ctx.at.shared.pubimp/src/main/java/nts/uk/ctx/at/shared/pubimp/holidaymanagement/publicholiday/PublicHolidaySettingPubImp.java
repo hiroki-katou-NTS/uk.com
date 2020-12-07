@@ -25,9 +25,6 @@ public class PublicHolidaySettingPubImp implements PublicHolidaySettingPub{
 	@Inject
 	private PublicHolidaySettingRepository pubHdSetRepo;
 	
-	private static final Integer NOT_MANAGE = 0;
-	private static final Integer MANAGE = 1;
-	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.bs.employee.pub.holidaysetting.configuration.PublicHolidaySettingPub#FindPublicHolidaySetting()
 	 */

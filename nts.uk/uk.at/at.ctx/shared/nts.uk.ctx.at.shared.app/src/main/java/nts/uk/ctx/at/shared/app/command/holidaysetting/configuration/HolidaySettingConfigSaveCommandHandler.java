@@ -26,20 +26,6 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class HolidaySettingConfigSaveCommandHandler extends CommandHandler<PublicHolidaySettingCommand> {
-	
-	/** The forward set of pub hd repo. */
-//	@Inject
-//	private ForwardSettingOfPublicHolidayRepository forwardSetOfPubHdRepo;
-//	
-//	/** The four weekfour hd numb set repo. */
-//	@Inject
-//	private FourWeekFourHolidayNumberSettingRepository fourWeekfourHdNumbSetRepo;
-//	
-//	/** The week hd set repo. */
-//	@Inject
-//	private WeekHolidaySettingRepository weekHdSetRepo;
-	
-	/** The pub hd set repo. */
 	@Inject
 	private PublicHolidaySettingRepository pubHdSetRepo;	
 	
@@ -48,25 +34,17 @@ public class HolidaySettingConfigSaveCommandHandler extends CommandHandler<Publi
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<PublicHolidaySettingCommand> context) {
-		String companyId = AppContexts.user().companyId();
-//		boolean storeStatusManageComPublicHd = false;
-		
-		PublicHolidaySettingCommand command = context.getCommand();
-		
-//		ForwardSettingOfPublicHoliday forwardSetOfPubHdDomain = new ForwardSettingOfPublicHoliday(command.getForwardSetOfPubHd());
-//		FourWeekFourHolidayNumberSetting fourWeekfourHdNumbSetDomain = new FourWeekFourHolidayNumberSetting(command.getFourWeekfourHdNumbSet());
-//		WeekHolidaySetting weekHdSetDomain = new WeekHolidaySetting(command.getWeekHdSet());
-//		PublicHolidaySetting pubHdSetDomain = new PublicHolidaySetting(command.getPubHdSet());
+		String companyId = AppContexts.user().companyId();		
+		PublicHolidaySettingCommand command = context.getCommand();		
 		
 		PublicHolidaySetting publicHolidaySetting;
 		// Get info from DB
 		Optional<PublicHolidaySetting> optionalPubHdSet = this.pubHdSetRepo.get(companyId);
 		if(optionalPubHdSet.isPresent()){
-//			storeStatusManageComPublicHd = optionalPubHdSet.get().getIsManagePublicHoliday();
 			publicHolidaySetting = optionalPubHdSet.get();
 			publicHolidaySetting.setCompanyID(companyId);
 			publicHolidaySetting.setIsManagePublicHoliday(command.getManagePublicHoliday());
-		publicHolidaySetting.setPublicHolidayCarryOverDeadline(PublicHolidayCarryOverDeadline.valueOf(command.getPublicHdCarryOverDeadline()));
+			publicHolidaySetting.setPublicHolidayCarryOverDeadline(PublicHolidayCarryOverDeadline.valueOf(command.getPublicHdCarryOverDeadline()));
 			publicHolidaySetting.setPublicHolidayPeriod(PublicHolidayPeriod.valueOf(command.getPublicHolidayPeriod()));
 			publicHolidaySetting.setCarryOverNumberOfPublicHolidayIsNegative(command.getCarryOverNumberOfPublicHdIsNegative());
 			this.pubHdSetRepo.update(publicHolidaySetting);	
@@ -76,66 +54,8 @@ public class HolidaySettingConfigSaveCommandHandler extends CommandHandler<Publi
 					command.getManagePublicHoliday(),
 					PublicHolidayPeriod.valueOf(command.getPublicHolidayPeriod()),
 					PublicHolidayCarryOverDeadline.valueOf(command.getPublicHdCarryOverDeadline()), 
-					command.getCarryOverNumberOfPublicHdIsNegative());
+					command.getCarryOverNumberOfPublicHdIsNegative() !=null ? command.getCarryOverNumberOfPublicHdIsNegative(): 0);
 			this.pubHdSetRepo.insert(publicHolidaySetting);
 		}
-//		if (pubHdSetDomain.isManageComPublicHd() == true) {
-//			//save PublicHolidaySetting
-//			if(optionalPubHdSet.isPresent()){
-//				storeStatusManageComPublicHd = optionalPubHdSet.get().isManageComPublicHd();
-//				this.pubHdSetRepo.update(pubHdSetDomain);
-//			}else {
-//				this.pubHdSetRepo.add(pubHdSetDomain);
-//			}
-//			
-//			if (pubHdSetDomain.getPublicHdManagementClassification().value == 1) {	// 0  is 1 month, 1 is 4 week
-//				// save FourWeekFourHolidayNumberSetting
-//				Optional<FourWeekFourHolidayNumberSetting> optionalFourWeekfourHdNumbSet = this.fourWeekfourHdNumbSetRepo.findByCID(companyId);
-//				if(optionalFourWeekfourHdNumbSet.isPresent()){
-//					this.fourWeekfourHdNumbSetRepo.update(fourWeekfourHdNumbSetDomain);
-//				}else {
-//					this.fourWeekfourHdNumbSetRepo.add(fourWeekfourHdNumbSetDomain);
-//				}
-//			}
-//			
-//			// save ForwardSettingOfPublicHoliday
-//			Optional<ForwardSettingOfPublicHoliday> optionalForwardSetOfPubHd = this.forwardSetOfPubHdRepo.findByCID(companyId);
-//			if(optionalForwardSetOfPubHd.isPresent()){
-//				this.forwardSetOfPubHdRepo.update(forwardSetOfPubHdDomain);
-//			}else {
-//				this.forwardSetOfPubHdRepo.add(forwardSetOfPubHdDomain);
-//			}
-//			
-//			// save WeekHolidaySetting
-//			Optional<WeekHolidaySetting> optionalWeekHdSet = this.weekHdSetRepo.findByCID(companyId);
-//			if(optionalWeekHdSet.isPresent()){
-//				this.weekHdSetRepo.update(weekHdSetDomain);
-//			}else {
-//				this.weekHdSetRepo.add(weekHdSetDomain);
-//			}
-//		} else {
-//			//save PublicHolidaySetting
-//			if(optionalPubHdSet.isPresent()){
-//				PublicHolidaySetting publicHolidaySetting = optionalPubHdSet.get();
-//				storeStatusManageComPublicHd = optionalPubHdSet.get().isManageComPublicHd();
-//				// 会社の公休管理をする was set 管理しない, all element on UI will be set disable and set default value 
-//				// so I use domain get from service and onlye set "isManageComPublicHd" to false  
-//				publicHolidaySetting.setManageComPublicHd(false);
-//				this.pubHdSetRepo.update(publicHolidaySetting);
-//			}else {
-//				this.pubHdSetRepo.add(pubHdSetDomain);
-//			}
-//		}
-		
-		//check managementCategory change
-		// ドメインモデル「特別休暇」を新規登録した場合
-		// Event： 特別休暇情報が変更された を発行する
-//		if (!optionalPubHdSet.isPresent() || storeStatusManageComPublicHd != command
-//				.getPubHdSet().getIsManageComPublicHd()) {
-//			val publicHolidaySettingDomainEvent = new PublicHolidaySettingDomainEvent(
-//					command.getPubHdSet().getIsManageComPublicHd());
-//			publicHolidaySettingDomainEvent.toBePublished();
-//		}
-	}
-	
+	}	
 }

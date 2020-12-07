@@ -155,10 +155,12 @@ public class HolidaySettingExportImpl implements MasterListData{
 			putDataCustom(datas,TextResource.localize("KMF002_61"),"","管理しない",0);
 			putDataCustom(datas,TextResource.localize("KMF002_4"),"","",1);
 			putDataCustom(datas,"",TextResource.localize("KMF002_7"),"",0);
+			putDataCustom(datas,TextResource.localize("KMF002_72"),"","", 1);
 		}else{
 			putDataCustom(datas,TextResource.localize("KMF002_61"),"","",0);
 			putDataCustom(datas,TextResource.localize("KMF002_4"),"","",1);
 			putDataCustom(datas,"",TextResource.localize("KMF002_7"),"",0);
+			putDataCustom(datas,TextResource.localize("KMF002_72"),"","", 1);
 		}
 		return datas;
 	}
