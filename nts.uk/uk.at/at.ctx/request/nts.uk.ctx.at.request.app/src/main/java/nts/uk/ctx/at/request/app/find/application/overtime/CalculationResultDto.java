@@ -19,7 +19,6 @@ public class CalculationResultDto {
 	// 申請時間
 	public List<ApplicationTimeDto> applicationTimes;
 	
-	
 	public static CalculationResultDto fromDomain(CalculationResult calculationResult) {
 		
 		if (calculationResult == null) return null;
@@ -32,4 +31,6 @@ public class CalculationResultDto {
 					.map(x -> ApplicationTimeDto.fromDomain(x))
 					.collect(Collectors.toList()));
 	}
+	
+
 }

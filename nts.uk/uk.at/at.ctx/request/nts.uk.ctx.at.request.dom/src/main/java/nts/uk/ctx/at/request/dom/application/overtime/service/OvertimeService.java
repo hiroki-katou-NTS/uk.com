@@ -7,7 +7,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
@@ -274,7 +273,7 @@ public interface OvertimeService {
 			);
 	
 	/**
-	 * Refactor5
+	 * Refactor5 UKDesign.UniversalK.就業.KAF_申請.KAF005_残業申請.A：残業申請（新規登録）.ユースケース
 	 * @param companyId
 	 * @param employeeId
 	 * @param dateOp
@@ -298,5 +297,39 @@ public interface OvertimeService {
 			List<WorkType> worktypes
 			);
 	
-	
+	// Mobile //
+	/**
+	 * Refactor5 
+	 * @param mode
+	 * @param companyId
+	 * @param employeeIdOptional
+	 * @param dateOptional
+	 * @param disOptional
+	 * @param appOptional
+	 * @param appDispInfoStartupOutput
+	 * @param overtimeAppAtr
+	 * @return
+	 */
+	public DisplayInfoOverTimeMobile startMobile(
+			Boolean mode,
+			String companyId,
+			Optional<String> employeeIdOptional,
+			Optional<GeneralDate> dateOptional,
+			Optional<DisplayInfoOverTime> disOptional,
+			Optional<AppOverTime> appOptional,
+			AppDispInfoStartupOutput appDispInfoStartupOutput,
+			OvertimeAppAtr overtimeAppAtr);
+	/**
+	 * Refactor5 UKDesign.UniversalK.就業.KAF_申請.KAFS05_残業申請(スマホ).A：残業申請(新規).アルゴリズム.申請日を変更する
+	 * 申請日を変更する
+	 * @param companyId
+	 * @param date
+	 * @param displayInfoOverTime
+	 * @return
+	 */
+	public DisplayInfoOverTime changeDateMobile(
+			String companyId,
+			GeneralDate date,
+			DisplayInfoOverTime displayInfoOverTime
+			);
 }

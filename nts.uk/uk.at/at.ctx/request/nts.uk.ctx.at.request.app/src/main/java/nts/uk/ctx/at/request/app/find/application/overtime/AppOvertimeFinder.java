@@ -28,6 +28,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.CheckBeforeOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.ICommonAlgorithmOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayInfoOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayInfoOverTimeMobile;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
@@ -291,20 +292,51 @@ public class AppOvertimeFinder {
 	}
 	
 	
-	public Application createApplication(ApplicationDto application) {
-		
-		return Application.createFromNew(
-				EnumAdaptor.valueOf(application.getPrePostAtr(), PrePostAtr.class),
-				application.getEmployeeID(),
-				ApplicationType.OVER_TIME_APPLICATION,
-				new ApplicationDate(GeneralDate.fromString(application.getAppDate(), PATTERN_DATE)),
-				application.getEnteredPerson(),
-				application.getOpStampRequestMode() == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(application.getOpStampRequestMode(), StampRequestMode.class)),
-				application.getOpReversionReason() == null ? Optional.empty() : Optional.of(new ReasonForReversion(application.getOpReversionReason())),
-				application.getOpAppStartDate() == null ? Optional.empty() : Optional.of(new ApplicationDate(GeneralDate.fromString(application.getOpAppStartDate(), PATTERN_DATE))),
-				application.getOpAppEndDate() == null ? Optional.empty() : Optional.of(new ApplicationDate(GeneralDate.fromString(application.getOpAppEndDate(), PATTERN_DATE))),
-				application.getOpAppReason() == null ? Optional.empty() : Optional.of(new AppReason(application.getOpAppReason())),
-				application.getOpAppStandardReasonCD() == null ? Optional.empty() : Optional.of(new AppStandardReasonCode(application.getOpAppStandardReasonCD())));
+//	public Application createApplication(ApplicationDto application) {
+//		
+//		return Application.createFromNew(
+//				EnumAdaptor.valueOf(application.getPrePostAtr(), PrePostAtr.class),
+//				application.getEmployeeID(),
+//				ApplicationType.OVER_TIME_APPLICATION,
+//				new ApplicationDate(GeneralDate.fromString(application.getAppDate(), PATTERN_DATE)),
+//				application.getEnteredPerson(),
+//				application.getOpStampRequestMode() == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(application.getOpStampRequestMode(), StampRequestMode.class)),
+//				application.getOpReversionReason() == null ? Optional.empty() : Optional.of(new ReasonForReversion(application.getOpReversionReason())),
+//				application.getOpAppStartDate() == null ? Optional.empty() : Optional.of(new ApplicationDate(GeneralDate.fromString(application.getOpAppStartDate(), PATTERN_DATE))),
+//				application.getOpAppEndDate() == null ? Optional.empty() : Optional.of(new ApplicationDate(GeneralDate.fromString(application.getOpAppEndDate(), PATTERN_DATE))),
+//				application.getOpAppReason() == null ? Optional.empty() : Optional.of(new AppReason(application.getOpAppReason())),
+//				application.getOpAppStandardReasonCD() == null ? Optional.empty() : Optional.of(new AppStandardReasonCode(application.getOpAppStandardReasonCD())));
+//	}
+	
+	/**
+	 * Mobile
+	 */
+	public DisplayInfoOverTimeMobileDto startMobile(ParamStartMobile param) {
+		Optional<GeneralDate> dateOp = Optional.empty();
+		if (StringUtils.isNotBlank(param.dateOptional)) {
+			dateOp = Optional.of(GeneralDate.fromString(param.dateOptional, PATTERN_DATE));	
+		}
+		DisplayInfoOverTimeMobile output = overtimeService.startMobile(
+				param.mode,
+				param.companyId,
+				StringUtils.isBlank(param.employeeIdOptional) ? Optional.empty() : Optional.of(param.employeeIdOptional),
+				dateOp,
+				param.disOptional == null ? Optional.empty() : Optional.of(param.disOptional.toDomain()),
+				param.appOptional == null ? Optional.empty() : Optional.of(param.appOptional.toDomain()),
+				param.appDispInfoStartupOutput.toDomain(),
+				EnumAdaptor.valueOf(param.overtimeAppAtr, OvertimeAppAtr.class));
+		return DisplayInfoOverTimeMobileDto.fromDomain(output);
 	}
 	
+	public DisplayInfoOverTimeDto changeDateMobile(ParamChangeDateMobile param) {
+		GeneralDate date = null;
+		if (StringUtils.isNotBlank(param.date)) {
+			date = GeneralDate.fromString(param.date, PATTERN_DATE);
+		}
+		DisplayInfoOverTime output = overtimeService.changeDateMobile(
+				param.companyId,
+				date,
+				param.displayInfoOverTime.toDomain());
+		return DisplayInfoOverTimeDto.fromDomain(output);
+	}
 }

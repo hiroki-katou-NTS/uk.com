@@ -33,7 +33,9 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchieve
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithmImpl;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHdWorkDispInfoOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
@@ -79,8 +81,10 @@ public class OvertimeServiceImpl implements OvertimeService {
 
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
+	
 	@Inject
 	private OvertimeRepository overTimeRepository;
+	
 	@Inject
 	ApplicationApprovalService appRepository;
 	
@@ -109,7 +113,10 @@ public class OvertimeServiceImpl implements OvertimeService {
 	private DetailBeforeUpdate detailBeforeUpdate;
 	
 	@Inject
-	NewBeforeRegister processBeforeRegister;
+	private NewBeforeRegister processBeforeRegister;
+	
+	@Inject
+	private CommonAlgorithmImpl commonAlgorithmImpl;
 	
 	@Override
 	public int checkOvertimeAtr(String url) {
@@ -1034,6 +1041,79 @@ public class OvertimeServiceImpl implements OvertimeService {
 			infoWithDateApplication.setBreakTime(breakTime);
 			displayInfoOverTimeTemp.setInfoWithDateApplicationOp(Optional.of(infoWithDateApplication));
 		return displayInfoOverTimeTemp;
+	}
+
+	@Override
+	public DisplayInfoOverTimeMobile startMobile(
+			Boolean mode,
+			String companyId,
+			Optional<String> employeeIdOptional,
+			Optional<GeneralDate> dateOptional,
+			Optional<DisplayInfoOverTime> disOptional,
+			Optional<AppOverTime> appOptional,
+			AppDispInfoStartupOutput appDispInfoStartupOutput,
+			OvertimeAppAtr overtimeAppAtr) {
+		DisplayInfoOverTimeMobile output = new DisplayInfoOverTimeMobile();
+		DisplayInfoOverTime displayInfoOverTime;
+		if (!mode) { // 修正モード
+			// INPUT「残業申請の表示情報」と「残業申請」を返す
+			output.setAppOverTimeOp(appOptional);
+			output.setDisplayInfoOverTime(disOptional.get());
+			return output;
+		}
+		// PCのアルゴリズム「01_初期起動の処理」を実行する
+		displayInfoOverTime = this.getInitData(
+				companyId,
+				dateOptional,
+				overtimeAppAtr,
+				appDispInfoStartupOutput,
+				Optional.empty(),
+				Optional.empty(),
+				false);
+		output.setDisplayInfoOverTime(displayInfoOverTime);	
+		return output;
+	}
+
+	@Override
+	public DisplayInfoOverTime changeDateMobile(
+			String companyId,
+			GeneralDate date,
+			DisplayInfoOverTime displayInfoOverTime) {
+		
+		List<GeneralDate> dates = new ArrayList<>();
+		dates.add(date);
+		
+		// 申請表示情報(基準日関係あり)を取得する
+		AppDispInfoWithDateOutput appDispInfoWithDateOutput = commonAlgorithmImpl.getAppDispInfoWithDate(
+				companyId,
+				ApplicationType.OVER_TIME_APPLICATION,
+				dates,
+				displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoNoDateOutput(),
+				true,
+				Optional.of(displayInfoOverTime.getOvertimeAppAtr()));
+		// 「残業申請の表示情報」を更新する
+		displayInfoOverTime.getAppDispInfoStartup().setAppDispInfoWithDateOutput(appDispInfoWithDateOutput);
+		// 申請日に関する情報を取得する
+		InfoWithDateApplication infoWithDateApplication = commonAlgorithmOverTime.getInfoAppDate(
+				companyId,
+				Optional.of(date),
+				Optional.empty(),
+				Optional.empty(),
+				displayInfoOverTime.getInfoBaseDateOutput().getWorktypes(),
+				displayInfoOverTime.getAppDispInfoStartup(),
+				displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet());
+		
+		displayInfoOverTime.setInfoWithDateApplicationOp(Optional.of(infoWithDateApplication));
+		// 「残業申請の表示情報」を更新して返す
+		if (displayInfoOverTime.getCalculationResultOp().isPresent()) {
+			displayInfoOverTime.getCalculationResultOp().get().setFlag(1);
+		} else {
+			CalculationResult calculationResult = new CalculationResult();
+			calculationResult.setFlag(1);
+			displayInfoOverTime.setCalculationResultOp(Optional.of(calculationResult));
+		}
+		
+		return displayInfoOverTime;
 	}
 
 	
