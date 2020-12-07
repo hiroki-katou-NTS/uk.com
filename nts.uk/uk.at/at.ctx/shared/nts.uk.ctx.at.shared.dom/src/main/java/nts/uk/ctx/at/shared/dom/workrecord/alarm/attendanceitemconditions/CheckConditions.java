@@ -15,4 +15,6 @@ public interface CheckConditions<V> {
      * @return boolean
      */
     boolean check(Double targetV, Function<V, Double> value);
+
+    boolean isSingleValue ();
 }

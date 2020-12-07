@@ -1,9 +1,11 @@
 package nts.uk.ctx.at.record.pubimp.workrecord.erroralarm.alarmlistworkplace;
 
+import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.service.AggregateProcessMasterCheckBasicService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.service.AggregateProcessMasterCheckDailyService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.extractresult.AlarmListExtractionInfoWorkplaceDto;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.service.AggregateProcessMasterCheckMonthlyService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.schedule.service.AggregateProcessMasterCheckScheduleService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.workplace.service.AggregateProcessMasterCheckWorkplaceService;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.alarmlistworkplace.AggregateProcessPub;
@@ -26,6 +28,8 @@ public class AggregateProcessPubImpl implements AggregateProcessPub {
     private AggregateProcessMasterCheckWorkplaceService aggregateProcessMasterCheckWorkplaceService;
     @Inject
     private AggregateProcessMasterCheckScheduleService aggregateProcessMasterCheckScheduleService;
+    @Inject
+    private AggregateProcessMasterCheckMonthlyService aggregateProcessMasterCheckMonthlyService;
 
     @Override
     public List<AlarmListExtractionInfoWorkplaceExport> processMasterCheckBasic(String cid, DatePeriod period,
@@ -54,6 +58,12 @@ public class AggregateProcessPubImpl implements AggregateProcessPub {
                                                                                    List<String> optionalIds,
                                                                                    List<String> workplaceIds) {
         return convert(aggregateProcessMasterCheckScheduleService.process(cid, period, alarmCheckWkpId, optionalIds, workplaceIds));
+    }
+
+    @Override
+    public List<AlarmListExtractionInfoWorkplaceExport> processMasterCheckMonthly(String cid, YearMonth ym, List<String> fixedExtractCondIds, List<String> extractCondIds, List<String> workplaceIds) {
+        return convert(aggregateProcessMasterCheckMonthlyService.process(cid, ym, fixedExtractCondIds, extractCondIds, workplaceIds));
+
     }
 
     private List<AlarmListExtractionInfoWorkplaceExport> convert(List<AlarmListExtractionInfoWorkplaceDto> data) {

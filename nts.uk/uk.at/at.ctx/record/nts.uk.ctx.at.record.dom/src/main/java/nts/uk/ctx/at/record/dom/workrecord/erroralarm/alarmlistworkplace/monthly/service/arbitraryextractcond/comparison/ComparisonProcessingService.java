@@ -10,6 +10,9 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly
 import nts.uk.ctx.at.shared.dom.scherec.alarm.alarmlistactractionresult.AlarmValueDate;
 import nts.uk.ctx.at.shared.dom.scherec.alarm.alarmlistactractionresult.AlarmValueMessage;
 import nts.uk.ctx.at.shared.dom.scherec.alarm.alarmlistactractionresult.MessageDisplay;
+import nts.uk.ctx.at.shared.dom.workrecord.alarm.attendanceitemconditions.CheckConditions;
+import nts.uk.ctx.at.shared.dom.workrecord.alarm.attendanceitemconditions.CompareRange;
+import nts.uk.ctx.at.shared.dom.workrecord.alarm.attendanceitemconditions.CompareSingleValue;
 import nts.uk.shr.com.i18n.TextResource;
 
 import javax.ejb.Stateless;
@@ -26,108 +29,64 @@ public class ComparisonProcessingService {
     /**
      * 比較処理
      *
-     * @param workplaceId      職場ID
-     * @param condition        チェック条件
-     * @param avgTime          比較値
-     * @param averageTimeValue 平均値　（Enum）
-     * @param ym               年月
-     * @return 抽出結果
-     */
-    public ExtractResultDto compare(String workplaceId, ExtractionMonthlyCon condition,
-                                    Double avgTime, AverageTime averageTimeValue, YearMonth ym) {
-        // 「Input．比較値」とチェック条件を比較
-        boolean check = condition.getCheckConditions().check(avgTime, c -> avgTime);
-
-        // 抽出結果を作成 // TODO
-        ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(TextResource.localize("KAL020_402")),
-                new AlarmValueDate(ym.v(), Optional.empty()),
-                condition.getMonExtracConName().v(),
-                Optional.ofNullable(TextResource.localize("KAL020_408")),
-                Optional.of(new MessageDisplay(condition.getMessageDisp().v())),
-                workplaceId);
-
-        // 作成した抽出結果を返す
-        return result;
-    }
-
-    /**
-     * 比較処理
-     *
-     * @param workplaceId   職場ID
-     * @param condition     チェック条件
-     * @param avgTime       比較値
-     * @param averageNumDay 平均値　（Enum）
-     * @param ym            年月
-     * @return 抽出結果
-     */
-    public ExtractResultDto compare(String workplaceId, ExtractionMonthlyCon condition,
-                                    Double avgTime, AverageNumberOfDays averageNumDay, YearMonth ym) {
-        // 「Input．比較値」とチェック条件を比較
-        boolean check = condition.getCheckConditions().check(avgTime, c -> avgTime);
-
-        // 抽出結果を作成 // TODO
-        ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(TextResource.localize("KAL020_402")),
-                new AlarmValueDate(ym.v(), Optional.empty()),
-                condition.getMonExtracConName().v(),
-                Optional.ofNullable(TextResource.localize("KAL020_408")),
-                Optional.of(new MessageDisplay(condition.getMessageDisp().v())),
-                workplaceId);
-
-        // 作成した抽出結果を返す
-        return result;
-    }
-
-    /**
-     * 比較処理
-     *
      * @param workplaceId     職場ID
      * @param condition       チェック条件
      * @param avgTime         比較値
-     * @param averageNumTimes 平均値　（Enum）
+     * @param averageTimeName 平均値　（Enum）
      * @param ym              年月
      * @return 抽出結果
      */
     public ExtractResultDto compare(String workplaceId, ExtractionMonthlyCon condition,
-                                    Double avgTime, AverageNumberOfTimes averageNumTimes, YearMonth ym) {
+                                    Double avgTime, String averageTimeName, YearMonth ym) {
         // 「Input．比較値」とチェック条件を比較
         boolean check = condition.getCheckConditions().check(avgTime, c -> avgTime);
+        CheckConditions checkConditions = condition.getCheckConditions();
 
-        // 抽出結果を作成 // TODO
-        ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(TextResource.localize("KAL020_402")),
+        String message;
+        if (checkConditions.isSingleValue()) {
+            CompareSingleValue compareSingleValue = ((CompareSingleValue) checkConditions);
+            if (!check) return null;
+            message = TextResource.localize("KAL020_402", averageTimeName,
+                    compareSingleValue.getCompareOpertor().nameId, compareSingleValue.getValue().toString(),
+                    avgTime.toString());
+        } else {
+            CompareRange compareRange = ((CompareRange) checkConditions);
+            if (!check) return null;
+            message = TextResource.localize("KAL020_403", averageTimeName, getFormula(compareRange),
+                    avgTime.toString());
+        }
+
+        // 抽出結果を作成
+        // 作成した抽出結果を返す
+        return new ExtractResultDto(new AlarmValueMessage(message),
                 new AlarmValueDate(ym.v(), Optional.empty()),
                 condition.getMonExtracConName().v(),
-                Optional.ofNullable(TextResource.localize("KAL020_408")),
+                Optional.ofNullable(TextResource.localize("KAL020_408", avgTime.toString())),
                 Optional.of(new MessageDisplay(condition.getMessageDisp().v())),
                 workplaceId);
-
-        // 作成した抽出結果を返す
-        return result;
     }
 
-    /**
-     * 比較処理
-     *
-     * @param workplaceId  職場ID
-     * @param condition    チェック条件
-     * @param avgTime      比較値
-     * @param averageRatio 平均値　（Enum）
-     * @param ym           年月
-     * @return 抽出結果
-     */
-    public ExtractResultDto compare(String workplaceId, ExtractionMonthlyCon condition,
-                                    Double avgTime, AverageRatio averageRatio, YearMonth ym) {
-        // 「Input．比較値」とチェック条件を比較
-        boolean check = condition.getCheckConditions().check(avgTime, c -> avgTime);
+    private String getFormula(CompareRange compareRange) {
+        String formula = "";
+        switch (compareRange.getCompareOperator()) {
+            case BETWEEN_RANGE_OPEN:
+                formula = TextResource.localize("KAL020_404", compareRange.getCompareOperator().nameId,
+                        compareRange.getStartValue().toString(), compareRange.getEndValue().toString());
+                break;
+            case BETWEEN_RANGE_CLOSED:
+                formula = TextResource.localize("KAL020_405", compareRange.getCompareOperator().nameId,
+                        compareRange.getStartValue().toString(), compareRange.getEndValue().toString());
+                break;
+            case OUTSIDE_RANGE_OPEN:
+                formula = TextResource.localize("KAL020_406", compareRange.getCompareOperator().nameId,
+                        compareRange.getStartValue().toString(), compareRange.getEndValue().toString());
+                break;
+            case OUTSIDE_RANGE_CLOSED:
+                formula = TextResource.localize("KAL020_407", compareRange.getCompareOperator().nameId,
+                        compareRange.getStartValue().toString(), compareRange.getEndValue().toString());
+                break;
+        }
 
-        // 抽出結果を作成 // TODO
-        ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(TextResource.localize("KAL020_402")),
-                new AlarmValueDate(ym.v(), Optional.empty()),
-                condition.getMonExtracConName().v(),
-                Optional.ofNullable(TextResource.localize("KAL020_408")),
-                Optional.of(new MessageDisplay(condition.getMessageDisp().v())),
-                workplaceId);
-
-        // 作成した抽出結果を返す
-        return result;
+        return formula;
     }
 }

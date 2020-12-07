@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.pub.workrecord.erroralarm.alarmlistworkplace;
 
+import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 
 import java.util.List;
@@ -59,4 +60,19 @@ public interface AggregateProcessPub {
                                                                             List<String> alarmCheckWkpId,
                                                                             List<String> optionalIds,
                                                                             List<String> workplaceIds);
+
+    /**
+     * 月次の集計処理
+     *
+     * @param cid                 会社ID
+     * @param ym                  年月
+     * @param fixedExtractCondIds List＜固定抽出条件ID＞
+     * @param extractCondIds      List＜任意抽出条件ID＞
+     * @param workplaceIds        List<職場ID＞
+     * @return List＜アラームリスト抽出情報（職場）＞
+     */
+    List<AlarmListExtractionInfoWorkplaceExport> processMasterCheckMonthly(String cid, YearMonth ym,
+                                                                           List<String> fixedExtractCondIds,
+                                                                           List<String> extractCondIds,
+                                                                           List<String> workplaceIds);
 }

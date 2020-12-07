@@ -16,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
@@ -25,6 +26,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.export.param.AggrResultOfAnnAndR
 import nts.uk.ctx.at.shared.dom.remainingnumber.export.param.AggrResultOfAnnualLeave;
 import nts.uk.ctx.at.shared.dom.remainingnumber.export.param.AggrResultOfReserveLeave;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveGrant;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.WorkDaysOfMonthly;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 
@@ -98,6 +100,7 @@ public class AverageRatioCheckService {
                                 false, false, Optional.of(false),
                                 Optional.empty(), Optional.empty(), Optional.empty(),
                                 Optional.empty(), Optional.empty(), Optional.empty());
+                        Optional<AggrResultOfAnnualLeave> annualLeave = aggResult.getAnnualLeave();
                         switch (averageRatio.get()) {
                             case HOLIDAY_VACATION_RATE:
                                 // 総集計日数　+＝　集計日数
@@ -108,26 +111,72 @@ public class AverageRatioCheckService {
                                 break;
                             case ANNUAL_LEAVE_DIGESTION_RATE:
                                 // 総集計日数を合計
+                                if (annualLeave.isPresent()) {
+                                    // 年休繰越数　＝　合計（年休情報(期間終了日時点)．付与残数データ．年休(マイナスあり)．残数．合計．合計残日数）// TODO Q&A 37551
+                                    aggregateTotal += annualLeave.get().getAsOfPeriodEnd().getRemainingNumber()
+                                            .getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingDays().v();
+                                    // +　合計（年休情報(期間終了日の翌日開始時点．付与残数データ．年休(マイナスあり)．残数．合計．合計残日数)　// TODO Q&A 37551
+                                    aggregateTotal += annualLeave.get().getAsOfStartNextDayOfPeriodEnd().getRemainingNumber()
+                                            .getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingDays().v();
 
-                                // 総日数を合計する
+                                    // 年休付与数　＝　年休情報(期間終了日時点)．付与情報．付与日数　
+                                    Optional<AnnualLeaveGrant> grantInfo = annualLeave.get().getAsOfPeriodEnd().getGrantInfo();
+                                    if (grantInfo.isPresent()) {
+                                        aggregateTotal += grantInfo.get().getGrantDays().v();
+                                    }
+                                    // +　年休情報(期間終了日の翌日開始時点．付与情報．付与日数
+                                    Optional<AnnualLeaveGrant> grantInfoNextDay = annualLeave.get().getAsOfStartNextDayOfPeriodEnd().getGrantInfo();
+                                    if (grantInfoNextDay.isPresent()) {
+                                        aggregateTotal += grantInfoNextDay.get().getGrantDays().v();
+                                    }
+
+                                    // 総日数を合計する
+                                    // +＝　年休情報．使用日数 // TODO Q&A 37551
+                                    // total += annualLeave.get().
+                                }
 
                                 break;
                             case TIME_ANNUAL_BREAK_DIG:
                                 // 総日数を合計する
+                                // +＝　年休情報．使用時間数 // TODO Q&A 37551
 
                                 // 総集計日数を合計
-
+                                // 年休繰越数　＝　合計（年休情報(期間終了日時点)．付与残数データ．年休(マイナスあり)．残数．合計．合計残時間）
+                                Optional<RemainingMinutes> totalRemainingTime = annualLeave.get().getAsOfPeriodEnd().getRemainingNumber()
+                                        .getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingTime();
+                                if (totalRemainingTime.isPresent()) {
+                                    aggregateTotal += totalRemainingTime.get().v();
+                                }
+                                // +　合計（年休情報(期間終了日の翌日開始時点．付与残数データ．年休(マイナスあり)．残数．合計．合計残時間)　
+                                Optional<RemainingMinutes> totalRemainingTimeNextDay = annualLeave.get().getAsOfStartNextDayOfPeriodEnd().getRemainingNumber()
+                                        .getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingTime();
+                                if (totalRemainingTimeNextDay.isPresent()) {
+                                    aggregateTotal += totalRemainingTimeNextDay.get().v();
+                                }
+                                // 年休付与数　＝　？？？？ // TODO Q&A 37551
                                 break;
                             case ANNUAL_HOLIDAY_DIGESTIBILITY:
                                 // 総日数を合計する
+                                // +＝　年休情報．使用日数 // TODO Q&A 37551
 
                                 // 総集計日数を合計
-
+                                // +＝年休情報(期間終了日時点)．付与情報．付与日数
+                                Optional<AnnualLeaveGrant> grantInfo = annualLeave.get().getAsOfPeriodEnd().getGrantInfo();
+                                if (grantInfo.isPresent()) {
+                                    aggregateTotal += grantInfo.get().getGrantDays().v();
+                                }
+                                // +　年休情報(期間終了日の翌日開始時点．付与情報．付与日数
+                                Optional<AnnualLeaveGrant> grantInfoNextDay = annualLeave.get().getAsOfStartNextDayOfPeriodEnd().getGrantInfo();
+                                if (grantInfoNextDay.isPresent()) {
+                                    aggregateTotal += grantInfoNextDay.get().getGrantDays().v();
+                                }
                                 break;
                             case TIME_ABD_NOT_INC:
                                 // 総日数を合計する
+                                // +＝　年休情報．使用時間数 // TODO Q&A 37551
 
                                 // 総集計日数を合計
+                                // +＝？？？ // TODO Q&A 37551
 
                                 break;
                         }
@@ -136,13 +185,13 @@ public class AverageRatioCheckService {
             }
         }
 
-        // 平均値　＝　合計値/Input．List＜社員情報＞．size
-        Double avg = total / empInfos.size();
+        // 比率値　＝　総日数/総集計日数*100
+        Double avg = total / aggregateTotal + 100;
         BigDecimal bd = new BigDecimal(Double.toString(avg));
         bd = bd.setScale(1, RoundingMode.HALF_UP);
         // 比較処理
-        // 取得した「抽出結果」を返す
-        return comparisonProcessingService.compare(workplaceId, condition, bd.doubleValue(), averageRatio.get(), ym);
+        // 取得した抽出結果を返す
+        return comparisonProcessingService.compare(workplaceId, condition, bd.doubleValue(), averageRatio.get().nameId, ym);
     }
 
     private Double getTotalHolidayVacationRate(RecordDomRequireService.Require require, CacheCarrier cacheCarrier,

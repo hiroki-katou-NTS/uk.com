@@ -108,11 +108,11 @@ public class AverageTimeCheckService {
         }
 
         // 平均時間　＝　合計値/List<社員情報＞.size
-        Double avg = total/empInfos.size();
+        Double avg = total / empInfos.size();
         BigDecimal bd = new BigDecimal(Double.toString(avg));
         bd = bd.setScale(1, RoundingMode.HALF_UP);
         // 比較処理
         // 取得した抽出結果を返す
-        return comparisonProcessingService.compare(workplaceId, condition, bd.doubleValue(), averageTime.get(), ym);
+        return comparisonProcessingService.compare(workplaceId, condition, bd.doubleValue(), averageTime.get().nameId, ym);
     }
 }

@@ -80,6 +80,6 @@ public class AverageNumTimeCheckService {
         bd = bd.setScale(1, RoundingMode.HALF_UP);
         // 比較処理
         // 「抽出結果」を返す
-        return comparisonProcessingService.compare(workplaceId, condition, bd.doubleValue(), averageNumberOfTimes.get(), ym);
+        return comparisonProcessingService.compare(workplaceId, condition, bd.doubleValue(), averageNumberOfTimes.get().nameId, ym);
     }
 }

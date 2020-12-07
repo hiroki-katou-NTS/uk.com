@@ -38,6 +38,11 @@ public class CompareSingleValue<V> implements CheckConditions<V> {
         return checkWithFixedValue(targetV, value.apply(this.value));
     }
 
+    @Override
+    public boolean isSingleValue() {
+        return true;
+    }
+
     private boolean checkWithFixedValue(Double target, Double compare) {
         if (target == null || compare == null) {
             return false;

@@ -115,14 +115,16 @@ public class AverageNumDayCheckService {
                                 Optional<AggrResultOfAnnualLeave> annualLeave = aggResult.getAnnualLeave();
                                 // 合計値　を計算
                                 if (annualLeave.isPresent()) {
-                                    total += annualLeave.get().getAsOfPeriodEnd().getUsedDays().v(); // TODO
+                                    total += annualLeave.get().getAsOfPeriodEnd().getUsedDays().v();
+                                    total += annualLeave.get().getAsOfPeriodEnd().getUsedTime().v() * 60 / 8;
                                 }
                                 break;
                             case ACCUMULATED_ANNUAL_LEAVE_USED:
                                 Optional<AggrResultOfReserveLeave> reserveLeave = aggResult.getReserveLeave();
                                 // 合計値　を計算
                                 if (reserveLeave.isPresent()) {
-                                    total += reserveLeave.get().getAsOfPeriodEnd().getUsedDays().v(); // TODO
+                                    total += reserveLeave.get().getAsOfPeriodEnd().getUsedDays().v();
+                                    // total += reserveLeave.get().getAsOfPeriodEnd().getUsedTime().v() * 60 / 8; //TODO Q&A 37551
                                 }
                                 break;
                         }
@@ -137,7 +139,7 @@ public class AverageNumDayCheckService {
         bd = bd.setScale(1, RoundingMode.HALF_UP);
         // 比較処理
         // 取得した「抽出結果」を返す
-        return comparisonProcessingService.compare(workplaceId, condition, bd.doubleValue(), averageNumDay.get(), ym);
+        return comparisonProcessingService.compare(workplaceId, condition, bd.doubleValue(), averageNumDay.get().nameId, ym);
     }
 
     /**
