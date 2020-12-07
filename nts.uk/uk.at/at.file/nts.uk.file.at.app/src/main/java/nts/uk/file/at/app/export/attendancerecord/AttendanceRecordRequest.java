@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportFontSize;
 
 /**
  * The Class AttendanceRecordRequest.
