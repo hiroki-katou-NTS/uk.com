@@ -1320,6 +1320,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 			case 1:
 			case 2:
+			case 15:
 				sumInt = sum.intValue();
 				return this.convertMinutesToHours(sumInt.toString(), zeroDisplayType, false);
 			case 7:
@@ -1452,12 +1453,15 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			return b;
 		if (b.equals(""))
 			return a;
+		// For time
 		int indexA = a.indexOf(":");
 		int indexB = b.indexOf(":");
 
-		int subtrA = a.indexOf("-");
-		int subtrB = b.indexOf("-");
+		// For case 前日
+		int subtrA = a.indexOf("前日");
+		int subtrB = b.indexOf("前日");
 
+		// For case 
 		if (indexA >= 0 && indexB >= 0) {
 			Integer hourA;
 			Integer hourB;
@@ -1465,46 +1469,65 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			Integer minuteB;
 			hourA = Integer.parseInt(a.substring(0, indexA));
 			if (subtrA == 0) {
-				minuteA = Integer.parseInt(a.substring(indexA + 1)) * (-1);
+				minuteA = Integer.parseInt(a.substring(indexA + 2)) * (-1);
 			} else {
 				minuteA = Integer.parseInt(a.substring(indexA + 1));
 			}
 			hourB = Integer.parseInt(b.substring(0, indexB));
 			if (subtrB == 0) {
-				minuteB = Integer.parseInt(b.substring(indexB + 1)) * (-1);
+				minuteB = Integer.parseInt(b.substring(indexB + 2)) * (-1);
 			} else {
-
 				minuteB = Integer.parseInt(b.substring(indexB + 1));
 			}
 
 			Integer totalMinute = (hourA * 60 + minuteA) + (hourB * 60 + minuteB);
 
 			return this.convertMinutesToHours(totalMinute.toString(), zeroDisplayType, true);
-		} else {
-			indexA = a.indexOf("回");
-			indexB = b.indexOf("回");
+		}
+		
+		// For case 回
+		int subStrTimesA = a.indexOf("回");
+		int subStrTimesB = b.indexOf("回");
 
-			if (indexA >= 0 && indexB >= 0) {
-				Double countA = a.substring(0, indexA - 1).isEmpty() ? Double.parseDouble(a.substring(0, indexA - 1)) : Double.parseDouble(a.substring(0, indexA));
-				Double countB = b.substring(0, indexB - 1).isEmpty() ? Double.parseDouble(b.substring(0, indexB - 1)) : Double.parseDouble(b.substring(0, indexB));
-			
-				Double totalCount = countA + countB;
-				return String.format("%.1f",totalCount.doubleValue()) + "回";
-			} else {
-				String stringAmountA = a.replaceAll(",", "");
-				String stringAmountB = b.replaceAll(",", "");
+		if (subStrTimesA >= 0 && subStrTimesB >= 0) {
+			Double countA = a.substring(0, subStrTimesA - 1).isEmpty()
+							? Double.parseDouble(a.substring(0, subStrTimesA - 1))
+							: Double.parseDouble(a.substring(0, subStrTimesA));
 
-				Double amountA = Double.parseDouble(stringAmountA.toString());
-				Double amountB = Double.parseDouble(stringAmountB.toString());
-				
-				Double totalAmount = amountA + amountB;
-				DecimalFormat format = new DecimalFormat("###,###,###");
-				return format.format(totalAmount);
+			Double countB = b.substring(0, subStrTimesB - 1).isEmpty()
+							? Double.parseDouble(b.substring(0, subStrTimesB - 1))
+							: Double.parseDouble(b.substring(0, subStrTimesB));
+		
+			Double totalCount = countA + countB;
+			return String.format("%.1f",totalCount.doubleValue()) + "回";
+		}
+		
+		// For case number of days 
+		int subStrDaysAmountA = a.indexOf("日");
+		int subStrDaysAmountB = b.indexOf("日");
 
-			}
+		if (subStrDaysAmountA >= 0 && subStrDaysAmountB >= 0) {
+			Double countA = a.substring(0, subStrDaysAmountA - 1).isEmpty()
+					? Double.parseDouble(a.substring(0, subStrDaysAmountA - 1))
+					: Double.parseDouble(a.substring(0, subStrDaysAmountA));
 
+			Double countB = b.substring(0, subStrDaysAmountB - 1).isEmpty()
+							? Double.parseDouble(b.substring(0, subStrDaysAmountB - 1))
+							: Double.parseDouble(b.substring(0, subStrDaysAmountB));
+		
+			Double totalCount = countA + countB;
+			return String.format("%.1f",totalCount.doubleValue()) + "日";
 		}
 
+		String stringAmountA = a.replaceAll(",", "");
+		String stringAmountB = b.replaceAll(",", "");
+
+		Double amountA = Double.parseDouble(stringAmountA.toString());
+		Double amountB = Double.parseDouble(stringAmountB.toString());
+		
+		Double totalAmount = amountA + amountB;
+		DecimalFormat format = new DecimalFormat("###,###,###");
+		return format.format(totalAmount);
 	}
 
 	/**
@@ -1542,11 +1565,17 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 				return zeroDisplayType == ZeroDisplayType.DISPLAY ? item.getValue() : "";
 			DecimalFormat formatTime = new DecimalFormat("###.##");
 			return formatTime.format(Double.parseDouble(value.toString())) + "回";
+		case AMOUNT_NUM:
 		case AMOUNT:
 			if (Integer.parseInt(item.getValue()) == 0 || item.getValue().isEmpty())
 				return zeroDisplayType == ZeroDisplayType.DISPLAY ? item.getValue() : "";
 			DecimalFormat format = new DecimalFormat("###,###,###");
-			return format.format(Double.parseDouble(value)) + "日";
+			return format.format(Double.parseDouble(value));
+		case DAYS:
+			if (Integer.parseInt(item.getValue()) == 0 || item.getValue().isEmpty())
+				return zeroDisplayType == ZeroDisplayType.DISPLAY ? item.getValue() : "";
+			DecimalFormat formatDay = new DecimalFormat("###.##");
+			return formatDay.format(Double.parseDouble(value.toString())) + "日";
 		case CODE:
 			if (!attendanceTypeList.isEmpty()) {
 				AttendanceType attendance = attendanceTypeList.stream()
@@ -1624,8 +1653,6 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 				tempTime = "翌日 ";
 			} else if (hourInt > 48) {
 				tempTime = "翌々日 ";
-			} else {
-				tempTime = "当日 ";
 			}
 			return isDaily ? tempTime + String.format(FORMAT, hourInt, minuteInt) : String.format(FORMAT, hourInt, minuteInt);
 		}

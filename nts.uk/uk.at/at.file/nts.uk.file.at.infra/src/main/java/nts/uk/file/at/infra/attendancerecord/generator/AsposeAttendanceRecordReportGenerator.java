@@ -468,7 +468,6 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 			
 			// delete template sheet
 			worksheetCollection.removeAt(0);
-			
 			worksheetCollection.setActiveSheetIndex(0);
 			// Create file name
 			String fileName = data.getReportName() + "_"
@@ -562,7 +561,7 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 			
 			monthlyTitleFix = MONTHLY_TITLE_FIX;
 			
-			reportLeftColAddr = REPORT_LEFT_COL_ADDR;
+			reportLeftColAddr = REPORT_LEFT_COL_ADDR_FM;
 			
 			reportRightColAddr = REPORT_RIGHT_COL_ADDR;
 			
