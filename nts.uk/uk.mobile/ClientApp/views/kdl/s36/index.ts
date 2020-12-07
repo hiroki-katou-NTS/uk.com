@@ -58,21 +58,41 @@ export class KdlS36Component extends Vue {
     get requiredNumberOfDays() {
         const vm = this;
 
-        const { holidayWorkInfoList } = vm;
-        const required = vm.substituteHolidayList.length * vm.daysUnit;
-        let selected = 0;
+        const { holidayWorkInfoList, substituteHolidayList, daysUnit } = vm;
 
-        holidayWorkInfoList.forEach((m) => {
-            if (m.checked) {
-                selected += m.remainingNumber;
-            }
-        });
+        const counted = holidayWorkInfoList
+            .map((m) => m.checked ? m.remainingNumber : 0)
+            .reduce((p, c) => p -= c, substituteHolidayList.length * daysUnit);
 
-        return required - selected < 0 ? 0 : required - selected;
+        return Math.max(counted, 0);
+    }
 
-        // return substituteWorkInfoList
-        //     .map((m) => m.checked ? m.remainingNumber : 0)
-        //     .reduce((p, c) => p + c, required);
+    public checkRequirementOfDay(item: ISubstituteWorkInfo) {
+        const vm = this;
+        const { daysUnit, substituteHolidayList, holidayWorkInfoList } = vm;
+        const required = substituteHolidayList.length * daysUnit;
+        const counted = holidayWorkInfoList
+            .filter((c) => !_.isEqual(c, item))
+            .map((m) => m.checked ? m.remainingNumber : 0)
+            .reduce((p, c) => p -= c, required);
+
+        if (Math.max(counted, 0) === 0 && item.checked) {
+            vm.$modal
+                .warn({ messageId: 'Msg_1758' })
+                .then(() => {
+                    item.checked = false;
+                });
+        }
+    }
+
+    public checkRequirementOfDayWithCheck(item: ISubstituteWorkInfo) {
+        const vm = this;
+
+        if (item.enable) {
+            item.checked = !item.checked;
+
+            vm.checkRequirementOfDay(item);
+        }
     }
 
     public back() {
@@ -285,6 +305,7 @@ interface ISubstituteWorkInfo {
     remainingNumber: number;
     holidayWorkDate: string;
     checked: boolean;
+    enable: boolean;
 }
 
 enum DataType {
