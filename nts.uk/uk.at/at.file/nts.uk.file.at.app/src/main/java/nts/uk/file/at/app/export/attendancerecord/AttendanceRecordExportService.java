@@ -1458,8 +1458,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		int indexB = b.indexOf(":");
 
 		// For case 前日
-		int subtrA = a.indexOf("前日");
-		int subtrB = b.indexOf("前日");
+		int subStrA = a.indexOf("前日");
+		int subStrB = b.indexOf("前日");
 
 		// For case 
 		if (indexA >= 0 && indexB >= 0) {
@@ -1467,22 +1467,35 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			Integer hourB;
 			Integer minuteA;
 			Integer minuteB;
-			hourA = Integer.parseInt(a.substring(0, indexA));
-			if (subtrA == 0) {
-				minuteA = Integer.parseInt(a.substring(indexA + 2)) * (-1);
+			if (a.contains("翌日")) {
+				hourA = Integer.parseInt(a.substring(3, indexA)) + 24;
+			} else if (a.contains("翌々日")) {
+				hourA = Integer.parseInt(a.substring(4, indexA)) + 48;
+			} else {
+				hourA = Integer.parseInt(a.substring(0, indexA));
+			}
+			if (subStrA == 0) {
+				minuteA = Integer.parseInt(a.substring(indexA + 1)) * (-1);
 			} else {
 				minuteA = Integer.parseInt(a.substring(indexA + 1));
 			}
-			hourB = Integer.parseInt(b.substring(0, indexB));
-			if (subtrB == 0) {
-				minuteB = Integer.parseInt(b.substring(indexB + 2)) * (-1);
+
+			if (b.contains("翌日")) {
+				hourB = Integer.parseInt(b.substring(3, indexB)) + 24;
+			} else if (b.contains("翌々日")) {
+				hourB = Integer.parseInt(b.substring(4, indexB)) + 48;
+			} else {
+				hourB = Integer.parseInt(b.substring(0, indexB));
+			}
+			if (subStrB == 0) {
+				minuteB = Integer.parseInt(b.substring(indexB + 1)) * (-1);
 			} else {
 				minuteB = Integer.parseInt(b.substring(indexB + 1));
 			}
 
 			Integer totalMinute = (hourA * 60 + minuteA) + (hourB * 60 + minuteB);
 
-			return this.convertMinutesToHours(totalMinute.toString(), zeroDisplayType, true);
+			return this.convertMinutesToHours(totalMinute.toString(), zeroDisplayType, false);
 		}
 		
 		// For case 回
@@ -1639,7 +1652,9 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		String FORMAT = "%d:%02d";
 		Integer minuteInt = Integer.parseInt(minutes);
 		if (minuteInt < 0) {
-			minuteInt *= -1;
+			if (isDaily) {
+				minuteInt *= -1;
+			}
 			Integer hourInt = minuteInt / 60;
 			minuteInt = minuteInt % 60;
 			return isDaily ? ("前日 " + String.format(FORMAT, hourInt, minuteInt)) : String.format(FORMAT, hourInt, minuteInt);
@@ -1648,11 +1663,14 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			Integer hourInt = minuteInt / 60;
 			minuteInt = minuteInt % 60;
 
-			if (hourInt > 24 && hourInt < 48) {
-				hourInt = hourInt - 24;
-				tempTime = "翌日 ";
-			} else if (hourInt > 48) {
-				tempTime = "翌々日 ";
+			if (isDaily) {
+				if (hourInt > 24 && hourInt < 48) {
+					hourInt = hourInt - 24;
+					tempTime = "翌日 ";
+				} else if (hourInt > 48) {
+					hourInt = hourInt - 48;
+					tempTime = "翌々日 ";
+				}
 			}
 			return isDaily ? tempTime + String.format(FORMAT, hourInt, minuteInt) : String.format(FORMAT, hourInt, minuteInt);
 		}
