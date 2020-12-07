@@ -119,8 +119,6 @@ public class OvertimeServiceImpl implements OvertimeService {
 	@Inject
 	private CommonAlgorithmImpl commonAlgorithmImpl;
 	
-	@Inject
-	private OvertimeService overTimeService;
 	
 	@Override
 	public int checkOvertimeAtr(String url) {
@@ -1133,7 +1131,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 		List<ConfirmMsgOutput> checkExcessList = commonAlgorithmOverTime.checkExcess(appOverTime, displayInfoOverTime);
 		outputs.addAll(checkExcessList);
 		// 登録時の乖離時間チェックを行う
-		overTimeService.checkDivergenceTime(
+		this.checkDivergenceTime(
 				require,
 				ApplicationType.OVER_TIME_APPLICATION,
 				Optional.of(appOverTime),
