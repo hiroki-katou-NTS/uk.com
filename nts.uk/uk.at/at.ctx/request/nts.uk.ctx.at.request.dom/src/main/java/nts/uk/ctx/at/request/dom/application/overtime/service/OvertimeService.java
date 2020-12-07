@@ -378,4 +378,24 @@ public interface OvertimeService {
 			AppOverTime appOverTime,
 			Boolean mode
 			);
+	/**
+	 * Refactor5
+	 * UKDesign.UniversalK.就業.KAF_申請.KAFS05_残業申請(スマホ).A：残業申請(新規).ユースケース
+	 * @param companyId
+	 * @param displayInfoOverTime
+	 * @param appOverTime
+	 * @param mode
+	 * @param employeeId
+	 * @param dateOp
+	 * @return
+	 */
+	public DisplayInfoOverTime calculateMobile(
+			String companyId,
+			DisplayInfoOverTime displayInfoOverTime,
+			AppOverTime appOverTime,
+			Boolean mode,
+			String employeeId,
+			Optional<GeneralDate> dateOp
+			);
+	
 }

@@ -1212,6 +1212,74 @@ public class OvertimeServiceImpl implements OvertimeService {
 		
 	}
 
+	@Override
+	public DisplayInfoOverTime calculateMobile(String companyId, DisplayInfoOverTime displayInfoOverTime,
+			AppOverTime appOverTime, Boolean mode, String employeeId, Optional<GeneralDate> dateOp) {
+		
+		// 勤務情報の申請内容をチェックする
+		this.checkContentApp(
+				companyId,
+				displayInfoOverTime,
+				appOverTime,
+				mode);
+		if (displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet().getApplicationDetailSetting().getTimeCalUse() == nts.uk.shr.com.enumcommon.NotUseAtr.USE) {
+			Integer prePost = displayInfoOverTime.getAppDispInfoStartup()
+					.getAppDispInfoWithDateOutput()
+					.getPrePostAtr().value;
+				WorkContent workContent = new WorkContent();
+				if (appOverTime.getWorkInfoOp().isPresent()) {
+					workContent.setWorkTypeCode(appOverTime.getWorkInfoOp().get().getWorkTypeCode() == null ? Optional.empty() : Optional.of(appOverTime.getWorkInfoOp().get().getWorkTypeCode().v()));
+					workContent.setWorkTimeCode(appOverTime.getWorkInfoOp().get().getWorkTimeCode() == null ? Optional.empty() : Optional.of(appOverTime.getWorkInfoOp().get().getWorkTimeCode().v()));
+				}
+				List<TimeZone> timeZones = new ArrayList<TimeZone>();
+				List<BreakTimeSheet> breakTimes = new ArrayList<BreakTimeSheet>();
+				if (appOverTime.getWorkHoursOp().isPresent()) {
+					appOverTime.getWorkHoursOp().get()
+												.stream()
+												.forEach(x -> {
+													TimeWithDayAttr start = x.getTimeZone().getStartTime();
+													TimeWithDayAttr end = x.getTimeZone().getEndTime();
+													timeZones.add(new TimeZone(start, end));
+												});
+				}
+				if (appOverTime.getBreakTimeOp().isPresent()) {
+					appOverTime.getBreakTimeOp().get()
+							.stream()
+							.forEach(x -> {
+								TimeWithDayAttr start = x.getTimeZone().getStartTime();
+								TimeWithDayAttr end = x.getTimeZone().getEndTime();
+								breakTimes.add(new BreakTimeSheet(
+										new BreakFrameNo(x.getWorkNo().v()),
+										start,
+										end));
+							});
+				}
+				
+				
+				workContent.setTimeZones(timeZones);
+				workContent.setBreakTimes(breakTimes);
+			
+			// 計算処理を実行する
+			this.calculate(
+					companyId,
+					employeeId,
+					dateOp,
+					EnumAdaptor.valueOf(prePost, PrePostAtr.class),
+					displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet().getOvertimeLeaveAppCommonSet(),
+					displayInfoOverTime.getAppDispInfoStartup()
+						.getAppDispInfoWithDateOutput()
+						.getOpPreAppContentDisplayLst()
+						.map(x -> x.get(0).getApOptional().map(y -> y.getApplicationTime()).orElse(null))
+						.orElse(null),
+					displayInfoOverTime.getInfoWithDateApplicationOp()
+						.map(x -> x.getApplicationTime().orElse(null))
+						.orElse(null),
+					workContent);
+		}
+		
+		return displayInfoOverTime;
+	}
+
 	
 	
 }
