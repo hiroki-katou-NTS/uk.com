@@ -33,6 +33,18 @@ import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
+import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeSixProcess;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.FlexExcessUseSetAtr;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSetRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
+import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReason;
+import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
@@ -44,6 +56,52 @@ public class AppOvertimeFinder {
 	
 	@Inject
 	private ICommonAlgorithmOverTime commonAlgorithmOverTime;
+//	private EmployeeRequestAdapter employeeAdapter;
+	
+	@Inject
+	private WorkTimeSettingRepository workTimeRepository;
+	
+	@Inject
+	private WorkTypeRepository workTypeRepository;
+	
+	@Inject
+	private OvertimeRestAppCommonSetRepository overtimeRestAppCommonSetRepository;
+	
+//	@Inject
+//	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
+	
+	@Inject
+	private OvertimeWorkFrameRepository overtimeFrameRepository;
+	
+//	@Inject
+//	private IOvertimePreProcess iOvertimePreProcess;
+//	
+//	@Inject
+//	private OvertimeRepository overtimeRepository;
+	@Inject
+	private OvertimeSixProcess overtimeSixProcess;
+//	@Inject
+//	private OvertimeFourProcess overtimeFourProcess;
+//	@Inject
+//	private OtherCommonAlgorithm otherCommonAlgorithm;
+//	@Inject
+//	private DailyAttendanceTimeCaculation dailyAttendanceTimeCaculation;
+	@Inject
+	private OvertimeAppSetRepository appOvertimeSettingRepository;
+	@Inject
+	private WorkingConditionItemRepository workingConditionItemRepository;
+	
+//	@Inject
+//	private AtEmployeeAdapter atEmployeeAdapter;
+	
+//	@Inject
+//	private CommonOvertimeHoliday commonOvertimeHoliday;
+
+	@Inject
+	private PredetemineTimeSettingRepository predetemineTimeRepo;
+	
+//	@Inject
+//	private PreActualColorCheck preActualColorCheck;
 	
 	/**
 	 * Refactor5
@@ -204,6 +262,32 @@ public class AppOvertimeFinder {
 					(param.actualContentDisplayDtos.get(0).getOpAchievementDetail() == null ?
 							Optional.empty() : Optional.ofNullable(param.actualContentDisplayDtos.get(0).getOpAchievementDetail().toDomain()))
 				));
+	}	
+	/**
+	 * フレックス時間を表示するかチェック
+	 * 
+	 * @param baseDate
+	 * @param employeeID
+	 * @return フレックス時間を表示する区分
+	 */
+	public boolean flexDisplayCheck(GeneralDate baseDate, String employeeID) {
+//		if (appOvertimeSettingRepository.getAppOver().get().getFlexJExcessUseSetAtr().equals(FlexExcessUseSetAtr.DISPLAY)) {
+//			Optional<WorkingConditionItem> personalLablorCodition = workingConditionItemRepository.getBySidAndStandardDate(employeeID, baseDate);
+//			if (personalLablorCodition.isPresent()) {
+//				if (personalLablorCodition.get().getLaborSystem().isFlexTimeWork()) {
+//					return true;
+//				} else {
+//					return false;
+//				}
+//			} else {
+//				return false;
+//			}
+//		} else if (appOvertimeSettingRepository.getAppOver().get().getFlexJExcessUseSetAtr().equals(FlexExcessUseSetAtr.ALWAYSDISPLAY)) {
+//			return true;
+//		} else {
+//			return false;
+//		}
+		return true;
 	}
 	
 	

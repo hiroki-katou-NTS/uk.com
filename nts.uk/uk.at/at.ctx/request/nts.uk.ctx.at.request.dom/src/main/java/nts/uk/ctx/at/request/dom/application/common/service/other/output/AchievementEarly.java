@@ -19,17 +19,17 @@ public class AchievementEarly {
 	/**
 	 * 予定出勤時刻1
 	 */
-	private TimeWithDayAttr scheAttendanceTime1;
+	private Optional<TimeWithDayAttr> scheAttendanceTime1 = Optional.empty();
 	
 	/**
 	 * 予定出勤時刻2
 	 */
-	private Optional<TimeWithDayAttr> scheAttendanceTime2;
+	private Optional<TimeWithDayAttr> scheAttendanceTime2 = Optional.empty();
 	
 	/**
 	 * 予定退勤時刻1
 	 */
-	private TimeWithDayAttr scheDepartureTime1;
+	private Optional<TimeWithDayAttr> scheDepartureTime1 = Optional.empty();
 	
 	/**
 	 * 予定退勤時刻2

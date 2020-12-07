@@ -27,9 +27,9 @@ public class ScBasicScheduleImport {
 	// 就業時間帯コード
 	private Optional<String> workTimeCode;
 	// 開始時刻1
-	private TimeWithDayAttr scheduleStartClock1;
+	private Optional<TimeWithDayAttr> scheduleStartClock1;
 	// 終了時刻1
-	private TimeWithDayAttr scheduleEndClock1;
+	private Optional<TimeWithDayAttr> scheduleEndClock1;
 	// 開始時刻2
 	private Optional<TimeWithDayAttr> scheduleStartClock2;
 	// 終了時刻2

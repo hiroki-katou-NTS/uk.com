@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.app.command.application.overtime;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nts.uk.ctx.at.request.dom.application.overtime.ReasonDivergence;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.DivergenceReason;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DiverdenceReasonCode;
@@ -14,8 +16,8 @@ public class ReasonDivergenceCommand {
 	
 	public ReasonDivergence toDomain() {
 		return new ReasonDivergence(
-				new DivergenceReason(reason),
-				new DiverdenceReasonCode(reasonCode),
+				StringUtils.isBlank(reason) ? null : new DivergenceReason(reason),
+				StringUtils.isBlank(reasonCode) ? null : new DiverdenceReasonCode(reasonCode),
 				diviationTime);
 	}
 }

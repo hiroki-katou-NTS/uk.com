@@ -14,6 +14,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendan
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AgreeOverTimeOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.OverTimeWorkHoursOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.ColorConfirmResult;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
@@ -53,7 +54,7 @@ public interface CommonOvertimeHoliday {
 	 * @param appType 時間外表示区分
 	 * @return
 	 */
-	public Optional<AgreeOverTimeOutput> getAgreementTime(String companyID, String employeeID, ApplicationType appType);
+	public Optional<OverTimeWorkHoursOutput> getAgreementTime(String companyID, String employeeID, ApplicationType appType);
 
 	/**
 	 * 01-04_加給時間を取得

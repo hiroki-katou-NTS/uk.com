@@ -177,7 +177,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					vm.visibleModel = vm.createVisibleModel(vm.dataSource);
 					vm.bindOverTimeWorks(vm.dataSource);
 					vm.bindWorkInfo(vm.dataSource);
-					vm.bindRestTime(vm.dataSource);
+					vm.bindRestTime(vm.dataSource, 0);
 					vm.bindHolidayTime(vm.dataSource, 0);
 					vm.bindOverTime(vm.dataSource, 0);
 					vm.bindMessageInfo(vm.dataSource);
@@ -186,7 +186,13 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					}
                 }
             }).fail(err => {
-	
+				// xử lý lỗi nghiệp vụ riêng
+				vm.handleErrorCustom(err).then((result: any) => {
+					if (result) {
+						// xử lý lỗi nghiệp vụ chung
+						vm.handleErrorCommon(err);
+					}
+				});
             }).always(() => vm.$blockui('hide'));
         }
 
@@ -272,6 +278,15 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			});
 			return dfd.promise();
         }
+
+		handleErrorCommon(failData: any) {
+			const vm = this;
+			if(failData.messageId == "Msg_324") {
+				vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds });
+				return;
+			}	
+			vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds });
+		}
 
 		handleErrorCustom(failData: any): any {
 			const vm = this;
@@ -484,7 +499,27 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			
 
 			applicationTime.reasonDissociation = [] as Array<ReasonDivergence>;
-
+			
+			// message info
+			if (vm.visibleModel.c11_1() || vm.visibleModel.c11_2()) {
+				//vm.messageInfos
+				
+				let item = {} as ReasonDivergence;
+				item.reasonCode = vm.messageInfos()[0].selectedCode();
+				item.reason = vm.messageInfos()[0].valueInput();
+				item.diviationTime = 1;
+				applicationTime.reasonDissociation.push(item);
+			}
+			
+			if (vm.visibleModel.c12_1() || vm.visibleModel.c12_2()) {
+				//vm.messageInfos
+				
+				let item = {} as ReasonDivergence;
+				item.reasonCode = vm.messageInfos()[1].selectedCode();
+				item.reason = vm.messageInfos()[1].valueInput();
+				item.diviationTime = 2;
+				applicationTime.reasonDissociation.push(item);
+			}
 
 
 			// common application
@@ -507,19 +542,44 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				let item = new OvertimeWork();
 				let currentMonth = res.infoNoBaseDate.agreeOverTimeOutput.currentMonth;
 				item.yearMonth = ko.observable(currentMonth);
+				// A2_15 // A2_16
+				if (res.infoNoBaseDate.agreeOverTimeOutput.isCurrentMonth) {
+					let timeLimit = res.infoNoBaseDate.agreeOverTimeOutput.currentTimeMonth.legalMaxTime.threshold.erAlTime.error;
+					let timeActual = res.infoNoBaseDate.agreeOverTimeOutput.currentTimeMonth.legalMaxTime.agreementTime;
+					item.limitTime = ko.observable(timeLimit);
+					item.actualTime = ko.observable(timeActual);				
+				} else {
+					let timeLimit = res.infoNoBaseDate.agreeOverTimeOutput.currentTimeMonth.agreementTime.threshold.erAlTime.error;
+					let timeActual = res.infoNoBaseDate.agreeOverTimeOutput.currentTimeMonth.agreementTime.agreementTime;
+					item.limitTime = ko.observable(timeLimit);
+					item.actualTime = ko.observable(timeActual);
+				}
+				
 				overTimeWorks.push(item);
 			}
 			{
 				let item = new OvertimeWork();
 				let nextMonth = res.infoNoBaseDate.agreeOverTimeOutput.nextMonth;
 				item.yearMonth = ko.observable(nextMonth);
+				// A2_20 // A2_21
+				if (res.infoNoBaseDate.agreeOverTimeOutput.isNextMonth) {
+					let timeLimit = res.infoNoBaseDate.agreeOverTimeOutput.nextTimeMonth.legalMaxTime.threshold.erAlTime.error;
+					let timeActual = res.infoNoBaseDate.agreeOverTimeOutput.nextTimeMonth.legalMaxTime.agreementTime;
+					item.limitTime = ko.observable(timeLimit);
+					item.actualTime = ko.observable(timeActual);				
+				} else {
+					let timeLimit = res.infoNoBaseDate.agreeOverTimeOutput.nextTimeMonth.agreementTime.threshold.erAlTime.error;
+					let timeActual = res.infoNoBaseDate.agreeOverTimeOutput.nextTimeMonth.agreementTime.agreementTime;
+					item.limitTime = ko.observable(timeLimit);
+					item.actualTime = ko.observable(timeActual);
+				}
 				overTimeWorks.push(item);
 			}
 			self.overTimeWork(overTimeWorks);
 		}
 		
 		//  work-info 
-		bindWorkInfo(res: DisplayInfoOverTime) {
+		bindWorkInfo(res: DisplayInfoOverTime, mode?: ACTION) {
 			const self = this;
 			if (!ko.toJS(self.workInfo)) {
 				let workInfo = {} as WorkInfo;
@@ -591,8 +651,10 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				});
 
 			}
-			self.workInfo().workType(workType);
-			self.workInfo().workTime(workTime);
+			if (_.isNil(mode) || mode == ACTION.CHANGE_DATE) {
+				self.workInfo().workType(workType);				
+				self.workInfo().workTime(workTime);				
+			}
 			self.workInfo().workHours1 = workHours1;
 			self.workInfo().workHours2 = workHours2;
 
@@ -608,14 +670,20 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					new ItemModel('3', '')
 				];
 				let messageArray = [] as Array<MessageInfo>;
-				let messageInfo = {} as MessageInfo;
-				messageInfo.titleDrop = ko.observable('');
-				messageInfo.listDrop = ko.observableArray(itemList);
-				messageInfo.titleInput = ko.observable('');
-				messageInfo.valueInput = ko.observable(null);
-				messageInfo.selectedCode = ko.observable('1');
-				messageArray.push(messageInfo);
-				messageArray.push(messageInfo);
+				let messageInfo1 = {} as MessageInfo;
+				messageInfo1.titleDrop = ko.observable('');
+				messageInfo1.listDrop = ko.observableArray(itemList);
+				messageInfo1.titleInput = ko.observable('');
+				messageInfo1.valueInput = ko.observable('');
+				messageInfo1.selectedCode = ko.observable('');
+				let messageInfo2 = {} as MessageInfo;
+				messageInfo2.titleDrop = ko.observable('');
+				messageInfo2.listDrop = ko.observableArray(itemList);
+				messageInfo2.titleInput = ko.observable('');
+				messageInfo2.valueInput = ko.observable('');
+				messageInfo2.selectedCode = ko.observable('');
+				messageArray.push(messageInfo1);
+				messageArray.push(messageInfo2);
 
 				self.messageInfos(messageArray);
 				return;
@@ -642,32 +710,86 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			if (self.visibleModel.c11_1()) {
 				let itemList = [] as Array<ItemModel>;
 				let findResut = _.find(res.infoNoBaseDate.divergenceReasonInputMethod, { divergenceTimeNo: 1 });
+				// first dropdown
+				{
+					let i = {} as ItemModel;
+					i.code = null;
+					i.name = self.$i18n('KAF005_340');
+					itemList.push(i);
+				}	
 				_.forEach(findResut.reasons, (item: DivergenceReasonSelect) => {
 					let i = {} as ItemModel;
 					i.code = item.divergenceReasonCode;
-					i.name = self.$i18n('KAF005_340') + item.divergenceReasonCode + ' ' + item.reason;
+					i.name = item.divergenceReasonCode + ' ' + item.reason;
 					itemList.push(i);
 					
 				});
 				messageInfo1.listDrop(itemList);
+				
+				let reasonDissociation = self.appOverTime.applicationTime.reasonDissociation;
+				let selectedCode = '';
+				let result = _.find(reasonDissociation, (item: ReasonDivergence) => item.diviationTime == 1);
+				if (_!.isNil(result)) {
+					let resultItemModel = _.find(itemList, (item: ItemModel) => item.code == result.reasonCode);
+					if (!_.isNil(resultItemModel)) {
+						selectedCode = resultItemModel.code;
+						messageInfo1.selectedCode(selectedCode);
+					}
+				}
+				
 			} else {
-				messageInfo1.selectedCode(null);
+				messageInfo1.selectedCode('');
+			}
+			
+			if (self.visibleModel.c11_2()) {
+				let reasonDissociation = self.appOverTime.applicationTime.reasonDissociation;
+				let result = _.find(reasonDissociation, (item: ReasonDivergence) => item.diviationTime == 1);
+				if (!_.isNil(result)) {
+					messageInfo1.valueInput(result.reason);
+				}
 			}
 			
 			if (self.visibleModel.c12_1()) {
 				let itemList = [] as Array<ItemModel>;
 				let findResut = _.find(res.infoNoBaseDate.divergenceReasonInputMethod, { divergenceTimeNo: 2 });
+				// first dropdown
+				{
+					let i = {} as ItemModel;
+					i.code = null;
+					i.name = self.$i18n('KAF005_340');
+					itemList.push(i);
+				}	
 				_.forEach(findResut.reasons, (item: DivergenceReasonSelect) => {
 					let i = {} as ItemModel;
 					i.code = item.divergenceReasonCode;
-					i.name = self.$i18n('KAF005_340') + item.divergenceReasonCode + ' ' + item.reason;
+					i.name = item.divergenceReasonCode + ' ' + item.reason;
 					itemList.push(i);
 					
 				});
 				messageInfo2.listDrop(itemList);
+				
+				let reasonDissociation = self.appOverTime.applicationTime.reasonDissociation;
+				let selectedCode = '';
+				let result = _.find(reasonDissociation, (item: ReasonDivergence) => item.diviationTime == 2);
+				if (_!.isNil(result)) {
+					let resultItemModel = _.find(itemList, (item: ItemModel) => item.code == result.reasonCode);
+					if (!_.isNil(resultItemModel)) {
+						selectedCode = resultItemModel.code;
+						messageInfo2.selectedCode(selectedCode);
+					}
+				}
 			} else {
-				messageInfo2.selectedCode(null);
+				messageInfo2.selectedCode('');
 			}
+			
+			if (self.visibleModel.c12_2()) {
+				let reasonDissociation = self.appOverTime.applicationTime.reasonDissociation;
+				let result = _.find(reasonDissociation, (item: ReasonDivergence) => item.diviationTime == 2);
+				if (!_.isNil(result)) {
+					messageInfo2.valueInput(result.reason);
+				}
+			}
+			
 
 		}
 		
@@ -744,6 +866,43 @@ module nts.uk.at.view.kafsample.b.viewmodel {
                     workTime.code = childData.selectedWorkTimeCode;
 					workTime.name = childData.selectedWorkTimeName;
 					self.workInfo().workTime(workTime);
+					
+					let command = {
+						companyId: self.$user.companyId,
+						employeeId: self.$user.employeeId,
+						date: self.application().appDate(),
+						workType: workType.code,
+						workTime: workTime.code,
+						appDispInfoStartupDto: self.appDispInfoStartupOutput(),
+						overtimeAppSet: self.dataSource.infoNoBaseDate.overTimeAppSet
+					};
+					self.$blockui('show')
+					self.$ajax(API.selectWorkInfo, command)
+						.done((res: DisplayInfoOverTime) => {
+							if (res) {
+								self.dataSource.infoWithDateApplicationOp = res.infoWithDateApplicationOp;
+								self.dataSource.calculationResultOp = res.calculationResultOp;
+								self.dataSource.workdayoffFrames = res.workdayoffFrames;
+								self.dataSource.appDispInfoStartup = res.appDispInfoStartup;
+								self.createVisibleModel(self.dataSource);
+						
+								self.bindOverTimeWorks(self.dataSource);
+								self.bindWorkInfo(self.dataSource, ACTION.CHANGE_WORK);
+								self.bindRestTime(self.dataSource, 1);
+								self.bindHolidayTime(self.dataSource, 1);
+								self.bindOverTime(self.dataSource, 1);
+							}
+						})
+						.fail(res => {
+							// xử lý lỗi nghiệp vụ riêng
+							self.handleErrorCustom(res).then((result: any) => {
+								if (result) {
+									// xử lý lỗi nghiệp vụ chung
+									self.handleErrorCommon(res);
+								}
+							});
+						})
+						.always(() => self.$blockui('hide'));
                 }
             })
 
@@ -835,36 +994,78 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					}
 				})
 				.fail((res: any) => {
-
+					// xử lý lỗi nghiệp vụ riêng
+					self.handleErrorCustom(res).then((result: any) => {
+						if (result) {
+							// xử lý lỗi nghiệp vụ chung
+							self.handleErrorCommon(res);
+						}
+					});
 				})
 				.always(() => self.$blockui("hide"));
 		}
 		
-		bindRestTime(res: DisplayInfoOverTime) {
+		bindRestTime(res: DisplayInfoOverTime, mode: number) {
 			const self = this;
 			let restTimeArray = self.restTime() as Array<RestTime>;
-			let breakTimes = self.appOverTime.breakTimeOp;
-			if (_.isEmpty(breakTimes)) {
-				_.forEach(restTimeArray, (i: RestTime) => {
-					i.start(null);
-					i.end(null);
-				});
-				
-				return;
-			}
-			_.forEach(breakTimes, (i: TimeZoneWithWorkNo) => {
-				if (i.workNo <= 10) {
-					let restItem = restTimeArray[i.workNo - 1] as RestTime;
-					restItem.start(i.timeZone.startTime);
-					restItem.end(i.timeZone.endTime);
+			if (mode == 0) {
+				let breakTimes = self.appOverTime.breakTimeOp;
+				if (_.isEmpty(breakTimes)) {
+					_.forEach(restTimeArray, (i: RestTime) => {
+						i.start(null);
+						i.end(null);
+					});
+					
+					return;
 				}
-			})
+				_.forEach(breakTimes, (i: TimeZoneWithWorkNo) => {
+					if (i.workNo <= 10) {
+						let restItem = restTimeArray[i.workNo - 1] as RestTime;
+						restItem.start(i.timeZone.startTime);
+						restItem.end(i.timeZone.endTime);
+					}
+				})
+				
+			} else if (mode == 1) {
+				let infoWithDateApplication = res.infoWithDateApplicationOp as InfoWithDateApplication;
+				if (!_.isNil(infoWithDateApplication)) {
+				let breakTime = infoWithDateApplication.breakTime;
+				if (!_.isNil(breakTime)) {
+					if (!_.isEmpty(breakTime.timeZones)) {
+						_.forEach(breakTime.timeZones, (item: TimeZone, index) => {
+							if (Number(index) < 10) {
+								let restItem = restTimeArray[index] as RestTime;
+								restItem.start(item.start);
+								restItem.end(item.end);
+							}
+						})
+
+					} else {
+						_.forEach(self.restTime(), (item: RestTime) => {
+							item.start(null);
+							item.end(null);
+						});
+					}
+
+				} else {
+					_.forEach(self.restTime(), (item: RestTime) => {
+						item.start(null);
+						item.end(null);
+					});
+				}
+				} else {
+					_.forEach(self.restTime(), (item: RestTime) => {
+						item.start(null);
+						item.end(null);
+					});
+				}
+			}
 			
 			
 			self.restTime(_.clone(restTimeArray));
 		}
 		
-		bindHolidayTime(res: DisplayInfoOverTime, mode?: number) {
+		bindHolidayTime(res: DisplayInfoOverTime, mode?: number) { // mode = 0 bind from appOverTime, =1  bind from displayOver 
 			const self = this;
 			let holidayTimeArray = [] as Array<HolidayTime>;
 			let workdayoffFrames = res.workdayoffFrames as Array<WorkdayoffFrame>;
@@ -2059,6 +2260,51 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		}
 		
 		
+		getBreakTimes() {
+			const self = this;
+			self.$blockui("show");
+			let command = {} as ParamBreakTime;
+			command.companyId = self.$user.companyId;
+			command.workTypeCode = self.workInfo().workType().code;
+			command.workTimeCode = self.workInfo().workTime().code;
+			command.startTime = self.workInfo().workHours1.start();
+			command.endTime = self.workInfo().workHours1.end();
+			command.actualContentDisplayDtos = self.dataSource.appDispInfoStartup.appDispInfoWithDateOutput.opActualContentDisplayLstl;
+			self.$ajax(API.breakTimes, command)
+				.done((res: BreakTimeZoneSetting) => {
+					if (res) {
+						if (!_.isEmpty(res.timeZones)) {
+							_.forEach(self.restTime(), (item: RestTime) => {
+								let data = res.timeZones.shift();
+								if (!_.isNil(data)) {
+									item.start(data.start);
+									item.end(data.end);
+								} else {
+									item.start(null);
+									item.end(null);
+								}
+							});
+						} else {
+							_.forEach(self.restTime(), (item: RestTime) => {
+								item.start(null);
+								item.end(null);
+							});
+						}
+					}
+				})
+				.fail((res: any) => {
+					// xử lý lỗi nghiệp vụ riêng
+					self.handleErrorCustom(res).then((result: any) => {
+						if (result) {
+							// xử lý lỗi nghiệp vụ chung
+							self.handleErrorCommon(res);
+						}
+					});
+				})
+				.always(() => self.$blockui('hide'));
+		}
+		
+		
 		
 		
 		
@@ -2080,7 +2326,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			// 残業申請の表示情報．基準日に関係しない情報．利用する乖離理由．乖離理由を選択肢から選ぶ = true
 			let c11_1 = true;
 			let findResut = _.find(res.infoNoBaseDate.divergenceReasonInputMethod, { divergenceTimeNo: 1 });
-			let c11_1_1 = _.isNil(findResut) ? false : !_.isEmpty(findResut.reasons);
+			let c11_1_1 = !_.isNil(findResut);
 			let c11_1_2 = c11_1_1 ? findResut.divergenceReasonSelected : false;
 			c11_1 = c11_1_1 && c11_1_2;
 			visibleModel.c11_1(c11_1);
@@ -2088,7 +2334,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			// 「残業申請の表示情報．基準日に関係しない情報．利用する乖離理由．NO = 1」 <> empty　AND
 			// 残業申請の表示情報．基準日に関係しない情報．利用する乖離理由．乖離理由を入力する = true
 			let c11_2 = true;
-			let c11_2_1 = _.isNil(findResut) ? false : !_.isEmpty(findResut.reasons);
+			let c11_2_1 = !_.isNil(findResut);
 			let c11_2_2 = c11_2_1 ? findResut.divergenceReasonInputed : false;
 			c11_2 = c11_2_1 && c11_2_2;
 			visibleModel.c11_2(c11_2);
@@ -2097,7 +2343,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			// 残業申請の表示情報．基準日に関係しない情報．利用する乖離理由．乖離理由を選択肢から選ぶ = true
 			let c12_1 = true;
 			findResut = _.find(res.infoNoBaseDate.divergenceReasonInputMethod, { divergenceTimeNo: 2 });
-			let c12_1_1 = _.isNil(findResut) ? false : !_.isEmpty(findResut.reasons);
+			let c12_1_1 = !_.isNil(findResut);
 			let c12_1_2 = c12_1_1 ? findResut.divergenceReasonSelected : false;
 			c12_1 = c12_1_1 && c12_1_2;
 			visibleModel.c12_1(c12_1);
@@ -2106,7 +2352,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			// 残業申請の表示情報．基準日に関係しない情報．利用する乖離理由．乖離理由を入力する = true
 			let c12_2 = true;
 			findResut = _.find(res.infoNoBaseDate.divergenceReasonInputMethod, { divergenceTimeNo: 2 });
-			let c12_2_1 = _.isNil(findResut) ? false : !_.isEmpty(findResut.reasons);
+			let c12_2_1 = !_.isNil(findResut);
 			let c12_2_2 = c12_2_1 ? findResut.divergenceReasonInputed : false;
 			c12_2 = c12_2_2 && c12_2_2;
 			visibleModel.c12_2(c12_2);
@@ -2187,7 +2433,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		calculate: 'at/request/application/overtime/calculate',
 		update: 'at/request/application/overtime/update',
 		checkBefore: 'at/request/application/overtime/checkBeforeUpdate',
-		sendMailAfterUpdateSample: ""
+		breakTimes: 'at/request/application/overtime/breakTimes'
     }
 
 	const BACKGROUND_COLOR = {
@@ -2418,9 +2664,11 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		applicationDetailSetting: any;
 	}
 	export interface AgreeOverTimeOutput {
-		detailCurrentMonth: AgreementTimeImport;
-		detailNextMonth: AgreementTimeImport;
-		currentMonth: string;
+		isCurrentMonth: boolean;
+		currentTimeMonth: any;
+		currentMonth: string
+		isNextMonth: boolean;
+		nextTimeMonth: any;
 		nextMonth: string;
 	}
 	export interface AgreementTimeImport {
@@ -2509,7 +2757,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		flexOverTime: number; // フレックス超過時間
 		overTimeShiftNight: OverTimeShiftNight; // 就業時間外深夜時間
 		anyItem: Array<AnyItemValue>; // 任意項目
-		reasonDissociation: Array<any>; // 乖離理由
+		reasonDissociation: Array<ReasonDivergence>; // 乖離理由
 	}
 	export interface OvertimeApplicationSetting {
 		frameNo: number;
@@ -2529,7 +2777,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 	}
 	export interface ReasonDivergence {
 
-		reason: DivergenceReason;
+		reason: string;
 		reasonCode: string;
 		diviationTime: number;
 	}
@@ -2639,6 +2887,10 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 	export interface HolidayMidNightTime {
 		attendanceTime: number;
 		legalClf: number;
+	}
+	enum ACTION {
+		CHANGE_DATE,
+		CHANGE_WORK,
 	}
 
 }

@@ -17,7 +17,7 @@ public class InfoNoBaseDateCommand {
 	public OvertimeAppSetCommand overTimeAppSet;
 	
 	// 申請用時間外労働時間パラメータ
-	public AgreeOverTimeCommand agreeOverTimeOutput;
+	public OverTimeWorkHoursCommand agreeOverTimeOutput;
 	
 	// 利用する乖離理由(DivergenceReasonInputMethod at record , so create new class #112406)
 	public List<DivergenceReasonInputMethodCommand> divergenceReasonInputMethod;

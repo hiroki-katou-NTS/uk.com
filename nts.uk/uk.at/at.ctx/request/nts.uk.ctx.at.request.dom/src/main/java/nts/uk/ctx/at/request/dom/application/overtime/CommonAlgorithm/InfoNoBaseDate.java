@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.AgreeOverTimeOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.OverTimeWorkHoursOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
@@ -28,7 +28,7 @@ public class InfoNoBaseDate {
 	private OvertimeAppSet overTimeAppSet;
 	
 	// 申請用時間外労働時間パラメータ
-	private AgreeOverTimeOutput agreeOverTimeOutput;
+	private OverTimeWorkHoursOutput agreeOverTimeOutput;
 	
 	// 利用する乖離理由(DivergenceReasonInputMethod at record , so create new class #112406)
 	private List<DivergenceReasonInputMethod> divergenceReasonInputMethod;

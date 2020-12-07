@@ -92,7 +92,7 @@ public class AddPatternCommand implements DataStoragePatternSetting.MementoGette
 		return categoriesMaster.stream()
 				.map(DataStorageSelectionCategory::createFromMemento)
 				.collect(Collectors.toList());
-	};
+	}
 
 	@Override
 	public int getIdenSurveyArch() {

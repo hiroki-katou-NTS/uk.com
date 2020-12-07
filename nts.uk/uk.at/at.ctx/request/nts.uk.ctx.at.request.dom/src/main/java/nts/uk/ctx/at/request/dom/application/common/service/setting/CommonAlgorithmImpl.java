@@ -73,6 +73,7 @@ import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultiple;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultipleRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
@@ -709,8 +710,28 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			return;
 		}
 		// 法定区分をチェックする
-		WorkTypeSet appWorkTypeSet = workTypeApp.getWorkTypeSet();
-		WorkTypeSet actualWorkTypeSet = workTypeActual.getWorkTypeSet();
+		WorkTypeSet appWorkTypeSet = workTypeApp.getWorkTypeSetList().stream().filter(x -> {
+			// 1日
+			if (workTypeApp.isOneDay()) {
+				return workTypeApp.getDailyWork().getOneDay()==WorkTypeClassification.HolidayWork;
+			}
+			// 午前と午後
+			else {
+				return workTypeApp.getDailyWork().getMorning()==WorkTypeClassification.HolidayWork || 
+						workTypeApp.getDailyWork().getAfternoon()==WorkTypeClassification.HolidayWork;
+			}
+		}).findFirst().orElse(null);
+		WorkTypeSet actualWorkTypeSet = workTypeActual.getWorkTypeSetList().stream().filter(x -> {
+			// 1日
+			if (workTypeActual.isOneDay()) {
+				return workTypeActual.getDailyWork().getOneDay()==WorkTypeClassification.Holiday;
+			}
+			// 午前と午後
+			else {
+				return workTypeActual.getDailyWork().getMorning()==WorkTypeClassification.Holiday || 
+						workTypeActual.getDailyWork().getAfternoon()==WorkTypeClassification.Holiday;
+			}
+		}).findFirst().orElse(null);
 		if(appWorkTypeSet == null || actualWorkTypeSet == null) {
 			return;
 		}

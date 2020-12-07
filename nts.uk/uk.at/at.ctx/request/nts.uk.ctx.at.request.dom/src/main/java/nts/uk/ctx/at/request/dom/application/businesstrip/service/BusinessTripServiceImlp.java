@@ -253,17 +253,14 @@ public class BusinessTripServiceImlp implements BusinessTripService {
         String cid = AppContexts.user().companyId();
         List<WorkType> result = Collections.emptyList();
 
-        if (!appEmploymentSet.isPresent()) {
-            return result;
-        }
-
-        Optional<TargetWorkTypeByApp> opTargetWorkTypeByApp = appEmploymentSet.get()
+        Optional<TargetWorkTypeByApp> opTargetWorkTypeByApp = !appEmploymentSet.isPresent() ? Optional.empty() : appEmploymentSet.get()
                 .getTargetWorkTypeByAppLst()
                 .stream()
                 .filter((x ->
                         x.getAppType() == ApplicationType.BUSINESS_TRIP_APPLICATION && x.getOpBusinessTripAppWorkType().isPresent() && x.getOpBusinessTripAppWorkType().get().value == workStyle.value
                 ))
                 .findAny();
+
         if (opTargetWorkTypeByApp.isPresent()) {
             if (opTargetWorkTypeByApp.get().isDisplayWorkType()
                     && opTargetWorkTypeByApp.get().getOpBusinessTripAppWorkType().isPresent()
@@ -327,7 +324,7 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                 if (StringUtil.isNullOrEmpty(wkTimeCd, true)) {
                     throw new BusinessException("Msg_24", inputDate.toString());
                 } else {
-                    if (startWorkTime == null && endWorkTime == null) {
+                    if (startWorkTime == null || endWorkTime == null) {
                         throw new BusinessException("Msg_1912", inputDate.toString());
                     } else {
                         if (startWorkTime > endWorkTime) {
@@ -338,7 +335,7 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                 break;
             case OPTIONAL:
                 if (!StringUtil.isNullOrEmpty(wkTimeCd, true)) {
-                    if (startWorkTime == null && endWorkTime == null) {
+                    if (startWorkTime == null || endWorkTime == null) {
                         throw new BusinessException("Msg_1912", inputDate.toString());
                     } else {
                         if (startWorkTime > endWorkTime) {
@@ -412,9 +409,10 @@ public class BusinessTripServiceImlp implements BusinessTripService {
     public void businessTripIndividualCheck(List<BusinessTripInfo> infos, List<ActualContentDisplay> actualContent) {
         String sid = AppContexts.user().employeeId();
         String cid = AppContexts.user().companyId();
+        List<EmployeeInfoImport> employeeInfoImports = atEmployeeAdapter.getByListSID(Arrays.asList(sid));
 
         // loop 年月日　in　期間
-        infos.stream().forEach(i -> {
+        infos.forEach(i -> {
             String wkTypeCd = i.getWorkInformation().getWorkTypeCode().v();
             String wkTimeCd = i.getWorkInformation().getWorkTimeCode() == null ? null : i.getWorkInformation().getWorkTimeCode().v();
             Integer workTimeStart = null;
@@ -427,20 +425,17 @@ public class BusinessTripServiceImlp implements BusinessTripService {
 
             // アルゴリズム「出張申請就業時間帯チェック」を実行する
             this.checkInputWorkCode(wkTypeCd, wkTimeCd, i.getDate(), workTimeStart, workTimeEnd);
+
+            // アルゴリズム「申請の矛盾チェック」を実行する
+            this.commonAlgorithm.appConflictCheck(
+                    cid,
+                    employeeInfoImports.get(0),
+                    Arrays.asList(i.getDate()),
+                    new ArrayList<>(Arrays.asList(i.getWorkInformation().getWorkTypeCode().v())),
+                    actualContent
+            );
+
         });
-
-        List<GeneralDate> dates = infos.stream().map(i -> i.getDate()).collect(Collectors.toList());
-        List<String> workTypeCodes = infos.stream().map(i -> i.getWorkInformation().getWorkTypeCode().v()).collect(Collectors.toList());
-
-        List<EmployeeInfoImport> employeeInfoImports = atEmployeeAdapter.getByListSID(Arrays.asList(sid));
-        // アルゴリズム「申請の矛盾チェック」を実行する
-        this.commonAlgorithm.appConflictCheck(
-                cid,
-                employeeInfoImports.get(0),
-                dates,
-                workTypeCodes,
-                actualContent
-        );
     }
 
     /**

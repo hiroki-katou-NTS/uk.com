@@ -21,6 +21,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.ba
 import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScBasicScheduleExport;
 import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScBasicSchedulePub;
 import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScWorkScheduleExport_New;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 /**
  * 
  * @author Doan Duy Hung
@@ -61,11 +62,12 @@ public class ScBasicScheduleAdapterImpl implements ScBasicScheduleAdapter {
 
 	@Override
 	public ScBasicScheduleImport findByIDRefactor(String employeeID, GeneralDate date) {
-		ScWorkScheduleExport_New scWorkScheduleExport = scBasicSchedulePub.findByIdNewV2(employeeID, date);
+		ScWorkScheduleExport_New scWorkScheduleExport = scBasicSchedulePub.findByIdNewV2(employeeID, date).orElse(null);
 		return fromExport(scWorkScheduleExport);
 	}
 	
 	private ScBasicScheduleImport fromExport(ScWorkScheduleExport_New scWorkScheduleExport) {
+		if (scWorkScheduleExport == null) return null;
 		return new ScBasicScheduleImport(
 				scWorkScheduleExport.getEmployeeId(), 
 				scWorkScheduleExport.getDate(), 

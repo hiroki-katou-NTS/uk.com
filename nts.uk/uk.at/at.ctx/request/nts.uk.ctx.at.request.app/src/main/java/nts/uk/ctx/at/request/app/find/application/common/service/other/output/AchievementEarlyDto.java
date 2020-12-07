@@ -37,21 +37,17 @@ public class AchievementEarlyDto {
 	
 	public static AchievementEarlyDto fromDomain(AchievementEarly achievementEarly) {
 		return new AchievementEarlyDto(
-				// check null to avoid exception
-				achievementEarly.getScheAttendanceTime1() == null ? null : achievementEarly.getScheAttendanceTime1().v(), 
+				achievementEarly.getScheAttendanceTime1().map(x -> x.v()).orElse(null),
 				achievementEarly.getScheAttendanceTime2().map(x -> x.v()).orElse(null),
-				// check null to avoid exception
-				achievementEarly.getScheDepartureTime1() == null ? null : achievementEarly.getScheDepartureTime1().v(), 
+				achievementEarly.getScheDepartureTime1().map(x -> x.v()).orElse(null),
 				achievementEarly.getScheDepartureTime2().map(x -> x.v()).orElse(null));
 	}
 	
 	public AchievementEarly toDomain() {
 		return new AchievementEarly(
-				// check null to avoid exception
-				new TimeWithDayAttr(scheAttendanceTime1 == null ? 100 : scheAttendanceTime1), 
+				scheAttendanceTime1 == null ? Optional.empty() :  Optional.of(new TimeWithDayAttr(scheAttendanceTime1)),
 				scheAttendanceTime2 == null ? Optional.empty() : Optional.of(new TimeWithDayAttr(scheAttendanceTime2)), 
-				// check null to avoid exception		
-				new TimeWithDayAttr(scheDepartureTime1 == null ? 100 : scheDepartureTime1), 
+				scheDepartureTime1 == null ? Optional.empty() :  Optional.of(new TimeWithDayAttr(scheDepartureTime1)),
 				scheDepartureTime2 == null ? Optional.empty() : Optional.of(new TimeWithDayAttr(scheDepartureTime2)));
 	}
 }

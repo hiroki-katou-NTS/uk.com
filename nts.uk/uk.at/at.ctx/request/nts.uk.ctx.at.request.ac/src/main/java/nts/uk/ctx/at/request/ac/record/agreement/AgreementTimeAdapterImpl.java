@@ -2,23 +2,40 @@ package nts.uk.ctx.at.request.ac.record.agreement;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.Year;
 import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.ctx.at.record.pub.monthly.agreement.AgreementTimeOfManagePeriodPub;
+import nts.uk.ctx.at.record.pub.monthly.agreement.export.AgreementTimeBreakdownExport;
+import nts.uk.ctx.at.record.pub.monthly.agreement.export.AgreementTimeOfManagePeriodExport;
+import nts.uk.ctx.at.record.pub.monthly.agreement.export.AgreementTimeOfMonthlyExport;
 import nts.uk.ctx.at.record.pub.monthlyprocess.agreement.GetAgreementTimePub;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreeTimeYearImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxAverageTimeMulti;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreTimeYearStatusOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeBreakdown;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeYear;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.ScheRecAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthErrorAlarmTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthTime;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
 @Stateless
@@ -110,6 +127,53 @@ public class AgreementTimeAdapterImpl implements AgreementTimeAdapter {
 		/** TODO: 36協定時間対応により、コメントアウトされた */
 		return Optional.empty();
 //		return getAgreementTimePub.getMaxAverageMulti(companyId, employeeId, yearMonth, criteria);
+	}
+
+	@Override
+	public AgreementTimeOfManagePeriod getAgreementTimeOfManagePeriod(
+			String sid,
+			YearMonth ym,
+			List<IntegrationOfDaily> dailyRecord,
+			GeneralDate baseDate,
+			ScheRecAtr scheRecAtr) {
+		AgreementTimeOfManagePeriodExport export = getAgreementTimePub.calcAgreementTime(sid, ym, dailyRecord, baseDate, scheRecAtr);
+		AgreementTimeBreakdownExport agreementTimeBreakdownExport = export.getBreakdown();
+		AgreementTimeBreakdown agreementTimeBreakdown = AgreementTimeBreakdown.of(
+				new AttendanceTimeMonth(agreementTimeBreakdownExport.getOverTime()),
+				new AttendanceTimeMonth(agreementTimeBreakdownExport.getTransferOverTime()),
+				new AttendanceTimeMonth(agreementTimeBreakdownExport.getIllegalHolidayWorkTime()),
+				new AttendanceTimeMonth(agreementTimeBreakdownExport.getIllegaltransferTime()),
+				new AttendanceTimeMonth(agreementTimeBreakdownExport.getFlexLegalTime()),
+				new AttendanceTimeMonth(agreementTimeBreakdownExport.getFlexIllegalTime()),
+				new AttendanceTimeMonth(agreementTimeBreakdownExport.getWithinPrescribedPremiumTime()),
+				new AttendanceTimeMonth(agreementTimeBreakdownExport.getWeeklyPremiumTime()),
+				new AttendanceTimeMonth(agreementTimeBreakdownExport.getMonthlyPremiumTime()),
+				new AttendanceTimeMonth(agreementTimeBreakdownExport.getTemporaryTime()),
+				new AttendanceTimeMonth(agreementTimeBreakdownExport.getLegalHolidayWorkTime()),
+				new AttendanceTimeMonth(agreementTimeBreakdownExport.getLegalTransferTime()));
+				
+		
+		return AgreementTimeOfManagePeriod.builder()
+					.agreementTime(convertAgreementTimeOfMonthly(export.getAgreementTime()))
+					.sid(export.getSid())
+					.status(EnumAdaptor.valueOf(export.getStatus(), AgreementTimeStatusOfMonthly.class))
+					.agreementTimeBreakDown(agreementTimeBreakdown)
+					.yearMonth(export.getYm())
+					.legalMaxTime(convertAgreementTimeOfMonthly(export.getLegalMaxTime()))
+					.build();
+			
+			
+	}
+	
+	public AgreementTimeOfMonthly convertAgreementTimeOfMonthly(AgreementTimeOfMonthlyExport export) {
+		OneMonthErrorAlarmTime oneMonthErrorAlarmTime = OneMonthErrorAlarmTime.of(
+				new AgreementOneMonthTime(export.getThreshold().getErrorTime()),
+				new AgreementOneMonthTime(export.getThreshold().getAlarmTime()));
+		AgreementOneMonthTime upperLimit = new AgreementOneMonthTime(export.getThreshold().getUpperLimit());
+		
+		return AgreementTimeOfMonthly.of(
+				new AttendanceTimeMonth(export.getAgreementTime()), 
+				OneMonthTime.of(oneMonthErrorAlarmTime, upperLimit));
 	}
 
 	/** TODO: 36協定時間対応により、コメントアウトされた */

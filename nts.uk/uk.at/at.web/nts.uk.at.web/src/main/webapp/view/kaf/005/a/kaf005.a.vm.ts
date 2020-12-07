@@ -32,12 +32,17 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		isCalculation: Boolean = true;
 		appOverTime: AppOverTime;
 		urlParam: string;
+		mode: KnockoutObservable<number> = ko.observable(MODE.NORMAL);
+		employeeIDLst: Array<string>;
+		
+		
 		created(params: AppInitParam) {
 			// new 
 			const vm = this;
 			vm.urlParam = $(location).attr('search').split("=")[1];
 			
 			vm.application = ko.observable(new Application(ko.toJS(vm.appType)));
+			vm.setMode(params);
 			
 			vm.createRestTime(vm.restTime);
 			vm.createHolidayTime(vm.holidayTime);
@@ -126,8 +131,63 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					$('#kaf000-a-component4-singleDate').focus();
 				});
 		}
+		
+		// detect screen go this page
+		createCommandStart() {
+			const self = this;
+			// Menuから起動する場合
+			/*
+			let param1 = {
 
-
+			} as FirstParam;
+			param1.companyId = self.$user.companyId;
+			// param1.dateOp = '2020/11/13';
+			param1.overtimeAppAtr = self.getOverTimeAtrByUrl();
+			param1.appDispInfoStartupDto = ko.toJS(self.appDispInfoStartupOutput);
+			// param1.startTimeSPR = 100;
+			// param1.endTimeSPR = 200;
+			param1.isProxy = true;
+			
+			*/
+			
+			let command = {
+				companyId: self.$user.companyId,
+				// dateOp: null,
+				overtimeAppAtr: self.getOverTimeAtrByUrl(),
+				appDispInfoStartupDto: ko.toJS(self.appDispInfoStartupOutput),
+				// startTimeSPR: null,
+				// endTimeSPR: null,
+				isProxy: false,
+			};
+			
+			
+			// KDW003から起動する場合
+			
+			
+			
+			
+			
+		}
+		
+		setMode(params: any) {
+			const self = this;
+			if (_.isNil(params)) {
+				self.mode(MODE.NORMAL);
+			} else {
+				if (params.isAgentMode) {
+					if (!_.isEmpty(params.employeeIds)) {
+						self.employeeIDLst = params.employeeIds;
+						if (params.employeeIds.length == 1) {
+							self.mode(MODE.SINGLE_AGENT);
+						} else {
+							self.mode(MODE.MULTiPLE_AGENT);
+						}
+					}
+				}
+			}
+		}
+		
+		
 		handleErrorCustom(failData: any): any {
 			const vm = this;
 			if (failData.messageId == "Msg_26") {
@@ -252,14 +312,20 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					self.dataSource.appDispInfoStartup = res.appDispInfoStartup;
 
 					self.bindOverTimeWorks(self.dataSource);
-					self.bindWorkInfo(self.dataSource);
+					self.bindWorkInfo(self.dataSource, ACTION.CHANGE_DATE);
 					self.bindRestTime(self.dataSource);
 					self.bindHolidayTime(self.dataSource, 1);
 					self.bindOverTime(self.dataSource, 1);
 
 				})
 				.fail((res: any) => {
-
+					// xử lý lỗi nghiệp vụ riêng
+					self.handleErrorCustom(res).then((result: any) => {
+						if (result) {
+							// xử lý lỗi nghiệp vụ chung
+							self.handleErrorCommon(res);
+						}
+					});
 				})
 				.always(() => self.$blockui('hide'));
 		}
@@ -460,6 +526,16 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				item.diviationTime = 1;
 				applicationTime.reasonDissociation.push(item);
 			}
+			
+			if (vm.visibleModel.c12_1() || vm.visibleModel.c12_2()) {
+				//vm.messageInfos
+				
+				let item = {} as ReasonDivergence;
+				item.reasonCode = vm.messageInfos()[1].selectedCode();
+				item.reason = vm.messageInfos()[1].valueInput();
+				item.diviationTime = 2;
+				applicationTime.reasonDissociation.push(item);
+			}
 
 
 
@@ -469,6 +545,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			appOverTime.application.employeeID = vm.$user.employeeId;
 			appOverTime.application.inputDate = moment(new Date()).format('YYYY/MM/DD HH:mm:ss');
 			appOverTime.application.enteredPerson = vm.$user.employeeId;
+			appOverTime.application.employeeIDLst = vm.employeeIDLst;
 
 
 
@@ -553,13 +630,42 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			{
 				let item = new OvertimeWork();
 				let currentMonth = res.infoNoBaseDate.agreeOverTimeOutput.currentMonth;
+				// A2_14
 				item.yearMonth = ko.observable(currentMonth);
+				// A2_15 // A2_16
+				if (res.infoNoBaseDate.agreeOverTimeOutput.isCurrentMonth) {
+					let timeLimit = res.infoNoBaseDate.agreeOverTimeOutput.currentTimeMonth.legalMaxTime.threshold.erAlTime.error;
+					let timeActual = res.infoNoBaseDate.agreeOverTimeOutput.currentTimeMonth.legalMaxTime.agreementTime;
+					item.limitTime = ko.observable(timeLimit);
+					item.actualTime = ko.observable(timeActual);				
+				} else {
+					let timeLimit = res.infoNoBaseDate.agreeOverTimeOutput.currentTimeMonth.agreementTime.threshold.erAlTime.error;
+					let timeActual = res.infoNoBaseDate.agreeOverTimeOutput.currentTimeMonth.agreementTime.agreementTime;
+					item.limitTime = ko.observable(timeLimit);
+					item.actualTime = ko.observable(timeActual);
+				}
+				
+				
+				
 				overTimeWorks.push(item);
 			}
 			{
 				let item = new OvertimeWork();
 				let nextMonth = res.infoNoBaseDate.agreeOverTimeOutput.nextMonth;
 				item.yearMonth = ko.observable(nextMonth);
+				
+				// A2_20 // A2_21
+				if (res.infoNoBaseDate.agreeOverTimeOutput.isNextMonth) {
+					let timeLimit = res.infoNoBaseDate.agreeOverTimeOutput.nextTimeMonth.legalMaxTime.threshold.erAlTime.error;
+					let timeActual = res.infoNoBaseDate.agreeOverTimeOutput.nextTimeMonth.legalMaxTime.agreementTime;
+					item.limitTime = ko.observable(timeLimit);
+					item.actualTime = ko.observable(timeActual);				
+				} else {
+					let timeLimit = res.infoNoBaseDate.agreeOverTimeOutput.nextTimeMonth.agreementTime.threshold.erAlTime.error;
+					let timeActual = res.infoNoBaseDate.agreeOverTimeOutput.nextTimeMonth.agreementTime.agreementTime;
+					item.limitTime = ko.observable(timeLimit);
+					item.actualTime = ko.observable(timeActual);
+				}
 				overTimeWorks.push(item);
 			}
 			self.overTimeWork(overTimeWorks);
@@ -633,6 +739,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				}
 
 			}
+			// not change in select work type 
 			if (_.isNil(mode) || mode == ACTION.CHANGE_DATE) {
 				self.workInfo().workType(workType);				
 				self.workInfo().workTime(workTime);				
@@ -651,14 +758,20 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					new ItemModel('3', '')
 				];
 				let messageArray = [] as Array<MessageInfo>;
-				let messageInfo = {} as MessageInfo;
-				messageInfo.titleDrop = ko.observable('');
-				messageInfo.listDrop = ko.observableArray(itemList);
-				messageInfo.titleInput = ko.observable('');
-				messageInfo.valueInput = ko.observable('');
-				messageInfo.selectedCode = ko.observable(null);
-				messageArray.push(messageInfo);
-				messageArray.push(messageInfo);
+				let messageInfo1 = {} as MessageInfo;
+				messageInfo1.titleDrop = ko.observable('');
+				messageInfo1.listDrop = ko.observableArray(itemList);
+				messageInfo1.titleInput = ko.observable('');
+				messageInfo1.valueInput = ko.observable('');
+				messageInfo1.selectedCode = ko.observable('');
+				let messageInfo2 = {} as MessageInfo;
+				messageInfo2.titleDrop = ko.observable('');
+				messageInfo2.listDrop = ko.observableArray(itemList);
+				messageInfo2.titleInput = ko.observable('');
+				messageInfo2.valueInput = ko.observable('');
+				messageInfo2.selectedCode = ko.observable('');
+				messageArray.push(messageInfo1);
+				messageArray.push(messageInfo2);
 
 				self.messageInfos(messageArray);
 				return;
@@ -692,20 +805,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					i.name = self.$i18n('KAF005_340');
 					itemList.push(i);
 				}	
-				// dummy data 
-				{
-					findResut.reasons = [];
-					findResut.reasons.push({
-						divergenceReasonCode: '1',
-						reason: 'aaaaa',
-						reasonRequired: 1
-					});
-					findResut.reasons.push({
-						divergenceReasonCode: '2',
-						reason: 'bbbb',
-						reasonRequired: 1
-					});
-				}	
 				_.forEach(findResut.reasons, (item: DivergenceReasonSelect) => {
 					let i = {} as ItemModel;
 					i.code = item.divergenceReasonCode;
@@ -715,7 +814,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				});
 				messageInfo1.listDrop(itemList);
 			} else {
-				messageInfo1.selectedCode(null);
+				messageInfo1.selectedCode('');
 			}
 			
 			if (self.visibleModel.c12_1()) {
@@ -738,7 +837,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				});
 				messageInfo2.listDrop(itemList);
 			} else {
-				messageInfo2.selectedCode(null);
+				messageInfo2.selectedCode('');
 			}
 
 		}
@@ -759,8 +858,18 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 							}
 						})
 
+					} else {
+						_.forEach(self.restTime(), (item: RestTime) => {
+							item.start(null);
+							item.end(null);
+						});
 					}
 
+				} else {
+					_.forEach(self.restTime(), (item: RestTime) => {
+						item.start(null);
+						item.end(null);
+					});
 				}
 			} else {
 				_.forEach(self.restTime(), (item: RestTime) => {
@@ -1946,7 +2055,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 							}
 						})
 						.fail(res => {
-							
+							// xử lý lỗi nghiệp vụ riêng
+							self.handleErrorCustom(res).then((result: any) => {
+								if (result) {
+									// xử lý lỗi nghiệp vụ chung
+									self.handleErrorCommon(res);
+								}
+							});
 						})
 						.always(() => self.$blockui('hide'));
                 }
@@ -1964,7 +2079,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			let c2 = !_.isEmpty(res.infoBaseDateOutput.quotaOutput.overTimeQuotaList);
 			visibleModel.c2(c2);
 			// 
-			let c6 = true;
+			let c6 = self.mode() != MODE.MULTiPLE_AGENT;
 			visibleModel.c6(c6);
 
 			// 「残業申請の表示情報．基準日に関係しない情報．残業申請設定．申請詳細設定．時刻計算利用区分」= する
@@ -2106,7 +2221,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					}
 				})
 				.fail((res: any) => {
-					
+					// xử lý lỗi nghiệp vụ riêng
+					self.handleErrorCustom(res).then((result: any) => {
+						if (result) {
+							// xử lý lỗi nghiệp vụ chung
+							self.handleErrorCommon(res);
+						}
+					});
 				})
 				.always(() => self.$blockui('hide'));
 		}
@@ -2196,7 +2317,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					}
 				})
 				.fail((res: any) => {
-
+					// xử lý lỗi nghiệp vụ riêng
+					self.handleErrorCustom(res).then((result: any) => {
+						if (result) {
+							// xử lý lỗi nghiệp vụ chung
+							self.handleErrorCommon(res);
+						}
+					});
 				})
 				.always(() => self.$blockui("hide"));
 
@@ -2438,11 +2565,22 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		applicationDetailSetting: any;
 	}
 	export interface AgreeOverTimeOutput {
-		detailCurrentMonth: AgreementTimeImport;
-		detailNextMonth: AgreementTimeImport;
-		currentMonth: string;
+		isCurrentMonth: boolean;
+		currentTimeMonth: any;
+		currentMonth: string
+		isNextMonth: boolean;
+		nextTimeMonth: any;
 		nextMonth: string;
 	}
+	export interface AgreementTimeOfManagePeriod {
+		agreementTime: any;
+		sid: string;
+		status: number;
+		agreementTimeBreakDown: any;
+		yearMonth: string;
+		legalMaxTime: any;
+	}
+	
 	export interface AgreementTimeImport {
 		employeeId: string;
 		confirmed?: AgreeTimeOfMonthExport;
@@ -2630,6 +2768,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		opAppEndDate?: string;
 		opAppReason?: string;
 		opAppStandardReasonCD?: number;
+		employeeIDLst: Array<string>;
 	}
 	export interface ReflectionStatus {
 
@@ -2677,6 +2816,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 	enum ACTION {
 		CHANGE_DATE,
 		CHANGE_WORK,
+	}
+	enum MODE {
+		NORMAL,
+		SINGLE_AGENT,
+		MULTiPLE_AGENT
 	}
 
 

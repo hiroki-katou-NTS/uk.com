@@ -63,6 +63,7 @@ export class CmmS45BComponent extends Vue {
 
     //Refactor4
     public appStatus: ApplicationStatus;
+    public arrayAppType = [2, 3, 4, 7, 9, 15];
 
     @Watch('modeAppr')
     public checkChangeMode(mode: boolean) {
@@ -185,7 +186,7 @@ export class CmmS45BComponent extends Vue {
                     self.dateRange = { start: self.$dt.fromUTCString(self.appListExtractCondition.periodStartDate, 'YYYY/MM/DD'), end: self.$dt.fromUTCString(self.appListExtractCondition.periodEndDate, 'YYYY/MM/DD') };
                     // self.isDisPreP = 
                     self.convertAppInfo(self.data);
-                    // self.createLstAppType(self.data.appListExtractConditionDto.opListOfAppTypes);
+                    self.createLstAppType(self.data.appListExtractConditionDto.opListOfAppTypes);
                     // self.disableB24 = data.appStatusCount.unApprovalNumber == 0 ? true : false;
                     self.disableB24 = !self.isEmptyApprovalList();
                 }).catch(() => {
@@ -254,7 +255,7 @@ export class CmmS45BComponent extends Vue {
                     }
 
                     let paramNew = {
-                            listAppType: [2, 3, 4, 7, 9, 15],
+                            listAppType: self.arrayAppType,
                             listOfAppTypes: res.data,
                             appListExtractCondition: self.appListExtractCondition
                     };
@@ -369,6 +370,7 @@ export class CmmS45BComponent extends Vue {
                 count++;
             });
         });
+        self.lstAppByEmp = _.orderBy(self.lstAppByEmp, ['empCD'],['asc']);
         if (count == 0) {
             self.displayB513 = 1;
         } else if (count > data.appAllNumber) {
@@ -402,12 +404,12 @@ export class CmmS45BComponent extends Vue {
         const self = this;
         let lst = [];
         lstApp.forEach((app: ListOfApplication) => {
-            if (app.appType == 0 || app.appType == 2 || app.appType == 3 || app.appType == 4  || app.appType == 7 || app.appType == 9 || app.appType == 15) {
+            if (self.arrayAppType.indexOf(app.appType) >= 0) {
                 lst.push(new AppInfo({
                     id: app.appID,
                     appDate: self.$dt.fromUTCString(app.appDate, 'YYYY/MM/DD'),
                     appType: app.appType,
-                    appName: self.appTypeName(app.appType, String(app.application.opStampRequestMode)),
+                    appName: self.appTypeName(app.appType, app.application.opStampRequestMode),
                     prePostAtr: app.prePostAtr,
                     reflectStatus: app.reflectionStatus,
                     appStatusNo: self.convertReflectToInt(app.reflectionStatus),
@@ -450,7 +452,7 @@ export class CmmS45BComponent extends Vue {
     //     return (_.find(self.data.appListInfoDto.appLst, (app) => app.appID == appID) || { statusFrameAtr: false }).statusFrameAtr;
     // }
 
-    private appTypeName(appType: number, opAppTypeDisplay?: string) {
+    private appTypeName(appType: number, opAppTypeDisplay?: any) {
         const self = this;
         if (_.isNil(opAppTypeDisplay)) {
             // return 'AppName';
@@ -468,6 +470,21 @@ export class CmmS45BComponent extends Vue {
         // return (_.find(self.data.appListExtractConditionDto.opListOfAppTypes, (item) => item.appType === appType) || { appName: '' }).appName;
     }
 
+    // check app7 with mode 0 and 1
+    public getStampMode(mode: number) {
+        const self = this;
+        let isMode = false;
+        _.forEach(self.data.appListInfoDto.appLst, (i) => {
+            if (i.application.appType == 7) {
+                if (i.application.opStampRequestMode == mode) {
+                    isMode = true;
+                }
+            }
+        });
+
+        return isMode;
+    }
+
     private createLstAppType(opAppTypeLst: Array<ListOfAppTypes>) {
         // let self = this;
         // self.lstAppType = [];
@@ -483,14 +500,28 @@ export class CmmS45BComponent extends Vue {
         self.lstAppType = [];
         this.lstAppType.push({ code: String(-1), appType: -1, appName: 'すべて' });
         opAppTypeLst.forEach((appType) => {
-            if (appType.appType == 0 || appType.appType == 2 || appType.appType == 3 || appType.appType == 4 || appType.appType == 7 || appType.appType == 9 || appType.appType == 15) {
+            if (_.intersection(_.uniq(_.map(_.flatMap(self.lstAppByEmp, (i) => i.lstApp), (x) => x.appType)), self.arrayAppType).indexOf(appType.appType) >= 0) {
                 let item = { code: String(appType.appType), appType: appType.appType, appName: appType.appName } as any;
                 if (appType.opApplicationTypeDisplay == 3) {
                     item.code = item.code + Type002.stamp;
                 } else if (appType.opApplicationTypeDisplay == 4) {
                     item.code = item.code + Type002.record;
                 }
-                self.lstAppType.push(item);            }
+                if (appType.appType == 7) {
+                    if (self.getStampMode(0)) {
+                        if (appType.opApplicationTypeDisplay == 3) {
+                            self.lstAppType.push(item);
+                        }
+                    }
+                    
+                    if (self.getStampMode(1)) {
+                        if (appType.opApplicationTypeDisplay == 4) {
+                            self.lstAppType.push(item);
+                        }
+                    }
+                } else {
+                    self.lstAppType.push(item);
+                }         }
         });
         self.lstAppType = _.uniqBy(self.lstAppType, (o: any) => {
             return o.code;
