@@ -1,0 +1,113 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 1075,
+					height : 760
+				};
+			</script>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="knr002.b.service.js" />
+			<com:scriptfile path="knr002.b.vm.js" />
+			<com:scriptfile path="knr002.b.start.js" />
+			<com:stylefile path="knr002.b.style.css" />
+		</ui:define>
+
+		<ui:define name="content">
+			<!-- Content -->
+			<div class="fixed-flex-layout" id="contents-area">
+				<!-- column 1 -->
+				<div class="column-1">
+				<div id="B1-panel" class="panel panel-frame div_line"
+						style="height: 135px; width: 295px;">
+						<div class="div_line">
+							<div id="B1_1" class="label itemLabel ilb">#{i18n.getText('KNR002_60')}</div>
+							<div id="B2_1" class="label ilb" style="width: 15px;">#{i18n.getText('KNR002_66')}</div>
+							<div id="B3_1" class="ilb" data-bind="text: empInfoTerCode"></div>
+						</div>
+						<div class="div_line">
+							<div id="B1_2" class="label itemLabel ilb">#{i18n.getText('KNR002_61')}</div>
+							<div id="B2_2" class="label ilb" style="width: 15px;">#{i18n.getText('KNR002_66')}</div>
+							<div id="B3_2" class="ilb" data-bind="text: empInfoTerName"></div>
+						</div>
+						<div class="div_line">
+							<div id="B1_3" class="label itemLabel ilb">#{i18n.getText('KNR002_62')}</div>
+							<div id="B1_3" class="label ilb" style="width: 15px;">#{i18n.getText('KNR002_66')}</div>
+							<div id="B1_3" class="ilb" data-bind="text: modelEmpInfoTer"></div>
+						</div>
+						<div class="div_line">
+							<div id="B1_4" class="label itemLabel ilb">#{i18n.getText('KNR002_63')}</div>
+							<div id="B2_4" class="label ilb" style="width: 15px;">#{i18n.getText('KNR002_66')}</div>
+							<div id="B3_4" class="ilb" data-bind="text: workLocationName"></div>
+						</div>
+						<div class="div_line">
+							<div id="B1_5" class="label itemLabel ilb">#{i18n.getText('KNR002_64')}</div>
+							<div id="B2_5" class="label ilb" style="width: 15px;">#{i18n.getText('KNR002_66')}</div>
+							<div id="B3_5" class="ilb" data-bind="text: lastSuccessDate"></div>
+						</div>
+						<div class="div_line">
+							<div id="B1_6" class="label itemLabel ilb">#{i18n.getText('KNR002_65')}</div>
+							<div id="B2_6" class="label ilb" style="width: 15px;">#{i18n.getText('KNR002_66')}</div>
+							<div id="B3_6" class="ilb" data-bind="text: status"></div>
+						</div>
+					</div>
+				</div>
+				<!-- Log in the Period -->
+				<div class="column-2 ">
+					<div class="div_line">
+						<div id="B4_1" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KNR002_67')}</div>
+						<div id="B4_2" tabindex="1" style="margin-bottom: 30px;"
+							data-name="DateTimePairRange Editor"
+							data-bind="ntsDateTimePairRangeEditor: {				
+									value: ko.observable({start: sTime, end: eTime}),	
+									name:  '#[KNR002_68]',	
+									constraint: true,
+									rangeUnit: months; 
+									maxRange: 1,	
+									required: true, 	
+									enable: true, 	
+									readonly: true}" />
+						<button id="B4_3" tabindex="2" style="margin-left: 15px; width: 90px;"
+							data-bind="click: extract">#{i18n.getText('KNR002_69')}</button>
+					</div>
+					<div class="div_line" style="margin-left: 50px;">
+						<div id="logList" class="fixed-flex-layout">
+							<table id="multi-list"
+								data-bind="ntsGridList: {				
+									height: 353,		
+									primaryKey: 'id',
+									options: displayLogList,	
+									optionsValue: '',	
+									value: selectedLog,	
+									columns: [
+										{ headerText: '#{i18n.getText('KNR002_70')}', key: 'sDate', width: 140, formatter: colorText },
+										{ headerText: '', key: 'id', hidden: true},	
+										{ headerText: '', key: 'sTime', width: 60, formatter: _.escape },
+										{ headerText: '', key: 'textPeriod', width: 30, formatter: _.escape },
+										{ headerText: '', key: 'eDate', width: 140, formatter: _.escape },
+										{ headerText: '', key: 'eTime', width: 60, formatter: _.escape },
+					            	],				
+									multiple: false}">
+
+							</table>
+						</div>
+					</div>
+					<!-- -->
+				</div>
+			</div>
+			<!-- function area bottom -->
+			<div id="functions-area-bottom">
+				<button id="B6_1" tabindex="3"
+					data-bind="click: cancel_Dialog">#{i18n.getText('KNR002_72')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

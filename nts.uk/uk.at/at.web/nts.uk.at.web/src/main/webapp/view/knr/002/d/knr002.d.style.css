@@ -1,0 +1,44 @@
+.div_line {
+	margin-top: 2px;
+	float: left;
+	clear: both;
+	width: 100%;
+}
+.ilb {
+	display: inline-block;
+}
+
+#contents-area {
+	padding: 20px 0px 0px 20px;
+}
+
+.contentDialog {
+	margin-left: 20px;
+}
+.contentDialog>div.div_line{
+	margin-top: 7px;
+	width: 650px;
+}
+.contentDialog td[role=gridcell] {
+    border-bottom: 1px dotted black;
+}
+.ui-iggrid table tr th.ui-iggrid-header, .ui-iggrid table tr th.ui-state-hover, .ui-iggrid table tr th.ui-state-active, .ui-iggrid table tr th.ui-state-focus, .ui-iggrid table tr th.ui-state-active.ui-state-focus {
+    padding: 0 2px;
+    border: 1px solid black;
+}
+.contentDialog td[role=gridcell] {
+    border-bottom: 1px dotted black;
+    border-right: 1px solid black;
+}
+.contentDialog td[aria-describedby=multi-list_empInfoTerCode] {
+    border-left: 1px solid black;
+}
+.contentDialog #tablerange{
+	hight: 168px;
+	width: 565px;
+	border-left: 1px solid black;
+	border-bottom: 1px solid black;
+}
+.testcss {
+	color: red;	
+}

@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<script>
+				var dialogSize = {
+					width : 700,
+					height : 500
+				};
+			</script>
+			<com:scriptfile path="knr002.d.service.js" />
+			<com:scriptfile path="knr002.d.vm.js" />
+			<com:scriptfile path="knr002.d.start.js" />
+			<com:stylefile path="knr002.d.style.css" />
+		</ui:define>
+
+		<ui:define name="content">
+			<!-- Remote Settings copy dialog -->
+
+			<div class="contentDialog">
+				<div class="div_line">
+					<div id="D1_1" class="label" style="width: 500px;">#{i18n.getText('KNR002_101')}</div>
+				</div>
+
+				<div class="div_line">
+					<div id="D2_1" class="ilb"
+						data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KNR002_102')}</div>
+					<span id="D2_2" class="label ilb" style="width: 60px;">#{i18n.getText('KNR002_103')}</span>
+					<span id="D2_3" class="ilb" style="width: 60px;"
+						data-bind="text: empInfoTerCode"></span> <span id="D2_4"
+						class="ilb" style="width: 150px;" data-bind="text: empInfoTerName"></span>
+				</div>
+				<div class="div_line">
+					<div id="D3_1" class="ilb" style="margin-top: 20px;"
+						data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KNR002_104')}</div>
+				</div>
+				<div id="tablerange" class="div_line">
+					<table id="D3_2"></table>
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<button class="proceed" id="D5_1" tabindex="1"
+					data-bind="click: copy">#{i18n.getText('KNR002_109')}</button>
+				<button id="D5_2" tabindex="2"
+					data-bind="click: cancel_Dialog">#{i18n.getText('KNR002_110')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 500,
+					height : 700
+				};
+			</script>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="knr002.k.service.js" />
+			<com:scriptfile path="knr002.k.vm.js" />
+			<com:scriptfile path="knr002.k.start.js" />
+			<com:stylefile path="knr002.k.style.css" />
+		</ui:define>
+
+		<ui:define name="content">
+			<!-- Remote Settings copy dialog -->
+			<div class="fixed-flex-layout" id="contents-area">
+				<div id="K1_1" style="margin-left: 15px;"
+					data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KNR002_190')}</div>
+				<div>
+					<table id="multi-list"
+						data-bind="ntsGridList: {				
+									height: 384,		
+									options: destinationCopyList,	
+									optionsValue: 'code',	
+									value: selectedList,	
+									columns: [
+										{ headerText: '#{i18n.getText('KNR002_191')}', key: 'code', width: 60, formatter: _.escape },
+										{ headerText: '#{i18n.getText('KNR002_192')}', key: 'name', width: 150, formatter: _.escape },
+					            	],				
+									multiple: true }">
+
+					</table>
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<button class="proceed" id="K4_1" tabindex="1"
+					data-bind="">#{i18n.getText('KNR002_193')}</button>
+				<button id="K4_2" tabindex="2"
+					data-bind="click: cancel_Dialog">#{i18n.getText('KNR002_194')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
