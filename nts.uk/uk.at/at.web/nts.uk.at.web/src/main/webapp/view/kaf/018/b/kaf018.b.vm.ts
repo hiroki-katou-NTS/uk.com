@@ -141,30 +141,23 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 									if(!vm.initDisplayOfApprovalStatus.applicationApprovalFlg) {
 										$("#bGrid").igGrid("hideColumn", "countUnApprApp");
 									}
-									$("#bGrid").igGrid("hideColumn", "countUnConfirmDay");
-									$("#bGrid").igGrid("hideColumn", "countUnApprDay");
-									$("#bGrid").igGrid("hideColumn", "countUnConfirmMonth");
-									$("#bGrid").igGrid("hideColumn", "countUnApprMonth");
-									$("#bGrid").igGrid("hideColumn", "displayConfirm");
-									$("#bGrid").igGrid("hideColumn", "confirmPerson");
-									$("#bGrid").igGrid("hideColumn", "date");
-//									if(!useSet.usePersonConfirm || !vm.initDisplayOfApprovalStatus.confirmAndApprovalDailyFlg) {
-//										$("#bGrid").igGrid("hideColumn", "countUnConfirmDay");
-//									}
-//									if(!useSet.useBossConfirm || !vm.initDisplayOfApprovalStatus.confirmAndApprovalDailyFlg) {
-//										$("#bGrid").igGrid("hideColumn", "countUnApprDay");
-//									}
-//									if(!useSet.monthlyIdentityConfirm || !vm.initDisplayOfApprovalStatus.confirmAndApprovalMonthFlg) {
-//										$("#bGrid").igGrid("hideColumn", "countUnConfirmMonth");	
-//									}
-//									if(!useSet.monthlyConfirm || !vm.initDisplayOfApprovalStatus.confirmAndApprovalMonthFlg) {
-//										$("#bGrid").igGrid("hideColumn", "countUnApprMonth");
-//									}
-//									if(!useSet.employmentConfirm) {
-//										$("#bGrid").igGrid("hideColumn", "displayConfirm");
-//										$("#bGrid").igGrid("hideColumn", "confirmPerson");
-//										$("#bGrid").igGrid("hideColumn", "date");
-//									}
+									if(!useSet.usePersonConfirm || !vm.initDisplayOfApprovalStatus.confirmAndApprovalDailyFlg) {
+										$("#bGrid").igGrid("hideColumn", "countUnConfirmDay");
+									}
+									if(!useSet.useBossConfirm || !vm.initDisplayOfApprovalStatus.confirmAndApprovalDailyFlg) {
+										$("#bGrid").igGrid("hideColumn", "countUnApprDay");
+									}
+									if(!useSet.monthlyIdentityConfirm || !vm.initDisplayOfApprovalStatus.confirmAndApprovalMonthFlg) {
+										$("#bGrid").igGrid("hideColumn", "countUnConfirmMonth");	
+									}
+									if(!useSet.monthlyConfirm || !vm.initDisplayOfApprovalStatus.confirmAndApprovalMonthFlg) {
+										$("#bGrid").igGrid("hideColumn", "countUnApprMonth");
+									}
+									if(!useSet.employmentConfirm || !vm.initDisplayOfApprovalStatus.confirmEmploymentFlg) {
+										$("#bGrid").igGrid("hideColumn", "displayConfirm");
+										$("#bGrid").igGrid("hideColumn", "confirmPerson");
+										$("#bGrid").igGrid("hideColumn", "date");
+									}
 									vm.getPageData();
 									vm.loadData(true);
 								}
@@ -302,7 +295,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 							},
 							{ 
 								headerText: '<p style="text-align: center">' + vm.$i18n('KAF018_342') + '</p>', 
-								key: 'string', 
+								key: 'confirmPerson', 
 								dataType: 'string', 
 								width: '75px', 
 								headerCssClass: 'kaf018-b-header-emp-confirm',
@@ -407,13 +400,6 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 			}
 			
 			if(ui.colKey=="countUnConfirmDay" || ui.colKey=="countUnApprDay" || ui.colKey=="countUnConfirmMonth" || ui.colKey=="countUnApprMonth") {
-//				let countUnConfirmDay = _.find(vm.dataSource, o => o.wkpID == ui.rowKey).countUnConfirmDay,
-//					countUnApprDay = _.find(vm.dataSource, o => o.wkpID == ui.rowKey).countUnApprDay,
-//					countUnConfirmMonth = _.find(vm.dataSource, o => o.wkpID == ui.rowKey).countUnConfirmMonth,
-//					countUnApprMonth = _.find(vm.dataSource, o => o.wkpID == ui.rowKey).countUnApprMonth;
-//				if(!countUnConfirmDay && !countUnApprDay && !countUnConfirmMonth && !countUnApprMonth) {
-//					return;	
-//				}
 				let closureItem = vm.closureItem,
 					startDate = vm.startDate,
 					endDate = vm.endDate,
@@ -422,8 +408,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 						return countUnApprApp && _.includes(vm.pageData, o.wkpID);
 					}),
 					currentWkpID = ui.rowKey,
-					appNameLst: Array<any> = vm.appNameLst,
-					fParam: KAF018FParam = { closureItem, startDate, endDate, apprSttExeDtoLst, currentWkpID, appNameLst };
+					fParam: KAF018FParam = { closureItem, startDate, endDate, apprSttExeDtoLst, currentWkpID };
 				vm.$window.modal('/view/kaf/018/f/index.xhtml', fParam);
 			}
 		}
@@ -441,18 +426,17 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 				existData = _.chain(vm.dataSource).filter(o => {
 					switch(mailTypeParam) {
 						case ApprovalStatusMailType.APP_APPROVAL_UNAPPROVED:
-							let countUnApprApp = o.countUnApprApp ? true : false;
-							return countUnApprApp && _.includes(vm.pageData, o.wkpID);
+							return o.countUnApprApp;
 						case ApprovalStatusMailType.DAILY_UNCONFIRM_BY_PRINCIPAL:
-							return false;
+							return o.countUnConfirmDay;
 						case ApprovalStatusMailType.DAILY_UNCONFIRM_BY_CONFIRMER:
-							return false;
+							return o.countUnApprDay;
 						case ApprovalStatusMailType.MONTHLY_UNCONFIRM_BY_PRINCIPAL:
-							return false;
+							return o.countUnConfirmMonth;
 						case ApprovalStatusMailType.MONTHLY_UNCONFIRM_BY_CONFIRMER:
-							return false;
+							return o.countUnApprMonth;
 						case ApprovalStatusMailType.WORK_CONFIRMATION:
-							return false;
+							return o.displayConfirm;
 						default:
 							return false;
 					}
@@ -503,7 +487,6 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 	}	
 
 	const API = {
-		getStatusExecution: "at/request/application/approvalstatus/getStatusExecution",
-		deleteTmpTable: "at/request/application/approvalstatus/deleteTmpTable"
+		getStatusExecution: "at/screen/application/approvalstatus/getStatusExecution"
 	}
 }

@@ -326,9 +326,9 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 	}
 
 	const API = {
-		getApprovalStatusActivation: "at/request/application/approvalstatus/getApprovalStatusActivation",
 		getAppNameInAppList: "at/request/application/screen/applist/getAppNameInAppList",
+		getApprovalStatusActivation: "at/screen/application/approvalstatus/getApprovalStatusActivation",
 		getUseSetting: "at/record/application/realitystatus/getUseSetting",
-		changeClosure: "at/request/application/approvalstatus/changeClosure"
+		changeClosure: "at/screen/application/approvalstatus/changeClosure"
 	}
 }

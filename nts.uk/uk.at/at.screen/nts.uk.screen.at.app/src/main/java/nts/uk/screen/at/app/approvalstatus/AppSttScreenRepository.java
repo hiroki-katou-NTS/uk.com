@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.dom.application.approvalstatus.service;
+package nts.uk.screen.at.app.approvalstatus;
 
 import java.util.List;
 import java.util.Map;
@@ -10,8 +10,7 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.EmpPeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
-public interface ApprovalSttScreenRepository {
-	
+public interface AppSttScreenRepository {
 	public List<EmpPeriod> getCountEmp(GeneralDate startDate, GeneralDate endDate, List<String> wkpIDLst, List<String> employmentCDLst);
 	
 	public Map<String, Integer> getCountUnApprApp(GeneralDate startDate, GeneralDate endDate, List<String> wkpIDLst, List<String> employmentCDLst);

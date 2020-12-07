@@ -238,8 +238,8 @@ module nts.uk.at.view.kaf018.c.viewmodel {
 	}
 
 	const API = {
-		getEmpSendMailInfo: "at/request/application/approvalstatus/getEmpSendMailInfo",
-		updateMailTemplate: "at/request/application/approvalstatus/registerMail",
-		sendMailToDestination: "at/request/application/approvalstatus/sendMailToDestination"
+		getEmpSendMailInfo: "at/screen/application/approvalstatus/getEmpSendMailInfo",
+		updateMailTemplate: "at/screen/application/approvalstatus/registerMail",
+		sendMailToDestination: "at/screen/application/approvalstatus/sendMailToDestination"
 	}
 }

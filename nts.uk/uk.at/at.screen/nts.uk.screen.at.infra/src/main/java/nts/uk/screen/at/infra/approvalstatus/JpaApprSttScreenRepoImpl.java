@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.infra.repository.application.approvalstatus;
+package nts.uk.screen.at.infra.approvalstatus;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -14,9 +14,9 @@ import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprovalSttScreenRepository;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.EmpPeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.screen.at.app.approvalstatus.AppSttScreenRepository;
 
 /**
  * refactor 5
@@ -24,8 +24,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
  *
  */
 @Stateless
-public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements ApprovalSttScreenRepository {
-	
+public class JpaApprSttScreenRepoImpl extends JpaRepository implements AppSttScreenRepository {
 	@Override
 	public List<EmpPeriod> getCountEmp(GeneralDate startDate, GeneralDate endDate, List<String> wkpIDLst, List<String> employmentCDLst) {
 		String sql = 
