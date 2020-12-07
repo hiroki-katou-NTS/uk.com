@@ -141,6 +141,7 @@ module nts.uk.at.ksm008.c {
                                 let lstBanWorkTogether = _.map(banWorkTogether, function (item: any) {
                                     return new ItemModel(item, vm);
                                 });
+                                lstBanWorkTogether = _.sortBy(lstBanWorkTogether, ["code"]);
                                 vm.listBanWorkTogether(lstBanWorkTogether);
                                 vm.selectedProhibitedCode(lstBanWorkTogether[0].code);
                             } else {
@@ -191,6 +192,7 @@ module nts.uk.at.ksm008.c {
                     let listBanWork = _.map(res, function (i: any) {
                         return new ItemModel(i, vm);
                     });
+                    listBanWork = _.sortBy(listBanWork, ["code"]);
                     vm.listBanWorkTogether(listBanWork);
                 } else {
                     vm.listBanWorkTogether([]);
@@ -324,7 +326,9 @@ module nts.uk.at.ksm008.c {
             vm.selectableEmployeeList(vm.lstEmployeeSelectableBegin());
             vm.targetSelectedCodes([]);
             vm.selectedableCodes([]);
-            $('#C7_2').focus();
+            vm.$nextTick(() => {
+                $('#C7_2').focus();
+            });
         }
 
         swithchUpdateMode(data: any) {
@@ -357,7 +361,10 @@ module nts.uk.at.ksm008.c {
 
             vm.targetSelectedCodes([]);
             vm.selectedableCodes([]);
-            $('#C7_3').focus();
+            vm.$nextTick(() => {
+                $('#C7_3').focus();
+            })
+
         }
 
         register() {
@@ -466,7 +473,7 @@ module nts.uk.at.ksm008.c {
                         vm.$dialog.info({messageId: "Msg_16"}).then(() => {
                             vm.getBanWorkListByCode().then(() => {
                                 if (vm.listBanWorkTogether().length) {
-                                    let newIndex = index == 0 ? 0 : index;
+                                    let newIndex = index == 0 ? 0 : index - 1;
                                     vm.selectedProhibitedCode(vm.listBanWorkTogether()[newIndex].code);
                                 } else {
                                     vm.swithchNewMode();
