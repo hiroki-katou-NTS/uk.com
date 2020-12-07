@@ -64,4 +64,10 @@ public class WorkScheduleWorkInforDto {
 	public boolean workTypeIsNotExit; 
 	// dùng cho màn ksu001
 	public boolean workTimeIsNotExit;
+	
+	// dùng cho màn ksu002
+	public String workTypeNameKsu002;
+	
+	// dùng cho màn ksu002
+	public String workTimeNameKsu002;
 }

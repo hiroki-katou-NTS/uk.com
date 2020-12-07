@@ -228,6 +228,8 @@ public class CreateWorkScheduleWorkInfor {
 						.isActive(true)
 						.workTypeIsNotExit(workTypeIsNotExit)
 						.workTimeIsNotExit(workTimeIsNotExit)
+						.workTypeNameKsu002(workTypeInfor.map(m -> m.getAbbreviationName()).orElse(workTypeCode == null ? null : workTypeCode + "{#KSU002_31}"))
+						.workTimeNameKsu002(workTimeSetting.map(m -> m.getWorkTimeDisplayName().getWorkTimeName().v()).orElse(workTimeCode == null ? null : workTimeCode + "{#KSU002_31}"))
 						.build();
 
 				// ※Abc1
