@@ -475,9 +475,9 @@ module nts.uk.at.view.kdl045.a {
                 // set update data input open dialog kdl003
                 nts.uk.ui.windows.setShared('parentCodes', {
                     workTypeCodes: [],
-                    selectedWorkTypeCode: self.employee().employeeInfo.workScheduleDto.workTypeCode,
+                    selectedWorkTypeCode: self.workType(),
                     workTimeCodes: [],
-                    selectedWorkTimeCode: self.employee().employeeInfo.workScheduleDto.workTimeCode
+                    selectedWorkTimeCode: self.workTime()
                 }, true);
 
                 nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(function(): any {
@@ -485,10 +485,6 @@ module nts.uk.at.view.kdl045.a {
                     let childData = nts.uk.ui.windows.getShared('childData');
                     if (childData) {
                         self.isExistWorkType(true);
-                        self.employee().employeeInfo.workScheduleDto.workTypeCode = childData.selectedWorkTypeCode;
-                        self.employee().employeeInfo.workScheduleDto.workTimeCode = childData.selectedWorkTimeCode;
-                        self.employee().employeeInfo.fixedWorkInforDto.workTypeName = childData.selectedWorkTypeName;
-                        self.employee().employeeInfo.fixedWorkInforDto.workTimeName = childData.selectedWorkTimeName;
                         self.workType(childData.selectedWorkTypeCode);
                         self.workTypeName(childData.selectedWorkTypeName);
                         self.workTime(childData.selectedWorkTimeCode);
@@ -646,10 +642,11 @@ module nts.uk.at.view.kdl045.a {
                         });
                     }
                     self.dataSourceTime(listData);
+					self.fixBreakTime(self.moreInformation.breakTime.fixBreakTime);
                 }
                 self.setListData();
                 
-                self.fixBreakTime(self.moreInformation.breakTime.fixBreakTime);
+                
                 self.workTimeForm(self.moreInformation.workTimeForm);
                 self.includingWorkType(_.includes(self.employee().scheCorrection, self.moreInformation.workTimeForm));
                 self.includingWorkType.valueHasMutated();

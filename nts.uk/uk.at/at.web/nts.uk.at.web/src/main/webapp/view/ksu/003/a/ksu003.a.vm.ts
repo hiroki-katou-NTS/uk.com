@@ -20,16 +20,22 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 	export class ScreenModel {
 
 		KEY: string = 'USER_KSU003_INFOR';
-		employeeIdLogin: string = __viewContext.user.employeeId;
+		employeeIdLogin: string = __viewContext.user.employeeId; /** Employee login */
+		
 		targetDate: KnockoutObservable<string> = ko.observable('2020/05/02'); /*A2_1_3*/
 		targetDateDay: KnockoutObservable<string> = ko.observable('');
+		
 		organizationName: KnockoutObservable<string> = ko.observable(''); /*A2_2*/
 		selectedDisplayPeriod: KnockoutObservable<number> = ko.observable(1); /*A2_5*/
+		
 		itemList: KnockoutObservableArray<ItemModel>; /*A3_2*/
 		selectOperationUnit: KnockoutObservable<string> = ko.observable('0');
+		
 		sortList: KnockoutObservableArray<ItemModel>; /*A3_4*/
 		checked: KnockoutObservable<string> = ko.observable();
+		
 		checkedName: KnockoutObservable<boolean> = ko.observable(true); /*A3_3 */
+		
 		showA9: boolean;
 		checkNext: KnockoutObservable<boolean> = ko.observable(true);
 		checkPrv: KnockoutObservable<boolean> = ko.observable(true);
@@ -54,12 +60,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		operationOneMinus: KnockoutObservable<number> = ko.observable(12);
 
 		localStore: KnockoutObservable<ILocalStore> = ko.observable();
-		startScrollGc: KnockoutObservable<number> = ko.observable();
-
 		lstEmpId: Array<IEmpidName> = [];
-		startScrollY: number = 8;
 		timeRange: number = 0;
-
+		
 		timeBrkText: KnockoutObservable<string> = ko.observable();
 		timeBrkMinu: KnockoutObservable<number> = ko.observable();
 
@@ -71,14 +74,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		tooltip: any = [];
 		allGcShow: any = [];
 		allTimeChart: any = [];
+		// check when change work time, work type
 		checkClearTime: boolean = true;
 		checkUpdateMidChart: boolean = true;
 		checkUpdateTime: any = []
-
-		headerMidExtable: any = [];
-		midContent: any = [];
-
-		/** Các loại thời gian */
+		
 		constructor() {
 			let self = this;
 			// get data from sc A
@@ -794,7 +794,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			self.dataOfGantChart = timeGantChart;
 			self.midDataGC = middleDs;
 			startTimeArr = _.sortBy(startTimeArr, [function(o: any) { return o; }]);
-			self.startScrollY = startTimeArr[0];
 		}
 
 		public nextDay() {
@@ -895,14 +894,14 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			let checkSort = $("#extable-ksu003").exTable('updatedCells');
 			if (checkSort.length > 0) {
 				dialog.confirm({ messageId: "Msg_447" }).ifYes(() => {
-				self.prevAllDayImpl(i , prvDay);
+					self.prevAllDayImpl(i, prvDay);
 				}).ifNo(() => { return; });
 			} else {
-				self.prevAllDayImpl(i , prvDay);
+				self.prevAllDayImpl(i, prvDay);
 			}
 		}
 
-		public prevAllDayImpl(i : number, prvDay: any) {
+		public prevAllDayImpl(i: number, prvDay: any) {
 			let self = this;
 			self.checkPrv(true);
 			self.checkNext(true);
@@ -962,7 +961,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								});
 							} else {
 								errors.push({
-									message: nts.uk.resource.getMessage('Msg_1772', [result[i].nameError, formatById("Clock_Short_HM", result[i].timeSpan.startTime)  formatById("Clock_Short_HM", result[i].timeSpan.endTime)]),
+									message: nts.uk.resource.getMessage('Msg_1772', [result[i].nameError, formatById("Clock_Short_HM", result[i].timeSpan.startTime), formatById("Clock_Short_HM", result[i].timeSpan.endTime)]),
 									messageId: "Msg_1772",
 									supplements: {}
 								});
@@ -1066,15 +1065,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			setTimeout(() => {
 				self.initExtableChart(self.dataOfGantChart, self.leftDs, self.midDataGC, self.disableDs);
 				self.showHide();
-				if (!_.isNil(self.startScrollY)) {
-
-					if (!_.isString(self.startScrollY))
-						self.startScrollY = formatById("Clock_Short_HM", self.startScrollY);
-
-					let time = self.convertTimePixel(self.startScrollY);
-					self.startScrollGc(time * self.operationUnit() - 42);
-				}
-				$("#extable-ksu003").exTable("scrollBack", 0, { h: self.startScrollGc() });
+				$("#extable-ksu003").exTable("scrollBack", 0, { h: Math.round(self.dataInitStartKsu003Dto().byDateDto.initDispStart * 12) });
 				self.dataA6 = null;
 			}, 200)
 		}
@@ -1185,16 +1176,19 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			let self = this, lineNo = _.findIndex(self.lstEmpId, (x) => { return x.empId === empId; }),
 				dataMid = $("#extable-ksu003").exTable('dataSource', 'middle').body[lineNo];
 			block.grayout();
+			if (self.dataScreen003A().employeeInfo[lineNo].workScheduleDto != null) {
+				self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.workTypeCode = dataMid.worktypeCode.trim();
+				self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.workTimeCode = dataMid.worktimeCode.trim();
+				self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.startTime1 = dataMid.startTime1;
+				self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.endTime1 = dataMid.endTime1;
+				self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.startTime2 = dataMid.startTime2;
+				self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.endTime2 = dataMid.endTime2;
 
-			self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.workTypeCode = dataMid.worktypeCode;
-			self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.workTimeCode = dataMid.worktimeCode;
-			self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.startTime1 = dataMid.startTime1;
-			self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.endTime1 = dataMid.endTime1;
-			self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.startTime2 = dataMid.startTime2;
-			self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.endTime2 = dataMid.endTime2;
-			if (self.dataScreen003AFirst().employeeInfo[lineNo].workScheduleDto.workTimeCode == "") {
-				self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.listBreakTimeZoneDto = [];
+				if (self.dataScreen003AFirst().employeeInfo[lineNo].workScheduleDto.workTimeCode == "") {
+					self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.listBreakTimeZoneDto = [];
+				}
 			}
+
 			let data: Array<model.DisplayWorkInfoByDateDto> = _.filter(self.dataScreen003A().employeeInfo, (x) => { return x.empId === empId; }); // lấy dữl iệu theo empId từ list dữ liệu của màn KSU003	
 
 			let dataShare: any = {
@@ -1220,28 +1214,44 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					totalBrkTime = totalTimebr != null ? formatById("Clock_Short_HM", totalTimebr) : ""
 
 					let totalTime = self.calcTotalTime(self.dataScreen045A().workScheduleDto),
-						schedule: model.EmployeeWorkScheduleDto = self.dataScreen045A().workScheduleDto,
-						fixed: model.FixedWorkInforDto = self.dataScreen045A().fixedWorkInforDto,
-						info: model.EmployeeWorkInfoDto = self.dataScreen045A().workInfoDto;
+						schedule = self.dataScreen045A().workScheduleDto,
+						fixed = self.dataScreen045A().fixedWorkInforDto,
+						info = self.dataScreen045A().workInfoDto;
 
 					self.setDataToMidExtable(empId, schedule, fixed, totalTime, totalBrkTime);
-					self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.workTypeCode = schedule.workTypeCode;
-					self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.workTimeCode = schedule.workTimeCode;
-					self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.startTime1 = schedule.startTime1;
-					self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.endTime1 = schedule.endTime1;
-					self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.startTime2 = schedule.startTime2;
-					self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.endTime2 = schedule.endTime2;
-					if (lstBrkTime.length > 0) {
-						self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.listBreakTimeZoneDto = lstBrkTime;
+					self.dataScreen003A().employeeInfo[lineNo].workScheduleDto = {
+						startTime1: schedule.startTime1,
+						startTime1Status: schedule.endTime1,
+						endTime1: schedule.endTime1,
+						endTime1Status: null,
+						startTime2: schedule.startTime2,
+						startTime2Status: null,
+						endTime2: schedule.endTime2,
+						endTime2Status: null,
+						listBreakTimeZoneDto: lstBrkTime.length > 0 ? lstBrkTime : [],
+						workTypeCode: schedule.workTypeCode,
+						breakTimeStatus: null,
+						workTypeStatus: null,
+						workTimeCode: schedule.workTimeCode,
+						workTimeStatus: null
+					}
+
+					self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto = {
+						workTimeName: fixed.workTimeName,
+						coreStartTime: null,
+						coreEndTime: null,
+						overtimeHours: [],
+						startTimeRange1: null,
+						endTimeRange1: null,
+						workTypeName: fixed.workTypeName,
+						startTimeRange2: null,
+						endTimeRange2: null,
+						fixBreakTime: fixed.fixBreakTime,
+						workType: fixed.workType
 					}
 
 					self.dataScreen003A().employeeInfo[lineNo].workInfoDto.directAtr = info.directAtr;
 					self.dataScreen003A().employeeInfo[lineNo].workInfoDto.bounceAtr = info.bounceAtr;
-
-					self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workTypeName = fixed.workTypeName;
-					self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workTimeName = fixed.workTimeName;
-					self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType = fixed.workType;
-					self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.fixBreakTime = fixed.fixBreakTime;
 
 					self.convertDataIntoExtable();
 
@@ -1259,7 +1269,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			});
 		}
 
-		public calcTotalTime(workScheduleDto: model.EmployeeWorkScheduleDto, ) {
+		public calcTotalTime(workScheduleDto: model.EmployeeWorkScheduleDto) {
 			let totalTime: any = null;
 			if (!_.isNil(workScheduleDto)) {
 				if (workScheduleDto.endTime2 != null && workScheduleDto.startTime2 != null)
@@ -1370,7 +1380,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		initExtableChart(timeGantChart: Array<ITimeGantChart>, leftDs: any, midData: any, disableDs: any): void {
 
 			let self = this;
-			let displayRange = self.timeRange == 0 ? 24 : 48, totalBreakTime = "0:00";
+			let displayRange = self.timeRange, totalBreakTime = "0:00";
 
 			let middleContentDeco: any = [], leftContentDeco: any = [], detailContentDeco: any = [];
 
@@ -1424,11 +1434,12 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					middleContentDeco.push(new CellColor("endTime2", disableDSFilter[0].empId, "xseal", disableDSFilter[0].color));
 					middleContentDeco.push(new CellColor("totalTime", disableDSFilter[0].empId, "xseal", disableDSFilter[0].color));
 					middleContentDeco.push(new CellColor("breaktime", disableDSFilter[0].empId, "xseal", disableDSFilter[0].color));
-					for (let z = 0; z <= displayRange; z++) {
+					for (let z = self.dataInitStartKsu003Dto().byDateDto.dispStart; z <= (displayRange + self.dataInitStartKsu003Dto().byDateDto.dispStart); z++) {
 						detailContentDeco.push(new CellColor(z.toString(), disableDSFilter[0].empId, disableDSFilter[0].color));
 					}
 				}
-
+				
+				
 				// set ẩn hiện A6, A7, A8
 				if (self.dataScreen003A().employeeInfo[i].workInfoDto.isNeedWorkSchedule != 0) { // ※2
 					if (self.dataScreen003A().canModified == 0) { // パラメータ．修正可能==０：参照 // ※4
@@ -1545,7 +1556,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				width: "391px",
 				rowHeight: "33px"
 			};
-			self.headerMidExtable = middleHeader;
 			middleContent = {
 				columns: middleColumns,
 				dataSource: middleDs,
@@ -1555,14 +1565,13 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					decorator: middleContentDeco
 				}]
 			};
-			self.midContent = middleContent;
 
 			let width = "42px", detailColumns = [], detailHeaderDs = [], detailContent = {}, detailHeader = {};
 
 			// A8_2 TQP
 			// let timesOfHeader : model.DisplaySettingByDateDto  = self.dataInitStartKsu003Dto().byDateDto();
-			for (let y = 0; y <= displayRange; y++) {
-				if (y == 0) {
+			for (let y = self.dataInitStartKsu003Dto().byDateDto.dispStart; y <= (displayRange + self.dataInitStartKsu003Dto().byDateDto.dispStart); y++) {
+				if (y == self.dataInitStartKsu003Dto().byDateDto.dispStart) {
 					detailColumns.push({ key: "empId", width: "0px", headerText: "ABC", visible: false });
 				} else {
 					detailColumns.push({ key: (y - 1).toString(), width: width });
@@ -1571,7 +1580,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			// Phần detail
 			detailHeaderDs = [{ empId: "" }];
 			let detailHeaders = {};
-			for (let y = 0; y <= displayRange; y++) {
+			for (let y = self.dataInitStartKsu003Dto().byDateDto.dispStart; y <= (displayRange + self.dataInitStartKsu003Dto().byDateDto.dispStart); y++) {
 				detailHeaderDs[0][y] = y.toString();
 				detailHeaders[y] = "";
 			}
@@ -1741,10 +1750,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 			return dfd.promise();
 		}
-		
-/*		checkTimeOfChart(time : any, timeRangeLimit : any){
-			
-		}*/
+
+		/*		checkTimeOfChart(time : any, timeRangeLimit : any){
+					
+				}*/
 
 		/** ADD-CHART-ZONE */
 		addAllChart(datafilter: Array<ITimeGantChart>, i: number, lstBreakTime: any, midData: any, screen: string, lstBrkNew?: any) {
@@ -1769,10 +1778,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								lineNo: i,
 								start: timeChart.startTime > timeRangeLimit ? timeRangeLimit : timeChart.startTime,
 								end: timeChart.endTime > timeRangeLimit ? timeRangeLimit : timeChart.endTime,
-								limitStartMin: self.checkRangeLimitTime(fixed, timeRangeLimit, 1, 0) ? Math.round(fixed[0].startTimeRange.startTime.time / 5) : 0,
-								limitStartMax: self.checkRangeLimitTime(fixed, timeRangeLimit, 2, 0) ? Math.round(fixed[0].startTimeRange.endTime.time / 5) : timeRangeLimit,
-								limitEndMin: self.checkRangeLimitTime(fixed, timeRangeLimit, 3, 0) ? Math.round(fixed[0].endTimeRange.startTime.time / 5) : timeRangeLimit,
-								limitEndMax: self.checkRangeLimitTime(fixed, timeRangeLimit, 4, 0) ? Math.round(fixed[0].endTimeRange.endTime.time / 5) : timeRangeLimit,
+								limitStartMin: self.checkRangeLimitTime(fixed, timeRangeLimit, 1, 0) ? Math.round((fixed[0].startTimeRange.startTime.time - self.dataInitStartKsu003Dto().byDateDto.dispStart * 60) / 5) : 0,
+								limitStartMax: self.checkRangeLimitTime(fixed, timeRangeLimit, 2, 0) ? Math.round((fixed[0].startTimeRange.endTime.time - self.dataInitStartKsu003Dto().byDateDto.dispStart * 60) / 5) : timeRangeLimit,
+								limitEndMin: self.checkRangeLimitTime(fixed, timeRangeLimit, 3, 0) ? Math.round((fixed[0].endTimeRange.startTime.time - self.dataInitStartKsu003Dto().byDateDto.dispStart * 60) / 5) : timeRangeLimit,
+								limitEndMax: self.checkRangeLimitTime(fixed, timeRangeLimit, 4, 0) ? Math.round((fixed[0].endTimeRange.endTime.time - self.dataInitStartKsu003Dto().byDateDto.dispStart * 60) / 5) : timeRangeLimit,
 								resizeFinished: (b: any, e: any, p: any) => {
 									console.log("test");
 								},
@@ -1797,10 +1806,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									lineNo: i,
 									start: timeChart2.startTime > timeRangeLimit ? timeRangeLimit : timeChart2.startTime,
 									end: timeChart2.endTime > timeRangeLimit ? timeRangeLimit : timeChart2.endTime,
-									limitStartMin: self.checkRangeLimitTime(fixed, timeRangeLimit, 1, 1) ? Math.round(fixed[1].startTimeRange.startTime.time / 5) : 0,
-									limitStartMax: self.checkRangeLimitTime(fixed, timeRangeLimit, 2, 1) ? Math.round(fixed[1].startTimeRange.endTime.time / 5) : timeRangeLimit,
-									limitEndMin: self.checkRangeLimitTime(fixed, timeRangeLimit, 3, 1) ? Math.round(fixed[1].endTimeRange.startTime.time / 5) : timeRangeLimit,
-									limitEndMax: self.checkRangeLimitTime(fixed, timeRangeLimit, 4, 1) ? Math.round(fixed[1].endTimeRange.endTime.time / 5) : timeRangeLimit,
+									limitStartMin: self.checkRangeLimitTime(fixed, timeRangeLimit, 1, 1) ? Math.round((fixed[1].startTimeRange.startTime.time - self.dataInitStartKsu003Dto().byDateDto.dispStart * 60) / 5) : 0,
+									limitStartMax: self.checkRangeLimitTime(fixed, timeRangeLimit, 2, 1) ? Math.round((fixed[1].startTimeRange.endTime.time - self.dataInitStartKsu003Dto().byDateDto.dispStart * 60) / 5) : timeRangeLimit,
+									limitEndMin: self.checkRangeLimitTime(fixed, timeRangeLimit, 3, 1) ? Math.round((fixed[1].endTimeRange.startTime.time - self.dataInitStartKsu003Dto().byDateDto.dispStart * 60) / 5) : timeRangeLimit,
+									limitEndMax: self.checkRangeLimitTime(fixed, timeRangeLimit, 4, 1) ? Math.round((fixed[1].endTimeRange.endTime.time - self.dataInitStartKsu003Dto().byDateDto.dispStart * 60) / 5) : timeRangeLimit,
 									resizeFinished: (b: any, e: any, p: any) => {
 										console.log("test");
 									},
@@ -1828,10 +1837,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							lineNo: i,
 							start: timeChart.startTime > timeRangeLimit ? timeRangeLimit : timeChart.startTime,
 							end: timeChart.endTime > timeRangeLimit ? timeRangeLimit : timeChart.endTime,
-							limitStartMin: self.checkRangeLimitTime(changeable, timeRangeLimit, 1, 0) ? Math.round(changeable[0].startTimeRange.startTime.time / 5) : 0,
-							limitStartMax: self.checkRangeLimitTime(changeable, timeRangeLimit, 2, 0) ? Math.round(changeable[0].startTimeRange.endTime.time / 5) : timeRangeLimit,
-							limitEndMin: self.checkRangeLimitTime(changeable, timeRangeLimit, 3, 0) ? Math.round(changeable[0].endTimeRange.startTime.time / 5) : timeRangeLimit,
-							limitEndMax: self.checkRangeLimitTime(changeable, timeRangeLimit, 4, 0) ? Math.round(changeable[0].endTimeRange.endTime.time / 5) : timeRangeLimit,
+							limitStartMin: self.checkRangeLimitTime(changeable, timeRangeLimit, 1, 0) ? Math.round((changeable[0].startTimeRange.startTime.time - self.dataInitStartKsu003Dto().byDateDto.dispStart * 60) / 5) : 0,
+							limitStartMax: self.checkRangeLimitTime(changeable, timeRangeLimit, 2, 0) ? Math.round((changeable[0].startTimeRange.endTime.time - self.dataInitStartKsu003Dto().byDateDto.dispStart * 60) / 5) : timeRangeLimit,
+							limitEndMin: self.checkRangeLimitTime(changeable, timeRangeLimit, 3, 0) ? Math.round((changeable[0].endTimeRange.startTime.time - self.dataInitStartKsu003Dto().byDateDto.dispStart * 60) / 5) : timeRangeLimit,
+							limitEndMax: self.checkRangeLimitTime(changeable, timeRangeLimit, 4, 0) ? Math.round((changeable[0].endTimeRange.endTime.time - self.dataInitStartKsu003Dto().byDateDto.dispStart * 60) / 5) : timeRangeLimit,
 							resizeFinished: (b: any, e: any, p: any) => {
 								console.log("test");
 							},
@@ -1853,10 +1862,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								lineNo: i,
 								start: timeChart2.startTime > timeRangeLimit ? timeRangeLimit : timeChart2.startTime,
 								end: timeChart2.endTime > timeRangeLimit ? timeRangeLimit : timeChart2.endTime,
-								limitStartMin: self.checkRangeLimitTime(changeable, timeRangeLimit, 1, 1) ? Math.round(changeable[1].startTimeRange.startTime.time / 5) : 0,
-								limitStartMax: self.checkRangeLimitTime(changeable, timeRangeLimit, 2, 1) ? Math.round(changeable[1].startTimeRange.endTime.time / 5) : timeRangeLimit,
-								limitEndMin: self.checkRangeLimitTime(changeable, timeRangeLimit, 3, 1) ? Math.round(changeable[1].endTimeRange.startTime.time / 5) : timeRangeLimit,
-								limitEndMax: self.checkRangeLimitTime(changeable, timeRangeLimit, 4, 1) ? Math.round(changeable[1].endTimeRange.endTime.time / 5) : timeRangeLimit,
+								limitStartMin: self.checkRangeLimitTime(changeable, timeRangeLimit, 1, 1) ? Math.round((changeable[1].startTimeRange.startTime.time - self.dataInitStartKsu003Dto().byDateDto.dispStart * 60) / 5) : 0,
+								limitStartMax: self.checkRangeLimitTime(changeable, timeRangeLimit, 2, 1) ? Math.round((changeable[1].startTimeRange.endTime.time - self.dataInitStartKsu003Dto().byDateDto.dispStart * 60) / 5) : timeRangeLimit,
+								limitEndMin: self.checkRangeLimitTime(changeable, timeRangeLimit, 3, 1) ? Math.round((changeable[1].endTimeRange.startTime.time - self.dataInitStartKsu003Dto().byDateDto.dispStart * 60) / 5) : timeRangeLimit,
+								limitEndMax: self.checkRangeLimitTime(changeable, timeRangeLimit, 4, 1) ? Math.round((changeable[1].endTimeRange.endTime.time - self.dataInitStartKsu003Dto().byDateDto.dispStart * 60) / 5) : timeRangeLimit,
 								resizeFinished: (b: any, e: any, p: any) => {
 									console.log("test");
 								},
@@ -1881,22 +1890,27 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						if (coreTime.length > 0) {
 							timeChartCore = self.convertTimeToChart(coreTime[0].coreStartTime, coreTime[0].coreEndTime);
 						}
+						let limitStartMin = self.checkRangeLimitTime(flex, timeRangeLimit, 1, 0) ? Math.round((flex[0].startTimeRange.startTime.time - self.dataInitStartKsu003Dto().byDateDto.dispStart * 60) / 5) : 0,
+							limitStartMax = self.checkRangeLimitTime(flex, timeRangeLimit, 2, 0) ? Math.round((flex[0].startTimeRange.endTime.time - self.dataInitStartKsu003Dto().byDateDto.dispStart * 60) / 5) : timeRangeLimit,
+							limitEndMin = self.checkRangeLimitTime(flex, timeRangeLimit, 3, 0) ? Math.round((flex[0].endTimeRange.startTime.time - self.dataInitStartKsu003Dto().byDateDto.dispStart * 60) / 5) : timeRangeLimit,
+							limitEndMax = self.checkRangeLimitTime(flex, timeRangeLimit, 4, 0) ? Math.round((flex[0].endTimeRange.endTime.time - self.dataInitStartKsu003Dto().byDateDto.dispStart * 60) / 5) : timeRangeLimit;
 						if (timeChart.startTime < timeRangeLimit) {
 							lgc = ruler.addChartWithType("Flex", {
 								id: `lgc${i}`,
 								lineNo: i,
 								start: timeChart.startTime >= timeRangeLimit ? timeRangeLimit : timeChart.startTime,
 								end: timeChart.endTime >= timeRangeLimit ? timeRangeLimit : timeChart.endTime,
-								limitStartMin: self.checkRangeLimitTime(flex, timeRangeLimit, 1, 0) ? Math.round(flex[0].startTimeRange.startTime.time / 5) : 0,
-								limitStartMax: self.checkRangeLimitTime(flex, timeRangeLimit, 2, 0) ? Math.round(flex[0].startTimeRange.endTime.time / 5) : timeRangeLimit,
-								limitEndMin: self.checkRangeLimitTime(flex, timeRangeLimit, 3, 0) ? Math.round(flex[0].endTimeRange.startTime.time / 5) : timeRangeLimit,
-								limitEndMax: self.checkRangeLimitTime(flex, timeRangeLimit, 4, 0) ? Math.round(flex[0].endTimeRange.endTime.time / 5) : timeRangeLimit
+								limitStartMin: limitStartMin,
+								limitStartMax: limitStartMax,
+								limitEndMin: limitEndMin,
+								limitEndMax: limitEndMax
 							});
 
 							fixedGc.push(self.addChartWithType045(ruler, "Flex", `lgc${i}`, timeChart, i));
 							indexLeft = ++indexLeft;
 							// CORE-TIME
-							if (coreTime.length > 0) {
+							if (coreTime.length > 0 && (_.inRange(coreTime[0].coreStartTime, timeMinus[0].startTime, timeMinus[0].endTime) ||
+								_.inRange(coreTime[0].coreEndTime, timeMinus[0].startTime, timeMinus[0].endTime)) && _.inRange(timeChartCore.startTime, limitStartMin, limitStartMax)) {
 								ruler.addChartWithType("CoreTime", {
 									id: `lgc${i}_` + indexLeft,
 									parent: `lgc${i}`,
@@ -1925,7 +1939,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				if (suportTime != null) {
 					timeChart = self.convertTimeToChart(suportTime[0].coreStartTime, suportTime[0].coreEndTime);
 					spgc = self.addChildChartWithTypes(ruler, "SupportTime", `lgc${i}_` + indexF, timeChart, i, `lgc${i}`)
-
+		
 					indexF = ++indexF;
 				}*/
 
@@ -1934,15 +1948,19 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					overTime[0].lstOverTime.forEach(y => {
 						timeChartOver = self.convertTimeToChart(y.startTime, y.endTime);
 						let id = `lgc${i}_` + indexLeft, parent = `lgc${i}`;
-						if ((timeMinus.length > 0 && timeMinus[0].startTime != null && timeMinus[0].endTime != null) && (timeChart.startTime < timeRangeLimit) &&
-							(_.inRange(timeChartOver.startTime, 0, timeRangeLimit) || _.inRange(timeChartOver.endTime, 0, timeRangeLimit))) {
+						if ((timeMinus.length > 0 && timeMinus[0].startTime != null && timeMinus[0].endTime != null) &&
+							(timeChart.startTime < Math.round(timeRangeLimit - self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)) &&
+							(_.inRange(timeChartOver.startTime, 0, Math.round(timeRangeLimit - self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)) ||
+								_.inRange(timeChartOver.endTime, 0, Math.round(timeRangeLimit - self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)))) {
 							indexLeft = ++indexLeft;
 							self.addChildChartWithTypes(ruler, "OT", id, timeChartOver, i, parent, 0, 9999, 0, 9999, null, 1002)
 							fixedGc.push(self.addChartWithType045(ruler, "OT", id, timeChartOver, i, parent, 0, 9999, 0, 9999, 1002));
 						}
 
-						if ((timeMinus2.length > 0 && timeMinus2.startTime != null && timeMinus2.endTime != null) && (timeChart2.startTime < timeRangeLimit) &&
-							(_.inRange(timeChartOver.startTime, 0, timeRangeLimit) || _.inRange(timeChartOver.endTime, 0, timeRangeLimit))) {
+						if ((timeMinus2.length > 0 && timeMinus2.startTime != null && timeMinus2.endTime != null) &&
+							(timeChart2.startTime < Math.round(timeRangeLimit - self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)) &&
+							(_.inRange(timeChartOver.startTime, 0, Math.round(timeRangeLimit - self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)) ||
+								_.inRange(timeChartOver.endTime, 0, Math.round(timeRangeLimit - self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)))) {
 							id = `rgc${i}_` + indexRight, parent = `rgc${i}`;
 							indexRight = ++indexRight;
 							self.addChildChartWithTypes(ruler, "OT", id, timeChartOver, i, parent, 0, 9999, 0, 9999, null, 1002)
@@ -1966,7 +1984,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						let id = `lgc${i}_` + indexLeft, parent = `lgc${i}`;
 
 						if (timeMinus.length > 0 && (_.inRange(y.startTime != null ? y.startTime : y.start, timeMinus[0].startTime, timeMinus[0].endTime) ||
-							_.inRange(y.endTime, timeMinus[0].startTime, timeMinus[0].endTime))) {
+							_.inRange(y.endTimeTime != null ? y.endTime : y.endTime, timeMinus[0].startTime, timeMinus[0].endTime))) {
 
 							ruler.addChartWithType("BreakTime", {
 								id: id,
@@ -1998,7 +2016,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 						if (datafilter[0].gantCharts === 1) {
 							if (timeMinus2.length > 0 && (_.inRange(y.startTime != null ? y.startTime : y.start, timeMinus2[0].startTime, timeMinus2[0].endTime) ||
-								_.inRange(y.endTime, timeMinus2[0].startTime, timeMinus2[0].endTime))) {
+								_.inRange(y.endTimeTime != null ? y.endTime : y.endTime, timeMinus[0].startTime, timeMinus[0].endTime))) {
 								id = `rgc${i}_` + indexRight, parent = `rgc${i}`;
 								indexRight = ++indexRight;
 
@@ -2266,18 +2284,19 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 		// Kiểm tra giới hạn hiển thị của thanh chart
 		checkRangeLimitTime(flex: any, timeRangeLimit: number, type: number, index: number) {
-			let check = false;
+			let check = false, self = this;
+
 			if (flex.length > 0) {
-				if (type == 1 && flex[index].startTimeRange != null && Math.round(flex[index].startTimeRange.startTime.time / 5) <= timeRangeLimit) {
+				if (type == 1 && flex[index].startTimeRange != null && Math.round((flex[index].startTimeRange.startTime.time - self.dataInitStartKsu003Dto().byDateDto.dispStart * 60) / 5) <= timeRangeLimit) {
 					check = true;
 				}
-				if (type == 2 && flex[index].startTimeRange != null && Math.round(flex[index].startTimeRange.endTime.time / 5) < timeRangeLimit) {
+				if (type == 2 && flex[index].startTimeRange != null && Math.round((flex[index].startTimeRange.endTime.time - self.dataInitStartKsu003Dto().byDateDto.dispStart * 60) / 5) < timeRangeLimit) {
 					check = true;
 				}
-				if (type == 3 && flex[index].endTimeRange != null && Math.round(flex[index].endTimeRange.startTime.time / 5) <= timeRangeLimit) {
+				if (type == 3 && flex[index].endTimeRange != null && Math.round((flex[index].endTimeRange.startTime.time - self.dataInitStartKsu003Dto().byDateDto.dispStart * 60) / 5) <= timeRangeLimit) {
 					check = true;
 				}
-				if (type == 4 && flex[index].endTimeRange != null && Math.round(flex[index].endTimeRange.endTime.time / 5) < timeRangeLimit) {
+				if (type == 4 && flex[index].endTimeRange != null && Math.round((flex[index].endTimeRange.endTime.time - self.dataInitStartKsu003Dto().byDateDto.dispStart * 60) / 5) < timeRangeLimit) {
 					check = true;
 				}
 			}
@@ -2404,7 +2423,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			/*$("#master-wrapper").css({ 'overflow-y': 'auto' });
 			$("#master-wrapper").css({ 'overflow-x': 'hidden' });*/
 			//}
-			$("#extable-ksu003").exTable("scrollBack", 0, { h: self.startScrollGc() });
+			$("#extable-ksu003").exTable("scrollBack", 0, { h: Math.round(self.dataInitStartKsu003Dto().byDateDto.initDispStart * 12) });
 		}
 
 		setWidth(): any {
@@ -2424,8 +2443,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					$(".toLeft").css("margin-left", 100 + 'px');
 				}
 				if (window.innerHeight < 700) {
-				$(".ex-header-detail").css({ "width": 1009 + 'px' });
-				$(".ex-body-detail").css({ "width": 1026 + 'px' });
+					$(".ex-header-detail").css({ "width": 1009 + 'px' });
+					$(".ex-body-detail").css({ "width": 1026 + 'px' });
 				}
 			} else {
 				if (self.showA9) {
@@ -2437,8 +2456,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					$(".toLeft").css("margin-left", 562 + 'px');
 				}
 				if (window.innerHeight < 700) {
-				$(".ex-header-detail").css({ "width": 615 + 'px' });
-				$(".ex-body-detail").css({ "width": 632 + 'px' });
+					$(".ex-header-detail").css({ "width": 615 + 'px' });
+					$(".ex-body-detail").css({ "width": 632 + 'px' });
 				}
 				/*$(".ex-body-detail").css({ 'overflow-x': 'scroll hidden' + '!important' });
 				$(".ex-body-detail").css({ 'overflow': 'none' + '!important' });
@@ -2448,7 +2467,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			self.indexBtnToLeft(self.indexBtnToLeft() + 1);
 			self.localStore().showHide = self.indexBtnToLeft();
 			storage.setItemAsJson(self.KEY, self.localStore());
-			$("#extable-ksu003").exTable("scrollBack", 0, { h: self.startScrollGc() });
+			$("#extable-ksu003").exTable("scrollBack", 0, { h: Math.round(self.dataInitStartKsu003Dto().byDateDto.initDispStart * 12) });
 		}
 
 		toDown() {
@@ -2555,10 +2574,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		}
 
 		public convertTimePixel(timeStart: any) {
-			let time = 0;
+			let time = 0, self = this;
 			if (timeStart != null) {
 				// convert string to pixel
-				time = Math.round(duration.parseString(timeStart).toValue() / 5);
+				time = Math.round((duration.parseString(timeStart).toValue() - (self.dataInitStartKsu003Dto().byDateDto.dispStart * 60)) / 5);
 			}
 			return time;
 		}
@@ -2578,8 +2597,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 	}
 
 	/**
- * 応援区分
- */
+	* 応援区分
+	*/
 	export enum SupportAtr {
 		/**
 		 * 応援ではない
