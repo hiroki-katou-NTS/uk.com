@@ -112,28 +112,29 @@ module nts.uk.com.view.ccg034.i {
      */
     public updatePartDataAndCloseDialog() {
       const vm = this;
+      vm.$errors("#I2_1_1", "Msg_01");
       vm.$validate().then((valid: boolean) => {
         if (valid) {
-          if (vm.fileSize() / 1024 <= MAX_FILE_SIZE_MB) {
-            // Update part data
-            const image = new Image();
-            if (vm.imageType() === 0) {
-              vm.partData.fileName = vm.imageSrc();
-              image.src = vm.imageSrc();
-            } else {
+          // Update part data
+          const image = new Image();
+          if (vm.imageType() === 0) {
+            vm.partData.fileName = vm.imageSrc();
+            image.src = vm.imageSrc();
+          } else {
+            if (vm.fileSize() / 1024 <= MAX_FILE_SIZE_MB) {
               vm.partData.fileId = vm.fileId();
               vm.partData.uploadedFileName = vm.uploadedFileName();
               vm.partData.uploadedFileSize = vm.fileSize();
               image.src = (nts.uk.request as any).liveView(vm.fileId());
+            } else {
+              vm.$dialog.error({ messageId: 'Msg_70', messageParams: [String(MAX_FILE_SIZE_MB)] });
             }
-            vm.partData.ratio = image.naturalHeight / image.naturalWidth;
-            vm.partData.isFixed = vm.imageType();
-
-            // Return data
-            vm.$window.close(vm.partData);
-          } else {
-            vm.$dialog.error({ messageId: 'Msg_70', messageParams: [String(MAX_FILE_SIZE_MB)] });
           }
+          vm.partData.ratio = image.naturalHeight / image.naturalWidth;
+          vm.partData.isFixed = vm.imageType();
+
+          // Return data
+          vm.$window.close(vm.partData);
         }
       });
     }
