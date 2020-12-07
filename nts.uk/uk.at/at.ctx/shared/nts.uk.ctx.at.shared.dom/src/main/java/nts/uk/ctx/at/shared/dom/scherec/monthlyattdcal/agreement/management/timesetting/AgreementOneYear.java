@@ -60,10 +60,10 @@ public class AgreementOneYear {
 	// 	[2] 特例条項による上限のエラー時間を超えているか
 	public Pair<Boolean, AgreementOneYearTime> checkErrorTimeExceeded(AgreementOneYearTime applicationTime){
 
-		return basic.isErrorTimeOver(applicationTime);
+		return specConditionLimit.isErrorTimeOver(applicationTime);
 	}
 	// 	[3] アラーム時間を計算する
 	public AgreementOneYearTime calculateAlarmTime(AgreementOneYearTime applicationTime) {
-		return basic.calcAlarmTime(applicationTime);
+		return specConditionLimit.calcAlarmTime(applicationTime);
 	}
 }
