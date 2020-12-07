@@ -17,7 +17,7 @@ public class CompanyEstimateAmount implements DomainAggregate{
 	private EstimateAmountDetail detail;
 	
 	/**
-	 * [1] 変更する
+	 * 変更する
 	 * @param detail 目安金額詳細
 	 */
 	public void update(EstimateAmountDetail detail) {
