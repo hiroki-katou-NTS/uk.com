@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.infra.repository.workcheduleworkrecord.appreflectpr
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWorkRepository;
@@ -42,6 +43,6 @@ public class JpaAppReflectOtHdWorkRepository extends JpaRepository implements Ap
                     EnumAdaptor.valueOf(nightOvertimeReflectAtr, NotUseAtr.class)
             ));
         else
-            throw new BusinessException("Setting Master Data for Overtime/Holiday Work Application Reflection not found!");
+            throw new BusinessException(new RawErrorMessage("Setting Master Data for Overtime/Holiday Work Application Reflection not found!"));
     }
 }
