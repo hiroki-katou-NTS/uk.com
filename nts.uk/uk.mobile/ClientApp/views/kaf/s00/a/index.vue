@@ -9,10 +9,7 @@
             </button>
             </div>
             <div class="collapse">
-            <div class="card-body">
-                <!-- コンテンツ -->
-                {{ appMsg | i18n }}
-            </div>
+            <div class="card-body" v-html="appMsg"></div>
             </div>
         </div>
         <div class="card" v-if="displayAppMsgForCurrentMonth">

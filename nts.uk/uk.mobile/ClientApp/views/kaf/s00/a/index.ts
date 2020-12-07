@@ -49,7 +49,7 @@ export class KafS00AComponent extends Vue {
             receptionRestrictionSetting: self.params.receptionRestrictionSetting,
             opOvertimeAppAtr: self.params.opOvertimeAppAtr
         }).then((data: any) => {
-            self.appMsg = data.data.applicationUseSetting.memo;
+            self.appMsg = _.escape(data.data.applicationUseSetting.memo).replace(/\n/g, '<br/>');
             self.appMsgForCurrentMonth = self.$i18n('KAFS00_3', self.$dt(data.data.deadlineLimitCurrentMonth.opAppDeadline, 'M月D日')) ;
             if (data.data.preAppAcceptLimit.opAvailableTime) {
                 self.preAppPeriod = self.$i18n('KAFS00_22', self.$dt.timedr(data.data.preAppAcceptLimit.opAvailableTime));    
