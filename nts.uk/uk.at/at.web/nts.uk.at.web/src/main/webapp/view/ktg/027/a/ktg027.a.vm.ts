@@ -8,12 +8,17 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
     getDataWhenChangeDate: "screen/at/overtimehours/onChangeDate/",
   };
 
-  const KTG_027_Style = `#contents-area {
+  const KTG_027_Style = `
+  #contents-area {
     padding-top: 5px;
     padding-left: 5px;
     width: 445x;
     height: 100%;
     border: 1px solid #B1B1B1;
+  }
+  #contents-area::before {
+    display: inline-block;
+    height: 450px;
   }
   .addSign {
     background: url("../image/addSign.png");
