@@ -59,7 +59,6 @@
           <!-- I2_2_1 画像のアップロード -->
           <div id="I2_2_1" class="choose-button" data-bind="ntsFileUpload: {
             name: '#{i18n.getText('CCG034_124')}',
-            required: true,
             filename: uploadedFileName,
             accept: ['.png','.gif', '.jpeg', '.jpg', '.tiff', '.bmp'],
             text: '#{i18n.getText('CCG034_124')}',
@@ -84,10 +83,10 @@
       </div>
       <div id="functions-area-bottom">
         <!-- I20_1 決定 -->
-        <button class="large proceed" tabindex="6"
+        <button id="I20_1" class="large proceed" tabindex="6"
           data-bind="click: updatePartDataAndCloseDialog">#{i18n.getText('CCG034_127')}</button>
         <!-- I20_2 閉じる -->
-        <button class="large" tabindex="7" data-bind="click: closeDialog">#{i18n.getText('CCG034_128')}</button>
+        <button id="I20_2" class="large" tabindex="7" data-bind="click: closeDialog">#{i18n.getText('CCG034_128')}</button>
       </div>
     </ui:define>
   </ui:composition>

@@ -1528,7 +1528,7 @@ module nts.uk.com.view.ccg034.d {
         $imageContent = $("<img>", { 'class': 'part-image-content' });
       }
       $imageContent
-        .attr('src', (partData.isFixed === 0) ? partData.fileName : (nts.uk.request as any).liveView(partData.fileId));
+        .attr('src', (partData.isFixed === 0) ? partData.fileName : (partData.fileId ? (nts.uk.request as any).liveView(partData.fileId) : ''));
       // Set image scale by original ratio
       const partRatio = partData.height / partData.width;
       const imageRatio = partData.ratio;
@@ -2000,9 +2000,9 @@ module nts.uk.com.view.ccg034.d {
 
   export class PartDataImageModel extends PartDataModel {
     // Default data
-    fileId: string = null;
-    fileName: string = null;
-    uploadedFileName: string = null;
+    fileId: string = '';
+    fileName: string = '';
+    uploadedFileName: string = '';
     uploadedFileSize = 0;
     isFixed = 0;
     ratio = 1;
