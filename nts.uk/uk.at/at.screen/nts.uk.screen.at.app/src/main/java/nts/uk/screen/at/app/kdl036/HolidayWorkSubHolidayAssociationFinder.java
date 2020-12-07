@@ -124,7 +124,7 @@ public class HolidayWorkSubHolidayAssociationFinder {
         // ドメインモデル「暫定休出管理データ」を取得する
         List<String> mngIds = remainData.stream().map(InterimRemain::getRemainManaID).collect(Collectors.toList());
         List<InterimBreakMng> recData = interimBreakDayOffMngRepo.getBreakByIds(mngIds)
-                .stream().filter(i -> i.getUnUsedDays().v() > 0 && i.getUnUsedTimes().v() > 0).collect(Collectors.toList());
+                .stream().filter(i -> i.getUnUsedDays().v() > 0 && i.getUnUsedTimes().v() <= 0).collect(Collectors.toList());
 
         List<HolidayWorkData> result = new ArrayList<>();
         for (InterimBreakMng recMng : recData) {
@@ -148,7 +148,7 @@ public class HolidayWorkSubHolidayAssociationFinder {
     private List<HolidayWorkData> getFixedDrawingData(String employeeId, ClosurePeriod closurePeriod, List<LeaveComDayOffManagement> managementData) {
         // ドメインモデル「休出管理データ」を取得する
         List<LeaveManagementData> payoutData = holidayWorkMngRepo.getBySidAndStateAtr(AppContexts.user().companyId(), employeeId, DigestionAtr.UNUSED)
-                .stream().filter(i -> i.getUnUsedDays().v() > 0 && i.getUnUsedTimes().v() > 0 && !i.getComDayOffDate().isUnknownDate())
+                .stream().filter(i -> i.getUnUsedDays().v() > 0 && i.getUnUsedTimes().v() <= 0 && !i.getComDayOffDate().isUnknownDate())
                 .collect(Collectors.toList());
         if (!managementData.isEmpty()) {
             List<GeneralDate> outBreakDays = managementData.stream().map(i -> i.getAssocialInfo().getOutbreakDay()).collect(Collectors.toList());
@@ -203,7 +203,7 @@ public class HolidayWorkSubHolidayAssociationFinder {
 
         // ドメインモデル「休出管理データ」を取得する
         List<LeaveManagementData> payoutData = holidayWorkMngRepo.getBySidAndDatOff(employeeId, outBreakDays)
-                .stream().filter(i -> i.getSubHDAtr() != DigestionAtr.EXPIRED && !i.getComDayOffDate().isUnknownDate())
+                .stream().filter(i -> i.getSubHDAtr() != DigestionAtr.EXPIRED && !i.getComDayOffDate().isUnknownDate() && i.getUnUsedTimes().v() <= 0)
                 .collect(Collectors.toList());
 
         if (!payoutData.isEmpty()) {
