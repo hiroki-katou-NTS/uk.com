@@ -17,7 +17,7 @@ const template = `
 								height: calc(100vh - 163px);
     							overflow: hidden scroll;">
 					
-						<div style="display:inline-block; padding: 30px 18px 30px 30px;"> 
+						<div style="display:inline-block; padding: 30px 20px 30px 30px;"> 
 							<div id="work-place-list"></div>
 						</div>
 						<div id="right-layout" >

@@ -25,7 +25,7 @@ const template = `
 							<label id="flex-title" data-bind="i18n:'KMK004_268'"></label>
 							<hr/>
 							<label id="selected-work-place" data-bind="i18n:screenData().selectedName"></label>
-							<div style="margin-top: 15px;" data-bind="component: {
+							<div style="margin-top: 10px;" data-bind="component: {
 								name: 'basic-settings-company',
 								params: {
 											screenData:screenData,
@@ -97,7 +97,7 @@ class ScreenIComponent extends ko.ViewModel {
 				listType: ListType.EMPLOYMENT,
 				selectType: SelectType.SELECT_FIRST_ITEM,
 				selectedCode: vm.screenData().selected,
-				isDisplayClosureSelection:true,
+				isDisplayClosureSelection: true,
 				isDialog: false,
 				isShowNoSelectRow: false,
 				alreadySettingList: vm.screenData().alreadySettingList,
@@ -116,7 +116,7 @@ class ScreenIComponent extends ko.ViewModel {
 			vm.screenData().selected.valueHasMutated();
 		});
 	}
-	
+
 	mounted() {
 		$("#year-list").focus();
 	}
