@@ -7,11 +7,11 @@ import javax.inject.Inject;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
 import nts.uk.ctx.at.request.infra.entity.application.holidayshipment.KrqdtAppRecAbsPK;
 import nts.uk.ctx.at.request.infra.entity.application.holidayshipment.absenceleaveapp.KrqdtAppHdSub;
-import nts.uk.ctx.at.request.infra.repository.application.JpaApplicationRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -21,7 +21,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaAbsenceLeaveAppRepository extends JpaRepository implements AbsenceLeaveAppRepository {
 
 	@Inject 
-	private JpaApplicationRepository applicationRepo;
+	private ApplicationRepository applicationRepo;
 
 	@Override
 	public void insert(AbsenceLeaveApp domain) {
