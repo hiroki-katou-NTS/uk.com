@@ -14,6 +14,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -56,12 +57,13 @@ public class Ksm008JWorkingHourListOrgScreenQuery {
                     .collect(Collectors.toList());
         }
         //就業時間帯情報を取得する
-        List<WorkTimeSetting> workTimeSettingList = workTimeRepo
-                .getListWorkTimeSetByListCode(AppContexts.user().companyId(), workHourCodeList);
+        Map<String, String> getCodeNameByListWorkTimeCd = workTimeRepo
+                .getCodeNameByListWorkTimeCd(AppContexts.user().companyId(), workHourCodeList);
         // working hours list
-        List<WorkingHoursOrgDTO> workhourList = workTimeSettingList
+        List<WorkingHoursOrgDTO> workhourList = getCodeNameByListWorkTimeCd
+                .entrySet()
                 .stream()
-                .map(item -> new WorkingHoursOrgDTO(item.getWorktimeCode().v(), item.getWorkTimeDisplayName().getWorkTimeName().v()))
+                .map(item -> new WorkingHoursOrgDTO(item.getKey(), item.getValue()))
                 .collect(Collectors.toList());
 
         MaxDaysOfContinuousWorkTimeListOrgDto dto = new MaxDaysOfContinuousWorkTimeListOrgDto(

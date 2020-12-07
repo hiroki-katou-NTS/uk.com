@@ -164,7 +164,6 @@ module nts.uk.at.ksm008.c {
             vm.isWorkplaceMode(!_.isEmpty(data.workplaceId));
 
             return vm.$ajax(API.getEmployeeInfo, data).done(res => {
-                console.log(res);
                 if (res) {
                     let listEmployee = _.map(res, function (item: any) {
                         return {
@@ -342,8 +341,6 @@ module nts.uk.at.ksm008.c {
             vm.banCode(firtBanListItem.code);
             vm.banName(firtBanListItem.name);
             vm.numOfEmployeeLimit(firtBanListItem.upperLimit);
-            vm.targetSelectedCodes([]);
-            vm.selectedableCodes([]);
 
             if (listBanEmployee) {
                 let listTarget: any = [];
@@ -357,6 +354,9 @@ module nts.uk.at.ksm008.c {
                 vm.selectableEmployeeList(listSelectable);
                 vm.targetEmployeeList(listTarget);
             }
+
+            vm.targetSelectedCodes([]);
+            vm.selectedableCodes([]);
             $('#C7_3').focus();
         }
 
@@ -407,10 +407,18 @@ module nts.uk.at.ksm008.c {
             let orgInfo = ko.toJS(vm.targetOrganizationInfor());
 
             vm.$errors("clear");
-            const params = {
-                unit: orgInfo.unit,
-                workplaceId: orgInfo.workplaceId
-            };
+            let params;
+            if (vm.isWorkplaceMode()) {
+                params = {
+                    unit: orgInfo.unit,
+                    workplaceId: orgInfo.workplaceId
+                };
+            } else {
+                params = {
+                    unit: orgInfo.unit,
+                    workplaceGroupId: orgInfo.workplaceGroupId
+                };
+            }
             vm.$window
                 .storage('dataShareDialog046', params)
                 .then(() => vm.$window.modal('at', '/view/kdl/046/a/index.xhtml'))
@@ -452,11 +460,14 @@ module nts.uk.at.ksm008.c {
                         code: vm.selectedProhibitedCode()
                     };
 
+                    let index = _.findIndex(vm.listBanWorkTogether(), i => i.code == vm.selectedProhibitedCode());
+
                     vm.$ajax(API.delete, data).done(() => {
                         vm.$dialog.info({messageId: "Msg_16"}).then(() => {
                             vm.getBanWorkListByCode().then(() => {
                                 if (vm.listBanWorkTogether().length) {
-                                    vm.selectedProhibitedCode(vm.listBanWorkTogether()[0].code);
+                                    let newIndex = index == 0 ? 0 : index;
+                                    vm.selectedProhibitedCode(vm.listBanWorkTogether()[newIndex].code);
                                 } else {
                                     vm.swithchNewMode();
                                 }

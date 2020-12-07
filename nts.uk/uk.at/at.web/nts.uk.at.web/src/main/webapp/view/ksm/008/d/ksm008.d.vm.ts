@@ -209,15 +209,7 @@ module nts.uk.at.ksm008.d {
 
         mounted() {
             const vm = this;
-            if (vm.isAttendance()) {
-                setTimeout(() => {
-                    $("#pg-name").text("KSM008D " + vm.$i18n("KSM008_5"));
-                }, 500);
-            }
-            else {
-                setTimeout(() => {
-                    $("#pg-name").text("KSM008E " + vm.$i18n("KSM008_5"));
-                }, 500);
+            if (!vm.isAttendance()) {
                 $('#panel-1').removeClass('active');
                 $('#panel-2').addClass('active');
                 $('#tabpanel-2').removeClass('disappear');
@@ -226,7 +218,6 @@ module nts.uk.at.ksm008.d {
 
         loadScreenD(selectedCode: string) {
             const vm = this;
-            $("#pg-name").text("KSM008D " + vm.$i18n("KSM008_5"));
             if (vm.receiverCode) {
                 vm.$blockui("invisible");
                 vm.$ajax(PATH_API.getStartupScreenD, {code: vm.receiverCode}).done(data => {
@@ -263,7 +254,6 @@ module nts.uk.at.ksm008.d {
 
         loadScreenE(selectedCode: string) {
             const vm = this;
-            $("#pg-name").text("KSM008E " + vm.$i18n("KSM008_100"));
             vm.$blockui("invisible");
 
             vm.$ajax(PATH_API.getStartupScreenE, {code: vm.receiverCode}).done(data => {
