@@ -15,3 +15,16 @@
 .panel.ntsPanel {
     padding: 15px;
 }
+.label.warning.color-black {
+    background-color: #f7efd4;
+    border: 1px solid #B1B1B1;
+    padding-top: 5px;
+    padding-right: 10px;
+    padding-bottom: 2rem;
+    padding-left: 10px;
+    margin-bottom: 5px;
+    color: black;
+}
+.width-common{
+    width: 27px;
+}

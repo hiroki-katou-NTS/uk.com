@@ -22,7 +22,7 @@ public class SendTimeRecordSettingPubImpl implements SendTimeRecordSettingPub {
 	private TimeRecordReqSettingRepository timeRecordReqSettingRepository;
 
 	@Override
-	public Optional<SendTimeRecordSettingExport> send(Integer empInfoTerCode, String contractCode) {
+	public Optional<SendTimeRecordSettingExport> send(String empInfoTerCode, String contractCode) {
 
 		RequireImpl impl = new RequireImpl(timeRecordReqSettingRepository);
 

@@ -72,7 +72,7 @@ public class ExternalBudgetWebService extends WebService {
 	}
 	
 	/**
-	 * get External Budget by atr 
+	 * get External Budget by atr
 	 * @param param
 	 * @return
 	 * author: Hoang Yen

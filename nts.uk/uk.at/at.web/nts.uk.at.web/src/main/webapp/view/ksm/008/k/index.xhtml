@@ -5,7 +5,7 @@
       xmlns:com="http://xmlns.jcp.org/jsf/component"
 >
 <body>
-<ui:composition template="../../../../master/dialogsidebar.xhtml">
+<ui:composition template="../../../../master/sidebar.xhtml">
     <ui:define name="sidebar-head">
         <com:ValidatorScript>
             nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDayOfWorkTimeCode
@@ -18,21 +18,22 @@
         <com:scriptfile path="ksm008.k.vm.js"/>
         <com:scriptfile set="IGNITE"/>
     </ui:define>
-    <ui:define name="sidebar" tabindex="1">
-        <ul class="navigator">
+    <ui:define name="sidebar" >
+        <ul class="navigator" tabindex="1">
             <!--k1_1-->
-            <li data-bind="click: onCompanySelect">
-                <a data-id="0" href="#tabpanel-1" role="tab-navigator"
+            <li data-bind="click: onCompanySelect, visible: $vm.$user.role.isInCharge.attendance">
+                <a tabindex="-1" data-id="0" id="panel-1" href="#tabpanel-1" role="tab-navigator"
                    class="active">#{i18n.getText('Com_Company')} </a>
             </li>
             <!--k1_2-->
             <li data-bind="click: onOrganizationSelect">
-                <a data-id="1" href="#tabpanel-2" role="tab-navigator">#{i18n.getText('KSM008_148')}</a>
+                <a tabindex="-1" data-id="1" id="panel-2" href="#tabpanel-2" role="tab-navigator">#{i18n.getText('KSM008_148')}</a>
             </li>
         </ul>
     </ui:define>
     <ui:define name="sidebar-content">
-        <div id="tabpanel-1" role="tabpanel">
+        <div id="tabpanel-1" role="tabpanel" data-bind="visible:  $vm.$user.role.isInCharge.attendance">
+            <com:ko tag="if" bind="$vm.$user.role.isInCharge.attendance">
             <div class="sidebar-content-header custom-header">
                 <div>
                     <span class="title">#{i18n.getText('Com_Company')}</span>
@@ -45,7 +46,7 @@
                     <button class="proceed" data-bind="click:registerKScreen, enable: $root.errors.isEmpty"
                             tabindex="4">#{i18n.getText('KSM008_151')}</button>
                     <!--k2_4-->
-                    <button class="danger" data-bind="enable:vm.isKScreenUpdateMode()?true:false,click:kScreenClickDeleteButton"
+                    <button class="danger" data-bind="enable:vm.isKScreenUpdateMode(),click:kScreenClickDeleteButton"
                             tabindex="5">#{i18n.getText('KSM008_152')}</button>
                 </div>
             </div>
@@ -53,12 +54,13 @@
                 <div>
                     <!--k3_1-->
                     <div class="label class-padding-btm-5" data-bind="text: scheduleAlarmCheckCond().codeAndName"></div>
+                    <div class="label warning color-black ">
                     <!--k4_1-->
-                    <div class="label warning"
-                         style="padding-bottom: 0;padding-top: 0;">#{i18n.getText('KSM008_153')}</div>
+                    <div >#{i18n.getText('KSM008_153')}</div>
                     <!--k4_2-->
-                    <div class="label warning" style="padding-top: 0;"
+                    <div style="padding-top: 0;white-space: pre-wrap;"
                          data-bind="text: scheduleAlarmCheckCond().descriptions"></div>
+                    </div>
                 </div>
                 <div class="table" style="margin-top: 8px;">
                     <div class="cell valign-top">
@@ -93,7 +95,7 @@
                                 <input tabindex="7" id="K6_2"
                                        data-bind="
                                          ntsTextEditor: {constraint: 'MaxDayOfWorkTimeCode',value: vm.kScreenWorkingHour.code, enable:vm.isKScreenUpdateMode()?false:true, required: true, name: '#[KSM008_159]'},
-                                         style: { width: '25px', marginRight: '5px'}
+                                         style: { width: '27px', marginRight: '5px'}
                                 "/>
                             </div>
                             <div class="cell valign-center">
@@ -112,12 +114,11 @@
                             <!-- K7_2 -->
                             <div class="cell valign-center">
                                 <button tabindex="9" data-bind="click: openKdl001ModalKScreen" id="K7_2"
-                                        style="margin-right: 6px;margin-left: 26px">#{i18n.getText('KSM008_162')}</button>
+                                        style="margin-right: 6px;margin-left: 27px;width: 48px">#{i18n.getText('KSM008_162')}</button>
                             </div>
                             <!-- K7_3-->
                             <div class="cell valign-center">
-                                <input id="K7_3" class="width-180"
-                                       data-bind="ntsTextEditor: {value: vm.kScreenWorkingHour.workHour,enable:false,name: '#[KSM008_163]'}"/>
+                                <input style="width: 180px" data-bind="ntsTextEditor: {value: vm.kScreenWorkingHour.workHour, enable: true, readonly: true}"/>
                             </div>
                         </div>
                         <div class="table" style="margin-top: 7px">
@@ -128,7 +129,7 @@
                             <!-- K8_2 -->
                             <div class="cell valign-center">
                                 <input tabindex="10" id="K8_2"
-                                       data-bind="ntsNumberEditor: {constraint: 'MaxDay', value: vm.kScreenWorkingHour.numberOfConDays, required: true, name: '#[KSM008_165]'}, style: { width: '25px', marginRight: '6px', marginLeft: '26px'}"/>
+                                       data-bind="ntsNumberEditor: {constraint: 'MaxDay', value: vm.kScreenWorkingHour.numberOfConDays, required: true, name: '#[KSM008_165]'}, style: { width: '27px', marginRight: '6px', marginLeft: '26px'}"/>
                             </div>
                             <!-- K8_3 -->
                             <div class="cell valign-center">
@@ -138,6 +139,7 @@
                     </div>
                 </div>
             </div>
+            </com:ko>
         </div>
         <div id="tabpanel-2" role="tabpanel">
             <ui:include src="../l/index.xhtml"/>

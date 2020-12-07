@@ -191,6 +191,8 @@ public class ProgramIdConsts {
 
 	public static final String KSU001A = "KSU001A";
 
+	public static final String KSU002A = "KSU002A";
+
 	public static final String KSU001C = "KSU001C";
 
 	public static final String KSU001D = "KSU001D";
@@ -238,16 +240,6 @@ public class ProgramIdConsts {
 	public static final String KML002F = "KML002F";
 
 	public static final String KML002G = "KML002G";
-
-	public static final String KML002H = "KML002H";
-
-	public static final String KML002I = "KML002I";
-
-	public static final String KML002K = "KML002K";
-
-	public static final String KML002L = "KML002L";
-
-	public static final String KML002M = "KML002M";
 	
 	public static final String KSU003A = "KSU003A";
 
@@ -284,6 +276,10 @@ public class ProgramIdConsts {
 	public static final String KDL010A = "KDL010A";
 
 	public static final String KDL021A = "KDL021A";
+
+	public static final String KDL035A = "KDL035A";
+
+	public static final String KDL036A = "KDL036A";
 
 	public static final String KSM003A = "KSM003A";
 
@@ -891,7 +887,14 @@ public class ProgramIdConsts {
 	public static final String CPS001G = "CPS001G";
 
 	public static final String KTG001A = "KTG001A";
+	public static final String KTG001B = "KTG001B";
 	public static final String KTG002A = "KTG002A";
+	
+	public static final String KTG004A = "KTG004A";
+	public static final String KTG004B = "KTG004B";
+	
+	public static final String KTG005A = "KTG005A";
+	public static final String KTG005B = "KTG005B";
 	public static final String KTG028A = "KTG028A";
 	public static final String KTG029A = "KTG029A";
 
@@ -1419,6 +1422,14 @@ public class ProgramIdConsts {
 	public static final String KDL048 = "KDL048";
 	/** KDL047 */
 	public static final String KDL047 = "KDL047";
+	/** KDL051 */
+	public static final String KDL051A = "KDL051A";
+	public static final String KDL051B = "KDL051B";
+	
+	/** KDL052 */
+	public static final String KDL052A = "KDL052A";
+	public static final String KDL052B = "KDL052B";
+	
 	/**
 	 * CMM024
 	 */
@@ -1427,4 +1438,9 @@ public class ProgramIdConsts {
 	public static final String CMM024C = "CMM024C";
 	public static final String CMM024D = "CMM024D";
 	public static final String CMM024F = "CMM024F";
+	
+	/**
+	 * KNR001
+	 */
+	public static final String KNR001A = "KNR001A";
 }

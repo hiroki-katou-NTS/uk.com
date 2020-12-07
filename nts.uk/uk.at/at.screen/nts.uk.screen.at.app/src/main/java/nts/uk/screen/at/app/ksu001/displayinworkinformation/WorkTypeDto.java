@@ -22,6 +22,8 @@ public class WorkTypeDto {
 
 	/* 勤務種類名称 */
 	public String name;
+	
+	public String abbName;
 
 	/* 勤務種類備考 */
 	public String memo;   
@@ -29,7 +31,8 @@ public class WorkTypeDto {
 	public WorkTypeDto(WorkType workType) {
 		super();
 		this.workTypeCode = workType.getWorkTypeCode() == null ? null : workType.getWorkTypeCode().v();
-		this.name = workType.getAbbreviationName()  == null ? null :  workType.getAbbreviationName().v();
+		this.abbName = workType.getAbbreviationName()  == null ? null :  workType.getAbbreviationName().v();
 		this.memo = workType.getMemo() == null ? null : workType.getMemo().v();
+		this.name = workType.getName().v();
 	}
 }

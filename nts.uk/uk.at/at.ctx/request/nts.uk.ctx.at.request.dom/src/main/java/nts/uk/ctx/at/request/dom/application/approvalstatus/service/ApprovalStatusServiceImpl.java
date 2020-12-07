@@ -110,6 +110,7 @@ import nts.uk.ctx.at.request.dom.application.stamp.AppStamp_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode_Old;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDispSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
@@ -925,34 +926,33 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 
 	@Override
 	public ApplicationsListOutput initApprovalSttRequestContentDis(List<ApprovalStatusEmployeeOutput> listStatusEmp) {
-//		List<ApplicationApprContent> listAppContents = new ArrayList<>();
-//		String companyId = AppContexts.user().companyId();
-//
-//		val mailDestCache = this.approvalStateAdapter.createMailDestinationCache(companyId);
-//		
-//		// 期間（リスト）
-//		for (ApprovalStatusEmployeeOutput appEmp : listStatusEmp) {
-//			// アルゴリズム「承認状況取得申請」を実行する
-//			List<ApplicationApprContent> listAppContent = this.getAppSttAcquisitionAppl(appEmp, mailDestCache);
-//			listAppContents.addAll(listAppContent);
-//		}
-//		List<Application_New> listCompltLeaveSync = new ArrayList<>();
-//		List<ApplicationApprContent> listAppContentsSorted = this.sortById(listAppContents);
-//		for (ApplicationApprContent appContent : listAppContentsSorted) {
-//			if (appContent.getApplication().isAppCompltLeave())
-//				listCompltLeaveSync.add(appContent.getApplication());
-//		}
-//		// アルゴリズム「承認状況申請内容取得振休振出」を実行する
-//		List<AppCompltLeaveSync> listSync = this.getCompltLeaveSyncOutput(companyId, listCompltLeaveSync);
-//		GeneralDate endDateMax = this.findEndDateMax(listStatusEmp);
-//		// アルゴリズム「承認状況申請内容追加」を実行する
-//		List<ApprovalSttAppDetail> listApprovalAppDetail = this.getApprovalSttAppDetail(listAppContentsSorted,endDateMax);
-//		// ドメインモデル「休暇申請設定」を取得する
-//		Optional<HolidayApplicationSetting> lstHdAppSet = repoHdAppSet.findSettingByCompanyId(companyId);
-//
-//		boolean displayPrePostFlg = this.isDisplayPrePostFlg(companyId);
-//		return new ApplicationsListOutput(listApprovalAppDetail, lstHdAppSet, listSync, displayPrePostFlg);
-		return null;
+		List<ApplicationApprContent> listAppContents = new ArrayList<>();
+		String companyId = AppContexts.user().companyId();
+
+		val mailDestCache = this.approvalStateAdapter.createMailDestinationCache(companyId);
+		
+		// 期間（リスト）
+		for (ApprovalStatusEmployeeOutput appEmp : listStatusEmp) {
+			// アルゴリズム「承認状況取得申請」を実行する
+			List<ApplicationApprContent> listAppContent = this.getAppSttAcquisitionAppl(appEmp, mailDestCache);
+			listAppContents.addAll(listAppContent);
+		}
+		List<Application_New> listCompltLeaveSync = new ArrayList<>();
+		List<ApplicationApprContent> listAppContentsSorted = this.sortById(listAppContents);
+		for (ApplicationApprContent appContent : listAppContentsSorted) {
+			if (appContent.getApplication().isAppCompltLeave())
+				listCompltLeaveSync.add(appContent.getApplication());
+		}
+		// アルゴリズム「承認状況申請内容取得振休振出」を実行する
+		List<AppCompltLeaveSync> listSync = this.getCompltLeaveSyncOutput(companyId, listCompltLeaveSync);
+		GeneralDate endDateMax = this.findEndDateMax(listStatusEmp);
+		// アルゴリズム「承認状況申請内容追加」を実行する
+		List<ApprovalSttAppDetail> listApprovalAppDetail = this.getApprovalSttAppDetail(listAppContentsSorted,endDateMax);
+		// ドメインモデル「休暇申請設定」を取得する
+		Optional<HolidayApplicationSetting> lstHdAppSet = repoHdAppSet.findSettingByCompanyId(companyId);
+
+		boolean displayPrePostFlg = this.isDisplayPrePostFlg(companyId);
+		return new ApplicationsListOutput(listApprovalAppDetail, lstHdAppSet, listSync, displayPrePostFlg);
 	}
 
 	private GeneralDate findEndDateMax(List<ApprovalStatusEmployeeOutput> lstDate){
