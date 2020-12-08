@@ -1,9 +1,12 @@
 package nts.uk.file.at.infra.attendancerecord.generator;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -439,10 +442,9 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 					pageSetup.setHeader(0, "&\"ＭＳ ゴシック\"&9 " + dataSource.getData().getCompanyName());
 					pageSetup.setHeader(1, "&\"ＭＳ ゴシック\"&"+ fontSize + " " + dataSource.getData().getReportName());
 					// Get current date and format it
-					DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm", Locale.JAPAN);
+					DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd  HH:mm", Locale.JAPAN);
 					String currentFormattedDate = LocalDateTime.now().format(fullDateTimeFormatter);
 					pageSetup.setHeader(2, "&\"ＭＳ ゴシック\"&9 " + currentFormattedDate+"\npage&P");
-					
 					// Delete template column
 					if (dataSource.getData().getFontSize() == ExportFontSize.CHAR_SIZE_LARGE.value) {
 						worksheet.getCells().deleteColumns(42, 20, true);
@@ -703,7 +705,9 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 		this.setFontBold(employeeInfoL.get(0, EMPL_INVIDUAL_INDEX));
 		this.setFontBold(employeeInfoL.get(0, EMPL_WORKPLACE_INDEX));
 		this.setFontBold(employeeYearInfo.get(0, EMPL_YEARMONTH_INDEX));
-		
+		DateFormat df = new SimpleDateFormat("yyyy/MM"); 
+		Date startDate = df.parse(employeeData.getYearMonth());
+		String yearMonth = df.format(startDate);
 		employeeInfoL.get(0, EMPL_INVIDUAL_INDEX)
 				.setValue(TextResource.localize("KWR002_212") + employeeData.getInvidual());
 		employeeInfoL.get(0, EMPL_WORKPLACE_INDEX)
@@ -715,7 +719,7 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 		employeeInfoR.get(0, EMPL_WORKTYPE_INDEX)
 				.setValue(TextResource.localize("KWR002_216") + employeeData.getWorkType());
 		employeeYearInfo.get(0, EMPL_YEARMONTH_INDEX)
-				.setValue(TextResource.localize("KWR002_217") + employeeData.getYearMonth());
+				.setValue(TextResource.localize("KWR002_217") + yearMonth);
 		// ver8 report , print deadline B8_17 B8_18
 		String deadlineDay = employeeData.isLastDayOfMonth() ? TextResource.localize("KWR002_236") : (employeeData.getClosureDay() + TextResource.localize("KWR002_237")).toString();
 		employeeYearInfo.get(0, MONTHLY_ACTUAL_DEADLINE_START)
@@ -728,7 +732,6 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 		dataRow.put(REPORT_RIGHT_ROW, startNewPage + START_REPORT_DATA_ROW);
 		dataRow.put(REPORT_ROW_BG, REPORT_ROW_BG_WHITE);
 		dataRow.put(REPORT_ROW_START_RIGHT, REPORT_ROW_START_RIGHT_COUNT);
-		
 		// fill data column 
 		for (AttendanceRecordReportWeeklyData weeklyData : weeklyDatas) {
 			this.generateWeeklyData(worksheet, weeklyData, dataRow, dailyWTmpl, dailyBTmpl, weeklyRangeTmpl, fontSize);
