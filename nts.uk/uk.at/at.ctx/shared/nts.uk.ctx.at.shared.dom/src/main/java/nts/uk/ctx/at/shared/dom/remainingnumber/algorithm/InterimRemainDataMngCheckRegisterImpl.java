@@ -56,7 +56,7 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 	private CompensLeaveComSetRepository leaveSetRepos;
 	@Inject
 	private GetAnnLeaRemNumWithinPeriodSharedImport annualService;
-	
+
 	/** REQUIRE対応 */
 	@Inject
 	private RemainNumberTempRequireService requireService;
@@ -152,20 +152,23 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 		// 特休チェック区分をチェックする
 		if (inputParam.isChkSpecial() && !specialHolidayData.isEmpty()) {
 			// 暫定残数管理データ(output)に「特別休暇暫定データ」が存在するかチェックする
-			for (InterimSpecialHolidayMng a : specialHolidayData) {
-				List<InterimRemain> interimSpecialChk = interimSpecial.stream()
-						.filter(c -> c.getRemainManaID().equals(a.getSpecialHolidayId())).collect(Collectors.toList());
-				ComplileInPeriodOfSpecialLeaveParam speParam = new ComplileInPeriodOfSpecialLeaveParam(
-						inputParam.getCid(), inputParam.getSid(), inputParam.getDatePeriod(), inputParam.isMode(),
-						!interimSpecialChk.isEmpty() ? interimSpecialChk.get(0).getYmd() : inputParam.getBaseDate(),
-						a.getSpecialHolidayCode(), false, true, interimSpecial, specialHolidayData, Optional.empty());
-				InPeriodOfSpecialLeave speOutCheck = SpecialLeaveManagementService
-						.complileInPeriodOfSpecialLeave(require, cacheCarrier, speParam).getAggSpecialLeaveResult();
-				if (!speOutCheck.getLstError().isEmpty()) {
-					outputData.setChkSpecial(true);
-					break;
-				}
-			}
+			// 要修正 jinno
+//			for (InterimSpecialHolidayMng a : specialHolidayData) {
+//				List<InterimRemain> interimSpecialChk = interimSpecial.stream()
+//						.filter(c -> c.getRemainManaID().equals(a.getSpecialHolidayId())).collect(Collectors.toList());
+//				ComplileInPeriodOfSpecialLeaveParam speParam = new ComplileInPeriodOfSpecialLeaveParam(
+//						inputParam.getCid(), inputParam.getSid(), inputParam.getDatePeriod(), inputParam.isMode(),
+//						!interimSpecialChk.isEmpty() ? interimSpecialChk.get(0).getYmd() : inputParam.getBaseDate(),
+//						a.getSpecialHolidayCode(), false, true, interimSpecial, specialHolidayData);
+//
+//
+//				InPeriodOfSpecialLeave speOutCheck = SpecialLeaveManagementService
+//						.complileInPeriodOfSpecialLeave(require, cacheCarrier, speParam).getAggSpecialLeaveResult();
+//				if (!speOutCheck.getLstError().isEmpty()) {
+//					outputData.setChkSpecial(true);
+//					break;
+//				}
+//			}
 		}
 		// 年休チェック区分をチェックする
 		List<TmpAnnualLeaveMngWork> mngWork = new ArrayList<>();

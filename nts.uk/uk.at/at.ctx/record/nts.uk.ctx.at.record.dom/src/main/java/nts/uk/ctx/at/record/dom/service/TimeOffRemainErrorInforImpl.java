@@ -43,8 +43,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLe
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpReserveLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.service.RemainNumberCreateInformation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.ComplileInPeriodOfSpecialLeaveParam;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveError;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.ComplileInPeriodOfSpecialLeaveParam;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.InPeriodOfSpecialLeaveResultInfor;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.SpecialLeaveManagementService;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.export.pererror.CreatePerErrorsFromLeaveErrors;
@@ -199,7 +198,8 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 		List<EmployeeMonthlyPerError> lstOutput = new ArrayList<>();
 		lstSpecial.stream().forEach(x -> {
 			ComplileInPeriodOfSpecialLeaveParam speParam
-				= new ComplileInPeriodOfSpecialLeaveParam(param.getCid(),
+				= new ComplileInPeriodOfSpecialLeaveParam(
+					param.getCid(),
 					param.getSid(),
 					param.getAggDate(),
 					false,
@@ -208,7 +208,8 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 					false,
 					true,
 					interimSpecial,
-					specialHolidayData);
+					specialHolidayData,
+					Optional.empty());
 			//マイナスなしを含めた期間内の特別休暇残を集計する
 			InPeriodOfSpecialLeaveResultInfor speLeaveInfor = SpecialLeaveManagementService
 					.complileInPeriodOfSpecialLeave(require, cacheCarrier, speParam);

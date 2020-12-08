@@ -24,13 +24,13 @@ import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.InPeriodOfSpecialLeaveResultInfor;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngOfInPeriod;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfSpecialLeaveResultInfor;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordService;
@@ -52,10 +52,10 @@ public class AggregateMonthlyRecordServiceTest {
 
 	@Tested
 	private AggregateMonthlyRecordService aggregateMonthlyService;
-	
+
 	@Test
 	public void a(){
-		
+
 		// restore
 		HashMap<String, Object> restoreCid =
 				ObjectBinaryFile.read(Paths.get("c:\\MonBinWithCid.csv"));
@@ -63,23 +63,23 @@ public class AggregateMonthlyRecordServiceTest {
 				ObjectBinaryFile.read(Paths.get("c:\\MonBinWithEmpIdPeriod.csv"));
 		HashMap<String, Object> restoreEmpIdYearMonth =
 				ObjectBinaryFile.read(Paths.get("c:\\MonBinWithEmpIdYearMonth.csv"));
-		
+
 		String companyId = "comID";
 		String employeeId = "empID";
 		YearMonth yearMonth = YearMonth.of(2020, 5);
 		ClosureId closureId = ClosureId.RegularEmployee;
 		ClosureDate closureDate = new ClosureDate(0, true);
 		DatePeriod period = new DatePeriod(GeneralDate.ymd(2020, 5, 1), GeneralDate.ymd(2020, 5, 31));
-		
+
 		// 年休積立年休の集計結果（前月分）
 		AggrResultOfAnnAndRsvLeave prevAggrResult = new AggrResultOfAnnAndRsvLeave();
 		// 期間内の振出振休残数の取得結果（前月分）
 		AbsRecRemainMngOfInPeriod prevAbsRecResult = null;
 		// 休出代休残数管理（前月分）
 		BreakDayOffRemainMngOfInPeriod prevBreakDayOffResult = null;
-		// 特別休暇の集計結果情報(前月分)	
+		// 特別休暇の集計結果情報(前月分)
 		Map<Integer, InPeriodOfSpecialLeaveResultInfor> prevSpecialLeaveResultMap = new HashMap<>();
-		
+
 		// 月別集計で必要な会社別設定
 		MonAggrCompanySettings companySets = new MonAggrCompanySettings();
 		companySets.setCompanyId(companyId);
@@ -101,10 +101,10 @@ public class AggregateMonthlyRecordServiceTest {
 		companySets.getOutsideOTOverTimes().addAll(companySets.getOutsideOverTimeSet().getOvertimes());
 		companySets.getOutsideOTOverTimes().removeIf(a -> { return a.getUseClassification() != UseClassification.UseClass_Use; });
 		companySets.getOutsideOTOverTimes().sort((a, b) -> a.getOvertime().v() - b.getOvertime().v());
-		
+
 		// 月別集計で必要な社員別設定
 		MonAggrEmployeeSettings employeeSets = new MonAggrEmployeeSettings();
-		
+
 		// 日別実績(WORK)
 		List<IntegrationOfDaily> dailyWorks = new ArrayList<>();
 		List<WorkTypeOfDailyPerformance> workTypeOfDays =
@@ -127,7 +127,7 @@ public class AggregateMonthlyRecordServiceTest {
 				(List<EmployeeDailyPerError>)restoreEmpIdPeriod.get("PerErrorOfDay");
 		List<AnyItemValueOfDaily> anyItemOfDays =
 				(List<AnyItemValueOfDaily>)restoreEmpIdPeriod.get("AnyItemOfDay");
-		
+
 		Map<GeneralDate, WorkTypeOfDailyPerformance> workTypeOfDayMap = new HashMap<>();
 		if (workTypeOfDays != null){
 			for (val v : workTypeOfDays) workTypeOfDayMap.put(v.getDate(), v);
@@ -167,11 +167,11 @@ public class AggregateMonthlyRecordServiceTest {
 		if (anyItemOfDays != null){
 			for (val v : anyItemOfDays) anyItemOfDayMap.put(v.getYmd(), v);
 		}
-		
+
 		if (workTypeOfDays != null){
 			for (val v : workInfoOfDays){
 				GeneralDate ymd = v.getYmd();
-				
+
 				IntegrationOfDaily integOfDay = new IntegrationOfDaily(
 						employeeId,
 						ymd,
@@ -193,11 +193,11 @@ public class AggregateMonthlyRecordServiceTest {
 						new ArrayList<>(),
 						Optional.ofNullable(temporaryTimeOfDayMap.get(ymd).getAttendance()),
 						new ArrayList<>());
-				
+
 				dailyWorks.add(integOfDay);
 			}
 		}
-		
+
 		// 月別実績(WORK)
 		IntegrationOfMonthly monthlyWork = new IntegrationOfMonthly();
 		List<AttendanceTimeOfMonthly> attendanceTimeOfMons =
@@ -213,7 +213,7 @@ public class AggregateMonthlyRecordServiceTest {
 		if (anyItemOfMons != null){
 			monthlyWork.getAnyItemList().addAll(anyItemOfMons);
 		}
-		
+
 		val result = this.aggregateMonthlyService.aggregate(
 				companyId,
 				employeeId,
@@ -229,7 +229,7 @@ public class AggregateMonthlyRecordServiceTest {
 				employeeSets,
 				Optional.ofNullable(dailyWorks),
 				Optional.ofNullable(monthlyWork));
-		
+
 		result.toString();
 	}
 }

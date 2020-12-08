@@ -47,7 +47,7 @@ public class SpecialHolidayCommand {
 	private String memo;
 
 	public SpecialHoliday toDomain(String companyId) {
-		return  SpecialHoliday.createFromJavaType(companyId,
+		return  SpecialHoliday.of(companyId,
 				this.specialHolidayCode,
 				this.specialHolidayName,
 				this.toDomainGrantRegular(companyId),
@@ -130,11 +130,15 @@ public class SpecialHolidayCommand {
 			return null;
 		}
 
-		return GrantRegular.createFromJavaType(companyId, this.specialHolidayCode,
-				regularCommand.getTypeTime(),
-				regularCommand.getGrantDate(),
-				regularCommand.isAllowDisappear(),
-				this.toDomainGrantTime());
+		// ooooo 要修正 jinno
+		return new GrantRegular();
+//		return GrantRegular.createFromJavaType(
+//		companyId,
+//		this.specialHolidayCode,
+//		regularCommand.getTypeTime(),
+//		regularCommand.getGrantDate(),
+//		regularCommand.isAllowDisappear(),
+//		this.toDomainGrantTime());
 	}
 
 	private GrantTime toDomainGrantTime() {
@@ -150,7 +154,10 @@ public class SpecialHolidayCommand {
 			return null;
 		}
 
-		return FixGrantDate.createFromJavaType(this.regularCommand.getGrantTime().getFixGrantDate().getInterval(),
-				this.regularCommand.getGrantTime().getFixGrantDate().getGrantDays());
+		// ooooo 要修正 jinno
+		return new FixGrantDate();
+//		return FixGrantDate.createFromJavaType(
+//				this.regularCommand.getGrantTime().getFixGrantDate().getInterval(),
+//				this.regularCommand.getGrantTime().getFixGrantDate().getGrantDays());
 	}
 }

@@ -105,12 +105,11 @@ public class SpecialHoliday extends AggregateRoot {
 				new Memo(memo));
 	}
 
-	public static SpecialHoliday createFromJavaType(
+	public static SpecialHoliday of(
 			String companyId,
 			int specialHolidayCode,
 			String specialHolidayName,
 			GrantRegular grantRegular,
-//			GrantDeadline grantPeriodic,
 			SpecialLeaveRestriction specialLeaveRestriction,
 			TargetItem targetItem,
 			int autoGrant,
@@ -119,7 +118,6 @@ public class SpecialHoliday extends AggregateRoot {
 				new SpecialHolidayCode(specialHolidayCode),
 				new SpecialHolidayName(specialHolidayName),
 				grantRegular,
-//				grantPeriodic,
 				specialLeaveRestriction,
 				targetItem,
 				EnumAdaptor.valueOf(autoGrant, NotUseAtr.class),

@@ -16,6 +16,7 @@ import nts.uk.ctx.at.function.dom.adapter.periodofspecialleave.SpecialHolidayImp
 import nts.uk.ctx.at.function.dom.adapter.periodofspecialleave.SpecialVacationImported;
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.export.SpecialHolidayRemainDataOutput;
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.export.SpecialHolidayRemainDataSevice;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.InPeriodOfSpecialLeaveResultInfor;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.SpecialLeaveManagementService;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
@@ -27,39 +28,43 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremain
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.ComplileInPeriodOfSpecialLeaveParam;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTblRepository;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 
 @Stateless
 public class ComplileInPeriodOfSpecialLeaveFinder implements ComplileInPeriodOfSpecialLeaveAdapter {
 
-	@Inject
-	private SpecialHolidayRemainDataSevice specialHolidayRemainDataSevice;
+//	@Inject
+//	private SpecialHolidayRemainDataSevice specialHolidayRemainDataSevice;
+//
+//	@Inject
+//	private SpecialLeaveGrantRepository specialLeaveGrantRepo;
+//
+//	@Inject
+//	private ShareEmploymentAdapter shareEmploymentAdapter;
+//
+//	@Inject
+//	private EmpEmployeeAdapter empEmployeeAdapter;
+//
+//	@Inject
+//	private GrantDateTblRepository grantDateTblRepo;
+//
+//	@Inject
+//	private AnnLeaEmpBasicInfoRepository annLeaEmpBasicInfoRepo;
+//
+//	@Inject
+//	private SpecialHolidayRepository specialHolidayRepo;
+//
+//	@Inject
+//	private InterimSpecialHolidayMngRepository interimSpecialHolidayMngRepo;
+//
+//	@Inject
+//	private InterimRemainRepository interimRemainRepo;
+//
+//	@Inject
+//	private SpecialLeaveBasicInfoRepository specialLeaveBasicInfoRepo;
 
 	@Inject
-	private SpecialLeaveGrantRepository specialLeaveGrantRepo;
-
-	@Inject
-	private ShareEmploymentAdapter shareEmploymentAdapter;
-
-	@Inject
-	private EmpEmployeeAdapter empEmployeeAdapter;
-
-	@Inject
-	private GrantDateTblRepository grantDateTblRepo;
-
-	@Inject
-	private AnnLeaEmpBasicInfoRepository annLeaEmpBasicInfoRepo;
-
-	@Inject
-	private SpecialHolidayRepository specialHolidayRepo;
-
-	@Inject
-	private InterimSpecialHolidayMngRepository interimSpecialHolidayMngRepo;
-
-	@Inject
-	private InterimRemainRepository interimRemainRepo;
-
-	@Inject
-	private SpecialLeaveBasicInfoRepository specialLeaveBasicInfoRepo;
+	private RecordDomRequireService recordDomRequireService;
 
 	@Override
 	public SpecialVacationImported complileInPeriodOfSpecialLeave(String cid, String sid, DatePeriod complileDate,
@@ -68,13 +73,14 @@ public class ComplileInPeriodOfSpecialLeaveFinder implements ComplileInPeriodOfS
 		ComplileInPeriodOfSpecialLeaveParam param = new ComplileInPeriodOfSpecialLeaveParam(cid, sid,
 				complileDate, mode, baseDate, specialLeaveCode, mngAtr,
 				false, new ArrayList<>(), new ArrayList<>());
-		InPeriodOfSpecialLeave specialLeave = SpecialLeaveManagementService
+		InPeriodOfSpecialLeaveResultInfor specialLeave = SpecialLeaveManagementService
 				.complileInPeriodOfSpecialLeave(
-						SpecialLeaveManagementService.createRequireM5(specialLeaveGrantRepo, shareEmploymentAdapter,
-								empEmployeeAdapter, grantDateTblRepo, annLeaEmpBasicInfoRepo, specialHolidayRepo,
-								interimSpecialHolidayMngRepo, interimRemainRepo, specialLeaveBasicInfoRepo),
-						new CacheCarrier(), param)
-				.getAggSpecialLeaveResult();
+//						SpecialLeaveManagementService.createRequireM5(specialLeaveGrantRepo, shareEmploymentAdapter,
+//								empEmployeeAdapter, grantDateTblRepo, annLeaEmpBasicInfoRepo, specialHolidayRepo,
+//								interimSpecialHolidayMngRepo, interimRemainRepo, specialLeaveBasicInfoRepo),
+						recordDomRequireService.createRequire(),
+						new CacheCarrier(), param);
+//				.getAggSpecialLeaveResult();
 		if (specialLeave == null)
 			return null;
 		return new SpecialVacationImported(

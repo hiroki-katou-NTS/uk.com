@@ -76,22 +76,23 @@ public class InforSpecialLeaveOfEmployeeSevice {
 		GrantDaysInforByDates grantDayInfors = getGrantDays(require, cacheCarrier, cid, sid,
 				complileDate, specialHoliday, leaverBasicInfo);
 		// 「付与日数一覧」の件数をチェックする
-		Optional<Integer> upLimiDays = specialHoliday.getGrantPeriodic().getLimitCarryoverDays() == null
-				|| specialHoliday.getGrantPeriodic().getLimitCarryoverDays().v() == null ? Optional.empty()
-				: Optional.of(specialHoliday.getGrantPeriodic().getLimitCarryoverDays().v());
-				
-				
-		if(grantDayInfors == null || grantDayInfors.getNextSpecialLeaveGrant().isEmpty()) {
-			// 状態：「付与なし」を返す
-			return new InforSpecialLeaveOfEmployee(InforStatus.NOTGRANT, upLimiDays,
-					new ArrayList<>(), false);
-		} else {
-			// 期限を取得する
-			List<SpecialHolidayInfor> getDeadlineInfo = getDeadlineInfo(grantDayInfors, specialHoliday);
-
-			return new InforSpecialLeaveOfEmployee(InforStatus.GRANTED, upLimiDays,
-					getDeadlineInfo, false);
-		}
+		// 要修正 jinno
+//		Optional<Integer> upLimiDays = specialHoliday.getGrantPeriodic().getLimitCarryoverDays() == null
+//				|| specialHoliday.getGrantPeriodic().getLimitCarryoverDays().v() == null ? Optional.empty()
+//				: Optional.of(specialHoliday.getGrantPeriodic().getLimitCarryoverDays().v());
+//
+//		if(grantDayInfors == null || grantDayInfors.getNextSpecialLeaveGrant().isEmpty()) {
+//			// 状態：「付与なし」を返す
+//			return new InforSpecialLeaveOfEmployee(InforStatus.NOTGRANT, upLimiDays,
+//					new ArrayList<>(), false);
+//		} else {
+//			// 期限を取得する
+//			List<SpecialHolidayInfor> getDeadlineInfo = getDeadlineInfo(grantDayInfors, specialHoliday);
+//
+//			return new InforSpecialLeaveOfEmployee(InforStatus.GRANTED, upLimiDays,
+//					getDeadlineInfo, false);
+//		}
+			return new InforSpecialLeaveOfEmployee();
 	}
 
 	/**
@@ -139,8 +140,10 @@ public class InforSpecialLeaveOfEmployeeSevice {
 			//固定の付与日一覧を求める
 			return askGrantDays(require, cacheCarrier, cid, employeeId, period, grantDate, speHoliday, leaveBasicInfo);
 		} else {
-			//テーブルに基づいた付与日数一覧を求める
-			return askGrantdaysFromtable(require, cacheCarrier,cid, employeeId, period, grantDate, leaveBasicInfo, speHoliday);
+			// 要修正 jinno
+//			//テーブルに基づいた付与日数一覧を求める
+//			return askGrantdaysFromtable(require, cacheCarrier,cid, employeeId, period, grantDate, leaveBasicInfo, speHoliday);
+			return new GrantDaysInforByDates();
 		}
 
 	}
@@ -156,52 +159,55 @@ public class InforSpecialLeaveOfEmployeeSevice {
 			String sid, DatePeriod period, GeneralDate grantDate, SpecialHoliday speHoliday,
 			SpecialLeaveBasicInfo leaveBasicInfo) {
 
-		List<GrantDaysInfor> lstOutput = new ArrayList<>();
-		//パラメータ「付与基準日」をパラメータ「比較年月日」にセットする
-		GrantTime grantTime = speHoliday.getGrantRegular().getTypeTime();
-		//取得している「特別休暇．付与情報．固定付与日．周期」
-		int interval = grantTime.getFixGrantDate().getInterval().v();
-		//取得している「特別休暇．付与情報．固定付与日．周期」をチェックする
-		if(interval == 0) {
-			return null;
-		}
-		double grantDays = 0;
-		//　◆特別休暇基本情報．適用設定≠所定の条件を適用する　の場合
-		//　　付与日数　←　特別休暇基本情報．付与設定．付与日数
-		if(leaveBasicInfo.getApplicationSet() != SpecialLeaveAppSetting.PRESCRIBED) {
-			grantDays = leaveBasicInfo.getGrantSetting().getGrantDays().isPresent() && leaveBasicInfo.getGrantSetting().getGrantDays().get().v() != null
-					? leaveBasicInfo.getGrantSetting().getGrantDays().get().v() : 0;
-		}
-		//　◆特別休暇基本情報．適用設定＝所定の条件を適用する　の場合
-		// 　　付与日数　←　ドメインモデル「特別休暇．付与情報．固定付与日．固定付与日数」
-
-		else {
-			grantDays = speHoliday.getGrantRegular().getGrantTime().getFixGrantDate().getGrantDays().v();
-		}
-		GrantDaysInforByDates outputData = new GrantDaysInforByDates(grantDate,new ArrayList<>());
-		//パラメータ「期間」に一致する付与日数を生成する
-		for(GeneralDate loopDate = grantDate; loopDate.beforeOrEquals(period.end());) {
-			//パラメータ「比較年月日」とパラメータ「期間」を比較する
-			if(period.start().beforeOrEquals(loopDate)
-					&& loopDate.beforeOrEquals(period.end())) {//「期間．開始日」≦「比較年月日」≦「期間．終了日」
-				//利用条件をチェックする
-				ErrorFlg checkUser = checkUse(require, cacheCarrier, cid, sid, loopDate, speHoliday);
-				if(checkUser.isAgeError()
-						|| checkUser.isClassError()
-						|| checkUser.isEmploymentError()
-						|| checkUser.isGenderError()) {
-					//パラメータ「付与日数一覧」を追加する
-					GrantDaysInfor outPut = new GrantDaysInfor(loopDate, Optional.of(checkUser), 0);
-					lstOutput.add(outPut);
-				} else {
-					GrantDaysInfor outPut = new GrantDaysInfor(loopDate, Optional.empty(), grantDays);
-					lstOutput.add(outPut);
-				}
-			}
-			loopDate = loopDate.addYears(interval);
-			outputData.setGrantDate(loopDate);
-		}
-		outputData.setLstGrantDaysInfor(lstOutput);
+		// 要修正 jinno
+//		List<GrantDaysInfor> lstOutput = new ArrayList<>();
+//		//パラメータ「付与基準日」をパラメータ「比較年月日」にセットする
+//		GrantTime grantTime = speHoliday.getGrantRegular().getTypeTime();
+//
+//		//取得している「特別休暇．付与情報．固定付与日．周期」
+//		int interval = grantTime.getFixGrantDate().getInterval().v();
+//		//取得している「特別休暇．付与情報．固定付与日．周期」をチェックする
+//		if(interval == 0) {
+//			return null;
+//		}
+//		double grantDays = 0;
+//		//　◆特別休暇基本情報．適用設定≠所定の条件を適用する　の場合
+//		//　　付与日数　←　特別休暇基本情報．付与設定．付与日数
+//		if(leaveBasicInfo.getApplicationSet() != SpecialLeaveAppSetting.PRESCRIBED) {
+//			grantDays = leaveBasicInfo.getGrantSetting().getGrantDays().isPresent() && leaveBasicInfo.getGrantSetting().getGrantDays().get().v() != null
+//					? leaveBasicInfo.getGrantSetting().getGrantDays().get().v() : 0;
+//		}
+//		//　◆特別休暇基本情報．適用設定＝所定の条件を適用する　の場合
+//		// 　　付与日数　←　ドメインモデル「特別休暇．付与情報．固定付与日．固定付与日数」
+//
+//		else {
+//			grantDays = speHoliday.getGrantRegular().getGrantTime().getFixGrantDate().getGrantDays().v();
+//		}
+//		GrantDaysInforByDates outputData = new GrantDaysInforByDates(grantDate,new ArrayList<>());
+//		//パラメータ「期間」に一致する付与日数を生成する
+//		for(GeneralDate loopDate = grantDate; loopDate.beforeOrEquals(period.end());) {
+//			//パラメータ「比較年月日」とパラメータ「期間」を比較する
+//			if(period.start().beforeOrEquals(loopDate)
+//					&& loopDate.beforeOrEquals(period.end())) {//「期間．開始日」≦「比較年月日」≦「期間．終了日」
+//				//利用条件をチェックする
+//				ErrorFlg checkUser = checkUse(require, cacheCarrier, cid, sid, loopDate, speHoliday);
+//				if(checkUser.isAgeError()
+//						|| checkUser.isClassError()
+//						|| checkUser.isEmploymentError()
+//						|| checkUser.isGenderError()) {
+//					//パラメータ「付与日数一覧」を追加する
+//					GrantDaysInfor outPut = new GrantDaysInfor(loopDate, Optional.of(checkUser), 0);
+//					lstOutput.add(outPut);
+//				} else {
+//					GrantDaysInfor outPut = new GrantDaysInfor(loopDate, Optional.empty(), grantDays);
+//					lstOutput.add(outPut);
+//				}
+//			}
+//			loopDate = loopDate.addYears(interval);
+//			outputData.setGrantDate(loopDate);
+//		}
+//		outputData.setLstGrantDaysInfor(lstOutput);
+		GrantDaysInforByDates outputData = new GrantDaysInforByDates();
 		return outputData;
 	}
 
@@ -588,72 +594,74 @@ public class InforSpecialLeaveOfEmployeeSevice {
 
 //		TimeLimitSpecification timeSpecifyMethod = specialHoliday.getGrantPeriodic().getTimeSpecifyMethod();
 
-		TimeLimitSpecification timeSpecifyMethod;
-		TypeTime typeTime = specialHoliday.getGrantRegular().getTypeTime();
-
-		if (typeTime.equals(TypeTime.GRANT_SPECIFY_DATE) ) { // 指定日付与
-			if ( specialHoliday.getGrantRegular().getFixGrantDate().isPresent()) {
-				timeSpecifyMethod = specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantPeriodic().getTimeSpecifyMethod();
-			}
-		} else if (typeTime.equals(TypeTime.REFER_GRANT_DATE_TBL) ) { // 指定日付与
-			if ( specialHoliday.getGrantRegular().getGrantPeriodic().isPresent() ) {
-				timeSpecifyMethod = specialHoliday.getGrantRegular().getGrantPeriodic().get().getTimeSpecifyMethod();
-			}
-		}
-
+		// 要修正 jinno
+//		TimeLimitSpecification timeSpecifyMethod;
+//		TypeTime typeTime = specialHoliday.getGrantRegular().getTypeTime();
+//
+//		if (typeTime.equals(TypeTime.GRANT_SPECIFY_DATE) ) { // 指定日付与
+//			if ( specialHoliday.getGrantRegular().getFixGrantDate().isPresent()) {
+//				timeSpecifyMethod = specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantPeriodic().getTimeSpecifyMethod();
+//			}
+//		} else if (typeTime.equals(TypeTime.REFER_GRANT_DATE_TBL) ) { // 指定日付与
+//			if ( specialHoliday.getGrantRegular().getGrantPeriodic().isPresent() ) {
+//				timeSpecifyMethod = specialHoliday.getGrantRegular().getGrantPeriodic().get().getTimeSpecifyMethod();
+//			}
+//		}
+//
+//		List<SpecialHolidayInfor> lstOutput = new ArrayList<>();
+//
+//		//取得している「特別休暇．期限情報．期限指定方法」をチェックする
+//		if(timeSpecifyMethod == TimeLimitSpecification.INDEFINITE_PERIOD) {
+//			//パラメータ「付与日数一覧」を元にパラメータ「特別休暇情報一覧」を生成する
+//			grantDaysInfor.getNextSpecialLeaveGrant().stream().forEach(x -> {
+//				SpecialHolidayInfor output = new SpecialHolidayInfor(x, Optional.empty());
+//				lstOutput.add(output);
+//			});
+//		} else if (timeSpecifyMethod == TimeLimitSpecification.AVAILABLE_GRANT_DATE_DESIGNATE) {
+//			//期限日　←　パラメータ「付与日数一覧．年月日」＋取得している「定期付与．付与日（定期）．特別休暇の期限」の「年数」「月数」の年月日
+//			SpecialVacationDeadline speDeadline = specialHoliday.getGrantPeriodic().getExpirationDate();
+//			grantDaysInfor.getNextSpecialLeaveGrant().stream().forEach(x -> {
+//				GeneralDate dealineDate = x.getYmd().addYears(speDeadline.getYears().v());
+//				dealineDate = dealineDate.addMonths(speDeadline.getMonths().v());
+//				dealineDate = dealineDate.addDays(-1);
+//				SpecialHolidayInfor output = new SpecialHolidayInfor(x, Optional.of(dealineDate));
+//				lstOutput.add(output);
+//			});
+//		} else if (timeSpecifyMethod == TimeLimitSpecification.AVAILABLE_UNTIL_NEXT_GRANT_DATE) {
+//			//パラメータ「付与日数一覧．年月日」の次の「付与日数一覧．年月日」
+//			//　※最後の処理で次の「付与日数一覧．年月日」が存在しない場合 パラメータ「期間外次回付与日」をセット
+//			//List<GrantDaysInfor> lstGrantDaysInfor
+//			int i = 1;
+//			for (GrantDaysInfor daysInfor : grantDaysInfor.getLstGrantDaysInfor()) {
+//				SpecialHolidayInfor output = new SpecialHolidayInfor();
+//				if(i == grantDaysInfor.getLstGrantDaysInfor().size()) {
+//					output = new SpecialHolidayInfor(daysInfor, grantDaysInfor.getGrantDate() != null
+//							? Optional.of(grantDaysInfor.getGrantDate().get().addDays(-1)) : Optional.empty());
+//				} else {
+//					GrantDaysInfor nextInfor = grantDaysInfor.getLstGrantDaysInfor().get(i);
+//					output = new SpecialHolidayInfor(daysInfor, Optional.of(nextInfor.getYmd().addDays(-1)));
+//				}
+//				lstOutput.add(output);
+//				i += 1;
+//			}
+//		} else {
+//			grantDaysInfor.getLstGrantDaysInfor().stream().forEach(x -> {
+//				//付与日　←　パラメータ「付与日数一覧．年月日」の次の「特別休暇．期限情報．使用可能期間．開始日」
+//				AvailabilityPeriod period = specialHoliday.getGrantPeriodic().getAvailabilityPeriod();
+//				GeneralDate ymd = GeneralDate.ymd(x.getYmd().year(), period.getStartDate().getMonth(), period.getStartDate().getDay());
+//				if(ymd.after(x.getYmd())) {
+//					x.setYmd(ymd);
+//				}
+//				//パラメータ「付与日数一覧．年月日」の次の「特別休暇．期限情報．使用可能期間．終了日」
+//				GeneralDate ymdDealine = GeneralDate.ymd(x.getYmd().year(), period.getEndDate().getMonth(), period.getEndDate().getDay());
+//				if(x.getYmd().after(ymdDealine)) {
+//					ymdDealine = ymdDealine.addYears(1);
+//				}
+//				SpecialHolidayInfor output = new SpecialHolidayInfor(x, Optional.of(ymdDealine));
+//				lstOutput.add(output);
+//			});
+//		}
 		List<SpecialHolidayInfor> lstOutput = new ArrayList<>();
-
-		//取得している「特別休暇．期限情報．期限指定方法」をチェックする
-		if(timeSpecifyMethod == TimeLimitSpecification.INDEFINITE_PERIOD) {
-			//パラメータ「付与日数一覧」を元にパラメータ「特別休暇情報一覧」を生成する
-			grantDaysInfor.getNextSpecialLeaveGrant().stream().forEach(x -> {
-				SpecialHolidayInfor output = new SpecialHolidayInfor(x, Optional.empty());
-				lstOutput.add(output);
-			});
-		} else if (timeSpecifyMethod == TimeLimitSpecification.AVAILABLE_GRANT_DATE_DESIGNATE) {
-			//期限日　←　パラメータ「付与日数一覧．年月日」＋取得している「定期付与．付与日（定期）．特別休暇の期限」の「年数」「月数」の年月日
-			SpecialVacationDeadline speDeadline = specialHoliday.getGrantPeriodic().getExpirationDate();
-			grantDaysInfor.getNextSpecialLeaveGrant().stream().forEach(x -> {
-				GeneralDate dealineDate = x.getYmd().addYears(speDeadline.getYears().v());
-				dealineDate = dealineDate.addMonths(speDeadline.getMonths().v());
-				dealineDate = dealineDate.addDays(-1);
-				SpecialHolidayInfor output = new SpecialHolidayInfor(x, Optional.of(dealineDate));
-				lstOutput.add(output);
-			});
-		} else if (timeSpecifyMethod == TimeLimitSpecification.AVAILABLE_UNTIL_NEXT_GRANT_DATE) {
-			//パラメータ「付与日数一覧．年月日」の次の「付与日数一覧．年月日」
-			//　※最後の処理で次の「付与日数一覧．年月日」が存在しない場合 パラメータ「期間外次回付与日」をセット
-			//List<GrantDaysInfor> lstGrantDaysInfor
-			int i = 1;
-			for (GrantDaysInfor daysInfor : grantDaysInfor.getLstGrantDaysInfor()) {
-				SpecialHolidayInfor output = new SpecialHolidayInfor();
-				if(i == grantDaysInfor.getLstGrantDaysInfor().size()) {
-					output = new SpecialHolidayInfor(daysInfor, grantDaysInfor.getGrantDate() != null
-							? Optional.of(grantDaysInfor.getGrantDate().get().addDays(-1)) : Optional.empty());
-				} else {
-					GrantDaysInfor nextInfor = grantDaysInfor.getLstGrantDaysInfor().get(i);
-					output = new SpecialHolidayInfor(daysInfor, Optional.of(nextInfor.getYmd().addDays(-1)));
-				}
-				lstOutput.add(output);
-				i += 1;
-			}
-		} else {
-			grantDaysInfor.getLstGrantDaysInfor().stream().forEach(x -> {
-				//付与日　←　パラメータ「付与日数一覧．年月日」の次の「特別休暇．期限情報．使用可能期間．開始日」
-				AvailabilityPeriod period = specialHoliday.getGrantPeriodic().getAvailabilityPeriod();
-				GeneralDate ymd = GeneralDate.ymd(x.getYmd().year(), period.getStartDate().getMonth(), period.getStartDate().getDay());
-				if(ymd.after(x.getYmd())) {
-					x.setYmd(ymd);
-				}
-				//パラメータ「付与日数一覧．年月日」の次の「特別休暇．期限情報．使用可能期間．終了日」
-				GeneralDate ymdDealine = GeneralDate.ymd(x.getYmd().year(), period.getEndDate().getMonth(), period.getEndDate().getDay());
-				if(x.getYmd().after(ymdDealine)) {
-					ymdDealine = ymdDealine.addYears(1);
-				}
-				SpecialHolidayInfor output = new SpecialHolidayInfor(x, Optional.of(ymdDealine));
-				lstOutput.add(output);
-			});
-		}
 		return lstOutput;
 	}
 
@@ -664,70 +672,72 @@ public class InforSpecialLeaveOfEmployeeSevice {
 	public static Map<String, List<SpecialHolidayInfor>> getDeadlineInfo(List<GrantDaysInforByDatesInfo> grantDaysInfors,
 			SpecialHoliday specialHoliday) {
 		Map<String, List<SpecialHolidayInfor>> result = new HashMap<>();
-		TimeLimitSpecification timeSpecifyMethod = specialHoliday.getGrantPeriodic().getTimeSpecifyMethod();
-		grantDaysInfors.stream().forEach(c ->{
-			List<SpecialHolidayInfor> lstOutput = new ArrayList<>();
-			//取得している「特別休暇．期限情報．期限指定方法」をチェックする
-			if(timeSpecifyMethod == TimeLimitSpecification.INDEFINITE_PERIOD) {
-				//パラメータ「付与日数一覧」を元にパラメータ「特別休暇情報一覧」を生成する
-				c.getLstGrantDaysInfor().stream().forEach(x -> {
-					SpecialHolidayInfor output = new SpecialHolidayInfor(x, Optional.empty());
-					lstOutput.add(output);
-				});
-			} else if (timeSpecifyMethod == TimeLimitSpecification.AVAILABLE_GRANT_DATE_DESIGNATE) {
-				//期限日　←　パラメータ「付与日数一覧．年月日」＋取得している「定期付与．付与日（定期）．特別休暇の期限」の「年数」「月数」の年月日
-				SpecialVacationDeadline speDeadline = specialHoliday.getGrantPeriodic().getExpirationDate();
-				c.getLstGrantDaysInfor().stream().forEach(x -> {
-					GeneralDate dealineDate = x.getYmd().addYears(speDeadline.getYears().v());
-					dealineDate = dealineDate.addMonths(speDeadline.getMonths().v());
-					dealineDate = dealineDate.addDays(-1);
-					SpecialHolidayInfor output = new SpecialHolidayInfor(x, Optional.of(dealineDate));
-					lstOutput.add(output);
-				});
-			} else if (timeSpecifyMethod == TimeLimitSpecification.AVAILABLE_UNTIL_NEXT_GRANT_DATE) {
-				//パラメータ「付与日数一覧．年月日」の次の「付与日数一覧．年月日」
-				//　※最後の処理で次の「付与日数一覧．年月日」が存在しない場合 パラメータ「期間外次回付与日」をセット
-				//List<GrantDaysInfor> lstGrantDaysInfor
-				int i = 1;
-				for (NextSpecialLeaveGrant daysInfor : c.getLstGrantDaysInfor()) {
-					SpecialHolidayInfor output = new SpecialHolidayInfor();
-					if(i == c.getLstGrantDaysInfor().size()) {
-						output = new SpecialHolidayInfor(daysInfor, c.getGrantDate() != null
-								? Optional.of(c.getGrantDate().addDays(-1)) : Optional.empty());
-					} else {
-						GrantDaysInfor nextInfor = c.getLstGrantDaysInfor().get(i);
-						output = new SpecialHolidayInfor(daysInfor, Optional.of(nextInfor.getYmd().addDays(-1)));
-					}
-					lstOutput.add(output);
-					i += 1;
-				}
-			} else {
-				c.getLstGrantDaysInfor().stream().forEach(x -> {
-					//付与日　←　パラメータ「付与日数一覧．年月日」の次の「特別休暇．期限情報．使用可能期間．開始日」
-					AvailabilityPeriod period = specialHoliday.getGrantPeriodic().getAvailabilityPeriod();
-					GeneralDate ymd = GeneralDate.ymd(x.getYmd().year(), period.getStartDate().getMonth(), period.getStartDate().getDay());
-					if(ymd.after(x.getYmd())) {
-						x.setYmd(ymd);
-					}
-					//パラメータ「付与日数一覧．年月日」の次の「特別休暇．期限情報．使用可能期間．終了日」
-					GeneralDate ymdDealine = GeneralDate.ymd(x.getYmd().year(), period.getEndDate().getMonth(), period.getEndDate().getDay());
-					if(x.getYmd().after(ymdDealine)) {
-						ymdDealine = ymdDealine.addYears(1);
-					}
-					SpecialHolidayInfor output = new SpecialHolidayInfor(x, Optional.of(ymdDealine));
-					lstOutput.add(output);
-				});
-			}
-			result.put(c.getSid(), lstOutput);
-		});
+
+		// 要修正 jinno
+//		TimeLimitSpecification timeSpecifyMethod = specialHoliday.getGrantPeriodic().getTimeSpecifyMethod();
+//		grantDaysInfors.stream().forEach(c ->{
+//			List<SpecialHolidayInfor> lstOutput = new ArrayList<>();
+//			//取得している「特別休暇．期限情報．期限指定方法」をチェックする
+//			if(timeSpecifyMethod == TimeLimitSpecification.INDEFINITE_PERIOD) {
+//				//パラメータ「付与日数一覧」を元にパラメータ「特別休暇情報一覧」を生成する
+//				c.getLstGrantDaysInfor().stream().forEach(x -> {
+//					SpecialHolidayInfor output = new SpecialHolidayInfor(x, Optional.empty());
+//					lstOutput.add(output);
+//				});
+//			} else if (timeSpecifyMethod == TimeLimitSpecification.AVAILABLE_GRANT_DATE_DESIGNATE) {
+//				//期限日　←　パラメータ「付与日数一覧．年月日」＋取得している「定期付与．付与日（定期）．特別休暇の期限」の「年数」「月数」の年月日
+//				SpecialVacationDeadline speDeadline = specialHoliday.getGrantPeriodic().getExpirationDate();
+//				c.getLstGrantDaysInfor().stream().forEach(x -> {
+//					GeneralDate dealineDate = x.getYmd().addYears(speDeadline.getYears().v());
+//					dealineDate = dealineDate.addMonths(speDeadline.getMonths().v());
+//					dealineDate = dealineDate.addDays(-1);
+//					SpecialHolidayInfor output = new SpecialHolidayInfor(x, Optional.of(dealineDate));
+//					lstOutput.add(output);
+//				});
+//			} else if (timeSpecifyMethod == TimeLimitSpecification.AVAILABLE_UNTIL_NEXT_GRANT_DATE) {
+//				//パラメータ「付与日数一覧．年月日」の次の「付与日数一覧．年月日」
+//				//　※最後の処理で次の「付与日数一覧．年月日」が存在しない場合 パラメータ「期間外次回付与日」をセット
+//				//List<GrantDaysInfor> lstGrantDaysInfor
+//				int i = 1;
+//				for (NextSpecialLeaveGrant daysInfor : c.getLstGrantDaysInfor()) {
+//					SpecialHolidayInfor output = new SpecialHolidayInfor();
+//					if(i == c.getLstGrantDaysInfor().size()) {
+//						output = new SpecialHolidayInfor(daysInfor, c.getGrantDate() != null
+//								? Optional.of(c.getGrantDate().addDays(-1)) : Optional.empty());
+//					} else {
+//						GrantDaysInfor nextInfor = c.getLstGrantDaysInfor().get(i);
+//						output = new SpecialHolidayInfor(daysInfor, Optional.of(nextInfor.getYmd().addDays(-1)));
+//					}
+//					lstOutput.add(output);
+//					i += 1;
+//				}
+//			} else {
+//				c.getLstGrantDaysInfor().stream().forEach(x -> {
+//					//付与日　←　パラメータ「付与日数一覧．年月日」の次の「特別休暇．期限情報．使用可能期間．開始日」
+//					AvailabilityPeriod period = specialHoliday.getGrantPeriodic().getAvailabilityPeriod();
+//					GeneralDate ymd = GeneralDate.ymd(x.getYmd().year(), period.getStartDate().getMonth(), period.getStartDate().getDay());
+//					if(ymd.after(x.getYmd())) {
+//						x.setYmd(ymd);
+//					}
+//					//パラメータ「付与日数一覧．年月日」の次の「特別休暇．期限情報．使用可能期間．終了日」
+//					GeneralDate ymdDealine = GeneralDate.ymd(x.getYmd().year(), period.getEndDate().getMonth(), period.getEndDate().getDay());
+//					if(x.getYmd().after(ymdDealine)) {
+//						ymdDealine = ymdDealine.addYears(1);
+//					}
+//					SpecialHolidayInfor output = new SpecialHolidayInfor(x, Optional.of(ymdDealine));
+//					lstOutput.add(output);
+//				});
+//			}
+//			result.put(c.getSid(), lstOutput);
+//		});
 		return result;
 	}
 
 	public static interface RequireM1 extends RequireM2 {
 
-		List<ElapseYear> elapseYear(String companyId, int specialHolidayCode, String grantDateCode);
+		Optional<ElapseYear> elapseYear(String companyId, int specialHolidayCode);
 
-		Optional<GrantDateTbl> grantDateTbl(String companyId, int specialHolidayCode);
+		Optional<GrantDateTbl> grantDateTbl(String companyId, int specialHolidayCode, String grantDateCode);
 	}
 
 	public static interface RequireM2 {

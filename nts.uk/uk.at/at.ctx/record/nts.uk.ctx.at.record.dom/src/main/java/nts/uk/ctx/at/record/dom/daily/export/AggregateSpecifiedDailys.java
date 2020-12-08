@@ -12,6 +12,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordService;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordValue;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthly;
@@ -58,13 +59,13 @@ public class AggregateSpecifiedDailys {
 		}
 
 		// 前回集計結果　（年休積立年休の集計結果）
-		AggrResultOfAnnAndRsvLeave prevAggrResult = new AggrResultOfAnnAndRsvLeave();
+//		AggrResultOfAnnAndRsvLeave prevAggrResult = new AggrResultOfAnnAndRsvLeave();
 
 		// 月別実績を集計する　（アルゴリズム）
-		val value = AggregateMonthlyRecordService.aggregate(require, cacheCarrier, companyId, employeeId,
+		AggregateMonthlyRecordValue value = AggregateMonthlyRecordService.aggregate(require, cacheCarrier, companyId, employeeId,
 				yearMonth, closureId, closureDate, period,
-				prevAggrResult, Optional.empty(), Optional.empty(), Collections.emptyMap(),
-				companySets, employeeSets, Optional.of(dailyWorks), monthlyWork);
+				Optional.empty(), Optional.empty(),
+				companySets, employeeSets, Optional.of(dailyWorks), monthlyWork, true);
 		if (value.getErrorInfos().size() > 0) {
 			// エラー発生時
 			return Optional.empty();

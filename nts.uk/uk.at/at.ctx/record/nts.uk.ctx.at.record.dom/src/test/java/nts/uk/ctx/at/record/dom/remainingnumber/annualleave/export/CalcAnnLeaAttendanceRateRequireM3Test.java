@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -10,11 +11,8 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.serialize.binary.ObjectBinaryFile;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.test.CalcAnnLeaAttendanceRateRequireM3;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSidPeriodDateEmploymentImport;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
@@ -25,6 +23,10 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.Annu
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
+import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerform;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -42,20 +44,20 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
  *
  */
 public class CalcAnnLeaAttendanceRateRequireM3Test implements GetAnnLeaRemNumWithinPeriodProc.RequireM3 {
-	
+
 	public CalcAnnLeaAttendanceRateRequireM3Test(){
-		binaryData 
-			= ObjectBinaryFile.read(CalcAnnLeaAttendanceRateRequireM3.destionationFile);	
+		binaryData
+			= ObjectBinaryFile.read(CalcAnnLeaAttendanceRateRequireM3.destionationFile);
 	}
-	
+
 	/** バイナリデータ */
 	HashMap<String, Object> binaryData;
-	
+
 	/** 社員 */
 	@Override
 	public EmployeeImport employee(CacheCarrier cacheCarrier, String empId) {
 		//return empEmployeeAdapter.findByEmpIdRequire(cacheCarrier, empId);
-		
+
 		List<EmployeeImport> list = (List<EmployeeImport>) binaryData.get(EmployeeImport.class.toString());
 //		List<EmployeeImport> listFilter
 //			= list.stream().filter(c -> c.getEmployeeId().equals(empId)).collect(Collectors.toList());
@@ -69,8 +71,8 @@ public class CalcAnnLeaAttendanceRateRequireM3Test implements GetAnnLeaRemNumWit
 	@Override
 	public AnnualPaidLeaveSetting annualPaidLeaveSetting(String companyId) {
 		//return annualPaidLeaveSettingRepo.findByCompanyId(companyId);
-		
-		List<AnnualPaidLeaveSetting> list 
+
+		List<AnnualPaidLeaveSetting> list
 			= (List<AnnualPaidLeaveSetting>) binaryData.get(AnnualPaidLeaveSetting.class.toString());
 		return list.stream().filter(c -> c.getCompanyId().equals(companyId)).findFirst().orElse(null);
 	}
@@ -79,12 +81,12 @@ public class CalcAnnLeaAttendanceRateRequireM3Test implements GetAnnLeaRemNumWit
 	@Override
 	public Optional<AnnualLeaveEmpBasicInfo> employeeAnnualLeaveBasicInfo(String employeeId) {
 		// return annLeaEmpBasicInfoRepo.get(employeeId);
-		
+
 		List<AnnualLeaveEmpBasicInfo> list
 			= (List<AnnualLeaveEmpBasicInfo>) binaryData.get(AnnualLeaveEmpBasicInfo.class.toString());
 		AnnualLeaveEmpBasicInfo annualLeaveEmpBasicInfo
 			= list.stream().filter(c -> c.getEmployeeId().equals(employeeId)).findFirst().orElse(null);
-		
+
 		return Optional.ofNullable(annualLeaveEmpBasicInfo);
 	}
 
@@ -92,7 +94,7 @@ public class CalcAnnLeaAttendanceRateRequireM3Test implements GetAnnLeaRemNumWit
 	@Override
 	public Optional<GrantHdTblSet> grantHdTblSet(String companyId, String yearHolidayCode) {
 		// return yearHolidayRepo.findByCode(companyId, yearHolidayCode);
-		
+
 		List<GrantHdTblSet> list
 			= (List<GrantHdTblSet>) binaryData.get(GrantHdTblSet.class.toString());
 		GrantHdTblSet grantHdTblSet
@@ -100,7 +102,7 @@ public class CalcAnnLeaAttendanceRateRequireM3Test implements GetAnnLeaRemNumWit
 				.filter(c -> c.getCompanyId().equals(companyId))
 				.filter(c -> c.getYearHolidayCode().equals(yearHolidayCode))
 				.findFirst().orElse(null);
-		
+
 		return Optional.ofNullable(grantHdTblSet);
 	}
 
@@ -108,15 +110,15 @@ public class CalcAnnLeaAttendanceRateRequireM3Test implements GetAnnLeaRemNumWit
 	@Override
 	public List<LengthServiceTbl> lengthServiceTbl(String companyId, String yearHolidayCode) {
 		// return lengthServiceRepository.findByCode(companyId, yearHolidayCode);
-		
-		List<LengthServiceTbl> list 
+
+		List<LengthServiceTbl> list
 			= (List<LengthServiceTbl>) binaryData.get(LengthServiceTbl.class.toString());
 		List<LengthServiceTbl> listFilter
 			= list.stream()
 					.filter(c -> c.getCompanyId().equals(companyId))
 					.filter(c -> c.getYearHolidayCode().equals(yearHolidayCode))
 					.collect(Collectors.toList());
-		
+
 		return listFilter;
 	}
 
@@ -129,7 +131,8 @@ public class CalcAnnLeaAttendanceRateRequireM3Test implements GetAnnLeaRemNumWit
 //				+ "AND a.endDate <= :endDate "
 //				+ "AND a.closureStatus = 1 "
 //				+ "ORDER BY a.startDate ";
-		List<AnnLeaRemNumEachMonth> list 
+		@SuppressWarnings("unchecked")
+		List<AnnLeaRemNumEachMonth> list
 			= (List<AnnLeaRemNumEachMonth>) binaryData.get(AnnLeaRemNumEachMonth.class.toString());
 		List<AnnLeaRemNumEachMonth> listFilter
 			= list.stream()
@@ -147,8 +150,8 @@ public class CalcAnnLeaAttendanceRateRequireM3Test implements GetAnnLeaRemNumWit
 	public List<WorkInfoOfDailyPerformance> dailyWorkInfos(String employeeId, DatePeriod datePeriod) {
 		//return workInformationRepo.findByPeriodOrderByYmd(employeeId, datePeriod);
 		//	"select * from KRCDT_WORK_SCHEDULE_TIME where SID = ? and YMD >= ? and YMD <= ? order by YMD ")) {
-		
-		List<WorkInfoOfDailyPerformance> list 
+
+		List<WorkInfoOfDailyPerformance> list
 			= (List<WorkInfoOfDailyPerformance>)binaryData.get(WorkInfoOfDailyPerformance.class.toString());
 		List<WorkInfoOfDailyPerformance> listFilter
 			= list.stream()
@@ -160,7 +163,7 @@ public class CalcAnnLeaAttendanceRateRequireM3Test implements GetAnnLeaRemNumWit
 
 		return listFilter;
 	}
-	
+
 	@Override
 	public Optional<WorkType> workType(String companyId, String workTypeCd) {
 		// return workTypeRepo.findByPK(companyId, workTypeCd);
@@ -170,7 +173,7 @@ public class CalcAnnLeaAttendanceRateRequireM3Test implements GetAnnLeaRemNumWit
 			= list.stream()
 				.filter(c -> c.getWorkTypeCode().equals(workTypeCd))
 				.findFirst().orElse(null);
-		
+
 		return Optional.ofNullable(workType);
 	}
 
@@ -184,14 +187,14 @@ public class CalcAnnLeaAttendanceRateRequireM3Test implements GetAnnLeaRemNumWit
 			= list.stream()
 				.filter(c -> c.getCompanyId().equals(companyId))
 				.findFirst().orElse(null);
-		
+
 		return Optional.ofNullable(operationStartSetDailyPerform);
 	}
 
 	@Override
 	public List<InterimRemain> interimRemains(String employeeId, DatePeriod datePeriod, RemainType remainType) {
 //		return interimRemainRepo.getRemainBySidPriod(employeeId, dateData, remainType);
-		List<InterimRemain> list 
+		List<InterimRemain> list
 			= (List<InterimRemain>)binaryData.get(InterimRemain.class.toString());
 		List<InterimRemain> listFilter
 			= list.stream()
@@ -200,13 +203,13 @@ public class CalcAnnLeaAttendanceRateRequireM3Test implements GetAnnLeaRemNumWit
 				.filter(c -> c.getYmd().beforeOrEquals(datePeriod.end()))
 				.filter(c -> c.getRemainType().equals(remainType))
 				.collect(Collectors.toList());
-	
+
 		return listFilter;
 	}
 
 	@Override
 	public Optional<TmpAnnualHolidayMng> tmpAnnualHolidayMng(String mngId) {
-//		List<TmpAnnualHolidayMng> list 
+//		List<TmpAnnualHolidayMng> list
 //			= (List<TmpAnnualHolidayMng>)binaryData.get(TmpAnnualHolidayMng.class.toString());
 //		List<TmpAnnualHolidayMng> listFilter
 //			= list.stream()
@@ -217,7 +220,7 @@ public class CalcAnnLeaAttendanceRateRequireM3Test implements GetAnnLeaRemNumWit
 //				.collect(Collectors.toList());
 //
 //			return listFilter;
-	
+
 		System.out.print("要実装");
 		final String className = Thread.currentThread().getStackTrace()[1].getClassName();
 	    System.out.println(className);
@@ -236,13 +239,13 @@ public class CalcAnnLeaAttendanceRateRequireM3Test implements GetAnnLeaRemNumWit
 	    final String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
         System.out.println(methodName);
 //        return null;
-        
+
 //        FIND_BY_PERIOD_INTO_END = "SELECT a FROM KrcdtMonMerge a "
 //    			+ "WHERE a.krcdtMonMergePk.employeeId = :employeeId "
 //    			+ "AND a.endYmd >= :startDate "
 //    			+ "AND a.endYmd <= :endDate "
 //    			+ "ORDER BY a.startYmd ";
-        List<AttendanceTimeOfMonthly> list 
+        List<AttendanceTimeOfMonthly> list
 			= (List<AttendanceTimeOfMonthly>)binaryData.get(AttendanceTimeOfMonthly.class.toString());
 		List<AttendanceTimeOfMonthly> listFilter
 			= list.stream()
@@ -354,12 +357,20 @@ public class CalcAnnLeaAttendanceRateRequireM3Test implements GetAnnLeaRemNumWit
 	@Override
 	public Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate) {
 		// TODO Auto-generated method stub
-		
-		
-		
-		
-		
-		
+		return null;
+	}
+
+
+	@Override
+	public List<SharedSidPeriodDateEmploymentImport> employmentHistories(CacheCarrier cacheCarrier, List<String> sids,
+			DatePeriod datePeriod) {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
+
+	@Override
+	public List<ClosureEmployment> employmentClosure(String companyId, List<String> employmentCDs) {
+		// TODO 自動生成されたメソッド・スタブ
 		return null;
 	}
 
