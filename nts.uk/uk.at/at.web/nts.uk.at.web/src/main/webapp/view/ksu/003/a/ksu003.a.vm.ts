@@ -1490,8 +1490,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.workType === WorkTimeForm.FIXED) { // 10
 
 						}
-						// đang để tạm là 1
-						if (self.dataScreen003A().canModified == 1 || self.dataScreen003A().employeeInfo[i].workInfoDto.isConfirmed == 1) { // [※3]=〇 ※4 x x
+						// đang để tạm là 2
+						if (self.dataScreen003A().canModified == 2 || self.dataScreen003A().employeeInfo[i].workInfoDto.isConfirmed == 2) { // [※3]=〇 ※4 x x
 							middleContentDeco.push(new CellColor("worktypeCode", self.lstEmpId[i].empId, "xseal", 0));
 							middleContentDeco.push(new CellColor("worktypeName", self.lstEmpId[i].empId, "xseal", 0));
 							middleContentDeco.push(new CellColor("worktimeName", self.lstEmpId[i].empId, "xseal", 0));
