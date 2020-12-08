@@ -5,6 +5,8 @@ import nts.arc.layer.ws.WebService;
 import nts.arc.task.AsyncTaskInfo;
 import nts.uk.ctx.at.function.app.command.alarmworkplace.alarmlist.ExtractAlarmListWorkPlaceCommandHandler;
 import nts.uk.ctx.at.function.app.command.alarmworkplace.alarmlist.ExtractAlarmListWorkPlaceCommand;
+import nts.uk.ctx.at.function.app.command.alarmworkplace.alarmlist.SendEmailAlarmListWorkPlaceCommand;
+import nts.uk.ctx.at.function.app.command.alarmworkplace.alarmlist.SendEmailAlarmListWorkPlaceCommandHandler;
 import nts.uk.ctx.at.function.app.command.alarmworkplace.extractprocessstatus.CreateAlarmListExtractProcessStatusWorkplaceCommand;
 import nts.uk.ctx.at.function.app.command.alarmworkplace.extractprocessstatus.CreateAlarmListExtractProcessStatusWorkplaceCommandHandler;
 import nts.uk.ctx.at.function.app.find.alarmworkplace.alarmlist.CheckConditionDto;
@@ -31,6 +33,9 @@ public class ExtractAlarmListWorkPlaceWebService extends WebService {
     @Inject
     private ExtractAlarmListWorkPlaceCommandHandler extractAlarmListWorkPlaceCommandHandler;
 
+    @Inject
+    private SendEmailAlarmListWorkPlaceCommandHandler sendEmailCommandHandler;
+
     @POST
     @Path("init")
     public InitActiveAlarmListDto initActiveAlarmList() {
@@ -53,5 +58,11 @@ public class ExtractAlarmListWorkPlaceWebService extends WebService {
     @Path("extract/execute")
     public AsyncTaskInfo extractAlarm(ExtractAlarmListWorkPlaceCommand command) {
         return extractAlarmListWorkPlaceCommandHandler.handle(command);
+    }
+
+    @POST
+    @Path("send-email")
+    public JavaTypeResult<String> sendEmailStarting(SendEmailAlarmListWorkPlaceCommand command) {
+        return new JavaTypeResult<String>(sendEmailCommandHandler.handle(command));
     }
 }
