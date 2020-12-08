@@ -159,9 +159,10 @@ module nts.uk.com.view.ccg003.a {
       if (!vm.anniversaries()[index()].flag) {
         return;
       }
+      const anniversary = vm.anniversaries()[index()].anniversaryNotice.displayDate;
       const command = {
         personalId: vm.anniversaries()[index()].anniversaryNotice.personalId,
-        anniversary: vm.anniversaries()[index()].anniversaryNotice.anniversary,
+        anniversary: moment.utc(anniversary, 'MM-DD').format('MMDD'),
         referDate: moment.utc(vm.dateValue().endDate).toISOString(),
       }
       vm.$blockui('show');
