@@ -1,4 +1,5 @@
-package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.export;
+package nts.uk.ctx.at.record.dom.daily.export;
+
 
 import java.util.Collections;
 import java.util.List;
@@ -37,9 +38,9 @@ public class AggregateSpecifiedDailys {
 	 * @return 月別実績(Work)
 	 */
 	public static Optional<IntegrationOfMonthly> algorithm(RequireM1 require, CacheCarrier cacheCarrier,
-			String companyId, String employeeId, 
-			YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate, DatePeriod period, 
-			Optional<String> empCalAndSumExecLogID, List<IntegrationOfDaily> dailyWorks, 
+			String companyId, String employeeId,
+			YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate, DatePeriod period,
+			Optional<String> empCalAndSumExecLogID, List<IntegrationOfDaily> dailyWorks,
 			Optional<IntegrationOfMonthly> monthlyWork) {
 
 		// 月別集計で必要な会社別設定を取得する
@@ -48,17 +49,17 @@ public class AggregateSpecifiedDailys {
 			// エラー発生時
 			return Optional.empty();
 		}
-		
+
 		// 月別集計で必要な社員別設定を取得
 		val employeeSets = MonAggrEmployeeSettings.loadSettings(require, cacheCarrier, companyId, employeeId, period);
 		if (employeeSets.getErrorInfos().size() > 0){
 			// エラー発生時
 			return Optional.empty();
 		}
-		
+
 		// 前回集計結果　（年休積立年休の集計結果）
 		AggrResultOfAnnAndRsvLeave prevAggrResult = new AggrResultOfAnnAndRsvLeave();
-		
+
 		// 月別実績を集計する　（アルゴリズム）
 		val value = AggregateMonthlyRecordService.aggregate(require, cacheCarrier, companyId, employeeId,
 				yearMonth, closureId, closureDate, period,
@@ -72,9 +73,9 @@ public class AggregateSpecifiedDailys {
 		// 月別実績(Work)を返す
 		return Optional.of(value.getIntegration());
 	}
-	
+
 	public static interface RequireM1 extends MonAggrCompanySettings.RequireM6, MonAggrEmployeeSettings.RequireM2,
 		AggregateMonthlyRecordService.RequireM2 {
-		
+
 	}
 }

@@ -56,24 +56,21 @@ public class SpecialLeaveManagementService {
 			CacheCarrier cacheCarrier,
 			ComplileInPeriodOfSpecialLeaveParam param) {
 
+
 		// 特別休暇の集計結果情報
 		InPeriodOfSpecialLeaveResultInfor outputData = new InPeriodOfSpecialLeaveResultInfor();
 
-		// 特別休暇コードから設定を取得（会社設定）
-		Optional<SpecialHoliday> specialHolidayOpt
-			= require.specialHoliday(param.getCid(), param.getSpecialLeaveCode());
+		require.specialHoliday(param.getCid(), param.getSpecialLeaveCode());
 
 		// ドメインモデル「特別休暇基本情報」を取得する
 		Optional<SpecialLeaveBasicInfo> optBasicInfor = require.specialLeaveBasicInfo(param.getSid(), param.getSpecialLeaveCode(), UseAtr.USE);
-		SpecialLeaveGrantSetting specialLeaveGrantSetting;
 		if(!optBasicInfor.isPresent() ){
 //				|| optBasicInfor.get().getUsed() == UseAtr.NOT_USE) {
 //			RemainDaysOfSpecialHoliday remainDays = new RemainDaysOfSpecialHoliday(new SpecialHolidayRemainInfor(0, 0, 0), 0, Optional.empty(), new ArrayList<>());
 //			InPeriodOfSpecialLeave specialLeaveInfor = new InPeriodOfSpecialLeave(new ArrayList<>(), remainDays, new ArrayList<>(), new ArrayList<>());
 //			return new InPeriodOfSpecialLeaveResultInfor(specialLeaveInfor, Finally.empty(), Finally.of(param.getComplileDate().end().addDays(1)));
 
-			// ドメインモデル「特別休暇付与設定」を取得する
-			specialLeaveGrantSetting = optBasicInfor.get().getGrantSetting();
+			optBasicInfor.get().getGrantSetting();
 		}
 
 		// 社員
@@ -292,8 +289,6 @@ public class SpecialLeaveManagementService {
 					aggrPeriod.start(),
 					prevSpecialLeaveInfo.getGrantRemainingList());
 		}
-
-		boolean isAfterClosureStart = false;
 
 		// 休暇残数を計算する締め開始日を取得する
 		Optional<GeneralDate> closureStartOpt = Optional.empty();
@@ -713,9 +708,7 @@ public class SpecialLeaveManagementService {
 				continue;
 			}
 
-			// 特別休暇集計期間WORKを作成し、Listに追加
-			SpecialLeaveLapsedWork specialLeaveLapsedWork
-				= new SpecialLeaveLapsedWork();
+			new SpecialLeaveLapsedWork();
 
 			// 期間．開始日←「処理単位分割日．年月日」
 			// 期間．終了日←次の「処理単位分割日．年月日」の前日

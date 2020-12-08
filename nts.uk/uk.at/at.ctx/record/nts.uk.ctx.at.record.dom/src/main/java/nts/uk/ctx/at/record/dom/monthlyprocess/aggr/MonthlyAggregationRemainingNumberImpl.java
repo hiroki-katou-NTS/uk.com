@@ -288,12 +288,12 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 			//未消化数
 			ReserveLeaveUndigestedNumber undigestedNumber= new ReserveLeaveUndigestedNumber();
 
-			ReserveLeaveRemainingDayNumber days = asOfStartNextDayOfPeriodEnd.getRemainingNumber().getＲeserveLeaveUndigestedNumber().getUndigestedDays();
+			ReserveLeaveRemainingDayNumber undigestedNumber = asOfStartNextDayOfPeriodEnd.getRemainingNumber().getＲeserveLeaveUndigestedNumber().getUndigestedDays();
 			//Optional<LeaveUndigestTime> minutes = asOfStartNextDayOfPeriodEnd.getRemainingNumber().getAnnualLeaveUndigestNumber().get().getMinutes();
 
-			undigestedNumber=ReserveLeaveUndigestedNumber.of(
-					new ReserveLeaveRemainingDayNumber(days.v())
-					);
+//			undigestedNumber=ReserveLeaveUndigestedNumber.of(
+//					new ReserveLeaveRemainingDayNumber(days.v())
+//					);
 
 			// 積立年休月別残数データを更新
 			ReserveLeaveGrant reserveLeaveGrant = null;
@@ -307,7 +307,7 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 					remainingNumber.getReserveLeaveNoMinus(), remainingNumber.getReserveLeaveWithMinus(),
 					Optional.ofNullable(reserveLeaveGrant),
 					asOfStartNextDayOfPeriodEnd.getRemainingNumber().getReserveLeaveWithMinus().getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().isPresent(),
-					undigestedNumber );
+					undigestedNumber.v() );
 
 			this.aggregateResult.getRsvLeaRemNumEachMonthList().add(rsvLeaRemNum);
 
@@ -481,8 +481,9 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 					// period.end(), specialLeaveCode, true,
 					(interimRemainMngMode == InterimRemainMngMode.MONTHLY), period.end(), specialLeaveCode, false,
 					this.isOverWriteRemain, interimMng, interimSpecialData);
-			InPeriodOfSpecialLeaveResultInfor aggrResult = SpecialLeaveManagementService
-					.complileInPeriodOfSpecialLeave(require, cacheCarrier, param);
+			InPeriodOfSpecialLeaveResultInfor aggrResult
+				= SpecialLeaveManagementService.complileInPeriodOfSpecialLeave(
+						require, cacheCarrier, param);
 
 			SpecialLeaveInfo asOfPeriodEnd　=　aggrResult.getAsOfPeriodEnd();
 			SpecialLeaveInfo asOfStartNextDayOfPeriodEnd=aggrResult.getAsOfStartNextDayOfPeriodEnd();

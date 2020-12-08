@@ -67,7 +67,7 @@ public class ComplileInPeriodOfSpecialLeaveFinder implements ComplileInPeriodOfS
 		// requestList273
 		ComplileInPeriodOfSpecialLeaveParam param = new ComplileInPeriodOfSpecialLeaveParam(cid, sid,
 				complileDate, mode, baseDate, specialLeaveCode, mngAtr,
-				false, new ArrayList<>(), new ArrayList<>(), Optional.empty());//TODO can them thong tin cho 3 bien nay
+				false, new ArrayList<>(), new ArrayList<>());
 		InPeriodOfSpecialLeave specialLeave = SpecialLeaveManagementService
 				.complileInPeriodOfSpecialLeave(
 						SpecialLeaveManagementService.createRequireM5(specialLeaveGrantRepo, shareEmploymentAdapter,

@@ -121,7 +121,6 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 		LoginUserContext loginUserContext = AppContexts.user();
 		String companyId = loginUserContext.companyId();
 
-		// 期間中の年休残数を取得
 		Optional<AggrResultOfAnnualLeave> aggrResultOfAnnualLeave =
 				GetAnnLeaRemNumWithinPeriodProc.
 				algorithm(require, cacheCarrier, companyId,
@@ -130,12 +129,12 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 						InterimRemainMngMode.OTHER,
 						designatedPeriod.end(),
 						false,
-//						false,
 						Optional.of(false),
 						Optional.empty(),
 						Optional.empty(),
 						Optional.empty(),
 						Optional.empty());
+
 		if (aggrResultOfAnnualLeave.isPresent()){
 			//締め開始日以前に付与された年休残数を取得する
 			yearlyHolidaysTimeRemainingExport = getNumberOfAnnualHolidayGrantedBeforeCloseDate(employeeId, companyId, startDate.get(), designatedPeriod.start(), designatedPeriod.end());

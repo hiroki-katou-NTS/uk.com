@@ -40,9 +40,9 @@ public class RemainSpecialHoidayCalculation {
 				period.getPeriod(),
 				true, period.getPeriod().end(), specialLeaveCode, true,
 				true, interimMng, interimSpecialData);
+
 		return SpecialLeaveManagementService.complileInPeriodOfSpecialLeave(
-				require, cacheCarrier, param)
-					.getAggSpecialLeaveResult();
+				require, cacheCarrier, param);
 	}
 
 	public static interface RequireM1 extends SpecialLeaveManagementService.RequireM5 {

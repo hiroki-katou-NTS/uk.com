@@ -23,6 +23,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremain
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeave;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeaveGrant;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeaveUndigestedNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
@@ -36,7 +37,7 @@ public class RsvLeaRemNumEachMonthDto extends MonthlyItemCommon {
 
 	/***/
 	private static final long serialVersionUID = 1L;
-	
+
 	/** 会社ID */
 	private String companyId;
 
@@ -64,11 +65,11 @@ public class RsvLeaRemNumEachMonthDto extends MonthlyItemCommon {
 	/** 積立年休 */
 	@AttendanceItemLayout(jpPropertyName = RETENTION, layout = LAYOUT_C)
 	private ReserveLeaveDto reserveLeave;
-	
+
 	/** 実積立年休 */
 	@AttendanceItemLayout(jpPropertyName = REAL + RETENTION, layout = LAYOUT_D)
 	private ReserveLeaveDto realReserveLeave;
-	
+
 	/** 積立年休付与情報 */
 	@AttendanceItemValue(type = ValueType.DAYS)
 	@AttendanceItemLayout(jpPropertyName = GRANT + INFO, layout = LAYOUT_E)
@@ -78,6 +79,9 @@ public class RsvLeaRemNumEachMonthDto extends MonthlyItemCommon {
 	@AttendanceItemLayout(jpPropertyName = GRANT + ATTRIBUTE, layout = LAYOUT_F)
 	@AttendanceItemValue(type = ValueType.FLAG)
 	private boolean grantAtr;
+
+	/** 未消化数 */
+	private double undigestedNumber;
 
 	@Override
 	public String employeeId() {
@@ -116,20 +120,21 @@ public class RsvLeaRemNumEachMonthDto extends MonthlyItemCommon {
 			ym = this.ym;
 		}else {
 			if(datePeriod == null){
-				datePeriod = new DatePeriodDto(GeneralDate.ymd(ym.year(), ym.month(), 1), 
+				datePeriod = new DatePeriodDto(GeneralDate.ymd(ym.year(), ym.month(), 1),
 						GeneralDate.ymd(ym.year(), ym.month(), ym.lastDateInMonth()));
 			}
 		}
 		if(closureDate == null){
 			closureDate = this.closureDate;
 		}
+
 		return RsvLeaRemNumEachMonth.of(employeeId, ym, ConvertHelper.getEnum(closureID, ClosureId.class),
 				closureDate == null ? null : closureDate.toDomain(), datePeriod == null ? null : datePeriod.toDomain(),
 				closureStatus == ClosureStatus.PROCESSED.value ? ClosureStatus.PROCESSED : ClosureStatus.UNTREATED,
-				reserveLeave == null ? new ReserveLeave() : reserveLeave.toDomain(), 
+				reserveLeave == null ? new ReserveLeave() : reserveLeave.toDomain(),
 				realReserveLeave == null ? new ReserveLeave() : realReserveLeave.toDomain(),
 				Optional.of(ReserveLeaveGrant.of(new ReserveLeaveGrantDayNumber(reserveLeaveGrant))),
-				grantAtr);
+				grantAtr, undigestedNumber);
 	}
 
 	@Override

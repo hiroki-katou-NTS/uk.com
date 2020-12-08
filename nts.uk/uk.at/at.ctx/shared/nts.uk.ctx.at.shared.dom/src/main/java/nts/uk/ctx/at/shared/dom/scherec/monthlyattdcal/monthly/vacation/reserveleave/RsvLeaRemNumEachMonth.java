@@ -6,6 +6,7 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
@@ -83,6 +84,7 @@ public class RsvLeaRemNumEachMonth extends AggregateRoot {
 	 * @param realReserveLeave 実積立年休
 	 * @param reserveLeaveGrant 積立年休付与情報
 	 * @param grantAtr 付与区分
+	 * @param undigestedNumber 未消化数
 	 * @return 積立年休月別残数データ
 	 */
 	public static RsvLeaRemNumEachMonth of(
@@ -96,7 +98,7 @@ public class RsvLeaRemNumEachMonth extends AggregateRoot {
 			ReserveLeave realReserveLeave,
 			Optional<ReserveLeaveGrant> reserveLeaveGrant,
 			boolean grantAtr,
-			ReserveLeaveUndigestedNumber undigestedNumber){
+			double undigestedNumber){
 
 		RsvLeaRemNumEachMonth domain = new RsvLeaRemNumEachMonth(
 				employeeId, yearMonth, closureId, closureDate);
@@ -106,7 +108,7 @@ public class RsvLeaRemNumEachMonth extends AggregateRoot {
 		domain.realReserveLeave = realReserveLeave;
 		domain.reserveLeaveGrant = reserveLeaveGrant;
 		domain.grantAtr = grantAtr;
-		domain.undigestedNumber = undigestedNumber;
+		domain.undigestedNumber = ReserveLeaveUndigestedNumber.of(new ReserveLeaveRemainingDayNumber(undigestedNumber));
 		return domain;
 	}
 }
