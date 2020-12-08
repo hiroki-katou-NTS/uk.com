@@ -51,15 +51,15 @@ public interface AggregateProcessPub {
      *
      * @param cid             会社ID
      * @param period          期間
-     * @param alarmCheckWkpId List＜固定抽出条件ID＞
-     * @param optionalIds     List＜任意抽出条件ID＞
+     * @param fixedExtractCondIds List＜固定抽出条件ID＞
+     * @param extractCondIds     List＜任意抽出条件ID＞
      * @param workplaceIds    List＜職場ID＞
      * @return List＜アラーム抽出結果＞
      */
     List<AlarmListExtractionInfoWorkplaceExport> processSchedule(String cid, DatePeriod period,
-                                                                            List<String> alarmCheckWkpId,
-                                                                            List<String> optionalIds,
-                                                                            List<String> workplaceIds);
+                                                                 List<String> fixedExtractCondIds,
+                                                                 List<String> extractCondIds,
+                                                                 List<String> workplaceIds);
 
     /**
      * 月次の集計処理
@@ -72,7 +72,7 @@ public interface AggregateProcessPub {
      * @return List＜アラームリスト抽出情報（職場）＞
      */
     List<AlarmListExtractionInfoWorkplaceExport> processMonthly(String cid, YearMonth ym,
-                                                                           List<String> fixedExtractCondIds,
-                                                                           List<String> extractCondIds,
-                                                                           List<String> workplaceIds);
+                                                                List<String> fixedExtractCondIds,
+                                                                List<String> extractCondIds,
+                                                                List<String> workplaceIds);
 }

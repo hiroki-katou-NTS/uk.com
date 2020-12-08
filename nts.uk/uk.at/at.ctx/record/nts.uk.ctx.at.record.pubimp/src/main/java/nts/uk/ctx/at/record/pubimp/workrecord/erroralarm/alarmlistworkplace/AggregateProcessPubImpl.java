@@ -54,10 +54,10 @@ public class AggregateProcessPubImpl implements AggregateProcessPub {
 
     @Override
     public List<AlarmListExtractionInfoWorkplaceExport> processSchedule(String cid, DatePeriod period,
-                                                                        List<String> alarmCheckWkpId,
-                                                                        List<String> optionalIds,
+                                                                        List<String> fixedExtractCondIds,
+                                                                        List<String> extractCondIds,
                                                                         List<String> workplaceIds) {
-        return convert(aggregateProcessScheduleService.process(cid, period, alarmCheckWkpId, optionalIds, workplaceIds));
+        return convert(aggregateProcessScheduleService.process(cid, period, fixedExtractCondIds, extractCondIds, workplaceIds));
     }
 
     @Override

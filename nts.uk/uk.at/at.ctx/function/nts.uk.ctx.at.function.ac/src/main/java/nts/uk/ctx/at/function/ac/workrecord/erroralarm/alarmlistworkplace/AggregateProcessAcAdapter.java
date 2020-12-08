@@ -44,10 +44,10 @@ public class AggregateProcessAcAdapter implements AggregateProcessAdapter {
 
     @Override
     public List<AlarmListExtractInfoWorkplace> processSchedule(String cid, DatePeriod period,
-                                                               List<String> alarmCheckWkpId,
-                                                               List<String> optionalIds,
+                                                               List<String> fixedExtractCondIds,
+                                                               List<String> extractCondIds,
                                                                List<String> workplaceIds) {
-        return convert(aggregateProcessPub.processSchedule(cid, period, alarmCheckWkpId, optionalIds, workplaceIds));
+        return convert(aggregateProcessPub.processSchedule(cid, period, fixedExtractCondIds, extractCondIds, workplaceIds));
 
     }
 

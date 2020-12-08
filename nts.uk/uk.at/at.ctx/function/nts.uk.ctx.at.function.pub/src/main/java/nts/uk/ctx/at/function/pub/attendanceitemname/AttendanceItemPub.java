@@ -19,6 +19,6 @@ public interface AttendanceItemPub {
 	 * @param cid
 	 * @return List<AttendanceItemExport>
 	 */
-	List<AttendanceItemExport> getByAttendenceIds(String cid, int typeOfAttendanceItem);
+	List<AttendanceItemExport> getAttendanceItemName(String cid, int typeOfAttendanceItem);
 
 }

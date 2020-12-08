@@ -40,7 +40,7 @@ public class AttendanceItemPubImpl implements AttendanceItemPub{
 	}
 
 	@Override
-	public List<AttendanceItemExport> getByAttendenceIds(String cid,int typeOfAttendanceItem) {
+	public List<AttendanceItemExport> getAttendanceItemName(String cid,int typeOfAttendanceItem) {
 		List<AttendanceType> attendanceTypes = attendanceTypeRepository.getItemByAtrandType(cid,typeOfAttendanceItem);
 		List<Integer> attendanceItemIds = attendanceTypes.stream().map(AttendanceType::getAttendanceItemId).collect(Collectors.toList());
 

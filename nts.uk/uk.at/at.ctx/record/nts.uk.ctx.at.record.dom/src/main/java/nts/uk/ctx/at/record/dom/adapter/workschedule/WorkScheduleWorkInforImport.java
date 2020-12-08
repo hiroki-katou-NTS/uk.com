@@ -17,7 +17,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class WorkScheduleWorkInforImport  {
-	
+
+	private String employeeId;
+
 	private String workTyle;
 	
 	private String workTime;
@@ -33,10 +35,11 @@ public class WorkScheduleWorkInforImport  {
 	///** 日別勤怠の出退勤**/
 	private Optional<TimeLeavingOfDailyAttdImport> timeLeavingOfDailyAttd;
 
-	public WorkScheduleWorkInforImport(String workTyle, String workTime, int goStraightAtr, int backStraightAtr,
+	public WorkScheduleWorkInforImport(String employeeId, String workTyle, String workTime, int goStraightAtr, int backStraightAtr,
 			TimeLeavingOfDailyAttdImport timeLeavingOfDailyAttd,
 			List<BreakTimeOfDailyAttdImport> listBreakTimeOfDailyAttdImport) {
 		super();
+		this.employeeId = employeeId;
 		this.workTyle = workTyle;
 		this.workTime = workTime;
 		this.goStraightAtr = goStraightAtr;

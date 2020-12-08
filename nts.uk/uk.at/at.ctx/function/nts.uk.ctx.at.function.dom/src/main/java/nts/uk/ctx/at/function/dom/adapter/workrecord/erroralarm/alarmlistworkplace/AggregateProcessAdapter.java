@@ -21,8 +21,8 @@ public interface AggregateProcessAdapter {
                                                                     List<String> workplaceIds);
 
     List<AlarmListExtractInfoWorkplace> processSchedule(String cid, DatePeriod period,
-                                                        List<String> alarmCheckWkpId,
-                                                        List<String> optionalIds,
+                                                        List<String> fixedExtractCondIds,
+                                                        List<String> extractCondIds,
                                                         List<String> workplaceIds);
 
     List<AlarmListExtractInfoWorkplace> processMonthly(String cid, YearMonth ym,
