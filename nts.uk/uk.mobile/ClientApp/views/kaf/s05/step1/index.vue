@@ -35,7 +35,7 @@
         <span class="textSize uk-text-dark-gray">{{ "KAFS09_4" | i18n }}</span>
         <button type="button" class="btn btn-selection mt-2 mb-2">
           <!-- A4_2_1 -->
-          <span class="badge badge-secondary">Code's Work Type</span>
+          <span class="badge badge-secondary">{{model.work.workType.code}}</span>
           <span>Name's Work Type</span>
         </button>
 

@@ -1,3 +1,4 @@
+import {ParamStartMobile, OvertimeAppAtr, Model} from '../a/define.interface';
 import { _, Vue } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 import { StepwizardComponent } from '@app/components';
@@ -32,6 +33,8 @@ export class KafS05Component extends KafS00ShrComponent {
     public modeNew: boolean = true;
     public application: Application = null;
 
+    public model: Model;
+
     @Prop() 
     public readonly params: InitParam;
 
@@ -63,8 +66,22 @@ export class KafS05Component extends KafS00ShrComponent {
                 vm.updateKaf000_A_Params(vm.user);
                 vm.updateKaf000_B_Params(vm.modeNew);
                 vm.updateKaf000_C_Params(vm.modeNew);
+                let command = {} as ParamStartMobile;
+                let url = self.location.search.split('=')[1];
+                command.mode = vm.modeNew;
+                command.companyId = vm.user.companyId;
+                command.employeeIdOptional = vm.user.employeeId;
+                if (url == '0') {
+                    command.overtimeAppAtr = OvertimeAppAtr.EARLY_OVERTIME;
+                } else if (url == '1') {
+                    command.overtimeAppAtr = OvertimeAppAtr.NORMAL_OVERTIME;
+                } else {
+                    command.overtimeAppAtr = OvertimeAppAtr.EARLY_NORMAL_OVERTIME;
+                }
+                command.appDispInfoStartupOutput = vm.appDispInfoStartupOutput;
+
                 if (vm.modeNew) {
-                    return vm.$http.post('at', API.initAppNew, {});  
+                    return vm.$http.post('at', API.start, command);  
                 }
                 
                 return true;
@@ -72,7 +89,8 @@ export class KafS05Component extends KafS00ShrComponent {
         }).then((result: any) => {
             if (result) {
                 if (vm.modeNew) {
-                    
+                    vm.model = {} as Model;
+                    vm.model.displayInfoOverTime = result.displayInfoOverTime;
                 } else {
 
                 }   
@@ -88,6 +106,7 @@ export class KafS05Component extends KafS00ShrComponent {
 
     public kaf000BChangeDate(objectDate) {
         const vm = this;
+        console.log('kaf000BChangeDate');
         if (objectDate.startDate) {
             if (vm.modeNew) {
                 vm.application.appDate = vm.$dt.date(objectDate.startDate, 'YYYY/MM/DD');
@@ -100,16 +119,19 @@ export class KafS05Component extends KafS00ShrComponent {
     
     public kaf000BChangePrePost(prePostAtr) {
         const vm = this;
+        console.log('kaf000BChangePrePost');
         vm.application.prePostAtr = prePostAtr;
     }
 
     public kaf000CChangeReasonCD(opAppStandardReasonCD) {
         const vm = this;
+        console.log('kaf000CChangeReasonCD');
         vm.application.opAppStandardReasonCD = opAppStandardReasonCD;
     }
 
     public kaf000CChangeAppReason(opAppReason) {
         const vm = this;
+        console.log('kaf000CChangeAppReason');
         vm.application.opAppReason = opAppReason;
     }
 
@@ -229,7 +251,7 @@ export class KafS05Component extends KafS00ShrComponent {
     }
 }
 const API = {
-    initAppNew: 'at/request/application/initApp',
+    start: 'at/request/application/overtime/mobile/start',
     checkBeforeRegisterSample: 'at/request/application/checkBeforeSample',
     registerSample: 'at/request/application/changeDataSample',
     sendMailAfterRegisterSample: ''

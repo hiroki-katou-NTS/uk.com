@@ -62,7 +62,7 @@ export enum StaturoryAtrOfHolidayWork {
 export interface ExcessStateDetail {
     frame: number;
     type: number;
-    excessState: number
+    excessState: number;
 }
 export interface ParamBreakTime {
     companyId: string;
@@ -164,7 +164,7 @@ export interface OvertimeAppSet {
 export interface AgreeOverTimeOutput {
     isCurrentMonth: boolean;
     currentTimeMonth: any;
-    currentMonth: string
+    currentMonth: string;
     isNextMonth: boolean;
     nextTimeMonth: any;
     nextMonth: string;
@@ -189,17 +189,17 @@ export interface AgreementTimeImport {
 export interface AgreeTimeOfMonthExport {
     agreementTime: number;
     limitErrorTime: number;
-    limitAlarmTime: number
+    limitAlarmTime: number;
     exceptionLimitErrorTime?: number;
     exceptionLimitAlarmTime?: number;
-    status: number
+    status: number;
 }
 export interface AgreMaxTimeOfMonthExport {
     agreementTime: number;
     maxTime: number;
     status: number;
 }
-enum OvertimeAppAtr {
+export enum OvertimeAppAtr {
 
     EARLY_OVERTIME,
     NORMAL_OVERTIME,
@@ -231,7 +231,7 @@ export interface FirstParam { // start param
     sids?: Array<string>; // 申請者リスト
     dates?: Array<string>; // 申請対象日リスト
     mode: number; // 新規詳細モード
-    dateOp?: string // 申請日
+    dateOp?: string; // 申請日
     overtimeAppAtr: number; // 残業申請区分
     appDispInfoStartupDto: any; // 申請表示情報
     startTimeSPR?: number; // SPR連携の開始時刻
@@ -269,7 +269,7 @@ export interface ApplicationTime {
 export interface OvertimeApplicationSetting {
     frameNo: number;
     attendanceType: number;
-    applicationTime: number
+    applicationTime: number;
 }
 export interface OverTimeShiftNight {
     midNightHolidayTimes: Array<HolidayMidNightTime>;
@@ -280,7 +280,7 @@ export interface AnyItemValue {
     itemNo: number;
     times: number;
     amount: number;
-    time: number
+    time: number;
 }
 export interface ReasonDivergence {
 
@@ -289,7 +289,7 @@ export interface ReasonDivergence {
     diviationTime: number;
 }
 export interface DivergenceReason {
-    
+    code: number;
 }
 export interface WorkContent {
     workTypeCode: string;
@@ -309,9 +309,9 @@ export interface BreakTimeSheet {
 }
 export interface TimeZoneWithWorkNo {
     workNo: number;
-    timeZone: TimeZone_New;
+    timeZone: TimeZoneNew;
 }
-export interface TimeZone_New {
+export interface TimeZoneNew {
     startTime: number;
     endTime: number;
 }
@@ -358,7 +358,7 @@ export interface ApplicationDto {
     appDate: string;
     enteredPerson: string;
     inputDate: string;
-    reflectionStatus: ReflectionStatus
+    reflectionStatus: ReflectionStatus;
     opStampRequestMode?: number;
     opReversionReason?: string;
     opAppStartDate?: string;
@@ -368,7 +368,7 @@ export interface ApplicationDto {
     employeeIDLst: Array<string>;
 }
 export interface ReflectionStatus {
-
+    code: any;
 }
 export interface WorkInformation {
     workType: string;
@@ -408,4 +408,20 @@ export interface ApplicationInsertCmd {
     opAppEndDate: string;
     opStampRequestMode: string;
     
+}
+
+export interface ParamStartMobile {
+    mode: boolean;
+    companyId: string;
+    employeeIdOptional: string;
+    dateOptional: string;
+    disOptional: any;
+    appOptional: any;
+    appDispInfoStartupOutput: any;
+    overtimeAppAtr: number;
+}
+
+export interface Model {
+    appOverTime: AppOverTime;
+    displayInfoOverTime: DisplayInfoOverTime;
 }
