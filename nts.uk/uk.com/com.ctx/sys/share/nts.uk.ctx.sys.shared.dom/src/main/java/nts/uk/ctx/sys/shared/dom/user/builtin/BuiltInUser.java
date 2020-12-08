@@ -19,6 +19,9 @@ public class BuiltInUser {
 	/** 会社管理者のロールID（０契約０会社データに合わせる） */
 	private static final String ROLE_ID_COMPANY_ADMIN = "00000000-0000-0000-00000000000000001";
 	
+	/** 個人情報担当者のロールID（０契約０会社データに合わせる） */
+	private static final String ROLE_ID_PERSONAL_INFO = "b92261c6-7b38-4e0c-84ac-8b359a09880a";
+	
 	private static final String ROLE_ID_DUMMY = "BuiltInUser-RoleID";
 	
 	/** ビルトインユーザのユーザIDかどうかの判定に使えるようにpublic */
@@ -53,7 +56,7 @@ public class BuiltInUser {
 			.forAttendance(ROLE_ID_DUMMY)
 			.forPayroll(ROLE_ID_DUMMY)
 			.forPersonnel(ROLE_ID_DUMMY)
-			.forPersonalInfo(ROLE_ID_DUMMY)
+			.forPersonalInfo(ROLE_ID_PERSONAL_INFO)
 			.forOfficeHelper(ROLE_ID_DUMMY)
 			.forSystemAdmin(ROLE_ID_SYSTEM_ADMIN)
 			.forCompanyAdmin(ROLE_ID_COMPANY_ADMIN)
