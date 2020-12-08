@@ -126,6 +126,8 @@ module nts.uk.at.view.kmk004 {
 		visibleL4: KnockoutObservable<boolean> = ko.observable(false);
 
 		screenData = new TransformScreenData();
+		
+		isLoadData: KnockoutObservable<boolean>;
 
 		constructor(private params: IParam) {
 			super();
@@ -158,7 +160,15 @@ module nts.uk.at.view.kmk004 {
 					}
 				});
 			}
-
+			
+			vm.isLoadData = vm.params.isLoadData;
+			vm.isLoadData.subscribe((value: boolean) => {
+				if(value){
+					vm.loadData();
+					vm.isLoadData(false);		
+				}
+			});
+			
 		}
 
 		mounted() {

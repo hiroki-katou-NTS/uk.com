@@ -108,6 +108,7 @@ module nts.uk.at.view.kmk004.l {
 		public checkEmployee: KnockoutObservable<boolean> = ko.observable(true);
 		public existYear: KnockoutObservable<boolean> = ko.observable(false);
 		paramL: IParam;
+		isLoadData: KnockoutObservable<boolean> = ko.observable(false);
 		
 		constructor(private params: IParam){
 			super();
@@ -197,7 +198,7 @@ module nts.uk.at.view.kmk004.l {
 				isShowSelectAllButton: vm.isShowSelectAllButton(),
 				disableSelection: vm.disableSelection()
 			};
-			vm.paramL = {sidebarType : "Com_Person", wkpId: ko.observable(''), empCode: ko.observable(''), empId: ko.observable(''), titleName: '', deforLaborTimeComDto: null, settingDto: null};
+			vm.paramL = {isLoadData: vm.isLoadData, sidebarType : "Com_Person", wkpId: ko.observable(''), empCode: ko.observable(''), empId: ko.observable(''), titleName: '', deforLaborTimeComDto: null, settingDto: null};
 			vm.selectedYear
 			.subscribe(() => {
 				if(vm.selectedYear != null) {
@@ -226,7 +227,9 @@ module nts.uk.at.view.kmk004.l {
 		
 		openViewP() {
 			let vm = this;
-			vm.$window.modal('at', '/view/kmk/004/p/index.xhtml', ko.toJS(vm.paramL))
+			vm.$window.modal('at', '/view/kmk/004/p/index.xhtml', ko.toJS(vm.paramL)).then(() => {
+				vm.isLoadData(true);
+			});
 		}
 	}
 
