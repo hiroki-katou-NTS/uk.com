@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.infra.repository.employmentinfoterminal.infotermina
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -93,13 +94,21 @@ public class JpaTimeRecordSetFormatListRepository extends JpaRepository implemen
 	
 	private List<TimeRecordSetFormatList> toListDomain(List<KrcmtTrRemoteSetting> listEntity) {
 		List<TimeRecordSetFormatList> listTimeRecordSetFormatList = new ArrayList<TimeRecordSetFormatList>();
-		
+		Map<String, List<KrcmtTrRemoteSetting>> results = listEntity.stream().collect(Collectors.groupingBy(KrcmtTrRemoteSetting::getGroupByString));
+		results.entrySet().stream().forEach(e -> {
+			TimeRecordSetFormatList timeRecordSetFormatList = toDomain(e.getValue());
+			listTimeRecordSetFormatList.add(timeRecordSetFormatList);
+		});
 		return null;
 	}
 
 	@Override
 	public List<TimeRecordSetFormatList> get(ContractCode contractCode, List<EmpInfoTerminalCode> listEmpInfoTerCode) {
-		// TODO Auto-generated method stub
-		return null;
+		List<KrcmtTrRemoteSetting> listEntity = this.queryProxy().query(FIND_CONTRACT_LISTCODE, KrcmtTrRemoteSetting.class)
+													.setParameter("contractCode", contractCode.v())
+													.setParameter("listCode", listEmpInfoTerCode)
+													.getList();
+				
+		return toListDomain(listEntity);
 	}
 }

@@ -55,6 +55,6 @@ public class KrcdtTrRemoteUpdate extends UkJpaEntity implements Serializable {
 	}
 
 	public String getGroupByString() {
-		return this.pk.timeRecordCode + this.empInfoTerName + this.romVersion + this.modelEmpInfoTer;
+		return this.pk.timeRecordCode + "|" + this.empInfoTerName + "|" + this.romVersion + "|" + this.modelEmpInfoTer;
 	}
 }
